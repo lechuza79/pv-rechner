@@ -9,6 +9,26 @@ const DEGRAD = 0.005;
 // Winter ~17% über Durchschnitt, Sommer ~15% unter
 const CONSUMPTION_MONTHLY = [1.17, 1.05, 1.08, 0.97, 0.93, 0.84, 0.87, 0.87, 0.91, 1.00, 1.13, 1.17];
 
+// Gas/Öl-Referenzkosten für WP-Vergleich
+const FUEL = {
+  gas: { label: "Gas", price: 0.12, efficiency: 0.90, co2PerKwh: 0.20 },   // 12 ct/kWh, 90% Kessel, 200g CO2/kWh
+  oil: { label: "Heizöl", price: 0.10, efficiency: 0.85, co2PerKwh: 0.266 }, // 10 ct/kWh, 85% Kessel, 266g CO2/kWh
+};
+// CO2-Preis: 55€/t 2025, 65€/t 2026, ab 2027 EU ETS2 marktbasiert (konservativ +8€/Jahr)
+function calcFuelCost25(wpKwhElectric: number, fuel: "gas" | "oil"): number {
+  const f = FUEL[fuel];
+  const thermalKwh = wpKwhElectric * 3.5; // COP 3.5
+  const fuelKwh = thermalKwh / f.efficiency;
+  let total = 0;
+  for (let i = 0; i < YEARS; i++) {
+    const co2Price = i === 0 ? 55 : i === 1 ? 65 : 65 + (i - 1) * 8; // €/t, konservativ steigend
+    const co2Surcharge = f.co2PerKwh * co2Price / 1000; // €/kWh
+    const basePrice = f.price * Math.pow(1.02, i); // 2% Grundpreissteigerung
+    total += fuelKwh * (basePrice + co2Surcharge);
+  }
+  return Math.round(total);
+}
+
 const ANLAGEN = [
   { kwp: 5, label: "5 kWp", sub: "Klein · ~12 Module", icon: "🔆" },
   { kwp: 8, label: "8 kWp", sub: "Mittel · ~19 Module", icon: "🔆" },
@@ -302,6 +322,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzSource, setPlzSource] = useState<string | null>(null);
   const [monthlyProfile, setMonthlyProfile] = useState<number[] | null>(null);
+
+  // Gas/Öl-Referenz (nur bei WP)
+  const [fuelType, setFuelType] = useState<"gas" | "oil">("gas");
 
   // Speicher-Kosten Inline-Prompt (Quick Settings)
   const [spKostenPrompt, setSpKostenPrompt] = useState(false);
@@ -785,6 +808,33 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               </div>
             </div>
 
+            {/* Gas/Öl reference (nur bei WP) */}
+            {wp !== "nein" && (
+              <div style={{ background: "#151515", borderRadius: 14, padding: "12px 16px", marginBottom: 16, border: "1px solid #252525" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                  <span style={{ fontSize: 11, color: "#777", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>
+                    Zum Vergleich: {FUEL[fuelType].label}heizung 25 J.
+                  </span>
+                  <div style={{ display: "flex", gap: 4 }}>
+                    {(["gas", "oil"] as const).map(ft => (
+                      <button key={ft} onClick={() => setFuelType(ft)} style={{
+                        padding: "3px 8px", borderRadius: 6, fontSize: 10, fontWeight: 600, cursor: "pointer",
+                        background: fuelType === ft ? "rgba(239,68,68,0.1)" : "transparent",
+                        border: fuelType === ft ? "1px solid rgba(239,68,68,0.3)" : "1px solid #333",
+                        color: fuelType === ft ? "#ef4444" : "#666",
+                      }}>{FUEL[ft].label}</button>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 800, fontFamily: "'JetBrains Mono',monospace", color: "#ef4444" }}>
+                  {calcFuelCost25(3500, fuelType).toLocaleString("de-DE")} €
+                </div>
+                <div style={{ fontSize: 11, color: "#666", marginTop: 4, lineHeight: 1.5 }}>
+                  Heizkosten für {Math.round(3500 * 3.5).toLocaleString("de-DE")} kWh Wärme/Jahr inkl. steigender CO₂-Abgabe (55 €/t → EU ETS2 ab 2027)
+                </div>
+              </div>
+            )}
+
             {/* Chart */}
             <div style={{ background: "#131313", borderRadius: 16, padding: "14px 10px 6px", marginBottom: 16, border: "1px solid #222" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 6px", marginBottom: 6 }}>
@@ -815,7 +865,26 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               ))}
             </div>
 
-            {/* Monthly production chart */}
+            {/* Monthly production chart or PLZ CTA */}
+            {!monthlyProfile && (
+              <div
+                onClick={() => {
+                  const el = document.querySelector<HTMLInputElement>('input[placeholder="PLZ"]');
+                  if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus(); }
+                }}
+                style={{
+                  background: "#131313", borderRadius: 16, padding: "20px 16px", marginBottom: 16,
+                  border: "1px dashed #333", textAlign: "center", cursor: "pointer",
+                }}
+              >
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#888", marginBottom: 4 }}>
+                  Jahresverlauf & exaktere Prognose
+                </div>
+                <div style={{ fontSize: 12, color: "#555" }}>
+                  PLZ eingeben für standortgenauen Ertrag + monatliche Berechnung
+                </div>
+              </div>
+            )}
             {monthlyProfile && (
               <div style={{ background: "#131313", borderRadius: 16, padding: "14px 14px 10px", marginBottom: 16, border: "1px solid #222" }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "#ddd", marginBottom: 10 }}>Monatsertrag</div>
