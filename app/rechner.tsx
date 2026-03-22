@@ -40,6 +40,8 @@ const TRI = [
   { id: "ja", label: "Vorhanden" },
 ];
 
+const EA_KM_PRESETS = [10000, 15000, 20000];
+
 const SCENARIOS = [
   { id: "pessimistic", label: "Pessimistisch", color: "#ef4444", strom: 0.01, evDelta: -5 },
   { id: "realistic", label: "Realistisch", color: "#22c55e", strom: 0.03, evDelta: 0 },
@@ -52,13 +54,13 @@ function estimateCost(kwp: number, spKwh: number): number {
   return Math.round((pv + sp) / 500) * 500;
 }
 
-function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, kwp, ertragKwp }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; kwp: number; ertragKwp: number }): number {
+function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm, kwp, ertragKwp }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; eaKm: number; kwp: number; ertragKwp: number }): number {
   const jahresertrag = kwp * ertragKwp;
   const grundverbrauch = PERSONEN[personenIdx].verbrauch;
   const tagQuote = NUTZUNG[nutzungIdx].tagQuote;
   let extra = 0;
   if (wp !== "nein") extra += 3500;
-  if (ea !== "nein") extra += 2500;
+  if (ea !== "nein") extra += Math.round(eaKm * 0.18);
   const gesamt = grundverbrauch + extra;
   const direkt = jahresertrag * tagQuote;
   const boost = speicherKwh > 0 ? Math.min(speicherKwh * 200, jahresertrag * 0.25) : 0;
@@ -222,7 +224,7 @@ function TriToggle({ options, value, onChange, label }: { options: { id: string;
 }
 
 // ─── URL param helpers ────────────────────────────────────────────────────────
-const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er"];
+const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km"];
 
 function paramInt(params: Record<string, string | string[] | undefined> | undefined, key: string, fallback: number, min = 0, max = 99): number {
   const v = params?.[key];
@@ -247,12 +249,14 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const hasShare = initialParams && SHARE_KEYS.some(k => k in initialParams);
 
   const [step, setStep] = useState(hasShare ? 4 : 0);
-  const [anlage, setAnlage] = useState(hasShare ? paramInt(initialParams, "a", 2, 0, 3) : 2);
+  const [anlage, setAnlage] = useState(hasShare ? paramInt(initialParams, "a", 2, 0, 4) : 2);
+  const [customKwp, setCustomKwp] = useState(hasShare ? paramInt(initialParams, "ck", 12, 1, 50) : 12);
   const [speicher, setSpeicher] = useState(hasShare ? paramInt(initialParams, "s", 0, 0, 3) : 0);
   const [personen, setPersonen] = useState(hasShare ? paramInt(initialParams, "p", 1, 0, 3) : 1);
   const [nutzung, setNutzung] = useState(hasShare ? paramInt(initialParams, "n", 1, 0, 3) : 1);
   const [wp, setWp] = useState(hasShare ? paramStr(initialParams, "wp", "nein", ["nein", "geplant", "ja"]) : "nein");
   const [ea, setEa] = useState(hasShare ? paramStr(initialParams, "ea", "nein", ["nein", "geplant", "ja"]) : "nein");
+  const [eaKm, setEaKm] = useState(hasShare ? paramInt(initialParams, "km", 15000, 1000, 50000) : 15000);
 
   // Editable overrides (null = use auto-calculated)
   const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 1000 && n <= 200000 ? n : null; })() : null);
@@ -267,10 +271,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [canShare, setCanShare] = useState(false);
   useEffect(() => { setCanShare(typeof navigator !== "undefined" && !!navigator.share); }, []);
 
-  const kwp = ANLAGEN[anlage].kwp;
+  const kwp = anlage <= 3 ? ANLAGEN[anlage].kwp : customKwp;
   const spKwh = SPEICHER[speicher].kwh;
   const kosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh);
-  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, kwp, ertragKwp: oErtrag });
+  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, kwp, ertragKwp: oErtrag });
   const effEv = oEv !== null ? oEv : autoEv;
   const jahresertrag = kwp * oErtrag;
 
@@ -278,7 +282,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     SCENARIOS.map(s => ({
       ...s,
       data: calc({ kwp, kosten, strompreis: oStrom, eigenverbrauch: Math.min(effEv + s.evDelta, 95), einspeisung: einspeisungAn ? oEinsp : 0, stromSteigerung: s.strom, ertragKwp: oErtrag }),
-    })), [kwp, kosten, oStrom, effEv, oEinsp, einspeisungAn, oErtrag]);
+    })), [kwp, kosten, oStrom, effEv, oEinsp, einspeisungAn, oErtrag, eaKm]);
 
   const real = scenarioData.find(s => s.id === "realistic")!;
   const be = real.data.be;
@@ -297,6 +301,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     p.set("n", String(nutzung));
     p.set("wp", wp);
     p.set("ea", ea);
+    if (ea !== "nein") p.set("km", String(eaKm));
+    if (anlage === 4) p.set("ck", String(customKwp));
     if (oKosten !== null) p.set("k", String(oKosten));
     if (oEv !== null) p.set("ev", String(oEv));
     p.set("st", String(oStrom));
@@ -357,10 +363,37 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: "#fff" }}>{STEPS[step]}</h2>
 
             {step === 0 && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                {ANLAGEN.map((a, i) => (
-                  <OptionCard key={i} selected={anlage === i} onClick={() => { setAnlage(i); setOKosten(null); }} label={a.label} sub={a.sub} icon={a.icon} />
-                ))}
+              <div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  {ANLAGEN.map((a, i) => (
+                    <OptionCard key={i} selected={anlage === i} onClick={() => { setAnlage(i); setOKosten(null); setOEv(null); }} label={a.label} sub={a.sub} icon={a.icon} />
+                  ))}
+                </div>
+                <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
+                  <div style={{ width: "calc(50% - 5px)" }}>
+                    <OptionCard selected={anlage === 4} onClick={() => { setAnlage(4); setOKosten(null); setOEv(null); }} label="Anderer Wert" sub={anlage === 4 ? `${customKwp} kWp` : "z.B. 12 kWp"} icon="✏️" />
+                  </div>
+                </div>
+                {anlage === 4 && (
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 12 }}>
+                    <input
+                      autoFocus
+                      value={String(customKwp)}
+                      onChange={e => {
+                        const raw = e.target.value.replace(",", ".");
+                        const n = parseInt(raw);
+                        if (!isNaN(n) && n >= 1 && n <= 50) { setCustomKwp(n); setOKosten(null); setOEv(null); }
+                      }}
+                      style={{
+                        width: 64, textAlign: "center", fontSize: 16, fontWeight: 700,
+                        fontFamily: "'JetBrains Mono',monospace", color: "#22c55e",
+                        background: "rgba(34,197,94,0.1)", border: "1px solid #22c55e",
+                        borderRadius: 8, padding: "8px 6px", outline: "none",
+                      }}
+                    />
+                    <span style={{ fontSize: 14, fontWeight: 600, color: "#888" }}>kWp</span>
+                  </div>
+                )}
               </div>
             )}
 
@@ -398,6 +431,40 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               <div>
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
                 <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
+                {ea !== "nein" && (
+                  <div style={{ marginBottom: 18, marginTop: -10 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#777", marginBottom: 6 }}>Laufleistung ca.</div>
+                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                      {EA_KM_PRESETS.map(km => (
+                        <button key={km} onClick={() => { setEaKm(km); setOEv(null); }} style={{
+                          padding: "7px 10px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                          background: eaKm === km ? "rgba(34,197,94,0.1)" : "#161616",
+                          border: eaKm === km ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
+                          color: eaKm === km ? "#22c55e" : "#999",
+                        }}>{(km / 1000).toFixed(0)}k</button>
+                      ))}
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        <input
+                          value={EA_KM_PRESETS.includes(eaKm) ? "" : String(eaKm)}
+                          placeholder="km"
+                          onChange={e => {
+                            const n = parseInt(e.target.value.replace(/\D/g, ""));
+                            if (!isNaN(n) && n >= 1000 && n <= 50000) { setEaKm(n); setOEv(null); }
+                          }}
+                          style={{
+                            width: 56, textAlign: "center", fontSize: 12, fontWeight: 600,
+                            fontFamily: "'JetBrains Mono',monospace",
+                            color: !EA_KM_PRESETS.includes(eaKm) ? "#22c55e" : "#666",
+                            background: !EA_KM_PRESETS.includes(eaKm) ? "rgba(34,197,94,0.1)" : "#161616",
+                            border: !EA_KM_PRESETS.includes(eaKm) ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
+                            borderRadius: 8, padding: "7px 4px", outline: "none",
+                          }}
+                        />
+                        <span style={{ fontSize: 11, color: "#666" }}>km</span>
+                      </span>
+                    </div>
+                  </div>
+                )}
                 <div style={{ fontSize: 12, color: "#666", marginTop: 4, lineHeight: 1.5 }}>
                   Beides erhöht den Eigenverbrauch deutlich — weniger Einspeisung, mehr Ersparnis.
                 </div>
@@ -484,6 +551,75 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               <div style={{ fontSize: 11, color: "#555", marginTop: 10 }}>
                 Werte anklicken zum Anpassen
               </div>
+            </div>
+
+            {/* Quick Settings */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: "#666", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Was wäre wenn?</div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button onClick={() => { setWp(wp === "nein" ? "ja" : "nein"); setOEv(null); setOKosten(null); }} style={{
+                  padding: "8px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  background: wp !== "nein" ? "rgba(34,197,94,0.1)" : "#151515",
+                  border: wp !== "nein" ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
+                  color: wp !== "nein" ? "#22c55e" : "#888",
+                  display: "flex", alignItems: "center", gap: 6,
+                }}>
+                  ⚡ Wärmepumpe
+                  {wp !== "nein" && <span style={{ fontSize: 10, opacity: 0.7 }}>✓</span>}
+                </button>
+                <button onClick={() => { setEa(ea === "nein" ? "ja" : "nein"); setOEv(null); setOKosten(null); }} style={{
+                  padding: "8px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  background: ea !== "nein" ? "rgba(34,197,94,0.1)" : "#151515",
+                  border: ea !== "nein" ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
+                  color: ea !== "nein" ? "#22c55e" : "#888",
+                  display: "flex", alignItems: "center", gap: 6,
+                }}>
+                  🚗 E-Auto
+                  {ea !== "nein" && <span style={{ fontSize: 10, opacity: 0.7 }}>✓</span>}
+                </button>
+                <button onClick={() => { setSpeicher(speicher === 0 ? 2 : 0); setOKosten(null); setOEv(null); }} style={{
+                  padding: "8px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  background: speicher > 0 ? "rgba(34,197,94,0.1)" : "#151515",
+                  border: speicher > 0 ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
+                  color: speicher > 0 ? "#22c55e" : "#888",
+                  display: "flex", alignItems: "center", gap: 6,
+                }}>
+                  🔋 Speicher
+                  {speicher > 0 && <span style={{ fontSize: 10, opacity: 0.7 }}>{spKwh} kWh ✓</span>}
+                </button>
+              </div>
+              {ea !== "nein" && (
+                <div style={{ marginTop: 8, display: "flex", gap: 6, alignItems: "center", paddingLeft: 4 }}>
+                  <span style={{ fontSize: 11, color: "#666" }}>Laufleistung:</span>
+                  {EA_KM_PRESETS.map(km => (
+                    <button key={km} onClick={() => { setEaKm(km); setOEv(null); }} style={{
+                      padding: "5px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer",
+                      background: eaKm === km ? "rgba(34,197,94,0.1)" : "#151515",
+                      border: eaKm === km ? "1px solid #22c55e" : "1px solid #2a2a2a",
+                      color: eaKm === km ? "#22c55e" : "#777",
+                    }}>{(km / 1000).toFixed(0)}k</button>
+                  ))}
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
+                    <input
+                      value={EA_KM_PRESETS.includes(eaKm) ? "" : String(eaKm)}
+                      placeholder="km"
+                      onChange={e => {
+                        const n = parseInt(e.target.value.replace(/\D/g, ""));
+                        if (!isNaN(n) && n >= 1000 && n <= 50000) { setEaKm(n); setOEv(null); }
+                      }}
+                      style={{
+                        width: 48, textAlign: "center", fontSize: 11, fontWeight: 600,
+                        fontFamily: "'JetBrains Mono',monospace",
+                        color: !EA_KM_PRESETS.includes(eaKm) ? "#22c55e" : "#555",
+                        background: !EA_KM_PRESETS.includes(eaKm) ? "rgba(34,197,94,0.1)" : "#151515",
+                        border: !EA_KM_PRESETS.includes(eaKm) ? "1px solid #22c55e" : "1px solid #2a2a2a",
+                        borderRadius: 6, padding: "5px 4px", outline: "none",
+                      }}
+                    />
+                    <span style={{ fontSize: 10, color: "#555" }}>km</span>
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Stats row */}

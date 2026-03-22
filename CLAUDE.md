@@ -23,11 +23,13 @@ Du arbeitest mit einem UX-Architekten zusammen, der technisch mitdenken kann, ab
 ### User Flow: 4 Schritte → Ergebnis
 
 ```
-Step 0: Anlagengröße          → 5 / 8 / 10 / 15 kWp (2×2 Grid, OptionCard)
+Step 0: Anlagengröße          → 5 / 8 / 10 / 15 kWp + "Anderer Wert" (2×2+1 Grid, OptionCard)
+                                 Bei "Anderer Wert": freie kWp-Eingabe (1–50)
 Step 1: Speicher               → Nein / 5 / 10 / 15 kWh (2×2 Grid, OptionCard)
 Step 2: Haushalt               → Personen (1/2/3–4/5+, 4×1 Buttons)
                                  + Nutzungsprofil (weg/teils/home/immer, 2×2 OptionCards)
 Step 3: Großverbraucher        → Wärmepumpe + E-Auto (je TriToggle: Nein/Geplant/Vorhanden)
+                                 Bei E-Auto aktiv: Laufleistung (10k/15k/20k/custom km)
 ─────────────────────────────────
 Ergebnis:
   Hero-Card:
@@ -35,6 +37,8 @@ Ergebnis:
     - Editierbares 2×3 Grid: Investition, Eigenverbrauch, Strompreis,
       Einspeisevergütung (mit An/Aus-Toggle), spez. Ertrag, Anlageninfo
     - Hint: "Werte anklicken zum Anpassen"
+  Quick Settings: "Was wäre wenn?" Toggle-Chips (WP, E-Auto, Speicher)
+    - E-Auto zeigt Laufleistung-Presets (10k/15k/20k + custom)
   Stats: Rendite 25J + ⌀ Ersparnis/Jahr (2×1 Grid)
   Chart: SVG-Amortisationskurve mit 3 Szenarien
   Szenario-Pills: Pessimistisch / Realistisch / Optimistisch
@@ -49,7 +53,7 @@ Ergebnis:
 ```
 Grundverbrauch   = f(Personen): 1→1800, 2→2800, 3–4→3800, 5+→5000 kWh/a
 Tagquote         = f(Nutzung): weg→20%, teils→30%, home→40%, immer→50%
-Extra-Verbrauch  = WP→+3500 kWh, E-Auto→+2500 kWh (bei "ja" oder "geplant")
+Extra-Verbrauch  = WP→+3500 kWh, E-Auto→Laufleistung×0.18 kWh (bei "ja" oder "geplant", Default 15.000 km/a)
 Speicher-Boost   = min(kWh × 200, Jahresertrag × 0.25)
 Eigenverbrauch   = min(Direktverbr. + Boost, Gesamtverbrauch, Ertrag × 90%)
 Ergebnis: 10–90%, gerundet
