@@ -552,7 +552,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             <div style={{ marginBottom: 16 }}>
               <div style={{ fontSize: 10, fontWeight: 700, color: "#666", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Was wäre wenn?</div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                <button onClick={() => { setWp(wp === "nein" ? "ja" : "nein"); setOEv(null); setOKosten(null); }} style={{
+                <button onClick={() => { setWp(wp === "nein" ? "ja" : "nein"); setOEv(null); }} style={{
                   padding: "8px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer",
                   background: wp !== "nein" ? "rgba(34,197,94,0.1)" : "#151515",
                   border: wp !== "nein" ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
@@ -562,7 +562,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   ⚡ Wärmepumpe
                   {wp !== "nein" && <span style={{ fontSize: 10, opacity: 0.7 }}>✓</span>}
                 </button>
-                <button onClick={() => { setEa(ea === "nein" ? "ja" : "nein"); setOEv(null); setOKosten(null); }} style={{
+                <button onClick={() => { setEa(ea === "nein" ? "ja" : "nein"); setOEv(null); }} style={{
                   padding: "8px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer",
                   background: ea !== "nein" ? "rgba(34,197,94,0.1)" : "#151515",
                   border: ea !== "nein" ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
