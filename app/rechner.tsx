@@ -668,8 +668,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               background: "#131313", borderRadius: 12, padding: "12px 16px", marginBottom: 16,
               border: "1px solid #222", fontSize: 12, color: "#666", lineHeight: 1.6,
             }}>
-              <span style={{ fontWeight: 700, color: "#888" }}>Methodik: </span>
-              Eigenverbrauch kalibriert an HTW Berlin Simulationsdaten (±5% Abweichung möglich) · Degradation 0,5%/Jahr · Einspeisevergütung fix 20 J. · Wartungskosten nicht einberechnet (~150–250 €/Jahr empfohlen)
+              <Link href="/methodik" style={{ fontWeight: 700, color: "#888", textDecoration: "none", borderBottom: "1px dashed #555" }}>Methodik</Link>
+              <span style={{ color: "#666" }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
             </div>
 
             {/* Share */}
@@ -713,6 +713,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         )}
 
         <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: "24px 0 16px" }}>
+          <Link href="/methodik" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Methodik</Link>
           <Link href="/impressum" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Impressum</Link>
           <Link href="/datenschutz" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Datenschutz</Link>
         </div>
