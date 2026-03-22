@@ -237,7 +237,7 @@ function TriToggle({ options, value, onChange, label }: { options: { id: string;
 }
 
 // ─── URL param helpers ────────────────────────────────────────────────────────
-const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km"];
+const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz"];
 
 function paramInt(params: Record<string, string | string[] | undefined> | undefined, key: string, fallback: number, min = 0, max = 99): number {
   const v = params?.[key];
@@ -279,9 +279,38 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [einspeisungAn, setEinspeisungAn] = useState(hasShare ? initialParams?.eia !== "0" : true);
   const [oErtrag, setOErtrag] = useState(hasShare ? paramInt(initialParams, "er", 950, 700, 1200) : 950);
 
+  // PLZ → standortspezifischer Ertrag
+  const [plz, setPlz] = useState(hasShare && typeof initialParams?.plz === "string" && /^\d{5}$/.test(initialParams.plz) ? initialParams.plz : "");
+  const [plzLoading, setPlzLoading] = useState(false);
+  const [plzSource, setPlzSource] = useState<string | null>(null);
+
   // Speicher-Kosten Inline-Prompt (Quick Settings)
   const [spKostenPrompt, setSpKostenPrompt] = useState(false);
   const [spKostenDraft, setSpKostenDraft] = useState("");
+
+  // PLZ → PVGIS Ertrag laden
+  const fetchPvgis = async (inputPlz: string) => {
+    if (!/^\d{5}$/.test(inputPlz)) return;
+    setPlzLoading(true);
+    try {
+      // PLZ → Koordinaten (lazy load)
+      const plzRes = await fetch("/plz.json");
+      const plzData: Record<string, [number, number]> = await plzRes.json();
+      const coords = plzData[inputPlz];
+      if (!coords) { setPlzLoading(false); return; }
+      const [lat, lon] = coords;
+      const res = await fetch(`/api/pvgis?lat=${lat}&lon=${lon}&plzPrefix=${inputPlz.slice(0, 2)}`);
+      const data = await res.json();
+      if (data.annual && data.annual >= 700 && data.annual <= 1400) {
+        setOErtrag(data.annual);
+        setPlzSource(data.source);
+      }
+    } catch { /* Fallback: oErtrag bleibt unverändert */ }
+    setPlzLoading(false);
+  };
+
+  // Auto-fetch bei Share-URL mit PLZ
+  useEffect(() => { if (plz && hasShare) fetchPvgis(plz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Share state
   const [copied, setCopied] = useState(false);
@@ -326,6 +355,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     p.set("ei", String(oEinsp));
     p.set("eia", einspeisungAn ? "1" : "0");
     p.set("er", String(oErtrag));
+    if (plz) p.set("plz", plz);
     return `${window.location.origin}${window.location.pathname}?${p.toString()}`;
   };
 
@@ -536,8 +566,32 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   )}
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "#777" }}>Ertrag</span>
-                  <InlineEdit value={oErtrag} onCommit={setOErtrag} unit=" kWh/kWp" step={10} min={700} max={1200} width={48} />
+                  <span style={{ color: "#777" }}>Ertrag{plzLoading && <span style={{ color: "#22c55e", fontSize: 10, marginLeft: 4 }}>…</span>}</span>
+                  <InlineEdit value={oErtrag} onCommit={setOErtrag} unit=" kWh/kWp" step={10} min={700} max={1400} width={48} />
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ color: "#777" }}>Standort</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                    <input
+                      value={plz}
+                      placeholder="PLZ"
+                      maxLength={5}
+                      onChange={e => {
+                        const v = e.target.value.replace(/\D/g, "").slice(0, 5);
+                        setPlz(v);
+                        if (v.length === 5) fetchPvgis(v);
+                      }}
+                      style={{
+                        width: 52, textAlign: "center", fontSize: 13, fontWeight: 700,
+                        fontFamily: "'JetBrains Mono',monospace",
+                        color: plz.length === 5 ? "#22c55e" : "#888",
+                        background: plz.length === 5 ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.03)",
+                        border: plz.length === 5 ? "1px solid rgba(34,197,94,0.3)" : "1px dashed #555",
+                        borderRadius: 6, padding: "3px 4px", outline: "none",
+                      }}
+                    />
+                    {plzSource && <span style={{ fontSize: 10, color: "#555" }}>{plzSource === "pvgis" ? "✓" : "~"}</span>}
+                  </span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ color: "#777" }}>Anlage</span>

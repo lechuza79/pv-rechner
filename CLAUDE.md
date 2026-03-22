@@ -116,10 +116,11 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
 - [ ] Blog/Ratgeber-Sektion
 
-### Phase 3: Produkt-Erweiterung (Horizont)
-- [ ] Gespeicherte Berechnungen (→ Accounts, Supabase)
+### Phase 3: Produkt-Erweiterung (in Arbeit)
+- [x] Standort-basierter Ertrag (PLZ → PVGIS API → kWh/kWp)
+- [x] Supabase Infrastruktur (PVGIS-Cache, Schema für Berechnungen)
+- [ ] Gespeicherte Berechnungen (→ Accounts, Supabase Auth)
 - [ ] "Meine Anlage tracken" für PV-Besitzer
-- [ ] Standort-basierter Ertrag (PLZ → spezifischer Ertrag)
 - [ ] PDF-Export des Ergebnisses
 - [ ] Finanzierungsrechner (Kredit vs. Eigenkapital)
 - [ ] Community-Features (Erfahrungsberichte, Vergleiche)
@@ -135,7 +136,8 @@ Baue nur was in der aktuellen Phase steht. Wenn eine Architekturentscheidung sp�
 | Styling | **Inline Styles** | Bewusst kein Tailwind — Projekt zu klein, harte Farbwerte |
 | Fonts | **DM Sans + JetBrains Mono** | Google Fonts, geladen in layout.tsx |
 | Deployment | **Vercel** | Zero-Config für Next.js, Preview Deployments |
-| Backend | **Keins (Phase 0–2)** | Alles clientseitig. Supabase kommt wenn Accounts nötig (Phase 3) |
+| Backend | **Supabase** (ab Phase 3) | PVGIS-Cache, vorbereitet für Accounts |
+| PV-Ertrag | **PVGIS API** (EU JRC) | Standortspezifisch via Next.js API-Route, Supabase-Cache |
 | Package Manager | **npm** | Standard reicht bei dieser Projektgröße |
 
 **Bewusst nicht im Stack:** Tailwind, shadcn/ui, State Management Libraries, CSS-in-JS, Testing Framework. Erst einführen wenn es einen konkreten Grund gibt.
@@ -148,12 +150,18 @@ pv-rechner/
 ├── README.md              # Setup-Anleitung
 ├── package.json
 ├── next.config.js
+├── .env.local             # SUPABASE_URL, SUPABASE_SERVICE_KEY (nicht in git)
 ├── .gitignore
-├── public/                # Statische Assets (Favicon, OG-Image — TODO)
+├── public/
+│   └── plz.json           # PLZ → [lat, lon] Lookup (8.298 Einträge, CC BY 4.0)
+├── lib/
+│   └── supabase.ts        # Supabase Server-Client (graceful null wenn keine Credentials)
 └── app/
-    ├── layout.tsx         # Root Layout: HTML, Fonts (DM Sans + JetBrains Mono), SEO-Meta
+    ├── layout.tsx         # Root Layout: HTML, Fonts, SEO-Meta
     ├── page.tsx           # Einstiegspunkt, Error Boundary + <PVRechner />
     ├── rechner.tsx        # "use client" — Hauptkomponente, gesamte Logik + UI
+    ├── api/pvgis/route.ts # PVGIS API-Proxy mit Supabase-Cache + Bundesland-Fallback
+    ├── methodik/page.tsx  # Berechnungsmethodik (statisch)
     ├── impressum/page.tsx # Impressum (statisch)
     └── datenschutz/page.tsx # Datenschutzerklärung (statisch)
 ```
