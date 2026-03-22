@@ -81,15 +81,29 @@ function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm
   return Math.max(10, Math.min(ev, 90));
 }
 
-function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number }) {
+function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null }) {
   const years = [];
   let kum = -kosten;
+  // Monatliche Berechnung wenn PVGIS-Profil vorhanden
+  const fracs = monthly ? monthly.map(m => m / monthly.reduce((a, b) => a + b, 0)) : null;
   for (let i = 0; i <= YEARS; i++) {
-    const ertrag = kwp * ertragKwp * Math.pow(1 - DEGRAD, i);
-    const eigenKwh = ertrag * (eigenverbrauch / 100);
-    const einspKwh = ertrag - eigenKwh;
-    const sp = strompreis * Math.pow(1 + stromSteigerung, i);
-    const j = i === 0 ? 0 : eigenKwh * sp + einspKwh * (einspeisung / 100);
+    let j = 0;
+    if (i > 0) {
+      const deg = Math.pow(1 - DEGRAD, i);
+      const sp = strompreis * Math.pow(1 + stromSteigerung, i);
+      if (fracs) {
+        // Monatlich: EV% variiert saisonal (Winter höher, Sommer niedriger)
+        for (let m = 0; m < 12; m++) {
+          const mProd = kwp * ertragKwp * fracs[m] * deg;
+          const mEv = Math.min(eigenverbrauch / (fracs[m] * 12), 95) / 100;
+          j += mProd * mEv * sp + mProd * (1 - mEv) * (einspeisung / 100);
+        }
+      } else {
+        // Jährlich (Fallback ohne Monatsprofil)
+        const ertrag = kwp * ertragKwp * deg;
+        j = ertrag * (eigenverbrauch / 100) * sp + ertrag * (1 - eigenverbrauch / 100) * (einspeisung / 100);
+      }
+    }
     kum += j;
     years.push({ year: YEAR + i, i, kum: Math.round(kum), j: Math.round(j) });
   }
@@ -279,10 +293,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [einspeisungAn, setEinspeisungAn] = useState(hasShare ? initialParams?.eia !== "0" : true);
   const [oErtrag, setOErtrag] = useState(hasShare ? paramInt(initialParams, "er", 950, 700, 1200) : 950);
 
-  // PLZ → standortspezifischer Ertrag
+  // PLZ → standortspezifischer Ertrag + Monatsprofil
   const [plz, setPlz] = useState(hasShare && typeof initialParams?.plz === "string" && /^\d{5}$/.test(initialParams.plz) ? initialParams.plz : "");
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzSource, setPlzSource] = useState<string | null>(null);
+  const [monthlyProfile, setMonthlyProfile] = useState<number[] | null>(null);
 
   // Speicher-Kosten Inline-Prompt (Quick Settings)
   const [spKostenPrompt, setSpKostenPrompt] = useState(false);
@@ -304,6 +319,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       if (data.annual && data.annual >= 700 && data.annual <= 1400) {
         setOErtrag(data.annual);
         setPlzSource(data.source);
+        if (data.monthly && data.monthly.length === 12) setMonthlyProfile(data.monthly);
       }
     } catch { /* Fallback: oErtrag bleibt unverändert */ }
     setPlzLoading(false);
@@ -327,8 +343,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const scenarioData = useMemo(() =>
     SCENARIOS.map(s => ({
       ...s,
-      data: calc({ kwp, kosten, strompreis: oStrom, eigenverbrauch: Math.min(effEv + s.evDelta, 95), einspeisung: einspeisungAn ? oEinsp : 0, stromSteigerung: s.strom, ertragKwp: oErtrag }),
-    })), [kwp, kosten, oStrom, effEv, oEinsp, einspeisungAn, oErtrag, eaKm]);
+      data: calc({ kwp, kosten, strompreis: oStrom, eigenverbrauch: Math.min(effEv + s.evDelta, 95), einspeisung: einspeisungAn ? oEinsp : 0, stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile }),
+    })), [kwp, kosten, oStrom, effEv, oEinsp, einspeisungAn, oErtrag, eaKm, monthlyProfile]);
 
   const real = scenarioData.find(s => s.id === "realistic")!;
   const be = real.data.be;
@@ -794,6 +810,27 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 </div>
               ))}
             </div>
+
+            {/* Monthly production chart */}
+            {monthlyProfile && (
+              <div style={{ background: "#131313", borderRadius: 16, padding: "14px 14px 10px", marginBottom: 16, border: "1px solid #222" }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#ddd", marginBottom: 10 }}>Monatsertrag</div>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 80 }}>
+                  {monthlyProfile.map((m, i) => {
+                    const max = Math.max(...monthlyProfile);
+                    const h = (m / max) * 100;
+                    return (
+                      <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+                        <span style={{ fontSize: 9, fontFamily: "'JetBrains Mono',monospace", color: "#888" }}>{Math.round(m * kwp)}</span>
+                        <div style={{ width: "100%", height: `${h}%`, borderRadius: "3px 3px 0 0", background: m === max ? "#22c55e" : "rgba(34,197,94,0.3)", minHeight: 2 }} />
+                        <span style={{ fontSize: 9, color: "#555" }}>{["J","F","M","A","M","J","J","A","S","O","N","D"][i]}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{ fontSize: 10, color: "#555", textAlign: "center", marginTop: 6 }}>kWh/Monat · {plz && `PLZ ${plz}`}</div>
+              </div>
+            )}
 
             {/* Methodology note */}
             <div style={{
