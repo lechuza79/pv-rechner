@@ -160,6 +160,42 @@ export default function MethodikPage() {
           Autarkie-Quote nicht, weil mehr vom eigenen Dach kommt statt aus dem Netz.
         </p>
 
+        {/* ── Gas/Öl-Vergleich ── */}
+        <h2 style={S.h2}>Vergleich: Gas- & Ölheizung</h2>
+        <p style={S.p}>
+          Bei aktiver Wärmepumpe zeigen wir zum Vergleich, was eine Gas- oder
+          Ölheizung über 25 Jahre kosten würde — für die gleiche Wärmemenge.
+        </p>
+        <div style={S.card}>
+          <span style={S.label}>Berechnung</span>
+          <span style={S.accent}>Wärmebedarf:</span> 3.500 kWh Strom × COP 3,5 = 12.250 kWh Wärme/Jahr
+          <br />
+          <span style={S.accent}>Gaskessel:</span> 12.250 kWh ÷ 0,90 Wirkungsgrad = 13.611 kWh Gas
+          <br />
+          <span style={S.accent}>Ölkessel:</span> 12.250 kWh ÷ 0,85 Wirkungsgrad = 14.412 kWh Öl
+          <br />
+          <br />
+          <span style={S.label}>Preise</span>
+          <span style={S.accent}>Gas:</span> 12 ct/kWh · <span style={S.accent}>Heizöl:</span> 10 ct/kWh
+          <br />
+          Grundpreissteigerung: 2 %/Jahr
+          <br />
+          <br />
+          <span style={S.label}>CO₂-Abgabe</span>
+          2025: 55 €/t · 2026: 65 €/t · ab 2027: EU ETS2 (marktbasiert)
+          <br />
+          Wir rechnen konservativ mit +8 €/t pro Jahr ab 2027.
+          <br />
+          Gas: 200 g CO₂/kWh · Heizöl: 266 g CO₂/kWh
+          <br />
+          <br />
+          <span style={S.muted}>
+            Die CO₂-Bepreisung für Gebäude wird ab 2027/28 durch den EU-weiten
+            Emissionshandel (ETS2) ersetzt. Die tatsächlichen Zertifikatspreise
+            könnten deutlich über unserer konservativen Schätzung liegen.
+          </span>
+        </div>
+
         {/* ── Kostenschätzung ── */}
         <h2 style={S.h2}>Kostenschätzung</h2>
         <p style={S.p}>
