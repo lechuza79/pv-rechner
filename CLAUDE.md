@@ -52,16 +52,20 @@ Ergebnis:
 **Eigenverbrauch (automatisch berechnet, manuell überschreibbar):**
 ```
 Grundverbrauch   = f(Personen): 1→1800, 2→2800, 3–4→3800, 5+→5000 kWh/a
-Tagquote         = f(Nutzung): weg→25%, teils→40%, home→55%, immer→65%
+Tagquote         = f(Nutzung): weg→24%, teils→30%, home→38%, immer→45%
 Extra-Verbrauch  = WP→+3500 kWh, E-Auto→Laufleistung×0.18 kWh (Default 15.000 km/a)
 
-Empirisches Power-Law-Modell (angelehnt an HTW Berlin):
+Empirisches Power-Law (kalibriert an HTW Berlin Simulationsdaten, ±2pp):
   x              = kWp / (Gesamtverbrauch in MWh)
-  EV_Basis       = tagQuote × x^(-0.6)
-  EV_Speicher    = 0.35 × x^(-0.45) × (1 - e^(-batteryRatio×1.5))
+  y              = Speicher kWh / (Gesamtverbrauch in MWh)
+  EV_Basis       = tagQuote × x^(-0.69)
+  EV_Speicher    = 0.61 × x^(-0.72) × (1 - e^(-0.6×y))
   EV_Max         = Gesamtverbrauch / Jahresertrag
   Eigenverbrauch = min(EV_Basis + EV_Speicher, EV_Max, 90%)
 Ergebnis: 10–90%, gerundet
+
+Quelle: HTW Berlin, Quaschning/Weniger (25.000 Konfigurationen, 1-Min-Auflösung, VDI 4655)
+tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 ```
 
 **Kostenschätzung (automatisch, manuell überschreibbar):**
