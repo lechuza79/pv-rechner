@@ -815,18 +815,17 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             {monthlyProfile && (
               <div style={{ background: "#131313", borderRadius: 16, padding: "14px 14px 10px", marginBottom: 16, border: "1px solid #222" }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "#ddd", marginBottom: 10 }}>Monatsertrag</div>
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 80 }}>
-                  {monthlyProfile.map((m, i) => {
-                    const max = Math.max(...monthlyProfile);
-                    const h = (m / max) * 100;
+                <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 100, padding: "0 2px" }}>
+                  {(() => { const max = Math.max(...monthlyProfile); return monthlyProfile.map((m, i) => {
+                    const barH = Math.max(Math.round((m / max) * 70), 3);
                     return (
-                      <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-                        <span style={{ fontSize: 9, fontFamily: "'JetBrains Mono',monospace", color: "#888" }}>{Math.round(m * kwp)}</span>
-                        <div style={{ width: "100%", height: `${h}%`, borderRadius: "3px 3px 0 0", background: m === max ? "#22c55e" : "rgba(34,197,94,0.3)", minHeight: 2 }} />
-                        <span style={{ fontSize: 9, color: "#555" }}>{["J","F","M","A","M","J","J","A","S","O","N","D"][i]}</span>
+                      <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <span style={{ fontSize: 9, fontFamily: "'JetBrains Mono',monospace", color: "#888", marginBottom: 3 }}>{Math.round(m * kwp)}</span>
+                        <div style={{ width: "100%", height: barH, borderRadius: "3px 3px 0 0", background: m === max ? "#22c55e" : "rgba(34,197,94,0.35)" }} />
+                        <span style={{ fontSize: 9, color: "#555", marginTop: 3 }}>{["J","F","M","A","M","J","J","A","S","O","N","D"][i]}</span>
                       </div>
                     );
-                  })}
+                  }); })()}
                 </div>
                 <div style={{ fontSize: 10, color: "#555", textAlign: "center", marginTop: 6 }}>kWh/Monat · {plz && `PLZ ${plz}`}</div>
               </div>
