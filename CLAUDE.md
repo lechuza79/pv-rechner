@@ -111,21 +111,53 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Error Boundary für fehlerhafte Share-URLs (Fallback-UI statt Whitescreen)
 - [x] Impressum + Datenschutz Seiten mit Footer-Links
 
-### Phase 2: Content & Reichweite (geplant)
+### Phase 2 ✅ Berechnungsgenauigkeit + Standort (done)
+- [x] EV-Modell kalibriert an HTW Berlin Simulationsdaten
+- [x] Standort-basierter Ertrag (PLZ → PVGIS API → kWh/kWp)
+- [x] Monatliche Amortisation + Monatsertrag-Chart
+- [x] Saisonaler Verbrauchsfaktor (BDEW H0 Lastprofil)
+- [x] Gas/Öl-Referenzkosten bei WP (inkl. CO₂-Abgabe, EU ETS2)
+- [x] Supabase Infrastruktur (PVGIS-Cache, Schema für Berechnungen)
+- [x] Quick Settings (WP, E-Auto, Speicher)
+- [x] E-Auto Laufleistung
+- [x] Custom kWp Eingabe
+- [x] Methodik-Seite mit transparenter Berechnungserklärung
+
+### Phase 3: Accounts & Empfehlungs-Flow (nächstes WP)
+
+**WP 1: Accounts & Rollen**
+- [ ] Supabase Auth (Magic Link oder Google OAuth)
+- [ ] 3 Rollen: Interessent, PV-Besitzer, Solateur
+- [ ] Berechnung speichern + wieder laden
+- [ ] Dashboard "Meine Berechnungen"
+
+**WP 2: Empfehlungs-Flow**
+- [ ] Neuer UX-Flow: PLZ + Verbrauch + Dachfläche/Budget → System empfiehlt kWp + Speicher
+- [ ] "Warum"-Erklärung (EV-Optimierung, Über-/Unterdimensionierung)
+- [ ] Optional: Dachausrichtung für genaueren Ertrag
+
+### Phase 4: Content & Reichweite
 - [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
 - [ ] Blog/Ratgeber-Sektion
 
-### Phase 3: Produkt-Erweiterung (in Arbeit)
-- [x] Standort-basierter Ertrag (PLZ → PVGIS API → kWh/kWp)
-- [x] Supabase Infrastruktur (PVGIS-Cache, Schema für Berechnungen)
-- [ ] Gespeicherte Berechnungen (→ Accounts, Supabase Auth)
-- [ ] "Meine Anlage tracken" für PV-Besitzer
-- [ ] PDF-Export des Ergebnisses
-- [ ] Finanzierungsrechner (Kredit vs. Eigenkapital)
-- [ ] Community-Features (Erfahrungsberichte, Vergleiche)
+### Phase 5: Plattform (Horizont)
 
-Baue nur was in der aktuellen Phase steht. Wenn eine Architekturentscheidung spätere Phasen betrifft, kurz ansprechen.
+**WP 3: PV-Besitzer Tracking**
+- [ ] "Meine Anlage" Profil (kWp, Speicher, Inbetriebnahme)
+- [ ] Ist vs. Soll Vergleich (echte Erträge vs. PVGIS-Prognose)
+
+**WP 4: Solateur-Widget**
+- [ ] Embeddable Rechner (iframe/Web Component, White-Label)
+- [ ] Lead-Funktion → geht an Solateur
+- [ ] Solateur-Dashboard
+
+**WP 6: Weitere Features**
+- [ ] PDF-Export
+- [ ] Finanzierungsrechner (Kredit vs. Eigenkapital)
+- [ ] Community-Features
+
+Aktuelle Priorität: WP 1 → WP 2 → Phase 4
 
 ## Tech-Stack
 
