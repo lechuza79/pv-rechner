@@ -5,6 +5,9 @@ import Link from "next/link";
 const YEAR = 2026;
 const YEARS = 25;
 const DEGRAD = 0.005;
+// Saisonaler Verbrauchsfaktor (BDEW Standardlastprofil H0)
+// Winter ~17% über Durchschnitt, Sommer ~15% unter
+const CONSUMPTION_MONTHLY = [1.17, 1.05, 1.08, 0.97, 0.93, 0.84, 0.87, 0.87, 0.91, 1.00, 1.13, 1.17];
 
 const ANLAGEN = [
   { kwp: 5, label: "5 kWp", sub: "Klein · ~12 Module", icon: "🔆" },
@@ -95,7 +98,8 @@ function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteig
         // Monatlich: EV% variiert saisonal (Winter höher, Sommer niedriger)
         for (let m = 0; m < 12; m++) {
           const mProd = kwp * ertragKwp * fracs[m] * deg;
-          const mEv = Math.min(eigenverbrauch / (fracs[m] * 12), 95) / 100;
+          // EV% pro Monat: skaliert mit Verbrauch (BDEW H0) und inversem Ertrag
+          const mEv = Math.min(eigenverbrauch * CONSUMPTION_MONTHLY[m] / (fracs[m] * 12), 95) / 100;
           j += mProd * mEv * sp + mProd * (1 - mEv) * (einspeisung / 100);
         }
       } else {
