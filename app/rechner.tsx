@@ -46,13 +46,13 @@ const SCENARIOS = [
   { id: "optimistic", label: "Optimistisch", color: "#3b82f6", strom: 0.05, evDelta: 5 },
 ];
 
-function estimateCost(kwp, spKwh) {
+function estimateCost(kwp: number, spKwh: number): number {
   const pv = kwp <= 10 ? kwp * 1500 : 10 * 1500 + (kwp - 10) * 1350;
   const sp = spKwh > 0 ? 2000 + spKwh * 650 : 0;
   return Math.round((pv + sp) / 500) * 500;
 }
 
-function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, kwp, ertragKwp }) {
+function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, kwp, ertragKwp }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; kwp: number; ertragKwp: number }): number {
   const jahresertrag = kwp * ertragKwp;
   const grundverbrauch = PERSONEN[personenIdx].verbrauch;
   const tagQuote = NUTZUNG[nutzungIdx].tagQuote;
@@ -66,7 +66,7 @@ function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, kwp,
   return Math.max(10, Math.min(Math.round((eigenKwh / jahresertrag) * 100), 90));
 }
 
-function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp }) {
+function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number }) {
   const years = [];
   let kum = -kosten;
   for (let i = 0; i <= YEARS; i++) {
@@ -83,7 +83,7 @@ function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteig
 }
 
 // ─── Editable inline value ───────────────────────────────────────────────────
-function InlineEdit({ value, onCommit, unit, step = 1, min = 0, max = 99999, width = 72, fmt }: { value: any; onCommit: any; unit: any; step?: number; min?: number; max?: number; width?: number; fmt?: any }) {
+function InlineEdit({ value, onCommit, unit, step = 1, min = 0, max = 99999, width = 72, fmt }: { value: number; onCommit: (v: number) => void; unit: string; step?: number; min?: number; max?: number; width?: number; fmt?: (v: number) => string }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
 
@@ -141,7 +141,7 @@ function InlineEdit({ value, onCommit, unit, step = 1, min = 0, max = 99999, wid
 }
 
 // ─── Chart ───────────────────────────────────────────────────────────────────
-function Chart({ scenarios, kosten }) {
+function Chart({ scenarios, kosten }: { scenarios: { id: string; color: string; data: { years: { i: number; kum: number }[]; be: { i: number; kum: number } | undefined } }[]; kosten: number }) {
   const W = 640, H = 280;
   const P = { t: 24, r: 16, b: 32, l: 52 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
@@ -149,8 +149,8 @@ function Chart({ scenarios, kosten }) {
   const yMin = Math.floor(Math.min(...allV, -kosten) / 5000) * 5000;
   const yMax = Math.ceil(Math.max(...allV) / 5000) * 5000;
   const yR = yMax - yMin || 1;
-  const x = i => P.l + (i / YEARS) * cW;
-  const y = v => P.t + cH - ((v - yMin) / yR) * cH;
+  const x = (i: number) => P.l + (i / YEARS) * cW;
+  const y = (v: number) => P.t + cH - ((v - yMin) / yR) * cH;
   const tStep = yR <= 30000 ? 5000 : yR <= 60000 ? 10000 : 20000;
   const yTicks = [];
   for (let v = yMin; v <= yMax; v += tStep) yTicks.push(v);
@@ -186,7 +186,7 @@ function Chart({ scenarios, kosten }) {
 }
 
 // ─── Reusable components ─────────────────────────────────────────────────────
-function OptionCard({ selected, onClick, icon = null, label, sub }: { selected: any; onClick: any; icon?: any; label: any; sub: any }) {
+function OptionCard({ selected, onClick, icon = null, label, sub }: { selected: boolean; onClick: () => void; icon?: string | null; label: string; sub: string }) {
   return (
     <button onClick={onClick} style={{
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
@@ -202,7 +202,7 @@ function OptionCard({ selected, onClick, icon = null, label, sub }: { selected: 
   );
 }
 
-function TriToggle({ options, value, onChange, label }) {
+function TriToggle({ options, value, onChange, label }: { options: { id: string; label: string }[]; value: string; onChange: (v: string) => void; label: string }) {
   return (
     <div style={{ marginBottom: 18 }}>
       <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0", marginBottom: 8 }}>{label}</div>
@@ -224,19 +224,19 @@ function TriToggle({ options, value, onChange, label }) {
 // ─── URL param helpers ────────────────────────────────────────────────────────
 const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er"];
 
-function paramInt(params: Record<string, any> | undefined, key: string, fallback: number, min = 0, max = 99) {
+function paramInt(params: Record<string, string | string[] | undefined> | undefined, key: string, fallback: number, min = 0, max = 99): number {
   const v = params?.[key];
   if (typeof v === "string") { const n = parseInt(v); if (!isNaN(n) && n >= min && n <= max) return n; }
   return fallback;
 }
 
-function paramFloat(params: Record<string, any> | undefined, key: string, fallback: number) {
+function paramFloat(params: Record<string, string | string[] | undefined> | undefined, key: string, fallback: number, min = 0, max = 99999): number {
   const v = params?.[key];
-  if (typeof v === "string") { const n = parseFloat(v); if (!isNaN(n)) return n; }
+  if (typeof v === "string") { const n = parseFloat(v); if (!isNaN(n) && isFinite(n) && n >= min && n <= max) return n; }
   return fallback;
 }
 
-function paramStr(params: Record<string, any> | undefined, key: string, fallback: string, allowed: string[]) {
+function paramStr(params: Record<string, string | string[] | undefined> | undefined, key: string, fallback: string, allowed: string[]): string {
   const v = params?.[key];
   if (typeof v === "string" && allowed.includes(v)) return v;
   return fallback;
@@ -255,10 +255,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [ea, setEa] = useState(hasShare ? paramStr(initialParams, "ea", "nein", ["nein", "geplant", "ja"]) : "nein");
 
   // Editable overrides (null = use auto-calculated)
-  const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? Number(initialParams.k) : null);
-  const [oEv, setOEv] = useState<number | null>(hasShare && initialParams?.ev ? Number(initialParams.ev) : null);
-  const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", 0.34) : 0.34);
-  const [oEinsp, setOEinsp] = useState(hasShare ? paramFloat(initialParams, "ei", 8.03) : 8.03);
+  const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 1000 && n <= 200000 ? n : null; })() : null);
+  const [oEv, setOEv] = useState<number | null>(hasShare && initialParams?.ev ? (() => { const n = Number(initialParams.ev); return isFinite(n) && n >= 5 && n <= 95 ? n : null; })() : null);
+  const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", 0.34, 0.05, 1.0) : 0.34);
+  const [oEinsp, setOEinsp] = useState(hasShare ? paramFloat(initialParams, "ei", 8.03, 0, 20) : 8.03);
   const [einspeisungAn, setEinspeisungAn] = useState(hasShare ? initialParams?.eia !== "0" : true);
   const [oErtrag, setOErtrag] = useState(hasShare ? paramInt(initialParams, "er", 950, 700, 1200) : 950);
 
@@ -280,7 +280,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       data: calc({ kwp, kosten, strompreis: oStrom, eigenverbrauch: Math.min(effEv + s.evDelta, 95), einspeisung: einspeisungAn ? oEinsp : 0, stromSteigerung: s.strom, ertragKwp: oErtrag }),
     })), [kwp, kosten, oStrom, effEv, oEinsp, einspeisungAn, oErtrag]);
 
-  const real = scenarioData.find(s => s.id === "realistic");
+  const real = scenarioData.find(s => s.id === "realistic")!;
   const be = real.data.be;
 
   const STEPS = ["Wie groß soll die Anlage werden?", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
