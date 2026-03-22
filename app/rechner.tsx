@@ -279,6 +279,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [einspeisungAn, setEinspeisungAn] = useState(hasShare ? initialParams?.eia !== "0" : true);
   const [oErtrag, setOErtrag] = useState(hasShare ? paramInt(initialParams, "er", 950, 700, 1200) : 950);
 
+  // Speicher-Kosten Inline-Prompt (Quick Settings)
+  const [spKostenPrompt, setSpKostenPrompt] = useState(false);
+  const [spKostenDraft, setSpKostenDraft] = useState("");
+
   // Share state
   const [copied, setCopied] = useState(false);
   const [canShare, setCanShare] = useState(false);
@@ -572,7 +576,18 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   🚗 E-Auto
                   {ea !== "nein" && <span style={{ fontSize: 10, opacity: 0.7 }}>✓</span>}
                 </button>
-                <button onClick={() => { setSpeicher(speicher === 0 ? 2 : 0); setOKosten(null); setOEv(null); }} style={{
+                <button onClick={() => {
+                  if (oKosten !== null) {
+                    // Manueller Preis: Inline-Prompt für Speicherkosten
+                    const defaultSpKosten = speicher === 0
+                      ? (2000 + SPEICHER[2].kwh * 650) // ON: 10kWh default
+                      : (2000 + spKwh * 650); // OFF: aktuelle Größe
+                    setSpKostenDraft(String(defaultSpKosten));
+                    setSpKostenPrompt(true);
+                  } else {
+                    setSpeicher(speicher === 0 ? 2 : 0); setOEv(null);
+                  }
+                }} style={{
                   padding: "8px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer",
                   background: speicher > 0 ? "rgba(34,197,94,0.1)" : "#151515",
                   border: speicher > 0 ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
@@ -583,6 +598,69 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   {speicher > 0 && <span style={{ fontSize: 10, opacity: 0.7 }}>{spKwh} kWh ✓</span>}
                 </button>
               </div>
+              {spKostenPrompt && (
+                <div style={{
+                  marginTop: 8, padding: "10px 14px", borderRadius: 10,
+                  background: "#151515", border: "1.5px solid #22c55e",
+                  display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
+                }}>
+                  <span style={{ fontSize: 12, color: "#999" }}>
+                    {speicher > 0 ? "Speicherkosten abziehen:" : "Speicherkosten:"}
+                  </span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                    <input
+                      autoFocus
+                      value={spKostenDraft}
+                      onChange={e => setSpKostenDraft(e.target.value.replace(/[^\d]/g, ""))}
+                      onKeyDown={e => {
+                        if (e.key === "Enter") {
+                          const n = parseInt(spKostenDraft);
+                          if (!isNaN(n) && n >= 0 && n <= 50000) {
+                            if (speicher > 0) {
+                              setOKosten(Math.max(oKosten! - n, 1000));
+                              setSpeicher(0);
+                            } else {
+                              setOKosten(oKosten! + n);
+                              setSpeicher(2);
+                            }
+                            setOEv(null);
+                          }
+                          setSpKostenPrompt(false);
+                        }
+                        if (e.key === "Escape") setSpKostenPrompt(false);
+                      }}
+                      style={{
+                        width: 64, textAlign: "right", fontSize: 13, fontWeight: 700,
+                        fontFamily: "'JetBrains Mono',monospace", color: "#22c55e",
+                        background: "rgba(34,197,94,0.1)", border: "1px solid #22c55e",
+                        borderRadius: 6, padding: "5px 6px", outline: "none",
+                      }}
+                    />
+                    <span style={{ fontSize: 12, color: "#888" }}>€</span>
+                  </span>
+                  <button onClick={() => {
+                    const n = parseInt(spKostenDraft);
+                    if (!isNaN(n) && n >= 0 && n <= 50000) {
+                      if (speicher > 0) {
+                        setOKosten(Math.max(oKosten! - n, 1000));
+                        setSpeicher(0);
+                      } else {
+                        setOKosten(oKosten! + n);
+                        setSpeicher(2);
+                      }
+                      setOEv(null);
+                    }
+                    setSpKostenPrompt(false);
+                  }} style={{
+                    padding: "5px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600,
+                    background: "#22c55e", border: "none", color: "#000", cursor: "pointer",
+                  }}>OK</button>
+                  <button onClick={() => setSpKostenPrompt(false)} style={{
+                    padding: "5px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600,
+                    background: "transparent", border: "1px solid #333", color: "#666", cursor: "pointer",
+                  }}>Abbrechen</button>
+                </div>
+              )}
               {ea !== "nein" && (
                 <div style={{ marginTop: 8, display: "flex", gap: 6, alignItems: "center", paddingLeft: 4 }}>
                   <span style={{ fontSize: 11, color: "#666" }}>Laufleistung:</span>
