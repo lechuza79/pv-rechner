@@ -29,6 +29,16 @@ function calcFuelCost25(wpKwhElectric: number, fuel: "gas" | "oil"): number {
   return Math.round(total);
 }
 
+function calcWpGridCost25(wpKwh: number, autarky: number, strompreis: number, stromSteigerung: number): number {
+  let total = 0;
+  const gridFraction = 1 - autarky;
+  for (let i = 0; i < YEARS; i++) {
+    const sp = strompreis * Math.pow(1 + stromSteigerung, i);
+    total += wpKwh * gridFraction * sp;
+  }
+  return Math.round(total);
+}
+
 const ANLAGEN = [
   { kwp: 5, label: "5 kWp", sub: "Klein · ~12 Module", icon: "🔆" },
   { kwp: 8, label: "8 kWp", sub: "Mittel · ~19 Module", icon: "🔆" },
@@ -809,11 +819,16 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             </div>
 
             {/* Gas/Öl reference (nur bei WP) */}
-            {wp !== "nein" && (
+            {wp !== "nein" && (() => {
+              const autarky = Math.min(effEv / 100 * jahresertrag / (PERSONEN[personen].verbrauch + 3500 + (ea !== "nein" ? Math.round(eaKm * 0.18) : 0)), 1);
+              const fuelCost = calcFuelCost25(3500, fuelType);
+              const wpGridCost = calcWpGridCost25(3500, autarky, oStrom, 0.03);
+              const netSaving = fuelCost - wpGridCost;
+              return (
               <div style={{ background: "#151515", borderRadius: 14, padding: "12px 16px", marginBottom: 16, border: "1px solid #252525" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                   <span style={{ fontSize: 11, color: "#777", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>
-                    Zum Vergleich: {FUEL[fuelType].label}heizung 25 J.
+                    WP vs. {FUEL[fuelType].label}heizung · 25 Jahre
                   </span>
                   <div style={{ display: "flex", gap: 4 }}>
                     {(["gas", "oil"] as const).map(ft => (
@@ -826,14 +841,28 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     ))}
                   </div>
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 800, fontFamily: "'JetBrains Mono',monospace", color: "#ef4444" }}>
-                  {calcFuelCost25(3500, fuelType).toLocaleString("de-DE")} €
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+                  <div>
+                    <span style={{ fontSize: 11, color: "#ef4444" }}>{FUEL[fuelType].label}: </span>
+                    <span style={{ fontSize: 16, fontWeight: 700, fontFamily: "'JetBrains Mono',monospace", color: "#ef4444", textDecoration: "line-through", opacity: 0.7 }}>
+                      {fuelCost.toLocaleString("de-DE")} €
+                    </span>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: 11, color: "#888" }}>WP Netz: </span>
+                    <span style={{ fontSize: 16, fontWeight: 700, fontFamily: "'JetBrains Mono',monospace", color: "#888" }}>
+                      {wpGridCost.toLocaleString("de-DE")} €
+                    </span>
+                  </div>
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 800, fontFamily: "'JetBrains Mono',monospace", color: "#22c55e", marginTop: 4 }}>
+                  Ersparnis: {netSaving.toLocaleString("de-DE")} €
                 </div>
                 <div style={{ fontSize: 11, color: "#666", marginTop: 4, lineHeight: 1.5 }}>
-                  Heizkosten für {Math.round(3500 * 3.5).toLocaleString("de-DE")} kWh Wärme/Jahr inkl. steigender CO₂-Abgabe (55 €/t → EU ETS2 ab 2027)
+                  {Math.round(3500 * 3.5).toLocaleString("de-DE")} kWh Wärme/Jahr · WP-Autarkie {Math.round(autarky * 100)} % · inkl. CO₂-Abgabe
                 </div>
               </div>
-            )}
+            ); })()}
 
             {/* Chart */}
             <div style={{ background: "#131313", borderRadius: 16, padding: "14px 10px 6px", marginBottom: 16, border: "1px solid #222" }}>
