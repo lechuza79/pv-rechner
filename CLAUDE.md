@@ -54,6 +54,7 @@ Ergebnis:
 Grundverbrauch   = f(Personen): 1→1800, 2→2800, 3–4→3800, 5+→5000 kWh/a
 Tagquote         = f(Nutzung): weg→20%, teils→30%, home→40%, immer→50%
 Extra-Verbrauch  = WP→+3500 kWh, E-Auto→Laufleistung×0.18 kWh (bei "ja" oder "geplant", Default 15.000 km/a)
+Direktverbrauch  = Jahresertrag × Tagquote + WP×0.35 + E-Auto×0.40 (anteiliger Tagesverbrauch)
 Speicher-Boost   = min(kWh × 200, Jahresertrag × 0.25)
 Eigenverbrauch   = min(Direktverbr. + Boost, Gesamtverbrauch, Ertrag × 90%)
 Ergebnis: 10–90%, gerundet

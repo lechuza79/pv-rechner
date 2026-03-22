@@ -59,10 +59,11 @@ function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm
   const grundverbrauch = PERSONEN[personenIdx].verbrauch;
   const tagQuote = NUTZUNG[nutzungIdx].tagQuote;
   let extra = 0;
-  if (wp !== "nein") extra += 3500;
-  if (ea !== "nein") extra += Math.round(eaKm * 0.18);
+  let direktExtra = 0;
+  if (wp !== "nein") { extra += 3500; direktExtra += 3500 * 0.35; }
+  if (ea !== "nein") { const eaVerbrauch = Math.round(eaKm * 0.18); extra += eaVerbrauch; direktExtra += eaVerbrauch * 0.4; }
   const gesamt = grundverbrauch + extra;
-  const direkt = jahresertrag * tagQuote;
+  const direkt = jahresertrag * tagQuote + direktExtra;
   const boost = speicherKwh > 0 ? Math.min(speicherKwh * 200, jahresertrag * 0.25) : 0;
   const eigenKwh = Math.min(direkt + boost, gesamt, jahresertrag * 0.90);
   return Math.max(10, Math.min(Math.round((eigenKwh / jahresertrag) * 100), 90));
@@ -369,31 +370,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     <OptionCard key={i} selected={anlage === i} onClick={() => { setAnlage(i); setOKosten(null); setOEv(null); }} label={a.label} sub={a.sub} icon={a.icon} />
                   ))}
                 </div>
-                <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
-                  <div style={{ width: "calc(50% - 5px)" }}>
-                    <OptionCard selected={anlage === 4} onClick={() => { setAnlage(4); setOKosten(null); setOEv(null); }} label="Anderer Wert" sub={anlage === 4 ? `${customKwp} kWp` : "z.B. 12 kWp"} icon="✏️" />
-                  </div>
+                <div style={{
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                  marginTop: 14, fontSize: 13, color: "#666",
+                }}>
+                  <span>oder</span>
+                  <InlineEdit value={customKwp} onCommit={v => { setCustomKwp(Math.round(v)); setAnlage(4); setOKosten(null); setOEv(null); }} unit=" kWp" step={1} min={1} max={50} width={48} />
                 </div>
-                {anlage === 4 && (
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 12 }}>
-                    <input
-                      autoFocus
-                      value={String(customKwp)}
-                      onChange={e => {
-                        const raw = e.target.value.replace(",", ".");
-                        const n = parseInt(raw);
-                        if (!isNaN(n) && n >= 1 && n <= 50) { setCustomKwp(n); setOKosten(null); setOEv(null); }
-                      }}
-                      style={{
-                        width: 64, textAlign: "center", fontSize: 16, fontWeight: 700,
-                        fontFamily: "'JetBrains Mono',monospace", color: "#22c55e",
-                        background: "rgba(34,197,94,0.1)", border: "1px solid #22c55e",
-                        borderRadius: 8, padding: "8px 6px", outline: "none",
-                      }}
-                    />
-                    <span style={{ fontSize: 14, fontWeight: 600, color: "#888" }}>kWp</span>
-                  </div>
-                )}
               </div>
             )}
 
