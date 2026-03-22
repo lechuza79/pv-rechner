@@ -1,5 +1,6 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import Link from "next/link";
 
 const YEAR = 2026;
 const YEARS = 25;
@@ -220,23 +221,51 @@ function TriToggle({ options, value, onChange, label }) {
   );
 }
 
+// ─── URL param helpers ────────────────────────────────────────────────────────
+const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er"];
+
+function paramInt(params: Record<string, any> | undefined, key: string, fallback: number, min = 0, max = 99) {
+  const v = params?.[key];
+  if (typeof v === "string") { const n = parseInt(v); if (!isNaN(n) && n >= min && n <= max) return n; }
+  return fallback;
+}
+
+function paramFloat(params: Record<string, any> | undefined, key: string, fallback: number) {
+  const v = params?.[key];
+  if (typeof v === "string") { const n = parseFloat(v); if (!isNaN(n)) return n; }
+  return fallback;
+}
+
+function paramStr(params: Record<string, any> | undefined, key: string, fallback: string, allowed: string[]) {
+  const v = params?.[key];
+  if (typeof v === "string" && allowed.includes(v)) return v;
+  return fallback;
+}
+
 // ─── Main ────────────────────────────────────────────────────────────────────
-export default function PVRechner() {
-  const [step, setStep] = useState(0);
-  const [anlage, setAnlage] = useState(2);
-  const [speicher, setSpeicher] = useState(0);
-  const [personen, setPersonen] = useState(1);
-  const [nutzung, setNutzung] = useState(1);
-  const [wp, setWp] = useState("nein");
-  const [ea, setEa] = useState("nein");
+export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
+  const hasShare = initialParams && SHARE_KEYS.some(k => k in initialParams);
+
+  const [step, setStep] = useState(hasShare ? 4 : 0);
+  const [anlage, setAnlage] = useState(hasShare ? paramInt(initialParams, "a", 2, 0, 3) : 2);
+  const [speicher, setSpeicher] = useState(hasShare ? paramInt(initialParams, "s", 0, 0, 3) : 0);
+  const [personen, setPersonen] = useState(hasShare ? paramInt(initialParams, "p", 1, 0, 3) : 1);
+  const [nutzung, setNutzung] = useState(hasShare ? paramInt(initialParams, "n", 1, 0, 3) : 1);
+  const [wp, setWp] = useState(hasShare ? paramStr(initialParams, "wp", "nein", ["nein", "geplant", "ja"]) : "nein");
+  const [ea, setEa] = useState(hasShare ? paramStr(initialParams, "ea", "nein", ["nein", "geplant", "ja"]) : "nein");
 
   // Editable overrides (null = use auto-calculated)
-  const [oKosten, setOKosten] = useState(null);
-  const [oEv, setOEv] = useState(null);
-  const [oStrom, setOStrom] = useState(0.34);
-  const [oEinsp, setOEinsp] = useState(8.03);
-  const [einspeisungAn, setEinspeisungAn] = useState(true);
-  const [oErtrag, setOErtrag] = useState(950);
+  const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? Number(initialParams.k) : null);
+  const [oEv, setOEv] = useState<number | null>(hasShare && initialParams?.ev ? Number(initialParams.ev) : null);
+  const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", 0.34) : 0.34);
+  const [oEinsp, setOEinsp] = useState(hasShare ? paramFloat(initialParams, "ei", 8.03) : 8.03);
+  const [einspeisungAn, setEinspeisungAn] = useState(hasShare ? initialParams?.eia !== "0" : true);
+  const [oErtrag, setOErtrag] = useState(hasShare ? paramInt(initialParams, "er", 950, 700, 1200) : 950);
+
+  // Share state
+  const [copied, setCopied] = useState(false);
+  const [canShare, setCanShare] = useState(false);
+  useEffect(() => { setCanShare(typeof navigator !== "undefined" && !!navigator.share); }, []);
 
   const kwp = ANLAGEN[anlage].kwp;
   const spKwh = SPEICHER[speicher].kwh;
@@ -258,7 +287,42 @@ export default function PVRechner() {
   const isResult = step >= STEPS.length;
   const next = () => step < STEPS.length && setStep(step + 1);
   const back = () => step > 0 && setStep(step - 1);
-  const restart = () => { setStep(0); setOKosten(null); setOEv(null); };
+  const restart = () => { setStep(0); setOKosten(null); setOEv(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
+
+  const buildShareUrl = () => {
+    const p = new URLSearchParams();
+    p.set("a", String(anlage));
+    p.set("s", String(speicher));
+    p.set("p", String(personen));
+    p.set("n", String(nutzung));
+    p.set("wp", wp);
+    p.set("ea", ea);
+    if (oKosten !== null) p.set("k", String(oKosten));
+    if (oEv !== null) p.set("ev", String(oEv));
+    p.set("st", String(oStrom));
+    p.set("ei", String(oEinsp));
+    p.set("eia", einspeisungAn ? "1" : "0");
+    p.set("er", String(oErtrag));
+    return `${window.location.origin}${window.location.pathname}?${p.toString()}`;
+  };
+
+  const shareText = `Meine PV-Anlage (${kwp} kWp) amortisiert sich in ${be ? be.i : ">25"} Jahren.`;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(buildShareUrl());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { prompt("Link kopieren:", buildShareUrl()); }
+  };
+
+  const handleNativeShare = async () => {
+    try { await navigator.share({ title: "PV Rechner – Mein Ergebnis", text: shareText, url: buildShareUrl() }); } catch {}
+  };
+
+  const handleWhatsApp = () => {
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n" + buildShareUrl())}`, "_blank");
+  };
 
   return (
     <div style={{ background: "#0c0c0c", fontFamily: "'DM Sans',system-ui,sans-serif", color: "#f0f0f0", minHeight: "100vh", padding: "20px 16px" }}>
@@ -477,6 +541,33 @@ export default function PVRechner() {
               Degradation 0,5%/Jahr · Einspeisevergütung fix 20 J. · Wartungskosten nicht einberechnet (~150–250 €/Jahr empfohlen)
             </div>
 
+            {/* Share */}
+            <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+              <button onClick={handleCopy} style={{
+                flex: 1, padding: "10px 12px", borderRadius: 12, fontSize: 13, fontWeight: 600,
+                background: copied ? "rgba(34,197,94,0.15)" : "#161616",
+                border: copied ? "1px solid #22c55e" : "1px solid #2a2a2a",
+                color: copied ? "#22c55e" : "#999", cursor: "pointer",
+                transition: "all 0.2s",
+              }}>
+                {copied ? "✓ Kopiert!" : "🔗 Link kopieren"}
+              </button>
+              {canShare && (
+                <button onClick={handleNativeShare} style={{
+                  flex: 1, padding: "10px 12px", borderRadius: 12, fontSize: 13, fontWeight: 600,
+                  background: "#161616", border: "1px solid #2a2a2a", color: "#999", cursor: "pointer",
+                }}>
+                  📤 Teilen
+                </button>
+              )}
+              <button onClick={handleWhatsApp} style={{
+                flex: 1, padding: "10px 12px", borderRadius: 12, fontSize: 13, fontWeight: 600,
+                background: "#161616", border: "1px solid #2a2a2a", color: "#999", cursor: "pointer",
+              }}>
+                💬 WhatsApp
+              </button>
+            </div>
+
             {/* Restart */}
             <button onClick={restart} style={{
               width: "100%", padding: "12px", borderRadius: 12, fontSize: 13, fontWeight: 600,
@@ -489,6 +580,11 @@ export default function PVRechner() {
             </div>
           </div>
         )}
+
+        <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: "24px 0 16px" }}>
+          <Link href="/impressum" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Impressum</Link>
+          <Link href="/datenschutz" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Datenschutz</Link>
+        </div>
       </div>
     </div>
   );
