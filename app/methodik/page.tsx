@@ -184,6 +184,44 @@ export default function MethodikPage() {
           </span>
         </div>
 
+        {/* ── Standort-Ertrag ── */}
+        <h2 style={S.h2}>Standort-Ertrag</h2>
+        <p style={S.p}>
+          Wie viel Strom eine PV-Anlage produziert, hängt stark vom Standort ab.
+          In Süddeutschland sind über 1.100 kWh pro kWp möglich, an der Nordseeküste
+          eher 950–1.000. Der Unterschied kann 10–15 % ausmachen.
+        </p>
+        <p style={S.p}>
+          Wenn du deine Postleitzahl eingibst, rufen wir Ertragsdaten vom{" "}
+          <a
+            href="https://re.jrc.ec.europa.eu/pvg_tools/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={S.link}
+          >
+            PVGIS
+          </a>{" "}
+          ab — dem Solarrechner der Europäischen Kommission. PVGIS simuliert den
+          Ertrag basierend auf langjährigen Wetterdaten, optimaler Dachneigung
+          und 14 % Systemverlusten.
+        </p>
+        <div style={S.card}>
+          <span style={S.label}>Beispielwerte</span>
+          <span style={S.accent}>München:</span> ~1.140 kWh/kWp
+          <br />
+          <span style={S.accent}>Frankfurt:</span> ~1.060 kWh/kWp
+          <br />
+          <span style={S.accent}>Hamburg:</span> ~990 kWh/kWp
+          <br />
+          <span style={S.accent}>Kiel:</span> ~990 kWh/kWp
+          <br />
+          <br />
+          <span style={S.muted}>
+            Ohne PLZ-Eingabe rechnen wir mit 950 kWh/kWp (konservativer
+            Durchschnitt). Der Wert ist im Ergebnis jederzeit manuell anpassbar.
+          </span>
+        </div>
+
         {/* ── Amortisation ── */}
         <h2 style={S.h2}>Amortisation</h2>
         <p style={S.p}>
