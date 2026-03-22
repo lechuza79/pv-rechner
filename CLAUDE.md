@@ -52,11 +52,15 @@ Ergebnis:
 **Eigenverbrauch (automatisch berechnet, manuell überschreibbar):**
 ```
 Grundverbrauch   = f(Personen): 1→1800, 2→2800, 3–4→3800, 5+→5000 kWh/a
-Tagquote         = f(Nutzung): weg→20%, teils→30%, home→40%, immer→50%
-Extra-Verbrauch  = WP→+3500 kWh, E-Auto→Laufleistung×0.18 kWh (bei "ja" oder "geplant", Default 15.000 km/a)
-Direktverbrauch  = Jahresertrag × Tagquote + WP×0.35 + E-Auto×0.40 (anteiliger Tagesverbrauch)
-Speicher-Boost   = min(kWh × 200, Jahresertrag × 0.25)
-Eigenverbrauch   = min(Direktverbr. + Boost, Gesamtverbrauch, Ertrag × 90%)
+Tagquote         = f(Nutzung): weg→25%, teils→40%, home→55%, immer→65%
+Extra-Verbrauch  = WP→+3500 kWh, E-Auto→Laufleistung×0.18 kWh (Default 15.000 km/a)
+
+Empirisches Power-Law-Modell (angelehnt an HTW Berlin):
+  x              = kWp / (Gesamtverbrauch in MWh)
+  EV_Basis       = tagQuote × x^(-0.6)
+  EV_Speicher    = 0.35 × x^(-0.45) × (1 - e^(-batteryRatio×1.5))
+  EV_Max         = Gesamtverbrauch / Jahresertrag
+  Eigenverbrauch = min(EV_Basis + EV_Speicher, EV_Max, 90%)
 Ergebnis: 10–90%, gerundet
 ```
 

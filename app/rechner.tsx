@@ -28,10 +28,10 @@ const PERSONEN = [
 ];
 
 const NUTZUNG = [
-  { label: "Tagsüber weg", sub: "Klassisch berufstätig", tagQuote: 0.20 },
-  { label: "Teils zuhause", sub: "1–2 Tage Homeoffice", tagQuote: 0.30 },
-  { label: "Homeoffice", sub: "Überwiegend daheim", tagQuote: 0.40 },
-  { label: "Immer zuhause", sub: "Rente, Elternzeit …", tagQuote: 0.50 },
+  { label: "Tagsüber weg", sub: "Klassisch berufstätig", tagQuote: 0.25 },
+  { label: "Teils zuhause", sub: "1–2 Tage Homeoffice", tagQuote: 0.40 },
+  { label: "Homeoffice", sub: "Überwiegend daheim", tagQuote: 0.55 },
+  { label: "Immer zuhause", sub: "Rente, Elternzeit …", tagQuote: 0.65 },
 ];
 
 const TRI = [
@@ -59,14 +59,25 @@ function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm
   const grundverbrauch = PERSONEN[personenIdx].verbrauch;
   const tagQuote = NUTZUNG[nutzungIdx].tagQuote;
   let extra = 0;
-  let direktExtra = 0;
-  if (wp !== "nein") { extra += 3500; direktExtra += 3500 * 0.35; }
-  if (ea !== "nein") { const eaVerbrauch = Math.round(eaKm * 0.18); extra += eaVerbrauch; direktExtra += eaVerbrauch * 0.4; }
+  if (wp !== "nein") extra += 3500;
+  if (ea !== "nein") extra += Math.round(eaKm * 0.18);
   const gesamt = grundverbrauch + extra;
-  const direkt = jahresertrag * tagQuote + direktExtra;
-  const boost = speicherKwh > 0 ? Math.min(speicherKwh * 200, jahresertrag * 0.25) : 0;
-  const eigenKwh = Math.min(direkt + boost, gesamt, jahresertrag * 0.90);
-  return Math.max(10, Math.min(Math.round((eigenKwh / jahresertrag) * 100), 90));
+  // Verhältnis Anlagengröße zu Verbrauch (kWp pro MWh)
+  const x = kwp / (gesamt / 1000);
+  // Basis-Eigenverbrauch: empirisches Power-Law (angelehnt an HTW Berlin Studien)
+  // Größere Anlage relativ zum Verbrauch → niedrigerer EV-Anteil
+  // tagQuote skaliert nach Nutzungsprofil (mehr zuhause → mehr Direktverbrauch)
+  const evBase = tagQuote * Math.pow(x, -0.6);
+  // Speicher-Boost: verschiebt Nachtverbrauch auf Solar
+  // Sättigungseffekt bei größerem Speicher relativ zur Anlage
+  const batteryRatio = speicherKwh / kwp;
+  const evBoost = speicherKwh > 0
+    ? 0.35 * Math.pow(x, -0.45) * (1 - Math.exp(-batteryRatio * 1.5))
+    : 0;
+  // Physikalische Grenze: max. Eigenverbrauch = Gesamtverbrauch / Jahresertrag
+  const evMax = gesamt / jahresertrag;
+  const ev = Math.round(Math.min(evBase + evBoost, evMax, 0.90) * 100);
+  return Math.max(10, Math.min(ev, 90));
 }
 
 function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number }) {
