@@ -88,11 +88,15 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 
 ### Phase 1: In Arbeit
 - [ ] Domain registrieren + Vercel Deployment
-- [ ] Strukturierte Daten (JSON-LD: FAQPage, WebApplication)
-- [ ] sitemap.xml + robots.txt
+- [x] Strukturierte Daten (JSON-LD: FAQPage, WebApplication)
+- [x] sitemap.xml + robots.txt (inkl. /impressum, /datenschutz)
 - [ ] Favicon / OG-Image
-- [ ] Share-Funktion: Ergebnis als URL teilbar (Query-Parameter)
-- [ ] Google Search Console einrichten
+- [x] Share-Funktion: Ergebnis als URL teilbar (Query-Parameter, Clipboard, Native Share, WhatsApp)
+- [x] Google Search Console einrichten
+- [x] TypeScript strict mode + vollständige Typisierung
+- [x] Input-Validierung für Share-URL-Parameter (NaN/Infinity/Bounds)
+- [x] Error Boundary für fehlerhafte Share-URLs (Fallback-UI statt Whitescreen)
+- [x] Impressum + Datenschutz Seiten mit Footer-Links
 
 ### Phase 2: Content & Reichweite (geplant)
 - [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
@@ -135,24 +139,27 @@ pv-rechner/
 ├── public/                # Statische Assets (Favicon, OG-Image — TODO)
 └── app/
     ├── layout.tsx         # Root Layout: HTML, Fonts (DM Sans + JetBrains Mono), SEO-Meta
-    ├── page.tsx           # Einstiegspunkt, rendert <PVRechner />
-    └── rechner.tsx        # "use client" — Hauptkomponente, gesamte Logik + UI
+    ├── page.tsx           # Einstiegspunkt, Error Boundary + <PVRechner />
+    ├── rechner.tsx        # "use client" — Hauptkomponente, gesamte Logik + UI
+    ├── impressum/page.tsx # Impressum (statisch)
+    └── datenschutz/page.tsx # Datenschutzerklärung (statisch)
 ```
 
-**Single-File-Architektur:** `rechner.tsx` enthält alles (~500 Zeilen). Erst aufteilen wenn die Datei unübersichtlich wird. Wenn aufgeteilt wird:
+**Single-File-Architektur:** `rechner.tsx` enthält alles (~590 Zeilen). Erst aufteilen wenn die Datei unübersichtlich wird. Wenn aufgeteilt wird:
 - Berechnungslogik → `lib/calc.ts` (Pure Functions)
 - UI-Komponenten → `components/`
 - Konstanten/Config → `lib/constants.ts`
 
 ### Komponenten in rechner.tsx
 
-| Komponente | Funktion |
-|---|---|
-| `PVRechner` | Hauptkomponente, State, Flow-Steuerung |
-| `OptionCard` | Auswahl-Karte für Steps (2×2 Grids) |
-| `TriToggle` | Dreier-Toggle: Nein / Geplant / Vorhanden (WP + E-Auto) |
-| `InlineEdit` | Click-to-Edit Zahlenwert im Ergebnis |
-| `Chart` | SVG-Amortisationskurve mit 3 Szenarien (rein deklarativ, kein D3) |
+| Komponente | Datei | Funktion |
+|---|---|---|
+| `ErrorBoundary` | `page.tsx` | Fängt Render-Crashes ab, zeigt Fallback-UI mit Neu-Berechnen-Link |
+| `PVRechner` | `rechner.tsx` | Hauptkomponente, State, Flow-Steuerung |
+| `OptionCard` | `rechner.tsx` | Auswahl-Karte für Steps (2×2 Grids) |
+| `TriToggle` | `rechner.tsx` | Dreier-Toggle: Nein / Geplant / Vorhanden (WP + E-Auto) |
+| `InlineEdit` | `rechner.tsx` | Click-to-Edit Zahlenwert im Ergebnis |
+| `Chart` | `rechner.tsx` | SVG-Amortisationskurve mit 3 Szenarien (rein deklarativ, kein D3) |
 
 ## Design-System
 
