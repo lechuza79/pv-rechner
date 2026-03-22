@@ -320,7 +320,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [eaKm, setEaKm] = useState(hasShare ? paramInt(initialParams, "km", 15000, 1000, 50000) : 15000);
 
   // Editable overrides (null = use auto-calculated)
-  const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 1000 && n <= 200000 ? n : null; })() : null);
+  const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 500 && n <= 200000 ? n : null; })() : null);
   const [oEv, setOEv] = useState<number | null>(hasShare && initialParams?.ev ? (() => { const n = Number(initialParams.ev); return isFinite(n) && n >= 5 && n <= 95 ? n : null; })() : null);
   const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", 0.34, 0.05, 1.0) : 0.34);
   const [oEinsp, setOEinsp] = useState(hasShare ? paramFloat(initialParams, "ei", 8.03, 0, 20) : 8.03);
@@ -587,7 +587,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ color: "#777" }}>Investition</span>
-                  <InlineEdit value={kosten} onCommit={v => setOKosten(v)} unit=" €" step={500} min={3000} max={80000} width={68} />
+                  <InlineEdit value={kosten} onCommit={v => setOKosten(v)} unit=" €" step={500} min={500} max={80000} width={68} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ color: "#777" }}>Eigenverbr.</span>
@@ -724,7 +724,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                           const n = parseInt(spKostenDraft);
                           if (!isNaN(n) && n >= 0 && n <= 50000) {
                             if (speicher > 0) {
-                              setOKosten(Math.max(oKosten! - n, 1000));
+                              setOKosten(Math.max(oKosten! - n, 500));
                               setSpeicher(0);
                             } else {
                               setOKosten(oKosten! + n);
@@ -749,7 +749,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     const n = parseInt(spKostenDraft);
                     if (!isNaN(n) && n >= 0 && n <= 50000) {
                       if (speicher > 0) {
-                        setOKosten(Math.max(oKosten! - n, 1000));
+                        setOKosten(Math.max(oKosten! - n, 500));
                         setSpeicher(0);
                       } else {
                         setOKosten(oKosten! + n);
