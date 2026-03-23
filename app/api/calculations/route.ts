@@ -37,7 +37,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("calculations")
-    .select("id, name, kwp, amortisation_jahre, rendite_25j, created_at, updated_at")
+    .select("id, name, description, kwp, amortisation_jahre, rendite_25j, created_at, updated_at")
     .eq("user_id", user.id)
     .order("updated_at", { ascending: false });
 
@@ -64,6 +64,7 @@ export async function POST(req: NextRequest) {
     .insert({
       user_id: user.id,
       name: body.name || "Meine Berechnung",
+      description: body.description || null,
       anlage: body.anlage,
       custom_kwp: body.custom_kwp,
       speicher: body.speicher,

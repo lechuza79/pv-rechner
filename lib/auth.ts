@@ -29,12 +29,13 @@ export function useUser() {
   return { user, loading };
 }
 
-export async function signInWithMagicLink(email: string, redirectTo?: string) {
+export async function signInWithMagicLink(email: string, options?: { next?: string }) {
   const supabase = createClient();
+  const next = options?.next || "/dashboard";
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: redirectTo || `${window.location.origin}/auth/callback`,
+      emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });
   return { error };

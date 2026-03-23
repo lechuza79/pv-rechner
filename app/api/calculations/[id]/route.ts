@@ -68,9 +68,13 @@ export async function PUT(
 
   const body = await req.json();
 
+  const update: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (body.name !== undefined) update.name = body.name;
+  if (body.description !== undefined) update.description = body.description;
+
   const { error } = await supabase
     .from("calculations")
-    .update({ name: body.name, updated_at: new Date().toISOString() })
+    .update(update)
     .eq("id", id)
     .eq("user_id", user.id);
 

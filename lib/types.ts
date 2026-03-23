@@ -23,6 +23,7 @@ export interface CalculationRow {
   id: string;
   user_id: string;
   name: string;
+  description: string | null;
   // Inputs
   anlage: number;
   custom_kwp: number | null;
@@ -54,7 +55,7 @@ export interface CalculationRow {
 export function paramsToRow(
   params: CalcParams,
   computed: { kwp: number; amortisationJahre: number | null; rendite25j: number | null }
-): Omit<CalculationRow, "id" | "user_id" | "created_at" | "updated_at" | "name"> {
+): Omit<CalculationRow, "id" | "user_id" | "created_at" | "updated_at" | "name" | "description"> {
   return {
     anlage: params.anlage,
     custom_kwp: params.anlage === 4 ? params.customKwp : null,

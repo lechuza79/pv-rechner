@@ -381,25 +381,24 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     e.preventDefault();
     if (!loginEmail.trim()) return;
     setLoginError("");
-    const { error } = await signInWithMagicLink(loginEmail.trim());
+    const { error } = await signInWithMagicLink(loginEmail.trim(), { next: isResult ? "/dashboard" : "/dashboard" });
     if (error) {
       setLoginError(error.message);
     } else {
       setLoginSent(true);
-      // Pending save: speichere State in localStorage
+      // Pending save: speichere Berechnung in localStorage für Auto-Save nach Login
       if (isResult) {
-        localStorage.setItem("pendingSave", "1");
+        const row = paramsToRow(
+          { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType },
+          { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(real.data.years[YEARS - 1]?.kum ?? 0) }
+        );
+        const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
+        localStorage.setItem("pendingSave", JSON.stringify({ ...row, name: `${kwp} kWp${spLabel}` }));
       }
     }
   };
 
-  // Auto-save nach Magic Link Redirect
-  useEffect(() => {
-    if (user && isResult && localStorage.getItem("pendingSave")) {
-      localStorage.removeItem("pendingSave");
-      handleSave();
-    }
-  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Auto-save wird jetzt vom Dashboard übernommen (pendingSave in localStorage)
 
   // Share state
   const [copied, setCopied] = useState(false);
