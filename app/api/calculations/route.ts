@@ -37,7 +37,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("calculations")
-    .select("id, name, description, kwp, amortisation_jahre, rendite_25j, created_at, updated_at")
+    .select("id, name, description, kwp, amortisation_jahre, rendite_25j, flow_type, created_at, updated_at")
     .eq("user_id", user.id)
     .order("updated_at", { ascending: false });
 
@@ -81,6 +81,10 @@ export async function POST(req: NextRequest) {
       o_ertrag: body.o_ertrag,
       plz: body.plz,
       fuel_type: body.fuel_type,
+      ...(body.flow_type ? { flow_type: body.flow_type } : {}),
+      ...(body.haustyp != null ? { haustyp: body.haustyp } : {}),
+      ...(body.dachart != null ? { dachart: body.dachart } : {}),
+      ...(body.budget_limit != null ? { budget_limit: body.budget_limit } : {}),
       kwp: body.kwp,
       amortisation_jahre: body.amortisation_jahre,
       rendite_25j: body.rendite_25j,

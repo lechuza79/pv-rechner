@@ -16,6 +16,11 @@ export interface CalcParams {
   oErtrag: number;       // 700–1400
   plz: string;
   fuelType: string;      // "gas" | "oil"
+  // Empfehlungs-Flow Felder
+  flowType: "manual" | "empfehlung";
+  haustyp: number | null;   // 0–3 (Index in HAUSTYPEN)
+  dachart: number | null;   // 0–3 (Index in DACHARTEN)
+  budgetLimit: number | null;
 }
 
 // DB-Zeile für gespeicherte Berechnungen
@@ -42,6 +47,11 @@ export interface CalculationRow {
   o_ertrag: number;
   plz: string | null;
   fuel_type: string;
+  // Empfehlungs-Flow
+  flow_type: string;
+  haustyp: number | null;
+  dachart: number | null;
+  budget_limit: number | null;
   // Berechnete Werte (für Dashboard-Anzeige)
   kwp: number;
   amortisation_jahre: number | null;
@@ -73,6 +83,10 @@ export function paramsToRow(
     o_ertrag: params.oErtrag,
     plz: params.plz || null,
     fuel_type: params.fuelType,
+    flow_type: params.flowType,
+    haustyp: params.haustyp,
+    dachart: params.dachart,
+    budget_limit: params.budgetLimit,
     kwp: computed.kwp,
     amortisation_jahre: computed.amortisationJahre,
     rendite_25j: computed.rendite25j,
@@ -98,6 +112,10 @@ export function rowToParams(row: CalculationRow): CalcParams {
     oErtrag: row.o_ertrag,
     plz: row.plz ?? "",
     fuelType: row.fuel_type,
+    flowType: (row.flow_type === "empfehlung" ? "empfehlung" : "manual") as "manual" | "empfehlung",
+    haustyp: row.haustyp ?? null,
+    dachart: row.dachart ?? null,
+    budgetLimit: row.budget_limit ?? null,
   };
 }
 
@@ -120,5 +138,11 @@ export function paramsToInitial(params: CalcParams): Record<string, string> {
   if (params.oEv !== null) p.ev = String(params.oEv);
   if (params.ea !== "nein") p.km = String(params.eaKm);
   if (params.plz) p.plz = params.plz;
+  if (params.flowType === "empfehlung") {
+    p.flow = "emp";
+    if (params.haustyp !== null) p.ht = String(params.haustyp);
+    if (params.dachart !== null) p.da = String(params.dachart);
+    if (params.budgetLimit !== null) p.bl = String(params.budgetLimit);
+  }
   return p;
 }

@@ -60,7 +60,7 @@ export default function DashboardClient({
   const handleLoad = (calc: CalculationRow) => {
     const params = paramsToInitial(rowToParams(calc));
     const sp = new URLSearchParams(params);
-    router.push(`/?${sp.toString()}`);
+    router.push(`/rechner?${sp.toString()}`);
   };
 
   const handleLogout = async () => {
@@ -212,8 +212,11 @@ export default function DashboardClient({
                             {calc.description}
                           </div>
                         )}
-                        <div style={{ fontSize: 11, color: "#555", marginTop: 3 }}>
+                        <div style={{ fontSize: 11, color: "#555", marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}>
                           {formatDate(calc.created_at)}
+                          {(calc as any).flow_type === "empfehlung" && (
+                            <span style={{ fontSize: 9, fontWeight: 700, color: "#22c55e", background: "rgba(34,197,94,0.1)", padding: "1px 5px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>Empfohlen</span>
+                          )}
                         </div>
                       </div>
                       <div style={{

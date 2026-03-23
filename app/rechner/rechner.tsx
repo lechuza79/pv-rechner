@@ -1,311 +1,14 @@
 "use client";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useUser, signInWithMagicLink, signOut } from "../lib/auth";
-import { paramsToRow } from "../lib/types";
-
-const YEAR = 2026;
-const YEARS = 25;
-const DEGRAD = 0.005;
-// Saisonaler Verbrauchsfaktor (BDEW Standardlastprofil H0)
-// Winter ~17% über Durchschnitt, Sommer ~15% unter
-const CONSUMPTION_MONTHLY = [1.17, 1.05, 1.08, 0.97, 0.93, 0.84, 0.87, 0.87, 0.91, 1.00, 1.13, 1.17];
-
-// Gas/Öl-Referenzkosten für WP-Vergleich
-const FUEL = {
-  gas: { label: "Gas", price: 0.12, efficiency: 0.90, co2PerKwh: 0.20 },   // 12 ct/kWh, 90% Kessel, 200g CO2/kWh
-  oil: { label: "Heizöl", price: 0.10, efficiency: 0.85, co2PerKwh: 0.266 }, // 10 ct/kWh, 85% Kessel, 266g CO2/kWh
-};
-// CO2-Preis: 55€/t 2025, 65€/t 2026, ab 2027 EU ETS2 marktbasiert (konservativ +8€/Jahr)
-function calcFuelCost25(wpKwhElectric: number, fuel: "gas" | "oil"): number {
-  const f = FUEL[fuel];
-  const thermalKwh = wpKwhElectric * 3.5; // COP 3.5
-  const fuelKwh = thermalKwh / f.efficiency;
-  let total = 0;
-  for (let i = 0; i < YEARS; i++) {
-    const co2Price = i === 0 ? 55 : i === 1 ? 65 : 65 + (i - 1) * 8; // €/t, konservativ steigend
-    const co2Surcharge = f.co2PerKwh * co2Price / 1000; // €/kWh
-    const basePrice = f.price * Math.pow(1.02, i); // 2% Grundpreissteigerung
-    total += fuelKwh * (basePrice + co2Surcharge);
-  }
-  return Math.round(total);
-}
-
-function calcWpGridCost25(wpKwh: number, autarky: number, strompreis: number, stromSteigerung: number): number {
-  let total = 0;
-  const gridFraction = 1 - autarky;
-  for (let i = 0; i < YEARS; i++) {
-    const sp = strompreis * Math.pow(1 + stromSteigerung, i);
-    total += wpKwh * gridFraction * sp;
-  }
-  return Math.round(total);
-}
-
-const ANLAGEN = [
-  { kwp: 5, label: "5 kWp", sub: "Klein · ~12 Module", icon: "🔆" },
-  { kwp: 8, label: "8 kWp", sub: "Mittel · ~19 Module", icon: "🔆" },
-  { kwp: 10, label: "10 kWp", sub: "Standard · ~24 Module", icon: "☀️" },
-  { kwp: 15, label: "15 kWp", sub: "Groß · ~36 Module", icon: "☀️" },
-];
-
-const SPEICHER = [
-  { kwh: 0, label: "Kein Speicher", sub: "Nur Direktverbrauch", icon: "—" },
-  { kwh: 5, label: "5 kWh", sub: "Kompakt", icon: "🔋" },
-  { kwh: 10, label: "10 kWh", sub: "Standard", icon: "🔋" },
-  { kwh: 15, label: "15 kWh", sub: "Groß", icon: "🔋" },
-];
-
-const PERSONEN = [
-  { label: "1", verbrauch: 1800 },
-  { label: "2", verbrauch: 2800 },
-  { label: "3–4", verbrauch: 3800 },
-  { label: "5+", verbrauch: 5000 },
-];
-
-const NUTZUNG = [
-  { label: "Tagsüber weg", sub: "Klassisch berufstätig", tagQuote: 0.24 },
-  { label: "Teils zuhause", sub: "1–2 Tage Homeoffice", tagQuote: 0.30 },
-  { label: "Homeoffice", sub: "Überwiegend daheim", tagQuote: 0.38 },
-  { label: "Immer zuhause", sub: "Rente, Elternzeit …", tagQuote: 0.45 },
-];
-
-const TRI = [
-  { id: "nein", label: "Nein" },
-  { id: "geplant", label: "Geplant" },
-  { id: "ja", label: "Vorhanden" },
-];
-
-const EA_KM_PRESETS = [10000, 15000, 20000];
-
-const SCENARIOS = [
-  { id: "pessimistic", label: "Pessimistisch", color: "#ef4444", strom: 0.01, evDelta: -5 },
-  { id: "realistic", label: "Realistisch", color: "#22c55e", strom: 0.03, evDelta: 0 },
-  { id: "optimistic", label: "Optimistisch", color: "#3b82f6", strom: 0.05, evDelta: 5 },
-];
-
-function estimateCost(kwp: number, spKwh: number): number {
-  const pv = kwp <= 10 ? kwp * 1500 : 10 * 1500 + (kwp - 10) * 1350;
-  const sp = spKwh > 0 ? 2000 + spKwh * 650 : 0;
-  return Math.round((pv + sp) / 500) * 500;
-}
-
-function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm, kwp, ertragKwp }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; eaKm: number; kwp: number; ertragKwp: number }): number {
-  const jahresertrag = kwp * ertragKwp;
-  const grundverbrauch = PERSONEN[personenIdx].verbrauch;
-  const tagQuote = NUTZUNG[nutzungIdx].tagQuote;
-  let extra = 0;
-  if (wp !== "nein") extra += 3500;
-  if (ea !== "nein") extra += Math.round(eaKm * 0.18);
-  const gesamt = grundverbrauch + extra;
-  // x = kWp pro MWh Verbrauch (Anlagengröße relativ zum Verbrauch)
-  const x = kwp / (gesamt / 1000);
-  // y = kWh Speicher pro MWh Verbrauch
-  const y = speicherKwh / (gesamt / 1000);
-  // Basis-Eigenverbrauch: kalibriert an HTW Berlin Simulationsdaten
-  // (25.000 Konfigurationen, 1-Min-Auflösung, VDI 4655 Lastprofil)
-  // Standard-Profil ≈ 0.30, tagQuote skaliert nach Nutzungsprofil
-  const evBase = tagQuote * Math.pow(x, -0.69);
-  // Speicher-Boost: kalibriert an HTW Berlin Lookup-Tabellen
-  // Sättigungseffekt bei größerem Speicher
-  const evBoost = speicherKwh > 0
-    ? 0.61 * Math.pow(x, -0.72) * (1 - Math.exp(-0.6 * y))
-    : 0;
-  // Physikalische Grenze: max. Eigenverbrauch = Gesamtverbrauch / Jahresertrag
-  const evMax = gesamt / jahresertrag;
-  const ev = Math.round(Math.min(evBase + evBoost, evMax, 0.90) * 100);
-  return Math.max(10, Math.min(ev, 90));
-}
-
-function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null }) {
-  const years = [];
-  let kum = -kosten;
-  // Monatliche Berechnung wenn PVGIS-Profil vorhanden
-  const fracs = monthly ? monthly.map(m => m / monthly.reduce((a, b) => a + b, 0)) : null;
-  for (let i = 0; i <= YEARS; i++) {
-    let j = 0;
-    if (i > 0) {
-      const deg = Math.pow(1 - DEGRAD, i);
-      const sp = strompreis * Math.pow(1 + stromSteigerung, i);
-      if (fracs) {
-        // Monatlich: EV% variiert saisonal (Winter höher, Sommer niedriger)
-        for (let m = 0; m < 12; m++) {
-          const mProd = kwp * ertragKwp * fracs[m] * deg;
-          // EV% pro Monat: skaliert mit Verbrauch (BDEW H0) und inversem Ertrag
-          const mEv = Math.min(eigenverbrauch * CONSUMPTION_MONTHLY[m] / (fracs[m] * 12), 95) / 100;
-          j += mProd * mEv * sp + mProd * (1 - mEv) * (einspeisung / 100);
-        }
-      } else {
-        // Jährlich (Fallback ohne Monatsprofil)
-        const ertrag = kwp * ertragKwp * deg;
-        j = ertrag * (eigenverbrauch / 100) * sp + ertrag * (1 - eigenverbrauch / 100) * (einspeisung / 100);
-      }
-    }
-    kum += j;
-    years.push({ year: YEAR + i, i, kum: Math.round(kum), j: Math.round(j) });
-  }
-  const be = years.find((y, idx) => idx > 0 && y.kum >= 0);
-  return { years, be, total: years[YEARS].kum };
-}
-
-// ─── Editable inline value ───────────────────────────────────────────────────
-function InlineEdit({ value, onCommit, unit, step = 1, min = 0, max = 99999, width = 72, fmt }: { value: number; onCommit: (v: number) => void; unit: string; step?: number; min?: number; max?: number; width?: number; fmt?: (v: number) => string }) {
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState("");
-
-  const startEdit = () => {
-    setDraft(String(value));
-    setEditing(true);
-  };
-
-  const commit = () => {
-    const raw = draft.replace(",", ".");
-    const n = parseFloat(raw);
-    if (!isNaN(n) && n >= min && n <= max) {
-      onCommit(Math.round(n * 1000) / 1000);
-    }
-    setEditing(false);
-  };
-
-  const display = fmt ? fmt(value) : (typeof value === "number" && value >= 1000 ? value.toLocaleString("de-DE") : String(value));
-
-  if (!editing) {
-    return (
-      <span
-        onClick={startEdit}
-        style={{
-          cursor: "pointer", borderBottom: "1px dashed #555",
-          padding: "2px 0 3px", display: "inline-flex", alignItems: "baseline", gap: 2,
-          color: "#fff", fontFamily: "'JetBrains Mono',monospace", fontWeight: 700,
-          fontSize: "inherit", minHeight: 24, lineHeight: 1.4,
-        }}
-        title="Klicken zum Bearbeiten"
-      >
-        {display}{unit && <span style={{ color: "#888", fontWeight: 500 }}>{unit}</span>}
-      </span>
-    );
-  }
-
-  return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
-      <input
-        autoFocus
-        value={draft}
-        onChange={e => setDraft(e.target.value)}
-        onBlur={commit}
-        onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); commit(); } if (e.key === "Escape") setEditing(false); }}
-        style={{
-          width, textAlign: "right", fontSize: "inherit", fontWeight: 700,
-          fontFamily: "'JetBrains Mono',monospace", color: "#22c55e",
-          background: "rgba(34,197,94,0.1)", border: "1px solid #22c55e",
-          borderRadius: 6, padding: "3px 6px", outline: "none",
-        }}
-      />
-      {unit && <span style={{ color: "#888", fontWeight: 500 }}>{unit}</span>}
-    </span>
-  );
-}
-
-// ─── Chart ───────────────────────────────────────────────────────────────────
-function Chart({ scenarios, kosten }: { scenarios: { id: string; color: string; data: { years: { i: number; kum: number }[]; be: { i: number; kum: number } | undefined } }[]; kosten: number }) {
-  const W = 640, H = 280;
-  const P = { t: 24, r: 16, b: 32, l: 52 };
-  const cW = W - P.l - P.r, cH = H - P.t - P.b;
-  const allV = scenarios.flatMap(s => s.data.years.map(y => y.kum));
-  const yMin = Math.floor(Math.min(...allV, -kosten) / 5000) * 5000;
-  const yMax = Math.ceil(Math.max(...allV) / 5000) * 5000;
-  const yR = yMax - yMin || 1;
-  const x = (i: number) => P.l + (i / YEARS) * cW;
-  const y = (v: number) => P.t + cH - ((v - yMin) / yR) * cH;
-  const tStep = yR <= 30000 ? 5000 : yR <= 60000 ? 10000 : 20000;
-  const yTicks = [];
-  for (let v = yMin; v <= yMax; v += tStep) yTicks.push(v);
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
-      <rect x={P.l} y={y(yMax)} width={cW} height={y(0) - y(yMax)} fill="rgba(34,197,94,0.05)" />
-      <rect x={P.l} y={y(0)} width={cW} height={y(yMin) - y(0)} fill="rgba(239,68,68,0.05)" />
-      {yTicks.map(v => (
-        <g key={v}>
-          <line x1={P.l} x2={W - P.r} y1={y(v)} y2={y(v)} stroke={v === 0 ? "#555" : "#252525"} strokeWidth={v === 0 ? 1.5 : 0.5} />
-          <text x={P.l - 8} y={y(v)} textAnchor="end" dominantBaseline="middle" fontSize={10} fill="#666" fontFamily="'JetBrains Mono',monospace">{(v / 1000).toFixed(0)}k</text>
-        </g>
-      ))}
-      {[0, 5, 10, 15, 20, 25].map(i => (
-        <text key={i} x={x(i)} y={H - 4} textAnchor="middle" fontSize={10} fill="#666" fontFamily="'JetBrains Mono',monospace">{YEAR + i}</text>
-      ))}
-      {scenarios.map(s => {
-        const pts = s.data.years.map((yr, i) => `${x(i)},${y(yr.kum)}`).join(" ");
-        return (
-          <g key={s.id}>
-            <polyline points={pts} fill="none" stroke={s.color} strokeWidth={2.5} strokeLinejoin="round" opacity={s.id === "realistic" ? 1 : 0.45} />
-            {s.data.be && (
-              <>
-                <circle cx={x(s.data.be.i)} cy={y(s.data.be.kum)} r={4.5} fill={s.color} stroke="#111" strokeWidth={2} />
-                <text x={x(s.data.be.i)} y={y(s.data.be.kum) - 11} textAnchor="middle" fontSize={11} fontWeight="700" fill={s.color} fontFamily="'JetBrains Mono',monospace">{s.data.be.i}J</text>
-              </>
-            )}
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
-
-// ─── Reusable components ─────────────────────────────────────────────────────
-function OptionCard({ selected, onClick, icon = null, label, sub }: { selected: boolean; onClick: () => void; icon?: string | null; label: string; sub: string }) {
-  return (
-    <button onClick={onClick} style={{
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      padding: "14px 8px", borderRadius: 14, cursor: "pointer",
-      background: selected ? "rgba(34,197,94,0.1)" : "#161616",
-      border: selected ? "2px solid #22c55e" : "2px solid #2a2a2a",
-      color: "#f0f0f0", textAlign: "center", minHeight: 78, width: "100%",
-    }}>
-      {icon && <div style={{ fontSize: 18, marginBottom: 3 }}>{icon}</div>}
-      <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0" }}>{label}</div>
-      {sub && <div style={{ fontSize: 11, color: "#888", marginTop: 2, lineHeight: 1.3 }}>{sub}</div>}
-    </button>
-  );
-}
-
-function TriToggle({ options, value, onChange, label }: { options: { id: string; label: string }[]; value: string; onChange: (v: string) => void; label: string }) {
-  return (
-    <div style={{ marginBottom: 18 }}>
-      <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0", marginBottom: 8 }}>{label}</div>
-      <div style={{ display: "flex", gap: 6 }}>
-        {options.map(o => (
-          <button key={o.id} onClick={() => onChange(o.id)} style={{
-            flex: 1, padding: "10px 8px", borderRadius: 10, fontSize: 13, fontWeight: 600,
-            cursor: "pointer", textAlign: "center",
-            background: value === o.id ? "rgba(34,197,94,0.1)" : "#161616",
-            border: value === o.id ? "2px solid #22c55e" : "2px solid #2a2a2a",
-            color: value === o.id ? "#22c55e" : "#999",
-          }}>{o.label}</button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ─── URL param helpers ────────────────────────────────────────────────────────
-const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz"];
-
-function paramInt(params: Record<string, string | string[] | undefined> | undefined, key: string, fallback: number, min = 0, max = 99): number {
-  const v = params?.[key];
-  if (typeof v === "string") { const n = parseInt(v); if (!isNaN(n) && n >= min && n <= max) return n; }
-  return fallback;
-}
-
-function paramFloat(params: Record<string, string | string[] | undefined> | undefined, key: string, fallback: number, min = 0, max = 99999): number {
-  const v = params?.[key];
-  if (typeof v === "string") { const n = parseFloat(v); if (!isNaN(n) && isFinite(n) && n >= min && n <= max) return n; }
-  return fallback;
-}
-
-function paramStr(params: Record<string, string | string[] | undefined> | undefined, key: string, fallback: string, allowed: string[]): string {
-  const v = params?.[key];
-  if (typeof v === "string" && allowed.includes(v)) return v;
-  return fallback;
-}
+import { useUser, signInWithMagicLink, signOut } from "../../lib/auth";
+import { paramsToRow } from "../../lib/types";
+import { YEAR, YEARS, CONSUMPTION_MONTHLY, FUEL, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN } from "../../lib/constants";
+import { calcFuelCost25, calcWpGridCost25, estimateCost, calcEigenverbrauch, calc, paramInt, paramFloat, paramStr } from "../../lib/calc";
+import OptionCard from "../../components/OptionCard";
+import TriToggle from "../../components/TriToggle";
+import InlineEdit from "../../components/InlineEdit";
+import Chart from "../../components/Chart";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
@@ -341,6 +44,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Speicher-Kosten Inline-Prompt (Quick Settings)
   const [spKostenPrompt, setSpKostenPrompt] = useState(false);
   const [spKostenDraft, setSpKostenDraft] = useState("");
+
+  // Empfehlungs-Flow Kontext
+  const flowType = hasShare && initialParams?.flow === "emp" ? "empfehlung" : "manual";
+  const htIdx = hasShare ? paramInt(initialParams, "ht", -1, 0, 3) : -1;
+  const daIdx = hasShare ? paramInt(initialParams, "da", -1, 0, 3) : -1;
 
   // PLZ → PVGIS Ertrag laden
   const fetchPvgis = async (inputPlz: string) => {
@@ -389,7 +97,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       // Pending save: speichere Berechnung in localStorage für Auto-Save nach Login
       if (isResult) {
         const row = paramsToRow(
-          { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType },
+          { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
           { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(real.data.years[YEARS - 1]?.kum ?? 0) }
         );
         const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
@@ -444,6 +152,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     p.set("eia", einspeisungAn ? "1" : "0");
     p.set("er", String(oErtrag));
     if (plz) p.set("plz", plz);
+    if (flowType === "empfehlung") {
+      p.set("flow", "emp");
+      if (htIdx >= 0) p.set("ht", String(htIdx));
+      if (daIdx >= 0) p.set("da", String(daIdx));
+    }
     return `${window.location.origin}${window.location.pathname}?${p.toString()}`;
   };
 
@@ -470,7 +183,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     setSaving(true);
     try {
       const row = paramsToRow(
-        { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType },
+        { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
         { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(real.data.years[YEARS - 1]?.kum ?? 0) }
       );
       const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
@@ -487,7 +200,22 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       }
     } catch { /* silent */ }
     setSaving(false);
-  }, [user, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType, kwp, spKwh, be, real]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType, kwp, spKwh, be, real, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Empfehlungs-Kontext für "Warum diese Anlage?"
+  const empfehlungKontext = flowType === "empfehlung" && htIdx >= 0 && daIdx >= 0 ? (() => {
+    const ht = HAUSTYPEN[htIdx];
+    const da = DACHARTEN[daIdx];
+    const nutzbar = Math.round(ht.footprint * da.factor);
+    const maxKwp = Math.round(nutzbar * 0.2 * 10) / 10;
+    const grundverbrauch = PERSONEN[personen].verbrauch;
+    let extraVerbrauch = 0;
+    if (wp !== "nein") extraVerbrauch += 3500;
+    if (ea !== "nein") extraVerbrauch += Math.round(eaKm * 0.18);
+    const gesamtVerbrauch = grundverbrauch + extraVerbrauch;
+    const dachAuslastung = Math.round((kwp / maxKwp) * 100);
+    return { ht, da, nutzbar, maxKwp, grundverbrauch, extraVerbrauch, gesamtVerbrauch, dachAuslastung };
+  })() : null;
 
   return (
     <div style={{ background: "#0c0c0c", fontFamily: "'DM Sans',system-ui,sans-serif", color: "#f0f0f0", minHeight: "100vh", padding: "20px 16px" }}>
@@ -780,6 +508,54 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 Werte anklicken zum Anpassen
               </div>
             </div>
+
+            {/* Empfehlungs-Kontext: Warum diese Anlage? */}
+            {empfehlungKontext && (
+              <details style={{
+                background: "#151515", borderRadius: 14, padding: "14px 16px", marginBottom: 16,
+                border: "1px solid #252525",
+              }}>
+                <summary style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0", cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span>Warum diese Anlage?</span>
+                  <span style={{ fontSize: 11, color: "#666", fontWeight: 400 }}>Details ▾</span>
+                </summary>
+                <div style={{ marginTop: 14, fontSize: 13, color: "#bbb", lineHeight: 1.7 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 16px", marginBottom: 12 }}>
+                    <div>
+                      <span style={{ color: "#777" }}>Grundverbrauch</span>
+                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{empfehlungKontext.grundverbrauch.toLocaleString("de-DE")} kWh</div>
+                    </div>
+                    {empfehlungKontext.extraVerbrauch > 0 && (
+                      <div>
+                        <span style={{ color: "#777" }}>+ Großverbraucher</span>
+                        <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{empfehlungKontext.extraVerbrauch.toLocaleString("de-DE")} kWh</div>
+                      </div>
+                    )}
+                    <div>
+                      <span style={{ color: "#777" }}>Gesamtverbrauch</span>
+                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, color: "#22c55e" }}>{empfehlungKontext.gesamtVerbrauch.toLocaleString("de-DE")} kWh</div>
+                    </div>
+                    <div>
+                      <span style={{ color: "#777" }}>Dachfläche nutzbar</span>
+                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>~{empfehlungKontext.nutzbar} m² → max {empfehlungKontext.maxKwp} kWp</div>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 12, color: "#888", lineHeight: 1.6, borderTop: "1px solid #252525", paddingTop: 10 }}>
+                    <strong style={{ color: "#bbb" }}>{empfehlungKontext.ht.label} + {empfehlungKontext.da.label}:</strong>{" "}
+                    Deine Dachfläche bietet Platz für max. {empfehlungKontext.maxKwp} kWp.{" "}
+                    {kwp < empfehlungKontext.maxKwp
+                      ? `Die empfohlenen ${kwp} kWp nutzen ${empfehlungKontext.dachAuslastung}% — optimiert auf hohen Eigenverbrauch.`
+                      : `Die empfohlenen ${kwp} kWp nutzen die volle Dachfläche.`
+                    }
+                    {kwp < empfehlungKontext.maxKwp && empfehlungKontext.maxKwp - kwp >= 3 && (
+                      <span style={{ display: "block", marginTop: 4, color: "#666" }}>
+                        Eine größere Anlage ({empfehlungKontext.maxKwp} kWp) wäre möglich, senkt aber den Eigenverbrauchsanteil.
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </details>
+            )}
 
             {/* Quick Settings */}
             <div style={{ marginBottom: 16 }}>

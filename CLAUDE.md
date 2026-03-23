@@ -20,31 +20,36 @@ Du arbeitest mit einem UX-Architekten zusammen, der technisch mitdenken kann, ab
 
 ## Kernkonzept
 
-### User Flow: 4 Schritte → Ergebnis
+### Zwei Flows, ein Ergebnis
 
+**Startseite (`/`):** Hub mit 2 Optionen → Rechner oder Empfehlung
+
+**Flow 1: Rechner (`/rechner`)** — "Ich kenne meine Anlage"
 ```
 Step 0: Anlagengröße          → 5 / 8 / 10 / 15 kWp + "Anderer Wert" (2×2+1 Grid, OptionCard)
-                                 Bei "Anderer Wert": freie kWp-Eingabe (1–50)
 Step 1: Speicher               → Nein / 5 / 10 / 15 kWh (2×2 Grid, OptionCard)
-Step 2: Haushalt               → Personen (1/2/3–4/5+, 4×1 Buttons)
-                                 + Nutzungsprofil (weg/teils/home/immer, 2×2 OptionCards)
-Step 3: Großverbraucher        → Wärmepumpe + E-Auto (je TriToggle: Nein/Geplant/Vorhanden)
-                                 Bei E-Auto aktiv: Laufleistung (10k/15k/20k/custom km)
-─────────────────────────────────
-Ergebnis:
-  Hero-Card:
-    - Große Amortisationszahl ("X Jahren")
-    - Editierbares 2×3 Grid: Investition, Eigenverbrauch, Strompreis,
-      Einspeisevergütung (mit An/Aus-Toggle), spez. Ertrag, Anlageninfo
-    - Hint: "Werte anklicken zum Anpassen"
-  Quick Settings: "Was wäre wenn?" Toggle-Chips (WP, E-Auto, Speicher)
-    - E-Auto zeigt Laufleistung-Presets (10k/15k/20k + custom)
-  Stats: Rendite 25J + ⌀ Ersparnis/Jahr (2×1 Grid)
-  Chart: SVG-Amortisationskurve mit 3 Szenarien
-  Szenario-Pills: Pessimistisch / Realistisch / Optimistisch
-  Methodik-Hinweis
-  Neu-Berechnen-Button
-  Footer: Keine Datensammlung · Keine Werbung · Disclaimer
+Step 2: Haushalt               → Personen + Nutzungsprofil
+Step 3: Großverbraucher        → WP + E-Auto (TriToggles)
+→ Ergebnis (gleiche Seite)
+```
+
+**Flow 2: Empfehlung (`/empfehlung`)** — "Was passt zu mir?"
+```
+Step 0: Haushalt               → Personen + Nutzungsprofil
+Step 1: Großverbraucher        → WP + E-Auto (mit Erklärtext warum relevant)
+Step 2: Dach                   → Haustyp (4 Typen) + Dachart (4 Typen) + opt. Budget
+→ Zwischenseite: Empfehlung + Warum + Alternativen
+→ Ergebnis (auf /rechner, mit "Warum diese Anlage?"-Sektion)
+```
+
+**Gemeinsame Ergebnisseite:**
+```
+Hero-Card: Amortisation + editierbares Grid
+Quick Settings: WP, E-Auto, Speicher
+Stats: Rendite 25J + ⌀ Ersparnis/Jahr
+Chart: SVG-Amortisationskurve mit 3 Szenarien
+[Empfehlungs-Flow: aufklappbare "Warum diese Anlage?"-Sektion]
+Methodik · Save · Share · Neu-Berechnen
 ```
 
 ### Berechnungslogik
@@ -137,10 +142,16 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Name + Beschreibung für gespeicherte Berechnungen (Inline-Edit im Dashboard)
 - [x] Doppeltes Login-Formular auf Ergebnis-Seite behoben
 
-**WP 2: Empfehlungs-Flow**
-- [ ] Neuer UX-Flow: PLZ + Verbrauch + Dachfläche/Budget → System empfiehlt kWp + Speicher
-- [ ] "Warum"-Erklärung (EV-Optimierung, Über-/Unterdimensionierung)
-- [ ] Optional: Dachausrichtung für genaueren Ertrag
+**WP 2: Empfehlungs-Flow ✅ (done)**
+- [x] Hub-Startseite (/) mit 2 Flow-Optionen
+- [x] Empfehlungs-Flow (/empfehlung): Haushalt → WP/E-Auto → Haustyp+Dachart+Budget → Empfehlung
+- [x] Empfehlungs-Algorithmus (lib/recommend.ts): EV-optimierte kWp + Speicher-Empfehlung
+- [x] Zwischenseite mit Empfehlung, Warum-Erklärung, Alternativen
+- [x] Ergebnis-Erweiterung: aufklappbare "Warum diese Anlage?" Sektion
+- [x] Code-Extraction: lib/calc.ts, lib/constants.ts, components/ (aus rechner.tsx)
+- [x] URL-Routing: /, /rechner, /empfehlung + Redirect für alte Share-URLs
+- [x] DB-Schema erweitert: flow_type, haustyp, dachart, budget_limit
+- [x] Share-URLs + Dashboard für beide Flows
 
 ### Phase 4: Content & Reichweite
 - [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
@@ -163,7 +174,7 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [ ] Finanzierungsrechner (Kredit vs. Eigenkapital)
 - [ ] Community-Features
 
-Aktuelle Priorität: WP 2 → Phase 4
+Aktuelle Priorität: Phase 4 (Content & Reichweite)
 
 ## Tech-Stack
 
@@ -187,22 +198,35 @@ pv-rechner/
 ├── CLAUDE.md              # Dieses Dokument (Projekt-Kontext für Claude)
 ├── README.md              # Setup-Anleitung
 ├── package.json
-├── next.config.js
+├── next.config.js         # Env + Redirects (alte Share-URLs / → /rechner)
 ├── middleware.ts           # Supabase Auth Session-Refresh
 ├── .env.local             # SUPABASE_URL, SUPABASE_SERVICE_KEY, NEXT_PUBLIC_* (nicht in git)
 ├── .gitignore
 ├── public/
 │   └── plz.json           # PLZ → [lat, lon] Lookup (8.298 Einträge, CC BY 4.0)
 ├── lib/
+│   ├── constants.ts                # Alle Konstanten (ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, etc.)
+│   ├── calc.ts                     # Pure Berechnungsfunktionen (EV, Amortisation, Kosten, URL-Helpers)
+│   ├── recommend.ts                # Empfehlungs-Algorithmus (optimale kWp + Speicher aus Haushalt + Dach)
+│   ├── types.ts                    # CalcParams, CalculationRow, Konvertierung
 │   ├── supabase-server.ts          # Supabase Server-Client mit Service Key
 │   ├── supabase-browser.ts         # Supabase Browser-Client (@supabase/ssr)
 │   ├── supabase-server-component.ts # Supabase Client für Server Components
-│   ├── auth.ts                     # useUser() Hook, signIn/signOut Helpers
-│   └── types.ts                    # CalcParams, CalculationRow, Konvertierung
+│   └── auth.ts                     # useUser() Hook, signIn/signOut Helpers
+├── components/
+│   ├── OptionCard.tsx              # Auswahl-Karte (2×2 Grids)
+│   ├── TriToggle.tsx               # Dreier-Toggle (Nein/Geplant/Vorhanden)
+│   ├── InlineEdit.tsx              # Click-to-Edit Zahlenwert
+│   └── Chart.tsx                   # SVG-Amortisationskurve
 └── app/
     ├── layout.tsx                 # Root Layout: HTML, Fonts, SEO-Meta
-    ├── page.tsx                   # Einstiegspunkt, Error Boundary + <PVRechner />
-    ├── rechner.tsx                # "use client" — Hauptkomponente + Auth UI
+    ├── page.tsx                   # Hub-Startseite: 2 Flows (Empfehlung / Rechner)
+    ├── rechner/
+    │   ├── page.tsx               # Error Boundary + <PVRechner />
+    │   └── rechner.tsx            # "use client" — Rechner-Flow + Ergebnisseite
+    ├── empfehlung/
+    │   ├── page.tsx               # Metadata + <Empfehlung />
+    │   └── empfehlung.tsx         # "use client" — Empfehlungs-Flow (3 Steps + Zwischenseite)
     ├── auth/callback/route.ts     # Magic Link Callback Handler
     ├── api/pvgis/route.ts         # PVGIS API-Proxy mit Supabase-Cache
     ├── api/calculations/route.ts  # GET (Liste), POST (Speichern)
@@ -215,21 +239,19 @@ pv-rechner/
     └── datenschutz/page.tsx       # Datenschutzerklärung (statisch)
 ```
 
-**Architektur:** `rechner.tsx` enthält Rechner-Logik + UI (~1100 Zeilen). Auth-Code ist minimal integriert (useUser Hook + Save/Login UI). Wenn die Datei zu groß wird:
-- Berechnungslogik → `lib/calc.ts` (Pure Functions)
-- UI-Komponenten → `components/`
-- Konstanten/Config → `lib/constants.ts`
+**Architektur:** Berechnungslogik, Konstanten und UI-Komponenten sind aus rechner.tsx extrahiert in lib/ und components/. Beide Flows (Rechner + Empfehlung) teilen sich dieselben Komponenten und Berechnungsfunktionen.
 
-### Komponenten in rechner.tsx
+### Komponenten
 
 | Komponente | Datei | Funktion |
 |---|---|---|
-| `ErrorBoundary` | `page.tsx` | Fängt Render-Crashes ab, zeigt Fallback-UI mit Neu-Berechnen-Link |
-| `PVRechner` | `rechner.tsx` | Hauptkomponente, State, Flow-Steuerung |
-| `OptionCard` | `rechner.tsx` | Auswahl-Karte für Steps (2×2 Grids) |
-| `TriToggle` | `rechner.tsx` | Dreier-Toggle: Nein / Geplant / Vorhanden (WP + E-Auto) |
-| `InlineEdit` | `rechner.tsx` | Click-to-Edit Zahlenwert im Ergebnis |
-| `Chart` | `rechner.tsx` | SVG-Amortisationskurve mit 3 Szenarien (rein deklarativ, kein D3) |
+| `ErrorBoundary` | `app/rechner/page.tsx` | Fängt Render-Crashes ab, zeigt Fallback-UI |
+| `PVRechner` | `app/rechner/rechner.tsx` | Rechner-Flow + Ergebnisseite |
+| `Empfehlung` | `app/empfehlung/empfehlung.tsx` | Empfehlungs-Flow (3 Steps + Zwischenseite) |
+| `OptionCard` | `components/OptionCard.tsx` | Auswahl-Karte für Steps (2×2 Grids) |
+| `TriToggle` | `components/TriToggle.tsx` | Dreier-Toggle: Nein / Geplant / Vorhanden |
+| `InlineEdit` | `components/InlineEdit.tsx` | Click-to-Edit Zahlenwert im Ergebnis |
+| `Chart` | `components/Chart.tsx` | SVG-Amortisationskurve (3 Szenarien, kein D3) |
 
 ## Design-System
 

@@ -1,0 +1,383 @@
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER } from "../../lib/constants";
+import { estimateCost } from "../../lib/calc";
+import { recommend } from "../../lib/recommend";
+import OptionCard from "../../components/OptionCard";
+import TriToggle from "../../components/TriToggle";
+
+export default function Empfehlung() {
+  const router = useRouter();
+  const [step, setStep] = useState(0);
+
+  // Step 0: Haushalt
+  const [personen, setPersonen] = useState(1);
+  const [nutzung, setNutzung] = useState(1);
+
+  // Step 1: WP / E-Auto
+  const [wp, setWp] = useState("nein");
+  const [ea, setEa] = useState("nein");
+  const [eaKm, setEaKm] = useState(15000);
+
+  // Step 2: Dach + Budget
+  const [haustyp, setHaustyp] = useState(2); // EFH default
+  const [dachart, setDachart] = useState(0); // Satteldach default
+  const [showBudget, setShowBudget] = useState(false);
+  const [budgetDraft, setBudgetDraft] = useState("");
+  const budgetLimit = showBudget && budgetDraft ? parseInt(budgetDraft.replace(/\D/g, "")) || null : null;
+
+  const STEPS = ["Dein Haushalt", "Großverbraucher", "Dein Dach"];
+  const isRecommendation = step >= STEPS.length;
+  const next = () => step < STEPS.length && setStep(step + 1);
+  const back = () => step > 0 && setStep(step - 1);
+
+  // Empfehlung berechnen
+  const rec = isRecommendation ? recommend({
+    personen, nutzung, wp, ea, eaKm,
+    haustyp, dachart, budgetLimit,
+  }) : null;
+
+  const goToResult = (kwp: number, speicherIdx: number) => {
+    const anlageIdx = kwp <= 5 ? 0 : kwp <= 8 ? 1 : kwp <= 10 ? 2 : kwp <= 15 ? 3 : 4;
+    const p = new URLSearchParams();
+    p.set("a", String(anlageIdx));
+    if (anlageIdx === 4) p.set("ck", String(kwp));
+    p.set("s", String(speicherIdx));
+    p.set("p", String(personen));
+    p.set("n", String(nutzung));
+    p.set("wp", wp);
+    p.set("ea", ea);
+    if (ea !== "nein") p.set("km", String(eaKm));
+    p.set("flow", "emp");
+    p.set("ht", String(haustyp));
+    p.set("da", String(dachart));
+    router.push(`/rechner?${p.toString()}`);
+  };
+
+  // Finde den passenden SPEICHER-Index für eine kWh-Angabe
+  const findSpeicherIdx = (kwh: number) => {
+    const idx = SPEICHER.findIndex(s => s.kwh === kwh);
+    return idx >= 0 ? idx : 0;
+  };
+
+  return (
+    <div style={{ background: "#0c0c0c", fontFamily: "'DM Sans',system-ui,sans-serif", color: "#f0f0f0", minHeight: "100vh", padding: "20px 16px" }}>
+      <style>{`
+        *{box-sizing:border-box;margin:0;padding:0}
+        @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+        .fu{animation:fu .3s ease-out}
+      `}</style>
+      <div style={{ maxWidth: 480, margin: "0 auto" }}>
+
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <Link href="/" style={{ textDecoration: "none" }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#22c55e", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>PV Rechner</div>
+          </Link>
+          <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", color: "#fff", lineHeight: 1.2 }}>Was passt zu dir?</h1>
+          <p style={{ fontSize: 13, color: "#666", marginTop: 6 }}>Wir empfehlen dir die optimale Anlage.</p>
+        </div>
+
+        {/* Progress */}
+        {!isRecommendation && (
+          <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
+            {STEPS.map((_, i) => (
+              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? "#22c55e" : "#282828", transition: "background 0.3s" }} />
+            ))}
+          </div>
+        )}
+
+        {/* ── STEPS ── */}
+        {!isRecommendation && (
+          <div className="fu" key={step}>
+            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: "#fff" }}>{STEPS[step]}</h2>
+
+            {/* Step 0: Haushalt */}
+            {step === 0 && (
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
+                  {PERSONEN.map((p, i) => (
+                    <button key={i} onClick={() => setPersonen(i)} style={{
+                      padding: "10px 4px", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", textAlign: "center",
+                      background: personen === i ? "rgba(34,197,94,0.1)" : "#161616",
+                      border: personen === i ? "2px solid #22c55e" : "2px solid #2a2a2a",
+                      color: personen === i ? "#22c55e" : "#ccc",
+                    }}>{p.label}</button>
+                  ))}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                  {NUTZUNG.map((n, i) => (
+                    <OptionCard key={i} selected={nutzung === i} onClick={() => setNutzung(i)} label={n.label} sub={n.sub} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 1: WP / E-Auto */}
+            {step === 1 && (
+              <div>
+                <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={setWp} />
+                <div style={{ fontSize: 12, color: "#666", marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
+                  Eine Wärmepumpe erhöht deinen Stromverbrauch um ~3.500 kWh/Jahr — eine größere PV-Anlage lohnt sich dann besonders.
+                </div>
+                <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={setEa} />
+                {ea !== "nein" && (
+                  <div style={{ marginBottom: 18, marginTop: -10 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: "#777", marginBottom: 6 }}>Laufleistung ca.</div>
+                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                      {EA_KM_PRESETS.map(km => (
+                        <button key={km} onClick={() => setEaKm(km)} style={{
+                          padding: "7px 10px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                          background: eaKm === km ? "rgba(34,197,94,0.1)" : "#161616",
+                          border: eaKm === km ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
+                          color: eaKm === km ? "#22c55e" : "#999",
+                        }}>{(km / 1000).toFixed(0)}k</button>
+                      ))}
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        <input
+                          value={EA_KM_PRESETS.includes(eaKm) ? "" : String(eaKm)}
+                          placeholder="km"
+                          onChange={e => {
+                            const n = parseInt(e.target.value.replace(/\D/g, ""));
+                            if (!isNaN(n) && n >= 1000 && n <= 50000) setEaKm(n);
+                          }}
+                          style={{
+                            width: 56, textAlign: "center", fontSize: 12, fontWeight: 600,
+                            fontFamily: "'JetBrains Mono',monospace",
+                            color: !EA_KM_PRESETS.includes(eaKm) ? "#22c55e" : "#666",
+                            background: !EA_KM_PRESETS.includes(eaKm) ? "rgba(34,197,94,0.1)" : "#161616",
+                            border: !EA_KM_PRESETS.includes(eaKm) ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
+                            borderRadius: 8, padding: "7px 4px", outline: "none",
+                          }}
+                        />
+                        <span style={{ fontSize: 11, color: "#666" }}>km</span>
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {ea === "nein" && (
+                  <div style={{ fontSize: 12, color: "#666", marginTop: -10, marginBottom: 8, lineHeight: 1.5, paddingLeft: 2 }}>
+                    Ein E-Auto erhöht deinen Verbrauch um ~2.700 kWh/Jahr (bei 15.000 km) — gut für die PV-Rentabilität.
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Step 2: Dach + Budget */}
+            {step === 2 && (
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Haustyp</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
+                  {HAUSTYPEN.map((h, i) => (
+                    <OptionCard key={i} selected={haustyp === i} onClick={() => setHaustyp(i)} label={h.label} sub={h.sub} />
+                  ))}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachart</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
+                  {DACHARTEN.map((d, i) => (
+                    <OptionCard key={i} selected={dachart === i} onClick={() => setDachart(i)} label={d.label} sub={d.sub} />
+                  ))}
+                </div>
+
+                {/* Budget (aufklappbar) */}
+                <div style={{ marginTop: 8 }}>
+                  <button onClick={() => setShowBudget(!showBudget)} style={{
+                    background: "none", border: "none", color: "#666", fontSize: 13, cursor: "pointer",
+                    fontFamily: "'DM Sans',system-ui,sans-serif", padding: "4px 0",
+                    display: "flex", alignItems: "center", gap: 6,
+                  }}>
+                    <span style={{ fontSize: 11, color: showBudget ? "#22c55e" : "#555" }}>{showBudget ? "▾" : "▸"}</span>
+                    Hast du ein maximales Budget?
+                  </button>
+                  {showBudget && (
+                    <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: 13, color: "#888" }}>Max.</span>
+                      <input
+                        value={budgetDraft}
+                        placeholder="z.B. 20000"
+                        onChange={e => setBudgetDraft(e.target.value.replace(/[^\d]/g, ""))}
+                        style={{
+                          width: 100, textAlign: "right", fontSize: 14, fontWeight: 700,
+                          fontFamily: "'JetBrains Mono',monospace", color: "#22c55e",
+                          background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)",
+                          borderRadius: 8, padding: "8px 10px", outline: "none",
+                        }}
+                      />
+                      <span style={{ fontSize: 13, color: "#888" }}>€</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Navigation */}
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
+              {step > 0 ? (
+                <button onClick={back} style={{ padding: "10px 20px", borderRadius: 10, fontSize: 14, fontWeight: 600, background: "transparent", border: "1px solid #333", color: "#888", cursor: "pointer" }}>Zurück</button>
+              ) : (
+                <Link href="/" style={{ padding: "10px 20px", borderRadius: 10, fontSize: 14, fontWeight: 600, background: "transparent", border: "1px solid #333", color: "#888", cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
+              )}
+              <button onClick={next} style={{ padding: "10px 32px", borderRadius: 10, fontSize: 14, fontWeight: 700, background: "#22c55e", border: "none", color: "#000", cursor: "pointer" }}>
+                {step === STEPS.length - 1 ? "Empfehlung anzeigen ✦" : "Weiter →"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── RECOMMENDATION ── */}
+        {isRecommendation && rec && (
+          <div className="fu">
+            {/* Hero */}
+            <div style={{
+              textAlign: "center", padding: "24px 20px 20px", marginBottom: 16,
+              background: "#111", borderRadius: 20, border: "1px solid #1e3a1e",
+            }}>
+              <div style={{ fontSize: 12, color: "#888", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>
+                Unsere Empfehlung
+              </div>
+              <div style={{ fontSize: 42, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono',monospace", lineHeight: 1.1 }}>
+                {rec.kwp} kWp
+              </div>
+              {rec.speicherKwh > 0 && (
+                <div style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", fontFamily: "'JetBrains Mono',monospace", marginTop: 4 }}>
+                  + {rec.speicherKwh} kWh Speicher
+                </div>
+              )}
+              <div style={{ fontSize: 14, color: "#888", marginTop: 12 }}>
+                Geschätzte Investition: <span style={{ fontWeight: 700, color: "#f0f0f0", fontFamily: "'JetBrains Mono',monospace" }}>{rec.reasoning.investition.toLocaleString("de-DE")} €</span>
+              </div>
+              {rec.reasoning.paybackYears && (
+                <div style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
+                  Amortisation in ca. {rec.reasoning.paybackYears} Jahren
+                </div>
+              )}
+              {rec.reasoning.budgetConstrained && (
+                <div style={{ fontSize: 12, color: "#ef4444", marginTop: 8, fontWeight: 600 }}>
+                  Budget-begrenzt — ohne Limit wäre mehr möglich
+                </div>
+              )}
+            </div>
+
+            {/* Warum-Details */}
+            <details style={{
+              background: "#151515", borderRadius: 14, padding: "14px 16px", marginBottom: 16,
+              border: "1px solid #252525",
+            }}>
+              <summary style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0", cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span>Warum diese Konfiguration?</span>
+                <span style={{ fontSize: 11, color: "#666", fontWeight: 400 }}>Details ▾</span>
+              </summary>
+              <div style={{ marginTop: 14, fontSize: 13, color: "#bbb", lineHeight: 1.7 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px", marginBottom: 12 }}>
+                  <div>
+                    <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Grundverbrauch</div>
+                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{rec.reasoning.baseConsumption.toLocaleString("de-DE")} kWh</div>
+                  </div>
+                  {rec.reasoning.wpConsumption > 0 && (
+                    <div>
+                      <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>+ Wärmepumpe</div>
+                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{rec.reasoning.wpConsumption.toLocaleString("de-DE")} kWh</div>
+                    </div>
+                  )}
+                  {rec.reasoning.eaConsumption > 0 && (
+                    <div>
+                      <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>+ E-Auto</div>
+                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{rec.reasoning.eaConsumption.toLocaleString("de-DE")} kWh</div>
+                    </div>
+                  )}
+                  <div>
+                    <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Gesamt</div>
+                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, color: "#22c55e" }}>{rec.reasoning.totalConsumption.toLocaleString("de-DE")} kWh</div>
+                  </div>
+                  <div>
+                    <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachfläche nutzbar</div>
+                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>~{rec.reasoning.nutzbarM2} m²</div>
+                  </div>
+                  <div>
+                    <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Max. Anlagengröße</div>
+                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{rec.reasoning.maxRoofKwp} kWp</div>
+                  </div>
+                  <div>
+                    <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Eigenverbrauch</div>
+                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, color: "#22c55e" }}>{rec.reasoning.eigenverbrauch}%</div>
+                  </div>
+                  {rec.speicherKwh > 0 && (
+                    <div>
+                      <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Ohne Speicher</div>
+                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#888" }}>{rec.reasoning.eigenverbrauchOhneSpeicher}%</div>
+                    </div>
+                  )}
+                </div>
+                <div style={{ fontSize: 12, color: "#666", borderTop: "1px solid #252525", paddingTop: 10, lineHeight: 1.6 }}>
+                  {rec.kwp < rec.reasoning.maxRoofKwp
+                    ? `${rec.kwp} kWp ist für deinen Verbrauch optimal dimensioniert — größere Anlagen senken den Eigenverbrauchsanteil.`
+                    : `Die Empfehlung nutzt die maximale Dachfläche deines ${HAUSTYPEN[haustyp].label}s.`
+                  }
+                  {rec.speicherKwh > 0 && ` Der ${rec.speicherKwh} kWh Speicher steigert den Eigenverbrauch von ${rec.reasoning.eigenverbrauchOhneSpeicher}% auf ${rec.reasoning.eigenverbrauch}%.`}
+                </div>
+              </div>
+            </details>
+
+            {/* CTA */}
+            <button onClick={() => goToResult(rec.kwp, rec.speicherIdx)} style={{
+              width: "100%", padding: "14px", borderRadius: 12, fontSize: 15, fontWeight: 700,
+              background: "#22c55e", border: "none", color: "#000", cursor: "pointer",
+              fontFamily: "'DM Sans',system-ui,sans-serif", marginBottom: 16,
+            }}>
+              Ergebnis anzeigen →
+            </button>
+
+            {/* Alternativen */}
+            {rec.alternatives.length > 0 && (
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#666", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Alternativen</div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {rec.alternatives.map((alt, i) => (
+                    <button key={i} onClick={() => goToResult(alt.kwp, findSpeicherIdx(alt.speicherKwh))} style={{
+                      background: "#151515", borderRadius: 14, padding: "14px 16px", border: "1px solid #2a2a2a",
+                      cursor: "pointer", textAlign: "left", width: "100%",
+                    }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: "#f0f0f0" }}>{alt.label}</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: "'JetBrains Mono',monospace", color: "#888" }}>
+                          {alt.kwp} kWp{alt.speicherKwh > 0 ? ` + ${alt.speicherKwh} kWh` : ""}
+                        </span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontSize: 12, color: "#666" }}>{alt.reason}</span>
+                        <span style={{ fontSize: 12, fontFamily: "'JetBrains Mono',monospace", color: "#888" }}>
+                          {alt.investition.toLocaleString("de-DE")} €
+                        </span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Zurück */}
+            <button onClick={() => setStep(STEPS.length - 1)} style={{
+              width: "100%", padding: "12px", borderRadius: 12, fontSize: 13, fontWeight: 600,
+              background: "transparent", border: "1px solid #333", color: "#888", cursor: "pointer",
+            }}>↺ Eingaben ändern</button>
+
+            <div style={{ textAlign: "center", fontSize: 11, color: "#444", padding: "20px 0 8px", lineHeight: 1.6 }}>
+              Die Empfehlung basiert auf Durchschnittswerten. Auf der Ergebnisseite kannst du alle Annahmen anpassen.
+            </div>
+          </div>
+        )}
+
+        {/* Footer */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: "24px 0 16px" }}>
+          <Link href="/methodik" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Methodik</Link>
+          <Link href="/impressum" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Impressum</Link>
+          <Link href="/datenschutz" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Datenschutz</Link>
+        </div>
+      </div>
+    </div>
+  );
+}
