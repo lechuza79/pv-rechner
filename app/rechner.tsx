@@ -531,8 +531,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
           <p style={{ fontSize: 13, color: "#666", marginTop: 6 }}>Ehrlich berechnet. Ohne Leadfunnel.</p>
         </div>
 
-        {/* Inline Login */}
-        {showLogin && !user && (
+        {/* Inline Login — only during question steps, sticky bar handles result page */}
+        {showLogin && !user && !isResult && (
           <div className="fu" style={{
             background: "#151515", borderRadius: 14, padding: "16px", marginBottom: 16,
             border: "1px solid #252525",
