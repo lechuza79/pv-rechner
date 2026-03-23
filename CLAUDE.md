@@ -131,7 +131,11 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Berechnung speichern + wieder laden
 - [x] Dashboard "Meine Berechnungen" (`/dashboard`)
 - [x] Inline Login (Header + Sticky Bottom Bar im Ergebnis)
-- [x] Auto-Save nach Magic Link Redirect (localStorage pending)
+- [x] Auto-Save nach Magic Link Redirect (localStorage pending → Dashboard)
+- [x] Login leitet zum Dashboard weiter (nicht zurück zum Rechner)
+- [x] "Neue Berechnung" Button im Dashboard
+- [x] Name + Beschreibung für gespeicherte Berechnungen (Inline-Edit im Dashboard)
+- [x] Doppeltes Login-Formular auf Ergebnis-Seite behoben
 
 **WP 2: Empfehlungs-Flow**
 - [ ] Neuer UX-Flow: PLZ + Verbrauch + Dachfläche/Budget → System empfiehlt kWp + Speicher
