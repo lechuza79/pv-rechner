@@ -1,6 +1,8 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useUser, signInWithMagicLink, signOut } from "../lib/auth";
+import { paramsToRow } from "../lib/types";
 
 const YEAR = 2026;
 const YEARS = 25;
@@ -365,6 +367,40 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Auto-fetch bei Share-URL mit PLZ
   useEffect(() => { if (plz && hasShare) fetchPvgis(plz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Auth + Save
+  const { user, loading: authLoading } = useUser();
+  const [showLogin, setShowLogin] = useState(false);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginSent, setLoginSent] = useState(false);
+  const [loginError, setLoginError] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [savedCalcId, setSavedCalcId] = useState<string | null>(initialParams?.calc ? String(initialParams.calc) : null);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!loginEmail.trim()) return;
+    setLoginError("");
+    const { error } = await signInWithMagicLink(loginEmail.trim());
+    if (error) {
+      setLoginError(error.message);
+    } else {
+      setLoginSent(true);
+      // Pending save: speichere State in localStorage
+      if (isResult) {
+        localStorage.setItem("pendingSave", "1");
+      }
+    }
+  };
+
+  // Auto-save nach Magic Link Redirect
+  useEffect(() => {
+    if (user && isResult && localStorage.getItem("pendingSave")) {
+      localStorage.removeItem("pendingSave");
+      handleSave();
+    }
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Share state
   const [copied, setCopied] = useState(false);
   const [canShare, setCanShare] = useState(false);
@@ -430,6 +466,30 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n" + buildShareUrl())}`, "_blank");
   };
 
+  const handleSave = useCallback(async () => {
+    if (!user || saving) return;
+    setSaving(true);
+    try {
+      const row = paramsToRow(
+        { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType },
+        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(real.data.years[YEARS - 1]?.kum ?? 0) }
+      );
+      const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
+      const res = await fetch("/api/calculations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...row, name: `${kwp} kWp${spLabel}` }),
+      });
+      if (res.ok) {
+        const { id } = await res.json();
+        setSaved(true);
+        setSavedCalcId(id);
+        setTimeout(() => setSaved(false), 2500);
+      }
+    } catch { /* silent */ }
+    setSaving(false);
+  }, [user, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType, kwp, spKwh, be, real]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div style={{ background: "#0c0c0c", fontFamily: "'DM Sans',system-ui,sans-serif", color: "#f0f0f0", minHeight: "100vh", padding: "20px 16px" }}>
       <style>{`
@@ -442,11 +502,74 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       <div style={{ maxWidth: 480, margin: "0 auto" }}>
 
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
+        <div style={{ textAlign: "center", marginBottom: 24, position: "relative" }}>
+          {/* Auth indicator */}
+          {!authLoading && (
+            <div style={{ position: "absolute", top: 0, right: 0 }}>
+              {user ? (
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <Link href="/dashboard" style={{
+                    width: 28, height: 28, borderRadius: "50%", background: "rgba(34,197,94,0.15)",
+                    border: "1px solid rgba(34,197,94,0.3)", display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 12, fontWeight: 700, color: "#22c55e", textDecoration: "none",
+                  }}>
+                    {(user.email || "U")[0].toUpperCase()}
+                  </Link>
+                </div>
+              ) : (
+                <button onClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }} style={{
+                  background: "none", border: "none", color: "#666", fontSize: 13, cursor: "pointer",
+                  padding: "4px 0", fontFamily: "'DM Sans',system-ui,sans-serif",
+                }}>
+                  Anmelden
+                </button>
+              )}
+            </div>
+          )}
           <div style={{ fontSize: 12, fontWeight: 700, color: "#22c55e", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>PV Rechner</div>
           <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: "#fff", lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
           <p style={{ fontSize: 13, color: "#666", marginTop: 6 }}>Ehrlich berechnet. Ohne Leadfunnel.</p>
         </div>
+
+        {/* Inline Login */}
+        {showLogin && !user && (
+          <div className="fu" style={{
+            background: "#151515", borderRadius: 14, padding: "16px", marginBottom: 16,
+            border: "1px solid #252525",
+          }}>
+            {loginSent ? (
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#22c55e", marginBottom: 6 }}>Link gesendet!</div>
+                <div style={{ fontSize: 12, color: "#888" }}>Prüfe deine E-Mails und klicke den Link zum Anmelden.</div>
+              </div>
+            ) : (
+              <form onSubmit={handleLogin} style={{ display: "flex", gap: 8 }}>
+                <input
+                  type="email"
+                  placeholder="E-Mail-Adresse"
+                  value={loginEmail}
+                  onChange={e => setLoginEmail(e.target.value)}
+                  style={{
+                    flex: 1, padding: "10px 12px", borderRadius: 10, fontSize: 14,
+                    background: "#161616", border: "1px solid #2a2a2a", color: "#f0f0f0",
+                    fontFamily: "'DM Sans',system-ui,sans-serif", outline: "none",
+                  }}
+                />
+                <button type="submit" style={{
+                  padding: "10px 16px", borderRadius: 10, fontSize: 13, fontWeight: 600,
+                  background: "#22c55e", border: "none", color: "#000", cursor: "pointer",
+                  fontFamily: "'DM Sans',system-ui,sans-serif", whiteSpace: "nowrap",
+                }}>
+                  Link senden
+                </button>
+              </form>
+            )}
+            {loginError && <div style={{ fontSize: 12, color: "#ef4444", marginTop: 8 }}>{loginError}</div>}
+            <div style={{ fontSize: 11, color: "#555", marginTop: 8, textAlign: "center" }}>
+              Passwordless per Magic Link · Keine Werbung
+            </div>
+          </div>
+        )}
 
         {/* Progress */}
         {!isResult && (
@@ -942,6 +1065,28 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               <span style={{ color: "#666" }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
             </div>
 
+            {/* Save (logged in) */}
+            {user && (
+              <div style={{ marginBottom: 16 }}>
+                <button onClick={handleSave} disabled={saving} style={{
+                  width: "100%", padding: "12px", borderRadius: 12, fontSize: 14, fontWeight: 700,
+                  background: saved ? "rgba(34,197,94,0.15)" : "rgba(34,197,94,0.1)",
+                  border: saved ? "1px solid #22c55e" : "1px solid rgba(34,197,94,0.3)",
+                  color: saved ? "#22c55e" : "#22c55e", cursor: saving ? "wait" : "pointer",
+                  fontFamily: "'DM Sans',system-ui,sans-serif", transition: "all 0.2s",
+                }}>
+                  {saved ? "✓ Gespeichert!" : saving ? "Speichert..." : "Ergebnis speichern"}
+                </button>
+                {savedCalcId && !saved && (
+                  <div style={{ textAlign: "center", marginTop: 6 }}>
+                    <Link href="/dashboard" style={{ fontSize: 12, color: "#666", textDecoration: "none", borderBottom: "1px dashed #555" }}>
+                      Meine Berechnungen →
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Share */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <button onClick={handleCopy} style={{
@@ -982,12 +1127,68 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
           </div>
         )}
 
-        <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: "24px 0 16px" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: `24px 0 ${isResult && !user ? 80 : 16}px` }}>
           <Link href="/methodik" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Methodik</Link>
           <Link href="/impressum" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Impressum</Link>
           <Link href="/datenschutz" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Datenschutz</Link>
         </div>
       </div>
+
+      {/* Sticky Bottom Bar — CTA für nicht-eingeloggte Nutzer */}
+      {isResult && !user && !authLoading && (
+        <div style={{
+          position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100,
+          background: "linear-gradient(to top, #0c0c0c 80%, transparent)",
+          padding: "20px 16px 16px",
+        }}>
+          <div style={{ maxWidth: 480, margin: "0 auto" }}>
+            {showLogin && loginSent ? (
+              <div style={{
+                background: "#151515", borderRadius: 14, padding: "14px 16px",
+                border: "1px solid #252525", textAlign: "center",
+              }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#22c55e" }}>Link gesendet!</div>
+                <div style={{ fontSize: 12, color: "#888", marginTop: 4 }}>Prüfe deine E-Mails.</div>
+              </div>
+            ) : showLogin ? (
+              <form onSubmit={handleLogin} style={{
+                display: "flex", gap: 8,
+                background: "#151515", borderRadius: 14, padding: "12px",
+                border: "1px solid #252525",
+              }}>
+                <input
+                  type="email"
+                  placeholder="E-Mail-Adresse"
+                  value={loginEmail}
+                  onChange={e => setLoginEmail(e.target.value)}
+                  autoFocus
+                  style={{
+                    flex: 1, padding: "10px 12px", borderRadius: 10, fontSize: 14,
+                    background: "#161616", border: "1px solid #2a2a2a", color: "#f0f0f0",
+                    fontFamily: "'DM Sans',system-ui,sans-serif", outline: "none",
+                  }}
+                />
+                <button type="submit" style={{
+                  padding: "10px 16px", borderRadius: 10, fontSize: 13, fontWeight: 600,
+                  background: "#22c55e", border: "none", color: "#000", cursor: "pointer",
+                  fontFamily: "'DM Sans',system-ui,sans-serif", whiteSpace: "nowrap",
+                }}>
+                  Link senden
+                </button>
+              </form>
+            ) : (
+              <button onClick={() => { setShowLogin(true); setLoginSent(false); setLoginError(""); }} style={{
+                width: "100%", padding: "14px", borderRadius: 14, fontSize: 15, fontWeight: 700,
+                background: "#22c55e", border: "none", color: "#000", cursor: "pointer",
+                fontFamily: "'DM Sans',system-ui,sans-serif",
+              }}>
+                Ergebnisse speichern
+              </button>
+            )}
+            {loginError && <div style={{ fontSize: 12, color: "#ef4444", marginTop: 6, textAlign: "center" }}>{loginError}</div>}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -123,13 +123,15 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Custom kWp Eingabe
 - [x] Methodik-Seite mit transparenter Berechnungserklärung
 
-### Phase 3: Accounts & Empfehlungs-Flow (nächstes WP)
+### Phase 3: Accounts & Empfehlungs-Flow
 
-**WP 1: Accounts & Rollen**
-- [ ] Supabase Auth (Magic Link oder Google OAuth)
-- [ ] 3 Rollen: Interessent, PV-Besitzer, Solateur
-- [ ] Berechnung speichern + wieder laden
-- [ ] Dashboard "Meine Berechnungen"
+**WP 1: Accounts & Rollen ✅ (done)**
+- [x] Supabase Auth (Magic Link, passwordless)
+- [x] 3 Rollen in DB (Interessent/PV-Besitzer/Solateur), aktiv ab WP 3/4
+- [x] Berechnung speichern + wieder laden
+- [x] Dashboard "Meine Berechnungen" (`/dashboard`)
+- [x] Inline Login (Header + Sticky Bottom Bar im Ergebnis)
+- [x] Auto-Save nach Magic Link Redirect (localStorage pending)
 
 **WP 2: Empfehlungs-Flow**
 - [ ] Neuer UX-Flow: PLZ + Verbrauch + Dachfläche/Budget → System empfiehlt kWp + Speicher
@@ -157,7 +159,7 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [ ] Finanzierungsrechner (Kredit vs. Eigenkapital)
 - [ ] Community-Features
 
-Aktuelle Priorität: WP 1 → WP 2 → Phase 4
+Aktuelle Priorität: WP 2 → Phase 4
 
 ## Tech-Stack
 
@@ -168,7 +170,7 @@ Aktuelle Priorität: WP 1 → WP 2 → Phase 4
 | Styling | **Inline Styles** | Bewusst kein Tailwind — Projekt zu klein, harte Farbwerte |
 | Fonts | **DM Sans + JetBrains Mono** | Google Fonts, geladen in layout.tsx |
 | Deployment | **Vercel** | Zero-Config für Next.js, Preview Deployments |
-| Backend | **Supabase** (ab Phase 3) | PVGIS-Cache, vorbereitet für Accounts |
+| Backend | **Supabase** | Auth (Magic Link), PVGIS-Cache, Berechnungen speichern |
 | PV-Ertrag | **PVGIS API** (EU JRC) | Standortspezifisch via Next.js API-Route, Supabase-Cache |
 | Package Manager | **npm** | Standard reicht bei dieser Projektgröße |
 
@@ -182,23 +184,34 @@ pv-rechner/
 ├── README.md              # Setup-Anleitung
 ├── package.json
 ├── next.config.js
-├── .env.local             # SUPABASE_URL, SUPABASE_SERVICE_KEY (nicht in git)
+├── middleware.ts           # Supabase Auth Session-Refresh
+├── .env.local             # SUPABASE_URL, SUPABASE_SERVICE_KEY, NEXT_PUBLIC_* (nicht in git)
 ├── .gitignore
 ├── public/
 │   └── plz.json           # PLZ → [lat, lon] Lookup (8.298 Einträge, CC BY 4.0)
 ├── lib/
-│   └── supabase.ts        # Supabase Server-Client (graceful null wenn keine Credentials)
+│   ├── supabase-server.ts          # Supabase Server-Client mit Service Key
+│   ├── supabase-browser.ts         # Supabase Browser-Client (@supabase/ssr)
+│   ├── supabase-server-component.ts # Supabase Client für Server Components
+│   ├── auth.ts                     # useUser() Hook, signIn/signOut Helpers
+│   └── types.ts                    # CalcParams, CalculationRow, Konvertierung
 └── app/
-    ├── layout.tsx         # Root Layout: HTML, Fonts, SEO-Meta
-    ├── page.tsx           # Einstiegspunkt, Error Boundary + <PVRechner />
-    ├── rechner.tsx        # "use client" — Hauptkomponente, gesamte Logik + UI
-    ├── api/pvgis/route.ts # PVGIS API-Proxy mit Supabase-Cache + Bundesland-Fallback
-    ├── methodik/page.tsx  # Berechnungsmethodik (statisch)
-    ├── impressum/page.tsx # Impressum (statisch)
-    └── datenschutz/page.tsx # Datenschutzerklärung (statisch)
+    ├── layout.tsx                 # Root Layout: HTML, Fonts, SEO-Meta
+    ├── page.tsx                   # Einstiegspunkt, Error Boundary + <PVRechner />
+    ├── rechner.tsx                # "use client" — Hauptkomponente + Auth UI
+    ├── auth/callback/route.ts     # Magic Link Callback Handler
+    ├── api/pvgis/route.ts         # PVGIS API-Proxy mit Supabase-Cache
+    ├── api/calculations/route.ts  # GET (Liste), POST (Speichern)
+    ├── api/calculations/[id]/route.ts # GET, PUT, DELETE einzelne Berechnung
+    ├── dashboard/
+    │   ├── page.tsx               # Server Component: Auth-Check + Daten laden
+    │   └── client.tsx             # Client Component: Dashboard UI
+    ├── methodik/page.tsx          # Berechnungsmethodik (statisch)
+    ├── impressum/page.tsx         # Impressum (statisch)
+    └── datenschutz/page.tsx       # Datenschutzerklärung (statisch)
 ```
 
-**Single-File-Architektur:** `rechner.tsx` enthält alles (~590 Zeilen). Erst aufteilen wenn die Datei unübersichtlich wird. Wenn aufgeteilt wird:
+**Architektur:** `rechner.tsx` enthält Rechner-Logik + UI (~1100 Zeilen). Auth-Code ist minimal integriert (useUser Hook + Save/Login UI). Wenn die Datei zu groß wird:
 - Berechnungslogik → `lib/calc.ts` (Pure Functions)
 - UI-Komponenten → `components/`
 - Konstanten/Config → `lib/constants.ts`
