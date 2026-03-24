@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { getCssVariables, globalStyles } from "../lib/theme";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://pv-rechner-alpha.vercel.app";
 
@@ -85,6 +86,7 @@ export default function RootLayout({
     <html lang="de">
       <head>
         <meta name="google-site-verification" content="ATH_SsHQBX5xWwJEO_f-IY30ld3a77-fIS6GjXTWURw" />
+        <style dangerouslySetInnerHTML={{ __html: getCssVariables() + globalStyles }} />
         <link
           href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap"
           rel="stylesheet"
@@ -102,7 +104,7 @@ export default function RootLayout({
         style={{
           margin: 0,
           padding: 0,
-          background: "#0c0c0c",
+          background: "var(--color-bg)",
           minHeight: "100vh",
         }}
       >

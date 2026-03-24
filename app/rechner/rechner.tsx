@@ -9,6 +9,7 @@ import OptionCard from "../../components/OptionCard";
 import TriToggle from "../../components/TriToggle";
 import InlineEdit from "../../components/InlineEdit";
 import Chart from "../../components/Chart";
+import { v } from "../../lib/theme";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
@@ -218,15 +219,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   })() : null;
 
   return (
-    <div style={{ background: "#0c0c0c", fontFamily: "'DM Sans',system-ui,sans-serif", color: "#f0f0f0", minHeight: "100vh", padding: "20px 16px" }}>
-      <style>{`
-        *{box-sizing:border-box;margin:0;padding:0}
-        input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-        input[type=number]{-moz-appearance:textfield}
-        @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        .fu{animation:fu .3s ease-out}
-      `}</style>
-      <div style={{ maxWidth: 480, margin: "0 auto" }}>
+    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
+      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 24, position: "relative" }}>
@@ -236,38 +230,38 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               {user ? (
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <Link href="/dashboard" style={{
-                    width: 28, height: 28, borderRadius: "50%", background: "rgba(34,197,94,0.15)",
-                    border: "1px solid rgba(34,197,94,0.3)", display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 12, fontWeight: 700, color: "#22c55e", textDecoration: "none",
+                    width: 28, height: 28, borderRadius: "50%", background: v('--color-accent-dim-15'),
+                    border: `1px solid ${v('--color-accent-border')}`, display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 12, fontWeight: 700, color: v('--color-accent'), textDecoration: "none",
                   }}>
                     {(user.email || "U")[0].toUpperCase()}
                   </Link>
                 </div>
               ) : (
                 <button onClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }} style={{
-                  background: "none", border: "none", color: "#666", fontSize: 13, cursor: "pointer",
-                  padding: "4px 0", fontFamily: "'DM Sans',system-ui,sans-serif",
+                  background: "none", border: "none", color: v('--color-text-muted'), fontSize: 13, cursor: "pointer",
+                  padding: "4px 0", fontFamily: v('--font-text'),
                 }}>
                   Anmelden
                 </button>
               )}
             </div>
           )}
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#22c55e", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>PV Rechner</div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: "#fff", lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
-          <p style={{ fontSize: 13, color: "#666", marginTop: 6 }}>Ehrlich berechnet. Ohne Leadfunnel.</p>
+          <div style={{ fontSize: 12, fontWeight: 700, color: v('--color-accent'), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>PV Rechner</div>
+          <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-white'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
+          <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Ehrlich berechnet. Ohne Leadfunnel.</p>
         </div>
 
         {/* Inline Login — only during question steps, sticky bar handles result page */}
         {showLogin && !user && !isResult && (
           <div className="fu" style={{
-            background: "#151515", borderRadius: 14, padding: "16px", marginBottom: 16,
-            border: "1px solid #252525",
+            background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "16px", marginBottom: 16,
+            border: `1px solid ${v('--color-border')}`,
           }}>
             {loginSent ? (
               <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#22c55e", marginBottom: 6 }}>Link gesendet!</div>
-                <div style={{ fontSize: 12, color: "#888" }}>Prüfe deine E-Mails und klicke den Link zum Anmelden.</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: v('--color-accent'), marginBottom: 6 }}>Link gesendet!</div>
+                <div style={{ fontSize: 12, color: v('--color-text-secondary') }}>Prüfe deine E-Mails und klicke den Link zum Anmelden.</div>
               </div>
             ) : (
               <form onSubmit={handleLogin} style={{ display: "flex", gap: 8 }}>
@@ -277,22 +271,22 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   value={loginEmail}
                   onChange={e => setLoginEmail(e.target.value)}
                   style={{
-                    flex: 1, padding: "10px 12px", borderRadius: 10, fontSize: 14,
-                    background: "#161616", border: "1px solid #2a2a2a", color: "#f0f0f0",
-                    fontFamily: "'DM Sans',system-ui,sans-serif", outline: "none",
+                    flex: 1, padding: "10px 12px", borderRadius: v('--radius-button'), fontSize: 14,
+                    background: v('--color-bg-input'), border: `1px solid ${v('--color-border-input')}`, color: v('--color-text-primary'),
+                    fontFamily: v('--font-text'), outline: "none",
                   }}
                 />
                 <button type="submit" style={{
-                  padding: "10px 16px", borderRadius: 10, fontSize: 13, fontWeight: 600,
-                  background: "#22c55e", border: "none", color: "#000", cursor: "pointer",
-                  fontFamily: "'DM Sans',system-ui,sans-serif", whiteSpace: "nowrap",
+                  padding: "10px 16px", borderRadius: v('--radius-button'), fontSize: 13, fontWeight: 600,
+                  background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+                  fontFamily: v('--font-text'), whiteSpace: "nowrap",
                 }}>
                   Link senden
                 </button>
               </form>
             )}
-            {loginError && <div style={{ fontSize: 12, color: "#ef4444", marginTop: 8 }}>{loginError}</div>}
-            <div style={{ fontSize: 11, color: "#555", marginTop: 8, textAlign: "center" }}>
+            {loginError && <div style={{ fontSize: 12, color: v('--color-negative'), marginTop: 8 }}>{loginError}</div>}
+            <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
               Passwordless per Magic Link · Keine Werbung
             </div>
           </div>
@@ -302,7 +296,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         {!isResult && (
           <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
             {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? "#22c55e" : "#282828", transition: "background 0.3s" }} />
+              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? v('--color-accent') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
             ))}
           </div>
         )}
@@ -310,7 +304,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         {/* ── QUESTIONS ── */}
         {!isResult && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: "#fff" }}>{STEPS[step]}</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: v('--color-text-white') }}>{STEPS[step]}</h2>
 
             {step === 0 && (
               <div>
@@ -321,7 +315,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 </div>
                 <div style={{
                   display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  marginTop: 14, fontSize: 13, color: "#666",
+                  marginTop: 14, fontSize: 13, color: v('--color-text-muted'),
                 }}>
                   <span>oder</span>
                   <InlineEdit value={customKwp} onCommit={v => { setCustomKwp(Math.round(v)); setAnlage(4); setOKosten(null); setOEv(null); }} unit=" kWp" step={1} min={1} max={50} width={48} />
@@ -339,18 +333,18 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {step === 2 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-tertiary'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
                   {PERSONEN.map((p, i) => (
                     <button key={i} onClick={() => { setPersonen(i); setOEv(null); }} style={{
-                      padding: "10px 4px", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", textAlign: "center",
-                      background: personen === i ? "rgba(34,197,94,0.1)" : "#161616",
-                      border: personen === i ? "2px solid #22c55e" : "2px solid #2a2a2a",
-                      color: personen === i ? "#22c55e" : "#ccc",
+                      padding: "10px 4px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 700, cursor: "pointer", textAlign: "center",
+                      background: personen === i ? v('--color-accent-dim') : v('--color-bg-input'),
+                      border: personen === i ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border-input')}`,
+                      color: personen === i ? v('--color-accent') : v('--color-text-ccc'),
                     }}>{p.label}</button>
                   ))}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-tertiary'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {NUTZUNG.map((n, i) => (
                     <OptionCard key={i} selected={nutzung === i} onClick={() => { setNutzung(i); setOEv(null); }} label={n.label} sub={n.sub} />
@@ -365,14 +359,14 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
                 {ea !== "nein" && (
                   <div style={{ marginBottom: 18, marginTop: -10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: "#777", marginBottom: 6 }}>Laufleistung ca.</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-label'), marginBottom: 6 }}>Laufleistung ca.</div>
                     <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                       {EA_KM_PRESETS.map(km => (
                         <button key={km} onClick={() => { setEaKm(km); setOEv(null); }} style={{
-                          padding: "7px 10px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer",
-                          background: eaKm === km ? "rgba(34,197,94,0.1)" : "#161616",
-                          border: eaKm === km ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
-                          color: eaKm === km ? "#22c55e" : "#999",
+                          padding: "7px 10px", borderRadius: v('--radius-pill'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                          background: eaKm === km ? v('--color-accent-dim') : v('--color-bg-input'),
+                          border: eaKm === km ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border-input')}`,
+                          color: eaKm === km ? v('--color-accent') : v('--color-text-tertiary'),
                         }}>{(km / 1000).toFixed(0)}k</button>
                       ))}
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
@@ -385,19 +379,19 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                           }}
                           style={{
                             width: 56, textAlign: "center", fontSize: 12, fontWeight: 600,
-                            fontFamily: "'JetBrains Mono',monospace",
-                            color: !EA_KM_PRESETS.includes(eaKm) ? "#22c55e" : "#666",
-                            background: !EA_KM_PRESETS.includes(eaKm) ? "rgba(34,197,94,0.1)" : "#161616",
-                            border: !EA_KM_PRESETS.includes(eaKm) ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
-                            borderRadius: 8, padding: "7px 4px", outline: "none",
+                            fontFamily: v('--font-mono'),
+                            color: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent') : v('--color-text-muted'),
+                            background: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent-dim') : v('--color-bg-input'),
+                            border: !EA_KM_PRESETS.includes(eaKm) ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border-input')}`,
+                            borderRadius: v('--radius-pill'), padding: "7px 4px", outline: "none",
                           }}
                         />
-                        <span style={{ fontSize: 11, color: "#666" }}>km</span>
+                        <span style={{ fontSize: 11, color: v('--color-text-muted') }}>km</span>
                       </span>
                     </div>
                   </div>
                 )}
-                <div style={{ fontSize: 12, color: "#666", marginTop: 4, lineHeight: 1.5 }}>
+                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 4, lineHeight: 1.5 }}>
                   Beides erhöht den Eigenverbrauch deutlich — weniger Einspeisung, mehr Ersparnis.
                 </div>
               </div>
@@ -405,9 +399,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
               {step > 0 ? (
-                <button onClick={back} style={{ padding: "10px 20px", borderRadius: 10, fontSize: 14, fontWeight: 600, background: "transparent", border: "1px solid #333", color: "#888", cursor: "pointer" }}>Zurück</button>
+                <button onClick={back} style={{ padding: "10px 20px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>Zurück</button>
               ) : <div />}
-              <button onClick={next} style={{ padding: "10px 32px", borderRadius: 10, fontSize: 14, fontWeight: 700, background: "#22c55e", border: "none", color: "#000", cursor: "pointer" }}>
+              <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer" }}>
                 {step === STEPS.length - 1 ? "Berechnen ✦" : "Weiter →"}
               </button>
             </div>
@@ -420,43 +414,43 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             {/* Hero with amortisation */}
             <div style={{
               textAlign: "center", padding: "24px 20px 20px", marginBottom: 16,
-              background: "#111", borderRadius: 20, border: "1px solid #1e3a1e",
+              background: v('--color-bg-hero'), borderRadius: v('--radius-card-xl'), border: `1px solid ${v('--color-border-hero')}`,
             }}>
-              <div style={{ fontSize: 12, color: "#888", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>
+              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>
                 Deine PV-Anlage amortisiert sich in
               </div>
-              <div style={{ fontSize: 56, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono',monospace", lineHeight: 1 }}>
+              <div style={{ fontSize: 56, fontWeight: 800, color: v('--color-accent'), fontFamily: v('--font-mono'), lineHeight: 1 }}>
                 {be ? be.i : ">25"}<span style={{ fontSize: 22, fontWeight: 600, marginLeft: 4 }}>Jahren</span>
               </div>
 
               {/* Editable parameters grid */}
               <div style={{
                 display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px",
-                marginTop: 18, padding: "14px 16px", background: "rgba(255,255,255,0.03)",
-                borderRadius: 12, textAlign: "left", fontSize: 13,
+                marginTop: 18, padding: "14px 16px", background: v('--color-bg-subtle'),
+                borderRadius: v('--radius-button-lg'), textAlign: "left", fontSize: 13,
               }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "#777" }}>Investition</span>
+                  <span style={{ color: v('--color-text-label') }}>Investition</span>
                   <InlineEdit value={kosten} onCommit={v => setOKosten(v)} unit=" €" step={500} min={500} max={80000} width={68} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "#777" }}>Eigenverbr.</span>
+                  <span style={{ color: v('--color-text-label') }}>Eigenverbr.</span>
                   <InlineEdit value={effEv} onCommit={v => setOEv(v)} unit="%" step={1} min={10} max={90} width={40} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "#777" }}>Strompreis</span>
+                  <span style={{ color: v('--color-text-label') }}>Strompreis</span>
                   <InlineEdit value={oStrom} onCommit={setOStrom} unit=" €" step={0.01} min={0.15} max={0.60} width={52} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ color: "#777" }}>Einspeisung</span>
+                    <span style={{ color: v('--color-text-label') }}>Einspeisung</span>
                     <span onClick={() => setEinspeisungAn(!einspeisungAn)} style={{
                       width: 32, height: 18, borderRadius: 9, padding: 2, cursor: "pointer",
-                      background: einspeisungAn ? "#22c55e" : "#333", transition: "background 0.2s",
+                      background: einspeisungAn ? v('--color-accent') : v('--color-border-muted'), transition: "background 0.2s",
                       display: "inline-flex", alignItems: "center", flexShrink: 0,
                     }}>
                       <span style={{
-                        width: 14, height: 14, borderRadius: "50%", background: "#fff",
+                        width: 14, height: 14, borderRadius: "50%", background: v('--color-text-white'),
                         transform: einspeisungAn ? "translateX(14px)" : "translateX(0)",
                         transition: "transform 0.2s",
                       }} />
@@ -465,46 +459,46 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   {einspeisungAn ? (
                     <InlineEdit value={oEinsp} onCommit={setOEinsp} unit=" ct" step={0.01} min={4} max={12} width={48} />
                   ) : (
-                    <span style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, color: "#555", fontSize: 13 }}>aus</span>
+                    <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-faint'), fontSize: 13 }}>aus</span>
                   )}
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "#777" }}>Ertrag{plzLoading && <span style={{ color: "#22c55e", fontSize: 10, marginLeft: 4 }}>…</span>}</span>
+                  <span style={{ color: v('--color-text-label') }}>Ertrag{plzLoading && <span style={{ color: v('--color-accent'), fontSize: 10, marginLeft: 4 }}>…</span>}</span>
                   <InlineEdit value={oErtrag} onCommit={setOErtrag} unit=" kWh/kWp" step={10} min={700} max={1400} width={48} />
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "#777" }}>Standort</span>
+                  <span style={{ color: v('--color-text-label') }}>Standort</span>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                     <input
                       value={plz}
                       placeholder="PLZ"
                       maxLength={5}
                       onChange={e => {
-                        const v = e.target.value.replace(/\D/g, "").slice(0, 5);
-                        setPlz(v);
-                        if (v.length === 5) fetchPvgis(v);
+                        const val = e.target.value.replace(/\D/g, "").slice(0, 5);
+                        setPlz(val);
+                        if (val.length === 5) fetchPvgis(val);
                       }}
                       style={{
                         width: 52, textAlign: "center", fontSize: 13, fontWeight: 700,
-                        fontFamily: "'JetBrains Mono',monospace",
-                        color: plz.length === 5 ? "#22c55e" : "#888",
-                        background: plz.length === 5 ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.03)",
-                        border: plz.length === 5 ? "1px solid rgba(34,197,94,0.3)" : "1px dashed #555",
-                        borderRadius: 6, padding: "3px 4px", outline: "none",
+                        fontFamily: v('--font-mono'),
+                        color: plz.length === 5 ? v('--color-accent') : v('--color-text-secondary'),
+                        background: plz.length === 5 ? v('--color-accent-dim') : v('--color-bg-subtle'),
+                        border: plz.length === 5 ? `1px solid ${v('--color-accent-border')}` : `1px dashed ${v('--color-text-faint')}`,
+                        borderRadius: v('--radius-input'), padding: "3px 4px", outline: "none",
                       }}
                     />
-                    {plzSource && <span style={{ fontSize: 10, color: "#555" }}>{plzSource === "pvgis" ? "✓" : "~"}</span>}
+                    {plzSource && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{plzSource === "pvgis" ? "✓" : "~"}</span>}
                   </span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: "#777" }}>Anlage</span>
-                  <span style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, color: "#fff", fontSize: 13 }}>
+                  <span style={{ color: v('--color-text-label') }}>Anlage</span>
+                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-white'), fontSize: 13 }}>
                     {kwp} kWp{spKwh > 0 ? ` + ${spKwh} kWh` : ""}
                   </span>
                 </div>
               </div>
 
-              <div style={{ fontSize: 11, color: "#555", marginTop: 10 }}>
+              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10 }}>
                 Werte anklicken zum Anpassen
               </div>
             </div>
@@ -512,43 +506,43 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             {/* Empfehlungs-Kontext: Warum diese Anlage? */}
             {empfehlungKontext && (
               <details style={{
-                background: "#151515", borderRadius: 14, padding: "14px 16px", marginBottom: 16,
-                border: "1px solid #252525",
+                background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "14px 16px", marginBottom: 16,
+                border: `1px solid ${v('--color-border')}`,
               }}>
-                <summary style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0", cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <summary style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span>Warum diese Anlage?</span>
-                  <span style={{ fontSize: 11, color: "#666", fontWeight: 400 }}>Details ▾</span>
+                  <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400 }}>Details ▾</span>
                 </summary>
-                <div style={{ marginTop: 14, fontSize: 13, color: "#bbb", lineHeight: 1.7 }}>
+                <div style={{ marginTop: 14, fontSize: 13, color: v('--color-text-bbb'), lineHeight: 1.7 }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 16px", marginBottom: 12 }}>
                     <div>
-                      <span style={{ color: "#777" }}>Grundverbrauch</span>
-                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{empfehlungKontext.grundverbrauch.toLocaleString("de-DE")} kWh</div>
+                      <span style={{ color: v('--color-text-label') }}>Grundverbrauch</span>
+                      <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{empfehlungKontext.grundverbrauch.toLocaleString("de-DE")} kWh</div>
                     </div>
                     {empfehlungKontext.extraVerbrauch > 0 && (
                       <div>
-                        <span style={{ color: "#777" }}>+ Großverbraucher</span>
-                        <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{empfehlungKontext.extraVerbrauch.toLocaleString("de-DE")} kWh</div>
+                        <span style={{ color: v('--color-text-label') }}>+ Großverbraucher</span>
+                        <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{empfehlungKontext.extraVerbrauch.toLocaleString("de-DE")} kWh</div>
                       </div>
                     )}
                     <div>
-                      <span style={{ color: "#777" }}>Gesamtverbrauch</span>
-                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, color: "#22c55e" }}>{empfehlungKontext.gesamtVerbrauch.toLocaleString("de-DE")} kWh</div>
+                      <span style={{ color: v('--color-text-label') }}>Gesamtverbrauch</span>
+                      <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent') }}>{empfehlungKontext.gesamtVerbrauch.toLocaleString("de-DE")} kWh</div>
                     </div>
                     <div>
-                      <span style={{ color: "#777" }}>Dachfläche nutzbar</span>
-                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>~{empfehlungKontext.nutzbar} m² → max {empfehlungKontext.maxKwp} kWp</div>
+                      <span style={{ color: v('--color-text-label') }}>Dachfläche nutzbar</span>
+                      <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>~{empfehlungKontext.nutzbar} m² → max {empfehlungKontext.maxKwp} kWp</div>
                     </div>
                   </div>
-                  <div style={{ fontSize: 12, color: "#888", lineHeight: 1.6, borderTop: "1px solid #252525", paddingTop: 10 }}>
-                    <strong style={{ color: "#bbb" }}>{empfehlungKontext.ht.label} + {empfehlungKontext.da.label}:</strong>{" "}
+                  <div style={{ fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.6, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10 }}>
+                    <strong style={{ color: v('--color-text-bbb') }}>{empfehlungKontext.ht.label} + {empfehlungKontext.da.label}:</strong>{" "}
                     Deine Dachfläche bietet Platz für max. {empfehlungKontext.maxKwp} kWp.{" "}
                     {kwp < empfehlungKontext.maxKwp
                       ? `Die empfohlenen ${kwp} kWp nutzen ${empfehlungKontext.dachAuslastung}% — optimiert auf hohen Eigenverbrauch.`
                       : `Die empfohlenen ${kwp} kWp nutzen die volle Dachfläche.`
                     }
                     {kwp < empfehlungKontext.maxKwp && empfehlungKontext.maxKwp - kwp >= 3 && (
-                      <span style={{ display: "block", marginTop: 4, color: "#666" }}>
+                      <span style={{ display: "block", marginTop: 4, color: v('--color-text-muted') }}>
                         Eine größere Anlage ({empfehlungKontext.maxKwp} kWp) wäre möglich, senkt aber den Eigenverbrauchsanteil.
                       </span>
                     )}
@@ -559,23 +553,23 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {/* Quick Settings */}
             <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#666", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Was wäre wenn?</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Was wäre wenn?</div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <button onClick={() => { setWp(wp === "nein" ? "ja" : "nein"); setOEv(null); }} style={{
-                  padding: "8px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer",
-                  background: wp !== "nein" ? "rgba(34,197,94,0.1)" : "#151515",
-                  border: wp !== "nein" ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
-                  color: wp !== "nein" ? "#22c55e" : "#888",
+                  padding: "8px 14px", borderRadius: v('--radius-button'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  background: wp !== "nein" ? v('--color-accent-dim') : v('--color-bg-card'),
+                  border: wp !== "nein" ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border-input')}`,
+                  color: wp !== "nein" ? v('--color-accent') : v('--color-text-secondary'),
                   display: "flex", alignItems: "center", gap: 6,
                 }}>
                   ⚡ Wärmepumpe
                   {wp !== "nein" && <span style={{ fontSize: 10, opacity: 0.7 }}>✓</span>}
                 </button>
                 <button onClick={() => { setEa(ea === "nein" ? "ja" : "nein"); setOEv(null); }} style={{
-                  padding: "8px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer",
-                  background: ea !== "nein" ? "rgba(34,197,94,0.1)" : "#151515",
-                  border: ea !== "nein" ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
-                  color: ea !== "nein" ? "#22c55e" : "#888",
+                  padding: "8px 14px", borderRadius: v('--radius-button'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  background: ea !== "nein" ? v('--color-accent-dim') : v('--color-bg-card'),
+                  border: ea !== "nein" ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border-input')}`,
+                  color: ea !== "nein" ? v('--color-accent') : v('--color-text-secondary'),
                   display: "flex", alignItems: "center", gap: 6,
                 }}>
                   🚗 E-Auto
@@ -593,10 +587,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     setSpeicher(speicher === 0 ? 2 : 0); setOEv(null);
                   }
                 }} style={{
-                  padding: "8px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: "pointer",
-                  background: speicher > 0 ? "rgba(34,197,94,0.1)" : "#151515",
-                  border: speicher > 0 ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
-                  color: speicher > 0 ? "#22c55e" : "#888",
+                  padding: "8px 14px", borderRadius: v('--radius-button'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  background: speicher > 0 ? v('--color-accent-dim') : v('--color-bg-card'),
+                  border: speicher > 0 ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border-input')}`,
+                  color: speicher > 0 ? v('--color-accent') : v('--color-text-secondary'),
                   display: "flex", alignItems: "center", gap: 6,
                 }}>
                   🔋 Speicher
@@ -605,11 +599,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               </div>
               {spKostenPrompt && (
                 <div style={{
-                  marginTop: 8, padding: "10px 14px", borderRadius: 10,
-                  background: "#151515", border: "1.5px solid #22c55e",
+                  marginTop: 8, padding: "10px 14px", borderRadius: v('--radius-button'),
+                  background: v('--color-bg-card'), border: `1.5px solid ${v('--color-accent')}`,
                   display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
                 }}>
-                  <span style={{ fontSize: 12, color: "#999" }}>
+                  <span style={{ fontSize: 12, color: v('--color-text-tertiary') }}>
                     {speicher > 0 ? "Speicherkosten abziehen:" : "Speicherkosten:"}
                   </span>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
@@ -636,12 +630,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                       }}
                       style={{
                         width: 64, textAlign: "right", fontSize: 13, fontWeight: 700,
-                        fontFamily: "'JetBrains Mono',monospace", color: "#22c55e",
-                        background: "rgba(34,197,94,0.1)", border: "1px solid #22c55e",
-                        borderRadius: 6, padding: "5px 6px", outline: "none",
+                        fontFamily: v('--font-mono'), color: v('--color-accent'),
+                        background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`,
+                        borderRadius: v('--radius-input'), padding: "5px 6px", outline: "none",
                       }}
                     />
-                    <span style={{ fontSize: 12, color: "#888" }}>€</span>
+                    <span style={{ fontSize: 12, color: v('--color-text-secondary') }}>€</span>
                   </span>
                   <button onClick={() => {
                     const n = parseInt(spKostenDraft);
@@ -657,24 +651,24 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     }
                     setSpKostenPrompt(false);
                   }} style={{
-                    padding: "5px 12px", borderRadius: 6, fontSize: 11, fontWeight: 600,
-                    background: "#22c55e", border: "none", color: "#000", cursor: "pointer",
+                    padding: "5px 12px", borderRadius: v('--radius-input'), fontSize: 11, fontWeight: 600,
+                    background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
                   }}>OK</button>
                   <button onClick={() => setSpKostenPrompt(false)} style={{
-                    padding: "5px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600,
-                    background: "transparent", border: "1px solid #333", color: "#666", cursor: "pointer",
+                    padding: "5px 8px", borderRadius: v('--radius-input'), fontSize: 11, fontWeight: 600,
+                    background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-muted'), cursor: "pointer",
                   }}>Abbrechen</button>
                 </div>
               )}
               {ea !== "nein" && (
                 <div style={{ marginTop: 8, display: "flex", gap: 6, alignItems: "center", paddingLeft: 4 }}>
-                  <span style={{ fontSize: 11, color: "#666" }}>Laufleistung:</span>
+                  <span style={{ fontSize: 11, color: v('--color-text-muted') }}>Laufleistung:</span>
                   {EA_KM_PRESETS.map(km => (
                     <button key={km} onClick={() => { setEaKm(km); setOEv(null); }} style={{
-                      padding: "5px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer",
-                      background: eaKm === km ? "rgba(34,197,94,0.1)" : "#151515",
-                      border: eaKm === km ? "1px solid #22c55e" : "1px solid #2a2a2a",
-                      color: eaKm === km ? "#22c55e" : "#777",
+                      padding: "5px 8px", borderRadius: v('--radius-input'), fontSize: 11, fontWeight: 600, cursor: "pointer",
+                      background: eaKm === km ? v('--color-accent-dim') : v('--color-bg-card'),
+                      border: eaKm === km ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border-input')}`,
+                      color: eaKm === km ? v('--color-accent') : v('--color-text-label'),
                     }}>{(km / 1000).toFixed(0)}k</button>
                   ))}
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
@@ -687,14 +681,14 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                       }}
                       style={{
                         width: 48, textAlign: "center", fontSize: 11, fontWeight: 600,
-                        fontFamily: "'JetBrains Mono',monospace",
-                        color: !EA_KM_PRESETS.includes(eaKm) ? "#22c55e" : "#555",
-                        background: !EA_KM_PRESETS.includes(eaKm) ? "rgba(34,197,94,0.1)" : "#151515",
-                        border: !EA_KM_PRESETS.includes(eaKm) ? "1px solid #22c55e" : "1px solid #2a2a2a",
-                        borderRadius: 6, padding: "5px 4px", outline: "none",
+                        fontFamily: v('--font-mono'),
+                        color: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent') : v('--color-text-faint'),
+                        background: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent-dim') : v('--color-bg-card'),
+                        border: !EA_KM_PRESETS.includes(eaKm) ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border-input')}`,
+                        borderRadius: v('--radius-input'), padding: "5px 4px", outline: "none",
                       }}
                     />
-                    <span style={{ fontSize: 10, color: "#555" }}>km</span>
+                    <span style={{ fontSize: 10, color: v('--color-text-faint') }}>km</span>
                   </span>
                 </div>
               )}
@@ -702,15 +696,15 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {/* Stats row */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
-              <div style={{ background: "#151515", borderRadius: 14, padding: "14px 16px", border: "1px solid #252525" }}>
-                <div style={{ fontSize: 11, color: "#777", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</div>
-                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: "'JetBrains Mono',monospace", color: real.data.total >= 0 ? "#22c55e" : "#ef4444", marginTop: 4 }}>
+              <div style={{ background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "14px 16px", border: `1px solid ${v('--color-border')}` }}>
+                <div style={{ fontSize: 11, color: v('--color-text-label'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</div>
+                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: real.data.total >= 0 ? v('--color-accent') : v('--color-negative'), marginTop: 4 }}>
                   {real.data.total > 0 ? "+" : ""}{real.data.total.toLocaleString("de-DE")} €
                 </div>
               </div>
-              <div style={{ background: "#151515", borderRadius: 14, padding: "14px 16px", border: "1px solid #252525" }}>
-                <div style={{ fontSize: 11, color: "#777", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>⌀ Ersparnis / Jahr</div>
-                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: "'JetBrains Mono',monospace", color: "#f0f0f0", marginTop: 4 }}>
+              <div style={{ background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "14px 16px", border: `1px solid ${v('--color-border')}` }}>
+                <div style={{ fontSize: 11, color: v('--color-text-label'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>⌀ Ersparnis / Jahr</div>
+                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-primary'), marginTop: 4 }}>
                   {Math.round((real.data.total + kosten) / YEARS).toLocaleString("de-DE")} €
                 </div>
               </div>
@@ -723,52 +717,52 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               const wpGridCost = calcWpGridCost25(3500, autarky, oStrom, 0.03);
               const netSaving = fuelCost - wpGridCost;
               return (
-              <div style={{ background: "#151515", borderRadius: 14, padding: "12px 16px", marginBottom: 16, border: "1px solid #252525" }}>
+              <div style={{ background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                  <span style={{ fontSize: 11, color: "#777", textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>
+                  <span style={{ fontSize: 11, color: v('--color-text-label'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>
                     WP vs. {FUEL[fuelType].label}heizung · 25 Jahre
                   </span>
                   <div style={{ display: "flex", gap: 4 }}>
                     {(["gas", "oil"] as const).map(ft => (
                       <button key={ft} onClick={() => setFuelType(ft)} style={{
-                        padding: "3px 8px", borderRadius: 6, fontSize: 10, fontWeight: 600, cursor: "pointer",
-                        background: fuelType === ft ? "rgba(239,68,68,0.1)" : "transparent",
-                        border: fuelType === ft ? "1px solid rgba(239,68,68,0.3)" : "1px solid #333",
-                        color: fuelType === ft ? "#ef4444" : "#666",
+                        padding: "3px 8px", borderRadius: v('--radius-input'), fontSize: 10, fontWeight: 600, cursor: "pointer",
+                        background: fuelType === ft ? v('--color-negative-dim') : "transparent",
+                        border: fuelType === ft ? `1px solid ${v('--color-negative-border')}` : `1px solid ${v('--color-border-muted')}`,
+                        color: fuelType === ft ? v('--color-negative') : v('--color-text-muted'),
                       }}>{FUEL[ft].label}</button>
                     ))}
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
                   <div>
-                    <span style={{ fontSize: 11, color: "#ef4444" }}>{FUEL[fuelType].label}: </span>
-                    <span style={{ fontSize: 16, fontWeight: 700, fontFamily: "'JetBrains Mono',monospace", color: "#ef4444", textDecoration: "line-through", opacity: 0.7 }}>
+                    <span style={{ fontSize: 11, color: v('--color-negative') }}>{FUEL[fuelType].label}: </span>
+                    <span style={{ fontSize: 16, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-negative'), textDecoration: "line-through", opacity: 0.7 }}>
                       {fuelCost.toLocaleString("de-DE")} €
                     </span>
                   </div>
                   <div>
-                    <span style={{ fontSize: 11, color: "#888" }}>WP Netz: </span>
-                    <span style={{ fontSize: 16, fontWeight: 700, fontFamily: "'JetBrains Mono',monospace", color: "#888" }}>
+                    <span style={{ fontSize: 11, color: v('--color-text-secondary') }}>WP Netz: </span>
+                    <span style={{ fontSize: 16, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>
                       {wpGridCost.toLocaleString("de-DE")} €
                     </span>
                   </div>
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 800, fontFamily: "'JetBrains Mono',monospace", color: "#22c55e", marginTop: 4 }}>
+                <div style={{ fontSize: 20, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-accent'), marginTop: 4 }}>
                   Ersparnis: {netSaving.toLocaleString("de-DE")} €
                 </div>
-                <div style={{ fontSize: 11, color: "#666", marginTop: 4, lineHeight: 1.5 }}>
+                <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4, lineHeight: 1.5 }}>
                   {Math.round(3500 * 3.5).toLocaleString("de-DE")} kWh Wärme/Jahr · WP-Autarkie {Math.round(autarky * 100)} % · inkl. CO₂-Abgabe
                 </div>
               </div>
             ); })()}
 
             {/* Chart */}
-            <div style={{ background: "#131313", borderRadius: 16, padding: "14px 10px 6px", marginBottom: 16, border: "1px solid #222" }}>
+            <div style={{ background: v('--color-bg-chart'), borderRadius: v('--radius-card-lg'), padding: "14px 10px 6px", marginBottom: 16, border: `1px solid ${v('--color-border-subtle')}` }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 6px", marginBottom: 6 }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#ddd" }}>Amortisation</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-ddd') }}>Amortisation</span>
                 <div style={{ display: "flex", gap: 12 }}>
                   {SCENARIOS.map(s => (
-                    <span key={s.id} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#888" }}>
+                    <span key={s.id} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: v('--color-text-secondary') }}>
                       <span style={{ width: 8, height: 3, borderRadius: 2, background: s.color, display: "inline-block", opacity: s.id === "realistic" ? 1 : 0.5 }} />
                       {s.label}
                     </span>
@@ -782,12 +776,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
               {scenarioData.map(s => (
                 <div key={s.id} style={{
-                  flex: 1, padding: "10px 8px", borderRadius: 10, textAlign: "center",
-                  background: "#151515", borderTop: `3px solid ${s.color}`,
+                  flex: 1, padding: "10px 8px", borderRadius: v('--radius-button'), textAlign: "center",
+                  background: v('--color-bg-card'), borderTop: `3px solid ${s.color}`,
                 }}>
                   <div style={{ fontSize: 10, color: s.color, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>{s.label}</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "'JetBrains Mono',monospace", color: "#f0f0f0", margin: "4px 0 2px" }}>{s.data.be ? `${s.data.be.i} J.` : ">25 J."}</div>
-                  <div style={{ fontSize: 10, color: "#666" }}>Strom +{(s.strom * 100).toFixed(0)}%/a</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-primary'), margin: "4px 0 2px" }}>{s.data.be ? `${s.data.be.i} J.` : ">25 J."}</div>
+                  <div style={{ fontSize: 10, color: v('--color-text-muted') }}>Strom +{(s.strom * 100).toFixed(0)}%/a</div>
                 </div>
               ))}
             </div>
@@ -800,61 +794,61 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus(); }
                 }}
                 style={{
-                  background: "#131313", borderRadius: 16, padding: "20px 16px", marginBottom: 16,
-                  border: "1px dashed #333", textAlign: "center", cursor: "pointer",
+                  background: v('--color-bg-chart'), borderRadius: v('--radius-card-lg'), padding: "20px 16px", marginBottom: 16,
+                  border: `1px dashed ${v('--color-border-muted')}`, textAlign: "center", cursor: "pointer",
                 }}
               >
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#888", marginBottom: 4 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 4 }}>
                   Jahresverlauf & exaktere Prognose
                 </div>
-                <div style={{ fontSize: 12, color: "#555" }}>
+                <div style={{ fontSize: 12, color: v('--color-text-faint') }}>
                   PLZ eingeben für standortgenauen Ertrag + monatliche Berechnung
                 </div>
               </div>
             )}
             {monthlyProfile && (
-              <div style={{ background: "#131313", borderRadius: 16, padding: "14px 14px 10px", marginBottom: 16, border: "1px solid #222" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#ddd", marginBottom: 10 }}>Monatsertrag</div>
+              <div style={{ background: v('--color-bg-chart'), borderRadius: v('--radius-card-lg'), padding: "14px 14px 10px", marginBottom: 16, border: `1px solid ${v('--color-border-subtle')}` }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-ddd'), marginBottom: 10 }}>Monatsertrag</div>
                 <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 100, padding: "0 2px" }}>
                   {(() => { const max = Math.max(...monthlyProfile); return monthlyProfile.map((m, i) => {
                     const barH = Math.max(Math.round((m / max) * 70), 3);
                     return (
                       <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <span style={{ fontSize: 9, fontFamily: "'JetBrains Mono',monospace", color: "#888", marginBottom: 3 }}>{Math.round(m * kwp)}</span>
-                        <div style={{ width: "100%", height: barH, borderRadius: "3px 3px 0 0", background: m === max ? "#22c55e" : "rgba(34,197,94,0.35)" }} />
-                        <span style={{ fontSize: 9, color: "#555", marginTop: 3 }}>{["J","F","M","A","M","J","J","A","S","O","N","D"][i]}</span>
+                        <span style={{ fontSize: 9, fontFamily: v('--font-mono'), color: v('--color-text-secondary'), marginBottom: 3 }}>{Math.round(m * kwp)}</span>
+                        <div style={{ width: "100%", height: barH, borderRadius: "3px 3px 0 0", background: m === max ? v('--color-accent') : "rgba(34,197,94,0.35)" }} />
+                        <span style={{ fontSize: 9, color: v('--color-text-faint'), marginTop: 3 }}>{["J","F","M","A","M","J","J","A","S","O","N","D"][i]}</span>
                       </div>
                     );
                   }); })()}
                 </div>
-                <div style={{ fontSize: 10, color: "#555", textAlign: "center", marginTop: 6 }}>kWh/Monat · {plz && `PLZ ${plz}`}</div>
+                <div style={{ fontSize: 10, color: v('--color-text-faint'), textAlign: "center", marginTop: 6 }}>kWh/Monat · {plz && `PLZ ${plz}`}</div>
               </div>
             )}
 
             {/* Methodology note */}
             <div style={{
-              background: "#131313", borderRadius: 12, padding: "12px 16px", marginBottom: 16,
-              border: "1px solid #222", fontSize: 12, color: "#666", lineHeight: 1.6,
+              background: v('--color-bg-chart'), borderRadius: v('--radius-button-lg'), padding: "12px 16px", marginBottom: 16,
+              border: `1px solid ${v('--color-border-subtle')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6,
             }}>
-              <Link href="/methodik" style={{ fontWeight: 700, color: "#888", textDecoration: "none", borderBottom: "1px dashed #555" }}>Methodik</Link>
-              <span style={{ color: "#666" }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
+              <Link href="/methodik" style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
+              <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
             </div>
 
             {/* Save (logged in) */}
             {user && (
               <div style={{ marginBottom: 16 }}>
                 <button onClick={handleSave} disabled={saving} style={{
-                  width: "100%", padding: "12px", borderRadius: 12, fontSize: 14, fontWeight: 700,
-                  background: saved ? "rgba(34,197,94,0.15)" : "rgba(34,197,94,0.1)",
-                  border: saved ? "1px solid #22c55e" : "1px solid rgba(34,197,94,0.3)",
-                  color: saved ? "#22c55e" : "#22c55e", cursor: saving ? "wait" : "pointer",
-                  fontFamily: "'DM Sans',system-ui,sans-serif", transition: "all 0.2s",
+                  width: "100%", padding: "12px", borderRadius: v('--radius-button-lg'), fontSize: 14, fontWeight: 700,
+                  background: saved ? v('--color-accent-dim-15') : v('--color-accent-dim'),
+                  border: saved ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-accent-border')}`,
+                  color: saved ? v('--color-accent') : v('--color-accent'), cursor: saving ? "wait" : "pointer",
+                  fontFamily: v('--font-text'), transition: "all 0.2s",
                 }}>
                   {saved ? "✓ Gespeichert!" : saving ? "Speichert..." : "Ergebnis speichern"}
                 </button>
                 {savedCalcId && !saved && (
                   <div style={{ textAlign: "center", marginTop: 6 }}>
-                    <Link href="/dashboard" style={{ fontSize: 12, color: "#666", textDecoration: "none", borderBottom: "1px dashed #555" }}>
+                    <Link href="/dashboard" style={{ fontSize: 12, color: v('--color-text-muted'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>
                       Meine Berechnungen →
                     </Link>
                   </div>
@@ -865,25 +859,25 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             {/* Share */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <button onClick={handleCopy} style={{
-                flex: 1, padding: "10px 12px", borderRadius: 12, fontSize: 13, fontWeight: 600,
-                background: copied ? "rgba(34,197,94,0.15)" : "#161616",
-                border: copied ? "1px solid #22c55e" : "1px solid #2a2a2a",
-                color: copied ? "#22c55e" : "#999", cursor: "pointer",
+                flex: 1, padding: "10px 12px", borderRadius: v('--radius-button-lg'), fontSize: 13, fontWeight: 600,
+                background: copied ? v('--color-accent-dim-15') : v('--color-bg-input'),
+                border: copied ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border-input')}`,
+                color: copied ? v('--color-accent') : v('--color-text-tertiary'), cursor: "pointer",
                 transition: "all 0.2s",
               }}>
                 {copied ? "✓ Kopiert!" : "🔗 Link kopieren"}
               </button>
               {canShare && (
                 <button onClick={handleNativeShare} style={{
-                  flex: 1, padding: "10px 12px", borderRadius: 12, fontSize: 13, fontWeight: 600,
-                  background: "#161616", border: "1px solid #2a2a2a", color: "#999", cursor: "pointer",
+                  flex: 1, padding: "10px 12px", borderRadius: v('--radius-button-lg'), fontSize: 13, fontWeight: 600,
+                  background: v('--color-bg-input'), border: `1px solid ${v('--color-border-input')}`, color: v('--color-text-tertiary'), cursor: "pointer",
                 }}>
                   📤 Teilen
                 </button>
               )}
               <button onClick={handleWhatsApp} style={{
-                flex: 1, padding: "10px 12px", borderRadius: 12, fontSize: 13, fontWeight: 600,
-                background: "#161616", border: "1px solid #2a2a2a", color: "#999", cursor: "pointer",
+                flex: 1, padding: "10px 12px", borderRadius: v('--radius-button-lg'), fontSize: 13, fontWeight: 600,
+                background: v('--color-bg-input'), border: `1px solid ${v('--color-border-input')}`, color: v('--color-text-tertiary'), cursor: "pointer",
               }}>
                 💬 WhatsApp
               </button>
@@ -891,11 +885,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {/* Restart */}
             <button onClick={restart} style={{
-              width: "100%", padding: "12px", borderRadius: 12, fontSize: 13, fontWeight: 600,
-              background: "transparent", border: "1px solid #333", color: "#888", cursor: "pointer",
+              width: "100%", padding: "12px", borderRadius: v('--radius-button-lg'), fontSize: 13, fontWeight: 600,
+              background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
             }}>↺ Neu berechnen</button>
 
-            <div style={{ textAlign: "center", fontSize: 11, color: "#444", padding: "20px 0 8px", lineHeight: 1.6 }}>
+            <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-disabled'), padding: "20px 0 8px", lineHeight: 1.6 }}>
               Keine Datensammlung · Keine Werbung<br />
               Alle Angaben ohne Gewähr · Keine Steuer- oder Anlageberatung
             </div>
@@ -903,9 +897,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         )}
 
         <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: `24px 0 ${isResult && !user ? 80 : 16}px` }}>
-          <Link href="/methodik" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Methodik</Link>
-          <Link href="/impressum" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Impressum</Link>
-          <Link href="/datenschutz" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Datenschutz</Link>
+          <Link href="/methodik" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Methodik</Link>
+          <Link href="/impressum" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Impressum</Link>
+          <Link href="/datenschutz" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Datenschutz</Link>
         </div>
       </div>
 
@@ -913,23 +907,23 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       {isResult && !user && !authLoading && (
         <div style={{
           position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100,
-          background: "linear-gradient(to top, #0c0c0c 80%, transparent)",
+          background: `linear-gradient(to top, ${v('--color-bg')} 80%, transparent)`,
           padding: "20px 16px 16px",
         }}>
-          <div style={{ maxWidth: 480, margin: "0 auto" }}>
+          <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
             {showLogin && loginSent ? (
               <div style={{
-                background: "#151515", borderRadius: 14, padding: "14px 16px",
-                border: "1px solid #252525", textAlign: "center",
+                background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "14px 16px",
+                border: `1px solid ${v('--color-border')}`, textAlign: "center",
               }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#22c55e" }}>Link gesendet!</div>
-                <div style={{ fontSize: 12, color: "#888", marginTop: 4 }}>Prüfe deine E-Mails.</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-accent') }}>Link gesendet!</div>
+                <div style={{ fontSize: 12, color: v('--color-text-secondary'), marginTop: 4 }}>Prüfe deine E-Mails.</div>
               </div>
             ) : showLogin ? (
               <form onSubmit={handleLogin} style={{
                 display: "flex", gap: 8,
-                background: "#151515", borderRadius: 14, padding: "12px",
-                border: "1px solid #252525",
+                background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "12px",
+                border: `1px solid ${v('--color-border')}`,
               }}>
                 <input
                   type="email"
@@ -938,29 +932,29 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   onChange={e => setLoginEmail(e.target.value)}
                   autoFocus
                   style={{
-                    flex: 1, padding: "10px 12px", borderRadius: 10, fontSize: 14,
-                    background: "#161616", border: "1px solid #2a2a2a", color: "#f0f0f0",
-                    fontFamily: "'DM Sans',system-ui,sans-serif", outline: "none",
+                    flex: 1, padding: "10px 12px", borderRadius: v('--radius-button'), fontSize: 14,
+                    background: v('--color-bg-input'), border: `1px solid ${v('--color-border-input')}`, color: v('--color-text-primary'),
+                    fontFamily: v('--font-text'), outline: "none",
                   }}
                 />
                 <button type="submit" style={{
-                  padding: "10px 16px", borderRadius: 10, fontSize: 13, fontWeight: 600,
-                  background: "#22c55e", border: "none", color: "#000", cursor: "pointer",
-                  fontFamily: "'DM Sans',system-ui,sans-serif", whiteSpace: "nowrap",
+                  padding: "10px 16px", borderRadius: v('--radius-button'), fontSize: 13, fontWeight: 600,
+                  background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+                  fontFamily: v('--font-text'), whiteSpace: "nowrap",
                 }}>
                   Link senden
                 </button>
               </form>
             ) : (
               <button onClick={() => { setShowLogin(true); setLoginSent(false); setLoginError(""); }} style={{
-                width: "100%", padding: "14px", borderRadius: 14, fontSize: 15, fontWeight: 700,
-                background: "#22c55e", border: "none", color: "#000", cursor: "pointer",
-                fontFamily: "'DM Sans',system-ui,sans-serif",
+                width: "100%", padding: "14px", borderRadius: v('--radius-card'), fontSize: 15, fontWeight: 700,
+                background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+                fontFamily: v('--font-text'),
               }}>
                 Ergebnisse speichern
               </button>
             )}
-            {loginError && <div style={{ fontSize: 12, color: "#ef4444", marginTop: 6, textAlign: "center" }}>{loginError}</div>}
+            {loginError && <div style={{ fontSize: 12, color: v('--color-negative'), marginTop: 6, textAlign: "center" }}>{loginError}</div>}
           </div>
         </div>
       )}

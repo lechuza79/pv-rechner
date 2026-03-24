@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { v } from "../../lib/theme";
 
 export const metadata: Metadata = {
   title: "Methodik – So berechnen wir deine PV-Rendite",
@@ -8,87 +9,87 @@ export const metadata: Metadata = {
 
 const S = {
   page: {
-    background: "#0c0c0c",
-    fontFamily: "'DM Sans',system-ui,sans-serif",
-    color: "#f0f0f0",
+    background: v('--color-bg'),
+    fontFamily: v('--font-text'),
+    color: v('--color-text-primary'),
     minHeight: "100vh",
     padding: "20px 16px",
-  } as const,
-  wrap: { maxWidth: 480, margin: "0 auto" } as const,
+  },
+  wrap: { maxWidth: v('--page-max-width'), margin: "0 auto" },
   back: {
     fontSize: 13,
-    color: "#888",
+    color: v('--color-text-secondary'),
     textDecoration: "none",
     display: "inline-block",
     marginBottom: 24,
-  } as const,
+  },
   h1: {
     fontSize: 22,
     fontWeight: 800,
     letterSpacing: "-0.02em",
-    color: "#fff",
+    color: v('--color-text-white'),
     lineHeight: 1.2,
     marginBottom: 8,
-  } as const,
+  },
   subtitle: {
     fontSize: 13,
-    color: "#666",
+    color: v('--color-text-muted'),
     marginBottom: 28,
     lineHeight: 1.5,
-  } as const,
+  },
   h2: {
     fontSize: 16,
     fontWeight: 700,
-    color: "#fff",
+    color: v('--color-text-white'),
     marginTop: 32,
     marginBottom: 10,
-  } as const,
+  },
   p: {
     fontSize: 13,
-    color: "#999",
+    color: v('--color-text-tertiary'),
     lineHeight: 1.7,
     marginBottom: 10,
-  } as const,
+  },
   card: {
-    background: "#151515",
-    borderRadius: 12,
+    background: v('--color-bg-card'),
+    borderRadius: v('--radius-button-lg'),
     padding: "14px 16px",
-    border: "1px solid #252525",
+    border: `1px solid ${v('--color-border')}`,
     marginBottom: 12,
     fontSize: 13,
-    color: "#999",
+    color: v('--color-text-tertiary'),
     lineHeight: 1.7,
-  } as const,
+  },
   label: {
     fontSize: 11,
     fontWeight: 700,
-    color: "#777",
+    color: v('--color-text-label'),
     textTransform: "uppercase" as const,
     letterSpacing: "0.04em",
     marginBottom: 6,
     display: "block",
   },
   mono: {
-    fontFamily: "'JetBrains Mono',monospace",
+    fontFamily: v('--font-mono'),
     fontSize: 12,
-    color: "#22c55e",
-  } as const,
-  accent: { color: "#22c55e", fontWeight: 600 } as const,
-  muted: { color: "#666" } as const,
-  link: { color: "#3b82f6", textDecoration: "none" } as const,
+    color: v('--color-accent'),
+  },
+  accent: { color: v('--color-accent'), fontWeight: 600 },
+  muted: { color: v('--color-text-muted') },
+  link: { color: v('--color-optimistic'), textDecoration: "none" },
   footer: {
     marginTop: 48,
     paddingTop: 20,
-    borderTop: "1px solid #222",
+    borderTop: `1px solid ${v('--color-border-subtle')}`,
     display: "flex",
     justifyContent: "center",
     gap: 20,
     fontSize: 12,
-  } as const,
+  },
   footerLink: {
-    color: "#666",
+    color: v('--color-text-muted'),
     textDecoration: "none",
-  } as const,
+  },
 };
 
 export default function MethodikPage() {
@@ -280,12 +281,12 @@ export default function MethodikPage() {
           <br />
           <br />
           <span style={S.label}>3 Szenarien</span>
-          <span style={{ color: "#ef4444", fontWeight: 600 }}>Pessimistisch:</span>{" "}
+          <span style={{ color: v('--color-negative'), fontWeight: 600 }}>Pessimistisch:</span>{" "}
           Strom +1 %/Jahr
           <br />
           <span style={S.accent}>Realistisch:</span> Strom +3 %/Jahr
           <br />
-          <span style={{ color: "#3b82f6", fontWeight: 600 }}>Optimistisch:</span>{" "}
+          <span style={{ color: v('--color-optimistic'), fontWeight: 600 }}>Optimistisch:</span>{" "}
           Strom +5 %/Jahr
           <br />
           <br />

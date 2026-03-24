@@ -7,6 +7,7 @@ import { estimateCost } from "../../lib/calc";
 import { recommend } from "../../lib/recommend";
 import OptionCard from "../../components/OptionCard";
 import TriToggle from "../../components/TriToggle";
+import { v } from "../../lib/theme";
 
 export default function Empfehlung() {
   const router = useRouter();
@@ -60,28 +61,23 @@ export default function Empfehlung() {
   };
 
   return (
-    <div style={{ background: "#0c0c0c", fontFamily: "'DM Sans',system-ui,sans-serif", color: "#f0f0f0", minHeight: "100vh", padding: "20px 16px" }}>
-      <style>{`
-        *{box-sizing:border-box;margin:0;padding:0}
-        @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        .fu{animation:fu .3s ease-out}
-      `}</style>
-      <div style={{ maxWidth: 480, margin: "0 auto" }}>
+    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
+      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <Link href="/" style={{ textDecoration: "none" }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "#22c55e", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>PV Rechner</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: v('--color-accent'), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>PV Rechner</div>
           </Link>
-          <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", color: "#fff", lineHeight: 1.2 }}>Was passt zu dir?</h1>
-          <p style={{ fontSize: 13, color: "#666", marginTop: 6 }}>Wir empfehlen dir die optimale Anlage.</p>
+          <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-white'), lineHeight: 1.2 }}>Was passt zu dir?</h1>
+          <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Wir empfehlen dir die optimale Anlage.</p>
         </div>
 
         {/* Progress */}
         {!isRecommendation && (
           <div style={{ display: "flex", gap: 4, marginBottom: 28 }}>
             {STEPS.map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? "#22c55e" : "#282828", transition: "background 0.3s" }} />
+              <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= step ? v('--color-accent') : v('--color-progress-inactive'), transition: "background 0.3s" }} />
             ))}
           </div>
         )}
@@ -89,18 +85,18 @@ export default function Empfehlung() {
         {/* ── STEPS ── */}
         {!isRecommendation && (
           <div className="fu" key={step}>
-            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: "#fff" }}>{STEPS[step]}</h2>
+            <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: v('--color-text-white') }}>{STEPS[step]}</h2>
 
             {/* Step 0: Haus + Dach */}
             {step === 0 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Haustyp</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-tertiary'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Haustyp</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
                   {HAUSTYPEN.map((h, i) => (
                     <OptionCard key={i} selected={haustyp === i} onClick={() => setHaustyp(i)} label={h.label} sub={h.sub} />
                   ))}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachart</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-tertiary'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachart</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {DACHARTEN.map((d, i) => (
                     <OptionCard key={i} selected={dachart === i} onClick={() => setDachart(i)} label={d.label} sub={d.sub} />
@@ -112,18 +108,18 @@ export default function Empfehlung() {
             {/* Step 1: Haushalt */}
             {step === 1 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-tertiary'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
                   {PERSONEN.map((p, i) => (
                     <button key={i} onClick={() => setPersonen(i)} style={{
-                      padding: "10px 4px", borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: "pointer", textAlign: "center",
-                      background: personen === i ? "rgba(34,197,94,0.1)" : "#161616",
-                      border: personen === i ? "2px solid #22c55e" : "2px solid #2a2a2a",
-                      color: personen === i ? "#22c55e" : "#ccc",
+                      padding: "10px 4px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 700, cursor: "pointer", textAlign: "center",
+                      background: personen === i ? v('--color-accent-dim') : v('--color-bg-input'),
+                      border: personen === i ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border-input')}`,
+                      color: personen === i ? v('--color-accent') : v('--color-text-ccc'),
                     }}>{p.label}</button>
                   ))}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-tertiary'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {NUTZUNG.map((n, i) => (
                     <OptionCard key={i} selected={nutzung === i} onClick={() => setNutzung(i)} label={n.label} sub={n.sub} />
@@ -136,20 +132,20 @@ export default function Empfehlung() {
             {step === 2 && (
               <div>
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={setWp} />
-                <div style={{ fontSize: 12, color: "#666", marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
+                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
                   Eine Wärmepumpe erhöht deinen Stromverbrauch um ~3.500 kWh/Jahr — eine größere PV-Anlage lohnt sich dann besonders.
                 </div>
                 <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={setEa} />
                 {ea !== "nein" && (
                   <div style={{ marginBottom: 18, marginTop: -10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: "#777", marginBottom: 6 }}>Laufleistung ca.</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-label'), marginBottom: 6 }}>Laufleistung ca.</div>
                     <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                       {EA_KM_PRESETS.map(km => (
                         <button key={km} onClick={() => setEaKm(km)} style={{
-                          padding: "7px 10px", borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer",
-                          background: eaKm === km ? "rgba(34,197,94,0.1)" : "#161616",
-                          border: eaKm === km ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
-                          color: eaKm === km ? "#22c55e" : "#999",
+                          padding: "7px 10px", borderRadius: v('--radius-pill'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                          background: eaKm === km ? v('--color-accent-dim') : v('--color-bg-input'),
+                          border: eaKm === km ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border-input')}`,
+                          color: eaKm === km ? v('--color-accent') : v('--color-text-tertiary'),
                         }}>{(km / 1000).toFixed(0)}k</button>
                       ))}
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
@@ -162,20 +158,20 @@ export default function Empfehlung() {
                           }}
                           style={{
                             width: 56, textAlign: "center", fontSize: 12, fontWeight: 600,
-                            fontFamily: "'JetBrains Mono',monospace",
-                            color: !EA_KM_PRESETS.includes(eaKm) ? "#22c55e" : "#666",
-                            background: !EA_KM_PRESETS.includes(eaKm) ? "rgba(34,197,94,0.1)" : "#161616",
-                            border: !EA_KM_PRESETS.includes(eaKm) ? "1.5px solid #22c55e" : "1.5px solid #2a2a2a",
-                            borderRadius: 8, padding: "7px 4px", outline: "none",
+                            fontFamily: v('--font-mono'),
+                            color: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent') : v('--color-text-muted'),
+                            background: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent-dim') : v('--color-bg-input'),
+                            border: !EA_KM_PRESETS.includes(eaKm) ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border-input')}`,
+                            borderRadius: v('--radius-pill'), padding: "7px 4px", outline: "none",
                           }}
                         />
-                        <span style={{ fontSize: 11, color: "#666" }}>km</span>
+                        <span style={{ fontSize: 11, color: v('--color-text-muted') }}>km</span>
                       </span>
                     </div>
                   </div>
                 )}
                 {ea === "nein" && (
-                  <div style={{ fontSize: 12, color: "#666", marginTop: -10, marginBottom: 8, lineHeight: 1.5, paddingLeft: 2 }}>
+                  <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 8, lineHeight: 1.5, paddingLeft: 2 }}>
                     Ein E-Auto erhöht deinen Verbrauch um ~2.700 kWh/Jahr (bei 15.000 km) — gut für die PV-Rentabilität.
                   </div>
                 )}
@@ -185,11 +181,11 @@ export default function Empfehlung() {
             {/* Navigation */}
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
               {step > 0 ? (
-                <button onClick={back} style={{ padding: "10px 20px", borderRadius: 10, fontSize: 14, fontWeight: 600, background: "transparent", border: "1px solid #333", color: "#888", cursor: "pointer" }}>Zurück</button>
+                <button onClick={back} style={{ padding: "10px 20px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>Zurück</button>
               ) : (
-                <Link href="/" style={{ padding: "10px 20px", borderRadius: 10, fontSize: 14, fontWeight: 600, background: "transparent", border: "1px solid #333", color: "#888", cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
+                <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
               )}
-              <button onClick={next} style={{ padding: "10px 32px", borderRadius: 10, fontSize: 14, fontWeight: 700, background: "#22c55e", border: "none", color: "#000", cursor: "pointer" }}>
+              <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer" }}>
                 {step === STEPS.length - 1 ? "Empfehlung anzeigen ✦" : "Weiter →"}
               </button>
             </div>
@@ -202,29 +198,29 @@ export default function Empfehlung() {
             {/* Hero */}
             <div style={{
               textAlign: "center", padding: "24px 20px 20px", marginBottom: 16,
-              background: "#111", borderRadius: 20, border: "1px solid #1e3a1e",
+              background: v('--color-bg-hero'), borderRadius: v('--radius-card-xl'), border: `1px solid ${v('--color-border-hero')}`,
             }}>
-              <div style={{ fontSize: 12, color: "#888", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>
+              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>
                 Unsere Empfehlung
               </div>
-              <div style={{ fontSize: 42, fontWeight: 800, color: "#22c55e", fontFamily: "'JetBrains Mono',monospace", lineHeight: 1.1 }}>
+              <div style={{ fontSize: 42, fontWeight: 800, color: v('--color-accent'), fontFamily: v('--font-mono'), lineHeight: 1.1 }}>
                 {rec.kwp} kWp
               </div>
               {rec.speicherKwh > 0 && (
-                <div style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", fontFamily: "'JetBrains Mono',monospace", marginTop: 4 }}>
+                <div style={{ fontSize: 22, fontWeight: 700, color: v('--color-text-primary'), fontFamily: v('--font-mono'), marginTop: 4 }}>
                   + {rec.speicherKwh} kWh Speicher
                 </div>
               )}
-              <div style={{ fontSize: 14, color: "#888", marginTop: 12 }}>
-                Geschätzte Investition: <span style={{ fontWeight: 700, color: "#f0f0f0", fontFamily: "'JetBrains Mono',monospace" }}>{rec.reasoning.investition.toLocaleString("de-DE")} €</span>
+              <div style={{ fontSize: 14, color: v('--color-text-secondary'), marginTop: 12 }}>
+                Geschätzte Investition: <span style={{ fontWeight: 700, color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{rec.reasoning.investition.toLocaleString("de-DE")} €</span>
               </div>
               {rec.reasoning.paybackYears && (
-                <div style={{ fontSize: 13, color: "#666", marginTop: 4 }}>
+                <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 4 }}>
                   Amortisation in ca. {rec.reasoning.paybackYears} Jahren
                 </div>
               )}
               {rec.reasoning.budgetConstrained && (
-                <div style={{ fontSize: 12, color: "#ef4444", marginTop: 8, fontWeight: 600 }}>
+                <div style={{ fontSize: 12, color: v('--color-negative'), marginTop: 8, fontWeight: 600 }}>
                   Budget-begrenzt — ohne Limit wäre mehr möglich
                 </div>
               )}
@@ -232,55 +228,55 @@ export default function Empfehlung() {
 
             {/* Warum-Details */}
             <details style={{
-              background: "#151515", borderRadius: 14, padding: "14px 16px", marginBottom: 16,
-              border: "1px solid #252525",
+              background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "14px 16px", marginBottom: 16,
+              border: `1px solid ${v('--color-border')}`,
             }}>
-              <summary style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0", cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <summary style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>Warum diese Konfiguration?</span>
-                <span style={{ fontSize: 11, color: "#666", fontWeight: 400 }}>Details ▾</span>
+                <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400 }}>Details ▾</span>
               </summary>
-              <div style={{ marginTop: 14, fontSize: 13, color: "#bbb", lineHeight: 1.7 }}>
+              <div style={{ marginTop: 14, fontSize: 13, color: v('--color-text-bbb'), lineHeight: 1.7 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px", marginBottom: 12 }}>
                   <div>
-                    <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Grundverbrauch</div>
-                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{rec.reasoning.baseConsumption.toLocaleString("de-DE")} kWh</div>
+                    <div style={{ color: v('--color-text-label'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Grundverbrauch</div>
+                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.baseConsumption.toLocaleString("de-DE")} kWh</div>
                   </div>
                   {rec.reasoning.wpConsumption > 0 && (
                     <div>
-                      <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>+ Wärmepumpe</div>
-                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{rec.reasoning.wpConsumption.toLocaleString("de-DE")} kWh</div>
+                      <div style={{ color: v('--color-text-label'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>+ Wärmepumpe</div>
+                      <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.wpConsumption.toLocaleString("de-DE")} kWh</div>
                     </div>
                   )}
                   {rec.reasoning.eaConsumption > 0 && (
                     <div>
-                      <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>+ E-Auto</div>
-                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{rec.reasoning.eaConsumption.toLocaleString("de-DE")} kWh</div>
+                      <div style={{ color: v('--color-text-label'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>+ E-Auto</div>
+                      <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.eaConsumption.toLocaleString("de-DE")} kWh</div>
                     </div>
                   )}
                   <div>
-                    <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Gesamt</div>
-                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, color: "#22c55e" }}>{rec.reasoning.totalConsumption.toLocaleString("de-DE")} kWh</div>
+                    <div style={{ color: v('--color-text-label'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Gesamt</div>
+                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent') }}>{rec.reasoning.totalConsumption.toLocaleString("de-DE")} kWh</div>
                   </div>
                   <div>
-                    <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachfläche nutzbar</div>
-                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>~{rec.reasoning.nutzbarM2} m²</div>
+                    <div style={{ color: v('--color-text-label'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachfläche nutzbar</div>
+                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>~{rec.reasoning.nutzbarM2} m²</div>
                   </div>
                   <div>
-                    <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Max. Anlagengröße</div>
-                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#f0f0f0" }}>{rec.reasoning.maxRoofKwp} kWp</div>
+                    <div style={{ color: v('--color-text-label'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Max. Anlagengröße</div>
+                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.maxRoofKwp} kWp</div>
                   </div>
                   <div>
-                    <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Eigenverbrauch</div>
-                    <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 700, color: "#22c55e" }}>{rec.reasoning.eigenverbrauch}%</div>
+                    <div style={{ color: v('--color-text-label'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Eigenverbrauch</div>
+                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent') }}>{rec.reasoning.eigenverbrauch}%</div>
                   </div>
                   {rec.speicherKwh > 0 && (
                     <div>
-                      <div style={{ color: "#777", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Ohne Speicher</div>
-                      <div style={{ fontFamily: "'JetBrains Mono',monospace", fontWeight: 600, color: "#888" }}>{rec.reasoning.eigenverbrauchOhneSpeicher}%</div>
+                      <div style={{ color: v('--color-text-label'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Ohne Speicher</div>
+                      <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-secondary') }}>{rec.reasoning.eigenverbrauchOhneSpeicher}%</div>
                     </div>
                   )}
                 </div>
-                <div style={{ fontSize: 12, color: "#666", borderTop: "1px solid #252525", paddingTop: 10, lineHeight: 1.6 }}>
+                <div style={{ fontSize: 12, color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, lineHeight: 1.6 }}>
                   {rec.kwp < rec.reasoning.maxRoofKwp
                     ? `${rec.kwp} kWp ist für deinen Verbrauch optimal dimensioniert — größere Anlagen senken den Eigenverbrauchsanteil.`
                     : `Die Empfehlung nutzt die maximale Dachfläche deines ${HAUSTYPEN[haustyp].label}s.`
@@ -292,9 +288,9 @@ export default function Empfehlung() {
 
             {/* CTA */}
             <button onClick={() => goToResult(rec.kwp, rec.speicherIdx)} style={{
-              width: "100%", padding: "14px", borderRadius: 12, fontSize: 15, fontWeight: 700,
-              background: "#22c55e", border: "none", color: "#000", cursor: "pointer",
-              fontFamily: "'DM Sans',system-ui,sans-serif", marginBottom: 16,
+              width: "100%", padding: "14px", borderRadius: v('--radius-button-lg'), fontSize: 15, fontWeight: 700,
+              background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+              fontFamily: v('--font-text'), marginBottom: 16,
             }}>
               Ergebnis anzeigen →
             </button>
@@ -302,22 +298,22 @@ export default function Empfehlung() {
             {/* Alternativen */}
             {rec.alternatives.length > 0 && (
               <div style={{ marginBottom: 16 }}>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#666", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Alternativen</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Alternativen</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {rec.alternatives.map((alt, i) => (
                     <button key={i} onClick={() => goToResult(alt.kwp, findSpeicherIdx(alt.speicherKwh))} style={{
-                      background: "#151515", borderRadius: 14, padding: "14px 16px", border: "1px solid #2a2a2a",
+                      background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "14px 16px", border: `1px solid ${v('--color-border-input')}`,
                       cursor: "pointer", textAlign: "left", width: "100%",
                     }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: "#f0f0f0" }}>{alt.label}</span>
-                        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: "'JetBrains Mono',monospace", color: "#888" }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary') }}>{alt.label}</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>
                           {alt.kwp} kWp{alt.speicherKwh > 0 ? ` + ${alt.speicherKwh} kWh` : ""}
                         </span>
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span style={{ fontSize: 12, color: "#666" }}>{alt.reason}</span>
-                        <span style={{ fontSize: 12, fontFamily: "'JetBrains Mono',monospace", color: "#888" }}>
+                        <span style={{ fontSize: 12, color: v('--color-text-muted') }}>{alt.reason}</span>
+                        <span style={{ fontSize: 12, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>
                           {alt.investition.toLocaleString("de-DE")} €
                         </span>
                       </div>
@@ -329,11 +325,11 @@ export default function Empfehlung() {
 
             {/* Zurück */}
             <button onClick={() => setStep(STEPS.length - 1)} style={{
-              width: "100%", padding: "12px", borderRadius: 12, fontSize: 13, fontWeight: 600,
-              background: "transparent", border: "1px solid #333", color: "#888", cursor: "pointer",
+              width: "100%", padding: "12px", borderRadius: v('--radius-button-lg'), fontSize: 13, fontWeight: 600,
+              background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
             }}>↺ Eingaben ändern</button>
 
-            <div style={{ textAlign: "center", fontSize: 11, color: "#444", padding: "20px 0 8px", lineHeight: 1.6 }}>
+            <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-disabled'), padding: "20px 0 8px", lineHeight: 1.6 }}>
               Die Empfehlung basiert auf Durchschnittswerten. Auf der Ergebnisseite kannst du alle Annahmen anpassen.
             </div>
           </div>
@@ -341,9 +337,9 @@ export default function Empfehlung() {
 
         {/* Footer */}
         <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: "24px 0 16px" }}>
-          <Link href="/methodik" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Methodik</Link>
-          <Link href="/impressum" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Impressum</Link>
-          <Link href="/datenschutz" style={{ fontSize: 11, color: "#555", textDecoration: "none" }}>Datenschutz</Link>
+          <Link href="/methodik" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Methodik</Link>
+          <Link href="/impressum" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Impressum</Link>
+          <Link href="/datenschutz" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Datenschutz</Link>
         </div>
       </div>
     </div>

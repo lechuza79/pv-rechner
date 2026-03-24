@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { v } from "../../lib/theme";
 
 export const metadata: Metadata = {
   title: "Datenschutzerklärung – PV Rechner",
@@ -9,75 +10,75 @@ export const metadata: Metadata = {
 
 const S = {
   page: {
-    background: "#0c0c0c",
-    fontFamily: "'DM Sans',system-ui,sans-serif",
-    color: "#f0f0f0",
+    background: v('--color-bg'),
+    fontFamily: v('--font-text'),
+    color: v('--color-text-primary'),
     minHeight: "100vh",
     padding: "20px 16px",
-  } as const,
-  wrap: { maxWidth: 480, margin: "0 auto" } as const,
+  },
+  wrap: { maxWidth: v('--page-max-width'), margin: "0 auto" },
   back: {
     fontSize: 13,
-    color: "#888",
+    color: v('--color-text-secondary'),
     textDecoration: "none",
     display: "inline-block",
     marginBottom: 24,
-  } as const,
+  },
   h1: {
     fontSize: 22,
     fontWeight: 800,
     letterSpacing: "-0.02em",
-    color: "#fff",
+    color: v('--color-text-white'),
     lineHeight: 1.2,
     marginBottom: 24,
-  } as const,
+  },
   h2: {
     fontSize: 16,
     fontWeight: 700,
-    color: "#fff",
+    color: v('--color-text-white'),
     marginTop: 28,
     marginBottom: 10,
-  } as const,
+  },
   p: {
     fontSize: 13,
-    color: "#999",
+    color: v('--color-text-tertiary'),
     lineHeight: 1.7,
     marginBottom: 10,
-  } as const,
+  },
   ul: {
     fontSize: 13,
-    color: "#999",
+    color: v('--color-text-tertiary'),
     lineHeight: 1.7,
     marginBottom: 10,
     paddingLeft: 20,
-  } as const,
+  },
   li: {
     marginBottom: 4,
-  } as const,
+  },
   a: {
-    color: "#22c55e",
+    color: v('--color-accent'),
     textDecoration: "none",
-  } as const,
+  },
   strong: {
-    color: "#ccc",
+    color: v('--color-text-ccc'),
     fontWeight: 700,
-  } as const,
+  },
   footer: {
     marginTop: 48,
     paddingTop: 20,
-    borderTop: "1px solid #222",
+    borderTop: `1px solid ${v('--color-border-subtle')}`,
     display: "flex",
     justifyContent: "center",
     gap: 20,
     fontSize: 12,
-  } as const,
+  },
   footerLink: {
-    color: "#666",
+    color: v('--color-text-muted'),
     textDecoration: "none",
-  } as const,
+  },
   muted: {
     fontSize: 12,
-    color: "#555",
+    color: v('--color-text-faint'),
     fontStyle: "italic" as const,
     marginTop: 28,
   },

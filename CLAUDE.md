@@ -153,6 +153,13 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] DB-Schema erweitert: flow_type, haustyp, dachart, budget_limit
 - [x] Share-URLs + Dashboard für beide Flows
 
+**WP 3: Design-System & Theming ✅ (done)**
+- [x] CSS Custom Properties: alle Design-Tokens zentral in `lib/theme.ts`
+- [x] Migration aller Inline-Styles auf `var()` Referenzen (10+ Dateien)
+- [x] Admin Theme-Seite (`/admin/theme`): Farben, Fonts, Spacing, Komponenten
+- [x] Admin-Zugang via `ADMIN_EMAILS` Env-Variable
+- [x] Grundlage für Whitelabeling (WP 4: anderes Token-Set pro Tenant)
+
 ### Phase 4: Content & Reichweite
 - [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
@@ -189,7 +196,7 @@ Aktuelle Priorität: Phase 4 (Content & Reichweite)
 |---|---|---|
 | Framework | **Next.js 14 (App Router)** | SEO-fähig, Vercel-Integration, erweiterbar für Content-Seiten |
 | UI | **React 18 (Client Components)** | Interaktiver Rechner braucht Client-State |
-| Styling | **Inline Styles** | Bewusst kein Tailwind — Projekt zu klein, harte Farbwerte |
+| Styling | **Inline Styles + CSS Custom Properties** | Tokens in `lib/theme.ts`, injiziert als `:root` CSS-Variablen, referenziert via `v()` Helper |
 | Fonts | **DM Sans + JetBrains Mono** | Google Fonts, geladen in layout.tsx |
 | Deployment | **Vercel** | Zero-Config für Next.js, Preview Deployments |
 | Backend | **Supabase** | Auth (Magic Link), PVGIS-Cache, Berechnungen speichern |
@@ -219,14 +226,16 @@ pv-rechner/
 │   ├── supabase-server.ts          # Supabase Server-Client mit Service Key
 │   ├── supabase-browser.ts         # Supabase Browser-Client (@supabase/ssr)
 │   ├── supabase-server-component.ts # Supabase Client für Server Components
-│   └── auth.ts                     # useUser() Hook, signIn/signOut Helpers
+│   ├── auth.ts                     # useUser() Hook, signIn/signOut Helpers
+│   └── theme.ts                    # Design-Tokens, CSS-Variablen-Generator, v() Helper
 ├── components/
 │   ├── OptionCard.tsx              # Auswahl-Karte (2×2 Grids)
 │   ├── TriToggle.tsx               # Dreier-Toggle (Nein/Geplant/Vorhanden)
 │   ├── InlineEdit.tsx              # Click-to-Edit Zahlenwert
-│   └── Chart.tsx                   # SVG-Amortisationskurve
+│   ├── Chart.tsx                   # SVG-Amortisationskurve
+│   └── ErrorBoundary.tsx          # Error Boundary für fehlerhafte Share-URLs
 └── app/
-    ├── layout.tsx                 # Root Layout: HTML, Fonts, SEO-Meta
+    ├── layout.tsx                 # Root Layout: HTML, Fonts, SEO-Meta, CSS-Variablen
     ├── page.tsx                   # Hub-Startseite: 2 Flows (Empfehlung / Rechner)
     ├── rechner/
     │   ├── page.tsx               # Error Boundary + <PVRechner />
@@ -241,6 +250,9 @@ pv-rechner/
     ├── dashboard/
     │   ├── page.tsx               # Server Component: Auth-Check + Daten laden
     │   └── client.tsx             # Client Component: Dashboard UI
+    ├── admin/theme/
+    │   ├── page.tsx               # Server Component: Admin-Email-Check + Redirect
+    │   └── client.tsx             # Client Component: Design System Showcase
     ├── methodik/page.tsx          # Berechnungsmethodik (statisch)
     ├── impressum/page.tsx         # Impressum (statisch)
     └── datenschutz/page.tsx       # Datenschutzerklärung (statisch)
@@ -282,7 +294,7 @@ pv-rechner/
 | Border-Radius Buttons | 10–12px |
 | Animation | fadeUp 0.3s ease-out bei Step-Wechsel |
 
-Kein CSS-Variablen-System — harte Werte im Code. Wenn das Projekt Theming braucht (z.B. Light Mode), dann CSS-Variablen einführen.
+**CSS Custom Properties System:** Alle Design-Tokens in `lib/theme.ts` definiert, als `:root` CSS-Variablen in `layout.tsx` injiziert. Inline-Styles referenzieren Tokens via `v('--color-accent')` Helper. Für Whitelabeling: anderes Token-Set laden (z.B. `[data-theme="solateur-x"]` Overrides).
 
 ## SEO-Strategie
 
@@ -347,7 +359,10 @@ Branching-Strategie (develop/main) erst einführen wenn es einen Staging-Bedarf 
 
 ### Env-Variablen
 
-Aktuell keine — alles clientseitig. Wenn APIs oder Supabase dazukommen:
+- `NEXT_PUBLIC_SUPABASE_URL` — Supabase Projekt-URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase anonymer Key
+- `SUPABASE_SERVICE_KEY` — Supabase Service-Key (serverseitig)
+- `ADMIN_EMAILS` — Kommaseparierte Admin-E-Mails (Zugang `/admin/theme`)
 - Lokal: `.env.local` (in `.gitignore`)
 - Vercel: Dashboard → Project → Settings → Environment Variables
 
