@@ -60,10 +60,10 @@ export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei"
 
 // ─── Empfehlungs-Flow ───────────────────────────────────────────────────────
 export const HAUSTYPEN = [
-  { label: "Reihenhaus", sub: "~50 m² Grundfläche", footprint: 50 },
-  { label: "Doppelhaushälfte", sub: "~70 m² Grundfläche", footprint: 70 },
-  { label: "Einfamilienhaus", sub: "~100 m² Grundfläche", footprint: 100 },
-  { label: "Großes EFH", sub: "~150 m² Grundfläche", footprint: 150 },
+  { label: "Reihenhaus", sub: "Schmal, begrenzte Dachfläche", footprint: 50 },
+  { label: "Doppelhaushälfte", sub: "Halbes Dach nutzbar", footprint: 70 },
+  { label: "Einfamilienhaus", sub: "Freistehend, gute Dachfläche", footprint: 100 },
+  { label: "Großes EFH", sub: "Freistehend, große Dachfläche", footprint: 150 },
 ];
 
 export const DACHARTEN = [

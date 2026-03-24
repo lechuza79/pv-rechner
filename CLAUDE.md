@@ -144,7 +144,7 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 
 **WP 2: Empfehlungs-Flow ✅ (done)**
 - [x] Hub-Startseite (/) mit 2 Flow-Optionen
-- [x] Empfehlungs-Flow (/empfehlung): Haushalt → WP/E-Auto → Haustyp+Dachart+Budget → Empfehlung
+- [x] Empfehlungs-Flow (/empfehlung): Haus+Dach → Haushalt → WP/E-Auto → Empfehlung
 - [x] Empfehlungs-Algorithmus (lib/recommend.ts): EV-optimierte kWp + Speicher-Empfehlung
 - [x] Zwischenseite mit Empfehlung, Warum-Erklärung, Alternativen
 - [x] Ergebnis-Erweiterung: aufklappbare "Warum diese Anlage?" Sektion
@@ -173,6 +173,13 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [ ] PDF-Export
 - [ ] Finanzierungsrechner (Kredit vs. Eigenkapital)
 - [ ] Community-Features
+
+**WP 7: Mehrfamilienhaus-Rechner**
+- [ ] MFH als Haustyp im Empfehlungs-Flow
+- [ ] Abfrage Wohneinheiten
+- [ ] Angepasstes Verbrauchsmodell (nicht "Personen im Haushalt")
+- [ ] Mieterstrom-Thematik (Vergütung, Abrechnung)
+- [ ] Andere Kostenstruktur (größere Anlagen)
 
 Aktuelle Priorität: Phase 4 (Content & Reichweite)
 

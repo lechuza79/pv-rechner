@@ -12,23 +12,20 @@ export default function Empfehlung() {
   const router = useRouter();
   const [step, setStep] = useState(0);
 
-  // Step 0: Haushalt
+  // Step 0: Haus + Dach
+  const [haustyp, setHaustyp] = useState(2); // EFH default
+  const [dachart, setDachart] = useState(0); // Satteldach default
+
+  // Step 1: Haushalt
   const [personen, setPersonen] = useState(1);
   const [nutzung, setNutzung] = useState(1);
 
-  // Step 1: WP / E-Auto
+  // Step 2: WP / E-Auto
   const [wp, setWp] = useState("nein");
   const [ea, setEa] = useState("nein");
   const [eaKm, setEaKm] = useState(15000);
 
-  // Step 2: Dach + Budget
-  const [haustyp, setHaustyp] = useState(2); // EFH default
-  const [dachart, setDachart] = useState(0); // Satteldach default
-  const [showBudget, setShowBudget] = useState(false);
-  const [budgetDraft, setBudgetDraft] = useState("");
-  const budgetLimit = showBudget && budgetDraft ? parseInt(budgetDraft.replace(/\D/g, "")) || null : null;
-
-  const STEPS = ["Dein Haushalt", "Großverbraucher", "Dein Dach"];
+  const STEPS = ["Dein Haus", "Dein Haushalt", "Großverbraucher"];
   const isRecommendation = step >= STEPS.length;
   const next = () => step < STEPS.length && setStep(step + 1);
   const back = () => step > 0 && setStep(step - 1);
@@ -36,7 +33,7 @@ export default function Empfehlung() {
   // Empfehlung berechnen
   const rec = isRecommendation ? recommend({
     personen, nutzung, wp, ea, eaKm,
-    haustyp, dachart, budgetLimit,
+    haustyp, dachart, budgetLimit: null,
   }) : null;
 
   const goToResult = (kwp: number, speicherIdx: number) => {
@@ -94,8 +91,26 @@ export default function Empfehlung() {
           <div className="fu" key={step}>
             <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 18, color: "#fff" }}>{STEPS[step]}</h2>
 
-            {/* Step 0: Haushalt */}
+            {/* Step 0: Haus + Dach */}
             {step === 0 && (
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Haustyp</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
+                  {HAUSTYPEN.map((h, i) => (
+                    <OptionCard key={i} selected={haustyp === i} onClick={() => setHaustyp(i)} label={h.label} sub={h.sub} />
+                  ))}
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachart</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                  {DACHARTEN.map((d, i) => (
+                    <OptionCard key={i} selected={dachart === i} onClick={() => setDachart(i)} label={d.label} sub={d.sub} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 1: Haushalt */}
+            {step === 1 && (
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
@@ -117,8 +132,8 @@ export default function Empfehlung() {
               </div>
             )}
 
-            {/* Step 1: WP / E-Auto */}
-            {step === 1 && (
+            {/* Step 2: WP / E-Auto */}
+            {step === 2 && (
               <div>
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={setWp} />
                 <div style={{ fontSize: 12, color: "#666", marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
@@ -164,53 +179,6 @@ export default function Empfehlung() {
                     Ein E-Auto erhöht deinen Verbrauch um ~2.700 kWh/Jahr (bei 15.000 km) — gut für die PV-Rentabilität.
                   </div>
                 )}
-              </div>
-            )}
-
-            {/* Step 2: Dach + Budget */}
-            {step === 2 && (
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Haustyp</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 18 }}>
-                  {HAUSTYPEN.map((h, i) => (
-                    <OptionCard key={i} selected={haustyp === i} onClick={() => setHaustyp(i)} label={h.label} sub={h.sub} />
-                  ))}
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#999", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachart</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
-                  {DACHARTEN.map((d, i) => (
-                    <OptionCard key={i} selected={dachart === i} onClick={() => setDachart(i)} label={d.label} sub={d.sub} />
-                  ))}
-                </div>
-
-                {/* Budget (aufklappbar) */}
-                <div style={{ marginTop: 8 }}>
-                  <button onClick={() => setShowBudget(!showBudget)} style={{
-                    background: "none", border: "none", color: "#666", fontSize: 13, cursor: "pointer",
-                    fontFamily: "'DM Sans',system-ui,sans-serif", padding: "4px 0",
-                    display: "flex", alignItems: "center", gap: 6,
-                  }}>
-                    <span style={{ fontSize: 11, color: showBudget ? "#22c55e" : "#555" }}>{showBudget ? "▾" : "▸"}</span>
-                    Hast du ein maximales Budget?
-                  </button>
-                  {showBudget && (
-                    <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontSize: 13, color: "#888" }}>Max.</span>
-                      <input
-                        value={budgetDraft}
-                        placeholder="z.B. 20000"
-                        onChange={e => setBudgetDraft(e.target.value.replace(/[^\d]/g, ""))}
-                        style={{
-                          width: 100, textAlign: "right", fontSize: 14, fontWeight: 700,
-                          fontFamily: "'JetBrains Mono',monospace", color: "#22c55e",
-                          background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)",
-                          borderRadius: 8, padding: "8px 10px", outline: "none",
-                        }}
-                      />
-                      <span style={{ fontSize: 13, color: "#888" }}>€</span>
-                    </div>
-                  )}
-                </div>
               </div>
             )}
 
