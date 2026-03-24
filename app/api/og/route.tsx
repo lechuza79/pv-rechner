@@ -1,0 +1,142 @@
+import { ImageResponse } from "next/og";
+import { NextRequest } from "next/server";
+import { ANLAGEN, SPEICHER } from "../../../lib/constants";
+import { calcEigenverbrauch, estimateCost, calc, paramInt, paramFloat, paramStr } from "../../../lib/calc";
+
+export const runtime = "edge";
+
+function fmt(n: number): string {
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+export async function GET(req: NextRequest) {
+  const params = Object.fromEntries(req.nextUrl.searchParams.entries());
+
+  const anlageIdx = paramInt(params, "a", 2, 0, 4);
+  const speicherIdx = paramInt(params, "s", 0, 0, 3);
+  const personenIdx = paramInt(params, "p", 1, 0, 3);
+  const nutzungIdx = paramInt(params, "n", 1, 0, 3);
+  const wp = paramStr(params, "wp", "nein", ["nein", "geplant", "ja"]);
+  const ea = paramStr(params, "ea", "nein", ["nein", "geplant", "ja"]);
+  const eaKm = paramInt(params, "km", 15000, 1000, 50000);
+  const customKwp = paramFloat(params, "ck", 12, 1, 50);
+  const ertragKwp = paramInt(params, "er", 950, 700, 1400);
+  const strompreis = paramFloat(params, "st", 0.34, 0.05, 1.0);
+  const einspeisung = paramFloat(params, "ei", 8.03, 0, 20);
+  const einspeisungAn = params.eia !== "0";
+  const plz = params.plz || "";
+
+  const kwp = anlageIdx < 4 ? ANLAGEN[anlageIdx].kwp : customKwp;
+  const spKwh = SPEICHER[speicherIdx].kwh;
+
+  const oKosten = params.k ? paramFloat(params, "k", 0, 500, 200000) : null;
+  const oEv = params.ev ? paramInt(params, "ev", 0, 5, 95) : null;
+
+  const ev = oEv ?? calcEigenverbrauch({
+    personenIdx, nutzungIdx, speicherKwh: spKwh, wp, ea, eaKm, kwp, ertragKwp,
+  });
+  const kosten = oKosten ?? estimateCost(kwp, spKwh);
+  const einsp = einspeisungAn ? einspeisung : 0;
+
+  const result = calc({
+    kwp, kosten, strompreis, eigenverbrauch: ev, einspeisung: einsp,
+    stromSteigerung: 0.03, ertragKwp, monthly: null,
+  });
+
+  const amortYears = result.be ? result.be.i : null;
+  const rendite25j = result.total;
+  const avgSavings = Math.round(rendite25j / 25);
+
+  const jetBrainsMono = await fetch(
+    new URL("/fonts/JetBrainsMono-Bold.ttf", req.nextUrl.origin)
+  ).then(r => r.arrayBuffer());
+
+  const amortColor = amortYears !== null ? "#22c55e" : "#ef4444";
+  const amortText = amortYears !== null ? `${amortYears}` : ">25";
+  const renditeStr = `${rendite25j > 0 ? "+" : ""}${fmt(rendite25j)}`;
+  const savingsStr = `${avgSavings > 0 ? "+" : ""}${fmt(avgSavings)}`;
+
+  const cards = [
+    { value: `${kwp} kWp`, label: "ANLAGE" },
+    { value: spKwh > 0 ? `${spKwh} kWh` : "Ohne", label: "SPEICHER" },
+    { value: `${ev}%`, label: "EIGENVERBR." },
+  ];
+  if (plz) cards.push({ value: plz, label: "STANDORT" });
+
+  return new ImageResponse(
+    (
+      <div style={{
+        width: "100%", height: "100%", display: "flex", flexDirection: "column",
+        justifyContent: "space-between", padding: "48px 56px",
+        background: "#0c0c0c", color: "#f0f0f0",
+      }}>
+        {/* Header */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ fontSize: 24, fontWeight: 700, color: "#888" }}>PV Rechner</span>
+          <span style={{ fontSize: 20, color: "#555" }}>pvrechner.de</span>
+        </div>
+
+        {/* Main metric */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <span style={{ fontSize: 22, color: "#888", letterSpacing: 1 }}>
+            AMORTISATION IN
+          </span>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginTop: 8 }}>
+            <span style={{ fontSize: 96, fontWeight: 700, color: amortColor, fontFamily: "JetBrains Mono", lineHeight: 1 }}>
+              {amortText}
+            </span>
+            <span style={{ fontSize: 36, color: amortColor, fontWeight: 600 }}>
+              Jahren
+            </span>
+          </div>
+        </div>
+
+        {/* Info cards */}
+        <div style={{ display: "flex", gap: 16, justifyContent: "center" }}>
+          {cards.map((card) => (
+            <div key={card.label} style={{
+              display: "flex", flexDirection: "column", alignItems: "center",
+              padding: "16px 28px", background: "#151515",
+              border: "1px solid #252525", borderRadius: 12, minWidth: 120,
+            }}>
+              <span style={{ fontSize: 22, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#f0f0f0" }}>
+                {card.value}
+              </span>
+              <span style={{ fontSize: 14, color: "#777", marginTop: 4, letterSpacing: 1 }}>
+                {card.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom stats + tagline */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+          <div style={{ display: "flex", gap: 40 }}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontSize: 14, color: "#777", letterSpacing: 1 }}>RENDITE 25 J.</span>
+              <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#f0f0f0" }}>
+                {`${renditeStr} \u20AC`}
+              </span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontSize: 14, color: "#777", letterSpacing: 1 }}>ERSPARNIS / JAHR</span>
+              <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#f0f0f0" }}>
+                {`${savingsStr} \u20AC`}
+              </span>
+            </div>
+          </div>
+          <span style={{ fontSize: 16, color: "#555" }}>
+            Ehrlich berechnet. Ohne Leadfunnel.
+          </span>
+        </div>
+      </div>
+    ),
+    {
+      width: 1200,
+      height: 630,
+      fonts: [
+        { name: "JetBrains Mono", data: jetBrainsMono, weight: 700 as const },
+      ],
+    },
+  );
+}

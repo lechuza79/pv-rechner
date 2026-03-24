@@ -1,45 +1,39 @@
-"use client";
-import { Component, ReactNode } from "react";
+import { Metadata } from "next";
+import { ErrorBoundary } from "../../components/ErrorBoundary";
 import PVRechner from "./rechner";
 
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://pv-rechner-alpha.vercel.app";
 
-  static getDerivedStateFromError() {
-    return { hasError: true };
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}): Promise<Metadata> {
+  // Build OG image URL from share params
+  const ogParams = new URLSearchParams();
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (typeof value === "string") ogParams.set(key, value);
   }
+  const ogQuery = ogParams.toString();
+  const ogUrl = ogQuery
+    ? `${BASE_URL}/api/og?${ogQuery}`
+    : `${BASE_URL}/api/og`;
 
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div style={{
-          background: "#0c0c0c", fontFamily: "'DM Sans',system-ui,sans-serif",
-          color: "#f0f0f0", minHeight: "100vh", display: "flex",
-          alignItems: "center", justifyContent: "center", padding: 20,
-        }}>
-          <div style={{ textAlign: "center", maxWidth: 400 }}>
-            <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>
-              Berechnung konnte nicht geladen werden
-            </div>
-            <div style={{ fontSize: 13, color: "#888", marginBottom: 20, lineHeight: 1.5 }}>
-              Die Daten in der URL sind ungültig. Starte eine neue Berechnung.
-            </div>
-            <a href="/rechner" style={{
-              display: "inline-block", padding: "10px 32px", borderRadius: 10,
-              fontSize: 14, fontWeight: 700, background: "#22c55e",
-              color: "#000", textDecoration: "none",
-            }}>
-              Neu berechnen
-            </a>
-          </div>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
+  return {
+    title: "PV Rechner – Lohnt sich Photovoltaik? Ehrlich berechnet.",
+    description: "Kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Sofort Ergebnis: Amortisation, Rendite und Szenarien.",
+    openGraph: {
+      title: "PV Rechner – Lohnt sich Photovoltaik?",
+      description: "Ehrlich berechnet. Ohne Leadfunnel. Sofort Ergebnis.",
+      images: [{ url: ogUrl, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "PV Rechner – Lohnt sich Photovoltaik?",
+      description: "Ehrlich berechnet. Ohne Leadfunnel. Sofort Ergebnis.",
+      images: [ogUrl],
+    },
+  };
 }
 
 export default function RechnerPage({
