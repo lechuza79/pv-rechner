@@ -1,4 +1,4 @@
-# CLAUDE.md – PV Rechner
+# CLAUDE.md – Solar Check (solar-check.oi)
 
 ## Deine Rolle
 
@@ -12,7 +12,7 @@ Du arbeitest mit einem UX-Architekten zusammen, der technisch mitdenken kann, ab
 
 ## Projektüberblick
 
-"PV Rechner" ist ein kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Nutzer beantworten 4 Fragen und bekommen sofort ein Ergebnis mit Amortisationschart und Szenariovergleich. Alle Berechnungsannahmen sind im Ergebnis transparent editierbar.
+"Solar Check" (solar-check.oi) ist ein kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Nutzer beantworten 4 Fragen und bekommen sofort ein Ergebnis mit Amortisationschart und Szenariovergleich. Alle Berechnungsannahmen sind im Ergebnis transparent editierbar.
 
 **Differenzierung:** Enpal, Klarsolar, Check24 etc. zeigen Ergebnisse erst nach Lead-Erfassung (Name, Telefon, E-Mail). Wir liefern sofort — keine Datensammlung, kein Vertriebskontakt, keine Werbung.
 
@@ -105,7 +105,7 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Next.js Projekt mit SEO-Meta + OpenGraph
 
 ### Phase 1: In Arbeit
-- [ ] Domain registrieren + Vercel Deployment
+- [x] Domain solar-check.oi + Vercel Deployment
 - [x] Strukturierte Daten (JSON-LD: FAQPage, WebApplication)
 - [x] sitemap.xml + robots.txt (inkl. /impressum, /datenschutz)
 - [ ] Favicon / OG-Image
@@ -336,24 +336,21 @@ npm run build         # Production Build
 
 | Komponente | URL / Status |
 |---|---|
-| GitHub | Repo anlegen (TODO) |
-| Vercel (Production) | Domain verbinden (TODO) |
-| Domain | Noch nicht registriert |
+| Vercel (Production) | `solar-check.oi` ✅ |
+| Vercel (Preview) | `pv-rechner-alpha.vercel.app` |
+| Domain-Registrar | All-Inkl |
 
-### Domains (geplant)
+### Domains
 
 | Domain | Ziel | Branch |
 |---|---|---|
-| `www.[domain].de` | Production | `main` |
-| `[domain].de` | Redirect → www | `main` |
-
-Staging-Umgebung erst einführen wenn es Testnutzer oder ein Backend gibt (Phase 3).
+| `solar-check.oi` | Production (Hauptdomain) | `main` |
+| `www.solar-check.oi` | Redirect → `solar-check.oi` | `main` |
 
 ### Entwicklungs-Workflow
 
 1. **Lokal entwickeln** — `npm run dev` auf localhost:3000
-2. **Auf `main` pushen** — `git push` → Vercel deployed automatisch
-3. **Domain verbinden** wenn registriert (Vercel → Settings → Domains)
+2. **Auf `main` pushen** — `git push` → Vercel deployed automatisch auf solar-check.oi
 
 Branching-Strategie (develop/main) erst einführen wenn es einen Staging-Bedarf gibt.
 

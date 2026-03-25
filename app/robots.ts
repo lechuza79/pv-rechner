@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://pv-rechner-alpha.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.oi";
 
 export default function robots(): MetadataRoute.Robots {
   return {

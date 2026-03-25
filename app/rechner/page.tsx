@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { ErrorBoundary } from "../../components/ErrorBoundary";
 import PVRechner from "./rechner";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://pv-rechner-alpha.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.oi";
 
 export async function generateMetadata({
   searchParams,
