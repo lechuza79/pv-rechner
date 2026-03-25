@@ -7,12 +7,12 @@ export default function InlineEdit({ value, onCommit, unit, step = 1, min = 0, m
   const [draft, setDraft] = useState("");
 
   const startEdit = () => {
-    setDraft(String(value));
+    setDraft(String(value).replace(".", ","));
     setEditing(true);
   };
 
   const commit = () => {
-    const raw = draft.replace(",", ".");
+    const raw = draft.replace(/\./g, "").replace(",", ".");
     const n = parseFloat(raw);
     if (!isNaN(n) && n >= min && n <= max) {
       onCommit(Math.round(n * 1000) / 1000);
@@ -20,7 +20,7 @@ export default function InlineEdit({ value, onCommit, unit, step = 1, min = 0, m
     setEditing(false);
   };
 
-  const display = fmt ? fmt(value) : (typeof value === "number" && value >= 1000 ? value.toLocaleString("de-DE") : String(value));
+  const display = fmt ? fmt(value) : value.toLocaleString("de-DE");
 
   if (!editing) {
     return (
