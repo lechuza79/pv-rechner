@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { getCssVariables, globalStyles } from "../lib/theme";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.oi";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

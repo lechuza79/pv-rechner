@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    NEXT_PUBLIC_BASE_URL: "https://solar-check.oi",
+    NEXT_PUBLIC_BASE_URL: "https://solar-check.io",
   },
   async redirects() {
     return [
