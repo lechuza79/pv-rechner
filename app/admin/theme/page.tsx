@@ -5,7 +5,7 @@ import ThemeClient from "./client";
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
 
 export const metadata = {
-  title: "Design System – PV Rechner",
+  title: "Design System – Solar Check",
   robots: { index: false, follow: false },
 };
 

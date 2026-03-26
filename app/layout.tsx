@@ -5,7 +5,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
-  title: "PV Rechner – Lohnt sich Photovoltaik? Ehrlich berechnet.",
+  title: "Solar Check – Lohnt sich Photovoltaik? Ehrlich berechnet.",
   description:
     "Kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Sofort Ergebnis: Amortisation, Rendite und Szenarien für deine Photovoltaikanlage mit oder ohne Speicher.",
   keywords: [
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "Photovoltaik Rechner ohne Anmeldung",
   ],
   openGraph: {
-    title: "PV Rechner – Lohnt sich Photovoltaik?",
+    title: "Solar Check – Lohnt sich Photovoltaik?",
     description: "Ehrlich berechnet. Ohne Leadfunnel. Sofort Ergebnis.",
     type: "website",
     url: BASE_URL,
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 const softwareAppJsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "PV Rechner",
+  name: "Solar Check",
   description:
     "Kostenloser PV-Rentabilitätsrechner: Amortisation, Rendite und Szenarien für Photovoltaikanlagen mit oder ohne Speicher.",
   url: BASE_URL,

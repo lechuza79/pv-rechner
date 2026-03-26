@@ -3,8 +3,8 @@ import Link from "next/link";
 import { v } from "../../lib/theme";
 
 export const metadata: Metadata = {
-  title: "Impressum – PV Rechner",
-  description: "Impressum und Angaben gemäß § 5 TMG für PV Rechner.",
+  title: "Impressum – Solar Check",
+  description: "Impressum und Angaben gemäß § 5 TMG für Solar Check.",
 };
 
 const S = {
@@ -132,7 +132,7 @@ export default function ImpressumPage() {
             Datenschutz
           </Link>
           <Link href="/" style={S.footerLink}>
-            PV Rechner
+            Solar Check
           </Link>
         </div>
       </div>

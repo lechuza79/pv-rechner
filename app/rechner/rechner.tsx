@@ -10,6 +10,7 @@ import TriToggle from "../../components/TriToggle";
 import InlineEdit from "../../components/InlineEdit";
 import Chart from "../../components/Chart";
 import { v } from "../../lib/theme";
+import Logo from "../../components/Logo";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
@@ -172,7 +173,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   };
 
   const handleNativeShare = async () => {
-    try { await navigator.share({ title: "PV Rechner – Mein Ergebnis", text: shareText, url: buildShareUrl() }); } catch {}
+    try { await navigator.share({ title: "Solar Check – Mein Ergebnis", text: shareText, url: buildShareUrl() }); } catch {}
   };
 
   const handleWhatsApp = () => {
@@ -247,8 +248,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               )}
             </div>
           )}
-          <div style={{ fontSize: 12, fontWeight: 700, color: v('--color-accent'), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>PV Rechner</div>
-          <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
+          <Link href="/" style={{ textDecoration: "none", display: "inline-flex" }}><Logo height={24} /></Link>
+          <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2, marginTop: 8 }}>Lohnt sich Photovoltaik?</h1>
           <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Ehrlich berechnet. Ohne Leadfunnel.</p>
         </div>
 

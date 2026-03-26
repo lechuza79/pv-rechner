@@ -8,6 +8,7 @@ import { recommend } from "../../lib/recommend";
 import OptionCard from "../../components/OptionCard";
 import TriToggle from "../../components/TriToggle";
 import { v } from "../../lib/theme";
+import Logo from "../../components/Logo";
 
 export default function Empfehlung() {
   const router = useRouter();
@@ -67,7 +68,7 @@ export default function Empfehlung() {
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <Link href="/" style={{ textDecoration: "none" }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: v('--color-accent'), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>PV Rechner</div>
+            <Logo height={24} />
           </Link>
           <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Was passt zu dir?</h1>
           <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Wir empfehlen dir die optimale Anlage.</p>

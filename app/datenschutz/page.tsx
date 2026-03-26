@@ -3,9 +3,9 @@ import Link from "next/link";
 import { v } from "../../lib/theme";
 
 export const metadata: Metadata = {
-  title: "Datenschutzerklärung – PV Rechner",
+  title: "Datenschutzerklärung – Solar Check",
   description:
-    "Datenschutzerklärung für PV Rechner. Keine Cookies, kein Tracking, alle Berechnungen lokal im Browser.",
+    "Datenschutzerklärung für Solar Check. Keine Cookies, kein Tracking, alle Berechnungen lokal im Browser.",
 };
 
 const S = {
@@ -278,7 +278,7 @@ export default function DatenschutzPage() {
             Impressum
           </Link>
           <Link href="/" style={S.footerLink}>
-            PV Rechner
+            Solar Check
           </Link>
         </div>
       </div>

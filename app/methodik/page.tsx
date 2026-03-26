@@ -4,7 +4,7 @@ import { v } from "../../lib/theme";
 
 export const metadata: Metadata = {
   title: "Methodik – So berechnen wir deine PV-Rendite",
-  description: "Transparente Erklärung der Berechnungslogik im PV Rechner: Eigenverbrauch, Speicher-Effekt, Amortisation. Kalibriert an HTW Berlin Simulationsdaten.",
+  description: "Transparente Erklärung der Berechnungslogik im Solar Check: Eigenverbrauch, Speicher-Effekt, Amortisation. Kalibriert an HTW Berlin Simulationsdaten.",
 };
 
 const S = {
@@ -342,7 +342,7 @@ export default function MethodikPage() {
             Datenschutz
           </Link>
           <Link href="/" style={S.footerLink}>
-            PV Rechner
+            Solar Check
           </Link>
         </div>
       </div>

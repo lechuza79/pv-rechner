@@ -4,7 +4,7 @@ import type { CalculationRow } from "../../lib/types";
 import DashboardClient from "./client";
 
 export const metadata = {
-  title: "Meine Berechnungen – PV Rechner",
+  title: "Meine Berechnungen – Solar Check",
 };
 
 export default async function DashboardPage() {

@@ -7,6 +7,7 @@ import { signOut } from "../../lib/auth";
 import type { CalculationRow } from "../../lib/types";
 import { rowToParams, paramsToInitial } from "../../lib/types";
 import { v } from "../../lib/theme";
+import Logo from "../../components/Logo";
 
 export default function DashboardClient({
   calculations: initialCalcs,
@@ -102,9 +103,7 @@ export default function DashboardClient({
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-          <Link href="/" style={{ fontSize: 12, fontWeight: 700, color: v('--color-accent'), letterSpacing: "0.1em", textTransform: "uppercase", textDecoration: "none" }}>
-            ← PV Rechner
-          </Link>
+          <Link href="/" style={{ textDecoration: "none", display: "inline-flex" }}><Logo height={20} /></Link>
           <button onClick={handleLogout} style={{
             background: "none", border: "none", color: v('--color-text-muted'), fontSize: 12, cursor: "pointer",
             fontFamily: v('--font-text'),
