@@ -4,56 +4,60 @@
 
 export const tokens = {
   // Backgrounds
-  '--color-bg': '#0c0c0c',
-  '--color-bg-card': '#151515',
-  '--color-bg-input': '#161616',
-  '--color-bg-hero': '#111',
-  '--color-bg-subtle': 'rgba(255,255,255,0.03)',
-  '--color-bg-chart': '#131313',
+  '--color-bg': '#FFFFFF',
+  '--color-bg-card': '#FFFFFF',
+  '--color-bg-input': '#F8F8F8',
+  '--color-bg-hero': '#F1F6FE',
+  '--color-bg-subtle': 'rgba(0,0,0,0.02)',
+  '--color-bg-chart': '#FFFFFF',
 
   // Borders
-  '--color-border': '#252525',
-  '--color-border-input': '#2a2a2a',
-  '--color-border-subtle': '#222',
-  '--color-border-muted': '#333',
-  '--color-border-hero': '#1e3a1e',
+  '--color-border': '#E9E9E9',
+  '--color-border-input': '#E9E9E9',
+  '--color-border-subtle': '#F0F0F0',
+  '--color-border-muted': '#E0E0E0',
+  '--color-border-hero': '#BCD6FF',
 
-  // Accent (green)
-  '--color-accent': '#22c55e',
-  '--color-accent-dim': 'rgba(34,197,94,0.1)',
-  '--color-accent-dim-15': 'rgba(34,197,94,0.15)',
-  '--color-accent-border': 'rgba(34,197,94,0.3)',
-  '--color-accent-border-strong': 'rgba(34,197,94,0.4)',
+  // Accent (blue)
+  '--color-accent': '#1365EA',
+  '--color-accent-dim': 'rgba(19,101,234,0.08)',
+  '--color-accent-dim-15': 'rgba(19,101,234,0.12)',
+  '--color-accent-border': '#BCD6FF',
+  '--color-accent-border-strong': '#6A9EF2',
+  '--color-accent-dark': '#073C93',
+  '--color-accent-light': '#6A9EF2',
+  '--color-accent-bg': '#F1F6FE',
 
   // Semantic
-  '--color-negative': '#ef4444',
-  '--color-negative-dim': 'rgba(239,68,68,0.1)',
-  '--color-negative-border': 'rgba(239,68,68,0.3)',
-  '--color-optimistic': '#3b82f6',
+  '--color-negative': '#EF4444',
+  '--color-negative-dim': 'rgba(239,68,68,0.06)',
+  '--color-negative-border': 'rgba(239,68,68,0.2)',
+  '--color-optimistic': '#1365EA',
+  '--color-positive': '#00D950',
 
   // Chart
-  '--color-chart-positive-bg': 'rgba(34,197,94,0.05)',
+  '--color-chart-positive-bg': 'rgba(0,217,80,0.08)',
   '--color-chart-negative-bg': 'rgba(239,68,68,0.05)',
-  '--color-chart-grid': '#252525',
-  '--color-chart-zero': '#555',
+  '--color-chart-grid': '#E9E9E9',
+  '--color-chart-zero': '#BEBEBE',
 
   // Text
-  '--color-text-primary': '#f0f0f0',
-  '--color-text-white': '#fff',
-  '--color-text-secondary': '#888',
-  '--color-text-tertiary': '#999',
-  '--color-text-muted': '#666',
-  '--color-text-faint': '#555',
-  '--color-text-disabled': '#444',
-  '--color-text-label': '#777',
-  '--color-text-ccc': '#ccc',
-  '--color-text-bbb': '#bbb',
-  '--color-text-aaa': '#aaa',
-  '--color-text-black': '#000',
-  '--color-text-ddd': '#ddd',
+  '--color-text-primary': '#3F3F3F',
+  '--color-text-white': '#1A1A1A',
+  '--color-text-secondary': '#777777',
+  '--color-text-tertiary': '#949494',
+  '--color-text-muted': '#949494',
+  '--color-text-faint': '#BEBEBE',
+  '--color-text-disabled': '#CCCCCC',
+  '--color-text-label': '#777777',
+  '--color-text-ccc': '#777777',
+  '--color-text-bbb': '#949494',
+  '--color-text-aaa': '#777777',
+  '--color-text-ddd': '#3F3F3F',
+  '--color-text-on-accent': '#FFFFFF',
 
   // Progress
-  '--color-progress-inactive': '#282828',
+  '--color-progress-inactive': '#E9E9E9',
 
   // Fonts
   '--font-text': "'DM Sans',system-ui,sans-serif",

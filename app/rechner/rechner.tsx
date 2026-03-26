@@ -278,7 +278,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 />
                 <button type="submit" style={{
                   padding: "10px 16px", borderRadius: v('--radius-button'), fontSize: 13, fontWeight: 600,
-                  background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+                  background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
                   fontFamily: v('--font-text'), whiteSpace: "nowrap",
                 }}>
                   Link senden
@@ -401,7 +401,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               {step > 0 ? (
                 <button onClick={back} style={{ padding: "10px 20px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>Zurück</button>
               ) : <div />}
-              <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer" }}>
+              <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
                 {step === STEPS.length - 1 ? "Berechnen ✦" : "Weiter →"}
               </button>
             </div>
@@ -527,7 +527,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     )}
                     <div>
                       <span style={{ color: v('--color-text-label') }}>Gesamtverbrauch</span>
-                      <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent') }}>{empfehlungKontext.gesamtVerbrauch.toLocaleString("de-DE")} kWh</div>
+                      <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary') }}>{empfehlungKontext.gesamtVerbrauch.toLocaleString("de-DE")} kWh</div>
                     </div>
                     <div>
                       <span style={{ color: v('--color-text-label') }}>Dachfläche nutzbar</span>
@@ -652,7 +652,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     setSpKostenPrompt(false);
                   }} style={{
                     padding: "5px 12px", borderRadius: v('--radius-input'), fontSize: 11, fontWeight: 600,
-                    background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+                    background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
                   }}>OK</button>
                   <button onClick={() => setSpKostenPrompt(false)} style={{
                     padding: "5px 8px", borderRadius: v('--radius-input'), fontSize: 11, fontWeight: 600,
@@ -698,13 +698,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
               <div style={{ background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "14px 16px", border: `1px solid ${v('--color-border')}` }}>
                 <div style={{ fontSize: 11, color: v('--color-text-label'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</div>
-                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: real.data.total >= 0 ? v('--color-accent') : v('--color-negative'), marginTop: 4 }}>
+                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: real.data.total >= 0 ? v('--color-positive') : v('--color-negative'), marginTop: 4 }}>
                   {real.data.total > 0 ? "+" : ""}{real.data.total.toLocaleString("de-DE")} €
                 </div>
               </div>
               <div style={{ background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "14px 16px", border: `1px solid ${v('--color-border')}` }}>
                 <div style={{ fontSize: 11, color: v('--color-text-label'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>⌀ Ersparnis / Jahr</div>
-                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-primary'), marginTop: 4 }}>
+                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 4 }}>
                   {Math.round((real.data.total + kosten) / YEARS).toLocaleString("de-DE")} €
                 </div>
               </div>
@@ -747,7 +747,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     </span>
                   </div>
                 </div>
-                <div style={{ fontSize: 20, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-accent'), marginTop: 4 }}>
+                <div style={{ fontSize: 20, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 4 }}>
                   Ersparnis: {netSaving.toLocaleString("de-DE")} €
                 </div>
                 <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4, lineHeight: 1.5 }}>
@@ -815,7 +815,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     return (
                       <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
                         <span style={{ fontSize: 9, fontFamily: v('--font-mono'), color: v('--color-text-secondary'), marginBottom: 3 }}>{Math.round(m * kwp).toLocaleString("de-DE")}</span>
-                        <div style={{ width: "100%", height: barH, borderRadius: "3px 3px 0 0", background: m === max ? v('--color-accent') : "rgba(34,197,94,0.35)" }} />
+                        <div style={{ width: "100%", height: barH, borderRadius: "3px 3px 0 0", background: m === max ? v('--color-accent') : v('--color-accent-border') }} />
                         <span style={{ fontSize: 9, color: v('--color-text-faint'), marginTop: 3 }}>{["J","F","M","A","M","J","J","A","S","O","N","D"][i]}</span>
                       </div>
                     );
@@ -939,7 +939,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 />
                 <button type="submit" style={{
                   padding: "10px 16px", borderRadius: v('--radius-button'), fontSize: 13, fontWeight: 600,
-                  background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+                  background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
                   fontFamily: v('--font-text'), whiteSpace: "nowrap",
                 }}>
                   Link senden
@@ -948,7 +948,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             ) : (
               <button onClick={() => { setShowLogin(true); setLoginSent(false); setLoginError(""); }} style={{
                 width: "100%", padding: "14px", borderRadius: v('--radius-card'), fontSize: 15, fontWeight: 700,
-                background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+                background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
                 fontFamily: v('--font-text'),
               }}>
                 Ergebnisse speichern

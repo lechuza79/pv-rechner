@@ -159,6 +159,10 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Admin Theme-Seite (`/admin/theme`): Farben, Fonts, Spacing, Komponenten
 - [x] Admin-Zugang via `ADMIN_EMAILS` Env-Variable
 - [x] Grundlage für Whitelabeling (WP 4: anderes Token-Set pro Tenant)
+- [x] Light Theme mit blauem Akzent (Figma-basiert)
+- [x] Semantisches Farbsystem: Grün=positiv, Blau=interaktiv, Rot=negativ, Grau=neutral
+- [x] Neue Tokens: `--color-positive`, `--color-text-on-accent`, `--color-accent-dark/light/bg`
+- [x] OG-Image auf Light Theme + Solar Check Branding
 
 ### Phase 4: Content & Reichweite
 - [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
@@ -276,23 +280,30 @@ pv-rechner/
 
 | Element | Wert |
 |---|---|
-| Hintergrund | `#0c0c0c` |
-| Karten/Panels | `#151515` mit `#252525` Border |
-| Input-Hintergrund | `#161616` mit `#2a2a2a` Border |
-| Akzent (positiv, CTAs, Auswahl) | `#22c55e` |
-| Akzent gedimmt | `rgba(34,197,94,0.1)` |
-| Negativ / Pessimistisch | `#ef4444` |
-| Optimistisch | `#3b82f6` |
-| Text primär | `#f0f0f0` |
-| Text sekundär | `#888` |
-| Text muted | `#555`–`#666` |
-| Labels (uppercase) | `#777`–`#999` |
+| Hintergrund | `#FFFFFF` (Light Theme) |
+| Karten/Panels | `#FFFFFF` mit `#E9E9E9` Border |
+| Input-Hintergrund | `#F8F8F8` mit `#E9E9E9` Border |
+| Hero-Hintergrund | `#F1F6FE` (leichter Blauton) |
+| Akzent (CTAs, interaktive Elemente) | `#1365EA` (Blau) |
+| Akzent dunkel/hell | `#073C93` / `#6A9EF2` |
+| Positiv (Rendite, Ersparnis) | `#00D950` (Grün) |
+| Negativ / Pessimistisch | `#EF4444` (Rot) |
+| Text primär | `#3F3F3F` |
+| Text sekundär | `#777777` |
+| Text muted | `#949494` |
+| Labels (uppercase) | `#777777` |
 | Font Text | DM Sans 400–800 |
 | Font Zahlen | JetBrains Mono 400–700 |
 | Layout | Mobile-first, max-width 480px, zentriert |
 | Border-Radius Cards | 14px |
 | Border-Radius Buttons | 10–12px |
 | Animation | fadeUp 0.3s ease-out bei Step-Wechsel |
+
+**Semantisches Farbsystem:**
+- **Blau** (`--color-accent`): Interaktive Elemente (Buttons, Toggles, editierbare Werte, Links, Hero-Zahl)
+- **Grün** (`--color-positive`): Positive Werte (Rendite, Ersparnis, Einsparung)
+- **Rot** (`--color-negative`): Negative Werte (Kosten, Verluste, Gas-Streichpreis)
+- **Grau**: Neutrale Dimensionen (kWh, kWp, Prozent, Labels)
 
 **CSS Custom Properties System:** Alle Design-Tokens in `lib/theme.ts` definiert, als `:root` CSS-Variablen in `layout.tsx` injiziert. Inline-Styles referenzieren Tokens via `v('--color-accent')` Helper. Für Whitelabeling: anderes Token-Set laden (z.B. `[data-theme="solateur-x"]` Overrides).
 

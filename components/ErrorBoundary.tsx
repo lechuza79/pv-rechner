@@ -30,7 +30,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { hasError
             <a href="/rechner" style={{
               display: "inline-block", padding: "10px 32px", borderRadius: v('--radius-button'),
               fontSize: 14, fontWeight: 700, background: v('--color-accent'),
-              color: v('--color-text-black'), textDecoration: "none",
+              color: v('--color-text-on-accent'), textDecoration: "none",
             }}>
               Neu berechnen
             </a>

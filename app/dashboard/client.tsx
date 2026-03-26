@@ -120,7 +120,7 @@ export default function DashboardClient({
         <Link href="/" style={{
           display: "block", width: "100%", padding: "14px", borderRadius: v('--radius-card'),
           fontSize: 14, fontWeight: 700, textAlign: "center",
-          background: v('--color-accent'), color: v('--color-text-black'), textDecoration: "none",
+          background: v('--color-accent'), color: v('--color-text-on-accent'), textDecoration: "none",
           marginBottom: 20,
         }}>
           + Neue Berechnung
@@ -186,7 +186,7 @@ export default function DashboardClient({
                     <div style={{ display: "flex", gap: 8 }}>
                       <button onClick={saveEdit} style={{
                         flex: 1, padding: "8px 12px", borderRadius: v('--radius-button'), fontSize: 13, fontWeight: 600,
-                        background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+                        background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
                         fontFamily: v('--font-text'),
                       }}>
                         Speichern
@@ -236,7 +236,7 @@ export default function DashboardClient({
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 10, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Rendite 25J</div>
-                        <div style={{ fontSize: 14, fontWeight: 600, fontFamily: v('--font-mono'), color: (calc.rendite_25j ?? 0) > 0 ? v('--color-accent') : v('--color-negative') }}>
+                        <div style={{ fontSize: 14, fontWeight: 600, fontFamily: v('--font-mono'), color: (calc.rendite_25j ?? 0) > 0 ? v('--color-positive') : v('--color-negative') }}>
                           {calc.rendite_25j != null ? `${calc.rendite_25j > 0 ? "+" : ""}${calc.rendite_25j.toLocaleString("de-DE")} €` : "—"}
                         </div>
                       </div>

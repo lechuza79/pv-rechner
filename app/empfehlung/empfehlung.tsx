@@ -185,7 +185,7 @@ export default function Empfehlung() {
               ) : (
                 <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
               )}
-              <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer" }}>
+              <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
                 {step === STEPS.length - 1 ? "Empfehlung anzeigen ✦" : "Weiter →"}
               </button>
             </div>
@@ -255,7 +255,7 @@ export default function Empfehlung() {
                   )}
                   <div>
                     <div style={{ color: v('--color-text-label'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Gesamt</div>
-                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent') }}>{rec.reasoning.totalConsumption.toLocaleString("de-DE")} kWh</div>
+                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary') }}>{rec.reasoning.totalConsumption.toLocaleString("de-DE")} kWh</div>
                   </div>
                   <div>
                     <div style={{ color: v('--color-text-label'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachfläche nutzbar</div>
@@ -267,7 +267,7 @@ export default function Empfehlung() {
                   </div>
                   <div>
                     <div style={{ color: v('--color-text-label'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Eigenverbrauch</div>
-                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent') }}>{rec.reasoning.eigenverbrauch}%</div>
+                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary') }}>{rec.reasoning.eigenverbrauch}%</div>
                   </div>
                   {rec.speicherKwh > 0 && (
                     <div>
@@ -289,7 +289,7 @@ export default function Empfehlung() {
             {/* CTA */}
             <button onClick={() => goToResult(rec.kwp, rec.speicherIdx)} style={{
               width: "100%", padding: "14px", borderRadius: v('--radius-button-lg'), fontSize: 15, fontWeight: 700,
-              background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+              background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               fontFamily: v('--font-text'), marginBottom: 16,
             }}>
               Ergebnis anzeigen →

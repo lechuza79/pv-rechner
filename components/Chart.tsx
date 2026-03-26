@@ -35,7 +35,7 @@ export default function Chart({ scenarios, kosten }: { scenarios: { id: string; 
             <polyline points={pts} fill="none" stroke={s.color} strokeWidth={2.5} strokeLinejoin="round" opacity={s.id === "realistic" ? 1 : 0.45} />
             {s.data.be && (
               <>
-                <circle cx={x(s.data.be.i)} cy={y(s.data.be.kum)} r={4.5} fill={s.color} stroke="var(--color-bg-hero)" strokeWidth={2} />
+                <circle cx={x(s.data.be.i)} cy={y(s.data.be.kum)} r={4.5} fill={s.color} stroke="var(--color-bg)" strokeWidth={2} />
                 <text x={x(s.data.be.i)} y={y(s.data.be.kum) - 11} textAnchor="middle" fontSize={11} fontWeight="700" fill={s.color} fontFamily="var(--font-mono)">{s.data.be.i}J</text>
               </>
             )}

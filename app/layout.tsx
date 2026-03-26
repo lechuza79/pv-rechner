@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     type: "website",
     url: BASE_URL,
   },
+  other: {
+    "theme-color": "#FFFFFF",
+  },
 };
 
 const softwareAppJsonLd = {

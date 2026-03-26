@@ -32,21 +32,21 @@ function isColor(value: string) {
 // Sample chart data for demo
 const sampleScenarios = [
   {
-    id: "pessimistic", color: "#ef4444",
+    id: "pessimistic", color: "#EF4444",
     data: {
       years: Array.from({ length: 26 }, (_, i) => ({ i, kum: -15000 + i * 700 })),
       be: { i: 21, kum: 0 },
     },
   },
   {
-    id: "realistic", color: "#22c55e",
+    id: "realistic", color: "#00D950",
     data: {
       years: Array.from({ length: 26 }, (_, i) => ({ i, kum: -15000 + i * 1100 })),
       be: { i: 14, kum: 0 },
     },
   },
   {
-    id: "optimistic", color: "#3b82f6",
+    id: "optimistic", color: "#1365EA",
     data: {
       years: Array.from({ length: 26 }, (_, i) => ({ i, kum: -15000 + i * 1500 })),
       be: { i: 10, kum: 0 },
@@ -247,7 +247,7 @@ export default function ThemeClient() {
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <button style={{
               padding: "14px", borderRadius: v('--radius-button-lg'), fontSize: 15, fontWeight: 700,
-              background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+              background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               fontFamily: v('--font-text'), width: "100%",
             }}>
               Primary CTA — Ergebnis anzeigen →
@@ -261,7 +261,7 @@ export default function ThemeClient() {
               </button>
               <button style={{
                 flex: 1, padding: "10px 32px", borderRadius: v('--radius-button'), fontSize: 14, fontWeight: 700,
-                background: v('--color-accent'), border: "none", color: v('--color-text-black'), cursor: "pointer",
+                background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               }}>
                 Weiter →
               </button>

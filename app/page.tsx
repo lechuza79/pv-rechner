@@ -28,7 +28,7 @@ export default function Home() {
               </div>
               <div style={{
                 marginTop: 12, display: "inline-block", padding: "8px 16px", borderRadius: v('--radius-button'),
-                fontSize: 13, fontWeight: 700, background: v('--color-accent'), color: v('--color-text-black'),
+                fontSize: 13, fontWeight: 700, background: v('--color-accent'), color: v('--color-text-on-accent'),
               }}>
                 Empfehlung starten →
               </div>

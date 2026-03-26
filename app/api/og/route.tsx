@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
     new URL("/fonts/JetBrainsMono-Bold.ttf", req.nextUrl.origin)
   ).then(r => r.arrayBuffer());
 
-  const amortColor = amortYears !== null ? "#22c55e" : "#ef4444";
+  const amortColor = amortYears !== null ? "#1365EA" : "#EF4444";
   const amortText = amortYears !== null ? `${amortYears}` : ">25";
   const renditeStr = `${rendite25j > 0 ? "+" : ""}${fmt(rendite25j)}`;
   const savingsStr = `${avgSavings > 0 ? "+" : ""}${fmt(avgSavings)}`;
@@ -68,17 +68,17 @@ export async function GET(req: NextRequest) {
       <div style={{
         width: "100%", height: "100%", display: "flex", flexDirection: "column",
         justifyContent: "space-between", padding: "48px 56px",
-        background: "#0c0c0c", color: "#f0f0f0",
+        background: "#FFFFFF", color: "#3F3F3F",
       }}>
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: 24, fontWeight: 700, color: "#888" }}>PV Rechner</span>
-          <span style={{ fontSize: 20, color: "#555" }}>pvrechner.de</span>
+          <span style={{ fontSize: 24, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
+          <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
         </div>
 
         {/* Main metric */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <span style={{ fontSize: 22, color: "#888", letterSpacing: 1 }}>
+          <span style={{ fontSize: 22, color: "#777777", letterSpacing: 1 }}>
             AMORTISATION IN
           </span>
           <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginTop: 8 }}>
@@ -96,13 +96,13 @@ export async function GET(req: NextRequest) {
           {cards.map((card) => (
             <div key={card.label} style={{
               display: "flex", flexDirection: "column", alignItems: "center",
-              padding: "16px 28px", background: "#151515",
-              border: "1px solid #252525", borderRadius: 12, minWidth: 120,
+              padding: "16px 28px", background: "#F8F8F8",
+              border: "1px solid #E9E9E9", borderRadius: 12, minWidth: 120,
             }}>
-              <span style={{ fontSize: 22, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#f0f0f0" }}>
+              <span style={{ fontSize: 22, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#3F3F3F" }}>
                 {card.value}
               </span>
-              <span style={{ fontSize: 14, color: "#777", marginTop: 4, letterSpacing: 1 }}>
+              <span style={{ fontSize: 14, color: "#777777", marginTop: 4, letterSpacing: 1 }}>
                 {card.label}
               </span>
             </div>
@@ -113,19 +113,19 @@ export async function GET(req: NextRequest) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
           <div style={{ display: "flex", gap: 40 }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 14, color: "#777", letterSpacing: 1 }}>RENDITE 25 J.</span>
-              <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#f0f0f0" }}>
+              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>RENDITE 25 J.</span>
+              <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: rendite25j > 0 ? "#00D950" : "#EF4444" }}>
                 {`${renditeStr} \u20AC`}
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <span style={{ fontSize: 14, color: "#777", letterSpacing: 1 }}>ERSPARNIS / JAHR</span>
-              <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#f0f0f0" }}>
+              <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>ERSPARNIS / JAHR</span>
+              <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: avgSavings > 0 ? "#00D950" : "#3F3F3F" }}>
                 {`${savingsStr} \u20AC`}
               </span>
             </div>
           </div>
-          <span style={{ fontSize: 16, color: "#555" }}>
+          <span style={{ fontSize: 16, color: "#949494" }}>
             Ehrlich berechnet. Ohne Leadfunnel.
           </span>
         </div>

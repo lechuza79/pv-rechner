@@ -51,9 +51,9 @@ export const TRI = [
 export const EA_KM_PRESETS = [10000, 15000, 20000];
 
 export const SCENARIOS = [
-  { id: "pessimistic", label: "Pessimistisch", color: "#ef4444", strom: 0.01, evDelta: -5 },
-  { id: "realistic", label: "Realistisch", color: "#22c55e", strom: 0.03, evDelta: 0 },
-  { id: "optimistic", label: "Optimistisch", color: "#3b82f6", strom: 0.05, evDelta: 5 },
+  { id: "pessimistic", label: "Pessimistisch", color: "#EF4444", strom: 0.01, evDelta: -5 },
+  { id: "realistic", label: "Realistisch", color: "#00D950", strom: 0.03, evDelta: 0 },
+  { id: "optimistic", label: "Optimistisch", color: "#1365EA", strom: 0.05, evDelta: 5 },
 ];
 
 export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "bl"];
