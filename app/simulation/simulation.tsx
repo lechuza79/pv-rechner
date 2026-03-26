@@ -36,12 +36,12 @@ export default function LiveSimulation() {
   const [wpActive, setWpActive] = useState(false);
   const [eaActive, setEaActive] = useState(false);
 
-  const household = useMemo<HouseholdProfile>(() => {
-    let annual = PERSONEN[personenIdx].verbrauch;
-    if (wpActive) annual += 3500;
-    if (eaActive) annual += 15000 * 0.18; // 15.000 km × 0.18 kWh/km
-    return { annualKwh: annual, tagQuote: NUTZUNG[nutzungIdx].tagQuote };
-  }, [personenIdx, nutzungIdx, wpActive, eaActive]);
+  const household = useMemo<HouseholdProfile>(() => ({
+    baseKwh: PERSONEN[personenIdx].verbrauch,
+    tagQuote: NUTZUNG[nutzungIdx].tagQuote,
+    wpActive,
+    eaActive,
+  }), [personenIdx, nutzungIdx, wpActive, eaActive]);
 
   // PLZ lookup + weather fetch
   const fetchWeather = useCallback(async (lat: number, lon: number) => {
@@ -224,7 +224,7 @@ export default function LiveSimulation() {
               </button>
             </div>
             <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
-              Jahresverbrauch: ~{Math.round(household.annualKwh).toLocaleString("de-DE")} kWh
+              Jahresverbrauch: ~{Math.round(household.baseKwh + (wpActive ? 3500 : 0) + (eaActive ? 2700 : 0)).toLocaleString("de-DE")} kWh
             </div>
           </div>
         )}
