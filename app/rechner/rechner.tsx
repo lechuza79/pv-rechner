@@ -223,33 +223,31 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 24, position: "relative" }}>
-          {/* Auth indicator */}
-          {!authLoading && (
-            <div style={{ position: "absolute", top: 0, right: 0 }}>
-              {user ? (
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <Link href="/dashboard" style={{
-                    width: 28, height: 28, borderRadius: "50%", background: v('--color-accent-dim'),
-                    border: `1px solid ${v('--color-border-accent')}`, display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 12, fontWeight: 700, color: v('--color-accent'), textDecoration: "none",
-                  }}>
-                    {(user.email || "U")[0].toUpperCase()}
-                  </Link>
-                </div>
+        {/* Header — Navigation bar */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <Link href="/" style={{ textDecoration: "none", display: "inline-flex" }}><Logo height={22} /></Link>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <Link href="/rechner" style={{ fontSize: 13, fontWeight: 600, color: v('--color-accent'), textDecoration: "none" }}>Rechner</Link>
+            {!authLoading && (
+              user ? (
+                <Link href="/dashboard" style={{ fontSize: 13, fontWeight: 600, color: v('--color-accent'), textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}>
+                  ◉ Einloggen
+                </Link>
               ) : (
                 <button onClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }} style={{
-                  background: "none", border: "none", color: v('--color-text-muted'), fontSize: 13, cursor: "pointer",
-                  padding: "4px 0", fontFamily: v('--font-text'),
+                  background: "none", border: "none", color: v('--color-accent'), fontSize: 13, fontWeight: 600, cursor: "pointer",
+                  padding: 0, fontFamily: v('--font-text'),
                 }}>
-                  Anmelden
+                  ◉ Einloggen
                 </button>
-              )}
-            </div>
-          )}
-          <Link href="/" style={{ textDecoration: "none", display: "inline-flex" }}><Logo height={24} /></Link>
-          <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2, marginTop: 8 }}>Lohnt sich Photovoltaik?</h1>
+              )
+            )}
+          </div>
+        </div>
+
+        {/* Title */}
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
           <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Ehrlich berechnet. Ohne Leadfunnel.</p>
         </div>
 
@@ -415,7 +413,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             {/* Hero with amortisation */}
             <div style={{
               textAlign: "center", padding: "24px 20px 20px", marginBottom: 16,
-              background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}`,
+              background: v('--color-bg-muted'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border')}`,
             }}>
               <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>
                 Deine PV-Anlage amortisiert sich in
@@ -554,27 +552,27 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {/* Quick Settings */}
             <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Was wäre wenn?</div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Starke Einflussfaktoren</div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <button onClick={() => { setWp(wp === "nein" ? "ja" : "nein"); setOEv(null); }} style={{
-                  padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                  background: wp !== "nein" ? v('--color-accent-dim') : v('--color-bg'),
-                  border: wp !== "nein" ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                  padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, cursor: "pointer",
+                  background: wp !== "nein" ? v('--color-bg-accent') : v('--color-bg'),
+                  border: wp !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border')}`,
                   color: wp !== "nein" ? v('--color-accent') : v('--color-text-secondary'),
                   display: "flex", alignItems: "center", gap: 6,
                 }}>
-                  ⚡ Wärmepumpe
-                  {wp !== "nein" && <span style={{ fontSize: 10, opacity: 0.7 }}>✓</span>}
+                  Wärmepumpe
+                  <span style={{ width: 14, height: 14, borderRadius: 3, border: wp !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: wp !== "nein" ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: v('--color-accent') }}>{wp !== "nein" ? "✓" : ""}</span>
                 </button>
                 <button onClick={() => { setEa(ea === "nein" ? "ja" : "nein"); setOEv(null); }} style={{
-                  padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                  background: ea !== "nein" ? v('--color-accent-dim') : v('--color-bg'),
-                  border: ea !== "nein" ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                  padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, cursor: "pointer",
+                  background: ea !== "nein" ? v('--color-bg-accent') : v('--color-bg'),
+                  border: ea !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border')}`,
                   color: ea !== "nein" ? v('--color-accent') : v('--color-text-secondary'),
                   display: "flex", alignItems: "center", gap: 6,
                 }}>
-                  🚗 E-Auto
-                  {ea !== "nein" && <span style={{ fontSize: 10, opacity: 0.7 }}>✓</span>}
+                  E-Auto
+                  <span style={{ width: 14, height: 14, borderRadius: 3, border: ea !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: ea !== "nein" ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: v('--color-accent') }}>{ea !== "nein" ? "✓" : ""}</span>
                 </button>
                 <button onClick={() => {
                   if (oKosten !== null) {
@@ -588,14 +586,15 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     setSpeicher(speicher === 0 ? 2 : 0); setOEv(null);
                   }
                 }} style={{
-                  padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                  background: speicher > 0 ? v('--color-accent-dim') : v('--color-bg'),
-                  border: speicher > 0 ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                  padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, cursor: "pointer",
+                  background: speicher > 0 ? v('--color-bg-accent') : v('--color-bg'),
+                  border: speicher > 0 ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border')}`,
                   color: speicher > 0 ? v('--color-accent') : v('--color-text-secondary'),
                   display: "flex", alignItems: "center", gap: 6,
                 }}>
-                  🔋 Speicher
-                  {speicher > 0 && <span style={{ fontSize: 10, opacity: 0.7 }}>{spKwh} kWh ✓</span>}
+                  Speicher
+                  {speicher > 0 && <span style={{ fontSize: 11 }}>{spKwh} kWh</span>}
+                  <span style={{ width: 14, height: 14, borderRadius: 3, border: speicher > 0 ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: speicher > 0 ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: v('--color-accent') }}>{speicher > 0 ? "✓" : ""}</span>
                 </button>
               </div>
               {spKostenPrompt && (
