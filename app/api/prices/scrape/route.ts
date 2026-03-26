@@ -34,21 +34,37 @@ function scrapeFromHtml(html: string): ScrapedPrices {
   const $ = cheerio.load(html);
   const result: ScrapedPrices = { pvBySize: [], batteryPerKwh: null };
 
-  // Strategy 1: Find tables with "kWp" and "€/kWp" or "Kosten pro kWp" columns
+  // Strategy 1: Find tables with "kWp" and "Kosten pro kWp" columns
+  // Note: solaranlagen-portal.com uses <td> for headers (no <th>), so check first row text
   $("table").each((_, table) => {
-    const headerText = $(table).find("th, thead td").text().toLowerCase();
-    if (!headerText.includes("kwp") || (!headerText.includes("pro kwp") && !headerText.includes("€/kwp"))) return;
+    const allRows = $(table).find("tr");
+    const firstRowText = allRows.first().text().toLowerCase();
+    // Check if first row contains header indicators
+    if (!firstRowText.includes("kwp") || (!firstRowText.includes("pro kwp") && !firstRowText.includes("€/kwp"))) return;
 
-    $(table).find("tbody tr, tr").each((_, row) => {
+    // Find the column index for "Kosten pro kWp" dynamically
+    const headerCells = allRows.first().find("td, th");
+    let priceColIdx = -1;
+    headerCells.each((i, cell) => {
+      const t = $(cell).text().toLowerCase();
+      if (t.includes("pro kwp") || t.includes("€/kwp")) {
+        priceColIdx = i;
+        return false; // take first match
+      }
+    });
+    if (priceColIdx < 0) priceColIdx = 3; // fallback to 4th column
+
+    // Parse data rows (skip first row = headers)
+    allRows.slice(1).each((_, row) => {
       const cells = $(row).find("td");
-      if (cells.length < 4) return;
+      if (cells.length <= priceColIdx) return;
 
       const sizeText = $(cells[0]).text().trim();
-      const pricePerKwpText = $(cells[3]).text().trim(); // "Ø Kosten pro kWp" is typically 4th column
+      const pricePerKwpText = $(cells[priceColIdx]).text().trim();
 
-      // Extract kWp value: "5 kWp", "10 kWp", etc.
+      // Extract kWp value: "3 kWp", "10 kWp", etc.
       const kwpMatch = sizeText.match(/([\d,.]+)\s*kwp/i);
-      // Extract price: "1.530€", "1.530 €", "1530"
+      // Extract price: "1.730€", "1.530 €", "1530"
       const priceMatch = pricePerKwpText.match(/([\d.]+(?:,\d+)?)\s*€?/);
 
       if (kwpMatch && priceMatch) {
@@ -129,6 +145,8 @@ async function getLastPrices(): Promise<{ pvPriceSmall: number; pvPriceLarge: nu
   const { data } = await supabase
     .from("market_prices")
     .select("pv_price_small, pv_price_large, battery_per_kwh")
+    .neq("source", "SCRAPE_ERROR")
+    .gt("pv_price_small", 0)
     .order("valid_from", { ascending: false })
     .limit(1)
     .single();

@@ -26,6 +26,8 @@ export async function GET() {
     const { data, error } = await supabase
       .from("market_prices")
       .select("*")
+      .neq("source", "SCRAPE_ERROR")
+      .gt("pv_price_small", 0)
       .lte("valid_from", new Date().toISOString().split("T")[0])
       .order("valid_from", { ascending: false })
       .limit(1)
