@@ -58,6 +58,33 @@ export default function Home() {
           </Link>
         </div>
 
+        {/* Weitere Tools */}
+        <div style={{ fontSize: 11, fontWeight: 600, color: v('--color-text-faint'), textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10, textAlign: "center" }}>
+          Weitere Tools
+        </div>
+        <div style={{ marginBottom: 32 }}>
+          <Link href="/simulation" style={{ textDecoration: "none" }}>
+            <div style={{
+              background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "16px 20px", cursor: "pointer",
+              border: `1px solid ${v('--color-border')}`,
+            }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 4 }}>
+                Live Simulation
+              </div>
+              <div style={{ fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.5 }}>
+                Sieh in Echtzeit, was eine PV-Anlage an deinem Standort gerade produzieren würde.
+              </div>
+              <div style={{
+                marginTop: 10, display: "inline-block", padding: "6px 12px", borderRadius: v('--radius-sm'),
+                fontSize: 12, fontWeight: 600, color: v('--color-accent'),
+                border: `1px solid ${v('--color-border-accent')}`,
+              }}>
+                Jetzt testen →
+              </div>
+            </div>
+          </Link>
+        </div>
+
         {/* Keine Daten */}
         <div style={{ textAlign: "center", fontSize: 12, color: v('--color-text-faint'), marginBottom: 24, lineHeight: 1.6 }}>
           Keine Datensammlung · Keine Werbung · Keine Anmeldung nötig

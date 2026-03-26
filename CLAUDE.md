@@ -164,6 +164,15 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Neue Tokens: `--color-positive`, `--color-text-on-accent`, `--color-accent-dark/light/bg`
 - [x] OG-Image auf Light Theme + Solar Check Branding
 
+**WP 5: Live Simulation (Phase 1) ✅ (done)**
+- [x] Open-Meteo Wetter-API-Route (`/api/weather`) mit In-Memory-Cache (5 Min TTL)
+- [x] PV-Momentanleistung: NOCT-Temperaturmodell + Temperaturkoeffizient
+- [x] Seite `/simulation`: PLZ → Wetter-Card → Anlagen-Grid (5/8/10/15 kWp) → Tagesverlauf-Chart (SVG)
+- [x] Auto-Refresh alle 15 Min, Nacht-Modus, PLZ via URL-Parameter
+- [x] Hub-Startseite: "Weitere Tools" Sektion mit Link zu Live Simulation
+- [ ] Phase 2: Verbrauchsprofil-Overlay (WP + E-Auto + Haushalt → Live-Eigenverbrauch)
+- [ ] Phase 3: Mehrtägige Simulation (Open-Meteo Forecast bis 16 Tage)
+
 ### Phase 4: Content & Reichweite
 - [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
@@ -225,6 +234,7 @@ pv-rechner/
 ├── lib/
 │   ├── constants.ts                # Alle Konstanten (ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, etc.)
 │   ├── calc.ts                     # Pure Berechnungsfunktionen (EV, Amortisation, Kosten, URL-Helpers)
+│   ├── simulation.ts               # Live-Simulation: PV-Momentanleistung aus Wetterdaten (NOCT-Modell)
 │   ├── recommend.ts                # Empfehlungs-Algorithmus (optimale kWp + Speicher aus Haushalt + Dach)
 │   ├── types.ts                    # CalcParams, CalculationRow, Konvertierung
 │   ├── supabase-server.ts          # Supabase Server-Client mit Service Key
@@ -249,6 +259,7 @@ pv-rechner/
     │   └── empfehlung.tsx         # "use client" — Empfehlungs-Flow (3 Steps + Zwischenseite)
     ├── auth/callback/route.ts     # Magic Link Callback Handler
     ├── api/pvgis/route.ts         # PVGIS API-Proxy mit Supabase-Cache
+    ├── api/weather/route.ts       # Open-Meteo Proxy mit In-Memory-Cache (Live Simulation)
     ├── api/calculations/route.ts  # GET (Liste), POST (Speichern)
     ├── api/calculations/[id]/route.ts # GET, PUT, DELETE einzelne Berechnung
     ├── dashboard/
@@ -257,6 +268,9 @@ pv-rechner/
     ├── admin/theme/
     │   ├── page.tsx               # Server Component: Admin-Email-Check + Redirect
     │   └── client.tsx             # Client Component: Design System Showcase
+    ├── simulation/
+    │   ├── page.tsx               # Metadata + Suspense + <LiveSimulation />
+    │   └── simulation.tsx         # "use client" — Live PV Simulation (Wetter + Grid + Chart)
     ├── methodik/page.tsx          # Berechnungsmethodik (statisch)
     ├── impressum/page.tsx         # Impressum (statisch)
     └── datenschutz/page.tsx       # Datenschutzerklärung (statisch)
