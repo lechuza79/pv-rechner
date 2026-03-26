@@ -8,11 +8,11 @@ export default function TriToggle({ options, value, onChange, label }: { options
       <div style={{ display: "flex", gap: 6 }}>
         {options.map(o => (
           <button key={o.id} onClick={() => onChange(o.id)} style={{
-            flex: 1, padding: "10px 8px", borderRadius: v('--radius-button'), fontSize: 13, fontWeight: 600,
+            flex: 1, padding: "10px 8px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
             cursor: "pointer", textAlign: "center",
-            background: value === o.id ? v('--color-accent-dim') : v('--color-bg-input'),
-            border: value === o.id ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border-input')}`,
-            color: value === o.id ? v('--color-accent') : v('--color-text-tertiary'),
+            background: value === o.id ? v('--color-accent-dim') : v('--color-bg-muted'),
+            border: value === o.id ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+            color: value === o.id ? v('--color-accent') : v('--color-text-muted'),
           }}>{o.label}</button>
         ))}
       </div>

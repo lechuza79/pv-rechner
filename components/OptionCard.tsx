@@ -5,9 +5,9 @@ export default function OptionCard({ selected, onClick, icon = null, label, sub 
   return (
     <button onClick={onClick} style={{
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      padding: "14px 8px", borderRadius: v('--radius-card'), cursor: "pointer",
-      background: selected ? v('--color-accent-dim') : v('--color-bg-input'),
-      border: selected ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border-input')}`,
+      padding: "14px 8px", borderRadius: v('--radius-md'), cursor: "pointer",
+      background: selected ? v('--color-accent-dim') : v('--color-bg-muted'),
+      border: selected ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
       color: v('--color-text-primary'), textAlign: "center", minHeight: 78, width: "100%",
     }}>
       {icon && <div style={{ fontSize: 18, marginBottom: 3 }}>{icon}</div>}

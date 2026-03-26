@@ -1,78 +1,58 @@
 // Central theme tokens — Single Source of Truth for all design values.
 // Used by getCssVariables() (injected in layout.tsx) and v() helper (for inline styles).
 // For whitelabeling: swap token values per tenant, UI updates automatically.
+//
+// v2: Consolidated from Figma design. See theme-v1.ts for previous token set.
 
 export const tokens = {
-  // Backgrounds
-  '--color-bg': '#FFFFFF',
-  '--color-bg-card': '#FFFFFF',
-  '--color-bg-input': '#F8F8F8',
-  '--color-bg-hero': '#F1F6FE',
-  '--color-bg-subtle': 'rgba(0,0,0,0.02)',
-  '--color-bg-chart': '#FFFFFF',
+  // ─── Backgrounds (3) ────────────────────────────────────────────────────────
+  '--color-bg': '#FFFFFF',              // Page, cards, panels, chart
+  '--color-bg-muted': '#F8F8F8',        // Inputs, subtle areas, overlays
+  '--color-bg-accent': '#F1F6FE',       // Hero section, accent backgrounds
 
-  // Borders
-  '--color-border': '#E9E9E9',
-  '--color-border-input': '#E9E9E9',
-  '--color-border-subtle': '#F0F0F0',
-  '--color-border-muted': '#E0E0E0',
-  '--color-border-hero': '#BCD6FF',
+  // ─── Borders (3) ───────────────────────────────────────────────────────────
+  '--color-border': '#E9E9E9',          // Default borders, cards, inputs
+  '--color-border-muted': '#E0E0E0',    // Muted/secondary borders, toggles
+  '--color-border-accent': '#BCD6FF',   // Accent borders, hero, icon buttons
 
-  // Accent (blue)
-  '--color-accent': '#1365EA',
-  '--color-accent-dim': 'rgba(19,101,234,0.08)',
-  '--color-accent-dim-15': 'rgba(19,101,234,0.12)',
-  '--color-accent-border': '#BCD6FF',
-  '--color-accent-border-strong': '#6A9EF2',
-  '--color-accent-dark': '#073C93',
-  '--color-accent-light': '#6A9EF2',
-  '--color-accent-bg': '#F1F6FE',
+  // ─── Accent — Blue (5) ─────────────────────────────────────────────────────
+  '--color-accent': '#1365EA',          // CTAs, toggles, active states, hero number
+  '--color-accent-dim': 'rgba(19,101,234,0.08)',  // Selected card backgrounds
+  '--color-accent-dark': '#073C93',     // Hover, dark accent text
+  '--color-accent-light': '#6A9EF2',    // Light accent, secondary interactive
 
-  // Semantic
-  '--color-negative': '#EF4444',
-  '--color-negative-dim': 'rgba(239,68,68,0.06)',
-  '--color-negative-border': 'rgba(239,68,68,0.2)',
-  '--color-optimistic': '#1365EA',
-  '--color-positive': '#00D950',
+  // ─── Semantic (4) ──────────────────────────────────────────────────────────
+  '--color-positive': '#00D950',        // Positive values (Rendite, Ersparnis)
+  '--color-negative': '#EF4444',        // Negative values (Kosten, Verluste)
+  '--color-negative-dim': 'rgba(239,68,68,0.06)',  // Negative background
+  '--color-negative-border': 'rgba(239,68,68,0.2)', // Negative border
 
-  // Chart
+  // ─── Chart (4) ─────────────────────────────────────────────────────────────
   '--color-chart-positive-bg': 'rgba(0,217,80,0.08)',
   '--color-chart-negative-bg': 'rgba(239,68,68,0.05)',
   '--color-chart-grid': '#E9E9E9',
   '--color-chart-zero': '#BEBEBE',
 
-  // Text
-  '--color-text-primary': '#3F3F3F',
-  '--color-text-white': '#1A1A1A',
-  '--color-text-secondary': '#777777',
-  '--color-text-tertiary': '#949494',
-  '--color-text-muted': '#949494',
-  '--color-text-faint': '#BEBEBE',
-  '--color-text-disabled': '#CCCCCC',
-  '--color-text-label': '#777777',
-  '--color-text-ccc': '#777777',
-  '--color-text-bbb': '#949494',
-  '--color-text-aaa': '#777777',
-  '--color-text-ddd': '#3F3F3F',
-  '--color-text-on-accent': '#FFFFFF',
+  // ─── Text (5) ──────────────────────────────────────────────────────────────
+  '--color-text-primary': '#3F3F3F',    // Headings, strong text, values
+  '--color-text-secondary': '#777777',  // Body text, labels, descriptions
+  '--color-text-muted': '#949494',      // Dimmed text, hints
+  '--color-text-faint': '#BEBEBE',      // Very light text, placeholders
+  '--color-text-on-accent': '#FFFFFF',  // Text on accent-colored backgrounds
 
-  // Progress
+  // ─── Progress (1) ──────────────────────────────────────────────────────────
   '--color-progress-inactive': '#E9E9E9',
 
-  // Fonts
+  // ─── Fonts (2) ─────────────────────────────────────────────────────────────
   '--font-text': "'DM Sans',system-ui,sans-serif",
   '--font-mono': "'JetBrains Mono',monospace",
 
-  // Radii
-  '--radius-card': '14px',
-  '--radius-card-lg': '16px',
-  '--radius-card-xl': '20px',
-  '--radius-button': '10px',
-  '--radius-button-lg': '12px',
-  '--radius-input': '6px',
-  '--radius-pill': '8px',
+  // ─── Radii (3) ─────────────────────────────────────────────────────────────
+  '--radius-sm': '6px',                 // Small: inputs, checkboxes, pills
+  '--radius-md': '12px',                // Medium: buttons, cards, panels
+  '--radius-lg': '20px',                // Large: hero cards, outer containers
 
-  // Layout
+  // ─── Layout (1) ────────────────────────────────────────────────────────────
   '--page-max-width': '480px',
 } as const;
 

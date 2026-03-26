@@ -27,7 +27,7 @@ const S = {
     fontSize: 22,
     fontWeight: 800,
     letterSpacing: "-0.02em",
-    color: v('--color-text-white'),
+    color: v('--color-text-primary'),
     lineHeight: 1.2,
     marginBottom: 8,
   },
@@ -40,30 +40,30 @@ const S = {
   h2: {
     fontSize: 16,
     fontWeight: 700,
-    color: v('--color-text-white'),
+    color: v('--color-text-primary'),
     marginTop: 32,
     marginBottom: 10,
   },
   p: {
     fontSize: 13,
-    color: v('--color-text-tertiary'),
+    color: v('--color-text-muted'),
     lineHeight: 1.7,
     marginBottom: 10,
   },
   card: {
-    background: v('--color-bg-card'),
-    borderRadius: v('--radius-button-lg'),
+    background: v('--color-bg'),
+    borderRadius: v('--radius-md'),
     padding: "14px 16px",
     border: `1px solid ${v('--color-border')}`,
     marginBottom: 12,
     fontSize: 13,
-    color: v('--color-text-tertiary'),
+    color: v('--color-text-muted'),
     lineHeight: 1.7,
   },
   label: {
     fontSize: 11,
     fontWeight: 700,
-    color: v('--color-text-label'),
+    color: v('--color-text-secondary'),
     textTransform: "uppercase" as const,
     letterSpacing: "0.04em",
     marginBottom: 6,
@@ -76,11 +76,11 @@ const S = {
   },
   accent: { color: v('--color-accent'), fontWeight: 600 },
   muted: { color: v('--color-text-muted') },
-  link: { color: v('--color-optimistic'), textDecoration: "none" },
+  link: { color: v('--color-accent'), textDecoration: "none" },
   footer: {
     marginTop: 48,
     paddingTop: 20,
-    borderTop: `1px solid ${v('--color-border-subtle')}`,
+    borderTop: `1px solid ${v('--color-border')}`,
     display: "flex",
     justifyContent: "center",
     gap: 20,
@@ -286,7 +286,7 @@ export default function MethodikPage() {
           <br />
           <span style={S.accent}>Realistisch:</span> Strom +3 %/Jahr
           <br />
-          <span style={{ color: v('--color-optimistic'), fontWeight: 600 }}>Optimistisch:</span>{" "}
+          <span style={{ color: v('--color-accent'), fontWeight: 600 }}>Optimistisch:</span>{" "}
           Strom +5 %/Jahr
           <br />
           <br />

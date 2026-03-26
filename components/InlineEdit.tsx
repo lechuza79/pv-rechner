@@ -29,7 +29,7 @@ export default function InlineEdit({ value, onCommit, unit, step = 1, min = 0, m
         style={{
           cursor: "pointer", borderBottom: `1px dashed ${v('--color-text-faint')}`,
           padding: "2px 0 3px", display: "inline-flex", alignItems: "baseline", gap: 2,
-          color: v('--color-text-white'), fontFamily: v('--font-mono'), fontWeight: 700,
+          color: v('--color-text-primary'), fontFamily: v('--font-mono'), fontWeight: 700,
           fontSize: "inherit", minHeight: 24, lineHeight: 1.4,
         }}
         title="Klicken zum Bearbeiten"
@@ -51,7 +51,7 @@ export default function InlineEdit({ value, onCommit, unit, step = 1, min = 0, m
           width, textAlign: "right", fontSize: "inherit", fontWeight: 700,
           fontFamily: v('--font-mono'), color: v('--color-accent'),
           background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`,
-          borderRadius: v('--radius-input'), padding: "3px 6px", outline: "none",
+          borderRadius: v('--radius-sm'), padding: "3px 6px", outline: "none",
         }}
       />
       {unit && <span style={{ color: v('--color-text-secondary'), fontWeight: 500 }}>{unit}</span>}

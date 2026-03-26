@@ -118,7 +118,7 @@ export default function DashboardClient({
 
         {/* Neue Berechnung Button */}
         <Link href="/" style={{
-          display: "block", width: "100%", padding: "14px", borderRadius: v('--radius-card'),
+          display: "block", width: "100%", padding: "14px", borderRadius: v('--radius-md'),
           fontSize: 14, fontWeight: 700, textAlign: "center",
           background: v('--color-accent'), color: v('--color-text-on-accent'), textDecoration: "none",
           marginBottom: 20,
@@ -129,8 +129,8 @@ export default function DashboardClient({
         {/* Pending save notification */}
         {pendingSaved && (
           <div style={{
-            background: v('--color-accent-dim'), borderRadius: v('--radius-button-lg'), padding: "12px 16px",
-            border: `1px solid ${v('--color-accent-border')}`, marginBottom: 16,
+            background: v('--color-accent-dim'), borderRadius: v('--radius-md'), padding: "12px 16px",
+            border: `1px solid ${v('--color-border-accent')}`, marginBottom: 16,
             fontSize: 13, fontWeight: 600, color: v('--color-accent'), textAlign: "center",
           }}>
             ✓ Berechnung gespeichert!
@@ -139,7 +139,7 @@ export default function DashboardClient({
 
         {calculations.length === 0 && !pendingSaved ? (
           <div style={{
-            background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "32px 20px",
+            background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "32px 20px",
             border: `1px solid ${v('--color-border')}`, textAlign: "center",
           }}>
             <div style={{ fontSize: 14, color: v('--color-text-secondary'), marginBottom: 4 }}>
@@ -153,8 +153,8 @@ export default function DashboardClient({
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {calculations.map(calc => (
               <div key={calc.id} style={{
-                background: v('--color-bg-card'), borderRadius: v('--radius-card'), padding: "16px",
-                border: editingId === calc.id ? `1px solid ${v('--color-accent-border-strong')}` : `1px solid ${v('--color-border')}`,
+                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "16px",
+                border: editingId === calc.id ? `1px solid ${v('--color-accent-light')}` : `1px solid ${v('--color-border')}`,
                 transition: "border-color 0.2s",
               }}>
                 {editingId === calc.id ? (
@@ -166,8 +166,8 @@ export default function DashboardClient({
                       placeholder="Name der Berechnung"
                       autoFocus
                       style={{
-                        width: "100%", padding: "8px 10px", borderRadius: v('--radius-pill'), fontSize: 14, fontWeight: 600,
-                        background: v('--color-bg-input'), border: `1px solid ${v('--color-border-input')}`, color: v('--color-text-primary'),
+                        width: "100%", padding: "8px 10px", borderRadius: v('--radius-sm'), fontSize: 14, fontWeight: 600,
+                        background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-primary'),
                         fontFamily: v('--font-text'), outline: "none", marginBottom: 8,
                       }}
                       onKeyDown={e => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") setEditingId(null); }}
@@ -177,23 +177,23 @@ export default function DashboardClient({
                       onChange={e => setEditDesc(e.target.value)}
                       placeholder="Beschreibung (optional)"
                       style={{
-                        width: "100%", padding: "8px 10px", borderRadius: v('--radius-pill'), fontSize: 13,
-                        background: v('--color-bg-input'), border: `1px solid ${v('--color-border-input')}`, color: v('--color-text-aaa'),
+                        width: "100%", padding: "8px 10px", borderRadius: v('--radius-sm'), fontSize: 13,
+                        background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-secondary'),
                         fontFamily: v('--font-text'), outline: "none", marginBottom: 10,
                       }}
                       onKeyDown={e => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") setEditingId(null); }}
                     />
                     <div style={{ display: "flex", gap: 8 }}>
                       <button onClick={saveEdit} style={{
-                        flex: 1, padding: "8px 12px", borderRadius: v('--radius-button'), fontSize: 13, fontWeight: 600,
+                        flex: 1, padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
                         background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
                         fontFamily: v('--font-text'),
                       }}>
                         Speichern
                       </button>
                       <button onClick={() => setEditingId(null)} style={{
-                        padding: "8px 12px", borderRadius: v('--radius-button'), fontSize: 13, fontWeight: 600,
-                        background: v('--color-bg-input'), border: `1px solid ${v('--color-border-input')}`, color: v('--color-text-secondary'), cursor: "pointer",
+                        padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+                        background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-secondary'), cursor: "pointer",
                         fontFamily: v('--font-text'),
                       }}>
                         Abbrechen
@@ -209,7 +209,7 @@ export default function DashboardClient({
                           {calc.name}
                         </div>
                         {calc.description && (
-                          <div style={{ fontSize: 12, color: v('--color-text-label'), marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          <div style={{ fontSize: 12, color: v('--color-text-secondary'), marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {calc.description}
                           </div>
                         )}
@@ -244,22 +244,22 @@ export default function DashboardClient({
 
                     <div style={{ display: "flex", gap: 8 }}>
                       <button onClick={() => handleLoad(calc)} style={{
-                        flex: 1, padding: "8px 12px", borderRadius: v('--radius-button'), fontSize: 13, fontWeight: 600,
-                        background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent-border')}`,
+                        flex: 1, padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+                        background: v('--color-accent-dim'), border: `1px solid ${v('--color-border-accent')}`,
                         color: v('--color-accent'), cursor: "pointer", fontFamily: v('--font-text'),
                       }}>
                         Laden
                       </button>
                       <button onClick={() => startEditing(calc)} style={{
-                        padding: "8px 12px", borderRadius: v('--radius-button'), fontSize: 13, fontWeight: 600,
-                        background: v('--color-bg-input'), border: `1px solid ${v('--color-border-input')}`,
+                        padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+                        background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
                         color: v('--color-text-secondary'), cursor: "pointer", fontFamily: v('--font-text'),
                       }}>
                         ✎
                       </button>
                       <button onClick={() => handleDelete(calc.id)} disabled={deleting === calc.id} style={{
-                        padding: "8px 12px", borderRadius: v('--radius-button'), fontSize: 13, fontWeight: 600,
-                        background: v('--color-bg-input'), border: `1px solid ${v('--color-border-input')}`,
+                        padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
+                        background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
                         color: deleting === calc.id ? v('--color-text-faint') : v('--color-text-secondary'), cursor: "pointer",
                         fontFamily: v('--font-text'),
                       }}>
