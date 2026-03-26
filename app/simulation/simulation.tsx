@@ -4,9 +4,11 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Logo from "../../components/Logo";
 import { v } from "../../lib/theme";
+import { PERSONEN, NUTZUNG } from "../../lib/constants";
 import {
   WeatherData,
   HourlyForecast,
+  HouseholdProfile,
   simulateAll,
   calcHourlyProduction,
   calcDailyEstimate,
@@ -27,6 +29,19 @@ export default function LiveSimulation() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [selectedKwp, setSelectedKwp] = useState(10);
+
+  // Household profile
+  const [personenIdx, setPersonenIdx] = useState(1); // Default: 2 Personen
+  const [nutzungIdx, setNutzungIdx] = useState(1);   // Default: Teils zuhause
+  const [wpActive, setWpActive] = useState(false);
+  const [eaActive, setEaActive] = useState(false);
+
+  const household = useMemo<HouseholdProfile>(() => {
+    let annual = PERSONEN[personenIdx].verbrauch;
+    if (wpActive) annual += 3500;
+    if (eaActive) annual += 15000 * 0.18; // 15.000 km × 0.18 kWh/km
+    return { annualKwh: annual, tagQuote: NUTZUNG[nutzungIdx].tagQuote };
+  }, [personenIdx, nutzungIdx, wpActive, eaActive]);
 
   // PLZ lookup + weather fetch
   const fetchWeather = useCallback(async (lat: number, lon: number) => {
@@ -75,10 +90,10 @@ export default function LiveSimulation() {
   }, [coords, fetchWeather]);
 
   // Derived data
-  const results = useMemo(() => weather ? simulateAll(weather) : [], [weather]);
+  const results = useMemo(() => weather ? simulateAll(weather, household) : [], [weather, household]);
   const hourlyPoints = useMemo(() =>
-    hourly && selectedKwp ? calcHourlyProduction(selectedKwp, hourly) : [],
-    [hourly, selectedKwp]
+    hourly && selectedKwp ? calcHourlyProduction(selectedKwp, hourly, household) : [],
+    [hourly, selectedKwp, household]
   );
   const dailyEstimate = useMemo(() =>
     hourly && selectedKwp ? calcDailyEstimate(selectedKwp, hourly) : 0,
@@ -156,6 +171,64 @@ export default function LiveSimulation() {
           </div>
         )}
 
+        {/* Household Profile */}
+        {weather && !error && (
+          <div className="fu" style={{ marginBottom: 16, padding: "14px 16px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg') }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
+              Dein Haushalt
+            </div>
+            {/* Personen */}
+            <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+              {PERSONEN.map((p, i) => (
+                <button key={i} onClick={() => setPersonenIdx(i)} style={{
+                  flex: 1, padding: "6px 0", fontSize: 12, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
+                  background: personenIdx === i ? v('--color-accent') : v('--color-bg-muted'),
+                  color: personenIdx === i ? v('--color-text-on-accent') : v('--color-text-secondary'),
+                  border: personenIdx === i ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
+                }}>
+                  {p.label} Pers.
+                </button>
+              ))}
+            </div>
+            {/* Nutzung */}
+            <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
+              {NUTZUNG.map((n, i) => (
+                <button key={i} onClick={() => setNutzungIdx(i)} style={{
+                  flex: 1, padding: "6px 2px", fontSize: 10, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
+                  background: nutzungIdx === i ? v('--color-accent') : v('--color-bg-muted'),
+                  color: nutzungIdx === i ? v('--color-text-on-accent') : v('--color-text-secondary'),
+                  border: nutzungIdx === i ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
+                  lineHeight: 1.2,
+                }}>
+                  {n.label}
+                </button>
+              ))}
+            </div>
+            {/* WP + E-Auto */}
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={() => setWpActive(!wpActive)} style={{
+                flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
+                background: wpActive ? v('--color-accent') : v('--color-bg-muted'),
+                color: wpActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
+                border: wpActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
+              }}>
+                Wärmepumpe {wpActive ? "✓" : ""}
+              </button>
+              <button onClick={() => setEaActive(!eaActive)} style={{
+                flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
+                background: eaActive ? v('--color-accent') : v('--color-bg-muted'),
+                color: eaActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
+                border: eaActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
+              }}>
+                E-Auto {eaActive ? "✓" : ""}
+              </button>
+            </div>
+            <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
+              Jahresverbrauch: ~{Math.round(household.annualKwh).toLocaleString("de-DE")} kWh
+            </div>
+          </div>
+        )}
+
         {/* Grid */}
         {weather && !error && weather.isDay && (
           <div className="fu" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
@@ -177,16 +250,26 @@ export default function LiveSimulation() {
                   {r.currentKw.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
                   <span style={{ fontSize: 13, fontWeight: 500, color: v('--color-text-muted'), marginLeft: 3 }}>kW</span>
                 </div>
-                {/* Capacity bar */}
-                <div style={{ height: 4, borderRadius: 2, background: v('--color-border'), marginTop: 8, overflow: "hidden" }}>
-                  <div style={{
-                    height: "100%", borderRadius: 2, width: `${Math.min(r.capacityPercent, 100)}%`,
-                    background: r.capacityPercent >= 50 ? v('--color-positive') : r.capacityPercent >= 20 ? v('--color-accent') : v('--color-text-muted'),
-                    transition: "width 0.3s ease",
-                  }} />
+                {/* Self-use bar: green = self-consumed, gray = surplus */}
+                <div style={{ height: 4, borderRadius: 2, background: v('--color-border'), marginTop: 8, overflow: "hidden", display: "flex" }}>
+                  {r.currentWatts > 0 && (
+                    <>
+                      <div style={{
+                        height: "100%", width: `${r.selfUsePercent}%`,
+                        background: v('--color-positive'),
+                        transition: "width 0.3s ease",
+                      }} />
+                      <div style={{
+                        height: "100%", width: `${100 - r.selfUsePercent}%`,
+                        background: v('--color-accent-light'),
+                        opacity: 0.4,
+                        transition: "width 0.3s ease",
+                      }} />
+                    </>
+                  )}
                 </div>
                 <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4 }}>
-                  {r.capacityPercent}% Auslastung
+                  <span style={{ color: v('--color-positive'), fontWeight: 600 }}>{r.selfUsePercent}%</span> Eigenverbrauch
                 </div>
               </button>
             ))}
@@ -264,26 +347,38 @@ function WeatherStat({ label, value, unit }: { label: string; value: string; uni
 // ─── DailyChart (SVG) ───────────────────────────────────────────────────────
 
 function DailyChart({ points, kwp }: { points: HourlyPoint[]; kwp: number }) {
-  const W = 640, H = 200;
-  const P = { t: 16, r: 12, b: 28, l: 42 };
+  const W = 640, H = 220;
+  const P = { t: 16, r: 12, b: 40, l: 42 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
 
   // Filter to daylight hours (5–21)
   const dayPoints = points.filter(p => p.hour >= 5 && p.hour <= 21);
   if (dayPoints.length === 0) return null;
 
-  const maxKw = Math.max(kwp, ...dayPoints.map(p => p.kw));
-  const yMax = Math.ceil(maxKw);
-  const yR = yMax || 1;
+  const hasConsumption = dayPoints.some(p => p.consumptionKw > 0);
+  const maxKw = Math.max(kwp, ...dayPoints.map(p => p.kw), ...dayPoints.map(p => p.consumptionKw));
+  const yMax = Math.ceil(maxKw) || 1;
 
   const x = (hour: number) => P.l + ((hour - 5) / 16) * cW;
-  const y = (kw: number) => P.t + cH - (kw / yR) * cH;
+  const y = (kw: number) => P.t + cH - (kw / yMax) * cH;
 
-  // Area + line path
-  const linePoints = dayPoints.map(p => `${x(p.hour)},${y(p.kw)}`).join(" ");
-  const areaPath = `M${x(dayPoints[0].hour)},${y(0)} ` +
+  // Production area + line
+  const prodLine = dayPoints.map(p => `${x(p.hour)},${y(p.kw)}`).join(" ");
+  const prodArea = `M${x(dayPoints[0].hour)},${y(0)} ` +
     dayPoints.map(p => `L${x(p.hour)},${y(p.kw)}`).join(" ") +
     ` L${x(dayPoints[dayPoints.length - 1].hour)},${y(0)} Z`;
+
+  // Self-use area (min of production and consumption)
+  const selfUseArea = hasConsumption
+    ? `M${x(dayPoints[0].hour)},${y(0)} ` +
+      dayPoints.map(p => `L${x(p.hour)},${y(p.selfUseKw)}`).join(" ") +
+      ` L${x(dayPoints[dayPoints.length - 1].hour)},${y(0)} Z`
+    : null;
+
+  // Consumption line
+  const consLine = hasConsumption
+    ? dayPoints.map(p => `${x(p.hour)},${y(p.consumptionKw)}`).join(" ")
+    : null;
 
   // Current hour marker
   const now = new Date();
@@ -308,16 +403,22 @@ function DailyChart({ points, kwp }: { points: HourlyPoint[]; kwp: number }) {
 
       {/* X-axis labels */}
       {[6, 9, 12, 15, 18, 21].map(h => (
-        <text key={h} x={x(h)} y={H - 4} textAnchor="middle" fontSize={10} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
+        <text key={h} x={x(h)} y={H - 20} textAnchor="middle" fontSize={10} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">
           {h}h
         </text>
       ))}
 
-      {/* Area fill */}
-      <path d={areaPath} fill="var(--color-accent)" opacity={0.08} />
+      {/* Production area (light blue) */}
+      <path d={prodArea} fill="var(--color-accent)" opacity={0.06} />
 
-      {/* Line */}
-      <polyline points={linePoints} fill="none" stroke="var(--color-accent)" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+      {/* Self-use area (green, overlaps production area) */}
+      {selfUseArea && <path d={selfUseArea} fill="var(--color-positive)" opacity={0.15} />}
+
+      {/* Production line */}
+      <polyline points={prodLine} fill="none" stroke="var(--color-accent)" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+
+      {/* Consumption line (dashed) */}
+      {consLine && <polyline points={consLine} fill="none" stroke="var(--color-negative)" strokeWidth={1.5} strokeDasharray="6,4" strokeLinejoin="round" strokeLinecap="round" opacity={0.7} />}
 
       {/* "Now" marker */}
       {currentHour >= 5 && currentHour <= 21 && (
@@ -333,6 +434,18 @@ function DailyChart({ points, kwp }: { points: HourlyPoint[]; kwp: number }) {
       <text x={P.l - 8} y={8} textAnchor="end" fontSize={9} fill="var(--color-text-faint)" fontFamily="var(--font-mono)">
         kW
       </text>
+
+      {/* Legend */}
+      {hasConsumption && (
+        <g transform={`translate(${P.l}, ${H - 6})`}>
+          <line x1={0} x2={16} y1={0} y2={0} stroke="var(--color-accent)" strokeWidth={2} />
+          <text x={20} y={0} dominantBaseline="middle" fontSize={9} fill="var(--color-text-muted)">Erzeugung</text>
+          <line x1={90} x2={106} y1={0} y2={0} stroke="var(--color-negative)" strokeWidth={1.5} strokeDasharray="4,3" opacity={0.7} />
+          <text x={110} y={0} dominantBaseline="middle" fontSize={9} fill="var(--color-text-muted)">Verbrauch</text>
+          <rect x={195} y={-4} width={10} height={8} rx={1} fill="var(--color-positive)" opacity={0.3} />
+          <text x={209} y={0} dominantBaseline="middle" fontSize={9} fill="var(--color-text-muted)">Eigenverbrauch</text>
+        </g>
+      )}
     </svg>
   );
 }
