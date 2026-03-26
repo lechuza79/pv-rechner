@@ -8,6 +8,7 @@ import type { CalculationRow } from "../../lib/types";
 import { rowToParams, paramsToInitial } from "../../lib/types";
 import { v } from "../../lib/theme";
 import Logo from "../../components/Logo";
+import { IconPlus, IconCheck } from "../../components/Icons";
 
 export default function DashboardClient({
   calculations: initialCalcs,
@@ -122,7 +123,7 @@ export default function DashboardClient({
           background: v('--color-accent'), color: v('--color-text-on-accent'), textDecoration: "none",
           marginBottom: 20,
         }}>
-          + Neue Berechnung
+<span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconPlus size={16} /> Neue Berechnung</span>
         </Link>
 
         {/* Pending save notification */}
@@ -132,7 +133,7 @@ export default function DashboardClient({
             border: `1px solid ${v('--color-border-accent')}`, marginBottom: 16,
             fontSize: 13, fontWeight: 600, color: v('--color-accent'), textAlign: "center",
           }}>
-            ✓ Berechnung gespeichert!
+<span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconCheck size={14} /> Berechnung gespeichert!</span>
           </div>
         )}
 

@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Logo from "../../components/Logo";
+import { IconArrowRight, IconCheck } from "../../components/Icons";
 import { v } from "../../lib/theme";
 import { PERSONEN, NUTZUNG } from "../../lib/constants";
 import {
@@ -146,7 +147,7 @@ export default function LiveSimulation() {
                 border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700,
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
-                →
+                <IconArrowRight size={18} />
               </button>
             )}
           </form>
@@ -223,7 +224,7 @@ export default function LiveSimulation() {
                 color: wpActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
                 border: wpActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
               }}>
-                Wärmepumpe {wpActive ? "✓" : ""}
+<span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Wärmepumpe {wpActive ? <IconCheck size={12} /> : ""}</span>
               </button>
               <button onClick={() => setEaActive(!eaActive)} style={{
                 flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
@@ -231,7 +232,7 @@ export default function LiveSimulation() {
                 color: eaActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
                 border: eaActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
               }}>
-                E-Auto {eaActive ? "✓" : ""}
+<span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>E-Auto {eaActive ? <IconCheck size={12} /> : ""}</span>
               </button>
             </div>
             <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
@@ -314,7 +315,7 @@ export default function LiveSimulation() {
                 textDecoration: "none",
               }}
             >
-              {selectedKwp} kWp vollständig berechnen →
+<span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>{selectedKwp} kWp vollständig berechnen <IconArrowRight size={14} /></span>
             </Link>
           </div>
         )}

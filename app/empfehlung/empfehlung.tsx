@@ -9,6 +9,7 @@ import TriToggle from "../../components/TriToggle";
 import { v } from "../../lib/theme";
 import { usePrices } from "../../lib/prices";
 import Logo from "../../components/Logo";
+import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../components/Icons";
 
 export default function Empfehlung() {
   const router = useRouter();
@@ -188,7 +189,7 @@ export default function Empfehlung() {
                 <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
               )}
               <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                {step === STEPS.length - 1 ? "Empfehlung anzeigen ✦" : "Weiter →"}
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <><IconSparkle size={14} /> Empfehlung anzeigen</> : <>Weiter <IconArrowRight size={14} /></>}</span>
               </button>
             </div>
           </div>
@@ -235,7 +236,7 @@ export default function Empfehlung() {
             }}>
               <summary style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>Warum diese Konfiguration?</span>
-                <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400 }}>Details ▾</span>
+                <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={10} /></span>
               </summary>
               <div style={{ marginTop: 14, fontSize: 13, color: v('--color-text-muted'), lineHeight: 1.7 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px", marginBottom: 12 }}>
@@ -294,7 +295,7 @@ export default function Empfehlung() {
               background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               fontFamily: v('--font-text'), marginBottom: 16,
             }}>
-              Ergebnis anzeigen →
+<span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Ergebnis anzeigen <IconArrowRight size={14} /></span>
             </button>
 
             {/* Alternativen */}
@@ -329,7 +330,7 @@ export default function Empfehlung() {
             <button onClick={() => setStep(STEPS.length - 1)} style={{
               width: "100%", padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
               background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
-            }}>↺ Eingaben ändern</button>
+            }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={14} /> Eingaben ändern</span></button>
 
             <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
               Die Empfehlung basiert auf Durchschnittswerten. Auf der Ergebnisseite kannst du alle Annahmen anpassen.

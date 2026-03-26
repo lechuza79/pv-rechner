@@ -13,6 +13,7 @@ import Chart from "../../components/Chart";
 import { v } from "../../lib/theme";
 import { usePrices } from "../../lib/prices";
 import Logo from "../../components/Logo";
+import { IconLock, IconArrowRight, IconSparkle, IconCheck, IconChevronDown, IconLink, IconShare, IconWhatsApp, IconRefresh } from "../../components/Icons";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
@@ -234,14 +235,14 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             {!authLoading && (
               user ? (
                 <Link href="/dashboard" style={{ fontSize: 13, fontWeight: 600, color: v('--color-accent'), textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}>
-                  ◉ Einloggen
+                  <IconLock size={14} color={v('--color-accent-light')} /> Einloggen
                 </Link>
               ) : (
                 <button onClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }} style={{
                   background: "none", border: "none", color: v('--color-accent'), fontSize: 13, fontWeight: 600, cursor: "pointer",
-                  padding: 0, fontFamily: v('--font-text'),
+                  padding: 0, fontFamily: v('--font-text'), display: "inline-flex", alignItems: "center", gap: 4,
                 }}>
-                  ◉ Einloggen
+                  <IconLock size={14} color={v('--color-accent-light')} /> Einloggen
                 </button>
               )
             )}
@@ -404,7 +405,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 <button onClick={back} style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>Zurück</button>
               ) : <div />}
               <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                {step === STEPS.length - 1 ? "Berechnen ✦" : "Weiter →"}
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <><IconSparkle size={14} /> Berechnen</> : <>Weiter <IconArrowRight size={14} /></>}</span>
               </button>
             </div>
           </div>
@@ -491,9 +492,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                         padding: "3px 6px", fontSize: 11, fontWeight: 700, lineHeight: 1,
                         background: v('--color-accent'), color: v('--color-text-on-accent'),
                         border: "none", borderRadius: v('--radius-sm'), cursor: "pointer",
-                      }}>→</button>
+                      }}><IconArrowRight size={12} color={v('--color-text-on-accent')} /></button>
                     )}
-                    {plzSource && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{plzSource === "pvgis" ? "✓" : "~"}</span>}
+                    {plzSource && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{plzSource === "pvgis" ? <IconCheck size={10} /> : "~"}</span>}
                   </form>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -517,7 +518,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               }}>
                 <summary style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span>Warum diese Anlage?</span>
-                  <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400 }}>Details ▾</span>
+                  <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={10} /></span>
                 </summary>
                 <div style={{ marginTop: 14, fontSize: 13, color: v('--color-text-muted'), lineHeight: 1.7 }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 16px", marginBottom: 12 }}>
@@ -569,7 +570,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   display: "flex", alignItems: "center", gap: 6,
                 }}>
                   Wärmepumpe
-                  <span style={{ width: 14, height: 14, borderRadius: 3, border: wp !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: wp !== "nein" ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: v('--color-accent') }}>{wp !== "nein" ? "✓" : ""}</span>
+                  <span style={{ width: 14, height: 14, borderRadius: 3, border: wp !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: wp !== "nein" ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", color: v('--color-accent') }}>{wp !== "nein" ? <IconCheck size={10} /> : ""}</span>
                 </button>
                 <button onClick={() => { setEa(ea === "nein" ? "ja" : "nein"); setOEv(null); }} style={{
                   padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, cursor: "pointer",
@@ -579,7 +580,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   display: "flex", alignItems: "center", gap: 6,
                 }}>
                   E-Auto
-                  <span style={{ width: 14, height: 14, borderRadius: 3, border: ea !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: ea !== "nein" ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: v('--color-accent') }}>{ea !== "nein" ? "✓" : ""}</span>
+                  <span style={{ width: 14, height: 14, borderRadius: 3, border: ea !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: ea !== "nein" ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", color: v('--color-accent') }}>{ea !== "nein" ? <IconCheck size={10} /> : ""}</span>
                 </button>
                 <button onClick={() => {
                   if (oKosten !== null) {
@@ -601,7 +602,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 }}>
                   Speicher
                   {speicher > 0 && <span style={{ fontSize: 11 }}>{spKwh} kWh</span>}
-                  <span style={{ width: 14, height: 14, borderRadius: 3, border: speicher > 0 ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: speicher > 0 ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: v('--color-accent') }}>{speicher > 0 ? "✓" : ""}</span>
+                  <span style={{ width: 14, height: 14, borderRadius: 3, border: speicher > 0 ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: speicher > 0 ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", color: v('--color-accent') }}>{speicher > 0 ? <IconCheck size={10} /> : ""}</span>
                 </button>
               </div>
               {spKostenPrompt && (
@@ -851,12 +852,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   color: saved ? v('--color-accent') : v('--color-accent'), cursor: saving ? "wait" : "pointer",
                   fontFamily: v('--font-text'), transition: "all 0.2s",
                 }}>
-                  {saved ? "✓ Gespeichert!" : saving ? "Speichert..." : "Ergebnis speichern"}
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>{saved ? <><IconCheck size={14} /> Gespeichert!</> : saving ? "Speichert..." : "Ergebnis speichern"}</span>
                 </button>
                 {savedCalcId && !saved && (
                   <div style={{ textAlign: "center", marginTop: 6 }}>
                     <Link href="/dashboard" style={{ fontSize: 12, color: v('--color-text-muted'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>
-                      Meine Berechnungen →
+                      Meine Berechnungen <IconArrowRight size={10} />
                     </Link>
                   </div>
                 )}
@@ -872,21 +873,21 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 color: copied ? v('--color-accent') : v('--color-text-muted'), cursor: "pointer",
                 transition: "all 0.2s",
               }}>
-                {copied ? "✓ Kopiert!" : "🔗 Link kopieren"}
+<span style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center" }}>{copied ? <><IconCheck size={14} /> Kopiert!</> : <><IconLink size={14} /> Link kopieren</>}</span>
               </button>
               {canShare && (
                 <button onClick={handleNativeShare} style={{
                   flex: 1, padding: "10px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
                   background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-muted'), cursor: "pointer",
                 }}>
-                  📤 Teilen
+<span style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconShare size={14} /> Teilen</span>
                 </button>
               )}
               <button onClick={handleWhatsApp} style={{
                 flex: 1, padding: "10px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
                 background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-muted'), cursor: "pointer",
               }}>
-                💬 WhatsApp
+<span style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconWhatsApp size={14} /> WhatsApp</span>
               </button>
             </div>
 
@@ -894,7 +895,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             <button onClick={restart} style={{
               width: "100%", padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
               background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
-            }}>↺ Neu berechnen</button>
+            }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={14} /> Neu berechnen</span></button>
 
             <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
               Keine Datensammlung · Keine Werbung<br />

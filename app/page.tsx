@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Logo from "../components/Logo";
+import { IconArrowRight } from "../components/Icons";
 import { v } from "../lib/theme";
 
 export default function Home() {
@@ -31,7 +32,7 @@ export default function Home() {
                 marginTop: 12, display: "inline-block", padding: "8px 16px", borderRadius: v('--radius-md'),
                 fontSize: 13, fontWeight: 700, background: v('--color-accent'), color: v('--color-text-on-accent'),
               }}>
-                Empfehlung starten →
+<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>Empfehlung starten <IconArrowRight size={12} /></span>
               </div>
             </div>
           </Link>
@@ -52,7 +53,7 @@ export default function Home() {
                 fontSize: 13, fontWeight: 600, background: "transparent", color: v('--color-text-muted'),
                 border: `1px solid ${v('--color-border-muted')}`,
               }}>
-                Direkt rechnen →
+<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>Direkt rechnen <IconArrowRight size={12} /></span>
               </div>
             </div>
           </Link>
@@ -79,7 +80,7 @@ export default function Home() {
                 fontSize: 12, fontWeight: 600, color: v('--color-accent'),
                 border: `1px solid ${v('--color-border-accent')}`,
               }}>
-                Jetzt testen →
+<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>Jetzt testen <IconArrowRight size={12} /></span>
               </div>
             </div>
           </Link>

@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { IconArrowRight } from "../../components/Icons";
 import { v } from "../../lib/theme";
 
 export const metadata: Metadata = {
@@ -89,7 +90,7 @@ export default function DatenschutzPage() {
     <div style={S.page}>
       <div style={S.wrap}>
         <Link href="/" style={S.back}>
-          ← Zurück zum Rechner
+<span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconArrowRight size={12} style={{ transform: "rotate(180deg)" }} /> Zurück zum Rechner</span>
         </Link>
 
         <h1 style={S.h1}>Datenschutzerklärung</h1>
