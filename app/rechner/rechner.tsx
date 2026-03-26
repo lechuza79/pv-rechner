@@ -8,6 +8,7 @@ import { calcFuelCost25, calcWpGridCost25, estimateCost, calcEigenverbrauch, cal
 import OptionCard from "../../components/OptionCard";
 import TriToggle from "../../components/TriToggle";
 import InlineEdit from "../../components/InlineEdit";
+import { calcExtraConsumption } from "../../lib/consumption";
 import Chart from "../../components/Chart";
 import { v } from "../../lib/theme";
 import Logo from "../../components/Logo";
@@ -211,9 +212,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     const nutzbar = Math.round(ht.footprint * da.factor);
     const maxKwp = Math.round(nutzbar * 0.2 * 10) / 10;
     const grundverbrauch = PERSONEN[personen].verbrauch;
-    let extraVerbrauch = 0;
-    if (wp !== "nein") extraVerbrauch += 3500;
-    if (ea !== "nein") extraVerbrauch += Math.round(eaKm * 0.18);
+    const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm);
     const gesamtVerbrauch = grundverbrauch + extraVerbrauch;
     const dachAuslastung = Math.round((kwp / maxKwp) * 100);
     return { ht, da, nutzbar, maxKwp, grundverbrauch, extraVerbrauch, gesamtVerbrauch, dachAuslastung };
@@ -467,16 +466,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ color: v('--color-text-secondary') }}>Standort</span>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                  <form onSubmit={e => { e.preventDefault(); fetchPvgis(plz); }} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                     <input
                       value={plz}
                       placeholder="PLZ"
+                      inputMode="numeric"
                       maxLength={5}
-                      onChange={e => {
-                        const val = e.target.value.replace(/\D/g, "").slice(0, 5);
-                        setPlz(val);
-                        if (val.length === 5) fetchPvgis(val);
-                      }}
+                      onChange={e => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
                       style={{
                         width: 52, textAlign: "center", fontSize: 13, fontWeight: 700,
                         fontFamily: v('--font-mono'),
@@ -486,8 +482,15 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                         borderRadius: v('--radius-sm'), padding: "3px 4px", outline: "none",
                       }}
                     />
+                    {plz.length === 5 && !plzLoading && !plzSource && (
+                      <button type="submit" style={{
+                        padding: "3px 6px", fontSize: 11, fontWeight: 700, lineHeight: 1,
+                        background: v('--color-accent'), color: v('--color-text-on-accent'),
+                        border: "none", borderRadius: v('--radius-sm'), cursor: "pointer",
+                      }}>→</button>
+                    )}
                     {plzSource && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{plzSource === "pvgis" ? "✓" : "~"}</span>}
-                  </span>
+                  </form>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ color: v('--color-text-secondary') }}>Anlage</span>

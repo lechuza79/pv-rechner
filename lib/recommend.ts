@@ -1,5 +1,6 @@
 import { PERSONEN, NUTZUNG, SPEICHER, HAUSTYPEN, DACHARTEN } from "./constants";
 import { calcEigenverbrauch, estimateCost, calc } from "./calc";
+import { WP_ANNUAL_KWH, calcEaAnnual } from "./consumption";
 
 // ─── Schwellwerte (tunable) ─────────────────────────────────────────────────
 const MIN_EV_TARGET = 0.40;         // Empfohlene Mindest-EV-Quote
@@ -58,8 +59,8 @@ export function recommend(input: RecommendInput): Recommendation {
 
   // 1. Gesamtverbrauch berechnen
   const baseConsumption = PERSONEN[input.personen].verbrauch;
-  const wpConsumption = input.wp !== "nein" ? 3500 : 0;
-  const eaConsumption = input.ea !== "nein" ? Math.round(input.eaKm * 0.18) : 0;
+  const wpConsumption = input.wp !== "nein" ? WP_ANNUAL_KWH : 0;
+  const eaConsumption = input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0;
   const totalConsumption = baseConsumption + wpConsumption + eaConsumption;
 
   // 2. Max Dach-kWp

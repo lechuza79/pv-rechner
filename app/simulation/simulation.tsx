@@ -15,6 +15,7 @@ import {
   SIM_CONFIGS,
   HourlyPoint,
 } from "../../lib/simulation";
+import { WP_ANNUAL_KWH, EA_DEFAULT_KM, calcEaAnnual } from "../../lib/consumption";
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 
@@ -61,15 +62,15 @@ export default function LiveSimulation() {
     }
   }, []);
 
-  const handlePlz = useCallback(async (value: string) => {
-    setPlz(value);
-    if (!/^\d{5}$/.test(value)) return;
+  const submitPlz = useCallback(async (value?: string) => {
+    const v = value ?? plz;
+    if (!/^\d{5}$/.test(v)) return;
     setLoading(true);
     setError(null);
     try {
       const plzRes = await fetch("/plz.json");
       const plzData: Record<string, [number, number]> = await plzRes.json();
-      const c = plzData[value];
+      const c = plzData[v];
       if (!c) { setError("PLZ nicht gefunden."); setLoading(false); return; }
       setCoords(c);
       await fetchWeather(c[0], c[1]);
@@ -77,10 +78,10 @@ export default function LiveSimulation() {
       setError("Fehler beim Laden der Standortdaten.");
     }
     setLoading(false);
-  }, [fetchWeather]);
+  }, [fetchWeather, plz]);
 
   // Auto-fetch on initial PLZ from URL
-  useEffect(() => { if (initialPlz && /^\d{5}$/.test(initialPlz)) handlePlz(initialPlz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (initialPlz && /^\d{5}$/.test(initialPlz)) submitPlz(initialPlz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-refresh every 15 min
   useEffect(() => {
@@ -119,26 +120,36 @@ export default function LiveSimulation() {
 
         {/* PLZ Input */}
         <div style={{ marginBottom: 20 }}>
-          <div style={{ position: "relative" }}>
+          <form onSubmit={e => { e.preventDefault(); submitPlz(); }} style={{ position: "relative" }}>
             <input
               type="text"
               inputMode="numeric"
               placeholder="PLZ eingeben (z.B. 80331)"
               value={plz}
-              onChange={e => { const v = e.target.value.replace(/\D/g, "").slice(0, 5); handlePlz(v); }}
+              onChange={e => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
               style={{
-                width: "100%", padding: "14px 16px", fontSize: 16, fontFamily: v('--font-mono'),
+                width: "100%", padding: "14px 16px", paddingRight: 56, fontSize: 16, fontFamily: v('--font-mono'),
                 borderRadius: v('--radius-md'), border: `2px solid ${v('--color-border')}`,
                 background: v('--color-bg-muted'), color: v('--color-text-primary'),
                 outline: "none", textAlign: "center", letterSpacing: "0.1em",
               }}
             />
-            {loading && (
+            {loading ? (
               <div style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", fontSize: 12, color: v('--color-text-muted') }}>
                 Laden...
               </div>
+            ) : plz.length === 5 && (
+              <button type="submit" style={{
+                position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
+                width: 38, height: 38, borderRadius: v('--radius-sm'),
+                background: v('--color-accent'), color: v('--color-text-on-accent'),
+                border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700,
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                →
+              </button>
             )}
-          </div>
+          </form>
           {lastUpdate && (
             <div style={{ fontSize: 11, color: v('--color-text-faint'), textAlign: "center", marginTop: 6 }}>
               Aktualisiert {lastUpdate.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr
@@ -224,7 +235,7 @@ export default function LiveSimulation() {
               </button>
             </div>
             <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
-              Jahresverbrauch: ~{Math.round(household.baseKwh + (wpActive ? 3500 : 0) + (eaActive ? 2700 : 0)).toLocaleString("de-DE")} kWh
+              Jahresverbrauch: ~{Math.round(household.baseKwh + (wpActive ? WP_ANNUAL_KWH : 0) + (eaActive ? calcEaAnnual(EA_DEFAULT_KM) : 0)).toLocaleString("de-DE")} kWh
             </div>
           </div>
         )}

@@ -1,4 +1,5 @@
 import { YEAR, YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN, NUTZUNG } from "./constants";
+import { calcExtraConsumption } from "./consumption";
 
 // ─── Fuel comparison (WP vs. Gas/Öl) ────────────────────────────────────────
 // CO2-Preis: 55€/t 2025, 65€/t 2026, ab 2027 EU ETS2 marktbasiert (konservativ +8€/Jahr)
@@ -38,9 +39,7 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
   const jahresertrag = kwp * ertragKwp;
   const grundverbrauch = PERSONEN[personenIdx].verbrauch;
   const tagQuote = NUTZUNG[nutzungIdx].tagQuote;
-  let extra = 0;
-  if (wp !== "nein") extra += 3500;
-  if (ea !== "nein") extra += Math.round(eaKm * 0.18);
+  const extra = calcExtraConsumption(wp, ea, eaKm);
   const gesamt = grundverbrauch + extra;
   // x = kWp pro MWh Verbrauch (Anlagengröße relativ zum Verbrauch)
   const x = kwp / (gesamt / 1000);

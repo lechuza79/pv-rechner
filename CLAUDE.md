@@ -170,7 +170,9 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Seite `/simulation`: PLZ → Wetter-Card → Anlagen-Grid (5/8/10/15 kWp) → Tagesverlauf-Chart (SVG)
 - [x] Auto-Refresh alle 15 Min, Nacht-Modus, PLZ via URL-Parameter
 - [x] Hub-Startseite: "Weitere Tools" Sektion mit Link zu Live Simulation
-- [ ] Phase 2: Verbrauchsprofil-Overlay (WP + E-Auto + Haushalt → Live-Eigenverbrauch)
+- [x] Phase 2: Verbrauchsprofil-Overlay (WP + E-Auto + Haushalt → Live-Eigenverbrauch)
+- [x] Zentrales Verbrauchsmodell (`lib/consumption.ts`): WP/E-Auto/Haushalt Konstanten + Stundenprofile
+- [x] PLZ-Submit-Button statt Auto-Fetch (Simulation + Rechner)
 - [ ] Phase 3: Mehrtägige Simulation (Open-Meteo Forecast bis 16 Tage)
 
 ### Phase 4: Content & Reichweite
@@ -234,6 +236,7 @@ pv-rechner/
 ├── lib/
 │   ├── constants.ts                # Alle Konstanten (ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, etc.)
 │   ├── calc.ts                     # Pure Berechnungsfunktionen (EV, Amortisation, Kosten, URL-Helpers)
+│   ├── consumption.ts              # Zentrales Verbrauchsmodell: WP/E-Auto Konstanten, Stundenprofile (BDEW/VDI 4655)
 │   ├── simulation.ts               # Live-Simulation: PV-Momentanleistung aus Wetterdaten (NOCT-Modell)
 │   ├── recommend.ts                # Empfehlungs-Algorithmus (optimale kWp + Speicher aus Haushalt + Dach)
 │   ├── types.ts                    # CalcParams, CalculationRow, Konvertierung
