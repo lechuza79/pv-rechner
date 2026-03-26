@@ -1,6 +1,7 @@
 import { PERSONEN, NUTZUNG, SPEICHER, HAUSTYPEN, DACHARTEN } from "./constants";
 import { calcEigenverbrauch, estimateCost, calc } from "./calc";
 import { WP_ANNUAL_KWH, calcEaAnnual } from "./consumption";
+import { type PriceConfig } from "./prices-config";
 
 // ─── Schwellwerte (tunable) ─────────────────────────────────────────────────
 const MIN_EV_TARGET = 0.40;         // Empfohlene Mindest-EV-Quote
@@ -54,7 +55,7 @@ export interface Recommendation {
   alternatives: Alternative[];
 }
 
-export function recommend(input: RecommendInput): Recommendation {
+export function recommend(input: RecommendInput, prices?: PriceConfig): Recommendation {
   const ertragKwp = input.ertragKwp ?? DEFAULT_ERTRAG;
 
   // 1. Gesamtverbrauch berechnen
@@ -109,7 +110,7 @@ export function recommend(input: RecommendInput): Recommendation {
     const boost = evMit - evOhne;
     if (boost >= BATTERY_EV_BOOST_MIN) {
       // Amortisation prüfen
-      const kosten = estimateCost(optimalKwp, spKwh);
+      const kosten = estimateCost(optimalKwp, spKwh, prices);
       const result = calc({
         kwp: optimalKwp, kosten, strompreis: DEFAULT_STROM,
         eigenverbrauch: evMit, einspeisung: 8.03,
@@ -129,19 +130,19 @@ export function recommend(input: RecommendInput): Recommendation {
   let budgetConstrained = false;
 
   if (input.budgetLimit !== null) {
-    let kosten = estimateCost(finalKwp, finalSpeicher);
+    let kosten = estimateCost(finalKwp, finalSpeicher, prices);
     if (kosten > input.budgetLimit) {
       budgetConstrained = true;
       // Erst Speicher reduzieren
       while (finalSpeicherIdx > 0 && kosten > input.budgetLimit) {
         finalSpeicherIdx--;
         finalSpeicher = speicherOptions[finalSpeicherIdx];
-        kosten = estimateCost(finalKwp, finalSpeicher);
+        kosten = estimateCost(finalKwp, finalSpeicher, prices);
       }
       // Dann kWp reduzieren
       while (finalKwp > 3 && kosten > input.budgetLimit) {
         finalKwp -= 0.5;
-        kosten = estimateCost(finalKwp, finalSpeicher);
+        kosten = estimateCost(finalKwp, finalSpeicher, prices);
       }
       finalKwp = Math.round(finalKwp * 2) / 2;
     }
@@ -153,7 +154,7 @@ export function recommend(input: RecommendInput): Recommendation {
     speicherKwh: finalSpeicher, wp: input.wp, ea: input.ea, eaKm: input.eaKm,
     kwp: finalKwp, ertragKwp,
   });
-  const finalKosten = estimateCost(finalKwp, finalSpeicher);
+  const finalKosten = estimateCost(finalKwp, finalSpeicher, prices);
   const finalResult = calc({
     kwp: finalKwp, kosten: finalKosten, strompreis: DEFAULT_STROM,
     eigenverbrauch: finalEv, einspeisung: 8.03,
@@ -165,7 +166,7 @@ export function recommend(input: RecommendInput): Recommendation {
 
   // Budget-Variante (ohne Speicher) wenn Hauptempfehlung Speicher enthält
   if (finalSpeicher > 0) {
-    const altKosten = estimateCost(finalKwp, 0);
+    const altKosten = estimateCost(finalKwp, 0, prices);
     const altEv = calcEigenverbrauch({
       personenIdx: input.personen, nutzungIdx: input.nutzung,
       speicherKwh: 0, wp: input.wp, ea: input.ea, eaKm: input.eaKm,
@@ -190,7 +191,7 @@ export function recommend(input: RecommendInput): Recommendation {
   // Maximale Dachnutzung wenn empfohlenes kWp < maxKwp
   if (maxRoofKwp - finalKwp >= ALT_SIZE_DIFF_KWP) {
     const maxKwp = Math.round(maxRoofKwp * 2) / 2;
-    const altKosten = estimateCost(maxKwp, finalSpeicher);
+    const altKosten = estimateCost(maxKwp, finalSpeicher, prices);
     const altEv = calcEigenverbrauch({
       personenIdx: input.personen, nutzungIdx: input.nutzung,
       speicherKwh: finalSpeicher, wp: input.wp, ea: input.ea, eaKm: input.eaKm,

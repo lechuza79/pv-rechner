@@ -11,6 +11,7 @@ import InlineEdit from "../../components/InlineEdit";
 import { calcExtraConsumption } from "../../lib/consumption";
 import Chart from "../../components/Chart";
 import { v } from "../../lib/theme";
+import { usePrices } from "../../lib/prices";
 import Logo from "../../components/Logo";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
@@ -78,6 +79,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Auto-fetch bei Share-URL mit PLZ
   useEffect(() => { if (plz && hasShare) fetchPvgis(plz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Dynamic market prices
+  const prices = usePrices();
+
   // Auth + Save
   const { user, loading: authLoading } = useUser();
   const [showLogin, setShowLogin] = useState(false);
@@ -118,7 +122,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
   const kwp = anlage <= 3 ? ANLAGEN[anlage].kwp : customKwp;
   const spKwh = SPEICHER[speicher].kwh;
-  const kosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh);
+  const kosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh, prices);
   const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, kwp, ertragKwp: oErtrag });
   const effEv = oEv !== null ? oEv : autoEv;
   const jahresertrag = kwp * oErtrag;

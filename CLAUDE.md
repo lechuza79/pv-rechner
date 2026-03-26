@@ -75,8 +75,11 @@ tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 
 **Kostenschätzung (automatisch, manuell überschreibbar):**
 ```
-PV:       ≤10 kWp → 1.500 €/kWp, >10 kWp → 1.350 €/kWp (über 10)
-Speicher: 2.000 € Basis + 650 €/kWh
+Preise werden monatlich via Cron von solaranlagen-portal.com gescrapt
+und in Supabase (market_prices) gespeichert. Admin-UI: /admin/prices
+Fallback-Defaults in lib/prices-config.ts (Q1/2026):
+PV:       ≤10 kWp → 1.400 €/kWp, >10 kWp → 1.250 €/kWp
+Speicher: 700 €/kWh
 Gerundet auf 500 €
 ```
 
@@ -175,6 +178,16 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] PLZ-Submit-Button statt Auto-Fetch (Simulation + Rechner)
 - [ ] Phase 3: Mehrtägige Simulation (Open-Meteo Forecast bis 16 Tage)
 
+**WP 8: Automatische Marktpreise ✅ (done)**
+- [x] Supabase-Tabelle `market_prices` (Preishistorie, RLS)
+- [x] Monatlicher Vercel Cron: Scraping von solaranlagen-portal.com (`/api/prices/scrape`)
+- [x] Plausibilitätsprüfung (Grenzen + max. 30% Abweichung)
+- [x] `estimateCost()` mit dynamischem `PriceConfig`-Parameter
+- [x] `usePrices()` Client-Hook (sessionStorage-Cache)
+- [x] Methodik-Seite zeigt aktuelle Preise + "Stand: Monat/Jahr"
+- [x] Admin-UI `/admin/prices` (Scrape-Trigger, manuelles Override, Historie)
+- [x] Preise aktualisiert auf Q1/2026 Marktpreise
+
 ### Phase 4: Content & Reichweite
 - [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
@@ -235,6 +248,8 @@ pv-rechner/
 │   └── plz.json           # PLZ → [lat, lon] Lookup (8.298 Einträge, CC BY 4.0)
 ├── lib/
 │   ├── constants.ts                # Alle Konstanten (ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, etc.)
+│   ├── prices-config.ts            # PriceConfig Interface + DEFAULT_PRICES (shared server/client)
+│   ├── prices.ts                   # usePrices() Client-Hook (fetcht /api/prices, sessionStorage-Cache)
 │   ├── calc.ts                     # Pure Berechnungsfunktionen (EV, Amortisation, Kosten, URL-Helpers)
 │   ├── consumption.ts              # Zentrales Verbrauchsmodell: WP/E-Auto Konstanten, Stundenprofile (BDEW/VDI 4655)
 │   ├── simulation.ts               # Live-Simulation: PV-Momentanleistung aus Wetterdaten (NOCT-Modell)
@@ -261,6 +276,8 @@ pv-rechner/
     │   ├── page.tsx               # Metadata + <Empfehlung />
     │   └── empfehlung.tsx         # "use client" — Empfehlungs-Flow (3 Steps + Zwischenseite)
     ├── auth/callback/route.ts     # Magic Link Callback Handler
+    ├── api/prices/route.ts        # GET (aktuelle Preise, cached) + POST (Admin-Update)
+    ├── api/prices/scrape/route.ts # Vercel Cron: Scraping + Plausibilitätsprüfung
     ├── api/pvgis/route.ts         # PVGIS API-Proxy mit Supabase-Cache
     ├── api/weather/route.ts       # Open-Meteo Proxy mit In-Memory-Cache (Live Simulation)
     ├── api/calculations/route.ts  # GET (Liste), POST (Speichern)
@@ -268,6 +285,9 @@ pv-rechner/
     ├── dashboard/
     │   ├── page.tsx               # Server Component: Auth-Check + Daten laden
     │   └── client.tsx             # Client Component: Dashboard UI
+    ├── admin/prices/
+    │   ├── page.tsx               # Server Component: Admin-Guard + Preishistorie laden
+    │   └── client.tsx             # Client Component: Scrape-Trigger, Manual-Form, Historie
     ├── admin/theme/
     │   ├── page.tsx               # Server Component: Admin-Email-Check + Redirect
     │   └── client.tsx             # Client Component: Design System Showcase

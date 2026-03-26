@@ -1,5 +1,6 @@
 import { YEAR, YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN, NUTZUNG } from "./constants";
 import { calcExtraConsumption } from "./consumption";
+import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 
 // ─── Fuel comparison (WP vs. Gas/Öl) ────────────────────────────────────────
 // CO2-Preis: 55€/t 2025, 65€/t 2026, ab 2027 EU ETS2 marktbasiert (konservativ +8€/Jahr)
@@ -28,9 +29,12 @@ export function calcWpGridCost25(wpKwh: number, autarky: number, strompreis: num
 }
 
 // ─── Kostenschätzung ─────────────────────────────────────────────────────────
-export function estimateCost(kwp: number, spKwh: number): number {
-  const pv = kwp <= 10 ? kwp * 1500 : 10 * 1500 + (kwp - 10) * 1350;
-  const sp = spKwh > 0 ? 2000 + spKwh * 650 : 0;
+export function estimateCost(kwp: number, spKwh: number, prices?: PriceConfig): number {
+  const p = prices ?? DEFAULT_PRICES;
+  const pv = kwp <= p.pvThresholdKwp
+    ? kwp * p.pvPriceSmall
+    : p.pvThresholdKwp * p.pvPriceSmall + (kwp - p.pvThresholdKwp) * p.pvPriceLarge;
+  const sp = spKwh > 0 ? p.batteryBase + spKwh * p.batteryPerKwh : 0;
   return Math.round((pv + sp) / 500) * 500;
 }
 

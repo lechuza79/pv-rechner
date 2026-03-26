@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { v } from "../../lib/theme";
+import { supabase } from "../../lib/supabase-server";
+import { DEFAULT_PRICES, type PriceConfig } from "../../lib/prices-config";
 
 export const metadata: Metadata = {
   title: "Methodik – So berechnen wir deine PV-Rendite",
@@ -92,7 +94,36 @@ const S = {
   },
 };
 
-export default function MethodikPage() {
+async function fetchPrices(): Promise<PriceConfig> {
+  if (!supabase) return DEFAULT_PRICES;
+  try {
+    const { data } = await supabase
+      .from("market_prices")
+      .select("*")
+      .lte("valid_from", new Date().toISOString().split("T")[0])
+      .order("valid_from", { ascending: false })
+      .limit(1)
+      .single();
+    if (!data) return DEFAULT_PRICES;
+    return {
+      pvPriceSmall: Number(data.pv_price_small),
+      pvPriceLarge: Number(data.pv_price_large),
+      pvThresholdKwp: Number(data.pv_threshold_kwp),
+      batteryBase: Number(data.battery_base),
+      batteryPerKwh: Number(data.battery_per_kwh),
+      validFrom: data.valid_from,
+      source: data.source,
+    };
+  } catch { return DEFAULT_PRICES; }
+}
+
+function formatPriceDate(isoDate: string): string {
+  const d = new Date(isoDate + "T00:00:00");
+  return d.toLocaleDateString("de-DE", { month: "long", year: "numeric" });
+}
+
+export default async function MethodikPage() {
+  const prices = await fetchPrices();
   return (
     <div style={S.page}>
       <div style={S.wrap}>
@@ -205,19 +236,20 @@ export default function MethodikPage() {
         </p>
         <div style={S.card}>
           <span style={S.label}>PV-Module + Installation</span>
-          <span style={S.mono}>1.500 €/kWp</span>{" "}
-          <span style={S.muted}>(bis 10 kWp)</span>
+          <span style={S.mono}>{prices.pvPriceSmall.toLocaleString("de-DE")} €/kWp</span>{" "}
+          <span style={S.muted}>(bis {prices.pvThresholdKwp} kWp)</span>
           <br />
-          <span style={S.mono}>1.350 €/kWp</span>{" "}
-          <span style={S.muted}>(ab 10 kWp, Mengeneffekt)</span>
+          <span style={S.mono}>{prices.pvPriceLarge.toLocaleString("de-DE")} €/kWp</span>{" "}
+          <span style={S.muted}>(ab {prices.pvThresholdKwp} kWp, Mengeneffekt)</span>
           <br />
           <br />
           <span style={S.label}>Batteriespeicher</span>
-          <span style={S.mono}>2.000 € Basis + 650 €/kWh</span>
+          <span style={S.mono}>{prices.batteryBase > 0 ? `${prices.batteryBase.toLocaleString("de-DE")} € Basis + ` : ""}{prices.batteryPerKwh.toLocaleString("de-DE")} €/kWh</span>
           <br />
           <br />
           <span style={S.muted}>
-            Gerundet auf 500 €. Preise Stand 2024/25, ohne Förderung.
+            Gerundet auf 500 €. Stand {formatPriceDate(prices.validFrom)}, ohne Förderung.
+            {prices.source && <><br />Quelle: {prices.source}</>}
           </span>
         </div>
 

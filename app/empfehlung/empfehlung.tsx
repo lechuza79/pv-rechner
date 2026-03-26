@@ -3,15 +3,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER } from "../../lib/constants";
-import { estimateCost } from "../../lib/calc";
 import { recommend } from "../../lib/recommend";
 import OptionCard from "../../components/OptionCard";
 import TriToggle from "../../components/TriToggle";
 import { v } from "../../lib/theme";
+import { usePrices } from "../../lib/prices";
 import Logo from "../../components/Logo";
 
 export default function Empfehlung() {
   const router = useRouter();
+  const prices = usePrices();
   const [step, setStep] = useState(0);
 
   // Step 0: Haus + Dach
@@ -36,7 +37,7 @@ export default function Empfehlung() {
   const rec = isRecommendation ? recommend({
     personen, nutzung, wp, ea, eaKm,
     haustyp, dachart, budgetLimit: null,
-  }) : null;
+  }, prices) : null;
 
   const goToResult = (kwp: number, speicherIdx: number) => {
     const anlageIdx = kwp <= 5 ? 0 : kwp <= 8 ? 1 : kwp <= 10 ? 2 : kwp <= 15 ? 3 : 4;
