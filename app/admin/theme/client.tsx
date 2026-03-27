@@ -185,8 +185,8 @@ export default function ThemeClient() {
             OptionCard
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <OptionCard selected={true} onClick={() => {}} label="10 kWp" sub="Mittelgroß" icon="sun" />
-            <OptionCard selected={false} onClick={() => {}} label="15 kWp" sub="Groß" icon="sun" />
+            <OptionCard selected={true} onClick={() => {}} label="10 kWp" sub="Mittelgroß" icon="☀️" />
+            <OptionCard selected={false} onClick={() => {}} label="15 kWp" sub="Groß" icon="🔆" />
             <OptionCard selected={false} onClick={() => {}} label="5 kWp" sub="Klein" />
             <OptionCard selected={false} onClick={() => {}} label="8 kWp" sub="Standard" />
           </div>

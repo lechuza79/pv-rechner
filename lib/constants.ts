@@ -15,17 +15,17 @@ export const FUEL: Record<string, { label: string; price: number; efficiency: nu
 
 // ─── Optionen für den Rechner-Flow ──────────────────────────────────────────
 export const ANLAGEN = [
-  { kwp: 5, label: "5 kWp", sub: "Klein · ~12 Module", icon: "sun" },
-  { kwp: 8, label: "8 kWp", sub: "Mittel · ~19 Module", icon: "sun" },
-  { kwp: 10, label: "10 kWp", sub: "Standard · ~24 Module", icon: "sun" },
-  { kwp: 15, label: "15 kWp", sub: "Groß · ~36 Module", icon: "sun" },
+  { kwp: 5, label: "5 kWp", sub: "Klein · ~12 Module", icon: "🔆" },
+  { kwp: 8, label: "8 kWp", sub: "Mittel · ~19 Module", icon: "🔆" },
+  { kwp: 10, label: "10 kWp", sub: "Standard · ~24 Module", icon: "☀️" },
+  { kwp: 15, label: "15 kWp", sub: "Groß · ~36 Module", icon: "☀️" },
 ];
 
 export const SPEICHER = [
-  { kwh: 0, label: "Kein Speicher", sub: "Nur Direktverbrauch", icon: null },
-  { kwh: 5, label: "5 kWh", sub: "Kompakt", icon: "battery" },
-  { kwh: 10, label: "10 kWh", sub: "Standard", icon: "battery" },
-  { kwh: 15, label: "15 kWh", sub: "Groß", icon: "battery" },
+  { kwh: 0, label: "Kein Speicher", sub: "Nur Direktverbrauch", icon: "—" },
+  { kwh: 5, label: "5 kWh", sub: "Kompakt", icon: "🔋" },
+  { kwh: 10, label: "10 kWh", sub: "Standard", icon: "🔋" },
+  { kwh: 15, label: "15 kWh", sub: "Groß", icon: "🔋" },
 ];
 
 export const PERSONEN = [

@@ -13,7 +13,7 @@ import Chart from "../../components/Chart";
 import { v } from "../../lib/theme";
 import { usePrices } from "../../lib/prices";
 import Header from "../../components/Header";
-import { IconBolt, IconCar, IconArrowRight, IconSparkle, IconCheck, IconChevronDown, IconLink, IconShare, IconWhatsApp, IconRefresh } from "../../components/Icons";
+import { IconArrowRight, IconSparkle, IconCheck, IconChevronDown, IconLink, IconShare, IconWhatsApp, IconRefresh } from "../../components/Icons";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
@@ -343,8 +343,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {step === 3 && (
               <div>
-                <TriToggle label="Wärmepumpe" icon={<IconBolt size={15} />} options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
-                <TriToggle label="Elektroauto" icon={<IconCar size={15} />} options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
+                <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
+                <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
                 {ea !== "nein" && (
                   <div style={{ marginBottom: 18, marginTop: -10 }}>
                     <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Laufleistung ca.</div>

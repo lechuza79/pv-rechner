@@ -9,7 +9,7 @@ import TriToggle from "../../components/TriToggle";
 import { v } from "../../lib/theme";
 import { usePrices } from "../../lib/prices";
 import Header from "../../components/Header";
-import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh, IconBolt, IconCar } from "../../components/Icons";
+import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../components/Icons";
 
 export default function Empfehlung() {
   const router = useRouter();
@@ -132,11 +132,11 @@ export default function Empfehlung() {
             {/* Step 2: WP / E-Auto */}
             {step === 2 && (
               <div>
-                <TriToggle label="Wärmepumpe" icon={<IconBolt size={15} />} options={TRI} value={wp} onChange={setWp} />
+                <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={setWp} />
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
                   Eine Wärmepumpe erhöht deinen Stromverbrauch um ~3.500 kWh/Jahr — eine größere PV-Anlage lohnt sich dann besonders.
                 </div>
-                <TriToggle label="Elektroauto" icon={<IconCar size={15} />} options={TRI} value={ea} onChange={setEa} />
+                <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={setEa} />
                 {ea !== "nein" && (
                   <div style={{ marginBottom: 18, marginTop: -10 }}>
                     <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Laufleistung ca.</div>
