@@ -12,8 +12,8 @@ import { calcExtraConsumption } from "../../lib/consumption";
 import Chart from "../../components/Chart";
 import { v } from "../../lib/theme";
 import { usePrices } from "../../lib/prices";
-import Logo from "../../components/Logo";
-import { IconLock, IconArrowRight, IconSparkle, IconCheck, IconChevronDown, IconLink, IconShare, IconWhatsApp, IconRefresh } from "../../components/Icons";
+import Header from "../../components/Header";
+import { IconBolt, IconCar, IconArrowRight, IconSparkle, IconCheck, IconChevronDown, IconLink, IconShare, IconWhatsApp, IconRefresh } from "../../components/Icons";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
@@ -227,27 +227,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
-        {/* Header — Navigation bar */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <Link href="/" style={{ textDecoration: "none", display: "inline-flex" }}><Logo height={22} /></Link>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <Link href="/rechner" style={{ fontSize: 13, fontWeight: 600, color: v('--color-accent'), textDecoration: "none" }}>Rechner</Link>
-            {!authLoading && (
-              user ? (
-                <Link href="/dashboard" style={{ fontSize: 13, fontWeight: 600, color: v('--color-accent'), textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }}>
-                  <IconLock size={14} color={v('--color-accent-light')} /> Einloggen
-                </Link>
-              ) : (
-                <button onClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }} style={{
-                  background: "none", border: "none", color: v('--color-accent'), fontSize: 13, fontWeight: 600, cursor: "pointer",
-                  padding: 0, fontFamily: v('--font-text'), display: "inline-flex", alignItems: "center", gap: 4,
-                }}>
-                  <IconLock size={14} color={v('--color-accent-light')} /> Einloggen
-                </button>
-              )
-            )}
-          </div>
-        </div>
+        <Header
+          user={user}
+          authLoading={authLoading}
+          onLoginClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }}
+          activePage="rechner"
+        />
 
         {/* Title */}
         <div style={{ textAlign: "center", marginBottom: 24 }}>
@@ -358,8 +343,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {step === 3 && (
               <div>
-                <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
-                <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
+                <TriToggle label="Wärmepumpe" icon={<IconBolt size={15} />} options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
+                <TriToggle label="Elektroauto" icon={<IconCar size={15} />} options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
                 {ea !== "nein" && (
                   <div style={{ marginBottom: 18, marginTop: -10 }}>
                     <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Laufleistung ca.</div>

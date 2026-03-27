@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Logo from "../components/Logo";
+import Header from "../components/Header";
 import { IconArrowRight } from "../components/Icons";
 import { v } from "../lib/theme";
 
@@ -8,9 +8,10 @@ export default function Home() {
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 36, paddingTop: 20 }}>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}><Logo height={28} /></div>
+        <Header />
+
+        {/* Hero */}
+        <div style={{ textAlign: "center", marginBottom: 36, paddingTop: 10 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
           <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Ehrlich berechnet. Ohne Leadfunnel.</p>
         </div>

@@ -7,7 +7,7 @@ import { signOut } from "../../lib/auth";
 import type { CalculationRow } from "../../lib/types";
 import { rowToParams, paramsToInitial } from "../../lib/types";
 import { v } from "../../lib/theme";
-import Logo from "../../components/Logo";
+import Header from "../../components/Header";
 import { IconPlus, IconCheck } from "../../components/Icons";
 
 export default function DashboardClient({
@@ -102,16 +102,7 @@ export default function DashboardClient({
       color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px",
     }}>
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
-        {/* Header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-          <Link href="/" style={{ textDecoration: "none", display: "inline-flex" }}><Logo height={20} /></Link>
-          <button onClick={handleLogout} style={{
-            background: "none", border: "none", color: v('--color-text-muted'), fontSize: 12, cursor: "pointer",
-            fontFamily: v('--font-text'),
-          }}>
-            Abmelden
-          </button>
-        </div>
+        <Header user={{}} onLogoutClick={handleLogout} activePage="dashboard" />
 
         <h1 style={{ fontSize: 20, fontWeight: 800, marginBottom: 4 }}>Meine Berechnungen</h1>
         <p style={{ fontSize: 13, color: v('--color-text-muted'), marginBottom: 20 }}>{userEmail}</p>

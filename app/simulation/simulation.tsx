@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Logo from "../../components/Logo";
+import Header from "../../components/Header";
 import { IconArrowRight, IconCheck } from "../../components/Icons";
 import { v } from "../../lib/theme";
 import { PERSONEN, NUTZUNG } from "../../lib/constants";
@@ -106,11 +106,9 @@ export default function LiveSimulation() {
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 28, paddingTop: 20 }}>
-          <Link href="/" style={{ display: "flex", justifyContent: "center", marginBottom: 10, textDecoration: "none" }}>
-            <Logo height={28} />
-          </Link>
+        <Header activePage="simulation" />
+
+        <div style={{ textAlign: "center", marginBottom: 28, paddingTop: 10 }}>
           <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>
             Live Simulation
           </h1>

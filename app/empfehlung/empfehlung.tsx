@@ -8,8 +8,8 @@ import OptionCard from "../../components/OptionCard";
 import TriToggle from "../../components/TriToggle";
 import { v } from "../../lib/theme";
 import { usePrices } from "../../lib/prices";
-import Logo from "../../components/Logo";
-import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../components/Icons";
+import Header from "../../components/Header";
+import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh, IconBolt, IconCar } from "../../components/Icons";
 
 export default function Empfehlung() {
   const router = useRouter();
@@ -67,11 +67,9 @@ export default function Empfehlung() {
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
-        {/* Header */}
+        <Header activePage="empfehlung" />
+
         <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <Link href="/" style={{ textDecoration: "none" }}>
-            <Logo height={24} />
-          </Link>
           <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Was passt zu dir?</h1>
           <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Wir empfehlen dir die optimale Anlage.</p>
         </div>
@@ -134,11 +132,11 @@ export default function Empfehlung() {
             {/* Step 2: WP / E-Auto */}
             {step === 2 && (
               <div>
-                <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={setWp} />
+                <TriToggle label="Wärmepumpe" icon={<IconBolt size={15} />} options={TRI} value={wp} onChange={setWp} />
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
                   Eine Wärmepumpe erhöht deinen Stromverbrauch um ~3.500 kWh/Jahr — eine größere PV-Anlage lohnt sich dann besonders.
                 </div>
-                <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={setEa} />
+                <TriToggle label="Elektroauto" icon={<IconCar size={15} />} options={TRI} value={ea} onChange={setEa} />
                 {ea !== "nein" && (
                   <div style={{ marginBottom: 18, marginTop: -10 }}>
                     <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Laufleistung ca.</div>

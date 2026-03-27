@@ -91,3 +91,43 @@ export function IconSparkle({ size = 16, color = "currentColor", style }: IconPr
     </svg>
   );
 }
+
+export function IconUser({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M13.333 14v-1.333A2.667 2.667 0 0 0 10.667 10H5.333a2.667 2.667 0 0 0-2.666 2.667V14M8 7.333A2.667 2.667 0 1 0 8 2a2.667 2.667 0 0 0 0 5.333Z" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconSun({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M8 1.333V2m0 12v.667M3.287 3.287l.473.473m8.48 8.48.473.473M1.333 8H2m12 0h.667M3.287 12.713l.473-.473m8.48-8.48.473-.473M10.667 8a2.667 2.667 0 1 1-5.334 0 2.667 2.667 0 0 1 5.334 0Z" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconBattery({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M14.667 7.333v1.334M1.333 5.2c0-.747 0-1.12.146-1.405a1.333 1.333 0 0 1 .582-.583C2.347 3.067 2.72 3.067 3.467 3.067h6.4c.746 0 1.12 0 1.404.145.25.128.455.333.583.583.146.285.146.658.146 1.405v5.6c0 .747 0 1.12-.146 1.405a1.333 1.333 0 0 1-.583.582c-.284.146-.658.146-1.404.146h-6.4c-.747 0-1.12 0-1.405-.146a1.333 1.333 0 0 1-.582-.582C1.333 11.92 1.333 11.547 1.333 10.8V5.2Z" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconBolt({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M8.667 1.333 3.2 9.067h4.8L7.333 14.667 12.8 6.933H8l.667-5.6Z" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconCar({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M3.667 10h.006m8.66 0h.007M3.333 7.333l.88-2.64a1.333 1.333 0 0 1 1.264-.906h5.046c.556 0 1.05.345 1.244.866l.9 2.68M3.333 7.333H2.4a1.067 1.067 0 0 0-1.067 1.067v2.267c0 .589.478 1.066 1.067 1.066h.933m.667-4.4h8m0 0h.933c.59 0 1.067.478 1.067 1.067v2.267c0 .589-.478 1.066-1.067 1.066H12m-8.667 0v1.334m0-1.334H12m0 0v1.334" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}

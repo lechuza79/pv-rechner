@@ -261,8 +261,11 @@ pv-rechner/
 │   ├── auth.ts                     # useUser() Hook, signIn/signOut Helpers
 │   └── theme.ts                    # Design-Tokens, CSS-Variablen-Generator, v() Helper
 ├── components/
-│   ├── OptionCard.tsx              # Auswahl-Karte (2×2 Grids)
-│   ├── TriToggle.tsx               # Dreier-Toggle (Nein/Geplant/Vorhanden)
+│   ├── Header.tsx                 # Shared Header-Navigation (Logo links, Nav rechts)
+│   ├── Logo.tsx                   # SVG-Logo + Text (solar-check.io)
+│   ├── Icons.tsx                  # SVG-Icon-Bibliothek (16 Icons, stroke-basiert)
+│   ├── OptionCard.tsx              # Auswahl-Karte (2×2 Grids, SVG-Icon-Mapping)
+│   ├── TriToggle.tsx               # Dreier-Toggle (Nein/Geplant/Vorhanden, optionales Icon)
 │   ├── InlineEdit.tsx              # Click-to-Edit Zahlenwert
 │   ├── Chart.tsx                   # SVG-Amortisationskurve
 │   └── ErrorBoundary.tsx          # Error Boundary für fehlerhafte Share-URLs
@@ -305,11 +308,14 @@ pv-rechner/
 
 | Komponente | Datei | Funktion |
 |---|---|---|
+| `Header` | `components/Header.tsx` | Shared Navigation (Logo links, Rechner + Auth rechts) |
+| `Logo` | `components/Logo.tsx` | SVG-Icon + Text-Logo mit unique IDs |
+| `Icons` | `components/Icons.tsx` | 16 SVG-Icons (stroke-basiert, `IconProps`-Interface) |
 | `ErrorBoundary` | `app/rechner/page.tsx` | Fängt Render-Crashes ab, zeigt Fallback-UI |
 | `PVRechner` | `app/rechner/rechner.tsx` | Rechner-Flow + Ergebnisseite |
 | `Empfehlung` | `app/empfehlung/empfehlung.tsx` | Empfehlungs-Flow (3 Steps + Zwischenseite) |
-| `OptionCard` | `components/OptionCard.tsx` | Auswahl-Karte für Steps (2×2 Grids) |
-| `TriToggle` | `components/TriToggle.tsx` | Dreier-Toggle: Nein / Geplant / Vorhanden |
+| `OptionCard` | `components/OptionCard.tsx` | Auswahl-Karte für Steps (Icon-String → SVG-Mapping) |
+| `TriToggle` | `components/TriToggle.tsx` | Dreier-Toggle mit optionalem SVG-Icon |
 | `InlineEdit` | `components/InlineEdit.tsx` | Click-to-Edit Zahlenwert im Ergebnis |
 | `Chart` | `components/Chart.tsx` | SVG-Amortisationskurve (3 Szenarien, kein D3) |
 
