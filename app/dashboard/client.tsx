@@ -8,6 +8,7 @@ import type { CalculationRow } from "../../lib/types";
 import { rowToParams, paramsToInitial } from "../../lib/types";
 import { v } from "../../lib/theme";
 import Header from "../../components/Header";
+import { IconEdit, IconClose } from "../../components/Icons";
 import { IconPlus, IconCheck } from "../../components/Icons";
 
 export default function DashboardClient({
@@ -246,7 +247,7 @@ export default function DashboardClient({
                         background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
                         color: v('--color-text-secondary'), cursor: "pointer", fontFamily: v('--font-text'),
                       }}>
-                        ✎
+                        <IconEdit size={14} />
                       </button>
                       <button onClick={() => handleDelete(calc.id)} disabled={deleting === calc.id} style={{
                         padding: "8px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
@@ -254,7 +255,7 @@ export default function DashboardClient({
                         color: deleting === calc.id ? v('--color-text-faint') : v('--color-text-secondary'), cursor: "pointer",
                         fontFamily: v('--font-text'),
                       }}>
-                        {deleting === calc.id ? "..." : "✕"}
+                        {deleting === calc.id ? "..." : <IconClose size={14} />}
                       </button>
                     </div>
                   </>

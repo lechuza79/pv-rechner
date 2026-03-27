@@ -30,6 +30,7 @@ export default function Header({ user, authLoading, onLoginClick, onLogoutClick,
       </Link>
       <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
         <Link href="/rechner" style={linkStyle("rechner")}>Rechner</Link>
+        <Link href="/empfehlung" style={linkStyle("empfehlung")}>Empfehlung</Link>
         {!authLoading && (
           user ? (
             onLogoutClick ? (
