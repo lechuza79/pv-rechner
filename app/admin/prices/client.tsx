@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { v } from "../../../lib/theme";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
+import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 import { estimateCost } from "../../../lib/calc";
 
 interface PriceRow {
@@ -39,7 +40,21 @@ const S = {
   link: { color: v("--color-accent"), textDecoration: "none", fontSize: 13 },
 };
 
-export default function PricesClient({ history }: { history: PriceRow[] }) {
+interface FeedInRow {
+  id: string;
+  teil_under_10: number;
+  teil_over_10: number;
+  voll_under_10: number;
+  voll_over_10: number;
+  threshold_kwp: number;
+  valid_from: string;
+  source: string | null;
+  notes: string | null;
+  updated_by: string | null;
+  created_at: string;
+}
+
+export default function PricesClient({ history, feedInHistory = [] }: { history: PriceRow[]; feedInHistory?: FeedInRow[] }) {
   const current = history.find(h => h.source !== "SCRAPE_ERROR") || null;
 
   const [pvSmall, setPvSmall] = useState(current?.pv_price_small ?? DEFAULT_PRICES.pvPriceSmall);
@@ -103,6 +118,45 @@ export default function PricesClient({ history }: { history: PriceRow[] }) {
     } catch {
       setScrapeResult("Netzwerkfehler");
       setScrapeStatus("error");
+    }
+  };
+
+  // Feed-in tariff state
+  const currentFeedIn = feedInHistory.length > 0 ? feedInHistory[0] : null;
+  const [fiTeilU, setFiTeilU] = useState(currentFeedIn?.teil_under_10 ?? DEFAULT_FEED_IN.teilUnder10);
+  const [fiTeilO, setFiTeilO] = useState(currentFeedIn?.teil_over_10 ?? DEFAULT_FEED_IN.teilOver10);
+  const [fiVollU, setFiVollU] = useState(currentFeedIn?.voll_under_10 ?? DEFAULT_FEED_IN.vollUnder10);
+  const [fiVollO, setFiVollO] = useState(currentFeedIn?.voll_over_10 ?? DEFAULT_FEED_IN.vollOver10);
+  const [fiValidFrom, setFiValidFrom] = useState(new Date().toISOString().split("T")[0]);
+  const [fiSource, setFiSource] = useState("");
+  const [fiNotes, setFiNotes] = useState("");
+  const [fiStatus, setFiStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
+  const [fiError, setFiError] = useState("");
+
+  const handleFeedInSave = async () => {
+    setFiStatus("saving");
+    try {
+      const res = await fetch("/api/feedin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          teilUnder10: fiTeilU, teilOver10: fiTeilO,
+          vollUnder10: fiVollU, vollOver10: fiVollO,
+          validFrom: fiValidFrom,
+          source: fiSource || "Manual (Admin)", notes: fiNotes || null,
+        }),
+      });
+      if (res.ok) {
+        setFiStatus("success");
+        setTimeout(() => window.location.reload(), 1500);
+      } else {
+        const data = await res.json();
+        setFiError(data.error || "Fehler beim Speichern");
+        setFiStatus("error");
+      }
+    } catch {
+      setFiError("Netzwerkfehler");
+      setFiStatus("error");
     }
   };
 
@@ -224,6 +278,84 @@ export default function PricesClient({ history }: { history: PriceRow[] }) {
                       ) : (
                         <span title={row.notes || ""}>{row.source || row.updated_by || "—"}</span>
                       )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {/* ─── Feed-In Tariffs ─── */}
+        <h2 style={{ ...S.h2, marginTop: 48 }}>Einspeisevergütung (EEG)</h2>
+        <div style={S.card}>
+          <span style={S.label}>Teileinspeisung</span>
+          <div style={S.row}>
+            <div style={{ flex: 1 }}>
+              <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>≤ 10 kWp (ct/kWh)</span>
+              <input style={S.input} type="number" step="0.01" value={fiTeilU} onChange={e => setFiTeilU(Number(e.target.value))} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>&gt; 10 kWp (ct/kWh)</span>
+              <input style={S.input} type="number" step="0.01" value={fiTeilO} onChange={e => setFiTeilO(Number(e.target.value))} />
+            </div>
+          </div>
+
+          <span style={S.label}>Volleinspeisung</span>
+          <div style={S.row}>
+            <div style={{ flex: 1 }}>
+              <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>≤ 10 kWp (ct/kWh)</span>
+              <input style={S.input} type="number" step="0.01" value={fiVollU} onChange={e => setFiVollU(Number(e.target.value))} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>&gt; 10 kWp (ct/kWh)</span>
+              <input style={S.input} type="number" step="0.01" value={fiVollO} onChange={e => setFiVollO(Number(e.target.value))} />
+            </div>
+          </div>
+
+          <span style={S.label}>Meta</span>
+          <div style={{ marginBottom: 12 }}>
+            <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>Gültig ab</span>
+            <input style={{ ...S.input, maxWidth: 180 }} type="date" value={fiValidFrom} onChange={e => setFiValidFrom(e.target.value)} />
+          </div>
+          <div style={{ marginBottom: 12 }}>
+            <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>Quelle</span>
+            <input style={S.input} type="text" placeholder="z.B. Bundesnetzagentur, Feb 2025" value={fiSource} onChange={e => setFiSource(e.target.value)} />
+          </div>
+          <div style={{ marginBottom: 16 }}>
+            <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>Notizen</span>
+            <input style={S.input} type="text" placeholder="Optional" value={fiNotes} onChange={e => setFiNotes(e.target.value)} />
+          </div>
+
+          <button style={{ ...S.btn, marginTop: 8 }} onClick={handleFeedInSave} disabled={fiStatus === "saving"}>
+            {fiStatus === "saving" ? "Speichern..." : "Vergütungssätze speichern"}
+          </button>
+          {fiStatus === "success" && <p style={S.success}>Gespeichert! Seite lädt neu...</p>}
+          {fiStatus === "error" && <p style={S.error}>{fiError}</p>}
+        </div>
+
+        {/* Feed-In History */}
+        <h2 style={S.h2}>Vergütungshistorie</h2>
+        {feedInHistory.length === 0 ? (
+          <p style={S.muted}>Noch keine Einträge.</p>
+        ) : (
+          <div style={{ overflowX: "auto" }}>
+            <table style={S.table}>
+              <thead>
+                <tr>
+                  <th style={S.th}>Datum</th>
+                  <th style={S.th}>Teil ≤/{">"}10</th>
+                  <th style={S.th}>Voll ≤/{">"}10</th>
+                  <th style={S.th}>Quelle</th>
+                </tr>
+              </thead>
+              <tbody>
+                {feedInHistory.map(row => (
+                  <tr key={row.id}>
+                    <td style={S.td}>{row.valid_from}</td>
+                    <td style={S.td}>{row.teil_under_10}/{row.teil_over_10}</td>
+                    <td style={S.td}>{row.voll_under_10}/{row.voll_over_10}</td>
+                    <td style={{ ...S.td, fontFamily: v("--font-text"), fontSize: 12, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      <span title={row.notes || ""}>{row.source || row.updated_by || "—"}</span>
                     </td>
                   </tr>
                 ))}

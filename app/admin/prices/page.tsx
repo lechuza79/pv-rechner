@@ -33,14 +33,28 @@ export default async function PricesPage() {
     created_at: string;
   }> = [];
 
+  let feedInHistory: Array<{
+    id: string;
+    teil_under_10: number;
+    teil_over_10: number;
+    voll_under_10: number;
+    voll_over_10: number;
+    threshold_kwp: number;
+    valid_from: string;
+    source: string | null;
+    notes: string | null;
+    updated_by: string | null;
+    created_at: string;
+  }> = [];
+
   if (supabase) {
-    const { data } = await supabase
-      .from("market_prices")
-      .select("*")
-      .order("valid_from", { ascending: false })
-      .limit(20);
-    if (data) history = data;
+    const [priceRes, feedInRes] = await Promise.all([
+      supabase.from("market_prices").select("*").order("valid_from", { ascending: false }).limit(20),
+      supabase.from("feed_in_rates").select("*").order("valid_from", { ascending: false }).limit(20),
+    ]);
+    if (priceRes.data) history = priceRes.data;
+    if (feedInRes.data) feedInHistory = feedInRes.data;
   }
 
-  return <PricesClient history={history} />;
+  return <PricesClient history={history} feedInHistory={feedInHistory} />;
 }

@@ -28,6 +28,12 @@ export function calcWpGridCost25(wpKwh: number, autarky: number, strompreis: num
   return Math.round(total);
 }
 
+// ─── Gewichtete Einspeisevergütung (EEG: ≤10 kWp / >10 kWp) ────────────────
+export function calcWeightedFeedIn(kwp: number, rateUnder: number, rateOver: number, threshold = 10): number {
+  if (kwp <= threshold) return rateUnder;
+  return Math.round((threshold * rateUnder + (kwp - threshold) * rateOver) / kwp * 100) / 100;
+}
+
 // ─── Kostenschätzung ─────────────────────────────────────────────────────────
 export function estimateCost(kwp: number, spKwh: number, prices?: PriceConfig): number {
   const p = prices ?? DEFAULT_PRICES;

@@ -87,7 +87,13 @@ Gerundet auf 500 €
 ```
 Zeitraum:            25 Jahre
 Degradation:         0,5%/Jahr
-Einspeisevergütung:  8,03 ct/kWh default, fix 20 Jahre, abschaltbar per Toggle
+Einspeisevergütung:  EEG-konform, 4 Sätze (Teil/Voll × ≤10/>10 kWp)
+                     Teileinspeisung: 8,03 / 6,95 ct/kWh
+                     Volleinspeisung: 12,73 / 10,67 ct/kWh
+                     Gewichteter Mischsatz bei Anlagen >10 kWp
+                     3-State: Aus / Teil / Voll (auto-berechnet, manuell überschreibbar)
+                     Sätze in Supabase (feed_in_rates), Admin-UI: /admin/prices
+                     Fallback-Defaults in lib/feedin-config.ts (Stand Feb 2025)
 Szenarien:           Strompreis +1% / +3% / +5% p.a.
 EV-Delta:            −5% / 0% / +5% pro Szenario
 ```
@@ -249,6 +255,8 @@ pv-rechner/
 ├── lib/
 │   ├── constants.ts                # Alle Konstanten (ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, etc.)
 │   ├── prices-config.ts            # PriceConfig Interface + DEFAULT_PRICES (shared server/client)
+│   ├── feedin-config.ts            # FeedInRates Interface + DEFAULT_FEED_IN (EEG-Vergütungssätze)
+│   ├── feedin.ts                   # useFeedInRates() Client-Hook (fetcht /api/feedin, sessionStorage-Cache)
 │   ├── prices.ts                   # usePrices() Client-Hook (fetcht /api/prices, sessionStorage-Cache)
 │   ├── calc.ts                     # Pure Berechnungsfunktionen (EV, Amortisation, Kosten, URL-Helpers)
 │   ├── consumption.ts              # Zentrales Verbrauchsmodell: WP/E-Auto Konstanten, Stundenprofile (BDEW/VDI 4655)
@@ -279,6 +287,7 @@ pv-rechner/
     │   ├── page.tsx               # Metadata + <Empfehlung />
     │   └── empfehlung.tsx         # "use client" — Empfehlungs-Flow (3 Steps + Zwischenseite)
     ├── auth/callback/route.ts     # Magic Link Callback Handler
+    ├── api/feedin/route.ts        # GET (aktuelle Vergütungssätze, cached) + POST (Admin-Update)
     ├── api/prices/route.ts        # GET (aktuelle Preise, cached) + POST (Admin-Update)
     ├── api/prices/scrape/route.ts # Vercel Cron: Scraping + Plausibilitätsprüfung
     ├── api/pvgis/route.ts         # PVGIS API-Proxy mit Supabase-Cache

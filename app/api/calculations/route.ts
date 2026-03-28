@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
       o_ev: body.o_ev,
       o_strom: body.o_strom,
       o_einsp: body.o_einsp,
-      einspeisung_an: body.einspeisung_an,
+      einspeisung_modus: body.einspeisung_modus ?? (body.einspeisung_an === false ? "aus" : "teil"),
       o_ertrag: body.o_ertrag,
       plz: body.plz,
       fuel_type: body.fuel_type,

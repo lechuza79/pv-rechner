@@ -308,8 +308,16 @@ export default async function MethodikPage() {
           <span style={S.accent}>Degradation:</span> 0,5 % pro Jahr
           (Leistungsverlust der Module)
           <br />
-          <span style={S.accent}>Einspeisevergütung:</span> 8,03 ct/kWh, fix für
-          20 Jahre
+          <span style={S.accent}>Einspeisevergütung (EEG):</span>
+          <br />
+          &nbsp;&nbsp;Teileinspeisung: 8,03 ct/kWh (≤10 kWp) / 6,95 ct/kWh ({">"}10 kWp)
+          <br />
+          &nbsp;&nbsp;Volleinspeisung: 12,73 ct/kWh (≤10 kWp) / 10,67 ct/kWh ({">"}10 kWp)
+          <br />
+          &nbsp;&nbsp;Fix für 20 Jahre ab Inbetriebnahme. Bei Anlagen {">"}10 kWp wird ein
+          gewichteter Mischsatz berechnet. Halbjährliche Degression ca. 1%.
+          <br />
+          &nbsp;&nbsp;<span style={S.muted}>Stand: Februar 2025 · Quelle: Bundesnetzagentur, §48 EEG</span>
           <br />
           <span style={S.accent}>Strompreis:</span> 0,34 €/kWh
           (Durchschnitt 2024)

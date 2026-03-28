@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useUser, signInWithMagicLink, signOut } from "../../lib/auth";
 import { paramsToRow } from "../../lib/types";
 import { YEAR, YEARS, CONSUMPTION_MONTHLY, FUEL, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN } from "../../lib/constants";
-import { calcFuelCost25, calcWpGridCost25, estimateCost, calcEigenverbrauch, calc, paramInt, paramFloat, paramStr } from "../../lib/calc";
+import { calcFuelCost25, calcWpGridCost25, estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, paramInt, paramFloat, paramStr } from "../../lib/calc";
 import OptionCard from "../../components/OptionCard";
 import TriToggle from "../../components/TriToggle";
 import InlineEdit from "../../components/InlineEdit";
@@ -12,6 +12,7 @@ import { calcExtraConsumption } from "../../lib/consumption";
 import Chart from "../../components/Chart";
 import { v } from "../../lib/theme";
 import { usePrices } from "../../lib/prices";
+import { useFeedInRates } from "../../lib/feedin";
 import Header from "../../components/Header";
 import { IconArrowRight, IconSparkle, IconCheck, IconChevronDown, IconLink, IconShare, IconWhatsApp, IconRefresh } from "../../components/Icons";
 
@@ -33,8 +34,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 500 && n <= 200000 ? n : null; })() : null);
   const [oEv, setOEv] = useState<number | null>(hasShare && initialParams?.ev ? (() => { const n = Number(initialParams.ev); return isFinite(n) && n >= 5 && n <= 95 ? n : null; })() : null);
   const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", 0.34, 0.05, 1.0) : 0.34);
-  const [oEinsp, setOEinsp] = useState(hasShare ? paramFloat(initialParams, "ei", 8.03, 0, 20) : 8.03);
-  const [einspeisungAn, setEinspeisungAn] = useState(hasShare ? initialParams?.eia !== "0" : true);
+  const [oEinsp, setOEinsp] = useState<number | null>(hasShare && initialParams?.ei ? (() => { const n = Number(initialParams.ei); return isFinite(n) && n >= 0 && n <= 20 ? n : null; })() : null);
+  const [einspeisungModus, setEinspeisungModus] = useState<"aus" | "teil" | "voll">(
+    hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
+  );
   const [oErtrag, setOErtrag] = useState(hasShare ? paramInt(initialParams, "er", 950, 700, 1200) : 950);
 
   // PLZ → standortspezifischer Ertrag + Monatsprofil
@@ -80,8 +83,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Auto-fetch bei Share-URL mit PLZ
   useEffect(() => { if (plz && hasShare) fetchPvgis(plz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Dynamic market prices
+  // Dynamic market prices + feed-in rates
   const prices = usePrices();
+  const feedInRates = useFeedInRates();
 
   // Auth + Save
   const { user, loading: authLoading } = useUser();
@@ -105,7 +109,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       // Pending save: speichere Berechnung in localStorage für Auto-Save nach Login
       if (isResult) {
         const row = paramsToRow(
-          { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
+          { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
           { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(real.data.years[YEARS - 1]?.kum ?? 0) }
         );
         const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
@@ -128,11 +132,22 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const effEv = oEv !== null ? oEv : autoEv;
   const jahresertrag = kwp * oErtrag;
 
+  // Feed-in: weighted EEG rate based on system size + mode
+  const autoEinsp = einspeisungModus === "voll"
+    ? calcWeightedFeedIn(kwp, feedInRates.vollUnder10, feedInRates.vollOver10, feedInRates.thresholdKwp)
+    : calcWeightedFeedIn(kwp, feedInRates.teilUnder10, feedInRates.teilOver10, feedInRates.thresholdKwp);
+  const effEinsp = oEinsp ?? autoEinsp;
+
   const scenarioData = useMemo(() =>
     SCENARIOS.map(s => ({
       ...s,
-      data: calc({ kwp, kosten, strompreis: oStrom, eigenverbrauch: Math.min(effEv + s.evDelta, 95), einspeisung: einspeisungAn ? oEinsp : 0, stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile }),
-    })), [kwp, kosten, oStrom, effEv, oEinsp, einspeisungAn, oErtrag, eaKm, monthlyProfile]);
+      data: calc({
+        kwp, kosten, strompreis: oStrom,
+        eigenverbrauch: einspeisungModus === "voll" ? 0 : Math.min(effEv + s.evDelta, 95),
+        einspeisung: einspeisungModus === "aus" ? 0 : effEinsp,
+        stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
+      }),
+    })), [kwp, kosten, oStrom, effEv, effEinsp, einspeisungModus, oErtrag, eaKm, monthlyProfile]);
 
   const real = scenarioData.find(s => s.id === "realistic")!;
   const be = real.data.be;
@@ -156,8 +171,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (oKosten !== null) p.set("k", String(oKosten));
     if (oEv !== null) p.set("ev", String(oEv));
     p.set("st", String(oStrom));
-    p.set("ei", String(oEinsp));
-    p.set("eia", einspeisungAn ? "1" : "0");
+    if (oEinsp !== null) p.set("ei", String(oEinsp));
+    p.set("eia", einspeisungModus === "voll" ? "2" : einspeisungModus === "aus" ? "0" : "1");
     p.set("er", String(oErtrag));
     if (plz) p.set("plz", plz);
     if (flowType === "empfehlung") {
@@ -191,7 +206,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     setSaving(true);
     try {
       const row = paramsToRow(
-        { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
+        { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
         { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(real.data.years[YEARS - 1]?.kum ?? 0) }
       );
       const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
@@ -208,7 +223,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       }
     } catch { /* silent */ }
     setSaving(false);
-  }, [user, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungAn, oErtrag, plz, fuelType, kwp, spKwh, be, real, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, kwp, spKwh, be, real, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Empfehlungs-Kontext für "Warum diese Anlage?"
   const empfehlungKontext = flowType === "empfehlung" && htIdx >= 0 && daIdx >= 0 ? (() => {
@@ -423,31 +438,40 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ color: v('--color-text-secondary') }}>Eigenverbr.</span>
-                  <InlineEdit value={effEv} onCommit={v => setOEv(v)} unit="%" step={1} min={10} max={90} width={40} />
+                  {einspeisungModus === "voll" ? (
+                    <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-faint'), fontSize: 13 }}>0%</span>
+                  ) : (
+                    <InlineEdit value={effEv} onCommit={v => setOEv(v)} unit="%" step={1} min={10} max={90} width={40} />
+                  )}
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ color: v('--color-text-secondary') }}>Strompreis</span>
                   <InlineEdit value={oStrom} onCommit={setOStrom} unit=" €" step={0.01} min={0.15} max={0.60} width={52} />
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: einspeisungModus !== "aus" ? 6 : 0 }}>
                     <span style={{ color: v('--color-text-secondary') }}>Einspeisung</span>
-                    <span onClick={() => setEinspeisungAn(!einspeisungAn)} style={{
-                      width: 32, height: 18, borderRadius: 9, padding: 2, cursor: "pointer",
-                      background: einspeisungAn ? v('--color-accent') : v('--color-border-muted'), transition: "background 0.2s",
-                      display: "inline-flex", alignItems: "center", flexShrink: 0,
-                    }}>
-                      <span style={{
-                        width: 14, height: 14, borderRadius: "50%", background: v('--color-text-primary'),
-                        transform: einspeisungAn ? "translateX(14px)" : "translateX(0)",
-                        transition: "transform 0.2s",
-                      }} />
-                    </span>
-                  </span>
-                  {einspeisungAn ? (
-                    <InlineEdit value={oEinsp} onCommit={setOEinsp} unit=" ct" step={0.01} min={4} max={12} width={48} />
-                  ) : (
-                    <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-faint'), fontSize: 13 }}>aus</span>
+                    <div style={{ display: "flex", gap: 2, background: v('--color-bg'), borderRadius: 8, padding: 2 }}>
+                      {(["aus", "teil", "voll"] as const).map(m => (
+                        <button key={m} onClick={() => { setEinspeisungModus(m); setOEinsp(null); }} style={{
+                          padding: "3px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer",
+                          background: einspeisungModus === m ? v('--color-accent') : "transparent",
+                          border: "none",
+                          color: einspeisungModus === m ? v('--color-text-on-accent') : v('--color-text-muted'),
+                          transition: "all 0.15s",
+                        }}>
+                          {m === "aus" ? "Aus" : m === "teil" ? "Teil" : "Voll"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {einspeisungModus !== "aus" && (
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: 11, color: v('--color-text-faint') }}>
+                        {einspeisungModus === "voll" ? "Vergütung (kein Eigenverbr.)" : "Vergütung"}
+                      </span>
+                      <InlineEdit value={effEinsp} onCommit={v => setOEinsp(v)} unit=" ct" step={0.01} min={4} max={16} width={48} />
+                    </div>
                   )}
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>

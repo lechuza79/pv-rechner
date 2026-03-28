@@ -11,8 +11,8 @@ export interface CalcParams {
   oKosten: number | null;
   oEv: number | null;
   oStrom: number;        // 0.05–1.0
-  oEinsp: number;        // 0–20
-  einspeisungAn: boolean;
+  oEinsp: number | null;  // 0–20, null = auto (weighted EEG rate)
+  einspeisungModus: "aus" | "teil" | "voll";
   oErtrag: number;       // 700–1400
   plz: string;
   fuelType: string;      // "gas" | "oil"
@@ -42,8 +42,8 @@ export interface CalculationRow {
   o_kosten: number | null;
   o_ev: number | null;
   o_strom: number;
-  o_einsp: number;
-  einspeisung_an: boolean;
+  o_einsp: number | null;
+  einspeisung_modus: string;
   o_ertrag: number;
   plz: string | null;
   fuel_type: string;
@@ -79,7 +79,7 @@ export function paramsToRow(
     o_ev: params.oEv,
     o_strom: params.oStrom,
     o_einsp: params.oEinsp,
-    einspeisung_an: params.einspeisungAn,
+    einspeisung_modus: params.einspeisungModus,
     o_ertrag: params.oErtrag,
     plz: params.plz || null,
     fuel_type: params.fuelType,
@@ -108,7 +108,7 @@ export function rowToParams(row: CalculationRow): CalcParams {
     oEv: row.o_ev,
     oStrom: row.o_strom,
     oEinsp: row.o_einsp,
-    einspeisungAn: row.einspeisung_an,
+    einspeisungModus: (row.einspeisung_modus === "voll" ? "voll" : row.einspeisung_modus === "aus" ? "aus" : "teil") as "aus" | "teil" | "voll",
     oErtrag: row.o_ertrag,
     plz: row.plz ?? "",
     fuelType: row.fuel_type,
@@ -129,12 +129,12 @@ export function paramsToInitial(params: CalcParams): Record<string, string> {
     wp: params.wp,
     ea: params.ea,
     st: String(params.oStrom),
-    ei: String(params.oEinsp),
-    eia: params.einspeisungAn ? "1" : "0",
+    eia: params.einspeisungModus === "voll" ? "2" : params.einspeisungModus === "aus" ? "0" : "1",
     er: String(params.oErtrag),
   };
   if (params.anlage === 4) p.ck = String(params.customKwp);
   if (params.oKosten !== null) p.k = String(params.oKosten);
+  if (params.oEinsp !== null) p.ei = String(params.oEinsp);
   if (params.oEv !== null) p.ev = String(params.oEv);
   if (params.ea !== "nein") p.km = String(params.eaKm);
   if (params.plz) p.plz = params.plz;

@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { ANLAGEN, SPEICHER } from "../../../lib/constants";
-import { calcEigenverbrauch, estimateCost, calc, paramInt, paramFloat, paramStr } from "../../../lib/calc";
+import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, paramInt, paramFloat, paramStr } from "../../../lib/calc";
+import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 
 export const runtime = "edge";
 
@@ -22,8 +23,7 @@ export async function GET(req: NextRequest) {
   const customKwp = paramFloat(params, "ck", 12, 1, 50);
   const ertragKwp = paramInt(params, "er", 950, 700, 1400);
   const strompreis = paramFloat(params, "st", 0.34, 0.05, 1.0);
-  const einspeisung = paramFloat(params, "ei", 8.03, 0, 20);
-  const einspeisungAn = params.eia !== "0";
+  const einspeisungModus = params.eia === "2" ? "voll" : params.eia === "0" ? "aus" : "teil";
   const plz = params.plz || "";
 
   const kwp = anlageIdx < 4 ? ANLAGEN[anlageIdx].kwp : customKwp;
@@ -36,10 +36,15 @@ export async function GET(req: NextRequest) {
     personenIdx, nutzungIdx, speicherKwh: spKwh, wp, ea, eaKm, kwp, ertragKwp,
   });
   const kosten = oKosten ?? estimateCost(kwp, spKwh);
-  const einsp = einspeisungAn ? einspeisung : 0;
+  const oEinsp = params.ei ? paramFloat(params, "ei", 0, 0, 20) : null;
+  const autoEinsp = einspeisungModus === "voll"
+    ? calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.vollUnder10, DEFAULT_FEED_IN.vollOver10)
+    : calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
+  const einsp = einspeisungModus === "aus" ? 0 : (oEinsp ?? autoEinsp);
+  const effEv = einspeisungModus === "voll" ? 0 : ev;
 
   const result = calc({
-    kwp, kosten, strompreis, eigenverbrauch: ev, einspeisung: einsp,
+    kwp, kosten, strompreis, eigenverbrauch: effEv, einspeisung: einsp,
     stromSteigerung: 0.03, ertragKwp, monthly: null,
   });
 
