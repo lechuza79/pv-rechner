@@ -808,7 +808,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     return (
                       <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
                         <span style={{ fontSize: 9, fontFamily: v('--font-mono'), color: v('--color-text-secondary'), marginBottom: 3 }}>{Math.round(m * kwp).toLocaleString("de-DE")}</span>
-                        <div style={{ width: "100%", height: barH, borderRadius: "3px 3px 0 0", background: m === max ? v('--color-accent') : v('--color-border-accent') }} />
+                        <div style={{ width: "100%", height: barH, borderRadius: "3px 3px 0 0", background: i === new Date().getMonth() ? v('--color-accent') : v('--color-border-accent') }} />
                         <span style={{ fontSize: 9, color: v('--color-text-faint'), marginTop: 3 }}>{["J","F","M","A","M","J","J","A","S","O","N","D"][i]}</span>
                       </div>
                     );
