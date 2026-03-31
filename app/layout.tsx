@@ -88,7 +88,7 @@ export default function RootLayout({
   return (
     <html lang="de">
       <head>
-        <meta name="google-site-verification" content="ATH_SsHQBX5xWwJEO_f-IY30ld3a77-fIS6GjXTWURw" />
+        <meta name="google-site-verification" content="OdndfgILkY22LlMHqIT8_ASdidCYTyqksv6LC9zw67o" />
         <style dangerouslySetInnerHTML={{ __html: getCssVariables() + globalStyles }} />
         <link
           href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap"
