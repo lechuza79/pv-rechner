@@ -6,9 +6,10 @@ import { v } from "../lib/theme";
 export default function Home() {
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         <Header />
+
+      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         {/* Hero */}
         <div style={{ textAlign: "center", marginBottom: 36, paddingTop: 10 }}>

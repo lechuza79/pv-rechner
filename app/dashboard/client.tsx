@@ -102,8 +102,9 @@ export default function DashboardClient({
       background: v('--color-bg'), fontFamily: v('--font-text'),
       color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px",
     }}>
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
         <Header user={{}} onLogoutClick={handleLogout} activePage="dashboard" />
+
+      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         <h1 style={{ fontSize: 20, fontWeight: 800, marginBottom: 4 }}>Meine Berechnungen</h1>
         <p style={{ fontSize: 13, color: v('--color-text-muted'), marginBottom: 20 }}>{userEmail}</p>

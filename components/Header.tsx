@@ -1,7 +1,8 @@
 "use client";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
-import { IconUser } from "./Icons";
+import { IconUser, IconMenu, IconClose } from "./Icons";
 import { v } from "../lib/theme";
 
 interface HeaderProps {
@@ -13,55 +14,141 @@ interface HeaderProps {
 }
 
 export default function Header({ user, authLoading, onLoginClick, onLogoutClick, activePage }: HeaderProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(true);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => {
+      setIsDesktop(e.matches);
+      if (e.matches) setMenuOpen(false);
+    };
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
   const linkStyle = (page: string): React.CSSProperties => ({
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: 600,
     color: activePage === page ? v('--color-accent') : v('--color-text-secondary'),
     textDecoration: "none",
     display: "inline-flex",
     alignItems: "center",
-    gap: 4,
+    gap: 6,
   });
 
+  const mobileLinkStyle = (page: string): React.CSSProperties => ({
+    fontSize: 16,
+    fontWeight: 600,
+    color: activePage === page ? v('--color-accent') : v('--color-text-primary'),
+    textDecoration: "none",
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "12px 0",
+  });
+
+  const authElement = !authLoading && (
+    user ? (
+      onLogoutClick ? (
+        <button onClick={() => { onLogoutClick(); closeMenu(); }} style={{
+          background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
+          color: v('--color-text-muted'), cursor: "pointer", padding: isDesktop ? 0 : "12px 0",
+          fontFamily: v('--font-text'),
+        }}>
+          Abmelden
+        </button>
+      ) : (
+        <Link href="/dashboard" style={isDesktop ? linkStyle("dashboard") : mobileLinkStyle("dashboard")} onClick={closeMenu}>
+          <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Dashboard
+        </Link>
+      )
+    ) : (
+      onLoginClick ? (
+        <button onClick={() => { onLoginClick(); closeMenu(); }} style={{
+          background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
+          color: v('--color-text-secondary'), cursor: "pointer", padding: isDesktop ? 0 : "12px 0",
+          fontFamily: v('--font-text'), display: "flex", alignItems: "center", gap: isDesktop ? 6 : 8,
+        }}>
+          <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
+        </button>
+      ) : (
+        <Link href="/rechner" style={{ ...(isDesktop ? linkStyle("") : mobileLinkStyle("")), gap: isDesktop ? 6 : 8 }} onClick={closeMenu}>
+          <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
+        </Link>
+      )
+    )
+  );
+
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-      <Link href="/" style={{ textDecoration: "none", display: "inline-flex" }}>
-        <Logo height={22} />
-      </Link>
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-        <Link href="/rechner" style={linkStyle("rechner")}>Rechner</Link>
-        <Link href="/empfehlung" style={linkStyle("empfehlung")}>Empfehlung</Link>
-        {!authLoading && (
-          user ? (
-            onLogoutClick ? (
-              <button onClick={onLogoutClick} style={{
-                background: "none", border: "none", fontSize: 13, fontWeight: 600,
-                color: v('--color-text-muted'), cursor: "pointer", padding: 0, fontFamily: v('--font-text'),
-              }}>
-                Abmelden
-              </button>
-            ) : (
-              <Link href="/dashboard" style={linkStyle("dashboard")}>
-                <IconUser size={14} color={v('--color-accent-light')} /> Dashboard
-              </Link>
-            )
-          ) : (
-            onLoginClick ? (
-              <button onClick={onLoginClick} style={{
-                background: "none", border: "none", fontSize: 13, fontWeight: 600,
-                color: v('--color-text-secondary'), cursor: "pointer", padding: 0,
-                fontFamily: v('--font-text'), display: "inline-flex", alignItems: "center", gap: 4,
-              }}>
-                <IconUser size={14} color={v('--color-accent-light')} /> Einloggen
-              </button>
-            ) : (
-              <Link href="/rechner" style={{ ...linkStyle(""), gap: 4 }}>
-                <IconUser size={14} color={v('--color-accent-light')} /> Einloggen
-              </Link>
-            )
-          )
+    <header style={{
+      maxWidth: v('--header-max-width'),
+      margin: "0 auto",
+      marginBottom: 20,
+      position: "relative",
+    }}>
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}>
+        <Link href="/" style={{ textDecoration: "none", display: "inline-flex" }}>
+          <Logo height={isDesktop ? 28 : 22} />
+        </Link>
+
+        {isDesktop ? (
+          <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
+            <Link href="/rechner" style={linkStyle("rechner")}>Rechner</Link>
+            <Link href="/empfehlung" style={linkStyle("empfehlung")}>Empfehlung</Link>
+            {authElement}
+          </nav>
+        ) : (
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Menu schließen" : "Menu öffnen"}
+            style={{
+              background: "none", border: "none", cursor: "pointer", padding: 4,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+          >
+            {menuOpen
+              ? <IconClose size={22} color={v('--color-text-primary')} />
+              : <IconMenu size={22} color={v('--color-text-primary')} />
+            }
+          </button>
         )}
       </div>
-    </div>
+
+      {/* Mobile menu dropdown */}
+      {!isDesktop && menuOpen && (
+        <>
+          <div
+            onClick={closeMenu}
+            style={{
+              position: "fixed", inset: 0, zIndex: 99,
+              background: "rgba(0,0,0,0.2)",
+            }}
+          />
+          <nav style={{
+            position: "absolute",
+            top: "100%",
+            left: -16,
+            right: -16,
+            zIndex: 100,
+            background: v('--color-bg'),
+            borderBottom: `1px solid ${v('--color-border')}`,
+            padding: "8px 24px 16px",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+          }}>
+            <Link href="/rechner" style={mobileLinkStyle("rechner")} onClick={closeMenu}>Rechner</Link>
+            <Link href="/empfehlung" style={mobileLinkStyle("empfehlung")} onClick={closeMenu}>Empfehlung</Link>
+            {authElement}
+          </nav>
+        </>
+      )}
+    </header>
   );
 }

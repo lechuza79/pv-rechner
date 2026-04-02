@@ -104,9 +104,10 @@ export default function LiveSimulation() {
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         <Header activePage="simulation" />
+
+      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         <div style={{ textAlign: "center", marginBottom: 28, paddingTop: 10 }}>
           <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>

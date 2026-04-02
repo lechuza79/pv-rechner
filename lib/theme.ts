@@ -52,8 +52,9 @@ export const tokens = {
   '--radius-md': '12px',                // Medium: buttons, cards, panels
   '--radius-lg': '20px',                // Large: hero cards, outer containers
 
-  // ─── Layout (1) ────────────────────────────────────────────────────────────
+  // ─── Layout (2) ────────────────────────────────────────────────────────────
   '--page-max-width': '480px',
+  '--header-max-width': '960px',
 } as const;
 
 export type TokenName = keyof typeof tokens;

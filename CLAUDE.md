@@ -346,7 +346,7 @@ pv-rechner/
 | Labels (uppercase) | `#777777` |
 | Font Text | DM Sans 400–800 |
 | Font Zahlen | JetBrains Mono 400–700 |
-| Layout | Mobile-first, max-width 480px, zentriert |
+| Layout | Mobile-first, Content max-width 480px zentriert, Header max-width 960px, Burger-Menu <768px |
 | Border-Radius Cards | 14px |
 | Border-Radius Buttons | 10–12px |
 | Animation | fadeUp 0.3s ease-out bei Step-Wechsel |

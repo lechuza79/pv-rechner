@@ -240,7 +240,6 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         <Header
           user={user}
@@ -248,6 +247,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
           onLoginClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }}
           activePage="rechner"
         />
+
+      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         {/* Title */}
         <div style={{ textAlign: "center", marginBottom: 24 }}>
