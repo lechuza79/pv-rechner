@@ -5,7 +5,7 @@
 Sebastian Schäder
 Albrecht-Dürer-Str. 57
 97204 Höchberg
-E-Mail: [DEINE@EMAIL.DE]
+E-Mail: hey@solar-check.io
 
 ## 2. Grundsatz
 
@@ -71,7 +71,7 @@ Du hast jederzeit das Recht auf:
 - Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)
 - Datenübertragbarkeit (Art. 20 DSGVO)
 
-Zur Ausübung deiner Rechte wende dich an: [DEINE@EMAIL.DE]
+Zur Ausübung deiner Rechte wende dich an: hey@solar-check.io
 
 Darüber hinaus hast du das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO).
 

@@ -87,7 +87,7 @@ export default function ImpressumPage() {
         </p>
 
         <h2 style={S.h2}>Kontakt</h2>
-        <p style={S.p}>E-Mail: [DEINE@EMAIL.DE]</p>
+        <p style={S.p}>E-Mail: hey@solar-check.io</p>
 
         <h2 style={S.h2}>
           Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV

@@ -8,7 +8,7 @@ Albrecht-Dürer-Str. 57
 
 ## Kontakt
 
-E-Mail: [DEINE@EMAIL.DE]
+E-Mail: hey@solar-check.io
 
 ## Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV
 

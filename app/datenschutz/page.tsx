@@ -103,7 +103,7 @@ export default function DatenschutzPage() {
           <br />
           97204 Höchberg
           <br />
-          E-Mail: [DEINE@EMAIL.DE]
+          E-Mail: hey@solar-check.io
         </p>
 
         <h2 style={S.h2}>2. Grundsatz</h2>
@@ -259,7 +259,7 @@ export default function DatenschutzPage() {
           <li style={S.li}>Datenübertragbarkeit (Art. 20 DSGVO)</li>
         </ul>
         <p style={S.p}>
-          Zur Ausübung deiner Rechte wende dich an: [DEINE@EMAIL.DE]
+          Zur Ausübung deiner Rechte wende dich an: hey@solar-check.io
         </p>
         <p style={S.p}>
           Darüber hinaus hast du das Recht, dich bei einer
