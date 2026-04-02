@@ -103,6 +103,7 @@ export default function Header({ user, authLoading, onLoginClick, onLogoutClick,
           <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
             <Link href="/rechner" style={linkStyle("rechner")}>Rechner</Link>
             <Link href="/empfehlung" style={linkStyle("empfehlung")}>Empfehlung</Link>
+            <Link href="/simulation" style={linkStyle("simulation")}>Live Simulation</Link>
             {authElement}
           </nav>
         ) : (
@@ -145,6 +146,7 @@ export default function Header({ user, authLoading, onLoginClick, onLogoutClick,
           }}>
             <Link href="/rechner" style={mobileLinkStyle("rechner")} onClick={closeMenu}>Rechner</Link>
             <Link href="/empfehlung" style={mobileLinkStyle("empfehlung")} onClick={closeMenu}>Empfehlung</Link>
+            <Link href="/simulation" style={mobileLinkStyle("simulation")} onClick={closeMenu}>Live Simulation</Link>
             {authElement}
           </nav>
         </>

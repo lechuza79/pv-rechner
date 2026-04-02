@@ -14,7 +14,7 @@ export default function Home() {
         {/* Hero */}
         <div style={{ textAlign: "center", marginBottom: 36, paddingTop: 10 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
-          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Ehrlich berechnet. Ohne Leadfunnel.</p>
+          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Ehrlich berechnet. Ohne nervige Anrufe oder Sales-Pitch.</p>
         </div>
 
         {/* Flow-Auswahl */}
@@ -88,9 +88,18 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Keine Daten */}
-        <div style={{ textAlign: "center", fontSize: 12, color: v('--color-text-faint'), marginBottom: 24, lineHeight: 1.6 }}>
-          Keine Datensammlung · Keine Werbung · Keine Anmeldung nötig
+        {/* Trust Badge */}
+        <div style={{
+          textAlign: "center", marginBottom: 24, padding: "12px 16px",
+          borderRadius: v('--radius-md'), background: v('--color-bg-accent'),
+          border: `1px solid ${v('--color-border-accent')}`,
+        }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-accent') }}>
+            🔒 Keine Anmeldung nötig
+          </div>
+          <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4 }}>
+            Keine Datensammlung · Keine Werbung · Kein Vertriebskontakt
+          </div>
         </div>
 
         {/* Footer Links */}
