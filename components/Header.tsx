@@ -96,7 +96,7 @@ export default function Header({ user, authLoading, onLoginClick, onLogoutClick,
         alignItems: "center",
       }}>
         <Link href="/" style={{ textDecoration: "none", display: "inline-flex" }}>
-          <Logo height={isDesktop ? 28 : 22} />
+          <Logo width={130} />
         </Link>
 
         {isDesktop ? (

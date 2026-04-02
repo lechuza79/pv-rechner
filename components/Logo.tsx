@@ -1,11 +1,11 @@
-/** Horizontal logo: PNG image, height-prop controls size */
-export default function Logo({ height = 24 }: { height?: number }) {
+/** Horizontal logo: PNG image, width-prop controls size */
+export default function Logo({ width = 130 }: { width?: number }) {
   return (
     <img
       src="/logo.png"
       alt="solar-check.io"
-      height={height}
-      style={{ display: "block", flexShrink: 0 }}
+      width={width}
+      style={{ display: "block", flexShrink: 0, height: "auto" }}
     />
   );
 }
