@@ -46,7 +46,8 @@ function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T):
       }
     } catch { /* ignore */ }
 
-    // No cache hit — show loading state immediately
+    // No cache hit — reset data and show loading state immediately
+    setData(defaultValue);
     setLoading(true);
 
     fetch(endpoint)

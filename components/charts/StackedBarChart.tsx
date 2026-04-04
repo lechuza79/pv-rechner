@@ -517,36 +517,40 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
           </BarStack>
 
           {/* Nuclear import overlay — horizontal line at nuclear height */}
-          {nuclearBuckets && buckets.map((bucket) => {
-            const nucGWh = nuclearBuckets.get(bucket.weekKey) || 0;
-            if (nucGWh <= 0.01) return null;
-            const x = xScale(bucket.weekKey) ?? 0;
-            const barWidth = xScale.bandwidth();
-            const lineY = yScale(nucGWh) ?? innerHeight;
-            return (
-              <g key={`nuc-${bucket.weekKey}`} pointerEvents="none">
-                {/* White outline (1px border around the 2px line) */}
-                <line
-                  x1={x}
-                  x2={x + barWidth}
-                  y1={lineY}
-                  y2={lineY}
-                  stroke="#FFFFFF"
-                  strokeWidth={4}
-                  strokeOpacity={0.5}
-                />
-                {/* Purple nuclear import line */}
-                <line
-                  x1={x}
-                  x2={x + barWidth}
-                  y1={lineY}
-                  y2={lineY}
-                  stroke={CATEGORY_COLORS.nuclearImport}
-                  strokeWidth={2}
-                />
-              </g>
-            );
-          })}
+          {nuclearBuckets && (
+            <g style={{ animation: "nucReveal 0.8s ease-out forwards" }}>
+              {buckets.map((bucket) => {
+                const nucGWh = nuclearBuckets.get(bucket.weekKey) || 0;
+                if (nucGWh <= 0.01) return null;
+                const x = xScale(bucket.weekKey) ?? 0;
+                const barWidth = xScale.bandwidth();
+                const lineY = yScale(nucGWh) ?? innerHeight;
+                return (
+                  <g key={`nuc-${bucket.weekKey}`} pointerEvents="none">
+                    {/* White outline (1px border around the 2px line) */}
+                    <line
+                      x1={x}
+                      x2={x + barWidth}
+                      y1={lineY}
+                      y2={lineY}
+                      stroke="#FFFFFF"
+                      strokeWidth={4}
+                      strokeOpacity={0.5}
+                    />
+                    {/* Nuclear import line */}
+                    <line
+                      x1={x}
+                      x2={x + barWidth}
+                      y1={lineY}
+                      y2={lineY}
+                      stroke={CATEGORY_COLORS.nuclearImport}
+                      strokeWidth={2}
+                    />
+                  </g>
+                );
+              })}
+            </g>
+          )}
 
           <AxisBottom
             top={innerHeight}

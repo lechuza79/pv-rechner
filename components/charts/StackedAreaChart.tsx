@@ -395,7 +395,7 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
 
           {/* Nuclear import overlay */}
           {nuclearOverlay && nuclearOverlay.length > 1 && (
-            <>
+            <g style={{ animation: "nucReveal 0.8s ease-out forwards" }}>
               <AreaClosed
                 data={nuclearOverlay}
                 x={(d) => xScale(new Date(d.ts)) ?? 0}
@@ -418,7 +418,7 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
                 strokeWidth={2}
                 strokeOpacity={0.9}
               />
-            </>
+            </g>
           )}
 
           {/* Tooltip hover line */}

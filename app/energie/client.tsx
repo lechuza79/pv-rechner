@@ -91,7 +91,10 @@ function LoadingSpinner() {
         animation: "spin 0.8s linear infinite",
       }} />
       Lade Daten…
-      <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg) } }
+        @keyframes nucReveal { from { clip-path: inset(0 100% 0 0) } to { clip-path: inset(0 0 0 0) } }
+      `}</style>
     </div>
   );
 }
@@ -271,16 +274,16 @@ export default function EnergieClient() {
             }}
           >
             <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Kernimport</div>
-            {nuclearLoading ? (
-              <div style={{ display: "flex", justifyContent: "center", padding: "6px 0" }}>
+            <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              {nuclearLoading ? (
                 <BouncingDots />
-              </div>
-            ) : (
-              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800 }}>
-                <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{nuclearData.avg_gw.toFixed(1)}</span>
-                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>GW</span>
-              </div>
-            )}
+              ) : (
+                <>
+                  <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{nuclearData.avg_gw.toFixed(1)}</span>
+                  <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>GW</span>
+                </>
+              )}
+            </div>
           </button>
         </div>
       )}
