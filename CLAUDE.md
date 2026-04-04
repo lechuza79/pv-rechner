@@ -204,7 +204,10 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Visx als Chart-Library (@visx/shape, scale, axis, grid, responsive, tooltip, gradient)
 - [x] `components/charts/StackedAreaChart.tsx`: Visx Stacked Area mit smooth curves (curveMonotoneX), custom Tooltip, responsive
 - [x] `components/charts/StackedBarChart.tsx`: Visx Stacked Bar mit täglicher/wöchentlicher Aggregation, 52-Wochen-Grid für YTD
-- [x] `/energie` Seite: 4 Summary-Widgets (EE-%, Erzeugt, davon EE, Netto Import/Export), 5 Zeiträume (24h/7d/30d/YTD/12M)
+- [x] `/energie` Seite: 5 Summary-Widgets horizontal (EE-%, Erzeugt, davon EE, Netto Import/Export, Kernimport), 5 Zeiträume (24h/7d/30d/YTD/12M)
+- [x] `/api/energy/nuclear-import`: Rechnerischer Kernimport aus 6 Nachbarländern (FR, CZ, CH, SE, BE, NL) via Grenzflüsse × Kernanteil
+- [x] Kernimport-Overlay auf Stacked Area + Bar Chart (transparente Fläche + Strokeline, Toggle ein/aus)
+- [x] `useNuclearImport()` Client-Hook mit sessionStorage-Cache
 - [ ] Supabase-Tabellen anlegen (energy_timeseries, energy_monthly, data_source_meta) — SQL vorbereitet in /api/energy/setup
 - [ ] Cron-Routes (live 15min, daily, monthly) + vercel.json
 - [ ] Eurostat-Integration (Haushaltsstrompreise EU)
@@ -292,7 +295,7 @@ pv-rechner/
 │   ├── auth.ts                     # useUser() Hook, signIn/signOut Helpers
 │   ├── theme.ts                    # Design-Tokens, CSS-Variablen-Generator, v() Helper
 │   ├── energy-api.ts               # Datalake: Fetch-Wrapper, Timestamp-Normalisierung, Supabase-Upsert, Energy-Charts/Eurostat
-│   ├── energy.ts                   # Client-Hooks: useGenerationMix() (sessionStorage-Cache)
+│   ├── energy.ts                   # Client-Hooks: useGenerationMix(), useNuclearImport() (sessionStorage-Cache)
 │   └── chart-utils.ts              # Chart-Utilities: Energietyp-Farben, Formatter, Aggregation (calcPeriodStats)
 ├── components/
 │   ├── Header.tsx                 # Shared Header-Navigation (Logo links, Nav rechts)
@@ -324,6 +327,7 @@ pv-rechner/
     ├── api/calculations/route.ts  # GET (Liste), POST (Speichern)
     ├── api/calculations/[id]/route.ts # GET, PUT, DELETE einzelne Berechnung
     ├── api/energy/generation/route.ts # Energy-Charts public_power Proxy + In-Memory-Cache + Downsampling
+    ├── api/energy/nuclear-import/route.ts # Kernimport-Berechnung: CBPF × Kernanteil der 6 Nachbarländer
     ├── api/energy/setup/route.ts  # Einmalig: Supabase-Tabellen anlegen (energy_timeseries etc.)
     ├── energie/
     │   ├── page.tsx               # Metadata + <EnergieClient />
