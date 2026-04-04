@@ -440,60 +440,111 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
             yScale={yScale}
             color={colorScale}
           >
-            {(barStacks) =>
-              barStacks.map((barStack) =>
-                barStack.bars.map((bar) => (
-                  <rect
-                    key={`bar-${barStack.index}-${bar.index}`}
-                    x={bar.x}
-                    y={bar.y}
-                    width={bar.width}
-                    height={Math.max(0, bar.height)}
-                    fill={bar.color}
-                    opacity={0.85}
-                    rx={bar.width > 4 ? 1 : 0}
-                    onMouseEnter={() => {
-                      setTooltip({
-                        data: buckets[bar.index],
-                        left: bar.x + bar.width / 2 + margin.left,
-                      });
-                    }}
-                    onMouseLeave={() => setTooltip(null)}
-                    onTouchStart={() => {
-                      setTooltip({
-                        data: buckets[bar.index],
-                        left: bar.x + bar.width / 2 + margin.left,
-                      });
-                    }}
-                    onTouchEnd={() => setTooltip(null)}
-                  />
-                ))
-              )
-            }
+            {(barStacks) => {
+              // Find the topmost (last non-zero) bar for each column index
+              const topBarKey = new Map<number, string>();
+              for (const barStack of barStacks) {
+                for (const bar of barStack.bars) {
+                  if (bar.height > 0.5) {
+                    topBarKey.set(bar.index, `${barStack.index}-${bar.index}`);
+                  }
+                }
+              }
+
+              return barStacks.map((barStack) =>
+                barStack.bars.map((bar) => {
+                  const isTop = topBarKey.get(bar.index) === `${barStack.index}-${bar.index}`;
+                  const r = bar.width > 4 ? 2 : 0;
+
+                  // Only round top corners for the topmost segment
+                  const barEl = isTop && r > 0 ? (
+                    <path
+                      key={`bar-${barStack.index}-${bar.index}`}
+                      d={`M${bar.x},${bar.y + r}
+                          q0,-${r} ${r},-${r}
+                          h${bar.width - 2 * r}
+                          q${r},0 ${r},${r}
+                          v${Math.max(0, bar.height - r)}
+                          h-${bar.width}
+                          z`}
+                      fill={bar.color}
+                      opacity={0.85}
+                      onMouseEnter={() => {
+                        setTooltip({
+                          data: buckets[bar.index],
+                          left: bar.x + bar.width / 2 + margin.left,
+                        });
+                      }}
+                      onMouseLeave={() => setTooltip(null)}
+                      onTouchStart={() => {
+                        setTooltip({
+                          data: buckets[bar.index],
+                          left: bar.x + bar.width / 2 + margin.left,
+                        });
+                      }}
+                      onTouchEnd={() => setTooltip(null)}
+                    />
+                  ) : (
+                    <rect
+                      key={`bar-${barStack.index}-${bar.index}`}
+                      x={bar.x}
+                      y={bar.y}
+                      width={bar.width}
+                      height={Math.max(0, bar.height)}
+                      fill={bar.color}
+                      opacity={0.85}
+                      onMouseEnter={() => {
+                        setTooltip({
+                          data: buckets[bar.index],
+                          left: bar.x + bar.width / 2 + margin.left,
+                        });
+                      }}
+                      onMouseLeave={() => setTooltip(null)}
+                      onTouchStart={() => {
+                        setTooltip({
+                          data: buckets[bar.index],
+                          left: bar.x + bar.width / 2 + margin.left,
+                        });
+                      }}
+                      onTouchEnd={() => setTooltip(null)}
+                    />
+                  );
+
+                  return barEl;
+                })
+              );
+            }}
           </BarStack>
 
-          {/* Nuclear import overlay bars */}
+          {/* Nuclear import overlay — horizontal line at nuclear height */}
           {nuclearBuckets && buckets.map((bucket) => {
             const nucGWh = nuclearBuckets.get(bucket.weekKey) || 0;
             if (nucGWh <= 0.01) return null;
             const x = xScale(bucket.weekKey) ?? 0;
             const barWidth = xScale.bandwidth();
-            const barHeight = innerHeight - (yScale(nucGWh) ?? 0);
+            const lineY = yScale(nucGWh) ?? innerHeight;
             return (
-              <rect
-                key={`nuc-${bucket.weekKey}`}
-                x={x}
-                y={innerHeight - barHeight}
-                width={barWidth}
-                height={Math.max(0, barHeight)}
-                fill={CATEGORY_COLORS.nuclearImport}
-                fillOpacity={0.2}
-                stroke={CATEGORY_COLORS.nuclearImport}
-                strokeWidth={0.5}
-                strokeOpacity={0.6}
-                rx={barWidth > 4 ? 1 : 0}
-                pointerEvents="none"
-              />
+              <g key={`nuc-${bucket.weekKey}`} pointerEvents="none">
+                {/* White outline (1px border around the 2px line) */}
+                <line
+                  x1={x}
+                  x2={x + barWidth}
+                  y1={lineY}
+                  y2={lineY}
+                  stroke="#FFFFFF"
+                  strokeWidth={4}
+                  strokeOpacity={0.5}
+                />
+                {/* Purple nuclear import line */}
+                <line
+                  x1={x}
+                  x2={x + barWidth}
+                  y1={lineY}
+                  y2={lineY}
+                  stroke={CATEGORY_COLORS.nuclearImport}
+                  strokeWidth={2}
+                />
+              </g>
             );
           })}
 

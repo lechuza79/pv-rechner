@@ -49,7 +49,7 @@ export const tokens = {
   // ─── Energy — Sonstige ────────────────────────────────────────────────────
   '--color-energy-other': '#BDBDBD',        // Light grey — Sonstige/Abfall
   // ─── Energy — Importierte Kernenergie ─────────────────────────────────────
-  '--color-energy-nuclear-import': '#7E57C2', // Purple — Importierte Kernenergie
+  '--color-energy-nuclear-import': '#EA00FF', // Magenta — Importierte Kernenergie
   // ─── Energy — Category summary colors ─────────────────────────────────────
   '--color-energy-cat-renewable': '#4CAF50', // Green — Erneuerbare (summary)
   '--color-energy-cat-fossil': '#8D6E63',    // Brown — Fossil (summary)
