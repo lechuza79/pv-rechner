@@ -481,7 +481,7 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
           <AxisLeft
             scale={yScale}
             numTicks={5}
-            tickFormat={(d) => formatMW(d as number)}
+            tickFormat={(d) => `${Math.round((d as number) / 1000)}`}
             stroke="transparent"
             tickStroke="transparent"
             tickLabelProps={() => ({
@@ -493,6 +493,16 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
               dy: "0.3em",
             })}
           />
+          {/* Y-axis unit label */}
+          <text
+            x={-margin.left + 4}
+            y={innerHeight + 30}
+            fill="var(--color-text-faint)"
+            fontSize={9}
+            fontFamily="var(--font-mono)"
+          >
+            in GW
+          </text>
 
           {/* Invisible overlay for tooltip */}
           <rect

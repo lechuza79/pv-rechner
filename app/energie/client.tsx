@@ -540,63 +540,62 @@ export default function EnergieClient() {
           ) : (
             <StackedAreaChart
               data={genData.data}
-              xFormat={hours > 168 ? "date" : hours > 48 ? "datetime" : "time"}
+              xFormat={hours >= 168 ? "date" : hours > 48 ? "datetime" : "time"}
               nuclearOverlay={showNuclear ? nuclearData.data : undefined}
             />
           )}
 
-          {/* Legend */}
+          {/* Legend + Share buttons in one row */}
           {!loading && !error && genData.data.length > 0 && (
             <div style={{
-              display: "flex", justifyContent: "flex-start", gap: 16, flexWrap: "wrap",
+              display: "flex", alignItems: "center", justifyContent: "space-between",
               padding: "12px 8px 0", marginTop: 8,
               borderTop: `1px solid ${v("--color-border")}`,
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.renewable, flexShrink: 0 }} />
-                <span style={{ color: v("--color-text-muted") }}>Erneuerbare</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.fossil, flexShrink: 0 }} />
-                <span style={{ color: v("--color-text-muted") }}>Fossil</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.other, flexShrink: 0 }} />
-                <span style={{ color: v("--color-text-muted") }}>Sonstige</span>
-              </div>
-              {(hasDomesticNuclear || showNuclear) && (
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                  <span style={{ color: v("--color-text-muted") }}>Kernenergie</span>
-                  {hasDomesticNuclear && (
-                    <>
-                      <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclear, flexShrink: 0 }} />
-                      <span style={{ color: v("--color-text-faint"), fontSize: 10 }}>erzeugt</span>
-                    </>
-                  )}
-                  {showNuclear && (
-                    nuclearLoading ? <BouncingDots /> : (
-                      <>
-                        <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclearImport, flexShrink: 0 }} />
-                        <span style={{ color: v("--color-text-faint"), fontSize: 10 }}>importiert</span>
-                      </>
-                    )
-                  )}
+                  <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.renewable, flexShrink: 0 }} />
+                  <span style={{ color: v("--color-text-muted") }}>Erneuerbare</span>
                 </div>
-              )}
+                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.fossil, flexShrink: 0 }} />
+                  <span style={{ color: v("--color-text-muted") }}>Fossil</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.other, flexShrink: 0 }} />
+                  <span style={{ color: v("--color-text-muted") }}>Sonstige</span>
+                </div>
+                {(hasDomesticNuclear || showNuclear) && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                    <span style={{ color: v("--color-text-muted") }}>Kernenergie</span>
+                    {hasDomesticNuclear && (
+                      <>
+                        <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclear, flexShrink: 0 }} />
+                        <span style={{ color: v("--color-text-faint"), fontSize: 10 }}>erzeugt</span>
+                      </>
+                    )}
+                    {showNuclear && (
+                      nuclearLoading ? <BouncingDots /> : (
+                        <>
+                          <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclearImport, flexShrink: 0 }} />
+                          <span style={{ color: v("--color-text-faint"), fontSize: 10 }}>importiert</span>
+                        </>
+                      )
+                    )}
+                  </div>
+                )}
+              </div>
+              <ChartExportBar
+                onDownload={energyChartExport.downloadPng}
+                onShare={energyChartExport.sharePng}
+                onWhatsApp={energyChartExport.shareWhatsApp}
+                onTwitter={energyChartExport.shareTwitter}
+                isExporting={energyChartExport.isExporting}
+                canNativeShare={energyChartExport.canNativeShare}
+              />
             </div>
           )}
         </div>
-
-        {!loading && !error && genData.data.length > 0 && (
-          <ChartExportBar
-            onDownload={energyChartExport.downloadPng}
-            onShare={energyChartExport.sharePng}
-            onWhatsApp={energyChartExport.shareWhatsApp}
-            onTwitter={energyChartExport.shareTwitter}
-            isExporting={energyChartExport.isExporting}
-            canNativeShare={energyChartExport.canNativeShare}
-          />
-        )}
       </div>
 
       {/* Methodology note */}
@@ -621,16 +620,7 @@ export default function EnergieClient() {
           lineHeight: 1.6,
         }}
       >
-        Datenquelle:{" "}
-        <a
-          href="https://energy-charts.info"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: v("--color-text-muted"), textDecoration: "underline" }}
-        >
-          Fraunhofer ISE / Energy-Charts
-        </a>{" "}
-        (CC BY 4.0)
+        Datenquelle: Fraunhofer ISE / Energy-Charts (CC BY 4.0)
       </div>
 
       {/* Footer Links */}

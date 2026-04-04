@@ -32,7 +32,7 @@ export default function ChartExportBar({
   onDownload, onShare, onWhatsApp, onTwitter, isExporting, canNativeShare,
 }: ChartExportBarProps) {
   return (
-    <div style={{ display: "flex", gap: 6, justifyContent: "flex-end", padding: "8px 4px 0" }}>
+    <div style={{ display: "flex", gap: 6, justifyContent: "flex-end", flexShrink: 0 }}>
       <button
         onClick={onDownload}
         disabled={isExporting}

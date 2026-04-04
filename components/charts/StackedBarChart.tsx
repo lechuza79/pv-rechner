@@ -510,20 +510,39 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
 
   if (innerWidth <= 0 || buckets.length < 1) return null;
 
-  // Tick labels: for max mode show only year starts, otherwise density-based
-  const totalBuckets = buckets.length;
+  // Tick labels
   const tickValues = useMemo(() => {
     if (preAggregated) {
-      // Monthly buckets: show January of each year (weekKey = "YYYY-01")
-      return buckets.filter(b => b.weekKey.endsWith("-01")).map(b => b.weekKey);
+      // Monthly buckets: show every 2nd month, always include January
+      return buckets
+        .filter(b => {
+          const m = parseInt(b.weekKey.split("-")[1], 10);
+          return m % 2 === 1; // Jan, Mar, May, Jul, Sep, Nov
+        })
+        .map(b => b.weekKey);
     }
-    if (mode === "max") {
-      // Show only KW1 of each year (year label)
-      return buckets.filter(b => b.weekKey.endsWith("-W01")).map(b => b.weekKey);
+    if (mode === "30d") {
+      // Daily: every few days
+      const interval = buckets.length > 20 ? 4 : buckets.length > 10 ? 2 : 1;
+      return buckets.filter((_, i) => i % interval === 0).map(d => d.weekKey);
     }
-    const interval = totalBuckets > 40 ? 8 : totalBuckets > 20 ? 4 : totalBuckets > 10 ? 2 : 1;
-    return buckets.filter((_, i) => i % interval === 0).map((d) => d.weekKey);
-  }, [buckets, totalBuckets, mode, preAggregated]);
+    // ytd, 12m, year, max (weekly bars): show month labels every 2 months
+    if (mode === "ytd" || mode === "12m" || mode === "max") {
+      const seen = new Set<string>();
+      return buckets.filter(b => {
+        const parts = b.weekKey.match(/^(\d{4})-W(\d{2})$/);
+        if (!parts) return false;
+        const { month } = isoWeekToMonth(parseInt(parts[1], 10), parseInt(parts[2], 10));
+        const yr = parseInt(parts[1], 10);
+        const key = `${yr}-${month}`;
+        if (seen.has(key) || month % 2 !== 0) return false; // every 2 months (Jan=0, Mar=2, May=4...)
+        seen.add(key);
+        return true;
+      }).map(b => b.weekKey);
+    }
+    const interval = buckets.length > 40 ? 8 : buckets.length > 20 ? 4 : buckets.length > 10 ? 2 : 1;
+    return buckets.filter((_, i) => i % interval === 0).map(d => d.weekKey);
+  }, [buckets, mode, preAggregated]);
 
   return (
     <div style={{ position: "relative" }}>
@@ -671,7 +690,15 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
             scale={xScale}
             tickValues={tickValues}
             tickFormat={(key) => {
-              const b = buckets.find((d) => d.weekKey === key);
+              const k = key as string;
+              // Weekly buckets: show month name
+              const weekMatch = k.match(/^(\d{4})-W(\d{2})$/);
+              if (weekMatch) {
+                const { year, month } = isoWeekToMonth(parseInt(weekMatch[1], 10), parseInt(weekMatch[2], 10));
+                return month === 0 ? String(year) : MONTH_LABELS[month];
+              }
+              // Monthly/daily buckets: use stored label
+              const b = buckets.find((d) => d.weekKey === k);
               return b?.label || "";
             }}
             stroke="var(--color-chart-grid)"
@@ -687,7 +714,11 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
           <AxisLeft
             scale={yScale}
             numTicks={5}
-            tickFormat={(d) => formatGWh(d as number)}
+            tickFormat={(d) => {
+              const v = d as number;
+              if (yMax >= 1000) return `${Math.round(v / 1000)}`;
+              return `${Math.round(v)}`;
+            }}
             stroke="transparent"
             tickStroke="transparent"
             tickLabelProps={() => ({
@@ -699,6 +730,16 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
               dy: "0.3em",
             })}
           />
+          {/* Y-axis unit label */}
+          <text
+            x={-margin.left + 4}
+            y={innerHeight + 30}
+            fill="var(--color-text-faint)"
+            fontSize={9}
+            fontFamily="var(--font-mono)"
+          >
+            {yMax >= 1000 ? "in TWh" : "in GWh"}
+          </text>
         </Group>
       </svg>
 
