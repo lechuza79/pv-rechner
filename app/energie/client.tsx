@@ -94,6 +94,22 @@ function LoadingSpinner() {
   );
 }
 
+function BouncingDots() {
+  const dot = (delay: number) => ({
+    width: 4, height: 4, borderRadius: "50%",
+    background: v("--color-text-muted"),
+    animation: `bounce 1.2s ease-in-out ${delay}s infinite`,
+  });
+  return (
+    <div style={{ display: "flex", gap: 3, alignItems: "center" }}>
+      <div style={dot(0)} />
+      <div style={dot(0.15)} />
+      <div style={dot(0.3)} />
+      <style>{`@keyframes bounce { 0%,80%,100% { transform: scale(0.6); opacity: 0.4 } 40% { transform: scale(1); opacity: 1 } }`}</style>
+    </div>
+  );
+}
+
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function EnergieClient() {
@@ -319,6 +335,12 @@ export default function EnergieClient() {
               <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.other, flexShrink: 0 }} />
               <span style={{ color: v("--color-text-muted") }}>Sonstige</span>
             </div>
+            {showNuclear && nuclearLoading && (
+              <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                <span style={{ color: v("--color-text-muted") }}>Kernimport</span>
+                <BouncingDots />
+              </div>
+            )}
             {showNuclear && !nuclearLoading && nuclearData.avg_gw > 0 && (
               <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
                 <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclearImport, flexShrink: 0 }} />
