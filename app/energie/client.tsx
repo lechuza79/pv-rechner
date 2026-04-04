@@ -11,6 +11,7 @@ import {
 import { v } from "../../lib/theme";
 import { useChartExport } from "../../lib/useChartExport";
 import ChartExportBar from "../../components/ChartExportBar";
+import { IconChevronLeft, IconChevronRight, IconChevronDown } from "../../components/Icons";
 
 // ─── Time Range Selector ─────────────────────────────────────────────────────
 
@@ -189,97 +190,109 @@ export default function EnergieClient() {
         </h1>
       </div>
 
-      {/* Time Range Toggle — single row */}
-      <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap", alignItems: "center" }}>
-        {LETZTE_RANGES.map((range) => (
-          <button key={range.value} onClick={() => setSelected(range.value)} style={rangeButtonStyle(selected === range.value)}>
-            {range.label}
-          </button>
-        ))}
-
-        {/* Year selector with arrows */}
-        <div style={{ display: "flex", alignItems: "center", gap: 0, marginLeft: 4 }}>
-          <button
-            onClick={() => {
-              const currentYear = new Date().getFullYear();
-              if (isYear) {
-                const y = Number(selected);
-                if (y > 2015) setSelected(String(y - 1));
-              } else if (selected === "YTD") {
-                setSelected(String(currentYear - 1));
-              } else {
-                setSelected(String(currentYear - 1));
-              }
-            }}
-            style={{
-              ...rangeButtonStyle(false),
-              borderRadius: `${v("--radius-sm")} 0 0 ${v("--radius-sm")}`,
-              borderRight: "none",
-              padding: "6px 6px",
-              fontSize: 13,
-              lineHeight: 1,
-            }}
-            title="Vorheriges Jahr"
-          >
-            ‹
-          </button>
-          <div style={{ position: "relative" }}>
-            <select
-              value={isYear ? selected : selected === "YTD" ? "YTD" : ""}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val) setSelected(val);
-              }}
-              style={{
-                ...rangeButtonStyle(isYear || selected === "YTD"),
-                borderRadius: 0,
-                appearance: "none" as const,
-                WebkitAppearance: "none" as const,
-                paddingRight: 18,
-                minWidth: 70,
-                textAlign: "center",
-              }}
-            >
-              <option value="" disabled>Jahre</option>
-              <option value="YTD">{new Date().getFullYear()}</option>
-              {availableYears.map((year) => (
-                <option key={year} value={String(year)}>{year}</option>
-              ))}
-            </select>
-            <span style={{
-              position: "absolute", right: 5, top: "50%", transform: "translateY(-50%)",
-              fontSize: 8, pointerEvents: "none",
-              color: isYear || selected === "YTD" ? v("--color-text-on-accent") : v("--color-text-secondary"),
-            }}>▼</span>
+      {/* Time Range Toggle — two groups */}
+      <div style={{ display: "flex", gap: 20, marginBottom: 20, flexWrap: "wrap" }}>
+        {/* Letzte */}
+        <div>
+          <div style={{ fontSize: 10, color: v("--color-text-muted"), marginBottom: 4, fontWeight: 600 }}>Letzte</div>
+          <div style={{ display: "flex", gap: 6 }}>
+            {LETZTE_RANGES.map((range) => (
+              <button key={range.value} onClick={() => setSelected(range.value)} style={rangeButtonStyle(selected === range.value)}>
+                {range.label}
+              </button>
+            ))}
           </div>
-          <button
-            onClick={() => {
-              const currentYear = new Date().getFullYear();
-              if (isYear) {
-                const y = Number(selected);
-                if (y < currentYear - 1) setSelected(String(y + 1));
-                else if (y === currentYear - 1) setSelected("YTD");
-              }
-            }}
-            disabled={selected === "YTD"}
-            style={{
-              ...rangeButtonStyle(false),
-              borderRadius: `0 ${v("--radius-sm")} ${v("--radius-sm")} 0`,
-              borderLeft: "none",
-              padding: "6px 6px",
-              fontSize: 13,
-              lineHeight: 1,
-              opacity: selected === "YTD" ? 0.4 : 1,
-            }}
-            title="Nächstes Jahr"
-          >
-            ›
-          </button>
         </div>
+        {/* Andere Zeiträume */}
+        <div>
+          <div style={{ fontSize: 10, color: v("--color-text-muted"), marginBottom: 4, fontWeight: 600 }}>Andere Zeiträume</div>
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            {/* Current year button */}
+            <button onClick={() => setSelected("YTD")} style={rangeButtonStyle(selected === "YTD")}>
+              {new Date().getFullYear()}
+            </button>
 
-        <button onClick={() => setSelected("MAX")} style={rangeButtonStyle(selected === "MAX")}>
-          Max
-        </button>
+            {/* Year selector with arrows + dropdown */}
+            <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
+              <button
+                onClick={() => {
+                  if (isYear) {
+                    const y = Number(selected);
+                    if (y > 2015) setSelected(String(y - 1));
+                  } else {
+                    setSelected(String(new Date().getFullYear() - 1));
+                  }
+                }}
+                style={{
+                  ...rangeButtonStyle(false),
+                  borderRadius: `${v("--radius-sm")} 0 0 ${v("--radius-sm")}`,
+                  borderRight: "none",
+                  padding: "6px 5px",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+                title="Vorheriges Jahr"
+              >
+                <IconChevronLeft size={10} />
+              </button>
+              <div style={{ position: "relative" }}>
+                <select
+                  value={isYear ? selected : ""}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val) setSelected(val);
+                  }}
+                  style={{
+                    ...rangeButtonStyle(isYear),
+                    borderRadius: 0,
+                    appearance: "none" as const,
+                    WebkitAppearance: "none" as const,
+                    paddingRight: 20,
+                    minWidth: 70,
+                    textAlign: "center",
+                  }}
+                >
+                  <option value="" disabled>Jahre</option>
+                  {availableYears.map((year) => (
+                    <option key={year} value={String(year)}>{year}</option>
+                  ))}
+                </select>
+                <span style={{
+                  position: "absolute", right: 5, top: "50%", transform: "translateY(-50%)",
+                  pointerEvents: "none",
+                  color: isYear ? v("--color-text-on-accent") : v("--color-text-secondary"),
+                  display: "flex",
+                }}>
+                  <IconChevronDown size={8} />
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  if (isYear) {
+                    const y = Number(selected);
+                    const maxYear = new Date().getFullYear() - 1;
+                    if (y < maxYear) setSelected(String(y + 1));
+                  }
+                }}
+                disabled={!isYear || Number(selected) >= new Date().getFullYear() - 1}
+                style={{
+                  ...rangeButtonStyle(false),
+                  borderRadius: `0 ${v("--radius-sm")} ${v("--radius-sm")} 0`,
+                  borderLeft: "none",
+                  padding: "6px 5px",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  opacity: !isYear || Number(selected) >= new Date().getFullYear() - 1 ? 0.4 : 1,
+                }}
+                title="Nächstes Jahr"
+              >
+                <IconChevronRight size={10} />
+              </button>
+            </div>
+
+            <button onClick={() => setSelected("MAX")} style={rangeButtonStyle(selected === "MAX")}>
+              Max
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Summary Widgets — horizontal row (always visible) */}
