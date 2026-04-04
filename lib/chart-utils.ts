@@ -131,7 +131,8 @@ export function formatGWh(gwh: number): string {
   if (gwh >= 10000) return `${(gwh / 1000).toFixed(0)} TWh`;
   if (gwh >= 1000) return `${(gwh / 1000).toFixed(1)} TWh`;
   if (gwh >= 10) return `${gwh.toFixed(0)} GWh`;
-  return `${gwh.toFixed(1)} GWh`;
+  if (gwh >= 1) return `${gwh.toFixed(1)} GWh`;
+  return `${gwh.toFixed(2)} GWh`;
 }
 
 export function formatEurMWh(eur: number): string {
