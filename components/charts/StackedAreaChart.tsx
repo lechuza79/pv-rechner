@@ -395,7 +395,15 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
 
           {/* Nuclear import overlay */}
           {nuclearOverlay && nuclearOverlay.length > 1 && (
-            <g style={{ animation: "nucReveal 0.8s ease-out forwards" }}>
+            <>
+            <defs>
+              <clipPath id="nucClipArea">
+                <rect x={0} y={0} width={innerWidth} height={innerHeight}>
+                  <animate attributeName="width" from="0" to={innerWidth} dur="0.8s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" />
+                </rect>
+              </clipPath>
+            </defs>
+            <g clipPath="url(#nucClipArea)">
               <AreaClosed
                 data={nuclearOverlay}
                 x={(d) => xScale(new Date(d.ts)) ?? 0}
@@ -419,6 +427,7 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
                 strokeOpacity={0.9}
               />
             </g>
+            </>
           )}
 
           {/* Tooltip hover line */}

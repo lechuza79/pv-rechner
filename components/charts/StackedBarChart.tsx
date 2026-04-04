@@ -518,7 +518,15 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
 
           {/* Nuclear import overlay — horizontal line at nuclear height */}
           {nuclearBuckets && (
-            <g style={{ animation: "nucReveal 0.8s ease-out forwards" }}>
+            <>
+            <defs>
+              <clipPath id="nucClip">
+                <rect x={0} y={0} width={innerWidth} height={innerHeight}>
+                  <animate attributeName="width" from="0" to={innerWidth} dur="0.8s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" />
+                </rect>
+              </clipPath>
+            </defs>
+            <g clipPath="url(#nucClip)">
               {buckets.map((bucket) => {
                 const nucGWh = nuclearBuckets.get(bucket.weekKey) || 0;
                 if (nucGWh <= 0.01) return null;
@@ -550,6 +558,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
                 );
               })}
             </g>
+            </>
           )}
 
           <AxisBottom

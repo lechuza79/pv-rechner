@@ -91,10 +91,7 @@ function LoadingSpinner() {
         animation: "spin 0.8s linear infinite",
       }} />
       Lade Daten…
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg) } }
-        @keyframes nucReveal { from { clip-path: inset(0 100% 0 0) } to { clip-path: inset(0 0 0 0) } }
-      `}</style>
+      <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   );
 }
@@ -140,10 +137,33 @@ export default function EnergieClient() {
 
   const stats = useMemo(() => calcPeriodStats(genData.data), [genData.data]);
 
+  // Time range display label
+  const rangeLabel = useMemo(() => {
+    if (selected === "YTD") return "Year to Date";
+    if (/^\d{4}$/.test(selected)) return selected;
+    const r = LETZTE_RANGES.find(r => r.value === selected);
+    return r ? `Die letzten ${r.label}` : selected;
+  }, [selected]);
+
   const energyChartExport = useChartExport({
-    title: `Strommix Deutschland ${selected}`,
+    context: {
+      title: "Stromerzeugung nach Energieträger in Deutschland",
+      subtitle: rangeLabel,
+      stats: stats ? [
+        { label: "Erneuerbare", value: `${Math.round(stats.eeSharePct)}`, unit: "%" },
+        { label: "Erzeugt", value: formatGWh(stats.totalGenerationGWh).replace(/[^\d.,]/g, ''), unit: formatGWh(stats.totalGenerationGWh).replace(/[\d.,\s]/g, '') },
+        { label: "davon EE", value: formatGWh(stats.renewableGWh).replace(/[^\d.,]/g, ''), unit: formatGWh(stats.renewableGWh).replace(/[\d.,\s]/g, '') },
+        ...(stats.netImportGWh !== 0 ? [{ label: "Netto-Import", value: `${stats.netImportGWh > 0 ? "+" : ""}${formatGWh(Math.abs(stats.netImportGWh)).replace(/[^\d.,]/g, '')}`, unit: formatGWh(Math.abs(stats.netImportGWh)).replace(/[\d.,\s]/g, '') }] : []),
+      ] : undefined,
+      legend: [
+        { color: CATEGORY_COLORS.renewable, label: "Erneuerbare" },
+        { color: CATEGORY_COLORS.fossil, label: "Fossil" },
+        { color: CATEGORY_COLORS.other, label: "Sonstige" },
+        ...(showNuclear && nuclearData.avg_gw > 0 ? [{ color: CATEGORY_COLORS.nuclearImport, label: "Importierte Kernenergie" }] : []),
+      ],
+    },
     filename: `solar-check-strommix-${selected}.png`,
-    shareText: `Strommix Deutschland (${selected}) – ${stats ? `${Math.round(stats.eeSharePct)}% Erneuerbare` : ""}`,
+    shareText: `Strommix Deutschland (${rangeLabel}) – ${stats ? `${Math.round(stats.eeSharePct)}% Erneuerbare` : ""}`,
   });
 
   return (
@@ -184,109 +204,69 @@ export default function EnergieClient() {
         </div>
       </div>
 
-      {/* Summary Widgets — horizontal row */}
-      {stats && (
-        <div
-          style={{
-            display: "flex",
-            gap: 8,
-            marginBottom: 20,
-            overflowX: "auto",
-            WebkitOverflowScrolling: "touch",
-            scrollbarWidth: "none",
-          }}
-        >
-          {/* EE Share */}
-          <div style={{
+      {/* Summary Widgets — horizontal row (always visible) */}
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          marginBottom: 20,
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
+        }}
+      >
+        {[
+          { label: "Erneuerbare", value: stats ? `${Math.round(stats.eeSharePct)}` : null, unit: "%" },
+          { label: "Erzeugt", value: stats ? splitValueUnit(formatGWh(stats.totalGenerationGWh))[0] : null, unit: stats ? splitValueUnit(formatGWh(stats.totalGenerationGWh))[1] : "TWh" },
+          { label: "davon EE", value: stats ? splitValueUnit(formatGWh(stats.renewableGWh))[0] : null, unit: stats ? splitValueUnit(formatGWh(stats.renewableGWh))[1] : "TWh" },
+          { label: stats?.netImportGWh != null ? `Netto-${stats.netImportGWh > 0 ? "Import" : "Export"}` : "Netto", value: stats ? `${stats.netImportGWh > 0 ? "+" : ""}${splitValueUnit(formatGWh(Math.abs(stats.netImportGWh)))[0]}` : null, unit: stats ? splitValueUnit(formatGWh(Math.abs(stats.netImportGWh)))[1] : "GWh" },
+        ].map(({ label, value, unit }) => (
+          <div key={label} style={{
             flex: "1 0 0", minWidth: 80,
             background: v("--color-bg-muted"),
             border: `1px solid ${v("--color-border")}`,
             borderRadius: v("--radius-md"),
             padding: "12px 8px", textAlign: "center",
           }}>
-            <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Erneuerbare</div>
-            <div style={{ fontFamily: v("--font-mono"), fontWeight: 800 }}>
-              <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{Math.round(stats.eeSharePct)}</span>
-              <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 1 }}>%</span>
-            </div>
-          </div>
-          {/* Total */}
-          {(() => { const [val, unit] = splitValueUnit(formatGWh(stats.totalGenerationGWh)); return (
-            <div style={{
-              flex: "1 0 0", minWidth: 80,
-              background: v("--color-bg-muted"),
-              border: `1px solid ${v("--color-border")}`,
-              borderRadius: v("--radius-md"),
-              padding: "12px 8px", textAlign: "center",
-            }}>
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Erzeugt</div>
-              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800 }}>
-                <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{val}</span>
-                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>{unit}</span>
-              </div>
-            </div>
-          ); })()}
-          {/* Renewable */}
-          {(() => { const [val, unit] = splitValueUnit(formatGWh(stats.renewableGWh)); return (
-            <div style={{
-              flex: "1 0 0", minWidth: 80,
-              background: v("--color-bg-muted"),
-              border: `1px solid ${v("--color-border")}`,
-              borderRadius: v("--radius-md"),
-              padding: "12px 8px", textAlign: "center",
-            }}>
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>davon EE</div>
-              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800 }}>
-                <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{val}</span>
-                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>{unit}</span>
-              </div>
-            </div>
-          ); })()}
-          {/* Net Import/Export */}
-          {(() => { const [val, unit] = splitValueUnit(formatGWh(Math.abs(stats.netImportGWh))); return (
-            <div style={{
-              flex: "1 0 0", minWidth: 80,
-              background: v("--color-bg-muted"),
-              border: `1px solid ${v("--color-border")}`,
-              borderRadius: v("--radius-md"),
-              padding: "12px 8px", textAlign: "center",
-            }}>
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>
-                Netto-{stats.netImportGWh > 0 ? "Import" : "Export"}
-              </div>
-              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800 }}>
-                <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{stats.netImportGWh > 0 ? "+" : ""}{val}</span>
-                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>{unit}</span>
-              </div>
-            </div>
-          ); })()}
-          {/* Nuclear import toggle */}
-          <button
-            onClick={() => !nuclearLoading && setShowNuclear(!showNuclear)}
-            style={{
-              flex: "1 0 0", minWidth: 80,
-              background: v("--color-bg-muted"),
-              border: `1px solid ${v("--color-border")}`,
-              borderRadius: v("--radius-md"),
-              padding: "12px 8px", textAlign: "center",
-              cursor: nuclearLoading ? "default" : "pointer", fontFamily: v("--font-text"),
-              opacity: nuclearLoading ? 0.6 : showNuclear ? 1 : 0.5,
-            }}
-          >
-            <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Kernimport</div>
+            <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>{label}</div>
             <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              {nuclearLoading ? (
+              {value === null ? (
                 <BouncingDots />
               ) : (
                 <>
-                  <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{nuclearData.avg_gw.toFixed(1)}</span>
-                  <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>GW</span>
+                  <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{value}</span>
+                  <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>{unit}</span>
                 </>
               )}
             </div>
-          </button>
-        </div>
-      )}
+          </div>
+        ))}
+        {/* Kernenergie toggle */}
+        <button
+          onClick={() => !nuclearLoading && setShowNuclear(!showNuclear)}
+          style={{
+            flex: "1 0 0", minWidth: 80,
+            background: v("--color-bg-muted"),
+            border: `1px solid ${v("--color-border")}`,
+            borderRadius: v("--radius-md"),
+            padding: "12px 8px", textAlign: "center",
+            cursor: nuclearLoading ? "default" : "pointer", fontFamily: v("--font-text"),
+            opacity: nuclearLoading ? 0.6 : showNuclear ? 1 : 0.5,
+          }}
+        >
+          <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Kernenergie</div>
+          <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            {nuclearLoading ? (
+              <BouncingDots />
+            ) : (
+              <>
+                <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{nuclearData.avg_gw.toFixed(1)}</span>
+                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>GW</span>
+              </>
+            )}
+          </div>
+        </button>
+      </div>
 
       {/* Stacked Area / Bar Chart */}
       <div
