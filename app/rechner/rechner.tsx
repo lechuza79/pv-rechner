@@ -428,7 +428,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
               {/* Editable parameters grid */}
               <div style={{
-                display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px",
+                display: "flex", flexDirection: "column", gap: 8,
                 marginTop: 18, padding: "14px 16px", background: v('--color-bg-muted'),
                 borderRadius: v('--radius-md'), textAlign: "left", fontSize: 13,
               }}>
@@ -448,7 +448,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   <span style={{ color: v('--color-text-secondary') }}>Strompreis</span>
                   <InlineEdit value={oStrom} onCommit={setOStrom} unit=" €" step={0.01} min={0.15} max={0.60} width={52} />
                 </div>
-                <div style={{ gridColumn: "1 / -1" }}>
+                <div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: einspeisungModus !== "aus" ? 6 : 0 }}>
                     <span style={{ color: v('--color-text-secondary') }}>Einspeisung</span>
                     <div style={{ display: "flex", gap: 2, background: v('--color-bg'), borderRadius: 8, padding: 2 }}>
