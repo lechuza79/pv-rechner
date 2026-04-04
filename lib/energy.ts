@@ -1,0 +1,74 @@
+"use client";
+import { useState, useEffect } from "react";
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+export interface GenerationDataPoint {
+  ts: string;
+  [key: string]: number | string | null;
+}
+
+export interface GenerationData {
+  data: GenerationDataPoint[];
+  source: string;
+  license: string;
+  country: string;
+}
+
+// ─── Hooks ───────────────────────────────────────────────────────────────────
+
+const CACHE_PREFIX = "sc-energy-";
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T): {
+  data: T;
+  loading: boolean;
+  error: string | null;
+} {
+  const [data, setData] = useState<T>(defaultValue);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check sessionStorage
+    try {
+      const cached = sessionStorage.getItem(CACHE_PREFIX + cacheKey);
+      if (cached) {
+        const { data: d, ts } = JSON.parse(cached);
+        if (Date.now() - ts < CACHE_TTL) {
+          setData(d);
+          setLoading(false);
+          return;
+        }
+      }
+    } catch { /* ignore */ }
+
+    fetch(endpoint)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((d: T) => {
+        setData(d);
+        setLoading(false);
+        try {
+          sessionStorage.setItem(CACHE_PREFIX + cacheKey, JSON.stringify({ data: d, ts: Date.now() }));
+        } catch { /* ignore */ }
+      })
+      .catch((e) => {
+        setError(e.message);
+        setLoading(false);
+      });
+  }, [endpoint, cacheKey]);
+
+  return { data, loading, error };
+}
+
+/** Current electricity generation mix (last 24h by default) */
+export function useGenerationMix(country = "de", hours = 24) {
+  return useCachedFetch<GenerationData>(
+    `/api/energy/generation?country=${country}&hours=${hours}`,
+    `gen-${country}-${hours}`,
+    { data: [], source: "", license: "", country }
+  );
+}

@@ -194,6 +194,27 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Admin-UI `/admin/prices` (Scrape-Trigger, manuelles Override, Historie)
 - [x] Preise aktualisiert auf Q1/2026 Marktpreise
 
+**WP 9: Energiedaten-Datalake (in Arbeit)**
+- [x] Datenquellen-Recherche: Energy-Charts, Eurostat, SMARD, ENTSO-E, MaStR
+- [x] `lib/energy-api.ts`: Shared Fetch-Wrapper, Timestamp-Normalisierung, Cache-Factory, Energy-Charts + Eurostat Fetch-Funktionen
+- [x] `lib/chart-utils.ts`: Energietyp-Farbpalette (grün=EE, braun=fossil), Formatter, Aggregation (calcPeriodStats)
+- [x] `lib/energy.ts`: Client-Hooks (useGenerationMix) mit sessionStorage-Cache
+- [x] Energie-Farbtokens in `lib/theme.ts` (10 Tokens, semantisch: grün-Shades für EE, braun für fossil)
+- [x] `/api/energy/generation`: Energy-Charts public_power Proxy mit In-Memory-Cache + Downsampling (15min→1h→3h→6h)
+- [x] Visx als Chart-Library (@visx/shape, scale, axis, grid, responsive, tooltip, gradient)
+- [x] `components/charts/StackedAreaChart.tsx`: Visx Stacked Area mit smooth curves (curveMonotoneX), custom Tooltip, responsive
+- [x] `components/charts/StackedBarChart.tsx`: Visx Stacked Bar mit täglicher/wöchentlicher Aggregation, 52-Wochen-Grid für YTD
+- [x] `/energie` Seite: 4 Summary-Widgets (EE-%, Erzeugt, davon EE, Netto Import/Export), 5 Zeiträume (24h/7d/30d/YTD/12M)
+- [ ] Supabase-Tabellen anlegen (energy_timeseries, energy_monthly, data_source_meta) — SQL vorbereitet in /api/energy/setup
+- [ ] Cron-Routes (live 15min, daily, monthly) + vercel.json
+- [ ] Eurostat-Integration (Haushaltsstrompreise EU)
+- [ ] Spotpreis-Chart (Energy-Charts /price)
+- [ ] Grenzflüsse-Chart (Energy-Charts /cbpf)
+- [ ] EE-Ampel Widget für Startseite/Simulation
+- [ ] /energie/frankreich (Strommix FR inkl. Kernenergie)
+- [ ] Navigation-Updates (Hub + Header → /energie)
+- [ ] SEO-Metadata für /energie
+
 ### Phase 4: Content & Reichweite
 - [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
@@ -222,7 +243,7 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [ ] Mieterstrom-Thematik (Vergütung, Abrechnung)
 - [ ] Andere Kostenstruktur (größere Anlagen)
 
-Aktuelle Priorität: Phase 4 (Content & Reichweite)
+Aktuelle Priorität: WP 9 (Energiedaten-Datalake) + Phase 4 (Content & Reichweite)
 
 ## Tech-Stack
 
@@ -235,9 +256,11 @@ Aktuelle Priorität: Phase 4 (Content & Reichweite)
 | Deployment | **Vercel** | Zero-Config für Next.js, Preview Deployments |
 | Backend | **Supabase** | Auth (Magic Link), PVGIS-Cache, Berechnungen speichern |
 | PV-Ertrag | **PVGIS API** (EU JRC) | Standortspezifisch via Next.js API-Route, Supabase-Cache |
+| Charts | **Visx** (@visx/*) | Low-level SVG-Primitives von Airbnb, volle Kontrolle über Look & Feel |
+| Energiedaten | **Energy-Charts API** (Fraunhofer ISE) | Strommix, Preise, Kapazität — kein Auth, JSON, CC BY 4.0 |
 | Package Manager | **npm** | Standard reicht bei dieser Projektgröße |
 
-**Bewusst nicht im Stack:** Tailwind, shadcn/ui, State Management Libraries, CSS-in-JS, Testing Framework. Erst einführen wenn es einen konkreten Grund gibt.
+**Bewusst nicht im Stack:** Tailwind, shadcn/ui, State Management Libraries, CSS-in-JS, Testing Framework, Recharts/Nivo (zu wenig Kontrolle). Erst einführen wenn es einen konkreten Grund gibt.
 
 ## Projektstruktur
 
@@ -267,7 +290,10 @@ pv-rechner/
 │   ├── supabase-browser.ts         # Supabase Browser-Client (@supabase/ssr)
 │   ├── supabase-server-component.ts # Supabase Client für Server Components
 │   ├── auth.ts                     # useUser() Hook, signIn/signOut Helpers
-│   └── theme.ts                    # Design-Tokens, CSS-Variablen-Generator, v() Helper
+│   ├── theme.ts                    # Design-Tokens, CSS-Variablen-Generator, v() Helper
+│   ├── energy-api.ts               # Datalake: Fetch-Wrapper, Timestamp-Normalisierung, Supabase-Upsert, Energy-Charts/Eurostat
+│   ├── energy.ts                   # Client-Hooks: useGenerationMix() (sessionStorage-Cache)
+│   └── chart-utils.ts              # Chart-Utilities: Energietyp-Farben, Formatter, Aggregation (calcPeriodStats)
 ├── components/
 │   ├── Header.tsx                 # Shared Header-Navigation (Logo links, Nav rechts)
 │   ├── Logo.tsx                   # SVG-Logo + Text (solar-check.io)
@@ -276,7 +302,10 @@ pv-rechner/
 │   ├── TriToggle.tsx               # Dreier-Toggle (Nein/Geplant/Vorhanden, optionales Icon)
 │   ├── InlineEdit.tsx              # Click-to-Edit Zahlenwert
 │   ├── Chart.tsx                   # SVG-Amortisationskurve
-│   └── ErrorBoundary.tsx          # Error Boundary für fehlerhafte Share-URLs
+│   ├── ErrorBoundary.tsx          # Error Boundary für fehlerhafte Share-URLs
+│   └── charts/
+│       ├── StackedAreaChart.tsx     # Visx Stacked Area (Strommix 24h/7d, smooth curves, Tooltip)
+│       └── StackedBarChart.tsx      # Visx Stacked Bar (30d/YTD/12M, wöchentlich aggregiert)
 └── app/
     ├── layout.tsx                 # Root Layout: HTML, Fonts, SEO-Meta, CSS-Variablen
     ├── page.tsx                   # Hub-Startseite: 2 Flows (Empfehlung / Rechner)
@@ -294,6 +323,11 @@ pv-rechner/
     ├── api/weather/route.ts       # Open-Meteo Proxy mit In-Memory-Cache (Live Simulation)
     ├── api/calculations/route.ts  # GET (Liste), POST (Speichern)
     ├── api/calculations/[id]/route.ts # GET, PUT, DELETE einzelne Berechnung
+    ├── api/energy/generation/route.ts # Energy-Charts public_power Proxy + In-Memory-Cache + Downsampling
+    ├── api/energy/setup/route.ts  # Einmalig: Supabase-Tabellen anlegen (energy_timeseries etc.)
+    ├── energie/
+    │   ├── page.tsx               # Metadata + <EnergieClient />
+    │   └── client.tsx             # Energiedaten-Dashboard: Widgets + Chart + Zeitraum-Toggle
     ├── dashboard/
     │   ├── page.tsx               # Server Component: Auth-Check + Daten laden
     │   └── client.tsx             # Client Component: Dashboard UI

@@ -33,6 +33,21 @@ export const tokens = {
   '--color-chart-grid': '#E9E9E9',
   '--color-chart-zero': '#BEBEBE',
 
+  // ─── Energy — Renewables (green shades) ─────────────────────────────────────
+  '--color-energy-solar': '#4CAF50',        // Strong green — Solar
+  '--color-energy-wind': '#66BB6A',         // Medium green — Wind onshore
+  '--color-energy-wind-offshore': '#2E7D32', // Dark green — Wind offshore
+  '--color-energy-hydro': '#81C784',        // Light green — Wasserkraft
+  '--color-energy-biomass': '#A5D6A7',      // Pale green — Biomasse
+  '--color-energy-geothermal': '#C8E6C9',   // Very pale green — Geothermie
+  // ─── Energy — Fossil / Other (brown/grey shades) ──────────────────────────
+  '--color-energy-nuclear': '#9E9E9E',      // Neutral grey — Kernenergie
+  '--color-energy-gas': '#BC8F6F',          // Warm tan — Erdgas
+  '--color-energy-coal': '#8D6E63',         // Medium brown — Steinkohle
+  '--color-energy-lignite': '#5D4037',      // Dark brown — Braunkohle
+  '--color-energy-oil': '#A1887F',          // Light brown — Öl
+  '--color-energy-other': '#BDBDBD',        // Light grey — Sonstige/Abfall
+
   // ─── Text (5) ──────────────────────────────────────────────────────────────
   '--color-text-primary': '#3F3F3F',    // Headings, strong text, values
   '--color-text-secondary': '#777777',  // Body text, labels, descriptions

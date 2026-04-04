@@ -1,0 +1,364 @@
+"use client";
+
+import { useMemo, useCallback, useRef, useState } from "react";
+import { AreaStack } from "@visx/shape";
+import { scaleTime, scaleLinear } from "@visx/scale";
+import { AxisBottom, AxisLeft } from "@visx/axis";
+import { GridRows } from "@visx/grid";
+import { Group } from "@visx/group";
+import { ParentSize } from "@visx/responsive";
+import { LinearGradient } from "@visx/gradient";
+import { stack as d3Stack, stackOrderNone, stackOffsetNone, curveMonotoneX } from "d3-shape";
+import { bisector } from "d3-array";
+import {
+  ENERGY_COLORS_HEX,
+  ENERGY_LABELS,
+  GENERATION_STACK_KEYS,
+  RENEWABLE_KEYS,
+  formatMW,
+  formatTime,
+  CHART_MARGIN,
+  CHART_HEIGHT,
+} from "../../lib/chart-utils";
+import { v } from "../../lib/theme";
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+interface DataPoint {
+  ts: string;
+  [key: string]: number | string | null;
+}
+
+interface Props {
+  data: DataPoint[];
+  keys?: string[];
+  height?: number;
+  xFormat?: "time" | "date" | "datetime";
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function getDate(d: DataPoint): Date {
+  return new Date(d.ts);
+}
+
+const bisectDate = bisector<DataPoint, Date>((d) => getDate(d)).left;
+
+// ─── Tooltip Component ───────────────────────────────────────────────────────
+
+function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare }: {
+  tooltip: { data: DataPoint; left: number };
+  activeKeys: string[];
+  width: number;
+  margin: typeof CHART_MARGIN;
+  getEEShare: (d: DataPoint) => number;
+}) {
+  const d = tooltip.data;
+  const tooltipWidth = 180;
+  const goLeft = tooltip.left > width / 2;
+  const left = goLeft ? tooltip.left - tooltipWidth - 12 : tooltip.left + 12;
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: margin.top,
+        left: Math.max(0, Math.min(left, width - tooltipWidth)),
+        width: tooltipWidth,
+        background: "var(--color-bg)",
+        border: "1px solid var(--color-border)",
+        borderRadius: "var(--radius-sm)",
+        padding: "10px 14px",
+        fontSize: 12,
+        fontFamily: "var(--font-text)",
+        color: "var(--color-text-primary)",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        lineHeight: 1.6,
+        pointerEvents: "none",
+        zIndex: 10,
+      }}
+    >
+      <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "var(--font-mono)", fontSize: 11 }}>
+        {formatTime(d.ts, "datetime")}
+      </div>
+      <div style={{
+        fontWeight: 700, color: "var(--color-positive)", fontSize: 13, marginBottom: 8,
+        fontFamily: "var(--font-mono)",
+      }}>
+        {Math.round(getEEShare(d))} % Erneuerbare
+      </div>
+      {[...activeKeys].reverse().map((key) => {
+        const val = d[key];
+        if (typeof val !== "number" || val <= 0) return null;
+        return (
+          <div key={key} style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
+            <div style={{
+              width: 8, height: 8, borderRadius: 2,
+              background: ENERGY_COLORS_HEX[key] || "#B0BEC5",
+              flexShrink: 0,
+            }} />
+            <span style={{ flex: 1, color: "var(--color-text-secondary)", fontSize: 11 }}>
+              {ENERGY_LABELS[key] || key}
+            </span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600 }}>
+              {formatMW(val)}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Chart ───────────────────────────────────────────────────────────────────
+
+function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat }: Props & { width: number }) {
+  const margin = CHART_MARGIN;
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
+
+  // Filter to keys that have data
+  const activeKeys = useMemo(() => {
+    const k = keys || GENERATION_STACK_KEYS;
+    return k.filter((key) => data.some((d) => typeof d[key] === "number" && (d[key] as number) > 0));
+  }, [data, keys]);
+
+  // Normalize data: null → 0 for stacking
+  const normalized = useMemo(
+    () =>
+      data.map((d) => {
+        const row: Record<string, number | string> = { ts: d.ts };
+        for (const key of activeKeys) {
+          const val = d[key];
+          row[key] = typeof val === "number" && val > 0 ? val : 0;
+        }
+        return row as Record<string, number> & { ts: string };
+      }),
+    [data, activeKeys]
+  );
+
+  // Scales
+  const xScale = useMemo(
+    () =>
+      scaleTime({
+        domain: [getDate(data[0]), getDate(data[data.length - 1])],
+        range: [0, innerWidth],
+      }),
+    [data, innerWidth]
+  );
+
+  const yMax = useMemo(() => {
+    let max = 0;
+    for (const d of normalized) {
+      let sum = 0;
+      for (const key of activeKeys) sum += d[key] || 0;
+      if (sum > max) max = sum;
+    }
+    return max * 1.05; // 5% headroom
+  }, [normalized, activeKeys]);
+
+  const yScale = useMemo(
+    () =>
+      scaleLinear({
+        domain: [0, yMax],
+        range: [innerHeight, 0],
+        nice: true,
+      }),
+    [yMax, innerHeight]
+  );
+
+  // Stack data
+  const stacked = useMemo(() => {
+    const stackGen = d3Stack<Record<string, number> & { ts: string }>()
+      .keys(activeKeys)
+      .order(stackOrderNone)
+      .offset(stackOffsetNone);
+    return stackGen(normalized);
+  }, [normalized, activeKeys]);
+
+  // Tooltip state (simple useState instead of visx useTooltip for reliable positioning)
+  const [tooltip, setTooltip] = useState<{ data: DataPoint; left: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleTooltip = useCallback(
+    (event: React.TouchEvent<SVGRectElement> | React.MouseEvent<SVGRectElement>) => {
+      const svg = (event.target as SVGElement).ownerSVGElement;
+      if (!svg) return;
+      const point = svg.createSVGPoint();
+      const clientEvent = "touches" in event ? event.touches[0] : event;
+      point.x = clientEvent.clientX;
+      point.y = clientEvent.clientY;
+      const svgPoint = point.matrixTransform(svg.getScreenCTM()?.inverse());
+      const x0 = xScale.invert(svgPoint.x - margin.left);
+      const idx = bisectDate(data, x0, 1);
+      const d0 = data[idx - 1];
+      const d1 = data[idx];
+      if (!d0) return;
+      const d = d1 && x0.getTime() - getDate(d0).getTime() > getDate(d1).getTime() - x0.getTime() ? d1 : d0;
+      setTooltip({
+        data: d,
+        left: xScale(getDate(d)) + margin.left,
+      });
+    },
+    [xScale, data, margin.left]
+  );
+
+  // Renewable share for tooltip
+  const getEEShare = useCallback(
+    (d: DataPoint) => {
+      let renewable = 0;
+      let total = 0;
+      for (const key of activeKeys) {
+        const val = typeof d[key] === "number" ? (d[key] as number) : 0;
+        if (val > 0) {
+          total += val;
+          if (RENEWABLE_KEYS.includes(key)) renewable += val;
+        }
+      }
+      return total > 0 ? (renewable / total) * 100 : 0;
+    },
+    [activeKeys]
+  );
+
+  if (innerWidth <= 0 || data.length < 2) return null;
+
+  return (
+    <div ref={containerRef} style={{ position: "relative" }}>
+      <svg width={width} height={height}>
+        {/* Gradients for each energy type */}
+        {activeKeys.map((key) => (
+          <LinearGradient
+            key={key}
+            id={`gradient-${key}`}
+            from={ENERGY_COLORS_HEX[key] || "#B0BEC5"}
+            to={ENERGY_COLORS_HEX[key] || "#B0BEC5"}
+            fromOpacity={0.85}
+            toOpacity={0.6}
+          />
+        ))}
+
+        <Group left={margin.left} top={margin.top}>
+          {/* Grid */}
+          <GridRows
+            scale={yScale}
+            width={innerWidth}
+            stroke="var(--color-chart-grid)"
+            strokeOpacity={0.5}
+            strokeDasharray="2,3"
+          />
+
+          {/* Stacked areas */}
+          <AreaStack
+            data={normalized}
+            keys={activeKeys}
+            x={(d) => xScale(new Date(d.data.ts)) ?? 0}
+            y0={(d) => yScale(d[0]) ?? 0}
+            y1={(d) => yScale(d[1]) ?? 0}
+            curve={curveMonotoneX}
+          >
+            {({ stacks, path }) =>
+              stacks.map((stack) => (
+                <path
+                  key={stack.key}
+                  d={path(stack) || ""}
+                  fill={`url(#gradient-${stack.key})`}
+                  stroke={ENERGY_COLORS_HEX[stack.key] || "#B0BEC5"}
+                  strokeWidth={0.5}
+                  strokeOpacity={0.3}
+                />
+              ))
+            }
+          </AreaStack>
+
+          {/* Tooltip hover line */}
+          {tooltip && (
+            <line
+              x1={xScale(getDate(tooltip.data))}
+              x2={xScale(getDate(tooltip.data))}
+              y1={0}
+              y2={innerHeight}
+              stroke="var(--color-text-muted)"
+              strokeWidth={1}
+              strokeDasharray="3,3"
+              pointerEvents="none"
+            />
+          )}
+
+          {/* Axes */}
+          <AxisBottom
+            top={innerHeight}
+            scale={xScale}
+            numTicks={Math.min(6, Math.floor(innerWidth / 80))}
+            tickFormat={(d) => formatTime((d as Date).toISOString(), xFormat || "time")}
+            stroke="var(--color-chart-grid)"
+            tickStroke="var(--color-chart-grid)"
+            tickLabelProps={() => ({
+              fill: "var(--color-text-muted)",
+              fontSize: 11,
+              fontFamily: "var(--font-mono)",
+              textAnchor: "middle" as const,
+              dy: "0.3em",
+            })}
+          />
+          <AxisLeft
+            scale={yScale}
+            numTicks={5}
+            tickFormat={(d) => formatMW(d as number)}
+            stroke="transparent"
+            tickStroke="transparent"
+            tickLabelProps={() => ({
+              fill: "var(--color-text-muted)",
+              fontSize: 11,
+              fontFamily: "var(--font-mono)",
+              textAnchor: "end" as const,
+              dx: "-0.4em",
+              dy: "0.3em",
+            })}
+          />
+
+          {/* Invisible overlay for tooltip */}
+          <rect
+            width={innerWidth}
+            height={innerHeight}
+            fill="transparent"
+            onTouchStart={handleTooltip}
+            onTouchMove={handleTooltip}
+            onMouseMove={handleTooltip}
+            onMouseLeave={() => setTooltip(null)}
+          />
+        </Group>
+      </svg>
+
+      {/* Tooltip */}
+      {tooltip && <ChartTooltip tooltip={tooltip} activeKeys={activeKeys} width={width} margin={margin} getEEShare={getEEShare} />}
+    </div>
+  );
+}
+
+// ─── Responsive Wrapper ──────────────────────────────────────────────────────
+
+export default function StackedAreaChart({ data, keys, height, xFormat }: Props) {
+  if (!data || data.length < 2) {
+    return (
+      <div style={{
+        height: height || CHART_HEIGHT, display: "flex", alignItems: "center", justifyContent: "center",
+        color: "var(--color-text-muted)", fontSize: 13, fontFamily: "var(--font-text)",
+      }}>
+        Lade Daten...
+      </div>
+    );
+  }
+
+  const h = height || CHART_HEIGHT;
+  return (
+    <div style={{ width: "100%", height: h }}>
+      <ParentSize>
+        {({ width }) =>
+          width > 0 ? (
+            <StackedAreaInner data={data} keys={keys} height={h} width={width} xFormat={xFormat} />
+          ) : null
+        }
+      </ParentSize>
+    </div>
+  );
+}
