@@ -455,13 +455,9 @@ export default function EnergieClient() {
                   <span style={{ fontSize: 11, color: v("--color-text-muted"), fontWeight: 400, fontFamily: v("--font-text") }}>—</span>
                 )}
               </div>
-              {hasAny && (hasDomestic || importAvgGw > 0) && (
+              {hasDomestic && importAvgGw > 0 && (
                 <div style={{ fontSize: 8, color: v("--color-text-faint"), marginTop: 2, lineHeight: 1.4 }}>
-                  {hasDomestic && <span style={{ color: CATEGORY_COLORS.nuclear }}>●</span>}
-                  {hasDomestic && ` ${domesticNuclearStats.avgGw.toFixed(1)}`}
-                  {hasDomestic && importAvgGw > 0 && " + "}
-                  {importAvgGw > 0 && <span style={{ color: CATEGORY_COLORS.nuclearImport }}>●</span>}
-                  {importAvgGw > 0 && ` ${importAvgGw.toFixed(1)}`}
+                  Zukauf {importAvgGw.toFixed(1)}
                 </div>
               )}
             </button>
