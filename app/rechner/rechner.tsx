@@ -3,8 +3,8 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useUser, signInWithMagicLink, signOut } from "../../lib/auth";
 import { paramsToRow } from "../../lib/types";
-import { YEAR, YEARS, CONSUMPTION_MONTHLY, FUEL, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN } from "../../lib/constants";
-import { calcFuelCost25, calcWpGridCost25, estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, paramInt, paramFloat, paramStr } from "../../lib/calc";
+import { YEAR, YEARS, CONSUMPTION_MONTHLY, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN } from "../../lib/constants";
+import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, paramInt, paramFloat, paramStr } from "../../lib/calc";
 import OptionCard from "../../components/OptionCard";
 import TriToggle from "../../components/TriToggle";
 import InlineEdit from "../../components/InlineEdit";
@@ -14,7 +14,13 @@ import { v } from "../../lib/theme";
 import { usePrices } from "../../lib/prices";
 import { useFeedInRates } from "../../lib/feedin";
 import Header from "../../components/Header";
-import { IconArrowRight, IconSparkle, IconCheck, IconChevronDown, IconLink, IconShare, IconWhatsApp, IconRefresh } from "../../components/Icons";
+import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../components/Icons";
+import { useChartExport } from "../../lib/useChartExport";
+import ChartExportBar from "../../components/ChartExportBar";
+import ResultHeroCard from "../../components/ResultHeroCard";
+import QuickSettings from "../../components/QuickSettings";
+import ResultStats from "../../components/ResultStats";
+import ResultActions from "../../components/ResultActions";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
@@ -48,10 +54,6 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
   // Gas/Öl-Referenz (nur bei WP)
   const [fuelType, setFuelType] = useState<"gas" | "oil">("gas");
-
-  // Speicher-Kosten Inline-Prompt (Quick Settings)
-  const [spKostenPrompt, setSpKostenPrompt] = useState(false);
-  const [spKostenDraft, setSpKostenDraft] = useState("");
 
   // Empfehlungs-Flow Kontext
   const flowType = hasShare && initialParams?.flow === "emp" ? "empfehlung" : "manual";
@@ -157,6 +159,16 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
   const STEPS = ["Wie groß soll die Anlage werden?", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
   const isResult = step >= STEPS.length;
+
+  // Chart export
+  const chartExport = useChartExport({
+    title: "Amortisation",
+    parameterInfo: isResult ? {
+      label: `${kwp} kWp · ${spKwh} kWh · EV ${Math.round(effEv * 100)}% · ${oStrom} ct/kWh · ${oErtrag} kWh/kWp`,
+    } : undefined,
+    filename: "solar-check-amortisation.png",
+    shareText: `PV-Amortisation: ${kwp} kWp${spKwh > 0 ? ` + ${spKwh} kWh Speicher` : ""} – ${be ? `${be.i} Jahre` : ">25 Jahre"}`,
+  });
   const next = () => step < STEPS.length && setStep(step + 1);
   const back = () => step > 0 && setStep(step - 1);
   const restart = () => { setStep(0); setOKosten(null); setOEv(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
@@ -417,128 +429,14 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         {/* ── RESULT ── */}
         {isResult && (
           <div className="fu">
-            {/* Hero with amortisation */}
-            <div style={{
-              textAlign: "center", padding: "25px 11px 21px", marginBottom: 16,
-              background: v('--color-bg'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border')}`,
-            }}>
-              <div style={{ fontSize: 13, color: v('--color-text-secondary'), fontWeight: 400, marginBottom: 8 }}>
-                Deine PV-Anlage amortisiert sich in
-              </div>
-              <div style={{ fontSize: 56, fontWeight: 800, color: v('--color-text-primary'), fontFamily: v('--font-mono'), lineHeight: 1 }}>
-                {be ? be.i : ">25"}<span style={{ fontSize: 22, fontWeight: 700, marginLeft: 4, color: v('--color-text-faint') }}>Jahren</span>
-              </div>
-
-              {/* Editable parameters grid */}
-              <div style={{
-                display: "flex", gap: 12,
-                marginTop: 18, padding: "14px 12px", background: v('--color-bg-muted'),
-                borderRadius: v('--radius-md'), textAlign: "left", fontSize: 12,
-              }}>
-                {/* Left column */}
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 13 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: v('--color-text-secondary') }}>Investition</span>
-                    <InlineEdit value={kosten} onCommit={v => setOKosten(v)} unit=" €" step={500} min={500} max={80000} width={68} />
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: v('--color-text-secondary') }}>Strompreis</span>
-                    <InlineEdit value={oStrom} onCommit={setOStrom} unit=" €" step={0.01} min={0.15} max={0.60} width={52} />
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: v('--color-text-secondary') }}>Ertrag{plzLoading && <span style={{ color: v('--color-accent'), fontSize: 10, marginLeft: 4 }}>…</span>}</span>
-                    <InlineEdit value={oErtrag} onCommit={setOErtrag} unit=" kWh/kWp" step={10} min={700} max={1400} width={48} />
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: v('--color-text-secondary') }}>Anlage</span>
-                    <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary'), fontSize: 15 }}>
-                      {kwp} <span style={{ fontFamily: v('--font-mono'), fontWeight: 500, color: v('--color-text-secondary'), fontSize: 13 }}>kWp</span>
-                    </span>
-                  </div>
-                </div>
-                {/* Right column */}
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 13 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: v('--color-text-secondary') }}>Eigenverbr.</span>
-                    {effEinspeisungModus === "voll" ? (
-                      <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-faint'), fontSize: 13 }}>0%</span>
-                    ) : (
-                      <InlineEdit value={effEv} onCommit={v => setOEv(v)} unit="%" step={1} min={10} max={90} width={40} />
-                    )}
-                  </div>
-                  <div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: effEinspeisungModus !== "aus" ? 6 : 0 }}>
-                      <span style={{ color: v('--color-text-secondary') }}>Einspeisung</span>
-                      <div style={{ display: "flex", gap: 2, background: v('--color-bg'), borderRadius: 8, padding: 2 }}>
-                        {(["aus", "teil", "voll"] as const).map(m => {
-                          const isActive = effEinspeisungModus === m;
-                          const isDisabled = m === "voll" && vollDisabled;
-                          return (
-                            <button key={m} onClick={() => { if (!isDisabled) { setEinspeisungModus(m); setOEinsp(null); } }} style={{
-                              padding: "3px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600,
-                              cursor: isDisabled ? "not-allowed" : "pointer",
-                              background: isActive ? v('--color-accent') : "transparent",
-                              border: "none",
-                              color: isDisabled ? v('--color-text-faint') : isActive ? v('--color-text-on-accent') : v('--color-text-muted'),
-                              opacity: isDisabled ? 0.4 : 1,
-                              transition: "all 0.15s",
-                            }}>
-                              {m === "aus" ? "Aus" : m === "teil" ? "Teil" : "Voll"}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                    {effEinspeisungModus !== "aus" && (
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span style={{ fontSize: 11, color: v('--color-text-faint') }}>
-                          {effEinspeisungModus === "voll" ? "Vergütung" : "Vergütung"}
-                        </span>
-                        <InlineEdit value={effEinsp} onCommit={v => setOEinsp(v)} unit=" ct" step={0.01} min={4} max={16} width={48} />
-                      </div>
-                    )}
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: v('--color-text-secondary') }}>Standort</span>
-                    <form onSubmit={e => { e.preventDefault(); fetchPvgis(plz); }} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                      <input
-                        value={plz}
-                        placeholder="PLZ"
-                        inputMode="numeric"
-                        maxLength={5}
-                        onChange={e => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
-                        style={{
-                          width: 52, textAlign: "center", fontSize: 13, fontWeight: 700,
-                          fontFamily: v('--font-mono'),
-                          color: plz.length === 5 ? v('--color-accent') : v('--color-text-secondary'),
-                          background: plz.length === 5 ? v('--color-accent-dim') : v('--color-bg'),
-                          border: plz.length === 5 ? `1px solid ${v('--color-border-accent')}` : `1px dashed ${v('--color-text-faint')}`,
-                          borderRadius: v('--radius-sm'), padding: "3px 4px", outline: "none",
-                        }}
-                      />
-                      {plz.length === 5 && !plzLoading && !plzSource && (
-                        <button type="submit" style={{
-                          padding: "3px 6px", fontSize: 11, fontWeight: 700, lineHeight: 1,
-                          background: v('--color-accent'), color: v('--color-text-on-accent'),
-                          border: "none", borderRadius: v('--radius-sm'), cursor: "pointer",
-                        }}><IconArrowRight size={12} color={v('--color-text-on-accent')} /></button>
-                      )}
-                      {plzSource && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{plzSource === "pvgis" ? <IconCheck size={10} /> : "~"}</span>}
-                    </form>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ color: v('--color-text-secondary') }}>Speicher</span>
-                    <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary'), fontSize: 15 }}>
-                      {spKwh > 0 ? <>{spKwh} <span style={{ fontFamily: v('--font-mono'), fontWeight: 500, color: v('--color-text-secondary'), fontSize: 13 }}>kWh</span></> : <span style={{ color: v('--color-text-faint') }}>—</span>}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ fontSize: 11, color: v('--color-accent'), marginTop: 10 }}>
-                Werte anklicken zum Anpassen
-              </div>
-            </div>
+            <ResultHeroCard
+              be={be} kosten={kosten} setOKosten={setOKosten}
+              oStrom={oStrom} setOStrom={setOStrom} oErtrag={oErtrag} setOErtrag={setOErtrag}
+              kwp={kwp} spKwh={spKwh} effEv={effEv} setOEv={setOEv}
+              effEinspeisungModus={effEinspeisungModus} setEinspeisungModus={setEinspeisungModus}
+              vollDisabled={vollDisabled} effEinsp={effEinsp} setOEinsp={setOEinsp}
+              plz={plz} setPlz={setPlz} plzLoading={plzLoading} plzSource={plzSource} fetchPvgis={fetchPvgis}
+            />
 
             {/* Empfehlungs-Kontext: Warum diese Anlage? */}
             {empfehlungKontext && (
@@ -588,226 +486,43 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               </details>
             )}
 
-            {/* Quick Settings */}
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 8 }}>Starke Einflussfaktoren</div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                <button onClick={() => { setWp(wp === "nein" ? "ja" : "nein"); setOEv(null); }} style={{
-                  padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, cursor: "pointer",
-                  background: wp !== "nein" ? v('--color-bg-accent') : v('--color-bg'),
-                  border: wp !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border')}`,
-                  color: wp !== "nein" ? v('--color-accent') : v('--color-text-secondary'),
-                  display: "flex", alignItems: "center", gap: 6,
-                }}>
-                  Wärmepumpe
-                  <span style={{ width: 14, height: 14, borderRadius: 3, border: wp !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: wp !== "nein" ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", color: v('--color-accent') }}>{wp !== "nein" ? <IconCheck size={10} /> : ""}</span>
-                </button>
-                <button onClick={() => { setEa(ea === "nein" ? "ja" : "nein"); setOEv(null); }} style={{
-                  padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, cursor: "pointer",
-                  background: ea !== "nein" ? v('--color-bg-accent') : v('--color-bg'),
-                  border: ea !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border')}`,
-                  color: ea !== "nein" ? v('--color-accent') : v('--color-text-secondary'),
-                  display: "flex", alignItems: "center", gap: 6,
-                }}>
-                  E-Auto
-                  <span style={{ width: 14, height: 14, borderRadius: 3, border: ea !== "nein" ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: ea !== "nein" ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", color: v('--color-accent') }}>{ea !== "nein" ? <IconCheck size={10} /> : ""}</span>
-                </button>
-                <button onClick={() => {
-                  if (oKosten !== null) {
-                    // Manueller Preis: Inline-Prompt für Speicherkosten
-                    const defaultSpKosten = speicher === 0
-                      ? (2000 + SPEICHER[2].kwh * 650) // ON: 10kWh default
-                      : (2000 + spKwh * 650); // OFF: aktuelle Größe
-                    setSpKostenDraft(String(defaultSpKosten));
-                    setSpKostenPrompt(true);
-                  } else {
-                    setSpeicher(speicher === 0 ? 2 : 0); setOEv(null);
-                  }
-                }} style={{
-                  padding: "8px 14px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, cursor: "pointer",
-                  background: speicher > 0 ? v('--color-bg-accent') : v('--color-bg'),
-                  border: speicher > 0 ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border')}`,
-                  color: speicher > 0 ? v('--color-accent') : v('--color-text-secondary'),
-                  display: "flex", alignItems: "center", gap: 6,
-                }}>
-                  Speicher
-                  {speicher > 0 && <span style={{ fontSize: 11 }}>{spKwh} kWh</span>}
-                  <span style={{ width: 14, height: 14, borderRadius: 3, border: speicher > 0 ? `1.5px solid ${v('--color-accent-light')}` : `1.5px solid ${v('--color-border-muted')}`, background: speicher > 0 ? v('--color-bg-accent') : v('--color-bg'), display: "inline-flex", alignItems: "center", justifyContent: "center", color: v('--color-accent') }}>{speicher > 0 ? <IconCheck size={10} /> : ""}</span>
-                </button>
-              </div>
-              {spKostenPrompt && (
-                <div style={{
-                  marginTop: 8, padding: "10px 14px", borderRadius: v('--radius-md'),
-                  background: v('--color-bg'), border: `1.5px solid ${v('--color-accent')}`,
-                  display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
-                }}>
-                  <span style={{ fontSize: 12, color: v('--color-text-muted') }}>
-                    {speicher > 0 ? "Speicherkosten abziehen:" : "Speicherkosten:"}
-                  </span>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                    <input
-                      autoFocus
-                      value={spKostenDraft}
-                      onChange={e => setSpKostenDraft(e.target.value.replace(/[^\d]/g, ""))}
-                      onKeyDown={e => {
-                        if (e.key === "Enter") {
-                          const n = parseInt(spKostenDraft);
-                          if (!isNaN(n) && n >= 0 && n <= 50000) {
-                            if (speicher > 0) {
-                              setOKosten(Math.max(oKosten! - n, 500));
-                              setSpeicher(0);
-                            } else {
-                              setOKosten(oKosten! + n);
-                              setSpeicher(2);
-                            }
-                            setOEv(null);
-                          }
-                          setSpKostenPrompt(false);
-                        }
-                        if (e.key === "Escape") setSpKostenPrompt(false);
-                      }}
-                      style={{
-                        width: 64, textAlign: "right", fontSize: 13, fontWeight: 700,
-                        fontFamily: v('--font-mono'), color: v('--color-accent'),
-                        background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`,
-                        borderRadius: v('--radius-sm'), padding: "5px 6px", outline: "none",
-                      }}
-                    />
-                    <span style={{ fontSize: 12, color: v('--color-text-secondary') }}>€</span>
-                  </span>
-                  <button onClick={() => {
-                    const n = parseInt(spKostenDraft);
-                    if (!isNaN(n) && n >= 0 && n <= 50000) {
-                      if (speicher > 0) {
-                        setOKosten(Math.max(oKosten! - n, 500));
-                        setSpeicher(0);
-                      } else {
-                        setOKosten(oKosten! + n);
-                        setSpeicher(2);
-                      }
-                      setOEv(null);
-                    }
-                    setSpKostenPrompt(false);
-                  }} style={{
-                    padding: "5px 12px", borderRadius: v('--radius-sm'), fontSize: 11, fontWeight: 600,
-                    background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
-                  }}>OK</button>
-                  <button onClick={() => setSpKostenPrompt(false)} style={{
-                    padding: "5px 8px", borderRadius: v('--radius-sm'), fontSize: 11, fontWeight: 600,
-                    background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-muted'), cursor: "pointer",
-                  }}>Abbrechen</button>
-                </div>
-              )}
-              {ea !== "nein" && (
-                <div style={{ marginTop: 8, display: "flex", gap: 6, alignItems: "center", paddingLeft: 4 }}>
-                  <span style={{ fontSize: 11, color: v('--color-text-muted') }}>Laufleistung:</span>
-                  {EA_KM_PRESETS.map(km => (
-                    <button key={km} onClick={() => { setEaKm(km); setOEv(null); }} style={{
-                      padding: "5px 8px", borderRadius: v('--radius-sm'), fontSize: 11, fontWeight: 600, cursor: "pointer",
-                      background: eaKm === km ? v('--color-accent-dim') : v('--color-bg'),
-                      border: eaKm === km ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
-                      color: eaKm === km ? v('--color-accent') : v('--color-text-secondary'),
-                    }}>{(km / 1000).toFixed(0)}k</button>
-                  ))}
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
-                    <input
-                      value={EA_KM_PRESETS.includes(eaKm) ? "" : String(eaKm)}
-                      placeholder="km"
-                      onChange={e => {
-                        const n = parseInt(e.target.value.replace(/\D/g, ""));
-                        if (!isNaN(n) && n >= 1000 && n <= 50000) { setEaKm(n); setOEv(null); }
-                      }}
-                      style={{
-                        width: 48, textAlign: "center", fontSize: 11, fontWeight: 600,
-                        fontFamily: v('--font-mono'),
-                        color: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent') : v('--color-text-faint'),
-                        background: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent-dim') : v('--color-bg'),
-                        border: !EA_KM_PRESETS.includes(eaKm) ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
-                        borderRadius: v('--radius-sm'), padding: "5px 4px", outline: "none",
-                      }}
-                    />
-                    <span style={{ fontSize: 10, color: v('--color-text-faint') }}>km</span>
-                  </span>
-                </div>
-              )}
-            </div>
+            <QuickSettings
+              wp={wp} setWp={setWp} ea={ea} setEa={setEa} eaKm={eaKm} setEaKm={setEaKm}
+              speicher={speicher} setSpeicher={setSpeicher} spKwh={spKwh}
+              oKosten={oKosten} setOKosten={setOKosten} setOEv={() => setOEv(null)}
+            />
 
-            {/* Stats row */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
-              <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", border: `1px solid ${v('--color-border')}` }}>
-                <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</div>
-                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: real.data.total >= 0 ? v('--color-positive') : v('--color-negative'), marginTop: 4 }}>
-                  {real.data.total > 0 ? "+" : ""}{real.data.total.toLocaleString("de-DE")} €
-                </div>
-              </div>
-              <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", border: `1px solid ${v('--color-border')}` }}>
-                <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>⌀ Ersparnis / Jahr</div>
-                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 4 }}>
-                  {Math.round((real.data.total + kosten) / YEARS).toLocaleString("de-DE")} €
-                </div>
-              </div>
-            </div>
-
-            {/* Gas/Öl reference (nur bei WP) */}
-            {wp !== "nein" && (() => {
-              const autarky = Math.min(effEv / 100 * jahresertrag / (PERSONEN[personen].verbrauch + 3500 + (ea !== "nein" ? Math.round(eaKm * 0.18) : 0)), 1);
-              const fuelCost = calcFuelCost25(3500, fuelType);
-              const wpGridCost = calcWpGridCost25(3500, autarky, oStrom, 0.03);
-              const netSaving = fuelCost - wpGridCost;
-              return (
-              <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                  <span style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>
-                    WP vs. {FUEL[fuelType].label}heizung · 25 Jahre
-                  </span>
-                  <div style={{ display: "flex", gap: 4 }}>
-                    {(["gas", "oil"] as const).map(ft => (
-                      <button key={ft} onClick={() => setFuelType(ft)} style={{
-                        padding: "3px 8px", borderRadius: v('--radius-sm'), fontSize: 10, fontWeight: 600, cursor: "pointer",
-                        background: fuelType === ft ? v('--color-negative-dim') : "transparent",
-                        border: fuelType === ft ? `1px solid ${v('--color-negative-border')}` : `1px solid ${v('--color-border-muted')}`,
-                        color: fuelType === ft ? v('--color-negative') : v('--color-text-muted'),
-                      }}>{FUEL[ft].label}</button>
-                    ))}
-                  </div>
-                </div>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
-                  <div>
-                    <span style={{ fontSize: 11, color: v('--color-negative') }}>{FUEL[fuelType].label}: </span>
-                    <span style={{ fontSize: 16, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-negative'), textDecoration: "line-through", opacity: 0.7 }}>
-                      {fuelCost.toLocaleString("de-DE")} €
-                    </span>
-                  </div>
-                  <div>
-                    <span style={{ fontSize: 11, color: v('--color-text-secondary') }}>WP Netz: </span>
-                    <span style={{ fontSize: 16, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>
-                      {wpGridCost.toLocaleString("de-DE")} €
-                    </span>
-                  </div>
-                </div>
-                <div style={{ fontSize: 20, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 4 }}>
-                  Ersparnis: {netSaving.toLocaleString("de-DE")} €
-                </div>
-                <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4, lineHeight: 1.5 }}>
-                  {Math.round(3500 * 3.5).toLocaleString("de-DE")} kWh Wärme/Jahr · WP-Autarkie {Math.round(autarky * 100)} % · inkl. CO₂-Abgabe
-                </div>
-              </div>
-            ); })()}
+            
+            <ResultStats
+              total={real.data.total} kosten={kosten}
+              wp={wp} ea={ea} eaKm={eaKm} effEv={effEv} jahresertrag={jahresertrag} personen={personen}
+              oStrom={oStrom} fuelType={fuelType} setFuelType={setFuelType}
+            />
 
             {/* Chart */}
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-lg'), padding: "14px 10px 6px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 6px", marginBottom: 6 }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary') }}>Amortisation</span>
-                <div style={{ display: "flex", gap: 12 }}>
-                  {SCENARIOS.map(s => (
-                    <span key={s.id} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: v('--color-text-secondary') }}>
-                      <span style={{ width: 8, height: 3, borderRadius: 2, background: s.color, display: "inline-block", opacity: s.id === "realistic" ? 1 : 0.5 }} />
-                      {s.label}
-                    </span>
-                  ))}
+              <div ref={chartExport.chartRef}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 6px", marginBottom: 6 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary') }}>Amortisation</span>
+                  <div style={{ display: "flex", gap: 12 }}>
+                    {SCENARIOS.map(s => (
+                      <span key={s.id} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: v('--color-text-secondary') }}>
+                        <span style={{ width: 8, height: 3, borderRadius: 2, background: s.color, display: "inline-block", opacity: s.id === "realistic" ? 1 : 0.5 }} />
+                        {s.label}
+                      </span>
+                    ))}
+                  </div>
                 </div>
+                <Chart scenarios={scenarioData} kosten={kosten} />
               </div>
-              <Chart scenarios={scenarioData} kosten={kosten} />
+              <ChartExportBar
+                onDownload={chartExport.downloadPng}
+                onShare={chartExport.sharePng}
+                onWhatsApp={chartExport.shareWhatsApp}
+                onTwitter={chartExport.shareTwitter}
+                isExporting={chartExport.isExporting}
+                canNativeShare={chartExport.canNativeShare}
+              />
             </div>
 
             {/* Scenario pills */}
@@ -872,65 +587,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
             </div>
 
-            {/* CTAs: Icon buttons + Save */}
-            <div style={{ display: "flex", gap: 5, alignItems: "center", padding: "10px 0", marginBottom: 16 }}>
-              <button onClick={handleCopy} title={copied ? "Kopiert!" : "Link kopieren"} style={{
-                width: 40, height: 40, borderRadius: v('--radius-md'), cursor: "pointer",
-                background: copied ? v('--color-accent-dim') : v('--color-bg'),
-                border: `1px solid ${copied ? v('--color-accent') : v('--color-border-accent')}`,
-                color: copied ? v('--color-accent') : v('--color-accent'),
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                transition: "all 0.2s",
-              }}>
-                {copied ? <IconCheck size={16} /> : <IconLink size={16} />}
-              </button>
-              {canShare && (
-                <button onClick={handleNativeShare} title="Teilen" style={{
-                  width: 40, height: 40, borderRadius: v('--radius-md'), cursor: "pointer",
-                  background: v('--color-bg'), border: `1px solid ${v('--color-border-accent')}`,
-                  color: v('--color-accent'),
-                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                }}>
-                  <IconShare size={16} />
-                </button>
-              )}
-              <button onClick={handleWhatsApp} title="WhatsApp" style={{
-                width: 40, height: 40, borderRadius: v('--radius-md'), cursor: "pointer",
-                background: v('--color-bg'), border: `1px solid ${v('--color-border-accent')}`,
-                color: v('--color-accent'),
-                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-              }}>
-                <IconWhatsApp size={16} />
-              </button>
-              {user ? (
-                <button onClick={handleSave} disabled={saving} style={{
-                  flex: 1, height: 40, borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
-                  background: saved ? v('--color-accent-dim') : v('--color-accent'),
-                  border: saved ? `1px solid ${v('--color-accent')}` : "none",
-                  color: saved ? v('--color-accent') : v('--color-text-on-accent'),
-                  cursor: saving ? "wait" : "pointer", fontFamily: v('--font-text'), transition: "all 0.2s",
-                  display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                }}>
-                  {saved ? <><IconCheck size={14} /> Gespeichert!</> : saving ? "Speichert..." : "Ergebnis speichern"}
-                </button>
-              ) : (
-                <button onClick={() => { setShowLogin(true); setLoginSent(false); setLoginError(""); }} style={{
-                  flex: 1, height: 40, borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
-                  background: v('--color-accent'), border: "none",
-                  color: v('--color-text-on-accent'), cursor: "pointer", fontFamily: v('--font-text'),
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                }}>
-                  Ergebnis speichern
-                </button>
-              )}
-            </div>
-            {user && savedCalcId && !saved && (
-              <div style={{ textAlign: "center", marginBottom: 16 }}>
-                <Link href="/dashboard" style={{ fontSize: 12, color: v('--color-text-muted'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>
-                  Meine Berechnungen <IconArrowRight size={10} />
-                </Link>
-              </div>
-            )}
+            <ResultActions
+              copied={copied} canShare={canShare} user={user} saving={saving} saved={saved} savedCalcId={savedCalcId}
+              onCopy={handleCopy} onNativeShare={handleNativeShare} onWhatsApp={handleWhatsApp}
+              onSave={handleSave} onLoginClick={() => { setShowLogin(true); setLoginSent(false); setLoginError(""); }}
+            />
 
             {/* Restart */}
             <button onClick={restart} style={{

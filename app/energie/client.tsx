@@ -9,6 +9,8 @@ import {
   formatGWh, calcPeriodStats, CATEGORY_COLORS,
 } from "../../lib/chart-utils";
 import { v } from "../../lib/theme";
+import { useChartExport } from "../../lib/useChartExport";
+import ChartExportBar from "../../components/ChartExportBar";
 
 // ─── Time Range Selector ─────────────────────────────────────────────────────
 
@@ -135,6 +137,12 @@ export default function EnergieClient() {
 
   const stats = useMemo(() => calcPeriodStats(genData.data), [genData.data]);
 
+  const energyChartExport = useChartExport({
+    title: `Strommix Deutschland ${selected}`,
+    filename: `solar-check-strommix-${selected}.png`,
+    shareText: `Strommix Deutschland (${selected}) – ${stats ? `${Math.round(stats.eeSharePct)}% Erneuerbare` : ""}`,
+  });
+
   return (
     <div style={{ maxWidth: 640, margin: "0 auto" }}>
       {/* Hero */}
@@ -250,26 +258,30 @@ export default function EnergieClient() {
             </div>
           ); })()}
           {/* Nuclear import toggle */}
-          {!nuclearLoading && nuclearData.avg_gw > 0 && (
-            <button
-              onClick={() => setShowNuclear(!showNuclear)}
-              style={{
-                flex: "1 0 0", minWidth: 80,
-                background: v("--color-bg-muted"),
-                border: `1px solid ${v("--color-border")}`,
-                borderRadius: v("--radius-md"),
-                padding: "12px 8px", textAlign: "center",
-                cursor: "pointer", fontFamily: v("--font-text"),
-                opacity: showNuclear ? 1 : 0.5,
-              }}
-            >
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Kernimport</div>
+          <button
+            onClick={() => !nuclearLoading && setShowNuclear(!showNuclear)}
+            style={{
+              flex: "1 0 0", minWidth: 80,
+              background: v("--color-bg-muted"),
+              border: `1px solid ${v("--color-border")}`,
+              borderRadius: v("--radius-md"),
+              padding: "12px 8px", textAlign: "center",
+              cursor: nuclearLoading ? "default" : "pointer", fontFamily: v("--font-text"),
+              opacity: nuclearLoading ? 0.6 : showNuclear ? 1 : 0.5,
+            }}
+          >
+            <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Kernimport</div>
+            {nuclearLoading ? (
+              <div style={{ display: "flex", justifyContent: "center", padding: "6px 0" }}>
+                <BouncingDots />
+              </div>
+            ) : (
               <div style={{ fontFamily: v("--font-mono"), fontWeight: 800 }}>
                 <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{nuclearData.avg_gw.toFixed(1)}</span>
                 <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>GW</span>
               </div>
-            </button>
-          )}
+            )}
+          </button>
         </div>
       )}
 
@@ -287,67 +299,78 @@ export default function EnergieClient() {
           Stromerzeugung nach Energieträger
         </div>
 
-        {loading ? (
-          <LoadingSpinner />
-        ) : error ? (
-          <div
-            style={{
-              height: 300,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: v("--color-negative"),
-              fontSize: 13,
-            }}
-          >
-            Fehler beim Laden: {error}
-          </div>
-        ) : hours >= 720 || isYear ? (
-          <StackedBarChart
-            data={genData.data}
-            mode={selected === "YTD" || isYear ? "ytd" : selected === "12M" ? "12m" : "30d"}
-            nuclearOverlay={showNuclear ? nuclearData.data : undefined}
-          />
-        ) : (
-          <StackedAreaChart
-            data={genData.data}
-            xFormat={hours > 168 ? "date" : hours > 48 ? "datetime" : "time"}
-            nuclearOverlay={showNuclear ? nuclearData.data : undefined}
-          />
-        )}
+        <div ref={energyChartExport.chartRef}>
+          {loading ? (
+            <LoadingSpinner />
+          ) : error ? (
+            <div
+              style={{
+                height: 300,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: v("--color-negative"),
+                fontSize: 13,
+              }}
+            >
+              Fehler beim Laden: {error}
+            </div>
+          ) : hours >= 720 || isYear ? (
+            <StackedBarChart
+              data={genData.data}
+              mode={selected === "YTD" || isYear ? "ytd" : selected === "12M" ? "12m" : "30d"}
+              nuclearOverlay={showNuclear ? nuclearData.data : undefined}
+            />
+          ) : (
+            <StackedAreaChart
+              data={genData.data}
+              xFormat={hours > 168 ? "date" : hours > 48 ? "datetime" : "time"}
+              nuclearOverlay={showNuclear ? nuclearData.data : undefined}
+            />
+          )}
 
-        {/* Legend */}
+          {/* Legend */}
+          {!loading && !error && genData.data.length > 0 && (
+            <div style={{
+              display: "flex", justifyContent: "flex-start", gap: 16, flexWrap: "wrap",
+              padding: "12px 8px 0", marginTop: 8,
+              borderTop: `1px solid ${v("--color-border")}`,
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.renewable, flexShrink: 0 }} />
+                <span style={{ color: v("--color-text-muted") }}>Erneuerbare</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.fossil, flexShrink: 0 }} />
+                <span style={{ color: v("--color-text-muted") }}>Fossil</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.other, flexShrink: 0 }} />
+                <span style={{ color: v("--color-text-muted") }}>Sonstige</span>
+              </div>
+              {showNuclear && (
+                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                  {nuclearLoading ? (
+                    <BouncingDots />
+                  ) : (
+                    <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclearImport, flexShrink: 0 }} />
+                  )}
+                  <span style={{ color: v("--color-text-muted") }}>Importierte Kernenergie</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
         {!loading && !error && genData.data.length > 0 && (
-          <div style={{
-            display: "flex", justifyContent: "center", gap: 16,
-            padding: "12px 8px 0", marginTop: 8,
-            borderTop: `1px solid ${v("--color-border")}`,
-          }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.renewable, flexShrink: 0 }} />
-              <span style={{ color: v("--color-text-muted") }}>Erneuerbare</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.fossil, flexShrink: 0 }} />
-              <span style={{ color: v("--color-text-muted") }}>Fossil</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.other, flexShrink: 0 }} />
-              <span style={{ color: v("--color-text-muted") }}>Sonstige</span>
-            </div>
-            {showNuclear && nuclearLoading && (
-              <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                <span style={{ color: v("--color-text-muted") }}>Kernimport</span>
-                <BouncingDots />
-              </div>
-            )}
-            {showNuclear && !nuclearLoading && nuclearData.avg_gw > 0 && (
-              <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclearImport, flexShrink: 0 }} />
-                <span style={{ color: v("--color-text-muted") }}>Importierte Kernenergie</span>
-              </div>
-            )}
-          </div>
+          <ChartExportBar
+            onDownload={energyChartExport.downloadPng}
+            onShare={energyChartExport.sharePng}
+            onWhatsApp={energyChartExport.shareWhatsApp}
+            onTwitter={energyChartExport.shareTwitter}
+            isExporting={energyChartExport.isExporting}
+            canNativeShare={energyChartExport.canNativeShare}
+          />
         )}
       </div>
 
