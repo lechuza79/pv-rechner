@@ -388,25 +388,26 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
         </>
       )}
 
-      {/* Kernenergie (inländisch) */}
-      {nuclearGWhLocal > 0.01 && (
-        <>
-          <BarTooltipSummary color={CATEGORY_COLORS.nuclear} label={`Kernenergie ${nuclearPctLocal}%`} value={formatGWh(nuclearGWhLocal)} />
-          {nuclearKeysLocal.map(key => {
-            const val = data[key];
-            if (typeof val !== "number" || val <= 0.01) return null;
-            return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatGWh(val)} />;
-          })}
-        </>
-      )}
-
-      {/* Importierte Kernenergie */}
-      {nuclearGWh != null && nuclearGWh > 0.01 && (
-        <>
-          <BarTooltipSummary color={CATEGORY_COLORS.nuclearImport} label={`Kernenergie ${totalGWh > 0 ? Math.round(nuclearGWh / (totalGWh + nuclearGWh) * 100) : 0}%`} value={formatGWh(nuclearGWh)} />
-          <div style={{ fontSize: 10, color: "var(--color-text-faint)", marginTop: -2, marginBottom: 2 }}>importiert</div>
-        </>
-      )}
+      {/* Kernenergie (inländisch + importiert) */}
+      {(nuclearGWhLocal > 0.01 || (nuclearGWh != null && nuclearGWh > 0.01)) && (() => {
+        const nucTotal = nuclearGWhLocal + (nuclearGWh || 0);
+        const allTotal = totalGWh + (nuclearGWh || 0);
+        const nucPct = allTotal > 0 ? Math.round(nucTotal / allTotal * 100) : 0;
+        return (
+          <>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, marginBottom: 4 }}>
+              <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: "var(--color-text-primary)" }}>Kernenergie {nucPct}%</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{formatGWh(nucTotal)}</span>
+            </div>
+            {nuclearGWhLocal > 0.01 && (
+              <BarTooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={formatGWh(nuclearGWhLocal)} />
+            )}
+            {nuclearGWh != null && nuclearGWh > 0.01 && (
+              <BarTooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={formatGWh(nuclearGWh)} />
+            )}
+          </>
+        );
+      })()}
     </div>
   );
 }

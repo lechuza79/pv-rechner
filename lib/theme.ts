@@ -49,7 +49,7 @@ export const tokens = {
   // ─── Energy — Sonstige ────────────────────────────────────────────────────
   '--color-energy-other': '#BDBDBD',        // Light grey — Sonstige/Abfall
   // ─── Energy — Kernenergie ───────────────────────────────────────────────
-  '--color-energy-nuclear': '#F9A825',        // Yellow — Kernenergie (inländisch, bis 2023)
+  '--color-energy-nuclear': '#EF85F8',        // Light pink — Kernenergie erzeugt in DE (bis April 2023)
   '--color-energy-nuclear-import': '#EA00FF', // Magenta — Importierte Kernenergie
   // ─── Energy — Category summary colors ─────────────────────────────────────
   '--color-energy-cat-renewable': '#4CAF50', // Green — Erneuerbare (summary)

@@ -200,25 +200,26 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
         </>
       )}
 
-      {/* Kernenergie (inländisch) */}
-      {nuclearTotal > 0 && (
-        <>
-          <TooltipSummary color={CATEGORY_COLORS.nuclear} label={`Kernenergie ${nuclearPct}%`} value={formatMW(nuclearTotal)} />
-          {nuclearKeys.map(key => {
-            const val = d[key];
-            if (typeof val !== "number" || val <= 0) return null;
-            return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;
-          })}
-        </>
-      )}
-
-      {/* Importierte Kernenergie */}
-      {nuclearMw > 0 && (
-        <>
-          <TooltipSummary color={CATEGORY_COLORS.nuclearImport} label={`Kernenergie ${totalGen > 0 ? Math.round(nuclearMw / (totalGen + nuclearMw) * 100) : 0}%`} value={formatMW(nuclearMw)} />
-          <div style={{ fontSize: 10, color: "var(--color-text-faint)", marginTop: -2, marginBottom: 2 }}>importiert</div>
-        </>
-      )}
+      {/* Kernenergie (inländisch + importiert) */}
+      {(nuclearTotal > 0 || nuclearMw > 0) && (() => {
+        const nucCombined = nuclearTotal + nuclearMw;
+        const allTotal = totalGen + nuclearMw;
+        const nucPct = allTotal > 0 ? Math.round(nucCombined / allTotal * 100) : 0;
+        return (
+          <>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, marginBottom: 4 }}>
+              <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: "var(--color-text-primary)" }}>Kernenergie {nucPct}%</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{formatMW(nucCombined)}</span>
+            </div>
+            {nuclearTotal > 0 && (
+              <TooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={formatMW(nuclearTotal)} />
+            )}
+            {nuclearMw > 0 && (
+              <TooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={formatMW(nuclearMw)} />
+            )}
+          </>
+        );
+      })()}
     </div>
   );
 }

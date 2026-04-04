@@ -173,8 +173,8 @@ export default function EnergieClient() {
         { color: CATEGORY_COLORS.renewable, label: "Erneuerbare" },
         { color: CATEGORY_COLORS.fossil, label: "Fossil" },
         { color: CATEGORY_COLORS.other, label: "Sonstige" },
-        ...(hasDomesticNuclear ? [{ color: CATEGORY_COLORS.nuclear, label: "Kernenergie" }] : []),
-        ...(showNuclear && nuclearData.avg_gw > 0 ? [{ color: CATEGORY_COLORS.nuclearImport, label: "Importierte Kernenergie" }] : []),
+        ...(hasDomesticNuclear ? [{ color: CATEGORY_COLORS.nuclear, label: "Kernenergie (erzeugt)" }] : []),
+        ...(showNuclear && nuclearData.avg_gw > 0 ? [{ color: CATEGORY_COLORS.nuclearImport, label: "Kernenergie (importiert)" }] : []),
       ],
     },
     filename: `solar-check-strommix-${selected}.png`,
@@ -234,7 +234,7 @@ export default function EnergieClient() {
               >
                 <IconChevronLeft size={10} />
               </button>
-              <div style={{ position: "relative" }}>
+              <div style={{ position: "relative", display: "flex" }}>
                 <select
                   value={isYear ? selected : ""}
                   onChange={(e) => {
@@ -249,6 +249,9 @@ export default function EnergieClient() {
                     paddingRight: 20,
                     minWidth: 70,
                     textAlign: "center",
+                    height: 31,
+                    boxSizing: "border-box" as const,
+                    lineHeight: "normal",
                   }}
                 >
                   <option value="" disabled>Jahre</option>
@@ -460,20 +463,23 @@ export default function EnergieClient() {
                 <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.other, flexShrink: 0 }} />
                 <span style={{ color: v("--color-text-muted") }}>Sonstige</span>
               </div>
-              {hasDomesticNuclear && (
+              {(hasDomesticNuclear || showNuclear) && (
                 <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                  <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclear, flexShrink: 0 }} />
                   <span style={{ color: v("--color-text-muted") }}>Kernenergie</span>
-                </div>
-              )}
-              {showNuclear && (
-                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                  {nuclearLoading ? (
-                    <BouncingDots />
-                  ) : (
-                    <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclearImport, flexShrink: 0 }} />
+                  {hasDomesticNuclear && (
+                    <>
+                      <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclear, flexShrink: 0 }} />
+                      <span style={{ color: v("--color-text-faint"), fontSize: 10 }}>erzeugt</span>
+                    </>
                   )}
-                  <span style={{ color: v("--color-text-muted") }}>Importierte Kernenergie</span>
+                  {showNuclear && (
+                    nuclearLoading ? <BouncingDots /> : (
+                      <>
+                        <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclearImport, flexShrink: 0 }} />
+                        <span style={{ color: v("--color-text-faint"), fontSize: 10 }}>importiert</span>
+                      </>
+                    )
+                  )}
                 </div>
               )}
             </div>
