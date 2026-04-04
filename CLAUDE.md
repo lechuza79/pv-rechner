@@ -209,6 +209,9 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Kernimport-Overlay auf Stacked Area + Bar Chart (Magenta-Linie + weiße Outline, SVG-Fade-in, Toggle)
 - [x] Inländische Kernenergie als unterster Bar im Strommix (pink #EF85F8, bis April 2023)
 - [x] `useNuclearImport()` Client-Hook mit Stale-While-Revalidate + localStorage für historische Daten
+- [x] Kernimport in Supabase `energy_weekly` gespeichert (`nuclear_import` Spalte) — Max-View zeigt Kernimport aus DB
+- [x] Backfill-Route berechnet Kernimport pro Woche (CBPF × Kernanteil, parallel gefetcht)
+- [x] Kernenergie-Widget zeigt erzeugt + importiert (aufgeschlüsselt mit Farbpunkten)
 - [x] Chart-Export: PNG-Download + Share (Native, WhatsApp, Twitter) via `lib/chart-export.ts` + `useChartExport`
 - [x] Ergebnis-Refactoring: HeroCard, Stats, QuickSettings, ResultActions als eigene Komponenten
 - [x] API-Resilienz: Stale Cache Fallback (server-seitig), 24h-Cache für historische Zeiträume, Client Auto-Retry + Retry-Button

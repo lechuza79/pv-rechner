@@ -201,12 +201,16 @@ function aggregateWeeksToMonths(weekBuckets: WeekBucket[]): WeekBucket[] {
       const label = month === 0 ? String(year) : MONTH_LABELS[month];
       const bucket: WeekBucket = { weekKey: monthKey, label };
       for (const key of genKeys) bucket[key] = 0;
+      bucket.nuclear_import = 0;
       months.set(monthKey, bucket);
     }
 
     const bucket = months.get(monthKey)!;
     for (const key of genKeys) {
       bucket[key] = (bucket[key] as number) + (typeof w[key] === "number" ? (w[key] as number) : 0);
+    }
+    if (typeof w.nuclear_import === "number") {
+      bucket.nuclear_import = (bucket.nuclear_import as number) + (w.nuclear_import as number);
     }
   }
 
@@ -448,10 +452,19 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
   }, [data, mode, preAggregated]);
 
   const nuclearBuckets = useMemo(() => {
+    // For preAggregated data: extract nuclear_import directly from buckets
+    if (preAggregated) {
+      const map = new Map<string, number>();
+      for (const b of buckets) {
+        const val = b.nuclear_import;
+        if (typeof val === "number" && val > 0) map.set(b.weekKey, val);
+      }
+      return map.size > 0 ? map : null;
+    }
     if (!nuclearOverlay || nuclearOverlay.length < 2) return null;
     if (mode === "30d") return aggregateNuclearToDays(nuclearOverlay);
     return aggregateNuclearToWeeks(nuclearOverlay);
-  }, [nuclearOverlay, mode]);
+  }, [nuclearOverlay, mode, preAggregated, buckets]);
 
   const activeKeys = useMemo(() => {
     const k = keys || GENERATION_STACK_KEYS;

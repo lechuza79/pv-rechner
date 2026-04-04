@@ -164,6 +164,48 @@ export default function EnergieClient() {
     return genData.data.some(d => typeof d.nuclear === "number" && (d.nuclear as number) > 0);
   }, [genData.data]);
 
+  // Calculate domestic nuclear total for summary widget
+  const domesticNuclearStats = useMemo(() => {
+    if (!hasDomesticNuclear || genData.data.length < 2) return { avgGw: 0, totalGWh: 0 };
+    const isWeekly = genData.resolution === "weekly";
+    let intervalHours = 0.25;
+    if (!isWeekly) {
+      const t0 = new Date(genData.data[0].ts).getTime();
+      const t1 = new Date(genData.data[1].ts).getTime();
+      intervalHours = (t1 - t0) / (1000 * 60 * 60);
+    }
+    let totalGWh = 0;
+    let totalMw = 0;
+    let count = 0;
+    for (const d of genData.data) {
+      const val = d.nuclear;
+      if (typeof val === "number" && val > 0) {
+        if (isWeekly) {
+          totalGWh += val; // already GWh
+        } else {
+          totalGWh += val * intervalHours / 1000;
+          totalMw += val;
+        }
+        count++;
+      }
+    }
+    const avgGw = isWeekly
+      ? (totalGWh / genData.data.length / 168 * 1000) // GWh/week → avg GW
+      : count > 0 ? totalMw / count / 1000 : 0;
+    return { avgGw, totalGWh };
+  }, [genData.data, genData.resolution, hasDomesticNuclear]);
+
+  // Nuclear import from preAggregated data (for Max view where API doesn't work)
+  const preAggNuclearImportGWh = useMemo(() => {
+    if (genData.resolution !== "weekly") return 0;
+    let total = 0;
+    for (const d of genData.data) {
+      const val = d.nuclear_import;
+      if (typeof val === "number" && val > 0) total += val;
+    }
+    return total;
+  }, [genData.data, genData.resolution]);
+
   // Time range display label
   const rangeLabel = useMemo(() => {
     if (selected === "MAX") return "2015 – heute";
@@ -372,32 +414,59 @@ export default function EnergieClient() {
           </div>
         ))}
         {/* Kernenergie toggle */}
-        <button
-          onClick={() => !nuclearLoading && setShowNuclear(!showNuclear)}
-          style={{
-            flex: "1 0 0", minWidth: 80,
-            background: v("--color-bg-muted"),
-            border: `1px solid ${v("--color-border")}`,
-            borderRadius: v("--radius-md"),
-            padding: "12px 8px", textAlign: "center",
-            cursor: nuclearLoading ? "default" : "pointer", fontFamily: v("--font-text"),
-            opacity: nuclearLoading ? 0.6 : showNuclear ? 1 : 0.5,
-          }}
-        >
-          <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Kernenergie</div>
-          <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            {nuclearLoading ? (
-              <BouncingDots />
-            ) : nuclearError && nuclearData.data.length === 0 ? (
-              <span style={{ fontSize: 11, color: v("--color-text-muted"), fontWeight: 400, fontFamily: v("--font-text") }}>Nicht verfügbar</span>
-            ) : (
-              <>
-                <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{nuclearData.avg_gw.toFixed(1)}</span>
-                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>GW</span>
-              </>
-            )}
-          </div>
-        </button>
+        {(() => {
+          // Combine domestic + imported nuclear for display
+          const hasImportData = nuclearData.avg_gw > 0 || preAggNuclearImportGWh > 0;
+          const hasDomestic = domesticNuclearStats.avgGw > 0;
+          const hasAny = hasImportData || hasDomestic;
+          // For GW display: use avg_gw from API if available, or estimate from preAgg GWh
+          const importAvgGw = nuclearData.avg_gw > 0
+            ? nuclearData.avg_gw
+            : preAggNuclearImportGWh > 0 && genData.data.length > 0
+              ? (preAggNuclearImportGWh / genData.data.length / 168 * 1000)  // GWh/week → GW
+              : 0;
+          const totalAvgGw = domesticNuclearStats.avgGw + importAvgGw;
+
+          return (
+            <button
+              onClick={() => !nuclearLoading && setShowNuclear(!showNuclear)}
+              style={{
+                flex: "1 0 0", minWidth: 80,
+                background: v("--color-bg-muted"),
+                border: `1px solid ${v("--color-border")}`,
+                borderRadius: v("--radius-md"),
+                padding: "12px 8px", textAlign: "center",
+                cursor: nuclearLoading ? "default" : "pointer", fontFamily: v("--font-text"),
+                opacity: nuclearLoading ? 0.6 : showNuclear ? 1 : 0.5,
+              }}
+            >
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Kernenergie</div>
+              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {nuclearLoading && !hasAny ? (
+                  <BouncingDots />
+                ) : nuclearError && !hasAny ? (
+                  <span style={{ fontSize: 11, color: v("--color-text-muted"), fontWeight: 400, fontFamily: v("--font-text") }}>Nicht verfügbar</span>
+                ) : hasAny ? (
+                  <>
+                    <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{totalAvgGw.toFixed(1)}</span>
+                    <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>GW</span>
+                  </>
+                ) : (
+                  <span style={{ fontSize: 11, color: v("--color-text-muted"), fontWeight: 400, fontFamily: v("--font-text") }}>—</span>
+                )}
+              </div>
+              {hasAny && (hasDomestic || importAvgGw > 0) && (
+                <div style={{ fontSize: 8, color: v("--color-text-faint"), marginTop: 2, lineHeight: 1.4 }}>
+                  {hasDomestic && <span style={{ color: CATEGORY_COLORS.nuclear }}>●</span>}
+                  {hasDomestic && ` ${domesticNuclearStats.avgGw.toFixed(1)}`}
+                  {hasDomestic && importAvgGw > 0 && " + "}
+                  {importAvgGw > 0 && <span style={{ color: CATEGORY_COLORS.nuclearImport }}>●</span>}
+                  {importAvgGw > 0 && ` ${importAvgGw.toFixed(1)}`}
+                </div>
+              )}
+            </button>
+          );
+        })()}
       </div>
 
       {/* Stacked Area / Bar Chart */}

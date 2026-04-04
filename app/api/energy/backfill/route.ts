@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
-import { fetchPublicPower } from "../../../../lib/energy-api";
+import { fetchPublicPower, fetchCrossBorderFlows } from "../../../../lib/energy-api";
 import { GENERATION_STACK_KEYS } from "../../../../lib/chart-utils";
 
 // Backfill route: Fetches Energy-Charts data year by year,
@@ -25,6 +25,19 @@ function getISOWeekYear(d: Date): number {
   return date.getUTCFullYear();
 }
 
+// ─── Nuclear import calculation ────────────────────────────────────────────
+
+const NUCLEAR_COUNTRIES = ["fr", "cz", "ch", "se", "be", "nl"] as const;
+
+const CBPF_NAME_TO_CODE: Record<string, string> = {
+  france: "fr",
+  czech_republic: "cz",
+  switzerland: "ch",
+  sweden: "se",
+  belgium: "be",
+  netherlands: "nl",
+};
+
 // ─── Aggregate raw data to weekly GWh ──────────────────────────────────────
 
 interface WeekRow {
@@ -38,6 +51,7 @@ interface WeekRow {
 function aggregateToWeeks(
   data: { ts: string; data: Record<string, string | number | null> }[],
   country: string,
+  nuclearImportByTs?: Map<string, number>,
 ): WeekRow[] {
   if (data.length < 2) return [];
 
@@ -57,6 +71,7 @@ function aggregateToWeeks(
       const row: WeekRow = { week_key: weekKey, year: yr, week: wk, country };
       for (const key of GENERATION_STACK_KEYS) row[key] = 0;
       row.load = 0;
+      row.nuclear_import = 0;
       buckets.set(weekKey, row);
     }
 
@@ -71,12 +86,78 @@ function aggregateToWeeks(
     if (typeof load === "number" && load > 0) {
       bucket.load = (bucket.load as number) + load * intervalHours / 1000;
     }
+
+    // Nuclear import: GW × hours → GWh
+    const nucImportGw = nuclearImportByTs?.get(d.ts) ?? 0;
+    if (nucImportGw > 0) {
+      bucket.nuclear_import = (bucket.nuclear_import as number) + nucImportGw * intervalHours / 1000;
+    }
   }
 
   return Array.from(buckets.values()).sort((a, b) => a.week_key.localeCompare(b.week_key));
 }
 
 // ─── Fetch + store one year ────────────────────────────────────────────────
+
+async function calcNuclearImport(
+  startStr: string,
+  endStr: string,
+): Promise<Map<string, number>> {
+  const result = new Map<string, number>();
+
+  try {
+    // Fetch cross-border flows for Germany
+    const cbpfRows = await fetchCrossBorderFlows("de", startStr, endStr);
+    if (cbpfRows.length === 0) return result;
+
+    // Fetch nuclear countries generation mixes in parallel
+    const countryGenRows = new Map<string, Map<string, { nuclear: number; total: number }>>();
+    const countryResults = await Promise.allSettled(
+      NUCLEAR_COUNTRIES.map(code =>
+        fetchPublicPower(code, startStr, endStr, 6000, 1).then(rows => ({ code, rows }))
+      )
+    );
+
+    for (const res of countryResults) {
+      if (res.status === "rejected") continue;
+      const { code, rows } = res.value;
+      const tsMap = new Map<string, { nuclear: number; total: number }>();
+      for (const row of rows) {
+        const nuclear = (row.data.nuclear as number) ?? 0;
+        let total = 0;
+        for (const [key, val] of Object.entries(row.data)) {
+          if (
+            typeof val === "number" && val > 0 &&
+            !key.includes("load") && !key.includes("share") &&
+            !key.includes("cross_border") && !key.includes("consumption")
+          ) {
+            total += val;
+          }
+        }
+        tsMap.set(row.ts, { nuclear, total });
+      }
+      countryGenRows.set(code, tsMap);
+    }
+
+    // Calculate nuclear import per timestamp
+    for (const row of cbpfRows) {
+      let nuclearGw = 0;
+      for (const [name, val] of Object.entries(row.data)) {
+        if (name === "net" || typeof val !== "number" || val <= 0) continue;
+        const code = CBPF_NAME_TO_CODE[name];
+        if (!code) continue;
+        const mix = countryGenRows.get(code)?.get(row.ts);
+        if (!mix || mix.total <= 0) continue;
+        nuclearGw += val * (mix.nuclear / mix.total);
+      }
+      if (nuclearGw > 0) result.set(row.ts, nuclearGw);
+    }
+  } catch (e) {
+    console.warn("Nuclear import calc failed (non-fatal):", (e as Error).message);
+  }
+
+  return result;
+}
 
 async function backfillYear(year: number, country: string): Promise<{ year: number; weeks: number; error?: string }> {
   if (!supabase) return { year, weeks: 0, error: "No database" };
@@ -88,10 +169,14 @@ async function backfillYear(year: number, country: string): Promise<{ year: numb
     : `${year}-12-31T23:59:59+01:00`;
 
   try {
-    const rows = await fetchPublicPower(country, startStr, endStr);
+    // Fetch generation data + nuclear import in parallel
+    const [rows, nuclearImportByTs] = await Promise.all([
+      fetchPublicPower(country, startStr, endStr),
+      calcNuclearImport(startStr, endStr),
+    ]);
     if (rows.length === 0) return { year, weeks: 0, error: "No data from Energy-Charts" };
 
-    const weeks = aggregateToWeeks(rows, country);
+    const weeks = aggregateToWeeks(rows, country, nuclearImportByTs);
     if (weeks.length === 0) return { year, weeks: 0, error: "No weeks aggregated" };
 
     // Upsert into Supabase

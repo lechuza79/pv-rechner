@@ -82,6 +82,7 @@ async function fetchFromSupabase(
       point[key] = typeof row[key] === "number" ? row[key] as number : 0;
     }
     if (typeof row.load === "number") point.load = row.load as number;
+    if (typeof row.nuclear_import === "number") point.nuclear_import = row.nuclear_import as number;
     return point;
   });
 

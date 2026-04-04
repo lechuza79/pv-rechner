@@ -100,6 +100,8 @@ export async function GET(req: NextRequest) {
         hydro_pumped_storage real DEFAULT 0,
         biomass real DEFAULT 0,
         geothermal real DEFAULT 0,
+        -- Nuclear import (calculated: CBPF × nuclear share per country, GWh)
+        nuclear_import real DEFAULT 0,
         -- Consumption
         load real DEFAULT 0,
         -- Metadata
@@ -110,6 +112,12 @@ export async function GET(req: NextRequest) {
     `,
   });
   results.push({ step: "energy_weekly", status: e4w ? "error" : "ok", error: e4w?.message });
+
+  // 4b. Add nuclear_import column if missing (for existing tables)
+  const { error: e4m } = await supabase.rpc("exec_sql", {
+    sql: `ALTER TABLE energy_weekly ADD COLUMN IF NOT EXISTS nuclear_import real DEFAULT 0;`,
+  });
+  results.push({ step: "energy_weekly_add_nuclear_import", status: e4m ? "error" : "ok", error: e4m?.message });
 
   // 5. RLS: enable read for anon, write for service role only
   const { error: e4 } = await supabase.rpc("exec_sql", {
