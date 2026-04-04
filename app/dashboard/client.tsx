@@ -102,7 +102,7 @@ export default function DashboardClient({
       background: v('--color-bg'), fontFamily: v('--font-text'),
       color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px",
     }}>
-        <Header user={{}} onLogoutClick={handleLogout} activePage="dashboard" />
+        <Header user={{}} onLogoutClick={handleLogout} />
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 

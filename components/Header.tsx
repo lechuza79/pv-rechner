@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import { IconUser, IconMenu, IconClose } from "./Icons";
 import { v } from "../lib/theme";
@@ -13,7 +14,16 @@ interface HeaderProps {
   activePage?: string;
 }
 
-export default function Header({ user, authLoading, onLoginClick, onLogoutClick, activePage }: HeaderProps) {
+export default function Header({ user, authLoading, onLoginClick, onLogoutClick, activePage: activePageProp }: HeaderProps) {
+  const pathname = usePathname();
+  const activePage = activePageProp ?? (
+    pathname === "/" ? "rechner" :
+    pathname.startsWith("/simulation") ? "simulation" :
+    pathname.startsWith("/energie") ? "energie" :
+    pathname.startsWith("/rechner") ? "rechner" :
+    pathname.startsWith("/empfehlung") ? "empfehlung" :
+    pathname.startsWith("/dashboard") ? "dashboard" : ""
+  );
   const [menuOpen, setMenuOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
 

@@ -105,7 +105,7 @@ export default function LiveSimulation() {
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
 
-        <Header activePage="simulation" />
+        <Header />
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 

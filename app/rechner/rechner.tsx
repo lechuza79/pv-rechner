@@ -245,7 +245,6 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
           user={user}
           authLoading={authLoading}
           onLoginClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }}
-          activePage="rechner"
         />
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
