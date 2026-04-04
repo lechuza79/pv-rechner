@@ -114,9 +114,11 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
     <div
       style={{
         position: "absolute",
-        top: margin.top,
+        bottom: margin.bottom + 4,
         left: Math.max(0, Math.min(left, width - tooltipWidth)),
         width: tooltipWidth,
+        maxHeight: `calc(100% - ${margin.top + margin.bottom + 8}px)`,
+        overflowY: "auto",
         background: "var(--color-bg)",
         border: "1px solid var(--color-border)",
         borderRadius: "var(--radius-sm)",
