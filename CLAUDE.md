@@ -204,10 +204,13 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Visx als Chart-Library (@visx/shape, scale, axis, grid, responsive, tooltip, gradient)
 - [x] `components/charts/StackedAreaChart.tsx`: Visx Stacked Area mit smooth curves (curveMonotoneX), custom Tooltip, responsive
 - [x] `components/charts/StackedBarChart.tsx`: Visx Stacked Bar mit täglicher/wöchentlicher Aggregation, 52-Wochen-Grid für YTD
-- [x] `/energie` Seite: 5 Summary-Widgets horizontal (EE-%, Erzeugt, davon EE, Netto Import/Export, Kernimport), 5 Zeiträume (24h/7d/30d/YTD/12M)
+- [x] `/energie` Seite: 5 Summary-Widgets horizontal (EE-%, Erzeugt, davon EE, Netto Import/Export, Kernimport), 5 Zeiträume (24h/7d/30d/YTD/12M) + Max (seit 2015)
 - [x] `/api/energy/nuclear-import`: Rechnerischer Kernimport aus 6 Nachbarländern (FR, CZ, CH, SE, BE, NL) via Grenzflüsse × Kernanteil
-- [x] Kernimport-Overlay auf Stacked Area + Bar Chart (transparente Fläche + Strokeline, Toggle ein/aus)
+- [x] Kernimport-Overlay auf Stacked Area + Bar Chart (Magenta-Linie + weiße Outline, SVG-Fade-in, Toggle)
+- [x] Inländische Kernenergie als unterster Bar im Strommix (gelb, bis April 2023)
 - [x] `useNuclearImport()` Client-Hook mit sessionStorage-Cache
+- [x] Chart-Export: PNG-Download + Share (Native, WhatsApp, Twitter) via `lib/chart-export.ts` + `useChartExport`
+- [x] Ergebnis-Refactoring: HeroCard, Stats, QuickSettings, ResultActions als eigene Komponenten
 - [ ] Supabase-Tabellen anlegen (energy_timeseries, energy_monthly, data_source_meta) — SQL vorbereitet in /api/energy/setup
 - [ ] Cron-Routes (live 15min, daily, monthly) + vercel.json
 - [ ] Eurostat-Integration (Haushaltsstrompreise EU)
@@ -296,7 +299,9 @@ pv-rechner/
 │   ├── theme.ts                    # Design-Tokens, CSS-Variablen-Generator, v() Helper
 │   ├── energy-api.ts               # Datalake: Fetch-Wrapper, Timestamp-Normalisierung, Supabase-Upsert, Energy-Charts/Eurostat
 │   ├── energy.ts                   # Client-Hooks: useGenerationMix(), useNuclearImport() (sessionStorage-Cache)
-│   └── chart-utils.ts              # Chart-Utilities: Energietyp-Farben, Formatter, Aggregation (calcPeriodStats)
+│   ├── chart-utils.ts              # Chart-Utilities: Energietyp-Farben, Formatter, Aggregation (calcPeriodStats)
+│   ├── chart-export.ts             # PNG-Export: SVG→Canvas Rendering mit Branding, Stats, Legende
+│   └── useChartExport.ts           # React-Hook für Chart-Export (Download, Share, WhatsApp, Twitter)
 ├── components/
 │   ├── Header.tsx                 # Shared Header-Navigation (Logo links, Nav rechts)
 │   ├── Logo.tsx                   # SVG-Logo + Text (solar-check.io)
@@ -305,10 +310,15 @@ pv-rechner/
 │   ├── TriToggle.tsx               # Dreier-Toggle (Nein/Geplant/Vorhanden, optionales Icon)
 │   ├── InlineEdit.tsx              # Click-to-Edit Zahlenwert
 │   ├── Chart.tsx                   # SVG-Amortisationskurve
+│   ├── ChartExportBar.tsx          # Share/Download-Leiste unter Charts
+│   ├── QuickSettings.tsx           # WP/E-Auto/Speicher Quick-Toggles (Ergebnis)
+│   ├── ResultHeroCard.tsx          # Ergebnis Hero-Card mit editierbaren Werten
+│   ├── ResultStats.tsx             # Rendite/Ersparnis Stats unter Hero
+│   ├── ResultActions.tsx           # Methodik/Share/Save Buttons (Ergebnis)
 │   ├── ErrorBoundary.tsx          # Error Boundary für fehlerhafte Share-URLs
 │   └── charts/
 │       ├── StackedAreaChart.tsx     # Visx Stacked Area (Strommix 24h/7d, smooth curves, Tooltip)
-│       └── StackedBarChart.tsx      # Visx Stacked Bar (30d/YTD/12M, wöchentlich aggregiert)
+│       └── StackedBarChart.tsx      # Visx Stacked Bar (30d/YTD/12M/Max, wöchentlich aggregiert)
 └── app/
     ├── layout.tsx                 # Root Layout: HTML, Fonts, SEO-Meta, CSS-Variablen
     ├── page.tsx                   # Hub-Startseite: 2 Flows (Empfehlung / Rechner)
