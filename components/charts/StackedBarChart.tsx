@@ -12,7 +12,6 @@ import {
   ENERGY_LABELS,
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
-  FOSSIL_KEYS,
   formatGWh,
   CHART_MARGIN,
   CHART_HEIGHT,
@@ -224,21 +223,22 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
 
   let totalGWh = 0;
   let renewableGWh = 0;
-  let fossilGWh = 0;
+  let sonstigeGWh = 0;
   for (const key of activeKeys) {
     const val = data[key];
     if (typeof val === "number" && val > 0) {
       totalGWh += val;
       if (RENEWABLE_KEYS.includes(key)) renewableGWh += val;
-      else if (FOSSIL_KEYS.includes(key)) fossilGWh += val;
+      else sonstigeGWh += val;
     }
   }
-  const eePct = totalGWh > 0 ? (renewableGWh / totalGWh) * 100 : 0;
   if (totalGWh < 0.01) return null;
 
+  const renewablePct = totalGWh > 0 ? Math.round(renewableGWh / totalGWh * 100) : 0;
+  const sonstigePct = totalGWh > 0 ? Math.round(sonstigeGWh / totalGWh * 100) : 0;
+
   const renewableKeys = [...activeKeys].reverse().filter(k => RENEWABLE_KEYS.includes(k));
-  const fossilKeys = [...activeKeys].reverse().filter(k => FOSSIL_KEYS.includes(k));
-  const otherKeys = [...activeKeys].reverse().filter(k => !RENEWABLE_KEYS.includes(k) && !FOSSIL_KEYS.includes(k));
+  const sonstigeKeys = [...activeKeys].reverse().filter(k => !RENEWABLE_KEYS.includes(k));
 
   return (
     <div
@@ -260,25 +260,14 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
         zIndex: 10,
       }}
     >
-      <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "var(--font-mono)", fontSize: 11 }}>
+      <div style={{ fontWeight: 700, marginBottom: 8, fontFamily: "var(--font-mono)", fontSize: 11 }}>
         {data.label}
       </div>
-      <div style={{
-        fontWeight: 700, color: "var(--color-positive)", fontSize: 13, marginBottom: 4,
-        fontFamily: "var(--font-mono)",
-      }}>
-        {Math.round(eePct)} % Erneuerbare
-      </div>
-      <div style={{
-        fontWeight: 600, color: "var(--color-text-secondary)", fontSize: 11, marginBottom: 8,
-        fontFamily: "var(--font-mono)",
-      }}>
-        {formatGWh(totalGWh)} gesamt
-      </div>
 
+      {/* Erneuerbare */}
       {renewableGWh > 0 && (
         <>
-          <BarTooltipSummary color="#4CAF50" label="Erneuerbare" value={formatGWh(renewableGWh)} />
+          <BarTooltipSummary color="#4CAF50" label={`Erneuerbare ${renewablePct}%`} value={formatGWh(renewableGWh)} />
           {renewableKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;
@@ -287,10 +276,11 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
         </>
       )}
 
-      {fossilGWh > 0 && (
+      {/* Sonstige */}
+      {sonstigeGWh > 0 && (
         <>
-          <BarTooltipSummary color="#8D6E63" label="Fossil" value={formatGWh(fossilGWh)} />
-          {fossilKeys.map(key => {
+          <BarTooltipSummary color="#8D6E63" label={`Sonstige ${sonstigePct}%`} value={formatGWh(sonstigeGWh)} />
+          {sonstigeKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;
             return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatGWh(val)} />;
@@ -298,14 +288,9 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
         </>
       )}
 
-      {otherKeys.map(key => {
-        const val = data[key];
-        if (typeof val !== "number" || val <= 0.01) return null;
-        return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatGWh(val)} />;
-      })}
-
+      {/* Kernenergie */}
       {nuclearGWh != null && nuclearGWh > 0.01 && (
-        <BarTooltipSummary color="#F9A825" label="Kernimport" value={formatGWh(nuclearGWh)} />
+        <BarTooltipSummary color="#F9A825" label="Kernenergie" value={formatGWh(nuclearGWh)} />
       )}
     </div>
   );

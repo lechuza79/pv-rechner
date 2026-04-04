@@ -15,7 +15,6 @@ import {
   ENERGY_LABELS,
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
-  FOSSIL_KEYS,
   formatMW,
   formatTime,
   CHART_MARGIN,
@@ -86,21 +85,25 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
   const goLeft = tooltip.left > width / 2;
   const left = goLeft ? tooltip.left - tooltipWidth - 12 : tooltip.left + 12;
 
-  // Calculate category totals
+  // Calculate category totals: Erneuerbare / Sonstige / Kernenergie
   let renewableTotal = 0;
-  let fossilTotal = 0;
+  let sonstigeTotal = 0;
+  let totalGen = 0;
   for (const key of activeKeys) {
     const val = d[key];
     if (typeof val !== "number" || val <= 0) continue;
+    totalGen += val;
     if (RENEWABLE_KEYS.includes(key)) renewableTotal += val;
-    else if (FOSSIL_KEYS.includes(key)) fossilTotal += val;
+    else sonstigeTotal += val;
   }
   const nuclearMw = nuclearGw != null && nuclearGw > 0 ? nuclearGw * 1000 : 0;
 
+  const renewablePct = totalGen > 0 ? Math.round(renewableTotal / totalGen * 100) : 0;
+  const sonstigePct = totalGen > 0 ? Math.round(sonstigeTotal / totalGen * 100) : 0;
+
   // Split keys by category (reversed for top→bottom display)
   const renewableKeys = [...activeKeys].reverse().filter(k => RENEWABLE_KEYS.includes(k));
-  const fossilKeys = [...activeKeys].reverse().filter(k => FOSSIL_KEYS.includes(k));
-  const otherKeys = [...activeKeys].reverse().filter(k => !RENEWABLE_KEYS.includes(k) && !FOSSIL_KEYS.includes(k));
+  const sonstigeKeys = [...activeKeys].reverse().filter(k => !RENEWABLE_KEYS.includes(k));
 
   return (
     <div
@@ -122,20 +125,14 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
         zIndex: 10,
       }}
     >
-      <div style={{ fontWeight: 700, marginBottom: 6, fontFamily: "var(--font-mono)", fontSize: 11 }}>
+      <div style={{ fontWeight: 700, marginBottom: 8, fontFamily: "var(--font-mono)", fontSize: 11 }}>
         {formatTime(d.ts, "datetime")}
       </div>
-      <div style={{
-        fontWeight: 700, color: "var(--color-positive)", fontSize: 13, marginBottom: 8,
-        fontFamily: "var(--font-mono)",
-      }}>
-        {Math.round(getEEShare(d))} % Erneuerbare
-      </div>
 
-      {/* Renewables */}
+      {/* Erneuerbare */}
       {renewableTotal > 0 && (
         <>
-          <TooltipSummary color="#4CAF50" label="Erneuerbare" value={formatMW(renewableTotal)} />
+          <TooltipSummary color="#4CAF50" label={`Erneuerbare ${renewablePct}%`} value={formatMW(renewableTotal)} />
           {renewableKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
@@ -144,11 +141,11 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
         </>
       )}
 
-      {/* Fossil */}
-      {fossilTotal > 0 && (
+      {/* Sonstige */}
+      {sonstigeTotal > 0 && (
         <>
-          <TooltipSummary color="#8D6E63" label="Fossil" value={formatMW(fossilTotal)} />
-          {fossilKeys.map(key => {
+          <TooltipSummary color="#8D6E63" label={`Sonstige ${sonstigePct}%`} value={formatMW(sonstigeTotal)} />
+          {sonstigeKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
             return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;
@@ -156,16 +153,9 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
         </>
       )}
 
-      {/* Other (waste, others) */}
-      {otherKeys.map(key => {
-        const val = d[key];
-        if (typeof val !== "number" || val <= 0) return null;
-        return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;
-      })}
-
-      {/* Nuclear import */}
+      {/* Kernenergie */}
       {nuclearMw > 0 && (
-        <TooltipSummary color="#F9A825" label="Kernimport" value={formatMW(nuclearMw)} />
+        <TooltipSummary color="#F9A825" label="Kernenergie" value={formatMW(nuclearMw)} />
       )}
     </div>
   );

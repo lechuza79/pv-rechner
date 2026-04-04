@@ -7,7 +7,7 @@ import StackedAreaChart from "../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../components/charts/StackedBarChart";
 import {
   ENERGY_COLORS_HEX, ENERGY_LABELS, GENERATION_STACK_KEYS,
-  RENEWABLE_KEYS, FOSSIL_KEYS,
+  RENEWABLE_KEYS,
   formatMW, formatGWh, calcPeriodStats,
 } from "../../lib/chart-utils";
 import { v } from "../../lib/theme";
@@ -50,21 +50,21 @@ export default function EnergieClient() {
   // Aggregate stats over the full time period
   const stats = useMemo(() => calcPeriodStats(genData.data), [genData.data]);
 
-  // Legend items grouped by category
+  // Legend items grouped by category: Erneuerbare / Sonstige / Kernenergie
   const legendGroups = useMemo(() => {
-    if (genData.data.length === 0) return { renewable: [], fossil: [] };
+    if (genData.data.length === 0) return { renewable: [], sonstige: [] };
     const latest = genData.data[genData.data.length - 1];
     const renewable: { key: string; value: number }[] = [];
-    const fossil: { key: string; value: number }[] = [];
+    const sonstige: { key: string; value: number }[] = [];
     for (const key of GENERATION_STACK_KEYS) {
       const val = latest[key];
       if (typeof val !== "number" || val <= 0) continue;
       if (RENEWABLE_KEYS.includes(key)) renewable.push({ key, value: val });
-      else if (FOSSIL_KEYS.includes(key)) fossil.push({ key, value: val });
+      else sonstige.push({ key, value: val });
     }
     renewable.sort((a, b) => b.value - a.value);
-    fossil.sort((a, b) => b.value - a.value);
-    return { renewable: renewable.slice(0, 4), fossil: fossil.slice(0, 3) };
+    sonstige.sort((a, b) => b.value - a.value);
+    return { renewable: renewable.slice(0, 4), sonstige: sonstige.slice(0, 3) };
   }, [genData.data]);
 
   return (
@@ -255,12 +255,13 @@ export default function EnergieClient() {
           />
         )}
 
-        {/* Legend — grouped by category */}
-        {!loading && !error && (legendGroups.renewable.length > 0 || legendGroups.fossil.length > 0) && (
+        {/* Legend — 3 clusters: Erneuerbare / Sonstige / Kernenergie */}
+        {!loading && !error && (legendGroups.renewable.length > 0 || legendGroups.sonstige.length > 0) && (
           <div style={{ padding: "12px 8px 0", marginTop: 8, borderTop: `1px solid ${v("--color-border")}` }}>
-            {/* Renewables row */}
+            {/* Erneuerbare */}
             {legendGroups.renewable.length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", marginBottom: 6 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#4CAF50", marginRight: 2 }}>Erneuerbare</span>
                 {legendGroups.renewable.map(({ key, value }) => (
                   <div key={key} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
                     <div style={{ width: 8, height: 8, borderRadius: 2, background: ENERGY_COLORS_HEX[key], flexShrink: 0 }} />
@@ -270,9 +271,12 @@ export default function EnergieClient() {
                 ))}
               </div>
             )}
-            {/* Fossil + Nuclear row */}
+            {/* Sonstige + Kernenergie */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px" }}>
-              {legendGroups.fossil.map(({ key, value }) => (
+              {legendGroups.sonstige.length > 0 && (
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#8D6E63", marginRight: 2 }}>Sonstige</span>
+              )}
+              {legendGroups.sonstige.map(({ key, value }) => (
                 <div key={key} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
                   <div style={{ width: 8, height: 8, borderRadius: 2, background: ENERGY_COLORS_HEX[key], flexShrink: 0 }} />
                   <span style={{ color: v("--color-text-secondary") }}>{ENERGY_LABELS[key] || key}</span>
@@ -280,11 +284,14 @@ export default function EnergieClient() {
                 </div>
               ))}
               {showNuclear && !nuclearLoading && nuclearData.avg_gw > 0 && (
-                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: 2, background: "#F9A825", flexShrink: 0 }} />
-                  <span style={{ color: v("--color-text-secondary") }}>Kernimport</span>
-                  <span style={{ fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") }}>{formatMW(nuclearData.avg_gw * 1000)}</span>
-                </div>
+                <>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#F9A825", marginLeft: 4, marginRight: 2 }}>Kernenergie</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: 2, background: "#F9A825", flexShrink: 0 }} />
+                    <span style={{ color: v("--color-text-secondary") }}>Kernimport</span>
+                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") }}>{formatMW(nuclearData.avg_gw * 1000)}</span>
+                  </div>
+                </>
               )}
             </div>
           </div>
