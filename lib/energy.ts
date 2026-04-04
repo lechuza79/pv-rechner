@@ -30,6 +30,9 @@ function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T):
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+    setError(null);
+
     // Check sessionStorage
     try {
       const cached = sessionStorage.getItem(CACHE_PREFIX + cacheKey);
@@ -43,12 +46,16 @@ function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T):
       }
     } catch { /* ignore */ }
 
+    // No cache hit — show loading state immediately
+    setLoading(true);
+
     fetch(endpoint)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
       .then((d: T) => {
+        if (cancelled) return;
         setData(d);
         setLoading(false);
         try {
@@ -56,9 +63,12 @@ function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T):
         } catch { /* ignore */ }
       })
       .catch((e) => {
+        if (cancelled) return;
         setError(e.message);
         setLoading(false);
       });
+
+    return () => { cancelled = true; };
   }, [endpoint, cacheKey]);
 
   return { data, loading, error };

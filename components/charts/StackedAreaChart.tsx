@@ -15,6 +15,7 @@ import {
   ENERGY_LABELS,
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
+  FOSSIL_KEYS,
   formatMW,
   formatTime,
   CHART_MARGIN,
@@ -52,6 +53,26 @@ const bisectDate = bisector<DataPoint, Date>((d) => getDate(d)).left;
 
 // ─── Tooltip Component ───────────────────────────────────────────────────────
 
+function TooltipRow({ color, label, value }: { color: string; label: string; value: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
+      <div style={{ width: 8, height: 8, borderRadius: 2, background: color, flexShrink: 0 }} />
+      <span style={{ flex: 1, color: "var(--color-text-secondary)", fontSize: 11 }}>{label}</span>
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600 }}>{value}</span>
+    </div>
+  );
+}
+
+function TooltipSummary({ color, label, value }: { color: string; label: string; value: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, marginTop: 2 }}>
+      <div style={{ width: 8, height: 8, borderRadius: 3, background: color, flexShrink: 0 }} />
+      <span style={{ flex: 1, fontWeight: 700, fontSize: 11 }}>{label}</span>
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 700 }}>{value}</span>
+    </div>
+  );
+}
+
 function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearGw }: {
   tooltip: { data: DataPoint; left: number };
   activeKeys: string[];
@@ -61,9 +82,25 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
   nuclearGw?: number | null;
 }) {
   const d = tooltip.data;
-  const tooltipWidth = 180;
+  const tooltipWidth = 200;
   const goLeft = tooltip.left > width / 2;
   const left = goLeft ? tooltip.left - tooltipWidth - 12 : tooltip.left + 12;
+
+  // Calculate category totals
+  let renewableTotal = 0;
+  let fossilTotal = 0;
+  for (const key of activeKeys) {
+    const val = d[key];
+    if (typeof val !== "number" || val <= 0) continue;
+    if (RENEWABLE_KEYS.includes(key)) renewableTotal += val;
+    else if (FOSSIL_KEYS.includes(key)) fossilTotal += val;
+  }
+  const nuclearMw = nuclearGw != null && nuclearGw > 0 ? nuclearGw * 1000 : 0;
+
+  // Split keys by category (reversed for top→bottom display)
+  const renewableKeys = [...activeKeys].reverse().filter(k => RENEWABLE_KEYS.includes(k));
+  const fossilKeys = [...activeKeys].reverse().filter(k => FOSSIL_KEYS.includes(k));
+  const otherKeys = [...activeKeys].reverse().filter(k => !RENEWABLE_KEYS.includes(k) && !FOSSIL_KEYS.includes(k));
 
   return (
     <div
@@ -94,33 +131,42 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       }}>
         {Math.round(getEEShare(d))} % Erneuerbare
       </div>
-      {nuclearGw != null && nuclearGw > 0 && (
-        <div style={{
-          fontSize: 11, color: "#9E9E9E", marginBottom: 8,
-          fontFamily: "var(--font-mono)", fontWeight: 600,
-        }}>
-          ⚛ {(nuclearGw * 1000).toFixed(0)} MW Kernimport
-        </div>
+
+      {/* Renewables */}
+      {renewableTotal > 0 && (
+        <>
+          <TooltipSummary color="#4CAF50" label="Erneuerbare" value={formatMW(renewableTotal)} />
+          {renewableKeys.map(key => {
+            const val = d[key];
+            if (typeof val !== "number" || val <= 0) return null;
+            return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;
+          })}
+        </>
       )}
-      {[...activeKeys].reverse().map((key) => {
+
+      {/* Fossil */}
+      {fossilTotal > 0 && (
+        <>
+          <TooltipSummary color="#8D6E63" label="Fossil" value={formatMW(fossilTotal)} />
+          {fossilKeys.map(key => {
+            const val = d[key];
+            if (typeof val !== "number" || val <= 0) return null;
+            return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;
+          })}
+        </>
+      )}
+
+      {/* Other (waste, others) */}
+      {otherKeys.map(key => {
         const val = d[key];
         if (typeof val !== "number" || val <= 0) return null;
-        return (
-          <div key={key} style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-            <div style={{
-              width: 8, height: 8, borderRadius: 2,
-              background: ENERGY_COLORS_HEX[key] || "#B0BEC5",
-              flexShrink: 0,
-            }} />
-            <span style={{ flex: 1, color: "var(--color-text-secondary)", fontSize: 11 }}>
-              {ENERGY_LABELS[key] || key}
-            </span>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600 }}>
-              {formatMW(val)}
-            </span>
-          </div>
-        );
+        return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;
       })}
+
+      {/* Nuclear import */}
+      {nuclearMw > 0 && (
+        <TooltipSummary color="#F9A825" label="Kernimport" value={formatMW(nuclearMw)} />
+      )}
     </div>
   );
 }
@@ -321,8 +367,8 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
                 y={(d) => yScale(d.nuclear_gw * 1000) ?? 0}
                 yScale={yScale}
                 curve={curveMonotoneX}
-                fill="#78909C"
-                fillOpacity={0.35}
+                fill="#F9A825"
+                fillOpacity={0.15}
                 stroke="none"
               />
               {/* Visible top edge line */}
@@ -333,9 +379,9 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
                 yScale={yScale}
                 curve={curveMonotoneX}
                 fill="none"
-                stroke="#546E7A"
+                stroke="#F9A825"
                 strokeWidth={2}
-                strokeOpacity={0.8}
+                strokeOpacity={0.9}
               />
             </>
           )}
@@ -393,6 +439,7 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
             fill="transparent"
             onTouchStart={handleTooltip}
             onTouchMove={handleTooltip}
+            onTouchEnd={() => setTooltip(null)}
             onMouseMove={handleTooltip}
             onMouseLeave={() => setTooltip(null)}
           />

@@ -6,6 +6,7 @@ import {
   calcPeriodStats,
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
+  FOSSIL_KEYS,
   META_KEYS,
   ENERGY_COLORS_HEX,
   ENERGY_LABELS,
@@ -71,6 +72,18 @@ describe("energy key consistency", () => {
   it("all RENEWABLE_KEYS are in GENERATION_STACK_KEYS", () => {
     for (const key of RENEWABLE_KEYS) {
       expect(GENERATION_STACK_KEYS).toContain(key);
+    }
+  });
+
+  it("all FOSSIL_KEYS are in GENERATION_STACK_KEYS", () => {
+    for (const key of FOSSIL_KEYS) {
+      expect(GENERATION_STACK_KEYS).toContain(key);
+    }
+  });
+
+  it("RENEWABLE and FOSSIL keys don't overlap", () => {
+    for (const key of RENEWABLE_KEYS) {
+      expect(FOSSIL_KEYS).not.toContain(key);
     }
   });
 

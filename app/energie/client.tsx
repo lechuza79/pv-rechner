@@ -7,6 +7,7 @@ import StackedAreaChart from "../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../components/charts/StackedBarChart";
 import {
   ENERGY_COLORS_HEX, ENERGY_LABELS, GENERATION_STACK_KEYS,
+  RENEWABLE_KEYS, FOSSIL_KEYS,
   formatMW, formatGWh, calcPeriodStats,
 } from "../../lib/chart-utils";
 import { v } from "../../lib/theme";
@@ -49,17 +50,21 @@ export default function EnergieClient() {
   // Aggregate stats over the full time period
   const stats = useMemo(() => calcPeriodStats(genData.data), [genData.data]);
 
-  // Top generators from latest data point (for legend)
-  const legendItems = useMemo(() => {
-    if (genData.data.length === 0) return [];
+  // Legend items grouped by category
+  const legendGroups = useMemo(() => {
+    if (genData.data.length === 0) return { renewable: [], fossil: [] };
     const latest = genData.data[genData.data.length - 1];
-    const items: { key: string; value: number }[] = [];
+    const renewable: { key: string; value: number }[] = [];
+    const fossil: { key: string; value: number }[] = [];
     for (const key of GENERATION_STACK_KEYS) {
       const val = latest[key];
-      if (typeof val === "number" && val > 0) items.push({ key, value: val });
+      if (typeof val !== "number" || val <= 0) continue;
+      if (RENEWABLE_KEYS.includes(key)) renewable.push({ key, value: val });
+      else if (FOSSIL_KEYS.includes(key)) fossil.push({ key, value: val });
     }
-    items.sort((a, b) => b.value - a.value);
-    return items.slice(0, 5);
+    renewable.sort((a, b) => b.value - a.value);
+    fossil.sort((a, b) => b.value - a.value);
+    return { renewable: renewable.slice(0, 4), fossil: fossil.slice(0, 3) };
   }, [genData.data]);
 
   return (
@@ -173,14 +178,14 @@ export default function EnergieClient() {
                 onClick={() => setShowNuclear(!showNuclear)}
                 style={{
                   flex: "1 0 0", minWidth: 90,
-                  background: showNuclear ? "rgba(158,158,158,0.08)" : v("--color-bg-muted"),
-                  border: `1px solid ${showNuclear ? "#9E9E9E" : v("--color-border")}`,
+                  background: showNuclear ? "rgba(249,168,37,0.08)" : v("--color-bg-muted"),
+                  border: `1px solid ${showNuclear ? "#F9A825" : v("--color-border")}`,
                   borderRadius: v("--radius-md"),
                   padding: "12px 8px", textAlign: "center",
                   cursor: "pointer", fontFamily: v("--font-text"),
                 }}
               >
-                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: "#9E9E9E" }}>
+                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: "#F9A825" }}>
                   {nuclearData.avg_gw.toFixed(1)} GW
                 </div>
                 <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>
@@ -250,26 +255,38 @@ export default function EnergieClient() {
           />
         )}
 
-        {/* Legend */}
-        {!loading && !error && legendItems.length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", padding: "12px 8px 0", marginTop: 8, borderTop: `1px solid ${v("--color-border")}` }}>
-            {legendItems.map(({ key, value }) => (
-              <div key={key} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                <div
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 2,
-                    background: ENERGY_COLORS_HEX[key] || "#B0BEC5",
-                    flexShrink: 0,
-                  }}
-                />
-                <span style={{ color: v("--color-text-secondary") }}>{ENERGY_LABELS[key] || key}</span>
-                <span style={{ fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") }}>
-                  {formatMW(value)}
-                </span>
+        {/* Legend — grouped by category */}
+        {!loading && !error && (legendGroups.renewable.length > 0 || legendGroups.fossil.length > 0) && (
+          <div style={{ padding: "12px 8px 0", marginTop: 8, borderTop: `1px solid ${v("--color-border")}` }}>
+            {/* Renewables row */}
+            {legendGroups.renewable.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", marginBottom: 6 }}>
+                {legendGroups.renewable.map(({ key, value }) => (
+                  <div key={key} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: 2, background: ENERGY_COLORS_HEX[key], flexShrink: 0 }} />
+                    <span style={{ color: v("--color-text-secondary") }}>{ENERGY_LABELS[key] || key}</span>
+                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") }}>{formatMW(value)}</span>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
+            {/* Fossil + Nuclear row */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px" }}>
+              {legendGroups.fossil.map(({ key, value }) => (
+                <div key={key} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: 2, background: ENERGY_COLORS_HEX[key], flexShrink: 0 }} />
+                  <span style={{ color: v("--color-text-secondary") }}>{ENERGY_LABELS[key] || key}</span>
+                  <span style={{ fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") }}>{formatMW(value)}</span>
+                </div>
+              ))}
+              {showNuclear && !nuclearLoading && nuclearData.avg_gw > 0 && (
+                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: 2, background: "#F9A825", flexShrink: 0 }} />
+                  <span style={{ color: v("--color-text-secondary") }}>Kernimport</span>
+                  <span style={{ fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") }}>{formatMW(nuclearData.avg_gw * 1000)}</span>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

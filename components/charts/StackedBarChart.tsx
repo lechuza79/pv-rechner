@@ -12,6 +12,7 @@ import {
   ENERGY_LABELS,
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
+  FOSSIL_KEYS,
   formatGWh,
   CHART_MARGIN,
   CHART_HEIGHT,
@@ -189,30 +190,55 @@ function aggregateNuclearToDays(data: NuclearOverlayPoint[]): Map<string, number
 
 // ─── Tooltip Component ───────────────────────────────────────────────────────
 
-function BarTooltip({ data, activeKeys, left, width, margin }: {
+function BarTooltipRow({ color, label, value }: { color: string; label: string; value: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
+      <div style={{ width: 8, height: 8, borderRadius: 2, background: color, flexShrink: 0 }} />
+      <span style={{ flex: 1, color: "var(--color-text-secondary)", fontSize: 11 }}>{label}</span>
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600 }}>{value}</span>
+    </div>
+  );
+}
+
+function BarTooltipSummary({ color, label, value }: { color: string; label: string; value: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, marginTop: 2 }}>
+      <div style={{ width: 8, height: 8, borderRadius: 3, background: color, flexShrink: 0 }} />
+      <span style={{ flex: 1, fontWeight: 700, fontSize: 11 }}>{label}</span>
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 700 }}>{value}</span>
+    </div>
+  );
+}
+
+function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
   data: WeekBucket;
   activeKeys: string[];
   left: number;
   width: number;
   margin: typeof CHART_MARGIN;
+  nuclearGWh?: number;
 }) {
-  const tooltipWidth = 180;
+  const tooltipWidth = 200;
   const goLeft = left > width / 2;
   const x = goLeft ? left - tooltipWidth - 12 : left + 12;
 
   let totalGWh = 0;
   let renewableGWh = 0;
+  let fossilGWh = 0;
   for (const key of activeKeys) {
     const val = data[key];
     if (typeof val === "number" && val > 0) {
       totalGWh += val;
       if (RENEWABLE_KEYS.includes(key)) renewableGWh += val;
+      else if (FOSSIL_KEYS.includes(key)) fossilGWh += val;
     }
   }
   const eePct = totalGWh > 0 ? (renewableGWh / totalGWh) * 100 : 0;
-  const isEmpty = totalGWh < 0.01;
+  if (totalGWh < 0.01) return null;
 
-  if (isEmpty) return null;
+  const renewableKeys = [...activeKeys].reverse().filter(k => RENEWABLE_KEYS.includes(k));
+  const fossilKeys = [...activeKeys].reverse().filter(k => FOSSIL_KEYS.includes(k));
+  const otherKeys = [...activeKeys].reverse().filter(k => !RENEWABLE_KEYS.includes(k) && !FOSSIL_KEYS.includes(k));
 
   return (
     <div
@@ -249,25 +275,38 @@ function BarTooltip({ data, activeKeys, left, width, margin }: {
       }}>
         {formatGWh(totalGWh)} gesamt
       </div>
-      {[...activeKeys].reverse().map((key) => {
+
+      {renewableGWh > 0 && (
+        <>
+          <BarTooltipSummary color="#4CAF50" label="Erneuerbare" value={formatGWh(renewableGWh)} />
+          {renewableKeys.map(key => {
+            const val = data[key];
+            if (typeof val !== "number" || val <= 0.01) return null;
+            return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatGWh(val)} />;
+          })}
+        </>
+      )}
+
+      {fossilGWh > 0 && (
+        <>
+          <BarTooltipSummary color="#8D6E63" label="Fossil" value={formatGWh(fossilGWh)} />
+          {fossilKeys.map(key => {
+            const val = data[key];
+            if (typeof val !== "number" || val <= 0.01) return null;
+            return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatGWh(val)} />;
+          })}
+        </>
+      )}
+
+      {otherKeys.map(key => {
         const val = data[key];
         if (typeof val !== "number" || val <= 0.01) return null;
-        return (
-          <div key={key} style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-            <div style={{
-              width: 8, height: 8, borderRadius: 2,
-              background: ENERGY_COLORS_HEX[key] || "#BDBDBD",
-              flexShrink: 0,
-            }} />
-            <span style={{ flex: 1, color: "var(--color-text-secondary)", fontSize: 11 }}>
-              {ENERGY_LABELS[key] || key}
-            </span>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 600 }}>
-              {formatGWh(val)}
-            </span>
-          </div>
-        );
+        return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatGWh(val)} />;
       })}
+
+      {nuclearGWh != null && nuclearGWh > 0.01 && (
+        <BarTooltipSummary color="#F9A825" label="Kernimport" value={formatGWh(nuclearGWh)} />
+      )}
     </div>
   );
 }
@@ -380,6 +419,13 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
                       });
                     }}
                     onMouseLeave={() => setTooltip(null)}
+                    onTouchStart={() => {
+                      setTooltip({
+                        data: buckets[bar.index],
+                        left: bar.x + bar.width / 2 + margin.left,
+                      });
+                    }}
+                    onTouchEnd={() => setTooltip(null)}
                   />
                 ))
               )
@@ -400,11 +446,11 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
                 y={innerHeight - barHeight}
                 width={barWidth}
                 height={Math.max(0, barHeight)}
-                fill="#9E9E9E"
-                fillOpacity={0.25}
-                stroke="#9E9E9E"
+                fill="#F9A825"
+                fillOpacity={0.2}
+                stroke="#F9A825"
                 strokeWidth={0.5}
-                strokeOpacity={0.5}
+                strokeOpacity={0.6}
                 rx={barWidth > 4 ? 1 : 0}
                 pointerEvents="none"
               />
@@ -454,6 +500,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
           left={tooltip.left}
           width={width}
           margin={margin}
+          nuclearGWh={nuclearBuckets?.get(tooltip.data.weekKey)}
         />
       )}
     </div>

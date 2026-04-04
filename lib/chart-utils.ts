@@ -15,7 +15,7 @@ export const ENERGY_COLORS_HEX: Record<string, string> = {
   biomass: "#A5D6A7",
   geothermal: "#C8E6C9",
   // Fossil / other — brown/grey shades
-  nuclear: "#9E9E9E",
+  nuclear: "#F9A825",
   fossil_gas: "#BC8F6F",
   fossil_hard_coal: "#8D6E63",
   fossil_brown_coal_lignite: "#5D4037",
@@ -45,24 +45,36 @@ export const ENERGY_LABELS: Record<string, string> = {
   others: "Sonstige",
 };
 
-// Keys to show in stacked area chart, ordered bottom to top (renewables on top)
+// Keys to show in stacked area chart, ordered bottom to top
+// Within each group: dark colors at bottom → light colors at top
 export const GENERATION_STACK_KEYS = [
+  // Fossil (dark brown → light brown)
   "fossil_brown_coal_lignite",
   "fossil_hard_coal",
   "fossil_coal_derived_gas",
   "fossil_oil",
   "fossil_gas",
-  "nuclear",
+  // Neutral
   "waste",
   "others",
-  "biomass",
-  "geothermal",
+  // Renewables (dark green → light green)
+  "wind_offshore",
+  "solar",
+  "wind_onshore",
   "hydro_run_of_river",
   "hydro_water_reservoir",
   "hydro_pumped_storage",
-  "wind_offshore",
-  "wind_onshore",
-  "solar",
+  "biomass",
+  "geothermal",
+];
+
+// Fossil keys for calculating fossil share
+export const FOSSIL_KEYS = [
+  "fossil_brown_coal_lignite",
+  "fossil_hard_coal",
+  "fossil_coal_derived_gas",
+  "fossil_oil",
+  "fossil_gas",
 ];
 
 // Renewable keys for calculating EE share
