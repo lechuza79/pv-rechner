@@ -130,10 +130,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const kosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh, prices);
   const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, kwp, ertragKwp: oErtrag });
   const effEv = oEv !== null ? oEv : autoEv;
+  // Volleinspeisung is incompatible with WP/E-Auto (they require self-consumption)
+  const vollDisabled = wp !== "nein" || ea !== "nein";
+  const effEinspeisungModus = vollDisabled && einspeisungModus === "voll" ? "teil" : einspeisungModus;
   const jahresertrag = kwp * oErtrag;
 
-  // Feed-in: weighted EEG rate based on system size + mode
-  const autoEinsp = einspeisungModus === "voll"
+  // Feed-in: weighted EEG rate based on system size + effective mode
+  const autoEinsp = effEinspeisungModus === "voll"
     ? calcWeightedFeedIn(kwp, feedInRates.vollUnder10, feedInRates.vollOver10, feedInRates.thresholdKwp)
     : calcWeightedFeedIn(kwp, feedInRates.teilUnder10, feedInRates.teilOver10, feedInRates.thresholdKwp);
   const effEinsp = oEinsp ?? autoEinsp;
@@ -143,11 +146,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       ...s,
       data: calc({
         kwp, kosten, strompreis: oStrom,
-        eigenverbrauch: einspeisungModus === "voll" ? 0 : Math.min(effEv + s.evDelta, 95),
-        einspeisung: einspeisungModus === "aus" ? 0 : effEinsp,
+        eigenverbrauch: effEinspeisungModus === "voll" ? 0 : Math.min(effEv + s.evDelta, 95),
+        einspeisung: effEinspeisungModus === "aus" ? 0 : effEinsp,
         stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
       }),
-    })), [kwp, kosten, oStrom, effEv, effEinsp, einspeisungModus, oErtrag, eaKm, monthlyProfile]);
+    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile]);
 
   const real = scenarioData.find(s => s.id === "realistic")!;
   const be = real.data.be;
@@ -172,7 +175,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (oEv !== null) p.set("ev", String(oEv));
     p.set("st", String(oStrom));
     if (oEinsp !== null) p.set("ei", String(oEinsp));
-    p.set("eia", einspeisungModus === "voll" ? "2" : einspeisungModus === "aus" ? "0" : "1");
+    p.set("eia", effEinspeisungModus === "voll" ? "2" : effEinspeisungModus === "aus" ? "0" : "1");
     p.set("er", String(oErtrag));
     if (plz) p.set("plz", plz);
     if (flowType === "empfehlung") {
@@ -438,7 +441,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span style={{ color: v('--color-text-secondary') }}>Eigenverbr.</span>
-                  {einspeisungModus === "voll" ? (
+                  {effEinspeisungModus === "voll" ? (
                     <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-faint'), fontSize: 13 }}>0%</span>
                   ) : (
                     <InlineEdit value={effEv} onCommit={v => setOEv(v)} unit="%" step={1} min={10} max={90} width={40} />
@@ -449,26 +452,32 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   <InlineEdit value={oStrom} onCommit={setOStrom} unit=" €" step={0.01} min={0.15} max={0.60} width={52} />
                 </div>
                 <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: einspeisungModus !== "aus" ? 6 : 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: effEinspeisungModus !== "aus" ? 6 : 0 }}>
                     <span style={{ color: v('--color-text-secondary') }}>Einspeisung</span>
                     <div style={{ display: "flex", gap: 2, background: v('--color-bg'), borderRadius: 8, padding: 2 }}>
-                      {(["aus", "teil", "voll"] as const).map(m => (
-                        <button key={m} onClick={() => { setEinspeisungModus(m); setOEinsp(null); }} style={{
-                          padding: "3px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600, cursor: "pointer",
-                          background: einspeisungModus === m ? v('--color-accent') : "transparent",
-                          border: "none",
-                          color: einspeisungModus === m ? v('--color-text-on-accent') : v('--color-text-muted'),
-                          transition: "all 0.15s",
-                        }}>
-                          {m === "aus" ? "Aus" : m === "teil" ? "Teil" : "Voll"}
-                        </button>
-                      ))}
+                      {(["aus", "teil", "voll"] as const).map(m => {
+                        const isActive = effEinspeisungModus === m;
+                        const isDisabled = m === "voll" && vollDisabled;
+                        return (
+                          <button key={m} onClick={() => { if (!isDisabled) { setEinspeisungModus(m); setOEinsp(null); } }} style={{
+                            padding: "3px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600,
+                            cursor: isDisabled ? "not-allowed" : "pointer",
+                            background: isActive ? v('--color-accent') : "transparent",
+                            border: "none",
+                            color: isDisabled ? v('--color-text-faint') : isActive ? v('--color-text-on-accent') : v('--color-text-muted'),
+                            opacity: isDisabled ? 0.4 : 1,
+                            transition: "all 0.15s",
+                          }}>
+                            {m === "aus" ? "Aus" : m === "teil" ? "Teil" : "Voll"}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
-                  {einspeisungModus !== "aus" && (
+                  {effEinspeisungModus !== "aus" && (
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <span style={{ fontSize: 11, color: v('--color-text-faint') }}>
-                        {einspeisungModus === "voll" ? "Vergütung (kein Eigenverbr.)" : "Vergütung"}
+                        {effEinspeisungModus === "voll" ? "Vergütung (kein Eigenverbr.)" : "Vergütung"}
                       </span>
                       <InlineEdit value={effEinsp} onCommit={v => setOEinsp(v)} unit=" ct" step={0.01} min={4} max={16} width={48} />
                     </div>

@@ -12,12 +12,11 @@ import { v } from "../../lib/theme";
 
 // ─── Time Range Selector ─────────────────────────────────────────────────────
 
-const TIME_RANGES = [
-  { label: "24h", hours: 24, desc: "24 Stunden" },
-  { label: "7d", hours: 168, desc: "7 Tage" },
-  { label: "30d", hours: 720, desc: "30 Tage" },
-  { label: "YTD", hours: 0, desc: "seit Jahresbeginn" },   // calculated below
-  { label: "12M", hours: 8760, desc: "12 Monate" },
+const LETZTE_RANGES = [
+  { label: "24 Stunden", value: "24h", hours: 24 },
+  { label: "7 Tage", value: "7d", hours: 168 },
+  { label: "30 Tage", value: "30d", hours: 720 },
+  { label: "12 Monate", value: "12M", hours: 8760 },
 ] as const;
 
 // ─── Main Component ──────────────────────────────────────────────────────────
@@ -29,25 +28,29 @@ function getYtdHours(): number {
   return Math.floor((now.getTime() - jan1.getTime()) / (1000 * 60 * 60));
 }
 
+// Split value+unit for styling (e.g. "1.3 TWh" → ["1.3", "TWh"])
+function splitValueUnit(formatted: string): [string, string] {
+  const parts = formatted.split(" ");
+  if (parts.length === 2) return [parts[0], parts[1]];
+  return [formatted, ""];
+}
+
 export default function EnergieClient() {
-  const [selectedLabel, setSelectedLabel] = useState("24h");
+  const [selected, setSelected] = useState("24h");
   const [showNuclear, setShowNuclear] = useState(true);
 
-  // Resolve actual hours (YTD is dynamic)
+  // Resolve actual hours
   const hours = useMemo(() => {
-    const range = TIME_RANGES.find(r => r.label === selectedLabel);
-    if (!range) return 24;
-    if (range.label === "YTD") return getYtdHours();
-    return range.hours;
-  }, [selectedLabel]);
+    if (selected === "YTD") return getYtdHours();
+    const range = LETZTE_RANGES.find(r => r.value === selected);
+    return range?.hours || 24;
+  }, [selected]);
 
-  const timeLabel = TIME_RANGES.find(r => r.label === selectedLabel)?.desc || "24 Stunden";
   const { data: genData, loading, error } = useGenerationMix("de", hours);
   const { data: nuclearData, loading: nuclearLoading } = useNuclearImport(hours);
 
   // Aggregate stats over the full time period
   const stats = useMemo(() => calcPeriodStats(genData.data), [genData.data]);
-
 
   return (
     <div style={{ maxWidth: 640, margin: "0 auto" }}>
@@ -56,24 +59,22 @@ export default function EnergieClient() {
         <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
           Deutschlands Energiedaten
         </h1>
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: 6 }}>
-          Live-Daten · Transparent · Quellenbasiert
-        </p>
       </div>
 
-      {/* Time Range Toggle */}
-      <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 20 }}>
-        {TIME_RANGES.map((range) => (
+      {/* Time Range Toggle — "Letzte" group + "Dieses Jahr" */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginBottom: 20 }}>
+        <span style={{ fontSize: 11, color: v("--color-text-muted"), marginRight: 2 }}>Letzte</span>
+        {LETZTE_RANGES.map((range) => (
           <button
-            key={range.label}
-            onClick={() => setSelectedLabel(range.label)}
+            key={range.value}
+            onClick={() => setSelected(range.value)}
             style={{
-              padding: "6px 14px",
+              padding: "6px 10px",
               borderRadius: v("--radius-sm"),
-              border: `1px solid ${selectedLabel === range.label ? v("--color-accent") : v("--color-border")}`,
-              background: selectedLabel === range.label ? v("--color-accent") : v("--color-bg"),
-              color: selectedLabel === range.label ? v("--color-text-on-accent") : v("--color-text-secondary"),
-              fontSize: 12,
+              border: `1px solid ${selected === range.value ? v("--color-accent") : v("--color-border")}`,
+              background: selected === range.value ? v("--color-accent") : v("--color-bg"),
+              color: selected === range.value ? v("--color-text-on-accent") : v("--color-text-secondary"),
+              fontSize: 11,
               fontWeight: 600,
               cursor: "pointer",
               fontFamily: v("--font-text"),
@@ -82,63 +83,87 @@ export default function EnergieClient() {
             {range.label}
           </button>
         ))}
+        <div style={{ width: 12 }} />
+        <button
+          onClick={() => setSelected("YTD")}
+          style={{
+            padding: "6px 10px",
+            borderRadius: v("--radius-sm"),
+            border: `1px solid ${selected === "YTD" ? v("--color-accent") : v("--color-border")}`,
+            background: selected === "YTD" ? v("--color-accent") : v("--color-bg"),
+            color: selected === "YTD" ? v("--color-text-on-accent") : v("--color-text-secondary"),
+            fontSize: 11,
+            fontWeight: 600,
+            cursor: "pointer",
+            fontFamily: v("--font-text"),
+          }}
+        >
+          Dieses Jahr
+        </button>
       </div>
 
       {/* Summary Widgets — horizontal row */}
       {stats && (
-        <>
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              marginBottom: 12,
-              overflowX: "auto",
-              WebkitOverflowScrolling: "touch",
-              scrollbarWidth: "none",
-            }}
-          >
-            {/* EE Share */}
-            <div style={{
-              flex: "1 0 0", minWidth: 90,
-              background: v("--color-bg-muted"),
-              border: `1px solid ${v("--color-border")}`,
-              borderRadius: v("--radius-md"),
-              padding: "12px 8px", textAlign: "center",
-            }}>
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Erneuerbare</div>
-              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
-                {Math.round(stats.eeSharePct)}%
-              </div>
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            marginBottom: 20,
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+          }}
+        >
+          {/* EE Share */}
+          <div style={{
+            flex: "1 0 0", minWidth: 80,
+            background: v("--color-bg-muted"),
+            border: `1px solid ${v("--color-border")}`,
+            borderRadius: v("--radius-md"),
+            padding: "12px 8px", textAlign: "center",
+          }}>
+            <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Erneuerbare</div>
+            <div style={{ fontFamily: v("--font-mono"), fontWeight: 800 }}>
+              <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{Math.round(stats.eeSharePct)}</span>
+              <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 1 }}>%</span>
             </div>
-            {/* Total */}
+          </div>
+          {/* Total */}
+          {(() => { const [val, unit] = splitValueUnit(formatGWh(stats.totalGenerationGWh)); return (
             <div style={{
-              flex: "1 0 0", minWidth: 90,
+              flex: "1 0 0", minWidth: 80,
               background: v("--color-bg-muted"),
               border: `1px solid ${v("--color-border")}`,
               borderRadius: v("--radius-md"),
               padding: "12px 8px", textAlign: "center",
             }}>
               <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Erzeugt</div>
-              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
-                {formatGWh(stats.totalGenerationGWh)}
+              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800 }}>
+                <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{val}</span>
+                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>{unit}</span>
               </div>
             </div>
-            {/* Renewable */}
+          ); })()}
+          {/* Renewable */}
+          {(() => { const [val, unit] = splitValueUnit(formatGWh(stats.renewableGWh)); return (
             <div style={{
-              flex: "1 0 0", minWidth: 90,
+              flex: "1 0 0", minWidth: 80,
               background: v("--color-bg-muted"),
               border: `1px solid ${v("--color-border")}`,
               borderRadius: v("--radius-md"),
               padding: "12px 8px", textAlign: "center",
             }}>
               <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>davon EE</div>
-              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
-                {formatGWh(stats.renewableGWh)}
+              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800 }}>
+                <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{val}</span>
+                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>{unit}</span>
               </div>
             </div>
-            {/* Net Import/Export */}
+          ); })()}
+          {/* Net Import/Export */}
+          {(() => { const [val, unit] = splitValueUnit(formatGWh(Math.abs(stats.netImportGWh))); return (
             <div style={{
-              flex: "1 0 0", minWidth: 90,
+              flex: "1 0 0", minWidth: 80,
               background: v("--color-bg-muted"),
               border: `1px solid ${v("--color-border")}`,
               borderRadius: v("--radius-md"),
@@ -147,37 +172,34 @@ export default function EnergieClient() {
               <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>
                 Netto-{stats.netImportGWh > 0 ? "Import" : "Export"}
               </div>
-              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
-                {stats.netImportGWh > 0 ? "+" : ""}{formatGWh(Math.abs(stats.netImportGWh))}
+              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800 }}>
+                <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{stats.netImportGWh > 0 ? "+" : ""}{val}</span>
+                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>{unit}</span>
               </div>
             </div>
-            {/* Nuclear import toggle */}
-            {!nuclearLoading && nuclearData.avg_gw > 0 && (
-              <button
-                onClick={() => setShowNuclear(!showNuclear)}
-                style={{
-                  flex: "1 0 0", minWidth: 90,
-                  background: v("--color-bg-muted"),
-                  border: `1px solid ${showNuclear ? v("--color-text-muted") : v("--color-border")}`,
-                  borderRadius: v("--radius-md"),
-                  padding: "12px 8px", textAlign: "center",
-                  cursor: "pointer", fontFamily: v("--font-text"),
-                }}
-              >
-                <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>
-                  {showNuclear ? "▣" : "▢"} Kernimport
-                </div>
-                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
-                  {nuclearData.avg_gw.toFixed(1)} GW
-                </div>
-              </button>
-            )}
-          </div>
-
-          <div style={{ textAlign: "center", fontSize: 11, color: v("--color-text-faint"), marginBottom: 16 }}>
-            {selectedLabel === "YTD" ? "Seit Jahresbeginn" : `Letzte ${timeLabel}`}
-          </div>
-        </>
+          ); })()}
+          {/* Nuclear import toggle */}
+          {!nuclearLoading && nuclearData.avg_gw > 0 && (
+            <button
+              onClick={() => setShowNuclear(!showNuclear)}
+              style={{
+                flex: "1 0 0", minWidth: 80,
+                background: v("--color-bg-muted"),
+                border: `1px solid ${v("--color-border")}`,
+                borderRadius: v("--radius-md"),
+                padding: "12px 8px", textAlign: "center",
+                cursor: "pointer", fontFamily: v("--font-text"),
+                opacity: showNuclear ? 1 : 0.5,
+              }}
+            >
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Kernimport</div>
+              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800 }}>
+                <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{nuclearData.avg_gw.toFixed(1)}</span>
+                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>GW</span>
+              </div>
+            </button>
+          )}
+        </div>
       )}
 
       {/* Stacked Area Chart */}
@@ -223,7 +245,7 @@ export default function EnergieClient() {
         ) : hours >= 720 ? (
           <StackedBarChart
             data={genData.data}
-            mode={selectedLabel === "YTD" ? "ytd" : selectedLabel === "12M" ? "12m" : "30d"}
+            mode={selected === "YTD" ? "ytd" : selected === "12M" ? "12m" : "30d"}
             nuclearOverlay={showNuclear ? nuclearData.data : undefined}
           />
         ) : (
