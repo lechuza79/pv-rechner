@@ -393,21 +393,22 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       )}
 
       {/* Kernenergie (inländisch + importiert) */}
-      {(nuclearGWhLocal > 0.01 || (nuclearGWh != null && nuclearGWh > 0.01)) && (() => {
+      {(nuclearGWhLocal > 0.01 || (nuclearGWh != null && nuclearGWh > 0.001)) && (() => {
         const nucTotal = nuclearGWhLocal + (nuclearGWh || 0);
         const allTotal = totalGWh + (nuclearGWh || 0);
         const nucPct = allTotal > 0 ? Math.round(nucTotal / allTotal * 100) : 0;
+        const fmtNuc = (v: number) => v >= 10 ? formatGWh(v) : `${v.toFixed(2)} GWh`;
         return (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, marginBottom: 4 }}>
               <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: "var(--color-text-primary)" }}>Kernenergie {nucPct}%</span>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{formatGWh(nucTotal)}</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{fmtNuc(nucTotal)}</span>
             </div>
             {nuclearGWhLocal > 0.01 && (
-              <BarTooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={formatGWh(nuclearGWhLocal)} />
+              <BarTooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={fmtNuc(nuclearGWhLocal)} />
             )}
-            {nuclearGWh != null && nuclearGWh > 0.01 && (
-              <BarTooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={formatGWh(nuclearGWh)} />
+            {nuclearGWh != null && nuclearGWh > 0.001 && (
+              <BarTooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={fmtNuc(nuclearGWh)} />
             )}
           </>
         );

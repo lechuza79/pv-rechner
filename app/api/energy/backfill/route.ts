@@ -87,10 +87,10 @@ function aggregateToWeeks(
       bucket.load = (bucket.load as number) + load * intervalHours / 1000;
     }
 
-    // Nuclear import: GW × hours → GWh
+    // Nuclear import: GW × hours = GWh (values from calcNuclearImport are already in GW)
     const nucImportGw = nuclearImportByTs?.get(d.ts) ?? 0;
     if (nucImportGw > 0) {
-      bucket.nuclear_import = (bucket.nuclear_import as number) + nucImportGw * intervalHours / 1000;
+      bucket.nuclear_import = (bucket.nuclear_import as number) + nucImportGw * intervalHours;
     }
   }
 
