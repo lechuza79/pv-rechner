@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
   const store = isPast ? historicalCache : rangeHours > 168 ? longCache : cache;
   const cached = store.get(cacheKey);
   if (cached) {
-    const maxAge = isPast ? 86400 : 600;
+    const maxAge = isPast ? 2592000 : 600; // 30 days for past periods
     return NextResponse.json(cached, {
       headers: { "Cache-Control": `public, s-maxage=${maxAge}, stale-while-revalidate=${maxAge * 2}` },
     });
@@ -215,7 +215,7 @@ export async function GET(req: NextRequest) {
 
     store.set(cacheKey, response);
 
-    const maxAge = isPast ? 86400 : 600;
+    const maxAge = isPast ? 2592000 : 600; // 30 days for past periods
     return NextResponse.json(response, {
       headers: { "Cache-Control": `public, s-maxage=${maxAge}, stale-while-revalidate=${maxAge * 2}` },
     });

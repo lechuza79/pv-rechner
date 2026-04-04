@@ -18,8 +18,8 @@ export interface GenerationData {
 // ─── Hooks ───────────────────────────────────────────────────────────────────
 
 const CACHE_PREFIX = "sc-energy-";
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-const LONG_CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days for historical data
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes (sessionStorage)
+const LONG_CACHE_TTL = Infinity; // Historical data never expires (localStorage)
 
 const RETRY_DELAYS = [3000, 8000]; // 2 retries after 3s and 8s
 
@@ -46,11 +46,13 @@ function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T, 
     if (retryRef.current) clearTimeout(retryRef.current);
 
     const ttl = isHistorical ? LONG_CACHE_TTL : CACHE_TTL;
+    // Historical data → localStorage (persists across sessions), live → sessionStorage
+    const store = isHistorical ? localStorage : sessionStorage;
 
-    // Check sessionStorage — show stale data immediately if available
+    // Check cache — show stale data immediately if available
     let hasStaleData = false;
     try {
-      const cached = sessionStorage.getItem(CACHE_PREFIX + cacheKey);
+      const cached = store.getItem(CACHE_PREFIX + cacheKey);
       if (cached) {
         const { data: d, ts } = JSON.parse(cached);
         setData(d);
@@ -87,7 +89,7 @@ function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T, 
           setError(null);
           setIsStale(false);
           try {
-            sessionStorage.setItem(CACHE_PREFIX + cacheKey, JSON.stringify({ data: d, ts: Date.now() }));
+            store.setItem(CACHE_PREFIX + cacheKey, JSON.stringify({ data: d, ts: Date.now() }));
           } catch { /* ignore */ }
         })
         .catch((e) => {
