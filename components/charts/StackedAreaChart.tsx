@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useCallback, useRef, useState } from "react";
+import { useMemo, useCallback, useRef, useState, useLayoutEffect } from "react";
 import { AreaStack, AreaClosed } from "@visx/shape";
 import { scaleTime, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
@@ -82,9 +82,23 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
   nuclearGw?: number | null;
 }) {
   const d = tooltip.data;
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const tooltipWidth = 200;
   const goLeft = tooltip.left > width / 2;
   const left = goLeft ? tooltip.left - tooltipWidth - 12 : tooltip.left + 12;
+
+  // After render, check if tooltip overflows viewport bottom and shift up
+  useLayoutEffect(() => {
+    const el = tooltipRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight - 8) {
+      const shift = rect.bottom - window.innerHeight + 8;
+      el.style.top = `${margin.top - shift}px`;
+    } else {
+      el.style.top = `${margin.top}px`;
+    }
+  });
 
   // Calculate category totals: Erneuerbare / Fossil / Sonstige / Kernenergie
   let renewableTotal = 0;
@@ -112,13 +126,12 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
 
   return (
     <div
+      ref={tooltipRef}
       style={{
         position: "absolute",
-        bottom: margin.bottom + 4,
+        top: margin.top,
         left: Math.max(0, Math.min(left, width - tooltipWidth)),
         width: tooltipWidth,
-        maxHeight: `calc(100% - ${margin.top + margin.bottom + 8}px)`,
-        overflowY: "auto",
         background: "var(--color-bg)",
         border: "1px solid var(--color-border)",
         borderRadius: "var(--radius-sm)",

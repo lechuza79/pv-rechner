@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useCallback, useState } from "react";
+import { useMemo, useCallback, useRef, useState, useLayoutEffect } from "react";
 import { BarStack } from "@visx/shape";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
@@ -218,9 +218,23 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
   margin: typeof CHART_MARGIN;
   nuclearGWh?: number;
 }) {
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const tooltipWidth = 200;
   const goLeft = left > width / 2;
   const x = goLeft ? left - tooltipWidth - 12 : left + 12;
+
+  // After render, check if tooltip overflows viewport bottom and shift up
+  useLayoutEffect(() => {
+    const el = tooltipRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.bottom > window.innerHeight - 8) {
+      const shift = rect.bottom - window.innerHeight + 8;
+      el.style.top = `${margin.top - shift}px`;
+    } else {
+      el.style.top = `${margin.top}px`;
+    }
+  });
 
   let totalGWh = 0;
   let renewableGWh = 0;
@@ -247,13 +261,12 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
 
   return (
     <div
+      ref={tooltipRef}
       style={{
         position: "absolute",
-        bottom: margin.bottom + 4,
+        top: margin.top,
         left: Math.max(0, Math.min(x, width - tooltipWidth)),
         width: tooltipWidth,
-        maxHeight: `calc(100% - ${margin.top + margin.bottom + 8}px)`,
-        overflowY: "auto",
         background: "var(--color-bg)",
         border: "1px solid var(--color-border)",
         borderRadius: "var(--radius-sm)",
