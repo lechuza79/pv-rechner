@@ -456,8 +456,8 @@ export default function EnergieClient() {
                 )}
               </div>
               {hasDomestic && importAvgGw > 0 && (
-                <div style={{ fontSize: 8, color: v("--color-text-faint"), marginTop: 2, lineHeight: 1.4 }}>
-                  Zukauf {importAvgGw.toFixed(1)}
+                <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 2, lineHeight: 1.4, fontFamily: v("--font-mono") }}>
+                  Zukauf {importAvgGw.toFixed(1)} <span style={{ fontSize: 10, color: v("--color-text-faint") }}>GW</span>
                 </div>
               )}
             </button>

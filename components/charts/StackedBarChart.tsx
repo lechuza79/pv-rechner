@@ -433,6 +433,8 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
         for (const key of GENERATION_STACK_KEYS) {
           bucket[key] = typeof d[key] === "number" ? (d[key] as number) : 0;
         }
+        // Copy nuclear_import (not in GENERATION_STACK_KEYS but stored in Supabase)
+        if (typeof d.nuclear_import === "number") bucket.nuclear_import = d.nuclear_import as number;
         return bucket;
       });
       // Aggregate to monthly for better readability
