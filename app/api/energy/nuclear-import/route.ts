@@ -90,19 +90,14 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Step 2: Fetch nuclear countries in batches of 2 (avoid 429 rate limiting)
+    // Step 2: Fetch nuclear countries sequentially (Energy-Charts rate limits aggressively)
     const countryGenRows: Map<string, Map<string, { nuclear: number; total: number }>> = new Map();
 
-    for (let i = 0; i < NUCLEAR_COUNTRIES.length; i += 2) {
-      const batch = NUCLEAR_COUNTRIES.slice(i, i + 2);
-      const results = await Promise.all(
-        batch.map(c => fetchPublicPower(c, startStr, endStr))
-      );
-
-      for (let j = 0; j < batch.length; j++) {
-        const code = batch[j];
+    for (const code of NUCLEAR_COUNTRIES) {
+      try {
+        const rows = await fetchPublicPower(code, startStr, endStr);
         const tsMap = new Map<string, { nuclear: number; total: number }>();
-        for (const row of results[j]) {
+        for (const row of rows) {
           const nuclear = (row.data.nuclear as number) ?? 0;
           let total = 0;
           for (const [key, val] of Object.entries(row.data)) {
@@ -119,12 +114,13 @@ export async function GET(req: NextRequest) {
           tsMap.set(row.ts, { nuclear, total });
         }
         countryGenRows.set(code, tsMap);
+      } catch (e) {
+        // Skip country on error — partial data is better than no data
+        console.warn(`Nuclear import: skipping ${code}:`, (e as Error).message);
       }
 
-      // Small delay between batches to avoid rate limiting
-      if (i + 2 < NUCLEAR_COUNTRIES.length) {
-        await delay(200);
-      }
+      // Delay between each country to avoid rate limiting
+      await delay(300);
     }
 
     // Build lookup: ts → { country_code → flow_gw }

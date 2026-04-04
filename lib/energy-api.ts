@@ -52,12 +52,25 @@ export function mmyyyyToPeriod(s: string): string {
   return `${y}-${m.padStart(2, "0")}`;
 }
 
-// ─── Fetch with Timeout ──────────────────────────────────────────────────────
+// ─── Fetch with Timeout + Retry ─────────────────────────────────────────────
 
-export async function fetchWithTimeout(url: string, timeoutMs = 10000): Promise<Response> {
-  const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
-  if (!res.ok) throw new Error(`HTTP ${res.status} from ${new URL(url).hostname}`);
-  return res;
+export async function fetchWithTimeout(
+  url: string, timeoutMs = 10000, retries = 3
+): Promise<Response> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+    if (res.ok) return res;
+
+    // Retry on 429 (rate limit) with exponential backoff
+    if (res.status === 429 && attempt < retries) {
+      const delay = Math.min(1000 * Math.pow(2, attempt), 8000); // 1s, 2s, 4s, max 8s
+      await new Promise(r => setTimeout(r, delay));
+      continue;
+    }
+
+    throw new Error(`HTTP ${res.status} from ${new URL(url).hostname}`);
+  }
+  throw new Error(`Max retries exceeded for ${new URL(url).hostname}`);
 }
 
 // ─── Supabase Upsert Helpers ─────────────────────────────────────────────────
