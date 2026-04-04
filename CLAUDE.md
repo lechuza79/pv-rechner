@@ -207,12 +207,21 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] `/energie` Seite: 5 Summary-Widgets horizontal (EE-%, Erzeugt, davon EE, Netto Import/Export, Kernimport), 5 Zeiträume (24h/7d/30d/YTD/12M) + Max (seit 2015)
 - [x] `/api/energy/nuclear-import`: Rechnerischer Kernimport aus 6 Nachbarländern (FR, CZ, CH, SE, BE, NL) via Grenzflüsse × Kernanteil, parallelisiert via Promise.allSettled
 - [x] Kernimport-Overlay auf Stacked Area + Bar Chart (Magenta-Linie + weiße Outline, SVG-Fade-in, Toggle)
-- [x] Inländische Kernenergie als unterster Bar im Strommix (gelb, bis April 2023)
+- [x] Inländische Kernenergie als unterster Bar im Strommix (pink #EF85F8, bis April 2023)
 - [x] `useNuclearImport()` Client-Hook mit Stale-While-Revalidate + localStorage für historische Daten
 - [x] Chart-Export: PNG-Download + Share (Native, WhatsApp, Twitter) via `lib/chart-export.ts` + `useChartExport`
 - [x] Ergebnis-Refactoring: HeroCard, Stats, QuickSettings, ResultActions als eigene Komponenten
 - [x] API-Resilienz: Stale Cache Fallback (server-seitig), 24h-Cache für historische Zeiträume, Client Auto-Retry + Retry-Button
 - [x] Graceful Degradation: Nuclear-Fehler blockiert nicht Generation-Chart, "Nicht verfügbar" statt 502-Fehler
+- [x] Supabase `energy_weekly`-Tabelle: Voraggregierte wöchentliche GWh (597 Zeilen, 2015–heute)
+- [x] `/api/energy/backfill`: Befüllt energy_weekly aus Energy-Charts (jahresweise, CRON_SECRET-geschützt)
+- [x] Max-Ansicht (2015–heute): Monatliche Balken aus Supabase-Daten, Jahreslabels auf X-Achse
+- [x] Permanentes Caching: localStorage (Infinity TTL) für historische Daten, 30d CDN-Cache für vergangene Zeiträume
+- [x] Zeitraum-UI: "Letzte" (24h–12M) + "Andere Zeiträume" (aktuelles Jahr, Jahres-Dropdown mit Pfeilnav, Max)
+- [x] Custom Dropdown statt natives Select (gestyltes Flyout, gleiche Höhe, outside-click-close)
+- [x] SVG-Chevron-Icons (ChevronLeft, ChevronRight) in Icons.tsx ergänzt
+- [x] Kernenergie-Tooltip: "Kernenergie X%" Header + "erzeugt in DE" / "importiert" Zeilen
+- [x] Kernenergie-Legende: "Kernenergie [pink] erzeugt [magenta] importiert" als eine Zeile
 - [ ] Supabase-Tabellen anlegen (energy_timeseries, energy_monthly, data_source_meta) — SQL vorbereitet in /api/energy/setup
 - [ ] Cron-Routes (live 15min, daily, monthly) + vercel.json
 - [ ] Eurostat-Integration (Haushaltsstrompreise EU)
@@ -338,9 +347,10 @@ pv-rechner/
     ├── api/weather/route.ts       # Open-Meteo Proxy mit In-Memory-Cache (Live Simulation)
     ├── api/calculations/route.ts  # GET (Liste), POST (Speichern)
     ├── api/calculations/[id]/route.ts # GET, PUT, DELETE einzelne Berechnung
-    ├── api/energy/generation/route.ts # Energy-Charts public_power Proxy + In-Memory-Cache + Downsampling
+    ├── api/energy/generation/route.ts # Energy-Charts public_power Proxy + In-Memory-Cache + Downsampling + Supabase-Fallback für Max
     ├── api/energy/nuclear-import/route.ts # Kernimport-Berechnung: CBPF × Kernanteil der 6 Nachbarländer
-    ├── api/energy/setup/route.ts  # Einmalig: Supabase-Tabellen anlegen (energy_timeseries etc.)
+    ├── api/energy/backfill/route.ts # Befüllt energy_weekly aus Energy-Charts (jahresweise, CRON_SECRET)
+    ├── api/energy/setup/route.ts  # Einmalig: Supabase-Tabellen anlegen (energy_weekly etc.)
     ├── energie/
     │   ├── page.tsx               # Metadata + <EnergieClient />
     │   └── client.tsx             # Energiedaten-Dashboard: Widgets + Chart + Zeitraum-Toggle
