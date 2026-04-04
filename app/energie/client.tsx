@@ -227,7 +227,7 @@ export default function EnergieClient() {
             </button>
 
             {/* Year selector with arrows + dropdown */}
-            <div style={{ display: "flex", alignItems: "center", gap: 0 }}>
+            <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
               <button
                 onClick={() => {
                   if (isYear) {
@@ -241,14 +241,14 @@ export default function EnergieClient() {
                   ...rangeButtonStyle(false),
                   borderRadius: `${v("--radius-sm")} 0 0 ${v("--radius-sm")}`,
                   borderRight: "none",
-                  padding: "6px 5px",
+                  padding: "0 6px",
                   display: "flex", alignItems: "center", justifyContent: "center",
                 }}
                 title="Vorheriges Jahr"
               >
                 <IconChevronLeft size={10} />
               </button>
-              <div ref={yearDropdownRef} style={{ position: "relative" }}>
+              <div ref={yearDropdownRef} style={{ position: "relative", display: "flex" }}>
                 <button
                   onClick={() => setYearDropdownOpen(!yearDropdownOpen)}
                   style={{
@@ -317,7 +317,7 @@ export default function EnergieClient() {
                   ...rangeButtonStyle(false),
                   borderRadius: `0 ${v("--radius-sm")} ${v("--radius-sm")} 0`,
                   borderLeft: "none",
-                  padding: "6px 5px",
+                  padding: "0 6px",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   opacity: !isYear || Number(selected) >= new Date().getFullYear() - 1 ? 0.4 : 1,
                 }}
