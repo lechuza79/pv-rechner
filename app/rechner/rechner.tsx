@@ -419,111 +419,123 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
           <div className="fu">
             {/* Hero with amortisation */}
             <div style={{
-              textAlign: "center", padding: "24px 20px 20px", marginBottom: 16,
-              background: v('--color-bg-muted'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border')}`,
+              textAlign: "center", padding: "25px 11px 21px", marginBottom: 16,
+              background: v('--color-bg'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border')}`,
             }}>
-              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8 }}>
+              <div style={{ fontSize: 13, color: v('--color-text-secondary'), fontWeight: 400, marginBottom: 8 }}>
                 Deine PV-Anlage amortisiert sich in
               </div>
-              <div style={{ fontSize: 56, fontWeight: 800, color: v('--color-accent'), fontFamily: v('--font-mono'), lineHeight: 1 }}>
-                {be ? be.i : ">25"}<span style={{ fontSize: 22, fontWeight: 600, marginLeft: 4 }}>Jahren</span>
+              <div style={{ fontSize: 56, fontWeight: 800, color: v('--color-text-primary'), fontFamily: v('--font-mono'), lineHeight: 1 }}>
+                {be ? be.i : ">25"}<span style={{ fontSize: 22, fontWeight: 700, marginLeft: 4, color: v('--color-text-faint') }}>Jahren</span>
               </div>
 
               {/* Editable parameters grid */}
               <div style={{
-                display: "flex", flexDirection: "column", gap: 8,
-                marginTop: 18, padding: "14px 16px", background: v('--color-bg-muted'),
+                display: "flex", gap: 20,
+                marginTop: 18, padding: 20, background: v('--color-bg-muted'),
                 borderRadius: v('--radius-md'), textAlign: "left", fontSize: 13,
               }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: v('--color-text-secondary') }}>Investition</span>
-                  <InlineEdit value={kosten} onCommit={v => setOKosten(v)} unit=" €" step={500} min={500} max={80000} width={68} />
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: v('--color-text-secondary') }}>Eigenverbr.</span>
-                  {effEinspeisungModus === "voll" ? (
-                    <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-faint'), fontSize: 13 }}>0%</span>
-                  ) : (
-                    <InlineEdit value={effEv} onCommit={v => setOEv(v)} unit="%" step={1} min={10} max={90} width={40} />
-                  )}
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: v('--color-text-secondary') }}>Strompreis</span>
-                  <InlineEdit value={oStrom} onCommit={setOStrom} unit=" €" step={0.01} min={0.15} max={0.60} width={52} />
-                </div>
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: effEinspeisungModus !== "aus" ? 6 : 0 }}>
-                    <span style={{ color: v('--color-text-secondary') }}>Einspeisung</span>
-                    <div style={{ display: "flex", gap: 2, background: v('--color-bg'), borderRadius: 8, padding: 2 }}>
-                      {(["aus", "teil", "voll"] as const).map(m => {
-                        const isActive = effEinspeisungModus === m;
-                        const isDisabled = m === "voll" && vollDisabled;
-                        return (
-                          <button key={m} onClick={() => { if (!isDisabled) { setEinspeisungModus(m); setOEinsp(null); } }} style={{
-                            padding: "3px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600,
-                            cursor: isDisabled ? "not-allowed" : "pointer",
-                            background: isActive ? v('--color-accent') : "transparent",
-                            border: "none",
-                            color: isDisabled ? v('--color-text-faint') : isActive ? v('--color-text-on-accent') : v('--color-text-muted'),
-                            opacity: isDisabled ? 0.4 : 1,
-                            transition: "all 0.15s",
-                          }}>
-                            {m === "aus" ? "Aus" : m === "teil" ? "Teil" : "Voll"}
-                          </button>
-                        );
-                      })}
-                    </div>
+                {/* Left column */}
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 13 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: v('--color-text-secondary') }}>Investition</span>
+                    <InlineEdit value={kosten} onCommit={v => setOKosten(v)} unit=" €" step={500} min={500} max={80000} width={68} />
                   </div>
-                  {effEinspeisungModus !== "aus" && (
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <span style={{ fontSize: 11, color: v('--color-text-faint') }}>
-                        {effEinspeisungModus === "voll" ? "Vergütung (kein Eigenverbr.)" : "Vergütung"}
-                      </span>
-                      <InlineEdit value={effEinsp} onCommit={v => setOEinsp(v)} unit=" ct" step={0.01} min={4} max={16} width={48} />
-                    </div>
-                  )}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: v('--color-text-secondary') }}>Strompreis</span>
+                    <InlineEdit value={oStrom} onCommit={setOStrom} unit=" €" step={0.01} min={0.15} max={0.60} width={52} />
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: v('--color-text-secondary') }}>Ertrag{plzLoading && <span style={{ color: v('--color-accent'), fontSize: 10, marginLeft: 4 }}>…</span>}</span>
+                    <InlineEdit value={oErtrag} onCommit={setOErtrag} unit=" kWh/kWp" step={10} min={700} max={1400} width={48} />
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: v('--color-text-secondary') }}>Anlage</span>
+                    <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary'), fontSize: 15 }}>
+                      {kwp} <span style={{ fontFamily: v('--font-mono'), fontWeight: 500, color: v('--color-text-secondary'), fontSize: 13 }}>kWp</span>
+                    </span>
+                  </div>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: v('--color-text-secondary') }}>Ertrag{plzLoading && <span style={{ color: v('--color-accent'), fontSize: 10, marginLeft: 4 }}>…</span>}</span>
-                  <InlineEdit value={oErtrag} onCommit={setOErtrag} unit=" kWh/kWp" step={10} min={700} max={1400} width={48} />
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: v('--color-text-secondary') }}>Standort</span>
-                  <form onSubmit={e => { e.preventDefault(); fetchPvgis(plz); }} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                    <input
-                      value={plz}
-                      placeholder="PLZ"
-                      inputMode="numeric"
-                      maxLength={5}
-                      onChange={e => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
-                      style={{
-                        width: 52, textAlign: "center", fontSize: 13, fontWeight: 700,
-                        fontFamily: v('--font-mono'),
-                        color: plz.length === 5 ? v('--color-accent') : v('--color-text-secondary'),
-                        background: plz.length === 5 ? v('--color-accent-dim') : v('--color-bg-muted'),
-                        border: plz.length === 5 ? `1px solid ${v('--color-border-accent')}` : `1px dashed ${v('--color-text-faint')}`,
-                        borderRadius: v('--radius-sm'), padding: "3px 4px", outline: "none",
-                      }}
-                    />
-                    {plz.length === 5 && !plzLoading && !plzSource && (
-                      <button type="submit" style={{
-                        padding: "3px 6px", fontSize: 11, fontWeight: 700, lineHeight: 1,
-                        background: v('--color-accent'), color: v('--color-text-on-accent'),
-                        border: "none", borderRadius: v('--radius-sm'), cursor: "pointer",
-                      }}><IconArrowRight size={12} color={v('--color-text-on-accent')} /></button>
+                {/* Right column */}
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 13 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: v('--color-text-secondary') }}>Eigenverbr.</span>
+                    {effEinspeisungModus === "voll" ? (
+                      <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-faint'), fontSize: 13 }}>0%</span>
+                    ) : (
+                      <InlineEdit value={effEv} onCommit={v => setOEv(v)} unit="%" step={1} min={10} max={90} width={40} />
                     )}
-                    {plzSource && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{plzSource === "pvgis" ? <IconCheck size={10} /> : "~"}</span>}
-                  </form>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ color: v('--color-text-secondary') }}>Anlage</span>
-                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary'), fontSize: 13 }}>
-                    {kwp} kWp{spKwh > 0 ? ` + ${spKwh} kWh` : ""}
-                  </span>
+                  </div>
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: effEinspeisungModus !== "aus" ? 6 : 0 }}>
+                      <span style={{ color: v('--color-text-secondary') }}>Einspeisung</span>
+                      <div style={{ display: "flex", gap: 2, background: v('--color-bg'), borderRadius: 8, padding: 2 }}>
+                        {(["aus", "teil", "voll"] as const).map(m => {
+                          const isActive = effEinspeisungModus === m;
+                          const isDisabled = m === "voll" && vollDisabled;
+                          return (
+                            <button key={m} onClick={() => { if (!isDisabled) { setEinspeisungModus(m); setOEinsp(null); } }} style={{
+                              padding: "3px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600,
+                              cursor: isDisabled ? "not-allowed" : "pointer",
+                              background: isActive ? v('--color-accent') : "transparent",
+                              border: "none",
+                              color: isDisabled ? v('--color-text-faint') : isActive ? v('--color-text-on-accent') : v('--color-text-muted'),
+                              opacity: isDisabled ? 0.4 : 1,
+                              transition: "all 0.15s",
+                            }}>
+                              {m === "aus" ? "Aus" : m === "teil" ? "Teil" : "Voll"}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    {effEinspeisungModus !== "aus" && (
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontSize: 11, color: v('--color-text-faint') }}>
+                          {effEinspeisungModus === "voll" ? "Vergütung" : "Vergütung"}
+                        </span>
+                        <InlineEdit value={effEinsp} onCommit={v => setOEinsp(v)} unit=" ct" step={0.01} min={4} max={16} width={48} />
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: v('--color-text-secondary') }}>Standort</span>
+                    <form onSubmit={e => { e.preventDefault(); fetchPvgis(plz); }} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                      <input
+                        value={plz}
+                        placeholder="PLZ"
+                        inputMode="numeric"
+                        maxLength={5}
+                        onChange={e => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
+                        style={{
+                          width: 52, textAlign: "center", fontSize: 13, fontWeight: 700,
+                          fontFamily: v('--font-mono'),
+                          color: plz.length === 5 ? v('--color-accent') : v('--color-text-secondary'),
+                          background: plz.length === 5 ? v('--color-accent-dim') : v('--color-bg'),
+                          border: plz.length === 5 ? `1px solid ${v('--color-border-accent')}` : `1px dashed ${v('--color-text-faint')}`,
+                          borderRadius: v('--radius-sm'), padding: "3px 4px", outline: "none",
+                        }}
+                      />
+                      {plz.length === 5 && !plzLoading && !plzSource && (
+                        <button type="submit" style={{
+                          padding: "3px 6px", fontSize: 11, fontWeight: 700, lineHeight: 1,
+                          background: v('--color-accent'), color: v('--color-text-on-accent'),
+                          border: "none", borderRadius: v('--radius-sm'), cursor: "pointer",
+                        }}><IconArrowRight size={12} color={v('--color-text-on-accent')} /></button>
+                      )}
+                      {plzSource && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{plzSource === "pvgis" ? <IconCheck size={10} /> : "~"}</span>}
+                    </form>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ color: v('--color-text-secondary') }}>Speicher</span>
+                    <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary'), fontSize: 15 }}>
+                      {spKwh > 0 ? <>{spKwh} <span style={{ fontFamily: v('--font-mono'), fontWeight: 500, color: v('--color-text-secondary'), fontSize: 13 }}>kWh</span></> : <span style={{ color: v('--color-text-faint') }}>—</span>}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10 }}>
+              <div style={{ fontSize: 11, color: v('--color-accent'), marginTop: 10 }}>
                 Werte anklicken zum Anpassen
               </div>
             </div>
@@ -860,54 +872,65 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
             </div>
 
-            {/* Save (logged in) */}
-            {user && (
-              <div style={{ marginBottom: 16 }}>
-                <button onClick={handleSave} disabled={saving} style={{
-                  width: "100%", padding: "12px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
-                  background: saved ? v('--color-accent-dim') : v('--color-accent-dim'),
-                  border: saved ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border-accent')}`,
-                  color: saved ? v('--color-accent') : v('--color-accent'), cursor: saving ? "wait" : "pointer",
-                  fontFamily: v('--font-text'), transition: "all 0.2s",
-                }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>{saved ? <><IconCheck size={14} /> Gespeichert!</> : saving ? "Speichert..." : "Ergebnis speichern"}</span>
-                </button>
-                {savedCalcId && !saved && (
-                  <div style={{ textAlign: "center", marginTop: 6 }}>
-                    <Link href="/dashboard" style={{ fontSize: 12, color: v('--color-text-muted'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>
-                      Meine Berechnungen <IconArrowRight size={10} />
-                    </Link>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Share */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-              <button onClick={handleCopy} style={{
-                flex: 1, padding: "10px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
-                background: copied ? v('--color-accent-dim') : v('--color-bg-muted'),
-                border: copied ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
-                color: copied ? v('--color-accent') : v('--color-text-muted'), cursor: "pointer",
+            {/* CTAs: Icon buttons + Save */}
+            <div style={{ display: "flex", gap: 5, alignItems: "center", padding: "10px 0", marginBottom: 16 }}>
+              <button onClick={handleCopy} title={copied ? "Kopiert!" : "Link kopieren"} style={{
+                width: 40, height: 40, borderRadius: v('--radius-md'), cursor: "pointer",
+                background: copied ? v('--color-accent-dim') : v('--color-bg'),
+                border: `1px solid ${copied ? v('--color-accent') : v('--color-border-accent')}`,
+                color: copied ? v('--color-accent') : v('--color-accent'),
+                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                 transition: "all 0.2s",
               }}>
-<span style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center" }}>{copied ? <><IconCheck size={14} /> Kopiert!</> : <><IconLink size={14} /> Link kopieren</>}</span>
+                {copied ? <IconCheck size={16} /> : <IconLink size={16} />}
               </button>
               {canShare && (
-                <button onClick={handleNativeShare} style={{
-                  flex: 1, padding: "10px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
-                  background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-muted'), cursor: "pointer",
+                <button onClick={handleNativeShare} title="Teilen" style={{
+                  width: 40, height: 40, borderRadius: v('--radius-md'), cursor: "pointer",
+                  background: v('--color-bg'), border: `1px solid ${v('--color-border-accent')}`,
+                  color: v('--color-accent'),
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                 }}>
-<span style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconShare size={14} /> Teilen</span>
+                  <IconShare size={16} />
                 </button>
               )}
-              <button onClick={handleWhatsApp} style={{
-                flex: 1, padding: "10px 12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
-                background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-text-muted'), cursor: "pointer",
+              <button onClick={handleWhatsApp} title="WhatsApp" style={{
+                width: 40, height: 40, borderRadius: v('--radius-md'), cursor: "pointer",
+                background: v('--color-bg'), border: `1px solid ${v('--color-border-accent')}`,
+                color: v('--color-accent'),
+                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
-<span style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconWhatsApp size={14} /> WhatsApp</span>
+                <IconWhatsApp size={16} />
               </button>
+              {user ? (
+                <button onClick={handleSave} disabled={saving} style={{
+                  flex: 1, height: 40, borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
+                  background: saved ? v('--color-accent-dim') : v('--color-accent'),
+                  border: saved ? `1px solid ${v('--color-accent')}` : "none",
+                  color: saved ? v('--color-accent') : v('--color-text-on-accent'),
+                  cursor: saving ? "wait" : "pointer", fontFamily: v('--font-text'), transition: "all 0.2s",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                }}>
+                  {saved ? <><IconCheck size={14} /> Gespeichert!</> : saving ? "Speichert..." : "Ergebnis speichern"}
+                </button>
+              ) : (
+                <button onClick={() => { setShowLogin(true); setLoginSent(false); setLoginError(""); }} style={{
+                  flex: 1, height: 40, borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
+                  background: v('--color-accent'), border: "none",
+                  color: v('--color-text-on-accent'), cursor: "pointer", fontFamily: v('--font-text'),
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  Ergebnis speichern
+                </button>
+              )}
             </div>
+            {user && savedCalcId && !saved && (
+              <div style={{ textAlign: "center", marginBottom: 16 }}>
+                <Link href="/dashboard" style={{ fontSize: 12, color: v('--color-text-muted'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>
+                  Meine Berechnungen <IconArrowRight size={10} />
+                </Link>
+              </div>
+            )}
 
             {/* Restart */}
             <button onClick={restart} style={{
@@ -922,7 +945,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
           </div>
         )}
 
-        <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: `24px 0 ${isResult && !user ? 80 : 16}px` }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: `24px 0 ${isResult && !user && showLogin ? 80 : 16}px` }}>
           <Link href="/methodik" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Methodik</Link>
           <Link href="/impressum" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Impressum</Link>
           <Link href="/datenschutz" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Datenschutz</Link>
@@ -930,15 +953,15 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         </div>
       </div>
 
-      {/* Sticky Bottom Bar — CTA für nicht-eingeloggte Nutzer */}
-      {isResult && !user && !authLoading && (
+      {/* Sticky Bottom Bar — Login-Formular für nicht-eingeloggte Nutzer */}
+      {isResult && !user && !authLoading && showLogin && (
         <div style={{
           position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100,
           background: `linear-gradient(to top, ${v('--color-bg')} 80%, transparent)`,
           padding: "20px 16px 16px",
         }}>
           <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
-            {showLogin && loginSent ? (
+            {loginSent ? (
               <div style={{
                 background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px",
                 border: `1px solid ${v('--color-border')}`, textAlign: "center",
@@ -946,7 +969,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-accent') }}>Link gesendet!</div>
                 <div style={{ fontSize: 12, color: v('--color-text-secondary'), marginTop: 4 }}>Prüfe deine E-Mails.</div>
               </div>
-            ) : showLogin ? (
+            ) : (
               <form onSubmit={handleLogin} style={{
                 display: "flex", gap: 8,
                 background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px",
@@ -972,14 +995,6 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   Link senden
                 </button>
               </form>
-            ) : (
-              <button onClick={() => { setShowLogin(true); setLoginSent(false); setLoginError(""); }} style={{
-                width: "100%", padding: "14px", borderRadius: v('--radius-md'), fontSize: 15, fontWeight: 700,
-                background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
-                fontFamily: v('--font-text'),
-              }}>
-                Ergebnisse speichern
-              </button>
             )}
             {loginError && <div style={{ fontSize: 12, color: v('--color-negative'), marginTop: 6, textAlign: "center" }}>{loginError}</div>}
           </div>
