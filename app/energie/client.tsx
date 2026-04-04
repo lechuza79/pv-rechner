@@ -19,37 +19,104 @@ const LETZTE_RANGES = [
   { label: "12 Monate", value: "12M", hours: 8760 },
 ] as const;
 
+// Available full years (Energy-Charts has data from 2015+)
+function getAvailableYears(): number[] {
+  const currentYear = new Date().getFullYear();
+  const years: number[] = [];
+  for (let y = currentYear - 1; y >= Math.max(currentYear - 3, 2020); y--) {
+    years.push(y);
+  }
+  return years;
+}
+
 // ─── Main Component ──────────────────────────────────────────────────────────
 
-// Calculate YTD hours dynamically
 function getYtdHours(): number {
   const now = new Date();
   const jan1 = new Date(now.getFullYear(), 0, 1);
   return Math.floor((now.getTime() - jan1.getTime()) / (1000 * 60 * 60));
 }
 
-// Split value+unit for styling (e.g. "1.3 TWh" → ["1.3", "TWh"])
+function getYearRange(year: number): { start: string; end: string } {
+  const currentYear = new Date().getFullYear();
+  const end = year === currentYear
+    ? new Date().toISOString().slice(0, 10)
+    : `${year}-12-31`;
+  return { start: `${year}-01-01`, end };
+}
+
 function splitValueUnit(formatted: string): [string, string] {
   const parts = formatted.split(" ");
   if (parts.length === 2) return [parts[0], parts[1]];
   return [formatted, ""];
 }
 
+// ─── Shared Button Style ────────────────────────────────────────────────────
+
+function rangeButtonStyle(active: boolean) {
+  return {
+    padding: "6px 10px",
+    borderRadius: v("--radius-sm"),
+    border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
+    background: active ? v("--color-accent") : v("--color-bg"),
+    color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
+    fontSize: 11,
+    fontWeight: 600 as const,
+    cursor: "pointer" as const,
+    fontFamily: v("--font-text"),
+  };
+}
+
+// ─── Loading Spinner ────────────────────────────────────────────────────────
+
+function LoadingSpinner() {
+  return (
+    <div style={{
+      height: 300,
+      display: "flex",
+      flexDirection: "column" as const,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 12,
+      color: v("--color-text-muted"),
+      fontSize: 13,
+    }}>
+      <div style={{
+        width: 28, height: 28,
+        border: `3px solid ${v("--color-border")}`,
+        borderTopColor: v("--color-accent"),
+        borderRadius: "50%",
+        animation: "spin 0.8s linear infinite",
+      }} />
+      Lade Daten…
+      <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+    </div>
+  );
+}
+
+// ─── Component ──────────────────────────────────────────────────────────────
+
 export default function EnergieClient() {
   const [selected, setSelected] = useState("24h");
   const [showNuclear, setShowNuclear] = useState(true);
+  const availableYears = useMemo(() => getAvailableYears(), []);
 
-  // Resolve actual hours
+  const isYear = /^\d{4}$/.test(selected);
   const hours = useMemo(() => {
     if (selected === "YTD") return getYtdHours();
+    if (isYear) return 8760;
     const range = LETZTE_RANGES.find(r => r.value === selected);
     return range?.hours || 24;
-  }, [selected]);
+  }, [selected, isYear]);
 
-  const { data: genData, loading, error } = useGenerationMix("de", hours);
-  const { data: nuclearData, loading: nuclearLoading } = useNuclearImport(hours);
+  const dateRange = useMemo(() => {
+    if (isYear) return getYearRange(Number(selected));
+    return undefined;
+  }, [selected, isYear]);
 
-  // Aggregate stats over the full time period
+  const { data: genData, loading, error } = useGenerationMix("de", hours, dateRange);
+  const { data: nuclearData, loading: nuclearLoading } = useNuclearImport(hours, dateRange);
+
   const stats = useMemo(() => calcPeriodStats(genData.data), [genData.data]);
 
   return (
@@ -61,45 +128,33 @@ export default function EnergieClient() {
         </h1>
       </div>
 
-      {/* Time Range Toggle — "Letzte" group + "Dieses Jahr" */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginBottom: 20 }}>
-        <span style={{ fontSize: 11, color: v("--color-text-muted"), marginRight: 2 }}>Letzte</span>
-        {LETZTE_RANGES.map((range) => (
-          <button
-            key={range.value}
-            onClick={() => setSelected(range.value)}
-            style={{
-              padding: "6px 10px",
-              borderRadius: v("--radius-sm"),
-              border: `1px solid ${selected === range.value ? v("--color-accent") : v("--color-border")}`,
-              background: selected === range.value ? v("--color-accent") : v("--color-bg"),
-              color: selected === range.value ? v("--color-text-on-accent") : v("--color-text-secondary"),
-              fontSize: 11,
-              fontWeight: 600,
-              cursor: "pointer",
-              fontFamily: v("--font-text"),
-            }}
-          >
-            {range.label}
-          </button>
-        ))}
-        <div style={{ width: 12 }} />
-        <button
-          onClick={() => setSelected("YTD")}
-          style={{
-            padding: "6px 10px",
-            borderRadius: v("--radius-sm"),
-            border: `1px solid ${selected === "YTD" ? v("--color-accent") : v("--color-border")}`,
-            background: selected === "YTD" ? v("--color-accent") : v("--color-bg"),
-            color: selected === "YTD" ? v("--color-text-on-accent") : v("--color-text-secondary"),
-            fontSize: 11,
-            fontWeight: 600,
-            cursor: "pointer",
-            fontFamily: v("--font-text"),
-          }}
-        >
-          Dieses Jahr
-        </button>
+      {/* Time Range Toggle — two groups side by side */}
+      <div style={{ display: "flex", gap: 20, marginBottom: 20, flexWrap: "wrap" }}>
+        {/* Letzte */}
+        <div>
+          <div style={{ fontSize: 10, color: v("--color-text-muted"), marginBottom: 4, fontWeight: 600 }}>Letzte</div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            {LETZTE_RANGES.map((range) => (
+              <button key={range.value} onClick={() => setSelected(range.value)} style={rangeButtonStyle(selected === range.value)}>
+                {range.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* Andere Zeiträume */}
+        <div>
+          <div style={{ fontSize: 10, color: v("--color-text-muted"), marginBottom: 4, fontWeight: 600 }}>Andere Zeiträume</div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            <button onClick={() => setSelected("YTD")} style={rangeButtonStyle(selected === "YTD")}>
+              {new Date().getFullYear()}
+            </button>
+            {availableYears.map((year) => (
+              <button key={year} onClick={() => setSelected(String(year))} style={rangeButtonStyle(selected === String(year))}>
+                {year}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Summary Widgets — horizontal row */}
@@ -202,7 +257,7 @@ export default function EnergieClient() {
         </div>
       )}
 
-      {/* Stacked Area Chart */}
+      {/* Stacked Area / Bar Chart */}
       <div
         style={{
           background: v("--color-bg"),
@@ -217,18 +272,7 @@ export default function EnergieClient() {
         </div>
 
         {loading ? (
-          <div
-            style={{
-              height: 300,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: v("--color-text-muted"),
-              fontSize: 13,
-            }}
-          >
-            Lade Daten von Energy-Charts...
-          </div>
+          <LoadingSpinner />
         ) : error ? (
           <div
             style={{
@@ -242,10 +286,10 @@ export default function EnergieClient() {
           >
             Fehler beim Laden: {error}
           </div>
-        ) : hours >= 720 ? (
+        ) : hours >= 720 || isYear ? (
           <StackedBarChart
             data={genData.data}
-            mode={selected === "YTD" ? "ytd" : selected === "12M" ? "12m" : "30d"}
+            mode={selected === "YTD" || isYear ? "ytd" : selected === "12M" ? "12m" : "30d"}
             nuclearOverlay={showNuclear ? nuclearData.data : undefined}
           />
         ) : (
@@ -256,7 +300,7 @@ export default function EnergieClient() {
           />
         )}
 
-        {/* Legend — 4 category labels with colored squares */}
+        {/* Legend */}
         {!loading && !error && genData.data.length > 0 && (
           <div style={{
             display: "flex", justifyContent: "center", gap: 16,
@@ -278,20 +322,20 @@ export default function EnergieClient() {
             {showNuclear && !nuclearLoading && nuclearData.avg_gw > 0 && (
               <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
                 <div style={{ width: 10, height: 10, borderRadius: 2, background: "#F9A825", flexShrink: 0 }} />
-                <span style={{ color: v("--color-text-muted") }}>Kernenergie</span>
+                <span style={{ color: v("--color-text-muted") }}>Importierte Kernenergie</span>
               </div>
             )}
           </div>
         )}
       </div>
 
-      {/* Methodology note for nuclear overlay */}
+      {/* Methodology note */}
       {showNuclear && !nuclearLoading && nuclearData.avg_gw > 0 && (
         <div style={{
           fontSize: 10, color: v("--color-text-faint"), lineHeight: 1.6,
           marginBottom: 20, padding: "0 8px",
         }}>
-          <strong style={{ color: v("--color-text-muted") }}>Kernimport-Overlay:</strong>{" "}
+          <strong style={{ color: v("--color-text-muted") }}>Importierte Kernenergie:</strong>{" "}
           Rechnerischer Kernenergie-Import = Physische Grenzflüsse × Kernanteil des Exportlandes.
           Methodik analog Fraunhofer ISE. Nur Importe aus FR, CZ, CH, SE, BE, NL.
         </div>

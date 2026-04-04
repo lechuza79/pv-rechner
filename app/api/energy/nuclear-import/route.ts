@@ -63,10 +63,17 @@ function delay(ms: number) {
 // ─── GET Handler ────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
+  const startParam = req.nextUrl.searchParams.get("start"); // ISO date e.g. "2025-01-01"
+  const endParam = req.nextUrl.searchParams.get("end");     // ISO date e.g. "2025-12-31"
   const hoursBack = Math.min(Number(req.nextUrl.searchParams.get("hours")) || 24, 8784);
 
-  const cacheKey = `nuclear-${hoursBack}`;
-  const store = hoursBack > 168 ? longCache : cache;
+  const isAbsolute = !!(startParam && endParam);
+  const cacheKey = isAbsolute ? `nuclear-${startParam}-${endParam}` : `nuclear-${hoursBack}`;
+  const rangeHours = isAbsolute
+    ? Math.ceil((new Date(endParam + "T23:59:59Z").getTime() - new Date(startParam + "T00:00:00Z").getTime()) / 3600000)
+    : hoursBack;
+
+  const store = rangeHours > 168 ? longCache : cache;
   const cached = store.get(cacheKey);
   if (cached) {
     return NextResponse.json(cached, {
@@ -75,10 +82,18 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const now = new Date();
-    const start = new Date(now.getTime() - hoursBack * 60 * 60 * 1000);
-    const startStr = start.toISOString().slice(0, 19) + "+01:00";
-    const endStr = now.toISOString().slice(0, 19) + "+01:00";
+    let startStr: string;
+    let endStr: string;
+
+    if (isAbsolute) {
+      startStr = startParam + "T00:00:00+01:00";
+      endStr = endParam + "T23:59:59+01:00";
+    } else {
+      const now = new Date();
+      const start = new Date(now.getTime() - hoursBack * 60 * 60 * 1000);
+      startStr = start.toISOString().slice(0, 19) + "+01:00";
+      endStr = now.toISOString().slice(0, 19) + "+01:00";
+    }
 
     // Step 1: Fetch cross-border flows (1 request)
     const cbpfRows = await fetchCrossBorderFlows("de", startStr, endStr);
@@ -166,11 +181,11 @@ export async function GET(req: NextRequest) {
     data.sort((a, b) => a.ts.localeCompare(b.ts));
 
     // Downsample for longer ranges
-    if (hoursBack > 2160) {
+    if (rangeHours > 2160) {
       data = downsample(data, 24);
-    } else if (hoursBack > 720) {
+    } else if (rangeHours > 720) {
       data = downsample(data, 12);
-    } else if (hoursBack > 168) {
+    } else if (rangeHours > 168) {
       data = downsample(data, 4);
     }
 

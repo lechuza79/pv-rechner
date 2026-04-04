@@ -74,13 +74,15 @@ function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T):
   return { data, loading, error };
 }
 
-/** Current electricity generation mix (last 24h by default) */
-export function useGenerationMix(country = "de", hours = 24) {
-  return useCachedFetch<GenerationData>(
-    `/api/energy/generation?country=${country}&hours=${hours}`,
-    `gen-${country}-${hours}`,
-    { data: [], source: "", license: "", country }
-  );
+/** Current electricity generation mix (last N hours or absolute date range) */
+export function useGenerationMix(country = "de", hours = 24, dateRange?: { start: string; end: string }) {
+  const endpoint = dateRange
+    ? `/api/energy/generation?country=${country}&start=${dateRange.start}&end=${dateRange.end}`
+    : `/api/energy/generation?country=${country}&hours=${hours}`;
+  const key = dateRange
+    ? `gen-${country}-${dateRange.start}-${dateRange.end}`
+    : `gen-${country}-${hours}`;
+  return useCachedFetch<GenerationData>(endpoint, key, { data: [], source: "", license: "", country });
 }
 
 // ─── Nuclear Import ─────────────────────────────────────────────────────────
@@ -99,10 +101,12 @@ export interface NuclearImportData {
 }
 
 /** Calculated nuclear import from neighboring countries */
-export function useNuclearImport(hours = 24) {
-  return useCachedFetch<NuclearImportData>(
-    `/api/energy/nuclear-import?hours=${hours}`,
-    `nuclear-${hours}`,
-    { data: [], avg_gw: 0, avg_share_pct: 0, source: "", license: "" }
-  );
+export function useNuclearImport(hours = 24, dateRange?: { start: string; end: string }) {
+  const endpoint = dateRange
+    ? `/api/energy/nuclear-import?start=${dateRange.start}&end=${dateRange.end}`
+    : `/api/energy/nuclear-import?hours=${hours}`;
+  const key = dateRange
+    ? `nuclear-${dateRange.start}-${dateRange.end}`
+    : `nuclear-${hours}`;
+  return useCachedFetch<NuclearImportData>(endpoint, key, { data: [], avg_gw: 0, avg_share_pct: 0, source: "", license: "" });
 }

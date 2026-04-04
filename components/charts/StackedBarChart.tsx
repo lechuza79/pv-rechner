@@ -99,13 +99,15 @@ function aggregateToWeeks(data: DataPoint[]): WeekBucket[] {
 // ─── Build 52-week grid for YTD (empty weeks at end) ─────────────────────────
 
 function build52WeekGrid(filledWeeks: WeekBucket[]): WeekBucket[] {
-  const now = new Date();
-  const year = now.getFullYear();
+  // Derive year from data (first bucket's weekKey), fall back to current year
+  const dataYear = filledWeeks.length > 0
+    ? parseInt(filledWeeks[0].weekKey.split("-W")[0], 10)
+    : new Date().getFullYear();
   const genKeys = GENERATION_STACK_KEYS;
   const grid: WeekBucket[] = [];
 
   for (let w = 1; w <= 52; w++) {
-    const weekKey = `${year}-W${String(w).padStart(2, "0")}`;
+    const weekKey = `${dataYear}-W${String(w).padStart(2, "0")}`;
     const existing = filledWeeks.find((b) => b.weekKey === weekKey);
     if (existing) {
       grid.push(existing);
@@ -223,17 +225,24 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
   const goLeft = left > width / 2;
   const x = goLeft ? left - tooltipWidth - 12 : left + 12;
 
-  // After render, check if tooltip overflows viewport bottom and shift up
+  // Center tooltip vertically within chart area, clamp to viewport
+  const chartHeight = CHART_HEIGHT - margin.top - margin.bottom;
   useLayoutEffect(() => {
     const el = tooltipRef.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    if (rect.bottom > window.innerHeight - 8) {
-      const shift = rect.bottom - window.innerHeight + 8;
-      el.style.top = `${margin.top - shift}px`;
-    } else {
-      el.style.top = `${margin.top}px`;
+    const elHeight = el.getBoundingClientRect().height;
+    let top = margin.top + (chartHeight - elHeight) / 2;
+    const containerRect = el.parentElement?.getBoundingClientRect();
+    if (containerRect) {
+      const absTop = containerRect.top + top;
+      if (absTop + elHeight > window.innerHeight - 8) {
+        top = window.innerHeight - 8 - containerRect.top - elHeight;
+      }
+      if (absTop < 8) {
+        top = 8 - containerRect.top;
+      }
     }
+    el.style.top = `${top}px`;
   });
 
   let totalGWh = 0;
@@ -320,9 +329,12 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
         </>
       )}
 
-      {/* Kernenergie */}
+      {/* Importierte Kernenergie */}
       {nuclearGWh != null && nuclearGWh > 0.01 && (
-        <BarTooltipSummary color="#F9A825" label="Kernenergie" value={formatGWh(nuclearGWh)} />
+        <>
+          <BarTooltipSummary color="#F9A825" label={`Kernenergie ${totalGWh > 0 ? Math.round(nuclearGWh / (totalGWh + nuclearGWh) * 100) : 0}%`} value={formatGWh(nuclearGWh)} />
+          <div style={{ fontSize: 10, color: "var(--color-text-faint)", marginTop: -2, marginBottom: 2 }}>importiert</div>
+        </>
       )}
     </div>
   );
