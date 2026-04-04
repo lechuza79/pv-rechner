@@ -1,0 +1,206 @@
+import { NextRequest, NextResponse } from "next/server";
+import {
+  createCache,
+  fetchCrossBorderFlows,
+  fetchPublicPower,
+} from "../../../../lib/energy-api";
+
+// Countries with active nuclear power plants
+const NUCLEAR_COUNTRIES = ["fr", "cz", "ch", "se", "be", "nl"] as const;
+
+// CBPF country names → country codes (Energy-Charts uses full names)
+const CBPF_NAME_TO_CODE: Record<string, string> = {
+  france: "fr",
+  czech_republic: "cz",
+  switzerland: "ch",
+  sweden: "se",
+  belgium: "be",
+  netherlands: "nl",
+};
+
+interface NuclearDataPoint {
+  ts: string;
+  nuclear_gw: number;
+}
+
+interface NuclearImportResponse {
+  data: NuclearDataPoint[];
+  avg_gw: number;
+  avg_share_pct: number;
+  source: string;
+  license: string;
+}
+
+// ─── Cache ──────────────────────────────────────────────────────────────────
+
+const cache = createCache<NuclearImportResponse>(10 * 60 * 1000); // 10 min
+const longCache = createCache<NuclearImportResponse>(30 * 60 * 1000); // 30 min
+
+// ─── Downsample ─────────────────────────────────────────────────────────────
+
+function downsample(data: NuclearDataPoint[], factor: number): NuclearDataPoint[] {
+  if (factor <= 1 || data.length === 0) return data;
+  const result: NuclearDataPoint[] = [];
+  for (let i = 0; i < data.length; i += factor) {
+    const chunk = data.slice(i, i + factor);
+    let sum = 0;
+    let count = 0;
+    for (const d of chunk) {
+      if (d.nuclear_gw != null) { sum += d.nuclear_gw; count++; }
+    }
+    result.push({
+      ts: chunk[Math.floor(chunk.length / 2)].ts,
+      nuclear_gw: count > 0 ? Math.round(sum / count * 1000) / 1000 : 0,
+    });
+  }
+  return result;
+}
+
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// ─── GET Handler ────────────────────────────────────────────────────────────
+
+export async function GET(req: NextRequest) {
+  const hoursBack = Math.min(Number(req.nextUrl.searchParams.get("hours")) || 24, 8784);
+
+  const cacheKey = `nuclear-${hoursBack}`;
+  const store = hoursBack > 168 ? longCache : cache;
+  const cached = store.get(cacheKey);
+  if (cached) {
+    return NextResponse.json(cached, {
+      headers: { "Cache-Control": "public, s-maxage=600, stale-while-revalidate=1200" },
+    });
+  }
+
+  try {
+    const now = new Date();
+    const start = new Date(now.getTime() - hoursBack * 60 * 60 * 1000);
+    const startStr = start.toISOString().slice(0, 19) + "+01:00";
+    const endStr = now.toISOString().slice(0, 19) + "+01:00";
+
+    // Step 1: Fetch cross-border flows (1 request)
+    const cbpfRows = await fetchCrossBorderFlows("de", startStr, endStr);
+
+    if (cbpfRows.length === 0) {
+      return NextResponse.json(
+        { data: [], avg_gw: 0, avg_share_pct: 0, source: "error", license: "" },
+        { status: 502 }
+      );
+    }
+
+    // Step 2: Fetch nuclear countries in batches of 2 (avoid 429 rate limiting)
+    const countryGenRows: Map<string, Map<string, { nuclear: number; total: number }>> = new Map();
+
+    for (let i = 0; i < NUCLEAR_COUNTRIES.length; i += 2) {
+      const batch = NUCLEAR_COUNTRIES.slice(i, i + 2);
+      const results = await Promise.all(
+        batch.map(c => fetchPublicPower(c, startStr, endStr))
+      );
+
+      for (let j = 0; j < batch.length; j++) {
+        const code = batch[j];
+        const tsMap = new Map<string, { nuclear: number; total: number }>();
+        for (const row of results[j]) {
+          const nuclear = (row.data.nuclear as number) ?? 0;
+          let total = 0;
+          for (const [key, val] of Object.entries(row.data)) {
+            if (
+              typeof val === "number" && val > 0 &&
+              !key.includes("load") &&
+              !key.includes("share") &&
+              !key.includes("cross_border") &&
+              !key.includes("consumption")
+            ) {
+              total += val;
+            }
+          }
+          tsMap.set(row.ts, { nuclear, total });
+        }
+        countryGenRows.set(code, tsMap);
+      }
+
+      // Small delay between batches to avoid rate limiting
+      if (i + 2 < NUCLEAR_COUNTRIES.length) {
+        await delay(200);
+      }
+    }
+
+    // Build lookup: ts → { country_code → flow_gw }
+    const cbpfByTs = new Map<string, Record<string, number>>();
+    for (const row of cbpfRows) {
+      const flows: Record<string, number> = {};
+      for (const [name, val] of Object.entries(row.data)) {
+        if (name === "net" || typeof val !== "number") continue;
+        const code = CBPF_NAME_TO_CODE[name];
+        if (code) flows[code] = val;
+      }
+      cbpfByTs.set(row.ts, flows);
+    }
+
+    // Calculate nuclear import per timestamp
+    // For DE load %, use total import from CBPF as proxy
+    // (client has actual DE load from generation data)
+    let data: NuclearDataPoint[] = [];
+    let totalNuclear = 0;
+    let totalNetImport = 0;
+    let count = 0;
+
+    cbpfByTs.forEach((flows, ts) => {
+      let nuclearGw = 0;
+
+      for (const code of NUCLEAR_COUNTRIES) {
+        const flowGw = flows[code] ?? 0;
+        if (flowGw <= 0) continue; // Only imports (positive = import to DE)
+
+        const mix = countryGenRows.get(code)?.get(ts);
+        if (!mix || mix.total <= 0) continue;
+
+        const nuclearShare = mix.nuclear / mix.total;
+        nuclearGw += flowGw * nuclearShare;
+      }
+
+      data.push({ ts, nuclear_gw: Math.round(nuclearGw * 1000) / 1000 });
+      totalNuclear += nuclearGw;
+      count++;
+    });
+
+    // Sort by timestamp
+    data.sort((a, b) => a.ts.localeCompare(b.ts));
+
+    // Downsample for longer ranges
+    if (hoursBack > 2160) {
+      data = downsample(data, 24);
+    } else if (hoursBack > 720) {
+      data = downsample(data, 12);
+    } else if (hoursBack > 168) {
+      data = downsample(data, 4);
+    }
+
+    const avgGw = count > 0 ? Math.round(totalNuclear / count * 100) / 100 : 0;
+    // Estimate share: avg nuclear GW / typical DE load (~45 GW)
+    // Client will calculate exact % from its own generation data
+    const avgSharePct = count > 0 ? Math.round(avgGw / 45 * 100 * 10) / 10 : 0;
+
+    const response: NuclearImportResponse = {
+      data,
+      avg_gw: avgGw,
+      avg_share_pct: avgSharePct,
+      source: "Fraunhofer ISE / Energy-Charts",
+      license: "CC BY 4.0",
+    };
+
+    store.set(cacheKey, response);
+
+    return NextResponse.json(response, {
+      headers: { "Cache-Control": "public, s-maxage=600, stale-while-revalidate=1200" },
+    });
+  } catch (e) {
+    console.error("Nuclear import fetch error:", e);
+    return NextResponse.json(
+      { data: [], avg_gw: 0, avg_share_pct: 0, source: "error", license: "" },
+      { status: 502 }
+    );
+  }
+}

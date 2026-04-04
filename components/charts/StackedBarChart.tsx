@@ -30,11 +30,17 @@ interface WeekBucket {
   [key: string]: number | string;
 }
 
+export interface NuclearOverlayPoint {
+  ts: string;
+  nuclear_gw: number;
+}
+
 interface Props {
   data: DataPoint[];
   keys?: string[];
   height?: number;
   mode?: "ytd" | "12m" | "30d";
+  nuclearOverlay?: NuclearOverlayPoint[];
 }
 
 // ─── ISO week number ─────────────────────────────────────────────────────────
@@ -148,6 +154,39 @@ function aggregateToDays(data: DataPoint[]): WeekBucket[] {
   return Array.from(buckets.values()).sort((a, b) => a.weekKey.localeCompare(b.weekKey));
 }
 
+// ─── Aggregate nuclear overlay to matching buckets ──────────────────────────
+
+function aggregateNuclearToWeeks(data: NuclearOverlayPoint[]): Map<string, number> {
+  if (data.length < 2) return new Map();
+  const t0 = new Date(data[0].ts).getTime();
+  const t1 = new Date(data[1].ts).getTime();
+  const intervalHours = (t1 - t0) / (1000 * 60 * 60);
+  const buckets = new Map<string, number>();
+  for (const d of data) {
+    const date = new Date(d.ts);
+    const week = getISOWeek(date);
+    const year = getISOWeekYear(date);
+    const weekKey = `${year}-W${String(week).padStart(2, "0")}`;
+    buckets.set(weekKey, (buckets.get(weekKey) || 0) + d.nuclear_gw * intervalHours);
+    // GW × hours = GWh
+  }
+  return buckets;
+}
+
+function aggregateNuclearToDays(data: NuclearOverlayPoint[]): Map<string, number> {
+  if (data.length < 2) return new Map();
+  const t0 = new Date(data[0].ts).getTime();
+  const t1 = new Date(data[1].ts).getTime();
+  const intervalHours = (t1 - t0) / (1000 * 60 * 60);
+  const buckets = new Map<string, number>();
+  for (const d of data) {
+    const date = new Date(d.ts);
+    const dayKey = date.toLocaleDateString("sv-SE", { timeZone: "Europe/Berlin" });
+    buckets.set(dayKey, (buckets.get(dayKey) || 0) + d.nuclear_gw * intervalHours);
+  }
+  return buckets;
+}
+
 // ─── Tooltip Component ───────────────────────────────────────────────────────
 
 function BarTooltip({ data, activeKeys, left, width, margin }: {
@@ -235,7 +274,7 @@ function BarTooltip({ data, activeKeys, left, width, margin }: {
 
 // ─── Inner Chart ─────────────────────────────────────────────────────────────
 
-function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode }: Props & { width: number }) {
+function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nuclearOverlay }: Props & { width: number }) {
   const margin = CHART_MARGIN;
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
@@ -246,6 +285,12 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode }: Pro
     if (mode === "ytd") return build52WeekGrid(weeks);
     return weeks;
   }, [data, mode]);
+
+  const nuclearBuckets = useMemo(() => {
+    if (!nuclearOverlay || nuclearOverlay.length < 2) return null;
+    if (mode === "30d") return aggregateNuclearToDays(nuclearOverlay);
+    return aggregateNuclearToWeeks(nuclearOverlay);
+  }, [nuclearOverlay, mode]);
 
   const activeKeys = useMemo(() => {
     const k = keys || GENERATION_STACK_KEYS;
@@ -341,6 +386,31 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode }: Pro
             }
           </BarStack>
 
+          {/* Nuclear import overlay bars */}
+          {nuclearBuckets && buckets.map((bucket) => {
+            const nucGWh = nuclearBuckets.get(bucket.weekKey) || 0;
+            if (nucGWh <= 0.01) return null;
+            const x = xScale(bucket.weekKey) ?? 0;
+            const barWidth = xScale.bandwidth();
+            const barHeight = innerHeight - (yScale(nucGWh) ?? 0);
+            return (
+              <rect
+                key={`nuc-${bucket.weekKey}`}
+                x={x}
+                y={innerHeight - barHeight}
+                width={barWidth}
+                height={Math.max(0, barHeight)}
+                fill="#9E9E9E"
+                fillOpacity={0.25}
+                stroke="#9E9E9E"
+                strokeWidth={0.5}
+                strokeOpacity={0.5}
+                rx={barWidth > 4 ? 1 : 0}
+                pointerEvents="none"
+              />
+            );
+          })}
+
           <AxisBottom
             top={innerHeight}
             scale={xScale}
@@ -392,7 +462,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode }: Pro
 
 // ─── Responsive Wrapper ──────────────────────────────────────────────────────
 
-export default function StackedBarChart({ data, keys, height, mode }: Props) {
+export default function StackedBarChart({ data, keys, height, mode, nuclearOverlay }: Props) {
   if (!data || data.length < 2) {
     return (
       <div style={{
@@ -410,7 +480,7 @@ export default function StackedBarChart({ data, keys, height, mode }: Props) {
       <ParentSize>
         {({ width }) =>
           width > 0 ? (
-            <StackedBarInner data={data} keys={keys} height={h} width={width} mode={mode} />
+            <StackedBarInner data={data} keys={keys} height={h} width={width} mode={mode} nuclearOverlay={nuclearOverlay} />
           ) : null
         }
       </ParentSize>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useCallback, useRef, useState } from "react";
-import { AreaStack } from "@visx/shape";
+import { AreaStack, AreaClosed } from "@visx/shape";
 import { scaleTime, scaleLinear } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { GridRows } from "@visx/grid";
@@ -29,11 +29,17 @@ interface DataPoint {
   [key: string]: number | string | null;
 }
 
+export interface NuclearOverlayPoint {
+  ts: string;
+  nuclear_gw: number;
+}
+
 interface Props {
   data: DataPoint[];
   keys?: string[];
   height?: number;
   xFormat?: "time" | "date" | "datetime";
+  nuclearOverlay?: NuclearOverlayPoint[];
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -46,12 +52,13 @@ const bisectDate = bisector<DataPoint, Date>((d) => getDate(d)).left;
 
 // ─── Tooltip Component ───────────────────────────────────────────────────────
 
-function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare }: {
+function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearGw }: {
   tooltip: { data: DataPoint; left: number };
   activeKeys: string[];
   width: number;
   margin: typeof CHART_MARGIN;
   getEEShare: (d: DataPoint) => number;
+  nuclearGw?: number | null;
 }) {
   const d = tooltip.data;
   const tooltipWidth = 180;
@@ -87,6 +94,14 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare }: {
       }}>
         {Math.round(getEEShare(d))} % Erneuerbare
       </div>
+      {nuclearGw != null && nuclearGw > 0 && (
+        <div style={{
+          fontSize: 11, color: "#9E9E9E", marginBottom: 8,
+          fontFamily: "var(--font-mono)", fontWeight: 600,
+        }}>
+          ⚛ {(nuclearGw * 1000).toFixed(0)} MW Kernimport
+        </div>
+      )}
       {[...activeKeys].reverse().map((key) => {
         const val = d[key];
         if (typeof val !== "number" || val <= 0) return null;
@@ -112,7 +127,7 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare }: {
 
 // ─── Chart ───────────────────────────────────────────────────────────────────
 
-function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat }: Props & { width: number }) {
+function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, nuclearOverlay }: Props & { width: number }) {
   const margin = CHART_MARGIN;
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
@@ -203,6 +218,33 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat }:
     [xScale, data, margin.left]
   );
 
+  // Nuclear overlay lookup for tooltip
+  const nuclearByTs = useMemo(() => {
+    if (!nuclearOverlay) return null;
+    const map = new Map<string, number>();
+    for (const d of nuclearOverlay) map.set(d.ts, d.nuclear_gw);
+    return map;
+  }, [nuclearOverlay]);
+
+  const getNuclearGw = useCallback(
+    (d: DataPoint): number | null => {
+      if (!nuclearByTs) return null;
+      // Exact match first
+      const exact = nuclearByTs.get(d.ts);
+      if (exact !== undefined) return exact;
+      // Find closest timestamp
+      const ts = new Date(d.ts).getTime();
+      let closest: number | null = null;
+      let minDiff = Infinity;
+      nuclearByTs.forEach((val, key) => {
+        const diff = Math.abs(new Date(key).getTime() - ts);
+        if (diff < minDiff) { minDiff = diff; closest = val; }
+      });
+      return closest;
+    },
+    [nuclearByTs]
+  );
+
   // Renewable share for tooltip
   const getEEShare = useCallback(
     (d: DataPoint) => {
@@ -270,6 +312,34 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat }:
             }
           </AreaStack>
 
+          {/* Nuclear import overlay */}
+          {nuclearOverlay && nuclearOverlay.length > 1 && (
+            <>
+              <AreaClosed
+                data={nuclearOverlay}
+                x={(d) => xScale(new Date(d.ts)) ?? 0}
+                y={(d) => yScale(d.nuclear_gw * 1000) ?? 0}
+                yScale={yScale}
+                curve={curveMonotoneX}
+                fill="#78909C"
+                fillOpacity={0.35}
+                stroke="none"
+              />
+              {/* Visible top edge line */}
+              <AreaClosed
+                data={nuclearOverlay}
+                x={(d) => xScale(new Date(d.ts)) ?? 0}
+                y={(d) => yScale(d.nuclear_gw * 1000) ?? 0}
+                yScale={yScale}
+                curve={curveMonotoneX}
+                fill="none"
+                stroke="#546E7A"
+                strokeWidth={2}
+                strokeOpacity={0.8}
+              />
+            </>
+          )}
+
           {/* Tooltip hover line */}
           {tooltip && (
             <line
@@ -330,14 +400,14 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat }:
       </svg>
 
       {/* Tooltip */}
-      {tooltip && <ChartTooltip tooltip={tooltip} activeKeys={activeKeys} width={width} margin={margin} getEEShare={getEEShare} />}
+      {tooltip && <ChartTooltip tooltip={tooltip} activeKeys={activeKeys} width={width} margin={margin} getEEShare={getEEShare} nuclearGw={getNuclearGw(tooltip.data)} />}
     </div>
   );
 }
 
 // ─── Responsive Wrapper ──────────────────────────────────────────────────────
 
-export default function StackedAreaChart({ data, keys, height, xFormat }: Props) {
+export default function StackedAreaChart({ data, keys, height, xFormat, nuclearOverlay }: Props) {
   if (!data || data.length < 2) {
     return (
       <div style={{
@@ -355,7 +425,7 @@ export default function StackedAreaChart({ data, keys, height, xFormat }: Props)
       <ParentSize>
         {({ width }) =>
           width > 0 ? (
-            <StackedAreaInner data={data} keys={keys} height={h} width={width} xFormat={xFormat} />
+            <StackedAreaInner data={data} keys={keys} height={h} width={width} xFormat={xFormat} nuclearOverlay={nuclearOverlay} />
           ) : null
         }
       </ParentSize>

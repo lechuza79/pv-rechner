@@ -72,3 +72,27 @@ export function useGenerationMix(country = "de", hours = 24) {
     { data: [], source: "", license: "", country }
   );
 }
+
+// ─── Nuclear Import ─────────────────────────────────────────────────────────
+
+export interface NuclearImportDataPoint {
+  ts: string;
+  nuclear_gw: number;
+}
+
+export interface NuclearImportData {
+  data: NuclearImportDataPoint[];
+  avg_gw: number;
+  avg_share_pct: number;
+  source: string;
+  license: string;
+}
+
+/** Calculated nuclear import from neighboring countries */
+export function useNuclearImport(hours = 24) {
+  return useCachedFetch<NuclearImportData>(
+    `/api/energy/nuclear-import?hours=${hours}`,
+    `nuclear-${hours}`,
+    { data: [], avg_gw: 0, avg_share_pct: 0, source: "", license: "" }
+  );
+}

@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { useGenerationMix } from "../../lib/energy";
+import { useGenerationMix, useNuclearImport } from "../../lib/energy";
 import StackedAreaChart from "../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../components/charts/StackedBarChart";
 import {
@@ -32,6 +32,7 @@ function getYtdHours(): number {
 
 export default function EnergieClient() {
   const [selectedLabel, setSelectedLabel] = useState("24h");
+  const [showNuclear, setShowNuclear] = useState(true);
 
   // Resolve actual hours (YTD is dynamic)
   const hours = useMemo(() => {
@@ -43,6 +44,7 @@ export default function EnergieClient() {
 
   const timeLabel = TIME_RANGES.find(r => r.label === selectedLabel)?.desc || "24 Stunden";
   const { data: genData, loading, error } = useGenerationMix("de", hours);
+  const { data: nuclearData, loading: nuclearLoading } = useNuclearImport(hours);
 
   // Aggregate stats over the full time period
   const stats = useMemo(() => calcPeriodStats(genData.data), [genData.data]);
@@ -95,82 +97,99 @@ export default function EnergieClient() {
         ))}
       </div>
 
-      {/* Summary Widgets — period totals */}
+      {/* Summary Widgets — horizontal row */}
       {stats && (
         <>
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 10,
+              display: "flex",
+              gap: 8,
               marginBottom: 12,
-              maxWidth: 400,
-              marginLeft: "auto",
-              marginRight: "auto",
+              overflowX: "auto",
+              WebkitOverflowScrolling: "touch",
+              scrollbarWidth: "none",
             }}
           >
-            <div
-              style={{
-                background: v("--color-bg-accent"),
-                border: `1px solid ${v("--color-border-accent")}`,
-                borderRadius: v("--radius-md"),
-                padding: "14px 16px",
-                textAlign: "center",
-              }}
-            >
-              <div style={{ fontSize: 26, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-positive") }}>
+            {/* EE Share */}
+            <div style={{
+              flex: "1 0 0", minWidth: 90,
+              background: v("--color-bg-accent"),
+              border: `1px solid ${v("--color-border-accent")}`,
+              borderRadius: v("--radius-md"),
+              padding: "12px 8px", textAlign: "center",
+            }}>
+              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-positive") }}>
                 {Math.round(stats.eeSharePct)}%
               </div>
-              <div style={{ fontSize: 10, color: v("--color-text-muted"), marginTop: 2 }}>Erneuerbare</div>
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>Erneuerbare</div>
             </div>
-            <div
-              style={{
-                background: v("--color-bg-muted"),
-                border: `1px solid ${v("--color-border")}`,
-                borderRadius: v("--radius-md"),
-                padding: "14px 16px",
-                textAlign: "center",
-              }}
-            >
-              <div style={{ fontSize: 26, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
+            {/* Total */}
+            <div style={{
+              flex: "1 0 0", minWidth: 90,
+              background: v("--color-bg-muted"),
+              border: `1px solid ${v("--color-border")}`,
+              borderRadius: v("--radius-md"),
+              padding: "12px 8px", textAlign: "center",
+            }}>
+              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
                 {formatGWh(stats.totalGenerationGWh)}
               </div>
-              <div style={{ fontSize: 10, color: v("--color-text-muted"), marginTop: 2 }}>Erzeugt</div>
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>Erzeugt</div>
             </div>
-            <div
-              style={{
-                background: v("--color-bg-muted"),
-                border: `1px solid ${v("--color-border")}`,
-                borderRadius: v("--radius-md"),
-                padding: "14px 16px",
-                textAlign: "center",
-              }}
-            >
-              <div style={{ fontSize: 26, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-positive") }}>
+            {/* Renewable */}
+            <div style={{
+              flex: "1 0 0", minWidth: 90,
+              background: v("--color-bg-muted"),
+              border: `1px solid ${v("--color-border")}`,
+              borderRadius: v("--radius-md"),
+              padding: "12px 8px", textAlign: "center",
+            }}>
+              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-positive") }}>
                 {formatGWh(stats.renewableGWh)}
               </div>
-              <div style={{ fontSize: 10, color: v("--color-text-muted"), marginTop: 2 }}>davon Erneuerbar</div>
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>davon EE</div>
             </div>
-            <div
-              style={{
-                background: v("--color-bg-muted"),
-                border: `1px solid ${v("--color-border")}`,
-                borderRadius: v("--radius-md"),
-                padding: "14px 16px",
-                textAlign: "center",
-              }}
-            >
+            {/* Net Import/Export */}
+            <div style={{
+              flex: "1 0 0", minWidth: 90,
+              background: v("--color-bg-muted"),
+              border: `1px solid ${v("--color-border")}`,
+              borderRadius: v("--radius-md"),
+              padding: "12px 8px", textAlign: "center",
+            }}>
               <div style={{
-                fontSize: 26, fontWeight: 800, fontFamily: v("--font-mono"),
+                fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"),
                 color: stats.netImportGWh > 0 ? v("--color-negative") : v("--color-positive"),
               }}>
                 {stats.netImportGWh > 0 ? "+" : ""}{formatGWh(Math.abs(stats.netImportGWh))}
               </div>
-              <div style={{ fontSize: 10, color: v("--color-text-muted"), marginTop: 2 }}>
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>
                 Netto-{stats.netImportGWh > 0 ? "Import" : "Export"}
               </div>
             </div>
+            {/* Nuclear import toggle */}
+            {!nuclearLoading && nuclearData.avg_gw > 0 && (
+              <button
+                onClick={() => setShowNuclear(!showNuclear)}
+                style={{
+                  flex: "1 0 0", minWidth: 90,
+                  background: showNuclear ? "rgba(158,158,158,0.08)" : v("--color-bg-muted"),
+                  border: `1px solid ${showNuclear ? "#9E9E9E" : v("--color-border")}`,
+                  borderRadius: v("--radius-md"),
+                  padding: "12px 8px", textAlign: "center",
+                  cursor: "pointer", fontFamily: v("--font-text"),
+                }}
+              >
+                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: "#9E9E9E" }}>
+                  {nuclearData.avg_gw.toFixed(1)} GW
+                </div>
+                <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>
+                  {showNuclear ? "▣" : "▢"} Kernimport
+                </div>
+              </button>
+            )}
           </div>
+
           <div style={{ textAlign: "center", fontSize: 11, color: v("--color-text-faint"), marginBottom: 16 }}>
             {selectedLabel === "YTD" ? "Seit Jahresbeginn" : `Letzte ${timeLabel}`}
           </div>
@@ -221,9 +240,14 @@ export default function EnergieClient() {
           <StackedBarChart
             data={genData.data}
             mode={selectedLabel === "YTD" ? "ytd" : selectedLabel === "12M" ? "12m" : "30d"}
+            nuclearOverlay={showNuclear ? nuclearData.data : undefined}
           />
         ) : (
-          <StackedAreaChart data={genData.data} xFormat={hours > 168 ? "date" : hours > 48 ? "datetime" : "time"} />
+          <StackedAreaChart
+            data={genData.data}
+            xFormat={hours > 168 ? "date" : hours > 48 ? "datetime" : "time"}
+            nuclearOverlay={showNuclear ? nuclearData.data : undefined}
+          />
         )}
 
         {/* Legend */}
@@ -249,6 +273,18 @@ export default function EnergieClient() {
           </div>
         )}
       </div>
+
+      {/* Methodology note for nuclear overlay */}
+      {showNuclear && !nuclearLoading && nuclearData.avg_gw > 0 && (
+        <div style={{
+          fontSize: 10, color: v("--color-text-faint"), lineHeight: 1.6,
+          marginBottom: 20, padding: "0 8px",
+        }}>
+          <strong style={{ color: v("--color-text-muted") }}>Kernimport-Overlay:</strong>{" "}
+          Rechnerischer Kernenergie-Import = Physische Grenzflüsse × Kernanteil des Exportlandes.
+          Methodik analog Fraunhofer ISE. Nur Importe aus FR, CZ, CH, SE, BE, NL.
+        </div>
+      )}
 
       {/* Source Attribution */}
       <div
