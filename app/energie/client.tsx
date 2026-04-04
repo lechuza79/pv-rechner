@@ -190,7 +190,7 @@ export default function EnergieClient() {
       }
     }
     const avgGw = isWeekly
-      ? (totalGWh / genData.data.length / 168 * 1000) // GWh/week → avg GW
+      ? (totalGWh / genData.data.length / 168) // GWh/week → avg GW
       : count > 0 ? totalMw / count / 1000 : 0;
     return { avgGw, totalGWh };
   }, [genData.data, genData.resolution, hasDomesticNuclear]);
@@ -423,7 +423,7 @@ export default function EnergieClient() {
           const importAvgGw = nuclearData.avg_gw > 0
             ? nuclearData.avg_gw
             : preAggNuclearImportGWh > 0 && genData.data.length > 0
-              ? (preAggNuclearImportGWh / genData.data.length / 168 * 1000)  // GWh/week → GW
+              ? (preAggNuclearImportGWh / genData.data.length / 168)  // GWh/week → GW
               : 0;
           const totalAvgGw = domesticNuclearStats.avgGw + importAvgGw;
 

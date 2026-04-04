@@ -513,12 +513,9 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
   // Tick labels
   const tickValues = useMemo(() => {
     if (preAggregated) {
-      // Monthly buckets: show every 2nd month, always include January
+      // Monthly buckets in Max view: show only January (year labels)
       return buckets
-        .filter(b => {
-          const m = parseInt(b.weekKey.split("-")[1], 10);
-          return m % 2 === 1; // Jan, Mar, May, Jul, Sep, Nov
-        })
+        .filter(b => b.weekKey.endsWith("-01"))
         .map(b => b.weekKey);
     }
     if (mode === "30d") {
