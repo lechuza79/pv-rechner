@@ -171,6 +171,48 @@ function aggregateToDays(data: DataPoint[]): WeekBucket[] {
   return Array.from(buckets.values()).sort((a, b) => a.weekKey.localeCompare(b.weekKey));
 }
 
+// ─── Aggregate weekly buckets to monthly ────────────────────────────────────
+
+const MONTH_LABELS = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+
+function isoWeekToMonth(year: number, week: number): { year: number; month: number } {
+  // Monday of ISO week: Jan 4 is always in week 1
+  const jan4 = new Date(Date.UTC(year, 0, 4));
+  const dayOfWeek = jan4.getUTCDay() || 7; // Mon=1..Sun=7
+  const monday = new Date(jan4.getTime() + ((week - 1) * 7 - (dayOfWeek - 1)) * 86400000);
+  // Use Wednesday (mid-week) to determine which month the week "belongs" to
+  const wed = new Date(monday.getTime() + 2 * 86400000);
+  return { year: wed.getUTCFullYear(), month: wed.getUTCMonth() }; // 0-based
+}
+
+function aggregateWeeksToMonths(weekBuckets: WeekBucket[]): WeekBucket[] {
+  const genKeys = GENERATION_STACK_KEYS;
+  const months = new Map<string, WeekBucket>();
+
+  for (const w of weekBuckets) {
+    const parts = w.weekKey.match(/^(\d{4})-W(\d{2})$/);
+    if (!parts) continue;
+    const yr = parseInt(parts[1], 10);
+    const wk = parseInt(parts[2], 10);
+    const { year, month } = isoWeekToMonth(yr, wk);
+    const monthKey = `${year}-${String(month + 1).padStart(2, "0")}`;
+
+    if (!months.has(monthKey)) {
+      const label = month === 0 ? String(year) : MONTH_LABELS[month];
+      const bucket: WeekBucket = { weekKey: monthKey, label };
+      for (const key of genKeys) bucket[key] = 0;
+      months.set(monthKey, bucket);
+    }
+
+    const bucket = months.get(monthKey)!;
+    for (const key of genKeys) {
+      bucket[key] = (bucket[key] as number) + (typeof w[key] === "number" ? (w[key] as number) : 0);
+    }
+  }
+
+  return Array.from(months.values()).sort((a, b) => a.weekKey.localeCompare(b.weekKey));
+}
+
 // ─── Aggregate nuclear overlay to matching buckets ──────────────────────────
 
 function aggregateNuclearToWeeks(data: NuclearOverlayPoint[]): Map<string, number> {
@@ -379,20 +421,16 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
   const buckets = useMemo(() => {
     // Pre-aggregated data from Supabase: ts is "YYYY-WNN", values are already GWh
     if (preAggregated) {
-      return data.map((d): WeekBucket => {
+      const weekBuckets = data.map((d): WeekBucket => {
         const weekKey = d.ts as string;
-        const parts = weekKey.match(/^(\d{4})-W(\d{2})$/);
-        const year = parts ? parts[1] : weekKey;
-        const wNum = parts ? parseInt(parts[2], 10) : 0;
-        const bucket: WeekBucket = {
-          weekKey,
-          label: wNum === 1 ? year : `KW${wNum}`,
-        };
+        const bucket: WeekBucket = { weekKey, label: weekKey };
         for (const key of GENERATION_STACK_KEYS) {
           bucket[key] = typeof d[key] === "number" ? (d[key] as number) : 0;
         }
         return bucket;
       });
+      // Aggregate to monthly for better readability
+      return aggregateWeeksToMonths(weekBuckets);
     }
     if (mode === "30d") return aggregateToDays(data);
     const weeks = aggregateToWeeks(data);
@@ -424,7 +462,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
       scaleBand<string>({
         domain: buckets.map((d) => d.weekKey),
         range: [0, innerWidth],
-        padding: mode === "30d" ? 0.15 : mode === "max" ? 0.02 : 0.08,
+        padding: mode === "30d" ? 0.15 : preAggregated ? 0.05 : mode === "max" ? 0.02 : 0.08,
       }),
     [buckets, innerWidth, mode]
   );
@@ -461,13 +499,17 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
   // Tick labels: for max mode show only year starts, otherwise density-based
   const totalBuckets = buckets.length;
   const tickValues = useMemo(() => {
+    if (preAggregated) {
+      // Monthly buckets: show January of each year (weekKey = "YYYY-01")
+      return buckets.filter(b => b.weekKey.endsWith("-01")).map(b => b.weekKey);
+    }
     if (mode === "max") {
       // Show only KW1 of each year (year label)
       return buckets.filter(b => b.weekKey.endsWith("-W01")).map(b => b.weekKey);
     }
     const interval = totalBuckets > 40 ? 8 : totalBuckets > 20 ? 4 : totalBuckets > 10 ? 2 : 1;
     return buckets.filter((_, i) => i % interval === 0).map((d) => d.weekKey);
-  }, [buckets, totalBuckets, mode]);
+  }, [buckets, totalBuckets, mode, preAggregated]);
 
   return (
     <div style={{ position: "relative" }}>
