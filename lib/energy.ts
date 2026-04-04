@@ -13,6 +13,7 @@ export interface GenerationData {
   source: string;
   license: string;
   country: string;
+  resolution?: string;
 }
 
 // ─── Hooks ───────────────────────────────────────────────────────────────────

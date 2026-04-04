@@ -45,6 +45,7 @@ interface Props {
   height?: number;
   mode?: "ytd" | "12m" | "30d" | "max";
   nuclearOverlay?: NuclearOverlayPoint[];
+  preAggregated?: boolean; // Data is already weekly GWh (from Supabase)
 }
 
 // ─── ISO week number ─────────────────────────────────────────────────────────
@@ -370,12 +371,29 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
 
 // ─── Inner Chart ─────────────────────────────────────────────────────────────
 
-function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nuclearOverlay }: Props & { width: number }) {
+function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nuclearOverlay, preAggregated }: Props & { width: number }) {
   const margin = CHART_MARGIN;
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
   const buckets = useMemo(() => {
+    // Pre-aggregated data from Supabase: ts is "YYYY-WNN", values are already GWh
+    if (preAggregated) {
+      return data.map((d): WeekBucket => {
+        const weekKey = d.ts as string;
+        const parts = weekKey.match(/^(\d{4})-W(\d{2})$/);
+        const year = parts ? parts[1] : weekKey;
+        const wNum = parts ? parseInt(parts[2], 10) : 0;
+        const bucket: WeekBucket = {
+          weekKey,
+          label: wNum === 1 ? year : `KW${wNum}`,
+        };
+        for (const key of GENERATION_STACK_KEYS) {
+          bucket[key] = typeof d[key] === "number" ? (d[key] as number) : 0;
+        }
+        return bucket;
+      });
+    }
     if (mode === "30d") return aggregateToDays(data);
     const weeks = aggregateToWeeks(data);
     if (mode === "max") {
@@ -388,7 +406,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
     }
     if (mode === "ytd") return build52WeekGrid(weeks);
     return weeks;
-  }, [data, mode]);
+  }, [data, mode, preAggregated]);
 
   const nuclearBuckets = useMemo(() => {
     if (!nuclearOverlay || nuclearOverlay.length < 2) return null;
@@ -644,7 +662,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
 
 // ─── Responsive Wrapper ──────────────────────────────────────────────────────
 
-export default function StackedBarChart({ data, keys, height, mode, nuclearOverlay }: Props) {
+export default function StackedBarChart({ data, keys, height, mode, nuclearOverlay, preAggregated }: Props) {
   if (!data || data.length < 2) {
     return (
       <div style={{
@@ -662,7 +680,7 @@ export default function StackedBarChart({ data, keys, height, mode, nuclearOverl
       <ParentSize>
         {({ width }) =>
           width > 0 ? (
-            <StackedBarInner data={data} keys={keys} height={h} width={width} mode={mode} nuclearOverlay={nuclearOverlay} />
+            <StackedBarInner data={data} keys={keys} height={h} width={width} mode={mode} nuclearOverlay={nuclearOverlay} preAggregated={preAggregated} />
           ) : null
         }
       </ParentSize>

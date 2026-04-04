@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createCache, fetchPublicPower } from "../../../../lib/energy-api";
+import { supabase } from "../../../../lib/supabase-server";
+import { GENERATION_STACK_KEYS } from "../../../../lib/chart-utils";
 
 // In-memory cache (TTL scales with time range)
 const cache = createCache<GenerationResponse>(5 * 60 * 1000);
@@ -47,6 +49,51 @@ function downsample(data: GenerationDataPoint[], factor: number): GenerationData
   return result;
 }
 
+// ─── Fetch pre-aggregated weekly data from Supabase ─────────────────────────
+
+async function fetchFromSupabase(
+  country: string,
+  startDate: string,
+  endDate: string,
+): Promise<GenerationResponse | null> {
+  if (!supabase) return null;
+
+  // Convert dates to week_key range
+  const startYear = new Date(startDate).getFullYear();
+  const endYear = new Date(endDate).getFullYear();
+
+  const { data: rows, error } = await supabase
+    .from("energy_weekly")
+    .select("*")
+    .eq("country", country)
+    .gte("year", startYear)
+    .lte("year", endYear)
+    .order("week_key", { ascending: true });
+
+  if (error || !rows || rows.length === 0) return null;
+
+  // Convert weekly rows to GenerationDataPoint format
+  // Use week_key as timestamp (client aggregates to weeks anyway)
+  const data: GenerationDataPoint[] = rows.map((row: Record<string, unknown>) => {
+    const point: GenerationDataPoint = {
+      ts: `${row.year}-W${String(row.week).padStart(2, "0")}`,
+    };
+    for (const key of GENERATION_STACK_KEYS) {
+      point[key] = typeof row[key] === "number" ? row[key] as number : 0;
+    }
+    if (typeof row.load === "number") point.load = row.load as number;
+    return point;
+  });
+
+  return {
+    data,
+    source: "Fraunhofer ISE / Energy-Charts (cached)",
+    license: "CC BY 4.0",
+    country,
+    resolution: "weekly",
+  };
+}
+
 // ─── GET Handler ──────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
@@ -87,23 +134,19 @@ export async function GET(req: NextRequest) {
       endStr = now.toISOString().replace("Z", "+01:00").slice(0, 19) + "+01:00";
     }
 
-    // For multi-year ranges, split into yearly chunks to avoid API timeout
-    let rows: Awaited<ReturnType<typeof fetchPublicPower>>;
-    if (rangeHours > 8784) {
-      // Split into yearly requests, fetch in parallel
-      const startYear = new Date(startStr).getFullYear();
-      const endYear = new Date(endStr).getFullYear();
-      const yearChunks: Promise<Awaited<ReturnType<typeof fetchPublicPower>>>[] = [];
-      for (let y = startYear; y <= endYear; y++) {
-        const chunkStart = y === startYear ? startStr : `${y}-01-01T00:00:00+01:00`;
-        const chunkEnd = y === endYear ? endStr : `${y}-12-31T23:59:59+01:00`;
-        yearChunks.push(fetchPublicPower(country, chunkStart, chunkEnd));
+    // For multi-year ranges, try Supabase first (pre-aggregated weekly data)
+    if (isAbsolute && rangeHours > 8784) {
+      const dbResult = await fetchFromSupabase(country, startParam!, endParam!);
+      if (dbResult && dbResult.data.length > 0) {
+        store.set(cacheKey, dbResult);
+        return NextResponse.json(dbResult, {
+          headers: { "Cache-Control": `public, s-maxage=${isPast ? 2592000 : 3600}` },
+        });
       }
-      const results = await Promise.all(yearChunks);
-      rows = results.flat();
-    } else {
-      rows = await fetchPublicPower(country, startStr, endStr);
+      // Supabase empty → fallback to Energy-Charts (yearly chunks)
     }
+
+    const rows = await fetchPublicPower(country, startStr, endStr);
 
     if (rows.length === 0) {
       const stale = store.getStale(cacheKey);

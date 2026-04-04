@@ -96,9 +96,9 @@ export async function GET(req: NextRequest) {
     }
 
     // Helper: fetch with yearly chunking for multi-year ranges
-    async function fetchChunked<T>(
+    const fetchChunked = async <T,>(
       fetcher: (s: string, e: string) => Promise<T[]>,
-    ): Promise<T[]> {
+    ): Promise<T[]> => {
       if (rangeHours > 8784) {
         const startYear = new Date(startStr).getFullYear();
         const endYear = new Date(endStr).getFullYear();
@@ -111,7 +111,7 @@ export async function GET(req: NextRequest) {
         return (await Promise.all(chunks)).flat();
       }
       return fetcher(startStr, endStr);
-    }
+    };
 
     // Step 1: Fetch cross-border flows (chunked for multi-year)
     const cbpfRows = await fetchChunked((s, e) => fetchCrossBorderFlows("de", s, e));

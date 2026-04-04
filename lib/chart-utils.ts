@@ -158,48 +158,55 @@ interface DataPoint {
   [key: string]: number | string | null;
 }
 
-/** Calculate energy totals over a time period (MW × 0.25h intervals → MWh → GWh) */
-export function calcPeriodStats(data: DataPoint[]) {
+/** Calculate energy totals over a time period.
+ *  For raw data: MW × interval hours → MWh → GWh.
+ *  For pre-aggregated weekly data (resolution="weekly"): values already in GWh.
+ */
+export function calcPeriodStats(data: DataPoint[], resolution?: string) {
   if (data.length < 2) return null;
 
-  // Detect interval (usually 15 min = 900s)
-  const t0 = new Date(data[0].ts).getTime();
-  const t1 = new Date(data[1].ts).getTime();
-  const intervalHours = (t1 - t0) / (1000 * 60 * 60);
+  const isWeekly = resolution === "weekly";
 
-  let totalGenerationMWh = 0;
-  let renewableMWh = 0;
-  let loadMWh = 0;
+  // For raw data: detect interval (usually 15 min = 900s)
+  let intervalHours = 0.25;
+  if (!isWeekly) {
+    const t0 = new Date(data[0].ts).getTime();
+    const t1 = new Date(data[1].ts).getTime();
+    intervalHours = (t1 - t0) / (1000 * 60 * 60);
+  }
+
+  let totalGWh = 0;
+  let renewableGWh = 0;
+  let loadGWh = 0;
 
   for (const d of data) {
-    // Sum generation
     for (const key of GENERATION_STACK_KEYS) {
       const val = d[key];
       if (typeof val === "number" && val > 0) {
-        totalGenerationMWh += val * intervalHours;
-        if (RENEWABLE_KEYS.includes(key)) {
-          renewableMWh += val * intervalHours;
+        if (isWeekly) {
+          // Already GWh
+          totalGWh += val;
+          if (RENEWABLE_KEYS.includes(key)) renewableGWh += val;
+        } else {
+          // MW × hours → MWh, accumulate
+          const mwh = val * intervalHours;
+          totalGWh += mwh / 1000;
+          if (RENEWABLE_KEYS.includes(key)) renewableGWh += mwh / 1000;
         }
       }
     }
 
-    // Sum load (consumption)
     const load = d.load;
     if (typeof load === "number" && load > 0) {
-      loadMWh += load * intervalHours;
+      loadGWh += isWeekly ? load : load * intervalHours / 1000;
     }
   }
 
-  const totalGenerationGWh = totalGenerationMWh / 1000;
-  const renewableGWh = renewableMWh / 1000;
-  const loadGWh = loadMWh / 1000;
-  const eeSharePct = totalGenerationMWh > 0 ? (renewableMWh / totalGenerationMWh) * 100 : 0;
-
-  // Net import/export: load - generation (positive = import, negative = export)
-  const netImportGWh = loadGWh - totalGenerationGWh;
+  const eeSharePct = totalGWh > 0 ? (renewableGWh / totalGWh) * 100 : 0;
+  const netImportGWh = loadGWh - totalGWh;
 
   return {
-    totalGenerationGWh,
+    totalGenerationGWh: totalGWh,
     renewableGWh,
     loadGWh,
     eeSharePct,

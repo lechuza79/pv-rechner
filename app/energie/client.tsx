@@ -142,7 +142,7 @@ export default function EnergieClient() {
   const { data: genData, loading, error, isStale, refetch } = useGenerationMix("de", hours, dateRange);
   const { data: nuclearData, loading: nuclearLoading, error: nuclearError } = useNuclearImport(hours, dateRange);
 
-  const stats = useMemo(() => calcPeriodStats(genData.data), [genData.data]);
+  const stats = useMemo(() => calcPeriodStats(genData.data, genData.resolution), [genData.data, genData.resolution]);
 
   // Check if domestic nuclear data is present (only before April 2023)
   const hasDomesticNuclear = useMemo(() => {
@@ -357,6 +357,7 @@ export default function EnergieClient() {
               data={genData.data}
               mode={isMax ? "max" : selected === "YTD" || isYear ? "ytd" : selected === "12M" ? "12m" : "30d"}
               nuclearOverlay={showNuclear ? nuclearData.data : undefined}
+              preAggregated={genData.resolution === "weekly"}
             />
           ) : (
             <StackedAreaChart
