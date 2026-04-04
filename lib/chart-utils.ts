@@ -135,9 +135,10 @@ export function formatGWh(gwh: number): string {
   return `${gwh.toFixed(2)} GWh`;
 }
 
-/** Determine whether to use TWh or GWh based on the total value */
+/** Determine whether to use TWh or GWh based on the total value.
+ *  Uses TWh when totals exceed 5 TWh (30d+), GWh for shorter periods (24h, 7d). */
 export function energyUnit(totalGWh: number): "TWh" | "GWh" {
-  return totalGWh >= 1000 ? "TWh" : "GWh";
+  return totalGWh >= 5000 ? "TWh" : "GWh";
 }
 
 /** Format GWh value in a fixed unit (TWh or GWh) for consistent comparison */

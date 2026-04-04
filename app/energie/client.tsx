@@ -195,16 +195,30 @@ export default function EnergieClient() {
     return { avgGw, totalGWh };
   }, [genData.data, genData.resolution, hasDomesticNuclear]);
 
-  // Nuclear import from preAggregated data (for Max view where API doesn't work)
-  const preAggNuclearImportGWh = useMemo(() => {
-    if (genData.resolution !== "weekly") return 0;
-    let total = 0;
-    for (const d of genData.data) {
-      const val = d.nuclear_import;
-      if (typeof val === "number" && val > 0) total += val;
+  // Nuclear import total GWh — from Supabase (preAggregated) or live API data
+  const nuclearImportGWh = useMemo(() => {
+    // From preAggregated weekly data (Max view)
+    if (genData.resolution === "weekly") {
+      let total = 0;
+      for (const d of genData.data) {
+        const val = d.nuclear_import;
+        if (typeof val === "number" && val > 0) total += val;
+      }
+      return total;
     }
-    return total;
-  }, [genData.data, genData.resolution]);
+    // From live API data: nuclear_gw × intervalHours = GWh
+    if (nuclearData.data.length >= 2) {
+      const t0 = new Date(nuclearData.data[0].ts).getTime();
+      const t1 = new Date(nuclearData.data[1].ts).getTime();
+      const intervalHours = (t1 - t0) / (1000 * 60 * 60);
+      let total = 0;
+      for (const d of nuclearData.data) {
+        if (d.nuclear_gw > 0) total += d.nuclear_gw * intervalHours;
+      }
+      return total;
+    }
+    return 0;
+  }, [genData.data, genData.resolution, nuclearData.data]);
 
   // Time range display label
   const rangeLabel = useMemo(() => {
@@ -234,7 +248,7 @@ export default function EnergieClient() {
         { color: CATEGORY_COLORS.fossil, label: "Fossil" },
         { color: CATEGORY_COLORS.other, label: "Sonstige" },
         ...(hasDomesticNuclear ? [{ color: CATEGORY_COLORS.nuclear, label: "Kernenergie (erzeugt)" }] : []),
-        ...(showNuclear && nuclearData.avg_gw > 0 ? [{ color: CATEGORY_COLORS.nuclearImport, label: "Kernenergie (importiert)" }] : []),
+        ...(showNuclear && nuclearImportGWh > 0 ? [{ color: CATEGORY_COLORS.nuclearImport, label: "Kernenergie (importiert)" }] : []),
       ],
     },
     filename: `solar-check-strommix-${selected}.png`,
@@ -424,17 +438,14 @@ export default function EnergieClient() {
         ))}
         {/* Kernenergie toggle */}
         {(() => {
-          // Combine domestic + imported nuclear for display
-          const hasImportData = nuclearData.avg_gw > 0 || preAggNuclearImportGWh > 0;
-          const hasDomestic = domesticNuclearStats.avgGw > 0;
-          const hasAny = hasImportData || hasDomestic;
-          // For GW display: use avg_gw from API if available, or estimate from preAgg GWh
-          const importAvgGw = nuclearData.avg_gw > 0
-            ? nuclearData.avg_gw
-            : preAggNuclearImportGWh > 0 && genData.data.length > 0
-              ? (preAggNuclearImportGWh / genData.data.length / 168)  // GWh/week → GW
-              : 0;
-          const totalAvgGw = domesticNuclearStats.avgGw + importAvgGw;
+          const totalNucGWh = domesticNuclearStats.totalGWh + nuclearImportGWh;
+          const hasAny = totalNucGWh > 0;
+          const hasDomestic = domesticNuclearStats.totalGWh > 0;
+          const hasImport = nuclearImportGWh > 0;
+          // Use same unit as other widgets
+          const wUnit = stats ? energyUnit(stats.totalGenerationGWh) : "TWh";
+          const nucFormatted = hasAny ? splitValueUnit(formatGWhIn(totalNucGWh, wUnit)) : null;
+          const importFormatted = hasImport ? splitValueUnit(formatGWhIn(nuclearImportGWh, wUnit)) : null;
 
           return (
             <button
@@ -455,18 +466,18 @@ export default function EnergieClient() {
                   <BouncingDots />
                 ) : nuclearError && !hasAny ? (
                   <span style={{ fontSize: 11, color: v("--color-text-muted"), fontWeight: 400, fontFamily: v("--font-text") }}>Nicht verfügbar</span>
-                ) : hasAny ? (
+                ) : hasAny && nucFormatted ? (
                   <>
-                    <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{totalAvgGw.toFixed(1)}</span>
-                    <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>GW</span>
+                    <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{nucFormatted[0]}</span>
+                    <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 3 }}>{nucFormatted[1]}</span>
                   </>
                 ) : (
                   <span style={{ fontSize: 11, color: v("--color-text-muted"), fontWeight: 400, fontFamily: v("--font-text") }}>—</span>
                 )}
               </div>
-              {hasDomestic && importAvgGw > 0 && (
+              {hasDomestic && hasImport && importFormatted && (
                 <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 2, lineHeight: 1.4, fontFamily: v("--font-mono") }}>
-                  Zukauf {importAvgGw.toFixed(1)} <span style={{ fontSize: 10, color: v("--color-text-faint") }}>GW</span>
+                  Zukauf {importFormatted[0]} <span style={{ fontSize: 10, color: v("--color-text-faint") }}>{importFormatted[1]}</span>
                 </div>
               )}
             </button>
@@ -608,7 +619,7 @@ export default function EnergieClient() {
       </div>
 
       {/* Methodology note */}
-      {showNuclear && !nuclearLoading && nuclearData.avg_gw > 0 && (
+      {showNuclear && !nuclearLoading && nuclearImportGWh > 0 && (
         <div style={{
           fontSize: 10, color: v("--color-text-faint"), lineHeight: 1.6,
           marginBottom: 20, padding: "0 8px",
