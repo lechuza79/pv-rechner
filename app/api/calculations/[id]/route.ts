@@ -66,11 +66,20 @@ export async function PUT(
     return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 });
   }
 
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
 
   const update: Record<string, unknown> = { updated_at: new Date().toISOString() };
-  if (body.name !== undefined) update.name = body.name;
-  if (body.description !== undefined) update.description = body.description;
+  if (typeof body.name === "string") update.name = body.name.slice(0, 100);
+  if (typeof body.description === "string") update.description = body.description.slice(0, 500);
+
+  if (Object.keys(update).length <= 1) {
+    return NextResponse.json({ error: "No valid fields to update (name, description)" }, { status: 400 });
+  }
 
   const { error } = await supabase
     .from("calculations")

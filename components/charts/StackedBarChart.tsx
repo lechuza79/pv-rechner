@@ -13,6 +13,7 @@ import {
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
   FOSSIL_KEYS,
+  NUCLEAR_KEYS,
   SONSTIGE_KEYS,
   CATEGORY_COLORS,
   formatGWh,
@@ -42,7 +43,7 @@ interface Props {
   data: DataPoint[];
   keys?: string[];
   height?: number;
-  mode?: "ytd" | "12m" | "30d";
+  mode?: "ytd" | "12m" | "30d" | "max";
   nuclearOverlay?: NuclearOverlayPoint[];
 }
 
@@ -259,6 +260,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
   let totalGWh = 0;
   let renewableGWh = 0;
   let fossilGWh = 0;
+  let nuclearGWhLocal = 0;
   let sonstigeGWh = 0;
   for (const key of activeKeys) {
     const val = data[key];
@@ -266,6 +268,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       totalGWh += val;
       if (RENEWABLE_KEYS.includes(key)) renewableGWh += val;
       else if (FOSSIL_KEYS.includes(key)) fossilGWh += val;
+      else if (NUCLEAR_KEYS.includes(key)) nuclearGWhLocal += val;
       else sonstigeGWh += val;
     }
   }
@@ -273,10 +276,12 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
 
   const renewablePct = totalGWh > 0 ? Math.round(renewableGWh / totalGWh * 100) : 0;
   const fossilPct = totalGWh > 0 ? Math.round(fossilGWh / totalGWh * 100) : 0;
+  const nuclearPctLocal = totalGWh > 0 ? Math.round(nuclearGWhLocal / totalGWh * 100) : 0;
   const sonstigePct = totalGWh > 0 ? Math.round(sonstigeGWh / totalGWh * 100) : 0;
 
   const renewableKeys = [...activeKeys].reverse().filter(k => RENEWABLE_KEYS.includes(k));
   const fossilKeys = [...activeKeys].reverse().filter(k => FOSSIL_KEYS.includes(k));
+  const nuclearKeysLocal = [...activeKeys].reverse().filter(k => NUCLEAR_KEYS.includes(k));
   const sonstigeKeys = [...activeKeys].reverse().filter(k => SONSTIGE_KEYS.includes(k));
 
   return (
@@ -340,6 +345,18 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
         </>
       )}
 
+      {/* Kernenergie (inländisch) */}
+      {nuclearGWhLocal > 0.01 && (
+        <>
+          <BarTooltipSummary color={CATEGORY_COLORS.nuclear} label={`Kernenergie ${nuclearPctLocal}%`} value={formatGWh(nuclearGWhLocal)} />
+          {nuclearKeysLocal.map(key => {
+            const val = data[key];
+            if (typeof val !== "number" || val <= 0.01) return null;
+            return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatGWh(val)} />;
+          })}
+        </>
+      )}
+
       {/* Importierte Kernenergie */}
       {nuclearGWh != null && nuclearGWh > 0.01 && (
         <>
@@ -361,6 +378,14 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
   const buckets = useMemo(() => {
     if (mode === "30d") return aggregateToDays(data);
     const weeks = aggregateToWeeks(data);
+    if (mode === "max") {
+      // For multi-year "max" view, use raw weekly data with year-aware labels
+      return weeks.map((w): WeekBucket => {
+        const [y, wStr] = w.weekKey.split("-W");
+        const wNum = parseInt(wStr, 10);
+        return { ...w, label: wNum === 1 ? y : `KW${wNum}` };
+      });
+    }
     if (mode === "ytd") return build52WeekGrid(weeks);
     return weeks;
   }, [data, mode]);
@@ -381,7 +406,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
       scaleBand<string>({
         domain: buckets.map((d) => d.weekKey),
         range: [0, innerWidth],
-        padding: mode === "30d" ? 0.15 : 0.08,
+        padding: mode === "30d" ? 0.15 : mode === "max" ? 0.02 : 0.08,
       }),
     [buckets, innerWidth, mode]
   );
@@ -415,10 +440,16 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
 
   if (innerWidth <= 0 || buckets.length < 1) return null;
 
-  // Tick labels: show every Nth label depending on density
+  // Tick labels: for max mode show only year starts, otherwise density-based
   const totalBuckets = buckets.length;
-  const tickInterval = totalBuckets > 40 ? 8 : totalBuckets > 20 ? 4 : totalBuckets > 10 ? 2 : 1;
-  const tickValues = buckets.filter((_, i) => i % tickInterval === 0).map((d) => d.weekKey);
+  const tickValues = useMemo(() => {
+    if (mode === "max") {
+      // Show only KW1 of each year (year label)
+      return buckets.filter(b => b.weekKey.endsWith("-W01")).map(b => b.weekKey);
+    }
+    const interval = totalBuckets > 40 ? 8 : totalBuckets > 20 ? 4 : totalBuckets > 10 ? 2 : 1;
+    return buckets.filter((_, i) => i % interval === 0).map((d) => d.weekKey);
+  }, [buckets, totalBuckets, mode]);
 
   return (
     <div style={{ position: "relative" }}>

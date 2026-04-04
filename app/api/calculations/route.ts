@@ -57,43 +57,80 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Nicht angemeldet" }, { status: 401 });
   }
 
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  // ─── Validation helpers ──────────────────────────────────────────────────
+  const int = (v: unknown, min: number, max: number): number | null => {
+    const n = Number(v);
+    return Number.isInteger(n) && n >= min && n <= max ? n : null;
+  };
+  const float = (v: unknown, min: number, max: number): number | null => {
+    const n = Number(v);
+    return isFinite(n) && n >= min && n <= max ? n : null;
+  };
+  const str = (v: unknown, allowed: string[]): string | null =>
+    typeof v === "string" && allowed.includes(v) ? v : null;
+  const optStr = (v: unknown, maxLen: number): string | null =>
+    typeof v === "string" ? v.slice(0, maxLen) : null;
+
+  // ─── Required fields ────────────────────────────────────────────────────
+  const anlage = int(body.anlage, 0, 4);
+  const speicher = int(body.speicher, 0, 3);
+  const personen = int(body.personen, 0, 3);
+  const nutzung = int(body.nutzung, 0, 3);
+  const wp = str(body.wp, ["nein", "geplant", "ja"]);
+  const ea = str(body.ea, ["nein", "geplant", "ja"]);
+  const kwp = float(body.kwp, 1, 50);
+  const oErtrag = int(body.o_ertrag, 700, 1400);
+
+  if (anlage === null || speicher === null || personen === null || nutzung === null || !wp || !ea || !kwp || !oErtrag) {
+    return NextResponse.json({ error: "Missing or invalid required fields" }, { status: 400 });
+  }
+
+  // ─── Optional fields with bounds ────────────────────────────────────────
+  const einspeisungModus = str(body.einspeisung_modus, ["aus", "teil", "voll"])
+    ?? (body.einspeisung_an === false ? "aus" : "teil");
 
   const { data, error } = await supabase
     .from("calculations")
     .insert({
       user_id: user.id,
-      name: body.name || "Meine Berechnung",
-      description: body.description || null,
-      anlage: body.anlage,
-      custom_kwp: body.custom_kwp,
-      speicher: body.speicher,
-      personen: body.personen,
-      nutzung: body.nutzung,
-      wp: body.wp,
-      ea: body.ea,
-      ea_km: body.ea_km,
-      o_kosten: body.o_kosten,
-      o_ev: body.o_ev,
-      o_strom: body.o_strom,
-      o_einsp: body.o_einsp,
-      einspeisung_modus: body.einspeisung_modus ?? (body.einspeisung_an === false ? "aus" : "teil"),
-      o_ertrag: body.o_ertrag,
-      plz: body.plz,
-      fuel_type: body.fuel_type,
-      ...(body.flow_type ? { flow_type: body.flow_type } : {}),
-      ...(body.haustyp != null ? { haustyp: body.haustyp } : {}),
-      ...(body.dachart != null ? { dachart: body.dachart } : {}),
-      ...(body.budget_limit != null ? { budget_limit: body.budget_limit } : {}),
-      kwp: body.kwp,
-      amortisation_jahre: body.amortisation_jahre,
-      rendite_25j: body.rendite_25j,
+      name: optStr(body.name, 100) || "Meine Berechnung",
+      description: optStr(body.description, 500) || null,
+      anlage,
+      custom_kwp: int(body.custom_kwp, 1, 50) ?? kwp,
+      speicher,
+      personen,
+      nutzung,
+      wp,
+      ea,
+      ea_km: int(body.ea_km, 1000, 50000) ?? 15000,
+      o_kosten: float(body.o_kosten, 500, 200000) ?? null,
+      o_ev: float(body.o_ev, 5, 95) ?? null,
+      o_strom: float(body.o_strom, 0.05, 1.0) ?? 0.34,
+      o_einsp: float(body.o_einsp, 0, 20) ?? null,
+      einspeisung_modus: einspeisungModus,
+      o_ertrag: oErtrag,
+      plz: typeof body.plz === "string" && /^\d{5}$/.test(body.plz) ? body.plz : null,
+      fuel_type: str(body.fuel_type, ["gas", "oil"]) ?? "gas",
+      ...(str(body.flow_type, ["manual", "empfehlung"]) ? { flow_type: body.flow_type as string } : {}),
+      ...(int(body.haustyp, 0, 3) !== null ? { haustyp: int(body.haustyp, 0, 3) } : {}),
+      ...(int(body.dachart, 0, 3) !== null ? { dachart: int(body.dachart, 0, 3) } : {}),
+      ...(float(body.budget_limit, 0, 500000) !== null ? { budget_limit: float(body.budget_limit, 0, 500000) } : {}),
+      kwp,
+      amortisation_jahre: int(body.amortisation_jahre, 0, 30) ?? null,
+      rendite_25j: int(body.rendite_25j, -100000, 500000) ?? null,
     })
     .select("id")
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Berechnung konnte nicht gespeichert werden" }, { status: 500 });
   }
 
   return NextResponse.json(data, { status: 201 });

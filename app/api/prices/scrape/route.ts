@@ -6,7 +6,7 @@ import { DEFAULT_PRICES } from "../../../../lib/prices-config";
 // Vercel Cron: called monthly via vercel.json crons config
 // Also callable manually: GET /api/prices/scrape?key=CRON_SECRET
 
-const CRON_SECRET = process.env.CRON_SECRET || "";
+const CRON_SECRET = process.env.CRON_SECRET;
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
 
 // Plausibility bounds
@@ -224,10 +224,14 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const keyParam = url.searchParams.get("key");
 
-  const isVercelCron = authHeader === `Bearer ${CRON_SECRET}`;
-  const isManualTrigger = keyParam && keyParam === CRON_SECRET;
+  if (!CRON_SECRET) {
+    return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
+  }
 
-  if (!isVercelCron && !isManualTrigger && CRON_SECRET) {
+  const isVercelCron = authHeader === `Bearer ${CRON_SECRET}`;
+  const isManualTrigger = keyParam === CRON_SECRET;
+
+  if (!isVercelCron && !isManualTrigger) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

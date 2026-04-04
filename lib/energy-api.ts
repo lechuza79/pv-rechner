@@ -205,6 +205,11 @@ export function createCache<T>(ttlMs: number) {
       if (entry && Date.now() - entry.ts < ttlMs) return entry.data;
       return null;
     },
+    /** Return cached data regardless of TTL (for fallback on upstream failure) */
+    getStale(key: string): T | null {
+      const entry = store.get(key);
+      return entry ? entry.data : null;
+    },
     set(key: string, data: T) {
       store.set(key, { data, ts: Date.now() });
       // Evict if too large
@@ -232,9 +237,9 @@ export function ecUrl(endpoint: string, params: Record<string, string>): string 
 }
 
 /** Fetch Energy-Charts public_power and normalize to TimeseriesRow[] */
-export async function fetchPublicPower(country: string, start: string, end: string): Promise<TimeseriesRow[]> {
+export async function fetchPublicPower(country: string, start: string, end: string, timeoutMs = 15000, retries = 3): Promise<TimeseriesRow[]> {
   const url = ecUrl("public_power", { country, start, end });
-  const res = await fetchWithTimeout(url, 15000);
+  const res = await fetchWithTimeout(url, timeoutMs, retries);
   const json = await res.json();
 
   if (!json.unix_seconds || !json.production_types) return [];

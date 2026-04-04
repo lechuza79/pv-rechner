@@ -77,22 +77,35 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { pvPriceSmall, pvPriceLarge, pvThresholdKwp, batteryBase, batteryPerKwh, validFrom, source, notes } = body;
 
-    // Validate
-    if (!pvPriceSmall || !pvPriceLarge || !batteryPerKwh || !validFrom) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    // Type + bounds validation
+    const num = (v: unknown, min: number, max: number): number | null => {
+      const n = Number(v);
+      return isFinite(n) && n >= min && n <= max ? n : null;
+    };
+    const pSmall = num(pvPriceSmall, 500, 3000);
+    const pLarge = num(pvPriceLarge, 500, 3000);
+    const bPerKwh = num(batteryPerKwh, 100, 2000);
+    const threshold = num(pvThresholdKwp, 1, 50) ?? 10;
+    const bBase = num(batteryBase, 0, 10000) ?? 0;
+
+    if (!pSmall || !pLarge || !bPerKwh) {
+      return NextResponse.json({ error: "Invalid or missing price values (pvPriceSmall: 500-3000, pvPriceLarge: 500-3000, batteryPerKwh: 100-2000)" }, { status: 400 });
+    }
+    if (typeof validFrom !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(validFrom)) {
+      return NextResponse.json({ error: "validFrom must be YYYY-MM-DD" }, { status: 400 });
     }
 
     const { data, error } = await supabase
       .from("market_prices")
       .insert({
-        pv_price_small: pvPriceSmall,
-        pv_price_large: pvPriceLarge,
-        pv_threshold_kwp: pvThresholdKwp ?? 10,
-        battery_base: batteryBase ?? 0,
-        battery_per_kwh: batteryPerKwh,
+        pv_price_small: pSmall,
+        pv_price_large: pLarge,
+        pv_threshold_kwp: threshold,
+        battery_base: bBase,
+        battery_per_kwh: bPerKwh,
         valid_from: validFrom,
-        source: source || "Manual (Admin)",
-        notes: notes || null,
+        source: typeof source === "string" ? source.slice(0, 100) : "Manual (Admin)",
+        notes: typeof notes === "string" ? notes.slice(0, 500) : null,
         updated_by: user.email,
       })
       .select()

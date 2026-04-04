@@ -5,7 +5,7 @@ import { supabase } from "../../../../lib/supabase-server";
 // Call once: GET /api/energy/setup?key=CRON_SECRET
 // Safe to re-run (uses IF NOT EXISTS).
 
-const CRON_SECRET = process.env.CRON_SECRET || "";
+const CRON_SECRET = process.env.CRON_SECRET;
 
 export async function GET(req: NextRequest) {
   const key = req.nextUrl.searchParams.get("key");

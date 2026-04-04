@@ -72,21 +72,34 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { teilUnder10, teilOver10, vollUnder10, vollOver10, validFrom, source, notes } = body;
 
-    if (!teilUnder10 || !teilOver10 || !vollUnder10 || !vollOver10 || !validFrom) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    // Feed-in rates are in ct/kWh, typically 4-20 ct
+    const num = (v: unknown, min: number, max: number): number | null => {
+      const n = Number(v);
+      return isFinite(n) && n >= min && n <= max ? n : null;
+    };
+    const tU10 = num(teilUnder10, 0, 30);
+    const tO10 = num(teilOver10, 0, 30);
+    const vU10 = num(vollUnder10, 0, 30);
+    const vO10 = num(vollOver10, 0, 30);
+
+    if (tU10 === null || tO10 === null || vU10 === null || vO10 === null) {
+      return NextResponse.json({ error: "Invalid feed-in rates (all must be 0-30 ct/kWh)" }, { status: 400 });
+    }
+    if (typeof validFrom !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(validFrom)) {
+      return NextResponse.json({ error: "validFrom must be YYYY-MM-DD" }, { status: 400 });
     }
 
     const { data, error } = await supabase
       .from("feed_in_rates")
       .insert({
-        teil_under_10: teilUnder10,
-        teil_over_10: teilOver10,
-        voll_under_10: vollUnder10,
-        voll_over_10: vollOver10,
+        teil_under_10: tU10,
+        teil_over_10: tO10,
+        voll_under_10: vU10,
+        voll_over_10: vO10,
         threshold_kwp: 10,
         valid_from: validFrom,
-        source: source || "Manual (Admin)",
-        notes: notes || null,
+        source: typeof source === "string" ? source.slice(0, 100) : "Manual (Admin)",
+        notes: typeof notes === "string" ? notes.slice(0, 500) : null,
         updated_by: user.email,
       })
       .select()

@@ -4,7 +4,9 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Header from "../../components/Header";
 import { IconArrowRight, IconCheck } from "../../components/Icons";
-import { v } from "../../lib/theme";
+import { useChartExport } from "../../lib/useChartExport";
+import ChartExportBar from "../../components/ChartExportBar";
+import { v, tokens } from "../../lib/theme";
 import { PERSONEN, NUTZUNG } from "../../lib/constants";
 import {
   WeatherData,
@@ -101,6 +103,27 @@ export default function LiveSimulation() {
     hourly && selectedKwp ? calcDailyEstimate(selectedKwp, hourly) : 0,
     [hourly, selectedKwp]
   );
+
+  const hasConsumption = hourlyPoints.length > 0 && hourlyPoints.some(p => p.consumptionKw > 0);
+  const simChartExport = useChartExport({
+    context: {
+      title: `Tagesverlauf · ${selectedKwp} kWp`,
+      subtitle: plz ? `PLZ ${plz}` : undefined,
+      stats: hourlyPoints.length > 0 ? [
+        { label: "Anlagengröße", value: `${selectedKwp}`, unit: "kWp" },
+        { label: "Tagesertrag", value: `~${dailyEstimate.toLocaleString("de-DE", { minimumFractionDigits: 1 })}`, unit: "kWh" },
+      ] : undefined,
+      legend: [
+        { color: tokens['--color-accent'], label: "Erzeugung" },
+        ...(hasConsumption ? [
+          { color: tokens['--color-negative'], label: "Verbrauch" },
+          { color: tokens['--color-positive'], label: "Eigenverbrauch" },
+        ] : []),
+      ],
+    },
+    filename: `solar-check-simulation-${selectedKwp}kwp.png`,
+    shareText: `Live PV-Simulation: ${selectedKwp} kWp erzeugt heute ~${dailyEstimate.toLocaleString("de-DE", { minimumFractionDigits: 1 })} kWh`,
+  });
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
@@ -290,15 +313,25 @@ export default function LiveSimulation() {
         {/* Daily Chart */}
         {hourlyPoints.length > 0 && weather && !error && (
           <div className="fu" style={{ marginBottom: 20 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary') }}>
-                Tagesverlauf · {selectedKwp} kWp
+            <div ref={simChartExport.chartRef}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary') }}>
+                  Tagesverlauf · {selectedKwp} kWp
+                </div>
+                <div style={{ fontSize: 12, fontFamily: v('--font-mono'), color: v('--color-accent'), fontWeight: 600 }}>
+                  ~{dailyEstimate.toLocaleString("de-DE", { minimumFractionDigits: 1 })} kWh
+                </div>
               </div>
-              <div style={{ fontSize: 12, fontFamily: v('--font-mono'), color: v('--color-accent'), fontWeight: 600 }}>
-                ~{dailyEstimate.toLocaleString("de-DE", { minimumFractionDigits: 1 })} kWh
-              </div>
+              <DailyChart points={hourlyPoints} kwp={selectedKwp} />
             </div>
-            <DailyChart points={hourlyPoints} kwp={selectedKwp} />
+            <ChartExportBar
+              onDownload={simChartExport.downloadPng}
+              onShare={simChartExport.sharePng}
+              onWhatsApp={simChartExport.shareWhatsApp}
+              onTwitter={simChartExport.shareTwitter}
+              isExporting={simChartExport.isExporting}
+              canNativeShare={simChartExport.canNativeShare}
+            />
           </div>
         )}
 

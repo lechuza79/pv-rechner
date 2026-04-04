@@ -148,6 +148,22 @@ export function IconMenu({ size = 16, color = "currentColor", style }: IconProps
   );
 }
 
+export function IconDownload({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M14 10v1.333A1.334 1.334 0 0 1 12.667 12.667H3.333A1.334 1.334 0 0 1 2 11.333V10M4.667 6.667 8 10l3.333-3.333M8 10V2" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconTwitter({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M12.6 1.5h2.246L9.93 6.98 15.72 14.5h-4.597L7.41 9.955 3.27 14.5H1.022l5.23-5.98L.72 1.5h4.714l3.36 4.143L12.6 1.5Zm-.788 11.688h1.244L4.68 2.775H3.34l8.472 10.413Z" fill={color} />
+    </svg>
+  );
+}
+
 export function IconCar({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>

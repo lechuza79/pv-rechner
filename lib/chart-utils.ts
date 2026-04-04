@@ -23,6 +23,8 @@ export const ENERGY_COLORS_HEX: Record<string, string> = {
   fossil_brown_coal_lignite: tokens["--color-energy-lignite"],
   fossil_oil: tokens["--color-energy-oil"],
   fossil_coal_derived_gas: tokens["--color-energy-coal-gas"],
+  // Kernenergie (inländisch, bis April 2023)
+  nuclear: tokens["--color-energy-nuclear"],
   // Sonstige
   waste: tokens["--color-energy-other"],
   others: tokens["--color-energy-other"],
@@ -33,6 +35,7 @@ export const CATEGORY_COLORS = {
   renewable: tokens["--color-energy-cat-renewable"],
   fossil: tokens["--color-energy-cat-fossil"],
   other: tokens["--color-energy-cat-other"],
+  nuclear: tokens["--color-energy-nuclear"],
   nuclearImport: tokens["--color-energy-nuclear-import"],
 } as const;
 
@@ -59,6 +62,8 @@ export const ENERGY_LABELS: Record<string, string> = {
 // Keys to show in stacked area chart, ordered bottom to top
 // Within each group: dark colors at bottom → light colors at top
 export const GENERATION_STACK_KEYS = [
+  // Nuclear (bottom — only present until April 2023)
+  "nuclear",
   // Fossil (dark brown → light brown)
   "fossil_brown_coal_lignite",
   "fossil_hard_coal",
@@ -98,6 +103,9 @@ export const RENEWABLE_KEYS = [
   "biomass",
   "geothermal",
 ];
+
+// Nuclear keys (inländische Kernenergie, bis April 2023)
+export const NUCLEAR_KEYS = ["nuclear"];
 
 // Sonstige keys (waste, others — neither renewable nor fossil)
 export const SONSTIGE_KEYS = ["waste", "others"];

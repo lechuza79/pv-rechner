@@ -160,15 +160,6 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const STEPS = ["Wie groß soll die Anlage werden?", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
   const isResult = step >= STEPS.length;
 
-  // Chart export
-  const chartExport = useChartExport({
-    title: "Amortisation",
-    parameterInfo: isResult ? {
-      label: `${kwp} kWp · ${spKwh} kWh · EV ${Math.round(effEv * 100)}% · ${oStrom} ct/kWh · ${oErtrag} kWh/kWp`,
-    } : undefined,
-    filename: "solar-check-amortisation.png",
-    shareText: `PV-Amortisation: ${kwp} kWp${spKwh > 0 ? ` + ${spKwh} kWh Speicher` : ""} – ${be ? `${be.i} Jahre` : ">25 Jahre"}`,
-  });
   const next = () => step < STEPS.length && setStep(step + 1);
   const back = () => step > 0 && setStep(step - 1);
   const restart = () => { setStep(0); setOKosten(null); setOEv(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
@@ -199,6 +190,24 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   };
 
   const shareText = `Meine PV-Anlage (${kwp} kWp) amortisiert sich in ${be ? be.i : ">25"} Jahren.`;
+
+  // Chart export
+  const chartExport = useChartExport({
+    context: {
+      title: "Amortisation",
+      subtitle: `${kwp} kWp${spKwh > 0 ? ` · ${spKwh} kWh Speicher` : ""}`,
+      stats: isResult ? [
+        { label: "Amortisation", value: be ? `${be.i}` : ">25", unit: "Jahre" },
+        { label: "Eigenverbrauch", value: `${Math.round(effEv * 100)}`, unit: "%" },
+        { label: "Kosten", value: kosten.toLocaleString("de-DE"), unit: "€" },
+        { label: "Strompreis", value: `${oStrom}`, unit: "ct/kWh" },
+      ] : undefined,
+      legend: SCENARIOS.map(s => ({ color: s.color, label: s.label })),
+    },
+    filename: "solar-check-amortisation.png",
+    shareText: `PV-Amortisation: ${kwp} kWp${spKwh > 0 ? ` + ${spKwh} kWh Speicher` : ""} – ${be ? `${be.i} Jahre` : ">25 Jahre"}`,
+    shareUrl: typeof window !== "undefined" ? buildShareUrl() : undefined,
+  });
 
   const handleCopy = async () => {
     try {

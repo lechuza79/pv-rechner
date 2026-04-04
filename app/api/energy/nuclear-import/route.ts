@@ -35,6 +35,7 @@ interface NuclearImportResponse {
 
 const cache = createCache<NuclearImportResponse>(10 * 60 * 1000); // 10 min
 const longCache = createCache<NuclearImportResponse>(30 * 60 * 1000); // 30 min
+const historicalCache = createCache<NuclearImportResponse>(24 * 60 * 60 * 1000); // 24h for past periods
 
 // ─── Downsample ─────────────────────────────────────────────────────────────
 
@@ -56,10 +57,6 @@ function downsample(data: NuclearDataPoint[], factor: number): NuclearDataPoint[
   return result;
 }
 
-function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 // ─── GET Handler ────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
@@ -73,11 +70,14 @@ export async function GET(req: NextRequest) {
     ? Math.ceil((new Date(endParam + "T23:59:59Z").getTime() - new Date(startParam + "T00:00:00Z").getTime()) / 3600000)
     : hoursBack;
 
-  const store = rangeHours > 168 ? longCache : cache;
+  // Historical (past) periods get 24h cache; they don't change
+  const isPast = isAbsolute && new Date(endParam + "T23:59:59Z").getTime() < Date.now() - 2 * 24 * 3600000;
+  const store = isPast ? historicalCache : rangeHours > 168 ? longCache : cache;
   const cached = store.get(cacheKey);
   if (cached) {
+    const maxAge = isPast ? 86400 : 600;
     return NextResponse.json(cached, {
-      headers: { "Cache-Control": "public, s-maxage=600, stale-while-revalidate=1200" },
+      headers: { "Cache-Control": `public, s-maxage=${maxAge}, stale-while-revalidate=${maxAge * 2}` },
     });
   }
 
@@ -99,43 +99,51 @@ export async function GET(req: NextRequest) {
     const cbpfRows = await fetchCrossBorderFlows("de", startStr, endStr);
 
     if (cbpfRows.length === 0) {
+      const stale = store.getStale(cacheKey);
+      if (stale) {
+        return NextResponse.json(stale, {
+          headers: { "Cache-Control": "public, s-maxage=60", "X-Data-Stale": "true" },
+        });
+      }
       return NextResponse.json(
         { data: [], avg_gw: 0, avg_share_pct: 0, source: "error", license: "" },
         { status: 502 }
       );
     }
 
-    // Step 2: Fetch nuclear countries sequentially (Energy-Charts rate limits aggressively)
+    // Step 2: Fetch nuclear countries in parallel (partial data is fine)
     const countryGenRows: Map<string, Map<string, { nuclear: number; total: number }>> = new Map();
 
-    for (const code of NUCLEAR_COUNTRIES) {
-      try {
-        const rows = await fetchPublicPower(code, startStr, endStr);
-        const tsMap = new Map<string, { nuclear: number; total: number }>();
-        for (const row of rows) {
-          const nuclear = (row.data.nuclear as number) ?? 0;
-          let total = 0;
-          for (const [key, val] of Object.entries(row.data)) {
-            if (
-              typeof val === "number" && val > 0 &&
-              !key.includes("load") &&
-              !key.includes("share") &&
-              !key.includes("cross_border") &&
-              !key.includes("consumption")
-            ) {
-              total += val;
-            }
-          }
-          tsMap.set(row.ts, { nuclear, total });
-        }
-        countryGenRows.set(code, tsMap);
-      } catch (e) {
-        // Skip country on error — partial data is better than no data
-        console.warn(`Nuclear import: skipping ${code}:`, (e as Error).message);
-      }
+    const countryResults = await Promise.allSettled(
+      NUCLEAR_COUNTRIES.map(code =>
+        fetchPublicPower(code, startStr, endStr, 6000, 1).then(rows => ({ code, rows }))
+      )
+    );
 
-      // Delay between each country to avoid rate limiting
-      await delay(300);
+    for (const result of countryResults) {
+      if (result.status === "rejected") {
+        console.warn(`Nuclear import: skipping country:`, result.reason?.message || result.reason);
+        continue;
+      }
+      const { code, rows } = result.value;
+      const tsMap = new Map<string, { nuclear: number; total: number }>();
+      for (const row of rows) {
+        const nuclear = (row.data.nuclear as number) ?? 0;
+        let total = 0;
+        for (const [key, val] of Object.entries(row.data)) {
+          if (
+            typeof val === "number" && val > 0 &&
+            !key.includes("load") &&
+            !key.includes("share") &&
+            !key.includes("cross_border") &&
+            !key.includes("consumption")
+          ) {
+            total += val;
+          }
+        }
+        tsMap.set(row.ts, { nuclear, total });
+      }
+      countryGenRows.set(code, tsMap);
     }
 
     // Build lookup: ts → { country_code → flow_gw }
@@ -209,6 +217,13 @@ export async function GET(req: NextRequest) {
     });
   } catch (e) {
     console.error("Nuclear import fetch error:", e);
+    // Return stale cached data if available
+    const stale = store.getStale(cacheKey);
+    if (stale) {
+      return NextResponse.json(stale, {
+        headers: { "Cache-Control": "public, s-maxage=60", "X-Data-Stale": "true" },
+      });
+    }
     return NextResponse.json(
       { data: [], avg_gw: 0, avg_share_pct: 0, source: "error", license: "" },
       { status: 502 }

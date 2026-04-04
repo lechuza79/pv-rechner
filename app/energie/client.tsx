@@ -25,7 +25,7 @@ const LETZTE_RANGES = [
 function getAvailableYears(): number[] {
   const currentYear = new Date().getFullYear();
   const years: number[] = [];
-  for (let y = currentYear - 1; y >= Math.max(currentYear - 3, 2020); y--) {
+  for (let y = currentYear - 1; y >= 2015; y--) {
     years.push(y);
   }
   return years;
@@ -120,25 +120,38 @@ export default function EnergieClient() {
   const availableYears = useMemo(() => getAvailableYears(), []);
 
   const isYear = /^\d{4}$/.test(selected);
+  const isMax = selected === "MAX";
   const hours = useMemo(() => {
     if (selected === "YTD") return getYtdHours();
+    if (isMax) {
+      const now = new Date();
+      const start = new Date(2015, 0, 1);
+      return Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60));
+    }
     if (isYear) return 8760;
     const range = LETZTE_RANGES.find(r => r.value === selected);
     return range?.hours || 24;
-  }, [selected, isYear]);
+  }, [selected, isYear, isMax]);
 
   const dateRange = useMemo(() => {
+    if (isMax) return { start: "2015-01-01", end: new Date().toISOString().slice(0, 10) };
     if (isYear) return getYearRange(Number(selected));
     return undefined;
-  }, [selected, isYear]);
+  }, [selected, isYear, isMax]);
 
-  const { data: genData, loading, error } = useGenerationMix("de", hours, dateRange);
-  const { data: nuclearData, loading: nuclearLoading } = useNuclearImport(hours, dateRange);
+  const { data: genData, loading, error, isStale, refetch } = useGenerationMix("de", hours, dateRange);
+  const { data: nuclearData, loading: nuclearLoading, error: nuclearError } = useNuclearImport(hours, dateRange);
 
   const stats = useMemo(() => calcPeriodStats(genData.data), [genData.data]);
 
+  // Check if domestic nuclear data is present (only before April 2023)
+  const hasDomesticNuclear = useMemo(() => {
+    return genData.data.some(d => typeof d.nuclear === "number" && (d.nuclear as number) > 0);
+  }, [genData.data]);
+
   // Time range display label
   const rangeLabel = useMemo(() => {
+    if (selected === "MAX") return "2015 – heute";
     if (selected === "YTD") return "Year to Date";
     if (/^\d{4}$/.test(selected)) return selected;
     const r = LETZTE_RANGES.find(r => r.value === selected);
@@ -159,6 +172,7 @@ export default function EnergieClient() {
         { color: CATEGORY_COLORS.renewable, label: "Erneuerbare" },
         { color: CATEGORY_COLORS.fossil, label: "Fossil" },
         { color: CATEGORY_COLORS.other, label: "Sonstige" },
+        ...(hasDomesticNuclear ? [{ color: CATEGORY_COLORS.nuclear, label: "Kernenergie" }] : []),
         ...(showNuclear && nuclearData.avg_gw > 0 ? [{ color: CATEGORY_COLORS.nuclearImport, label: "Importierte Kernenergie" }] : []),
       ],
     },
@@ -200,6 +214,9 @@ export default function EnergieClient() {
                 {year}
               </button>
             ))}
+            <button onClick={() => setSelected("MAX")} style={rangeButtonStyle(selected === "MAX")}>
+              Max
+            </button>
           </div>
         </div>
       </div>
@@ -258,6 +275,8 @@ export default function EnergieClient() {
           <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, height: 28, display: "flex", alignItems: "center", justifyContent: "center" }}>
             {nuclearLoading ? (
               <BouncingDots />
+            ) : nuclearError && nuclearData.data.length === 0 ? (
+              <span style={{ fontSize: 11, color: v("--color-text-muted"), fontWeight: 400, fontFamily: v("--font-text") }}>Nicht verfügbar</span>
             ) : (
               <>
                 <span style={{ fontSize: 22, color: v("--color-text-primary") }}>{nuclearData.avg_gw.toFixed(1)}</span>
@@ -278,30 +297,65 @@ export default function EnergieClient() {
           marginBottom: 20,
         }}
       >
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 12, paddingLeft: 8 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: isStale ? 6 : 12, paddingLeft: 8 }}>
           Stromerzeugung nach Energieträger
         </div>
+        {isStale && (
+          <div style={{
+            fontSize: 11, color: v("--color-text-muted"), marginBottom: 8, paddingLeft: 8,
+            display: "flex", alignItems: "center", gap: 6,
+          }}>
+            <span>Aktualisierung fehlgeschlagen — zeige zwischengespeicherte Daten</span>
+            <button
+              onClick={refetch}
+              style={{
+                background: "none", border: "none", cursor: "pointer",
+                color: v("--color-accent"), fontSize: 11, fontWeight: 600,
+                fontFamily: v("--font-text"), padding: 0, textDecoration: "underline",
+              }}
+            >
+              Erneut versuchen
+            </button>
+          </div>
+        )}
 
         <div ref={energyChartExport.chartRef}>
           {loading ? (
             <LoadingSpinner />
-          ) : error ? (
+          ) : error && genData.data.length === 0 ? (
             <div
               style={{
                 height: 300,
                 display: "flex",
+                flexDirection: "column" as const,
                 alignItems: "center",
                 justifyContent: "center",
-                color: v("--color-negative"),
+                gap: 12,
                 fontSize: 13,
               }}
             >
-              Fehler beim Laden: {error}
+              <div style={{ color: v("--color-text-muted") }}>Daten konnten nicht geladen werden</div>
+              <button
+                onClick={refetch}
+                style={{
+                  padding: "8px 20px",
+                  borderRadius: v("--radius-sm"),
+                  border: `1px solid ${v("--color-accent")}`,
+                  background: v("--color-accent"),
+                  color: v("--color-text-on-accent"),
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontFamily: v("--font-text"),
+                }}
+              >
+                Erneut laden
+              </button>
             </div>
-          ) : hours >= 720 || isYear ? (
+          ) : hours >= 720 || isYear || isMax ? (
             <StackedBarChart
               data={genData.data}
-              mode={selected === "YTD" || isYear ? "ytd" : selected === "12M" ? "12m" : "30d"}
+              mode={isMax ? "max" : selected === "YTD" || isYear ? "ytd" : selected === "12M" ? "12m" : "30d"}
               nuclearOverlay={showNuclear ? nuclearData.data : undefined}
             />
           ) : (
@@ -331,6 +385,12 @@ export default function EnergieClient() {
                 <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.other, flexShrink: 0 }} />
                 <span style={{ color: v("--color-text-muted") }}>Sonstige</span>
               </div>
+              {hasDomesticNuclear && (
+                <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclear, flexShrink: 0 }} />
+                  <span style={{ color: v("--color-text-muted") }}>Kernenergie</span>
+                </div>
+              )}
               {showNuclear && (
                 <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
                   {nuclearLoading ? (

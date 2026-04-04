@@ -16,6 +16,7 @@ import {
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
   FOSSIL_KEYS,
+  NUCLEAR_KEYS,
   SONSTIGE_KEYS,
   CATEGORY_COLORS,
   formatMW,
@@ -110,9 +111,10 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
     el.style.top = `${top}px`;
   });
 
-  // Calculate category totals: Erneuerbare / Fossil / Sonstige / Kernenergie
+  // Calculate category totals
   let renewableTotal = 0;
   let fossilTotal = 0;
+  let nuclearTotal = 0;
   let sonstigeTotal = 0;
   let totalGen = 0;
   for (const key of activeKeys) {
@@ -121,17 +123,20 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
     totalGen += val;
     if (RENEWABLE_KEYS.includes(key)) renewableTotal += val;
     else if (FOSSIL_KEYS.includes(key)) fossilTotal += val;
+    else if (NUCLEAR_KEYS.includes(key)) nuclearTotal += val;
     else sonstigeTotal += val;
   }
   const nuclearMw = nuclearGw != null && nuclearGw > 0 ? nuclearGw * 1000 : 0;
 
   const renewablePct = totalGen > 0 ? Math.round(renewableTotal / totalGen * 100) : 0;
   const fossilPct = totalGen > 0 ? Math.round(fossilTotal / totalGen * 100) : 0;
+  const nuclearPct = totalGen > 0 ? Math.round(nuclearTotal / totalGen * 100) : 0;
   const sonstigePct = totalGen > 0 ? Math.round(sonstigeTotal / totalGen * 100) : 0;
 
   // Split keys by category (reversed for top→bottom display)
   const renewableKeys = [...activeKeys].reverse().filter(k => RENEWABLE_KEYS.includes(k));
   const fossilKeys = [...activeKeys].reverse().filter(k => FOSSIL_KEYS.includes(k));
+  const nuclearKeys = [...activeKeys].reverse().filter(k => NUCLEAR_KEYS.includes(k));
   const sonstigeKeys = [...activeKeys].reverse().filter(k => SONSTIGE_KEYS.includes(k));
 
   return (
@@ -188,6 +193,18 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
         <>
           <TooltipSummary color={CATEGORY_COLORS.other} label={`Sonstige ${sonstigePct}%`} value={formatMW(sonstigeTotal)} />
           {sonstigeKeys.map(key => {
+            const val = d[key];
+            if (typeof val !== "number" || val <= 0) return null;
+            return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;
+          })}
+        </>
+      )}
+
+      {/* Kernenergie (inländisch) */}
+      {nuclearTotal > 0 && (
+        <>
+          <TooltipSummary color={CATEGORY_COLORS.nuclear} label={`Kernenergie ${nuclearPct}%`} value={formatMW(nuclearTotal)} />
+          {nuclearKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
             return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;

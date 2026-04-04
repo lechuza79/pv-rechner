@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -19,60 +19,114 @@ export interface GenerationData {
 
 const CACHE_PREFIX = "sc-energy-";
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const LONG_CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 days for historical data
 
-function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T): {
+const RETRY_DELAYS = [3000, 8000]; // 2 retries after 3s and 8s
+
+function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T, isHistorical = false): {
   data: T;
   loading: boolean;
   error: string | null;
+  isStale: boolean;
+  refetch: () => void;
 } {
   const [data, setData] = useState<T>(defaultValue);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isStale, setIsStale] = useState(false);
+  const [fetchTrigger, setFetchTrigger] = useState(0);
+  const retryRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const refetch = useCallback(() => {
+    setFetchTrigger(n => n + 1);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
-    setError(null);
+    if (retryRef.current) clearTimeout(retryRef.current);
 
-    // Check sessionStorage
+    const ttl = isHistorical ? LONG_CACHE_TTL : CACHE_TTL;
+
+    // Check sessionStorage — show stale data immediately if available
+    let hasStaleData = false;
     try {
       const cached = sessionStorage.getItem(CACHE_PREFIX + cacheKey);
       if (cached) {
         const { data: d, ts } = JSON.parse(cached);
-        if (Date.now() - ts < CACHE_TTL) {
-          setData(d);
+        setData(d);
+        if (Date.now() - ts < ttl) {
+          // Fresh cache hit — done
           setLoading(false);
+          setError(null);
+          setIsStale(false);
           return;
         }
+        // Stale cache — show it but refetch in background
+        hasStaleData = true;
+        setLoading(false);
+        setIsStale(true);
       }
     } catch { /* ignore */ }
 
-    // No cache hit — reset data and show loading state immediately
-    setData(defaultValue);
-    setLoading(true);
+    if (!hasStaleData) {
+      setData(defaultValue);
+      setLoading(true);
+    }
+    setError(null);
 
-    fetch(endpoint)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((d: T) => {
-        if (cancelled) return;
-        setData(d);
-        setLoading(false);
-        try {
-          sessionStorage.setItem(CACHE_PREFIX + cacheKey, JSON.stringify({ data: d, ts: Date.now() }));
-        } catch { /* ignore */ }
-      })
-      .catch((e) => {
-        if (cancelled) return;
-        setError(e.message);
-        setLoading(false);
-      });
+    const doFetch = (retryIndex: number) => {
+      fetch(endpoint)
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then((d: T) => {
+          if (cancelled) return;
+          setData(d);
+          setLoading(false);
+          setError(null);
+          setIsStale(false);
+          try {
+            sessionStorage.setItem(CACHE_PREFIX + cacheKey, JSON.stringify({ data: d, ts: Date.now() }));
+          } catch { /* ignore */ }
+        })
+        .catch((e) => {
+          if (cancelled) return;
+          // Auto-retry
+          if (retryIndex < RETRY_DELAYS.length) {
+            retryRef.current = setTimeout(() => {
+              if (!cancelled) doFetch(retryIndex + 1);
+            }, RETRY_DELAYS[retryIndex]);
+            return;
+          }
+          // All retries exhausted
+          setError(e.message);
+          setLoading(false);
+          // Keep stale data visible if we have it
+          if (hasStaleData) {
+            setIsStale(true);
+          }
+        });
+    };
 
-    return () => { cancelled = true; };
-  }, [endpoint, cacheKey]);
+    doFetch(0);
 
-  return { data, loading, error };
+    return () => {
+      cancelled = true;
+      if (retryRef.current) clearTimeout(retryRef.current);
+    };
+  }, [endpoint, cacheKey, fetchTrigger]);
+
+  return { data, loading, error, isStale, refetch };
+}
+
+/** Check if a date range refers to a completed past period (safe to cache long-term) */
+function isPastPeriod(dateRange?: { start: string; end: string }): boolean {
+  if (!dateRange) return false;
+  const end = new Date(dateRange.end + "T23:59:59");
+  const now = new Date();
+  // Consider "past" if end date is at least 2 days ago (buffer for late data)
+  return end.getTime() < now.getTime() - 2 * 24 * 60 * 60 * 1000;
 }
 
 /** Current electricity generation mix (last N hours or absolute date range) */
@@ -83,7 +137,7 @@ export function useGenerationMix(country = "de", hours = 24, dateRange?: { start
   const key = dateRange
     ? `gen-${country}-${dateRange.start}-${dateRange.end}`
     : `gen-${country}-${hours}`;
-  return useCachedFetch<GenerationData>(endpoint, key, { data: [], source: "", license: "", country });
+  return useCachedFetch<GenerationData>(endpoint, key, { data: [], source: "", license: "", country }, isPastPeriod(dateRange));
 }
 
 // ─── Nuclear Import ─────────────────────────────────────────────────────────
@@ -109,5 +163,5 @@ export function useNuclearImport(hours = 24, dateRange?: { start: string; end: s
   const key = dateRange
     ? `nuclear-${dateRange.start}-${dateRange.end}`
     : `nuclear-${hours}`;
-  return useCachedFetch<NuclearImportData>(endpoint, key, { data: [], avg_gw: 0, avg_share_pct: 0, source: "", license: "" });
+  return useCachedFetch<NuclearImportData>(endpoint, key, { data: [], avg_gw: 0, avg_share_pct: 0, source: "", license: "" }, isPastPeriod(dateRange));
 }

@@ -4,6 +4,7 @@ import { createCache, fetchPublicPower } from "../../../../lib/energy-api";
 // In-memory cache (TTL scales with time range)
 const cache = createCache<GenerationResponse>(5 * 60 * 1000);
 const longCache = createCache<GenerationResponse>(30 * 60 * 1000); // 30 min for large requests
+const historicalCache = createCache<GenerationResponse>(24 * 60 * 60 * 1000); // 24h for past periods
 
 interface GenerationDataPoint {
   ts: string;
@@ -61,11 +62,14 @@ export async function GET(req: NextRequest) {
     ? Math.ceil((new Date(endParam + "T23:59:59Z").getTime() - new Date(startParam + "T00:00:00Z").getTime()) / 3600000)
     : hoursBack;
 
-  const store = rangeHours > 168 ? longCache : cache;
+  // Historical (past) periods get 24h cache; they don't change
+  const isPast = isAbsolute && new Date(endParam + "T23:59:59Z").getTime() < Date.now() - 2 * 24 * 3600000;
+  const store = isPast ? historicalCache : rangeHours > 168 ? longCache : cache;
   const cached = store.get(cacheKey);
   if (cached) {
+    const maxAge = isPast ? 86400 : 300;
     return NextResponse.json(cached, {
-      headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" },
+      headers: { "Cache-Control": `public, s-maxage=${maxAge}, stale-while-revalidate=${maxAge * 2}` },
     });
   }
 
@@ -86,6 +90,12 @@ export async function GET(req: NextRequest) {
     const rows = await fetchPublicPower(country, startStr, endStr);
 
     if (rows.length === 0) {
+      const stale = store.getStale(cacheKey);
+      if (stale) {
+        return NextResponse.json(stale, {
+          headers: { "Cache-Control": "public, s-maxage=60", "X-Data-Stale": "true" },
+        });
+      }
       return NextResponse.json({ data: [], source: "error", license: "", country, resolution: "none" }, { status: 502 });
     }
 
@@ -95,9 +105,13 @@ export async function GET(req: NextRequest) {
     }));
 
     // Downsample for longer time ranges to keep response manageable
-    // 15min → hourly (4x), → 3-hourly (12x), → 6-hourly (24x)
+    // 15min → hourly (4x), → 3-hourly (12x), → 6-hourly (24x), → daily (96x)
     let resolution = "15min";
-    if (rangeHours > 2160) {
+    if (rangeHours > 17520) {
+      // >2 years: daily (~3650 points for 10 years)
+      data = downsample(data, 96);
+      resolution = "1d";
+    } else if (rangeHours > 2160) {
       // >90 days: 6-hourly (~365 points for a year)
       data = downsample(data, 24);
       resolution = "6h";
@@ -126,6 +140,13 @@ export async function GET(req: NextRequest) {
     });
   } catch (e) {
     console.error("Energy generation fetch error:", e);
+    // Return stale cached data if available
+    const stale = store.getStale(cacheKey);
+    if (stale) {
+      return NextResponse.json(stale, {
+        headers: { "Cache-Control": "public, s-maxage=60", "X-Data-Stale": "true" },
+      });
+    }
     return NextResponse.json(
       { data: [], source: "error", license: "", country, resolution: "none" },
       { status: 502 }
