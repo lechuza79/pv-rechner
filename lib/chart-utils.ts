@@ -88,6 +88,9 @@ export const RENEWABLE_KEYS = [
   "geothermal",
 ];
 
+// Sonstige keys (waste, others — neither renewable nor fossil)
+export const SONSTIGE_KEYS = ["waste", "others"];
+
 // Meta keys (not generation types, but included in API response)
 export const META_KEYS = [
   "load",

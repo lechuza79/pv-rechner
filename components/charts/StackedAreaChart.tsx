@@ -15,6 +15,8 @@ import {
   ENERGY_LABELS,
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
+  FOSSIL_KEYS,
+  SONSTIGE_KEYS,
   formatMW,
   formatTime,
   CHART_MARGIN,
@@ -64,10 +66,9 @@ function TooltipRow({ color, label, value }: { color: string; label: string; val
 
 function TooltipSummary({ color, label, value }: { color: string; label: string; value: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, marginTop: 2 }}>
-      <div style={{ width: 8, height: 8, borderRadius: 3, background: color, flexShrink: 0 }} />
-      <span style={{ flex: 1, fontWeight: 700, fontSize: 11 }}>{label}</span>
-      <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 700 }}>{value}</span>
+    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, marginTop: 6 }}>
+      <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color }}>{label}</span>
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700, color }}>{value}</span>
     </div>
   );
 }
@@ -85,8 +86,9 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
   const goLeft = tooltip.left > width / 2;
   const left = goLeft ? tooltip.left - tooltipWidth - 12 : tooltip.left + 12;
 
-  // Calculate category totals: Erneuerbare / Sonstige / Kernenergie
+  // Calculate category totals: Erneuerbare / Fossil / Sonstige / Kernenergie
   let renewableTotal = 0;
+  let fossilTotal = 0;
   let sonstigeTotal = 0;
   let totalGen = 0;
   for (const key of activeKeys) {
@@ -94,16 +96,19 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
     if (typeof val !== "number" || val <= 0) continue;
     totalGen += val;
     if (RENEWABLE_KEYS.includes(key)) renewableTotal += val;
+    else if (FOSSIL_KEYS.includes(key)) fossilTotal += val;
     else sonstigeTotal += val;
   }
   const nuclearMw = nuclearGw != null && nuclearGw > 0 ? nuclearGw * 1000 : 0;
 
   const renewablePct = totalGen > 0 ? Math.round(renewableTotal / totalGen * 100) : 0;
+  const fossilPct = totalGen > 0 ? Math.round(fossilTotal / totalGen * 100) : 0;
   const sonstigePct = totalGen > 0 ? Math.round(sonstigeTotal / totalGen * 100) : 0;
 
   // Split keys by category (reversed for top→bottom display)
   const renewableKeys = [...activeKeys].reverse().filter(k => RENEWABLE_KEYS.includes(k));
-  const sonstigeKeys = [...activeKeys].reverse().filter(k => !RENEWABLE_KEYS.includes(k));
+  const fossilKeys = [...activeKeys].reverse().filter(k => FOSSIL_KEYS.includes(k));
+  const sonstigeKeys = [...activeKeys].reverse().filter(k => SONSTIGE_KEYS.includes(k));
 
   return (
     <div
@@ -141,10 +146,22 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
         </>
       )}
 
+      {/* Fossil */}
+      {fossilTotal > 0 && (
+        <>
+          <TooltipSummary color="#8D6E63" label={`Fossil ${fossilPct}%`} value={formatMW(fossilTotal)} />
+          {fossilKeys.map(key => {
+            const val = d[key];
+            if (typeof val !== "number" || val <= 0) return null;
+            return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;
+          })}
+        </>
+      )}
+
       {/* Sonstige */}
       {sonstigeTotal > 0 && (
         <>
-          <TooltipSummary color="#8D6E63" label={`Sonstige ${sonstigePct}%`} value={formatMW(sonstigeTotal)} />
+          <TooltipSummary color="#BDBDBD" label={`Sonstige ${sonstigePct}%`} value={formatMW(sonstigeTotal)} />
           {sonstigeKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;

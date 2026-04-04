@@ -7,6 +7,7 @@ import {
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
   FOSSIL_KEYS,
+  SONSTIGE_KEYS,
   META_KEYS,
   ENERGY_COLORS_HEX,
   ENERGY_LABELS,
@@ -78,6 +79,19 @@ describe("energy key consistency", () => {
   it("all FOSSIL_KEYS are in GENERATION_STACK_KEYS", () => {
     for (const key of FOSSIL_KEYS) {
       expect(GENERATION_STACK_KEYS).toContain(key);
+    }
+  });
+
+  it("all SONSTIGE_KEYS are in GENERATION_STACK_KEYS", () => {
+    for (const key of SONSTIGE_KEYS) {
+      expect(GENERATION_STACK_KEYS).toContain(key);
+    }
+  });
+
+  it("SONSTIGE_KEYS don't overlap with RENEWABLE or FOSSIL", () => {
+    for (const key of SONSTIGE_KEYS) {
+      expect(RENEWABLE_KEYS).not.toContain(key);
+      expect(FOSSIL_KEYS).not.toContain(key);
     }
   });
 

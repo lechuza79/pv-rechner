@@ -12,6 +12,8 @@ import {
   ENERGY_LABELS,
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
+  FOSSIL_KEYS,
+  SONSTIGE_KEYS,
   formatGWh,
   CHART_MARGIN,
   CHART_HEIGHT,
@@ -201,10 +203,9 @@ function BarTooltipRow({ color, label, value }: { color: string; label: string; 
 
 function BarTooltipSummary({ color, label, value }: { color: string; label: string; value: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, marginTop: 2 }}>
-      <div style={{ width: 8, height: 8, borderRadius: 3, background: color, flexShrink: 0 }} />
-      <span style={{ flex: 1, fontWeight: 700, fontSize: 11 }}>{label}</span>
-      <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, fontWeight: 700 }}>{value}</span>
+    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, marginTop: 6 }}>
+      <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color }}>{label}</span>
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700, color }}>{value}</span>
     </div>
   );
 }
@@ -223,22 +224,26 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
 
   let totalGWh = 0;
   let renewableGWh = 0;
+  let fossilGWh = 0;
   let sonstigeGWh = 0;
   for (const key of activeKeys) {
     const val = data[key];
     if (typeof val === "number" && val > 0) {
       totalGWh += val;
       if (RENEWABLE_KEYS.includes(key)) renewableGWh += val;
+      else if (FOSSIL_KEYS.includes(key)) fossilGWh += val;
       else sonstigeGWh += val;
     }
   }
   if (totalGWh < 0.01) return null;
 
   const renewablePct = totalGWh > 0 ? Math.round(renewableGWh / totalGWh * 100) : 0;
+  const fossilPct = totalGWh > 0 ? Math.round(fossilGWh / totalGWh * 100) : 0;
   const sonstigePct = totalGWh > 0 ? Math.round(sonstigeGWh / totalGWh * 100) : 0;
 
   const renewableKeys = [...activeKeys].reverse().filter(k => RENEWABLE_KEYS.includes(k));
-  const sonstigeKeys = [...activeKeys].reverse().filter(k => !RENEWABLE_KEYS.includes(k));
+  const fossilKeys = [...activeKeys].reverse().filter(k => FOSSIL_KEYS.includes(k));
+  const sonstigeKeys = [...activeKeys].reverse().filter(k => SONSTIGE_KEYS.includes(k));
 
   return (
     <div
@@ -276,10 +281,22 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
         </>
       )}
 
+      {/* Fossil */}
+      {fossilGWh > 0 && (
+        <>
+          <BarTooltipSummary color="#8D6E63" label={`Fossil ${fossilPct}%`} value={formatGWh(fossilGWh)} />
+          {fossilKeys.map(key => {
+            const val = data[key];
+            if (typeof val !== "number" || val <= 0.01) return null;
+            return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatGWh(val)} />;
+          })}
+        </>
+      )}
+
       {/* Sonstige */}
       {sonstigeGWh > 0 && (
         <>
-          <BarTooltipSummary color="#8D6E63" label={`Sonstige ${sonstigePct}%`} value={formatGWh(sonstigeGWh)} />
+          <BarTooltipSummary color="#BDBDBD" label={`Sonstige ${sonstigePct}%`} value={formatGWh(sonstigeGWh)} />
           {sonstigeKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;

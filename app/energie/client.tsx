@@ -6,9 +6,7 @@ import { useGenerationMix, useNuclearImport } from "../../lib/energy";
 import StackedAreaChart from "../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../components/charts/StackedBarChart";
 import {
-  ENERGY_COLORS_HEX, ENERGY_LABELS, GENERATION_STACK_KEYS,
-  RENEWABLE_KEYS,
-  formatMW, formatGWh, calcPeriodStats,
+  formatGWh, calcPeriodStats,
 } from "../../lib/chart-utils";
 import { v } from "../../lib/theme";
 
@@ -50,22 +48,6 @@ export default function EnergieClient() {
   // Aggregate stats over the full time period
   const stats = useMemo(() => calcPeriodStats(genData.data), [genData.data]);
 
-  // Legend items grouped by category: Erneuerbare / Sonstige / Kernenergie
-  const legendGroups = useMemo(() => {
-    if (genData.data.length === 0) return { renewable: [], sonstige: [] };
-    const latest = genData.data[genData.data.length - 1];
-    const renewable: { key: string; value: number }[] = [];
-    const sonstige: { key: string; value: number }[] = [];
-    for (const key of GENERATION_STACK_KEYS) {
-      const val = latest[key];
-      if (typeof val !== "number" || val <= 0) continue;
-      if (RENEWABLE_KEYS.includes(key)) renewable.push({ key, value: val });
-      else sonstige.push({ key, value: val });
-    }
-    renewable.sort((a, b) => b.value - a.value);
-    sonstige.sort((a, b) => b.value - a.value);
-    return { renewable: renewable.slice(0, 4), sonstige: sonstige.slice(0, 3) };
-  }, [genData.data]);
 
   return (
     <div style={{ maxWidth: 640, margin: "0 auto" }}>
@@ -118,15 +100,15 @@ export default function EnergieClient() {
             {/* EE Share */}
             <div style={{
               flex: "1 0 0", minWidth: 90,
-              background: v("--color-bg-accent"),
-              border: `1px solid ${v("--color-border-accent")}`,
+              background: v("--color-bg-muted"),
+              border: `1px solid ${v("--color-border")}`,
               borderRadius: v("--radius-md"),
               padding: "12px 8px", textAlign: "center",
             }}>
-              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-positive") }}>
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Erneuerbare</div>
+              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
                 {Math.round(stats.eeSharePct)}%
               </div>
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>Erneuerbare</div>
             </div>
             {/* Total */}
             <div style={{
@@ -136,10 +118,10 @@ export default function EnergieClient() {
               borderRadius: v("--radius-md"),
               padding: "12px 8px", textAlign: "center",
             }}>
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>Erzeugt</div>
               <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
                 {formatGWh(stats.totalGenerationGWh)}
               </div>
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>Erzeugt</div>
             </div>
             {/* Renewable */}
             <div style={{
@@ -149,10 +131,10 @@ export default function EnergieClient() {
               borderRadius: v("--radius-md"),
               padding: "12px 8px", textAlign: "center",
             }}>
-              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-positive") }}>
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>davon EE</div>
+              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
                 {formatGWh(stats.renewableGWh)}
               </div>
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>davon EE</div>
             </div>
             {/* Net Import/Export */}
             <div style={{
@@ -162,14 +144,11 @@ export default function EnergieClient() {
               borderRadius: v("--radius-md"),
               padding: "12px 8px", textAlign: "center",
             }}>
-              <div style={{
-                fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"),
-                color: stats.netImportGWh > 0 ? v("--color-negative") : v("--color-positive"),
-              }}>
-                {stats.netImportGWh > 0 ? "+" : ""}{formatGWh(Math.abs(stats.netImportGWh))}
-              </div>
-              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>
                 Netto-{stats.netImportGWh > 0 ? "Import" : "Export"}
+              </div>
+              <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
+                {stats.netImportGWh > 0 ? "+" : ""}{formatGWh(Math.abs(stats.netImportGWh))}
               </div>
             </div>
             {/* Nuclear import toggle */}
@@ -178,18 +157,18 @@ export default function EnergieClient() {
                 onClick={() => setShowNuclear(!showNuclear)}
                 style={{
                   flex: "1 0 0", minWidth: 90,
-                  background: showNuclear ? "rgba(249,168,37,0.08)" : v("--color-bg-muted"),
-                  border: `1px solid ${showNuclear ? "#F9A825" : v("--color-border")}`,
+                  background: v("--color-bg-muted"),
+                  border: `1px solid ${showNuclear ? v("--color-text-muted") : v("--color-border")}`,
                   borderRadius: v("--radius-md"),
                   padding: "12px 8px", textAlign: "center",
                   cursor: "pointer", fontFamily: v("--font-text"),
                 }}
               >
-                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: "#F9A825" }}>
-                  {nuclearData.avg_gw.toFixed(1)} GW
-                </div>
-                <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>
+                <div style={{ fontSize: 9, color: v("--color-text-muted"), marginBottom: 2 }}>
                   {showNuclear ? "▣" : "▢"} Kernimport
+                </div>
+                <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
+                  {nuclearData.avg_gw.toFixed(1)} GW
                 </div>
               </button>
             )}
@@ -255,45 +234,31 @@ export default function EnergieClient() {
           />
         )}
 
-        {/* Legend — 3 clusters: Erneuerbare / Sonstige / Kernenergie */}
-        {!loading && !error && (legendGroups.renewable.length > 0 || legendGroups.sonstige.length > 0) && (
-          <div style={{ padding: "12px 8px 0", marginTop: 8, borderTop: `1px solid ${v("--color-border")}` }}>
-            {/* Erneuerbare */}
-            {legendGroups.renewable.length > 0 && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", marginBottom: 6 }}>
-                <span style={{ fontSize: 10, fontWeight: 700, color: "#4CAF50", marginRight: 2 }}>Erneuerbare</span>
-                {legendGroups.renewable.map(({ key, value }) => (
-                  <div key={key} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                    <div style={{ width: 8, height: 8, borderRadius: 2, background: ENERGY_COLORS_HEX[key], flexShrink: 0 }} />
-                    <span style={{ color: v("--color-text-secondary") }}>{ENERGY_LABELS[key] || key}</span>
-                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") }}>{formatMW(value)}</span>
-                  </div>
-                ))}
+        {/* Legend — 4 category labels with colored squares */}
+        {!loading && !error && genData.data.length > 0 && (
+          <div style={{
+            display: "flex", justifyContent: "center", gap: 16,
+            padding: "12px 8px 0", marginTop: 8,
+            borderTop: `1px solid ${v("--color-border")}`,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: "#4CAF50", flexShrink: 0 }} />
+              <span style={{ color: v("--color-text-muted") }}>Erneuerbare</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: "#8D6E63", flexShrink: 0 }} />
+              <span style={{ color: v("--color-text-muted") }}>Fossil</span>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: "#BDBDBD", flexShrink: 0 }} />
+              <span style={{ color: v("--color-text-muted") }}>Sonstige</span>
+            </div>
+            {showNuclear && !nuclearLoading && nuclearData.avg_gw > 0 && (
+              <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: "#F9A825", flexShrink: 0 }} />
+                <span style={{ color: v("--color-text-muted") }}>Kernenergie</span>
               </div>
             )}
-            {/* Sonstige + Kernenergie */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px" }}>
-              {legendGroups.sonstige.length > 0 && (
-                <span style={{ fontSize: 10, fontWeight: 700, color: "#8D6E63", marginRight: 2 }}>Sonstige</span>
-              )}
-              {legendGroups.sonstige.map(({ key, value }) => (
-                <div key={key} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: 2, background: ENERGY_COLORS_HEX[key], flexShrink: 0 }} />
-                  <span style={{ color: v("--color-text-secondary") }}>{ENERGY_LABELS[key] || key}</span>
-                  <span style={{ fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") }}>{formatMW(value)}</span>
-                </div>
-              ))}
-              {showNuclear && !nuclearLoading && nuclearData.avg_gw > 0 && (
-                <>
-                  <span style={{ fontSize: 10, fontWeight: 700, color: "#F9A825", marginLeft: 4, marginRight: 2 }}>Kernenergie</span>
-                  <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                    <div style={{ width: 8, height: 8, borderRadius: 2, background: "#F9A825", flexShrink: 0 }} />
-                    <span style={{ color: v("--color-text-secondary") }}>Kernimport</span>
-                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") }}>{formatMW(nuclearData.avg_gw * 1000)}</span>
-                  </div>
-                </>
-              )}
-            </div>
           </div>
         )}
       </div>
