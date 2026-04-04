@@ -17,6 +17,8 @@ import {
   SONSTIGE_KEYS,
   CATEGORY_COLORS,
   formatGWh,
+  formatGWhIn,
+  energyUnit,
   CHART_MARGIN,
   CHART_HEIGHT,
 } from "../../lib/chart-utils";
@@ -326,6 +328,10 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
   const nuclearPctLocal = totalGWh > 0 ? Math.round(nuclearGWhLocal / totalGWh * 100) : 0;
   const sonstigePct = totalGWh > 0 ? Math.round(sonstigeGWh / totalGWh * 100) : 0;
 
+  // Use consistent unit across entire tooltip based on total
+  const unit = energyUnit(totalGWh);
+  const fmt = (v: number) => formatGWhIn(v, unit);
+
   const renewableKeys = [...activeKeys].reverse().filter(k => RENEWABLE_KEYS.includes(k));
   const fossilKeys = [...activeKeys].reverse().filter(k => FOSSIL_KEYS.includes(k));
   const nuclearKeysLocal = [...activeKeys].reverse().filter(k => NUCLEAR_KEYS.includes(k));
@@ -359,11 +365,11 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       {/* Erneuerbare */}
       {renewableGWh > 0 && (
         <>
-          <BarTooltipSummary color={CATEGORY_COLORS.renewable} label={`Erneuerbare ${renewablePct}%`} value={formatGWh(renewableGWh)} />
+          <BarTooltipSummary color={CATEGORY_COLORS.renewable} label={`Erneuerbare ${renewablePct}%`} value={fmt(renewableGWh)} />
           {renewableKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;
-            return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatGWh(val)} />;
+            return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
           })}
         </>
       )}
@@ -371,11 +377,11 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       {/* Fossil */}
       {fossilGWh > 0 && (
         <>
-          <BarTooltipSummary color={CATEGORY_COLORS.fossil} label={`Fossil ${fossilPct}%`} value={formatGWh(fossilGWh)} />
+          <BarTooltipSummary color={CATEGORY_COLORS.fossil} label={`Fossil ${fossilPct}%`} value={fmt(fossilGWh)} />
           {fossilKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;
-            return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatGWh(val)} />;
+            return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
           })}
         </>
       )}
@@ -383,11 +389,11 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       {/* Sonstige */}
       {sonstigeGWh > 0 && (
         <>
-          <BarTooltipSummary color={CATEGORY_COLORS.other} label={`Sonstige ${sonstigePct}%`} value={formatGWh(sonstigeGWh)} />
+          <BarTooltipSummary color={CATEGORY_COLORS.other} label={`Sonstige ${sonstigePct}%`} value={fmt(sonstigeGWh)} />
           {sonstigeKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;
-            return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatGWh(val)} />;
+            return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
           })}
         </>
       )}
@@ -402,13 +408,13 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, marginBottom: 4 }}>
               <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: "var(--color-text-primary)" }}>Kernenergie {nucPct}%</span>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{formatGWh(nucTotal)}</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{fmt(nucTotal)}</span>
             </div>
             {nuclearGWhLocal > 0.01 && (
-              <BarTooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={formatGWh(nuclearGWhLocal)} />
+              <BarTooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={fmt(nuclearGWhLocal)} />
             )}
             {nuclearGWh != null && nuclearGWh > 0.001 && (
-              <BarTooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={formatGWh(nuclearGWh)} />
+              <BarTooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={fmt(nuclearGWh)} />
             )}
           </>
         );

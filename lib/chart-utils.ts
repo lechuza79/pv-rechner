@@ -135,6 +135,24 @@ export function formatGWh(gwh: number): string {
   return `${gwh.toFixed(2)} GWh`;
 }
 
+/** Determine whether to use TWh or GWh based on the total value */
+export function energyUnit(totalGWh: number): "TWh" | "GWh" {
+  return totalGWh >= 1000 ? "TWh" : "GWh";
+}
+
+/** Format GWh value in a fixed unit (TWh or GWh) for consistent comparison */
+export function formatGWhIn(gwh: number, unit: "TWh" | "GWh"): string {
+  if (unit === "TWh") {
+    const twh = gwh / 1000;
+    if (twh >= 10) return `${twh.toFixed(0)} TWh`;
+    if (twh >= 1) return `${twh.toFixed(1)} TWh`;
+    return `${twh.toFixed(2)} TWh`;
+  }
+  if (gwh >= 10) return `${gwh.toFixed(0)} GWh`;
+  if (gwh >= 1) return `${gwh.toFixed(1)} GWh`;
+  return `${gwh.toFixed(2)} GWh`;
+}
+
 export function formatEurMWh(eur: number): string {
   return `${(eur / 10).toFixed(1)} ct/kWh`;
 }

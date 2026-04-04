@@ -6,7 +6,7 @@ import { useGenerationMix, useNuclearImport } from "../../lib/energy";
 import StackedAreaChart from "../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../components/charts/StackedBarChart";
 import {
-  formatGWh, calcPeriodStats, CATEGORY_COLORS,
+  formatGWh, formatGWhIn, energyUnit, calcPeriodStats, CATEGORY_COLORS,
 } from "../../lib/chart-utils";
 import { v } from "../../lib/theme";
 import { useChartExport } from "../../lib/useChartExport";
@@ -219,12 +219,16 @@ export default function EnergieClient() {
     context: {
       title: "Stromerzeugung nach Energieträger in Deutschland",
       subtitle: rangeLabel,
-      stats: stats ? [
-        { label: "Erneuerbare", value: `${Math.round(stats.eeSharePct)}`, unit: "%" },
-        { label: "Erzeugt", value: formatGWh(stats.totalGenerationGWh).replace(/[^\d.,]/g, ''), unit: formatGWh(stats.totalGenerationGWh).replace(/[\d.,\s]/g, '') },
-        { label: "davon EE", value: formatGWh(stats.renewableGWh).replace(/[^\d.,]/g, ''), unit: formatGWh(stats.renewableGWh).replace(/[\d.,\s]/g, '') },
-        ...(stats.netImportGWh !== 0 ? [{ label: "Netto-Import", value: `${stats.netImportGWh > 0 ? "+" : ""}${formatGWh(Math.abs(stats.netImportGWh)).replace(/[^\d.,]/g, '')}`, unit: formatGWh(Math.abs(stats.netImportGWh)).replace(/[\d.,\s]/g, '') }] : []),
-      ] : undefined,
+      stats: stats ? (() => {
+        const u = energyUnit(stats.totalGenerationGWh);
+        const f = (v: number) => formatGWhIn(v, u);
+        return [
+          { label: "Erneuerbare", value: `${Math.round(stats.eeSharePct)}`, unit: "%" },
+          { label: "Erzeugt", value: f(stats.totalGenerationGWh).replace(/[^\d.,]/g, ''), unit: u },
+          { label: "davon EE", value: f(stats.renewableGWh).replace(/[^\d.,]/g, ''), unit: u },
+          ...(stats.netImportGWh !== 0 ? [{ label: "Netto-Import", value: `${stats.netImportGWh > 0 ? "+" : ""}${f(Math.abs(stats.netImportGWh)).replace(/[^\d.,]/g, '')}`, unit: u }] : []),
+        ];
+      })() : undefined,
       legend: [
         { color: CATEGORY_COLORS.renewable, label: "Erneuerbare" },
         { color: CATEGORY_COLORS.fossil, label: "Fossil" },
@@ -387,12 +391,17 @@ export default function EnergieClient() {
           scrollbarWidth: "none",
         }}
       >
-        {[
-          { label: "Erneuerbare", value: stats ? `${Math.round(stats.eeSharePct)}` : null, unit: "%" },
-          { label: "Erzeugt", value: stats ? splitValueUnit(formatGWh(stats.totalGenerationGWh))[0] : null, unit: stats ? splitValueUnit(formatGWh(stats.totalGenerationGWh))[1] : "TWh" },
-          { label: "davon EE", value: stats ? splitValueUnit(formatGWh(stats.renewableGWh))[0] : null, unit: stats ? splitValueUnit(formatGWh(stats.renewableGWh))[1] : "TWh" },
-          { label: stats?.netImportGWh != null ? `Netto-${stats.netImportGWh > 0 ? "Import" : "Export"}` : "Netto", value: stats ? `${stats.netImportGWh > 0 ? "+" : ""}${splitValueUnit(formatGWh(Math.abs(stats.netImportGWh)))[0]}` : null, unit: stats ? splitValueUnit(formatGWh(Math.abs(stats.netImportGWh)))[1] : "GWh" },
-        ].map(({ label, value, unit }) => (
+        {(() => {
+          // Determine consistent unit for all energy widgets based on total generation
+          const wUnit = stats ? energyUnit(stats.totalGenerationGWh) : "TWh";
+          const fmtW = (v: number) => splitValueUnit(formatGWhIn(v, wUnit));
+          return [
+            { label: "Erneuerbare", value: stats ? `${Math.round(stats.eeSharePct)}` : null, unit: "%" },
+            { label: "Erzeugt", value: stats ? fmtW(stats.totalGenerationGWh)[0] : null, unit: stats ? fmtW(stats.totalGenerationGWh)[1] : "TWh" },
+            { label: "davon EE", value: stats ? fmtW(stats.renewableGWh)[0] : null, unit: stats ? fmtW(stats.renewableGWh)[1] : "TWh" },
+            { label: stats?.netImportGWh != null ? `Netto-${stats.netImportGWh > 0 ? "Import" : "Export"}` : "Netto", value: stats ? `${stats.netImportGWh > 0 ? "+" : ""}${fmtW(Math.abs(stats.netImportGWh))[0]}` : null, unit: stats ? fmtW(Math.abs(stats.netImportGWh))[1] : "GWh" },
+          ];
+        })().map(({ label, value, unit }) => (
           <div key={label} style={{
             flex: "1 0 0", minWidth: 80,
             background: v("--color-bg-muted"),
