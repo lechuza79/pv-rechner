@@ -95,8 +95,26 @@ export async function GET(req: NextRequest) {
       endStr = now.toISOString().slice(0, 19) + "+01:00";
     }
 
-    // Step 1: Fetch cross-border flows (1 request)
-    const cbpfRows = await fetchCrossBorderFlows("de", startStr, endStr);
+    // Helper: fetch with yearly chunking for multi-year ranges
+    async function fetchChunked<T>(
+      fetcher: (s: string, e: string) => Promise<T[]>,
+    ): Promise<T[]> {
+      if (rangeHours > 8784) {
+        const startYear = new Date(startStr).getFullYear();
+        const endYear = new Date(endStr).getFullYear();
+        const chunks: Promise<T[]>[] = [];
+        for (let y = startYear; y <= endYear; y++) {
+          const cs = y === startYear ? startStr : `${y}-01-01T00:00:00+01:00`;
+          const ce = y === endYear ? endStr : `${y}-12-31T23:59:59+01:00`;
+          chunks.push(fetcher(cs, ce));
+        }
+        return (await Promise.all(chunks)).flat();
+      }
+      return fetcher(startStr, endStr);
+    }
+
+    // Step 1: Fetch cross-border flows (chunked for multi-year)
+    const cbpfRows = await fetchChunked((s, e) => fetchCrossBorderFlows("de", s, e));
 
     if (cbpfRows.length === 0) {
       const stale = store.getStale(cacheKey);
@@ -111,12 +129,12 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Step 2: Fetch nuclear countries in parallel (partial data is fine)
+    // Step 2: Fetch nuclear countries in parallel (partial data is fine, chunked)
     const countryGenRows: Map<string, Map<string, { nuclear: number; total: number }>> = new Map();
 
     const countryResults = await Promise.allSettled(
       NUCLEAR_COUNTRIES.map(code =>
-        fetchPublicPower(code, startStr, endStr, 6000, 1).then(rows => ({ code, rows }))
+        fetchChunked((s, e) => fetchPublicPower(code, s, e, 6000, 1)).then(rows => ({ code, rows }))
       )
     );
 

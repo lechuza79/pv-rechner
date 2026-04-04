@@ -87,7 +87,23 @@ export async function GET(req: NextRequest) {
       endStr = now.toISOString().replace("Z", "+01:00").slice(0, 19) + "+01:00";
     }
 
-    const rows = await fetchPublicPower(country, startStr, endStr);
+    // For multi-year ranges, split into yearly chunks to avoid API timeout
+    let rows: Awaited<ReturnType<typeof fetchPublicPower>>;
+    if (rangeHours > 8784) {
+      // Split into yearly requests, fetch in parallel
+      const startYear = new Date(startStr).getFullYear();
+      const endYear = new Date(endStr).getFullYear();
+      const yearChunks: Promise<Awaited<ReturnType<typeof fetchPublicPower>>>[] = [];
+      for (let y = startYear; y <= endYear; y++) {
+        const chunkStart = y === startYear ? startStr : `${y}-01-01T00:00:00+01:00`;
+        const chunkEnd = y === endYear ? endStr : `${y}-12-31T23:59:59+01:00`;
+        yearChunks.push(fetchPublicPower(country, chunkStart, chunkEnd));
+      }
+      const results = await Promise.all(yearChunks);
+      rows = results.flat();
+    } else {
+      rows = await fetchPublicPower(country, startStr, endStr);
+    }
 
     if (rows.length === 0) {
       const stale = store.getStale(cacheKey);
