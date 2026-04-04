@@ -189,7 +189,10 @@ export async function GET(req: NextRequest) {
     data.sort((a, b) => a.ts.localeCompare(b.ts));
 
     // Downsample for longer ranges
-    if (rangeHours > 2160) {
+    if (rangeHours > 17520) {
+      // >2 years: daily
+      data = downsample(data, 96);
+    } else if (rangeHours > 2160) {
       data = downsample(data, 24);
     } else if (rangeHours > 720) {
       data = downsample(data, 12);
@@ -212,8 +215,9 @@ export async function GET(req: NextRequest) {
 
     store.set(cacheKey, response);
 
+    const maxAge = isPast ? 86400 : 600;
     return NextResponse.json(response, {
-      headers: { "Cache-Control": "public, s-maxage=600, stale-while-revalidate=1200" },
+      headers: { "Cache-Control": `public, s-maxage=${maxAge}, stale-while-revalidate=${maxAge * 2}` },
     });
   } catch (e) {
     console.error("Nuclear import fetch error:", e);
