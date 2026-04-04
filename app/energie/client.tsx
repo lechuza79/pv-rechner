@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useGenerationMix, useNuclearImport } from "../../lib/energy";
 import StackedAreaChart from "../../components/charts/StackedAreaChart";
@@ -118,7 +118,21 @@ function BouncingDots() {
 export default function EnergieClient() {
   const [selected, setSelected] = useState("24h");
   const [showNuclear, setShowNuclear] = useState(true);
+  const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
+  const yearDropdownRef = useRef<HTMLDivElement>(null);
   const availableYears = useMemo(() => getAvailableYears(), []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!yearDropdownOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (yearDropdownRef.current && !yearDropdownRef.current.contains(e.target as Node)) {
+        setYearDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [yearDropdownOpen]);
 
   const isYear = /^\d{4}$/.test(selected);
   const isMax = selected === "MAX";
@@ -234,39 +248,61 @@ export default function EnergieClient() {
               >
                 <IconChevronLeft size={10} />
               </button>
-              <div style={{ position: "relative", display: "flex" }}>
-                <select
-                  value={isYear ? selected : ""}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    if (val) setSelected(val);
-                  }}
+              <div ref={yearDropdownRef} style={{ position: "relative" }}>
+                <button
+                  onClick={() => setYearDropdownOpen(!yearDropdownOpen)}
                   style={{
                     ...rangeButtonStyle(isYear),
                     borderRadius: 0,
-                    appearance: "none" as const,
-                    WebkitAppearance: "none" as const,
-                    paddingRight: 20,
-                    minWidth: 70,
-                    textAlign: "center",
-                    height: 31,
-                    boxSizing: "border-box" as const,
-                    lineHeight: "normal",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 4,
+                    minWidth: 64,
+                    justifyContent: "center",
                   }}
                 >
-                  <option value="" disabled>Jahre</option>
-                  {availableYears.map((year) => (
-                    <option key={year} value={String(year)}>{year}</option>
-                  ))}
-                </select>
-                <span style={{
-                  position: "absolute", right: 5, top: "50%", transform: "translateY(-50%)",
-                  pointerEvents: "none",
-                  color: isYear ? v("--color-text-on-accent") : v("--color-text-secondary"),
-                  display: "flex",
-                }}>
+                  {isYear ? selected : "Jahre"}
                   <IconChevronDown size={8} />
-                </span>
+                </button>
+                {yearDropdownOpen && (
+                  <div style={{
+                    position: "absolute",
+                    top: "calc(100% + 4px)",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    background: v("--color-bg"),
+                    border: `1px solid ${v("--color-border")}`,
+                    borderRadius: v("--radius-sm"),
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    zIndex: 20,
+                    padding: "4px 0",
+                    minWidth: 80,
+                    maxHeight: 200,
+                    overflowY: "auto",
+                  }}>
+                    {availableYears.map((year) => (
+                      <button
+                        key={year}
+                        onClick={() => { setSelected(String(year)); setYearDropdownOpen(false); }}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          padding: "6px 14px",
+                          border: "none",
+                          background: selected === String(year) ? v("--color-bg-accent") : "transparent",
+                          color: selected === String(year) ? v("--color-accent") : v("--color-text-secondary"),
+                          fontSize: 12,
+                          fontWeight: selected === String(year) ? 700 : 400,
+                          fontFamily: v("--font-text"),
+                          cursor: "pointer",
+                          textAlign: "center",
+                        }}
+                      >
+                        {year}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               <button
                 onClick={() => {
