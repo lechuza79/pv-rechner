@@ -6,7 +6,7 @@ import { useGenerationMix, useNuclearImport } from "../../lib/energy";
 import StackedAreaChart from "../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../components/charts/StackedBarChart";
 import {
-  formatGWh, calcPeriodStats,
+  formatGWh, calcPeriodStats, CATEGORY_COLORS,
 } from "../../lib/chart-utils";
 import { v } from "../../lib/theme";
 
@@ -308,20 +308,20 @@ export default function EnergieClient() {
             borderTop: `1px solid ${v("--color-border")}`,
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: "#4CAF50", flexShrink: 0 }} />
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.renewable, flexShrink: 0 }} />
               <span style={{ color: v("--color-text-muted") }}>Erneuerbare</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: "#8D6E63", flexShrink: 0 }} />
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.fossil, flexShrink: 0 }} />
               <span style={{ color: v("--color-text-muted") }}>Fossil</span>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-              <div style={{ width: 10, height: 10, borderRadius: 2, background: "#BDBDBD", flexShrink: 0 }} />
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.other, flexShrink: 0 }} />
               <span style={{ color: v("--color-text-muted") }}>Sonstige</span>
             </div>
             {showNuclear && !nuclearLoading && nuclearData.avg_gw > 0 && (
               <div style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
-                <div style={{ width: 10, height: 10, borderRadius: 2, background: "#F9A825", flexShrink: 0 }} />
+                <div style={{ width: 10, height: 10, borderRadius: 2, background: CATEGORY_COLORS.nuclearImport, flexShrink: 0 }} />
                 <span style={{ color: v("--color-text-muted") }}>Importierte Kernenergie</span>
               </div>
             )}

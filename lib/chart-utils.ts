@@ -2,28 +2,39 @@
 // Used by all Visx-based energy charts.
 // Keys match Energy-Charts API response (normalizeProductionType output).
 
+import { tokens } from "./theme";
+
 // ─── Energy Type Color Mapping (hex for Visx SVG fills) ─────────────────────
+// Sourced from theme tokens — single source of truth
 
 export const ENERGY_COLORS_HEX: Record<string, string> = {
   // Renewables — green shades
-  solar: "#4CAF50",
-  wind_onshore: "#66BB6A",
-  wind_offshore: "#2E7D32",
-  hydro_run_of_river: "#81C784",
-  hydro_water_reservoir: "#81C784",
-  hydro_pumped_storage: "#81C784",
-  biomass: "#A5D6A7",
-  geothermal: "#C8E6C9",
-  // Fossil / other — brown/grey shades
-  nuclear: "#F9A825",
-  fossil_gas: "#BC8F6F",
-  fossil_hard_coal: "#8D6E63",
-  fossil_brown_coal_lignite: "#5D4037",
-  fossil_oil: "#A1887F",
-  fossil_coal_derived_gas: "#8D6E63",
-  waste: "#BDBDBD",
-  others: "#BDBDBD",
+  solar: tokens["--color-energy-solar"],
+  wind_onshore: tokens["--color-energy-wind"],
+  wind_offshore: tokens["--color-energy-wind-offshore"],
+  hydro_run_of_river: tokens["--color-energy-hydro"],
+  hydro_water_reservoir: tokens["--color-energy-hydro"],
+  hydro_pumped_storage: tokens["--color-energy-hydro"],
+  biomass: tokens["--color-energy-biomass"],
+  geothermal: tokens["--color-energy-geothermal"],
+  // Fossil — brown shades
+  fossil_gas: tokens["--color-energy-gas"],
+  fossil_hard_coal: tokens["--color-energy-coal"],
+  fossil_brown_coal_lignite: tokens["--color-energy-lignite"],
+  fossil_oil: tokens["--color-energy-oil"],
+  fossil_coal_derived_gas: tokens["--color-energy-coal-gas"],
+  // Sonstige
+  waste: tokens["--color-energy-other"],
+  others: tokens["--color-energy-other"],
 };
+
+// Category summary colors (for legend, tooltip headers)
+export const CATEGORY_COLORS = {
+  renewable: tokens["--color-energy-cat-renewable"],
+  fossil: tokens["--color-energy-cat-fossil"],
+  other: tokens["--color-energy-cat-other"],
+  nuclearImport: tokens["--color-energy-nuclear-import"],
+} as const;
 
 // Display names (German)
 export const ENERGY_LABELS: Record<string, string> = {

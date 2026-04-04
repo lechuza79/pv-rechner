@@ -14,6 +14,7 @@ import {
   RENEWABLE_KEYS,
   FOSSIL_KEYS,
   SONSTIGE_KEYS,
+  CATEGORY_COLORS,
   formatGWh,
   CHART_MARGIN,
   CHART_HEIGHT,
@@ -99,10 +100,20 @@ function aggregateToWeeks(data: DataPoint[]): WeekBucket[] {
 // ─── Build 52-week grid for YTD (empty weeks at end) ─────────────────────────
 
 function build52WeekGrid(filledWeeks: WeekBucket[]): WeekBucket[] {
-  // Derive year from data (first bucket's weekKey), fall back to current year
-  const dataYear = filledWeeks.length > 0
-    ? parseInt(filledWeeks[0].weekKey.split("-W")[0], 10)
-    : new Date().getFullYear();
+  // Derive dominant year from data (most frequent ISO week year, not just first entry)
+  // Needed because Jan 1 can fall in ISO week 52 of the previous year
+  let dataYear = new Date().getFullYear();
+  if (filledWeeks.length > 0) {
+    const yearCounts = new Map<number, number>();
+    for (const w of filledWeeks) {
+      const y = parseInt(w.weekKey.split("-W")[0], 10);
+      yearCounts.set(y, (yearCounts.get(y) || 0) + 1);
+    }
+    let maxCount = 0;
+    yearCounts.forEach((count, year) => {
+      if (count > maxCount) { maxCount = count; dataYear = year; }
+    });
+  }
   const genKeys = GENERATION_STACK_KEYS;
   const grid: WeekBucket[] = [];
 
@@ -296,7 +307,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       {/* Erneuerbare */}
       {renewableGWh > 0 && (
         <>
-          <BarTooltipSummary color="#4CAF50" label={`Erneuerbare ${renewablePct}%`} value={formatGWh(renewableGWh)} />
+          <BarTooltipSummary color={CATEGORY_COLORS.renewable} label={`Erneuerbare ${renewablePct}%`} value={formatGWh(renewableGWh)} />
           {renewableKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;
@@ -308,7 +319,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       {/* Fossil */}
       {fossilGWh > 0 && (
         <>
-          <BarTooltipSummary color="#8D6E63" label={`Fossil ${fossilPct}%`} value={formatGWh(fossilGWh)} />
+          <BarTooltipSummary color={CATEGORY_COLORS.fossil} label={`Fossil ${fossilPct}%`} value={formatGWh(fossilGWh)} />
           {fossilKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;
@@ -320,7 +331,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       {/* Sonstige */}
       {sonstigeGWh > 0 && (
         <>
-          <BarTooltipSummary color="#BDBDBD" label={`Sonstige ${sonstigePct}%`} value={formatGWh(sonstigeGWh)} />
+          <BarTooltipSummary color={CATEGORY_COLORS.other} label={`Sonstige ${sonstigePct}%`} value={formatGWh(sonstigeGWh)} />
           {sonstigeKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;
@@ -332,7 +343,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       {/* Importierte Kernenergie */}
       {nuclearGWh != null && nuclearGWh > 0.01 && (
         <>
-          <BarTooltipSummary color="#F9A825" label={`Kernenergie ${totalGWh > 0 ? Math.round(nuclearGWh / (totalGWh + nuclearGWh) * 100) : 0}%`} value={formatGWh(nuclearGWh)} />
+          <BarTooltipSummary color={CATEGORY_COLORS.nuclearImport} label={`Kernenergie ${totalGWh > 0 ? Math.round(nuclearGWh / (totalGWh + nuclearGWh) * 100) : 0}%`} value={formatGWh(nuclearGWh)} />
           <div style={{ fontSize: 10, color: "var(--color-text-faint)", marginTop: -2, marginBottom: 2 }}>importiert</div>
         </>
       )}
@@ -398,7 +409,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
     [yMax, innerHeight]
   );
 
-  const colorScale = useCallback((key: string) => ENERGY_COLORS_HEX[key] || "#BDBDBD", []);
+  const colorScale = useCallback((key: string) => ENERGY_COLORS_HEX[key] || CATEGORY_COLORS.other, []);
 
   const [tooltip, setTooltip] = useState<{ data: WeekBucket; left: number } | null>(null);
 
@@ -475,9 +486,9 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
                 y={innerHeight - barHeight}
                 width={barWidth}
                 height={Math.max(0, barHeight)}
-                fill="#F9A825"
+                fill={CATEGORY_COLORS.nuclearImport}
                 fillOpacity={0.2}
-                stroke="#F9A825"
+                stroke={CATEGORY_COLORS.nuclearImport}
                 strokeWidth={0.5}
                 strokeOpacity={0.6}
                 rx={barWidth > 4 ? 1 : 0}

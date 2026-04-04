@@ -40,13 +40,20 @@ export const tokens = {
   '--color-energy-hydro': '#81C784',        // Light green — Wasserkraft
   '--color-energy-biomass': '#A5D6A7',      // Pale green — Biomasse
   '--color-energy-geothermal': '#C8E6C9',   // Very pale green — Geothermie
-  // ─── Energy — Fossil / Other (brown/grey shades) ──────────────────────────
-  '--color-energy-nuclear': '#9E9E9E',      // Neutral grey — Kernenergie
+  // ─── Energy — Fossil (brown shades) ───────────────────────────────────────
   '--color-energy-gas': '#BC8F6F',          // Warm tan — Erdgas
   '--color-energy-coal': '#8D6E63',         // Medium brown — Steinkohle
+  '--color-energy-coal-gas': '#8D6E63',     // Medium brown — Grubengas
   '--color-energy-lignite': '#5D4037',      // Dark brown — Braunkohle
   '--color-energy-oil': '#A1887F',          // Light brown — Öl
+  // ─── Energy — Sonstige ────────────────────────────────────────────────────
   '--color-energy-other': '#BDBDBD',        // Light grey — Sonstige/Abfall
+  // ─── Energy — Importierte Kernenergie ─────────────────────────────────────
+  '--color-energy-nuclear-import': '#7E57C2', // Purple — Importierte Kernenergie
+  // ─── Energy — Category summary colors ─────────────────────────────────────
+  '--color-energy-cat-renewable': '#4CAF50', // Green — Erneuerbare (summary)
+  '--color-energy-cat-fossil': '#8D6E63',    // Brown — Fossil (summary)
+  '--color-energy-cat-other': '#BDBDBD',     // Grey — Sonstige (summary)
 
   // ─── Text (5) ──────────────────────────────────────────────────────────────
   '--color-text-primary': '#3F3F3F',    // Headings, strong text, values

@@ -17,6 +17,7 @@ import {
   RENEWABLE_KEYS,
   FOSSIL_KEYS,
   SONSTIGE_KEYS,
+  CATEGORY_COLORS,
   formatMW,
   formatTime,
   CHART_MARGIN,
@@ -161,7 +162,7 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       {/* Erneuerbare */}
       {renewableTotal > 0 && (
         <>
-          <TooltipSummary color="#4CAF50" label={`Erneuerbare ${renewablePct}%`} value={formatMW(renewableTotal)} />
+          <TooltipSummary color={CATEGORY_COLORS.renewable} label={`Erneuerbare ${renewablePct}%`} value={formatMW(renewableTotal)} />
           {renewableKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
@@ -173,7 +174,7 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       {/* Fossil */}
       {fossilTotal > 0 && (
         <>
-          <TooltipSummary color="#8D6E63" label={`Fossil ${fossilPct}%`} value={formatMW(fossilTotal)} />
+          <TooltipSummary color={CATEGORY_COLORS.fossil} label={`Fossil ${fossilPct}%`} value={formatMW(fossilTotal)} />
           {fossilKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
@@ -185,7 +186,7 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       {/* Sonstige */}
       {sonstigeTotal > 0 && (
         <>
-          <TooltipSummary color="#BDBDBD" label={`Sonstige ${sonstigePct}%`} value={formatMW(sonstigeTotal)} />
+          <TooltipSummary color={CATEGORY_COLORS.other} label={`Sonstige ${sonstigePct}%`} value={formatMW(sonstigeTotal)} />
           {sonstigeKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
@@ -197,7 +198,7 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       {/* Importierte Kernenergie */}
       {nuclearMw > 0 && (
         <>
-          <TooltipSummary color="#F9A825" label={`Kernenergie ${totalGen > 0 ? Math.round(nuclearMw / (totalGen + nuclearMw) * 100) : 0}%`} value={formatMW(nuclearMw)} />
+          <TooltipSummary color={CATEGORY_COLORS.nuclearImport} label={`Kernenergie ${totalGen > 0 ? Math.round(nuclearMw / (totalGen + nuclearMw) * 100) : 0}%`} value={formatMW(nuclearMw)} />
           <div style={{ fontSize: 10, color: "var(--color-text-faint)", marginTop: -2, marginBottom: 2 }}>importiert</div>
         </>
       )}
@@ -401,7 +402,7 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
                 y={(d) => yScale(d.nuclear_gw * 1000) ?? 0}
                 yScale={yScale}
                 curve={curveMonotoneX}
-                fill="#F9A825"
+                fill={CATEGORY_COLORS.nuclearImport}
                 fillOpacity={0.15}
                 stroke="none"
               />
@@ -413,7 +414,7 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
                 yScale={yScale}
                 curve={curveMonotoneX}
                 fill="none"
-                stroke="#F9A825"
+                stroke={CATEGORY_COLORS.nuclearImport}
                 strokeWidth={2}
                 strokeOpacity={0.9}
               />
