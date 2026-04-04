@@ -439,9 +439,16 @@ Content-Seiten pro Long-Tail-Keyword als eigene Next.js-Seiten:
 
 ```bash
 npm install           # Dependencies installieren
-npm run dev           # Dev-Server (localhost:3000)
-npm run build         # Production Build
+npm run dev           # Dev-Server (localhost:3000, nutzt .next-dev/)
+npm run build         # Production Build (prebuild räumt .next/ auf, nutzt .next/)
 ```
+
+**Cache-Trennung:** Dev-Server und Build nutzen getrennte Output-Verzeichnisse (`distDir` in `next.config.js`):
+- `npm run dev` → `.next-dev/` (NODE_ENV=development)
+- `npm run build` → `.next/` (NODE_ENV=production, Vercel-kompatibel)
+- `prebuild`-Script löscht `.next/` automatisch vor jedem Build
+
+Das verhindert "Cannot find module './XXX.js'" Fehler die auftreten wenn Dev-Server und Build sich `.next/` teilen.
 
 ## Deployment & Workflow
 
