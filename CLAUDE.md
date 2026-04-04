@@ -198,19 +198,21 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Datenquellen-Recherche: Energy-Charts, Eurostat, SMARD, ENTSO-E, MaStR
 - [x] `lib/energy-api.ts`: Shared Fetch-Wrapper, Timestamp-Normalisierung, Cache-Factory, Energy-Charts + Eurostat Fetch-Funktionen
 - [x] `lib/chart-utils.ts`: Energietyp-Farbpalette (grün=EE, braun=fossil), Formatter, Aggregation (calcPeriodStats)
-- [x] `lib/energy.ts`: Client-Hooks (useGenerationMix) mit sessionStorage-Cache
+- [x] `lib/energy.ts`: Client-Hooks (useGenerationMix, useNuclearImport) mit Stale-While-Revalidate, Auto-Retry (2×), localStorage für historische Daten
 - [x] Energie-Farbtokens in `lib/theme.ts` (10 Tokens, semantisch: grün-Shades für EE, braun für fossil)
 - [x] `/api/energy/generation`: Energy-Charts public_power Proxy mit In-Memory-Cache + Downsampling (15min→1h→3h→6h)
 - [x] Visx als Chart-Library (@visx/shape, scale, axis, grid, responsive, tooltip, gradient)
 - [x] `components/charts/StackedAreaChart.tsx`: Visx Stacked Area mit smooth curves (curveMonotoneX), custom Tooltip, responsive
 - [x] `components/charts/StackedBarChart.tsx`: Visx Stacked Bar mit täglicher/wöchentlicher Aggregation, 52-Wochen-Grid für YTD
 - [x] `/energie` Seite: 5 Summary-Widgets horizontal (EE-%, Erzeugt, davon EE, Netto Import/Export, Kernimport), 5 Zeiträume (24h/7d/30d/YTD/12M) + Max (seit 2015)
-- [x] `/api/energy/nuclear-import`: Rechnerischer Kernimport aus 6 Nachbarländern (FR, CZ, CH, SE, BE, NL) via Grenzflüsse × Kernanteil
+- [x] `/api/energy/nuclear-import`: Rechnerischer Kernimport aus 6 Nachbarländern (FR, CZ, CH, SE, BE, NL) via Grenzflüsse × Kernanteil, parallelisiert via Promise.allSettled
 - [x] Kernimport-Overlay auf Stacked Area + Bar Chart (Magenta-Linie + weiße Outline, SVG-Fade-in, Toggle)
 - [x] Inländische Kernenergie als unterster Bar im Strommix (gelb, bis April 2023)
-- [x] `useNuclearImport()` Client-Hook mit sessionStorage-Cache
+- [x] `useNuclearImport()` Client-Hook mit Stale-While-Revalidate + localStorage für historische Daten
 - [x] Chart-Export: PNG-Download + Share (Native, WhatsApp, Twitter) via `lib/chart-export.ts` + `useChartExport`
 - [x] Ergebnis-Refactoring: HeroCard, Stats, QuickSettings, ResultActions als eigene Komponenten
+- [x] API-Resilienz: Stale Cache Fallback (server-seitig), 24h-Cache für historische Zeiträume, Client Auto-Retry + Retry-Button
+- [x] Graceful Degradation: Nuclear-Fehler blockiert nicht Generation-Chart, "Nicht verfügbar" statt 502-Fehler
 - [ ] Supabase-Tabellen anlegen (energy_timeseries, energy_monthly, data_source_meta) — SQL vorbereitet in /api/energy/setup
 - [ ] Cron-Routes (live 15min, daily, monthly) + vercel.json
 - [ ] Eurostat-Integration (Haushaltsstrompreise EU)
