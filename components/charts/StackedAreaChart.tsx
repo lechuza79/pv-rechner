@@ -204,7 +204,8 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       {(nuclearTotal > 0 || nuclearMw > 0) && (() => {
         const nucCombined = nuclearTotal + nuclearMw;
         const allTotal = totalGen + nuclearMw;
-        const nucPct = allTotal > 0 ? Math.round(nucCombined / allTotal * 100) : 0;
+        const nucPctRaw = allTotal > 0 ? nucCombined / allTotal * 100 : 0;
+        const nucPct = nucPctRaw >= 10 ? Math.round(nucPctRaw) : nucPctRaw < 0.1 ? nucPctRaw.toFixed(2) : nucPctRaw.toFixed(1);
         return (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, marginBottom: 4 }}>

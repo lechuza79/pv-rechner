@@ -396,7 +396,8 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       {(nuclearGWhLocal > 0.01 || (nuclearGWh != null && nuclearGWh > 0.001)) && (() => {
         const nucTotal = nuclearGWhLocal + (nuclearGWh || 0);
         const allTotal = totalGWh + (nuclearGWh || 0);
-        const nucPct = allTotal > 0 ? Math.round(nucTotal / allTotal * 100) : 0;
+        const nucPctRaw = allTotal > 0 ? nucTotal / allTotal * 100 : 0;
+        const nucPct = nucPctRaw >= 10 ? Math.round(nucPctRaw) : nucPctRaw < 0.1 ? nucPctRaw.toFixed(2) : nucPctRaw.toFixed(1);
         const fmtNuc = (v: number) => v >= 10 ? formatGWh(v) : `${v.toFixed(2)} GWh`;
         return (
           <>

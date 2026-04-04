@@ -110,17 +110,23 @@ async function calcNuclearImport(
     const cbpfRows = await fetchCrossBorderFlows("de", startStr, endStr);
     if (cbpfRows.length === 0) return result;
 
-    // Fetch nuclear countries generation mixes in parallel
+    // Fetch nuclear countries generation mixes sequentially (avoid rate limiting)
+    // Full year of 15-min data per country is large — needs generous timeout
     const countryGenRows = new Map<string, Map<string, { nuclear: number; total: number }>>();
-    const countryResults = await Promise.allSettled(
-      NUCLEAR_COUNTRIES.map(code =>
-        fetchPublicPower(code, startStr, endStr, 6000, 1).then(rows => ({ code, rows }))
-      )
-    );
+    const countryResults: { code: string; rows: Awaited<ReturnType<typeof fetchPublicPower>> }[] = [];
+    for (const code of NUCLEAR_COUNTRIES) {
+      try {
+        const rows = await fetchPublicPower(code, startStr, endStr, 45000, 3);
+        countryResults.push({ code, rows });
+      } catch (e) {
+        console.warn(`Nuclear import: ${code} fetch failed:`, (e as Error).message);
+      }
+      // Small delay between countries to avoid rate limiting
+      await new Promise(r => setTimeout(r, 500));
+    }
 
     for (const res of countryResults) {
-      if (res.status === "rejected") continue;
-      const { code, rows } = res.value;
+      const { code, rows } = res;
       const tsMap = new Map<string, { nuclear: number; total: number }>();
       for (const row of rows) {
         const nuclear = (row.data.nuclear as number) ?? 0;
