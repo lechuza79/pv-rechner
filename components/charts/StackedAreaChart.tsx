@@ -19,7 +19,8 @@ import {
   NUCLEAR_KEYS,
   SONSTIGE_KEYS,
   CATEGORY_COLORS,
-  formatMW,
+  formatMWIn,
+  powerUnit,
   formatTime,
   CHART_MARGIN,
   CHART_HEIGHT,
@@ -128,6 +129,10 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
   }
   const nuclearMw = nuclearGw != null && nuclearGw > 0 ? nuclearGw * 1000 : 0;
 
+  // Use consistent unit across entire tooltip based on total
+  const unit = powerUnit(totalGen);
+  const fmt = (v: number) => formatMWIn(v, unit);
+
   const renewablePct = totalGen > 0 ? Math.round(renewableTotal / totalGen * 100) : 0;
   const fossilPct = totalGen > 0 ? Math.round(fossilTotal / totalGen * 100) : 0;
   const nuclearPct = totalGen > 0 ? Math.round(nuclearTotal / totalGen * 100) : 0;
@@ -167,11 +172,11 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       {/* Erneuerbare */}
       {renewableTotal > 0 && (
         <>
-          <TooltipSummary color={CATEGORY_COLORS.renewable} label={`Erneuerbare ${renewablePct}%`} value={formatMW(renewableTotal)} />
+          <TooltipSummary color={CATEGORY_COLORS.renewable} label={`Erneuerbare ${renewablePct}%`} value={fmt(renewableTotal)} />
           {renewableKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
-            return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;
+            return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
           })}
         </>
       )}
@@ -179,11 +184,11 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       {/* Fossil */}
       {fossilTotal > 0 && (
         <>
-          <TooltipSummary color={CATEGORY_COLORS.fossil} label={`Fossil ${fossilPct}%`} value={formatMW(fossilTotal)} />
+          <TooltipSummary color={CATEGORY_COLORS.fossil} label={`Fossil ${fossilPct}%`} value={fmt(fossilTotal)} />
           {fossilKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
-            return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;
+            return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
           })}
         </>
       )}
@@ -191,11 +196,11 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       {/* Sonstige */}
       {sonstigeTotal > 0 && (
         <>
-          <TooltipSummary color={CATEGORY_COLORS.other} label={`Sonstige ${sonstigePct}%`} value={formatMW(sonstigeTotal)} />
+          <TooltipSummary color={CATEGORY_COLORS.other} label={`Sonstige ${sonstigePct}%`} value={fmt(sonstigeTotal)} />
           {sonstigeKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
-            return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={formatMW(val)} />;
+            return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
           })}
         </>
       )}
@@ -210,13 +215,13 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, marginBottom: 4 }}>
               <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: "var(--color-text-primary)" }}>Kernenergie {nucPct}%</span>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{formatMW(nucCombined)}</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{fmt(nucCombined)}</span>
             </div>
             {nuclearTotal > 0 && (
-              <TooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={formatMW(nuclearTotal)} />
+              <TooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={fmt(nuclearTotal)} />
             )}
             {nuclearMw > 0 && (
-              <TooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={formatMW(nuclearMw)} />
+              <TooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={fmt(nuclearMw)} />
             )}
           </>
         );

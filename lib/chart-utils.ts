@@ -127,6 +127,26 @@ export function formatMW(mw: number): string {
   return `${Math.round(mw)} MW`;
 }
 
+/** Determine whether to use GW or MW based on the total value.
+ *  Uses GW when totals exceed 1000 MW (always for full German mix). */
+export function powerUnit(totalMW: number): "GW" | "MW" {
+  return totalMW >= 1000 ? "GW" : "MW";
+}
+
+/** Format MW value in a fixed unit (GW or MW) for consistent comparison */
+export function formatMWIn(mw: number, unit: "GW" | "MW"): string {
+  if (unit === "GW") {
+    const gw = mw / 1000;
+    if (gw >= 10) return `${gw.toFixed(0)} GW`;
+    if (gw >= 1) return `${gw.toFixed(1)} GW`;
+    if (gw >= 0.01) return `${gw.toFixed(2)} GW`;
+    return "< 0.01 GW";
+  }
+  if (mw >= 10) return `${Math.round(mw)} MW`;
+  if (mw >= 1) return `${mw.toFixed(1)} MW`;
+  return `${mw.toFixed(2)} MW`;
+}
+
 export function formatGWh(gwh: number): string {
   if (gwh >= 10000) return `${(gwh / 1000).toFixed(0)} TWh`;
   if (gwh >= 1000) return `${(gwh / 1000).toFixed(1)} TWh`;
@@ -147,11 +167,13 @@ export function formatGWhIn(gwh: number, unit: "TWh" | "GWh"): string {
     const twh = gwh / 1000;
     if (twh >= 10) return `${twh.toFixed(0)} TWh`;
     if (twh >= 1) return `${twh.toFixed(1)} TWh`;
-    return `${twh.toFixed(2)} TWh`;
+    if (twh >= 0.01) return `${twh.toFixed(2)} TWh`;
+    return "< 0.01 TWh";
   }
   if (gwh >= 10) return `${gwh.toFixed(0)} GWh`;
   if (gwh >= 1) return `${gwh.toFixed(1)} GWh`;
-  return `${gwh.toFixed(2)} GWh`;
+  if (gwh >= 0.01) return `${gwh.toFixed(2)} GWh`;
+  return "< 0.01 GWh";
 }
 
 export function formatEurMWh(eur: number): string {
