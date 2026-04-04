@@ -27,7 +27,7 @@ export default function InlineEdit({ value, onCommit, unit, step = 1, min = 0, m
       <span
         onClick={startEdit}
         style={{
-          cursor: "pointer", borderBottom: `1px dashed ${v('--color-text-faint')}`,
+          cursor: "pointer", borderBottom: `1px dashed ${v('--color-accent')}`,
           padding: "2px 0 3px", display: "inline-flex", alignItems: "baseline", gap: 2,
           color: v('--color-text-primary'), fontFamily: v('--font-mono'), fontWeight: 700,
           fontSize: "inherit", minHeight: 24, lineHeight: 1.4,

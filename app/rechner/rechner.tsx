@@ -431,9 +431,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
               {/* Editable parameters grid */}
               <div style={{
-                display: "flex", gap: 20,
-                marginTop: 18, padding: 20, background: v('--color-bg-muted'),
-                borderRadius: v('--radius-md'), textAlign: "left", fontSize: 13,
+                display: "flex", gap: 12,
+                marginTop: 18, padding: "14px 12px", background: v('--color-bg-muted'),
+                borderRadius: v('--radius-md'), textAlign: "left", fontSize: 12,
               }}>
                 {/* Left column */}
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 13 }}>
