@@ -505,6 +505,7 @@ Branching-Strategie (develop/main) erst einführen wenn es einen Staging-Bedarf 
 - Commit-Messages auf Deutsch
 - UI-Texte auf Deutsch
 - Code und Variablennamen auf Englisch, außer Domänen-Begriffe (Eigenverbrauch, Einspeisevergütung, Strompreis etc.)
+- **Chart-Entwicklung:** Vor jeder Chart-Änderung oder neuen Chart-Implementierung das Chart-Regelwerk in Memory lesen (`feedback_chart_conventions.md`). Dort sind alle Konventionen dokumentiert: Charttyp pro Zeitraum, einheitliche Einheiten, Tooltip-Struktur, Achsenbeschriftung, Export/Sharing, Caching-Architektur, Farb-Zuordnung.
 
 ## Workflow-Konventionen
 
