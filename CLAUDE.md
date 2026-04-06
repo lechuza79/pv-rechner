@@ -20,9 +20,9 @@ Du arbeitest mit einem UX-Architekten zusammen, der technisch mitdenken kann, ab
 
 ## Kernkonzept
 
-### Zwei Flows, ein Ergebnis
+### Startseite + Flows
 
-**Startseite (`/`):** Hub mit 2 Optionen → Rechner oder Empfehlung
+**Startseite (`/`):** Tool-Hub mit 3 Widget-Cards → Live Simulation, Anlage rechnen, Energiedaten
 
 **Flow 1: Rechner (`/rechner`)** — "Ich kenne meine Anlage"
 ```
@@ -151,7 +151,7 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Name + Beschreibung für gespeicherte Berechnungen (Inline-Edit im Dashboard)
 - [x] Doppeltes Login-Formular auf Ergebnis-Seite behoben
 
-**WP 2: Empfehlungs-Flow ✅ (done)**
+**WP 2: Empfehlungs-Flow ✅ (done, geparkt — nicht auf Startseite verlinkt)**
 - [x] Hub-Startseite (/) mit 2 Flow-Optionen
 - [x] Empfehlungs-Flow (/empfehlung): Haus+Dach → Haushalt → WP/E-Auto → Empfehlung
 - [x] Empfehlungs-Algorithmus (lib/recommend.ts): EV-optimierte kWp + Speicher-Empfehlung
@@ -335,7 +335,7 @@ pv-rechner/
 │       └── StackedBarChart.tsx      # Visx Stacked Bar (30d/YTD/12M/Max, wöchentlich aggregiert)
 └── app/
     ├── layout.tsx                 # Root Layout: HTML, Fonts, SEO-Meta, CSS-Variablen
-    ├── page.tsx                   # Hub-Startseite: 2 Flows (Empfehlung / Rechner)
+    ├── page.tsx                   # Tool-Hub: 3 Widget-Cards (Simulation / Rechner / Energie)
     ├── rechner/
     │   ├── page.tsx               # Error Boundary + <PVRechner />
     │   └── rechner.tsx            # "use client" — Rechner-Flow + Ergebnisseite
