@@ -1,7 +1,31 @@
 import Link from "next/link";
 import Header from "../components/Header";
-import { IconArrowRight } from "../components/Icons";
+import { IconSun, IconBolt, IconSparkle, IconArrowRight } from "../components/Icons";
 import { v } from "../lib/theme";
+
+const tools = [
+  {
+    href: "/simulation",
+    icon: IconSun,
+    title: "Live Simulation",
+    description: "Sieh in Echtzeit, was eine PV-Anlage an deinem Standort gerade produzieren würde — basierend auf aktuellen Wetterdaten.",
+    cta: "Simulation starten",
+  },
+  {
+    href: "/rechner",
+    icon: IconBolt,
+    title: "Anlage rechnen",
+    description: "Berechne Kosten, Ersparnis und Rendite einer PV-Anlage — individuell für deinen Haushalt.",
+    cta: "Jetzt berechnen",
+  },
+  {
+    href: "/energie",
+    icon: IconSparkle,
+    title: "Energiedaten Deutschland",
+    description: "Deutschlands Strommix live: Solar, Wind, Gas, Kohle — transparent und aktuell.",
+    cta: "Charts ansehen",
+  },
+];
 
 export default function Home() {
   return (
@@ -14,78 +38,49 @@ export default function Home() {
         {/* Hero */}
         <div style={{ textAlign: "center", marginBottom: 36, paddingTop: 10 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
-          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Ehrlich berechnet. Ohne nervige Anrufe oder Sales-Pitch.</p>
+          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Drei Tools. Ehrlich berechnet. Ohne Anmeldung.</p>
         </div>
 
-        {/* Flow-Auswahl */}
+        {/* Tool Cards */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32 }}>
-          <Link href="/empfehlung" style={{ textDecoration: "none" }}>
-            <div style={{
-              background: v('--color-bg'), borderRadius: v('--radius-lg'), padding: "20px", cursor: "pointer",
-              border: `2px solid ${v('--color-accent')}`,
-            }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 6 }}>
-                Was passt zu mir?
-              </div>
-              <div style={{ fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.5 }}>
-                Beschreibe deinen Haushalt und dein Dach — wir empfehlen dir die passende Anlage.
-              </div>
-              <div style={{
-                marginTop: 12, display: "inline-block", padding: "8px 16px", borderRadius: v('--radius-md'),
-                fontSize: 13, fontWeight: 700, background: v('--color-accent'), color: v('--color-text-on-accent'),
-              }}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>Empfehlung starten <IconArrowRight size={12} /></span>
-              </div>
-            </div>
-          </Link>
-
-          <Link href="/rechner" style={{ textDecoration: "none" }}>
-            <div style={{
-              background: v('--color-bg'), borderRadius: v('--radius-lg'), padding: "20px", cursor: "pointer",
-              border: `2px solid ${v('--color-border')}`,
-            }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 6 }}>
-                Ich kenne meine Anlage
-              </div>
-              <div style={{ fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.5 }}>
-                Du weißt schon wie groß deine Anlage wird? Gib kWp und Speicher ein und rechne direkt.
-              </div>
-              <div style={{
-                marginTop: 12, display: "inline-block", padding: "8px 16px", borderRadius: v('--radius-md'),
-                fontSize: 13, fontWeight: 600, background: "transparent", color: v('--color-text-muted'),
-                border: `1px solid ${v('--color-border-muted')}`,
-              }}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>Direkt rechnen <IconArrowRight size={12} /></span>
-              </div>
-            </div>
-          </Link>
-        </div>
-
-        {/* Weitere Tools */}
-        <div style={{ fontSize: 11, fontWeight: 600, color: v('--color-text-faint'), textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10, textAlign: "center" }}>
-          Weitere Tools
-        </div>
-        <div style={{ marginBottom: 32 }}>
-          <Link href="/simulation" style={{ textDecoration: "none" }}>
-            <div style={{
-              background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "16px 20px", cursor: "pointer",
-              border: `1px solid ${v('--color-border')}`,
-            }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 4 }}>
-                Live Simulation
-              </div>
-              <div style={{ fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.5 }}>
-                Sieh in Echtzeit, was eine PV-Anlage an deinem Standort gerade produzieren würde.
-              </div>
-              <div style={{
-                marginTop: 10, display: "inline-block", padding: "6px 12px", borderRadius: v('--radius-sm'),
-                fontSize: 12, fontWeight: 600, color: v('--color-accent'),
-                border: `1px solid ${v('--color-border-accent')}`,
-              }}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>Jetzt testen <IconArrowRight size={12} /></span>
-              </div>
-            </div>
-          </Link>
+          {tools.map((tool) => {
+            const Icon = tool.icon;
+            return (
+              <Link key={tool.href} href={tool.href} style={{ textDecoration: "none" }}>
+                <div style={{
+                  background: v('--color-bg'),
+                  borderRadius: v('--radius-lg'),
+                  padding: "24px 20px",
+                  cursor: "pointer",
+                  border: `1px solid ${v('--color-border')}`,
+                }}>
+                  <div style={{
+                    width: 48, height: 48, borderRadius: "50%",
+                    background: v('--color-bg-accent'),
+                    border: `1px solid ${v('--color-border-accent')}`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    marginBottom: 14,
+                  }}>
+                    <Icon size={22} color={v('--color-accent')} />
+                  </div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 6 }}>
+                    {tool.title}
+                  </div>
+                  <div style={{ fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.5 }}>
+                    {tool.description}
+                  </div>
+                  <div style={{
+                    marginTop: 14, display: "inline-block", padding: "8px 16px", borderRadius: v('--radius-md'),
+                    fontSize: 13, fontWeight: 700, background: v('--color-accent'), color: v('--color-text-on-accent'),
+                  }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      {tool.cta} <IconArrowRight size={12} />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
 
         {/* Trust Badge */}

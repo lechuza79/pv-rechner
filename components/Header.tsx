@@ -17,7 +17,7 @@ interface HeaderProps {
 export default function Header({ user, authLoading, onLoginClick, onLogoutClick, activePage: activePageProp }: HeaderProps) {
   const pathname = usePathname();
   const activePage = activePageProp ?? (
-    pathname === "/" ? "rechner" :
+    pathname === "/" ? "" :
     pathname.startsWith("/simulation") ? "simulation" :
     pathname.startsWith("/energie") ? "energie" :
     pathname.startsWith("/rechner") ? "rechner" :
@@ -111,7 +111,7 @@ export default function Header({ user, authLoading, onLoginClick, onLogoutClick,
 
         {isDesktop ? (
           <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            <Link href="/" style={linkStyle("rechner")}>Rechner</Link>
+            <Link href="/rechner" style={linkStyle("rechner")}>Rechner</Link>
             <Link href="/simulation" style={linkStyle("simulation")}>Live Simulation</Link>
             <Link href="/energie" style={linkStyle("energie")}>Charts</Link>
             {authElement}
@@ -154,7 +154,7 @@ export default function Header({ user, authLoading, onLoginClick, onLogoutClick,
             padding: "8px 24px 16px",
             boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
           }}>
-            <Link href="/" style={mobileLinkStyle("rechner")} onClick={closeMenu}>Rechner</Link>
+            <Link href="/rechner" style={mobileLinkStyle("rechner")} onClick={closeMenu}>Rechner</Link>
             <Link href="/simulation" style={mobileLinkStyle("simulation")} onClick={closeMenu}>Live Simulation</Link>
             <Link href="/energie" style={mobileLinkStyle("energie")} onClick={closeMenu}>Charts</Link>
             {authElement}
