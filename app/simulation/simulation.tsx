@@ -86,12 +86,18 @@ export default function LiveSimulation() {
   // Auto-fetch on initial PLZ from URL
   useEffect(() => { if (initialPlz && /^\d{5}$/.test(initialPlz)) submitPlz(initialPlz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Auto-refresh every 15 min
+  // Refresh only when the user returns to the tab and data is older than 30 min.
+  // Avoids burning Vercel function invocations on background tabs left open for hours.
   useEffect(() => {
     if (!coords) return;
-    const interval = setInterval(() => fetchWeather(coords[0], coords[1]), 15 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, [coords, fetchWeather]);
+    const onVisibility = () => {
+      if (document.visibilityState !== "visible") return;
+      if (lastUpdate && Date.now() - lastUpdate.getTime() < 30 * 60 * 1000) return;
+      fetchWeather(coords[0], coords[1]);
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [coords, fetchWeather, lastUpdate]);
 
   // Derived data
   const results = useMemo(() => weather ? simulateAll(weather, household) : [], [weather, household]);

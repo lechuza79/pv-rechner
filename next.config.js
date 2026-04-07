@@ -13,6 +13,14 @@ const nextConfig = {
         destination: "/rechner",
         permanent: false,
       },
+      // Legacy Vercel preview host → production (handled by Next before middleware
+      // so it doesn't consume middleware invocations)
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "pv-rechner-alpha.vercel.app" }],
+        destination: "https://solar-check.io/:path*",
+        permanent: true,
+      },
     ];
   },
 }

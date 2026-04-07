@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabase-server";
 
+// PVGIS values for a given rounded coordinate are effectively stationary.
+// Cache aggressively on the Vercel CDN so repeat requests skip the function entirely.
+const CDN_CACHE_LONG = "public, s-maxage=2592000, stale-while-revalidate=2592000"; // 30 days
+const CDN_CACHE_FALLBACK = "public, s-maxage=86400, stale-while-revalidate=604800"; // 1 day
+
 // Bundesland-Fallback (kWh/kWp Durchschnitt)
 const FALLBACK: Record<string, number> = {
   BW: 1123, BY: 1123, BE: 1055, BB: 1052, HB: 991, HH: 985,
@@ -36,7 +41,10 @@ export async function GET(req: NextRequest) {
   // Sofort-Fallback wenn keine Koordinaten
   if (isNaN(lat) || isNaN(lon) || lat < 47 || lat > 55 || lon < 5 || lon > 16) {
     const bl = PLZ_BL[plzPrefix] || "BY";
-    return NextResponse.json({ annual: FALLBACK[bl] || 1050, monthly: null, source: "fallback" });
+    return NextResponse.json(
+      { annual: FALLBACK[bl] || 1050, monthly: null, source: "fallback" },
+      { headers: { "Cache-Control": CDN_CACHE_FALLBACK } },
+    );
   }
 
   // Gerundete Koordinaten für Cache (0.01° ≈ 1 km)
@@ -53,11 +61,14 @@ export async function GET(req: NextRequest) {
       .maybeSingle();
 
     if (cached) {
-      return NextResponse.json({
-        annual: cached.annual_kwh_per_kwp,
-        monthly: cached.monthly,
-        source: "cache",
-      });
+      return NextResponse.json(
+        {
+          annual: cached.annual_kwh_per_kwp,
+          monthly: cached.monthly,
+          source: "cache",
+        },
+        { headers: { "Cache-Control": CDN_CACHE_LONG } },
+      );
     }
   }
 
@@ -92,10 +103,16 @@ export async function GET(req: NextRequest) {
       }, { onConflict: "lat,lon" }).then(() => {});
     }
 
-    return NextResponse.json({ annual, monthly, source: "pvgis" });
+    return NextResponse.json(
+      { annual, monthly, source: "pvgis" },
+      { headers: { "Cache-Control": CDN_CACHE_LONG } },
+    );
   } catch {
     // 3. Fallback auf Bundesland-Tabelle
     const bl = PLZ_BL[plzPrefix] || "BY";
-    return NextResponse.json({ annual: FALLBACK[bl] || 1050, monthly: null, source: "fallback" });
+    return NextResponse.json(
+      { annual: FALLBACK[bl] || 1050, monthly: null, source: "fallback" },
+      { headers: { "Cache-Control": CDN_CACHE_FALLBACK } },
+    );
   }
 }

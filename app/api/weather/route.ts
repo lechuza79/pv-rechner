@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 // In-memory cache (warm Vercel function keeps this between requests)
 const cache = new Map<string, { data: WeatherResponse; ts: number }>();
-const TTL = 5 * 60 * 1000; // 5 minutes
+const TTL = 15 * 60 * 1000; // 15 minutes
+// CDN cache-control: 15 min fresh, 1 h stale-while-revalidate
+const CDN_CACHE = "public, s-maxage=900, stale-while-revalidate=3600";
 
 interface WeatherResponse {
   current: {
@@ -37,7 +39,7 @@ export async function GET(req: NextRequest) {
   // Check cache
   const cached = cache.get(key);
   if (cached && Date.now() - cached.ts < TTL) {
-    return NextResponse.json(cached.data);
+    return NextResponse.json(cached.data, { headers: { "Cache-Control": CDN_CACHE } });
   }
 
   // Fetch from Open-Meteo
@@ -84,7 +86,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(data, { headers: { "Cache-Control": CDN_CACHE } });
   } catch {
     return NextResponse.json({
       current: { temperature: 0, irradiance: 0, cloudCover: 0, isDay: false, time: "" },
