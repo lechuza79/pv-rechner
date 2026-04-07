@@ -459,9 +459,11 @@ npm run build         # Production Build (prebuild räumt .next/ auf, nutzt .nex
 **Cache-Trennung:** Dev-Server und Build nutzen getrennte Output-Verzeichnisse (`distDir` in `next.config.js`):
 - `npm run dev` → `.next-dev/` (NODE_ENV=development)
 - `npm run build` → `.next/` (NODE_ENV=production, Vercel-kompatibel)
-- `prebuild`-Script löscht `.next/` automatisch vor jedem Build
+- `prebuild`-Script löscht `.next/` lokal vor jedem Build, **aber nicht auf Vercel**
 
 Das verhindert "Cannot find module './XXX.js'" Fehler die auftreten wenn Dev-Server und Build sich `.next/` teilen.
+
+**Wichtig:** `prebuild` prüft `process.env.VERCEL` und räumt nur lokal auf. Vercel restored `.next/cache/` (webpack, SWC, tsbuildinfo) aus dem Build-Cache vor dem Build — diesen Cache zu löschen verdoppelt die Build-Zeit und Kosten. Alte Version war `"prebuild": "rm -rf .next"`, das hat jeden Vercel-Build zum Cold Build gemacht.
 
 ## Deployment & Workflow
 
@@ -495,6 +497,21 @@ Branching-Strategie (develop/main) erst einführen wenn es einen Staging-Bedarf 
 - `ADMIN_EMAILS` — Kommaseparierte Admin-E-Mails (Zugang `/admin/theme`)
 - Lokal: `.env.local` (in `.gitignore`)
 - Vercel: Dashboard → Project → Settings → Environment Variables
+
+### Vercel-Kostenoptimierungen (Stand Apr 2026)
+
+Gesamt-Org hat vier Projekte (`pv-rechner`, `life-is-a-binge`, `growth-assistant`, `portfolios-katharina`). Der pv-rechner-Anteil an den Vercel-Kosten ist ~$8,50/Monat (~20% der Org-Kosten), davon ~$8,50 Build Minutes. Aktive Fixes:
+
+1. **Build-Cache reaktiviert** — `prebuild` räumt `.next/` nur lokal auf (siehe oben). Spart ~40–60% Build-Zeit auf Vercel.
+2. **Ignored Build Step** im Vercel Dashboard (Settings → Build and Deployment):
+   ```sh
+   bash -c 'if git rev-parse HEAD^ >/dev/null 2>&1; then git diff --quiet HEAD^ HEAD -- ":!*.md" ":!.claude/"; else exit 1; fi'
+   ```
+   Überspringt Builds für Commits, die nur `*.md`-Dateien oder `.claude/` ändern (~10% der Commits).
+3. **Middleware-Matcher** auf `/dashboard`, `/admin`, `/api/calculations`, `/auth/callback` beschränkt — öffentliche Seiten werden statisch ausgeliefert und umgehen Edge Middleware Invocations.
+4. **CDN-Cache-Header** auf `/api/weather` (s-maxage=900) und `/api/pvgis` (s-maxage=2592000) — die meisten Requests kommen aus dem Vercel-Edge-Cache statt Functions aufzurufen.
+
+**Wichtig bei Kostenanalyse:** Im Vercel Usage-Dashboard immer nach Projekt filtern (`projectId`-URL-Parameter), sonst siehst du die Org-Gesamtzahlen und fixst das falsche Projekt.
 
 ## Hinweise
 
