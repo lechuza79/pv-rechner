@@ -1,4 +1,9 @@
 {
+  "git": {
+    "deploymentEnabled": {
+      "staging": false
+    }
+  },
   "crons": [
     {
       "path": "/api/prices/scrape",
