@@ -4,18 +4,53 @@ import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 
 // ─── Fuel comparison (WP vs. Gas/Öl) ────────────────────────────────────────
 // CO2-Preis: 55€/t 2025, 65€/t 2026, ab 2027 EU ETS2 marktbasiert (konservativ +8€/Jahr)
+// Quelle: BEHG + EU ETS2 (Agora/dena-Prognose)
+export function co2PriceForYear(i: number): number {
+  return i === 0 ? 55 : i === 1 ? 65 : 65 + (i - 1) * 8;
+}
+
+/** Generalized fuel cost over arbitrary horizon.
+ *  fuelKwh = thermischer Bedarf / Kesselwirkungsgrad (bereits berechnet).
+ */
+export function calcFuelCost({ fuelKwh, pricePerKwh, co2PerKwh, years = YEARS, inflation = 0.02 }: {
+  fuelKwh: number;
+  pricePerKwh: number;
+  co2PerKwh: number;
+  years?: number;
+  inflation?: number;
+}): number {
+  let total = 0;
+  for (let i = 0; i < years; i++) {
+    const co2Surcharge = co2PerKwh * co2PriceForYear(i) / 1000; // €/kWh
+    const basePrice = pricePerKwh * Math.pow(1 + inflation, i);
+    total += fuelKwh * (basePrice + co2Surcharge);
+  }
+  return Math.round(total);
+}
+
+/** Per-year fuel cost breakdown (for charting WP vs Gas over time). */
+export function calcFuelCostPerYear({ fuelKwh, pricePerKwh, co2PerKwh, years = YEARS, inflation = 0.02 }: {
+  fuelKwh: number;
+  pricePerKwh: number;
+  co2PerKwh: number;
+  years?: number;
+  inflation?: number;
+}): number[] {
+  const out: number[] = [];
+  for (let i = 0; i < years; i++) {
+    const co2Surcharge = co2PerKwh * co2PriceForYear(i) / 1000;
+    const basePrice = pricePerKwh * Math.pow(1 + inflation, i);
+    out.push(fuelKwh * (basePrice + co2Surcharge));
+  }
+  return out;
+}
+
+// Legacy wrapper — used by PV-Rechner (25 years, assumes COP 3.5 to derive thermal from electric)
 export function calcFuelCost25(wpKwhElectric: number, fuel: "gas" | "oil"): number {
   const f = FUEL[fuel];
   const thermalKwh = wpKwhElectric * 3.5; // COP 3.5
   const fuelKwh = thermalKwh / f.efficiency;
-  let total = 0;
-  for (let i = 0; i < YEARS; i++) {
-    const co2Price = i === 0 ? 55 : i === 1 ? 65 : 65 + (i - 1) * 8; // €/t, konservativ steigend
-    const co2Surcharge = f.co2PerKwh * co2Price / 1000; // €/kWh
-    const basePrice = f.price * Math.pow(1.02, i); // 2% Grundpreissteigerung
-    total += fuelKwh * (basePrice + co2Surcharge);
-  }
-  return Math.round(total);
+  return calcFuelCost({ fuelKwh, pricePerKwh: f.price, co2PerKwh: f.co2PerKwh, years: YEARS, inflation: 0.02 });
 }
 
 export function calcWpGridCost25(wpKwh: number, autarky: number, strompreis: number, stromSteigerung: number): number {

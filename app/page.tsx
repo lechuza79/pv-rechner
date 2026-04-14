@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Header from "../components/Header";
-import { IconSun, IconBolt, IconSparkle, IconArrowRight } from "../components/Icons";
+import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery } from "../components/Icons";
 import { v } from "../lib/theme";
 
 const tools = [
@@ -17,6 +17,13 @@ const tools = [
     title: "Anlage rechnen",
     description: "Berechne Kosten, Ersparnis und Rendite einer PV-Anlage — individuell für deinen Haushalt.",
     cta: "Jetzt berechnen",
+  },
+  {
+    href: "/waermepumpe",
+    icon: IconBattery,
+    title: "Wärmepumpe rechnen",
+    description: "Einsparung, Amortisation und CO₂ einer Wärmepumpe vs. Gas/Öl — mit BEG-Förderung, transparent nach Fraunhofer ISE & BWP.",
+    cta: "Prognose starten",
   },
   {
     href: "/energie",
@@ -37,8 +44,8 @@ export default function Home() {
 
         {/* Hero */}
         <div style={{ textAlign: "center", marginBottom: 36, paddingTop: 10 }}>
-          <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
-          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Drei Tools. Ehrlich berechnet. Ohne Anmeldung.</p>
+          <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
+          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Vier Tools. Ohne Anmeldung, ohne Leadfunnel.</p>
         </div>
 
         {/* Tool Cards */}

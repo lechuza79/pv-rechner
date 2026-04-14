@@ -184,6 +184,24 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] PLZ-Submit-Button statt Auto-Fetch (Simulation + Rechner)
 - [ ] Phase 3: Mehrtägige Simulation (Open-Meteo Forecast bis 16 Tage)
 
+**WP 10: Wärmepumpen-Rechner ✅ (done)**
+- [x] Eigener Flow `/waermepumpe` mit Neubau/Bestand-Umschalter (5 Steps)
+- [x] Kern-Berechnung in `lib/heatpump.ts` (Pure Functions): Heizwärmebedarf, JAZ, Investition, BEG-Förderung, 20-J-TCO
+- [x] Config in `lib/heatpump-config.ts` (zentralisiert, Admin-fähig strukturiert)
+- [x] Heizwärmebedarf: Wohnfläche × spez. kWh/m²·a (dena-Gebäudereport, DIN V 18599) + 650 kWh/Person Warmwasser
+- [x] JAZ-Modell linear aus Fraunhofer ISE „WPsmart im Bestand" (LWWP/SWWP × Vorlauftemp)
+- [x] Investition nach Heizlast aus BWP Preisübersicht 2024, +6.000 € bei HK-Tausch
+- [x] BEG-Förderung BAFA/KfW 2026: 30 % Grund + 20 % Klima + 5 % Effizienz + 30 % Einkommen (opt-in), Cap 70 %/30.000 €
+- [x] Gas-Referenz über generalisierten `calcFuelCost` (mit CO₂-Preispfad BEHG/EU ETS2)
+- [x] Hero: 20-Jahre-TCO-Differenz als Zahl, Amortisation + ⌀ Ersparnis + CO₂ als Kacheln
+- [x] Editierbare Werte (InlineEdit): Q_ges, JAZ, Referenzheizung (3 Varianten), Gas-/Strompreis, Invest, Einkommens-Bonus
+- [x] 3-Szenarien-Chart (Pessimistisch/Realistisch/Optimistisch) mit Amortisations-Markern
+- [x] `calcFuelCost` verallgemeinert aus `calcFuelCost25` (abwärtskompatibler Wrapper für PV-Rechner)
+- [x] Startseite: 4. Widget-Card "Wärmepumpe rechnen"
+- [x] Sitemap + SEO-Metadata für `/waermepumpe`
+- [ ] PV-Synergie als Toggle im Ergebnis (aktuell nur Link "PV dazu rechnen" zum PV-Rechner)
+- [ ] Share-URL + Dashboard-Save für WP-Berechnungen
+
 **WP 8: Automatische Marktpreise ✅ (done)**
 - [x] Supabase-Tabelle `market_prices` (Preishistorie, RLS)
 - [x] Monatlicher Vercel Cron: Scraping von solaranlagen-portal.com (`/api/prices/scrape`)

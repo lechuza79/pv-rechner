@@ -72,3 +72,46 @@ export const DACHARTEN = [
   { label: "Walmdach", sub: "4 Seiten, weniger Fläche", factor: 0.30 },
   { label: "Pultdach", sub: "Einseitig geneigt, sehr gut", factor: 0.55 },
 ];
+
+// ─── Wärmepumpen-Flow ───────────────────────────────────────────────────────
+
+export const SITUATION = [
+  { id: "bestand", label: "Bestandsgebäude", sub: "Alte Heizung tauschen" },
+  { id: "neubau", label: "Neubau", sub: "Frische Planung, keine Altheizung" },
+];
+
+export const WOHNFLAECHEN = [
+  { m2: 100, label: "100 m²", sub: "Kleines EFH / DHH" },
+  { m2: 140, label: "140 m²", sub: "Typisches EFH" },
+  { m2: 180, label: "180 m²", sub: "Großes EFH" },
+  { m2: 220, label: "220 m²", sub: "Sehr groß" },
+];
+
+export const INSULATION_BESTAND = [
+  { label: "Unsaniert", sub: "Baujahr vor ~1995, keine Dämmung", specKwh: 220 },
+  { label: "Teilsaniert", sub: "Fenster/Dach oder Fassade erneuert", specKwh: 160 },
+  { label: "Gut saniert", sub: "Vollsanierung, moderner Standard", specKwh: 100 },
+];
+
+export const INSULATION_NEUBAU = [
+  { label: "EnEV 2014", sub: "Gesetzlicher Mindeststandard", specKwh: 75 },
+  { label: "KfW 55", sub: "Effizienzhaus 55", specKwh: 50 },
+  { label: "KfW 40 oder besser", sub: "Passivhaus-Niveau", specKwh: 30 },
+];
+
+export const HEIZSYSTEM = [
+  { id: "fbh", label: "Fußbodenheizung", sub: "Niedrige Vorlauftemperatur (35°C)" },
+  { id: "hk_neu", label: "Moderne Heizkörper", sub: "Flächig, ausreichend dimensioniert (45°C)" },
+  { id: "hk_alt", label: "Alte Heizkörper", sub: "Klein, hohe Vorlauftemperatur (55°C+)" },
+];
+
+export const WP_TYPE = [
+  { id: "lwwp", label: "Luft/Wasser", sub: "Standard, günstigere Investition" },
+  { id: "swwp", label: "Sole/Wasser (Erdsonde)", sub: "Höhere JAZ, teurer" },
+];
+
+export const WP_FUEL_OPTIONS = [
+  { id: "gas_neu", label: "Gas-Brennwert", price: 0.11, efficiency: 0.95, co2PerKwh: 0.20 },
+  { id: "gas_alt", label: "Alter Gaskessel", price: 0.11, efficiency: 0.80, co2PerKwh: 0.20 },
+  { id: "oil", label: "Heizöl", price: 0.10, efficiency: 0.85, co2PerKwh: 0.266 },
+];
