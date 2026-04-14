@@ -23,6 +23,13 @@ export interface HeatPumpInputs {
   personen: number;              // actual head count (1, 2, 3.5, 5)
   heizsystem: "fbh" | "hk_neu" | "hk_alt";
   wpType: "lwwp" | "swwp";
+  // PV synergy (computed from /rechner conventions)
+  pv?: {
+    status: "nein" | "geplant" | "vorhanden";
+    kwp: number;
+    speicherKwh: number;
+    pvInvest?: number;           // optional override for PV cost
+  };
   // Optional overrides (editable in result view)
   override?: {
     qGes?: number;               // thermal demand override (kWh/a)
@@ -51,9 +58,13 @@ export interface HeatPumpResult {
   beg: { rate: number; amount: number; breakdown: { label: string; rate: number }[] };
   investNetto: number;
   // 20-year cost totals
-  stromKosten: number;           // Σ WP electricity
+  stromKosten: number;           // Σ WP electricity (bereits um PV-Deckung bereinigt)
   wartungWp: number;             // Σ WP maintenance
   tcoWp: number;                 // Invest + Strom + Wartung
+  // PV synergy
+  pvCoverage: number;            // Anteil WP-Strom aus PV (0–0.35)
+  pvStromSavings: number;        // Σ 20J eingesparte WP-Stromkosten durch PV
+  pvInvest: number;              // PV-Investitionskosten (nur bei status="geplant" angerechnet)
   // Gas reference
   gasKosten: number;             // Σ Gas fuel cost
   gasFix: number;                // Σ Grundgebühr
@@ -160,19 +171,31 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   const beg = calcBegSubsidy(inputs.situation, inputs.wpType, investBrutto, inputs.override?.incomeBonus ?? false, cfg);
   const investNetto = inputs.override?.investNetto ?? (investBrutto - beg.amount);
 
-  // 4. 20-Jahre Betriebskosten WP
+  // 4. 20-Jahre Betriebskosten WP (mit PV-Synergie)
   const stromPrice = inputs.override?.stromPrice ?? cfg.wpTarif;
+  // PV-Deckung: 0 wenn nein, sonst HTW-kalibrierte Heuristik
+  const pvActive = inputs.pv && inputs.pv.status !== "nein" && inputs.pv.kwp > 0;
+  const pvCoverage = pvActive ? estimatePvCoverageOfWp(inputs.pv!.kwp, eWp, inputs.pv!.speicherKwh) : 0;
+  const gridFrac = 1 - pvCoverage;
   let stromKosten = 0;
+  let pvStromSavings = 0;
   const stromPerYear: number[] = [];
   for (let i = 0; i < cfg.years; i++) {
     const p = stromPrice * Math.pow(1 + adj.stromInflation, i);
-    const cost = eWp * p;
+    const costNoPv = eWp * p;
+    const cost = costNoPv * gridFrac;
+    pvStromSavings += costNoPv - cost;
     stromKosten += cost;
     stromPerYear.push(cost);
   }
   stromKosten = Math.round(stromKosten);
+  pvStromSavings = Math.round(pvStromSavings);
+  // PV-Invest nur anrechnen wenn "geplant" — "vorhanden" ist Sunk Cost
+  const pvInvest = (inputs.pv?.status === "geplant" && inputs.pv.kwp > 0)
+    ? (inputs.pv.pvInvest ?? estimatePvCost(inputs.pv.kwp, inputs.pv.speicherKwh))
+    : 0;
   const wartungWp = cfg.wpMaintenance * cfg.years;
-  const tcoWp = investNetto + stromKosten + wartungWp;
+  const tcoWp = investNetto + pvInvest + stromKosten + wartungWp;
 
   // 5. 20-Jahre Gas-Referenz
   const gasPrice = inputs.override?.gasPrice ?? cfg.gasPriceCtPerKwh / 100;
@@ -195,8 +218,8 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   const gasInvest = inputs.situation === "neubau" ? cfg.gasInvestNeubau : 0;
   const tcoGas = gasKosten + gasFix + gasWartung + gasInvest;
 
-  // 6. Vergleich
-  const mehrInvest = investNetto - gasInvest;
+  // 6. Vergleich (pvInvest bereits in tcoWp enthalten bei status="geplant")
+  const mehrInvest = (investNetto + pvInvest) - gasInvest;
   const tcoEinsparung = Math.round(tcoGas - tcoWp);
   const einsparungProJahr = Math.round(tcoEinsparung / cfg.years);
 
@@ -206,6 +229,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   years.push({ i: 0, kum: Math.round(kum), annual: 0 });
   let amortisationsJahre: number | null = null;
   for (let i = 0; i < cfg.years; i++) {
+    // stromPerYear[i] ist bereits um PV-Deckung bereinigt
     const annualSaving = (gasPerYear[i] + cfg.gasFixCostPerYear + cfg.gasMaintenance) - (stromPerYear[i] + cfg.wpMaintenance);
     kum += annualSaving;
     years.push({ i: i + 1, kum: Math.round(kum), annual: Math.round(annualSaving) });
@@ -223,10 +247,26 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
     heizlastKw, flowTemp, jaz: Math.round(jaz * 100) / 100, eWp,
     investBrutto, beg, investNetto,
     stromKosten, wartungWp, tcoWp,
+    pvCoverage: Math.round(pvCoverage * 1000) / 1000,
+    pvStromSavings,
+    pvInvest,
     gasKosten, gasFix, gasWartung, gasInvest, tcoGas,
     tcoEinsparung, einsparungProJahr, amortisationsJahre,
     co2Einsparung, years,
   };
+}
+
+// ─── PV cost estimator (re-exported from prices config for self-contained use) ─
+// Mirrors lib/calc.ts:estimateCost but standalone so heatpump.ts has no UI deps.
+function estimatePvCost(kwp: number, speicherKwh: number): number {
+  // Uses Q1/2026 market prices (shared fallback with prices-config)
+  const pvSmall = 1400, pvLarge = 1250, threshold = 10;
+  const batteryPerKwh = 700;
+  const pv = kwp <= threshold
+    ? kwp * pvSmall
+    : threshold * pvSmall + (kwp - threshold) * pvLarge;
+  const sp = speicherKwh > 0 ? speicherKwh * batteryPerKwh : 0;
+  return Math.round((pv + sp) / 500) * 500;
 }
 
 // ─── Scenario wrappers (pessimistic/realistic/optimistic) ──────────────────

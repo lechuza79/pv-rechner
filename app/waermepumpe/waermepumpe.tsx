@@ -11,7 +11,7 @@ import OptionCard from "../../components/OptionCard";
 import InlineEdit from "../../components/InlineEdit";
 import HeatPumpChart from "../../components/HeatPumpChart";
 import Header from "../../components/Header";
-import { IconArrowRight, IconRefresh, IconChevronDown } from "../../components/Icons";
+import { IconArrowRight, IconRefresh, IconChevronDown, IconHelpCircle, IconSun } from "../../components/Icons";
 import { v } from "../../lib/theme";
 
 const STEPS = ["Situation", "Wohnfläche", "Dämmstandard", "Haushalt", "Heizsystem"];
@@ -25,10 +25,16 @@ export default function Waermepumpe() {
   const [situation, setSituation] = useState<"bestand" | "neubau">("bestand");
   const [flaecheIdx, setFlaecheIdx] = useState(1);         // 140 m² default
   const [customFlaeche, setCustomFlaeche] = useState<number | null>(null);
+  const [customFlaecheDraft, setCustomFlaecheDraft] = useState<string>("");
   const [insulationIdx, setInsulationIdx] = useState(1);   // teilsaniert / KfW 55
   const [personen, setPersonen] = useState(2);             // 3–4
   const [heizsystem, setHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">("fbh");
   const [wpType, setWpType] = useState<"lwwp" | "swwp">("lwwp");
+
+  // PV-Integration (Ergebnis-Overlay)
+  const [pvStatus, setPvStatus] = useState<"nein" | "geplant" | "vorhanden">("nein");
+  const [pvKwp, setPvKwp] = useState<number>(10);
+  const [pvSpeicher, setPvSpeicher] = useState<number>(10);
 
   // ── Result overrides (editable) ──────────────────────────────
   const [oGasPrice, setOGasPrice] = useState<number | null>(null);
@@ -53,6 +59,7 @@ export default function Waermepumpe() {
     situation, wohnflaeche, insulationIdx,
     personen: AVG_PERSONS[personen],
     heizsystem, wpType,
+    pv: pvStatus !== "nein" ? { status: pvStatus, kwp: pvKwp, speicherKwh: pvSpeicher } : undefined,
     override: {
       qGes: oQges ?? undefined,
       jaz: oJaz ?? undefined,
@@ -63,7 +70,7 @@ export default function Waermepumpe() {
       gasCo2: fuel.co2PerKwh,
       incomeBonus,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, oQges, oJaz, oInvest, oStromPrice, oGasPrice, fuel, incomeBonus]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, pvStatus, pvKwp, pvSpeicher, oQges, oJaz, oInvest, oStromPrice, oGasPrice, fuel, incomeBonus]);
 
   const result = useMemo(() => calcHeatPump(inputs), [inputs]);
   const scenarios = useMemo(() => calcHeatPumpScenarios(inputs), [inputs]);
@@ -127,10 +134,25 @@ export default function Waermepumpe() {
                   <span style={{ fontSize: 13, fontWeight: 600 }}>Eigener Wert</span>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                     <input type="text" inputMode="numeric" placeholder="m²"
-                      value={customFlaeche ?? ""} onChange={e => {
-                        const n = parseInt(e.target.value.replace(/\D/g, ""));
-                        if (!isNaN(n) && n >= 30 && n <= 500) setCustomFlaeche(n);
-                        else if (e.target.value === "") setCustomFlaeche(null);
+                      value={customFlaecheDraft}
+                      onChange={e => {
+                        // Nur Ziffern akzeptieren, aber während der Eingabe jeden Wert im Feld zulassen
+                        const raw = e.target.value.replace(/\D/g, "");
+                        setCustomFlaecheDraft(raw);
+                        if (raw === "") {
+                          setCustomFlaeche(null);
+                        } else {
+                          const n = parseInt(raw);
+                          if (!isNaN(n) && n >= 30 && n <= 500) setCustomFlaeche(n);
+                        }
+                      }}
+                      onBlur={() => {
+                        // Clamp bei Verlassen des Feldes
+                        if (customFlaecheDraft !== "") {
+                          const n = parseInt(customFlaecheDraft);
+                          if (isNaN(n) || n < 30) { setCustomFlaeche(null); setCustomFlaecheDraft(""); }
+                          else if (n > 500) { setCustomFlaeche(500); setCustomFlaecheDraft("500"); }
+                        }
                       }}
                       style={{ width: 70, textAlign: "right", fontSize: 13, fontWeight: 700, fontFamily: v('--font-mono'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, borderRadius: v('--radius-sm'), padding: "6px 8px", outline: "none" }}
                     />
@@ -219,6 +241,12 @@ export default function Waermepumpe() {
               {/* Editierbare Kernannahmen */}
               <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
                 <div>Heizwärmebedarf: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} /></div>
+                <div>
+                  Wärmepumpe:{" "}
+                  <select value={wpType} onChange={e => { setWpType(e.target.value as "lwwp" | "swwp"); setOInvest(null); setOJaz(null); }} style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: 13 }}>
+                    {WP_TYPE.map(w => <option key={w.id} value={w.id}>{w.label}</option>)}
+                  </select>
+                </div>
                 <div>JAZ (Jahresarbeitszahl): <InlineEdit value={result.jaz} onCommit={v => setOJaz(v)} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
                 <div>
                   Referenzheizung:{" "}
@@ -233,7 +261,16 @@ export default function Waermepumpe() {
                   <div style={{ marginTop: 6 }}>
                     <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), cursor: "pointer" }}>
                       <input type="checkbox" checked={incomeBonus} onChange={e => { setIncomeBonus(e.target.checked); setOInvest(null); }} style={{ cursor: "pointer" }} />
-                      Einkommens-Bonus BEG (HH-Einkommen ≤ 40.000 €)
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        Einkommens-Bonus BEG
+                        <span
+                          title="Zusätzliche 30 % BEG-Förderung für Haushalte mit einem zu versteuernden Jahreseinkommen ≤ 40.000 €. Quelle: BAFA/KfW BEG EM Richtlinie 2026. Max. Gesamtförderung 70 %, Cap 30.000 € förderfähige Kosten."
+                          style={{ display: "inline-flex", alignItems: "center", color: v('--color-text-muted'), cursor: "help" }}
+                        >
+                          <IconHelpCircle size={13} />
+                        </span>
+                        (HH-Einkommen ≤ 40.000 €)
+                      </span>
                     </label>
                   </div>
                 )}
@@ -299,10 +336,51 @@ export default function Waermepumpe() {
               </div>
             </details>
 
+            {/* PV-Synergie */}
+            <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${pvStatus !== "nein" ? v('--color-accent') : v('--color-border')}` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <IconSun size={16} color={v('--color-accent')} />
+                <span style={{ fontSize: 14, fontWeight: 700 }}>Solaranlage einrechnen</span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginBottom: pvStatus !== "nein" ? 14 : 0 }}>
+                {([
+                  { id: "nein", label: "Keine PV" },
+                  { id: "geplant", label: "PV geplant" },
+                  { id: "vorhanden", label: "PV vorhanden" },
+                ] as const).map(opt => (
+                  <button key={opt.id} onClick={() => setPvStatus(opt.id)} style={{
+                    padding: "10px 4px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700, cursor: "pointer", textAlign: "center",
+                    background: pvStatus === opt.id ? v('--color-accent-dim') : v('--color-bg-muted'),
+                    border: pvStatus === opt.id ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+                    color: pvStatus === opt.id ? v('--color-accent') : v('--color-text-secondary'),
+                  }}>{opt.label}</button>
+                ))}
+              </div>
+
+              {pvStatus !== "nein" && (
+                <div style={{ fontSize: 13, lineHeight: 2, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 12 }}>
+                  <div>Anlagengröße: <InlineEdit value={pvKwp} onCommit={v => setPvKwp(v)} unit=" kWp" min={2} max={30} step={0.5} width={60} fmt={v => (Math.round(v * 10) / 10).toString().replace(".", ",")} /></div>
+                  <div>Batteriespeicher: <InlineEdit value={pvSpeicher} onCommit={v => setPvSpeicher(v)} unit=" kWh" min={0} max={30} step={1} width={60} /></div>
+                  <div style={{ marginTop: 8, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
+                    PV deckt <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> des WP-Strombedarfs ({result.pvStromSavings.toLocaleString("de-DE")} € Ersparnis über {DEFAULT_HEATPUMP_CONFIG.years} Jahre)
+                    {pvStatus === "geplant" && result.pvInvest > 0 && (
+                      <> · PV-Invest <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary') }}>{result.pvInvest.toLocaleString("de-DE")} €</span> wird mit angerechnet</>
+                    )}
+                    {pvStatus === "vorhanden" && (
+                      <> · PV-Invest bereits getätigt, wird nicht angerechnet</>
+                    )}
+                    <div style={{ marginTop: 4, fontSize: 11, color: v('--color-text-faint') }}>
+                      Quelle: HTW Berlin Lastprofile. Winter-Schwäche berücksichtigt — realistische Bandbreite 10–30 %.
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-              <Link href="/rechner" style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
-                PV dazu rechnen <IconArrowRight size={12} />
+              <Link href={`/rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
+                PV-Rechner öffnen <IconArrowRight size={12} />
               </Link>
               <button onClick={() => setStep(0)} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={12} /> Neu berechnen</span>
