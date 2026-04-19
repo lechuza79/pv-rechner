@@ -371,10 +371,16 @@ function SummaryPanel({
   segment: SegmentFilter;
   onReset: () => void;
 }) {
-  // Labels derive from UI state — always known, no waiting required
+  // Labels derive from UI state — known immediately for DE + Bundesländer.
+  // Landkreis names come from the API response (DB lookup), so until summary
+  // loads the label shows just the AGS as a placeholder.
   const isDE = regionAgs === "de";
-  const bl = !isDE ? bundeslandByAgs(regionAgs) : null;
-  const regionName = isDE ? "Deutschland" : (bl?.name ?? regionAgs);
+  const isBl = !isDE && regionAgs.length === 2;
+  const bl = isBl ? bundeslandByAgs(regionAgs) : null;
+  let regionName: string;
+  if (isDE) regionName = "Deutschland";
+  else if (isBl) regionName = bl?.name ?? regionAgs;
+  else regionName = summary?.name ?? regionAgs;
   const regionLabel = regionName + (bl?.short ? ` · ${bl.short}` : "");
   const traegerLabel = TRAEGER_DISPLAY[energietraeger];
   const segmentSuffix = segment !== "alle" ? ` · ${SEGMENT_DISPLAY[segment]}` : "";

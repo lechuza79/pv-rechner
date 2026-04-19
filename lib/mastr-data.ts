@@ -230,9 +230,10 @@ async function supabaseChoroplethData(
     if (!rowMatchesSegment(r, segment)) continue;
     let regionKey: string;
     if (parent === "de") {
-      regionKey = blPrefix(r.region_id); // aggregate to Bundesland level
+      // Show Landkreis granularity directly on the DE map — gives a richer
+      // "all-at-once" view than 16 Bundesland aggregates, no drilldown needed.
+      regionKey = r.region_id;
     } else {
-      // Landkreis level (future): only include when region starts with parent AGS
       if (!r.region_id.startsWith(parent)) continue;
       regionKey = r.region_id;
     }
@@ -300,7 +301,18 @@ async function supabaseRegionSummary(
     name = bl?.name ?? regionId;
     level = "bundesland";
   } else {
-    name = regionId;
+    // Landkreis — look up the name from mastr_regions (populated by upload phase)
+    const { supabase } = await import("./supabase-server");
+    let lkName: string | null = null;
+    if (supabase) {
+      const { data } = await supabase
+        .from("mastr_regions")
+        .select("name")
+        .eq("region_id", regionId)
+        .maybeSingle();
+      lkName = (data as { name?: string } | null)?.name ?? null;
+    }
+    name = lkName ?? regionId;
     level = "landkreis";
   }
 

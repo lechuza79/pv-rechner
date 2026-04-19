@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Mercator } from "@visx/geo";
 import { ParentSize } from "@visx/responsive";
-import { scaleQuantize } from "@visx/scale";
+import { scaleQuantile } from "@visx/scale";
 import { v } from "../lib/theme";
 import { bundeslandByAgs } from "../lib/mastr-regions";
 
@@ -26,16 +26,27 @@ export type MastrMapProps = {
   valueLabel?: string;
 };
 
+const COLOR_RAMP = ["#EAF2FE", "#C9DCFB", "#A8C5F7", "#87AFF4", "#5B95F0", "#3380EE", "#1365EA"];
+
 export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "kWp" }: MastrMapProps) {
-  const [geo, setGeo] = useState<FeatureCollection | null>(null);
+  const [lkGeo, setLkGeo] = useState<FeatureCollection | null>(null);
+  const [blGeo, setBlGeo] = useState<FeatureCollection | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
 
   useEffect(() => {
     if (level !== "de") return;
-    fetch("/geo/de-bundeslaender.geo.json")
-      .then((r) => r.json())
-      .then(setGeo)
-      .catch(() => setGeo(null));
+    Promise.all([
+      fetch("/geo/de-landkreise.geo.json").then((r) => r.json()),
+      fetch("/geo/de-bundeslaender.geo.json").then((r) => r.json()),
+    ])
+      .then(([lk, bl]) => {
+        setLkGeo(lk);
+        setBlGeo(bl);
+      })
+      .catch(() => {
+        setLkGeo(null);
+        setBlGeo(null);
+      });
   }, [level]);
 
   const valueByAgs = useMemo(() => {
@@ -44,19 +55,26 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
     return m;
   }, [values]);
 
-  const maxVal = useMemo(() => Math.max(1, ...values.map((v) => v.value)), [values]);
+  // Quantile scale distributes colors across the data quantiles — better for
+  // power-law distributions (few huge, many small) than linear quantize.
+  const colorScale = useMemo(() => {
+    const nums = values.map((v) => v.value).filter((n) => n > 0);
+    if (nums.length === 0) {
+      return () => COLOR_RAMP[0];
+    }
+    return scaleQuantile<string>({
+      domain: nums,
+      range: COLOR_RAMP,
+    });
+  }, [values]);
 
-  // 7-step sequential color ramp from light to accent
-  const colorScale = useMemo(
-    () =>
-      scaleQuantize<string>({
-        domain: [0, maxVal],
-        range: ["#EAF2FE", "#C9DCFB", "#A8C5F7", "#87AFF4", "#5B95F0", "#3380EE", "#1365EA"],
-      }),
-    [maxVal],
-  );
+  const fillFor = (ags: string) => {
+    const val = valueByAgs.get(ags) ?? 0;
+    if (val <= 0) return COLOR_RAMP[0];
+    return colorScale(val);
+  };
 
-  if (!geo) {
+  if (!lkGeo || !blGeo) {
     return (
       <div
         style={{
@@ -75,26 +93,24 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
         {({ width, height }) => {
           if (width < 10) return null;
           return (
-            <svg width={width} height={height} role="img" aria-label="Deutschlandkarte: Bundesländer">
+            <svg width={width} height={height} role="img" aria-label="Deutschlandkarte: Landkreise">
+              {/* Landkreis layer — filled + clickable */}
               <Mercator<RegionFeature>
-                data={geo.features}
-                // d3-geo's ExtendedFeatureCollection type is structurally compatible with
-                // our GeoJSON FeatureCollection but nominally distinct; cast is safe.
-                fitSize={[[width, height], geo as never]}
+                data={lkGeo.features}
+                fitSize={[[width, height], lkGeo as never]}
               >
                 {({ features }) =>
                   features.map(({ feature, path }) => {
                     const ags = feature.properties.id;
-                    const val = valueByAgs.get(ags) ?? 0;
                     const isHovered = hovered === ags;
                     const isSelected = selectedAgs === ags;
                     return (
                       <path
                         key={ags}
                         d={path ?? ""}
-                        fill={colorScale(val)}
+                        fill={fillFor(ags)}
                         stroke={isSelected ? v("--color-accent-dark") : v("--color-border")}
-                        strokeWidth={isSelected ? 2 : isHovered ? 1.5 : 0.5}
+                        strokeWidth={isSelected ? 1.8 : isHovered ? 1.2 : 0.25}
                         style={{
                           cursor: onSelect ? "pointer" : "default",
                           transition: "stroke 120ms, stroke-width 120ms",
@@ -107,6 +123,27 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
                   })
                 }
               </Mercator>
+
+              {/* Bundesland border overlay — no fill, pointer-events: none */}
+              <g style={{ pointerEvents: "none" }}>
+                <Mercator<RegionFeature>
+                  data={blGeo.features}
+                  fitSize={[[width, height], lkGeo as never]}
+                >
+                  {({ features }) =>
+                    features.map(({ feature, path }) => (
+                      <path
+                        key={`bl-${feature.properties.id}`}
+                        d={path ?? ""}
+                        fill="none"
+                        stroke={v("--color-text-secondary")}
+                        strokeWidth={0.9}
+                        strokeLinejoin="round"
+                      />
+                    ))
+                  }
+                </Mercator>
+              </g>
             </svg>
           );
         }}
@@ -128,7 +165,7 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
           }}
         >
           <div style={{ fontWeight: 600, color: v("--color-text-primary") }}>
-            {geo.features.find((f) => f.properties.id === hovered)?.properties.name ??
+            {lkGeo.features.find((f) => f.properties.id === hovered)?.properties.name ??
               bundeslandByAgs(hovered)?.name ??
               hovered}
           </div>
