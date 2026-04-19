@@ -141,9 +141,181 @@ function applySegmentFilter(
 
 // ─── Public API ───────────────────────────────────────────────────────────────
 
-// Data-source toggle. Flip to true once Supabase is populated.
-const LOAD_FROM_SUPABASE = false;
+// Data-source toggle. Flip to true once Supabase is populated (phase 3 done).
+const LOAD_FROM_SUPABASE = true;
 const PLACEHOLDER_AS_OF = "2025-01-31";
+
+// ─── Supabase path ────────────────────────────────────────────────────────────
+
+type AggregateRow = {
+  region_id: string;
+  energietraeger: string;
+  segment: string;
+  year: number;
+  count: number;
+  kwp: number;
+};
+
+let metaDataAsOfCache: string | null = null;
+let metaFetchedAt = 0;
+
+async function fetchMetaDataAsOf(): Promise<string> {
+  // Cache mastr_meta.imported_at for 5 minutes — rarely changes.
+  if (metaDataAsOfCache && Date.now() - metaFetchedAt < 5 * 60 * 1000) return metaDataAsOfCache;
+  const { supabase } = await import("./supabase-server");
+  if (!supabase) return PLACEHOLDER_AS_OF;
+  const { data } = await supabase.from("mastr_meta").select("imported_at").eq("id", 1).maybeSingle();
+  const iso = data?.imported_at ?? PLACEHOLDER_AS_OF;
+  metaDataAsOfCache = typeof iso === "string" ? iso.substring(0, 10) : PLACEHOLDER_AS_OF;
+  metaFetchedAt = Date.now();
+  return metaDataAsOfCache;
+}
+
+async function loadSupabaseAggregates(energietraeger: Energietraeger): Promise<AggregateRow[]> {
+  const { supabase } = await import("./supabase-server");
+  if (!supabase) throw new Error("Supabase not configured");
+
+  const etList: string[] =
+    energietraeger === "gesamt" ? RENEWABLE_TRAEGER : [energietraeger];
+
+  // Supabase / PostgREST default max_rows is 1000. For Solar (~28k buckets)
+  // and Gesamt (~45k buckets) we paginate with .range() until exhausted.
+  const PAGE = 1000;
+  const all: AggregateRow[] = [];
+  let from = 0;
+  while (true) {
+    const { data, error } = await supabase
+      .from("mastr_aggregates")
+      .select("region_id, energietraeger, segment, year, count, kwp")
+      .in("energietraeger", etList)
+      // Stable ordering is required for pagination — without it, Supabase
+      // may return duplicates or gaps across pages.
+      .order("region_id", { ascending: true })
+      .order("energietraeger", { ascending: true })
+      .order("segment", { ascending: true })
+      .order("year", { ascending: true })
+      .range(from, from + PAGE - 1);
+    if (error) throw new Error(`Supabase query failed: ${error.message}`);
+    if (!data || data.length === 0) break;
+    all.push(...(data as AggregateRow[]));
+    if (data.length < PAGE) break;
+    from += PAGE;
+  }
+  return all;
+}
+
+// Bundesland AGS = first 2 digits of the Landkreis AGS (region_id)
+function blPrefix(regionId: string): string {
+  return regionId.substring(0, 2);
+}
+
+function rowMatchesSegment(row: AggregateRow, segment: SegmentFilter): boolean {
+  if (segment === "alle") return true;
+  // Segment filter only meaningful for solar; rows from other traegers have
+  // segment='n/a' and should be excluded when user filters to privat/gewerbe/…
+  return row.segment === segment;
+}
+
+async function supabaseChoroplethData(
+  parent: string,
+  energietraeger: Energietraeger,
+  segment: SegmentFilter,
+): Promise<{ data: ChoroplethEntry[]; source: "supabase"; data_as_of: string }> {
+  const rows = await loadSupabaseAggregates(energietraeger);
+  const asOf = await fetchMetaDataAsOf();
+
+  const byRegion = new Map<string, { count: number; kwp: number }>();
+
+  for (const r of rows) {
+    if (!rowMatchesSegment(r, segment)) continue;
+    let regionKey: string;
+    if (parent === "de") {
+      regionKey = blPrefix(r.region_id); // aggregate to Bundesland level
+    } else {
+      // Landkreis level (future): only include when region starts with parent AGS
+      if (!r.region_id.startsWith(parent)) continue;
+      regionKey = r.region_id;
+    }
+    const existing = byRegion.get(regionKey) ?? { count: 0, kwp: 0 };
+    existing.count += r.count;
+    existing.kwp += r.kwp;
+    byRegion.set(regionKey, existing);
+  }
+
+  const data: ChoroplethEntry[] = Array.from(byRegion.entries()).map(([region_id, v]) => ({
+    region_id,
+    count: v.count,
+    kwp: v.kwp,
+  }));
+  return { data, source: "supabase", data_as_of: asOf };
+}
+
+async function supabaseRegionSummary(
+  regionId: string,
+  energietraeger: Energietraeger,
+  segment: SegmentFilter,
+): Promise<RegionSummary> {
+  const rows = await loadSupabaseAggregates(energietraeger);
+  const asOf = await fetchMetaDataAsOf();
+
+  // Match rows for this region (DE = all, BL = 2-digit prefix, LK = exact)
+  const matches = rows.filter((r) => {
+    if (regionId === "de") return true;
+    if (regionId.length === 2) return blPrefix(r.region_id) === regionId;
+    return r.region_id === regionId;
+  });
+
+  const filtered = matches.filter((r) => rowMatchesSegment(r, segment));
+  const totalCount = filtered.reduce((s, r) => s + r.count, 0);
+  const totalKwp = filtered.reduce((s, r) => s + Number(r.kwp), 0);
+
+  // by_segment (solar only): unfiltered segment distribution
+  let by_segment: SegmentBreakdown[];
+  if (energietraeger === "solar") {
+    const buckets: Record<string, { count: number; kwp: number }> = {};
+    for (const r of matches) {
+      const b = buckets[r.segment] ?? { count: 0, kwp: 0 };
+      b.count += r.count;
+      b.kwp += Number(r.kwp);
+      buckets[r.segment] = b;
+    }
+    by_segment = (Object.entries(buckets) as [string, { count: number; kwp: number }][])
+      .map(([segKey, v]) => ({ segment: segKey as Segment, ...v }))
+      .filter((s) => s.segment !== "n/a");
+    // Stable, predictable order
+    const order: Record<string, number> = { privat_dach: 0, gewerbe_dach: 1, freiflaeche: 2 };
+    by_segment.sort((a, b) => (order[a.segment] ?? 99) - (order[b.segment] ?? 99));
+  } else {
+    by_segment = [{ segment: "n/a", count: totalCount, kwp: totalKwp }];
+  }
+
+  // Resolve region name + level
+  let name: string;
+  let level: Level;
+  if (regionId === "de") {
+    name = "Deutschland";
+    level = "de";
+  } else if (regionId.length === 2) {
+    const bl = bundeslandByAgs(regionId);
+    name = bl?.name ?? regionId;
+    level = "bundesland";
+  } else {
+    name = regionId;
+    level = "landkreis";
+  }
+
+  return {
+    region_id: regionId,
+    name,
+    level,
+    energietraeger,
+    total_count: totalCount,
+    total_kwp: totalKwp,
+    by_segment,
+    source: "supabase",
+    data_as_of: asOf,
+  };
+}
 
 export async function getChoroplethData(
   parent: string,
@@ -151,7 +323,7 @@ export async function getChoroplethData(
   segment: SegmentFilter = "alle",
 ): Promise<{ data: ChoroplethEntry[]; source: "supabase" | "placeholder"; data_as_of: string }> {
   if (LOAD_FROM_SUPABASE) {
-    throw new Error("Supabase path not yet wired");
+    return supabaseChoroplethData(parent, energietraeger, segment);
   }
 
   if (parent === "de") {
@@ -172,7 +344,7 @@ export async function getRegionSummary(
   segment: SegmentFilter = "alle",
 ): Promise<RegionSummary> {
   if (LOAD_FROM_SUPABASE) {
-    throw new Error("Supabase path not yet wired");
+    return supabaseRegionSummary(regionId, energietraeger, segment);
   }
 
   let level: Level;

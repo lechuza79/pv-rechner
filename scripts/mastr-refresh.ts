@@ -233,12 +233,331 @@ async function phaseInspect(rec: ZenodoRecord): Promise<void> {
   );
 }
 
-async function phaseAggregate(): Promise<void> {
-  throw new Error("phase 2 (aggregate): TODO — implement once CSV schema is confirmed from mastr-schema.json");
+// ─── Phase 2: Aggregation ─────────────────────────────────────────────────────
+
+const AGGREGATES_OUT = resolve(SCRIPT_DIR, ".cache", "aggregates.json");
+
+const UNIT_FILES: { et: "solar" | "wind" | "biomasse" | "wasser" | "speicher"; csv: string }[] = [
+  { et: "solar", csv: "bnetza_mastr_solar_raw.csv" },
+  { et: "wind", csv: "bnetza_mastr_wind_raw.csv" },
+  { et: "biomasse", csv: "bnetza_mastr_biomass_raw.csv" },
+  { et: "wasser", csv: "bnetza_mastr_hydro_raw.csv" },
+  { et: "speicher", csv: "bnetza_mastr_storage_raw.csv" },
+];
+const ACTORS_CSV = "bnetza_mastr_market_actors_raw.csv";
+
+type ActorKind = "privat" | "gewerbe";
+type AggregateKey = `${string}|${string}|${string}|${number}`; // region_id|et|segment|year
+type AggregateValue = { count: number; kwp: number };
+type RegionMeta = { level: "bundesland" | "landkreis"; name: string; parent: string };
+
+function findZipPath(): string {
+  // Cache dir has exactly one .zip (the Zenodo dump)
+  const entries = require("node:fs").readdirSync(CACHE_DIR) as string[];
+  const zip = entries.find((n) => n.endsWith(".zip"));
+  if (!zip) throw new Error(`No .zip found in ${CACHE_DIR}. Run --inspect first.`);
+  return resolve(CACHE_DIR, zip);
 }
 
+function streamCsvEntry<T>(
+  zipPath: string,
+  entryNameMatcher: (path: string) => boolean,
+  onRow: (row: Record<string, string>, rowIdx: number) => void,
+): Promise<number> {
+  return new Promise(async (resolvePromise, reject) => {
+    try {
+      const directory = await unzipper.Open.file(zipPath);
+      const entry = directory.files.find((f) => f.type === "File" && entryNameMatcher(f.path));
+      if (!entry) throw new Error(`CSV entry matching predicate not found in ${zipPath}`);
+
+      const stream = entry.stream();
+      const parser = csvParse({
+        columns: true,
+        delimiter: ",",
+        quote: '"',
+        escape: '"',
+        skip_empty_lines: true,
+        relax_column_count: true,
+        relax_quotes: true,
+        bom: true,
+      });
+
+      let idx = 0;
+      parser.on("readable", () => {
+        let row: Record<string, string> | null;
+        while ((row = parser.read()) !== null) {
+          onRow(row, idx++);
+        }
+      });
+      parser.on("end", () => resolvePromise(idx));
+      parser.on("error", reject);
+      stream.on("error", reject);
+      stream.pipe(parser);
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+async function buildActorMap(zipPath: string): Promise<Map<string, ActorKind>> {
+  const map = new Map<string, ActorKind>();
+  const total = await streamCsvEntry(
+    zipPath,
+    (p) => p.endsWith(ACTORS_CSV),
+    (row, i) => {
+      const nr = row.MastrNummer;
+      const kind = row.Personenart;
+      if (!nr || !kind) return;
+      map.set(nr, kind === "Natürliche Person" ? "privat" : "gewerbe");
+      if (i > 0 && i % 500_000 === 0) {
+        process.stderr.write(`\r  actors: ${i.toLocaleString()} rows, ${map.size.toLocaleString()} classified`);
+      }
+    },
+  );
+  process.stderr.write("\n");
+  log(`Actor map built: ${map.size.toLocaleString()} entries (${total.toLocaleString()} rows scanned)`, "ok");
+  return map;
+}
+
+function classifySolarSegment(row: Record<string, string>, actorMap: Map<string, ActorKind>): string {
+  const lage = (row.Lage ?? "").toLowerCase();
+  if (lage.includes("freifläche") || lage.includes("freiflaeche")) return "freiflaeche";
+  const nr = row.AnlagenbetreiberMastrNummer;
+  const kind = nr ? actorMap.get(nr) : undefined;
+  return kind === "privat" ? "privat_dach" : "gewerbe_dach";
+}
+
+function parseYear(s: string | undefined): number | null {
+  if (!s || s.length < 4) return null;
+  const y = parseInt(s.substring(0, 4), 10);
+  if (isNaN(y) || y < 1900 || y > 2100) return null;
+  return y;
+}
+
+async function aggregateUnit(
+  zipPath: string,
+  csvBasename: string,
+  et: "solar" | "wind" | "biomasse" | "wasser" | "speicher",
+  actorMap: Map<string, ActorKind>,
+  agg: Map<AggregateKey, AggregateValue>,
+  regions: Map<string, RegionMeta>,
+): Promise<{ processed: number; accepted: number; skipped: Record<string, number> }> {
+  const skipped = { status: 0, gks: 0, year: 0, kwp: 0 };
+  let accepted = 0;
+
+  const total = await streamCsvEntry(
+    zipPath,
+    (p) => p.endsWith(csvBasename),
+    (row, i) => {
+      if (row.EinheitBetriebsstatus !== "In Betrieb") {
+        skipped.status++;
+        return;
+      }
+      const gks = row.Gemeindeschluessel?.trim();
+      if (!gks || gks.length < 5) {
+        skipped.gks++;
+        return;
+      }
+      const year = parseYear(row.Inbetriebnahmedatum);
+      if (!year) {
+        skipped.year++;
+        return;
+      }
+      const kwp = parseFloat(row.Bruttoleistung ?? "0");
+      if (!kwp || kwp <= 0) {
+        skipped.kwp++;
+        return;
+      }
+
+      const regionId = gks.substring(0, 5);
+      const blAgs = gks.substring(0, 2);
+
+      // Collect region metadata (first occurrence wins)
+      if (!regions.has(regionId) && row.Landkreis) {
+        regions.set(regionId, { level: "landkreis", name: row.Landkreis, parent: blAgs });
+      }
+
+      const segment = et === "solar" ? classifySolarSegment(row, actorMap) : "n/a";
+
+      const key: AggregateKey = `${regionId}|${et}|${segment}|${year}`;
+      const existing = agg.get(key);
+      if (existing) {
+        existing.count++;
+        existing.kwp += kwp;
+      } else {
+        agg.set(key, { count: 1, kwp });
+      }
+      accepted++;
+      if (i > 0 && i % 200_000 === 0) {
+        process.stderr.write(
+          `\r  ${et}: ${i.toLocaleString()} rows, ${accepted.toLocaleString()} accepted, ${agg.size.toLocaleString()} buckets`,
+        );
+      }
+    },
+  );
+  process.stderr.write("\n");
+  return { processed: total, accepted, skipped };
+}
+
+async function phaseAggregate(): Promise<void> {
+  const zipPath = findZipPath();
+  log(`Aggregating from ${basename(zipPath)}`);
+
+  log("Step 1/3: building actor map (~6M rows, ~500 MB RAM)...");
+  const actorMap = await buildActorMap(zipPath);
+
+  log("Step 2/3: streaming unit CSVs...");
+  const agg = new Map<AggregateKey, AggregateValue>();
+  const regions = new Map<string, RegionMeta>();
+
+  for (const { et, csv } of UNIT_FILES) {
+    log(`  aggregating ${et} (${csv})...`);
+    const r = await aggregateUnit(zipPath, csv, et, actorMap, agg, regions);
+    log(
+      `    ${et}: ${r.accepted.toLocaleString()} accepted / ${r.processed.toLocaleString()} total ` +
+        `(skipped: status=${r.skipped.status}, gks=${r.skipped.gks}, year=${r.skipped.year}, kwp=${r.skipped.kwp})`,
+      "ok",
+    );
+  }
+
+  // Release actor map memory before writing output
+  actorMap.clear();
+
+  log(`Step 3/3: writing aggregates.json (${agg.size.toLocaleString()} buckets, ${regions.size} landkreise)`);
+  const aggregates = Array.from(agg.entries()).map(([key, val]) => {
+    const [region_id, energietraeger, segment, yearStr] = key.split("|");
+    return {
+      region_id,
+      energietraeger,
+      segment,
+      year: parseInt(yearStr, 10),
+      count: val.count,
+      kwp: Math.round(val.kwp * 100) / 100,
+    };
+  });
+
+  const regionsArray = Array.from(regions.entries()).map(([region_id, meta]) => ({
+    region_id,
+    ...meta,
+  }));
+
+  await writeFile(
+    AGGREGATES_OUT,
+    JSON.stringify({ generated_at: new Date().toISOString(), aggregates, regions: regionsArray }, null, 0),
+  );
+  log(`Aggregates written to ${AGGREGATES_OUT}`, "ok");
+}
+
+// ─── Phase 3: Supabase upload ─────────────────────────────────────────────────
+
 async function phaseUpload(): Promise<void> {
-  throw new Error("phase 3 (upload): TODO — requires aggregated output from phase 2");
+  loadEnvFile();
+  const supabaseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_KEY in env. Put them in .env.local.");
+  }
+
+  const { createClient } = await import("@supabase/supabase-js");
+  const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: { persistSession: false },
+  });
+
+  const { readFile } = await import("node:fs/promises");
+  const payload = JSON.parse(await readFile(AGGREGATES_OUT, "utf8"));
+  const { aggregates, regions, generated_at } = payload as {
+    aggregates: { region_id: string; energietraeger: string; segment: string; year: number; count: number; kwp: number }[];
+    regions: { region_id: string; level: "landkreis"; name: string; parent: string }[];
+    generated_at: string;
+  };
+
+  // 1. Build region hierarchy: DE + 16 Bundesländer + N Landkreise
+  const BUNDESLAND_NAMES: Record<string, string> = {
+    "01": "Schleswig-Holstein", "02": "Hamburg", "03": "Niedersachsen", "04": "Bremen",
+    "05": "Nordrhein-Westfalen", "06": "Hessen", "07": "Rheinland-Pfalz", "08": "Baden-Württemberg",
+    "09": "Bayern", "10": "Saarland", "11": "Berlin", "12": "Brandenburg",
+    "13": "Mecklenburg-Vorpommern", "14": "Sachsen", "15": "Sachsen-Anhalt", "16": "Thüringen",
+  };
+
+  const regionsRows = [
+    { region_id: "de", level: "de", parent_region_id: null, name: "Deutschland" },
+    ...Object.entries(BUNDESLAND_NAMES).map(([ags, name]) => ({
+      region_id: ags,
+      level: "bundesland",
+      parent_region_id: "de",
+      name,
+    })),
+    ...regions.map((r) => ({
+      region_id: r.region_id,
+      level: r.level,
+      parent_region_id: r.parent,
+      name: r.name,
+    })),
+  ];
+
+  log(`Upserting ${regionsRows.length} regions...`);
+  for (let i = 0; i < regionsRows.length; i += 500) {
+    const batch = regionsRows.slice(i, i + 500);
+    const { error } = await supabase.from("mastr_regions").upsert(batch, { onConflict: "region_id" });
+    if (error) throw new Error(`mastr_regions upsert failed: ${error.message}`);
+  }
+  log(`Regions upserted`, "ok");
+
+  // 2. Aggregates: full replace strategy (delete + insert batched)
+  log(`Deleting existing aggregates...`);
+  const { error: delErr } = await supabase.from("mastr_aggregates").delete().gte("year", 0);
+  if (delErr) throw new Error(`delete failed: ${delErr.message}`);
+
+  log(`Inserting ${aggregates.length.toLocaleString()} aggregate rows (batches of 1000)...`);
+  const BATCH = 1000;
+  for (let i = 0; i < aggregates.length; i += BATCH) {
+    const batch = aggregates.slice(i, i + BATCH);
+    const { error } = await supabase.from("mastr_aggregates").insert(batch);
+    if (error) throw new Error(`mastr_aggregates insert failed at batch ${i}: ${error.message}`);
+    if ((i / BATCH) % 10 === 0) {
+      process.stderr.write(`\r  ${i.toLocaleString()} / ${aggregates.length.toLocaleString()}`);
+    }
+  }
+  process.stderr.write("\n");
+  log(`Aggregates upserted`, "ok");
+
+  // 3. Meta
+  const totalUnits = aggregates.reduce((s, a) => s + a.count, 0);
+  const { error: metaErr } = await supabase
+    .from("mastr_meta")
+    .upsert(
+      {
+        id: 1,
+        source_version: "zenodo:6807425",
+        source_url: "https://zenodo.org/records/6807425",
+        imported_at: generated_at,
+        total_units_imported: totalUnits,
+        notes: `Aggregated from open-mastr Zenodo dump. ${aggregates.length} buckets, ${regionsRows.length} regions.`,
+      },
+      { onConflict: "id" },
+    );
+  if (metaErr) throw new Error(`mastr_meta upsert failed: ${metaErr.message}`);
+  log(`Meta row updated. Imported ${totalUnits.toLocaleString()} units total.`, "ok");
+}
+
+// ─── .env.local loader (minimal) ──────────────────────────────────────────────
+
+function loadEnvFile(): void {
+  const path = resolve(process.cwd(), ".env.local");
+  if (!existsSync(path)) return;
+  const content = require("node:fs").readFileSync(path, "utf8") as string;
+  for (const line of content.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eq = trimmed.indexOf("=");
+    if (eq < 0) continue;
+    const k = trimmed.slice(0, eq).trim();
+    let val = trimmed.slice(eq + 1).trim();
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      val = val.slice(1, -1);
+    }
+    if (!(k in process.env)) process.env[k] = val;
+  }
 }
 
 async function main() {
