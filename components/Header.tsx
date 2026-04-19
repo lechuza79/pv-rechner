@@ -5,17 +5,17 @@ import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import { IconUser, IconMenu, IconClose } from "./Icons";
 import { v } from "../lib/theme";
+import { useAuth } from "../lib/auth";
 
 interface HeaderProps {
-  user?: any;
-  authLoading?: boolean;
   onLoginClick?: () => void;
   onLogoutClick?: () => void;
   activePage?: string;
 }
 
-export default function Header({ user, authLoading, onLoginClick, onLogoutClick, activePage: activePageProp }: HeaderProps) {
+export default function Header({ onLoginClick, onLogoutClick, activePage: activePageProp }: HeaderProps) {
   const pathname = usePathname();
+  const authState = useAuth();
   const activePage = activePageProp ?? (
     pathname === "/" ? "" :
     pathname.startsWith("/simulation") ? "simulation" :
@@ -61,8 +61,8 @@ export default function Header({ user, authLoading, onLoginClick, onLogoutClick,
     padding: "12px 0",
   });
 
-  const authElement = !authLoading && (
-    user ? (
+  const authElement = authState.status === "loading" ? null :
+    authState.status === "authed" ? (
       onLogoutClick ? (
         <button onClick={() => { onLogoutClick(); closeMenu(); }} style={{
           background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
@@ -90,8 +90,7 @@ export default function Header({ user, authLoading, onLoginClick, onLogoutClick,
           <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
         </Link>
       )
-    )
-  );
+    );
 
   return (
     <header style={{

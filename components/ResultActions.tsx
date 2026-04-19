@@ -2,11 +2,12 @@
 import Link from "next/link";
 import { v } from "../lib/theme";
 import { IconCheck, IconLink, IconShare, IconWhatsApp, IconArrowRight } from "./Icons";
+import type { AuthState } from "../lib/auth";
 
 interface ResultActionsProps {
   copied: boolean;
   canShare: boolean;
-  user: { id: string; email?: string } | null;
+  authState: AuthState;
   saving: boolean;
   saved: boolean;
   savedCalcId: string | null;
@@ -18,7 +19,7 @@ interface ResultActionsProps {
 }
 
 export default function ResultActions({
-  copied, canShare, user, saving, saved, savedCalcId,
+  copied, canShare, authState, saving, saved, savedCalcId,
   onCopy, onNativeShare, onWhatsApp, onSave, onLoginClick,
 }: ResultActionsProps) {
   const iconBtnStyle = (active?: boolean) => ({
@@ -29,6 +30,45 @@ export default function ResultActions({
     display: "flex" as const, alignItems: "center" as const, justifyContent: "center" as const, flexShrink: 0 as const,
     transition: "all 0.2s",
   });
+
+  const primaryBtn = () => {
+    if (authState.status === "loading") {
+      return (
+        <button disabled style={{
+          flex: 1, height: 40, borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
+          background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
+          color: v('--color-text-faint'), cursor: "default", fontFamily: v('--font-text'),
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          Ergebnis speichern
+        </button>
+      );
+    }
+    if (authState.status === "authed") {
+      return (
+        <button onClick={onSave} disabled={saving} style={{
+          flex: 1, height: 40, borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
+          background: saved ? v('--color-accent-dim') : v('--color-accent'),
+          border: saved ? `1px solid ${v('--color-accent')}` : "none",
+          color: saved ? v('--color-accent') : v('--color-text-on-accent'),
+          cursor: saving ? "wait" : "pointer", fontFamily: v('--font-text'), transition: "all 0.2s",
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+        }}>
+          {saved ? <><IconCheck size={14} /> Gespeichert!</> : saving ? "Speichert..." : "Ergebnis speichern"}
+        </button>
+      );
+    }
+    return (
+      <button onClick={onLoginClick} style={{
+        flex: 1, height: 40, borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
+        background: v('--color-accent'), border: "none",
+        color: v('--color-text-on-accent'), cursor: "pointer", fontFamily: v('--font-text'),
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        Ergebnis speichern
+      </button>
+    );
+  };
 
   return (
     <>
@@ -44,29 +84,9 @@ export default function ResultActions({
         <button onClick={onWhatsApp} title="WhatsApp" style={iconBtnStyle()}>
           <IconWhatsApp size={16} />
         </button>
-        {user ? (
-          <button onClick={onSave} disabled={saving} style={{
-            flex: 1, height: 40, borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
-            background: saved ? v('--color-accent-dim') : v('--color-accent'),
-            border: saved ? `1px solid ${v('--color-accent')}` : "none",
-            color: saved ? v('--color-accent') : v('--color-text-on-accent'),
-            cursor: saving ? "wait" : "pointer", fontFamily: v('--font-text'), transition: "all 0.2s",
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-          }}>
-            {saved ? <><IconCheck size={14} /> Gespeichert!</> : saving ? "Speichert..." : "Ergebnis speichern"}
-          </button>
-        ) : (
-          <button onClick={onLoginClick} style={{
-            flex: 1, height: 40, borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700,
-            background: v('--color-accent'), border: "none",
-            color: v('--color-text-on-accent'), cursor: "pointer", fontFamily: v('--font-text'),
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
-            Ergebnis speichern
-          </button>
-        )}
+        {primaryBtn()}
       </div>
-      {user && savedCalcId && !saved && (
+      {authState.status === "authed" && savedCalcId && !saved && (
         <div style={{ textAlign: "center", marginBottom: 16 }}>
           <Link href="/dashboard" style={{ fontSize: 12, color: v('--color-text-muted'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>
             Meine Berechnungen <IconArrowRight size={10} />

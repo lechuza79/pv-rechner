@@ -1,7 +1,7 @@
 "use client";
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useUser, signInWithMagicLink, signOut } from "../../lib/auth";
+import { useAuth, signInWithMagicLink } from "../../lib/auth";
 import { paramsToRow } from "../../lib/types";
 import { YEAR, YEARS, CONSUMPTION_MONTHLY, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN } from "../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, paramInt, paramFloat, paramStr } from "../../lib/calc";
@@ -90,7 +90,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const feedInRates = useFeedInRates();
 
   // Auth + Save
-  const { user, loading: authLoading } = useUser();
+  const authState = useAuth();
   const [showLogin, setShowLogin] = useState(false);
   const [loginEmail, setLoginEmail] = useState("");
   const [loginSent, setLoginSent] = useState(false);
@@ -226,7 +226,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   };
 
   const handleSave = useCallback(async () => {
-    if (!user || saving) return;
+    if (authState.status !== "authed" || saving) return;
     setSaving(true);
     try {
       const row = paramsToRow(
@@ -247,7 +247,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       }
     } catch { /* silent */ }
     setSaving(false);
-  }, [user, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, kwp, spKwh, be, real, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [authState, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, kwp, spKwh, be, real, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Empfehlungs-Kontext für "Warum diese Anlage?"
   const empfehlungKontext = flowType === "empfehlung" && htIdx >= 0 && daIdx >= 0 ? (() => {
@@ -266,8 +266,6 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
 
         <Header
-          user={user}
-          authLoading={authLoading}
           onLoginClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }}
         />
 
@@ -280,7 +278,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         </div>
 
         {/* Inline Login — only during question steps, sticky bar handles result page */}
-        {showLogin && !user && !isResult && (
+        {showLogin && authState.status === "anon" && !isResult && (
           <div className="fu" style={{
             background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "16px", marginBottom: 16,
             border: `1px solid ${v('--color-border')}`,
@@ -597,7 +595,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             </div>
 
             <ResultActions
-              copied={copied} canShare={canShare} user={user} saving={saving} saved={saved} savedCalcId={savedCalcId}
+              copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}
               onCopy={handleCopy} onNativeShare={handleNativeShare} onWhatsApp={handleWhatsApp}
               onSave={handleSave} onLoginClick={() => { setShowLogin(true); setLoginSent(false); setLoginError(""); }}
             />
@@ -615,7 +613,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
           </div>
         )}
 
-        <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: `24px 0 ${isResult && !user && showLogin ? 80 : 16}px` }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: `24px 0 ${isResult && authState.status === "anon" && showLogin ? 80 : 16}px` }}>
           <Link href="/methodik" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Methodik</Link>
           <Link href="/impressum" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Impressum</Link>
           <Link href="/datenschutz" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Datenschutz</Link>
@@ -624,7 +622,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       </div>
 
       {/* Sticky Bottom Bar — Login-Formular für nicht-eingeloggte Nutzer */}
-      {isResult && !user && !authLoading && showLogin && (
+      {isResult && authState.status === "anon" && showLogin && (
         <div style={{
           position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 100,
           background: `linear-gradient(to top, ${v('--color-bg')} 80%, transparent)`,
