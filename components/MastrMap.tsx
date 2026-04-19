@@ -89,6 +89,7 @@ export function MastrMap({
   }, [values]);
 
   const fillFor = (ags: string) => {
+    if (loading) return v("--color-bg-muted");
     const val = valueByAgs.get(ags) ?? 0;
     if (val <= 0) return COLOR_RAMP[0];
     return colorScale(val);
@@ -175,14 +176,12 @@ export function MastrMap({
           }}
         />
       ) : (
-        <svg
-          width={width}
-          height={MAP_HEIGHT}
-          role="img"
-          aria-label="Deutschlandkarte"
-          style={loading ? { animation: "sc-map-pulse 1.4s ease-in-out infinite" } : undefined}
-        >
-          <g>
+        <svg width={width} height={MAP_HEIGHT} role="img" aria-label="Deutschlandkarte">
+          <g
+            style={
+              loading ? { animation: "sc-map-pulse 1.4s ease-in-out infinite" } : undefined
+            }
+          >
             {fillPaths.map((p) => {
               const isHovered = hovered === p.id;
               const isSelected = selectedAgs === p.id;
@@ -194,12 +193,12 @@ export function MastrMap({
                   stroke={isSelected ? v("--color-accent-dark") : v("--color-border")}
                   strokeWidth={isSelected ? 2 : isHovered ? 1.3 : 0.5}
                   style={{
-                    cursor: onSelect ? "pointer" : "default",
-                    transition: "stroke 120ms, stroke-width 120ms",
+                    cursor: onSelect && !loading ? "pointer" : "default",
+                    transition: "fill 240ms ease-out, stroke 120ms, stroke-width 120ms",
                   }}
-                  onMouseEnter={() => setHovered(p.id)}
+                  onMouseEnter={() => !loading && setHovered(p.id)}
                   onMouseLeave={() => setHovered(null)}
-                  onClick={() => onSelect?.(p.id)}
+                  onClick={() => !loading && onSelect?.(p.id)}
                 />
               );
             })}
