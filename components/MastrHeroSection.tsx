@@ -158,14 +158,7 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
       )}
 
       <div className="mastr-hero-grid" style={{ marginTop: 16 }}>
-        <div
-          style={{
-            background: v("--color-bg-accent"),
-            borderRadius: 14,
-            padding: 12,
-            border: `1px solid ${v("--color-border")}`,
-          }}
-        >
+        <div>
           <MastrMap
             level={mapLevel}
             parentAgs={parentAgs}
@@ -173,6 +166,7 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
             selectedAgs={selectedAgs}
             onSelect={handleSelect}
             valueLabel="MW"
+            loading={choroplethLoading}
           />
         </div>
 
@@ -692,33 +686,39 @@ function LiveKachel({
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    fetch("/api/energy/generation?hours=3")
-      .then((r) => r.json())
-      .then((d: { data?: GenerationPoint[] }) => {
-        if (cancelled) return;
-        const pts = d.data ?? [];
-        // Walk backwards to find the most recent point with a defined value
-        for (let i = pts.length - 1; i >= 0; i--) {
-          const val = extractMW(pts[i], energietraeger);
-          if (val !== null) {
-            setCurrentMW(val);
-            setTs(pts[i].ts);
-            setLoading(false);
-            return;
+    const loadLive = () => {
+      setLoading(true);
+      fetch("/api/energy/generation?hours=2")
+        .then((r) => r.json())
+        .then((d: { data?: GenerationPoint[] }) => {
+          if (cancelled) return;
+          const pts = d.data ?? [];
+          for (let i = pts.length - 1; i >= 0; i--) {
+            const val = extractMW(pts[i], energietraeger);
+            if (val !== null) {
+              setCurrentMW(val);
+              setTs(pts[i].ts);
+              setLoading(false);
+              return;
+            }
           }
-        }
-        setCurrentMW(null);
-        setLoading(false);
-      })
-      .catch(() => {
-        if (!cancelled) {
           setCurrentMW(null);
           setLoading(false);
-        }
-      });
+        })
+        .catch(() => {
+          if (!cancelled) {
+            setCurrentMW(null);
+            setLoading(false);
+          }
+        });
+    };
+    loadLive();
+    // Re-fetch every 5 minutes — Energy-Charts publishes 15-min intervals
+    // with ~15–30 min lag, so polling more often has no effect.
+    const interval = setInterval(loadLive, 5 * 60 * 1000);
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
   }, [energietraeger]);
 
@@ -727,9 +727,15 @@ function LiveKachel({
   const currentGW = currentMW / 1000;
   const pct = installedKwp && installedKwp > 0 ? ((currentMW * 1000) / installedKwp) * 100 : null;
   const tsDate = ts ? new Date(ts) : null;
-  const tsLabel = tsDate
-    ? tsDate.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })
-    : null;
+  const minutesAgo = tsDate ? Math.round((Date.now() - tsDate.getTime()) / 60000) : null;
+  const freshness =
+    minutesAgo === null
+      ? ""
+      : minutesAgo < 1
+        ? "gerade eben"
+        : minutesAgo < 60
+          ? `vor ${minutesAgo} Min`
+          : `${tsDate!.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr`;
 
   return (
     <div
@@ -778,8 +784,8 @@ function LiveKachel({
         {currentGW.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW
       </div>
       <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginTop: 2 }}>
-        {pct !== null ? `${pct.toFixed(0)}% der installierten Leistung` : ""}
-        {tsLabel ? ` · ${tsLabel} Uhr` : ""}
+        {pct !== null ? `Auslastung ${pct.toFixed(0)}%` : ""}
+        {freshness ? ` · ${freshness}` : ""}
       </div>
     </div>
   );

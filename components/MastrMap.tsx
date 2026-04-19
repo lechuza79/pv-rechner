@@ -28,6 +28,8 @@ export type MastrMapProps = {
   selectedAgs?: string;
   onSelect?: (ags: string) => void;
   valueLabel?: string;
+  /** True while choropleth data is fetching — polygons animate with a pulse. */
+  loading?: boolean;
 };
 
 const COLOR_RAMP = ["#EAF2FE", "#C9DCFB", "#A8C5F7", "#87AFF4", "#5B95F0", "#3380EE", "#1365EA"];
@@ -40,6 +42,7 @@ export function MastrMap({
   selectedAgs,
   onSelect,
   valueLabel = "MW",
+  loading = false,
 }: MastrMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [width, setWidth] = useState(0);
@@ -172,7 +175,13 @@ export function MastrMap({
           }}
         />
       ) : (
-        <svg width={width} height={MAP_HEIGHT} role="img" aria-label="Deutschlandkarte">
+        <svg
+          width={width}
+          height={MAP_HEIGHT}
+          role="img"
+          aria-label="Deutschlandkarte"
+          style={loading ? { animation: "sc-map-pulse 1.4s ease-in-out infinite" } : undefined}
+        >
           <g>
             {fillPaths.map((p) => {
               const isHovered = hovered === p.id;
