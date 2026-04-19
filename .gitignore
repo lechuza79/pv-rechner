@@ -9,3 +9,5 @@ next-env.d.ts
 .env.local
 .env*.local
 .vercel
+scripts/.cache/
+scripts/mastr-schema.json
