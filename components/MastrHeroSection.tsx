@@ -123,6 +123,9 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
           ) : (
             <LoadingKachel />
           )}
+          {!selectedAgs && energietraeger !== "speicher" && summary && (
+            <LiveKachel energietraeger={energietraeger} installedKwp={summary.total_kwp} />
+          )}
         </aside>
       </div>
     </section>
@@ -452,6 +455,152 @@ function LoadingKachel() {
       }}
     >
       lade…
+    </div>
+  );
+}
+
+type GenerationPoint = {
+  ts: string;
+  solar?: number | null;
+  wind_onshore?: number | null;
+  wind_offshore?: number | null;
+  biomass?: number | null;
+  hydro_run_of_river?: number | null;
+  hydro_water_reservoir?: number | null;
+  [key: string]: number | string | null | undefined;
+};
+
+function extractMW(p: GenerationPoint, et: Energietraeger): number | null {
+  const n = (v: number | null | undefined) => (typeof v === "number" ? v : null);
+  const sum = (...vals: (number | null | undefined)[]) => {
+    const nums = vals.map(n).filter((x): x is number => x !== null);
+    return nums.length ? nums.reduce((s, x) => s + x, 0) : null;
+  };
+  switch (et) {
+    case "solar":
+      return n(p.solar);
+    case "wind":
+      return sum(p.wind_onshore, p.wind_offshore);
+    case "biomasse":
+      return n(p.biomass);
+    case "wasser":
+      return sum(p.hydro_run_of_river, p.hydro_water_reservoir);
+    case "gesamt":
+      return sum(
+        p.solar,
+        p.wind_onshore,
+        p.wind_offshore,
+        p.biomass,
+        p.hydro_run_of_river,
+        p.hydro_water_reservoir,
+      );
+    default:
+      return null;
+  }
+}
+
+function LiveKachel({
+  energietraeger,
+  installedKwp,
+}: {
+  energietraeger: Energietraeger;
+  installedKwp: number;
+}) {
+  const [currentMW, setCurrentMW] = useState<number | null>(null);
+  const [ts, setTs] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    fetch("/api/energy/generation?hours=3")
+      .then((r) => r.json())
+      .then((d: { data?: GenerationPoint[] }) => {
+        if (cancelled) return;
+        const pts = d.data ?? [];
+        // Walk backwards to find the most recent point with a defined value
+        for (let i = pts.length - 1; i >= 0; i--) {
+          const val = extractMW(pts[i], energietraeger);
+          if (val !== null) {
+            setCurrentMW(val);
+            setTs(pts[i].ts);
+            setLoading(false);
+            return;
+          }
+        }
+        setCurrentMW(null);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setCurrentMW(null);
+          setLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [energietraeger]);
+
+  if (loading || currentMW === null) return null;
+
+  const currentGW = currentMW / 1000;
+  const pct = installedKwp > 0 ? ((currentMW * 1000) / installedKwp) * 100 : null;
+  const tsDate = ts ? new Date(ts) : null;
+  const tsLabel = tsDate
+    ? tsDate.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })
+    : null;
+
+  return (
+    <div
+      style={{
+        background: v("--color-bg"),
+        border: `1px solid ${v("--color-border")}`,
+        borderRadius: 12,
+        padding: 12,
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          fontSize: 11,
+          textTransform: "uppercase",
+          letterSpacing: 0.8,
+          color: v("--color-text-muted"),
+          marginBottom: 4,
+        }}
+      >
+        <span
+          aria-hidden="true"
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            background: v("--color-positive"),
+            boxShadow: `0 0 0 3px ${v("--color-positive")}22`,
+          }}
+        />
+        Jetzt eingespeist
+      </div>
+      <div
+        style={{
+          fontSize: 22,
+          fontWeight: 700,
+          color: v("--color-text-primary"),
+          fontVariantNumeric: "tabular-nums",
+          fontFamily: '"JetBrains Mono", ui-monospace, SFMono-Regular, monospace',
+          letterSpacing: -0.3,
+        }}
+      >
+        {currentGW.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW
+      </div>
+      <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginTop: 2 }}>
+        {pct !== null ? `${pct.toFixed(0)}% der installierten Leistung` : ""}
+        {tsLabel ? ` · ${tsLabel} Uhr` : ""}
+      </div>
     </div>
   );
 }

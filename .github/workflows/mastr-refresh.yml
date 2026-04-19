@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
     steps:
       - uses: actions/checkout@v4
@@ -38,17 +38,19 @@ jobs:
       - name: Disk space before run
         run: df -h .
 
-      # Currently only --inspect is implemented. --aggregate and --upload
-      # follow in subsequent iterations. The flag list is additive — append
-      # once phases 2 + 3 land.
-      - name: Run MaStR refresh
-        run: npm run mastr:refresh -- --inspect
+      # Full pipeline: download Zenodo dump, inspect schema, aggregate,
+      # upload to Supabase. Runner has 14 GB free — the 1.3 GB ZIP +
+      # ~4 GB extracted CSV fit comfortably.
+      - name: Run MaStR refresh (full)
+        run: npm run mastr:refresh -- --inspect --aggregate --upload
 
-      - name: Upload schema report as artifact
+      - name: Upload artifacts (schema + aggregates)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mastr-schema
-          path: scripts/mastr-schema.json
+          name: mastr-snapshot
+          path: |
+            scripts/mastr-schema.json
+            scripts/.cache/aggregates.json
           if-no-files-found: warn
-          retention-days: 30
+          retention-days: 90
