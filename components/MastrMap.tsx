@@ -74,12 +74,14 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
     return colorScale(val);
   };
 
+  const MAP_HEIGHT = 640;
+
   if (!lkGeo || !blGeo) {
     return (
       <div
         style={{
           width: "100%",
-          aspectRatio: "4 / 5",
+          height: MAP_HEIGHT,
           background: v("--color-bg-muted"),
           borderRadius: 12,
         }}
@@ -88,7 +90,7 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
   }
 
   return (
-    <div style={{ width: "100%", aspectRatio: "4 / 5", position: "relative" }}>
+    <div style={{ width: "100%", height: MAP_HEIGHT, position: "relative" }}>
       <ParentSize>
         {({ width, height }) => {
           if (width < 10) return null;
@@ -124,7 +126,8 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
                 }
               </Mercator>
 
-              {/* Bundesland border overlay — no fill, pointer-events: none */}
+              {/* Bundesland border overlay — same fitSize as LK layer so the
+                  projection aligns. No fill, pointer-events: none. */}
               <g style={{ pointerEvents: "none" }}>
                 <Mercator<RegionFeature>
                   data={blGeo.features}
