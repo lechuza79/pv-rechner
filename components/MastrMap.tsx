@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import { Mercator } from "@visx/geo";
-import { ParentSize } from "@visx/responsive";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { geoMercator, geoPath } from "d3-geo";
 import { scaleQuantile } from "@visx/scale";
 import { v } from "../lib/theme";
 import { bundeslandByAgs } from "../lib/mastr-regions";
@@ -27,14 +26,28 @@ export type MastrMapProps = {
 };
 
 const COLOR_RAMP = ["#EAF2FE", "#C9DCFB", "#A8C5F7", "#87AFF4", "#5B95F0", "#3380EE", "#1365EA"];
+const MAP_HEIGHT = 640;
 
-export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "kWp" }: MastrMapProps) {
+export function MastrMap({ values, selectedAgs, onSelect, valueLabel = "kWp" }: MastrMapProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [width, setWidth] = useState(0);
   const [lkGeo, setLkGeo] = useState<FeatureCollection | null>(null);
   const [blGeo, setBlGeo] = useState<FeatureCollection | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
 
+  // Track container width manually (ResizeObserver + initial measure)
+  useLayoutEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    setWidth(el.getBoundingClientRect().width);
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) setWidth(entry.contentRect.width);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   useEffect(() => {
-    if (level !== "de") return;
     Promise.all([
       fetch("/geo/de-landkreise.geo.json").then((r) => r.json()),
       fetch("/geo/de-bundeslaender.geo.json").then((r) => r.json()),
@@ -47,7 +60,7 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
         setLkGeo(null);
         setBlGeo(null);
       });
-  }, [level]);
+  }, []);
 
   const valueByAgs = useMemo(() => {
     const m = new Map<string, number>();
@@ -55,8 +68,6 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
     return m;
   }, [values]);
 
-  // Quantile scale distributes colors across the data quantiles — better for
-  // power-law distributions (few huge, many small) than linear quantize.
   const colorScale = useMemo(() => {
     const nums = values.map((v) => v.value).filter((n) => n > 0);
     if (nums.length === 0) {
@@ -74,85 +85,83 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
     return colorScale(val);
   };
 
-  const MAP_HEIGHT = 640;
-
-  if (!lkGeo || !blGeo) {
-    return (
-      <div
-        style={{
-          width: "100%",
-          height: MAP_HEIGHT,
-          background: v("--color-bg-muted"),
-          borderRadius: 12,
-        }}
-      />
-    );
-  }
+  // Build a shared d3-geo path generator fitted to the LK bounds so both layers
+  // use the same projection and align pixel-perfect.
+  const { lkPaths, blPaths } = useMemo(() => {
+    if (!lkGeo || !blGeo || width < 10) return { lkPaths: null, blPaths: null };
+    const projection = geoMercator().fitSize([width, MAP_HEIGHT], lkGeo as never);
+    const path = geoPath(projection);
+    return {
+      lkPaths: lkGeo.features.map((f) => ({
+        id: (f.properties as RegionProps).id,
+        name: (f.properties as RegionProps).name,
+        d: path(f as never) ?? "",
+      })),
+      blPaths: blGeo.features.map((f) => ({
+        id: (f.properties as RegionProps).id,
+        d: path(f as never) ?? "",
+      })),
+    };
+  }, [lkGeo, blGeo, width]);
 
   return (
-    <div style={{ width: "100%", height: MAP_HEIGHT, position: "relative" }}>
-      <ParentSize>
-        {({ width, height }) => {
-          if (width < 10) return null;
-          return (
-            <svg width={width} height={height} role="img" aria-label="Deutschlandkarte: Landkreise">
-              {/* Landkreis layer — filled + clickable */}
-              <Mercator<RegionFeature>
-                data={lkGeo.features}
-                fitSize={[[width, height], lkGeo as never]}
-              >
-                {({ features }) =>
-                  features.map(({ feature, path }) => {
-                    const ags = feature.properties.id;
-                    const isHovered = hovered === ags;
-                    const isSelected = selectedAgs === ags;
-                    return (
-                      <path
-                        key={ags}
-                        d={path ?? ""}
-                        fill={fillFor(ags)}
-                        stroke={isSelected ? v("--color-accent-dark") : v("--color-border")}
-                        strokeWidth={isSelected ? 1.8 : isHovered ? 1.2 : 0.25}
-                        style={{
-                          cursor: onSelect ? "pointer" : "default",
-                          transition: "stroke 120ms, stroke-width 120ms",
-                        }}
-                        onMouseEnter={() => setHovered(ags)}
-                        onMouseLeave={() => setHovered(null)}
-                        onClick={() => onSelect?.(ags)}
-                      />
-                    );
-                  })
-                }
-              </Mercator>
+    <div ref={containerRef} style={{ width: "100%", height: MAP_HEIGHT, position: "relative" }}>
+      {!lkGeo || !blGeo || width < 10 ? (
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            background: v("--color-bg-muted"),
+            borderRadius: 12,
+          }}
+        />
+      ) : (
+        <svg
+          width={width}
+          height={MAP_HEIGHT}
+          role="img"
+          aria-label="Deutschlandkarte: Landkreise"
+        >
+          {/* Landkreis layer — filled, clickable */}
+          <g>
+            {lkPaths?.map((p) => {
+              const isHovered = hovered === p.id;
+              const isSelected = selectedAgs === p.id;
+              return (
+                <path
+                  key={p.id}
+                  d={p.d}
+                  fill={fillFor(p.id)}
+                  stroke={isSelected ? v("--color-accent-dark") : v("--color-border")}
+                  strokeWidth={isSelected ? 1.8 : isHovered ? 1.2 : 0.3}
+                  style={{
+                    cursor: onSelect ? "pointer" : "default",
+                    transition: "stroke 120ms, stroke-width 120ms",
+                  }}
+                  onMouseEnter={() => setHovered(p.id)}
+                  onMouseLeave={() => setHovered(null)}
+                  onClick={() => onSelect?.(p.id)}
+                />
+              );
+            })}
+          </g>
+          {/* BL border overlay */}
+          <g style={{ pointerEvents: "none" }}>
+            {blPaths?.map((p) => (
+              <path
+                key={`bl-${p.id}`}
+                d={p.d}
+                fill="none"
+                stroke={v("--color-text-secondary")}
+                strokeWidth={1}
+                strokeLinejoin="round"
+              />
+            ))}
+          </g>
+        </svg>
+      )}
 
-              {/* Bundesland border overlay — same fitSize as LK layer so the
-                  projection aligns. No fill, pointer-events: none. */}
-              <g style={{ pointerEvents: "none" }}>
-                <Mercator<RegionFeature>
-                  data={blGeo.features}
-                  fitSize={[[width, height], lkGeo as never]}
-                >
-                  {({ features }) =>
-                    features.map(({ feature, path }) => (
-                      <path
-                        key={`bl-${feature.properties.id}`}
-                        d={path ?? ""}
-                        fill="none"
-                        stroke={v("--color-text-secondary")}
-                        strokeWidth={0.9}
-                        strokeLinejoin="round"
-                      />
-                    ))
-                  }
-                </Mercator>
-              </g>
-            </svg>
-          );
-        }}
-      </ParentSize>
-
-      {hovered && (
+      {hovered && lkGeo && (
         <div
           style={{
             position: "absolute",
@@ -168,9 +177,8 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
           }}
         >
           <div style={{ fontWeight: 600, color: v("--color-text-primary") }}>
-            {lkGeo.features.find((f) => f.properties.id === hovered)?.properties.name ??
-              bundeslandByAgs(hovered)?.name ??
-              hovered}
+            {lkGeo.features.find((f) => (f.properties as RegionProps).id === hovered)
+              ?.properties.name ?? bundeslandByAgs(hovered)?.name ?? hovered}
           </div>
           <div style={{ color: v("--color-text-secondary"), fontVariantNumeric: "tabular-nums" }}>
             {(valueByAgs.get(hovered) ?? 0).toLocaleString("de-DE")} {valueLabel}
