@@ -133,7 +133,7 @@ export function MastrMap({ values, selectedAgs, onSelect, valueLabel = "kWp" }: 
                   d={p.d}
                   fill={fillFor(p.id)}
                   stroke={isSelected ? v("--color-accent-dark") : v("--color-border")}
-                  strokeWidth={isSelected ? 1.8 : isHovered ? 1.2 : 0.3}
+                  strokeWidth={isSelected ? 1.8 : isHovered ? 1.2 : 0.5}
                   style={{
                     cursor: onSelect ? "pointer" : "default",
                     transition: "stroke 120ms, stroke-width 120ms",

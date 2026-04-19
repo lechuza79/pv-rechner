@@ -74,6 +74,11 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
   const region = selectedAgs ?? "de";
   const summaryEndpoint = `/api/mastr/summary?region=${region}&type=${energietraeger}&segment=${effectiveSegment}`;
 
+  // Cache version bump — invalidates stale localStorage entries when the data
+  // shape or granularity changes (bumped to v2 when choropleth moved from
+  // Bundesland- to Landkreis-aggregates).
+  const CACHE_VERSION = "v2";
+
   const {
     data: choropleth,
     loading: choroplethLoading,
@@ -82,9 +87,9 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
     refetch: refetchChoropleth,
   } = useCachedFetch<ChoroplethResp>(
     choroplethEndpoint,
-    `mastr-choropleth-${energietraeger}-${effectiveSegment}`,
+    `${CACHE_VERSION}-mastr-choropleth-${energietraeger}-${effectiveSegment}`,
     CHOROPLETH_DEFAULT,
-    { longLived: true, keyPrefix: "sc-mastr-" },
+    { longLived: false, keyPrefix: "sc-mastr-" },
   );
 
   const {
@@ -95,9 +100,9 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
     refetch: refetchSummary,
   } = useCachedFetch<RegionSummary | null>(
     summaryEndpoint,
-    `mastr-summary-${region}-${energietraeger}-${effectiveSegment}`,
+    `${CACHE_VERSION}-mastr-summary-${region}-${energietraeger}-${effectiveSegment}`,
     SUMMARY_DEFAULT,
-    { longLived: true, keyPrefix: "sc-mastr-" },
+    { longLived: false, keyPrefix: "sc-mastr-" },
   );
 
   const handleSelect = (ags: string) => {
