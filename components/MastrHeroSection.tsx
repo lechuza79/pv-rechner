@@ -87,7 +87,7 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
   // Cache version bump — invalidates stale localStorage entries when the data
   // shape or granularity changes (bumped to v2 when choropleth moved from
   // Bundesland- to Landkreis-aggregates).
-  const CACHE_VERSION = "v2";
+  const CACHE_VERSION = "v3";
 
   const {
     data: choropleth,
