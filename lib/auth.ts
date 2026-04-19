@@ -4,29 +4,31 @@ import { useEffect, useState } from "react";
 import { createClient } from "./supabase-browser";
 import type { User } from "@supabase/supabase-js";
 
-export function useUser() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+export type AuthState =
+  | { status: "loading" }
+  | { status: "authed"; user: User }
+  | { status: "anon" };
+
+export function useAuth(): AuthState {
+  const [state, setState] = useState<AuthState>({ status: "loading" });
 
   useEffect(() => {
     const supabase = createClient();
 
     supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-      setLoading(false);
+      setState(user ? { status: "authed", user } : { status: "anon" });
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
+      setState(session?.user ? { status: "authed", user: session.user } : { status: "anon" });
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  return { user, loading };
+  return state;
 }
 
 export async function signInWithMagicLink(email: string, options?: { next?: string }) {
