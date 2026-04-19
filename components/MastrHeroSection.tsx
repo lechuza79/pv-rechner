@@ -686,6 +686,10 @@ function LiveKachel({
 
   useEffect(() => {
     let cancelled = false;
+    // Clear stale value on traeger change so we don't combine old currentMW
+    // with new installedKwp (was producing misleading "5%" flashes).
+    setCurrentMW(null);
+    setTs(null);
     const loadLive = () => {
       setLoading(true);
       fetch("/api/energy/generation?hours=2")
