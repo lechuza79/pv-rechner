@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MastrMap, type RegionValue } from "./MastrMap";
 import { bundeslandByAgs } from "../lib/mastr-regions";
 import type { Energietraeger, RegionSummary, SegmentFilter } from "../lib/mastr-data";
+import { useCachedFetch } from "../lib/use-cached-fetch";
 import { v } from "../lib/theme";
 
 // Tab order: aggregate first, then individual renewables, then storage (separated)
@@ -45,14 +46,15 @@ export type MastrHeroSectionProps = {
   onRegionChange?: (regionAgs: string | undefined) => void;
 };
 
+const CHOROPLETH_DEFAULT: ChoroplethResp = { source: "", data_as_of: "", data: [] };
+const SUMMARY_DEFAULT: RegionSummary | null = null;
+
 export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSectionProps) {
   const [energietraeger, setEnergietraeger] = useState<Energietraeger>("gesamt");
   const [segment, setSegment] = useState<SegmentFilter>("alle");
   const [selectedAgs, setSelectedAgs] = useState<string | undefined>(
     initialRegion && initialRegion !== "de" ? initialRegion : undefined,
   );
-  const [choropleth, setChoropleth] = useState<ChoroplethResp | null>(null);
-  const [summary, setSummary] = useState<RegionSummary | null>(null);
 
   // Segment filter only applies to solar. Reset when switching away.
   const effectiveSegment: SegmentFilter = energietraeger === "solar" ? segment : "alle";
@@ -64,36 +66,68 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
   }, [energietraeger, segment]);
 
   useEffect(() => {
-    fetch(`/api/mastr/choropleth?parent=de&type=${energietraeger}&segment=${effectiveSegment}`)
-      .then((r) => r.json())
-      .then(setChoropleth)
-      .catch(() => setChoropleth(null));
-  }, [energietraeger, effectiveSegment]);
-
-  useEffect(() => {
-    const region = selectedAgs ?? "de";
-    fetch(`/api/mastr/summary?region=${region}&type=${energietraeger}&segment=${effectiveSegment}`)
-      .then((r) => r.json())
-      .then(setSummary)
-      .catch(() => setSummary(null));
-  }, [selectedAgs, energietraeger, effectiveSegment]);
-
-  useEffect(() => {
     onRegionChange?.(selectedAgs);
   }, [selectedAgs, onRegionChange]);
+
+  const choroplethEndpoint = `/api/mastr/choropleth?parent=de&type=${energietraeger}&segment=${effectiveSegment}`;
+  const region = selectedAgs ?? "de";
+  const summaryEndpoint = `/api/mastr/summary?region=${region}&type=${energietraeger}&segment=${effectiveSegment}`;
+
+  const {
+    data: choropleth,
+    loading: choroplethLoading,
+    error: choroplethError,
+    isStale: choroplethStale,
+    refetch: refetchChoropleth,
+  } = useCachedFetch<ChoroplethResp>(
+    choroplethEndpoint,
+    `mastr-choropleth-${energietraeger}-${effectiveSegment}`,
+    CHOROPLETH_DEFAULT,
+    { longLived: true, keyPrefix: "sc-mastr-" },
+  );
+
+  const {
+    data: summary,
+    loading: summaryLoading,
+    error: summaryError,
+    isStale: summaryStale,
+    refetch: refetchSummary,
+  } = useCachedFetch<RegionSummary | null>(
+    summaryEndpoint,
+    `mastr-summary-${region}-${energietraeger}-${effectiveSegment}`,
+    SUMMARY_DEFAULT,
+    { longLived: true, keyPrefix: "sc-mastr-" },
+  );
 
   const handleSelect = (ags: string) => {
     setSelectedAgs((prev) => (prev === ags ? undefined : ags));
   };
 
-  const values: RegionValue[] =
-    choropleth?.data.map((d) => ({ ags: d.region_id, value: d.kwp / 1000 })) ?? [];
+  const values: RegionValue[] = useMemo(
+    () => choropleth.data.map((d) => ({ ags: d.region_id, value: d.kwp / 1000 })),
+    [choropleth],
+  );
+
+  const hasError = !!(choroplethError || summaryError);
+  const isStale = choroplethStale || summaryStale;
+  const isLoading = (choroplethLoading && values.length === 0) || (summaryLoading && !summary);
 
   return (
     <section aria-label="MaStR Übersicht">
       <TraegerSwitch value={energietraeger} onChange={setEnergietraeger} />
 
       {energietraeger === "solar" && <SegmentSwitch value={segment} onChange={setSegment} />}
+
+      {(isStale || hasError) && (
+        <StaleBanner
+          stale={isStale}
+          error={hasError}
+          onRetry={() => {
+            refetchChoropleth();
+            refetchSummary();
+          }}
+        />
+      )}
 
       <div className="mastr-hero-grid" style={{ marginTop: 16 }}>
         <div
@@ -102,6 +136,7 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
             borderRadius: 14,
             padding: 12,
             border: `1px solid ${v("--color-border")}`,
+            position: "relative",
           }}
         >
           <MastrMap
@@ -111,6 +146,7 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
             onSelect={handleSelect}
             valueLabel="MW"
           />
+          {isLoading && <MapLoadingOverlay />}
         </div>
 
         <aside style={{ display: "grid", gap: 12, minWidth: 0 }}>
@@ -120,8 +156,12 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
               segment={effectiveSegment}
               onReset={() => setSelectedAgs(undefined)}
             />
+          ) : summaryLoading ? (
+            <SummarySkeleton />
+          ) : summaryError ? (
+            <ErrorKachel message={summaryError} onRetry={refetchSummary} />
           ) : (
-            <LoadingKachel />
+            <SummarySkeleton />
           )}
           {!selectedAgs && energietraeger !== "speicher" && summary && (
             <LiveKachel energietraeger={energietraeger} installedKwp={summary.total_kwp} />
@@ -442,19 +482,169 @@ function Kachel({ label, value, hint }: { label: string; value: string; hint?: s
   );
 }
 
-function LoadingKachel() {
+function SkeletonBar({ width = "100%", height = 16 }: { width?: number | string; height?: number }) {
   return (
     <div
       style={{
+        width,
+        height,
+        borderRadius: 4,
         background: v("--color-bg-muted"),
-        border: `1px solid ${v("--color-border")}`,
-        borderRadius: 12,
-        padding: 14,
-        fontSize: 13,
-        color: v("--color-text-muted"),
+        animation: "mastr-pulse 1.2s ease-in-out infinite",
+      }}
+    />
+  );
+}
+
+function SummarySkeleton() {
+  return (
+    <>
+      <div
+        style={{
+          background: v("--color-bg"),
+          border: `1px solid ${v("--color-border")}`,
+          borderRadius: 12,
+          padding: 12,
+          display: "grid",
+          gap: 6,
+        }}
+      >
+        <SkeletonBar width={80} height={10} />
+        <SkeletonBar width={140} height={22} />
+        <SkeletonBar width={120} height={12} />
+      </div>
+      <div
+        style={{
+          background: v("--color-bg"),
+          border: `1px solid ${v("--color-border")}`,
+          borderRadius: 12,
+          padding: 12,
+          display: "grid",
+          gap: 6,
+        }}
+      >
+        <SkeletonBar width={60} height={10} />
+        <SkeletonBar width={100} height={22} />
+        <SkeletonBar width={80} height={12} />
+      </div>
+    </>
+  );
+}
+
+function MapLoadingOverlay() {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 12,
+        borderRadius: 10,
+        background: `${v("--color-bg-muted")}b0`,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        pointerEvents: "none",
+        animation: "mastr-pulse 1.2s ease-in-out infinite",
+      }}
+      aria-label="Lade Karte"
+    >
+      <div
+        style={{
+          fontSize: 12,
+          color: v("--color-text-muted"),
+          textTransform: "uppercase",
+          letterSpacing: 0.8,
+        }}
+      >
+        lade…
+      </div>
+    </div>
+  );
+}
+
+function StaleBanner({
+  stale,
+  error,
+  onRetry,
+}: {
+  stale: boolean;
+  error: boolean;
+  onRetry: () => void;
+}) {
+  const message = error
+    ? "Daten konnten nicht geladen werden. Zeige letzte bekannte Werte."
+    : stale
+      ? "Daten werden aktualisiert…"
+      : "";
+  if (!message) return null;
+  return (
+    <div
+      role="status"
+      style={{
+        marginTop: 8,
+        fontSize: 12,
+        color: error ? v("--color-negative") : v("--color-text-muted"),
+        background: error ? v("--color-negative-dim") : v("--color-bg-muted"),
+        border: `1px solid ${error ? v("--color-negative-border") : v("--color-border")}`,
+        borderRadius: 8,
+        padding: "6px 10px",
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
       }}
     >
-      lade…
+      <span style={{ flex: 1 }}>{message}</span>
+      {error && (
+        <button
+          onClick={onRetry}
+          style={{
+            padding: "3px 10px",
+            fontSize: 12,
+            fontWeight: 600,
+            color: v("--color-text-on-accent"),
+            background: v("--color-accent"),
+            border: "none",
+            borderRadius: 6,
+            cursor: "pointer",
+          }}
+        >
+          Erneut versuchen
+        </button>
+      )}
+    </div>
+  );
+}
+
+function ErrorKachel({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div
+      style={{
+        background: v("--color-negative-dim"),
+        border: `1px solid ${v("--color-negative-border")}`,
+        borderRadius: 12,
+        padding: 12,
+        fontSize: 13,
+        color: v("--color-negative"),
+        display: "grid",
+        gap: 8,
+      }}
+    >
+      <div>Fehler: {message}</div>
+      <button
+        onClick={onRetry}
+        style={{
+          padding: "6px 12px",
+          fontSize: 13,
+          fontWeight: 600,
+          color: v("--color-text-on-accent"),
+          background: v("--color-accent"),
+          border: "none",
+          borderRadius: 8,
+          cursor: "pointer",
+          justifySelf: "start",
+        }}
+      >
+        Erneut laden
+      </button>
     </div>
   );
 }
