@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { MastrMap, type RegionValue } from "./MastrMap";
+import { LoadingDots } from "./LoadingDots";
 import { bundeslandByAgs } from "../lib/mastr-regions";
 import type { Energietraeger, RegionSummary, SegmentFilter } from "../lib/mastr-data";
 import { useCachedFetch } from "../lib/use-cached-fetch";
@@ -136,7 +137,6 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
             borderRadius: 14,
             padding: 12,
             border: `1px solid ${v("--color-border")}`,
-            position: "relative",
           }}
         >
           <MastrMap
@@ -146,25 +146,24 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
             onSelect={handleSelect}
             valueLabel="MW"
           />
-          {isLoading && <MapLoadingOverlay />}
         </div>
 
         <aside style={{ display: "grid", gap: 12, minWidth: 0 }}>
-          {summary ? (
-            <SummaryPanel
-              summary={summary}
-              segment={effectiveSegment}
-              onReset={() => setSelectedAgs(undefined)}
-            />
-          ) : summaryLoading ? (
-            <SummarySkeleton />
-          ) : summaryError ? (
+          <SummaryPanel
+            summary={summary}
+            regionAgs={region}
+            energietraeger={energietraeger}
+            segment={effectiveSegment}
+            onReset={() => setSelectedAgs(undefined)}
+          />
+          {summaryError && !summary && (
             <ErrorKachel message={summaryError} onRetry={refetchSummary} />
-          ) : (
-            <SummarySkeleton />
           )}
-          {!selectedAgs && energietraeger !== "speicher" && summary && (
-            <LiveKachel energietraeger={energietraeger} installedKwp={summary.total_kwp} />
+          {!selectedAgs && energietraeger !== "speicher" && (
+            <LiveKachel
+              energietraeger={energietraeger}
+              installedKwp={summary?.total_kwp ?? null}
+            />
           )}
         </aside>
       </div>
@@ -342,33 +341,46 @@ const SEGMENT_DISPLAY: Record<SegmentFilter, string> = {
 
 function SummaryPanel({
   summary,
+  regionAgs,
+  energietraeger,
   segment,
   onReset,
 }: {
-  summary: RegionSummary;
+  summary: RegionSummary | null;
+  regionAgs: string;
+  energietraeger: Energietraeger;
   segment: SegmentFilter;
   onReset: () => void;
 }) {
-  const isDE = summary.level === "de";
-  const selected = !isDE ? bundeslandByAgs(summary.region_id) : null;
-  const totalMw = summary.total_kwp / 1000;
-  const avgKwp = summary.total_count > 0 ? summary.total_kwp / summary.total_count : 0;
-  const traegerLabel = TRAEGER_DISPLAY[summary.energietraeger];
+  // Labels derive from UI state — always known, no waiting required
+  const isDE = regionAgs === "de";
+  const bl = !isDE ? bundeslandByAgs(regionAgs) : null;
+  const regionName = isDE ? "Deutschland" : (bl?.name ?? regionAgs);
+  const regionLabel = regionName + (bl?.short ? ` · ${bl.short}` : "");
+  const traegerLabel = TRAEGER_DISPLAY[energietraeger];
   const segmentSuffix = segment !== "alle" ? ` · ${SEGMENT_DISPLAY[segment]}` : "";
+
+  const totalMw = summary ? summary.total_kwp / 1000 : null;
+  const totalCount = summary ? summary.total_count : null;
+  const avgKwp = summary && summary.total_count > 0 ? summary.total_kwp / summary.total_count : null;
 
   return (
     <>
       <Kachel
-        label={summary.name + (selected?.short ? ` · ${selected.short}` : "")}
-        value={`${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW`}
+        label={regionLabel}
+        value={
+          totalMw !== null
+            ? `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW`
+            : <LoadingDots />
+        }
         hint={`installiert · ${traegerLabel}${segmentSuffix}`}
       />
       <Kachel
         label="Anlagen"
-        value={summary.total_count.toLocaleString("de-DE")}
-        hint={`⌀ ${avgKwp.toFixed(0)} kWp`}
+        value={totalCount !== null ? totalCount.toLocaleString("de-DE") : <LoadingDots />}
+        hint={avgKwp !== null ? `⌀ ${avgKwp.toFixed(0)} kWp` : "⌀ — kWp"}
       />
-      {summary.energietraeger === "solar" && summary.by_segment.length > 1 && (
+      {summary && energietraeger === "solar" && summary.by_segment.length > 1 && (
         <div
           style={{
             background: v("--color-bg"),
@@ -433,16 +445,17 @@ function SummaryPanel({
         </button>
       )}
       <div style={{ fontSize: 11, color: v("--color-text-muted"), paddingTop: 2 }}>
-        {summary.source === "placeholder"
-          ? "Platzhalter-Schätzung · Stand "
-          : "Marktstammdatenregister · Stand "}
-        {summary.data_as_of}
+        {summary
+          ? (summary.source === "placeholder"
+              ? "Platzhalter-Schätzung · Stand "
+              : "Marktstammdatenregister · Stand ") + summary.data_as_of
+          : "Marktstammdatenregister"}
       </div>
     </>
   );
 }
 
-function Kachel({ label, value, hint }: { label: string; value: string; hint?: string }) {
+function Kachel({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
   return (
     <div
       style={{
@@ -478,85 +491,6 @@ function Kachel({ label, value, hint }: { label: string; value: string; hint?: s
       {hint && (
         <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginTop: 2 }}>{hint}</div>
       )}
-    </div>
-  );
-}
-
-function SkeletonBar({ width = "100%", height = 16 }: { width?: number | string; height?: number }) {
-  return (
-    <div
-      style={{
-        width,
-        height,
-        borderRadius: 4,
-        background: v("--color-bg-muted"),
-        animation: "mastr-pulse 1.2s ease-in-out infinite",
-      }}
-    />
-  );
-}
-
-function SummarySkeleton() {
-  return (
-    <>
-      <div
-        style={{
-          background: v("--color-bg"),
-          border: `1px solid ${v("--color-border")}`,
-          borderRadius: 12,
-          padding: 12,
-          display: "grid",
-          gap: 6,
-        }}
-      >
-        <SkeletonBar width={80} height={10} />
-        <SkeletonBar width={140} height={22} />
-        <SkeletonBar width={120} height={12} />
-      </div>
-      <div
-        style={{
-          background: v("--color-bg"),
-          border: `1px solid ${v("--color-border")}`,
-          borderRadius: 12,
-          padding: 12,
-          display: "grid",
-          gap: 6,
-        }}
-      >
-        <SkeletonBar width={60} height={10} />
-        <SkeletonBar width={100} height={22} />
-        <SkeletonBar width={80} height={12} />
-      </div>
-    </>
-  );
-}
-
-function MapLoadingOverlay() {
-  return (
-    <div
-      style={{
-        position: "absolute",
-        inset: 12,
-        borderRadius: 10,
-        background: `${v("--color-bg-muted")}b0`,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        pointerEvents: "none",
-        animation: "mastr-pulse 1.2s ease-in-out infinite",
-      }}
-      aria-label="Lade Karte"
-    >
-      <div
-        style={{
-          fontSize: 12,
-          color: v("--color-text-muted"),
-          textTransform: "uppercase",
-          letterSpacing: 0.8,
-        }}
-      >
-        lade…
-      </div>
     </div>
   );
 }
@@ -694,7 +628,7 @@ function LiveKachel({
   installedKwp,
 }: {
   energietraeger: Energietraeger;
-  installedKwp: number;
+  installedKwp: number | null;
 }) {
   const [currentMW, setCurrentMW] = useState<number | null>(null);
   const [ts, setTs] = useState<string | null>(null);
@@ -735,7 +669,7 @@ function LiveKachel({
   if (loading || currentMW === null) return null;
 
   const currentGW = currentMW / 1000;
-  const pct = installedKwp > 0 ? ((currentMW * 1000) / installedKwp) * 100 : null;
+  const pct = installedKwp && installedKwp > 0 ? ((currentMW * 1000) / installedKwp) * 100 : null;
   const tsDate = ts ? new Date(ts) : null;
   const tsLabel = tsDate
     ? tsDate.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })
