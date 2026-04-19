@@ -3,16 +3,27 @@
 import { useEffect, useState } from "react";
 import { MastrMap, type RegionValue } from "./MastrMap";
 import { bundeslandByAgs } from "../lib/mastr-regions";
-import type { Energietraeger, RegionSummary } from "../lib/mastr-data";
+import type { Energietraeger, RegionSummary, SegmentFilter } from "../lib/mastr-data";
 import { v } from "../lib/theme";
 
-const TRAEGER: { key: Energietraeger; label: string }[] = [
+// Tab order: aggregate first, then individual renewables, then storage (separated)
+const RENEWABLE_TRAEGER: { key: Energietraeger; label: string }[] = [
+  { key: "gesamt", label: "Gesamt" },
   { key: "solar", label: "Solar" },
   { key: "wind", label: "Wind" },
   { key: "biomasse", label: "Biomasse" },
   { key: "wasser", label: "Wasser" },
-  { key: "speicher", label: "Speicher" },
 ];
+const STORAGE_TRAEGER: { key: Energietraeger; label: string } = { key: "speicher", label: "Speicher" };
+
+// Primary segment filter options (for solar). "Freifläche" is rendered as
+// a secondary option (visually distinct / smaller).
+const PRIMARY_SEGMENTS: { key: SegmentFilter; label: string }[] = [
+  { key: "alle", label: "Alle" },
+  { key: "privat_dach", label: "Privat" },
+  { key: "gewerbe_dach", label: "Gewerbe" },
+];
+const SECONDARY_SEGMENT: { key: SegmentFilter; label: string } = { key: "freiflaeche", label: "Freifläche" };
 
 const SEGMENT_LABEL: Record<string, string> = {
   privat_dach: "Privat (Dach)",
@@ -35,27 +46,37 @@ export type MastrHeroSectionProps = {
 };
 
 export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSectionProps) {
-  const [energietraeger, setEnergietraeger] = useState<Energietraeger>("solar");
+  const [energietraeger, setEnergietraeger] = useState<Energietraeger>("gesamt");
+  const [segment, setSegment] = useState<SegmentFilter>("alle");
   const [selectedAgs, setSelectedAgs] = useState<string | undefined>(
     initialRegion && initialRegion !== "de" ? initialRegion : undefined,
   );
   const [choropleth, setChoropleth] = useState<ChoroplethResp | null>(null);
   const [summary, setSummary] = useState<RegionSummary | null>(null);
 
+  // Segment filter only applies to solar. Reset when switching away.
+  const effectiveSegment: SegmentFilter = energietraeger === "solar" ? segment : "alle";
+
   useEffect(() => {
-    fetch(`/api/mastr/choropleth?parent=de&type=${energietraeger}`)
+    if (energietraeger !== "solar" && segment !== "alle") {
+      setSegment("alle");
+    }
+  }, [energietraeger, segment]);
+
+  useEffect(() => {
+    fetch(`/api/mastr/choropleth?parent=de&type=${energietraeger}&segment=${effectiveSegment}`)
       .then((r) => r.json())
       .then(setChoropleth)
       .catch(() => setChoropleth(null));
-  }, [energietraeger]);
+  }, [energietraeger, effectiveSegment]);
 
   useEffect(() => {
     const region = selectedAgs ?? "de";
-    fetch(`/api/mastr/summary?region=${region}&type=${energietraeger}`)
+    fetch(`/api/mastr/summary?region=${region}&type=${energietraeger}&segment=${effectiveSegment}`)
       .then((r) => r.json())
       .then(setSummary)
       .catch(() => setSummary(null));
-  }, [selectedAgs, energietraeger]);
+  }, [selectedAgs, energietraeger, effectiveSegment]);
 
   useEffect(() => {
     onRegionChange?.(selectedAgs);
@@ -71,6 +92,8 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
   return (
     <section aria-label="MaStR Übersicht">
       <TraegerSwitch value={energietraeger} onChange={setEnergietraeger} />
+
+      {energietraeger === "solar" && <SegmentSwitch value={segment} onChange={setSegment} />}
 
       <div className="mastr-hero-grid" style={{ marginTop: 16 }}>
         <div
@@ -92,7 +115,11 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
 
         <aside style={{ display: "grid", gap: 12, minWidth: 0 }}>
           {summary ? (
-            <SummaryPanel summary={summary} onReset={() => setSelectedAgs(undefined)} />
+            <SummaryPanel
+              summary={summary}
+              segment={effectiveSegment}
+              onReset={() => setSelectedAgs(undefined)}
+            />
           ) : (
             <LoadingKachel />
           )}
@@ -109,68 +136,189 @@ function TraegerSwitch({
   value: Energietraeger;
   onChange: (v: Energietraeger) => void;
 }) {
+  const renderButton = (t: { key: Energietraeger; label: string }) => {
+    const active = t.key === value;
+    return (
+      <button
+        key={t.key}
+        role="tab"
+        aria-selected={active}
+        onClick={() => onChange(t.key)}
+        style={{
+          padding: "6px 12px",
+          fontSize: 13,
+          fontWeight: active ? 600 : 400,
+          whiteSpace: "nowrap",
+          color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
+          background: active ? v("--color-accent") : "transparent",
+          border: "none",
+          borderRadius: 7,
+          cursor: "pointer",
+          transition: "background 120ms, color 120ms",
+        }}
+      >
+        {t.label}
+      </button>
+    );
+  };
+
   return (
     <div
       role="tablist"
       style={{
         display: "flex",
-        gap: 4,
-        padding: 4,
-        background: v("--color-bg-muted"),
-        borderRadius: 10,
-        border: `1px solid ${v("--color-border")}`,
-        width: "fit-content",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: 8,
         maxWidth: "100%",
-        overflowX: "auto",
       }}
     >
-      {TRAEGER.map((t) => {
-        const active = t.key === value;
-        return (
-          <button
-            key={t.key}
-            role="tab"
-            aria-selected={active}
-            onClick={() => onChange(t.key)}
-            style={{
-              padding: "6px 12px",
-              fontSize: 13,
-              fontWeight: active ? 600 : 400,
-              whiteSpace: "nowrap",
-              color: active ? v("--color-text-on-accent") : v("--color-text-secondary"),
-              background: active ? v("--color-accent") : "transparent",
-              border: "none",
-              borderRadius: 7,
-              cursor: "pointer",
-              transition: "background 120ms, color 120ms",
-            }}
-          >
-            {t.label}
-          </button>
-        );
-      })}
+      <div
+        style={{
+          display: "flex",
+          gap: 4,
+          padding: 4,
+          background: v("--color-bg-muted"),
+          borderRadius: 10,
+          border: `1px solid ${v("--color-border")}`,
+          overflowX: "auto",
+        }}
+      >
+        {RENEWABLE_TRAEGER.map(renderButton)}
+      </div>
+      <div
+        aria-hidden="true"
+        style={{
+          width: 1,
+          height: 20,
+          background: v("--color-border-muted"),
+          flexShrink: 0,
+        }}
+      />
+      <div
+        style={{
+          display: "flex",
+          padding: 4,
+          background: v("--color-bg-muted"),
+          borderRadius: 10,
+          border: `1px solid ${v("--color-border")}`,
+        }}
+      >
+        {renderButton(STORAGE_TRAEGER)}
+      </div>
     </div>
   );
 }
 
+function SegmentSwitch({
+  value,
+  onChange,
+}: {
+  value: SegmentFilter;
+  onChange: (s: SegmentFilter) => void;
+}) {
+  const renderPrimary = (s: { key: SegmentFilter; label: string }) => {
+    const active = s.key === value;
+    return (
+      <button
+        key={s.key}
+        role="tab"
+        aria-selected={active}
+        onClick={() => onChange(s.key)}
+        style={{
+          padding: "4px 10px",
+          fontSize: 12,
+          fontWeight: active ? 600 : 400,
+          whiteSpace: "nowrap",
+          color: active ? v("--color-accent") : v("--color-text-secondary"),
+          background: active ? v("--color-accent-dim") : "transparent",
+          border: `1px solid ${active ? v("--color-accent") : v("--color-border")}`,
+          borderRadius: 16,
+          cursor: "pointer",
+          transition: "all 120ms",
+        }}
+      >
+        {s.label}
+      </button>
+    );
+  };
+
+  const freiActive = value === SECONDARY_SEGMENT.key;
+
+  return (
+    <div
+      role="tablist"
+      aria-label="Solar-Segmente"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: 6,
+        marginTop: 8,
+      }}
+    >
+      {PRIMARY_SEGMENTS.map(renderPrimary)}
+      <span style={{ color: v("--color-text-faint"), fontSize: 12, margin: "0 2px" }}>·</span>
+      <button
+        role="tab"
+        aria-selected={freiActive}
+        onClick={() => onChange(freiActive ? "alle" : SECONDARY_SEGMENT.key)}
+        style={{
+          padding: "3px 8px",
+          fontSize: 11,
+          fontWeight: freiActive ? 600 : 400,
+          color: freiActive ? v("--color-accent") : v("--color-text-muted"),
+          background: freiActive ? v("--color-accent-dim") : "transparent",
+          border: `1px dashed ${freiActive ? v("--color-accent") : v("--color-border-muted")}`,
+          borderRadius: 14,
+          cursor: "pointer",
+          transition: "all 120ms",
+        }}
+      >
+        {SECONDARY_SEGMENT.label}
+      </button>
+    </div>
+  );
+}
+
+const TRAEGER_DISPLAY: Record<Energietraeger, string> = {
+  gesamt: "Erneuerbare",
+  solar: "Solar",
+  wind: "Wind",
+  biomasse: "Biomasse",
+  wasser: "Wasser",
+  speicher: "Speicher",
+};
+
+const SEGMENT_DISPLAY: Record<SegmentFilter, string> = {
+  alle: "",
+  privat_dach: "Privat",
+  gewerbe_dach: "Gewerbe",
+  freiflaeche: "Freifläche",
+};
+
 function SummaryPanel({
   summary,
+  segment,
   onReset,
 }: {
   summary: RegionSummary;
+  segment: SegmentFilter;
   onReset: () => void;
 }) {
   const isDE = summary.level === "de";
   const selected = !isDE ? bundeslandByAgs(summary.region_id) : null;
   const totalMw = summary.total_kwp / 1000;
   const avgKwp = summary.total_count > 0 ? summary.total_kwp / summary.total_count : 0;
+  const traegerLabel = TRAEGER_DISPLAY[summary.energietraeger];
+  const segmentSuffix = segment !== "alle" ? ` · ${SEGMENT_DISPLAY[segment]}` : "";
 
   return (
     <>
       <Kachel
         label={summary.name + (selected?.short ? ` · ${selected.short}` : "")}
         value={`${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW`}
-        hint={`installiert · ${summary.energietraeger}`}
+        hint={`installiert · ${traegerLabel}${segmentSuffix}`}
       />
       <Kachel
         label="Anlagen"

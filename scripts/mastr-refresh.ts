@@ -139,11 +139,13 @@ async function sampleCsvEntry(
     const stream = entry.stream();
     const parser = csvParse({
       columns: true,
-      delimiter: ";",
+      delimiter: ",",
       quote: '"',
       escape: '"',
       skip_empty_lines: true,
       relax_column_count: true,
+      relax_quotes: true,
+      bom: true,
       to: rows,
     });
 

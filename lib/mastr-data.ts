@@ -5,9 +5,13 @@
 
 import { BUNDESLAENDER, bundeslandByAgs } from "./mastr-regions";
 
-export type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher";
+export type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
 export type Segment = "privat_dach" | "gewerbe_dach" | "freiflaeche" | "n/a";
+export type SegmentFilter = "alle" | "privat_dach" | "gewerbe_dach" | "freiflaeche";
 export type Level = "de" | "bundesland" | "landkreis";
+
+// "gesamt" = all renewables summed (solar + wind + biomasse + wasser); storage excluded
+const RENEWABLE_TRAEGER: Energietraeger[] = ["solar", "wind", "biomasse", "wasser"];
 
 export type ChoroplethEntry = {
   region_id: string;
@@ -74,7 +78,7 @@ const SOLAR_SEGMENT_SHARE: Record<Exclude<Segment, "n/a">, number> = {
 };
 
 // Rough median kWp per unit per segment (for count ↔ kWp sanity)
-const AVG_KWP: Record<Energietraeger, number> = {
+const AVG_KWP: Record<Exclude<Energietraeger, "gesamt">, number> = {
   solar: 12,       // mix of EFH (9 kWp) and larger commercial (40+ kWp)
   wind: 3500,      // avg onshore turbine
   biomasse: 450,
@@ -87,6 +91,16 @@ function mwToKwp(mw: number): number {
 }
 
 function placeholderByBl(bl: PlaceholderBl, et: Energietraeger): { count: number; kwp: number } {
+  if (et === "gesamt") {
+    let count = 0;
+    let kwp = 0;
+    for (const t of RENEWABLE_TRAEGER) {
+      const e = placeholderByBl(bl, t);
+      count += e.count;
+      kwp += e.kwp;
+    }
+    return { count, kwp };
+  }
   const mw = {
     solar: bl.solar_mw,
     wind: bl.wind_mw,
@@ -110,6 +124,21 @@ function placeholderTotal(et: Energietraeger): { count: number; kwp: number } {
   return { count, kwp };
 }
 
+// Apply segment filter. Only meaningful for solar — for other traegers the
+// filter is ignored (returns unfiltered values).
+function applySegmentFilter(
+  base: { count: number; kwp: number },
+  et: Energietraeger,
+  segment: SegmentFilter,
+): { count: number; kwp: number } {
+  if (segment === "alle" || et !== "solar") return base;
+  const share = SOLAR_SEGMENT_SHARE[segment as keyof typeof SOLAR_SEGMENT_SHARE];
+  return {
+    count: Math.round(base.count * share),
+    kwp: Math.round(base.kwp * share),
+  };
+}
+
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 // Data-source toggle. Flip to true once Supabase is populated.
@@ -119,30 +148,28 @@ const PLACEHOLDER_AS_OF = "2025-01-31";
 export async function getChoroplethData(
   parent: string,
   energietraeger: Energietraeger,
+  segment: SegmentFilter = "alle",
 ): Promise<{ data: ChoroplethEntry[]; source: "supabase" | "placeholder"; data_as_of: string }> {
   if (LOAD_FROM_SUPABASE) {
-    // TODO(phase-3): SELECT region_id, SUM(kwp), SUM(count) FROM mastr_aggregates
-    // JOIN mastr_regions r ON a.region_id = r.region_id
-    // WHERE r.parent_region_id = $parent AND a.energietraeger = $et
-    // GROUP BY region_id
     throw new Error("Supabase path not yet wired");
   }
 
   if (parent === "de") {
     const data = PLACEHOLDER.map((bl) => {
-      const { count, kwp } = placeholderByBl(bl, energietraeger);
-      return { region_id: bl.ags, count, kwp };
+      const base = placeholderByBl(bl, energietraeger);
+      const filtered = applySegmentFilter(base, energietraeger, segment);
+      return { region_id: bl.ags, count: filtered.count, kwp: filtered.kwp };
     });
     return { data, source: "placeholder", data_as_of: PLACEHOLDER_AS_OF };
   }
 
-  // Landkreis-level not supported yet (phase 2 feature)
   return { data: [], source: "placeholder", data_as_of: PLACEHOLDER_AS_OF };
 }
 
 export async function getRegionSummary(
   regionId: string,
   energietraeger: Energietraeger,
+  segment: SegmentFilter = "alle",
 ): Promise<RegionSummary> {
   if (LOAD_FROM_SUPABASE) {
     throw new Error("Supabase path not yet wired");
@@ -150,12 +177,12 @@ export async function getRegionSummary(
 
   let level: Level;
   let name: string;
-  let total: { count: number; kwp: number };
+  let base: { count: number; kwp: number };
 
   if (regionId === "de") {
     level = "de";
     name = "Deutschland";
-    total = placeholderTotal(energietraeger);
+    base = placeholderTotal(energietraeger);
   } else {
     const bl = bundeslandByAgs(regionId);
     if (!bl) throw new Error(`Unknown region: ${regionId}`);
@@ -163,17 +190,21 @@ export async function getRegionSummary(
     if (!placeholder) throw new Error(`No placeholder for AGS ${regionId}`);
     level = "bundesland";
     name = bl.name;
-    total = placeholderByBl(placeholder, energietraeger);
+    base = placeholderByBl(placeholder, energietraeger);
   }
 
+  const total = applySegmentFilter(base, energietraeger, segment);
+
+  // by_segment always shows the full segment breakdown (unfiltered base)
+  // so the user can see relative sizes even when filtering.
   const by_segment: SegmentBreakdown[] =
     energietraeger === "solar"
       ? (Object.entries(SOLAR_SEGMENT_SHARE) as [Exclude<Segment, "n/a">, number][]).map(([seg, share]) => ({
           segment: seg,
-          count: Math.round(total.count * share),
-          kwp: Math.round(total.kwp * share),
+          count: Math.round(base.count * share),
+          kwp: Math.round(base.kwp * share),
         }))
-      : [{ segment: "n/a", count: total.count, kwp: total.kwp }];
+      : [{ segment: "n/a", count: base.count, kwp: base.kwp }];
 
   return {
     region_id: regionId,
@@ -188,6 +219,9 @@ export async function getRegionSummary(
   };
 }
 
-export function allBundeslaenderSummary(energietraeger: Energietraeger): Promise<RegionSummary[]> {
-  return Promise.all(BUNDESLAENDER.map((bl) => getRegionSummary(bl.ags, energietraeger)));
+export function allBundeslaenderSummary(
+  energietraeger: Energietraeger,
+  segment: SegmentFilter = "alle",
+): Promise<RegionSummary[]> {
+  return Promise.all(BUNDESLAENDER.map((bl) => getRegionSummary(bl.ags, energietraeger, segment)));
 }
