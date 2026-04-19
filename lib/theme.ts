@@ -98,4 +98,6 @@ export const globalStyles = `
   input[type=number]{-moz-appearance:textfield}
   @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   .fu{animation:fu .3s ease-out}
+  .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+  @media (max-width:720px){.mastr-hero-grid{grid-template-columns:1fr}}
 `;

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Header from "../components/Header";
 import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery } from "../components/Icons";
+import { MastrHeroSection } from "../components/MastrHeroSection";
 import { v } from "../lib/theme";
 
 const tools = [
@@ -42,11 +43,19 @@ export default function Home() {
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
-        {/* Hero */}
-        <div style={{ textAlign: "center", marginBottom: 36, paddingTop: 10 }}>
+        {/* Hero Text */}
+        <div style={{ textAlign: "center", marginBottom: 20, paddingTop: 10 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
           <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Vier Tools. Ohne Anmeldung, ohne Leadfunnel.</p>
         </div>
+      </div>
+
+      {/* MaStR Hero Map — wider container, breaks out of the 480px column */}
+      <div style={{ maxWidth: 800, margin: "0 auto 36px" }}>
+        <MastrHeroSection />
+      </div>
+
+      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         {/* Tool Cards */}
         <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32 }}>
