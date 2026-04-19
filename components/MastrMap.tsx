@@ -5,7 +5,7 @@ import { Mercator } from "@visx/geo";
 import { ParentSize } from "@visx/responsive";
 import { scaleQuantize } from "@visx/scale";
 import { v } from "../lib/theme";
-import { bundeslandByAgs, bundeslandByIso } from "../lib/mastr-regions";
+import { bundeslandByAgs } from "../lib/mastr-regions";
 
 import type { Feature, FeatureCollection as GeoJsonFeatureCollection, Geometry } from "geojson";
 
@@ -84,15 +84,13 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
               >
                 {({ features }) =>
                   features.map(({ feature, path }) => {
-                    const iso = feature.properties.id;
-                    const bl = bundeslandByIso(iso);
-                    const ags = bl?.ags ?? "";
+                    const ags = feature.properties.id;
                     const val = valueByAgs.get(ags) ?? 0;
                     const isHovered = hovered === ags;
                     const isSelected = selectedAgs === ags;
                     return (
                       <path
-                        key={iso}
+                        key={ags}
                         d={path ?? ""}
                         fill={colorScale(val)}
                         stroke={isSelected ? v("--color-accent-dark") : v("--color-border")}
@@ -130,7 +128,9 @@ export function MastrMap({ level, values, selectedAgs, onSelect, valueLabel = "k
           }}
         >
           <div style={{ fontWeight: 600, color: v("--color-text-primary") }}>
-            {bundeslandByAgs(hovered)?.name ?? hovered}
+            {geo.features.find((f) => f.properties.id === hovered)?.properties.name ??
+              bundeslandByAgs(hovered)?.name ??
+              hovered}
           </div>
           <div style={{ color: v("--color-text-secondary"), fontVariantNumeric: "tabular-nums" }}>
             {(valueByAgs.get(hovered) ?? 0).toLocaleString("de-DE")} {valueLabel}

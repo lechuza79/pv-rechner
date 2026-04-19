@@ -167,6 +167,25 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
           )}
         </aside>
       </div>
+      <div
+        style={{
+          fontSize: 10,
+          color: v("--color-text-faint"),
+          marginTop: 10,
+          textAlign: "right",
+        }}
+      >
+        Karte: © GeoBasis-DE / BKG 2024 (VG2500,{" "}
+        <a
+          href="https://www.govdata.de/dl-de/by-2-0"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "inherit", textDecoration: "underline" }}
+        >
+          dl-de/by-2-0
+        </a>
+        ) · Daten: Marktstammdatenregister / Bundesnetzagentur
+      </div>
     </section>
   );
 }
