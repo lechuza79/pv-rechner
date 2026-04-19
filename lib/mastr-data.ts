@@ -230,10 +230,10 @@ async function supabaseChoroplethData(
     if (!rowMatchesSegment(r, segment)) continue;
     let regionKey: string;
     if (parent === "de") {
-      // Show Landkreis granularity directly on the DE map — gives a richer
-      // "all-at-once" view than 16 Bundesland aggregates, no drilldown needed.
-      regionKey = r.region_id;
+      // DE-Ebene aggregiert auf Bundesland — cleaner Einstiegsansicht.
+      regionKey = blPrefix(r.region_id);
     } else {
+      // Bundesland-Ebene: nur Landkreise mit passendem AGS-Prefix.
       if (!r.region_id.startsWith(parent)) continue;
       regionKey = r.region_id;
     }

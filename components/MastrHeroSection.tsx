@@ -70,7 +70,17 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
     onRegionChange?.(selectedAgs);
   }, [selectedAgs, onRegionChange]);
 
-  const choroplethEndpoint = `/api/mastr/choropleth?parent=de&type=${energietraeger}&segment=${effectiveSegment}`;
+  // Drilldown levels derive from selectedAgs:
+  //   undefined  → de-level: show 16 Bundesländer
+  //   2-digit AGS → bundesland-level: zoom in, show LKs inside
+  //   5-digit AGS → bundesland-level with LK highlighted
+  const isBlSelected = selectedAgs?.length === 2;
+  const isLkSelected = selectedAgs?.length === 5;
+  const parentAgs = isBlSelected ? selectedAgs : isLkSelected ? selectedAgs.slice(0, 2) : undefined;
+  const mapLevel: "de" | "bundesland" = parentAgs ? "bundesland" : "de";
+  const choroplethParent = parentAgs ?? "de";
+
+  const choroplethEndpoint = `/api/mastr/choropleth?parent=${choroplethParent}&type=${energietraeger}&segment=${effectiveSegment}`;
   const region = selectedAgs ?? "de";
   const summaryEndpoint = `/api/mastr/summary?region=${region}&type=${energietraeger}&segment=${effectiveSegment}`;
 
@@ -87,7 +97,7 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
     refetch: refetchChoropleth,
   } = useCachedFetch<ChoroplethResp>(
     choroplethEndpoint,
-    `${CACHE_VERSION}-mastr-choropleth-${energietraeger}-${effectiveSegment}`,
+    `${CACHE_VERSION}-mastr-choropleth-${choroplethParent}-${energietraeger}-${effectiveSegment}`,
     CHOROPLETH_DEFAULT,
     { longLived: false, keyPrefix: "sc-mastr-" },
   );
@@ -106,7 +116,19 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
   );
 
   const handleSelect = (ags: string) => {
-    setSelectedAgs((prev) => (prev === ags ? undefined : ags));
+    setSelectedAgs((prev) => {
+      if (prev === ags) {
+        // Clicking the already-selected region goes up a level
+        if (ags.length === 5) return ags.slice(0, 2); // LK → BL
+        return undefined; // BL → DE
+      }
+      return ags;
+    });
+  };
+
+  const handleBack = () => {
+    if (isLkSelected && selectedAgs) setSelectedAgs(selectedAgs.slice(0, 2));
+    else setSelectedAgs(undefined);
   };
 
   const values: RegionValue[] = useMemo(
@@ -145,7 +167,8 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
           }}
         >
           <MastrMap
-            level="de"
+            level={mapLevel}
+            parentAgs={parentAgs}
             values={values}
             selectedAgs={selectedAgs}
             onSelect={handleSelect}
@@ -159,7 +182,8 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
             regionAgs={region}
             energietraeger={energietraeger}
             segment={effectiveSegment}
-            onReset={() => setSelectedAgs(undefined)}
+            onReset={handleBack}
+            backLabel={isLkSelected ? "← Zurück zum Bundesland" : "← Zurück zu Deutschland"}
           />
           {summaryError && !summary && (
             <ErrorKachel message={summaryError} onRetry={refetchSummary} />
@@ -369,12 +393,14 @@ function SummaryPanel({
   energietraeger,
   segment,
   onReset,
+  backLabel = "← Zurück zu Deutschland",
 }: {
   summary: RegionSummary | null;
   regionAgs: string;
   energietraeger: Energietraeger;
   segment: SegmentFilter;
   onReset: () => void;
+  backLabel?: string;
 }) {
   // Labels derive from UI state — known immediately for DE + Bundesländer.
   // Landkreis names come from the API response (DB lookup), so until summary
@@ -471,7 +497,7 @@ function SummaryPanel({
             color: v("--color-text-primary"),
           }}
         >
-          ← Zurück zu Deutschland
+          {backLabel}
         </button>
       )}
       <div style={{ fontSize: 11, color: v("--color-text-muted"), paddingTop: 2 }}>
