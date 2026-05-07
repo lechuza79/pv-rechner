@@ -135,8 +135,13 @@ export async function GET(req: NextRequest) {
       endStr = now.toISOString().replace("Z", "+01:00").slice(0, 19) + "+01:00";
     }
 
-    // For multi-year ranges, try Supabase first (pre-aggregated weekly data)
-    if (isAbsolute && rangeHours > 8784) {
+    // For finished past ranges spanning roughly a year or more, try the
+    // pre-aggregated weekly table in Supabase first. Threshold 6000 hours
+    // (~9 months) covers full years, 12-month windows and multi-year ranges
+    // — but stays away from short ranges where 15-min granularity matters.
+    // Requires isPast so we never hand back partial-week data for ongoing
+    // periods.
+    if (isAbsolute && isPast && rangeHours > 6000) {
       const dbResult = await fetchFromSupabase(country, startParam!, endParam!);
       if (dbResult && dbResult.data.length > 0) {
         store.set(cacheKey, dbResult);

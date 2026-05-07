@@ -405,8 +405,8 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh, compact
         </>
       )}
 
-      {/* Kernenergie (inländisch + importiert) — skip in compact */}
-      {!compact && (nuclearGWhLocal > 0.01 || (nuclearGWh != null && nuclearGWh > 0.001)) && (() => {
+      {/* Kernenergie (inländisch + importiert) */}
+      {(nuclearGWhLocal > 0.01 || (nuclearGWh != null && nuclearGWh > 0.001)) && (() => {
         const nucTotal = nuclearGWhLocal + (nuclearGWh || 0);
         const allTotal = totalGWh + (nuclearGWh || 0);
         const nucPctRaw = allTotal > 0 ? nucTotal / allTotal * 100 : 0;
@@ -417,10 +417,10 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh, compact
               <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: "var(--color-text-primary)" }}>Kernenergie {nucPct}%</span>
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{fmt(nucTotal)}</span>
             </div>
-            {nuclearGWhLocal > 0.01 && (
+            {!compact && nuclearGWhLocal > 0.01 && (
               <BarTooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={fmt(nuclearGWhLocal)} />
             )}
-            {nuclearGWh != null && nuclearGWh > 0.001 && (
+            {!compact && nuclearGWh != null && nuclearGWh > 0.001 && (
               <BarTooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={fmt(nuclearGWh)} />
             )}
           </>

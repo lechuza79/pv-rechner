@@ -8,7 +8,7 @@ import {
   IconChevronLeft,
   IconChevronRight,
 } from "../../../../components/Icons";
-import { useGenerationMix } from "../../../../lib/energy";
+import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
 import {
   CATEGORY_COLORS,
   FOSSIL_KEYS,
@@ -347,14 +347,16 @@ function ChartArea({ tab }: { tab: TabState }) {
     hours,
     dateRange,
   );
+  const { data: nuclearData } = useNuclearImport(hours, dateRange);
 
-  // Three-category share aggregation for the period mean.
-  // Total = sum of generation keys only. Meta keys (load, residual_load,
-  // cross_border_trading) are ignored.
+  // Period-mean shares aggregated into four buckets: renewable, fossil,
+  // nuclear (domestic + imported), and other. Only non-zero categories
+  // are shown in the headline.
   const shares = useMemo(() => {
     if (!genData.data.length) return null;
     let renew = 0;
     let foss = 0;
+    let nuc = 0;
     let other = 0;
     const isWeekly = genData.resolution === "weekly";
     let intervalHours = 0.25;
@@ -371,14 +373,35 @@ function ChartArea({ tab }: { tab: TabState }) {
         const energy = isWeekly ? v : (v * intervalHours) / 1000;
         if (RENEWABLE_KEYS.includes(key)) renew += energy;
         else if (FOSSIL_KEYS.includes(key)) foss += energy;
+        else if (key === "nuclear") nuc += energy;
         else other += energy;
       }
+      // Pre-aggregated weekly rows ship a separate nuclear_import column.
+      if (isWeekly) {
+        const ni = d.nuclear_import;
+        if (typeof ni === "number" && ni > 0) nuc += ni;
+      }
     }
-    const total = renew + foss + other;
+    // Live data: nuclear import comes from the parallel /api/energy/nuclear-import
+    // endpoint. Sum nuclear_gw × intervalHours into GWh.
+    if (!isWeekly && nuclearData.data.length >= 2) {
+      const t0 = new Date(nuclearData.data[0].ts).getTime();
+      const t1 = new Date(nuclearData.data[1].ts).getTime();
+      const niInterval = (t1 - t0) / (1000 * 60 * 60);
+      for (const d of nuclearData.data) {
+        if (d.nuclear_gw > 0) nuc += d.nuclear_gw * niInterval;
+      }
+    }
+    const total = renew + foss + nuc + other;
     if (total <= 0) return null;
     const pct = (n: number) => Math.round((n / total) * 1000) / 10;
-    return { renewable: pct(renew), fossil: pct(foss), other: pct(other) };
-  }, [genData.data, genData.resolution]);
+    return {
+      renewable: pct(renew),
+      fossil: pct(foss),
+      nuclear: pct(nuc),
+      other: pct(other),
+    };
+  }, [genData.data, genData.resolution, nuclearData.data]);
 
   // 7d → smooth area, 30d / year → stacked bars
   const useArea = tab.id === "7d";
@@ -398,7 +421,13 @@ function ChartArea({ tab }: { tab: TabState }) {
           <CenteredMessage text="Lade Daten…" />
         )}
         {genData.data.length > 0 && useArea && (
-          <StackedAreaChart data={genData.data} xFormat="date" height={220} compact />
+          <StackedAreaChart
+            data={genData.data}
+            xFormat="date"
+            height={220}
+            nuclearOverlay={nuclearData.data}
+            compact
+          />
         )}
         {genData.data.length > 0 && !useArea && (
           <StackedBarChart
@@ -406,6 +435,7 @@ function ChartArea({ tab }: { tab: TabState }) {
             mode={barMode}
             preAggregated={genData.resolution === "weekly"}
             height={220}
+            nuclearOverlay={nuclearData.data}
             compact
           />
         )}
@@ -417,7 +447,12 @@ function ChartArea({ tab }: { tab: TabState }) {
 function Headline({
   shares,
 }: {
-  shares: { renewable: number; fossil: number; other: number } | null;
+  shares: {
+    renewable: number;
+    fossil: number;
+    nuclear: number;
+    other: number;
+  } | null;
 }) {
   if (!shares) {
     return (
@@ -451,6 +486,13 @@ function Headline({
         label="Fossile"
         value={shares.fossil}
       />
+      {shares.nuclear >= 0.5 && (
+        <SharePill
+          color={CATEGORY_COLORS.nuclear}
+          label="Kernenergie"
+          value={shares.nuclear}
+        />
+      )}
       <SharePill
         color={CATEGORY_COLORS.other}
         label="Sonstige"

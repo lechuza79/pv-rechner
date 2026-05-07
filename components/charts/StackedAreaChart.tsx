@@ -212,8 +212,8 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
         </>
       )}
 
-      {/* Kernenergie (inländisch + importiert) — skip in compact */}
-      {!compact && (nuclearTotal > 0 || nuclearMw > 0) && (() => {
+      {/* Kernenergie (inländisch + importiert) */}
+      {(nuclearTotal > 0 || nuclearMw > 0) && (() => {
         const nucCombined = nuclearTotal + nuclearMw;
         const allTotal = totalGen + nuclearMw;
         const nucPctRaw = allTotal > 0 ? nucCombined / allTotal * 100 : 0;
@@ -224,10 +224,10 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
               <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: "var(--color-text-primary)" }}>Kernenergie {nucPct}%</span>
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{fmt(nucCombined)}</span>
             </div>
-            {nuclearTotal > 0 && (
+            {!compact && nuclearTotal > 0 && (
               <TooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={fmt(nuclearTotal)} />
             )}
-            {nuclearMw > 0 && (
+            {!compact && nuclearMw > 0 && (
               <TooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={fmt(nuclearMw)} />
             )}
           </>
