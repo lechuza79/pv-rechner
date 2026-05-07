@@ -10,8 +10,11 @@ const POLL_INTERVAL_MS = 5 * 60 * 1000;
 const ALLOWED_ORIGINS = [
   "https://sebastianschaeder.de",
   "https://www.sebastianschaeder.de",
+  "https://solar-check.io",
+  "https://www.solar-check.io",
   "http://localhost:4321",
   "http://localhost:4322",
+  "http://localhost:3041",
 ];
 
 // CSS variables a parent page may override. Anything outside this list is ignored.

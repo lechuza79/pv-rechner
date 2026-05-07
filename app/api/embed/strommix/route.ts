@@ -145,7 +145,26 @@ export async function GET(_req: NextRequest) {
     const fmt = (d: Date) =>
       d.toISOString().replace("Z", "+01:00").slice(0, 19) + "+01:00";
 
-    const rows = await fetchPublicPower("de", fmt(start), fmt(now), 10000, 2);
+    // Energy-Charts can be slow under load. Retry network failures with
+    // exponential backoff before giving up on the upstream.
+    let rows: Awaited<ReturnType<typeof fetchPublicPower>> = [];
+    let lastErr: unknown = null;
+    const attempts = [
+      { timeout: 8000, wait: 0 },
+      { timeout: 12000, wait: 1500 },
+      { timeout: 20000, wait: 3000 },
+    ];
+    for (const a of attempts) {
+      if (a.wait) await new Promise((r) => setTimeout(r, a.wait));
+      try {
+        rows = await fetchPublicPower("de", fmt(start), fmt(now), a.timeout, 0);
+        if (rows.length > 0) break;
+      } catch (err) {
+        lastErr = err;
+      }
+    }
+    if (rows.length === 0 && lastErr) throw lastErr;
+
     const response = aggregate(rows);
 
     if (!response) {
