@@ -1,29 +1,58 @@
-# PV Rechner
+# Solar Check
 
-Ehrlicher PV-Rentabilitätsrechner ohne Leadfunnel.
+Ehrlicher PV-Rentabilitätsrechner ohne Leadfunnel — live unter
+[solar-check.io](https://solar-check.io). Drumherum: Live-PV-Simulation
+auf Wetterdaten-Basis, Wärmepumpen-Rechner, Strommix-Dashboard und
+Embed-Widgets für Drittseiten.
 
 ## Setup
 
 ```bash
-npm install
-npm run dev
+npm install   # installiert Deps und aktiviert .githooks via postinstall
+npm run dev   # → http://localhost:3000
 ```
 
-Öffne [http://localhost:3000](http://localhost:3000).
+`.env.local` mit den ENV-Vars unten anlegen, sonst fallen Auth, Supabase
+und die Cron-Routen aus.
 
-## Deploy auf Vercel
+## ENV-Variablen
 
-1. Repo auf GitHub pushen
-2. [vercel.com/new](https://vercel.com/new) → GitHub-Repo importieren
-3. Framework: Next.js (wird automatisch erkannt)
-4. Deploy klicken
-5. Domain verbinden unter Settings → Domains
+| Variable | Wofür |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase Projekt-URL (Client + Server) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Anon-Key (Client) |
+| `SUPABASE_SERVICE_KEY` | Supabase Service-Key (server-only) |
+| `ADMIN_EMAILS` | Kommagetrennte Admin-Mails (Zugang `/admin/*`) |
+| `CRON_SECRET` | Bearer-Token für Vercel-Cron-Routen |
+| `NEXT_PUBLIC_BASE_URL` | Kanonische URL für OG-Tags und Sitemap |
 
-## Struktur
+`.env.local` ist gitignored und wird vom Pre-commit-Hook geblockt.
 
-```
-app/
-  layout.tsx    → HTML-Grundgerüst, Fonts, SEO-Meta
-  page.tsx      → Einstiegspunkt
-  rechner.tsx   → PV-Rechner Komponente (client-side)
-```
+## Tech-Stack
+
+Next.js 14 (App Router) · React 18 · TypeScript strict · Supabase
+(Auth + Postgres) · Visx (Charts) · Vercel (Hosting + Cron). Bewusst
+kein Tailwind, keine Component-Library — Styling läuft über
+CSS-Custom-Properties aus `lib/theme.ts`.
+
+## Pre-commit-Hook
+
+`.githooks/pre-commit` ist versioniert und wird via `core.hooksPath`
+eingehängt (postinstall-Script). Der Hook blockt:
+
+- jede `.env*`-Datei (auch in Renames / als Inhalt)
+- TypeScript-Fehler (`tsc --noEmit`)
+
+`--no-verify` ist nicht erlaubt — schlägt der Hook, ist der Commit
+kaputt und gehört repariert, nicht umgangen.
+
+## Deployment
+
+`git push origin main` → Vercel deployt automatisch auf
+`solar-check.io`. Preview-Deploys gehen auf
+`pv-rechner-alpha.vercel.app`.
+
+## Mehr Kontext
+
+Architektur, Roadmap, Berechnungslogik und Konventionen stehen in
+[`CLAUDE.md`](./CLAUDE.md).
