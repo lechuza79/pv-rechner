@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import { IconCheck } from "./Icons";
-import { v } from "../lib/theme";
-import { SPEICHER, EA_KM_PRESETS } from "../lib/constants";
+import { IconCheck } from "../../../../components/Icons";
+import { v } from "../../../../lib/theme";
+import { SPEICHER, EA_KM_PRESETS } from "../../../../lib/constants";
 
 interface QuickSettingsProps {
   wp: string;

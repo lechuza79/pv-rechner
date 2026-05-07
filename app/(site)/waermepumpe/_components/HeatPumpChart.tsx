@@ -1,5 +1,5 @@
 "use client";
-import { YEAR } from "../lib/constants";
+import { YEAR } from "../../../../lib/constants";
 
 interface ScenarioData {
   id: string;

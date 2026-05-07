@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
-import { v } from "../lib/theme";
-import { IconCheck, IconLink, IconShare, IconWhatsApp, IconArrowRight } from "./Icons";
-import type { AuthState } from "../lib/auth";
+import { v } from "../../../../lib/theme";
+import { IconCheck, IconLink, IconShare, IconWhatsApp, IconArrowRight } from "../../../../components/Icons";
+import type { AuthState } from "../../../../lib/auth";
 
 interface ResultActionsProps {
   copied: boolean;
