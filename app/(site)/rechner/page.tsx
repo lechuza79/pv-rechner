@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { ErrorBoundary } from "../../components/ErrorBoundary";
+import { ErrorBoundary } from "../../../components/ErrorBoundary";
 import PVRechner from "./rechner";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";

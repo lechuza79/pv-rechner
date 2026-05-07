@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "../../../lib/supabase-server-component";
+import { createClient } from "../../../../lib/supabase-server-component";
 import ThemeClient from "./client";
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);

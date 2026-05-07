@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signOut } from "../../lib/auth";
-import type { CalculationRow } from "../../lib/types";
-import { rowToParams, paramsToInitial } from "../../lib/types";
-import { v } from "../../lib/theme";
-import Header from "../../components/Header";
-import { IconEdit, IconClose } from "../../components/Icons";
-import { IconPlus, IconCheck } from "../../components/Icons";
+import { signOut } from "../../../lib/auth";
+import type { CalculationRow } from "../../../lib/types";
+import { rowToParams, paramsToInitial } from "../../../lib/types";
+import { v } from "../../../lib/theme";
+import Header from "../../../components/Header";
+import { IconEdit, IconClose } from "../../../components/Icons";
+import { IconPlus, IconCheck } from "../../../components/Icons";
 
 export default function DashboardClient({
   calculations: initialCalcs,

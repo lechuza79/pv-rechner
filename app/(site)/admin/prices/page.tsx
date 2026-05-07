@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { createClient } from "../../../lib/supabase-server-component";
-import { supabase } from "../../../lib/supabase-server";
+import { createClient } from "../../../../lib/supabase-server-component";
+import { supabase } from "../../../../lib/supabase-server";
 import PricesClient from "./client";
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);

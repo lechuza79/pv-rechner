@@ -2,12 +2,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Header from "../../components/Header";
-import { IconArrowRight, IconCheck } from "../../components/Icons";
-import { useChartExport } from "../../lib/useChartExport";
-import ChartExportBar from "../../components/ChartExportBar";
-import { v, tokens } from "../../lib/theme";
-import { PERSONEN, NUTZUNG } from "../../lib/constants";
+import Header from "../../../components/Header";
+import { IconArrowRight, IconCheck } from "../../../components/Icons";
+import { useChartExport } from "../../../lib/useChartExport";
+import ChartExportBar from "../../../components/ChartExportBar";
+import { v, tokens } from "../../../lib/theme";
+import { PERSONEN, NUTZUNG } from "../../../lib/constants";
 import {
   WeatherData,
   HourlyForecast,
@@ -17,8 +17,8 @@ import {
   calcDailyEstimate,
   SIM_CONFIGS,
   HourlyPoint,
-} from "../../lib/simulation";
-import { WP_ANNUAL_KWH, EA_DEFAULT_KM, calcEaAnnual } from "../../lib/consumption";
+} from "../../../lib/simulation";
+import { WP_ANNUAL_KWH, EA_DEFAULT_KM, calcEaAnnual } from "../../../lib/consumption";
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 

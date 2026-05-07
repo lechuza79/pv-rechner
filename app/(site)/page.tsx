@@ -1,7 +1,7 @@
 import Link from "next/link";
-import Header from "../components/Header";
-import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery } from "../components/Icons";
-import { v } from "../lib/theme";
+import Header from "../../components/Header";
+import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery } from "../../components/Icons";
+import { v } from "../../lib/theme";
 
 const tools = [
   {

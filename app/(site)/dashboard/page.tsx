@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { createClient } from "../../lib/supabase-server-component";
-import type { CalculationRow } from "../../lib/types";
+import { createClient } from "../../../lib/supabase-server-component";
+import type { CalculationRow } from "../../../lib/types";
 import DashboardClient from "./client";
 
 export const metadata = {
