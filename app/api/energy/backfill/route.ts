@@ -5,8 +5,9 @@ import { GENERATION_STACK_KEYS } from "../../../../lib/chart-utils";
 
 // Backfill route: Fetches Energy-Charts data year by year,
 // aggregates to weekly GWh totals, stores in Supabase.
-// GET /api/energy/backfill?key=CRON_SECRET&year=2022
-// GET /api/energy/backfill?key=CRON_SECRET&all=true  (2015–now)
+// Auth: send Authorization: Bearer $CRON_SECRET header.
+// GET /api/energy/backfill?year=2022
+// GET /api/energy/backfill?all=true  (2015–now)
 
 const CRON_SECRET = process.env.CRON_SECRET;
 
@@ -200,10 +201,9 @@ async function backfillYear(year: number, country: string): Promise<{ year: numb
 // ─── GET Handler ────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
-  const key = req.nextUrl.searchParams.get("key");
   const authHeader = req.headers.get("authorization");
 
-  if (!CRON_SECRET || (key !== CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`)) {
+  if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
