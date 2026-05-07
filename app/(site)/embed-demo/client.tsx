@@ -14,8 +14,8 @@ interface ThemePreset {
 const PRESETS: ThemePreset[] = [
   {
     id: "default",
-    label: "Solar-Check (Default)",
-    description: "Helles Layout, grüner Akzent — wie auf solar-check.io.",
+    label: "Default",
+    description: "Solar-Check-Brand: helles Layout, blauer Akzent.",
     vars: null,
   },
   {
@@ -33,9 +33,9 @@ const PRESETS: ThemePreset[] = [
     },
   },
   {
-    id: "portfolio",
-    label: "Portfolio (Beispiel)",
-    description: "Soft cream + warmer Akzent, wie ein Portfolio-Look.",
+    id: "beispiel",
+    label: "Beispiel",
+    description: "Warmer Akzent, abgerundete Ecken — Portfolio-Look.",
     vars: {
       "--widget-bg": "#F7F4EE",
       "--widget-fg": "#2A2520",
@@ -44,20 +44,6 @@ const PRESETS: ThemePreset[] = [
       "--widget-accent-fg": "#FFFFFF",
       "--widget-border-radius": "8px",
       "--widget-font-family": "Georgia,serif",
-    },
-  },
-  {
-    id: "minimal",
-    label: "Minimal",
-    description: "Eckige Kanten, neutrale Töne.",
-    vars: {
-      "--widget-bg": "#FFFFFF",
-      "--widget-fg": "#111111",
-      "--widget-muted": "#999999",
-      "--widget-accent": "#111111",
-      "--widget-accent-fg": "#FFFFFF",
-      "--widget-border-radius": "0px",
-      "--widget-font-family": "ui-monospace,SFMono-Regular,Menlo,monospace",
     },
   },
 ];
@@ -73,6 +59,16 @@ export default function EmbedDemoClient() {
   const [active, setActive] = useState<string>("default");
   const [frameW, setFrameW] = useState<number>(480);
   const [iframeReady, setIframeReady] = useState(false);
+
+  // Race-fix: if the iframe already finished loading before React attached
+  // the onLoad handler (common during HMR / fast navigation), the load event
+  // never fires again. Catch that case on mount.
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (iframe?.contentDocument?.readyState === "complete") {
+      setIframeReady(true);
+    }
+  }, []);
 
   // Re-apply theme whenever the iframe finishes loading or the preset changes.
   useEffect(() => {
@@ -94,9 +90,7 @@ export default function EmbedDemoClient() {
       <div style={S.wrap}>
         <h1 style={S.h1}>Embed-Demo</h1>
         <p style={S.subtitle}>
-          So sieht das Strommix-Widget aus, wenn es per iframe eingebunden wird.
-          Theme-Tokens werden per <code style={S.code}>postMessage</code> live
-          übergeben — nur Ursprünge auf der Whitelist werden akzeptiert.
+          Vorschau des Strommix-Widgets in verschiedenen Themes und Container-Breiten.
         </p>
 
         <div style={S.controls}>
@@ -153,72 +147,6 @@ export default function EmbedDemoClient() {
             />
           </div>
         </div>
-
-        <h2 style={S.h2}>Einbetten</h2>
-        <p style={S.p}>
-          Auf einer fremden Seite reicht ein iframe — das Widget rendert dann
-          im Solar-Check-Default-Brand:
-        </p>
-        <pre style={S.pre}>
-{`<iframe
-  src="https://solar-check.io/embed/strommix"
-  style="width:100%;max-width:600px;height:280px;border:0;display:block"
-  title="Strommix Deutschland"
-  loading="lazy"></iframe>`}
-        </pre>
-
-        <h2 style={S.h2}>Whitelabel</h2>
-        <p style={S.p}>
-          Damit das Widget die Brand der Hostseite übernimmt, schickt sie nach
-          dem Laden des iframes die Tokens per <code style={S.code}>postMessage</code>.
-          Akzeptiert werden nur Origins auf der Whitelist im Widget — derzeit{" "}
-          <code style={S.code}>sebastianschaeder.de</code> sowie Dev-Hosts.
-          Andere Origins werden ignoriert.
-        </p>
-        <pre style={S.pre}>
-{`<script>
-  const iframe = document.querySelector('iframe[src*="solar-check.io/embed/strommix"]');
-  iframe.addEventListener('load', () => {
-    iframe.contentWindow.postMessage({
-      type: 'widget:theme',
-      vars: {
-        '--widget-bg': '#0F0F0F',
-        '--widget-fg': '#F5F5F5',
-        '--widget-accent': '#4A9EFF',
-        '--widget-accent-fg': '#0F0F0F'
-      }
-    }, 'https://solar-check.io');
-  });
-</script>`}
-        </pre>
-        <p style={S.p}>
-          Reset auf Default: leeres <code style={S.code}>vars</code>-Objekt
-          schicken, dann fallen alle Tokens auf die Solar-Check-Werte zurück.
-        </p>
-
-        <h2 style={S.h2}>API</h2>
-        <p style={S.p}>
-          Die Daten unter <code style={S.code}>/api/embed/strommix</code> sind
-          öffentlich (CORS offen) und können auch ohne iframe in eigenen
-          Visualisierungen genutzt werden:
-        </p>
-        <pre style={S.pre}>
-{`{
-  "updatedAt": "2026-05-07T03:30:00.000Z",
-  "mix": {
-    "solar":   0,
-    "wind":    25.4,
-    "gas":     20.7,
-    "kohle":   32.8,
-    "sonstige": 21.1
-  },
-  "co2PerKwh": 500
-}`}
-        </pre>
-        <p style={S.hint}>
-          Quelle: Energy-Charts / SMARD · Cache 5 min, stale-while-revalidate
-          10 min.
-        </p>
       </div>
     </div>
   );
@@ -230,37 +158,25 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
+    paddingTop: 20,
   },
   wrap: {
     maxWidth: 720,
     margin: "0 auto",
-    padding: "20px 16px 80px",
+    padding: "0 16px 80px",
   },
   h1: {
     fontSize: 24,
     fontWeight: 800,
     letterSpacing: "-0.02em",
-    marginTop: 24,
+    marginTop: 0,
     marginBottom: 8,
-  },
-  h2: {
-    fontSize: 16,
-    fontWeight: 700,
-    color: v("--color-text-primary"),
-    marginTop: 32,
-    marginBottom: 10,
   },
   subtitle: {
     fontSize: 13,
     color: v("--color-text-muted"),
     marginBottom: 24,
     lineHeight: 1.5,
-  },
-  p: {
-    fontSize: 13,
-    color: v("--color-text-muted"),
-    lineHeight: 1.6,
-    marginBottom: 10,
   },
   hint: {
     fontSize: 12,
@@ -321,28 +237,9 @@ const S: Record<string, React.CSSProperties> = {
   },
   iframe: {
     width: "100%",
-    height: 280,
+    height: 460,
     border: 0,
     display: "block",
     background: "transparent",
-  },
-  code: {
-    fontFamily: v("--font-mono"),
-    fontSize: 12,
-    background: v("--color-bg-muted"),
-    padding: "1px 5px",
-    borderRadius: 4,
-    color: v("--color-accent"),
-  },
-  pre: {
-    fontFamily: v("--font-mono"),
-    fontSize: 12,
-    background: "#0F0F0F",
-    color: "#E0E0E0",
-    padding: 14,
-    borderRadius: 10,
-    overflowX: "auto" as const,
-    lineHeight: 1.5,
-    margin: "8px 0 16px",
   },
 };

@@ -588,6 +588,29 @@ Claude führt vor dem finalen Commit selbstständig folgende Prüfungen durch:
 
 Der Nutzer muss nichts davon manuell triggern.
 
+### Local-First-Merge: Kein Merge ohne Nutzer-Abnahme — BLOCKER
+
+**Reihenfolge:** Code im Worktree-Branch → lokal Dev-Server → Nutzer
+testet im Browser → Nutzer gibt OK → **erst dann** Push auf Branch
+und Merge auf `main`.
+
+Vercel ist Production. Ein kaputter Merge bedeutet kaputte Domain
+und/oder fehlgeschlagene Vercel-Builds, die Build-Minutes kosten.
+Type-Check und `npm run build` decken Compile-Fehler ab — aber
+**nicht** UX-Bugs, falsche Berechnungen, hässliche Layouts oder
+unintendierte Verhalten. Das fängt nur ein Mensch im Browser.
+
+**Nach Code-Änderungen die im Browser sichtbar sind:**
+1. Dev-Server starten (`preview_start` oder `npm run dev`).
+2. Konkrete URL nennen, an der getestet werden kann.
+3. **Auf das Go warten.** Nicht selbst entscheiden, dass es passt.
+4. Erst danach `git push` + Merge auf `main`.
+
+**Ausnahme:** Pure Infrastruktur-Commits ohne Browser-Auswirkung
+(z. B. Hooks, Scripts, Docs, Workflow-Dateien) — die dürfen ohne
+manuelle Abnahme gemerged werden, nachdem `tsc --noEmit` /
+`npm run build` grün waren.
+
 ### Hotfix-Regel: Kein Multi-Step ohne Verify
 
 Wenn ein Fix auf Production einen Folgefehler verursacht:
