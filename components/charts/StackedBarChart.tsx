@@ -48,6 +48,12 @@ interface Props {
   mode?: "ytd" | "12m" | "30d" | "max";
   nuclearOverlay?: NuclearOverlayPoint[];
   preAggregated?: boolean; // Data is already weekly GWh (from Supabase)
+  /**
+   * Compact tooltip mode — only show category summaries, hide per-energy-type
+   * breakdown and the nuclear detail block. Used by the embed widget where
+   * the iframe is too small for the full tooltip.
+   */
+  compact?: boolean;
 }
 
 // ─── ISO week number ─────────────────────────────────────────────────────────
@@ -273,16 +279,17 @@ function BarTooltipSummary({ color, label, value }: { color: string; label: stri
   );
 }
 
-function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
+function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh, compact }: {
   data: WeekBucket;
   activeKeys: string[];
   left: number;
   width: number;
   margin: typeof CHART_MARGIN;
   nuclearGWh?: number;
+  compact?: boolean;
 }) {
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const tooltipWidth = 200;
+  const tooltipWidth = compact ? 160 : 200;
   const goLeft = left > width / 2;
   const x = goLeft ? left - tooltipWidth - 12 : left + 12;
 
@@ -366,7 +373,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       {renewableGWh > 0 && (
         <>
           <BarTooltipSummary color={CATEGORY_COLORS.renewable} label={`Erneuerbare ${renewablePct}%`} value={fmt(renewableGWh)} />
-          {renewableKeys.map(key => {
+          {!compact && renewableKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;
             return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
@@ -378,7 +385,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       {fossilGWh > 0 && (
         <>
           <BarTooltipSummary color={CATEGORY_COLORS.fossil} label={`Fossil ${fossilPct}%`} value={fmt(fossilGWh)} />
-          {fossilKeys.map(key => {
+          {!compact && fossilKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;
             return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
@@ -390,7 +397,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
       {sonstigeGWh > 0 && (
         <>
           <BarTooltipSummary color={CATEGORY_COLORS.other} label={`Sonstige ${sonstigePct}%`} value={fmt(sonstigeGWh)} />
-          {sonstigeKeys.map(key => {
+          {!compact && sonstigeKeys.map(key => {
             const val = data[key];
             if (typeof val !== "number" || val <= 0.01) return null;
             return <BarTooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
@@ -410,10 +417,10 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
               <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: "var(--color-text-primary)" }}>Kernenergie {nucPct}%</span>
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{fmt(nucTotal)}</span>
             </div>
-            {nuclearGWhLocal > 0.01 && (
+            {!compact && nuclearGWhLocal > 0.01 && (
               <BarTooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={fmt(nuclearGWhLocal)} />
             )}
-            {nuclearGWh != null && nuclearGWh > 0.001 && (
+            {!compact && nuclearGWh != null && nuclearGWh > 0.001 && (
               <BarTooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={fmt(nuclearGWh)} />
             )}
           </>
@@ -425,7 +432,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh }: {
 
 // ─── Inner Chart ─────────────────────────────────────────────────────────────
 
-function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nuclearOverlay, preAggregated }: Props & { width: number }) {
+function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nuclearOverlay, preAggregated, compact }: Props & { width: number }) {
   const margin = CHART_MARGIN;
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
@@ -757,6 +764,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
           width={width}
           margin={margin}
           nuclearGWh={nuclearBuckets?.get(tooltip.data.weekKey)}
+          compact={compact}
         />
       )}
     </div>
@@ -765,7 +773,7 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
 
 // ─── Responsive Wrapper ──────────────────────────────────────────────────────
 
-export default function StackedBarChart({ data, keys, height, mode, nuclearOverlay, preAggregated }: Props) {
+export default function StackedBarChart({ data, keys, height, mode, nuclearOverlay, preAggregated, compact }: Props) {
   if (!data || data.length < 2) {
     return (
       <div style={{
@@ -783,7 +791,7 @@ export default function StackedBarChart({ data, keys, height, mode, nuclearOverl
       <ParentSize>
         {({ width }) =>
           width > 0 ? (
-            <StackedBarInner data={data} keys={keys} height={h} width={width} mode={mode} nuclearOverlay={nuclearOverlay} preAggregated={preAggregated} />
+            <StackedBarInner data={data} keys={keys} height={h} width={width} mode={mode} nuclearOverlay={nuclearOverlay} preAggregated={preAggregated} compact={compact} />
           ) : null
         }
       </ParentSize>

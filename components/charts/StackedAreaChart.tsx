@@ -45,6 +45,12 @@ interface Props {
   height?: number;
   xFormat?: "time" | "date" | "datetime";
   nuclearOverlay?: NuclearOverlayPoint[];
+  /**
+   * Compact tooltip mode — only show category summaries, hide per-energy-type
+   * breakdown and the nuclear detail block. Used by the embed widget where
+   * the iframe is too small for the full tooltip.
+   */
+  compact?: boolean;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -76,17 +82,18 @@ function TooltipSummary({ color, label, value }: { color: string; label: string;
   );
 }
 
-function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearGw }: {
+function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearGw, compact }: {
   tooltip: { data: DataPoint; left: number };
   activeKeys: string[];
   width: number;
   margin: typeof CHART_MARGIN;
   getEEShare: (d: DataPoint) => number;
   nuclearGw?: number | null;
+  compact?: boolean;
 }) {
   const d = tooltip.data;
   const tooltipRef = useRef<HTMLDivElement>(null);
-  const tooltipWidth = 200;
+  const tooltipWidth = compact ? 160 : 200;
   const goLeft = tooltip.left > width / 2;
   const left = goLeft ? tooltip.left - tooltipWidth - 12 : tooltip.left + 12;
 
@@ -173,7 +180,7 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       {renewableTotal > 0 && (
         <>
           <TooltipSummary color={CATEGORY_COLORS.renewable} label={`Erneuerbare ${renewablePct}%`} value={fmt(renewableTotal)} />
-          {renewableKeys.map(key => {
+          {!compact && renewableKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
             return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
@@ -185,7 +192,7 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       {fossilTotal > 0 && (
         <>
           <TooltipSummary color={CATEGORY_COLORS.fossil} label={`Fossil ${fossilPct}%`} value={fmt(fossilTotal)} />
-          {fossilKeys.map(key => {
+          {!compact && fossilKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
             return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
@@ -197,7 +204,7 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
       {sonstigeTotal > 0 && (
         <>
           <TooltipSummary color={CATEGORY_COLORS.other} label={`Sonstige ${sonstigePct}%`} value={fmt(sonstigeTotal)} />
-          {sonstigeKeys.map(key => {
+          {!compact && sonstigeKeys.map(key => {
             const val = d[key];
             if (typeof val !== "number" || val <= 0) return null;
             return <TooltipRow key={key} color={ENERGY_COLORS_HEX[key]} label={ENERGY_LABELS[key] || key} value={fmt(val)} />;
@@ -217,10 +224,10 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
               <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: "var(--color-text-primary)" }}>Kernenergie {nucPct}%</span>
               <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{fmt(nucCombined)}</span>
             </div>
-            {nuclearTotal > 0 && (
+            {!compact && nuclearTotal > 0 && (
               <TooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={fmt(nuclearTotal)} />
             )}
-            {nuclearMw > 0 && (
+            {!compact && nuclearMw > 0 && (
               <TooltipRow color={CATEGORY_COLORS.nuclearImport} label="importiert" value={fmt(nuclearMw)} />
             )}
           </>
@@ -232,7 +239,7 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
 
 // ─── Chart ───────────────────────────────────────────────────────────────────
 
-function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, nuclearOverlay }: Props & { width: number }) {
+function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, nuclearOverlay, compact }: Props & { width: number }) {
   const margin = CHART_MARGIN;
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
@@ -525,14 +532,14 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
       </svg>
 
       {/* Tooltip */}
-      {tooltip && <ChartTooltip tooltip={tooltip} activeKeys={activeKeys} width={width} margin={margin} getEEShare={getEEShare} nuclearGw={getNuclearGw(tooltip.data)} />}
+      {tooltip && <ChartTooltip tooltip={tooltip} activeKeys={activeKeys} width={width} margin={margin} getEEShare={getEEShare} nuclearGw={getNuclearGw(tooltip.data)} compact={compact} />}
     </div>
   );
 }
 
 // ─── Responsive Wrapper ──────────────────────────────────────────────────────
 
-export default function StackedAreaChart({ data, keys, height, xFormat, nuclearOverlay }: Props) {
+export default function StackedAreaChart({ data, keys, height, xFormat, nuclearOverlay, compact }: Props) {
   if (!data || data.length < 2) {
     return (
       <div style={{
@@ -550,7 +557,7 @@ export default function StackedAreaChart({ data, keys, height, xFormat, nuclearO
       <ParentSize>
         {({ width }) =>
           width > 0 ? (
-            <StackedAreaInner data={data} keys={keys} height={h} width={width} xFormat={xFormat} nuclearOverlay={nuclearOverlay} />
+            <StackedAreaInner data={data} keys={keys} height={h} width={width} xFormat={xFormat} nuclearOverlay={nuclearOverlay} compact={compact} />
           ) : null
         }
       </ParentSize>
