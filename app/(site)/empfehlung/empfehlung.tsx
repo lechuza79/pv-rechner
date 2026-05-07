@@ -2,14 +2,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER } from "../../lib/constants";
-import { recommend } from "../../lib/recommend";
-import OptionCard from "../../components/OptionCard";
-import TriToggle from "../../components/TriToggle";
-import { v } from "../../lib/theme";
-import { usePrices } from "../../lib/prices";
-import Header from "../../components/Header";
-import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../components/Icons";
+import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER } from "../../../lib/constants";
+import { recommend } from "../../../lib/recommend";
+import OptionCard from "../../../components/OptionCard";
+import TriToggle from "../../../components/TriToggle";
+import { v } from "../../../lib/theme";
+import { usePrices } from "../../../lib/prices";
+import Header from "../../../components/Header";
+import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../../components/Icons";
 
 export default function Empfehlung() {
   const router = useRouter();

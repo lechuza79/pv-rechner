@@ -2,16 +2,16 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
-import { useGenerationMix, useNuclearImport } from "../../lib/energy";
-import StackedAreaChart from "../../components/charts/StackedAreaChart";
-import StackedBarChart from "../../components/charts/StackedBarChart";
+import { useGenerationMix, useNuclearImport } from "../../../lib/energy";
+import StackedAreaChart from "../../../components/charts/StackedAreaChart";
+import StackedBarChart from "../../../components/charts/StackedBarChart";
 import {
   formatGWh, formatGWhIn, energyUnit, calcPeriodStats, CATEGORY_COLORS,
-} from "../../lib/chart-utils";
-import { v } from "../../lib/theme";
-import { useChartExport } from "../../lib/useChartExport";
-import ChartExportBar from "../../components/ChartExportBar";
-import { IconChevronLeft, IconChevronRight, IconChevronDown } from "../../components/Icons";
+} from "../../../lib/chart-utils";
+import { v } from "../../../lib/theme";
+import { useChartExport } from "../../../lib/useChartExport";
+import ChartExportBar from "../../../components/ChartExportBar";
+import { IconChevronLeft, IconChevronRight, IconChevronDown } from "../../../components/Icons";
 
 // ─── Time Range Selector ─────────────────────────────────────────────────────
 

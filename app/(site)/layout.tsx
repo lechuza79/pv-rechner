@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getCssVariables, globalStyles } from "../lib/theme";
+import { getCssVariables, globalStyles } from "../../lib/theme";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 

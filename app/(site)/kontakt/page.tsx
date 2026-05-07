@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { v } from "../../lib/theme";
+import { v } from "../../../lib/theme";
 
 export const metadata: Metadata = {
   title: "Kontakt – Solar Check",

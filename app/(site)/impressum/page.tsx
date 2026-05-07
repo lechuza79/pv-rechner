@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowRight } from "../../components/Icons";
-import { v } from "../../lib/theme";
+import { IconArrowRight } from "../../../components/Icons";
+import { v } from "../../../lib/theme";
 
 export const metadata: Metadata = {
   title: "Impressum – Solar Check",

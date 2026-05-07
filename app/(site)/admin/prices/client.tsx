@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import { v } from "../../../lib/theme";
-import { DEFAULT_PRICES } from "../../../lib/prices-config";
-import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
-import { estimateCost } from "../../../lib/calc";
+import { v } from "../../../../lib/theme";
+import { DEFAULT_PRICES } from "../../../../lib/prices-config";
+import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
+import { estimateCost } from "../../../../lib/calc";
 
 interface PriceRow {
   id: string;

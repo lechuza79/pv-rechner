@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowRight } from "../../components/Icons";
-import { v } from "../../lib/theme";
-import { supabase } from "../../lib/supabase-server";
-import { DEFAULT_PRICES, type PriceConfig } from "../../lib/prices-config";
+import { IconArrowRight } from "../../../components/Icons";
+import { v } from "../../../lib/theme";
+import { supabase } from "../../../lib/supabase-server";
+import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 
 export const metadata: Metadata = {
   title: "Methodik – So berechnen wir deine PV-Rendite",

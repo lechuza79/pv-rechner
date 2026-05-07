@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Header from "../../components/Header";
-import { v } from "../../lib/theme";
+import Header from "../../../components/Header";
+import { v } from "../../../lib/theme";
 import EnergieClient from "./client";
 
 export const metadata: Metadata = {

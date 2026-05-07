@@ -4,15 +4,15 @@ import Link from "next/link";
 import {
   SITUATION, WOHNFLAECHEN, INSULATION_BESTAND, INSULATION_NEUBAU,
   PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS,
-} from "../../lib/constants";
-import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs } from "../../lib/heatpump";
-import { DEFAULT_HEATPUMP_CONFIG } from "../../lib/heatpump-config";
-import OptionCard from "../../components/OptionCard";
-import InlineEdit from "../../components/InlineEdit";
-import HeatPumpChart from "../../components/HeatPumpChart";
-import Header from "../../components/Header";
-import { IconArrowRight, IconRefresh, IconChevronDown, IconHelpCircle, IconSun } from "../../components/Icons";
-import { v } from "../../lib/theme";
+} from "../../../lib/constants";
+import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs } from "../../../lib/heatpump";
+import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
+import OptionCard from "../../../components/OptionCard";
+import InlineEdit from "../../../components/InlineEdit";
+import HeatPumpChart from "../../../components/HeatPumpChart";
+import Header from "../../../components/Header";
+import { IconArrowRight, IconRefresh, IconChevronDown, IconHelpCircle, IconSun } from "../../../components/Icons";
+import { v } from "../../../lib/theme";
 
 const STEPS = ["Situation", "Wohnfläche", "Dämmstandard", "Haushalt", "Heizsystem"];
 
