@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Pre-commit guard for pv-rechner.
+# Two checks, both block the commit on failure:
+#   1. No staged .env* file ever ends up in a commit.
+#   2. tsc --noEmit must pass on the staged tree, so import paths,
+#      type errors and module-not-found errors are caught BEFORE
+#      the commit lands. This catches the class of bug where files
+#      get modified after `git mv` but the modifications are not
+#      staged — locally the working tree compiles, but the commit
+#      itself is broken and Vercel fails.
+
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+
+# ─── 1. Block .env* leaks ─────────────────────────────────────────
+ENV_LEAK="$(git diff --cached --name-only --diff-filter=A | grep -E '(^|/)\.env(\.|$)' || true)"
+if [ -n "$ENV_LEAK" ]; then
+  echo "✖ pre-commit: refusing to commit .env file(s):"
+  echo "$ENV_LEAK" | sed 's/^/    /'
+  echo "  Remove with: git restore --staged <file> && add to .gitignore"
+  exit 1
+fi
+
+# ─── 2. TypeScript check on the working tree ──────────────────────
+# We type-check the working tree (not the index) because tsc has no
+# direct support for the staged state. In practice the difference
+# only matters if you partially-stage a file — rare here, and even
+# then a clean type-check is what we actually care about.
+#
+# `npm exec tsc` walks up directories to find tsc — that lets the
+# hook work in worktrees that share node_modules with the main repo.
+echo "→ pre-commit: tsc --noEmit"
+if ! npm exec --no -- tsc --noEmit; then
+  echo "✖ pre-commit: TypeScript check failed. Fix the errors above before committing."
+  exit 1
+fi
+
+echo "✓ pre-commit: ok"

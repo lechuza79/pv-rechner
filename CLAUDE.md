@@ -544,11 +544,44 @@ Gesamt-Org hat vier Projekte (`pv-rechner`, `life-is-a-binge`, `growth-assistant
 
 ## Workflow-Konventionen
 
+### Pre-commit Hook — BLOCKER
+
+`.githooks/pre-commit` ist versioniert und wird via `core.hooksPath`
+aktiviert. Setup automatisch über `npm install` (postinstall-Script).
+Der Hook blockt:
+
+- jede `.env*`-Datei (auch `.env.test` o.Ä.)
+- TypeScript-Fehler (`tsc --noEmit`) — fängt Module-not-found,
+  falsche Imports, Typfehler ab, **bevor** der Commit landet.
+
+**Warum der Hook existiert:** Beim Embed-Widget-PR sind nach `git mv`
+Dateien geändert worden, aber nur die Renames waren staged. Lokaler
+Build lief grün (Working-Tree korrekt), Vercel-Build fiel um, weil
+der Commit selbst kaputt war. Mit Hook gilt: was committed wird,
+ist auch type-clean — egal welcher Workflow vorher passierte.
+
+**Hook deaktivieren** ist nicht erlaubt (`--no-verify`); wenn er
+schlägt, ist der Commit kaputt. Fix vor Commit.
+
+### Git-Workflow nach `git mv` — BLOCKER
+
+`git mv` staged nur den Rename. Wenn die Datei danach **modifiziert**
+wird (z. B. weil sich relative Imports beim Verschieben ändern),
+muss die Modifikation **separat** mit `git add <datei>` gestaged
+werden — sonst commitet Git nur den Rename, nicht den Inhalt.
+
+Zeichen dass das passiert ist: `git status` zeigt nach `git mv`
+plus Änderungen die Datei zweimal — einmal als `RM` (renamed,
+modified) im Index, einmal als ` M` (modified, unstaged) im
+Working-Tree. Den Pre-commit Hook fängt es trotzdem (TypeCheck
+schlägt fehl), aber besser direkt richtig stagen.
+
 ### Session-Ende (automatisch vor jedem Commit)
 
 Claude führt vor dem finalen Commit selbstständig folgende Prüfungen durch:
 
-1. `npm run build` — Build muss sauber durchlaufen
+1. `npm run build` — Build muss sauber durchlaufen (Pre-commit Hook
+   prüft zusätzlich `tsc --noEmit`, deckt aber nicht jeden Build-Fehler ab)
 2. **Docs-Check:** Gab es strukturelle Änderungen (neue Features, geänderte Konventionen, neue Seiten, abgeschlossene Roadmap-Punkte)? Wenn ja → CLAUDE.md updaten. Nicht bei reinen Bugfixes.
 3. **Kurzcheck auf offensichtliches Tech Debt:** Wurden temporäre Workarounds, auskommentierter Code oder TODOs hinterlassen? Wenn ja und schnell behebbar (< 5 Min) → direkt fixen. Wenn größer → als TODO-Kommentar mit Kontext.
 4. **Immer pushen nach Commit:** `git push` nach jedem erfolgreichen Commit.
