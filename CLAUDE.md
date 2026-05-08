@@ -554,6 +554,16 @@ Der Hook blockt:
 - jede `.env*`-Datei (auch `.env.test` o.Ä.)
 - TypeScript-Fehler (`tsc --noEmit`) — fängt Module-not-found,
   falsche Imports, Typfehler ab, **bevor** der Commit landet.
+- Test-Failures (`vitest run`) — fängt Regressionen in der
+  Berechnungslogik (PV-Wirtschaftlichkeit, WP, Chart-Helpers) bevor
+  sie zum Vercel-Build oder in den Browser durchschlagen.
+
+**Worktree-Falle:** `core.hooksPath` muss **relativ** (`.githooks`)
+gesetzt sein, sonst zeigt jeder Worktree auf das Hauptrepo statt
+auf seinen eigenen Hook. Symptom: Hook-Updates im Worktree wirken
+beim Commit nicht. Fix: `git config --worktree --unset core.hooksPath`
+(falls absolut gesetzt) — der relative Wert in `.git/config` greift
+dann automatisch und resolved pro Worktree korrekt.
 
 **Warum der Hook existiert:** Beim Embed-Widget-PR sind nach `git mv`
 Dateien geändert worden, aber nur die Renames waren staged. Lokaler
