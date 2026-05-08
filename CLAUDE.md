@@ -102,7 +102,9 @@ EV-Delta:            −5% / 0% / +5% pro Szenario
 
 Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung angezeigt (Affordance), Klick öffnet Input, Enter/Blur committed, Escape bricht ab. **Kein `type="number"`** (Bug-anfällig bei Dezimalwerten), sondern Text-Input mit manueller Validierung. **Deutsche Zahlenformatierung:** Display nutzt `toLocaleString("de-DE")` (Komma als Dezimaltrenner, Punkt als Tausendertrenner). Eingabe akzeptiert Komma und Punkt — Tausenderpunkte werden entfernt, Dezimalkomma zu Punkt konvertiert.
 
-## Aktueller Fokus: Phase 1 — Live & SEO-Basics
+## Aktueller Fokus
+
+Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 (Energiedaten-Datalake) und Phase 4 (Content/Reichweite) sind die offenen Posten.
 
 ### Phase 0 ✅ MVP (done)
 - [x] 4-Step-Flow (Anlage → Speicher → Haushalt → Großverbraucher)
@@ -113,17 +115,20 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Auto-Eigenverbrauchsberechnung aus Haushaltsdaten
 - [x] Next.js Projekt mit SEO-Meta + OpenGraph
 
-### Phase 1: In Arbeit
+### Phase 1 ✅ Live & SEO-Basics (done bis auf Favicon)
 - [x] Domain solar-check.io + Vercel Deployment
-- [x] Strukturierte Daten (JSON-LD: FAQPage, WebApplication)
+- [x] Strukturierte Daten (JSON-LD: FAQPage, WebApplication) — Jahres-Frage rotiert dynamisch
 - [x] sitemap.xml + robots.txt (inkl. /impressum, /datenschutz)
-- [ ] Favicon / OG-Image
 - [x] Share-Funktion: Ergebnis als URL teilbar (Query-Parameter, Clipboard, Native Share, WhatsApp)
 - [x] Google Search Console einrichten
-- [x] TypeScript strict mode + vollständige Typisierung
+- [x] TypeScript strict + noUnusedLocals/noUnusedParameters/noImplicitReturns
 - [x] Input-Validierung für Share-URL-Parameter (NaN/Infinity/Bounds)
 - [x] Error Boundary für fehlerhafte Share-URLs (Fallback-UI statt Whitescreen)
+- [x] Globale Error-Page (`app/(site)/error.tsx`) für Routen unter dem Site-Layout
+- [x] Open-Redirect-Validierung im Auth-Callback (next-Param)
 - [x] Impressum + Datenschutz Seiten mit Footer-Links
+- [x] Test-Infrastruktur: Vitest, ~150 Tests (calc, heatpump, recommend, consumption, chart-utils, energy-api), läuft im Pre-commit-Hook
+- [ ] Favicon / OG-Image
 
 ### Phase 2 ✅ Berechnungsgenauigkeit + Standort (done)
 - [x] EV-Modell kalibriert an HTW Berlin Simulationsdaten
@@ -298,7 +303,9 @@ Aktuelle Priorität: WP 9 (Energiedaten-Datalake) + Phase 4 (Content & Reichweit
 | Energiedaten | **Energy-Charts API** (Fraunhofer ISE) | Strommix, Preise, Kapazität — kein Auth, JSON, CC BY 4.0 |
 | Package Manager | **npm** | Standard reicht bei dieser Projektgröße |
 
-**Bewusst nicht im Stack:** Tailwind, shadcn/ui, State Management Libraries, CSS-in-JS, Testing Framework, Recharts/Nivo (zu wenig Kontrolle). Erst einführen wenn es einen konkreten Grund gibt.
+**Im Stack ergänzt (Audit Mai 2026):** **Vitest** als Test-Runner — Pure-Function-Coverage für die Berechnungs-Module. Component-Testing-Library bewusst noch nicht — kommt erst wenn die großen Client-Komponenten zerlegt werden.
+
+**Bewusst nicht im Stack:** Tailwind, shadcn/ui, State Management Libraries, CSS-in-JS, Recharts/Nivo (zu wenig Kontrolle). Erst einführen wenn es einen konkreten Grund gibt.
 
 ## Projektstruktur
 
