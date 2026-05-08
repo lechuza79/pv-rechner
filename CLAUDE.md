@@ -629,3 +629,22 @@ Wenn ein Fix auf Production einen Folgefehler verursacht:
 - Keine Abstraktion die nur einen Anwendungsfall hat
 - Kein CSS-Framework, kein State Management, keine Component Library — erst wenn es wehtut
 - Erst aufteilen wenn es wehtut, nicht prophylaktisch
+
+### Wartungsfreier Code: Keine Hardcoded Daten/Jahre — BLOCKER
+
+Was sich automatisch ändern sollte (Jahreszahlen, "aktuelle" Werte, "heute"-bezogene Defaults), darf **nicht** in Config oder als Konstante hardcoded werden — sonst bricht es still beim nächsten Rollover (Jahr, Quartal, Monat).
+
+**Statt hardcoden:**
+- **Im Code:** `new Date().getFullYear()` (oder analog für Monat/Quartal). Beispiel: `lib/constants.ts → YEAR` ist die Projektions-Startjahr-Konstante und wird zur Laufzeit ausgewertet, nicht statisch gesetzt.
+- **In API-Routes:** Default-Param aus `new Date()` ableiten, statt Cron-Pfad mit `?year=2026` zu führen. Beispiel: `/api/energy/backfill` defaultet auf das aktuelle Jahr, der Vercel-Cron ruft den Pfad ohne Parameter.
+- **In SEO-Strings (JSON-LD, Page-Titles, FAQs):** zur Render-Zeit interpolieren. `app/(site)/layout.tsx → buildFaqJsonLd()` als Beispiel.
+
+**Wann Hardcoden OK ist:**
+- **Dokument-Versionen** ("Stand: März 2026" in Datenschutz/Impressum) — soll mit Inhalt mitwachsen, NICHT autoupdaten.
+- **Config-Snapshots als Fallback** (`lib/feedin-config.ts`, `lib/prices-config.ts`, `lib/heatpump-config.ts`) — bewusste Stichtags-Datenstände, DB hat die Live-Werte. `validFrom` dort ist eine echte Datenherkunft, kein Renderdatum.
+- **Historische Fakten** ("Kernenergie inländisch bis April 2023", "BWP Preisübersicht 2024") — passieren wirklich nur einmal.
+- **Test-Fixtures** — deterministische Eingaben sind das Ziel.
+
+**Faustregel:** Bevor du irgendwo eine Jahreszahl, ein Datum oder einen "aktuell"-Wert reinschreibst, frag dich: *Was passiert damit am 1. Januar nächstes Jahr?* Wenn die Antwort "ich muss dran denken, das anzupassen" ist → falsch. Wenn die Antwort "soll genau so bleiben, weil es ein Stichtag ist" → richtig.
+
+**Doku statt Mahnmal:** Wenn ein Hardcode unvermeidbar ist (z. B. weil eine Library kein Date-API hat), kommt ein Inline-Kommentar in den Code, der erklärt warum. Kein "TODO 2027 anpassen" — das ist eine tickende Bombe ohne Wecker.
