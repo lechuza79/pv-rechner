@@ -1,7 +1,7 @@
 "use client";
-import { v } from "../lib/theme";
-import { YEARS, FUEL, PERSONEN } from "../lib/constants";
-import { calcFuelCost25, calcWpGridCost25 } from "../lib/calc";
+import { v } from "../../../../lib/theme";
+import { YEARS, FUEL, PERSONEN } from "../../../../lib/constants";
+import { calcFuelCost25, calcWpGridCost25 } from "../../../../lib/calc";
 
 interface ResultStatsProps {
   total: number;

@@ -16,7 +16,6 @@ import {
   NUCLEAR_KEYS,
   SONSTIGE_KEYS,
   CATEGORY_COLORS,
-  formatGWh,
   formatGWhIn,
   energyUnit,
   CHART_MARGIN,
@@ -332,7 +331,6 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh, compact
 
   const renewablePct = totalGWh > 0 ? Math.round(renewableGWh / totalGWh * 100) : 0;
   const fossilPct = totalGWh > 0 ? Math.round(fossilGWh / totalGWh * 100) : 0;
-  const nuclearPctLocal = totalGWh > 0 ? Math.round(nuclearGWhLocal / totalGWh * 100) : 0;
   const sonstigePct = totalGWh > 0 ? Math.round(sonstigeGWh / totalGWh * 100) : 0;
 
   // Use consistent unit across entire tooltip based on total
@@ -341,7 +339,6 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh, compact
 
   const renewableKeys = [...activeKeys].reverse().filter(k => RENEWABLE_KEYS.includes(k));
   const fossilKeys = [...activeKeys].reverse().filter(k => FOSSIL_KEYS.includes(k));
-  const nuclearKeysLocal = [...activeKeys].reverse().filter(k => NUCLEAR_KEYS.includes(k));
   const sonstigeKeys = [...activeKeys].reverse().filter(k => SONSTIGE_KEYS.includes(k));
 
   return (

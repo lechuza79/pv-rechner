@@ -1,0 +1,72 @@
+name: CI
+
+# Triggers:
+#   - Pushes to main: catch direct commits
+#   - Pull requests: catch everything before it lands on main
+# Feature branches without a PR don't trigger CI to keep Action minutes low —
+# open a PR or push to main when you want validation.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Type check + unit tests + e2e smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript check
+        run: npm run typecheck
+
+      - name: Unit tests (Vitest)
+        run: npm test
+
+      # Cache Playwright browsers — saves ~30s on every run.
+      # Cache key is tied to package-lock so a Playwright version bump invalidates it.
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install chromium --with-deps
+
+      - name: Install Playwright system deps (cache hit)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: E2E smoke tests (Playwright)
+        run: npm run test:e2e
+        env:
+          # Smoke tests don't need real Supabase — these placeholders just
+          # let supabase-js initialize without crashing. If we later add tests
+          # that hit auth or DB, swap to GitHub Secrets here.
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-smoke-tests
+
+      # Upload the Playwright HTML report when something failed — easier
+      # than re-running locally to see what the browser saw.
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

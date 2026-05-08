@@ -208,7 +208,7 @@ export default function DashboardClient({
                         )}
                         <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 3, display: "flex", alignItems: "center", gap: 6 }}>
                           {formatDate(calc.created_at)}
-                          {(calc as any).flow_type === "empfehlung" && (
+                          {calc.flow_type === "empfehlung" && (
                             <span style={{ fontSize: 9, fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), padding: "1px 5px", borderRadius: 4, textTransform: "uppercase", letterSpacing: "0.04em" }}>Empfohlen</span>
                           )}
                         </div>

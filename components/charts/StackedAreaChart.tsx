@@ -8,7 +8,7 @@ import { GridRows } from "@visx/grid";
 import { Group } from "@visx/group";
 import { ParentSize } from "@visx/responsive";
 import { LinearGradient } from "@visx/gradient";
-import { stack as d3Stack, stackOrderNone, stackOffsetNone, curveMonotoneX } from "d3-shape";
+import { curveMonotoneX } from "d3-shape";
 import { bisector } from "d3-array";
 import {
   ENERGY_COLORS_HEX,
@@ -25,7 +25,6 @@ import {
   CHART_MARGIN,
   CHART_HEIGHT,
 } from "../../lib/chart-utils";
-import { v } from "../../lib/theme";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -82,12 +81,11 @@ function TooltipSummary({ color, label, value }: { color: string; label: string;
   );
 }
 
-function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearGw, compact }: {
+function ChartTooltip({ tooltip, activeKeys, width, margin, nuclearGw, compact }: {
   tooltip: { data: DataPoint; left: number };
   activeKeys: string[];
   width: number;
   margin: typeof CHART_MARGIN;
-  getEEShare: (d: DataPoint) => number;
   nuclearGw?: number | null;
   compact?: boolean;
 }) {
@@ -142,13 +140,11 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, getEEShare, nuclearG
 
   const renewablePct = totalGen > 0 ? Math.round(renewableTotal / totalGen * 100) : 0;
   const fossilPct = totalGen > 0 ? Math.round(fossilTotal / totalGen * 100) : 0;
-  const nuclearPct = totalGen > 0 ? Math.round(nuclearTotal / totalGen * 100) : 0;
   const sonstigePct = totalGen > 0 ? Math.round(sonstigeTotal / totalGen * 100) : 0;
 
   // Split keys by category (reversed for top→bottom display)
   const renewableKeys = [...activeKeys].reverse().filter(k => RENEWABLE_KEYS.includes(k));
   const fossilKeys = [...activeKeys].reverse().filter(k => FOSSIL_KEYS.includes(k));
-  const nuclearKeys = [...activeKeys].reverse().filter(k => NUCLEAR_KEYS.includes(k));
   const sonstigeKeys = [...activeKeys].reverse().filter(k => SONSTIGE_KEYS.includes(k));
 
   return (
@@ -294,14 +290,10 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
     [yMax, innerHeight]
   );
 
-  // Stack data
-  const stacked = useMemo(() => {
-    const stackGen = d3Stack<Record<string, number> & { ts: string }>()
-      .keys(activeKeys)
-      .order(stackOrderNone)
-      .offset(stackOffsetNone);
-    return stackGen(normalized);
-  }, [normalized, activeKeys]);
+  // (Dead code removed: a useMemo'd d3Stack output that was never consumed —
+  // areas are rendered by manually walking the cumulative sums below, not via
+  // a precomputed stack. Kept this comment so a future reader doesn't try to
+  // re-add visx Stack here without first checking what the render loop does.)
 
   // Tooltip state (simple useState instead of visx useTooltip for reliable positioning)
   const [tooltip, setTooltip] = useState<{ data: DataPoint; left: number } | null>(null);
@@ -355,23 +347,6 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
       return closest;
     },
     [nuclearByTs]
-  );
-
-  // Renewable share for tooltip
-  const getEEShare = useCallback(
-    (d: DataPoint) => {
-      let renewable = 0;
-      let total = 0;
-      for (const key of activeKeys) {
-        const val = typeof d[key] === "number" ? (d[key] as number) : 0;
-        if (val > 0) {
-          total += val;
-          if (RENEWABLE_KEYS.includes(key)) renewable += val;
-        }
-      }
-      return total > 0 ? (renewable / total) * 100 : 0;
-    },
-    [activeKeys]
   );
 
   if (innerWidth <= 0 || data.length < 2) return null;
@@ -532,7 +507,7 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
       </svg>
 
       {/* Tooltip */}
-      {tooltip && <ChartTooltip tooltip={tooltip} activeKeys={activeKeys} width={width} margin={margin} getEEShare={getEEShare} nuclearGw={getNuclearGw(tooltip.data)} compact={compact} />}
+      {tooltip && <ChartTooltip tooltip={tooltip} activeKeys={activeKeys} width={width} margin={margin} nuclearGw={getNuclearGw(tooltip.data)} compact={compact} />}
     </div>
   );
 }

@@ -1,5 +1,10 @@
 // ─── Zeitkonstanten ──────────────────────────────────────────────────────────
-export const YEAR = 2026;
+// YEAR = current calendar year, used as the projection start year (Chart x-axis,
+// amortization timeline). Computed at module load → re-evaluated per dev-server
+// restart, per Vercel cold start, or per client mount; that's good enough for a
+// 25-year projection where being off by a few weeks at year-rollover is fine.
+// Keep this dynamic — never hardcode a year here.
+export const YEAR = new Date().getFullYear();
 export const YEARS = 25;
 export const DEGRAD = 0.005;
 

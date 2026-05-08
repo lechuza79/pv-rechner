@@ -102,7 +102,9 @@ EV-Delta:            −5% / 0% / +5% pro Szenario
 
 Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung angezeigt (Affordance), Klick öffnet Input, Enter/Blur committed, Escape bricht ab. **Kein `type="number"`** (Bug-anfällig bei Dezimalwerten), sondern Text-Input mit manueller Validierung. **Deutsche Zahlenformatierung:** Display nutzt `toLocaleString("de-DE")` (Komma als Dezimaltrenner, Punkt als Tausendertrenner). Eingabe akzeptiert Komma und Punkt — Tausenderpunkte werden entfernt, Dezimalkomma zu Punkt konvertiert.
 
-## Aktueller Fokus: Phase 1 — Live & SEO-Basics
+## Aktueller Fokus
+
+Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 (Energiedaten-Datalake) und Phase 4 (Content/Reichweite) sind die offenen Posten.
 
 ### Phase 0 ✅ MVP (done)
 - [x] 4-Step-Flow (Anlage → Speicher → Haushalt → Großverbraucher)
@@ -113,17 +115,20 @@ Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung ange
 - [x] Auto-Eigenverbrauchsberechnung aus Haushaltsdaten
 - [x] Next.js Projekt mit SEO-Meta + OpenGraph
 
-### Phase 1: In Arbeit
+### Phase 1 ✅ Live & SEO-Basics (done bis auf Favicon)
 - [x] Domain solar-check.io + Vercel Deployment
-- [x] Strukturierte Daten (JSON-LD: FAQPage, WebApplication)
+- [x] Strukturierte Daten (JSON-LD: FAQPage, WebApplication) — Jahres-Frage rotiert dynamisch
 - [x] sitemap.xml + robots.txt (inkl. /impressum, /datenschutz)
-- [ ] Favicon / OG-Image
 - [x] Share-Funktion: Ergebnis als URL teilbar (Query-Parameter, Clipboard, Native Share, WhatsApp)
 - [x] Google Search Console einrichten
-- [x] TypeScript strict mode + vollständige Typisierung
+- [x] TypeScript strict + noUnusedLocals/noUnusedParameters/noImplicitReturns
 - [x] Input-Validierung für Share-URL-Parameter (NaN/Infinity/Bounds)
 - [x] Error Boundary für fehlerhafte Share-URLs (Fallback-UI statt Whitescreen)
+- [x] Globale Error-Page (`app/(site)/error.tsx`) für Routen unter dem Site-Layout
+- [x] Open-Redirect-Validierung im Auth-Callback (next-Param)
 - [x] Impressum + Datenschutz Seiten mit Footer-Links
+- [x] Test-Infrastruktur: Vitest, ~150 Tests (calc, heatpump, recommend, consumption, chart-utils, energy-api), läuft im Pre-commit-Hook
+- [ ] Favicon / OG-Image
 
 ### Phase 2 ✅ Berechnungsgenauigkeit + Standort (done)
 - [x] EV-Modell kalibriert an HTW Berlin Simulationsdaten
@@ -298,7 +303,9 @@ Aktuelle Priorität: WP 9 (Energiedaten-Datalake) + Phase 4 (Content & Reichweit
 | Energiedaten | **Energy-Charts API** (Fraunhofer ISE) | Strommix, Preise, Kapazität — kein Auth, JSON, CC BY 4.0 |
 | Package Manager | **npm** | Standard reicht bei dieser Projektgröße |
 
-**Bewusst nicht im Stack:** Tailwind, shadcn/ui, State Management Libraries, CSS-in-JS, Testing Framework, Recharts/Nivo (zu wenig Kontrolle). Erst einführen wenn es einen konkreten Grund gibt.
+**Im Stack ergänzt (Audit Mai 2026):** **Vitest** als Test-Runner — Pure-Function-Coverage für die Berechnungs-Module. Component-Testing-Library bewusst noch nicht — kommt erst wenn die großen Client-Komponenten zerlegt werden.
+
+**Bewusst nicht im Stack:** Tailwind, shadcn/ui, State Management Libraries, CSS-in-JS, Recharts/Nivo (zu wenig Kontrolle). Erst einführen wenn es einen konkreten Grund gibt.
 
 ## Projektstruktur
 
@@ -541,6 +548,7 @@ Gesamt-Org hat vier Projekte (`pv-rechner`, `life-is-a-binge`, `growth-assistant
 - UI-Texte auf Deutsch
 - Code und Variablennamen auf Englisch, außer Domänen-Begriffe (Eigenverbrauch, Einspeisevergütung, Strompreis etc.)
 - **Chart-Entwicklung:** Vor jeder Chart-Änderung oder neuen Chart-Implementierung das Chart-Regelwerk in Memory lesen (`feedback_chart_conventions.md`). Dort sind alle Konventionen dokumentiert: Charttyp pro Zeitraum, einheitliche Einheiten, Tooltip-Struktur, Achsenbeschriftung, Export/Sharing, Caching-Architektur, Farb-Zuordnung.
+- **Antworten an den Nutzer = Klartext, keine Code-Sprache.** Keine Dateipfade, keine Variablennamen, keine API-Namen im Erklärtext — übersetzen in das, was sie tun. Stichpunkte statt Textwand. Am Ende eine konkrete Frage. Code-Snippets gehören in den Code, nicht in die Antwort. Diese Regel steht ausführlich in der globalen CLAUDE.md unter "Klartext bei technischen Entscheidungen" und gilt hier 1:1.
 
 ## Workflow-Konventionen
 
@@ -553,6 +561,28 @@ Der Hook blockt:
 - jede `.env*`-Datei (auch `.env.test` o.Ä.)
 - TypeScript-Fehler (`tsc --noEmit`) — fängt Module-not-found,
   falsche Imports, Typfehler ab, **bevor** der Commit landet.
+- Test-Failures (`vitest run`) — fängt Regressionen in der
+  Berechnungslogik (PV-Wirtschaftlichkeit, WP, Chart-Helpers) bevor
+  sie zum Vercel-Build oder in den Browser durchschlagen.
+
+**Browser-Smokes (Playwright)** laufen NICHT im Pre-commit (zu langsam,
+~45s), sondern in GitHub Actions bei jedem PR und Push auf `main`. Sechs
+End-to-End-Tests klicken die Hauptflows durch (Rechner, Wärmepumpe,
+Empfehlung, Share-URL, Live-Simulation, Energie-Dashboard). Bei
+Failure landet ein HTML-Report als Artifact am Workflow-Run.
+
+Lokal manuell:
+```
+npm run test:e2e        # headless, list-Reporter
+npm run test:e2e:ui     # interaktive Test-UI
+```
+
+**Worktree-Falle:** `core.hooksPath` muss **relativ** (`.githooks`)
+gesetzt sein, sonst zeigt jeder Worktree auf das Hauptrepo statt
+auf seinen eigenen Hook. Symptom: Hook-Updates im Worktree wirken
+beim Commit nicht. Fix: `git config --worktree --unset core.hooksPath`
+(falls absolut gesetzt) — der relative Wert in `.git/config` greift
+dann automatisch und resolved pro Worktree korrekt.
 
 **Warum der Hook existiert:** Beim Embed-Widget-PR sind nach `git mv`
 Dateien geändert worden, aber nur die Renames waren staged. Lokaler
@@ -629,3 +659,22 @@ Wenn ein Fix auf Production einen Folgefehler verursacht:
 - Keine Abstraktion die nur einen Anwendungsfall hat
 - Kein CSS-Framework, kein State Management, keine Component Library — erst wenn es wehtut
 - Erst aufteilen wenn es wehtut, nicht prophylaktisch
+
+### Wartungsfreier Code: Keine Hardcoded Daten/Jahre — BLOCKER
+
+Was sich automatisch ändern sollte (Jahreszahlen, "aktuelle" Werte, "heute"-bezogene Defaults), darf **nicht** in Config oder als Konstante hardcoded werden — sonst bricht es still beim nächsten Rollover (Jahr, Quartal, Monat).
+
+**Statt hardcoden:**
+- **Im Code:** `new Date().getFullYear()` (oder analog für Monat/Quartal). Beispiel: `lib/constants.ts → YEAR` ist die Projektions-Startjahr-Konstante und wird zur Laufzeit ausgewertet, nicht statisch gesetzt.
+- **In API-Routes:** Default-Param aus `new Date()` ableiten, statt Cron-Pfad mit `?year=2026` zu führen. Beispiel: `/api/energy/backfill` defaultet auf das aktuelle Jahr, der Vercel-Cron ruft den Pfad ohne Parameter.
+- **In SEO-Strings (JSON-LD, Page-Titles, FAQs):** zur Render-Zeit interpolieren. `app/(site)/layout.tsx → buildFaqJsonLd()` als Beispiel.
+
+**Wann Hardcoden OK ist:**
+- **Dokument-Versionen** ("Stand: März 2026" in Datenschutz/Impressum) — soll mit Inhalt mitwachsen, NICHT autoupdaten.
+- **Config-Snapshots als Fallback** (`lib/feedin-config.ts`, `lib/prices-config.ts`, `lib/heatpump-config.ts`) — bewusste Stichtags-Datenstände, DB hat die Live-Werte. `validFrom` dort ist eine echte Datenherkunft, kein Renderdatum.
+- **Historische Fakten** ("Kernenergie inländisch bis April 2023", "BWP Preisübersicht 2024") — passieren wirklich nur einmal.
+- **Test-Fixtures** — deterministische Eingaben sind das Ziel.
+
+**Faustregel:** Bevor du irgendwo eine Jahreszahl, ein Datum oder einen "aktuell"-Wert reinschreibst, frag dich: *Was passiert damit am 1. Januar nächstes Jahr?* Wenn die Antwort "ich muss dran denken, das anzupassen" ist → falsch. Wenn die Antwort "soll genau so bleiben, weil es ein Stichtag ist" → richtig.
+
+**Doku statt Mahnmal:** Wenn ein Hardcode unvermeidbar ist (z. B. weil eine Library kein Date-API hat), kommt ein Inline-Kommentar in den Code, der erklärt warum. Kein "TODO 2027 anpassen" — das ist eine tickende Bombe ohne Wecker.

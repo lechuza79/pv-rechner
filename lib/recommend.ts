@@ -1,4 +1,4 @@
-import { PERSONEN, NUTZUNG, SPEICHER, HAUSTYPEN, DACHARTEN } from "./constants";
+import { PERSONEN, HAUSTYPEN, DACHARTEN } from "./constants";
 import { calcEigenverbrauch, estimateCost, calc } from "./calc";
 import { WP_ANNUAL_KWH, calcEaAnnual } from "./consumption";
 import { type PriceConfig } from "./prices-config";

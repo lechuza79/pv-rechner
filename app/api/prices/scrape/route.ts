@@ -3,11 +3,11 @@ import * as cheerio from "cheerio";
 import { supabase } from "../../../../lib/supabase-server";
 import { DEFAULT_PRICES } from "../../../../lib/prices-config";
 
-// Vercel Cron: called monthly via vercel.json crons config
-// Also callable manually: GET /api/prices/scrape?key=CRON_SECRET
+// Vercel Cron: called monthly via vercel.json crons config.
+// Manual trigger: send Authorization: Bearer $CRON_SECRET header.
+// (Query params would leak the secret into browser history and access logs.)
 
 const CRON_SECRET = process.env.CRON_SECRET;
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
 
 // Plausibility bounds
 const BOUNDS = {
@@ -49,8 +49,9 @@ function scrapeFromHtml(html: string): ScrapedPrices {
       const t = $(cell).text().toLowerCase();
       if (t.includes("pro kwp") || t.includes("€/kwp")) {
         priceColIdx = i;
-        return false; // take first match
+        return false; // cheerio: returning false breaks .each()
       }
+      return; // continue iteration (explicit for noImplicitReturns)
     });
     if (priceColIdx < 0) priceColIdx = 3; // fallback to 4th column
 
@@ -219,19 +220,15 @@ async function notifyAdmin(subject: string, body: string) {
 // ─── Main Handler ─────────────────────────────────────────────────────────────
 
 export async function GET(req: Request) {
-  // Auth: Vercel Cron sends Authorization header, or use query param for manual trigger
+  // Auth: Authorization: Bearer $CRON_SECRET. Vercel Cron sends this automatically;
+  // manual triggers must use the same header. No query-param fallback (would leak the secret).
   const authHeader = req.headers.get("authorization");
-  const url = new URL(req.url);
-  const keyParam = url.searchParams.get("key");
 
   if (!CRON_SECRET) {
     return NextResponse.json({ error: "CRON_SECRET not configured" }, { status: 500 });
   }
 
-  const isVercelCron = authHeader === `Bearer ${CRON_SECRET}`;
-  const isManualTrigger = keyParam === CRON_SECRET;
-
-  if (!isVercelCron && !isManualTrigger) {
+  if (authHeader !== `Bearer ${CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

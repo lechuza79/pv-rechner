@@ -3,13 +3,13 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { paramsToRow } from "../../../lib/types";
-import { YEAR, YEARS, CONSUMPTION_MONTHLY, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN } from "../../../lib/constants";
+import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import { calcExtraConsumption } from "../../../lib/consumption";
-import Chart from "../../../components/Chart";
+import Chart from "./_components/Chart";
 import { v } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
@@ -17,10 +17,10 @@ import Header from "../../../components/Header";
 import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../../components/Icons";
 import { useChartExport } from "../../../lib/useChartExport";
 import ChartExportBar from "../../../components/ChartExportBar";
-import ResultHeroCard from "../../../components/ResultHeroCard";
-import QuickSettings from "../../../components/QuickSettings";
-import ResultStats from "../../../components/ResultStats";
-import ResultActions from "../../../components/ResultActions";
+import ResultHeroCard from "./_components/ResultHeroCard";
+import QuickSettings from "./_components/QuickSettings";
+import ResultStats from "./_components/ResultStats";
+import ResultActions from "./_components/ResultActions";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {

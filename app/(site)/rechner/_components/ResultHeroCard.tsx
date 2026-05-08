@@ -1,7 +1,7 @@
 "use client";
-import InlineEdit from "./InlineEdit";
-import { IconArrowRight, IconCheck } from "./Icons";
-import { v } from "../lib/theme";
+import InlineEdit from "../../../../components/InlineEdit";
+import { IconArrowRight, IconCheck } from "../../../../components/Icons";
+import { v } from "../../../../lib/theme";
 
 interface ResultHeroCardProps {
   be: { i: number; kum: number } | undefined;

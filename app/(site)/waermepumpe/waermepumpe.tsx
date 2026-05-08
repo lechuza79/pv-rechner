@@ -9,7 +9,7 @@ import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs } from "../../
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
-import HeatPumpChart from "../../../components/HeatPumpChart";
+import HeatPumpChart from "./_components/HeatPumpChart";
 import Header from "../../../components/Header";
 import { IconArrowRight, IconRefresh, IconChevronDown, IconHelpCircle, IconSun } from "../../../components/Icons";
 import { v } from "../../../lib/theme";

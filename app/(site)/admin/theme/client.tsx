@@ -4,7 +4,7 @@ import { tokens, v } from "../../../../lib/theme";
 import OptionCard from "../../../../components/OptionCard";
 import TriToggle from "../../../../components/TriToggle";
 import InlineEdit from "../../../../components/InlineEdit";
-import Chart from "../../../../components/Chart";
+import Chart from "../../rechner/_components/Chart";
 
 // Group tokens by category for display
 const tokenGroups: { label: string; prefix: string }[] = [
