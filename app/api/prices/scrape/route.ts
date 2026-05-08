@@ -8,7 +8,6 @@ import { DEFAULT_PRICES } from "../../../../lib/prices-config";
 // (Query params would leak the secret into browser history and access logs.)
 
 const CRON_SECRET = process.env.CRON_SECRET;
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
 
 // Plausibility bounds
 const BOUNDS = {
