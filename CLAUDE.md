@@ -541,6 +541,7 @@ Gesamt-Org hat vier Projekte (`pv-rechner`, `life-is-a-binge`, `growth-assistant
 - UI-Texte auf Deutsch
 - Code und Variablennamen auf Englisch, außer Domänen-Begriffe (Eigenverbrauch, Einspeisevergütung, Strompreis etc.)
 - **Chart-Entwicklung:** Vor jeder Chart-Änderung oder neuen Chart-Implementierung das Chart-Regelwerk in Memory lesen (`feedback_chart_conventions.md`). Dort sind alle Konventionen dokumentiert: Charttyp pro Zeitraum, einheitliche Einheiten, Tooltip-Struktur, Achsenbeschriftung, Export/Sharing, Caching-Architektur, Farb-Zuordnung.
+- **Antworten an den Nutzer = Klartext, keine Code-Sprache.** Keine Dateipfade, keine Variablennamen, keine API-Namen im Erklärtext — übersetzen in das, was sie tun. Stichpunkte statt Textwand. Am Ende eine konkrete Frage. Code-Snippets gehören in den Code, nicht in die Antwort. Diese Regel steht ausführlich in der globalen CLAUDE.md unter "Klartext bei technischen Entscheidungen" und gilt hier 1:1.
 
 ## Workflow-Konventionen
 
