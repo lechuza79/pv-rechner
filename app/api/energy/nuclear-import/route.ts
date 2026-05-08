@@ -181,7 +181,6 @@ export async function GET(req: NextRequest) {
     // (client has actual DE load from generation data)
     let data: NuclearDataPoint[] = [];
     let totalNuclear = 0;
-    let totalNetImport = 0;
     let count = 0;
 
     cbpfByTs.forEach((flows, ts) => {

@@ -49,8 +49,9 @@ function scrapeFromHtml(html: string): ScrapedPrices {
       const t = $(cell).text().toLowerCase();
       if (t.includes("pro kwp") || t.includes("€/kwp")) {
         priceColIdx = i;
-        return false; // take first match
+        return false; // cheerio: returning false breaks .each()
       }
+      return; // continue iteration (explicit for noImplicitReturns)
     });
     if (priceColIdx < 0) priceColIdx = 3; // fallback to 4th column
 

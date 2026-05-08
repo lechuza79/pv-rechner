@@ -1,6 +1,5 @@
 "use client";
 import { YEAR, YEARS } from "../../../../lib/constants";
-import { v } from "../../../../lib/theme";
 
 export default function Chart({ scenarios, kosten }: { scenarios: { id: string; color: string; data: { years: { i: number; kum: number }[]; be: { i: number; kum: number } | undefined } }[]; kosten: number }) {
   const W = 640, H = 280;

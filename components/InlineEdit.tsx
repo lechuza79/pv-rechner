@@ -2,7 +2,10 @@
 import { useState } from "react";
 import { v } from "../lib/theme";
 
-export default function InlineEdit({ value, onCommit, unit, step = 1, min = 0, max = 99999, width = 72, fmt }: { value: number; onCommit: (v: number) => void; unit: string; step?: number; min?: number; max?: number; width?: number; fmt?: (v: number) => string }) {
+// `step` is accepted for API compatibility (callers pass it) but currently unused —
+// the component does free-form text entry with min/max validation, no stepping.
+// Kept on the prop signature in case we add arrow-key increment later.
+export default function InlineEdit({ value, onCommit, unit, step: _step = 1, min = 0, max = 99999, width = 72, fmt }: { value: number; onCommit: (v: number) => void; unit: string; step?: number; min?: number; max?: number; width?: number; fmt?: (v: number) => string }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState("");
 

@@ -192,7 +192,6 @@ describe("calc (25-year amortization)", () => {
   });
 
   it("applies 0.5%/year degradation (year 25 yield < year 1 yield)", () => {
-    const r = calc(baseCase);
     // Year 25 nominal price is much higher (3%/year strom rise) but
     // production is lower → check the production-only effect via a
     // case with no price escalation

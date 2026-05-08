@@ -6,7 +6,7 @@ import { useGenerationMix, useNuclearImport } from "../../../lib/energy";
 import StackedAreaChart from "../../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../../components/charts/StackedBarChart";
 import {
-  formatGWh, formatGWhIn, energyUnit, calcPeriodStats, CATEGORY_COLORS,
+  formatGWhIn, energyUnit, calcPeriodStats, CATEGORY_COLORS,
 } from "../../../lib/chart-utils";
 import { v } from "../../../lib/theme";
 import { useChartExport } from "../../../lib/useChartExport";
