@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Pre-commit guard for pv-rechner.
-# Two checks, both block the commit on failure:
+# Three checks, each blocks the commit on failure:
 #   1. No staged .env* file ever ends up in a commit.
 #   2. tsc --noEmit must pass on the staged tree, so import paths,
 #      type errors and module-not-found errors are caught BEFORE
@@ -8,6 +8,10 @@
 #      get modified after `git mv` but the modifications are not
 #      staged — locally the working tree compiles, but the commit
 #      itself is broken and Vercel fails.
+#   3. vitest run — unit tests must pass. Catches regressions in
+#      calculation logic (PV economics, heat pump, chart utils)
+#      that tsc cannot see. ~5 seconds on this project; if it ever
+#      gets too slow, scope it down to changed files.
 
 set -euo pipefail
 
@@ -34,6 +38,13 @@ fi
 echo "→ pre-commit: tsc --noEmit"
 if ! npm exec --no -- tsc --noEmit; then
   echo "✖ pre-commit: TypeScript check failed. Fix the errors above before committing."
+  exit 1
+fi
+
+# ─── 3. Unit tests ────────────────────────────────────────────────
+echo "→ pre-commit: vitest run"
+if ! npm exec --no -- vitest run --reporter=dot; then
+  echo "✖ pre-commit: tests failed. Fix the failing tests before committing."
   exit 1
 fi
 
