@@ -565,6 +565,18 @@ Der Hook blockt:
   Berechnungslogik (PV-Wirtschaftlichkeit, WP, Chart-Helpers) bevor
   sie zum Vercel-Build oder in den Browser durchschlagen.
 
+**Browser-Smokes (Playwright)** laufen NICHT im Pre-commit (zu langsam,
+~45s), sondern in GitHub Actions bei jedem PR und Push auf `main`. Sechs
+End-to-End-Tests klicken die Hauptflows durch (Rechner, Wärmepumpe,
+Empfehlung, Share-URL, Live-Simulation, Energie-Dashboard). Bei
+Failure landet ein HTML-Report als Artifact am Workflow-Run.
+
+Lokal manuell:
+```
+npm run test:e2e        # headless, list-Reporter
+npm run test:e2e:ui     # interaktive Test-UI
+```
+
 **Worktree-Falle:** `core.hooksPath` muss **relativ** (`.githooks`)
 gesetzt sein, sonst zeigt jeder Worktree auf das Hauptrepo statt
 auf seinen eigenen Hook. Symptom: Hook-Updates im Worktree wirken
