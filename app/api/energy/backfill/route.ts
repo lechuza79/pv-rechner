@@ -6,8 +6,9 @@ import { GENERATION_STACK_KEYS } from "../../../../lib/chart-utils";
 // Backfill route: Fetches Energy-Charts data year by year,
 // aggregates to weekly GWh totals, stores in Supabase.
 // Auth: send Authorization: Bearer $CRON_SECRET header.
-// GET /api/energy/backfill?year=2022
-// GET /api/energy/backfill?all=true  (2015–now)
+// GET /api/energy/backfill            → current year (default, used by weekly cron)
+// GET /api/energy/backfill?year=2022  → specific year
+// GET /api/energy/backfill?all=true   → 2015–now
 
 const CRON_SECRET = process.env.CRON_SECRET;
 
@@ -215,13 +216,12 @@ export async function GET(req: NextRequest) {
   const yearParam = req.nextUrl.searchParams.get("year");
   const all = req.nextUrl.searchParams.get("all") === "true";
 
-  if (!yearParam && !all) {
-    return NextResponse.json({ error: "Provide ?year=2022 or ?all=true" }, { status: 400 });
-  }
-
-  if (yearParam) {
-    const year = parseInt(yearParam, 10);
-    if (year < 2015 || year > new Date().getFullYear()) {
+  // Default: current year (so the weekly cron can call this URL without
+  // any params and never needs maintenance at year-rollover).
+  if (!all) {
+    const currentYear = new Date().getFullYear();
+    const year = yearParam ? parseInt(yearParam, 10) : currentYear;
+    if (Number.isNaN(year) || year < 2015 || year > currentYear) {
       return NextResponse.json({ error: "Year must be 2015–now" }, { status: 400 });
     }
     const result = await backfillYear(year, country);

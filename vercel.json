@@ -10,7 +10,7 @@
       "schedule": "0 8 1 * *"
     },
     {
-      "path": "/api/energy/backfill?year=2026",
+      "path": "/api/energy/backfill",
       "schedule": "0 6 * * 1"
     }
   ]
