@@ -102,6 +102,7 @@ export const globalStyles = `
   @keyframes sc-map-pulse{0%,100%{opacity:.45}50%{opacity:1}}
   @keyframes sc-live-dot{0%,100%{transform:scale(1);box-shadow:0 0 0 3px rgba(61,255,193,.30)}50%{transform:scale(1.15);box-shadow:0 0 0 7px rgba(61,255,193,0)}}
   @keyframes sc-live-bar{0%,100%{opacity:1}50%{opacity:.55}}
+  @keyframes sc-bar-grow{from{opacity:0}to{opacity:1}}
   .fu{animation:fu .3s ease-out}
   .sc-live-dot{animation:sc-live-dot 1.8s ease-in-out infinite}
   .sc-live-bar{animation:sc-live-bar 1.8s ease-in-out infinite}

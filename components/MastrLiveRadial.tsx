@@ -47,17 +47,70 @@ function extractMW(p: GenerationPoint, et: Energietraeger): number | null {
 
 type Bar = { ts: string; mw: number };
 
-const SIZE = 240;
-const CX = SIZE / 2;
-const CY = SIZE / 2;
-const INNER_R = 50;
-const OUTER_R = 104;
-const MIN_BAR_R = 2;
-const HIT_STROKE = 18;
+export type SizeVariant = "default" | "compact";
 
-function pointAt(visualAngleDeg: number, r: number): [number, number] {
+const DIM = {
+  default: {
+    size: 240,
+    innerR: 50,
+    outerR: 104,
+    minBarR: 2,
+    hitStroke: 18,
+    barStroke: 2.2,
+    barStrokeLatest: 3,
+    barStrokeHover: 3.4,
+    centerBig: 30,
+    centerLabel: 11,
+    chevron: 24,
+    chevronFont: 18,
+    titleFont: 13,
+    beforeFont: 12,
+  },
+  compact: {
+    size: 160,
+    innerR: 36,
+    outerR: 72,
+    minBarR: 1.5,
+    hitStroke: 14,
+    barStroke: 1.6,
+    barStrokeLatest: 2.2,
+    barStrokeHover: 2.6,
+    centerBig: 20,
+    centerLabel: 9,
+    chevron: 20,
+    chevronFont: 15,
+    titleFont: 12,
+    beforeFont: 11,
+  },
+} as const;
+
+function chevronBtnStyle(width: number, fontSize: number): React.CSSProperties {
+  return {
+    width,
+    height: width,
+    border: "none",
+    background: "transparent",
+    color: "var(--color-text-secondary)",
+    fontSize,
+    lineHeight: 1,
+    cursor: "pointer",
+    padding: 0,
+    fontFamily: "inherit",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 6,
+  };
+}
+
+function pointAt(
+  cx: number,
+  cy: number,
+  visualAngleDeg: number,
+  r: number,
+): [number, number] {
   const rad = ((visualAngleDeg - 90) * Math.PI) / 180;
-  return [CX + r * Math.cos(rad), CY + r * Math.sin(rad)];
+  return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
 }
 
 function visualAngleFromHour(h: number): number {
@@ -70,13 +123,37 @@ function visualAngleFromTs(ts: string): number {
   return visualAngleFromHour(h);
 }
 
+export type TraegerNav = {
+  label: string;
+  onPrev: () => void;
+  onNext: () => void;
+  /** Text/JSX shown left of the prev arrow (e.g. "Momentan erzeugt") */
+  before?: React.ReactNode;
+  /** JSX shown right of the next arrow (e.g. a help button) */
+  after?: React.ReactNode;
+};
+
 export function MastrLiveRadial({
   energietraeger,
   installedKwp,
+  traegerNav,
+  size = "default",
 }: {
   energietraeger: Energietraeger;
   installedKwp: number | null;
+  traegerNav?: TraegerNav;
+  size?: SizeVariant;
 }) {
+  const dim = DIM[size];
+  const SIZE = dim.size;
+  const CX = SIZE / 2;
+  const CY = SIZE / 2;
+  const INNER_R = dim.innerR;
+  const OUTER_R = dim.outerR;
+  const MIN_BAR_R = dim.minBarR;
+  const HIT_STROKE = dim.hitStroke;
+  const isCompact = size === "compact";
+
   const [bars, setBars] = useState<Bar[]>([]);
   const [latest, setLatest] = useState<Bar | null>(null);
   // Skala: Gesamt-Peak der letzten 24h (Gesamt ≥ jeder einzelne Tab).
@@ -118,10 +195,26 @@ export function MastrLiveRadial({
         });
     };
     load();
-    const id = setInterval(load, 5 * 60 * 1000);
+    // Energy-Charts veröffentlicht 15-Min-Intervalle, die API-Route cached
+    // s-maxage=300. Wir pollen alle 90 Sekunden — neue Werte kommen damit
+    // spätestens 90 s nach Veröffentlichung (in der Praxis aus dem CDN-Cache).
+    const id = setInterval(load, 90 * 1000);
+
+    // Page Visibility: beim Zurückwechseln zum Tab sofortiger Refresh,
+    // damit der jüngste Wert immer aktuell ist, auch nach langer Inaktivität.
+    const onVisible = () => {
+      if (typeof document !== "undefined" && !document.hidden) load();
+    };
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", onVisible);
+    }
+
     return () => {
       cancelled = true;
       clearInterval(id);
+      if (typeof document !== "undefined") {
+        document.removeEventListener("visibilitychange", onVisible);
+      }
     };
   }, [energietraeger]);
 
@@ -203,30 +296,108 @@ export function MastrLiveRadial({
         padding: 12,
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          fontSize: 11,
-          textTransform: "uppercase",
-          letterSpacing: 0.8,
-          color: v("--color-text-muted"),
-          marginBottom: 4,
-        }}
-      >
-        <span
-          aria-hidden="true"
-          className="sc-live-dot"
+      {traegerNav ? (
+        <div
           style={{
-            width: 6,
-            height: 6,
-            borderRadius: "50%",
-            background: v("--color-highlight"),
+            position: "relative",
+            textAlign: "center",
+            marginBottom: 8,
           }}
-        />
-        Im Moment erzeugt
-      </div>
+        >
+          {/* Zeile 1: ● Momentan erzeugt — primary, fett, mittig */}
+          {traegerNav.before !== null && (
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: dim.beforeFont,
+                fontWeight: 600,
+                color: v("--color-text-primary"),
+                whiteSpace: "nowrap",
+              }}
+            >
+              <span
+                aria-hidden="true"
+                className="sc-live-dot"
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: v("--color-highlight"),
+                }}
+              />
+              {traegerNav.before ?? "Momentan erzeugt"}
+            </div>
+          )}
+
+          {/* Help-Button absolute am rechten Rand der ersten Zeile */}
+          {traegerNav.after && (
+            <div style={{ position: "absolute", right: 0, top: 0 }}>
+              {traegerNav.after}
+            </div>
+          )}
+
+          {/* Zeile 2: ‹ Träger › — sekundär, leichter, mittig.
+              Gleiche Schriftgröße wie "Momentan erzeugt" für ruhigen Header. */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 4,
+              fontSize: dim.beforeFont,
+              color: v("--color-text-secondary"),
+              marginTop: traegerNav.before !== null ? 4 : 0,
+            }}
+          >
+            <button
+              type="button"
+              aria-label="Vorheriger Energieträger"
+              onClick={traegerNav.onPrev}
+              style={chevronBtnStyle(dim.chevron, dim.chevronFont)}
+            >
+              ‹
+            </button>
+            <span style={{ minWidth: isCompact ? 80 : 110, textAlign: "center" }}>
+              {traegerNav.label}
+            </span>
+            <button
+              type="button"
+              aria-label="Nächster Energieträger"
+              onClick={traegerNav.onNext}
+              style={chevronBtnStyle(dim.chevron, dim.chevronFont)}
+            >
+              ›
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            fontSize: 11,
+            textTransform: "uppercase",
+            letterSpacing: 0.8,
+            color: v("--color-text-muted"),
+            marginBottom: 4,
+          }}
+        >
+          <span
+            aria-hidden="true"
+            className="sc-live-dot"
+            style={{
+              width: 6,
+              height: 6,
+              borderRadius: "50%",
+              background: v("--color-highlight"),
+            }}
+          />
+          Im Moment erzeugt
+        </div>
+      )}
 
       <div style={{ position: "relative", width: SIZE, maxWidth: "100%", margin: "0 auto" }}>
         <svg
@@ -268,66 +439,76 @@ export function MastrLiveRadial({
             />
           ))}
 
-          {/* Bars: visible stroke + invisible wider hit-area for easier hover */}
-          {bars.map((b, i) => {
-            const va = visualAngleFromTs(b.ts);
-            const ratio = Math.min(1, b.mw / maxMw);
-            const len = ratio > 0 ? MIN_BAR_R + (OUTER_R - INNER_R - MIN_BAR_R) * ratio : 0;
-            const [x1, y1] = pointAt(va, INNER_R);
-            const [x2, y2] = pointAt(va, INNER_R + len);
-            // Hit-area extends from inner ring all the way to outer ring,
-            // independent of value — full wedge is hoverable.
-            const [hx2, hy2] = pointAt(va, OUTER_R);
-            const isLatest = i === bars.length - 1 && b.mw > 0;
-            const isHover = hover?.ts === b.ts;
-            return (
-              <g
-                key={b.ts}
-                onPointerEnter={() => setHover(b)}
-                onPointerLeave={(e) => {
-                  // Auf Touch feuert pointerleave erst beim nächsten Tap;
-                  // Mouse: zurück, sobald wir den Bar verlassen.
-                  if (e.pointerType === "mouse") {
-                    setHover((h) => (h?.ts === b.ts ? null : h));
-                  }
-                }}
-                onPointerDown={() => setHover(b)}
-                style={{ cursor: "pointer", touchAction: "manipulation" }}
-              >
-                {ratio > 0 && (
+          {/* Bars: visible stroke + invisible wider hit-area for easier hover.
+              Outer <g key={energietraeger}> remounts on tab switch so the
+              stagger-grow animation re-plays. */}
+          <g key={energietraeger}>
+            {bars.map((b, i) => {
+              const va = visualAngleFromTs(b.ts);
+              const ratio = Math.min(1, b.mw / maxMw);
+              const len = ratio > 0 ? MIN_BAR_R + (OUTER_R - INNER_R - MIN_BAR_R) * ratio : 0;
+              const [x1, y1] = pointAt(CX, CY, va, INNER_R);
+              const [x2, y2] = pointAt(CX, CY, va, INNER_R + len);
+              const [hx2, hy2] = pointAt(CX, CY, va, OUTER_R);
+              const isLatest = i === bars.length - 1 && b.mw > 0;
+              const isHover = hover?.ts === b.ts;
+              return (
+                <g
+                  key={b.ts}
+                  onPointerEnter={() => setHover(b)}
+                  onPointerLeave={(e) => {
+                    if (e.pointerType === "mouse") {
+                      setHover((h) => (h?.ts === b.ts ? null : h));
+                    }
+                  }}
+                  onPointerDown={() => setHover(b)}
+                  style={{ cursor: "pointer", touchAction: "manipulation" }}
+                >
+                  {ratio > 0 && (
+                    <line
+                      x1={x1}
+                      y1={y1}
+                      x2={x2}
+                      y2={y2}
+                      stroke={isHover || isLatest ? accentLatest : accentBars}
+                      strokeWidth={
+                        isHover
+                          ? dim.barStrokeHover
+                          : isLatest
+                            ? dim.barStrokeLatest
+                            : dim.barStroke
+                      }
+                      strokeLinecap="round"
+                      opacity={isHover || isLatest ? 1 : 0.85}
+                      style={{
+                        animation: "sc-bar-grow 0.35s ease-out backwards",
+                        animationDelay: `${i * 6}ms`,
+                      }}
+                    />
+                  )}
                   <line
                     x1={x1}
                     y1={y1}
-                    x2={x2}
-                    y2={y2}
-                    stroke={isHover || isLatest ? accentLatest : accentBars}
-                    strokeWidth={isHover ? 3.4 : isLatest ? 3 : 2.2}
-                    strokeLinecap="round"
-                    opacity={isHover || isLatest ? 1 : 0.85}
+                    x2={hx2}
+                    y2={hy2}
+                    stroke="transparent"
+                    strokeWidth={HIT_STROKE}
+                    strokeLinecap="butt"
+                    pointerEvents="stroke"
                   />
-                )}
-                <line
-                  x1={x1}
-                  y1={y1}
-                  x2={hx2}
-                  y2={hy2}
-                  stroke="transparent"
-                  strokeWidth={HIT_STROKE}
-                  strokeLinecap="butt"
-                  pointerEvents="stroke"
-                />
-              </g>
-            );
-          })}
+                </g>
+              );
+            })}
+          </g>
 
-          {/* Weißer Center-Kreis ÜBER den Bars mit Drop-Shadow.
+          {/* Hintergrund-Kreis ÜBER den Bars mit Drop-Shadow.
               Schneidet die Bar-Caps unten leicht an und wirft Schatten nach
-              außen — gibt visuelle Tiefe. */}
+              außen — gibt visuelle Tiefe. Fill folgt dem Theme-Hintergrund. */}
           <circle
             cx={CX}
             cy={CY}
             r={INNER_R}
-            fill="#FFFFFF"
+            fill="var(--color-bg)"
             filter="url(#mastr-radial-center-shadow)"
           />
         </svg>
@@ -347,7 +528,7 @@ export function MastrLiveRadial({
         >
           <div
             style={{
-              fontSize: 11,
+              fontSize: dim.centerLabel,
               color: labelColor,
               fontVariantNumeric: "tabular-nums",
               marginBottom: 4,
@@ -357,7 +538,7 @@ export function MastrLiveRadial({
           </div>
           <div
             style={{
-              fontSize: 30,
+              fontSize: dim.centerBig,
               fontWeight: 700,
               color: v("--color-text-primary"),
               fontVariantNumeric: "tabular-nums",
@@ -370,7 +551,7 @@ export function MastrLiveRadial({
           </div>
           <div
             style={{
-              fontSize: 11,
+              fontSize: dim.centerLabel,
               color: labelColor,
               marginTop: 3,
               letterSpacing: 0.5,
@@ -381,8 +562,8 @@ export function MastrLiveRadial({
         </div>
       </div>
 
-      {/* Auslastung-Zeile (folgt dem aktuellen oder dem Hover-Wert) */}
-      {displayPct !== null && (
+      {/* Auslastung-Zeile (folgt dem aktuellen oder dem Hover-Wert) — nur in Default-Größe */}
+      {!isCompact && displayPct !== null && (
         <div
           style={{
             marginTop: 10,
