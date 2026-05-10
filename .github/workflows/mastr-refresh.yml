@@ -1,13 +1,21 @@
 name: MaStR Refresh
 
-# Pulls the latest open-mastr Zenodo dump, aggregates, and upserts into
-# Supabase. Runs quarterly to catch Zenodo's (irregular) release cadence.
-# Can also be triggered manually via the Actions tab.
+# Pulls the BNetzA Gesamtdatenexport (monthly XML dump), aggregates per
+# region × energy type × segment × year, and upserts into Supabase. Replaces
+# the older quarterly Zenodo pipeline; the BNetzA dump refreshes daily and
+# is the authoritative source. The Zenodo path (scripts/mastr-refresh.ts)
+# stays in the repo as a fallback if BNetzA ever goes down.
+#
+# Vercel cron is unsuitable here — Function timeout is too short and the
+# 3 GB download exceeds Edge limits. GitHub Actions runners have ~14 GB
+# free disk and 60 min budget, which fits comfortably.
 
 on:
   schedule:
-    # 03:00 UTC on the 1st of Jan / Apr / Jul / Oct
-    - cron: "0 3 1 1,4,7,10 *"
+    # 04:00 UTC on the 5th of each month — BNetzA publishes daily, so by the
+    # 5th the start-of-month data is stable. UTC keeps the schedule aligned
+    # with BNetzA's own publication time (~05:00 UTC).
+    - cron: "0 4 5 * *"
   workflow_dispatch: {}
 
 permissions:
@@ -38,19 +46,21 @@ jobs:
       - name: Disk space before run
         run: df -h .
 
-      # Full pipeline: download Zenodo dump, inspect schema, aggregate,
-      # upload to Supabase. Runner has 14 GB free — the 1.3 GB ZIP +
-      # ~4 GB extracted CSV fit comfortably.
-      - name: Run MaStR refresh (full)
-        run: npm run mastr:refresh -- --inspect --aggregate --upload
+      - name: Run MaStR refresh (BNetzA, full pipeline)
+        run: npm run mastr:refresh-bnetza -- --download --aggregate --upload
+
+      - name: Disk space after run
+        if: always()
+        run: df -h .
 
       - name: Upload artifacts (schema + aggregates)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mastr-snapshot
+          name: mastr-bnetza-snapshot
           path: |
-            scripts/mastr-schema.json
-            scripts/.cache/aggregates.json
+            scripts/mastr-bnetza-schema.json
+            scripts/.cache/bnetza/aggregates.json
+            scripts/.cache/bnetza/resolved.json
           if-no-files-found: warn
           retention-days: 90

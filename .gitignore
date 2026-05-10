@@ -18,3 +18,4 @@ playwright/.cache/
 # MaStR refresh artifacts
 scripts/.cache/
 scripts/mastr-schema.json
+scripts/mastr-bnetza-schema.json

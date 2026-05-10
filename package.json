@@ -13,6 +13,7 @@
     "test:e2e:ui": "playwright test --ui",
     "typecheck": "tsc --noEmit",
     "mastr:refresh": "tsx scripts/mastr-refresh.ts",
+    "mastr:refresh-bnetza": "tsx scripts/mastr-bnetza-refresh.ts",
     "postinstall": "node -e \"if(!process.env.VERCEL && !process.env.CI){require('child_process').execSync('git config core.hooksPath .githooks',{stdio:'inherit'})}\""
   },
   "dependencies": {
@@ -42,8 +43,11 @@
     "@types/d3-shape": "^3.1.8",
     "@types/node": "25.5.0",
     "@types/react": "19.2.14",
+    "@types/sax": "^1.2.7",
     "@types/unzipper": "^0.10.11",
     "csv-parse": "^6.2.1",
+    "iconv-lite": "^0.7.2",
+    "sax": "^1.6.0",
     "tsx": "^4.21.0",
     "typescript": "5.9.3",
     "unzipper": "^0.12.3",

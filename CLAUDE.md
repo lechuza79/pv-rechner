@@ -258,6 +258,16 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [ ] Navigation-Updates (Hub + Header → /energie)
 - [ ] SEO-Metadata für /energie
 
+**MaStR-Datenpipeline (Anlagenstammdaten für Choropleth)**
+- [x] Quellwechsel von open-MaStR (Zenodo, jährlich) auf BNetzA Gesamtdatenexport (monatlich)
+- [x] `scripts/mastr-bnetza-refresh.ts` mit vier Phasen: `--download`, `--inspect`, `--aggregate`, `--upload`
+- [x] XML-Streaming via `sax` + `iconv-lite` (UTF-16 → UTF-8), 3 GB ZIP wird nicht entpackt
+- [x] URL-Resolver mit Datums-Fallback (heute → -7 Tage), Schema-Version via `BNETZA_SCHEMA_VERSION` env
+- [x] Aggregation analog zur Zenodo-Pipeline: `(region_id × energietraeger × segment × jahr) → (count, kwp)`
+- [x] GitHub Actions Workflow `mastr-refresh.yml`: monatlich am 5. um 04:00 UTC + manueller Trigger. Vercel-Cron geht nicht (Function-Timeout 10 s, 3 GB sprengt Edge)
+- [x] Alte Zenodo-Pipeline (`scripts/mastr-refresh.ts`) bleibt als Fallback im Repo, ohne Auto-Trigger
+- [x] Daten landen in `mastr_aggregates`/`mastr_regions`/`mastr_meta` (Schema unverändert), `data_as_of` aus dem ZIP-Stichtag
+
 ### Phase 4: Content & Reichweite
 - [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
