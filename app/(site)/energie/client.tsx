@@ -12,6 +12,7 @@ import { v } from "../../../lib/theme";
 import { useChartExport } from "../../../lib/useChartExport";
 import ChartExportBar from "../../../components/ChartExportBar";
 import { IconChevronLeft, IconChevronRight, IconChevronDown } from "../../../components/Icons";
+import { LoadingDots as BouncingDots } from "../../../components/LoadingDots";
 
 // ─── Time Range Selector ─────────────────────────────────────────────────────
 
@@ -97,21 +98,7 @@ function LoadingSpinner() {
   );
 }
 
-function BouncingDots() {
-  const dot = (delay: number) => ({
-    width: 4, height: 4, borderRadius: "50%",
-    background: v("--color-text-muted"),
-    animation: `bounce 1.2s ease-in-out ${delay}s infinite`,
-  });
-  return (
-    <div style={{ display: "flex", gap: 3, alignItems: "center" }}>
-      <div style={dot(0)} />
-      <div style={dot(0.15)} />
-      <div style={dot(0.3)} />
-      <style>{`@keyframes bounce { 0%,80%,100% { transform: scale(0.6); opacity: 0.4 } 40% { transform: scale(1); opacity: 1 } }`}</style>
-    </div>
-  );
-}
+// BouncingDots → components/LoadingDots (imported above as aliased BouncingDots).
 
 // ─── Component ──────────────────────────────────────────────────────────────
 

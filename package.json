@@ -12,6 +12,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "typecheck": "tsc --noEmit",
+    "mastr:refresh": "tsx scripts/mastr-refresh.ts",
     "postinstall": "node -e \"if(!process.env.VERCEL && !process.env.CI){require('child_process').execSync('git config core.hooksPath .githooks',{stdio:'inherit'})}\""
   },
   "dependencies": {
@@ -19,6 +20,7 @@
     "@supabase/supabase-js": "^2.99.3",
     "@visx/axis": "^3.12.0",
     "@visx/event": "^3.12.0",
+    "@visx/geo": "^3.12.0",
     "@visx/gradient": "^3.12.0",
     "@visx/grid": "^3.12.0",
     "@visx/group": "^3.12.0",
@@ -40,7 +42,11 @@
     "@types/d3-shape": "^3.1.8",
     "@types/node": "25.5.0",
     "@types/react": "19.2.14",
+    "@types/unzipper": "^0.10.11",
+    "csv-parse": "^6.2.1",
+    "tsx": "^4.21.0",
     "typescript": "5.9.3",
+    "unzipper": "^0.12.3",
     "vitest": "^3.2.4"
   }
 }

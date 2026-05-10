@@ -14,3 +14,7 @@ next-env.d.ts
 test-results/
 playwright-report/
 playwright/.cache/
+
+# MaStR refresh artifacts
+scripts/.cache/
+scripts/mastr-schema.json

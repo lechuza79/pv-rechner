@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Header from "../../components/Header";
 import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery } from "../../components/Icons";
+import { MastrHeroSection } from "../../components/MastrHeroSection";
 import { v } from "../../lib/theme";
 
 const tools = [
@@ -42,14 +43,21 @@ export default function Home() {
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
-        {/* Hero */}
-        <div style={{ textAlign: "center", marginBottom: 36, paddingTop: 10 }}>
+        {/* Hero Text */}
+        <div style={{ textAlign: "center", marginBottom: 20, paddingTop: 10 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
           <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Vier Tools. Ohne Anmeldung, ohne Leadfunnel.</p>
         </div>
+      </div>
 
-        {/* Tool Cards */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32 }}>
+      {/* MaStR Hero Map — wider container, breaks out of the 480px column */}
+      <div style={{ maxWidth: 760, margin: "0 auto 36px" }}>
+        <MastrHeroSection />
+      </div>
+
+      {/* Tool Cards — breiter Container, 2-spaltig auf Desktop */}
+      <div style={{ maxWidth: 760, margin: "0 auto 32px" }}>
+        <div className="tool-cards-grid">
           {tools.map((tool) => {
             const Icon = tool.icon;
             return (
@@ -60,6 +68,7 @@ export default function Home() {
                   padding: "24px 20px",
                   cursor: "pointer",
                   border: `1px solid ${v('--color-border')}`,
+                  height: "100%",
                 }}>
                   <div style={{
                     width: 48, height: 48, borderRadius: "50%",
@@ -89,6 +98,9 @@ export default function Home() {
             );
           })}
         </div>
+      </div>
+
+      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         {/* Trust Badge */}
         <div style={{
