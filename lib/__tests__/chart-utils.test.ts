@@ -32,7 +32,7 @@ describe("formatMW", () => {
 describe("formatGWh", () => {
   it("formats small values", () => {
     expect(formatGWh(5.3)).toBe("5.3 GWh");
-    expect(formatGWh(0.1)).toBe("0.1 GWh");
+    expect(formatGWh(0.1)).toBe("0.10 GWh");
   });
 
   it("formats medium values without decimals", () => {

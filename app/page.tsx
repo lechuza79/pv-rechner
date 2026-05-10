@@ -51,14 +51,13 @@ export default function Home() {
       </div>
 
       {/* MaStR Hero Map — wider container, breaks out of the 480px column */}
-      <div style={{ maxWidth: 800, margin: "0 auto 36px" }}>
+      <div style={{ maxWidth: 760, margin: "0 auto 36px" }}>
         <MastrHeroSection />
       </div>
 
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
-
-        {/* Tool Cards */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32 }}>
+      {/* Tool Cards — breiter Container, 2-spaltig auf Desktop */}
+      <div style={{ maxWidth: 760, margin: "0 auto 32px" }}>
+        <div className="tool-cards-grid">
           {tools.map((tool) => {
             const Icon = tool.icon;
             return (
@@ -69,6 +68,7 @@ export default function Home() {
                   padding: "24px 20px",
                   cursor: "pointer",
                   border: `1px solid ${v('--color-border')}`,
+                  height: "100%",
                 }}>
                   <div style={{
                     width: 48, height: 48, borderRadius: "50%",
@@ -98,6 +98,9 @@ export default function Home() {
             );
           })}
         </div>
+      </div>
+
+      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         {/* Trust Badge */}
         <div style={{

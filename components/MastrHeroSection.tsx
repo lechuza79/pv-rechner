@@ -3,6 +3,7 @@
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { MastrMap, type RegionValue } from "./MastrMap";
 import { LoadingDots } from "./LoadingDots";
+import { MastrLiveRadial } from "./MastrLiveRadial";
 import { bundeslandByAgs } from "../lib/mastr-regions";
 import type { Energietraeger, RegionSummary, SegmentFilter } from "../lib/mastr-data";
 import { useCachedFetch } from "../lib/use-cached-fetch";
@@ -171,6 +172,12 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
         </div>
 
         <aside style={{ display: "grid", gap: 12, minWidth: 0 }}>
+          {!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
+            <MastrLiveRadial
+              energietraeger={energietraeger}
+              installedKwp={summary?.total_kwp ?? null}
+            />
+          )}
           <SummaryPanel
             summary={summary}
             regionAgs={region}
@@ -181,12 +188,6 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
           />
           {summaryError && !summary && (
             <ErrorKachel message={summaryError} onRetry={refetchSummary} />
-          )}
-          {!selectedAgs && energietraeger !== "speicher" && (
-            <LiveKachel
-              energietraeger={energietraeger}
-              installedKwp={summary?.total_kwp ?? null}
-            />
           )}
         </aside>
       </div>
@@ -381,6 +382,17 @@ const SEGMENT_DISPLAY: Record<SegmentFilter, string> = {
   freiflaeche: "Freifläche",
 };
 
+const MONTHS_DE = [
+  "Januar", "Februar", "März", "April", "Mai", "Juni",
+  "Juli", "August", "September", "Oktober", "November", "Dezember",
+];
+
+function formatDataAsOf(iso: string): string {
+  const m = /^(\d{4})-(\d{2})-\d{2}$/.exec(iso);
+  if (!m) return iso;
+  return `${MONTHS_DE[parseInt(m[2], 10) - 1]} ${m[1]}`;
+}
+
 function SummaryPanel({
   summary,
   regionAgs,
@@ -430,7 +442,7 @@ function SummaryPanel({
         value={totalCount !== null ? totalCount.toLocaleString("de-DE") : <LoadingDots />}
         hint={avgKwp !== null ? `⌀ ${avgKwp.toFixed(0)} kWp` : "⌀ — kWp"}
       />
-      {summary && energietraeger === "solar" && summary.by_segment.length > 1 && (
+      {summary && energietraeger === "solar" && segment === "alle" && summary.by_segment.length > 1 && (
         <div
           style={{
             background: v("--color-bg"),
@@ -496,10 +508,9 @@ function SummaryPanel({
       )}
       <div style={{ fontSize: 11, color: v("--color-text-muted"), paddingTop: 2 }}>
         {summary
-          ? (summary.source === "placeholder"
-              ? "Platzhalter-Schätzung · Stand "
-              : "Marktstammdatenregister · Stand ") + summary.data_as_of
-          : "Marktstammdatenregister"}
+          ? (summary.source === "placeholder" ? "Schätzung · " : "Stand ") +
+            formatDataAsOf(summary.data_as_of)
+          : ""}
       </div>
     </>
   );
@@ -633,164 +644,3 @@ function ErrorKachel({ message, onRetry }: { message: string; onRetry: () => voi
   );
 }
 
-type GenerationPoint = {
-  ts: string;
-  solar?: number | null;
-  wind_onshore?: number | null;
-  wind_offshore?: number | null;
-  biomass?: number | null;
-  hydro_run_of_river?: number | null;
-  hydro_water_reservoir?: number | null;
-  [key: string]: number | string | null | undefined;
-};
-
-function extractMW(p: GenerationPoint, et: Energietraeger): number | null {
-  const n = (v: number | null | undefined) => (typeof v === "number" ? v : null);
-  const sum = (...vals: (number | null | undefined)[]) => {
-    const nums = vals.map(n).filter((x): x is number => x !== null);
-    return nums.length ? nums.reduce((s, x) => s + x, 0) : null;
-  };
-  switch (et) {
-    case "solar":
-      return n(p.solar);
-    case "wind":
-      return sum(p.wind_onshore, p.wind_offshore);
-    case "biomasse":
-      return n(p.biomass);
-    case "wasser":
-      return sum(p.hydro_run_of_river, p.hydro_water_reservoir);
-    case "gesamt":
-      return sum(
-        p.solar,
-        p.wind_onshore,
-        p.wind_offshore,
-        p.biomass,
-        p.hydro_run_of_river,
-        p.hydro_water_reservoir,
-      );
-    default:
-      return null;
-  }
-}
-
-function LiveKachel({
-  energietraeger,
-  installedKwp,
-}: {
-  energietraeger: Energietraeger;
-  installedKwp: number | null;
-}) {
-  const [currentMW, setCurrentMW] = useState<number | null>(null);
-  const [ts, setTs] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-    // Clear stale value on traeger change so we don't combine old currentMW
-    // with new installedKwp (was producing misleading "5%" flashes).
-    setCurrentMW(null);
-    setTs(null);
-    const loadLive = () => {
-      setLoading(true);
-      fetch("/api/energy/generation?hours=2")
-        .then((r) => r.json())
-        .then((d: { data?: GenerationPoint[] }) => {
-          if (cancelled) return;
-          const pts = d.data ?? [];
-          for (let i = pts.length - 1; i >= 0; i--) {
-            const val = extractMW(pts[i], energietraeger);
-            if (val !== null) {
-              setCurrentMW(val);
-              setTs(pts[i].ts);
-              setLoading(false);
-              return;
-            }
-          }
-          setCurrentMW(null);
-          setLoading(false);
-        })
-        .catch(() => {
-          if (!cancelled) {
-            setCurrentMW(null);
-            setLoading(false);
-          }
-        });
-    };
-    loadLive();
-    // Re-fetch every 5 minutes — Energy-Charts publishes 15-min intervals
-    // with ~15–30 min lag, so polling more often has no effect.
-    const interval = setInterval(loadLive, 5 * 60 * 1000);
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [energietraeger]);
-
-  if (loading || currentMW === null) return null;
-
-  const currentGW = currentMW / 1000;
-  const pct = installedKwp && installedKwp > 0 ? ((currentMW * 1000) / installedKwp) * 100 : null;
-  const tsDate = ts ? new Date(ts) : null;
-  const minutesAgo = tsDate ? Math.round((Date.now() - tsDate.getTime()) / 60000) : null;
-  const freshness =
-    minutesAgo === null
-      ? ""
-      : minutesAgo < 1
-        ? "gerade eben"
-        : minutesAgo < 60
-          ? `vor ${minutesAgo} Min`
-          : `${tsDate!.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr`;
-
-  return (
-    <div
-      style={{
-        background: v("--color-bg"),
-        border: `1px solid ${v("--color-border")}`,
-        borderRadius: 12,
-        padding: 12,
-        position: "relative",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-          fontSize: 11,
-          textTransform: "uppercase",
-          letterSpacing: 0.8,
-          color: v("--color-text-muted"),
-          marginBottom: 4,
-        }}
-      >
-        <span
-          aria-hidden="true"
-          style={{
-            width: 6,
-            height: 6,
-            borderRadius: "50%",
-            background: v("--color-positive"),
-            boxShadow: `0 0 0 3px ${v("--color-positive")}22`,
-          }}
-        />
-        Jetzt eingespeist
-      </div>
-      <div
-        style={{
-          fontSize: 22,
-          fontWeight: 700,
-          color: v("--color-text-primary"),
-          fontVariantNumeric: "tabular-nums",
-          fontFamily: '"JetBrains Mono", ui-monospace, SFMono-Regular, monospace',
-          letterSpacing: -0.3,
-        }}
-      >
-        {currentGW.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW
-      </div>
-      <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginTop: 2 }}>
-        {pct !== null ? `Auslastung ${pct.toFixed(0)}%` : ""}
-        {freshness ? ` · ${freshness}` : ""}
-      </div>
-    </div>
-  );
-}

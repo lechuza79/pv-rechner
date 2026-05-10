@@ -21,8 +21,9 @@ export const tokens = {
   '--color-accent-dark': '#073C93',     // Hover, dark accent text
   '--color-accent-light': '#6A9EF2',    // Light accent, secondary interactive
 
-  // ─── Semantic (4) ──────────────────────────────────────────────────────────
+  // ─── Semantic (5) ──────────────────────────────────────────────────────────
   '--color-positive': '#00D950',        // Positive values (Rendite, Ersparnis)
+  '--color-highlight': '#3DFFC1',       // Highlight (Live-Indikator, jüngster Wert)
   '--color-negative': '#EF4444',        // Negative values (Kosten, Verluste)
   '--color-negative-dim': 'rgba(239,68,68,0.06)',  // Negative background
   '--color-negative-border': 'rgba(239,68,68,0.2)', // Negative border
@@ -99,7 +100,13 @@ export const globalStyles = `
   @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
   @keyframes sc-dots{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
   @keyframes sc-map-pulse{0%,100%{opacity:.45}50%{opacity:1}}
+  @keyframes sc-live-dot{0%,100%{transform:scale(1);box-shadow:0 0 0 3px rgba(61,255,193,.30)}50%{transform:scale(1.15);box-shadow:0 0 0 7px rgba(61,255,193,0)}}
+  @keyframes sc-live-bar{0%,100%{opacity:1}50%{opacity:.55}}
   .fu{animation:fu .3s ease-out}
-  .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
+  .sc-live-dot{animation:sc-live-dot 1.8s ease-in-out infinite}
+  .sc-live-bar{animation:sc-live-bar 1.8s ease-in-out infinite}
+  .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,430px) 300px;gap:48px;align-items:start;justify-content:center}
   @media (max-width:720px){.mastr-hero-grid{grid-template-columns:1fr}}
+  .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
 `;
