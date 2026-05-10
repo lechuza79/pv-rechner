@@ -32,6 +32,7 @@ const baseStyles = `
     --widget-muted:#777777;
     --widget-accent:#1365EA;
     --widget-accent-fg:#FFFFFF;
+    --widget-highlight:#3DFFC1;
     --widget-border-radius:14px;
     --widget-font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 
@@ -44,6 +45,7 @@ const baseStyles = `
     --color-border:color-mix(in srgb,var(--widget-fg) 12%,transparent);
     --color-chart-grid:color-mix(in srgb,var(--widget-fg) 8%,transparent);
     --color-accent:var(--widget-accent);
+    --color-highlight:var(--widget-highlight);
     --font-text:var(--widget-font-family);
     --font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
     --radius-sm:6px;
@@ -54,6 +56,19 @@ const baseStyles = `
     font-family:var(--widget-font-family);
     font-size:14px;
     line-height:1.4;
+  }
+
+  /* Live-Indikator-Pulse (recycled von /energie + Hub) */
+  @keyframes sc-live-dot {
+    0%,100% { transform: scale(1); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-highlight) 30%, transparent) }
+    50%     { transform: scale(1.15); box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-highlight) 0%, transparent) }
+  }
+  .sc-live-dot { animation: sc-live-dot 1.8s ease-in-out infinite }
+
+  /* Bar-Wachstum-Stagger fuer Live-Radial-Chart */
+  @keyframes sc-bar-grow {
+    from { opacity: 0 }
+    to   { opacity: 1 }
   }
 `;
 
