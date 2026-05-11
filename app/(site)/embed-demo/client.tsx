@@ -136,6 +136,7 @@ export default function EmbedDemoClient() {
 const AUTOSWITCH_OPTIONS = [
   { id: "off", label: "Aus", ms: 0 },
   { id: "3s", label: "3 s", ms: 3000 },
+  { id: "4s", label: "4 s", ms: 4000 },
   { id: "6s", label: "6 s", ms: 6000 },
   { id: "10s", label: "10 s", ms: 10000 },
 ];

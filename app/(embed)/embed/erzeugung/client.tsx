@@ -107,18 +107,6 @@ export default function ErzeugungWidget({
     return () => window.removeEventListener("message", onMessage);
   }, []);
 
-  // Click-outside to close help tooltip on touch devices
-  useEffect(() => {
-    if (!showHelp) return;
-    function close(e: MouseEvent) {
-      if (helpRef.current && !helpRef.current.contains(e.target as Node)) {
-        setShowHelp(false);
-      }
-    }
-    document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
-  }, [showHelp]);
-
   // Fetch installed capacity for the selected traeger
   useEffect(() => {
     let cancelled = false;
@@ -138,30 +126,61 @@ export default function ErzeugungWidget({
   }, [traeger]);
 
   const helpButton = (
-    <div ref={helpRef} style={{ position: "relative" }}>
+    <button
+      type="button"
+      aria-label="Was zeigt dieses Widget?"
+      onClick={() => setShowHelp(true)}
+      style={{
+        width: 18,
+        height: 18,
+        borderRadius: "50%",
+        border: "1px solid var(--color-border)",
+        background: "transparent",
+        color: "var(--widget-muted)",
+        fontSize: 11,
+        fontWeight: 600,
+        cursor: "pointer",
+        userSelect: "none",
+        lineHeight: 1,
+        padding: 0,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "inherit",
+      }}
+    >
+      ?
+    </button>
+  );
+
+  const helpPanel = (
+    <div
+      ref={helpRef}
+      style={{
+        position: "relative",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        gap: 10,
+      }}
+    >
       <button
         type="button"
-        aria-label="Was zeigt dieses Widget?"
-        aria-expanded={showHelp}
-        onPointerEnter={(e) => {
-          if (e.pointerType === "mouse") setShowHelp(true);
-        }}
-        onPointerLeave={(e) => {
-          if (e.pointerType === "mouse") setShowHelp(false);
-        }}
-        onClick={() => setShowHelp(!showHelp)}
+        aria-label="Hilfe schließen"
+        onClick={() => setShowHelp(false)}
         style={{
-          width: 18,
-          height: 18,
+          position: "absolute",
+          top: -4,
+          right: -4,
+          width: 24,
+          height: 24,
           borderRadius: "50%",
-          border: "1px solid var(--color-border)",
+          border: 0,
           background: "transparent",
           color: "var(--widget-muted)",
-          fontSize: 11,
-          fontWeight: 600,
-          cursor: "help",
-          userSelect: "none",
+          fontSize: 18,
           lineHeight: 1,
+          cursor: "pointer",
           padding: 0,
           display: "inline-flex",
           alignItems: "center",
@@ -169,32 +188,28 @@ export default function ErzeugungWidget({
           fontFamily: "inherit",
         }}
       >
-        ?
+        ×
       </button>
-      {showHelp && (
-        <div
-          role="tooltip"
-          style={{
-            position: "absolute",
-            top: "calc(100% + 6px)",
-            right: 0,
-            width: 240,
-            background: "var(--widget-bg)",
-            border: "1px solid var(--color-border)",
-            borderRadius: "var(--radius-sm)",
-            padding: "10px 12px",
-            fontSize: 11,
-            lineHeight: 1.4,
-            color: "var(--widget-fg)",
-            boxShadow: "0 6px 20px rgba(0,0,0,0.10)",
-            zIndex: 20,
-            fontWeight: 400,
-            textAlign: "left",
-          }}
-        >
-          {HELP_TEXT}
-        </div>
-      )}
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: 600,
+          color: "var(--widget-fg)",
+          paddingRight: 24,
+        }}
+      >
+        Was zeigt das Widget?
+      </div>
+      <div
+        style={{
+          fontSize: 12,
+          lineHeight: 1.5,
+          color: "var(--widget-muted)",
+          textAlign: "left",
+        }}
+      >
+        {HELP_TEXT}
+      </div>
     </div>
   );
 
@@ -216,6 +231,7 @@ export default function ErzeugungWidget({
         installedKwp={installedKwp}
         size={compact ? "compact" : "default"}
         branding
+        helpOverlay={showHelp ? helpPanel : null}
         traegerNav={{
           label: TRAEGER_LABEL[traeger],
           onPrev: () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { v } from "../lib/theme";
 
 type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
@@ -139,6 +139,7 @@ export function MastrLiveRadial({
   traegerNav,
   size = "default",
   branding = false,
+  helpOverlay = null,
 }: {
   energietraeger: Energietraeger;
   installedKwp: number | null;
@@ -146,6 +147,10 @@ export function MastrLiveRadial({
   size?: SizeVariant;
   /** Renders a small "Powered by Solar-Check.io" footer (for embeds). */
   branding?: boolean;
+  /** When set, replaces the chart content with this node (e.g. help screen).
+      Container border + padding are preserved so the flip looks like a
+      back-side of the same card. */
+  helpOverlay?: React.ReactNode;
 }) {
   const dim = DIM[size];
   const SIZE = dim.size;
@@ -157,43 +162,25 @@ export function MastrLiveRadial({
   const HIT_STROKE = dim.hitStroke;
   const isCompact = size === "compact";
 
-  const [bars, setBars] = useState<Bar[]>([]);
-  const [latest, setLatest] = useState<Bar | null>(null);
-  // Skala: Gesamt-Peak der letzten 24h (Gesamt ≥ jeder einzelne Tab).
-  // Damit ist Bar-Länge konsistent über alle Tabs, und Gesamt füllt den
-  // Bar-Bereich vollständig aus.
-  const [scaleMaxMw, setScaleMaxMw] = useState(1);
+  // Rohdaten werden NUR durch Fetches geändert, NICHT beim Energieträger-
+  // Wechsel. Damit bleibt das Widget beim Tab-Switch sichtbar (kein Blitz),
+  // nur die abgeleiteten bars/latest/scaleMaxMw werden neu berechnet.
+  const [rawPoints, setRawPoints] = useState<GenerationPoint[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
-    setBars([]);
-    setLatest(null);
     const load = () => {
       setLoading(true);
       fetch("/api/energy/generation?hours=24")
         .then((r) => r.json())
         .then((d: { data?: GenerationPoint[] }) => {
           if (cancelled) return;
-          const pts = d.data ?? [];
-          const seq: Bar[] = [];
-          let maxGesamtMw = 0;
-          for (const p of pts) {
-            const total = extractMW(p, "gesamt");
-            if (total !== null && total > maxGesamtMw) maxGesamtMw = total;
-            const mw = extractMW(p, energietraeger);
-            if (mw === null) continue;
-            seq.push({ ts: p.ts, mw });
-          }
-          setBars(seq);
-          setLatest(seq.length ? seq[seq.length - 1] : null);
-          setScaleMaxMw(Math.max(1, maxGesamtMw));
+          setRawPoints(d.data ?? []);
           setLoading(false);
         })
         .catch(() => {
           if (cancelled) return;
-          setBars([]);
-          setLatest(null);
           setLoading(false);
         });
     };
@@ -219,7 +206,23 @@ export function MastrLiveRadial({
         document.removeEventListener("visibilitychange", onVisible);
       }
     };
-  }, [energietraeger]);
+  }, []);
+
+  // Abgeleitete bars + Skala — synchron pro Render, wechselt sofort beim
+  // Energieträger-Tausch ohne Loading-Flash.
+  const { bars, scaleMaxMw } = useMemo(() => {
+    const seq: Bar[] = [];
+    let maxGesamtMw = 0;
+    for (const p of rawPoints) {
+      const total = extractMW(p, "gesamt");
+      if (total !== null && total > maxGesamtMw) maxGesamtMw = total;
+      const mw = extractMW(p, energietraeger);
+      if (mw === null) continue;
+      seq.push({ ts: p.ts, mw });
+    }
+    return { bars: seq, scaleMaxMw: Math.max(1, maxGesamtMw) };
+  }, [rawPoints, energietraeger]);
+  const latest: Bar | null = bars.length ? bars[bars.length - 1] : null;
 
   const [hover, setHover] = useState<Bar | null>(null);
   const [showHelp, setShowHelp] = useState(false);
@@ -290,18 +293,44 @@ export function MastrLiveRadial({
     opacity: i % 2 === 0 ? 0.06 : 0.14,
   }));
 
+  const isFlipped = helpOverlay != null;
+  const cardStyle: React.CSSProperties = {
+    background: v("--color-bg"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: 12,
+    padding: isCompact ? "12px 20px 14px" : "16px 20px 24px",
+    // Compact = Box passt sich dem Inhalt an (hug content); Default
+    // bleibt block-Level (volle Container-Breite).
+    display: isCompact ? "inline-block" : "block",
+  };
+
   return (
     <div
       style={{
-        background: v("--color-bg"),
-        border: `1px solid ${v("--color-border")}`,
-        borderRadius: 12,
-        padding: isCompact ? "12px 20px 14px" : "16px 20px 24px",
-        // Compact = Box passt sich dem Inhalt an (hug content); Default
-        // bleibt block-Level (volle Container-Breite).
+        perspective: "1200px",
         display: isCompact ? "inline-block" : "block",
       }}
     >
+      <div
+        style={{
+          position: "relative",
+          transformStyle: "preserve-3d",
+          transition: "transform 0.55s cubic-bezier(.4,.0,.2,1)",
+          transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+        }}
+      >
+        {/* Vorderseite — definiert die Höhe des Flip-Containers.
+            Opacity-Fade auf der Halbzeit der Flip-Anim verdeckt das SVG,
+            das in manchen Browsern durch backface-visibility durchscheint. */}
+        <div
+          style={{
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            opacity: isFlipped ? 0 : 1,
+            transition: "opacity 0.12s ease 0.22s",
+          }}
+        >
+          <div style={cardStyle}>
       {traegerNav ? (
         <div
           style={{
@@ -462,8 +491,10 @@ export function MastrLiveRadial({
           ))}
 
           {/* Bars: visible stroke + invisible wider hit-area for easier hover.
-              Outer <g key={energietraeger}> remounts on tab switch so the
-              stagger-grow animation re-plays. */}
+              <g key={energietraeger}> erzwingt Re-Mount der Bars bei Tab-
+              Wechsel — die sc-bar-grow-Stagger-Animation läuft dann erneut.
+              Das Widget selbst (Container, Header, Center-Kreis) bleibt
+              gemountet (kein Blitz), weil rawPoints entkoppelt sind. */}
           <g key={energietraeger}>
             {bars.map((b, i) => {
               const va = visualAngleFromTs(b.ts);
@@ -486,28 +517,36 @@ export function MastrLiveRadial({
                   onPointerDown={() => setHover(b)}
                   style={{ cursor: "pointer", touchAction: "manipulation" }}
                 >
-                  {ratio > 0 && (
-                    <line
-                      x1={x1}
-                      y1={y1}
-                      x2={x2}
-                      y2={y2}
-                      stroke={isHover || isLatest ? accentLatest : accentBars}
-                      strokeWidth={
-                        isHover
-                          ? dim.barStrokeHover
-                          : isLatest
-                            ? dim.barStrokeLatest
-                            : dim.barStroke
-                      }
-                      strokeLinecap="round"
-                      opacity={isHover || isLatest ? 1 : 0.85}
-                      style={{
-                        animation: "sc-bar-grow 0.35s ease-out backwards",
-                        animationDelay: `${i * 6}ms`,
-                      }}
-                    />
-                  )}
+                  {/* Line immer gerendert (kein conditional mount), damit
+                      x2/y2-Transition zwischen Energieträgern smooth läuft.
+                      Bei ratio=0 (Solar nachts) wird sie via opacity 0
+                      unsichtbar — bleibt aber als Element bestehen. */}
+                  <line
+                    x1={x1}
+                    y1={y1}
+                    x2={x2}
+                    y2={y2}
+                    stroke={isHover || isLatest ? accentLatest : accentBars}
+                    strokeWidth={
+                      isHover
+                        ? dim.barStrokeHover
+                        : isLatest
+                          ? dim.barStrokeLatest
+                          : dim.barStroke
+                    }
+                    strokeLinecap="round"
+                    opacity={ratio > 0 ? (isHover || isLatest ? 1 : 0.85) : 0}
+                    style={{
+                      // Stagger-Aufbau beim Energieträger-Wechsel (via Re-Mount
+                      // durch das parent <g key={energietraeger}>). Bei 90s-
+                      // Refresh ohne Wechsel: keine Animation, nur Transition
+                      // auf den Geometrie-Attributen für smooth Werte-Updates.
+                      animation: "sc-bar-grow 0.35s ease-out backwards",
+                      animationDelay: `${i * 6}ms`,
+                      transition:
+                        "x2 0.4s cubic-bezier(.4,.0,.2,1), y2 0.4s cubic-bezier(.4,.0,.2,1), opacity 0.3s ease, stroke 0.2s ease, stroke-width 0.15s ease",
+                    }}
+                  />
                   <line
                     x1={x1}
                     y1={y1}
@@ -701,6 +740,28 @@ export function MastrLiveRadial({
           {isCompact && traegerNav?.after && <span>{traegerNav.after}</span>}
         </div>
       )}
+          </div>
+        </div>
+
+        {/* Rückseite — overlay über Vorderseite, gleiche Maße.
+            Opacity-Fade gegengleich zur Vorderseite. */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+            opacity: isFlipped ? 1 : 0,
+            transition: "opacity 0.12s ease 0.22s",
+          }}
+        >
+          <div style={{ ...cardStyle, height: "100%" }}>{helpOverlay}</div>
+        </div>
+      </div>
     </div>
   );
 }
