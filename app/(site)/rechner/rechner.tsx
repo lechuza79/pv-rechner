@@ -29,7 +29,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [step, setStep] = useState(hasShare ? 4 : 0);
   const [anlage, setAnlage] = useState(hasShare ? paramInt(initialParams, "a", 2, 0, 4) : 2);
   const [customKwp, setCustomKwp] = useState(hasShare ? paramInt(initialParams, "ck", 12, 1, 50) : 12);
-  const [speicher, setSpeicher] = useState(hasShare ? paramInt(initialParams, "s", 0, 0, 3) : 0);
+  const [speicher, setSpeicher] = useState(hasShare ? paramInt(initialParams, "s", 0, 0, SPEICHER.length - 1) : 0);
   const [personen, setPersonen] = useState(hasShare ? paramInt(initialParams, "p", 1, 0, 3) : 1);
   const [nutzung, setNutzung] = useState(hasShare ? paramInt(initialParams, "n", 1, 0, 3) : 1);
   const [wp, setWp] = useState(hasShare ? paramStr(initialParams, "wp", "nein", ["nein", "geplant", "ja"]) : "nein");
@@ -40,6 +40,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 500 && n <= 200000 ? n : null; })() : null);
   const [oEv, setOEv] = useState<number | null>(hasShare && initialParams?.ev ? (() => { const n = Number(initialParams.ev); return isFinite(n) && n >= 5 && n <= 95 ? n : null; })() : null);
   const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", 0.34, 0.05, 1.0) : 0.34);
+  const [oStromSynced, setOStromSynced] = useState(hasShare); // synced when share-URL — no auto-update
   const [oEinsp, setOEinsp] = useState<number | null>(hasShare && initialParams?.ei ? (() => { const n = Number(initialParams.ei); return isFinite(n) && n >= 0 && n <= 20 ? n : null; })() : null);
   const [einspeisungModus, setEinspeisungModus] = useState<"aus" | "teil" | "voll">(
     hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
@@ -88,6 +89,14 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Dynamic market prices + feed-in rates
   const prices = usePrices();
   const feedInRates = useFeedInRates();
+
+  // Sync electricity price default once when central price loads — only for fresh calculations (not share-URLs)
+  useEffect(() => {
+    if (!oStromSynced && prices.electricityPrice > 0 && prices.electricityPrice !== oStrom) {
+      setOStrom(prices.electricityPrice);
+      setOStromSynced(true);
+    }
+  }, [prices.electricityPrice, oStromSynced, oStrom]);
 
   // Auth + Save
   const authState = useAuth();
@@ -350,9 +359,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {step === 1 && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                {SPEICHER.map((s, i) => (
-                  <OptionCard key={i} selected={speicher === i} onClick={() => { setSpeicher(i); setOKosten(null); }} label={s.label} sub={s.sub} icon={s.icon} />
-                ))}
+                {[...SPEICHER.map((s, idx) => ({ ...s, idx }))]
+                  .sort((a, b) => a.kwh - b.kwh)
+                  .map(s => (
+                    <OptionCard key={s.idx} selected={speicher === s.idx} onClick={() => { setSpeicher(s.idx); setOKosten(null); }} label={s.label} sub={s.sub} icon={s.icon} />
+                  ))}
               </div>
             )}
 

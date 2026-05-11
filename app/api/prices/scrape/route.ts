@@ -13,10 +13,12 @@ const CRON_SECRET = process.env.CRON_SECRET;
 const BOUNDS = {
   pvMin: 800, pvMax: 2500,       // €/kWp
   batteryMin: 200, batteryMax: 1500, // €/kWh
+  electricityMin: 0.20, electricityMax: 0.50, // €/kWh Haushaltsstrom Bestandskunden
   maxDeviation: 0.30,            // 30% max change from last value
 };
 
 const SOURCE_URL = "https://www.solaranlagen-portal.com/photovoltaik/kosten";
+const ELECTRICITY_SOURCE_URL = "https://strom-report.de/strompreise/";
 
 // ─── Scraping Logic ───────────────────────────────────────────────────────────
 
@@ -141,11 +143,11 @@ function derivePriceTiers(scraped: ScrapedPrices) {
 
 // ─── Plausibility Check ───────────────────────────────────────────────────────
 
-async function getLastPrices(): Promise<{ pvPriceSmall: number; pvPriceLarge: number; batteryPerKwh: number } | null> {
+async function getLastPrices(): Promise<{ pvPriceSmall: number; pvPriceLarge: number; batteryPerKwh: number; electricityPrice: number | null; electricityIncrease: number | null } | null> {
   if (!supabase) return null;
   const { data } = await supabase
     .from("market_prices")
-    .select("pv_price_small, pv_price_large, battery_per_kwh")
+    .select("pv_price_small, pv_price_large, battery_per_kwh, electricity_price, electricity_increase")
     .neq("source", "SCRAPE_ERROR")
     .gt("pv_price_small", 0)
     .order("valid_from", { ascending: false })
@@ -157,6 +159,8 @@ async function getLastPrices(): Promise<{ pvPriceSmall: number; pvPriceLarge: nu
     pvPriceSmall: Number(data.pv_price_small),
     pvPriceLarge: Number(data.pv_price_large),
     batteryPerKwh: Number(data.battery_per_kwh),
+    electricityPrice: data.electricity_price != null ? Number(data.electricity_price) : null,
+    electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : null,
   };
 }
 
@@ -193,6 +197,48 @@ function checkPlausibility(
   }
 
   return issues;
+}
+
+// ─── Electricity Price Scrape (strom-report.de) ───────────────────────────────
+// Meta-Description holds the current consumer electricity prices, updated
+// monthly by the source. We parse the "Bestandskunden X,Y Cent" value — that's
+// the realistic average for households on existing contracts.
+
+async function scrapeElectricityPrice(): Promise<{ price: number; note: string } | null> {
+  try {
+    const res = await fetch(ELECTRICITY_SOURCE_URL, {
+      headers: {
+        "User-Agent": "SolarCheck-PriceBot/1.0 (solar-check.io; automated market price update)",
+        "Accept": "text/html",
+        "Accept-Language": "de-DE,de;q=0.9",
+      },
+      redirect: "follow",
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) return null;
+    const html = await res.text();
+    const $ = cheerio.load(html);
+
+    // Primary: meta description (most stable, owner maintains it for SEO)
+    const meta = $('meta[name="description"]').attr("content") || "";
+    // Pattern: "Bestandskunden 32,8 Cent" (case-insensitive, comma-decimal)
+    let match = meta.match(/Bestandskunden[^\d]*([\d]+,[\d]+)\s*Cent/i);
+    let source = "meta";
+
+    // Fallback: page text
+    if (!match) {
+      const bodyText = $("body").text();
+      match = bodyText.match(/Bestandskunden[^\d]*([\d]+,[\d]+)\s*Cent/i);
+      source = "body";
+    }
+
+    if (!match) return null;
+    const cents = parseGermanNumber(match[1]);
+    const price = cents / 100; // ct → €/kWh
+    return { price, note: `parsed from ${source}: "${match[0]}"` };
+  } catch {
+    return null;
+  }
 }
 
 // ─── Notification ─────────────────────────────────────────────────────────────
@@ -282,6 +328,24 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Plausibility check failed", issues, derived, lastPrices }, { status: 422 });
     }
 
+    // 4b. Electricity price (separate source, optional — if it fails we keep last known)
+    const electricity = await scrapeElectricityPrice();
+    let electricityPrice = lastPrices?.electricityPrice ?? null;
+    let electricityNote = "kept last known value (no fresh scrape)";
+    if (electricity) {
+      const newPrice = electricity.price;
+      const inBounds = newPrice >= BOUNDS.electricityMin && newPrice <= BOUNDS.electricityMax;
+      const lastEp = lastPrices?.electricityPrice;
+      const deviation = lastEp ? Math.abs(newPrice - lastEp) / lastEp : 0;
+      const reasonableChange = !lastEp || deviation <= BOUNDS.maxDeviation;
+      if (inBounds && reasonableChange) {
+        electricityPrice = newPrice;
+        electricityNote = electricity.note;
+      } else {
+        electricityNote = `rejected (bounds: ${inBounds}, deviation: ${(deviation * 100).toFixed(1)}%); kept last value`;
+      }
+    }
+
     // 5. Store in database
     const { error } = await supabase.from("market_prices").insert({
       pv_price_small: derived.pvPriceSmall,
@@ -289,9 +353,11 @@ export async function GET(req: Request) {
       pv_threshold_kwp: 10,
       battery_base: 0,
       battery_per_kwh: derived.batteryPerKwh,
+      electricity_price: electricityPrice,
+      electricity_increase: lastPrices?.electricityIncrease ?? null,
       valid_from: new Date().toISOString().split("T")[0],
-      source: `solaranlagen-portal.com (auto)`,
-      notes: `Raw: ${scraped.pvBySize.length} size entries, battery ${scraped.batteryPerKwh?.min ?? "?"}–${scraped.batteryPerKwh?.max ?? "?"} €/kWh`,
+      source: `solaranlagen-portal.com + strom-report.de (auto)`,
+      notes: `PV: ${scraped.pvBySize.length} size entries, battery ${scraped.batteryPerKwh?.min ?? "?"}–${scraped.batteryPerKwh?.max ?? "?"} €/kWh · Strom: ${electricityNote}`,
       updated_by: "cron",
     });
 
@@ -300,12 +366,12 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Database error", details: error.message }, { status: 500 });
     }
 
-    console.log(`[Price Scrape] Updated: PV ${derived.pvPriceSmall}/${derived.pvPriceLarge} €/kWp, Battery ${derived.batteryPerKwh} €/kWh`);
+    console.log(`[Price Scrape] Updated: PV ${derived.pvPriceSmall}/${derived.pvPriceLarge} €/kWp, Battery ${derived.batteryPerKwh} €/kWh, Strom ${electricityPrice != null ? (electricityPrice * 100).toFixed(1) + " ct/kWh" : "—"}`);
 
     return NextResponse.json({
       success: true,
-      prices: derived,
-      raw: { pvEntries: scraped.pvBySize.length, batteryRange: scraped.batteryPerKwh },
+      prices: { ...derived, electricityPrice },
+      raw: { pvEntries: scraped.pvBySize.length, batteryRange: scraped.batteryPerKwh, electricity: electricityNote },
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";

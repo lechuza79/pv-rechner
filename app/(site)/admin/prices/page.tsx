@@ -26,6 +26,8 @@ export default async function PricesPage() {
     pv_threshold_kwp: number;
     battery_base: number;
     battery_per_kwh: number;
+    electricity_price: number | null;
+    electricity_increase: number | null;
     valid_from: string;
     source: string | null;
     notes: string | null;

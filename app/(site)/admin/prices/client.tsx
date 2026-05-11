@@ -12,6 +12,8 @@ interface PriceRow {
   pv_threshold_kwp: number;
   battery_base: number;
   battery_per_kwh: number;
+  electricity_price: number | null;
+  electricity_increase: number | null;
   valid_from: string;
   source: string | null;
   notes: string | null;
@@ -62,6 +64,8 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
   const [threshold, setThreshold] = useState(current?.pv_threshold_kwp ?? DEFAULT_PRICES.pvThresholdKwp);
   const [battBase, setBattBase] = useState(current?.battery_base ?? DEFAULT_PRICES.batteryBase);
   const [battKwh, setBattKwh] = useState(current?.battery_per_kwh ?? DEFAULT_PRICES.batteryPerKwh);
+  const [elecPrice, setElecPrice] = useState(current?.electricity_price ?? DEFAULT_PRICES.electricityPrice);
+  const [elecIncrease, setElecIncrease] = useState(current?.electricity_increase ?? DEFAULT_PRICES.electricityIncrease);
   const [validFrom, setValidFrom] = useState(new Date().toISOString().split("T")[0]);
   const [source, setSource] = useState("");
   const [notes, setNotes] = useState("");
@@ -71,7 +75,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
   const [scrapeResult, setScrapeResult] = useState("");
 
   // Live preview
-  const previewPrices = { pvPriceSmall: pvSmall, pvPriceLarge: pvLarge, pvThresholdKwp: threshold, batteryBase: battBase, batteryPerKwh: battKwh, validFrom, source: null };
+  const previewPrices = { pvPriceSmall: pvSmall, pvPriceLarge: pvLarge, pvThresholdKwp: threshold, batteryBase: battBase, batteryPerKwh: battKwh, electricityPrice: elecPrice, electricityIncrease: elecIncrease, validFrom, source: null };
   const preview10 = estimateCost(10, 0, previewPrices);
   const preview10sp = estimateCost(10, 10, previewPrices);
   const preview15 = estimateCost(15, 10, previewPrices);
@@ -84,7 +88,9 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           pvPriceSmall: pvSmall, pvPriceLarge: pvLarge, pvThresholdKwp: threshold,
-          batteryBase: battBase, batteryPerKwh: battKwh, validFrom,
+          batteryBase: battBase, batteryPerKwh: battKwh,
+          electricityPrice: elecPrice, electricityIncrease: elecIncrease,
+          validFrom,
           source: source || "Manual (Admin)", notes: notes || null,
         }),
       });
@@ -206,6 +212,18 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
             <div style={{ flex: 1 }}>
               <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>pro kWh (€)</span>
               <input style={S.input} type="number" value={battKwh} onChange={e => setBattKwh(Number(e.target.value))} />
+            </div>
+          </div>
+
+          <span style={S.label}>Haushaltsstrom</span>
+          <div style={S.row}>
+            <div style={{ flex: 1 }}>
+              <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>Arbeitspreis (ct/kWh)</span>
+              <input style={S.input} type="number" step="0.1" value={Math.round(elecPrice * 100 * 10) / 10} onChange={e => setElecPrice(Number(e.target.value) / 100)} />
+            </div>
+            <div style={{ flex: 1 }}>
+              <span style={{ ...S.muted, display: "block", marginBottom: 4 }}>Jährliche Steigerung (%)</span>
+              <input style={S.input} type="number" step="0.1" value={Math.round(elecIncrease * 100 * 10) / 10} onChange={e => setElecIncrease(Number(e.target.value) / 100)} />
             </div>
           </div>
 

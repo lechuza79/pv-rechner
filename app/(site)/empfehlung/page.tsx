@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import Empfehlung from "./empfehlung";
 
 export const metadata: Metadata = {
@@ -7,5 +8,10 @@ export const metadata: Metadata = {
 };
 
 export default function EmpfehlungPage() {
-  return <Empfehlung />;
+  // useSearchParams in the client component requires a Suspense boundary.
+  return (
+    <Suspense fallback={null}>
+      <Empfehlung />
+    </Suspense>
+  );
 }

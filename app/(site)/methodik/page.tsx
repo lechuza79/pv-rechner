@@ -114,6 +114,8 @@ async function fetchPrices(): Promise<PriceConfig> {
       pvThresholdKwp: Number(data.pv_threshold_kwp),
       batteryBase: Number(data.battery_base),
       batteryPerKwh: Number(data.battery_per_kwh),
+      electricityPrice: data.electricity_price != null ? Number(data.electricity_price) : DEFAULT_PRICES.electricityPrice,
+      electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : DEFAULT_PRICES.electricityIncrease,
       validFrom: data.valid_from,
       source: data.source,
     };
@@ -193,6 +195,17 @@ export default async function MethodikPage() {
           Das verbessert den Eigenverbrauchsanteil, weil weniger Strom
           übrig bleibt der eingespeist werden muss. Gleichzeitig sinkt die
           Autarkie-Quote nicht, weil mehr vom eigenen Dach kommt statt aus dem Netz.
+        </p>
+        <p style={S.p}>
+          <strong>Wichtige Korrektur bei Wärmepumpen:</strong> Das HTW-Berlin-Modell
+          wurde an Haushalten <em>ohne</em> Wärmepumpe kalibriert. Eine WP zieht
+          aber etwa 80 % ihres Stroms zwischen Oktober und April — genau dann,
+          wenn die Sonne nur ~30 % des Jahresertrags liefert. Der Speicher kann
+          diesen Winterverbrauch kaum decken, weil er in den dunklen Monaten
+          selten voll wird. Wir gewichten den Speicher-Vorteil bei
+          WP-Haushalten deshalb mit einer Saisonkorrektur nach unten — das
+          spiegelt wider, dass ein größerer Speicher hier weniger zusätzlichen
+          Nutzen bringt, als die reine Verbrauchsmenge vermuten lässt.
         </p>
 
         {/* ── Gas/Öl-Vergleich ── */}
