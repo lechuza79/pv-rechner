@@ -360,6 +360,9 @@ export function MastrLiveRadial({
                   height: 6,
                   borderRadius: "50%",
                   background: v("--color-highlight"),
+                  // Dezente Outline, damit der Punkt auch bei Highlight-Tokens
+                  // sichtbar bleibt, die zum Host-BG zu nah liegen.
+                  boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.10)",
                 }}
               />
               {traegerNav.before ?? "Momentan erzeugt"}
@@ -517,6 +520,29 @@ export function MastrLiveRadial({
                   onPointerDown={() => setHover(b)}
                   style={{ cursor: "pointer", touchAction: "manipulation" }}
                 >
+                  {/* Outline-Line bei aktiven/jüngsten Bars — sorgt dafür,
+                      dass die Highlight-Bar auch bei zarten Highlight-Tokens
+                      auf hellen Hintergründen sichtbar bleibt. */}
+                  {(isHover || isLatest) && ratio > 0 && (
+                    <line
+                      x1={x1}
+                      y1={y1}
+                      x2={x2}
+                      y2={y2}
+                      stroke="rgba(0,0,0,0.10)"
+                      strokeWidth={
+                        (isHover ? dim.barStrokeHover : dim.barStrokeLatest) + 2
+                      }
+                      strokeLinecap="round"
+                      pointerEvents="none"
+                      style={{
+                        animation: "sc-bar-grow 0.35s ease-out backwards",
+                        animationDelay: `${i * 6}ms`,
+                        transition:
+                          "x2 0.4s cubic-bezier(.4,.0,.2,1), y2 0.4s cubic-bezier(.4,.0,.2,1)",
+                      }}
+                    />
+                  )}
                   {/* Line immer gerendert (kein conditional mount), damit
                       x2/y2-Transition zwischen Energieträgern smooth läuft.
                       Bei ratio=0 (Solar nachts) wird sie via opacity 0
