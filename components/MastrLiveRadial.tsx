@@ -138,11 +138,14 @@ export function MastrLiveRadial({
   installedKwp,
   traegerNav,
   size = "default",
+  branding = false,
 }: {
   energietraeger: Energietraeger;
   installedKwp: number | null;
   traegerNav?: TraegerNav;
   size?: SizeVariant;
+  /** Renders a small "Powered by Solar-Check.io" footer (for embeds). */
+  branding?: boolean;
 }) {
   const dim = DIM[size];
   const SIZE = dim.size;
@@ -293,7 +296,10 @@ export function MastrLiveRadial({
         background: v("--color-bg"),
         border: `1px solid ${v("--color-border")}`,
         borderRadius: 12,
-        padding: 12,
+        padding: isCompact ? "12px 20px 14px" : "16px 20px 24px",
+        // Compact = Box passt sich dem Inhalt an (hug content); Default
+        // bleibt block-Level (volle Container-Breite).
+        display: isCompact ? "inline-block" : "block",
       }}
     >
       {traegerNav ? (
@@ -328,11 +334,27 @@ export function MastrLiveRadial({
                 }}
               />
               {traegerNav.before ?? "Momentan erzeugt"}
+              <span
+                style={{
+                  fontWeight: 400,
+                  color: v("--color-text-secondary"),
+                  marginLeft: 4,
+                  // Feste Mindestbreite, damit das Widget beim Hover-Wechsel
+                  // ("vor 88 Min" → "14:30 Uhr") nicht horizontal springt.
+                  display: "inline-block",
+                  minWidth: 86,
+                  textAlign: "left",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                · {freshness}
+              </span>
             </div>
           )}
 
-          {/* Help-Button absolute am rechten Rand der ersten Zeile */}
-          {traegerNav.after && (
+          {/* Help-Button absolute am rechten Rand der ersten Zeile (nur Default).
+              In Compact wandert der Help-Slot in den Container-Footer. */}
+          {!isCompact && traegerNav.after && (
             <div style={{ position: "absolute", right: 0, top: 0 }}>
               {traegerNav.after}
             </div>
@@ -528,16 +550,6 @@ export function MastrLiveRadial({
         >
           <div
             style={{
-              fontSize: dim.centerLabel,
-              color: labelColor,
-              fontVariantNumeric: "tabular-nums",
-              marginBottom: 4,
-            }}
-          >
-            {freshness}
-          </div>
-          <div
-            style={{
               fontSize: dim.centerBig,
               fontWeight: 700,
               color: v("--color-text-primary"),
@@ -561,6 +573,21 @@ export function MastrLiveRadial({
           </div>
         </div>
       </div>
+
+      {/* Compact: Help-Slot unten rechts (kein Auslastung-Footer in Compact).
+          Bei branding wandert der ?-Slot in den Branding-Footer (gleiche Zeile
+          wie "Powered by", damit nichts doppelt unten steht). */}
+      {isCompact && traegerNav?.after && !branding && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: 6,
+          }}
+        >
+          {traegerNav.after}
+        </div>
+      )}
 
       {/* Auslastung-Zeile (folgt dem aktuellen oder dem Hover-Wert) — nur in Default-Größe */}
       {!isCompact && displayPct !== null && (
@@ -639,6 +666,39 @@ export function MastrLiveRadial({
               Leistung. Bei Solar tagsüber typisch 20–50 %, nachts 0 %.
             </div>
           )}
+        </div>
+      )}
+
+      {branding && (
+        <div
+          style={{
+            marginTop: 10,
+            fontSize: 10,
+            color: v("--color-text-muted"),
+            letterSpacing: 0.2,
+            display: "flex",
+            // Default: Powered by zentriert. Compact: links + Help rechts.
+            justifyContent: isCompact ? "space-between" : "center",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <span>
+            Powered by{" "}
+            <a
+              href="https://solar-check.io"
+              target="_blank"
+              rel="noopener"
+              style={{
+                color: v("--color-accent"),
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              Solar-Check.io
+            </a>
+          </span>
+          {isCompact && traegerNav?.after && <span>{traegerNav.after}</span>}
         </div>
       )}
     </div>

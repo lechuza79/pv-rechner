@@ -69,27 +69,17 @@ interface WidgetSection {
   label: string;
   /** Whether this section shows the container-width selector. */
   showFrameWidth: boolean;
+  /** Whether this section shows the autoswitch toggle (adds ?auto=1 to src). */
+  showAutoswitch?: boolean;
   variants: WidgetVariant[];
 }
 
 const SECTIONS: WidgetSection[] = [
   {
-    id: "strommix",
-    label: "Strommix Deutschland",
-    showFrameWidth: true,
-    variants: [
-      {
-        id: "strommix",
-        label: "Strommix",
-        src: "/embed/strommix",
-        height: 460,
-      },
-    ],
-  },
-  {
     id: "erzeugung",
     label: "Stromerzeugung (Live)",
     showFrameWidth: false,
+    showAutoswitch: true,
     variants: [
       {
         id: "standard",
@@ -102,8 +92,21 @@ const SECTIONS: WidgetSection[] = [
         id: "mini",
         label: "Kompakt",
         src: "/embed/erzeugung-mini",
-        height: 290,
-        fixedWidth: 280,
+        height: 330,
+        fixedWidth: 260,
+      },
+    ],
+  },
+  {
+    id: "strommix",
+    label: "Strommix Deutschland",
+    showFrameWidth: true,
+    variants: [
+      {
+        id: "strommix",
+        label: "Strommix",
+        src: "/embed/strommix",
+        height: 460,
       },
     ],
   },
@@ -130,9 +133,17 @@ export default function EmbedDemoClient() {
   );
 }
 
+const AUTOSWITCH_OPTIONS = [
+  { id: "off", label: "Aus", ms: 0 },
+  { id: "3s", label: "3 s", ms: 3000 },
+  { id: "6s", label: "6 s", ms: 6000 },
+  { id: "10s", label: "10 s", ms: 10000 },
+];
+
 function SectionPreview({ section }: { section: WidgetSection }) {
   const [themeId, setThemeId] = useState<string>("default");
   const [frameW, setFrameW] = useState<number>(480);
+  const [autoswitch, setAutoswitch] = useState<number>(0);
   const activePreset = PRESETS.find((p) => p.id === themeId);
 
   return (
@@ -182,6 +193,31 @@ function SectionPreview({ section }: { section: WidgetSection }) {
             </div>
           </div>
         )}
+
+        {section.showAutoswitch && (
+          <div>
+            <div style={S.label}>Autoswitch</div>
+            <div style={S.btnRow}>
+              {AUTOSWITCH_OPTIONS.map((o) => (
+                <button
+                  key={o.id}
+                  type="button"
+                  onClick={() => setAutoswitch(o.ms)}
+                  style={{
+                    ...S.btn,
+                    ...(autoswitch === o.ms ? S.btnActive : null),
+                  }}
+                >
+                  {o.label}
+                </button>
+              ))}
+            </div>
+            <div style={S.hint}>
+              Wechselt im gewählten Intervall automatisch durch die Energieträger.
+              Pausiert für 30 s bei manuellem Klick auf die Pfeile.
+            </div>
+          </div>
+        )}
       </div>
 
       <div style={S.variantRow}>
@@ -191,6 +227,7 @@ function SectionPreview({ section }: { section: WidgetSection }) {
             variant={variant}
             themeId={themeId}
             frameW={frameW}
+            autoswitch={autoswitch}
             showVariantLabel={section.variants.length > 1}
           />
         ))}
@@ -203,15 +240,24 @@ function VariantFrame({
   variant,
   themeId,
   frameW,
+  autoswitch,
   showVariantLabel,
 }: {
   variant: WidgetVariant;
   themeId: string;
   frameW: number;
+  autoswitch: number;
   showVariantLabel: boolean;
 }) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [iframeReady, setIframeReady] = useState(false);
+
+  // Toggle Autoswitch reloads the iframe with ?auto=1 query param
+  const src = autoswitch > 0 ? `${variant.src}?auto=${autoswitch}` : variant.src;
+
+  useEffect(() => {
+    setIframeReady(false);
+  }, [src]);
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -240,11 +286,62 @@ function VariantFrame({
       )}
       <iframe
         ref={iframeRef}
-        src={variant.src}
+        src={src}
         title={variant.label}
         onLoad={() => setIframeReady(true)}
         style={{ ...S.iframe, height: variant.height }}
       />
+      <EmbedSnippet variant={variant} autoswitch={autoswitch} />
+    </div>
+  );
+}
+
+function EmbedSnippet({
+  variant,
+  autoswitch,
+}: {
+  variant: WidgetVariant;
+  autoswitch: number;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  const url =
+    autoswitch > 0
+      ? `https://solar-check.io${variant.src}?auto=${autoswitch}`
+      : `https://solar-check.io${variant.src}`;
+
+  const code = [
+    `<iframe`,
+    `  src="${url}"`,
+    `  width="${variant.fixedWidth ?? 480}"`,
+    `  height="${variant.height}"`,
+    `  style="border:0;display:block"`,
+    `  title="${variant.label} — Solar Check"`,
+    `  loading="lazy"`,
+    `></iframe>`,
+  ].join("\n");
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // noop
+    }
+  };
+
+  return (
+    <div style={S.snippetWrap}>
+      <div style={S.snippetHeader}>
+        <span style={S.snippetLabel}>Embed-Code</span>
+        <button type="button" onClick={copy} style={S.snippetCopyBtn}>
+          {copied ? "Kopiert!" : "Kopieren"}
+        </button>
+      </div>
+      <pre style={S.snippetPre}>
+        <code>{code}</code>
+      </pre>
     </div>
   );
 }
@@ -362,5 +459,47 @@ const S: Record<string, React.CSSProperties> = {
     border: 0,
     display: "block",
     background: "transparent",
+  },
+  snippetWrap: {
+    marginTop: 12,
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: 8,
+    overflow: "hidden",
+    background: v("--color-bg-muted"),
+  },
+  snippetHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "6px 10px",
+    borderBottom: `1px solid ${v("--color-border")}`,
+  },
+  snippetLabel: {
+    fontSize: 10,
+    fontWeight: 700,
+    color: v("--color-text-secondary"),
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.06em",
+  },
+  snippetCopyBtn: {
+    padding: "3px 10px",
+    fontSize: 11,
+    fontWeight: 600,
+    background: v("--color-accent"),
+    color: v("--color-text-on-accent"),
+    border: 0,
+    borderRadius: 6,
+    cursor: "pointer",
+    fontFamily: "inherit",
+  },
+  snippetPre: {
+    margin: 0,
+    padding: "10px 12px",
+    fontSize: 11,
+    lineHeight: 1.45,
+    fontFamily: v("--font-mono"),
+    color: v("--color-text-primary"),
+    whiteSpace: "pre-wrap" as const,
+    wordBreak: "break-all" as const,
   },
 };

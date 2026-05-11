@@ -48,15 +48,34 @@ function neighbour(t: Traeger, step: -1 | 1): Traeger {
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
+
 export default function ErzeugungWidget({
   compact = false,
+  autoswitchMs = 0,
 }: {
   compact?: boolean;
+  /** Intervall in Millisekunden für Autoswitch. 0 = aus. */
+  autoswitchMs?: number;
 }) {
   const [traeger, setTraeger] = useState<Traeger>("gesamt");
   const [installedKwp, setInstalledKwp] = useState<number | null>(null);
   const [showHelp, setShowHelp] = useState(false);
   const helpRef = useRef<HTMLDivElement | null>(null);
+
+  // Autoswitch: wechselt periodisch durch die Energieträger. Pausiert
+  // a) solange der Cursor über dem Widget hovert (Desktop)
+  // b) 30 s nach manueller Pfeil-Nav oder Touch-Tap (Mobile)
+  const lastManualRef = useRef<number>(0);
+  const hoveringRef = useRef<boolean>(false);
+  useEffect(() => {
+    if (autoswitchMs <= 0) return;
+    const id = setInterval(() => {
+      if (hoveringRef.current) return;
+      if (Date.now() - lastManualRef.current < 30_000) return;
+      setTraeger((t) => neighbour(t, +1));
+    }, autoswitchMs);
+    return () => clearInterval(id);
+  }, [autoswitchMs]);
 
   // postMessage theme override
   useEffect(() => {
@@ -181,23 +200,32 @@ export default function ErzeugungWidget({
 
   return (
     <div
-      style={{
-        background: "var(--widget-bg)",
-        color: "var(--widget-fg)",
-        borderRadius: "var(--widget-border-radius)",
-        fontFamily: "var(--widget-font-family)",
-        padding: compact ? 12 : 20,
-        boxSizing: "border-box",
+      // Unsichtbarer Pointer-Event-Wrapper für Autoswitch-Pause bei Hover/Tap.
+      onPointerEnter={(e) => {
+        if (e.pointerType === "mouse") hoveringRef.current = true;
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === "mouse") hoveringRef.current = false;
+      }}
+      onPointerDown={(e) => {
+        if (e.pointerType !== "mouse") lastManualRef.current = Date.now();
       }}
     >
       <MastrLiveRadial
         energietraeger={traeger}
         installedKwp={installedKwp}
         size={compact ? "compact" : "default"}
+        branding
         traegerNav={{
           label: TRAEGER_LABEL[traeger],
-          onPrev: () => setTraeger(neighbour(traeger, -1)),
-          onNext: () => setTraeger(neighbour(traeger, +1)),
+          onPrev: () => {
+            lastManualRef.current = Date.now();
+            setTraeger(neighbour(traeger, -1));
+          },
+          onNext: () => {
+            lastManualRef.current = Date.now();
+            setTraeger(neighbour(traeger, +1));
+          },
           before: "Momentan erzeugt",
           after: helpButton,
         }}

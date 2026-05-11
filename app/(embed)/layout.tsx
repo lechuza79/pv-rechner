@@ -33,6 +33,7 @@ const baseStyles = `
     --widget-accent:#1365EA;
     --widget-accent-fg:#FFFFFF;
     --widget-highlight:#3DFFC1;
+    --widget-awareness:#3DFFC1;
     --widget-border-radius:14px;
     --widget-font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 
@@ -46,6 +47,7 @@ const baseStyles = `
     --color-chart-grid:color-mix(in srgb,var(--widget-fg) 8%,transparent);
     --color-accent:var(--widget-accent);
     --color-highlight:var(--widget-highlight);
+    --color-awareness:var(--widget-awareness);
     --font-text:var(--widget-font-family);
     --font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
     --radius-sm:6px;
@@ -58,12 +60,24 @@ const baseStyles = `
     line-height:1.4;
   }
 
-  /* Live-Indikator-Pulse (recycled von /energie + Hub) */
-  @keyframes sc-live-dot {
-    0%,100% { transform: scale(1); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-highlight) 30%, transparent) }
-    50%     { transform: scale(1.15); box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-highlight) 0%, transparent) }
+  /* Live-Indikator: zwei expandierende Ringe, der zweite halb versetzt */
+  @keyframes sc-live-ring {
+    0%   { transform: translate(-50%,-50%) scale(1);   opacity: 0.7 }
+    100% { transform: translate(-50%,-50%) scale(3.5); opacity: 0 }
   }
-  .sc-live-dot { animation: sc-live-dot 1.8s ease-in-out infinite }
+  .sc-live-dot { position: relative }
+  .sc-live-dot::before,
+  .sc-live-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: var(--color-highlight);
+    pointer-events: none;
+    animation: sc-live-ring 1.8s ease-out infinite;
+  }
+  .sc-live-dot::after { animation-delay: 0.9s }
 
   /* Bar-Wachstum-Stagger fuer Live-Radial-Chart */
   @keyframes sc-bar-grow {
