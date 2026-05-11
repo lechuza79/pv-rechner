@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery } from "../../components/Icons";
+import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser } from "../../components/Icons";
 import { MastrHeroSection } from "../../components/MastrHeroSection";
 import { v } from "../../lib/theme";
 
@@ -14,10 +14,17 @@ const tools = [
     cta: "Simulation starten",
   },
   {
+    href: "/empfehlung",
+    icon: IconUser,
+    title: "Was passt zu mir?",
+    description: "Beschreibe Haus, Haushalt und Verbrauch — wir empfehlen dir die optimale PV-Anlage mit Speicher. Für alle, die nicht wissen, wo sie anfangen sollen.",
+    cta: "Empfehlung starten",
+  },
+  {
     href: "/rechner",
     icon: IconBolt,
     title: "Anlage rechnen",
-    description: "Berechne Kosten, Ersparnis und Rendite einer PV-Anlage — individuell für deinen Haushalt.",
+    description: "Berechne Kosten, Ersparnis und Rendite einer PV-Anlage — individuell für deinen Haushalt. Wenn du schon weißt, was du planst.",
     cta: "Jetzt berechnen",
   },
   {
@@ -47,7 +54,7 @@ export default function Home() {
         {/* Hero Text */}
         <div style={{ textAlign: "center", marginBottom: 20, paddingTop: 10 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
-          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Vier Tools. Ohne Anmeldung, ohne Leadfunnel.</p>
+          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Fünf Tools. Ohne Anmeldung, ohne Leadfunnel.</p>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { recommend, type RecommendInput } from "../recommend";
+import { SPEICHER } from "../constants";
 
 // Canonical input: 4-person household, normal usage, EFH with Satteldach,
 // no WP, no EA, no budget cap. This should land somewhere around 8 kWp
@@ -112,14 +113,72 @@ describe("recommend (PV system recommendation)", () => {
   });
 
   it("speicherIdx points to the correct entry in the SPEICHER constant", () => {
-    // SPEICHER = [{kwh:0}, {kwh:5}, {kwh:10}, {kwh:15}]
+    // SPEICHER includes intermediate sizes (0/5/7.5/10/12.5/15 kWh)
     const r = recommend(baseInput);
-    const expectedKwh = [0, 5, 10, 15][r.speicherIdx];
-    expect(r.speicherKwh).toBe(expectedKwh);
+    expect(SPEICHER[r.speicherIdx].kwh).toBe(r.speicherKwh);
   });
 
   it("rounds final kWp to half-integer steps", () => {
     const r = recommend(baseInput);
     expect(r.kwp * 2).toBe(Math.round(r.kwp * 2));
+  });
+
+  it("npv25 is the 25-year net profit (after investment)", () => {
+    const r = recommend(baseInput);
+    expect(typeof r.reasoning.npv25).toBe("number");
+    // For a typical EFH, NPV should be positive (otherwise PV would never be recommended)
+    expect(r.reasoning.npv25).toBeGreaterThan(0);
+  });
+
+  it("higher consumption → larger recommendation (more kWp or storage)", () => {
+    const low = recommend({ ...baseInput, personen: 0, nutzung: 0 });    // 1 person, away
+    const high = recommend({ ...baseInput, personen: 3, wp: "ja", ea: "ja" }); // 5+, with WP+EA
+    const lowSize = low.kwp + low.speicherKwh / 5;
+    const highSize = high.kwp + high.speicherKwh / 5;
+    expect(highSize).toBeGreaterThan(lowSize);
+  });
+
+  it("with heat pump, recommendation utilises significant share of roof potential", () => {
+    // Reihenhaus + Flachdach + 3-4 Pers + WP: 7300 kWh consumption on a 6.5 kWp roof.
+    // The correct answer is to use the roof — anything ≤ 3 kWp is mathematically wrong.
+    const r = recommend({
+      personen: 2, nutzung: 1, wp: "ja", ea: "nein", eaKm: 15000,
+      haustyp: 0, dachart: 1, budgetLimit: null,
+    });
+    expect(r.kwp).toBeGreaterThanOrEqual(r.reasoning.maxRoofKwp * 0.7);
+  });
+
+  it("never returns NaN in npv25 or investition", () => {
+    const cases: RecommendInput[] = [
+      baseInput,
+      { ...baseInput, personen: 0, nutzung: 0 },
+      { ...baseInput, personen: 3, wp: "ja", ea: "ja", eaKm: 20000 },
+      { ...baseInput, haustyp: 0, dachart: 2 },
+      { ...baseInput, haustyp: 3, dachart: 3 },
+    ];
+    for (const c of cases) {
+      const r = recommend(c);
+      expect(Number.isFinite(r.reasoning.npv25)).toBe(true);
+      expect(Number.isFinite(r.reasoning.investition)).toBe(true);
+      for (const alt of r.alternatives) {
+        expect(Number.isFinite(alt.npv25)).toBe(true);
+        expect(Number.isFinite(alt.investition)).toBe(true);
+      }
+    }
+  });
+
+  it("survives an incomplete PriceConfig (e.g. stale cache without electricity fields)", () => {
+    // Simulate caller passing a price object missing the new electricityPrice/Increase keys.
+    // The function should fall back to defaults instead of producing NaN.
+    const incompletePrices = {
+      pvPriceSmall: 1400, pvPriceLarge: 1250, pvThresholdKwp: 10,
+      batteryBase: 0, batteryPerKwh: 700,
+      // electricityPrice + electricityIncrease intentionally missing
+      validFrom: "2026-04-01", source: null,
+    } as unknown as Parameters<typeof recommend>[1];
+    const r = recommend(baseInput, incompletePrices);
+    expect(Number.isFinite(r.reasoning.npv25)).toBe(true);
+    // 8-kWp roof + healthy consumption should still recommend a real system
+    expect(r.kwp).toBeGreaterThanOrEqual(5);
   });
 });

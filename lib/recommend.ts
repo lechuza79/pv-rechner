@@ -1,26 +1,32 @@
-import { PERSONEN, HAUSTYPEN, DACHARTEN } from "./constants";
+import { PERSONEN, HAUSTYPEN, DACHARTEN, SPEICHER } from "./constants";
 import { calcEigenverbrauch, estimateCost, calc } from "./calc";
 import { WP_ANNUAL_KWH, calcEaAnnual } from "./consumption";
-import { type PriceConfig } from "./prices-config";
+import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
+import { DEFAULT_FEED_IN, type FeedInRates } from "./feedin-config";
 
-// ─── Schwellwerte (tunable) ─────────────────────────────────────────────────
-const MIN_EV_TARGET = 0.40;         // Empfohlene Mindest-EV-Quote
-const BATTERY_EV_BOOST_MIN = 8;     // Min. EV-Verbesserung in pp für Speicher-Empfehlung
-const BATTERY_PAYBACK_MAX = 14;     // Max. Amortisation in Jahren mit Speicher
-const ALT_SIZE_DIFF_KWP = 3;        // Min. kWp-Differenz für "Maximale Dachnutzung"-Alternative
-const DEFAULT_ERTRAG = 950;         // kWh/kWp Fallback
-const DEFAULT_STROM = 0.34;         // €/kWh
+// ─── Tunables ───────────────────────────────────────────────────────────────
+const KWP_STEP = 0.5;
+const KWP_MIN = 3;
+const SPEICHER_OPTIONS_KWH = [0, 5, 7.5, 10, 12.5, 15];
+const DAYS_PER_YEAR = 365;
+const MAX_SPEICHER_DAYS = 2;          // Speicher max. ~2× Tagesverbrauch
+const ALT_SIZE_DIFF_KWP = 3;          // "Max Dachnutzung" wird angeboten ab diesem Abstand
+const ALT_NPV_TOLERANCE = 0.95;       // Alternativen müssen ≥ 95 % NPV der Hauptempfehlung erreichen
+const ALT_MIN_INVEST_DELTA = 2000;    // "Günstiger Einstieg" braucht min. 2.000 € Investitions-Abstand
+const ALT_MIN_INVEST_DELTA_RATIO = 0.15; // ODER min. 15 % weniger Investition
+const DEFAULT_ERTRAG = 950;
 
 export interface RecommendInput {
-  personen: number;      // Index in PERSONEN
-  nutzung: number;       // Index in NUTZUNG
-  wp: string;            // "nein" | "geplant" | "ja"
-  ea: string;            // "nein" | "geplant" | "ja"
+  personen: number;        // Index in PERSONEN
+  nutzung: number;         // Index in NUTZUNG
+  wp: string;              // "nein" | "geplant" | "ja"
+  ea: string;              // "nein" | "geplant" | "ja"
   eaKm: number;
-  haustyp: number;       // Index in HAUSTYPEN
-  dachart: number;       // Index in DACHARTEN
+  haustyp: number;         // Index in HAUSTYPEN
+  dachart: number;         // Index in DACHARTEN
   budgetLimit: number | null;
-  ertragKwp?: number;    // Default 950
+  ertragKwp?: number;
+  customRoofM2?: number;   // Override für nutzbare Dachfläche in m² (sonst aus haustyp × dachart)
 }
 
 export interface RecommendReasoning {
@@ -35,6 +41,7 @@ export interface RecommendReasoning {
   paybackYears: number | null;
   budgetConstrained: boolean;
   investition: number;
+  npv25: number;           // Rendite nach 25 J (Gesamtgewinn nach Investitionsabzug)
 }
 
 export interface Alternative {
@@ -44,179 +51,201 @@ export interface Alternative {
   eigenverbrauch: number;
   paybackYears: number | null;
   investition: number;
+  npv25: number;
   reason: string;
 }
 
 export interface Recommendation {
   kwp: number;
   speicherKwh: number;
-  speicherIdx: number;    // Index in SPEICHER
+  speicherIdx: number;     // Index in SPEICHER
   reasoning: RecommendReasoning;
   alternatives: Alternative[];
 }
 
-export function recommend(input: RecommendInput, prices?: PriceConfig): Recommendation {
-  const ertragKwp = input.ertragKwp ?? DEFAULT_ERTRAG;
+// Gewichteter Einspeise-Mischsatz für Anlagen über der 10-kWp-Schwelle
+function effectiveFeedInCtPerKwh(kwp: number, feedIn: FeedInRates): number {
+  if (kwp <= 10) return feedIn.teilUnder10;
+  return (10 * feedIn.teilUnder10 + (kwp - 10) * feedIn.teilOver10) / kwp;
+}
 
-  // 1. Gesamtverbrauch berechnen
+function findSpeicherIdx(kwh: number): number {
+  const idx = SPEICHER.findIndex(s => s.kwh === kwh);
+  return idx >= 0 ? idx : 0;
+}
+
+interface Candidate {
+  kwp: number;
+  speicherKwh: number;
+  ev: number;             // EV-Quote in %
+  investition: number;
+  npv25: number;          // Rendite nach 25 J
+  paybackYears: number | null;
+}
+
+export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: FeedInRates): Recommendation {
+  const p = prices ?? DEFAULT_PRICES;
+  const f = feedIn ?? DEFAULT_FEED_IN;
+  const ertragKwp = input.ertragKwp ?? DEFAULT_ERTRAG;
+  // Defensive: fallback to defaults if upstream caller passed an incomplete PriceConfig
+  // (e.g. stale browser cache). Otherwise NaN propagates through calc() and ranks first.
+  const strompreis = Number.isFinite(p.electricityPrice) && p.electricityPrice > 0
+    ? p.electricityPrice
+    : DEFAULT_PRICES.electricityPrice;
+  const stromSteigerung = Number.isFinite(p.electricityIncrease)
+    ? p.electricityIncrease
+    : DEFAULT_PRICES.electricityIncrease;
+
+  // 1. Verbrauchsgrößen
   const baseConsumption = PERSONEN[input.personen].verbrauch;
   const wpConsumption = input.wp !== "nein" ? WP_ANNUAL_KWH : 0;
   const eaConsumption = input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0;
   const totalConsumption = baseConsumption + wpConsumption + eaConsumption;
+  const dailyConsumption = totalConsumption / DAYS_PER_YEAR;
 
-  // 2. Max Dach-kWp
+  // 2. Dachfläche → max. kWp (customRoofM2 hat Vorrang vor haustyp × dachart)
   const footprint = HAUSTYPEN[input.haustyp].footprint;
-  const factor = DACHARTEN[input.dachart].factor;
-  const nutzbarM2 = Math.round(footprint * factor);
-  const maxRoofKwp = Math.round(nutzbarM2 * 0.2 * 10) / 10; // 200 Wp/m²
+  const dachFactor = DACHARTEN[input.dachart].factor;
+  const nutzbarM2 = input.customRoofM2 != null && input.customRoofM2 > 0
+    ? Math.round(input.customRoofM2)
+    : Math.round(footprint * dachFactor);
+  const maxRoofKwp = Math.round(nutzbarM2 * 0.2 * 2) / 2; // 200 Wp/m², gerundet auf 0,5
 
-  // 3. Optimales kWp finden (ohne Speicher zuerst)
-  // Iteriere in 0.5er-Schritten, finde höchstes kWp wo EV > MIN_EV_TARGET
-  let optimalKwp = Math.min(3, maxRoofKwp); // Start bei 3 kWp
-  for (let testKwp = 3; testKwp <= maxRoofKwp; testKwp += 0.5) {
-    const ev = calcEigenverbrauch({
-      personenIdx: input.personen, nutzungIdx: input.nutzung,
-      speicherKwh: 0, wp: input.wp, ea: input.ea, eaKm: input.eaKm,
-      kwp: testKwp, ertragKwp,
-    });
-    if (ev / 100 >= MIN_EV_TARGET) {
-      optimalKwp = testKwp;
-    } else {
-      break; // EV sinkt unter Schwelle
+  // 3. Grid-Search: alle (kWp × Speicher)-Kombinationen NPV-bewertet
+  const maxSpeicherSinnvoll = Math.min(15, MAX_SPEICHER_DAYS * dailyConsumption);
+  const speicherTestOptions = SPEICHER_OPTIONS_KWH.filter(kwh => kwh <= maxSpeicherSinnvoll);
+  const candidates: Candidate[] = [];
+
+  const maxKwp = Math.max(KWP_MIN, maxRoofKwp);
+  for (let kwp = KWP_MIN; kwp <= maxKwp + 1e-6; kwp += KWP_STEP) {
+    const kwpRounded = Math.round(kwp * 2) / 2;
+    const feedInCt = effectiveFeedInCtPerKwh(kwpRounded, f);
+    for (const speicherKwh of speicherTestOptions) {
+      const ev = calcEigenverbrauch({
+        personenIdx: input.personen, nutzungIdx: input.nutzung,
+        speicherKwh, wp: input.wp, ea: input.ea, eaKm: input.eaKm,
+        kwp: kwpRounded, ertragKwp,
+      });
+      const investition = estimateCost(kwpRounded, speicherKwh, p);
+      const result = calc({
+        kwp: kwpRounded, kosten: investition, strompreis,
+        eigenverbrauch: ev, einspeisung: feedInCt,
+        stromSteigerung, ertragKwp, monthly: null,
+      });
+      candidates.push({
+        kwp: kwpRounded, speicherKwh, ev,
+        investition,
+        npv25: result.total,
+        paybackYears: result.be?.i ?? null,
+      });
     }
   }
-  // Auf ganze oder halbe kWp runden
-  optimalKwp = Math.round(optimalKwp * 2) / 2;
-  // Mindestens so viel wie der Verbrauch sinnvoll macht
-  optimalKwp = Math.max(optimalKwp, Math.min(3, maxRoofKwp));
 
-  // 4. Speicher testen
-  const speicherOptions = [0, 5, 10, 15]; // kWh
-  let bestSpeicher = 0;
-  let bestSpeicherIdx = 0;
-  const evOhne = calcEigenverbrauch({
+  // 4. Beste Empfehlung = höchster NPV nach 25 J. NaN-Kandidaten werden ausgeschlossen
+  // (würden in Brower-Sort sonst zufällig erscheinen je nach Engine).
+  const valid = candidates.filter(c => Number.isFinite(c.npv25));
+  valid.sort((a, b) => b.npv25 - a.npv25);
+  let best = valid[0] ?? candidates[0];
+
+  // 5. Budget-Constraint: filtere alle die ins Budget passen, nimm bestes davon (aus der sortierten Liste)
+  let budgetConstrained = false;
+  if (input.budgetLimit !== null) {
+    const affordable = valid.filter(c => c.investition <= input.budgetLimit!);
+    if (affordable.length > 0) {
+      if (affordable[0].kwp !== best.kwp || affordable[0].speicherKwh !== best.speicherKwh) {
+        budgetConstrained = true;
+        best = affordable[0];
+      }
+    } else {
+      budgetConstrained = true;
+      // Kleinste verfügbare Kombination als Fallback
+      const cheapest = [...candidates].sort((a, b) => a.investition - b.investition)[0];
+      best = cheapest;
+    }
+  }
+
+  const evOhneSpeicher = calcEigenverbrauch({
     personenIdx: input.personen, nutzungIdx: input.nutzung,
     speicherKwh: 0, wp: input.wp, ea: input.ea, eaKm: input.eaKm,
-    kwp: optimalKwp, ertragKwp,
+    kwp: best.kwp, ertragKwp,
   });
 
-  for (let si = 1; si < speicherOptions.length; si++) {
-    const spKwh = speicherOptions[si];
-    const evMit = calcEigenverbrauch({
-      personenIdx: input.personen, nutzungIdx: input.nutzung,
-      speicherKwh: spKwh, wp: input.wp, ea: input.ea, eaKm: input.eaKm,
-      kwp: optimalKwp, ertragKwp,
-    });
-    const boost = evMit - evOhne;
-    if (boost >= BATTERY_EV_BOOST_MIN) {
-      // Amortisation prüfen
-      const kosten = estimateCost(optimalKwp, spKwh, prices);
-      const result = calc({
-        kwp: optimalKwp, kosten, strompreis: DEFAULT_STROM,
-        eigenverbrauch: evMit, einspeisung: 8.03,
-        stromSteigerung: 0.03, ertragKwp, monthly: null,
-      });
-      if (result.be && result.be.i <= BATTERY_PAYBACK_MAX) {
-        bestSpeicher = spKwh;
-        bestSpeicherIdx = si;
-      }
-    }
-  }
-
-  // 5. Budget-Constraint
-  let finalKwp = optimalKwp;
-  let finalSpeicher = bestSpeicher;
-  let finalSpeicherIdx = bestSpeicherIdx;
-  let budgetConstrained = false;
-
-  if (input.budgetLimit !== null) {
-    let kosten = estimateCost(finalKwp, finalSpeicher, prices);
-    if (kosten > input.budgetLimit) {
-      budgetConstrained = true;
-      // Erst Speicher reduzieren
-      while (finalSpeicherIdx > 0 && kosten > input.budgetLimit) {
-        finalSpeicherIdx--;
-        finalSpeicher = speicherOptions[finalSpeicherIdx];
-        kosten = estimateCost(finalKwp, finalSpeicher, prices);
-      }
-      // Dann kWp reduzieren
-      while (finalKwp > 3 && kosten > input.budgetLimit) {
-        finalKwp -= 0.5;
-        kosten = estimateCost(finalKwp, finalSpeicher, prices);
-      }
-      finalKwp = Math.round(finalKwp * 2) / 2;
-    }
-  }
-
-  // Finale Werte berechnen
-  const finalEv = calcEigenverbrauch({
-    personenIdx: input.personen, nutzungIdx: input.nutzung,
-    speicherKwh: finalSpeicher, wp: input.wp, ea: input.ea, eaKm: input.eaKm,
-    kwp: finalKwp, ertragKwp,
-  });
-  const finalKosten = estimateCost(finalKwp, finalSpeicher, prices);
-  const finalResult = calc({
-    kwp: finalKwp, kosten: finalKosten, strompreis: DEFAULT_STROM,
-    eigenverbrauch: finalEv, einspeisung: 8.03,
-    stromSteigerung: 0.03, ertragKwp, monthly: null,
-  });
-
-  // 6. Alternativen generieren
+  // 6. Alternativen aus den Top-NPV-Kandidaten
   const alternatives: Alternative[] = [];
 
-  // Budget-Variante (ohne Speicher) wenn Hauptempfehlung Speicher enthält
-  if (finalSpeicher > 0) {
-    const altKosten = estimateCost(finalKwp, 0, prices);
-    const altEv = calcEigenverbrauch({
-      personenIdx: input.personen, nutzungIdx: input.nutzung,
-      speicherKwh: 0, wp: input.wp, ea: input.ea, eaKm: input.eaKm,
-      kwp: finalKwp, ertragKwp,
-    });
-    const altResult = calc({
-      kwp: finalKwp, kosten: altKosten, strompreis: DEFAULT_STROM,
-      eigenverbrauch: altEv, einspeisung: 8.03,
-      stromSteigerung: 0.03, ertragKwp, monthly: null,
-    });
-    alternatives.push({
-      label: "Ohne Speicher",
-      kwp: finalKwp,
-      speicherKwh: 0,
-      eigenverbrauch: altEv,
-      paybackYears: altResult.be?.i ?? null,
-      investition: altKosten,
-      reason: `${(finalKosten - altKosten).toLocaleString("de-DE")} € günstiger, kürzere Amortisation`,
-    });
+  // "Ohne Speicher" — selbe kWp, kein Akku
+  if (best.speicherKwh > 0) {
+    const alt = candidates.find(c => c.kwp === best.kwp && c.speicherKwh === 0);
+    if (alt) {
+      alternatives.push({
+        label: "Ohne Speicher",
+        kwp: alt.kwp,
+        speicherKwh: 0,
+        eigenverbrauch: alt.ev,
+        paybackYears: alt.paybackYears,
+        investition: alt.investition,
+        npv25: alt.npv25,
+        reason: `${(best.investition - alt.investition).toLocaleString("de-DE")} € günstiger, schneller amortisiert`,
+      });
+    }
   }
 
-  // Maximale Dachnutzung wenn empfohlenes kWp < maxKwp
-  if (maxRoofKwp - finalKwp >= ALT_SIZE_DIFF_KWP) {
-    const maxKwp = Math.round(maxRoofKwp * 2) / 2;
-    const altKosten = estimateCost(maxKwp, finalSpeicher, prices);
-    const altEv = calcEigenverbrauch({
-      personenIdx: input.personen, nutzungIdx: input.nutzung,
-      speicherKwh: finalSpeicher, wp: input.wp, ea: input.ea, eaKm: input.eaKm,
-      kwp: maxKwp, ertragKwp,
-    });
-    const altResult = calc({
-      kwp: maxKwp, kosten: altKosten, strompreis: DEFAULT_STROM,
-      eigenverbrauch: altEv, einspeisung: 8.03,
-      stromSteigerung: 0.03, ertragKwp, monthly: null,
-    });
+  // "Maximale Dachnutzung" — größtes kWp, falls signifikant größer
+  if (maxRoofKwp - best.kwp >= ALT_SIZE_DIFF_KWP) {
+    const altCandidates = candidates.filter(c => c.kwp === maxRoofKwp);
+    altCandidates.sort((a, b) => b.npv25 - a.npv25);
+    const alt = altCandidates[0];
+    if (alt && alt.kwp !== best.kwp) {
+      const diff = best.npv25 - alt.npv25;
+      const reason = diff > 0
+        ? `Volles Dach: mehr Stromertrag, ${Math.round(diff).toLocaleString("de-DE")} € weniger Rendite über 25 J`
+        : `Volles Dach mit ähnlich guter Rendite (${Math.round(alt.npv25).toLocaleString("de-DE")} €)`;
+      alternatives.push({
+        label: "Maximale Dachnutzung",
+        kwp: alt.kwp,
+        speicherKwh: alt.speicherKwh,
+        eigenverbrauch: alt.ev,
+        paybackYears: alt.paybackYears,
+        investition: alt.investition,
+        npv25: alt.npv25,
+        reason,
+      });
+    }
+  }
+
+  // "Günstiger" — substantiell kleinere Investition, fast gleicher NPV (innerhalb Toleranz).
+  // Damit's nicht nur ein 500-€-Cosmetics-Vorschlag wird, fordern wir
+  // entweder min. 2.000 € absoluten Abstand ODER min. 15 % relativen Abstand
+  // gegenüber der Hauptempfehlung.
+  const cheaper = candidates
+    .filter(c => {
+      if (c.kwp === best.kwp && c.speicherKwh === best.speicherKwh) return false;
+      if (c.investition >= best.investition) return false;
+      if (c.npv25 < best.npv25 * ALT_NPV_TOLERANCE) return false;
+      if (alternatives.some(a => a.kwp === c.kwp && a.speicherKwh === c.speicherKwh)) return false;
+      const delta = best.investition - c.investition;
+      const ratio = delta / best.investition;
+      return delta >= ALT_MIN_INVEST_DELTA || ratio >= ALT_MIN_INVEST_DELTA_RATIO;
+    })
+    .sort((a, b) => a.investition - b.investition);
+  if (cheaper.length > 0 && alternatives.length < 2) {
+    const alt = cheaper[0];
     alternatives.push({
-      label: "Maximale Dachnutzung",
-      kwp: maxKwp,
-      speicherKwh: finalSpeicher,
-      eigenverbrauch: altEv,
-      paybackYears: altResult.be?.i ?? null,
-      investition: altKosten,
-      reason: `Nutzt die volle Dachfläche — mehr Einspeisung, weniger Eigenverbrauch (${altEv}%)`,
+      label: "Günstiger Einstieg",
+      kwp: alt.kwp,
+      speicherKwh: alt.speicherKwh,
+      eigenverbrauch: alt.ev,
+      paybackYears: alt.paybackYears,
+      investition: alt.investition,
+      npv25: alt.npv25,
+      reason: `${(best.investition - alt.investition).toLocaleString("de-DE")} € weniger Investition, fast gleiche Rendite`,
     });
   }
 
   return {
-    kwp: finalKwp,
-    speicherKwh: finalSpeicher,
-    speicherIdx: finalSpeicherIdx,
+    kwp: best.kwp,
+    speicherKwh: best.speicherKwh,
+    speicherIdx: findSpeicherIdx(best.speicherKwh),
     reasoning: {
       totalConsumption,
       baseConsumption,
@@ -224,11 +253,12 @@ export function recommend(input: RecommendInput, prices?: PriceConfig): Recommen
       eaConsumption,
       maxRoofKwp,
       nutzbarM2,
-      eigenverbrauch: finalEv,
-      eigenverbrauchOhneSpeicher: evOhne,
-      paybackYears: finalResult.be?.i ?? null,
+      eigenverbrauch: best.ev,
+      eigenverbrauchOhneSpeicher: evOhneSpeicher,
+      paybackYears: best.paybackYears,
       budgetConstrained,
-      investition: finalKosten,
+      investition: best.investition,
+      npv25: best.npv25,
     },
     alternatives,
   };

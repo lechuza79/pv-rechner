@@ -80,6 +80,11 @@ export function estimateCost(kwp: number, spKwh: number, prices?: PriceConfig): 
 }
 
 // ─── Eigenverbrauch (HTW Berlin Modell) ──────────────────────────────────────
+// HTW-Berlin / Quaschning-Weniger Power-Law: kalibriert an 25.000 Konfigurationen,
+// 1-Min-Auflösung, VDI 4655 Lastprofil — also OHNE Wärmepumpen-Lastprofil.
+// Für WP-Haushalte korrigieren wir den Speicher-Boost saisonal nach unten, weil
+// ~80 % des WP-Verbrauchs Okt–Apr anfällt — genau wenn der Speicher mangels Sonne
+// kaum gefüllt werden kann (PV-Ertrag in diesen Monaten: ~30 % des Jahres).
 export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm, kwp, ertragKwp }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; eaKm: number; kwp: number; ertragKwp: number }): number {
   const jahresertrag = kwp * ertragKwp;
   const grundverbrauch = PERSONEN[personenIdx].verbrauch;
@@ -90,20 +95,25 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
   const x = kwp / (gesamt / 1000);
   // y = kWh Speicher pro MWh Verbrauch
   const y = speicherKwh / (gesamt / 1000);
-  // Basis-Eigenverbrauch: kalibriert an HTW Berlin Simulationsdaten
-  // (25.000 Konfigurationen, 1-Min-Auflösung, VDI 4655 Lastprofil)
-  // Standard-Profil ≈ 0.30, tagQuote skaliert nach Nutzungsprofil
+  // Basis-Eigenverbrauch (HTW-Power-Law)
   const evBase = tagQuote * Math.pow(x, -0.69);
-  // Speicher-Boost: kalibriert an HTW Berlin Lookup-Tabellen
-  // Sättigungseffekt bei größerem Speicher
-  const evBoost = speicherKwh > 0
+  // Speicher-Boost mit Saturation
+  let evBoost = speicherKwh > 0
     ? 0.61 * Math.pow(x, -0.72) * (1 - Math.exp(-0.6 * y))
     : 0;
+  // Saisonkorrektur: Speicher kann WP-Strom kaum decken (Winter-Sonnenmangel).
+  // Korrekturfaktor = 1 − wpAnteil × 0.30 (empirisch aus PV-/WP-Saisonprofilen).
+  if (speicherKwh > 0 && wp !== "nein") {
+    const wpKwh = extra > 0 ? Math.min(WP_ANNUAL_KWH_CONST, extra) : 0;
+    const wpAnteil = wpKwh / gesamt;
+    evBoost *= (1 - wpAnteil * 0.30);
+  }
   // Physikalische Grenze: max. Eigenverbrauch = Gesamtverbrauch / Jahresertrag
   const evMax = gesamt / jahresertrag;
   const ev = Math.round(Math.min(evBase + evBoost, evMax, 0.90) * 100);
   return Math.max(10, Math.min(ev, 90));
 }
+const WP_ANNUAL_KWH_CONST = 3500;
 
 // ─── Amortisation (25 Jahre, monatlich wenn PVGIS-Profil vorhanden) ─────────
 export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null }) {

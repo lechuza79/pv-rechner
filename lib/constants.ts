@@ -26,11 +26,15 @@ export const ANLAGEN = [
   { kwp: 15, label: "15 kWp", sub: "Groß · ~36 Module", icon: "☀️" },
 ];
 
+// Indices 0–3 are stable for legacy share-URL compatibility ("s=2" → 10 kWh).
+// New intermediate sizes (7.5 / 12.5 kWh) appended at the end — UI re-sorts by kWh on display.
 export const SPEICHER = [
-  { kwh: 0, label: "Kein Speicher", sub: "Nur Direktverbrauch", icon: "—" },
-  { kwh: 5, label: "5 kWh", sub: "Kompakt", icon: "🔋" },
-  { kwh: 10, label: "10 kWh", sub: "Standard", icon: "🔋" },
-  { kwh: 15, label: "15 kWh", sub: "Groß", icon: "🔋" },
+  { kwh: 0,    label: "Kein Speicher", sub: "Nur Direktverbrauch", icon: "—" },
+  { kwh: 5,    label: "5 kWh",         sub: "Kompakt",             icon: "🔋" },
+  { kwh: 10,   label: "10 kWh",        sub: "Standard",            icon: "🔋" },
+  { kwh: 15,   label: "15 kWh",        sub: "Groß",                icon: "🔋" },
+  { kwh: 7.5,  label: "7,5 kWh",       sub: "Mittel",              icon: "🔋" },
+  { kwh: 12.5, label: "12,5 kWh",      sub: "Groß+",               icon: "🔋" },
 ];
 
 export const PERSONEN = [
