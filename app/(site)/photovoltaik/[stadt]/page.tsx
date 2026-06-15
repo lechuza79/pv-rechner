@@ -1,0 +1,312 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import Header from "../../../../components/Header";
+import Footer from "../../../../components/Footer";
+import { IconArrowRight } from "../../../../components/Icons";
+import { v } from "../../../../lib/theme";
+import { pageMetadata } from "../../../../lib/seo";
+import { ATLAS_CITIES, cityBySlug, type AtlasCity } from "../../../../lib/atlas-cities";
+import { getRegionAtlasData, type RegionAtlas } from "../../../../lib/mastr-data";
+import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "../../../../lib/calc";
+import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
+
+export function generateStaticParams() {
+  return ATLAS_CITIES.map((c) => ({ stadt: c.slug }));
+}
+
+export async function generateMetadata({ params }: { params: { stadt: string } }): Promise<Metadata> {
+  const city = cityBySlug(params.stadt);
+  if (!city) return {};
+  const year = new Date().getFullYear();
+  return pageMetadata({
+    path: `/photovoltaik/${city.slug}`,
+    title: `Photovoltaik in ${city.name} – Bestand & Förderung ${year}`,
+    description: `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister${city.funding ? `, das ${city.funding.name}` : ""} und Beispielrechnungen für deine PV-Anlage.`,
+    ogImageTitle: `Photovoltaik in ${city.name}`,
+    ogImageSubtitle: city.funding ? `Bestand & ${city.funding.name}` : "Anlagenbestand & Beispielrechnungen",
+  });
+}
+
+const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
+
+const SEGMENT_LABEL: Record<string, string> = {
+  privat_dach: "Private Dächer",
+  gewerbe_dach: "Gewerbedächer",
+  freiflaeche: "Freiflächen-Parks",
+};
+
+type Example = {
+  kwp: number;
+  spKwh: number;
+  brutto: number;
+  foerderung: number;
+  netto: number;
+  amort: number | null;
+  total: number;
+};
+
+function buildExamples(city: AtlasCity): Example[] {
+  const configs = [
+    { kwp: 5, spKwh: 0 },
+    { kwp: 10, spKwh: 5 },
+    { kwp: 15, spKwh: 10 },
+  ];
+  return configs.map(({ kwp, spKwh }) => {
+    const ertragKwp = city.yieldKwhKwp;
+    const ev = calcEigenverbrauch({
+      personenIdx: 2, nutzungIdx: 1, speicherKwh: spKwh,
+      wp: "nein", ea: "nein", eaKm: 15000, kwp, ertragKwp,
+    });
+    const brutto = estimateCost(kwp, spKwh);
+    const einspeisung = calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
+    let foerderung = 0;
+    const f = city.funding;
+    if (f) {
+      if (f.pvPerKwp) foerderung = kwp * f.pvPerKwp + spKwh * (f.speicherPerKwh ?? 0);
+      else if (f.percentOfCost) foerderung = brutto * f.percentOfCost;
+      foerderung = Math.round(foerderung);
+    }
+    const netto = Math.max(0, brutto - foerderung);
+    const result = calc({
+      kwp, kosten: netto, strompreis: 0.34, eigenverbrauch: ev,
+      einspeisung, stromSteigerung: 0.03, ertragKwp, monthly: null,
+    });
+    return { kwp, spKwh, brutto, foerderung, netto, amort: result.be ? result.be.i : null, total: result.total };
+  });
+}
+
+function ZubauChart({ years }: { years: { year: number; count: number }[] }) {
+  const currentYear = new Date().getFullYear();
+  // Drop the partial current year and anything pre-2014 (sparse).
+  const rows = years.filter((y) => y.year >= 2014 && y.year < currentYear);
+  if (rows.length < 3) return null;
+  const max = Math.max(...rows.map((r) => r.count));
+  const peak = rows.reduce((a, b) => (b.count > a.count ? b : a));
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 150 }}>
+        {rows.map((r) => (
+          <div key={r.year} title={`${r.year}: ${nf(r.count)} neue Anlagen`} style={{ flex: 1, height: "100%", display: "flex", alignItems: "flex-end" }}>
+            <div style={{
+              width: "100%",
+              height: `${Math.max(2, Math.round((r.count / max) * 100))}%`,
+              background: r.year === peak.year ? v("--color-accent") : v("--color-accent-light"),
+              borderRadius: "3px 3px 0 0",
+            }} />
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: 4, marginTop: 6 }}>
+        {rows.map((r) => (
+          <div key={r.year} style={{ flex: 1, textAlign: "center", fontSize: 9, color: v("--color-text-muted"), fontFamily: v("--font-mono") }}>
+            {r.year % 2 === 0 ? `'${String(r.year).slice(2)}` : ""}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const S = {
+  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "20px 16px" } as React.CSSProperties,
+  wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
+  breadcrumb: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 6 } as React.CSSProperties,
+  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
+  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" } as React.CSSProperties,
+  strong: { color: v("--color-text-primary"), fontWeight: 600 } as React.CSSProperties,
+  metricsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 10, marginBottom: 28 } as React.CSSProperties,
+  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 } as React.CSSProperties,
+  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 } as React.CSSProperties,
+  metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 } as React.CSSProperties,
+  h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" } as React.CSSProperties,
+  sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px" } as React.CSSProperties,
+  section: { marginBottom: 28 } as React.CSSProperties,
+  card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "16px 18px" } as React.CSSProperties,
+};
+
+export default async function StadtPage({ params }: { params: { stadt: string } }) {
+  const city = cityBySlug(params.stadt);
+  if (!city) notFound();
+
+  let atlas: RegionAtlas | null = null;
+  try {
+    atlas = await getRegionAtlasData(city.ags);
+  } catch {
+    atlas = null;
+  }
+
+  const examples = buildExamples(city);
+  const f = city.funding;
+  const currentYear = new Date().getFullYear();
+  const lastFullYear = atlas?.solar.by_year.filter((y) => y.year < currentYear).slice(-1)[0];
+
+  return (
+    <div style={S.page}>
+      <Header />
+      <div style={S.wrap}>
+        <div style={S.breadcrumb}>
+          <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>Solar Check</Link>
+          {" · "}{city.bundesland} · Stadt
+        </div>
+        <h1 style={S.h1}>Photovoltaik in {city.name}</h1>
+
+        {atlas && atlas.solar.total_count > 0 ? (
+          <p style={S.intro}>
+            In {city.name} sind <span style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</span> mit
+            zusammen <span style={S.strong}>{nf(atlas.solar.total_kwp / 1000)} MWp</span> am Netz, dazu
+            {" "}<span style={S.strong}>{nf(atlas.speicher.count)} Batteriespeicher</span>.
+            {f ? <> Die Stadt fördert neue Anlagen über das <span style={S.strong}>{f.name}</span>.</> : null}
+          </p>
+        ) : (
+          <p style={S.intro}>
+            Anlagenbestand, {f ? `das ${f.name}` : "Förderung"} und Beispielrechnungen für Photovoltaik in {city.name}.
+          </p>
+        )}
+
+        {/* ── Bestand (Trust-Signal) ── */}
+        {atlas && atlas.solar.total_count > 0 && (
+          <>
+            <div style={S.metricsGrid}>
+              <div style={S.metric}>
+                <div style={S.metricLabel}>Solaranlagen</div>
+                <div style={S.metricValue}>{nf(atlas.solar.total_count)}</div>
+              </div>
+              <div style={S.metric}>
+                <div style={S.metricLabel}>Installiert</div>
+                <div style={S.metricValue}>{nf(atlas.solar.total_kwp / 1000)} <span style={{ fontSize: 14 }}>MWp</span></div>
+              </div>
+              <div style={S.metric}>
+                <div style={S.metricLabel}>Batteriespeicher</div>
+                <div style={S.metricValue}>{nf(atlas.speicher.count)}</div>
+              </div>
+              {lastFullYear && (
+                <div style={S.metric}>
+                  <div style={S.metricLabel}>Neu in {lastFullYear.year}</div>
+                  <div style={S.metricValue}>{nf(lastFullYear.count)}</div>
+                </div>
+              )}
+            </div>
+
+            {atlas.solar.by_year.length >= 4 && (
+              <div style={S.section}>
+                <h2 style={S.h2}>Zubau pro Jahr</h2>
+                <p style={S.sub}>Neu in Betrieb genommene Solaranlagen in {city.name}</p>
+                <ZubauChart years={atlas.solar.by_year} />
+              </div>
+            )}
+
+            {atlas.solar.by_segment.length > 0 && (
+              <div style={S.section}>
+                <h2 style={S.h2}>Wo der Strom erzeugt wird</h2>
+                <div style={{ display: "flex", flexDirection: "column", gap: 9, marginTop: 12 }}>
+                  {(() => {
+                    const maxKwp = Math.max(...atlas.solar.by_segment.map((s) => s.kwp));
+                    return atlas.solar.by_segment.map((s) => (
+                      <div key={s.segment}>
+                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 3 }}>
+                          <span>{SEGMENT_LABEL[s.segment] ?? s.segment}</span>
+                          <span style={{ color: v("--color-text-secondary"), fontFamily: v("--font-mono") }}>{nf(s.kwp / 1000)} MWp · {nf(s.count)} Anlagen</span>
+                        </div>
+                        <div style={{ height: 8, background: v("--color-bg-muted"), borderRadius: 4 }}>
+                          <div style={{ height: "100%", width: `${Math.max(3, Math.round((s.kwp / maxKwp) * 100))}%`, background: v("--color-accent"), borderRadius: 4 }} />
+                        </div>
+                      </div>
+                    ));
+                  })()}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ── Förderung ── */}
+        {f && (
+          <div style={S.section}>
+            <h2 style={S.h2}>Förderung in {city.name}</h2>
+            <p style={S.sub}>{f.name} · {f.traeger}</p>
+            <div style={{ ...S.card, borderColor: v("--color-positive"), background: v("--color-bg-muted") }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
+                {f.eligibility.map((e) => (
+                  <span key={e} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-positive"), background: v("--color-bg"), border: `1px solid ${v("--color-positive")}`, borderRadius: 999, padding: "3px 10px" }}>
+                    {e === "privat" ? "Privat" : "Gewerblich"}
+                  </span>
+                ))}
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
+                {f.rates.map((r) => (
+                  <div key={r.label} style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 14, borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 8 }}>
+                    <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
+                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, textAlign: "right" }}>{r.value}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 6 }}>Bedingungen</div>
+              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.7, color: v("--color-text-secondary") }}>
+                {f.conditions.map((c) => <li key={c}>{c}</li>)}
+              </ul>
+              <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 12 }}>
+                Stand: {f.stand}{f.capped ? " · Topf gedeckelt, vor Antrag prüfen" : ""} ·{" "}
+                <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>Zum Programm</a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Beispielrechnungen ── */}
+        <div style={S.section}>
+          <h2 style={S.h2}>Beispielrechnungen für {city.name}</h2>
+          <p style={S.sub}>Typische Anlagen, gerechnet mit {nf(city.yieldKwhKwp)} kWh/kWp{f ? " inkl. lokaler Förderung" : ""}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
+            {examples.map((ex) => (
+              <div key={ex.kwp} style={S.card}>
+                <div style={{ fontSize: 17, fontWeight: 800 }}>{ex.kwp} kWp</div>
+                <div style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: 12 }}>
+                  {ex.spKwh > 0 ? `mit ${ex.spKwh} kWh Speicher` : "ohne Speicher"}
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 13 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: v("--color-text-secondary") }}>Investition</span>
+                    <span style={{ fontFamily: v("--font-mono") }}>{nf(ex.brutto)} €</span>
+                  </div>
+                  {ex.foerderung > 0 && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ color: v("--color-text-secondary") }}>Förderung</span>
+                      <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
+                    </div>
+                  )}
+                  <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 6 }}>
+                    <span style={{ color: v("--color-text-secondary") }}>Amortisation</span>
+                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{ex.amort !== null ? `${ex.amort} Jahre` : "> 25 J."}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: v("--color-text-secondary") }}>Rendite 25 J.</span>
+                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: ex.total > 0 ? v("--color-positive") : v("--color-negative") }}>{ex.total > 0 ? "+" : ""}{nf(ex.total)} €</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── CTA ── */}
+        <div style={{ ...S.card, background: v("--color-bg-accent"), borderColor: v("--color-border-accent"), marginBottom: 28 }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: v("--color-accent"), marginBottom: 4 }}>Was würde sich für dich rechnen?</div>
+          <div style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), marginBottom: 14 }}>
+            {city.name} liefert rund {nf(city.yieldKwhKwp)} kWh pro kWp. Rechne mit deinen eigenen Werten.
+          </div>
+          <Link href={`/rechner?er=${city.yieldKwhKwp}`} style={{ display: "inline-block", textDecoration: "none", padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: 14, fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent") }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>Für {city.name} rechnen <IconArrowRight size={13} /></span>
+          </Link>
+        </div>
+
+        <div style={{ fontSize: 11, color: v("--color-text-muted"), borderTop: `1px solid ${v("--color-border")}`, paddingTop: 12, marginBottom: 32 }}>
+          Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur){atlas?.data_as_of ? `, Stand ${atlas.data_as_of}` : ""}, monatlich aktualisiert.
+          {f ? " Förderdaten redaktionell gepflegt." : ""} Beispielrechnungen sind Schätzungen, keine verbindliche Beratung.
+        </div>
+
+        <Footer />
+      </div>
+    </div>
+  );
+}

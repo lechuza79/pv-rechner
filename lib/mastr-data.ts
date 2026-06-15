@@ -403,6 +403,86 @@ export async function getRegionSummary(
   };
 }
 
+// ─── Region atlas (single region, all metrics in one query) ──────────────────
+// For region landing pages: loads only the requested region's rows (a city has
+// ~100 buckets) instead of the full table, and returns solar + storage + the
+// yearly build-out curve in one shot. Scoped to Kreis/Stadt (5-digit AGS) and
+// Bundesland (2-digit); for "de" it would exceed the 1000-row page cap.
+
+export type RegionAtlas = {
+  region_id: string;
+  solar: {
+    total_count: number;
+    total_kwp: number;
+    by_segment: SegmentBreakdown[];
+    by_year: { year: number; count: number; kwp: number }[];
+  };
+  speicher: { count: number; kwp: number };
+  data_as_of: string;
+};
+
+export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas> {
+  const { supabase } = await import("./supabase-server");
+  if (!supabase) throw new Error("Supabase not configured");
+
+  let query = supabase
+    .from("mastr_aggregates")
+    .select("energietraeger, segment, year, count, kwp")
+    .in("energietraeger", ["solar", "speicher"]);
+  if (regionId !== "de") {
+    query = regionId.length === 2
+      ? query.like("region_id", `${regionId}%`)
+      : query.eq("region_id", regionId);
+  }
+  const { data, error } = await query;
+  if (error) throw new Error(`Supabase query failed: ${error.message}`);
+  const rows = (data ?? []) as AggregateRow[];
+
+  let solarCount = 0;
+  let solarKwp = 0;
+  const segBuckets: Record<string, { count: number; kwp: number }> = {};
+  const yearBuckets: Record<number, { count: number; kwp: number }> = {};
+  let speicherCount = 0;
+  let speicherKwp = 0;
+
+  for (const r of rows) {
+    const kwp = Number(r.kwp);
+    if (r.energietraeger === "speicher") {
+      speicherCount += r.count;
+      speicherKwp += kwp;
+      continue;
+    }
+    // solar
+    solarCount += r.count;
+    solarKwp += kwp;
+    const seg = (segBuckets[r.segment] ??= { count: 0, kwp: 0 });
+    seg.count += r.count;
+    seg.kwp += kwp;
+    if (r.year) {
+      const yr = (yearBuckets[r.year] ??= { count: 0, kwp: 0 });
+      yr.count += r.count;
+      yr.kwp += kwp;
+    }
+  }
+
+  const order: Record<string, number> = { privat_dach: 0, gewerbe_dach: 1, freiflaeche: 2 };
+  const by_segment: SegmentBreakdown[] = (Object.entries(segBuckets) as [string, { count: number; kwp: number }][])
+    .map(([seg, v]) => ({ segment: seg as Segment, ...v }))
+    .filter((s) => s.segment !== "n/a")
+    .sort((a, b) => (order[a.segment] ?? 99) - (order[b.segment] ?? 99));
+
+  const by_year = (Object.entries(yearBuckets) as [string, { count: number; kwp: number }][])
+    .map(([year, v]) => ({ year: Number(year), ...v }))
+    .sort((a, b) => a.year - b.year);
+
+  return {
+    region_id: regionId,
+    solar: { total_count: solarCount, total_kwp: solarKwp, by_segment, by_year },
+    speicher: { count: speicherCount, kwp: speicherKwp },
+    data_as_of: await fetchMetaDataAsOf(),
+  };
+}
+
 export function allBundeslaenderSummary(
   energietraeger: Energietraeger,
   segment: SegmentFilter = "alle",
