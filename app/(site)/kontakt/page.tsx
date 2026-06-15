@@ -1,11 +1,15 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { v } from "../../../lib/theme";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/kontakt",
   title: "Kontakt – Solar Check",
   description: "So erreichst du uns. Fragen, Feedback oder Anregungen zu Solar Check.",
-};
+  ogImageTitle: "Kontakt",
+  ogImageSubtitle: "Fragen, Feedback oder Anregungen? Schreib uns.",
+});
 
 const S = {
   page: {

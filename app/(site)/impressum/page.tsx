@@ -2,11 +2,14 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/impressum",
   title: "Impressum – Solar Check",
   description: "Impressum und Angaben gemäß § 5 TMG für Solar Check.",
-};
+  ogImageTitle: "Impressum",
+});
 
 const S = {
   page: {

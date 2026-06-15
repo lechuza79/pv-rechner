@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import Header from "../../../components/Header";
 import { v } from "../../../lib/theme";
+import { pageMetadata } from "../../../lib/seo";
 import EnergieClient from "./client";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/energie",
   title: "Energiedaten Deutschland — Live & Transparent | Solar Check",
   description:
     "Deutschlands Strommix in Echtzeit: Solar, Wind, Gas, Kohle. Datenquelle: Fraunhofer ISE / Energy-Charts (CC BY 4.0).",
-};
+  ogImageTitle: "Deutschlands Strommix — live",
+  ogImageSubtitle: "Solar, Wind, Gas, Kohle in Echtzeit. Quelle: Fraunhofer ISE.",
+});
 
 export default function EnergiePage() {
   return (

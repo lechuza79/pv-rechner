@@ -22,10 +22,28 @@ export const metadata: Metadata = {
     description: "Ehrlich berechnet. Ohne Leadfunnel. Sofort Ergebnis.",
     type: "website",
     url: BASE_URL,
+    siteName: "Solar Check",
+    images: [{ url: `${BASE_URL}/api/og`, width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Solar Check – Lohnt sich Photovoltaik?",
+    description: "Ehrlich berechnet. Ohne Leadfunnel. Sofort Ergebnis.",
+    images: [`${BASE_URL}/api/og`],
   },
   other: {
     "theme-color": "#FFFFFF",
   },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Solar Check",
+  url: BASE_URL,
+  logo: `${BASE_URL}/logo.png`,
+  description:
+    "Kostenlose Energie-Rechner ohne Leadfunnel: Photovoltaik-Rentabilität, Wärmepumpe und Live-Energiedaten für Deutschland.",
 };
 
 const softwareAppJsonLd = {
@@ -99,6 +117,10 @@ export default function RootLayout({
         <link
           href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap"
           rel="stylesheet"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         <script
           type="application/ld+json"

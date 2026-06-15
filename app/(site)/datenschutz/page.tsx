@@ -2,12 +2,16 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/datenschutz",
   title: "Datenschutzerklärung – Solar Check",
   description:
     "Datenschutzerklärung für Solar Check. Keine Cookies, kein Tracking, alle Berechnungen lokal im Browser.",
-};
+  ogImageTitle: "Datenschutz",
+  ogImageSubtitle: "Keine Cookies, kein Tracking. Alles lokal im Browser.",
+});
 
 const S = {
   page: {

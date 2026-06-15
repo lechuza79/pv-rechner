@@ -22,6 +22,9 @@ export async function generateMetadata({
   return {
     title: "Solar Check – Lohnt sich Photovoltaik? Ehrlich berechnet.",
     description: "Kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Sofort Ergebnis: Amortisation, Rendite und Szenarien.",
+    // Canonical without query params — share links append ?a=…&s=… etc., which
+    // would otherwise look like dozens of duplicate pages to search engines.
+    alternates: { canonical: "/rechner" },
     openGraph: {
       title: "Solar Check – Lohnt sich Photovoltaik?",
       description: "Ehrlich berechnet. Ohne Leadfunnel. Sofort Ergebnis.",

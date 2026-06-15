@@ -13,6 +13,48 @@ function fmt(n: number): string {
 export async function GET(req: NextRequest) {
   const params = Object.fromEntries(req.nextUrl.searchParams.entries());
 
+  const jetBrainsMono = await fetch(
+    new URL("/fonts/JetBrainsMono-Bold.ttf", req.nextUrl.origin)
+  ).then(r => r.arrayBuffer());
+  const fonts = [
+    { name: "JetBrains Mono", data: jetBrainsMono, weight: 700 as const },
+  ];
+
+  // Branded card for non-calculator pages (Wärmepumpe, Energie, Simulation …).
+  // Title/subtitle come from the page via lib/seo.ts brandOgImage().
+  if (params.view === "brand") {
+    const title = (params.t || "Solar Check").slice(0, 80);
+    const subtitle = (params.s || "").slice(0, 120);
+    return new ImageResponse(
+      (
+        <div style={{
+          width: "100%", height: "100%", display: "flex", flexDirection: "column",
+          justifyContent: "space-between", padding: "56px 64px",
+          background: "#FFFFFF", color: "#3F3F3F",
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: 28, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
+            <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <span style={{ fontSize: 58, fontWeight: 700, color: "#1365EA", lineHeight: 1.15 }}>
+              {title}
+            </span>
+            {subtitle ? (
+              <span style={{ fontSize: 28, color: "#777777", lineHeight: 1.4, marginTop: 20 }}>
+                {subtitle}
+              </span>
+            ) : null}
+          </div>
+          <span style={{ fontSize: 18, color: "#949494" }}>
+            Ehrlich berechnet. Ohne Leadfunnel.
+          </span>
+        </div>
+      ),
+      { width: 1200, height: 630, fonts },
+    );
+  }
+
   const anlageIdx = paramInt(params, "a", 2, 0, 4);
   const speicherIdx = paramInt(params, "s", 0, 0, 3);
   const personenIdx = paramInt(params, "p", 1, 0, 3);
@@ -51,10 +93,6 @@ export async function GET(req: NextRequest) {
   const amortYears = result.be ? result.be.i : null;
   const rendite25j = result.total;
   const avgSavings = Math.round(rendite25j / 25);
-
-  const jetBrainsMono = await fetch(
-    new URL("/fonts/JetBrainsMono-Bold.ttf", req.nextUrl.origin)
-  ).then(r => r.arrayBuffer());
 
   const amortColor = amortYears !== null ? "#1365EA" : "#EF4444";
   const amortText = amortYears !== null ? `${amortYears}` : ">25";
@@ -136,12 +174,6 @@ export async function GET(req: NextRequest) {
         </div>
       </div>
     ),
-    {
-      width: 1200,
-      height: 630,
-      fonts: [
-        { name: "JetBrains Mono", data: jetBrainsMono, weight: 700 as const },
-      ],
-    },
+    { width: 1200, height: 630, fonts },
   );
 }

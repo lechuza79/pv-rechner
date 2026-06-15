@@ -4,11 +4,15 @@ import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
+import { pageMetadata } from "../../../lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
+  path: "/methodik",
   title: "Methodik – So berechnen wir deine PV-Rendite",
   description: "Transparente Erklärung der Berechnungslogik im Solar Check: Eigenverbrauch, Speicher-Effekt, Amortisation. Kalibriert an HTW Berlin Simulationsdaten.",
-};
+  ogImageTitle: "So rechnen wir",
+  ogImageSubtitle: "Transparent statt Blackbox — kalibriert an HTW-Berlin-Daten.",
+});
 
 const S = {
   page: {
