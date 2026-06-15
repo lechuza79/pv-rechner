@@ -15,7 +15,12 @@ export interface FundingProgram {
   /** Budget is capped / first-come-first-served. */
   capped: boolean;
   eligibility: Eligibility[];
-  /** Headline rates shown as a list, e.g. {label:"PV-Anlage (Dach)", value:"50 %, max. 300 €/kWp"}. */
+  /** Which costs the funding applies to (varies per program), e.g.
+   *  "50 % der anerkannten Kosten (Material + Installation)". */
+  coveredCosts: string;
+  /** Optional overall cap, e.g. "max. 50.000 €". */
+  maxFoerderung?: string;
+  /** Headline rates shown as a list, e.g. {label:"PV-Anlage (Dach)", value:"50 %, max. 350 €/kWp"}. */
   rates: { label: string; value: string }[];
   conditions: string[];
   // Optional structured rates so the example calculations can show a concrete
@@ -47,21 +52,24 @@ export const ATLAS_CITIES: AtlasCity[] = [
     funding: {
       name: "Stuttgarter Solaroffensive",
       traeger: "Landeshauptstadt Stuttgart",
-      url: "https://www.stuttgart.de/leben/umwelt/energie/foerderprogramm-energie.php",
+      url: "https://www.stuttgart.de/solaroffensive",
       stand: "Juni 2026",
       capped: true,
       eligibility: ["privat", "gewerblich"],
+      coveredCosts: "50 % der anerkannten Kosten (Material + Installation)",
       rates: [
-        { label: "PV-Anlage (Dach)", value: "50 %, max. 300 €/kWp" },
-        { label: "PV an der Fassade", value: "max. 450 €/kWp" },
+        { label: "PV-Anlage (Dach)", value: "50 %, max. 350 €/kWp" },
+        { label: "PV an Fassade / Gründach", value: "max. 450 €/kWp" },
+        { label: "Volleinspeisung (≥ 10 Jahre)", value: "100 %, max. 600 €/kWp" },
         { label: "Batteriespeicher", value: "100 €/kWh" },
+        { label: "Balkonkraftwerk", value: "200 € pauschal" },
       ],
       conditions: [
-        "Antrag vor Montage stellen",
-        "Nur Installations-, keine Materialkosten",
+        "Antrag vor Kauf bzw. Installation — keine rückwirkende Förderung",
+        "Mit Bundesförderung kombinierbar",
         "Gebäude im Stadtgebiet Stuttgart",
       ],
-      pvPerKwp: 300,
+      pvPerKwp: 350,
       speicherPerKwh: 100,
     },
   },
@@ -74,17 +82,21 @@ export const ATLAS_CITIES: AtlasCity[] = [
     funding: {
       name: "Frankfurter Klimabonus",
       traeger: "Stadt Frankfurt am Main",
-      url: "https://frankfurt.de/themen/umwelt-und-gruen/energie/foerderprogramme",
+      url: "https://frankfurt.de/themen/klima-und-energie/stadtklima/klimabonus",
       stand: "Juni 2026",
       capped: true,
-      eligibility: ["privat"],
+      eligibility: ["privat", "gewerblich"],
+      coveredCosts: "20 % von Material- und Arbeitskosten",
+      maxFoerderung: "max. 50.000 € je Maßnahmenbereich",
       rates: [
-        { label: "PV-Anlage + Speicher", value: "20 % der Installationskosten" },
+        { label: "PV-Anlage", value: "20 % (30 % mit Dachbegrünung)" },
+        { label: "Batteriespeicher + Wallbox", value: "20 %" },
+        { label: "Balkonkraftwerk", value: "50 % (75 % mit Frankfurt-Pass)" },
       ],
       conditions: [
-        "Mindestens 4 kWp Anlagenleistung",
-        "Antrag vor Auftragsvergabe",
-        "Gebäude im Stadtgebiet Frankfurt",
+        "Erst nach Zuwendungsbescheid mit der Maßnahme beginnen",
+        "Online-Antrag mit Registrierung",
+        "Grundstück im Stadtgebiet Frankfurt",
       ],
       percentOfCost: 0.2,
     },

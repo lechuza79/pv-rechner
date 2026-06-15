@@ -30,6 +30,14 @@ export async function generateMetadata({ params }: { params: { stadt: string } }
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
+// Capacity: show kWp below 1 MWp (so small segments don't collapse to "0 MWp"),
+// MWp with one decimal up to 10, no decimals above.
+function fmtCapacity(kwp: number): string {
+  if (kwp < 1000) return `${nf(kwp)} kWp`;
+  const mwp = kwp / 1000;
+  return `${mwp.toLocaleString("de-DE", { maximumFractionDigits: mwp < 10 ? 1 : 0 })} MWp`;
+}
+
 const SEGMENT_LABEL: Record<string, string> = {
   privat_dach: "Private Dächer",
   gewerbe_dach: "Gewerbedächer",
@@ -150,88 +158,28 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
           {" · "}{city.bundesland} · Stadt
         </div>
         <h1 style={S.h1}>Photovoltaik in {city.name}</h1>
+        <p style={S.intro}>
+          {f
+            ? <>In {city.name} fördert die Stadt neue Solaranlagen über das <span style={S.strong}>{f.name}</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
+            : <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>}
+        </p>
 
-        {atlas && atlas.solar.total_count > 0 ? (
-          <p style={S.intro}>
-            In {city.name} sind <span style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</span> mit
-            zusammen <span style={S.strong}>{nf(atlas.solar.total_kwp / 1000)} MWp</span> am Netz, dazu
-            {" "}<span style={S.strong}>{nf(atlas.speicher.count)} Batteriespeicher</span>.
-            {f ? <> Die Stadt fördert neue Anlagen über das <span style={S.strong}>{f.name}</span>.</> : null}
-          </p>
-        ) : (
-          <p style={S.intro}>
-            Anlagenbestand, {f ? `das ${f.name}` : "Förderung"} und Beispielrechnungen für Photovoltaik in {city.name}.
-          </p>
-        )}
-
-        {/* ── Bestand (Trust-Signal) ── */}
-        {atlas && atlas.solar.total_count > 0 && (
-          <>
-            <div style={S.metricsGrid}>
-              <div style={S.metric}>
-                <div style={S.metricLabel}>Solaranlagen</div>
-                <div style={S.metricValue}>{nf(atlas.solar.total_count)}</div>
-              </div>
-              <div style={S.metric}>
-                <div style={S.metricLabel}>Installiert</div>
-                <div style={S.metricValue}>{nf(atlas.solar.total_kwp / 1000)} <span style={{ fontSize: 14 }}>MWp</span></div>
-              </div>
-              <div style={S.metric}>
-                <div style={S.metricLabel}>Batteriespeicher</div>
-                <div style={S.metricValue}>{nf(atlas.speicher.count)}</div>
-              </div>
-              {lastFullYear && (
-                <div style={S.metric}>
-                  <div style={S.metricLabel}>Neu in {lastFullYear.year}</div>
-                  <div style={S.metricValue}>{nf(lastFullYear.count)}</div>
-                </div>
-              )}
-            </div>
-
-            {atlas.solar.by_year.length >= 4 && (
-              <div style={S.section}>
-                <h2 style={S.h2}>Zubau pro Jahr</h2>
-                <p style={S.sub}>Neu in Betrieb genommene Solaranlagen in {city.name}</p>
-                <ZubauChart years={atlas.solar.by_year} />
-              </div>
-            )}
-
-            {atlas.solar.by_segment.length > 0 && (
-              <div style={S.section}>
-                <h2 style={S.h2}>Wo der Strom erzeugt wird</h2>
-                <div style={{ display: "flex", flexDirection: "column", gap: 9, marginTop: 12 }}>
-                  {(() => {
-                    const maxKwp = Math.max(...atlas.solar.by_segment.map((s) => s.kwp));
-                    return atlas.solar.by_segment.map((s) => (
-                      <div key={s.segment}>
-                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 3 }}>
-                          <span>{SEGMENT_LABEL[s.segment] ?? s.segment}</span>
-                          <span style={{ color: v("--color-text-secondary"), fontFamily: v("--font-mono") }}>{nf(s.kwp / 1000)} MWp · {nf(s.count)} Anlagen</span>
-                        </div>
-                        <div style={{ height: 8, background: v("--color-bg-muted"), borderRadius: 4 }}>
-                          <div style={{ height: "100%", width: `${Math.max(3, Math.round((s.kwp / maxKwp) * 100))}%`, background: v("--color-accent"), borderRadius: 4 }} />
-                        </div>
-                      </div>
-                    ));
-                  })()}
-                </div>
-              </div>
-            )}
-          </>
-        )}
-
-        {/* ── Förderung ── */}
+        {/* ── Förderung (oben) ── */}
         {f && (
           <div style={S.section}>
             <h2 style={S.h2}>Förderung in {city.name}</h2>
             <p style={S.sub}>{f.name} · {f.traeger}</p>
             <div style={{ ...S.card, borderColor: v("--color-positive"), background: v("--color-bg-muted") }}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 14 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
                 {f.eligibility.map((e) => (
                   <span key={e} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-positive"), background: v("--color-bg"), border: `1px solid ${v("--color-positive")}`, borderRadius: 999, padding: "3px 10px" }}>
                     {e === "privat" ? "Privat" : "Gewerblich"}
                   </span>
                 ))}
+              </div>
+              <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 14 }}>
+                Förderfähig: <span style={{ color: v("--color-text-primary"), fontWeight: 600 }}>{f.coveredCosts}</span>
+                {f.maxFoerderung ? ` · ${f.maxFoerderung}` : ""}
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
                 {f.rates.map((r) => (
@@ -300,9 +248,71 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
           </Link>
         </div>
 
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), borderTop: `1px solid ${v("--color-border")}`, paddingTop: 12, marginBottom: 32 }}>
+        {/* ── Bestand (Trust-Signal, unten) ── */}
+        {atlas && atlas.solar.total_count > 0 && (
+          <div style={S.section}>
+            <h2 style={S.h2}>Photovoltaik in {city.name} in Zahlen</h2>
+            <p style={S.sub}>Aktueller Anlagenbestand aus dem Marktstammdatenregister</p>
+            <div style={S.metricsGrid}>
+              <div style={S.metric}>
+                <div style={S.metricLabel}>Solaranlagen</div>
+                <div style={S.metricValue}>{nf(atlas.solar.total_count)}</div>
+              </div>
+              <div style={S.metric}>
+                <div style={S.metricLabel}>Installiert</div>
+                <div style={S.metricValue}>{fmtCapacity(atlas.solar.total_kwp)}</div>
+              </div>
+              <div style={S.metric}>
+                <div style={S.metricLabel}>Batteriespeicher</div>
+                <div style={S.metricValue}>{nf(atlas.speicher.count)}</div>
+              </div>
+              {lastFullYear && (
+                <div style={S.metric}>
+                  <div style={S.metricLabel}>Neu in {lastFullYear.year}</div>
+                  <div style={S.metricValue}>{nf(lastFullYear.count)}</div>
+                </div>
+              )}
+            </div>
+
+            {atlas.solar.by_year.length >= 4 && (
+              <div style={{ marginBottom: 22 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, margin: "0 0 2px" }}>Zubau pro Jahr</h3>
+                <p style={S.sub}>Neu in Betrieb genommene Solaranlagen</p>
+                <ZubauChart years={atlas.solar.by_year} />
+              </div>
+            )}
+
+            {atlas.solar.by_segment.length > 0 && (
+              <div>
+                <h3 style={{ fontSize: 14, fontWeight: 700, margin: "0 0 12px" }}>Wo der Strom erzeugt wird</h3>
+                <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+                  {(() => {
+                    const maxKwp = Math.max(...atlas.solar.by_segment.map((s) => s.kwp));
+                    return atlas.solar.by_segment.map((s) => (
+                      <div key={s.segment}>
+                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 3 }}>
+                          <span>{SEGMENT_LABEL[s.segment] ?? s.segment}</span>
+                          <span style={{ color: v("--color-text-secondary"), fontFamily: v("--font-mono") }}>{fmtCapacity(s.kwp)} · {nf(s.count)} Anlagen</span>
+                        </div>
+                        <div style={{ height: 8, background: v("--color-bg-muted"), borderRadius: 4 }}>
+                          <div style={{ height: "100%", width: `${Math.max(3, Math.round((s.kwp / maxKwp) * 100))}%`, background: v("--color-accent"), borderRadius: 4 }} />
+                        </div>
+                      </div>
+                    ));
+                  })()}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Disclaimer ── */}
+        <div style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6, borderTop: `1px solid ${v("--color-border")}`, paddingTop: 12, marginBottom: 32 }}>
           Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur){atlas?.data_as_of ? `, Stand ${atlas.data_as_of}` : ""}, monatlich aktualisiert.
-          {f ? " Förderdaten redaktionell gepflegt." : ""} Beispielrechnungen sind Schätzungen, keine verbindliche Beratung.
+          {f ? ` Förderdaten redaktionell gepflegt, Stand ${f.stand}.` : ""}
+          {" "}Alle Angaben sind Näherungswerte ohne Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit und stellen keine
+          Rechts-, Steuer- oder Anlageberatung dar. Förderkonditionen ändern sich und Budgets können erschöpft sein — verbindlich
+          ist allein die offizielle Quelle des jeweiligen Programms. Beispielrechnungen sind unverbindliche Schätzungen.
         </div>
 
         <Footer />
