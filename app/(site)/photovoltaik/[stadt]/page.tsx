@@ -7,6 +7,7 @@ import { IconArrowRight } from "../../../../components/Icons";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { ATLAS_CITIES, cityBySlug, type AtlasCity } from "../../../../lib/atlas-cities";
+import { getFundingProgram, type FundingProgram } from "../../../../lib/funding-programs";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../lib/mastr-data";
 import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "../../../../lib/calc";
 import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
@@ -18,13 +19,14 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { stadt: string } }): Promise<Metadata> {
   const city = cityBySlug(params.stadt);
   if (!city) return {};
+  const f = city.fundingId ? getFundingProgram(city.fundingId) : undefined;
   const year = new Date().getFullYear();
   return pageMetadata({
     path: `/photovoltaik/${city.slug}`,
     title: `Photovoltaik in ${city.name} – Bestand & Förderung ${year}`,
-    description: `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister${city.funding ? `, das ${city.funding.name}` : ""} und Beispielrechnungen für deine PV-Anlage.`,
+    description: `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister${f ? `, das ${f.name}` : ""} und Beispielrechnungen für deine PV-Anlage.`,
     ogImageTitle: `Photovoltaik in ${city.name}`,
-    ogImageSubtitle: city.funding ? `Bestand & ${city.funding.name}` : "Anlagenbestand & Beispielrechnungen",
+    ogImageSubtitle: f ? `Bestand & ${f.name}` : "Anlagenbestand & Beispielrechnungen",
   });
 }
 
@@ -54,7 +56,7 @@ type Example = {
   total: number;
 };
 
-function buildExamples(city: AtlasCity): Example[] {
+function buildExamples(city: AtlasCity, f: FundingProgram | undefined): Example[] {
   const configs = [
     { kwp: 5, spKwh: 0 },
     { kwp: 10, spKwh: 5 },
@@ -69,7 +71,6 @@ function buildExamples(city: AtlasCity): Example[] {
     const brutto = estimateCost(kwp, spKwh);
     const einspeisung = calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
     let foerderung = 0;
-    const f = city.funding;
     if (f) {
       if (f.pvPerKwp) foerderung = kwp * f.pvPerKwp + spKwh * (f.speicherPerKwh ?? 0);
       else if (f.percentOfCost) foerderung = brutto * f.percentOfCost;
@@ -144,8 +145,11 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
     atlas = null;
   }
 
-  const examples = buildExamples(city);
-  const f = city.funding;
+  const f = city.fundingId ? getFundingProgram(city.fundingId) : undefined;
+  const examples = buildExamples(city, f);
+  const combinable = (f?.combinableWith ?? [])
+    .map((id) => getFundingProgram(id))
+    .filter((p): p is FundingProgram => Boolean(p));
   const currentYear = new Date().getFullYear();
   const lastFullYear = atlas?.solar.by_year.filter((y) => y.year < currentYear).slice(-1)[0];
 
@@ -193,6 +197,17 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
               <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.7, color: v("--color-text-secondary") }}>
                 {f.conditions.map((c) => <li key={c}>{c}</li>)}
               </ul>
+              {combinable.length > 0 && (
+                <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: 12 }}>
+                  Kombinierbar mit:{" "}
+                  {combinable.map((p, i) => (
+                    <span key={p.id}>
+                      <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>{p.name}</a>
+                      {i < combinable.length - 1 ? ", " : ""}
+                    </span>
+                  ))}
+                </div>
+              )}
               <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 12 }}>
                 Stand: {f.stand}{f.capped ? " · Topf gedeckelt, vor Antrag prüfen" : ""} ·{" "}
                 <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>Zum Programm</a>
