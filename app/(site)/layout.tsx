@@ -1,7 +1,23 @@
 import { Metadata } from "next";
+import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { getCssVariables, globalStyles } from "../../lib/theme";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
+
+// Self-hosted fonts (next/font downloads them at build time and serves them
+// from our own domain). No runtime request to Google -> DSGVO-konform und
+// schneller (kein render-blocking external CSS). Exposed as CSS variables so
+// the inline-style tokens in lib/theme.ts can reference them.
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-dm-sans",
+});
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-jetbrains-mono",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -110,14 +126,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de">
+    <html lang="de" className={`${dmSans.variable} ${jetBrainsMono.variable}`}>
       <head>
         <meta name="google-site-verification" content="OdndfgILkY22LlMHqIT8_ASdidCYTyqksv6LC9zw67o" />
         <style dangerouslySetInnerHTML={{ __html: getCssVariables() + globalStyles }} />
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap"
-          rel="stylesheet"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

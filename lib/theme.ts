@@ -69,8 +69,10 @@ export const tokens = {
   '--color-progress-inactive': '#E9E9E9',
 
   // ─── Fonts (2) ─────────────────────────────────────────────────────────────
-  '--font-text': "'DM Sans',system-ui,sans-serif",
-  '--font-mono': "'JetBrains Mono',monospace",
+  // Font families resolve to the self-hosted next/font variables (set on <html>
+  // in app/(site)/layout.tsx), with system fallbacks before they load.
+  '--font-text': "var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
+  '--font-mono': "var(--font-jetbrains-mono),'JetBrains Mono',monospace",
 
   // ─── Radii (3) ─────────────────────────────────────────────────────────────
   '--radius-sm': '6px',                 // Small: inputs, checkboxes, pills
