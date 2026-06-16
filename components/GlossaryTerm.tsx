@@ -1,9 +1,8 @@
 "use client";
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import Link from "next/link";
 import { v } from "../lib/theme";
-import { resolveGlossary, resolveGlossarySlug } from "../lib/glossary";
+import { resolveGlossary } from "../lib/glossary";
 
 // Inline glossary term: renders its children with a subtle dashed underline
 // (same affordance as InlineEdit) and shows a one-sentence tooltip on
@@ -164,20 +163,6 @@ export default function GlossaryTerm({ id, children }: Props) {
               {entry.term}
             </span>
             {entry.short}
-            <Link
-              href={`/glossar#${resolveGlossarySlug(id) ?? ""}`}
-              onClick={() => setOpen(false)}
-              style={{
-                display: "block",
-                marginTop: 6,
-                fontSize: 11.5,
-                color: v("--color-accent"),
-                textDecoration: "none",
-                fontWeight: 600,
-              }}
-            >
-              Mehr im Glossar
-            </Link>
           </span>,
           document.body
         )}
