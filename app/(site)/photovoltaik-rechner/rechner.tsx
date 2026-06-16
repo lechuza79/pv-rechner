@@ -24,7 +24,11 @@ import ResultActions from "./_components/ResultActions";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
-  const hasShare = initialParams && SHARE_KEYS.some(k => k in initialParams);
+  // 'er' (Ertrag) und 'plz' sind reine Vorbefüll-Hinweise (z.B. von einer
+  // regionalen Landingpage): sie seeden State, dürfen aber NICHT direkt ins
+  // Ergebnis springen — das tut nur eine echte Konfiguration (a/s/p/n/…).
+  const RESULT_KEYS = SHARE_KEYS.filter(k => k !== "er" && k !== "plz");
+  const hasShare = !!initialParams && RESULT_KEYS.some(k => k in initialParams);
 
   const [step, setStep] = useState(hasShare ? 4 : 0);
   const [anlage, setAnlage] = useState(hasShare ? paramInt(initialParams, "a", 2, 0, 4) : 2);
@@ -45,10 +49,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [einspeisungModus, setEinspeisungModus] = useState<"aus" | "teil" | "voll">(
     hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
   );
-  const [oErtrag, setOErtrag] = useState(hasShare ? paramInt(initialParams, "er", 950, 700, 1200) : 950);
+  const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", 950, 700, 1200) : 950);
 
   // PLZ → standortspezifischer Ertrag + Monatsprofil
-  const [plz, setPlz] = useState(hasShare && typeof initialParams?.plz === "string" && /^\d{5}$/.test(initialParams.plz) ? initialParams.plz : "");
+  const [plz, setPlz] = useState(typeof initialParams?.plz === "string" && /^\d{5}$/.test(initialParams.plz) ? initialParams.plz : "");
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzSource, setPlzSource] = useState<string | null>(null);
   const [monthlyProfile, setMonthlyProfile] = useState<number[] | null>(null);
@@ -84,7 +88,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   };
 
   // Auto-fetch bei Share-URL mit PLZ
-  useEffect(() => { if (plz && hasShare) fetchPvgis(plz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (plz) fetchPvgis(plz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Dynamic market prices + feed-in rates
   const prices = usePrices();

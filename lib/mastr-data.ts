@@ -406,8 +406,10 @@ export async function getRegionSummary(
 // ─── Region atlas (single region, all metrics in one query) ──────────────────
 // For region landing pages: loads only the requested region's rows (a city has
 // ~100 buckets) instead of the full table, and returns solar + storage + the
-// yearly build-out curve in one shot. Scoped to Kreis/Stadt (5-digit AGS) and
-// Bundesland (2-digit); for "de" it would exceed the 1000-row page cap.
+// yearly build-out curve in one shot. SAFE ONLY for Kreis/Stadt (5-digit AGS,
+// ~100 buckets < PostgREST's 1000-row page cap). For a Bundesland (2-digit,
+// ~thousands of buckets) or "de" this single query would silently truncate at
+// 1000 rows — add pagination (see loadSupabaseAggregates) before using it there.
 
 export type RegionAtlas = {
   region_id: string;

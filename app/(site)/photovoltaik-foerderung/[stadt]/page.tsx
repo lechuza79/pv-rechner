@@ -51,6 +51,8 @@ type Example = {
   spKwh: number;
   brutto: number;
   foerderung: number;
+  /** True if a concrete € amount could be derived; false for free-text-only programs. */
+  foerderComputable: boolean;
   netto: number;
   amort: number | null;
   total: number;
@@ -71,17 +73,28 @@ function buildExamples(city: AtlasCity, f: FundingProgram | undefined): Example[
     const brutto = estimateCost(kwp, spKwh);
     const einspeisung = calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
     let foerderung = 0;
-    if (f) {
-      if (f.pvPerKwp) foerderung = kwp * f.pvPerKwp + spKwh * (f.speicherPerKwh ?? 0);
-      else if (f.percentOfCost) foerderung = brutto * f.percentOfCost;
-      foerderung = Math.round(foerderung);
+    let foerderComputable = false;
+    if (f?.pvPerKwp) {
+      let pv = kwp * f.pvPerKwp;
+      if (f.pvCap) pv = Math.min(pv, f.pvCap);
+      let sp = spKwh * (f.speicherPerKwh ?? 0);
+      if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
+      foerderung = Math.round(pv + sp);
+      foerderComputable = true;
+    } else if (f?.percentOfCost) {
+      foerderung = Math.round(brutto * f.percentOfCost);
+      foerderComputable = true;
     }
     const netto = Math.max(0, brutto - foerderung);
+    // Statische Beispiel-Annahmen (Strompreis 0,34 €/kWh, DEFAULT_PRICES via
+    // estimateCost): die Seite wird zur Build-Zeit statisch generiert, daher
+    // bewusst keine Live-Preise (usePrices) wie im interaktiven Rechner. Die
+    // Zahlen sind illustrativ — der CTA führt in den Rechner mit Live-Werten.
     const result = calc({
       kwp, kosten: netto, strompreis: 0.34, eigenverbrauch: ev,
       einspeisung, stromSteigerung: 0.03, ertragKwp, monthly: null,
     });
-    return { kwp, spKwh, brutto, foerderung, netto, amort: result.be ? result.be.i : null, total: result.total };
+    return { kwp, spKwh, brutto, foerderung, foerderComputable, netto, amort: result.be ? result.be.i : null, total: result.total };
   });
 }
 
@@ -222,7 +235,7 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
         {/* ── Beispielrechnungen ── */}
         <div style={S.section}>
           <h2 style={S.h2}>Beispielrechnungen für {city.name}</h2>
-          <p style={S.sub}>Typische Anlagen, gerechnet mit {nf(city.yieldKwhKwp)} kWh/kWp{f ? " inkl. lokaler Förderung" : ""}</p>
+          <p style={S.sub}>Typische Anlagen, gerechnet mit {nf(city.yieldKwhKwp)} kWh/kWp{examples[0]?.foerderComputable ? " inkl. lokaler Förderung" : ""}</p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
             {examples.map((ex) => (
               <div key={ex.kwp} style={S.card}>
@@ -235,12 +248,17 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
                     <span style={{ color: v("--color-text-secondary") }}>Investition</span>
                     <span style={{ fontFamily: v("--font-mono") }}>{nf(ex.brutto)} €</span>
                   </div>
-                  {ex.foerderung > 0 && (
+                  {ex.foerderung > 0 ? (
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <span style={{ color: v("--color-text-secondary") }}>Förderung</span>
                       <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
                     </div>
-                  )}
+                  ) : f && !ex.foerderComputable ? (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ color: v("--color-text-secondary") }}>Förderung</span>
+                      <span style={{ color: v("--color-text-muted") }}>anteilig — siehe oben</span>
+                    </div>
+                  ) : null}
                   <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 6 }}>
                     <span style={{ color: v("--color-text-secondary") }}>Amortisation</span>
                     <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{ex.amort !== null ? `${ex.amort} Jahre` : "> 25 J."}</span>

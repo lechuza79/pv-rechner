@@ -40,6 +40,10 @@ export interface FundingProgram {
   speicherPerKwh?: number;
   /** Share of total cost, e.g. 0.2 for 20 %. */
   percentOfCost?: number;
+  /** Total € cap on the PV-per-kWp part (matches the "max. … €" in rates). */
+  pvCap?: number;
+  /** Total € cap on the storage part. */
+  speicherCap?: number;
 }
 
 // Bund applies everywhere and combines with every regional program.
@@ -124,7 +128,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [{ label: "PV-Anlage", value: "250 €/kWp, max. 2.500 €" }],
     conditions: ["Antrag vor Arbeitsbeginn", "Fachbetrieb-Pflicht"],
     combinableWith: BUND,
-    pvPerKwp: 250,
+    pvPerKwp: 250, pvCap: 2500,
   },
   "regensburg-effizient": {
     id: "regensburg-effizient", name: "Regensburg effizient",
@@ -136,7 +140,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     rates: [{ label: "PV-Anlage", value: "100 €/kWp, max. 1.500 €" }],
     conditions: ["Antrag vor Montage"],
     combinableWith: BUND,
-    pvPerKwp: 100,
+    pvPerKwp: 100, pvCap: 1500,
   },
   "wuerzburg-klimastadt": {
     id: "wuerzburg-klimastadt", name: "Klimastadt Würzburg",
@@ -155,7 +159,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Mindestgröße 0,04 kWp je m² Wohnfläche",
     ],
     combinableWith: BUND,
-    pvPerKwp: 150,
+    pvPerKwp: 150, pvCap: 1500,
   },
   "frankfurt-klimabonus": {
     id: "frankfurt-klimabonus", name: "Frankfurter Klimabonus",
@@ -191,7 +195,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     conditions: ["Freiwillige Leistung, kein Rechtsanspruch"],
     combinableWith: BUND,
-    pvPerKwp: 200,
+    pvPerKwp: 200, pvCap: 6000,
   },
   "badhomburg-energiespar": {
     id: "badhomburg-energiespar", name: "Energiesparförderung",
@@ -235,7 +239,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     conditions: ["Antrag vor Beginn"],
     combinableWith: BUND,
-    pvPerKwp: 200, speicherPerKwh: 250,
+    pvPerKwp: 200, speicherPerKwh: 250, pvCap: 10000, speicherCap: 10000,
   },
   "hannover-proklima": {
     id: "hannover-proklima", name: "proKlima (enercity-Fonds)",

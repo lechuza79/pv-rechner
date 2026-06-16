@@ -35,6 +35,8 @@ describe("funding-programs dataset", () => {
       }
       if (p.pvPerKwp !== undefined) expect(p.pvPerKwp).toBeGreaterThan(0);
       if (p.speicherPerKwh !== undefined) expect(p.speicherPerKwh).toBeGreaterThan(0);
+      if (p.pvCap !== undefined) expect(p.pvCap).toBeGreaterThan(0);
+      if (p.speicherCap !== undefined) expect(p.speicherCap).toBeGreaterThan(0);
     }
   });
 
