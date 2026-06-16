@@ -1,5 +1,6 @@
 "use client";
 import InlineEdit from "../../../../components/InlineEdit";
+import GlossaryTerm from "../../../../components/GlossaryTerm";
 import { IconArrowRight, IconCheck } from "../../../../components/Icons";
 import { v } from "../../../../lib/theme";
 
@@ -38,7 +39,7 @@ export default function ResultHeroCard({
       background: v('--color-bg'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border')}`,
     }}>
       <div style={{ fontSize: 13, color: v('--color-text-secondary'), fontWeight: 400, marginBottom: 8 }}>
-        Deine PV-Anlage amortisiert sich in
+        Deine PV-Anlage <GlossaryTerm id="amortisation">amortisiert sich</GlossaryTerm> in
       </div>
       <div style={{ fontSize: 56, fontWeight: 800, color: v('--color-text-primary'), fontFamily: v('--font-mono'), lineHeight: 1 }}>
         {be ? be.i : ">25"}<span style={{ fontSize: 22, fontWeight: 700, marginLeft: 4, color: v('--color-text-faint') }}>Jahren</span>
@@ -61,7 +62,7 @@ export default function ResultHeroCard({
             <InlineEdit value={oStrom} onCommit={setOStrom} unit=" €" step={0.01} min={0.15} max={0.60} width={52} />
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ color: v('--color-text-secondary') }}>Ertrag{plzLoading && <span style={{ color: v('--color-accent'), fontSize: 10, marginLeft: 4 }}>…</span>}</span>
+            <span style={{ color: v('--color-text-secondary') }}><GlossaryTerm id="ertrag">Ertrag</GlossaryTerm>{plzLoading && <span style={{ color: v('--color-accent'), fontSize: 10, marginLeft: 4 }}>…</span>}</span>
             <InlineEdit value={oErtrag} onCommit={setOErtrag} unit=" kWh/kWp" step={10} min={700} max={1400} width={48} />
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -74,7 +75,7 @@ export default function ResultHeroCard({
         {/* Right column */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 13 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ color: v('--color-text-secondary') }}>Eigenverbr.</span>
+            <span style={{ color: v('--color-text-secondary') }}><GlossaryTerm id="eigenverbrauch">Eigenverbr.</GlossaryTerm></span>
             {effEinspeisungModus === "voll" ? (
               <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-faint'), fontSize: 13 }}>0%</span>
             ) : (
@@ -83,7 +84,7 @@ export default function ResultHeroCard({
           </div>
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: effEinspeisungModus !== "aus" ? 6 : 0 }}>
-              <span style={{ color: v('--color-text-secondary') }}>Einspeisung</span>
+              <span style={{ color: v('--color-text-secondary') }}><GlossaryTerm id="einspeiseverguetung">Einspeisung</GlossaryTerm></span>
               <div style={{ display: "flex", gap: 2, background: v('--color-bg'), borderRadius: 8, padding: 2 }}>
                 {(["aus", "teil", "voll"] as const).map(m => {
                   const isActive = effEinspeisungModus === m;
