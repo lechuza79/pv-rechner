@@ -24,7 +24,11 @@ Du arbeitest mit einem UX-Architekten zusammen, der technisch mitdenken kann, ab
 
 **Startseite (`/`):** Tool-Hub mit 3 Widget-Cards → Live Simulation, Anlage rechnen, Energiedaten
 
-**Flow 1: Rechner (`/rechner`)** — "Ich kenne meine Anlage"
+> **Routen-Schema (Stand Juni 2026):** Slugs sind keyword-optimiert (`thema-funktion`, transliteriert). Alte Pfade werden via `next.config.js` dauerhaft (301/308) auf die neuen umgeleitet (Query-Parameter bleiben erhalten — geteilte Links intakt):
+> `/rechner`→`/photovoltaik-rechner` · `/waermepumpe`→`/waermepumpe-rechner` · `/energie`→`/strommix-deutschland` · `/empfehlung`→`/pv-bedarf-berechnen` · `/simulation`→`/pv-simulation`.
+> Neu: **`/photovoltaik-foerderung`** (Förder-Übersicht aus `lib/funding-programs.ts`) + **`/photovoltaik-foerderung/[stadt]`** (regionale Stadt-Seiten: MaStR-Bestand + kommunale Förderung + Beispielrechnungen; Städte-Registry `lib/atlas-cities.ts`).
+
+**Flow 1: Rechner (`/photovoltaik-rechner`)** — "Ich kenne meine Anlage"
 ```
 Step 0: Anlagengröße          → 5 / 8 / 10 / 15 kWp + "Anderer Wert" (2×2+1 Grid, OptionCard)
 Step 1: Speicher               → Nein / 5 / 10 / 15 kWh (2×2 Grid, OptionCard)
@@ -33,13 +37,13 @@ Step 3: Großverbraucher        → WP + E-Auto (TriToggles)
 → Ergebnis (gleiche Seite)
 ```
 
-**Flow 2: Empfehlung (`/empfehlung`)** — "Was passt zu mir?"
+**Flow 2: Empfehlung (`/pv-bedarf-berechnen`)** — "Was passt zu mir?"
 ```
 Step 0: Haushalt               → Personen + Nutzungsprofil
 Step 1: Großverbraucher        → WP + E-Auto (mit Erklärtext warum relevant)
 Step 2: Dach                   → Haustyp (4 Typen) + Dachart (4 Typen) + opt. Budget
 → Zwischenseite: Empfehlung + Warum + Alternativen
-→ Ergebnis (auf /rechner, mit "Warum diese Anlage?"-Sektion)
+→ Ergebnis (auf /photovoltaik-rechner, mit "Warum diese Anlage?"-Sektion)
 ```
 
 **Gemeinsame Ergebnisseite:**

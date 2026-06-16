@@ -21,6 +21,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/pv-simulation") ? "simulation" :
     pathname.startsWith("/strommix-deutschland") ? "energie" :
     pathname.startsWith("/photovoltaik-rechner") ? "rechner" :
+    pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
     pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""
   );
@@ -113,6 +114,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             <Link href="/pv-bedarf-berechnen" style={linkStyle("empfehlung")}>Empfehlung</Link>
             <Link href="/photovoltaik-rechner" style={linkStyle("rechner")}>Rechner</Link>
             <Link href="/pv-simulation" style={linkStyle("simulation")}>Live Simulation</Link>
+            <Link href="/photovoltaik-foerderung" style={linkStyle("foerderung")}>Förderung</Link>
             <Link href="/strommix-deutschland" style={linkStyle("energie")}>Charts</Link>
             {authElement}
           </nav>
@@ -157,6 +159,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             <Link href="/pv-bedarf-berechnen" style={mobileLinkStyle("empfehlung")} onClick={closeMenu}>Empfehlung</Link>
             <Link href="/photovoltaik-rechner" style={mobileLinkStyle("rechner")} onClick={closeMenu}>Rechner</Link>
             <Link href="/pv-simulation" style={mobileLinkStyle("simulation")} onClick={closeMenu}>Live Simulation</Link>
+            <Link href="/photovoltaik-foerderung" style={mobileLinkStyle("foerderung")} onClick={closeMenu}>Förderung</Link>
             <Link href="/strommix-deutschland" style={mobileLinkStyle("energie")} onClick={closeMenu}>Charts</Link>
             {authElement}
           </nav>
