@@ -138,6 +138,25 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     pvPerKwp: 100,
   },
+  "wuerzburg-klimastadt": {
+    id: "wuerzburg-klimastadt", name: "Klimastadt Würzburg",
+    traeger: "Stadt Würzburg", level: "kommune", region: "Würzburg", bundesland: "Bayern",
+    url: "https://www.wuerzburg.de", stand: "Juni 2026",
+    status: "aktiv", capped: true, verified: false,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp",
+    rates: [
+      { label: "PV-Anlage", value: "150 €/kWp, max. 1.500 €" },
+      { label: "Vollbelegungs-Bonus", value: "+50 €/kWp, max. 500 €" },
+      { label: "Denkmal", value: "200 €/kWp" },
+    ],
+    conditions: [
+      "Antrag vor Installation",
+      "Mindestgröße 0,04 kWp je m² Wohnfläche",
+    ],
+    combinableWith: BUND,
+    pvPerKwp: 150,
+  },
   "frankfurt-klimabonus": {
     id: "frankfurt-klimabonus", name: "Frankfurter Klimabonus",
     traeger: "Stadt Frankfurt am Main", level: "kommune", region: "Frankfurt am Main", bundesland: "Hessen",

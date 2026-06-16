@@ -213,6 +213,9 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
                 <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>Zum Programm</a>
               </div>
             </div>
+            <Link href="/foerderung" style={{ display: "inline-block", marginTop: 10, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Alle Förderprogramme im Überblick <IconArrowRight size={11} /></span>
+            </Link>
           </div>
         )}
 
