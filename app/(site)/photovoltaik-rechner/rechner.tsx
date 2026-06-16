@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { paramsToRow } from "../../../lib/types";
 import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN } from "../../../lib/constants";
-import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, paramInt, paramFloat, paramStr } from "../../../lib/calc";
+import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
@@ -165,8 +165,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         eigenverbrauch: effEinspeisungModus === "voll" ? 0 : Math.min(effEv + s.evDelta, 95),
         einspeisung: effEinspeisungModus === "aus" ? 0 : effEinsp,
         stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
+        batteryReplace: batteryReplaceCost(spKwh, prices),
       }),
-    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile]);
+    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices]);
 
   const real = scenarioData.find(s => s.id === "realistic")!;
   const be = real.data.be;

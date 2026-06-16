@@ -79,6 +79,76 @@ export function estimateCost(kwp: number, spKwh: number, prices?: PriceConfig): 
   return Math.round((pv + sp) / 500) * 500;
 }
 
+// ─── Speicher-Lebensdauer & Ersatz ───────────────────────────────────────────
+// Ein Heimspeicher hält ~13 Jahre (Garantie/Zyklenlebensdauer LFP), danach
+// fällig: Ersatz. Über den 25-Jahre-Horizont fällt also genau ein Akku-Tausch
+// an. Ohne diesen Posten rechnet sich jede Speichergröße scheinbar, weil der
+// Akku „25 Jahre gratis weiterläuft" — das überdimensioniert die Empfehlung.
+export const BATTERY_LIFETIME_YEARS = 13;
+// Ersatzakku in ~13 Jahren ist günstiger als heute (Preisverfall ~-3 %/Jahr).
+export const BATTERY_REPLACE_PRICE_FACTOR = 0.7;
+
+/** Reine Speicher-Kosten (ohne PV, ohne 500er-Rundung). */
+export function batteryCost(spKwh: number, prices?: PriceConfig): number {
+  const p = prices ?? DEFAULT_PRICES;
+  return spKwh > 0 ? p.batteryBase + spKwh * p.batteryPerKwh : 0;
+}
+
+/** Kosten des Akku-Tauschs in Jahr BATTERY_LIFETIME_YEARS (zukünftiger Preis). */
+export function batteryReplaceCost(spKwh: number, prices?: PriceConfig): number {
+  return Math.round(batteryCost(spKwh, prices) * BATTERY_REPLACE_PRICE_FACTOR);
+}
+
+// ─── Grenzrendite-Gate (zentral, für Auto-Dimensionierung) ───────────────────
+// Eine reine NPV-Maximierung über 25 Jahre wählt immer die Ecke des Suchraums
+// (größter Speicher, vollstes Dach), weil jede zusätzliche kWh sich über den
+// langen Horizont noch minimal rechnet — auch wenn die *zusätzliche*
+// Investition erst nach 15+ Jahren zurückkommt. Das überdimensioniert.
+//
+// Dieses Gate bewertet stattdessen den Grenznutzen: ein Upgrade wird nur
+// akzeptiert, wenn sich das *zusätzliche* Kapital innerhalb seiner Lebensdauer
+// amortisiert. Default 12 Jahre = typische Heimspeicher-Lebensdauer; ein
+// Speicher, der sich nicht in seiner Lebenszeit rechnet, ist eine Fehlinvestition.
+export const MAX_MARGINAL_PAYBACK_YEARS = 12;
+
+/** Marginale Amortisationszeit eines Upgrades in Jahren:
+ *  zusätzliche Investition geteilt durch die ⌀ jährliche Mehrersparnis.
+ *  npv = kumulierter Gewinn nach `years` Jahren (Investition bereits abgezogen),
+ *  daher: ⌀ Jahresersparnis = (Δnpv + Δinvest) / years. */
+export function marginalPaybackYears(deltaInvest: number, deltaNpv: number, years = YEARS): number {
+  if (deltaInvest <= 0) return 0;
+  const avgAnnualSaving = (deltaNpv + deltaInvest) / years;
+  return avgAnnualSaving > 0 ? deltaInvest / avgAnnualSaving : Infinity;
+}
+
+/** Aus einer Kandidatenliste den wirtschaftlich sinnvollen Punkt wählen.
+ *  Kandidaten werden nach Investition aufsteigend betrachtet; ein größerer
+ *  (teurerer) Kandidat löst den bisherigen Pick nur ab, wenn (a) er mehr
+ *  Gesamtgewinn bringt UND (b) die *zusätzliche* Investition gegenüber dem
+ *  bisherigen Pick sich innerhalb maxPayback amortisiert.
+ *  Gleich teure Kandidaten konkurrieren rein über NPV. */
+export function selectByMarginalReturn<T extends { investition: number; npv25: number }>(
+  candidates: T[],
+  maxPayback = MAX_MARGINAL_PAYBACK_YEARS,
+): T | undefined {
+  const sorted = [...candidates]
+    .filter(c => Number.isFinite(c.npv25) && Number.isFinite(c.investition))
+    .sort((a, b) => a.investition - b.investition || b.npv25 - a.npv25);
+  let pick = sorted[0];
+  if (!pick) return undefined;
+  for (let i = 1; i < sorted.length; i++) {
+    const c = sorted[i];
+    if (c.investition <= pick.investition) {
+      if (c.npv25 > pick.npv25) pick = c;
+      continue;
+    }
+    if (c.npv25 <= pick.npv25) continue; // teurer aber nicht besser → nie sinnvoll
+    const mp = marginalPaybackYears(c.investition - pick.investition, c.npv25 - pick.npv25);
+    if (mp <= maxPayback) pick = c;
+  }
+  return pick;
+}
+
 // ─── Eigenverbrauch (HTW Berlin Modell) ──────────────────────────────────────
 // HTW-Berlin / Quaschning-Weniger Power-Law: kalibriert an 25.000 Konfigurationen,
 // 1-Min-Auflösung, VDI 4655 Lastprofil — also OHNE Wärmepumpen-Lastprofil.
@@ -116,7 +186,7 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
 const WP_ANNUAL_KWH_CONST = 3500;
 
 // ─── Amortisation (25 Jahre, monatlich wenn PVGIS-Profil vorhanden) ─────────
-export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null }) {
+export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly, batteryReplace = 0 }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null; batteryReplace?: number }) {
   const years = [];
   let kum = -kosten;
   // Monatliche Berechnung wenn PVGIS-Profil vorhanden
@@ -140,6 +210,8 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
         j = ertrag * (eigenverbrauch / 100) * sp + ertrag * (1 - eigenverbrauch / 100) * (einspeisung / 100);
       }
     }
+    // Akku-Tausch nach Ablauf der Speicher-Lebensdauer (einmalig im Horizont)
+    if (i === BATTERY_LIFETIME_YEARS) j -= batteryReplace;
     kum += j;
     years.push({ year: YEAR + i, i, kum: Math.round(kum), j: Math.round(j) });
   }

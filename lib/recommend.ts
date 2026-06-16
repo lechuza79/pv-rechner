@@ -1,5 +1,5 @@
 import { PERSONEN, HAUSTYPEN, DACHARTEN, SPEICHER } from "./constants";
-import { calcEigenverbrauch, estimateCost, calc } from "./calc";
+import { calcEigenverbrauch, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
 import { WP_ANNUAL_KWH, calcEaAnnual } from "./consumption";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "./feedin-config";
@@ -10,6 +10,7 @@ const KWP_MIN = 3;
 const SPEICHER_OPTIONS_KWH = [0, 5, 7.5, 10, 12.5, 15];
 const DAYS_PER_YEAR = 365;
 const MAX_SPEICHER_DAYS = 2;          // Speicher max. ~2× Tagesverbrauch
+const SPEICHER_PER_MWH = 1.2;         // Faustregel: ~1,2 kWh Speicher pro MWh Jahresverbrauch
 const ALT_SIZE_DIFF_KWP = 3;          // "Max Dachnutzung" wird angeboten ab diesem Abstand
 const ALT_NPV_TOLERANCE = 0.95;       // Alternativen müssen ≥ 95 % NPV der Hauptempfehlung erreichen
 const ALT_MIN_INVEST_DELTA = 2000;    // "Günstiger Einstieg" braucht min. 2.000 € Investitions-Abstand
@@ -111,8 +112,13 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
     : Math.round(footprint * dachFactor);
   const maxRoofKwp = Math.round(nutzbarM2 * 0.2 * 2) / 2; // 200 Wp/m², gerundet auf 0,5
 
-  // 3. Grid-Search: alle (kWp × Speicher)-Kombinationen NPV-bewertet
-  const maxSpeicherSinnvoll = Math.min(15, MAX_SPEICHER_DAYS * dailyConsumption);
+  // 3. Grid-Search: alle (kWp × Speicher)-Kombinationen NPV-bewertet.
+  // Speichergröße zusätzlich per Branchen-Faustregel deckeln (~1,2 kWh pro MWh
+  // Jahresverbrauch). Ein Akku, der größer ist als der Haushalt nutzen kann,
+  // steht nur teuer herum — vor allem bei WP-Haushalten, deren Last im Winter
+  // anfällt, wenn der Speicher mangels Sonne kaum gefüllt wird.
+  const ruleOfThumbMax = (totalConsumption / 1000) * SPEICHER_PER_MWH;
+  const maxSpeicherSinnvoll = Math.min(15, MAX_SPEICHER_DAYS * dailyConsumption, ruleOfThumbMax);
   const speicherTestOptions = SPEICHER_OPTIONS_KWH.filter(kwh => kwh <= maxSpeicherSinnvoll);
   const candidates: Candidate[] = [];
 
@@ -131,6 +137,7 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
         kwp: kwpRounded, kosten: investition, strompreis,
         eigenverbrauch: ev, einspeisung: feedInCt,
         stromSteigerung, ertragKwp, monthly: null,
+        batteryReplace: batteryReplaceCost(speicherKwh, p),
       });
       candidates.push({
         kwp: kwpRounded, speicherKwh, ev,
@@ -141,20 +148,40 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
     }
   }
 
-  // 4. Beste Empfehlung = höchster NPV nach 25 J. NaN-Kandidaten werden ausgeschlossen
-  // (würden in Brower-Sort sonst zufällig erscheinen je nach Engine).
+  // 4. Beste Empfehlung: Panele nach NPV (Dach möglichst voll — Module sind
+  // billig und zahlen sich über Einspeisung + steigende Strompreise aus), aber
+  // den Speicher pro Anlagengröße über das zentrale Grenzrendite-Gate (calc.ts)
+  // deckeln. Reine NPV-Maximierung würde sonst immer den größten Akku wählen,
+  // auch wenn dessen letzte kWh sich erst nach 15+ Jahren rechnet.
   const valid = candidates.filter(c => Number.isFinite(c.npv25));
-  valid.sort((a, b) => b.npv25 - a.npv25);
-  let best = valid[0] ?? candidates[0];
+  function gatedBest(pool: Candidate[]): Candidate | undefined {
+    const byKwp = new Map<number, Candidate[]>();
+    for (const c of pool) {
+      const arr = byKwp.get(c.kwp) ?? [];
+      arr.push(c);
+      byKwp.set(c.kwp, arr);
+    }
+    // Pro Anlagengröße: wirtschaftlich sinnvolle Speichergröße via Gate.
+    // Über die Anlagengrößen hinweg: höchster NPV (= vollstes Dach gewinnt).
+    const perKwp: Candidate[] = [];
+    for (const arr of Array.from(byKwp.values())) {
+      const pick = selectByMarginalReturn<Candidate>(arr);
+      if (pick) perKwp.push(pick);
+    }
+    perKwp.sort((a, b) => b.npv25 - a.npv25);
+    return perKwp[0];
+  }
+  let best = gatedBest(valid) ?? valid.sort((a, b) => b.npv25 - a.npv25)[0] ?? candidates[0];
 
-  // 5. Budget-Constraint: filtere alle die ins Budget passen, nimm bestes davon (aus der sortierten Liste)
+  // 5. Budget-Constraint: nur Kombinationen die ins Budget passen, dann dasselbe Gate
   let budgetConstrained = false;
   if (input.budgetLimit !== null) {
     const affordable = valid.filter(c => c.investition <= input.budgetLimit!);
-    if (affordable.length > 0) {
-      if (affordable[0].kwp !== best.kwp || affordable[0].speicherKwh !== best.speicherKwh) {
+    const affordableBest = gatedBest(affordable);
+    if (affordableBest) {
+      if (affordableBest.kwp !== best.kwp || affordableBest.speicherKwh !== best.speicherKwh) {
         budgetConstrained = true;
-        best = affordable[0];
+        best = affordableBest;
       }
     } else {
       budgetConstrained = true;

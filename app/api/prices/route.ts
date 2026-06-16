@@ -30,6 +30,7 @@ export async function GET() {
       .gt("pv_price_small", 0)
       .lte("valid_from", new Date().toISOString().split("T")[0])
       .order("valid_from", { ascending: false })
+      .order("created_at", { ascending: false }) // tiebreaker: newest insertion wins on same-day rows
       .limit(1)
       .single();
 

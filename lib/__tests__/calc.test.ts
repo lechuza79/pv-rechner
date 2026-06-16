@@ -69,10 +69,10 @@ describe("estimateCost", () => {
   it("adds battery cost on top", () => {
     const without = estimateCost(10, 0);
     const with10kWh = estimateCost(10, 10);
-    // 10 kWh × 700 €/kWh = 7000 € extra
+    // Default Q2/2026: 1500 € Basis + 10 kWh × 225 €/kWh = 3750 € extra (±Rundung)
     const diff = with10kWh - without;
-    expect(diff).toBeGreaterThanOrEqual(6500);
-    expect(diff).toBeLessThanOrEqual(7500);
+    expect(diff).toBeGreaterThanOrEqual(3500);
+    expect(diff).toBeLessThanOrEqual(4000);
   });
 
   it("respects custom price config (used by usePrices() hook)", () => {
