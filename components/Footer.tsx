@@ -8,7 +8,7 @@ const linkStyle: React.CSSProperties = {
 };
 
 const groupLabelStyle: React.CSSProperties = {
-  fontSize: 10,
+  fontSize: 11,
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.06em",
@@ -58,7 +58,7 @@ export default function Footer() {
       </div>
       <p
         style={{
-          fontSize: 10,
+          fontSize: 11,
           lineHeight: 1.6,
           color: v("--color-text-faint"),
           textAlign: "center",

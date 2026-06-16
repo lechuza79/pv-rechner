@@ -44,6 +44,13 @@ export interface FundingProgram {
   pvCap?: number;
   /** Total € cap on the storage part. */
   speicherCap?: number;
+  /** Tiered flat amounts by kWp (e.g. Köln): first tier whose `upTo` the size
+   *  does not exceed wins. Use a large `upTo` for the open top tier. */
+  pvTiers?: { upTo: number; amount: number }[];
+  /** Tiered flat amounts by kWh storage. */
+  speicherTiers?: { upTo: number; amount: number }[];
+  /** Minimum storage kWh below which no storage funding is paid. */
+  speicherMin?: number;
 }
 
 // Bund applies everywhere and combines with every regional program.
@@ -218,13 +225,25 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.stadt-koeln.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss für PV + Speicher (gedeckelt)",
+    coveredCosts: "Staffel-Pauschalen, max. 60 % der Kosten",
     rates: [
-      { label: "PV-Anlage", value: "bis 2.500 €" },
-      { label: "Batteriespeicher", value: "bis 1.300 €" },
+      { label: "PV-Anlage", value: "1.500–2.500 € (nach kWp)" },
+      { label: "Batteriespeicher", value: "500–1.300 € (nach kWh)" },
     ],
-    conditions: ["Solange Mittel reichen (Budget 8 Mio. € 2026)"],
+    conditions: ["Solange Mittel reichen (Budget 8 Mio. € 2026)", "Speicher ab 3 kWh"],
     combinableWith: BUND,
+    pvTiers: [
+      { upTo: 5, amount: 1500 },
+      { upTo: 9, amount: 2000 },
+      { upTo: 14, amount: 2300 },
+      { upTo: 999, amount: 2500 },
+    ],
+    speicherTiers: [
+      { upTo: 7, amount: 500 },
+      { upTo: 11, amount: 1000 },
+      { upTo: 999, amount: 1300 },
+    ],
+    speicherMin: 3,
   },
   "duesseldorf-klimafreundlich": {
     id: "duesseldorf-klimafreundlich", name: "Klimafreundliches Wohnen und Arbeiten",

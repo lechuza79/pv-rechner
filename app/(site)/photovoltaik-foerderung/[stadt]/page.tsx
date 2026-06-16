@@ -58,6 +58,11 @@ type Example = {
   total: number;
 };
 
+function tierAmount(tiers: { upTo: number; amount: number }[], value: number): number {
+  for (const t of tiers) if (value <= t.upTo) return t.amount;
+  return tiers[tiers.length - 1].amount;
+}
+
 function buildExamples(city: AtlasCity, f: FundingProgram | undefined): Example[] {
   const configs = [
     { kwp: 5, spKwh: 0 },
@@ -80,6 +85,14 @@ function buildExamples(city: AtlasCity, f: FundingProgram | undefined): Example[
       let sp = spKwh * (f.speicherPerKwh ?? 0);
       if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
       foerderung = Math.round(pv + sp);
+      foerderComputable = true;
+    } else if (f?.pvTiers) {
+      // Gestaffelte Pauschalen (z.B. Köln): erster Tier, dessen upTo nicht
+      // überschritten wird.
+      const pv = tierAmount(f.pvTiers, kwp);
+      const sp = f.speicherTiers && spKwh >= (f.speicherMin ?? 0)
+        ? tierAmount(f.speicherTiers, spKwh) : 0;
+      foerderung = pv + sp;
       foerderComputable = true;
     } else if (f?.percentOfCost) {
       foerderung = Math.round(brutto * f.percentOfCost);
