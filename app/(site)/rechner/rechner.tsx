@@ -8,6 +8,7 @@ import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, paramInt, p
 import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
+import GlossaryTerm from "../../../components/GlossaryTerm";
 import { calcExtraConsumption } from "../../../lib/consumption";
 import Chart from "./_components/Chart";
 import { v } from "../../../lib/theme";
@@ -342,6 +343,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {step === 0 && (
               <div>
+                <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
+                  Die Leistung wird in <GlossaryTerm id="kwp">kWp</GlossaryTerm> angegeben.
+                </p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   {ANLAGEN.map((a, i) => (
                     <OptionCard key={i} selected={anlage === i} onClick={() => { setAnlage(i); setOKosten(null); setOEv(null); }} label={a.label} sub={a.sub} icon={a.icon} />
@@ -358,12 +362,17 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             )}
 
             {step === 1 && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <div>
+                <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
+                  Die <GlossaryTerm id="speicherkapazitaet">Speicherkapazität</GlossaryTerm> wird in <GlossaryTerm id="kwh">kWh</GlossaryTerm> gemessen.
+                </p>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 {[...SPEICHER.map((s, idx) => ({ ...s, idx }))]
                   .sort((a, b) => a.kwh - b.kwh)
                   .map(s => (
                     <OptionCard key={s.idx} selected={speicher === s.idx} onClick={() => { setSpeicher(s.idx); setOKosten(null); }} label={s.label} sub={s.sub} icon={s.icon} />
                   ))}
+                </div>
               </div>
             )}
 
