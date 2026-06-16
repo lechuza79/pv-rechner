@@ -340,6 +340,7 @@ pv-rechner/
 │   ├── consumption.ts              # Zentrales Verbrauchsmodell: WP/E-Auto Konstanten, Stundenprofile (BDEW/VDI 4655)
 │   ├── simulation.ts               # Live-Simulation: PV-Momentanleistung aus Wetterdaten (NOCT-Modell)
 │   ├── recommend.ts                # Empfehlungs-Algorithmus (optimale kWp + Speicher aus Haushalt + Dach)
+│   ├── glossary.ts                 # Fachbegriff-Datensatz (15 Begriffe: short/long/aliases) + Slug-Lookup
 │   ├── types.ts                    # CalcParams, CalculationRow, Konvertierung
 │   ├── supabase-server.ts          # Supabase Server-Client mit Service Key
 │   ├── supabase-browser.ts         # Supabase Browser-Client (@supabase/ssr)
@@ -358,6 +359,7 @@ pv-rechner/
 │   ├── OptionCard.tsx              # Auswahl-Karte (2×2 Grids, SVG-Icon-Mapping)
 │   ├── TriToggle.tsx               # Dreier-Toggle (Nein/Geplant/Vorhanden, optionales Icon)
 │   ├── InlineEdit.tsx              # Click-to-Edit Zahlenwert
+│   ├── GlossaryTerm.tsx            # Fachbegriff-Tooltip (Portal) + GlossaryProvider (erste Erwähnung pro Seite)
 │   ├── Chart.tsx                   # SVG-Amortisationskurve
 │   ├── ChartExportBar.tsx          # Share/Download-Leiste unter Charts
 │   ├── QuickSettings.tsx           # WP/E-Auto/Speicher Quick-Toggles (Ergebnis)
@@ -404,6 +406,7 @@ pv-rechner/
     ├── simulation/
     │   ├── page.tsx               # Metadata + Suspense + <LiveSimulation />
     │   └── simulation.tsx         # "use client" — Live PV Simulation (Wetter + Grid + Chart)
+    ├── glossar/page.tsx           # Fachbegriff-Glossar (statisch, alle Begriffe + Langtexte, SEO)
     ├── methodik/page.tsx          # Berechnungsmethodik (statisch)
     ├── impressum/page.tsx         # Impressum (statisch)
     └── datenschutz/page.tsx       # Datenschutzerklärung (statisch)
