@@ -16,6 +16,8 @@ export interface FundingProgram {
   level: FundingLevel;
   /** Display region, e.g. "Stuttgart", "Berlin", "bundesweit". */
   region: string;
+  /** Bundesland for grouping on the overview page; omitted for federal programs. */
+  bundesland?: string;
   url: string;
   /** Human-readable as-of, e.g. "Juni 2026". */
   stand: string;
@@ -71,7 +73,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   // ── Land ───────────────────────────────────────────────────────────────────
   "berlin-solarplus": {
     id: "berlin-solarplus", name: "SolarPLUS", traeger: "IBB / Land Berlin",
-    level: "land", region: "Berlin",
+    level: "land", region: "Berlin", bundesland: "Berlin",
     url: "https://www.berlin.de/solarcity/", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -92,7 +94,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   // ── Kommune – aktiv & solide ────────────────────────────────────────────────
   "stuttgart-solaroffensive": {
     id: "stuttgart-solaroffensive", name: "Stuttgarter Solaroffensive",
-    traeger: "Landeshauptstadt Stuttgart", level: "kommune", region: "Stuttgart",
+    traeger: "Landeshauptstadt Stuttgart", level: "kommune", region: "Stuttgart", bundesland: "Baden-Württemberg",
     url: "https://www.stuttgart.de/solaroffensive", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -114,7 +116,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "karlsruhe-klimabonus": {
     id: "karlsruhe-klimabonus", name: "Karlsruher Klima-Bonus",
-    traeger: "Stadt Karlsruhe", level: "kommune", region: "Karlsruhe",
+    traeger: "Stadt Karlsruhe", level: "kommune", region: "Karlsruhe", bundesland: "Baden-Württemberg",
     url: "https://www.karlsruhe.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: false,
     eligibility: ["privat"],
@@ -126,7 +128,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "regensburg-effizient": {
     id: "regensburg-effizient", name: "Regensburg effizient",
-    traeger: "Stadt Regensburg", level: "kommune", region: "Regensburg",
+    traeger: "Stadt Regensburg", level: "kommune", region: "Regensburg", bundesland: "Bayern",
     url: "https://www.regensburg.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: false,
     eligibility: ["privat"],
@@ -138,7 +140,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "frankfurt-klimabonus": {
     id: "frankfurt-klimabonus", name: "Frankfurter Klimabonus",
-    traeger: "Stadt Frankfurt am Main", level: "kommune", region: "Frankfurt am Main",
+    traeger: "Stadt Frankfurt am Main", level: "kommune", region: "Frankfurt am Main", bundesland: "Hessen",
     url: "https://frankfurt.de/themen/klima-und-energie/stadtklima/klimabonus",
     stand: "Juni 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -159,7 +161,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "darmstadt-pv": {
     id: "darmstadt-pv", name: "Förderprogramm Photovoltaik",
-    traeger: "Wissenschaftsstadt Darmstadt", level: "kommune", region: "Darmstadt",
+    traeger: "Wissenschaftsstadt Darmstadt", level: "kommune", region: "Darmstadt", bundesland: "Hessen",
     url: "https://www.darmstadt.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -174,7 +176,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "badhomburg-energiespar": {
     id: "badhomburg-energiespar", name: "Energiesparförderung",
-    traeger: "Stadt Bad Homburg", level: "kommune", region: "Bad Homburg",
+    traeger: "Stadt Bad Homburg", level: "kommune", region: "Bad Homburg", bundesland: "Hessen",
     url: "https://www.bad-homburg.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: false,
     eligibility: ["privat", "gewerblich"],
@@ -189,7 +191,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "koeln-pv": {
     id: "koeln-pv", name: "Klimafreundliches Wohnen & Arbeiten",
-    traeger: "Stadt Köln", level: "kommune", region: "Köln",
+    traeger: "Stadt Köln", level: "kommune", region: "Köln", bundesland: "Nordrhein-Westfalen",
     url: "https://www.stadt-koeln.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -203,7 +205,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "duesseldorf-klimafreundlich": {
     id: "duesseldorf-klimafreundlich", name: "Klimafreundliches Wohnen und Arbeiten",
-    traeger: "Stadt Düsseldorf", level: "kommune", region: "Düsseldorf",
+    traeger: "Stadt Düsseldorf", level: "kommune", region: "Düsseldorf", bundesland: "Nordrhein-Westfalen",
     url: "https://www.duesseldorf.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -218,7 +220,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "hannover-proklima": {
     id: "hannover-proklima", name: "proKlima (enercity-Fonds)",
-    traeger: "Region Hannover", level: "landkreis", region: "Region Hannover",
+    traeger: "Region Hannover", level: "landkreis", region: "Region Hannover", bundesland: "Niedersachsen",
     url: "https://www.proklima-hannover.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -235,7 +237,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   // ── Kommune – aktuell ausgeschöpft / eingestellt (zur Lagebeurteilung) ───────
   "bonn-solares": {
     id: "bonn-solares", name: "Solares Bonn", traeger: "Stadt Bonn",
-    level: "kommune", region: "Bonn", url: "https://www.bonn.de",
+    level: "kommune", region: "Bonn", bundesland: "Nordrhein-Westfalen", url: "https://www.bonn.de",
     stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp (Budget 2026 erschöpft)",
@@ -245,7 +247,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "goettingen-klimafonds": {
     id: "goettingen-klimafonds", name: "KlimaFonds Göttingen",
-    traeger: "Stadt Göttingen", level: "kommune", region: "Göttingen",
+    traeger: "Stadt Göttingen", level: "kommune", region: "Göttingen", bundesland: "Niedersachsen",
     url: "https://nachhaltigkeit.goettingen.de", stand: "Juni 2026",
     status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
