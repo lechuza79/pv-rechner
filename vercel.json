@@ -10,6 +10,10 @@
       "schedule": "0 8 1 * *"
     },
     {
+      "path": "/api/prices/report",
+      "schedule": "0 9 2 * *"
+    },
+    {
       "path": "/api/energy/backfill",
       "schedule": "0 6 * * 1"
     }
