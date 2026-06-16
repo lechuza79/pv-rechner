@@ -20,6 +20,7 @@ export default function Footer() {
       >
         <Link href="/methodik" style={linkStyle}>Methodik</Link>
         <Link href="/photovoltaik-foerderung" style={linkStyle}>Förderung</Link>
+        <Link href="/glossar" style={linkStyle}>Glossar</Link>
         <Link href="/embed-demo" style={linkStyle}>Widgets</Link>
         <Link href="/impressum" style={linkStyle}>Impressum</Link>
         <Link href="/datenschutz" style={linkStyle}>Datenschutz</Link>

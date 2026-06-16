@@ -86,6 +86,12 @@ export default function Empfehlung() {
   const [plzSource, setPlzSource] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
 
+  // Local input buffer for the PLZ field. The URL only ever holds a complete,
+  // valid 5-digit PLZ (parsePlzParam filters partials to ""), so a directly
+  // URL-bound input would discard every keystroke until the 5th. Type freely
+  // here; the URL syncs once the input is a full PLZ.
+  const [plzInput, setPlzInput] = useState(plz);
+
   // Patch the URL — drops keys whose value equals the default (keeps URLs short).
   const updateUrl = useCallback((updates: Record<string, string | number | null>) => {
     const next = new URLSearchParams(searchParams.toString());
@@ -113,7 +119,6 @@ export default function Empfehlung() {
   const setEa          = (v: string) => updateUrl({ ea: v === "nein" ? null : v, km: v === "nein" ? null : eaKm });
   const setEaKm        = (v: number) => updateUrl({ km: v });
   const setPlz         = (v: string) => updateUrl({ plz: v || null, ertrag: v ? ertragKwp : null });
-  const setErtragKwp   = (v: number | null) => updateUrl({ ertrag: v });
 
   // Step-Navigation: Wizard ↔ Ergebnis
   const showRecommendation = () => updateUrl({ view: "ergebnis" });
@@ -141,7 +146,10 @@ export default function Empfehlung() {
       const res = await fetch(`/api/pvgis?lat=${lat}&lon=${lon}&plzPrefix=${inputPlz.slice(0, 2)}`);
       const data = await res.json();
       if (data.annual && data.annual >= 700 && data.annual <= 1400) {
-        setErtragKwp(data.annual);
+        // Write PLZ + Ertrag together: this runs after an async await, so the
+        // updateUrl closure here predates setPlz and would otherwise drop the
+        // freshly-set PLZ from the URL. Passing inputPlz keeps both in sync.
+        updateUrl({ plz: inputPlz, ertrag: data.annual });
         setPlzSource(data.source);
       }
     } catch { /* keep default */ }
@@ -429,11 +437,12 @@ export default function Empfehlung() {
                     type="text"
                     inputMode="numeric"
                     placeholder="PLZ"
-                    value={plz}
+                    value={plzInput}
                     onChange={e => {
                       const v2 = e.target.value.replace(/\D/g, "").slice(0, 5);
-                      setPlz(v2);
-                      if (v2.length === 5) fetchPvgis(v2);
+                      setPlzInput(v2);
+                      if (v2.length === 5) { setPlz(v2); fetchPvgis(v2); }
+                      else setPlz("");
                     }}
                     style={{
                       width: 80, padding: "8px 10px", borderRadius: v('--radius-sm'), fontSize: 14, fontFamily: v('--font-mono'),

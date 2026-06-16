@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { IconArrowRight } from "../../../components/Icons";
+import GlossaryTerm from "../../../components/GlossaryTerm";
 import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
@@ -149,7 +150,7 @@ export default async function MethodikPage() {
         {/* ── Eigenverbrauch ── */}
         <h2 style={S.h2}>Eigenverbrauch</h2>
         <p style={S.p}>
-          Der Eigenverbrauchsanteil ist der wichtigste Faktor für die Rentabilität:
+          Der <GlossaryTerm id="eigenverbrauch">Eigenverbrauchsanteil</GlossaryTerm> ist der wichtigste Faktor für die Rentabilität:
           Wie viel Prozent deines Solarstroms nutzt du selbst, statt ihn ins Netz
           einzuspeisen? Jede selbst verbrauchte Kilowattstunde spart dir den vollen
           Strompreis — eingespeister Strom bringt nur die Einspeisevergütung.
@@ -197,8 +198,8 @@ export default async function MethodikPage() {
         </p>
         <p style={S.p}>
           Das verbessert den Eigenverbrauchsanteil, weil weniger Strom
-          übrig bleibt der eingespeist werden muss. Gleichzeitig sinkt die
-          Autarkie-Quote nicht, weil mehr vom eigenen Dach kommt statt aus dem Netz.
+          übrig bleibt der eingespeist werden muss. Gleichzeitig sinkt die{" "}
+          <GlossaryTerm id="autarkie">Autarkie-Quote</GlossaryTerm> nicht, weil mehr vom eigenen Dach kommt statt aus dem Netz.
         </p>
         <p style={S.p}>
           <strong>Wichtige Korrektur bei Wärmepumpen:</strong> Das HTW-Berlin-Modell
@@ -322,14 +323,14 @@ export default async function MethodikPage() {
           <span style={S.label}>Annahmen</span>
           <span style={S.accent}>Zeitraum:</span> 25 Jahre
           <br />
-          <span style={S.accent}>Degradation:</span> 0,5 % pro Jahr
+          <span style={S.accent}><GlossaryTerm id="degradation">Degradation</GlossaryTerm>:</span> 0,5 % pro Jahr
           (Leistungsverlust der Module)
           <br />
-          <span style={S.accent}>Einspeisevergütung (EEG):</span>
+          <span style={S.accent}><GlossaryTerm id="einspeiseverguetung">Einspeisevergütung</GlossaryTerm> (EEG):</span>
           <br />
-          &nbsp;&nbsp;Teileinspeisung: 8,03 ct/kWh (≤10 kWp) / 6,95 ct/kWh ({">"}10 kWp)
+          &nbsp;&nbsp;<GlossaryTerm id="teileinspeisung">Teileinspeisung</GlossaryTerm>: 8,03 ct/kWh (≤10 kWp) / 6,95 ct/kWh ({">"}10 kWp)
           <br />
-          &nbsp;&nbsp;Volleinspeisung: 12,73 ct/kWh (≤10 kWp) / 10,67 ct/kWh ({">"}10 kWp)
+          &nbsp;&nbsp;<GlossaryTerm id="volleinspeisung">Volleinspeisung</GlossaryTerm>: 12,73 ct/kWh (≤10 kWp) / 10,67 ct/kWh ({">"}10 kWp)
           <br />
           &nbsp;&nbsp;Fix für 20 Jahre ab Inbetriebnahme. Bei Anlagen {">"}10 kWp wird ein
           gewichteter Mischsatz berechnet. Halbjährliche Degression ca. 1%.
