@@ -64,7 +64,7 @@ export default function DashboardClient({
   const handleLoad = (calc: CalculationRow) => {
     const params = paramsToInitial(rowToParams(calc));
     const sp = new URLSearchParams(params);
-    router.push(`/rechner?${sp.toString()}`);
+    router.push(`/photovoltaik-rechner?${sp.toString()}`);
   };
 
   const handleLogout = async () => {

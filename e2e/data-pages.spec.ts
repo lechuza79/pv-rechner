@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 // Smoke for the two pages that fetch external data:
-// /simulation pulls weather data from Open-Meteo, /energie pulls Energy-Charts data.
+// /pv-simulation pulls weather data from Open-Meteo, /strommix-deutschland pulls Energy-Charts data.
 // We don't assert the data contents (those depend on live APIs), only that:
 //   - the page renders its frame and controls without crashing
 //   - either real data shows up, or a graceful loading/error state appears
@@ -11,7 +11,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Data-driven pages", () => {
   test("Live simulation page renders and accepts a PLZ submit", async ({ page }) => {
-    await page.goto("/simulation");
+    await page.goto("/pv-simulation");
 
     // Page frame should be there
     await expect(page.getByRole("heading", { name: /Live|Simulation|Solar/i }).first()).toBeVisible();
@@ -38,7 +38,7 @@ test.describe("Data-driven pages", () => {
   });
 
   test("Energy dashboard page renders header and time-range controls", async ({ page }) => {
-    await page.goto("/energie");
+    await page.goto("/strommix-deutschland");
 
     // Page must render without runtime errors
     await expect(page.getByRole("heading").first()).toBeVisible({ timeout: 10_000 });

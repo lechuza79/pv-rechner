@@ -5,7 +5,7 @@ import { test, expect } from "@playwright/test";
 // We just want to confirm a complete walkthrough leads to a TCO comparison.
 
 test("Wärmepumpe flow lands on a result with TCO and amortization", async ({ page }) => {
-  await page.goto("/waermepumpe");
+  await page.goto("/waermepumpe-rechner");
 
   // Step 0: Situation — Bestandsgebäude (Sanierungsfall, BEG-relevant)
   await page.getByText("Bestandsgebäude", { exact: false }).click();

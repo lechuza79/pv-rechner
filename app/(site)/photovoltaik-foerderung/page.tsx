@@ -9,7 +9,7 @@ import { ATLAS_CITIES } from "../../../lib/atlas-cities";
 import { allFundingPrograms, type FundingProgram, type FundingStatus } from "../../../lib/funding-programs";
 
 export const metadata: Metadata = pageMetadata({
-  path: "/foerderung",
+  path: "/photovoltaik-foerderung",
   title: `PV-Förderung ${new Date().getFullYear()} – Übersicht aller Programme nach Bundesland`,
   description:
     "Welche Förderung gibt es für Photovoltaik und Batteriespeicher? Übersicht der Programme von Bund, Ländern und Kommunen — mit Beträgen, Bedingungen und Status.",
@@ -69,7 +69,7 @@ function ProgramCard({ p, citySlug }: { p: FundingProgram; citySlug?: string }) 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
         <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>Zur Quelle</a>
         {citySlug && (
-          <Link href={`/photovoltaik/${citySlug}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
+          <Link href={`/photovoltaik-foerderung/${citySlug}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Stadt-Seite <IconArrowRight size={11} /></span>
           </Link>
         )}

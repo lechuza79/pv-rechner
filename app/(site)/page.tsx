@@ -18,35 +18,35 @@ export const metadata: Metadata = pageMetadata({
 
 const tools = [
   {
-    href: "/simulation",
+    href: "/pv-simulation",
     icon: IconSun,
     title: "Live Simulation",
     description: "Sieh in Echtzeit, was eine PV-Anlage an deinem Standort gerade produzieren würde — basierend auf aktuellen Wetterdaten.",
     cta: "Simulation starten",
   },
   {
-    href: "/empfehlung",
+    href: "/pv-bedarf-berechnen",
     icon: IconUser,
     title: "Was passt zu mir?",
     description: "Beschreibe Haus, Haushalt und Verbrauch — wir empfehlen dir die optimale PV-Anlage mit Speicher. Für alle, die nicht wissen, wo sie anfangen sollen.",
     cta: "Empfehlung starten",
   },
   {
-    href: "/rechner",
+    href: "/photovoltaik-rechner",
     icon: IconBolt,
     title: "Anlage rechnen",
     description: "Berechne Kosten, Ersparnis und Rendite einer PV-Anlage — individuell für deinen Haushalt. Wenn du schon weißt, was du planst.",
     cta: "Jetzt berechnen",
   },
   {
-    href: "/waermepumpe",
+    href: "/waermepumpe-rechner",
     icon: IconBattery,
     title: "Wärmepumpe rechnen",
     description: "Einsparung, Amortisation und CO₂ einer Wärmepumpe vs. Gas/Öl — mit BEG-Förderung, transparent nach Fraunhofer ISE & BWP.",
     cta: "Prognose starten",
   },
   {
-    href: "/energie",
+    href: "/strommix-deutschland",
     icon: IconSparkle,
     title: "Energiedaten Deutschland",
     description: "Deutschlands Strommix live: Solar, Wind, Gas, Kohle — transparent und aktuell.",

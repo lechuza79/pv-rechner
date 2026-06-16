@@ -345,7 +345,7 @@ export default function LiveSimulation() {
         {weather && !error && (
           <div className="fu" style={{ marginBottom: 24 }}>
             <Link
-              href={`/rechner?a=${SIM_CONFIGS.findIndex(c => c.kwp === selectedKwp)}`}
+              href={`/photovoltaik-rechner?a=${SIM_CONFIGS.findIndex(c => c.kwp === selectedKwp)}`}
               style={{
                 display: "block", textAlign: "center", padding: "14px 20px",
                 borderRadius: v('--radius-md'), background: v('--color-accent'),

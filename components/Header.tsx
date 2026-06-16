@@ -18,10 +18,10 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   const authState = useAuth();
   const activePage = activePageProp ?? (
     pathname === "/" ? "" :
-    pathname.startsWith("/simulation") ? "simulation" :
-    pathname.startsWith("/energie") ? "energie" :
-    pathname.startsWith("/rechner") ? "rechner" :
-    pathname.startsWith("/empfehlung") ? "empfehlung" :
+    pathname.startsWith("/pv-simulation") ? "simulation" :
+    pathname.startsWith("/strommix-deutschland") ? "energie" :
+    pathname.startsWith("/photovoltaik-rechner") ? "rechner" :
+    pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""
   );
   const [menuOpen, setMenuOpen] = useState(false);
@@ -86,7 +86,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
           <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
         </button>
       ) : (
-        <Link href="/rechner" style={{ ...(isDesktop ? linkStyle("") : mobileLinkStyle("")), gap: isDesktop ? 6 : 8 }} onClick={closeMenu}>
+        <Link href="/photovoltaik-rechner" style={{ ...(isDesktop ? linkStyle("") : mobileLinkStyle("")), gap: isDesktop ? 6 : 8 }} onClick={closeMenu}>
           <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
         </Link>
       )
@@ -110,10 +110,10 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
         {isDesktop ? (
           <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            <Link href="/empfehlung" style={linkStyle("empfehlung")}>Empfehlung</Link>
-            <Link href="/rechner" style={linkStyle("rechner")}>Rechner</Link>
-            <Link href="/simulation" style={linkStyle("simulation")}>Live Simulation</Link>
-            <Link href="/energie" style={linkStyle("energie")}>Charts</Link>
+            <Link href="/pv-bedarf-berechnen" style={linkStyle("empfehlung")}>Empfehlung</Link>
+            <Link href="/photovoltaik-rechner" style={linkStyle("rechner")}>Rechner</Link>
+            <Link href="/pv-simulation" style={linkStyle("simulation")}>Live Simulation</Link>
+            <Link href="/strommix-deutschland" style={linkStyle("energie")}>Charts</Link>
             {authElement}
           </nav>
         ) : (
@@ -154,10 +154,10 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             padding: "8px 24px 16px",
             boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
           }}>
-            <Link href="/empfehlung" style={mobileLinkStyle("empfehlung")} onClick={closeMenu}>Empfehlung</Link>
-            <Link href="/rechner" style={mobileLinkStyle("rechner")} onClick={closeMenu}>Rechner</Link>
-            <Link href="/simulation" style={mobileLinkStyle("simulation")} onClick={closeMenu}>Live Simulation</Link>
-            <Link href="/energie" style={mobileLinkStyle("energie")} onClick={closeMenu}>Charts</Link>
+            <Link href="/pv-bedarf-berechnen" style={mobileLinkStyle("empfehlung")} onClick={closeMenu}>Empfehlung</Link>
+            <Link href="/photovoltaik-rechner" style={mobileLinkStyle("rechner")} onClick={closeMenu}>Rechner</Link>
+            <Link href="/pv-simulation" style={mobileLinkStyle("simulation")} onClick={closeMenu}>Live Simulation</Link>
+            <Link href="/strommix-deutschland" style={mobileLinkStyle("energie")} onClick={closeMenu}>Charts</Link>
             {authElement}
           </nav>
         </>

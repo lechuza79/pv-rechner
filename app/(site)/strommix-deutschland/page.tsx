@@ -5,8 +5,8 @@ import { pageMetadata } from "../../../lib/seo";
 import EnergieClient from "./client";
 
 export const metadata: Metadata = pageMetadata({
-  path: "/energie",
-  title: "Energiedaten Deutschland — Live & Transparent | Solar Check",
+  path: "/strommix-deutschland",
+  title: "Strommix Deutschland – Live: Solar, Wind, Kohle & mehr | Solar Check",
   description:
     "Deutschlands Strommix in Echtzeit: Solar, Wind, Gas, Kohle. Datenquelle: Fraunhofer ISE / Energy-Charts (CC BY 4.0).",
   ogImageTitle: "Deutschlands Strommix — live",

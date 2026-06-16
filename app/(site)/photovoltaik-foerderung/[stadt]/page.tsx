@@ -22,8 +22,8 @@ export async function generateMetadata({ params }: { params: { stadt: string } }
   const f = city.fundingId ? getFundingProgram(city.fundingId) : undefined;
   const year = new Date().getFullYear();
   return pageMetadata({
-    path: `/photovoltaik/${city.slug}`,
-    title: `Photovoltaik in ${city.name} – Bestand & Förderung ${year}`,
+    path: `/photovoltaik-foerderung/${city.slug}`,
+    title: `Photovoltaik-Förderung ${city.name} ${year} – Zuschüsse & Bestand`,
     description: `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister${f ? `, das ${f.name}` : ""} und Beispielrechnungen für deine PV-Anlage.`,
     ogImageTitle: `Photovoltaik in ${city.name}`,
     ogImageSubtitle: f ? `Bestand & ${f.name}` : "Anlagenbestand & Beispielrechnungen",
@@ -213,7 +213,7 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
                 <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>Zum Programm</a>
               </div>
             </div>
-            <Link href="/foerderung" style={{ display: "inline-block", marginTop: 10, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
+            <Link href="/photovoltaik-foerderung" style={{ display: "inline-block", marginTop: 10, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Alle Förderprogramme im Überblick <IconArrowRight size={11} /></span>
             </Link>
           </div>
@@ -261,7 +261,7 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
           <div style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), marginBottom: 14 }}>
             {city.name} liefert rund {nf(city.yieldKwhKwp)} kWh pro kWp. Rechne mit deinen eigenen Werten.
           </div>
-          <Link href={`/rechner?er=${city.yieldKwhKwp}`} style={{ display: "inline-block", textDecoration: "none", padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: 14, fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent") }}>
+          <Link href={`/photovoltaik-rechner?er=${city.yieldKwhKwp}`} style={{ display: "inline-block", textDecoration: "none", padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: 14, fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent") }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>Für {city.name} rechnen <IconArrowRight size={13} /></span>
           </Link>
         </div>

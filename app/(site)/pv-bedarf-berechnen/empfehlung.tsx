@@ -96,7 +96,7 @@ export default function Empfehlung() {
         next.set(key, String(value));
       }
     }
-    router.replace(`/empfehlung?${next.toString()}`, { scroll: false });
+    router.replace(`/pv-bedarf-berechnen?${next.toString()}`, { scroll: false });
   }, [searchParams, router]);
 
   // Setters — each writes back to the URL with speaking slugs
@@ -184,7 +184,7 @@ export default function Empfehlung() {
     p.set("da", String(dachart));
     if (plz) p.set("plz", plz);
     if (ertragKwp) p.set("er", String(ertragKwp));
-    router.push(`/rechner?${p.toString()}`);
+    router.push(`/photovoltaik-rechner?${p.toString()}`);
   };
 
   const findSpeicherIdx = (kwh: number) => {

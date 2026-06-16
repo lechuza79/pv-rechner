@@ -5,7 +5,7 @@ import { test, expect } from "@playwright/test";
 // Confirms the algorithm runs end-to-end without state-passing breakage.
 
 test("Empfehlung flow ends on a recommendation with kWp + storage suggestion", async ({ page }) => {
-  await page.goto("/empfehlung");
+  await page.goto("/pv-bedarf-berechnen");
 
   // Step 0: Haus + Dach — pick Einfamilienhaus + Satteldach
   await page.getByText("Einfamilienhaus", { exact: false }).first().click();

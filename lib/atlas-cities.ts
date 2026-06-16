@@ -1,4 +1,4 @@
-// City registry for the regional landing pages (/photovoltaik/[stadt]).
+// City registry for the regional landing pages (/photovoltaik-foerderung/[stadt]).
 // Each city maps a URL slug to its MaStR region id (AGS) and a regional PV
 // yield. The municipal funding program (if any) lives in the standalone
 // funding dataset (lib/funding-programs.ts) and is referenced by id, so the

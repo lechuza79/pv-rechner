@@ -635,7 +635,7 @@ export default function EnergieClient() {
         <Link href="/" style={{ fontSize: 11, color: v("--color-text-faint"), textDecoration: "none" }}>
           Startseite
         </Link>
-        <Link href="/rechner" style={{ fontSize: 11, color: v("--color-text-faint"), textDecoration: "none" }}>
+        <Link href="/photovoltaik-rechner" style={{ fontSize: 11, color: v("--color-text-faint"), textDecoration: "none" }}>
           Rechner
         </Link>
         <Link href="/impressum" style={{ fontSize: 11, color: v("--color-text-faint"), textDecoration: "none" }}>

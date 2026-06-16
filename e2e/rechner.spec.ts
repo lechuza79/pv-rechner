@@ -8,7 +8,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Rechner flow", () => {
   test("clicks through 4 steps and lands on a result with payback info", async ({ page }) => {
-    await page.goto("/rechner");
+    await page.goto("/photovoltaik-rechner");
 
     // Step 0: Anlagengröße — pick the standard 10 kWp option
     await expect(page.getByRole("heading", { name: /Lohnt sich Photovoltaik/i })).toBeVisible();
@@ -41,7 +41,7 @@ test.describe("Rechner flow", () => {
     // Standard config: 10 kWp, 10 kWh storage, 3-4 persons, teils zuhause, no WP/EA.
     // Param shape from lib/calc.ts:paramInt → 'a' (anlage idx 2 = 10 kWp), 's' (speicher idx 2 = 10 kWh),
     // 'p' (personen idx 2), 'n' (nutzung idx 1).
-    await page.goto("/rechner?a=2&s=2&p=2&n=1&wp=nein&ea=nein");
+    await page.goto("/photovoltaik-rechner?a=2&s=2&p=2&n=1&wp=nein&ea=nein");
 
     // Should skip the steps entirely and show the result directly
     await expect(page.getByText(/Amortisation/i).first()).toBeVisible({ timeout: 10_000 });

@@ -14,7 +14,7 @@ export function brandOgImage(title: string, subtitle = ""): string {
 }
 
 interface PageMetaInput {
-  /** Canonical path, e.g. "/energie". Resolved against metadataBase. */
+  /** Canonical path, e.g. "/strommix-deutschland". Resolved against metadataBase. */
   path: string;
   title: string;
   description: string;

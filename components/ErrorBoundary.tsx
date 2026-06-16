@@ -27,7 +27,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { hasError
             <div style={{ fontSize: 13, color: v('--color-text-secondary'), marginBottom: 20, lineHeight: 1.5 }}>
               Die Daten in der URL sind ungültig. Starte eine neue Berechnung.
             </div>
-            <a href="/rechner" style={{
+            <a href="/photovoltaik-rechner" style={{
               display: "inline-block", padding: "10px 32px", borderRadius: v('--radius-md'),
               fontSize: 14, fontWeight: 700, background: v('--color-accent'),
               color: v('--color-text-on-accent'), textDecoration: "none",
