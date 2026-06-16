@@ -12,19 +12,26 @@ const CRON_SECRET = process.env.CRON_SECRET;
 // Plausibility bounds
 const BOUNDS = {
   pvMin: 800, pvMax: 2500,       // €/kWp
-  batteryMin: 200, batteryMax: 1500, // €/kWh
+  batteryMin: 50, batteryMax: 800, // €/kWh Zell-Preis (ohne Installations-Basis)
   electricityMin: 0.20, electricityMax: 0.50, // €/kWh Haushaltsstrom Bestandskunden
   maxDeviation: 0.30,            // 30% max change from last value
 };
 
 const SOURCE_URL = "https://www.solaranlagen-portal.com/photovoltaik/kosten";
 const ELECTRICITY_SOURCE_URL = "https://strom-report.de/strompreise/";
+// Second, independent battery-price source for cross-checking.
+const BATTERY_SOURCE_2_URL = "https://www.energie-experten.org/erneuerbare-energien/photovoltaik/stromspeicher/kosten";
+
+// Absolute plausibility window for an all-in 10-kWh home battery (€, incl. install).
+const BATTERY_10KWH = { min: 2500, max: 7000 };
+// Two sources count as "agreeing" if within this relative spread of the median.
+const BATTERY_AGREE_SPREAD = 0.30;
 
 // ─── Scraping Logic ───────────────────────────────────────────────────────────
 
 interface ScrapedPrices {
   pvBySize: { kwp: number; pricePerKwp: number }[];
-  batteryPerKwh: { min: number; max: number } | null;
+  batteryAllIn: { kwh: number; total: number } | null;  // all-in price (incl. install) for a stated size
 }
 
 function parseGermanNumber(s: string): number {
@@ -34,7 +41,7 @@ function parseGermanNumber(s: string): number {
 
 function scrapeFromHtml(html: string): ScrapedPrices {
   const $ = cheerio.load(html);
-  const result: ScrapedPrices = { pvBySize: [], batteryPerKwh: null };
+  const result: ScrapedPrices = { pvBySize: [], batteryAllIn: null };
 
   // Strategy 1: Find tables with "kWp" and "Kosten pro kWp" columns
   // Note: solaranlagen-portal.com uses <td> for headers (no <th>), so check first row text
@@ -94,22 +101,33 @@ function scrapeFromHtml(html: string): ScrapedPrices {
     }
   }
 
-  // Battery storage prices from text
-  const text = $.text();
-  // "400 bis 1.000 Euro pro Kilowattstunde" or "400 bis 900 Euro pro kWh"
-  const batteryMatch = text.match(/([\d.]+(?:,\d+)?)\s*bis\s*([\d.]+(?:,\d+)?)\s*Euro\s*pro\s*(?:Kilowattstunde|kWh)/i);
-  if (batteryMatch) {
-    const min = parseGermanNumber(batteryMatch[1]);
-    const max = parseGermanNumber(batteryMatch[2]);
-    if (min >= BOUNDS.batteryMin && max <= BOUNDS.batteryMax && min < max) {
-      result.batteryPerKwh = { min, max };
+  // Battery storage price. Soft hyphens (­) in the source break word matching → strip them.
+  const text = $.text().replace(/­/g, "");
+
+  // Primary: all-in total for a stated size, e.g. "Ein 10 kWh-Batteriespeicher kostet etwa 3.250 €"
+  // (this price INCLUDES installation). Most faithful — a real datapoint, not a vague range.
+  const totalMatch = text.match(/(\d+(?:[.,]\d+)?)\s*kWh[\s-]*Batteriespeicher\s+kostet\s+etwa\s+([\d.]+(?:,\d+)?)\s*€/i);
+  if (totalMatch) {
+    const kwh = parseGermanNumber(totalMatch[1]);
+    const total = parseGermanNumber(totalMatch[2]);
+    if (kwh > 0 && total > 0) result.batteryAllIn = { kwh, total };
+  }
+
+  // Fallback: a per-kWh range "400 bis 900 Euro pro kWh". The lower end ≈ the
+  // realistic large-system all-in price; anchor it to a 10-kWh reference system.
+  if (!result.batteryAllIn) {
+    const rangeMatch = text.match(/([\d.]+(?:,\d+)?)\s*bis\s*([\d.]+(?:,\d+)?)\s*Euro\s*pro\s*(?:Kilowattstunde|kWh)/i);
+    if (rangeMatch) {
+      const min = parseGermanNumber(rangeMatch[1]);
+      const max = parseGermanNumber(rangeMatch[2]);
+      if (min > 0 && max > min) result.batteryAllIn = { kwh: 10, total: min * 10 };
     }
   }
 
   return result;
 }
 
-function derivePriceTiers(scraped: ScrapedPrices) {
+function derivePvTiers(scraped: ScrapedPrices) {
   if (scraped.pvBySize.length === 0) return null;
 
   // Sort by kWp
@@ -128,17 +146,90 @@ function derivePriceTiers(scraped: ScrapedPrices) {
     ? Math.round(large.reduce((s, e) => s + e.pricePerKwp, 0) / large.length)
     : pvPriceSmall ? Math.round(pvPriceSmall * 0.9) : null; // Estimate 10% discount
 
-  const batteryPerKwh = scraped.batteryPerKwh
-    ? Math.round((scraped.batteryPerKwh.min + scraped.batteryPerKwh.max) / 2)
-    : null;
-
   if (!pvPriceSmall) return null;
 
   return {
     pvPriceSmall,
     pvPriceLarge: pvPriceLarge ?? Math.round(pvPriceSmall * 0.9),
-    batteryPerKwh: batteryPerKwh ?? DEFAULT_PRICES.batteryPerKwh,
   };
+}
+
+// ─── Multi-source battery price (cross-check + average) ──────────────────────
+// Every source is normalised to the SAME quantity: all-in € for a 10-kWh home
+// battery (incl. installation). Then: average agreeing sources, drop outliers,
+// fall back gracefully, and never write an implausible value.
+
+interface BatterySample { source: string; value: number | null }
+interface BatteryResolution {
+  value10kWh: number | null;   // averaged all-in € for 10 kWh; null = no usable source
+  status: string;              // health summary (stored, read by the watcher)
+  healthy: boolean;            // false → degraded (single source) or failed (none)
+  samples: BatterySample[];
+}
+
+// Source 2: energie-experten.org — "350 bis 500 Euro pro Kilowattstunde" → midpoint ×10.
+async function fetchBatterySource2(): Promise<number | null> {
+  try {
+    const res = await fetch(BATTERY_SOURCE_2_URL, {
+      headers: {
+        "User-Agent": "SolarCheck-PriceBot/1.0 (solar-check.io; automated market price update)",
+        "Accept": "text/html",
+        "Accept-Language": "de-DE,de;q=0.9",
+      },
+      redirect: "follow",
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) return null;
+    const text = cheerio.load(await res.text())("body").text().replace(/­/g, "");
+    const m = text.match(/([\d.]+(?:,\d+)?)\s*bis\s*([\d.]+(?:,\d+)?)\s*Euro\s*pro\s*(?:Kilowattstunde|kWh)/i);
+    if (!m) return null;
+    const lo = parseGermanNumber(m[1]), hi = parseGermanNumber(m[2]);
+    if (lo <= 0 || hi < lo) return null;
+    return Math.round((lo + hi) / 2 * 10);
+  } catch {
+    return null;
+  }
+}
+
+async function resolveBatteryPrice(sapAllIn: { kwh: number; total: number } | null): Promise<BatteryResolution> {
+  // Source 1: solaranlagen-portal (already scraped) — normalise to 10 kWh.
+  const sapVal = sapAllIn && sapAllIn.kwh > 0 ? Math.round((sapAllIn.total * 10) / sapAllIn.kwh) : null;
+  // Source 2: energie-experten.
+  const eeVal = await fetchBatterySource2();
+  const samples: BatterySample[] = [
+    { source: "solaranlagen-portal", value: sapVal },
+    { source: "energie-experten", value: eeVal },
+  ];
+
+  const valid = samples.filter(
+    (s): s is { source: string; value: number } =>
+      s.value != null && s.value >= BATTERY_10KWH.min && s.value <= BATTERY_10KWH.max,
+  );
+
+  if (valid.length === 0) {
+    return { value10kWh: null, status: "FAILED: no source delivered a plausible battery price", healthy: false, samples };
+  }
+  if (valid.length === 1) {
+    return { value10kWh: valid[0].value, status: `DEGRADED: single source (${valid[0].source}=${valid[0].value} €)`, healthy: false, samples };
+  }
+  // ≥2 sources: drop outliers vs. median, average the rest.
+  const vals = valid.map(v => v.value).sort((a, b) => a - b);
+  const median = vals[Math.floor(vals.length / 2)];
+  const agree = valid.filter(v => Math.abs(v.value - median) / median <= BATTERY_AGREE_SPREAD);
+  const used = agree.length > 0 ? agree : valid;
+  const avg = Math.round(used.reduce((s, v) => s + v.value, 0) / used.length);
+  const spreadPct = Math.round(((Math.max(...used.map(u => u.value)) - Math.min(...used.map(u => u.value))) / median) * 100);
+  const detail = used.map(u => `${u.source}=${u.value}`).join(", ");
+  return { value10kWh: avg, status: `ok: ${used.length} sources avg ${avg} € (spread ${spreadPct}%; ${detail})`, healthy: true, samples };
+}
+
+/** All-in 10-kWh € → stable install base + market-tracking per-kWh cell price. */
+function batteryTiers(value10kWh: number | null, lastPerKwh: number | null) {
+  const batteryBase = DEFAULT_PRICES.batteryBase;
+  const batteryPerKwh = value10kWh != null
+    ? Math.max(50, Math.round((value10kWh - batteryBase) / 10))
+    : (lastPerKwh ?? DEFAULT_PRICES.batteryPerKwh); // keep last good value, never garbage
+  return { batteryBase, batteryPerKwh };
 }
 
 // ─── Plausibility Check ───────────────────────────────────────────────────────
@@ -191,8 +282,13 @@ function checkPlausibility(
     if (devLarge > BOUNDS.maxDeviation) {
       issues.push(`PV large deviation ${(devLarge * 100).toFixed(0)}% exceeds ${BOUNDS.maxDeviation * 100}%`);
     }
-    if (devBatt > BOUNDS.maxDeviation) {
-      issues.push(`Battery deviation ${(devBatt * 100).toFixed(0)}% exceeds ${BOUNDS.maxDeviation * 100}%`);
+    // Battery: a deploy can intentionally recalibrate the price model (e.g. new
+    // base+per-kWh structure). Accept a large move from the last DB value if the
+    // new value matches the shipped code default — that's a blessed correction,
+    // not a scrape glitch. Only flag when it deviates from BOTH anchors.
+    const devBattVsDefault = Math.abs(newPrices.batteryPerKwh - DEFAULT_PRICES.batteryPerKwh) / DEFAULT_PRICES.batteryPerKwh;
+    if (devBatt > BOUNDS.maxDeviation && devBattVsDefault > BOUNDS.maxDeviation) {
+      issues.push(`Battery deviation ${(devBatt * 100).toFixed(0)}% from last and ${(devBattVsDefault * 100).toFixed(0)}% from default both exceed ${BOUNDS.maxDeviation * 100}%`);
     }
   }
 
@@ -308,16 +404,34 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "No prices found", scraped }, { status: 422 });
     }
 
-    // 3. Derive price tiers
-    const derived = derivePriceTiers(scraped);
+    // 3. Derive PV tiers + resolve battery price from MULTIPLE sources (cross-check).
+    const pv = derivePvTiers(scraped);
 
-    if (!derived) {
-      await notifyAdmin("Scraping failed", `Could not derive price tiers. Raw data: ${JSON.stringify(scraped)}`);
+    if (!pv) {
+      await notifyAdmin("Scraping failed", `Could not derive PV price tiers. Raw data: ${JSON.stringify(scraped)}`);
       return NextResponse.json({ error: "Could not derive prices", scraped }, { status: 422 });
     }
 
-    // 4. Plausibility check
     const lastPrices = await getLastPrices();
+    const battery = await resolveBatteryPrice(scraped.batteryAllIn);
+
+    // Hard fail (loud) ONLY when no source works AND there is no last good value to fall back on.
+    if (battery.value10kWh == null && lastPrices?.batteryPerKwh == null) {
+      await notifyAdmin(
+        "Battery price unavailable — no source and no fallback",
+        `${battery.status}\nSamples: ${JSON.stringify(battery.samples)}`,
+      );
+      return NextResponse.json({ error: "Battery price unavailable", battery }, { status: 422 });
+    }
+    // Degraded (single source / kept last value): write the value, but alert so the watcher can fix the dead source.
+    if (!battery.healthy) {
+      await notifyAdmin("Battery price degraded", `${battery.status}\nSamples: ${JSON.stringify(battery.samples)}`);
+    }
+
+    const { batteryBase, batteryPerKwh } = batteryTiers(battery.value10kWh, lastPrices?.batteryPerKwh ?? null);
+    const derived = { ...pv, batteryBase, batteryPerKwh };
+
+    // 4. Plausibility check
     const issues = checkPlausibility(derived, lastPrices);
 
     if (issues.length > 0) {
@@ -351,13 +465,15 @@ export async function GET(req: Request) {
       pv_price_small: derived.pvPriceSmall,
       pv_price_large: derived.pvPriceLarge,
       pv_threshold_kwp: 10,
-      battery_base: 0,
+      battery_base: derived.batteryBase,
       battery_per_kwh: derived.batteryPerKwh,
       electricity_price: electricityPrice,
       electricity_increase: lastPrices?.electricityIncrease ?? null,
       valid_from: new Date().toISOString().split("T")[0],
-      source: `solaranlagen-portal.com + strom-report.de (auto)`,
-      notes: `PV: ${scraped.pvBySize.length} size entries, battery ${scraped.batteryPerKwh?.min ?? "?"}–${scraped.batteryPerKwh?.max ?? "?"} €/kWh · Strom: ${electricityNote}`,
+      source: `solaranlagen-portal.com + energie-experten.org + strom-report.de (auto)`,
+      // Health string is read by the self-healing watcher agent. "HEALTH=ok/DEGRADED/FAILED"
+      // is a stable, machine-greppable prefix — keep it first.
+      notes: `HEALTH=${battery.healthy ? "ok" : "DEGRADED"} · Battery[${battery.status}] → ${derived.batteryBase} € + ${derived.batteryPerKwh} €/kWh · PV: ${scraped.pvBySize.length} entries → ${derived.pvPriceSmall}/${derived.pvPriceLarge} · Strom: ${electricityNote}`,
       updated_by: "cron",
     });
 
@@ -370,8 +486,10 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       success: true,
+      health: battery.healthy ? "ok" : "degraded",
       prices: { ...derived, electricityPrice },
-      raw: { pvEntries: scraped.pvBySize.length, batteryRange: scraped.batteryPerKwh, electricity: electricityNote },
+      battery: { status: battery.status, samples: battery.samples },
+      raw: { pvEntries: scraped.pvBySize.length, electricity: electricityNote },
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";

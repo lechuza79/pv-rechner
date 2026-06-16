@@ -15,6 +15,7 @@
 // indem E_WP als Teil des Gesamtverbrauchs übergeben wird.
 
 import { DEFAULT_HEATPUMP_CONFIG, type HeatPumpConfig } from "./heatpump-config";
+import { estimateCost } from "./calc";
 
 export interface HeatPumpInputs {
   situation: "bestand" | "neubau";
@@ -192,7 +193,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   pvStromSavings = Math.round(pvStromSavings);
   // PV-Invest nur anrechnen wenn "geplant" — "vorhanden" ist Sunk Cost
   const pvInvest = (inputs.pv?.status === "geplant" && inputs.pv.kwp > 0)
-    ? (inputs.pv.pvInvest ?? estimatePvCost(inputs.pv.kwp, inputs.pv.speicherKwh))
+    ? (inputs.pv.pvInvest ?? estimateCost(inputs.pv.kwp, inputs.pv.speicherKwh))
     : 0;
   const wartungWp = cfg.wpMaintenance * cfg.years;
   const tcoWp = investNetto + pvInvest + stromKosten + wartungWp;
@@ -254,19 +255,6 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
     tcoEinsparung, einsparungProJahr, amortisationsJahre,
     co2Einsparung, years,
   };
-}
-
-// ─── PV cost estimator (re-exported from prices config for self-contained use) ─
-// Mirrors lib/calc.ts:estimateCost but standalone so heatpump.ts has no UI deps.
-function estimatePvCost(kwp: number, speicherKwh: number): number {
-  // Uses Q1/2026 market prices (shared fallback with prices-config)
-  const pvSmall = 1400, pvLarge = 1250, threshold = 10;
-  const batteryPerKwh = 700;
-  const pv = kwp <= threshold
-    ? kwp * pvSmall
-    : threshold * pvSmall + (kwp - threshold) * pvLarge;
-  const sp = speicherKwh > 0 ? speicherKwh * batteryPerKwh : 0;
-  return Math.round((pv + sp) / 500) * 500;
 }
 
 // ─── Scenario wrappers (pessimistic/realistic/optimistic) ──────────────────

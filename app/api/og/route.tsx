@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { ANLAGEN, SPEICHER } from "../../../lib/constants";
-import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, paramInt, paramFloat, paramStr } from "../../../lib/calc";
+import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 
 export const runtime = "edge";
@@ -46,6 +46,7 @@ export async function GET(req: NextRequest) {
   const result = calc({
     kwp, kosten, strompreis, eigenverbrauch: effEv, einspeisung: einsp,
     stromSteigerung: 0.03, ertragKwp, monthly: null,
+    batteryReplace: batteryReplaceCost(spKwh),
   });
 
   const amortYears = result.be ? result.be.i : null;

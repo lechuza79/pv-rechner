@@ -18,8 +18,8 @@ export const DEFAULT_PRICES: PriceConfig = {
   pvPriceSmall: 1400,     // €/kWp ≤ 10 kWp
   pvPriceLarge: 1250,     // €/kWp > 10 kWp
   pvThresholdKwp: 10,
-  batteryBase: 0,          // Simplified: included in per-kWh price
-  batteryPerKwh: 700,      // €/kWh (market range 400–1000, midpoint)
+  batteryBase: 1500,       // € fixe Installations-Basis (Wechselrichter + Montage, ~stabil)
+  batteryPerKwh: 225,      // €/kWh Zell-Preis, trackt Markt (2-Quellen-Mittel Q2/2026: ~3.750 €/10 kWh all-in)
   electricityPrice: 0.34,  // €/kWh Haushaltsstrom (BNetzA Q1/2026 Mittelwert)
   electricityIncrease: 0.03,
   validFrom: "2026-03-01",
