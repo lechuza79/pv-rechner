@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Header from "../../../components/Header";
-import Footer from "../../../components/Footer";
 import { v } from "../../../lib/theme";
 
 interface ThemePreset {
@@ -126,8 +125,6 @@ export default function EmbedDemoClient() {
         {SECTIONS.map((s) => (
           <SectionPreview key={s.id} section={s} />
         ))}
-
-        <Footer />
       </div>
     </div>
   );

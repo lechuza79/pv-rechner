@@ -394,18 +394,6 @@ export default async function MethodikPage() {
             Für eine exakte Prognose empfehlen wir ein Angebot vom Fachbetrieb.
           </span>
         </div>
-
-        <div style={S.footer}>
-          <Link href="/impressum" style={S.footerLink}>
-            Impressum
-          </Link>
-          <Link href="/datenschutz" style={S.footerLink}>
-            Datenschutz
-          </Link>
-          <Link href="/" style={S.footerLink}>
-            Solar Check
-          </Link>
-        </div>
       </div>
     </div>
   );

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "../../../../components/Header";
-import Footer from "../../../../components/Footer";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
@@ -365,7 +364,6 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
           ist allein die offizielle Quelle des jeweiligen Programms. Beispielrechnungen sind unverbindliche Schätzungen.
         </div>
 
-        <Footer />
       </div>
     </div>
   );

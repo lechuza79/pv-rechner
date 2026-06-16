@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { IconArrowRight } from "../../../components/Icons";
-import Footer from "../../../components/Footer";
 import { v } from "../../../lib/theme";
 import { allGlossaryEntries } from "../../../lib/glossary";
 
@@ -120,9 +119,6 @@ export default function GlossarPage() {
           </section>
         ))}
 
-        <div style={{ marginTop: 40 }}>
-          <Footer />
-        </div>
       </div>
     </div>
   );

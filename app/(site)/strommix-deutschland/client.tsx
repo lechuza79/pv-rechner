@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
-import Link from "next/link";
 import { useGenerationMix, useNuclearImport } from "../../../lib/energy";
 import StackedAreaChart from "../../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../../components/charts/StackedBarChart";
@@ -630,21 +629,6 @@ export default function EnergieClient() {
         Datenquelle: Fraunhofer ISE / Energy-Charts (CC BY 4.0)
       </div>
 
-      {/* Footer Links */}
-      <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: "16px 0" }}>
-        <Link href="/" style={{ fontSize: 11, color: v("--color-text-faint"), textDecoration: "none" }}>
-          Startseite
-        </Link>
-        <Link href="/photovoltaik-rechner" style={{ fontSize: 11, color: v("--color-text-faint"), textDecoration: "none" }}>
-          Rechner
-        </Link>
-        <Link href="/impressum" style={{ fontSize: 11, color: v("--color-text-faint"), textDecoration: "none" }}>
-          Impressum
-        </Link>
-        <Link href="/datenschutz" style={{ fontSize: 11, color: v("--color-text-faint"), textDecoration: "none" }}>
-          Datenschutz
-        </Link>
-      </div>
     </div>
   );
 }

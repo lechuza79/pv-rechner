@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser } from "../../components/Icons";
 import { MastrHeroSection } from "../../components/MastrHeroSection";
 import { v } from "../../lib/theme";
@@ -134,8 +133,6 @@ export default function Home() {
             Keine Datensammlung · Keine Werbung · Kein Vertriebskontakt
           </div>
         </div>
-
-        <Footer />
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { getCssVariables, globalStyles } from "../../lib/theme";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
+import Footer from "../../components/Footer";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -152,7 +153,10 @@ export default function RootLayout({
           minHeight: "100vh",
         }}
       >
-        <GlossaryProvider>{children}</GlossaryProvider>
+        <GlossaryProvider>
+          {children}
+          <div style={{ padding: "0 16px" }}><Footer /></div>
+        </GlossaryProvider>
       </body>
     </html>
   );

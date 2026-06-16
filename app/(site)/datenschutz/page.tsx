@@ -277,15 +277,6 @@ export default function DatenschutzPage() {
           entsprechen.
         </p>
         <p style={S.muted}>Stand: März 2026</p>
-
-        <div style={S.footer}>
-          <Link href="/impressum" style={S.footerLink}>
-            Impressum
-          </Link>
-          <Link href="/" style={S.footerLink}>
-            Solar Check
-          </Link>
-        </div>
       </div>
     </div>
   );

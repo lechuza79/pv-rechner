@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../../components/Header";
-import Footer from "../../../components/Footer";
 import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
@@ -130,8 +129,6 @@ export default function FoerderungPage() {
           Auswahl der wichtigsten Programme — kommunale Förderung ist dezentral und ändert sich laufend.
           Ohne Anspruch auf Vollständigkeit; verbindlich ist die jeweilige offizielle Quelle.
         </p>
-
-        <Footer />
       </div>
     </div>
   );

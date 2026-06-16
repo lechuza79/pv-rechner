@@ -130,15 +130,6 @@ export default function ImpressumPage() {
           tatsächlichen Wirtschaftlichkeit abweichen. Für individuelle Beratung
           wenden Sie sich bitte an einen qualifizierten Fachberater.
         </p>
-
-        <div style={S.footer}>
-          <Link href="/datenschutz" style={S.footerLink}>
-            Datenschutz
-          </Link>
-          <Link href="/" style={S.footerLink}>
-            Solar Check
-          </Link>
-        </div>
       </div>
     </div>
   );

@@ -638,12 +638,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
           </div>
         )}
 
-        <div style={{ display: "flex", justifyContent: "center", gap: 16, padding: `24px 0 ${isResult && authState.status === "anon" && showLogin ? 80 : 16}px` }}>
-          <Link href="/methodik" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Methodik</Link>
-          <Link href="/impressum" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Impressum</Link>
-          <Link href="/datenschutz" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Datenschutz</Link>
-          <Link href="/kontakt" style={{ fontSize: 11, color: v('--color-text-faint'), textDecoration: "none" }}>Kontakt</Link>
-        </div>
+        {/* Footer kommt aus dem (site)-Layout. Hier nur Abstand, damit die
+            sticky Login-Leiste den Seitenfuß nicht verdeckt. */}
+        {isResult && authState.status === "anon" && showLogin && <div style={{ height: 64 }} />}
       </div>
 
       {/* Sticky Bottom Bar — Login-Formular für nicht-eingeloggte Nutzer */}
