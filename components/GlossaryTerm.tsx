@@ -1,8 +1,19 @@
 "use client";
-import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
+import { usePathname } from "next/navigation";
 import { v } from "../lib/theme";
-import { resolveGlossary } from "../lib/glossary";
+import { resolveGlossary, resolveGlossarySlug } from "../lib/glossary";
 
 // Inline glossary term: renders its children with a subtle dashed underline
 // (same affordance as InlineEdit) and shows a one-sentence tooltip on
@@ -10,12 +21,77 @@ import { resolveGlossary } from "../lib/glossary";
 // <body> with fixed positioning, so it never gets clipped by overflow:hidden
 // ancestors and never pushes surrounding layout around.
 //
+// First-mention-only: only the FIRST <GlossaryTerm> for a given term on a page
+// renders interactively — later mentions of the same term render as plain text.
+// This is tracked via GlossaryProvider (see below); we deliberately do NOT
+// auto-scan page text, so "5 kWp", "10 kWp" etc. stay untouched unless wrapped.
+//
 // Accessibility: the trigger is a real <button> with aria-describedby pointing
 // at the tooltip, so screen readers announce the explanation.
 
 const TOOLTIP_MAX_WIDTH = 280;
 const GAP = 8; // px between trigger and tooltip
 const EDGE = 8; // min px from viewport edge
+
+// useLayoutEffect warns during SSR; fall back to useEffect on the server.
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+// ─── Context: tracks which term (by slug) already has a visible tooltip ──────
+interface GlossaryContextValue {
+  /** slug → registered instance ids, in document (registration) order. */
+  primaries: Record<string, string[]>;
+  register: (slug: string, instanceId: string) => void;
+  unregister: (slug: string, instanceId: string) => void;
+}
+
+const GlossaryContext = createContext<GlossaryContextValue | null>(null);
+
+/**
+ * Wrap a page (or the whole site) so each glossary term shows its tooltip only
+ * on its first mention. Resets automatically on route change. Without this
+ * provider, every <GlossaryTerm> renders interactively (graceful fallback).
+ */
+export function GlossaryProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const [primaries, setPrimaries] = useState<Record<string, string[]>>({});
+
+  // Reset the registry when navigating to a new page (first-mention is
+  // per-page). Adjusting state during render on a changed value is the
+  // React-endorsed pattern — avoids an extra paint after navigation.
+  const prevPath = useRef(pathname);
+  if (prevPath.current !== pathname) {
+    prevPath.current = pathname;
+    setPrimaries({});
+  }
+
+  const register = useCallback((slug: string, instanceId: string) => {
+    setPrimaries((prev) => {
+      const list = prev[slug];
+      if (!list) return { ...prev, [slug]: [instanceId] };
+      if (list.includes(instanceId)) return prev;
+      return { ...prev, [slug]: [...list, instanceId] };
+    });
+  }, []);
+
+  const unregister = useCallback((slug: string, instanceId: string) => {
+    setPrimaries((prev) => {
+      const list = prev[slug];
+      if (!list || !list.includes(instanceId)) return prev;
+      const next = list.filter((x) => x !== instanceId);
+      const copy = { ...prev };
+      if (next.length === 0) delete copy[slug];
+      else copy[slug] = next;
+      return copy;
+    });
+  }, []);
+
+  const value = useMemo<GlossaryContextValue>(
+    () => ({ primaries, register, unregister }),
+    [primaries, register, unregister]
+  );
+
+  return <GlossaryContext.Provider value={value}>{children}</GlossaryContext.Provider>;
+}
 
 interface Props {
   /** Glossary slug, term, or alias to look up. */
@@ -26,6 +102,9 @@ interface Props {
 
 export default function GlossaryTerm({ id, children }: Props) {
   const entry = resolveGlossary(id);
+  const slug = resolveGlossarySlug(id);
+  const ctx = useContext(GlossaryContext);
+  const instanceId = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const tooltipRef = useRef<HTMLSpanElement>(null);
   const [open, setOpen] = useState(false);
@@ -39,9 +118,14 @@ export default function GlossaryTerm({ id, children }: Props) {
 
   useEffect(() => setMounted(true), []);
 
-  // If the term isn't in the glossary, render the label as-is (no crash, no
-  // broken affordance). Lets us add <GlossaryTerm> ahead of writing the entry.
-  // Hooks above run unconditionally so this early return is rules-of-hooks safe.
+  // Register this mention with the provider; first one per slug wins. Runs in a
+  // layout effect so the demotion of duplicates happens before the browser
+  // paints — no flash of multiple underlined mentions.
+  useIsoLayoutEffect(() => {
+    if (!ctx || !slug) return;
+    ctx.register(slug, instanceId);
+    return () => ctx.unregister(slug, instanceId);
+  }, [ctx, slug, instanceId]);
 
   // Position the tooltip relative to the trigger, clamped to the viewport.
   useLayoutEffect(() => {
@@ -90,9 +174,18 @@ export default function GlossaryTerm({ id, children }: Props) {
     };
   }, [open]);
 
-  if (!entry) return <>{children ?? id}</>;
+  const label = children ?? entry?.term ?? id;
 
-  const label = children ?? entry.term;
+  // Not in the glossary → plain text (lets us wrap ahead of writing the entry).
+  if (!entry) return <>{label}</>;
+
+  // First-mention gate: with a provider, only the first registered instance for
+  // this slug is interactive. Optimistic — unknown/unregistered renders as
+  // primary so single mentions never flash plain.
+  const registered = ctx && slug ? ctx.primaries[slug] : undefined;
+  const isPrimary = !ctx || !slug || registered === undefined || registered[0] === instanceId;
+
+  if (!isPrimary) return <>{label}</>;
 
   return (
     <>
