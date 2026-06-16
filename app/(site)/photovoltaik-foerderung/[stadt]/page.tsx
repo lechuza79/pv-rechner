@@ -248,17 +248,12 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
                     <span style={{ color: v("--color-text-secondary") }}>Investition</span>
                     <span style={{ fontFamily: v("--font-mono") }}>{nf(ex.brutto)} €</span>
                   </div>
-                  {ex.foerderung > 0 ? (
+                  {ex.foerderung > 0 && (
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <span style={{ color: v("--color-text-secondary") }}>Förderung</span>
                       <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
                     </div>
-                  ) : f && !ex.foerderComputable ? (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: v("--color-text-secondary") }}>Förderung</span>
-                      <span style={{ color: v("--color-text-muted") }}>anteilig — siehe oben</span>
-                    </div>
-                  ) : null}
+                  )}
                   <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 6 }}>
                     <span style={{ color: v("--color-text-secondary") }}>Amortisation</span>
                     <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{ex.amort !== null ? `${ex.amort} Jahre` : "> 25 J."}</span>
@@ -271,6 +266,12 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
               </div>
             ))}
           </div>
+          {f && !examples[0]?.foerderComputable && (
+            <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>
+              Dazu kommt die Förderung über das {f.name}: Pauschalen statt fester €/kWp-Sätze,
+              daher hier nicht pro Anlage eingerechnet — die Beträge stehen oben im Förderblock.
+            </p>
+          )}
         </div>
 
         {/* ── CTA ── */}
