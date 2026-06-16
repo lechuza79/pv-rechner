@@ -10,6 +10,7 @@ import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
+import GlossaryTerm from "../../../components/GlossaryTerm";
 import Header from "../../../components/Header";
 import { IconArrowRight, IconRefresh, IconChevronDown, IconHelpCircle, IconSun } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
@@ -247,7 +248,7 @@ export default function Waermepumpe() {
                     {WP_TYPE.map(w => <option key={w.id} value={w.id}>{w.label}</option>)}
                   </select>
                 </div>
-                <div>JAZ (Jahresarbeitszahl): <InlineEdit value={result.jaz} onCommit={v => setOJaz(v)} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
+                <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={result.jaz} onCommit={v => setOJaz(v)} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
                 <div>
                   Referenzheizung:{" "}
                   <select value={oFuel} onChange={e => setOFuel(e.target.value)} style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: 13 }}>
