@@ -7,7 +7,7 @@
 
 export type Eligibility = "privat" | "gewerblich";
 export type FundingLevel = "bund" | "land" | "landkreis" | "kommune";
-export type FundingStatus = "aktiv" | "ausgeschoepft" | "eingestellt" | "unsicher";
+export type FundingStatus = "aktiv" | "ausgeschoepft" | "pausiert" | "eingestellt" | "unsicher";
 
 export interface FundingProgram {
   id: string;
@@ -37,6 +37,8 @@ export interface FundingProgram {
   combinableWith: string[];
   // Structured rates so example calculations can show a concrete amount.
   pvPerKwp?: number;
+  /** Flat base amount added before the per-kWp part (e.g. Düsseldorf 1.000 €). */
+  pvSockel?: number;
   speicherPerKwh?: number;
   /** Share of total cost, e.g. 0.2 for 20 %. */
   percentOfCost?: number;
@@ -109,64 +111,79 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.stuttgart.de/solaroffensive", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "50 % der anerkannten Kosten (Material + Installation)",
+    coveredCosts: "nur Begleitmaßnahmen (Elektrik, Gerüst, Statik…) + Speicher — NICHT die Module",
     rates: [
-      { label: "PV-Anlage (Dach)", value: "50 %, max. 350 €/kWp" },
-      { label: "PV an Fassade / Gründach", value: "max. 450 €/kWp" },
-      { label: "Volleinspeisung (≥ 10 Jahre)", value: "100 %, max. 600 €/kWp" },
+      { label: "Begleitmaßnahmen Dach-PV", value: "max. 300 €/kWp (50 % der Kosten)" },
+      { label: "Begleitmaßnahmen Fassade/Gründach", value: "max. 400 €/kWp" },
       { label: "Batteriespeicher", value: "100 €/kWh" },
       { label: "Balkonkraftwerk", value: "200 € pauschal" },
     ],
     conditions: [
-      "Antrag vor Kauf bzw. Installation — keine rückwirkende Förderung",
-      "Mit Bundesförderung kombinierbar",
-      "Gebäude im Stadtgebiet Stuttgart",
+      "PV-Zuschuss nur für Begleitmaßnahmen (Elektrik, Zählerplatz, Gerüst, Statik) — Module/Wechselrichter selbst nicht förderfähig",
+      "Antrag zwingend vor Beauftragung; Ausführung durch Fachfirma",
+      "Speicher nur mit neuer PV (max. 1 kWh je kWp), 100 €/kWh",
+      "Mit BAFA/KfW/L-Bank kombinierbar (deren Mittel werden abgezogen)",
     ],
     combinableWith: BUND,
-    pvPerKwp: 350, speicherPerKwh: 100,
+    speicherPerKwh: 100, speicherCap: 15000,
   },
   "karlsruhe-klimabonus": {
     id: "karlsruhe-klimabonus", name: "Karlsruher Klima-Bonus",
     traeger: "Stadt Karlsruhe", level: "kommune", region: "Karlsruhe", bundesland: "Baden-Württemberg",
-    url: "https://www.karlsruhe.de", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: false,
-    eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWp",
-    rates: [{ label: "PV-Anlage", value: "250 €/kWp, max. 2.500 €" }],
-    conditions: ["Antrag vor Arbeitsbeginn", "Fachbetrieb-Pflicht"],
+    url: "https://www.karlsruhe.de", stand: "Mai 2026",
+    status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss je kWp (Wohngebäude im Stadtkreis)",
+    rates: [
+      { label: "PV-Anlage", value: "250 €/kWp, max. 2.500 €" },
+      { label: "Fassaden-PV / PVT-Bonus", value: "+100 €/kWp, max. 1.000 €" },
+    ],
+    conditions: [
+      "Fördertopf 2026 ausgeschöpft — Neustart 2027 mit ggf. geänderten Sätzen",
+      "Kein Speicher gefördert",
+      "Antrag nach Installation, Fachbetrieb-Pflicht",
+    ],
     combinableWith: BUND,
     pvPerKwp: 250, pvCap: 2500,
   },
   "regensburg-effizient": {
     id: "regensburg-effizient", name: "Regensburg effizient",
     traeger: "Stadt Regensburg", level: "kommune", region: "Regensburg", bundesland: "Bayern",
-    url: "https://www.regensburg.de", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: false,
-    eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWp",
-    rates: [{ label: "PV-Anlage", value: "100 €/kWp, max. 1.500 €" }],
-    conditions: ["Antrag vor Montage"],
+    url: "https://www.greendeal-regensburg.de", stand: "Juni 2026",
+    status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Zuschuss je kWp + je kWh Speicher",
+    rates: [
+      { label: "PV-Anlage", value: "100 €/kWp, max. 1.500 €" },
+      { label: "Gründach / Fassade / Denkmal", value: "+200 € pauschal" },
+      { label: "Batteriespeicher (ab 4 kWh)", value: "150 €/kWh, max. 1.500 €" },
+    ],
+    conditions: [
+      "Antrag muss vor Kauf/Baubeginn bewilligt sein",
+      "Speicher nur mit PV (ab 1,25 kWp), min. 4 kWh nutzbar",
+    ],
     combinableWith: BUND,
     pvPerKwp: 100, pvCap: 1500,
+    speicherPerKwh: 150, speicherCap: 1500, speicherMin: 4,
   },
   "wuerzburg-klimastadt": {
     id: "wuerzburg-klimastadt", name: "Klimastadt Würzburg",
     traeger: "Stadt Würzburg", level: "kommune", region: "Würzburg", bundesland: "Bayern",
-    url: "https://www.wuerzburg.de", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: false,
-    eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWp",
+    url: "https://www.wuerzburg.de/themen/umwelt-klima/foerderungen-und-beratungen/photovoltaik",
+    stand: "Juni 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Bausteine je Anlagentyp, je max. 5.000 € — kein einheitlicher Dach-Satz",
     rates: [
-      { label: "PV-Anlage", value: "150 €/kWp, max. 1.500 €" },
-      { label: "Vollbelegungs-Bonus", value: "+50 €/kWp, max. 500 €" },
-      { label: "Denkmal", value: "200 €/kWp" },
+      { label: "Gemeinschaftl. Gebäudeversorgung", value: "2.000 € + 150 €/kWp" },
+      { label: "Fassaden-PV / PVT", value: "250 €/kWp" },
+      { label: "PV mit Dachbegrünung", value: "150 €/kWp (max. 3.000 €)" },
     ],
     conditions: [
-      "Antrag vor Installation",
-      "Mindestgröße 0,04 kWp je m² Wohnfläche",
+      "Förderung nur für die genannten Bausteine (Fassade, Gründach, Gemeinschaftsversorgung) — Standard-Dach-PV ohne diese Merkmale wird nicht je kWp gefördert",
+      "Antrag + Bescheid vor Maßnahmenbeginn; kein Speicher gefördert",
+      "Bund/Land kumulierbar, max. 90 % der Kosten",
     ],
     combinableWith: BUND,
-    pvPerKwp: 150, pvCap: 1500,
   },
   "frankfurt-klimabonus": {
     id: "frankfurt-klimabonus", name: "Frankfurter Klimabonus",
@@ -248,17 +265,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "duesseldorf-klimafreundlich": {
     id: "duesseldorf-klimafreundlich", name: "Klimafreundliches Wohnen und Arbeiten",
     traeger: "Stadt Düsseldorf", level: "kommune", region: "Düsseldorf", bundesland: "Nordrhein-Westfalen",
-    url: "https://www.duesseldorf.de", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: true,
+    url: "https://www.duesseldorf.de/stadtrecht/1/19/19-303", stand: "Juni 2026",
+    status: "pausiert", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Sockel + je kWp + je kWh Speicher",
+    coveredCosts: "Sockel + je kWp + je kWh Speicher, max. 50 % der Kosten",
     rates: [
       { label: "PV-Anlage", value: "1.000 € + 200 €/kWp, max. 10.000 €" },
       { label: "Batteriespeicher", value: "250 €/kWh, max. 10.000 €" },
     ],
-    conditions: ["Antrag vor Beginn"],
+    conditions: [
+      "Aktuell keine neuen Anträge — Programm wird überarbeitet (Stand Juni 2026)",
+      "Speicher max. das 1,5-fache der kWp, mit 10-Jahres-Garantie",
+      "Förderung max. 50 % der Gesamtkosten",
+    ],
     combinableWith: BUND,
-    pvPerKwp: 200, speicherPerKwh: 250, pvCap: 10000, speicherCap: 10000,
+    pvSockel: 1000, pvPerKwp: 200, speicherPerKwh: 250, pvCap: 10000, speicherCap: 10000,
   },
   "hannover-proklima": {
     id: "hannover-proklima", name: "proKlima (enercity-Fonds)",

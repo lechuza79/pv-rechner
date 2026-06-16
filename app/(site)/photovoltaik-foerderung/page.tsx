@@ -21,7 +21,7 @@ const LEVEL_LABEL: Record<FundingProgram["level"], string> = {
 };
 
 const STATUS_LABEL: Record<FundingStatus, string> = {
-  aktiv: "aktiv", ausgeschoepft: "ausgeschöpft", eingestellt: "eingestellt", unsicher: "Status unklar",
+  aktiv: "aktiv", ausgeschoepft: "ausgeschöpft", pausiert: "pausiert", eingestellt: "eingestellt", unsicher: "Status unklar",
 };
 
 function statusColor(s: FundingStatus): string {

@@ -76,26 +76,30 @@ function buildExamples(city: AtlasCity, f: FundingProgram | undefined): Example[
     });
     const brutto = estimateCost(kwp, spKwh);
     const einspeisung = calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
+    // Kann das Programm pauschal pro Anlage gerechnet werden? (unabhängig vom Status)
+    const foerderComputable = !!(f && (f.percentOfCost || f.pvPerKwp || f.pvTiers || f.speicherPerKwh || f.speicherTiers));
     let foerderung = 0;
-    let foerderComputable = false;
-    if (f?.pvPerKwp) {
-      let pv = kwp * f.pvPerKwp;
-      if (f.pvCap) pv = Math.min(pv, f.pvCap);
-      let sp = spKwh * (f.speicherPerKwh ?? 0);
-      if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
-      foerderung = Math.round(pv + sp);
-      foerderComputable = true;
-    } else if (f?.pvTiers) {
-      // Gestaffelte Pauschalen (z.B. Köln): erster Tier, dessen upTo nicht
-      // überschritten wird.
-      const pv = tierAmount(f.pvTiers, kwp);
-      const sp = f.speicherTiers && spKwh >= (f.speicherMin ?? 0)
-        ? tierAmount(f.speicherTiers, spKwh) : 0;
-      foerderung = pv + sp;
-      foerderComputable = true;
-    } else if (f?.percentOfCost) {
-      foerderung = Math.round(brutto * f.percentOfCost);
-      foerderComputable = true;
+    // Nur abziehen, wenn das Programm aktuell auch Anträge annimmt.
+    if (f && f.status === "aktiv") {
+      if (f.percentOfCost) {
+        foerderung = Math.round(brutto * f.percentOfCost);
+      } else {
+        let pv = 0;
+        if (f.pvPerKwp) {
+          pv = (f.pvSockel ?? 0) + kwp * f.pvPerKwp;
+          if (f.pvCap) pv = Math.min(pv, f.pvCap);
+        } else if (f.pvTiers) {
+          pv = tierAmount(f.pvTiers, kwp);
+        }
+        let sp = 0;
+        if (f.speicherPerKwh && spKwh > 0) {
+          sp = spKwh * f.speicherPerKwh;
+          if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
+        } else if (f.speicherTiers && spKwh >= (f.speicherMin ?? 0)) {
+          sp = tierAmount(f.speicherTiers, spKwh);
+        }
+        foerderung = Math.round(pv + sp);
+      }
     }
     const netto = Math.max(0, brutto - foerderung);
     // Statische Beispiel-Annahmen (Strompreis 0,34 €/kWh, DEFAULT_PRICES via
@@ -188,9 +192,11 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
         </div>
         <h1 style={S.h1}>Photovoltaik in {city.name}</h1>
         <p style={S.intro}>
-          {f
+          {!f
+            ? <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>
+            : f.status === "aktiv"
             ? <>In {city.name} fördert die Stadt neue Solaranlagen über das <span style={S.strong}>{f.name}</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
-            : <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>}
+            : <>In {city.name} gibt es mit dem <span style={S.strong}>{f.name}</span> ein kommunales Förderprogramm — {f.status === "pausiert" ? "aktuell aber pausiert (keine neuen Anträge)" : "aktuell aber ausgeschöpft"}. Bundesweit gilt die 0 % Mehrwertsteuer.</>}
         </p>
 
         {/* ── Förderung (oben) ── */}
@@ -247,7 +253,7 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
         {/* ── Beispielrechnungen ── */}
         <div style={S.section}>
           <h2 style={S.h2}>Beispielrechnungen für {city.name}</h2>
-          <p style={S.sub}>Typische Anlagen, gerechnet mit {nf(city.yieldKwhKwp)} kWh/kWp{examples[0]?.foerderComputable ? " inkl. lokaler Förderung" : ""}</p>
+          <p style={S.sub}>Typische Anlagen, gerechnet mit {nf(city.yieldKwhKwp)} kWh/kWp{f?.status === "aktiv" && examples.some((e) => e.foerderung > 0) ? " inkl. lokaler Förderung" : ""}</p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
             {examples.map((ex) => (
               <div key={ex.kwp} style={S.card}>
@@ -278,12 +284,17 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
               </div>
             ))}
           </div>
-          {f && !examples[0]?.foerderComputable && (
+          {f && f.status !== "aktiv" ? (
             <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>
-              Dazu kommt die Förderung über das {f.name}: Pauschalen statt fester €/kWp-Sätze,
-              daher hier nicht pro Anlage eingerechnet — die Beträge stehen oben im Förderblock.
+              Die Förderung über das {f.name} ist {f.status === "pausiert" ? "aktuell pausiert" : "aktuell ausgeschöpft"} —
+              die Beispiele rechnen daher ohne. Status oben prüfen.
             </p>
-          )}
+          ) : f && !examples[0]?.foerderComputable ? (
+            <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>
+              Die Förderung über das {f.name} hängt vom Anlagentyp ab (siehe oben) und ist hier
+              nicht pauschal pro Anlage eingerechnet.
+            </p>
+          ) : null}
         </div>
 
         {/* ── CTA ── */}
