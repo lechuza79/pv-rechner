@@ -26,12 +26,15 @@ interface ResultHeroCardProps {
   plzLoading: boolean;
   plzSource: string | null;
   fetchPvgis: (plz: string) => void;
+  /** True when a regional funding program is already in play (e.g. via a
+   *  city/program link) — the PLZ hint then drops the funding mention. */
+  hasFunding?: boolean;
 }
 
 export default function ResultHeroCard({
   be, kosten, setOKosten, oStrom, setOStrom, oErtrag, setOErtrag,
   kwp, spKwh, effEv, setOEv, effEinspeisungModus, setEinspeisungModus,
-  vollDisabled, effEinsp, setOEinsp, plz, setPlz, plzLoading, plzSource, fetchPvgis,
+  vollDisabled, effEinsp, setOEinsp, plz, setPlz, plzLoading, plzSource, fetchPvgis, hasFunding,
 }: ResultHeroCardProps) {
   return (
     <div style={{
@@ -152,7 +155,9 @@ export default function ResultHeroCard({
 
       {!plzSource && (
         <div style={{ fontSize: 11, color: v('--color-accent'), fontWeight: 600, marginTop: 10 }}>
-          PLZ eingeben für genauere Ergebnisse und mögliche Förderprogramme
+          {hasFunding
+            ? "PLZ eingeben für einen standortgenauen Ertrag"
+            : "PLZ eingeben für genauere Ergebnisse und mögliche Förderprogramme"}
         </div>
       )}
       <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 6 }}>

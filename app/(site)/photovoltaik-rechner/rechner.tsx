@@ -542,6 +542,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               effEinspeisungModus={effEinspeisungModus} setEinspeisungModus={setEinspeisungModus}
               vollDisabled={vollDisabled} effEinsp={effEinsp} setOEinsp={setOEinsp}
               plz={plz} setPlz={setPlz} plzLoading={plzLoading} plzSource={plzSource} fetchPvgis={fetchPvgis}
+              hasFunding={fundingPrograms.some((p) => p.level !== "bund")}
             />
 
             <ResultFunding
