@@ -22,13 +22,15 @@ import ResultHeroCard from "./_components/ResultHeroCard";
 import QuickSettings from "./_components/QuickSettings";
 import ResultStats from "./_components/ResultStats";
 import ResultActions from "./_components/ResultActions";
+import ResultFunding from "./_components/ResultFunding";
+import { fundingForAgs, stackFunding, getFundingProgram } from "../../../lib/funding-programs";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
   // 'er' (Ertrag) und 'plz' sind reine Vorbefüll-Hinweise (z.B. von einer
   // regionalen Landingpage): sie seeden State, dürfen aber NICHT direkt ins
   // Ergebnis springen — das tut nur eine echte Konfiguration (a/s/p/n/…).
-  const RESULT_KEYS = SHARE_KEYS.filter(k => k !== "er" && k !== "plz");
+  const RESULT_KEYS = SHARE_KEYS.filter(k => k !== "er" && k !== "plz" && k !== "foe");
   const hasShare = !!initialParams && RESULT_KEYS.some(k => k in initialParams);
 
   const [step, setStep] = useState(hasShare ? 4 : 0);
@@ -58,6 +60,15 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [plzSource, setPlzSource] = useState<string | null>(null);
   const [monthlyProfile, setMonthlyProfile] = useState<number[] | null>(null);
 
+  // Förderung: PLZ → AGS → zutreffende Programme. `foe` (Programm-ID) kann ein
+  // Programm vorab scharf schalten (z.B. Link von einer Stadt-/Förderseite).
+  const seedFoeId = typeof initialParams?.foe === "string" ? initialParams.foe : null;
+  const seedFoe = seedFoeId ? getFundingProgram(seedFoeId) : undefined;
+  const [fundingCandidates, setFundingCandidates] = useState<{ ort: string; ags: string }[] | null>(null);
+  const [fundingAgs, setFundingAgs] = useState<string | null>(seedFoe?.agsCode ?? null);
+  const [fundingEnabled, setFundingEnabled] = useState<boolean>(!!seedFoe);
+  const [fundingLoading, setFundingLoading] = useState(false);
+
   // Gas/Öl-Referenz (nur bei WP)
   const [fuelType, setFuelType] = useState<"gas" | "oil">("gas");
 
@@ -66,9 +77,28 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const htIdx = hasShare ? paramInt(initialParams, "ht", -1, 0, 3) : -1;
   const daIdx = hasShare ? paramInt(initialParams, "da", -1, 0, 3) : -1;
 
+  // PLZ → zutreffende Förderprogramme (Kandidaten serverseitig auflösen)
+  const fetchFunding = async (inputPlz: string) => {
+    if (!/^\d{5}$/.test(inputPlz)) return;
+    setFundingLoading(true);
+    try {
+      const res = await fetch(`/api/funding?plz=${inputPlz}`);
+      const data = await res.json();
+      const candidates: { ort: string; ags: string }[] = Array.isArray(data.candidates) ? data.candidates : [];
+      setFundingCandidates(candidates);
+      // Eindeutig → AGS direkt setzen; mehrdeutig → Nutzer fragen (X oder Y?)
+      setFundingAgs(candidates.length === 1 ? candidates[0].ags : null);
+    } catch {
+      setFundingCandidates([]);
+      setFundingAgs(null);
+    }
+    setFundingLoading(false);
+  };
+
   // PLZ → PVGIS Ertrag laden
   const fetchPvgis = async (inputPlz: string) => {
     if (!/^\d{5}$/.test(inputPlz)) return;
+    fetchFunding(inputPlz);
     setPlzLoading(true);
     try {
       // PLZ → Koordinaten (lazy load)
@@ -143,7 +173,16 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
   const kwp = anlage <= 3 ? ANLAGEN[anlage].kwp : customKwp;
   const spKwh = SPEICHER[speicher].kwh;
-  const kosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh, prices);
+  // Brutto = vom Nutzer editierte oder geschätzte Investition. Förderung (falls
+  // aktiviert) reduziert sie zur effektiven Investition, mit der gerechnet wird.
+  const bruttoKosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh, prices);
+  const fundingPrograms = useMemo(() => (fundingAgs ? fundingForAgs(fundingAgs) : []), [fundingAgs]);
+  const fundingStack = useMemo(
+    () => stackFunding(fundingPrograms, kwp, spKwh, bruttoKosten),
+    [fundingPrograms, kwp, spKwh, bruttoKosten],
+  );
+  const foerderung = fundingEnabled ? fundingStack.total : 0;
+  const kosten = Math.max(0, bruttoKosten - foerderung);
   const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, kwp, ertragKwp: oErtrag });
   const effEv = oEv !== null ? oEv : autoEv;
   // Volleinspeisung is incompatible with WP/E-Auto (they require self-consumption)
@@ -196,6 +235,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     p.set("eia", effEinspeisungModus === "voll" ? "2" : effEinspeisungModus === "aus" ? "0" : "1");
     p.set("er", String(oErtrag));
     if (plz) p.set("plz", plz);
+    // Förderung: das wirksamste angerechnete Programm mitgeben, damit der Link
+    // dieselbe Förderung vorab scharf schaltet.
+    if (fundingEnabled && fundingStack.applied.length > 0) p.set("foe", fundingStack.applied[fundingStack.applied.length - 1].program.id);
     if (flowType === "empfehlung") {
       p.set("flow", "emp");
       if (htIdx >= 0) p.set("ht", String(htIdx));
@@ -462,12 +504,25 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         {isResult && (
           <div className="fu">
             <ResultHeroCard
-              be={be} kosten={kosten} setOKosten={setOKosten}
+              be={be} kosten={bruttoKosten} setOKosten={setOKosten}
               oStrom={oStrom} setOStrom={setOStrom} oErtrag={oErtrag} setOErtrag={setOErtrag}
               kwp={kwp} spKwh={spKwh} effEv={effEv} setOEv={setOEv}
               effEinspeisungModus={effEinspeisungModus} setEinspeisungModus={setEinspeisungModus}
               vollDisabled={vollDisabled} effEinsp={effEinsp} setOEinsp={setOEinsp}
               plz={plz} setPlz={setPlz} plzLoading={plzLoading} plzSource={plzSource} fetchPvgis={fetchPvgis}
+            />
+
+            <ResultFunding
+              loading={fundingLoading}
+              candidates={fundingCandidates}
+              chosenAgs={fundingAgs}
+              onChooseAgs={setFundingAgs}
+              programs={fundingPrograms}
+              applied={fundingStack.applied}
+              total={fundingStack.total}
+              enabled={fundingEnabled}
+              onToggle={setFundingEnabled}
+              brutto={bruttoKosten}
             />
 
             {/* Empfehlungs-Kontext: Warum diese Anlage? */}
@@ -584,10 +639,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 }}
               >
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 4 }}>
-                  Jahresverlauf & exaktere Prognose
+                  Standortgenaue Prognose & Fördermöglichkeiten
                 </div>
                 <div style={{ fontSize: 12, color: v('--color-text-faint') }}>
-                  PLZ eingeben für standortgenauen Ertrag + monatliche Berechnung
+                  PLZ eingeben für exakten Ertrag, monatliche Berechnung und lokale Förderung
                 </div>
               </div>
             )}

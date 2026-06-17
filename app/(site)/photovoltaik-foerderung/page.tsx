@@ -5,7 +5,7 @@ import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { ATLAS_CITIES } from "../../../lib/atlas-cities";
-import { allFundingPrograms, type FundingProgram, type FundingStatus } from "../../../lib/funding-programs";
+import { allFundingPrograms, fundingAmount, type FundingProgram, type FundingStatus } from "../../../lib/funding-programs";
 
 export const metadata: Metadata = pageMetadata({
   path: "/photovoltaik-foerderung",
@@ -67,6 +67,14 @@ function ProgramCard({ p, citySlug }: { p: FundingProgram; citySlug?: string }) 
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
         <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>Zur Quelle</a>
+        {(() => {
+          const a = fundingAmount(p, 10, 5, 20000);
+          return a.computable && a.active ? (
+            <Link href={`/photovoltaik-rechner?foe=${p.id}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={11} /></span>
+            </Link>
+          ) : null;
+        })()}
         {citySlug && (
           <Link href={`/photovoltaik-foerderung/${citySlug}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Stadt-Seite <IconArrowRight size={11} /></span>

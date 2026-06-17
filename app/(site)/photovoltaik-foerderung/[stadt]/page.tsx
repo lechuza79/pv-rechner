@@ -6,7 +6,7 @@ import { IconArrowRight } from "../../../../components/Icons";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { ATLAS_CITIES, cityBySlug, type AtlasCity } from "../../../../lib/atlas-cities";
-import { getFundingProgram, type FundingProgram } from "../../../../lib/funding-programs";
+import { getFundingProgram, fundingAmount, type FundingProgram } from "../../../../lib/funding-programs";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../lib/mastr-data";
 import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "../../../../lib/calc";
 import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
@@ -57,11 +57,6 @@ type Example = {
   total: number;
 };
 
-function tierAmount(tiers: { upTo: number; amount: number }[], value: number): number {
-  for (const t of tiers) if (value <= t.upTo) return t.amount;
-  return tiers[tiers.length - 1].amount;
-}
-
 function buildExamples(city: AtlasCity, f: FundingProgram | undefined): Example[] {
   const configs = [
     { kwp: 5, spKwh: 0 },
@@ -76,31 +71,11 @@ function buildExamples(city: AtlasCity, f: FundingProgram | undefined): Example[
     });
     const brutto = estimateCost(kwp, spKwh);
     const einspeisung = calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
-    // Kann das Programm pauschal pro Anlage gerechnet werden? (unabhängig vom Status)
-    const foerderComputable = !!(f && (f.percentOfCost || f.pvPerKwp || f.pvTiers || f.speicherPerKwh || f.speicherTiers));
-    let foerderung = 0;
+    // Shared funding math (single source of truth, also used by the rechner).
+    const fa = fundingAmount(f, kwp, spKwh, brutto);
+    const foerderComputable = fa.computable;
     // Nur abziehen, wenn das Programm aktuell auch Anträge annimmt.
-    if (f && f.status === "aktiv") {
-      if (f.percentOfCost) {
-        foerderung = Math.round(brutto * f.percentOfCost);
-      } else {
-        let pv = 0;
-        if (f.pvPerKwp) {
-          pv = (f.pvSockel ?? 0) + kwp * f.pvPerKwp;
-          if (f.pvCap) pv = Math.min(pv, f.pvCap);
-        } else if (f.pvTiers) {
-          pv = tierAmount(f.pvTiers, kwp);
-        }
-        let sp = 0;
-        if (f.speicherPerKwh && spKwh > 0) {
-          sp = spKwh * f.speicherPerKwh;
-          if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
-        } else if (f.speicherTiers && spKwh >= (f.speicherMin ?? 0)) {
-          sp = tierAmount(f.speicherTiers, spKwh);
-        }
-        foerderung = Math.round(pv + sp);
-      }
-    }
+    const foerderung = fa.active ? fa.total : 0;
     const netto = Math.max(0, brutto - foerderung);
     // Statische Beispiel-Annahmen (Strompreis 0,34 €/kWh, DEFAULT_PRICES via
     // estimateCost): die Seite wird zur Build-Zeit statisch generiert, daher
@@ -176,6 +151,9 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
 
   const f = city.fundingId ? getFundingProgram(city.fundingId) : undefined;
   const examples = buildExamples(city, f);
+  // Förderung im Rechner vorab scharf schalten — nur wenn sie sich pauschal
+  // berechnen lässt UND aktuell Anträge angenommen werden.
+  const ctaFoe = f && f.status === "aktiv" && examples[0]?.foerderComputable ? `&foe=${f.id}` : "";
   const combinable = (f?.combinableWith ?? [])
     .map((id) => getFundingProgram(id))
     .filter((p): p is FundingProgram => Boolean(p));
@@ -303,8 +281,8 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
           <div style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), marginBottom: 14 }}>
             {city.name} liefert rund {nf(city.yieldKwhKwp)} kWh pro kWp. Rechne mit deinen eigenen Werten.
           </div>
-          <Link href={`/photovoltaik-rechner?er=${city.yieldKwhKwp}`} style={{ display: "inline-block", textDecoration: "none", padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: 14, fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent") }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>Für {city.name} rechnen <IconArrowRight size={13} /></span>
+          <Link href={`/photovoltaik-rechner?er=${city.yieldKwhKwp}${ctaFoe}`} style={{ display: "inline-block", textDecoration: "none", padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: 14, fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent") }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{ctaFoe ? `Mit Förderung rechnen` : `Für ${city.name} rechnen`} <IconArrowRight size={13} /></span>
           </Link>
         </div>
 

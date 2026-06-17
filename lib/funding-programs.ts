@@ -18,6 +18,10 @@ export interface FundingProgram {
   region: string;
   /** Bundesland for grouping on the overview page; omitted for federal programs. */
   bundesland?: string;
+  /** Geo key for PLZ→AGS matching: an AGS prefix the location's 8-digit AGS must
+   *  start with. Land = 2-digit, Kreis/kreisfreie Stadt = 5-digit, Gemeinde =
+   *  8-digit. Omitted for bund (matches everywhere). */
+  agsCode?: string;
   url: string;
   /** Human-readable as-of, e.g. "Juni 2026". */
   stand: string;
@@ -86,7 +90,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   // ── Land ───────────────────────────────────────────────────────────────────
   "berlin-solarplus": {
     id: "berlin-solarplus", name: "SolarPLUS", traeger: "IBB / Land Berlin",
-    level: "land", region: "Berlin", bundesland: "Berlin",
+    level: "land", region: "Berlin", bundesland: "Berlin", agsCode: "11",
     url: "https://www.berlin.de/solarcity/", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -107,7 +111,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   // ── Kommune – aktiv & solide ────────────────────────────────────────────────
   "stuttgart-solaroffensive": {
     id: "stuttgart-solaroffensive", name: "Stuttgarter Solaroffensive",
-    traeger: "Landeshauptstadt Stuttgart", level: "kommune", region: "Stuttgart", bundesland: "Baden-Württemberg",
+    traeger: "Landeshauptstadt Stuttgart", level: "kommune", region: "Stuttgart", bundesland: "Baden-Württemberg", agsCode: "08111",
     url: "https://www.stuttgart.de/solaroffensive", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -129,7 +133,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "karlsruhe-klimabonus": {
     id: "karlsruhe-klimabonus", name: "Karlsruher Klima-Bonus",
-    traeger: "Stadt Karlsruhe", level: "kommune", region: "Karlsruhe", bundesland: "Baden-Württemberg",
+    traeger: "Stadt Karlsruhe", level: "kommune", region: "Karlsruhe", bundesland: "Baden-Württemberg", agsCode: "08212",
     url: "https://www.karlsruhe.de", stand: "Mai 2026",
     status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -148,7 +152,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "regensburg-effizient": {
     id: "regensburg-effizient", name: "Regensburg effizient",
-    traeger: "Stadt Regensburg", level: "kommune", region: "Regensburg", bundesland: "Bayern",
+    traeger: "Stadt Regensburg", level: "kommune", region: "Regensburg", bundesland: "Bayern", agsCode: "09362",
     url: "https://www.greendeal-regensburg.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -168,7 +172,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "wuerzburg-klimastadt": {
     id: "wuerzburg-klimastadt", name: "Klimastadt Würzburg",
-    traeger: "Stadt Würzburg", level: "kommune", region: "Würzburg", bundesland: "Bayern",
+    traeger: "Stadt Würzburg", level: "kommune", region: "Würzburg", bundesland: "Bayern", agsCode: "09663",
     url: "https://www.wuerzburg.de/themen/umwelt-klima/foerderungen-und-beratungen/photovoltaik",
     stand: "Juni 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -187,7 +191,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "frankfurt-klimabonus": {
     id: "frankfurt-klimabonus", name: "Frankfurter Klimabonus",
-    traeger: "Stadt Frankfurt am Main", level: "kommune", region: "Frankfurt am Main", bundesland: "Hessen",
+    traeger: "Stadt Frankfurt am Main", level: "kommune", region: "Frankfurt am Main", bundesland: "Hessen", agsCode: "06412",
     url: "https://frankfurt.de/themen/klima-und-energie/stadtklima/klimabonus",
     stand: "Juni 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -208,7 +212,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "darmstadt-pv": {
     id: "darmstadt-pv", name: "Förderprogramm Photovoltaik",
-    traeger: "Wissenschaftsstadt Darmstadt", level: "kommune", region: "Darmstadt", bundesland: "Hessen",
+    traeger: "Wissenschaftsstadt Darmstadt", level: "kommune", region: "Darmstadt", bundesland: "Hessen", agsCode: "06411",
     url: "https://www.darmstadt.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -223,7 +227,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "badhomburg-energiespar": {
     id: "badhomburg-energiespar", name: "Energiesparförderung",
-    traeger: "Stadt Bad Homburg", level: "kommune", region: "Bad Homburg", bundesland: "Hessen",
+    traeger: "Stadt Bad Homburg", level: "kommune", region: "Bad Homburg", bundesland: "Hessen", agsCode: "06434003",
     url: "https://www.bad-homburg.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: false,
     eligibility: ["privat", "gewerblich"],
@@ -238,7 +242,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "koeln-pv": {
     id: "koeln-pv", name: "Klimafreundliches Wohnen & Arbeiten",
-    traeger: "Stadt Köln", level: "kommune", region: "Köln", bundesland: "Nordrhein-Westfalen",
+    traeger: "Stadt Köln", level: "kommune", region: "Köln", bundesland: "Nordrhein-Westfalen", agsCode: "05315",
     url: "https://www.stadt-koeln.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -264,7 +268,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "duesseldorf-klimafreundlich": {
     id: "duesseldorf-klimafreundlich", name: "Klimafreundliches Wohnen und Arbeiten",
-    traeger: "Stadt Düsseldorf", level: "kommune", region: "Düsseldorf", bundesland: "Nordrhein-Westfalen",
+    traeger: "Stadt Düsseldorf", level: "kommune", region: "Düsseldorf", bundesland: "Nordrhein-Westfalen", agsCode: "05111",
     url: "https://www.duesseldorf.de/stadtrecht/1/19/19-303", stand: "Juni 2026",
     status: "pausiert", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -283,7 +287,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "hannover-proklima": {
     id: "hannover-proklima", name: "proKlima (enercity-Fonds)",
-    traeger: "Region Hannover", level: "landkreis", region: "Region Hannover", bundesland: "Niedersachsen",
+    traeger: "Region Hannover", level: "landkreis", region: "Region Hannover", bundesland: "Niedersachsen", agsCode: "03241",
     url: "https://www.proklima-hannover.de", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
@@ -300,7 +304,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   // ── Kommune – aktuell ausgeschöpft / eingestellt (zur Lagebeurteilung) ───────
   "bonn-solares": {
     id: "bonn-solares", name: "Solares Bonn", traeger: "Stadt Bonn",
-    level: "kommune", region: "Bonn", bundesland: "Nordrhein-Westfalen", url: "https://www.bonn.de",
+    level: "kommune", region: "Bonn", bundesland: "Nordrhein-Westfalen", agsCode: "05314", url: "https://www.bonn.de",
     stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp (Budget 2026 erschöpft)",
@@ -310,7 +314,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
   "goettingen-klimafonds": {
     id: "goettingen-klimafonds", name: "KlimaFonds Göttingen",
-    traeger: "Stadt Göttingen", level: "kommune", region: "Göttingen", bundesland: "Niedersachsen",
+    traeger: "Stadt Göttingen", level: "kommune", region: "Göttingen", bundesland: "Niedersachsen", agsCode: "03159016",
     url: "https://nachhaltigkeit.goettingen.de", stand: "Juni 2026",
     status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
@@ -330,4 +334,93 @@ export function getFundingProgram(id: string): FundingProgram | undefined {
 
 export function allFundingPrograms(): FundingProgram[] {
   return Object.values(FUNDING_PROGRAMS);
+}
+
+/**
+ * Programs applicable at a location, given its 8-digit Gemeinde-AGS.
+ * Bund applies everywhere; Land/Kreis/Kommune match when the location's AGS
+ * starts with the program's agsCode (2/5/8-digit). Ordered Bund → Land →
+ * Kreis → Kommune (broadest first).
+ */
+export function fundingForAgs(ags: string): FundingProgram[] {
+  const order: Record<FundingLevel, number> = { bund: 0, land: 1, landkreis: 2, kommune: 3 };
+  return allFundingPrograms()
+    .filter((p) => (p.level === "bund" ? true : !!p.agsCode && ags.startsWith(p.agsCode)))
+    .sort((a, b) => order[a.level] - order[b.level]);
+}
+
+/** Pick the first tier whose `upTo` the value fits into; falls back to the last. */
+function tierAmount(tiers: { upTo: number; amount: number }[], value: number): number {
+  for (const t of tiers) if (value <= t.upTo) return t.amount;
+  return tiers[tiers.length - 1].amount;
+}
+
+export type FundingAmount = {
+  /** Grant in € the program yields for this system (0 if not computable). */
+  total: number;
+  /** A concrete € amount could be derived (structured rule present). */
+  computable: boolean;
+  /** Program currently accepts applications (status === "aktiv"). */
+  active: boolean;
+};
+
+/**
+ * Computes the € grant a single program yields for a given PV system — the one
+ * place this math lives, shared by the city pages and the interactive rechner.
+ * `total` is purely the rule's output; callers decide whether to subtract it
+ * (typically only when `computable && active`). `bruttoCost` is only used for
+ * percent-of-cost programs.
+ */
+export function fundingAmount(
+  f: FundingProgram | undefined,
+  kwp: number,
+  speicherKwh: number,
+  bruttoCost: number,
+): FundingAmount {
+  const computable = !!(f && (f.percentOfCost || f.pvPerKwp || f.pvTiers || f.speicherPerKwh || f.speicherTiers));
+  const active = f?.status === "aktiv";
+  if (!f || !computable) return { total: 0, computable: false, active };
+
+  if (f.percentOfCost) {
+    return { total: Math.round(bruttoCost * f.percentOfCost), computable: true, active };
+  }
+  let pv = 0;
+  if (f.pvPerKwp) {
+    pv = (f.pvSockel ?? 0) + kwp * f.pvPerKwp;
+    if (f.pvCap) pv = Math.min(pv, f.pvCap);
+  } else if (f.pvTiers) {
+    pv = tierAmount(f.pvTiers, kwp);
+  }
+  let sp = 0;
+  if (f.speicherPerKwh && speicherKwh > 0) {
+    sp = speicherKwh * f.speicherPerKwh;
+    if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
+  } else if (f.speicherTiers && speicherKwh >= (f.speicherMin ?? 0)) {
+    sp = tierAmount(f.speicherTiers, speicherKwh);
+  }
+  return { total: Math.round(pv + sp), computable: true, active };
+}
+
+/**
+ * Total stackable grant across a set of programs (e.g. the result of
+ * {@link fundingForAgs}) for one system. Only active & computable programs
+ * contribute; the sum is capped at the gross cost. Returns the contributing
+ * programs so the UI can name them.
+ */
+export function stackFunding(
+  programs: FundingProgram[],
+  kwp: number,
+  speicherKwh: number,
+  bruttoCost: number,
+): { total: number; applied: { program: FundingProgram; amount: number }[] } {
+  const applied: { program: FundingProgram; amount: number }[] = [];
+  let total = 0;
+  for (const p of programs) {
+    const a = fundingAmount(p, kwp, speicherKwh, bruttoCost);
+    if (a.computable && a.active && a.total > 0) {
+      applied.push({ program: p, amount: a.total });
+      total += a.total;
+    }
+  }
+  return { total: Math.min(total, bruttoCost), applied };
 }
