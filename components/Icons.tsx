@@ -44,6 +44,16 @@ export function IconArrowRight({ size = 16, color = "currentColor", style }: Ico
   );
 }
 
+// Long, thin horizontal arrow (→) for breadcrumb separators.
+export function IconArrowLongRight({ size = 14, color = "currentColor", style }: IconProps) {
+  const w = Math.round(size * 2);
+  return (
+    <svg width={w} height={size} viewBox="0 0 28 14" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M1 7h25m0 0-5-5m5 5-5 5" stroke={color} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function IconRefresh({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>

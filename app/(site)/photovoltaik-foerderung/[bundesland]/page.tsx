@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "../../../../components/Header";
-import { IconArrowRight, IconChevronRight } from "../../../../components/Icons";
+import { IconArrowRight, IconArrowLongRight } from "../../../../components/Icons";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { bundeslaenderWithCities, citiesInBundesland, cityPath } from "../../../../lib/atlas-cities";
@@ -64,9 +64,9 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
       <div style={S.wrap}>
         <nav style={{ ...S.breadcrumb, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }} aria-label="Brotkrümel">
           <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>Solar Check</Link>
-          <IconChevronRight size={12} color={v("--color-text-faint")} />
+          <IconArrowLongRight size={13} color={v("--color-text-faint")} />
           <Link href="/photovoltaik-foerderung" style={{ color: "inherit", textDecoration: "none" }}>Förderung</Link>
-          <IconChevronRight size={12} color={v("--color-text-faint")} />
+          <IconArrowLongRight size={13} color={v("--color-text-faint")} />
           <span style={{ color: v("--color-text-primary") }}>{name}</span>
         </nav>
 
