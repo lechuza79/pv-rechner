@@ -5,19 +5,28 @@ import Header from "../../../../components/Header";
 import { IconArrowRight, IconArrowLongRight } from "../../../../components/Icons";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
-import { bundeslaenderWithCities, citiesInBundesland, cityPath } from "../../../../lib/atlas-cities";
+import { bundeslaenderWithCities, citiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
 import { getFundingPrograms } from "../../../../lib/funding-data";
-import type { FundingProgram, FundingStatus } from "../../../../lib/funding-programs";
+import { landProgramBundeslaender, fundingAmount, type FundingProgram, type FundingStatus } from "../../../../lib/funding-programs";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
 
+// Bundesländer that get a page: those with cities AND those with a Land-level
+// program (e.g. Berlin has no cities here but a landesweites Programm).
+function allBundeslaender(): { name: string; slug: string }[] {
+  const m = new Map<string, string>();
+  for (const b of bundeslaenderWithCities()) m.set(b.slug, b.name);
+  for (const b of landProgramBundeslaender()) m.set(b.slug, b.name);
+  return Array.from(m, ([slug, name]) => ({ slug, name }));
+}
+
 export function generateStaticParams() {
-  return bundeslaenderWithCities().map((bl) => ({ bundesland: bl.slug }));
+  return allBundeslaender().map((bl) => ({ bundesland: bl.slug }));
 }
 
 function blName(slug: string): string | undefined {
-  return bundeslaenderWithCities().find((bl) => bl.slug === slug)?.name;
+  return allBundeslaender().find((bl) => bl.slug === slug)?.name;
 }
 
 export async function generateMetadata({ params }: { params: { bundesland: string } }): Promise<Metadata> {
@@ -50,6 +59,39 @@ function Badge({ text, color }: { text: string; color: string }) {
   return <span style={{ fontSize: 11, fontWeight: 700, color, border: `1px solid ${color}`, borderRadius: 999, padding: "2px 9px", whiteSpace: "nowrap" }}>{text}</span>;
 }
 
+function LandProgramBox({ p }: { p: FundingProgram }) {
+  const a = fundingAmount(p, 10, 5, 20000);
+  return (
+    <div style={{ ...S.card, borderColor: p.status === "aktiv" ? v("--color-positive") : v("--color-border"), background: v("--color-bg-muted") }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
+        <span style={{ fontSize: 16, fontWeight: 700 }}>{p.name}</span>
+        <Badge text={STATUS_LABEL[p.status]} color={p.status === "aktiv" ? v("--color-positive") : v("--color-text-muted")} />
+      </div>
+      <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginBottom: 8 }}>{p.traeger}</div>
+      <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 8 }}>
+        Förderfähig: <span style={{ color: v("--color-text-primary") }}>{p.coveredCosts}</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 10 }}>
+        {p.rates.map((r) => (
+          <div key={r.label} style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13 }}>
+            <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
+            <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, textAlign: "right" }}>{r.value}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
+        <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>Zur Quelle</a>
+        {a.computable && a.active && (
+          <Link href={`/photovoltaik-rechner?foe=${p.id}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={11} /></span>
+          </Link>
+        )}
+        <span style={{ color: v("--color-text-muted") }}>Stand: {p.stand}{p.verified ? "" : " · unbestätigt"}</span>
+      </div>
+    </div>
+  );
+}
+
 export default async function BundeslandPage({ params }: { params: { bundesland: string } }) {
   const name = blName(params.bundesland);
   if (!name) notFound();
@@ -57,6 +99,9 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
   const cities = citiesInBundesland(params.bundesland);
   const programs = await getFundingPrograms();
   const byId = new Map(programs.map((p) => [p.id, p]));
+  const landPrograms = programs.filter(
+    (p) => p.level === "land" && p.bundesland != null && slugify(p.bundesland) === params.bundesland,
+  );
 
   return (
     <div style={S.page}>
@@ -72,10 +117,23 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
 
         <h1 style={S.h1}>Photovoltaik-Förderung in {name}</h1>
         <p style={S.intro}>
-          In {name} wird Photovoltaik vor allem auf kommunaler Ebene gefördert. Die folgenden Städte haben ein
-          eigenes Förderprogramm — wähle deine Stadt, um die Konditionen und eine Beispielrechnung zu sehen.
-          Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.
+          {landPrograms.length > 0 && cities.length > 0
+            ? <>In {name} gibt es eine landesweite Förderung; zusätzlich fördern einzelne Städte auf kommunaler Ebene. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>
+            : landPrograms.length > 0
+            ? <>In {name} wird Photovoltaik über ein landesweites Programm gefördert. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>
+            : <>In {name} wird Photovoltaik vor allem auf kommunaler Ebene gefördert. Die folgenden Städte haben ein eigenes Förderprogramm — wähle deine Stadt, um die Konditionen und eine Beispielrechnung zu sehen. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
         </p>
+
+        {landPrograms.length > 0 && (
+          <div style={{ marginBottom: 22 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 10px" }}>Landesweite Förderung</h2>
+            {landPrograms.map((p) => <LandProgramBox key={p.id} p={p} />)}
+          </div>
+        )}
+
+        {landPrograms.length > 0 && cities.length > 0 && (
+          <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 10px" }}>Förderung nach Stadt</h2>
+        )}
 
         {cities.map((c) => {
           const f: FundingProgram | undefined = c.fundingId ? byId.get(c.fundingId) : undefined;
@@ -102,8 +160,8 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
         </Link>
 
         <p style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 24 }}>
-          Auswahl der wichtigsten Städte mit eigenem Programm — kommunale Förderung ist dezentral und ändert
-          sich laufend. Ohne Anspruch auf Vollständigkeit; verbindlich ist die jeweilige offizielle Quelle.
+          Auswahl der wichtigsten Programme — Förderung ist dezentral und ändert sich laufend. Alle Angaben
+          ohne Gewähr; verbindlich ist die jeweilige offizielle Quelle des Programms.
         </p>
       </div>
     </div>

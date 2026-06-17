@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { ATLAS_CITIES, slugify, bundeslaenderWithCities } from "../lib/atlas-cities";
+import { landProgramBundeslaender } from "../lib/funding-programs";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -11,8 +12,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "weekly",
     priority: 0.7,
   }));
-  const bundeslandPages: MetadataRoute.Sitemap = bundeslaenderWithCities().map((bl) => ({
-    url: `${BASE_URL}/photovoltaik-foerderung/${bl.slug}`,
+  const blSlugs = new Set([...bundeslaenderWithCities(), ...landProgramBundeslaender()].map((b) => b.slug));
+  const bundeslandPages: MetadataRoute.Sitemap = Array.from(blSlugs).map((slug) => ({
+    url: `${BASE_URL}/photovoltaik-foerderung/${slug}`,
     lastModified: now,
     changeFrequency: "weekly",
     priority: 0.7,

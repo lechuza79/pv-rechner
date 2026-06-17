@@ -340,6 +340,22 @@ export function allFundingPrograms(): FundingProgram[] {
   return Object.values(FUNDING_PROGRAMS);
 }
 
+/** Bundesländer that have a Land-level program (from the seed — used to also
+ *  give those a Bundesland page even without cities, e.g. Berlin). */
+export function landProgramBundeslaender(): { name: string; slug: string }[] {
+  const out = new Map<string, string>();
+  for (const p of Object.values(FUNDING_PROGRAMS)) {
+    if (p.level === "land" && p.bundesland) out.set(blSlug(p.bundesland), p.bundesland);
+  }
+  return Array.from(out, ([slug, name]) => ({ slug, name }));
+}
+
+// Local transliterating slugifier (kept here to avoid an import cycle with
+// atlas-cities). Must match atlas-cities.slugify.
+function blSlug(s: string): string {
+  return s.toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 /**
  * Programs applicable at a location, given its 8-digit Gemeinde-AGS.
  * Bund applies everywhere; Land/Kreis/Kommune match when the location's AGS

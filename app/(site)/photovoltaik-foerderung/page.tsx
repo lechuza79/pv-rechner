@@ -5,7 +5,7 @@ import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { ATLAS_CITIES, cityPath, slugify, bundeslaenderWithCities, type AtlasCity } from "../../../lib/atlas-cities";
-import { fundingAmount, type FundingProgram, type FundingStatus } from "../../../lib/funding-programs";
+import { fundingAmount, landProgramBundeslaender, type FundingProgram, type FundingStatus } from "../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../lib/funding-data";
 
 // ISR: SEO pages read the live dataset from Supabase but re-render at most
@@ -120,7 +120,8 @@ export default async function FoerderungPage() {
     byLand.set(bl, list);
   }
   const laender = Array.from(byLand.keys()).sort((a, b) => a.localeCompare(b, "de"));
-  const blWithCities = new Set(bundeslaenderWithCities().map((b) => b.slug));
+  // Bundesländer mit eigener Seite: mit Städten ODER mit Landesprogramm.
+  const blWithPage = new Set([...bundeslaenderWithCities(), ...landProgramBundeslaender()].map((b) => b.slug));
 
   return (
     <div style={S.page}>
@@ -146,9 +147,9 @@ export default async function FoerderungPage() {
         {laender.map((bl) => (
           <div key={bl}>
             <h2 id={slugify(bl)} style={S.h2}>{bl}</h2>
-            {blWithCities.has(slugify(bl)) && (
+            {blWithPage.has(slugify(bl)) && (
               <Link href={`/photovoltaik-foerderung/${slugify(bl)}`} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, color: v("--color-accent"), textDecoration: "none", marginBottom: 10 }}>
-                Alle Städte in {bl} <IconArrowRight size={11} />
+                {bundeslaenderWithCities().some((b) => b.slug === slugify(bl)) ? `Alle Städte in ${bl}` : `${bl}-Förderung im Detail`} <IconArrowRight size={11} />
               </Link>
             )}
             {byLand.get(bl)!.map((p) => <ProgramCard key={p.id} p={p} city={cityByFundingId.get(p.id)} />)}
