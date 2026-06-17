@@ -79,6 +79,33 @@ deckelt?").
 zu einem automatisch abgezogenen Betrag (siehe `fundingAmount`/`stackFunding`).
 Im Zweifel lieber keinen Betrag zeigen als einen falschen.
 
+## Automatisierung: zwei geplante Tasks
+
+Beide laufen über die App (scheduled-tasks, „läuft solange die App offen ist" —
+für Förderdaten ausreichend). Sie werden **nach dem Merge** scharf geschaltet,
+weil sie die Programmliste aus diesem Repo (main) lesen.
+
+**1. News-Wächter — wöchentlich (billig, stößt nur an).** Cron z. B. `47 6 * * 1`
+(Montag früh). Prompt-Kern:
+
+> Lies `lib/funding-programs.ts` für die aktuelle Programmliste (Level ≠ bund).
+> Mach **wenige, breite** Web-Suchen (nicht eine pro Programm) nach Signalen, dass
+> sich etwas geändert hat — z. B. „[Stadt] Photovoltaik Förderung 2026 ausgeschöpft
+> / gestoppt / neu / geändert". Melde nur **Verdachtsfälle** mit Quelle + einem
+> Satz. Für jeden Verdachtsfall: Empfehlung „volle Prüfung für Programm X" (das ist
+> dann Task 2 für genau dieses eine Programm). Keine Datenänderung, nur Bericht.
+
+Begründung Cadence: Förderbudgets ändern sich nicht täglich; wöchentlich fängt
+„Topf leer" innerhalb von Tagen und ist deutlich billiger als täglich. (Täglich
+ist möglich — bei Bedarf Cron umstellen.)
+
+**2. Voll-Prüfung — quartalsweise.** Cron z. B. `23 4 1 */3 *` (alle 3 Monate),
+zusätzlich sinnvoll Anfang Januar (neue Jahres-Budgets). Prompt-Kern:
+
+> Führe die Förder-Prüfung gemäß `scripts/foerder-verify.md` aus (ein Agent pro
+> Programm), melde die Abweichungs-Liste. Bei klaren Befunden Korrekturen
+> vorschlagen, nicht automatisch in die Live-Daten schreiben.
+
 ## Changelog
 
 ### Juni 2026 (erster Lauf, 13 Programme)
