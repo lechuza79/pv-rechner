@@ -32,6 +32,19 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/darmstadt", destination: "/photovoltaik-foerderung/hessen/darmstadt", permanent: true },
       { source: "/photovoltaik-foerderung/koeln", destination: "/photovoltaik-foerderung/nordrhein-westfalen/koeln", permanent: true },
       { source: "/photovoltaik-foerderung/duesseldorf", destination: "/photovoltaik-foerderung/nordrhein-westfalen/duesseldorf", permanent: true },
+      { source: "/photovoltaik-foerderung/muenchen", destination: "/photovoltaik-foerderung/bayern/muenchen", permanent: true },
+      { source: "/photovoltaik-foerderung/nuernberg", destination: "/photovoltaik-foerderung/bayern/nuernberg", permanent: true },
+      { source: "/photovoltaik-foerderung/freiburg", destination: "/photovoltaik-foerderung/baden-wuerttemberg/freiburg", permanent: true },
+      { source: "/photovoltaik-foerderung/heidelberg", destination: "/photovoltaik-foerderung/baden-wuerttemberg/heidelberg", permanent: true },
+      { source: "/photovoltaik-foerderung/mannheim", destination: "/photovoltaik-foerderung/baden-wuerttemberg/mannheim", permanent: true },
+      { source: "/photovoltaik-foerderung/muenster", destination: "/photovoltaik-foerderung/nordrhein-westfalen/muenster", permanent: true },
+      { source: "/photovoltaik-foerderung/aachen", destination: "/photovoltaik-foerderung/nordrhein-westfalen/aachen", permanent: true },
+      { source: "/photovoltaik-foerderung/wiesbaden", destination: "/photovoltaik-foerderung/hessen/wiesbaden", permanent: true },
+      { source: "/photovoltaik-foerderung/mainz", destination: "/photovoltaik-foerderung/rheinland-pfalz/mainz", permanent: true },
+      { source: "/photovoltaik-foerderung/leipzig", destination: "/photovoltaik-foerderung/sachsen/leipzig", permanent: true },
+      // Hamburg/Bremen: Stadtstaaten — flacher Slug = Bundesland-Slug, daher KEIN
+      // Redirect (würde die Bundesland-Seite abfangen). Stadt-Seite liegt unter
+      // /hamburg/hamburg bzw. /bremen/bremen, erreichbar über die Bundesland-Seite.
       // Legacy Vercel preview host → production (handled by Next before middleware
       // so it doesn't consume middleware invocations)
       {

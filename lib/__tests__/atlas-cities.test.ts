@@ -19,8 +19,13 @@ describe("geo helpers", () => {
   });
 
   it("citiesInBundesland returns only that Land's cities", () => {
-    expect(citiesInBundesland("bayern").map((c) => c.slug).sort()).toEqual(["regensburg", "wuerzburg"]);
-    expect(citiesInBundesland("hessen").map((c) => c.slug).sort()).toEqual(["darmstadt", "frankfurt"]);
+    // jede zurückgegebene Stadt liegt wirklich in dem Bundesland
+    for (const slug of ["bayern", "hessen", "baden-wuerttemberg"]) {
+      for (const c of citiesInBundesland(slug)) expect(slugify(c.bundesland)).toBe(slug);
+    }
+    expect(citiesInBundesland("bayern").map((c) => c.slug)).toContain("muenchen");
+    expect(citiesInBundesland("hessen").map((c) => c.slug)).toContain("wiesbaden");
+    expect(citiesInBundesland("sachsen").map((c) => c.slug)).toEqual(["leipzig"]);
   });
 
   it("bundeslaenderWithCities is unique and covers every city's Bundesland", () => {
@@ -43,6 +48,13 @@ describe("slug redirects stay in sync with atlas-cities", () => {
   it("every city's flat URL redirects (308) to its current nested path", async () => {
     const redirects = await nextConfig.redirects!();
     for (const c of ATLAS_CITIES) {
+      // Stadtstaaten (Slug == Bundesland-Slug, z. B. Hamburg) bekommen KEINEN
+      // flachen Redirect — der würde die Bundesland-Seite abfangen.
+      if (c.slug === slugify(c.bundesland)) {
+        const flat = `/photovoltaik-foerderung/${c.slug}`;
+        expect(redirects.find((x: { source: string }) => x.source === flat), `Stadtstaat ${c.slug} darf keinen flachen Redirect haben`).toBeFalsy();
+        continue;
+      }
       const flat = `/photovoltaik-foerderung/${c.slug}`;
       const r = redirects.find((x: { source: string }) => x.source === flat);
       expect(r, `redirect for ${flat} missing in next.config.js`).toBeTruthy();

@@ -82,9 +82,9 @@ describe("fundingForAgs geo-matching", () => {
   });
 
   it("does not bleed funding across city borders", () => {
-    // Munich (09162000) has no own program here → only bund-level should match
-    const munich = fundingForAgs("09162000");
-    expect(munich.every((p) => p.level === "bund")).toBe(true);
+    // Flensburg (01001000, Schleswig-Holstein) has no own program → only bund
+    const flensburg = fundingForAgs("01001000");
+    expect(flensburg.every((p) => p.level === "bund")).toBe(true);
   });
 
   it("orders results broadest-first (bund → land → kreis → kommune)", () => {

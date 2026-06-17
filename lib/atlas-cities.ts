@@ -83,6 +83,19 @@ export const ATLAS_CITIES: AtlasCity[] = [
     yieldKwhKwp: 1000,
     fundingId: "duesseldorf-klimafreundlich",
   },
+  // ── Batch Juni 2026 (je 1 Recherche-Agent → offizielle Quelle) ──────────────
+  { slug: "muenchen", name: "München", ags: "09162", bundesland: "Bayern", yieldKwhKwp: 1040, fundingId: "muenchen-fkg" },
+  { slug: "nuernberg", name: "Nürnberg", ags: "09564", bundesland: "Bayern", yieldKwhKwp: 1050 },
+  { slug: "freiburg", name: "Freiburg im Breisgau", ags: "08311", bundesland: "Baden-Württemberg", yieldKwhKwp: 1090, fundingId: "freiburg-stromerzeugung" },
+  { slug: "heidelberg", name: "Heidelberg", ags: "08221", bundesland: "Baden-Württemberg", yieldKwhKwp: 1040, fundingId: "heidelberg-rev" },
+  { slug: "mannheim", name: "Mannheim", ags: "08222", bundesland: "Baden-Württemberg", yieldKwhKwp: 1060, fundingId: "mannheim-solarbonus" },
+  { slug: "muenster", name: "Münster", ags: "05515", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 960, fundingId: "muenster-klimafreundlich" },
+  { slug: "aachen", name: "Aachen", ags: "05334", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 960 },
+  { slug: "wiesbaden", name: "Wiesbaden", ags: "06414", bundesland: "Hessen", yieldKwhKwp: 1030, fundingId: "wiesbaden-eswe-speicher" },
+  { slug: "mainz", name: "Mainz", ags: "07315", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1040, fundingId: "mainz-kipki-speicher" },
+  { slug: "leipzig", name: "Leipzig", ags: "14713", bundesland: "Sachsen", yieldKwhKwp: 1000 },
+  { slug: "hamburg", name: "Hamburg", ags: "02000", bundesland: "Hamburg", yieldKwhKwp: 950 },
+  { slug: "bremen", name: "Bremen", ags: "04011", bundesland: "Bremen", yieldKwhKwp: 960, fundingId: "bremen-rundumshaus" },
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {

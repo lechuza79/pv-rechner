@@ -76,10 +76,14 @@ export async function GET(req: NextRequest) {
   });
   results.push({ step: "rls", status: e3 ? "error" : "ok", error: e3?.message });
 
-  // Seed only when empty — never clobber edited live data.
+  // Seed when empty. With ?resync=1 upsert ALL code programs (id conflict →
+  // update data/source/confidence/archived; last_verified etc. bleiben). So
+  // gelangen neu eingepflegte Städte aus dem Code-Seed in die DB, ohne die
+  // Beleg-Felder eines Wächter-Laufs zu überschreiben.
+  const resync = req.nextUrl.searchParams.get("resync") === "1";
   let seeded = 0;
   const { count } = await supabase.from("funding_programs").select("id", { count: "exact", head: true });
-  if (!count) {
+  if (!count || resync) {
     const rows = Object.values(FUNDING_PROGRAMS).map((p) => ({
       id: p.id,
       data: p,
@@ -88,10 +92,10 @@ export async function GET(req: NextRequest) {
       archived: p.status === "eingestellt",
     }));
     const { error: se } = await supabase.from("funding_programs").upsert(rows);
-    if (se) results.push({ step: "seed", status: "error", error: se.message });
-    else { seeded = rows.length; results.push({ step: "seed", status: "ok", note: `${seeded} programs` }); }
+    if (se) results.push({ step: resync ? "resync" : "seed", status: "error", error: se.message });
+    else { seeded = rows.length; results.push({ step: resync ? "resync" : "seed", status: "ok", note: `${seeded} programs` }); }
   } else {
-    results.push({ step: "seed", status: "skipped", note: `${count} rows exist` });
+    results.push({ step: "seed", status: "skipped", note: `${count} rows exist (use ?resync=1 to upsert)` });
   }
 
   const allOk = results.every((r) => r.status === "ok" || r.status === "skipped");
