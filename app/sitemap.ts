@@ -1,12 +1,12 @@
 import { MetadataRoute } from "next";
-import { ATLAS_CITIES } from "../lib/atlas-cities";
+import { ATLAS_CITIES, slugify } from "../lib/atlas-cities";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
   const cityPages: MetadataRoute.Sitemap = ATLAS_CITIES.map((c) => ({
-    url: `${BASE_URL}/photovoltaik-foerderung/${c.slug}`,
+    url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
     lastModified: now,
     changeFrequency: "weekly",
     priority: 0.7,

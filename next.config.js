@@ -21,6 +21,17 @@ const nextConfig = {
       { source: "/energie", destination: "/strommix-deutschland", permanent: true },
       { source: "/empfehlung", destination: "/pv-bedarf-berechnen", permanent: true },
       { source: "/simulation", destination: "/pv-simulation", permanent: true },
+      // Förder-Stadtseiten: flache Slugs → Hierarchie Bundesland/Kommune.
+      // Feste historische Zuordnung (alte URLs wachsen nicht mehr) — bei neuer
+      // Stadt hier ergänzen (Quelle: lib/atlas-cities.ts).
+      { source: "/photovoltaik-foerderung/stuttgart", destination: "/photovoltaik-foerderung/baden-wuerttemberg/stuttgart", permanent: true },
+      { source: "/photovoltaik-foerderung/karlsruhe", destination: "/photovoltaik-foerderung/baden-wuerttemberg/karlsruhe", permanent: true },
+      { source: "/photovoltaik-foerderung/regensburg", destination: "/photovoltaik-foerderung/bayern/regensburg", permanent: true },
+      { source: "/photovoltaik-foerderung/wuerzburg", destination: "/photovoltaik-foerderung/bayern/wuerzburg", permanent: true },
+      { source: "/photovoltaik-foerderung/frankfurt", destination: "/photovoltaik-foerderung/hessen/frankfurt", permanent: true },
+      { source: "/photovoltaik-foerderung/darmstadt", destination: "/photovoltaik-foerderung/hessen/darmstadt", permanent: true },
+      { source: "/photovoltaik-foerderung/koeln", destination: "/photovoltaik-foerderung/nordrhein-westfalen/koeln", permanent: true },
+      { source: "/photovoltaik-foerderung/duesseldorf", destination: "/photovoltaik-foerderung/nordrhein-westfalen/duesseldorf", permanent: true },
       // Legacy Vercel preview host → production (handled by Next before middleware
       // so it doesn't consume middleware invocations)
       {

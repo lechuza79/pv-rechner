@@ -1,31 +1,31 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Header from "../../../../components/Header";
-import { IconArrowRight } from "../../../../components/Icons";
-import { v } from "../../../../lib/theme";
-import { pageMetadata } from "../../../../lib/seo";
-import { ATLAS_CITIES, cityBySlug, type AtlasCity } from "../../../../lib/atlas-cities";
-import { fundingAmount, type FundingProgram } from "../../../../lib/funding-programs";
-import { getFundingPrograms, getFundingProgramById } from "../../../../lib/funding-data";
+import Header from "../../../../../components/Header";
+import { IconArrowRight } from "../../../../../components/Icons";
+import { v } from "../../../../../lib/theme";
+import { pageMetadata } from "../../../../../lib/seo";
+import { ATLAS_CITIES, cityBySlug, slugify, type AtlasCity } from "../../../../../lib/atlas-cities";
+import { fundingAmount, type FundingProgram } from "../../../../../lib/funding-programs";
+import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
+import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
+import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "../../../../../lib/calc";
+import { DEFAULT_FEED_IN } from "../../../../../lib/feedin-config";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
-import { getRegionAtlasData, type RegionAtlas } from "../../../../lib/mastr-data";
-import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "../../../../lib/calc";
-import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
 
 export function generateStaticParams() {
-  return ATLAS_CITIES.map((c) => ({ stadt: c.slug }));
+  return ATLAS_CITIES.map((c) => ({ bundesland: slugify(c.bundesland), stadt: c.slug }));
 }
 
-export async function generateMetadata({ params }: { params: { stadt: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { bundesland: string; stadt: string } }): Promise<Metadata> {
   const city = cityBySlug(params.stadt);
-  if (!city) return {};
+  if (!city || slugify(city.bundesland) !== params.bundesland) return {};
   const f = city.fundingId ? await getFundingProgramById(city.fundingId) : undefined;
   const year = new Date().getFullYear();
   return pageMetadata({
-    path: `/photovoltaik-foerderung/${city.slug}`,
+    path: `/photovoltaik-foerderung/${slugify(city.bundesland)}/${city.slug}`,
     title: `Photovoltaik-Förderung ${city.name} ${year} – Zuschüsse & Bestand`,
     description: `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister${f ? `, das ${f.name}` : ""} und Beispielrechnungen für deine PV-Anlage.`,
     ogImageTitle: `Photovoltaik in ${city.name}`,
@@ -142,9 +142,11 @@ const S = {
   card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "16px 18px" } as React.CSSProperties,
 };
 
-export default async function StadtPage({ params }: { params: { stadt: string } }) {
+export default async function StadtPage({ params }: { params: { bundesland: string; stadt: string } }) {
   const city = cityBySlug(params.stadt);
-  if (!city) notFound();
+  // Guard the hierarchy: the Bundesland segment must match the city, otherwise
+  // a wrong-Bundesland URL would render a valid page under a bogus parent.
+  if (!city || slugify(city.bundesland) !== params.bundesland) notFound();
 
   let atlas: RegionAtlas | null = null;
   try {
@@ -170,10 +172,15 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
     <div style={S.page}>
       <Header />
       <div style={S.wrap}>
-        <div style={S.breadcrumb}>
+        <nav style={S.breadcrumb} aria-label="Brotkrümel">
           <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>Solar Check</Link>
-          {" · "}{city.bundesland} · Stadt
-        </div>
+          {" › "}
+          <Link href="/photovoltaik-foerderung" style={{ color: "inherit", textDecoration: "none" }}>Förderung</Link>
+          {" › "}
+          <Link href={`/photovoltaik-foerderung#${slugify(city.bundesland)}`} style={{ color: "inherit", textDecoration: "none" }}>{city.bundesland}</Link>
+          {" › "}
+          <span style={{ color: v("--color-text-primary") }}>{city.name}</span>
+        </nav>
         <h1 style={S.h1}>Photovoltaik in {city.name}</h1>
         <p style={S.intro}>
           {!f

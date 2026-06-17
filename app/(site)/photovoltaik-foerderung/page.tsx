@@ -4,7 +4,7 @@ import Header from "../../../components/Header";
 import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
-import { ATLAS_CITIES } from "../../../lib/atlas-cities";
+import { ATLAS_CITIES, cityPath, slugify, type AtlasCity } from "../../../lib/atlas-cities";
 import { fundingAmount, type FundingProgram, type FundingStatus } from "../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../lib/funding-data";
 
@@ -51,7 +51,14 @@ function Badge({ text, color }: { text: string; color: string }) {
   );
 }
 
-function ProgramCard({ p, citySlug }: { p: FundingProgram; citySlug?: string }) {
+function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
+  const a = fundingAmount(p, 10, 5, 20000);
+  const inRechner = a.computable && a.active;
+  // Primary CTA = the program's own page: the regional city page where one
+  // exists, otherwise the official funding source.
+  const primaryHref = city ? cityPath(city) : p.url;
+  const primaryExternal = !city;
+  const primaryLabel = city ? `Förderung in ${city.name} ansehen` : "Zur offiziellen Förderseite";
   return (
     <div style={S.card}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
@@ -62,7 +69,7 @@ function ProgramCard({ p, citySlug }: { p: FundingProgram; citySlug?: string }) 
       <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 8 }}>
         Förderfähig: <span style={{ color: v("--color-text-primary") }}>{p.coveredCosts}</span>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 10 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 12 }}>
         {p.rates.map((r) => (
           <div key={r.label} style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13 }}>
             <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
@@ -70,19 +77,27 @@ function ProgramCard({ p, citySlug }: { p: FundingProgram; citySlug?: string }) 
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
-        <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>Zur Quelle</a>
-        {(() => {
-          const a = fundingAmount(p, 10, 5, 20000);
-          return a.computable && a.active ? (
-            <Link href={`/photovoltaik-rechner?foe=${p.id}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={11} /></span>
-            </Link>
-          ) : null;
-        })()}
-        {citySlug && (
-          <Link href={`/photovoltaik-foerderung/${citySlug}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Stadt-Seite <IconArrowRight size={11} /></span>
+
+      {/* Primary CTA → program page (or official source) */}
+      <Link
+        href={primaryHref}
+        {...(primaryExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        style={{
+          display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none",
+          background: v("--color-accent"), color: v("--color-text-on-accent"),
+          fontSize: 13, fontWeight: 700, padding: "8px 14px", borderRadius: v("--radius-md"),
+        }}
+      >
+        {primaryLabel} <IconArrowRight size={13} color={v("--color-text-on-accent")} />
+      </Link>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12, marginTop: 10 }}>
+        {city && (
+          <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>Zur Quelle</a>
+        )}
+        {inRechner && (
+          <Link href={`/photovoltaik-rechner?foe=${p.id}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={11} /></span>
           </Link>
         )}
         <span style={{ color: v("--color-text-muted") }}>Stand: {p.stand}{p.verified ? "" : " · unbestätigt"}</span>
@@ -91,13 +106,9 @@ function ProgramCard({ p, citySlug }: { p: FundingProgram; citySlug?: string }) 
   );
 }
 
-function slugify(s: string): string {
-  return s.toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-}
-
 export default async function FoerderungPage() {
   const programs = await getFundingPrograms();
-  const cityByFundingId = new Map(ATLAS_CITIES.filter((c) => c.fundingId).map((c) => [c.fundingId!, c.slug]));
+  const cityByFundingId = new Map(ATLAS_CITIES.filter((c) => c.fundingId).map((c) => [c.fundingId!, c]));
 
   const bund = programs.filter((p) => p.level === "bund");
   const regional = programs.filter((p) => p.level !== "bund");
@@ -116,9 +127,9 @@ export default async function FoerderungPage() {
       <div style={S.wrap}>
         <h1 style={S.h1}>PV-Förderung im Überblick</h1>
         <p style={S.intro}>
-          Förderung für Photovoltaik und Speicher gibt es auf drei Ebenen — Bund, Land und Kommune.
-          Sie lässt sich meist <strong style={{ color: v("--color-text-primary"), fontWeight: 600 }}>kombinieren</strong>,
-          aber kommunale Töpfe sind oft gedeckelt. Antrag fast immer <strong style={{ color: v("--color-text-primary"), fontWeight: 600 }}>vor</strong> Kauf oder Montage.
+          Förderung für Photovoltaik und Speicher gibt es auf drei Ebenen: Bund, Land und Kommune.
+          Die Programme lassen sich meist <strong style={{ color: v("--color-text-primary"), fontWeight: 600 }}>miteinander kombinieren</strong>,
+          die kommunalen Töpfe sind aber oft gedeckelt. Der Antrag muss in der Regel <strong style={{ color: v("--color-text-primary"), fontWeight: 600 }}>vor dem Kauf oder der Montage</strong> gestellt werden.
         </p>
 
         <div style={S.nav}>
@@ -129,12 +140,12 @@ export default async function FoerderungPage() {
         </div>
 
         <h2 id="bundesweit" style={S.h2}>Bundesweit</h2>
-        {bund.map((p) => <ProgramCard key={p.id} p={p} citySlug={cityByFundingId.get(p.id)} />)}
+        {bund.map((p) => <ProgramCard key={p.id} p={p} city={cityByFundingId.get(p.id)} />)}
 
         {laender.map((bl) => (
           <div key={bl}>
             <h2 id={slugify(bl)} style={S.h2}>{bl}</h2>
-            {byLand.get(bl)!.map((p) => <ProgramCard key={p.id} p={p} citySlug={cityByFundingId.get(p.id)} />)}
+            {byLand.get(bl)!.map((p) => <ProgramCard key={p.id} p={p} city={cityByFundingId.get(p.id)} />)}
           </div>
         ))}
 

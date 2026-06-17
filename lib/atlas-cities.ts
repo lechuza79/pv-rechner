@@ -1,4 +1,6 @@
-// City registry for the regional landing pages (/photovoltaik-foerderung/[stadt]).
+// City registry for the regional landing pages.
+// URL scheme is hierarchical Bundesland > Kommune:
+//   /photovoltaik-foerderung/[bundesland]/[stadt]   (e.g. /…/bayern/wuerzburg)
 // Each city maps a URL slug to its MaStR region id (AGS) and a regional PV
 // yield. The municipal funding program (if any) lives in the standalone
 // funding dataset (lib/funding-programs.ts) and is referenced by id, so the
@@ -85,4 +87,22 @@ export const ATLAS_CITIES: AtlasCity[] = [
 
 export function cityBySlug(slug: string): AtlasCity | undefined {
   return ATLAS_CITIES.find((c) => c.slug === slug);
+}
+
+/** Transliterating slugifier — shared so anchor ids, paths and redirects all
+ *  agree on the same Bundesland slug (e.g. "Baden-Württemberg" → "baden-wuerttemberg"). */
+export function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+export function bundeslandSlug(city: AtlasCity): string {
+  return slugify(city.bundesland);
+}
+
+/** Canonical path of a city's funding landing page (Bundesland > Kommune). */
+export function cityPath(city: AtlasCity): string {
+  return `/photovoltaik-foerderung/${slugify(city.bundesland)}/${city.slug}`;
 }
