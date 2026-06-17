@@ -9,6 +9,7 @@ import { ATLAS_CITIES, cityBySlug, slugify, type AtlasCity } from "../../../../.
 import { fundingAmount, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
 import { FundingRates, FundingConditions } from "../../../../../components/FundingProgramParts";
+import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
 import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "../../../../../lib/calc";
 import { DEFAULT_FEED_IN } from "../../../../../lib/feedin-config";
@@ -168,6 +169,13 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
     .filter((p): p is FundingProgram => Boolean(p));
   const currentYear = new Date().getFullYear();
   const lastFullYear = atlas?.solar.by_year.filter((y) => y.year < currentYear).slice(-1)[0];
+  // FAQ aus den Förderdaten generiert (kein separater Datensatz).
+  const faq = buildFundingFaq(city.name, f, { amortYears: examples[1]?.amort ?? examples[0]?.amort ?? null });
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.map((i) => ({ "@type": "Question", name: i.q, acceptedAnswer: { "@type": "Answer", text: i.a } })),
+  };
 
   return (
     <div style={S.page}>
@@ -292,6 +300,20 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
             <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{ctaFoe ? `Mit Förderung rechnen` : `Für ${city.name} rechnen`} <IconArrowRight size={13} /></span>
           </Link>
         </div>
+
+        {/* ── FAQ (aus Förderdaten generiert) ── */}
+        <div style={S.section}>
+          <h2 style={S.h2}>Häufige Fragen zur PV-Förderung in {city.name}</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 12 }}>
+            {faq.map((item) => (
+              <details key={item.q} style={{ background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: "12px 14px" }}>
+                <summary style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary"), cursor: "pointer", listStyle: "none" }}>{item.q}</summary>
+                <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "8px 0 0" }}>{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
         {/* ── Bestand (Trust-Signal, unten) ── */}
         {atlas && atlas.solar.total_count > 0 && (

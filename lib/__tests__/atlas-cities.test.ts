@@ -41,7 +41,7 @@ describe("landProgramBundeslaender", () => {
 // atlas-cities but the redirect isn't updated, a live URL breaks. Lock it.
 describe("slug redirects stay in sync with atlas-cities", () => {
   it("every city's flat URL redirects (308) to its current nested path", async () => {
-    const redirects = await nextConfig.redirects();
+    const redirects = await nextConfig.redirects!();
     for (const c of ATLAS_CITIES) {
       const flat = `/photovoltaik-foerderung/${c.slug}`;
       const r = redirects.find((x: { source: string }) => x.source === flat);
