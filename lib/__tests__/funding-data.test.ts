@@ -146,6 +146,27 @@ describe("stackFunding", () => {
     const { total } = stackFunding(programs, 5, 0, 1000); // tiny brutto
     expect(total).toBeLessThanOrEqual(1000);
   });
+
+  // Regression: official-source verification (Juni 2026) found Würzburg DOES
+  // fund standard roof PV (150 €/kWp, max 1.500 €) — earlier data wrongly
+  // treated it as non-computable.
+  it("Würzburg funds standard roof PV (150 €/kWp, cap 1.500)", () => {
+    const p = getFundingProgram("wuerzburg-klimastadt")!;
+    expect(p.status).toBe("aktiv");
+    expect(fundingAmount(p, 8, 0, 16000).total).toBe(8 * 150);
+    expect(fundingAmount(p, 20, 0, 40000).total).toBe(1500); // cap
+  });
+
+  // Regression: Bad Homburg amounts are correct but the program is not reliably
+  // accepting applications → status "unsicher" must NOT be auto-deducted.
+  it("Bad Homburg (status unsicher) is not auto-applied", () => {
+    const p = getFundingProgram("badhomburg-energiespar")!;
+    expect(p.status).toBe("unsicher");
+    const a = fundingAmount(p, 10, 5, 20000);
+    expect(a.computable).toBe(true);
+    expect(a.active).toBe(false); // computable, but not active → no deduction
+    expect(stackFunding(fundingForAgs("06434003"), 10, 5, 20000).total).toBe(0);
+  });
 });
 
 describe("atlas-cities registry", () => {
