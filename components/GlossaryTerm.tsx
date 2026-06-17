@@ -121,11 +121,18 @@ export default function GlossaryTerm({ id, children }: Props) {
   // Register this mention with the provider; first one per slug wins. Runs in a
   // layout effect so the demotion of duplicates happens before the browser
   // paints — no flash of multiple underlined mentions.
+  // Depend on the STABLE register/unregister callbacks, not on the whole ctx
+  // object: ctx changes identity on every registration (it carries `primaries`),
+  // so depending on `ctx` makes this effect re-run → unregister → register →
+  // re-render → loop ("Maximum update depth exceeded"). register/unregister are
+  // useCallback([]) and never change, so this now runs once on mount/unmount.
+  const register = ctx?.register;
+  const unregister = ctx?.unregister;
   useIsoLayoutEffect(() => {
-    if (!ctx || !slug) return;
-    ctx.register(slug, instanceId);
-    return () => ctx.unregister(slug, instanceId);
-  }, [ctx, slug, instanceId]);
+    if (!register || !unregister || !slug) return;
+    register(slug, instanceId);
+    return () => unregister(slug, instanceId);
+  }, [register, unregister, slug, instanceId]);
 
   // Position the tooltip relative to the trigger, clamped to the viewport.
   useLayoutEffect(() => {
