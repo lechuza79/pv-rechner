@@ -120,6 +120,7 @@ export default function ResultHeroCard({
                 placeholder="PLZ"
                 inputMode="numeric"
                 maxLength={5}
+                className={!plzSource && !plzLoading ? "sc-plz-pulse" : undefined}
                 onChange={e => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
                 style={{
                   width: 52, textAlign: "center", fontSize: 13, fontWeight: 700,
@@ -149,7 +150,12 @@ export default function ResultHeroCard({
         </div>
       </div>
 
-      <div style={{ fontSize: 11, color: v('--color-accent'), marginTop: 10 }}>
+      {!plzSource && (
+        <div style={{ fontSize: 11, color: v('--color-accent'), fontWeight: 600, marginTop: 10 }}>
+          PLZ eingeben für genauere Ergebnisse und mögliche Förderprogramme
+        </div>
+      )}
+      <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 6 }}>
         Werte anklicken zum Anpassen
       </div>
     </div>

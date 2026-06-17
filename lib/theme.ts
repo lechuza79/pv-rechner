@@ -107,6 +107,8 @@ export const globalStyles = `
   @keyframes sc-live-ring{0%{transform:translate(-50%,-50%) scale(1);opacity:.7}100%{transform:translate(-50%,-50%) scale(3.5);opacity:0}}
   @keyframes sc-live-bar{0%,100%{opacity:1}50%{opacity:.55}}
   @keyframes sc-bar-grow{from{opacity:0}to{opacity:1}}
+  @keyframes sc-plz-pulse{0%{box-shadow:0 0 0 0 rgba(19,101,234,.4)}70%{box-shadow:0 0 0 6px rgba(19,101,234,0)}100%{box-shadow:0 0 0 0 rgba(19,101,234,0)}}
+  .sc-plz-pulse{animation:sc-plz-pulse 2s ease-out infinite}
   .fu{animation:fu .3s ease-out}
   .sc-live-dot{position:relative}
   .sc-live-dot::before,.sc-live-dot::after{content:'';position:absolute;top:50%;left:50%;width:100%;height:100%;border-radius:50%;background:var(--color-highlight);pointer-events:none;animation:sc-live-ring 1.8s ease-out infinite}
