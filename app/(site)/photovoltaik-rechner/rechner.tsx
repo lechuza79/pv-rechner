@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { paramsToRow } from "../../../lib/types";
@@ -70,6 +70,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [fundingPrograms, setFundingPrograms] = useState<FundingProgram[]>([]);
   const [fundingEnabled, setFundingEnabled] = useState<boolean>(!!seedFoeId);
   const [fundingLoading, setFundingLoading] = useState(false);
+
+  // Einmaliger PLZ-Toast beim ersten Anzeigen des Ergebnisses.
+  const [plzToast, setPlzToast] = useState(false);
+  const plzToastShown = useRef(false);
 
   // Gas/Öl-Referenz (nur bei WP)
   const [fuelType, setFuelType] = useState<"gas" | "oil">("gas");
@@ -245,6 +249,22 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
   const STEPS = ["Wie groß soll die Anlage werden?", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
   const isResult = step >= STEPS.length;
+  const fundingActive = fundingPrograms.some((p) => p.level !== "bund");
+
+  // PLZ-Hinweis einmal als Toast einblenden, sobald das Ergebnis erscheint und
+  // noch kein Standort gesetzt ist.
+  useEffect(() => {
+    if (!isResult || plzSource || plzToastShown.current) return;
+    plzToastShown.current = true;
+    setPlzToast(true);
+  }, [isResult, plzSource]);
+  // Auto-Ausblenden nach 6 s — eigener Effekt, damit der Timer auch unter
+  // StrictMode (doppelter Effekt-Invoke im Dev) korrekt neu gesetzt wird.
+  useEffect(() => {
+    if (!plzToast) return;
+    const t = setTimeout(() => setPlzToast(false), 6000);
+    return () => clearTimeout(t);
+  }, [plzToast]);
 
   const next = () => step < STEPS.length && setStep(step + 1);
   const back = () => step > 0 && setStep(step - 1);
@@ -533,6 +553,32 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         )}
 
         {/* ── RESULT ── */}
+        {plzToast && (
+          <div
+            className="fu"
+            onClick={() => {
+              const el = document.querySelector<HTMLInputElement>('input[placeholder="PLZ"]');
+              if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus(); }
+              setPlzToast(false);
+            }}
+            style={{
+              position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
+              zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)", cursor: "pointer",
+              background: v('--color-accent'), color: v('--color-text-on-accent'),
+              borderRadius: v('--radius-md'), padding: "12px 16px",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 10,
+              fontSize: 13, fontWeight: 600, lineHeight: 1.4,
+            }}
+          >
+            <span style={{ flex: 1 }}>
+              {fundingActive
+                ? "PLZ eingeben für einen standortgenauen Ertrag"
+                : "PLZ eingeben für genauere Ergebnisse und mögliche Förderprogramme"}
+            </span>
+            <button onClick={e => { e.stopPropagation(); setPlzToast(false); }} aria-label="Schließen" style={{ border: "none", background: "transparent", color: v('--color-text-on-accent'), fontSize: 18, lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85 }}>×</button>
+          </div>
+        )}
+
         {isResult && (
           <div className="fu">
             <ResultHeroCard
@@ -542,7 +588,6 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               effEinspeisungModus={effEinspeisungModus} setEinspeisungModus={setEinspeisungModus}
               vollDisabled={vollDisabled} effEinsp={effEinsp} setOEinsp={setOEinsp}
               plz={plz} setPlz={setPlz} plzLoading={plzLoading} plzSource={plzSource} fetchPvgis={fetchPvgis}
-              hasFunding={fundingPrograms.some((p) => p.level !== "bund")}
             />
 
             <ResultFunding
