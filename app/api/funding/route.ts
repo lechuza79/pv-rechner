@@ -1,39 +1,53 @@
 import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
+import { getFundingPrograms } from "../../../lib/funding-data";
+import { matchFundingForAgs, type FundingProgram } from "../../../lib/funding-programs";
 
-// Resolves a 5-digit PLZ to its municipality codes (AGS). The 933 KB lookup
-// table lives server-side only — clients get just the handful of candidates
-// for their PLZ, then compute matching funding programs locally (pure data).
+// Resolves funding for the rechner. The 933 KB PLZ→AGS table and the program
+// dataset both live server-side; the client gets only the matched programs.
 //
-// PLZ → AGS mapping is effectively static (boundary changes are rare), so the
-// response is cached aggressively at the edge.
+// ?plz=XXXXX → { plz, candidates: [{ ort, ags, programs }] }
+//   one entry per municipality sharing the PLZ (client disambiguates)
+// ?foe=<id>  → { foe, ags, programs }  pre-arm a specific program (e.g. from a
+//   city/funding page link)
 
 type PlzEntry = { ort: string; ags: string; kreis: string; land: string };
 
-let cache: Record<string, PlzEntry[]> | null = null;
+let plzCache: Record<string, PlzEntry[]> | null = null;
 
 async function loadTable(): Promise<Record<string, PlzEntry[]>> {
-  if (cache) return cache;
+  if (plzCache) return plzCache;
   const file = path.join(process.cwd(), "public", "plz-ags.json");
-  cache = JSON.parse(await fs.readFile(file, "utf-8")) as Record<string, PlzEntry[]>;
-  return cache;
+  plzCache = JSON.parse(await fs.readFile(file, "utf-8")) as Record<string, PlzEntry[]>;
+  return plzCache;
 }
+
+const headers = { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" };
 
 export async function GET(req: NextRequest) {
   const plz = req.nextUrl.searchParams.get("plz") ?? "";
+  const foe = req.nextUrl.searchParams.get("foe") ?? "";
+  const all = await getFundingPrograms();
+
+  // Pre-arm a specific program by id.
+  if (foe) {
+    const program = all.find((p) => p.id === foe);
+    if (!program) return NextResponse.json({ foe, ags: null, programs: [] }, { status: 200, headers });
+    const ags = program.agsCode ?? "";
+    const programs = ags ? matchFundingForAgs(all, ags) : [program];
+    return NextResponse.json({ foe, ags, programs }, { headers });
+  }
+
   if (!/^\d{5}$/.test(plz)) {
     return NextResponse.json({ error: "invalid plz" }, { status: 400 });
   }
-  let candidates: { ort: string; ags: string }[] = [];
+  let candidates: { ort: string; ags: string; programs: FundingProgram[] }[] = [];
   try {
     const table = await loadTable();
-    candidates = (table[plz] ?? []).map((e) => ({ ort: e.ort, ags: e.ags }));
+    candidates = (table[plz] ?? []).map((e) => ({ ort: e.ort, ags: e.ags, programs: matchFundingForAgs(all, e.ags) }));
   } catch {
     return NextResponse.json({ plz, candidates: [] }, { status: 200 });
   }
-  return NextResponse.json(
-    { plz, candidates },
-    { headers: { "Cache-Control": "public, s-maxage=31536000, immutable" } },
-  );
+  return NextResponse.json({ plz, candidates }, { headers });
 }

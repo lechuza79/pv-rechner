@@ -23,7 +23,7 @@ import QuickSettings from "./_components/QuickSettings";
 import ResultStats from "./_components/ResultStats";
 import ResultActions from "./_components/ResultActions";
 import ResultFunding from "./_components/ResultFunding";
-import { fundingForAgs, stackFunding, getFundingProgram } from "../../../lib/funding-programs";
+import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
@@ -60,13 +60,15 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [plzSource, setPlzSource] = useState<string | null>(null);
   const [monthlyProfile, setMonthlyProfile] = useState<number[] | null>(null);
 
-  // Förderung: PLZ → AGS → zutreffende Programme. `foe` (Programm-ID) kann ein
-  // Programm vorab scharf schalten (z.B. Link von einer Stadt-/Förderseite).
+  // Förderung: PLZ → zutreffende Programme, serverseitig aus der DB aufgelöst
+  // (/api/funding liefert die Programme mit). `foe` (Programm-ID) kann ein
+  // Programm vorab scharf schalten (Link von einer Stadt-/Förderseite).
   const seedFoeId = typeof initialParams?.foe === "string" ? initialParams.foe : null;
-  const seedFoe = seedFoeId ? getFundingProgram(seedFoeId) : undefined;
-  const [fundingCandidates, setFundingCandidates] = useState<{ ort: string; ags: string }[] | null>(null);
-  const [fundingAgs, setFundingAgs] = useState<string | null>(seedFoe?.agsCode ?? null);
-  const [fundingEnabled, setFundingEnabled] = useState<boolean>(!!seedFoe);
+  type FundingCandidate = { ort: string; ags: string; programs: FundingProgram[] };
+  const [fundingCandidates, setFundingCandidates] = useState<FundingCandidate[] | null>(null);
+  const [fundingAgs, setFundingAgs] = useState<string | null>(null);
+  const [fundingPrograms, setFundingPrograms] = useState<FundingProgram[]>([]);
+  const [fundingEnabled, setFundingEnabled] = useState<boolean>(!!seedFoeId);
   const [fundingLoading, setFundingLoading] = useState(false);
 
   // Gas/Öl-Referenz (nur bei WP)
@@ -84,16 +86,47 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     try {
       const res = await fetch(`/api/funding?plz=${inputPlz}`);
       const data = await res.json();
-      const candidates: { ort: string; ags: string }[] = Array.isArray(data.candidates) ? data.candidates : [];
+      const candidates: FundingCandidate[] = Array.isArray(data.candidates) ? data.candidates : [];
       setFundingCandidates(candidates);
-      // Eindeutig → AGS direkt setzen; mehrdeutig → Nutzer fragen (X oder Y?)
-      setFundingAgs(candidates.length === 1 ? candidates[0].ags : null);
+      if (candidates.length === 1) {
+        // Eindeutig → Programme direkt übernehmen.
+        setFundingAgs(candidates[0].ags);
+        setFundingPrograms(candidates[0].programs);
+      } else {
+        // Mehrdeutig → Nutzer fragen (X oder Y?), bis dahin keine Programme aktiv.
+        setFundingAgs(null);
+        setFundingPrograms([]);
+      }
     } catch {
       setFundingCandidates([]);
       setFundingAgs(null);
+      setFundingPrograms([]);
     }
     setFundingLoading(false);
   };
+
+  // Bei mehrdeutiger PLZ: gewählten Ort übernehmen (Programme liegen schon vor).
+  const chooseFundingAgs = (ags: string) => {
+    setFundingAgs(ags);
+    setFundingPrograms(fundingCandidates?.find((c) => c.ags === ags)?.programs ?? []);
+  };
+
+  // `foe`-Seed: Programm beim Laden serverseitig auflösen + scharf schalten.
+  useEffect(() => {
+    if (!seedFoeId) return;
+    (async () => {
+      setFundingLoading(true);
+      try {
+        const res = await fetch(`/api/funding?foe=${seedFoeId}`);
+        const data = await res.json();
+        if (Array.isArray(data.programs) && data.programs.length) {
+          setFundingPrograms(data.programs);
+          setFundingAgs(typeof data.ags === "string" ? data.ags : null);
+        }
+      } catch { /* ignore */ }
+      setFundingLoading(false);
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // PLZ → PVGIS Ertrag laden
   const fetchPvgis = async (inputPlz: string) => {
@@ -176,7 +209,6 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Brutto = vom Nutzer editierte oder geschätzte Investition. Förderung (falls
   // aktiviert) reduziert sie zur effektiven Investition, mit der gerechnet wird.
   const bruttoKosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh, prices);
-  const fundingPrograms = useMemo(() => (fundingAgs ? fundingForAgs(fundingAgs) : []), [fundingAgs]);
   const fundingStack = useMemo(
     () => stackFunding(fundingPrograms, kwp, spKwh, bruttoKosten),
     [fundingPrograms, kwp, spKwh, bruttoKosten],
@@ -516,7 +548,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               loading={fundingLoading}
               candidates={fundingCandidates}
               chosenAgs={fundingAgs}
-              onChooseAgs={setFundingAgs}
+              onChooseAgs={chooseFundingAgs}
               programs={fundingPrograms}
               applied={fundingStack.applied}
               total={fundingStack.total}
