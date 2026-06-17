@@ -5,7 +5,12 @@ import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { ATLAS_CITIES } from "../../../lib/atlas-cities";
-import { allFundingPrograms, fundingAmount, type FundingProgram, type FundingStatus } from "../../../lib/funding-programs";
+import { fundingAmount, type FundingProgram, type FundingStatus } from "../../../lib/funding-programs";
+import { getFundingPrograms } from "../../../lib/funding-data";
+
+// ISR: SEO pages read the live dataset from Supabase but re-render at most
+// hourly, so admin/verification edits appear without a redeploy.
+export const revalidate = 3600;
 
 export const metadata: Metadata = pageMetadata({
   path: "/photovoltaik-foerderung",
@@ -90,8 +95,8 @@ function slugify(s: string): string {
   return s.toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-export default function FoerderungPage() {
-  const programs = allFundingPrograms();
+export default async function FoerderungPage() {
+  const programs = await getFundingPrograms();
   const cityByFundingId = new Map(ATLAS_CITIES.filter((c) => c.fundingId).map((c) => [c.fundingId!, c.slug]));
 
   const bund = programs.filter((p) => p.level === "bund");

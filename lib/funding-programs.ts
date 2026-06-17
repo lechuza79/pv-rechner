@@ -346,11 +346,20 @@ export function allFundingPrograms(): FundingProgram[] {
  * starts with the program's agsCode (2/5/8-digit). Ordered Bund → Land →
  * Kreis → Kommune (broadest first).
  */
-export function fundingForAgs(ags: string): FundingProgram[] {
-  const order: Record<FundingLevel, number> = { bund: 0, land: 1, landkreis: 2, kommune: 3 };
-  return allFundingPrograms()
+const LEVEL_ORDER: Record<FundingLevel, number> = { bund: 0, land: 1, landkreis: 2, kommune: 3 };
+
+/** Pure: programs from `list` applicable at `ags`, ordered broadest-first.
+ *  Works on any program list — the code seed or the DB-loaded set. */
+export function matchFundingForAgs(list: FundingProgram[], ags: string): FundingProgram[] {
+  return list
     .filter((p) => (p.level === "bund" ? true : !!p.agsCode && ags.startsWith(p.agsCode)))
-    .sort((a, b) => order[a.level] - order[b.level]);
+    .sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
+}
+
+/** Convenience over the code seed (tests + fallback). DB-backed callers use
+ *  {@link matchFundingForAgs} with the loaded program list instead. */
+export function fundingForAgs(ags: string): FundingProgram[] {
+  return matchFundingForAgs(allFundingPrograms(), ags);
 }
 
 /** Pick the first tier whose `upTo` the value fits into; falls back to the last. */

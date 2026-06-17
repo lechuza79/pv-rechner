@@ -6,7 +6,11 @@ import { IconArrowRight } from "../../../../components/Icons";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { ATLAS_CITIES, cityBySlug, type AtlasCity } from "../../../../lib/atlas-cities";
-import { getFundingProgram, fundingAmount, type FundingProgram } from "../../../../lib/funding-programs";
+import { fundingAmount, type FundingProgram } from "../../../../lib/funding-programs";
+import { getFundingPrograms, getFundingProgramById } from "../../../../lib/funding-data";
+
+// ISR: read live funding data from Supabase, re-render at most hourly.
+export const revalidate = 3600;
 import { getRegionAtlasData, type RegionAtlas } from "../../../../lib/mastr-data";
 import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "../../../../lib/calc";
 import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
@@ -18,7 +22,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { stadt: string } }): Promise<Metadata> {
   const city = cityBySlug(params.stadt);
   if (!city) return {};
-  const f = city.fundingId ? getFundingProgram(city.fundingId) : undefined;
+  const f = city.fundingId ? await getFundingProgramById(city.fundingId) : undefined;
   const year = new Date().getFullYear();
   return pageMetadata({
     path: `/photovoltaik-foerderung/${city.slug}`,
@@ -149,13 +153,15 @@ export default async function StadtPage({ params }: { params: { stadt: string } 
     atlas = null;
   }
 
-  const f = city.fundingId ? getFundingProgram(city.fundingId) : undefined;
+  const programs = await getFundingPrograms();
+  const byId = new Map(programs.map((p) => [p.id, p]));
+  const f = city.fundingId ? byId.get(city.fundingId) : undefined;
   const examples = buildExamples(city, f);
   // Förderung im Rechner vorab scharf schalten — nur wenn sie sich pauschal
   // berechnen lässt UND aktuell Anträge angenommen werden.
   const ctaFoe = f && f.status === "aktiv" && examples[0]?.foerderComputable ? `&foe=${f.id}` : "";
   const combinable = (f?.combinableWith ?? [])
-    .map((id) => getFundingProgram(id))
+    .map((id) => byId.get(id))
     .filter((p): p is FundingProgram => Boolean(p));
   const currentYear = new Date().getFullYear();
   const lastFullYear = atlas?.solar.by_year.filter((y) => y.year < currentYear).slice(-1)[0];
