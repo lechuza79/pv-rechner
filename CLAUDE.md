@@ -26,7 +26,7 @@ Du arbeitest mit einem UX-Architekten zusammen, der technisch mitdenken kann, ab
 
 > **Routen-Schema (Stand Juni 2026):** Slugs sind keyword-optimiert (`thema-funktion`, transliteriert). Alte Pfade werden via `next.config.js` dauerhaft (301/308) auf die neuen umgeleitet (Query-Parameter bleiben erhalten — geteilte Links intakt):
 > `/rechner`→`/photovoltaik-rechner` · `/waermepumpe`→`/waermepumpe-rechner` · `/energie`→`/strommix-deutschland` · `/empfehlung`→`/pv-bedarf-berechnen` · `/simulation`→`/pv-simulation`.
-> Neu: **`/photovoltaik-foerderung`** (Förder-Übersicht aus `lib/funding-programs.ts`) + **`/photovoltaik-foerderung/[stadt]`** (regionale Stadt-Seiten: MaStR-Bestand + kommunale Förderung + Beispielrechnungen; Städte-Registry `lib/atlas-cities.ts`).
+> Neu: **`/photovoltaik-foerderung`** (Förder-Übersicht) + **`/photovoltaik-foerderung/[bundesland]`** (Bundesland-Seite, listet Kommunen + Landesprogramme) + **`/photovoltaik-foerderung/[bundesland]/[stadt]`** (Stadt-Seiten: MaStR-Bestand + Förderung + Beispiele + FAQ/JSON-LD). Alte flache Slugs `/photovoltaik-foerderung/[stadt]` → 308 auf die verschachtelten (in `next.config.js`; Stadtstaaten Hamburg/Bremen ohne Redirect, da Slug=Bundesland). **Förderdaten in Supabase** (`funding_programs` + `funding_checks`), gelesen via `lib/funding-data.ts → getFundingPrograms()` mit Code-Seed (`lib/funding-programs.ts`) als Fallback; Seiten ISR (revalidate 3600), Rechner via `/api/funding`. Anlegen/Sync: `/api/funding/setup` (`?resync=1` upsert). Quartals-/Wochen-Wächter (scheduled-tasks) + Runbook `scripts/foerder-verify.md`. Städte-Registry `lib/atlas-cities.ts`, geteilte Bausteine `components/FundingProgramParts.tsx`.
 
 **Flow 1: Rechner (`/photovoltaik-rechner`)** — "Ich kenne meine Anlage"
 ```
