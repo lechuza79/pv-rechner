@@ -177,7 +177,7 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
           {" › "}
           <Link href="/photovoltaik-foerderung" style={{ color: "inherit", textDecoration: "none" }}>Förderung</Link>
           {" › "}
-          <Link href={`/photovoltaik-foerderung#${slugify(city.bundesland)}`} style={{ color: "inherit", textDecoration: "none" }}>{city.bundesland}</Link>
+          <Link href={`/photovoltaik-foerderung/${slugify(city.bundesland)}`} style={{ color: "inherit", textDecoration: "none" }}>{city.bundesland}</Link>
           {" › "}
           <span style={{ color: v("--color-text-primary") }}>{city.name}</span>
         </nav>

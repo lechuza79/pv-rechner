@@ -106,3 +106,15 @@ export function bundeslandSlug(city: AtlasCity): string {
 export function cityPath(city: AtlasCity): string {
   return `/photovoltaik-foerderung/${slugify(city.bundesland)}/${city.slug}`;
 }
+
+/** All cities whose Bundesland slug matches (for the Bundesland landing page). */
+export function citiesInBundesland(blSlug: string): AtlasCity[] {
+  return ATLAS_CITIES.filter((c) => slugify(c.bundesland) === blSlug);
+}
+
+/** Distinct Bundesländer that currently have at least one city page. */
+export function bundeslaenderWithCities(): { name: string; slug: string }[] {
+  const bySlug = new Map<string, string>();
+  for (const c of ATLAS_CITIES) bySlug.set(slugify(c.bundesland), c.bundesland);
+  return Array.from(bySlug, ([slug, name]) => ({ slug, name })).sort((a, b) => a.name.localeCompare(b.name, "de"));
+}

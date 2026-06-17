@@ -4,7 +4,7 @@ import Header from "../../../components/Header";
 import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
-import { ATLAS_CITIES, cityPath, slugify, type AtlasCity } from "../../../lib/atlas-cities";
+import { ATLAS_CITIES, cityPath, slugify, bundeslaenderWithCities, type AtlasCity } from "../../../lib/atlas-cities";
 import { fundingAmount, type FundingProgram, type FundingStatus } from "../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../lib/funding-data";
 
@@ -120,6 +120,7 @@ export default async function FoerderungPage() {
     byLand.set(bl, list);
   }
   const laender = Array.from(byLand.keys()).sort((a, b) => a.localeCompare(b, "de"));
+  const blWithCities = new Set(bundeslaenderWithCities().map((b) => b.slug));
 
   return (
     <div style={S.page}>
@@ -145,6 +146,11 @@ export default async function FoerderungPage() {
         {laender.map((bl) => (
           <div key={bl}>
             <h2 id={slugify(bl)} style={S.h2}>{bl}</h2>
+            {blWithCities.has(slugify(bl)) && (
+              <Link href={`/photovoltaik-foerderung/${slugify(bl)}`} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, color: v("--color-accent"), textDecoration: "none", marginBottom: 10 }}>
+                Alle Städte in {bl} <IconArrowRight size={11} />
+              </Link>
+            )}
             {byLand.get(bl)!.map((p) => <ProgramCard key={p.id} p={p} city={cityByFundingId.get(p.id)} />)}
           </div>
         ))}
