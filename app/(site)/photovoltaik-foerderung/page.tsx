@@ -5,8 +5,9 @@ import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { ATLAS_CITIES, cityPath, slugify, bundeslaenderWithCities, type AtlasCity } from "../../../lib/atlas-cities";
-import { fundingAmount, landProgramBundeslaender, type FundingProgram, type FundingStatus } from "../../../lib/funding-programs";
+import { fundingAmount, landProgramBundeslaender, type FundingProgram } from "../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../lib/funding-data";
+import { FundingStatusBadge, FundingRates } from "../../../components/FundingProgramParts";
 
 // ISR: SEO pages read the live dataset from Supabase but re-render at most
 // hourly, so admin/verification edits appear without a redeploy.
@@ -25,14 +26,6 @@ const LEVEL_LABEL: Record<FundingProgram["level"], string> = {
   bund: "Bund", land: "Land", landkreis: "Landkreis", kommune: "Kommune",
 };
 
-const STATUS_LABEL: Record<FundingStatus, string> = {
-  aktiv: "aktiv", ausgeschoepft: "ausgeschöpft", pausiert: "pausiert", eingestellt: "eingestellt", unsicher: "Status unklar",
-};
-
-function statusColor(s: FundingStatus): string {
-  return s === "aktiv" ? v("--color-positive") : v("--color-text-muted");
-}
-
 const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "20px 16px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
@@ -44,12 +37,6 @@ const S = {
   card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "14px 16px", marginBottom: 10 } as React.CSSProperties,
   label: { fontSize: 12, color: v("--color-text-secondary") } as React.CSSProperties,
 };
-
-function Badge({ text, color }: { text: string; color: string }) {
-  return (
-    <span style={{ fontSize: 11, fontWeight: 700, color, border: `1px solid ${color}`, borderRadius: 999, padding: "2px 9px", whiteSpace: "nowrap" }}>{text}</span>
-  );
-}
 
 function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
   const a = fundingAmount(p, 10, 5, 20000);
@@ -63,19 +50,14 @@ function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
     <div style={S.card}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
         <span style={{ fontSize: 15, fontWeight: 700 }}>{p.name}</span>
-        <Badge text={STATUS_LABEL[p.status]} color={statusColor(p.status)} />
+        <FundingStatusBadge status={p.status} />
       </div>
       <div style={{ ...S.label, marginBottom: 8 }}>{LEVEL_LABEL[p.level]} · {p.traeger}</div>
       <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 8 }}>
         Förderfähig: <span style={{ color: v("--color-text-primary") }}>{p.coveredCosts}</span>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 12 }}>
-        {p.rates.map((r) => (
-          <div key={r.label} style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13 }}>
-            <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
-            <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, textAlign: "right" }}>{r.value}</span>
-          </div>
-        ))}
+      <div style={{ marginBottom: 12 }}>
+        <FundingRates rates={p.rates} />
       </div>
 
       {/* Primary CTA → program page (or official source) */}

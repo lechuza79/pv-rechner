@@ -7,7 +7,8 @@ import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { bundeslaenderWithCities, citiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
 import { getFundingPrograms } from "../../../../lib/funding-data";
-import { landProgramBundeslaender, fundingAmount, type FundingProgram, type FundingStatus } from "../../../../lib/funding-programs";
+import { landProgramBundeslaender, fundingAmount, type FundingProgram } from "../../../../lib/funding-programs";
+import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
@@ -42,10 +43,6 @@ export async function generateMetadata({ params }: { params: { bundesland: strin
   });
 }
 
-const STATUS_LABEL: Record<FundingStatus, string> = {
-  aktiv: "aktiv", ausgeschoepft: "ausgeschöpft", pausiert: "pausiert", eingestellt: "eingestellt", unsicher: "Status unklar",
-};
-
 const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "20px 16px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
@@ -55,29 +52,20 @@ const S = {
   card: { display: "block", background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "14px 16px", marginBottom: 10, textDecoration: "none", color: "inherit" } as React.CSSProperties,
 };
 
-function Badge({ text, color }: { text: string; color: string }) {
-  return <span style={{ fontSize: 11, fontWeight: 700, color, border: `1px solid ${color}`, borderRadius: 999, padding: "2px 9px", whiteSpace: "nowrap" }}>{text}</span>;
-}
-
 function LandProgramBox({ p }: { p: FundingProgram }) {
   const a = fundingAmount(p, 10, 5, 20000);
   return (
     <div style={{ ...S.card, borderColor: p.status === "aktiv" ? v("--color-positive") : v("--color-border"), background: v("--color-bg-muted") }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
         <span style={{ fontSize: 16, fontWeight: 700 }}>{p.name}</span>
-        <Badge text={STATUS_LABEL[p.status]} color={p.status === "aktiv" ? v("--color-positive") : v("--color-text-muted")} />
+        <FundingStatusBadge status={p.status} />
       </div>
       <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginBottom: 8 }}>{p.traeger}</div>
       <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 8 }}>
         Förderfähig: <span style={{ color: v("--color-text-primary") }}>{p.coveredCosts}</span>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 10 }}>
-        {p.rates.map((r) => (
-          <div key={r.label} style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13 }}>
-            <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
-            <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, textAlign: "right" }}>{r.value}</span>
-          </div>
-        ))}
+      <div style={{ marginBottom: 10 }}>
+        <FundingRates rates={p.rates} />
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
         <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>Zur Quelle</a>
@@ -139,7 +127,7 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
             <Link key={c.slug} href={cityPath(c)} style={S.card}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
                 <span style={{ fontSize: 16, fontWeight: 700 }}>{c.name}</span>
-                {f && <Badge text={STATUS_LABEL[f.status]} color={f.status === "aktiv" ? v("--color-positive") : v("--color-text-muted")} />}
+                {f && <FundingStatusBadge status={f.status} />}
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 13, color: v("--color-text-secondary") }}>

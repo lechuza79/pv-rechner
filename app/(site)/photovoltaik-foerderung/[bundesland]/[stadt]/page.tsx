@@ -8,6 +8,7 @@ import { pageMetadata } from "../../../../../lib/seo";
 import { ATLAS_CITIES, cityBySlug, slugify, type AtlasCity } from "../../../../../lib/atlas-cities";
 import { fundingAmount, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
+import { FundingRates, FundingConditions } from "../../../../../components/FundingProgramParts";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
 import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "../../../../../lib/calc";
 import { DEFAULT_FEED_IN } from "../../../../../lib/feedin-config";
@@ -208,18 +209,10 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
                 Förderfähig: <span style={{ color: v("--color-text-primary"), fontWeight: 600 }}>{f.coveredCosts}</span>
                 {f.maxFoerderung ? ` · ${f.maxFoerderung}` : ""}
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
-                {f.rates.map((r) => (
-                  <div key={r.label} style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 14, borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 8 }}>
-                    <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
-                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, textAlign: "right" }}>{r.value}</span>
-                  </div>
-                ))}
+              <div style={{ marginBottom: 14 }}>
+                <FundingRates rates={f.rates} bordered />
               </div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 6 }}>Bedingungen</div>
-              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.7, color: v("--color-text-secondary") }}>
-                {f.conditions.map((c) => <li key={c}>{c}</li>)}
-              </ul>
+              <FundingConditions conditions={f.conditions} />
               {combinable.length > 0 && (
                 <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: 12 }}>
                   Kombinierbar mit:{" "}
