@@ -1,10 +1,69 @@
 "use client";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { v } from "../../../../lib/theme";
 import { IconArrowRight } from "../../../../components/Icons";
 import type { FundingProgram } from "../../../../lib/funding-programs";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
+
+const STATUS_LABEL: Record<FundingProgram["status"], string> = {
+  aktiv: "aktiv", ausgeschoepft: "ausgeschöpft", pausiert: "pausiert", eingestellt: "eingestellt", unsicher: "Status unklar",
+};
+
+// Detail-Modal: zeigt alles, was wir zum Programm haben, ohne die Seite zu
+// verlassen (Portal + Esc/Klick-außen schließt).
+function FundingProgramModal({ program, onClose }: { program: FundingProgram; onClose: () => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+  if (!mounted) return null;
+  const active = program.status === "aktiv";
+  const statusColor = active ? v("--color-positive") : v("--color-text-muted");
+  return createPortal(
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 16 }}>
+      <div onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" style={{ background: v("--color-bg"), borderRadius: v("--radius-lg"), maxWidth: 480, width: "100%", maxHeight: "85vh", overflowY: "auto", padding: "20px 18px", boxShadow: "0 10px 40px rgba(0,0,0,0.25)", fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 8 }}>
+          <span style={{ fontSize: 17, fontWeight: 800, lineHeight: 1.25 }}>{program.name}</span>
+          <button onClick={onClose} aria-label="Schließen" style={{ border: "none", background: "transparent", fontSize: 24, lineHeight: 0.8, cursor: "pointer", color: v("--color-text-muted"), padding: 0 }}>×</button>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: statusColor, border: `1px solid ${statusColor}`, borderRadius: 999, padding: "2px 9px" }}>{STATUS_LABEL[program.status]}</span>
+          <span style={{ fontSize: 12, color: v("--color-text-secondary") }}>{program.traeger}</span>
+        </div>
+        <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 12 }}>
+          Förderfähig: <span style={{ color: v("--color-text-primary") }}>{program.coveredCosts}</span>{program.maxFoerderung ? ` · ${program.maxFoerderung}` : ""}
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 7, marginBottom: 14 }}>
+          {program.rates.map((r) => (
+            <div key={r.label} style={{ display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13, borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 7 }}>
+              <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
+              <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, textAlign: "right" }}>{r.value}</span>
+            </div>
+          ))}
+        </div>
+        {program.conditions.length > 0 && (
+          <>
+            <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 6 }}>Bedingungen</div>
+            <ul style={{ margin: "0 0 14px", paddingLeft: 18, fontSize: 13, lineHeight: 1.7, color: v("--color-text-secondary") }}>
+              {program.conditions.map((c) => <li key={c}>{c}</li>)}
+            </ul>
+          </>
+        )}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
+          <a href={program.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 700 }}>Zur offiziellen Quelle ›</a>
+          <span style={{ color: v("--color-text-muted") }}>Stand: {program.stand}{program.verified ? "" : " · unbestätigt"}</span>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
 
 interface ResultFundingProps {
   loading: boolean;
@@ -26,6 +85,18 @@ export default function ResultFunding({
   loading, candidates, chosenAgs, onChooseAgs,
   programs, applied, total, enabled, onToggle, brutto,
 }: ResultFundingProps) {
+  const [modalProgram, setModalProgram] = useState<FundingProgram | null>(null);
+
+  // Programmname als Link → öffnet das Detail-Modal (kein Seitenwechsel).
+  const ProgramLink = ({ p, children }: { p: FundingProgram; children?: React.ReactNode }) => (
+    <button
+      onClick={() => setModalProgram(p)}
+      style={{ border: "none", background: "transparent", padding: 0, font: "inherit", color: v("--color-accent"), cursor: "pointer", textDecoration: "underline", textDecorationStyle: "dotted", textUnderlineOffset: 2 }}
+    >
+      {children ?? p.name}
+    </button>
+  );
+
   // Nothing to show until a PLZ has been resolved (or a program was pre-armed).
   if (!loading && candidates === null && !chosenAgs) return null;
 
@@ -106,11 +177,11 @@ export default function ResultFunding({
             </span>
           </label>
 
-          {enabled && (
+          {enabled ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 7, fontSize: 13 }}>
               {applied.map(({ program, amount }) => (
                 <div key={program.id} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                  <span style={{ color: v("--color-text-secondary") }}>{program.name}</span>
+                  <ProgramLink p={program} />
                   <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-positive"), whiteSpace: "nowrap" }}>− {nf(amount)} €</span>
                 </div>
               ))}
@@ -119,15 +190,19 @@ export default function ResultFunding({
                 <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-text-primary") }}>{nf(effektiv)} €</span>
               </div>
             </div>
-          )}
+          ) : mostSpecific ? (
+            <div style={{ fontSize: 12, marginTop: 8 }}>
+              <ProgramLink p={mostSpecific}>Details zu {mostSpecific.name} ›</ProgramLink>
+            </div>
+          ) : null}
         </>
       ) : (
         <div style={{ fontSize: 12, color: v("--color-text-secondary"), lineHeight: 1.6 }}>
-          {regional.length > 0 ? (
+          {mostSpecific ? (
             <>
-              Für {ortLabel ?? "deinen Ort"} liegt uns ein Programm vor, das sich nicht pauschal
-              pro Anlage berechnen lässt{regional[regional.length - 1] ? ` (${regional[regional.length - 1].name})` : ""}.
-              Details findest du in der Förder-Übersicht.
+              Für {ortLabel ?? "deinen Ort"} liegt uns mit dem{" "}
+              <ProgramLink p={mostSpecific} /> ein Programm vor, das sich nicht pauschal
+              pro Anlage berechnen lässt. Die Details kannst du dir direkt ansehen.
             </>
           ) : (
             <>Für deinen Ort kennen wir kein aktives kommunales Förderprogramm. Bundesweit gilt die 0 % Mehrwertsteuer auf PV — die steckt bereits in den Marktpreisen.</>
@@ -138,6 +213,8 @@ export default function ResultFunding({
       <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 12, fontSize: 12, color: v("--color-accent"), textDecoration: "none" }}>
         Alle Förderprogramme <IconArrowRight size={11} />
       </Link>
+
+      {modalProgram && <FundingProgramModal program={modalProgram} onClose={() => setModalProgram(null)} />}
     </div>
   );
 }
