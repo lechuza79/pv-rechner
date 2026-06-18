@@ -292,28 +292,41 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "hannover-proklima": {
     id: "hannover-proklima", name: "proKlima (enercity-Fonds)",
     traeger: "Region Hannover", level: "landkreis", region: "Region Hannover", bundesland: "Niedersachsen", agsCode: "03241",
-    url: "https://www.proklima-hannover.de", stand: "Juni 2026",
+    url: "https://www.proklima-hannover.de/wohngebaeude/foerderangebote/solarstrom/dachvolltoll/", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp",
+    coveredCosts: "Zuschuss je kWp bei voller Dachbelegung (Baustein \u201eDachVollToll\u201c)",
     rates: [
-      { label: "PV-Anlage (Dach)", value: "100 €/kWp, max. 1.000 €" },
-      { label: "PV auf Gründach", value: "200 €/kWp, max. 6.000 €" },
+      { label: "Dach-PV (Vollbelegung)", value: "100 €/kWp, max. 2.000 €" },
+      { label: "Bonus Energiemanagement", value: "500 € (mit Speicher + Smart Meter + dynamischem Tarif)" },
     ],
-    conditions: ["Nur im Fördergebiet (Hannover + 5 Umlandkommunen)", "Mit BEG kombinierbar"],
+    conditions: [
+      "Nur im Fördergebiet (Hannover + Hemmingen, Laatzen, Langenhagen, Ronnenberg, Seelze)",
+      "Volle Belegung aller geeigneten Dachflächen, mindestens 2 kWp",
+      "Antrag vor Maßnahmenbeginn; mit BEG kombinierbar",
+    ],
     combinableWith: BUND,
-    pvPerKwp: 100,
+    pvPerKwp: 100, pvCap: 2000,
   },
 
   // ── Kommune – aktuell ausgeschöpft / eingestellt (zur Lagebeurteilung) ───────
   "bonn-solares": {
-    id: "bonn-solares", name: "Solares Bonn", traeger: "Stadt Bonn",
-    level: "kommune", region: "Bonn", bundesland: "Nordrhein-Westfalen", agsCode: "05314", url: "https://www.bonn.de",
+    id: "bonn-solares", name: "Solares Bonn", traeger: "Bundesstadt Bonn",
+    level: "kommune", region: "Bonn", bundesland: "Nordrhein-Westfalen", agsCode: "05314",
+    url: "https://www.bonn.de/themen-entdecken/klima/klima-foerderprogramme/foerderprogramm-solares-bonn.php",
     stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp (Budget 2026 erschöpft)",
-    rates: [{ label: "PV-Anlage", value: "100 – 300 €/kWp" }],
-    conditions: ["Antragstellung derzeit gesperrt"],
+    maxFoerderung: "max. 25.000 € je Objekt (Denkmal 27.500 €)",
+    rates: [
+      { label: "Dach-PV Wohngebäude (Vollbelegung)", value: "100 €/kWp" },
+      { label: "Mehrfamilienhaus / Fassade / Denkmal", value: "bis 300 €/kWp" },
+    ],
+    conditions: [
+      "Mittel 2026 ausgeschöpft — Wiedereröffnung üblicherweise zum Jahresbeginn",
+      "Antrag vor Beauftragung; nur Bestandsgebäude (fertiggestellt bis 31.12.2021)",
+      "Standardsatz nur bei voller Belegung der geeigneten Dachfläche",
+    ],
     combinableWith: BUND,
   },
   "goettingen-klimafonds": {
@@ -470,6 +483,63 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "kommunaler swb-Zuschuss ggf. zusätzlich (separat beim Versorger)",
     ],
     combinableWith: BUND,
+  },
+
+  // ── Batch Juni 2026, Teil 2 ────────────────────────────────────────────────
+  "potsdam-klimaschutz": {
+    id: "potsdam-klimaschutz", name: "Klimaschutzförderprogramm Potsdam",
+    traeger: "Landeshauptstadt Potsdam", level: "kommune", region: "Potsdam", bundesland: "Brandenburg", agsCode: "12054",
+    url: "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam",
+    stand: "Juni 2026", status: "aktiv", capped: true, verified: false,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp für Dach-PV + Pauschale für Batteriespeicher",
+    rates: [
+      { label: "Dach-PV", value: "200 €/kWp, max. 1.200 € (ab 6 kWp)" },
+      { label: "Batteriespeicher (ab 5 kWh)", value: "1.000 € pauschal" },
+      { label: "Steckersolar (bis 0,6 kWp)", value: "250 € pauschal" },
+    ],
+    conditions: [
+      "Energieberatung (z. B. Verbraucherzentrale) vor der Antragstellung erforderlich",
+      "Antrag vor Maßnahmenbeginn; zertifizierter Ökostrom-Tarif als Voraussetzung",
+      "nur für Privatpersonen mit Wohnsitz/Immobilie in Potsdam",
+    ],
+    combinableWith: BUND,
+    pvPerKwp: 200, pvCap: 1200,
+    speicherTiers: [{ upTo: 999, amount: 1000 }], speicherMin: 5,
+  },
+  "dortmund-pv": {
+    id: "dortmund-pv", name: "Förderung von Photovoltaik auf Ein- und Zweifamilienhäusern",
+    traeger: "Stadt Dortmund", level: "kommune", region: "Dortmund", bundesland: "Nordrhein-Westfalen", agsCode: "05913",
+    url: "https://www.dortmund.de/services/foerderung-von-photovoltaikanlagen-auf-ein-und-zweifamilienhaeusern.html",
+    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Anlage (selbstgenutztes Ein-/Zweifamilienhaus, ab 5 kWp)",
+    rates: [{ label: "PV-Anlage (ab 5 kWp)", value: "1.000 € pauschal" }],
+    conditions: [
+      "Förderung zum 05.06.2026 wegen hoher Nachfrage gestoppt — derzeit keine Neuanträge",
+      "Haushaltseinkommen max. 75.000 € (ledig) bzw. 150.000 € (zusammen veranlagt)",
+      "Antrag vor Auftragsvergabe; kein Speicher gefördert",
+    ],
+    combinableWith: BUND,
+  },
+  "essen-solar": {
+    id: "essen-solar", name: "Förderprogramm Photovoltaik- und Solaranlagen",
+    traeger: "Stadt Essen", level: "kommune", region: "Essen", bundesland: "Nordrhein-Westfalen", agsCode: "05113",
+    url: "https://www.essen.de/leben/umwelt/klima/klimaschutz/solarfoederung.de.html",
+    stand: "Juni 2026", status: "pausiert", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Sockel + Zuschuss je kWp (Dach-PV); Programm derzeit ausgesetzt",
+    rates: [
+      { label: "Dach-PV", value: "500 € + 100 €/kWp, max. 4.000 €" },
+      { label: "Gründach / Fassade", value: "+100 €/kWp" },
+    ],
+    conditions: [
+      "Antragsannahme wegen der Haushaltslage ausgesetzt — Neuauflage nicht terminiert",
+      "bereits bewilligte Anträge bleiben gültig",
+      "Antrag galt vor Maßnahmenbeginn",
+    ],
+    combinableWith: BUND,
+    pvSockel: 500, pvPerKwp: 100, pvCap: 4000,
   },
 };
 

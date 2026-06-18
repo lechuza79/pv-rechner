@@ -169,6 +169,31 @@ describe("stackFunding", () => {
   });
 });
 
+// Batch Juni 2026, Teil 2 — verified against official sources.
+describe("funding batch 2 (Juni 2026)", () => {
+  it("Potsdam funds roof PV (200 €/kWp, cap 1.200) and a flat storage grant", () => {
+    const p = getFundingProgram("potsdam-klimaschutz")!;
+    expect(p.status).toBe("aktiv");
+    expect(fundingAmount(p, 5, 0, 12000).total).toBe(5 * 200);
+    expect(fundingAmount(p, 10, 0, 20000).total).toBe(1200);
+    expect(fundingAmount(p, 10, 8, 25000).total).toBe(1200 + 1000);
+    expect(fundingAmount(p, 10, 3, 25000).total).toBe(1200);
+    expect(stackFunding(fundingForAgs("12054000"), 10, 8, 25000).total).toBe(2200);
+  });
+  it("Hannover proKlima caps the PV grant at 2.000 €", () => {
+    const p = getFundingProgram("hannover-proklima")!;
+    expect(p.status).toBe("aktiv");
+    expect(fundingAmount(p, 15, 0, 25000).total).toBe(1500);
+    expect(fundingAmount(p, 30, 0, 45000).total).toBe(2000);
+  });
+  it("Dortmund (ausgeschoepft) and Essen (pausiert) are not auto-applied", () => {
+    expect(getFundingProgram("dortmund-pv")!.status).toBe("ausgeschoepft");
+    expect(getFundingProgram("essen-solar")!.status).toBe("pausiert");
+    expect(stackFunding(fundingForAgs("05913000"), 10, 5, 20000).total).toBe(0);
+    expect(stackFunding(fundingForAgs("05113000"), 10, 5, 20000).total).toBe(0);
+  });
+});
+
 describe("atlas-cities registry", () => {
   it("every city fundingId resolves to a real program", () => {
     for (const c of ATLAS_CITIES) {

@@ -96,6 +96,23 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "leipzig", name: "Leipzig", ags: "14713", bundesland: "Sachsen", yieldKwhKwp: 1000 },
   { slug: "hamburg", name: "Hamburg", ags: "02000", bundesland: "Hamburg", yieldKwhKwp: 950 },
   { slug: "bremen", name: "Bremen", ags: "04011", bundesland: "Bremen", yieldKwhKwp: 960, fundingId: "bremen-rundumshaus" },
+  // ── Batch Juni 2026, Teil 2 (je 1 Recherche-Agent → offizielle Quelle) ──────
+  // Deckt die bis dahin fehlenden Bundesländer ab (NI, SH, TH, ST, BB, MV, SL).
+  { slug: "hannover", name: "Hannover", ags: "03241", bundesland: "Niedersachsen", yieldKwhKwp: 970, fundingId: "hannover-proklima" },
+  { slug: "dresden", name: "Dresden", ags: "14612", bundesland: "Sachsen", yieldKwhKwp: 1030 },
+  { slug: "dortmund", name: "Dortmund", ags: "05913", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 980, fundingId: "dortmund-pv" },
+  { slug: "essen", name: "Essen", ags: "05113", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "essen-solar" },
+  { slug: "bonn", name: "Bonn", ags: "05314", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 1000, fundingId: "bonn-solares" },
+  { slug: "kiel", name: "Kiel", ags: "01002", bundesland: "Schleswig-Holstein", yieldKwhKwp: 960 },
+  { slug: "erfurt", name: "Erfurt", ags: "16051", bundesland: "Thüringen", yieldKwhKwp: 1010 },
+  { slug: "magdeburg", name: "Magdeburg", ags: "15003", bundesland: "Sachsen-Anhalt", yieldKwhKwp: 1030 },
+  { slug: "potsdam", name: "Potsdam", ags: "12054", bundesland: "Brandenburg", yieldKwhKwp: 1040, fundingId: "potsdam-klimaschutz" },
+  { slug: "rostock", name: "Rostock", ags: "13003", bundesland: "Mecklenburg-Vorpommern", yieldKwhKwp: 990 },
+  { slug: "saarbruecken", name: "Saarbrücken", ags: "10041", bundesland: "Saarland", yieldKwhKwp: 1060 },
+  { slug: "augsburg", name: "Augsburg", ags: "09761", bundesland: "Bayern", yieldKwhKwp: 1080 },
+  { slug: "kassel", name: "Kassel", ags: "06611", bundesland: "Hessen", yieldKwhKwp: 1010 },
+  { slug: "luebeck", name: "Lübeck", ags: "01003", bundesland: "Schleswig-Holstein", yieldKwhKwp: 960 },
+  { slug: "halle", name: "Halle (Saale)", ags: "15002", bundesland: "Sachsen-Anhalt", yieldKwhKwp: 1040 },
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {

@@ -42,6 +42,21 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/wiesbaden", destination: "/photovoltaik-foerderung/hessen/wiesbaden", permanent: true },
       { source: "/photovoltaik-foerderung/mainz", destination: "/photovoltaik-foerderung/rheinland-pfalz/mainz", permanent: true },
       { source: "/photovoltaik-foerderung/leipzig", destination: "/photovoltaik-foerderung/sachsen/leipzig", permanent: true },
+      { source: "/photovoltaik-foerderung/hannover", destination: "/photovoltaik-foerderung/niedersachsen/hannover", permanent: true },
+      { source: "/photovoltaik-foerderung/dresden", destination: "/photovoltaik-foerderung/sachsen/dresden", permanent: true },
+      { source: "/photovoltaik-foerderung/dortmund", destination: "/photovoltaik-foerderung/nordrhein-westfalen/dortmund", permanent: true },
+      { source: "/photovoltaik-foerderung/essen", destination: "/photovoltaik-foerderung/nordrhein-westfalen/essen", permanent: true },
+      { source: "/photovoltaik-foerderung/bonn", destination: "/photovoltaik-foerderung/nordrhein-westfalen/bonn", permanent: true },
+      { source: "/photovoltaik-foerderung/kiel", destination: "/photovoltaik-foerderung/schleswig-holstein/kiel", permanent: true },
+      { source: "/photovoltaik-foerderung/erfurt", destination: "/photovoltaik-foerderung/thueringen/erfurt", permanent: true },
+      { source: "/photovoltaik-foerderung/magdeburg", destination: "/photovoltaik-foerderung/sachsen-anhalt/magdeburg", permanent: true },
+      { source: "/photovoltaik-foerderung/potsdam", destination: "/photovoltaik-foerderung/brandenburg/potsdam", permanent: true },
+      { source: "/photovoltaik-foerderung/rostock", destination: "/photovoltaik-foerderung/mecklenburg-vorpommern/rostock", permanent: true },
+      { source: "/photovoltaik-foerderung/saarbruecken", destination: "/photovoltaik-foerderung/saarland/saarbruecken", permanent: true },
+      { source: "/photovoltaik-foerderung/augsburg", destination: "/photovoltaik-foerderung/bayern/augsburg", permanent: true },
+      { source: "/photovoltaik-foerderung/kassel", destination: "/photovoltaik-foerderung/hessen/kassel", permanent: true },
+      { source: "/photovoltaik-foerderung/luebeck", destination: "/photovoltaik-foerderung/schleswig-holstein/luebeck", permanent: true },
+      { source: "/photovoltaik-foerderung/halle", destination: "/photovoltaik-foerderung/sachsen-anhalt/halle", permanent: true },
       // Hamburg/Bremen: Stadtstaaten — flacher Slug = Bundesland-Slug, daher KEIN
       // Redirect (würde die Bundesland-Seite abfangen). Stadt-Seite liegt unter
       // /hamburg/hamburg bzw. /bremen/bremen, erreichbar über die Bundesland-Seite.
