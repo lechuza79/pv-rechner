@@ -194,6 +194,24 @@ describe("funding batch 2 (Juni 2026)", () => {
   });
 });
 
+// Batch Juni 2026, Teil 3 — Katalog-Vervollständigung. Einziger neuer
+// aktiv+anrechenbarer Zuschuss: Schweinfurt.
+describe("funding batch 3 (Katalog)", () => {
+  it("Schweinfurt funds roof PV (100 €/kWp cap 1.000) + storage (100 €/kWh ab 3 kWh)", () => {
+    const p = getFundingProgram("schweinfurt-pv")!;
+    expect(p.status).toBe("aktiv");
+    expect(fundingAmount(p, 8, 0, 16000).total).toBe(800);
+    expect(fundingAmount(p, 20, 0, 40000).total).toBe(1000); // cap
+    expect(fundingAmount(p, 8, 5, 18000).total).toBe(800 + 500);
+    expect(stackFunding(fundingForAgs("09662000"), 10, 6, 22000).total).toBe(1000 + 600);
+  });
+  it("Wolfsburg (pausiert) and Bottrop (ausgeschoepft) are not auto-applied", () => {
+    expect(getFundingProgram("wolfsburg-pv")!.status).toBe("pausiert");
+    expect(stackFunding(fundingForAgs("03103000"), 10, 5, 20000).total).toBe(0);
+    expect(stackFunding(fundingForAgs("05512000"), 10, 5, 20000).total).toBe(0); // Bottrop
+  });
+});
+
 describe("atlas-cities registry", () => {
   it("every city fundingId resolves to a real program", () => {
     for (const c of ATLAS_CITIES) {
