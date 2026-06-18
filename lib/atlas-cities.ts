@@ -6,6 +6,8 @@
 // funding dataset (lib/funding-programs.ts) and is referenced by id, so the
 // program data can also power an overview page and cross-program links.
 
+import { getFundingProgram } from "./funding-programs";
+
 export interface AtlasCity {
   slug: string;
   name: string;
@@ -225,5 +227,35 @@ export function citiesInBundesland(blSlug: string): AtlasCity[] {
 export function bundeslaenderWithCities(): { name: string; slug: string }[] {
   const bySlug = new Map<string, string>();
   for (const c of ATLAS_CITIES) bySlug.set(slugify(c.bundesland), c.bundesland);
+  return Array.from(bySlug, ([slug, name]) => ({ slug, name })).sort((a, b) => a.name.localeCompare(b.name, "de"));
+}
+
+// ── "Live" = only regions whose own funding program currently accepts
+// applications (status "aktiv"). Policy (User, Juni 2026): we publish a page
+// only for regions WITH an active program; regions whose program is exhausted/
+// paused/discontinued, or that never had one, stay in the registry (archive,
+// re-enabled later for SEO) but get NO live page. Existence is code-driven via
+// the program status; page CONTENT still comes from the DB. Flip these filters
+// to include inactive programs to re-expand the catalog.
+
+/** True if the city has its own program and that program is currently active. */
+export function isCityLive(c: AtlasCity): boolean {
+  return !!c.fundingId && getFundingProgram(c.fundingId)?.status === "aktiv";
+}
+
+/** Cities with a live (active) program — drives page generation, sitemap, listings. */
+export function liveCities(): AtlasCity[] {
+  return ATLAS_CITIES.filter(isCityLive);
+}
+
+/** Live cities in a Bundesland (by slug). */
+export function liveCitiesInBundesland(blSlug: string): AtlasCity[] {
+  return liveCities().filter((c) => slugify(c.bundesland) === blSlug);
+}
+
+/** Bundesländer that have at least one live city (Land-level programs handled separately). */
+export function liveBundeslaender(): { name: string; slug: string }[] {
+  const bySlug = new Map<string, string>();
+  for (const c of liveCities()) bySlug.set(slugify(c.bundesland), c.bundesland);
   return Array.from(bySlug, ([slug, name]) => ({ slug, name })).sort((a, b) => a.name.localeCompare(b.name, "de"));
 }

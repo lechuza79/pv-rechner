@@ -5,7 +5,7 @@ import Header from "../../../../components/Header";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
-import { bundeslaenderWithCities, citiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
+import { liveBundeslaender, liveCitiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import { landProgramBundeslaender, fundingAmount, fundingStandLabel, type FundingProgram } from "../../../../lib/funding-programs";
 import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
@@ -14,6 +14,8 @@ import { getRegionSummary, type RegionSummary } from "../../../../lib/mastr-data
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
+// Only Bundesländer with at least one live (active) program get a page.
+export const dynamicParams = false;
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
@@ -35,7 +37,7 @@ function bundeslandAgs(name: string): string | undefined {
 // program (e.g. Berlin has no cities here but a landesweites Programm).
 function allBundeslaender(): { name: string; slug: string }[] {
   const m = new Map<string, string>();
-  for (const b of bundeslaenderWithCities()) m.set(b.slug, b.name);
+  for (const b of liveBundeslaender()) m.set(b.slug, b.name);
   for (const b of landProgramBundeslaender()) m.set(b.slug, b.name);
   return Array.from(m, ([slug, name]) => ({ slug, name }));
 }
@@ -106,11 +108,11 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
   const name = blName(params.bundesland);
   if (!name) notFound();
 
-  const cities = citiesInBundesland(params.bundesland);
+  const cities = liveCitiesInBundesland(params.bundesland);
   const programs = await getFundingPrograms();
   const byId = new Map(programs.map((p) => [p.id, p]));
   const landPrograms = programs.filter(
-    (p) => p.level === "land" && p.bundesland != null && slugify(p.bundesland) === params.bundesland,
+    (p) => p.level === "land" && p.status === "aktiv" && p.bundesland != null && slugify(p.bundesland) === params.bundesland,
   );
 
   // Aggregate solar stock for the whole Bundesland (MaStR), as a trust signal.

@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { ATLAS_CITIES, slugify, bundeslaenderWithCities } from "../lib/atlas-cities";
+import { liveCities, slugify, liveBundeslaender } from "../lib/atlas-cities";
 import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
 
@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ? new Date(Math.max(...fundingDates.map((d) => d.getTime())))
     : now;
 
-  const cityPages: MetadataRoute.Sitemap = ATLAS_CITIES.map((c) => {
+  const cityPages: MetadataRoute.Sitemap = liveCities().map((c) => {
     const f = c.fundingId ? byId.get(c.fundingId) : undefined;
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
@@ -33,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     };
   });
-  const blSlugs = new Set([...bundeslaenderWithCities(), ...landProgramBundeslaender()].map((b) => b.slug));
+  const blSlugs = new Set([...liveBundeslaender(), ...landProgramBundeslaender()].map((b) => b.slug));
   const bundeslandPages: MetadataRoute.Sitemap = Array.from(blSlugs).map((slug) => ({
     url: `${BASE_URL}/photovoltaik-foerderung/${slug}`,
     lastModified: maxFundingDate,

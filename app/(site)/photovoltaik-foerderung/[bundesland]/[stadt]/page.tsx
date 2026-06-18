@@ -5,7 +5,7 @@ import Header from "../../../../../components/Header";
 import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons";
 import { v } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
-import { ATLAS_CITIES, cityBySlug, slugify, type AtlasCity } from "../../../../../lib/atlas-cities";
+import { cityBySlug, slugify, isCityLive, liveCities, type AtlasCity } from "../../../../../lib/atlas-cities";
 import { fundingAmount, fundingStandLabel, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
 import { FundingRates, FundingConditions } from "../../../../../components/FundingProgramParts";
@@ -16,9 +16,11 @@ import { DEFAULT_FEED_IN } from "../../../../../lib/feedin-config";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
+// Only regions with an active program get a page; archived/no-program slugs 404.
+export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return ATLAS_CITIES.map((c) => ({ bundesland: slugify(c.bundesland), stadt: c.slug }));
+  return liveCities().map((c) => ({ bundesland: slugify(c.bundesland), stadt: c.slug }));
 }
 
 export async function generateMetadata({ params }: { params: { bundesland: string; stadt: string } }): Promise<Metadata> {
@@ -148,7 +150,8 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
   const city = cityBySlug(params.stadt);
   // Guard the hierarchy: the Bundesland segment must match the city, otherwise
   // a wrong-Bundesland URL would render a valid page under a bogus parent.
-  if (!city || slugify(city.bundesland) !== params.bundesland) notFound();
+  // Also guard the live policy: only regions with an active program have a page.
+  if (!city || slugify(city.bundesland) !== params.bundesland || !isCityLive(city)) notFound();
 
   let atlas: RegionAtlas | null = null;
   try {

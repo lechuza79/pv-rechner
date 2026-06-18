@@ -1,7 +1,29 @@
 import { describe, it, expect } from "vitest";
-import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland } from "../atlas-cities";
-import { landProgramBundeslaender } from "../funding-programs";
+import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland, liveCities, isCityLive } from "../atlas-cities";
+import { landProgramBundeslaender, getFundingProgram } from "../funding-programs";
 import nextConfig from "../../next.config.js";
+
+// Live-Policy (Juni 2026): nur Regionen mit aktivem Programm bekommen eine Seite.
+describe("live cities (only active programs)", () => {
+  it("a city is live iff its program status is aktiv", () => {
+    for (const c of liveCities()) {
+      expect(c.fundingId).toBeTruthy();
+      expect(getFundingProgram(c.fundingId!)?.status).toBe("aktiv");
+    }
+  });
+  it("includes an active program city and excludes inactive/no-program ones", () => {
+    const slugs = liveCities().map((c) => c.slug);
+    expect(slugs).toContain("wuerzburg"); // aktiv
+    expect(slugs).toContain("schweinfurt"); // aktiv
+    expect(slugs).not.toContain("muenchen"); // eingestellt
+    expect(slugs).not.toContain("karlsruhe"); // ausgeschoepft
+    expect(slugs).not.toContain("dresden"); // kein Programm
+  });
+  it("isCityLive is false for cities without a fundingId", () => {
+    const noProg = ATLAS_CITIES.find((c) => !c.fundingId)!;
+    expect(isCityLive(noProg)).toBe(false);
+  });
+});
 
 describe("slugify", () => {
   it("transliterates umlauts and ß and collapses separators", () => {

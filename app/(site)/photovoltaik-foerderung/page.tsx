@@ -4,7 +4,7 @@ import Header from "../../../components/Header";
 import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
-import { ATLAS_CITIES, cityPath, slugify, bundeslaenderWithCities, type AtlasCity } from "../../../lib/atlas-cities";
+import { ATLAS_CITIES, cityPath, slugify, liveBundeslaender, type AtlasCity } from "../../../lib/atlas-cities";
 import { fundingAmount, fundingStandLabel, landProgramBundeslaender, type FundingProgram } from "../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../lib/funding-data";
 import { FundingStatusBadge, FundingRates } from "../../../components/FundingProgramParts";
@@ -92,8 +92,10 @@ export default async function FoerderungPage() {
   const programs = await getFundingPrograms();
   const cityByFundingId = new Map(ATLAS_CITIES.filter((c) => c.fundingId).map((c) => [c.fundingId!, c]));
 
-  const bund = programs.filter((p) => p.level === "bund");
-  const regional = programs.filter((p) => p.level !== "bund");
+  // Policy: nur Programme zeigen, die aktuell Anträge annehmen (status "aktiv").
+  // Inaktive bleiben im Datensatz (Archiv), erscheinen aber nicht in der Übersicht.
+  const bund = programs.filter((p) => p.level === "bund" && p.status === "aktiv");
+  const regional = programs.filter((p) => p.level !== "bund" && p.status === "aktiv");
   const byLand = new Map<string, FundingProgram[]>();
   for (const p of regional) {
     const bl = p.bundesland ?? "Sonstige";
@@ -103,7 +105,7 @@ export default async function FoerderungPage() {
   }
   const laender = Array.from(byLand.keys()).sort((a, b) => a.localeCompare(b, "de"));
   // Bundesländer mit eigener Seite: mit Städten ODER mit Landesprogramm.
-  const blWithPage = new Set([...bundeslaenderWithCities(), ...landProgramBundeslaender()].map((b) => b.slug));
+  const blWithPage = new Set([...liveBundeslaender(), ...landProgramBundeslaender()].map((b) => b.slug));
 
   return (
     <div style={S.page}>
@@ -131,7 +133,7 @@ export default async function FoerderungPage() {
             <h2 id={slugify(bl)} style={S.h2}>{bl}</h2>
             {blWithPage.has(slugify(bl)) && (
               <Link href={`/photovoltaik-foerderung/${slugify(bl)}`} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, color: v("--color-accent"), textDecoration: "none", marginBottom: 10 }}>
-                {bundeslaenderWithCities().some((b) => b.slug === slugify(bl)) ? `Alle Städte in ${bl}` : `${bl}-Förderung im Detail`} <IconArrowRight size={11} />
+                {liveBundeslaender().some((b) => b.slug === slugify(bl)) ? `Alle Städte in ${bl}` : `${bl}-Förderung im Detail`} <IconArrowRight size={11} />
               </Link>
             )}
             {byLand.get(bl)!.map((p) => <ProgramCard key={p.id} p={p} city={cityByFundingId.get(p.id)} />)}
