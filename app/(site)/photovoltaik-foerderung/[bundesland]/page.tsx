@@ -9,9 +9,27 @@ import { bundeslaenderWithCities, citiesInBundesland, cityPath, slugify } from "
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import { landProgramBundeslaender, fundingAmount, type FundingProgram } from "../../../../lib/funding-programs";
 import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
+import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
+import { getRegionSummary, type RegionSummary } from "../../../../lib/mastr-data";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
+
+const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
+
+// Capacity: kWp below 1 MWp, MWp (one decimal up to 10, else none), GWp above 1 GWp.
+function fmtCapacity(kwp: number): string {
+  if (kwp < 1000) return `${nf(kwp)} kWp`;
+  const mwp = kwp / 1000;
+  if (mwp < 1000) return `${mwp.toLocaleString("de-DE", { maximumFractionDigits: mwp < 10 ? 1 : 0 })} MWp`;
+  const gwp = mwp / 1000;
+  return `${gwp.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GWp`;
+}
+
+/** 2-digit Bundesland AGS for the MaStR stock query, matched by name. */
+function bundeslandAgs(name: string): string | undefined {
+  return BUNDESLAENDER.find((b) => b.name === name)?.ags;
+}
 
 // Bundesländer that get a page: those with cities AND those with a Land-level
 // program (e.g. Berlin has no cities here but a landesweites Programm).
@@ -50,6 +68,10 @@ const S = {
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
   intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" } as React.CSSProperties,
   card: { display: "block", background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "14px 16px", marginBottom: 10, textDecoration: "none", color: "inherit" } as React.CSSProperties,
+  metricsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, margin: "10px 0 14px" } as React.CSSProperties,
+  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 } as React.CSSProperties,
+  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 } as React.CSSProperties,
+  metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 } as React.CSSProperties,
 };
 
 function LandProgramBox({ p }: { p: FundingProgram }) {
@@ -91,6 +113,24 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
     (p) => p.level === "land" && p.bundesland != null && slugify(p.bundesland) === params.bundesland,
   );
 
+  // Aggregate solar stock for the whole Bundesland (MaStR), as a trust signal.
+  let solar: RegionSummary | null = null;
+  const blAgs = bundeslandAgs(name);
+  if (blAgs) {
+    try {
+      solar = await getRegionSummary(blAgs, "solar");
+    } catch {
+      solar = null;
+    }
+  }
+
+  // Active municipal programs that currently pay out a computable grant — named
+  // in the intro so the page leads with the concrete benefit.
+  const activeCityNames = cities
+    .map((c) => (c.fundingId ? byId.get(c.fundingId) : undefined))
+    .filter((p): p is FundingProgram => Boolean(p) && p!.status === "aktiv" && fundingAmount(p!, 10, 5, 20000).computable)
+    .map((p) => p.region);
+
   return (
     <div style={S.page}>
       <Header />
@@ -109,6 +149,20 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
             ? <>In {name} wird Photovoltaik über ein landesweites Programm gefördert. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>
             : <>In {name} wird Photovoltaik vor allem auf kommunaler Ebene gefördert. Die folgenden Städte haben ein eigenes Förderprogramm — wähle deine Stadt, um die Konditionen und eine Beispielrechnung zu sehen. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
         </p>
+        {(cities.length > 0 || solar) && (
+          <p style={S.intro}>
+            {cities.length > 0 && (
+              <>Wir haben {cities.length === 1 ? "eine Stadt" : `${cities.length} Städte`} in {name} im Blick
+              {activeCityNames.length > 0
+                ? <> — aktuell zahlt {activeCityNames.length === 1 ? <><span style={{ color: v("--color-text-primary"), fontWeight: 600 }}>{activeCityNames[0]}</span> einen kommunalen Zuschuss</> : <>in {activeCityNames.slice(0, 3).join(", ")} ein kommunaler Zuschuss</>}.</>
+                : <>. Eigene kommunale Zuschüsse sind hier derzeit selten — die Seiten zeigen den Anlagenbestand und ehrliche Beispielrechnungen.</>}
+              {" "}</>
+            )}
+            {solar && solar.total_count > 0 && (
+              <>In {name} sind bereits rund <span style={{ color: v("--color-text-primary"), fontWeight: 600 }}>{nf(solar.total_count)}</span> Solaranlagen mit zusammen {fmtCapacity(solar.total_kwp)} in Betrieb.</>
+            )}
+          </p>
+        )}
 
         {landPrograms.length > 0 && (
           <div style={{ marginBottom: 22 }}>
@@ -141,6 +195,23 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
           );
         })}
 
+        {solar && solar.total_count > 0 && (
+          <div style={{ marginTop: 26 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 2px" }}>Photovoltaik in {name} in Zahlen</h2>
+            <p style={{ fontSize: 12, color: v("--color-text-muted"), margin: "0 0 4px" }}>Anlagenbestand aus dem Marktstammdatenregister</p>
+            <div style={S.metricsGrid}>
+              <div style={S.metric}>
+                <div style={S.metricLabel}>Solaranlagen</div>
+                <div style={S.metricValue}>{nf(solar.total_count)}</div>
+              </div>
+              <div style={S.metric}>
+                <div style={S.metricLabel}>Installiert</div>
+                <div style={S.metricValue}>{fmtCapacity(solar.total_kwp)}</div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 14, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
           Alle Förderprogramme im Überblick <IconArrowRight size={11} />
         </Link>
@@ -148,6 +219,7 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
         <p style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 24 }}>
           Auswahl der wichtigsten Programme — Förderung ist dezentral und ändert sich laufend. Alle Angaben
           ohne Gewähr; verbindlich ist die jeweilige offizielle Quelle des Programms.
+          {solar && solar.total_count > 0 ? ` Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur), Stand ${solar.data_as_of}.` : ""}
         </p>
       </div>
     </div>
