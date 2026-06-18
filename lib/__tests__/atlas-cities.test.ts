@@ -25,7 +25,8 @@ describe("geo helpers", () => {
     }
     expect(citiesInBundesland("bayern").map((c) => c.slug)).toContain("muenchen");
     expect(citiesInBundesland("hessen").map((c) => c.slug)).toContain("wiesbaden");
-    expect(citiesInBundesland("sachsen").map((c) => c.slug)).toEqual(["leipzig"]);
+    // Sachsen has Leipzig and Dresden (more may follow) — assert membership, not an exact list.
+    expect(citiesInBundesland("sachsen").map((c) => c.slug)).toEqual(expect.arrayContaining(["leipzig", "dresden"]));
   });
 
   it("bundeslaenderWithCities is unique and covers every city's Bundesland", () => {

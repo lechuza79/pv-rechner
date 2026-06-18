@@ -5,7 +5,7 @@ import Link from "next/link";
 import { v } from "../../../../lib/theme";
 import { IconArrowRight } from "../../../../components/Icons";
 import { FundingStatusBadge, FundingRates, FundingConditions } from "../../../../components/FundingProgramParts";
-import type { FundingProgram } from "../../../../lib/funding-programs";
+import { fundingStandLabel, type FundingProgram } from "../../../../lib/funding-programs";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
@@ -42,7 +42,7 @@ function FundingProgramModal({ program, onClose }: { program: FundingProgram; on
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
           <a href={program.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 700 }}>Zur offiziellen Quelle ›</a>
-          <span style={{ color: v("--color-text-muted") }}>Stand: {program.stand}{program.verified ? "" : " · unbestätigt"}</span>
+          <span style={{ color: v("--color-text-muted") }}>{fundingStandLabel(program)}</span>
         </div>
       </div>
     </div>,

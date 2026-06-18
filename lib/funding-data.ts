@@ -16,9 +16,17 @@ export async function getFundingPrograms(): Promise<FundingProgram[]> {
   if (!supabase) return seed;
 
   try {
-    const { data, error } = await supabase.from("funding_programs").select("data");
+    // Pull the provenance columns alongside the program json so pages can show
+    // "Zuletzt geprüft" and the sitemap can emit a real <lastmod>. last_verified
+    // is set by the verification routine; updated_at is the resync fallback.
+    const { data, error } = await supabase
+      .from("funding_programs")
+      .select("data, last_verified, updated_at");
     if (error || !data || data.length === 0) return seed;
-    const programs = data.map((r) => r.data as FundingProgram);
+    const programs = data.map((r) => {
+      const lastVerified = (r.last_verified ?? r.updated_at) as string | null;
+      return { ...(r.data as FundingProgram), ...(lastVerified ? { lastVerified } : {}) };
+    });
     cache = { data: programs, ts: Date.now() };
     return programs;
   } catch {

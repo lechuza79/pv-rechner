@@ -1,39 +1,60 @@
 import { MetadataRoute } from "next";
 import { ATLAS_CITIES, slugify, bundeslaenderWithCities } from "../lib/atlas-cities";
 import { landProgramBundeslaender } from "../lib/funding-programs";
+import { getFundingPrograms } from "../lib/funding-data";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+// <lastmod> from real change dates, not build time: Google ignores a sitemap
+// whose lastmod is always "now". Funding pages carry the verification date of
+// their program(s); the live energy dashboard genuinely changes daily; the
+// remaining static pages omit lastmod (let the crawler decide) rather than lie.
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const cityPages: MetadataRoute.Sitemap = ATLAS_CITIES.map((c) => ({
-    url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
-    lastModified: now,
-    changeFrequency: "weekly",
-    priority: 0.7,
-  }));
+
+  const programs = await getFundingPrograms();
+  const byId = new Map(programs.map((p) => [p.id, p]));
+  const toDate = (iso?: string): Date | undefined => {
+    if (!iso) return undefined;
+    const d = new Date(iso);
+    return isNaN(d.getTime()) ? undefined : d;
+  };
+  const fundingDates = programs.map((p) => toDate(p.lastVerified)).filter((d): d is Date => !!d);
+  const maxFundingDate = fundingDates.length
+    ? new Date(Math.max(...fundingDates.map((d) => d.getTime())))
+    : now;
+
+  const cityPages: MetadataRoute.Sitemap = ATLAS_CITIES.map((c) => {
+    const f = c.fundingId ? byId.get(c.fundingId) : undefined;
+    return {
+      url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
+      lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    };
+  });
   const blSlugs = new Set([...bundeslaenderWithCities(), ...landProgramBundeslaender()].map((b) => b.slug));
   const bundeslandPages: MetadataRoute.Sitemap = Array.from(blSlugs).map((slug) => ({
     url: `${BASE_URL}/photovoltaik-foerderung/${slug}`,
-    lastModified: now,
+    lastModified: maxFundingDate,
     changeFrequency: "weekly",
     priority: 0.7,
   }));
 
   return [
-    { url: BASE_URL, lastModified: now, changeFrequency: "monthly", priority: 1 },
-    { url: `${BASE_URL}/photovoltaik-rechner`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/pv-bedarf-berechnen`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/waermepumpe-rechner`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/pv-simulation`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: BASE_URL, changeFrequency: "monthly", priority: 1 },
+    { url: `${BASE_URL}/photovoltaik-rechner`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/pv-bedarf-berechnen`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/waermepumpe-rechner`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE_URL}/pv-simulation`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/strommix-deutschland`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     ...bundeslandPages,
     ...cityPages,
-    { url: `${BASE_URL}/methodik`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${BASE_URL}/glossar`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${BASE_URL}/kontakt`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${BASE_URL}/impressum`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${BASE_URL}/datenschutz`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${BASE_URL}/methodik`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE_URL}/glossar`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE_URL}/kontakt`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${BASE_URL}/impressum`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${BASE_URL}/datenschutz`, changeFrequency: "yearly", priority: 0.3 },
   ];
 }

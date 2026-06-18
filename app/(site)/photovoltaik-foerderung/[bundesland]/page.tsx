@@ -7,7 +7,7 @@ import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { bundeslaenderWithCities, citiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
 import { getFundingPrograms } from "../../../../lib/funding-data";
-import { landProgramBundeslaender, fundingAmount, type FundingProgram } from "../../../../lib/funding-programs";
+import { landProgramBundeslaender, fundingAmount, fundingStandLabel, type FundingProgram } from "../../../../lib/funding-programs";
 import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import { getRegionSummary, type RegionSummary } from "../../../../lib/mastr-data";
@@ -96,7 +96,7 @@ function LandProgramBox({ p }: { p: FundingProgram }) {
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={11} /></span>
           </Link>
         )}
-        <span style={{ color: v("--color-text-muted") }}>Stand: {p.stand}{p.verified ? "" : " · unbestätigt"}</span>
+        <span style={{ color: v("--color-text-muted") }}>{fundingStandLabel(p)}</span>
       </div>
     </div>
   );

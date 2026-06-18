@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
-import { FUNDING_PROGRAMS } from "../../../../lib/funding-programs";
+import { FUNDING_PROGRAMS, landProgramBundeslaender } from "../../../../lib/funding-programs";
+import { ATLAS_CITIES, cityPath, bundeslaenderWithCities } from "../../../../lib/atlas-cities";
+import { pingIndexNow } from "../../../../lib/indexnow";
 
 // One-time setup: create the funding tables + RLS, then seed from the code
 // dataset if empty. Trigger with Authorization: Bearer $CRON_SECRET.
@@ -98,6 +100,21 @@ export async function GET(req: NextRequest) {
     results.push({ step: "seed", status: "skipped", note: `${count} rows exist (use ?resync=1 to upsert)` });
   }
 
+  // Success is decided by the DB steps only — IndexNow is best-effort and must
+  // never flip the setup to 500.
   const allOk = results.every((r) => r.status === "ok" || r.status === "skipped");
+
+  // Content changed → nudge IndexNow (Bing/Yandex) to re-crawl the funding URLs.
+  if (seeded > 0) {
+    const blSlugs = new Set([...bundeslaenderWithCities(), ...landProgramBundeslaender()].map((b) => b.slug));
+    const urls = [
+      "/photovoltaik-foerderung",
+      ...Array.from(blSlugs, (s) => `/photovoltaik-foerderung/${s}`),
+      ...ATLAS_CITIES.map((c) => cityPath(c)),
+    ];
+    const ping = await pingIndexNow(urls);
+    results.push({ step: "indexnow", status: ping.ok ? "ok" : "skipped", note: `${urls.length} URLs${ping.status ? ` · HTTP ${ping.status}` : " · nicht erreicht"}` });
+  }
+
   return NextResponse.json({ success: allOk, seeded, results }, { status: allOk ? 200 : 500 });
 }

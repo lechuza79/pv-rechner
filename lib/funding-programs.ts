@@ -57,6 +57,28 @@ export interface FundingProgram {
   speicherTiers?: { upTo: number; amount: number }[];
   /** Minimum storage kWh below which no storage funding is paid. */
   speicherMin?: number;
+  // ── Provenance (DB-only; undefined in the code seed) ─────────────────────────
+  /** ISO date the program was last verified (Wächter) or last written (resync
+   *  fallback = updated_at). Surfaced as "Zuletzt geprüft" and as sitemap lastmod.
+   *  Set by lib/funding-data.ts from the funding_programs row, not by the seed. */
+  lastVerified?: string;
+}
+
+/**
+ * Display label for a program's provenance. Prefers the DB verification date
+ * ("Zuletzt geprüft: 18.06.2026") and falls back to the editorial `stand`
+ * ("Stand: Juni 2026") for code-seed entries. Appends "· unbestätigt" when the
+ * program is not confirmed against the official source.
+ */
+export function fundingStandLabel(p: FundingProgram): string {
+  const unbestaetigt = p.verified ? "" : " · unbestätigt";
+  if (p.lastVerified) {
+    const d = new Date(p.lastVerified);
+    if (!isNaN(d.getTime())) {
+      return `Zuletzt geprüft: ${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}${unbestaetigt}`;
+    }
+  }
+  return `Stand: ${p.stand}${unbestaetigt}`;
 }
 
 // Bund applies everywhere and combines with every regional program.

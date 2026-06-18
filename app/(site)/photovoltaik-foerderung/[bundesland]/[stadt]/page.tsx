@@ -6,7 +6,7 @@ import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons
 import { v } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { ATLAS_CITIES, cityBySlug, slugify, type AtlasCity } from "../../../../../lib/atlas-cities";
-import { fundingAmount, type FundingProgram } from "../../../../../lib/funding-programs";
+import { fundingAmount, fundingStandLabel, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
 import { FundingRates, FundingConditions } from "../../../../../components/FundingProgramParts";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
@@ -233,7 +233,7 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
                 </div>
               )}
               <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 12 }}>
-                Stand: {f.stand}{f.capped ? " · Topf gedeckelt, vor Antrag prüfen" : ""} ·{" "}
+                {fundingStandLabel(f)}{f.capped ? " · Topf gedeckelt, vor Antrag prüfen" : ""} ·{" "}
                 <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>Zum Programm</a>
               </div>
             </div>

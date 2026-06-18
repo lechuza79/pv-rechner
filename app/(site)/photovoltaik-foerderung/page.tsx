@@ -5,7 +5,7 @@ import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { ATLAS_CITIES, cityPath, slugify, bundeslaenderWithCities, type AtlasCity } from "../../../lib/atlas-cities";
-import { fundingAmount, landProgramBundeslaender, type FundingProgram } from "../../../lib/funding-programs";
+import { fundingAmount, fundingStandLabel, landProgramBundeslaender, type FundingProgram } from "../../../lib/funding-programs";
 import { getFundingPrograms } from "../../../lib/funding-data";
 import { FundingStatusBadge, FundingRates } from "../../../components/FundingProgramParts";
 
@@ -82,7 +82,7 @@ function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={11} /></span>
           </Link>
         )}
-        <span style={{ color: v("--color-text-muted") }}>Stand: {p.stand}{p.verified ? "" : " · unbestätigt"}</span>
+        <span style={{ color: v("--color-text-muted") }}>{fundingStandLabel(p)}</span>
       </div>
     </div>
   );
