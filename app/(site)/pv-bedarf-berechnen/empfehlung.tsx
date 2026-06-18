@@ -4,6 +4,7 @@ import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/n
 import Link from "next/link";
 import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER } from "../../../lib/constants";
 import { recommend } from "../../../lib/recommend";
+import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
 import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
@@ -85,6 +86,35 @@ export default function Empfehlung() {
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzSource, setPlzSource] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+
+  // Förderung am Standort: PLZ → zutreffende Programme (serverseitig aus der DB).
+  // Eindeutige PLZ → Programme direkt; mehrdeutige PLZ überlassen wir der
+  // Ergebnisseite (dort fragt der Rechner „Stadt X oder Y?").
+  const [fundingPrograms, setFundingPrograms] = useState<FundingProgram[]>([]);
+  const [fundingOrt, setFundingOrt] = useState<string | null>(null);
+  const fetchFunding = useCallback(async (inputPlz: string) => {
+    if (!/^\d{5}$/.test(inputPlz)) return;
+    try {
+      const res = await fetch(`/api/funding?plz=${inputPlz}`);
+      const data = await res.json();
+      const candidates: { ort: string; ags: string; programs: FundingProgram[] }[] = Array.isArray(data.candidates) ? data.candidates : [];
+      if (candidates.length === 1) {
+        setFundingPrograms(candidates[0].programs);
+        setFundingOrt(candidates[0].ort);
+      } else {
+        setFundingPrograms([]);
+        setFundingOrt(null);
+      }
+    } catch {
+      setFundingPrograms([]);
+      setFundingOrt(null);
+    }
+  }, []);
+  // Förderung auflösen, sobald wir auf der Empfehlungsseite sind und eine PLZ haben.
+  useEffect(() => {
+    if (isRecommendation && plz) fetchFunding(plz);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRecommendation, plz]);
 
   // Local input buffer for the PLZ field. The URL only ever holds a complete,
   // valid 5-digit PLZ (parsePlzParam filters partials to ""), so a directly
@@ -176,6 +206,16 @@ export default function Empfehlung() {
     customRoofM2: customRoofM2 ?? undefined,
   }, prices, feedIn) : null;
 
+  // Förderung für die empfohlene Anlage (gleiche Mathe wie Stadt-Seite + Rechner).
+  // Nur aktive, pauschal berechenbare Programme tragen bei. Das zuletzt (am
+  // spezifischsten) angewandte Programm wird im Ergebnis vorab scharf geschaltet.
+  const fundingStack = rec
+    ? stackFunding(fundingPrograms, rec.kwp, rec.speicherKwh, rec.reasoning.investition)
+    : { total: 0, applied: [] };
+  const armedFoeId = fundingStack.applied.length > 0
+    ? fundingStack.applied[fundingStack.applied.length - 1].program.id
+    : null;
+
   const goToResult = (kwp: number, speicherIdx: number) => {
     const anlageIdx = kwp <= 5 ? 0 : kwp <= 8 ? 1 : kwp <= 10 ? 2 : kwp <= 15 ? 3 : 4;
     const p = new URLSearchParams();
@@ -192,6 +232,9 @@ export default function Empfehlung() {
     p.set("da", String(dachart));
     if (plz) p.set("plz", plz);
     if (ertragKwp) p.set("er", String(ertragKwp));
+    // Lokale Förderung scharf ans Ergebnis durchreichen, damit die Amortisation
+    // sie einrechnet (wie bei einem Link von einer Förder-Stadtseite).
+    if (armedFoeId) p.set("foe", armedFoeId);
     router.push(`/photovoltaik-rechner?${p.toString()}`);
   };
 
@@ -520,6 +563,28 @@ export default function Empfehlung() {
                 )}
               </div>
             </details>
+
+            {/* Förderung am Standort */}
+            {fundingStack.total > 0 && (
+              <div style={{
+                background: v('--color-bg-muted'), border: `1px solid ${v('--color-positive')}`,
+                borderRadius: v('--radius-md'), padding: "12px 14px", marginBottom: 12,
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 4 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary') }}>
+                    Förderung{fundingOrt ? ` in ${fundingOrt}` : ""}
+                  </span>
+                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, fontSize: 15, color: v('--color-positive') }}>
+                    + {Math.round(fundingStack.total).toLocaleString("de-DE")} €
+                  </span>
+                </div>
+                <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5 }}>
+                  {fundingStack.applied.map((a) => a.program.name).join(", ")} senkt deine Investition für diese
+                  Anlage um rund {Math.round(fundingStack.total).toLocaleString("de-DE")} €. Im Ergebnis ist die
+                  Förderung bereits eingerechnet.
+                </div>
+              </div>
+            )}
 
             {/* CTA */}
             <button onClick={() => goToResult(rec.kwp, rec.speicherIdx)} style={{
