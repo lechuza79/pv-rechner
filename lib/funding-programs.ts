@@ -295,7 +295,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.proklima-hannover.de/wohngebaeude/foerderangebote/solarstrom/dachvolltoll/", stand: "Juni 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp bei voller Dachbelegung (Baustein \u201eDachVollToll\u201c)",
+    coveredCosts: "Zuschuss je kWp bei voller Dachbelegung (Baustein DachVollToll)",
     rates: [
       { label: "Dach-PV (Vollbelegung)", value: "100 €/kWp, max. 2.000 €" },
       { label: "Bonus Energiemanagement", value: "500 € (mit Speicher + Smart Meter + dynamischem Tarif)" },
