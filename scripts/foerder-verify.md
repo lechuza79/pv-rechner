@@ -106,6 +106,34 @@ zusätzlich sinnvoll Anfang Januar (neue Jahres-Budgets). Prompt-Kern:
 > Programm), melde die Abweichungs-Liste. Bei klaren Befunden Korrekturen
 > vorschlagen, nicht automatisch in die Live-Daten schreiben.
 
+## Status-Verlässlichkeit (aktiv/inaktiv) — BLOCKER
+
+Leitprinzip (User, Juni 2026): **„Am besten immer alles zeigen — aber aktiv/inaktiv
+muss zuverlässig sein."** Wir verstecken keine Region wegen fehlender/abgelaufener
+Förderung (die Seite trägt sich über MaStR-Bestand + ehrlichen Status). Der
+`status` ist aber sicherheitskritisch: nur `status: "aktiv"` wird im Rechner
+abgezogen und löst den „Mit Förderung rechnen"-CTA aus. Ein falsches „aktiv"
+führt zu falscher Amortisation und vergeblichen Anträgen.
+
+Regeln, die jeder Voll-Lauf erzwingt:
+1. **Jedes** Programm (Level ≠ bund) bekommt sein `status`-Feld erneut gegen die
+   offizielle Quelle bestätigt — nicht nur die Verdachtsfälle.
+2. Nach Bestätigung/Korrektur die Beleg-Spalte **`last_verified` auf das heutige
+   Datum** setzen (DB; über `/api/funding/setup?resync=1` landet `updated_at` als
+   Fallback, der Wächter schreibt `last_verified` gezielt). Dieses Datum wird auf
+   den Seiten als „Zuletzt geprüft: …" angezeigt — es ist das Vertrauenssignal und
+   muss echt sein.
+3. **Konservativ im Zweifel:** Quelle nicht erreichbar / widersprüchlich / Topf-Stand
+   unklar → NICHT „aktiv", sondern `unsicher` (kein Abzug). Lieber eine echte
+   Förderung als „unsicher" zeigen als eine tote als „aktiv".
+4. Jahreswechsel ist der kritischste Drift-Punkt (Töpfe öffnen am 1.1., laufen
+   mitten im Jahr leer) → Anfang Januar zusätzlich voll prüfen; der wöchentliche
+   News-Wächter fängt „leer/neu" dazwischen ab.
+
+Je mehr Regionen im Katalog (aktuell ~110 Städte + 4 Kreise), desto wichtiger,
+dass der Voll-Lauf wirklich jedes Programm abdeckt — die Reichweite skaliert nur,
+wenn der Status verlässlich bleibt.
+
 ## Changelog
 
 ### Juni 2026 (erster Lauf, 13 Programme)
