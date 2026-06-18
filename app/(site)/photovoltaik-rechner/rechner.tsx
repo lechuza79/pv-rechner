@@ -46,6 +46,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Editable overrides (null = use auto-calculated)
   const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 500 && n <= 200000 ? n : null; })() : null);
   const [oEv, setOEv] = useState<number | null>(hasShare && initialParams?.ev ? (() => { const n = Number(initialParams.ev); return isFinite(n) && n >= 5 && n <= 95 ? n : null; })() : null);
+  // Direkt eingegebener Haushaltsverbrauch (kWh/a, ohne WP/E-Auto). null = aus Personen geschätzt.
+  const [oVerbrauch, setOVerbrauch] = useState<number | null>(hasShare && initialParams?.vb ? (() => { const n = Number(initialParams.vb); return isFinite(n) && n >= 500 && n <= 30000 ? n : null; })() : null);
+  // Eingabemodus für Step 2: Personenzahl schätzen vs. Jahresverbrauch direkt kennen.
+  const [verbrauchMode, setVerbrauchMode] = useState(oVerbrauch !== null);
   const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", 0.34, 0.05, 1.0) : 0.34);
   const [oStromSynced, setOStromSynced] = useState(hasShare); // synced when share-URL — no auto-update
   const [oEinsp, setOEinsp] = useState<number | null>(hasShare && initialParams?.ei ? (() => { const n = Number(initialParams.ei); return isFinite(n) && n >= 0 && n <= 20 ? n : null; })() : null);
@@ -219,7 +223,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   );
   const foerderung = fundingEnabled ? fundingStack.total : 0;
   const kosten = Math.max(0, bruttoKosten - foerderung);
-  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, kwp, ertragKwp: oErtrag });
+  // Grundverbrauch: direkt eingegeben oder aus Personenzahl geschätzt.
+  const grundverbrauch = oVerbrauch ?? PERSONEN[personen].verbrauch;
+  const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm);
+  const gesamtVerbrauch = grundverbrauch + extraVerbrauch;
+  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, kwp, ertragKwp: oErtrag, baseKwh: oVerbrauch });
   const effEv = oEv !== null ? oEv : autoEv;
   // Volleinspeisung is incompatible with WP/E-Auto (they require self-consumption)
   const vollDisabled = wp !== "nein" || ea !== "nein";
@@ -268,7 +276,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
   const next = () => step < STEPS.length && setStep(step + 1);
   const back = () => step > 0 && setStep(step - 1);
-  const restart = () => { setStep(0); setOKosten(null); setOEv(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
+  const restart = () => { setStep(0); setOKosten(null); setOEv(null); setOVerbrauch(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
 
   const buildShareUrl = () => {
     const p = new URLSearchParams();
@@ -282,6 +290,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (anlage === 4) p.set("ck", String(customKwp));
     if (oKosten !== null) p.set("k", String(oKosten));
     if (oEv !== null) p.set("ev", String(oEv));
+    if (oVerbrauch !== null) p.set("vb", String(oVerbrauch));
     p.set("st", String(oStrom));
     if (oEinsp !== null) p.set("ei", String(oEinsp));
     p.set("eia", effEinspeisungModus === "voll" ? "2" : effEinspeisungModus === "aus" ? "0" : "1");
@@ -364,12 +373,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     const da = DACHARTEN[daIdx];
     const nutzbar = Math.round(ht.footprint * da.factor);
     const maxKwp = Math.round(nutzbar * 0.2 * 10) / 10;
-    const grundverbrauch = PERSONEN[personen].verbrauch;
-    const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm);
-    const gesamtVerbrauch = grundverbrauch + extraVerbrauch;
     const dachAuslastung = Math.round((kwp / maxKwp) * 100);
     return { ht, da, nutzbar, maxKwp, grundverbrauch, extraVerbrauch, gesamtVerbrauch, dachAuslastung };
   })() : null;
+  // grundverbrauch/extraVerbrauch/gesamtVerbrauch oben aufgelöst (respektiert oVerbrauch).
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
@@ -380,11 +387,26 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
-        {/* Title */}
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
-          <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Ehrlich berechnet. Ohne Leadfunnel.</p>
-        </div>
+        {/* Title — aus der Empfehlung kommend als Fortsetzung framen, nicht als neuer Rechner */}
+        {flowType === "empfehlung" ? (
+          <div style={{ marginBottom: 24 }}>
+            <button
+              onClick={() => { if (typeof window !== "undefined") window.history.back(); }}
+              style={{ background: "none", border: "none", color: v('--color-accent'), cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: v('--font-text'), padding: 0, marginBottom: 10, display: "inline-flex", alignItems: "center", gap: 4 }}
+            >
+              <span style={{ transform: "rotate(180deg)", display: "inline-flex" }}><IconArrowRight size={13} /></span> Zurück zur Empfehlung
+            </button>
+            <div style={{ textAlign: "center" }}>
+              <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Deine Empfehlung im Detail</h1>
+              <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>So rechnet sich die empfohlene Anlage — alle Annahmen anpassbar.</p>
+            </div>
+          </div>
+        ) : (
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
+            <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Ehrlich berechnet. Ohne Leadfunnel.</p>
+          </div>
+        )}
 
         {/* Inline Login — only during question steps, sticky bar handles result page */}
         {showLogin && authState.status === "anon" && !isResult && (
@@ -477,17 +499,58 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {step === 2 && (
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
-                  {PERSONEN.map((p, i) => (
-                    <button key={i} onClick={() => { setPersonen(i); setOEv(null); }} style={{
-                      padding: "10px 4px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, cursor: "pointer", textAlign: "center",
-                      background: personen === i ? v('--color-accent-dim') : v('--color-bg-muted'),
-                      border: personen === i ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
-                      color: personen === i ? v('--color-accent') : v('--color-text-secondary'),
-                    }}>{p.label}</button>
+                {/* Umschalter: Personen schätzen vs. Jahresverbrauch direkt eingeben */}
+                <div style={{ display: "flex", gap: 4, marginBottom: 16, background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
+                  {[
+                    { mode: false, label: "Nach Personen" },
+                    { mode: true, label: "Verbrauch kenne ich" },
+                  ].map(opt => (
+                    <button key={String(opt.mode)} onClick={() => {
+                      if (opt.mode === verbrauchMode) return;
+                      setVerbrauchMode(opt.mode);
+                      // Beim Wechsel in den Direktmodus den geschätzten Wert als Startwert übernehmen.
+                      setOVerbrauch(opt.mode ? PERSONEN[personen].verbrauch : null);
+                      setOEv(null);
+                    }} style={{
+                      flex: 1, padding: "8px 4px", borderRadius: v('--radius-sm'), fontSize: 13, fontWeight: 600, cursor: "pointer",
+                      background: verbrauchMode === opt.mode ? v('--color-accent') : "transparent",
+                      border: "none",
+                      color: verbrauchMode === opt.mode ? v('--color-text-on-accent') : v('--color-text-muted'),
+                      transition: "all 0.15s",
+                    }}>{opt.label}</button>
                   ))}
                 </div>
+
+                {!verbrauchMode ? (
+                  <>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Personen im Haushalt</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
+                      {PERSONEN.map((p, i) => (
+                        <button key={i} onClick={() => { setPersonen(i); setOEv(null); }} style={{
+                          padding: "10px 4px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, cursor: "pointer", textAlign: "center",
+                          background: personen === i ? v('--color-accent-dim') : v('--color-bg-muted'),
+                          border: personen === i ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+                          color: personen === i ? v('--color-accent') : v('--color-text-secondary'),
+                        }}>{p.label}</button>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Jahresverbrauch Haushalt</div>
+                    <div style={{
+                      display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
+                      background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "14px 16px",
+                      border: `1.5px solid ${v('--color-accent')}`,
+                    }}>
+                      <span style={{ fontSize: 13, color: v('--color-text-secondary') }}>Dein Stromverbrauch pro Jahr</span>
+                      <InlineEdit value={oVerbrauch ?? PERSONEN[personen].verbrauch} onCommit={val => { setOVerbrauch(Math.round(val)); setOEv(null); }} unit=" kWh" step={100} min={500} max={30000} width={72} />
+                    </div>
+                    <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>
+                      Der Wert von deiner Stromrechnung — ohne Wärmepumpe und E-Auto. Die rechnen wir im nächsten Schritt separat dazu.
+                    </div>
+                  </div>
+                )}
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Nutzungsprofil</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                   {NUTZUNG.map((n, i) => (
@@ -590,6 +653,37 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               plz={plz} setPlz={setPlz} plzLoading={plzLoading} plzSource={plzSource} fetchPvgis={fetchPvgis}
             />
 
+            {/* Stromverbrauch — editierbar, mit Aufschlüsselung wenn WP/E-Auto aktiv */}
+            <div style={{
+              background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16,
+              border: `1px solid ${v('--color-border')}`,
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-secondary') }}>Stromverbrauch Haushalt</span>
+                <InlineEdit value={grundverbrauch} onCommit={val => { setOVerbrauch(Math.round(val)); setOEv(null); }} unit=" kWh" step={100} min={500} max={30000} width={72} />
+              </div>
+              {extraVerbrauch > 0 && (
+                <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px dashed ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.8 }}>
+                  {wp !== "nein" && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span>+ Wärmepumpe</span>
+                      <span style={{ fontFamily: v('--font-mono') }}>{calcExtraConsumption(wp, "nein", eaKm).toLocaleString("de-DE")} kWh</span>
+                    </div>
+                  )}
+                  {ea !== "nein" && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span>+ E-Auto</span>
+                      <span style={{ fontFamily: v('--font-mono') }}>{calcExtraConsumption("nein", ea, eaKm).toLocaleString("de-DE")} kWh</span>
+                    </div>
+                  )}
+                  <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, color: v('--color-text-primary'), marginTop: 2 }}>
+                    <span>Gesamt</span>
+                    <span style={{ fontFamily: v('--font-mono') }}>{gesamtVerbrauch.toLocaleString("de-DE")} kWh</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <ResultFunding
               loading={fundingLoading}
               candidates={fundingCandidates}
@@ -605,7 +699,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {/* Empfehlungs-Kontext: Warum diese Anlage? */}
             {empfehlungKontext && (
-              <details style={{
+              <details open style={{
                 background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16,
                 border: `1px solid ${v('--color-border')}`,
               }}>
@@ -660,7 +754,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             
             <ResultStats
               total={real.data.total} kosten={kosten}
-              wp={wp} ea={ea} eaKm={eaKm} effEv={effEv} jahresertrag={jahresertrag} personen={personen}
+              wp={wp} ea={ea} eaKm={eaKm} effEv={effEv} jahresertrag={jahresertrag} baseKwh={grundverbrauch}
               oStrom={oStrom} fuelType={fuelType} setFuelType={setFuelType}
             />
 

@@ -138,6 +138,19 @@ describe("calcEigenverbrauch", () => {
     expect(withWp).toBeGreaterThan(baseCase);
   });
 
+  it("uses baseKwh override instead of the persons-based estimate", () => {
+    // personenIdx 2 → 3800 kWh. A direct 8000 kWh base means more demand on the
+    // home side → physical max rises, so EV must be at least as high.
+    const fromPersons = calcEigenverbrauch({ ...standard, kwp: 12 });
+    const fromDirect = calcEigenverbrauch({ ...standard, kwp: 12, baseKwh: 8000 });
+    expect(fromDirect).toBeGreaterThan(fromPersons);
+  });
+
+  it("ignores baseKwh when null (falls back to persons)", () => {
+    const withNull = calcEigenverbrauch({ ...standard, baseKwh: null });
+    expect(withNull).toBe(calcEigenverbrauch(standard));
+  });
+
   it("clamps to 10–90 % regardless of inputs", () => {
     // Massive system, tiny consumption → EV would be ~5%, clamped up
     const tinyConsumption = calcEigenverbrauch({ ...standard, kwp: 50, personenIdx: 0, nutzungIdx: 0, speicherKwh: 0 });

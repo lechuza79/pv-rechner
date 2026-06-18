@@ -155,9 +155,11 @@ export function selectByMarginalReturn<T extends { investition: number; npv25: n
 // Für WP-Haushalte korrigieren wir den Speicher-Boost saisonal nach unten, weil
 // ~80 % des WP-Verbrauchs Okt–Apr anfällt — genau wenn der Speicher mangels Sonne
 // kaum gefüllt werden kann (PV-Ertrag in diesen Monaten: ~30 % des Jahres).
-export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm, kwp, ertragKwp }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; eaKm: number; kwp: number; ertragKwp: number }): number {
+export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm, kwp, ertragKwp, baseKwh }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; eaKm: number; kwp: number; ertragKwp: number; baseKwh?: number | null }): number {
   const jahresertrag = kwp * ertragKwp;
-  const grundverbrauch = PERSONEN[personenIdx].verbrauch;
+  // baseKwh = direkt eingegebener Haushaltsverbrauch (ohne WP/E-Auto). Fällt
+  // auf die personenbasierte Schätzung zurück, wenn nicht gesetzt.
+  const grundverbrauch = baseKwh ?? PERSONEN[personenIdx].verbrauch;
   const tagQuote = NUTZUNG[nutzungIdx].tagQuote;
   const extra = calcExtraConsumption(wp, ea, eaKm);
   const gesamt = grundverbrauch + extra;

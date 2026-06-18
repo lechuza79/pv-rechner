@@ -1,6 +1,6 @@
 "use client";
 import { v } from "../../../../lib/theme";
-import { YEARS, FUEL, PERSONEN } from "../../../../lib/constants";
+import { YEARS, FUEL } from "../../../../lib/constants";
 import { calcFuelCost25, calcWpGridCost25 } from "../../../../lib/calc";
 
 interface ResultStatsProps {
@@ -11,14 +11,14 @@ interface ResultStatsProps {
   eaKm: number;
   effEv: number;
   jahresertrag: number;
-  personen: number;
+  baseKwh: number;
   oStrom: number;
   fuelType: "gas" | "oil";
   setFuelType: (v: "gas" | "oil") => void;
 }
 
 export default function ResultStats({
-  total, kosten, wp, ea, eaKm, effEv, jahresertrag, personen, oStrom, fuelType, setFuelType,
+  total, kosten, wp, ea, eaKm, effEv, jahresertrag, baseKwh, oStrom, fuelType, setFuelType,
 }: ResultStatsProps) {
   return (
     <>
@@ -38,7 +38,7 @@ export default function ResultStats({
       </div>
 
       {wp !== "nein" && (() => {
-        const autarky = Math.min(effEv / 100 * jahresertrag / (PERSONEN[personen].verbrauch + 3500 + (ea !== "nein" ? Math.round(eaKm * 0.18) : 0)), 1);
+        const autarky = Math.min(effEv / 100 * jahresertrag / (baseKwh + 3500 + (ea !== "nein" ? Math.round(eaKm * 0.18) : 0)), 1);
         const fuelCost = calcFuelCost25(3500, fuelType);
         const wpGridCost = calcWpGridCost25(3500, autarky, oStrom, 0.03);
         const netSaving = fuelCost - wpGridCost;
