@@ -129,6 +129,10 @@ const nextConfig = {
       { source: "/photovoltaik-foerderung/worms", destination: "/photovoltaik-foerderung/rheinland-pfalz/worms", permanent: true },
       { source: "/photovoltaik-foerderung/wuppertal", destination: "/photovoltaik-foerderung/nordrhein-westfalen/wuppertal", permanent: true },
       { source: "/photovoltaik-foerderung/zweibruecken", destination: "/photovoltaik-foerderung/rheinland-pfalz/zweibruecken", permanent: true },
+      { source: "/photovoltaik-foerderung/rhein-erft-kreis", destination: "/photovoltaik-foerderung/nordrhein-westfalen/rhein-erft-kreis", permanent: true },
+      { source: "/photovoltaik-foerderung/kreis-viersen", destination: "/photovoltaik-foerderung/nordrhein-westfalen/kreis-viersen", permanent: true },
+      { source: "/photovoltaik-foerderung/kreis-bergstrasse", destination: "/photovoltaik-foerderung/hessen/kreis-bergstrasse", permanent: true },
+      { source: "/photovoltaik-foerderung/mayen-koblenz", destination: "/photovoltaik-foerderung/rheinland-pfalz/mayen-koblenz", permanent: true },
       // Hamburg/Bremen: Stadtstaaten — flacher Slug = Bundesland-Slug, daher KEIN
       // Redirect (würde die Bundesland-Seite abfangen). Stadt-Seite liegt unter
       // /hamburg/hamburg bzw. /bremen/bremen, erreichbar über die Bundesland-Seite.

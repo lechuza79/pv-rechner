@@ -187,6 +187,11 @@ export const ATLAS_CITIES: AtlasCity[] = [
   { slug: "worms", name: "Worms", ags: "07319", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1030 },
   { slug: "wuppertal", name: "Wuppertal", ags: "05124", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970 },
   { slug: "zweibruecken", name: "Zweibrücken", ags: "07320", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1020 },
+  // ── Landkreise mit eigenem (wiederkehrendem) Förderprogramm (Juni 2026) ──────
+  { slug: "rhein-erft-kreis", name: "Rhein-Erft-Kreis", ags: "05362", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "rhein-erft-energieoffensive" },
+  { slug: "kreis-viersen", name: "Kreis Viersen", ags: "05166", bundesland: "Nordrhein-Westfalen", yieldKwhKwp: 970, fundingId: "viersen-klimaschutz" },
+  { slug: "kreis-bergstrasse", name: "Kreis Bergstraße", ags: "06431", bundesland: "Hessen", yieldKwhKwp: 1030, fundingId: "bergstrasse-speicher" },
+  { slug: "mayen-koblenz", name: "Landkreis Mayen-Koblenz", ags: "07137", bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1010, fundingId: "mayen-koblenz-speicher" },
 ];
 
 export function cityBySlug(slug: string): AtlasCity | undefined {

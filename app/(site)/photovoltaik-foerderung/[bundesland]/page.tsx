@@ -147,12 +147,12 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
             ? <>In {name} gibt es eine landesweite Förderung; zusätzlich fördern einzelne Städte auf kommunaler Ebene. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>
             : landPrograms.length > 0
             ? <>In {name} wird Photovoltaik über ein landesweites Programm gefördert. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>
-            : <>In {name} wird Photovoltaik vor allem auf kommunaler Ebene gefördert. Die folgenden Städte haben ein eigenes Förderprogramm — wähle deine Stadt, um die Konditionen und eine Beispielrechnung zu sehen. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
+            : <>In {name} wird Photovoltaik vor allem auf kommunaler Ebene gefördert. Die folgenden Städte und Kreise haben ein eigenes Förderprogramm — wähle deinen Ort, um die Konditionen und eine Beispielrechnung zu sehen. Bundesweit gilt zusätzlich die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
         </p>
         {(cities.length > 0 || solar) && (
           <p style={S.intro}>
             {cities.length > 0 && (
-              <>Wir haben {cities.length === 1 ? "eine Stadt" : `${cities.length} Städte`} in {name} im Blick
+              <>Wir haben {cities.length === 1 ? "einen Ort" : `${cities.length} Orte`} in {name} im Blick
               {activeCityNames.length > 0
                 ? <> — aktuell zahlt {activeCityNames.length === 1 ? <><span style={{ color: v("--color-text-primary"), fontWeight: 600 }}>{activeCityNames[0]}</span> einen kommunalen Zuschuss</> : <>in {activeCityNames.slice(0, 3).join(", ")} ein kommunaler Zuschuss</>}.</>
                 : <>. Eigene kommunale Zuschüsse sind hier derzeit selten — die Seiten zeigen den Anlagenbestand und ehrliche Beispielrechnungen.</>}
@@ -172,7 +172,7 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
         )}
 
         {landPrograms.length > 0 && cities.length > 0 && (
-          <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 10px" }}>Förderung nach Stadt</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 10px" }}>Förderung nach Ort</h2>
         )}
 
         {cities.map((c) => {

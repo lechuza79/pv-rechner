@@ -708,6 +708,74 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     pvPerKwp: 100, pvCap: 1000, speicherPerKwh: 200, speicherCap: 2000,
   },
+
+  // ── Landkreise (eigenes, wiederkehrendes Programm; aktuell ausgeschöpft) ──────
+  "rhein-erft-energieoffensive": {
+    id: "rhein-erft-energieoffensive", name: "Energieoffensive Rhein-Erft-Kreis",
+    traeger: "Rhein-Erft-Kreis", level: "landkreis", region: "Rhein-Erft-Kreis", bundesland: "Nordrhein-Westfalen", agsCode: "05362",
+    url: "https://www.rhein-erft-kreis.de/infrastruktur/energieoffensive.php",
+    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale für PV + Speicher (Jahresprogramm)",
+    maxFoerderung: "max. 1.500 € je Haushalt",
+    rates: [
+      { label: "PV-Anlage (ab 5 kWp)", value: "1.000 €" },
+      { label: "Batteriespeicher", value: "500 €" },
+    ],
+    conditions: [
+      "Jahresprogramm — Budget 2026 (1 Mio. €) seit 18.03.2026 erschöpft (Förderampel rot)",
+      "Antrag vor Maßnahmenbeginn; Neuauflage üblicherweise zum Jahresbeginn",
+    ],
+    combinableWith: BUND,
+  },
+  "viersen-klimaschutz": {
+    id: "viersen-klimaschutz", name: "Förderprogramm Klimaschutz Kreis Viersen",
+    traeger: "Kreis Viersen", level: "landkreis", region: "Kreis Viersen", bundesland: "Nordrhein-Westfalen", agsCode: "05166",
+    url: "https://www.kreis-viersen.de/themen/klima/klimaschutz/foerderprogramm-klimaschutz",
+    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp Dach-PV ODER je kWh Speicher (nicht kombinierbar)",
+    maxFoerderung: "max. 1.000 € je Position",
+    rates: [
+      { label: "Dach-PV", value: "200 €/kWp, max. 1.000 €" },
+      { label: "Batteriespeicher", value: "200 €/kWh, max. 1.000 €" },
+    ],
+    conditions: [
+      "Programm zum 13.04.2026 beendet (Budget erschöpft); Neuauflage offen",
+      "PV und Speicher nicht kombinierbar — nur eine Position je Antrag",
+    ],
+    combinableWith: BUND,
+  },
+  "bergstrasse-speicher": {
+    id: "bergstrasse-speicher", name: "PV-Stromspeicher-Förderprogramm",
+    traeger: "Kreis Bergstraße", level: "landkreis", region: "Kreis Bergstraße", bundesland: "Hessen", agsCode: "06431",
+    url: "https://www.kreis-bergstrasse.de/themen-projekte/nachhaltigkeit/foerderprogramme/2024-pv-stromspeicher/",
+    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWh Batteriespeicher (PV ab 2 kWp Voraussetzung)",
+    maxFoerderung: "max. 3.000 € (max. 50 % der Kosten)",
+    rates: [{ label: "Batteriespeicher (ab 3 kWh)", value: "180 €/kWh, max. 3.000 €" }],
+    conditions: [
+      "2024er-Topf erschöpft; Neuauflage 2026 frühestens ab Mitte Juli in Entscheidung",
+      "PV-Anlage ab 2 kWp Voraussetzung; max. 50 % der Kosten",
+    ],
+    combinableWith: BUND,
+    speicherPerKwh: 180, speicherCap: 3000, speicherMin: 3,
+  },
+  "mayen-koblenz-speicher": {
+    id: "mayen-koblenz-speicher", name: "Solarspeicher-Förderprogramm",
+    traeger: "Landkreis Mayen-Koblenz", level: "landkreis", region: "Landkreis Mayen-Koblenz", bundesland: "Rheinland-Pfalz", agsCode: "07137",
+    url: "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/solarspeicher-foerderprogramm/",
+    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWh Batteriespeicher (mit PV)",
+    rates: [{ label: "Batteriespeicher", value: "200 €/kWh" }],
+    conditions: [
+      "Bisherige Runde ausgeschöpft, Antragstellung derzeit nicht möglich",
+      "Neuauflage angekündigt — vor Antrag beim Kreis prüfen",
+    ],
+    combinableWith: BUND,
+  },
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {
