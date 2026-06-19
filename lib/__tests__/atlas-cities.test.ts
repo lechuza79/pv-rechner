@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland, liveCities, isCityLive } from "../atlas-cities";
+import { ATLAS_CITIES, slugify, cityPath, bundeslaenderWithCities, citiesInBundesland, liveCities, isCityLive, isCityArchived, archivedCities, isCityPublished, publishedCities, publishedCitiesInBundesland, publishedBundeslaender } from "../atlas-cities";
 import { landProgramBundeslaender, getFundingProgram } from "../funding-programs";
 import nextConfig from "../../next.config.js";
 
@@ -22,6 +22,58 @@ describe("live cities (only active programs)", () => {
   it("isCityLive is false for cities without a fundingId", () => {
     const noProg = ATLAS_CITIES.find((c) => !c.fundingId)!;
     expect(isCityLive(noProg)).toBe(false);
+  });
+});
+
+// Archive-Policy (Juni 2026): Regionen mit inaktivem Programm (ausgeschöpft/
+// pausiert/eingestellt) bekommen eine Archiv-Seite; "unsicher" und "kein
+// Programm" bleiben auf 404.
+describe("archived cities (inactive but published programs)", () => {
+  it("a city is archived iff its program is exhausted/paused/discontinued", () => {
+    const inactive = ["ausgeschoepft", "pausiert", "eingestellt"];
+    for (const c of archivedCities()) {
+      expect(c.fundingId).toBeTruthy();
+      expect(inactive).toContain(getFundingProgram(c.fundingId!)?.status);
+    }
+  });
+  it("includes inactive-program cities and excludes active/unsicher/no-program", () => {
+    const slugs = archivedCities().map((c) => c.slug);
+    expect(slugs).toContain("muenchen"); // eingestellt
+    expect(slugs).toContain("karlsruhe"); // ausgeschoepft
+    expect(slugs).toContain("duesseldorf"); // pausiert
+    expect(slugs).not.toContain("wuerzburg"); // aktiv
+    expect(slugs).not.toContain("heidelberg"); // unsicher → bewusst NICHT veröffentlicht
+    expect(slugs).not.toContain("dresden"); // kein Programm
+  });
+  it("live and archived are disjoint; published is their union", () => {
+    const live = new Set(liveCities().map((c) => c.slug));
+    const archived = archivedCities().map((c) => c.slug);
+    for (const s of archived) expect(live.has(s)).toBe(false);
+    const published = new Set(publishedCities().map((c) => c.slug));
+    expect(published.size).toBe(live.size + archived.length);
+    for (const c of publishedCities()) expect(isCityPublished(c)).toBe(true);
+  });
+  it("an 'unsicher' city is neither live nor archived (stays 404)", () => {
+    const heidelberg = ATLAS_CITIES.find((c) => c.slug === "heidelberg")!;
+    expect(getFundingProgram(heidelberg.fundingId!)?.status).toBe("unsicher");
+    expect(isCityLive(heidelberg)).toBe(false);
+    expect(isCityArchived(heidelberg)).toBe(false);
+    expect(isCityPublished(heidelberg)).toBe(false);
+  });
+  it("publishedBundeslaender covers Rheinland-Pfalz (only archived cities there)", () => {
+    // Mainz + Mayen-Koblenz sind ausgeschöpft → RLP hat ohne Archiv keine Seite.
+    expect(publishedBundeslaender().map((b) => b.slug)).toContain("rheinland-pfalz");
+    const rlp = publishedCitiesInBundesland("rheinland-pfalz").map((c) => c.slug);
+    expect(rlp).toEqual(expect.arrayContaining(["mainz", "mayen-koblenz"]));
+  });
+  it("publishedCitiesInBundesland lists active programs before archived ones", () => {
+    for (const bl of publishedBundeslaender().map((b) => b.slug)) {
+      const cities = publishedCitiesInBundesland(bl);
+      const firstArchived = cities.findIndex((c) => !isCityLive(c));
+      if (firstArchived === -1) continue;
+      // no live city may appear after the first archived one
+      for (let i = firstArchived; i < cities.length; i++) expect(isCityLive(cities[i])).toBe(false);
+    }
   });
 });
 

@@ -5,10 +5,10 @@ import Header from "../../../../../components/Header";
 import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons";
 import { v } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
-import { cityBySlug, slugify, isCityLive, liveCities, type AtlasCity } from "../../../../../lib/atlas-cities";
+import { cityBySlug, slugify, isCityPublished, publishedCities, type AtlasCity } from "../../../../../lib/atlas-cities";
 import { fundingAmount, fundingStandLabel, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
-import { FundingRates, FundingConditions } from "../../../../../components/FundingProgramParts";
+import { FundingRates, FundingConditions, FundingStatusBadge, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
 import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "../../../../../lib/calc";
@@ -16,22 +16,31 @@ import { DEFAULT_FEED_IN } from "../../../../../lib/feedin-config";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
-// Only regions with an active program get a page; archived/no-program slugs 404.
+// Published = regions with an active OR archived (exhausted/paused/discontinued)
+// program. Regions that never had a program — or whose status is "unsicher" —
+// still 404.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return liveCities().map((c) => ({ bundesland: slugify(c.bundesland), stadt: c.slug }));
+  return publishedCities().map((c) => ({ bundesland: slugify(c.bundesland), stadt: c.slug }));
 }
 
 export async function generateMetadata({ params }: { params: { bundesland: string; stadt: string } }): Promise<Metadata> {
   const city = cityBySlug(params.stadt);
   if (!city || slugify(city.bundesland) !== params.bundesland) return {};
   const f = city.fundingId ? await getFundingProgramById(city.fundingId) : undefined;
+  const active = f?.status === "aktiv";
   const year = new Date().getFullYear();
   return pageMetadata({
     path: `/photovoltaik-foerderung/${slugify(city.bundesland)}/${city.slug}`,
-    title: `Photovoltaik-Förderung ${city.name} ${year} – Zuschüsse & Bestand`,
-    description: `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister${f ? `, das ${f.name}` : ""} und Beispielrechnungen für deine PV-Anlage.`,
+    title: active || !f
+      ? `Photovoltaik-Förderung ${city.name} ${year} – Zuschüsse & Bestand`
+      : `Photovoltaik-Förderung ${city.name} ${year} – aktueller Status & Bestand`,
+    description: active
+      ? `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister, das ${f!.name} und Beispielrechnungen für deine PV-Anlage.`
+      : f
+      ? `Lohnt sich Photovoltaik in ${city.name}? Anlagenbestand aus dem Marktstammdatenregister, der Status des ${f.name} (derzeit ${FUNDING_STATUS_LABEL[f.status]}) und ehrliche Beispielrechnungen für deine PV-Anlage.`
+      : `Wie viele Solaranlagen gibt es in ${city.name}? Aktueller Anlagenbestand aus dem Marktstammdatenregister und Beispielrechnungen für deine PV-Anlage.`,
     ogImageTitle: `Photovoltaik in ${city.name}`,
     ogImageSubtitle: f ? `Bestand & ${f.name}` : "Anlagenbestand & Beispielrechnungen",
   });
@@ -150,8 +159,9 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
   const city = cityBySlug(params.stadt);
   // Guard the hierarchy: the Bundesland segment must match the city, otherwise
   // a wrong-Bundesland URL would render a valid page under a bogus parent.
-  // Also guard the live policy: only regions with an active program have a page.
-  if (!city || slugify(city.bundesland) !== params.bundesland || !isCityLive(city)) notFound();
+  // Also guard the publish policy: only regions with a live or archived program
+  // have a page (no-program / "unsicher" slugs 404).
+  if (!city || slugify(city.bundesland) !== params.bundesland || !isCityPublished(city)) notFound();
 
   let atlas: RegionAtlas | null = null;
   try {
@@ -200,15 +210,18 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
             ? <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>
             : f.status === "aktiv"
             ? <>In {city.name} fördert die Stadt neue Solaranlagen über das <span style={S.strong}>{f.name}</span> — zusätzlich zur bundesweiten 0 % Mehrwertsteuer. Was sich damit rechnet:</>
-            : <>In {city.name} gibt es mit dem <span style={S.strong}>{f.name}</span> ein kommunales Förderprogramm — {f.status === "pausiert" ? "aktuell aber pausiert (keine neuen Anträge)" : "aktuell aber ausgeschöpft"}. Bundesweit gilt die 0 % Mehrwertsteuer.</>}
+            : <>In {city.name} gibt es mit dem <span style={S.strong}>{f.name}</span> ein kommunales Förderprogramm — {FUNDING_STATUS_NOTE[f.status]}. Bundesweit gilt weiterhin die 0 % Mehrwertsteuer auf Kauf und Installation.</>}
         </p>
 
         {/* ── Förderung (oben) ── */}
         {f && (
           <div style={S.section}>
-            <h2 style={S.h2}>Förderung in {city.name}</h2>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+              <h2 style={S.h2}>Förderung in {city.name}</h2>
+              <FundingStatusBadge status={f.status} />
+            </div>
             <p style={S.sub}>{f.name} · {f.traeger}</p>
-            <div style={{ ...S.card, borderColor: v("--color-positive"), background: v("--color-bg-muted") }}>
+            <div style={{ ...S.card, borderColor: f.status === "aktiv" ? v("--color-positive") : v("--color-border"), background: v("--color-bg-muted") }}>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
                 {f.eligibility.map((e) => (
                   <span key={e} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-positive"), background: v("--color-bg"), border: `1px solid ${v("--color-positive")}`, borderRadius: 999, padding: "3px 10px" }}>
@@ -282,8 +295,8 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
           </div>
           {f && f.status !== "aktiv" ? (
             <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>
-              Die Förderung über das {f.name} ist {f.status === "pausiert" ? "aktuell pausiert" : "aktuell ausgeschöpft"} —
-              die Beispiele rechnen daher ohne. Status oben prüfen.
+              Die Förderung über das {f.name} ist {FUNDING_STATUS_NOTE[f.status]} —
+              die Beispiele rechnen daher ohne. Aktuellen Status vor einem Antrag direkt beim Programm prüfen.
             </p>
           ) : f && !examples[0]?.foerderComputable ? (
             <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>

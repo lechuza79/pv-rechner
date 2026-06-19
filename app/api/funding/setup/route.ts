@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
 import { FUNDING_PROGRAMS, landProgramBundeslaender } from "../../../../lib/funding-programs";
-import { liveCities, cityPath, liveBundeslaender } from "../../../../lib/atlas-cities";
+import { publishedCities, cityPath, publishedBundeslaender } from "../../../../lib/atlas-cities";
 import { pingIndexNow } from "../../../../lib/indexnow";
 
 // One-time setup: create the funding tables + RLS, then seed from the code
@@ -106,11 +106,11 @@ export async function GET(req: NextRequest) {
 
   // Content changed → nudge IndexNow (Bing/Yandex) to re-crawl the funding URLs.
   if (seeded > 0) {
-    const blSlugs = new Set([...liveBundeslaender(), ...landProgramBundeslaender()].map((b) => b.slug));
+    const blSlugs = new Set([...publishedBundeslaender(), ...landProgramBundeslaender()].map((b) => b.slug));
     const urls = [
       "/photovoltaik-foerderung",
       ...Array.from(blSlugs, (s) => `/photovoltaik-foerderung/${s}`),
-      ...liveCities().map((c) => cityPath(c)),
+      ...publishedCities().map((c) => cityPath(c)),
     ];
     const ping = await pingIndexNow(urls);
     results.push({ step: "indexnow", status: ping.ok ? "ok" : "skipped", note: `${urls.length} URLs${ping.status ? ` · HTTP ${ping.status}` : " · nicht erreicht"}` });

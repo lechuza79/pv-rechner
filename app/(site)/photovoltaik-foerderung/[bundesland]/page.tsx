@@ -5,7 +5,7 @@ import Header from "../../../../components/Header";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
-import { liveBundeslaender, liveCitiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
+import { publishedBundeslaender, publishedCitiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import { landProgramBundeslaender, fundingAmount, fundingStandLabel, type FundingProgram } from "../../../../lib/funding-programs";
 import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
@@ -33,11 +33,12 @@ function bundeslandAgs(name: string): string | undefined {
   return BUNDESLAENDER.find((b) => b.name === name)?.ags;
 }
 
-// Bundesländer that get a page: those with cities AND those with a Land-level
-// program (e.g. Berlin has no cities here but a landesweites Programm).
+// Bundesländer that get a page: those with published cities (live or archived)
+// AND those with a Land-level program (e.g. Berlin has no cities here but a
+// landesweites Programm).
 function allBundeslaender(): { name: string; slug: string }[] {
   const m = new Map<string, string>();
-  for (const b of liveBundeslaender()) m.set(b.slug, b.name);
+  for (const b of publishedBundeslaender()) m.set(b.slug, b.name);
   for (const b of landProgramBundeslaender()) m.set(b.slug, b.name);
   return Array.from(m, ([slug, name]) => ({ slug, name }));
 }
@@ -108,7 +109,7 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
   const name = blName(params.bundesland);
   if (!name) notFound();
 
-  const cities = liveCitiesInBundesland(params.bundesland);
+  const cities = publishedCitiesInBundesland(params.bundesland);
   const programs = await getFundingPrograms();
   const byId = new Map(programs.map((p) => [p.id, p]));
   const landPrograms = programs.filter(

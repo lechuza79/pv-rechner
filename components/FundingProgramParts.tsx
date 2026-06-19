@@ -11,6 +11,17 @@ export const FUNDING_STATUS_LABEL: Record<FundingStatus, string> = {
   aktiv: "aktiv", ausgeschoepft: "ausgeschöpft", pausiert: "pausiert", eingestellt: "eingestellt", unsicher: "Status unklar",
 };
 
+/** Short status phrase for inline prose on city/archive pages — reads naturally
+ *  after "… ist {phrase}" / "… — {phrase}". Keeps the wording in one place so
+ *  the city page, the example note and any future caller stay consistent. */
+export const FUNDING_STATUS_NOTE: Record<FundingStatus, string> = {
+  aktiv: "nimmt aktuell Anträge an",
+  ausgeschoepft: "aktuell ausgeschöpft (Fördertopf leer)",
+  pausiert: "aktuell pausiert (keine neuen Anträge)",
+  eingestellt: "eingestellt (wird nicht mehr angeboten)",
+  unsicher: "Status unklar",
+};
+
 export function fundingStatusColor(status: FundingStatus): string {
   return status === "aktiv" ? v("--color-positive") : v("--color-text-muted");
 }

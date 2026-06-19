@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { liveCities, slugify, liveBundeslaender } from "../lib/atlas-cities";
+import { liveCities, archivedCities, slugify, publishedBundeslaender } from "../lib/atlas-cities";
 import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
 
@@ -33,7 +33,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     };
   });
-  const blSlugs = new Set([...liveBundeslaender(), ...landProgramBundeslaender()].map((b) => b.slug));
+  // Archive pages (program exhausted/paused/discontinued): still indexable for
+  // SEO, but lower priority and less churn than the live ones.
+  const archivedCityPages: MetadataRoute.Sitemap = archivedCities().map((c) => {
+    const f = c.fundingId ? byId.get(c.fundingId) : undefined;
+    return {
+      url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
+      lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    };
+  });
+  const blSlugs = new Set([...publishedBundeslaender(), ...landProgramBundeslaender()].map((b) => b.slug));
   const bundeslandPages: MetadataRoute.Sitemap = Array.from(blSlugs).map((slug) => ({
     url: `${BASE_URL}/photovoltaik-foerderung/${slug}`,
     lastModified: maxFundingDate,
@@ -51,6 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/strommix-deutschland`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     ...bundeslandPages,
     ...cityPages,
+    ...archivedCityPages,
     { url: `${BASE_URL}/methodik`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/glossar`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/kontakt`, changeFrequency: "yearly", priority: 0.3 },

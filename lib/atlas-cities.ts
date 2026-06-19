@@ -6,7 +6,7 @@
 // funding dataset (lib/funding-programs.ts) and is referenced by id, so the
 // program data can also power an overview page and cross-program links.
 
-import { getFundingProgram } from "./funding-programs";
+import { getFundingProgram, type FundingStatus } from "./funding-programs";
 
 export interface AtlasCity {
   slug: string;
@@ -257,5 +257,49 @@ export function liveCitiesInBundesland(blSlug: string): AtlasCity[] {
 export function liveBundeslaender(): { name: string; slug: string }[] {
   const bySlug = new Map<string, string>();
   for (const c of liveCities()) bySlug.set(slugify(c.bundesland), c.bundesland);
+  return Array.from(bySlug, ([slug, name]) => ({ slug, name })).sort((a, b) => a.name.localeCompare(b.name, "de"));
+}
+
+// ── Archive = regions whose own program exists but currently does NOT accept
+// applications (exhausted / paused / discontinued). Unlike "no program at all",
+// these still warrant a page: it carries the (now inactive) program terms, the
+// MaStR stock and the federal fallback, so the URL stays useful for SEO without
+// promising money that isn't there. "unsicher" is deliberately excluded — we do
+// not publish program data we don't trust. Archive pages render with a status
+// badge and compute their example amounts WITHOUT the inactive grant.
+const ARCHIVE_STATUSES: FundingStatus[] = ["ausgeschoepft", "pausiert", "eingestellt"];
+
+/** True if the city's own program is inactive but published as an archive page. */
+export function isCityArchived(c: AtlasCity): boolean {
+  const s = c.fundingId ? getFundingProgram(c.fundingId)?.status : undefined;
+  return !!s && ARCHIVE_STATUSES.includes(s);
+}
+
+/** Cities with an inactive (archived) program. */
+export function archivedCities(): AtlasCity[] {
+  return ATLAS_CITIES.filter(isCityArchived);
+}
+
+/** A city gets a published page when its program is live OR archived. */
+export function isCityPublished(c: AtlasCity): boolean {
+  return isCityLive(c) || isCityArchived(c);
+}
+
+/** Cities that get a page (live + archived) — drives page generation & sitemap. */
+export function publishedCities(): AtlasCity[] {
+  return ATLAS_CITIES.filter(isCityPublished);
+}
+
+/** Published cities in a Bundesland (by slug), active programs listed first. */
+export function publishedCitiesInBundesland(blSlug: string): AtlasCity[] {
+  return publishedCities()
+    .filter((c) => slugify(c.bundesland) === blSlug)
+    .sort((a, b) => Number(isCityLive(b)) - Number(isCityLive(a)));
+}
+
+/** Bundesländer with at least one published city (live or archived). */
+export function publishedBundeslaender(): { name: string; slug: string }[] {
+  const bySlug = new Map<string, string>();
+  for (const c of publishedCities()) bySlug.set(slugify(c.bundesland), c.bundesland);
   return Array.from(bySlug, ([slug, name]) => ({ slug, name })).sort((a, b) => a.name.localeCompare(b.name, "de"));
 }
