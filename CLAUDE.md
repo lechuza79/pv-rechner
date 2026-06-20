@@ -201,7 +201,7 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] JAZ-Modell linear aus Fraunhofer ISE „WPsmart im Bestand" (LWWP/SWWP × Vorlauftemp)
 - [x] Investition nach Heizlast aus BWP Preisübersicht 2024, +6.000 € bei HK-Tausch
 - [x] BEG-Förderung BAFA/KfW 2026: 30 % Grund + 20 % Klima + 5 % Effizienz + 30 % Einkommen (opt-in), Cap 70 %/30.000 €
-- [x] Gas-Referenz über generalisierten `calcFuelCost` (mit CO₂-Preispfad BEHG/EU ETS2)
+- [x] Gas-Referenz über generalisierten `calcFuelCost` (mit CO₂-Preispfad BEHG/EU ETS2). Preispfad in `lib/co2-config.ts` an absolute Kalenderjahre verankert (rollover-sicher), jährlicher Wächter + Runbook `scripts/co2-preis-verify.md`
 - [x] Hero: 20-Jahre-TCO-Differenz als Zahl, Amortisation + ⌀ Ersparnis + CO₂ als Kacheln
 - [x] Editierbare Werte (InlineEdit): Q_ges, JAZ, Referenzheizung (3 Varianten), Gas-/Strompreis, Invest, Einkommens-Bonus
 - [x] 3-Szenarien-Chart (Pessimistisch/Realistisch/Optimistisch) mit Amortisations-Markern
@@ -338,6 +338,8 @@ pv-rechner/
 │   ├── constants.ts                # Alle Konstanten (ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, etc.)
 │   ├── prices-config.ts            # PriceConfig Interface + DEFAULT_PRICES (shared server/client)
 │   ├── feedin-config.ts            # FeedInRates Interface + DEFAULT_FEED_IN (EEG-Vergütungssätze)
+│   ├── co2-config.ts               # Co2PriceConfig + CO2_PRICE: CO2-Preispfad an absolute Kalenderjahre verankert (BEHG → ETS2), rollover-sicher
+│   ├── heatpump-config.ts          # WP-Berechnungs-Config (Heizlast, JAZ, Invest, BEG-Förderung)
 │   ├── feedin.ts                   # useFeedInRates() Client-Hook (fetcht /api/feedin, sessionStorage-Cache)
 │   ├── prices.ts                   # usePrices() Client-Hook (fetcht /api/prices, sessionStorage-Cache)
 │   ├── calc.ts                     # Pure Berechnungsfunktionen (EV, Amortisation, Kosten, URL-Helpers)
@@ -688,7 +690,7 @@ Was sich automatisch ändern sollte (Jahreszahlen, "aktuelle" Werte, "heute"-bez
 
 **Wann Hardcoden OK ist:**
 - **Dokument-Versionen** ("Stand: März 2026" in Datenschutz/Impressum) — soll mit Inhalt mitwachsen, NICHT autoupdaten.
-- **Config-Snapshots als Fallback** (`lib/feedin-config.ts`, `lib/prices-config.ts`, `lib/heatpump-config.ts`) — bewusste Stichtags-Datenstände, DB hat die Live-Werte. `validFrom` dort ist eine echte Datenherkunft, kein Renderdatum.
+- **Config-Snapshots als Fallback** (`lib/feedin-config.ts`, `lib/prices-config.ts`, `lib/heatpump-config.ts`, `lib/co2-config.ts`) — bewusste Stichtags-Datenstände, DB hat die Live-Werte. `validFrom` dort ist eine echte Datenherkunft, kein Renderdatum. `lib/co2-config.ts` verankert die CO2-Preise zusätzlich an **absolute** Kalenderjahre (nicht an Projektions-Offsets), damit die Jahr→Preis-Zuordnung beim Jahreswechsel nicht still verrutscht; `reviewBy` + Runbook `scripts/co2-preis-verify.md` erzwingen die jährliche Prüfung gegen offizielle Prognosen.
 - **Historische Fakten** ("Kernenergie inländisch bis April 2023", "BWP Preisübersicht 2024") — passieren wirklich nur einmal.
 - **Test-Fixtures** — deterministische Eingaben sind das Ziel.
 

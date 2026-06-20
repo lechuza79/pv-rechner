@@ -13,18 +13,35 @@ import {
   paramStr,
 } from "../calc";
 import { DEFAULT_PRICES } from "../prices-config";
+import { co2PriceForCalendarYear } from "../co2-config";
+import { YEAR } from "../constants";
 
-// ─── CO2 price path (BEHG → EU ETS2) ─────────────────────────────────────────
-describe("co2PriceForYear", () => {
-  it("follows the legal BEHG path for 2026/2027", () => {
-    expect(co2PriceForYear(0)).toBe(55); // 2025
-    expect(co2PriceForYear(1)).toBe(65); // 2026
+// ─── CO2 price path (BEHG → EU ETS2), anchored to absolute calendar years ────
+describe("co2PriceForCalendarYear", () => {
+  it("uses the legislated BEHG corridor for 2026 and 2027", () => {
+    expect(co2PriceForCalendarYear(2026)).toBe(55); // corridor floor (conservative)
+    expect(co2PriceForCalendarYear(2027)).toBe(65); // corridor ceiling (frozen 2027)
   });
 
-  it("extrapolates +8 €/t per year from 2027 onward (conservative ETS2)", () => {
-    expect(co2PriceForYear(2)).toBe(73);
-    expect(co2PriceForYear(3)).toBe(81);
-    expect(co2PriceForYear(10)).toBe(137);
+  it("extrapolates +8 €/t per year for the ETS2 free market from 2028", () => {
+    expect(co2PriceForCalendarYear(2028)).toBe(73);
+    expect(co2PriceForCalendarYear(2029)).toBe(81);
+    expect(co2PriceForCalendarYear(2036)).toBe(137);
+  });
+
+  it("clamps years before the first anchor to the floor", () => {
+    expect(co2PriceForCalendarYear(2025)).toBe(55);
+    expect(co2PriceForCalendarYear(2020)).toBe(55);
+  });
+});
+
+// co2PriceForYear is a thin offset→year adapter: i maps to calendar year YEAR + i.
+// Time-independent assertion so the test does not break at year rollover.
+describe("co2PriceForYear", () => {
+  it("maps projection offset i to the absolute calendar year YEAR + i", () => {
+    expect(co2PriceForYear(0)).toBe(co2PriceForCalendarYear(YEAR));
+    expect(co2PriceForYear(2)).toBe(co2PriceForCalendarYear(YEAR + 2));
+    expect(co2PriceForYear(10)).toBe(co2PriceForCalendarYear(YEAR + 10));
   });
 });
 

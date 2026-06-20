@@ -1,12 +1,15 @@
 import { YEAR, YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN, NUTZUNG } from "./constants";
 import { calcExtraConsumption } from "./consumption";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
+import { co2PriceForCalendarYear } from "./co2-config";
 
 // ─── Fuel comparison (WP vs. Gas/Öl) ────────────────────────────────────────
-// CO2-Preis: 55€/t 2025, 65€/t 2026, ab 2027 EU ETS2 marktbasiert (konservativ +8€/Jahr)
-// Quelle: BEHG + EU ETS2 (Agora/dena-Prognose)
+// CO2-Preis pro Projektions-Offset i. Dünner Adapter: i mappt auf das absolute
+// Kalenderjahr YEAR + i. Die eigentliche Jahr→Preis-Logik (gesetzlicher Korridor
+// + ETS2-Forecast) liegt rollover-sicher in lib/co2-config.ts. Jährliche Prüfung:
+// scripts/co2-preis-verify.md.
 export function co2PriceForYear(i: number): number {
-  return i === 0 ? 55 : i === 1 ? 65 : 65 + (i - 1) * 8;
+  return co2PriceForCalendarYear(YEAR + i);
 }
 
 /** Generalized fuel cost over arbitrary horizon.
