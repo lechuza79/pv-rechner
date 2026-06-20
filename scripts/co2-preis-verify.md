@@ -1,4 +1,4 @@
-# CO2-Preis-Verifikation — Runbook (jährlich, jeweils im Januar)
+# CO2-Preis-Verifikation — Runbook (jährlich, jeweils im Dezember)
 
 **Zweck:** Den CO2-Preispfad in `lib/co2-config.ts` (`CO2_PRICE.anchors` +
 `annualIncrease`) gegen die offizielle Gesetzeslage und gegen offizielle
@@ -6,11 +6,20 @@ Prognosen abgleichen. Der Preis fließt in die Wärmepumpen-Wirtschaftlichkeit e
 (`calcFuelCost` → CO2-Aufschlag auf Gas/Öl). Ein veralteter Pfad verzerrt die
 Gas-Referenz und damit die TCO-Differenz im WP-Rechner.
 
-**Warum jährlich im Januar:** Der nationale BEHG-Korridor wird politisch
-festgelegt (Korridor 55–65 €/t für 2026 **und** 2027, eingefroren laut
-Koalitionsausschuss 05/2026). Der EU-ETS2-Markt startet 2028 — ab dann gibt es
-echte Marktpreise statt einer Schätzung. Beide ändern sich zum Jahreswechsel
-bzw. mit neuen Haushalts-/EU-Beschlüssen. Stichtag steht in `CO2_PRICE.reviewBy`.
+**Warum jährlich im Dezember:** Der nationale BEHG-Preis wird politisch
+festgelegt — meist mit dem Bundeshaushalt fürs Folgejahr (Verabschiedung Nov/Dez).
+Im Dezember steht damit fest, was im neuen Jahr gilt, und die Config ist aktuell,
+bevor das Jahr umspringt. (Korridor 55–65 €/t für 2026 **und** 2027, eingefroren
+laut Koalitionsausschuss 05/2026. EU-ETS2-Markt startet 2028 — ab dann echte
+Marktpreise statt Schätzung.) Stichtag steht in `CO2_PRICE.reviewBy`.
+
+**Dazu zwei laufende Wächter (melden nur, ändern nichts):**
+- **Monatlich** (`co2-prognose-monitor`): scannt die verlässlichen Quellen
+  (Agora, Expertenrat, UBA/DEHSt, EU-Kommission, ICIS/BloombergNEF) auf NEUE
+  Marktprognosen und meldet Abweichungen vom hinterlegten Pfad.
+- **Wöchentlich** (`foerder-news-waechter`): fängt politische/gesetzliche
+  Ad-hoc-Beschlüsse zum CO2-Preis mit ab (z. B. ein Koalitionsausschuss zwischen
+  den Dezember-Läufen).
 
 ## So wird die Routine ausgelöst
 
