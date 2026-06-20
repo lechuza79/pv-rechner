@@ -64,6 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...cityPages,
     ...archivedCityPages,
     { url: `${BASE_URL}/methodik`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE_URL}/datenstand`, changeFrequency: "weekly", priority: 0.5 },
     { url: `${BASE_URL}/glossar`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/kontakt`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${BASE_URL}/impressum`, changeFrequency: "yearly", priority: 0.3 },

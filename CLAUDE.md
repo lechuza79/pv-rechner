@@ -414,6 +414,7 @@ pv-rechner/
     │   └── simulation.tsx         # "use client" — Live PV Simulation (Wetter + Grid + Chart)
     ├── glossar/page.tsx           # Fachbegriff-Glossar (statisch, alle Begriffe + Langtexte, SEO)
     ├── methodik/page.tsx          # Berechnungsmethodik (statisch)
+    ├── datenstand/page.tsx        # Öffentliche Werte-Übersicht: alle Annahmen mit Stand + Quelle, liest live aus denselben Quellen wie der Rechner (Supabase market_prices/feed_in_rates + Config-Module co2-config/heatpump-config/constants), ISR 3600 — driftet nie
     ├── impressum/page.tsx         # Impressum (statisch)
     └── datenschutz/page.tsx       # Datenschutzerklärung (statisch)
 ```

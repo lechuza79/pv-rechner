@@ -32,6 +32,7 @@ const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
     label: "Mehr",
     links: [
       { href: "/methodik", label: "Methodik" },
+      { href: "/datenstand", label: "Datenstand" },
       { href: "/glossar", label: "Glossar" },
       { href: "/embed-demo", label: "Widgets" },
       { href: "/kontakt", label: "Kontakt" },

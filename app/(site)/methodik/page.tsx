@@ -394,6 +394,12 @@ export default async function MethodikPage() {
             Für eine exakte Prognose empfehlen wir ein Angebot vom Fachbetrieb.
           </span>
         </div>
+
+        <p style={S.p}>
+          Eine kompakte Übersicht aller Werte — Preise, Vergütung, CO₂-Preis,
+          Wärmepumpen-Annahmen — mit Stand und Quelle findest du auf der{" "}
+          <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
+        </p>
       </div>
     </div>
   );
