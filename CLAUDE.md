@@ -92,12 +92,14 @@ Gerundet auf 500 €
 Zeitraum:            25 Jahre
 Degradation:         0,5%/Jahr
 Einspeisevergütung:  EEG-konform, 4 Sätze (Teil/Voll × ≤10/>10 kWp)
-                     Teileinspeisung: 8,03 / 6,95 ct/kWh
-                     Volleinspeisung: 12,73 / 10,67 ct/kWh
+                     Teileinspeisung: 7,78 / 6,73 ct/kWh
+                     Volleinspeisung: 12,34 / 10,35 ct/kWh
                      Gewichteter Mischsatz bei Anlagen >10 kWp
                      3-State: Aus / Teil / Voll (auto-berechnet, manuell überschreibbar)
-                     Sätze in Supabase (feed_in_rates), Admin-UI: /admin/prices
-                     Fallback-Defaults in lib/feedin-config.ts (Stand Feb 2025)
+                     Quelle = lib/feedin-config.ts (Stand 02–07/2026); die
+                     Supabase-Tabelle feed_in_rates ist NICHT angelegt, daher ist
+                     die Config die De-facto-Quelle. EEG degressiert 1%/Halbjahr
+                     (1.2. / 1.8.) — Wächter + Runbook scripts/eeg-verify.md
 Szenarien:           Strompreis +1% / +3% / +5% p.a.
 EV-Delta:            −5% / 0% / +5% pro Szenario
 ```
