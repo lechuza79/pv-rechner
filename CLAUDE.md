@@ -198,7 +198,7 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 **WP 10: Wärmepumpen-Rechner ✅ (done)**
 - [x] Eigener Flow `/waermepumpe` mit Neubau/Bestand-Umschalter (5 Steps)
 - [x] Kern-Berechnung in `lib/heatpump.ts` (Pure Functions): Heizwärmebedarf, JAZ, Investition, BEG-Förderung, 20-J-TCO
-- [x] Config in `lib/heatpump-config.ts` (zentralisiert, Admin-fähig strukturiert)
+- [x] Config in `lib/heatpump-config.ts` (zentralisiert, Admin-fähig strukturiert). `validFrom` + `reviewBy`; jährlicher Wächter (scheduled-task, Januar) + Runbook `scripts/waermepumpe-verify.md` prüft die preis-/förderabhängigen Werte (BEG, BWP-Invest, §14a-Tarif, Gas) gegen offizielle Quellen; mid-year-Förderänderungen fängt der `foerder-news-waechter` ab
 - [x] Heizwärmebedarf: Wohnfläche × spez. kWh/m²·a (dena-Gebäudereport, DIN V 18599) + 650 kWh/Person Warmwasser
 - [x] JAZ-Modell linear aus Fraunhofer ISE „WPsmart im Bestand" (LWWP/SWWP × Vorlauftemp)
 - [x] Investition nach Heizlast aus BWP Preisübersicht 2024, +6.000 € bei HK-Tausch

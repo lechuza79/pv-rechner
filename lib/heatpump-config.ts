@@ -51,7 +51,8 @@ export interface HeatPumpConfig {
   stromInflation: number;
   // Source attribution
   source: string;
-  validFrom: string;
+  validFrom: string;   // ISO date — when these values were last verified
+  reviewBy: string;    // ISO date — re-check against official sources by then (see scripts/waermepumpe-verify.md)
 }
 
 export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
@@ -88,4 +89,5 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   stromInflation: 0.03,
   source: "Fraunhofer ISE WPsmart, BWP Preisübersicht 2024, BAFA BEG 2026, BDEW",
   validFrom: "2026-04-01",
+  reviewBy: "2027-01-31",
 };
