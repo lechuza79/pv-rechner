@@ -391,6 +391,7 @@ pv-rechner/
     ├── api/feedin/route.ts        # GET (aktuelle Vergütungssätze, cached) + POST (Admin-Update)
     ├── api/prices/route.ts        # GET (aktuelle Preise, cached) + POST (Admin-Update)
     ├── api/prices/scrape/route.ts # Vercel Cron: Scraping + Plausibilitätsprüfung
+    ├── api/alert/route.ts         # POST (CRON_SECRET): generischer Wächter-Alert → Resend-Mail an ADMIN_EMAILS. Die scheduled-task-Wächter (CO2/EEG/WP/Förder) rufen ihn am Lauf-Ende; Report landet im Postfach statt nur in der App. dryRun=1 rendert ohne Senden.
     ├── api/pvgis/route.ts         # PVGIS API-Proxy mit Supabase-Cache
     ├── api/weather/route.ts       # Open-Meteo Proxy mit In-Memory-Cache (Live Simulation)
     ├── api/calculations/route.ts  # GET (Liste), POST (Speichern)
