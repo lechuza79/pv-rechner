@@ -223,9 +223,10 @@ export default function DatenschutzPage() {
         <p style={S.p}>
           Für Anmeldung und Speicherung nutzen wir den Dienst Supabase (betrieben
           von Supabase Inc.) als Auftragsverarbeiter im Sinne von Art. 28 DSGVO.
-          Die Daten werden ausschließlich zur Bereitstellung deines Kontos und
-          deiner gespeicherten Berechnungen verarbeitet und nicht zu Werbezwecken
-          genutzt oder an Dritte verkauft. Rechtsgrundlage ist Art. 6 Abs. 1 lit.
+          Die Daten werden auf einem Server innerhalb der EU (Stockholm,
+          Schweden) gespeichert. Sie werden ausschließlich zur Bereitstellung
+          deines Kontos und deiner gespeicherten Berechnungen verarbeitet und
+          nicht zu Werbezwecken genutzt oder an Dritte verkauft. Rechtsgrundlage ist Art. 6 Abs. 1 lit.
           b DSGVO (Erfüllung des von dir gewünschten Dienstes). Du kannst dein
           Konto und alle gespeicherten Berechnungen jederzeit löschen, indem du
           dich an{" "}
