@@ -24,6 +24,14 @@ zum Jahreswechsel. Stichtag steht in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
 - `wpTarif` — Wärmepumpen-Stromtarif (§ 14a EnWG, BDEW)
 - `gasPriceCtPerKwh` / `gasFixCostPerYear` / `gasInvestNeubau` — Gas-Referenz (BDEW)
 
+> **⚠️ Gas-/Öl-Preis ist doppelt abgelegt** (bis zur geplanten Zusammenführung):
+> `heatpump-config.gasPriceCtPerKwh` (WP-Rechner) UND `FUEL.gas.price` /
+> `FUEL.oil.price` in `lib/constants.ts` (PV-Rechner, `calcFuelCost25`) + die
+> `WP_FUEL_OPTIONS`. Bei einer **Gas-/Öl-Preis-Änderung BEIDE Stellen** als „zu
+> aktualisieren" listen, sonst rechnet der PV-Rechner mit dem alten Wert weiter.
+> (Sobald die Audit-Session beides zu einer Quelle zusammengeführt hat, kann
+> dieser Hinweis raus.)
+
 **Nicht prüfen (Modell-/Bauphysik-Konstanten, ändern sich nicht jährlich):**
 - `specDemandBestand` / `specDemandNeubau` (dena Gebäudereport, DIN V 18599)
 - `jazLwwp` / `jazSwwp` / Vorlauftemperaturen (Fraunhofer ISE WPsmart)
