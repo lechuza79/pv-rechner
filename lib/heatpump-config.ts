@@ -2,6 +2,8 @@
 // All constants for the heat pump calculator, centralized for future admin UI.
 // Sources documented in-line so every number is defensible.
 
+import { FUEL_PRICE } from "./constants";
+
 export interface HeatPumpConfig {
   // Specific heating demand (kWh/m²·a) by insulation standard
   // Source: dena Gebäudereport, DIN V 18599, Verbraucherzentrale
@@ -78,9 +80,10 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   begMaxRate: 0.70,
   wpTarif: 0.26,
   wpMaintenance: 200,
-  gasPriceCtPerKwh: 11,
+  gasPriceCtPerKwh: Math.round(FUEL_PRICE.gas.price * 100), // = 11, aus FUEL_PRICE (Single Source)
   gasEfficiency: 0.95,
-  gasCo2PerKwh: 0.20,
+  gasCo2PerKwh: FUEL_PRICE.gas.co2PerKwh, // = 0.20, aus FUEL_PRICE
+
   gasFixCostPerYear: 180,
   gasMaintenance: 180,
   gasInvestNeubau: 12000,

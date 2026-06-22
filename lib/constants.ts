@@ -12,10 +12,20 @@ export const DEGRAD = 0.005;
 // Winter ~17% über Durchschnitt, Sommer ~15% unter
 export const CONSUMPTION_MONTHLY = [1.17, 1.05, 1.08, 0.97, 0.93, 0.84, 0.87, 0.87, 0.91, 1.00, 1.13, 1.17];
 
-// Gas/Öl-Referenzkosten für WP-Vergleich
+// Gas/Öl-Marktpreis + CO2-Faktor — EINZIGE QUELLE (Single Source of Truth).
+// Preis in €/kWh, co2PerKwh in kg/kWh. FUEL, WP_FUEL_OPTIONS und
+// lib/heatpump-config.ts leiten ihre Gas-/Öl-Werte hieraus ab — bitte nur hier
+// pflegen (jährlicher WP-Wächter, scripts/waermepumpe-verify.md). Der
+// Kessel-Wirkungsgrad bleibt pro Kontext separat (Brennwert/alt/Öl).
+export const FUEL_PRICE: Record<"gas" | "oil", { price: number; co2PerKwh: number }> = {
+  gas: { price: 0.11, co2PerKwh: 0.20 },   // 11 ct/kWh, 200 g CO2/kWh
+  oil: { price: 0.10, co2PerKwh: 0.266 },  // 10 ct/kWh, 266 g CO2/kWh
+};
+
+// Gas/Öl-Referenzkosten für WP-Vergleich (Preis + CO2 aus FUEL_PRICE)
 export const FUEL: Record<string, { label: string; price: number; efficiency: number; co2PerKwh: number }> = {
-  gas: { label: "Gas", price: 0.11, efficiency: 0.90, co2PerKwh: 0.20 },   // 11 ct/kWh, 90% Kessel, 200g CO2/kWh (konsistent mit heatpump-config gasPriceCtPerKwh)
-  oil: { label: "Heizöl", price: 0.10, efficiency: 0.85, co2PerKwh: 0.266 }, // 10 ct/kWh, 85% Kessel, 266g CO2/kWh
+  gas: { label: "Gas", price: FUEL_PRICE.gas.price, efficiency: 0.90, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },   // 90% Kessel
+  oil: { label: "Heizöl", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh }, // 85% Kessel
 };
 
 // ─── Optionen für den Rechner-Flow ──────────────────────────────────────────
@@ -119,8 +129,9 @@ export const WP_TYPE = [
   { id: "swwp", label: "Sole/Wasser (Erdsonde)", sub: "Höhere JAZ, teurer" },
 ];
 
+// Preis + CO2 aus FUEL_PRICE; nur der Wirkungsgrad unterscheidet die Varianten.
 export const WP_FUEL_OPTIONS = [
-  { id: "gas_neu", label: "Gas-Brennwert", price: 0.11, efficiency: 0.95, co2PerKwh: 0.20 },
-  { id: "gas_alt", label: "Alter Gaskessel", price: 0.11, efficiency: 0.80, co2PerKwh: 0.20 },
-  { id: "oil", label: "Heizöl", price: 0.10, efficiency: 0.85, co2PerKwh: 0.266 },
+  { id: "gas_neu", label: "Gas-Brennwert", price: FUEL_PRICE.gas.price, efficiency: 0.95, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
+  { id: "gas_alt", label: "Alter Gaskessel", price: FUEL_PRICE.gas.price, efficiency: 0.80, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
+  { id: "oil", label: "Heizöl", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
 ];
