@@ -200,14 +200,45 @@ interface DataPoint {
   [key: string]: number | string | null;
 }
 
+// Weather-dependent carriers that Energy-Charts publishes with the longest
+// latency: the newest ~1h of points report load + fossil but leave these null
+// (night is reported as 0, not null). Counting such trailing points makes any
+// aggregate that mixes complete series (load) with the incomplete generation
+// undercount generation — which flipped the net-import sign and zeroed totals.
+const TAIL_COMPLETE_KEYS = ["solar", "wind_onshore", "wind_offshore"];
+
+/**
+ * Drop the trailing block of points whose weather-dependent generation is not
+ * yet fully reported, so every consumer (charts, widgets, period stats) reads
+ * one coherent, complete moment. A point counts as complete when all
+ * TAIL_COMPLETE_KEYS are numeric. Weekly/aggregated data is already complete
+ * and passes through untouched.
+ */
+export function trimIncompleteTail<T extends { [key: string]: number | string | null | undefined }>(
+  data: T[],
+): T[] {
+  let last = data.length - 1;
+  while (last >= 0 && !TAIL_COMPLETE_KEYS.every((k) => typeof data[last][k] === "number")) {
+    last--;
+  }
+  // If nothing is complete (shouldn't happen for live data), keep the input
+  // rather than returning an empty series.
+  return last >= 0 ? data.slice(0, last + 1) : data;
+}
+
 /** Calculate energy totals over a time period.
  *  For raw data: MW × interval hours → MWh → GWh.
  *  For pre-aggregated weekly data (resolution="weekly"): values already in GWh.
  */
 export function calcPeriodStats(data: DataPoint[], resolution?: string) {
-  if (data.length < 2) return null;
-
   const isWeekly = resolution === "weekly";
+
+  // Raw (sub-daily) series can carry an incomplete latency tail where load is
+  // reported but generation isn't. Trimming it keeps net-import sign/magnitude
+  // honest (load and generation then cover the same complete window).
+  if (!isWeekly) data = trimIncompleteTail(data);
+
+  if (data.length < 2) return null;
 
   // For raw data: detect interval (usually 15 min = 900s)
   let intervalHours = 0.25;

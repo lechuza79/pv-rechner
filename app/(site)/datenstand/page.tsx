@@ -134,6 +134,10 @@ async function fetchPrices(): Promise<PriceConfig> {
       .gt("pv_price_small", 0)
       .lte("valid_from", new Date().toISOString().split("T")[0])
       .order("valid_from", { ascending: false })
+      // Tiebreaker on created_at must match /api/prices exactly — otherwise this
+      // transparency page can read a different (older) duplicate row than the
+      // one the calculator actually uses for the same valid_from.
+      .order("created_at", { ascending: false })
       .limit(1)
       .single();
     if (!data) return DEFAULT_PRICES;

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { v } from "../lib/theme";
+import { trimIncompleteTail } from "../lib/chart-utils";
 
 type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
 
@@ -211,18 +212,12 @@ export function MastrLiveRadial({
   // Abgeleitete bars + Skala — synchron pro Render, wechselt sofort beim
   // Energieträger-Tausch ohne Loading-Flash.
   const { bars, scaleMaxMw } = useMemo(() => {
-    // Energy-Charts meldet Solar mit ~1 h Verzögerung: die jüngsten Punkte haben
-    // solar=null (Nacht wird dagegen als 0 gemeldet, nicht null). Diese
-    // unvollständigen Schwanz-Punkte würden den "gesamt"-Snapshot ohne Solar
-    // anzeigen (viel zu klein) und die Tabs auf unterschiedliche Zeitstempel
-    // setzen — Solar könnte dann größer als Gesamt wirken. Deshalb auf den
-    // jüngsten Punkt mit gemeldetem Solar-Wert kürzen, damit alle Tabs denselben
-    // kohärenten Moment zeigen.
-    let lastComplete = rawPoints.length - 1;
-    while (lastComplete >= 0 && typeof rawPoints[lastComplete].solar !== "number") {
-      lastComplete--;
-    }
-    const usable = lastComplete >= 0 ? rawPoints.slice(0, lastComplete + 1) : rawPoints;
+    // Cut the latency tail where weather-dependent carriers (solar/wind) aren't
+    // reported yet — otherwise "gesamt" would omit them and read smaller than a
+    // single sub-carrier. The generation endpoint already trims this, but we
+    // re-apply the shared helper here so the widget is correct even if fed an
+    // untrimmed/cached series. Robust across all laggy carriers, not just solar.
+    const usable = trimIncompleteTail(rawPoints);
     const seq: Bar[] = [];
     let maxGesamtMw = 0;
     for (const p of usable) {

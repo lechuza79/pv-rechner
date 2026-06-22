@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createCache, fetchPublicPower } from "../../../../lib/energy-api";
 import { supabase } from "../../../../lib/supabase-server";
-import { GENERATION_STACK_KEYS } from "../../../../lib/chart-utils";
+import { GENERATION_STACK_KEYS, trimIncompleteTail } from "../../../../lib/chart-utils";
 
 // In-memory cache (TTL scales with time range)
 const cache = createCache<GenerationResponse>(5 * 60 * 1000);
@@ -168,6 +168,11 @@ export async function GET(req: NextRequest) {
       ts: r.ts,
       ...r.data,
     }));
+
+    // Cut the latency tail (newest points where solar/wind aren't reported yet)
+    // once, at the source, so every consumer — charts, widgets, period stats —
+    // gets one coherent complete window instead of a partial mix.
+    data = trimIncompleteTail(data);
 
     // Downsample for longer time ranges to keep response manageable
     // 15min → hourly (4x), → 3-hourly (12x), → 6-hourly (24x), → daily (96x)

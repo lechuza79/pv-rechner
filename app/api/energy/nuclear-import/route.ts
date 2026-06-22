@@ -134,7 +134,7 @@ export async function GET(req: NextRequest) {
 
     const countryResults = await Promise.allSettled(
       NUCLEAR_COUNTRIES.map(code =>
-        fetchChunked((s, e) => fetchPublicPower(code, s, e, 6000, 1)).then(rows => ({ code, rows }))
+        fetchChunked((s, e) => fetchPublicPower(code, s, e, 10000, 2)).then(rows => ({ code, rows }))
       )
     );
 
@@ -164,6 +164,22 @@ export async function GET(req: NextRequest) {
       countryGenRows.set(code, tsMap);
     }
 
+    // Guard: if every neighbour-generation fetch failed, we cannot compute the
+    // nuclear share — returning 0 would be physically false and (worse) get
+    // cached as a valid value. Serve stale data or fail loudly instead.
+    if (countryGenRows.size === 0) {
+      const stale = store.getStale(cacheKey);
+      if (stale) {
+        return NextResponse.json(stale, {
+          headers: { "Cache-Control": "public, s-maxage=60", "X-Data-Stale": "true" },
+        });
+      }
+      return NextResponse.json(
+        { data: [], avg_gw: 0, avg_share_pct: 0, source: "error", license: "" },
+        { status: 502 },
+      );
+    }
+
     // Build lookup: ts → { country_code → flow_gw }
     const cbpfByTs = new Map<string, Record<string, number>>();
     for (const row of cbpfRows) {
@@ -185,17 +201,27 @@ export async function GET(req: NextRequest) {
 
     cbpfByTs.forEach((flows, ts) => {
       let nuclearGw = 0;
+      let positiveFlows = 0;
+      let mixHits = 0;
 
       for (const code of NUCLEAR_COUNTRIES) {
         const flowGw = flows[code] ?? 0;
         if (flowGw <= 0) continue; // Only imports (positive = import to DE)
+        positiveFlows++;
 
         const mix = countryGenRows.get(code)?.get(ts);
         if (!mix || mix.total <= 0) continue;
+        mixHits++;
 
         const nuclearShare = mix.nuclear / mix.total;
         nuclearGw += flowGw * nuclearShare;
       }
+
+      // Skip timestamps that have imports but no usable neighbour mix (data
+      // gap / latency tail): counting them as 0 would drag the average down and
+      // can zero out a whole window. Timestamps with no imports at all are a
+      // legitimate 0 and stay counted.
+      if (positiveFlows > 0 && mixHits === 0) return;
 
       data.push({ ts, nuclear_gw: Math.round(nuclearGw * 1000) / 1000 });
       totalNuclear += nuclearGw;

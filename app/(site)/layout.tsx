@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { getCssVariables, globalStyles } from "../../lib/theme";
 import { DEFAULT_FEED_IN } from "../../lib/feedin-config";
+import { estimateCost } from "../../lib/calc";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
 import Footer from "../../components/Footer";
 
@@ -83,6 +84,12 @@ const softwareAppJsonLd = {
 // hardcode a year here. Dynamic SEO content > static SEO content gone stale.
 function buildFaqJsonLd() {
   const year = new Date().getFullYear();
+  // Derive the cost figures from the same price model the calculator uses, so
+  // the FAQ never drifts from the live numbers (rounded to the nearest 1.000 €
+  // since this is a rough orientation in structured data).
+  const round1k = (n: number) => Math.round(n / 1000) * 1000;
+  const pvOnlyCost = round1k(estimateCost(10, 0));
+  const storageAddon = round1k(estimateCost(10, 10) - estimateCost(10, 0));
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -108,7 +115,7 @@ function buildFaqJsonLd() {
         name: "Was kostet eine PV-Anlage mit Speicher?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Eine 10-kWp-Anlage ohne Speicher kostet ca. 15.000 €. Mit einem 10-kWh-Speicher kommen rund 8.500 € hinzu. Die tatsächlichen Kosten variieren je nach Anbieter und Region.",
+          text: `Eine 10-kWp-Anlage ohne Speicher kostet ca. ${pvOnlyCost.toLocaleString("de-DE")} €. Mit einem 10-kWh-Speicher kommen rund ${storageAddon.toLocaleString("de-DE")} € hinzu. Die tatsächlichen Kosten variieren je nach Anbieter und Region.`,
         },
       },
       {

@@ -61,28 +61,45 @@ const NIGHT_SHAPE = [
 // BDEW seasonal factor for base household consumption
 const BASE_MONTHLY = [1.17, 1.05, 1.08, 0.97, 0.93, 0.84, 0.87, 0.87, 0.91, 1.00, 1.13, 1.17];
 
-// Heat pump hourly profile (normalized to sum=1.0)
-// Heating demand concentrated in morning + evening, minimal midday
-// Source: VDI 4655 + SG Ready typical profiles
-const WP_SHAPE = [
+const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+// Normalize an hourly shape so it sums to exactly 1.0. Applied by construction
+// so hand-tuned weights can never silently drift the daily energy off (a tiny
+// drift here scaled the simulated daily WP/E-car energy by a few percent).
+function normalizeToSum1(shape: number[]): number[] {
+  const sum = shape.reduce((a, b) => a + b, 0);
+  return sum === 0 ? shape : shape.map((x) => x / sum);
+}
+
+// Normalize a monthly factor so its DAY-WEIGHTED mean is 1.0 — then summing
+// daily_energy × factor[month] over a full year preserves the annual total.
+function normalizeMonthly(factors: number[]): number[] {
+  const totalDays = DAYS_IN_MONTH.reduce((a, b) => a + b, 0);
+  const dayWeightedMean =
+    factors.reduce((s, x, m) => s + x * DAYS_IN_MONTH[m], 0) / totalDays;
+  return dayWeightedMean === 0 ? factors : factors.map((x) => x / dayWeightedMean);
+}
+
+// Heat pump hourly profile — heating demand concentrated morning + evening,
+// minimal midday. Source: VDI 4655 + SG Ready typical profiles.
+const WP_SHAPE = normalizeToSum1([
   0.04, 0.03, 0.03, 0.03, 0.04, 0.06, // 0–5h
   0.08, 0.08, 0.06, 0.04, 0.03, 0.02, // 6–11h
   0.02, 0.02, 0.02, 0.03, 0.04, 0.06, // 12–17h
   0.07, 0.07, 0.06, 0.05, 0.04, 0.03, // 18–23h
-]; // sum = 1.0
+]);
 
 // Heat pump seasonal factor (relative to average month)
 // COP-weighted: winter high demand, summer near-zero (hot water only ~15%)
-const WP_MONTHLY = [1.8, 1.6, 1.4, 1.0, 0.5, 0.15, 0.15, 0.15, 0.5, 1.0, 1.4, 1.8];
+const WP_MONTHLY = normalizeMonthly([1.8, 1.6, 1.4, 1.0, 0.5, 0.15, 0.15, 0.15, 0.5, 1.0, 1.4, 1.8]);
 
-// E-car charging profile (normalized to sum=1.0)
-// Predominantly evening/night charging (after work, overnight)
-const EA_SHAPE = [
+// E-car charging profile — predominantly evening/night charging.
+const EA_SHAPE = normalizeToSum1([
   0.06, 0.06, 0.06, 0.05, 0.02, 0.01, // 0–5h
   0.01, 0.01, 0.01, 0.02, 0.02, 0.02, // 6–11h
   0.02, 0.02, 0.02, 0.02, 0.03, 0.05, // 12–17h
   0.08, 0.10, 0.10, 0.09, 0.08, 0.07, // 18–23h
-]; // sum = 1.0
+]);
 
 // ─── Hourly consumption calculation ─────────────────────────────────────────
 

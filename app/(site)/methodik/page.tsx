@@ -6,6 +6,7 @@ import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
+import { co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { pageMetadata } from "../../../lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -135,6 +136,8 @@ function formatPriceDate(isoDate: string): string {
 
 export default async function MethodikPage() {
   const prices = await fetchPrices();
+  // CO2 path derived live from co2-config so it never drifts a year off.
+  const co2Y0 = new Date().getFullYear();
   return (
     <div style={S.page}>
       <div style={S.wrap}>
@@ -230,15 +233,15 @@ export default async function MethodikPage() {
           <br />
           <br />
           <span style={S.label}>Preise</span>
-          <span style={S.accent}>Gas:</span> 12 ct/kWh · <span style={S.accent}>Heizöl:</span> 10 ct/kWh
+          <span style={S.accent}>Gas:</span> 11 ct/kWh · <span style={S.accent}>Heizöl:</span> 10 ct/kWh
           <br />
           Grundpreissteigerung: 2 %/Jahr
           <br />
           <br />
           <span style={S.label}>CO₂-Abgabe</span>
-          2025: 55 €/t · 2026: 65 €/t · ab 2027: EU ETS2 (marktbasiert)
+          {co2Y0}: {co2PriceForCalendarYear(co2Y0)} €/t · {co2Y0 + 1}: {co2PriceForCalendarYear(co2Y0 + 1)} €/t · ab {co2Y0 + 2}: EU ETS2 (marktbasiert)
           <br />
-          Wir rechnen konservativ mit +8 €/t pro Jahr ab 2027.
+          Ab {co2Y0 + 2} rechnen wir konservativ mit +8 €/t pro Jahr.
           <br />
           Gas: 200 g CO₂/kWh · Heizöl: 266 g CO₂/kWh
           <br />
