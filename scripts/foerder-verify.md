@@ -134,6 +134,16 @@ Je mehr Regionen im Katalog (aktuell ~110 Städte + 4 Kreise), desto wichtiger,
 dass der Voll-Lauf wirklich jedes Programm abdeckt — die Reichweite skaliert nur,
 wenn der Status verlässlich bleibt.
 
+## Council bei Abweichung
+
+Findet die Prüfung bei einem Programm eine Abweichung (Satz geändert, Topf leer,
+Status anders), zuerst das **Council** laufen lassen (`scripts/council-verify.md`)
+— drei unabhängige Verifizierer, einer mit Widerlegungs-Auftrag, prüfen genau
+diesen einen Befund gegen. Förderung ist ein **Ermessensfall** (Kleingedrucktes,
+„aktiv vs. unsicher", strukturierter Satz vs. kein Abzug) → **kein Auto-Fix, auch
+bei Konsens**. Den vom Council bestätigten Befund als Vorschlag für
+`lib/funding-programs.ts` mailen; der Nutzer gibt frei.
+
 ## Changelog
 
 ### Juni 2026 (erster Lauf, 13 Programme)

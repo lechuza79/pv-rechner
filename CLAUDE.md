@@ -99,7 +99,11 @@ Einspeisevergütung:  EEG-konform, 4 Sätze (Teil/Voll × ≤10/>10 kWp)
                      Quelle = lib/feedin-config.ts (Stand 02–07/2026); die
                      Supabase-Tabelle feed_in_rates ist NICHT angelegt, daher ist
                      die Config die De-facto-Quelle. EEG degressiert 1%/Halbjahr
-                     (1.2. / 1.8.) — Wächter + Runbook scripts/eeg-verify.md
+                     (1.2. / 1.8.) — Wächter + Runbook scripts/eeg-verify.md.
+                     Wächter-Abweichungen werden per Council gegengeprüft
+                     (scripts/council-verify.md: 3 unabhängige Verifizierer, 1
+                     adversarial); bei Konsens fixt EEG sich selbst (Auto-Commit),
+                     CO2/WP/Förderung bleiben Vorschlag.
 Szenarien:           Strompreis +1% / +3% / +5% p.a.
 EV-Delta:            −5% / 0% / +5% pro Szenario
 ```

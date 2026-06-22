@@ -50,9 +50,14 @@ spawnt einen Recherche-Agenten.
 
 ## Nach der Prüfung
 
-- **Bei `abweichung`:** `DEFAULT_FEED_IN` in `lib/feedin-config.ts` aktualisieren
-  (4 Sätze + `validFrom` + `source`), die CLAUDE.md-Berechnungslogik-Sätze
-  mitziehen. `npm run build` + `npm test` grün, committen.
+- **Bei `abweichung`:** zuerst das **Council** laufen lassen
+  (`scripts/council-verify.md`) — drei unabhängige Verifizierer prüfen die neuen
+  Sätze gegen, einer mit Widerlegungs-Auftrag. EEG ist der mechanische Fall:
+  **bei Konsens den Fix automatisch ausführen** — `DEFAULT_FEED_IN` in
+  `lib/feedin-config.ts` (4 Sätze + `validFrom` + `source`), die CLAUDE.md-
+  Berechnungslogik-Sätze mitziehen, `npm run build` + `npm test` grün, auf `main`
+  mergen + pushen, dann Diff + „Council-Konsens" per Mail. **Kein Konsens:** nicht
+  ändern, nur als unsicheren Vorschlag mailen.
 - **Bei `ok`:** nichts ändern (Sätze noch im laufenden Halbjahr gültig).
-- **Bei REFORM-HINWEIS:** nicht blind Zahlen tauschen — erst dem Nutzer melden,
-  weil eine Reform die Berechnungslogik selbst betreffen kann.
+- **Bei REFORM-HINWEIS:** nicht blind Zahlen tauschen, **kein** Auto-Fix — erst
+  dem Nutzer melden, weil eine Reform die Berechnungslogik selbst betreffen kann.

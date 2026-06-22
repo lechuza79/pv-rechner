@@ -65,10 +65,13 @@ Mitgeben: den aktuellen Inhalt von `lib/co2-config.ts` (`anchors`,
 
 - **Bei `ok`:** nur `validFrom` und `reviewBy` in `lib/co2-config.ts` auf das
   nächste Jahr hochsetzen (bestätigt, dass der Pfad noch stimmt).
-- **Bei `abweichung`:** `anchors` / `annualIncrease` anpassen, `source` +
-  `validFrom` + `reviewBy` aktualisieren. Die Tests in
-  `lib/__tests__/calc.test.ts` (`co2PriceForCalendarYear`) auf die neuen
-  Stützstellen anpassen. `npm run build` + `npm test` grün, dann committen.
+- **Bei `abweichung`:** zuerst das **Council** laufen lassen
+  (`scripts/council-verify.md`). CO2 ist ein **Ermessensfall** (welcher Anker,
+  Korridor-Boden vs. -Decke, ETS2-Encoding) → **kein Auto-Fix, auch bei Konsens**.
+  Den vom Council bestätigten Vorschlag mailen; erst nach Freigabe `anchors` /
+  `annualIncrease` + `source`/`validFrom`/`reviewBy` in `lib/co2-config.ts`
+  anpassen, die Tests in `lib/__tests__/calc.test.ts` (`co2PriceForCalendarYear`)
+  auf die neuen Stützstellen, `npm run build` + `npm test` grün, dann committen.
 - **Anker müssen lückenlos sein** (Jahr für Jahr ab dem ersten Anker bis zum
   letzten) — `co2PriceForCalendarYear` extrapoliert erst ab dem Jahr NACH dem
   letzten Anker.

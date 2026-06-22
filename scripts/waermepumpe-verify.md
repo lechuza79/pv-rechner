@@ -63,8 +63,12 @@ Dem Assistenten sagen: **„Lauf die Wärmepumpen-Prüfung."**
 
 ## Nach der Prüfung
 
-- **Bei `abweichung`:** betroffene Felder in `lib/heatpump-config.ts` anpassen,
-  `validFrom` + `reviewBy` + `source` aktualisieren. `npm run build` + `npm test`
-  grün (die Invarianten-Tests in `lib/__tests__/heatpump.test.ts` beachten:
-  Bonus-Summe > Cap, SWWP-Invest > LWWP-Invest). Committen.
+- **Bei `abweichung`:** zuerst das **Council** laufen lassen
+  (`scripts/council-verify.md`). Wärmepumpe ist ein **Ermessensfall** (Förder-
+  Kleingedrucktes, „aktiv vs. ausgeschöpft", welches Investitionsfeld) → **kein
+  Auto-Fix, auch bei Konsens**. Den bestätigten Vorschlag mailen; erst nach
+  Freigabe die betroffenen Felder in `lib/heatpump-config.ts` +
+  `validFrom`/`reviewBy`/`source` anpassen, `npm run build` + `npm test` grün
+  (Invarianten-Tests in `lib/__tests__/heatpump.test.ts` beachten: Bonus-Summe >
+  Cap, SWWP-Invest > LWWP-Invest), committen.
 - **Bei `ok`:** nur `validFrom` + `reviewBy` aufs nächste Jahr setzen.
