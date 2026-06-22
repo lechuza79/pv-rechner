@@ -11,8 +11,9 @@ import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
 import GlossaryTerm from "../../../components/GlossaryTerm";
+import InfoTooltip from "../../../components/InfoTooltip";
 import Header from "../../../components/Header";
-import { IconArrowRight, IconRefresh, IconChevronDown, IconHelpCircle, IconSun } from "../../../components/Icons";
+import { IconArrowRight, IconRefresh, IconChevronDown, IconSun } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 
 const STEPS = ["Situation", "Wohnfläche", "Dämmstandard", "Haushalt", "Heizsystem"];
@@ -264,12 +265,9 @@ export default function Waermepumpe() {
                       <input type="checkbox" checked={incomeBonus} onChange={e => { setIncomeBonus(e.target.checked); setOInvest(null); }} style={{ cursor: "pointer" }} />
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
                         Einkommens-Bonus BEG
-                        <span
-                          title="Zusätzliche 30 % BEG-Förderung für Haushalte mit einem zu versteuernden Jahreseinkommen ≤ 40.000 €. Quelle: BAFA/KfW BEG EM Richtlinie 2026. Max. Gesamtförderung 70 %, Cap 30.000 € förderfähige Kosten."
-                          style={{ display: "inline-flex", alignItems: "center", color: v('--color-text-muted'), cursor: "help" }}
-                        >
-                          <IconHelpCircle size={13} />
-                        </span>
+                        <InfoTooltip title="Einkommens-Bonus BEG" ariaLabel="Was ist der Einkommens-Bonus BEG?">
+                          Zusätzliche 30 % BEG-Förderung für Haushalte mit einem zu versteuernden Jahreseinkommen bis 40.000 €. Die Gesamtförderung ist bei 70 % gedeckelt, maximal 30.000 € förderfähige Kosten. Quelle: BAFA/KfW BEG EM Richtlinie 2026.
+                        </InfoTooltip>
                         (HH-Einkommen ≤ 40.000 €)
                       </span>
                     </label>
