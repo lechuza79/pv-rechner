@@ -155,7 +155,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
                 aria-expanded={rechnerOpen}
                 onFocus={openRechner}
               >
-                Rechner
+                Rentabilität berechnen
                 <IconChevronDown
                   size={14}
                   color={rechnerActive ? v('--color-accent') : v('--color-text-muted')}
@@ -274,7 +274,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
               color: v('--color-text-muted'),
               padding: "14px 0 4px",
             }}>
-              Rechner
+              Rentabilität berechnen
             </div>
             {RECHNER_ITEMS.map((item) => (
               <Link
