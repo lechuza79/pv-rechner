@@ -222,7 +222,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             </div>
 
             <Link href="/photovoltaik-foerderung" style={linkStyle("foerderung")}>PV-Förderung</Link>
-            <Link href="/strommix-deutschland" style={linkStyle("energie")}>Strommix</Link>
+            <Link href="/strommix-deutschland" style={linkStyle("energie")}>Strommix &amp; Energiedaten</Link>
           </nav>
         )}
 
@@ -290,7 +290,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
             <Link href="/photovoltaik-foerderung" style={mobileLinkStyle("foerderung")} onClick={closeMenu}>PV-Förderung</Link>
-            <Link href="/strommix-deutschland" style={mobileLinkStyle("energie")} onClick={closeMenu}>Strommix</Link>
+            <Link href="/strommix-deutschland" style={mobileLinkStyle("energie")} onClick={closeMenu}>Strommix &amp; Energiedaten</Link>
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
