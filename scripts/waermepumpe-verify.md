@@ -22,15 +22,12 @@ zum Jahreswechsel. Stichtag steht in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
 - `investLwwpBase` / `investLwwpPerKw` / `investSwwpBase` / `investSwwpPerKw` /
   `heizkoerperTauschKosten` — BWP Preisübersicht (jeweils aktuellstes Jahr)
 - `wpTarif` — Wärmepumpen-Stromtarif (§ 14a EnWG, BDEW)
-- `gasPriceCtPerKwh` / `gasFixCostPerYear` / `gasInvestNeubau` — Gas-Referenz (BDEW)
-
-> **⚠️ Gas-/Öl-Preis ist doppelt abgelegt** (bis zur geplanten Zusammenführung):
-> `heatpump-config.gasPriceCtPerKwh` (WP-Rechner) UND `FUEL.gas.price` /
-> `FUEL.oil.price` in `lib/constants.ts` (PV-Rechner, `calcFuelCost25`) + die
-> `WP_FUEL_OPTIONS`. Bei einer **Gas-/Öl-Preis-Änderung BEIDE Stellen** als „zu
-> aktualisieren" listen, sonst rechnet der PV-Rechner mit dem alten Wert weiter.
-> (Sobald die Audit-Session beides zu einer Quelle zusammengeführt hat, kann
-> dieser Hinweis raus.)
+- **Gas-/Öl-Preis + CO2-Faktor:** liegen an EINER Stelle — `FUEL_PRICE` in
+  `lib/constants.ts` (Single Source of Truth). `heatpump-config`
+  (`gasPriceCtPerKwh`/`gasCo2PerKwh`), `FUEL` und `WP_FUEL_OPTIONS` leiten daraus
+  ab. **Preis-/CO2-Änderung nur in `FUEL_PRICE`** pflegen → wirkt überall.
+- `gasFixCostPerYear` / `gasInvestNeubau` — WP-spezifisch, bleiben in
+  `heatpump-config` (BDEW); der Kessel-Wirkungsgrad ebenfalls (pro Variante).
 
 **Nicht prüfen (Modell-/Bauphysik-Konstanten, ändern sich nicht jährlich):**
 - `specDemandBestand` / `specDemandNeubau` (dena Gebäudereport, DIN V 18599)
