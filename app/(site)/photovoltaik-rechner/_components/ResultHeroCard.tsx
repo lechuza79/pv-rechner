@@ -118,12 +118,14 @@ export default function ResultHeroCard({
               <input
                 value={plz}
                 placeholder="PLZ"
+                aria-label="Postleitzahl eingeben"
                 inputMode="numeric"
                 maxLength={5}
                 className={!plzSource && !plzLoading ? "sc-plz-pulse" : undefined}
                 onChange={e => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
                 style={{
-                  width: 52, textAlign: "center", fontSize: 13, fontWeight: 700,
+                  // fontSize >= 16px prevents iOS Safari auto-zoom on focus.
+                  width: 56, textAlign: "center", fontSize: 16, fontWeight: 700,
                   fontFamily: v('--font-mono'),
                   color: plz.length === 5 ? v('--color-accent') : v('--color-text-secondary'),
                   background: plz.length === 5 ? v('--color-accent-dim') : v('--color-bg'),
@@ -132,7 +134,7 @@ export default function ResultHeroCard({
                 }}
               />
               {plz.length === 5 && !plzLoading && !plzSource && (
-                <button type="submit" style={{
+                <button type="submit" aria-label="Standort übernehmen" style={{
                   padding: "3px 6px", fontSize: 11, fontWeight: 700, lineHeight: 1,
                   background: v('--color-accent'), color: v('--color-text-on-accent'),
                   border: "none", borderRadius: v('--radius-sm'), cursor: "pointer",

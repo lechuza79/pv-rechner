@@ -8,9 +8,9 @@ export const metadata: Metadata = pageMetadata({
   path: "/datenschutz",
   title: "Datenschutzerklärung – Solar Check",
   description:
-    "Datenschutzerklärung für Solar Check. Keine Cookies, kein Tracking, alle Berechnungen lokal im Browser.",
+    "Datenschutzerklärung für Solar Check. Datensparsam, kein Lead-Funnel, kein Werbe-Tracking. Berechnungen laufen im Browser; nur für Standort-Ertrag und optionales Speichern werden Daten übermittelt.",
   ogImageTitle: "Datenschutz",
-  ogImageSubtitle: "Keine Cookies, kein Tracking. Alles lokal im Browser.",
+  ogImageSubtitle: "Datensparsam und transparent — was wir erheben und was nicht.",
 });
 
 const S = {
@@ -114,10 +114,14 @@ export default function DatenschutzPage() {
         <p style={S.p}>
           Der Schutz deiner Daten ist uns wichtig. Diese Website wurde bewusst so
           gebaut, dass so wenig personenbezogene Daten wie möglich erhoben
-          werden. Es gibt keine Nutzer-Accounts, keine Cookies, kein Tracking
-          durch Drittanbieter und keine Werbung. Alle Berechnungen laufen
-          ausschließlich in deinem Browser — es werden keine Eingabedaten an
-          unsere oder fremde Server übermittelt.
+          werden. Es gibt keinen Lead-Funnel, kein Werbe-Tracking durch
+          Drittanbieter und keine Werbung — du bekommst dein Ergebnis sofort,
+          ohne Registrierung. Die eigentliche Berechnung läuft in deinem Browser.
+          In zwei Fällen werden dennoch Daten übermittelt: für die
+          standortgenaue Ertragsprognose wird deine Postleitzahl an einen
+          Berechnungsdienst gesendet (Abschnitt 7), und wenn du dich freiwillig
+          anmeldest, um Berechnungen zu speichern, legen wir ein Nutzerkonto an
+          (Abschnitt 8). Beides ist unten transparent beschrieben.
         </p>
 
         <h2 style={S.h2}>3. Hosting</h2>
@@ -154,35 +158,7 @@ export default function DatenschutzPage() {
           </a>
         </p>
 
-        <h2 style={S.h2}>4. Webanalyse (Umami)</h2>
-        <p style={S.p}>
-          Wir verwenden Umami, eine datenschutzfreundliche, selbst gehostete
-          Webanalyse-Software. Umami erhebt ausschließlich anonymisierte
-          Nutzungsdaten:
-        </p>
-        <ul style={S.ul}>
-          <li style={S.li}>Seitenaufrufe (welche Seiten besucht werden)</li>
-          <li style={S.li}>Referrer (woher Besucher kommen)</li>
-          <li style={S.li}>
-            Land (aus der IP-Adresse abgeleitet, IP wird nicht gespeichert)
-          </li>
-          <li style={S.li}>Gerätetyp, Browser, Betriebssystem</li>
-        </ul>
-        <p style={S.p}>
-          Umami setzt <strong style={S.strong}>keine Cookies</strong> und
-          speichert{" "}
-          <strong style={S.strong}>keine IP-Adressen</strong> oder andere
-          personenbezogene Daten. Es werden keine Daten an Dritte weitergegeben.
-          Die Daten werden auf unserem eigenen Server in der EU verarbeitet.
-        </p>
-        <p style={S.p}>
-          Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
-          an der Analyse der Website-Nutzung zur Verbesserung des Angebots).
-          Aufgrund der vollständigen Anonymisierung ist kein Cookie-Banner
-          erforderlich.
-        </p>
-
-        <h2 style={S.h2}>5. Google Search Console</h2>
+        <h2 style={S.h2}>4. Google Search Console</h2>
         <p style={S.p}>
           Wir nutzen die Google Search Console, um die Sichtbarkeit der Website
           in den Google-Suchergebnissen zu analysieren. Die Search Console
@@ -199,39 +175,72 @@ export default function DatenschutzPage() {
           </a>
         </p>
 
-        <h2 style={S.h2}>6. Google Fonts</h2>
+        <h2 style={S.h2}>5. Schriftarten</h2>
         <p style={S.p}>
-          Diese Website nutzt Web-Fonts von Google (DM Sans, JetBrains Mono). Die
-          Fonts werden beim Seitenaufruf von Google-Servern geladen, wobei deine
-          IP-Adresse an Google übermittelt wird. Rechtsgrundlage ist Art. 6 Abs.
-          1 lit. f DSGVO (berechtigtes Interesse an einer einheitlichen
-          Darstellung). Weitere Informationen:{" "}
+          Diese Website verwendet die Schriftarten DM Sans und JetBrains Mono.
+          Diese werden nicht von Google-Servern geladen, sondern sind fest in die
+          Website integriert und werden direkt von unserer eigenen Domain
+          ausgeliefert. Es findet dabei keine Verbindung zu Google statt und es
+          wird keine IP-Adresse an Google übermittelt.
+        </p>
+
+        <h2 style={S.h2}>6. Cookies</h2>
+        <p style={S.p}>
+          Diese Website setzt keine Tracking- oder Werbe-Cookies. Solange du dich
+          nicht anmeldest, werden überhaupt keine Cookies gesetzt. Meldest du
+          dich an, um Berechnungen zu speichern (siehe Abschnitt 8), wird ein
+          technisch notwendiges Sitzungs-Cookie gesetzt, damit du eingeloggt
+          bleibst. Dieses Cookie ist für den Anmeldevorgang erforderlich (§ 25
+          Abs. 2 Nr. 2 TTDSG); ein Cookie-Banner ist dafür nicht nötig.
+        </p>
+
+        <h2 style={S.h2}>7. Standortgenaue Ertragsprognose</h2>
+        <p style={S.p}>
+          Für eine realistische Ertragsprognose berechnen wir den
+          standortabhängigen Solarertrag. Dazu wird die von dir eingegebene
+          Postleitzahl bzw. die daraus abgeleiteten Koordinaten an unseren Server
+          und von dort an den Photovoltaik-Ertragsdienst PVGIS der Europäischen
+          Kommission (Joint Research Centre) übermittelt. In der Live-Simulation
+          werden die Koordinaten zusätzlich an den Wetterdienst Open-Meteo
+          gesendet. Dabei wird technisch bedingt die IP-Adresse unseres Servers,
+          nicht deine eigene, an diese Dienste übertragen. Es werden keine
+          Berechnungs-Eingaben darüber hinaus weitergegeben. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer
+          standortgenauen Berechnung). Abgefragte Ertragsdaten werden zur
+          Beschleunigung zwischengespeichert; sie sind einem Standort, nicht
+          deiner Person zugeordnet.
+        </p>
+
+        <h2 style={S.h2}>8. Nutzerkonto und gespeicherte Berechnungen</h2>
+        <p style={S.p}>
+          Du kannst die Website vollständig ohne Anmeldung nutzen. Möchtest du
+          deine Berechnungen speichern und später wieder aufrufen, kannst du dir
+          freiwillig ein Konto anlegen. Die Anmeldung erfolgt per Magic Link: Du
+          gibst deine E-Mail-Adresse ein und erhältst einen Anmeldelink — ein
+          Passwort ist nicht nötig. Gespeichert werden dann deine E-Mail-Adresse
+          und die von dir bewusst gespeicherten Berechnungen.
+        </p>
+        <p style={S.p}>
+          Für Anmeldung und Speicherung nutzen wir den Dienst Supabase (betrieben
+          von Supabase Inc.) als Auftragsverarbeiter im Sinne von Art. 28 DSGVO.
+          Die Daten werden ausschließlich zur Bereitstellung deines Kontos und
+          deiner gespeicherten Berechnungen verarbeitet und nicht zu Werbezwecken
+          genutzt oder an Dritte verkauft. Rechtsgrundlage ist Art. 6 Abs. 1 lit.
+          b DSGVO (Erfüllung des von dir gewünschten Dienstes). Du kannst dein
+          Konto und alle gespeicherten Berechnungen jederzeit löschen, indem du
+          dich an{" "}
+          <a href="mailto:hey@solar-check.io" style={S.a}>
+            hey [at] solar-check.io
+          </a>{" "}
+          wendest. Weitere Informationen:{" "}
           <a
-            href="https://policies.google.com/privacy"
+            href="https://supabase.com/privacy"
             target="_blank"
             rel="noopener noreferrer"
             style={S.a}
           >
-            policies.google.com/privacy
+            supabase.com/privacy
           </a>
-        </p>
-        <p style={S.p}>
-          Alternativ können die Fonts lokal eingebunden werden, um die Verbindung
-          zu Google-Servern zu vermeiden. Dies ist für eine zukünftige Version
-          geplant.
-        </p>
-
-        <h2 style={S.h2}>7. Keine Cookies</h2>
-        <p style={S.p}>
-          Diese Website setzt keine Cookies — weder eigene noch von
-          Drittanbietern. Es gibt daher keinen Cookie-Banner.
-        </p>
-
-        <h2 style={S.h2}>8. Lokale Datenspeicherung</h2>
-        <p style={S.p}>
-          Der PV-Rechner verarbeitet alle Eingaben ausschließlich lokal in deinem
-          Browser. Es werden keine Daten an Server übermittelt, gespeichert oder
-          weitergegeben. Wenn du den Browser schließt, sind alle Eingaben weg.
         </p>
 
         <h2 style={S.h2}>9. Kontakt per E-Mail</h2>
@@ -276,7 +285,7 @@ export default function DatenschutzPage() {
           Änderungen an der Website oder rechtlichen Anforderungen zu
           entsprechen.
         </p>
-        <p style={S.muted}>Stand: März 2026</p>
+        <p style={S.muted}>Stand: Juni 2026</p>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { getCssVariables, globalStyles } from "../../lib/theme";
+import { DEFAULT_FEED_IN } from "../../lib/feedin-config";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
 import Footer from "../../components/Footer";
 
@@ -115,7 +116,7 @@ function buildFaqJsonLd() {
         name: `Wie hoch ist die Einspeisevergütung ${year}?`,
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Die Einspeisevergütung für Anlagen bis 10 kWp liegt aktuell bei ca. 8,03 ct/kWh. Sie ist für 20 Jahre ab Inbetriebnahme garantiert, sinkt aber für neue Anlagen kontinuierlich.",
+          text: `Die Einspeisevergütung für Anlagen bis 10 kWp liegt aktuell bei ca. ${DEFAULT_FEED_IN.teilUnder10.toLocaleString("de-DE")} ct/kWh. Sie ist für 20 Jahre ab Inbetriebnahme garantiert, sinkt aber für neue Anlagen kontinuierlich.`,
         },
       },
     ],

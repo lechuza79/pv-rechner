@@ -5,6 +5,7 @@ import GlossaryTerm from "../../../components/GlossaryTerm";
 import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
+import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 import { pageMetadata } from "../../../lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -328,17 +329,16 @@ export default async function MethodikPage() {
           <br />
           <span style={S.accent}><GlossaryTerm id="einspeiseverguetung">Einspeisevergütung</GlossaryTerm> (EEG):</span>
           <br />
-          &nbsp;&nbsp;<GlossaryTerm id="teileinspeisung">Teileinspeisung</GlossaryTerm>: 8,03 ct/kWh (≤10 kWp) / 6,95 ct/kWh ({">"}10 kWp)
+          &nbsp;&nbsp;<GlossaryTerm id="teileinspeisung">Teileinspeisung</GlossaryTerm>: {DEFAULT_FEED_IN.teilUnder10.toLocaleString("de-DE")} ct/kWh (≤10 kWp) / {DEFAULT_FEED_IN.teilOver10.toLocaleString("de-DE")} ct/kWh ({">"}10 kWp)
           <br />
-          &nbsp;&nbsp;<GlossaryTerm id="volleinspeisung">Volleinspeisung</GlossaryTerm>: 12,73 ct/kWh (≤10 kWp) / 10,67 ct/kWh ({">"}10 kWp)
+          &nbsp;&nbsp;<GlossaryTerm id="volleinspeisung">Volleinspeisung</GlossaryTerm>: {DEFAULT_FEED_IN.vollUnder10.toLocaleString("de-DE")} ct/kWh (≤10 kWp) / {DEFAULT_FEED_IN.vollOver10.toLocaleString("de-DE")} ct/kWh ({">"}10 kWp)
           <br />
           &nbsp;&nbsp;Fix für 20 Jahre ab Inbetriebnahme. Bei Anlagen {">"}10 kWp wird ein
           gewichteter Mischsatz berechnet. Halbjährliche Degression ca. 1%.
           <br />
-          &nbsp;&nbsp;<span style={S.muted}>Stand: Februar 2025 · Quelle: Bundesnetzagentur, §48 EEG</span>
+          &nbsp;&nbsp;<span style={S.muted}>Stand: {formatPriceDate(DEFAULT_FEED_IN.validFrom)} · Quelle: Bundesnetzagentur, §48 EEG</span>
           <br />
-          <span style={S.accent}>Strompreis:</span> 0,34 €/kWh
-          (Durchschnitt 2024)
+          <span style={S.accent}>Strompreis:</span> {(prices.electricityPrice * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct/kWh
           <br />
           <br />
           <span style={S.label}>3 Szenarien</span>

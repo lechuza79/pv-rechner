@@ -28,7 +28,11 @@ export default function InlineEdit({ value, onCommit, unit, step: _step = 1, min
   if (!editing) {
     return (
       <span
+        role="button"
+        tabIndex={0}
+        aria-label={`${display}${unit} bearbeiten`}
         onClick={startEdit}
+        onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); startEdit(); } }}
         style={{
           cursor: "pointer", borderBottom: `1px dashed ${v('--color-accent')}`,
           padding: "2px 0 3px", display: "inline-flex", alignItems: "baseline", gap: 2,
@@ -46,12 +50,15 @@ export default function InlineEdit({ value, onCommit, unit, step: _step = 1, min
     <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
       <input
         autoFocus
+        inputMode="decimal"
         value={draft}
         onChange={e => setDraft(e.target.value)}
         onBlur={commit}
         onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); commit(); } if (e.key === "Escape") setEditing(false); }}
         style={{
-          width, textAlign: "right", fontSize: "inherit", fontWeight: 700,
+          // fontSize must stay >= 16px: iOS Safari auto-zooms into any focused
+          // input below 16px and never zooms back out (display value can be smaller).
+          width, textAlign: "right", fontSize: 16, fontWeight: 700,
           fontFamily: v('--font-mono'), color: v('--color-accent'),
           background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`,
           borderRadius: v('--radius-sm'), padding: "3px 6px", outline: "none",

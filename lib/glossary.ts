@@ -69,7 +69,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Der gesetzlich festgelegte Betrag, den du pro eingespeister Kilowattstunde Solarstrom bekommst — 20 Jahre lang fix.",
     long:
-      "Die Einspeisevergütung ist der nach dem Erneuerbare-Energien-Gesetz (EEG) garantierte Betrag, den du für jede ins Netz eingespeiste Kilowattstunde Solarstrom erhältst. Sie ist ab Inbetriebnahme 20 Jahre lang fest und sinkt für Neuanlagen halbjährlich leicht (Degression). Die Höhe hängt von der Anlagengröße und davon ab, ob du teil- oder volleinspeist. Aktuell liegt sie bei rund 8 ct/kWh (Teileinspeisung) bzw. rund 13 ct/kWh (Volleinspeisung) für kleine Anlagen — deutlich unter dem Strompreis, weshalb hoher Eigenverbrauch sich mehr lohnt als Einspeisen.",
+      "Die Einspeisevergütung ist der nach dem Erneuerbare-Energien-Gesetz (EEG) garantierte Betrag, den du für jede ins Netz eingespeiste Kilowattstunde Solarstrom erhältst. Sie ist ab Inbetriebnahme 20 Jahre lang fest und sinkt für Neuanlagen halbjährlich leicht (Degression). Die Höhe hängt von der Anlagengröße und davon ab, ob du teil- oder volleinspeist. Aktuell liegt sie bei rund 8 ct/kWh (Teileinspeisung) bzw. rund 12 ct/kWh (Volleinspeisung) für kleine Anlagen — deutlich unter dem Strompreis, weshalb hoher Eigenverbrauch sich mehr lohnt als Einspeisen.",
   },
   teileinspeisung: {
     term: "Teileinspeisung",
