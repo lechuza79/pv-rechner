@@ -758,6 +758,23 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               oStrom={oStrom} fuelType={fuelType} setFuelType={setFuelType}
             />
 
+            {spKwh > 0 && effEinspeisungModus !== "voll" && (
+              <div style={{
+                background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
+                borderRadius: v('--radius-md'), padding: "12px 14px", marginBottom: 16,
+                fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'),
+              }}>
+                Dein Speicher hebt den <GlossaryTerm id="eigenverbrauch">Eigenverbrauch</GlossaryTerm> auf{" "}
+                <strong style={{ color: v('--color-text-primary') }}>{Math.round(effEv * 100)}%</strong> — so viel
+                deines Solarstroms nutzt du übers Jahr selbst, der Rest fließt ins Netz. Dieser Wert ist der
+                wichtigste Hebel für die Wirtschaftlichkeit: Jede selbst genutzte Kilowattstunde spart dir den
+                vollen Strompreis, während eingespeister Strom nur die deutlich niedrigere Einspeisevergütung bringt.{" "}
+                <Link href="/methodik" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>
+                  Wie wir das berechnen
+                </Link>
+              </div>
+            )}
+
             {/* Chart */}
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-lg'), padding: "14px 10px 6px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
               <div ref={chartExport.chartRef}>

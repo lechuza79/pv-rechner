@@ -165,6 +165,20 @@ export default async function MethodikPage() {
           Verbrauch, desto geringer der Eigenverbrauchsanteil — weil mehr
           überschüssiger Strom ins Netz fließt.
         </p>
+        <p style={S.p}>
+          Wichtig: Der Eigenverbrauchsanteil ist eine <strong style={{ fontWeight: 700, color: v('--color-text-primary') }}>Jahresgröße</strong>.
+          Er stammt aus Ganzjahres-Simulationen der HTW Berlin (25.000 Konfigurationen im
+          Minutentakt) und bildet damit bereits ab, dass im Sommer Überschüsse eingespeist
+          werden und im Winter zugekauft wird. Genau dieser eine Jahreswert fließt in die
+          Wirtschaftlichkeitsrechnung — er wird nicht zusätzlich saisonal „verkleinert".
+        </p>
+        <p style={S.p}>
+          Nicht verwechseln mit dem <strong style={{ fontWeight: 700, color: v('--color-text-primary') }}>Autarkiegrad</strong>: Der
+          Eigenverbrauchsanteil sagt, wie viel deines <em>erzeugten</em> Solarstroms du selbst
+          nutzt. Der Autarkiegrad sagt, wie viel deines <em>Verbrauchs</em> du aus eigener Sonne
+          deckst. Die oft genannten „70–80 %" beziehen sich meist auf den Autarkiegrad, nicht
+          auf den Eigenverbrauch.
+        </p>
         <div style={S.card}>
           <span style={S.label}>Einflussfaktoren</span>
           <span style={S.accent}>Anlagengröße</span> relativ zum Verbrauch
