@@ -2,26 +2,32 @@
 
 import { useEffect, useRef, useState } from "react";
 import Header from "../../../components/Header";
+import Footer from "../../../components/Footer";
+import { IconBolt, IconRefresh, IconLink } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
+import { buildWidgetThemeQuery } from "../../../lib/widget-theme";
+
+const SITE_URL = "https://solar-check.io";
 
 interface ThemePreset {
   id: string;
   label: string;
   description: string;
+  /** --widget-* overrides (colors + radius). null = Solar-Check-Standardlook. */
   vars: Record<string, string> | null;
 }
 
 const PRESETS: ThemePreset[] = [
   {
     id: "default",
-    label: "Default",
-    description: "Solar-Check-Brand: helles Layout, blauer Akzent.",
+    label: "Standard",
+    description: "Heller Solar-Check-Look mit blauem Akzent.",
     vars: null,
   },
   {
     id: "dark",
-    label: "Dark",
-    description: "Dunkler Hintergrund, blauer Akzent.",
+    label: "Dunkel",
+    description: "Dunkler Hintergrund für dunkle Websites.",
     vars: {
       "--widget-bg": "#0F0F0F",
       "--widget-fg": "#F5F5F5",
@@ -29,13 +35,12 @@ const PRESETS: ThemePreset[] = [
       "--widget-accent": "#4A9EFF",
       "--widget-accent-fg": "#0F0F0F",
       "--widget-border-radius": "12px",
-      "--widget-font-family": "system-ui,-apple-system,sans-serif",
     },
   },
   {
-    id: "beispiel",
-    label: "Beispiel",
-    description: "Warmer Akzent, abgerundete Ecken — Portfolio-Look.",
+    id: "warm",
+    label: "Warm",
+    description: "Warmer Akzent mit weichen Ecken.",
     vars: {
       "--widget-bg": "#F7F4EE",
       "--widget-fg": "#2A2520",
@@ -43,7 +48,6 @@ const PRESETS: ThemePreset[] = [
       "--widget-accent": "#C45A2E",
       "--widget-accent-fg": "#FFFFFF",
       "--widget-border-radius": "8px",
-      "--widget-font-family": "Georgia,serif",
     },
   },
 ];
@@ -59,16 +63,22 @@ interface WidgetVariant {
   label: string;
   src: string;
   height: number;
-  /** If set, the iframe is rendered at this fixed width; otherwise frame width selector applies. */
+  /** If set, the iframe renders at this fixed width; otherwise the width selector applies. */
   fixedWidth?: number;
+}
+
+interface Attribution {
+  /** Deep link target on solar-check.io — this anchor in the HOST page is the actual backlink. */
+  path: string;
+  text: string;
 }
 
 interface WidgetSection {
   id: string;
   label: string;
-  /** Whether this section shows the container-width selector. */
+  intro: string;
+  attribution: Attribution;
   showFrameWidth: boolean;
-  /** Whether this section shows the autoswitch toggle (adds ?auto=1 to src). */
   showAutoswitch?: boolean;
   variants: WidgetVariant[];
 }
@@ -76,56 +86,84 @@ interface WidgetSection {
 const SECTIONS: WidgetSection[] = [
   {
     id: "erzeugung",
-    label: "Stromerzeugung (Live)",
+    label: "Stromerzeugung (live)",
+    intro:
+      "Die aktuelle Erzeugung aus erneuerbaren Quellen als Radial-Chart der letzten 24 Stunden. Optional wechselt das Widget automatisch durch die Energieträger.",
+    attribution: {
+      path: "/strommix-deutschland",
+      text: "Stromerzeugung in Deutschland – live bei Solar Check",
+    },
     showFrameWidth: false,
     showAutoswitch: true,
     variants: [
-      {
-        id: "standard",
-        label: "Standard",
-        src: "/embed/erzeugung",
-        height: 460,
-        fixedWidth: 380,
-      },
-      {
-        id: "mini",
-        label: "Kompakt",
-        src: "/embed/erzeugung-mini",
-        height: 330,
-        fixedWidth: 260,
-      },
+      { id: "standard", label: "Standard", src: "/embed/erzeugung", height: 460, fixedWidth: 380 },
+      { id: "mini", label: "Kompakt", src: "/embed/erzeugung-mini", height: 330, fixedWidth: 260 },
     ],
   },
   {
     id: "strommix",
     label: "Strommix Deutschland",
+    intro:
+      "Der deutsche Strommix im Zeitverlauf – erneuerbare und fossile Erzeugung nebeneinander, mit wählbarem Zeitraum von 24 Stunden bis zum Maximum.",
+    attribution: {
+      path: "/strommix-deutschland",
+      text: "Strommix Deutschland – live bei Solar Check",
+    },
     showFrameWidth: true,
-    variants: [
-      {
-        id: "strommix",
-        label: "Strommix",
-        src: "/embed/strommix",
-        height: 460,
-      },
-    ],
+    variants: [{ id: "strommix", label: "Strommix", src: "/embed/strommix", height: 460 }],
   },
 ];
 
-export default function EmbedDemoClient() {
+const RULES = [
+  {
+    icon: IconBolt,
+    title: "Kostenlos und ohne Anmeldung",
+    body: "Kopiere den Code und füge ihn in deine Seite ein. Es gibt keine Registrierung, keine Kosten und kein Limit.",
+  },
+  {
+    icon: IconRefresh,
+    title: "Immer aktuell",
+    body: "Das Widget lädt die Daten live von Solar Check. Du musst nie etwas nachpflegen – die Werte bleiben automatisch auf dem neuesten Stand.",
+  },
+  {
+    icon: IconLink,
+    title: "Mit Quellenangabe",
+    body: "Bitte lass den Quellen-Link unter dem Widget stehen. Er ist im Code bereits enthalten und ist die einzige Bedingung für die kostenlose Nutzung.",
+  },
+];
+
+export default function WidgetsClient() {
   return (
     <div style={S.page}>
-      <Header />
+      <Header activePage="widgets" />
       <div style={S.wrap}>
-        <h1 style={S.h1}>Embed-Demo</h1>
+        <h1 style={S.h1}>Energie-Widgets für die eigene Website</h1>
         <p style={S.subtitle}>
-          Vorschau aller einbettbaren Widgets in verschiedenen Themes. Theme-Wechsel
-          läuft per <code style={S.code}>postMessage</code> aus dem Eltern-Frame.
+          Bette den deutschen Strommix und die Live-Stromerzeugung kostenlos auf deiner Seite ein.
+          Die Daten aktualisieren sich automatisch, und das Aussehen lässt sich an dein Design anpassen.
+          Wähle ein Widget, passe Theme und Breite an und kopiere den fertigen Code.
         </p>
+
+        <div style={S.rules}>
+          {RULES.map((r) => {
+            const Icon = r.icon;
+            return (
+              <div key={r.title} style={S.ruleCard}>
+                <div style={S.ruleIcon}>
+                  <Icon size={18} color={v("--color-accent")} />
+                </div>
+                <div style={S.ruleTitle}>{r.title}</div>
+                <div style={S.ruleBody}>{r.body}</div>
+              </div>
+            );
+          })}
+        </div>
 
         {SECTIONS.map((s) => (
           <SectionPreview key={s.id} section={s} />
         ))}
       </div>
+      <Footer />
     </div>
   );
 }
@@ -143,10 +181,12 @@ function SectionPreview({ section }: { section: WidgetSection }) {
   const [frameW, setFrameW] = useState<number>(480);
   const [autoswitch, setAutoswitch] = useState<number>(0);
   const activePreset = PRESETS.find((p) => p.id === themeId);
+  const themeVars = activePreset?.vars ?? {};
 
   return (
     <section style={S.section}>
       <h2 style={S.h2}>{section.label}</h2>
+      <p style={S.sectionIntro}>{section.intro}</p>
 
       <div style={S.controls}>
         <div>
@@ -157,33 +197,25 @@ function SectionPreview({ section }: { section: WidgetSection }) {
                 key={p.id}
                 type="button"
                 onClick={() => setThemeId(p.id)}
-                style={{
-                  ...S.btn,
-                  ...(themeId === p.id ? S.btnActive : null),
-                }}
+                style={{ ...S.btn, ...(themeId === p.id ? S.btnActive : null) }}
               >
                 {p.label}
               </button>
             ))}
           </div>
-          {activePreset?.description && (
-            <div style={S.hint}>{activePreset.description}</div>
-          )}
+          {activePreset?.description && <div style={S.hint}>{activePreset.description}</div>}
         </div>
 
         {section.showFrameWidth && (
           <div>
-            <div style={S.label}>Container-Breite</div>
+            <div style={S.label}>Breite</div>
             <div style={S.btnRow}>
               {FRAME_WIDTHS.map((w) => (
                 <button
                   key={w.id}
                   type="button"
                   onClick={() => setFrameW(w.width)}
-                  style={{
-                    ...S.btn,
-                    ...(frameW === w.width ? S.btnActive : null),
-                  }}
+                  style={{ ...S.btn, ...(frameW === w.width ? S.btnActive : null) }}
                 >
                   {w.label}
                 </button>
@@ -201,18 +233,15 @@ function SectionPreview({ section }: { section: WidgetSection }) {
                   key={o.id}
                   type="button"
                   onClick={() => setAutoswitch(o.ms)}
-                  style={{
-                    ...S.btn,
-                    ...(autoswitch === o.ms ? S.btnActive : null),
-                  }}
+                  style={{ ...S.btn, ...(autoswitch === o.ms ? S.btnActive : null) }}
                 >
                   {o.label}
                 </button>
               ))}
             </div>
             <div style={S.hint}>
-              Wechselt im gewählten Intervall automatisch durch die Energieträger.
-              Pausiert für 30 s bei manuellem Klick auf die Pfeile.
+              Das Widget wechselt im gewählten Intervall automatisch durch die Energieträger und
+              pausiert für 30 Sekunden, wenn jemand manuell auf die Pfeile klickt.
             </div>
           </div>
         )}
@@ -223,7 +252,9 @@ function SectionPreview({ section }: { section: WidgetSection }) {
           <VariantFrame
             key={variant.id}
             variant={variant}
+            attribution={section.attribution}
             themeId={themeId}
+            themeVars={themeVars}
             frameW={frameW}
             autoswitch={autoswitch}
             showVariantLabel={section.variants.length > 1}
@@ -236,13 +267,17 @@ function SectionPreview({ section }: { section: WidgetSection }) {
 
 function VariantFrame({
   variant,
+  attribution,
   themeId,
+  themeVars,
   frameW,
   autoswitch,
   showVariantLabel,
 }: {
   variant: WidgetVariant;
+  attribution: Attribution;
   themeId: string;
+  themeVars: Record<string, string>;
   frameW: number;
   autoswitch: number;
   showVariantLabel: boolean;
@@ -250,7 +285,8 @@ function VariantFrame({
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const [iframeReady, setIframeReady] = useState(false);
 
-  // Toggle Autoswitch reloads the iframe with ?auto=1 query param
+  // Live preview drives the theme via postMessage (instant, no reload). The
+  // autoswitch interval is the only thing that needs a fresh src.
   const src = autoswitch > 0 ? `${variant.src}?auto=${autoswitch}` : variant.src;
 
   useEffect(() => {
@@ -259,9 +295,7 @@ function VariantFrame({
 
   useEffect(() => {
     const iframe = iframeRef.current;
-    if (iframe?.contentDocument?.readyState === "complete") {
-      setIframeReady(true);
-    }
+    if (iframe?.contentDocument?.readyState === "complete") setIframeReady(true);
   }, []);
 
   useEffect(() => {
@@ -279,9 +313,7 @@ function VariantFrame({
 
   return (
     <div style={{ ...S.frameContainer, maxWidth: effectiveWidth }}>
-      {showVariantLabel && (
-        <div style={S.variantLabel}>{variant.label}</div>
-      )}
+      {showVariantLabel && <div style={S.variantLabel}>{variant.label}</div>}
       <iframe
         ref={iframeRef}
         src={src}
@@ -289,34 +321,49 @@ function VariantFrame({
         onLoad={() => setIframeReady(true)}
         style={{ ...S.iframe, height: variant.height }}
       />
-      <EmbedSnippet variant={variant} autoswitch={autoswitch} />
+      <EmbedSnippet
+        variant={variant}
+        attribution={attribution}
+        themeVars={themeVars}
+        autoswitch={autoswitch}
+      />
     </div>
   );
 }
 
 function EmbedSnippet({
   variant,
+  attribution,
+  themeVars,
   autoswitch,
 }: {
   variant: WidgetVariant;
+  attribution: Attribution;
+  themeVars: Record<string, string>;
   autoswitch: number;
 }) {
   const [copied, setCopied] = useState(false);
 
-  const url =
-    autoswitch > 0
-      ? `https://solar-check.io${variant.src}?auto=${autoswitch}`
-      : `https://solar-check.io${variant.src}`;
+  const qs = new URLSearchParams(buildWidgetThemeQuery(themeVars));
+  if (autoswitch > 0) qs.set("auto", String(autoswitch));
+  const query = qs.toString();
+  const url = `${SITE_URL}${variant.src}${query ? `?${query}` : ""}`;
+  const width = variant.fixedWidth ?? 480;
 
+  // The <a> below the iframe lives in the HOST page's HTML — that anchor, not
+  // the iframe src, is what search engines count as a backlink to solar-check.io.
   const code = [
     `<iframe`,
     `  src="${url}"`,
-    `  width="${variant.fixedWidth ?? 480}"`,
+    `  width="${width}"`,
     `  height="${variant.height}"`,
-    `  style="border:0;display:block"`,
+    `  style="border:0;display:block;width:100%;max-width:${width}px"`,
     `  title="${variant.label} — Solar Check"`,
     `  loading="lazy"`,
     `></iframe>`,
+    `<p style="margin:6px 0 0;font:13px/1.4 system-ui,sans-serif">`,
+    `  <a href="${SITE_URL}${attribution.path}" target="_blank" rel="noopener">${attribution.text}</a>`,
+    `</p>`,
   ].join("\n");
 
   const copy = async () => {
@@ -332,7 +379,7 @@ function EmbedSnippet({
   return (
     <div style={S.snippetWrap}>
       <div style={S.snippetHeader}>
-        <span style={S.snippetLabel}>Embed-Code</span>
+        <span style={S.snippetLabel}>Einbettungs-Code</span>
         <button type="button" onClick={copy} style={S.snippetCopyBtn}>
           {copied ? "Kopiert!" : "Kopieren"}
         </button>
@@ -352,47 +399,28 @@ const S: Record<string, React.CSSProperties> = {
     minHeight: "100vh",
     paddingTop: 20,
   },
-  wrap: {
-    maxWidth: 720,
-    margin: "0 auto",
-    padding: "0 16px 80px",
+  wrap: { maxWidth: 720, margin: "0 auto", padding: "0 16px 64px" },
+  h1: { fontSize: 28, fontWeight: 800, letterSpacing: "-0.02em", marginTop: 0, marginBottom: 10 },
+  subtitle: { fontSize: 15, color: v("--color-text-secondary"), marginBottom: 28, lineHeight: 1.55 },
+  rules: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: 12,
+    marginBottom: 44,
   },
-  h1: {
-    fontSize: 24,
-    fontWeight: 800,
-    letterSpacing: "-0.02em",
-    marginTop: 0,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: v("--color-text-muted"),
-    marginBottom: 24,
-    lineHeight: 1.5,
-  },
-  code: {
-    fontFamily: v("--font-mono"),
-    fontSize: 12,
+  ruleCard: {
     background: v("--color-bg-muted"),
-    padding: "1px 6px",
-    borderRadius: 4,
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: 12,
+    padding: 16,
   },
-  section: {
-    marginBottom: 48,
-    paddingBottom: 24,
-    borderBottom: `1px solid ${v("--color-border")}`,
-  },
-  h2: {
-    fontSize: 18,
-    fontWeight: 700,
-    marginTop: 0,
-    marginBottom: 16,
-  },
-  hint: {
-    fontSize: 12,
-    color: v("--color-text-muted"),
-    marginTop: 6,
-  },
+  ruleIcon: { marginBottom: 10 },
+  ruleTitle: { fontSize: 14, fontWeight: 700, marginBottom: 4, color: v("--color-text-primary") },
+  ruleBody: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.5 },
+  section: { marginBottom: 44, paddingBottom: 24, borderBottom: `1px solid ${v("--color-border")}` },
+  h2: { fontSize: 20, fontWeight: 700, marginTop: 0, marginBottom: 8 },
+  sectionIntro: { fontSize: 14, color: v("--color-text-secondary"), lineHeight: 1.5, marginTop: 0, marginBottom: 16 },
+  hint: { fontSize: 12, color: v("--color-text-muted"), marginTop: 6, lineHeight: 1.5 },
   label: {
     fontSize: 11,
     fontWeight: 700,
@@ -411,11 +439,7 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: 12,
     marginBottom: 16,
   },
-  btnRow: {
-    display: "flex",
-    flexWrap: "wrap" as const,
-    gap: 8,
-  },
+  btnRow: { display: "flex", flexWrap: "wrap" as const, gap: 8 },
   btn: {
     padding: "8px 12px",
     fontSize: 12.5,
@@ -439,10 +463,7 @@ const S: Record<string, React.CSSProperties> = {
     gap: 24,
     justifyContent: "center",
   },
-  frameContainer: {
-    width: "100%",
-    transition: "max-width 0.2s ease-out",
-  },
+  frameContainer: { width: "100%", transition: "max-width 0.2s ease-out" },
   variantLabel: {
     fontSize: 11,
     fontWeight: 600,
@@ -452,12 +473,7 @@ const S: Record<string, React.CSSProperties> = {
     marginBottom: 8,
     textAlign: "center" as const,
   },
-  iframe: {
-    width: "100%",
-    border: 0,
-    display: "block",
-    background: "transparent",
-  },
+  iframe: { width: "100%", border: 0, display: "block", background: "transparent" },
   snippetWrap: {
     marginTop: 12,
     border: `1px solid ${v("--color-border")}`,

@@ -34,6 +34,7 @@ const nextConfig = {
       { source: "/energie", destination: "/strommix-deutschland", permanent: true },
       { source: "/empfehlung", destination: "/pv-bedarf-berechnen", permanent: true },
       { source: "/simulation", destination: "/pv-simulation", permanent: true },
+      { source: "/embed-demo", destination: "/energie-widgets", permanent: true },
       // Förder-Stadtseiten: flache Slugs → Hierarchie Bundesland/Kommune.
       // Feste historische Zuordnung (alte URLs wachsen nicht mehr) — bei neuer
       // Stadt hier ergänzen (Quelle: lib/atlas-cities.ts).

@@ -9,6 +9,7 @@ import {
   IconChevronRight,
 } from "../../../../components/Icons";
 import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
+import { parseWidgetThemeQuery } from "../../../../lib/widget-theme";
 import {
   CATEGORY_COLORS,
   FOSSIL_KEYS,
@@ -88,6 +89,15 @@ function rangeButtonStyle(active: boolean): React.CSSProperties {
 // ─── Component ──────────────────────────────────────────────────────────────
 export default function StrommixWidget() {
   const [tab, setTab] = useState<TabState>({ id: "7d" });
+
+  // Static theme via iframe URL params (copy-paste embed code path)
+  useEffect(() => {
+    const theme = parseWidgetThemeQuery(window.location.search);
+    const root = document.documentElement;
+    Object.keys(theme).forEach((k) => {
+      if (ALLOWED_VARS.indexOf(k) !== -1) root.style.setProperty(k, theme[k]);
+    });
+  }, []);
 
   // Theme override listener
   useEffect(() => {

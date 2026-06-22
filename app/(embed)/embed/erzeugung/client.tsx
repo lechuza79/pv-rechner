@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MastrLiveRadial } from "../../../../components/MastrLiveRadial";
+import { parseWidgetThemeQuery } from "../../../../lib/widget-theme";
 
 // ─── Configuration ──────────────────────────────────────────────────────────
 const ALLOWED_ORIGINS = [
@@ -76,6 +77,15 @@ export default function ErzeugungWidget({
     }, autoswitchMs);
     return () => clearInterval(id);
   }, [autoswitchMs]);
+
+  // Static theme via iframe URL params (copy-paste embed code path)
+  useEffect(() => {
+    const theme = parseWidgetThemeQuery(window.location.search);
+    const root = document.documentElement;
+    Object.keys(theme).forEach((k) => {
+      if (ALLOWED_VARS.indexOf(k) !== -1) root.style.setProperty(k, theme[k]);
+    });
+  }, []);
 
   // postMessage theme override
   useEffect(() => {

@@ -13,17 +13,30 @@ interface HeaderProps {
   activePage?: string;
 }
 
-// All calculators grouped under the "Rechner" dropdown. Sub-labels carry the
-// SEO keywords (Photovoltaik-Rechner, Wärmepumpen-Rechner …) so internal anchor
-// text matches each page's target term.
-const RECHNER_ITEMS = [
+interface NavItem {
+  href: string;
+  label: string;
+  desc: string;
+  page: string;
+}
+
+// All calculators grouped under the "Rentabilität berechnen" dropdown. Sub-labels
+// carry the SEO keywords (Photovoltaik-Rechner, Wärmepumpen-Rechner …) so internal
+// anchor text matches each page's target term.
+const RECHNER_ITEMS: NavItem[] = [
   { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Lohnt sich meine PV-Anlage?", page: "rechner" },
   { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Heizkosten und Förderung vergleichen", page: "waermepumpe" },
   { href: "/pv-bedarf-berechnen", label: "PV-Bedarf berechnen", desc: "Welche Anlage passt zu mir?", page: "empfehlung" },
   { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge in Echtzeit", page: "simulation" },
 ];
 
-const RECHNER_PAGES = RECHNER_ITEMS.map((i) => i.page);
+// Energy-data hub: the dashboard plus the embeddable widgets. The embed page is
+// surfaced here (not as a top-level slot) so it becomes crawlable without
+// spending a scarce nav slot on a publisher feature.
+const ENERGIE_ITEMS: NavItem[] = [
+  { href: "/strommix-deutschland", label: "Strommix Deutschland", desc: "Live-Stromerzeugung, Verlauf und Kernenergie", page: "energie" },
+  { href: "/energie-widgets", label: "Charts einbetten", desc: "Kostenlose Energie-Widgets für die eigene Website", page: "widgets" },
+];
 
 export default function Header({ onLoginClick, onLogoutClick, activePage: activePageProp }: HeaderProps) {
   const pathname = usePathname();
@@ -32,6 +45,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname === "/" ? "" :
     pathname.startsWith("/pv-simulation") ? "simulation" :
     pathname.startsWith("/strommix-deutschland") ? "energie" :
+    pathname.startsWith("/energie-widgets") ? "widgets" :
     pathname.startsWith("/photovoltaik-rechner") ? "rechner" :
     pathname.startsWith("/waermepumpe-rechner") ? "waermepumpe" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
@@ -39,9 +53,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/dashboard") ? "dashboard" : ""
   );
   const [menuOpen, setMenuOpen] = useState(false);
-  const [rechnerOpen, setRechnerOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
-  const rechnerCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
@@ -55,18 +67,6 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   }, []);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
-
-  const openRechner = useCallback(() => {
-    if (rechnerCloseTimer.current) clearTimeout(rechnerCloseTimer.current);
-    setRechnerOpen(true);
-  }, []);
-  // Small delay so moving the cursor across the gap to the panel doesn't close it.
-  const scheduleCloseRechner = useCallback(() => {
-    if (rechnerCloseTimer.current) clearTimeout(rechnerCloseTimer.current);
-    rechnerCloseTimer.current = setTimeout(() => setRechnerOpen(false), 120);
-  }, []);
-
-  const rechnerActive = RECHNER_PAGES.includes(activePage);
 
   const linkStyle = (page: string): React.CSSProperties => ({
     fontSize: 14,
@@ -138,91 +138,19 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
         {isDesktop && (
           <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            {/* Rechner dropdown */}
-            <div
-              style={{ position: "relative" }}
-              onMouseEnter={openRechner}
-              onMouseLeave={scheduleCloseRechner}
-            >
-              <Link
-                href="/photovoltaik-rechner"
-                style={{
-                  ...linkStyle(rechnerActive ? activePage : "rechner"),
-                  color: rechnerActive ? v('--color-accent') : v('--color-text-secondary'),
-                  cursor: "pointer",
-                }}
-                aria-haspopup="true"
-                aria-expanded={rechnerOpen}
-                onFocus={openRechner}
-              >
-                Rentabilität berechnen
-                <IconChevronDown
-                  size={14}
-                  color={rechnerActive ? v('--color-accent') : v('--color-text-muted')}
-                  style={{
-                    transition: "transform 0.15s ease",
-                    transform: rechnerOpen ? "rotate(180deg)" : "none",
-                  }}
-                />
-              </Link>
-
-              {rechnerOpen && (
-                <div style={{
-                  position: "absolute",
-                  top: "100%",
-                  left: 0,
-                  paddingTop: 10,
-                  zIndex: 100,
-                }}>
-                  <div style={{
-                    background: v('--color-bg'),
-                    border: `1px solid ${v('--color-border')}`,
-                    borderRadius: 14,
-                    boxShadow: "0 8px 28px rgba(0,0,0,0.1)",
-                    padding: 8,
-                    width: 280,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                  }}>
-                    {RECHNER_ITEMS.map((item) => {
-                      const isActive = activePage === item.page;
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => setRechnerOpen(false)}
-                          style={{
-                            textDecoration: "none",
-                            display: "block",
-                            padding: "10px 12px",
-                            borderRadius: 10,
-                            background: isActive ? v('--color-accent-dim') : "transparent",
-                          }}
-                          onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = v('--color-bg-muted'); }}
-                          onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
-                        >
-                          <div style={{
-                            fontSize: 14,
-                            fontWeight: 700,
-                            color: isActive ? v('--color-accent') : v('--color-text-primary'),
-                            marginBottom: 2,
-                          }}>
-                            {item.label}
-                          </div>
-                          <div style={{ fontSize: 12.5, color: v('--color-text-muted') }}>
-                            {item.desc}
-                          </div>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-
+            <DesktopDropdown
+              triggerLabel="Rentabilität berechnen"
+              triggerHref="/photovoltaik-rechner"
+              items={RECHNER_ITEMS}
+              activePage={activePage}
+            />
             <Link href="/photovoltaik-foerderung" style={linkStyle("foerderung")}>PV-Förderung</Link>
-            <Link href="/strommix-deutschland" style={linkStyle("energie")}>Strommix &amp; Energiedaten</Link>
+            <DesktopDropdown
+              triggerLabel="Strommix & Energiedaten"
+              triggerHref="/strommix-deutschland"
+              items={ENERGIE_ITEMS}
+              activePage={activePage}
+            />
           </nav>
         )}
 
@@ -266,31 +194,15 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             padding: "8px 24px 16px",
             boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
           }}>
-            <div style={{
-              fontSize: 12,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.04em",
-              color: v('--color-text-muted'),
-              padding: "14px 0 4px",
-            }}>
-              Rentabilität berechnen
-            </div>
-            {RECHNER_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                style={{ ...mobileLinkStyle(item.page), paddingLeft: 12 }}
-                onClick={closeMenu}
-              >
-                {item.label}
-              </Link>
-            ))}
+            <MobileSection title="Rentabilität berechnen" items={RECHNER_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
             <Link href="/photovoltaik-foerderung" style={mobileLinkStyle("foerderung")} onClick={closeMenu}>PV-Förderung</Link>
-            <Link href="/strommix-deutschland" style={mobileLinkStyle("energie")} onClick={closeMenu}>Strommix &amp; Energiedaten</Link>
+
+            <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
+
+            <MobileSection title="Strommix & Energiedaten" items={ENERGIE_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
@@ -299,5 +211,158 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
         </>
       )}
     </header>
+  );
+}
+
+// Desktop hover dropdown. Trigger links to the section's main page; hovering (or
+// keyboard focus) reveals the panel of sub-items. Each instance owns its open
+// state so multiple dropdowns coexist.
+function DesktopDropdown({
+  triggerLabel,
+  triggerHref,
+  items,
+  activePage,
+  width = 280,
+}: {
+  triggerLabel: string;
+  triggerHref: string;
+  items: NavItem[];
+  activePage: string;
+  width?: number;
+}) {
+  const [open, setOpen] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const active = items.some((i) => i.page === activePage);
+
+  const openNow = useCallback(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpen(true);
+  }, []);
+  // Small delay so moving the cursor across the gap to the panel doesn't close it.
+  const scheduleClose = useCallback(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpen(false), 120);
+  }, []);
+
+  return (
+    <div style={{ position: "relative" }} onMouseEnter={openNow} onMouseLeave={scheduleClose}>
+      <Link
+        href={triggerHref}
+        aria-haspopup="true"
+        aria-expanded={open}
+        onFocus={openNow}
+        style={{
+          fontSize: 14,
+          fontWeight: 600,
+          textDecoration: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          cursor: "pointer",
+          color: active ? v('--color-accent') : v('--color-text-secondary'),
+        }}
+      >
+        {triggerLabel}
+        <IconChevronDown
+          size={14}
+          color={active ? v('--color-accent') : v('--color-text-muted')}
+          style={{ transition: "transform 0.15s ease", transform: open ? "rotate(180deg)" : "none" }}
+        />
+      </Link>
+
+      {open && (
+        <div style={{ position: "absolute", top: "100%", left: 0, paddingTop: 10, zIndex: 100 }}>
+          <div style={{
+            background: v('--color-bg'),
+            border: `1px solid ${v('--color-border')}`,
+            borderRadius: 14,
+            boxShadow: "0 8px 28px rgba(0,0,0,0.1)",
+            padding: 8,
+            width,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}>
+            {items.map((item) => {
+              const isActive = activePage === item.page;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  style={{
+                    textDecoration: "none",
+                    display: "block",
+                    padding: "10px 12px",
+                    borderRadius: 10,
+                    background: isActive ? v('--color-accent-dim') : "transparent",
+                  }}
+                  onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = v('--color-bg-muted'); }}
+                  onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = "transparent"; }}
+                >
+                  <div style={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: isActive ? v('--color-accent') : v('--color-text-primary'),
+                    marginBottom: 2,
+                  }}>
+                    {item.label}
+                  </div>
+                  <div style={{ fontSize: 12.5, color: v('--color-text-muted') }}>{item.desc}</div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Mobile: a labelled section with its sub-items listed (indented), no collapse.
+function MobileSection({
+  title,
+  items,
+  activePage,
+  onNavigate,
+}: {
+  title: string;
+  items: NavItem[];
+  activePage: string;
+  onNavigate: () => void;
+}) {
+  return (
+    <>
+      <div style={{
+        fontSize: 12,
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "0.04em",
+        color: v('--color-text-muted'),
+        padding: "14px 0 4px",
+      }}>
+        {title}
+      </div>
+      {items.map((item) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          onClick={onNavigate}
+          style={{
+            fontSize: 16,
+            fontWeight: 600,
+            color: activePage === item.page ? v('--color-accent') : v('--color-text-primary'),
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "12px 0",
+            paddingLeft: 12,
+          }}
+        >
+          {item.label}
+        </Link>
+      ))}
+    </>
   );
 }
