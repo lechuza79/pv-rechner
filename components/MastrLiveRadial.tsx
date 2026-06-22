@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { v } from "../lib/theme";
 import { trimIncompleteTail } from "../lib/chart-utils";
+import InfoTooltip from "./InfoTooltip";
 
 type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
 
@@ -232,7 +233,6 @@ export function MastrLiveRadial({
   const latest: Bar | null = bars.length ? bars[bars.length - 1] : null;
 
   const [hover, setHover] = useState<Bar | null>(null);
-  const [showHelp, setShowHelp] = useState(false);
   const [shownMw, setShownMw] = useState<number>(0);
   const shownMwRef = useRef<number>(0);
 
@@ -674,70 +674,18 @@ export function MastrLiveRadial({
             display: "flex",
             justifyContent: "space-between",
             alignItems: "baseline",
-            position: "relative",
           }}
         >
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             Auslastung
-            <span
-              role="button"
-              tabIndex={0}
-              aria-label="Was bedeutet Auslastung?"
-              onPointerEnter={(e) => {
-                if (e.pointerType === "mouse") setShowHelp(true);
-              }}
-              onPointerLeave={(e) => {
-                if (e.pointerType === "mouse") setShowHelp(false);
-              }}
-              onClick={() => setShowHelp((s) => !s)}
-              onFocus={() => setShowHelp(true)}
-              onBlur={() => setShowHelp(false)}
-              style={{
-                width: 14,
-                height: 14,
-                borderRadius: "50%",
-                border: `1px solid ${v("--color-border")}`,
-                color: v("--color-text-muted"),
-                fontSize: 9,
-                fontWeight: 600,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "help",
-                userSelect: "none",
-                lineHeight: 1,
-              }}
-            >
-              ?
-            </span>
+            <InfoTooltip ariaLabel="Was bedeutet Auslastung?" size={14}>
+              Anteil der gerade produzierten Leistung an der gesamten installierten
+              Leistung. Bei Solar tagsüber typisch 20–50 %, nachts 0 %.
+            </InfoTooltip>
           </span>
           <span style={{ color: v("--color-text-primary"), fontWeight: 600 }}>
             {displayPct.toFixed(0)}%
           </span>
-          {showHelp && (
-            <div
-              role="tooltip"
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                bottom: "calc(100% + 6px)",
-                background: v("--color-bg"),
-                border: `1px solid ${v("--color-border")}`,
-                borderRadius: 8,
-                padding: "8px 10px",
-                fontSize: 11,
-                lineHeight: 1.4,
-                color: v("--color-text-primary"),
-                fontWeight: 400,
-                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                zIndex: 10,
-              }}
-            >
-              Anteil der gerade produzierten Leistung an der gesamten installierten
-              Leistung. Bei Solar tagsüber typisch 20–50 %, nachts 0 %.
-            </div>
-          )}
         </div>
       )}
 

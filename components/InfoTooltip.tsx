@@ -33,27 +33,47 @@ export default function InfoTooltip({ title, children, size = 13, ariaLabel = "M
   const tooltipRef = useRef<HTMLSpanElement>(null);
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [pos, setPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
+  const [pos, setPos] = useState<{ top: number; left: number; width: number; maxHeight: number }>({
+    top: 0,
+    left: 0,
+    width: TOOLTIP_MAX_WIDTH,
+    maxHeight: 0,
+  });
   const tooltipId = useId();
 
   useEffect(() => setMounted(true), []);
 
-  // Position the tooltip relative to the trigger, clamped to the viewport.
+  // Position the tooltip relative to the trigger, clamped to the viewport on all
+  // four edges. Runs as a layout effect so the position is set before paint.
   useLayoutEffect(() => {
     if (!open || !triggerRef.current) return;
     const t = triggerRef.current.getBoundingClientRect();
-    const ttWidth = Math.min(TOOLTIP_MAX_WIDTH, window.innerWidth - 2 * EDGE);
-    const ttHeight = tooltipRef.current?.offsetHeight ?? 80;
+    // Fall back if the viewport reports 0 — happens for an embed page loaded
+    // outside its iframe; inside a real iframe innerWidth is the iframe size.
+    const vw = window.innerWidth || document.documentElement.clientWidth || TOOLTIP_MAX_WIDTH + 2 * EDGE;
+    const vh = window.innerHeight || document.documentElement.clientHeight || 600;
 
-    // Prefer above; flip below if not enough room.
-    const below = t.top - GAP - ttHeight < EDGE;
-    const top = below ? t.bottom + GAP : t.top - GAP - ttHeight;
+    // Width: never wider than the viewport (minus edge margins). Constraining
+    // the rendered box to the SAME width used for centering keeps the math and
+    // the paint in sync, so it never overhangs on narrow phones.
+    const width = Math.min(TOOLTIP_MAX_WIDTH, vw - 2 * EDGE);
+    const height = tooltipRef.current?.offsetHeight ?? 80;
+
+    // Vertical: prefer above. Flip below only if it doesn't fit above AND there
+    // is more room below. Then clamp the top edge and cap the height so a tall
+    // tooltip scrolls internally instead of running off-screen.
+    const spaceAbove = t.top - GAP - EDGE;
+    const spaceBelow = vh - t.bottom - GAP - EDGE;
+    const below = height > spaceAbove && spaceBelow > spaceAbove;
+    const maxHeight = Math.max(80, below ? spaceBelow : spaceAbove);
+    let top = below ? t.bottom + GAP : t.top - GAP - height;
+    top = Math.max(EDGE, Math.min(top, vh - EDGE - Math.min(height, maxHeight)));
 
     // Center horizontally on the trigger, clamp to viewport.
-    let left = t.left + t.width / 2 - ttWidth / 2;
-    left = Math.max(EDGE, Math.min(left, window.innerWidth - ttWidth - EDGE));
+    let left = t.left + t.width / 2 - width / 2;
+    left = Math.max(EDGE, Math.min(left, vw - width - EDGE));
 
-    setPos({ top, left });
+    setPos({ top, left, width, maxHeight });
   }, [open]);
 
   // Close on outside click, scroll, resize, or Escape.
@@ -121,8 +141,10 @@ export default function InfoTooltip({ title, children, size = 13, ariaLabel = "M
               top: pos.top,
               left: pos.left,
               zIndex: 1000,
-              maxWidth: TOOLTIP_MAX_WIDTH,
+              maxWidth: pos.width,
               width: "max-content",
+              maxHeight: pos.maxHeight || undefined,
+              overflowY: "auto",
               background: v("--color-bg"),
               color: v("--color-text-secondary"),
               border: `1px solid ${v("--color-border")}`,

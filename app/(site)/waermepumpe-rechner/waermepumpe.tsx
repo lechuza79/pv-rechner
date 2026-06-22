@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, type ReactNode } from "react";
 import Link from "next/link";
 import {
   SITUATION, WOHNFLAECHEN, INSULATION_BESTAND, INSULATION_NEUBAU,
@@ -88,9 +88,11 @@ export default function Waermepumpe() {
           <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
             {isResult ? "Deine Wärmepumpen-Prognose" : "Lohnt sich eine Wärmepumpe?"}
           </h1>
-          <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>
-            {isResult ? "Alle Werte kannst du anpassen." : "Fünf Fragen, ehrlich berechnet. Keine Anmeldung."}
-          </p>
+          {!isResult && (
+            <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>
+              Fünf Fragen, ehrlich berechnet. Keine Anmeldung.
+            </p>
+          )}
         </div>
 
         {/* Progress */}
@@ -236,8 +238,15 @@ export default function Waermepumpe() {
               <div style={{ fontSize: 42, fontWeight: 800, color: result.tcoEinsparung >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
                 {result.tcoEinsparung >= 0 ? "+" : ""}{result.tcoEinsparung.toLocaleString("de-DE")} €
               </div>
-              <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, textAlign: "center" }}>
-                vs. {situation === "neubau" ? "Gas-Brennwertkessel neu" : "Weiterbetrieb fossile Heizung"}
+              <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                vs. {situation === "neubau" ? null : "Weiterbetrieb"}
+                <select value={oFuel} onChange={e => setOFuel(e.target.value)} aria-label="Referenzheizung wählen" style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: 13 }}>
+                  {WP_FUEL_OPTIONS.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
+                </select>
+                {situation === "neubau" ? "(Neubau)" : null}
+                <InfoTooltip title="Wie sich der Brennstoffpreis entwickelt" ariaLabel="Wie sich der Gaspreis in der Rechnung entwickelt">
+                  Der heutige Brennstoffpreis steigt in der Rechnung jedes Jahr — durch allgemeine Teuerung (realistisch rund 2 % pro Jahr) und durch den steigenden CO₂-Preis auf fossile Energie. Der CO₂-Preis liegt 2026 und 2027 bei 55–65 € pro Tonne und klettert ab 2028 mit dem EU-Emissionshandel voraussichtlich um etwa 8 € pro Tonne und Jahr. Die im heutigen Preis schon enthaltene CO₂-Abgabe wird dabei nicht doppelt gezählt. Die drei Szenarien im Diagramm rechnen mit unterschiedlich starkem Anstieg.
+                </InfoTooltip>
               </div>
 
               {/* Editierbare Kernannahmen */}
@@ -250,12 +259,6 @@ export default function Waermepumpe() {
                   </select>
                 </div>
                 <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={result.jaz} onCommit={v => setOJaz(v)} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
-                <div>
-                  Referenzheizung:{" "}
-                  <select value={oFuel} onChange={e => setOFuel(e.target.value)} style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: 13 }}>
-                    {WP_FUEL_OPTIONS.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
-                  </select>
-                </div>
                 <div>Gaspreis: <InlineEdit value={Math.round((oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => setOGasPrice(v / 100)} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} /></div>
                 <div>WP-Strompreis: <InlineEdit value={Math.round((oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => setOStromPrice(v / 100)} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
                 <div>Investition (netto): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} /></div>
@@ -268,7 +271,7 @@ export default function Waermepumpe() {
                         <InfoTooltip title="Einkommens-Bonus BEG" ariaLabel="Was ist der Einkommens-Bonus BEG?">
                           Zusätzliche 30 % BEG-Förderung für Haushalte mit einem zu versteuernden Jahreseinkommen bis 40.000 €. Die Gesamtförderung ist bei 70 % gedeckelt, maximal 30.000 € förderfähige Kosten. Quelle: BAFA/KfW BEG EM Richtlinie 2026.
                         </InfoTooltip>
-                        (HH-Einkommen ≤ 40.000 €)
+                        (Haushaltseinkommen bis 40.000 €)
                       </span>
                     </label>
                   </div>
@@ -280,7 +283,14 @@ export default function Waermepumpe() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
               <StatCard label="Amortisation" value={result.amortisationsJahre !== null ? `${result.amortisationsJahre} J` : "> 20 J"} positive={result.amortisationsJahre !== null && result.amortisationsJahre <= 15} />
               <StatCard label="⌀ Ersparnis/Jahr" value={`${result.einsparungProJahr.toLocaleString("de-DE")} €`} positive={result.einsparungProJahr > 0} />
-              <StatCard label="CO₂ 20 J" value={`${Math.round(result.co2Einsparung / 1000).toLocaleString("de-DE")} t`} positive={result.co2Einsparung > 0} />
+              <StatCard
+                label="CO₂ 20 J"
+                value={`${Math.round(result.co2Einsparung / 1000).toLocaleString("de-DE")} t`}
+                positive={result.co2Einsparung > 0}
+                helpTitle="CO₂-Einsparung"
+                helpAriaLabel="Was bedeutet die CO₂-Zahl?"
+                help="Vermiedener CO₂-Ausstoß über 20 Jahre: die Emissionen der fossilen Heizung minus die Emissionen aus dem Strom, den die Wärmepumpe verbraucht (deutscher Strommix). Es ist also netto eingespartes CO₂, nicht ausgestoßenes — der Stromverbrauch der Wärmepumpe ist schon abgezogen."
+              />
             </div>
 
             {/* Chart */}
@@ -398,10 +408,13 @@ export default function Waermepumpe() {
 
 // ─── Helpers ───────────────────────────────────────────────────
 
-function StatCard({ label, value, positive }: { label: string; value: string; positive: boolean }) {
+function StatCard({ label, value, positive, help, helpTitle, helpAriaLabel }: { label: string; value: string; positive: boolean; help?: ReactNode; helpTitle?: string; helpAriaLabel?: string }) {
   return (
     <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
-      <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4 }}>{label}</div>
+      <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
+        {label}
+        {help && <InfoTooltip title={helpTitle} ariaLabel={helpAriaLabel ?? "Mehr Infos"} size={12}>{help}</InfoTooltip>}
+      </div>
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: positive ? v('--color-positive') : v('--color-text-primary') }}>{value}</div>
     </div>
   );
