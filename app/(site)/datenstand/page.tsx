@@ -8,6 +8,7 @@ import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS } from "../../../lib/constants";
+import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
 
 // ISR: re-render hourly so live market prices / feed-in rates stay current
@@ -302,8 +303,8 @@ export default async function DatenstandPage() {
             { label: "Grundverbrauch 1 / 2 / 3–4 / 5+ Personen", value: PERSONEN.map((p) => nf(p.verbrauch)).join(" / ") + " kWh/a" },
             { label: "Tag-Anteil je Nutzungsprofil", value: NUTZUNG.map((n) => `${nf(n.tagQuote * 100)}`).join(" / ") + " %" },
             { label: "Saisonaler Verbrauchsfaktor", value: `${nf(Math.min(...CONSUMPTION_MONTHLY))}–${nf(Math.max(...CONSUMPTION_MONTHLY))} (BDEW H0)` },
-            { label: "Mehrverbrauch Wärmepumpe", value: "+3.500 kWh/a" },
-            { label: "Mehrverbrauch E-Auto", value: "0,18 kWh/km (Default 15.000 km/a)" },
+            { label: "Mehrverbrauch Wärmepumpe", value: `+${nf(WP_ANNUAL_KWH)} kWh/a` },
+            { label: "Mehrverbrauch E-Auto", value: `${EA_KWH_PER_KM.toLocaleString("de-DE")} kWh/km (Default ${nf(EA_DEFAULT_KM)} km/a)` },
           ]}
           source="HTW Berlin (Quaschning/Weniger, 25.000 Konfigurationen, VDI 4655) · BDEW Standardlastprofil H0"
         />
