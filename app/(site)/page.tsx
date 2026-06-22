@@ -4,15 +4,14 @@ import Header from "../../components/Header";
 import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser } from "../../components/Icons";
 import { MastrHeroSection } from "../../components/MastrHeroSection";
 import { v } from "../../lib/theme";
-import { pageMetadata } from "../../lib/seo";
+import { pageMetadata, energyOgImage } from "../../lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   path: "/",
   title: "Solar Check – Lohnt sich Photovoltaik? Ehrlich berechnet.",
   description:
     "Kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Sofort Ergebnis: Amortisation, Rendite und Szenarien für deine Photovoltaikanlage mit oder ohne Speicher.",
-  ogImageTitle: "Energie ehrlich berechnet.",
-  ogImageSubtitle: "Fünf Tools. Ohne Anmeldung, ohne Leadfunnel.",
+  ogImage: energyOgImage(),
 });
 
 const tools = [

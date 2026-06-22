@@ -13,6 +13,16 @@ export function brandOgImage(title: string, subtitle = ""): string {
   return `${BASE_URL}/api/og?${p.toString()}`;
 }
 
+/**
+ * OG image (1200x630) featuring a live snapshot of Germany's current renewable
+ * generation as a radial chart, rendered by /api/og in "energy" mode. Used on
+ * the homepage. The route fetches live data and revalidates at the CDN, so the
+ * card stays current instead of freezing; falls back to a text card on error.
+ */
+export function energyOgImage(): string {
+  return `${BASE_URL}/api/og?view=energy`;
+}
+
 interface PageMetaInput {
   /** Canonical path, e.g. "/strommix-deutschland". Resolved against metadataBase. */
   path: string;

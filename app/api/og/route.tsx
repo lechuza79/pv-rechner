@@ -10,6 +10,44 @@ function fmt(n: number): string {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
+type RadialData = { frac: number[]; currentGW: number };
+
+// Fetch the last 24h of renewable generation and reduce it to N normalized bars
+// plus the current GW value. Mirrors the live-radial widget, including the
+// solar-latency trim (newest points have solar=null; cutting them keeps the
+// snapshot coherent). Returns null on any failure so the OG can fall back.
+async function loadEnergyRadial(origin: string, bars: number): Promise<RadialData | null> {
+  try {
+    const res = await fetch(new URL("/api/energy/generation?hours=24", origin));
+    if (!res.ok) return null;
+    const raw = await res.json();
+    const pts: Array<Record<string, number | string | null>> = Array.isArray(raw)
+      ? raw
+      : (raw.data ?? []);
+    if (!pts.length) return null;
+    const gesamt = (p: Record<string, number | string | null>): number | null => {
+      const xs = [
+        p.solar, p.wind_onshore, p.wind_offshore,
+        p.biomass, p.hydro_run_of_river, p.hydro_water_reservoir,
+      ].filter((x): x is number => typeof x === "number");
+      return xs.length ? xs.reduce((s, x) => s + x, 0) : null;
+    };
+    let last = pts.length - 1;
+    while (last >= 0 && typeof pts[last].solar !== "number") last--;
+    const usable = last >= 0 ? pts.slice(0, last + 1) : pts;
+    const series = usable.map(gesamt).filter((x): x is number => x !== null);
+    if (!series.length) return null;
+    const max = Math.max(...series, 1);
+    const frac: number[] = [];
+    for (let i = 0; i < bars; i++) {
+      frac.push(series[Math.floor((i / bars) * series.length)] / max);
+    }
+    return { frac, currentGW: series[series.length - 1] / 1000 };
+  } catch {
+    return null;
+  }
+}
+
 export async function GET(req: NextRequest) {
   const params = Object.fromEntries(req.nextUrl.searchParams.entries());
 
@@ -52,6 +90,107 @@ export async function GET(req: NextRequest) {
         </div>
       ),
       { width: 1200, height: 630, fonts },
+    );
+  }
+
+  // Live energy snapshot card (homepage): radial of the last 24h renewable
+  // generation with the current GW in the center. CDN-revalidated so it stays
+  // current; falls back to a text card if the live data is unavailable.
+  if (params.view === "energy") {
+    const N = 72;
+    const data = await loadEnergyRadial(req.nextUrl.origin, N);
+
+    if (!data) {
+      return new ImageResponse(
+        (
+          <div style={{
+            width: "100%", height: "100%", display: "flex", flexDirection: "column",
+            justifyContent: "space-between", padding: "56px 64px",
+            background: "#FFFFFF", color: "#3F3F3F",
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: 28, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
+              <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span style={{ fontSize: 58, fontWeight: 700, color: "#1365EA", lineHeight: 1.15 }}>
+                Energie ehrlich berechnet.
+              </span>
+              <span style={{ fontSize: 28, color: "#777777", lineHeight: 1.4, marginTop: 20 }}>
+                Fünf Tools. Ohne Anmeldung, ohne Leadfunnel.
+              </span>
+            </div>
+            <span style={{ fontSize: 18, color: "#949494" }}>Ehrlich berechnet. Ohne Leadfunnel.</span>
+          </div>
+        ),
+        { width: 1200, height: 630, fonts, headers: { "cache-control": "public, max-age=0, s-maxage=300" } },
+      );
+    }
+
+    const cx = 190, cy = 190, innerR = 78, maxLen = 95, minLen = 5;
+    const startDeg = -90, sweepDeg = 340;
+    const lines = data.frac.map((f, i) => {
+      const a = ((startDeg + sweepDeg * (i / (N - 1))) * Math.PI) / 180;
+      const len = minLen + f * maxLen;
+      return {
+        x1: cx + innerR * Math.cos(a),
+        y1: cy + innerR * Math.sin(a),
+        x2: cx + (innerR + len) * Math.cos(a),
+        y2: cy + (innerR + len) * Math.sin(a),
+        color: i === N - 1 ? "#00D950" : "#1365EA",
+      };
+    });
+    const gwStr = data.currentGW.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+    return new ImageResponse(
+      (
+        <div style={{
+          width: "100%", height: "100%", display: "flex", flexDirection: "column",
+          justifyContent: "space-between", padding: "44px 56px",
+          background: "#FFFFFF", color: "#3F3F3F",
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: 24, fontWeight: 700, color: "#3F3F3F" }}>Solar Check</span>
+            <span style={{ fontSize: 20, color: "#949494" }}>solar-check.io</span>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", flexDirection: "column", width: 560 }}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ width: 12, height: 12, borderRadius: 6, background: "#00D950", marginRight: 10 }} />
+                <span style={{ fontSize: 17, color: "#777777", letterSpacing: 1 }}>ERNEUERBARE · GERADE EBEN</span>
+              </div>
+              <span style={{ fontSize: 50, fontWeight: 700, color: "#1365EA", lineHeight: 1.15, marginTop: 14 }}>
+                Energie ehrlich berechnet.
+              </span>
+              <span style={{ fontSize: 23, color: "#777777", lineHeight: 1.4, marginTop: 16 }}>
+                Live-Stromdaten, PV- und Wärmepumpen-Rechner. Ohne Anmeldung.
+              </span>
+            </div>
+
+            <div style={{ display: "flex", position: "relative", width: 380, height: 380, alignItems: "center", justifyContent: "center" }}>
+              <svg width="380" height="380" viewBox="0 0 380 380">
+                <circle cx={cx} cy={cy} r={innerR + maxLen} fill="none" stroke="#EFEFEF" strokeWidth="1" />
+                <circle cx={cx} cy={cy} r={innerR + maxLen * 0.55} fill="none" stroke="#F3F3F3" strokeWidth="1" />
+                {lines.map((l, i) => (
+                  <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke={l.color} strokeWidth="3.4" strokeLinecap="round" />
+                ))}
+              </svg>
+              <div style={{ position: "absolute", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <span style={{ fontSize: 58, fontWeight: 700, fontFamily: "JetBrains Mono", color: "#3F3F3F", lineHeight: 1 }}>
+                  {gwStr}
+                </span>
+                <span style={{ fontSize: 22, color: "#777777", marginTop: 4 }}>GW</span>
+              </div>
+            </div>
+          </div>
+
+          <span style={{ fontSize: 16, color: "#949494" }}>
+            Erneuerbare Erzeugung in Deutschland · letzte 24 Stunden
+          </span>
+        </div>
+      ),
+      { width: 1200, height: 630, fonts, headers: { "cache-control": "public, max-age=0, s-maxage=1800, stale-while-revalidate=86400" } },
     );
   }
 
