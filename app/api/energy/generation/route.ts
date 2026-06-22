@@ -31,6 +31,9 @@ function downsample(data: GenerationDataPoint[], factor: number): GenerationData
 
   for (let i = 0; i < data.length; i += factor) {
     const chunk = data.slice(i, i + factor);
+    // Drop a trailing partial chunk: downstream energy sums assume every bucket
+    // spans the full interval, so a short last bucket would be over-counted.
+    if (chunk.length < factor) break;
     const merged: GenerationDataPoint = { ts: chunk[Math.floor(chunk.length / 2)].ts };
 
     for (const key of numericKeys) {

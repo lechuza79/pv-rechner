@@ -12,6 +12,14 @@ export function co2PriceForYear(i: number): number {
   return co2PriceForCalendarYear(YEAR + i);
 }
 
+// CO2 surcharge to add ON TOP of a present-day retail fuel price, in €/t-equivalent
+// terms relative to today. Retail gas/oil prices already include the current-year
+// CO2 levy, so only the projected INCREASE over today's level is added — otherwise
+// the current-year CO2 component would be double-counted in year 0.
+export function co2SurchargeOverToday(i: number): number {
+  return Math.max(0, co2PriceForYear(i) - co2PriceForYear(0));
+}
+
 /** Generalized fuel cost over arbitrary horizon.
  *  fuelKwh = thermischer Bedarf / Kesselwirkungsgrad (bereits berechnet).
  */
@@ -24,7 +32,7 @@ export function calcFuelCost({ fuelKwh, pricePerKwh, co2PerKwh, years = YEARS, i
 }): number {
   let total = 0;
   for (let i = 0; i < years; i++) {
-    const co2Surcharge = co2PerKwh * co2PriceForYear(i) / 1000; // €/kWh
+    const co2Surcharge = co2PerKwh * co2SurchargeOverToday(i) / 1000; // €/kWh, increase over today
     const basePrice = pricePerKwh * Math.pow(1 + inflation, i);
     total += fuelKwh * (basePrice + co2Surcharge);
   }
@@ -41,7 +49,7 @@ export function calcFuelCostPerYear({ fuelKwh, pricePerKwh, co2PerKwh, years = Y
 }): number[] {
   const out: number[] = [];
   for (let i = 0; i < years; i++) {
-    const co2Surcharge = co2PerKwh * co2PriceForYear(i) / 1000;
+    const co2Surcharge = co2PerKwh * co2SurchargeOverToday(i) / 1000;
     const basePrice = pricePerKwh * Math.pow(1 + inflation, i);
     out.push(fuelKwh * (basePrice + co2Surcharge));
   }
@@ -191,22 +199,53 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
 const WP_ANNUAL_KWH_CONST = 3500;
 
 // ─── Amortisation (25 Jahre, monatlich wenn PVGIS-Profil vorhanden) ─────────
+// Per-month self-consumption ratio cannot physically exceed ~95%.
+const EV_MONTH_CAP = 0.95;
+
+/**
+ * Build monthly self-consumption ratios that PRESERVE the (calibrated or
+ * user-entered) annual EV. The raw seasonal split scales EV up in low-yield
+ * winter months and hits the 95% cap there; without compensation the
+ * production-weighted annual EV drifts well below the shown value (e.g. 90% →
+ * 75%). Here the capped shortfall is redistributed onto months with headroom,
+ * production-weighted, so Σ mEv[m]·fracs[m] ≈ evFrac. Exported for testing.
+ */
+export function buildMonthlyEv(evFrac: number, fracs: number[]): number[] {
+  const mEv = fracs.map((f, m) =>
+    Math.min(f > 0 ? (evFrac * CONSUMPTION_MONTHLY[m]) / (f * 12) : EV_MONTH_CAP, EV_MONTH_CAP),
+  );
+  for (let iter = 0; iter < 12; iter++) {
+    const achieved = mEv.reduce((s, e, m) => s + e * fracs[m], 0);
+    const deficit = evFrac - achieved;
+    if (deficit <= 1e-6) break;
+    const headroomProd = fracs.reduce((s, f, m) => s + (mEv[m] < EV_MONTH_CAP ? f : 0), 0);
+    if (headroomProd <= 1e-9) break; // every month capped — target unreachable
+    const delta = deficit / headroomProd;
+    for (let m = 0; m < 12; m++) {
+      if (mEv[m] < EV_MONTH_CAP) mEv[m] = Math.min(EV_MONTH_CAP, mEv[m] + delta);
+    }
+  }
+  return mEv;
+}
+
 export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly, batteryReplace = 0 }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null; batteryReplace?: number }) {
-  const years = [];
+  const years: { year: number; i: number; kum: number; j: number }[] = [];
   let kum = -kosten;
   // Monatliche Berechnung wenn PVGIS-Profil vorhanden
   const fracs = monthly ? monthly.map(m => m / monthly.reduce((a, b) => a + b, 0)) : null;
+  // Seasonal self-consumption ratios that integrate back to the entered EV.
+  const monthlyEv = fracs ? buildMonthlyEv(eigenverbrauch / 100, fracs) : null;
   for (let i = 0; i <= YEARS; i++) {
     let j = 0;
     if (i > 0) {
       const deg = Math.pow(1 - DEGRAD, i);
       const sp = strompreis * Math.pow(1 + stromSteigerung, i);
-      if (fracs) {
-        // Monatlich: EV% variiert saisonal (Winter höher, Sommer niedriger)
+      if (fracs && monthlyEv) {
+        // Monatlich: EV% variiert saisonal (Winter höher, Sommer niedriger),
+        // bleibt aber jahresgewichtet auf dem eingegebenen Eigenverbrauch.
         for (let m = 0; m < 12; m++) {
           const mProd = kwp * ertragKwp * fracs[m] * deg;
-          // EV% pro Monat: skaliert mit Verbrauch (BDEW H0) und inversem Ertrag
-          const mEv = Math.min(eigenverbrauch * CONSUMPTION_MONTHLY[m] / (fracs[m] * 12), 95) / 100;
+          const mEv = monthlyEv[m];
           j += mProd * mEv * sp + mProd * (1 - mEv) * (einspeisung / 100);
         }
       } else {
@@ -220,7 +259,12 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
     kum += j;
     years.push({ year: YEAR + i, i, kum: Math.round(kum), j: Math.round(j) });
   }
-  const be = years.find((y, idx) => idx > 0 && y.kum >= 0);
+  // Break-even = first year from which the cumulative cashflow stays positive
+  // for good. The first crossing alone can mislabel it when the one-off battery
+  // replacement (year BATTERY_LIFETIME_YEARS) pushes the balance back below zero.
+  const be = years.find(
+    (y, idx) => idx > 0 && y.kum >= 0 && years.slice(idx).every((z) => z.kum >= 0),
+  );
   return { years, be, total: years[YEARS].kum };
 }
 

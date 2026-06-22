@@ -4,6 +4,7 @@ import {
   calcWeightedFeedIn,
   estimateCost,
   calcEigenverbrauch,
+  buildMonthlyEv,
   calcFuelCost,
   calcFuelCost25,
   calcWpGridCost25,
@@ -241,6 +242,36 @@ describe("calc (25-year amortization)", () => {
     const noMonthly = calc(baseCase);
     // Within 5% — the seasonal EV scaling does shift things slightly
     expect(Math.abs(equal.total - noMonthly.total) / noMonthly.total).toBeLessThan(0.10);
+  });
+});
+
+// ─── Monthly EV redistribution (annual EV preserved across seasonal split) ──
+describe("buildMonthlyEv", () => {
+  const munich = [52, 73, 104, 120, 120, 124, 128, 122, 107, 86, 55, 49];
+  const total = munich.reduce((a, b) => a + b, 0);
+  const fracs = munich.map((m) => m / total);
+  const weightedEv = (mEv: number[]) => mEv.reduce((s, e, m) => s + e * fracs[m], 0);
+
+  it("preserves a high annual EV that previously drifted to ~75% via the winter cap", () => {
+    const mEv = buildMonthlyEv(0.9, fracs);
+    expect(weightedEv(mEv)).toBeCloseTo(0.9, 2);
+    expect(Math.max(...mEv)).toBeLessThanOrEqual(0.95 + 1e-9);
+  });
+
+  it("leaves a low EV untouched (cap never hit)", () => {
+    expect(weightedEv(buildMonthlyEv(0.33, fracs))).toBeCloseTo(0.33, 3);
+  });
+});
+
+describe("calc monthly vs annual consistency", () => {
+  it("monthly profile total matches the annual fallback at high EV (no EV leak)", () => {
+    const base = {
+      kwp: 10, kosten: 18000, strompreis: 0.32, eigenverbrauch: 90,
+      einspeisung: 7.78, stromSteigerung: 0.03, ertragKwp: 1000, batteryReplace: 0,
+    };
+    const monthly = calc({ ...base, monthly: [52, 73, 104, 120, 120, 124, 128, 122, 107, 86, 55, 49] }).total;
+    const annual = calc({ ...base, monthly: null }).total;
+    expect(Math.abs(monthly - annual) / Math.abs(annual)).toBeLessThan(0.01);
   });
 });
 

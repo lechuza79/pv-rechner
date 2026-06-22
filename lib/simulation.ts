@@ -45,6 +45,13 @@ const NOCT = 45;          // Nominal Operating Cell Temperature (°C)
 const GAMMA = -0.004;     // Temperature coefficient (%/°C for crystalline silicon)
 const T_REF = 25;         // Reference temperature (STC)
 
+// System performance ratio: inverter, wiring, mismatch, soiling losses. Also
+// absorbs that the weather feed delivers global HORIZONTAL irradiance (GHI),
+// used here as a plane-of-array proxy. Without it the model behaves like a
+// perfect PR≈1.0 system and overstates output ~15–25 %, clashing with the
+// PVGIS-based annual yield the calculator uses. 0.85 ≈ PVGIS default losses.
+const SYSTEM_PERFORMANCE_RATIO = 0.85;
+
 export const SIM_CONFIGS = [
   { kwp: 5,  label: "5 kWp" },
   { kwp: 8,  label: "8 kWp" },
@@ -64,7 +71,7 @@ export function calcCurrentPower(kwp: number, ghi: number, ambientTemp: number):
   if (ghi <= 0 || kwp <= 0) return 0;
   const tCell = calcCellTemp(ambientTemp, ghi);
   const tempFactor = 1 + GAMMA * (tCell - T_REF);
-  const watts = kwp * 1000 * (ghi / 1000) * tempFactor;
+  const watts = kwp * 1000 * (ghi / 1000) * tempFactor * SYSTEM_PERFORMANCE_RATIO;
   return Math.max(0, Math.round(watts));
 }
 
