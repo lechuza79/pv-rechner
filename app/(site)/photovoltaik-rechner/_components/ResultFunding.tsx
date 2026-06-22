@@ -167,7 +167,7 @@ export default function ResultFunding({
               {applied.map(({ program, amount }) => (
                 <div key={program.id} style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                   <ProgramLink p={program} />
-                  <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-positive-text"), whiteSpace: "nowrap" }}>− {nf(amount)} €</span>
+                  <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-positive"), whiteSpace: "nowrap" }}>− {nf(amount)} €</span>
                 </div>
               ))}
               <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 7 }}>

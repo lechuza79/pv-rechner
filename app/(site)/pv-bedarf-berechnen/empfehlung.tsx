@@ -448,7 +448,7 @@ export default function Empfehlung() {
                 </div>
               )}
               <div style={{ fontSize: 13, color: v('--color-text-secondary'), marginTop: 8, paddingTop: 8, borderTop: `1px solid ${v('--color-border-accent')}` }}>
-                Rendite nach 25 Jahren: <span style={{ fontWeight: 700, color: rec.reasoning.npv25 >= 0 ? v('--color-positive-text') : v('--color-negative'), fontFamily: v('--font-mono') }}>
+                Rendite nach 25 Jahren: <span style={{ fontWeight: 700, color: rec.reasoning.npv25 >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono') }}>
                   {rec.reasoning.npv25 >= 0 ? "+" : ""}{Math.round(rec.reasoning.npv25).toLocaleString("de-DE")} €
                 </span>
               </div>
@@ -574,7 +574,7 @@ export default function Empfehlung() {
                   <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary') }}>
                     Förderung{fundingOrt ? ` in ${fundingOrt}` : ""}
                   </span>
-                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, fontSize: 15, color: v('--color-positive-text') }}>
+                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, fontSize: 15, color: v('--color-positive') }}>
                     + {Math.round(fundingStack.total).toLocaleString("de-DE")} €
                   </span>
                 </div>
@@ -635,7 +635,7 @@ export default function Empfehlung() {
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, paddingTop: 6, borderTop: `1px dashed ${v('--color-border')}` }}>
                         <span style={{ fontSize: 11, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</span>
-                        <span style={{ fontSize: 12, fontFamily: v('--font-mono'), fontWeight: 700, color: alt.npv25 >= 0 ? v('--color-positive-text') : v('--color-negative') }}>
+                        <span style={{ fontSize: 12, fontFamily: v('--font-mono'), fontWeight: 700, color: alt.npv25 >= 0 ? v('--color-positive') : v('--color-negative') }}>
                           {alt.npv25 >= 0 ? "+" : ""}{Math.round(alt.npv25).toLocaleString("de-DE")} €
                         </span>
                       </div>

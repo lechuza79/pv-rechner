@@ -25,7 +25,7 @@ export const FUNDING_STATUS_NOTE: Record<FundingStatus, string> = {
 export function fundingStatusColor(status: FundingStatus): string {
   // Text + border of the status badge on a white card — use the AA-contrast green
   // text token (not the bright #00D950, which fails contrast as text).
-  return status === "aktiv" ? v("--color-positive-text") : v("--color-text-muted");
+  return status === "aktiv" ? v("--color-positive") : v("--color-text-muted");
 }
 
 export function FundingStatusBadge({ status }: { status: FundingStatus }) {

@@ -229,7 +229,7 @@ export default function DashboardClient({
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ fontSize: 10, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Rendite 25J</div>
-                        <div style={{ fontSize: 14, fontWeight: 600, fontFamily: v('--font-mono'), color: (calc.rendite_25j ?? 0) > 0 ? v('--color-positive-text') : v('--color-negative') }}>
+                        <div style={{ fontSize: 14, fontWeight: 600, fontFamily: v('--font-mono'), color: (calc.rendite_25j ?? 0) > 0 ? v('--color-positive') : v('--color-negative') }}>
                           {calc.rendite_25j != null ? `${calc.rendite_25j > 0 ? "+" : ""}${calc.rendite_25j.toLocaleString("de-DE")} €` : "—"}
                         </div>
                       </div>

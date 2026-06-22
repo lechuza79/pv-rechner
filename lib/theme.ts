@@ -22,8 +22,7 @@ export const tokens = {
   '--color-accent-light': '#6A9EF2',    // Light accent, secondary interactive
 
   // ─── Semantic (5) ──────────────────────────────────────────────────────────
-  '--color-positive': '#00D950',        // Positive values — FLÄCHEN/Icons/Borders/Fills only
-  '--color-positive-text': '#00822E',   // Positive values as TEXT on white (≈5:1, WCAG AA). #00D950 wäre nur 1,9:1.
+  '--color-positive': '#00D950',        // Positive values (Rendite, Ersparnis)
   '--color-highlight': '#3DFFC1',       // Highlight (Live-Indikator, jüngster Wert)
   '--color-awareness': '#3DFFC1',       // Awareness/Aufmerksamkeit (Synonym fürs Highlight-Token, semantisch klarer für allgemeine Use-Cases ausserhalb Live-Daten)
   '--color-negative': '#EF4444',        // Negative values (Kosten, Verluste)

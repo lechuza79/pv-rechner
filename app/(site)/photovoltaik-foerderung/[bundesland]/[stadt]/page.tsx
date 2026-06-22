@@ -224,7 +224,7 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
             <div style={{ ...S.card, borderColor: f.status === "aktiv" ? v("--color-positive") : v("--color-border"), background: v("--color-bg-muted") }}>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
                 {f.eligibility.map((e) => (
-                  <span key={e} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-positive-text"), background: v("--color-bg"), border: `1px solid ${v("--color-positive-text")}`, borderRadius: 999, padding: "3px 10px" }}>
+                  <span key={e} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-positive"), background: v("--color-bg"), border: `1px solid ${v("--color-positive")}`, borderRadius: 999, padding: "3px 10px" }}>
                     {e === "privat" ? "Privat" : "Gewerblich"}
                   </span>
                 ))}
@@ -278,7 +278,7 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
                   {ex.foerderung > 0 && (
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <span style={{ color: v("--color-text-secondary") }}>Förderung</span>
-                      <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive-text"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
+                      <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
                     </div>
                   )}
                   <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 6 }}>
@@ -287,7 +287,7 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ color: v("--color-text-secondary") }}>Rendite 25 J.</span>
-                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: ex.total > 0 ? v("--color-positive-text") : v("--color-negative") }}>{ex.total > 0 ? "+" : ""}{nf(ex.total)} €</span>
+                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: ex.total > 0 ? v("--color-positive") : v("--color-negative") }}>{ex.total > 0 ? "+" : ""}{nf(ex.total)} €</span>
                   </div>
                 </div>
               </div>
