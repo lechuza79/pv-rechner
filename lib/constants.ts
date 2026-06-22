@@ -14,7 +14,7 @@ export const CONSUMPTION_MONTHLY = [1.17, 1.05, 1.08, 0.97, 0.93, 0.84, 0.87, 0.
 
 // Gas/Öl-Referenzkosten für WP-Vergleich
 export const FUEL: Record<string, { label: string; price: number; efficiency: number; co2PerKwh: number }> = {
-  gas: { label: "Gas", price: 0.12, efficiency: 0.90, co2PerKwh: 0.20 },   // 12 ct/kWh, 90% Kessel, 200g CO2/kWh
+  gas: { label: "Gas", price: 0.11, efficiency: 0.90, co2PerKwh: 0.20 },   // 11 ct/kWh, 90% Kessel, 200g CO2/kWh (konsistent mit heatpump-config gasPriceCtPerKwh)
   oil: { label: "Heizöl", price: 0.10, efficiency: 0.85, co2PerKwh: 0.266 }, // 10 ct/kWh, 85% Kessel, 266g CO2/kWh
 };
 

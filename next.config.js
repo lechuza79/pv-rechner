@@ -5,6 +5,19 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_BASE_URL: "https://solar-check.io",
   },
+  async headers() {
+    return [
+      {
+        // PLZ→Koordinaten-Lookup ist ein statischer, versionierter Datensatz —
+        // ändert sich praktisch nie. Aggressiv & unveränderlich cachen, damit der
+        // Browser ihn nicht bei jedem Rechner-/Simulations-Aufruf neu lädt.
+        source: "/plz.json",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       {

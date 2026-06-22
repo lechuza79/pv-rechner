@@ -2,16 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
 
 // One-time setup route to create MaStR data lake tables.
-// Call once: GET /api/mastr/setup?key=CRON_SECRET
+// Trigger: send Authorization: Bearer $CRON_SECRET header.
 // Safe to re-run (uses IF NOT EXISTS).
 
 const CRON_SECRET = process.env.CRON_SECRET;
 
 export async function GET(req: NextRequest) {
-  const key = req.nextUrl.searchParams.get("key");
+  // Nur Bearer-Header akzeptieren — kein ?key=-Query-Param (landet sonst in
+  // Server-/Proxy-Logs). Analog zu energy/setup, funding/setup, prices/scrape.
   const authHeader = req.headers.get("authorization");
 
-  if (!CRON_SECRET || (key !== CRON_SECRET && authHeader !== `Bearer ${CRON_SECRET}`)) {
+  if (!CRON_SECRET || authHeader !== `Bearer ${CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

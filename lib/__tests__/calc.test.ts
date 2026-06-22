@@ -67,20 +67,20 @@ describe("calcWeightedFeedIn", () => {
 // ─── Cost estimation ────────────────────────────────────────────────────────
 describe("estimateCost", () => {
   it("uses the small-system rate at or below the threshold", () => {
-    // 8 kWp, no battery, default prices Q1/2026: 1400 €/kWp small
+    // 8 kWp, no battery, default fallback 06/2026: 1416 €/kWp small
     const result = estimateCost(8, 0);
-    // Rounded to 500 → 11200 → 11000 or 11500
+    // 8*1416 = 11328 → rounds to 11500 (500€ steps)
     expect(result % 500).toBe(0);
     expect(result).toBeGreaterThan(10000);
     expect(result).toBeLessThan(13000);
   });
 
   it("blends small and large prices above the threshold", () => {
-    // 15 kWp = 10*1400 + 5*1250 = 14000 + 6250 = 20250 → rounds to 20500 (500€ steps)
+    // 15 kWp = 10*1416 + 5*1071 = 14160 + 5355 = 19515 → rounds to 19500 (500€ steps)
     const result = estimateCost(15, 0);
     expect(result % 500).toBe(0);
-    expect(result).toBeGreaterThanOrEqual(20000);
-    expect(result).toBeLessThanOrEqual(20500);
+    expect(result).toBeGreaterThanOrEqual(19000);
+    expect(result).toBeLessThanOrEqual(20000);
   });
 
   it("adds battery cost on top", () => {

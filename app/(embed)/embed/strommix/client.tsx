@@ -612,7 +612,7 @@ function Footer() {
           }}
         >
           <SolarCheckMark />
-          <span>Solar-Check.io</span>
+          <span>solar-check.io</span>
         </a>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { paramsToRow } from "../../../lib/types";
 import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN } from "../../../lib/constants";
@@ -26,7 +27,20 @@ import ResultFunding from "./_components/ResultFunding";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
-export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
+export default function PVRechner() {
+  // Share-Parameter clientseitig aus der URL lesen (nicht als Server-Prop) —
+  // so bleibt die nackte Route /photovoltaik-rechner statisch prerenderbar und
+  // CDN-cachebar. Einmal beim Mount eingefroren, damit es sich exakt wie der
+  // frühere Server-searchParams-Snapshot verhält. Die Suspense-Grenze in
+  // page.tsx deckt den CSR-Bailout von useSearchParams ab.
+  const sp = useSearchParams();
+  const initialParams = useMemo<Record<string, string>>(() => {
+    const o: Record<string, string> = {};
+    sp.forEach((value, key) => { o[key] = value; });
+    return o;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // 'er' (Ertrag) und 'plz' sind reine Vorbefüll-Hinweise (z.B. von einer
   // regionalen Landingpage): sie seeden State, dürfen aber NICHT direkt ins
   // Ergebnis springen — das tut nur eine echte Konfiguration (a/s/p/n/…).

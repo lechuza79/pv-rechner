@@ -153,6 +153,7 @@ export default function LiveSimulation() {
             <input
               type="text"
               inputMode="numeric"
+              aria-label="Postleitzahl eingeben"
               placeholder="PLZ eingeben (z.B. 80331)"
               value={plz}
               onChange={e => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
@@ -309,7 +310,7 @@ export default function LiveSimulation() {
                   )}
                 </div>
                 <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4 }}>
-                  <span style={{ color: v('--color-positive'), fontWeight: 600 }}>{r.selfUsePercent}%</span> Eigenverbrauch
+                  <span style={{ color: v('--color-positive-text'), fontWeight: 600 }}>{r.selfUsePercent}%</span> Eigenverbrauch
                 </div>
               </button>
             ))}

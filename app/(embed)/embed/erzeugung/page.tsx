@@ -4,7 +4,7 @@ import ErzeugungWidget from "./client";
 export const metadata: Metadata = {
   title: "Stromerzeugung Deutschland — Solar Check Widget",
   description:
-    "Aktuelle Stromerzeugung in Deutschland: Solar, Wind, Biomasse, Wasser. 24-Stunden-Verlauf als Radial-Chart, live aus Solar-Check.io.",
+    "Aktuelle Stromerzeugung in Deutschland: Solar, Wind, Biomasse, Wasser. 24-Stunden-Verlauf als Radial-Chart, live aus solar-check.io.",
   robots: { index: false, follow: false },
 };
 

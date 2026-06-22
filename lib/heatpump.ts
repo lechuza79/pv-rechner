@@ -15,7 +15,7 @@
 // indem E_WP als Teil des Gesamtverbrauchs übergeben wird.
 
 import { DEFAULT_HEATPUMP_CONFIG, type HeatPumpConfig } from "./heatpump-config";
-import { estimateCost } from "./calc";
+import { estimateCost, co2PriceForYear } from "./calc";
 
 export interface HeatPumpInputs {
   situation: "bestand" | "neubau";
@@ -207,7 +207,10 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   const gasPerYear: number[] = [];
   let gasKosten = 0;
   for (let i = 0; i < cfg.years; i++) {
-    const co2Surcharge = gasCo2 * (i === 0 ? 55 : i === 1 ? 65 : 65 + (i - 1) * 8) / 1000;
+    // CO2-Preis kalenderjahr-verankert (rollover-sicher) statt offset-fest —
+    // co2PriceForYear(i) = CO2_PRICE für YEAR+i (lib/co2-config.ts). Sonst würde
+    // die Jahr→Preis-Zuordnung am 1.1. still verrutschen.
+    const co2Surcharge = gasCo2 * co2PriceForYear(i) / 1000;
     const basePrice = gasPrice * Math.pow(1 + adj.gasInflation, i);
     const y = fuelKwh * (basePrice + co2Surcharge);
     gasKosten += y;

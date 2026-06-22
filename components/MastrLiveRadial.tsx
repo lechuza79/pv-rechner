@@ -760,7 +760,7 @@ export function MastrLiveRadial({
                 textDecoration: "none",
               }}
             >
-              Solar-Check.io
+              solar-check.io
             </a>
           </span>
           {isCompact && traegerNav?.after && <span>{traegerNav.after}</span>}
