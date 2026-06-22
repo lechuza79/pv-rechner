@@ -316,7 +316,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       subtitle: `${kwp} kWp${spKwh > 0 ? ` · ${spKwh} kWh Speicher` : ""}`,
       stats: isResult ? [
         { label: "Amortisation", value: be ? `${be.i}` : ">25", unit: "Jahre" },
-        { label: "Eigenverbrauch", value: `${Math.round(effEv * 100)}`, unit: "%" },
+        { label: "Eigenverbrauch", value: `${Math.round(effEv)}`, unit: "%" },
         { label: "Kosten", value: kosten.toLocaleString("de-DE"), unit: "€" },
         { label: "Strompreis", value: `${oStrom}`, unit: "ct/kWh" },
       ] : undefined,
@@ -765,7 +765,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'),
               }}>
                 Dein Speicher hebt den <GlossaryTerm id="eigenverbrauch">Eigenverbrauch</GlossaryTerm> auf{" "}
-                <strong style={{ color: v('--color-text-primary') }}>{Math.round(effEv * 100)}%</strong> — so viel
+                <strong style={{ color: v('--color-text-primary') }}>{Math.round(effEv)}%</strong> — so viel
                 deines Solarstroms nutzt du übers Jahr selbst, der Rest fließt ins Netz. Dieser Wert ist der
                 wichtigste Hebel für die Wirtschaftlichkeit: Jede selbst genutzte Kilowattstunde spart dir den
                 vollen Strompreis, während eingespeister Strom nur die deutlich niedrigere Einspeisevergütung bringt.{" "}
