@@ -6,10 +6,9 @@ import { scaleQuantile } from "@visx/scale";
 import { v } from "../lib/theme";
 import { bundeslandByAgs } from "../lib/mastr-regions";
 
-import type { Feature, FeatureCollection as GeoJsonFeatureCollection, Geometry } from "geojson";
+import type { FeatureCollection as GeoJsonFeatureCollection, Geometry } from "geojson";
 
 type RegionProps = { id: string; name: string; bl?: string; kind?: string };
-type RegionFeature = Feature<Geometry, RegionProps>;
 type FeatureCollection = GeoJsonFeatureCollection<Geometry, RegionProps>;
 
 export type RegionValue = {
@@ -102,18 +101,17 @@ export function MastrMap({
 
   const {
     fillFeatures,
-    borderFeatures,
     projection,
   } = useMemo(() => {
     if (!lkGeo || !blGeo || width < 10) {
-      return { fillFeatures: [], borderFeatures: [], projection: null };
+      return { fillFeatures: [], projection: null };
     }
 
     if (level === "bundesland" && parentAgs) {
-      // Zoom to the Bundesland; render its Landkreise as fill, the BL outline as border.
+      // Zoom to the Bundesland; render its Landkreise as fill.
       const parentFeature = blGeo.features.find((f) => (f.properties as RegionProps).id === parentAgs);
       if (!parentFeature) {
-        return { fillFeatures: [], borderFeatures: [], projection: null };
+        return { fillFeatures: [], projection: null };
       }
       const proj = geoMercator().fitExtent(
         [
@@ -122,12 +120,20 @@ export function MastrMap({
         ],
         parentFeature as never,
       );
+      // States are wider than tall, so fitExtent centers them vertically and
+      // leaves a big gap above. Shift the projection up so the state sits at
+      // the top of the box (height stays the same).
+      const bounds = geoPath(proj).bounds(parentFeature as never);
+      const dy = bounds[0][1] - 20;
+      if (dy > 0) {
+        const [tx, ty] = proj.translate();
+        proj.translate([tx, ty - dy]);
+      }
       const lksInBl = lkGeo.features.filter((f) =>
         (f.properties as RegionProps).id.startsWith(parentAgs),
       );
       return {
         fillFeatures: lksInBl,
-        borderFeatures: [parentFeature],
         projection: proj,
       };
     }
@@ -136,7 +142,6 @@ export function MastrMap({
     const proj = geoMercator().fitSize([width, MAP_HEIGHT], lkGeo as never);
     return {
       fillFeatures: blGeo.features,
-      borderFeatures: [] as RegionFeature[],
       projection: proj,
     };
   }, [level, parentAgs, lkGeo, blGeo, width]);
@@ -154,14 +159,6 @@ export function MastrMap({
       };
     });
   }, [fillFeatures, pathGen]);
-
-  const borderPaths = useMemo(() => {
-    if (!pathGen) return [];
-    return borderFeatures.map((f) => {
-      const props = f.properties as RegionProps;
-      return { id: props.id, d: pathGen(f as never) ?? "" };
-    });
-  }, [borderFeatures, pathGen]);
 
   const hoveredName = useMemo(() => {
     if (!hovered) return null;
@@ -208,20 +205,6 @@ export function MastrMap({
               );
             })}
           </g>
-          {borderPaths.length > 0 && (
-            <g style={{ pointerEvents: "none" }}>
-              {borderPaths.map((p) => (
-                <path
-                  key={`border-${p.id}`}
-                  d={p.d}
-                  fill="none"
-                  stroke={v("--color-text-secondary")}
-                  strokeWidth={1.5}
-                  strokeLinejoin="round"
-                />
-              ))}
-            </g>
-          )}
         </svg>
       )}
 

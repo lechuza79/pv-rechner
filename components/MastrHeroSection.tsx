@@ -129,11 +129,6 @@ export function MastrHeroSection({ initialRegion, onRegionChange, embedded }: Ma
     });
   };
 
-  const handleBack = () => {
-    if (isLkSelected && selectedAgs) setSelectedAgs(selectedAgs.slice(0, 2));
-    else setSelectedAgs(undefined);
-  };
-
   const values: RegionValue[] = useMemo(
     () => choropleth.data.map((d) => ({ ags: d.region_id, value: d.kwp / 1000 })),
     [choropleth],
@@ -156,6 +151,16 @@ export function MastrHeroSection({ initialRegion, onRegionChange, embedded }: Ma
             refetchChoropleth();
             refetchSummary();
           }}
+        />
+      )}
+
+      {selectedAgs && parentAgs && (
+        <MapBreadcrumb
+          isLk={isLkSelected}
+          blAgs={parentAgs}
+          blName={bundeslandByAgs(parentAgs)?.name ?? parentAgs}
+          lkName={isLkSelected ? summary?.name : undefined}
+          onGo={setSelectedAgs}
         />
       )}
 
@@ -185,8 +190,6 @@ export function MastrHeroSection({ initialRegion, onRegionChange, embedded }: Ma
             regionAgs={region}
             energietraeger={energietraeger}
             segment={effectiveSegment}
-            onReset={handleBack}
-            backLabel={isLkSelected ? "← Zurück zum Bundesland" : "← Zurück zu Deutschland"}
           />
           {summaryError && !summary && (
             <ErrorKachel message={summaryError} onRetry={refetchSummary} />
@@ -395,20 +398,69 @@ function formatDataAsOf(iso: string): string {
   return `${MONTHS_DE[parseInt(m[2], 10) - 1]} ${m[1]}`;
 }
 
+// Breadcrumb above the map: Deutschland › Bundesland › Landkreis. Each crumb
+// jumps to that level; the last (current) level carries an ✕ to go up one.
+function MapBreadcrumb({
+  isLk,
+  blAgs,
+  blName,
+  lkName,
+  onGo,
+}: {
+  isLk: boolean;
+  blAgs: string;
+  blName: string;
+  lkName?: string;
+  onGo: (ags: string | undefined) => void;
+}) {
+  const link: React.CSSProperties = {
+    background: "none", border: 0, padding: 0, cursor: "pointer",
+    fontSize: 13, fontWeight: 600, color: v("--color-accent"), fontFamily: "inherit",
+  };
+  const sep: React.CSSProperties = { color: v("--color-text-muted"), fontSize: 13 };
+  const current: React.CSSProperties = {
+    fontSize: 13, fontWeight: 700, color: v("--color-text-primary"),
+    display: "inline-flex", alignItems: "center", gap: 4,
+  };
+  const close: React.CSSProperties = {
+    background: "none", border: 0, padding: "0 2px", cursor: "pointer",
+    color: v("--color-text-muted"), fontSize: 14, lineHeight: 1, fontFamily: "inherit",
+  };
+  const Current = ({ label, up }: { label: string; up: string | undefined }) => (
+    <span style={current}>
+      {label}
+      <button style={close} onClick={() => onGo(up)} aria-label="Ebene schließen" title="Eine Ebene zurück">
+        ✕
+      </button>
+    </span>
+  );
+  return (
+    <nav aria-label="Navigation" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginTop: 14 }}>
+      <button style={link} onClick={() => onGo(undefined)}>Deutschland</button>
+      <span style={sep}>›</span>
+      {isLk ? (
+        <>
+          <button style={link} onClick={() => onGo(blAgs)}>{blName}</button>
+          <span style={sep}>›</span>
+          <Current label={lkName ?? "Landkreis"} up={blAgs} />
+        </>
+      ) : (
+        <Current label={blName} up={undefined} />
+      )}
+    </nav>
+  );
+}
+
 function SummaryPanel({
   summary,
   regionAgs,
   energietraeger,
   segment,
-  onReset,
-  backLabel = "← Zurück zu Deutschland",
 }: {
   summary: RegionSummary | null;
   regionAgs: string;
   energietraeger: Energietraeger;
   segment: SegmentFilter;
-  onReset: () => void;
-  backLabel?: string;
 }) {
   // Labels derive from UI state — known immediately for DE + Bundesländer.
   // Landkreis names come from the API response (DB lookup), so until summary
@@ -491,22 +543,6 @@ function SummaryPanel({
             );
           })}
         </div>
-      )}
-      {!isDE && (
-        <button
-          onClick={onReset}
-          style={{
-            padding: "8px 12px",
-            background: v("--color-bg-muted"),
-            border: `1px solid ${v("--color-border")}`,
-            borderRadius: 10,
-            cursor: "pointer",
-            fontSize: 13,
-            color: v("--color-text-primary"),
-          }}
-        >
-          {backLabel}
-        </button>
       )}
       <div style={{ fontSize: 11, color: v("--color-text-muted"), paddingTop: 2 }}>
         {summary
