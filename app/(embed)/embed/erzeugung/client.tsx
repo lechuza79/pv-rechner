@@ -23,6 +23,7 @@ const ALLOWED_VARS = [
   "--widget-accent",
   "--widget-accent-fg",
   "--widget-highlight",
+  "--widget-ink",
   "--widget-border-radius",
   "--widget-font-family",
 ];

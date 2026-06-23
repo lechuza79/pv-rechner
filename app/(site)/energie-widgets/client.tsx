@@ -13,12 +13,7 @@ import {
 } from "../../../lib/widget-theme";
 
 const SITE_URL = "https://solar-check.io";
-
-const RADIUS_OPTIONS = [
-  { label: "Eckig", value: "0px" },
-  { label: "Standard", value: "14px" },
-  { label: "Rund", value: "22px" },
-];
+const MAX_RADIUS = 28;
 
 interface WidgetVariant {
   id: string;
@@ -176,19 +171,17 @@ function ThemePanel({
           <ColorInput value={theme.highlight} onChange={(highlight) => onChange({ highlight })} />
         </Control>
 
-        <Control label="Ecken">
-          <div style={S.btnRow}>
-            {RADIUS_OPTIONS.map((r) => (
-              <button
-                key={r.value}
-                type="button"
-                onClick={() => onChange({ radius: r.value })}
-                style={{ ...S.btn, ...(theme.radius === r.value ? S.btnActive : null) }}
-              >
-                {r.label}
-              </button>
-            ))}
-          </div>
+        <Control label={`Ecken: ${parseInt(theme.radius, 10) || 0} px`}>
+          <input
+            type="range"
+            min={0}
+            max={MAX_RADIUS}
+            step={1}
+            value={parseInt(theme.radius, 10) || 0}
+            onChange={(e) => onChange({ radius: `${e.target.value}px` })}
+            style={S.slider}
+            aria-label="Eckenradius"
+          />
         </Control>
 
         <Control label="Schrift">
@@ -538,6 +531,7 @@ const S: Record<string, React.CSSProperties> = {
     cursor: "pointer",
   },
   colorValue: { fontSize: 12.5, fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
+  slider: { width: "100%", accentColor: v("--color-accent"), cursor: "pointer", margin: "6px 0" },
   variantRow: {
     display: "flex",
     flexWrap: "wrap" as const,

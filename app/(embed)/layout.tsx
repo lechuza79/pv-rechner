@@ -37,14 +37,20 @@ const baseStyles = `
     --widget-border-radius:14px;
     --widget-font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 
+    /* Structural "ink" — grid lines, borders, faint axis labels. Derived from
+       the BACKGROUND's contrast (set by the parent via postMessage/URL), not
+       from the text color, so a dark background flips grid/borders to white
+       automatically. Defaults to dark for the standard light background. */
+    --widget-ink:#0F0F0F;
+
     /* Aliases for recycled chart components — derived from widget tokens */
     --color-bg:var(--widget-bg);
     --color-text-primary:var(--widget-fg);
     --color-text-secondary:var(--widget-muted);
     --color-text-muted:var(--widget-muted);
-    --color-text-faint:color-mix(in srgb,var(--widget-fg) 30%,transparent);
-    --color-border:color-mix(in srgb,var(--widget-fg) 12%,transparent);
-    --color-chart-grid:color-mix(in srgb,var(--widget-fg) 8%,transparent);
+    --color-text-faint:color-mix(in srgb,var(--widget-ink) 30%,transparent);
+    --color-border:color-mix(in srgb,var(--widget-ink) 14%,transparent);
+    --color-chart-grid:color-mix(in srgb,var(--widget-ink) 10%,transparent);
     --color-accent:var(--widget-accent);
     --color-highlight:var(--widget-highlight);
     --color-awareness:var(--widget-awareness);

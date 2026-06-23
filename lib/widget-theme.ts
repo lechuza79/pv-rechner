@@ -16,6 +16,7 @@ export const WIDGET_THEME_PARAMS: Record<string, string> = {
   accent: "--widget-accent",
   accentfg: "--widget-accent-fg",
   highlight: "--widget-highlight",
+  ink: "--widget-ink",
   radius: "--widget-border-radius",
 };
 
@@ -84,6 +85,8 @@ export function selectionToVars(sel: WidgetThemeSelection): Record<string, strin
     "--widget-accent": sel.accent,
     "--widget-accent-fg": contrastColor(sel.accent),
     "--widget-highlight": sel.highlight,
+    // Grid/border ink follows the background contrast → white on dark bg.
+    "--widget-ink": contrastColor(sel.bg),
     "--widget-border-radius": sel.radius,
     "--widget-font-family": (WIDGET_FONTS[sel.font] ?? WIDGET_FONTS.system).stack,
   };
@@ -93,7 +96,10 @@ export function selectionToVars(sel: WidgetThemeSelection): Record<string, strin
  * equal to the default so the standard look yields a param-free URL. */
 export function buildWidgetThemeQuery(sel: WidgetThemeSelection): string {
   const params = new URLSearchParams();
-  if (sel.bg !== WIDGET_THEME_DEFAULTS.bg) params.set("bg", sel.bg);
+  if (sel.bg !== WIDGET_THEME_DEFAULTS.bg) {
+    params.set("bg", sel.bg);
+    params.set("ink", contrastColor(sel.bg));
+  }
   if (sel.fg !== WIDGET_THEME_DEFAULTS.fg) params.set("fg", sel.fg);
   if (sel.accent !== WIDGET_THEME_DEFAULTS.accent) {
     params.set("accent", sel.accent);

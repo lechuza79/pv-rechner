@@ -304,7 +304,9 @@ export function MastrLiveRadial({
   const cardStyle: React.CSSProperties = {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
-    borderRadius: 12,
+    // Embed widgets theme the corner radius via --widget-border-radius; on the
+    // main site that token is undefined, so it falls back to the original 12px.
+    borderRadius: "var(--widget-border-radius, 12px)",
     padding: isCompact ? "12px 20px 14px" : "16px 20px 24px",
     // Compact = Box passt sich dem Inhalt an (hug content); Default
     // bleibt block-Level (volle Container-Breite).

@@ -34,6 +34,7 @@ const ALLOWED_VARS = [
   "--widget-muted",
   "--widget-accent",
   "--widget-accent-fg",
+  "--widget-ink",
   "--widget-border-radius",
   "--widget-font-family",
 ];
