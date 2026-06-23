@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Header from "../../../components/Header";
-import { IconBolt, IconRefresh, IconLink } from "../../../components/Icons";
+import { IconBolt, IconRefresh, IconLink, IconChevronDown } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import {
   WIDGET_FONTS,
@@ -53,8 +53,8 @@ const SECTIONS: WidgetSection[] = [
     showFrameWidth: false,
     showAutoswitch: true,
     variants: [
-      { id: "standard", label: "Standard", src: "/embed/erzeugung", height: 460, fixedWidth: 380 },
-      { id: "mini", label: "Kompakt", src: "/embed/erzeugung-mini", height: 330, fixedWidth: 260 },
+      { id: "standard", label: "Standard", src: "/embed/erzeugung", height: 412, fixedWidth: 380 },
+      { id: "mini", label: "Kompakt", src: "/embed/erzeugung-mini", height: 285, fixedWidth: 260 },
     ],
   },
   {
@@ -67,7 +67,7 @@ const SECTIONS: WidgetSection[] = [
       text: "Strommix Deutschland – live bei Solar Check",
     },
     showFrameWidth: true,
-    variants: [{ id: "strommix", label: "Strommix", src: "/embed/strommix", height: 460 }],
+    variants: [{ id: "strommix", label: "Strommix", src: "/embed/strommix", height: 410 }],
   },
 ];
 
@@ -113,7 +113,7 @@ export default function WidgetsClient() {
         <p style={S.subtitle}>
           Bette den deutschen Strommix und die Live-Stromerzeugung kostenlos auf deiner Seite ein.
           Die Daten aktualisieren sich automatisch, und das Aussehen lässt sich frei an dein Design anpassen.
-          Stelle das Aussehen ein, wähle ein Widget und kopiere den fertigen Code.
+          Wähle ein Widget, passe das Aussehen unten an und kopiere den fertigen Code.
         </p>
 
         <div style={S.rules}>
@@ -131,10 +131,13 @@ export default function WidgetsClient() {
           })}
         </div>
 
-        <ThemePanel theme={theme} onChange={update} sticky={isDesktop} />
-
-        {SECTIONS.map((s) => (
-          <SectionPreview key={s.id} section={s} theme={theme} />
+        {SECTIONS.map((s, i) => (
+          <Fragment key={s.id}>
+            <SectionPreview section={s} theme={theme} />
+            {/* Controls live directly under the first live widget and stick to
+                the top while scrolling on to the next widget / the code. */}
+            {i === 0 && <ThemePanel theme={theme} onChange={update} sticky={isDesktop} />}
+          </Fragment>
         ))}
       </div>
     </div>
@@ -156,7 +159,7 @@ function ThemePanel({
     <section style={{ ...S.themePanel, ...(sticky ? S.themePanelSticky : null) }}>
       <div style={S.themePanelHead}>
         <h2 style={S.themePanelTitle}>Aussehen anpassen</h2>
-        <span style={S.themePanelHint}>Änderungen erscheinen sofort in den Widgets unten.</span>
+        <span style={S.themePanelHint}>Änderungen erscheinen sofort in den Widgets oben.</span>
         {!isDefault && (
           <button type="button" onClick={() => onChange(WIDGET_THEME_DEFAULTS)} style={S.resetBtn}>
             Zurücksetzen
@@ -178,7 +181,7 @@ function ThemePanel({
           <ColorInput value={theme.highlight} onChange={(highlight) => onChange({ highlight })} />
         </Control>
 
-        <Control label={`Ecken: ${parseInt(theme.radius, 10) || 0} px`}>
+        <Control label={`Ecken: ${parseInt(theme.radius, 10) || 0} px`} span={2}>
           <input
             type="range"
             min={0}
@@ -191,7 +194,7 @@ function ThemePanel({
           />
         </Control>
 
-        <Control label="Schrift" span>
+        <Control label="Schrift" span={2}>
           <div style={{ ...S.btnRow, flexWrap: "nowrap" }}>
             {Object.entries(WIDGET_FONTS).map(([key, f]) => (
               <button
@@ -210,9 +213,9 @@ function ThemePanel({
   );
 }
 
-function Control({ label, children, span }: { label: string; children: React.ReactNode; span?: boolean }) {
+function Control({ label, children, span }: { label: string; children: React.ReactNode; span?: number }) {
   return (
-    <div style={span ? { gridColumn: "1 / -1" } : undefined}>
+    <div style={span ? { gridColumn: `span ${span}` } : undefined}>
       <div style={S.label}>{label}</div>
       {children}
     </div>
@@ -386,6 +389,7 @@ function EmbedSnippet({
   autoswitch: number;
 }) {
   const [copied, setCopied] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const qs = new URLSearchParams(buildWidgetThemeQuery(theme));
   if (autoswitch > 0) qs.set("auto", String(autoswitch));
@@ -422,14 +426,23 @@ function EmbedSnippet({
   return (
     <div style={S.snippetWrap}>
       <div style={S.snippetHeader}>
-        <span style={S.snippetLabel}>Einbettungs-Code</span>
+        <button type="button" onClick={() => setOpen((o) => !o)} style={S.snippetToggle} aria-expanded={open}>
+          <IconChevronDown
+            size={14}
+            color={v("--color-text-secondary")}
+            style={{ transition: "transform 0.15s ease", transform: open ? "rotate(180deg)" : "none" }}
+          />
+          Einbettungs-Code
+        </button>
         <button type="button" onClick={copy} style={S.snippetCopyBtn}>
           {copied ? "Kopiert!" : "Kopieren"}
         </button>
       </div>
-      <pre style={S.snippetPre}>
-        <code>{code}</code>
-      </pre>
+      {open && (
+        <pre style={S.snippetPre}>
+          <code>{code}</code>
+        </pre>
+      )}
     </div>
   );
 }
@@ -471,7 +484,7 @@ const S: Record<string, React.CSSProperties> = {
     position: "sticky" as const,
     top: 12,
     zIndex: 50,
-    boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
+    boxShadow: "0 6px 20px rgba(0,0,0,0.1)",
   },
   themePanelHead: {
     display: "flex",
@@ -580,15 +593,22 @@ const S: Record<string, React.CSSProperties> = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "6px 10px",
-    borderBottom: `1px solid ${v("--color-border")}`,
+    padding: "6px 8px 6px 10px",
   },
-  snippetLabel: {
-    fontSize: 10,
+  snippetToggle: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    background: "none",
+    border: 0,
+    padding: 0,
+    fontSize: 11,
     fontWeight: 700,
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
     letterSpacing: "0.06em",
+    cursor: "pointer",
+    fontFamily: "inherit",
   },
   snippetCopyBtn: {
     padding: "3px 10px",
@@ -604,6 +624,7 @@ const S: Record<string, React.CSSProperties> = {
   snippetPre: {
     margin: 0,
     padding: "10px 12px",
+    borderTop: `1px solid ${v("--color-border")}`,
     fontSize: 11,
     lineHeight: 1.45,
     fontFamily: v("--font-mono"),

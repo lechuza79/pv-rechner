@@ -25,9 +25,9 @@ export const WIDGET_THEME_PARAMS: Record<string, string> = {
  * from the URL (spaces/commas + injection risk). */
 export const WIDGET_FONTS: Record<string, { label: string; stack: string }> = {
   system: { label: "System", stack: 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif' },
-  sans: { label: "Sans-Serif", stack: "Arial,Helvetica,sans-serif" },
+  sans: { label: "Sans", stack: "Arial,Helvetica,sans-serif" },
   serif: { label: "Serif", stack: 'Georgia,"Times New Roman",serif' },
-  mono: { label: "Monospace", stack: "ui-monospace,Menlo,Consolas,monospace" },
+  mono: { label: "Mono", stack: "ui-monospace,Menlo,Consolas,monospace" },
 };
 
 /** The widget layout's :root defaults. A selection equal to these is omitted
