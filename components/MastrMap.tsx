@@ -94,7 +94,7 @@ export function MastrMap({
   }, [values]);
 
   const fillFor = (ags: string) => {
-    if (loading) return v("--color-bg-muted");
+    if (loading) return COLOR_RAMP[0]; // faint accent wash while loading, not grey
     const val = valueByAgs.get(ags) ?? 0;
     if (val <= 0) return COLOR_RAMP[0];
     return colorScale(val);
@@ -176,7 +176,7 @@ export function MastrMap({
           style={{
             width: "100%",
             height: "100%",
-            background: v("--color-bg-muted"),
+            background: v("--color-accent-dim"),
             borderRadius: 12,
           }}
         />
@@ -195,7 +195,7 @@ export function MastrMap({
                   key={p.id}
                   d={p.d}
                   fill={fillFor(p.id)}
-                  stroke={isSelected ? v("--color-accent-dark") : v("--color-border")}
+                  stroke={isSelected ? v("--color-accent-dark") : loading ? COLOR_RAMP[3] : v("--color-border")}
                   strokeWidth={isSelected ? 2 : isHovered ? 1.3 : 0.5}
                   style={{
                     cursor: onSelect && !loading ? "pointer" : "default",
