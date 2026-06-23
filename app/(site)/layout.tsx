@@ -159,6 +159,7 @@ export default function RootLayout({
           padding: 0,
           background: "var(--color-bg)",
           minHeight: "100vh",
+          fontFamily: "var(--font-text)",
         }}
       >
         <GlossaryProvider>

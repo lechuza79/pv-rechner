@@ -2,60 +2,39 @@
 
 import { useEffect, useRef, useState } from "react";
 import Header from "../../../components/Header";
-import Footer from "../../../components/Footer";
 import { IconBolt, IconRefresh, IconLink } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
-import { buildWidgetThemeQuery } from "../../../lib/widget-theme";
+import {
+  WIDGET_FONTS,
+  WIDGET_THEME_DEFAULTS,
+  WidgetThemeSelection,
+  buildWidgetThemeQuery,
+  selectionToVars,
+} from "../../../lib/widget-theme";
 
 const SITE_URL = "https://solar-check.io";
 
-interface ThemePreset {
+interface QuickTheme {
   id: string;
   label: string;
-  description: string;
-  /** --widget-* overrides (colors + radius). null = Solar-Check-Standardlook. */
-  vars: Record<string, string> | null;
+  selection: WidgetThemeSelection;
 }
 
-const PRESETS: ThemePreset[] = [
-  {
-    id: "default",
-    label: "Standard",
-    description: "Heller Solar-Check-Look mit blauem Akzent.",
-    vars: null,
-  },
+// Quick-pick starting points. The colour pickers below let publishers fine-tune
+// from here, so these are real presets, not "examples".
+const QUICK_THEMES: QuickTheme[] = [
+  { id: "light", label: "Hell", selection: WIDGET_THEME_DEFAULTS },
   {
     id: "dark",
     label: "Dunkel",
-    description: "Dunkler Hintergrund für dunkle Websites.",
-    vars: {
-      "--widget-bg": "#0F0F0F",
-      "--widget-fg": "#F5F5F5",
-      "--widget-muted": "#888888",
-      "--widget-accent": "#4A9EFF",
-      "--widget-accent-fg": "#0F0F0F",
-      "--widget-border-radius": "12px",
-    },
-  },
-  {
-    id: "warm",
-    label: "Warm",
-    description: "Warmer Akzent mit weichen Ecken.",
-    vars: {
-      "--widget-bg": "#F7F4EE",
-      "--widget-fg": "#2A2520",
-      "--widget-muted": "#8A7E70",
-      "--widget-accent": "#C45A2E",
-      "--widget-accent-fg": "#FFFFFF",
-      "--widget-border-radius": "8px",
-    },
+    selection: { bg: "#0F0F0F", fg: "#F5F5F5", accent: "#4A9EFF", radius: "12px", font: "system" },
   },
 ];
 
-const FRAME_WIDTHS = [
-  { id: "narrow", label: "320 px", width: 320 },
-  { id: "default", label: "480 px", width: 480 },
-  { id: "wide", label: "600 px", width: 600 },
+const RADIUS_OPTIONS = [
+  { label: "Eckig", value: "0px" },
+  { label: "Standard", value: "14px" },
+  { label: "Rund", value: "22px" },
 ];
 
 interface WidgetVariant {
@@ -133,6 +112,9 @@ const RULES = [
 ];
 
 export default function WidgetsClient() {
+  const [theme, setTheme] = useState<WidgetThemeSelection>(WIDGET_THEME_DEFAULTS);
+  const update = (patch: Partial<WidgetThemeSelection>) => setTheme((t) => ({ ...t, ...patch }));
+
   return (
     <div style={S.page}>
       <Header activePage="widgets" />
@@ -140,8 +122,8 @@ export default function WidgetsClient() {
         <h1 style={S.h1}>Energie-Widgets für die eigene Website</h1>
         <p style={S.subtitle}>
           Bette den deutschen Strommix und die Live-Stromerzeugung kostenlos auf deiner Seite ein.
-          Die Daten aktualisieren sich automatisch, und das Aussehen lässt sich an dein Design anpassen.
-          Wähle ein Widget, passe Theme und Breite an und kopiere den fertigen Code.
+          Die Daten aktualisieren sich automatisch, und das Aussehen lässt sich frei an dein Design anpassen.
+          Stelle das Aussehen ein, wähle ein Widget und kopiere den fertigen Code.
         </p>
 
         <div style={S.rules}>
@@ -159,12 +141,118 @@ export default function WidgetsClient() {
           })}
         </div>
 
+        <ThemePanel theme={theme} onChange={update} onReset={setTheme} />
+
         {SECTIONS.map((s) => (
-          <SectionPreview key={s.id} section={s} />
+          <SectionPreview key={s.id} section={s} theme={theme} />
         ))}
       </div>
-      <Footer />
     </div>
+  );
+}
+
+function ThemePanel({
+  theme,
+  onChange,
+  onReset,
+}: {
+  theme: WidgetThemeSelection;
+  onChange: (patch: Partial<WidgetThemeSelection>) => void;
+  onReset: (sel: WidgetThemeSelection) => void;
+}) {
+  const activeQuick = QUICK_THEMES.find(
+    (q) => JSON.stringify(q.selection) === JSON.stringify(theme),
+  );
+
+  return (
+    <section style={S.themePanel}>
+      <h2 style={S.h2}>Aussehen anpassen</h2>
+      <p style={S.sectionIntro}>
+        Passe Farben, Ecken und Schrift an dein Design an. Die Vorschau unten aktualisiert sich
+        sofort, und der kopierte Code übernimmt deine Einstellungen automatisch.
+      </p>
+
+      <div style={S.themeGrid}>
+        <Control label="Schnellwahl">
+          <div style={S.btnRow}>
+            {QUICK_THEMES.map((q) => (
+              <button
+                key={q.id}
+                type="button"
+                onClick={() => onReset(q.selection)}
+                style={{ ...S.btn, ...(activeQuick?.id === q.id ? S.btnActive : null) }}
+              >
+                {q.label}
+              </button>
+            ))}
+          </div>
+        </Control>
+
+        <Control label="Hintergrund">
+          <ColorInput value={theme.bg} onChange={(bg) => onChange({ bg })} />
+        </Control>
+        <Control label="Hauptfarbe (Text)">
+          <ColorInput value={theme.fg} onChange={(fg) => onChange({ fg })} />
+        </Control>
+        <Control label="Akzent">
+          <ColorInput value={theme.accent} onChange={(accent) => onChange({ accent })} />
+        </Control>
+
+        <Control label="Ecken">
+          <div style={S.btnRow}>
+            {RADIUS_OPTIONS.map((r) => (
+              <button
+                key={r.value}
+                type="button"
+                onClick={() => onChange({ radius: r.value })}
+                style={{ ...S.btn, ...(theme.radius === r.value ? S.btnActive : null) }}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+        </Control>
+
+        <Control label="Schrift">
+          <div style={S.btnRow}>
+            {Object.entries(WIDGET_FONTS).map(([key, f]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => onChange({ font: key })}
+                style={{ ...S.btn, ...(theme.font === key ? S.btnActive : null) }}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </Control>
+      </div>
+    </section>
+  );
+}
+
+function Control({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div style={S.label}>{label}</div>
+      {children}
+    </div>
+  );
+}
+
+function ColorInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <label style={S.colorRow}>
+      <input
+        type="color"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={S.colorSwatch}
+        aria-label="Farbe wählen"
+      />
+      <span style={S.colorValue}>{value.toUpperCase()}</span>
+    </label>
   );
 }
 
@@ -176,76 +264,56 @@ const AUTOSWITCH_OPTIONS = [
   { id: "10s", label: "10 s", ms: 10000 },
 ];
 
-function SectionPreview({ section }: { section: WidgetSection }) {
-  const [themeId, setThemeId] = useState<string>("default");
+function SectionPreview({ section, theme }: { section: WidgetSection; theme: WidgetThemeSelection }) {
   const [frameW, setFrameW] = useState<number>(480);
   const [autoswitch, setAutoswitch] = useState<number>(0);
-  const activePreset = PRESETS.find((p) => p.id === themeId);
-  const themeVars = activePreset?.vars ?? {};
 
   return (
     <section style={S.section}>
       <h2 style={S.h2}>{section.label}</h2>
       <p style={S.sectionIntro}>{section.intro}</p>
 
-      <div style={S.controls}>
-        <div>
-          <div style={S.label}>Theme</div>
-          <div style={S.btnRow}>
-            {PRESETS.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setThemeId(p.id)}
-                style={{ ...S.btn, ...(themeId === p.id ? S.btnActive : null) }}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-          {activePreset?.description && <div style={S.hint}>{activePreset.description}</div>}
+      {(section.showFrameWidth || section.showAutoswitch) && (
+        <div style={S.controls}>
+          {section.showFrameWidth && (
+            <Control label="Breite">
+              <div style={S.btnRow}>
+                {[320, 480, 600].map((w) => (
+                  <button
+                    key={w}
+                    type="button"
+                    onClick={() => setFrameW(w)}
+                    style={{ ...S.btn, ...(frameW === w ? S.btnActive : null) }}
+                  >
+                    {w} px
+                  </button>
+                ))}
+              </div>
+            </Control>
+          )}
+
+          {section.showAutoswitch && (
+            <Control label="Autoswitch">
+              <div style={S.btnRow}>
+                {AUTOSWITCH_OPTIONS.map((o) => (
+                  <button
+                    key={o.id}
+                    type="button"
+                    onClick={() => setAutoswitch(o.ms)}
+                    style={{ ...S.btn, ...(autoswitch === o.ms ? S.btnActive : null) }}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+              <div style={S.hint}>
+                Das Widget wechselt im gewählten Intervall automatisch durch die Energieträger und
+                pausiert für 30 Sekunden, wenn jemand manuell auf die Pfeile klickt.
+              </div>
+            </Control>
+          )}
         </div>
-
-        {section.showFrameWidth && (
-          <div>
-            <div style={S.label}>Breite</div>
-            <div style={S.btnRow}>
-              {FRAME_WIDTHS.map((w) => (
-                <button
-                  key={w.id}
-                  type="button"
-                  onClick={() => setFrameW(w.width)}
-                  style={{ ...S.btn, ...(frameW === w.width ? S.btnActive : null) }}
-                >
-                  {w.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {section.showAutoswitch && (
-          <div>
-            <div style={S.label}>Autoswitch</div>
-            <div style={S.btnRow}>
-              {AUTOSWITCH_OPTIONS.map((o) => (
-                <button
-                  key={o.id}
-                  type="button"
-                  onClick={() => setAutoswitch(o.ms)}
-                  style={{ ...S.btn, ...(autoswitch === o.ms ? S.btnActive : null) }}
-                >
-                  {o.label}
-                </button>
-              ))}
-            </div>
-            <div style={S.hint}>
-              Das Widget wechselt im gewählten Intervall automatisch durch die Energieträger und
-              pausiert für 30 Sekunden, wenn jemand manuell auf die Pfeile klickt.
-            </div>
-          </div>
-        )}
-      </div>
+      )}
 
       <div style={S.variantRow}>
         {section.variants.map((variant) => (
@@ -253,8 +321,7 @@ function SectionPreview({ section }: { section: WidgetSection }) {
             key={variant.id}
             variant={variant}
             attribution={section.attribution}
-            themeId={themeId}
-            themeVars={themeVars}
+            theme={theme}
             frameW={frameW}
             autoswitch={autoswitch}
             showVariantLabel={section.variants.length > 1}
@@ -268,16 +335,14 @@ function SectionPreview({ section }: { section: WidgetSection }) {
 function VariantFrame({
   variant,
   attribution,
-  themeId,
-  themeVars,
+  theme,
   frameW,
   autoswitch,
   showVariantLabel,
 }: {
   variant: WidgetVariant;
   attribution: Attribution;
-  themeId: string;
-  themeVars: Record<string, string>;
+  theme: WidgetThemeSelection;
   frameW: number;
   autoswitch: number;
   showVariantLabel: boolean;
@@ -298,16 +363,16 @@ function VariantFrame({
     if (iframe?.contentDocument?.readyState === "complete") setIframeReady(true);
   }, []);
 
+  // Always send the full var set so the preview never keeps a stale override.
+  const themeKey = JSON.stringify(theme);
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe || !iframeReady) return;
-    const preset = PRESETS.find((p) => p.id === themeId);
-    if (!preset) return;
     iframe.contentWindow?.postMessage(
-      { type: "widget:theme", vars: preset.vars ?? {} },
+      { type: "widget:theme", vars: selectionToVars(theme) },
       window.location.origin,
     );
-  }, [themeId, iframeReady]);
+  }, [themeKey, iframeReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const effectiveWidth = variant.fixedWidth ?? frameW;
 
@@ -324,7 +389,7 @@ function VariantFrame({
       <EmbedSnippet
         variant={variant}
         attribution={attribution}
-        themeVars={themeVars}
+        theme={theme}
         autoswitch={autoswitch}
       />
     </div>
@@ -334,17 +399,17 @@ function VariantFrame({
 function EmbedSnippet({
   variant,
   attribution,
-  themeVars,
+  theme,
   autoswitch,
 }: {
   variant: WidgetVariant;
   attribution: Attribution;
-  themeVars: Record<string, string>;
+  theme: WidgetThemeSelection;
   autoswitch: number;
 }) {
   const [copied, setCopied] = useState(false);
 
-  const qs = new URLSearchParams(buildWidgetThemeQuery(themeVars));
+  const qs = new URLSearchParams(buildWidgetThemeQuery(theme));
   if (autoswitch > 0) qs.set("auto", String(autoswitch));
   const query = qs.toString();
   const url = `${SITE_URL}${variant.src}${query ? `?${query}` : ""}`;
@@ -417,6 +482,19 @@ const S: Record<string, React.CSSProperties> = {
   ruleIcon: { marginBottom: 10 },
   ruleTitle: { fontSize: 14, fontWeight: 700, marginBottom: 4, color: v("--color-text-primary") },
   ruleBody: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.5 },
+  themePanel: {
+    marginBottom: 44,
+    padding: 20,
+    background: v("--color-bg-accent"),
+    border: `1px solid ${v("--color-border-accent")}`,
+    borderRadius: 14,
+  },
+  themeGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+    gap: 16,
+    alignItems: "start",
+  },
   section: { marginBottom: 44, paddingBottom: 24, borderBottom: `1px solid ${v("--color-border")}` },
   h2: { fontSize: 20, fontWeight: 700, marginTop: 0, marginBottom: 8 },
   sectionIntro: { fontSize: 14, color: v("--color-text-secondary"), lineHeight: 1.5, marginTop: 0, marginBottom: 16 },
@@ -431,8 +509,8 @@ const S: Record<string, React.CSSProperties> = {
   },
   controls: {
     display: "flex",
-    flexDirection: "column" as const,
-    gap: 16,
+    flexWrap: "wrap" as const,
+    gap: 24,
     padding: 16,
     background: v("--color-bg-muted"),
     border: `1px solid ${v("--color-border")}`,
@@ -454,8 +532,19 @@ const S: Record<string, React.CSSProperties> = {
   btnActive: {
     background: v("--color-accent"),
     color: v("--color-text-on-accent"),
-    borderColor: v("--color-accent"),
+    border: `1px solid ${v("--color-accent")}`,
   },
+  colorRow: { display: "flex", alignItems: "center", gap: 8, cursor: "pointer" },
+  colorSwatch: {
+    width: 40,
+    height: 32,
+    padding: 0,
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: 8,
+    background: "none",
+    cursor: "pointer",
+  },
+  colorValue: { fontSize: 12.5, fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
   variantRow: {
     display: "flex",
     flexWrap: "wrap" as const,
