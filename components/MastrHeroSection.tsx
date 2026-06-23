@@ -46,12 +46,15 @@ export type MastrHeroSectionProps = {
   initialRegion?: string;
   /** Called whenever the selected region changes (for URL sync, analytics, etc.) */
   onRegionChange?: (regionAgs: string | undefined) => void;
+  /** Embed/widget mode: hide the side panel (live radial + summary), keep just
+   * the energy-type tabs and the choropleth map. */
+  embedded?: boolean;
 };
 
 const CHOROPLETH_DEFAULT: ChoroplethResp = { source: "", data_as_of: "", data: [] };
 const SUMMARY_DEFAULT: RegionSummary | null = null;
 
-export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSectionProps) {
+export function MastrHeroSection({ initialRegion, onRegionChange, embedded }: MastrHeroSectionProps) {
   const [energietraeger, setEnergietraeger] = useState<Energietraeger>("gesamt");
   const [segment, setSegment] = useState<SegmentFilter>("alle");
   const [selectedAgs, setSelectedAgs] = useState<string | undefined>(
@@ -169,25 +172,27 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
           />
         </div>
 
-        <aside style={{ display: "grid", gap: 12, minWidth: 0 }}>
-          {!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
-            <MastrLiveRadial
+        {!embedded && (
+          <aside style={{ display: "grid", gap: 12, minWidth: 0 }}>
+            {!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
+              <MastrLiveRadial
+                energietraeger={energietraeger}
+                installedKwp={summary?.total_kwp ?? null}
+              />
+            )}
+            <SummaryPanel
+              summary={summary}
+              regionAgs={region}
               energietraeger={energietraeger}
-              installedKwp={summary?.total_kwp ?? null}
+              segment={effectiveSegment}
+              onReset={handleBack}
+              backLabel={isLkSelected ? "← Zurück zum Bundesland" : "← Zurück zu Deutschland"}
             />
-          )}
-          <SummaryPanel
-            summary={summary}
-            regionAgs={region}
-            energietraeger={energietraeger}
-            segment={effectiveSegment}
-            onReset={handleBack}
-            backLabel={isLkSelected ? "← Zurück zum Bundesland" : "← Zurück zu Deutschland"}
-          />
-          {summaryError && !summary && (
-            <ErrorKachel message={summaryError} onRetry={refetchSummary} />
-          )}
-        </aside>
+            {summaryError && !summary && (
+              <ErrorKachel message={summaryError} onRetry={refetchSummary} />
+            )}
+          </aside>
+        )}
       </div>
       <div
         style={{

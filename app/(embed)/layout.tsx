@@ -90,6 +90,10 @@ const baseStyles = `
     from { opacity: 0 }
     to   { opacity: 1 }
   }
+
+  /* Map widget: always single-column (tabs → map → summary), so it fits any
+     iframe width and the preview matches the copy-paste code. */
+  .mastr-hero-grid{display:grid;grid-template-columns:1fr;gap:18px;justify-items:stretch}
 `;
 
 export default function EmbedRootLayout({

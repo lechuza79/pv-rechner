@@ -69,6 +69,18 @@ const SECTIONS: WidgetSection[] = [
     showFrameWidth: true,
     variants: [{ id: "strommix", label: "Strommix", src: "/embed/strommix", height: 410 }],
   },
+  {
+    id: "karte",
+    label: "Deutschland-Karte",
+    intro:
+      "Der Photovoltaik- und Erneuerbaren-Bestand je Region aus dem Marktstammdatenregister – interaktiv nach Energieträger umschaltbar und bis auf Landkreis-Ebene aufklappbar.",
+    attribution: {
+      path: "/",
+      text: "PV-Anlagen in Deutschland – Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [{ id: "karte", label: "Karte", src: "/embed/karte", height: 780, fixedWidth: 520 }],
+  },
 ];
 
 const RULES = [
