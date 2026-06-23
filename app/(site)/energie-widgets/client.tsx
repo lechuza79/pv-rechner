@@ -150,11 +150,18 @@ function ThemePanel({
   onChange: (patch: Partial<WidgetThemeSelection>) => void;
   sticky: boolean;
 }) {
+  const isDefault = JSON.stringify(theme) === JSON.stringify(WIDGET_THEME_DEFAULTS);
+
   return (
     <section style={{ ...S.themePanel, ...(sticky ? S.themePanelSticky : null) }}>
       <div style={S.themePanelHead}>
         <h2 style={S.themePanelTitle}>Aussehen anpassen</h2>
         <span style={S.themePanelHint}>Änderungen erscheinen sofort in den Widgets unten.</span>
+        {!isDefault && (
+          <button type="button" onClick={() => onChange(WIDGET_THEME_DEFAULTS)} style={S.resetBtn}>
+            Zurücksetzen
+          </button>
+        )}
       </div>
 
       <div style={S.themeGrid}>
@@ -184,8 +191,8 @@ function ThemePanel({
           />
         </Control>
 
-        <Control label="Schrift">
-          <div style={S.btnRow}>
+        <Control label="Schrift" span>
+          <div style={{ ...S.btnRow, flexWrap: "nowrap" }}>
             {Object.entries(WIDGET_FONTS).map(([key, f]) => (
               <button
                 key={key}
@@ -203,9 +210,9 @@ function ThemePanel({
   );
 }
 
-function Control({ label, children }: { label: string; children: React.ReactNode }) {
+function Control({ label, children, span }: { label: string; children: React.ReactNode; span?: boolean }) {
   return (
-    <div>
+    <div style={span ? { gridColumn: "1 / -1" } : undefined}>
       <div style={S.label}>{label}</div>
       {children}
     </div>
@@ -475,6 +482,18 @@ const S: Record<string, React.CSSProperties> = {
   },
   themePanelTitle: { fontSize: 17, fontWeight: 700, margin: 0 },
   themePanelHint: { fontSize: 12.5, color: v("--color-text-muted") },
+  resetBtn: {
+    marginLeft: "auto",
+    padding: "5px 12px",
+    fontSize: 12.5,
+    fontWeight: 600,
+    background: v("--color-bg"),
+    color: v("--color-text-secondary"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: 8,
+    cursor: "pointer",
+    fontFamily: "inherit",
+  },
   themeGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
