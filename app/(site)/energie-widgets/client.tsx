@@ -81,6 +81,18 @@ const SECTIONS: WidgetSection[] = [
     showFrameWidth: false,
     variants: [{ id: "karte", label: "Karte", src: "/embed/karte", height: 780, fixedWidth: 520 }],
   },
+  {
+    id: "simulation",
+    label: "PV-Ertrag jetzt (Live-Simulation)",
+    intro:
+      "Was eine PV-Anlage am eingegebenen Standort gerade beim aktuellen Wetter liefert – pro Anlagengröße. Standort über die PLZ; per ?plz=… im Code fest vorgebbar.",
+    attribution: {
+      path: "/pv-simulation",
+      text: "Live-PV-Ertrag berechnen – Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [{ id: "simulation", label: "Simulation", src: "/embed/simulation", height: 352, fixedWidth: 360 }],
+  },
 ];
 
 const RULES = [
