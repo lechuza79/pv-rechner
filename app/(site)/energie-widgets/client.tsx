@@ -27,7 +27,7 @@ const QUICK_THEMES: QuickTheme[] = [
   {
     id: "dark",
     label: "Dunkel",
-    selection: { bg: "#0F0F0F", fg: "#F5F5F5", accent: "#4A9EFF", radius: "12px", font: "system" },
+    selection: { bg: "#0F0F0F", fg: "#F5F5F5", accent: "#4A9EFF", highlight: "#3DFFC1", radius: "12px", font: "system" },
   },
 ];
 
@@ -196,6 +196,9 @@ function ThemePanel({
         </Control>
         <Control label="Akzent">
           <ColorInput value={theme.accent} onChange={(accent) => onChange({ accent })} />
+        </Control>
+        <Control label="Highlight">
+          <ColorInput value={theme.highlight} onChange={(highlight) => onChange({ highlight })} />
         </Control>
 
         <Control label="Ecken">

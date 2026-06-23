@@ -35,6 +35,7 @@ export interface WidgetThemeSelection {
   bg: string;
   fg: string;
   accent: string;
+  highlight: string; // turquoise live indicator
   radius: string;
   font: string; // key of WIDGET_FONTS
 }
@@ -43,6 +44,7 @@ export const WIDGET_THEME_DEFAULTS: WidgetThemeSelection = {
   bg: "#FFFFFF",
   fg: "#3F3F3F",
   accent: "#1365EA",
+  highlight: "#3DFFC1",
   radius: "14px",
   font: "system",
 };
@@ -81,6 +83,7 @@ export function selectionToVars(sel: WidgetThemeSelection): Record<string, strin
     "--widget-fg": sel.fg,
     "--widget-accent": sel.accent,
     "--widget-accent-fg": contrastColor(sel.accent),
+    "--widget-highlight": sel.highlight,
     "--widget-border-radius": sel.radius,
     "--widget-font-family": (WIDGET_FONTS[sel.font] ?? WIDGET_FONTS.system).stack,
   };
@@ -96,6 +99,7 @@ export function buildWidgetThemeQuery(sel: WidgetThemeSelection): string {
     params.set("accent", sel.accent);
     params.set("accentfg", contrastColor(sel.accent));
   }
+  if (sel.highlight !== WIDGET_THEME_DEFAULTS.highlight) params.set("highlight", sel.highlight);
   if (sel.radius !== WIDGET_THEME_DEFAULTS.radius) params.set("radius", sel.radius);
   if (sel.font !== WIDGET_THEME_DEFAULTS.font) params.set("font", sel.font);
   return params.toString();
