@@ -14,23 +14,6 @@ import {
 
 const SITE_URL = "https://solar-check.io";
 
-interface QuickTheme {
-  id: string;
-  label: string;
-  selection: WidgetThemeSelection;
-}
-
-// Quick-pick starting points. The colour pickers below let publishers fine-tune
-// from here, so these are real presets, not "examples".
-const QUICK_THEMES: QuickTheme[] = [
-  { id: "light", label: "Hell", selection: WIDGET_THEME_DEFAULTS },
-  {
-    id: "dark",
-    label: "Dunkel",
-    selection: { bg: "#0F0F0F", fg: "#F5F5F5", accent: "#4A9EFF", highlight: "#3DFFC1", radius: "12px", font: "system" },
-  },
-];
-
 const RADIUS_OPTIONS = [
   { label: "Eckig", value: "0px" },
   { label: "Standard", value: "14px" },
@@ -115,6 +98,18 @@ export default function WidgetsClient() {
   const [theme, setTheme] = useState<WidgetThemeSelection>(WIDGET_THEME_DEFAULTS);
   const update = (patch: Partial<WidgetThemeSelection>) => setTheme((t) => ({ ...t, ...patch }));
 
+  // The customization panel floats (sticky) on desktop so changes are visible
+  // in the widgets while adjusting. On mobile it stays in flow — a sticky panel
+  // would cover the very widget you want to watch.
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   return (
     <div style={S.page}>
       <Header activePage="widgets" />
@@ -141,7 +136,7 @@ export default function WidgetsClient() {
           })}
         </div>
 
-        <ThemePanel theme={theme} onChange={update} onReset={setTheme} />
+        <ThemePanel theme={theme} onChange={update} sticky={isDesktop} />
 
         {SECTIONS.map((s) => (
           <SectionPreview key={s.id} section={s} theme={theme} />
@@ -154,40 +149,20 @@ export default function WidgetsClient() {
 function ThemePanel({
   theme,
   onChange,
-  onReset,
+  sticky,
 }: {
   theme: WidgetThemeSelection;
   onChange: (patch: Partial<WidgetThemeSelection>) => void;
-  onReset: (sel: WidgetThemeSelection) => void;
+  sticky: boolean;
 }) {
-  const activeQuick = QUICK_THEMES.find(
-    (q) => JSON.stringify(q.selection) === JSON.stringify(theme),
-  );
-
   return (
-    <section style={S.themePanel}>
-      <h2 style={S.h2}>Aussehen anpassen</h2>
-      <p style={S.sectionIntro}>
-        Passe Farben, Ecken und Schrift an dein Design an. Die Vorschau unten aktualisiert sich
-        sofort, und der kopierte Code übernimmt deine Einstellungen automatisch.
-      </p>
+    <section style={{ ...S.themePanel, ...(sticky ? S.themePanelSticky : null) }}>
+      <div style={S.themePanelHead}>
+        <h2 style={S.themePanelTitle}>Aussehen anpassen</h2>
+        <span style={S.themePanelHint}>Änderungen erscheinen sofort in den Widgets unten.</span>
+      </div>
 
       <div style={S.themeGrid}>
-        <Control label="Schnellwahl">
-          <div style={S.btnRow}>
-            {QUICK_THEMES.map((q) => (
-              <button
-                key={q.id}
-                type="button"
-                onClick={() => onReset(q.selection)}
-                style={{ ...S.btn, ...(activeQuick?.id === q.id ? S.btnActive : null) }}
-              >
-                {q.label}
-              </button>
-            ))}
-          </div>
-        </Control>
-
         <Control label="Hintergrund">
           <ColorInput value={theme.bg} onChange={(bg) => onChange({ bg })} />
         </Control>
@@ -249,12 +224,12 @@ function ColorInput({ value, onChange }: { value: string; onChange: (v: string) 
     <label style={S.colorRow}>
       <input
         type="color"
-        value={value}
+        value={value || "#000000"}
         onChange={(e) => onChange(e.target.value)}
         style={S.colorSwatch}
         aria-label="Farbe wählen"
       />
-      <span style={S.colorValue}>{value.toUpperCase()}</span>
+      <span style={S.colorValue}>{(value || "").toUpperCase()}</span>
     </label>
   );
 }
@@ -487,11 +462,26 @@ const S: Record<string, React.CSSProperties> = {
   ruleBody: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.5 },
   themePanel: {
     marginBottom: 44,
-    padding: 20,
+    padding: 16,
     background: v("--color-bg-accent"),
     border: `1px solid ${v("--color-border-accent")}`,
     borderRadius: 14,
   },
+  themePanelSticky: {
+    position: "sticky" as const,
+    top: 12,
+    zIndex: 50,
+    boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
+  },
+  themePanelHead: {
+    display: "flex",
+    alignItems: "baseline",
+    flexWrap: "wrap" as const,
+    gap: "2px 10px",
+    marginBottom: 14,
+  },
+  themePanelTitle: { fontSize: 17, fontWeight: 700, margin: 0 },
+  themePanelHint: { fontSize: 12.5, color: v("--color-text-muted") },
   themeGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
