@@ -32,7 +32,12 @@ export type MastrMapProps = {
   loading?: boolean;
 };
 
-const COLOR_RAMP = ["#EAF2FE", "#C9DCFB", "#A8C5F7", "#87AFF4", "#5B95F0", "#3380EE", "#1365EA"];
+// Choropleth shades derive from the accent color (mixed toward the background),
+// so the map and the accent always share one variable — themeable in embeds and
+// on the main site (where the accent is the brand blue, this matches the old ramp).
+const COLOR_RAMP = [12, 26, 40, 55, 70, 85, 100].map(
+  (pct) => `color-mix(in srgb, var(--color-accent) ${pct}%, var(--color-bg))`,
+);
 const MAP_HEIGHT = 640;
 
 export function MastrMap({

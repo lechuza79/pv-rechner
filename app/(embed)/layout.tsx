@@ -52,6 +52,16 @@ const baseStyles = `
     --color-border:color-mix(in srgb,var(--widget-ink) 14%,transparent);
     --color-chart-grid:color-mix(in srgb,var(--widget-ink) 10%,transparent);
     --color-accent:var(--widget-accent);
+    --color-accent-dim:color-mix(in srgb,var(--widget-accent) 12%,transparent);
+    --color-accent-dark:color-mix(in srgb,var(--widget-accent) 78%,#000);
+    --color-text-on-accent:var(--widget-accent-fg);
+    --color-bg-muted:color-mix(in srgb,var(--widget-ink) 6%,var(--widget-bg));
+    --color-bg-accent:color-mix(in srgb,var(--widget-accent) 8%,var(--widget-bg));
+    --color-border-muted:color-mix(in srgb,var(--widget-ink) 10%,transparent);
+    --color-border-accent:color-mix(in srgb,var(--widget-accent) 30%,var(--widget-bg));
+    --color-negative:#EF4444;
+    --color-negative-dim:rgba(239,68,68,0.08);
+    --color-negative-border:rgba(239,68,68,0.25);
     --color-highlight:var(--widget-highlight);
     --color-awareness:var(--widget-awareness);
     --font-text:var(--widget-font-family);

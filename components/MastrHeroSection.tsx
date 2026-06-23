@@ -172,27 +172,26 @@ export function MastrHeroSection({ initialRegion, onRegionChange, embedded }: Ma
           />
         </div>
 
-        {!embedded && (
-          <aside style={{ display: "grid", gap: 12, minWidth: 0 }}>
-            {!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
-              <MastrLiveRadial
-                energietraeger={energietraeger}
-                installedKwp={summary?.total_kwp ?? null}
-              />
-            )}
-            <SummaryPanel
-              summary={summary}
-              regionAgs={region}
+        <aside style={{ display: "grid", gap: 12, minWidth: 0 }}>
+          {/* Live radial is the only thing hidden in embeds — the value tiles stay. */}
+          {!embedded && !selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
+            <MastrLiveRadial
               energietraeger={energietraeger}
-              segment={effectiveSegment}
-              onReset={handleBack}
-              backLabel={isLkSelected ? "← Zurück zum Bundesland" : "← Zurück zu Deutschland"}
+              installedKwp={summary?.total_kwp ?? null}
             />
-            {summaryError && !summary && (
-              <ErrorKachel message={summaryError} onRetry={refetchSummary} />
-            )}
-          </aside>
-        )}
+          )}
+          <SummaryPanel
+            summary={summary}
+            regionAgs={region}
+            energietraeger={energietraeger}
+            segment={effectiveSegment}
+            onReset={handleBack}
+            backLabel={isLkSelected ? "← Zurück zum Bundesland" : "← Zurück zu Deutschland"}
+          />
+          {summaryError && !summary && (
+            <ErrorKachel message={summaryError} onRetry={refetchSummary} />
+          )}
+        </aside>
       </div>
       <div
         style={{
