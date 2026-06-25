@@ -54,6 +54,8 @@ const baseStyles = `
     --color-accent:var(--widget-accent);
     --color-accent-dim:color-mix(in srgb,var(--widget-accent) 12%,transparent);
     --color-accent-dark:color-mix(in srgb,var(--widget-accent) 78%,#000);
+    --color-accent-light:color-mix(in srgb,var(--widget-accent) 55%,#FFF);
+    --color-positive:#00D950;
     --color-text-on-accent:var(--widget-accent-fg);
     --color-bg-muted:color-mix(in srgb,var(--widget-ink) 6%,var(--widget-bg));
     --color-bg-accent:color-mix(in srgb,var(--widget-accent) 8%,var(--widget-bg));
@@ -67,6 +69,7 @@ const baseStyles = `
     --font-text:var(--widget-font-family);
     --font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
     --radius-sm:6px;
+    --radius-md:var(--widget-border-radius);
   }
   body{
     background:transparent;

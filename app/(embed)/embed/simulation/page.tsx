@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function SimulationEmbedPage() {
-  return <SimulationWidget />;
+export default function SimulationEmbedPage({
+  searchParams,
+}: {
+  searchParams?: { plz?: string };
+}) {
+  return <SimulationWidget plz={searchParams?.plz ?? ""} />;
 }

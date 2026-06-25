@@ -83,15 +83,15 @@ const SECTIONS: WidgetSection[] = [
   },
   {
     id: "simulation",
-    label: "PV-Ertrag jetzt (Live-Simulation)",
+    label: "PV-Simulation (live)",
     intro:
-      "Was eine PV-Anlage am eingegebenen Standort gerade beim aktuellen Wetter liefert – pro Anlagengröße. Standort über die PLZ; per ?plz=… im Code fest vorgebbar.",
+      "Die vollständige Live-Simulation: was eine PV-Anlage am eingegebenen Standort gerade beim aktuellen Wetter liefert – mit Haushaltsprofil (Personen, Wärmepumpe, E-Auto), Eigenverbrauch und Tagesverlauf. Standort über die PLZ; per ?plz=… im Code fest vorgebbar.",
     attribution: {
       path: "/pv-simulation",
-      text: "Live-PV-Ertrag berechnen – Solar Check",
+      text: "Live-PV-Simulation – Solar Check",
     },
     showFrameWidth: false,
-    variants: [{ id: "simulation", label: "Simulation", src: "/embed/simulation", height: 352, fixedWidth: 360 }],
+    variants: [{ id: "simulation", label: "Simulation", src: "/embed/simulation", height: 1000, fixedWidth: 380 }],
   },
 ];
 
