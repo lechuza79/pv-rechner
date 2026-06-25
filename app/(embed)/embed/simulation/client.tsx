@@ -20,7 +20,10 @@ export default function SimulationWidget() {
   const [updated, setUpdated] = useState<Date | null>(null);
 
   const submitPlz = useCallback(async (value: string) => {
-    if (!/^\d{5}$/.test(value)) return;
+    if (!/^\d{5}$/.test(value)) {
+      setError("Bitte eine 5-stellige Postleitzahl eingeben.");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
