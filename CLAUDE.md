@@ -33,7 +33,7 @@ Du arbeitest mit einem UX-Architekten zusammen, der technisch mitdenken kann, ab
 Step 0: Anlagengröße          → 5 / 8 / 10 / 15 kWp + "Anderer Wert" (2×2+1 Grid, OptionCard)
 Step 1: Speicher               → Nein / 5 / 10 / 15 kWh (2×2 Grid, OptionCard)
 Step 2: Haushalt               → Personen + Nutzungsprofil
-Step 3: Großverbraucher        → WP + E-Auto (TriToggles)
+Step 3: Großverbraucher        → WP + E-Auto + Klimaanlage (TriToggles)
 → Ergebnis (gleiche Seite)
 ```
 
@@ -62,7 +62,10 @@ Methodik · Save · Share · Neu-Berechnen
 ```
 Grundverbrauch   = f(Personen): 1→1800, 2→2800, 3–4→3800, 5+→5000 kWh/a
 Tagquote         = f(Nutzung): weg→24%, teils→30%, home→38%, immer→45%
-Extra-Verbrauch  = WP→+3500 kWh, E-Auto→Laufleistung×0.18 kWh (Default 15.000 km/a)
+Extra-Verbrauch  = WP→+3500 kWh, E-Auto→Laufleistung×0.18 kWh (Default 15.000 km/a),
+                   Klimaanlage→Wohnfläche×3 kWh/m²·a (nur Kühlung, Default 120 m²)
+                   Klimaanlage ist sun-aligned (Bedarf = Mittag/Sommer), deckt aber
+                   nur Kühlen ab — Heizen läuft über den Wärmepumpen-Rechner.
 
 Empirisches Power-Law (kalibriert an HTW Berlin Simulationsdaten, ±2pp):
   x              = kWp / (Gesamtverbrauch in MWh)
@@ -349,7 +352,7 @@ pv-rechner/
 │   ├── feedin.ts                   # useFeedInRates() Client-Hook (fetcht /api/feedin, sessionStorage-Cache)
 │   ├── prices.ts                   # usePrices() Client-Hook (fetcht /api/prices, sessionStorage-Cache)
 │   ├── calc.ts                     # Pure Berechnungsfunktionen (EV, Amortisation, Kosten, URL-Helpers)
-│   ├── consumption.ts              # Zentrales Verbrauchsmodell: WP/E-Auto Konstanten, Stundenprofile (BDEW/VDI 4655)
+│   ├── consumption.ts              # Zentrales Verbrauchsmodell: WP/E-Auto/Klimaanlage Konstanten, Stundenprofile (BDEW/VDI 4655)
 │   ├── simulation.ts               # Live-Simulation: PV-Momentanleistung aus Wetterdaten (NOCT-Modell)
 │   ├── recommend.ts                # Empfehlungs-Algorithmus (optimale kWp + Speicher aus Haushalt + Dach)
 │   ├── glossary.ts                 # Fachbegriff-Datensatz (15 Begriffe: short/long/aliases) + Slug-Lookup

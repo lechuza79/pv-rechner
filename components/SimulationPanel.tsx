@@ -16,7 +16,7 @@ import {
   SIM_CONFIGS,
   HourlyPoint,
 } from "../lib/simulation";
-import { WP_ANNUAL_KWH, EA_DEFAULT_KM, calcEaAnnual } from "../lib/consumption";
+import { WP_ANNUAL_KWH, EA_DEFAULT_KM, calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2 } from "../lib/consumption";
 
 const SITE_URL = "https://solar-check.io";
 
@@ -50,13 +50,16 @@ export default function SimulationPanel({
   const [nutzungIdx, setNutzungIdx] = useState(1);   // Default: Teils zuhause
   const [wpActive, setWpActive] = useState(false);
   const [eaActive, setEaActive] = useState(false);
+  const [klimaActive, setKlimaActive] = useState(false);
 
   const household = useMemo<HouseholdProfile>(() => ({
     baseKwh: PERSONEN[personenIdx].verbrauch,
     tagQuote: NUTZUNG[nutzungIdx].tagQuote,
     wpActive,
     eaActive,
-  }), [personenIdx, nutzungIdx, wpActive, eaActive]);
+    klimaActive,
+    klimaM2: KLIMA_DEFAULT_M2,
+  }), [personenIdx, nutzungIdx, wpActive, eaActive, klimaActive]);
 
   // PLZ lookup + weather fetch
   const fetchWeather = useCallback(async (lat: number, lon: number) => {
@@ -277,9 +280,17 @@ export default function SimulationPanel({
             }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>E-Auto {eaActive ? <IconCheck size={12} /> : ""}</span>
             </button>
+            <button onClick={() => setKlimaActive(!klimaActive)} style={{
+              flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
+              background: klimaActive ? v('--color-accent') : v('--color-bg-muted'),
+              color: klimaActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
+              border: klimaActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
+            }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Klimaanlage {klimaActive ? <IconCheck size={12} /> : ""}</span>
+            </button>
           </div>
           <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
-            Jahresverbrauch: ~{Math.round(household.baseKwh + (wpActive ? WP_ANNUAL_KWH : 0) + (eaActive ? calcEaAnnual(EA_DEFAULT_KM) : 0)).toLocaleString("de-DE")} kWh
+            Jahresverbrauch: ~{Math.round(household.baseKwh + (wpActive ? WP_ANNUAL_KWH : 0) + (eaActive ? calcEaAnnual(EA_DEFAULT_KM) : 0) + (klimaActive ? calcKlimaAnnual(KLIMA_DEFAULT_M2) : 0)).toLocaleString("de-DE")} kWh
           </div>
         </div>
       )}

@@ -75,7 +75,7 @@ export const SCENARIOS = [
   { id: "optimistic", label: "Optimistisch", color: "#1365EA", strom: 0.05, evDelta: 5 },
 ];
 
-export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "bl", "foe", "vb"];
+export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "bl", "foe", "vb", "kl", "km2"];
 
 // ─── Empfehlungs-Flow ───────────────────────────────────────────────────────
 export const HAUSTYPEN = [

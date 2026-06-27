@@ -9,7 +9,7 @@ import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import GlossaryTerm from "../../../components/GlossaryTerm";
-import { calcExtraConsumption } from "../../../lib/consumption";
+import { calcExtraConsumption, calcKlimaAnnual, KLIMA_DEFAULT_M2, KLIMA_M2_PRESETS } from "../../../lib/consumption";
 import Chart from "./_components/Chart";
 import { v } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
@@ -42,6 +42,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [wp, setWp] = useState(hasShare ? paramStr(initialParams, "wp", "nein", ["nein", "geplant", "ja"]) : "nein");
   const [ea, setEa] = useState(hasShare ? paramStr(initialParams, "ea", "nein", ["nein", "geplant", "ja"]) : "nein");
   const [eaKm, setEaKm] = useState(hasShare ? paramInt(initialParams, "km", 15000, 1000, 50000) : 15000);
+  const [klima, setKlima] = useState(hasShare ? paramStr(initialParams, "kl", "nein", ["nein", "geplant", "ja"]) : "nein");
+  const [klimaM2, setKlimaM2] = useState(hasShare ? paramInt(initialParams, "km2", KLIMA_DEFAULT_M2, 20, 500) : KLIMA_DEFAULT_M2);
 
   // Editable overrides (null = use auto-calculated)
   const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 500 && n <= 200000 ? n : null; })() : null);
@@ -225,9 +227,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const kosten = Math.max(0, bruttoKosten - foerderung);
   // Grundverbrauch: direkt eingegeben oder aus Personenzahl geschätzt.
   const grundverbrauch = oVerbrauch ?? PERSONEN[personen].verbrauch;
-  const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm);
+  const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm, klima, klimaM2);
   const gesamtVerbrauch = grundverbrauch + extraVerbrauch;
-  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, kwp, ertragKwp: oErtrag, baseKwh: oVerbrauch });
+  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2, kwp, ertragKwp: oErtrag, baseKwh: oVerbrauch });
   const effEv = oEv !== null ? oEv : autoEv;
   // Volleinspeisung is incompatible with WP/E-Auto (they require self-consumption)
   const vollDisabled = wp !== "nein" || ea !== "nein";
@@ -287,6 +289,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     p.set("wp", wp);
     p.set("ea", ea);
     if (ea !== "nein") p.set("km", String(eaKm));
+    p.set("kl", klima);
+    if (klima !== "nein") p.set("km2", String(klimaM2));
     if (anlage === 4) p.set("ck", String(customKwp));
     if (oKosten !== null) p.set("k", String(oKosten));
     if (oEv !== null) p.set("ev", String(oEv));
@@ -598,8 +602,47 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     </div>
                   </div>
                 )}
+                <TriToggle label="❄️ Klimaanlage" options={TRI} value={klima} onChange={v => { setKlima(v); setOEv(null); }} />
+                {klima !== "nein" && (
+                  <div style={{ marginBottom: 18, marginTop: -10 }}>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Wohnfläche ca.</div>
+                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                      {KLIMA_M2_PRESETS.map(m2 => (
+                        <button key={m2} onClick={() => { setKlimaM2(m2); setOEv(null); }} style={{
+                          padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                          background: klimaM2 === m2 ? v('--color-accent-dim') : v('--color-bg-muted'),
+                          border: klimaM2 === m2 ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                          color: klimaM2 === m2 ? v('--color-accent') : v('--color-text-muted'),
+                        }}>{m2} m²</button>
+                      ))}
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        <input
+                          value={KLIMA_M2_PRESETS.includes(klimaM2) ? "" : String(klimaM2)}
+                          placeholder="m²"
+                          onChange={e => {
+                            const n = parseInt(e.target.value.replace(/\D/g, ""));
+                            if (!isNaN(n) && n >= 20 && n <= 500) { setKlimaM2(n); setOEv(null); }
+                          }}
+                          style={{
+                            width: 56, textAlign: "center", fontSize: 12, fontWeight: 600,
+                            fontFamily: v('--font-mono'),
+                            color: !KLIMA_M2_PRESETS.includes(klimaM2) ? v('--color-accent') : v('--color-text-muted'),
+                            background: !KLIMA_M2_PRESETS.includes(klimaM2) ? v('--color-accent-dim') : v('--color-bg-muted'),
+                            border: !KLIMA_M2_PRESETS.includes(klimaM2) ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                            borderRadius: v('--radius-sm'), padding: "7px 4px", outline: "none",
+                          }}
+                        />
+                        <span style={{ fontSize: 11, color: v('--color-text-muted') }}>m²</span>
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5 }}>
+                      Nur Kühlung im Sommer. Aus der Wohnfläche schätzen wir ~{calcKlimaAnnual(klimaM2).toLocaleString("de-DE")} kWh/Jahr.
+                    </div>
+                  </div>
+                )}
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 4, lineHeight: 1.5 }}>
-                  Beides erhöht den Eigenverbrauch deutlich — weniger Einspeisung, mehr Ersparnis.
+                  Alle drei erhöhen den Eigenverbrauch — Klimaanlagen besonders, weil sie genau dann
+                  kühlen, wenn die Sonne scheint.
                 </div>
               </div>
             )}
@@ -676,6 +719,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                       <span style={{ fontFamily: v('--font-mono') }}>{calcExtraConsumption("nein", ea, eaKm).toLocaleString("de-DE")} kWh</span>
                     </div>
                   )}
+                  {klima !== "nein" && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span>+ Klimaanlage</span>
+                      <span style={{ fontFamily: v('--font-mono') }}>{calcKlimaAnnual(klimaM2).toLocaleString("de-DE")} kWh</span>
+                    </div>
+                  )}
                   <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, color: v('--color-text-primary'), marginTop: 2 }}>
                     <span>Gesamt</span>
                     <span style={{ fontFamily: v('--font-mono') }}>{gesamtVerbrauch.toLocaleString("de-DE")} kWh</span>
@@ -747,6 +796,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             <QuickSettings
               wp={wp} setWp={setWp} ea={ea} setEa={setEa} eaKm={eaKm} setEaKm={setEaKm}
+              klima={klima} setKlima={setKlima} klimaM2={klimaM2} setKlimaM2={setKlimaM2}
               speicher={speicher} setSpeicher={setSpeicher} spKwh={spKwh}
               oKosten={oKosten} setOKosten={setOKosten} setOEv={() => setOEv(null)}
             />

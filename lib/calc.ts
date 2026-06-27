@@ -1,5 +1,5 @@
 import { YEAR, YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN, NUTZUNG } from "./constants";
-import { calcExtraConsumption } from "./consumption";
+import { calcExtraConsumption, KLIMA_DEFAULT_M2 } from "./consumption";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { co2PriceForCalendarYear } from "./co2-config";
 
@@ -166,13 +166,13 @@ export function selectByMarginalReturn<T extends { investition: number; npv25: n
 // Für WP-Haushalte korrigieren wir den Speicher-Boost saisonal nach unten, weil
 // ~80 % des WP-Verbrauchs Okt–Apr anfällt — genau wenn der Speicher mangels Sonne
 // kaum gefüllt werden kann (PV-Ertrag in diesen Monaten: ~30 % des Jahres).
-export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm, kwp, ertragKwp, baseKwh }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; eaKm: number; kwp: number; ertragKwp: number; baseKwh?: number | null }): number {
+export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm, klima = "nein", klimaM2 = KLIMA_DEFAULT_M2, kwp, ertragKwp, baseKwh }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; eaKm: number; klima?: string; klimaM2?: number; kwp: number; ertragKwp: number; baseKwh?: number | null }): number {
   const jahresertrag = kwp * ertragKwp;
   // baseKwh = direkt eingegebener Haushaltsverbrauch (ohne WP/E-Auto). Fällt
   // auf die personenbasierte Schätzung zurück, wenn nicht gesetzt.
   const grundverbrauch = baseKwh ?? PERSONEN[personenIdx].verbrauch;
   const tagQuote = NUTZUNG[nutzungIdx].tagQuote;
-  const extra = calcExtraConsumption(wp, ea, eaKm);
+  const extra = calcExtraConsumption(wp, ea, eaKm, klima, klimaM2);
   const gesamt = grundverbrauch + extra;
   // x = kWp pro MWh Verbrauch (Anlagengröße relativ zum Verbrauch)
   const x = kwp / (gesamt / 1000);

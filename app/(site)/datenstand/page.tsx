@@ -8,7 +8,7 @@ import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS } from "../../../lib/constants";
-import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM } from "../../../lib/consumption";
+import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
 
 // ISR: re-render hourly so live market prices / feed-in rates stay current
@@ -305,6 +305,7 @@ export default async function DatenstandPage() {
             { label: "Saisonaler Verbrauchsfaktor", value: `${nf(Math.min(...CONSUMPTION_MONTHLY))}–${nf(Math.max(...CONSUMPTION_MONTHLY))} (BDEW H0)` },
             { label: "Mehrverbrauch Wärmepumpe", value: `+${nf(WP_ANNUAL_KWH)} kWh/a` },
             { label: "Mehrverbrauch E-Auto", value: `${EA_KWH_PER_KM.toLocaleString("de-DE")} kWh/km (Default ${nf(EA_DEFAULT_KM)} km/a)` },
+            { label: "Mehrverbrauch Klimaanlage (Kühlung)", value: `${nf(KLIMA_KWH_PER_M2)} kWh/m²·a (Default ${nf(KLIMA_DEFAULT_M2)} m²)` },
           ]}
           source="HTW Berlin (Quaschning/Weniger, 25.000 Konfigurationen, VDI 4655) · BDEW Standardlastprofil H0"
         />

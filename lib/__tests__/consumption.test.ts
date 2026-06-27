@@ -2,8 +2,11 @@ import { describe, it, expect } from "vitest";
 import {
   WP_ANNUAL_KWH,
   EA_KWH_PER_KM,
+  KLIMA_KWH_PER_M2,
+  KLIMA_DEFAULT_M2,
   calcWpAnnual,
   calcEaAnnual,
+  calcKlimaAnnual,
   calcExtraConsumption,
   calcTotalAnnual,
   calcHourlyConsumption,
@@ -52,6 +55,34 @@ describe("calcExtraConsumption", () => {
   it("adds both WP and EA when both active", () => {
     expect(calcExtraConsumption("ja", "ja", 15000)).toBe(WP_ANNUAL_KWH + calcEaAnnual(15000));
   });
+
+  it("ignores Klimaanlage by default (optional param)", () => {
+    expect(calcExtraConsumption("nein", "nein", 15000)).toBe(0);
+    expect(calcExtraConsumption("ja", "ja", 15000)).toBe(WP_ANNUAL_KWH + calcEaAnnual(15000));
+  });
+
+  it("adds Klimaanlage from living area when active", () => {
+    expect(calcExtraConsumption("nein", "nein", 15000, "ja", 120)).toBe(calcKlimaAnnual(120));
+    expect(calcExtraConsumption("nein", "nein", 15000, "geplant", 80)).toBe(calcKlimaAnnual(80));
+  });
+
+  it("adds all three when WP, EA and Klima active", () => {
+    expect(calcExtraConsumption("ja", "ja", 15000, "ja", 120)).toBe(
+      WP_ANNUAL_KWH + calcEaAnnual(15000) + calcKlimaAnnual(120),
+    );
+  });
+});
+
+describe("calcKlimaAnnual", () => {
+  it("multiplies living area by the per-m² cooling factor", () => {
+    expect(calcKlimaAnnual(120)).toBe(Math.round(120 * KLIMA_KWH_PER_M2));
+    expect(calcKlimaAnnual(KLIMA_DEFAULT_M2)).toBe(KLIMA_DEFAULT_M2 * KLIMA_KWH_PER_M2);
+  });
+
+  it("scales linearly and stays integer", () => {
+    expect(calcKlimaAnnual(160)).toBe(2 * calcKlimaAnnual(80));
+    expect(Number.isInteger(calcKlimaAnnual(123))).toBe(true);
+  });
 });
 
 describe("calcTotalAnnual", () => {
@@ -59,6 +90,10 @@ describe("calcTotalAnnual", () => {
     expect(calcTotalAnnual(3800, "nein", "nein", 15000)).toBe(3800);
     expect(calcTotalAnnual(3800, "ja", "nein", 15000)).toBe(3800 + WP_ANNUAL_KWH);
     expect(calcTotalAnnual(3800, "ja", "ja", 15000)).toBe(3800 + WP_ANNUAL_KWH + calcEaAnnual(15000));
+  });
+
+  it("includes Klimaanlage when active", () => {
+    expect(calcTotalAnnual(3800, "nein", "nein", 15000, "ja", 120)).toBe(3800 + calcKlimaAnnual(120));
   });
 });
 
@@ -117,6 +152,41 @@ describe("calcHourlyConsumption", () => {
     const noon = calcHourlyConsumption(eaProfile, 12, 5);
     const evening = calcHourlyConsumption(eaProfile, 19, 5);
     expect(evening).toBeGreaterThan(noon);
+  });
+
+  it("Klima active → summer afternoon spike, winter floor", () => {
+    const klimaProfile = { ...baseProfile, klimaActive: true, klimaM2: 120 };
+    // Summer afternoon (July 15h) must clearly exceed the same hour in winter (January).
+    const summerAfternoon = calcHourlyConsumption(klimaProfile, 15, 6);
+    const winterAfternoon = calcHourlyConsumption(klimaProfile, 15, 0);
+    const baseAfternoon = calcHourlyConsumption(baseProfile, 15, 0);
+    // Winter has effectively no cooling load → same as the base household.
+    expect(winterAfternoon).toBe(baseAfternoon);
+    expect(summerAfternoon).toBeGreaterThan(winterAfternoon * 1.3);
+  });
+
+  it("Klima cooling peaks midday, not at night (sun-aligned)", () => {
+    const klimaProfile = { ...baseProfile, klimaActive: true, klimaM2: 120 };
+    // Isolate the AC contribution by subtracting the base household at each hour.
+    const acAtNoon = calcHourlyConsumption(klimaProfile, 15, 6) - calcHourlyConsumption(baseProfile, 15, 6);
+    const acAtNight = calcHourlyConsumption(klimaProfile, 3, 6) - calcHourlyConsumption(baseProfile, 3, 6);
+    expect(acAtNoon).toBeGreaterThan(acAtNight);
+  });
+
+  it("Klima annualizes back to roughly its derived cooling energy", () => {
+    const klimaProfile = { ...baseProfile, klimaActive: true, klimaM2: 120 };
+    let acKwh = 0;
+    for (let m = 0; m < 12; m++) {
+      const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m];
+      for (let day = 0; day < daysInMonth; day++) {
+        for (let h = 0; h < 24; h++) {
+          acKwh += (calcHourlyConsumption(klimaProfile, h, m) - calcHourlyConsumption(baseProfile, h, m)) / 1000;
+        }
+      }
+    }
+    const expected = calcKlimaAnnual(120);
+    expect(acKwh).toBeGreaterThan(expected * 0.9);
+    expect(acKwh).toBeLessThan(expected * 1.1);
   });
 
   it("returns integer watts", () => {

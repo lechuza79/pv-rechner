@@ -189,8 +189,8 @@ export default async function MethodikPage() {
           <span style={S.accent}>Speicher</span> — verschiebt Nachtverbrauch auf
           Solarstrom
           <br />
-          <span style={S.accent}>Großverbraucher</span> — Wärmepumpe und E-Auto
-          erhöhen den Gesamtverbrauch
+          <span style={S.accent}>Großverbraucher</span> — Wärmepumpe, E-Auto und
+          Klimaanlage erhöhen den Gesamtverbrauch
         </div>
 
         {/* ── Speicher ── */}
@@ -208,11 +208,23 @@ export default async function MethodikPage() {
         </p>
 
         {/* ── WP & E-Auto ── */}
-        <h2 style={S.h2}>Wärmepumpe & E-Auto</h2>
+        <h2 style={S.h2}>Wärmepumpe, E-Auto & Klimaanlage</h2>
         <p style={S.p}>
-          Beides erhöht deinen Stromverbrauch — und damit auch die Menge Solarstrom,
+          Alle drei erhöhen deinen Stromverbrauch — und damit auch die Menge Solarstrom,
           die du selbst nutzen kannst. Eine Wärmepumpe verbraucht ca. 3.500 kWh/Jahr,
           ein E-Auto je nach Fahrleistung 1.800–3.600 kWh/Jahr.
+        </p>
+        <p style={S.p}>
+          <strong>Klimaanlage (nur Kühlung):</strong> Den Kühlbedarf leiten wir aus der
+          Wohnfläche ab — rund 3 kWh Strom pro Quadratmeter und Jahr. Ein 120-m²-Haus
+          kommt so auf etwa 360 kWh in der Sommersaison. Das ist ein moderater Mittelwert:
+          In Deutschland wird meist nur teilweise gekühlt (Wohn- und Schlafräume), und der
+          Wert ist im Ergebnis frei anpassbar. Wichtig: Wir rechnen ausschließlich das
+          Kühlen im Sommer — Klimageräte können auch heizen, das deckt aber unser{" "}
+          <a href="/waermepumpe-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Wärmepumpen-Rechner</a> ab.
+          Kühlen passt besonders gut zur Solaranlage, weil der Bedarf genau dann am höchsten
+          ist, wenn die Sonne am stärksten scheint — fast jede gekühlte Kilowattstunde kommt
+          direkt vom eigenen Dach.
         </p>
         <p style={S.p}>
           Das verbessert den Eigenverbrauchsanteil, weil weniger Strom
