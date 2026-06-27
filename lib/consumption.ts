@@ -8,6 +8,20 @@ export const WP_ANNUAL_KWH = 3500;     // Heat pump: ~3500 kWh electric/year (CO
 export const EA_KWH_PER_KM = 0.18;     // E-car: 18 kWh/100km average
 export const EA_DEFAULT_KM = 15000;     // Default annual mileage
 
+// ─── Klimaanlage (Kühlung, nur Sommer) ──────────────────────────────────────
+// Stromverbrauch fürs Kühlen, abgeleitet aus der Wohnfläche. In Deutschland wird
+// nur teilweise gekühlt (Wohn-/Schlafräume, nicht das ganze Haus) und das Klima
+// ist gemäßigt — der Stromverbrauch je m² GESAMTwohnfläche ist daher moderat.
+// Modell: gekühlter Flächenanteil × spez. Kühlenergie / SEER, zusammengefasst zu
+// einem Strom-Kennwert je m² Wohnfläche. Ein typisches EFH kommt so auf einige
+// hundert kWh in der Sommersaison — deckt sich mit Verbrauchsratgebern 2025/26
+// (MediaMarkt/Check24/1KOMMA5°: ~300–800 kWh/Sommer fürs Haus).
+// WICHTIG: nur Kühlung. Klimageräte können auch heizen, das modellieren wir hier
+// bewusst NICHT — Heizen läuft über den separaten Wärmepumpen-Rechner.
+export const KLIMA_KWH_PER_M2 = 3;      // kWh Strom / m² Wohnfläche / Jahr (Kühlung)
+export const KLIMA_DEFAULT_M2 = 120;    // Default-Wohnfläche
+export const KLIMA_M2_PRESETS = [80, 120, 160];
+
 // ─── Annual consumption ─────────────────────────────────────────────────────
 
 export function calcWpAnnual(): number {
@@ -18,17 +32,37 @@ export function calcEaAnnual(km: number): number {
   return Math.round(km * EA_KWH_PER_KM);
 }
 
-/** Calculate extra consumption from WP + E-Auto (annual kWh) */
-export function calcExtraConsumption(wp: string, ea: string, eaKm: number): number {
+/** Kühlstrom einer Klimaanlage (annual kWh), abgeleitet aus der Wohnfläche. */
+export function calcKlimaAnnual(m2: number): number {
+  return Math.round(m2 * KLIMA_KWH_PER_M2);
+}
+
+/** Calculate extra consumption from WP + E-Auto + Klimaanlage (annual kWh).
+ *  klima/klimaM2 are optional so existing callers stay unchanged. */
+export function calcExtraConsumption(
+  wp: string,
+  ea: string,
+  eaKm: number,
+  klima: string = "nein",
+  klimaM2: number = KLIMA_DEFAULT_M2,
+): number {
   let extra = 0;
   if (wp !== "nein") extra += WP_ANNUAL_KWH;
   if (ea !== "nein") extra += calcEaAnnual(eaKm);
+  if (klima !== "nein") extra += calcKlimaAnnual(klimaM2);
   return extra;
 }
 
-/** Total annual consumption = base household + WP + E-Auto */
-export function calcTotalAnnual(baseKwh: number, wp: string, ea: string, eaKm: number): number {
-  return baseKwh + calcExtraConsumption(wp, ea, eaKm);
+/** Total annual consumption = base household + WP + E-Auto + Klimaanlage */
+export function calcTotalAnnual(
+  baseKwh: number,
+  wp: string,
+  ea: string,
+  eaKm: number,
+  klima: string = "nein",
+  klimaM2: number = KLIMA_DEFAULT_M2,
+): number {
+  return baseKwh + calcExtraConsumption(wp, ea, eaKm, klima, klimaM2);
 }
 
 // ─── Household profile (for hourly simulation) ─────────────────────────────
@@ -38,6 +72,8 @@ export interface HouseholdProfile {
   tagQuote: number;         // Daytime consumption fraction (0.24–0.45)
   wpActive: boolean;        // Heat pump active
   eaActive: boolean;        // E-car active
+  klimaActive?: boolean;    // Air conditioning (cooling only) active
+  klimaM2?: number;         // Living area for AC sizing (m²)
 }
 
 // ─── Hourly load profiles ───────────────────────────────────────────────────
@@ -101,14 +137,31 @@ const EA_SHAPE = normalizeToSum1([
   0.08, 0.10, 0.10, 0.09, 0.08, 0.07, // 18–23h
 ]);
 
+// Air-conditioning hourly profile — cooling load tracks the daytime heat:
+// negligible at night, ramps through the morning, peaks early afternoon when
+// the building is hottest. This aligns the AC load with PV production, which is
+// why cooling is a strong driver of self-consumption.
+const AC_SHAPE = normalizeToSum1([
+  0.01, 0.01, 0.01, 0.01, 0.01, 0.01, // 0–5h
+  0.01, 0.02, 0.02, 0.03, 0.04, 0.05, // 6–11h
+  0.06, 0.07, 0.08, 0.09, 0.09, 0.09, // 12–17h
+  0.08, 0.07, 0.05, 0.03, 0.02, 0.01, // 18–23h
+]);
+
+// Air-conditioning seasonal factor — cooling is concentrated in the summer
+// months, near-zero the rest of the year (German climate). normalizeMonthly
+// preserves the entered annual cooling energy regardless of the shape.
+const AC_MONTHLY = normalizeMonthly([0, 0, 0, 0, 0.3, 1.5, 3.0, 3.0, 1.0, 0.1, 0, 0]);
+
 // ─── Hourly consumption calculation ─────────────────────────────────────────
 
 /** Current household consumption in Watts for a given hour.
  *
- * Three independent load components, each with their own hourly + seasonal profile:
+ * Four independent load components, each with their own hourly + seasonal profile:
  * 1. Base household (BDEW H0): tagQuote splits day vs night directly
  * 2. Heat pump (VDI 4655): strong seasonal pattern (winter x1.8, summer x0.15)
  * 3. E-car charging: evening/night concentrated
+ * 4. Air conditioning (cooling only): summer + early-afternoon concentrated
  */
 export function calcHourlyConsumption(household: HouseholdProfile | null, hour: number, month: number): number {
   if (!household) return 0;
@@ -139,6 +192,14 @@ export function calcHourlyConsumption(household: HouseholdProfile | null, hour: 
   if (household.eaActive) {
     const eaDailyKwh = calcEaAnnual(EA_DEFAULT_KM) / 365;
     totalWatts += eaDailyKwh * (EA_SHAPE[hour] || 1 / 24) * 1000;
+  }
+
+  // 4. Air conditioning: cooling kWh from living area, summer + afternoon peak.
+  // Nullish coalescing (not ||) on AC_MONTHLY: winter months are a legit 0 and
+  // must stay 0 — a falsy-|| fallback would leak cooling into January.
+  if (household.klimaActive) {
+    const klimaDailyKwh = (calcKlimaAnnual(household.klimaM2 ?? KLIMA_DEFAULT_M2) / 365) * (AC_MONTHLY[month] ?? 1.0);
+    totalWatts += klimaDailyKwh * (AC_SHAPE[hour] ?? 1 / 24) * 1000;
   }
 
   return Math.round(totalWatts);

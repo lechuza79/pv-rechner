@@ -3,6 +3,7 @@ import { useState } from "react";
 import { IconCheck } from "../../../../components/Icons";
 import { v } from "../../../../lib/theme";
 import { SPEICHER, EA_KM_PRESETS } from "../../../../lib/constants";
+import { KLIMA_M2_PRESETS } from "../../../../lib/consumption";
 
 interface QuickSettingsProps {
   wp: string;
@@ -11,6 +12,10 @@ interface QuickSettingsProps {
   setEa: (v: string) => void;
   eaKm: number;
   setEaKm: (v: number) => void;
+  klima: string;
+  setKlima: (v: string) => void;
+  klimaM2: number;
+  setKlimaM2: (v: number) => void;
   speicher: number;
   setSpeicher: (v: number) => void;
   spKwh: number;
@@ -21,6 +26,7 @@ interface QuickSettingsProps {
 
 export default function QuickSettings({
   wp, setWp, ea, setEa, eaKm, setEaKm,
+  klima, setKlima, klimaM2, setKlimaM2,
   speicher, setSpeicher, spKwh, oKosten, setOKosten, setOEv,
 }: QuickSettingsProps) {
   const [spKostenPrompt, setSpKostenPrompt] = useState(false);
@@ -81,6 +87,10 @@ export default function QuickSettings({
         <button onClick={() => { setEa(ea === "nein" ? "ja" : "nein"); setOEv(null); }} style={toggleStyle(ea !== "nein")}>
           E-Auto
           <span style={checkboxStyle(ea !== "nein")}>{ea !== "nein" ? <IconCheck size={10} /> : ""}</span>
+        </button>
+        <button onClick={() => { setKlima(klima === "nein" ? "ja" : "nein"); setOEv(null); }} style={toggleStyle(klima !== "nein")}>
+          Klimaanlage
+          <span style={checkboxStyle(klima !== "nein")}>{klima !== "nein" ? <IconCheck size={10} /> : ""}</span>
         </button>
         <button onClick={handleSpeicherToggle} style={toggleStyle(speicher > 0)}>
           Speicher
@@ -154,6 +164,38 @@ export default function QuickSettings({
               }}
             />
             <span style={{ fontSize: 10, color: v('--color-text-faint') }}>km</span>
+          </span>
+        </div>
+      )}
+      {klima !== "nein" && (
+        <div style={{ marginTop: 8, display: "flex", gap: 6, alignItems: "center", paddingLeft: 4 }}>
+          <span style={{ fontSize: 11, color: v('--color-text-muted') }}>Wohnfläche:</span>
+          {KLIMA_M2_PRESETS.map(m2 => (
+            <button key={m2} onClick={() => { setKlimaM2(m2); setOEv(null); }} style={{
+              padding: "5px 8px", borderRadius: v('--radius-sm'), fontSize: 11, fontWeight: 600, cursor: "pointer",
+              background: klimaM2 === m2 ? v('--color-accent-dim') : v('--color-bg'),
+              border: klimaM2 === m2 ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
+              color: klimaM2 === m2 ? v('--color-accent') : v('--color-text-secondary'),
+            }}>{m2} m²</button>
+          ))}
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
+            <input
+              value={KLIMA_M2_PRESETS.includes(klimaM2) ? "" : String(klimaM2)}
+              placeholder="m²"
+              onChange={e => {
+                const n = parseInt(e.target.value.replace(/\D/g, ""));
+                if (!isNaN(n) && n >= 20 && n <= 500) { setKlimaM2(n); setOEv(null); }
+              }}
+              style={{
+                width: 48, textAlign: "center", fontSize: 11, fontWeight: 600,
+                fontFamily: v('--font-mono'),
+                color: !KLIMA_M2_PRESETS.includes(klimaM2) ? v('--color-accent') : v('--color-text-faint'),
+                background: !KLIMA_M2_PRESETS.includes(klimaM2) ? v('--color-accent-dim') : v('--color-bg'),
+                border: !KLIMA_M2_PRESETS.includes(klimaM2) ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
+                borderRadius: v('--radius-sm'), padding: "5px 4px", outline: "none",
+              }}
+            />
+            <span style={{ fontSize: 10, color: v('--color-text-faint') }}>m²</span>
           </span>
         </div>
       )}
