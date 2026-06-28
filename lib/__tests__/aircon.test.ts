@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   effectiveCdh, sizingKw, acquisitionCost, calcAircon, compareDevices, fallbackCdh,
+  cdhFromHourly, cdhFromDailyMinMax,
   type AcInputs,
 } from "../aircon";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../aircon-config";
@@ -116,5 +117,40 @@ describe("fallbackCdh", () => {
     expect(fallbackCdh("BY")).toBe(CFG.cdhByBundesland.BY);
     expect(fallbackCdh(null)).toBe(CFG.cdhNational);
     expect(fallbackCdh("XX")).toBe(CFG.cdhNational);
+  });
+});
+
+describe("cdhFromHourly", () => {
+  it("sums only hours above the base", () => {
+    expect(cdhFromHourly([20, 22, 24, 26], 22)).toBe(0 + 0 + 2 + 4);
+    expect(cdhFromHourly([10, 15, 18], 22)).toBe(0);
+  });
+  it("ignores non-numbers", () => {
+    // @ts-expect-error – Robustheit gegen lückenhafte Archivdaten
+    expect(cdhFromHourly([24, null, 26], 22)).toBe(2 + 4);
+  });
+});
+
+describe("cdhFromDailyMinMax", () => {
+  it("a hot day contributes, a cool day does not", () => {
+    expect(cdhFromDailyMinMax([32], [20], 22)).toBeGreaterThan(0);
+    expect(cdhFromDailyMinMax([19], [10], 22)).toBe(0);
+  });
+  it("hotter days yield more cooling-degree-hours", () => {
+    const hot = cdhFromDailyMinMax([34], [22], 22);
+    const mild = cdhFromDailyMinMax([28], [16], 22);
+    expect(hot).toBeGreaterThan(mild);
+  });
+  it("scales linearly with the number of days", () => {
+    const one = cdhFromDailyMinMax([32], [20], 22);
+    const three = cdhFromDailyMinMax([32, 32, 32], [20, 20, 20], 22);
+    expect(three).toBeCloseTo(one * 3, 6);
+  });
+  it("a single hot day sits in a plausible per-day range (~tens of Kh)", () => {
+    // Heißer Tag (Max 30 / Min 18): die Sonnenstunden über 22 °C summieren sich
+    // auf einige Dutzend Kühlgradstunden — gleiche Größenordnung wie real-stündlich.
+    const perDay = cdhFromDailyMinMax([30], [18], 22);
+    expect(perDay).toBeGreaterThan(20);
+    expect(perDay).toBeLessThan(120);
   });
 });

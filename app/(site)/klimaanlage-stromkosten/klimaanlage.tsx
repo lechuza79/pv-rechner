@@ -24,6 +24,15 @@ const TARGET_LABELS: Record<number, string> = { 22: "Kühl", 24: "Angenehm", 26:
 
 type HeatwaveInfo = { maxTemp: number; hotDays: number; active: boolean } | null;
 
+// Drei Standort-Modi für die Kühlgradstunden (im Ergebnis umschaltbar).
+type CdhMode = "avg5" | "lastSummer" | "projection";
+type CdhModes = { avg5: number; lastSummer: number; projection: number };
+// Projektionsjahr zur Render-Zeit (rollover-sicher, kein hardcoded Jahr).
+const PROJ_YEAR = new Date().getFullYear() + Math.round(
+  (CFG.projectionYearsAhead.start + CFG.projectionYearsAhead.end) / 2,
+);
+
+
 export default function Klimaanlage() {
   const [step, setStep] = useState(0);
   const [deviceId, setDeviceId] = useState<AcInputs["deviceId"]>("portasplit");
@@ -37,9 +46,15 @@ export default function Klimaanlage() {
   const [plz, setPlz] = useState("");
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzConfirmed, setPlzConfirmed] = useState(false);
-  const [cdh, setCdh] = useState<number>(CFG.cdhNational);
+  const [cdhSet, setCdhSet] = useState<CdhModes>(() => ({
+    avg5: CFG.cdhNational,
+    lastSummer: Math.round(CFG.cdhNational * CFG.lastSummerFactor),
+    projection: Math.round(CFG.cdhNational * CFG.projectionFactor),
+  }));
+  const [cdhMode, setCdhMode] = useState<CdhMode>("avg5");
   const [cdhSource, setCdhSource] = useState<"fallback" | "open-meteo" | "cache">("fallback");
   const [heatwave, setHeatwave] = useState<HeatwaveInfo>(null);
+  const cdh = cdhSet[cdhMode];
 
   // Editierbarer Strompreis (Default aus zentraler Preis-Quelle)
   const [oStrom, setOStrom] = useState<number | null>(null);
@@ -63,7 +78,10 @@ export default function Klimaanlage() {
         : `plzPrefix=${prefix}`;
       const res = await fetch(`/api/cooling-degree?${qs}`);
       const data = await res.json();
-      if (typeof data.cdh === "number") { setCdh(data.cdh); setCdhSource(data.source); }
+      if (typeof data.avg5 === "number") {
+        setCdhSet({ avg5: data.avg5, lastSummer: data.lastSummer, projection: data.projection });
+        setCdhSource(data.source);
+      }
       setHeatwave(data.heatwave ?? null);
       setPlzConfirmed(true);
     } catch { /* Fallback bleibt */ }
@@ -298,9 +316,29 @@ export default function Klimaanlage() {
                 <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
                 <div>Kühlgradstunden: <strong style={{ fontFamily: v('--font-mono') }}>{cdh.toLocaleString("de-DE")}</strong>{" "}
                   <span style={{ fontSize: 11, color: v('--color-text-faint') }}>
-                    ({cdhSource === "fallback" ? (bl ? `Ø ${bl}` : "Ø Deutschland") : `PLZ ${plz}`})
+                    ({cdhSource === "fallback" ? (bl ? `Ø ${bl}` : "Ø Deutschland") : plz ? `PLZ ${plz}` : "Ø Deutschland"})
                   </span>
                 </div>
+              </div>
+
+              {/* Standort-Modus: Ø letzte Jahre / letzter Sommer / Projektion */}
+              <div style={{ display: "flex", gap: 4, marginTop: 12, background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
+                {([
+                  { id: "avg5", label: `Ø ${CFG.avgYears} Jahre` },
+                  { id: "lastSummer", label: "Letzter Sommer" },
+                  { id: "projection", label: `Projektion ~${PROJ_YEAR}` },
+                ] as { id: CdhMode; label: string }[]).map(opt => (
+                  <button key={opt.id} onClick={() => setCdhMode(opt.id)} style={{
+                    flex: 1, padding: "7px 4px", borderRadius: v('--radius-sm'), fontSize: 11, fontWeight: 700, cursor: "pointer", border: "none", lineHeight: 1.2,
+                    background: cdhMode === opt.id ? v('--color-accent') : "transparent",
+                    color: cdhMode === opt.id ? v('--color-text-on-accent') : v('--color-text-muted'),
+                  }}>{opt.label}</button>
+                ))}
+              </div>
+              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5, textAlign: "center" }}>
+                {cdhMode === "avg5" && `Durchschnitt der letzten ${CFG.avgYears} Sommer — der ausgewogene Wert.`}
+                {cdhMode === "lastSummer" && "Der letzte Sommer — oft heißer als der Schnitt."}
+                {cdhMode === "projection" && `So heiß wird ein Sommer um ${PROJ_YEAR} laut Klimamodell (CMIP6) — Projektion, kein exakter Wert.`}
               </div>
             </div>
 

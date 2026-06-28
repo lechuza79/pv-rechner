@@ -59,9 +59,22 @@ export interface AcConfig {
   // (Mittagsleistung >> Kühllast) weitgehend unabhängig von der kWp.
   pvCoverage: { allday: number; day: number; night: number };
 
-  // Klimatologie-Referenz (Kühlgradstunden/Jahr, Schwelle 22 °C) — Fallback ohne PLZ
+  // Außentemperatur-Schwelle, ab der gekühlt wird (Kühlgradstunden-Basis)
+  coolBaseTemp: number;        // °C
+
+  // Klimatologie-Referenz (Kühlgradstunden/Jahr) — Fallback ohne PLZ. Repräsentiert
+  // den Modus „Ø letzte Jahre". cdhByBundesland ist die gepflegte Baseline.
   cdhNational: number;
   cdhByBundesland: Record<string, number>;
+
+  // Drei Standort-Modi für die Kühlgradstunden (im Ergebnis umschaltbar):
+  avgYears: number;            // „Ø letzte N Jahre" (Wetterarchiv)
+  // Fallback-Faktoren relativ zur Ø-Klimatologie, falls die Live-Daten fehlen:
+  lastSummerFactor: number;    // letzter Sommer war wärmer als der Schnitt
+  projectionFactor: number;    // Projektion ~20 Jahre vs. heute (Klimawandel)
+  // Projektionsfenster relativ zum aktuellen Jahr (rollover-sicher, gegen 2050 geclamped)
+  projectionYearsAhead: { start: number; end: number };
+  climateModel: string;        // CMIP6-Downscaling-Modell (Open-Meteo Climate API)
 
   // Hitzewelle (DWD-nahe Definition: ≥ 3 Tage mit Tagesmaximum ≥ Schwelle)
   heatwaveThreshold: number;   // °C
@@ -119,6 +132,8 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
 
   pvCoverage: { allday: 0.55, day: 0.8, night: 0.1 },
 
+  coolBaseTemp: 22,
+
   cdhNational: 1200,
   cdhByBundesland: {
     BW: 1380, BY: 1350, BE: 1320, BB: 1300, HB: 950, HH: 980,
@@ -126,13 +141,19 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
     SN: 1280, ST: 1240, SH: 920, TH: 1180,
   },
 
+  avgYears: 5,
+  lastSummerFactor: 1.3,
+  projectionFactor: 1.5,
+  projectionYearsAhead: { start: 18, end: 22 },
+  climateModel: "MRI_AGCM3_2_S",   // CMIP6-Downscaling, 10 km (Open-Meteo Climate API)
+
   heatwaveThreshold: 30,
   heatwaveMinDays: 3,
 
   stromPrice: 0.34,
   gridCo2PerKwh: 0.38,   // kg CO₂/kWh deutscher Strommix (UBA 2023, sinkend) — wie heatpump.ts
 
-  source: "Open-Meteo Klimatologie (Kühlgradstunden), Verbraucher-Tests 2025/26 (SEER), ADAC/Handwerkerdaten (Preise), BDEW (Strom), UBA (Strommix-CO₂)",
+  source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), Verbraucher-Tests 2025/26 (SEER), ADAC/Handwerkerdaten (Preise), BDEW (Strom), UBA (Strommix-CO₂)",
   validFrom: "2026-06-28",
   reviewBy: "2027-04-30",
 };
