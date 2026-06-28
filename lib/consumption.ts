@@ -2,6 +2,8 @@
 // All household consumption calculations in one place.
 // Used by: calc.ts (EV model), recommend.ts, simulation.ts (live hourly), UI display
 
+import { estimateAcKwhFromLivingArea } from "./aircon";
+
 // ─── Constants ──────────────────────────────────────────────────────────────
 
 export const WP_ANNUAL_KWH = 3500;     // Heat pump: ~3500 kWh electric/year (COP 3.5)
@@ -9,18 +11,18 @@ export const EA_KWH_PER_KM = 0.18;     // E-car: 18 kWh/100km average
 export const EA_DEFAULT_KM = 15000;     // Default annual mileage
 
 // ─── Klimaanlage (Kühlung, nur Sommer) ──────────────────────────────────────
-// Stromverbrauch fürs Kühlen, abgeleitet aus der Wohnfläche. In Deutschland wird
-// nur teilweise gekühlt (Wohn-/Schlafräume, nicht das ganze Haus) und das Klima
-// ist gemäßigt — der Stromverbrauch je m² GESAMTwohnfläche ist daher moderat.
-// Modell: gekühlter Flächenanteil × spez. Kühlenergie / SEER, zusammengefasst zu
-// einem Strom-Kennwert je m² Wohnfläche. Ein typisches EFH kommt so auf einige
-// hundert kWh in der Sommersaison — deckt sich mit Verbrauchsratgebern 2025/26
-// (MediaMarkt/Check24/1KOMMA5°: ~300–800 kWh/Sommer fürs Haus).
+// Stromverbrauch fürs Kühlen, abgeleitet aus der Wohnfläche. EINE Quelle: die
+// Schätzung kommt aus demselben Wettermodell wie der Klimaanlagen-Rechner
+// (lib/aircon.ts), nur auf typische Annahmen kollabiert (siehe estimateAc-
+// KwhFromLivingArea). So können PV-Rechner und Klimaanlagen-Rechner nicht mehr
+// auseinanderdriften. Der „~3 kWh/m²"-Kennwert ist nur die abgeleitete Kurzform.
 // WICHTIG: nur Kühlung. Klimageräte können auch heizen, das modellieren wir hier
 // bewusst NICHT — Heizen läuft über den separaten Wärmepumpen-Rechner.
-export const KLIMA_KWH_PER_M2 = 3;      // kWh Strom / m² Wohnfläche / Jahr (Kühlung)
 export const KLIMA_DEFAULT_M2 = 120;    // Default-Wohnfläche
 export const KLIMA_M2_PRESETS = [80, 120, 160];
+// Abgeleiteter Anzeige-Kennwert (kWh Strom / m² Wohnfläche / Jahr) — driftet nicht
+// frei, sondern folgt dem Wettermodell. Nur für /datenstand + Hinweistexte.
+export const KLIMA_KWH_PER_M2 = Math.round((estimateAcKwhFromLivingArea(100) / 100) * 10) / 10;
 
 // ─── Annual consumption ─────────────────────────────────────────────────────
 
@@ -32,24 +34,28 @@ export function calcEaAnnual(km: number): number {
   return Math.round(km * EA_KWH_PER_KM);
 }
 
-/** Kühlstrom einer Klimaanlage (annual kWh), abgeleitet aus der Wohnfläche. */
+/** Kühlstrom einer Klimaanlage (annual kWh), abgeleitet aus der Wohnfläche.
+ *  Delegiert an das gemeinsame Wettermodell (Single Source of Truth). */
 export function calcKlimaAnnual(m2: number): number {
-  return Math.round(m2 * KLIMA_KWH_PER_M2);
+  return estimateAcKwhFromLivingArea(m2);
 }
 
 /** Calculate extra consumption from WP + E-Auto + Klimaanlage (annual kWh).
- *  klima/klimaM2 are optional so existing callers stay unchanged. */
+ *  klima/klimaM2 are optional so existing callers stay unchanged.
+ *  klimaKwhOverride: direkter Kühlstrom (z.B. aus dem Klimaanlagen-Rechner
+ *  übernommen) — hat Vorrang vor der Flächen-Schätzung. */
 export function calcExtraConsumption(
   wp: string,
   ea: string,
   eaKm: number,
   klima: string = "nein",
   klimaM2: number = KLIMA_DEFAULT_M2,
+  klimaKwhOverride: number | null = null,
 ): number {
   let extra = 0;
   if (wp !== "nein") extra += WP_ANNUAL_KWH;
   if (ea !== "nein") extra += calcEaAnnual(eaKm);
-  if (klima !== "nein") extra += calcKlimaAnnual(klimaM2);
+  if (klima !== "nein") extra += klimaKwhOverride ?? calcKlimaAnnual(klimaM2);
   return extra;
 }
 
