@@ -1,16 +1,61 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createCache } from "../../../../lib/energy-api";
 import {
-  computeNuclearImport,
-  NuclearImportDataError,
-  type NuclearImportResponse,
-} from "../../../../lib/nuclear-import";
+  createCache,
+  fetchCrossBorderFlows,
+  fetchPublicPower,
+} from "../../../../lib/energy-api";
+
+// Countries with active nuclear power plants
+const NUCLEAR_COUNTRIES = ["fr", "cz", "ch", "se", "be", "nl"] as const;
+
+// CBPF country names → country codes (Energy-Charts uses full names)
+const CBPF_NAME_TO_CODE: Record<string, string> = {
+  france: "fr",
+  czech_republic: "cz",
+  switzerland: "ch",
+  sweden: "se",
+  belgium: "be",
+  netherlands: "nl",
+};
+
+interface NuclearDataPoint {
+  ts: string;
+  nuclear_gw: number;
+}
+
+interface NuclearImportResponse {
+  data: NuclearDataPoint[];
+  avg_gw: number;
+  avg_share_pct: number;
+  source: string;
+  license: string;
+}
 
 // ─── Cache ──────────────────────────────────────────────────────────────────
 
 const cache = createCache<NuclearImportResponse>(10 * 60 * 1000); // 10 min
 const longCache = createCache<NuclearImportResponse>(30 * 60 * 1000); // 30 min
 const historicalCache = createCache<NuclearImportResponse>(24 * 60 * 60 * 1000); // 24h for past periods
+
+// ─── Downsample ─────────────────────────────────────────────────────────────
+
+function downsample(data: NuclearDataPoint[], factor: number): NuclearDataPoint[] {
+  if (factor <= 1 || data.length === 0) return data;
+  const result: NuclearDataPoint[] = [];
+  for (let i = 0; i < data.length; i += factor) {
+    const chunk = data.slice(i, i + factor);
+    let sum = 0;
+    let count = 0;
+    for (const d of chunk) {
+      if (d.nuclear_gw != null) { sum += d.nuclear_gw; count++; }
+    }
+    result.push({
+      ts: chunk[Math.floor(chunk.length / 2)].ts,
+      nuclear_gw: count > 0 ? Math.round(sum / count * 1000) / 1000 : 0,
+    });
+  }
+  return result;
+}
 
 // ─── GET Handler ────────────────────────────────────────────────────────────
 
@@ -36,20 +81,181 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  let startStr: string;
-  let endStr: string;
-  if (isAbsolute) {
-    startStr = startParam + "T00:00:00+01:00";
-    endStr = endParam + "T23:59:59+01:00";
-  } else {
-    const now = new Date();
-    const start = new Date(now.getTime() - hoursBack * 60 * 60 * 1000);
-    startStr = start.toISOString().slice(0, 19) + "+01:00";
-    endStr = now.toISOString().slice(0, 19) + "+01:00";
-  }
-
   try {
-    const response = await computeNuclearImport(startStr, endStr, rangeHours);
+    let startStr: string;
+    let endStr: string;
+
+    if (isAbsolute) {
+      startStr = startParam + "T00:00:00+01:00";
+      endStr = endParam + "T23:59:59+01:00";
+    } else {
+      const now = new Date();
+      const start = new Date(now.getTime() - hoursBack * 60 * 60 * 1000);
+      startStr = start.toISOString().slice(0, 19) + "+01:00";
+      endStr = now.toISOString().slice(0, 19) + "+01:00";
+    }
+
+    // Helper: fetch with yearly chunking for multi-year ranges
+    const fetchChunked = async <T,>(
+      fetcher: (s: string, e: string) => Promise<T[]>,
+    ): Promise<T[]> => {
+      if (rangeHours > 8784) {
+        const startYear = new Date(startStr).getFullYear();
+        const endYear = new Date(endStr).getFullYear();
+        const chunks: Promise<T[]>[] = [];
+        for (let y = startYear; y <= endYear; y++) {
+          const cs = y === startYear ? startStr : `${y}-01-01T00:00:00+01:00`;
+          const ce = y === endYear ? endStr : `${y}-12-31T23:59:59+01:00`;
+          chunks.push(fetcher(cs, ce));
+        }
+        return (await Promise.all(chunks)).flat();
+      }
+      return fetcher(startStr, endStr);
+    };
+
+    // Step 1: Fetch cross-border flows (chunked for multi-year)
+    const cbpfRows = await fetchChunked((s, e) => fetchCrossBorderFlows("de", s, e));
+
+    if (cbpfRows.length === 0) {
+      const stale = store.getStale(cacheKey);
+      if (stale) {
+        return NextResponse.json(stale, {
+          headers: { "Cache-Control": "public, s-maxage=60", "X-Data-Stale": "true" },
+        });
+      }
+      return NextResponse.json(
+        { data: [], avg_gw: 0, avg_share_pct: 0, source: "error", license: "" },
+        { status: 502 }
+      );
+    }
+
+    // Step 2: Fetch nuclear countries in parallel (partial data is fine, chunked)
+    const countryGenRows: Map<string, Map<string, { nuclear: number; total: number }>> = new Map();
+
+    const countryResults = await Promise.allSettled(
+      NUCLEAR_COUNTRIES.map(code =>
+        fetchChunked((s, e) => fetchPublicPower(code, s, e, 10000, 2)).then(rows => ({ code, rows }))
+      )
+    );
+
+    for (const result of countryResults) {
+      if (result.status === "rejected") {
+        console.warn(`Nuclear import: skipping country:`, result.reason?.message || result.reason);
+        continue;
+      }
+      const { code, rows } = result.value;
+      const tsMap = new Map<string, { nuclear: number; total: number }>();
+      for (const row of rows) {
+        const nuclear = (row.data.nuclear as number) ?? 0;
+        let total = 0;
+        for (const [key, val] of Object.entries(row.data)) {
+          if (
+            typeof val === "number" && val > 0 &&
+            !key.includes("load") &&
+            !key.includes("share") &&
+            !key.includes("cross_border") &&
+            !key.includes("consumption")
+          ) {
+            total += val;
+          }
+        }
+        tsMap.set(row.ts, { nuclear, total });
+      }
+      countryGenRows.set(code, tsMap);
+    }
+
+    // Guard: if every neighbour-generation fetch failed, we cannot compute the
+    // nuclear share — returning 0 would be physically false and (worse) get
+    // cached as a valid value. Serve stale data or fail loudly instead.
+    if (countryGenRows.size === 0) {
+      const stale = store.getStale(cacheKey);
+      if (stale) {
+        return NextResponse.json(stale, {
+          headers: { "Cache-Control": "public, s-maxage=60", "X-Data-Stale": "true" },
+        });
+      }
+      return NextResponse.json(
+        { data: [], avg_gw: 0, avg_share_pct: 0, source: "error", license: "" },
+        { status: 502 },
+      );
+    }
+
+    // Build lookup: ts → { country_code → flow_gw }
+    const cbpfByTs = new Map<string, Record<string, number>>();
+    for (const row of cbpfRows) {
+      const flows: Record<string, number> = {};
+      for (const [name, val] of Object.entries(row.data)) {
+        if (name === "net" || typeof val !== "number") continue;
+        const code = CBPF_NAME_TO_CODE[name];
+        if (code) flows[code] = val;
+      }
+      cbpfByTs.set(row.ts, flows);
+    }
+
+    // Calculate nuclear import per timestamp
+    // For DE load %, use total import from CBPF as proxy
+    // (client has actual DE load from generation data)
+    let data: NuclearDataPoint[] = [];
+    let totalNuclear = 0;
+    let count = 0;
+
+    cbpfByTs.forEach((flows, ts) => {
+      let nuclearGw = 0;
+      let positiveFlows = 0;
+      let mixHits = 0;
+
+      for (const code of NUCLEAR_COUNTRIES) {
+        const flowGw = flows[code] ?? 0;
+        if (flowGw <= 0) continue; // Only imports (positive = import to DE)
+        positiveFlows++;
+
+        const mix = countryGenRows.get(code)?.get(ts);
+        if (!mix || mix.total <= 0) continue;
+        mixHits++;
+
+        const nuclearShare = mix.nuclear / mix.total;
+        nuclearGw += flowGw * nuclearShare;
+      }
+
+      // Skip timestamps that have imports but no usable neighbour mix (data
+      // gap / latency tail): counting them as 0 would drag the average down and
+      // can zero out a whole window. Timestamps with no imports at all are a
+      // legitimate 0 and stay counted.
+      if (positiveFlows > 0 && mixHits === 0) return;
+
+      data.push({ ts, nuclear_gw: Math.round(nuclearGw * 1000) / 1000 });
+      totalNuclear += nuclearGw;
+      count++;
+    });
+
+    // Sort by timestamp
+    data.sort((a, b) => a.ts.localeCompare(b.ts));
+
+    // Downsample for longer ranges
+    if (rangeHours > 17520) {
+      // >2 years: daily
+      data = downsample(data, 96);
+    } else if (rangeHours > 2160) {
+      data = downsample(data, 24);
+    } else if (rangeHours > 720) {
+      data = downsample(data, 12);
+    } else if (rangeHours > 168) {
+      data = downsample(data, 4);
+    }
+
+    const avgGw = count > 0 ? Math.round(totalNuclear / count * 100) / 100 : 0;
+    // Estimate share: avg nuclear GW / typical DE load (~45 GW)
+    // Client will calculate exact % from its own generation data
+    const avgSharePct = count > 0 ? Math.round(avgGw / 45 * 100 * 10) / 10 : 0;
+
+    const response: NuclearImportResponse = {
+      data,
+      avg_gw: avgGw,
+      avg_share_pct: avgSharePct,
+      source: "Fraunhofer ISE / Energy-Charts",
+      license: "CC BY 4.0",
+    };
+
     store.set(cacheKey, response);
 
     const maxAge = isPast ? 2592000 : 600; // 30 days for past periods
@@ -57,9 +263,7 @@ export async function GET(req: NextRequest) {
       headers: { "Cache-Control": `public, s-maxage=${maxAge}, stale-while-revalidate=${maxAge * 2}` },
     });
   } catch (e) {
-    if (!(e instanceof NuclearImportDataError)) {
-      console.error("Nuclear import fetch error:", e);
-    }
+    console.error("Nuclear import fetch error:", e);
     // Return stale cached data if available
     const stale = store.getStale(cacheKey);
     if (stale) {
