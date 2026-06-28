@@ -96,6 +96,17 @@ describe("calcAircon", () => {
     expect(r.netRunningCost).toBe(r.runningCost);
   });
 
+  it("battery lifts coverage, most strongly for night cooling", () => {
+    const nightBat = calcAircon({ ...base, window: "night", pvActive: true, battery: true });
+    const nightNo = calcAircon({ ...base, window: "night", pvActive: true, battery: false });
+    expect(nightBat.pvCoverage).toBeGreaterThan(nightNo.pvCoverage);
+    // Akku ist nachts der entscheidende Hebel: deutlich höhere Deckung
+    expect(nightBat.pvCoverage).toBeGreaterThan(nightNo.pvCoverage + 0.3);
+    // Default (battery weggelassen) = mit Speicher
+    const def = calcAircon({ ...base, window: "night", pvActive: true });
+    expect(def.pvCoverage).toBe(nightBat.pvCoverage);
+  });
+
   it("derives CO₂ from electricity and the grid factor", () => {
     const r = calcAircon(base);
     expect(r.co2Kg).toBe(Math.round(r.electricityKwh * CFG.gridCo2PerKwh));

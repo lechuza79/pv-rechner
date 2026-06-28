@@ -17,6 +17,7 @@ export interface AcInputs {
   cdh: number;               // Kühlgradstunden/Jahr am Standort (aus API/Config)
   stromPrice: number;        // €/kWh
   pvActive: boolean;         // eigene PV-Anlage vorhanden/geplant?
+  battery?: boolean;         // Batteriespeicher vorhanden? (Default true)
 }
 
 export interface AcResult {
@@ -71,7 +72,9 @@ export function calcAircon(inputs: AcInputs, cfg: AcConfig = DEFAULT_AIRCON_CONF
   const capacityKw = sizingKw(cooledArea, cfg);
   const acquisition = acquisitionCost(device, rooms, cooledArea, cfg);
 
-  const pvCoverage = inputs.pvActive ? cfg.pvCoverage[inputs.window] : 0;
+  // Mit Speicher ist Default (battery !== false). Akku hebt vor allem die Nacht.
+  const coverageSet = (inputs.battery ?? true) ? cfg.pvCoverage.battery : cfg.pvCoverage.noBattery;
+  const pvCoverage = inputs.pvActive ? coverageSet[inputs.window] : 0;
   const pvSavings = Math.round(electricityKwh * pvCoverage * inputs.stromPrice);
   const netRunningCost = runningCost - pvSavings;
 

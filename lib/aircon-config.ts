@@ -55,9 +55,14 @@ export interface AcConfig {
   sizingWPerM2: number;
 
   // PV-Deckung: Anteil des Kühlstroms, den die eigene PV-Anlage übernimmt.
-  // Kühlen tagsüber ist sonnen-deckungsstark, nachts kaum. Für typische Heim-PV
-  // (Mittagsleistung >> Kühllast) weitgehend unabhängig von der kWp.
-  pvCoverage: { allday: number; day: number; night: number };
+  // Kühlen tagsüber ist sonnen-deckungsstark, nachts kaum. Mit Batteriespeicher
+  // wird Tagstrom in den Abend/die Nacht verschoben → deutlich höhere Deckung,
+  // vor allem bei Nachtkühlung. Für typische Heim-PV (Mittagsleistung >> Kühllast,
+  // ~10-kWh-Akku >> Tageskühlbedarf) weitgehend unabhängig von kWp/Akkugröße.
+  pvCoverage: {
+    battery: { allday: number; day: number; night: number };
+    noBattery: { allday: number; day: number; night: number };
+  };
 
   // Außentemperatur-Schwelle, ab der gekühlt wird (Kühlgradstunden-Basis)
   coolBaseTemp: number;        // °C
@@ -130,7 +135,12 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
 
   sizingWPerM2: 85,
 
-  pvCoverage: { allday: 0.55, day: 0.8, night: 0.1 },
+  pvCoverage: {
+    // Mit Speicher (Default): Akku verschiebt Tagstrom in Abend/Nacht.
+    battery: { allday: 0.85, day: 0.92, night: 0.75 },
+    // Ohne Speicher: reine Direktnutzung — nachts liefert die Sonne nichts.
+    noBattery: { allday: 0.55, day: 0.8, night: 0.1 },
+  },
 
   coolBaseTemp: 22,
 

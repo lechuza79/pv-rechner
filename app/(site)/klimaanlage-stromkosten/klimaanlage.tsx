@@ -22,13 +22,20 @@ const WINDOWS: { id: CoolingWindow; label: string; sub: string }[] = [
 
 const TARGET_LABELS: Record<number, string> = { 22: "Kühl", 24: "Angenehm", 26: "Sparsam" };
 
-// Fensterabhängiger Text zur PV-Deckung. Die Deckung ist DIREKTnutzung (ohne
-// Speicher): tagsüber hoch, nachts niedrig (dann scheint keine Sonne). Der Text
-// darf also nicht pauschal „passt perfekt" behaupten.
-const COVERAGE_COPY: Record<CoolingWindow, string> = {
-  day: "Tagsüber kühlst du, wenn die Sonne scheint — sie deckt den Großteil direkt vom Dach.",
-  allday: "Am Tag kommt der Kühlstrom direkt vom Dach, abends und nachts aus dem Netz.",
-  night: "Nachts scheint keine Sonne — ohne Batteriespeicher kommt nur ein kleiner Teil direkt vom Dach.",
+// Fenster- und speicherabhängiger Text zur PV-Deckung. Ohne Speicher ist die
+// Deckung Direktnutzung (nachts ~0). Mit Speicher wird Tagstrom in die Nacht
+// verschoben — dann darf der Text auch die Nacht positiv framen.
+const COVERAGE_COPY: Record<"battery" | "noBattery", Record<CoolingWindow, string>> = {
+  battery: {
+    day: "Tagsüber direkt von der Sonne, den Abend-Rest liefert der Speicher.",
+    allday: "Am Tag direkt vom Dach, abends und nachts aus dem Speicher.",
+    night: "Der Speicher lädt sich tagsüber mit Sonne und kühlt nachts damit.",
+  },
+  noBattery: {
+    day: "Tagsüber kühlst du, wenn die Sonne scheint — sie deckt den Großteil direkt vom Dach.",
+    allday: "Am Tag kommt der Kühlstrom direkt vom Dach, abends und nachts aus dem Netz.",
+    night: "Nachts scheint keine Sonne — ohne Speicher kommt nur ein kleiner Teil direkt vom Dach.",
+  },
 };
 
 type HeatwaveInfo = { maxTemp: number; hotDays: number; active: boolean } | null;
@@ -50,6 +57,7 @@ export default function Klimaanlage() {
   const [targetTemp, setTargetTemp] = useState(CFG.defaultTargetTemp);
   const [window_, setWindow] = useState<CoolingWindow>("day");
   const [pvActive, setPvActive] = useState(false);
+  const [battery, setBattery] = useState(true); // mit Speicher ist Default
 
   // Standort → Kühlgradstunden
   const [plz, setPlz] = useState("");
@@ -104,8 +112,8 @@ export default function Klimaanlage() {
   };
 
   const inputs: AcInputs = useMemo(() => ({
-    deviceId, rooms, roomM2, targetTemp, window: window_, cdh, stromPrice: strompreis, pvActive,
-  }), [deviceId, rooms, roomM2, targetTemp, window_, cdh, strompreis, pvActive]);
+    deviceId, rooms, roomM2, targetTemp, window: window_, cdh, stromPrice: strompreis, pvActive, battery,
+  }), [deviceId, rooms, roomM2, targetTemp, window_, cdh, strompreis, pvActive, battery]);
 
   const result = useMemo(() => calcAircon(inputs), [inputs]);
   const comparison = useMemo(() => compareDevices(inputs), [inputs]);
@@ -114,8 +122,9 @@ export default function Klimaanlage() {
   const cooledArea = result.cooledArea;
   // PV-Rechner übernimmt die Klimaanlage als Verbraucher (Fläche = gekühlte Fläche)
   const pvRechnerHref = `/photovoltaik-rechner?kl=ja&km2=${cooledArea}${plz ? `&plz=${plz}` : ""}`;
-  // Teaser ohne PV: welche Deckung/Restkosten eine Solaranlage brächte (Fenster-abhängig)
-  const potentialCoverage = CFG.pvCoverage[window_];
+  // Teaser ohne PV: welche Deckung/Restkosten eine Solaranlage (mit Speicher,
+  // dem Default) brächte — fenster-abhängig.
+  const potentialCoverage = CFG.pvCoverage.battery[window_];
   const potentialNet = Math.round(result.runningCost * (1 - potentialCoverage));
 
   return (
@@ -421,22 +430,38 @@ export default function Klimaanlage() {
                 </span>
               </div>
               {pvActive ? (
-                <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
-                  Die Sonne übernimmt rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> deines Kühlstroms.{" "}
-                  {COVERAGE_COPY[window_]} Reststromkosten:{" "}
-                  <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.netRunningCost.toLocaleString("de-DE")} €/Jahr</span>{" "}
-                  statt {result.runningCost.toLocaleString("de-DE")} €.
-                  <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4 }}>
-                    Wert ohne Speicher (Direktnutzung) — ein Batteriespeicher verschiebt Tagstrom in den Abend und die Nacht und hebt die Deckung deutlich.{" "}
-                    <Link href={pvRechnerHref} style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Im PV-Rechner mitrechnen</Link>
+                <>
+                  {/* Mit / ohne Speicher — mit ist Default */}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 12 }}>
+                    <span style={{ fontSize: 12, color: v('--color-text-muted') }}>Batteriespeicher?</span>
+                    <span style={{ display: "inline-flex", gap: 3, background: v('--color-bg-muted'), borderRadius: v('--radius-sm'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
+                      {[{ on: true, label: "Mit Speicher" }, { on: false, label: "Ohne" }].map(opt => (
+                        <button key={String(opt.on)} onClick={() => setBattery(opt.on)} style={{
+                          padding: "4px 12px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none",
+                          background: battery === opt.on ? v('--color-accent') : "transparent",
+                          color: battery === opt.on ? v('--color-text-on-accent') : v('--color-text-muted'),
+                        }}>{opt.label}</button>
+                      ))}
+                    </span>
                   </div>
-                </div>
+                  <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+                    Die Sonne übernimmt rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> deines Kühlstroms.{" "}
+                    {COVERAGE_COPY[battery ? "battery" : "noBattery"][window_]} Reststromkosten:{" "}
+                    <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.netRunningCost.toLocaleString("de-DE")} €/Jahr</span>{" "}
+                    statt {result.runningCost.toLocaleString("de-DE")} €.
+                    <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4 }}>
+                      {battery
+                        ? "Mit typischem Heimspeicher (~10 kWh) gerechnet — er puffert den Tagstrom für Abend und Nacht."
+                        : "Direktnutzung ohne Speicher — ein Akku würde die Deckung heben, vor allem nachts."}{" "}
+                      <Link href={pvRechnerHref} style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Im PV-Rechner mitrechnen</Link>
+                    </div>
+                  </div>
+                </>
               ) : (
                 <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
-                  Mit einer Solaranlage würde die Sonne rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(potentialCoverage * 100)} %</span> deines Kühlstroms direkt übernehmen.{" "}
-                  {COVERAGE_COPY[window_]} Statt {result.runningCost.toLocaleString("de-DE")} € nur noch{" "}
+                  Mit einer Solaranlage und Speicher würde die Sonne rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(potentialCoverage * 100)} %</span> deines Kühlstroms übernehmen.{" "}
+                  {COVERAGE_COPY.battery[window_]} Statt {result.runningCost.toLocaleString("de-DE")} € nur noch{" "}
                   <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{potentialNet.toLocaleString("de-DE")} €/Jahr</span>.{" "}
-                  <span style={{ color: v('--color-text-faint') }}>Ohne Speicher; ein Akku hebt vor allem die Nacht-Deckung.</span>{" "}
                   <Link href="/photovoltaik-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Details im PV-Rechner</Link>
                 </div>
               )}
