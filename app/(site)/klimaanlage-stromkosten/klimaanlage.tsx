@@ -60,6 +60,7 @@ export default function Klimaanlage() {
   const [deviceId, setDeviceId] = useState<AcInputs["deviceId"]>("portasplit");
   const [rooms, setRooms] = useState(CFG.defaultRooms);
   const [roomM2, setRoomM2] = useState(CFG.defaultRoomM2);
+  const [exposure, setExposure] = useState(CFG.defaultExposure);
   const [targetTemp, setTargetTemp] = useState(CFG.defaultTargetTemp);
   const [window_, setWindow] = useState<CoolingWindow>("day");
   const [pvActive, setPvActive] = useState(false);
@@ -118,8 +119,8 @@ export default function Klimaanlage() {
   };
 
   const inputs: AcInputs = useMemo(() => ({
-    deviceId, rooms, roomM2, targetTemp, window: window_, cdh, stromPrice: strompreis, pvActive, battery,
-  }), [deviceId, rooms, roomM2, targetTemp, window_, cdh, strompreis, pvActive, battery]);
+    deviceId, rooms, roomM2, exposure, targetTemp, window: window_, cdh, stromPrice: strompreis, pvActive, battery,
+  }), [deviceId, rooms, roomM2, exposure, targetTemp, window_, cdh, strompreis, pvActive, battery]);
 
   const result = useMemo(() => calcAircon(inputs), [inputs]);
   const comparison = useMemo(() => compareDevices(inputs), [inputs]);
@@ -212,6 +213,17 @@ export default function Klimaanlage() {
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5 }}>
                   Gekühlt wird gesamt <strong style={{ color: v('--color-text-primary') }}>{rooms * roomM2} m²</strong> — nicht die ganze
                   Wohnfläche, sondern nur die Räume, die du wirklich kühlst.
+                </div>
+
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, marginTop: 22, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie sonnig liegt der Raum?</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
+                  {CFG.exposureOptions.map(opt => (
+                    <OptionCard key={opt.id} selected={exposure === opt.id} onClick={() => setExposure(opt.id)} label={opt.label} sub={opt.sub} />
+                  ))}
+                </div>
+                <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
+                  Sonne durchs Fenster ist beim Kühlen der größte Posten — größer als die Dämmung. Ein Dachgeschoss
+                  oder Südfenster ohne Verschattung heizt sich stark auf.
                 </div>
               </div>
             )}

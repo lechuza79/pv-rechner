@@ -14,10 +14,17 @@ export interface AcInputs {
   roomM2: number;            // gekühlte Fläche je Raum
   targetTemp: number;        // Wunsch-Innentemperatur °C
   window: CoolingWindow;
+  exposure?: string;         // Sonnen-/Lage-Stufe (Default „normal"); skaliert den Kühlbedarf
   cdh: number;               // Kühlgradstunden/Jahr am Standort (aus API/Config)
   stromPrice: number;        // €/kWh
   pvActive: boolean;         // eigene PV-Anlage vorhanden/geplant?
   battery?: boolean;         // Batteriespeicher vorhanden? (Default true)
+}
+
+/** Sonnen-/Lage-Faktor aus der Config (Default „normal" → 1,0). */
+export function exposureFactor(exposure: string | undefined, cfg: AcConfig = DEFAULT_AIRCON_CONFIG): number {
+  const id = exposure ?? cfg.defaultExposure;
+  return cfg.exposureOptions.find(o => o.id === id)?.factor ?? 1;
 }
 
 export interface AcResult {
@@ -87,8 +94,10 @@ export function calcAircon(inputs: AcInputs, cfg: AcConfig = DEFAULT_AIRCON_CONF
   const cooledArea = rooms * inputs.roomM2;
 
   const cdhEff = effectiveCdh(inputs.cdh, inputs.targetTemp, inputs.window, cfg);
-  // Kühlenergie [kWh] = gain[Wh/(m²·K·h)] × Fläche[m²] × Kühlgradstunden[K·h] / 1000
-  const coolingDemandKwh = Math.round((cfg.buildingGain * cooledArea * cdhEff) / 1000);
+  // Kühlenergie [kWh] = gain[Wh/(m²·K·h)] × Fläche[m²] × Kühlgradstunden[K·h] / 1000.
+  // Sonnen-/Lage-Faktor skaliert den solaren Wärmeeintrag (dominanter Posten beim Kühlen).
+  const exp = exposureFactor(inputs.exposure, cfg);
+  const coolingDemandKwh = Math.round((cfg.buildingGain * cooledArea * cdhEff * exp) / 1000);
   const electricityKwh = Math.round(coolingDemandKwh / device.seer);
   const runningCost = Math.round(electricityKwh * inputs.stromPrice);
   const co2Kg = Math.round(electricityKwh * cfg.gridCo2PerKwh);
