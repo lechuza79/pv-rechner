@@ -36,6 +36,7 @@ export default function Klimaanlage() {
   // Standort → Kühlgradstunden
   const [plz, setPlz] = useState("");
   const [plzLoading, setPlzLoading] = useState(false);
+  const [plzConfirmed, setPlzConfirmed] = useState(false);
   const [cdh, setCdh] = useState<number>(CFG.cdhNational);
   const [cdhSource, setCdhSource] = useState<"fallback" | "open-meteo" | "cache">("fallback");
   const [heatwave, setHeatwave] = useState<HeatwaveInfo>(null);
@@ -64,9 +65,16 @@ export default function Klimaanlage() {
       const data = await res.json();
       if (typeof data.cdh === "number") { setCdh(data.cdh); setCdhSource(data.source); }
       setHeatwave(data.heatwave ?? null);
+      setPlzConfirmed(true);
     } catch { /* Fallback bleibt */ }
     setPlzLoading(false);
   }, []);
+
+  // PLZ ändern → Bestätigung zurücksetzen (Standort muss erneut übernommen werden)
+  const onPlzChange = (raw: string) => {
+    setPlz(raw.replace(/\D/g, "").slice(0, 5));
+    setPlzConfirmed(false);
+  };
 
   const inputs: AcInputs = useMemo(() => ({
     deviceId, rooms, roomM2, targetTemp, window: window_, cdh, stromPrice: strompreis, pvActive,
@@ -79,6 +87,9 @@ export default function Klimaanlage() {
   const cooledArea = result.cooledArea;
   // PV-Rechner übernimmt die Klimaanlage als Verbraucher (Fläche = gekühlte Fläche)
   const pvRechnerHref = `/photovoltaik-rechner?kl=ja&km2=${cooledArea}${plz ? `&plz=${plz}` : ""}`;
+  // Teaser ohne PV: welche Deckung/Restkosten eine Solaranlage brächte (Fenster-abhängig)
+  const potentialCoverage = CFG.pvCoverage[window_];
+  const potentialNet = Math.round(result.runningCost * (1 - potentialCoverage));
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
@@ -187,31 +198,54 @@ export default function Klimaanlage() {
                 </div>
 
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Standort (für echte Hitzedaten)</div>
-                <form onSubmit={e => { e.preventDefault(); fetchCooling(plz); }} style={{ position: "relative" }}>
+                <form onSubmit={e => { e.preventDefault(); if (!plzConfirmed) fetchCooling(plz); }} style={{ display: "flex", gap: 8 }}>
                   <input
                     type="text" inputMode="numeric" aria-label="Postleitzahl"
-                    placeholder="PLZ eingeben (z. B. 80331)"
+                    placeholder="PLZ (z. B. 80331)"
                     value={plz}
-                    onChange={e => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
+                    onChange={e => onPlzChange(e.target.value)}
                     style={{
-                      width: "100%", padding: "12px 14px", paddingRight: 52, fontSize: 15, fontFamily: v('--font-mono'),
-                      borderRadius: v('--radius-md'), border: `2px solid ${v('--color-border')}`,
+                      flex: 1, padding: "12px 14px", fontSize: 15, fontFamily: v('--font-mono'),
+                      borderRadius: v('--radius-md'), border: `2px solid ${plzConfirmed ? v('--color-positive') : v('--color-border')}`,
                       background: v('--color-bg-muted'), color: v('--color-text-primary'), outline: "none", textAlign: "center", letterSpacing: "0.08em",
                     }}
                   />
-                  {plzLoading ? (
-                    <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 12, color: v('--color-text-muted') }}>…</span>
-                  ) : plz.length === 5 && (
-                    <button type="submit" aria-label="Übernehmen" style={{
-                      position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", width: 34, height: 34, borderRadius: v('--radius-sm'),
-                      background: v('--color-accent'), color: v('--color-text-on-accent'), border: "none", cursor: "pointer",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                    }}><IconArrowRight size={16} /></button>
-                  )}
+                  <button type="submit" disabled={plz.length !== 5 || plzLoading || plzConfirmed} style={{
+                    padding: "0 18px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, whiteSpace: "nowrap",
+                    border: "none", cursor: plz.length === 5 && !plzConfirmed ? "pointer" : "default",
+                    background: plzConfirmed ? v('--color-positive') : plz.length === 5 ? v('--color-accent') : v('--color-bg-muted'),
+                    color: plzConfirmed || plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
+                  }}>
+                    {plzLoading ? "…" : plzConfirmed
+                      ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconCheck size={13} /> Übernommen</span>
+                      : "Übernehmen"}
+                  </button>
                 </form>
+                {plzConfirmed ? (
+                  <div style={{ fontSize: 12, color: v('--color-positive'), marginTop: 8, lineHeight: 1.5, fontWeight: 600 }}>
+                    Standort übernommen: {cdh.toLocaleString("de-DE")} Kühlgradstunden{cdhSource === "fallback" ? " (Durchschnitt)" : ""}.
+                    {heatwave && heatwave.hotDays > 0 && ` Aktuell bis ${heatwave.maxTemp} °C.`}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>
+                    Optional. Ohne PLZ rechnen wir mit einem deutschen Durchschnitt. Mit PLZ nutzen wir die echten
+                    Sommertemperaturen deines Orts.
+                  </div>
+                )}
+
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, marginTop: 22, textTransform: "uppercase", letterSpacing: "0.04em" }}>Hast du eine Solaranlage?</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                  {[{ on: true, label: "Ja, vorhanden oder geplant" }, { on: false, label: "Nein" }].map(opt => (
+                    <button key={String(opt.on)} onClick={() => setPvActive(opt.on)} style={{
+                      padding: "12px 8px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, cursor: "pointer", textAlign: "center",
+                      background: pvActive === opt.on ? v('--color-accent-dim') : v('--color-bg-muted'),
+                      border: pvActive === opt.on ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+                      color: pvActive === opt.on ? v('--color-accent') : v('--color-text-secondary'),
+                    }}>{opt.label}</button>
+                  ))}
+                </div>
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>
-                  Optional. Ohne PLZ rechnen wir mit einem deutschen Durchschnitt. Mit PLZ nutzen wir die echten
-                  Sommertemperaturen deines Orts.
+                  Kühlen passt fast perfekt zur Sonne — mit PV deckt sie den Großteil des Kühlstroms.
                 </div>
               </div>
             )}
@@ -256,7 +290,11 @@ export default function Klimaanlage() {
 
               {/* Editierbare Annahmen */}
               <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
-                <div>Gekühlte Fläche: <strong style={{ fontFamily: v('--font-mono') }}>{result.cooledArea} m²</strong> ({rooms} {rooms === 1 ? "Raum" : "Räume"})</div>
+                <div>
+                  Gekühlt: <InlineEdit value={rooms} onCommit={val => setRooms(Math.max(1, Math.min(10, Math.round(val))))} unit="" min={1} max={10} step={1} width={32} /> {rooms === 1 ? "Raum" : "Räume"}
+                  {" × "}<InlineEdit value={roomM2} onCommit={val => setRoomM2(Math.round(val))} unit=" m²" min={8} max={80} step={5} width={52} />
+                  {" = "}<strong style={{ fontFamily: v('--font-mono') }}>{result.cooledArea} m²</strong>
+                </div>
                 <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
                 <div>Kühlgradstunden: <strong style={{ fontFamily: v('--font-mono') }}>{cdh.toLocaleString("de-DE")}</strong>{" "}
                   <span style={{ fontSize: 11, color: v('--color-text-faint') }}>
@@ -266,32 +304,49 @@ export default function Klimaanlage() {
               </div>
             </div>
 
-            {/* Gerätevergleich — gleicher Bedarf, anderer Strom */}
+            {/* Gerätevergleich — getroffene Auswahl als Referenz, andere mit Differenz */}
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 12 }}>
-                Gerätevergleich · gleiche Kühlung
+                Deine Auswahl · gleiche Kühlung
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {comparison.map(r => {
-                  const active = r.device.id === deviceId;
+
+              {/* Referenz: getroffene Auswahl, voll dargestellt */}
+              <div style={{ padding: "12px 14px", borderRadius: v('--radius-sm'), background: v('--color-accent-dim'), border: `1.5px solid ${v('--color-accent')}`, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                <span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+                  <span style={{ width: 16, height: 16, borderRadius: 4, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", background: v('--color-accent'), color: v('--color-text-on-accent') }}><IconCheck size={11} /></span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-accent') }}>{result.device.label}</span>
+                </span>
+                <span style={{ display: "flex", gap: 12, flexShrink: 0, fontFamily: v('--font-mono'), fontSize: 13, alignItems: "baseline" }}>
+                  <span style={{ color: v('--color-text-muted'), fontSize: 11 }}>{result.electricityKwh} kWh</span>
+                  <span style={{ fontWeight: 800, color: v('--color-text-primary') }}>{result.runningCost} €/J</span>
+                </span>
+              </div>
+
+              {/* Andere Gerätetypen: kleiner, mit +/- gegenüber der Auswahl */}
+              <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-faint'), textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 6 }}>im Vergleich</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {comparison.filter(r => r.device.id !== deviceId).map(r => {
+                  const dCost = r.runningCost - result.runningCost;
+                  const dKwh = r.electricityKwh - result.electricityKwh;
+                  const worse = dCost > 0; // teurer im Betrieb = schlechter
+                  const deltaColor = dCost === 0 ? v('--color-text-muted') : worse ? v('--color-negative') : v('--color-positive');
                   return (
                     <button key={r.device.id} onClick={() => setDeviceId(r.device.id)} style={{
-                      textAlign: "left", padding: "10px 12px", borderRadius: v('--radius-sm'), cursor: "pointer",
-                      background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
-                      border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                      textAlign: "left", padding: "8px 12px", borderRadius: v('--radius-sm'), cursor: "pointer",
+                      background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
                       display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10,
                     }}>
-                      <span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                        <span style={{ width: 14, height: 14, borderRadius: 3, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border-muted')}`, color: v('--color-accent') }}>{active ? <IconCheck size={10} /> : ""}</span>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: active ? v('--color-accent') : v('--color-text-secondary'), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.device.label}</span>
-                      </span>
-                      <span style={{ display: "flex", gap: 12, flexShrink: 0, fontFamily: v('--font-mono'), fontSize: 12 }}>
-                        <span style={{ color: v('--color-text-muted') }}>{r.electricityKwh} kWh</span>
-                        <span style={{ fontWeight: 700, color: v('--color-text-primary'), width: 56, textAlign: "right" }}>{r.runningCost} €/J</span>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{r.device.label}</span>
+                      <span style={{ display: "flex", gap: 10, flexShrink: 0, fontFamily: v('--font-mono'), fontSize: 11, alignItems: "baseline" }}>
+                        <span style={{ color: v('--color-text-faint') }}>{dKwh > 0 ? "+" : ""}{dKwh} kWh</span>
+                        <span style={{ fontWeight: 700, color: deltaColor, width: 56, textAlign: "right" }}>{dCost > 0 ? "+" : ""}{dCost} €/J</span>
                       </span>
                     </button>
                   );
                 })}
+              </div>
+              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
+                Anderen Typ antippen, um ihn als Auswahl zu übernehmen.
               </div>
             </div>
 
@@ -301,29 +356,40 @@ export default function Klimaanlage() {
               <StatCard label="Kühlleistung" value={`~${result.capacityKw.toString().replace(".", ",")} kW`} help="Empfohlene Geräteleistung für die gekühlte Fläche (~85 W/m²)." />
             </div>
 
-            {/* PV-Deckung */}
+            {/* PV-Deckung — getroffene Auswahl aus dem Funnel, hier umschaltbar */}
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${pvActive ? v('--color-accent') : v('--color-border')}` }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                   <IconSun size={16} color={v('--color-accent')} />
-                  <span style={{ fontSize: 14, fontWeight: 700 }}>Hast du eine Solaranlage?</span>
+                  <span style={{ fontSize: 14, fontWeight: 700 }}>Solaranlage</span>
                 </span>
-                <button onClick={() => setPvActive(!pvActive)} style={{
-                  padding: "6px 14px", borderRadius: v('--radius-sm'), fontSize: 13, fontWeight: 700, cursor: "pointer",
-                  background: pvActive ? v('--color-accent') : v('--color-bg-muted'),
-                  border: pvActive ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                  color: pvActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
-                }}>{pvActive ? "Ja" : "Nein"}</button>
+                <span style={{ display: "inline-flex", gap: 3, background: v('--color-bg-muted'), borderRadius: v('--radius-sm'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
+                  {[{ on: true, label: "Ja" }, { on: false, label: "Nein" }].map(opt => (
+                    <button key={String(opt.on)} onClick={() => setPvActive(opt.on)} style={{
+                      padding: "4px 14px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none",
+                      background: pvActive === opt.on ? v('--color-accent') : "transparent",
+                      color: pvActive === opt.on ? v('--color-text-on-accent') : v('--color-text-muted'),
+                    }}>{opt.label}</button>
+                  ))}
+                </span>
               </div>
-              {pvActive && (
+              {pvActive ? (
                 <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
                   Die Sonne übernimmt rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> deines Kühlstroms —
                   Kühlen passt zeitlich fast perfekt zur PV-Erzeugung. Reststromkosten:{" "}
                   <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.netRunningCost.toLocaleString("de-DE")} €/Jahr</span>{" "}
                   statt {result.runningCost.toLocaleString("de-DE")} €.
                   <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4 }}>
-                    Tagsüber kühlen = hohe Deckung, nachts kaum. Hängt vom gewählten Zeitfenster ab.
+                    Tagsüber kühlen = hohe Deckung, nachts kaum. Hängt vom gewählten Zeitfenster ab.{" "}
+                    <Link href={pvRechnerHref} style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Im PV-Rechner mitrechnen</Link>
                   </div>
+                </div>
+              ) : (
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+                  Mit einer Solaranlage würde die Sonne rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(potentialCoverage * 100)} %</span> deines Kühlstroms übernehmen —
+                  Kühlen läuft, wenn die Sonne scheint. Statt {result.runningCost.toLocaleString("de-DE")} € nur noch{" "}
+                  <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{potentialNet.toLocaleString("de-DE")} €/Jahr</span>.{" "}
+                  <Link href="/photovoltaik-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Details im PV-Rechner</Link>
                 </div>
               )}
             </div>
