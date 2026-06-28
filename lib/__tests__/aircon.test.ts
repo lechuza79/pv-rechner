@@ -96,6 +96,16 @@ describe("calcAircon", () => {
     expect(r.netRunningCost).toBe(r.runningCost);
   });
 
+  it("solar exposure scales the cooling demand (sunny > normal > shaded)", () => {
+    const sunny = calcAircon({ ...base, exposure: "high" });
+    const normal = calcAircon({ ...base, exposure: "normal" });
+    const shaded = calcAircon({ ...base, exposure: "low" });
+    expect(sunny.electricityKwh).toBeGreaterThan(normal.electricityKwh);
+    expect(shaded.electricityKwh).toBeLessThan(normal.electricityKwh);
+    // Default (weggelassen) = normal
+    expect(calcAircon(base).electricityKwh).toBe(normal.electricityKwh);
+  });
+
   it("battery lifts coverage, most strongly for night cooling", () => {
     const nightBat = calcAircon({ ...base, window: "night", pvActive: true, battery: true });
     const nightNo = calcAircon({ ...base, window: "night", pvActive: true, battery: false });

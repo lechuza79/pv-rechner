@@ -50,6 +50,13 @@ export interface AcConfig {
   // Zeitfenster filtert die Stunden, in denen gekühlt wird.
   windowFactor: { allday: number; day: number; night: number };
 
+  // Sonnen-/Lage-Faktor auf den Kühlbedarf. Beim Kühlen dominieren die SOLAREN
+  // Gewinne (Fenster, Ausrichtung, Verschattung, Dachgeschoss) — Wärmedämmung ist
+  // dagegen ein schwacher, teils kontraproduktiver Hebel (UBA, gebaeudeforum.de).
+  // Deshalb fragen wir Sonne/Lage, NICHT den Dämmstandard.
+  exposureOptions: { id: string; label: string; sub: string; factor: number }[];
+  defaultExposure: string;
+
   // Geräte-Dimensionierung (Spitzen-Kühllast): ~80 W/m² gut gedämmt, ~120 W/m²
   // Dachgeschoss/Altbau (ADAC/Handwerker-Faustregel).
   sizingWPerM2: number;
@@ -132,6 +139,13 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
   targetFactor: { 22: 1.5, 24: 1.0, 26: 0.6 },
 
   windowFactor: { allday: 1.0, day: 0.75, night: 0.35 },
+
+  exposureOptions: [
+    { id: "high", label: "Sehr sonnig", sub: "Dachgeschoss oder große Fenster nach Süden/Westen, ohne Verschattung", factor: 1.5 },
+    { id: "normal", label: "Normal", sub: "Durchschnittliche Fenster und Lage", factor: 1.0 },
+    { id: "low", label: "Eher schattig", sub: "Nordseite, verschattet oder mit Rollläden/Außenjalousie", factor: 0.6 },
+  ],
+  defaultExposure: "normal",
 
   sizingWPerM2: 85,
 

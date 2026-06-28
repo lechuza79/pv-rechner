@@ -259,6 +259,14 @@ export default async function MethodikPage() {
           Kühlenergie.
         </p>
         <p style={S.p}>
+          <strong>Sonne statt Dämmung:</strong> Beim Kühlen kommt der größte Wärmeeintrag durch die Fenster — Sonne,
+          Ausrichtung, Verschattung, vor allem ein Dachgeschoss. Wärmedämmung ist dagegen ein schwacher, teils
+          kontraproduktiver Hebel (sie hält Wärme auch im Haus). Deshalb fragen wir nach der <em>Lage zur Sonne</em>,
+          nicht nach dem Dämmstandard, und skalieren den Bedarf damit (sehr sonnig ×1,5 bis schattig ×0,6). Eine
+          aufs Zimmer genaue Rechnung ersetzt das nicht — dafür bräuchte es Fenstergrößen, -richtung und Verschattung
+          aus einer Vollsimulation.
+        </p>
+        <p style={S.p}>
           Wie viel <strong>Strom</strong> das kostet, hängt am Gerätetyp: Ein Monoblock mit Abluftschlauch zieht
           für dieselbe Kühlung rund das Dreifache einer fest installierten Split-Anlage (Effizienz SEER ~2,5 vs.
           ~6).
