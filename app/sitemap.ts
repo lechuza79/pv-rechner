@@ -57,6 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/photovoltaik-rechner`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/pv-bedarf-berechnen`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/waermepumpe-rechner`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/klimaanlage-stromkosten`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/pv-simulation`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/strommix-deutschland`, lastModified: now, changeFrequency: "daily", priority: 0.8 },

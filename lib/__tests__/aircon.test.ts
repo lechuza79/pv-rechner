@@ -1,0 +1,120 @@
+import { describe, it, expect } from "vitest";
+import {
+  effectiveCdh, sizingKw, acquisitionCost, calcAircon, compareDevices, fallbackCdh,
+  type AcInputs,
+} from "../aircon";
+import { DEFAULT_AIRCON_CONFIG as CFG } from "../aircon-config";
+
+const base: AcInputs = {
+  deviceId: "split",
+  rooms: 1,
+  roomM2: 20,
+  targetTemp: 24,
+  window: "day",
+  cdh: CFG.cdhNational,   // 1200
+  stromPrice: 0.34,
+  pvActive: false,
+};
+
+describe("effectiveCdh", () => {
+  it("applies target + window factors", () => {
+    expect(effectiveCdh(1200, 24, "allday")).toBe(1200 * 1.0 * 1.0);
+    expect(effectiveCdh(1200, 24, "day")).toBe(1200 * 1.0 * 0.75);
+    expect(effectiveCdh(1200, 26, "night")).toBe(1200 * 0.6 * 0.35);
+  });
+
+  it("cooling to a lower temperature means more degree-hours", () => {
+    expect(effectiveCdh(1200, 22, "allday")).toBeGreaterThan(effectiveCdh(1200, 26, "allday"));
+  });
+
+  it("interpolates target temperatures outside the preset table", () => {
+    const v = effectiveCdh(1200, 23, "allday"); // not in {22,24,26}
+    expect(v).toBeGreaterThan(effectiveCdh(1200, 24, "allday"));
+    expect(v).toBeLessThan(effectiveCdh(1200, 22, "allday"));
+  });
+});
+
+describe("sizingKw", () => {
+  it("scales cooling capacity with area (~85 W/m²)", () => {
+    expect(sizingKw(20)).toBeCloseTo(1.7, 1);
+    expect(sizingKw(40)).toBeCloseTo(3.4, 1);
+  });
+});
+
+describe("acquisitionCost", () => {
+  const mono = CFG.devices.find(d => d.id === "monoblock")!;
+  const porta = CFG.devices.find(d => d.id === "portasplit")!;
+  const split = CFG.devices.find(d => d.id === "split")!;
+
+  it("scales per-room devices by the room counter", () => {
+    expect(acquisitionCost(mono, 1, 20)).toBe(400);
+    expect(acquisitionCost(mono, 3, 60)).toBe(1200);
+    expect(acquisitionCost(porta, 2, 40)).toBe(1600);
+  });
+
+  it("prices the fixed split as base + €/kW (like €/kWp)", () => {
+    // 20 m² → 1.7 kW → 1200 + 600×1.7 = 2220 → gerundet 2200
+    expect(acquisitionCost(split, 1, 20)).toBe(2200);
+    // bigger area → higher price
+    expect(acquisitionCost(split, 2, 60)).toBeGreaterThan(acquisitionCost(split, 1, 20));
+  });
+});
+
+describe("calcAircon", () => {
+  it("split reference case lands in the published consumption band (~100 kWh)", () => {
+    const r = calcAircon(base);
+    expect(r.electricityKwh).toBeGreaterThan(70);
+    expect(r.electricityKwh).toBeLessThan(140);
+  });
+
+  it("monoblock uses 2–3× the electricity of a split for the same demand", () => {
+    const split = calcAircon({ ...base, deviceId: "split" });
+    const mono = calcAircon({ ...base, deviceId: "monoblock" });
+    expect(mono.coolingDemandKwh).toBe(split.coolingDemandKwh); // same demand
+    expect(mono.electricityKwh).toBeGreaterThan(split.electricityKwh * 2);
+    expect(mono.electricityKwh).toBeLessThan(split.electricityKwh * 3);
+  });
+
+  it("more rooms → more demand, electricity and cost", () => {
+    const one = calcAircon(base);
+    const three = calcAircon({ ...base, rooms: 3 });
+    expect(three.electricityKwh).toBeGreaterThan(one.electricityKwh);
+    expect(three.runningCost).toBeGreaterThan(one.runningCost);
+  });
+
+  it("PV covers more of daytime cooling than night cooling", () => {
+    const day = calcAircon({ ...base, window: "day", pvActive: true });
+    const night = calcAircon({ ...base, window: "night", pvActive: true });
+    expect(day.pvCoverage).toBeGreaterThan(night.pvCoverage);
+    expect(day.netRunningCost).toBeLessThan(day.runningCost);
+  });
+
+  it("no PV → no coverage, net equals running cost", () => {
+    const r = calcAircon({ ...base, pvActive: false });
+    expect(r.pvCoverage).toBe(0);
+    expect(r.netRunningCost).toBe(r.runningCost);
+  });
+
+  it("derives CO₂ from electricity and the grid factor", () => {
+    const r = calcAircon(base);
+    expect(r.co2Kg).toBe(Math.round(r.electricityKwh * CFG.gridCo2PerKwh));
+  });
+});
+
+describe("compareDevices", () => {
+  it("returns all three device types, split most efficient", () => {
+    const cmp = compareDevices({ rooms: 1, roomM2: 20, targetTemp: 24, window: "day", cdh: 1200, stromPrice: 0.34, pvActive: false });
+    expect(cmp).toHaveLength(3);
+    const split = cmp.find(r => r.device.id === "split")!;
+    const mono = cmp.find(r => r.device.id === "monoblock")!;
+    expect(split.electricityKwh).toBeLessThan(mono.electricityKwh);
+  });
+});
+
+describe("fallbackCdh", () => {
+  it("uses the Bundesland value when known, else the national average", () => {
+    expect(fallbackCdh("BY")).toBe(CFG.cdhByBundesland.BY);
+    expect(fallbackCdh(null)).toBe(CFG.cdhNational);
+    expect(fallbackCdh("XX")).toBe(CFG.cdhNational);
+  });
+});

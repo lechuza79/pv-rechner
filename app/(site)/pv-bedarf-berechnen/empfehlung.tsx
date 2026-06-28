@@ -73,6 +73,7 @@ export default function Empfehlung() {
   const wp         = parseStrParam(searchParams, "wp", "nein", ["nein", "geplant", "ja"]);
   const ea         = parseStrParam(searchParams, "ea", "nein", ["nein", "geplant", "ja"]);
   const eaKm       = parseRangedInt(searchParams, "km", 15000, 1000, 50000);
+  const klima      = parseStrParam(searchParams, "kl", "nein", ["nein", "geplant", "ja"]);
   const plz        = parsePlzParam(searchParams);
   const ertragKwp  = parseOptionalIntParam(searchParams, "ertrag", 700, 1400);
   const isRecommendation = searchParams.get("view") === "ergebnis";
@@ -147,6 +148,7 @@ export default function Empfehlung() {
   const setNutzung     = (v: number) => updateUrl({ nutzung: slugOrNull(v, NUTZUNG_SLUGS, NUTZ_DEFAULT) });
   const setWp          = (v: string) => updateUrl({ wp: v === "nein" ? null : v });
   const setEa          = (v: string) => updateUrl({ ea: v === "nein" ? null : v, km: v === "nein" ? null : eaKm });
+  const setKlima       = (v: string) => updateUrl({ kl: v === "nein" ? null : v });
   const setEaKm        = (v: number) => updateUrl({ km: v });
   const setPlz         = (v: string) => updateUrl({ plz: v || null, ertrag: v ? ertragKwp : null });
 
@@ -200,7 +202,7 @@ export default function Empfehlung() {
 
   // Empfehlung berechnen (mit PLZ-spezifischem Ertrag und ggf. eigener Dachfläche)
   const rec = isRecommendation ? recommend({
-    personen, nutzung, wp, ea, eaKm,
+    personen, nutzung, wp, ea, eaKm, klima,
     haustyp, dachart, budgetLimit: null,
     ertragKwp: ertragKwp ?? undefined,
     customRoofM2: customRoofM2 ?? undefined,
@@ -227,6 +229,7 @@ export default function Empfehlung() {
     p.set("wp", wp);
     p.set("ea", ea);
     if (ea !== "nein") p.set("km", String(eaKm));
+    if (klima !== "nein") p.set("kl", klima);
     p.set("flow", "emp");
     p.set("ht", String(haustyp));
     p.set("da", String(dachart));
@@ -403,6 +406,11 @@ export default function Empfehlung() {
                     Ein E-Auto erhöht deinen Verbrauch um ~2.700 kWh/Jahr (bei 15.000 km) — gut für die PV-Rentabilität.
                   </div>
                 )}
+                <TriToggle label="❄️ Klimaanlage" options={TRI} value={klima} onChange={setKlima} />
+                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 8, lineHeight: 1.5, paddingLeft: 2 }}>
+                  Eine Klimaanlage kühlt im Sommer — genau dann, wenn die Sonne scheint. Sie hebt den Eigenverbrauch
+                  besonders stark. Eigener <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Klimaanlagen-Rechner</Link> für die Stromkosten.
+                </div>
               </div>
             )}
 
@@ -523,6 +531,12 @@ export default function Empfehlung() {
                     <div>
                       <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>+ E-Auto</div>
                       <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.eaConsumption.toLocaleString("de-DE")} kWh</div>
+                    </div>
+                  )}
+                  {rec.reasoning.klimaConsumption > 0 && (
+                    <div>
+                      <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>+ Klimaanlage</div>
+                      <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.klimaConsumption.toLocaleString("de-DE")} kWh</div>
                     </div>
                   )}
                   <div>

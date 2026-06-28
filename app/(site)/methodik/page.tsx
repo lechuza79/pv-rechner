@@ -243,6 +243,34 @@ export default async function MethodikPage() {
           Nutzen bringt, als die reine Verbrauchsmenge vermuten lässt.
         </p>
 
+        {/* ── Klimaanlagen-Rechner ── */}
+        <h2 style={S.h2}>Klimaanlagen-Rechner: Kühlkosten</h2>
+        <p style={S.p}>
+          Der eigene <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Klimaanlagen-Rechner</Link> beantwortet
+          nicht „lohnt sich das" (eine Klimaanlage spart kein Geld, sie kostet welches), sondern: Was kostet sie
+          im Betrieb — und wie viel davon übernimmt die Sonne?
+        </p>
+        <p style={S.p}>
+          Den Kühlbedarf leiten wir aus echten <strong>Kühlgradstunden</strong> ab: Wir zählen für deinen Standort,
+          wie viele Stunden es im Sommer wie weit über der Kühlschwelle lag (Open-Meteo-Wetterhistorie, ohne PLZ
+          ein deutscher Durchschnitt). Wunschtemperatur und Zeitfenster (ganzer Tag / nur tagsüber / nur nachts)
+          skalieren diesen Wert. Mal Fläche und einem gebäudetypischen Kühl-Kennwert ergibt sich die jährliche
+          Kühlenergie.
+        </p>
+        <p style={S.p}>
+          Wie viel <strong>Strom</strong> das kostet, hängt am Gerätetyp: Ein Monoblock mit Abluftschlauch zieht
+          für dieselbe Kühlung rund das Dreifache einer fest installierten Split-Anlage (Effizienz SEER ~2,5 vs.
+          ~6). Den akuten Hitzewellen-Blick liefert die 16-Tage-Vorhersage. Eine verlässliche saisonale
+          Hitzewellen-Prognose gibt es nicht — der Jahreswert beruht daher auf der Klimatologie, nicht auf einer
+          Vorhersage. Alle Werte stehen auf der{" "}
+          <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Datenstand-Seite</Link>.
+        </p>
+        <p style={S.p}>
+          <strong>PV passt besonders gut zum Kühlen:</strong> Der Bedarf ist am höchsten, wenn die Sonne am
+          stärksten scheint. Wer tagsüber kühlt, deckt den Großteil direkt vom eigenen Dach; nachts hilft die
+          Anlage kaum. Deshalb hängt die PV-Deckung am gewählten Zeitfenster.
+        </p>
+
         {/* ── Gas/Öl-Vergleich ── */}
         <h2 style={S.h2}>Vergleich: Gas- & Ölheizung</h2>
         <p style={S.p}>

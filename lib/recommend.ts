@@ -1,6 +1,6 @@
 import { PERSONEN, HAUSTYPEN, DACHARTEN, SPEICHER } from "./constants";
 import { calcEigenverbrauch, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
-import { WP_ANNUAL_KWH, calcEaAnnual } from "./consumption";
+import { WP_ANNUAL_KWH, calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2 } from "./consumption";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "./feedin-config";
 
@@ -23,6 +23,8 @@ export interface RecommendInput {
   wp: string;              // "nein" | "geplant" | "ja"
   ea: string;              // "nein" | "geplant" | "ja"
   eaKm: number;
+  klima?: string;          // "nein" | "geplant" | "ja" (Kühlung, nur Sommer)
+  klimaM2?: number;        // gekühlte Wohnfläche (Default KLIMA_DEFAULT_M2)
   haustyp: number;         // Index in HAUSTYPEN
   dachart: number;         // Index in DACHARTEN
   budgetLimit: number | null;
@@ -35,6 +37,7 @@ export interface RecommendReasoning {
   baseConsumption: number;
   wpConsumption: number;
   eaConsumption: number;
+  klimaConsumption: number;
   maxRoofKwp: number;
   nutzbarM2: number;
   eigenverbrauch: number;
@@ -101,7 +104,10 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
   const baseConsumption = PERSONEN[input.personen].verbrauch;
   const wpConsumption = input.wp !== "nein" ? WP_ANNUAL_KWH : 0;
   const eaConsumption = input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0;
-  const totalConsumption = baseConsumption + wpConsumption + eaConsumption;
+  const klima = input.klima ?? "nein";
+  const klimaM2 = input.klimaM2 ?? KLIMA_DEFAULT_M2;
+  const klimaConsumption = klima !== "nein" ? calcKlimaAnnual(klimaM2) : 0;
+  const totalConsumption = baseConsumption + wpConsumption + eaConsumption + klimaConsumption;
   const dailyConsumption = totalConsumption / DAYS_PER_YEAR;
 
   // 2. Dachfläche → max. kWp (customRoofM2 hat Vorrang vor haustyp × dachart)
@@ -129,7 +135,7 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
     for (const speicherKwh of speicherTestOptions) {
       const ev = calcEigenverbrauch({
         personenIdx: input.personen, nutzungIdx: input.nutzung,
-        speicherKwh, wp: input.wp, ea: input.ea, eaKm: input.eaKm,
+        speicherKwh, wp: input.wp, ea: input.ea, eaKm: input.eaKm, klima, klimaM2,
         kwp: kwpRounded, ertragKwp,
       });
       const investition = estimateCost(kwpRounded, speicherKwh, p);
@@ -278,6 +284,7 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
       baseConsumption,
       wpConsumption,
       eaConsumption,
+      klimaConsumption,
       maxRoofKwp,
       nutzbarM2,
       eigenverbrauch: best.ev,
