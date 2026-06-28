@@ -22,6 +22,15 @@ const WINDOWS: { id: CoolingWindow; label: string; sub: string }[] = [
 
 const TARGET_LABELS: Record<number, string> = { 22: "Kühl", 24: "Angenehm", 26: "Sparsam" };
 
+// Fensterabhängiger Text zur PV-Deckung. Die Deckung ist DIREKTnutzung (ohne
+// Speicher): tagsüber hoch, nachts niedrig (dann scheint keine Sonne). Der Text
+// darf also nicht pauschal „passt perfekt" behaupten.
+const COVERAGE_COPY: Record<CoolingWindow, string> = {
+  day: "Tagsüber kühlst du, wenn die Sonne scheint — sie deckt den Großteil direkt vom Dach.",
+  allday: "Am Tag kommt der Kühlstrom direkt vom Dach, abends und nachts aus dem Netz.",
+  night: "Nachts scheint keine Sonne — ohne Batteriespeicher kommt nur ein kleiner Teil direkt vom Dach.",
+};
+
 type HeatwaveInfo = { maxTemp: number; hotDays: number; active: boolean } | null;
 
 // Drei Standort-Modi für die Kühlgradstunden (im Ergebnis umschaltbar).
@@ -413,20 +422,21 @@ export default function Klimaanlage() {
               </div>
               {pvActive ? (
                 <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
-                  Die Sonne übernimmt rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> deines Kühlstroms —
-                  Kühlen passt zeitlich fast perfekt zur PV-Erzeugung. Reststromkosten:{" "}
+                  Die Sonne übernimmt rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> deines Kühlstroms.{" "}
+                  {COVERAGE_COPY[window_]} Reststromkosten:{" "}
                   <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.netRunningCost.toLocaleString("de-DE")} €/Jahr</span>{" "}
                   statt {result.runningCost.toLocaleString("de-DE")} €.
                   <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4 }}>
-                    Tagsüber kühlen = hohe Deckung, nachts kaum. Hängt vom gewählten Zeitfenster ab.{" "}
+                    Wert ohne Speicher (Direktnutzung) — ein Batteriespeicher verschiebt Tagstrom in den Abend und die Nacht und hebt die Deckung deutlich.{" "}
                     <Link href={pvRechnerHref} style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Im PV-Rechner mitrechnen</Link>
                   </div>
                 </div>
               ) : (
                 <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
-                  Mit einer Solaranlage würde die Sonne rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(potentialCoverage * 100)} %</span> deines Kühlstroms übernehmen —
-                  Kühlen läuft, wenn die Sonne scheint. Statt {result.runningCost.toLocaleString("de-DE")} € nur noch{" "}
+                  Mit einer Solaranlage würde die Sonne rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(potentialCoverage * 100)} %</span> deines Kühlstroms direkt übernehmen.{" "}
+                  {COVERAGE_COPY[window_]} Statt {result.runningCost.toLocaleString("de-DE")} € nur noch{" "}
                   <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{potentialNet.toLocaleString("de-DE")} €/Jahr</span>.{" "}
+                  <span style={{ color: v('--color-text-faint') }}>Ohne Speicher; ein Akku hebt vor allem die Nacht-Deckung.</span>{" "}
                   <Link href="/photovoltaik-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Details im PV-Rechner</Link>
                 </div>
               )}
