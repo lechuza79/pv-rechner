@@ -260,9 +260,17 @@ export default async function MethodikPage() {
         <p style={S.p}>
           Wie viel <strong>Strom</strong> das kostet, hängt am Gerätetyp: Ein Monoblock mit Abluftschlauch zieht
           für dieselbe Kühlung rund das Dreifache einer fest installierten Split-Anlage (Effizienz SEER ~2,5 vs.
-          ~6). Den akuten Hitzewellen-Blick liefert die 16-Tage-Vorhersage. Eine verlässliche saisonale
-          Hitzewellen-Prognose gibt es nicht — der Jahreswert beruht daher auf der Klimatologie, nicht auf einer
-          Vorhersage. Alle Werte stehen auf der{" "}
+          ~6).
+        </p>
+        <p style={S.p}>
+          Für den Standort kannst du zwischen drei <strong>Klimadaten-Modi</strong> umschalten: dem{" "}
+          <strong>Durchschnitt der letzten 5 Sommer</strong> (der ausgewogene Standardwert), dem{" "}
+          <strong>letzten Sommer</strong> (oft heißer als der Schnitt) und einer <strong>Projektion in ~20 Jahre</strong>.
+          Die Projektion nutzt ein heruntergerechnetes Klimamodell (CMIP6, Open-Meteo Climate API) für deinen Ort —
+          eine Modellrechnung, kein exakter Wert, aber sie zeigt die Richtung: Die Zahl der heißen Tage in Deutschland
+          hat sich laut DWD seit den 1950ern bereits verdreifacht. Den akuten Blick auf die nächsten Tage liefert
+          zusätzlich die 16-Tage-Vorhersage. Eine verlässliche saisonale Hitzewellen-Prognose gibt es dagegen nicht.
+          Alle Werte stehen auf der{" "}
           <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Datenstand-Seite</Link>.
         </p>
         <p style={S.p}>

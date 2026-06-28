@@ -91,3 +91,35 @@ export function fallbackCdh(bundesland: string | null, cfg: AcConfig = DEFAULT_A
   if (bundesland && cfg.cdhByBundesland[bundesland]) return cfg.cdhByBundesland[bundesland];
   return cfg.cdhNational;
 }
+
+// ─── Kühlgradstunden-Berechnung ─────────────────────────────────────────────
+// Σ max(0, T_außen − Schwelle) über alle Stunden. Maß dafür, wie oft und wie
+// weit es über der „ab hier wird gekühlt"-Temperatur lag.
+
+/** Kühlgradstunden aus einer echten Stundenreihe (Wetterarchiv). Roh (ungerundet);
+ *  der Aufrufer rundet, damit Mittelwerte über mehrere Jahre nicht durch
+ *  Zwischenrundung driften. */
+export function cdhFromHourly(temps: number[], base: number): number {
+  let sum = 0;
+  for (const t of temps) if (typeof t === "number" && t > base) sum += t - base;
+  return sum;
+}
+
+/** Kühlgradstunden aus Tages-Min/Max via synthetischem Tagesgang (Sinus, Maximum
+ *  ~15 Uhr, Minimum ~3 Uhr). Für Klimamodell-Daten, die nur Tageswerte liefern —
+ *  derselbe Stunden-Maßstab wie cdhFromHourly, damit die Modi vergleichbar bleiben. */
+export function cdhFromDailyMinMax(tmax: number[], tmin: number[], base: number): number {
+  let sum = 0;
+  const n = Math.min(tmax.length, tmin.length);
+  for (let d = 0; d < n; d++) {
+    const hi = tmax[d], lo = tmin[d];
+    if (typeof hi !== "number" || typeof lo !== "number") continue;
+    const mean = (hi + lo) / 2;
+    const amp = (hi - lo) / 2;
+    for (let h = 0; h < 24; h++) {
+      const t = mean + amp * Math.cos((2 * Math.PI * (h - 15)) / 24);
+      if (t > base) sum += t - base;
+    }
+  }
+  return sum;
+}
