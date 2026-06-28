@@ -44,9 +44,15 @@ type HeatwaveInfo = { maxTemp: number; hotDays: number; active: boolean } | null
 type CdhMode = "avg5" | "lastSummer" | "projection";
 type CdhModes = { avg5: number; lastSummer: number; projection: number };
 // Projektionsjahr zur Render-Zeit (rollover-sicher, kein hardcoded Jahr).
-const PROJ_YEAR = new Date().getFullYear() + Math.round(
-  (CFG.projectionYearsAhead.start + CFG.projectionYearsAhead.end) / 2,
-);
+// Gegen 2050 geclamped — identisch zum Climate-API-Fenster in /api/cooling-degree,
+// damit Label und tatsächliche Projektionsdaten nicht auseinanderlaufen.
+const CLIMATE_MAX_YEAR = 2050;
+const PROJ_YEAR = (() => {
+  const y = new Date().getFullYear();
+  const s = Math.min(CLIMATE_MAX_YEAR, y + CFG.projectionYearsAhead.start);
+  const e = Math.min(CLIMATE_MAX_YEAR, y + CFG.projectionYearsAhead.end);
+  return Math.round((s + e) / 2);
+})();
 
 
 export default function Klimaanlage() {

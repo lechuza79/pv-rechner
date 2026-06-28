@@ -7,6 +7,7 @@ import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 import { co2PriceForCalendarYear } from "../../../lib/co2-config";
+import { DEFAULT_AIRCON_CONFIG } from "../../../lib/aircon-config";
 import { pageMetadata } from "../../../lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -264,7 +265,7 @@ export default async function MethodikPage() {
         </p>
         <p style={S.p}>
           Für den Standort kannst du zwischen drei <strong>Klimadaten-Modi</strong> umschalten: dem{" "}
-          <strong>Durchschnitt der letzten 5 Sommer</strong> (der ausgewogene Standardwert), dem{" "}
+          <strong>Durchschnitt der letzten {DEFAULT_AIRCON_CONFIG.avgYears} Sommer</strong> (der ausgewogene Standardwert), dem{" "}
           <strong>letzten Sommer</strong> (oft heißer als der Schnitt) und einer <strong>Projektion in ~20 Jahre</strong>.
           Die Projektion nutzt ein heruntergerechnetes Klimamodell (CMIP6, Open-Meteo Climate API) für deinen Ort —
           eine Modellrechnung, kein exakter Wert, aber sie zeigt die Richtung: Die Zahl der heißen Tage in Deutschland
