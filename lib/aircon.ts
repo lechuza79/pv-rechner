@@ -43,6 +43,29 @@ export function effectiveCdh(cdh: number, targetTemp: number, window: CoolingWin
   return cdh * tf * wf;
 }
 
+// ─── Schnell-Schätzung aus der Wohnfläche (Single Source of Truth) ──────────
+// Kontexte ohne Detaileingaben (PV-Rechner, Live-Simulation, Empfehlung) brauchen
+// den Kühlstrom aus EINER Zahl — der Wohnfläche. Statt einer zweiten, frei
+// driftenden Formel kollabieren wir HIER dasselbe Wettermodell auf typische
+// Annahmen: nur ein Teil der Wohnfläche wird gekühlt, mittlerer Gerätemix,
+// ganztags, 24 °C, deutscher Durchschnitt. So gibt es nur ein Kühlmodell;
+// der „~3 kWh/m²"-Kennwert ist dessen abgeleitete Kurzform, kein Konkurrent.
+export const AC_SIMPLE = {
+  cooledFraction: 0.38,         // gekühlter Anteil der Wohnfläche (Wohn-/Schlafräume)
+  seer: 5,                      // typischer Gerätemix (zwischen mobile + fest installiert)
+  window: "allday" as CoolingWindow,
+  targetTemp: 24,
+};
+
+/** Kühlstrom/Jahr aus der Wohnfläche — das Wettermodell auf typische Annahmen
+ *  kollabiert. cdh default = deutscher Durchschnitt (standortunabhängige Schätzung). */
+export function estimateAcKwhFromLivingArea(livingAreaM2: number, cdh: number = DEFAULT_AIRCON_CONFIG.cdhNational, cfg: AcConfig = DEFAULT_AIRCON_CONFIG): number {
+  const cooledArea = livingAreaM2 * AC_SIMPLE.cooledFraction;
+  const cdhEff = effectiveCdh(cdh, AC_SIMPLE.targetTemp, AC_SIMPLE.window, cfg);
+  const coolingDemandKwh = (cfg.buildingGain * cooledArea * cdhEff) / 1000;
+  return Math.round(coolingDemandKwh / AC_SIMPLE.seer);
+}
+
 /** Kühlleistung (kW) für die Dimensionierung — Spitzenlast aus Fläche. */
 export function sizingKw(cooledArea: number, cfg: AcConfig = DEFAULT_AIRCON_CONFIG): number {
   return Math.round((cooledArea * cfg.sizingWPerM2) / 100) / 10; // 1 Nachkommastelle

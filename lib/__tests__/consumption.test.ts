@@ -3,7 +3,6 @@ import {
   WP_ANNUAL_KWH,
   EA_KWH_PER_KM,
   KLIMA_KWH_PER_M2,
-  KLIMA_DEFAULT_M2,
   calcWpAnnual,
   calcEaAnnual,
   calcKlimaAnnual,
@@ -12,6 +11,7 @@ import {
   calcHourlyConsumption,
   type HouseholdProfile,
 } from "../consumption";
+import { estimateAcKwhFromLivingArea } from "../aircon";
 
 // ─── Annual calculations ────────────────────────────────────────────────────
 describe("calcWpAnnual", () => {
@@ -71,16 +71,31 @@ describe("calcExtraConsumption", () => {
       WP_ANNUAL_KWH + calcEaAnnual(15000) + calcKlimaAnnual(120),
     );
   });
+
+  it("uses the kWh override (Klimaanlagen-Rechner handoff) over the area estimate", () => {
+    // klimaKwhOverride hat Vorrang vor calcKlimaAnnual(klimaM2)
+    expect(calcExtraConsumption("nein", "nein", 15000, "ja", 120, 250)).toBe(250);
+    // ignoriert, wenn Klima aus
+    expect(calcExtraConsumption("nein", "nein", 15000, "nein", 120, 250)).toBe(0);
+  });
 });
 
 describe("calcKlimaAnnual", () => {
-  it("multiplies living area by the per-m² cooling factor", () => {
-    expect(calcKlimaAnnual(120)).toBe(Math.round(120 * KLIMA_KWH_PER_M2));
-    expect(calcKlimaAnnual(KLIMA_DEFAULT_M2)).toBe(KLIMA_DEFAULT_M2 * KLIMA_KWH_PER_M2);
+  it("delegates to the shared weather model (single source of truth)", () => {
+    // Identisch zur direkten Schätzung aus lib/aircon.ts — keine zweite Formel.
+    expect(calcKlimaAnnual(120)).toBe(estimateAcKwhFromLivingArea(120));
   });
 
-  it("scales linearly and stays integer", () => {
-    expect(calcKlimaAnnual(160)).toBe(2 * calcKlimaAnnual(80));
+  it("stays close to the established ~3 kWh/m² rate (calibration guard)", () => {
+    // Schützt die Kalibrierung: ändert jemand buildingGain/SEER im Wettermodell,
+    // schlägt das hier an, statt still vom PV-Rechner wegzudriften.
+    expect(KLIMA_KWH_PER_M2).toBeCloseTo(3, 1);
+    expect(calcKlimaAnnual(120)).toBeGreaterThan(120 * 2.8);
+    expect(calcKlimaAnnual(120)).toBeLessThan(120 * 3.2);
+  });
+
+  it("scales ~linearly and stays integer", () => {
+    expect(calcKlimaAnnual(160)).toBeCloseTo(2 * calcKlimaAnnual(80), -1);
     expect(Number.isInteger(calcKlimaAnnual(123))).toBe(true);
   });
 });

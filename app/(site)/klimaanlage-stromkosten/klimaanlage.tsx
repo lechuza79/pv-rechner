@@ -126,8 +126,10 @@ export default function Klimaanlage() {
 
   const bl = bundeslandFromPlz(plz);
   const cooledArea = result.cooledArea;
-  // PV-Rechner übernimmt die Klimaanlage als Verbraucher (Fläche = gekühlte Fläche)
-  const pvRechnerHref = `/photovoltaik-rechner?kl=ja&km2=${cooledArea}${plz ? `&plz=${plz}` : ""}`;
+  // PV-Rechner übernimmt die Klimaanlage als Verbraucher. Den hier berechneten
+  // Kühlstrom direkt mitgeben (klwh) — so zeigt der PV-Rechner dieselbe kWh-Zahl,
+  // statt sie aus seiner gröberen Flächen-Schätzung neu zu berechnen.
+  const pvRechnerHref = `/photovoltaik-rechner?kl=ja&klwh=${result.electricityKwh}&km2=${cooledArea}${plz ? `&plz=${plz}` : ""}`;
   // Teaser ohne PV: welche Deckung/Restkosten eine Solaranlage (mit Speicher,
   // dem Default) brächte — fenster-abhängig.
   const potentialCoverage = CFG.pvCoverage.battery[window_];
