@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../components/Header";
-import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser } from "../../components/Icons";
+import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser, IconSnowflake } from "../../components/Icons";
 import { MastrHeroSection } from "../../components/MastrHeroSection";
 import { v } from "../../lib/theme";
 import { pageMetadata, energyOgImage } from "../../lib/seo";
@@ -44,6 +44,13 @@ const tools = [
     cta: "Prognose starten",
   },
   {
+    href: "/klimaanlage-stromkosten",
+    icon: IconSnowflake,
+    title: "Klimaanlage rechnen",
+    description: "Was kostet eine Klimaanlage im Betrieb? Stromverbrauch, Kosten und CO₂ aus echten Wetterdaten — und wie viel deine Solaranlage davon übernimmt.",
+    cta: "Kosten berechnen",
+  },
+  {
     href: "/strommix-deutschland",
     icon: IconSparkle,
     title: "Energiedaten Deutschland",
@@ -63,7 +70,7 @@ export default function Home() {
         {/* Hero Text */}
         <div style={{ textAlign: "center", marginBottom: 20, paddingTop: 10 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
-          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Fünf Tools. Ohne Anmeldung, ohne Leadfunnel.</p>
+          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Sechs Tools. Ohne Anmeldung, ohne Leadfunnel.</p>
         </div>
       </div>
 

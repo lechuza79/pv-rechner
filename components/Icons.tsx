@@ -12,6 +12,14 @@ export function IconLock({ size = 16, color = "currentColor", style }: IconProps
   );
 }
 
+export function IconSnowflake({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M8 1.333v13.334M2.227 4.667l11.546 6.666M2.227 11.333l11.546-6.666M8 1.333 6.333 3M8 1.333 9.667 3M2.227 4.667l.61 2.276M2.227 4.667l2.276-.61M13.773 11.333l-2.276.61M13.773 11.333l-.61-2.276M2.227 11.333l2.276.61M2.227 11.333l-.61-2.276M13.773 4.667l-2.276-.61M13.773 4.667l.61 2.276M8 14.667 6.333 13M8 14.667 9.667 13" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function IconLink({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>

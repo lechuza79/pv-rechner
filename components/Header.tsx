@@ -26,6 +26,7 @@ interface NavItem {
 const RECHNER_ITEMS: NavItem[] = [
   { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Lohnt sich meine PV-Anlage?", page: "rechner" },
   { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Heizkosten und Förderung vergleichen", page: "waermepumpe" },
+  { href: "/klimaanlage-stromkosten", label: "Klimaanlagen-Rechner", desc: "Kühlkosten, Gerätevergleich, PV-Deckung", page: "klima" },
   { href: "/pv-bedarf-berechnen", label: "PV-Bedarf berechnen", desc: "Welche Anlage passt zu mir?", page: "empfehlung" },
   { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge in Echtzeit", page: "simulation" },
 ];
@@ -48,6 +49,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/energie-widgets") ? "widgets" :
     pathname.startsWith("/photovoltaik-rechner") ? "rechner" :
     pathname.startsWith("/waermepumpe-rechner") ? "waermepumpe" :
+    pathname.startsWith("/klimaanlage-stromkosten") ? "klima" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
     pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""

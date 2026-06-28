@@ -7,6 +7,7 @@ import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
+import { DEFAULT_AIRCON_CONFIG as AC } from "../../../lib/aircon-config";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS } from "../../../lib/constants";
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
@@ -291,6 +292,23 @@ export default async function DatenstandPage() {
             { label: "Gas-Referenz", value: `${nf(HP.gasPriceCtPerKwh)} ct/kWh, ${nf(HP.gasCo2PerKwh * 1000)} g CO₂/kWh` },
           ]}
           source={HP.source}
+        />
+
+        {/* ── Klimaanlagen-Rechner ── */}
+        <Section
+          title="Klimaanlage (Kühlkosten-Rechner)"
+          stand={monthYear(AC.validFrom)}
+          intro="Annahmen des Klimaanlagen-Rechners: Geräte-Effizienz, Preise, Klima- und Hitzedaten. Nur Kühlung — Heizen läuft über den Wärmepumpen-Rechner. Strompreis und Kühlgradstunden im Ergebnis editierbar."
+          rows={[
+            { label: "Effizienz (SEER): Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
+            { label: "Anschaffung Monoblock / mobile Split", value: `~${nf(AC.devices[0].pricePerUnit!)} € / ~${nf(AC.devices[1].pricePerUnit!)} € je Gerät·Raum` },
+            { label: "Anschaffung fest installierte Split", value: `${nf(AC.devices[2].priceBase!)} € + ${nf(AC.devices[2].pricePerKw!)} €/kW inkl. Montage` },
+            { label: "Kühlgradstunden Ø Deutschland", value: `${nf(AC.cdhNational)} K·h/a (Schwelle 22 °C)` },
+            { label: "Dimensionierung", value: `${nf(AC.sizingWPerM2)} W/m² Kühlleistung` },
+            { label: "Strommix CO₂", value: `${nf(AC.gridCo2PerKwh * 1000)} g/kWh` },
+            { label: "Hitzewelle (Vorhersage)", value: `≥ ${nf(AC.heatwaveMinDays)} Tage ≥ ${nf(AC.heatwaveThreshold)} °C` },
+          ]}
+          source={`${AC.source}. Nächste Prüfung bis ${monthYear(AC.reviewBy)}.`}
         />
 
         {/* ── Eigenverbrauch & Verbrauch (Modell-Annahmen) ── */}
