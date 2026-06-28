@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../components/Header";
-import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser, IconSnowflake, IconEuro } from "../../components/Icons";
+import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser, IconSnowflake } from "../../components/Icons";
 import { MastrHeroSection } from "../../components/MastrHeroSection";
 import { v } from "../../lib/theme";
 import { pageMetadata, energyOgImage } from "../../lib/seo";
@@ -51,13 +51,6 @@ const tools = [
     cta: "Kosten berechnen",
   },
   {
-    href: "/photovoltaik-foerderung",
-    icon: IconEuro,
-    title: "PV-Förderung finden",
-    description: "Welche Zuschüsse gibt es in deinem Bundesland und deiner Stadt? Kommunale Programme, Landesförderung und der aktuelle Anlagenbestand vor Ort.",
-    cta: "Förderung finden",
-  },
-  {
     href: "/strommix-deutschland",
     icon: IconSparkle,
     title: "Energiedaten Deutschland",
@@ -77,7 +70,7 @@ export default function Home() {
         {/* Hero Text */}
         <div style={{ textAlign: "center", marginBottom: 20, paddingTop: 10 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
-          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Sieben Tools. Ohne Anmeldung, ohne Leadfunnel.</p>
+          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Sechs Tools. Ohne Anmeldung, ohne Leadfunnel.</p>
         </div>
       </div>
 
