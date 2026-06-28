@@ -275,8 +275,10 @@ export default async function MethodikPage() {
         </p>
         <p style={S.p}>
           <strong>PV passt besonders gut zum Kühlen:</strong> Der Bedarf ist am höchsten, wenn die Sonne am
-          stärksten scheint. Wer tagsüber kühlt, deckt den Großteil direkt vom eigenen Dach; nachts hilft die
-          Anlage kaum. Deshalb hängt die PV-Deckung am gewählten Zeitfenster.
+          stärksten scheint. Ohne Speicher deckt die PV das Kühlen am Tag fast komplett, nachts dagegen kaum —
+          deshalb hängt die Deckung am Zeitfenster. Mit einem Batteriespeicher (Default in der Rechnung) wird der
+          Mittagsüberschuss in Abend und Nacht verschoben; dann ist auch Nachtkühlung größtenteils gedeckt. Beides
+          ist im Ergebnis umschaltbar.
         </p>
 
         {/* ── Gas/Öl-Vergleich ── */}
