@@ -443,7 +443,7 @@ export default function Klimaanlage() {
 
             {/* Stats: Anschaffung, Kühlleistung */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
-              <StatCard label="Anschaffung" value={`~${result.acquisition.toLocaleString("de-DE")} €`} help={result.device.perRoom ? `${result.device.label}: ein Gerät pro Raum, ${rooms}× gerechnet.` : `Sockel + Preis pro kW Kühlleistung inkl. Montage (~${result.capacityKw.toString().replace(".", ",")} kW).`} />
+              <StatCard label="Anschaffung" value={`~${result.acquisition.toLocaleString("de-DE")} €`} help={result.device.perRoom ? `${result.device.label}: ein Gerät pro Raum, ${rooms}× gerechnet.` : `Außengerät + je Innengerät pro Raum (Kernbohrung, Leitungen, Vakuum/Befüllung, Montage durch zertifizierten Fachbetrieb), ${rooms}× gerechnet.`} />
               <StatCard label="Kühlleistung" value={`~${result.capacityKw.toString().replace(".", ",")} kW`} help="Empfohlene Geräteleistung für die gekühlte Fläche (~85 W/m²)." />
             </div>
 
