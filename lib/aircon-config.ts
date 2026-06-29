@@ -15,12 +15,14 @@ export interface AcDevice {
   what: string;            // plain-language "what it is" (shown in the UI)
   seer: number;            // Seasonal Energy Efficiency Ratio (cooling). Strom = Kühlenergie / SEER
   // Acquisition price model. Monoblock + PortaSplit: one device per room →
-  // pricePerUnit × Räume. Fest installierte Split: Sockel + €/kW (inkl. Montage),
-  // analog zu €/kWp bei PV.
+  // pricePerUnit × Räume. Fest installierte Split: Sockel (Außengerät/Anfahrt) +
+  // pro Raum (Innengerät + Kernbohrung + Leitungen + Vakuum/Befüllung + Montage
+  // durch zertifizierten Fachbetrieb). Die Montage ist weitgehend PRO INNENGERÄT
+  // fix — nicht von der kW abhängig. Quelle: daibau/reduco/ADAC 2026.
   perRoom: boolean;
   pricePerUnit?: number;   // € je Gerät (monoblock/portasplit)
-  priceBase?: number;      // € Montage-Sockel (split)
-  pricePerKw?: number;     // € je kW Kühlleistung inkl. Montage (split)
+  priceBase?: number;      // € Sockel: Außengerät + Anfahrt/Inbetriebnahme (split)
+  pricePerRoom?: number;   // € je Innengerät inkl. Montage durch Fachbetrieb (split)
 }
 
 // Cooling-degree-hours = Σ max(0, T_außen − Schwelle) über ein Jahr. Maß dafür,
@@ -125,8 +127,11 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       what: "Innen- und Außeneinheit, fest montiert. Effizientester Typ, braucht aber Installation durch einen Fachbetrieb. Mehrere Räume als Multisplit.",
       seer: 6.0,         // fest installierte Split SEER ~5–8
       perRoom: false,
-      priceBase: 1200,   // Sockel inkl. Außeneinheit/Leitungen
-      pricePerKw: 600,   // €/kW Kühlleistung inkl. Montage (ADAC/Handwerkerdaten)
+      // 1 Raum (Monosplit) ~2.600 €, je weiterer Raum ~+1.900 € → 3 Räume ~6.400 €.
+      // Deckt sich mit Festpreisen 2026: Monosplit 1.800–3.500 €, Montage allein
+      // 1.000–2.500 € je Einheit (Fachbetrieb), Multisplit 3 Räume 5.000–8.000 €.
+      priceBase: 700,    // Außengerät + Anfahrt/Inbetriebnahme
+      pricePerRoom: 1900, // Innengerät + Kernbohrung + Leitungen + Montage je Raum
     },
   ],
 
@@ -177,7 +182,7 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
   stromPrice: 0.34,
   gridCo2PerKwh: 0.38,   // kg CO₂/kWh deutscher Strommix (UBA 2023, sinkend) — wie heatpump.ts
 
-  source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), Verbraucher-Tests 2025/26 (SEER), ADAC/Handwerkerdaten (Preise), BDEW (Strom), UBA (Strommix-CO₂)",
+  source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), Verbraucher-Tests 2025/26 (SEER), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), BDEW (Strom), UBA (Strommix-CO₂)",
   validFrom: "2026-06-28",
   reviewBy: "2027-04-30",
 };

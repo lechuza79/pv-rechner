@@ -302,7 +302,7 @@ export default async function DatenstandPage() {
           rows={[
             { label: "Effizienz (SEER): Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
             { label: "Anschaffung Monoblock / mobile Split", value: `~${nf(AC.devices[0].pricePerUnit!)} € / ~${nf(AC.devices[1].pricePerUnit!)} € je Gerät·Raum` },
-            { label: "Anschaffung fest installierte Split", value: `${nf(AC.devices[2].priceBase!)} € + ${nf(AC.devices[2].pricePerKw!)} €/kW inkl. Montage` },
+            { label: "Anschaffung fest installierte Split", value: `${nf(AC.devices[2].priceBase!)} € + ${nf(AC.devices[2].pricePerRoom!)} €/Raum (Innengerät inkl. Montage Fachbetrieb)` },
             { label: "Kühlgradstunden Ø Deutschland", value: `${nf(AC.cdhNational)} K·h/a (Schwelle ${nf(AC.coolBaseTemp)} °C)` },
             { label: "Standort-Modi", value: `Ø ${nf(AC.avgYears)} Sommer · letzter Sommer · Projektion (CMIP6, ${AC.climateModel})` },
             { label: "Sonnen-/Lage-Faktor", value: `${AC.exposureOptions.map((o) => nf(o.factor)).join(" / ")} (sehr sonnig / normal / schattig)` },

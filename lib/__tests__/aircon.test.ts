@@ -48,16 +48,17 @@ describe("acquisitionCost", () => {
   const split = CFG.devices.find(d => d.id === "split")!;
 
   it("scales per-room devices by the room counter", () => {
-    expect(acquisitionCost(mono, 1, 20)).toBe(400);
-    expect(acquisitionCost(mono, 3, 60)).toBe(1200);
-    expect(acquisitionCost(porta, 2, 40)).toBe(1600);
+    expect(acquisitionCost(mono, 1)).toBe(400);
+    expect(acquisitionCost(mono, 3)).toBe(1200);
+    expect(acquisitionCost(porta, 2)).toBe(1600);
   });
 
-  it("prices the fixed split as base + €/kW (like €/kWp)", () => {
-    // 20 m² → 1.7 kW → 1200 + 600×1.7 = 2220 → gerundet 2200
-    expect(acquisitionCost(split, 1, 20)).toBe(2200);
-    // bigger area → higher price
-    expect(acquisitionCost(split, 2, 60)).toBeGreaterThan(acquisitionCost(split, 1, 20));
+  it("prices the fixed split as base + per indoor unit (per room), not per kW", () => {
+    // 1 Raum: 700 + 1900 = 2.600 €
+    expect(acquisitionCost(split, 1)).toBe(2600);
+    // jeder weitere Raum (Innengerät) ~+1.900 € → mehr Räume = mehr €
+    expect(acquisitionCost(split, 3)).toBe(700 + 1900 * 3);
+    expect(acquisitionCost(split, 2)).toBeGreaterThan(acquisitionCost(split, 1));
   });
 });
 

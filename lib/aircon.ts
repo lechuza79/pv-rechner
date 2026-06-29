@@ -79,13 +79,15 @@ export function sizingKw(cooledArea: number, cfg: AcConfig = DEFAULT_AIRCON_CONF
 }
 
 /** Anschaffungskosten je Gerätetyp. */
-export function acquisitionCost(device: AcDevice, rooms: number, cooledArea: number, cfg: AcConfig = DEFAULT_AIRCON_CONFIG): number {
+export function acquisitionCost(device: AcDevice, rooms: number): number {
+  const n = Math.max(1, rooms);
   if (device.perRoom) {
-    return (device.pricePerUnit ?? 0) * Math.max(1, rooms);
+    // Monoblock/PortaSplit: ein Gerät pro Raum.
+    return (device.pricePerUnit ?? 0) * n;
   }
-  // Fest installierte Split: Sockel + €/kW über die dimensionierte Leistung
-  const kw = sizingKw(cooledArea, cfg);
-  return Math.round(((device.priceBase ?? 0) + (device.pricePerKw ?? 0) * kw) / 50) * 50;
+  // Fest installierte Split: Außengerät-Sockel + je Innengerät (= Raum). Die Montage
+  // ist weitgehend pro Innengerät fix (Fachbetrieb), nicht von der kW abhängig.
+  return Math.round(((device.priceBase ?? 0) + (device.pricePerRoom ?? 0) * n) / 50) * 50;
 }
 
 export function calcAircon(inputs: AcInputs, cfg: AcConfig = DEFAULT_AIRCON_CONFIG): AcResult {
@@ -102,7 +104,7 @@ export function calcAircon(inputs: AcInputs, cfg: AcConfig = DEFAULT_AIRCON_CONF
   const runningCost = Math.round(electricityKwh * inputs.stromPrice);
   const co2Kg = Math.round(electricityKwh * cfg.gridCo2PerKwh);
   const capacityKw = sizingKw(cooledArea, cfg);
-  const acquisition = acquisitionCost(device, rooms, cooledArea, cfg);
+  const acquisition = acquisitionCost(device, rooms);
 
   // Mit Speicher ist Default (battery !== false). Akku hebt vor allem die Nacht.
   const coverageSet = (inputs.battery ?? true) ? cfg.pvCoverage.battery : cfg.pvCoverage.noBattery;
