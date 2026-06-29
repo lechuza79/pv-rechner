@@ -90,6 +90,13 @@ export function acquisitionCost(device: AcDevice, rooms: number): number {
   return Math.round(((device.priceBase ?? 0) + (device.pricePerRoom ?? 0) * n) / 50) * 50;
 }
 
+/** Realistische Spanne um den Anschaffungs-Mittelwert [low, high] in €. */
+export function acquisitionRange(device: AcDevice, rooms: number): [number, number] {
+  const mid = acquisitionCost(device, rooms);
+  const round50 = (x: number) => Math.round(x / 50) * 50;
+  return [round50(mid * device.priceRange[0]), round50(mid * device.priceRange[1])];
+}
+
 export function calcAircon(inputs: AcInputs, cfg: AcConfig = DEFAULT_AIRCON_CONFIG): AcResult {
   const device = cfg.devices.find(d => d.id === inputs.deviceId) ?? cfg.devices[0];
   const rooms = Math.max(1, Math.round(inputs.rooms));

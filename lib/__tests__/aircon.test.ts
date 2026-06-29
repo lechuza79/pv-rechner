@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
-  effectiveCdh, sizingKw, acquisitionCost, calcAircon, compareDevices, fallbackCdh,
+  effectiveCdh, sizingKw, acquisitionCost, acquisitionRange, calcAircon, compareDevices, fallbackCdh,
   cdhFromHourly, cdhFromDailyMinMax,
   type AcInputs,
 } from "../aircon";
@@ -59,6 +59,18 @@ describe("acquisitionCost", () => {
     // jeder weitere Raum (Innengerät) ~+1.900 € → mehr Räume = mehr €
     expect(acquisitionCost(split, 3)).toBe(700 + 1900 * 3);
     expect(acquisitionCost(split, 2)).toBeGreaterThan(acquisitionCost(split, 1));
+  });
+
+  it("brackets the mean with a realistic range (low < mean < high)", () => {
+    const mid = acquisitionCost(split, 1); // 2.600 €
+    const [lo, hi] = acquisitionRange(split, 1);
+    expect(lo).toBeLessThan(mid);
+    expect(hi).toBeGreaterThan(mid);
+    // Split 1 Raum trifft die recherchierte Spanne ~1.800–3.500 €
+    expect(lo).toBeGreaterThanOrEqual(1700);
+    expect(lo).toBeLessThanOrEqual(2000);
+    expect(hi).toBeGreaterThanOrEqual(3300);
+    expect(hi).toBeLessThanOrEqual(3700);
   });
 });
 
