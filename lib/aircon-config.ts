@@ -23,6 +23,8 @@ export interface AcDevice {
   pricePerUnit?: number;   // € je Gerät (monoblock/portasplit)
   priceBase?: number;      // € Sockel: Außengerät + Anfahrt/Inbetriebnahme (split)
   pricePerRoom?: number;   // € je Innengerät inkl. Montage durch Fachbetrieb (split)
+  // Realistische Spanne als Faktor auf den Mittelwert (Gerät, Anbieter, Leitungsweg, Region).
+  priceRange: [number, number];
 }
 
 // Cooling-degree-hours = Σ max(0, T_außen − Schwelle) über ein Jahr. Maß dafür,
@@ -112,6 +114,7 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       seer: 2.5,         // Monoblock SEER ~2,0–2,8 (Verbraucher-Tests 2025/26)
       perRoom: true,
       pricePerUnit: 400, // Gerätepreis, keine Montage
+      priceRange: [0.65, 1.5], // ~250–600 € (Verbraucher-Tests 2025/26)
     },
     {
       id: "portasplit",
@@ -120,6 +123,7 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       seer: 4.3,         // A++ mobile Split (Midea PortaSplit Cool)
       perRoom: true,
       pricePerUnit: 800, // ~780–899 € (UVP/Amazon 2026)
+      priceRange: [0.75, 1.3], // ~600–1.050 € je Gerät
     },
     {
       id: "split",
@@ -132,6 +136,7 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       // 1.000–2.500 € je Einheit (Fachbetrieb), Multisplit 3 Räume 5.000–8.000 €.
       priceBase: 700,    // Außengerät + Anfahrt/Inbetriebnahme
       pricePerRoom: 1900, // Innengerät + Kernbohrung + Leitungen + Montage je Raum
+      priceRange: [0.7, 1.35], // 1 Raum ~1.800–3.500 €, je nach Anbieter/Leitungsweg
     },
   ],
 

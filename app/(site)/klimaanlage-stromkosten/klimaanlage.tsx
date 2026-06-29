@@ -9,7 +9,7 @@ import { IconArrowRight, IconRefresh, IconSun, IconCheck } from "../../../compon
 import { v } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
-import { calcAircon, compareDevices, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
+import { calcAircon, compareDevices, acquisitionRange, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
 import { bundeslandFromPlz } from "../../../lib/plz-bundesland";
 
 const STEPS = ["Gerätetyp", "Räume & Größe", "Nutzung & Standort"];
@@ -443,7 +443,21 @@ export default function Klimaanlage() {
 
             {/* Stats: Anschaffung, Kühlleistung */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
-              <StatCard label="Anschaffung" value={`~${result.acquisition.toLocaleString("de-DE")} €`} help={result.device.perRoom ? `${result.device.label}: ein Gerät pro Raum, ${rooms}× gerechnet.` : `Außengerät + je Innengerät pro Raum (Kernbohrung, Leitungen, Vakuum/Befüllung, Montage durch zertifizierten Fachbetrieb), ${rooms}× gerechnet.`} />
+              {(() => {
+                const [lo, hi] = acquisitionRange(result.device, rooms);
+                const calc = result.device.perRoom
+                  ? `${result.device.label}: ein Gerät pro Raum, ${rooms}× gerechnet.`
+                  : `Außengerät + je Innengerät pro Raum (Kernbohrung, Leitungen, Vakuum/Befüllung, Montage durch zertifizierten Fachbetrieb), ${rooms}× gerechnet.`;
+                return (
+                  <StatCard
+                    label="Anschaffung"
+                    value={`~${result.acquisition.toLocaleString("de-DE")} €`}
+                    sub={`${lo.toLocaleString("de-DE")}–${hi.toLocaleString("de-DE")} €`}
+                    helpTitle="Anschaffung — Mittelwert"
+                    help={<>Das ist ein <strong>Mittelwert</strong>. Die tatsächlichen Kosten variieren stark nach Gerät, Anbieter, Leitungsweg und Region — typische Spanne {lo.toLocaleString("de-DE")}–{hi.toLocaleString("de-DE")} €. {calc}</>}
+                  />
+                );
+              })()}
               <StatCard label="Kühlleistung" value={`~${result.capacityKw.toString().replace(".", ",")} kW`} help="Empfohlene Geräteleistung für die gekühlte Fläche (~85 W/m²)." />
             </div>
 
@@ -541,14 +555,15 @@ function GlossaryHint() {
   );
 }
 
-function StatCard({ label, value, help }: { label: string; value: string; help?: string }) {
+function StatCard({ label, value, sub, help, helpTitle }: { label: string; value: string; sub?: string; help?: React.ReactNode; helpTitle?: string }) {
   return (
     <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
       <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
         {label}
-        {help && <InfoTooltip title={label} ariaLabel="Mehr Infos" size={12}>{help}</InfoTooltip>}
+        {help && <InfoTooltip title={helpTitle ?? label} ariaLabel="Mehr Infos" size={12}>{help}</InfoTooltip>}
       </div>
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-primary') }}>{value}</div>
+      {sub && <div style={{ fontSize: 10, color: v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 2 }}>{sub}</div>}
     </div>
   );
 }
