@@ -215,7 +215,15 @@ export default function Klimaanlage() {
                   Wohnfläche, sondern nur die Räume, die du wirklich kühlst.
                 </div>
 
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, marginTop: 22, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie sonnig liegt der Raum?</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, marginTop: 22, textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                  Wie sonnig liegt der Raum?
+                  <InfoTooltip title="Warum Sonne, nicht Dämmung?" ariaLabel="Warum fragen wir nach der Sonne statt nach der Dämmung?" size={12}>
+                    Beim Kühlen kommt der größte Wärmeeintrag durch die Fenster — Sonne, Ausrichtung, fehlende
+                    Verschattung, vor allem ein Dachgeschoss. Wärmedämmung ist dagegen ein schwacher, teils
+                    kontraproduktiver Hebel (sie hält Wärme auch im Haus). Deshalb fragen wir nach der Lage zur
+                    Sonne statt nach dem Dämmstandard. Quelle: Umweltbundesamt, Gebäudeforum.
+                  </InfoTooltip>
+                </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
                   {CFG.exposureOptions.map(opt => (
                     <OptionCard key={opt.id} selected={exposure === opt.id} onClick={() => setExposure(opt.id)} label={opt.label} sub={opt.sub} />
@@ -334,8 +342,15 @@ export default function Klimaanlage() {
 
             {/* Hero: Stromkosten/Jahr */}
             <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
-              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
+              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
                 Stromkosten pro Jahr · {result.device.label}
+                <InfoTooltip title="Was den Wert treibt" ariaLabel="Wie kommt die Stromkosten-Zahl zustande?" size={12}>
+                  Das ist ein <strong>Jahres</strong>betrag, nicht pro Monat. Die deutsche Kühlsaison ist kurz —
+                  das Gerät läuft nur an heißen Tagen, und nachts ist es deutlich günstiger als ganztags. Deshalb
+                  wirkt die Zahl oft niedriger als erwartet. Höher wird sie mit deinem Standort (PLZ), dem Modus
+                  „letzter Sommer" und einer sonnigen Lage. Wie schnell ein heißer Raum runterkühlt, ist dagegen
+                  eine Frage der Geräte-Leistung, nicht der Jahresenergie.
+                </InfoTooltip>
               </div>
               <div style={{ fontSize: 42, fontWeight: 800, color: v('--color-text-primary'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
                 {result.runningCost.toLocaleString("de-DE")} €

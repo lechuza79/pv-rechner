@@ -267,6 +267,16 @@ export default async function MethodikPage() {
           aus einer Vollsimulation.
         </p>
         <p style={S.p}>
+          <strong>Warum die Zahl oft niedriger wirkt als erwartet:</strong> Der Wert ist ein <em>Jahres</em>betrag,
+          nicht pro Monat. Die deutsche Kühlsaison ist kurz — nur an wirklich heißen Tagen läuft das Gerät, und
+          nachts (kühlere Außenluft, wenige Stunden) ist es deutlich günstiger als ganztags. Wichtig ist auch die
+          Unterscheidung: <em>Wie schnell</em> ein Raum von z. B. 32 °C auf eine angenehme Temperatur runtergeht,
+          ist eine Frage der Geräte-Leistung (kW), nicht der Jahresenergie. Die <em>Energie</em> ist der laufende
+          Wärmeeintrag über die Saison — das einmalige Runterkühlen am Abend fällt dagegen kaum ins Gewicht. Eine
+          akute Hitzewelle bildet der Rechner ab, sobald du PLZ und „letzter Sommer" wählst — dann rechnet er mit
+          den echten heißen Tagen deines Orts statt mit dem milden Durchschnitt.
+        </p>
+        <p style={S.p}>
           Wie viel <strong>Strom</strong> das kostet, hängt am Gerätetyp: Ein Monoblock mit Abluftschlauch zieht
           für dieselbe Kühlung rund das Dreifache einer fest installierten Split-Anlage (Effizienz SEER ~2,5 vs.
           ~6).
