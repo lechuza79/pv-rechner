@@ -5,6 +5,7 @@ import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { computeNuclearImport } from "../../../lib/nuclear-import";
+import AtomstromWidget from "./AtomstromWidget";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 const PAGE_URL = `${BASE_URL}/atomstrom-import`;
@@ -243,6 +244,10 @@ export default async function AtomstromImportPage() {
               .
             </div>
           )}
+        </div>
+
+        <div style={S.section}>
+          <AtomstromWidget />
         </div>
 
         <div style={S.section}>
