@@ -158,6 +158,16 @@ export function IconBolt({ size = 16, color = "currentColor", style }: IconProps
   );
 }
 
+export function IconEuro({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <circle cx="8" cy="8" r="6.5" stroke={color} strokeWidth="1.33" />
+      <path d="M10.2 5.6a2.8 2.8 0 1 0 0 4.8" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4.7 7.2h4M4.7 8.8h3.4" stroke={color} strokeWidth="1.33" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function IconEdit({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
