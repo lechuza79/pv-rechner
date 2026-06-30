@@ -612,7 +612,10 @@ export default function EnergieClient() {
         }}>
           <strong style={{ color: v("--color-text-muted") }}>Importierte Kernenergie:</strong>{" "}
           Rechnerischer Kernenergie-Import = Physische Grenzflüsse × Kernanteil des Exportlandes.
-          Methodik analog Fraunhofer ISE. Nur Importe aus FR, CZ, CH, SE, BE, NL.
+          Methodik analog Fraunhofer ISE. Nur Importe aus FR, CZ, CH, SE, BE, NL.{" "}
+          <a href="/atomstrom-import" style={{ color: v("--color-accent"), fontWeight: 600, textDecoration: "none" }}>
+            Mehr zum Atomstrom-Import
+          </a>
         </div>
       )}
 
@@ -627,6 +630,10 @@ export default function EnergieClient() {
         }}
       >
         Datenquelle: Fraunhofer ISE / Energy-Charts (CC BY 4.0)
+        {" · "}
+        <a href="/atomstrom-import" style={{ color: v("--color-accent"), fontWeight: 600, textDecoration: "none" }}>
+          Wie viel Atomstrom importiert Deutschland?
+        </a>
       </div>
 
     </div>
