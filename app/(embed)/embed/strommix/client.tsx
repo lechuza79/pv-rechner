@@ -8,8 +8,34 @@ import {
   IconChevronLeft,
   IconChevronRight,
 } from "../../../../components/Icons";
+import ChartActionBar from "../../../../components/ChartActionBar";
+import { useChartExport } from "../../../../lib/useChartExport";
 import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
 import { parseWidgetThemeQuery } from "../../../../lib/widget-theme";
+import {
+  WIDGET_SETTINGS_DEFAULTS,
+  WidgetSettings,
+  WidgetRange,
+  parseWidgetSettingsQuery,
+} from "../../../../lib/widget-settings";
+
+// Where the share buttons point — the canonical source page for this widget.
+const SHARE_URL = "https://solar-check.io/strommix-deutschland";
+const SHARE_TEXT = "Strommix Deutschland – live bei Solar Check";
+
+function rangeToTab(range: WidgetRange): TabState {
+  if (range === "24h") return { id: "24h" };
+  if (range === "30d") return { id: "30d" };
+  if (range === "year") return { id: "year", year: new Date().getFullYear() };
+  return { id: "7d" };
+}
+
+function tabLabel(tab: TabState): string {
+  if (tab.id === "24h") return "Die letzten 24 Stunden";
+  if (tab.id === "7d") return "Die letzten 7 Tage";
+  if (tab.id === "30d") return "Die letzten 30 Tage";
+  return `Jahr ${tab.year}`;
+}
 import {
   CATEGORY_COLORS,
   FOSSIL_KEYS,
@@ -41,6 +67,7 @@ const ALLOWED_VARS = [
 
 // ─── Time range definitions ─────────────────────────────────────────────────
 type TabState =
+  | { id: "24h" }
   | { id: "7d" }
   | { id: "30d" }
   | { id: "year"; year: number };
@@ -62,6 +89,7 @@ function getYearRange(year: number): { start: string; end: string } {
 }
 
 function tabHours(tab: TabState): number {
+  if (tab.id === "24h") return 24;
   if (tab.id === "7d") return 168;
   if (tab.id === "30d") return 720;
   return 8760;
@@ -89,10 +117,21 @@ function rangeButtonStyle(active: boolean): React.CSSProperties {
 
 // ─── Component ──────────────────────────────────────────────────────────────
 export default function StrommixWidget() {
+  const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   const [tab, setTab] = useState<TabState>({ id: "7d" });
 
-  // Static theme via iframe URL params (copy-paste embed code path)
+  const chartExport = useChartExport({
+    context: { title: "Strommix Deutschland", subtitle: tabLabel(tab) },
+    filename: "solar-check-strommix.png",
+    shareText: SHARE_TEXT,
+    shareUrl: SHARE_URL,
+  });
+
+  // Static theme + settings via iframe URL params (copy-paste embed code path)
   useEffect(() => {
+    const s = { ...WIDGET_SETTINGS_DEFAULTS, ...parseWidgetSettingsQuery(window.location.search) };
+    setSettings(s);
+    setTab(rangeToTab(s.range));
     const theme = parseWidgetThemeQuery(window.location.search);
     const root = document.documentElement;
     Object.keys(theme).forEach((k) => {
@@ -103,11 +142,33 @@ export default function StrommixWidget() {
   // Theme override listener
   useEffect(() => {
     function onMessage(event: MessageEvent) {
-      if (ALLOWED_ORIGINS.indexOf(event.origin) === -1) return;
+      // localhost (any port) is always the developer's own machine — allow it so
+      // the widgets page drives the live preview regardless of the dev port.
+      const isLocal = /^http:\/\/localhost:\d+$/.test(event.origin);
+      if (!isLocal && ALLOWED_ORIGINS.indexOf(event.origin) === -1) return;
       const payload = event.data as
-        | { type?: unknown; vars?: unknown }
+        | { type?: unknown; vars?: unknown; settings?: unknown }
         | undefined;
-      if (!payload || payload.type !== "widget:theme") return;
+      if (!payload) return;
+
+      if (payload.type === "widget:settings") {
+        const s =
+          payload.settings && typeof payload.settings === "object"
+            ? (payload.settings as Record<string, unknown>)
+            : {};
+        const range = s.range;
+        const validRange = range === "7d" || range === "30d" || range === "year";
+        setSettings((prev) => ({
+          ...prev,
+          ...(typeof s.share === "boolean" ? { share: s.share } : null),
+          ...(typeof s.switchable === "boolean" ? { switchable: s.switchable } : null),
+          ...(validRange ? { range: range as WidgetRange } : null),
+        }));
+        if (validRange) setTab(rangeToTab(range as WidgetRange));
+        return;
+      }
+
+      if (payload.type !== "widget:theme") return;
 
       const vars =
         payload.vars && typeof payload.vars === "object"
@@ -146,9 +207,11 @@ export default function StrommixWidget() {
         overflow: "hidden",
       }}
     >
-      <TopBar tab={tab} onTab={setTab} />
-      <ChartArea tab={tab} />
-      <Footer />
+      <TopBar tab={tab} onTab={setTab} switchable={settings.switchable} />
+      <div ref={chartExport.chartRef}>
+        <ChartArea tab={tab} />
+      </div>
+      <Footer share={settings.share} chartExport={chartExport} />
     </div>
   );
 }
@@ -157,9 +220,11 @@ export default function StrommixWidget() {
 function TopBar({
   tab,
   onTab,
+  switchable,
 }: {
   tab: TabState;
   onTab: (t: TabState) => void;
+  switchable: boolean;
 }) {
   return (
     <div
@@ -174,27 +239,36 @@ function TopBar({
       <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
         Strommix Deutschland
       </div>
-      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-        <button
-          type="button"
-          onClick={() => onTab({ id: "7d" })}
-          style={rangeButtonStyle(tab.id === "7d")}
-        >
-          7 Tage
-        </button>
-        <button
-          type="button"
-          onClick={() => onTab({ id: "30d" })}
-          style={rangeButtonStyle(tab.id === "30d")}
-        >
-          30 Tage
-        </button>
-        <YearGroup
-          active={tab.id === "year"}
-          year={tab.id === "year" ? tab.year : null}
-          onChange={(y) => onTab({ id: "year", year: y })}
-        />
-      </div>
+      {switchable && (
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <button
+            type="button"
+            onClick={() => onTab({ id: "24h" })}
+            style={rangeButtonStyle(tab.id === "24h")}
+          >
+            24 Std
+          </button>
+          <button
+            type="button"
+            onClick={() => onTab({ id: "7d" })}
+            style={rangeButtonStyle(tab.id === "7d")}
+          >
+            7 Tage
+          </button>
+          <button
+            type="button"
+            onClick={() => onTab({ id: "30d" })}
+            style={rangeButtonStyle(tab.id === "30d")}
+          >
+            30 Tage
+          </button>
+          <YearGroup
+            active={tab.id === "year"}
+            year={tab.id === "year" ? tab.year : null}
+            onChange={(y) => onTab({ id: "year", year: y })}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -414,8 +488,8 @@ function ChartArea({ tab }: { tab: TabState }) {
     };
   }, [genData.data, genData.resolution, nuclearData.data]);
 
-  // 7d → smooth area, 30d / year → stacked bars
-  const useArea = tab.id === "7d";
+  // 24h / 7d → smooth area, 30d / year → stacked bars
+  const useArea = tab.id === "24h" || tab.id === "7d";
   const barMode: "30d" | "ytd" = tab.id === "30d" ? "30d" : "ytd";
 
   return (
@@ -434,7 +508,7 @@ function ChartArea({ tab }: { tab: TabState }) {
         {genData.data.length > 0 && useArea && (
           <StackedAreaChart
             data={genData.data}
-            xFormat="date"
+            xFormat={tab.id === "24h" ? "time" : "date"}
             height={220}
             nuclearOverlay={nuclearData.data}
             compact
@@ -587,7 +661,17 @@ function CenteredMessage({
   );
 }
 
-function Footer() {
+function Footer({
+  share,
+  chartExport,
+}: {
+  share: boolean;
+  chartExport: ReturnType<typeof useChartExport>;
+}) {
+  const copyLink = () => {
+    navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {});
+  };
+
   return (
     <div style={{ marginTop: 12 }}>
       <div
@@ -603,28 +687,43 @@ function Footer() {
           fontSize: 10.5,
           color: "var(--widget-muted)",
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: share ? "space-between" : "flex-end",
           alignItems: "center",
-          gap: 5,
+          gap: 8,
         }}
       >
-        <span>Powered by</span>
-        <a
-          href="https://solar-check.io"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 3,
-            textDecoration: "none",
-            color: "#1365EA",
-            fontWeight: 600,
-          }}
-        >
-          <SolarCheckMark />
-          <span>solar-check.io</span>
-        </a>
+        {share && (
+          <ChartActionBar
+            onDownload={chartExport.downloadPng}
+            onCopyLink={copyLink}
+            onWhatsApp={chartExport.shareWhatsApp}
+            onTwitter={chartExport.shareTwitter}
+            onShareImage={chartExport.sharePng}
+            onEmbed={() => window.open("/energie-widgets#strommix", "_blank", "noopener")}
+            isExporting={chartExport.isExporting}
+            canNativeShare={chartExport.canNativeShare}
+            size={30}
+          />
+        )}
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+          <span>Powered by</span>
+          <a
+            href="https://solar-check.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 3,
+              textDecoration: "none",
+              color: "#1365EA",
+              fontWeight: 600,
+            }}
+          >
+            <SolarCheckMark />
+            <span>solar-check.io</span>
+          </a>
+        </span>
       </div>
     </div>
   );

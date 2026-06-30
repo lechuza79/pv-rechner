@@ -11,6 +11,12 @@ import {
   buildWidgetThemeQuery,
   selectionToVars,
 } from "../../../lib/widget-theme";
+import {
+  WIDGET_SETTINGS_DEFAULTS,
+  WidgetSettings,
+  WidgetRange,
+  buildWidgetSettingsQuery,
+} from "../../../lib/widget-settings";
 
 const SITE_URL = "https://solar-check.io";
 const MAX_RADIUS = 28;
@@ -37,6 +43,8 @@ interface WidgetSection {
   attribution: Attribution;
   showFrameWidth: boolean;
   showAutoswitch?: boolean;
+  /** Widget supports the functional settings (share footer, time range, switcher). */
+  supportsSettings?: boolean;
   variants: WidgetVariant[];
 }
 
@@ -67,7 +75,8 @@ const SECTIONS: WidgetSection[] = [
       text: "Strommix Deutschland – live bei Solar Check",
     },
     showFrameWidth: true,
-    variants: [{ id: "strommix", label: "Strommix", src: "/embed/strommix", height: 410 }],
+    supportsSettings: true,
+    variants: [{ id: "strommix", label: "Strommix", src: "/embed/strommix", height: 460 }],
   },
   {
     id: "karte",
@@ -116,6 +125,8 @@ const RULES = [
 export default function WidgetsClient() {
   const [theme, setTheme] = useState<WidgetThemeSelection>(WIDGET_THEME_DEFAULTS);
   const update = (patch: Partial<WidgetThemeSelection>) => setTheme((t) => ({ ...t, ...patch }));
+  const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
+  const updateSettings = (patch: Partial<WidgetSettings>) => setSettings((s) => ({ ...s, ...patch }));
 
   // The customization panel floats (sticky) on desktop so changes are visible
   // in the widgets while adjusting. On mobile it stays in flow — a sticky panel
@@ -157,7 +168,12 @@ export default function WidgetsClient() {
 
         {SECTIONS.map((s, i) => (
           <Fragment key={s.id}>
-            <SectionPreview section={s} theme={theme} />
+            <SectionPreview
+              section={s}
+              theme={theme}
+              settings={settings}
+              onSettings={updateSettings}
+            />
             {/* Controls live directly under the first live widget and stick to
                 the top while scrolling on to the next widget / the code. */}
             {i === 0 && <ThemePanel theme={theme} onChange={update} sticky={isDesktop} />}
@@ -269,17 +285,52 @@ const AUTOSWITCH_OPTIONS = [
   { id: "10s", label: "10 s", ms: 10000 },
 ];
 
-function SectionPreview({ section, theme }: { section: WidgetSection; theme: WidgetThemeSelection }) {
+function SectionPreview({
+  section,
+  theme,
+  settings,
+  onSettings,
+}: {
+  section: WidgetSection;
+  theme: WidgetThemeSelection;
+  settings: WidgetSettings;
+  onSettings: (patch: Partial<WidgetSettings>) => void;
+}) {
   const [frameW, setFrameW] = useState<number>(480);
   const [autoswitch, setAutoswitch] = useState<number>(0);
 
   return (
-    <section style={S.section}>
+    <section id={section.id} style={{ ...S.section, scrollMarginTop: 80 }}>
       <h2 style={S.h2}>{section.label}</h2>
       <p style={S.sectionIntro}>{section.intro}</p>
 
-      {(section.showFrameWidth || section.showAutoswitch) && (
+      {(section.showFrameWidth || section.showAutoswitch || section.supportsSettings) && (
         <div style={S.controls}>
+          {section.supportsSettings && (
+            <>
+              <Control label="Teilen-Leiste">
+                <div style={S.btnRow}>
+                  <button type="button" onClick={() => onSettings({ share: true })} style={{ ...S.btn, ...(settings.share ? S.btnActive : null) }}>An</button>
+                  <button type="button" onClick={() => onSettings({ share: false })} style={{ ...S.btn, ...(!settings.share ? S.btnActive : null) }}>Aus</button>
+                </div>
+              </Control>
+              <Control label="Zeitraum">
+                <div style={S.btnRow}>
+                  {(["24h", "7d", "30d", "year"] as WidgetRange[]).map((r) => (
+                    <button key={r} type="button" onClick={() => onSettings({ range: r })} style={{ ...S.btn, ...(settings.range === r ? S.btnActive : null) }}>
+                      {r === "24h" ? "24 Std" : r === "7d" ? "7 Tage" : r === "30d" ? "30 Tage" : "Jahr"}
+                    </button>
+                  ))}
+                </div>
+              </Control>
+              <Control label="Zeitraum-Umschalter">
+                <div style={S.btnRow}>
+                  <button type="button" onClick={() => onSettings({ switchable: true })} style={{ ...S.btn, ...(settings.switchable ? S.btnActive : null) }}>An</button>
+                  <button type="button" onClick={() => onSettings({ switchable: false })} style={{ ...S.btn, ...(!settings.switchable ? S.btnActive : null) }}>Aus</button>
+                </div>
+              </Control>
+            </>
+          )}
           {section.showFrameWidth && (
             <Control label="Breite">
               <div style={S.btnRow}>
@@ -327,6 +378,7 @@ function SectionPreview({ section, theme }: { section: WidgetSection; theme: Wid
             variant={variant}
             attribution={section.attribution}
             theme={theme}
+            settings={section.supportsSettings ? settings : undefined}
             frameW={frameW}
             autoswitch={autoswitch}
             showVariantLabel={section.variants.length > 1}
@@ -341,6 +393,7 @@ function VariantFrame({
   variant,
   attribution,
   theme,
+  settings,
   frameW,
   autoswitch,
   showVariantLabel,
@@ -348,6 +401,7 @@ function VariantFrame({
   variant: WidgetVariant;
   attribution: Attribution;
   theme: WidgetThemeSelection;
+  settings?: WidgetSettings;
   frameW: number;
   autoswitch: number;
   showVariantLabel: boolean;
@@ -379,6 +433,17 @@ function VariantFrame({
     );
   }, [themeKey, iframeReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Functional settings (share footer, range, switcher) — live preview.
+  const settingsKey = JSON.stringify(settings);
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe || !iframeReady || !settings) return;
+    iframe.contentWindow?.postMessage(
+      { type: "widget:settings", settings },
+      window.location.origin,
+    );
+  }, [settingsKey, iframeReady]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const effectiveWidth = variant.fixedWidth ?? frameW;
 
   return (
@@ -395,6 +460,7 @@ function VariantFrame({
         variant={variant}
         attribution={attribution}
         theme={theme}
+        settings={settings}
         autoswitch={autoswitch}
       />
     </div>
@@ -405,11 +471,13 @@ function EmbedSnippet({
   variant,
   attribution,
   theme,
+  settings,
   autoswitch,
 }: {
   variant: WidgetVariant;
   attribution: Attribution;
   theme: WidgetThemeSelection;
+  settings?: WidgetSettings;
   autoswitch: number;
 }) {
   const [copied, setCopied] = useState(false);
@@ -417,6 +485,9 @@ function EmbedSnippet({
 
   const qs = new URLSearchParams(buildWidgetThemeQuery(theme));
   if (autoswitch > 0) qs.set("auto", String(autoswitch));
+  if (settings) {
+    buildWidgetSettingsQuery(settings).forEach((val, key) => qs.set(key, val));
+  }
   const query = qs.toString();
   const url = `${SITE_URL}${variant.src}${query ? `?${query}` : ""}`;
   const width = variant.fixedWidth ?? 480;

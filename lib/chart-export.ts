@@ -158,8 +158,6 @@ export function buildExportSvg(
     const titleTextW = context.title.length * 8;
     p.push(`<text x="${PAD + 8 + titleTextW + 12}" y="${titleY + 20}" font-family="${FONT_TEXT}" font-size="13" font-weight="400" fill="${tokens['--color-text-secondary']}">${esc(context.subtitle)}</text>`);
   }
-  // Separator
-  p.push(`<line x1="${PAD}" x2="${totalW - PAD}" y1="${titleY + TITLE_H - 4}" y2="${titleY + TITLE_H - 4}" stroke="${tokens['--color-border']}" stroke-width="1"/>`);
 
   // ── Stats Widgets ──
   if (hasStats && context.stats) {
