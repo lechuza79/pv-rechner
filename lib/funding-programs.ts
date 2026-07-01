@@ -195,7 +195,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "wuerzburg-klimastadt", name: "Klimastadt Würzburg",
     traeger: "Stadt Würzburg", level: "kommune", region: "Würzburg", bundesland: "Bayern", agsCode: "09663",
     url: "https://www.wuerzburg.de/themen/umwelt-klima/foerderungen-und-beratungen/photovoltaik",
-    stand: "Juni 2026", status: "aktiv", capped: true, verified: true,
+    stand: "Juli 2026", status: "aktiv", capped: true, verified: false,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp für Dach-PV (Vollbelegung) + Bausteine (Fassade, Gründach, Mieterstrom, Denkmal)",
     rates: [
@@ -207,10 +207,10 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Dach-PV ab Mindestgröße 0,04 kWp je m² Wohnfläche; Vollbelegungs-Bonus +50 €/kWp (max. +500 €)",
       "Antrag + Bescheid vor Maßnahmenbeginn; kein Speicher gefördert",
+      "Programm zum 25.04.2026 zu „KlimaStadt Würzburg“ umgebaut — Satz 150 €/kWp bestätigt, aber ob der Dach-PV-Baustein aktuell Anträge annimmt, ist unbestätigt; darum kein automatischer Abzug, vor Antrag bei der Stadt prüfen",
       "Bund/Land kumulierbar, max. 90 % der Kosten",
     ],
     combinableWith: BUND,
-    pvPerKwp: 150, pvCap: 1500,
   },
   "frankfurt-klimabonus": {
     id: "frankfurt-klimabonus", name: "Frankfurter Klimabonus",
@@ -410,22 +410,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "mannheim-solarbonus": {
     id: "mannheim-solarbonus", name: "SolarBonus Mannheim",
     traeger: "Stadt Mannheim / Klimaschutzagentur", level: "kommune", region: "Mannheim", bundesland: "Baden-Württemberg", agsCode: "08222",
-    url: "https://www.klima-ma.de/eigentuemer-mieter/foerderprogramme.html", stand: "Juni 2026",
-    status: "ausgeschoepft", capped: true, verified: true,
+    url: "https://www.klima-ma.de/eigentuemer-mieter/foerderprogramme.html", stand: "Juli 2026",
+    status: "aktiv", capped: true, verified: false,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWp (Wohngebäude im Bestand)",
+    coveredCosts: "Zuschuss je kWp — seit Neustart 03/2026 nur Mehrfamilienhäuser, Gründach oder Denkmal (nicht Standard-Einfamilienhaus-Dach)",
     rates: [
-      { label: "Aufdach", value: "160 €/kWp, max. 2.400 €" },
-      { label: "auf Dachbegrünung", value: "280 €/kWp, max. 4.200 €" },
+      { label: "Aufdach (nur Mehrfamilienhaus, ab 20 kWp / Vollbelegung)", value: "120 €/kWp, max. 2.400 €" },
+      { label: "auf Dachbegrünung", value: "260 €/kWp, max. 4.000 €" },
       { label: "Fassade / Denkmal", value: "250–300 €/kWp" },
     ],
     conditions: [
-      "Mittel seit Mitte 2025 erschöpft — neue Anträge nur auf Warteliste",
-      "Antrag vor Beauftragung; Ausführung durch Fachbetrieb",
-      "nur Wohngebäude mit Bauantrag vor dem 01.05.2022",
+      "Programm zum 11.03.2026 neu gestartet (neue Förderrichtlinie)",
+      "Ein-/Zweifamilienhäuser aufdach nur noch bei Dachbegrünung oder Denkmalschutz förderfähig",
+      "Standard-Aufdach nur Mehrfamilienhäuser (3+ Wohneinheiten) oder ab 20 kWp; Antrag vor Beauftragung",
     ],
     combinableWith: BUND,
-    pvPerKwp: 160, pvCap: 2400,
   },
   "muenster-klimafreundlich": {
     id: "muenster-klimafreundlich", name: "Klimafreundliche Wohngebäude – Photovoltaik",
@@ -548,7 +547,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "essen-solar", name: "Förderprogramm Photovoltaik- und Solaranlagen",
     traeger: "Stadt Essen", level: "kommune", region: "Essen", bundesland: "Nordrhein-Westfalen", agsCode: "05113",
     url: "https://www.essen.de/leben/umwelt/klima/klimaschutz/solarfoederung.de.html",
-    stand: "Juni 2026", status: "pausiert", capped: true, verified: true,
+    stand: "Juli 2026", status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Sockel + Zuschuss je kWp (Dach-PV); Programm derzeit ausgesetzt",
     rates: [
@@ -569,7 +568,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "schweinfurt-pv", name: "Förderprogramm Photovoltaik & Batteriespeicher",
     traeger: "Stadt Schweinfurt", level: "kommune", region: "Schweinfurt", bundesland: "Bayern", agsCode: "09662",
     url: "https://www.schweinfurt.de/leben-freizeit/umwelt/klimaschutzkonzept/6002.Foerderprogramme.html",
-    stand: "Juni 2026", status: "aktiv", capped: true, verified: false,
+    stand: "Juli 2026", status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp + je kWh Speicher (neu angeschaffte Anlage)",
     rates: [
@@ -579,7 +578,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Neu angeschaffte Anlage; Kauf/Auftrag nach dem 03.05.2022",
       "Speicher nur aus eigener PV gespeist; zweistufiger Antrag",
-      "Bewilligung nach Eingangsdatum, solange Haushaltsmittel reichen",
+      "Städtische Förderseite steht auf Haushaltsjahr 2024 und ist offline (404); mehrere Quellen (2025/2026) melden kein eigenes kommunales Programm mehr — gilt als eingestellt",
     ],
     combinableWith: BUND,
     pvPerKwp: 100, pvCap: 1000,
@@ -765,8 +764,8 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "mayen-koblenz-speicher": {
     id: "mayen-koblenz-speicher", name: "Solarspeicher-Förderprogramm",
     traeger: "Landkreis Mayen-Koblenz", level: "landkreis", region: "Landkreis Mayen-Koblenz", bundesland: "Rheinland-Pfalz", agsCode: "07137",
-    url: "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/solarspeicher-foerderprogramm/",
-    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
+    url: "https://www.kvmyk.de/themen/klima/klimaschutzmassnahmen/",
+    stand: "Juli 2026", status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWh Batteriespeicher (mit PV)",
     rates: [{ label: "Batteriespeicher", value: "200 €/kWh" }],

@@ -14,7 +14,8 @@ describe("live cities (only active programs)", () => {
   it("includes an active program city and excludes inactive/no-program ones", () => {
     const slugs = liveCities().map((c) => c.slug);
     expect(slugs).toContain("wuerzburg"); // aktiv
-    expect(slugs).toContain("schweinfurt"); // aktiv
+    expect(slugs).toContain("regensburg"); // aktiv
+    expect(slugs).not.toContain("schweinfurt"); // eingestellt (Council Juli 2026)
     expect(slugs).not.toContain("muenchen"); // eingestellt
     expect(slugs).not.toContain("karlsruhe"); // ausgeschoepft
     expect(slugs).not.toContain("dresden"); // kein Programm
