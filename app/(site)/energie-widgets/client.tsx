@@ -410,8 +410,11 @@ function VariantFrame({
   const [iframeReady, setIframeReady] = useState(false);
 
   // Live preview drives the theme via postMessage (instant, no reload). The
-  // autoswitch interval is the only thing that needs a fresh src.
-  const src = autoswitch > 0 ? `${variant.src}?auto=${autoswitch}` : variant.src;
+  // autoswitch interval is the only thing that needs a fresh src. embed=0 hides
+  // the widget's own "Einbetten" button here — you're already on the gallery.
+  const previewParams = new URLSearchParams({ embed: "0" });
+  if (autoswitch > 0) previewParams.set("auto", String(autoswitch));
+  const src = `${variant.src}?${previewParams.toString()}`;
 
   useEffect(() => {
     setIframeReady(false);
@@ -433,13 +436,23 @@ function VariantFrame({
     );
   }, [themeKey, iframeReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Functional settings (share footer, range, switcher) — live preview.
+  // Functional settings (share footer, range, switcher) — live preview. Only
+  // the three live controls travel; `embed` is intentionally omitted so it never
+  // overrides the embed=0 in the iframe URL (the gallery always hides the
+  // widget's own "Einbetten" button).
   const settingsKey = JSON.stringify(settings);
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe || !iframeReady || !settings) return;
     iframe.contentWindow?.postMessage(
-      { type: "widget:settings", settings },
+      {
+        type: "widget:settings",
+        settings: {
+          share: settings.share,
+          range: settings.range,
+          switchable: settings.switchable,
+        },
+      },
       window.location.origin,
     );
   }, [settingsKey, iframeReady]); // eslint-disable-line react-hooks/exhaustive-deps

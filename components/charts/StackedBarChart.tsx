@@ -411,8 +411,8 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh, compact
         return (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, marginBottom: 4 }}>
-              <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: "var(--color-text-primary)" }}>Kernenergie {nucPct}%</span>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{fmt(nucTotal)}</span>
+              <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: CATEGORY_COLORS.nuclear }}>Kernenergie {nucPct}%</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700, color: CATEGORY_COLORS.nuclear }}>{fmt(nucTotal)}</span>
             </div>
             {!compact && nuclearGWhLocal > 0.01 && (
               <BarTooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={fmt(nuclearGWhLocal)} />
@@ -669,13 +669,15 @@ function StackedBarInner({ data, keys, height = CHART_HEIGHT, width, mode, nucle
                 const lineY = yScale(nucGWh) ?? innerHeight;
                 return (
                   <g key={`nuc-${bucket.weekKey}`} pointerEvents="none">
-                    {/* White outline (1px border around the 2px line) */}
+                    {/* Background-coloured halo (contrast outline around the
+                        2px line) — uses the bg token so it stays a contrasting
+                        halo on a dark widget theme, not a fixed white. */}
                     <line
                       x1={x}
                       x2={x + barWidth}
                       y1={lineY}
                       y2={lineY}
-                      stroke="#FFFFFF"
+                      stroke="var(--color-bg)"
                       strokeWidth={4}
                       strokeOpacity={0.5}
                     />

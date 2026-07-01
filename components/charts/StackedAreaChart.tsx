@@ -217,8 +217,8 @@ function ChartTooltip({ tooltip, activeKeys, width, margin, nuclearGw, compact }
         return (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, marginBottom: 4 }}>
-              <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: "var(--color-text-primary)" }}>Kernenergie {nucPct}%</span>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700 }}>{fmt(nucCombined)}</span>
+              <span style={{ flex: 1, fontWeight: 700, fontSize: 12, color: CATEGORY_COLORS.nuclear }}>Kernenergie {nucPct}%</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, fontWeight: 700, color: CATEGORY_COLORS.nuclear }}>{fmt(nucCombined)}</span>
             </div>
             {!compact && nuclearTotal > 0 && (
               <TooltipRow color={CATEGORY_COLORS.nuclear} label="erzeugt in DE" value={fmt(nuclearTotal)} />
@@ -359,8 +359,8 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
           <LinearGradient
             key={key}
             id={`gradient-${key}`}
-            from={ENERGY_COLORS_HEX[key] || "#B0BEC5"}
-            to={ENERGY_COLORS_HEX[key] || "#B0BEC5"}
+            from={ENERGY_COLORS_HEX[key] || "var(--color-text-muted)"}
+            to={ENERGY_COLORS_HEX[key] || "var(--color-text-muted)"}
             fromOpacity={0.85}
             toOpacity={0.6}
           />
@@ -391,7 +391,7 @@ function StackedAreaInner({ data, keys, height = CHART_HEIGHT, width, xFormat, n
                   key={stack.key}
                   d={path(stack) || ""}
                   fill={`url(#gradient-${stack.key})`}
-                  stroke={ENERGY_COLORS_HEX[stack.key] || "#B0BEC5"}
+                  stroke={ENERGY_COLORS_HEX[stack.key] || "var(--color-text-muted)"}
                   strokeWidth={0.5}
                   strokeOpacity={0.3}
                 />

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { useGenerationMix, useNuclearImport } from "../../../lib/energy";
 import StackedAreaChart from "../../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../../components/charts/StackedBarChart";
@@ -30,6 +31,19 @@ function getAvailableYears(): number[] {
     years.push(y);
   }
   return years;
+}
+
+// Validate a ?range= query value against the known range vocabulary.
+// Accepts the fixed tokens plus any year string between 2015 and the current
+// year. Invalid/missing values return null so the caller can fall back to "24h".
+function parseRangeParam(raw: string | null): string | null {
+  if (!raw) return null;
+  if (["24h", "7d", "30d", "12M", "YTD", "MAX"].includes(raw)) return raw;
+  if (/^\d{4}$/.test(raw)) {
+    const year = Number(raw);
+    if (year >= 2015 && year <= new Date().getFullYear()) return raw;
+  }
+  return null;
 }
 
 // ─── Main Component ──────────────────────────────────────────────────────────
@@ -102,8 +116,25 @@ function LoadingSpinner() {
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function EnergieClient() {
-  const [selected, setSelected] = useState("24h");
+  const searchParams = useSearchParams();
+  const [selected, setSelected] = useState(() => parseRangeParam(searchParams.get("range")) ?? "24h");
   const [showNuclear, setShowNuclear] = useState(true);
+
+  // Mirror range changes into the URL without a reload or new history entry,
+  // so the existing share button (which shares window.location.href) carries the
+  // current view. Other query params are preserved.
+  const selectRange = useCallback((value: string) => {
+    setSelected(value);
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    params.set("range", value);
+    const query = params.toString();
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`
+    );
+  }, []);
   const [yearDropdownOpen, setYearDropdownOpen] = useState(false);
   const yearDropdownRef = useRef<HTMLDivElement>(null);
   const availableYears = useMemo(() => getAvailableYears(), []);
@@ -257,7 +288,7 @@ export default function EnergieClient() {
           <div style={{ fontSize: 10, color: v("--color-text-muted"), marginBottom: 4, fontWeight: 600 }}>Letzte</div>
           <div style={{ display: "flex", gap: 6 }}>
             {LETZTE_RANGES.map((range) => (
-              <button key={range.value} onClick={() => setSelected(range.value)} style={rangeButtonStyle(selected === range.value)}>
+              <button key={range.value} onClick={() => selectRange(range.value)} style={rangeButtonStyle(selected === range.value)}>
                 {range.label}
               </button>
             ))}
@@ -268,7 +299,7 @@ export default function EnergieClient() {
           <div style={{ fontSize: 10, color: v("--color-text-muted"), marginBottom: 4, fontWeight: 600 }}>Andere Zeiträume</div>
           <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
             {/* Current year button */}
-            <button onClick={() => setSelected("YTD")} style={rangeButtonStyle(selected === "YTD")}>
+            <button onClick={() => selectRange("YTD")} style={rangeButtonStyle(selected === "YTD")}>
               {new Date().getFullYear()}
             </button>
 
@@ -278,9 +309,9 @@ export default function EnergieClient() {
                 onClick={() => {
                   if (isYear) {
                     const y = Number(selected);
-                    if (y > 2015) setSelected(String(y - 1));
+                    if (y > 2015) selectRange(String(y - 1));
                   } else {
-                    setSelected(String(new Date().getFullYear() - 1));
+                    selectRange(String(new Date().getFullYear() - 1));
                   }
                 }}
                 style={{
@@ -329,7 +360,7 @@ export default function EnergieClient() {
                     {availableYears.map((year) => (
                       <button
                         key={year}
-                        onClick={() => { setSelected(String(year)); setYearDropdownOpen(false); }}
+                        onClick={() => { selectRange(String(year)); setYearDropdownOpen(false); }}
                         style={{
                           display: "block",
                           width: "100%",
@@ -355,7 +386,7 @@ export default function EnergieClient() {
                   if (isYear) {
                     const y = Number(selected);
                     const maxYear = new Date().getFullYear() - 1;
-                    if (y < maxYear) setSelected(String(y + 1));
+                    if (y < maxYear) selectRange(String(y + 1));
                   }
                 }}
                 disabled={!isYear || Number(selected) >= new Date().getFullYear() - 1}
@@ -373,7 +404,7 @@ export default function EnergieClient() {
               </button>
             </div>
 
-            <button onClick={() => setSelected("MAX")} style={rangeButtonStyle(selected === "MAX")}>
+            <button onClick={() => selectRange("MAX")} style={rangeButtonStyle(selected === "MAX")}>
               Max
             </button>
           </div>

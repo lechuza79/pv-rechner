@@ -292,7 +292,9 @@ export function MastrLiveRadial({
 
   const accentBars = v("--color-accent");
   const accentLatest = v("--color-highlight");
-  const labelColor = "rgba(0,0,0,0.45)";
+  // Muted text token instead of fixed black so the unit label stays legible on
+  // a dark widget background (where it resolves to a light tone).
+  const labelColor = v("--color-text-muted");
 
   // 4 alternating section rings (25/50/75/100% of bar length)
   const sectionRings = [0.25, 0.5, 0.75, 1].map((q, i) => ({
@@ -370,8 +372,9 @@ export function MastrLiveRadial({
                   borderRadius: "50%",
                   background: v("--color-highlight"),
                   // Dezente Outline, damit der Punkt auch bei Highlight-Tokens
-                  // sichtbar bleibt, die zum Host-BG zu nah liegen.
-                  boxShadow: "inset 0 0 0 1px rgba(0,0,0,0.10)",
+                  // sichtbar bleibt, die zum Host-BG zu nah liegen. Border-Token
+                  // statt festem Schwarz → flippt auf dunklem Hintergrund mit.
+                  boxShadow: `inset 0 0 0 1px ${v("--color-border")}`,
                 }}
               />
               {traegerNav.before ?? "Momentan erzeugt"}
@@ -483,7 +486,8 @@ export function MastrLiveRadial({
                 dx="0"
                 dy="1.5"
                 stdDeviation="2.5"
-                floodColor="rgba(0,0,0,0.18)"
+                floodColor={v("--color-text-primary")}
+                floodOpacity={0.18}
               />
             </filter>
           </defs>
@@ -496,7 +500,7 @@ export function MastrLiveRadial({
               cy={CY}
               r={s.r}
               fill="none"
-              stroke="rgba(0,0,0,1)"
+              stroke={v("--color-text-primary")}
               strokeOpacity={s.opacity}
               strokeWidth={1}
             />
@@ -538,7 +542,8 @@ export function MastrLiveRadial({
                       y1={y1}
                       x2={x2}
                       y2={y2}
-                      stroke="rgba(0,0,0,0.10)"
+                      stroke={v("--color-text-primary")}
+                      strokeOpacity={0.1}
                       strokeWidth={
                         (isHover ? dim.barStrokeHover : dim.barStrokeLatest) + 2
                       }
@@ -628,7 +633,7 @@ export function MastrLiveRadial({
               fontWeight: 700,
               color: v("--color-text-primary"),
               fontVariantNumeric: "tabular-nums",
-              fontFamily: '"JetBrains Mono", ui-monospace, SFMono-Regular, monospace',
+              fontFamily: v("--font-mono"),
               letterSpacing: -0.3,
               lineHeight: 1,
             }}

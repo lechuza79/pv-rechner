@@ -2,31 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { MastrLiveRadial } from "../../../../components/MastrLiveRadial";
-import { parseWidgetThemeQuery } from "../../../../lib/widget-theme";
-
-// ─── Configuration ──────────────────────────────────────────────────────────
-const ALLOWED_ORIGINS = [
-  "https://sebastianschaeder.de",
-  "https://www.sebastianschaeder.de",
-  "https://solar-check.io",
-  "https://www.solar-check.io",
-  "http://localhost:4321",
-  "http://localhost:4322",
-  "http://localhost:3041",
-  "http://localhost:3000",
-];
-
-const ALLOWED_VARS = [
-  "--widget-bg",
-  "--widget-fg",
-  "--widget-muted",
-  "--widget-accent",
-  "--widget-accent-fg",
-  "--widget-highlight",
-  "--widget-ink",
-  "--widget-border-radius",
-  "--widget-font-family",
-];
+import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 
 type Traeger = "gesamt" | "solar" | "wind" | "biomasse" | "wasser";
 
@@ -79,44 +55,8 @@ export default function ErzeugungWidget({
     return () => clearInterval(id);
   }, [autoswitchMs]);
 
-  // Static theme via iframe URL params (copy-paste embed code path)
-  useEffect(() => {
-    const theme = parseWidgetThemeQuery(window.location.search);
-    const root = document.documentElement;
-    Object.keys(theme).forEach((k) => {
-      if (ALLOWED_VARS.indexOf(k) !== -1) root.style.setProperty(k, theme[k]);
-    });
-  }, []);
-
-  // postMessage theme override
-  useEffect(() => {
-    function onMessage(event: MessageEvent) {
-      if (ALLOWED_ORIGINS.indexOf(event.origin) === -1) return;
-      const payload = event.data as { type?: unknown; vars?: unknown } | undefined;
-      if (!payload || payload.type !== "widget:theme") return;
-
-      const vars =
-        payload.vars && typeof payload.vars === "object"
-          ? (payload.vars as Record<string, unknown>)
-          : {};
-      const root = document.documentElement;
-
-      if (Object.keys(vars).length === 0) {
-        ALLOWED_VARS.forEach((k) => root.style.removeProperty(k));
-        return;
-      }
-
-      Object.keys(vars).forEach((k) => {
-        const val = vars[k];
-        if (ALLOWED_VARS.indexOf(k) !== -1 && typeof val === "string") {
-          root.style.setProperty(k, val);
-        }
-      });
-    }
-
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, []);
+  // Theme via URL params + same-origin postMessage (shared hook).
+  useWidgetTheme();
 
   // Fetch installed capacity for the selected traeger
   useEffect(() => {

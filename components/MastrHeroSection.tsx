@@ -581,7 +581,7 @@ function Kachel({ label, value, hint }: { label: string; value: ReactNode; hint?
           fontWeight: 700,
           color: v("--color-text-primary"),
           fontVariantNumeric: "tabular-nums",
-          fontFamily: '"JetBrains Mono", ui-monospace, SFMono-Regular, monospace',
+          fontFamily: v("--font-mono"),
           letterSpacing: -0.3,
         }}
       >

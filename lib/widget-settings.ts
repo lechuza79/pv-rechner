@@ -15,12 +15,16 @@ export interface WidgetSettings {
   range: WidgetRange;
   /** Show the time-range switcher. When false, the range is fixed. */
   switchable: boolean;
+  /** Show the "Einbetten" button. The widgets gallery sets this to false
+   * (embed=0) so the button doesn't appear on the gallery itself. */
+  embed: boolean;
 }
 
 export const WIDGET_SETTINGS_DEFAULTS: WidgetSettings = {
   share: true,
   range: "7d",
   switchable: true,
+  embed: true,
 };
 
 const RANGES: readonly WidgetRange[] = ["24h", "7d", "30d", "year"];
@@ -33,11 +37,29 @@ export function parseWidgetSettingsQuery(search: string): Partial<WidgetSettings
   const r = p.get("range");
   if (r && RANGES.indexOf(r as WidgetRange) !== -1) out.range = r as WidgetRange;
   if (p.has("switch")) out.switchable = p.get("switch") !== "0";
+  if (p.has("embed")) out.embed = p.get("embed") !== "0";
+  return out;
+}
+
+/** Coerce a postMessage settings object into a validated partial override.
+ * Shares the same validation as the URL parser so the two paths never drift —
+ * crucially this accepts every valid range (incl. "24h"). */
+export function parseWidgetSettingsObject(obj: unknown): Partial<WidgetSettings> {
+  const s = obj && typeof obj === "object" ? (obj as Record<string, unknown>) : {};
+  const out: Partial<WidgetSettings> = {};
+  if (typeof s.share === "boolean") out.share = s.share;
+  if (typeof s.switchable === "boolean") out.switchable = s.switchable;
+  if (typeof s.embed === "boolean") out.embed = s.embed;
+  if (typeof s.range === "string" && RANGES.indexOf(s.range as WidgetRange) !== -1) {
+    out.range = s.range as WidgetRange;
+  }
   return out;
 }
 
 /** Build URL params from a selection, omitting any value equal to the default
- * so the standard widget yields a clean, param-free embed URL. */
+ * so the standard widget yields a clean, param-free embed URL.
+ * NOTE: `embed` is intentionally NOT serialised here — it is a gallery-only
+ * runtime flag (embed=0), never part of the copy-paste embed code. */
 export function buildWidgetSettingsQuery(s: WidgetSettings): URLSearchParams {
   const p = new URLSearchParams();
   if (s.share !== WIDGET_SETTINGS_DEFAULTS.share) p.set("share", s.share ? "1" : "0");

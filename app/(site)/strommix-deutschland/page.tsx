@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Header from "../../../components/Header";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
@@ -25,7 +26,9 @@ export default function EnergiePage() {
       }}
     >
       <Header />
-      <EnergieClient />
+      <Suspense fallback={null}>
+        <EnergieClient />
+      </Suspense>
     </div>
   );
 }

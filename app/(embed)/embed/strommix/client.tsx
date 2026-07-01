@@ -11,12 +11,11 @@ import {
 import ChartActionBar from "../../../../components/ChartActionBar";
 import { useChartExport } from "../../../../lib/useChartExport";
 import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
-import { parseWidgetThemeQuery } from "../../../../lib/widget-theme";
+import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import {
   WIDGET_SETTINGS_DEFAULTS,
   WidgetSettings,
   WidgetRange,
-  parseWidgetSettingsQuery,
 } from "../../../../lib/widget-settings";
 
 // Where the share buttons point — the canonical source page for this widget.
@@ -42,28 +41,6 @@ import {
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
 } from "../../../../lib/chart-utils";
-
-// ─── Configuration ──────────────────────────────────────────────────────────
-const ALLOWED_ORIGINS = [
-  "https://sebastianschaeder.de",
-  "https://www.sebastianschaeder.de",
-  "https://solar-check.io",
-  "https://www.solar-check.io",
-  "http://localhost:4321",
-  "http://localhost:4322",
-  "http://localhost:3041",
-];
-
-const ALLOWED_VARS = [
-  "--widget-bg",
-  "--widget-fg",
-  "--widget-muted",
-  "--widget-accent",
-  "--widget-accent-fg",
-  "--widget-ink",
-  "--widget-border-radius",
-  "--widget-font-family",
-];
 
 // ─── Time range definitions ─────────────────────────────────────────────────
 type TabState =
@@ -127,71 +104,14 @@ export default function StrommixWidget() {
     shareUrl: SHARE_URL,
   });
 
-  // Static theme + settings via iframe URL params (copy-paste embed code path)
-  useEffect(() => {
-    const s = { ...WIDGET_SETTINGS_DEFAULTS, ...parseWidgetSettingsQuery(window.location.search) };
-    setSettings(s);
-    setTab(rangeToTab(s.range));
-    const theme = parseWidgetThemeQuery(window.location.search);
-    const root = document.documentElement;
-    Object.keys(theme).forEach((k) => {
-      if (ALLOWED_VARS.indexOf(k) !== -1) root.style.setProperty(k, theme[k]);
-    });
-  }, []);
-
-  // Theme override listener
-  useEffect(() => {
-    function onMessage(event: MessageEvent) {
-      // localhost (any port) is always the developer's own machine — allow it so
-      // the widgets page drives the live preview regardless of the dev port.
-      const isLocal = /^http:\/\/localhost:\d+$/.test(event.origin);
-      if (!isLocal && ALLOWED_ORIGINS.indexOf(event.origin) === -1) return;
-      const payload = event.data as
-        | { type?: unknown; vars?: unknown; settings?: unknown }
-        | undefined;
-      if (!payload) return;
-
-      if (payload.type === "widget:settings") {
-        const s =
-          payload.settings && typeof payload.settings === "object"
-            ? (payload.settings as Record<string, unknown>)
-            : {};
-        const range = s.range;
-        const validRange = range === "7d" || range === "30d" || range === "year";
-        setSettings((prev) => ({
-          ...prev,
-          ...(typeof s.share === "boolean" ? { share: s.share } : null),
-          ...(typeof s.switchable === "boolean" ? { switchable: s.switchable } : null),
-          ...(validRange ? { range: range as WidgetRange } : null),
-        }));
-        if (validRange) setTab(rangeToTab(range as WidgetRange));
-        return;
-      }
-
-      if (payload.type !== "widget:theme") return;
-
-      const vars =
-        payload.vars && typeof payload.vars === "object"
-          ? (payload.vars as Record<string, unknown>)
-          : {};
-      const root = document.documentElement;
-
-      if (Object.keys(vars).length === 0) {
-        ALLOWED_VARS.forEach((k) => root.style.removeProperty(k));
-        return;
-      }
-
-      Object.keys(vars).forEach((k) => {
-        const val = vars[k];
-        if (ALLOWED_VARS.indexOf(k) !== -1 && typeof val === "string") {
-          root.style.setProperty(k, val);
-        }
-      });
-    }
-
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, []);
+  // Theme + functional settings (URL params + same-origin postMessage) via the
+  // shared hook. Range changes also drive the active tab.
+  useWidgetTheme({
+    onSettings: (partial) => {
+      setSettings((prev) => ({ ...prev, ...partial }));
+      if (partial.range) setTab(rangeToTab(partial.range));
+    },
+  });
 
   return (
     <div
@@ -211,7 +131,7 @@ export default function StrommixWidget() {
       <div ref={chartExport.chartRef}>
         <ChartArea tab={tab} />
       </div>
-      <Footer share={settings.share} chartExport={chartExport} />
+      <Footer share={settings.share} embed={settings.embed} chartExport={chartExport} />
     </div>
   );
 }
@@ -663,9 +583,11 @@ function CenteredMessage({
 
 function Footer({
   share,
+  embed,
   chartExport,
 }: {
   share: boolean;
+  embed: boolean;
   chartExport: ReturnType<typeof useChartExport>;
 }) {
   const copyLink = () => {
@@ -699,7 +621,11 @@ function Footer({
             onWhatsApp={chartExport.shareWhatsApp}
             onTwitter={chartExport.shareTwitter}
             onShareImage={chartExport.sharePng}
-            onEmbed={() => window.open("/energie-widgets#strommix", "_blank", "noopener")}
+            onEmbed={
+              embed
+                ? () => window.open("/energie-widgets#strommix", "_blank", "noopener")
+                : undefined
+            }
             isExporting={chartExport.isExporting}
             canNativeShare={chartExport.canNativeShare}
             size={30}

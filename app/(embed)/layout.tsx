@@ -53,8 +53,10 @@ const baseStyles = `
     --color-chart-grid:color-mix(in srgb,var(--widget-ink) 10%,transparent);
     --color-accent:var(--widget-accent);
     --color-accent-dim:color-mix(in srgb,var(--widget-accent) 12%,transparent);
-    --color-accent-dark:color-mix(in srgb,var(--widget-accent) 78%,#000);
-    --color-accent-light:color-mix(in srgb,var(--widget-accent) 55%,#FFF);
+    /* Mix accent shades toward the theme's own ink/background rather than fixed
+       black/white, so derived tones stay correct on a dark widget theme. */
+    --color-accent-dark:color-mix(in srgb,var(--widget-accent) 78%,var(--widget-ink));
+    --color-accent-light:color-mix(in srgb,var(--widget-accent) 55%,var(--widget-bg));
     --color-positive:#00D950;
     --color-text-on-accent:var(--widget-accent-fg);
     --color-bg-muted:color-mix(in srgb,var(--widget-ink) 6%,var(--widget-bg));
