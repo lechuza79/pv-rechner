@@ -174,6 +174,9 @@ export default function ResultFunding({
                 <span style={{ color: v("--color-text-secondary") }}>Investition nach Förderung</span>
                 <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-text-primary") }}>{nf(effektiv)} €</span>
               </div>
+              <p style={{ fontSize: 11, lineHeight: 1.5, color: v("--color-text-faint"), margin: "2px 0 0" }}>
+                Fördersätze ohne Gewähr — verbindlich ist die offizielle Quelle des Programms, Budgets können erschöpft sein.
+              </p>
             </div>
           ) : mostSpecific ? (
             <div style={{ fontSize: 12, marginTop: 8 }}>

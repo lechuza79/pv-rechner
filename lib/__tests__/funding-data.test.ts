@@ -147,14 +147,17 @@ describe("stackFunding", () => {
     expect(total).toBeLessThanOrEqual(1000);
   });
 
-  // Regression: official-source verification (Juni 2026) found Würzburg DOES
-  // fund standard roof PV (150 €/kWp, max 1.500 €) — earlier data wrongly
-  // treated it as non-computable.
-  it("Würzburg funds standard roof PV (150 €/kWp, cap 1.500)", () => {
+  // Regression: Würzburg's rate (150 €/kWp, max 1.500 €) is still confirmed by two
+  // sources, but the Council-Prüfung (Juli 2026, 2:1) found the program was rebuilt
+  // to "KlimaStadt Würzburg" (25.04.2026) and current application acceptance is
+  // unconfirmed. Encoding: keep status "aktiv" (the overall programme runs, page
+  // stays live) but drop the structured rate → non-computable, no auto-deduction.
+  it("Würzburg (aktiv, but non-computable after 2026 rebuild) is not auto-deducted", () => {
     const p = getFundingProgram("wuerzburg-klimastadt")!;
     expect(p.status).toBe("aktiv");
-    expect(fundingAmount(p, 8, 0, 16000).total).toBe(8 * 150);
-    expect(fundingAmount(p, 20, 0, 40000).total).toBe(1500); // cap
+    expect(p.pvPerKwp).toBeUndefined();
+    expect(fundingAmount(p, 8, 0, 16000).computable).toBe(false);
+    expect(stackFunding(fundingForAgs("09663000"), 10, 5, 20000).total).toBe(0);
   });
 
   // Regression: Bad Homburg amounts are correct but the program is not reliably
@@ -186,24 +189,35 @@ describe("funding batch 2 (Juni 2026)", () => {
     expect(fundingAmount(p, 15, 0, 25000).total).toBe(1500);
     expect(fundingAmount(p, 30, 0, 45000).total).toBe(2000);
   });
-  it("Dortmund (ausgeschoepft) and Essen (pausiert) are not auto-applied", () => {
+  it("Dortmund (ausgeschoepft) and Essen (eingestellt) are not auto-applied", () => {
     expect(getFundingProgram("dortmund-pv")!.status).toBe("ausgeschoepft");
-    expect(getFundingProgram("essen-solar")!.status).toBe("pausiert");
+    // Council-Prüfung Juli 2026: Essen zum 03.07.2025 gestoppt → eingestellt.
+    expect(getFundingProgram("essen-solar")!.status).toBe("eingestellt");
     expect(stackFunding(fundingForAgs("05913000"), 10, 5, 20000).total).toBe(0);
     expect(stackFunding(fundingForAgs("05113000"), 10, 5, 20000).total).toBe(0);
   });
 });
 
-// Batch Juni 2026, Teil 3 — Katalog-Vervollständigung. Einziger neuer
-// aktiv+anrechenbarer Zuschuss: Schweinfurt.
-describe("funding batch 3 (Katalog)", () => {
-  it("Schweinfurt funds roof PV (100 €/kWp cap 1.000) + storage (100 €/kWh ab 3 kWh)", () => {
+// Batch Juni 2026, Teil 3 — Katalog-Vervollständigung.
+// Council-Korrekturen Juli 2026 (Quartals-Vollprüfung, 3 Programme gegengeprüft):
+//  - Schweinfurt: offizielle Seite auf 2024 eingefroren + offline → status eingestellt.
+//  - Würzburg: Programm zum 25.04.2026 umgebaut, Annahme unbestätigt → aktiv ohne Abzug.
+//  - Mannheim: Neustart 11.03.2026, aber nur MFH/Gründach/Denkmal → aktiv ohne €/kWp-Abzug.
+describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
+  it("Schweinfurt: Programm eingestellt → kein Auto-Abzug", () => {
     const p = getFundingProgram("schweinfurt-pv")!;
-    expect(p.status).toBe("aktiv");
+    expect(p.status).toBe("eingestellt");
+    // Rate-Mathematik dokumentiert das historische Programm — wird aber nicht angerechnet:
     expect(fundingAmount(p, 8, 0, 16000).total).toBe(800);
-    expect(fundingAmount(p, 20, 0, 40000).total).toBe(1000); // cap
-    expect(fundingAmount(p, 8, 5, 18000).total).toBe(800 + 500);
-    expect(stackFunding(fundingForAgs("09662000"), 10, 6, 22000).total).toBe(1000 + 600);
+    expect(fundingAmount(p, 8, 0, 16000).active).toBe(false);
+    expect(stackFunding(fundingForAgs("09662000"), 10, 6, 22000).total).toBe(0);
+  });
+  it("Mannheim: aktiv (Neustart 03/2026), aber ohne pauschalen €/kWp-Abzug", () => {
+    const p = getFundingProgram("mannheim-solarbonus")!;
+    expect(p.status).toBe("aktiv");
+    expect(p.pvPerKwp).toBeUndefined();
+    expect(fundingAmount(p, 10, 5, 20000).computable).toBe(false);
+    expect(stackFunding(fundingForAgs("08222000"), 10, 5, 20000).total).toBe(0);
   });
   it("Wolfsburg (pausiert) and Bottrop (ausgeschoepft) are not auto-applied", () => {
     expect(getFundingProgram("wolfsburg-pv")!.status).toBe("pausiert");
