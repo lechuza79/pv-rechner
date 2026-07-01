@@ -200,6 +200,16 @@ export function IconMenu({ size = 16, color = "currentColor", style }: IconProps
   );
 }
 
+export function IconMore({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <circle cx="3.5" cy="8" r="1.2" fill={color} />
+      <circle cx="8" cy="8" r="1.2" fill={color} />
+      <circle cx="12.5" cy="8" r="1.2" fill={color} />
+    </svg>
+  );
+}
+
 export function IconDownload({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>

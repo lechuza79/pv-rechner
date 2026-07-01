@@ -142,6 +142,8 @@ export function MastrLiveRadial({
   size = "default",
   branding = false,
   helpOverlay = null,
+  actions = null,
+  onValue,
 }: {
   energietraeger: Energietraeger;
   installedKwp: number | null;
@@ -149,6 +151,13 @@ export function MastrLiveRadial({
   size?: SizeVariant;
   /** Renders a small "Powered by Solar-Check.io" footer (for embeds). */
   branding?: boolean;
+  /** Optional action controls rendered in the branding footer (share/download/
+   * embed). Standard size: on the left, "Powered by" on the right. Compact:
+   * grouped on the right next to the help button. */
+  actions?: React.ReactNode;
+  /** Reports the current value in GW (settled, not animated) — used by the
+   * embed widget to bake the value into the exported image. */
+  onValue?: (gw: number | null) => void;
   /** When set, replaces the chart content with this node (e.g. help screen).
       Container border + padding are preserved so the flip looks like a
       back-side of the same card. */
@@ -263,6 +272,12 @@ export function MastrLiveRadial({
     rafId = requestAnimationFrame(step);
     return () => cancelAnimationFrame(rafId);
   }, [hover, latest]);
+
+  // Report the settled current value (GW) to the parent, e.g. for image export.
+  const latestMw = latest ? latest.mw : null;
+  useEffect(() => {
+    onValue?.(latestMw != null ? latestMw / 1000 : null);
+  }, [latestMw, onValue]);
 
   if (loading || !latest) return null;
 
@@ -696,7 +711,7 @@ export function MastrLiveRadial({
         </div>
       )}
 
-      {branding && (
+      {(branding || actions || (isCompact && traegerNav?.after)) && (
         <div
           style={{
             marginTop: 10,
@@ -704,28 +719,44 @@ export function MastrLiveRadial({
             color: v("--color-text-muted"),
             letterSpacing: 0.2,
             display: "flex",
-            // Default: Powered by zentriert. Compact: links + Help rechts.
-            justifyContent: isCompact ? "space-between" : "center",
+            // branding gates only the "Powered by" line; actions/help stay.
+            justifyContent: isCompact
+              ? branding
+                ? "space-between"
+                : "flex-end"
+              : actions
+                ? branding
+                  ? "space-between"
+                  : "flex-start"
+                : "center",
             alignItems: "center",
             gap: 8,
           }}
         >
-          <span>
-            Powered by{" "}
-            <a
-              href="https://solar-check.io"
-              target="_blank"
-              rel="noopener"
-              style={{
-                color: v("--color-accent"),
-                fontWeight: 600,
-                textDecoration: "none",
-              }}
-            >
-              solar-check.io
-            </a>
-          </span>
-          {isCompact && traegerNav?.after && <span>{traegerNav.after}</span>}
+          {actions && !isCompact && <span style={{ display: "flex" }}>{actions}</span>}
+          {branding && (
+            <span>
+              Powered by{" "}
+              <a
+                href="https://solar-check.io"
+                target="_blank"
+                rel="noopener"
+                style={{
+                  color: v("--color-accent"),
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
+              >
+                solar-check.io
+              </a>
+            </span>
+          )}
+          {isCompact && (traegerNav?.after || actions) && (
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              {traegerNav?.after}
+              {actions}
+            </span>
+          )}
         </div>
       )}
           </div>

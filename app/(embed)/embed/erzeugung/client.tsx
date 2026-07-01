@@ -3,6 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { MastrLiveRadial } from "../../../../components/MastrLiveRadial";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
+import ChartActionBar from "../../../../components/ChartActionBar";
+import { useChartExport } from "../../../../lib/useChartExport";
+
+// Where share/embed point — the canonical live page for this widget.
+const SHARE_URL = "https://solar-check.io/strommix-deutschland";
+const SHARE_TEXT = "Stromerzeugung in Deutschland – live bei Solar Check";
 
 type Traeger = "gesamt" | "solar" | "wind" | "biomasse" | "wasser";
 
@@ -38,7 +44,40 @@ export default function ErzeugungWidget({
   const [traeger, setTraeger] = useState<Traeger>("gesamt");
   const [installedKwp, setInstalledKwp] = useState<number | null>(null);
   const [showHelp, setShowHelp] = useState(false);
+  const [gw, setGw] = useState<number | null>(null);
+  const [showEmbed, setShowEmbed] = useState(true);
+  const [showBranding, setShowBranding] = useState(true);
   const helpRef = useRef<HTMLDivElement | null>(null);
+
+  const gwLabel =
+    gw != null
+      ? ` · ${gw.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW`
+      : "";
+  const chartExport = useChartExport({
+    context: {
+      title: "Stromerzeugung Deutschland",
+      subtitle: `${TRAEGER_LABEL[traeger]}${gwLabel}`,
+    },
+    filename: `solar-check-erzeugung-${traeger}.png`,
+    shareText: SHARE_TEXT,
+    shareUrl: SHARE_URL,
+  });
+
+  const actionBar = (
+    <ChartActionBar
+      variant={compact ? "menu" : "bar"}
+      menuUp={compact}
+      size={compact ? 26 : 28}
+      onDownload={chartExport.downloadPng}
+      onCopyLink={() => navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {})}
+      onWhatsApp={chartExport.shareWhatsApp}
+      onTwitter={chartExport.shareTwitter}
+      onShareImage={chartExport.sharePng}
+      onEmbed={showEmbed ? () => window.open("/energie-widgets#erzeugung", "_blank", "noopener") : undefined}
+      isExporting={chartExport.isExporting}
+      canNativeShare={chartExport.canNativeShare}
+    />
+  );
 
   // Autoswitch: wechselt periodisch durch die Energieträger. Pausiert
   // a) solange der Cursor über dem Widget hovert (Desktop)
@@ -55,8 +94,14 @@ export default function ErzeugungWidget({
     return () => clearInterval(id);
   }, [autoswitchMs]);
 
-  // Theme via URL params + same-origin postMessage (shared hook).
-  useWidgetTheme();
+  // Theme via URL params + same-origin postMessage (shared hook). Also picks up
+  // the embed flag (embed=0 on the gallery hides the "Einbetten" action).
+  useWidgetTheme({
+    onSettings: (s) => {
+      if (typeof s.embed === "boolean") setShowEmbed(s.embed);
+      if (typeof s.branding === "boolean") setShowBranding(s.branding);
+    },
+  });
 
   // Fetch installed capacity for the selected traeger
   useEffect(() => {
@@ -166,6 +211,7 @@ export default function ErzeugungWidget({
 
   return (
     <div
+      ref={chartExport.chartRef}
       // Unsichtbarer Pointer-Event-Wrapper für Autoswitch-Pause bei Hover/Tap.
       onPointerEnter={(e) => {
         if (e.pointerType === "mouse") hoveringRef.current = true;
@@ -181,7 +227,9 @@ export default function ErzeugungWidget({
         energietraeger={traeger}
         installedKwp={installedKwp}
         size={compact ? "compact" : "default"}
-        branding
+        branding={showBranding}
+        actions={actionBar}
+        onValue={setGw}
         helpOverlay={showHelp ? helpPanel : null}
         traegerNav={{
           label: TRAEGER_LABEL[traeger],

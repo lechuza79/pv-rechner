@@ -16,13 +16,26 @@ const DEFAULT_PLZ = "10115";
 // So we pre-load a default location (overridable via ?plz=) and the demo sets a
 // generous fixed height that fits the fully expanded state.
 export default function SimulationWidget({ plz = "" }: { plz?: string }) {
-  useWidgetTheme();
+  const [showEmbed, setShowEmbed] = useState(true);
+  const [showBranding, setShowBranding] = useState(true);
+  useWidgetTheme({
+    onSettings: (s) => {
+      if (typeof s.embed === "boolean") setShowEmbed(s.embed);
+      if (typeof s.branding === "boolean") setShowBranding(s.branding);
+    },
+  });
 
   const [initialPlz] = useState(() => (/^\d{5}$/.test(plz) ? plz : DEFAULT_PLZ));
 
   return (
     <div style={{ maxWidth: 380, margin: "0 auto", padding: 16 }}>
-      <SimulationPanel embed initialPlz={initialPlz} showExport={false} />
+      <SimulationPanel
+        embed
+        initialPlz={initialPlz}
+        showExport={false}
+        embedButton={showEmbed}
+        branding={showBranding}
+      />
     </div>
   );
 }

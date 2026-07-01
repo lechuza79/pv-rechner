@@ -18,6 +18,11 @@ export interface WidgetSettings {
   /** Show the "Einbetten" button. The widgets gallery sets this to false
    * (embed=0) so the button doesn't appear on the gallery itself. */
   embed: boolean;
+  /** Show the "Powered by solar-check.io" footer. Default true (free external
+   * embeds keep it). Our own on-site integrations set branding=0 to hide it;
+   * hiding it externally is a future premium feature, so it is never offered in
+   * the free copy-paste embed code. */
+  branding: boolean;
 }
 
 export const WIDGET_SETTINGS_DEFAULTS: WidgetSettings = {
@@ -25,6 +30,7 @@ export const WIDGET_SETTINGS_DEFAULTS: WidgetSettings = {
   range: "7d",
   switchable: true,
   embed: true,
+  branding: true,
 };
 
 const RANGES: readonly WidgetRange[] = ["24h", "7d", "30d", "year"];
@@ -38,6 +44,7 @@ export function parseWidgetSettingsQuery(search: string): Partial<WidgetSettings
   if (r && RANGES.indexOf(r as WidgetRange) !== -1) out.range = r as WidgetRange;
   if (p.has("switch")) out.switchable = p.get("switch") !== "0";
   if (p.has("embed")) out.embed = p.get("embed") !== "0";
+  if (p.has("branding")) out.branding = p.get("branding") !== "0";
   return out;
 }
 
@@ -50,6 +57,7 @@ export function parseWidgetSettingsObject(obj: unknown): Partial<WidgetSettings>
   if (typeof s.share === "boolean") out.share = s.share;
   if (typeof s.switchable === "boolean") out.switchable = s.switchable;
   if (typeof s.embed === "boolean") out.embed = s.embed;
+  if (typeof s.branding === "boolean") out.branding = s.branding;
   if (typeof s.range === "string" && RANGES.indexOf(s.range as WidgetRange) !== -1) {
     out.range = s.range as WidgetRange;
   }

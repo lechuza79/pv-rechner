@@ -10,6 +10,7 @@ import {
   IconTwitter,
   IconCode,
   IconCheck,
+  IconMore,
 } from "./Icons";
 
 export interface ChartActionBarProps {
@@ -18,20 +19,32 @@ export interface ChartActionBarProps {
   onWhatsApp: () => void;
   onTwitter: () => void;
   onShareImage?: () => void;
-  /** When given, adds an "Einbetten" entry that opens the embed modal. */
+  /** When given, adds an "Einbetten" entry that links to the widget gallery. */
   onEmbed?: () => void;
   isExporting: boolean;
   canNativeShare: boolean;
   /** Button edge length; the footer uses a slightly smaller size than pages. */
   size?: number;
+  /**
+   * "bar" (default) = the full button row (download + share dropdown + embed),
+   * for wide widgets. "menu" = a single ⋯ button opening one dropdown with all
+   * actions, for compact widgets where a full row would break the layout.
+   */
+  variant?: "bar" | "menu";
+  /** Omit the download action entirely (e.g. the map widget has no PNG export). */
+  showDownload?: boolean;
+  /** For variant="menu": open the dropdown upward (use when the ⋯ sits near the
+   * bottom of the widget, e.g. in a footer, so the menu doesn't clip). */
+  menuUp?: boolean;
 }
 
 /**
- * Standard chart action row: download as PNG + a share menu (copy link,
- * WhatsApp, X, optionally Einbetten). Uses the rounded accent buttons shared
- * with ChartExportBar. Lives wherever a chart can reach its own SVG — on pages
- * and inside the embed widget footer (the embed layout aliases --color-* onto
- * the widget tokens, so it themes correctly there too).
+ * Standard chart actions: download as PNG + share (copy link, WhatsApp, X,
+ * optionally native image share) + optional "Einbetten". Renders either as a
+ * button row (variant="bar") or a compact ⋯ menu (variant="menu"). Uses the
+ * rounded accent buttons shared with ChartExportBar and themes correctly inside
+ * the embed widget footer (the embed layout aliases --color-* onto the widget
+ * tokens).
  */
 export default function ChartActionBar({
   onDownload,
@@ -43,6 +56,9 @@ export default function ChartActionBar({
   isExporting,
   canNativeShare,
   size = 36,
+  variant = "bar",
+  showDownload = true,
+  menuUp = false,
 }: ChartActionBarProps) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -84,6 +100,56 @@ export default function ChartActionBar({
   };
   const icon = Math.round(size * 0.42);
 
+  // ─── Compact ⋯ menu (small widgets) ───────────────────────────────────────
+  if (variant === "menu") {
+    return (
+      <div ref={wrapRef} style={{ position: "relative", display: "inline-flex" }}>
+        {copied && (
+          <div style={{ ...S.toast, ...(menuUp ? null : S.toastBelow) }}>
+            <IconCheck size={13} color={v("--color-bg")} /> Link kopiert
+          </div>
+        )}
+        <button
+          onClick={() => setOpen((o) => !o)}
+          title="Aktionen"
+          aria-label="Aktionen"
+          aria-expanded={open}
+          style={btn}
+        >
+          <IconMore size={icon} />
+        </button>
+        {open && (
+          <div style={{ ...S.menu, ...(menuUp ? S.menuUpRight : S.menuBelowRight) }} role="menu">
+            {showDownload && (
+              <>
+                <MenuItem
+                  icon={IconDownload}
+                  label={isExporting ? "Wird erstellt…" : "Als Bild speichern"}
+                  onClick={run(onDownload)}
+                  disabled={isExporting}
+                />
+                <div style={S.divider} />
+              </>
+            )}
+            <MenuItem icon={IconLink} label="Link kopieren" onClick={copyLink} />
+            {canNativeShare && onShareImage && (
+              <MenuItem icon={IconShare} label="Als Bild teilen" onClick={run(onShareImage)} />
+            )}
+            <MenuItem icon={IconWhatsApp} label="WhatsApp" onClick={run(onWhatsApp)} />
+            <MenuItem icon={IconTwitter} label="X" onClick={run(onTwitter)} />
+            {onEmbed && (
+              <>
+                <div style={S.divider} />
+                <MenuItem icon={IconCode} label="Einbetten" onClick={run(onEmbed)} />
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ─── Full button row (wide widgets) ───────────────────────────────────────
   return (
     <div style={{ display: "flex", gap: 6, flexShrink: 0, position: "relative" }}>
       {copied && (
@@ -91,14 +157,16 @@ export default function ChartActionBar({
           <IconCheck size={13} color={v("--color-bg")} /> Link kopiert
         </div>
       )}
-      <button
-        onClick={onDownload}
-        disabled={isExporting}
-        title="Als Bild herunterladen"
-        style={{ ...btn, opacity: isExporting ? 0.5 : 1, cursor: isExporting ? "wait" : "pointer" }}
-      >
-        <IconDownload size={icon} />
-      </button>
+      {showDownload && (
+        <button
+          onClick={onDownload}
+          disabled={isExporting}
+          title="Als Bild herunterladen"
+          style={{ ...btn, opacity: isExporting ? 0.5 : 1, cursor: isExporting ? "wait" : "pointer" }}
+        >
+          <IconDownload size={icon} />
+        </button>
+      )}
 
       <div ref={wrapRef} style={{ position: "relative" }}>
         <button onClick={() => setOpen((o) => !o)} title="Teilen" aria-expanded={open} style={btn}>
@@ -130,14 +198,25 @@ function MenuItem({
   label,
   onClick,
   accent,
+  disabled,
 }: {
   icon: (p: { size?: number; color?: string }) => React.ReactElement;
   label: string;
   onClick: () => void;
   accent?: boolean;
+  disabled?: boolean;
 }) {
   return (
-    <button onClick={onClick} role="menuitem" style={{ ...S.item, ...(accent ? S.itemAccent : null) }}>
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      role="menuitem"
+      style={{
+        ...S.item,
+        ...(accent ? S.itemAccent : null),
+        ...(disabled ? { opacity: 0.5, cursor: "wait" } : null),
+      }}
+    >
       <Icon size={15} color={accent ? v("--color-accent") : v("--color-text-secondary")} />
       <span>{label}</span>
     </button>
@@ -157,6 +236,20 @@ const S: Record<string, React.CSSProperties> = {
     padding: 5,
     zIndex: 100,
   },
+  // ⋯ menu at the top-right of a widget → open downward, right-aligned.
+  menuBelowRight: {
+    bottom: "auto",
+    left: "auto",
+    top: 42,
+    right: 0,
+  },
+  // ⋯ menu near the bottom (footer) → open upward, right-aligned.
+  menuUpRight: {
+    bottom: 42,
+    top: "auto",
+    left: "auto",
+    right: 0,
+  },
   item: {
     display: "flex",
     alignItems: "center",
@@ -172,6 +265,7 @@ const S: Record<string, React.CSSProperties> = {
     cursor: "pointer",
     fontFamily: "inherit",
     textAlign: "left" as const,
+    whiteSpace: "nowrap" as const,
   },
   itemAccent: { color: v("--color-accent"), fontWeight: 700 },
   divider: { height: 1, background: v("--color-border"), margin: "4px 2px" },
@@ -193,4 +287,5 @@ const S: Record<string, React.CSSProperties> = {
     zIndex: 110,
     pointerEvents: "none" as const,
   },
+  toastBelow: { bottom: "auto", top: 44, left: "auto", right: 0 },
 };

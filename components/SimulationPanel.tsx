@@ -4,6 +4,7 @@ import Link from "next/link";
 import { IconArrowRight, IconCheck } from "./Icons";
 import { useChartExport } from "../lib/useChartExport";
 import ChartExportBar from "./ChartExportBar";
+import ChartActionBar from "./ChartActionBar";
 import { v, tokens } from "../lib/theme";
 import { PERSONEN, NUTZUNG } from "../lib/constants";
 import {
@@ -30,11 +31,17 @@ export default function SimulationPanel({
   initialPlz = "",
   showExport = !embed,
   showCta = true,
+  embedButton = true,
+  branding = false,
 }: {
   embed?: boolean;
   initialPlz?: string;
   showExport?: boolean;
   showCta?: boolean;
+  /** Embed only: show the "Einbetten" action (hidden on the gallery via embed=0). */
+  embedButton?: boolean;
+  /** Embed only: show the "Powered by solar-check.io" footer. */
+  branding?: boolean;
 }) {
   const [plz, setPlz] = useState(initialPlz);
   const [coords, setCoords] = useState<[number, number] | null>(null);
@@ -128,6 +135,9 @@ export default function SimulationPanel({
   );
 
   const hasConsumption = hourlyPoints.length > 0 && hourlyPoints.some(p => p.consumptionKw > 0);
+  // Share the exact current view: deep-link to the live page with the entered PLZ.
+  const shareUrl = `${SITE_URL}/pv-simulation${/^\d{5}$/.test(plz) ? `?plz=${plz}` : ""}`;
+  const shareText = `Live PV-Simulation: ${selectedKwp} kWp erzeugt heute ~${dailyEstimate.toLocaleString("de-DE", { minimumFractionDigits: 1 })} kWh – Solar Check`;
   const simChartExport = useChartExport({
     context: {
       title: `Tagesverlauf · ${selectedKwp} kWp`,
@@ -145,7 +155,8 @@ export default function SimulationPanel({
       ],
     },
     filename: `solar-check-simulation-${selectedKwp}kwp.png`,
-    shareText: `Live PV-Simulation: ${selectedKwp} kWp erzeugt heute ~${dailyEstimate.toLocaleString("de-DE", { minimumFractionDigits: 1 })} kWh`,
+    shareText,
+    shareUrl,
   });
 
   const ctaIdx = SIM_CONFIGS.findIndex(c => c.kwp === selectedKwp);
@@ -304,7 +315,10 @@ export default function SimulationPanel({
               onClick={() => setSelectedKwp(r.kwp)}
               style={{
                 padding: "14px 10px", borderRadius: v('--radius-md'), cursor: "pointer",
-                background: selectedKwp === r.kwp ? v('--color-accent-dim') : v('--color-bg'),
+                // Opaque accent tint (not the translucent --color-accent-dim) so the
+                // selected card sits consistently on the widget bg, incl. dark themes
+                // and any parent background behind a transparent embed body.
+                background: selectedKwp === r.kwp ? v('--color-bg-accent') : v('--color-bg'),
                 border: `2px solid ${selectedKwp === r.kwp ? v('--color-accent') : v('--color-border')}`,
                 textAlign: "center",
               }}
@@ -389,6 +403,46 @@ export default function SimulationPanel({
         <div style={{ fontSize: 11, color: v('--color-text-faint'), textAlign: "center", lineHeight: 1.5, marginBottom: embed ? 14 : 24 }}>
           Geschätzte Leistung für ein südausgerichtetes Dach ohne Verschattung.<br />
           Wetterdaten via Open-Meteo (DWD, NOAA). Aktualisierung alle 15 Min.
+        </div>
+      )}
+
+      {/* Embed action bar + branding footer (share the current view / PLZ). */}
+      {embed && weather && !error && (
+        <div>
+          <div style={{ height: 1, background: v('--color-border'), marginBottom: 10 }} />
+          <div
+            style={{
+              fontSize: 10.5,
+              color: v('--color-text-muted'),
+              display: "flex",
+              justifyContent: branding ? "space-between" : "flex-start",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <ChartActionBar
+              variant="bar"
+              size={30}
+              onDownload={simChartExport.downloadPng}
+              onCopyLink={() => navigator.clipboard?.writeText(`${shareText}\n${shareUrl}`).catch(() => {})}
+              onWhatsApp={simChartExport.shareWhatsApp}
+              onTwitter={simChartExport.shareTwitter}
+              onShareImage={simChartExport.sharePng}
+              onEmbed={embedButton ? () => window.open("/energie-widgets#simulation", "_blank", "noopener") : undefined}
+              isExporting={simChartExport.isExporting}
+              canNativeShare={simChartExport.canNativeShare}
+            />
+            {branding && (
+              <a
+                href={SITE_URL}
+                target="_blank"
+                rel="noopener"
+                style={{ color: v('--color-accent'), fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}
+              >
+                Powered by solar-check.io
+              </a>
+            )}
+          </div>
         </div>
       )}
     </>

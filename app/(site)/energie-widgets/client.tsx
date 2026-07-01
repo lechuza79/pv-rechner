@@ -88,7 +88,7 @@ const SECTIONS: WidgetSection[] = [
       text: "PV-Anlagen in Deutschland – Solar Check",
     },
     showFrameWidth: false,
-    variants: [{ id: "karte", label: "Karte", src: "/embed/karte", height: 760, fixedWidth: 680 }],
+    variants: [{ id: "karte", label: "Karte", src: "/embed/karte", height: 820, fixedWidth: 680 }],
   },
   {
     id: "simulation",
@@ -100,7 +100,7 @@ const SECTIONS: WidgetSection[] = [
       text: "Live-PV-Simulation – Solar Check",
     },
     showFrameWidth: false,
-    variants: [{ id: "simulation", label: "Simulation", src: "/embed/simulation", height: 1000, fixedWidth: 380 }],
+    variants: [{ id: "simulation", label: "Simulation", src: "/embed/simulation", height: 1060, fixedWidth: 380 }],
   },
 ];
 

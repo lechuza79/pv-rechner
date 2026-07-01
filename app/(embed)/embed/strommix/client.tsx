@@ -131,7 +131,12 @@ export default function StrommixWidget() {
       <div ref={chartExport.chartRef}>
         <ChartArea tab={tab} />
       </div>
-      <Footer share={settings.share} embed={settings.embed} chartExport={chartExport} />
+      <Footer
+        share={settings.share}
+        embed={settings.embed}
+        branding={settings.branding}
+        chartExport={chartExport}
+      />
     </div>
   );
 }
@@ -584,15 +589,20 @@ function CenteredMessage({
 function Footer({
   share,
   embed,
+  branding,
   chartExport,
 }: {
   share: boolean;
   embed: boolean;
+  branding: boolean;
   chartExport: ReturnType<typeof useChartExport>;
 }) {
   const copyLink = () => {
     navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {});
   };
+
+  // Nothing to show → drop the footer (and its divider) entirely.
+  if (!share && !branding) return null;
 
   return (
     <div style={{ marginTop: 12 }}>
@@ -609,7 +619,7 @@ function Footer({
           fontSize: 10.5,
           color: "var(--widget-muted)",
           display: "flex",
-          justifyContent: share ? "space-between" : "flex-end",
+          justifyContent: share ? (branding ? "space-between" : "flex-start") : "flex-end",
           alignItems: "center",
           gap: 8,
         }}
@@ -631,25 +641,27 @@ function Footer({
             size={30}
           />
         )}
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-          <span>Powered by</span>
-          <a
-            href="https://solar-check.io"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 3,
-              textDecoration: "none",
-              color: "#1365EA",
-              fontWeight: 600,
-            }}
-          >
-            <SolarCheckMark />
-            <span>solar-check.io</span>
-          </a>
-        </span>
+        {branding && (
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+            <span>Powered by</span>
+            <a
+              href="https://solar-check.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 3,
+                textDecoration: "none",
+                color: "#1365EA",
+                fontWeight: 600,
+              }}
+            >
+              <SolarCheckMark />
+              <span>solar-check.io</span>
+            </a>
+          </span>
+        )}
       </div>
     </div>
   );
