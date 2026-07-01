@@ -5,6 +5,7 @@ import { IconArrowRight, IconCheck } from "./Icons";
 import { useChartExport } from "../lib/useChartExport";
 import ChartExportBar from "./ChartExportBar";
 import ChartActionBar from "./ChartActionBar";
+import { PoweredBy } from "./PoweredBy";
 import { v, tokens } from "../lib/theme";
 import { PERSONEN, NUTZUNG } from "../lib/constants";
 import {
@@ -432,16 +433,7 @@ export default function SimulationPanel({
               isExporting={simChartExport.isExporting}
               canNativeShare={simChartExport.canNativeShare}
             />
-            {branding && (
-              <a
-                href={SITE_URL}
-                target="_blank"
-                rel="noopener"
-                style={{ color: v('--color-accent'), fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}
-              >
-                Powered by solar-check.io
-              </a>
-            )}
+            {branding && <PoweredBy />}
           </div>
         </div>
       )}

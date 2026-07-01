@@ -28,6 +28,9 @@ interface WidgetVariant {
   height: number;
   /** If set, the iframe renders at this fixed width; otherwise the width selector applies. */
   fixedWidth?: number;
+  /** Fixed query params for this variant (e.g. metric=leistung), merged into both
+   * the live-preview src and the copy-paste embed URL. */
+  params?: Record<string, string>;
 }
 
 interface Attribution {
@@ -89,6 +92,21 @@ const SECTIONS: WidgetSection[] = [
     },
     showFrameWidth: false,
     variants: [{ id: "karte", label: "Karte", src: "/embed/karte", height: 820, fixedWidth: 680 }],
+  },
+  {
+    id: "kennzahl",
+    label: "Kennzahlen (Anlagenbestand)",
+    intro:
+      "Eine einzelne Kennzahl aus dem Marktstammdatenregister als kompakte Kachel: die bundesweit installierte Erneuerbaren-Leistung oder die Anzahl der Anlagen. Zum Einbetten in eine Sidebar oder Faktenbox.",
+    attribution: {
+      path: "/",
+      text: "PV-Anlagen in Deutschland – Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [
+      { id: "leistung", label: "Leistung", src: "/embed/kennzahl", params: { metric: "leistung" }, height: 190, fixedWidth: 300 },
+      { id: "anlagen", label: "Anlagen", src: "/embed/kennzahl", params: { metric: "anlagen" }, height: 190, fixedWidth: 300 },
+    ],
   },
   {
     id: "simulation",
@@ -412,7 +430,8 @@ function VariantFrame({
   // Live preview drives the theme via postMessage (instant, no reload). The
   // autoswitch interval is the only thing that needs a fresh src. embed=0 hides
   // the widget's own "Einbetten" button here — you're already on the gallery.
-  const previewParams = new URLSearchParams({ embed: "0" });
+  const previewParams = new URLSearchParams(variant.params);
+  previewParams.set("embed", "0");
   if (autoswitch > 0) previewParams.set("auto", String(autoswitch));
   const src = `${variant.src}?${previewParams.toString()}`;
 
@@ -497,6 +516,7 @@ function EmbedSnippet({
   const [open, setOpen] = useState(false);
 
   const qs = new URLSearchParams(buildWidgetThemeQuery(theme));
+  if (variant.params) Object.entries(variant.params).forEach(([k, val]) => qs.set(k, val));
   if (autoswitch > 0) qs.set("auto", String(autoswitch));
   if (settings) {
     buildWidgetSettingsQuery(settings).forEach((val, key) => qs.set(key, val));

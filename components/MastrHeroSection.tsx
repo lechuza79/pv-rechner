@@ -46,15 +46,12 @@ export type MastrHeroSectionProps = {
   initialRegion?: string;
   /** Called whenever the selected region changes (for URL sync, analytics, etc.) */
   onRegionChange?: (regionAgs: string | undefined) => void;
-  /** Embed/widget mode: hide the side panel (live radial + summary), keep just
-   * the energy-type tabs and the choropleth map. */
-  embedded?: boolean;
 };
 
 const CHOROPLETH_DEFAULT: ChoroplethResp = { source: "", data_as_of: "", data: [] };
 const SUMMARY_DEFAULT: RegionSummary | null = null;
 
-export function MastrHeroSection({ initialRegion, onRegionChange, embedded }: MastrHeroSectionProps) {
+export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSectionProps) {
   const [energietraeger, setEnergietraeger] = useState<Energietraeger>("gesamt");
   const [segment, setSegment] = useState<SegmentFilter>("alle");
   const [selectedAgs, setSelectedAgs] = useState<string | undefined>(
@@ -178,8 +175,8 @@ export function MastrHeroSection({ initialRegion, onRegionChange, embedded }: Ma
         </div>
 
         <aside style={{ display: "grid", gap: 12, minWidth: 0 }}>
-          {/* Live radial is the only thing hidden in embeds — the value tiles stay. */}
-          {!embedded && !selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
+          {/* Live radial — shown on the homepage AND in the embed (same view). */}
+          {!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
             <MastrLiveRadial
               energietraeger={energietraeger}
               installedKwp={summary?.total_kwp ?? null}
@@ -392,7 +389,7 @@ const MONTHS_DE = [
   "Juli", "August", "September", "Oktober", "November", "Dezember",
 ];
 
-function formatDataAsOf(iso: string): string {
+export function formatDataAsOf(iso: string): string {
   const m = /^(\d{4})-(\d{2})-\d{2}$/.exec(iso);
   if (!m) return iso;
   return `${MONTHS_DE[parseInt(m[2], 10) - 1]} ${m[1]}`;
@@ -554,7 +551,7 @@ function SummaryPanel({
   );
 }
 
-function Kachel({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
+export function Kachel({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
   return (
     <div
       style={{

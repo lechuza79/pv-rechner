@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { v } from "../lib/theme";
 import { trimIncompleteTail } from "../lib/chart-utils";
 import InfoTooltip from "./InfoTooltip";
+import { PoweredBy } from "./PoweredBy";
 
 type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
 
@@ -734,23 +735,7 @@ export function MastrLiveRadial({
           }}
         >
           {actions && !isCompact && <span style={{ display: "flex" }}>{actions}</span>}
-          {branding && (
-            <span>
-              Powered by{" "}
-              <a
-                href="https://solar-check.io"
-                target="_blank"
-                rel="noopener"
-                style={{
-                  color: v("--color-accent"),
-                  fontWeight: 600,
-                  textDecoration: "none",
-                }}
-              >
-                solar-check.io
-              </a>
-            </span>
-          )}
+          {branding && <PoweredBy />}
           {isCompact && (traegerNav?.after || actions) && (
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
               {traegerNav?.after}
