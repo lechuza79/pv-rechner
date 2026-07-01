@@ -106,8 +106,10 @@ Einspeisevergütung:  EEG-konform, 4 Sätze (Teil/Voll × ≤10/>10 kWp)
                      (1.2. / 1.8.) — Wächter + Runbook scripts/eeg-verify.md.
                      Wächter-Abweichungen werden per Council gegengeprüft
                      (scripts/council-verify.md: 3 unabhängige Verifizierer, 1
-                     adversarial); bei Konsens fixt EEG sich selbst (Auto-Commit),
-                     CO2/WP/Förderung bleiben Vorschlag.
+                     adversarial); bei Konsens fixen sich EEG und die
+                     Förder-Abschaltung selbst (Auto-Commit + Deploy) — Förderung
+                     nur in der sicheren Richtung (Programm abschalten/kein Abzug),
+                     Förder-Einschalten sowie CO2/WP bleiben Vorschlag.
 Szenarien:           Strompreis +1% / +3% / +5% p.a.
 EV-Delta:            −5% / 0% / +5% pro Szenario
 ```
