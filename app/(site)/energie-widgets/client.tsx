@@ -79,6 +79,30 @@ const SECTIONS: WidgetSection[] = [
     variants: [{ id: "strommix", label: "Strommix", src: "/embed/strommix", height: 460 }],
   },
   {
+    id: "strommix-anteil",
+    label: "Kernenergie im Strommix",
+    intro:
+      "Wie viel Kernenergie – inklusive rechnerisch importiertem Atomstrom – im deutschen Strommix des laufenden Jahres steckt. Als Donut mit den Anteilen aller Kategorien.",
+    attribution: {
+      path: "/atomstrom-import",
+      text: "Kernenergie im deutschen Strommix – Solar Check",
+    },
+    showFrameWidth: true,
+    variants: [{ id: "strommix-anteil", label: "Kernenergie-Anteil", src: "/embed/strommix-anteil", height: 400 }],
+  },
+  {
+    id: "zubau-erneuerbare-atom",
+    label: "Zubau: Erneuerbare vs. Atomkraft",
+    intro:
+      "Wie viel Wind + Solar gegenüber Atomkraft jedes Jahr neu ans Netz geht — wählbar je Land, plus direkter Vergleich Deutschland ↔ China.",
+    attribution: {
+      path: "/laendervergleich",
+      text: "Zubau Erneuerbare vs. Atomkraft – Solar Check",
+    },
+    showFrameWidth: true,
+    variants: [{ id: "zubau-erneuerbare-atom", label: "Zubau EE vs. Atom", src: "/embed/zubau-erneuerbare-atom", height: 420 }],
+  },
+  {
     id: "karte",
     label: "Deutschland-Karte",
     intro:
@@ -457,6 +481,21 @@ function VariantFrame({
     );
   }, [settingsKey, iframeReady]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Auto-Höhe: das Widget meldet seine Content-Höhe → Vorschau ohne Leerraum.
+  const [autoHeight, setAutoHeight] = useState<number | null>(null);
+  useEffect(() => setAutoHeight(null), [src]);
+  useEffect(() => {
+    const onMsg = (e: MessageEvent) => {
+      if (!iframeRef.current || e.source !== iframeRef.current.contentWindow) return;
+      const d = e.data as { type?: string; height?: number } | null;
+      if (d && d.type === "widget:height" && typeof d.height === "number" && d.height > 0) {
+        setAutoHeight(Math.ceil(d.height));
+      }
+    };
+    window.addEventListener("message", onMsg);
+    return () => window.removeEventListener("message", onMsg);
+  }, []);
+
   const effectiveWidth = variant.fixedWidth ?? frameW;
 
   return (
@@ -467,7 +506,7 @@ function VariantFrame({
         src={src}
         title={variant.label}
         onLoad={() => setIframeReady(true)}
-        style={{ ...S.iframe, height: variant.height }}
+        style={{ ...S.iframe, height: autoHeight ?? variant.height }}
       />
       <EmbedSnippet
         variant={variant}
