@@ -449,6 +449,26 @@ pv-rechner/
 | `InlineEdit` | `components/InlineEdit.tsx` | Click-to-Edit Zahlenwert im Ergebnis |
 | `Chart` | `components/Chart.tsx` | SVG-Amortisationskurve (3 Szenarien, kein D3) |
 
+## Embed-Widgets (Energie-Widgets)
+
+Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Kompakt, Karte, Simulation, Kennzahl). Galerie mit Live-Vorschau + Copy-Paste-Code: `app/(site)/energie-widgets`. **Alle Widgets sind auf einem Stand — beim Bauen eines neuen Widgets dieselbe Konvention einhalten:**
+
+**Geteilte Bausteine (nicht neu erfinden):**
+- `lib/useWidgetTheme.ts` — **einziger** Theming-Weg: `useWidgetTheme({ onSettings })`. Wendet Theme (URL-Param + same-origin postMessage) auf `--widget-*` an; `onSettings` liefert die funktionalen Flags. Keine inline-Kopien mehr.
+- `lib/widget-settings.ts` — `WidgetSettings` (`share`, `range`, `switchable`, `embed`, `branding`). URL-Param **und** postMessage teilen sich denselben Parser (kein Drift, akzeptiert alle Ranges inkl. 24h).
+- `lib/widget-theme.ts` + `app/(embed)/layout.tsx` — Theme-Tokens `--widget-*` + Alias-Kette auf die Site-Tokens `--color-*` (recycelte Komponenten themen dadurch mit).
+- `components/ChartActionBar.tsx` — Aktionsleiste: `variant="bar"` (breite Widgets, Footer) oder `variant="menu"` (⋯ für kleine Widgets; `menuUp` wenn im Footer). `showDownload={false}` wo kein Chart/SVG exportierbar ist (Karte, Kennzahl).
+- `components/PoweredBy.tsx` — **das** „Powered by solar-check.io" (Marken-Icon inklusive). Überall verwenden, nie inline nachbauen.
+- Download/Teilen: `lib/useChartExport.ts` (composed Widget-Bild: Titel + Werte/Legende + Branding, ohne CTA; braucht eine SVG im `chartRef`).
+
+**Konventionen:**
+- **Theme = nur** Hintergrund/Text/Akzent/Highlight/Ecken/Schrift. Semantische Farben (grün=positiv, rot=negativ, Kategorie-/Energieträger-Farben) bleiben **fest** — nie an Theme-Token hängen.
+- **Flags:** `embed=0` blendet den Einbetten-Button aus (setzt die Galerie auf ihren Vorschau-iframes; **nicht** im Copy-Paste-Code). `branding=0` blendet „Powered by" aus (interne Integrationen; extern = Premium, nie im Gratis-Code angeboten). Beide default `true`.
+- **Teilen = aktueller Zustand** als Deep-Link auf die passende Live-Seite (z. B. `/strommix-deutschland?range=…`, `/pv-simulation?plz=…`).
+- **Galerie:** neues Widget als Sektion in `SECTIONS` (`app/(site)/energie-widgets/client.tsx`); fixe Query-Params pro Variante über das `params`-Feld (nicht in `src` hängen — kollidiert mit `embed=0`/Theme). iframe-Höhe **großzügig** (Footer/2-zeilige Legende).
+- **Recycling statt Neubau:** Startseite und Karten-Embed nutzen dieselbe `MastrHeroSection` (eine Ansicht, eine Quelle). Einzel-KPIs (`/embed/kennzahl`) recyceln die exportierte `Kachel`.
+- Icons/Buttons aus `components/Icons.tsx`.
+
 ## Design-System
 
 | Element | Wert |
