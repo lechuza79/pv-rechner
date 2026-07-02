@@ -141,6 +141,81 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     long:
       "Die Degression ist das gesetzlich festgelegte, schrittweise Absinken der Einspeisevergütung für neu in Betrieb genommene Anlagen (aktuell etwa 1 % pro Halbjahr). Wer früher baut, sichert sich einen höheren Satz — der dann aber für die gesamten 20 Jahre fix bleibt. Nicht zu verwechseln mit der Degradation, dem altersbedingten Leistungsverlust der Module.",
   },
+  arenh: {
+    term: "ARENH",
+    aliases: ["Atomstrom-Regulierung Frankreich"],
+    short:
+      "Französisches Regulierungssystem, das Stromanbietern Zugang zu Atomstrom von EDF zu einem staatlich festgelegten Preis garantierte — Ende 2025 ausgelaufen.",
+    long:
+      "ARENH war das französische Regulierungssystem, das Energieversorgern Zugang zu Atomstrom von EDF zu einem staatlich festgelegten Preis garantierte. Es lief Ende 2025 aus; seit 1. Januar 2026 gilt eine neue Regelung mit einem garantierten Durchschnittspreis von rund 70 €/MWh (7 Ct/kWh) statt vorher 4,2 Ct/kWh.",
+  },
+  blackout: {
+    term: "Blackout",
+    aliases: ["Blackouts"],
+    short:
+      "Ein großflächiger, unkontrollierter Zusammenbruch der Stromversorgung im gesamten Netz — nicht zu verwechseln mit einer kurzen, örtlichen Störung.",
+    long:
+      "Ein großflächiger, unkontrollierter Zusammenbruch der Stromversorgung im gesamten Netz — nicht zu verwechseln mit einer lokalen, meist kurzen Versorgungsunterbrechung, wie sie z. B. durch Bauarbeiten oder Wetter entsteht. Deutschland hatte bislang keinen flächendeckenden Blackout; die durchschnittliche Versorgungsunterbrechung pro Verbraucher lag 2024 bei 11,7 Minuten im Jahr (Bundesnetzagentur).",
+  },
+  dunkelflaute: {
+    term: "Dunkelflaute",
+    aliases: ["Dunkelflauten"],
+    short:
+      "Ein Zeitraum mit gleichzeitig wenig Wind und wenig Sonne, in dem Wind- und Solaranlagen kaum Strom liefern.",
+    long:
+      "Ein Zeitraum mit wenig Wind und wenig Sonne gleichzeitig, in dem Wind- und Solaranlagen kaum Strom liefern. Je nach Definition gab es davon 2025 in Deutschland 19 bis 22 Tage, rund 6 % des Jahres. Mehrtägige Dunkelflauten (eine Woche oder länger mit durchgehend schwacher Erzeugung) sind die eigentliche Herausforderung, weil sie die Kapazität heutiger Batteriespeicher übersteigen.",
+  },
+  grenzkosten: {
+    term: "Grenzkosten",
+    short:
+      "Die Kosten für die nächste erzeugte Kilowattstunde — bei Wind, Solar und Atomkraft niedrig, bei Gaskraftwerken hoch.",
+    long:
+      "Die Kosten, die ein Kraftwerk für die nächste erzeugte Kilowattstunde hat, vor allem Brennstoffkosten. Wind, Solar und Atomkraft haben niedrige Grenzkosten, Gaskraftwerke hohe.",
+  },
+  grundlastfaehig: {
+    term: "Grundlastfähig",
+    aliases: ["Grundlast", "grundlastfähig"],
+    short:
+      "Ein Kraftwerk ist grundlastfähig, wenn es konstant rund um die Uhr Strom liefern kann — klassisch Kohle- oder Kernkraftwerke.",
+    long:
+      "Ein Kraftwerk ist grundlastfähig, wenn es konstant und rund um die Uhr Strom liefern kann — klassisch Kohle- oder Kernkraftwerke. Im Erneuerbaren-System wird das zunehmend durch die Residuallast als Planungsgröße abgelöst.",
+  },
+  kapazitaetsmechanismus: {
+    term: "Kapazitätsmechanismus",
+    short:
+      "Ein Bezahlmodell, bei dem Kraftwerke schon dafür Geld bekommen, dass sie Leistung bereithalten — nicht nur für gelieferten Strom.",
+    long:
+      "Ein Bezahlmodell, bei dem Kraftwerksbetreiber schon dafür Geld bekommen, dass sie Leistung bereithalten — nicht nur für tatsächlich gelieferten Strom. Soll die Versorgung in Extremzeiten wie Dunkelflauten absichern. In Deutschland ab 2028 geplant.",
+  },
+  "merit-order": {
+    term: "Merit-Order",
+    short:
+      "Das Prinzip, nach dem an der Strombörse das teuerste noch benötigte Kraftwerk den Preis für alle setzt.",
+    long:
+      "Das Prinzip, nach dem an der Strombörse das jeweils teuerste noch benötigte Kraftwerk den Preis für alle Anbieter setzt. Da oft Gaskraftwerke die letzte Lücke schließen, bestimmt der Gaspreis häufig den gesamten Strompreis — auch wenn der meiste Strom aus günstigeren Quellen stammt.",
+  },
+  redispatch: {
+    term: "Redispatch",
+    short:
+      "Das kurzfristige An- und Abregeln von Kraftwerken durch die Netzbetreiber, um Engpässe im Stromnetz auszugleichen.",
+    long:
+      "Das kurzfristige An- und Abregeln von Kraftwerken durch die Netzbetreiber, um Engpässe im Stromnetz auszugleichen. Verursacht Zusatzkosten, die über die Netzentgelte auf den Strompreis umgelegt werden.",
+  },
+  residuallast: {
+    term: "Residuallast",
+    aliases: ["Residuallastkurve"],
+    short:
+      "Der Stromverbrauch, der nach Abzug von Wind- und Solarerzeugung übrig bleibt und anders gedeckt werden muss.",
+    long:
+      "Der Stromverbrauch, der nach Abzug der Wind- und Solarerzeugung übrig bleibt und durch Speicher, Importe oder andere Kraftwerke gedeckt werden muss.",
+  },
+  saidi: {
+    term: "SAIDI",
+    short:
+      "Die durchschnittliche Dauer von Stromausfällen pro Verbraucher und Jahr, erhoben von der Bundesnetzagentur.",
+    long:
+      "Die von der Bundesnetzagentur erhobene durchschnittliche Dauer von Stromausfällen pro Verbraucher und Jahr. 2024 lag der Wert für Deutschland bei 11,7 Minuten, ein international sehr niedriger Wert (zum Vergleich: USA 70–80 Minuten).",
+  },
 };
 
 export type GlossarySlug = keyof typeof GLOSSARY;
