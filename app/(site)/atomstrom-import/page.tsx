@@ -6,6 +6,7 @@ import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { computeNuclearImport } from "../../../lib/nuclear-import";
 import AtomstromWidget from "./AtomstromWidget";
+import AutoHeightIframe from "../../../components/AutoHeightIframe";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 const PAGE_URL = `${BASE_URL}/atomstrom-import`;
@@ -140,7 +141,6 @@ const S = {
 export default async function AtomstromImportPage() {
   const { result, asOf } = await getNuclearImport();
   const avgGw = result?.avg_gw ?? null;
-  const sharePct = result?.avg_share_pct ?? null;
   const gwhPerDay = avgGw != null ? avgGw * 24 : null;
   const standStr = dateLong(asOf);
 
@@ -217,37 +217,28 @@ export default async function AtomstromImportPage() {
           viel davon rechnerisch Atomstrom ist, aktuell und mit offengelegter Methodik.
         </p>
 
-        <div style={S.hero}>
-          <div style={S.heroLabel}>Atomstrom-Import · Ø letzte 7 Tage</div>
-          {avgGw != null ? (
-            <>
-              <div>
-                <span style={S.heroValue}>{nf1(avgGw)}</span>
-                <span style={S.heroUnit}>GW</span>
-              </div>
-              <div style={S.heroSub}>
-                Das entspricht rund {nf0(gwhPerDay!)} GWh pro Tag
-                {sharePct != null && sharePct > 0
-                  ? ` und etwa ${nf1(sharePct)} % der typischen deutschen Netzlast`
-                  : ""}
-                .
-              </div>
-              <div style={S.heroStand}>Stand {standStr}</div>
-            </>
-          ) : (
-            <div style={S.heroSub}>
-              Der Live-Wert ist gerade nicht abrufbar. Methodik und Quelle stehen unten — der
-              aktuelle Verlauf liegt im{" "}
-              <Link href="/strommix-deutschland" style={S.link}>
-                Strommix-Dashboard
-              </Link>
-              .
-            </div>
-          )}
-        </div>
+        <AutoHeightIframe
+          src="/embed/strommix-anteil"
+          title="Kernenergie im deutschen Strommix"
+          fallbackHeight={400}
+        />
 
         <div style={S.section}>
           <AtomstromWidget />
+        </div>
+
+        <div style={S.section}>
+          <h2 style={S.h2}>Erneuerbare vs. Atomkraft im Zubau</h2>
+          <p style={S.p}>
+            Während Deutschland Atomstrom importiert, zeigt der jährliche Zubau,
+            worauf tatsächlich gesetzt wird — wählbar je Land, plus direkter
+            Vergleich Deutschland ↔ China.
+          </p>
+          <AutoHeightIframe
+            src="/embed/zubau-erneuerbare-atom"
+            title="Zubau: Erneuerbare vs. Atomkraft"
+            fallbackHeight={420}
+          />
         </div>
 
         <div style={S.section}>

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import WidgetAutoHeight from "../../components/WidgetAutoHeight";
 
 // Standalone root layout for embeddable widgets.
 // No site header/footer, no global CSS variables, no external font CDN.
@@ -66,12 +67,33 @@ const baseStyles = `
     --color-negative:#EF4444;
     --color-negative-dim:rgba(239,68,68,0.08);
     --color-negative-border:rgba(239,68,68,0.25);
+    --color-negative-light:color-mix(in srgb,var(--color-negative) 45%,var(--widget-bg));
     --color-highlight:var(--widget-highlight);
     --color-awareness:var(--widget-awareness);
     --font-text:var(--widget-font-family);
     --font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
     --radius-sm:6px;
     --radius-md:var(--widget-border-radius);
+
+    /* Energie-Palette — feste, semantische Farben (nicht theme-bar), damit
+       recycelte Energie-Charts (Line/Donut/Stacked) im Embed korrekt färben. */
+    --color-energy-solar:#4CAF50;
+    --color-energy-wind:#66BB6A;
+    --color-energy-wind-offshore:#2E7D32;
+    --color-energy-hydro:#81C784;
+    --color-energy-biomass:#A5D6A7;
+    --color-energy-geothermal:#C8E6C9;
+    --color-energy-gas:#BC8F6F;
+    --color-energy-coal:#8D6E63;
+    --color-energy-coal-gas:#8D6E63;
+    --color-energy-lignite:#5D4037;
+    --color-energy-oil:#A1887F;
+    --color-energy-other:#BDBDBD;
+    --color-energy-nuclear:#EF85F8;
+    --color-energy-nuclear-import:#EA00FF;
+    --color-energy-cat-renewable:#4CAF50;
+    --color-energy-cat-fossil:#8D6E63;
+    --color-energy-cat-other:#BDBDBD;
   }
   body{
     background:transparent;
@@ -106,6 +128,12 @@ const baseStyles = `
     to   { opacity: 1 }
   }
 
+  /* Sanfter Wechsel beim Umschalten (z.B. Länder-Multitool) */
+  @keyframes sc-fade {
+    from { opacity: 0; transform: translateY(4px) }
+    to   { opacity: 1; transform: none }
+  }
+
   /* Map widget: map left, value tiles right (like the main site). Stacks on
      very narrow embeds. */
   .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:24px;align-items:start}
@@ -122,7 +150,10 @@ export default function EmbedRootLayout({
       <head>
         <style dangerouslySetInnerHTML={{ __html: baseStyles }} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <WidgetAutoHeight />
+      </body>
     </html>
   );
 }

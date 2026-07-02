@@ -264,6 +264,10 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] SVG-Chevron-Icons (ChevronLeft, ChevronRight) in Icons.tsx ergänzt
 - [x] Kernenergie-Tooltip: "Kernenergie X%" Header + "erzeugt in DE" / "importiert" Zeilen
 - [x] Kernenergie-Legende: "Kernenergie [pink] erzeugt [magenta] importiert" als eine Zeile
+- [x] Langzeit-Daten (Prototyp-Seiten, noindex): `lib/strommix-history.ts` (AGEB/UBA Bruttostromerzeugung nach Energieträgern 1990–2025 + CO₂-Intensität/-absolut + Eurostat-Strompreise, alle gegen Quelle geprüft, DL-DE-BY/CC BY 4.0), `lib/country-comparison.ts` (Ember-Ländervergleich: Anteil/CO₂-Intensität/Pro-Kopf/Zubau EE vs. Atom). Seiten: `/langzeit-strommix` (DE-Stack Mix+CO₂+Preise gleiche Achse) und `/laendervergleich` (Sonderweg-Einordnung).
+- [x] Neue Chart-Komponenten: `components/charts/LineChart.tsx` (Mehrserien-Jahres-Linienchart mit End-Labels + Highlight + fester xDomain), `components/charts/DonutChart.tsx` (Visx-Pie, 1px-Lücken, HTML-Center-Overlay). Chart-Farben als Hex (Energie-Palette), damit sie auch im Embed ohne `--color-energy-*`-Vars färben.
+- [x] Zwei echte Embed-Widgets (nach [[feedback_widget_convention]]): `/embed/strommix-anteil` (Kernenergie-Anteil am Verbrauchsmix inkl. Import, Donut; server-berechnet via `lib/strommix-ytd.ts` aus `energy_weekly`, 4 Kategorien SSOT) und `/embed/zubau-erneuerbare-atom` (Zubau EE vs. Atomkraft, Länder-Multitool wie Jahreswähler + DE↔China-Vergleich, KPI-Summen). Beide in `/energie-widgets`-Galerie + als iframe auf `/atomstrom-import`.
+- [x] Auto-Height für ALLE Embed-Widgets: `components/WidgetAutoHeight.tsx` (im `(embed)/layout.tsx`, meldet Content-Höhe per postMessage) + `lib/useIframeAutoHeight.ts` + `components/AutoHeightIframe.tsx` (Host passt iframe-Höhe an) → kein Leerraum unten mehr. Energie-Farbtokens `--color-energy-*` ins Embed-Layout ergänzt.
 - [ ] Supabase-Tabellen anlegen (energy_timeseries, energy_monthly, data_source_meta) — SQL vorbereitet in /api/energy/setup
 - [ ] Cron-Routes (live 15min, daily, monthly) + vercel.json
 - [ ] Eurostat-Integration (Haushaltsstrompreise EU)
