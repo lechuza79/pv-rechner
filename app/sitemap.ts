@@ -62,6 +62,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/pv-simulation`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/strommix-deutschland`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/atomstrom-import`, lastModified: now, changeFrequency: "daily", priority: 0.7 },
+    { url: `${BASE_URL}/atomstrom-import/methodik`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/energie-widgets`, changeFrequency: "monthly", priority: 0.6 },
     ...bundeslandPages,
     ...cityPages,
