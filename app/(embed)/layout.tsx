@@ -137,7 +137,21 @@ const baseStyles = `
   /* Map widget: map left, value tiles right (like the main site). Stacks on
      very narrow embeds. */
   .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:24px;align-items:start}
-  @media (max-width:600px){.mastr-hero-grid{grid-template-columns:1fr;gap:18px}}
+  .mastr-hero-aside{display:grid;gap:12px}
+  .mastr-kpis{display:grid;gap:10px}
+  .mastr-map-box{width:100%;height:600px}
+  @media (max-width:600px){
+    .mastr-hero-grid{grid-template-columns:1fr;gap:16px}
+    .mastr-map-box{height:420px;margin-inline:auto}
+    .mastr-map-box--de{max-width:300px}
+    .mastr-hero-grid.has-filter .mastr-map-box{height:372px}
+    .mastr-hero-grid.has-breadcrumb .mastr-map-box{height:376px}
+    .mastr-hero-grid.has-filter.has-breadcrumb .mastr-map-box{height:328px}
+    .mastr-hero-aside .mastr-summary{order:-1}
+    .mastr-kpis{grid-template-columns:repeat(3,1fr);gap:8px}
+    .mastr-kpis .kachel-tile{padding:10px}
+    .mastr-kpis .kachel-value{font-size:15px !important;letter-spacing:-0.4px}
+  }
 `;
 
 export default function EmbedRootLayout({

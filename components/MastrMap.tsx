@@ -37,8 +37,6 @@ export type MastrMapProps = {
 const COLOR_RAMP = [12, 26, 40, 55, 70, 85, 100].map(
   (pct) => `color-mix(in srgb, var(--color-accent) ${pct}%, var(--color-bg))`,
 );
-const MAP_HEIGHT = 640;
-
 export function MastrMap({
   level,
   parentAgs,
@@ -49,17 +47,36 @@ export function MastrMap({
   loading = false,
 }: MastrMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  // Both dimensions are measured from the container. Its height is set by CSS
+  // (.mastr-map-box) and shrinks on narrow viewports at the SAME breakpoint as
+  // the single-column layout, so the map always fits its box and never pushes
+  // the KPI row off screen. The projection just scales into whatever box it gets.
   const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
   const [lkGeo, setLkGeo] = useState<FeatureCollection | null>(null);
   const [blGeo, setBlGeo] = useState<FeatureCollection | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
 
+  // Clear any hover when the drilldown level changes. Without this a hovered
+  // Bundesland id lingers after tapping into it, and the info box would show
+  // that Bundesland with value 0 (its key no longer exists in the now
+  // Landkreis-level data). Touch devices are the main victims — a tap both
+  // hovers and drills, so the stale-0 box is what mobile users actually saw.
+  useEffect(() => {
+    setHovered(null);
+  }, [level, parentAgs]);
+
   useLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    setWidth(el.getBoundingClientRect().width);
+    const rect = el.getBoundingClientRect();
+    setWidth(rect.width);
+    setHeight(rect.height);
     const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) setWidth(entry.contentRect.width);
+      for (const entry of entries) {
+        setWidth(entry.contentRect.width);
+        setHeight(entry.contentRect.height);
+      }
     });
     ro.observe(el);
     return () => ro.disconnect();
@@ -103,7 +120,7 @@ export function MastrMap({
     fillFeatures,
     projection,
   } = useMemo(() => {
-    if (!lkGeo || !blGeo || width < 10) {
+    if (!lkGeo || !blGeo || width < 10 || height < 10) {
       return { fillFeatures: [], projection: null };
     }
 
@@ -116,7 +133,7 @@ export function MastrMap({
       const proj = geoMercator().fitExtent(
         [
           [20, 20],
-          [width - 20, MAP_HEIGHT - 20],
+          [width - 20, height - 20],
         ],
         parentFeature as never,
       );
@@ -139,12 +156,12 @@ export function MastrMap({
     }
 
     // Default: de-level. Render Bundesländer as fill.
-    const proj = geoMercator().fitSize([width, MAP_HEIGHT], lkGeo as never);
+    const proj = geoMercator().fitSize([width, height], lkGeo as never);
     return {
       fillFeatures: blGeo.features,
       projection: proj,
     };
-  }, [level, parentAgs, lkGeo, blGeo, width]);
+  }, [level, parentAgs, lkGeo, blGeo, width, height]);
 
   const pathGen = useMemo(() => (projection ? geoPath(projection) : null), [projection]);
 
@@ -166,9 +183,24 @@ export function MastrMap({
     return f ? (f.properties as RegionProps).name : bundeslandByAgs(hovered)?.name ?? hovered;
   }, [hovered, fillFeatures]);
 
+  // The on-map info box is a desktop hover affordance: it only shows a value
+  // for a region actually under the pointer AND present in the current view.
+  // The `valueByAgs.has` guard is what kills the old stale-0 bug — after
+  // drilling into a Bundesland the hovered id no longer exists in the (now
+  // Landkreis-level) data, so the box hides instead of reading 0. On touch
+  // there is no hover, so mobile relies on the KPI row under the map instead.
+  const hoverValid = hovered !== null && valueByAgs.has(hovered);
+  const info: { name: string; value: number } | null = hoverValid
+    ? { name: hoveredName ?? hovered!, value: valueByAgs.get(hovered!) ?? 0 }
+    : null;
+
   return (
-    <div ref={containerRef} style={{ width: "100%", height: MAP_HEIGHT, position: "relative" }}>
-      {!lkGeo || !blGeo || width < 10 || !projection ? (
+    <div
+      ref={containerRef}
+      className={`mastr-map-box${level === "de" ? " mastr-map-box--de" : ""}`}
+      style={{ width: "100%", position: "relative" }}
+    >
+      {!lkGeo || !blGeo || width < 10 || height < 10 || !projection ? (
         <div
           style={{
             width: "100%",
@@ -178,7 +210,7 @@ export function MastrMap({
           }}
         />
       ) : (
-        <svg width={width} height={MAP_HEIGHT} role="img" aria-label="Deutschlandkarte">
+        <svg width={width} height={height} role="img" aria-label="Deutschlandkarte">
           <g
             style={
               loading ? { animation: "sc-map-pulse 1.4s ease-in-out infinite" } : undefined
@@ -208,7 +240,7 @@ export function MastrMap({
         </svg>
       )}
 
-      {hovered && (
+      {info && (
         <div
           style={{
             position: "absolute",
@@ -223,10 +255,9 @@ export function MastrMap({
             boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
           }}
         >
-          <div style={{ fontWeight: 600, color: v("--color-text-primary") }}>{hoveredName}</div>
+          <div style={{ fontWeight: 600, color: v("--color-text-primary") }}>{info.name}</div>
           <div style={{ color: v("--color-text-secondary"), fontVariantNumeric: "tabular-nums" }}>
-            {(valueByAgs.get(hovered) ?? 0).toLocaleString("de-DE", { maximumFractionDigits: 0 })}{" "}
-            {valueLabel}
+            {info.value.toLocaleString("de-DE", { maximumFractionDigits: 0 })} {valueLabel}
           </div>
         </div>
       )}

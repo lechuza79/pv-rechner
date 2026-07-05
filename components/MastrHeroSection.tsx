@@ -161,7 +161,14 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
         />
       )}
 
-      <div className="mastr-hero-grid" style={{ marginTop: 16 }}>
+      <div
+        className={
+          "mastr-hero-grid" +
+          (energietraeger === "solar" ? " has-filter" : "") +
+          (selectedAgs && parentAgs ? " has-breadcrumb" : "")
+        }
+        style={{ marginTop: 16 }}
+      >
         <div>
           <MastrMap
             level={mapLevel}
@@ -174,13 +181,17 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
           />
         </div>
 
-        <aside style={{ display: "grid", gap: 12, minWidth: 0 }}>
-          {/* Live radial — shown on the homepage AND in the embed (same view). */}
+        <aside className="mastr-hero-aside" style={{ minWidth: 0 }}>
+          {/* Live radial — shown on the homepage AND in the embed (same view).
+              On mobile it drops below the KPI row (via CSS order) so map +
+              numbers share the first screen. */}
           {!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
-            <MastrLiveRadial
-              energietraeger={energietraeger}
-              installedKwp={summary?.total_kwp ?? null}
-            />
+            <div className="mastr-live">
+              <MastrLiveRadial
+                energietraeger={energietraeger}
+                installedKwp={summary?.total_kwp ?? null}
+              />
+            </div>
           )}
           <SummaryPanel
             summary={summary}
@@ -478,21 +489,38 @@ function SummaryPanel({
   const avgKwp = summary && summary.total_count > 0 ? summary.total_kwp / summary.total_count : null;
 
   return (
-    <>
-      <Kachel
-        label={regionLabel}
-        value={
-          totalMw !== null
-            ? `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW`
-            : <LoadingDots />
-        }
-        hint={`installiert · ${traegerLabel}${segmentSuffix}`}
-      />
-      <Kachel
-        label="Anlagen"
-        value={totalCount !== null ? totalCount.toLocaleString("de-DE") : <LoadingDots />}
-        hint={avgKwp !== null ? `⌀ ${avgKwp.toFixed(0)} kWp` : "⌀ — kWp"}
-      />
+    <div className="mastr-summary" style={{ display: "grid", gap: 12, minWidth: 0 }}>
+      {/* Region + Energieträger heading — carries the context that the three
+          KPI tiles below drop, so each tile can stay compact enough to sit in a
+          row on mobile. */}
+      <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 15, fontWeight: 700, color: v("--color-text-primary") }}>
+          {regionLabel}
+        </span>
+        <span style={{ fontSize: 13, color: v("--color-text-muted") }}>
+          {traegerLabel}
+          {segmentSuffix}
+        </span>
+      </div>
+
+      <div className="mastr-kpis">
+        <Kachel
+          label="Leistung"
+          value={
+            totalMw !== null
+              ? `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW`
+              : <LoadingDots />
+          }
+        />
+        <Kachel
+          label="Anlagen"
+          value={totalCount !== null ? totalCount.toLocaleString("de-DE") : <LoadingDots />}
+        />
+        <Kachel
+          label="⌀ Größe"
+          value={avgKwp !== null ? `${avgKwp.toFixed(0)} kWp` : <LoadingDots />}
+        />
+      </div>
       {summary && energietraeger === "solar" && segment === "alle" && summary.by_segment.length > 1 && (
         <div
           style={{
@@ -547,13 +575,14 @@ function SummaryPanel({
             formatDataAsOf(summary.data_as_of)
           : ""}
       </div>
-    </>
+    </div>
   );
 }
 
 export function Kachel({ label, value, hint }: { label: string; value: ReactNode; hint?: string }) {
   return (
     <div
+      className="kachel-tile"
       style={{
         background: v("--color-bg"),
         border: `1px solid ${v("--color-border")}`,
@@ -573,6 +602,7 @@ export function Kachel({ label, value, hint }: { label: string; value: ReactNode
         {label}
       </div>
       <div
+        className="kachel-value"
         style={{
           fontSize: 22,
           fontWeight: 700,

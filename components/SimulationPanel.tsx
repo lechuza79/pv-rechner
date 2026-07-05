@@ -161,7 +161,9 @@ export default function SimulationPanel({
   });
 
   const ctaIdx = SIM_CONFIGS.findIndex(c => c.kwp === selectedKwp);
-  const ctaHref = `/photovoltaik-rechner?a=${ctaIdx}`;
+  // Carry the entered PLZ into the full calculator so the user does not have to
+  // type it again — the calculator reads ?plz= and auto-loads the location yield.
+  const ctaHref = `/photovoltaik-rechner?a=${ctaIdx}${/^\d{5}$/.test(plz) ? `&plz=${plz}` : ""}`;
   const ctaStyle: React.CSSProperties = {
     display: "block", textAlign: "center", padding: "14px 20px",
     borderRadius: v('--radius-md'), background: v('--color-accent'),

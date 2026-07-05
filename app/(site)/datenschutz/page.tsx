@@ -8,7 +8,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/datenschutz",
   title: "Datenschutzerklärung – Solar Check",
   description:
-    "Datenschutzerklärung für Solar Check. Datensparsam, kein Lead-Funnel, kein Werbe-Tracking. Berechnungen laufen im Browser; nur für Standort-Ertrag und optionales Speichern werden Daten übermittelt.",
+    "Datenschutzerklärung für Solar Check. Datensparsam, ohne Verkaufsanrufe, kein Werbe-Tracking. Berechnungen laufen im Browser; nur für Standort-Ertrag und optionales Speichern werden Daten übermittelt.",
   ogImageTitle: "Datenschutz",
   ogImageSubtitle: "Datensparsam und transparent — was wir erheben und was nicht.",
 });
@@ -114,7 +114,7 @@ export default function DatenschutzPage() {
         <p style={S.p}>
           Der Schutz deiner Daten ist uns wichtig. Diese Website wurde bewusst so
           gebaut, dass so wenig personenbezogene Daten wie möglich erhoben
-          werden. Es gibt keinen Lead-Funnel, kein Werbe-Tracking durch
+          werden. Es gibt keine Verkaufsanrufe, kein Werbe-Tracking durch
           Drittanbieter und keine Werbung — du bekommst dein Ergebnis sofort,
           ohne Registrierung. Die eigentliche Berechnung läuft in deinem Browser.
           In zwei Fällen werden dennoch Daten übermittelt: für die

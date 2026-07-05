@@ -10,7 +10,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/",
   title: "Solar Check – Lohnt sich Photovoltaik? Ehrlich berechnet.",
   description:
-    "Kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Sofort Ergebnis: Amortisation, Rendite und Szenarien für deine Photovoltaikanlage mit oder ohne Speicher.",
+    "Kostenloser PV-Rentabilitätsrechner mit direktem Ergebnis — ohne Anmeldung, ohne Verkaufsanrufe. Amortisation, Rendite und Szenarien für deine Photovoltaikanlage mit oder ohne Speicher.",
   ogImage: energyOgImage(),
 });
 
@@ -77,7 +77,7 @@ export default function Home() {
         {/* Hero Text */}
         <div style={{ textAlign: "center", marginBottom: 20, paddingTop: 10 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
-          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Sieben Tools. Ohne Anmeldung, ohne Leadfunnel.</p>
+          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Sieben Tools. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
         </div>
       </div>
 
