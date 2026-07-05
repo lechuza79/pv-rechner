@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: "Solar Check – Lohnt sich Photovoltaik? Ehrlich berechnet.",
   description:
-    "Kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Sofort Ergebnis: Amortisation, Rendite und Szenarien für deine Photovoltaikanlage mit oder ohne Speicher.",
+    "Kostenloser PV-Rentabilitätsrechner mit direktem Ergebnis — ohne Anmeldung, ohne Verkaufsanrufe. Amortisation, Rendite und Szenarien für deine Photovoltaikanlage mit oder ohne Speicher.",
   keywords: [
     "PV Rechner",
     "Photovoltaik Rentabilität",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "Solar Check – Lohnt sich Photovoltaik?",
-    description: "Ehrlich berechnet. Ohne Leadfunnel. Sofort Ergebnis.",
+    description: "Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.",
     type: "website",
     url: BASE_URL,
     siteName: "Solar Check",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Solar Check – Lohnt sich Photovoltaik?",
-    description: "Ehrlich berechnet. Ohne Leadfunnel. Sofort Ergebnis.",
+    description: "Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.",
     images: [`${BASE_URL}/api/og`],
   },
   other: {
@@ -63,7 +63,7 @@ const organizationJsonLd = {
   url: BASE_URL,
   logo: `${BASE_URL}/logo.png`,
   description:
-    "Kostenlose Energie-Rechner ohne Leadfunnel: Photovoltaik-Rentabilität, Wärmepumpe und Live-Energiedaten für Deutschland.",
+    "Kostenlose Energie-Rechner — ohne Anmeldung, ohne Verkaufsanrufe: Photovoltaik-Rentabilität, Wärmepumpe und Live-Energiedaten für Deutschland.",
 };
 
 const softwareAppJsonLd = {

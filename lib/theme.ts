@@ -115,7 +115,28 @@ export const globalStyles = `
   .sc-live-dot::after{animation-delay:.9s}
   .sc-live-bar{animation:sc-live-bar 1.8s ease-in-out infinite}
   .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,430px) 300px;gap:48px;align-items:start;justify-content:center}
-  @media (max-width:720px){.mastr-hero-grid{grid-template-columns:1fr}}
+  .mastr-hero-aside{display:grid;gap:12px}
+  .mastr-kpis{display:grid;gap:10px}
+  /* Desktop: full-height map in its column. */
+  .mastr-map-box{width:100%;height:640px}
+  @media (max-width:720px){
+    .mastr-hero-grid{grid-template-columns:1fr;gap:16px}
+    /* Single-column safety: cap the height so the KPI row stays on screen. The
+       width cap only applies to the portrait Germany view (so it centers instead
+       of sitting in a wide, empty box); a drilled-in Bundesland (usually
+       landscape) keeps the full width and fills the height. */
+    .mastr-map-box{height:420px;margin-inline:auto}
+    .mastr-map-box--de{max-width:300px}
+    /* Extra control rows (Solar segment filter, Bundesland breadcrumb) push the
+       map down — shrink it by their height so the KPI row stays on screen. */
+    .mastr-hero-grid.has-filter .mastr-map-box{height:372px}
+    .mastr-hero-grid.has-breadcrumb .mastr-map-box{height:376px}
+    .mastr-hero-grid.has-filter.has-breadcrumb .mastr-map-box{height:328px}
+    .mastr-hero-aside .mastr-summary{order:-1}
+    .mastr-kpis{grid-template-columns:repeat(3,1fr);gap:8px}
+    .mastr-kpis .kachel-tile{padding:10px}
+    .mastr-kpis .kachel-value{font-size:15px !important;letter-spacing:-0.4px}
+  }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
 `;

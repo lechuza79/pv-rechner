@@ -21,19 +21,19 @@ export async function generateMetadata({
 
   return {
     title: "Solar Check – Lohnt sich Photovoltaik? Ehrlich berechnet.",
-    description: "Kostenloser PV-Rentabilitätsrechner ohne Leadfunnel. Sofort Ergebnis: Amortisation, Rendite und Szenarien.",
+    description: "Kostenloser PV-Rentabilitätsrechner mit direktem Ergebnis — ohne Anmeldung, ohne Verkaufsanrufe. Amortisation, Rendite und Szenarien.",
     // Canonical without query params — share links append ?a=…&s=… etc., which
     // would otherwise look like dozens of duplicate pages to search engines.
     alternates: { canonical: "/photovoltaik-rechner" },
     openGraph: {
       title: "Solar Check – Lohnt sich Photovoltaik?",
-      description: "Ehrlich berechnet. Ohne Leadfunnel. Sofort Ergebnis.",
+      description: "Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.",
       images: [{ url: ogUrl, width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title: "Solar Check – Lohnt sich Photovoltaik?",
-      description: "Ehrlich berechnet. Ohne Leadfunnel. Sofort Ergebnis.",
+      description: "Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.",
       images: [ogUrl],
     },
   };

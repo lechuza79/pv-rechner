@@ -85,7 +85,7 @@ export async function GET(req: NextRequest) {
             ) : null}
           </div>
           <span style={{ fontSize: 18, color: "#949494" }}>
-            Ehrlich berechnet. Ohne Leadfunnel.
+            Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.
           </span>
         </div>
       ),
@@ -117,10 +117,10 @@ export async function GET(req: NextRequest) {
                 Energie ehrlich berechnet.
               </span>
               <span style={{ fontSize: 28, color: "#777777", lineHeight: 1.4, marginTop: 20 }}>
-                Fünf Tools. Ohne Anmeldung, ohne Leadfunnel.
+                Fünf Tools. Ohne Anmeldung, ohne Verkaufsanrufe.
               </span>
             </div>
-            <span style={{ fontSize: 18, color: "#949494" }}>Ehrlich berechnet. Ohne Leadfunnel.</span>
+            <span style={{ fontSize: 18, color: "#949494" }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</span>
           </div>
         ),
         { width: 1200, height: 630, fonts, headers: { "cache-control": "public, max-age=0, s-maxage=300" } },
@@ -309,7 +309,7 @@ export async function GET(req: NextRequest) {
             </div>
           </div>
           <span style={{ fontSize: 16, color: "#949494" }}>
-            Ehrlich berechnet. Ohne Leadfunnel.
+            Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.
           </span>
         </div>
       </div>

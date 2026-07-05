@@ -270,10 +270,14 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // PLZ-Hinweis einmal als Toast einblenden, sobald das Ergebnis erscheint und
   // noch kein Standort gesetzt ist.
   useEffect(() => {
-    if (!isResult || plzSource || plzToastShown.current) return;
+    // Skip the nudge when a PLZ is already present (e.g. handed over from the
+    // Live-Simulation via ?plz=): plzSource only fills once the async location
+    // lookup returns, so without this guard the toast flashes "PLZ eingeben"
+    // even though the location is set and being applied.
+    if (!isResult || plzSource || /^\d{5}$/.test(plz) || plzToastShown.current) return;
     plzToastShown.current = true;
     setPlzToast(true);
-  }, [isResult, plzSource]);
+  }, [isResult, plzSource, plz]);
   // Auto-Ausblenden nach 6 s — eigener Effekt, damit der Timer auch unter
   // StrictMode (doppelter Effekt-Invoke im Dev) korrekt neu gesetzt wird.
   useEffect(() => {
@@ -415,7 +419,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         ) : (
           <div style={{ textAlign: "center", marginBottom: 24 }}>
             <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Lohnt sich Photovoltaik?</h1>
-            <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Ehrlich berechnet. Ohne Leadfunnel.</p>
+            <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>Direktes Ergebnis. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
           </div>
         )}
 
