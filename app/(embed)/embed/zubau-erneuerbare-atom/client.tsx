@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import LineChart, { type LineSeries } from "../../../../components/charts/LineChart";
 import ChartActionBar from "../../../../components/ChartActionBar";
+import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
+import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import {
   IconChevronDown,
   IconChevronLeft,
@@ -80,6 +82,7 @@ export default function ZubauWidget() {
     context: {
       title: "Zubau: Erneuerbare vs. Atomkraft",
       subtitle: view.kind === "compare" ? "Deutschland ↔ China" : `${view.flag} ${view.label}`,
+      source: sourceLabel(DATA_SOURCES.ember),
     },
     filename: "solar-check-zubau-erneuerbare-atom.png",
     shareText:
@@ -152,14 +155,18 @@ export default function ZubauWidget() {
         </div>
       </div>
 
-      {/* Footer nach Konvention */}
+      {/* Footer nach Konvention: Quelle (immer) + Aktionsleiste + Powered-by */}
       <div style={{ marginTop: 12 }}>
         <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
+        {/* Data-source credit — licence-required, always shown. */}
+        <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: settings.branding || settings.share ? 6 : 0 }}>
+          <DataSourceNote source={DATA_SOURCES.ember} />
+        </div>
         <div
           style={{
             fontSize: 10.5,
             color: "var(--widget-muted)",
-            display: "flex",
+            display: settings.branding || settings.share ? "flex" : "none",
             justifyContent: settings.share ? "space-between" : "flex-end",
             alignItems: "center",
             gap: 8,
@@ -182,17 +189,7 @@ export default function ZubauWidget() {
               size={30}
             />
           )}
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-            <span>Powered by</span>
-            <a
-              href="https://solar-check.io"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "var(--widget-accent)", fontWeight: 600, textDecoration: "none" }}
-            >
-              solar-check.io
-            </a>
-          </span>
+          {settings.branding && <PoweredBy />}
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import { MastrLiveRadial } from "./MastrLiveRadial";
 import { bundeslandByAgs } from "../lib/mastr-regions";
 import type { Energietraeger, RegionSummary, SegmentFilter } from "../lib/mastr-data";
 import { useCachedFetch } from "../lib/use-cached-fetch";
+import { DATA_SOURCES, sourceLabel } from "../lib/data-sources";
 import { v } from "../lib/theme";
 
 // Tab order: aggregate first, then individual renewables, then storage (separated)
@@ -222,6 +223,9 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
           dl-de/by-2-0
         </a>
         ) · Daten: Marktstammdatenregister / Bundesnetzagentur
+        {!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
+          <> · Live-Erzeugung: {sourceLabel(DATA_SOURCES.energyCharts)}</>
+        )}
       </div>
     </section>
   );

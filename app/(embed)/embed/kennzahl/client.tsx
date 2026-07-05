@@ -7,7 +7,8 @@ import { useCachedFetch } from "../../../../lib/use-cached-fetch";
 import type { Energietraeger, RegionSummary } from "../../../../lib/mastr-data";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy } from "../../../../components/PoweredBy";
+import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
+import { DATA_SOURCES } from "../../../../lib/data-sources";
 
 // Single KPI tile from the Marktstammdatenregister — either installed power or
 // plant count — reusing the same <Kachel> the homepage/karte composite renders,
@@ -90,6 +91,10 @@ export default function KennzahlWidget({
 
       <div style={{ marginTop: 12 }}>
         <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
+        {/* Data-source credit — always shown. */}
+        <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: 6 }}>
+          <DataSourceNote source={DATA_SOURCES.mastr} />
+        </div>
         <div
           style={{
             fontSize: 10.5,

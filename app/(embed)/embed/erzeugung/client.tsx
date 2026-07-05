@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { MastrLiveRadial } from "../../../../components/MastrLiveRadial";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import ChartActionBar from "../../../../components/ChartActionBar";
+import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { useChartExport } from "../../../../lib/useChartExport";
 
 // Where share/embed point — the canonical live page for this widget.
@@ -57,6 +58,7 @@ export default function ErzeugungWidget({
     context: {
       title: "Stromerzeugung Deutschland",
       subtitle: `${TRAEGER_LABEL[traeger]}${gwLabel}`,
+      source: `${sourceLabel(DATA_SOURCES.energyCharts)} · ${sourceLabel(DATA_SOURCES.mastr)}`,
     },
     filename: `solar-check-erzeugung-${traeger}.png`,
     shareText: SHARE_TEXT,
@@ -228,6 +230,9 @@ export default function ErzeugungWidget({
         installedKwp={installedKwp}
         size={compact ? "compact" : "default"}
         branding={showBranding}
+        // Live generation (Energy-Charts) + the "share of installed capacity"
+        // percentage, whose denominator comes from the MaStR.
+        dataSource={[DATA_SOURCES.energyCharts, DATA_SOURCES.mastr]}
         actions={actionBar}
         onValue={setGw}
         helpOverlay={showHelp ? helpPanel : null}
