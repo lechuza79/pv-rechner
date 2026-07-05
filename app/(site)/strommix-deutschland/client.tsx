@@ -9,6 +9,7 @@ import {
   formatGWhIn, energyUnit, calcPeriodStats, CATEGORY_COLORS,
 } from "../../../lib/chart-utils";
 import { v } from "../../../lib/theme";
+import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 import { useChartExport } from "../../../lib/useChartExport";
 import ChartExportBar from "../../../components/ChartExportBar";
 import { IconChevronLeft, IconChevronRight, IconChevronDown } from "../../../components/Icons";
@@ -267,6 +268,7 @@ export default function EnergieClient() {
         ...(hasDomesticNuclear ? [{ color: CATEGORY_COLORS.nuclear, label: "Kernenergie (erzeugt)" }] : []),
         ...(showNuclear && nuclearImportGWh > 0 ? [{ color: CATEGORY_COLORS.nuclearImport, label: "Kernenergie (importiert)" }] : []),
       ],
+      source: sourceLabel(DATA_SOURCES.energyCharts),
     },
     filename: `solar-check-strommix-${selected}.png`,
     shareText: `Strommix Deutschland (${rangeLabel}) – ${stats ? `${Math.round(stats.eeSharePct)}% Erneuerbare` : ""}`,
@@ -660,7 +662,7 @@ export default function EnergieClient() {
           lineHeight: 1.6,
         }}
       >
-        Datenquelle: Fraunhofer ISE / Energy-Charts (CC BY 4.0)
+        Datenquelle: {sourceLabel(DATA_SOURCES.energyCharts)}
         {" · "}
         <a href="/atomstrom-import" style={{ color: v("--color-accent"), fontWeight: 600, textDecoration: "none" }}>
           Wie viel Atomstrom importiert Deutschland?

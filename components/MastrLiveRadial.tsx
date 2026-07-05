@@ -4,7 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { v } from "../lib/theme";
 import { trimIncompleteTail } from "../lib/chart-utils";
 import InfoTooltip from "./InfoTooltip";
-import { PoweredBy } from "./PoweredBy";
+import { PoweredBy, DataSourceNote } from "./PoweredBy";
+import { type DataSource } from "../lib/data-sources";
 
 type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
 
@@ -142,6 +143,7 @@ export function MastrLiveRadial({
   traegerNav,
   size = "default",
   branding = false,
+  dataSource = null,
   helpOverlay = null,
   actions = null,
   onValue,
@@ -152,6 +154,10 @@ export function MastrLiveRadial({
   size?: SizeVariant;
   /** Renders a small "Powered by Solar-Check.io" footer (for embeds). */
   branding?: boolean;
+  /** Licence-required data-source credit(s) — always shown when set, not gated
+   * by `branding`. Pass an array when the view combines sources (e.g. live
+   * generation from Energy-Charts + installed capacity from the MaStR). */
+  dataSource?: DataSource | DataSource[] | null;
   /** Optional action controls rendered in the branding footer (share/download/
    * embed). Standard size: on the left, "Powered by" on the right. Compact:
    * grouped on the right next to the help button. */
@@ -712,10 +718,24 @@ export function MastrLiveRadial({
         </div>
       )}
 
-      {(branding || actions || (isCompact && traegerNav?.after)) && (
+      {dataSource && (
         <div
           style={{
             marginTop: 10,
+            fontSize: 10,
+            color: v("--color-text-muted"),
+            letterSpacing: 0.2,
+            lineHeight: 1.4,
+          }}
+        >
+          <DataSourceNote source={dataSource} />
+        </div>
+      )}
+
+      {(branding || actions || (isCompact && traegerNav?.after)) && (
+        <div
+          style={{
+            marginTop: dataSource ? 6 : 10,
             fontSize: 10,
             color: v("--color-text-muted"),
             letterSpacing: 0.2,

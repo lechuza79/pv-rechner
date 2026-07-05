@@ -1,4 +1,49 @@
 import { v } from "../lib/theme";
+import { type DataSource, sourceLabel } from "../lib/data-sources";
+
+/**
+ * Data-source credit line for widget/chart footers, e.g.
+ * "Datenquelle: Energy-Charts (Fraunhofer ISE), CC BY 4.0". Pass an array when
+ * the view combines datasets — they render as
+ * "Datenquelle: Energy-Charts … · Marktstammdatenregister …".
+ *
+ * Licence-required attribution — render it whenever a widget shows external
+ * data, and keep it visible regardless of the `branding` flag (that flag only
+ * hides "Powered by", not the data credit). The provider name links to its
+ * homepage; the muted styling follows the surrounding footer.
+ */
+export function DataSourceNote({ source }: { source: DataSource | DataSource[] }) {
+  const sources = Array.isArray(source) ? source : [source];
+  return (
+    <span>
+      Datenquelle:{" "}
+      {sources.map((s, i) => (
+        <span key={s.name}>
+          {i > 0 && " · "}
+          {s.url ? (
+            <a
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: 2 }}
+            >
+              {s.name}
+            </a>
+          ) : (
+            s.name
+          )}
+          {s.license ? `, ${s.license}` : ""}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/** Same credit as {@link DataSourceNote} but flat (no link) — for chart-export
+ * captions and other non-interactive contexts. */
+export function dataSourceCredit(source: DataSource): string {
+  return `Datenquelle: ${sourceLabel(source)}`;
+}
 
 /**
  * Shared "Powered by solar-check.io" attribution for embed widgets. One source

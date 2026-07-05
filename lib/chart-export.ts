@@ -21,6 +21,7 @@ export interface ExportContext {
   subtitle?: string;                // e.g. "Die letzten 30 Tage"
   stats?: ExportStat[];             // summary widgets row
   legend?: ExportLegendItem[];      // colored legend items below chart
+  source?: string;                  // data-source credit, e.g. "Energy-Charts (Fraunhofer ISE), CC BY 4.0"
 }
 
 // ─── Asset Cache ────────────────────────────────────────────────────────────
@@ -207,6 +208,11 @@ export function buildExportSvg(
   p.push(`<text x="${textX}" y="${footerCenterY}" text-anchor="end" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="11" fill="${tokens['--color-text-secondary']}">Powered by</text>`);
   if (logoBase64Cache) {
     p.push(`<image href="${logoBase64Cache}" x="${logoX}" y="${footerCenterY - logoH / 2}" width="${logoW}" height="${logoH}"/>`);
+  }
+
+  // Left-aligned: data-source credit (licence-required on shared images).
+  if (context.source) {
+    p.push(`<text x="${PAD + 10}" y="${footerCenterY}" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}">Datenquelle: ${esc(context.source)}</text>`);
   }
 
   p.push(`</svg>`);

@@ -9,7 +9,8 @@ import {
   IconChevronRight,
 } from "../../../../components/Icons";
 import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy } from "../../../../components/PoweredBy";
+import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
+import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { useChartExport } from "../../../../lib/useChartExport";
 import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
@@ -99,7 +100,7 @@ export default function StrommixWidget() {
   const [tab, setTab] = useState<TabState>({ id: "7d" });
 
   const chartExport = useChartExport({
-    context: { title: "Strommix Deutschland", subtitle: tabLabel(tab) },
+    context: { title: "Strommix Deutschland", subtitle: tabLabel(tab), source: sourceLabel(DATA_SOURCES.energyCharts) },
     filename: "solar-check-strommix.png",
     shareText: SHARE_TEXT,
     shareUrl: SHARE_URL,
@@ -602,9 +603,6 @@ function Footer({
     navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {});
   };
 
-  // Nothing to show → drop the footer (and its divider) entirely.
-  if (!share && !branding) return null;
-
   return (
     <div style={{ marginTop: 12 }}>
       <div
@@ -615,11 +613,15 @@ function Footer({
           marginBottom: 8,
         }}
       />
+      {/* Data-source credit — licence-required, always shown (not gated by flags). */}
+      <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: share || branding ? 6 : 0 }}>
+        <DataSourceNote source={DATA_SOURCES.energyCharts} />
+      </div>
       <div
         style={{
           fontSize: 10.5,
           color: "var(--widget-muted)",
-          display: "flex",
+          display: (share || branding) ? "flex" : "none",
           justifyContent: share ? (branding ? "space-between" : "flex-start") : "flex-end",
           alignItems: "center",
           gap: 8,
