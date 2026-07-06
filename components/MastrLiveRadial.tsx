@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { v } from "../lib/theme";
-import { trimIncompleteTail } from "../lib/chart-utils";
 import InfoTooltip from "./InfoTooltip";
 import { PoweredBy, DataSourceNote } from "./PoweredBy";
 import { type DataSource } from "../lib/data-sources";
@@ -49,7 +48,7 @@ function extractMW(p: GenerationPoint, et: Energietraeger): number | null {
   }
 }
 
-type Bar = { ts: string; mw: number };
+type Bar = { ts: string; mw: number; solarMissing: boolean };
 
 export type SizeVariant = "default" | "compact";
 
@@ -118,10 +117,10 @@ function pointAt(
 }
 
 function visualAngleFromHour(h: number): number {
-  // 12-hour clock face (like a wristwatch): 12/0 → top, 3 → right, 6 → bottom,
-  // 9 → left. A time lands where a clock's hand would point, so the newest
-  // reading reads intuitively (07:15 → the 7-o'clock position).
-  return ((h % 12) / 12) * 360;
+  // Real 24-hour dial: noon (12) at the top, midnight (0/24) at the bottom,
+  // morning on the left, evening on the right. Reads as a day/night cycle —
+  // the solar bump sits across the top around midday.
+  return ((h - 12) / 24) * 360;
 }
 
 function visualAngleFromTs(ts: string): number {
@@ -193,9 +192,10 @@ export function MastrLiveRadial({
     let cancelled = false;
     const load = () => {
       setLoading(true);
-      // Fetch 15h so that after trimming the incomplete latency tail (~1–3h)
-      // a full 12h window still remains to fill the dial without a gap.
-      fetch("/api/energy/generation?hours=15")
+      // Fetch 26h with the incomplete tail kept (trim=0): we render a full 24h
+      // dial ending at the freshest raw point and style the still-incomplete
+      // newest points (where solar hasn't reported yet) ourselves.
+      fetch("/api/energy/generation?hours=26&trim=0")
         .then((r) => r.json())
         .then((d: { data?: GenerationPoint[] }) => {
           if (cancelled) return;
@@ -239,26 +239,41 @@ export function MastrLiveRadial({
     // single sub-carrier. The generation endpoint already trims this, but we
     // re-apply the shared helper here so the widget is correct even if fed an
     // untrimmed/cached series. Robust across all laggy carriers, not just solar.
-    const trimmed = trimIncompleteTail(rawPoints);
-    if (!trimmed.length) return { bars: [], scaleMaxMw: 1 };
-    // Keep only the most recent 12 hours, ending at the newest complete sample.
-    // The dial is a 12-hour clock, so exactly 12h fills the ring without a gap —
-    // independent of how far the live feed lags behind the wall clock.
-    const newestMs = new Date(trimmed[trimmed.length - 1].ts).getTime();
-    const cutoffMs = newestMs - 12 * 3600 * 1000;
-    const usable = trimmed.filter((p) => new Date(p.ts).getTime() >= cutoffMs);
+    if (!rawPoints.length) return { bars: [], scaleMaxMw: 1 };
+    // Keep the incomplete tail: window to the 24h ending at the freshest raw
+    // point (the newest data we have, ~1h old) — not the newest *complete* one.
+    const newestMs = new Date(rawPoints[rawPoints.length - 1].ts).getTime();
+    const cutoffMs = newestMs - 24 * 3600 * 1000;
+    const usable = rawPoints.filter((p) => new Date(p.ts).getTime() >= cutoffMs);
     const seq: Bar[] = [];
     let maxGesamtMw = 0;
     for (const p of usable) {
       const total = extractMW(p, "gesamt");
       if (total !== null && total > maxGesamtMw) maxGesamtMw = total;
       const mw = extractMW(p, energietraeger);
+      // Solar view before sunrise / not-yet-reported → no bar (a gap in the ring).
       if (mw === null) continue;
-      seq.push({ ts: p.ts, mw });
+      // "Solar pending": solar hasn't been reported for this timestamp yet. For
+      // the renewables total the value is then missing its solar share (drawn
+      // paler); for single carriers other than solar it doesn't matter.
+      const solarMissing = typeof p.solar !== "number";
+      seq.push({ ts: p.ts, mw, solarMissing });
     }
     return { bars: seq, scaleMaxMw: Math.max(1, maxGesamtMw) };
   }, [rawPoints, energietraeger]);
-  const latest: Bar | null = bars.length ? bars[bars.length - 1] : null;
+  // The headline value = the newest *complete* reading. For the renewables total
+  // that skips the still-incomplete tail (solar not reported yet), so the big
+  // number never silently drops. Those paler tail bars stay in the ring and only
+  // reveal "ohne Solar" when hovered. Single carriers use their newest bar.
+  const latest: Bar | null = (() => {
+    if (!bars.length) return null;
+    if (energietraeger === "gesamt") {
+      for (let i = bars.length - 1; i >= 0; i--) {
+        if (!bars[i].solarMissing) return bars[i];
+      }
+    }
+    return bars[bars.length - 1];
+  })();
 
   const [hover, setHover] = useState<Bar | null>(null);
   const [shownMw, setShownMw] = useState<number>(0);
@@ -320,6 +335,9 @@ export function MastrLiveRadial({
   // feed lags the wall clock by ~1–3h, so a relative "gerade eben"/"vor X Min"
   // would be misleading — the exact clock time is the honest label.
   const freshness = `${displayClock} Uhr`;
+  // The renewables total is missing its solar share when solar hasn't been
+  // reported for the shown timestamp yet (only relevant for the "gesamt" sum).
+  const displayIncomplete = energietraeger === "gesamt" && !!display.solarMissing;
 
   const accentBars = v("--color-accent");
   const accentLatest = v("--color-highlight");
@@ -408,21 +426,20 @@ export function MastrLiveRadial({
                   boxShadow: `inset 0 0 0 1px ${v("--color-border")}`,
                 }}
               />
-              {traegerNav.before ?? "Momentan erzeugt"}
+              {traegerNav.before ?? "Letzte 24 Stunden"}
               <span
                 style={{
                   fontWeight: 400,
                   color: v("--color-text-secondary"),
                   marginLeft: 4,
-                  // Feste Mindestbreite, damit das Widget beim Hover-Wechsel
-                  // ("vor 88 Min" → "14:30 Uhr") nicht horizontal springt.
-                  display: "inline-block",
-                  minWidth: 86,
                   textAlign: "left",
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
                 · {freshness}
+                {displayIncomplete && (
+                  <span style={{ color: v("--color-text-muted") }}> · ohne Solar</span>
+                )}
               </span>
             </div>
           )}
@@ -492,7 +509,7 @@ export function MastrLiveRadial({
               background: v("--color-highlight"),
             }}
           />
-          Im Moment erzeugt
+          Letzte 24 Stunden
           <span
             style={{
               textTransform: "none",
@@ -502,6 +519,9 @@ export function MastrLiveRadial({
             }}
           >
             · {freshness}
+            {displayIncomplete && (
+              <span style={{ color: v("--color-text-muted") }}> · ohne Solar</span>
+            )}
           </span>
         </div>
       )}
@@ -560,8 +580,12 @@ export function MastrLiveRadial({
               const [x1, y1] = pointAt(CX, CY, va, INNER_R);
               const [x2, y2] = pointAt(CX, CY, va, INNER_R + len);
               const [hx2, hy2] = pointAt(CX, CY, va, OUTER_R);
-              const isLatest = i === bars.length - 1 && b.mw > 0;
+              const isLatest = latest?.ts === b.ts && b.mw > 0;
               const isHover = hover?.ts === b.ts;
+              // Renewables total with solar not yet reported → the bar only
+              // holds the other renewables, drawn paler blue (still the "now"
+              // marker if it's the newest, just dimmer).
+              const isPale = energietraeger === "gesamt" && b.solarMissing;
               return (
                 <g
                   key={b.ts}
@@ -616,7 +640,19 @@ export function MastrLiveRadial({
                           : dim.barStroke
                     }
                     strokeLinecap="round"
-                    opacity={ratio > 0 ? (isHover || isLatest ? 1 : 0.85) : 0}
+                    opacity={
+                      ratio > 0
+                        ? isHover
+                          ? 1
+                          : isPale
+                            ? isLatest
+                              ? 0.55
+                              : 0.28
+                            : isLatest
+                              ? 1
+                              : 0.85
+                        : 0
+                    }
                     style={{
                       // Stagger-Aufbau beim Energieträger-Wechsel (via Re-Mount
                       // durch das parent <g key={energietraeger}>). Bei 90s-
