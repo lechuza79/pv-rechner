@@ -105,10 +105,15 @@ export async function GET(req: NextRequest) {
   const startParam = req.nextUrl.searchParams.get("start"); // ISO date e.g. "2025-01-01"
   const endParam = req.nextUrl.searchParams.get("end");     // ISO date e.g. "2025-12-31"
   const hoursBack = Math.min(Number(req.nextUrl.searchParams.get("hours")) || 24, 8784);
+  // trim=0 keeps the incomplete latency tail (newest points where solar/wind
+  // aren't fully reported). Default trims it, so charts/stats get one coherent
+  // complete window; the live radial opts out to show the freshest points and
+  // marks them itself.
+  const keepTail = req.nextUrl.searchParams.get("trim") === "0";
 
   // Determine time range: absolute start/end takes priority over hours
   const isAbsolute = !!(startParam && endParam);
-  const cacheKey = isAbsolute ? `${country}-${startParam}-${endParam}` : `${country}-${hoursBack}`;
+  const cacheKey = `${isAbsolute ? `${country}-${startParam}-${endParam}` : `${country}-${hoursBack}`}${keepTail ? "-raw" : ""}`;
   const rangeHours = isAbsolute
     ? Math.ceil((new Date(endParam + "T23:59:59Z").getTime() - new Date(startParam + "T00:00:00Z").getTime()) / 3600000)
     : hoursBack;
@@ -174,8 +179,9 @@ export async function GET(req: NextRequest) {
 
     // Cut the latency tail (newest points where solar/wind aren't reported yet)
     // once, at the source, so every consumer — charts, widgets, period stats —
-    // gets one coherent complete window instead of a partial mix.
-    data = trimIncompleteTail(data);
+    // gets one coherent complete window instead of a partial mix. The live
+    // radial passes trim=0 to keep the tail and style it itself.
+    if (!keepTail) data = trimIncompleteTail(data);
 
     // Downsample for longer time ranges to keep response manageable
     // 15min → hourly (4x), → 3-hourly (12x), → 6-hourly (24x), → daily (96x)

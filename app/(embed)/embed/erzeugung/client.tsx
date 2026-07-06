@@ -24,7 +24,7 @@ const TRAEGER_LABEL: Record<Traeger, string> = {
 };
 
 const HELP_TEXT =
-  "Aktuelle Stromerzeugung in Deutschland nach Energieträger. Der Außenring zeigt den 24-Stunden-Verlauf nach Tageszeit (12 Uhr oben, 18 rechts, 0 unten, 6 links). Die Mitte zeigt den jüngsten Wert. Live-Daten von Energy-Charts (Fraunhofer ISE), aktualisiert alle 15 Minuten mit ~60 Min Lag.";
+  "Erneuerbare Stromerzeugung in Deutschland. Der Außenring ist ein 24-Stunden-Ziffernblatt (Mittag oben, Mitternacht unten) — jeder Wert steht an seiner Uhrzeit. Die jüngsten Balken, für die Solar noch nicht gemeldet ist, sind blasser blau (nur die übrigen Erneuerbaren); im Solar-Modus bleiben sie leer. Live-Daten von Energy-Charts (Fraunhofer ISE), ~1 h Lag, Solar ~2 h.";
 
 function neighbour(t: Traeger, step: -1 | 1): Traeger {
   const idx = TRAEGER_ORDER.indexOf(t);
@@ -246,7 +246,7 @@ export default function ErzeugungWidget({
             lastManualRef.current = Date.now();
             setTraeger(neighbour(traeger, +1));
           },
-          before: "Momentan erzeugt",
+          before: "Letzte 24 Stunden",
           after: helpButton,
         }}
       />

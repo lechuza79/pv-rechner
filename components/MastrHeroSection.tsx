@@ -494,16 +494,18 @@ function SummaryPanel({
 
   return (
     <div className="mastr-summary" style={{ display: "grid", gap: 12, minWidth: 0 }}>
-      {/* Region + Energieträger heading — carries the context that the three
-          KPI tiles below drop, so each tile can stay compact enough to sit in a
-          row on mobile. */}
-      <div style={{ display: "flex", alignItems: "baseline", gap: 6, flexWrap: "wrap" }}>
+      {/* "Kapazität <Träger>" + "Stand <Monat Jahr> · <Region>" — names what the
+          three KPI tiles below are (installed capacity), with the data date and
+          region. Both stay dynamic: träger and region follow the filter/map. */}
+      <div style={{ display: "grid", gap: 2, minWidth: 0 }}>
         <span style={{ fontSize: 15, fontWeight: 700, color: v("--color-text-primary") }}>
-          {regionLabel}
-        </span>
-        <span style={{ fontSize: 13, color: v("--color-text-muted") }}>
-          {traegerLabel}
+          Kapazität {traegerLabel}
           {segmentSuffix}
+        </span>
+        <span style={{ fontSize: 12, color: v("--color-text-muted") }}>
+          {summary
+            ? `${summary.source === "placeholder" ? "Schätzung · " : "Stand "}${formatDataAsOf(summary.data_as_of)} · ${regionLabel}`
+            : regionLabel}
         </span>
       </div>
 
@@ -512,7 +514,9 @@ function SummaryPanel({
           label="Leistung"
           value={
             totalMw !== null
-              ? `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW`
+              ? totalMw >= 1000
+                ? `${(totalMw / 1000).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW`
+                : `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW`
               : <LoadingDots />
           }
         />
@@ -573,12 +577,6 @@ function SummaryPanel({
           })}
         </div>
       )}
-      <div style={{ fontSize: 11, color: v("--color-text-muted"), paddingTop: 2 }}>
-        {summary
-          ? (summary.source === "placeholder" ? "Schätzung · " : "Stand ") +
-            formatDataAsOf(summary.data_as_of)
-          : ""}
-      </div>
     </div>
   );
 }
