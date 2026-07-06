@@ -8,6 +8,7 @@ import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryRepl
 import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
+import PresetNumberInput from "../../../components/PresetNumberInput";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import { calcExtraConsumption, calcKlimaAnnual, KLIMA_DEFAULT_M2, KLIMA_M2_PRESETS } from "../../../lib/consumption";
 import Chart from "./_components/Chart";
@@ -591,25 +592,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                           color: eaKm === km ? v('--color-accent') : v('--color-text-muted'),
                         }}>{(km / 1000).toFixed(0)}k</button>
                       ))}
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        <input
-                          value={EA_KM_PRESETS.includes(eaKm) ? "" : String(eaKm)}
-                          placeholder="km"
-                          onChange={e => {
-                            const n = parseInt(e.target.value.replace(/\D/g, ""));
-                            if (!isNaN(n) && n >= 1000 && n <= 50000) { setEaKm(n); setOEv(null); }
-                          }}
-                          style={{
-                            width: 56, textAlign: "center", fontSize: 12, fontWeight: 600,
-                            fontFamily: v('--font-mono'),
-                            color: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent') : v('--color-text-muted'),
-                            background: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent-dim') : v('--color-bg-muted'),
-                            border: !EA_KM_PRESETS.includes(eaKm) ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                            borderRadius: v('--radius-sm'), padding: "7px 4px", outline: "none",
-                          }}
-                        />
-                        <span style={{ fontSize: 11, color: v('--color-text-muted') }}>km</span>
-                      </span>
+                      <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km" onCommit={n => { setEaKm(n); setOEv(null); }} />
                     </div>
                   </div>
                 )}
@@ -626,25 +609,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                           color: klimaM2 === m2 ? v('--color-accent') : v('--color-text-muted'),
                         }}>{m2} m²</button>
                       ))}
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        <input
-                          value={KLIMA_M2_PRESETS.includes(klimaM2) ? "" : String(klimaM2)}
-                          placeholder="m²"
-                          onChange={e => {
-                            const n = parseInt(e.target.value.replace(/\D/g, ""));
-                            if (!isNaN(n) && n >= 20 && n <= 500) setKlimaM2Manual(n);
-                          }}
-                          style={{
-                            width: 56, textAlign: "center", fontSize: 12, fontWeight: 600,
-                            fontFamily: v('--font-mono'),
-                            color: !KLIMA_M2_PRESETS.includes(klimaM2) ? v('--color-accent') : v('--color-text-muted'),
-                            background: !KLIMA_M2_PRESETS.includes(klimaM2) ? v('--color-accent-dim') : v('--color-bg-muted'),
-                            border: !KLIMA_M2_PRESETS.includes(klimaM2) ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                            borderRadius: v('--radius-sm'), padding: "7px 4px", outline: "none",
-                          }}
-                        />
-                        <span style={{ fontSize: 11, color: v('--color-text-muted') }}>m²</span>
-                      </span>
+                      <PresetNumberInput value={klimaM2} presets={KLIMA_M2_PRESETS} min={20} max={500} unit="m²" onCommit={setKlimaM2Manual} />
                     </div>
                     <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5 }}>
                       Nur Kühlung im Sommer. Aus der Wohnfläche schätzen wir ~{calcKlimaAnnual(klimaM2).toLocaleString("de-DE")} kWh/Jahr.
