@@ -118,7 +118,10 @@ function pointAt(
 }
 
 function visualAngleFromHour(h: number): number {
-  return ((h - 12) / 24) * 360;
+  // 12-hour clock face (like a wristwatch): 12/0 → top, 3 → right, 6 → bottom,
+  // 9 → left. A time lands where a clock's hand would point, so the newest
+  // reading reads intuitively (07:15 → the 7-o'clock position).
+  return ((h % 12) / 12) * 360;
 }
 
 function visualAngleFromTs(ts: string): number {
@@ -190,7 +193,9 @@ export function MastrLiveRadial({
     let cancelled = false;
     const load = () => {
       setLoading(true);
-      fetch("/api/energy/generation?hours=24")
+      // Fetch 15h so that after trimming the incomplete latency tail (~1–3h)
+      // a full 12h window still remains to fill the dial without a gap.
+      fetch("/api/energy/generation?hours=15")
         .then((r) => r.json())
         .then((d: { data?: GenerationPoint[] }) => {
           if (cancelled) return;
@@ -234,7 +239,14 @@ export function MastrLiveRadial({
     // single sub-carrier. The generation endpoint already trims this, but we
     // re-apply the shared helper here so the widget is correct even if fed an
     // untrimmed/cached series. Robust across all laggy carriers, not just solar.
-    const usable = trimIncompleteTail(rawPoints);
+    const trimmed = trimIncompleteTail(rawPoints);
+    if (!trimmed.length) return { bars: [], scaleMaxMw: 1 };
+    // Keep only the most recent 12 hours, ending at the newest complete sample.
+    // The dial is a 12-hour clock, so exactly 12h fills the ring without a gap —
+    // independent of how far the live feed lags behind the wall clock.
+    const newestMs = new Date(trimmed[trimmed.length - 1].ts).getTime();
+    const cutoffMs = newestMs - 12 * 3600 * 1000;
+    const usable = trimmed.filter((p) => new Date(p.ts).getTime() >= cutoffMs);
     const seq: Bar[] = [];
     let maxGesamtMw = 0;
     for (const p of usable) {
@@ -304,13 +316,10 @@ export function MastrLiveRadial({
     hour: "2-digit",
     minute: "2-digit",
   });
-  const minutesAgo = hover ? null : Math.round((Date.now() - displayDate.getTime()) / 60000);
-  const freshness =
-    hover || minutesAgo === null || minutesAgo >= 60
-      ? `${displayClock} Uhr`
-      : minutesAgo < 1
-        ? "gerade eben"
-        : `vor ${minutesAgo} Min`;
+  // Always show the timestamp of the shown reading (latest or hovered). The live
+  // feed lags the wall clock by ~1–3h, so a relative "gerade eben"/"vor X Min"
+  // would be misleading — the exact clock time is the honest label.
+  const freshness = `${displayClock} Uhr`;
 
   const accentBars = v("--color-accent");
   const accentLatest = v("--color-highlight");
@@ -484,6 +493,16 @@ export function MastrLiveRadial({
             }}
           />
           Im Moment erzeugt
+          <span
+            style={{
+              textTransform: "none",
+              letterSpacing: 0,
+              color: v("--color-text-secondary"),
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            · {freshness}
+          </span>
         </div>
       )}
 
