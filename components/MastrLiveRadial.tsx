@@ -179,7 +179,6 @@ export function MastrLiveRadial({
   const INNER_R = dim.innerR;
   const OUTER_R = dim.outerR;
   const MIN_BAR_R = dim.minBarR;
-  const HIT_STROKE = dim.hitStroke;
   const isCompact = size === "compact";
 
   // Rohdaten werden NUR durch Fetches geändert, NICHT beim Energieträger-
@@ -342,6 +341,33 @@ export function MastrLiveRadial({
   // The renewables total is missing its solar share when solar hasn't been
   // reported for the shown timestamp yet (only relevant for the "gesamt" sum).
   const displayIncomplete = energietraeger === "gesamt" && !!display.solarMissing;
+
+  // Map a point in SVG user units to the bar whose clock angle is closest to the
+  // cursor. Returns null outside the bar ring or inside the "now" gap (where the
+  // nearest bar is more than ~half a bar-spacing away). Replaces per-bar hit
+  // areas, which overlapped and made hover offset by one bar.
+  const barAtAngle = (px: number, py: number): Bar | null => {
+    const dx = px - CX;
+    const dy = py - CY;
+    const r = Math.hypot(dx, dy);
+    if (r < INNER_R - 8 || r > OUTER_R + 6) return null;
+    // Invert pointAt: x = CX + r·cos(rad), rad = (visualAngle − 90)·π/180.
+    let target = (Math.atan2(dy, dx) * 180) / Math.PI + 90;
+    target = ((target % 360) + 360) % 360;
+    let best: Bar | null = null;
+    let bestD = Infinity;
+    for (const b of bars) {
+      const a = ((visualAngleFromTs(b.ts) % 360) + 360) % 360;
+      let d = Math.abs(a - target);
+      if (d > 180) d = 360 - d;
+      if (d < bestD) {
+        bestD = d;
+        best = b;
+      }
+    }
+    // ~half a bar-spacing (bars are 3.75° apart); the 7.5° "now" gap stays empty.
+    return bestD <= 2.6 ? best : null;
+  };
 
   const accentBars = v("--color-accent");
   const accentLatest = v("--color-highlight");
@@ -583,7 +609,6 @@ export function MastrLiveRadial({
               const len = ratio > 0 ? MIN_BAR_R + (OUTER_R - INNER_R - MIN_BAR_R) * ratio : 0;
               const [x1, y1] = pointAt(CX, CY, va, INNER_R);
               const [x2, y2] = pointAt(CX, CY, va, INNER_R + len);
-              const [hx2, hy2] = pointAt(CX, CY, va, OUTER_R);
               const isLatest = latest?.ts === b.ts && b.mw > 0;
               const isHover = hover?.ts === b.ts;
               // Renewables total with solar not yet reported → the bar only
@@ -591,17 +616,7 @@ export function MastrLiveRadial({
               // marker if it's the newest, just dimmer).
               const isPale = energietraeger === "gesamt" && b.solarMissing;
               return (
-                <g
-                  key={b.ts}
-                  onPointerEnter={() => setHover(b)}
-                  onPointerLeave={(e) => {
-                    if (e.pointerType === "mouse") {
-                      setHover((h) => (h?.ts === b.ts ? null : h));
-                    }
-                  }}
-                  onPointerDown={() => setHover(b)}
-                  style={{ cursor: "pointer", touchAction: "manipulation" }}
-                >
+                <g key={b.ts}>
                   {/* Outline-Line bei aktiven/jüngsten Bars — sorgt dafür,
                       dass die Highlight-Bar auch bei zarten Highlight-Tokens
                       auf hellen Hintergründen sichtbar bleibt. */}
@@ -644,6 +659,7 @@ export function MastrLiveRadial({
                           : dim.barStroke
                     }
                     strokeLinecap="round"
+                    pointerEvents="none"
                     opacity={
                       ratio > 0
                         ? isHover
@@ -668,20 +684,53 @@ export function MastrLiveRadial({
                         "x2 0.4s cubic-bezier(.4,.0,.2,1), y2 0.4s cubic-bezier(.4,.0,.2,1), opacity 0.3s ease, stroke 0.2s ease, stroke-width 0.15s ease",
                     }}
                   />
-                  <line
-                    x1={x1}
-                    y1={y1}
-                    x2={hx2}
-                    y2={hy2}
-                    stroke="transparent"
-                    strokeWidth={HIT_STROKE}
-                    strokeLinecap="butt"
-                    pointerEvents="stroke"
-                  />
                 </g>
               );
             })}
           </g>
+
+          {/* Single angle-based hover layer over the whole ring. Per-bar hit
+              areas (18px strokes) overlapped their neighbours, so the topmost
+              (newest) one caught the pointer → hover was offset by one bar and
+              the first bars were unreachable. Instead we map the cursor angle to
+              the nearest bar. Sits on top of the bars; the bars themselves are
+              pointer-transparent. Nothing within half the gap (>3.5°) hovers, so
+              the "now" gap stays empty. */}
+          <circle
+            cx={CX}
+            cy={CY}
+            r={OUTER_R + 4}
+            fill="transparent"
+            pointerEvents="all"
+            style={{ cursor: "pointer", touchAction: "manipulation" }}
+            onPointerMove={(e) => {
+              const svg = e.currentTarget.ownerSVGElement;
+              if (!svg) return;
+              const rect = svg.getBoundingClientRect();
+              if (!rect.width) return;
+              setHover(
+                barAtAngle(
+                  ((e.clientX - rect.left) / rect.width) * SIZE,
+                  ((e.clientY - rect.top) / rect.height) * SIZE,
+                ),
+              );
+            }}
+            onPointerDown={(e) => {
+              const svg = e.currentTarget.ownerSVGElement;
+              if (!svg) return;
+              const rect = svg.getBoundingClientRect();
+              if (!rect.width) return;
+              setHover(
+                barAtAngle(
+                  ((e.clientX - rect.left) / rect.width) * SIZE,
+                  ((e.clientY - rect.top) / rect.height) * SIZE,
+                ),
+              );
+            }}
+            onPointerLeave={(e) => {
+              if (e.pointerType === "mouse") setHover(null);
+            }}
+          />
 
           {/* Hintergrund-Kreis ÜBER den Bars mit Drop-Shadow.
               Schneidet die Bar-Caps unten leicht an und wirft Schatten nach
