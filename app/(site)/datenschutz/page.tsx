@@ -184,8 +184,15 @@ export default function DatenschutzPage() {
           und keine Informationen auf deinem Gerät gespeichert oder ausgelesen.
           Erhoben werden ausschließlich anonyme, aggregierte Daten wie die
           aufgerufene Seite, die ungefähre Herkunftsregion, der Gerätetyp und die
-          Verweis-Quelle. Es findet kein geräteübergreifendes Tracking statt, es
-          werden keine Nutzerprofile gebildet und einzelne Besucher werden nicht
+          Verweis-Quelle. Zusätzlich zählen wir anonyme Nutzungsereignisse — etwa
+          dass ein Berechnungsschritt erreicht, eine Berechnung abgeschlossen oder
+          ein Ergebnis geteilt wurde. In aggregierter, anonymer Form erfassen wir
+          dabei einzelne gewählte Eckdaten der Berechnung (zum Beispiel die
+          Anlagen- oder Speichergröße), um typische Nutzungsprofile zu verstehen.
+          Diese Ereignisse enthalten keine personenbezogenen Daten, keine
+          Freitext-Eingaben und keinen Bezug zu deiner Person. Es findet kein
+          geräteübergreifendes Tracking statt, es werden keine Nutzerprofile
+          einzelner Personen gebildet und einzelne Besucher werden nicht
           wiedererkannt.
         </p>
         <p style={S.p}>

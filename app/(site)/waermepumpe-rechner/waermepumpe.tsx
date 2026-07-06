@@ -15,6 +15,7 @@ import InfoTooltip from "../../../components/InfoTooltip";
 import Header from "../../../components/Header";
 import { IconArrowRight, IconRefresh, IconChevronDown, IconSun } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
+import { trackEvent } from "../../../lib/analytics";
 
 const STEPS = ["Situation", "Wohnfläche", "Dämmstandard", "Haushalt", "Heizsystem"];
 
@@ -49,7 +50,12 @@ export default function Waermepumpe() {
   const [showDetails, setShowDetails] = useState(false);
 
   const isResult = step >= STEPS.length;
-  const next = () => step < STEPS.length && setStep(step + 1);
+  const next = () => {
+    if (step >= STEPS.length) return;
+    const target = step + 1;
+    if (target === STEPS.length) trackEvent("waermepumpe_ergebnis");
+    setStep(target);
+  };
   const back = () => step > 0 && setStep(step - 1);
 
   // ── Resolved wohnfläche ──────────────────────────────────────

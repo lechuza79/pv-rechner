@@ -10,6 +10,7 @@ import { v } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { calcAircon, compareDevices, acquisitionRange, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
+import { trackEvent } from "../../../lib/analytics";
 import { bundeslandFromPlz } from "../../../lib/plz-bundesland";
 
 const STEPS = ["Gerätetyp", "Räume & Größe", "Nutzung & Standort"];
@@ -86,7 +87,12 @@ export default function Klimaanlage() {
   const strompreis = oStrom ?? (prices.electricityPrice > 0 ? prices.electricityPrice : CFG.stromPrice);
 
   const isResult = step >= STEPS.length;
-  const next = () => step < STEPS.length && setStep(step + 1);
+  const next = () => {
+    if (step >= STEPS.length) return;
+    const target = step + 1;
+    if (target === STEPS.length) trackEvent("klima_ergebnis");
+    setStep(target);
+  };
   const back = () => step > 0 && setStep(step - 1);
 
   const fetchCooling = useCallback(async (inputPlz: string) => {

@@ -4,6 +4,7 @@ import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/n
 import Link from "next/link";
 import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER } from "../../../lib/constants";
 import { recommend } from "../../../lib/recommend";
+import { trackEvent } from "../../../lib/analytics";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
 import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
@@ -192,7 +193,7 @@ export default function Empfehlung() {
   const STEPS = ["Dein Haus", "Dein Haushalt", "Großverbraucher"];
   const next = () => {
     if (wizardStep < STEPS.length - 1) setWizardStep(wizardStep + 1);
-    else showRecommendation();
+    else { trackEvent("empfehlung_ergebnis"); showRecommendation(); }
   };
   const back = () => wizardStep > 0 && setWizardStep(wizardStep - 1);
 

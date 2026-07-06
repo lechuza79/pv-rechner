@@ -18,6 +18,7 @@ import { useFeedInRates } from "../../../lib/feedin";
 import Header from "../../../components/Header";
 import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../../components/Icons";
 import { useChartExport } from "../../../lib/useChartExport";
+import { trackEvent } from "../../../lib/analytics";
 import ChartExportBar from "../../../components/ChartExportBar";
 import ResultHeroCard from "./_components/ResultHeroCard";
 import QuickSettings from "./_components/QuickSettings";
@@ -287,7 +288,28 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     return () => clearTimeout(t);
   }, [plzToast]);
 
-  const next = () => step < STEPS.length && setStep(step + 1);
+  // Funnel-Events: feuern nur beim Vorwärtsgehen im direkten Rechner-Flow
+  // (Share-/Empfehlungs-Aufrufe landen per URL direkt auf dem Ergebnis und
+  // laufen nicht durch next()). So bildet die Event-Treppe echte Abbrüche ab.
+  const FUNNEL_EVENTS = ["", "pv_schritt_speicher", "pv_schritt_haushalt", "pv_schritt_verbraucher"];
+  const next = () => {
+    if (step >= STEPS.length) return;
+    const target = step + 1;
+    if (target === STEPS.length) {
+      // Ergebnis erreicht: anonymes Anfrageprofil mitgeben. Vercel Web
+      // Analytics erlaubt im aktuellen Tarif nur 2 Eigenschaften pro Event
+      // (Anlagengröße + Speicher). Die restlichen Profil-Dimensionen
+      // (Personen, Nutzung, WP, E-Auto, Klima) brauchen das Plus-Add-on
+      // (8 Eigenschaften) — dokumentiert in docs/analytics-events.md.
+      trackEvent("pv_ergebnis", {
+        anlage: anlage === 4 ? "custom" : `${kwp} kWp`,
+        speicher: spKwh > 0 ? `${spKwh} kWh` : "kein",
+      });
+    } else if (FUNNEL_EVENTS[target]) {
+      trackEvent(FUNNEL_EVENTS[target]);
+    }
+    setStep(target);
+  };
   const back = () => step > 0 && setStep(step - 1);
   const restart = () => { setStep(0); setOKosten(null); setOEv(null); setOVerbrauch(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
 
@@ -344,6 +366,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   });
 
   const handleCopy = async () => {
+    trackEvent("pv_geteilt");
     try {
       await navigator.clipboard.writeText(buildShareUrl());
       setCopied(true);
@@ -352,10 +375,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   };
 
   const handleNativeShare = async () => {
+    trackEvent("pv_geteilt");
     try { await navigator.share({ title: "Solar Check – Mein Ergebnis", text: shareText, url: buildShareUrl() }); } catch {}
   };
 
   const handleWhatsApp = () => {
+    trackEvent("pv_geteilt");
     window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n" + buildShareUrl())}`, "_blank");
   };
 
@@ -375,6 +400,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       });
       if (res.ok) {
         const { id } = await res.json();
+        trackEvent("pv_gespeichert");
         setSaved(true);
         setSavedCalcId(id);
         setTimeout(() => setSaved(false), 2500);
@@ -800,7 +826,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 deines Solarstroms nutzt du übers Jahr selbst, der Rest fließt ins Netz. Dieser Wert ist der
                 wichtigste Hebel für die Wirtschaftlichkeit: Jede selbst genutzte Kilowattstunde spart dir den
                 vollen Strompreis, während eingespeister Strom nur die deutlich niedrigere Einspeisevergütung bringt.{" "}
-                <Link href="/methodik" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>
+                <Link href="/methodik" onClick={() => trackEvent("pv_methodik")} style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>
                   Wie wir das berechnen
                 </Link>
               </div>
@@ -890,7 +916,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16,
               border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6,
             }}>
-              <Link href="/methodik" style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
+              <Link href="/methodik" onClick={() => trackEvent("pv_methodik")} style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
               <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
             </div>
 
