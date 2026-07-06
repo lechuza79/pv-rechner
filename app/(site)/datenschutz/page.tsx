@@ -119,9 +119,9 @@ export default function DatenschutzPage() {
           ohne Registrierung. Die eigentliche Berechnung läuft in deinem Browser.
           In zwei Fällen werden dennoch Daten übermittelt: für die
           standortgenaue Ertragsprognose wird deine Postleitzahl an einen
-          Berechnungsdienst gesendet (Abschnitt 7), und wenn du dich freiwillig
+          Berechnungsdienst gesendet (Abschnitt 8), und wenn du dich freiwillig
           anmeldest, um Berechnungen zu speichern, legen wir ein Nutzerkonto an
-          (Abschnitt 8). Beides ist unten transparent beschrieben.
+          (Abschnitt 9). Beides ist unten transparent beschrieben.
         </p>
 
         <h2 style={S.h2}>3. Hosting</h2>
@@ -175,7 +175,38 @@ export default function DatenschutzPage() {
           </a>
         </p>
 
-        <h2 style={S.h2}>5. Schriftarten</h2>
+        <h2 style={S.h2}>5. Reichweitenmessung (Web-Analyse)</h2>
+        <p style={S.p}>
+          Um zu verstehen, wie unsere Website genutzt wird — etwa welche Seiten
+          aufgerufen werden und über welche Kanäle Besucher zu uns kommen —
+          setzen wir Vercel Web Analytics ein, einen Dienst der Vercel Inc. Die
+          Erfassung erfolgt bewusst cookiefrei: Es werden keine Cookies gesetzt
+          und keine Informationen auf deinem Gerät gespeichert oder ausgelesen.
+          Erhoben werden ausschließlich anonyme, aggregierte Daten wie die
+          aufgerufene Seite, die ungefähre Herkunftsregion, der Gerätetyp und die
+          Verweis-Quelle. Es findet kein geräteübergreifendes Tracking statt, es
+          werden keine Nutzerprofile gebildet und einzelne Besucher werden nicht
+          wiedererkannt.
+        </p>
+        <p style={S.p}>
+          Da hierbei keine Informationen auf deinem Gerät gespeichert oder
+          abgerufen werden, ist dafür keine Einwilligung nach § 25 TTDSG
+          erforderlich und es wird kein Cookie-Banner benötigt. Rechtsgrundlage
+          für die Verarbeitung ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
+          Interesse an einer datensparsamen Reichweitenmessung zur Verbesserung
+          unseres Angebots). Der Erhebung kannst du jederzeit widersprechen
+          (Abschnitt 11). Weitere Informationen:{" "}
+          <a
+            href="https://vercel.com/docs/analytics/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={S.a}
+          >
+            vercel.com/docs/analytics/privacy-policy
+          </a>
+        </p>
+
+        <h2 style={S.h2}>6. Schriftarten</h2>
         <p style={S.p}>
           Diese Website verwendet die Schriftarten DM Sans und JetBrains Mono.
           Diese werden nicht von Google-Servern geladen, sondern sind fest in die
@@ -184,17 +215,17 @@ export default function DatenschutzPage() {
           wird keine IP-Adresse an Google übermittelt.
         </p>
 
-        <h2 style={S.h2}>6. Cookies</h2>
+        <h2 style={S.h2}>7. Cookies</h2>
         <p style={S.p}>
           Diese Website setzt keine Tracking- oder Werbe-Cookies. Solange du dich
           nicht anmeldest, werden überhaupt keine Cookies gesetzt. Meldest du
-          dich an, um Berechnungen zu speichern (siehe Abschnitt 8), wird ein
+          dich an, um Berechnungen zu speichern (siehe Abschnitt 9), wird ein
           technisch notwendiges Sitzungs-Cookie gesetzt, damit du eingeloggt
           bleibst. Dieses Cookie ist für den Anmeldevorgang erforderlich (§ 25
           Abs. 2 Nr. 2 TTDSG); ein Cookie-Banner ist dafür nicht nötig.
         </p>
 
-        <h2 style={S.h2}>7. Standortgenaue Ertragsprognose</h2>
+        <h2 style={S.h2}>8. Standortgenaue Ertragsprognose</h2>
         <p style={S.p}>
           Für eine realistische Ertragsprognose berechnen wir den
           standortabhängigen Solarertrag. Dazu wird die von dir eingegebene
@@ -211,7 +242,7 @@ export default function DatenschutzPage() {
           deiner Person zugeordnet.
         </p>
 
-        <h2 style={S.h2}>8. Nutzerkonto und gespeicherte Berechnungen</h2>
+        <h2 style={S.h2}>9. Nutzerkonto und gespeicherte Berechnungen</h2>
         <p style={S.p}>
           Du kannst die Website vollständig ohne Anmeldung nutzen. Möchtest du
           deine Berechnungen speichern und später wieder aufrufen, kannst du dir
@@ -244,7 +275,7 @@ export default function DatenschutzPage() {
           </a>
         </p>
 
-        <h2 style={S.h2}>9. Kontakt per E-Mail</h2>
+        <h2 style={S.h2}>10. Kontakt per E-Mail</h2>
         <p style={S.p}>
           Wenn du uns per E-Mail kontaktierst, werden die von dir mitgeteilten
           Daten (E-Mail-Adresse, Inhalt der Nachricht) zum Zweck der Bearbeitung
@@ -254,7 +285,7 @@ export default function DatenschutzPage() {
           an der Beantwortung von Anfragen).
         </p>
 
-        <h2 style={S.h2}>10. Deine Rechte</h2>
+        <h2 style={S.h2}>11. Deine Rechte</h2>
         <p style={S.p}>Du hast jederzeit das Recht auf:</p>
         <ul style={S.ul}>
           <li style={S.li}>
@@ -280,13 +311,13 @@ export default function DatenschutzPage() {
           Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO).
         </p>
 
-        <h2 style={S.h2}>11. Änderungen</h2>
+        <h2 style={S.h2}>12. Änderungen</h2>
         <p style={S.p}>
           Diese Datenschutzerklärung kann gelegentlich aktualisiert werden, um
           Änderungen an der Website oder rechtlichen Anforderungen zu
           entsprechen.
         </p>
-        <p style={S.muted}>Stand: Juni 2026</p>
+        <p style={S.muted}>Stand: Juli 2026</p>
       </div>
     </div>
   );

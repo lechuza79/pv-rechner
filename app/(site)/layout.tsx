@@ -5,6 +5,7 @@ import { DEFAULT_FEED_IN } from "../../lib/feedin-config";
 import { estimateCost } from "../../lib/calc";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
 import Footer from "../../components/Footer";
+import { Analytics } from "@vercel/analytics/next";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -166,6 +167,11 @@ export default function RootLayout({
           {children}
           <div style={{ padding: "0 16px" }}><Footer /></div>
         </GlossaryProvider>
+        {/* Cookieless Web Analytics (aggregiert, keine personenbezogenen
+            Daten, kein Consent-Banner nötig — §25 TDDDG greift nicht, da
+            nichts auf dem Gerät gespeichert wird). Nur im (site)-Layout,
+            nicht in den Embed-Widgets. Siehe /datenschutz. */}
+        <Analytics />
       </body>
     </html>
   );
