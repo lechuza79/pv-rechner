@@ -222,7 +222,20 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
         <p style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 24 }}>
           Auswahl der wichtigsten Programme — Förderung ist dezentral und ändert sich laufend. Alle Angaben
           ohne Gewähr; verbindlich ist die jeweilige offizielle Quelle des Programms.
-          {solar && solar.total_count > 0 ? ` Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur), Stand ${solar.data_as_of}.` : ""}
+          {solar && solar.total_count > 0 && (
+            <>
+              {" "}Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur), Stand {solar.data_as_of}, Datenlizenz{" "}
+              <a
+                href="https://www.govdata.de/dl-de/by-2-0"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "inherit", textDecoration: "underline" }}
+              >
+                dl-de/by-2-0
+              </a>{" "}
+              (Daten aggregiert).
+            </>
+          )}
         </p>
       </div>
     </div>

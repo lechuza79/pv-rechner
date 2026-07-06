@@ -5,7 +5,8 @@ import { IconArrowRight, IconCheck } from "./Icons";
 import { useChartExport } from "../lib/useChartExport";
 import ChartExportBar from "./ChartExportBar";
 import ChartActionBar from "./ChartActionBar";
-import { PoweredBy } from "./PoweredBy";
+import { PoweredBy, DataSourceNote } from "./PoweredBy";
+import { DATA_SOURCES, sourceLabel } from "../lib/data-sources";
 import { v, tokens } from "../lib/theme";
 import { PERSONEN, NUTZUNG } from "../lib/constants";
 import {
@@ -154,6 +155,7 @@ export default function SimulationPanel({
           { color: tokens['--color-positive'], label: "Eigenverbrauch" },
         ] : []),
       ],
+      source: sourceLabel(DATA_SOURCES.openMeteo),
     },
     filename: `solar-check-simulation-${selectedKwp}kwp.png`,
     shareText,
@@ -405,7 +407,7 @@ export default function SimulationPanel({
       {weather && !error && (
         <div style={{ fontSize: 11, color: v('--color-text-faint'), textAlign: "center", lineHeight: 1.5, marginBottom: embed ? 14 : 24 }}>
           Geschätzte Leistung für ein südausgerichtetes Dach ohne Verschattung.<br />
-          Wetterdaten via Open-Meteo (DWD, NOAA). Aktualisierung alle 15 Min.
+          <DataSourceNote source={DATA_SOURCES.openMeteo} /> · Aktualisierung alle 15 Min.
         </div>
       )}
 

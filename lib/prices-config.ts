@@ -15,7 +15,7 @@ export interface PriceConfig {
 // Hardcoded fallback — greift NUR bei Supabase-Ausfall. An den Live-Stand der
 // market_prices-Tabelle angeglichen (Snapshot 2026-06-16), damit der Fallback bei
 // einem Ausfall keine veralteten Preise zeigt.
-// Sources: solaranlagen-portal.com, Fraunhofer ISE, BNetzA Strompreismonitor
+// Sources: taptaphome.com (vormals solaranlagen-portal.com), Fraunhofer ISE, BNetzA Strompreismonitor
 export const DEFAULT_PRICES: PriceConfig = {
   pvPriceSmall: 1416,     // €/kWp ≤ 10 kWp
   pvPriceLarge: 1071,     // €/kWp > 10 kWp

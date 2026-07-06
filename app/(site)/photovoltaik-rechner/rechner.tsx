@@ -933,7 +933,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={14} /> Neu berechnen</span></button>
 
             <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
-              Keine Datensammlung · Keine Werbung<br />
+              Keine Lead-Erfassung · Keine Werbung<br />
               Alle Angaben ohne Gewähr · Keine Steuer- oder Anlageberatung
             </div>
           </div>

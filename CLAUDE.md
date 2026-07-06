@@ -83,7 +83,8 @@ tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 
 **Kostenschätzung (automatisch, manuell überschreibbar):**
 ```
-Preise werden monatlich via Cron von solaranlagen-portal.com gescrapt
+Preise werden monatlich via Cron von taptaphome.com (vormals
+solaranlagen-portal.com, DAA GmbH) gescrapt
 und in Supabase (market_prices) gespeichert. Admin-UI: /admin/prices
 Fallback-Defaults in lib/prices-config.ts (Q1/2026):
 PV:       ≤10 kWp → 1.400 €/kWp, >10 kWp → 1.250 €/kWp
@@ -350,7 +351,7 @@ pv-rechner/
 ├── .env.local             # SUPABASE_URL, SUPABASE_SERVICE_KEY, NEXT_PUBLIC_* (nicht in git)
 ├── .gitignore
 ├── public/
-│   └── plz.json           # PLZ → [lat, lon] Lookup (8.298 Einträge, CC BY 4.0)
+│   └── plz.json           # PLZ → [lat, lon] Lookup (8.298 Einträge, WZB plz_geocoord, Apache 2.0)
 ├── lib/
 │   ├── constants.ts                # Alle Konstanten (ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, etc.)
 │   ├── prices-config.ts            # PriceConfig Interface + DEFAULT_PRICES (shared server/client)
@@ -472,6 +473,8 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 - **Teilen = aktueller Zustand** als Deep-Link auf die passende Live-Seite (z. B. `/strommix-deutschland?range=…`, `/pv-simulation?plz=…`).
 - **Galerie:** neues Widget als Sektion in `SECTIONS` (`app/(site)/energie-widgets/client.tsx`); fixe Query-Params pro Variante über das `params`-Feld (nicht in `src` hängen — kollidiert mit `embed=0`/Theme). iframe-Höhe **großzügig** (Footer/2-zeilige Legende).
 - **Recycling statt Neubau:** Startseite und Karten-Embed nutzen dieselbe `MastrHeroSection` (eine Ansicht, eine Quelle). Einzel-KPIs (`/embed/kennzahl`) recyceln die exportierte `Kachel`.
+- **Kein Browser-Storage im Embed-Kontext (§ 25 TDDDG):** `lib/embed-context.ts → isEmbedContext()` — alle Cache-Hooks (`lib/energy.ts`, `lib/use-cached-fetch.ts`, `lib/prices.ts`, `lib/feedin.ts`) fallen unter `/embed/*` auf In-Memory-Maps zurück. Widgets sind gegenüber Einbettenden als „cookielos, kein Browser-Speicher" beworben — beim Bauen neuer Widgets nicht brechen.
+- **Rechtliches:** Nutzungsbedingungen unter `/widget-nutzungsbedingungen` (aus Galerie verlinkt), Datenschutz-Textbaustein für Einbettende in der Galerie, `ChartActionBar` enthält einen branding-unabhängigen „Anbieter & Impressum"-Menüpunkt (§ 5 DDG).
 - Icons/Buttons aus `components/Icons.tsx`.
 
 ## Design-System

@@ -11,7 +11,14 @@ import {
   IconCode,
   IconCheck,
   IconMore,
+  IconHelpCircle,
 } from "./Icons";
+
+// Provider identification (§ 5 DDG): the widgets are delivered by solar-check.io
+// onto third-party pages, so a path to the Impressum must exist inside the
+// widget itself — independent of the `branding` flag, which only controls the
+// "Powered by" footer line.
+const IMPRESSUM_URL = "https://solar-check.io/impressum";
 
 export interface ChartActionBarProps {
   onDownload: () => void;
@@ -143,6 +150,13 @@ export default function ChartActionBar({
                 <MenuItem icon={IconCode} label="Einbetten" onClick={run(onEmbed)} />
               </>
             )}
+            <div style={S.divider} />
+            <MenuItem
+              icon={IconHelpCircle}
+              label="Anbieter & Impressum"
+              muted
+              onClick={run(() => window.open(IMPRESSUM_URL, "_blank", "noopener,noreferrer"))}
+            />
           </div>
         )}
       </div>
@@ -180,6 +194,13 @@ export default function ChartActionBar({
             )}
             <MenuItem icon={IconWhatsApp} label="WhatsApp" onClick={run(onWhatsApp)} />
             <MenuItem icon={IconTwitter} label="X" onClick={run(onTwitter)} />
+            <div style={S.divider} />
+            <MenuItem
+              icon={IconHelpCircle}
+              label="Anbieter & Impressum"
+              muted
+              onClick={run(() => window.open(IMPRESSUM_URL, "_blank", "noopener,noreferrer"))}
+            />
           </div>
         )}
       </div>
@@ -198,12 +219,14 @@ function MenuItem({
   label,
   onClick,
   accent,
+  muted,
   disabled,
 }: {
   icon: (p: { size?: number; color?: string }) => React.ReactElement;
   label: string;
   onClick: () => void;
   accent?: boolean;
+  muted?: boolean;
   disabled?: boolean;
 }) {
   return (
@@ -214,10 +237,11 @@ function MenuItem({
       style={{
         ...S.item,
         ...(accent ? S.itemAccent : null),
+        ...(muted ? S.itemMuted : null),
         ...(disabled ? { opacity: 0.5, cursor: "wait" } : null),
       }}
     >
-      <Icon size={15} color={accent ? v("--color-accent") : v("--color-text-secondary")} />
+      <Icon size={15} color={accent ? v("--color-accent") : muted ? v("--color-text-muted") : v("--color-text-secondary")} />
       <span>{label}</span>
     </button>
   );
@@ -268,6 +292,7 @@ const S: Record<string, React.CSSProperties> = {
     whiteSpace: "nowrap" as const,
   },
   itemAccent: { color: v("--color-accent"), fontWeight: 700 },
+  itemMuted: { color: v("--color-text-muted"), fontWeight: 400, fontSize: 12.5 },
   divider: { height: 1, background: v("--color-border"), margin: "4px 2px" },
   toast: {
     position: "absolute",

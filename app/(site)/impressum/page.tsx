@@ -3,6 +3,7 @@ import Link from "next/link";
 import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
+import ObfuscatedEmail from "../../../components/ObfuscatedEmail";
 
 export const metadata: Metadata = pageMetadata({
   path: "/impressum",
@@ -90,7 +91,12 @@ export default function ImpressumPage() {
         </p>
 
         <h2 style={S.h2}>Kontakt</h2>
-        <p style={S.p}>E-Mail: hey [at] solar-check.io</p>
+        <p style={S.p}>
+          E-Mail: <ObfuscatedEmail user="hey" domain="solar-check.io" style={{ color: v('--color-accent') }} />
+        </p>
+        <p style={S.p}>
+          Alternativ erreichst du mich über das <Link href="/kontakt" style={{ color: v('--color-accent') }}>Kontaktformular</Link>.
+        </p>
 
         <h2 style={S.h2}>
           Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV

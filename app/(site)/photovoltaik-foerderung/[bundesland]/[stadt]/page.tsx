@@ -391,7 +391,16 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
 
         {/* ── Disclaimer ── */}
         <div style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6, borderTop: `1px solid ${v("--color-border")}`, paddingTop: 12, marginBottom: 32 }}>
-          Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur){atlas?.data_as_of ? `, Stand ${atlas.data_as_of}` : ""}, monatlich aktualisiert.
+          Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur){atlas?.data_as_of ? `, Stand ${atlas.data_as_of}` : ""}, monatlich aktualisiert, Datenlizenz{" "}
+          <a
+            href="https://www.govdata.de/dl-de/by-2-0"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "inherit", textDecoration: "underline" }}
+          >
+            dl-de/by-2-0
+          </a>{" "}
+          (Daten aggregiert).
           {f ? ` Förderdaten redaktionell gepflegt, Stand ${f.stand}.` : ""}
           {" "}Alle Angaben sind Näherungswerte ohne Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit und stellen keine
           Rechts-, Steuer- oder Anlageberatung dar. Förderkonditionen ändern sich und Budgets können erschöpft sein — verbindlich

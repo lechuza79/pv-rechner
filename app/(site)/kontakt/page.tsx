@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
+import ObfuscatedEmail from "../../../components/ObfuscatedEmail";
+import ContactForm from "./ContactForm";
 
 export const metadata: Metadata = pageMetadata({
   path: "/kontakt",
@@ -41,17 +43,6 @@ const S = {
     color: v('--color-text-secondary'),
     marginBottom: 16,
   } as React.CSSProperties,
-  email: {
-    display: "inline-block",
-    fontSize: 16,
-    fontWeight: 600,
-    color: v('--color-accent'),
-    background: v('--color-bg-accent'),
-    border: `1px solid ${v('--color-border-accent')}`,
-    borderRadius: v('--radius-md'),
-    padding: "12px 20px",
-    marginTop: 8,
-  } as React.CSSProperties,
 };
 
 export default function Kontakt() {
@@ -62,15 +53,15 @@ export default function Kontakt() {
         <h1 style={S.h1}>Kontakt</h1>
 
         <p style={S.p}>
-          Fragen, Feedback oder Verbesserungsvorschläge? Schreib uns gerne eine E-Mail.
+          Fragen, Feedback oder Verbesserungsvorschläge? Schreib uns über das Formular oder direkt per E-Mail.
         </p>
 
-        <div style={S.email}>
-          hey [at] solar-check.io
-        </div>
+        <ContactForm />
 
         <p style={{ ...S.p, marginTop: 24, fontSize: 13, color: v('--color-text-muted') }}>
-          Wir antworten in der Regel innerhalb von 1–2 Werktagen.
+          Alternativ erreichst du uns direkt per E-Mail:{" "}
+          <ObfuscatedEmail user="hey" domain="solar-check.io" style={{ color: v('--color-accent'), fontWeight: 600 }} />.
+          {" "}Wir antworten in der Regel innerhalb von 1–2 Werktagen.
         </p>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import Header from "../../../components/Header";
 import { IconBolt, IconRefresh, IconLink, IconChevronDown } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
@@ -160,9 +161,11 @@ const RULES = [
   {
     icon: IconLink,
     title: "Mit Quellenangabe",
-    body: "Bitte lass den Quellen-Link unter dem Widget stehen. Er ist im Code bereits enthalten und ist die einzige Bedingung für die kostenlose Nutzung.",
+    body: null, // rendered separately below — needs a real link to the terms page
   },
 ];
+
+const PRIVACY_SNIPPET = `Auf dieser Seite ist ein Energiedaten-Widget von solar-check.io (Sebastian Schäder, Höchberg) eingebunden. Beim Laden des Widgets werden technisch bedingt Ihre IP-Adresse, die aufgerufene Seite (Referrer) und Ihr User-Agent an solar-check.io übermittelt (Hosting: Vercel Inc., USA; Übermittlung auf Grundlage des EU-US Data Privacy Framework). Das Widget setzt keine Cookies, speichert keine Daten in Ihrem Browser und führt kein Tracking durch. Rechtsgrundlage ist unser berechtigtes Interesse an der Darstellung aktueller Energiedaten (Art. 6 Abs. 1 lit. f DSGVO). Details: https://solar-check.io/datenschutz`;
 
 export default function WidgetsClient() {
   const [theme, setTheme] = useState<WidgetThemeSelection>(WIDGET_THEME_DEFAULTS);
@@ -202,11 +205,37 @@ export default function WidgetsClient() {
                   <Icon size={18} color={v("--color-accent")} />
                 </div>
                 <div style={S.ruleTitle}>{r.title}</div>
-                <div style={S.ruleBody}>{r.body}</div>
+                <div style={S.ruleBody}>
+                  {r.body ?? (
+                    <>
+                      Bitte lass den Quellen-Link und den „Powered by solar-check.io“-Hinweis unter
+                      dem Widget stehen. Beides ist im Code bereits enthalten – die vollständigen
+                      Bedingungen für die kostenlose Nutzung stehen in den{" "}
+                      <Link href="/widget-nutzungsbedingungen" style={S.ruleLink}>
+                        Widget-Nutzungsbedingungen
+                      </Link>
+                      .
+                    </>
+                  )}
+                </div>
               </div>
             );
           })}
         </div>
+
+        <section style={S.privacySection}>
+          <h2 style={S.h2}>Datenschutz beim Einbetten</h2>
+          <p style={S.sectionIntro}>
+            Beim Laden eines Widgets gehen technisch bedingt die IP-Adresse, die aufgerufene Seite
+            (Referrer) und der User-Agent des Besuchers deiner Website an solar-check.io (Hosting:
+            Vercel Inc., USA — zertifiziert unter dem EU-US Data Privacy Framework). Dabei werden
+            keine Cookies gesetzt, kein Speicher im Browser des Besuchers beschrieben und kein
+            Tracking durchgeführt. Wenn du ein Widget einbindest, solltest du das in deiner eigenen
+            Datenschutzerklärung erwähnen — den passenden Textbaustein kannst du unten direkt
+            übernehmen.
+          </p>
+          <PrivacySnippet />
+        </section>
 
         {SECTIONS.map((s, i) => (
           <Fragment key={s.id}>
@@ -614,6 +643,44 @@ function EmbedSnippet({
   );
 }
 
+function PrivacySnippet() {
+  const [copied, setCopied] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(PRIVACY_SNIPPET);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // noop
+    }
+  };
+
+  return (
+    <div style={S.snippetWrap}>
+      <div style={S.snippetHeader}>
+        <button type="button" onClick={() => setOpen((o) => !o)} style={S.snippetToggle} aria-expanded={open}>
+          <IconChevronDown
+            size={14}
+            color={v("--color-text-secondary")}
+            style={{ transition: "transform 0.15s ease", transform: open ? "rotate(180deg)" : "none" }}
+          />
+          Textbaustein für deine Datenschutzerklärung
+        </button>
+        <button type="button" onClick={copy} style={S.snippetCopyBtn}>
+          {copied ? "Kopiert!" : "Kopieren"}
+        </button>
+      </div>
+      {open && (
+        <pre style={S.snippetPre}>
+          <code>{PRIVACY_SNIPPET}</code>
+        </pre>
+      )}
+    </div>
+  );
+}
+
 const S: Record<string, React.CSSProperties> = {
   page: {
     background: v("--color-bg"),
@@ -640,6 +707,8 @@ const S: Record<string, React.CSSProperties> = {
   ruleIcon: { marginBottom: 10 },
   ruleTitle: { fontSize: 14, fontWeight: 700, marginBottom: 4, color: v("--color-text-primary") },
   ruleBody: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.5 },
+  ruleLink: { color: v("--color-accent"), textDecoration: "underline" },
+  privacySection: { marginBottom: 44, paddingBottom: 24, borderBottom: `1px solid ${v("--color-border")}` },
   themePanel: {
     marginBottom: 44,
     padding: 16,

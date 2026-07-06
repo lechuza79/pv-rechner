@@ -21,6 +21,15 @@ export interface DataSource {
   license?: string;
   /** Canonical homepage of the source, used for the credit link. */
   url?: string;
+  /** Licence homepage, if different from `url` (e.g. a govdata licence text page). */
+  licenseUrl?: string;
+  /**
+   * Short change/aggregation notice some licences require alongside the credit
+   * (e.g. dl-de/by-2-0 §3: mark data that was modified/aggregated). Rendered as
+   * a trailing " (…)" after the licence in both {@link sourceLabel} and
+   * {@link DataSourceNote}.
+   */
+  note?: string;
 }
 
 export const DATA_SOURCES = {
@@ -39,11 +48,16 @@ export const DATA_SOURCES = {
   /** German installation register (PV/battery stock). */
   mastr: {
     name: "Marktstammdatenregister (Bundesnetzagentur)",
+    license: "dl-de/by-2-0",
+    licenseUrl: "https://www.govdata.de/dl-de/by-2-0",
     url: "https://www.marktstammdatenregister.de",
+    note: "Daten aggregiert",
   },
   /** Live weather feed powering the PV simulation. */
   openMeteo: {
     name: "Open-Meteo (DWD, NOAA)",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
     url: "https://open-meteo.com",
   },
   /** Location-based PV yield model. */
@@ -53,7 +67,9 @@ export const DATA_SOURCES = {
   },
 } as const satisfies Record<string, DataSource>;
 
-/** "Energy-Charts (Fraunhofer ISE), CC BY 4.0" — the credit label as one string. */
+/** "Energy-Charts (Fraunhofer ISE), CC BY 4.0" — the credit label as one string.
+ * Appends the licence's change notice, if any, e.g. "…, dl-de/by-2-0 (Daten aggregiert)". */
 export function sourceLabel(source: DataSource): string {
-  return source.license ? `${source.name}, ${source.license}` : source.name;
+  const withLicense = source.license ? `${source.name}, ${source.license}` : source.name;
+  return source.note ? `${withLicense} (${source.note})` : withLicense;
 }

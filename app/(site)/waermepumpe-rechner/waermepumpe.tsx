@@ -345,9 +345,26 @@ export default function Waermepumpe() {
                   ["TCO Wärmepumpe", `${result.tcoWp.toLocaleString("de-DE")} €`],
                   ["TCO Gas-Referenz", `${result.tcoGas.toLocaleString("de-DE")} €`],
                 ]} />
+
+                {result.beg.breakdown.length > 0 && (
+                  <div style={{ marginTop: -4, marginBottom: 12, paddingLeft: 2 }}>
+                    {result.beg.breakdown.map(b => (
+                      <div key={b.label} style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: v('--color-text-muted'), padding: "2px 0" }}>
+                        <span>{b.label}</span>
+                        <span style={{ fontFamily: v('--font-mono') }}>{(b.rate * 100).toFixed(0)} %</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div style={{ fontSize: 11, color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, marginTop: 12, lineHeight: 1.6 }}>
                   Quellen: Fraunhofer ISE „WPsmart im Bestand" (JAZ-Modell), BWP Preisübersicht 2024 (Investition), BAFA/KfW BEG 2026 (Förderung), BDEW (Strom-/Gaspreise), dena-Gebäudereport &amp; DIN V 18599 (Heizwärmebedarf), BEHG + EU ETS2 (CO₂-Preispfad).
                 </div>
+                {inputs.situation === "bestand" && result.beg.amount > 0 && (
+                  <div style={{ fontSize: 11, color: v('--color-text-muted'), paddingTop: 8, lineHeight: 1.6 }}>
+                    Angenommen ist der Regelfall: selbstnutzender Eigentümer, Austausch einer funktionsfähigen fossilen Heizung, Wärmepumpe mit natürlichem Kältemittel. Die Förderung muss vor der Beauftragung bei der KfW beantragt werden — ob die Boni bei dir greifen, hängt von deiner individuellen Situation ab.
+                  </div>
+                )}
               </div>
             </details>
 

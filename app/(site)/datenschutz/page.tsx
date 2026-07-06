@@ -197,7 +197,7 @@ export default function DatenschutzPage() {
         </p>
         <p style={S.p}>
           Da hierbei keine Informationen auf deinem Gerät gespeichert oder
-          abgerufen werden, ist dafür keine Einwilligung nach § 25 TTDSG
+          abgerufen werden, ist dafür keine Einwilligung nach § 25 TDDDG
           erforderlich und es wird kein Cookie-Banner benötigt. Rechtsgrundlage
           für die Verarbeitung ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
           Interesse an einer datensparsamen Reichweitenmessung zur Verbesserung
@@ -229,7 +229,11 @@ export default function DatenschutzPage() {
           dich an, um Berechnungen zu speichern (siehe Abschnitt 9), wird ein
           technisch notwendiges Sitzungs-Cookie gesetzt, damit du eingeloggt
           bleibst. Dieses Cookie ist für den Anmeldevorgang erforderlich (§ 25
-          Abs. 2 Nr. 2 TTDSG); ein Cookie-Banner ist dafür nicht nötig.
+          Abs. 2 Nr. 2 TDDDG); ein Cookie-Banner ist dafür nicht nötig.
+        </p>
+
+        <p style={S.p}>
+          Zusätzlich nutzt die Website den lokalen Browser-Speicher (localStorage/sessionStorage), um öffentliche Energie- und Preisdaten zwischenzuspeichern und — wenn du auf „Speichern" klickst — deine Berechnung bis zum Login vorzuhalten. Diese Einträge enthalten keine Identifier und dienen keinem Tracking; die Speicherung ist für die gewünschte Funktion erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Du kannst sie jederzeit über die Einstellungen deines Browsers löschen.
         </p>
 
         <h2 style={S.h2}>8. Standortgenaue Ertragsprognose</h2>
@@ -324,6 +328,20 @@ export default function DatenschutzPage() {
           Änderungen an der Website oder rechtlichen Anforderungen zu
           entsprechen.
         </p>
+
+        <h2 style={S.h2}>13. Eingebettete Widgets auf anderen Websites</h2>
+        <p style={S.p}>
+          Wenn du eine fremde Website besuchst, die ein solar-check.io-Widget
+          einbindet (etwa eine Strommix- oder Erzeugungs-Grafik), verarbeitet
+          unser Hoster Vercel deine IP-Adresse und den Referrer in
+          Server-Logfiles, um dir die Inhalte des Widgets auszuliefern. Dabei
+          werden keine Cookies gesetzt, keine Daten in deinem Browser
+          gespeichert, kein Tracking durchgeführt und keine Nutzerprofile
+          gebildet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an der Auslieferung der Widget-Inhalte). Die
+          Speicherdauer der Logfiles entspricht Abschnitt 3 (Hosting).
+        </p>
+
         <p style={S.muted}>Stand: Juli 2026</p>
       </div>
     </div>

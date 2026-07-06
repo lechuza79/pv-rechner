@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { isEmbedContext } from "./embed-context";
 
 // Generic cached-fetch hook with stale-while-revalidate semantics, auto-retry,
 // and sessionStorage/localStorage persistence. Same behaviour the energy-data
@@ -10,6 +11,10 @@ const CACHE_PREFIX = "sc-fetch-";
 const DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes
 const LONG_TTL = Infinity; // historical / quarterly-updated data
 const RETRY_DELAYS = [3000, 8000];
+
+// In-embed-context fallback cache (no browser storage inside a third-party
+// page's iframe — see lib/embed-context.ts).
+const memoryCache = new Map<string, { data: unknown; ts: number }>();
 
 export type CachedFetchState<T> = {
   data: T;
@@ -51,11 +56,13 @@ export function useCachedFetch<T>(
     if (retryRef.current) clearTimeout(retryRef.current);
 
     const ttl = longLived ? LONG_TTL : DEFAULT_TTL;
-    const store = typeof window === "undefined" ? null : longLived ? window.localStorage : window.sessionStorage;
+    const inEmbed = isEmbedContext();
+    const store = typeof window === "undefined" || inEmbed ? null : longLived ? window.localStorage : window.sessionStorage;
+    const fullKey = keyPrefix + cacheKey;
 
     let hasStaleData = false;
     try {
-      const cached = store?.getItem(keyPrefix + cacheKey);
+      const cached = store ? store.getItem(fullKey) : memoryCache.has(fullKey) ? JSON.stringify(memoryCache.get(fullKey)) : null;
       if (cached) {
         const parsed = JSON.parse(cached) as { data: T; ts: number };
         setData(parsed.data);
@@ -92,7 +99,11 @@ export function useCachedFetch<T>(
           setError(null);
           setIsStale(false);
           try {
-            store?.setItem(keyPrefix + cacheKey, JSON.stringify({ data: payload, ts: Date.now() }));
+            if (store) {
+              store.setItem(fullKey, JSON.stringify({ data: payload, ts: Date.now() }));
+            } else {
+              memoryCache.set(fullKey, { data: payload, ts: Date.now() });
+            }
           } catch {
             /* quota etc. */
           }

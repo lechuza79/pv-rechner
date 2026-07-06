@@ -32,7 +32,26 @@ export function DataSourceNote({ source }: { source: DataSource | DataSource[] }
           ) : (
             s.name
           )}
-          {s.license ? `, ${s.license}` : ""}
+          {s.license ? (
+            <>
+              {", "}
+              {s.licenseUrl ? (
+                <a
+                  href={s.licenseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: 2 }}
+                >
+                  {s.license}
+                </a>
+              ) : (
+                s.license
+              )}
+            </>
+          ) : (
+            ""
+          )}
+          {s.note ? ` (${s.note})` : ""}
         </span>
       ))}
     </span>

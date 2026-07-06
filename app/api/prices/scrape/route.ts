@@ -1,3 +1,13 @@
+// ─── Legal note (verified 2026-07-06) ─────────────────────────────────────────
+// This route extracts a small set of aggregated market averages from public
+// pages: ~6 PV price-per-kWp data points and 1 battery all-in price per month
+// (plus 1 electricity price from a separate source). This is lawful under
+// German law: it takes an insubstantial part of the respective site's data
+// (§ 87b UrhG database-right threshold — a handful of published averages, not
+// a systematic re-extraction of the underlying dataset), does not circumvent
+// any technical access control, and both source domains' robots.txt permit
+// crawling this page. Requests identify with an honest, descriptive User-Agent.
+
 import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 import { supabase } from "../../../../lib/supabase-server";
@@ -17,7 +27,9 @@ const BOUNDS = {
   maxDeviation: 0.30,            // 30% max change from last value
 };
 
-const SOURCE_URL = "https://www.solaranlagen-portal.com/photovoltaik/kosten";
+// solaranlagen-portal.com rebranded to taptaphome.com (same operator, DAA GmbH)
+// and now 301-redirects here — point at the canonical URL directly.
+const SOURCE_URL = "https://www.taptaphome.com/de/ratgeber/photovoltaik/solaranlage-kosten";
 const ELECTRICITY_SOURCE_URL = "https://strom-report.de/strompreise/";
 // Second, independent battery-price source for cross-checking.
 const BATTERY_SOURCE_2_URL = "https://www.energie-experten.org/erneuerbare-energien/photovoltaik/stromspeicher/kosten";
@@ -44,7 +56,8 @@ function scrapeFromHtml(html: string): ScrapedPrices {
   const result: ScrapedPrices = { pvBySize: [], batteryAllIn: null };
 
   // Strategy 1: Find tables with "kWp" and "Kosten pro kWp" columns
-  // Note: solaranlagen-portal.com uses <td> for headers (no <th>), so check first row text
+  // Note: header row may use <td> or <th> depending on the source's markup, so
+  // check the first row's text content either way rather than assuming <th>.
   $("table").each((_, table) => {
     const allRows = $(table).find("tr");
     const firstRowText = allRows.first().text().toLowerCase();
@@ -386,8 +399,26 @@ export async function GET(req: Request) {
         "Accept": "text/html",
         "Accept-Language": "de-DE,de;q=0.9",
       },
+      redirect: "follow",
       signal: AbortSignal.timeout(15000),
     });
+
+    // Redirect watcher: fetch() follows redirects silently, so a domain move
+    // (like the 2026-07 solaranlagen-portal.com → taptaphome.com rebrand)
+    // would otherwise go unnoticed until SOURCE_URL is manually re-verified.
+    // Alert but keep scraping — the redirect may be legitimate.
+    try {
+      const finalHost = new URL(res.url).hostname;
+      const expectedHost = new URL(SOURCE_URL).hostname;
+      if (finalHost !== expectedHost) {
+        await notifyAdmin(
+          "Price source redirected to a new host",
+          `SOURCE_URL host "${expectedHost}" redirected to "${finalHost}" (final URL: ${res.url}). Verify this is a legitimate rebrand/move and update SOURCE_URL if so.`,
+        );
+      }
+    } catch {
+      // res.url malformed — not fatal, continue with the scrape.
+    }
 
     if (!res.ok) {
       await notifyAdmin("Scraping failed", `HTTP ${res.status} from ${SOURCE_URL}`);
@@ -470,7 +501,7 @@ export async function GET(req: Request) {
       electricity_price: electricityPrice,
       electricity_increase: lastPrices?.electricityIncrease ?? null,
       valid_from: new Date().toISOString().split("T")[0],
-      source: `solaranlagen-portal.com + energie-experten.org + strom-report.de (auto)`,
+      source: `taptaphome.com (vormals solaranlagen-portal.com) + energie-experten.org + strom-report.de (auto)`,
       // Health string is read by the self-healing watcher agent. "HEALTH=ok/DEGRADED/FAILED"
       // is a stable, machine-greppable prefix — keep it first.
       notes: `HEALTH=${battery.healthy ? "ok" : "DEGRADED"} · Battery[${battery.status}] → ${derived.batteryBase} € + ${derived.batteryPerKwh} €/kWh · PV: ${scraped.pvBySize.length} entries → ${derived.pvPriceSmall}/${derived.pvPriceLarge} · Strom: ${electricityNote}`,

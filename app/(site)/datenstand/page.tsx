@@ -250,7 +250,7 @@ export default async function DatenstandPage() {
             { label: "Haushaltsstrompreis", value: `${(prices.electricityPrice * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct/kWh` },
             { label: "Angenommene Strompreis­steigerung", value: `${nf(prices.electricityIncrease * 100)} % / Jahr` },
           ]}
-          source={prices.source || "Marktabgleich solaranlagen-portal.com, Fraunhofer ISE, BNetzA Strompreismonitor"}
+          source={prices.source || "Marktabgleich taptaphome.com (vormals solaranlagen-portal.com), Fraunhofer ISE, BNetzA Strompreismonitor"}
         />
 
         {/* ── Einspeisevergütung (live) ── */}
@@ -343,8 +343,9 @@ export default async function DatenstandPage() {
               value: `Strompreis +${nf(s.strom * 100)} %/a · Eigenverbrauch ${s.evDelta >= 0 ? "+" : ""}${nf(s.evDelta)} %`,
             })),
             { label: "Standortertrag", value: "PVGIS (EU JRC), live je Postleitzahl" },
+            { label: "PLZ → Koordinaten", value: "WZB plz_geocoord, Apache License 2.0" },
           ]}
-          source="Branchenübliche Konventionen · PVGIS (Photovoltaic Geographical Information System, EU JRC)"
+          source="Branchenübliche Konventionen · PVGIS (Photovoltaic Geographical Information System, EU JRC) · PLZ-Koordinaten: WZB plz_geocoord (Markus Konrad), Apache License 2.0"
         />
 
         <p style={S.note}>

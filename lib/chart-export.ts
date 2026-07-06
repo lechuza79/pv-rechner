@@ -50,33 +50,32 @@ async function loadLogo(): Promise<void> {
   }
 }
 
+// Self-hosted variable fonts for the canvas export (GDPR: no runtime request to
+// Google, mirrors the next/font self-hosting already used for page rendering).
+// Each file covers the full weight range used above (DM Sans 400/700, JetBrains
+// Mono 400/800) via its `wght` variation axis, so one file per family is enough.
+const EXPORT_FONT_FACES: { family: string; weightRange: string; url: string }[] = [
+  { family: 'DM Sans', weightRange: '100 1000', url: '/fonts/dm-sans-variable.woff2' },
+  { family: 'JetBrains Mono', weightRange: '400 800', url: '/fonts/jetbrains-mono-variable.woff2' },
+];
+
 async function loadFonts(): Promise<void> {
   if (fontCssCache) return;
   try {
-    const cssRes = await fetch(
-      'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap',
-      { headers: { 'User-Agent': 'Mozilla/5.0' } }
-    );
-    const cssText = await cssRes.text();
-    const fontFaces: string[] = [];
-    const blockRegex = /@font-face\s*\{[^}]+\}/g;
-    let match: RegExpExecArray | null;
-    while ((match = blockRegex.exec(cssText)) !== null) {
-      const block = match[0];
-      const urlMatch = block.match(/url\((https:\/\/[^)]+\.woff2)\)/);
-      if (!urlMatch) { fontFaces.push(block); continue; }
+    const fontFaces = await Promise.all(EXPORT_FONT_FACES.map(async ({ family, weightRange, url }) => {
       try {
-        const fontRes = await fetch(urlMatch[1]);
+        const fontRes = await fetch(url);
         const fontBuf = await fontRes.arrayBuffer();
         const fontBytes = new Uint8Array(fontBuf);
         let fontBinary = '';
         for (let i = 0; i < fontBytes.length; i++) fontBinary += String.fromCharCode(fontBytes[i]);
-        fontFaces.push(block.replace(urlMatch[0], `url(data:font/woff2;base64,${btoa(fontBinary)})`));
+        const dataUrl = `data:font/woff2;base64,${btoa(fontBinary)}`;
+        return `@font-face { font-family: '${family}'; font-style: normal; font-weight: ${weightRange}; src: url(${dataUrl}) format('woff2'); }`;
       } catch {
-        fontFaces.push(block);
+        return '';
       }
-    }
-    fontCssCache = fontFaces.join('\n');
+    }));
+    fontCssCache = fontFaces.filter(Boolean).join('\n');
   } catch {
     fontCssCache = '';
   }

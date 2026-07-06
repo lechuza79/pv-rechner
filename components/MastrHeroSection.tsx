@@ -222,7 +222,16 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
         >
           dl-de/by-2-0
         </a>
-        ) · Daten: Marktstammdatenregister / Bundesnetzagentur
+        ) · Daten: Marktstammdatenregister / Bundesnetzagentur, Datenlizenz{" "}
+        <a
+          href="https://www.govdata.de/dl-de/by-2-0"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "inherit", textDecoration: "underline" }}
+        >
+          dl-de/by-2-0
+        </a>{" "}
+        (Daten aggregiert)
         {!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
           <> · Live-Erzeugung: {sourceLabel(DATA_SOURCES.energyCharts)}</>
         )}

@@ -12,6 +12,8 @@ import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { calcAircon, compareDevices, acquisitionRange, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
 import { trackEvent } from "../../../lib/analytics";
 import { bundeslandFromPlz } from "../../../lib/plz-bundesland";
+import { DataSourceNote } from "../../../components/PoweredBy";
+import { DATA_SOURCES } from "../../../lib/data-sources";
 
 const STEPS = ["Gerätetyp", "Räume & Größe", "Nutzung & Standort"];
 
@@ -536,6 +538,9 @@ export default function Klimaanlage() {
               <Link href="/methodik" style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
               <span> · Kühlbedarf aus echten Kühlgradstunden · nur Kühlung, kein Heizen · Werte auf der </span>
               <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none" }}>Datenstand-Seite</Link>.
+              <div style={{ marginTop: 6 }}>
+                <DataSourceNote source={DATA_SOURCES.openMeteo} />
+              </div>
             </div>
 
             <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "8px 0" }}>
