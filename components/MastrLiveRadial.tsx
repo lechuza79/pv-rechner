@@ -240,10 +240,14 @@ export function MastrLiveRadial({
     // re-apply the shared helper here so the widget is correct even if fed an
     // untrimmed/cached series. Robust across all laggy carriers, not just solar.
     if (!rawPoints.length) return { bars: [], scaleMaxMw: 1 };
-    // Keep the incomplete tail: window to the 24h ending at the freshest raw
-    // point (the newest data we have, ~1h old) — not the newest *complete* one.
+    // Window to (almost) the 24h ending at the freshest raw point (the newest
+    // data we have, ~1h old) — not the newest *complete* one. We drop the last
+    // 30 min so the oldest bar doesn't land on the same clock angle as the
+    // newest one: that leaves a small gap at the "now" position instead of the
+    // newest value overlapping the oldest.
+    const SEAM_GAP_MIN = 30;
     const newestMs = new Date(rawPoints[rawPoints.length - 1].ts).getTime();
-    const cutoffMs = newestMs - 24 * 3600 * 1000;
+    const cutoffMs = newestMs - (24 * 60 - SEAM_GAP_MIN) * 60 * 1000;
     const usable = rawPoints.filter((p) => new Date(p.ts).getTime() >= cutoffMs);
     const seq: Bar[] = [];
     let maxGesamtMw = 0;
