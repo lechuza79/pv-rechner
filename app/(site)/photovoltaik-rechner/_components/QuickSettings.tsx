@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { IconCheck } from "../../../../components/Icons";
+import PresetNumberInput from "../../../../components/PresetNumberInput";
 import { v } from "../../../../lib/theme";
 import { SPEICHER, EA_KM_PRESETS } from "../../../../lib/constants";
 import { KLIMA_M2_PRESETS } from "../../../../lib/consumption";
@@ -146,25 +147,7 @@ export default function QuickSettings({
               color: eaKm === km ? v('--color-accent') : v('--color-text-secondary'),
             }}>{(km / 1000).toFixed(0)}k</button>
           ))}
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
-            <input
-              value={EA_KM_PRESETS.includes(eaKm) ? "" : String(eaKm)}
-              placeholder="km"
-              onChange={e => {
-                const n = parseInt(e.target.value.replace(/\D/g, ""));
-                if (!isNaN(n) && n >= 1000 && n <= 50000) { setEaKm(n); setOEv(null); }
-              }}
-              style={{
-                width: 48, textAlign: "center", fontSize: 11, fontWeight: 600,
-                fontFamily: v('--font-mono'),
-                color: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent') : v('--color-text-faint'),
-                background: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent-dim') : v('--color-bg'),
-                border: !EA_KM_PRESETS.includes(eaKm) ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
-                borderRadius: v('--radius-sm'), padding: "5px 4px", outline: "none",
-              }}
-            />
-            <span style={{ fontSize: 10, color: v('--color-text-faint') }}>km</span>
-          </span>
+          <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km" compact onCommit={n => { setEaKm(n); setOEv(null); }} />
         </div>
       )}
       {klima !== "nein" && (
@@ -178,25 +161,7 @@ export default function QuickSettings({
               color: klimaM2 === m2 ? v('--color-accent') : v('--color-text-secondary'),
             }}>{m2} m²</button>
           ))}
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
-            <input
-              value={KLIMA_M2_PRESETS.includes(klimaM2) ? "" : String(klimaM2)}
-              placeholder="m²"
-              onChange={e => {
-                const n = parseInt(e.target.value.replace(/\D/g, ""));
-                if (!isNaN(n) && n >= 20 && n <= 500) { setKlimaM2(n); setOEv(null); }
-              }}
-              style={{
-                width: 48, textAlign: "center", fontSize: 11, fontWeight: 600,
-                fontFamily: v('--font-mono'),
-                color: !KLIMA_M2_PRESETS.includes(klimaM2) ? v('--color-accent') : v('--color-text-faint'),
-                background: !KLIMA_M2_PRESETS.includes(klimaM2) ? v('--color-accent-dim') : v('--color-bg'),
-                border: !KLIMA_M2_PRESETS.includes(klimaM2) ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
-                borderRadius: v('--radius-sm'), padding: "5px 4px", outline: "none",
-              }}
-            />
-            <span style={{ fontSize: 10, color: v('--color-text-faint') }}>m²</span>
-          </span>
+          <PresetNumberInput value={klimaM2} presets={KLIMA_M2_PRESETS} min={20} max={500} unit="m²" compact onCommit={n => { setKlimaM2(n); setOEv(null); }} />
         </div>
       )}
     </div>

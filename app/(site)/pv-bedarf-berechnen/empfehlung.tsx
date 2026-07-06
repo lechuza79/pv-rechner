@@ -8,6 +8,7 @@ import { stackFunding, type FundingProgram } from "../../../lib/funding-programs
 import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
+import PresetNumberInput from "../../../components/PresetNumberInput";
 import { v } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
@@ -379,25 +380,7 @@ export default function Empfehlung() {
                           color: eaKm === km ? v('--color-accent') : v('--color-text-muted'),
                         }}>{(km / 1000).toFixed(0)}k</button>
                       ))}
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        <input
-                          value={EA_KM_PRESETS.includes(eaKm) ? "" : String(eaKm)}
-                          placeholder="km"
-                          onChange={e => {
-                            const n = parseInt(e.target.value.replace(/\D/g, ""));
-                            if (!isNaN(n) && n >= 1000 && n <= 50000) setEaKm(n);
-                          }}
-                          style={{
-                            width: 56, textAlign: "center", fontSize: 12, fontWeight: 600,
-                            fontFamily: v('--font-mono'),
-                            color: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent') : v('--color-text-muted'),
-                            background: !EA_KM_PRESETS.includes(eaKm) ? v('--color-accent-dim') : v('--color-bg-muted'),
-                            border: !EA_KM_PRESETS.includes(eaKm) ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                            borderRadius: v('--radius-sm'), padding: "7px 4px", outline: "none",
-                          }}
-                        />
-                        <span style={{ fontSize: 11, color: v('--color-text-muted') }}>km</span>
-                      </span>
+                      <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km" onCommit={setEaKm} />
                     </div>
                   </div>
                 )}
