@@ -3,7 +3,6 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import {
   exportChart,
-  preloadAssets,
   canNativeShareImages,
   ExportContext,
 } from "./chart-export";
@@ -24,7 +23,10 @@ export function useChartExport(options: UseChartExportOptions) {
   const [canShare, setCanShare] = useState(false);
 
   useEffect(() => {
-    preloadAssets();
+    // No asset preload on mount: exportChart awaits preloadAssets() itself, and
+    // eagerly fetching logo + fonts (~70 KB) on every chart-bearing page — incl.
+    // embed widgets on third-party sites — wastes bandwidth for the vast
+    // majority of visitors who never export.
     setCanShare(canNativeShareImages());
   }, []);
 

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { DEFAULT_CONTACT_TOPIC, isContactTopic } from "../../../lib/contact-topics";
 
 // ─── Contact form submission (email via Resend) ──────────────────────────────
 // Public-facing counterpart to /api/alert: same Resend send pattern (from
@@ -6,7 +7,10 @@ import { NextResponse } from "next/server";
 // form instead of authenticated watchers. Satisfies the §5 DDG requirement for
 // a second, fast contact channel alongside the email address in the Impressum.
 //
-// Body: { name?: string, email: string, message: string, website?: string }
+// Body: { name?: string, email: string, topic?: string, message: string, website?: string }
+//   "topic" must match the CONTACT_TOPICS allowlist (lib/contact-topics.ts) —
+//   unknown values fall back to the default topic, so the mail subject is
+//   never built from free text.
 //   "website" is a honeypot — real users never see or fill this field; bots
 //   that auto-fill all inputs do, so a non-empty value is silently accepted
 //   without sending anything.
@@ -28,6 +32,14 @@ const requestLog = new Map<string, number[]>();
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
+  // Sweep fully-expired IPs occasionally so the map can't grow without bound
+  // over a warm function instance's lifetime (X-Forwarded-For is attacker-
+  // controlled, so distinct keys are cheap to produce).
+  if (requestLog.size > 500) {
+    requestLog.forEach((times, key) => {
+      if (times.every(t => now - t >= RATE_LIMIT_WINDOW_MS)) requestLog.delete(key);
+    });
+  }
   const timestamps = (requestLog.get(ip) ?? []).filter(t => now - t < RATE_LIMIT_WINDOW_MS);
   if (timestamps.length >= RATE_LIMIT_MAX) {
     requestLog.set(ip, timestamps);
@@ -58,7 +70,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Zu viele Anfragen. Bitte versuch es in einer Stunde erneut." }, { status: 429 });
   }
 
-  let payload: { name?: unknown; email?: unknown; message?: unknown; website?: unknown };
+  let payload: { name?: unknown; email?: unknown; topic?: unknown; message?: unknown; website?: unknown };
   try {
     payload = await req.json();
   } catch {
@@ -74,6 +86,7 @@ export async function POST(req: Request) {
 
   const name = typeof payload.name === "string" ? payload.name.trim().slice(0, 200) : "";
   const email = typeof payload.email === "string" ? payload.email.trim().slice(0, 320) : "";
+  const topic = isContactTopic(payload.topic) ? payload.topic : DEFAULT_CONTACT_TOPIC;
   const message = typeof payload.message === "string" ? payload.message.trim() : "";
 
   if (!email || !EMAIL_RE.test(email)) {
@@ -92,13 +105,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Der Versand ist aktuell nicht verfügbar. Schreib uns bitte direkt per E-Mail." }, { status: 500 });
   }
 
-  const subject = `Solar Check – Kontaktformular${name ? ` von ${name.slice(0, 60)}` : ""}`;
+  const subject = `Solar Check – ${topic}${name ? ` von ${name.slice(0, 60)}` : ""}`;
   const bodyHtml = escapeHtml(message).replace(/\n/g, "<br>");
 
   const html = `<div style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;color:#3F3F3F">
     <h2 style="margin:0 0 4px">Neue Nachricht über das Kontaktformular</h2>
     <p style="color:#777;margin:0 0 16px;font-size:13px">
-      ${name ? `Von: ${escapeHtml(name)}<br>` : ""}E-Mail: ${escapeHtml(email)}
+      Betreff: ${escapeHtml(topic)}<br>${name ? `Von: ${escapeHtml(name)}<br>` : ""}E-Mail: ${escapeHtml(email)}
     </p>
     <div style="font-size:14px;line-height:1.7;white-space:normal">${bodyHtml}</div>
   </div>`;

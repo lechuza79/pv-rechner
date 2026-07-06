@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { v } from "../../../lib/theme";
 import { IconCheck, IconClose } from "../../../components/Icons";
+import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../../../lib/contact-topics";
 
 const S = {
   form: { marginTop: 24, display: "flex", flexDirection: "column", gap: 14 } as React.CSSProperties,
@@ -82,6 +83,7 @@ type Status = "idle" | "sending" | "success" | "error";
 export default function ContactForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [topic, setTopic] = useState<ContactTopic>(DEFAULT_CONTACT_TOPIC);
   const [message, setMessage] = useState("");
   const [website, setWebsite] = useState(""); // honeypot
   const [status, setStatus] = useState<Status>("idle");
@@ -96,7 +98,7 @@ export default function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message, website }),
+        body: JSON.stringify({ name, email, topic, message, website }),
       });
       const data = await res.json();
 
@@ -150,6 +152,20 @@ export default function ContactForm() {
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"
         />
+      </div>
+
+      <div style={S.field}>
+        <label style={S.label} htmlFor="contact-topic">Worum geht es?</label>
+        <select
+          id="contact-topic"
+          style={{ ...S.input, cursor: "pointer" }}
+          value={topic}
+          onChange={(e) => setTopic(e.target.value as ContactTopic)}
+        >
+          {CONTACT_TOPICS.map((t) => (
+            <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
       </div>
 
       <div style={S.field}>

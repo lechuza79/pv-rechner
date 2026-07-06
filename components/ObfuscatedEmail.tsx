@@ -1,9 +1,12 @@
 "use client";
 
-// Assembles a mailto address from two parts at runtime so it never appears as
-// a plain "user@domain" string in the server-rendered HTML — simple bots that
-// scrape static markup for email addresses won't find it, while real users
-// get a normal clickable mailto link (identical to a static one visually).
+import { useEffect, useState } from "react";
+
+// Spam-safe mailto link: the server-rendered HTML only ever contains the
+// "user [at] domain" text (client components are SSR'd too, so assembling the
+// address during render would still bake it into the delivered markup). The
+// real address + mailto link appear only after mount — plain-HTML scrapers
+// never see it, users get a normal clickable link.
 interface ObfuscatedEmailProps {
   user: string;
   domain: string;
@@ -11,6 +14,13 @@ interface ObfuscatedEmailProps {
 }
 
 export default function ObfuscatedEmail({ user, domain, style }: ObfuscatedEmailProps) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) {
+    return <span style={style}>{user} [at] {domain}</span>;
+  }
+
   const address = `${user}@${domain}`;
   return (
     <a href={`mailto:${address}`} style={style}>

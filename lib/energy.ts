@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { isEmbedContext } from "./embed-context";
+import { cacheStorage } from "./embed-context";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -24,12 +24,6 @@ const CACHE_TTL = 5 * 60 * 1000; // 5 minutes (sessionStorage)
 const LONG_CACHE_TTL = Infinity; // Historical data never expires (localStorage)
 
 const RETRY_DELAYS = [3000, 8000]; // 2 retries after 3s and 8s
-
-// In-embed-context fallback cache: same {data, ts} shape as the localStorage/
-// sessionStorage entries, but kept only in memory for the lifetime of the tab.
-// Embed widgets run in a third-party page's iframe — they must not write to
-// the visitor's browser storage (see lib/embed-context.ts).
-const memoryCache = new Map<string, { data: unknown; ts: number }>();
 
 function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T, isHistorical = false): {
   data: T;
@@ -55,16 +49,15 @@ function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T, 
 
     const ttl = isHistorical ? LONG_CACHE_TTL : CACHE_TTL;
     // Historical data → localStorage (persists across sessions), live → sessionStorage.
-    // Inside an embed widget: neither — an in-memory Map instead (no browser storage
-    // on a third-party page, see lib/embed-context.ts).
-    const inEmbed = isEmbedContext();
-    const store = inEmbed ? null : isHistorical ? localStorage : sessionStorage;
+    // Inside an embed widget cacheStorage() swaps in an in-memory fallback (no
+    // browser storage on a third-party page, see lib/embed-context.ts).
+    const store = cacheStorage(isHistorical ? "local" : "session");
     const fullKey = CACHE_PREFIX + cacheKey;
 
     // Check cache — show stale data immediately if available
     let hasStaleData = false;
     try {
-      const cached = store ? store.getItem(fullKey) : memoryCache.has(fullKey) ? JSON.stringify(memoryCache.get(fullKey)) : null;
+      const cached = store?.getItem(fullKey);
       if (cached) {
         const { data: d, ts } = JSON.parse(cached);
         setData(d);
@@ -101,11 +94,7 @@ function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T, 
           setError(null);
           setIsStale(false);
           try {
-            if (store) {
-              store.setItem(fullKey, JSON.stringify({ data: d, ts: Date.now() }));
-            } else {
-              memoryCache.set(fullKey, { data: d, ts: Date.now() });
-            }
+            store?.setItem(fullKey, JSON.stringify({ data: d, ts: Date.now() }));
           } catch { /* ignore */ }
         })
         .catch((e) => {

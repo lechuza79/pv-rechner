@@ -147,7 +147,7 @@ const SECTIONS: WidgetSection[] = [
   },
 ];
 
-const RULES = [
+const RULES: { icon: typeof IconBolt; title: string; body: React.ReactNode }[] = [
   {
     icon: IconBolt,
     title: "Kostenlos und ohne Anmeldung",
@@ -161,7 +161,17 @@ const RULES = [
   {
     icon: IconLink,
     title: "Mit Quellenangabe",
-    body: null, // rendered separately below — needs a real link to the terms page
+    body: (
+      <>
+        Bitte lass den Quellen-Link und den „Powered by solar-check.io“-Hinweis unter dem Widget
+        stehen. Beides ist im Code bereits enthalten – die vollständigen Bedingungen für die
+        kostenlose Nutzung stehen in den{" "}
+        <Link href="/widget-nutzungsbedingungen" style={{ color: v("--color-accent"), textDecoration: "underline" }}>
+          Widget-Nutzungsbedingungen
+        </Link>
+        .
+      </>
+    ),
   },
 ];
 
@@ -205,19 +215,7 @@ export default function WidgetsClient() {
                   <Icon size={18} color={v("--color-accent")} />
                 </div>
                 <div style={S.ruleTitle}>{r.title}</div>
-                <div style={S.ruleBody}>
-                  {r.body ?? (
-                    <>
-                      Bitte lass den Quellen-Link und den „Powered by solar-check.io“-Hinweis unter
-                      dem Widget stehen. Beides ist im Code bereits enthalten – die vollständigen
-                      Bedingungen für die kostenlose Nutzung stehen in den{" "}
-                      <Link href="/widget-nutzungsbedingungen" style={S.ruleLink}>
-                        Widget-Nutzungsbedingungen
-                      </Link>
-                      .
-                    </>
-                  )}
-                </div>
+                <div style={S.ruleBody}>{r.body}</div>
               </div>
             );
           })}
@@ -707,7 +705,6 @@ const S: Record<string, React.CSSProperties> = {
   ruleIcon: { marginBottom: 10 },
   ruleTitle: { fontSize: 14, fontWeight: 700, marginBottom: 4, color: v("--color-text-primary") },
   ruleBody: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.5 },
-  ruleLink: { color: v("--color-accent"), textDecoration: "underline" },
   privacySection: { marginBottom: 44, paddingBottom: 24, borderBottom: `1px solid ${v("--color-border")}` },
   themePanel: {
     marginBottom: 44,
