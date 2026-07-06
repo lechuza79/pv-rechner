@@ -101,8 +101,8 @@ export async function GET(req: Request) {
     const health = (curr.notes?.match(/HEALTH=(\w+)/)?.[1] ?? "unbekannt").toUpperCase();
     const healthColor = health === "OK" ? "#00A03C" : "#EF4444";
 
-    const sapSrc = "solaranlagen-portal.com";
-    const battSrc = "solaranlagen-portal + energie-experten (Mittel)";
+    const sapSrc = "taptaphome.com (vormals solaranlagen-portal.com)";
+    const battSrc = "taptaphome + energie-experten (Mittel)";
     const stromSrc = "strom-report.de";
     const feedSrc = feed?.source ?? "Bundesnetzagentur";
 
