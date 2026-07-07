@@ -1,8 +1,6 @@
 import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { getCssVariables, globalStyles } from "../../lib/theme";
-import { DEFAULT_FEED_IN } from "../../lib/feedin-config";
-import { estimateCost } from "../../lib/calc";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
 import Footer from "../../components/Footer";
 import { Analytics } from "@vercel/analytics/next";
@@ -80,57 +78,6 @@ const softwareAppJsonLd = {
   inLanguage: "de",
 };
 
-// FAQ JSON-LD with year-aware question titles. Built per render so the year
-// in "Lohnt sich Photovoltaik <YEAR>?" rolls over automatically — never
-// hardcode a year here. Dynamic SEO content > static SEO content gone stale.
-function buildFaqJsonLd() {
-  const year = new Date().getFullYear();
-  // Derive the cost figures from the same price model the calculator uses, so
-  // the FAQ never drifts from the live numbers (rounded to the nearest 1.000 €
-  // since this is a rough orientation in structured data).
-  const round1k = (n: number) => Math.round(n / 1000) * 1000;
-  const pvOnlyCost = round1k(estimateCost(10, 0));
-  const storageAddon = round1k(estimateCost(10, 10) - estimateCost(10, 0));
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `Lohnt sich Photovoltaik ${year}?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "In den meisten Fällen ja. Eine typische 10-kWp-Anlage amortisiert sich bei aktuellen Strompreisen in etwa 9–12 Jahren und erwirtschaftet über 25 Jahre deutliche Rendite. Der genaue Zeitraum hängt von Eigenverbrauch, Strompreis und Anlagenkosten ab.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Wie lange dauert die Amortisation einer PV-Anlage?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Je nach Anlagengröße, Speicher und Eigenverbrauchsquote liegt die Amortisation zwischen 8 und 14 Jahren. Höherer Eigenverbrauch (z.B. durch Speicher, Wärmepumpe oder E-Auto) verkürzt den Zeitraum deutlich.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Was kostet eine PV-Anlage mit Speicher?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `Eine 10-kWp-Anlage ohne Speicher kostet ca. ${pvOnlyCost.toLocaleString("de-DE")} €. Mit einem 10-kWh-Speicher kommen rund ${storageAddon.toLocaleString("de-DE")} € hinzu. Die tatsächlichen Kosten variieren je nach Anbieter und Region.`,
-        },
-      },
-      {
-        "@type": "Question",
-        name: `Wie hoch ist die Einspeisevergütung ${year}?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: `Die Einspeisevergütung für Anlagen bis 10 kWp liegt aktuell bei ca. ${DEFAULT_FEED_IN.teilUnder10.toLocaleString("de-DE")} ct/kWh. Sie ist für 20 Jahre ab Inbetriebnahme garantiert, sinkt aber für neue Anlagen kontinuierlich.`,
-        },
-      },
-    ],
-  };
-}
-
 export default function RootLayout({
   children,
 }: {
@@ -148,10 +95,6 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildFaqJsonLd()) }}
         />
       </head>
       <body
