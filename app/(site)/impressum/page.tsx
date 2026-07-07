@@ -98,6 +98,13 @@ export default function ImpressumPage() {
           Alternativ erreichst du mich über das <Link href="/kontakt" style={{ color: v('--color-accent') }}>Kontaktformular</Link>.
         </p>
 
+        <h2 style={S.h2}>Umsatzsteuer-ID</h2>
+        <p style={S.p}>
+          Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:
+          <br />
+          DE350007581
+        </p>
+
         <h2 style={S.h2}>
           Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
         </h2>
