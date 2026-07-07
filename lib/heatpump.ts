@@ -24,6 +24,11 @@ export interface HeatPumpInputs {
   personen: number;              // actual head count (1, 2, 3.5, 5)
   heizsystem: "fbh" | "hk_neu" | "hk_alt";
   wpType: "lwwp" | "swwp";
+  // Maßnahme: alte Heizkörper auf Niedertemperatur tauschen.
+  // Nur bei heizsystem="hk_alt" relevant. Aktiv → +Tauschkosten UND Vorlauf
+  // sinkt auf hk_neu-Niveau (55→45°C), was die JAZ hebt. Ist-Zustand (false):
+  // WP läuft mit alten Heizkörpern bei 55°C, keine Extrakosten, schlechtere JAZ.
+  heizkoerperTausch?: boolean;
   // PV synergy (computed from /rechner conventions)
   pv?: {
     status: "nein" | "geplant" | "vorhanden";
@@ -41,6 +46,8 @@ export interface HeatPumpInputs {
     gasEfficiency?: number;      // heating efficiency
     gasCo2?: number;             // kg CO2/kWh
     incomeBonus?: boolean;       // opt-in BEG Einkommens-Bonus
+    klimaBonus?: boolean;        // BEG Klima-Bonus (Eigennutzer) — default true
+    effizienzBonus?: boolean;    // BEG Effizienz-Bonus (nat. Kältemittel) — default true
   };
 }
 
@@ -76,7 +83,8 @@ export interface HeatPumpResult {
   tcoEinsparung: number;         // tcoGas − tcoWp
   einsparungProJahr: number;     // Ø pro Jahr
   amortisationsJahre: number | null;  // first year cumulative savings >= mehrinvest
-  co2Einsparung: number;          // kg CO₂ / 20a
+  co2Einsparung: number;          // kg CO₂ / 20a (vermieden ggü. Gas)
+  co2WpProM2Jahr: number;         // kg CO₂/m²·a Ausstoß der WP (Energieausweis-Kennzahl)
   // Chart data: cumulative savings per year (starts negative at −mehrinvest)
   years: { i: number; kum: number; annual: number }[];
 }
@@ -116,29 +124,48 @@ export function calcJAZ(wpType: "lwwp" | "swwp", flowTemp: number, cfg: HeatPump
   return Math.max(2.2, Math.min(jaz, 4.8));
 }
 
-export function calcInvestBrutto(wpType: "lwwp" | "swwp", heizlastKw: number, heizsystem: "fbh" | "hk_neu" | "hk_alt", cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
+export function calcInvestBrutto(wpType: "lwwp" | "swwp", heizlastKw: number, doHeizkoerperTausch: boolean, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
   const base = wpType === "swwp" ? cfg.investSwwpBase : cfg.investLwwpBase;
   const perKw = wpType === "swwp" ? cfg.investSwwpPerKw : cfg.investLwwpPerKw;
   const heatpumpCost = base + perKw * heizlastKw;
-  const hkTausch = heizsystem === "hk_alt" ? cfg.heizkoerperTauschKosten : 0;
+  // Tauschkosten nur wenn die Maßnahme aktiv gewählt ist — nicht mehr automatisch
+  // an "alte Heizkörper" gekoppelt (sonst zahlt man den Tausch ohne JAZ-Nutzen).
+  const hkTausch = doHeizkoerperTausch ? cfg.heizkoerperTauschKosten : 0;
   return Math.round(heatpumpCost + hkTausch);
 }
 
-export function calcBegSubsidy(situation: "bestand" | "neubau", wpType: "lwwp" | "swwp", investBrutto: number, incomeBonus = false, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG) {
+export interface BegOptions {
+  incomeBonus?: boolean;      // Einkommens-Bonus (bis 40.000 € Haushaltseinkommen)
+  klimaBonus?: boolean;       // Klima-Geschwindigkeits-Bonus (Eigennutzer, alte fossile Heizung) — default true
+  effizienzBonus?: boolean;   // Effizienz-Bonus (natürliches Kältemittel / Erdsonde) — default true
+}
+
+export function calcBegSubsidy(situation: "bestand" | "neubau", wpType: "lwwp" | "swwp", investBrutto: number, opts: BegOptions = {}, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG) {
   if (situation === "neubau") {
     return { rate: 0, amount: 0, breakdown: [{ label: "Neubau ohne BEG-Förderung", rate: 0 }] };
   }
+  // Boni sind an individuelle Voraussetzungen gebunden → abwählbar. Default an,
+  // weil die Kern-Zielgruppe (selbstnutzende Eigentümer, alte fossile Heizung,
+  // moderne WP mit R290) sie in der Regel bekommt. Grundförderung immer.
+  const klimaBonus = opts.klimaBonus ?? true;
+  const effizienzBonus = opts.effizienzBonus ?? true;
+  const incomeBonus = opts.incomeBonus ?? false;
+
   const breakdown: { label: string; rate: number }[] = [];
   let rate = cfg.begGrundfoerderung;
   breakdown.push({ label: "Grundförderung", rate: cfg.begGrundfoerderung });
 
   // Klima-Geschwindigkeits-Bonus: Tausch einer funktionierenden fossilen Heizung
-  rate += cfg.begKlimaBonus;
-  breakdown.push({ label: "Klima-Geschwindigkeits-Bonus", rate: cfg.begKlimaBonus });
+  if (klimaBonus) {
+    rate += cfg.begKlimaBonus;
+    breakdown.push({ label: "Klima-Geschwindigkeits-Bonus", rate: cfg.begKlimaBonus });
+  }
 
   // Effizienz-Bonus: SWWP oder natürliches Kältemittel (bei LWWP R290 angenommen)
-  rate += cfg.begEffizienzBonus;
-  breakdown.push({ label: wpType === "swwp" ? "Effizienz-Bonus (Sole/Wasser)" : "Effizienz-Bonus (R290)", rate: cfg.begEffizienzBonus });
+  if (effizienzBonus) {
+    rate += cfg.begEffizienzBonus;
+    breakdown.push({ label: wpType === "swwp" ? "Effizienz-Bonus (Sole/Wasser)" : "Effizienz-Bonus (R290)", rate: cfg.begEffizienzBonus });
+  }
 
   if (incomeBonus) {
     rate += cfg.begEinkommensBonus;
@@ -162,14 +189,22 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
 
   // 2. Heizlast & JAZ
   const heizlastKw = Math.max(4, Math.round(qGes / cfg.fullLoadHours));
-  const flowTemp = flowTempForSystem(inputs.heizsystem, cfg);
+  // Heizkörpertausch senkt den Vorlauf von alten Heizkörpern (55°C) auf
+  // Niedertemperatur-Niveau (45°C, wie moderne Heizkörper) → bessere JAZ.
+  const doHkTausch = inputs.heizsystem === "hk_alt" && !!inputs.heizkoerperTausch;
+  const effHeizsystem = doHkTausch ? "hk_neu" : inputs.heizsystem;
+  const flowTemp = flowTempForSystem(effHeizsystem, cfg);
   const jazBase = inputs.override?.jaz ?? calcJAZ(inputs.wpType, flowTemp, cfg);
   const jaz = Math.max(2.0, jazBase * adj.jazFactor);
   const eWp = Math.round(qGes / jaz);
 
   // 3. Investition & Förderung
-  const investBrutto = calcInvestBrutto(inputs.wpType, heizlastKw, inputs.heizsystem, cfg);
-  const beg = calcBegSubsidy(inputs.situation, inputs.wpType, investBrutto, inputs.override?.incomeBonus ?? false, cfg);
+  const investBrutto = calcInvestBrutto(inputs.wpType, heizlastKw, doHkTausch, cfg);
+  const beg = calcBegSubsidy(inputs.situation, inputs.wpType, investBrutto, {
+    incomeBonus: inputs.override?.incomeBonus ?? false,
+    klimaBonus: inputs.override?.klimaBonus ?? true,
+    effizienzBonus: inputs.override?.effizienzBonus ?? true,
+  }, cfg);
   const investNetto = inputs.override?.investNetto ?? (investBrutto - beg.amount);
 
   // 4. 20-Jahre Betriebskosten WP (mit PV-Synergie)
@@ -246,6 +281,10 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   const gridCo2 = 0.38; // kg CO2/kWh German grid mix (UBA 2023, sinkend)
   const co2Wp = eWp * gridCo2 * cfg.years;
   const co2Einsparung = Math.round(co2Gas - co2Wp);
+  // Spezifischer CO₂-Ausstoß des Heizens (kg/m²·a) — Energieausweis-Kennzahl.
+  // Sinkt monoton mit Dämmung/Effizienz (intuitiv), anders als die absolute
+  // Einsparung ggü. Gas (die bei Sanierung sinkt, weil weniger Gas ersetzt wird).
+  const co2WpProM2Jahr = inputs.wohnflaeche > 0 ? Math.round(eWp * gridCo2 / inputs.wohnflaeche) : 0;
 
   return {
     qHeiz: demand.qHeiz, qWw: demand.qWw, qGes,
@@ -257,7 +296,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
     pvInvest,
     gasKosten, gasFix, gasWartung, gasInvest, tcoGas,
     tcoEinsparung, einsparungProJahr, amortisationsJahre,
-    co2Einsparung, years,
+    co2Einsparung, co2WpProM2Jahr, years,
   };
 }
 

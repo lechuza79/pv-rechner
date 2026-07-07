@@ -5,7 +5,7 @@ import {
   SITUATION, WOHNFLAECHEN, INSULATION_BESTAND, INSULATION_NEUBAU,
   PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS,
 } from "../../../lib/constants";
-import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs } from "../../../lib/heatpump";
+import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
@@ -13,7 +13,7 @@ import HeatPumpChart from "./_components/HeatPumpChart";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
 import Header from "../../../components/Header";
-import { IconArrowRight, IconRefresh, IconChevronDown, IconSun } from "../../../components/Icons";
+import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
 
@@ -47,6 +47,10 @@ export default function Waermepumpe() {
   const [oInvest, setOInvest] = useState<number | null>(null);
   const [oQges, setOQges] = useState<number | null>(null);
   const [incomeBonus, setIncomeBonus] = useState(false);
+  const [klimaBonus, setKlimaBonus] = useState(true);          // BEG Klima-Bonus (Eigennutzer, alte fossile Heizung)
+  const [effizienzBonus, setEffizienzBonus] = useState(true);  // BEG Effizienz-Bonus (nat. Kältemittel / Erdsonde)
+  const [heizkoerperTausch, setHeizkoerperTausch] = useState(false);  // Maßnahme: alte HK auf Niedertemperatur tauschen
+  const [wegId, setWegId] = useState("ist");  // aktiver Sanierungs-/Maßnahmen-Weg (Szenario-Vergleich)
   const [showDetails, setShowDetails] = useState(false);
 
   const isResult = step >= STEPS.length;
@@ -66,7 +70,7 @@ export default function Waermepumpe() {
   const inputs: HeatPumpInputs = useMemo(() => ({
     situation, wohnflaeche, insulationIdx,
     personen: AVG_PERSONS[personen],
-    heizsystem, wpType,
+    heizsystem, wpType, heizkoerperTausch,
     pv: pvStatus !== "nein" ? { status: pvStatus, kwp: pvKwp, speicherKwh: pvSpeicher } : undefined,
     override: {
       qGes: oQges ?? undefined,
@@ -76,12 +80,56 @@ export default function Waermepumpe() {
       gasPrice: oGasPrice ?? fuel.price,
       gasEfficiency: fuel.efficiency,
       gasCo2: fuel.co2PerKwh,
-      incomeBonus,
+      incomeBonus, klimaBonus, effizienzBonus,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, pvStatus, pvKwp, pvSpeicher, oQges, oJaz, oInvest, oStromPrice, oGasPrice, fuel, incomeBonus]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, pvStatus, pvKwp, pvSpeicher, oQges, oJaz, oInvest, oStromPrice, oGasPrice, fuel, incomeBonus, klimaBonus, effizienzBonus]);
 
-  const result = useMemo(() => calcHeatPump(inputs), [inputs]);
-  const scenarios = useMemo(() => calcHeatPumpScenarios(inputs), [inputs]);
+  // ── Realistische Wege (Szenario-Vergleich) ───────────────────
+  // Ein unsaniertes Haus bleibt selten 20 Jahre unangetastet. Statt nur den
+  // Ist-Zustand zu zeigen, rechnen wir die realistischen Sanierungs-/Heizungs-
+  // wege durch. Jeder Weg ist ein Patch auf die Gebäude-/Heizungs-Eingaben.
+  // Sanierungskosten (Dämmung) werden NICHT der WP zugerechnet — sie zahlen aufs
+  // Gebäude ein (Komfort, Werterhalt, Heizkosten unabhängig vom System). Der
+  // Heizkörpertausch bleibt drin, den macht man nur für die Wärmepumpe.
+  type Weg = {
+    id: string; titel: string; kurz: string; sanierung: boolean;
+    patch: Partial<Pick<HeatPumpInputs, "insulationIdx" | "heizsystem" | "heizkoerperTausch">>;
+  };
+  const wege: Weg[] = useMemo(() => {
+    if (situation !== "bestand") return [];
+    const list: Weg[] = [
+      { id: "ist", titel: "So wie jetzt", kurz: "Ohne weitere Maßnahmen", sanierung: false, patch: {} },
+    ];
+    if (heizsystem === "hk_alt") {
+      list.push({ id: "heizung", titel: "Heizkörper fit machen", kurz: "Niedertemperatur-Heizkörper statt der alten", sanierung: false, patch: { heizkoerperTausch: true } });
+    }
+    if (insulationIdx === 0) {
+      list.push({ id: "teil", titel: "Schrittweise Sanierung", kurz: "Dach/Fassade dämmen + passende Heizflächen", sanierung: true, patch: { insulationIdx: 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
+    }
+    if (insulationIdx < 2) {
+      // Niedertemperatur-Heizkörper statt Gratis-Fußbodenheizung: deren Kosten
+      // zählen (ehrlich), sonst stünde die Vollsanierung künstlich zu gut da.
+      list.push({ id: "voll", titel: "Vollsanierung", kurz: "Rundum-Dämmung + Niedertemperatur-Heizflächen", sanierung: true, patch: { insulationIdx: 2, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
+    }
+    return list;
+  }, [situation, heizsystem, insulationIdx]);
+
+  const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }) })), [wege, inputs]);
+  const istResult = wegeResults.find(w => w.id === "ist")?.r ?? calcHeatPump(inputs);
+  const istKnapp = istResult.amortisationsJahre === null || istResult.amortisationsJahre > 15 || istResult.tcoEinsparung < 0;
+  // Szenario-Vergleich nur bei Bestand mit knappem Ist und echten Alternativen
+  const zeigeWege = situation === "bestand" && istKnapp && wege.length > 1;
+
+  const activeWeg = (zeigeWege ? wegeResults.find(w => w.id === wegId) : null) ?? wegeResults.find(w => w.id === "ist");
+  const activeInputs = useMemo(() => ({ ...inputs, ...(activeWeg?.patch ?? {}) }), [inputs, activeWeg]);
+  const result = useMemo(() => calcHeatPump(activeInputs), [activeInputs]);
+  const scenarios = useMemo(() => calcHeatPumpScenarios(activeInputs), [activeInputs]);
+
+  // Weg wechseln: baubezogene Overrides zurücksetzen, damit der Weg sauber greift
+  const selectWeg = (id: string) => {
+    setWegId(id);
+    setOQges(null); setOJaz(null); setOInvest(null);
+  };
 
   const insulationOptions = situation === "bestand" ? INSULATION_BESTAND : INSULATION_NEUBAU;
 
@@ -236,6 +284,76 @@ export default function Waermepumpe() {
         {/* ── RESULT ── */}
         {isResult && (
           <div className="fu">
+            {/* 1. Ist-Konklusion (klein, oben) */}
+            {zeigeWege && (
+              <div style={{ padding: "12px 14px", marginBottom: 12, borderRadius: v('--radius-md'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}` }}>
+                <div style={{ fontSize: 13, lineHeight: 1.55, color: v('--color-text-secondary') }}>
+                  <span style={{ fontWeight: 700, color: v('--color-text-primary') }}>So wie dein Haus jetzt ist</span>
+                  {" "}({INSULATION_BESTAND[insulationIdx].label.toLowerCase()}{heizsystem === "hk_alt" ? ", alte Heizkörper" : ""}){" "}
+                  {istResult.tcoEinsparung < 0
+                    ? <>ist eine Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre <span style={{ fontWeight: 700, color: v('--color-negative') }}>unwirtschaftlich</span> ({istResult.tcoEinsparung.toLocaleString("de-DE")} €).</>
+                    : <>spielt eine Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre nur <span style={{ fontWeight: 700, fontFamily: v('--font-mono') }}>+{istResult.tcoEinsparung.toLocaleString("de-DE")} €</span> ein — sie lohnt sich <span style={{ fontWeight: 700 }}>ohne weitere Maßnahmen kaum</span>.</>}
+                  {" "}Realistisch bleibt ein unsaniertes Haus aber selten {DEFAULT_HEATPUMP_CONFIG.years} Jahre unangetastet. Was jeder Schritt bringt:
+                </div>
+              </div>
+            )}
+
+            {/* 2. Förder-Settings — nach der Konklusion, sie bestimmen alle Zahlen */}
+            {situation === "bestand" && (
+              <div style={{ padding: "14px 16px", marginBottom: 16, borderRadius: v('--radius-lg'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}` }}>
+                <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 4, marginBottom: 2 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700 }}>Deine BEG-Förderung</span>
+                  <span style={{ fontFamily: v('--font-mono'), fontWeight: 800, fontSize: 15, color: v('--color-accent') }}>−{result.beg.amount.toLocaleString("de-DE")} €</span>
+                </div>
+                <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginBottom: 10 }}>
+                  {Math.round(result.beg.rate * 100)} % der förderfähigen Kosten
+                  {result.investBrutto > DEFAULT_HEATPUMP_CONFIG.begMaxCap
+                    ? <> · gedeckelt bei {DEFAULT_HEATPUMP_CONFIG.begMaxCap.toLocaleString("de-DE")} € (deine Anlage liegt darüber, daher {Math.round(result.beg.rate * 100)} % × {DEFAULT_HEATPUMP_CONFIG.begMaxCap.toLocaleString("de-DE")} €)</>
+                    : null}
+                </div>
+                <div style={{ fontSize: 12, color: v('--color-text-muted'), display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
+                  <span style={{ display: "inline-block", width: 13, height: 13, borderRadius: 3, background: v('--color-accent'), flexShrink: 0 }} />
+                  Grundförderung 30 % — bekommt jeder Heizungstausch im Bestand
+                </div>
+                <BonusToggle checked={klimaBonus} onChange={c => { setKlimaBonus(c); setOInvest(null); }} label="Eigengenutzte Immobilie +20 %" tipTitle="Klima-Geschwindigkeits-Bonus">
+                  20 % Zusatzförderung für selbstnutzende Eigentümer, die eine funktionierende alte fossile Heizung (Öl, Gas, Kohle) durch die Wärmepumpe ersetzen. Vermieter oder wer keine alte fossile Heizung hat, bekommt ihn nicht. Quelle: BAFA/KfW BEG EM 2026.
+                </BonusToggle>
+                <BonusToggle checked={effizienzBonus} onChange={c => { setEffizienzBonus(c); setOInvest(null); }} label="Effizienz-Bonus +5 %" tipTitle="Effizienz-Bonus">
+                  5 % Zusatzförderung für Wärmepumpen mit natürlichem Kältemittel (z. B. R290/Propan) oder mit Erdreich/Wasser als Wärmequelle. Die meisten modernen Luft-Wärmepumpen erfüllen das. Quelle: BAFA/KfW BEG EM 2026.
+                </BonusToggle>
+                <BonusToggle checked={incomeBonus} onChange={c => { setIncomeBonus(c); setOInvest(null); }} label="Einkommens-Bonus +30 %" tipTitle="Einkommens-Bonus">
+                  30 % Zusatzförderung für Haushalte mit einem zu versteuernden Jahreseinkommen bis 40.000 €. Die Gesamtförderung ist bei 70 % gedeckelt, maximal 30.000 € förderfähige Kosten. Quelle: BAFA/KfW BEG EM 2026.
+                </BonusToggle>
+                {oInvest !== null && (
+                  <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6 }}>Investition manuell überschrieben — Förderung wirkt erst wieder nach Zurücksetzen.</div>
+                )}
+              </div>
+            )}
+
+            {/* 3. Realistische Wege */}
+            {zeigeWege && (
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                  <IconSparkle size={16} color={v('--color-accent')} />
+                  <span style={{ fontSize: 14, fontWeight: 700 }}>Realistische Wege</span>
+                </div>
+                <div style={{ display: "grid", gap: 8 }}>
+                  {wegeResults.map(w => (
+                    <WegCard key={w.id} titel={w.titel} kurz={w.kurz} r={w.r} active={activeWeg?.id === w.id} onClick={() => selectWeg(w.id)} />
+                  ))}
+                </div>
+                <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
+                  Sanierungskosten (Dämmung) sind hier nicht enthalten — die zahlst du fürs Gebäude (Komfort, Werterhalt, dauerhaft weniger Heizenergie), nicht für die Wärmepumpe. Der Heizkörpertausch steckt in der Investition, den macht man nur für die Wärmepumpe.
+                </div>
+              </div>
+            )}
+
+            {zeigeWege && (
+              <div style={{ fontSize: 12, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", margin: "4px 2px 8px" }}>
+                Gewählter Weg: {activeWeg?.titel}
+              </div>
+            )}
+
             {/* Hero: TCO-Differenz */}
             <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
               <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
@@ -267,21 +385,7 @@ export default function Waermepumpe() {
                 <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={result.jaz} onCommit={v => setOJaz(v)} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
                 <div>Gaspreis: <InlineEdit value={Math.round((oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => setOGasPrice(v / 100)} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} /></div>
                 <div>WP-Strompreis: <InlineEdit value={Math.round((oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => setOStromPrice(v / 100)} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
-                <div>Investition (netto): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} /></div>
-                {situation === "bestand" && (
-                  <div style={{ marginTop: 6 }}>
-                    <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), cursor: "pointer" }}>
-                      <input type="checkbox" checked={incomeBonus} onChange={e => { setIncomeBonus(e.target.checked); setOInvest(null); }} style={{ cursor: "pointer" }} />
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        Einkommens-Bonus BEG
-                        <InfoTooltip title="Einkommens-Bonus BEG" ariaLabel="Was ist der Einkommens-Bonus BEG?">
-                          Zusätzliche 30 % BEG-Förderung für Haushalte mit einem zu versteuernden Jahreseinkommen bis 40.000 €. Die Gesamtförderung ist bei 70 % gedeckelt, maximal 30.000 € förderfähige Kosten. Quelle: BAFA/KfW BEG EM Richtlinie 2026.
-                        </InfoTooltip>
-                        (Haushaltseinkommen bis 40.000 €)
-                      </span>
-                    </label>
-                  </div>
-                )}
+                <div>Investition (netto): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} />{situation === "bestand" ? <span style={{ fontSize: 12, color: v('--color-text-muted') }}> · nach {Math.round(result.beg.rate * 100)} % Förderung</span> : null}</div>
               </div>
             </div>
 
@@ -414,7 +518,7 @@ export default function Waermepumpe() {
               <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
                 PV-Rechner öffnen <IconArrowRight size={12} />
               </Link>
-              <button onClick={() => setStep(0)} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
+              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setKlimaBonus(true); setEffizienzBonus(true); setIncomeBonus(false); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={12} /> Neu berechnen</span>
               </button>
             </div>
@@ -440,6 +544,46 @@ function StatCard({ label, value, positive, help, helpTitle, helpAriaLabel }: { 
       </div>
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: positive ? v('--color-positive') : v('--color-text-primary') }}>{value}</div>
     </div>
+  );
+}
+
+function BonusToggle({ checked, onChange, label, tipTitle, children }: { checked: boolean; onChange: (c: boolean) => void; label: string; tipTitle: string; children: ReactNode }) {
+  return (
+    <label style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: v('--color-text-secondary'), cursor: "pointer", marginBottom: 4 }}>
+      <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)} style={{ cursor: "pointer" }} />
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+        {label}
+        <InfoTooltip title={tipTitle} ariaLabel={tipTitle}>{children}</InfoTooltip>
+      </span>
+    </label>
+  );
+}
+
+function WegCard({ titel, kurz, r, active, onClick }: { titel: string; kurz: string; r: HeatPumpResult; active: boolean; onClick: () => void }) {
+  const pos = r.tcoEinsparung >= 0;
+  return (
+    <button onClick={onClick} style={{
+      display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", cursor: "pointer",
+      padding: "12px 14px", borderRadius: v('--radius-md'),
+      background: active ? v('--color-accent-dim') : v('--color-bg'),
+      border: active ? `2px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
+    }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          {active && <IconCheck size={14} color={v('--color-accent')} />}
+          <span style={{ fontSize: 13.5, fontWeight: 700, color: v('--color-text-primary') }}>{titel}</span>
+        </div>
+        <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginTop: 2, lineHeight: 1.4 }}>{kurz}</div>
+      </div>
+      <div style={{ textAlign: "right", flexShrink: 0 }}>
+        <div style={{ fontSize: 16, fontWeight: 800, fontFamily: v('--font-mono'), color: pos ? v('--color-positive') : v('--color-negative') }}>
+          {pos ? "+" : ""}{r.tcoEinsparung.toLocaleString("de-DE")} €
+        </div>
+        <div style={{ fontSize: 11, color: v('--color-text-muted') }}>
+          {r.amortisationsJahre !== null ? `Amortisation ${r.amortisationsJahre} J` : `Amortisation > ${DEFAULT_HEATPUMP_CONFIG.years} J`}
+        </div>
+      </div>
+    </button>
   );
 }
 

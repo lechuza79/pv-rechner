@@ -80,24 +80,24 @@ describe("calcJAZ", () => {
 // ─── Investment (base + perKw × heat load + radiator swap) ─────────────────
 describe("calcInvestBrutto", () => {
   it("LWWP for 8 kW load: 18000 + 1200 × 8 = 27600", () => {
-    const r = calcInvestBrutto("lwwp", 8, "fbh");
+    const r = calcInvestBrutto("lwwp", 8, false);
     expect(r).toBe(27600);
   });
 
   it("SWWP costs more than LWWP at the same load (drilling/probes)", () => {
-    expect(calcInvestBrutto("swwp", 8, "fbh")).toBeGreaterThan(calcInvestBrutto("lwwp", 8, "fbh"));
+    expect(calcInvestBrutto("swwp", 8, false)).toBeGreaterThan(calcInvestBrutto("lwwp", 8, false));
   });
 
-  it("adds 6.000 € for old radiators that need replacement", () => {
-    const withSwap = calcInvestBrutto("lwwp", 8, "hk_alt");
-    const withoutSwap = calcInvestBrutto("lwwp", 8, "fbh");
+  it("adds 6.000 € when the radiator swap measure is chosen", () => {
+    const withSwap = calcInvestBrutto("lwwp", 8, true);
+    const withoutSwap = calcInvestBrutto("lwwp", 8, false);
     expect(withSwap - withoutSwap).toBe(6000);
   });
 
-  it("modern radiators do not trigger the radiator swap", () => {
-    const hkNeu = calcInvestBrutto("lwwp", 8, "hk_neu");
-    const fbh = calcInvestBrutto("lwwp", 8, "fbh");
-    expect(hkNeu).toBe(fbh);
+  it("no swap cost by default (old radiators stay in place)", () => {
+    const noSwap = calcInvestBrutto("lwwp", 8, false);
+    const base = calcInvestBrutto("lwwp", 8, false);
+    expect(noSwap).toBe(base);
   });
 });
 
@@ -109,22 +109,28 @@ describe("calcBegSubsidy", () => {
     expect(r.amount).toBe(0);
   });
 
-  it("Bestand without income bonus: 30 + 20 + 5 = 55 %", () => {
-    const r = calcBegSubsidy("bestand", "lwwp", 30000, false);
+  it("Bestand default (Klima + Effizienz an): 30 + 20 + 5 = 55 %", () => {
+    const r = calcBegSubsidy("bestand", "lwwp", 30000);
     expect(r.rate).toBeCloseTo(0.55, 2);
     expect(r.amount).toBe(Math.round(30000 * 0.55));
   });
 
   it("Bestand with income bonus: capped at 70 %", () => {
-    const r = calcBegSubsidy("bestand", "lwwp", 40000, true);
+    const r = calcBegSubsidy("bestand", "lwwp", 40000, { incomeBonus: true });
     expect(r.rate).toBe(0.70); // 30 + 20 + 5 + 30 = 85 → capped to 70
     // 40k > 30k cap → only 30k förderfähig
     expect(r.amount).toBe(Math.round(30000 * 0.70));
   });
 
+  it("only Grundförderung when both bonuses off (30 %)", () => {
+    const r = calcBegSubsidy("bestand", "lwwp", 30000, { klimaBonus: false, effizienzBonus: false });
+    expect(r.rate).toBeCloseTo(0.30, 2);
+    expect(r.breakdown).toHaveLength(1);
+  });
+
   it("Förderbetrag bounded by 30.000 € förderfähige Kosten", () => {
-    const small = calcBegSubsidy("bestand", "lwwp", 20000, false);
-    const large = calcBegSubsidy("bestand", "lwwp", 100000, false);
+    const small = calcBegSubsidy("bestand", "lwwp", 20000);
+    const large = calcBegSubsidy("bestand", "lwwp", 100000);
     // Both at 55%: 20k → 11k, 100k → capped to 30k → 16.5k
     expect(small.amount).toBe(11000);
     expect(large.amount).toBe(16500);
@@ -180,6 +186,29 @@ describe("calcHeatPump (full TCO)", () => {
     const hkAlt = calcHeatPump({ ...baseInputs, heizsystem: "hk_alt" });
     expect(fbh.jaz).toBeGreaterThan(hkAlt.jaz);
     expect(fbh.eWp).toBeLessThan(hkAlt.eWp);  // higher JAZ → less electricity
+  });
+
+  it("old radiators alone add NO swap cost (Ist-Zustand, not the swap)", () => {
+    // Regression: früher zahlte man 6.000 € Tausch ohne JAZ-Nutzen.
+    const hkAlt = calcHeatPump({ ...baseInputs, heizsystem: "hk_alt" });
+    const hkNeu = calcHeatPump({ ...baseInputs, heizsystem: "hk_neu" });
+    expect(hkAlt.investBrutto).toBe(hkNeu.investBrutto);
+  });
+
+  it("radiator swap measure: raises JAZ, adds cost, improves 20y balance", () => {
+    const ist = calcHeatPump({ ...baseInputs, heizsystem: "hk_alt", heizkoerperTausch: false });
+    const mit = calcHeatPump({ ...baseInputs, heizsystem: "hk_alt", heizkoerperTausch: true });
+    expect(mit.jaz).toBeGreaterThan(ist.jaz);                       // 55°C → 45°C
+    expect(mit.investBrutto).toBe(ist.investBrutto + 6000);         // Tauschkosten
+    expect(mit.eWp).toBeLessThan(ist.eWp);                          // weniger Strom
+    expect(mit.tcoEinsparung).toBeGreaterThan(ist.tcoEinsparung);   // besseres Ergebnis
+  });
+
+  it("swap flag is a no-op for FBH/modern radiators (only hk_alt)", () => {
+    const fbh = calcHeatPump({ ...baseInputs, heizsystem: "fbh", heizkoerperTausch: false });
+    const fbhSwap = calcHeatPump({ ...baseInputs, heizsystem: "fbh", heizkoerperTausch: true });
+    expect(fbhSwap.investBrutto).toBe(fbh.investBrutto);
+    expect(fbhSwap.jaz).toBe(fbh.jaz);
   });
 
   it("override.qGes replaces calculated demand", () => {
