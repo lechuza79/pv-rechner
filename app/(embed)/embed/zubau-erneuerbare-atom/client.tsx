@@ -159,47 +159,60 @@ export default function ZubauWidget() {
         </div>
       </div>
 
-      {/* Footer nach Konvention: Quelle (immer) + Aktionsleiste + Powered-by */}
+      {/* Footer: divider (both) + web footer (page) + print footer (image). */}
       <div style={{ marginTop: 12 }}>
         <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
-        {/* Data-source credit — licence-required, always shown. */}
-        <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: settings.branding || settings.share ? 6 : 0 }}>
-          <DataSourceNote source={DATA_SOURCES.ember} />
+
+        {/* Web footer — dropped from the export image. Source on its own line
+            (lighter grey), then action bar + Powered-by. */}
+        <div data-sc-export-ignore="">
+          <div style={{ fontSize: 10.5, color: "var(--color-text-faint)", marginBottom: settings.branding || settings.share ? 6 : 0 }}>
+            <DataSourceNote source={DATA_SOURCES.ember} />
+          </div>
+          {(settings.branding || settings.share) && (
+            <div
+              style={{
+                fontSize: 10.5,
+                color: "var(--widget-muted)",
+                display: "flex",
+                justifyContent: settings.share ? "space-between" : "flex-end",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              {settings.share && (
+                <ChartActionBar
+                  onDownload={chartExport.downloadPng}
+                  onCopyLink={copyLink}
+                  onWhatsApp={chartExport.shareWhatsApp}
+                  onTwitter={chartExport.shareTwitter}
+                  onShareImage={chartExport.sharePng}
+                  onEmbed={
+                    settings.embed
+                      ? () => window.open("/energie-widgets#zubau-erneuerbare-atom", "_blank", "noopener")
+                      : undefined
+                  }
+                  isExporting={chartExport.isExporting}
+                  canNativeShare={chartExport.canNativeShare}
+                  size={30}
+                />
+              )}
+              {settings.branding && (
+                <span style={{ marginLeft: "auto", display: "inline-flex" }}>
+                  <PoweredBy />
+                </span>
+              )}
+            </div>
+          )}
         </div>
+
+        {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
         <div
-          style={{
-            fontSize: 10.5,
-            color: "var(--widget-muted)",
-            display: settings.branding || settings.share ? "flex" : "none",
-            justifyContent: settings.share ? "space-between" : "flex-end",
-            alignItems: "center",
-            gap: 8,
-          }}
+          data-sc-export-only="flex"
+          style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", alignItems: "center", justifyContent: "space-between", gap: 8 }}
         >
-          {settings.share && (
-            <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
-              <ChartActionBar
-                onDownload={chartExport.downloadPng}
-                onCopyLink={copyLink}
-                onWhatsApp={chartExport.shareWhatsApp}
-                onTwitter={chartExport.shareTwitter}
-                onShareImage={chartExport.sharePng}
-                onEmbed={
-                  settings.embed
-                    ? () => window.open("/energie-widgets#zubau-erneuerbare-atom", "_blank", "noopener")
-                    : undefined
-                }
-                isExporting={chartExport.isExporting}
-                canNativeShare={chartExport.canNativeShare}
-                size={30}
-              />
-            </span>
-          )}
-          {settings.branding && (
-            <span style={{ marginLeft: "auto", display: "inline-flex" }}>
-              <PoweredBy />
-            </span>
-          )}
+          <DataSourceNote source={DATA_SOURCES.ember} plain />
+          {settings.branding && <PoweredBy />}
         </div>
       </div>
     </div>

@@ -12,21 +12,27 @@ import { type DataSource, sourceLabel } from "../lib/data-sources";
  * hides "Powered by", not the data credit). The provider name links to its
  * homepage; the muted styling follows the surrounding footer.
  */
-export function DataSourceNote({ source }: { source: DataSource | DataSource[] }) {
+export function DataSourceNote({
+  source,
+  plain = false,
+}: {
+  source: DataSource | DataSource[];
+  /** Render provider/licence as flat text (no underline). Used in the PNG
+   * export where the "link" isn't clickable anyway. */
+  plain?: boolean;
+}) {
   const sources = Array.isArray(source) ? source : [source];
+  const linkStyle: React.CSSProperties = plain
+    ? { color: "inherit", textDecoration: "none" }
+    : { color: "inherit", textDecoration: "underline", textUnderlineOffset: 2 };
   return (
     <span>
       Datenquelle:{" "}
       {sources.map((s, i) => (
         <span key={s.name}>
           {i > 0 && " · "}
-          {s.url ? (
-            <a
-              href={s.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: 2 }}
-            >
+          {s.url && !plain ? (
+            <a href={s.url} target="_blank" rel="noopener noreferrer" style={linkStyle}>
               {s.name}
             </a>
           ) : (
@@ -35,13 +41,8 @@ export function DataSourceNote({ source }: { source: DataSource | DataSource[] }
           {s.license ? (
             <>
               {", "}
-              {s.licenseUrl ? (
-                <a
-                  href={s.licenseUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "inherit", textDecoration: "underline", textUnderlineOffset: 2 }}
-                >
+              {s.licenseUrl && !plain ? (
+                <a href={s.licenseUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
                   {s.license}
                 </a>
               ) : (

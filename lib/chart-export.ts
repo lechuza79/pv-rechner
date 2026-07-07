@@ -19,6 +19,9 @@ import { tokens, TokenName } from './theme';
 
 /** Marker attribute: elements carrying it are excluded from a node snapshot. */
 export const EXPORT_IGNORE_ATTR = 'data-sc-export-ignore';
+/** Marker attribute: elements hidden on the page but revealed in the snapshot;
+ * the attribute value is the `display` to apply (e.g. "flex"). */
+export const EXPORT_ONLY_ATTR = 'data-sc-export-only';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -331,21 +334,20 @@ export async function exportChart(
 // ─── 1:1 Node Capture (modern-screenshot) ────────────────────────────────────
 
 /**
- * Rasterize a DOM node exactly as it renders on screen. Elements carrying the
- * data-sc-export-ignore attribute (share buttons, range switchers, dropdowns)
- * are hidden for the duration of the snapshot so the image stays clean — the
- * layout reflows without them and is restored afterwards. Hiding beats
- * modern-screenshot's `filter` here: filter proved unreliable across the
- * foreignObject clone, hiding is deterministic. Background stays transparent so
- * the card's own rounded corners survive.
+ * Rasterize a DOM node exactly as it renders on screen, with two swaps:
+ *  • elements marked data-sc-export-ignore (share buttons, switchers, and the
+ *    on-screen footer) are dropped, and
+ *  • elements marked data-sc-export-only (hidden on the page) are revealed.
+ * This lets a widget show one footer on the web and a print-tuned one in the
+ * image (source inline next to "Powered by", no underline) from the same card.
  */
 export async function captureNodeToBlob(node: HTMLElement, scale = 2): Promise<Blob> {
   // Snapshot a detached CLONE of the card, not the live node. The live node is
   // owned by React, which re-renders the moment the caller flips its isExporting
-  // flag on click — that reconciliation undoes any exclusion we do to the live
-  // tree (display:none, node removal, modern-screenshot's own `filter` all lose
-  // this race). A clone is inert: we strip the CTAs from it once and React never
-  // touches it. Rendered off-screen at the live width so layout matches 1:1.
+  // flag on click — that reconciliation undoes any edit we make to the live tree
+  // (display:none, node removal, modern-screenshot's own `filter` all lose this
+  // race). A clone is inert: we mutate it once and React never touches it.
+  // Rendered off-screen at the live width so layout matches 1:1.
   const rect = node.getBoundingClientRect();
   // Off-screen positioning goes on a WRAPPER, never on the captured node itself:
   // modern-screenshot renders the target node's own transform/offset into the
@@ -355,9 +357,13 @@ export async function captureNodeToBlob(node: HTMLElement, scale = 2): Promise<B
   wrapper.style.cssText =
     'position:fixed;top:0;left:-100000px;pointer-events:none;opacity:1;';
   const clone = node.cloneNode(true) as HTMLElement;
+  clone.querySelectorAll(`[${EXPORT_IGNORE_ATTR}]`).forEach((el) => el.remove());
+  // Reveal print-only elements; the attribute value is the display to use.
   clone
-    .querySelectorAll(`[${EXPORT_IGNORE_ATTR}]`)
-    .forEach((el) => el.remove());
+    .querySelectorAll<HTMLElement>(`[${EXPORT_ONLY_ATTR}]`)
+    .forEach((el) => {
+      el.style.display = el.getAttribute(EXPORT_ONLY_ATTR) || 'block';
+    });
   clone.style.width = `${rect.width}px`;
   clone.style.margin = '0';
   wrapper.appendChild(clone);
