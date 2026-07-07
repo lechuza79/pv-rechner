@@ -19,3 +19,6 @@ playwright/.cache/
 scripts/.cache/
 scripts/mastr-schema.json
 scripts/mastr-bnetza-schema.json
+
+# Signed legal documents (contracts, DPAs) — never commit
+docs/legal/

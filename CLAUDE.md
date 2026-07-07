@@ -721,6 +721,57 @@ Wenn ein Fix auf Production einen Folgefehler verursacht:
 - Kein CSS-Framework, kein State Management, keine Component Library — erst wenn es wehtut
 - Erst aufteilen wenn es wehtut, nicht prophylaktisch
 
+### Legal-Checkliste für Neuentwicklungen — BLOCKER
+
+Lehren aus dem Legal-Audit 2026-07 (Details: Memory `project_legal_audit`). Vor dem Merge
+jedes neuen Features die zutreffenden Punkte prüfen — sie sind der Grund, warum die Site
+abmahnsicher ist, und jede Abkürzung reißt die Lücke wieder auf:
+
+1. **Neue Datenquelle** → Lizenz klären und als Eintrag in `lib/data-sources.ts` erfassen
+   (`license`, `licenseUrl`, ggf. `note` wie "Daten aggregiert" bei dl-de/by-2-0).
+   `DataSourceNote`/`sourceLabel` überall rendern, wo die Daten sichtbar sind — auch im
+   PNG-Export (`source`-Feld im Export-Context) und in Embeds (dort unabhängig vom
+   branding-Flag). Quelle zusätzlich auf `/datenstand` listen.
+2. **Neuer externer Dienst** → Fetches laufen über eigene API-Routen (Proxy), damit keine
+   Nutzer-IP an Dritte geht. Muss der Browser doch direkt einen Dritt-Host kontaktieren
+   (Ausnahmefall!): Datenschutzerklärung ergänzen + prüfen, ob Einwilligung nötig wird.
+   Niemals Assets (Fonts, Skripte, Bilder) von Dritt-CDNs laden — self-hosten.
+3. **Browser-Storage** → in Client-Hooks NIE direkt `localStorage`/`sessionStorage`,
+   sondern immer `cacheStorage()` aus `lib/embed-context.ts` (hält Embeds storage-frei,
+   § 25 TDDDG). Neuartige Speicherungen (mehr als Daten-Cache) in Datenschutzerklärung
+   Abschnitt 7 erwähnen. Kein Tracking/Analytics ohne vorherige Consent-Prüfung;
+   Custom Events (`lib/analytics.ts`) tragen NIE PLZ, Freitext oder Personenbezug.
+4. **Neue Seite mit Zahlen/Geldbeträgen** → Unverbindlichkeits-Hinweis (Footer-Disclaimer
+   deckt (site)-Seiten ab; Rechner-Ergebnisse und Förderbeträge brauchen zusätzlich
+   Stand-Datum + "ohne Gewähr, verbindlich ist die offizielle Quelle"). Förder-/Steuer-
+   Aussagen informieren, nie individuell beraten.
+5. **Neues Embed-Widget** → Widget-Konvention (oben) einhalten: `PoweredBy`,
+   `DataSourceNote` immer sichtbar, kein Browser-Storage, `ChartActionBar` (enthält den
+   Impressum-Menüpunkt). Prüfen, ob der Datenschutz-Baustein in der Galerie
+   (`/energie-widgets`) noch zutrifft (neue Datenflüsse?).
+6. **E-Mail-Versand** → an Nutzer nur transaktional (Auth, angeforderte Funktion).
+   Werbe-/Outreach-Mails NUR nach den Leitplanken in `docs/outreach-process-konzept.md`
+   (§ 7 UWG: keine Kaltakquise, auch nicht B2B). Newsletter o. Ä. → Double-Opt-in +
+   Datenschutzerklärung. Mail-Betreff/Header nie aus Freitext bauen (Allowlist-Muster
+   wie `lib/contact-topics.ts`).
+7. **Neue personenbezogene Daten** (Formularfelder, Account-Felder) → Datenschutzerklärung
+   ergänzen (Zweck, Rechtsgrundlage, Empfänger, Speicherdauer); Eingaben serverseitig
+   validieren + escapen; öffentliche POST-Endpoints mit Rate-Limit + Honeypot
+   (Muster: `app/api/contact/route.ts`).
+8. **Marketing-Claims** → absolute Aussagen ("keine …", "immer …", "100 %") gegen
+   Datenschutzerklärung und Realität prüfen (§ 5 UWG Irreführung). Wettbewerber nicht
+   herabsetzend nennen (§ 6 UWG). Keine ungeprüften Superlative.
+9. **Erste Bezahlfunktion** (Premium-Embeds, Solateur-Leads) → VOR Launch: Open-Meteo auf
+   API-Abo umstellen (Free-Tier = nur nicht-kommerziell), Widget-Nutzungsbedingungen zu
+   echten AGB ausbauen, Impressum auf Rechtsform-/Registerpflichten prüfen.
+10. **Unklarer Fall** → nicht raten: als offene Frage an den Betreiber geben (ggf. mit
+    Empfehlung "anwaltlich absichern"). Signierte Verträge/AVVs liegen in `docs/legal/`
+    (gitignored, nie committen).
+
+Gesetzes-/Lizenz-Änderungen überwacht der Quartals-Wächter `solar-check-legal-waechter`
+(scheduled-task): TDDDG/DDG/UWG-Änderungen, DPF-Status der US-Anbieter, Terms-Drift der
+Datenquellen (Open-Meteo, Energy-Charts, MaStR, Ember).
+
 ### Wartungsfreier Code: Keine Hardcoded Daten/Jahre — BLOCKER
 
 Was sich automatisch ändern sollte (Jahreszahlen, "aktuelle" Werte, "heute"-bezogene Defaults), darf **nicht** in Config oder als Konstante hardcoded werden — sonst bricht es still beim nächsten Rollover (Jahr, Quartal, Monat).
