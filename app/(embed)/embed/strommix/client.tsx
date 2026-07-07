@@ -132,7 +132,32 @@ export default function StrommixWidget() {
       ref={chartExport.chartRef}
     >
       <TopBar tab={tab} onTab={setTab} switchable={settings.switchable} />
-      <div>
+      <div style={{ position: "relative", paddingRight: 18 }}>
+        {/* Source credit — web only, vertical along the right edge of the chart
+            area. Dropped from the export (it uses the horizontal print footer). */}
+        <div
+          data-sc-export-ignore=""
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            right: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            writingMode: "vertical-rl",
+            transform: "rotate(180deg)",
+            fontSize: 9,
+            lineHeight: 1,
+            letterSpacing: 0.2,
+            color: "var(--color-text-faint)",
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
+          }}
+        >
+          <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
+        </div>
         <ChartArea tab={tab} />
       </div>
       <Footer
@@ -616,12 +641,9 @@ function Footer({
         }}
       />
 
-      {/* Web footer — dropped from the export image. Source on its own line
-          (lighter grey), then action bar + Powered-by. */}
+      {/* Web footer — dropped from the export image. Source is shown vertically
+          in the chart area (above); here only action bar + Powered-by. */}
       <div data-sc-export-ignore="">
-        <div style={{ fontSize: 10.5, color: "var(--color-text-faint)", marginBottom: share || branding ? 6 : 0 }}>
-          <DataSourceNote source={DATA_SOURCES.energyCharts} />
-        </div>
         {(share || branding) && (
           <div
             style={{
