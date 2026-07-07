@@ -364,6 +364,11 @@ export async function captureNodeToBlob(node: HTMLElement, scale = 2): Promise<B
     .forEach((el) => {
       el.style.display = el.getAttribute(EXPORT_ONLY_ATTR) || 'block';
     });
+  // Links aren't clickable in a PNG — drop underlines so credits read as plain
+  // text (matches the print footers that already use the plain DataSourceNote).
+  clone
+    .querySelectorAll<HTMLElement>('a')
+    .forEach((a) => a.style.setProperty('text-decoration', 'none'));
   clone.style.width = `${rect.width}px`;
   clone.style.margin = '0';
   wrapper.appendChild(clone);
