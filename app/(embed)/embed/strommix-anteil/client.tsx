@@ -44,6 +44,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
       ? `${fmtPct(ytd.nuclearShare)} Kernenergie im deutschen Strommix ${ytd.year} (inkl. importiertem Atomstrom)`
       : "Kernenergie im deutschen Strommix",
     shareUrl: SHARE_URL,
+    mode: "node",
   });
 
   const copyLink = () => {
@@ -78,7 +79,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
   }));
 
   return (
-    <div style={root}>
+    <div style={root} ref={chartExport.chartRef}>
       <div style={{ marginBottom: 16 }}>
         <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
           Deutscher Strommix {ytd.year}
@@ -88,7 +89,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
         </div>
       </div>
 
-      <div ref={chartExport.chartRef}>
+      <div>
         <div
           style={{
             display: "flex",
@@ -164,23 +165,29 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
           }}
         >
           {settings.share && (
-            <ChartActionBar
-              onDownload={chartExport.downloadPng}
-              onCopyLink={copyLink}
-              onWhatsApp={chartExport.shareWhatsApp}
-              onTwitter={chartExport.shareTwitter}
-              onShareImage={chartExport.sharePng}
-              onEmbed={
-                settings.embed
-                  ? () => window.open("/energie-widgets#strommix-anteil", "_blank", "noopener")
-                  : undefined
-              }
-              isExporting={chartExport.isExporting}
-              canNativeShare={chartExport.canNativeShare}
-              size={30}
-            />
+            <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
+              <ChartActionBar
+                onDownload={chartExport.downloadPng}
+                onCopyLink={copyLink}
+                onWhatsApp={chartExport.shareWhatsApp}
+                onTwitter={chartExport.shareTwitter}
+                onShareImage={chartExport.sharePng}
+                onEmbed={
+                  settings.embed
+                    ? () => window.open("/energie-widgets#strommix-anteil", "_blank", "noopener")
+                    : undefined
+                }
+                isExporting={chartExport.isExporting}
+                canNativeShare={chartExport.canNativeShare}
+                size={30}
+              />
+            </span>
           )}
-          {settings.branding && <PoweredBy />}
+          {settings.branding && (
+            <span style={{ marginLeft: "auto", display: "inline-flex" }}>
+              <PoweredBy />
+            </span>
+          )}
         </div>
       </div>
     </div>

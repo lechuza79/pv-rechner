@@ -63,9 +63,11 @@ export default function ErzeugungWidget({
     filename: `solar-check-erzeugung-${traeger}.png`,
     shareText: SHARE_TEXT,
     shareUrl: SHARE_URL,
+    mode: "node",
   });
 
   const actionBar = (
+    <span data-sc-export-ignore="" style={{ display: "contents" }}>
     <ChartActionBar
       variant={compact ? "menu" : "bar"}
       menuUp={compact}
@@ -79,6 +81,7 @@ export default function ErzeugungWidget({
       isExporting={chartExport.isExporting}
       canNativeShare={chartExport.canNativeShare}
     />
+    </span>
   );
 
   // Autoswitch: wechselt periodisch durch die Energieträger. Pausiert

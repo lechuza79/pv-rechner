@@ -104,6 +104,7 @@ export default function StrommixWidget() {
     filename: "solar-check-strommix.png",
     shareText: SHARE_TEXT,
     shareUrl: SHARE_URL,
+    mode: "node",
   });
 
   // Theme + functional settings (URL params + same-origin postMessage) via the
@@ -128,9 +129,10 @@ export default function StrommixWidget() {
         boxSizing: "border-box",
         overflow: "hidden",
       }}
+      ref={chartExport.chartRef}
     >
       <TopBar tab={tab} onTab={setTab} switchable={settings.switchable} />
-      <div ref={chartExport.chartRef}>
+      <div>
         <ChartArea tab={tab} />
       </div>
       <Footer
@@ -167,7 +169,7 @@ function TopBar({
         Strommix Deutschland
       </div>
       {switchable && (
-        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+        <div data-sc-export-ignore="" style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <button
             type="button"
             onClick={() => onTab({ id: "24h" })}
@@ -628,23 +630,29 @@ function Footer({
         }}
       >
         {share && (
-          <ChartActionBar
-            onDownload={chartExport.downloadPng}
-            onCopyLink={copyLink}
-            onWhatsApp={chartExport.shareWhatsApp}
-            onTwitter={chartExport.shareTwitter}
-            onShareImage={chartExport.sharePng}
-            onEmbed={
-              embed
-                ? () => window.open("/energie-widgets#strommix", "_blank", "noopener")
-                : undefined
-            }
-            isExporting={chartExport.isExporting}
-            canNativeShare={chartExport.canNativeShare}
-            size={30}
-          />
+          <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
+            <ChartActionBar
+              onDownload={chartExport.downloadPng}
+              onCopyLink={copyLink}
+              onWhatsApp={chartExport.shareWhatsApp}
+              onTwitter={chartExport.shareTwitter}
+              onShareImage={chartExport.sharePng}
+              onEmbed={
+                embed
+                  ? () => window.open("/energie-widgets#strommix", "_blank", "noopener")
+                  : undefined
+              }
+              isExporting={chartExport.isExporting}
+              canNativeShare={chartExport.canNativeShare}
+              size={30}
+            />
+          </span>
         )}
-        {branding && <PoweredBy />}
+        {branding && (
+          <span style={{ display: "inline-flex", marginLeft: "auto" }}>
+            <PoweredBy />
+          </span>
+        )}
       </div>
     </div>
   );

@@ -90,6 +90,7 @@ export default function ZubauWidget() {
         ? "Zubau Wind + Solar: Deutschland vs. China"
         : `Zubau Erneuerbare vs. Atomkraft — ${view.label}`,
     shareUrl: SHARE_URL,
+    mode: "node",
   });
 
   const copyLink = () => {
@@ -109,13 +110,16 @@ export default function ZubauWidget() {
         boxSizing: "border-box",
         overflow: "hidden",
       }}
+      ref={chartExport.chartRef}
     >
       {/* TopBar: Titel + Länder-Multitool */}
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 2 }}>
         <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
           Zubau: Erneuerbare vs. Atomkraft
         </div>
-        <CountryMultitool idx={idx} onChange={setIdx} />
+        <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
+          <CountryMultitool idx={idx} onChange={setIdx} />
+        </span>
       </div>
       <div style={{ fontSize: 12, color: "var(--widget-muted)", marginBottom: 12 }}>{sub}</div>
 
@@ -146,7 +150,7 @@ export default function ZubauWidget() {
         ))}
       </div>
 
-      <div ref={chartExport.chartRef}>
+      <div>
         <div key={view.id} style={{ animation: "sc-fade 0.35s ease" }}>
           <LineChart years={YEARS_2010_2024} series={series} unit="GW" xDomain={[2010, 2024]} height={300} />
         </div>
@@ -173,23 +177,29 @@ export default function ZubauWidget() {
           }}
         >
           {settings.share && (
-            <ChartActionBar
-              onDownload={chartExport.downloadPng}
-              onCopyLink={copyLink}
-              onWhatsApp={chartExport.shareWhatsApp}
-              onTwitter={chartExport.shareTwitter}
-              onShareImage={chartExport.sharePng}
-              onEmbed={
-                settings.embed
-                  ? () => window.open("/energie-widgets#zubau-erneuerbare-atom", "_blank", "noopener")
-                  : undefined
-              }
-              isExporting={chartExport.isExporting}
-              canNativeShare={chartExport.canNativeShare}
-              size={30}
-            />
+            <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
+              <ChartActionBar
+                onDownload={chartExport.downloadPng}
+                onCopyLink={copyLink}
+                onWhatsApp={chartExport.shareWhatsApp}
+                onTwitter={chartExport.shareTwitter}
+                onShareImage={chartExport.sharePng}
+                onEmbed={
+                  settings.embed
+                    ? () => window.open("/energie-widgets#zubau-erneuerbare-atom", "_blank", "noopener")
+                    : undefined
+                }
+                isExporting={chartExport.isExporting}
+                canNativeShare={chartExport.canNativeShare}
+                size={30}
+              />
+            </span>
           )}
-          {settings.branding && <PoweredBy />}
+          {settings.branding && (
+            <span style={{ marginLeft: "auto", display: "inline-flex" }}>
+              <PoweredBy />
+            </span>
+          )}
         </div>
       </div>
     </div>
