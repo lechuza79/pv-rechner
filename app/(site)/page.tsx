@@ -3,6 +3,8 @@ import Link from "next/link";
 import Header from "../../components/Header";
 import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser, IconSnowflake, IconEuro } from "../../components/Icons";
 import { MastrHeroSection } from "../../components/MastrHeroSection";
+import Faq from "../../components/Faq";
+import { homeFaq } from "../../lib/faq";
 import { v } from "../../lib/theme";
 import { pageMetadata, energyOgImage } from "../../lib/seo";
 
@@ -146,6 +148,9 @@ export default function Home() {
             Keine Lead-Erfassung · Keine Werbung · Kein Vertriebskontakt
           </div>
         </div>
+
+        {/* FAQ — visible content that mirrors the FAQPage structured data */}
+        <Faq items={homeFaq()} currentPath="/" />
       </div>
     </div>
   );
