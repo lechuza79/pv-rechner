@@ -197,7 +197,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
         {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
         <div
           data-sc-export-only="flex"
-          style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", alignItems: "center", justifyContent: "space-between", gap: 8 }}
+          style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", alignItems: "center", justifyContent: "space-between", gap: 32 }}
         >
           <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
           {settings.branding && <PoweredBy />}

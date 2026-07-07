@@ -3,9 +3,9 @@ import { type DataSource, sourceLabel } from "../lib/data-sources";
 
 /**
  * Data-source credit line for widget/chart footers, e.g.
- * "Datenquelle: Energy-Charts (Fraunhofer ISE), CC BY 4.0". Pass an array when
+ * "Quelle: Energy-Charts (Fraunhofer ISE), CC BY 4.0". Pass an array when
  * the view combines datasets — they render as
- * "Datenquelle: Energy-Charts … · Marktstammdatenregister …".
+ * "Quelle: Energy-Charts … · Marktstammdatenregister …".
  *
  * Licence-required attribution — render it whenever a widget shows external
  * data, and keep it visible regardless of the `branding` flag (that flag only
@@ -27,7 +27,7 @@ export function DataSourceNote({
     : { color: "inherit", textDecoration: "underline", textUnderlineOffset: 2 };
   return (
     <span>
-      Datenquelle:{" "}
+      Quelle:{" "}
       {sources.map((s, i) => (
         <span key={s.name}>
           {i > 0 && " · "}
@@ -62,7 +62,7 @@ export function DataSourceNote({
 /** Same credit as {@link DataSourceNote} but flat (no link) — for chart-export
  * captions and other non-interactive contexts. */
 export function dataSourceCredit(source: DataSource): string {
-  return `Datenquelle: ${sourceLabel(source)}`;
+  return `Quelle: ${sourceLabel(source)}`;
 }
 
 /**

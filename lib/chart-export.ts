@@ -231,7 +231,7 @@ export function buildExportSvg(
 
   // Left-aligned: data-source credit (licence-required on shared images).
   if (context.source) {
-    p.push(`<text x="${PAD + 10}" y="${footerCenterY}" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}">Datenquelle: ${esc(context.source)}</text>`);
+    p.push(`<text x="${PAD + 10}" y="${footerCenterY}" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}">Quelle: ${esc(context.source)}</text>`);
   }
 
   p.push(`</svg>`);
