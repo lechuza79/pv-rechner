@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   calcHeatDemand,
+  calcHeatLoad,
   flowTempForSystem,
   calcJAZ,
   calcInvestBrutto,
@@ -45,6 +46,40 @@ describe("calcHeatDemand", () => {
     const low = calcHeatDemand("bestand", 100, -5, 1);
     const firstValid = calcHeatDemand("bestand", 100, 0, 1); // unsaniert
     expect(low.qHeiz).toBe(firstValid.qHeiz);
+  });
+});
+
+// ─── Heat load (W/m² × Fläche × Haustyp, für Anlagengröße) ─────────────────
+describe("calcHeatLoad", () => {
+  it("sinkt mit besserer Dämmung", () => {
+    const unsaniert = calcHeatLoad("bestand", 150, 0, 1);
+    const saniert = calcHeatLoad("bestand", 150, 2, 1);
+    expect(unsaniert).toBeGreaterThan(saniert);
+  });
+
+  it("Haustyp senkt die Heizlast (Reihenmitte < Reihenend < frei)", () => {
+    const frei = calcHeatLoad("bestand", 150, 0, 1.0);
+    const reihenend = calcHeatLoad("bestand", 150, 0, 0.88);
+    const reihenmitte = calcHeatLoad("bestand", 150, 0, 0.78);
+    expect(reihenend).toBeLessThan(frei);
+    expect(reihenmitte).toBeLessThan(reihenend);
+  });
+
+  it("nicht mehr aus dem Jahresbedarf ÷ 2000 (Regression: WW zählte mit)", () => {
+    // 150 m² unsaniert freistehend: real ~15 kW, nicht 18 (alte Formel qGes/2000)
+    const hl = calcHeatLoad("bestand", 150, 0, 1);
+    expect(hl).toBeLessThan(16);
+    expect(hl).toBeGreaterThan(12);
+  });
+});
+
+describe("calcHeatPump heat load override", () => {
+  it("override.heizlast schlägt die Schätzung (DIN-Berechnung)", () => {
+    const base = { situation: "bestand" as const, wohnflaeche: 150, insulationIdx: 0, personen: 3.5, heizsystem: "hk_alt" as const, wpType: "lwwp" as const, haustypFaktor: 0.88 };
+    const geschaetzt = calcHeatPump(base);
+    const gemessen = calcHeatPump({ ...base, override: { heizlast: 7.5 } });
+    expect(gemessen.heizlastKw).toBe(7.5);
+    expect(gemessen.investBrutto).toBeLessThan(geschaetzt.investBrutto);
   });
 });
 

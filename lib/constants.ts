@@ -106,6 +106,16 @@ export const WOHNFLAECHEN = [
   { m2: 220, label: "220 m²", sub: "Sehr groß" },
 ];
 
+// Haustyp für die Heizlast: geteilte Wände senken den Wärmeverlust. Faktor
+// relativ zum freistehenden Haus. Wände sind ~25–35 % des Gesamtverlusts
+// (Rest Dach/Boden/Fenster/Lüftung), daher moderate Abschläge pro geteilter Wand.
+export const HAUSTYP_WP = [
+  { id: "frei", label: "Freistehend", sub: "Vier Außenwände", faktor: 1.0 },
+  { id: "doppel", label: "Doppelhaushälfte", sub: "Eine Wand geteilt", faktor: 0.9 },
+  { id: "reihenend", label: "Reihenendhaus", sub: "Eine Wand geteilt, Endlage", faktor: 0.9 },
+  { id: "reihenmitte", label: "Reihenmittelhaus", sub: "Zwei Wände geteilt", faktor: 0.78 },
+] as const;
+
 export const INSULATION_BESTAND = [
   { label: "Unsaniert", sub: "Baujahr vor ~1995, keine Dämmung", specKwh: 220 },
   { label: "Teilsaniert", sub: "Fenster/Dach oder Fassade erneuert", specKwh: 160 },

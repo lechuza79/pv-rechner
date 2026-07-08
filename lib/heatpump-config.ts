@@ -9,6 +9,16 @@ export interface HeatPumpConfig {
   // Source: dena Gebäudereport, DIN V 18599, Verbraucherzentrale
   specDemandBestand: [number, number, number];  // unsaniert / teilsaniert / saniert
   specDemandNeubau: [number, number, number];   // EnEV 2014 / KfW 55 / KfW 40+
+  // Specific HEAT LOAD (W/m²) by insulation standard — for sizing the heat pump.
+  // Getrennt vom Jahresbedarf (kWh/m²·a): die Heizlast (kW) bestimmt die
+  // Anlagengröße, der Bedarf die Betriebskosten. Quelle: Verbraucherzentrale,
+  // 42watt, deutsche-sanierungsberatung (Faustwerte unsaniert 100–140,
+  // teilsaniert 70–100, saniert 30–50 W/m²).
+  specHeatLoadBestand: [number, number, number];  // unsaniert / teilsaniert / saniert
+  specHeatLoadNeubau: [number, number, number];   // EnEV / KfW 55 / KfW 40+
+  // Reale Auslegung: Wärmepumpen werden monoenergetisch meist auf ~85 % der
+  // Norm-Heizlast ausgelegt (E-Heizstab deckt die wenigen kältesten Tage).
+  auslegungsfaktor: number;
   // Warm water demand per person (kWh/a)
   // Source: Verbraucherzentrale, DIN V 18599
   wwPerPerson: number;
@@ -27,8 +37,6 @@ export interface HeatPumpConfig {
   investSwwpPerKw: number;
   // Radiator replacement cost (triggered when old radiators selected)
   heizkoerperTauschKosten: number;
-  // Full load hours for heat load sizing
-  fullLoadHours: number;    // Q_ges / 2000h → heat load kW
   // BEG funding rates (BAFA/KfW 2026)
   begGrundfoerderung: number;    // 30%
   begKlimaBonus: number;         // 20% — Bestand only, heizungstausch
@@ -39,6 +47,10 @@ export interface HeatPumpConfig {
   // Electricity price (§14a EnWG WP tariff, BDEW 2026)
   wpTarif: number;               // €/kWh
   wpMaintenance: number;         // €/a
+  // Grid electricity CO₂ intensity (kg/kWh) for the heat pump's emissions.
+  // Konservativ statisch über die Laufzeit — der reale Strommix wird sauberer,
+  // d.h. die WP-Einsparung ist eher unterschätzt (kein Schönrechnen).
+  gridCo2PerKwh: number;
   // Gas reference costs
   gasPriceCtPerKwh: number;      // ct/kWh
   gasEfficiency: number;          // Brennwert default
@@ -60,6 +72,9 @@ export interface HeatPumpConfig {
 export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   specDemandBestand: [220, 160, 100],
   specDemandNeubau: [75, 50, 30],
+  specHeatLoadBestand: [115, 95, 60],   // W/m² — unsaniert/teil/saniert (Feldwerte, nicht unterdimensionieren)
+  specHeatLoadNeubau: [40, 30, 20],     // W/m²
+  auslegungsfaktor: 0.85,
   wwPerPerson: 650,
   jazLwwp: { a: 5.5, b: 0.05 },
   jazSwwp: { a: 6.5, b: 0.05 },
@@ -71,15 +86,15 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   investSwwpBase: 28000,
   investSwwpPerKw: 1800,
   heizkoerperTauschKosten: 6000,
-  fullLoadHours: 2000,
   begGrundfoerderung: 0.30,
   begKlimaBonus: 0.20,
   begEffizienzBonus: 0.05,
   begEinkommensBonus: 0.30,
   begMaxCap: 30000,
   begMaxRate: 0.70,
-  wpTarif: 0.26,
+  wpTarif: 0.24,
   wpMaintenance: 200,
+  gridCo2PerKwh: 0.38,   // DE-Netzmix 2024, konservativ statisch
   gasPriceCtPerKwh: Math.round(FUEL_PRICE.gas.price * 100), // = 11, aus FUEL_PRICE (Single Source)
   gasEfficiency: 0.95,
   gasCo2PerKwh: FUEL_PRICE.gas.co2PerKwh, // = 0.20, aus FUEL_PRICE

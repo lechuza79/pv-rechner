@@ -210,9 +210,14 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] Eigener Flow `/waermepumpe` mit Neubau/Bestand-Umschalter (5 Steps)
 - [x] Kern-Berechnung in `lib/heatpump.ts` (Pure Functions): Heizwärmebedarf, JAZ, Investition, BEG-Förderung, 20-J-TCO
 - [x] Config in `lib/heatpump-config.ts` (zentralisiert, Admin-fähig strukturiert). `validFrom` + `reviewBy`; jährlicher Wächter (scheduled-task, Januar) + Runbook `scripts/waermepumpe-verify.md` prüft die preis-/förderabhängigen Werte (BEG, BWP-Invest, §14a-Tarif, Gas) gegen offizielle Quellen; mid-year-Förderänderungen fängt der `foerder-news-waechter` ab
-- [x] Heizwärmebedarf: Wohnfläche × spez. kWh/m²·a (dena-Gebäudereport, DIN V 18599) + 650 kWh/Person Warmwasser
+- [x] Heizwärmebedarf: Wohnfläche × spez. kWh/m²·a (dena-Gebäudereport, DIN V 18599) × **Haustyp-Faktor** (geteilte Wände, `HAUSTYP_WP` in constants) + 650 kWh/Person Warmwasser
+- [x] **Heizlast (Anlagengröße) getrennt vom Bedarf**: `calcHeatLoad` = Wohnfläche × spez. W/m² (`specHeatLoadBestand/Neubau`, Feldwerte) × Haustyp × `auslegungsfaktor` (0,85, reale monoenergetische Auslegung, min 4 kW). Ersetzt die alte `qGes/2000h`-Formel, die das Warmwasser mitzählte. **Editierbar** im Ergebnis (`override.heizlast`) — wer eine DIN-EN-12831-Berechnung hat, trägt sie ein
+- [x] **Haustyp-Abfrage** im Flow-Step „Größe & Typ" (freistehend / Doppelhaus / Reihenend / Reihenmitte)
 - [x] JAZ-Modell linear aus Fraunhofer ISE „WPsmart im Bestand" (LWWP/SWWP × Vorlauftemp)
-- [x] Investition nach Heizlast aus BWP Preisübersicht 2024, +6.000 € bei HK-Tausch
+- [x] Investition nach Heizlast aus BWP Preisübersicht 2024. **Heizkörpertausch (+6.000 €) ist jetzt eine Maßnahme/Wahl** (bei alten Heizkörpern), nicht mehr automatisch aufgeschlagen — aktiv → Kosten UND bessere JAZ (55→45°C). Früher: Kosten ohne JAZ-Nutzen (Inkonsistenz behoben)
+- [x] **Realistische Wege** (Szenario-Vergleich, dauerhaft bei Bestand): Ist / Heizkörper fit / Teilsanierung / Vollsanierung — jeder Weg mit €-Ergebnis + Amortisation + TCO-Aufschlüsselung im Tooltip. Sanierungskosten (Dämmung) NICHT in der WP-Rechnung (eigener Gebäude-Nutzen), Heizkörpertausch schon
+- [x] **Transparente BEG-Förderung** oben im Ergebnis: Grundförderung 30 % fest + abwählbare Schalter (Eigennutz +20 %, Effizienz +5 %, Einkommen +30 %), Förderdeckel (30.000 €) sichtbar
+- [x] **Werte gegen Fachquellen geprüft (2026)**: spez. Heizlast korrigiert (Unterdimensionierungs-Bias behoben), WP-Tarif 0,24 €/kWh (Feld-Ø), Strom-CO₂ in Config (`gridCo2PerKwh`, konservativ statisch)
 - [x] BEG-Förderung BAFA/KfW 2026: 30 % Grund + 20 % Klima + 5 % Effizienz + 30 % Einkommen (opt-in), Cap 70 %/30.000 €
 - [x] Gas-Referenz über generalisierten `calcFuelCost` (mit CO₂-Preispfad BEHG/EU ETS2). Preispfad in `lib/co2-config.ts` an absolute Kalenderjahre verankert (rollover-sicher), jährlicher Wächter + Runbook `scripts/co2-preis-verify.md`
 - [x] Hero: 20-Jahre-TCO-Differenz als Zahl, Amortisation + ⌀ Ersparnis + CO₂ als Kacheln

@@ -3,7 +3,7 @@ import { useState, useMemo, type ReactNode } from "react";
 import Link from "next/link";
 import {
   SITUATION, WOHNFLAECHEN, INSULATION_BESTAND, INSULATION_NEUBAU,
-  PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS,
+  PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP,
 } from "../../../lib/constants";
 import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
@@ -17,7 +17,7 @@ import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, Ico
 import { v } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
 
-const STEPS = ["Situation", "Wohnfläche", "Dämmstandard", "Haushalt", "Heizsystem"];
+const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizsystem"];
 
 // Average head count per PERSONEN-index (for kWh per person calc)
 const AVG_PERSONS = [1, 2, 3.5, 5];
@@ -29,6 +29,7 @@ export default function Waermepumpe() {
   const [flaecheIdx, setFlaecheIdx] = useState(1);         // 140 m² default
   const [customFlaeche, setCustomFlaeche] = useState<number | null>(null);
   const [customFlaecheDraft, setCustomFlaecheDraft] = useState<string>("");
+  const [haustypIdx, setHaustypIdx] = useState(0);         // freistehend default
   const [insulationIdx, setInsulationIdx] = useState(1);   // teilsaniert / KfW 55
   const [personen, setPersonen] = useState(2);             // 3–4
   const [heizsystem, setHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">("fbh");
@@ -46,6 +47,7 @@ export default function Waermepumpe() {
   const [oJaz, setOJaz] = useState<number | null>(null);
   const [oInvest, setOInvest] = useState<number | null>(null);
   const [oQges, setOQges] = useState<number | null>(null);
+  const [oHeizlast, setOHeizlast] = useState<number | null>(null);
   const [incomeBonus, setIncomeBonus] = useState(false);
   const [klimaBonus, setKlimaBonus] = useState(true);          // BEG Klima-Bonus (Eigennutzer, alte fossile Heizung)
   const [effizienzBonus, setEffizienzBonus] = useState(true);  // BEG Effizienz-Bonus (nat. Kältemittel / Erdsonde)
@@ -71,9 +73,11 @@ export default function Waermepumpe() {
     situation, wohnflaeche, insulationIdx,
     personen: AVG_PERSONS[personen],
     heizsystem, wpType, heizkoerperTausch,
+    haustypFaktor: HAUSTYP_WP[haustypIdx].faktor,
     pv: pvStatus !== "nein" ? { status: pvStatus, kwp: pvKwp, speicherKwh: pvSpeicher } : undefined,
     override: {
       qGes: oQges ?? undefined,
+      heizlast: oHeizlast ?? undefined,
       jaz: oJaz ?? undefined,
       investNetto: oInvest ?? undefined,
       stromPrice: oStromPrice ?? undefined,
@@ -82,7 +86,7 @@ export default function Waermepumpe() {
       gasCo2: fuel.co2PerKwh,
       incomeBonus, klimaBonus, effizienzBonus,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, pvStatus, pvKwp, pvSpeicher, oQges, oJaz, oInvest, oStromPrice, oGasPrice, fuel, incomeBonus, klimaBonus, effizienzBonus]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, fuel, incomeBonus, klimaBonus, effizienzBonus]);
 
   // ── Realistische Wege (Szenario-Vergleich) ───────────────────
   // Ein unsaniertes Haus bleibt selten 20 Jahre unangetastet. Statt nur den
@@ -116,9 +120,12 @@ export default function Waermepumpe() {
 
   const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }) })), [wege, inputs]);
   const istResult = wegeResults.find(w => w.id === "ist")?.r ?? calcHeatPump(inputs);
-  const istKnapp = istResult.amortisationsJahre === null || istResult.amortisationsJahre > 15 || istResult.tcoEinsparung < 0;
-  // Szenario-Vergleich nur bei Bestand mit knappem Ist und echten Alternativen
-  const zeigeWege = situation === "bestand" && istKnapp && wege.length > 1;
+  const istNegativ = istResult.tcoEinsparung < 0;
+  const istKnapp = istResult.amortisationsJahre === null || istResult.amortisationsJahre > 15 || istNegativ;
+  // Wege dauerhaft zeigen (nicht an die knappe istKnapp-Schwelle koppeln — sonst
+  // erscheinen/verschwinden Wege + Konklusion beim kleinsten Wertwechsel). Die
+  // Konklusion rahmt das Ergebnis adaptiv (unwirtschaftlich / kaum / rechnet sich).
+  const zeigeWege = situation === "bestand" && wege.length > 1;
 
   const activeWeg = (zeigeWege ? wegeResults.find(w => w.id === wegId) : null) ?? wegeResults.find(w => w.id === "ist");
   const activeInputs = useMemo(() => ({ ...inputs, ...(activeWeg?.patch ?? {}) }), [inputs, activeWeg]);
@@ -128,7 +135,7 @@ export default function Waermepumpe() {
   // Weg wechseln: baubezogene Overrides zurücksetzen, damit der Weg sauber greift
   const selectWeg = (id: string) => {
     setWegId(id);
-    setOQges(null); setOJaz(null); setOInvest(null);
+    setOQges(null); setOJaz(null); setOInvest(null); setOHeizlast(null);
   };
 
   const insulationOptions = situation === "bestand" ? INSULATION_BESTAND : INSULATION_NEUBAU;
@@ -217,6 +224,16 @@ export default function Waermepumpe() {
                     <span style={{ fontSize: 12, color: v('--color-text-muted') }}>m²</span>
                   </span>
                 </div>
+
+                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), margin: "20px 0 8px", textTransform: "uppercase", letterSpacing: "0.04em" }}>Haustyp</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                  {HAUSTYP_WP.map((h, i) => (
+                    <OptionCard key={h.id} selected={haustypIdx === i} onClick={() => setHaustypIdx(i)} label={h.label} sub={h.sub} />
+                  ))}
+                </div>
+                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5 }}>
+                  Geteilte Wände mit Nachbarn senken den Wärmeverlust — ein Reihenhaus braucht eine kleinere (günstigere) Wärmepumpe als ein freistehendes Haus gleicher Größe.
+                </div>
               </div>
             )}
 
@@ -290,10 +307,12 @@ export default function Waermepumpe() {
                 <div style={{ fontSize: 13, lineHeight: 1.55, color: v('--color-text-secondary') }}>
                   <span style={{ fontWeight: 700, color: v('--color-text-primary') }}>So wie dein Haus jetzt ist</span>
                   {" "}({INSULATION_BESTAND[insulationIdx].label.toLowerCase()}{heizsystem === "hk_alt" ? ", alte Heizkörper" : ""}){" "}
-                  {istResult.tcoEinsparung < 0
+                  {istNegativ
                     ? <>ist eine Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre <span style={{ fontWeight: 700, color: v('--color-negative') }}>unwirtschaftlich</span> ({istResult.tcoEinsparung.toLocaleString("de-DE")} €).</>
-                    : <>spielt eine Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre nur <span style={{ fontWeight: 700, fontFamily: v('--font-mono') }}>+{istResult.tcoEinsparung.toLocaleString("de-DE")} €</span> ein — sie lohnt sich <span style={{ fontWeight: 700 }}>ohne weitere Maßnahmen kaum</span>.</>}
-                  {" "}Realistisch bleibt ein unsaniertes Haus aber selten {DEFAULT_HEATPUMP_CONFIG.years} Jahre unangetastet. Was jeder Schritt bringt:
+                    : istKnapp
+                      ? <>spielt eine Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre nur <span style={{ fontWeight: 700, fontFamily: v('--font-mono') }}>+{istResult.tcoEinsparung.toLocaleString("de-DE")} €</span> ein — sie lohnt sich <span style={{ fontWeight: 700 }}>ohne weitere Maßnahmen kaum</span>.</>
+                      : <>rechnet sich eine Wärmepumpe schon: <span style={{ fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>+{istResult.tcoEinsparung.toLocaleString("de-DE")} €</span>{istResult.amortisationsJahre !== null ? `, Amortisation in ${istResult.amortisationsJahre} Jahren` : ""}.</>}
+                  {" "}So wirken sich weitere Schritte auf die Wirtschaftlichkeit aus:
                 </div>
               </div>
             )}
@@ -339,7 +358,7 @@ export default function Waermepumpe() {
                 </div>
                 <div style={{ display: "grid", gap: 8 }}>
                   {wegeResults.map(w => (
-                    <WegCard key={w.id} titel={w.titel} kurz={w.kurz} r={w.r} active={activeWeg?.id === w.id} onClick={() => selectWeg(w.id)} />
+                    <WegCard key={w.id} titel={w.titel} kurz={w.kurz} r={w.r} active={activeWeg?.id === w.id} onClick={() => selectWeg(w.id)} situation={situation} sanierung={w.sanierung} />
                   ))}
                 </div>
                 <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
@@ -356,8 +375,11 @@ export default function Waermepumpe() {
 
             {/* Hero: TCO-Differenz */}
             <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
-              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
+              <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
                 Einsparung über {DEFAULT_HEATPUMP_CONFIG.years} Jahre
+                <InfoTooltip title="So wird die Einsparung berechnet" ariaLabel="Wie wird die Einsparung berechnet?">
+                  <TcoBreakdown r={result} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} />
+                </InfoTooltip>
               </div>
               <div style={{ fontSize: 42, fontWeight: 800, color: result.tcoEinsparung >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
                 {result.tcoEinsparung >= 0 ? "+" : ""}{result.tcoEinsparung.toLocaleString("de-DE")} €
@@ -376,6 +398,12 @@ export default function Waermepumpe() {
               {/* Editierbare Kernannahmen */}
               <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
                 <div>Heizwärmebedarf: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} /></div>
+                <div>
+                  Heizlast: <InlineEdit value={result.heizlastKw} onCommit={v => setOHeizlast(v)} unit=" kW" min={3} max={40} step={0.5} width={60} fmt={v => (Math.round(v * 10) / 10).toString().replace(".", ",")} />
+                  <InfoTooltip title="Heizlast" ariaLabel="Was ist die Heizlast?">
+                    Die Leistung, die deine Wärmepumpe an kalten Tagen liefern muss — sie bestimmt Anlagengröße und Preis. Wir schätzen sie aus Wohnfläche, Dämmzustand und Haustyp. <strong>Hast du eine Heizlastberechnung nach DIN EN 12831 (vom Energieberater oder Heizungsbauer)? Trag den exakten Wert hier ein</strong> — dann rechnen alle Kosten damit.
+                  </InfoTooltip>
+                </div>
                 <div>
                   Wärmepumpe:{" "}
                   <select value={wpType} onChange={e => { setWpType(e.target.value as "lwwp" | "swwp"); setOInvest(null); setOJaz(null); }} style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: 13 }}>
@@ -436,7 +464,7 @@ export default function Waermepumpe() {
                   ["Heizwärme", `${result.qHeiz.toLocaleString("de-DE")} kWh`],
                   ["Warmwasser", `${result.qWw.toLocaleString("de-DE")} kWh`],
                   ["Gesamt thermisch", `${result.qGes.toLocaleString("de-DE")} kWh`],
-                  ["Heizlast", `${result.heizlastKw} kW`],
+                  ["Heizlast", `${result.heizlastKw.toLocaleString("de-DE")} kW`],
                   ["Vorlauftemperatur", `${result.flowTemp} °C`],
                   ["JAZ", result.jaz.toFixed(2).replace(".", ",")],
                   ["Strombedarf WP", `${result.eWp.toLocaleString("de-DE")} kWh`],
@@ -518,7 +546,7 @@ export default function Waermepumpe() {
               <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
                 PV-Rechner öffnen <IconArrowRight size={12} />
               </Link>
-              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setKlimaBonus(true); setEffizienzBonus(true); setIncomeBonus(false); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
+              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setKlimaBonus(true); setEffizienzBonus(true); setIncomeBonus(false); setOHeizlast(null); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={12} /> Neu berechnen</span>
               </button>
             </div>
@@ -534,6 +562,48 @@ export default function Waermepumpe() {
 }
 
 // ─── Helpers ───────────────────────────────────────────────────
+
+// Transparente Aufschlüsselung, wie die Einsparung zustande kommt (20-J-TCO).
+// sanierungHinweis: erklärt, warum ein Sanierungs-Weg wirtschaftlich oft
+// schwächer aussieht (weniger Heizbedarf = weniger ersetztes Gas).
+function TcoBreakdown({ r, situation, jahre, sanierungHinweis }: { r: HeatPumpResult; situation: "bestand" | "neubau"; jahre: number; sanierungHinweis?: boolean }) {
+  const euro = (n: number) => `${n.toLocaleString("de-DE")} €`;
+  const Row = ({ label, val, strong, minus }: { label: string; val: number; strong?: boolean; minus?: boolean }) => (
+    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "1px 0", fontWeight: strong ? 700 : 400 }}>
+      <span>{minus ? "− " : ""}{label}</span>
+      <span style={{ fontFamily: v('--font-mono'), whiteSpace: "nowrap" }}>{euro(val)}</span>
+    </div>
+  );
+  return (
+    <div style={{ fontSize: 12, lineHeight: 1.5 }}>
+      <div style={{ marginBottom: 8 }}>Alles über {jahre} Jahre gerechnet — die günstigere Variante gewinnt:</div>
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ fontWeight: 700, marginBottom: 2 }}>Wärmepumpe kostet</div>
+        <Row label="Investition (nach Förderung)" val={r.investNetto} />
+        {r.pvInvest > 0 && <Row label="PV-Anlage" val={r.pvInvest} />}
+        <Row label="Strom" val={r.stromKosten} />
+        <Row label="Wartung" val={r.wartungWp} />
+        <div style={{ borderTop: `1px solid ${v('--color-border')}`, marginTop: 2, paddingTop: 2 }}><Row label="Summe" val={r.tcoWp} strong /></div>
+      </div>
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ fontWeight: 700, marginBottom: 2 }}>{situation === "neubau" ? "Neue Gasheizung kostet" : "Gasheizung weiterbetreiben kostet"}</div>
+        {r.gasInvest > 0 && <Row label="Neue Therme" val={r.gasInvest} />}
+        <Row label="Brennstoff (inkl. steigendem CO₂-Preis)" val={r.gasKosten} />
+        <Row label="Grundgebühr" val={r.gasFix} />
+        <Row label="Wartung" val={r.gasWartung} />
+        <div style={{ borderTop: `1px solid ${v('--color-border')}`, marginTop: 2, paddingTop: 2 }}><Row label="Summe" val={r.tcoGas} strong /></div>
+      </div>
+      <div style={{ borderTop: `1px solid ${v('--color-border')}`, paddingTop: 6 }}>
+        <Row label={`Einsparung (${euro(r.tcoGas)} − ${euro(r.tcoWp)})`} val={r.tcoEinsparung} strong />
+      </div>
+      {sanierungHinweis && (
+        <div style={{ marginTop: 8, paddingTop: 8, borderTop: `1px solid ${v('--color-border')}`, color: v('--color-text-muted'), lineHeight: 1.5 }}>
+          Warum oft weniger als „nur Heizkörper tauschen"? Die Dämmung senkt den Heizbedarf — die Wärmepumpe ersetzt dadurch <strong>weniger teures Gas</strong>, also fällt die reine WP-Ersparnis kleiner aus. Der eigentliche Nutzen der Dämmung (dauerhaft weniger Energie und CO₂, egal mit welchem Heizsystem) steckt bewusst nicht in dieser Zahl — sie zeigt nur, wie sich die Wärmepumpe gegenüber Gas rechnet.
+        </div>
+      )}
+    </div>
+  );
+}
 
 function StatCard({ label, value, positive, help, helpTitle, helpAriaLabel }: { label: string; value: string; positive: boolean; help?: ReactNode; helpTitle?: string; helpAriaLabel?: string }) {
   return (
@@ -559,15 +629,20 @@ function BonusToggle({ checked, onChange, label, tipTitle, children }: { checked
   );
 }
 
-function WegCard({ titel, kurz, r, active, onClick }: { titel: string; kurz: string; r: HeatPumpResult; active: boolean; onClick: () => void }) {
+function WegCard({ titel, kurz, r, active, onClick, situation, sanierung }: { titel: string; kurz: string; r: HeatPumpResult; active: boolean; onClick: () => void; situation: "bestand" | "neubau"; sanierung: boolean }) {
   const pos = r.tcoEinsparung >= 0;
+  // Klickbares div statt <button>, damit das Info-Icon (selbst ein Button) kein
+  // ungültiges verschachteltes Button ergibt. Tastatur-Bedienung nachgebildet.
   return (
-    <button onClick={onClick} style={{
-      display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", cursor: "pointer",
-      padding: "12px 14px", borderRadius: v('--radius-md'),
-      background: active ? v('--color-accent-dim') : v('--color-bg'),
-      border: active ? `2px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
-    }}>
+    <div
+      role="button" tabIndex={0} onClick={onClick}
+      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}
+      style={{
+        display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", cursor: "pointer",
+        padding: "12px 14px", borderRadius: v('--radius-md'),
+        background: active ? v('--color-accent-dim') : v('--color-bg'),
+        border: active ? `2px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
+      }}>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           {active && <IconCheck size={14} color={v('--color-accent')} />}
@@ -576,14 +651,21 @@ function WegCard({ titel, kurz, r, active, onClick }: { titel: string; kurz: str
         <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginTop: 2, lineHeight: 1.4 }}>{kurz}</div>
       </div>
       <div style={{ textAlign: "right", flexShrink: 0 }}>
-        <div style={{ fontSize: 16, fontWeight: 800, fontFamily: v('--font-mono'), color: pos ? v('--color-positive') : v('--color-negative') }}>
-          {pos ? "+" : ""}{r.tcoEinsparung.toLocaleString("de-DE")} €
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
+          <span style={{ fontSize: 16, fontWeight: 800, fontFamily: v('--font-mono'), color: pos ? v('--color-positive') : v('--color-negative') }}>
+            {pos ? "+" : ""}{r.tcoEinsparung.toLocaleString("de-DE")} €
+          </span>
+          <span onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()} style={{ display: "inline-flex" }}>
+            <InfoTooltip title={`So rechnet sich „${titel}"`} ariaLabel={`Berechnung für ${titel}`}>
+              <TcoBreakdown r={r} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={sanierung} />
+            </InfoTooltip>
+          </span>
         </div>
         <div style={{ fontSize: 11, color: v('--color-text-muted') }}>
           {r.amortisationsJahre !== null ? `Amortisation ${r.amortisationsJahre} J` : `Amortisation > ${DEFAULT_HEATPUMP_CONFIG.years} J`}
         </div>
       </div>
-    </button>
+    </div>
   );
 }
 

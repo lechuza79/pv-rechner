@@ -2,10 +2,11 @@
 // Pure functions — no React, no I/O. Reusable in server/client.
 //
 // Methodik (Quellen in heatpump-config.ts):
-//   Q_ges    = Wohnfläche × spez. Bedarf + Personen × 650  (dena, DIN V 18599)
+//   Q_ges    = Wohnfläche × spez. Bedarf × Haustyp + Personen × 650  (dena, DIN V 18599)
+//   Heizlast = Wohnfläche × spez.Heizlast(W/m²) × Haustyp × Auslegungsfaktor
 //   JAZ      = a − b × T_Vorlauf                            (Fraunhofer ISE WPsmart)
 //   E_WP     = Q_ges / JAZ                                  (Energiebilanz)
-//   Invest   = base + perKw × Heizlast(= Q_ges / 2000h)    (BWP Preisübersicht)
+//   Invest   = base + perKw × Heizlast                      (BWP Preisübersicht)
 //   BEG      = Grund 30% + Klima 20% + Effizienz 5% (+Einkommen 30%)  — Bestand only
 //   Gas-Ref  = fuelKwh × (price × 1.02^t + CO2_t)  + Grundgebühr + Wartung
 //   TCO_WP   = Invest_netto + Σ Strom + Σ Wartung
@@ -24,6 +25,7 @@ export interface HeatPumpInputs {
   personen: number;              // actual head count (1, 2, 3.5, 5)
   heizsystem: "fbh" | "hk_neu" | "hk_alt";
   wpType: "lwwp" | "swwp";
+  haustypFaktor?: number;        // Heizlast-Faktor je Haustyp (geteilte Wände) — default 1.0
   // Maßnahme: alte Heizkörper auf Niedertemperatur tauschen.
   // Nur bei heizsystem="hk_alt" relevant. Aktiv → +Tauschkosten UND Vorlauf
   // sinkt auf hk_neu-Niveau (55→45°C), was die JAZ hebt. Ist-Zustand (false):
@@ -39,6 +41,7 @@ export interface HeatPumpInputs {
   // Optional overrides (editable in result view)
   override?: {
     qGes?: number;               // thermal demand override (kWh/a)
+    heizlast?: number;           // manual heat load override (kW) — z.B. aus DIN-Heizlastberechnung
     jaz?: number;                // manual JAZ override
     investNetto?: number;        // total cost after subsidy
     stromPrice?: number;         // €/kWh
@@ -103,12 +106,33 @@ export function calcHeatDemand(
   insulationIdx: number,
   personen: number,
   cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG,
+  haustypFaktor = 1,
 ): { qHeiz: number; qWw: number; qGes: number } {
   const specArr = situation === "bestand" ? cfg.specDemandBestand : cfg.specDemandNeubau;
   const spec = specArr[Math.max(0, Math.min(insulationIdx, specArr.length - 1))];
-  const qHeiz = Math.round(wohnflaeche * spec);
+  // Haustyp-Faktor auch auf den Jahresbedarf: geteilte Wände senken den Verlust
+  // übers Jahr, nicht nur die Spitzenlast. Warmwasser bleibt personenabhängig.
+  const qHeiz = Math.round(wohnflaeche * spec * haustypFaktor);
   const qWw = Math.round(personen * cfg.wwPerPerson);
   return { qHeiz, qWw, qGes: qHeiz + qWw };
+}
+
+// Heizlast (kW) für die Anlagengröße — spezifische W/m² × Fläche × Haustyp-Faktor.
+// Getrennt vom Jahresbedarf: die Heizlast dimensioniert die Wärmepumpe, der Bedarf
+// die Betriebskosten. Ergebnis ist die real ausgelegte Leistung (Norm × Auslegungs-
+// faktor). Die individuelle DIN-EN-12831-Berechnung ist genauer → override.heizlast.
+export function calcHeatLoad(
+  situation: "bestand" | "neubau",
+  wohnflaeche: number,
+  insulationIdx: number,
+  haustypFaktor: number,
+  cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG,
+): number {
+  const arr = situation === "bestand" ? cfg.specHeatLoadBestand : cfg.specHeatLoadNeubau;
+  const spec = arr[Math.max(0, Math.min(insulationIdx, arr.length - 1))];
+  const normHeizlast = (wohnflaeche * spec * haustypFaktor) / 1000;  // kW (Norm)
+  // Untergrenze 4 kW: kleinere Luft-Wärmepumpen gibt es real kaum am Markt.
+  return Math.max(4, Math.round(normHeizlast * cfg.auslegungsfaktor * 10) / 10);  // reale Auslegung, 0,1 kW
 }
 
 export function flowTempForSystem(system: "fbh" | "hk_neu" | "hk_alt", cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
@@ -184,18 +208,23 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   const adj = scenarioAdj ?? { jazFactor: 1, stromInflation: cfg.stromInflation, gasInflation: cfg.gasInflation };
 
   // 1. Heizwärmebedarf
-  const demand = calcHeatDemand(inputs.situation, inputs.wohnflaeche, inputs.insulationIdx, inputs.personen, cfg);
+  const demand = calcHeatDemand(inputs.situation, inputs.wohnflaeche, inputs.insulationIdx, inputs.personen, cfg, inputs.haustypFaktor ?? 1);
   const qGes = inputs.override?.qGes ?? demand.qGes;
 
   // 2. Heizlast & JAZ
-  const heizlastKw = Math.max(4, Math.round(qGes / cfg.fullLoadHours));
+  // Heizlast aus spez. W/m² × Fläche × Haustyp (nicht mehr aus Jahresbedarf ÷ 2000 h —
+  // das hatte das Warmwasser mitgezählt und die Anlage zu groß gemacht). Individuelle
+  // DIN-Heizlastberechnung schlägt die Schätzung: override.heizlast.
+  const heizlastKw = inputs.override?.heizlast
+    ?? calcHeatLoad(inputs.situation, inputs.wohnflaeche, inputs.insulationIdx, inputs.haustypFaktor ?? 1, cfg);
   // Heizkörpertausch senkt den Vorlauf von alten Heizkörpern (55°C) auf
   // Niedertemperatur-Niveau (45°C, wie moderne Heizkörper) → bessere JAZ.
   const doHkTausch = inputs.heizsystem === "hk_alt" && !!inputs.heizkoerperTausch;
   const effHeizsystem = doHkTausch ? "hk_neu" : inputs.heizsystem;
   const flowTemp = flowTempForSystem(effHeizsystem, cfg);
   const jazBase = inputs.override?.jaz ?? calcJAZ(inputs.wpType, flowTemp, cfg);
-  const jaz = Math.max(2.0, jazBase * adj.jazFactor);
+  // Auch nach Szenario-Faktor/Override im physikalisch plausiblen Fenster halten.
+  const jaz = Math.min(4.8, Math.max(2.0, jazBase * adj.jazFactor));
   const eWp = Math.round(qGes / jaz);
 
   // 3. Investition & Förderung
@@ -235,7 +264,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
 
   // 5. 20-Jahre Gas-Referenz
   const gasPrice = inputs.override?.gasPrice ?? cfg.gasPriceCtPerKwh / 100;
-  const gasEff = inputs.override?.gasEfficiency ?? cfg.gasEfficiency;
+  const gasEff = Math.max(0.5, inputs.override?.gasEfficiency ?? cfg.gasEfficiency);  // gegen /0
   const gasCo2 = inputs.override?.gasCo2 ?? cfg.gasCo2PerKwh;
   const fuelKwh = qGes / gasEff;
   // Inline per-year gas cost (need array for chart)
@@ -278,7 +307,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
 
   // 8. CO₂-Einsparung
   const co2Gas = fuelKwh * gasCo2 * cfg.years;
-  const gridCo2 = 0.38; // kg CO2/kWh German grid mix (UBA 2023, sinkend)
+  const gridCo2 = cfg.gridCo2PerKwh; // kg CO2/kWh German grid mix (konservativ statisch)
   const co2Wp = eWp * gridCo2 * cfg.years;
   const co2Einsparung = Math.round(co2Gas - co2Wp);
   // Spezifischer CO₂-Ausstoß des Heizens (kg/m²·a) — Energieausweis-Kennzahl.
