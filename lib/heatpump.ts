@@ -340,6 +340,29 @@ export function calcHeatPumpScenarios(inputs: HeatPumpInputs, cfg: HeatPumpConfi
   return scenarios.map(s => ({ id: s.id, label: s.label, color: s.color, ...calcHeatPump(inputs, cfg, s.adj) }));
 }
 
+// ─── Shared: WP-Jahresstromverbrauch aus Gebäudedaten ──────────────────────
+// Schlanke gemeinsame Quelle für PV- und WP-Rechner: dieselbe Physik wie die
+// große TCO-Rechnung (Heizwärmebedarf ÷ Jahresarbeitszahl), aber ohne
+// Investitions-/Förder-/Gas-Overhead. So liefert dasselbe Haus in beiden
+// Rechnern denselben WP-Stromverbrauch, statt einmal pauschal 3500 kWh und
+// einmal ~11.000 kWh. Modelliert den Ist-Zustand (kein Heizkörpertausch).
+export interface WpElectricityInputs {
+  situation: "bestand" | "neubau";
+  wohnflaeche: number;          // m²
+  insulationIdx: number;         // 0–2 (Index in INSULATION_BESTAND/NEUBAU)
+  personen: number;              // actual head count (1, 2, 3.5, 5)
+  heizsystem: "fbh" | "hk_neu" | "hk_alt";
+  wpType: "lwwp" | "swwp";
+  haustypFaktor?: number;        // geteilte Wände senken den Bedarf — default 1.0
+}
+
+/** WP-Jahresstrom (kWh/a) = Heizwärmebedarf ÷ Jahresarbeitszahl. */
+export function calcWpAnnualElectricity(inp: WpElectricityInputs, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
+  const { qGes } = calcHeatDemand(inp.situation, inp.wohnflaeche, inp.insulationIdx, inp.personen, cfg, inp.haustypFaktor ?? 1);
+  const jaz = calcJAZ(inp.wpType, flowTempForSystem(inp.heizsystem, cfg), cfg);
+  return Math.round(qGes / jaz);
+}
+
 // ─── PV synergy: how much of WP electricity can a PV system cover? ─────────
 // Simplified HTW-based heuristic. Returns self-consumption rate of WP electricity.
 export function estimatePvCoverageOfWp(kwp: number, eWp: number, speicherKwh: number): number {

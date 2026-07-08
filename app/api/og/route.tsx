@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { ANLAGEN, SPEICHER } from "../../../lib/constants";
+import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND } from "../../../lib/constants";
 import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
+import { calcWpAnnualElectricity } from "../../../lib/heatpump";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 
 export const runtime = "edge";
@@ -213,8 +214,21 @@ export async function GET(req: NextRequest) {
   const oKosten = params.k ? paramFloat(params, "k", 0, 500, 200000) : null;
   const oEv = params.ev ? paramInt(params, "ev", 0, 5, 95) : null;
 
+  // WP-Jahresstrom aus den Gebäudedaten (gleiche Physik wie der Rechner), damit
+  // das Vorschaubild bei WP-Links dieselbe Amortisation zeigt wie die Seite.
+  const wpKwh = wp !== "nein"
+    ? calcWpAnnualElectricity({
+        situation: "bestand",
+        wohnflaeche: paramInt(params, "wf", 140, 20, 1000),
+        insulationIdx: paramInt(params, "wi", 1, 0, INSULATION_BESTAND.length - 1),
+        personen: PERSONEN[personenIdx].count,
+        heizsystem: paramStr(params, "wh", "hk_neu", ["fbh", "hk_neu", "hk_alt"]) as "fbh" | "hk_neu" | "hk_alt",
+        wpType: "lwwp",
+      })
+    : null;
+
   const ev = oEv ?? calcEigenverbrauch({
-    personenIdx, nutzungIdx, speicherKwh: spKwh, wp, ea, eaKm, kwp, ertragKwp,
+    personenIdx, nutzungIdx, speicherKwh: spKwh, wp, ea, eaKm, wpKwh, kwp, ertragKwp,
   });
   const kosten = oKosten ?? estimateCost(kwp, spKwh);
   const oEinsp = params.ei ? paramFloat(params, "ei", 0, 0, 20) : null;

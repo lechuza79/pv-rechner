@@ -78,6 +78,17 @@ describe("calcExtraConsumption", () => {
     // ignoriert, wenn Klima aus
     expect(calcExtraConsumption("nein", "nein", 15000, "nein", 120, 250)).toBe(0);
   });
+
+  it("uses the WP kWh override (Gebäudedaten) over the flat pauschale", () => {
+    // wpKwhOverride hat Vorrang vor WP_ANNUAL_KWH (7. Argument)
+    expect(calcExtraConsumption("ja", "nein", 15000, "nein", 120, null, 11000)).toBe(11000);
+    // kombiniert mit E-Auto
+    expect(calcExtraConsumption("ja", "ja", 15000, "nein", 120, null, 8000)).toBe(8000 + calcEaAnnual(15000));
+    // ignoriert, wenn WP aus
+    expect(calcExtraConsumption("nein", "nein", 15000, "nein", 120, null, 8000)).toBe(0);
+    // fällt ohne Override auf die Pauschale zurück
+    expect(calcExtraConsumption("ja", "nein", 15000, "nein", 120, null, null)).toBe(WP_ANNUAL_KWH);
+  });
 });
 
 describe("calcKlimaAnnual", () => {

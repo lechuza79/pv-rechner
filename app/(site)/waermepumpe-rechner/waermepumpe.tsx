@@ -19,9 +19,6 @@ import { trackEvent } from "../../../lib/analytics";
 
 const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizsystem"];
 
-// Average head count per PERSONEN-index (for kWh per person calc)
-const AVG_PERSONS = [1, 2, 3.5, 5];
-
 export default function Waermepumpe() {
   // ── Step state ───────────────────────────────────────────────
   const [step, setStep] = useState(0);
@@ -71,7 +68,7 @@ export default function Waermepumpe() {
   const fuel = WP_FUEL_OPTIONS.find(f => f.id === oFuel) ?? WP_FUEL_OPTIONS[0];
   const inputs: HeatPumpInputs = useMemo(() => ({
     situation, wohnflaeche, insulationIdx,
-    personen: AVG_PERSONS[personen],
+    personen: PERSONEN[personen].count,
     heizsystem, wpType, heizkoerperTausch,
     haustypFaktor: HAUSTYP_WP[haustypIdx].faktor,
     pv: pvStatus !== "nein" ? { status: pvStatus, kwp: pvKwp, speicherKwh: pvSpeicher } : undefined,

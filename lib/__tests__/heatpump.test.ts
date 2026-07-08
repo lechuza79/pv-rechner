@@ -9,6 +9,7 @@ import {
   calcHeatPump,
   calcHeatPumpScenarios,
   estimatePvCoverageOfWp,
+  calcWpAnnualElectricity,
   type HeatPumpInputs,
 } from "../heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../heatpump-config";
@@ -333,5 +334,45 @@ describe("DEFAULT_HEATPUMP_CONFIG", () => {
   it("SWWP base higher than LWWP base (drilling premium)", () => {
     const cfg = DEFAULT_HEATPUMP_CONFIG;
     expect(cfg.investSwwpBase).toBeGreaterThan(cfg.investLwwpBase);
+  });
+});
+
+// ─── Shared WP annual electricity (PV ↔ WP consistency) ─────────────────────
+describe("calcWpAnnualElectricity", () => {
+  it("equals Q_ges / JAZ of the full engine (same physics)", () => {
+    const eng = calcHeatPump(baseInputs);
+    const shared = calcWpAnnualElectricity({
+      situation: baseInputs.situation,
+      wohnflaeche: baseInputs.wohnflaeche,
+      insulationIdx: baseInputs.insulationIdx,
+      personen: baseInputs.personen,
+      heizsystem: baseInputs.heizsystem,
+      wpType: baseInputs.wpType,
+    });
+    expect(shared).toBe(eng.eWp);
+  });
+
+  it("unsaniertes EFH liegt realistisch bei ~11.000 kWh (nicht 3500)", () => {
+    // 140 m², unsaniert (220 kWh/m²), 2 Personen, alte Heizkörper (55°C) → LWWP
+    const kwh = calcWpAnnualElectricity({
+      situation: "bestand", wohnflaeche: 140, insulationIdx: 0,
+      personen: 2, heizsystem: "hk_alt", wpType: "lwwp",
+    });
+    expect(kwh).toBeGreaterThan(9000);
+    expect(kwh).toBeLessThan(13000);
+  });
+
+  it("Fußbodenheizung braucht weniger Strom als alte Heizkörper (bessere JAZ)", () => {
+    const common = { situation: "bestand" as const, wohnflaeche: 140, insulationIdx: 1, personen: 2, wpType: "lwwp" as const };
+    const fbh = calcWpAnnualElectricity({ ...common, heizsystem: "fbh" });
+    const hkAlt = calcWpAnnualElectricity({ ...common, heizsystem: "hk_alt" });
+    expect(fbh).toBeLessThan(hkAlt);
+  });
+
+  it("besser gedämmt → weniger Heizstrom", () => {
+    const common = { situation: "bestand" as const, wohnflaeche: 140, personen: 2, heizsystem: "hk_neu" as const, wpType: "lwwp" as const };
+    const unsaniert = calcWpAnnualElectricity({ ...common, insulationIdx: 0 });
+    const saniert = calcWpAnnualElectricity({ ...common, insulationIdx: 2 });
+    expect(saniert).toBeLessThan(unsaniert);
   });
 });

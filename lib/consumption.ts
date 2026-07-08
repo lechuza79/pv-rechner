@@ -43,7 +43,9 @@ export function calcKlimaAnnual(m2: number): number {
 /** Calculate extra consumption from WP + E-Auto + Klimaanlage (annual kWh).
  *  klima/klimaM2 are optional so existing callers stay unchanged.
  *  klimaKwhOverride: direkter Kühlstrom (z.B. aus dem Klimaanlagen-Rechner
- *  übernommen) — hat Vorrang vor der Flächen-Schätzung. */
+ *  übernommen) — hat Vorrang vor der Flächen-Schätzung.
+ *  wpKwhOverride: WP-Jahresstrom aus Gebäudedaten (calcWpAnnualElectricity,
+ *  gemeinsam mit dem Wärmepumpen-Rechner) — hat Vorrang vor der Pauschale. */
 export function calcExtraConsumption(
   wp: string,
   ea: string,
@@ -51,9 +53,10 @@ export function calcExtraConsumption(
   klima: string = "nein",
   klimaM2: number = KLIMA_DEFAULT_M2,
   klimaKwhOverride: number | null = null,
+  wpKwhOverride: number | null = null,
 ): number {
   let extra = 0;
-  if (wp !== "nein") extra += WP_ANNUAL_KWH;
+  if (wp !== "nein") extra += wpKwhOverride ?? WP_ANNUAL_KWH;
   if (ea !== "nein") extra += calcEaAnnual(eaKm);
   if (klima !== "nein") extra += klimaKwhOverride ?? calcKlimaAnnual(klimaM2);
   return extra;

@@ -166,13 +166,15 @@ export function selectByMarginalReturn<T extends { investition: number; npv25: n
 // Für WP-Haushalte korrigieren wir den Speicher-Boost saisonal nach unten, weil
 // ~80 % des WP-Verbrauchs Okt–Apr anfällt — genau wenn der Speicher mangels Sonne
 // kaum gefüllt werden kann (PV-Ertrag in diesen Monaten: ~30 % des Jahres).
-export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm, klima = "nein", klimaM2 = KLIMA_DEFAULT_M2, klimaKwh = null, kwp, ertragKwp, baseKwh }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; eaKm: number; klima?: string; klimaM2?: number; klimaKwh?: number | null; kwp: number; ertragKwp: number; baseKwh?: number | null }): number {
+export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, ea, eaKm, klima = "nein", klimaM2 = KLIMA_DEFAULT_M2, klimaKwh = null, wpKwh = null, kwp, ertragKwp, baseKwh }: { personenIdx: number; nutzungIdx: number; speicherKwh: number; wp: string; ea: string; eaKm: number; klima?: string; klimaM2?: number; klimaKwh?: number | null; wpKwh?: number | null; kwp: number; ertragKwp: number; baseKwh?: number | null }): number {
   const jahresertrag = kwp * ertragKwp;
   // baseKwh = direkt eingegebener Haushaltsverbrauch (ohne WP/E-Auto). Fällt
   // auf die personenbasierte Schätzung zurück, wenn nicht gesetzt.
   const grundverbrauch = baseKwh ?? PERSONEN[personenIdx].verbrauch;
   const tagQuote = NUTZUNG[nutzungIdx].tagQuote;
-  const extra = calcExtraConsumption(wp, ea, eaKm, klima, klimaM2, klimaKwh);
+  // wpKwh = WP-Jahresstrom aus Gebäudedaten (gemeinsam mit dem WP-Rechner). Fehlt
+  // er, fällt calcExtraConsumption auf die Pauschale (WP_ANNUAL_KWH) zurück.
+  const extra = calcExtraConsumption(wp, ea, eaKm, klima, klimaM2, klimaKwh, wpKwh);
   const gesamt = grundverbrauch + extra;
   // x = kWp pro MWh Verbrauch (Anlagengröße relativ zum Verbrauch)
   const x = kwp / (gesamt / 1000);
@@ -187,8 +189,10 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
   // Saisonkorrektur: Speicher kann WP-Strom kaum decken (Winter-Sonnenmangel).
   // Korrekturfaktor = 1 − wpAnteil × 0.30 (empirisch aus PV-/WP-Saisonprofilen).
   if (speicherKwh > 0 && wp !== "nein") {
-    const wpKwh = extra > 0 ? Math.min(WP_ANNUAL_KWH_CONST, extra) : 0;
-    const wpAnteil = wpKwh / gesamt;
+    // WP-Anteil am Gesamtverbrauch: realer Gebäude-Wert wenn vorhanden, sonst
+    // die Pauschale. min(., extra) kappt gegen den Fall dass nur WP zum Extra beiträgt.
+    const wpAnnual = Math.min(wpKwh ?? WP_ANNUAL_KWH_CONST, extra);
+    const wpAnteil = wpAnnual / gesamt;
     evBoost *= (1 - wpAnteil * 0.30);
   }
   // Physikalische Grenze: max. Eigenverbrauch = Gesamtverbrauch / Jahresertrag

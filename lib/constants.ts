@@ -47,11 +47,14 @@ export const SPEICHER = [
   { kwh: 12.5, label: "12,5 kWh",      sub: "Groß+",               icon: "🔋" },
 ];
 
+// count = mittlere Kopfzahl je Index — für die WP-Warmwasser-Berechnung
+// (kWh/Person) im PV- und WP-Rechner. Single Source, damit beide Rechner
+// dieselbe Personenzahl annehmen.
 export const PERSONEN = [
-  { label: "1", verbrauch: 1800 },
-  { label: "2", verbrauch: 2800 },
-  { label: "3–4", verbrauch: 3800 },
-  { label: "5+", verbrauch: 5000 },
+  { label: "1", verbrauch: 1800, count: 1 },
+  { label: "2", verbrauch: 2800, count: 2 },
+  { label: "3–4", verbrauch: 3800, count: 3.5 },
+  { label: "5+", verbrauch: 5000, count: 5 },
 ];
 
 export const NUTZUNG = [
@@ -75,7 +78,7 @@ export const SCENARIOS = [
   { id: "optimistic", label: "Optimistisch", color: "#1365EA", strom: 0.05, evDelta: 5 },
 ];
 
-export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "bl", "foe", "vb", "kl", "km2", "klwh"];
+export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "bl", "foe", "vb", "kl", "km2", "klwh", "wf", "wi", "wh"];
 
 // ─── Empfehlungs-Flow ───────────────────────────────────────────────────────
 export const HAUSTYPEN = [
