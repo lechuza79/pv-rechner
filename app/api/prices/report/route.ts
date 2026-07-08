@@ -19,6 +19,7 @@ interface PriceRow {
   pv_price_small: number; pv_price_large: number;
   battery_base: number; battery_per_kwh: number;
   electricity_price: number | null; electricity_increase: number | null;
+  wp_lwwp_base: number | null; wp_lwwp_per_kw: number | null;
   valid_from: string; notes: string | null;
 }
 interface FeedRow {
@@ -64,7 +65,7 @@ export async function GET(req: Request) {
     // rows share a date (e.g. a re-run), the most recent wins.
     const { data: latest } = await supabase
       .from("market_prices")
-      .select("pv_price_small, pv_price_large, battery_base, battery_per_kwh, electricity_price, electricity_increase, valid_from, notes")
+      .select("pv_price_small, pv_price_large, battery_base, battery_per_kwh, electricity_price, electricity_increase, wp_lwwp_base, wp_lwwp_per_kw, valid_from, notes")
       .neq("source", "SCRAPE_ERROR")
       .gt("pv_price_small", 0)
       .order("valid_from", { ascending: false })
@@ -81,7 +82,7 @@ export async function GET(req: Request) {
     // robust against multiple same-day rows from manual re-runs).
     const { data: prevRows } = await supabase
       .from("market_prices")
-      .select("pv_price_small, pv_price_large, battery_base, battery_per_kwh, electricity_price, electricity_increase, valid_from, notes")
+      .select("pv_price_small, pv_price_large, battery_base, battery_per_kwh, electricity_price, electricity_increase, wp_lwwp_base, wp_lwwp_per_kw, valid_from, notes")
       .neq("source", "SCRAPE_ERROR")
       .gt("pv_price_small", 0)
       .lt("valid_from", curr.valid_from)
@@ -103,6 +104,7 @@ export async function GET(req: Request) {
 
     const sapSrc = "taptaphome.com (vormals solaranlagen-portal.com)";
     const battSrc = "taptaphome + energie-experten (Mittel)";
+    const wpSrc = "taptaphome.com (WP-Kostenübersicht)";
     const stromSrc = "strom-report.de";
     const feedSrc = feed?.source ?? "Bundesnetzagentur";
 
@@ -118,6 +120,7 @@ export async function GET(req: Request) {
       row("PV-Preis >10 kWp", `${fmt(curr.pv_price_large)} €/kWp`, delta(curr.pv_price_large, prev?.pv_price_large), sapSrc),
       row("Speicher-Basis (Installation)", `${fmt(curr.battery_base)} €`, delta(curr.battery_base, prev?.battery_base), "Fixwert"),
       row("Speicher Zell-Preis", `${fmt(curr.battery_per_kwh)} €/kWh`, delta(curr.battery_per_kwh, prev?.battery_per_kwh), battSrc),
+      row("WP-Grundpreis Luft/Wasser", `${fmt(curr.wp_lwwp_base)} € + ${fmt(curr.wp_lwwp_per_kw)} €/kW`, delta(curr.wp_lwwp_base, prev?.wp_lwwp_base), wpSrc),
       row("Haushaltsstrom", `${fmt(ct(curr.electricity_price), 1)} ct/kWh`, delta(ct(curr.electricity_price), ct(prev?.electricity_price), 1), stromSrc),
       row("Strompreis-Steigerung", `${fmt(pct(currInc), 1)} %/a`, delta(pct(currInc), pct(prevInc), 1), "Annahme"),
       feed ? row("Einspeisung Teil ≤10 kWp", `${fmt(feed.teil_under_10, 2)} ct/kWh`, "—", feedSrc) : "",

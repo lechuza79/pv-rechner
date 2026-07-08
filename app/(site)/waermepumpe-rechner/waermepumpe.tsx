@@ -7,6 +7,7 @@ import {
 } from "../../../lib/constants";
 import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
+import { useHeatpumpPrices } from "../../../lib/prices";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
@@ -64,6 +65,16 @@ export default function Waermepumpe() {
   // ── Resolved wohnfläche ──────────────────────────────────────
   const wohnflaeche = customFlaeche ?? WOHNFLAECHEN[flaecheIdx].m2;
 
+  // ── Live-Grundpreis (Luft/Wasser) aus den Marktdaten ─────────
+  // Nur die LWWP-Basis kommt live (gescrapt, siehe lib/heatpump-prices.ts) —
+  // der Rest der Config bleibt der geprüfte Snapshot. Für Sole/Wasser ohne Wirkung.
+  const hpPrices = useHeatpumpPrices();
+  const cfg = useMemo(() => ({
+    ...DEFAULT_HEATPUMP_CONFIG,
+    investLwwpBase: hpPrices.investLwwpBase,
+    investLwwpPerKw: hpPrices.investLwwpPerKw,
+  }), [hpPrices]);
+
   // ── Build inputs + calculate ─────────────────────────────────
   const fuel = WP_FUEL_OPTIONS.find(f => f.id === oFuel) ?? WP_FUEL_OPTIONS[0];
   const inputs: HeatPumpInputs = useMemo(() => ({
@@ -115,8 +126,8 @@ export default function Waermepumpe() {
     return list;
   }, [situation, heizsystem, insulationIdx]);
 
-  const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }) })), [wege, inputs]);
-  const istResult = wegeResults.find(w => w.id === "ist")?.r ?? calcHeatPump(inputs);
+  const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }, cfg) })), [wege, inputs, cfg]);
+  const istResult = wegeResults.find(w => w.id === "ist")?.r ?? calcHeatPump(inputs, cfg);
   const istNegativ = istResult.tcoEinsparung < 0;
   const istKnapp = istResult.amortisationsJahre === null || istResult.amortisationsJahre > 15 || istNegativ;
   // Wege dauerhaft zeigen (nicht an die knappe istKnapp-Schwelle koppeln — sonst
@@ -126,8 +137,8 @@ export default function Waermepumpe() {
 
   const activeWeg = (zeigeWege ? wegeResults.find(w => w.id === wegId) : null) ?? wegeResults.find(w => w.id === "ist");
   const activeInputs = useMemo(() => ({ ...inputs, ...(activeWeg?.patch ?? {}) }), [inputs, activeWeg]);
-  const result = useMemo(() => calcHeatPump(activeInputs), [activeInputs]);
-  const scenarios = useMemo(() => calcHeatPumpScenarios(activeInputs), [activeInputs]);
+  const result = useMemo(() => calcHeatPump(activeInputs, cfg), [activeInputs, cfg]);
+  const scenarios = useMemo(() => calcHeatPumpScenarios(activeInputs, cfg), [activeInputs, cfg]);
 
   // Weg wechseln: baubezogene Overrides zurücksetzen, damit der Weg sauber greift
   const selectWeg = (id: string) => {

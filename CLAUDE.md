@@ -238,6 +238,17 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] Methodik-Seite zeigt aktuelle Preise + "Stand: Monat/Jahr"
 - [x] Admin-UI `/admin/prices` (Scrape-Trigger, manuelles Override, Historie)
 - [x] Preise aktualisiert auf Q1/2026 Marktpreise
+- [x] **WP-Grundpreis (Luft/Wasser) mitgescrapt** (Paket C): der monatliche Cron liest
+  zusätzlich die taptaphome-WP-Kostenübersicht (Gerät + Einbau je Typ) und leitet die
+  LWWP-Basis ab (`lib/heatpump-prices.ts`: typischer Gesamtpreis − fixe €/kW-Steigung
+  bei Referenz-Heizlast → Basis ~9.500 € statt der alten 18.000-Pauschale, die kleine
+  Anlagen ~8.500 € zu teuer rechnete). Live-Wert in `market_prices.wp_lwwp_base`
+  (Migration: `/api/prices/setup`), gelesen via `useHeatpumpPrices()` (WP-Rechner) +
+  `/datenstand`, Fallback = Config. Selbstheilung 1:1 wie bei PV/Speicher (Plausi-Grenzen,
+  „letzten Wert halten", Health-String kippt, Report-Zeile, Admin-Carry-forward); ein
+  WP-Scrape-Fehler blockiert **nie** die PV-Preise. NUR Luft/Wasser — Sole/Wasser bleibt
+  config-basiert (Bohrkosten sind fix, passen nicht ins Basis+kW-Schema). Grundpreis
+  damit aus dem jährlichen WP-Wächter herausgelöst (`scripts/waermepumpe-verify.md`).
 
 **WP 9: Energiedaten-Datalake (in Arbeit)**
 - [x] Datenquellen-Recherche: Energy-Charts, Eurostat, SMARD, ENTSO-E, MaStR

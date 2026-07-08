@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
+import { DEFAULT_HEATPUMP_PRICES } from "../../../lib/heatpump-prices";
+
+// The public price payload = PV/battery/electricity (PriceConfig) + the live
+// Wärmepumpen-Grundpreis (Luft/Wasser). usePrices() reads the PriceConfig part,
+// useHeatpumpPrices() the wp fields — both hit this one cached endpoint.
+type PricePayload = PriceConfig & { wpLwwpBase: number; wpLwwpPerKw: number };
+const DEFAULT_PAYLOAD: PricePayload = {
+  ...DEFAULT_PRICES,
+  wpLwwpBase: DEFAULT_HEATPUMP_PRICES.investLwwpBase,
+  wpLwwpPerKw: DEFAULT_HEATPUMP_PRICES.investLwwpPerKw,
+};
 
 // In-memory cache (warm Vercel function keeps this between requests)
-let cached: { data: PriceConfig; ts: number } | null = null;
+let cached: { data: PricePayload; ts: number } | null = null;
 const TTL = 60 * 60 * 1000; // 1 hour
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
@@ -19,7 +30,7 @@ export async function GET() {
   }
 
   if (!supabase) {
-    return NextResponse.json(DEFAULT_PRICES);
+    return NextResponse.json(DEFAULT_PAYLOAD);
   }
 
   try {
@@ -35,10 +46,10 @@ export async function GET() {
       .single();
 
     if (error || !data) {
-      return NextResponse.json(DEFAULT_PRICES);
+      return NextResponse.json(DEFAULT_PAYLOAD);
     }
 
-    const prices: PriceConfig = {
+    const prices: PricePayload = {
       pvPriceSmall: Number(data.pv_price_small),
       pvPriceLarge: Number(data.pv_price_large),
       pvThresholdKwp: Number(data.pv_threshold_kwp),
@@ -48,6 +59,9 @@ export async function GET() {
       electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : DEFAULT_PRICES.electricityIncrease,
       validFrom: data.valid_from,
       source: data.source,
+      // WP columns may be absent on older rows (pre-migration) → fall back to config.
+      wpLwwpBase: data.wp_lwwp_base != null ? Number(data.wp_lwwp_base) : DEFAULT_HEATPUMP_PRICES.investLwwpBase,
+      wpLwwpPerKw: data.wp_lwwp_per_kw != null ? Number(data.wp_lwwp_per_kw) : DEFAULT_HEATPUMP_PRICES.investLwwpPerKw,
     };
 
     cached = { data: prices, ts: Date.now() };
@@ -56,7 +70,7 @@ export async function GET() {
       headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" },
     });
   } catch {
-    return NextResponse.json(DEFAULT_PRICES);
+    return NextResponse.json(DEFAULT_PAYLOAD);
   }
 }
 
@@ -78,7 +92,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { pvPriceSmall, pvPriceLarge, pvThresholdKwp, batteryBase, batteryPerKwh, electricityPrice, electricityIncrease, validFrom, source, notes } = body;
+    const { pvPriceSmall, pvPriceLarge, pvThresholdKwp, batteryBase, batteryPerKwh, electricityPrice, electricityIncrease, wpLwwpBase, wpLwwpPerKw, validFrom, source, notes } = body;
 
     // Type + bounds validation
     const num = (v: unknown, min: number, max: number): number | null => {
@@ -92,6 +106,21 @@ export async function POST(req: NextRequest) {
     const bBase = num(batteryBase, 0, 10000) ?? 0;
     const elecPrice = num(electricityPrice, 0.10, 1.00);
     const elecIncrease = num(electricityIncrease, -0.05, 0.20);
+    // WP base is auto-scraped; a manual insert must not wipe it. Carry forward the
+    // last stored WP values (or config default), overridable via the body.
+    const { data: lastWp } = await supabase
+      .from("market_prices")
+      .select("wp_lwwp_base, wp_lwwp_per_kw")
+      .neq("source", "SCRAPE_ERROR")
+      .gt("pv_price_small", 0)
+      .order("valid_from", { ascending: false })
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+    const wpBase = num(wpLwwpBase, 3000, 30000)
+      ?? (lastWp?.wp_lwwp_base != null ? Number(lastWp.wp_lwwp_base) : DEFAULT_HEATPUMP_PRICES.investLwwpBase);
+    const wpPerKw = num(wpLwwpPerKw, 200, 4000)
+      ?? (lastWp?.wp_lwwp_per_kw != null ? Number(lastWp.wp_lwwp_per_kw) : DEFAULT_HEATPUMP_PRICES.investLwwpPerKw);
 
     if (!pSmall || !pLarge || !bPerKwh) {
       return NextResponse.json({ error: "Invalid or missing price values (pvPriceSmall: 500-3000, pvPriceLarge: 500-3000, batteryPerKwh: 100-2000)" }, { status: 400 });
@@ -113,6 +142,8 @@ export async function POST(req: NextRequest) {
         battery_per_kwh: bPerKwh,
         electricity_price: elecPrice,
         electricity_increase: elecIncrease,
+        wp_lwwp_base: wpBase,
+        wp_lwwp_per_kw: wpPerKw,
         valid_from: validFrom,
         source: typeof source === "string" ? source.slice(0, 100) : "Manual (Admin)",
         notes: typeof notes === "string" ? notes.slice(0, 500) : null,

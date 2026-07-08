@@ -115,9 +115,11 @@ describe("calcJAZ", () => {
 
 // ─── Investment (base + perKw × heat load + radiator swap) ─────────────────
 describe("calcInvestBrutto", () => {
-  it("LWWP for 8 kW load: 18000 + 1200 × 8 = 27600", () => {
+  it("LWWP for 8 kW load = base + perKw × 8 (from config, not hardcoded)", () => {
     const r = calcInvestBrutto("lwwp", 8, false);
-    expect(r).toBe(27600);
+    // Config-derived so the market-tracked base (auto-scraped, see heatpump-prices.ts)
+    // can move without breaking this test.
+    expect(r).toBe(DEFAULT_HEATPUMP_CONFIG.investLwwpBase + DEFAULT_HEATPUMP_CONFIG.investLwwpPerKw * 8);
   });
 
   it("SWWP costs more than LWWP at the same load (drilling/probes)", () => {

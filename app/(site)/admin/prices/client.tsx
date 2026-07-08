@@ -114,7 +114,7 @@ export default function PricesClient({ history, feedInHistory = [] }: { history:
       const res = await fetch("/api/prices/scrape");
       const data = await res.json();
       if (res.ok && data.success) {
-        setScrapeResult(`PV: ${data.prices.pvPriceSmall}/${data.prices.pvPriceLarge} €/kWp, Speicher: ${data.prices.batteryPerKwh} €/kWh`);
+        setScrapeResult(`PV: ${data.prices.pvPriceSmall}/${data.prices.pvPriceLarge} €/kWp, Speicher: ${data.prices.batteryPerKwh} €/kWh, WP-Basis: ${data.prices.wpLwwpBase} €`);
         setScrapeStatus("done");
         setTimeout(() => window.location.reload(), 2000);
       } else {

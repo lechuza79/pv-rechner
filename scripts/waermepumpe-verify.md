@@ -19,8 +19,14 @@ zum Jahreswechsel. Stichtag steht in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
 **Prüfen (preis-/politikabhängig):**
 - `begGrundfoerderung` / `begKlimaBonus` / `begEffizienzBonus` /
   `begEinkommensBonus` / `begMaxCap` / `begMaxRate` — BAFA/KfW BEG
-- `investLwwpBase` / `investLwwpPerKw` / `investSwwpBase` / `investSwwpPerKw` /
-  `heizkoerperTauschKosten` — BWP Preisübersicht (jeweils aktuellstes Jahr)
+- `investLwwpPerKw` / `investSwwpBase` / `investSwwpPerKw` /
+  `heizkoerperTauschKosten` — BWP Preisübersicht (jeweils aktuellstes Jahr).
+  **`investLwwpBase` NICHT mehr manuell prüfen** — die Luft/Wasser-Basis wird
+  monatlich automatisch aus der taptaphome-Kostenübersicht gescrapt
+  (`/api/prices/scrape`, Ableitung in `lib/heatpump-prices.ts`, Live-Wert in
+  `market_prices.wp_lwwp_base`, Fallback = Config). Der Monats-Preis-Report führt
+  sie als eigene Zeile; eine Scrape-Degradation kippt den HEALTH-Status. Config-
+  Wert dient nur als Fallback. Sole/Wasser bleibt manuell (Bohrkosten sind fix).
 - `wpTarif` — Wärmepumpen-Stromtarif (§ 14a EnWG, BDEW)
 - **Gas-/Öl-Preis + CO2-Faktor:** liegen an EINER Stelle — `FUEL_PRICE` in
   `lib/constants.ts` (Single Source of Truth). `heatpump-config`

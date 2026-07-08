@@ -1,17 +1,21 @@
-// ─── Legal note (verified 2026-07-06) ─────────────────────────────────────────
+// ─── Legal note (verified 2026-07-08) ─────────────────────────────────────────
 // This route extracts a small set of aggregated market averages from public
-// pages: ~6 PV price-per-kWp data points and 1 battery all-in price per month
-// (plus 1 electricity price from a separate source). This is lawful under
-// German law: it takes an insubstantial part of the respective site's data
-// (§ 87b UrhG database-right threshold — a handful of published averages, not
-// a systematic re-extraction of the underlying dataset), does not circumvent
-// any technical access control, and both source domains' robots.txt permit
-// crawling this page. Requests identify with an honest, descriptive User-Agent.
+// pages: ~6 PV price-per-kWp data points, 1 battery all-in price, 4 heat-pump
+// cost figures (Luft/Wasser Gerät + Einbau, low/high) per month (plus 1
+// electricity price from a separate source). This is lawful under German law: it
+// takes an insubstantial part of the respective site's data (§ 87b UrhG
+// database-right threshold — a handful of published averages, not a systematic
+// re-extraction of the underlying dataset), does not circumvent any technical
+// access control, and every source domain's robots.txt permits crawling these
+// pages (taptaphome.com robots.txt has no Disallow rules). Requests identify with
+// an honest, descriptive User-Agent.
 
 import { NextResponse } from "next/server";
 import * as cheerio from "cheerio";
 import { supabase } from "../../../../lib/supabase-server";
 import { DEFAULT_PRICES } from "../../../../lib/prices-config";
+import { deriveLwwpBaseFromRanges, DEFAULT_HEATPUMP_PRICES, WP_PRICE_BOUNDS } from "../../../../lib/heatpump-prices";
+import { DEFAULT_HEATPUMP_CONFIG } from "../../../../lib/heatpump-config";
 
 // Vercel Cron: called monthly via vercel.json crons config.
 // Manual trigger: send Authorization: Bearer $CRON_SECRET header.
@@ -30,6 +34,9 @@ const BOUNDS = {
 // solaranlagen-portal.com rebranded to taptaphome.com (same operator, DAA GmbH)
 // and now 301-redirects here — point at the canonical URL directly.
 const SOURCE_URL = "https://www.taptaphome.com/de/ratgeber/photovoltaik/solaranlage-kosten";
+// Heat-pump cost overview (same operator, DAA GmbH) — structured type table with
+// Anschaffung + Installation ranges per WP type. We read only Luft/Wasser.
+const WP_SOURCE_URL = "https://www.taptaphome.com/de/ratgeber/waermepumpe/waermepumpe-kosten";
 const ELECTRICITY_SOURCE_URL = "https://strom-report.de/strompreise/";
 // Second, independent battery-price source for cross-checking.
 const BATTERY_SOURCE_2_URL = "https://www.energie-experten.org/erneuerbare-energien/photovoltaik/stromspeicher/kosten";
@@ -245,13 +252,125 @@ function batteryTiers(value10kWh: number | null, lastPerKwh: number | null) {
   return { batteryBase, batteryPerKwh };
 }
 
+// ─── Wärmepumpen-Grundpreis (Luft/Wasser) ───────────────────────────────────
+// Reads the structured "Was kostet eine Wärmepumpe?" table on the taptaphome WP
+// cost page: the Anschaffungskosten + Installations-/Erschließungskosten ranges
+// for the Luft-Wasser column. From those four numbers we derive the LWWP base
+// (see lib/heatpump-prices.ts). Same graceful-degradation contract as the battery
+// price: a WP failure NEVER blocks the PV update — keep last good value or fall
+// back to config, and alert so the watcher can fix a dead source.
+
+interface WpRanges { geraetLow: number; geraetHigh: number; installLow: number; installHigh: number }
+interface WpResolution {
+  base: number;                // LWWP base € (always a plausible number — scraped, last, or config)
+  perKw: number;               // stable slope from config
+  healthy: boolean;
+  status: string;
+  ranges: WpRanges | null;
+}
+
+// Parse a German "X bis Y €" range, e.g. "ca. 12.000 bis 20.000 €" → [12000, 20000].
+function parseGermanRange(s: string): [number, number] | null {
+  const m = s.match(/([\d.]+(?:,\d+)?)\s*bis\s*([\d.]+(?:,\d+)?)/i);
+  if (!m) return null;
+  const lo = parseGermanNumber(m[1]);
+  const hi = parseGermanNumber(m[2]);
+  if (!Number.isFinite(lo) || !Number.isFinite(hi) || lo <= 0 || hi < lo) return null;
+  return [lo, hi];
+}
+
+function scrapeWpRangesFromHtml(html: string): WpRanges | null {
+  const $ = cheerio.load(html);
+  let ranges: WpRanges | null = null;
+
+  $("table").each((_, table) => {
+    if (ranges) return;
+    const rows = $(table).find("tr");
+    const header = rows.first().find("th, td");
+    // Locate the "Luft-Wasser" column (must not match "Luft-Luft").
+    let col = -1;
+    header.each((i, cell) => {
+      const t = $(cell).text().toLowerCase().replace(/\s+/g, "");
+      if (t.includes("luft-wasser")) { col = i; return false; }
+      return;
+    });
+    if (col < 0) return;
+
+    let geraet: [number, number] | null = null;
+    let install: [number, number] | null = null;
+    rows.slice(1).each((_, row) => {
+      const cells = $(row).find("th, td");
+      if (cells.length <= col) return;
+      const label = $(cells[0]).text().toLowerCase();
+      const cellText = $(cells[col]).text();
+      if (label.includes("anschaffung")) geraet = parseGermanRange(cellText);
+      else if (label.includes("installation") || label.includes("erschließung") || label.includes("erschliessung")) {
+        install = parseGermanRange(cellText);
+      }
+    });
+
+    if (geraet && install) {
+      ranges = { geraetLow: geraet[0], geraetHigh: geraet[1], installLow: install[0], installHigh: install[1] };
+    }
+  });
+
+  return ranges;
+}
+
+async function resolveWpPrice(lastBase: number | null): Promise<WpResolution> {
+  const perKw = DEFAULT_HEATPUMP_CONFIG.investLwwpPerKw;
+  const fallback = lastBase ?? DEFAULT_HEATPUMP_PRICES.investLwwpBase;
+
+  let html: string;
+  try {
+    const res = await fetch(WP_SOURCE_URL, {
+      headers: {
+        "User-Agent": "SolarCheck-PriceBot/1.0 (solar-check.io; automated market price update)",
+        "Accept": "text/html",
+        "Accept-Language": "de-DE,de;q=0.9",
+      },
+      redirect: "follow",
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) {
+      return { base: fallback, perKw, healthy: false, status: `DEGRADED: WP source HTTP ${res.status} → kept ${lastBase != null ? "last" : "config"} (${fallback} €)`, ranges: null };
+    }
+    html = await res.text();
+  } catch {
+    return { base: fallback, perKw, healthy: false, status: `DEGRADED: WP source unreachable → kept ${lastBase != null ? "last" : "config"} (${fallback} €)`, ranges: null };
+  }
+
+  const ranges = scrapeWpRangesFromHtml(html);
+  if (!ranges) {
+    return { base: fallback, perKw, healthy: false, status: `DEGRADED: WP cost table not found (page changed?) → kept ${lastBase != null ? "last" : "config"} (${fallback} €)`, ranges: null };
+  }
+
+  const derived = deriveLwwpBaseFromRanges(ranges.geraetLow, ranges.geraetHigh, ranges.installLow, ranges.installHigh, perKw);
+  if (derived == null) {
+    return { base: fallback, perKw, healthy: false, status: `DEGRADED: derived base out of bounds [${WP_PRICE_BOUNDS.lwwpBaseMin}–${WP_PRICE_BOUNDS.lwwpBaseMax}] → kept ${lastBase != null ? "last" : "config"} (${fallback} €)`, ranges };
+  }
+
+  // Deviation guard, dual-anchor like the battery check: a large move from the
+  // last DB value is accepted if it matches the shipped config default (a blessed
+  // recalibration), and only rejected when it deviates from BOTH anchors.
+  if (lastBase != null) {
+    const devLast = Math.abs(derived - lastBase) / lastBase;
+    const devDefault = Math.abs(derived - DEFAULT_HEATPUMP_PRICES.investLwwpBase) / DEFAULT_HEATPUMP_PRICES.investLwwpBase;
+    if (devLast > WP_PRICE_BOUNDS.maxDeviation && devDefault > WP_PRICE_BOUNDS.maxDeviation) {
+      return { base: lastBase, perKw, healthy: false, status: `DEGRADED: derived ${derived} € deviates ${(devLast * 100).toFixed(0)}% from last and ${(devDefault * 100).toFixed(0)}% from default → kept last (${lastBase} €)`, ranges };
+    }
+  }
+
+  return { base: derived, perKw, healthy: true, status: `ok: LWWP base ${derived} € (Gerät ${ranges.geraetLow}–${ranges.geraetHigh}, Einbau ${ranges.installLow}–${ranges.installHigh}; ${perKw} €/kW fix)`, ranges };
+}
+
 // ─── Plausibility Check ───────────────────────────────────────────────────────
 
-async function getLastPrices(): Promise<{ pvPriceSmall: number; pvPriceLarge: number; batteryPerKwh: number; electricityPrice: number | null; electricityIncrease: number | null } | null> {
+async function getLastPrices(): Promise<{ pvPriceSmall: number; pvPriceLarge: number; batteryPerKwh: number; electricityPrice: number | null; electricityIncrease: number | null; wpLwwpBase: number | null } | null> {
   if (!supabase) return null;
   const { data } = await supabase
     .from("market_prices")
-    .select("pv_price_small, pv_price_large, battery_per_kwh, electricity_price, electricity_increase")
+    .select("pv_price_small, pv_price_large, battery_per_kwh, electricity_price, electricity_increase, wp_lwwp_base")
     .neq("source", "SCRAPE_ERROR")
     .gt("pv_price_small", 0)
     .order("valid_from", { ascending: false })
@@ -265,6 +384,7 @@ async function getLastPrices(): Promise<{ pvPriceSmall: number; pvPriceLarge: nu
     batteryPerKwh: Number(data.battery_per_kwh),
     electricityPrice: data.electricity_price != null ? Number(data.electricity_price) : null,
     electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : null,
+    wpLwwpBase: data.wp_lwwp_base != null ? Number(data.wp_lwwp_base) : null,
   };
 }
 
@@ -491,6 +611,12 @@ export async function GET(req: Request) {
       }
     }
 
+    // 4c. Wärmepumpen-Grundpreis (Luft/Wasser) — non-fatal, keeps last/config on failure.
+    const wp = await resolveWpPrice(lastPrices?.wpLwwpBase ?? null);
+    if (!wp.healthy) {
+      await notifyAdmin("WP base price degraded", `${wp.status}\nRanges: ${JSON.stringify(wp.ranges)}`);
+    }
+
     // 5. Store in database
     const { error } = await supabase.from("market_prices").insert({
       pv_price_small: derived.pvPriceSmall,
@@ -500,11 +626,14 @@ export async function GET(req: Request) {
       battery_per_kwh: derived.batteryPerKwh,
       electricity_price: electricityPrice,
       electricity_increase: lastPrices?.electricityIncrease ?? null,
+      wp_lwwp_base: wp.base,
+      wp_lwwp_per_kw: wp.perKw,
       valid_from: new Date().toISOString().split("T")[0],
       source: `taptaphome.com (vormals solaranlagen-portal.com) + energie-experten.org + strom-report.de (auto)`,
       // Health string is read by the self-healing watcher agent. "HEALTH=ok/DEGRADED/FAILED"
-      // is a stable, machine-greppable prefix — keep it first.
-      notes: `HEALTH=${battery.healthy ? "ok" : "DEGRADED"} · Battery[${battery.status}] → ${derived.batteryBase} € + ${derived.batteryPerKwh} €/kWh · PV: ${scraped.pvBySize.length} entries → ${derived.pvPriceSmall}/${derived.pvPriceLarge} · Strom: ${electricityNote}`,
+      // is a stable, machine-greppable prefix — keep it first. A WP degradation
+      // flips HEALTH too so the monthly report/heartbeat surfaces it.
+      notes: `HEALTH=${battery.healthy && wp.healthy ? "ok" : "DEGRADED"} · Battery[${battery.status}] → ${derived.batteryBase} € + ${derived.batteryPerKwh} €/kWh · PV: ${scraped.pvBySize.length} entries → ${derived.pvPriceSmall}/${derived.pvPriceLarge} · WP[${wp.status}] → ${wp.base} € + ${wp.perKw} €/kW · Strom: ${electricityNote}`,
       updated_by: "cron",
     });
 
@@ -513,13 +642,14 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Database error", details: error.message }, { status: 500 });
     }
 
-    console.log(`[Price Scrape] Updated: PV ${derived.pvPriceSmall}/${derived.pvPriceLarge} €/kWp, Battery ${derived.batteryPerKwh} €/kWh, Strom ${electricityPrice != null ? (electricityPrice * 100).toFixed(1) + " ct/kWh" : "—"}`);
+    console.log(`[Price Scrape] Updated: PV ${derived.pvPriceSmall}/${derived.pvPriceLarge} €/kWp, Battery ${derived.batteryPerKwh} €/kWh, WP-Basis ${wp.base} €, Strom ${electricityPrice != null ? (electricityPrice * 100).toFixed(1) + " ct/kWh" : "—"}`);
 
     return NextResponse.json({
       success: true,
-      health: battery.healthy ? "ok" : "degraded",
-      prices: { ...derived, electricityPrice },
+      health: battery.healthy && wp.healthy ? "ok" : "degraded",
+      prices: { ...derived, electricityPrice, wpLwwpBase: wp.base, wpLwwpPerKw: wp.perKw },
       battery: { status: battery.status, samples: battery.samples },
+      wp: { status: wp.status, ranges: wp.ranges },
       raw: { pvEntries: scraped.pvBySize.length, electricity: electricityNote },
     });
   } catch (err) {

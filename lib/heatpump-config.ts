@@ -81,7 +81,14 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   flowTempFbh: 35,
   flowTempHkNeu: 45,
   flowTempHkAlt: 55,
-  investLwwpBase: 18000,
+  // LWWP-Basis: marktabgeleitet aus der taptaphome-Kostenübersicht (Gerät 12–20k +
+  // Einbau 3–7,5k, typischer Gesamtpreis ~21k bei ~9,7 kW Referenz-Heizlast, minus
+  // €/kW-Steigung → ~9.500 €). Ersetzt die alte 18.000-Pauschale, die kleine Anlagen
+  // deutlich zu teuer rechnete. Dies ist der FALLBACK — der Scrape-Cron
+  // (/api/prices/scrape) hält den Live-Wert in market_prices frisch. Nur die Basis
+  // ist markt-getrackt; investLwwpPerKw bleibt als stabile Steigung fix.
+  // Ableitung + Selbstheilung: lib/heatpump-prices.ts.
+  investLwwpBase: 9500,
   investLwwpPerKw: 1200,
   investSwwpBase: 28000,
   investSwwpPerKw: 1800,
