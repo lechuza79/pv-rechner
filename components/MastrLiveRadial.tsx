@@ -477,7 +477,7 @@ export function MastrLiveRadial({
           {/* Help-Button absolute am rechten Rand der ersten Zeile (nur Default).
               In Compact wandert der Help-Slot in den Container-Footer. */}
           {!isCompact && traegerNav.after && (
-            <div style={{ position: "absolute", right: 0, top: 0 }}>
+            <div data-sc-export-ignore="" style={{ position: "absolute", right: 0, top: 0 }}>
               {traegerNav.after}
             </div>
           )}
@@ -497,6 +497,7 @@ export function MastrLiveRadial({
           >
             <button
               type="button"
+              data-sc-export-ignore=""
               aria-label="Vorheriger Energieträger"
               onClick={traegerNav.onPrev}
               style={chevronBtnStyle(dim.chevron, dim.chevronFont)}
@@ -508,6 +509,7 @@ export function MastrLiveRadial({
             </span>
             <button
               type="button"
+              data-sc-export-ignore=""
               aria-label="Nächster Energieträger"
               onClick={traegerNav.onNext}
               style={chevronBtnStyle(dim.chevron, dim.chevronFont)}
@@ -788,6 +790,7 @@ export function MastrLiveRadial({
           wie "Powered by", damit nichts doppelt unten steht). */}
       {isCompact && traegerNav?.after && !branding && (
         <div
+          data-sc-export-ignore=""
           style={{
             display: "flex",
             justifyContent: "flex-end",
@@ -815,10 +818,12 @@ export function MastrLiveRadial({
         >
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             Auslastung
-            <InfoTooltip ariaLabel="Was bedeutet Auslastung?" size={14}>
-              Anteil der gerade produzierten Leistung an der gesamten installierten
-              Leistung. Bei Solar tagsüber typisch 20–50 %, nachts 0 %.
-            </InfoTooltip>
+            <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
+              <InfoTooltip ariaLabel="Was bedeutet Auslastung?" size={14}>
+                Anteil der gerade produzierten Leistung an der gesamten installierten
+                Leistung. Bei Solar tagsüber typisch 20–50 %, nachts 0 %.
+              </InfoTooltip>
+            </span>
           </span>
           <span style={{ color: v("--color-text-primary"), fontWeight: 600 }}>
             {displayPct.toFixed(0)}%
@@ -865,7 +870,7 @@ export function MastrLiveRadial({
           {actions && !isCompact && <span style={{ display: "flex" }}>{actions}</span>}
           {branding && <PoweredBy />}
           {isCompact && (traegerNav?.after || actions) && (
-            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span data-sc-export-ignore="" style={{ display: "flex", alignItems: "center", gap: 6 }}>
               {traegerNav?.after}
               {actions}
             </span>

@@ -90,6 +90,7 @@ export default function ZubauWidget() {
         ? "Zubau Wind + Solar: Deutschland vs. China"
         : `Zubau Erneuerbare vs. Atomkraft — ${view.label}`,
     shareUrl: SHARE_URL,
+    mode: "node",
   });
 
   const copyLink = () => {
@@ -109,13 +110,16 @@ export default function ZubauWidget() {
         boxSizing: "border-box",
         overflow: "hidden",
       }}
+      ref={chartExport.chartRef}
     >
       {/* TopBar: Titel + Länder-Multitool */}
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 2 }}>
         <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
           Zubau: Erneuerbare vs. Atomkraft
         </div>
-        <CountryMultitool idx={idx} onChange={setIdx} />
+        <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
+          <CountryMultitool idx={idx} onChange={setIdx} />
+        </span>
       </div>
       <div style={{ fontSize: 12, color: "var(--widget-muted)", marginBottom: 12 }}>{sub}</div>
 
@@ -146,7 +150,32 @@ export default function ZubauWidget() {
         ))}
       </div>
 
-      <div ref={chartExport.chartRef}>
+      <div style={{ position: "relative", paddingRight: 18 }}>
+        {/* Source credit — web only, vertical along the right edge of the chart
+            area. Dropped from the export (it uses the horizontal print footer). */}
+        <div
+          data-sc-export-ignore=""
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            right: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            writingMode: "vertical-rl",
+            transform: "rotate(180deg)",
+            fontSize: 9,
+            lineHeight: 1,
+            letterSpacing: 0.2,
+            color: "var(--color-text-faint)",
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
+          }}
+        >
+          <DataSourceNote source={DATA_SOURCES.ember} plain />
+        </div>
         <div key={view.id} style={{ animation: "sc-fade 0.35s ease" }}>
           <LineChart years={YEARS_2010_2024} series={series} unit="GW" xDomain={[2010, 2024]} height={300} />
         </div>
@@ -155,40 +184,56 @@ export default function ZubauWidget() {
         </div>
       </div>
 
-      {/* Footer nach Konvention: Quelle (immer) + Aktionsleiste + Powered-by */}
+      {/* Footer: divider (both) + web footer (page) + print footer (image). */}
       <div style={{ marginTop: 12 }}>
         <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
-        {/* Data-source credit — licence-required, always shown. */}
-        <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: settings.branding || settings.share ? 6 : 0 }}>
-          <DataSourceNote source={DATA_SOURCES.ember} />
-        </div>
-        <div
-          style={{
-            fontSize: 10.5,
-            color: "var(--widget-muted)",
-            display: settings.branding || settings.share ? "flex" : "none",
-            justifyContent: settings.share ? "space-between" : "flex-end",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          {settings.share && (
-            <ChartActionBar
-              onDownload={chartExport.downloadPng}
-              onCopyLink={copyLink}
-              onWhatsApp={chartExport.shareWhatsApp}
-              onTwitter={chartExport.shareTwitter}
-              onShareImage={chartExport.sharePng}
-              onEmbed={
-                settings.embed
-                  ? () => window.open("/energie-widgets#zubau-erneuerbare-atom", "_blank", "noopener")
-                  : undefined
-              }
-              isExporting={chartExport.isExporting}
-              canNativeShare={chartExport.canNativeShare}
-              size={30}
-            />
+
+        {/* Web footer — dropped from the export image. Source is shown vertically
+            in the chart area (above); here only action bar + Powered-by. */}
+        <div data-sc-export-ignore="">
+          {(settings.branding || settings.share) && (
+            <div
+              style={{
+                fontSize: 10.5,
+                color: "var(--widget-muted)",
+                display: "flex",
+                justifyContent: settings.share ? "space-between" : "flex-end",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              {settings.share && (
+                <ChartActionBar
+                  onDownload={chartExport.downloadPng}
+                  onCopyLink={copyLink}
+                  onWhatsApp={chartExport.shareWhatsApp}
+                  onTwitter={chartExport.shareTwitter}
+                  onShareImage={chartExport.sharePng}
+                  onEmbed={
+                    settings.embed
+                      ? () => window.open("/energie-widgets#zubau-erneuerbare-atom", "_blank", "noopener")
+                      : undefined
+                  }
+                  isExporting={chartExport.isExporting}
+                  canNativeShare={chartExport.canNativeShare}
+                  size={30}
+                />
+              )}
+              {settings.branding && (
+                <span style={{ marginLeft: "auto", display: "inline-flex" }}>
+                  <PoweredBy />
+                </span>
+              )}
+            </div>
           )}
+        </div>
+
+        {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
+        <div
+          data-sc-export-only="flex"
+          style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", alignItems: "center", justifyContent: "space-between", gap: 32 }}
+        >
+          <DataSourceNote source={DATA_SOURCES.ember} plain />
           {settings.branding && <PoweredBy />}
         </div>
       </div>

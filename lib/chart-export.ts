@@ -1,7 +1,27 @@
 // SVG → Canvas → PNG export pipeline with full context + branding.
 // Builds a self-contained image: title, stats, chart, legend, "Powered by" footer.
+//
+// Two export paths live here:
+//  • buildExportSvg/exportChart — the legacy re-composition path. Grabs the
+//    inner chart <svg> and rebuilds title/stats/legend/footer from an
+//    ExportContext. Used by the on-site dashboard/rechner/simulation, which
+//    supply their surrounding numbers explicitly (they don't sit next to the
+//    chart in the DOM).
+//  • captureNode/exportNode — the 1:1 capture path (modern-screenshot). Snap-
+//    shots the actual rendered card node, so the PNG matches the website
+//    pixel-for-pixel (fonts, units, legends, donut center — all included).
+//    Used by the self-contained embed widgets. Nodes marked with the
+//    data-sc-export-ignore attribute (share/CTA buttons, switchers) are
+//    dropped from the snapshot.
 
+import { domToBlob } from 'modern-screenshot';
 import { tokens, TokenName } from './theme';
+
+/** Marker attribute: elements carrying it are excluded from a node snapshot. */
+export const EXPORT_IGNORE_ATTR = 'data-sc-export-ignore';
+/** Marker attribute: elements hidden on the page but revealed in the snapshot;
+ * the attribute value is the `display` to apply (e.g. "flex"). */
+export const EXPORT_ONLY_ATTR = 'data-sc-export-only';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -211,7 +231,7 @@ export function buildExportSvg(
 
   // Left-aligned: data-source credit (licence-required on shared images).
   if (context.source) {
-    p.push(`<text x="${PAD + 10}" y="${footerCenterY}" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}">Datenquelle: ${esc(context.source)}</text>`);
+    p.push(`<text x="${PAD + 10}" y="${footerCenterY}" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}">Quelle: ${esc(context.source)}</text>`);
   }
 
   p.push(`</svg>`);
@@ -308,6 +328,86 @@ export async function exportChart(
     if (!shared) downloadBlob(blob, options.filename || 'solar-check-chart.png');
   }
 
+  return blob;
+}
+
+// ─── 1:1 Node Capture (modern-screenshot) ────────────────────────────────────
+
+/**
+ * Rasterize a DOM node exactly as it renders on screen, with two swaps:
+ *  • elements marked data-sc-export-ignore (share buttons, switchers, and the
+ *    on-screen footer) are dropped, and
+ *  • elements marked data-sc-export-only (hidden on the page) are revealed.
+ * This lets a widget show one footer on the web and a print-tuned one in the
+ * image (source inline next to "Powered by", no underline) from the same card.
+ */
+export async function captureNodeToBlob(node: HTMLElement, scale = 2): Promise<Blob> {
+  // Snapshot a detached CLONE of the card, not the live node. The live node is
+  // owned by React, which re-renders the moment the caller flips its isExporting
+  // flag on click — that reconciliation undoes any edit we make to the live tree
+  // (display:none, node removal, modern-screenshot's own `filter` all lose this
+  // race). A clone is inert: we mutate it once and React never touches it.
+  // Rendered off-screen at the live width so layout matches 1:1.
+  const rect = node.getBoundingClientRect();
+  // Off-screen positioning goes on a WRAPPER, never on the captured node itself:
+  // modern-screenshot renders the target node's own transform/offset into the
+  // image, so a shifted clone would fall outside the frame (blank PNG). The
+  // clone stays in normal flow at 0,0 inside the wrapper.
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText =
+    'position:fixed;top:0;left:-100000px;pointer-events:none;opacity:1;';
+  const clone = node.cloneNode(true) as HTMLElement;
+  clone.querySelectorAll(`[${EXPORT_IGNORE_ATTR}]`).forEach((el) => el.remove());
+  // Reveal print-only elements; the attribute value is the display to use.
+  clone
+    .querySelectorAll<HTMLElement>(`[${EXPORT_ONLY_ATTR}]`)
+    .forEach((el) => {
+      el.style.display = el.getAttribute(EXPORT_ONLY_ATTR) || 'block';
+    });
+  // Links aren't clickable in a PNG — drop underlines so credits read as plain
+  // text (matches the print footers that already use the plain DataSourceNote).
+  clone
+    .querySelectorAll<HTMLElement>('a')
+    .forEach((a) => a.style.setProperty('text-decoration', 'none'));
+  clone.style.width = `${rect.width}px`;
+  clone.style.margin = '0';
+  wrapper.appendChild(clone);
+  document.body.appendChild(wrapper);
+
+  try {
+    return await domToBlob(clone, {
+      scale,
+      // Transparent canvas → the card's rounded corners stay rounded.
+      backgroundColor: undefined,
+    });
+  } finally {
+    wrapper.remove();
+  }
+}
+
+/**
+ * Full node-capture pipeline: snapshot → download or native share (with
+ * download fallback). Mirrors exportChart's signature so useChartExport can
+ * pick a path without callers changing shape.
+ */
+export async function exportNode(
+  node: HTMLElement,
+  options: {
+    filename?: string;
+    mode: 'download' | 'share';
+    shareTitle?: string;
+    shareText?: string;
+  },
+): Promise<Blob | null> {
+  const blob = await captureNodeToBlob(node);
+  const filename = options.filename || 'solar-check-chart.png';
+
+  if (options.mode === 'download') {
+    downloadBlob(blob, filename);
+  } else {
+    const shared = await shareImage(blob, options.shareTitle || '', options.shareText || '');
+    if (!shared) downloadBlob(blob, filename);
+  }
   return blob;
 }
 

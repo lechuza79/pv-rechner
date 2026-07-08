@@ -104,6 +104,7 @@ export default function StrommixWidget() {
     filename: "solar-check-strommix.png",
     shareText: SHARE_TEXT,
     shareUrl: SHARE_URL,
+    mode: "node",
   });
 
   // Theme + functional settings (URL params + same-origin postMessage) via the
@@ -128,9 +129,35 @@ export default function StrommixWidget() {
         boxSizing: "border-box",
         overflow: "hidden",
       }}
+      ref={chartExport.chartRef}
     >
       <TopBar tab={tab} onTab={setTab} switchable={settings.switchable} />
-      <div ref={chartExport.chartRef}>
+      <div style={{ position: "relative", paddingRight: 18 }}>
+        {/* Source credit — web only, vertical along the right edge of the chart
+            area. Dropped from the export (it uses the horizontal print footer). */}
+        <div
+          data-sc-export-ignore=""
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            right: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            writingMode: "vertical-rl",
+            transform: "rotate(180deg)",
+            fontSize: 9,
+            lineHeight: 1,
+            letterSpacing: 0.2,
+            color: "var(--color-text-faint)",
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
+          }}
+        >
+          <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
+        </div>
         <ChartArea tab={tab} />
       </div>
       <Footer
@@ -167,7 +194,7 @@ function TopBar({
         Strommix Deutschland
       </div>
       {switchable && (
-        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+        <div data-sc-export-ignore="" style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <button
             type="button"
             onClick={() => onTab({ id: "24h" })}
@@ -613,37 +640,53 @@ function Footer({
           marginBottom: 8,
         }}
       />
-      {/* Data-source credit — licence-required, always shown (not gated by flags). */}
-      <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: share || branding ? 6 : 0 }}>
-        <DataSourceNote source={DATA_SOURCES.energyCharts} />
-      </div>
-      <div
-        style={{
-          fontSize: 10.5,
-          color: "var(--widget-muted)",
-          display: (share || branding) ? "flex" : "none",
-          justifyContent: share ? (branding ? "space-between" : "flex-start") : "flex-end",
-          alignItems: "center",
-          gap: 8,
-        }}
-      >
-        {share && (
-          <ChartActionBar
-            onDownload={chartExport.downloadPng}
-            onCopyLink={copyLink}
-            onWhatsApp={chartExport.shareWhatsApp}
-            onTwitter={chartExport.shareTwitter}
-            onShareImage={chartExport.sharePng}
-            onEmbed={
-              embed
-                ? () => window.open("/energie-widgets#strommix", "_blank", "noopener")
-                : undefined
-            }
-            isExporting={chartExport.isExporting}
-            canNativeShare={chartExport.canNativeShare}
-            size={30}
-          />
+
+      {/* Web footer — dropped from the export image. Source is shown vertically
+          in the chart area (above); here only action bar + Powered-by. */}
+      <div data-sc-export-ignore="">
+        {(share || branding) && (
+          <div
+            style={{
+              fontSize: 10.5,
+              color: "var(--widget-muted)",
+              display: "flex",
+              justifyContent: share ? (branding ? "space-between" : "flex-start") : "flex-end",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            {share && (
+              <ChartActionBar
+                onDownload={chartExport.downloadPng}
+                onCopyLink={copyLink}
+                onWhatsApp={chartExport.shareWhatsApp}
+                onTwitter={chartExport.shareTwitter}
+                onShareImage={chartExport.sharePng}
+                onEmbed={
+                  embed
+                    ? () => window.open("/energie-widgets#strommix", "_blank", "noopener")
+                    : undefined
+                }
+                isExporting={chartExport.isExporting}
+                canNativeShare={chartExport.canNativeShare}
+                size={30}
+              />
+            )}
+            {branding && (
+              <span style={{ display: "inline-flex", marginLeft: "auto" }}>
+                <PoweredBy />
+              </span>
+            )}
+          </div>
         )}
+      </div>
+
+      {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
+      <div
+        data-sc-export-only="flex"
+        style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", alignItems: "center", justifyContent: "space-between", gap: 32 }}
+      >
+        <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
         {branding && <PoweredBy />}
       </div>
     </div>
