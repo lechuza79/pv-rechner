@@ -31,6 +31,10 @@ export interface RecommendInput {
   budgetLimit: number | null;
   ertragKwp?: number;
   customRoofM2?: number;   // Override für nutzbare Dachfläche in m² (sonst aus haustyp × dachart)
+  // WP-Gebäudedaten für den exakten Heizstrom (sonst Standard-Gebäude)
+  wpWohnflaeche?: number;
+  wpInsulation?: number;   // Index in INSULATION_BESTAND
+  wpHeizsystem?: "fbh" | "hk_neu" | "hk_alt";
 }
 
 export interface RecommendReasoning {
@@ -103,11 +107,16 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
 
   // 1. Verbrauchsgrößen
   const baseConsumption = PERSONEN[input.personen].verbrauch;
-  // WP-Strom aus der exakten Methode (Heizwärmebedarf ÷ Arbeitszahl) fürs Standard-
-  // Gebäude + tatsächliche Personenzahl — statt der alten Pauschale. Der Empfehlungs-
-  // Flow fragt keine Gebäudedaten ab, deshalb DEFAULT_WP_BUILDING (dieselbe Quelle wie
-  // die Ergebnisseite, auf der der Flow landet — kein Drift).
-  const wpKwh = calcWpAnnualElectricity({ ...DEFAULT_WP_BUILDING, personen: PERSONEN[input.personen].count });
+  // WP-Strom aus der exakten Methode (Heizwärmebedarf ÷ Arbeitszahl): echte
+  // Gebäudedaten wenn der Flow sie liefert, sonst das Standard-Gebäude. Immer mit
+  // der tatsächlichen Personenzahl (Warmwasser).
+  const wpKwh = calcWpAnnualElectricity({
+    ...DEFAULT_WP_BUILDING,
+    wohnflaeche: input.wpWohnflaeche ?? DEFAULT_WP_BUILDING.wohnflaeche,
+    insulationIdx: input.wpInsulation ?? DEFAULT_WP_BUILDING.insulationIdx,
+    heizsystem: input.wpHeizsystem ?? DEFAULT_WP_BUILDING.heizsystem,
+    personen: PERSONEN[input.personen].count,
+  });
   const wpConsumption = input.wp !== "nein" ? wpKwh : 0;
   const eaConsumption = input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0;
   const klima = input.klima ?? "nein";

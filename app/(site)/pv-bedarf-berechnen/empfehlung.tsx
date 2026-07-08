@@ -2,8 +2,10 @@
 import { useState, useCallback, useEffect } from "react";
 import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER } from "../../../lib/constants";
+import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER, INSULATION_BESTAND } from "../../../lib/constants";
 import { recommend } from "../../../lib/recommend";
+import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
+import WpBuildingInputs, { type Heizsystem } from "../../../components/WpBuildingInputs";
 import { trackEvent } from "../../../lib/analytics";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
 import OptionCard from "../../../components/OptionCard";
@@ -76,6 +78,11 @@ export default function Empfehlung() {
   const ea         = parseStrParam(searchParams, "ea", "nein", ["nein", "geplant", "ja"]);
   const eaKm       = parseRangedInt(searchParams, "km", 15000, 1000, 50000);
   const klima      = parseStrParam(searchParams, "kl", "nein", ["nein", "geplant", "ja"]);
+  // WP-Gebäudedaten (nur relevant bei aktiver WP) — dieselben Parameter wie der
+  // PV-Rechner (wf/wi/wh), damit die Ergebnisseite sie direkt übernimmt.
+  const wpWohnflaeche = parseRangedInt(searchParams, "wf", DEFAULT_WP_BUILDING.wohnflaeche, 20, 1000);
+  const wpInsulation  = parseRangedInt(searchParams, "wi", DEFAULT_WP_BUILDING.insulationIdx, 0, INSULATION_BESTAND.length - 1);
+  const wpHeizsystem  = parseStrParam(searchParams, "wh", DEFAULT_WP_BUILDING.heizsystem, ["fbh", "hk_neu", "hk_alt"]) as Heizsystem;
   const plz        = parsePlzParam(searchParams);
   const ertragKwp  = parseOptionalIntParam(searchParams, "ertrag", 700, 1400);
   const isRecommendation = searchParams.get("view") === "ergebnis";
@@ -152,6 +159,10 @@ export default function Empfehlung() {
   const setEa          = (v: string) => updateUrl({ ea: v === "nein" ? null : v, km: v === "nein" ? null : eaKm });
   const setKlima       = (v: string) => updateUrl({ kl: v === "nein" ? null : v });
   const setEaKm        = (v: number) => updateUrl({ km: v });
+  // WP-Gebäude: Defaults werden aus der URL ausgelassen (kurze URLs).
+  const setWpWohnflaeche = (val: number) => updateUrl({ wf: val === DEFAULT_WP_BUILDING.wohnflaeche ? null : val });
+  const setWpInsulation  = (val: number) => updateUrl({ wi: val === DEFAULT_WP_BUILDING.insulationIdx ? null : val });
+  const setWpHeizsystem  = (val: Heizsystem) => updateUrl({ wh: val === DEFAULT_WP_BUILDING.heizsystem ? null : val });
   const setPlz         = (v: string) => updateUrl({ plz: v || null, ertrag: v ? ertragKwp : null });
 
   // Step-Navigation: Wizard ↔ Ergebnis
@@ -202,12 +213,19 @@ export default function Empfehlung() {
   const effectiveRoofM2 = customRoofM2 ?? computedRoofM2;
   const previewMaxKwp = Math.round(effectiveRoofM2 * 0.2 * 2) / 2;
 
+  // WP-Jahresstrom aus den Gebäudedaten (für Live-Hinweis im Step + Empfehlung)
+  const wpKwh = calcWpAnnualElectricity({
+    situation: "bestand", wohnflaeche: wpWohnflaeche, insulationIdx: wpInsulation,
+    personen: PERSONEN[personen].count, heizsystem: wpHeizsystem, wpType: "lwwp",
+  });
+
   // Empfehlung berechnen (mit PLZ-spezifischem Ertrag und ggf. eigener Dachfläche)
   const rec = isRecommendation ? recommend({
     personen, nutzung, wp, ea, eaKm, klima,
     haustyp, dachart, budgetLimit: null,
     ertragKwp: ertragKwp ?? undefined,
     customRoofM2: customRoofM2 ?? undefined,
+    wpWohnflaeche, wpInsulation, wpHeizsystem,
   }, prices, feedIn) : null;
 
   // Förderung für die empfohlene Anlage (gleiche Mathe wie Stadt-Seite + Rechner).
@@ -229,6 +247,7 @@ export default function Empfehlung() {
     p.set("p", String(personen));
     p.set("n", String(nutzung));
     p.set("wp", wp);
+    if (wp !== "nein") { p.set("wf", String(wpWohnflaeche)); p.set("wi", String(wpInsulation)); p.set("wh", wpHeizsystem); }
     p.set("ea", ea);
     if (ea !== "nein") p.set("km", String(eaKm));
     if (klima !== "nein") p.set("kl", klima);
@@ -365,9 +384,16 @@ export default function Empfehlung() {
             {step === 2 && (
               <div>
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={setWp} />
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
-                  Eine Wärmepumpe erhöht deinen Stromverbrauch um ~3.500 kWh/Jahr — eine größere PV-Anlage lohnt sich dann besonders.
-                </div>
+                {wp !== "nein" ? (
+                  <WpBuildingInputs
+                    wohnflaeche={wpWohnflaeche} insulationIdx={wpInsulation} heizsystem={wpHeizsystem} wpKwh={wpKwh}
+                    onWohnflaeche={setWpWohnflaeche} onInsulation={setWpInsulation} onHeizsystem={setWpHeizsystem}
+                  />
+                ) : (
+                  <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
+                    Eine Wärmepumpe erhöht deinen Stromverbrauch deutlich — eine größere PV-Anlage lohnt sich dann besonders.
+                  </div>
+                )}
                 <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={setEa} />
                 {ea !== "nein" && (
                   <div style={{ marginBottom: 18, marginTop: -10 }}>

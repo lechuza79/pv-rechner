@@ -3,7 +3,7 @@ import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { paramsToRow } from "../../../lib/types";
-import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM } from "../../../lib/constants";
+import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN, INSULATION_BESTAND } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
@@ -27,11 +27,7 @@ import ResultStats from "./_components/ResultStats";
 import ResultActions from "./_components/ResultActions";
 import ResultFunding from "./_components/ResultFunding";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
-
-// Kompakte Presets/Kurzlabels für die WP-Gebäudeabfrage im Großverbraucher-Step.
-const WP_M2_PRESETS = [100, 140, 180];
-const INSULATION_SHORT = ["Unsaniert", "Teilsaniert", "Saniert"];
-const HEIZSYSTEM_SHORT: Record<string, string> = { fbh: "Fußboden", hk_neu: "Heizkörper", hk_alt: "Alte HK" };
+import WpBuildingInputs from "../../../components/WpBuildingInputs";
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
@@ -628,48 +624,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               <div>
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
                 {wp !== "nein" && (
-                  <div style={{ marginBottom: 18, marginTop: -10 }}>
-                    <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
-                      Den Heizstrom der Wärmepumpe rechnen wir aus deinem Gebäude — genau wie im Wärmepumpen-Rechner. Dafür brauchen wir drei Angaben.
-                    </div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Wohnfläche ca.</div>
-                    <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 14 }}>
-                      {WP_M2_PRESETS.map(m2 => (
-                        <button key={m2} onClick={() => { setWpWohnflaeche(m2); setOEv(null); }} style={{
-                          padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                          background: wpWohnflaeche === m2 ? v('--color-accent-dim') : v('--color-bg-muted'),
-                          border: wpWohnflaeche === m2 ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                          color: wpWohnflaeche === m2 ? v('--color-accent') : v('--color-text-muted'),
-                        }}>{m2} m²</button>
-                      ))}
-                      <PresetNumberInput value={wpWohnflaeche} presets={WP_M2_PRESETS} min={20} max={1000} unit="m²" onCommit={n => { setWpWohnflaeche(n); setOEv(null); }} />
-                    </div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Dämmzustand</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginBottom: 14 }}>
-                      {INSULATION_BESTAND.map((_, i) => (
-                        <button key={i} onClick={() => { setWpInsulation(i); setOEv(null); }} style={{
-                          padding: "8px 4px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer", textAlign: "center",
-                          background: wpInsulation === i ? v('--color-accent-dim') : v('--color-bg-muted'),
-                          border: wpInsulation === i ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                          color: wpInsulation === i ? v('--color-accent') : v('--color-text-muted'),
-                        }}>{INSULATION_SHORT[i]}</button>
-                      ))}
-                    </div>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Heizsystem</div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
-                      {HEIZSYSTEM.map(h => (
-                        <button key={h.id} onClick={() => { setWpHeizsystem(h.id as "fbh" | "hk_neu" | "hk_alt"); setOEv(null); }} style={{
-                          padding: "8px 4px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer", textAlign: "center",
-                          background: wpHeizsystem === h.id ? v('--color-accent-dim') : v('--color-bg-muted'),
-                          border: wpHeizsystem === h.id ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                          color: wpHeizsystem === h.id ? v('--color-accent') : v('--color-text-muted'),
-                        }}>{HEIZSYSTEM_SHORT[h.id]}</button>
-                      ))}
-                    </div>
-                    <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
-                      Daraus ergeben sich rund {(wpKwh ?? 0).toLocaleString("de-DE")} kWh Heizstrom pro Jahr.
-                    </div>
-                  </div>
+                  <WpBuildingInputs
+                    wohnflaeche={wpWohnflaeche} insulationIdx={wpInsulation} heizsystem={wpHeizsystem} wpKwh={wpKwh ?? 0}
+                    onWohnflaeche={n => { setWpWohnflaeche(n); setOEv(null); }}
+                    onInsulation={i => { setWpInsulation(i); setOEv(null); }}
+                    onHeizsystem={h => { setWpHeizsystem(h); setOEv(null); }}
+                  />
                 )}
                 <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
                 {ea !== "nein" && (
