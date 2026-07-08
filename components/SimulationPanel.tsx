@@ -19,7 +19,8 @@ import {
   SIM_CONFIGS,
   HourlyPoint,
 } from "../lib/simulation";
-import { WP_ANNUAL_KWH, EA_DEFAULT_KM, calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2 } from "../lib/consumption";
+import { EA_DEFAULT_KM, calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2 } from "../lib/consumption";
+import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../lib/heatpump";
 
 const SITE_URL = "https://solar-check.io";
 
@@ -61,6 +62,13 @@ export default function SimulationPanel({
   const [eaActive, setEaActive] = useState(false);
   const [klimaActive, setKlimaActive] = useState(false);
 
+  // WP-Jahresstrom aus der exakten Methode (Standard-Gebäude + Personenzahl) —
+  // dieselbe Physik wie PV-/WP-Rechner, statt der alten Pauschale.
+  const wpAnnualKwh = useMemo(
+    () => calcWpAnnualElectricity({ ...DEFAULT_WP_BUILDING, personen: PERSONEN[personenIdx].count }),
+    [personenIdx],
+  );
+
   const household = useMemo<HouseholdProfile>(() => ({
     baseKwh: PERSONEN[personenIdx].verbrauch,
     tagQuote: NUTZUNG[nutzungIdx].tagQuote,
@@ -68,7 +76,8 @@ export default function SimulationPanel({
     eaActive,
     klimaActive,
     klimaM2: KLIMA_DEFAULT_M2,
-  }), [personenIdx, nutzungIdx, wpActive, eaActive, klimaActive]);
+    wpAnnualKwh,
+  }), [personenIdx, nutzungIdx, wpActive, eaActive, klimaActive, wpAnnualKwh]);
 
   // PLZ lookup + weather fetch
   const fetchWeather = useCallback(async (lat: number, lon: number) => {
@@ -306,7 +315,7 @@ export default function SimulationPanel({
             </button>
           </div>
           <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>
-            Jahresverbrauch: ~{Math.round(household.baseKwh + (wpActive ? WP_ANNUAL_KWH : 0) + (eaActive ? calcEaAnnual(EA_DEFAULT_KM) : 0) + (klimaActive ? calcKlimaAnnual(KLIMA_DEFAULT_M2) : 0)).toLocaleString("de-DE")} kWh
+            Jahresverbrauch: ~{Math.round(household.baseKwh + (wpActive ? wpAnnualKwh : 0) + (eaActive ? calcEaAnnual(EA_DEFAULT_KM) : 0) + (klimaActive ? calcKlimaAnnual(KLIMA_DEFAULT_M2) : 0)).toLocaleString("de-DE")} kWh
           </div>
         </div>
       )}

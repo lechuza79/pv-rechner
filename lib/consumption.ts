@@ -3,10 +3,15 @@
 // Used by: calc.ts (EV model), recommend.ts, simulation.ts (live hourly), UI display
 
 import { estimateAcKwhFromLivingArea } from "./aircon";
+import { DEFAULT_WP_ANNUAL_KWH } from "./heatpump-core";
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
-export const WP_ANNUAL_KWH = 3500;     // Heat pump: ~3500 kWh electric/year (COP 3.5)
+// WP-Jahresstrom-Default: das Standard-Gebäude durch die exakte Methode
+// (Heizwärmebedarf ÷ Arbeitszahl) — ~7.300 kWh, nicht mehr die alte 3.500-
+// Pauschale. Greift überall, wo keine echten Gebäudedaten vorliegen. Der PV-
+// und WP-Rechner überschreiben ihn mit den tatsächlichen Eingaben.
+export const WP_ANNUAL_KWH = DEFAULT_WP_ANNUAL_KWH;
 export const EA_KWH_PER_KM = 0.18;     // E-car: 18 kWh/100km average
 export const EA_DEFAULT_KM = 15000;     // Default annual mileage
 
@@ -83,6 +88,7 @@ export interface HouseholdProfile {
   eaActive: boolean;        // E-car active
   klimaActive?: boolean;    // Air conditioning (cooling only) active
   klimaM2?: number;         // Living area for AC sizing (m²)
+  wpAnnualKwh?: number;     // WP electricity (kWh/a) from building data — falls back to WP_ANNUAL_KWH
 }
 
 // ─── Hourly load profiles ───────────────────────────────────────────────────
@@ -191,9 +197,11 @@ export function calcHourlyConsumption(household: HouseholdProfile | null, hour: 
     totalWatts += baseDailyKwh * (1 - household.tagQuote) * hourFraction * 1000;
   }
 
-  // 2. Heat pump: WP_ANNUAL_KWH with own hourly + strong seasonal profile
+  // 2. Heat pump: building-based annual (or WP_ANNUAL_KWH default) with own
+  //    hourly + strong seasonal profile
   if (household.wpActive) {
-    const wpDailyKwh = (WP_ANNUAL_KWH / 365) * (WP_MONTHLY[month] || 1.0);
+    const wpAnnual = household.wpAnnualKwh ?? WP_ANNUAL_KWH;
+    const wpDailyKwh = (wpAnnual / 365) * (WP_MONTHLY[month] || 1.0);
     totalWatts += wpDailyKwh * (WP_SHAPE[hour] || 1 / 24) * 1000;
   }
 

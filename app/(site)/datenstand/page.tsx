@@ -323,7 +323,7 @@ export default async function DatenstandPage() {
             { label: "Grundverbrauch 1 / 2 / 3–4 / 5+ Personen", value: PERSONEN.map((p) => nf(p.verbrauch)).join(" / ") + " kWh/a" },
             { label: "Tag-Anteil je Nutzungsprofil", value: NUTZUNG.map((n) => `${nf(n.tagQuote * 100)}`).join(" / ") + " %" },
             { label: "Saisonaler Verbrauchsfaktor", value: `${nf(Math.min(...CONSUMPTION_MONTHLY))}–${nf(Math.max(...CONSUMPTION_MONTHLY))} (BDEW H0)` },
-            { label: "Mehrverbrauch Wärmepumpe", value: `+${nf(WP_ANNUAL_KWH)} kWh/a` },
+            { label: "Mehrverbrauch Wärmepumpe (Standard-Gebäude)", value: `~${nf(WP_ANNUAL_KWH)} kWh/a · im Rechner aus Wohnfläche, Dämmung & Heizsystem berechnet` },
             { label: "Mehrverbrauch E-Auto", value: `${EA_KWH_PER_KM.toLocaleString("de-DE")} kWh/km (Default ${nf(EA_DEFAULT_KM)} km/a)` },
             { label: "Mehrverbrauch Klimaanlage (Kühlung)", value: `${nf(KLIMA_KWH_PER_M2)} kWh/m²·a (Default ${nf(KLIMA_DEFAULT_M2)} m²)` },
           ]}

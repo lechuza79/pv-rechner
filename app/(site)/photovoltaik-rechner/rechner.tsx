@@ -5,7 +5,7 @@ import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { paramsToRow } from "../../../lib/types";
 import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
-import { calcWpAnnualElectricity } from "../../../lib/heatpump";
+import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
@@ -60,9 +60,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Wärmepumpen-Gebäudedaten: nötig, damit der WP-Jahresstrom genauso aus dem
   // Heizwärmebedarf ÷ Arbeitszahl kommt wie im Wärmepumpen-Rechner (statt einer
   // Pauschale). Nur relevant wenn wp !== "nein". Bestand angenommen (LWWP).
-  const [wpWohnflaeche, setWpWohnflaeche] = useState(hasShare ? paramInt(initialParams, "wf", 140, 20, 1000) : 140);
-  const [wpInsulation, setWpInsulation] = useState(hasShare ? paramInt(initialParams, "wi", 1, 0, INSULATION_BESTAND.length - 1) : 1);
-  const [wpHeizsystem, setWpHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">(hasShare ? (paramStr(initialParams, "wh", "hk_neu", ["fbh", "hk_neu", "hk_alt"]) as "fbh" | "hk_neu" | "hk_alt") : "hk_neu");
+  const [wpWohnflaeche, setWpWohnflaeche] = useState(hasShare ? paramInt(initialParams, "wf", DEFAULT_WP_BUILDING.wohnflaeche, 20, 1000) : DEFAULT_WP_BUILDING.wohnflaeche);
+  const [wpInsulation, setWpInsulation] = useState(hasShare ? paramInt(initialParams, "wi", DEFAULT_WP_BUILDING.insulationIdx, 0, INSULATION_BESTAND.length - 1) : DEFAULT_WP_BUILDING.insulationIdx);
+  const [wpHeizsystem, setWpHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">(hasShare ? (paramStr(initialParams, "wh", DEFAULT_WP_BUILDING.heizsystem, ["fbh", "hk_neu", "hk_alt"]) as "fbh" | "hk_neu" | "hk_alt") : DEFAULT_WP_BUILDING.heizsystem);
 
   // Editable overrides (null = use auto-calculated)
   const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 500 && n <= 200000 ? n : null; })() : null);

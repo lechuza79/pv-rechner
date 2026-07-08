@@ -1,5 +1,5 @@
 import { YEAR, YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN, NUTZUNG } from "./constants";
-import { calcExtraConsumption, KLIMA_DEFAULT_M2 } from "./consumption";
+import { calcExtraConsumption, KLIMA_DEFAULT_M2, WP_ANNUAL_KWH } from "./consumption";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { co2PriceForCalendarYear } from "./co2-config";
 
@@ -191,7 +191,7 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
   if (speicherKwh > 0 && wp !== "nein") {
     // WP-Anteil am Gesamtverbrauch: realer Gebäude-Wert wenn vorhanden, sonst
     // die Pauschale. min(., extra) kappt gegen den Fall dass nur WP zum Extra beiträgt.
-    const wpAnnual = Math.min(wpKwh ?? WP_ANNUAL_KWH_CONST, extra);
+    const wpAnnual = Math.min(wpKwh ?? WP_ANNUAL_KWH, extra);
     const wpAnteil = wpAnnual / gesamt;
     evBoost *= (1 - wpAnteil * 0.30);
   }
@@ -200,7 +200,6 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
   const ev = Math.round(Math.min(evBase + evBoost, evMax, 0.90) * 100);
   return Math.max(10, Math.min(ev, 90));
 }
-const WP_ANNUAL_KWH_CONST = 3500;
 
 // ─── Amortisation (25 Jahre, monatlich wenn PVGIS-Profil vorhanden) ─────────
 // Per-month self-consumption ratio cannot physically exceed ~95%.

@@ -17,6 +17,22 @@
 
 import { DEFAULT_HEATPUMP_CONFIG, type HeatPumpConfig } from "./heatpump-config";
 import { estimateCost, co2SurchargeOverToday } from "./calc";
+import { calcHeatDemand, calcHeatLoad, flowTempForSystem, calcJAZ } from "./heatpump-core";
+
+// Reine Bedarfs-/JAZ-Funktionen + WP-Jahresstrom + Standard-Gebäude leben in
+// heatpump-core.ts (calc-frei, zyklusfrei). Hier re-exportiert, damit bestehende
+// Importe `from "./heatpump"` unverändert funktionieren.
+export {
+  calcHeatDemand,
+  calcHeatLoad,
+  flowTempForSystem,
+  calcJAZ,
+  calcWpAnnualElectricity,
+  DEFAULT_WP_BUILDING,
+  defaultWpAnnualKwh,
+  DEFAULT_WP_ANNUAL_KWH,
+  type WpElectricityInputs,
+} from "./heatpump-core";
 
 export interface HeatPumpInputs {
   situation: "bestand" | "neubau";
@@ -99,54 +115,8 @@ export interface HeatPumpScenarioResult extends HeatPumpResult {
 }
 
 // ─── Core functions ────────────────────────────────────────────────────────
-
-export function calcHeatDemand(
-  situation: "bestand" | "neubau",
-  wohnflaeche: number,
-  insulationIdx: number,
-  personen: number,
-  cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG,
-  haustypFaktor = 1,
-): { qHeiz: number; qWw: number; qGes: number } {
-  const specArr = situation === "bestand" ? cfg.specDemandBestand : cfg.specDemandNeubau;
-  const spec = specArr[Math.max(0, Math.min(insulationIdx, specArr.length - 1))];
-  // Haustyp-Faktor auch auf den Jahresbedarf: geteilte Wände senken den Verlust
-  // übers Jahr, nicht nur die Spitzenlast. Warmwasser bleibt personenabhängig.
-  const qHeiz = Math.round(wohnflaeche * spec * haustypFaktor);
-  const qWw = Math.round(personen * cfg.wwPerPerson);
-  return { qHeiz, qWw, qGes: qHeiz + qWw };
-}
-
-// Heizlast (kW) für die Anlagengröße — spezifische W/m² × Fläche × Haustyp-Faktor.
-// Getrennt vom Jahresbedarf: die Heizlast dimensioniert die Wärmepumpe, der Bedarf
-// die Betriebskosten. Ergebnis ist die real ausgelegte Leistung (Norm × Auslegungs-
-// faktor). Die individuelle DIN-EN-12831-Berechnung ist genauer → override.heizlast.
-export function calcHeatLoad(
-  situation: "bestand" | "neubau",
-  wohnflaeche: number,
-  insulationIdx: number,
-  haustypFaktor: number,
-  cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG,
-): number {
-  const arr = situation === "bestand" ? cfg.specHeatLoadBestand : cfg.specHeatLoadNeubau;
-  const spec = arr[Math.max(0, Math.min(insulationIdx, arr.length - 1))];
-  const normHeizlast = (wohnflaeche * spec * haustypFaktor) / 1000;  // kW (Norm)
-  // Untergrenze 4 kW: kleinere Luft-Wärmepumpen gibt es real kaum am Markt.
-  return Math.max(4, Math.round(normHeizlast * cfg.auslegungsfaktor * 10) / 10);  // reale Auslegung, 0,1 kW
-}
-
-export function flowTempForSystem(system: "fbh" | "hk_neu" | "hk_alt", cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
-  if (system === "fbh") return cfg.flowTempFbh;
-  if (system === "hk_neu") return cfg.flowTempHkNeu;
-  return cfg.flowTempHkAlt;
-}
-
-export function calcJAZ(wpType: "lwwp" | "swwp", flowTemp: number, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
-  const coeff = wpType === "swwp" ? cfg.jazSwwp : cfg.jazLwwp;
-  const jaz = coeff.a - coeff.b * flowTemp;
-  // Clamp to plausible real-world range (Fraunhofer ISE observed 2.2–4.8)
-  return Math.max(2.2, Math.min(jaz, 4.8));
-}
+// calcHeatDemand / calcHeatLoad / flowTempForSystem / calcJAZ leben jetzt in
+// heatpump-core.ts (siehe Re-Export oben) und werden hier importiert genutzt.
 
 export function calcInvestBrutto(wpType: "lwwp" | "swwp", heizlastKw: number, doHeizkoerperTausch: boolean, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
   const base = wpType === "swwp" ? cfg.investSwwpBase : cfg.investLwwpBase;
@@ -338,29 +308,6 @@ export function calcHeatPumpScenarios(inputs: HeatPumpInputs, cfg: HeatPumpConfi
     { id: "optimistic",  label: "Optimistisch",  color: "#1365EA", adj: { jazFactor: 1.05, stromInflation: 0.01, gasInflation: 0.04 } },
   ];
   return scenarios.map(s => ({ id: s.id, label: s.label, color: s.color, ...calcHeatPump(inputs, cfg, s.adj) }));
-}
-
-// ─── Shared: WP-Jahresstromverbrauch aus Gebäudedaten ──────────────────────
-// Schlanke gemeinsame Quelle für PV- und WP-Rechner: dieselbe Physik wie die
-// große TCO-Rechnung (Heizwärmebedarf ÷ Jahresarbeitszahl), aber ohne
-// Investitions-/Förder-/Gas-Overhead. So liefert dasselbe Haus in beiden
-// Rechnern denselben WP-Stromverbrauch, statt einmal pauschal 3500 kWh und
-// einmal ~11.000 kWh. Modelliert den Ist-Zustand (kein Heizkörpertausch).
-export interface WpElectricityInputs {
-  situation: "bestand" | "neubau";
-  wohnflaeche: number;          // m²
-  insulationIdx: number;         // 0–2 (Index in INSULATION_BESTAND/NEUBAU)
-  personen: number;              // actual head count (1, 2, 3.5, 5)
-  heizsystem: "fbh" | "hk_neu" | "hk_alt";
-  wpType: "lwwp" | "swwp";
-  haustypFaktor?: number;        // geteilte Wände senken den Bedarf — default 1.0
-}
-
-/** WP-Jahresstrom (kWh/a) = Heizwärmebedarf ÷ Jahresarbeitszahl. */
-export function calcWpAnnualElectricity(inp: WpElectricityInputs, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
-  const { qGes } = calcHeatDemand(inp.situation, inp.wohnflaeche, inp.insulationIdx, inp.personen, cfg, inp.haustypFaktor ?? 1);
-  const jaz = calcJAZ(inp.wpType, flowTempForSystem(inp.heizsystem, cfg), cfg);
-  return Math.round(qGes / jaz);
 }
 
 // ─── PV synergy: how much of WP electricity can a PV system cover? ─────────

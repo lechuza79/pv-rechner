@@ -12,12 +12,16 @@ import {
   type HouseholdProfile,
 } from "../consumption";
 import { estimateAcKwhFromLivingArea } from "../aircon";
+import { defaultWpAnnualKwh } from "../heatpump-core";
 
 // ─── Annual calculations ────────────────────────────────────────────────────
 describe("calcWpAnnual", () => {
-  it("returns the WP annual constant", () => {
+  it("returns the WP annual default (exact method, standard building)", () => {
+    // Kein festes 3500 mehr: WP_ANNUAL_KWH ist der Methoden-Default fürs
+    // Standard-Gebäude (Heizwärmebedarf ÷ Arbeitszahl), ~7.300 kWh.
     expect(calcWpAnnual()).toBe(WP_ANNUAL_KWH);
-    expect(calcWpAnnual()).toBe(3500);
+    expect(calcWpAnnual()).toBe(defaultWpAnnualKwh(2));
+    expect(WP_ANNUAL_KWH).toBeGreaterThan(5000); // realistische Größenordnung, nicht die alte Pauschale
   });
 });
 

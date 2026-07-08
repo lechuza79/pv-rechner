@@ -1,6 +1,7 @@
 import { PERSONEN, HAUSTYPEN, DACHARTEN, SPEICHER } from "./constants";
 import { calcEigenverbrauch, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
-import { WP_ANNUAL_KWH, calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2 } from "./consumption";
+import { calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2 } from "./consumption";
+import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "./heatpump";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "./feedin-config";
 
@@ -102,7 +103,12 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
 
   // 1. Verbrauchsgrößen
   const baseConsumption = PERSONEN[input.personen].verbrauch;
-  const wpConsumption = input.wp !== "nein" ? WP_ANNUAL_KWH : 0;
+  // WP-Strom aus der exakten Methode (Heizwärmebedarf ÷ Arbeitszahl) fürs Standard-
+  // Gebäude + tatsächliche Personenzahl — statt der alten Pauschale. Der Empfehlungs-
+  // Flow fragt keine Gebäudedaten ab, deshalb DEFAULT_WP_BUILDING (dieselbe Quelle wie
+  // die Ergebnisseite, auf der der Flow landet — kein Drift).
+  const wpKwh = calcWpAnnualElectricity({ ...DEFAULT_WP_BUILDING, personen: PERSONEN[input.personen].count });
+  const wpConsumption = input.wp !== "nein" ? wpKwh : 0;
   const eaConsumption = input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0;
   const klima = input.klima ?? "nein";
   const klimaM2 = input.klimaM2 ?? KLIMA_DEFAULT_M2;
@@ -135,7 +141,7 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
     for (const speicherKwh of speicherTestOptions) {
       const ev = calcEigenverbrauch({
         personenIdx: input.personen, nutzungIdx: input.nutzung,
-        speicherKwh, wp: input.wp, ea: input.ea, eaKm: input.eaKm, klima, klimaM2,
+        speicherKwh, wp: input.wp, ea: input.ea, eaKm: input.eaKm, klima, klimaM2, wpKwh,
         kwp: kwpRounded, ertragKwp,
       });
       const investition = estimateCost(kwpRounded, speicherKwh, p);
@@ -199,7 +205,7 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
 
   const evOhneSpeicher = calcEigenverbrauch({
     personenIdx: input.personen, nutzungIdx: input.nutzung,
-    speicherKwh: 0, wp: input.wp, ea: input.ea, eaKm: input.eaKm,
+    speicherKwh: 0, wp: input.wp, ea: input.ea, eaKm: input.eaKm, wpKwh,
     kwp: best.kwp, ertragKwp,
   });
 

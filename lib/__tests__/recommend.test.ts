@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { recommend, type RecommendInput } from "../recommend";
-import { SPEICHER } from "../constants";
+import { SPEICHER, PERSONEN } from "../constants";
+import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../heatpump-core";
 
 // Canonical input: 4-person household, normal usage, EFH with Satteldach,
 // no WP, no EA, no budget cap. This should land somewhere around 8 kWp
@@ -38,8 +39,12 @@ describe("recommend (PV system recommendation)", () => {
 
     expect(withWp.reasoning.totalConsumption).toBeGreaterThan(noExtras.reasoning.totalConsumption);
     expect(withEa.reasoning.totalConsumption).toBeGreaterThan(noExtras.reasoning.totalConsumption);
-    // WP adds 3500, EA adds 2700 (15000 km × 0.18)
-    expect(withWp.reasoning.wpConsumption).toBe(3500);
+    // WP-Strom aus der exakten Methode (Standard-Gebäude + Personenzahl), nicht mehr
+    // pauschal 3500. EA adds 2700 (15000 km × 0.18).
+    expect(withWp.reasoning.wpConsumption).toBe(
+      calcWpAnnualElectricity({ ...DEFAULT_WP_BUILDING, personen: PERSONEN[baseInput.personen].count }),
+    );
+    expect(withWp.reasoning.wpConsumption).toBeGreaterThan(3500); // realistischer als die alte Pauschale
     expect(withEa.reasoning.eaConsumption).toBe(2700);
   });
 
