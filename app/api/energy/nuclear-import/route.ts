@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createCache, clampAbsoluteRange } from "../../../../lib/energy-api";
+import { rateLimit } from "../../../../lib/rate-limit";
 import {
   computeNuclearImport,
   NuclearImportDataError,
@@ -15,6 +16,9 @@ const historicalCache = createCache<NuclearImportResponse>(24 * 60 * 60 * 1000);
 // ─── GET Handler ────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
+  const limited = rateLimit(req, "energy-nuclear-import");
+  if (limited) return limited;
+
   const hoursBack = Math.min(Number(req.nextUrl.searchParams.get("hours")) || 24, 8784);
 
   // Validate + clamp the untrusted date range (floor 2015, ceiling today).

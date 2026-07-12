@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createCache, fetchPublicPower, clampAbsoluteRange, safeCountry } from "../../../../lib/energy-api";
+import { rateLimit } from "../../../../lib/rate-limit";
 import { supabase } from "../../../../lib/supabase-server";
 import { GENERATION_STACK_KEYS, trimIncompleteTail } from "../../../../lib/chart-utils";
 
@@ -101,6 +102,9 @@ async function fetchFromSupabase(
 // ─── GET Handler ──────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
+  const limited = rateLimit(req, "energy-generation");
+  if (limited) return limited;
+
   // Untrusted country → allowlist (unknown falls back to "de"), keeping the
   // cache-key / upstream-fetch surface bounded.
   const country = safeCountry(req.nextUrl.searchParams.get("country"));
