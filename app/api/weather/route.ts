@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit } from "../../../lib/rate-limit";
 
 // In-memory cache (warm Vercel function keeps this between requests)
 const cache = new Map<string, { data: WeatherResponse; ts: number }>();
@@ -23,6 +24,9 @@ interface WeatherResponse {
 }
 
 export async function GET(req: NextRequest) {
+  const limited = rateLimit(req, "weather");
+  if (limited) return limited;
+
   const lat = parseFloat(req.nextUrl.searchParams.get("lat") || "");
   const lon = parseFloat(req.nextUrl.searchParams.get("lon") || "");
 
