@@ -8,6 +8,7 @@ import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
 import { DEFAULT_AIRCON_CONFIG as AC } from "../../../lib/aircon-config";
+import { DEFAULT_BALKON_CONFIG as BK } from "../../../lib/balkon-config";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS } from "../../../lib/constants";
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
@@ -309,9 +310,11 @@ export default async function DatenstandPage() {
         <Section
           title="Klimaanlage (Kühlkosten-Rechner)"
           stand={monthYear(AC.validFrom)}
-          intro="Annahmen des Klimaanlagen-Rechners: Geräte-Effizienz, Preise, Klima- und Hitzedaten. Nur Kühlung — Heizen läuft über den Wärmepumpen-Rechner. Strompreis und Kühlgradstunden im Ergebnis editierbar."
+          intro="Annahmen des Klimaanlagen-Rechners: Geräte-Effizienz, Preise, Klima- und Hitzedaten. Kern ist Kühlung; Split-Geräte können zusätzlich in der Übergangszeit heizen (günstiger als Gas). Strompreis und Kühlgradstunden im Ergebnis editierbar."
           rows={[
-            { label: "Effizienz (SEER): Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
+            { label: "Effizienz Kühlen (SEER): Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
+            { label: "Effizienz Heizen (SCOP): mobile Split / fest installiert", value: `${AC.devices[1].scop!.toLocaleString("de-DE")} / ${AC.devices[2].scop!.toLocaleString("de-DE")} (Monoblock heizt nicht)` },
+            { label: "Übergangszeit-Heizwärme (Split)", value: `${nf(AC.heatSpecKwhPerM2)} kWh/m²·a je beheizter Fläche (editierbar)` },
             { label: "Anschaffung Monoblock / mobile Split", value: `~${nf(AC.devices[0].pricePerUnit!)} € / ~${nf(AC.devices[1].pricePerUnit!)} € je Gerät·Raum` },
             { label: "Anschaffung fest installierte Split", value: `${nf(AC.devices[2].priceBase!)} € + ${nf(AC.devices[2].pricePerRoom!)} €/Raum (Innengerät inkl. Montage Fachbetrieb)` },
             { label: "Kühlgradstunden Ø Deutschland", value: `${nf(AC.cdhNational)} K·h/a (Schwelle ${nf(AC.coolBaseTemp)} °C)` },
@@ -322,6 +325,23 @@ export default async function DatenstandPage() {
             { label: "Hitzewelle (Vorhersage)", value: `≥ ${nf(AC.heatwaveMinDays)} Tage ≥ ${nf(AC.heatwaveThreshold)} °C` },
           ]}
           source={`${AC.source}. Nächste Prüfung bis ${monthYear(AC.reviewBy)}.`}
+        />
+
+        {/* ── Balkonkraftwerk-Rechner ── */}
+        <Section
+          title="Balkonkraftwerk (Steckersolar)"
+          stand={monthYear(BK.validFrom)}
+          intro="Annahmen des Balkonkraftwerk-Rechners: Set-Preise, Wechselrichter-Grenze und Eigenverbrauch. Der Standort-Ertrag kommt live von PVGIS, der Strompreis ist im Ergebnis editierbar."
+          rows={[
+            { label: "Set-Preise: 1 Modul / 2 Module / 4 Module", value: BK.sets.map((s) => `~${nf(s.price)} €`).join(" / ") },
+            { label: "Modul / Wechselrichter je Set", value: BK.sets.map((s) => `${nf(s.moduleWp)} Wp / ${nf(s.inverterW)} W`).join(" · ") },
+            { label: "Wechselrichter-Deckel", value: `${nf(BK.maxFullLoadHours)} Volllaststunden/a → 800 W ≈ ${nf(Math.round(0.8 * BK.maxFullLoadHours))} kWh/a` },
+            { label: "Ausrichtungsfaktor (aufgeständert / Geländer / Ost-West / verschattet)", value: BK.orientations.map((o) => nf(o.factor)).join(" / ") },
+            { label: "Eigenverbrauch", value: `grundlast-gedeckt, Anteil sinkt mit Anlagengröße (${nf(BK.selfShareMin * 100)}–${nf(BK.selfShareMax * 100)} %)` },
+            { label: "Lebensdauer / Degradation", value: `${nf(BK.lifetimeYears)} Jahre · ${nf(BK.degradation * 100)} %/a` },
+            { label: "Einspeisung", value: "keine Vergütung — Überschuss fließt unvergütet ins Netz" },
+          ]}
+          source={`Marktpreise Steckersolar-Sets 2026, Solarpaket I (800-W-Grenze), HTW Berlin Stecker-Solar-Simulator (Eigenverbrauch), PVGIS (Ertrag). Nächste Prüfung bis ${monthYear(BK.reviewBy)}.`}
         />
 
         {/* ── Eigenverbrauch & Verbrauch (Modell-Annahmen) ── */}

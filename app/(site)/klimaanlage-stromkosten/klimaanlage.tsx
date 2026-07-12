@@ -9,7 +9,7 @@ import { IconArrowRight, IconRefresh, IconSun, IconCheck } from "../../../compon
 import { v } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
-import { calcAircon, compareDevices, acquisitionRange, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
+import { calcAircon, compareDevices, acquisitionRange, calcAirconHeating, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
 import { trackEvent } from "../../../lib/analytics";
 import { bundeslandFromPlz } from "../../../lib/plz-bundesland";
 import { DataSourceNote } from "../../../components/PoweredBy";
@@ -68,6 +68,10 @@ export default function Klimaanlage() {
   const [window_, setWindow] = useState<CoolingWindow>("day");
   const [pvActive, setPvActive] = useState(false);
   const [battery, setBattery] = useState(true); // mit Speicher ist Default
+
+  // Heizen mit Split (Übergangszeit) — optionaler Zusatzblock im Ergebnis
+  const [heatMode, setHeatMode] = useState(false);
+  const [heatThermalOverride, setHeatThermalOverride] = useState<number | null>(null);
 
   // Standort → Kühlgradstunden
   const [plz, setPlz] = useState("");
@@ -132,6 +136,10 @@ export default function Klimaanlage() {
 
   const result = useMemo(() => calcAircon(inputs), [inputs]);
   const comparison = useMemo(() => compareDevices(inputs), [inputs]);
+  const heat = useMemo(
+    () => calcAirconHeating(result.device, result.cooledArea, strompreis, heatThermalOverride),
+    [result.device, result.cooledArea, strompreis, heatThermalOverride],
+  );
 
   const bl = bundeslandFromPlz(plz);
   const cooledArea = result.cooledArea;
@@ -524,6 +532,75 @@ export default function Klimaanlage() {
               )}
             </div>
 
+            {/* Heizen mit Split (Übergangszeit) */}
+            <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${heatMode ? v('--color-accent') : v('--color-border')}` }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 14, fontWeight: 700 }}>Auch heizen?</span>
+                  <InfoTooltip title="Split-Klima als Heizung" ariaLabel="Wie gut heizt eine Split-Klimaanlage?" size={12}>
+                    Split-Geräte sind reversibel — sie funktionieren wie eine Luft-Luft-Wärmepumpe und heizen mit einer
+                    Arbeitszahl (SCOP) von rund 4. In der Übergangszeit ist das günstiger als Gas. Für tiefe Winterkälte
+                    und das ganze Haus sinkt die Effizienz — dann ist eine wassergeführte Wärmepumpe die bessere Wahl.
+                  </InfoTooltip>
+                </span>
+                <span style={{ display: "inline-flex", gap: 3, background: v('--color-bg-muted'), borderRadius: v('--radius-sm'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
+                  {[{ on: true, label: "Ja" }, { on: false, label: "Nein" }].map(opt => (
+                    <button key={String(opt.on)} onClick={() => setHeatMode(opt.on)} style={{
+                      padding: "4px 14px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700, cursor: "pointer", border: "none",
+                      background: heatMode === opt.on ? v('--color-accent') : "transparent",
+                      color: heatMode === opt.on ? v('--color-text-on-accent') : v('--color-text-muted'),
+                    }}>{opt.label}</button>
+                  ))}
+                </span>
+              </div>
+
+              {heatMode && (
+                heat.canHeat ? (
+                  <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}` }}>
+                    {/* Wärmepreis pro kWh — der belastbare Kern */}
+                    <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+                      <div style={{ flex: 1, padding: "10px 12px", borderRadius: v('--radius-sm'), background: v('--color-chart-positive-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Split (Arbeitszahl {heat.scop.toString().replace(".", ",")})</div>
+                        <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 2 }}>{heat.costPerKwhHeatSplitCt.toString().replace(".", ",")} ct</div>
+                        <div style={{ fontSize: 10, color: v('--color-text-faint') }}>je kWh Wärme</div>
+                      </div>
+                      <div style={{ flex: 1, padding: "10px 12px", borderRadius: v('--radius-sm'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
+                        <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Gas (Brennwert)</div>
+                        <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-secondary'), marginTop: 2 }}>{heat.costPerKwhHeatGasCt.toString().replace(".", ",")} ct</div>
+                        <div style={{ fontSize: 10, color: v('--color-text-faint') }}>je kWh Wärme</div>
+                      </div>
+                    </div>
+
+                    <div style={{ fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.7 }}>
+                      Für die Übergangszeit deiner {result.cooledArea} m² rechnen wir{" "}
+                      <InlineEdit value={heat.heatThermalKwh} onCommit={val => setHeatThermalOverride(Math.round(val))} unit=" kWh" min={100} max={20000} step={100} width={72} /> Heizwärme:{" "}
+                      <strong style={{ fontFamily: v('--font-mono') }}>{heat.heatElectricKwh.toLocaleString("de-DE")} kWh</strong> Strom ={" "}
+                      <strong style={{ fontFamily: v('--font-mono'), color: v('--color-text-primary') }}>{heat.heatCost.toLocaleString("de-DE")} €/Jahr</strong>.
+                      {heat.saving > 0 ? (
+                        <> Mit Gas wären es {heat.gasCost.toLocaleString("de-DE")} € — du sparst{" "}
+                          <strong style={{ color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{heat.saving.toLocaleString("de-DE")} €/Jahr</strong>.</>
+                      ) : (
+                        <> Mit Gas wären es {heat.gasCost.toLocaleString("de-DE")} € — hier liegt Gas beim reinen Energiepreis gleichauf oder günstiger.</>
+                      )}
+                    </div>
+
+                    <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.6 }}>
+                      Gerechnet für die Übergangszeit (Frühherbst, Frühjahr, milde Tage), ohne CO₂-Aufschlag aufs Gas. Für die
+                      kalte Kernzeit und das ganze Haus ist eine wassergeführte Wärmepumpe effizienter.{" "}
+                      <Link href="/waermepumpe-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Wärmepumpe rechnen</Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+                    Ein Monoblock eignet sich nicht zum Heizen. Zum effizienten Heizen brauchst du eine{" "}
+                    <button onClick={() => setDeviceId("split")} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), fontWeight: 600, cursor: "pointer", fontSize: 13 }}>fest installierte Split-Anlage</button>
+                    {" "}oder eine mobile Split. Für eine vollwertige Heizung:{" "}
+                    <Link href="/waermepumpe-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Wärmepumpe rechnen</Link>.
+                  </div>
+                )
+              )}
+            </div>
+
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
               <Link href={pvRechnerHref} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
@@ -536,7 +613,7 @@ export default function Klimaanlage() {
 
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
               <Link href="/methodik" style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
-              <span> · Kühlbedarf aus echten Kühlgradstunden · nur Kühlung, kein Heizen · Werte auf der </span>
+              <span> · Kühlbedarf aus echten Kühlgradstunden · Heizen als Übergangszeit-Schätzung · Werte auf der </span>
               <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none" }}>Datenstand-Seite</Link>.
               <div style={{ marginTop: 6 }}>
                 <DataSourceNote source={DATA_SOURCES.openMeteo} />

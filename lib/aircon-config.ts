@@ -4,8 +4,12 @@
 // surfaced on /datenstand. Cooling is sun-aligned: demand peaks midday/summer,
 // exactly when PV produces — that is the calculator's core angle.
 //
-// WICHTIG: nur Kühlung. Klimageräte können auch heizen; das modellieren wir hier
-// bewusst NICHT — Heizen läuft über den Wärmepumpen-Rechner.
+// Kühlung ist der Kern. Split-Geräte können zusätzlich HEIZEN (Luft-Luft-
+// Wärmepumpe, Arbeitszahl SCOP) — das modellieren wir als Übergangszeit-Heizung
+// (heatSpecKwhPerM2 + device.scop): ehrliche Teilheizung, die Gas spart. Für die
+// kalte Kernzeit und das ganze Haus bleibt der Wärmepumpen-Rechner die bessere
+// Adresse. Dieselbe Split-Heiz-Funktion (calcAirconHeating) nutzt auch der
+// Wärmepumpen-Rechner für seinen „Split als Teil-Ergänzung"-Block.
 
 export type AcDeviceId = "monoblock" | "portasplit" | "split";
 
@@ -14,6 +18,11 @@ export interface AcDevice {
   label: string;
   what: string;            // plain-language "what it is" (shown in the UI)
   seer: number;            // Seasonal Energy Efficiency Ratio (cooling). Strom = Kühlenergie / SEER
+  // Heizen: Split-Geräte sind reversibel (Luft-Luft-Wärmepumpe). scop = Seasonal
+  // Coefficient of Performance (Heizen); Heizstrom = Heizwärme / SCOP. canHeat=false
+  // für Monoblocks — die heizen real kaum sinnvoll.
+  canHeat: boolean;
+  scop?: number;
   // Acquisition price model. Monoblock + PortaSplit: one device per room →
   // pricePerUnit × Räume. Fest installierte Split: Sockel (Außengerät/Anfahrt) +
   // pro Raum (Innengerät + Kernbohrung + Leitungen + Vakuum/Befüllung + Montage
@@ -65,6 +74,13 @@ export interface AcConfig {
   // Dachgeschoss/Altbau (ADAC/Handwerker-Faustregel).
   sizingWPerM2: number;
 
+  // Heizen mit Split: thermische Heizwärme je m² beheizter Fläche in der
+  // ÜBERGANGSZEIT (Frühherbst, Frühjahr, milde Wintertage) — nicht das ganze
+  // Jahr und nicht die kalte Kernzeit. Grober Anhalt; im Ergebnis editierbar.
+  // Heizstrom = Heizwärme / device.scop. Auch der WP-Rechner nutzt diesen Wert
+  // für seinen „Split als Teil-Ergänzung"-Block (dort × Deckungsanteil).
+  heatSpecKwhPerM2: number;
+
   // PV-Deckung: Anteil des Kühlstroms, den die eigene PV-Anlage übernimmt.
   // Kühlen tagsüber ist sonnen-deckungsstark, nachts kaum. Mit Batteriespeicher
   // wird Tagstrom in den Abend/die Nacht verschoben → deutlich höhere Deckung,
@@ -112,6 +128,7 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       label: "Monoblock mit Abluftschlauch",
       what: "Ein Gerät, Schlauch zum Fenster raus. Günstig und laut — durch den Schlauchspalt zieht warme Luft nach, daher ineffizient. Der typische Hitzewellen-Spontankauf.",
       seer: 2.5,         // Monoblock SEER ~2,0–2,8 (Verbraucher-Tests 2025/26)
+      canHeat: false,    // Monoblock heizt real kaum sinnvoll (Abluftschlauch)
       perRoom: true,
       pricePerUnit: 400, // Gerätepreis, keine Montage
       priceRange: [0.65, 1.5], // ~250–600 € (Verbraucher-Tests 2025/26)
@@ -121,6 +138,8 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       label: "Mobile Split-Anlage (z. B. Midea PortaSplit)",
       what: "Tragbares Split-Gerät, Kompressor außen, kein Festeinbau. Deutlich effizienter als ein Monoblock. Ein Gerät pro Raum.",
       seer: 4.3,         // A++ mobile Split (Midea PortaSplit Cool)
+      canHeat: true,
+      scop: 3.6,         // mobile Split Heizen ~3,4–3,8 (Herstellerangaben 2026)
       perRoom: true,
       pricePerUnit: 800, // ~780–899 € (UVP/Amazon 2026)
       priceRange: [0.75, 1.3], // ~600–1.050 € je Gerät
@@ -130,6 +149,8 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       label: "Fest installierte Split-Anlage",
       what: "Innen- und Außeneinheit, fest montiert. Effizientester Typ, braucht aber Installation durch einen Fachbetrieb. Mehrere Räume als Multisplit.",
       seer: 6.0,         // fest installierte Split SEER ~5–8
+      canHeat: true,
+      scop: 4.2,         // fest installierte Split Heizen ~4,0–4,6 (A+++ Wärmepumpen-Split)
       perRoom: false,
       // 1 Raum (Monosplit) ~2.600 €, je weiterer Raum ~+1.900 € → 3 Räume ~6.400 €.
       // Deckt sich mit Festpreisen 2026: Monosplit 1.800–3.500 €, Montage allein
@@ -158,6 +179,8 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
   defaultExposure: "normal",
 
   sizingWPerM2: 85,
+
+  heatSpecKwhPerM2: 55,   // Übergangszeit-Heizwärme je m² (kWh/m²·a), editierbar
 
   pvCoverage: {
     // Mit Speicher (Default): Akku verschiebt Tagstrom in Abend/Nacht.
