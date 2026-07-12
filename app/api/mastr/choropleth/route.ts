@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
       },
     );
   } catch (err) {
-    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
+    console.error("[mastr/choropleth] failed:", (err as Error).message);
+    return NextResponse.json({ error: "Daten konnten nicht geladen werden" }, { status: 500 });
   }
 }

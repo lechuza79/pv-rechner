@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createCache } from "../../../../lib/energy-api";
+import { createCache, clampAbsoluteRange } from "../../../../lib/energy-api";
 import {
   computeNuclearImport,
   NuclearImportDataError,
@@ -15,18 +15,22 @@ const historicalCache = createCache<NuclearImportResponse>(24 * 60 * 60 * 1000);
 // ─── GET Handler ────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
-  const startParam = req.nextUrl.searchParams.get("start"); // ISO date e.g. "2025-01-01"
-  const endParam = req.nextUrl.searchParams.get("end");     // ISO date e.g. "2025-12-31"
   const hoursBack = Math.min(Number(req.nextUrl.searchParams.get("hours")) || 24, 8784);
 
-  const isAbsolute = !!(startParam && endParam);
-  const cacheKey = isAbsolute ? `nuclear-${startParam}-${endParam}` : `nuclear-${hoursBack}`;
+  // Validate + clamp the untrusted date range (floor 2015, ceiling today).
+  // Malformed or missing → range is null and we fall back to the hours window.
+  const range = clampAbsoluteRange(
+    req.nextUrl.searchParams.get("start"), // ISO date e.g. "2025-01-01"
+    req.nextUrl.searchParams.get("end"),   // ISO date e.g. "2025-12-31"
+  );
+  const isAbsolute = range !== null;
+  const cacheKey = isAbsolute ? `nuclear-${range.start}-${range.end}` : `nuclear-${hoursBack}`;
   const rangeHours = isAbsolute
-    ? Math.ceil((new Date(endParam + "T23:59:59Z").getTime() - new Date(startParam + "T00:00:00Z").getTime()) / 3600000)
+    ? Math.ceil((new Date(range.end + "T23:59:59Z").getTime() - new Date(range.start + "T00:00:00Z").getTime()) / 3600000)
     : hoursBack;
 
   // Historical (past) periods get 24h cache; they don't change
-  const isPast = isAbsolute && new Date(endParam + "T23:59:59Z").getTime() < Date.now() - 2 * 24 * 3600000;
+  const isPast = isAbsolute && new Date(range.end + "T23:59:59Z").getTime() < Date.now() - 2 * 24 * 3600000;
   const store = isPast ? historicalCache : rangeHours > 168 ? longCache : cache;
   const cached = store.get(cacheKey);
   if (cached) {
@@ -39,8 +43,8 @@ export async function GET(req: NextRequest) {
   let startStr: string;
   let endStr: string;
   if (isAbsolute) {
-    startStr = startParam + "T00:00:00+01:00";
-    endStr = endParam + "T23:59:59+01:00";
+    startStr = range.start + "T00:00:00+01:00";
+    endStr = range.end + "T23:59:59+01:00";
   } else {
     const now = new Date();
     const start = new Date(now.getTime() - hoursBack * 60 * 60 * 1000);

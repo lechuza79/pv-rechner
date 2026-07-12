@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { getCssVariables, globalStyles } from "../../lib/theme";
+import { jsonLdHtml } from "../../lib/json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
 import Footer from "../../components/Footer";
 import { Analytics } from "@vercel/analytics/next";
@@ -90,11 +91,11 @@ export default function RootLayout({
         <style dangerouslySetInnerHTML={{ __html: getCssVariables() + globalStyles }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdHtml(organizationJsonLd) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdHtml(softwareAppJsonLd) }}
         />
       </head>
       <body

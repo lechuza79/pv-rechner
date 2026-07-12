@@ -218,12 +218,76 @@ export function createCache<T>(ttlMs: number) {
         store.forEach((v, k) => {
           if (now - v.ts > ttlMs) store.delete(k);
         });
+        // Hard cap: if the map is still oversized after dropping expired
+        // entries, it's being flooded with many distinct fresh keys (e.g.
+        // coordinate or country enumeration). Drop the oldest-inserted entries
+        // so an attacker can't grow it without bound over a warm instance.
+        while (store.size > 200) {
+          const oldest = store.keys().next().value;
+          if (oldest === undefined) break;
+          store.delete(oldest);
+        }
       }
     },
     invalidate(key?: string) {
       if (key) store.delete(key); else store.clear();
     },
   };
+}
+
+// ─── Untrusted-input guards ──────────────────────────────────────────────────
+
+/** Energy-Charts coverage starts in 2015 — nothing before this is fetchable. */
+export const ENERGY_DATA_FLOOR_YEAR = 2015;
+
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * Validate and clamp an absolute [start, end] date range coming from untrusted
+ * query params. Returns null when either param is missing or malformed, so the
+ * caller falls back to its relative `hours` path.
+ *
+ * Clamps start to the data floor (2015-01-01) and end to today. Without this,
+ * a range like 0001-01-01…9999-12-31 makes the yearly-chunked fan-out
+ * (cross-border flows + 6 neighbour countries per year) explode into tens of
+ * thousands of parallel upstream requests from a single anonymous GET.
+ */
+export function clampAbsoluteRange(
+  startParam: string | null,
+  endParam: string | null,
+): { start: string; end: string } | null {
+  if (!startParam || !endParam) return null;
+  if (!ISO_DATE_RE.test(startParam) || !ISO_DATE_RE.test(endParam)) return null;
+
+  const startMs = new Date(startParam + "T00:00:00Z").getTime();
+  const endMs = new Date(endParam + "T00:00:00Z").getTime();
+  if (!Number.isFinite(startMs) || !Number.isFinite(endMs)) return null;
+
+  const floorMs = Date.UTC(ENERGY_DATA_FLOOR_YEAR, 0, 1);
+  const todayMs = Date.now();
+  const clampedStart = Math.max(startMs, floorMs);
+  const clampedEnd = Math.min(endMs, todayMs);
+  if (clampedEnd < clampedStart) return null;
+
+  return {
+    start: new Date(clampedStart).toISOString().slice(0, 10),
+    end: new Date(clampedEnd).toISOString().slice(0, 10),
+  };
+}
+
+/**
+ * Country codes the app actually requests from Energy-Charts. An unknown value
+ * from an untrusted `country` param falls back to "de" — this keeps the cache
+ * key space (and the upstream fetch surface) bounded instead of letting any
+ * random string spawn a fresh uncached upstream call.
+ */
+export const ENERGY_COUNTRIES = new Set([
+  "de", "fr", "ch", "at", "cz", "pl", "dk", "nl", "be", "lu", "se", "no", "it",
+]);
+
+export function safeCountry(country: string | null): string {
+  const code = (country || "de").toLowerCase();
+  return ENERGY_COUNTRIES.has(code) ? code : "de";
 }
 
 // ─── Energy-Charts Specific ──────────────────────────────────────────────────

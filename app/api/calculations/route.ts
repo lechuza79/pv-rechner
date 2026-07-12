@@ -42,7 +42,8 @@ export async function GET() {
     .order("updated_at", { ascending: false });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[calculations] list failed:", error.message);
+    return NextResponse.json({ error: "Berechnungen konnten nicht geladen werden" }, { status: 500 });
   }
 
   return NextResponse.json(data);
