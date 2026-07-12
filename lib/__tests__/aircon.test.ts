@@ -81,6 +81,13 @@ describe("calcAircon", () => {
     expect(r.electricityKwh).toBeLessThan(140);
   });
 
+  it("clamps a negative room size to zero (no negative energy, cost or CO₂)", () => {
+    const r = calcAircon({ ...base, roomM2: -20 });
+    expect(r.electricityKwh).toBe(0);
+    expect(r.runningCost).toBe(0);
+    expect(r.co2Kg).toBe(0);
+  });
+
   it("monoblock uses 2–3× the electricity of a split for the same demand", () => {
     const split = calcAircon({ ...base, deviceId: "split" });
     const mono = calcAircon({ ...base, deviceId: "monoblock" });

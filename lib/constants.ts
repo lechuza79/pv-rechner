@@ -7,6 +7,11 @@
 export const YEAR = new Date().getFullYear();
 export const YEARS = 25;
 export const DEGRAD = 0.005;
+// EEG-Einspeisevergütung ist auf 20 Jahre (+ Inbetriebnahmejahr) garantiert.
+// Danach fällt die Anlage aus dem EEG — Einspeisung bringt dann nur noch den
+// Marktwert, den wir konservativ nicht ansetzen. Über den 25-Jahre-Horizont
+// wird die Einspeisevergütung also nur bis Jahr 20 gezahlt.
+export const FEED_IN_YEARS = 20;
 
 // Saisonaler Verbrauchsfaktor (BDEW Standardlastprofil H0)
 // Winter ~17% über Durchschnitt, Sommer ~15% unter

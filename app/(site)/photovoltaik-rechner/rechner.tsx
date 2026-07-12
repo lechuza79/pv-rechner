@@ -272,12 +272,18 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       ...s,
       data: calc({
         kwp, kosten, strompreis: oStrom,
-        eigenverbrauch: effEinspeisungModus === "voll" ? 0 : Math.min(effEv + s.evDelta, 95),
+        // Szenario-EV zusätzlich gegen das physikalische Maximum kappen
+        // (Verbrauch/Ertrag): man kann nie mehr selbst verbrauchen, als man
+        // überhaupt verbraucht — sonst entsteht Phantom-Ersparnis in der
+        // optimistischen Kurve. jahresertrag=0 → Infinity → Cap greift nicht.
+        eigenverbrauch: effEinspeisungModus === "voll"
+          ? 0
+          : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
         einspeisung: effEinspeisungModus === "aus" ? 0 : effEinsp,
         stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
         batteryReplace: batteryReplaceCost(spKwh, prices),
       }),
-    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices]);
+    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag]);
 
   const real = scenarioData.find(s => s.id === "realistic")!;
   const be = real.data.be;
@@ -837,7 +843,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             
             <ResultStats
               total={real.data.total} kosten={kosten}
-              wp={wp} ea={ea} eaKm={eaKm} effEv={effEv} jahresertrag={jahresertrag} baseKwh={grundverbrauch}
+              wp={wp} ea={ea} eaKm={eaKm} wpKwh={wpKwh ?? 0} effEv={effEv} jahresertrag={jahresertrag} baseKwh={grundverbrauch}
               oStrom={oStrom} fuelType={fuelType} setFuelType={setFuelType}
             />
 

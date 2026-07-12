@@ -143,8 +143,13 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
   const speicherTestOptions = SPEICHER_OPTIONS_KWH.filter(kwh => kwh <= maxSpeicherSinnvoll);
   const candidates: Candidate[] = [];
 
-  const maxKwp = Math.max(KWP_MIN, maxRoofKwp);
-  for (let kwp = KWP_MIN; kwp <= maxKwp + 1e-6; kwp += KWP_STEP) {
+  // Nie mehr empfehlen, als aufs Dach passt. Gibt das Dach weniger als die
+  // Mindestgröße (KWP_MIN) her, ist die dachbegrenzte Größe selbst der einzige
+  // Kandidat — sonst würde bei einem winzigen Dach trotzdem KWP_MIN empfohlen.
+  const roofCapKwp = Math.round(maxRoofKwp * 2) / 2;
+  const maxKwp = maxRoofKwp >= KWP_MIN ? maxRoofKwp : Math.max(roofCapKwp, KWP_STEP);
+  const startKwp = Math.min(KWP_MIN, maxKwp);
+  for (let kwp = startKwp; kwp <= maxKwp + 1e-6; kwp += KWP_STEP) {
     const kwpRounded = Math.round(kwp * 2) / 2;
     const feedInCt = effectiveFeedInCtPerKwh(kwpRounded, f);
     for (const speicherKwh of speicherTestOptions) {

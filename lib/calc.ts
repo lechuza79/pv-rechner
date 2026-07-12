@@ -1,4 +1,4 @@
-import { YEAR, YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN, NUTZUNG } from "./constants";
+import { YEAR, YEARS, FEED_IN_YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN, NUTZUNG } from "./constants";
 import { calcExtraConsumption, KLIMA_DEFAULT_M2, WP_ANNUAL_KWH } from "./consumption";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { co2PriceForCalendarYear } from "./co2-config";
@@ -243,18 +243,22 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
     if (i > 0) {
       const deg = Math.pow(1 - DEGRAD, i);
       const sp = strompreis * Math.pow(1 + stromSteigerung, i);
+      // EEG-Einspeisevergütung nur die ersten 20 Jahre; danach fällt die Anlage
+      // aus dem EEG (Marktwert konservativ nicht angesetzt). Der Eigenverbrauch
+      // spart den Strompreis auch danach weiter.
+      const feedIn = i <= FEED_IN_YEARS ? einspeisung : 0;
       if (fracs && monthlyEv) {
         // Monatlich: EV% variiert saisonal (Winter höher, Sommer niedriger),
         // bleibt aber jahresgewichtet auf dem eingegebenen Eigenverbrauch.
         for (let m = 0; m < 12; m++) {
           const mProd = kwp * ertragKwp * fracs[m] * deg;
           const mEv = monthlyEv[m];
-          j += mProd * mEv * sp + mProd * (1 - mEv) * (einspeisung / 100);
+          j += mProd * mEv * sp + mProd * (1 - mEv) * (feedIn / 100);
         }
       } else {
         // Jährlich (Fallback ohne Monatsprofil)
         const ertrag = kwp * ertragKwp * deg;
-        j = ertrag * (eigenverbrauch / 100) * sp + ertrag * (1 - eigenverbrauch / 100) * (einspeisung / 100);
+        j = ertrag * (eigenverbrauch / 100) * sp + ertrag * (1 - eigenverbrauch / 100) * (feedIn / 100);
       }
     }
     // Akku-Tausch nach Ablauf der Speicher-Lebensdauer (einmalig im Horizont)

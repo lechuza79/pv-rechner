@@ -100,7 +100,7 @@ export function acquisitionRange(device: AcDevice, rooms: number): [number, numb
 export function calcAircon(inputs: AcInputs, cfg: AcConfig = DEFAULT_AIRCON_CONFIG): AcResult {
   const device = cfg.devices.find(d => d.id === inputs.deviceId) ?? cfg.devices[0];
   const rooms = Math.max(1, Math.round(inputs.rooms));
-  const cooledArea = rooms * inputs.roomM2;
+  const cooledArea = rooms * Math.max(0, inputs.roomM2);
 
   const cdhEff = effectiveCdh(inputs.cdh, inputs.targetTemp, inputs.window, cfg);
   // Kühlenergie [kWh] = gain[Wh/(m²·K·h)] × Fläche[m²] × Kühlgradstunden[K·h] / 1000.

@@ -126,6 +126,17 @@ describe("fundingAmount math", () => {
     const withReal = fundingAmount(p, 10, 10, 20000);
     expect(withReal.total).toBeGreaterThan(withTiny.total);
   });
+
+  it("respects speicherMin in the per-kWh branch too (not only tiers)", () => {
+    const p = allFundingPrograms().find(f => f.speicherPerKwh && (f.speicherMin ?? 0) > 0);
+    expect(p).toBeTruthy();
+    const min = p!.speicherMin!;
+    const noStorage = fundingAmount(p, 10, 0, 20000).total;
+    const below = fundingAmount(p, 10, min - 1, 20000).total;
+    const atMin = fundingAmount(p, 10, min, 20000).total;
+    expect(below).toBe(noStorage);        // under the minimum → no storage grant
+    expect(atMin).toBeGreaterThan(below);  // at the minimum → per-kWh grant applies
+  });
 });
 
 describe("stackFunding", () => {
@@ -183,11 +194,15 @@ describe("funding batch 2 (Juni 2026)", () => {
     expect(fundingAmount(p, 10, 3, 25000).total).toBe(1200);
     expect(stackFunding(fundingForAgs("12054000"), 10, 8, 25000).total).toBe(2200);
   });
-  it("Hannover proKlima caps the PV grant at 2.000 €", () => {
+  it("Hannover proKlima is info-only (not auto-deducted) — it covers only 6 of the ~21 Kreis municipalities", () => {
     const p = getFundingProgram("hannover-proklima")!;
     expect(p.status).toBe("aktiv");
-    expect(fundingAmount(p, 15, 0, 25000).total).toBe(1500);
-    expect(fundingAmount(p, 30, 0, 45000).total).toBe(2000);
+    // Deliberately no structured € rule: the Kreis-AGS 03241 would prefix-match
+    // non-eligible towns (e.g. Burgdorf) and wrongly deduct 100 €/kWp. So it is
+    // shown as a hint but never computed/subtracted until a precise 8-digit AGS
+    // allowlist of the 6 eligible municipalities exists.
+    expect(fundingAmount(p, 15, 0, 25000).computable).toBe(false);
+    expect(fundingAmount(p, 15, 0, 25000).total).toBe(0);
   });
   it("Dortmund (ausgeschoepft) and Essen (eingestellt) are not auto-applied", () => {
     expect(getFundingProgram("dortmund-pv")!.status).toBe("ausgeschoepft");

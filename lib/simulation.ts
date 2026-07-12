@@ -43,7 +43,8 @@ export interface HourlyPoint {
 
 const NOCT = 45;          // Nominal Operating Cell Temperature (°C)
 const GAMMA = -0.004;     // Temperature coefficient (%/°C for crystalline silicon)
-const T_REF = 25;         // Reference temperature (STC)
+const T_REF = 25;         // Reference temperature for the temp coefficient (STC, 25 °C)
+const NOCT_AMBIENT = 20;  // Ambient temp at which NOCT is defined (Sandia model, 20 °C)
 
 // System performance ratio: inverter, wiring, mismatch, soiling losses. Also
 // absorbs that the weather feed delivers global HORIZONTAL irradiance (GHI),
@@ -63,7 +64,8 @@ export const SIM_CONFIGS = [
 
 /** Cell temperature from ambient temp and irradiance (Sandia NOCT model) */
 export function calcCellTemp(ambientTemp: number, ghi: number): number {
-  return ambientTemp + (NOCT - T_REF) * (ghi / 800);
+  // NOCT is measured at 20 °C ambient / 800 W/m² — the rise scales with (NOCT - 20).
+  return ambientTemp + (NOCT - NOCT_AMBIENT) * (ghi / 800);
 }
 
 /** Instantaneous PV output in Watts */
