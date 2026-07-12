@@ -16,6 +16,33 @@ const nextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
+      {
+        // Harmlose Basis-Header global — MIME-Sniffing aus, Referrer sparsam.
+        // Absichtlich KEIN X-Frame-Options hier: die /embed/*-Widgets müssen
+        // fremd-einbettbar bleiben. Framing-Schutz sitzt gezielt auf den
+        // sensiblen Seiten unten. HSTS setzt Vercel automatisch.
+        // "/(.*)" ist Next.js' kanonische "alle Routen"-Form (matcht auch "/").
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        ],
+      },
+      // Clickjacking-Schutz für die authentifizierten Bereiche — die dürfen
+      // niemals in einem fremden iframe landen (Login/Admin-Aktionen). Je ein
+      // Eintrag für den nackten Pfad und die Unterseiten.
+      { source: "/dashboard", headers: [
+        { key: "X-Frame-Options", value: "DENY" },
+        { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+      ] },
+      { source: "/dashboard/(.*)", headers: [
+        { key: "X-Frame-Options", value: "DENY" },
+        { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+      ] },
+      { source: "/admin/(.*)", headers: [
+        { key: "X-Frame-Options", value: "DENY" },
+        { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
+      ] },
     ];
   },
   async redirects() {

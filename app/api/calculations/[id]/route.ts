@@ -88,7 +88,8 @@ export async function PUT(
     .eq("user_id", user.id);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[calculations/id] operation failed:", error.message);
+    return NextResponse.json({ error: "Aktion fehlgeschlagen" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });
@@ -114,7 +115,8 @@ export async function DELETE(
     .eq("user_id", user.id);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[calculations/id] operation failed:", error.message);
+    return NextResponse.json({ error: "Aktion fehlgeschlagen" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

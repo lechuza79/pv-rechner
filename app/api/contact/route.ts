@@ -105,7 +105,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Der Versand ist aktuell nicht verfügbar. Schreib uns bitte direkt per E-Mail." }, { status: 500 });
   }
 
-  const subject = `Solar Check – ${topic}${name ? ` von ${name.slice(0, 60)}` : ""}`;
+  // Strip control chars (CR/LF/tab) before the name goes into the mail subject
+  // — belt-and-suspenders against header injection even though Resend's JSON API
+  // already neutralises it. topic is allowlisted, so it needs no cleaning.
+  const safeName = name.replace(/[\r\n\t]+/g, " ").slice(0, 60);
+  const subject = `Solar Check – ${topic}${safeName ? ` von ${safeName}` : ""}`;
   const bodyHtml = escapeHtml(message).replace(/\n/g, "<br>");
 
   const html = `<div style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;color:#3F3F3F">

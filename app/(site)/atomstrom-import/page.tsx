@@ -4,6 +4,7 @@ import Header from "../../../components/Header";
 import { IconArrowRight } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
+import { jsonLdHtml } from "../../../lib/json-ld";
 import AtomstromWidget from "./AtomstromWidget";
 import AutoHeightIframe from "../../../components/AutoHeightIframe";
 import FaqAccordion, { AccordionItem } from "./FaqAccordion";
@@ -178,11 +179,11 @@ export default async function AtomstromImportPage() {
       <Header />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(faqJsonLd) }}
       />
       <div style={S.wrap}>
         <h1 style={S.h1}>Wie viel Atomstrom importiert Deutschland?</h1>

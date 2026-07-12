@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createCache, fetchPublicPower } from "../../../../lib/energy-api";
+import { createCache, fetchPublicPower, clampAbsoluteRange, safeCountry } from "../../../../lib/energy-api";
 import { supabase } from "../../../../lib/supabase-server";
 import { GENERATION_STACK_KEYS, trimIncompleteTail } from "../../../../lib/chart-utils";
 
@@ -101,9 +101,9 @@ async function fetchFromSupabase(
 // ─── GET Handler ──────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
-  const country = req.nextUrl.searchParams.get("country") || "de";
-  const startParam = req.nextUrl.searchParams.get("start"); // ISO date e.g. "2025-01-01"
-  const endParam = req.nextUrl.searchParams.get("end");     // ISO date e.g. "2025-12-31"
+  // Untrusted country → allowlist (unknown falls back to "de"), keeping the
+  // cache-key / upstream-fetch surface bounded.
+  const country = safeCountry(req.nextUrl.searchParams.get("country"));
   const hoursBack = Math.min(Number(req.nextUrl.searchParams.get("hours")) || 24, 8784);
   // trim=0 keeps the incomplete latency tail (newest points where solar/wind
   // aren't fully reported). Default trims it, so charts/stats get one coherent
@@ -111,15 +111,21 @@ export async function GET(req: NextRequest) {
   // marks them itself.
   const keepTail = req.nextUrl.searchParams.get("trim") === "0";
 
-  // Determine time range: absolute start/end takes priority over hours
-  const isAbsolute = !!(startParam && endParam);
-  const cacheKey = `${isAbsolute ? `${country}-${startParam}-${endParam}` : `${country}-${hoursBack}`}${keepTail ? "-raw" : ""}`;
+  // Determine time range: absolute start/end takes priority over hours.
+  // Validate + clamp the untrusted range (floor 2015, ceiling today) so an
+  // unbounded span can't be handed straight to Energy-Charts as one giant query.
+  const range = clampAbsoluteRange(
+    req.nextUrl.searchParams.get("start"), // ISO date e.g. "2025-01-01"
+    req.nextUrl.searchParams.get("end"),   // ISO date e.g. "2025-12-31"
+  );
+  const isAbsolute = range !== null;
+  const cacheKey = `${isAbsolute ? `${country}-${range.start}-${range.end}` : `${country}-${hoursBack}`}${keepTail ? "-raw" : ""}`;
   const rangeHours = isAbsolute
-    ? Math.ceil((new Date(endParam + "T23:59:59Z").getTime() - new Date(startParam + "T00:00:00Z").getTime()) / 3600000)
+    ? Math.ceil((new Date(range.end + "T23:59:59Z").getTime() - new Date(range.start + "T00:00:00Z").getTime()) / 3600000)
     : hoursBack;
 
   // Historical (past) periods get 24h cache; they don't change
-  const isPast = isAbsolute && new Date(endParam + "T23:59:59Z").getTime() < Date.now() - 2 * 24 * 3600000;
+  const isPast = isAbsolute && new Date(range.end + "T23:59:59Z").getTime() < Date.now() - 2 * 24 * 3600000;
   const store = isPast ? historicalCache : rangeHours > 168 ? longCache : cache;
   const cached = store.get(cacheKey);
   if (cached) {
@@ -134,8 +140,8 @@ export async function GET(req: NextRequest) {
     let endStr: string;
 
     if (isAbsolute) {
-      startStr = startParam + "T00:00:00+01:00";
-      endStr = endParam + "T23:59:59+01:00";
+      startStr = range.start + "T00:00:00+01:00";
+      endStr = range.end + "T23:59:59+01:00";
     } else {
       const now = new Date();
       const start = new Date(now.getTime() - hoursBack * 60 * 60 * 1000);
@@ -150,7 +156,7 @@ export async function GET(req: NextRequest) {
     // Requires isPast so we never hand back partial-week data for ongoing
     // periods.
     if (isAbsolute && isPast && rangeHours > 6000) {
-      const dbResult = await fetchFromSupabase(country, startParam!, endParam!);
+      const dbResult = await fetchFromSupabase(country, range.start, range.end);
       if (dbResult && dbResult.data.length > 0) {
         store.set(cacheKey, dbResult);
         return NextResponse.json(dbResult, {

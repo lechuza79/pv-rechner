@@ -4,7 +4,59 @@ import {
   ddmmyyyyToISO,
   mmyyyyToPeriod,
   createCache,
+  clampAbsoluteRange,
+  safeCountry,
+  ENERGY_DATA_FLOOR_YEAR,
 } from "../energy-api";
+
+// ─── Untrusted-input guards (DoS/amplification protection) ───────────────────
+
+describe("clampAbsoluteRange", () => {
+  it("returns null when a param is missing", () => {
+    expect(clampAbsoluteRange(null, "2025-01-01")).toBeNull();
+    expect(clampAbsoluteRange("2025-01-01", null)).toBeNull();
+    expect(clampAbsoluteRange(null, null)).toBeNull();
+  });
+
+  it("returns null for malformed date strings", () => {
+    expect(clampAbsoluteRange("2025", "2025-12-31")).toBeNull();
+    expect(clampAbsoluteRange("2025-13-45", "2025-12-31")).toBeNull(); // impossible month/day
+    expect(clampAbsoluteRange("not-a-date", "also-not")).toBeNull();
+  });
+
+  it("passes a normal in-range window through unchanged", () => {
+    expect(clampAbsoluteRange("2024-03-01", "2024-06-30")).toEqual({
+      start: "2024-03-01",
+      end: "2024-06-30",
+    });
+  });
+
+  it("clamps an absurd range to the data floor and today (the amplification guard)", () => {
+    const result = clampAbsoluteRange("0001-01-01", "9999-12-31");
+    expect(result).not.toBeNull();
+    expect(result!.start).toBe(`${ENERGY_DATA_FLOOR_YEAR}-01-01`);
+    // end is clamped to today, never a far-future date
+    expect(new Date(result!.end).getTime()).toBeLessThanOrEqual(Date.now());
+  });
+
+  it("returns null for an inverted range", () => {
+    expect(clampAbsoluteRange("2025-06-01", "2025-01-01")).toBeNull();
+  });
+});
+
+describe("safeCountry", () => {
+  it("passes known country codes (case-insensitive)", () => {
+    expect(safeCountry("de")).toBe("de");
+    expect(safeCountry("FR")).toBe("fr");
+  });
+
+  it("falls back to 'de' for unknown or empty values", () => {
+    expect(safeCountry(null)).toBe("de");
+    expect(safeCountry("")).toBe("de");
+    expect(safeCountry("../etc/passwd")).toBe("de");
+    expect(safeCountry("xx")).toBe("de");
+  });
+});
 
 // ─── Timestamp Normalization ────────────────────────────────────────────────
 

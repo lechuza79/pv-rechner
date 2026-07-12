@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err) {
-    return NextResponse.json({ error: (err as Error).message }, { status: 400 });
+    console.error("[mastr/summary] failed:", (err as Error).message);
+    return NextResponse.json({ error: "Daten konnten nicht geladen werden" }, { status: 400 });
   }
 }
