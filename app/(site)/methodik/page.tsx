@@ -212,7 +212,9 @@ export default async function MethodikPage() {
         <h2 style={S.h2}>Wärmepumpe, E-Auto & Klimaanlage</h2>
         <p style={S.p}>
           Alle drei erhöhen deinen Stromverbrauch — und damit auch die Menge Solarstrom,
-          die du selbst nutzen kannst. Eine Wärmepumpe verbraucht ca. 3.500 kWh/Jahr,
+          die du selbst nutzen kannst. Den Wärmepumpen-Strombedarf berechnen wir
+          individuell aus deinem Gebäude (Wohnfläche, Dämmung, Heizsystem, Haustyp) —
+          bei einem Standard-Einfamilienhaus sind das grob 6.000–8.000 kWh/Jahr;
           ein E-Auto je nach Fahrleistung 1.800–3.600 kWh/Jahr.
         </p>
         <p style={S.p}>
@@ -308,11 +310,11 @@ export default async function MethodikPage() {
         </p>
         <div style={S.card}>
           <span style={S.label}>Berechnung</span>
-          <span style={S.accent}>Wärmebedarf:</span> 3.500 kWh Strom × COP 3,5 = 12.250 kWh Wärme/Jahr
+          <span style={S.accent}>Wärmebedarf (Beispiel Standard-Haus):</span> ~7.000 kWh Strom × COP 3,5 = 24.500 kWh Wärme/Jahr
           <br />
-          <span style={S.accent}>Gaskessel:</span> 12.250 kWh ÷ 0,90 Wirkungsgrad = 13.611 kWh Gas
+          <span style={S.accent}>Gaskessel:</span> 24.500 kWh ÷ 0,90 Wirkungsgrad = 27.222 kWh Gas
           <br />
-          <span style={S.accent}>Ölkessel:</span> 12.250 kWh ÷ 0,85 Wirkungsgrad = 14.412 kWh Öl
+          <span style={S.accent}>Ölkessel:</span> 24.500 kWh ÷ 0,85 Wirkungsgrad = 28.824 kWh Öl
           <br />
           <br />
           <span style={S.label}>Preise</span>

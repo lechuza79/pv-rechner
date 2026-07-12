@@ -32,6 +32,14 @@ describe("recommend (PV system recommendation)", () => {
     expect(r.kwp).toBeLessThanOrEqual(r.reasoning.maxRoofKwp);
   });
 
+  it("never recommends more kWp than a tiny roof can hold", () => {
+    // customRoofM2 = 8 → maxRoofKwp 1.5, below the KWP_MIN(3) floor. Must use the
+    // roof-limited size as the candidate, not fall back to recommending 3 kWp.
+    const r = recommend({ ...baseInput, customRoofM2: 8 });
+    expect(r.reasoning.maxRoofKwp).toBe(1.5);
+    expect(r.kwp).toBeLessThanOrEqual(1.5);
+  });
+
   it("calculates total consumption from base + extras", () => {
     const noExtras = recommend(baseInput);
     const withWp = recommend({ ...baseInput, wp: "ja" });

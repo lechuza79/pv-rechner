@@ -328,7 +328,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Antrag vor Maßnahmenbeginn; mit BEG kombinierbar",
     ],
     combinableWith: BUND,
-    pvPerKwp: 100, pvCap: 2000,
+    // Info-only: proKlima gilt nur in 6 der ~21 Gemeinden der Region Hannover.
+    // Der Kreis-AGS 03241 würde per Präfix-Match den ganzen Landkreis treffen
+    // (z. B. Burgdorf, das NICHT förderfähig ist) → falscher €-Abzug. Bis eine
+    // exakte 8-stellige AGS-Allowlist der Fördergemeinden hinterlegt ist, wird
+    // das Programm nur als Hinweis angezeigt und NICHT automatisch abgezogen.
   },
 
   // ── Kommune – aktuell ausgeschöpft / eingestellt (zur Lagebeurteilung) ───────
@@ -866,7 +870,7 @@ export function fundingAmount(
     pv = tierAmount(f.pvTiers, kwp);
   }
   let sp = 0;
-  if (f.speicherPerKwh && speicherKwh > 0) {
+  if (f.speicherPerKwh && speicherKwh >= (f.speicherMin ?? 0) && speicherKwh > 0) {
     sp = speicherKwh * f.speicherPerKwh;
     if (f.speicherCap) sp = Math.min(sp, f.speicherCap);
   } else if (f.speicherTiers && speicherKwh >= (f.speicherMin ?? 0)) {

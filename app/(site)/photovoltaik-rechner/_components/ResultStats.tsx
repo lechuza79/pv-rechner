@@ -2,6 +2,7 @@
 import { v } from "../../../../lib/theme";
 import { YEARS, FUEL } from "../../../../lib/constants";
 import { calcFuelCost25, calcWpGridCost25 } from "../../../../lib/calc";
+import { EA_KWH_PER_KM } from "../../../../lib/consumption";
 
 interface ResultStatsProps {
   total: number;
@@ -9,6 +10,9 @@ interface ResultStatsProps {
   wp: string;
   ea: string;
   eaKm: number;
+  /** Building-based WP annual electricity (kWh) — same value the rest of the
+   *  result page shows, NOT the old 3.500-kWh flat rate. */
+  wpKwh: number;
   effEv: number;
   jahresertrag: number;
   baseKwh: number;
@@ -18,7 +22,7 @@ interface ResultStatsProps {
 }
 
 export default function ResultStats({
-  total, kosten, wp, ea, eaKm, effEv, jahresertrag, baseKwh, oStrom, fuelType, setFuelType,
+  total, kosten, wp, ea, eaKm, wpKwh, effEv, jahresertrag, baseKwh, oStrom, fuelType, setFuelType,
 }: ResultStatsProps) {
   return (
     <>
@@ -38,9 +42,9 @@ export default function ResultStats({
       </div>
 
       {wp !== "nein" && (() => {
-        const autarky = Math.min(effEv / 100 * jahresertrag / (baseKwh + 3500 + (ea !== "nein" ? Math.round(eaKm * 0.18) : 0)), 1);
-        const fuelCost = calcFuelCost25(3500, fuelType);
-        const wpGridCost = calcWpGridCost25(3500, autarky, oStrom, 0.03);
+        const autarky = Math.min(effEv / 100 * jahresertrag / (baseKwh + wpKwh + (ea !== "nein" ? Math.round(eaKm * EA_KWH_PER_KM) : 0)), 1);
+        const fuelCost = calcFuelCost25(wpKwh, fuelType);
+        const wpGridCost = calcWpGridCost25(wpKwh, autarky, oStrom, 0.03);
         const netSaving = fuelCost - wpGridCost;
         return (
           <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
@@ -77,7 +81,7 @@ export default function ResultStats({
               Ersparnis: {netSaving.toLocaleString("de-DE")} €
             </div>
             <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4, lineHeight: 1.5 }}>
-              {Math.round(3500 * 3.5).toLocaleString("de-DE")} kWh Wärme/Jahr · WP-Autarkie {Math.round(autarky * 100)} % · inkl. CO₂-Abgabe
+              {Math.round(wpKwh * 3.5).toLocaleString("de-DE")} kWh Wärme/Jahr · WP-Autarkie {Math.round(autarky * 100)} % · inkl. CO₂-Abgabe
             </div>
           </div>
         );
