@@ -50,6 +50,12 @@ export async function GET() {
     const notes: string = latest.notes ?? "";
     const healthMatch = notes.match(/HEALTH=(\w+)/);
     const scrapeHealth = healthMatch ? healthMatch[1].toLowerCase() : "unknown";
+    // Per-value electricity marker written by the scrape ("Strom[ok|MISS|STALE]").
+    // A STALE electricity price already flips the overall HEALTH= to DEGRADED, but
+    // surfacing it by name makes the watcher's reason precise instead of a bare
+    // "scrape degraded".
+    const elecMatch = notes.match(/Strom\[(\w+)/);
+    const electricityHealth = elecMatch ? elecMatch[1].toLowerCase() : "unknown";
     const ageDays = daysSince(latest.valid_from);
     const stale = ageDays > STALE_DAYS;
 
@@ -57,12 +63,14 @@ export async function GET() {
     let status: "ok" | "degraded" | "failed" = "ok";
     const reasons: string[] = [];
     if (scrapeHealth !== "ok") { status = "degraded"; reasons.push(`scrape ${scrapeHealth}`); }
+    if (electricityHealth === "stale") { status = "degraded"; reasons.push("electricity price stale (2+ runs without a fresh scrape)"); }
     if (stale) { status = "degraded"; reasons.push(`stale (${ageDays}d old)`); }
 
     return NextResponse.json({
       status,
       reasons,
       scrapeHealth,
+      electricityHealth,
       ageDays,
       batteryPerKwh: Number(latest.battery_per_kwh),
       batteryBase: Number(latest.battery_base),
