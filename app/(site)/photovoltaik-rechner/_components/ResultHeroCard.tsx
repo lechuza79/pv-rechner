@@ -52,7 +52,7 @@ export default function ResultHeroCard({
         borderRadius: v('--radius-md'), textAlign: "left", fontSize: 12,
       }}>
         {/* Left column */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 13 }}>
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 13 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ color: v('--color-text-secondary') }}>Investition</span>
             <InlineEdit value={kosten} onCommit={v => setOKosten(v)} unit=" €" step={500} min={500} max={80000} width={68} />
@@ -73,7 +73,7 @@ export default function ResultHeroCard({
           </div>
         </div>
         {/* Right column */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 13 }}>
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 13 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ color: v('--color-text-secondary') }}><GlossaryTerm id="eigenverbrauch">Eigenverbr.</GlossaryTerm></span>
             {effEinspeisungModus === "voll" ? (
@@ -83,9 +83,9 @@ export default function ResultHeroCard({
             )}
           </div>
           <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: effEinspeisungModus !== "aus" ? 6 : 0 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", rowGap: 4, marginBottom: effEinspeisungModus !== "aus" ? 6 : 0 }}>
               <span style={{ color: v('--color-text-secondary') }}><GlossaryTerm id="einspeiseverguetung">Einspeisung</GlossaryTerm></span>
-              <div style={{ display: "flex", gap: 2, background: v('--color-bg'), borderRadius: 8, padding: 2 }}>
+              <div style={{ display: "flex", gap: 2, background: v('--color-bg'), borderRadius: 8, padding: 2, flexShrink: 0 }}>
                 {(["aus", "teil", "voll"] as const).map(m => {
                   const isActive = effEinspeisungModus === m;
                   const isDisabled = m === "voll" && vollDisabled;
@@ -112,9 +112,9 @@ export default function ResultHeroCard({
               </div>
             )}
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", rowGap: 4 }}>
             <span style={{ color: v('--color-text-secondary') }}>Standort</span>
-            <form onSubmit={e => { e.preventDefault(); fetchPvgis(plz); }} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+            <form onSubmit={e => { e.preventDefault(); fetchPvgis(plz); }} style={{ display: "inline-flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
               <input
                 value={plz}
                 placeholder="PLZ"

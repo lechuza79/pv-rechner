@@ -116,6 +116,9 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
     insulationIdx: input.wpInsulation ?? DEFAULT_WP_BUILDING.insulationIdx,
     heizsystem: input.wpHeizsystem ?? DEFAULT_WP_BUILDING.heizsystem,
     personen: PERSONEN[input.personen].count,
+    // Haustyp (geteilte Wände) senkt den Wärmebedarf — konsistent mit dem
+    // WP-Rechner; der Empfehlungs-Flow fragt den Haustyp fürs Dach ohnehin ab.
+    haustypFaktor: HAUSTYPEN[input.haustyp].wpFaktor,
   });
   const wpConsumption = input.wp !== "nein" ? wpKwh : 0;
   const eaConsumption = input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0;

@@ -35,6 +35,10 @@ Step 0: Anlagengröße          → 5 / 8 / 10 / 15 kWp + "Anderer Wert" (2×2+1
 Step 1: Speicher               → Nein / 5 / 10 / 15 kWh (2×2 Grid, OptionCard)
 Step 2: Haushalt               → Personen + Nutzungsprofil
 Step 3: Großverbraucher        → WP + E-Auto + Klimaanlage (TriToggles)
+                                 WP an → Gebäude-Detail (Wohnfläche, Dämmung,
+                                 Heizsystem, HAUSTYP) für den WP-Strom, konsistent
+                                 zum WP-Rechner (Empfehlungs-Flow leitet den
+                                 Haustyp-Faktor aus dem Dach-Haustyp ab)
 → Ergebnis (gleiche Seite)
 ```
 
@@ -101,6 +105,12 @@ Einspeisevergütung:  EEG-konform, 4 Sätze (Teil/Voll × ≤10/>10 kWp)
                      Volleinspeisung: 12,34 / 10,35 ct/kWh
                      Gewichteter Mischsatz bei Anlagen >10 kWp
                      3-State: Aus / Teil / Voll (auto-berechnet, manuell überschreibbar)
+                     Zahlung nur 20 Jahre (FEED_IN_YEARS): EEG-Garantie endet nach
+                     20 J., danach 0 (Marktwert konservativ nicht angesetzt);
+                     Eigenverbrauchs-Ersparnis läuft weiter. Ergebnis-Notiz +
+                     FAQ-Eintrag zur geplanten EEG-Reform 2027 (Referentenentwurf,
+                     Neuanlagen ab 2027; Bestandsschutz für ≤2026) — Notiz nur bei
+                     aktiver Einspeisung; wächter-gepflegter Stichtags-Fakt
                      Quelle = lib/feedin-config.ts (Stand 02–07/2026); die
                      Supabase-Tabelle feed_in_rates ist NICHT angelegt, daher ist
                      die Config die De-facto-Quelle. EEG degressiert 1%/Halbjahr

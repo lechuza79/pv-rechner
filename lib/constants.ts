@@ -83,14 +83,17 @@ export const SCENARIOS = [
   { id: "optimistic", label: "Optimistisch", color: "#1365EA", strom: 0.05, evDelta: 5 },
 ];
 
-export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "bl", "foe", "vb", "kl", "km2", "klwh", "wf", "wi", "wh"];
+export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "bl", "foe", "vb", "kl", "km2", "klwh", "wf", "wi", "wh", "wht"];
 
 // ─── Empfehlungs-Flow ───────────────────────────────────────────────────────
+// footprint = nutzbare Dachfläche (Empfehlung); wpFaktor = Heizlast-Faktor durch
+// geteilte Wände (Wärmepumpen-Strom, analog HAUSTYP_WP). Reihenhaus liegt
+// zwischen End- (0,9) und Mittellage (0,78), daher konservativ 0,85.
 export const HAUSTYPEN = [
-  { label: "Reihenhaus", sub: "Schmal, begrenzte Dachfläche", footprint: 50 },
-  { label: "Doppelhaushälfte", sub: "Halbes Dach nutzbar", footprint: 70 },
-  { label: "Einfamilienhaus", sub: "Freistehend, gute Dachfläche", footprint: 100 },
-  { label: "Großes EFH", sub: "Freistehend, große Dachfläche", footprint: 150 },
+  { label: "Reihenhaus", sub: "Schmal, begrenzte Dachfläche", footprint: 50, wpFaktor: 0.85 },
+  { label: "Doppelhaushälfte", sub: "Halbes Dach nutzbar", footprint: 70, wpFaktor: 0.9 },
+  { label: "Einfamilienhaus", sub: "Freistehend, gute Dachfläche", footprint: 100, wpFaktor: 1.0 },
+  { label: "Großes EFH", sub: "Freistehend, große Dachfläche", footprint: 150, wpFaktor: 1.0 },
 ];
 
 export const DACHARTEN = [
