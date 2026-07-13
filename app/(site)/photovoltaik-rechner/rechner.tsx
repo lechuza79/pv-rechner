@@ -3,7 +3,7 @@ import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { paramsToRow } from "../../../lib/types";
-import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN, INSULATION_BESTAND } from "../../../lib/constants";
+import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
@@ -59,6 +59,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [wpWohnflaeche, setWpWohnflaeche] = useState(hasShare ? paramInt(initialParams, "wf", DEFAULT_WP_BUILDING.wohnflaeche, 20, 1000) : DEFAULT_WP_BUILDING.wohnflaeche);
   const [wpInsulation, setWpInsulation] = useState(hasShare ? paramInt(initialParams, "wi", DEFAULT_WP_BUILDING.insulationIdx, 0, INSULATION_BESTAND.length - 1) : DEFAULT_WP_BUILDING.insulationIdx);
   const [wpHeizsystem, setWpHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">(hasShare ? (paramStr(initialParams, "wh", DEFAULT_WP_BUILDING.heizsystem, ["fbh", "hk_neu", "hk_alt"]) as "fbh" | "hk_neu" | "hk_alt") : DEFAULT_WP_BUILDING.heizsystem);
+  // Haustyp (geteilte Wände) für den WP-Strom — 0 = freistehend (Default).
+  const [wpHaustyp, setWpHaustyp] = useState(hasShare ? paramInt(initialParams, "wht", 0, 0, HAUSTYP_WP.length - 1) : 0);
 
   // Editable overrides (null = use auto-calculated)
   const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 500 && n <= 200000 ? n : null; })() : null);
@@ -248,9 +250,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Rechner (Heizwärmebedarf ÷ Arbeitszahl). null wenn keine WP.
   const wpKwh = useMemo(
     () => (wp !== "nein"
-      ? calcWpAnnualElectricity({ situation: "bestand", wohnflaeche: wpWohnflaeche, insulationIdx: wpInsulation, personen: PERSONEN[personen].count, heizsystem: wpHeizsystem, wpType: "lwwp" })
+      ? calcWpAnnualElectricity({ situation: "bestand", wohnflaeche: wpWohnflaeche, insulationIdx: wpInsulation, personen: PERSONEN[personen].count, heizsystem: wpHeizsystem, wpType: "lwwp", haustypFaktor: HAUSTYP_WP[wpHaustyp].faktor })
       : null),
-    [wp, wpWohnflaeche, wpInsulation, personen, wpHeizsystem],
+    [wp, wpWohnflaeche, wpInsulation, personen, wpHeizsystem, wpHaustyp],
   );
   const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm, klima, klimaM2, klimaKwh, wpKwh);
   const gesamtVerbrauch = grundverbrauch + extraVerbrauch;
@@ -343,7 +345,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     p.set("p", String(personen));
     p.set("n", String(nutzung));
     p.set("wp", wp);
-    if (wp !== "nein") { p.set("wf", String(wpWohnflaeche)); p.set("wi", String(wpInsulation)); p.set("wh", wpHeizsystem); }
+    if (wp !== "nein") { p.set("wf", String(wpWohnflaeche)); p.set("wi", String(wpInsulation)); p.set("wh", wpHeizsystem); p.set("wht", String(wpHaustyp)); }
     p.set("ea", ea);
     if (ea !== "nein") p.set("km", String(eaKm));
     p.set("kl", klima);
@@ -631,10 +633,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
                 {wp !== "nein" && (
                   <WpBuildingInputs
-                    wohnflaeche={wpWohnflaeche} insulationIdx={wpInsulation} heizsystem={wpHeizsystem} wpKwh={wpKwh ?? 0}
+                    wohnflaeche={wpWohnflaeche} insulationIdx={wpInsulation} heizsystem={wpHeizsystem} haustypIdx={wpHaustyp} wpKwh={wpKwh ?? 0}
                     onWohnflaeche={n => { setWpWohnflaeche(n); setOEv(null); }}
                     onInsulation={i => { setWpInsulation(i); setOEv(null); }}
                     onHeizsystem={h => { setWpHeizsystem(h); setOEv(null); }}
+                    onHaustyp={i => { setWpHaustyp(i); setOEv(null); }}
                   />
                 )}
                 <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
@@ -951,6 +954,17 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               <Link href="/methodik" onClick={() => trackEvent("pv_methodik")} style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
               <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
             </div>
+
+            {/* Hinweis auf die geplante EEG-Reform — nur relevant, wenn überhaupt
+                eingespeist wird (Teil/Voll). Datierter Sachstand, siehe FAQ. */}
+            {effEinspeisungModus !== "aus" && (
+              <div style={{
+                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "10px 14px", marginBottom: 16,
+                border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.6,
+              }}>
+                <strong style={{ fontWeight: 700 }}>Einspeisevergütung:</strong> für Inbetriebnahme bis Ende 2026 volle 20 Jahre garantiert (Bestandsschutz). Für Neuanlagen ab 2027 ist ein Wegfall geplant — beschlossen ist er noch nicht.
+              </div>
+            )}
 
             <ResultActions
               copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}
