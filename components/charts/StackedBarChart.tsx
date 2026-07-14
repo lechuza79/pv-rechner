@@ -356,7 +356,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh, compact
         fontSize: 12,
         fontFamily: "var(--font-text)",
         color: "var(--color-text-primary)",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        boxShadow: "var(--shadow-md, 0 4px 12px rgba(0,0,0,0.1))",
         lineHeight: 1.6,
         pointerEvents: "none",
         zIndex: 10,

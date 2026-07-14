@@ -352,7 +352,7 @@ export default function EnergieClient() {
                     background: v("--color-bg"),
                     border: `1px solid ${v("--color-border")}`,
                     borderRadius: v("--radius-sm"),
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    boxShadow: v("--shadow-md"),
                     zIndex: 20,
                     padding: "4px 0",
                     minWidth: 80,

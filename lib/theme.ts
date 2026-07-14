@@ -68,6 +68,12 @@ export const tokens = {
   // ─── Progress (1) ──────────────────────────────────────────────────────────
   '--color-progress-inactive': '#E9E9E9',
 
+  // ─── Shadows (3) ───────────────────────────────────────────────────────────
+  // Tokenised so they invert for dark/dusk (black shadows vanish on dark grounds).
+  '--shadow-sm': '0 1px 3px rgba(0,0,0,0.06)',    // cards, subtle lift
+  '--shadow-md': '0 4px 16px rgba(0,0,0,0.08)',   // menus, popovers, tooltips
+  '--shadow-lg': '0 8px 28px rgba(0,0,0,0.10)',   // dropdowns, modals
+
   // ─── Fonts (2) ─────────────────────────────────────────────────────────────
   // Font families resolve to the self-hosted next/font variables (set on <html>
   // in app/(site)/layout.tsx), with system fallbacks before they load.
@@ -94,10 +100,110 @@ export function getCssVariables(): string {
   return `:root {\n${Object.entries(tokens).map(([k, val]) => `  ${k}: ${val};`).join('\n')}\n}`;
 }
 
+// ─── Dark / Dusk theme overrides ───────────────────────────────────────────
+// Only the tokens that change per theme; everything else inherits from :root
+// (the light base). data-theme values are the resolved themes from
+// lib/theme-schedule.ts ('light' | 'dusk' | 'dark'), set by the boot script and
+// the ThemeController.
+//
+// Semantic data colours stay recognisable in every mode: green = positive,
+// red = negative, cyan = highlight, and the energy-mix palette (green =
+// renewables, brown = fossil, pink = nuclear) are deliberately NOT overridden —
+// they are data, not chrome. Only chrome (surfaces, text, borders, shadows) and
+// the interactive accent shift, brightened for contrast on dark grounds.
+
+/** Nacht — cool dark slate. */
+const darkTokens: Partial<Record<TokenName, string>> = {
+  '--color-bg': '#12161C',
+  '--color-bg-muted': '#1B212A',
+  '--color-bg-accent': '#152238',
+  '--color-border': '#2A313C',
+  '--color-border-muted': '#232A34',
+  '--color-border-accent': '#31517F',
+  '--color-accent': '#4D8DF0',                      // brightened blue for dark contrast
+  '--color-accent-dim': 'rgba(77,141,240,0.16)',
+  '--color-accent-dark': '#8FBBF7',                 // "hover / accent text" → lighter on dark
+  '--color-accent-light': '#3E74CC',
+  '--color-positive': '#2BE06E',
+  '--color-negative': '#F26D6D',
+  '--color-negative-dim': 'rgba(242,109,109,0.12)',
+  '--color-negative-border': 'rgba(242,109,109,0.32)',
+  '--color-chart-positive-bg': 'rgba(43,224,110,0.13)',
+  '--color-chart-negative-bg': 'rgba(242,109,109,0.10)',
+  '--color-chart-grid': '#2A313C',
+  '--color-chart-zero': '#4C5561',
+  '--color-text-primary': '#E7EBF1',
+  '--color-text-secondary': '#9AA6B4',
+  '--color-text-muted': '#78828F',
+  '--color-text-faint': '#59616C',
+  '--color-progress-inactive': '#2A313C',
+  '--shadow-sm': '0 1px 3px rgba(0,0,0,0.45)',
+  '--shadow-md': '0 4px 16px rgba(0,0,0,0.55)',
+  '--shadow-lg': '0 10px 30px rgba(0,0,0,0.6)',
+};
+
+/** Dämmerung — warm, dimmed twilight between day and night. */
+const duskTokens: Partial<Record<TokenName, string>> = {
+  '--color-bg': '#26202B',                          // warm plum, dimmed (not deep dark)
+  '--color-bg-muted': '#302833',
+  '--color-bg-accent': '#342740',
+  '--color-border': '#3E3442',
+  '--color-border-muted': '#352C39',
+  '--color-border-accent': '#5A4A78',
+  '--color-accent': '#6E9CEE',
+  '--color-accent-dim': 'rgba(110,156,238,0.16)',
+  '--color-accent-dark': '#A9C4F5',
+  '--color-accent-light': '#5A7FC8',
+  '--color-positive': '#3BD97A',
+  '--color-negative': '#F07D72',
+  '--color-negative-dim': 'rgba(240,125,114,0.12)',
+  '--color-negative-border': 'rgba(240,125,114,0.30)',
+  '--color-chart-positive-bg': 'rgba(59,217,122,0.12)',
+  '--color-chart-negative-bg': 'rgba(240,125,114,0.10)',
+  '--color-chart-grid': '#3E3442',
+  '--color-chart-zero': '#5E5566',
+  '--color-text-primary': '#F0E6EC',                // warm off-white
+  '--color-text-secondary': '#B7A6B4',
+  '--color-text-muted': '#8E7F8C',
+  '--color-text-faint': '#6B5F6A',
+  '--color-progress-inactive': '#3E3442',
+  '--shadow-sm': '0 1px 3px rgba(0,0,0,0.35)',
+  '--shadow-md': '0 4px 16px rgba(0,0,0,0.45)',
+  '--shadow-lg': '0 10px 30px rgba(0,0,0,0.5)',
+};
+
+/** Resolved theme identifier used on the <html data-theme> attribute. */
+export type ResolvedTheme = 'light' | 'dusk' | 'dark';
+
+const OVERRIDES: Record<Exclude<ResolvedTheme, 'light'>, Partial<Record<TokenName, string>>> = {
+  dark: darkTokens,
+  dusk: duskTokens,
+};
+
+/**
+ * CSS for the dark/dusk theme overrides. Emitted once in the site <head> after
+ * getCssVariables(). Light needs no block — it is the :root base.
+ */
+export function getThemeOverrides(): string {
+  return (Object.entries(OVERRIDES) as [keyof typeof OVERRIDES, Partial<Record<TokenName, string>>][])
+    .map(([theme, set]) => {
+      const body = Object.entries(set).map(([k, val]) => `  ${k}: ${val};`).join('\n');
+      return `:root[data-theme="${theme}"] {\n${body}\n}`;
+    })
+    .join('\n');
+}
+
 /** Global reset + animations (shared across all pages) */
 export const globalStyles = `
   html{scroll-behavior:smooth}
   *{box-sizing:border-box;margin:0;padding:0}
+  /* Smooth theme cross-fade — only enabled while a theme switch is in flight
+     (ThemeController toggles .theme-anim on <html>), so normal hovers stay
+     instant and the initial (boot-script) theme paints without animating. */
+  html.theme-anim,html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{
+    transition:background-color .5s ease,border-color .5s ease,color .5s ease,fill .5s ease,stroke .5s ease,box-shadow .5s ease,background .5s ease !important;
+  }
+  @media (prefers-reduced-motion:reduce){html.theme-anim,html.theme-anim *{transition:none !important}}
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
   input[type=number]{-moz-appearance:textfield}

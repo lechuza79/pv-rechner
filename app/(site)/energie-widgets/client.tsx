@@ -717,7 +717,7 @@ const S: Record<string, React.CSSProperties> = {
     position: "sticky" as const,
     top: 12,
     zIndex: 50,
-    boxShadow: "0 6px 20px rgba(0,0,0,0.1)",
+    boxShadow: v("--shadow-lg"),
   },
   themePanelHead: {
     display: "flex",

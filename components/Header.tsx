@@ -6,6 +6,7 @@ import Logo from "./Logo";
 import { IconUser, IconMenu, IconClose, IconChevronDown } from "./Icons";
 import { v } from "../lib/theme";
 import { useAuth } from "../lib/auth";
+import ThemeController from "./ThemeController";
 
 interface HeaderProps {
   onLoginClick?: () => void;
@@ -160,7 +161,8 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
           </nav>
         )}
 
-        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 14 }}>
+          <ThemeController />
           {isDesktop ? authElement : (
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -198,7 +200,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             background: v('--color-bg'),
             borderBottom: `1px solid ${v('--color-border')}`,
             padding: "8px 24px 16px",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+            boxShadow: v('--shadow-md'),
           }}>
             <MobileSection title="Rentabilität berechnen" items={RECHNER_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
@@ -282,7 +284,7 @@ function DesktopDropdown({
             background: v('--color-bg'),
             border: `1px solid ${v('--color-border')}`,
             borderRadius: 14,
-            boxShadow: "0 8px 28px rgba(0,0,0,0.1)",
+            boxShadow: v('--shadow-lg'),
             padding: 8,
             width,
             display: "flex",

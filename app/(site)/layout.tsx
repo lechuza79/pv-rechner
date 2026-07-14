@@ -1,11 +1,35 @@
 import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
-import { getCssVariables, globalStyles } from "../../lib/theme";
+import { getCssVariables, getThemeOverrides, globalStyles } from "../../lib/theme";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
 import Footer from "../../components/Footer";
 import { Analytics } from "@vercel/analytics/next";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
+
+// No-flash boot: resolve and apply the theme before first paint. Inlines a
+// compact copy of lib/theme-schedule.ts (it cannot import modules this early).
+// "auto" tracks the sun over central Germany — keep this formula in sync with
+// the module. Reads/writes the same localStorage key as ThemeController.
+const themeBootScript = `(function(){try{
+var p=localStorage.getItem('sc-theme-pref')||'auto',r;
+if(p==='light')r='light';else if(p==='dusk')r='dusk';else if(p==='dark')r='dark';else{
+var d=new Date(),lat=51.16,lon=10.45,
+s=Date.UTC(d.getFullYear(),0,0),
+doy=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-s)/864e5),
+dec=0.4093*Math.sin(2*Math.PI/365*(doy-81)),
+la=lat*Math.PI/180,
+ch=Math.max(-1,Math.min(1,-Math.tan(la)*Math.tan(dec))),
+hd=Math.acos(ch)*12/Math.PI,
+tz=-d.getTimezoneOffset()/60,
+sn=12-lon/15,sr=sn-hd+tz,ss=sn+hd+tz,
+h=d.getHours()+d.getMinutes()/60,b=50/60;
+r=(h<sr-b||h>ss+b)?'dark':((h<sr+b||h>ss-b)?'dusk':'light');
+}
+var e=document.documentElement;
+e.setAttribute('data-theme',r);
+e.setAttribute('data-theme-pref',p);
+}catch(_){}})();`;
 
 // Self-hosted fonts (next/font downloads them at build time and serves them
 // from our own domain). No runtime request to Google -> DSGVO-konform und
@@ -84,10 +108,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de" className={`${dmSans.variable} ${jetBrainsMono.variable}`}>
+    <html lang="de" className={`${dmSans.variable} ${jetBrainsMono.variable}`} suppressHydrationWarning>
+      {/* suppressHydrationWarning: the theme boot script sets data-theme /
+          data-theme-pref on <html> before hydration (no-flash), which React
+          would otherwise flag as a server/client attribute mismatch. */}
       <head>
         <meta name="google-site-verification" content="OdndfgILkY22LlMHqIT8_ASdidCYTyqksv6LC9zw67o" />
-        <style dangerouslySetInnerHTML={{ __html: getCssVariables() + globalStyles }} />
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+        <style dangerouslySetInnerHTML={{ __html: getCssVariables() + getThemeOverrides() + globalStyles }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
