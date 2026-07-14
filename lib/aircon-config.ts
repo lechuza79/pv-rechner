@@ -42,6 +42,7 @@ export interface AcConfig {
   // an veröffentlichten Verbräuchen (Split-Einzelraum ~100 kWh Strom/Jahr).
   buildingGain: number;
 
+  defaultDeviceId: AcDeviceId; // typisches Standardgerät (Schnellschätzung, Modal-Vorbelegung)
   defaultRooms: number;
   defaultRoomM2: number;       // gekühlte Fläche je Raum (nicht ganze Wohnfläche!)
   defaultTargetTemp: number;   // Wunsch-Innentemperatur °C
@@ -142,6 +143,7 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
 
   buildingGain: 33,      // Wh/(m²·K·h), kalibriert (siehe oben)
 
+  defaultDeviceId: "portasplit",
   defaultRooms: 1,
   defaultRoomM2: 20,
   defaultTargetTemp: 24,

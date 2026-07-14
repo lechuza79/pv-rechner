@@ -11,7 +11,11 @@ import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
 import GlossaryTerm from "../../../components/GlossaryTerm";
-import { calcExtraConsumption, calcKlimaAnnual, KLIMA_DEFAULT_M2, KLIMA_M2_PRESETS } from "../../../lib/consumption";
+import { calcExtraConsumption, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
+import { calcAircon } from "../../../lib/aircon";
+import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
+import { useCoolingDegree } from "../../../lib/useCoolingDegree";
+import KlimaDetailModal from "../../../components/KlimaDetailModal";
 import Chart from "./_components/Chart";
 import { v } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
@@ -47,11 +51,16 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [ea, setEa] = useState(hasShare ? paramStr(initialParams, "ea", "nein", ["nein", "geplant", "ja"]) : "nein");
   const [eaKm, setEaKm] = useState(hasShare ? paramInt(initialParams, "km", 15000, 1000, 50000) : 15000);
   const [klima, setKlima] = useState(hasShare ? paramStr(initialParams, "kl", "nein", ["nein", "geplant", "ja"]) : "nein");
-  const [klimaM2, setKlimaM2] = useState(hasShare ? paramInt(initialParams, "km2", KLIMA_DEFAULT_M2, 20, 500) : KLIMA_DEFAULT_M2);
-  // Direkt übernommener Kühlstrom aus dem Klimaanlagen-Rechner (kWh/a). Hat Vorrang
-  // vor der Flächen-Schätzung; wird gelöscht, sobald der Nutzer die Wohnfläche ändert.
+  // Klimaanlage: Anzahl gekühlter Räume (statt Wohnfläche — die kollidierte mit
+  // der WP-Wohnfläche). Aus Räumen + Standort schätzen wir den Kühlstrom mit
+  // demselben Wettermodell wie der Klimaanlagen-Rechner (calcAircon), kein Drift.
+  const [klimaRooms, setKlimaRooms] = useState(hasShare ? paramInt(initialParams, "klr", 2, 1, 5) : 2);
+  // Direkt übernommener Kühlstrom (kWh/a) — aus dem Detail-Modal oder dem
+  // Klimaanlagen-Rechner. Hat Vorrang vor der Schnellschätzung; wird gelöscht,
+  // sobald der Nutzer die Räume ändert (dann greift wieder die Schätzung).
   const [klimaKwh, setKlimaKwh] = useState<number | null>(hasShare && initialParams?.klwh ? (() => { const n = Number(initialParams.klwh); return isFinite(n) && n >= 0 && n <= 20000 ? Math.round(n) : null; })() : null);
-  const setKlimaM2Manual = (m2: number) => { setKlimaM2(m2); setKlimaKwh(null); setOEv(null); };
+  const setKlimaRoomsManual = (n: number) => { setKlimaRooms(n); setKlimaKwh(null); setOEv(null); };
+  const [klimaDetailOpen, setKlimaDetailOpen] = useState(false);
 
   // Wärmepumpen-Gebäudedaten: nötig, damit der WP-Jahresstrom genauso aus dem
   // Heizwärmebedarf ÷ Arbeitszahl kommt wie im Wärmepumpen-Rechner (statt einer
@@ -181,6 +190,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Auto-fetch bei Share-URL mit PLZ
   useEffect(() => { if (plz) fetchPvgis(plz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Standort-Kühlgradstunden (für die Klima-Schnellschätzung + das Detail-Modal) —
+  // derselbe geteilte Hook wie im Klimaanlagen-Rechner. Fetch, sobald eine gültige
+  // PLZ vorliegt; ohne PLZ bleibt der deutsche Durchschnitt aus der Config.
+  const cooling = useCoolingDegree();
+  const coolingFetch = cooling.fetchForPlz;
+  useEffect(() => { if (/^\d{5}$/.test(plz)) coolingFetch(plz); }, [plz, coolingFetch]);
+
   // Dynamic market prices + feed-in rates
   const prices = usePrices();
   const feedInRates = useFeedInRates();
@@ -244,8 +260,21 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const kosten = Math.max(0, bruttoKosten - foerderung);
   // Grundverbrauch: direkt eingegeben oder aus Personenzahl geschätzt.
   const grundverbrauch = oVerbrauch ?? PERSONEN[personen].verbrauch;
-  // Effektiver Kühlstrom: übernommener Wert (Klimaanlagen-Rechner) hat Vorrang.
-  const klimaKwhEff = klima !== "nein" ? (klimaKwh ?? calcKlimaAnnual(klimaM2)) : 0;
+  // Schnellschätzung des Kühlstroms: dasselbe Wettermodell wie der Klimaanlagen-
+  // Rechner (calcAircon), mit Config-Defaults + gewählten Räumen + Standort-
+  // Kühlgradstunden. So driften Schnellschätzung und Detail-Rechnung nie.
+  const quickKlimaKwh = useMemo(
+    () => calcAircon({
+      deviceId: CFG.defaultDeviceId, rooms: klimaRooms, roomM2: CFG.defaultRoomM2,
+      exposure: CFG.defaultExposure, targetTemp: CFG.defaultTargetTemp, window: "day",
+      cdh: cooling.cdhSet.avg5, stromPrice: oStrom, pvActive: false,
+    }).electricityKwh,
+    [klimaRooms, cooling.cdhSet.avg5, oStrom],
+  );
+  // Effektiver Kühlstrom: übernommener Wert (Detail-Modal / Klimaanlagen-Rechner)
+  // hat Vorrang vor der Schnellschätzung. null wenn keine Klimaanlage.
+  const effKlimaKwh = klima !== "nein" ? (klimaKwh ?? quickKlimaKwh) : null;
+  const klimaKwhEff = effKlimaKwh ?? 0;
   // WP-Jahresstrom aus den Gebäudedaten — dieselbe Physik wie der Wärmepumpen-
   // Rechner (Heizwärmebedarf ÷ Arbeitszahl). null wenn keine WP.
   const wpKwh = useMemo(
@@ -254,9 +283,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       : null),
     [wp, wpWohnflaeche, wpInsulation, personen, wpHeizsystem, wpHaustyp],
   );
-  const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm, klima, klimaM2, klimaKwh, wpKwh);
+  const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm, klima, KLIMA_DEFAULT_M2, effKlimaKwh, wpKwh);
   const gesamtVerbrauch = grundverbrauch + extraVerbrauch;
-  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2, klimaKwh, wpKwh, kwp, ertragKwp: oErtrag, baseKwh: oVerbrauch });
+  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: oErtrag, baseKwh: oVerbrauch });
   const effEv = oEv !== null ? oEv : autoEv;
   // Volleinspeisung is incompatible with WP/E-Auto (they require self-consumption)
   const vollDisabled = wp !== "nein" || ea !== "nein";
@@ -349,7 +378,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     p.set("ea", ea);
     if (ea !== "nein") p.set("km", String(eaKm));
     p.set("kl", klima);
-    if (klima !== "nein") p.set("km2", String(klimaM2));
+    if (klima !== "nein") p.set("klr", String(klimaRooms));
     if (klima !== "nein" && klimaKwh !== null) p.set("klwh", String(klimaKwh));
     if (anlage === 4) p.set("ck", String(customKwp));
     if (oKosten !== null) p.set("k", String(oKosten));
@@ -451,6 +480,15 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
         <Header
           onLoginClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }}
+        />
+
+        <KlimaDetailModal
+          open={klimaDetailOpen}
+          onClose={() => setKlimaDetailOpen(false)}
+          rooms={klimaRooms}
+          plz={plz}
+          stromPrice={oStrom}
+          onApply={kwh => { setKlimaKwh(kwh); setOEv(null); }}
         />
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
@@ -660,20 +698,26 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 <TriToggle label="❄️ Klimaanlage" options={TRI} value={klima} onChange={v => { setKlima(v); setOEv(null); }} />
                 {klima !== "nein" && (
                   <div style={{ marginBottom: 18, marginTop: -10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Wohnfläche ca.</div>
+                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Wie viele Räume kühlst du?</div>
                     <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                      {KLIMA_M2_PRESETS.map(m2 => (
-                        <button key={m2} onClick={() => setKlimaM2Manual(m2)} style={{
-                          padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                          background: klimaM2 === m2 ? v('--color-accent-dim') : v('--color-bg-muted'),
-                          border: klimaM2 === m2 ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                          color: klimaM2 === m2 ? v('--color-accent') : v('--color-text-muted'),
-                        }}>{m2} m²</button>
+                      {[1, 2, 3, 4, 5].map(n => (
+                        <button key={n} onClick={() => setKlimaRoomsManual(n)} style={{
+                          padding: "7px 12px", borderRadius: v('--radius-sm'), fontSize: 13, fontWeight: 700, cursor: "pointer",
+                          background: klimaRooms === n ? v('--color-accent-dim') : v('--color-bg-muted'),
+                          border: klimaRooms === n ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                          color: klimaRooms === n ? v('--color-accent') : v('--color-text-muted'),
+                        }}>{n}</button>
                       ))}
-                      <PresetNumberInput value={klimaM2} presets={KLIMA_M2_PRESETS} min={20} max={500} unit="m²" onCommit={setKlimaM2Manual} />
+                      <button onClick={() => setKlimaDetailOpen(true)} style={{
+                        marginLeft: "auto", padding: "7px 12px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700, cursor: "pointer",
+                        background: v('--color-bg-muted'), border: `1.5px solid ${v('--color-border')}`, color: v('--color-accent'),
+                      }}>Details</button>
                     </div>
                     <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5 }}>
-                      Nur Kühlung im Sommer. Aus der Wohnfläche schätzen wir ~{calcKlimaAnnual(klimaM2).toLocaleString("de-DE")} kWh/Jahr.
+                      Nur Kühlung im Sommer.{" "}
+                      {klimaKwh !== null
+                        ? <>Übernommen: <strong style={{ color: v('--color-text-primary') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh/Jahr</strong>.</>
+                        : <>Schätzung: ~<strong style={{ color: v('--color-text-primary') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh/Jahr</strong>. Eine Split-Klimaanlage kühlt oft nur einzelne Räume — über „Details" rechnest du Gerät, Raumgröße und Sonne genau durch.</>}
                     </div>
                   </div>
                 )}
@@ -768,7 +812,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   </div>
                   {klimaKwh !== null && (
                     <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.4 }}>
-                      * Kühlstrom aus dem <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none" }}>Klimaanlagen-Rechner</Link> übernommen. Wohnfläche ändern für eine eigene Schätzung.
+                      * Kühlstrom aus den Details bzw. dem <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none" }}>Klimaanlagen-Rechner</Link> übernommen. Räume ändern für die Schnellschätzung.
                     </div>
                   )}
                 </div>
@@ -838,7 +882,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             <QuickSettings
               wp={wp} setWp={setWp} ea={ea} setEa={setEa} eaKm={eaKm} setEaKm={setEaKm}
-              klima={klima} setKlima={setKlima} klimaM2={klimaM2} setKlimaM2={setKlimaM2Manual}
+              klima={klima} setKlima={setKlima} klimaRooms={klimaRooms} setKlimaRooms={setKlimaRoomsManual}
+              onKlimaDetails={() => setKlimaDetailOpen(true)}
               speicher={speicher} setSpeicher={setSpeicher} spKwh={spKwh}
               oKosten={oKosten} setOKosten={setOKosten} setOEv={() => setOEv(null)}
             />
