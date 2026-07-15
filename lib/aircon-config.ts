@@ -6,12 +6,40 @@
 //
 // Kühlung ist der Kern. Split-Geräte können zusätzlich HEIZEN (Luft-Luft-
 // Wärmepumpe, Arbeitszahl SCOP) — das modellieren wir als Übergangszeit-Heizung
-// (heatSpecKwhPerM2 + device.scop): ehrliche Teilheizung, die Gas spart. Für die
-// kalte Kernzeit und das ganze Haus bleibt der Wärmepumpen-Rechner die bessere
-// Adresse. Dieselbe Split-Heiz-Funktion (calcAirconHeating) nutzt auch der
-// Wärmepumpen-Rechner für seinen „Split als Teil-Ergänzung"-Block.
+// (heatStandards × heatTransitionShare + device.scop): ehrliche Teilheizung, die
+// Gas spart. Für die kalte Kernzeit und das ganze Haus bleibt der
+// Wärmepumpen-Rechner die bessere Adresse. Split-Heizen gibt es NUR hier
+// (calcAirconHeating hat genau einen Aufrufer: den Klimaanlagen-Rechner).
+
+import { INSULATION_BESTAND, INSULATION_NEUBAU } from "./constants";
 
 export type AcDeviceId = "monoblock" | "portasplit" | "split";
+
+// Gebäudestandard für das HEIZEN mit Split. Beim Kühlen fragen wir bewusst
+// Sonne/Lage statt Dämmung (solare Gewinne dominieren, siehe exposureOptions) —
+// beim Heizen ist die Dämmung dagegen der dominante Hebel, ein Wert für alle wäre
+// grob falsch (Altbau ~3× Neubau).
+//
+// GETEILTE RECHEN-BASIS: Der Jahres-Heizwärmebedarf je m² kommt aus
+// INSULATION_BESTAND / INSULATION_NEUBAU (lib/constants.ts) — dieselbe Tabelle
+// (dena Gebäudereport, DIN V 18599), auf der der Wärmepumpen-Rechner rechnet.
+// Hier NICHT nachbauen: sonst driften Klima- und WP-Rechner auseinander.
+// Die specKwh sind kanonisch; label/sub sind UI-Text dieses Rechners.
+export interface AcHeatStandard {
+  id: string;
+  label: string;
+  sub: string;
+  specKwh: number;   // kWh/m²·a Jahres-Heizwärmebedarf (kanonisch aus constants.ts)
+}
+
+export const AC_HEAT_STANDARDS: AcHeatStandard[] = [
+  { id: "unsaniert",   label: INSULATION_BESTAND[0].label, sub: INSULATION_BESTAND[0].sub, specKwh: INSULATION_BESTAND[0].specKwh },
+  { id: "teilsaniert", label: INSULATION_BESTAND[1].label, sub: INSULATION_BESTAND[1].sub, specKwh: INSULATION_BESTAND[1].specKwh },
+  { id: "saniert",     label: INSULATION_BESTAND[2].label, sub: INSULATION_BESTAND[2].sub, specKwh: INSULATION_BESTAND[2].specKwh },
+  // Neubau: gesetzlicher Mindeststandard als Bucket. Wer KfW 55/40 hat, liegt
+  // darunter und korrigiert die Heizwärme direkt im Ergebnis (InlineEdit).
+  { id: "neubau",      label: "Neubau (EnEV 2014)", sub: INSULATION_NEUBAU[0].sub, specKwh: INSULATION_NEUBAU[0].specKwh },
+];
 
 export interface AcDevice {
   id: AcDeviceId;
@@ -74,12 +102,21 @@ export interface AcConfig {
   // Dachgeschoss/Altbau (ADAC/Handwerker-Faustregel).
   sizingWPerM2: number;
 
-  // Heizen mit Split: thermische Heizwärme je m² beheizter Fläche in der
-  // ÜBERGANGSZEIT (Frühherbst, Frühjahr, milde Wintertage) — nicht das ganze
-  // Jahr und nicht die kalte Kernzeit. Grober Anhalt; im Ergebnis editierbar.
-  // Heizstrom = Heizwärme / device.scop. Auch der WP-Rechner nutzt diesen Wert
-  // für seinen „Split als Teil-Ergänzung"-Block (dort × Deckungsanteil).
-  heatSpecKwhPerM2: number;
+  // Heizen mit Split: Heizwärme je m² beheizter Fläche in der ÜBERGANGSZEIT.
+  //   Heizwärme/m²·a = heatStandards[x].specKwh × heatTransitionShare
+  // Der Gebäudestandard kommt aus der geteilten Tabelle (siehe AC_HEAT_STANDARDS),
+  // der Übergangszeit-Anteil ist die einzige klima-spezifische Annahme hier.
+  // Heizstrom = Heizwärme / device.scop.
+  heatStandards: AcHeatStandard[];
+  // Anteil des JAHRES-Heizwärmebedarfs, der in der Übergangszeit anfällt
+  // (Frühherbst, Frühjahr, milde Wintertage) — also dort, wo ein Split-Gerät die
+  // Last realistisch übernimmt. Die kalte Kernzeit (Dez–Feb) bleibt bewusst
+  // draußen: dort fällt die Effizienz und die Wärmepumpe ist die bessere Adresse.
+  // Herleitung über Heizgradtage: von ~2.100 Kd/a entfallen ~45 % auf Tage über
+  // ~5 °C Mitteltemperatur; konservativ auf 40 % gerundet. Modell-Annahme, kein
+  // Marktwert — im Ergebnis über die Heizwärme direkt editierbar.
+  heatTransitionShare: number;
+  defaultHeatStandard: string;   // id aus heatStandards (Vorbelegung im Ergebnis)
 
   // PV-Deckung: Anteil des Kühlstroms, den die eigene PV-Anlage übernimmt.
   // Kühlen tagsüber ist sonnen-deckungsstark, nachts kaum. Mit Batteriespeicher
@@ -180,7 +217,12 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
 
   sizingWPerM2: 85,
 
-  heatSpecKwhPerM2: 55,   // Übergangszeit-Heizwärme je m² (kWh/m²·a), editierbar
+  heatStandards: AC_HEAT_STANDARDS,
+  heatTransitionShare: 0.4,
+  // Vorbelegung: „Teilsaniert" — der Median des deutschen Bestands und der
+  // realistische Fall für den Gas-Vergleich in diesem Block. Ergibt 64 kWh/m²·a
+  // (vorher: 55 pauschal für ALLE, d. h. Neubau um Faktor ~2 zu hoch).
+  defaultHeatStandard: "teilsaniert",
 
   pvCoverage: {
     // Mit Speicher (Default): Akku verschiebt Tagstrom in Abend/Nacht.
@@ -210,7 +252,7 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
   stromPrice: 0.34,
   gridCo2PerKwh: 0.38,   // kg CO₂/kWh deutscher Strommix (UBA 2023, sinkend) — wie heatpump.ts
 
-  source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), Verbraucher-Tests 2025/26 (SEER), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), BDEW (Strom), UBA (Strommix-CO₂)",
-  validFrom: "2026-06-28",
-  reviewBy: "2027-04-30",
+  source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), Verbraucher-Tests 2025/26 (SEER/SCOP), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), dena Gebäudereport/DIN V 18599 (Heizwärmebedarf je Gebäudestandard, geteilt mit dem Wärmepumpen-Rechner), BDEW (Strom/Gas), UBA (Strommix-CO₂)",
+  validFrom: "2026-07-15",
+  reviewBy: "2026-10-15",
 };

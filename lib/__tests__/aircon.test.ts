@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
 import {
   effectiveCdh, sizingKw, acquisitionCost, acquisitionRange, calcAircon, compareDevices, fallbackCdh,
-  cdhFromHourly, cdhFromDailyMinMax, calcAirconHeating,
+  cdhFromHourly, cdhFromDailyMinMax, calcAirconHeating, acHeatSpecKwhPerM2,
   type AcInputs,
 } from "../aircon";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../aircon-config";
-import { FUEL } from "../constants";
+import { FUEL, INSULATION_BESTAND, INSULATION_NEUBAU } from "../constants";
 
 const base: AcInputs = {
   deviceId: "split",
@@ -201,8 +201,36 @@ describe("calcAirconHeating", () => {
 
   it("derives heating electricity from thermal demand and SCOP", () => {
     const h = calcAirconHeating(split, 20, 0.34);
-    expect(h.heatThermalKwh).toBe(20 * CFG.heatSpecKwhPerM2);
+    expect(h.heatThermalKwh).toBe(20 * acHeatSpecKwhPerM2(CFG.defaultHeatStandard));
     expect(h.heatElectricKwh).toBe(Math.round(h.heatThermalKwh / split.scop!));
+  });
+
+  it("scales the heating demand with the building standard (Altbau ≫ Neubau)", () => {
+    const alt = calcAirconHeating(split, 20, 0.34, null, "unsaniert");
+    const neu = calcAirconHeating(split, 20, 0.34, null, "neubau");
+    // Der Wächter-Befund: ein Wert für alle war für Neubau ~3× zu hoch.
+    expect(alt.heatThermalKwh).toBeGreaterThan(neu.heatThermalKwh * 2.5);
+    expect(alt.standard.id).toBe("unsaniert");
+    expect(neu.standard.id).toBe("neubau");
+  });
+
+  it("takes the per-m² heating demand from the shared insulation table", () => {
+    // Geteilte Rechen-Basis: kein eigenes kWh/m²-Fundament im Klima-Rechner.
+    for (const std of CFG.heatStandards) {
+      expect(acHeatSpecKwhPerM2(std.id)).toBe(Math.round(std.specKwh * CFG.heatTransitionShare));
+    }
+    const canonical = [...INSULATION_BESTAND, ...INSULATION_NEUBAU].map(i => i.specKwh);
+    for (const std of CFG.heatStandards) expect(canonical).toContain(std.specKwh);
+  });
+
+  it("falls back to the default standard for an unknown id", () => {
+    const h = calcAirconHeating(split, 20, 0.34, null, "gibtsnicht");
+    expect(h.standard.id).toBe(CFG.defaultHeatStandard);
+  });
+
+  it("lets an explicit thermal override beat the building standard", () => {
+    const h = calcAirconHeating(split, 20, 0.34, 2000, "unsaniert");
+    expect(h.heatThermalKwh).toBe(2000);
   });
 
   it("computes the heat price per kWh from price ÷ SCOP; split beats gas", () => {
@@ -219,7 +247,7 @@ describe("calcAirconHeating", () => {
   });
 
   it("honours an overridden thermal demand and a custom gas price", () => {
-    const h = calcAirconHeating(split, 20, 0.34, 2000, CFG, { price: 0.15, efficiency: 0.9 });
+    const h = calcAirconHeating(split, 20, 0.34, 2000, undefined, CFG, { price: 0.15, efficiency: 0.9 });
     expect(h.heatThermalKwh).toBe(2000);
     expect(h.gasCost).toBe(Math.round((2000 / 0.9) * 0.15));
   });

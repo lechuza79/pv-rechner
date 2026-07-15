@@ -4,7 +4,7 @@
 // Wunschtemperatur, Zeitfenster). Strom = Kühlenergie / SEER(Gerätetyp).
 // Alle Konstanten in lib/aircon-config.ts (zentral, auf /datenstand gepflegt).
 
-import { DEFAULT_AIRCON_CONFIG, type AcConfig, type AcDevice, type AcDeviceId } from "./aircon-config";
+import { DEFAULT_AIRCON_CONFIG, type AcConfig, type AcDevice, type AcDeviceId, type AcHeatStandard } from "./aircon-config";
 import { FUEL } from "./constants";
 
 export type CoolingWindow = "allday" | "day" | "night";
@@ -137,6 +137,8 @@ export function calcAircon(inputs: AcInputs, cfg: AcConfig = DEFAULT_AIRCON_CONF
 export interface AcHeatResult {
   canHeat: boolean;
   scop: number;
+  standard: AcHeatStandard;     // angesetzter Gebäudestandard
+  specKwhPerM2: number;         // daraus abgeleitete Übergangszeit-Heizwärme je m²
   heatThermalKwh: number;       // thermische Heizwärme
   heatElectricKwh: number;      // Heizstrom
   heatCost: number;             // €/a mit Split
@@ -146,19 +148,35 @@ export interface AcHeatResult {
   costPerKwhHeatGasCt: number;   // ct/kWh Wärme (Gas)
 }
 
-/** Heizen mit dem gewählten Gerät. heatThermalOverride setzt die Heizwärme direkt
- *  (sonst Fläche × heatSpecKwhPerM2). gas erlaubt einen eigenen Gaspreis/-wirkungsgrad
- *  (Default aus FUEL.gas). */
+/** Übergangszeit-Heizwärme je m² für einen Gebäudestandard: Jahresbedarf (geteilte
+ *  Tabelle) × Übergangszeit-Anteil. Unbekannte id → Default-Standard. */
+export function acHeatStandard(standardId: string | undefined, cfg: AcConfig = DEFAULT_AIRCON_CONFIG): AcHeatStandard {
+  return cfg.heatStandards.find(s => s.id === standardId)
+    ?? cfg.heatStandards.find(s => s.id === cfg.defaultHeatStandard)
+    ?? cfg.heatStandards[0];
+}
+
+export function acHeatSpecKwhPerM2(standardId: string | undefined, cfg: AcConfig = DEFAULT_AIRCON_CONFIG): number {
+  return Math.round(acHeatStandard(standardId, cfg).specKwh * cfg.heatTransitionShare);
+}
+
+/** Heizen mit dem gewählten Gerät. heatStandardId wählt den Gebäudestandard (die
+ *  Dämmung ist beim Heizen der dominante Hebel — Altbau ~3× Neubau);
+ *  heatThermalOverride setzt die Heizwärme direkt und sticht den Standard.
+ *  gas erlaubt einen eigenen Gaspreis/-wirkungsgrad (Default aus FUEL.gas). */
 export function calcAirconHeating(
   device: AcDevice,
   cooledArea: number,
   stromPrice: number,
   heatThermalOverride?: number | null,
+  heatStandardId?: string,
   cfg: AcConfig = DEFAULT_AIRCON_CONFIG,
   gas: { price: number; efficiency: number } = { price: FUEL.gas.price, efficiency: FUEL.gas.efficiency },
 ): AcHeatResult {
   const scop = device.scop ?? 0;
-  const heatThermalKwh = Math.round(heatThermalOverride ?? cooledArea * cfg.heatSpecKwhPerM2);
+  const standard = acHeatStandard(heatStandardId, cfg);
+  const specKwhPerM2 = acHeatSpecKwhPerM2(heatStandardId, cfg);
+  const heatThermalKwh = Math.round(heatThermalOverride ?? cooledArea * specKwhPerM2);
   const heatElectricKwh = scop > 0 ? Math.round(heatThermalKwh / scop) : 0;
   const heatCost = Math.round(heatElectricKwh * stromPrice);
   // Gas: dieselbe Nutzwärme über den Kesselwirkungsgrad, Energiepreis (ohne CO₂).
@@ -169,7 +187,7 @@ export function calcAirconHeating(
   const costPerKwhHeatGasCt = Math.round((gas.price / gas.efficiency) * 1000) / 10;
 
   return {
-    canHeat: device.canHeat, scop, heatThermalKwh, heatElectricKwh,
+    canHeat: device.canHeat, scop, standard, specKwhPerM2, heatThermalKwh, heatElectricKwh,
     heatCost, gasCost, saving, costPerKwhHeatSplitCt, costPerKwhHeatGasCt,
   };
 }

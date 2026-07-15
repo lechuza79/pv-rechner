@@ -5,8 +5,9 @@
 Anschaffung, den Gerätevergleich und — für den „Auch heizen?"-Block — die Heiz-
 Effizienz. Der **Strompreis** kommt bereits live (aus `market_prices`), die
 **Kühlgradstunden** live aus `/api/cooling-degree`; hier geht es um die statischen
-Geräte-/Preis-Werte. Auch die Split-Heizwerte (SCOP, `heatSpecKwhPerM2`) für den
-„Auch heizen?"-Block liegen hier — Split-Heizen gibt es NUR im Klima-Rechner.
+Geräte-/Preis-Werte. Vom „Auch heizen?"-Block gehört nur der **SCOP** hierher —
+Split-Heizen gibt es NUR im Klima-Rechner. Der Heizwärmebedarf je Gebäudestandard
+ist dagegen **geteilte Rechen-Basis** und wird im WP-Runbook gepflegt (siehe unten).
 
 **Warum quartalsweise:** Gerätepreise und Effizienzklassen fallen mit den
 Produktgenerationen; ein Quartals-Check hält sie aktuell (Consumer-Preise ändern
@@ -21,14 +22,21 @@ Stichtag steht in `DEFAULT_AIRCON_CONFIG.reviewBy`.
 - `devices[].scop` — Heiz-Effizienz (SCOP): mobile Split ~3,6, fest installiert
   ~4,2. Herstellerdatenblätter / A+++-Wärmepumpen-Split. Monoblock heizt nicht
   (`canHeat: false`). Für den Klima-„Auch heizen?"-Block.
-- `heatSpecKwhPerM2` — Übergangszeit-Heizwärme je m² (Schätzung); im Ergebnis
-  editierbar, plausibel halten gegen typische Raum-Heizlasten.
 - `devices[].pricePerUnit` / `priceBase` / `pricePerRoom` — Anschaffung je Typ.
   ADAC, daibau, reduco, Fachbetrieb-Festpreise.
 
 **Nicht prüfen (Modell-/Klimatologie-Konstanten):**
 - `buildingGain`, `sizingWPerM2`, `targetFactor`, `windowFactor`,
   `exposureOptions[].factor` (kalibriertes Kühlmodell)
+- `heatStandards[].specKwh` — **hier NICHT anfassen.** Das ist die geteilte
+  Rechen-Basis: die Werte kommen aus `INSULATION_BESTAND`/`INSULATION_NEUBAU`
+  (`lib/constants.ts`, dena Gebäudereport / DIN V 18599) und werden vom
+  Wärmepumpen-Rechner mitbenutzt. Gepflegt wird das im **WP-Runbook**
+  (`scripts/waermepumpe-verify.md`) — ein Fix hier würde die beiden Rechner
+  auseinanderdriften lassen.
+- `heatTransitionShare` (0,4) — Modell-Annahme: Anteil des Jahres-Heizwärme-
+  bedarfs, der in der Übergangszeit anfällt (Herleitung über Heizgradtage, siehe
+  Kommentar in der Config). Kein Marktwert, kein Quartals-Thema.
 - `cdhNational` / `cdhByBundesland` / Faktoren — Baseline/Fallback, die Live-API
   verfeinert pro PLZ
 - `gridCo2PerKwh` (Strommix-Faktor, identisch zu WP-/Balkon-Rechner)

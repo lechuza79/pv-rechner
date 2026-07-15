@@ -9,7 +9,7 @@ import { IconArrowRight, IconRefresh, IconSun, IconCheck } from "../../../compon
 import { v } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
-import { calcAircon, compareDevices, acquisitionRange, calcAirconHeating, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
+import { calcAircon, compareDevices, acquisitionRange, calcAirconHeating, acHeatSpecKwhPerM2, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
 import { trackEvent } from "../../../lib/analytics";
 import { bundeslandFromPlz } from "../../../lib/plz-bundesland";
 import { DataSourceNote } from "../../../components/PoweredBy";
@@ -69,8 +69,11 @@ export default function Klimaanlage() {
   const [pvActive, setPvActive] = useState(false);
   const [battery, setBattery] = useState(true); // mit Speicher ist Default
 
-  // Heizen mit Split (Übergangszeit) — optionaler Zusatzblock im Ergebnis
+  // Heizen mit Split (Übergangszeit) — optionaler Zusatzblock im Ergebnis.
+  // Der Gebäudestandard wird NUR hier gefragt (nicht im Kühl-Flow): beim Kühlen
+  // ist die Dämmung ein schwacher Hebel, beim Heizen der dominante.
   const [heatMode, setHeatMode] = useState(false);
+  const [heatStandard, setHeatStandard] = useState<string>(CFG.defaultHeatStandard);
   const [heatThermalOverride, setHeatThermalOverride] = useState<number | null>(null);
 
   // Standort → Kühlgradstunden
@@ -137,8 +140,8 @@ export default function Klimaanlage() {
   const result = useMemo(() => calcAircon(inputs), [inputs]);
   const comparison = useMemo(() => compareDevices(inputs), [inputs]);
   const heat = useMemo(
-    () => calcAirconHeating(result.device, result.cooledArea, strompreis, heatThermalOverride),
-    [result.device, result.cooledArea, strompreis, heatThermalOverride],
+    () => calcAirconHeating(result.device, result.cooledArea, strompreis, heatThermalOverride, heatStandard),
+    [result.device, result.cooledArea, strompreis, heatThermalOverride, heatStandard],
   );
 
   const bl = bundeslandFromPlz(plz);
@@ -571,6 +574,35 @@ export default function Klimaanlage() {
                       </div>
                     </div>
 
+                    {/* Gebäudestandard — beim Heizen der dominante Hebel. Nur hier
+                        gefragt, damit der Kühl-Flow schlank bleibt. */}
+                    <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6 }}>
+                      Wie gut ist das Gebäude gedämmt?
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 12 }}>
+                      {CFG.heatStandards.map(std => {
+                        const on = heat.standard.id === std.id;
+                        return (
+                          <button
+                            key={std.id}
+                            onClick={() => { setHeatStandard(std.id); setHeatThermalOverride(null); }}
+                            title={std.sub}
+                            style={{
+                              padding: "8px 8px", borderRadius: v('--radius-sm'), cursor: "pointer", textAlign: "left",
+                              background: on ? v('--color-accent-dim') : v('--color-bg-muted'),
+                              border: on ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+                              color: on ? v('--color-accent') : v('--color-text-secondary'),
+                            }}
+                          >
+                            <div style={{ fontSize: 12, fontWeight: 700 }}>{std.label}</div>
+                            <div style={{ fontSize: 10, color: on ? v('--color-accent') : v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 1 }}>
+                              {acHeatSpecKwhPerM2(std.id)} kWh/m²
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
                     <div style={{ fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.7 }}>
                       Für die Übergangszeit deiner {result.cooledArea} m² rechnen wir{" "}
                       <InlineEdit value={heat.heatThermalKwh} onCommit={val => setHeatThermalOverride(Math.round(val))} unit=" kWh" min={100} max={20000} step={100} width={72} /> Heizwärme:{" "}
@@ -585,8 +617,10 @@ export default function Klimaanlage() {
                     </div>
 
                     <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.6 }}>
-                      Gerechnet für die Übergangszeit (Frühherbst, Frühjahr, milde Tage), ohne CO₂-Aufschlag aufs Gas. Für die
-                      kalte Kernzeit und das ganze Haus ist eine wassergeführte Wärmepumpe effizienter.{" "}
+                      Angesetzt sind {heat.specKwhPerM2} kWh/m² im Jahr — das sind {Math.round(CFG.heatTransitionShare * 100)} % des
+                      Jahres-Heizwärmebedarfs von {heat.standard.specKwh} kWh/m² für „{heat.standard.label}". Gerechnet ist also nur
+                      die Übergangszeit (Frühherbst, Frühjahr, milde Tage), ohne CO₂-Aufschlag aufs Gas. Für die kalte Kernzeit und
+                      das ganze Haus ist eine wassergeführte Wärmepumpe effizienter.{" "}
                       <Link href="/waermepumpe-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Wärmepumpe rechnen</Link>
                     </div>
                   </div>

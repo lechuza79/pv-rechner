@@ -8,6 +8,7 @@ import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
 import { DEFAULT_AIRCON_CONFIG as AC } from "../../../lib/aircon-config";
+import { acHeatSpecKwhPerM2 } from "../../../lib/aircon";
 import { DEFAULT_BALKON_CONFIG as BK } from "../../../lib/balkon-config";
 import { referenceYearKwh } from "../../../lib/solar-year";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS } from "../../../lib/constants";
@@ -315,7 +316,7 @@ export default async function DatenstandPage() {
           rows={[
             { label: "Effizienz Kühlen (SEER): Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
             { label: "Effizienz Heizen (SCOP): mobile Split / fest installiert", value: `${AC.devices[1].scop!.toLocaleString("de-DE")} / ${AC.devices[2].scop!.toLocaleString("de-DE")} (Monoblock heizt nicht)` },
-            { label: "Übergangszeit-Heizwärme (Split)", value: `${nf(AC.heatSpecKwhPerM2)} kWh/m²·a je beheizter Fläche (editierbar)` },
+            { label: "Übergangszeit-Heizwärme (Split)", value: `${AC.heatStandards.map((s) => `${s.label} ${nf(acHeatSpecKwhPerM2(s.id))}`).join(" · ")} — kWh/m²·a je beheizter Fläche, also ${nf(AC.heatTransitionShare * 100)} % des Jahres-Heizwärmebedarfs je Gebäudestandard (im Ergebnis editierbar)` },
             { label: "Anschaffung Monoblock / mobile Split", value: `~${nf(AC.devices[0].pricePerUnit!)} € / ~${nf(AC.devices[1].pricePerUnit!)} € je Gerät·Raum` },
             { label: "Anschaffung fest installierte Split", value: `${nf(AC.devices[2].priceBase!)} € + ${nf(AC.devices[2].pricePerRoom!)} €/Raum (Innengerät inkl. Montage Fachbetrieb)` },
             { label: "Kühlgradstunden Ø Deutschland", value: `${nf(AC.cdhNational)} K·h/a (Schwelle ${nf(AC.coolBaseTemp)} °C)` },
