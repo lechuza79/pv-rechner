@@ -6,12 +6,13 @@ import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import ZubauChart from "../../../../components/atlas/ZubauChart";
-import RankingTable, { type RankingRow } from "../../../../components/atlas/RankingTable";
+import RankingTable from "../../../../components/atlas/RankingTable";
 import {
   resolveSlugPath,
   getRegionById,
   getAncestors,
   getChildren,
+  getRankingData,
   childLevelOf,
   lastFullYear,
   currentYear,
@@ -89,10 +90,11 @@ export default async function AtlasPage({ params }: { params: Params }) {
   }
   if (!childLevel) notFound();
 
-  const [atlas, children, ancestors] = await Promise.all([
+  const [atlas, children, ancestors, ranking] = await Promise.all([
     getRegionAtlasData(region.region_id),
     getChildren(region),
     getAncestors(region),
+    getRankingData(region),
   ]);
 
   const crumbs: Crumb[] = [
@@ -107,20 +109,6 @@ export default async function AtlasPage({ params }: { params: Params }) {
   ];
 
   const basePath = `/solar-atlas${params.pfad?.length ? "/" + params.pfad.join("/") : ""}`;
-  const rows: RankingRow[] = children.map((c) => ({
-    region_id: c.region_id,
-    name: c.name,
-    href: c.slug ? `${basePath}/${c.slug}` : null,
-    population: c.population,
-    count: c.count,
-    kwp: c.kwp,
-    wPerCapita: c.wPerCapita,
-    wPerCapitaDach: c.wPerCapitaDach,
-    countRecent: c.countRecent,
-    rankDelta: c.rankDelta,
-    rankDachDelta: c.rankDachDelta,
-  }));
-
   const lastYear = lastFullYear();
   const thisYear = currentYear();
   const lastYearRow = atlas.solar.by_year.find((y) => y.year === lastYear);
@@ -179,11 +167,15 @@ export default async function AtlasPage({ params }: { params: Params }) {
         <div style={S.section}>
           <h2 style={S.h2}>Rangliste der {childNoun}</h2>
           <p style={S.sub}>
-            Sortierbar. „W/Kopf gesamt" enthält Freiflächen, „W/Kopf Dach" rechnet sie heraus — wo
-            viel Fläche zur Verfügung steht, klaffen die beiden Werte weit auseinander.
+            Jede Spalte sortiert. Der Filter oben wirkt auf alle Werte: „Privat" zählt private
+            Dächer, Steckersolar und Hausbatterien, „Gewerbe" gewerbliche Dächer, Freiflächen-Parks
+            und gewerbliche Speicher.
           </p>
           <RankingTable
-            rows={rows}
+            regions={ranking.regions}
+            cells={ranking.cells}
+            basePath={basePath}
+            lastFullYear={lastYear}
             scopeLabel={region.level === "de" ? "in Deutschland" : `in ${region.name}`}
           />
         </div>

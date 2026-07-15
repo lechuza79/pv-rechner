@@ -106,6 +106,15 @@ const SOLAR_ART_BALKON = "2961";
 // SolarNutzungsbereich (cat. 57) — building usage profile
 const NUTZUNG_HAUSHALT = "713";
 
+// Speicher-Technologie (cat. 29). "Speicher" in the MaStR is every kind of
+// electricity store, not just batteries — Goldisthal's 8,7 GWh pumped-storage
+// plant sits in the same file as a 10 kWh cellar battery. Lumping them together
+// would put "Batteriespeicher: 8.700.000 kWh" on one Gemeinde's page and wreck
+// any storage-per-kWp figure, so the segment column (unused for storage until
+// now) keeps them apart.
+const STORAGE_TECH_BATTERIE = "524";
+const STORAGE_TECH_PUMPSPEICHER = "1537";
+
 // ─── Logging helpers ──────────────────────────────────────────────────────────
 
 function log(msg: string, kind: "info" | "ok" | "warn" | "err" = "info") {
@@ -464,6 +473,25 @@ function classifySolarSegment(
   return kind === "privat" ? "privat_dach" : "gewerbe_dach";
 }
 
+/**
+ * Storage segment: technology first, then who runs it.
+ *
+ * Pumped storage is its own world — Goldisthal holds 8,7 GWh where a cellar
+ * battery holds 10 kWh — and asking whether it is "privat" is meaningless, so it
+ * never gets an operator split. Batteries do: a home battery next to a rooftop
+ * array is a different story from a commercial one, and that is the split a
+ * Gemeinde actually reads.
+ */
+function classifyStorage(row: Record<string, string>, actorMap: Map<string, ActorKind>): string {
+  const t = row.Technologie;
+  if (t === STORAGE_TECH_PUMPSPEICHER) return "pumpspeicher";
+  // Druckluft, Schwungrad, Wasserstoff and anything new the catalogue grows.
+  if (t !== STORAGE_TECH_BATTERIE) return "sonstige";
+  const nr = row.AnlagenbetreiberMastrNummer;
+  const kind = nr ? actorMap.get(nr) : undefined;
+  return kind === "privat" ? "batterie_privat" : "batterie_gewerbe";
+}
+
 function parseYear(s: string | undefined): number | null {
   if (!s || s.length < 4) return null;
   const y = parseInt(s.substring(0, 4), 10);
@@ -642,7 +670,12 @@ async function aggregateUnit(
       // Only storage has a capacity; for every other Träger kwh stays 0.
       const kwh = spec.et === "speicher" ? (capacityMap.get(row.EinheitMastrNummer ?? "") ?? 0) : 0;
 
-      const segment = spec.et === "solar" ? classifySolarSegment(row, actorMap) : "n/a";
+      const segment =
+        spec.et === "solar"
+          ? classifySolarSegment(row, actorMap)
+          : spec.et === "speicher"
+            ? classifyStorage(row, actorMap)
+            : "n/a";
       const key: AggregateKey = `${regionId}|${spec.et}|${segment}|${year}`;
       const existing = agg.get(key);
       if (existing) {
@@ -670,10 +703,11 @@ async function phaseAggregate(): Promise<void> {
 
   log("Step 1/3: building actor map...");
   const actorMap = await buildActorMap(zipPath);
-  // Millions of entries each. The actor map only classifies solar, the capacity
-  // map only applies to storage, and storage comes last — so the second is built
-  // only after the first is released. Holding both would put ~7M entries on the
-  // heap at once for no reason.
+  // Both maps are needed at the same time once storage is reached: the actor map
+  // to tell a home battery from a commercial one, the capacity map for its kWh.
+  // Together that is ~7M entries — hence --max-old-space-size in the npm script.
+  // The capacity map is still built late (storage is the last spec) so its memory
+  // is only held for the final pass.
   let capacityMap = new Map<string, number>();
 
   log("Step 2/3: streaming unit XMLs...");
@@ -682,7 +716,6 @@ async function phaseAggregate(): Promise<void> {
 
   for (const spec of UNIT_SPECS) {
     if (spec.et === "speicher") {
-      actorMap.clear();
       capacityMap = await buildStorageCapacityMap(zipPath);
     }
     log(`  aggregating ${spec.et}...`);
@@ -695,7 +728,8 @@ async function phaseAggregate(): Promise<void> {
     );
   }
 
-  // Free the lookup map before serialising output.
+  // Free the lookup maps before serialising output.
+  actorMap.clear();
   capacityMap.clear();
 
   const kreisCount = Array.from(regions.values()).filter((r) => r.level === "landkreis").length;

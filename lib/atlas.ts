@@ -8,7 +8,7 @@
 //
 // Gemeinde is the only stored grain; Kreis, Bundesland and DE are prefix rollups.
 
-import { loadChildren, type Level, type ChildRow } from "./mastr-data";
+import { loadChildren, LEVEL_LEN, type Level, type ChildRow } from "./mastr-data";
 
 export type AtlasRegion = {
   region_id: string;
@@ -48,6 +48,11 @@ export type AtlasChild = AtlasRegion &
   };
 
 const FREIFLAECHE = "freiflaeche";
+
+/** "de" means no filter — everything. Mirrors the rule in lib/mastr-data.ts. */
+function prefixOf(regionId: string): string {
+  return regionId === "de" ? "" : regionId;
+}
 
 /** The last year whose data is complete. The current one never is. */
 export function lastFullYear(): number {
@@ -242,6 +247,123 @@ function assignRank(children: AtlasChild[], metric: "wPerCapita" | "wPerCapitaDa
 /** How many of a region's children can actually be ranked (i.e. are inhabited). */
 export function rankableCount(children: AtlasChild[]): number {
   return children.filter((c) => c.wPerCapita !== null).length;
+}
+
+// ─── Ranking payload ──────────────────────────────────────────────────────────
+
+/**
+ * Who runs it, across energy types.
+ *
+ *   privat  — private roofs and Steckersolar, plus batteries owned by a person
+ *   gewerbe — commercial roofs, open-field parks, commercial batteries
+ *
+ * Pumped storage belongs to neither: asking whether Goldisthal is "private" makes
+ * no sense, and its GWh would swamp any total it landed in.
+ */
+export const SEGMENT_OWNER: Record<string, "privat" | "gewerbe" | null> = {
+  privat_dach: "privat",
+  steckersolar: "privat",
+  batterie_privat: "privat",
+  gewerbe_dach: "gewerbe",
+  freiflaeche: "gewerbe",
+  batterie_gewerbe: "gewerbe",
+  pumpspeicher: null,
+  sonstige: null,
+  "n/a": null,
+};
+
+/** One (child, segment, year) cell — the grain the ranking table filters on. */
+export type ChildYearRow = {
+  region_id: string;
+  segment: string;
+  year: number;
+  count: number;
+  kwp: number;
+  kwh: number;
+};
+
+/** Region identity the table needs alongside the numbers. */
+export type RankingRegion = {
+  region_id: string;
+  name: string;
+  slug: string | null;
+  population: number | null;
+};
+
+/**
+ * Everything the ranking table needs, in one payload: the children's identity
+ * plus their cells at segment × year granularity.
+ *
+ * Shipping the grain rather than pre-aggregated columns is deliberate. The table
+ * lets the reader switch owner filter, metric and Zubau year, and every one of
+ * those combinations is a different aggregation — computing them in the browser
+ * is instant, while a round trip per click would not be. The payload is bounded
+ * by children × segments × years: a Kreis with 55 Gemeinden lands around 150 KB.
+ */
+export async function getRankingData(
+  region: AtlasRegion,
+): Promise<{ regions: RankingRegion[]; cells: ChildYearRow[] }> {
+  const childLevel = childLevelOf(region);
+  if (!childLevel) return { regions: [], cells: [] };
+
+  const supabase = await db();
+  const [cells, regionsRes] = await Promise.all([
+    loadAllCells(supabase, prefixOf(region.region_id), LEVEL_LEN[childLevel]),
+    supabase
+      .from("mastr_regions")
+      .select("region_id, name, slug, population")
+      .eq("parent_region_id", region.region_id),
+  ]);
+  if (regionsRes.error) throw new Error(`getRankingData failed: ${regionsRes.error.message}`);
+
+  return { regions: regionsRes.data as RankingRegion[], cells };
+}
+
+/**
+ * Paginated read of the ranking cells.
+ *
+ * A Kreis with 55 Gemeinden across 5 segments and 25 years is ~6.900 cells, and
+ * PostgREST caps a response at 1000 rows *without saying so* — the first attempt
+ * here returned exactly 1000 and would have shown most Gemeinden as zero. Hence
+ * .range() until a short page arrives, and a hard stop rather than a silent
+ * truncation if the payload ever grows past what a page should carry.
+ */
+async function loadAllCells(
+  supabase: Awaited<ReturnType<typeof db>>,
+  prefix: string,
+  childLen: number,
+): Promise<ChildYearRow[]> {
+  const PAGE = 1000;
+  const MAX = 20_000;
+  const all: ChildYearRow[] = [];
+  for (let from = 0; from < MAX; from += PAGE) {
+    const { data, error } = await supabase
+      .rpc("mastr_children_by_year", {
+        p_prefix: prefix,
+        p_child_len: childLen,
+        p_traeger: ["solar", "speicher"],
+        p_year_min: null,
+      })
+      // Stable order is required for paging — without it rows can repeat or vanish.
+      .order("region_id", { ascending: true })
+      .order("segment", { ascending: true })
+      .order("year", { ascending: true })
+      .range(from, from + PAGE - 1);
+    if (error) throw new Error(`mastr_children_by_year failed: ${error.message}`);
+    const rows = (data ?? []) as ChildYearRow[];
+    all.push(
+      ...rows.map((r) => ({
+        region_id: r.region_id,
+        segment: r.segment,
+        year: Number(r.year),
+        count: Number(r.count),
+        kwp: Number(r.kwp),
+        kwh: Number(r.kwh),
+      })),
+    );
+    if (rows.length < PAGE) return all;
+  }
+  throw new Error(`Ranking payload exceeds ${MAX} cells for prefix "${prefix}" — refusing to ship a truncated table`);
 }
 
 // ─── Leaderboards ─────────────────────────────────────────────────────────────

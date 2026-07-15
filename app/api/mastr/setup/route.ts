@@ -209,6 +209,37 @@ export async function GET(req: NextRequest) {
         GROUP BY 1, 2, 3
       $fn$;
 
+      -- Children of a region, kept at segment x year granularity.
+      -- Feeds the ranking table, which filters (privat/gewerbe) and picks a Zubau
+      -- year client-side — shipping the grain once beats a round trip per filter.
+      -- Bounded: children x segment x years, a few thousand rows at most.
+      CREATE OR REPLACE FUNCTION mastr_children_by_year(
+        p_prefix text,
+        p_child_len int,
+        p_traeger text[],
+        p_year_min int DEFAULT NULL
+      )
+      RETURNS TABLE (region_id text, segment text, year int, count bigint, kwp numeric, kwh numeric)
+      LANGUAGE sql
+      STABLE
+      AS $fn$
+        SELECT
+          left(a.region_id, p_child_len) AS region_id,
+          a.segment,
+          a.year,
+          sum(a.count)::bigint,
+          sum(a.kwp),
+          sum(a.kwh)
+        FROM mastr_aggregates_gem a
+        WHERE a.energietraeger = ANY(p_traeger)
+          AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
+          AND (p_year_min IS NULL OR a.year >= p_year_min)
+        GROUP BY 1, 2, 3
+      $fn$;
+
+      REVOKE ALL ON FUNCTION mastr_children_by_year(text, int, text[], int) FROM PUBLIC;
+      GRANT EXECUTE ON FUNCTION mastr_children_by_year(text, int, text[], int) TO anon, authenticated, service_role;
+
       -- Leaderboard of Gemeinden by solar per inhabitant, ranked in the database.
       -- p_prefix scopes it: '' = nationwide, '09' = Bayern, '09679' = one Kreis.
       -- Joining population here is what makes it possible at all — ranking 10.943

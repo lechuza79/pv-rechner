@@ -3,122 +3,199 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { v } from "../../lib/theme";
+import { IconArrowUp, IconArrowDown, IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
+import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
 
-export type RankingRow = {
+type Owner = "alle" | "privat" | "gewerbe";
+type Metric = "count" | "kwp" | "perCapita" | "speicher" | "zubau";
+/** What the first column shows — position, or movement. */
+type RankMode = "platz" | "delta";
+
+type Row = {
   region_id: string;
   name: string;
   href: string | null;
   population: number | null;
   count: number;
   kwp: number;
-  wPerCapita: number | null;
-  wPerCapitaDach: number | null;
-  countRecent: number;
-  /** Places gained since the end of the year before last; positive = moved up. */
-  rankDelta: number | null;
-  rankDachDelta: number | null;
+  speicher: number;
+  perCapita: number | null;
+  zubau: number;
 };
 
-type SortKey = "wPerCapita" | "wPerCapitaDach" | "count" | "kwp" | "countRecent";
+const COLUMNS: { key: Metric; label: string }[] = [
+  { key: "count", label: "Anlagen" },
+  { key: "kwp", label: "Leistung" },
+  { key: "perCapita", label: "Pro Kopf" },
+  { key: "speicher", label: "Speicher" },
+  { key: "zubau", label: "Zubau" },
+];
 
-const COLUMNS: { key: SortKey; label: string; short: string }[] = [
-  { key: "count", label: "Anlagen", short: "Anlagen" },
-  { key: "kwp", label: "Leistung", short: "Leistung" },
-  { key: "wPerCapita", label: "W/Kopf gesamt", short: "W/Kopf" },
-  { key: "wPerCapitaDach", label: "W/Kopf Dach", short: "Dach" },
-  { key: "countRecent", label: "Neu im Vorjahr", short: "Neu" },
+const OWNERS: { key: Owner; label: string }[] = [
+  { key: "alle", label: "Alle" },
+  { key: "privat", label: "Privat" },
+  { key: "gewerbe", label: "Gewerbe" },
 ];
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
-/**
- * Rank change for the metric currently sorted by. Only the two per-capita columns
- * have a historical ranking to compare against — sorting by plant count or
- * capacity shows no delta rather than a made-up one.
- */
-function deltaFor(row: RankingRow, sort: SortKey): number | null {
-  if (sort === "wPerCapita") return row.rankDelta;
-  if (sort === "wPerCapitaDach") return row.rankDachDelta;
-  return null;
+function fmtLeistung(kwp: number): string {
+  if (kwp >= 1_000_000) return `${(kwp / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`;
+  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
+  return `${nf(kwp)} kW`;
 }
 
+function fmtSpeicher(kwh: number): string {
+  if (kwh >= 1_000_000) return `${(kwh / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GWh`;
+  if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
+  return `${nf(kwh)} kWh`;
+}
+
+function fmtCell(row: Row, m: Metric): string {
+  if (m === "kwp") return fmtLeistung(row.kwp);
+  if (m === "speicher") return fmtSpeicher(row.speicher);
+  if (m === "perCapita") return row.perCapita === null ? "—" : `${nf(row.perCapita)} W`;
+  return nf(row[m] as number);
+}
+
+function valueOf(row: Row, m: Metric): number | null {
+  return m === "perCapita" ? row.perCapita : (row[m] as number);
+}
+
+/** Rank movement, sized to sit inline with the rank number beside it. */
 function RankDelta({ value }: { value: number | null }) {
   if (value === null || value === 0) return null;
   const up = value > 0;
+  const Icon = up ? IconArrowUp : IconArrowDown;
   return (
     <span
       title={`${Math.abs(value)} ${Math.abs(value) === 1 ? "Platz" : "Plätze"} ${up ? "gutgemacht" : "verloren"} im letzten vollen Jahr`}
-      style={{
-        fontFamily: v("--font-mono"),
-        fontSize: 10,
-        fontWeight: 700,
-        color: up ? v("--color-positive") : v("--color-negative"),
-        whiteSpace: "nowrap",
-      }}
+      style={{ ...S.delta, color: up ? v("--color-positive") : v("--color-negative") }}
     >
-      {up ? "▲" : "▼"}
+      <Icon size={9} />
       {Math.abs(value)}
     </span>
   );
 }
 
-function fmtLeistung(kwp: number): string {
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(kwp)} kW`;
-}
-
-function cell(row: RankingRow, key: SortKey): string {
-  const val = row[key];
-  if (val === null) return "—";
-  if (key === "kwp") return fmtLeistung(val);
-  if (key === "wPerCapita" || key === "wPerCapitaDach") return `${nf(val)} W`;
-  return nf(val);
-}
-
 /**
  * Sortable ranking of a region's children.
  *
- * The user's home Gemeinde floats along the bottom edge while it is off-screen
- * and drops back into the list once its real row scrolls into view — so "where do
- * we stand?" is answerable without hunting through 52 rows, and the answer sits
- * next to the leaders it is being compared against.
+ * Every filter runs on the raw segment × year cells the server shipped, so owner,
+ * metric and Zubau year recombine without a round trip. The owner filter applies
+ * to every column at once — a table where "Anlagen" counted everything while
+ * "Pro Kopf" counted only private roofs would put two different worlds in one row.
  */
 export default function RankingTable({
-  rows,
+  regions,
+  cells,
   scopeLabel,
+  basePath,
+  lastFullYear,
 }: {
-  rows: RankingRow[];
-  /** e.g. "im Landkreis Würzburg" — used in the sticky row's caption. */
+  regions: RankingRegion[];
+  cells: ChildYearRow[];
+  /** e.g. "im Landkreis Würzburg" — caption of the floating row. */
   scopeLabel: string;
+  basePath: string;
+  lastFullYear: number;
 }) {
-  const [sort, setSort] = useState<SortKey>("wPerCapita");
+  const [owner, setOwner] = useState<Owner>("alle");
+  const [sort, setSort] = useState<Metric>("perCapita");
+  const [rankMode, setRankMode] = useState<RankMode>("platz");
+  const [zubauYear, setZubauYear] = useState(lastFullYear);
   const { home, setHome, ready } = useHomeGemeinde();
   const homeRowRef = useRef<HTMLDivElement | null>(null);
   const [homeVisible, setHomeVisible] = useState(true);
 
+  const years = useMemo(
+    () => Array.from(new Set(cells.map((c) => c.year))).sort((a, b) => b - a),
+    [cells],
+  );
+
+  /** Aggregate the cells into rows; yearMax rewinds the state to that year. */
+  const build = useMemo(() => {
+    const keep = (segment: string) =>
+      owner === "alle" ? SEGMENT_OWNER[segment] !== null : SEGMENT_OWNER[segment] === owner;
+    return (yearMax: number | null): Row[] => {
+      const acc = new Map<string, { count: number; kwp: number; speicher: number; zubau: number }>();
+      for (const c of cells) {
+        if (!keep(c.segment)) continue;
+        if (yearMax !== null && c.year > yearMax) continue;
+        const a = acc.get(c.region_id) ?? { count: 0, kwp: 0, speicher: 0, zubau: 0 };
+        if (c.segment.startsWith("batterie")) {
+          a.speicher += c.kwh;
+        } else {
+          a.count += c.count;
+          a.kwp += c.kwp;
+          if (c.year === zubauYear) a.zubau += c.count;
+        }
+        acc.set(c.region_id, a);
+      }
+      return regions.map((r) => {
+        const a = acc.get(r.region_id) ?? { count: 0, kwp: 0, speicher: 0, zubau: 0 };
+        return {
+          region_id: r.region_id,
+          name: r.name,
+          href: r.slug ? `${basePath}/${r.slug}` : null,
+          population: r.population,
+          count: a.count,
+          kwp: a.kwp,
+          speicher: a.speicher,
+          zubau: a.zubau,
+          perCapita: r.population ? Math.round((a.kwp * 1000) / r.population) : null,
+        };
+      });
+    };
+  }, [cells, regions, basePath, owner, zubauYear]);
+
+  const rows = useMemo(() => build(null), [build]);
+
+  // Ranks now against ranks at the end of the year before last. The difference is
+  // the movement during the last complete year; the running year is excluded from
+  // both sides, or every Gemeinde would appear to collapse each January.
+  const deltas = useMemo(() => {
+    const rank = (list: Row[]) => {
+      const m = new Map<string, number>();
+      list
+        .filter((r) => valueOf(r, sort) !== null)
+        .sort((a, b) => (valueOf(b, sort) as number) - (valueOf(a, sort) as number))
+        .forEach((r, i) => m.set(r.region_id, i + 1));
+      return m;
+    };
+    const now = rank(rows);
+    const before = rank(build(lastFullYear - 1));
+    const out = new Map<string, number | null>();
+    for (const r of rows) {
+      const a = before.get(r.region_id);
+      const b = now.get(r.region_id);
+      out.set(r.region_id, a != null && b != null ? a - b : null);
+    }
+    return out;
+  }, [rows, build, sort, lastFullYear]);
+
   const sorted = useMemo(() => {
-    const withVal = rows.filter((r) => r[sort] !== null);
-    const without = rows.filter((r) => r[sort] === null);
-    withVal.sort((a, b) => (b[sort] as number) - (a[sort] as number));
+    const withVal = rows.filter((r) => valueOf(r, sort) !== null);
+    const without = rows.filter((r) => valueOf(r, sort) === null);
+    withVal.sort((a, b) => (valueOf(b, sort) as number) - (valueOf(a, sort) as number));
     return [...withVal, ...without];
   }, [rows, sort]);
 
-  const homeIndex = home ? sorted.findIndex((r) => r.region_id === home.region_id) : -1;
-  const homeRow = homeIndex >= 0 ? sorted[homeIndex] : null;
+  /** Position always comes from the metric sort, even when the list is ordered by movement. */
+  const rankOf = useMemo(() => {
+    const m = new Map<string, number>();
+    sorted.forEach((r, i) => m.set(r.region_id, i + 1));
+    return m;
+  }, [sorted]);
 
-  // One scale for the list and the floating row. Capped at the runner-up: a
-  // single Gemeinde with a solar park (Riedenheim: 126.865 W/head against a
-  // second place of 17.705) would otherwise flatten every other bar to nothing.
-  const scale = useMemo(() => {
-    const vals = sorted.map((r) => r[sort]).filter((x): x is number => x !== null);
-    return Math.max(1, vals[1] ?? vals[0] ?? 1);
-  }, [sorted, sort]);
-  const barPct = (val: number | null) =>
-    val === null ? 0 : Math.min(100, Math.max(1, Math.round((val / scale) * 100)));
-  const stickyPct = barPct(homeRow ? homeRow[sort] : null);
+  const display = useMemo(() => {
+    if (rankMode !== "delta") return sorted;
+    return [...sorted].sort((a, b) => (deltas.get(b.region_id) ?? -Infinity) - (deltas.get(a.region_id) ?? -Infinity));
+  }, [sorted, rankMode, deltas]);
 
-  // Float the home row only while its real position is off-screen.
+  const homeRow = home ? display.find((r) => r.region_id === home.region_id) ?? null : null;
+
   useEffect(() => {
     const el = homeRowRef.current;
     if (!el) {
@@ -130,117 +207,266 @@ export default function RankingTable({
     });
     io.observe(el);
     return () => io.disconnect();
-  }, [homeRow?.region_id, sort]);
+  }, [homeRow?.region_id, sort, owner, rankMode]);
+
+  // One scale for the list and the floating row, capped at the runner-up: a single
+  // Gemeinde with a solar park (126.865 W/head against 17.705 on second place)
+  // would otherwise flatten every other bar to a hairline.
+  const scale = useMemo(() => {
+    const vals = display
+      .map((r) => valueOf(r, sort))
+      .filter((x): x is number => x !== null)
+      .sort((a, b) => b - a);
+    return Math.max(1, vals[1] ?? vals[0] ?? 1);
+  }, [display, sort]);
+  const barPct = (val: number | null) =>
+    val === null ? 0 : Math.min(100, Math.max(1, Math.round((val / scale) * 100)));
+
+  const cellStyle = (key: Metric): React.CSSProperties => ({
+    ...S.val,
+    color: sort === key ? v("--color-text-primary") : v("--color-text-muted"),
+    fontWeight: sort === key ? 600 : 400,
+  });
 
   return (
     <div>
-      <div style={S.tabs}>
-        {COLUMNS.map((c) => (
-          <button
-            key={c.key}
-            type="button"
-            onClick={() => setSort(c.key)}
-            style={{
-              ...S.tab,
-              background: sort === c.key ? v("--color-accent") : "transparent",
-              color: sort === c.key ? v("--color-text-on-accent") : v("--color-text-secondary"),
-            }}
-          >
-            {c.label}
-          </button>
-        ))}
+      <div style={S.controls}>
+        <div style={S.chips}>
+          {OWNERS.map((o) => (
+            <button
+              key={o.key}
+              type="button"
+              onClick={() => setOwner(o.key)}
+              style={{
+                ...S.chip,
+                background: owner === o.key ? v("--color-accent") : "transparent",
+                color: owner === o.key ? v("--color-text-on-accent") : v("--color-text-secondary"),
+              }}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+        <YearPicker years={years} value={zubauYear} onChange={setZubauYear} />
       </div>
 
-      <div style={S.list}>
-        {sorted.map((r, i) => {
-          const isHome = home?.region_id === r.region_id;
-          const val = r[sort];
-          const pct = barPct(val);
-          return (
-            <div
-              key={r.region_id}
-              ref={isHome ? homeRowRef : undefined}
-              style={{ ...S.row, ...(isHome ? S.rowHome : null) }}
-            >
+      <div style={S.scroller}>
+        <div style={S.table}>
+          {/* Header: every column sorts, the first also picks what it shows. */}
+          <div style={{ ...S.row, ...S.header }}>
+            <RankHeader mode={rankMode} onChange={setRankMode} />
+            <span style={S.headName}>Gemeinde</span>
+            <span />
+            {COLUMNS.map((c) => (
+              <button
+                key={c.key}
+                type="button"
+                onClick={() => setSort(c.key)}
+                style={{
+                  ...S.headBtn,
+                  color: sort === c.key ? v("--color-accent") : v("--color-text-muted"),
+                  fontWeight: sort === c.key ? 700 : 600,
+                }}
+              >
+                {c.key === "zubau" ? `Zubau ${zubauYear}` : c.label}
+              </button>
+            ))}
+          </div>
+
+          <div>
+            {display.map((r) => {
+              const isHome = home?.region_id === r.region_id;
+              const val = valueOf(r, sort);
+              return (
+                <div
+                  key={r.region_id}
+                  ref={isHome ? homeRowRef : undefined}
+                  style={{ ...S.row, ...(isHome ? S.rowHome : null) }}
+                >
+                  <span style={S.rank}>
+                    {val === null ? "—" : `${rankOf.get(r.region_id)}.`}
+                    <RankDelta value={deltas.get(r.region_id) ?? null} />
+                  </span>
+                  <span style={S.nameCell}>
+                    {r.href ? (
+                      <Link href={r.href} style={{ ...S.name, fontWeight: isHome ? 700 : 500 }}>
+                        {r.name}
+                      </Link>
+                    ) : (
+                      <span style={S.name}>{r.name}</span>
+                    )}
+                    {r.population === null && <span style={S.hint}>unbewohnt</span>}
+                  </span>
+                  <span style={S.barCell}>
+                    <span style={S.track}>
+                      <span
+                        style={{
+                          ...S.fill,
+                          width: `${barPct(val)}%`,
+                          background: isHome ? v("--color-accent") : v("--color-accent-light"),
+                        }}
+                      />
+                    </span>
+                  </span>
+                  {COLUMNS.map((c) => (
+                    <span key={c.key} style={cellStyle(c.key)}>
+                      {fmtCell(r, c.key)}
+                    </span>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Floating row: same grid as the list, so its bar and every value line
+              up under the column they stand in for. */}
+          {ready && homeRow && !homeVisible && (
+            <div style={{ ...S.row, ...S.sticky }}>
               <span style={S.rank}>
-                {val === null ? "—" : `${i + 1}.`}
-                <RankDelta value={deltaFor(r, sort)} />
+                {rankOf.get(homeRow.region_id) ?? "—"}.
+                <RankDelta value={deltas.get(homeRow.region_id) ?? null} />
               </span>
               <span style={S.nameCell}>
-                {r.href ? (
-                  <Link href={r.href} style={{ ...S.name, fontWeight: isHome ? 700 : 500 }}>
-                    {r.name}
-                  </Link>
-                ) : (
-                  <span style={S.name}>{r.name}</span>
-                )}
-                {r.population === null && <span style={S.hint}>unbewohnt</span>}
+                <span style={{ ...S.name, fontWeight: 700 }}>{homeRow.name}</span>
+                <span style={S.stickyScope}>{scopeLabel}</span>
               </span>
               <span style={S.barCell}>
                 <span style={S.track}>
                   <span
-                    style={{
-                      ...S.fill,
-                      width: `${pct}%`,
-                      background: isHome ? v("--color-accent") : v("--color-accent-light"),
-                    }}
+                    style={{ ...S.fill, width: `${barPct(valueOf(homeRow, sort))}%`, background: v("--color-accent") }}
                   />
                 </span>
               </span>
-              <span style={S.val}>{cell(r, sort)}</span>
+              {COLUMNS.map((c) => (
+                <span key={c.key} style={cellStyle(c.key)}>
+                  {fmtCell(homeRow, c.key)}
+                </span>
+              ))}
             </div>
-          );
-        })}
+          )}
+        </div>
       </div>
 
-      {ready && homeRow && !homeVisible && (
-        <div style={S.sticky}>
-          <span style={S.rank}>
-            {homeIndex + 1}.
-            <RankDelta value={deltaFor(homeRow, sort)} />
-          </span>
-          <span style={{ ...S.nameCell, fontWeight: 700 }}>
-            {homeRow.name}
-            <span style={S.stickyScope}>Ihre Gemeinde {scopeLabel}</span>
-          </span>
-          {/* Same bar and scale as the list, so the floating row reads as the row
-              it stands in for — not as a separate summary. */}
-          <span style={S.barCell}>
-            <span style={S.track}>
-              <span
-                style={{
-                  ...S.fill,
-                  width: `${stickyPct}%`,
-                  background: v("--color-accent"),
-                }}
-              />
-            </span>
-          </span>
-          <span style={S.val}>{cell(homeRow, sort)}</span>
-        </div>
-      )}
-
       {ready && !home && <HomePicker onPick={(hit, plz) => setHome({ ...hit, plz })} />}
-      {ready && home && homeIndex < 0 && (
+      {ready && home && (
         <p style={S.note}>
-          Ihre Gemeinde <strong>{home.name}</strong> liegt nicht in dieser Liste.{" "}
-          <Link href={home.path} style={S.link}>
-            Zur Seite von {home.name}
-          </Link>{" "}
+          {homeRow ? (
+            <>
+              Hervorgehoben: <strong>{home.name}</strong>
+            </>
+          ) : (
+            <>
+              <strong>{home.name}</strong> liegt nicht in dieser Liste.{" "}
+              <Link href={home.path} style={S.link}>
+                Zur Seite von {home.name}
+              </Link>
+            </>
+          )}{" "}
           ·{" "}
           <button type="button" onClick={() => setHome(null)} style={S.linkBtn}>
-            ändern
+            andere Gemeinde
           </button>
         </p>
       )}
-      {ready && home && homeIndex >= 0 && (
-        <p style={S.note}>
-          Hervorgehoben: <strong>{home.name}</strong> ·{" "}
-          <button type="button" onClick={() => setHome(null)} style={S.linkBtn}>
-            andere Gemeinde wählen
-          </button>
-        </p>
+    </div>
+  );
+}
+
+function useOutsideClose(open: boolean, close: () => void) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    const fn = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) close();
+    };
+    document.addEventListener("mousedown", fn);
+    return () => document.removeEventListener("mousedown", fn);
+  }, [open, close]);
+  return ref;
+}
+
+function RankHeader({ mode, onChange }: { mode: RankMode; onChange: (m: RankMode) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useOutsideClose(open, () => setOpen(false));
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <button type="button" onClick={() => setOpen(!open)} style={S.headBtnLeft}>
+        {mode === "platz" ? "Platz" : "Veränd."}
+        <IconChevronDown size={7} />
+      </button>
+      {open && (
+        <div style={S.dropdown}>
+          {(
+            [
+              ["platz", "Platzierung"],
+              ["delta", "Veränderung"],
+            ] as [RankMode, string][]
+          ).map(([k, label]) => (
+            <button
+              key={k}
+              type="button"
+              onClick={() => {
+                onChange(k);
+                setOpen(false);
+              }}
+              style={{ ...S.dropItem, fontWeight: mode === k ? 700 : 400 }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       )}
+    </div>
+  );
+}
+
+function YearPicker({ years, value, onChange }: { years: number[]; value: number; onChange: (y: number) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useOutsideClose(open, () => setOpen(false));
+  const idx = years.indexOf(value);
+  return (
+    <div style={S.yearBar}>
+      <button
+        type="button"
+        onClick={() => idx < years.length - 1 && onChange(years[idx + 1])}
+        disabled={idx >= years.length - 1}
+        style={{ ...S.yearBtn, borderRadius: "8px 0 0 8px", borderRight: "none", opacity: idx >= years.length - 1 ? 0.4 : 1 }}
+        title="Früheres Jahr"
+      >
+        <IconChevronLeft size={9} />
+      </button>
+      <div ref={ref} style={{ position: "relative", display: "flex" }}>
+        <button type="button" onClick={() => setOpen(!open)} style={{ ...S.yearBtn, borderRadius: 0, gap: 4, minWidth: 62 }}>
+          Zubau {value}
+          <IconChevronDown size={7} />
+        </button>
+        {open && (
+          <div style={{ ...S.dropdown, right: 0, left: "auto", maxHeight: 200, overflowY: "auto" }}>
+            {years.map((y) => (
+              <button
+                key={y}
+                type="button"
+                onClick={() => {
+                  onChange(y);
+                  setOpen(false);
+                }}
+                style={{ ...S.dropItem, fontWeight: y === value ? 700 : 400 }}
+              >
+                {y}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={() => idx > 0 && onChange(years[idx - 1])}
+        disabled={idx <= 0}
+        style={{ ...S.yearBtn, borderRadius: "0 8px 8px 0", borderLeft: "none", opacity: idx <= 0 ? 0.4 : 1 }}
+        title="Späteres Jahr"
+      >
+        <IconChevronRight size={9} />
+      </button>
     </div>
   );
 }
@@ -269,7 +495,7 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
 
   return (
     <div style={S.picker}>
-      <form onSubmit={submit} style={S.pickerForm}>
+      <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 7 }}>
         <label htmlFor="home-plz" style={S.pickerLabel}>
           Ihre Postleitzahl markiert Ihre Gemeinde in jeder Liste
         </label>
@@ -304,21 +530,27 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
   );
 }
 
+/** Rank · name · bar · one cell per column. Header, rows and floating row share it. */
+const GRID = "62px minmax(120px,1fr) minmax(44px,64px) repeat(5, minmax(56px, 76px))";
+
 const S: Record<string, React.CSSProperties> = {
-  tabs: { display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 12 },
-  tab: {
+  controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
+  chips: { display: "flex", gap: 4 },
+  chip: {
     border: `1px solid ${v("--color-border")}`,
     borderRadius: 999,
-    padding: "5px 11px",
+    padding: "5px 12px",
     fontSize: 12,
     fontWeight: 600,
     cursor: "pointer",
     fontFamily: "inherit",
   },
-  list: { display: "flex", flexDirection: "column" },
+  // Eight columns do not fit a phone. Scroll the table, never the page.
+  scroller: { overflowX: "auto", margin: "0 -8px", padding: "0 8px" },
+  table: { minWidth: 620 },
   row: {
     display: "grid",
-    gridTemplateColumns: "52px minmax(0,1fr) minmax(60px,90px) 88px",
+    gridTemplateColumns: GRID,
     alignItems: "center",
     gap: 8,
     padding: "7px 8px",
@@ -326,38 +558,81 @@ const S: Record<string, React.CSSProperties> = {
     borderBottom: `1px solid ${v("--color-border-muted")}`,
     fontSize: 13,
   },
+  header: { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 6, marginBottom: 2 },
+  headName: { fontSize: 11, color: v("--color-text-muted"), fontWeight: 600 },
+  headBtn: { background: "none", border: "none", padding: 0, fontFamily: "inherit", fontSize: 11, textAlign: "right", cursor: "pointer" },
+  headBtnLeft: {
+    background: "none",
+    border: "none",
+    padding: 0,
+    fontFamily: "inherit",
+    fontSize: 11,
+    fontWeight: 600,
+    color: v("--color-text-muted"),
+    cursor: "pointer",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 3,
+  },
   rowHome: { background: v("--color-bg-accent"), borderRadius: v("--radius-md") },
-  rank: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-muted"), display: "flex", alignItems: "baseline", gap: 3 },
+  rank: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-muted"), display: "flex", alignItems: "center", gap: 4 },
+  delta: { fontFamily: v("--font-mono"), fontSize: 12, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 1 },
   nameCell: { display: "flex", alignItems: "baseline", gap: 6, minWidth: 0 },
   name: { color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   hint: { fontSize: 10, color: v("--color-text-muted") },
   barCell: { display: "block" },
   track: { display: "block", height: 6, background: v("--color-bg-muted"), borderRadius: 3 },
   fill: { display: "block", height: "100%", borderRadius: 3 },
-  val: { fontFamily: v("--font-mono"), fontSize: 12, textAlign: "right", whiteSpace: "nowrap" },
+  val: { fontFamily: v("--font-mono"), fontSize: 11, textAlign: "right", whiteSpace: "nowrap" },
   sticky: {
     position: "sticky",
-    bottom: 12,
-    display: "grid",
-    gridTemplateColumns: "52px minmax(0,1fr) minmax(60px,90px) 88px",
-    alignItems: "center",
-    gap: 8,
-    padding: "10px 12px",
+    bottom: 10,
     marginTop: 10,
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border-accent")}`,
     borderRadius: v("--radius-md"),
     boxShadow: "0 4px 14px rgba(0,0,0,0.10)",
-    fontSize: 13,
   },
-  stickyScope: { fontSize: 10, color: v("--color-text-muted"), fontWeight: 400, marginLeft: 6 },
-  picker: {
-    marginTop: 16,
-    padding: "12px 14px",
-    background: v("--color-bg-muted"),
-    borderRadius: v("--radius-md"),
+  stickyScope: { fontSize: 10, color: v("--color-text-muted"), fontWeight: 400 },
+  dropdown: {
+    position: "absolute",
+    top: "calc(100% + 4px)",
+    left: 0,
+    background: v("--color-bg"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: v("--radius-sm"),
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+    zIndex: 20,
+    padding: "4px 0",
+    minWidth: 110,
   },
-  pickerForm: { display: "flex", flexDirection: "column", gap: 7 },
+  dropItem: {
+    display: "block",
+    width: "100%",
+    background: "none",
+    border: "none",
+    textAlign: "left",
+    padding: "6px 12px",
+    fontSize: 12,
+    fontFamily: "inherit",
+    color: v("--color-text-primary"),
+    cursor: "pointer",
+    whiteSpace: "nowrap",
+  },
+  yearBar: { display: "flex", alignItems: "stretch" },
+  yearBtn: {
+    border: `1px solid ${v("--color-border")}`,
+    background: v("--color-bg"),
+    color: v("--color-text-primary"),
+    fontFamily: v("--font-mono"),
+    fontSize: 12,
+    padding: "5px 8px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  picker: { marginTop: 16, padding: "12px 14px", background: v("--color-bg-muted"), borderRadius: v("--radius-md") },
   pickerLabel: { fontSize: 12, color: v("--color-text-secondary"), margin: 0 },
   input: {
     flex: "0 0 110px",
