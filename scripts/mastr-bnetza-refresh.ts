@@ -708,13 +708,23 @@ async function phaseUpload(): Promise<void> {
     })),
   ];
 
-  log(`Upserting ${regionsRows.length} regions...`);
+  // Regions exist only so mastr_aggregates.region_id has a foreign key to point
+  // at. Their content — official name, designation, slug, population — belongs to
+  // the Destatis Gemeindeverzeichnis (scripts/destatis-gemeinden.ts); the names
+  // here are BNetzA free-text and would be a downgrade.
+  //
+  // ignoreDuplicates is therefore load-bearing, not an optimisation: a plain
+  // upsert would overwrite "Landkreis Würzburg" with "Würzburg" on every monthly
+  // run and quietly break the slug that tells the two Würzburgs apart.
+  log(`Filling region gaps (${regionsRows.length.toLocaleString()} candidates, existing rows untouched)...`);
   for (let i = 0; i < regionsRows.length; i += 500) {
     const batch = regionsRows.slice(i, i + 500);
-    const { error } = await supabase.from("mastr_regions").upsert(batch, { onConflict: "region_id" });
+    const { error } = await supabase
+      .from("mastr_regions")
+      .upsert(batch, { onConflict: "region_id", ignoreDuplicates: true });
     if (error) throw new Error(`mastr_regions upsert failed: ${error.message}`);
   }
-  log(`Regions upserted`, "ok");
+  log(`Regions ok`, "ok");
 
   // Full replace strategy: delete all rows, then batched insert. This keeps
   // the table clean (no ghost buckets from previous schema versions) and

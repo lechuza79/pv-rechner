@@ -352,10 +352,33 @@ function parseGv100(text: string): Parsed {
 
   const { slugs, disambiguated } = resolveSlugs(drafts);
 
+  /**
+   * Three territories belong to no Kreis at all: the coastal waters incl. the
+   * German continental shelf and a gemeindefreies Gebiet (both M-V), plus the
+   * German-Luxembourg condominium on the Mosel. All are uninhabited, and their
+   * Kreis part is "000" — there is no Satzart-40 record to hang them on.
+   *
+   * They are kept and attached straight to their Bundesland: dropping them would
+   * lose any plants registered there (coastal waters is where offshore wind
+   * lands), and the rollup goes by AGS prefix, not by parent_region_id, so the
+   * shortened parent changes no total. Uninhabited means no slug and no page
+   * anyway.
+   */
+  const orphanParent = (d: GemeindeDraft): string =>
+    kreisMeta.has(d.kreisId) ? d.kreisId : d.regionId.slice(0, 2);
+
+  const orphans = drafts.filter((d) => !kreisMeta.has(d.kreisId));
+  for (const o of orphans) {
+    log(`  ${o.regionId} "${o.core}" has no Kreis (${o.kreisId}) — attaching to Bundesland`, "warn");
+  }
+  if (orphans.some((o) => o.population)) {
+    throw new Error("An inhabited Gemeinde has no Kreis — the hierarchy assumption broke");
+  }
+
   const gemeinden: RegionRow[] = drafts.map((d) => ({
     region_id: d.regionId,
     level: "gemeinde" as const,
-    parent_region_id: d.kreisId,
+    parent_region_id: orphanParent(d),
     name: d.core,
     bezeichnung: d.bezeichnung,
     // Uninhabited gemeindefreie Gebiete (forests, lakes) keep their row so their
