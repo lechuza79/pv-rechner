@@ -336,6 +336,8 @@ export default async function DatenstandPage() {
           rows={[
             { label: "Set-Preise: 1 Modul / 2 Module / 4 Module", value: BK.sets.map((s) => `~${nf(s.price)} €`).join(" / ") },
             { label: "Modul / Wechselrichter je Set", value: BK.sets.map((s) => `${nf(s.moduleWp)} Wp / ${nf(s.inverterW)} W`).join(" · ") },
+            { label: "Gesetzliche Grenze", value: "2.000 Wp Module / 800 VA Wechselrichter (§ 8 Abs. 5a EEG) — das ist die einzige verbindliche Grenze" },
+            { label: "Schuko-Grenze der VDE-Vornorm", value: `${nf(BK.schukoMaxWp)} Wp (= 800 W + 20 %), DIN VDE V 0126-95 seit 01.12.2025 — freiwillige Vornorm, Produktnorm für Hersteller, gilt nur für Geräte ohne Speicher. Darüber: spezielle Einspeisesteckdose durch Elektrofachkraft, ~${nf(BK.energySocketCostMin)}–${nf(BK.energySocketCostMax)} €` },
             { label: "Speicher-Größen & Aufpreis", value: BK.storage.filter((s) => s.kwh > 0).map((s) => `~${nf(s.kwh)} kWh: +${nf(s.price)} €`).join(" · ") },
             { label: "Speicher: Wirkungsgrad / Lebensdauer", value: `${nf(BK.storageRoundtrip * 100)} % Lade-/Entlade-Wirkungsgrad · ${nf(BK.storageLifeYears)} Jahre` },
             { label: "Speicher-Empfehlung nur bei Amortisation unter", value: `${nf(BK.storageRecommendMaxPayback)} Jahren — sonst empfehlen wir bewusst ohne` },
@@ -347,7 +349,7 @@ export default async function DatenstandPage() {
             { label: "Strompreisanstieg", value: `${nf(prices.electricityIncrease * 100)} % / Jahr (systemweit wie PV-Rechner)` },
             { label: "Einspeisung", value: "keine Vergütung — Überschuss fließt unvergütet ins Netz" },
           ]}
-          source={`Marktpreise Steckersolar-Sets 2026 (ADAC, Stiftung Warentest, Verbraucherzentrale); Speicher-Größen/-Preise an getesteten Geräten (Anker Solarbank 2 Pro ~1,6 kWh, Anker Solarbank 3 Pro ~2,7 kWh; Quervergleich Growatt Noah 2000, Zendure SolarFlow 800 Pro — heise Bestenliste, Stiftung Warentest). Solarpaket I (800-W-Grenze), HTW Berlin Stecker-Solar-Simulator (Eigenverbrauch), PVGIS (Ertrag). Nächste Prüfung bis ${monthYear(BK.reviewBy)}.`}
+          source={`Marktpreise Steckersolar-Sets 2026 (ADAC, Stiftung Warentest, Verbraucherzentrale); Speicher-Größen/-Preise an getesteten Geräten (Anker Solarbank 2 Pro ~1,6 kWh, Anker Solarbank 3 Pro ~2,7 kWh; Quervergleich Growatt Noah 2000, Zendure SolarFlow 800 Pro — heise Bestenliste, Stiftung Warentest). § 8 Abs. 5a EEG (2.000 Wp / 800 VA), DIN VDE V 0126-95 + DKE-Normauslegung vom 17.12.2025 (Schuko-Grenze der Vornorm), PVGIS (Stundenreihen je Ausrichtung). Nächste Prüfung bis ${monthYear(BK.reviewBy)}; die VDE-Vornorm wird spätestens Ende 2028 überprüft.`}
         />
 
         {/* ── Eigenverbrauch & Verbrauch (Modell-Annahmen) ── */}

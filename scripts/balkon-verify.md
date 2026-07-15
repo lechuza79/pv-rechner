@@ -27,9 +27,19 @@ Stichtag steht in `DEFAULT_BALKON_CONFIG.reviewBy`.
     (1,9 kWh, ab 730 €); Marktspanne reiner Balkonspeicher 400–1.500 €.
   Preise fallen und Größen wachsen — deshalb der Quartals-Rhythmus.
 - `sets[].inverterW` / Modulgrenze — die **800-W-Wechselrichter-Grenze** und die
-  **2.000-Wp-Modulgrenze** (Solarpaket I, seit Mai 2024). Prüfen, ob die Grenzen
-  gesetzlich unverändert sind (VDE-Norm/EEG). Ändert sich das, sind `inverterW`
-  und die Set-Modulleistungen anzupassen.
+  **2.000-Wp-Modulgrenze** (§ 8 Abs. 5a EEG). Das ist das **Gesetz** — prüfen, ob
+  es unverändert gilt.
+- `schukoMaxWp` (960) — die **Schuko-Grenze der VDE-Vornorm** DIN VDE V 0126-95
+  (seit 01.12.2025, = 800 W + 20 %). **Achtung, häufig verwechselt:** Das ist
+  **kein Gesetz**, sondern eine **freiwillige Vornorm** und eine **Produktnorm**
+  (Adressat: Hersteller). Sie gilt ausdrücklich **nur für Geräte ohne Speicher**.
+  Als Vornorm ("V") wird sie **spätestens nach drei Jahren** (also bis Ende 2028)
+  überprüft — dann kann sie zur Norm werden, sich ändern oder ersatzlos entfallen.
+  **Deshalb hier führen.** Quelle: DKE-Normauslegung vom 17.12.2025.
+  Prüfen: Gilt die Vornorm noch? Wurde sie zur Norm? Hat sich die 960 geändert?
+  Ist inzwischen eine Speicher-Norm erschienen (war 2026 in Arbeit)?
+- `energySocketCostMin/Max` (100–300 €) — Marktkosten für die spezielle
+  Energiesteckvorrichtung inkl. Elektrofachkraft. Marktangabe, keine Normgröße.
 - Anmelde-Regel (Text im Ergebnis): weiterhin nur Marktstammdatenregister, keine
   Netzbetreiber-Genehmigung? (BNetzA)
 
@@ -87,9 +97,22 @@ Dem Assistenten sagen: **„Lauf die Balkonkraftwerk-Prüfung."**
   Richtwerte (kein Ermessens-/Rechtsfall) → `sets[].price` bzw. `storage[].price`
   in `lib/balkon-config.ts` anpassen, `validFrom`/`reviewBy` hochsetzen,
   `npm run build` + `npm test` grün (`lib/__tests__/balkon.test.ts`), committen.
-- **Bei `abweichung` bei den Grenzen/Anmeldung (Gesetzesänderung):** das ist ein
-  Rechtsfall → **kein Auto-Fix**. Council (`scripts/council-verify.md`) laufen
-  lassen, Befund mailen, erst nach Freigabe `inverterW`/Modulleistungen und die
-  Ergebnis-Texte anpassen. Der Quartals-`solar-check-legal-waechter` fängt solche
-  Novellen zusätzlich mit ab.
+- **Bei `abweichung` bei den Grenzen/Anmeldung (Gesetzes-/Normänderung):** das ist
+  ein Rechtsfall → **kein Auto-Fix**. Council (`scripts/council-verify.md`) laufen
+  lassen, Befund mailen, erst nach Freigabe `inverterW`/Modulleistungen/`schukoMaxWp`
+  und die Ergebnis-Texte anpassen. Der Quartals-`solar-check-legal-waechter` fängt
+  solche Novellen zusätzlich mit ab.
+
+  **Lehre aus dem Council-Lauf 07/2026 — beim Prüfen sauber trennen:**
+  Der Wächter meldete damals die 960-Wp-Schwelle als geltende Regel. Der
+  adversariale Prüfer deckte auf, dass das **eine freiwillige Vornorm** ist und
+  **kein Gesetz** — hätten wir den Befund direkt umgesetzt, wäre eine falsche
+  Rechtsaussage („Pflicht", „nur mit Wieland erlaubt") live gegangen. Deshalb bei
+  jeder Grenze **drei Fragen** beantworten, bevor irgendwas in die UI wandert:
+  1. **Gesetz oder Norm?** (Norm ≠ Recht. Gesetz hier: § 8 Abs. 5a EEG.)
+  2. **Norm oder Vornorm?** („V" = vorläufig, Überprüfung in ≤3 Jahren.)
+  3. **Wer ist Adressat — Hersteller oder Betreiber?** (Produktnorm bindet den
+     Verbraucher nicht.)
+  Und: **Markennamen nicht als Anforderung übernehmen** — die Norm sagt
+  technologieoffen „spezielle Energiesteckvorrichtung", nicht „Wieland".
 - **Bei `ok`:** nur `validFrom` + `reviewBy` aufs nächste Jahr setzen.

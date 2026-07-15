@@ -6,6 +6,23 @@
 // betragen. Anmeldung: nur noch Marktstammdatenregister, keine Netzbetreiber-
 // Genehmigung mehr.
 //
+// RECHT vs. NORM — nicht verwechseln (Council-Prüfung 07/2026):
+//   GESETZ (§ 8 Abs. 5a EEG): 2.000 Wp Module / 800 VA Wechselrichter. Das ist die
+//   einzige verbindliche Grenze. Von 960 Wp steht dort nichts.
+//   VORNORM (DIN VDE V 0126-95, seit 01.12.2025): sieht für den Betrieb an einer
+//   normalen Schuko-Steckdose max. 960 Wp Module vor (= 800 W + 20 %), darüber eine
+//   "spezielle Energiesteckvorrichtung" (technologieoffen formuliert — "Wieland" ist
+//   ein Markenname, keine Anforderung). Diese Vornorm ist FREIWILLIG und eine
+//   PRODUKTnorm: Adressat sind Hersteller, nicht Betreiber. Die DKE selbst schreibt:
+//   "Die Anwendung von Normen ist grundsätzlich freiwillig." Sie ist zudem eine
+//   Vornorm ("V") und wird spätestens nach drei Jahren überprüft → schukoMaxWp
+//   gehört deshalb an den Wächter (reviewBy), nicht still in den Code.
+//   Wichtig: Die Vornorm gilt ausdrücklich NUR für Geräte OHNE Speicher — die DKE:
+//   "Die Konformität mit dieser Produktnorm ist nur für Steckersolargeräte ohne
+//   Speicher möglich."
+// Deshalb formuliert der Rechner hier nie "Pflicht"/"verboten", sondern nennt
+// Gesetz und Norm getrennt.
+//
 // Wirtschaftlich zählt fast nur der SELBST genutzte Strom: für Balkonkraftwerke
 // gibt es keine Einspeisevergütung, der Überschuss fließt unvergütet ins Netz.
 // Deshalb modellieren wir Ertrag → Eigenverbrauch → Ersparnis, nicht
@@ -71,6 +88,15 @@ export interface BalkonConfig {
   specificYield: number;    // Fallback kWh/kWp im Jahr, wenn keine PLZ gesetzt ist.
                             // Mit PLZ kommen die 12 Monatswerte direkt von PVGIS.
 
+  // Modulleistung, bis zu der die VDE-Vornorm den Betrieb an einer normalen
+  // Schuko-Steckdose vorsieht. FREIWILLIGE Vornorm, kein Gesetz (siehe Kopf) —
+  // wird spätestens 2028 überprüft, deshalb im Wächter-Runbook geführt.
+  schukoMaxWp: number;
+  // Was die Vornorm oberhalb davon vorsieht (Einbau durch Elektrofachkraft).
+  // Marktangabe, keine Norm-/Gesetzesgröße → Wächter prüft sie mit.
+  energySocketCostMin: number;
+  energySocketCostMax: number;
+
   // HINWEIS: Clipping-Deckel, Eigenverbrauchs-Power-Law und Speicher-Durchsatz
   // standen früher hier als kalibrierte Konstanten. Sie sind ersatzlos entfallen —
   // lib/balkon-sim.ts simuliert das Jahr stündlich auf der geteilten Basis
@@ -101,8 +127,11 @@ export interface BalkonConfig {
 export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   sets: [
     { id: "single", label: "1 Modul", what: "~500 Wp mit kleinem Wechselrichter — für schmale Balkone oder eine Wand.", moduleWp: 500, inverterW: 600, price: 300 },
-    { id: "duo", label: "2 Module (Standard)", what: "~1.000 Wp am 800-W-Wechselrichter — die gängigste Größe.", moduleWp: 1000, inverterW: 800, price: 500 },
-    { id: "max", label: "4 Module (Maximum)", what: "~2.000 Wp am 800-W-Wechselrichter — mehr Ertrag morgens und abends, die Mittagsspitze wird gedrosselt.", moduleWp: 2000, inverterW: 800, price: 800 },
+    // 960 Wp statt früher 1.000: genau die Grenze, bis zu der die VDE-Vornorm den
+    // normalen Schuko-Stecker vorsieht. Der Markt verkauft seit der Norm exakt
+    // solche Sets — damit ist die gängigste Größe ohne Sternchen normkonform.
+    { id: "duo", label: "2 Module (Standard)", what: "~960 Wp am 800-W-Wechselrichter — die gängigste Größe, läuft am normalen Schuko-Stecker.", moduleWp: 960, inverterW: 800, price: 500 },
+    { id: "max", label: "4 Module (Maximum)", what: "~2.000 Wp am 800-W-Wechselrichter — mehr Ertrag morgens und abends, die Mittagsspitze wird gedrosselt. Gesetzlich erlaubt; die VDE-Vornorm sieht dafür eine spezielle Einspeisesteckdose vor.", moduleWp: 2000, inverterW: 800, price: 800 },
   ],
   orientations: [
     { id: "sued_flach", label: "Süd, aufgeständert", sub: "Optimaler Winkel (Flachdach, Garten, Terrasse)" },
@@ -135,6 +164,10 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   defaultStorage: "none",
 
   specificYield: 950,
+
+  schukoMaxWp: 960,
+  energySocketCostMin: 100,
+  energySocketCostMax: 300,
 
   storageRoundtrip: 0.9,
   storageLifeYears: 12,

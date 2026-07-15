@@ -534,8 +534,22 @@ export default function Balkon() {
               )}
               <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 6 }}>
                 Anmeldung seit 2024 vereinfacht: eine Registrierung im Marktstammdatenregister genügt, keine Netzbetreiber-Genehmigung.
+                {r.storageKwh > 0 && " Mit Speicher ist das Gerät allerdings von der VDE-Produktnorm nicht abgedeckt — dafür entsteht gerade eine eigene Norm; je nach Ausführung kann eine Rückfrage beim Netzbetreiber sinnvoll sein."}
               </div>
             </div>
+
+            {/* Steckdosen-Hinweis oberhalb der Schuko-Grenze der VDE-Vornorm.
+                Bewusst KEIN "Pflicht"/"verboten": Gesetzlich sind 2.000 Wp erlaubt,
+                die Vornorm ist freiwillig und richtet sich an Hersteller. */}
+            {CFG.sets.find(s => s.id === active.setId)!.moduleWp > CFG.schukoMaxWp && (
+              <div style={{ background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
+                <strong style={{ color: v('--color-text-secondary') }}>Zur Steckdose:</strong> Gesetzlich sind {(2000).toLocaleString("de-DE")} Wp Module an 800 W erlaubt — dein Set ist also zulässig.
+                Die VDE-Vornorm (seit Dezember 2025) sieht für den normalen Schuko-Stecker aber nur bis {CFG.schukoMaxWp.toLocaleString("de-DE")} Wp vor; darüber eine spezielle
+                Einspeisesteckdose, die eine Elektrofachkraft setzt (~{CFG.energySocketCostMin}–{CFG.energySocketCostMax} €). Die Norm ist{" "}
+                <strong style={{ color: v('--color-text-secondary') }}>freiwillig</strong> und richtet sich an Hersteller, gilt aber als anerkannte Regel der Technik —
+                im Schadensfall kann das gegenüber Versicherung oder Vermieter zählen. Wer das umgehen will, nimmt das 2-Module-Set: das bleibt mit {CFG.sets.find(s => s.id === "duo")!.moduleWp} Wp darunter.
+              </div>
+            )}
 
             {/* Miete/Eigentum-Hinweis */}
             <div style={{ background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
