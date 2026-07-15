@@ -14,6 +14,7 @@
     "typecheck": "tsc --noEmit",
     "mastr:refresh": "tsx scripts/mastr-refresh.ts",
     "mastr:refresh-bnetza": "tsx scripts/mastr-bnetza-refresh.ts",
+    "destatis:gemeinden": "tsx scripts/destatis-gemeinden.ts",
     "postinstall": "node -e \"if(!process.env.VERCEL && !process.env.CI){require('child_process').execSync('git config core.hooksPath .githooks',{stdio:'inherit'})}\""
   },
   "dependencies": {

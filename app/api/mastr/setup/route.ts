@@ -22,11 +22,13 @@ export async function GET(req: NextRequest) {
 
   const results: { step: string; status: string; error?: string }[] = [];
 
-  // 1. mastr_regions — hierarchy of DE / Bundesland / Landkreis
-  //    region_id uses AGS (Amtlicher Gemeindeschlüssel):
-  //      'de'      → Germany
-  //      '01'..'16' → Bundesland (2-digit prefix)
-  //      '01001'.. → Landkreis (5-digit prefix)
+  // 1. mastr_regions — hierarchy of DE / Bundesland / Landkreis / Gemeinde
+  //    region_id uses AGS (Amtlicher Gemeindeschlüssel), nested by design:
+  //      'de'         → Germany
+  //      '01'..'16'   → Bundesland (2-digit prefix)
+  //      '01001'..    → Kreis (5-digit prefix)
+  //      '01001000'.. → Gemeinde (8-digit, the atomic grain)
+  //    Every level above Gemeinde is derivable by prefix — see mastr_aggregates.
   const { error: e1 } = await supabase.rpc("exec_sql", {
     sql: `
       CREATE TABLE IF NOT EXISTS mastr_regions (
@@ -45,6 +47,31 @@ export async function GET(req: NextRequest) {
     `,
   });
   results.push({ step: "mastr_regions", status: e1 ? "error" : "ok", error: e1?.message });
+
+  // 1b. Migration to Gemeinde granularity (Solar-Atlas).
+  //     CREATE TABLE IF NOT EXISTS above is a no-op on an existing table, so the
+  //     new level, columns and indexes are added explicitly and idempotently.
+  //
+  //     'level' is the structural position in the hierarchy; 'bezeichnung' is the
+  //     official designation from the Destatis Gemeindeverzeichnis. They are not
+  //     the same thing: a kreisfreie Stadt sits at level 'landkreis' but is called
+  //     "Kreisfreie Stadt", and BNetzA cannot tell the two Würzburgs apart at all.
+  //     'slug' is the URL segment, derived from name + bezeichnung.
+  const { error: e1b } = await supabase.rpc("exec_sql", {
+    sql: `
+      ALTER TABLE mastr_regions DROP CONSTRAINT IF EXISTS mastr_regions_level_check;
+      ALTER TABLE mastr_regions ADD CONSTRAINT mastr_regions_level_check
+        CHECK (level IN ('de', 'bundesland', 'landkreis', 'gemeinde'));
+      ALTER TABLE mastr_regions ADD COLUMN IF NOT EXISTS slug text;
+      ALTER TABLE mastr_regions ADD COLUMN IF NOT EXISTS bezeichnung text;
+      ALTER TABLE mastr_regions ADD COLUMN IF NOT EXISTS population_as_of date;
+      -- Slugs must be unique among siblings; that is what makes
+      -- /solar-atlas/bayern/landkreis-wuerzburg/hoechberg resolvable.
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_mr_parent_slug
+        ON mastr_regions (parent_region_id, slug) WHERE slug IS NOT NULL;
+    `,
+  });
+  results.push({ step: "mastr_regions_gemeinde_migration", status: e1b ? "error" : "ok", error: e1b?.message });
 
   // 2. mastr_aggregates — pre-aggregated per region × energy type × segment × year
   //    segment:

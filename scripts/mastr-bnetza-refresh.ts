@@ -49,7 +49,8 @@ type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher";
 type ActorKind = "privat" | "gewerbe";
 type AggregateKey = `${string}|${string}|${string}|${number}`;
 type AggregateValue = { count: number; kwp: number };
-type RegionMeta = { level: "landkreis"; name: string; parent: string };
+type RegionLevel = "landkreis" | "gemeinde";
+type RegionMeta = { level: RegionLevel; name: string; parent: string };
 
 type UnitSpec = {
   et: Energietraeger;
@@ -432,7 +433,11 @@ function classifySolarSegment(
   // Primary signal: ArtDerSolaranlage (Freifläche / Gebäude / Balkonkraftwerk).
   const art = row.ArtDerSolaranlage;
   if (art === SOLAR_ART_FREIFLAECHE) return "freiflaeche";
-  if (art === SOLAR_ART_BALKON) return "privat_dach";
+  // Steckersolar is its own segment, not a small privat_dach: it is a quarter of
+  // all units but a rounding error in capacity, and Balkonkraftwerk subsidies are
+  // the most common municipal funding programme — so the count is exactly what a
+  // Gemeinde wants to see about its own scheme.
+  if (art === SOLAR_ART_BALKON) return "steckersolar";
 
   // Gebäude-Solar: split into privat / gewerbe via Nutzungsbereich (preferred,
   // explicitly captured by the operator) and fall back to actor type.
@@ -513,7 +518,7 @@ async function aggregateUnit(
     return { processed: 0, accepted: 0, skipped: { status: 0, gks: 0, year: 0, kwp: 0 } };
   }
 
-  const skipped = { status: 0, gks: 0, year: 0, kwp: 0 };
+  const skipped = { status: 0, gks: 0, gksShort: 0, year: 0, kwp: 0 };
   let accepted = 0;
   let processed = 0;
 
@@ -528,8 +533,16 @@ async function aggregateUnit(
         return;
       }
       const gks = (row.Gemeindeschluessel ?? "").trim();
-      if (!gks || gks.length < 5) {
+      if (!gks) {
         skipped.gks++;
+        return;
+      }
+      // Gemeinde is the atomic grain: everything above (Kreis, Bundesland, DE)
+      // is derived by prefix, so a row that cannot be placed in a Gemeinde has
+      // no home. Rows carrying only a Kreis-level key are counted separately —
+      // if this number is ever non-trivial, the rollup silently loses capacity.
+      if (gks.length < 8) {
+        skipped.gksShort++;
         return;
       }
       const year = parseYear(row.Inbetriebnahmedatum);
@@ -543,14 +556,19 @@ async function aggregateUnit(
         return;
       }
 
-      const regionId = gks.substring(0, 5);
+      const regionId = gks.substring(0, 8);
+      const kreisAgs = gks.substring(0, 5);
       const blAgs = gks.substring(0, 2);
 
-      // First-occurrence wins for region metadata. BNetzA records may carry
-      // either `Landkreis` or no name at all; we accept whatever the row
-      // provides and let the upload phase fill in placeholders if missing.
-      if (!regions.has(regionId) && row.Landkreis) {
-        regions.set(regionId, { level: "landkreis", name: row.Landkreis, parent: blAgs });
+      // First-occurrence wins for region metadata. These names are a fallback:
+      // they are operator free-text and carry no official designation (BNetzA
+      // lists both Landkreis and kreisfreie Stadt Würzburg as plain "Würzburg").
+      // The Destatis Gemeindeverzeichnis overwrites them on upload.
+      if (!regions.has(kreisAgs) && row.Landkreis) {
+        regions.set(kreisAgs, { level: "landkreis", name: row.Landkreis, parent: blAgs });
+      }
+      if (!regions.has(regionId) && row.Gemeinde) {
+        regions.set(regionId, { level: "gemeinde", name: row.Gemeinde, parent: kreisAgs });
       }
 
       const segment = spec.et === "solar" ? classifySolarSegment(row, actorMap) : "n/a";
@@ -590,7 +608,8 @@ async function phaseAggregate(): Promise<void> {
     const r = await aggregateUnit(zipPath, spec, actorMap, agg, regions);
     log(
       `    ${spec.et}: ${r.accepted.toLocaleString()} accepted / ${r.processed.toLocaleString()} total ` +
-        `(skipped: status=${r.skipped.status}, gks=${r.skipped.gks}, year=${r.skipped.year}, kwp=${r.skipped.kwp})`,
+        `(skipped: status=${r.skipped.status}, gks=${r.skipped.gks}, gksShort=${r.skipped.gksShort}, ` +
+        `year=${r.skipped.year}, kwp=${r.skipped.kwp})`,
       "ok",
     );
   }
@@ -598,7 +617,12 @@ async function phaseAggregate(): Promise<void> {
   // Free actor map memory before serialising output.
   actorMap.clear();
 
-  log(`Step 3/3: writing aggregates.json (${agg.size.toLocaleString()} buckets, ${regions.size} landkreise)`);
+  const kreisCount = Array.from(regions.values()).filter((r) => r.level === "landkreis").length;
+  const gemeindeCount = regions.size - kreisCount;
+  log(
+    `Step 3/3: writing aggregates.json (${agg.size.toLocaleString()} buckets, ` +
+      `${kreisCount} Kreise, ${gemeindeCount.toLocaleString()} Gemeinden)`,
+  );
   const aggregates = Array.from(agg.entries()).map(([key, val]) => {
     const [region_id, energietraeger, segment, yearStr] = key.split("|");
     return {
@@ -654,7 +678,7 @@ async function phaseUpload(): Promise<void> {
   const payload = JSON.parse(await readFile(AGGREGATES_OUT, "utf8"));
   const { aggregates, regions, generated_at, data_as_of, source, source_filename } = payload as {
     aggregates: { region_id: string; energietraeger: string; segment: string; year: number; count: number; kwp: number }[];
-    regions: { region_id: string; level: "landkreis"; name: string; parent: string }[];
+    regions: { region_id: string; level: RegionLevel; name: string; parent: string }[];
     generated_at: string;
     data_as_of: string;
     source: string;
