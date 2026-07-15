@@ -396,20 +396,23 @@ export default function Balkon() {
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent'), whiteSpace: "nowrap" }}><IconCheck size={9} /> Empf.</span>
               )}
 
+              {/* Größen: gleiche Höhe wie der Schalter (22 px, border-box), damit die
+                  Zeile beim Ein-/Ausschalten nicht springt. Auswahl = blaue Unterstreichung. */}
               {storageOn && (
-                <div style={{ display: "flex", gap: 6, flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", gap: 12, alignItems: "center", minWidth: 0 }}>
                   {storageOptions.map(st => {
                     const selected = active.storageId === st.id;
-                    const rec = st.id === recommendation.best.storageId;
                     return (
                       <button key={st.id} onClick={() => selectStorage(st.id)} style={{
-                        flex: 1, minWidth: 0, padding: "6px 4px", borderRadius: v('--radius-md'), cursor: "pointer", textAlign: "center",
-                        display: "flex", flexDirection: "column", alignItems: "center", gap: 0,
-                        background: selected ? v('--color-accent-dim') : v('--color-bg-muted'),
-                        border: `2px solid ${selected ? v('--color-accent') : v('--color-border')}`,
+                        background: "none", border: "none", borderBottom: `2px solid ${selected ? v('--color-accent') : "transparent"}`,
+                        boxSizing: "border-box", height: 22, padding: 0, cursor: "pointer",
+                        display: "inline-flex", alignItems: "center", whiteSpace: "nowrap",
+                        fontFamily: "inherit", fontSize: 12, fontWeight: 700,
+                        color: selected ? v('--color-accent') : v('--color-text-secondary'),
+                        transition: "color 0.15s, border-color 0.15s",
                       }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, whiteSpace: "nowrap", color: selected ? v('--color-accent') : v('--color-text-primary') }}>~{st.kwh.toLocaleString("de-DE")} kWh</span>
-                        <span style={{ fontSize: 9, color: v('--color-text-muted'), whiteSpace: "nowrap" }}>+{st.price.toLocaleString("de-DE")} €{rec ? " · Empf." : ""}</span>
+                        ~{st.kwh.toLocaleString("de-DE")} kWh
+                        <span style={{ fontWeight: 400, fontSize: 11, color: v('--color-text-muted'), marginLeft: 4 }}>+{st.price.toLocaleString("de-DE")} €</span>
                       </button>
                     );
                   })}
