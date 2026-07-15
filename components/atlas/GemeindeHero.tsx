@@ -1,26 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import DonutChart from "../charts/DonutChart";
+import { IconChevronDown } from "../Icons";
 import { v } from "../../lib/theme";
-import { SEGMENT_OWNER } from "../../lib/atlas";
+import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
 
 export type HeroCell = { segment: string; count: number; kwp: number };
 
-export type HeroPeer = {
+/** A size-class benchmark from outside the Kreis. Per-capita only — see below. */
+export type OutsidePeer = {
   region_id: string;
   name: string;
   href: string | null;
-  population: number | null;
-  /** W per inhabitant under the currently selected owner filter. */
-  values: Record<Owner, number | null>;
-  rang: Record<Owner, number | null>;
+  population: number;
   scope: string;
-  isSelf: boolean;
+  values: Record<Owner, number | null>;
 };
 
 type Owner = "alle" | "privat" | "gewerbe";
+type Metric = "perCapita" | "count" | "kwp" | "speicher";
 
 const OWNERS: { key: Owner; label: string }[] = [
   { key: "alle", label: "Alle" },
@@ -28,10 +28,17 @@ const OWNERS: { key: Owner; label: string }[] = [
   { key: "gewerbe", label: "Gewerbe" },
 ];
 
+const METRICS: { key: Metric; label: string }[] = [
+  { key: "perCapita", label: "Solarleistung je Einwohner" },
+  { key: "count", label: "Zahl der Anlagen" },
+  { key: "kwp", label: "Installierte Leistung" },
+  { key: "speicher", label: "Speicherkapazität" },
+];
+
 /**
- * Category colours, fixed. They must not follow a theme — a slice that means
- * "Freifläche" cannot change meaning between light and dark (widget convention:
- * theme owns background, text and accent, never semantics).
+ * Category colours, fixed. A slice that means "Freifläche" cannot change meaning
+ * between light and dark (widget convention: theme owns background, text and
+ * accent, never semantics).
  */
 const SEG: Record<string, { label: string; color: string }> = {
   privat_dach: { label: "Private Dächer", color: "#1365EA" },
@@ -47,53 +54,150 @@ function fmtLeistung(kwp: number): string {
   return `${nf(kwp)} kW`;
 }
 
+function fmtValue(v: number, m: Metric): string {
+  if (m === "perCapita") return `${nf(v)} W`;
+  if (m === "kwp") return fmtLeistung(v);
+  if (m === "speicher") return v >= 1000 ? `${(v / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh` : `${nf(v)} kWh`;
+  return nf(v);
+}
+
+type PeerRow = {
+  region_id: string;
+  name: string;
+  href: string | null;
+  scope: string;
+  value: number;
+  rang: number | null;
+  isSelf: boolean;
+};
+
+function useOutsideClose(open: boolean, close: () => void) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!open) return;
+    const fn = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) close();
+    };
+    document.addEventListener("mousedown", fn);
+    return () => document.removeEventListener("mousedown", fn);
+  }, [open, close]);
+  return ref;
+}
+
 /**
  * The Gemeinde's own mix beside the peers it is measured against, under one
  * owner filter.
  *
  * Both halves answer the same question — where does this place stand — so they
- * share a filter rather than each carrying their own. Splitting them would let
- * the donut show all plants while the table ranks only private ones, which is
- * two different stories side by side.
+ * share the filter rather than each carrying their own. Splitting them would let
+ * the donut show every plant while the table ranks only private ones: two
+ * different stories side by side.
  */
 export default function GemeindeHero({
   cells,
-  peers,
+  siblings,
+  siblingCells,
+  outside,
+  regionId,
   regionName,
+  basePath,
 }: {
   cells: HeroCell[];
-  peers: HeroPeer[];
+  siblings: RankingRegion[];
+  siblingCells: ChildYearRow[];
+  outside: OutsidePeer[];
+  regionId: string;
   regionName: string;
+  basePath: string;
 }) {
   const [owner, setOwner] = useState<Owner>("alle");
+  const [metric, setMetric] = useState<Metric>("perCapita");
   const [active, setActive] = useState<string | null>(null);
+  const [metricOpen, setMetricOpen] = useState(false);
+  const metricRef = useOutsideClose(metricOpen, () => setMetricOpen(false));
 
-  const slices = useMemo(() => {
-    const keep = (segment: string) =>
-      owner === "alle" ? SEGMENT_OWNER[segment] !== null : SEGMENT_OWNER[segment] === owner;
-    return cells
-      .filter((c) => c.kwp > 0 && SEG[c.segment] && keep(c.segment))
-      .map((c) => ({ key: c.segment, label: SEG[c.segment].label, color: SEG[c.segment].color, value: c.kwp, count: c.count }))
-      .sort((a, b) => b.value - a.value);
-  }, [cells, owner]);
+  const keep = (segment: string) =>
+    owner === "alle" ? SEGMENT_OWNER[segment] !== null : SEGMENT_OWNER[segment] === owner;
 
+  const slices = useMemo(
+    () =>
+      cells
+        .filter((c) => c.kwp > 0 && SEG[c.segment] && keep(c.segment))
+        .map((c) => ({ key: c.segment, label: SEG[c.segment].label, color: SEG[c.segment].color, value: c.kwp, count: c.count }))
+        .sort((a, b) => b.value - a.value),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cells, owner],
+  );
   const total = slices.reduce((a, s) => a + s.value, 0);
   const shown = active ? slices.find((s) => s.key === active) : null;
 
-  const rows = useMemo(() => {
-    const withVal = peers.filter((p) => p.values[owner] !== null);
-    const self = withVal.find((p) => p.isSelf);
-    const others = withVal.filter((p) => !p.isSelf).sort((a, b) => (b.values[owner] as number) - (a.values[owner] as number));
-    // Self is never cut: it is 8th of 52 here, and a comparison table that drops
+  // Rank every Gemeinde in the Kreis, client-side, from the same cells the big
+  // table uses — that is what lets owner and metric recombine without a refetch.
+  const ranked = useMemo(() => {
+    const acc = new Map<string, { count: number; kwp: number; speicher: number }>();
+    for (const c of siblingCells) {
+      if (!keep(c.segment)) continue;
+      const a = acc.get(c.region_id) ?? { count: 0, kwp: 0, speicher: 0 };
+      if (c.segment.startsWith("batterie")) a.speicher += c.kwh;
+      else {
+        a.count += c.count;
+        a.kwp += c.kwp;
+      }
+      acc.set(c.region_id, a);
+    }
+    const rows = siblings
+      .map((r) => {
+        const a = acc.get(r.region_id) ?? { count: 0, kwp: 0, speicher: 0 };
+        const value =
+          metric === "perCapita" ? (r.population ? Math.round((a.kwp * 1000) / r.population) : null) : a[metric];
+        return { region: r, value };
+      })
+      .filter((x): x is { region: RankingRegion; value: number } => x.value !== null);
+    rows.sort((a, b) => b.value - a.value);
+    return rows.map((x, i) => ({
+      region_id: x.region.region_id,
+      name: x.region.name,
+      href: x.region.slug ? `${basePath}/${x.region.slug}` : null,
+      scope: "im Landkreis",
+      value: x.value,
+      rang: i + 1,
+      isSelf: x.region.region_id === regionId,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [siblingCells, siblings, owner, metric, basePath, regionId]);
+
+  const rows: PeerRow[] = useMemo(() => {
+    const self = ranked.find((r) => r.isSelf);
+    const others = ranked.filter((r) => !r.isSelf);
+    // The size-class benchmark only exists per head. On absolute counts a
+    // 7.000-inhabitant peer says nothing — the whole point of that row is that
+    // population is held constant.
+    const ext: PeerRow[] =
+      metric === "perCapita"
+        ? outside
+            .filter((o) => o.values[owner] !== null)
+            .map((o) => ({
+              region_id: o.region_id,
+              name: o.name,
+              href: o.href,
+              scope: o.scope,
+              value: o.values[owner] as number,
+              rang: 1,
+              isSelf: false,
+            }))
+        : [];
+    const top = [...others, ...ext].sort((a, b) => b.value - a.value).slice(0, 6);
+    // Self is never cut: Höchberg is 48th of 52, and a comparison table that drops
     // the place it is about answers nothing.
-    return self ? [...others.slice(0, 6), self] : others.slice(0, 7);
-  }, [peers, owner]);
+    return self ? [...top, self] : top;
+  }, [ranked, outside, owner, metric]);
+
   // Cap at the runner-up: one Gemeinde with a solar park (126.865 W/head against
   // 17.705 on second place) would flatten every other bar to a hairline.
   const scale = useMemo(() => {
-    const vals = rows.map((r) => r.values[owner] as number).sort((a, b) => b - a);
+    const vals = rows.map((r) => r.value).sort((a, b) => b - a);
     return Math.max(1, vals[1] ?? vals[0] ?? 1);
-  }, [rows, owner]);
+  }, [rows]);
 
   return (
     <div style={S.card}>
@@ -120,15 +224,15 @@ export default function GemeindeHero({
             <p style={S.empty}>Für diese Auswahl sind keine Anlagen erfasst.</p>
           ) : (
             <>
-              <div
-                onMouseLeave={() => setActive(null)}
-                onPointerDown={() => setActive(null)}
-                style={{ display: "inline-block" }}
-              >
+              <div onMouseLeave={() => setActive(null)} style={{ display: "inline-block" }}>
                 <DonutChart segments={slices} size={170}>
-                  <div style={S.centerValue}>{fmtLeistung(shown ? shown.value : total)}</div>
-                  <div style={S.centerLabel}>{shown ? shown.label : "gesamt"}</div>
-                  {shown && <div style={S.centerSub}>{nf(shown.count)} Anlagen</div>}
+                  <div key={shown?.key ?? "total"} style={S.center}>
+                    <div style={S.centerValue}>{fmtLeistung(shown ? shown.value : total)}</div>
+                    <div style={S.centerLabel}>{shown ? shown.label : "gesamt"}</div>
+                    <div style={S.centerSub}>
+                      {shown ? `${nf(shown.count)} Anlagen` : `${Math.round(total > 0 ? 100 : 0)} %`}
+                    </div>
+                  </div>
                 </DonutChart>
               </div>
               <div style={S.legend}>
@@ -139,13 +243,10 @@ export default function GemeindeHero({
                     onMouseEnter={() => setActive(s.key)}
                     onMouseLeave={() => setActive(null)}
                     onClick={() => setActive(active === s.key ? null : s.key)}
-                    style={{
-                      ...S.legendItem,
-                      opacity: active && active !== s.key ? 0.45 : 1,
-                    }}
+                    style={{ ...S.legendItem, opacity: active && active !== s.key ? 0.4 : 1 }}
                   >
                     <span style={{ ...S.dot, background: s.color }} />
-                    <span style={S.legendLabel}>{s.label}</span>
+                    <span>{s.label}</span>
                     <span style={S.legendVal}>{Math.round((s.value / total) * 100)} %</span>
                   </button>
                 ))}
@@ -155,41 +256,64 @@ export default function GemeindeHero({
         </div>
 
         <div style={S.right}>
-          <div style={S.rightHead}>Solarleistung je Einwohner</div>
-          {rows.map((r) => {
-            const val = r.values[owner] as number;
-            return (
-              <div key={r.region_id} style={{ ...S.peerRow, ...(r.isSelf ? S.peerSelf : null) }}>
-                <span style={S.peerRank}>{r.rang[owner] ?? "—"}.</span>
-                <span style={S.peerName}>
-                  {r.href && !r.isSelf ? (
-                    <Link href={r.href} style={S.peerLink}>
-                      {r.name}
-                    </Link>
-                  ) : (
-                    <span style={{ fontWeight: r.isSelf ? 700 : 500 }}>{r.name}</span>
-                  )}
-                  <span style={S.peerScope}>{r.scope}</span>
-                </span>
-                <span style={S.peerVal}>
-                  <span>{nf(val)} W</span>
-                  <span style={S.track}>
-                    <span
-                      style={{
-                        ...S.fill,
-                        width: `${Math.min(100, Math.max(2, Math.round((val / scale) * 100)))}%`,
-                        background: r.isSelf ? v("--color-accent") : v("--color-accent-light"),
-                      }}
-                    />
-                  </span>
-                </span>
+          <div ref={metricRef} style={{ position: "relative", marginBottom: 8 }}>
+            <button type="button" onClick={() => setMetricOpen(!metricOpen)} style={S.metricBtn}>
+              {METRICS.find((m) => m.key === metric)?.label}
+              <IconChevronDown size={8} />
+            </button>
+            {metricOpen && (
+              <div style={S.dropdown}>
+                {METRICS.map((m) => (
+                  <button
+                    key={m.key}
+                    type="button"
+                    onClick={() => {
+                      setMetric(m.key);
+                      setMetricOpen(false);
+                    }}
+                    style={{ ...S.dropItem, fontWeight: metric === m.key ? 700 : 400 }}
+                  >
+                    {m.label}
+                  </button>
+                ))}
               </div>
-            );
-          })}
-          <p style={S.peerNote}>
-            Verglichen mit Gemeinden ähnlicher Größe — die bundesweite Spitze wäre ein Koog mit
-            55 Einwohnern und sagte über {regionName} nichts.
-          </p>
+            )}
+          </div>
+
+          {rows.map((r) => (
+            <div key={`${r.region_id}-${r.scope}`} style={{ ...S.peerRow, ...(r.isSelf ? S.peerSelf : null) }}>
+              <span style={S.peerRank}>{r.rang}.</span>
+              <span style={S.peerName}>
+                {r.href && !r.isSelf ? (
+                  <Link href={r.href} style={S.peerLink}>
+                    {r.name}
+                  </Link>
+                ) : (
+                  <span style={{ ...S.peerLink, fontWeight: r.isSelf ? 700 : 500 }}>{r.name}</span>
+                )}
+                <span style={S.peerScope}>{r.scope}</span>
+              </span>
+              <span style={S.peerVal}>
+                <span>{fmtValue(r.value, metric)}</span>
+                <span style={S.track}>
+                  <span
+                    style={{
+                      ...S.fill,
+                      width: `${Math.min(100, Math.max(2, Math.round((r.value / scale) * 100)))}%`,
+                      background: r.isSelf ? v("--color-accent") : v("--color-accent-light"),
+                    }}
+                  />
+                </span>
+              </span>
+            </div>
+          ))}
+
+          {metric === "perCapita" && (
+            <p style={S.peerNote}>
+              Verglichen mit Gemeinden ähnlicher Größe — die bundesweite Spitze wäre ein Koog mit
+              55 Einwohnern und sagte über {regionName} nichts.
+            </p>
+          )}
         </div>
       </div>
     </div>
@@ -197,13 +321,7 @@ export default function GemeindeHero({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  card: {
-    background: v("--color-bg-accent"),
-    border: `1px solid ${v("--color-border-accent")}`,
-    borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
-    marginBottom: 28,
-  },
+  card: { marginBottom: 28 },
   chips: { display: "flex", gap: 4, marginBottom: 14 },
   chip: {
     border: `1px solid ${v("--color-border")}`,
@@ -214,11 +332,13 @@ const S: Record<string, React.CSSProperties> = {
     cursor: "pointer",
     fontFamily: "inherit",
     background: "transparent",
+    // Switching filter redraws every number; without this the table jumps.
+    transition: "background 160ms ease, color 160ms ease",
   },
-  split: { display: "flex", flexWrap: "wrap", gap: 22, alignItems: "flex-start" },
-  left: { flex: "1 1 240px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, minWidth: 0 },
-  right: { flex: "1 1 280px", minWidth: 0 },
-  rightHead: { fontSize: 11, color: v("--color-text-muted"), fontWeight: 600, marginBottom: 8 },
+  split: { display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start" },
+  left: { flex: "1 1 220px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, minWidth: 0 },
+  right: { flex: "1 1 300px", minWidth: 0 },
+  center: { animation: "fadeUp 0.18s ease-out" },
   centerValue: { fontFamily: v("--font-mono"), fontSize: 19, fontWeight: 700, lineHeight: 1.1 },
   centerLabel: { fontSize: 11, color: v("--color-text-secondary"), marginTop: 2 },
   centerSub: { fontSize: 10, color: v("--color-text-muted"), fontFamily: v("--font-mono") },
@@ -234,28 +354,67 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 11,
     color: v("--color-text-secondary"),
     cursor: "pointer",
+    transition: "opacity 160ms ease",
   },
   dot: { width: 8, height: 8, borderRadius: 2, flex: "0 0 auto" },
-  legendLabel: {},
   legendVal: { fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") },
   empty: { fontSize: 12, color: v("--color-text-muted"), margin: 0 },
+  metricBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 4,
+    background: "none",
+    border: "none",
+    padding: 0,
+    fontFamily: "inherit",
+    fontSize: 11,
+    fontWeight: 600,
+    color: v("--color-text-muted"),
+    cursor: "pointer",
+  },
+  dropdown: {
+    position: "absolute",
+    top: "calc(100% + 4px)",
+    left: 0,
+    background: v("--color-bg"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: v("--radius-sm"),
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+    zIndex: 20,
+    padding: "4px 0",
+    minWidth: 190,
+  },
+  dropItem: {
+    display: "block",
+    width: "100%",
+    background: "none",
+    border: "none",
+    textAlign: "left",
+    padding: "6px 12px",
+    fontSize: 12,
+    fontFamily: "inherit",
+    color: v("--color-text-primary"),
+    cursor: "pointer",
+    whiteSpace: "nowrap",
+  },
   peerRow: {
     display: "grid",
-    gridTemplateColumns: "24px minmax(0,1fr) 86px",
+    gridTemplateColumns: "26px minmax(0,1fr) 88px",
     alignItems: "center",
     gap: 8,
     padding: "5px 6px",
     margin: "0 -6px",
     borderRadius: v("--radius-sm"),
     fontSize: 12,
+    transition: "background 160ms ease",
   },
-  peerSelf: { background: v("--color-bg") },
+  peerSelf: { background: v("--color-bg-accent") },
   peerRank: { fontFamily: v("--font-mono"), fontSize: 11, color: v("--color-text-muted") },
   peerName: { display: "flex", flexDirection: "column", minWidth: 0 },
   peerLink: { color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   peerScope: { fontSize: 9, color: v("--color-text-muted") },
   peerVal: { fontFamily: v("--font-mono"), fontSize: 11, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 },
-  track: { display: "block", width: "100%", height: 4, background: v("--color-bg"), borderRadius: 2 },
-  fill: { display: "block", height: "100%", borderRadius: 2, marginLeft: "auto" },
+  track: { display: "block", width: "100%", height: 4, background: v("--color-bg-muted"), borderRadius: 2 },
+  fill: { display: "block", height: "100%", borderRadius: 2, marginLeft: "auto", transition: "width 220ms ease" },
   peerNote: { fontSize: 10, color: v("--color-text-muted"), lineHeight: 1.6, margin: "10px 0 0" },
 };

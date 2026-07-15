@@ -7,7 +7,7 @@ import { IconArrowRight } from "../../../../../../components/Icons";
 import { v } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
-import GemeindeHero, { type HeroPeer } from "../../../../../../components/atlas/GemeindeHero";
+import GemeindeHero, { type OutsidePeer } from "../../../../../../components/atlas/GemeindeHero";
 import {
   resolveSlugPath,
   getRegionById,
@@ -15,11 +15,14 @@ import {
   currentYear,
   peerBand,
   getTopGemeinden,
+  getRankingData,
   type TopGemeinde,
   type Owner,
 } from "../../../../../../lib/atlas";
 import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
+import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
+import { landProgramBundeslaender } from "../../../../../../lib/funding-programs";
 
 export const revalidate = 3600;
 
@@ -79,6 +82,14 @@ export default async function GemeindePage({ params }: { params: Params }) {
 
   const basePath = `/solar-atlas/${params.bundesland}/${params.kreis}`;
 
+  // Only link to funding that actually applies here. Linking a Gemeinde to its
+  // Bundesland's funding page just because it sits in that Bundesland sends people
+  // to a list they are not on: Bayern has no Landesprogramm at all (only Bremen
+  // and Berlin do), and its page lists Regensburg, Würzburg and Memmingen — none
+  // of which helps anyone in Höchberg.
+  const ownCity = publishedCities().find((c) => region.region_id.startsWith(c.ags));
+  const hasLandProgram = landProgramBundeslaender().some((b) => b.slug === params.bundesland);
+
   // Peers per owner filter, so the reader can switch without a round trip.
   // The size band is what makes the comparison mean anything: unfiltered, the
   // national leader is a 55-inhabitant Koog at 48.115 W per head — a number that
@@ -87,54 +98,41 @@ export default async function GemeindePage({ params }: { params: Params }) {
   // reaches 6.210 W per head against 954.
   const band = region.population ? peerBand(region.population) : { min: 0, max: 0 };
   const OWNERS: Owner[] = ["alle", "privat", "gewerbe"];
-  const perOwner = await Promise.all(
-    OWNERS.map(async (owner) => {
-      const [kreisAll, blTop, deTop] = await Promise.all([
-        // The whole Kreis, ranked — the top five to show, and this Gemeinde's own
-        // position, which is rarely among them.
-        getTopGemeinden({ prefix: kreis?.region_id ?? "", owner, limit: 500 }),
-        region.population
-          ? getTopGemeinden({ prefix: blAgs, owner, limit: 1, minPop: band.min, maxPop: band.max })
-          : Promise.resolve([]),
-        region.population
-          ? getTopGemeinden({ prefix: "", owner, limit: 1, minPop: band.min, maxPop: band.max })
-          : Promise.resolve([]),
+  const [siblingData, ...outsideByOwner] = await Promise.all([
+    // The Kreis in raw cells: the table ranks it client-side per owner AND per
+    // metric, which no fixed RPC result could serve.
+    kreis ? getRankingData(kreis) : Promise.resolve({ regions: [], cells: [] }),
+    ...OWNERS.map(async (owner) => {
+      if (!region.population) return { owner, rows: [] as TopGemeinde[] };
+      const [blTop, deTop] = await Promise.all([
+        getTopGemeinden({ prefix: blAgs, owner, limit: 1, minPop: band.min, maxPop: band.max }),
+        getTopGemeinden({ prefix: "", owner, limit: 1, minPop: band.min, maxPop: band.max }),
       ]);
-      return { owner, kreisTop: kreisAll.slice(0, 5), self: kreisAll.find((t) => t.region_id === region.region_id), blTop, deTop };
+      return { owner, rows: [...blTop.map((t) => ({ ...t, scope: `${bl?.name ?? "Land"}, Größenklasse` })), ...deTop.map((t) => ({ ...t, scope: "bundesweit, Größenklasse" }))] };
     }),
-  );
+  ]);
 
-  const kreisLabel = kreis?.name ?? "Landkreis";
-  const blName = bl?.name ?? "Bundesland";
-
-  // Merge the three owner views into one row set: every peer carries a value per
-  // filter, so switching is a lookup rather than a refetch.
-  const peerMap = new Map<string, HeroPeer>();
-  const put = (t: TopGemeinde, owner: Owner, scope: string) => {
-    const row: HeroPeer =
-      peerMap.get(t.region_id) ??
-      {
-        region_id: t.region_id,
-        name: t.name,
-        href: t.slug && kreis ? `${basePath}/${t.slug}` : null,
-        population: t.population,
-        values: { alle: null, privat: null, gewerbe: null },
-        rang: { alle: null, privat: null, gewerbe: null },
-        scope,
-        isSelf: t.region_id === region.region_id,
-      };
-    row.values[owner] = t.w_per_capita;
-    row.rang[owner] = t.rang;
-    peerMap.set(t.region_id, row);
-  };
-  for (const { owner, kreisTop, self, blTop, deTop } of perOwner) {
-    for (const t of kreisTop) put(t, owner, kreisLabel);
-    for (const t of blTop) put(t, owner, `${blName}, Größenklasse`);
-    for (const t of deTop) put(t, owner, "bundesweit, Größenklasse");
-    // This Gemeinde, for every filter — not just the first one round the loop.
-    if (self) put(self, owner, kreisLabel);
+  // One row per outside peer, carrying a value for each owner filter so switching
+  // is a lookup rather than a refetch.
+  const outsideMap = new Map<string, OutsidePeer>();
+  for (const { owner, rows } of outsideByOwner) {
+    for (const t of rows as (TopGemeinde & { scope: string })[]) {
+      if (t.region_id === region.region_id) continue;
+      const row =
+        outsideMap.get(t.region_id) ??
+        {
+          region_id: t.region_id,
+          name: t.name,
+          href: null,
+          population: t.population,
+          scope: t.scope,
+          values: { alle: null, privat: null, gewerbe: null },
+        };
+      row.values[owner] = t.w_per_capita;
+      outsideMap.set(t.region_id, row);
+    }
   }
-  const peers = Array.from(peerMap.values());
+  const outside = Array.from(outsideMap.values());
 
   return (
     <div style={S.page}>
@@ -171,7 +169,15 @@ export default async function GemeindePage({ params }: { params: Params }) {
           {region.population ? ` Auf ${nf(region.population)} Einwohner gerechnet ergibt das den Wert unten.` : ""}
         </p>
 
-        <GemeindeHero cells={atlas.solar.by_segment} peers={peers} regionName={region.name} />
+        <GemeindeHero
+          cells={atlas.solar.by_segment}
+          siblings={siblingData.regions}
+          siblingCells={siblingData.cells}
+          outside={outside}
+          regionId={region.region_id}
+          regionName={region.name}
+          basePath={basePath}
+        />
 
         <div style={S.metricsGrid}>
           <div style={S.metric}>
@@ -217,14 +223,21 @@ export default async function GemeindePage({ params }: { params: Params }) {
           </div>
         </div>
 
-        <div style={S.section}>
-          <h2 style={S.h2}>Förderung</h2>
-          <p style={S.sub}>Zuschüsse von Land und Kommune — getrennt vom Bestand geführt</p>
-          <Link href={`/photovoltaik-foerderung/${params.bundesland}`} style={S.linkRow}>
-            <span>Förderprogramme in {bl?.name ?? "diesem Bundesland"}</span>
-            <IconArrowRight size={14} />
-          </Link>
-        </div>
+        {(ownCity || hasLandProgram) && (
+          <div style={S.section}>
+            <h2 style={S.h2}>Förderung</h2>
+            <p style={S.sub}>Zuschüsse zusätzlich zur bundesweiten Regelung</p>
+            <Link
+              href={ownCity ? cityPath(ownCity) : `/photovoltaik-foerderung/${params.bundesland}`}
+              style={S.linkRow}
+            >
+              <span>
+                {ownCity ? `Förderung in ${ownCity.name}` : `Landesförderung in ${bl?.name ?? "diesem Bundesland"}`}
+              </span>
+              <IconArrowRight size={14} />
+            </Link>
+          </div>
+        )}
 
         <div style={S.section}>
           <div style={{ ...S.card, background: v("--color-bg-muted") }}>
