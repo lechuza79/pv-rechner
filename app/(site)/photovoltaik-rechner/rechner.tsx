@@ -318,6 +318,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const vollDisabled = wp !== "nein" || ea !== "nein";
   const effEinspeisungModus = vollDisabled && einspeisungModus === "voll" ? "teil" : einspeisungModus;
   const jahresertrag = kwp * oErtrag;
+  // Autarkiegrad: welcher Anteil des Jahresverbrauchs aus der eigenen Anlage
+  // gedeckt wird. Selbstgenutzter Solarstrom = Eigenverbrauchsquote × Ertrag,
+  // physikalisch gedeckelt auf den Gesamtverbrauch (mehr als 100 % geht nicht).
+  const selbstgenutzt = Math.min(effEv / 100 * jahresertrag, gesamtVerbrauch);
+  const autarkie = gesamtVerbrauch > 0 ? Math.round(selbstgenutzt / gesamtVerbrauch * 100) : 0;
 
   // Feed-in: weighted EEG rate based on system size + effective mode
   const autoEinsp = effEinspeisungModus === "voll"
@@ -988,7 +993,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             
             <ResultStats
               total={real.data.total} kosten={kosten}
-              wp={wp} ea={ea} eaKm={eaKm} wpKwh={wpKwh ?? 0} effEv={effEv} jahresertrag={jahresertrag} baseKwh={grundverbrauch}
+              wp={wp} ea={ea} eaKm={eaKm} wpKwh={wpKwh ?? 0} effEv={effEv} autarkie={autarkie} jahresertrag={jahresertrag} baseKwh={grundverbrauch}
               oStrom={oStrom} fuelType={fuelType} setFuelType={setFuelType}
             />
 

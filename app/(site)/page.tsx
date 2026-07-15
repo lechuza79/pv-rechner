@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../components/Header";
-import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser, IconSnowflake, IconEuro } from "../../components/Icons";
+import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser, IconSnowflake, IconEuro, IconPanel } from "../../components/Icons";
 import { MastrHeroSection } from "../../components/MastrHeroSection";
 import Faq from "../../components/Faq";
 import { homeFaq } from "../../lib/faq";
@@ -37,6 +37,13 @@ const tools = [
     title: "Anlage rechnen",
     description: "Berechne Kosten, Ersparnis und Rendite einer PV-Anlage — individuell für deinen Haushalt. Wenn du schon weißt, was du planst.",
     cta: "Jetzt berechnen",
+  },
+  {
+    href: "/balkonkraftwerk-rechner",
+    icon: IconPanel,
+    title: "Balkonkraftwerk rechnen",
+    description: "Lohnt sich Steckersolar? Für Miete und Eigentum ohne eigenes Dach: Ertrag, Stromersparnis und Amortisation eines 800-Watt-Sets — standortgenau.",
+    cta: "Balkon-PV berechnen",
   },
   {
     href: "/waermepumpe-rechner",
@@ -79,7 +86,7 @@ export default function Home() {
         {/* Hero Text */}
         <div style={{ textAlign: "center", marginBottom: 20, paddingTop: 10 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
-          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Sieben Tools. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
+          <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Acht Tools. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
         </div>
       </div>
 

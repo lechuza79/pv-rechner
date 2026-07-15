@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
 import {
   effectiveCdh, sizingKw, acquisitionCost, acquisitionRange, calcAircon, compareDevices, fallbackCdh,
-  cdhFromHourly, cdhFromDailyMinMax,
+  cdhFromHourly, cdhFromDailyMinMax, calcAirconHeating,
   type AcInputs,
 } from "../aircon";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../aircon-config";
+import { FUEL } from "../constants";
 
 const base: AcInputs = {
   deviceId: "split",
@@ -193,5 +194,40 @@ describe("cdhFromDailyMinMax", () => {
     const perDay = cdhFromDailyMinMax([30], [18], 22);
     expect(perDay).toBeGreaterThan(20);
     expect(perDay).toBeLessThan(120);
+  });
+});
+
+describe("calcAirconHeating", () => {
+  const split = CFG.devices.find(d => d.id === "split")!;
+  const mono = CFG.devices.find(d => d.id === "monoblock")!;
+
+  it("flags monoblocks as unable to heat", () => {
+    const h = calcAirconHeating(mono, 20, 0.34);
+    expect(h.canHeat).toBe(false);
+  });
+
+  it("derives heating electricity from thermal demand and SCOP", () => {
+    const h = calcAirconHeating(split, 20, 0.34);
+    expect(h.heatThermalKwh).toBe(20 * CFG.heatSpecKwhPerM2);
+    expect(h.heatElectricKwh).toBe(Math.round(h.heatThermalKwh / split.scop!));
+  });
+
+  it("computes the heat price per kWh from price ÷ SCOP; split beats gas", () => {
+    const h = calcAirconHeating(split, 20, 0.34);
+    expect(h.costPerKwhHeatSplitCt).toBeCloseTo(Math.round((0.34 / split.scop!) * 1000) / 10, 5);
+    expect(h.costPerKwhHeatSplitCt).toBeLessThan(h.costPerKwhHeatGasCt);
+  });
+
+  it("saving is gas cost minus split cost (default gas from FUEL)", () => {
+    const h = calcAirconHeating(split, 20, 0.34);
+    const gasExpected = Math.round((h.heatThermalKwh / FUEL.gas.efficiency) * FUEL.gas.price);
+    expect(h.gasCost).toBe(gasExpected);
+    expect(h.saving).toBe(h.gasCost - h.heatCost);
+  });
+
+  it("honours an overridden thermal demand and a custom gas price", () => {
+    const h = calcAirconHeating(split, 20, 0.34, 2000, CFG, { price: 0.15, efficiency: 0.9 });
+    expect(h.heatThermalKwh).toBe(2000);
+    expect(h.gasCost).toBe(Math.round((2000 / 0.9) * 0.15));
   });
 });

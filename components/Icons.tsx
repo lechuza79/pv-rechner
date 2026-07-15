@@ -12,6 +12,15 @@ export function IconLock({ size = 16, color = "currentColor", style }: IconProps
   );
 }
 
+export function IconPanel({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M2 2.667h12v7.333H2z" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2 5.333h12M2 8h12M6 2.667V10M10 2.667V10M8 10v3.333M6 13.333h4" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function IconSnowflake({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
