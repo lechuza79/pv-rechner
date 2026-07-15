@@ -184,14 +184,18 @@ export default function Klimaanlage() {
                   }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                       <span style={{ fontSize: 14, fontWeight: 700, color: deviceId === d.id ? v('--color-accent') : v('--color-text-primary') }}>{d.label}</span>
-                      <span style={{ fontSize: 11, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-muted'), whiteSpace: "nowrap" }}>SEER {d.seer.toString().replace(".", ",")}</span>
+                      <span style={{ fontSize: 11, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-muted'), whiteSpace: "nowrap" }}>Effizienz {d.seer.toString().replace(".", ",")}</span>
                     </div>
                     <div style={{ fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 6 }}>{d.what}</div>
+                    <div style={{ fontSize: 11, color: v('--color-text-faint'), lineHeight: 1.5, marginTop: 4 }}>
+                      Typenschild: {d.labelMetric} {d.labelValue.toString().replace(".", ",")} ({d.labelClass})
+                    </div>
                   </button>
                 ))}
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 2 }}>
                   Der <GlossaryHint /> sagt, wie effizient gekühlt wird: Ein Split-Gerät zieht für dieselbe Kühlung
-                  nur einen Bruchteil des Stroms eines Monoblocks.
+                  nur einen Bruchteil des Stroms eines Monoblocks. Wir rechnen für alle drei Typen mit der Effizienz
+                  im echten Betrieb, damit der Vergleich fair bleibt — die Zahlen vom Typenschild stehen darunter.
                 </div>
               </div>
             )}
@@ -556,11 +560,14 @@ export default function Klimaanlage() {
 function GlossaryHint() {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
-      SEER-Wert
-      <InfoTooltip title="SEER" ariaLabel="Was ist der SEER-Wert?" size={12}>
-        SEER (Seasonal Energy Efficiency Ratio) ist die jahreszeitliche Effizienz: Wie viel Kühlung das Gerät
-        pro Kilowattstunde Strom liefert. Monoblock ~2,5, fest installierte Split ~6 — also rund die dreifache
-        Kühlung für denselben Strom.
+      Effizienz-Wert
+      <InfoTooltip title="Effizienz (SEER)" ariaLabel="Was bedeutet der Effizienz-Wert?" size={12}>
+        Der Wert sagt, wie viel Kühlung ein Gerät pro Kilowattstunde Strom liefert. Wir rechnen mit der
+        Effizienz im echten Betrieb über eine ganze Saison, nicht mit der Zahl vom Typenschild — die fällt
+        im Labor günstiger aus als zu Hause. Wichtig dabei: Bei Split-Geräten steht auf dem Label ein
+        Saisonwert (SEER), bei Monoblöcken dagegen ein Volllast-Wert (EER), der in einer Prüfkammer ohne
+        Fenster gemessen wird. Dort kann keine warme Luft nachströmen — im Wohnzimmer schon. Deshalb sind
+        die beiden Label-Zahlen nicht vergleichbar, und wir rechnen sie auf eine gemeinsame Grundlage um.
       </InfoTooltip>
     </span>
   );

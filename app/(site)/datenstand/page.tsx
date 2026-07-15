@@ -7,7 +7,7 @@ import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
-import { DEFAULT_AIRCON_CONFIG as AC } from "../../../lib/aircon-config";
+import { DEFAULT_AIRCON_CONFIG as AC, AC_REAL_FACTOR } from "../../../lib/aircon-config";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS } from "../../../lib/constants";
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
@@ -311,7 +311,10 @@ export default async function DatenstandPage() {
           stand={monthYear(AC.validFrom)}
           intro="Annahmen des Klimaanlagen-Rechners: Geräte-Effizienz, Preise, Klima- und Hitzedaten. Nur Kühlung — Heizen läuft über den Wärmepumpen-Rechner. Strompreis und Kühlgradstunden im Ergebnis editierbar."
           rows={[
-            { label: "Effizienz (SEER): Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
+            { label: "Effizienz im Realbetrieb: Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
+            { label: "…davon Typenschild (EU-Label)", value: AC.devices.map((d) => `${d.labelMetric} ${d.labelValue.toLocaleString("de-DE")}`).join(" / ") },
+            { label: "…davon Abschlag Labor → Realbetrieb", value: `${((1 - AC_REAL_FACTOR) * 100).toLocaleString("de-DE")} % (einheitlich für alle Gerätetypen)` },
+            { label: "…davon Korrektur nachströmende Warmluft (nur Monoblock)", value: `${((1 - AC.devices[0].structuralFactor) * 100).toLocaleString("de-DE")} % (Effekt liegt außerhalb der Einkanal-Prüfnorm)` },
             { label: "Anschaffung Monoblock / mobile Split", value: `~${nf(AC.devices[0].pricePerUnit!)} € / ~${nf(AC.devices[1].pricePerUnit!)} € je Gerät·Raum` },
             { label: "Anschaffung fest installierte Split", value: `${nf(AC.devices[2].priceBase!)} € + ${nf(AC.devices[2].pricePerRoom!)} €/Raum (Innengerät inkl. Montage Fachbetrieb)` },
             { label: "Kühlgradstunden Ø Deutschland", value: `${nf(AC.cdhNational)} K·h/a (Schwelle ${nf(AC.coolBaseTemp)} °C)` },

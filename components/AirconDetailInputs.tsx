@@ -77,7 +77,7 @@ export default function AirconDetailInputs({
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
               <span style={{ fontSize: 13, fontWeight: 700, color: deviceId === d.id ? v('--color-accent') : v('--color-text-primary') }}>{d.label}</span>
-              <span style={{ fontSize: 11, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-muted'), whiteSpace: "nowrap" }}>SEER {d.seer.toString().replace(".", ",")}</span>
+              <span style={{ fontSize: 11, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-muted'), whiteSpace: "nowrap" }}>Effizienz {d.seer.toString().replace(".", ",")}</span>
             </div>
           </button>
         ))}

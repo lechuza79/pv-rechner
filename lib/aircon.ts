@@ -59,7 +59,13 @@ export function effectiveCdh(cdh: number, targetTemp: number, window: CoolingWin
 // der „~3 kWh/m²"-Kennwert ist dessen abgeleitete Kurzform, kein Konkurrent.
 export const AC_SIMPLE = {
   cooledFraction: 0.38,         // gekühlter Anteil der Wohnfläche (Wohn-/Schlafräume)
-  seer: 5,                      // typischer Gerätemix (zwischen mobile + fest installiert)
+  // Typischer Gerätemix: wer eine Klimaanlage im PV-Kontext angibt, hat einen
+  // Split (fest 5,5) oder einen mobilen Split (5,2) — der Korridor ist eng.
+  // 5 rundet ihn konservativ nach unten ab (Altgerät, ungünstige Aufstellung).
+  // Monoblöcke bleiben bewusst außen vor: sie laufen ein paar Hitzetage im Jahr,
+  // nicht als Dauerinstallation. Abgeleitet aus den effektiven Effizienzen in
+  // aircon-config.ts — bei deren Pflege mitprüfen (scripts/klimaanlage-verify.md).
+  seer: 5,
   window: "allday" as CoolingWindow,
   targetTemp: 24,
 };
