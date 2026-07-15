@@ -6,21 +6,17 @@ import Breadcrumb from "../../../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../../../components/Icons";
 import { v } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
-import MetricToggle from "../../../../../../components/atlas/MetricToggle";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
-import SegmentDonut from "../../../../../../components/atlas/SegmentDonut";
-import ComparisonTable, { type CompareRow } from "../../../../../../components/atlas/ComparisonTable";
+import GemeindeHero, { type HeroPeer } from "../../../../../../components/atlas/GemeindeHero";
 import {
   resolveSlugPath,
   getRegionById,
-  getChildren,
-  rankableCount,
   lastFullYear,
   currentYear,
   peerBand,
   getTopGemeinden,
-  type AtlasRegion,
   type TopGemeinde,
+  type Owner,
 } from "../../../../../../lib/atlas";
 import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
@@ -73,39 +69,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
 
   // The Gemeinde's own numbers, its siblings (for the rank) and both parents
   // (for the comparison bars).
-  const [atlas, siblings, kreisRegion, blRegion, deRegion] = await Promise.all([
-    getRegionAtlasData(region.region_id),
-    kreis ? getChildren(kreis) : Promise.resolve([]),
-    kreis ? getChildren(kreis).then(() => getRegionById(kreis.region_id)) : Promise.resolve(null),
-    getRegionById(blAgs),
-    getRegionById("de"),
-  ]);
-
-  const me = siblings.find((s) => s.region_id === region.region_id);
-  const of = rankableCount(siblings);
-
-  const freiflaeche = atlas.solar.by_segment.find((s) => s.segment === "freiflaeche");
-  const hasFreiflaeche = (freiflaeche?.count ?? 0) > 0;
-
-  // Parent per-capita values, computed the same way as the Gemeinde's own so the
-  // bars compare like with like.
-  const parentMetric = async (r: AtlasRegion | null, dachOnly: boolean): Promise<number | null> => {
-    if (!r?.population) return null;
-    const d = await getRegionAtlasData(r.region_id);
-    const kwp = dachOnly
-      ? d.solar.by_segment.filter((s) => s.segment !== "freiflaeche").reduce((a, s) => a + s.kwp, 0)
-      : d.solar.total_kwp;
-    return Math.round((kwp * 1000) / r.population);
-  };
-
-  const [kreisGesamt, kreisDach, blGesamt, blDach, deGesamt, deDach] = await Promise.all([
-    parentMetric(kreisRegion, false),
-    parentMetric(kreisRegion, true),
-    parentMetric(blRegion, false),
-    parentMetric(blRegion, true),
-    parentMetric(deRegion, false),
-    parentMetric(deRegion, true),
-  ]);
+  const atlas = await getRegionAtlasData(region.region_id);
 
   const lastYear = lastFullYear();
   const thisYear = currentYear();
@@ -115,54 +79,62 @@ export default async function GemeindePage({ params }: { params: Params }) {
 
   const basePath = `/solar-atlas/${params.bundesland}/${params.kreis}`;
 
-  // Comparison set: the five best in the Kreis, plus the best in the Bundesland
-  // and nationwide — but only among Gemeinden of comparable size. Unfiltered, the
-  // national leader is a 55-inhabitant Koog at 48.115 W per head, which would sit
-  // on all 10.943 pages saying nothing. See peerBand().
+  // Peers per owner filter, so the reader can switch without a round trip.
+  // The size band is what makes the comparison mean anything: unfiltered, the
+  // national leader is a 55-inhabitant Koog at 48.115 W per head — a number that
+  // measures the denominator, not the effort. Within half to double this
+  // Gemeinde's population it bites: Pilsting has 7.158 to Höchberg's 9.564 and
+  // reaches 6.210 W per head against 954.
   const band = region.population ? peerBand(region.population) : { min: 0, max: 0 };
-  const [kreisTop, blTop, deTop] = await Promise.all([
-    getTopGemeinden({ prefix: kreis?.region_id ?? "", dachOnly: true, limit: 5 }),
-    region.population
-      ? getTopGemeinden({ prefix: blAgs, dachOnly: true, limit: 1, minPop: band.min, maxPop: band.max })
-      : Promise.resolve([]),
-    region.population
-      ? getTopGemeinden({ prefix: "", dachOnly: true, limit: 1, minPop: band.min, maxPop: band.max })
-      : Promise.resolve([]),
-  ]);
+  const OWNERS: Owner[] = ["alle", "privat", "gewerbe"];
+  const perOwner = await Promise.all(
+    OWNERS.map(async (owner) => {
+      const [kreisAll, blTop, deTop] = await Promise.all([
+        // The whole Kreis, ranked — the top five to show, and this Gemeinde's own
+        // position, which is rarely among them.
+        getTopGemeinden({ prefix: kreis?.region_id ?? "", owner, limit: 500 }),
+        region.population
+          ? getTopGemeinden({ prefix: blAgs, owner, limit: 1, minPop: band.min, maxPop: band.max })
+          : Promise.resolve([]),
+        region.population
+          ? getTopGemeinden({ prefix: "", owner, limit: 1, minPop: band.min, maxPop: band.max })
+          : Promise.resolve([]),
+      ]);
+      return { owner, kreisTop: kreisAll.slice(0, 5), self: kreisAll.find((t) => t.region_id === region.region_id), blTop, deTop };
+    }),
+  );
 
   const kreisLabel = kreis?.name ?? "Landkreis";
-  const toRow = (t: TopGemeinde, scope: string): CompareRow => ({
-    label: t.name,
-    rang: t.rang,
-    scope,
-    name: t.name,
-    href: null,
-    population: t.population,
-    value: t.w_per_capita,
-    isSelf: t.region_id === region.region_id,
-  });
+  const blName = bl?.name ?? "Bundesland";
 
-  const vergleich: CompareRow[] = [
-    ...kreisTop.map((t) => toRow(t, kreisLabel)),
-    // Only add the wider benchmarks when they are not already in the Kreis list.
-    ...blTop.filter((t) => !kreisTop.some((k) => k.region_id === t.region_id)).map((t) => toRow(t, `${bl?.name ?? "Land"}, Größenklasse`)),
-    ...deTop
-      .filter((t) => ![...kreisTop, ...blTop].some((k) => k.region_id === t.region_id))
-      .map((t) => toRow(t, "bundesweit, Größenklasse")),
-  ];
-  // The Gemeinde itself, unless it already made the top five.
-  if (me && me.wPerCapitaDach !== null && !vergleich.some((r) => r.isSelf)) {
-    vergleich.push({
-      label: region.name,
-      rang: me.rankDach,
-      scope: kreisLabel,
-      name: region.name,
-      href: null,
-      population: region.population,
-      value: me.wPerCapitaDach,
-      isSelf: true,
-    });
+  // Merge the three owner views into one row set: every peer carries a value per
+  // filter, so switching is a lookup rather than a refetch.
+  const peerMap = new Map<string, HeroPeer>();
+  const put = (t: TopGemeinde, owner: Owner, scope: string) => {
+    const row: HeroPeer =
+      peerMap.get(t.region_id) ??
+      {
+        region_id: t.region_id,
+        name: t.name,
+        href: t.slug && kreis ? `${basePath}/${t.slug}` : null,
+        population: t.population,
+        values: { alle: null, privat: null, gewerbe: null },
+        rang: { alle: null, privat: null, gewerbe: null },
+        scope,
+        isSelf: t.region_id === region.region_id,
+      };
+    row.values[owner] = t.w_per_capita;
+    row.rang[owner] = t.rang;
+    peerMap.set(t.region_id, row);
+  };
+  for (const { owner, kreisTop, self, blTop, deTop } of perOwner) {
+    for (const t of kreisTop) put(t, owner, kreisLabel);
+    for (const t of blTop) put(t, owner, `${blName}, Größenklasse`);
+    for (const t of deTop) put(t, owner, "bundesweit, Größenklasse");
+    // This Gemeinde, for every filter — not just the first one round the loop.
+    if (self) put(self, owner, kreisLabel);
   }
+  const peers = Array.from(peerMap.values());
 
   return (
     <div style={S.page}>
@@ -199,32 +171,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
           {region.population ? ` Auf ${nf(region.population)} Einwohner gerechnet ergibt das den Wert unten.` : ""}
         </p>
 
-        <MetricToggle
-          regionName={region.name}
-          ownHasFreiflaeche={hasFreiflaeche}
-          gesamt={{
-            value: me?.wPerCapita ?? null,
-            rank: me?.rank ?? null,
-            of,
-            vergleich: [
-              { label: `→ ${region.name}`, value: me?.wPerCapita ?? null },
-              { label: kreis?.name ?? "Landkreis", value: kreisGesamt },
-              { label: bl?.name ?? "Bundesland", value: blGesamt },
-              { label: "Deutschland", value: deGesamt },
-            ],
-          }}
-          dach={{
-            value: me?.wPerCapitaDach ?? null,
-            rank: me?.rankDach ?? null,
-            of,
-            vergleich: [
-              { label: `→ ${region.name}`, value: me?.wPerCapitaDach ?? null },
-              { label: kreis?.name ?? "Landkreis", value: kreisDach },
-              { label: bl?.name ?? "Bundesland", value: blDach },
-              { label: "Deutschland", value: deDach },
-            ],
-          }}
-        />
+        <GemeindeHero cells={atlas.solar.by_segment} peers={peers} regionName={region.name} />
 
         <div style={S.metricsGrid}>
           <div style={S.metric}>
@@ -248,26 +195,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
             <div style={S.metricValue}>{nf(thisYearRow?.count ?? 0)}</div>
           </div>
         </div>
-
-        {atlas.solar.by_segment.length > 0 && (
-          <div style={S.section}>
-            <h2 style={S.h2}>Wo die Anlagen stehen</h2>
-            <p style={S.sub}>Nach Anlagenart, gemessen an der installierten Leistung</p>
-            <SegmentDonut segments={atlas.solar.by_segment} />
-          </div>
-        )}
-
-        {vergleich.length > 1 && (
-          <div style={S.section}>
-            <h2 style={S.h2}>Im Vergleich</h2>
-            <p style={S.sub}>
-              Solarleistung auf Dächern je Einwohner. Die bundesweite Spitze wäre ein Koog mit
-              55 Einwohnern — verglichen wird deshalb mit Gemeinden ähnlicher Größe
-              {region.population ? ` (${nf(band.min)} bis ${nf(band.max)} Einwohner)` : ""}.
-            </p>
-            <ComparisonTable rows={vergleich} />
-          </div>
-        )}
 
         {atlas.solar.by_year.length >= 4 && (
           <div style={S.section}>

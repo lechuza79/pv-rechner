@@ -397,9 +397,11 @@ export function peerBand(population: number): { min: number; max: number } {
   return { min: Math.round(population * 0.5), max: Math.round(population * 2) };
 }
 
+export type Owner = "alle" | "privat" | "gewerbe";
+
 export async function getTopGemeinden(opts: {
   prefix: string;
-  dachOnly: boolean;
+  owner: Owner;
   limit: number;
   minPop?: number;
   maxPop?: number;
@@ -407,7 +409,7 @@ export async function getTopGemeinden(opts: {
   const supabase = await db();
   const { data, error } = await supabase.rpc("mastr_top_gemeinden", {
     p_prefix: opts.prefix,
-    p_dach_only: opts.dachOnly,
+    p_owner: opts.owner,
     p_limit: opts.limit,
     p_min_pop: opts.minPop ?? 0,
     p_max_pop: opts.maxPop ?? null,

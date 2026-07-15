@@ -248,9 +248,11 @@ export async function GET(req: NextRequest) {
       -- national top is meaningless as a benchmark: it is a 26-inhabitant Koog
       -- whose single barn roof, divided by 26, beats every real town by 50x. That
       -- measures the denominator, not the effort.
+      -- p_owner: 'alle' | 'privat' | 'gewerbe' — the same split the ranking table
+      -- uses, so a peer row and a table row mean the same thing.
       CREATE OR REPLACE FUNCTION mastr_top_gemeinden(
         p_prefix text,
-        p_dach_only boolean,
+        p_owner text,
         p_limit int,
         p_min_pop int DEFAULT 0,
         p_max_pop int DEFAULT NULL
@@ -267,7 +269,11 @@ export async function GET(req: NextRequest) {
           FROM mastr_aggregates_gem a
           WHERE a.energietraeger = 'solar'
             AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
-            AND (NOT p_dach_only OR a.segment <> 'freiflaeche')
+            AND (
+              p_owner = 'alle'
+              OR (p_owner = 'privat' AND a.segment IN ('privat_dach', 'steckersolar'))
+              OR (p_owner = 'gewerbe' AND a.segment IN ('gewerbe_dach', 'freiflaeche'))
+            )
           GROUP BY 1
         ),
         ranked AS (
@@ -285,9 +291,9 @@ export async function GET(req: NextRequest) {
         SELECT * FROM ranked ORDER BY rang LIMIT p_limit
       $fn$;
 
-      DROP FUNCTION IF EXISTS mastr_top_gemeinden(text, boolean, int);
-      REVOKE ALL ON FUNCTION mastr_top_gemeinden(text, boolean, int, int, int) FROM PUBLIC;
-      GRANT EXECUTE ON FUNCTION mastr_top_gemeinden(text, boolean, int, int, int) TO anon, authenticated, service_role;
+      DROP FUNCTION IF EXISTS mastr_top_gemeinden(text, boolean, int, int, int);
+      REVOKE ALL ON FUNCTION mastr_top_gemeinden(text, text, int, int, int) FROM PUBLIC;
+      GRANT EXECUTE ON FUNCTION mastr_top_gemeinden(text, text, int, int, int) TO anon, authenticated, service_role;
 
       DROP FUNCTION IF EXISTS mastr_children(text, int, text[], int);
       REVOKE ALL ON FUNCTION mastr_children(text, int, text[], int, int) FROM PUBLIC;

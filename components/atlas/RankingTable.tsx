@@ -23,11 +23,27 @@ type Row = {
   perCapita: number | null;
 };
 
-const COLUMNS: { key: Metric; label: string }[] = [
-  { key: "count", label: "Anlagen" },
-  { key: "kwp", label: "Leistung" },
-  { key: "perCapita", label: "Pro Kopf" },
-  { key: "speicher", label: "Speicher" },
+const COLUMNS: { key: Metric; label: string; hint: string }[] = [
+  {
+    key: "count",
+    label: "Anlagen",
+    hint: "Zahl der Solaranlagen in Betrieb. Ein Balkonkraftwerk zählt wie eine Dachanlage — die Zahl sagt, wie viele mitmachen, nicht wie viel Leistung steht.",
+  },
+  {
+    key: "kwp",
+    label: "Leistung",
+    hint: "Installierte Spitzenleistung aller Solaranlagen zusammen. Ein Einfamilienhaus liegt typisch bei 10 kW, ein Freiflächen-Park bei mehreren Tausend.",
+  },
+  {
+    key: "perCapita",
+    label: "Pro Kopf",
+    hint: "Installierte Leistung geteilt durch die Einwohnerzahl. Macht große und kleine Gemeinden vergleichbar — Gemeinden mit viel Freifläche liegen hier zwangsläufig vorn.",
+  },
+  {
+    key: "speicher",
+    label: "Speicher",
+    hint: "Nutzbare Kapazität der Batteriespeicher, nicht ihre Leistung. Eine Hausbatterie hält typisch 5 bis 15 kWh. Pumpspeicherwerke sind nicht enthalten.",
+  },
 ];
 
 const OWNERS: { key: Owner; label: string }[] = [
@@ -255,6 +271,7 @@ export default function RankingTable({
                 key={c.key}
                 type="button"
                 onClick={() => setSort(c.key)}
+                title={c.hint}
                 style={{
                   ...S.headBtn,
                   color: sort === c.key ? v("--color-accent") : v("--color-text-muted"),
@@ -282,17 +299,18 @@ export default function RankingTable({
                   </span>
                   {COLUMNS.map((c) => (
                     <span key={c.key} style={cellStyle(c.key)}>
+                      <span>{fmtCell(r, c.key)}</span>
                       {c.key === sort && (
-                        <span
-                          aria-hidden
-                          style={{
-                            ...S.cellBar,
-                            width: `${barPct(val)}%`,
-                            background: isHome ? v("--color-accent-dim") : v("--color-bg-accent"),
-                          }}
-                        />
+                        <span aria-hidden style={S.track}>
+                          <span
+                            style={{
+                              ...S.fill,
+                              width: `${barPct(val)}%`,
+                              background: isHome ? v("--color-accent") : v("--color-accent-light"),
+                            }}
+                          />
+                        </span>
                       )}
-                      <span style={S.cellText}>{fmtCell(r, c.key)}</span>
                     </span>
                   ))}
                 </>
@@ -336,13 +354,12 @@ export default function RankingTable({
               </span>
               {COLUMNS.map((c) => (
                 <span key={c.key} style={cellStyle(c.key)}>
+                  <span>{fmtCell(homeRow, c.key)}</span>
                   {c.key === sort && (
-                    <span
-                      aria-hidden
-                      style={{ ...S.cellBar, width: `${barPct(valueOf(homeRow, sort))}%`, background: v("--color-accent-dim") }}
-                    />
+                    <span aria-hidden style={S.track}>
+                      <span style={{ ...S.fill, width: `${barPct(valueOf(homeRow, sort))}%`, background: v("--color-accent") }} />
+                    </span>
                   )}
-                  <span style={S.cellText}>{fmtCell(homeRow, c.key)}</span>
                 </span>
               ))}
             </Link>
@@ -393,7 +410,16 @@ function RankHeader({ mode, onChange, sinceYear }: { mode: RankMode; onChange: (
   const ref = useOutsideClose(open, () => setOpen(false));
   return (
     <div ref={ref} style={{ position: "relative" }}>
-      <button type="button" onClick={() => setOpen(!open)} style={S.headBtnLeft}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        title={
+          mode === "platz"
+            ? "Platzierung nach der Spalte, nach der gerade sortiert wird."
+            : `Gewonnene oder verlorene Plätze seit Ende ${sinceYear}. Das laufende Jahr ist noch unvollständig und daher nicht als Vorjahr gerechnet.`
+        }
+        style={S.headBtnLeft}
+      >
         {mode === "platz" ? "Platz" : `Δ ${sinceYear}`}
         <IconChevronDown size={7} />
       </button>
@@ -536,20 +562,20 @@ const S: Record<string, React.CSSProperties> = {
   nameCell: { display: "flex", alignItems: "baseline", gap: 6, minWidth: 0 },
   name: { color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   hint: { fontSize: 10, color: v("--color-text-muted") },
+  // The bar sits under the number in the sorted column, not in a column of its
+  // own: a header names a measure, and "the bar" is not one — it is that measure,
+  // drawn.
   val: {
     fontFamily: v("--font-mono"),
     fontSize: 11,
-    textAlign: "right",
     whiteSpace: "nowrap",
-    position: "relative",
-    padding: "3px 4px",
-    borderRadius: 3,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
+    gap: 3,
   },
-  // The bar is the sorted value drawn, so it lives inside that value's cell rather
-  // than in a column of its own — a column header names a measure, and "the bar"
-  // is not one.
-  cellBar: { position: "absolute", right: 0, top: 0, bottom: 0, borderRadius: 3 },
-  cellText: { position: "relative" },
+  track: { display: "block", width: "100%", height: 4, background: v("--color-bg-muted"), borderRadius: 2 },
+  fill: { display: "block", height: "100%", borderRadius: 2, marginLeft: "auto" },
   // Mirrors S.scroller's box exactly (same negative margin, same padding), so the
   // row inside starts on the same pixel as a row in the list. Getting this wrong
   // by 8px is what broke the alignment twice.
