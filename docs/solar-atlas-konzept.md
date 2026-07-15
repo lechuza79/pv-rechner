@@ -6,9 +6,10 @@
 
 ## 1. Ziel
 
-Für jede deutsche Gemeinde eine Seite mit dem tatsächlichen Solar-Anlagenbestand, eingebettet
-in eine Landkreis-Rangliste. Die Daten dafür laufen bereits jeden Monat durch unsere Pipeline —
-wir werfen die Gemeindeebene bisher nur weg.
+Eine durchgehende Hierarchie vom Bund bis zur Gemeinde — jede Ebene mit dem tatsächlichen
+Solar-Anlagenbestand und einer Rangliste ihrer Kinder. Die Daten dafür laufen bereits jeden
+Monat durch unsere Pipeline; wir werfen die Gemeindeebene bisher nur weg. Die oberen drei
+Ebenen zeigt die Startseiten-Karte heute schon — sie haben nur keine Adressen.
 
 **Der strategische Punkt ist nicht Onsite-SEO, sondern Distribution.** Wir haben festgehalten
 (Memory `feedback_backlinks`), dass Rechner-Verzeichnisse als Backlink-Quelle wertlos sind und
@@ -87,31 +88,61 @@ rollover-sicher zur Laufzeit ableiten, nicht hardcoden.
 
 ---
 
-## 4. Seite 1: Landkreis-Übersicht
+## 4. Die Hierarchie: vier Ebenen, zwei Vorlagen
 
-`/solar-atlas/bayern/wuerzburg`
+| Ebene | URL | Kinder |
+|---|---|---|
+| Deutschland | `/solar-atlas` | 16 Bundesländer |
+| Bundesland | `/solar-atlas/bayern` | ~30 Kreise |
+| Kreis | `/solar-atlas/bayern/landkreis-wuerzburg` | ~32 Gemeinden |
+| Gemeinde | `/solar-atlas/bayern/landkreis-wuerzburg/hoechberg` | — (Blatt) |
 
-Der Klick-Magnet ist die Rangliste. „Wo stehen wir?" ist die Frage, die jeder Bürgermeister
-zuerst stellt — und der Grund, warum die Seite geteilt wird.
+**Die obersten drei Ebenen haben wir visuell schon** — die Karte auf der Startseite macht
+Deutschland → Bundesland → Kreis inklusive Breadcrumb, Energieträger- und Segmentfilter. Ihr
+fehlen nur Adressen, redaktioneller Inhalt drumherum und die vierte Ebene. Sie nimmt bereits
+eine Startregion als Parameter entgegen (das nutzt das Karten-Embed), lässt sich also ohne
+Umbau je Ebene einsetzen.
 
-**Aufbau von oben nach unten:**
+### 4.1 Übersichtsvorlage (Deutschland · Bundesland · Kreis)
 
-1. **H1:** Solaranlagen im Landkreis Würzburg
-2. **Kreis-Kacheln:** Anlagen · installierte Leistung · W pro Kopf · Neu im letzten vollen Jahr ·
+Alle drei Ebenen sind dieselbe Seite mit anderem Zuschnitt — **eine Vorlage, drei Ebenen**:
+
+1. **H1** — „Solaranlagen in Deutschland" / „… in Bayern" / „… im Landkreis Würzburg"
+2. **Kacheln:** Anlagen · installierte Leistung · W pro Kopf · Neu im letzten vollen Jahr ·
    Neu in diesem Jahr
-3. **Karte:** die vorhandene Choropleth-Komponente, auf Gemeindeebene gezoomt
-4. **Rangliste aller Gemeinden** — der Kern der Seite
-   - Spalten: Rang · Gemeinde · Anlagen · Leistung · **W/Kopf gesamt** · **W/Kopf Dach**
-     (beide Kennzahlen nebeneinander, nicht entweder/oder)
+3. **Karte** der Kinder (vorhandene Komponente)
+4. **Rangliste der Kinder** — der Kern der Seite
+   - Spalten: Rang · Name · Anlagen · Leistung · **W/Kopf gesamt** · **W/Kopf Dach**
    - Sortierbar über jede Spalte; Default = W/Kopf gesamt
-   - Jede Zeile führt auf die Gemeindeseite
-5. **Zubaukurve** des Kreises nach Jahr
-6. **Einordnung:** Kreis vs. Bundesland vs. Bund
+   - Jede Zeile führt eine Ebene tiefer
+5. **Zubaukurve** nach Jahr
+6. **Einordnung** gegen die Elternebene
 7. **Quellen + Disclaimer**
+
+„Wo stehen wir?" ist die Frage, die geteilt wird — auf jeder Ebene. Auf Bundesebene ist es
+„Welches Bundesland hat am meisten Solar pro Kopf?", im Kreis fragt sie der Bürgermeister.
+
+**Je Ebene abweichend:**
+
+- **Deutschland** hat keine Elternebene. Statt „Einordnung" der Verweis auf den vorhandenen
+  Ländervergleich (`/laendervergleich`), der Deutschland international einordnet.
+- **Bundesland** verlinkt zusätzlich auf die Landes-Förderseite (Trennung Geld/Bestand, siehe 2).
+- **Kreisfreie Städte** stehen auf Kreisebene, haben aber keine Kinder → sie rendern die
+  Blatt-Vorlage aus 4.2.
+
+### 4.2 Karte: klicken heißt navigieren
+
+Auf den Atlas-Seiten ist die **URL die Wahrheit** — sonst läuft die Rangliste neben der Karte
+aus dem Tritt, wenn jemand herumklickt. Die Karte bekommt dafür einen optionalen Parameter:
+Ist er gesetzt, navigieren Klicks; ohne ihn bleibt das heutige Verhalten (Drilldown im Zustand).
+
+Damit bleibt die **Startseite unverändert** — dort ist die Karte ein Vertrauenselement und darf
+in Ruhe erkundbar bleiben. Sie bekommt nur einen Ausgang: „Alle Zahlen im Solar-Atlas →",
+der auf die gerade gewählte Region zeigt.
 
 ---
 
-## 5. Seite 2: Gemeinde-Detail
+## 5. Blatt-Vorlage: Gemeinde-Detail
 
 `/solar-atlas/bayern/wuerzburg/hoechberg`
 
@@ -260,10 +291,14 @@ beobachtbarer Wert, kein Bauchgefühl — und damit unsere Ampel.
 | Welle | Umfang | Index | Zweck |
 |---|---|---|---|
 | **0 — Pilot** | Lkr. Würzburg: 1 Kreisseite + ~32 Gemeinden | **noindex** | Feedback von Höchberg, Seite schärfen |
-| **1 — Kreisebene** | ~400 Kreisseiten | index + Sitemap | Der SEO-Layer. Jede Seite trägt eine einzigartige Rangliste — unstrittig gehaltvoll. Verdreifacht den Index; spürbar, aber vertretbar |
-| **2+ — Gemeinden** | Wellen à ~500–1.000, größte zuerst | index + Sitemap | Nach jeder Welle 4–6 Wochen Search Console beobachten |
+| **1 — Kopf** | Deutschland + 16 Bundesländer = **17 Seiten** | index + Sitemap | Kein Flutrisiko, und zugleich die stärksten Seiten des Atlas („Welches Bundesland hat am meisten Solar pro Kopf?"). Kann direkt nach dem Piloten raus |
+| **2 — Kreise** | ~400 Kreisseiten | index + Sitemap | Jede trägt eine einzigartige Rangliste — unstrittig gehaltvoll. Verdreifacht den Index; spürbar, aber vertretbar |
+| **3+ — Gemeinden** | Wellen à ~500–1.000, größte zuerst | index + Sitemap | Nach jeder Welle 4–6 Wochen Search Console beobachten |
 
-**Die Ampel für Welle 2+:**
+Der Kopf der Hierarchie (Welle 1) ist der eigentliche Glücksfall: 17 Seiten mit hoher
+Suchnachfrage, null Flutrisiko, und sie entstehen ohnehin als Nebenprodukt der Vorlage aus 4.1.
+
+**Die Ampel für Welle 3+:**
 
 - Indexierungsquote der letzten Welle **hoch** → nächste Welle
 - Viele Seiten hängen in **„Gecrawlt – zurzeit nicht indexiert"** → **Stopp.** Google sagt uns,
@@ -291,14 +326,20 @@ tausende Seiten im Index stehen.
 **Reihenfolge:**
 
 1. Pipeline: Gemeindeschlüssel behalten + Steckersolar-Segment → einmaliger Lauf
-2. Einwohnerzahlen aus dem Destatis-Gemeindeverzeichnis einlesen, Quelle registrieren
-3. Leseweg umbauen (vorberechnete Kreis-/Landesebene)
-4. Gemeinde-Detailseite (Höchberg als Referenz)
-5. Landkreis-Übersicht mit Rangliste
-6. Abnahme im Browser → Höchberg die Seite zeigen
-7. Erst danach: Förderseiten-Umbau + bundesweiter Rollout mit Schwelle
+2. Einwohnerzahlen + amtliche Bezeichnungen aus dem Destatis-Gemeindeverzeichnis einlesen,
+   Quelle registrieren
+3. Leseweg umbauen (vorberechnete Ebenen für die Karte)
+4. Übersichtsvorlage (4.1) — deckt Deutschland, Bundesland und Kreis in einem ab
+5. Blatt-Vorlage: Gemeinde-Detailseite (Höchberg als Referenz)
+6. Karte auf Navigations-Modus erweitern + Ausgang von der Startseite
+7. Abnahme im Browser → Höchberg die Seite zeigen
+8. Erst danach: Welle 1 (Kopf), Förderseiten-Umbau, weitere Wellen
 
 **Nicht im Pilot:** Widget, Förderseiten-Umbau, Sitemap-Eintrag, Index (Welle 0 ist noindex).
+
+Weil Schritt 4 alle drei Übersichtsebenen abdeckt, fällt der Kopf der Hierarchie
+(Deutschland + Bundesländer) im Piloten praktisch nebenbei ab — er muss danach nur noch in den
+Index gelassen werden.
 
 ---
 
