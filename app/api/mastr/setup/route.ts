@@ -96,6 +96,79 @@ export async function GET(req: NextRequest) {
   });
   results.push({ step: "mastr_aggregates", status: e2 ? "error" : "ok", error: e2?.message });
 
+  // 2b. Rollup functions.
+  //
+  //     With Gemeinde granularity the table grows ~10x. Reading it into Node and
+  //     aggregating there (the old path) would mean ~500 paginated requests per
+  //     page view, and any single query risks silently truncating at PostgREST's
+  //     1000-row cap. Both problems disappear if the database does the grouping:
+  //     every call below returns at most a few hundred rows.
+  //
+  //     The AGS is nested by design (2 = Bundesland, 5 = Kreis, 8 = Gemeinde), so
+  //     a prefix match is all a rollup needs. Gemeinde is the only stored grain —
+  //     nothing is double counted.
+  //
+  //     SECURITY INVOKER (the default) is deliberate: these run with the caller's
+  //     rights, so the existing RLS read policy stays the security boundary. EXECUTE
+  //     is revoked from PUBLIC and granted explicitly.
+  const { error: e2b } = await supabase.rpc("exec_sql", {
+    sql: `
+      -- Children of a region, grouped at the requested AGS length.
+      -- Serves the choropleth (16 Bundesländer / ~400 Kreise) and the Solar-Atlas
+      -- ranking tables (~55 Gemeinden per Kreis).
+      CREATE OR REPLACE FUNCTION mastr_children(
+        p_prefix text,
+        p_child_len int,
+        p_traeger text[],
+        p_year_recent int DEFAULT NULL
+      )
+      RETURNS TABLE (region_id text, segment text, count bigint, kwp numeric, count_recent bigint)
+      LANGUAGE sql
+      STABLE
+      AS $fn$
+        SELECT
+          left(a.region_id, p_child_len) AS region_id,
+          a.segment,
+          sum(a.count)::bigint,
+          sum(a.kwp),
+          sum(CASE WHEN p_year_recent IS NOT NULL AND a.year = p_year_recent THEN a.count ELSE 0 END)::bigint
+        FROM mastr_aggregates a
+        WHERE a.energietraeger = ANY(p_traeger)
+          AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
+        GROUP BY 1, 2
+      $fn$;
+
+      -- One region's full series (segment x year), summed over everything below it.
+      -- Bounded by construction: energietraeger x segment x year, never by region
+      -- count — so it is safe at Gemeinde, Kreis, Bundesland and DE alike.
+      CREATE OR REPLACE FUNCTION mastr_region_series(
+        p_prefix text,
+        p_traeger text[]
+      )
+      RETURNS TABLE (energietraeger text, segment text, year int, count bigint, kwp numeric)
+      LANGUAGE sql
+      STABLE
+      AS $fn$
+        SELECT a.energietraeger, a.segment, a.year, sum(a.count)::bigint, sum(a.kwp)
+        FROM mastr_aggregates a
+        WHERE a.energietraeger = ANY(p_traeger)
+          AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
+        GROUP BY 1, 2, 3
+      $fn$;
+
+      REVOKE ALL ON FUNCTION mastr_children(text, int, text[], int) FROM PUBLIC;
+      REVOKE ALL ON FUNCTION mastr_region_series(text, text[]) FROM PUBLIC;
+      GRANT EXECUTE ON FUNCTION mastr_children(text, int, text[], int) TO anon, authenticated, service_role;
+      GRANT EXECUTE ON FUNCTION mastr_region_series(text, text[]) TO anon, authenticated, service_role;
+
+      -- Prefix matching drives every rollup; without pattern_ops the btree above
+      -- cannot serve LIKE 'x%' under a non-C collation.
+      CREATE INDEX IF NOT EXISTS idx_ma_region_prefix
+        ON mastr_aggregates (region_id text_pattern_ops);
+    `,
+  });
+  results.push({ step: "mastr_rollup_functions", status: e2b ? "error" : "ok", error: e2b?.message });
+
   // 3. mastr_meta — single-row metadata (last import, source version)
   const { error: e3 } = await supabase.rpc("exec_sql", {
     sql: `
