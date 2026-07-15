@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef, Fragment } from "react";
 import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
@@ -397,13 +397,23 @@ export default function Balkon() {
               )}
 
               {/* Größen: gleiche Höhe wie der Schalter (22 px, border-box), damit die
-                  Zeile beim Ein-/Ausschalten nicht springt. Auswahl = blaue Unterstreichung. */}
-              {storageOn && (
-                <div style={{ display: "flex", gap: 12, alignItems: "center", minWidth: 0 }}>
-                  {storageOptions.map(st => {
-                    const selected = active.storageId === st.id;
-                    return (
-                      <button key={st.id} onClick={() => selectStorage(st.id)} style={{
+                  Zeile beim Ein-/Ausschalten nicht springt. Auswahl = blaue Unterstreichung.
+                  Bleiben dauerhaft im DOM und werden über Breite/Deckkraft eingeblendet —
+                  das animiert sanft, statt hart zu erscheinen. */}
+              <div aria-hidden={!storageOn} style={{
+                display: "flex", gap: 10, alignItems: "center", minWidth: 0, overflow: "hidden",
+                marginLeft: storageOn ? 6 : 0,
+                maxWidth: storageOn ? 340 : 0,
+                opacity: storageOn ? 1 : 0,
+                pointerEvents: storageOn ? "auto" : "none",
+                transition: "max-width 0.3s ease, opacity 0.22s ease, margin-left 0.3s ease",
+              }}>
+                {storageOptions.map((st, i) => {
+                  const selected = active.storageId === st.id;
+                  return (
+                    <Fragment key={st.id}>
+                      {i > 0 && <span aria-hidden style={{ width: 1, height: 14, background: v('--color-border'), flexShrink: 0 }} />}
+                      <button onClick={() => selectStorage(st.id)} tabIndex={storageOn ? 0 : -1} style={{
                         background: "none", border: "none", borderBottom: `2px solid ${selected ? v('--color-accent') : "transparent"}`,
                         boxSizing: "border-box", height: 22, padding: 0, cursor: "pointer",
                         display: "inline-flex", alignItems: "center", whiteSpace: "nowrap",
@@ -414,10 +424,10 @@ export default function Balkon() {
                         ~{st.kwh.toLocaleString("de-DE")} kWh
                         <span style={{ fontWeight: 400, fontSize: 11, color: v('--color-text-muted'), marginLeft: 4 }}>+{st.price.toLocaleString("de-DE")} €</span>
                       </button>
-                    );
-                  })}
-                </div>
-              )}
+                    </Fragment>
+                  );
+                })}
+              </div>
             </div>
             </div>
 
