@@ -211,6 +211,10 @@ export const globalStyles = `
   input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
   input[type=number]{-moz-appearance:textfield}
   @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  /* Shared flyout reveal — dropdowns/popovers anchored under their trigger. */
+  @keyframes sc-flyout{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+  .sc-flyout{animation:sc-flyout .18s ease-out}
+  @media (prefers-reduced-motion:reduce){.sc-flyout{animation:none}}
   @keyframes sc-dots{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
   @keyframes sc-map-pulse{0%,100%{opacity:.45}50%{opacity:1}}
   @keyframes sc-live-ring{0%{transform:translate(-50%,-50%) scale(1);opacity:.7}100%{transform:translate(-50%,-50%) scale(3.5);opacity:0}}

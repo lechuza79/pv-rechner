@@ -1,44 +1,24 @@
 "use client";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { v } from "../lib/theme";
-import { resolveTheme, cycleFrom, type ThemePref, type ThemeMode } from "../lib/theme-schedule";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { resolveTheme, type ThemePref, type ThemeMode } from "../lib/theme-schedule";
 import { useCachedFetch } from "../lib/use-cached-fetch";
 import { useLocation } from "../lib/location";
-import SolarNowBadge from "./SolarNowBadge";
+import SunControl from "./SunControl";
 import type { SolarNowResponse } from "../lib/solar-now";
 
-// Header control for the colour scheme. One click from "Auto" always flips to
-// the opposite of what is on screen; the full cycle is auto → opposite → other
-// → auto. Each switch shows a short tooltip explaining the new mode.
+// Owns how bright the page is. The sun decides by default: "auto" tracks how
+// much of the sky's potential is actually arriving right now — nation-wide, or
+// at the visitor's location once they set one.
 //
-// "Auto" tracks the time of day (see lib/theme-schedule.ts): bright by day,
-// warm-dimmed at dusk/dawn, dark at night. Dusk is a stage of that cycle, not a
-// pickable preference. A compact boot script in app/(site)/layout.tsx has
-// already applied the correct theme before first paint (no flash); this
-// component owns the runtime: the switch, periodic re-evaluation in auto mode,
-// and the smooth cross-fade on change.
+// A compact boot script in app/(site)/layout.tsx has already applied a theme
+// before first paint (from the sun's position alone — no network needed, so no
+// flash). This component owns the runtime: the live reading, the manual choice,
+// and the cross-fade between them.
 //
 // Persistence uses localStorage directly — this control only ever renders in the
 // (site) layout, never in the storage-free embed context.
 
 const STORAGE_KEY = "sc-theme-pref";
-const HINT_MS = 3200;
-const HINT_FADE_MS = 250;
-/** Keep the tooltip this far from the viewport edge on small screens. */
-const HINT_EDGE_PAD = 12;
-
-const LABEL: Record<ThemePref, string> = {
-  auto: "Automatisch",
-  light: "Hell",
-  dark: "Dunkel",
-};
-
-// Full sentences — this is visible UI copy, not a label.
-const HINT: Record<ThemePref, string> = {
-  auto: "Das Farbschema folgt jetzt wieder der Sonne: viel Sonne hell, wenig Sonne gedimmt, nachts dunkel.",
-  light: "Das Farbschema bleibt jetzt immer hell, unabhängig von der Tageszeit.",
-  dark: "Das Farbschema bleibt jetzt immer dunkel, unabhängig von der Tageszeit.",
-};
 
 function readPref(): ThemePref {
   if (typeof document === "undefined") return "auto";
@@ -76,9 +56,6 @@ function apply(pref: ThemePref, animate: boolean, util: number | null): ThemeMod
 
 export default function ThemeController({ compact }: { compact?: boolean } = {}) {
   const { plz, setPlz } = useLocation();
-  // How much sun there is right now — nation-wide, or at the visitor's location
-  // once they set one. Drives both the figure in the header and how bright the
-  // page is; until it lands (or if it fails) the sun position alone decides.
   const { data: solar } = useCachedFetch<SolarNowResponse | null>(
     `/api/solar-now${plz ? `?plz=${plz}` : ""}`,
     `solar-now-${plz ?? "de"}`,
@@ -91,55 +68,27 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
   const [pref, setPref] = useState<ThemePref>("auto");
   const [resolved, setResolved] = useState<ThemeMode>("light");
   const [mounted, setMounted] = useState(false);
-  const [hint, setHint] = useState<ThemePref | null>(null);
-  const [hintOn, setHintOn] = useState(false);
-  // Horizontal nudge that keeps the centred tooltip inside the viewport when the
-  // button sits near an edge (mobile: it is the last item in the header).
-  const [hintShift, setHintShift] = useState(0);
   const prefRef = useRef<ThemePref>("auto");
-  // Which manual mode the last click out of auto landed on — keeps the cycle
-  // symmetric so both manual modes stay reachable.
-  const firstManualRef = useRef<ThemePref | null>(null);
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const tipRef = useRef<HTMLDivElement>(null);
-  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Adopt the preference the boot script already resolved, then keep it applied.
   useEffect(() => {
     const initial = readPref();
     prefRef.current = initial;
-    if (initial !== "auto") firstManualRef.current = initial;
     setPref(initial);
     setResolved(apply(initial, false, utilRef.current));
     setMounted(true);
   }, []);
 
   // Re-apply when a fresh reading arrives (or the location changes): the boot
-  // script painted from the sun position, this corrects it — the cross-fade
+  // script painted from the sun's position, this corrects it — the cross-fade
   // makes the adjustment read as intentional rather than a flash.
   useEffect(() => {
     if (!mounted) return;
     setResolved(apply(prefRef.current, true, util));
   }, [util, mounted]);
 
-  useEffect(() => () => {
-    if (hideTimer.current) clearTimeout(hideTimer.current);
-  }, []);
-
-  // Centre the tooltip under the button, then pull it back inside the viewport
-  // if that would push it off an edge. Runs before paint so it never jumps.
-  useLayoutEffect(() => {
-    if (!hint || !wrapRef.current || !tipRef.current) return;
-    const anchor = wrapRef.current.getBoundingClientRect();
-    const width = tipRef.current.offsetWidth;
-    const centred = anchor.left + anchor.width / 2 - width / 2;
-    const min = HINT_EDGE_PAD;
-    const max = document.documentElement.clientWidth - width - HINT_EDGE_PAD;
-    setHintShift(Math.min(Math.max(centred, min), Math.max(min, max)) - centred);
-  }, [hint]);
-
   // In auto mode, re-evaluate every minute so the dusk/night crossover lands
-  // without a reload. No tooltip here — the user did not do anything.
+  // without a reload.
   useEffect(() => {
     if (pref !== "auto") return;
     const id = window.setInterval(() => {
@@ -149,124 +98,23 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
     return () => window.clearInterval(id);
   }, [pref]);
 
-  const cycle = useCallback(() => {
-    const current = prefRef.current;
-    const shown = resolveTheme(current, new Date(), utilRef.current);
-    const next = cycleFrom(current, shown, firstManualRef.current);
-    if (current === "auto") firstManualRef.current = next;
-    if (next === "auto") firstManualRef.current = null;
+  const choose = useCallback((next: ThemePref) => {
     prefRef.current = next;
     setPref(next);
     setResolved(apply(next, true, utilRef.current));
-    // The tooltip node is always mounted (see below), so it has already been
-    // painted at opacity 0 — flipping it on in the same tick transitions both
-    // ways without depending on requestAnimationFrame, which browsers throttle.
-    if (hideTimer.current) clearTimeout(hideTimer.current);
-    setHint(next);
-    setHintOn(true);
-    hideTimer.current = setTimeout(() => setHintOn(false), HINT_MS);
   }, []);
 
-  // SSR renders a stable placeholder; the icon syncs on mount (theme is already
-  // correct via the boot script, only this small control catches up).
-  const icon = !mounted ? "auto" : pref;
-  const modeNow =
-    pref !== "auto" ? "" :
-    ` (aktuell ${resolved === "dark" ? "dunkel" : resolved === "dusk" ? "Dämmerung" : "hell"})`;
-
   return (
-    <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-      <SolarNowBadge data={solar} plz={plz} onSetPlz={setPlz} compact={compact} />
-
-      <div ref={wrapRef} style={{ position: "relative", display: "inline-flex" }}>
-      <button
-        type="button"
-        onClick={cycle}
-        aria-label={`Farbschema: ${LABEL[pref]}${modeNow}. Klicken zum Wechseln.`}
-        title={`Farbschema: ${LABEL[pref]}${modeNow}`}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: 34,
-          height: 34,
-          borderRadius: v("--radius-sm"),
-          border: `1px solid ${v("--color-border")}`,
-          background: v("--color-bg-muted"),
-          color: v("--color-text-secondary"),
-          cursor: "pointer",
-          padding: 0,
-          flexShrink: 0,
-        }}
-      >
-        <ThemeIcon pref={icon} />
-      </button>
-
-      {/* Always mounted so the fade works in both directions; it is inert and
-          invisible until a switch happens. */}
-      <div
-          ref={tipRef}
-          role="status"
-          aria-live="polite"
-          aria-hidden={!hint}
-          style={{
-            position: "absolute",
-            top: "calc(100% + 8px)",
-            left: "50%",
-            zIndex: 200,
-            width: "min(232px, calc(100vw - 24px))",
-            background: v("--color-bg"),
-            border: `1px solid ${v("--color-border")}`,
-            borderRadius: v("--radius-md"),
-            boxShadow: v("--shadow-md"),
-            padding: "9px 11px",
-            fontFamily: v("--font-text"),
-            fontSize: 12.5,
-            lineHeight: 1.5,
-            color: v("--color-text-secondary"),
-            opacity: hintOn ? 1 : 0,
-            transform: `translateX(calc(-50% + ${hintShift}px)) translateY(${hintOn ? 0 : -4}px)`,
-            transition: `opacity ${HINT_FADE_MS}ms ease, transform ${HINT_FADE_MS}ms ease`,
-            pointerEvents: "none",
-          }}
-        >
-          {hint && (
-            <>
-              <span style={{ fontWeight: 700, color: v("--color-text-primary") }}>{LABEL[hint]}</span>
-              {" — "}
-              {HINT[hint]}
-            </>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ThemeIcon({ pref }: { pref: ThemePref }) {
-  const c = "currentColor";
-  if (pref === "light") {
-    // Sun
-    return (
-      <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={2} strokeLinecap="round">
-        <circle cx="12" cy="12" r="4.2" />
-        <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19" />
-      </svg>
-    );
-  }
-  if (pref === "dark") {
-    // Moon
-    return (
-      <svg width={18} height={18} viewBox="0 0 24 24" fill={c} stroke="none">
-        <path d="M20.5 14.2A8 8 0 0 1 9.8 3.5a.6.6 0 0 0-.8-.8 9.2 9.2 0 1 0 12.3 12.3.6.6 0 0 0-.8-.8Z" />
-      </svg>
-    );
-  }
-  // Auto — half sun / half moon in one disc.
-  return (
-    <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={2}>
-      <circle cx="12" cy="12" r="8.2" />
-      <path d="M12 3.8a8.2 8.2 0 0 0 0 16.4Z" fill={c} stroke="none" />
-    </svg>
+    <SunControl
+      data={solar}
+      plz={plz}
+      onSetPlz={setPlz}
+      // Before mount the boot script owns the theme; render the neutral default
+      // so server and client agree, then sync.
+      pref={mounted ? pref : "auto"}
+      resolved={resolved}
+      onSetPref={choose}
+      compact={compact}
+    />
   );
 }
