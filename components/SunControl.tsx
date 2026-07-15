@@ -1,18 +1,18 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { v } from "../lib/theme";
+import { v, iconSizes } from "../lib/theme";
 import { isValidPlz } from "../lib/location";
 import { IconChevronDown } from "./Icons";
 import type { SolarNowResponse } from "../lib/solar-now";
-import type { ThemePref, ThemeMode } from "../lib/theme-schedule";
+import type { ThemePref } from "../lib/theme-schedule";
 
 // The header's one control: how much solar power is being made right now, and
 // behind it everything that follows from it — the location it is measured for,
 // and the dimmer that decides how bright the page is.
 //
-// The figure is output as a share of installed capacity, deliberately a
-// percentage rather than gigawatts so it never reads as a competing measurement
-// next to the metered feed-in on the Strommix page.
+// The figure is output as a share of what the panels would make in full sun,
+// deliberately a percentage rather than gigawatts so it never reads as a
+// competing measurement next to the metered feed-in on the Strommix page.
 
 const PREFS: { id: ThemePref; label: string }[] = [
   { id: "auto", label: "Auto" },
@@ -26,12 +26,23 @@ const PREF_HINT: Record<ThemePref, string> = {
   dark: "Die Seite bleibt immer dunkel, unabhängig von der Sonne.",
 };
 
+const labelStyle: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 700,
+  textTransform: "uppercase",
+  letterSpacing: "0.04em",
+};
+
+/** Header shows only the first two digits — enough to place it, stays narrow. */
+function shortPlz(plz: string): string {
+  return `${plz.slice(0, 2)}…`;
+}
+
 export default function SunControl({
   data,
   plz,
   onSetPlz,
   pref,
-  resolved,
   onSetPref,
   compact,
 }: {
@@ -39,7 +50,6 @@ export default function SunControl({
   plz: string | null;
   onSetPlz: (plz: string | null) => void;
   pref: ThemePref;
-  resolved: ThemeMode;
   onSetPref: (pref: ThemePref) => void;
   /** Mobile: drop the place label, keep the figure. */
   compact?: boolean;
@@ -71,84 +81,54 @@ export default function SunControl({
     e.preventDefault();
     if (!isValidPlz(draft)) return;
     onSetPlz(draft);
-    setDraft("");
   };
 
   return (
     <div ref={wrapRef} style={{ position: "relative", display: "inline-flex" }}>
-      <div
+      <button
+        type="button"
+        onClick={() => {
+          setDraft(plz ?? "");
+          setOpen((o) => !o);
+        }}
+        aria-expanded={open}
+        aria-label={`Sonnenleistung ${data.powerPct} Prozent${plz ? ` in ${plz}` : " in Deutschland"}. Standort und Farbschema einstellen.`}
         style={{
           display: "inline-flex",
           alignItems: "center",
+          gap: 6,
           height: 34,
+          padding: compact ? "0 8px" : "0 10px",
           borderRadius: v("--radius-sm"),
           border: `1px solid ${v("--color-border")}`,
           background: v("--color-bg-muted"),
-          overflow: "hidden",
+          color: v("--color-text-secondary"),
+          fontFamily: v("--font-text"),
+          fontSize: 13,
+          fontWeight: 600,
+          cursor: "pointer",
         }}
       >
-        <button
-          type="button"
-          onClick={() => setOpen((o) => !o)}
-          aria-expanded={open}
-          aria-label={`Sonnenleistung ${data.powerPct} Prozent${plz ? ` in ${plz}` : " in Deutschland"}. Standort und Farbschema einstellen.`}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            height: "100%",
-            padding: compact ? "0 7px" : "0 9px",
-            border: "none",
-            background: "none",
-            color: v("--color-text-secondary"),
-            fontFamily: v("--font-text"),
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          <Pie pct={data.powerPct} />
+        <Donut pct={data.powerPct} />
+        {/* Keyed so switching between Germany and a location fades. */}
+        <span key={place} className="sc-fade" style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
           <span style={{ fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
             {data.powerPct}%
           </span>
           {/* Mobile hides the "DE" default (it says little) but keeps a chosen
               postcode visible — that one carries meaning. */}
           {(!compact || plz) && (
-            <span style={{ color: v("--color-text-muted") }}>{place}</span>
+            <span style={{ color: v("--color-text-muted") }}>
+              {plz ? shortPlz(plz) : place}
+            </span>
           )}
-          <IconChevronDown
-            size={12}
-            color={v("--color-text-muted")}
-            style={{ transition: "transform .15s ease", transform: open ? "rotate(180deg)" : "none" }}
-          />
-        </button>
-
-        {plz && (
-          <button
-            type="button"
-            onClick={() => onSetPlz(null)}
-            aria-label={`Standort ${plz} entfernen, wieder Deutschland zeigen`}
-            title="Standort entfernen"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-              width: 24,
-              border: "none",
-              borderLeft: `1px solid ${v("--color-border")}`,
-              background: "none",
-              color: v("--color-text-muted"),
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            <svg width={10} height={10} viewBox="0 0 10 10" aria-hidden="true">
-              <path d="M1 1l8 8M9 1l-8 8" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" />
-            </svg>
-          </button>
-        )}
-      </div>
+        </span>
+        <IconChevronDown
+          size={iconSizes.sm}
+          color={v("--color-text-muted")}
+          style={{ transition: "transform .15s ease", transform: open ? "rotate(180deg)" : "none" }}
+        />
+      </button>
 
       {open && (
         <div
@@ -158,7 +138,7 @@ export default function SunControl({
             top: "calc(100% + 8px)",
             right: 0,
             zIndex: 200,
-            width: "min(276px, calc(100vw - 24px))",
+            width: "min(280px, calc(100vw - 24px))",
             background: v("--color-bg"),
             border: `1px solid ${v("--color-border")}`,
             borderRadius: v("--radius-md"),
@@ -167,67 +147,90 @@ export default function SunControl({
             fontFamily: v("--font-text"),
           }}
         >
-          <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
-            Sonnenleistung {plz ? `in ${plz}` : "in Deutschland"}: {data.powerPct} %
+          {/* Keyed: entering a postcode swaps these lines — fade, don't snap. */}
+          <div key={place} className="sc-fade">
+            <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
+              Sonnenleistung {plz ? `in ${plz}` : "in Deutschland"}: {data.powerPct} %
+            </div>
+            <p style={{ fontSize: 12.5, lineHeight: 1.5, color: v("--color-text-secondary"), margin: 0 }}>
+              {plz
+                ? "So viel liefert eine Solaranlage an deinem Standort gerade von dem, was sie bei voller Sonne bringen würde."
+                : "So viel liefern Deutschlands Solaranlagen gerade von dem, was sie bei voller Sonne bringen würden."}
+            </p>
           </div>
-          <p style={{ fontSize: 12.5, lineHeight: 1.5, color: v("--color-text-secondary"), margin: 0 }}>
-            {plz
-              ? "So viel ihrer Nennleistung liefert eine Solaranlage an deinem Standort gerade."
-              : "So viel ihrer Nennleistung liefern Deutschlands Solaranlagen gerade im Schnitt."}
-          </p>
 
-          {!plz && (
-            <form onSubmit={submit} style={{ display: "flex", gap: 6, marginTop: 10 }}>
-              <input
-                value={draft}
-                onChange={(e) => setDraft(e.target.value.replace(/\D/g, "").slice(0, 5))}
-                inputMode="numeric"
-                placeholder="PLZ für deinen Standort"
-                aria-label="Postleitzahl"
-                style={{
-                  flex: 1,
-                  minWidth: 0,
-                  height: 34,
-                  padding: "0 10px",
-                  borderRadius: v("--radius-sm"),
-                  border: `1px solid ${v("--color-border")}`,
-                  background: v("--color-bg-muted"),
-                  color: v("--color-text-primary"),
-                  fontFamily: v("--font-text"),
-                  fontSize: 16, // 16px stops iOS zooming the page on focus
-                }}
-              />
-              <button
-                type="submit"
-                disabled={!isValidPlz(draft)}
-                style={{
-                  height: 34,
-                  padding: "0 12px",
-                  borderRadius: v("--radius-sm"),
-                  border: "none",
-                  background: isValidPlz(draft) ? v("--color-accent") : v("--color-border"),
-                  color: isValidPlz(draft) ? v("--color-text-on-accent") : v("--color-text-muted"),
-                  fontFamily: v("--font-text"),
-                  fontSize: 13,
-                  fontWeight: 700,
-                  cursor: isValidPlz(draft) ? "pointer" : "default",
-                }}
-              >
-                Zeigen
-              </button>
-            </form>
+          <div style={{ height: 1, background: v("--color-border"), margin: "12px 0" }} />
+
+          <div style={{ ...labelStyle, color: v("--color-text-muted"), marginBottom: 6 }}>
+            Standort
+          </div>
+
+          <form onSubmit={submit} style={{ display: "flex", gap: 6 }}>
+            <input
+              value={draft}
+              onChange={(e) => setDraft(e.target.value.replace(/\D/g, "").slice(0, 5))}
+              inputMode="numeric"
+              placeholder="PLZ eingeben"
+              aria-label="Postleitzahl eingeben"
+              style={{
+                flex: 1,
+                minWidth: 0,
+                height: 34,
+                padding: "0 10px",
+                borderRadius: v("--radius-sm"),
+                border: `1px solid ${v("--color-border")}`,
+                background: v("--color-bg-muted"),
+                color: v("--color-text-primary"),
+                fontFamily: v("--font-text"),
+                fontSize: 16, // 16px stops iOS zooming the page on focus
+              }}
+            />
+            <button
+              type="submit"
+              disabled={!isValidPlz(draft) || draft === plz}
+              style={{
+                height: 34,
+                padding: "0 12px",
+                borderRadius: v("--radius-sm"),
+                border: "none",
+                background: isValidPlz(draft) && draft !== plz ? v("--color-accent") : v("--color-border"),
+                color: isValidPlz(draft) && draft !== plz ? v("--color-text-on-accent") : v("--color-text-muted"),
+                fontFamily: v("--font-text"),
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: isValidPlz(draft) && draft !== plz ? "pointer" : "default",
+              }}
+            >
+              Zeigen
+            </button>
+          </form>
+
+          {plz && (
+            <button
+              type="button"
+              onClick={() => {
+                onSetPlz(null);
+                setDraft("");
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                marginTop: 8,
+                fontSize: 12.5,
+                fontWeight: 600,
+                fontFamily: v("--font-text"),
+                color: v("--color-accent"),
+                cursor: "pointer",
+              }}
+            >
+              Standort entfernen
+            </button>
           )}
 
           <div style={{ height: 1, background: v("--color-border"), margin: "12px 0" }} />
 
-          <div style={{
-            fontSize: 11,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.04em",
-            color: v("--color-text-muted"),
-            marginBottom: 6,
-          }}>
+          <div style={{ ...labelStyle, color: v("--color-text-muted"), marginBottom: 6 }}>
             Helligkeit
           </div>
 
@@ -271,11 +274,8 @@ export default function SunControl({
             })}
           </div>
 
-          <p style={{ fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted"), margin: "8px 0 0" }}>
+          <p key={pref} className="sc-fade" style={{ fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted"), margin: "8px 0 0" }}>
             {PREF_HINT[pref]}
-            {pref === "auto" && (
-              <> Gerade: {resolved === "dark" ? "dunkel" : resolved === "dusk" ? "gedimmt" : "hell"}.</>
-            )}
           </p>
         </div>
       )}
@@ -283,30 +283,28 @@ export default function SunControl({
   );
 }
 
-/** Pie of the current output — blue segment on a muted track. */
-function Pie({ pct }: { pct: number }) {
+/** Donut of the current output — blue arc on a muted ring. */
+function Donut({ pct }: { pct: number }) {
   const share = Math.max(0, Math.min(100, pct)) / 100;
-  const r = 7;
+  const r = 6.4;
   const c = 10;
-  const angle = share * 2 * Math.PI;
-  const x = c + r * Math.sin(angle);
-  const y = c - r * Math.cos(angle);
-  const large = share > 0.5 ? 1 : 0;
+  const stroke = 3.2;
+  const circumference = 2 * Math.PI * r;
 
   return (
-    <svg width={14} height={14} viewBox="0 0 20 20" aria-hidden="true" style={{ flexShrink: 0 }}>
-      <circle cx={c} cy={c} r={r} fill={v("--color-border-muted")} />
-      {share >= 0.999 ? (
-        <circle cx={c} cy={c} r={r} fill={v("--color-accent")} />
-      ) : (
-        share > 0 && (
-          <path
-            d={`M${c},${c} L${c},${c - r} A${r},${r} 0 ${large} 1 ${x.toFixed(3)},${y.toFixed(3)} Z`}
-            fill={v("--color-accent")}
-          />
-        )
-      )}
-      <circle cx={c} cy={c} r={r} fill="none" stroke={v("--color-border")} strokeWidth={1} />
+    <svg width={iconSizes.md} height={iconSizes.md} viewBox="0 0 20 20" aria-hidden="true" style={{ flexShrink: 0 }}>
+      <circle cx={c} cy={c} r={r} fill="none" stroke={v("--color-border-muted")} strokeWidth={stroke} />
+      <circle
+        cx={c}
+        cy={c}
+        r={r}
+        fill="none"
+        stroke={v("--color-accent")}
+        strokeWidth={stroke}
+        strokeDasharray={`${(share * circumference).toFixed(2)} ${circumference.toFixed(2)}`}
+        transform={`rotate(-90 ${c} ${c})`}
+        style={{ transition: "stroke-dasharray .4s ease" }}
+      />
     </svg>
   );
 }

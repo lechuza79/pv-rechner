@@ -92,6 +92,22 @@ export const tokens = {
 
 export type TokenName = keyof typeof tokens;
 
+/**
+ * Icon sizes — one place to tune how big icons read across the UI.
+ * Numbers (not CSS vars) because the icon components take a numeric `size`
+ * prop, so they can be passed straight through.
+ *
+ * NOTE: every existing icon call site still passes its own magic number, so
+ * changing these only affects call sites that opt in. Migrating the rest is a
+ * separate sweep.
+ */
+export const iconSizes = {
+  xs: 10,
+  sm: 12,
+  md: 14,
+  lg: 18,
+} as const;
+
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
 export const v = (name: TokenName): string => `var(${name})`;
 
@@ -214,7 +230,11 @@ export const globalStyles = `
   /* Shared flyout reveal — dropdowns/popovers anchored under their trigger. */
   @keyframes sc-flyout{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
   .sc-flyout{animation:sc-flyout .18s ease-out}
-  @media (prefers-reduced-motion:reduce){.sc-flyout{animation:none}}
+  /* Content swap — replay by changing the element's key, so a value changing
+     underneath the reader fades in instead of snapping. */
+  @keyframes sc-fade{from{opacity:0}to{opacity:1}}
+  .sc-fade{animation:sc-fade .28s ease-out}
+  @media (prefers-reduced-motion:reduce){.sc-flyout,.sc-fade{animation:none}}
   @keyframes sc-dots{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
   @keyframes sc-map-pulse{0%,100%{opacity:.45}50%{opacity:1}}
   @keyframes sc-live-ring{0%{transform:translate(-50%,-50%) scale(1);opacity:.7}100%{transform:translate(-50%,-50%) scale(3.5);opacity:0}}

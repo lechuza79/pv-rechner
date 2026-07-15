@@ -66,7 +66,6 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
   utilRef.current = util;
 
   const [pref, setPref] = useState<ThemePref>("auto");
-  const [resolved, setResolved] = useState<ThemeMode>("light");
   const [mounted, setMounted] = useState(false);
   const prefRef = useRef<ThemePref>("auto");
 
@@ -75,7 +74,7 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
     const initial = readPref();
     prefRef.current = initial;
     setPref(initial);
-    setResolved(apply(initial, false, utilRef.current));
+    apply(initial, false, utilRef.current);
     setMounted(true);
   }, []);
 
@@ -84,7 +83,7 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
   // makes the adjustment read as intentional rather than a flash.
   useEffect(() => {
     if (!mounted) return;
-    setResolved(apply(prefRef.current, true, util));
+    apply(prefRef.current, true, util);
   }, [util, mounted]);
 
   // In auto mode, re-evaluate every minute so the dusk/night crossover lands
@@ -93,7 +92,7 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
     if (pref !== "auto") return;
     const id = window.setInterval(() => {
       if (prefRef.current !== "auto") return;
-      setResolved(apply("auto", true, utilRef.current));
+      apply("auto", true, utilRef.current);
     }, 60_000);
     return () => window.clearInterval(id);
   }, [pref]);
@@ -101,7 +100,7 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
   const choose = useCallback((next: ThemePref) => {
     prefRef.current = next;
     setPref(next);
-    setResolved(apply(next, true, utilRef.current));
+    apply(next, true, utilRef.current);
   }, []);
 
   return (
@@ -112,7 +111,6 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
       // Before mount the boot script owns the theme; render the neutral default
       // so server and client agree, then sync.
       pref={mounted ? pref : "auto"}
-      resolved={resolved}
       onSetPref={choose}
       compact={compact}
     />
