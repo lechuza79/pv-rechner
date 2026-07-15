@@ -5,6 +5,7 @@
 // Alle Konstanten in lib/aircon-config.ts (zentral, auf /datenstand gepflegt).
 
 import { DEFAULT_AIRCON_CONFIG, type AcConfig, type AcDevice, type AcDeviceId } from "./aircon-config";
+import { FUEL } from "./constants";
 
 export type CoolingWindow = "allday" | "day" | "night";
 
@@ -59,7 +60,13 @@ export function effectiveCdh(cdh: number, targetTemp: number, window: CoolingWin
 // der „~3 kWh/m²"-Kennwert ist dessen abgeleitete Kurzform, kein Konkurrent.
 export const AC_SIMPLE = {
   cooledFraction: 0.38,         // gekühlter Anteil der Wohnfläche (Wohn-/Schlafräume)
-  seer: 5,                      // typischer Gerätemix (zwischen mobile + fest installiert)
+  // Typischer Gerätemix: wer eine Klimaanlage im PV-Kontext angibt, hat einen
+  // Split (fest 5,5) oder einen mobilen Split (5,2) — der Korridor ist eng.
+  // 5 rundet ihn konservativ nach unten ab (Altgerät, ungünstige Aufstellung).
+  // Monoblöcke bleiben bewusst außen vor: sie laufen ein paar Hitzetage im Jahr,
+  // nicht als Dauerinstallation. Abgeleitet aus den effektiven Effizienzen in
+  // aircon-config.ts — bei deren Pflege mitprüfen (scripts/klimaanlage-verify.md).
+  seer: 5,
   window: "allday" as CoolingWindow,
   targetTemp: 24,
 };
@@ -122,6 +129,54 @@ export function calcAircon(inputs: AcInputs, cfg: AcConfig = DEFAULT_AIRCON_CONF
   return {
     device, cooledArea, coolingDemandKwh, electricityKwh, runningCost, co2Kg,
     capacityKw, acquisition, pvCoverage, pvSavings, netRunningCost,
+  };
+}
+
+// ─── Heizen mit Split (geteilt: Klima-Rechner + WP-Ergänzung) ───────────────
+// Split-Geräte sind reversibel (Luft-Luft-Wärmepumpe). Belastbarer Kern ist der
+// Wärmepreis (Strompreis ÷ SCOP) im Vergleich zu Gas; die Heizmenge ist ein
+// Anhalt (editierbar). Diese EINE Funktion nutzen beide Rechner: der Klima-
+// Rechner (Übergangszeit der gekühlten Räume) und der WP-Rechner (Deckungsanteil
+// × Raumwärmebedarf). Gaspreis parametrisierbar, damit der WP-Rechner seinen
+// eigenen (ggf. editierten) Gaspreis durchreichen kann.
+
+export interface AcHeatResult {
+  canHeat: boolean;
+  scop: number;
+  heatThermalKwh: number;       // thermische Heizwärme
+  heatElectricKwh: number;      // Heizstrom
+  heatCost: number;             // €/a mit Split
+  gasCost: number;              // €/a dieselbe Wärme mit Gas (Energiepreis)
+  saving: number;               // €/a gegenüber Gas
+  costPerKwhHeatSplitCt: number; // ct/kWh Wärme (Split)
+  costPerKwhHeatGasCt: number;   // ct/kWh Wärme (Gas)
+}
+
+/** Heizen mit dem gewählten Gerät. heatThermalOverride setzt die Heizwärme direkt
+ *  (sonst Fläche × heatSpecKwhPerM2). gas erlaubt einen eigenen Gaspreis/-wirkungsgrad
+ *  (Default aus FUEL.gas). */
+export function calcAirconHeating(
+  device: AcDevice,
+  cooledArea: number,
+  stromPrice: number,
+  heatThermalOverride?: number | null,
+  cfg: AcConfig = DEFAULT_AIRCON_CONFIG,
+  gas: { price: number; efficiency: number } = { price: FUEL.gas.price, efficiency: FUEL.gas.efficiency },
+): AcHeatResult {
+  const scop = device.scop ?? 0;
+  const heatThermalKwh = Math.round(heatThermalOverride ?? cooledArea * cfg.heatSpecKwhPerM2);
+  const heatElectricKwh = scop > 0 ? Math.round(heatThermalKwh / scop) : 0;
+  const heatCost = Math.round(heatElectricKwh * stromPrice);
+  // Gas: dieselbe Nutzwärme über den Kesselwirkungsgrad, Energiepreis (ohne CO₂).
+  const gasInputKwh = heatThermalKwh / gas.efficiency;
+  const gasCost = Math.round(gasInputKwh * gas.price);
+  const saving = gasCost - heatCost;
+  const costPerKwhHeatSplitCt = scop > 0 ? Math.round((stromPrice / scop) * 1000) / 10 : 0;
+  const costPerKwhHeatGasCt = Math.round((gas.price / gas.efficiency) * 1000) / 10;
+
+  return {
+    canHeat: device.canHeat, scop, heatThermalKwh, heatElectricKwh,
+    heatCost, gasCost, saving, costPerKwhHeatSplitCt, costPerKwhHeatGasCt,
   };
 }
 

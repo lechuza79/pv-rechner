@@ -4,7 +4,6 @@ import { IconCheck } from "../../../../components/Icons";
 import PresetNumberInput from "../../../../components/PresetNumberInput";
 import { v } from "../../../../lib/theme";
 import { SPEICHER, EA_KM_PRESETS } from "../../../../lib/constants";
-import { KLIMA_M2_PRESETS } from "../../../../lib/consumption";
 
 interface QuickSettingsProps {
   wp: string;
@@ -15,8 +14,9 @@ interface QuickSettingsProps {
   setEaKm: (v: number) => void;
   klima: string;
   setKlima: (v: string) => void;
-  klimaM2: number;
-  setKlimaM2: (v: number) => void;
+  klimaRooms: number;
+  setKlimaRooms: (v: number) => void;
+  onKlimaDetails: () => void;
   speicher: number;
   setSpeicher: (v: number) => void;
   spKwh: number;
@@ -27,7 +27,7 @@ interface QuickSettingsProps {
 
 export default function QuickSettings({
   wp, setWp, ea, setEa, eaKm, setEaKm,
-  klima, setKlima, klimaM2, setKlimaM2,
+  klima, setKlima, klimaRooms, setKlimaRooms, onKlimaDetails,
   speicher, setSpeicher, spKwh, oKosten, setOKosten, setOEv,
 }: QuickSettingsProps) {
   const [spKostenPrompt, setSpKostenPrompt] = useState(false);
@@ -152,16 +152,19 @@ export default function QuickSettings({
       )}
       {klima !== "nein" && (
         <div style={{ marginTop: 8, display: "flex", gap: 6, alignItems: "center", paddingLeft: 4 }}>
-          <span style={{ fontSize: 11, color: v('--color-text-muted') }}>Wohnfläche:</span>
-          {KLIMA_M2_PRESETS.map(m2 => (
-            <button key={m2} onClick={() => { setKlimaM2(m2); setOEv(null); }} style={{
-              padding: "5px 8px", borderRadius: v('--radius-sm'), fontSize: 11, fontWeight: 600, cursor: "pointer",
-              background: klimaM2 === m2 ? v('--color-accent-dim') : v('--color-bg'),
-              border: klimaM2 === m2 ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
-              color: klimaM2 === m2 ? v('--color-accent') : v('--color-text-secondary'),
-            }}>{m2} m²</button>
+          <span style={{ fontSize: 11, color: v('--color-text-muted') }}>Räume:</span>
+          {[1, 2, 3, 4, 5].map(n => (
+            <button key={n} onClick={() => { setKlimaRooms(n); setOEv(null); }} style={{
+              padding: "5px 10px", borderRadius: v('--radius-sm'), fontSize: 11, fontWeight: 600, cursor: "pointer",
+              background: klimaRooms === n ? v('--color-accent-dim') : v('--color-bg'),
+              border: klimaRooms === n ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
+              color: klimaRooms === n ? v('--color-accent') : v('--color-text-secondary'),
+            }}>{n}</button>
           ))}
-          <PresetNumberInput value={klimaM2} presets={KLIMA_M2_PRESETS} min={20} max={500} unit="m²" compact onCommit={n => { setKlimaM2(n); setOEv(null); }} />
+          <button onClick={onKlimaDetails} style={{
+            marginLeft: "auto", padding: "5px 10px", borderRadius: v('--radius-sm'), fontSize: 11, fontWeight: 700, cursor: "pointer",
+            background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, color: v('--color-accent'),
+          }}>Details</button>
         </div>
       )}
     </div>

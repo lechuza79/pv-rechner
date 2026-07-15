@@ -14,6 +14,7 @@ interface ResultStatsProps {
    *  result page shows, NOT the old 3.500-kWh flat rate. */
   wpKwh: number;
   effEv: number;
+  autarkie: number;
   jahresertrag: number;
   baseKwh: number;
   oStrom: number;
@@ -22,10 +23,31 @@ interface ResultStatsProps {
 }
 
 export default function ResultStats({
-  total, kosten, wp, ea, eaKm, wpKwh, effEv, jahresertrag, baseKwh, oStrom, fuelType, setFuelType,
+  total, kosten, wp, ea, eaKm, wpKwh, effEv, autarkie, jahresertrag, baseKwh, oStrom, fuelType, setFuelType,
 }: ResultStatsProps) {
   return (
     <>
+      {/* Energie-Unabhängigkeit: Autarkie und Eigenverbrauch als Paar — die zwei
+          werden oft verwechselt, deshalb nebeneinander mit erklärender Zeile. */}
+      <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 10, border: `1px solid ${v('--color-border')}` }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          <div>
+            <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Autarkie</div>
+            <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 4 }}>{autarkie} %</div>
+            <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 2 }}>deines Verbrauchs deckst du selbst</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Eigenverbrauch</div>
+            <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-accent'), marginTop: 4 }}>{Math.round(effEv)} %</div>
+            <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 2 }}>deines Solarstroms nutzt du selbst</div>
+          </div>
+        </div>
+        <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5, borderTop: `1px solid ${v('--color-border-muted')}`, paddingTop: 8 }}>
+          <strong style={{ color: v('--color-text-secondary') }}>Autarkie</strong> misst deine Unabhängigkeit vom Netz,{" "}
+          <strong style={{ color: v('--color-text-secondary') }}>Eigenverbrauch</strong> wie gut die Anlage zu deinem Verbrauch passt. Ein Speicher hebt beide.
+        </div>
+      </div>
+
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
         <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", border: `1px solid ${v('--color-border')}` }}>
           <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</div>

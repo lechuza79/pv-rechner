@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
 import {
   effectiveCdh, sizingKw, acquisitionCost, acquisitionRange, calcAircon, compareDevices, fallbackCdh,
-  cdhFromHourly, cdhFromDailyMinMax,
+  cdhFromHourly, cdhFromDailyMinMax, calcAirconHeating,
   type AcInputs,
 } from "../aircon";
-import { DEFAULT_AIRCON_CONFIG as CFG } from "../aircon-config";
+import { DEFAULT_AIRCON_CONFIG as CFG, AC_REAL_FACTOR, effectiveSeer } from "../aircon-config";
+import { FUEL } from "../constants";
 
 const base: AcInputs = {
   deviceId: "split",
@@ -32,6 +33,73 @@ describe("effectiveCdh", () => {
     const v = effectiveCdh(1200, 23, "allday"); // not in {22,24,26}
     expect(v).toBeGreaterThan(effectiveCdh(1200, 24, "allday"));
     expect(v).toBeLessThan(effectiveCdh(1200, 22, "allday"));
+  });
+});
+
+// Der Gerätevergleich ist der Kern der Klimaanlagen-Seite. Er kippt, sobald ein
+// Typ anders behandelt wird als die anderen — genau das war vor 07/2026 der Fall
+// (mobile Split ~30 % abgewertet, fest installierte am Label). Diese Tests halten
+// die Systematik aus aircon-config.ts fest, damit sie nicht wieder still driftet.
+describe("Effizienz-Systematik", () => {
+  it("leitet jeden seer-Wert aus Label × Realfaktor × struktureller Korrektur ab", () => {
+    for (const d of CFG.devices) {
+      expect(d.seer, `${d.id}: seer ist handgesetzt statt abgeleitet`)
+        .toBe(effectiveSeer(d.labelValue, d.structuralFactor));
+    }
+  });
+
+  it("wendet denselben Realitäts-Abschlag auf alle Typen an", () => {
+    // Kein Typ darf einen eigenen, zusätzlichen Ermessens-Abschlag bekommen.
+    for (const d of CFG.devices) {
+      expect(d.seer, `${d.id}: Abschlag weicht vom einheitlichen Faktor ab`)
+        .toBeCloseTo(d.labelValue * AC_REAL_FACTOR * d.structuralFactor, 1);
+    }
+  });
+
+  it("korrigiert strukturell nur, wo die Prüfnorm etwas ausklammert", () => {
+    for (const d of CFG.devices) {
+      if (d.labelMetric === "SEER") {
+        // EN 14825 misst Teillast bei realer ΔT — es fehlt nichts.
+        expect(d.structuralFactor, `${d.id}: SEER-Skala braucht keine Korrektur`).toBe(1);
+      } else {
+        // Nur die EER-Skala (Einkanal) darf korrigiert werden — und nur nach unten.
+        expect(d.structuralFactor).toBeGreaterThan(0);
+        expect(d.structuralFactor).toBeLessThan(1);
+      }
+    }
+  });
+
+  it("hält Label-Metrik und -Klasse konsistent zu VO (EU) 626/2011", () => {
+    const mono = CFG.devices.find(d => d.id === "monoblock")!;
+    // Einkanalgeräte sind von EN 14825 ausgeschlossen → niemals SEER auf dem Label.
+    expect(mono.labelMetric).toBe("EER");
+    // Mobile Splits sind "room air conditioner" → SEER-Skala, wie fest installierte.
+    expect(CFG.devices.find(d => d.id === "portasplit")!.labelMetric).toBe("SEER");
+    expect(CFG.devices.find(d => d.id === "split")!.labelMetric).toBe("SEER");
+    // Klassengrenzen Anhang II: Split A++ ≥ 6,10 · A+++ ≥ 8,50 | Einkanal A ≥ 2,60
+    for (const d of CFG.devices.filter(x => x.labelMetric === "SEER")) {
+      expect(d.labelValue, `${d.id}: labelValue passt nicht zu ${d.labelClass}`)
+        .toBeGreaterThanOrEqual(6.1);
+      expect(d.labelValue).toBeLessThan(8.5);
+      expect(d.labelClass).toBe("A++");
+    }
+    expect(mono.labelValue).toBeGreaterThanOrEqual(2.6);
+    expect(mono.labelValue).toBeLessThan(3.1);
+    expect(mono.labelClass).toBe("A");
+  });
+
+  it("bleibt in den belegten Korridoren (Plausibilität gegen die Quellen)", () => {
+    const [mono, porta, split] = ["monoblock", "portasplit", "split"].map(id => CFG.devices.find(d => d.id === id)!);
+    // energie-lexikon.info: Monoblock real "deutlich unter 2"
+    expect(mono.seer).toBeLessThan(2);
+    // test.de 2025: PortaSplit "auf dem Niveau mancher fester Splitgeräte"
+    expect(porta.seer).toBeGreaterThan(split.seer * 0.85);
+    expect(porta.seer).toBeLessThanOrEqual(split.seer);
+    // test.de: Monoblock "bis zu siebenmal geringer"; Verbrauchsangaben ~2–3×.
+    // Unser Verhältnis muss dazwischen liegen — nicht darüber hinaus.
+    const ratio = split.seer / mono.seer;
+    expect(ratio).toBeGreaterThan(2);
+    expect(ratio).toBeLessThan(7);
   });
 });
 
@@ -88,12 +156,16 @@ describe("calcAircon", () => {
     expect(r.co2Kg).toBe(0);
   });
 
-  it("monoblock uses 2–3× the electricity of a split for the same demand", () => {
+  it("monoblock uses 2–7× the electricity of a split for the same demand", () => {
+    // Korridor aus den Quellen, nicht aus den Konstanten rückgerechnet:
+    // test.de nennt "bis zu siebenmal geringer" (eigene Messungen, 29.05.2026),
+    // veröffentlichte Verbrauchsangaben legen typisch ~2–3× nahe.
+    // Enger ist der Beleg nicht — die Systematik selbst prüft "Effizienz-Systematik".
     const split = calcAircon({ ...base, deviceId: "split" });
     const mono = calcAircon({ ...base, deviceId: "monoblock" });
     expect(mono.coolingDemandKwh).toBe(split.coolingDemandKwh); // same demand
     expect(mono.electricityKwh).toBeGreaterThan(split.electricityKwh * 2);
-    expect(mono.electricityKwh).toBeLessThan(split.electricityKwh * 3);
+    expect(mono.electricityKwh).toBeLessThan(split.electricityKwh * 7);
   });
 
   it("more rooms → more demand, electricity and cost", () => {
@@ -193,5 +265,40 @@ describe("cdhFromDailyMinMax", () => {
     const perDay = cdhFromDailyMinMax([30], [18], 22);
     expect(perDay).toBeGreaterThan(20);
     expect(perDay).toBeLessThan(120);
+  });
+});
+
+describe("calcAirconHeating", () => {
+  const split = CFG.devices.find(d => d.id === "split")!;
+  const mono = CFG.devices.find(d => d.id === "monoblock")!;
+
+  it("flags monoblocks as unable to heat", () => {
+    const h = calcAirconHeating(mono, 20, 0.34);
+    expect(h.canHeat).toBe(false);
+  });
+
+  it("derives heating electricity from thermal demand and SCOP", () => {
+    const h = calcAirconHeating(split, 20, 0.34);
+    expect(h.heatThermalKwh).toBe(20 * CFG.heatSpecKwhPerM2);
+    expect(h.heatElectricKwh).toBe(Math.round(h.heatThermalKwh / split.scop!));
+  });
+
+  it("computes the heat price per kWh from price ÷ SCOP; split beats gas", () => {
+    const h = calcAirconHeating(split, 20, 0.34);
+    expect(h.costPerKwhHeatSplitCt).toBeCloseTo(Math.round((0.34 / split.scop!) * 1000) / 10, 5);
+    expect(h.costPerKwhHeatSplitCt).toBeLessThan(h.costPerKwhHeatGasCt);
+  });
+
+  it("saving is gas cost minus split cost (default gas from FUEL)", () => {
+    const h = calcAirconHeating(split, 20, 0.34);
+    const gasExpected = Math.round((h.heatThermalKwh / FUEL.gas.efficiency) * FUEL.gas.price);
+    expect(h.gasCost).toBe(gasExpected);
+    expect(h.saving).toBe(h.gasCost - h.heatCost);
+  });
+
+  it("honours an overridden thermal demand and a custom gas price", () => {
+    const h = calcAirconHeating(split, 20, 0.34, 2000, CFG, { price: 0.15, efficiency: 0.9 });
+    expect(h.heatThermalKwh).toBe(2000);
+    expect(h.gasCost).toBe(Math.round((2000 / 0.9) * 0.15));
   });
 });
