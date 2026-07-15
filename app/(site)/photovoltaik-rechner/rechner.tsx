@@ -3,7 +3,7 @@ import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { paramsToRow } from "../../../lib/types";
-import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND } from "../../../lib/constants";
+import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
@@ -21,7 +21,8 @@ import { v } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import Header from "../../../components/Header";
-import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../../components/Icons";
+import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh, IconSun } from "../../../components/Icons";
+import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import { useChartExport } from "../../../lib/useChartExport";
 import { trackEvent } from "../../../lib/analytics";
 import ChartExportBar from "../../../components/ChartExportBar";
@@ -31,7 +32,16 @@ import ResultStats from "./_components/ResultStats";
 import ResultActions from "./_components/ResultActions";
 import ResultFunding from "./_components/ResultFunding";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
-import WpBuildingInputs from "../../../components/WpBuildingInputs";
+
+// Großverbraucher-Detailfragen in ihrer Akkordeon-Reihenfolge. Pro aktivem
+// Verbraucher wird immer nur die erste noch offene Frage aufgeklappt.
+const WP_FIELDS = ["wp-haustyp", "wp-flaeche", "wp-daemmung", "wp-heizsystem"] as const;
+const EA_FIELDS = ["ea-km"] as const;
+const KLIMA_FIELDS = ["klima-rooms"] as const;
+const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS, ...KLIMA_FIELDS];
+// Modell-Annahme für die Klima-Schnellschätzung, aus der geteilten Config (kein
+// Drift zum Klimaanlagen-Rechner). Langlabel auf den Kurznamen vor der Klammer.
+const KLIMA_DEVICE_LABEL = (CFG.devices.find(d => d.id === CFG.defaultDeviceId)?.label ?? "Split-Anlage").split(" (")[0];
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
@@ -67,9 +77,26 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Pauschale). Nur relevant wenn wp !== "nein". Bestand angenommen (LWWP).
   const [wpWohnflaeche, setWpWohnflaeche] = useState(hasShare ? paramInt(initialParams, "wf", DEFAULT_WP_BUILDING.wohnflaeche, 20, 1000) : DEFAULT_WP_BUILDING.wohnflaeche);
   const [wpInsulation, setWpInsulation] = useState(hasShare ? paramInt(initialParams, "wi", DEFAULT_WP_BUILDING.insulationIdx, 0, INSULATION_BESTAND.length - 1) : DEFAULT_WP_BUILDING.insulationIdx);
-  const [wpHeizsystem, setWpHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">(hasShare ? (paramStr(initialParams, "wh", DEFAULT_WP_BUILDING.heizsystem, ["fbh", "hk_neu", "hk_alt"]) as "fbh" | "hk_neu" | "hk_alt") : DEFAULT_WP_BUILDING.heizsystem);
+  const [wpHeizsystem, setWpHeizsystem] = useState<Heizsystem>(hasShare ? (paramStr(initialParams, "wh", DEFAULT_WP_BUILDING.heizsystem, ["fbh", "hk_neu", "hk_alt"]) as Heizsystem) : DEFAULT_WP_BUILDING.heizsystem);
   // Haustyp (geteilte Wände) für den WP-Strom — 0 = freistehend (Default).
   const [wpHaustyp, setWpHaustyp] = useState(hasShare ? paramInt(initialParams, "wht", 0, 0, HAUSTYP_WP.length - 1) : 0);
+
+  // Progressive Disclosure im Großverbraucher-Step: welche Detail-Fragen der
+  // Nutzer schon aktiv beantwortet hat (kein Preset vorausgewählt) + welche zum
+  // Nachbearbeiten wieder aufgeklappt ist. Bei geteilter URL gelten alle als
+  // gesetzt (die Werte kommen ja aus den Parametern → direkt eingeklappt zeigen).
+  const [gvAnswered, setGvAnswered] = useState<Set<string>>(() => hasShare ? new Set(GV_FIELDS) : new Set());
+  const [gvEditing, setGvEditing] = useState<string | null>(null);
+  const markGvAnswered = (key: string) => {
+    setGvAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
+    setGvEditing(null);
+  };
+  // Welche Frage einer Section ist offen: die zum Bearbeiten angeklickte, sonst
+  // die erste noch offene. null = alle beantwortet (alles eingeklappt).
+  const openGvField = (keys: readonly string[]): string | null => {
+    if (gvEditing && keys.includes(gvEditing)) return gvEditing;
+    return keys.find(k => !gvAnswered.has(k)) ?? null;
+  };
 
   // Editable overrides (null = use auto-calculated)
   const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 500 && n <= 200000 ? n : null; })() : null);
@@ -668,63 +695,133 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {step === 3 && (
               <div>
-                <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
-                {wp !== "nein" && (
-                  <WpBuildingInputs
-                    wohnflaeche={wpWohnflaeche} insulationIdx={wpInsulation} heizsystem={wpHeizsystem} haustypIdx={wpHaustyp} wpKwh={wpKwh ?? 0}
-                    onWohnflaeche={n => { setWpWohnflaeche(n); setOEv(null); }}
-                    onInsulation={i => { setWpInsulation(i); setOEv(null); }}
-                    onHeizsystem={h => { setWpHeizsystem(h); setOEv(null); }}
-                    onHaustyp={i => { setWpHaustyp(i); setOEv(null); }}
-                  />
-                )}
-                <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
-                {ea !== "nein" && (
-                  <div style={{ marginBottom: 18, marginTop: -10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Laufleistung ca.</div>
-                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                      {EA_KM_PRESETS.map(km => (
-                        <button key={km} onClick={() => { setEaKm(km); setOEv(null); }} style={{
-                          padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                          background: eaKm === km ? v('--color-accent-dim') : v('--color-bg-muted'),
-                          border: eaKm === km ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                          color: eaKm === km ? v('--color-accent') : v('--color-text-muted'),
-                        }}>{(km / 1000).toFixed(0)}k</button>
-                      ))}
-                      <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km" onCommit={n => { setEaKm(n); setOEv(null); }} />
-                    </div>
-                  </div>
-                )}
-                <TriToggle label="❄️ Klimaanlage" options={TRI} value={klima} onChange={v => { setKlima(v); setOEv(null); }} />
-                {klima !== "nein" && (
-                  <div style={{ marginBottom: 18, marginTop: -10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Wie viele Räume kühlst du?</div>
-                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                      {[1, 2, 3, 4, 5].map(n => (
-                        <button key={n} onClick={() => setKlimaRoomsManual(n)} style={{
-                          padding: "7px 12px", borderRadius: v('--radius-sm'), fontSize: 13, fontWeight: 700, cursor: "pointer",
-                          background: klimaRooms === n ? v('--color-accent-dim') : v('--color-bg-muted'),
-                          border: klimaRooms === n ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                          color: klimaRooms === n ? v('--color-accent') : v('--color-text-muted'),
-                        }}>{n}</button>
-                      ))}
-                      <button onClick={() => setKlimaDetailOpen(true)} style={{
-                        marginLeft: "auto", padding: "7px 12px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700, cursor: "pointer",
-                        background: v('--color-bg-muted'), border: `1.5px solid ${v('--color-border')}`, color: v('--color-accent'),
-                      }}>Details</button>
-                    </div>
-                    <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5 }}>
-                      Nur Kühlung im Sommer.{" "}
-                      {klimaKwh !== null
-                        ? <>Übernommen: <strong style={{ color: v('--color-text-primary') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh/Jahr</strong>.</>
-                        : <>Schätzung: ~<strong style={{ color: v('--color-text-primary') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh/Jahr</strong>. Eine Split-Klimaanlage kühlt oft nur einzelne Räume — über „Details" rechnest du Gerät, Raumgröße und Sonne genau durch.</>}
-                    </div>
-                  </div>
-                )}
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 4, lineHeight: 1.5 }}>
-                  Alle drei erhöhen den Eigenverbrauch — Klimaanlagen besonders, weil sie genau dann
-                  kühlen, wenn die Sonne scheint.
+                {/* Warum diese Verbraucher zählen — Kontext als Infobox */}
+                <div style={{
+                  display: "flex", gap: 10, alignItems: "flex-start",
+                  background: v('--color-bg-accent'), border: `1px solid ${v('--color-border-accent')}`,
+                  borderRadius: v('--radius-md'), padding: "12px 14px", marginBottom: 18,
+                }}>
+                  <IconSun size={18} color={v('--color-accent')} style={{ flexShrink: 0, marginTop: 1 }} />
+                  <span style={{ fontSize: 12.5, color: v('--color-text-secondary'), lineHeight: 1.55 }}>
+                    Alle drei erhöhen deinen Eigenverbrauch — Klimaanlagen besonders, weil sie genau dann
+                    kühlen, wenn die Sonne scheint. Die Wärmepumpe zieht ihren Strom vor allem im Winter,
+                    das E-Auto nur beim Laden tagsüber.
+                  </span>
                 </div>
+
+                {/* ── Wärmepumpe ── */}
+                <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
+                {wp !== "nein" && (() => {
+                  const openKey = openGvField(WP_FIELDS);
+                  return (
+                    <div style={{ marginBottom: 28, marginTop: -4 }}>
+                      <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
+                        Wie viel Heizstrom deine Wärmepumpe braucht, berechnen wir aus den Angaben zu deinem Gebäude.
+                      </div>
+                      <AccordionField label="Haustyp" open={openKey === "wp-haustyp"} answered={gvAnswered.has("wp-haustyp")} summary={HAUSTYP_WP[wpHaustyp].label} onEdit={() => setGvEditing("wp-haustyp")}>
+                        <ChoiceButtons options={HAUSTYP_WP} columns={2} selected={gvAnswered.has("wp-haustyp") ? wpHaustyp : null}
+                          onSelect={i => { setWpHaustyp(i); setOEv(null); markGvAnswered("wp-haustyp"); }} render={h => h.label} />
+                      </AccordionField>
+                      <AccordionField label="Wohnfläche" open={openKey === "wp-flaeche"} answered={gvAnswered.has("wp-flaeche")} summary={`${wpWohnflaeche} m²`} onEdit={() => setGvEditing("wp-flaeche")}>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                          {WP_M2_PRESETS.map(m2 => {
+                            const active = gvAnswered.has("wp-flaeche") && wpWohnflaeche === m2;
+                            return (
+                              <button key={m2} onClick={() => { setWpWohnflaeche(m2); setOEv(null); markGvAnswered("wp-flaeche"); }} style={{
+                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                                background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
+                                border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                                color: active ? v('--color-accent') : v('--color-text-muted'),
+                              }}>{m2} m²</button>
+                            );
+                          })}
+                          <PresetNumberInput value={wpWohnflaeche} presets={WP_M2_PRESETS} min={20} max={1000} unit="m²"
+                            onCommit={n => { setWpWohnflaeche(n); setOEv(null); markGvAnswered("wp-flaeche"); }}
+                            onFocus={() => setGvEditing("wp-flaeche")} onBlur={() => setGvEditing(null)} />
+                        </div>
+                      </AccordionField>
+                      <AccordionField label="Dämmzustand" open={openKey === "wp-daemmung"} answered={gvAnswered.has("wp-daemmung")} summary={INSULATION_BESTAND[wpInsulation].label} onEdit={() => setGvEditing("wp-daemmung")}>
+                        <ChoiceButtons options={INSULATION_BESTAND} columns={3} selected={gvAnswered.has("wp-daemmung") ? wpInsulation : null}
+                          onSelect={i => { setWpInsulation(i); setOEv(null); markGvAnswered("wp-daemmung"); }} render={ins => ins.label} />
+                      </AccordionField>
+                      <AccordionField label="Heizsystem" open={openKey === "wp-heizsystem"} answered={gvAnswered.has("wp-heizsystem")} summary={HEIZSYSTEM.find(h => h.id === wpHeizsystem)?.label} onEdit={() => setGvEditing("wp-heizsystem")}>
+                        <ChoiceButtons options={HEIZSYSTEM} columns={3} selected={gvAnswered.has("wp-heizsystem") ? HEIZSYSTEM.findIndex(h => h.id === wpHeizsystem) : null}
+                          onSelect={i => { setWpHeizsystem(HEIZSYSTEM[i].id as Heizsystem); setOEv(null); markGvAnswered("wp-heizsystem"); }}
+                          render={h => HEIZSYSTEM_SHORT[h.id]} />
+                      </AccordionField>
+                      {openKey === null && wpKwh != null && (
+                        <div className="sc-acc" style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.5 }}>
+                          Daraus ergeben sich rund <strong style={{ color: v('--color-text-primary') }}>{wpKwh.toLocaleString("de-DE")} kWh</strong> Heizstrom pro Jahr.
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+
+                {/* ── Elektroauto ── */}
+                <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
+                {ea !== "nein" && (() => {
+                  const openKey = openGvField(EA_FIELDS);
+                  return (
+                    <div style={{ marginBottom: 28, marginTop: -4 }}>
+                      <AccordionField label="Laufleistung ca." open={openKey === "ea-km"} answered={gvAnswered.has("ea-km")} summary={`${eaKm.toLocaleString("de-DE")} km`} onEdit={() => setGvEditing("ea-km")}>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                          {EA_KM_PRESETS.map(km => {
+                            const active = gvAnswered.has("ea-km") && eaKm === km;
+                            return (
+                              <button key={km} onClick={() => { setEaKm(km); setOEv(null); markGvAnswered("ea-km"); }} style={{
+                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                                background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
+                                border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                                color: active ? v('--color-accent') : v('--color-text-muted'),
+                              }}>{(km / 1000).toFixed(0)}k km</button>
+                            );
+                          })}
+                          <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km"
+                            onCommit={n => { setEaKm(n); setOEv(null); markGvAnswered("ea-km"); }}
+                            onFocus={() => setGvEditing("ea-km")} onBlur={() => setGvEditing(null)} />
+                        </div>
+                      </AccordionField>
+                    </div>
+                  );
+                })()}
+
+                {/* ── Klimaanlage ── */}
+                <TriToggle label="❄️ Klimaanlage" options={TRI} value={klima} onChange={v => { setKlima(v); setOEv(null); }} />
+                {klima !== "nein" && (() => {
+                  const openKey = openGvField(KLIMA_FIELDS);
+                  return (
+                    <div style={{ marginBottom: 28, marginTop: -4 }}>
+                      <AccordionField label="Gekühlte Räume" open={openKey === "klima-rooms"} answered={gvAnswered.has("klima-rooms")} summary={`${klimaRooms} ${klimaRooms === 1 ? "Raum" : "Räume"}`} onEdit={() => setGvEditing("klima-rooms")}>
+                        <ChoiceButtons options={[1, 2, 3, 4, 5]} selected={gvAnswered.has("klima-rooms") ? klimaRooms - 1 : null}
+                          onSelect={i => { setKlimaRoomsManual(i + 1); markGvAnswered("klima-rooms"); }} render={n => n} />
+                      </AccordionField>
+                      {openKey === null && (
+                        <div className="sc-acc" style={{
+                          background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
+                          borderRadius: v('--radius-sm'), padding: "10px 12px",
+                          display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap",
+                        }}>
+                          <div style={{ flex: "1 1 180px", minWidth: 0 }}>
+                            <div style={{ fontSize: 12.5, color: v('--color-text-secondary'), lineHeight: 1.5 }}>
+                              Kühlung im Sommer.{" "}
+                              {klimaKwh !== null
+                                ? <>Übernommen: <strong style={{ color: v('--color-text-primary') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh/Jahr</strong>.</>
+                                : <>Verbrauch ca. <strong style={{ color: v('--color-text-primary') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh/Jahr</strong>.</>}
+                            </div>
+                            <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 3, lineHeight: 1.4 }}>
+                              Angenommen: {KLIMA_DEVICE_LABEL}, ~{CFG.defaultRoomM2} m² je Raum.
+                            </div>
+                          </div>
+                          <button onClick={() => setKlimaDetailOpen(true)} style={{
+                            flexShrink: 0, padding: "8px 14px", borderRadius: v('--radius-sm'), fontSize: 12.5, fontWeight: 700, cursor: "pointer",
+                            background: v('--color-bg'), border: `1.5px solid ${v('--color-accent')}`, color: v('--color-accent'),
+                          }}>exakter berechnen</button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             )}
 

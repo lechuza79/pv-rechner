@@ -18,6 +18,10 @@ interface PresetNumberInputProps {
   onCommit: (n: number) => void;
   /** Smaller sizing for the result-page QuickSettings row. */
   compact?: boolean;
+  /** Optional focus/blur hooks — the accordion uses them to keep the field
+   *  open while a custom value is being typed (else it collapses mid-input). */
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 /**
@@ -43,6 +47,8 @@ export default function PresetNumberInput({
   unit,
   onCommit,
   compact = false,
+  onFocus,
+  onBlur,
 }: PresetNumberInputProps) {
   const isCustom = !presets.includes(value);
   const [text, setText] = useState(isCustom ? String(value) : "");
@@ -66,10 +72,12 @@ export default function PresetNumberInput({
         inputMode="numeric"
         onFocus={() => {
           focused.current = true;
+          onFocus?.();
         }}
         onBlur={() => {
           focused.current = false;
           setText(isCustom ? String(value) : "");
+          onBlur?.();
         }}
         onChange={(e) => {
           const raw = e.target.value.replace(/\D/g, "");

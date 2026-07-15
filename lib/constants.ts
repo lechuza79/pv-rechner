@@ -145,6 +145,14 @@ export const HEIZSYSTEM = [
   { id: "hk_alt", label: "Alte Heizkörper", sub: "Klein, hohe Vorlauftemperatur (55°C+)" },
 ];
 
+export type Heizsystem = "fbh" | "hk_neu" | "hk_alt";
+
+/** Kurzlabels für die Heizsystem-Buttons — die vollen Labels sprengen den Platz. */
+export const HEIZSYSTEM_SHORT: Record<string, string> = { fbh: "Fußboden", hk_neu: "Heizkörper", hk_alt: "Alte HK" };
+
+/** Wohnflächen-Presets der WP-Gebäudeabfrage (PV-Rechner + Empfehlungs-Flow). */
+export const WP_M2_PRESETS = [100, 140, 180];
+
 export const WP_TYPE = [
   { id: "lwwp", label: "Luft/Wasser", sub: "Standard, günstigere Investition" },
   { id: "swwp", label: "Sole/Wasser (Erdsonde)", sub: "Höhere JAZ, teurer" },
