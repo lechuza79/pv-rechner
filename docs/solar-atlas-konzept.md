@@ -97,11 +97,9 @@ rollover-sicher zur Laufzeit ableiten, nicht hardcoden.
 | Kreis | `/solar-atlas/bayern/landkreis-wuerzburg` | ~32 Gemeinden |
 | Gemeinde | `/solar-atlas/bayern/landkreis-wuerzburg/hoechberg` | — (Blatt) |
 
-**Die obersten drei Ebenen haben wir visuell schon** — die Karte auf der Startseite macht
-Deutschland → Bundesland → Kreis inklusive Breadcrumb, Energieträger- und Segmentfilter. Ihr
-fehlen nur Adressen, redaktioneller Inhalt drumherum und die vierte Ebene. Sie nimmt bereits
-eine Startregion als Parameter entgegen (das nutzt das Karten-Embed), lässt sich also ohne
-Umbau je Ebene einsetzen.
+**Der Atlas ist eine Tabellen-Hierarchie, keine Karten-Anwendung.** Die Daten für die oberen
+drei Ebenen liegen bereits vor — die Startseiten-Karte nutzt sie heute schon. Was fehlt, sind
+Adressen, Ranglisten und redaktioneller Inhalt. Zur Rolle der Karte siehe 4.2.
 
 ### 4.1 Übersichtsvorlage (Deutschland · Bundesland · Kreis)
 
@@ -110,17 +108,19 @@ Alle drei Ebenen sind dieselbe Seite mit anderem Zuschnitt — **eine Vorlage, d
 1. **H1** — „Solaranlagen in Deutschland" / „… in Bayern" / „… im Landkreis Würzburg"
 2. **Kacheln:** Anlagen · installierte Leistung · W pro Kopf · Neu im letzten vollen Jahr ·
    Neu in diesem Jahr
-3. **Karte** der Kinder (vorhandene Komponente)
-4. **Rangliste der Kinder** — der Kern der Seite
-   - Spalten: Rang · Name · Anlagen · Leistung · **W/Kopf gesamt** · **W/Kopf Dach**
+3. **Rangliste der Kinder** — **der Kern der Seite**
+   - Spalten: Rang · Name · Anlagen · Leistung · **W/Kopf gesamt** · **W/Kopf Dach** ·
+     Neu letztes volles Jahr
    - Sortierbar über jede Spalte; Default = W/Kopf gesamt
    - Jede Zeile führt eine Ebene tiefer
-5. **Zubaukurve** nach Jahr
-6. **Einordnung** gegen die Elternebene
-7. **Quellen + Disclaimer**
+4. **Zubaukurve** nach Jahr
+5. **Einordnung** gegen die Elternebene
+6. **Quellen + Disclaimer**
 
 „Wo stehen wir?" ist die Frage, die geteilt wird — auf jeder Ebene. Auf Bundesebene ist es
 „Welches Bundesland hat am meisten Solar pro Kopf?", im Kreis fragt sie der Bürgermeister.
+**Diese Frage beantwortet eine sortierbare Tabelle besser als jede Karte** — eine Karte zeigt
+Muster, eine Rangliste zeigt Plätze.
 
 **Je Ebene abweichend:**
 
@@ -128,17 +128,26 @@ Alle drei Ebenen sind dieselbe Seite mit anderem Zuschnitt — **eine Vorlage, d
   Ländervergleich (`/laendervergleich`), der Deutschland international einordnet.
 - **Bundesland** verlinkt zusätzlich auf die Landes-Förderseite (Trennung Geld/Bestand, siehe 2).
 - **Kreisfreie Städte** stehen auf Kreisebene, haben aber keine Kinder → sie rendern die
-  Blatt-Vorlage aus 4.2.
+  Blatt-Vorlage aus Abschnitt 5.
 
-### 4.2 Karte: klicken heißt navigieren
+### 4.2 Die Karte ist Beiwerk — und kann die wichtigste Ebene ohnehin nicht
 
-Auf den Atlas-Seiten ist die **URL die Wahrheit** — sonst läuft die Rangliste neben der Karte
-aus dem Tritt, wenn jemand herumklickt. Die Karte bekommt dafür einen optionalen Parameter:
-Ist er gesetzt, navigieren Klicks; ohne ihn bleibt das heutige Verhalten (Drilldown im Zustand).
+**Die Karte kennt genau zwei Geometrien: Bundesländer und Landkreise.** Eine Gemeindekarte
+bräuchte rund 10.750 zusätzliche Polygone — neues Asset, neue Quelle (BKG/VG250), neue Lizenz,
+mehrere MB Ladelast. Ausgerechnet die Ebene, um die es hier geht, ist als Karte nicht zu haben.
 
-Damit bleibt die **Startseite unverändert** — dort ist die Karte ein Vertrauenselement und darf
-in Ruhe erkundbar bleiben. Sie bekommt nur einen Ausgang: „Alle Zahlen im Solar-Atlas →",
-der auf die gerade gewählte Region zeigt.
+**Konsequenzen:**
+
+- Die Atlas-Seiten werden **ohne Karte** gebaut. Tabellen tragen alle vier Ebenen, Karten drei.
+- Die **Startseiten-Karte bleibt unverändert** — dort ist sie ein Vertrauenselement und darf in
+  Ruhe erkundbar bleiben. Sie bekommt lediglich einen Ausgang: „Alle Zahlen im Solar-Atlas →".
+- Kein Navigations-Modus, kein Umbau der Karten-Komponente. Fällt ersatzlos weg.
+- Später optional: Karte als Zusatz auf den Bundesland-Seiten (Kreis-Geometrien haben wir).
+  Kein Teil des Piloten.
+
+**Aber:** Der Umbau des Lesewegs (6.3) bleibt trotzdem auf der Liste — nicht für die neuen
+Seiten, sondern weil die **bestehende** Startseiten-Karte die komplette Aggregat-Tabelle lädt.
+Wächst die um den Faktor 10, bricht sie. Das ist eine zu verhindernde Regression, kein Feature.
 
 ---
 
@@ -202,13 +211,17 @@ Für eine Gemeindeseite ist das die falsche Entscheidung:
 
 Die Tabelle wächst von heute **50.745** auf grob **500.000 Zeilen**. Für die Datenbank egal.
 
-Aber: Die Karte lädt heute die komplette Tabelle in den Speicher und aggregiert in JavaScript
-(seitenweise à 1.000 Zeilen). Bei 500.000 Zeilen sind das 500 Anfragen pro Seitenaufruf — das
-bricht.
+**Das Problem ist die bestehende Startseiten-Karte, nicht der neue Atlas.** Sie lädt heute die
+komplette Tabelle in den Speicher und aggregiert in JavaScript (seitenweise à 1.000 Zeilen).
+Bei 500.000 Zeilen wären das ~500 Anfragen pro Seitenaufruf — sie bricht. Das ist eine
+Regression, die wir uns mit der feineren Granularität einhandeln, kein neues Feature.
 
-**Lösung:** vorberechnete Kreis- und Landesebene für die Karte; Detailzahlen werden nur noch für
-die eine gefragte Gemeinde geladen (dieser Pfad existiert bereits und ist für ~60 Buckets
-ausgelegt). Die Prefix-Logik bleibt überall gültig, weil der Schlüssel geschachtelt ist.
+**Lösung:** vorberechnete Bundesland- und Kreisebene für die Karte.
+
+**Die Atlas-Seiten brauchen das nicht** — sie laden je Seite nur ihre eigenen Kinder
+(16 Länder, ~30 Kreise oder ~30 Gemeinden) plus die eigene Summe. Kleine, gezielte Abfragen.
+Der Pfad dafür existiert bereits und ist für rund 60 Buckets ausgelegt. Die Prefix-Logik bleibt
+auf jeder Ebene gültig, weil der Schlüssel geschachtelt ist.
 
 ### 6.4 Slug-Regeln
 
@@ -288,15 +301,20 @@ Die Search Console liefert das Signal direkt: Der Status **„Gecrawlt – zurze
 ist Googles wörtliche Aussage, dass eine Seite den Aufwand nicht wert war. Das ist ein
 beobachtbarer Wert, kein Bauchgefühl — und damit unsere Ampel.
 
-| Welle | Umfang | Index | Zweck |
+| Phase | Umfang | Index | Zweck |
 |---|---|---|---|
-| **0 — Pilot** | Lkr. Würzburg: 1 Kreisseite + ~32 Gemeinden | **noindex** | Feedback von Höchberg, Seite schärfen |
-| **1 — Kopf** | Deutschland + 16 Bundesländer = **17 Seiten** | index + Sitemap | Kein Flutrisiko, und zugleich die stärksten Seiten des Atlas („Welches Bundesland hat am meisten Solar pro Kopf?"). Kann direkt nach dem Piloten raus |
-| **2 — Kreise** | ~400 Kreisseiten | index + Sitemap | Jede trägt eine einzigartige Rangliste — unstrittig gehaltvoll. Verdreifacht den Index; spürbar, aber vertretbar |
-| **3+ — Gemeinden** | Wellen à ~500–1.000, größte zuerst | index + Sitemap | Nach jeder Welle 4–6 Wochen Search Console beobachten |
+| **Pilot** | Lkr. Würzburg | **kein Release** | Bauen, lokal abnehmen, Vorlage schärfen |
+| **Welle 1** | Deutschland + 16 Bundesländer + **Lkr. Würzburg komplett** (1 Kreis + ~32 Gemeinden) = **~50 Seiten** | index + Sitemap | Kein Flutrisiko. Enthält **Höchberg** — die Seite, die die Anfrage ausgelöst hat, und die verlinkt werden soll |
+| **Welle 2** | ~400 Kreisseiten | index + Sitemap | Jede trägt eine einzigartige Rangliste — unstrittig gehaltvoll. Verdreifacht den Index; spürbar, aber vertretbar |
+| **3+** | Gemeinden in Wellen à ~500–1.000, größte zuerst | index + Sitemap | Nach jeder Welle 4–6 Wochen Search Console beobachten |
 
-Der Kopf der Hierarchie (Welle 1) ist der eigentliche Glücksfall: 17 Seiten mit hoher
-Suchnachfrage, null Flutrisiko, und sie entstehen ohnehin als Nebenprodukt der Vorlage aus 4.1.
+**Höchberg muss in Welle 1 und muss indexiert sein.** Das folgt aus der Outreach-Ausnahme
+unten: Ein Backlink auf eine noindex-Seite verpufft — und die Kommune ist der ganze Anlass.
+Die ~32 Nachbargemeinden kommen mit, weil die Kreis-Rangliste sonst auf 31 nicht indexierte
+Seiten zeigt.
+
+Welle 1 ist der Glücksfall: ~50 Seiten mit hoher Suchnachfrage, null Flutrisiko, und der Kopf
+der Hierarchie fällt als Nebenprodukt der Vorlage aus 4.1 sowieso ab.
 
 **Die Ampel für Welle 3+:**
 
@@ -328,18 +346,19 @@ tausende Seiten im Index stehen.
 1. Pipeline: Gemeindeschlüssel behalten + Steckersolar-Segment → einmaliger Lauf
 2. Einwohnerzahlen + amtliche Bezeichnungen aus dem Destatis-Gemeindeverzeichnis einlesen,
    Quelle registrieren
-3. Leseweg umbauen (vorberechnete Ebenen für die Karte)
+3. Leseweg der bestehenden Startseiten-Karte absichern (6.3) — sonst bricht sie an der
+   gewachsenen Tabelle
 4. Übersichtsvorlage (4.1) — deckt Deutschland, Bundesland und Kreis in einem ab
 5. Blatt-Vorlage: Gemeinde-Detailseite (Höchberg als Referenz)
-6. Karte auf Navigations-Modus erweitern + Ausgang von der Startseite
-7. Abnahme im Browser → Höchberg die Seite zeigen
-8. Erst danach: Welle 1 (Kopf), Förderseiten-Umbau, weitere Wellen
+6. Ausgang von der Startseiten-Karte in den Atlas
+7. Abnahme im Browser
+8. **Welle 1 ausliefern** (Kopf + Lkr. Würzburg, indexiert) → Höchberg die Seite geben
+9. Erst danach: Förderseiten-Umbau, Welle 2
 
-**Nicht im Pilot:** Widget, Förderseiten-Umbau, Sitemap-Eintrag, Index (Welle 0 ist noindex).
+**Nicht im Pilot:** Widget, Förderseiten-Umbau, Karte auf Atlas-Seiten.
 
 Weil Schritt 4 alle drei Übersichtsebenen abdeckt, fällt der Kopf der Hierarchie
-(Deutschland + Bundesländer) im Piloten praktisch nebenbei ab — er muss danach nur noch in den
-Index gelassen werden.
+(Deutschland + Bundesländer) praktisch nebenbei ab.
 
 ---
 
