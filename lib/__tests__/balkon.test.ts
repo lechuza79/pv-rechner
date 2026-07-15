@@ -101,9 +101,10 @@ describe("calcBalkon — Speicher", () => {
 
   it("storage adds its price to the investment", () => {
     const withS = calcBalkon({ ...base, storageId: "small" });
-    expect(withS.storagePrice).toBe(500);
-    // duo set price 500 + storage 500
-    expect(withS.invest).toBe(500 + 500);
+    const price = CFG.storage.find(s => s.id === "small")!.price;
+    expect(withS.storagePrice).toBe(price);
+    // duo set price 500 + Speicher-Aufpreis
+    expect(withS.invest).toBe(500 + price);
   });
 
   it("stored energy never exceeds the available surplus", () => {
@@ -178,13 +179,25 @@ describe("recommendBalkon", () => {
     expect(CFG.storage.map(s => s.id)).toContain(rec.best.storageId);
   });
 
-  it("does NOT recommend a storage when little surplus is left to store (mostly home)", () => {
-    // Oft zuhause → der Haushalt verbraucht den Strom schon tagsüber direkt, es
-    // bleibt wenig Überschuss den ein Speicher noch sinnvoll puffern könnte →
-    // der Aufpreis rechnet sich nicht → Empfehlung ohne Speicher.
-    const rec = recommendBalkon({ ...base, presenceId: "home" });
-    expect(rec.best.storageId).toBe("none");
-    expect(rec.storageReason).toMatch(/rechnen|lohnen|Überschuss/i);
+  it("storage pays back slower for someone home all day than for someone away", () => {
+    // Oft zuhause → der Strom wird schon tagsüber direkt verbraucht: weniger
+    // Überschuss zum Puffern UND weniger Abendbedarf zum Entladen → der Speicher
+    // rechnet sich langsamer. Robuste Aussage: gilt bei jedem Strompreis, anders
+    // als die Frage, ob er die Empfehlungs-Schwelle gerade eben reißt.
+    const home = calcBalkon({ ...base, setId: "max", presenceId: "home", storageId: "small" });
+    const away = calcBalkon({ ...base, setId: "max", presenceId: "weg", storageId: "small" });
+    expect(home.storageAddedKwh).toBeLessThan(away.storageAddedKwh);
+    expect(home.storagePayback).toBeGreaterThan(away.storagePayback);
+  });
+
+  it("a bigger storage brings nothing extra once the balcony surplus is the limit", () => {
+    // Kernaussage des Modells: Ein Balkon liefert zu wenig Überschuss, um einen
+    // grossen Speicher zu fuellen/leeren → die groessere Stufe schiebt dieselbe
+    // Menge, kostet aber mehr → sie gewinnt nie.
+    const small = calcBalkon({ ...base, setId: "max", storageId: "small" });
+    const large = calcBalkon({ ...base, setId: "max", storageId: "large" });
+    expect(large.storageAddedKwh).toBe(small.storageAddedKwh);
+    expect(large.lifetimeSaving).toBeLessThan(small.lifetimeSaving);
   });
 
   it("DOES recommend a storage when the household is away by day (much surplus)", () => {

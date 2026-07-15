@@ -335,7 +335,7 @@ export default async function DatenstandPage() {
           rows={[
             { label: "Set-Preise: 1 Modul / 2 Module / 4 Module", value: BK.sets.map((s) => `~${nf(s.price)} €`).join(" / ") },
             { label: "Modul / Wechselrichter je Set", value: BK.sets.map((s) => `${nf(s.moduleWp)} Wp / ${nf(s.inverterW)} W`).join(" · ") },
-            { label: "Speicher-Aufpreis (~1 kWh / ~2 kWh)", value: BK.storage.filter((s) => s.kwh > 0).map((s) => `+${nf(s.price)} €`).join(" / ") },
+            { label: "Speicher-Größen & Aufpreis", value: BK.storage.filter((s) => s.kwh > 0).map((s) => `~${nf(s.kwh)} kWh: +${nf(s.price)} €`).join(" · ") },
             { label: "Speicher hebt Eigenverbrauch auf max.", value: `${nf(BK.storageSelfShareCap * 100)} % (Durchsatz ~${nf(BK.storageEffCyclesPerYear)} Vollzyklen/a · ${nf(BK.storageRoundtrip * 100)} % Wirkungsgrad · Lebensdauer ${nf(BK.storageLifeYears)} J.)` },
             { label: "Speicher-Empfehlung nur bei Amortisation unter", value: `${nf(BK.storageRecommendMaxPayback)} Jahren — sonst empfehlen wir bewusst ohne` },
             { label: "Wechselrichter-Deckel", value: `${nf(BK.maxFullLoadHours)} Volllaststunden/a → 800 W ≈ ${nf(Math.round(0.8 * BK.maxFullLoadHours))} kWh/a` },
@@ -345,7 +345,7 @@ export default async function DatenstandPage() {
             { label: "Strompreisanstieg", value: `${nf(prices.electricityIncrease * 100)} % / Jahr (systemweit wie PV-Rechner)` },
             { label: "Einspeisung", value: "keine Vergütung — Überschuss fließt unvergütet ins Netz" },
           ]}
-          source={`Marktpreise Steckersolar-Sets + Speicher 2026 (ADAC, Stiftung Warentest 4/2026, Verbraucherzentrale), Solarpaket I (800-W-Grenze), HTW Berlin Stecker-Solar-Simulator (Eigenverbrauch), PVGIS (Ertrag). Nächste Prüfung bis ${monthYear(BK.reviewBy)}.`}
+          source={`Marktpreise Steckersolar-Sets 2026 (ADAC, Stiftung Warentest, Verbraucherzentrale); Speicher-Größen/-Preise an getesteten Geräten (Anker Solarbank 2 Pro ~1,6 kWh, Anker Solarbank 3 Pro ~2,7 kWh; Quervergleich Growatt Noah 2000, Zendure SolarFlow 800 Pro — heise Bestenliste, Stiftung Warentest). Solarpaket I (800-W-Grenze), HTW Berlin Stecker-Solar-Simulator (Eigenverbrauch), PVGIS (Ertrag). Nächste Prüfung bis ${monthYear(BK.reviewBy)}.`}
         />
 
         {/* ── Eigenverbrauch & Verbrauch (Modell-Annahmen) ── */}

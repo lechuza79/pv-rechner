@@ -117,10 +117,17 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
     { id: "teils", label: "Teils zuhause", sub: "Homeoffice-Tage, Familie", selfShareBase: 0.62 },
     { id: "home", label: "Oft zuhause", sub: "Homeoffice, Rente, Kinder", selfShareBase: 0.75 },
   ],
+  // Größen und Preise an echten, getesteten Geräten (Stand 2026-07). Das Segment
+  // unter ~1,5 kWh ist als Einstieg vom Markt verschwunden (Zendure AB1000 läuft
+  // nur noch als Altbestand) — Einstieg ist heute ~1,6 kWh.
+  //   ~1,6 kWh: Anker Solarbank 2 Pro (~410–460 €)
+  //   ~2,7 kWh: Anker Solarbank 3 Pro (ab ~890 €, Testsieger)
+  // Quervergleich: Growatt Noah 2000 (2,0 kWh, ab 600 €), Zendure SolarFlow 800 Pro
+  // (1,9 kWh, ab 730 €). Marktspanne reiner Balkonspeicher: 400–1.500 €.
   storage: [
     { id: "none", label: "Ohne Speicher", sub: "Überschuss fließt unvergütet ins Netz", kwh: 0, price: 0 },
-    { id: "small", label: "~1 kWh Speicher", sub: "Puffert etwas Abendstrom", kwh: 1, price: 500 },
-    { id: "large", label: "~2 kWh Speicher", sub: "Für Abend/Nacht bei höherem Verbrauch", kwh: 2, price: 800 },
+    { id: "small", label: "~1,6 kWh Speicher", sub: "Einstiegsgröße, deckt den Abend", kwh: 1.6, price: 430 },
+    { id: "large", label: "~2,7 kWh Speicher", sub: "Mehr Puffer — mehr, als ein Balkon meist füllen kann", kwh: 2.7, price: 890 },
   ],
   defaultSet: "duo",
   defaultOrientation: "sued_gelaender",
@@ -147,5 +154,5 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   stromPrice: 0.34,
 
   validFrom: "2026-07",
-  reviewBy: "2027-07",
+  reviewBy: "2026-10", // Quartals-Rhythmus (scripts/balkon-verify.md), nicht jährlich
 };
