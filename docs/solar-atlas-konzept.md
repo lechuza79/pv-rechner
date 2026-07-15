@@ -25,9 +25,14 @@ Die Höchberg-Anfrage ist der Beweis, dass die Nachfrage von selbst kommt.
 
 | Frage | Entscheidung |
 |---|---|
-| Umfang | **Pilot Landkreis Würzburg** (~32 Gemeinden), danach bundesweiter Rollout |
+| Umfang | **Pilot Landkreis Würzburg** (~32 Gemeinden), danach Rollout in Wellen (siehe 8.1) |
 | Verhältnis zu den Förder-Stadtseiten | **Trennen:** Förderseite = Geld, Atlas = Bestand. Die Zahlen-Sektion der Förderseiten weicht einem Link auf den Atlas |
-| URL-Schema | `/solar-atlas/[bundesland]/[landkreis]/[gemeinde]` — Produktname statt Keyword, weil im Kommunen-Gespräch pitchbar |
+| URL-Schema | `/solar-atlas/[bundesland]/[kreis]/[gemeinde]` — Produktname statt Keyword, weil im Kommunen-Gespräch pitchbar |
+| Kennzahl | **Beide** — W/Kopf gesamt *und* W/Kopf Dach. Umschalter im Detail, beide Spalten in der Rangliste |
+| Segmente | Freifläche vs. Dach, innerhalb Dach gewerblich vs. privat, plus Steckersolar |
+| Zeiträume | **Beide** — letztes volles Jahr *und* laufendes Jahr, klar beschriftet |
+| Kreis-Slugs | Aus der amtlichen Bezeichnung ableiten (Destatis), nicht pauschal `landkreis-` (siehe 6.4) |
+| Index | Wellen mit Search Console als Ampel; Pilot bleibt noindex |
 
 Zum URL-Schema: Der Suchbegriff („Solaranlagen Höchberg") lebt in H1, Title und Fließtext.
 Keywords in der URL sind ein schwacher Rankingfaktor — die Entscheidung kostet praktisch nichts
@@ -35,26 +40,50 @@ und gewinnt einen kommunizierbaren Produktnamen.
 
 ---
 
-## 3. Leitkennzahl — und die Vergleichsfalle
+## 3. Kennzahlen: beide, nicht eine
 
-**Die naive Kennzahl (Watt pro Einwohner, alles zusammen) ist irreführend und gefährlich.**
+**Watt pro Einwohner (gesamt)** und **Watt pro Einwohner (nur Dach)** werden beide gezeigt —
+umschaltbar auf der Detailseite, nebeneinander als Spalten in der Kreis-Rangliste.
 
-Höchberg: 9,1 MW auf ~9.450 Einwohner = **965 W pro Kopf**, deutlich unter dem Bundesschnitt
-(~1.200 W). Klingt nach Nachzügler. Tatsächlich ist Höchberg ein dichter Würzburger Vorort mit
-fast keiner Freifläche — nur 18 Anlagen über 30 kW. Die Kennzahl misst dort nicht Engagement,
-sondern verfügbare Ackerfläche.
+Der Unterschied ist erheblich und erklärt sich an Höchberg:
 
-Eine Rangliste auf dieser Basis bestraft ausgerechnet die Kommunen, die wir als Partner wollen,
-und macht die Seite unzitierbar für die Verwaltung.
+| Kennzahl | Höchberg | Aussage |
+|---|---|---|
+| W/Einwohner gesamt | **965 W** | Wie viel Solarleistung steht hier — unabhängig davon, warum |
+| W/Einwohner nur Dach | **728 W** | Was die Gemeinde und ihre Bürger auf den eigenen Gebäuden gemacht haben |
 
-**Deshalb:**
+Höchberg liegt gesamt unter dem Bundesschnitt (~1.200 W), weil es ein dichter Würzburger Vorort
+ohne nennenswerte Freifläche ist — nur 18 Anlagen über 30 kW.
 
-- **Leitkennzahl = Dach-PV pro Einwohner** (Höchberg: **728 W**) — vergleicht Äpfel mit Äpfeln
-- **Freifläche separat ausgewiesen**, nie in die Rangliste gemischt
-- **Erklärsatz auf jeder Seite:** dichte Gemeinden haben strukturell weniger Freifläche
+**Beide Zahlen haben ihre Berechtigung:**
+
+- Die Gesamtzahl ist der ehrliche Ist-Zustand. Wenn eine Gemeinde hinten liegt, ist das so —
+  und ein Grund zu handeln, kein Grund zum Beschönigen.
+- Die Dach-Zahl trennt Struktur von Anstrengung und macht dichte Gemeinden vergleichbar.
+
+Was bleibt: der **Erklärsatz**, dass Freifläche die Gesamtzahl dominiert. Das ist keine
+Weichspülerei, sondern die Information, die die Zahl überhaupt interpretierbar macht.
 
 Alle Referenzwerte (Kreis, Bundesland, Bund) kommen aus derselben Tabelle — kein externer
 Abgleich nötig, kein Drift.
+
+### Segmente
+
+Die Trennung **Freifläche vs. Dach** und innerhalb Dach **gewerblich vs. privat** wird
+durchgehalten — sie entspricht dem, was die Pipeline ohnehin schon klassifiziert. Plus
+Steckersolar als vierte Kategorie (siehe 6.2).
+
+### Zeiträume
+
+**Letztes volles Jahr und laufendes Jahr werden beide gezeigt**, klar beschriftet — sie
+beantworten verschiedene Fragen:
+
+- „2025: 112 Anlagen" — vollständig, vergleichbar, ranking-tauglich
+- „2026 bisher: 63 Anlagen (Stand Juli)" — aktuelle Dynamik
+
+Nur das laufende Jahr zu zeigen ließe jede Gemeinde im Januar wie einen Totalausfall aussehen;
+nur das letzte volle Jahr würde im Dezember 11 Monate Realität unterschlagen. Beide Werte
+rollover-sicher zur Laufzeit ableiten, nicht hardcoden.
 
 ---
 
@@ -68,12 +97,13 @@ zuerst stellt — und der Grund, warum die Seite geteilt wird.
 **Aufbau von oben nach unten:**
 
 1. **H1:** Solaranlagen im Landkreis Würzburg
-2. **Kreis-Kacheln:** Anlagen · installierte Leistung · Dach-W pro Kopf · Neu im letzten Jahr
-3. **Karte:** die vorhandene Choropleth-Komponente, auf Gemeindeebene gezoomt, eingefärbt nach
-   Dach-PV pro Kopf
+2. **Kreis-Kacheln:** Anlagen · installierte Leistung · W pro Kopf · Neu im letzten vollen Jahr ·
+   Neu in diesem Jahr
+3. **Karte:** die vorhandene Choropleth-Komponente, auf Gemeindeebene gezoomt
 4. **Rangliste aller Gemeinden** — der Kern der Seite
-   - Spalten: Rang · Gemeinde · Anlagen · Leistung · Dach-W/Kopf
-   - Sortierbar: Dach pro Kopf (Default) · absolut · Zubau letztes Jahr
+   - Spalten: Rang · Gemeinde · Anlagen · Leistung · **W/Kopf gesamt** · **W/Kopf Dach**
+     (beide Kennzahlen nebeneinander, nicht entweder/oder)
+   - Sortierbar über jede Spalte; Default = W/Kopf gesamt
    - Jede Zeile führt auf die Gemeindeseite
 5. **Zubaukurve** des Kreises nach Jahr
 6. **Einordnung:** Kreis vs. Bundesland vs. Bund
@@ -89,13 +119,16 @@ zuerst stellt — und der Grund, warum die Seite geteilt wird.
 
 1. **Breadcrumb:** Solar-Atlas › Bayern › Landkreis Würzburg › Höchberg
 2. **H1:** Solaranlagen in Höchberg
-3. **Hero:** große Zahl = Dach-PV pro Kopf, daneben der Rang im Landkreis
-   („728 W pro Einwohner · Platz 18 von 32")
-4. **Kacheln:** Anlagen · Leistung · Batteriespeicher · Neu im letzten Jahr
+3. **Hero:** große Zahl = W pro Einwohner, daneben der Rang im Landkreis.
+   **Umschalter „gesamt / nur Dach"** — die Zahl und der Rang wechseln mit
+   („965 W · Platz 24 von 32" ↔ „728 W · Platz 18 von 32")
+4. **Kacheln:** Anlagen · Leistung · Batteriespeicher · Neu im letzten vollen Jahr ·
+   Neu in diesem Jahr
 5. **Aufteilung** (Balken): Steckersolar · Dach privat · Dach gewerblich · Freifläche
-6. **Zubaukurve** nach Jahr — die vorhandene Komponente von den Förderseiten
-7. **Einordnung** (Balkenvergleich): Gemeinde · Kreis · Bundesland · Bund, plus Erklärsatz
-   zur Freiflächen-Verzerrung
+6. **Zubaukurve** nach Jahr — die vorhandene Komponente von den Förderseiten; laufendes Jahr
+   sichtbar als solches markiert (angeschnittener Balken o. Ä.), damit es nicht als Einbruch liest
+7. **Einordnung** (Balkenvergleich): Gemeinde · Kreis · Bundesland · Bund, folgt dem Umschalter
+   aus dem Hero, plus Erklärsatz zur Freiflächen-Verzerrung
 8. **Förderung:** Landesprogramm gibt es immer, kommunales falls vorhanden → Link auf die
    Förderseite
 9. **Was bringt eine Anlage hier?** Beispielrechnung mit dem lokalen Ertrag → CTA in den Rechner
@@ -146,10 +179,41 @@ bricht.
 die eine gefragte Gemeinde geladen (dieser Pfad existiert bereits und ist für ~60 Buckets
 ausgelegt). Die Prefix-Logik bleibt überall gültig, weil der Schlüssel geschachtelt ist.
 
-### 6.4 Namensdopplungen
+### 6.4 Slug-Regeln
 
-„Neustadt" gibt es rund zwanzigmal. Die Schachtelung unter dem Landkreis löst das ohne
-Sonderlogik.
+**Gemeinden:** „Neustadt" gibt es rund zwanzigmal. Die Schachtelung unter dem Kreis löst das
+ohne Sonderlogik.
+
+**Kreise:** Ein pauschales `landkreis-xx` wäre in rund einem Viertel der Fälle falsch:
+
+- **Nordrhein-Westfalen und Schleswig-Holstein** nennen ihre Kreise amtlich nur „Kreis"
+  (Kreis Höxter, Kreis Pinneberg)
+- Drei Sonderfälle: **Region Hannover**, **Städteregion Aachen**, **Regionalverband Saarbrücken**
+  — die einzigen drei, die auch in unseren aktuellen Daten einen Namenszusatz tragen
+- **Baden-Württemberg** nennt seine kreisfreien Städte „Stadtkreis"
+
+**Problem:** Die Bundesnetzagentur liefert nackte Namen ohne Bezeichnung. In unserer Tabelle
+stehen 09679 (Landkreis) und 09663 (kreisfreie Stadt) beide als „Würzburg" — ununterscheidbar.
+
+**Lösung:** Die amtliche Bezeichnung aus dem Destatis-Gemeindeverzeichnis ableiten (dort als
+Kennzeichen geführt), das wir für die Einwohnerzahlen ohnehin brauchen. Kein Regelwerk zu pflegen:
+
+| Amtlich | Slug |
+|---|---|
+| Landkreis Würzburg | `landkreis-wuerzburg` |
+| Kreis Höxter | `kreis-hoexter` |
+| Region Hannover | `region-hannover` |
+| Würzburg (kreisfreie Stadt) | `wuerzburg` — ohne Präfix, ist keiner |
+
+Das Präfix ist damit gleichzeitig die Auflösung der Zweideutigkeit und amtlich korrekt.
+
+**Kreisfreie Städte** sind Kreis- und Gemeindeebene in einem. Sie bekommen eine Seite auf
+Kreisebene (`/solar-atlas/bayern/wuerzburg`), die als Gemeinde-Detailseite rendert — es gibt
+keine Rangliste, weil es keine Untergemeinden gibt.
+
+**Stadtstaaten** (Berlin, Hamburg, Bremen) brauchen eine Sonderregel, sonst entsteht
+`/solar-atlas/berlin/berlin/berlin`. Die Förderseiten lösen das bereits (Slug = Bundesland);
+dort abschauen. Bremen hat zwei Gemeinden (Bremen + Bremerhaven) und ist der unangenehme Fall.
 
 ---
 
@@ -170,10 +234,48 @@ Für die Leitkennzahl brauchen wir Einwohnerzahlen und amtliche Gemeindenamen.
 
 | Risiko | Bewertung | Gegenmittel |
 |---|---|---|
-| **Thin Content / „scaled content abuse"** | Der ernsteste. 10.750 automatisch erzeugte Seiten sind genau das Muster, das Google seit dem Spam-Update 2024 abstraft | Mindestschwelle (Gemeinden unter ~50 Anlagen bekommen keine eigene Seite, stehen nur in der Kreis-Rangliste); echter Vergleichs-Mehrwert je Seite statt Zahlendump |
+| **Index-Flut** | Der ernsteste — siehe 8.1 | Ausrollen in Wellen, Search Console als Bremse |
 | **Personenbezug in kleinen Gemeinden** | Bei wenigen Anlagen im Ort sind Einzelanlagen re-identifizierbar | Nur Aggregate, keine Einzelanlagen, keine Adressen, keine Betreiber |
 | **Kannibalisierung der Förderseiten** | 117 Städte hätten zwei Seiten mit fast gleicher Überschrift | Entschieden: Förderseiten verlieren ihre Zahlen-Sektion und verlinken auf den Atlas |
-| **Rangliste beleidigt Kommunen** | Dichte Orte sehen pro Kopf schlecht aus | Dach-PV pro Kopf als Leitkennzahl, Freifläche separat, Erklärsatz |
+
+### 8.1 Die Index-Flut — und warum eine Schwelle sie nicht löst
+
+**Der naheliegende Reflex (Mindestschwelle, z. B. ab 50 Anlagen) greift nicht.** Deutschland hat
+grob 4 Mio. Solaranlagen auf 10.750 Gemeinden. Selbst ein 2.000-Einwohner-Dorf hat bei
+durchschnittlicher Dichte rund 100 Anlagen — genug für Zubaukurve, Segmente und einen Rang.
+Eine 50er-Schwelle siebt vielleicht 10–15 % aus. **Aus 10.750 werden 9.000. Das Problem bleibt.**
+
+**Das eigentliche Risiko ist nicht Dünne, sondern das Wachstum.** Wir haben heute rund
+**150 indexierte Seiten**. Ein Sprung auf 10.000 ist das **Sechzigfache** — und genau dieser
+Sprung ist das Muster, das Google als manipulativ liest, völlig unabhängig davon, wie gut die
+einzelne Seite ist. Ein etabliertes Portal mit 50.000 Seiten könnte 10.000 nachlegen, ohne dass
+es auffällt. Wir können das nicht.
+
+**Deshalb: nicht vorab entscheiden, sondern in Wellen ausrollen und Google antworten lassen.**
+
+Die Search Console liefert das Signal direkt: Der Status **„Gecrawlt – zurzeit nicht indexiert"**
+ist Googles wörtliche Aussage, dass eine Seite den Aufwand nicht wert war. Das ist ein
+beobachtbarer Wert, kein Bauchgefühl — und damit unsere Ampel.
+
+| Welle | Umfang | Index | Zweck |
+|---|---|---|---|
+| **0 — Pilot** | Lkr. Würzburg: 1 Kreisseite + ~32 Gemeinden | **noindex** | Feedback von Höchberg, Seite schärfen |
+| **1 — Kreisebene** | ~400 Kreisseiten | index + Sitemap | Der SEO-Layer. Jede Seite trägt eine einzigartige Rangliste — unstrittig gehaltvoll. Verdreifacht den Index; spürbar, aber vertretbar |
+| **2+ — Gemeinden** | Wellen à ~500–1.000, größte zuerst | index + Sitemap | Nach jeder Welle 4–6 Wochen Search Console beobachten |
+
+**Die Ampel für Welle 2+:**
+
+- Indexierungsquote der letzten Welle **hoch** → nächste Welle
+- Viele Seiten hängen in **„Gecrawlt – zurzeit nicht indexiert"** → **Stopp.** Google sagt uns,
+  dass die Seite zu dünn ist. Erst Inhalt nachschärfen, dann weiter
+
+**Ausnahme Outreach:** Eine Gemeinde, die wir aktiv anschreiben, kommt in die laufende Welle und
+wird indexiert. Ein Backlink auf eine noindex-Seite verpufft — das wäre der teuerste Fehler,
+den wir hier machen können.
+
+**Nebeneffekt:** Wenn Welle 1 gut läuft und Welle 2 stockt, haben wir immer noch 400 starke
+Seiten und nichts verloren. Der Kernwert (Kommunen-Outreach) hängt ohnehin nicht am Ranking,
+sondern daran, dass die Seite existiert und die Kommune sie herzeigt.
 
 **Legal-Checkliste** (siehe CLAUDE.md): Punkt 1 (neue Datenquelle → Registry + `/datenstand`),
 Punkt 4 (Seiten mit Zahlen → Stand-Datum + Unverbindlichkeit), Punkt 5 (falls Widget),
@@ -196,18 +298,17 @@ tausende Seiten im Index stehen.
 6. Abnahme im Browser → Höchberg die Seite zeigen
 7. Erst danach: Förderseiten-Umbau + bundesweiter Rollout mit Schwelle
 
-**Nicht im Pilot:** Widget, Förderseiten-Umbau, Sitemap-Eintrag für alle Gemeinden.
+**Nicht im Pilot:** Widget, Förderseiten-Umbau, Sitemap-Eintrag, Index (Welle 0 ist noindex).
 
 ---
 
 ## 10. Offene Punkte
 
-- **Zubau-Referenzjahr:** Das laufende Jahr ist immer unvollständig (Höchberg 2026: 63 Anlagen
-  bis Juli). „Neu im letzten Jahr" muss auf das letzte *volle* Jahr zeigen, sonst sieht jede
-  Gemeinde im Januar aus wie ein Totalausfall. Rollover-sicher ableiten, nicht hardcoden.
-- **Meldeverzug:** Anlagen dürfen einen Monat nach Inbetriebnahme gemeldet werden — die letzten
-  Wochen sind immer untererfasst. Auf der Seite erwähnen?
-- **Schwellenwert:** ~50 Anlagen ist ein Bauchwert. Am Pilot prüfen, ab wann eine Seite wirklich
-  etwas erzählt.
-- **Landkreis-Slugs:** „wuerzburg" ist als Slug für Stadt *und* Landkreis Würzburg zweideutig
-  (kreisfreie Stadt 09663, Landkreis 09679). Braucht eine Regel.
+- **Meldeverzug:** Anlagen dürfen bis zu einen Monat nach Inbetriebnahme gemeldet werden — die
+  jüngsten Wochen sind immer untererfasst. Auf der Seite erwähnen, oder das laufende Jahr
+  bewusst unscharf halten?
+- **Stadtstaaten:** Berlin/Hamburg unkritisch (Slug = Bundesland, wie bei den Förderseiten).
+  Bremen hat zwei Gemeinden und braucht eine echte Entscheidung.
+- **Kreisfreie Städte im Vergleich:** Sie stehen in keiner Kreis-Rangliste (sie *sind* der
+  Kreis). Wogegen vergleichen wir sie — Bundesland, oder eine bundesweite Liga vergleichbarer
+  Städte?
