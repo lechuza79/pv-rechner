@@ -96,13 +96,56 @@ export async function GET(req: NextRequest) {
   });
   results.push({ step: "mastr_aggregates", status: e2 ? "error" : "ok", error: e2?.message });
 
-  // 2b. Rollup functions.
+  // 2b. mastr_aggregates_gem — same shape as mastr_aggregates, but Gemeinde grain
+  //     (8-digit AGS) instead of Kreis (5-digit).
   //
-  //     With Gemeinde granularity the table grows ~10x. Reading it into Node and
-  //     aggregating there (the old path) would mean ~500 paginated requests per
-  //     page view, and any single query risks silently truncating at PostgREST's
-  //     1000-row cap. Both problems disappear if the database does the grouping:
-  //     every call below returns at most a few hundred rows.
+  //     Deliberately a second table, not a migration of the first. There is one
+  //     database behind both dev and production, and the live code addresses
+  //     Kreise by 5-digit key — writing 8-digit rows into mastr_aggregates would
+  //     blank the numbers on 117 city pages the moment the upload starts, and keep
+  //     them blank until a deploy caught up. Both tables coexist until the new
+  //     code is merged.
+  //
+  //     CLEANUP after merge: mastr_aggregates has no readers left — drop it, and
+  //     drop this comment with it.
+  const { error: e2gem } = await supabase.rpc("exec_sql", {
+    sql: `
+      CREATE TABLE IF NOT EXISTS mastr_aggregates_gem (
+        region_id text NOT NULL REFERENCES mastr_regions(region_id),
+        energietraeger text NOT NULL CHECK (energietraeger IN ('solar', 'wind', 'biomasse', 'wasser', 'speicher')),
+        segment text NOT NULL DEFAULT 'n/a',
+        year int NOT NULL,
+        count int NOT NULL DEFAULT 0,
+        kwp numeric NOT NULL DEFAULT 0,
+        updated_at timestamptz DEFAULT now(),
+        PRIMARY KEY (region_id, energietraeger, segment, year)
+      );
+      CREATE INDEX IF NOT EXISTS idx_mag_region_et ON mastr_aggregates_gem (region_id, energietraeger);
+      -- Prefix matching drives every rollup; without pattern_ops a btree cannot
+      -- serve LIKE 'x%' under a non-C collation.
+      CREATE INDEX IF NOT EXISTS idx_mag_region_prefix
+        ON mastr_aggregates_gem (region_id text_pattern_ops);
+
+      ALTER TABLE mastr_aggregates_gem ENABLE ROW LEVEL SECURITY;
+      DO $$ BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_aggregates_gem_anon_read') THEN
+          CREATE POLICY mastr_aggregates_gem_anon_read ON mastr_aggregates_gem FOR SELECT TO anon USING (true);
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_aggregates_gem_service_write') THEN
+          CREATE POLICY mastr_aggregates_gem_service_write ON mastr_aggregates_gem FOR ALL TO service_role USING (true);
+        END IF;
+      END $$;
+    `,
+  });
+  results.push({ step: "mastr_aggregates_gem", status: e2gem ? "error" : "ok", error: e2gem?.message });
+
+  // 2c. Rollup functions over the Gemeinde-grain table.
+  //
+  //     With Gemeinde granularity the table grows ~10x (562k rows). Reading it
+  //     into Node and aggregating there (the old path) would mean ~560 paginated
+  //     requests per page view, and any single query risks silently truncating at
+  //     PostgREST's 1000-row cap. Both problems disappear if the database does the
+  //     grouping: every call below returns at most a few hundred rows.
   //
   //     The AGS is nested by design (2 = Bundesland, 5 = Kreis, 8 = Gemeinde), so
   //     a prefix match is all a rollup needs. Gemeinde is the only stored grain —
@@ -132,7 +175,7 @@ export async function GET(req: NextRequest) {
           sum(a.count)::bigint,
           sum(a.kwp),
           sum(CASE WHEN p_year_recent IS NOT NULL AND a.year = p_year_recent THEN a.count ELSE 0 END)::bigint
-        FROM mastr_aggregates a
+        FROM mastr_aggregates_gem a
         WHERE a.energietraeger = ANY(p_traeger)
           AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
         GROUP BY 1, 2
@@ -150,7 +193,7 @@ export async function GET(req: NextRequest) {
       STABLE
       AS $fn$
         SELECT a.energietraeger, a.segment, a.year, sum(a.count)::bigint, sum(a.kwp)
-        FROM mastr_aggregates a
+        FROM mastr_aggregates_gem a
         WHERE a.energietraeger = ANY(p_traeger)
           AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
         GROUP BY 1, 2, 3
@@ -160,11 +203,6 @@ export async function GET(req: NextRequest) {
       REVOKE ALL ON FUNCTION mastr_region_series(text, text[]) FROM PUBLIC;
       GRANT EXECUTE ON FUNCTION mastr_children(text, int, text[], int) TO anon, authenticated, service_role;
       GRANT EXECUTE ON FUNCTION mastr_region_series(text, text[]) TO anon, authenticated, service_role;
-
-      -- Prefix matching drives every rollup; without pattern_ops the btree above
-      -- cannot serve LIKE 'x%' under a non-C collation.
-      CREATE INDEX IF NOT EXISTS idx_ma_region_prefix
-        ON mastr_aggregates (region_id text_pattern_ops);
     `,
   });
   results.push({ step: "mastr_rollup_functions", status: e2b ? "error" : "ok", error: e2b?.message });

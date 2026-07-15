@@ -37,6 +37,13 @@ const DEFAULT_SCHEMA_VERSION = process.env.BNETZA_SCHEMA_VERSION ?? "26.1";
 // How many days to walk back if today's filename is not yet published.
 const URL_LOOKBACK_DAYS = 7;
 
+// Gemeinde-grain aggregates live in their own table. mastr_aggregates still holds
+// the old Kreis-grain rows and is what the currently deployed code reads — one
+// database serves both dev and production, so overwriting it here would blank the
+// numbers on 117 city pages until a deploy caught up.
+// CLEANUP once the Solar-Atlas is merged: mastr_aggregates loses its last reader.
+const AGGREGATES_TABLE = "mastr_aggregates_gem";
+
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const CACHE_DIR = resolve(SCRIPT_DIR, ".cache", "bnetza");
 const SCHEMA_OUT = resolve(SCRIPT_DIR, "mastr-bnetza-schema.json");
@@ -730,15 +737,15 @@ async function phaseUpload(): Promise<void> {
   // the table clean (no ghost buckets from previous schema versions) and
   // matches the existing open-mastr workflow.
   log(`Deleting existing aggregates...`);
-  const { error: delErr } = await supabase.from("mastr_aggregates").delete().gte("year", 0);
+  const { error: delErr } = await supabase.from(AGGREGATES_TABLE).delete().gte("year", 0);
   if (delErr) throw new Error(`delete failed: ${delErr.message}`);
 
   log(`Inserting ${aggregates.length.toLocaleString()} aggregate rows (batches of 1000)...`);
   const BATCH = 1000;
   for (let i = 0; i < aggregates.length; i += BATCH) {
     const batch = aggregates.slice(i, i + BATCH);
-    const { error } = await supabase.from("mastr_aggregates").insert(batch);
-    if (error) throw new Error(`mastr_aggregates insert failed at batch ${i}: ${error.message}`);
+    const { error } = await supabase.from(AGGREGATES_TABLE).insert(batch);
+    if (error) throw new Error(`${AGGREGATES_TABLE} insert failed at batch ${i}: ${error.message}`);
     if ((i / BATCH) % 10 === 0) {
       process.stderr.write(`\r  ${i.toLocaleString()} / ${aggregates.length.toLocaleString()}`);
     }

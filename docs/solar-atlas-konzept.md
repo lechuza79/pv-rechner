@@ -41,6 +41,42 @@ und gewinnt einen kommunizierbaren Produktnamen.
 
 ---
 
+## 3a. Was der Pilot an echten Daten widerlegt hat
+
+Die Zahlen unten in Abschnitt 3 stammen aus einer Live-Abfrage vor dem Bau und waren an einer
+Stelle falsch. Der Abschnitt bleibt als Entscheidungsgrundlage stehen; hier steht, was die
+echte Pipeline sagt.
+
+**Höchberg hat gar keine Freiflächenanlagen.** Die 18 Anlagen über 30 kW sind laut amtlicher
+Klassifikation gewerbliche *Dach*anlagen (Betriebe, Hallen) — die Größenannahme „über 30 kW =
+Freifläche" war schlicht falsch. Beide Kennzahlen sind für Höchberg identisch: **954 W je
+Einwohner**, vollständig auf Dächern (925 Anlagen, 9.123,8 kW auf 9.564 Einwohner).
+
+**Und die „Vergleichsfalle" erklärt Höchberg nicht.** Die Vermutung war: dichter Vorort ohne
+Acker sieht pro Kopf schlecht aus, die Dach-Ansicht rückt das gerade. Sie tut es nicht —
+Höchberg ist **Platz 48 von 52 bei beiden Kennzahlen**:
+
+| | Höchberg | Spitze im Landkreis | Landkreis | Bayern | Bund |
+|---|---|---|---|---|---|
+| W/Kopf gesamt | 954 | 126.865 (Riedenheim) | 3.572 | 2.520 | 1.504 |
+| W/Kopf nur Dach | 954 | 6.527 (Gelchsheim) | — | — | — |
+
+Der wahre Strukturfaktor ist nicht die Freifläche, sondern **Dachfläche pro Kopf**: Ein dichter
+Vorort mit Mehrfamilienhäusern hat weniger davon als ein Dorf voller Höfe mit Scheunendächern.
+Das fängt keine der beiden Kennzahlen ein.
+
+**Folgen für die Seite:**
+
+- Der Umschalter wird **immer** gezeigt, nie abhängig davon, ob die Gemeinde selbst Freifläche
+  hat. Höchberg hat keine — und braucht die Dach-Ansicht trotzdem, weil die Vergleichswerte
+  welche enthalten. Die naive Bedingung hätte den Umschalter genau dort versteckt, wo er zählt.
+- Der Erklärtext bleibt **rein deskriptiv**, ohne Kausalbehauptung. „X liegt zurück, weil die
+  anderen Freiflächen haben" wäre für Höchberg nachweislich gelogen. Die Zahl steht für sich.
+- Der Umschalter rechtfertigt sich trotzdem: Riedenheim fällt von 126.865 W auf 5.186 W, sobald
+  der Solarpark herausgerechnet ist — Faktor 24.
+
+---
+
 ## 3. Kennzahlen: beide, nicht eine
 
 **Watt pro Einwohner (gesamt)** und **Watt pro Einwohner (nur Dach)** werden beide gezeigt —
