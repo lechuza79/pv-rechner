@@ -76,7 +76,6 @@ export default function Klimaanlage() {
 
   // Standort → Kühlgradstunden
   const [plz, setPlz] = useState("");
-  useSharedPlz(plz, setPlz); // one location across all calculators
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzConfirmed, setPlzConfirmed] = useState(false);
   const [cdhSet, setCdhSet] = useState<CdhModes>(() => ({
@@ -125,6 +124,10 @@ export default function Klimaanlage() {
     } catch { /* Fallback bleibt */ }
     setPlzLoading(false);
   }, []);
+
+  // Gemerkten Standort übernehmen und direkt anwenden — sonst stünde die PLZ
+  // nur im Feld, während weiter mit dem Bundesschnitt gerechnet wird.
+  useSharedPlz(plz, (shared) => { setPlz(shared); fetchCooling(shared); });
 
   // PLZ ändern → Bestätigung zurücksetzen (Standort muss erneut übernommen werden)
   const onPlzChange = (raw: string) => {

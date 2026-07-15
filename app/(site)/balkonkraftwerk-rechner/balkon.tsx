@@ -35,7 +35,6 @@ export default function Balkon() {
 
   // Standort → Ertrag (kWh/kWp) via PVGIS
   const [plz, setPlz] = useState("");
-  useSharedPlz(plz, setPlz); // one location across all calculators
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzConfirmed, setPlzConfirmed] = useState(false);
   const [specificYield, setSpecificYield] = useState(CFG.specificYield);
@@ -78,6 +77,10 @@ export default function Balkon() {
     } catch { /* Fallback bleibt */ }
     setPlzLoading(false);
   }, []);
+
+  // Gemerkten Standort übernehmen und direkt anwenden — sonst stünde die PLZ
+  // nur im Feld, während weiter mit dem Bundesschnitt gerechnet wird.
+  useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); });
 
   const onPlzChange = (raw: string) => {
     setPlz(raw.replace(/\D/g, "").slice(0, 5));

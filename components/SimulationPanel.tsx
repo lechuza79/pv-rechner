@@ -48,9 +48,6 @@ export default function SimulationPanel({
   branding?: boolean;
 }) {
   const [plz, setPlz] = useState(initialPlz);
-  // One location across all calculators. Inside embeds this resolves to the
-  // in-memory store, so the widget stays free of browser storage.
-  useSharedPlz(plz, setPlz);
   const [coords, setCoords] = useState<[number, number] | null>(null);
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [hourly, setHourly] = useState<HourlyForecast | null>(null);
@@ -124,6 +121,11 @@ export default function SimulationPanel({
 
   // Auto-fetch on initial PLZ (from URL on the site, from ?plz= on the embed)
   useEffect(() => { if (initialPlz && /^\d{5}$/.test(initialPlz)) submitPlz(initialPlz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // One location across all calculators: adopt the remembered postcode and load
+  // it straight away. Inside embeds this resolves to the in-memory store, so the
+  // widget stays free of browser storage.
+  useSharedPlz(plz, (shared) => { setPlz(shared); submitPlz(shared); });
 
   // Refresh only when the user returns to the tab and data is older than 30 min.
   // Avoids burning Vercel function invocations on background tabs left open for hours.
