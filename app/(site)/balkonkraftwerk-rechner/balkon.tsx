@@ -401,12 +401,11 @@ export default function Balkon() {
                   Bleiben dauerhaft im DOM und werden über Breite/Deckkraft eingeblendet —
                   das animiert sanft, statt hart zu erscheinen. */}
               <div aria-hidden={!storageOn} style={{
-                display: "flex", gap: 10, alignItems: "center", minWidth: 0, overflow: "hidden",
-                marginLeft: storageOn ? 6 : 0,
-                maxWidth: storageOn ? 340 : 0,
+                display: "flex", gap: 10, alignItems: "center", minWidth: 0, marginLeft: 6,
                 opacity: storageOn ? 1 : 0,
+                transform: storageOn ? "translateY(0)" : "translateY(-8px)",
                 pointerEvents: storageOn ? "auto" : "none",
-                transition: "max-width 0.3s ease, opacity 0.22s ease, margin-left 0.3s ease",
+                transition: "opacity 0.2s ease, transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1)",
               }}>
                 {storageOptions.map((st, i) => {
                   const selected = active.storageId === st.id;
