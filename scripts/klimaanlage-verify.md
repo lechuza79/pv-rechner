@@ -5,8 +5,9 @@
 Anschaffung, den Gerätevergleich und — für den „Auch heizen?"-Block — die Heiz-
 Effizienz. Der **Strompreis** kommt bereits live (aus `market_prices`), die
 **Kühlgradstunden** live aus `/api/cooling-degree`; hier geht es um die statischen
-Geräte-/Preis-Werte. Auch die Split-Heizwerte (SCOP, `heatSpecKwhPerM2`) für den
-„Auch heizen?"-Block liegen hier — Split-Heizen gibt es NUR im Klima-Rechner.
+Geräte-/Preis-Werte. Vom „Auch heizen?"-Block gehört nur der **SCOP** hierher —
+Split-Heizen gibt es NUR im Klima-Rechner. Der Heizwärmebedarf je Gebäudestandard
+ist dagegen **geteilte Rechen-Basis** und wird im WP-Runbook gepflegt (siehe unten).
 
 **Warum quartalsweise:** Gerätepreise und Effizienzklassen fallen mit den
 Produktgenerationen; ein Quartals-Check hält sie aktuell (Consumer-Preise ändern
@@ -91,14 +92,28 @@ Ecodesign-Minimum (206/2012 Tier 2, < 6 kW): Split SEER 4,60 · Einkanal EER 2,6
 - `devices[].scop` — Heiz-Effizienz: mobile Split ~3,6, fest installiert ~4,2.
   Herstellerdatenblätter / A+++-Wärmepumpen-Split. Monoblock heizt nicht
   (`canHeat: false`). Für den „Auch heizen?"-Block. **Siehe 4.5.**
-- `heatSpecKwhPerM2` — Übergangszeit-Heizwärme je m² (Schätzung); im Ergebnis
-  editierbar, plausibel halten gegen typische Raum-Heizlasten.
+- `heatTransitionShare` — welcher Anteil des Jahres-Heizwärmebedarfs in der
+  Übergangszeit anfällt (die Split heizt nur diesen Teil). Die kWh/m²·a je
+  Gebäudestandard werden daraus **abgeleitet**, nicht gepflegt: Quelle ist die
+  geteilte `INSULATION`-Tabelle in `lib/constants.ts`, auf der auch der
+  Wärmepumpen-Rechner rechnet. Also hier NUR den Anteil prüfen — wer die
+  kWh/m² anfassen will, prüft die geteilte Tabelle (siehe
+  `scripts/waermepumpe-verify.md`), sonst driften die beiden Rechner.
 - `devices[].pricePerUnit` / `priceBase` / `pricePerRoom` — Anschaffung je Typ.
   ADAC, daibau, reduco, Fachbetrieb-Festpreise.
 
 **Nicht prüfen (Modell-/Klimatologie-Konstanten):**
 - `buildingGain`, `sizingWPerM2`, `targetFactor`, `windowFactor`,
   `exposureOptions[].factor` (kalibriertes Kühlmodell)
+- `heatStandards[].specKwh` — **hier NICHT anfassen.** Das ist die geteilte
+  Rechen-Basis: die Werte kommen aus `INSULATION_BESTAND`/`INSULATION_NEUBAU`
+  (`lib/constants.ts`, dena Gebäudereport / DIN V 18599) und werden vom
+  Wärmepumpen-Rechner mitbenutzt. Gepflegt wird das im **WP-Runbook**
+  (`scripts/waermepumpe-verify.md`) — ein Fix hier würde die beiden Rechner
+  auseinanderdriften lassen.
+- `heatTransitionShare` (0,4) — Modell-Annahme: Anteil des Jahres-Heizwärme-
+  bedarfs, der in der Übergangszeit anfällt (Herleitung über Heizgradtage, siehe
+  Kommentar in der Config). Kein Marktwert, kein Quartals-Thema.
 - `cdhNational` / `cdhByBundesland` / Faktoren — Baseline/Fallback, die Live-API
   verfeinert pro PLZ
 - `gridCo2PerKwh` (Strommix-Faktor, identisch zu WP-/Balkon-Rechner)
