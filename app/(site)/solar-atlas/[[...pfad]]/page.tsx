@@ -117,6 +117,8 @@ export default async function AtlasPage({ params }: { params: Params }) {
     wPerCapita: c.wPerCapita,
     wPerCapitaDach: c.wPerCapitaDach,
     countRecent: c.countRecent,
+    rankDelta: c.rankDelta,
+    rankDachDelta: c.rankDachDelta,
   }));
 
   const lastYear = lastFullYear();

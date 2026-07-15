@@ -120,6 +120,10 @@ export async function GET(req: NextRequest) {
         updated_at timestamptz DEFAULT now(),
         PRIMARY KEY (region_id, energietraeger, segment, year)
       );
+      -- Usable storage capacity (kWh). Only storage rows carry it: Bruttoleistung
+      -- says how fast a battery charges, kwh says how much it holds — and that is
+      -- the number anyone actually asks about.
+      ALTER TABLE mastr_aggregates_gem ADD COLUMN IF NOT EXISTS kwh numeric NOT NULL DEFAULT 0;
       CREATE INDEX IF NOT EXISTS idx_mag_region_et ON mastr_aggregates_gem (region_id, energietraeger);
       -- Prefix matching drives every rollup; without pattern_ops a btree cannot
       -- serve LIKE 'x%' under a non-C collation.
@@ -159,11 +163,15 @@ export async function GET(req: NextRequest) {
       -- Children of a region, grouped at the requested AGS length.
       -- Serves the choropleth (16 Bundesländer / ~400 Kreise) and the Solar-Atlas
       -- ranking tables (~55 Gemeinden per Kreis).
+      -- p_year_max cuts the history off at a year: passing last year's number
+      -- yields the ranking as it stood back then, which is what the rank delta on
+      -- a Gemeinde page compares against.
       CREATE OR REPLACE FUNCTION mastr_children(
         p_prefix text,
         p_child_len int,
         p_traeger text[],
-        p_year_recent int DEFAULT NULL
+        p_year_recent int DEFAULT NULL,
+        p_year_max int DEFAULT NULL
       )
       RETURNS TABLE (region_id text, segment text, count bigint, kwp numeric, count_recent bigint)
       LANGUAGE sql
@@ -178,21 +186,23 @@ export async function GET(req: NextRequest) {
         FROM mastr_aggregates_gem a
         WHERE a.energietraeger = ANY(p_traeger)
           AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
+          AND (p_year_max IS NULL OR a.year <= p_year_max)
         GROUP BY 1, 2
       $fn$;
 
       -- One region's full series (segment x year), summed over everything below it.
       -- Bounded by construction: energietraeger x segment x year, never by region
       -- count — so it is safe at Gemeinde, Kreis, Bundesland and DE alike.
+      DROP FUNCTION IF EXISTS mastr_region_series(text, text[]);
       CREATE OR REPLACE FUNCTION mastr_region_series(
         p_prefix text,
         p_traeger text[]
       )
-      RETURNS TABLE (energietraeger text, segment text, year int, count bigint, kwp numeric)
+      RETURNS TABLE (energietraeger text, segment text, year int, count bigint, kwp numeric, kwh numeric)
       LANGUAGE sql
       STABLE
       AS $fn$
-        SELECT a.energietraeger, a.segment, a.year, sum(a.count)::bigint, sum(a.kwp)
+        SELECT a.energietraeger, a.segment, a.year, sum(a.count)::bigint, sum(a.kwp), sum(a.kwh)
         FROM mastr_aggregates_gem a
         WHERE a.energietraeger = ANY(p_traeger)
           AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
@@ -248,9 +258,10 @@ export async function GET(req: NextRequest) {
       REVOKE ALL ON FUNCTION mastr_top_gemeinden(text, boolean, int, int, int) FROM PUBLIC;
       GRANT EXECUTE ON FUNCTION mastr_top_gemeinden(text, boolean, int, int, int) TO anon, authenticated, service_role;
 
-      REVOKE ALL ON FUNCTION mastr_children(text, int, text[], int) FROM PUBLIC;
+      DROP FUNCTION IF EXISTS mastr_children(text, int, text[], int);
+      REVOKE ALL ON FUNCTION mastr_children(text, int, text[], int, int) FROM PUBLIC;
       REVOKE ALL ON FUNCTION mastr_region_series(text, text[]) FROM PUBLIC;
-      GRANT EXECUTE ON FUNCTION mastr_children(text, int, text[], int) TO anon, authenticated, service_role;
+      GRANT EXECUTE ON FUNCTION mastr_children(text, int, text[], int, int) TO anon, authenticated, service_role;
       GRANT EXECUTE ON FUNCTION mastr_region_series(text, text[]) TO anon, authenticated, service_role;
     `,
   });

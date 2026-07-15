@@ -223,6 +223,8 @@ export async function loadChildren(
   childLevel: Exclude<Level, "de">,
   energietraeger: Energietraeger,
   yearRecent?: number,
+  /** Cut the history off here. Passing last year yields the ranking as it stood then. */
+  yearMax?: number,
 ): Promise<ChildRow[]> {
   const { supabase } = await import("./supabase-server");
   if (!supabase) throw new Error("Supabase not configured");
@@ -232,6 +234,7 @@ export async function loadChildren(
     p_child_len: LEVEL_LEN[childLevel],
     p_traeger: traegerList(energietraeger),
     p_year_recent: yearRecent ?? null,
+    p_year_max: yearMax ?? null,
   });
   if (error) throw new Error(`mastr_children failed: ${error.message}`);
   return (data ?? []).map((r: ChildRow) => ({

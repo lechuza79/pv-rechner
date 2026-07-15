@@ -35,7 +35,17 @@ export type AtlasMetrics = {
   wPerCapitaDach: number | null;
 };
 
-export type AtlasChild = AtlasRegion & AtlasMetrics & { rank: number | null; rankDach: number | null };
+export type AtlasChild = AtlasRegion &
+  AtlasMetrics & {
+    rank: number | null;
+    rankDach: number | null;
+    /**
+     * Positions gained since the end of the previous full year (positive = moved
+     * up). Null when the region was unranked back then.
+     */
+    rankDelta: number | null;
+    rankDachDelta: number | null;
+  };
 
 const FREIFLAECHE = "freiflaeche";
 
@@ -159,28 +169,65 @@ export async function getChildren(region: AtlasRegion, energietraeger = "solar")
   if (!childLevel) return [];
 
   const supabase = await db();
-  const [rows, regionsRes] = await Promise.all([
+  // The same ranking twice: once with everything, once cut off at the end of the
+  // year before last. The difference is how many places a Gemeinde moved during
+  // the last complete year — the current year is excluded from both, or a January
+  // page would report everyone plunging.
+  const [rows, rowsBefore, regionsRes] = await Promise.all([
     loadChildren(region.region_id, childLevel, energietraeger as never, lastFullYear()),
+    loadChildren(region.region_id, childLevel, energietraeger as never, undefined, lastFullYear() - 1),
     supabase.from("mastr_regions").select(REGION_COLUMNS).eq("parent_region_id", region.region_id),
   ]);
   if (regionsRes.error) throw new Error(`getChildren failed: ${regionsRes.error.message}`);
 
-  const byRegion = new Map<string, ChildRow[]>();
-  for (const r of rows) {
-    const list = byRegion.get(r.region_id) ?? [];
-    list.push(r);
-    byRegion.set(r.region_id, list);
-  }
+  const group = (list: ChildRow[]) => {
+    const m = new Map<string, ChildRow[]>();
+    for (const r of list) {
+      const arr = m.get(r.region_id) ?? [];
+      arr.push(r);
+      m.set(r.region_id, arr);
+    }
+    return m;
+  };
+  const byRegion = group(rows);
+  const byRegionBefore = group(rowsBefore);
 
-  const children: AtlasChild[] = (regionsRes.data as AtlasRegion[]).map((r) => ({
+  const regions = regionsRes.data as AtlasRegion[];
+
+  const children: AtlasChild[] = regions.map((r) => ({
     ...r,
     ...foldMetrics(byRegion.get(r.region_id) ?? [], r.population),
     rank: null,
     rankDach: null,
+    rankDelta: null,
+    rankDachDelta: null,
   }));
 
   assignRank(children, "wPerCapita", "rank");
   assignRank(children, "wPerCapitaDach", "rankDach");
+
+  // Ranks as of the end of the year before last, keyed by region.
+  const before = regions.map((r) => ({
+    region_id: r.region_id,
+    ...foldMetrics(byRegionBefore.get(r.region_id) ?? [], r.population),
+  }));
+  const rankBefore = (metric: "wPerCapita" | "wPerCapitaDach") => {
+    const map = new Map<string, number>();
+    before
+      .filter((c) => c[metric] !== null)
+      .sort((a, b) => (b[metric] as number) - (a[metric] as number))
+      .forEach((c, i) => map.set(c.region_id, i + 1));
+    return map;
+  };
+  const prevRank = rankBefore("wPerCapita");
+  const prevRankDach = rankBefore("wPerCapitaDach");
+
+  for (const c of children) {
+    const p = prevRank.get(c.region_id);
+    if (p != null && c.rank != null) c.rankDelta = p - c.rank;
+    const pd = prevRankDach.get(c.region_id);
+    if (pd != null && c.rankDach != null) c.rankDachDelta = pd - c.rankDach;
+  }
 
   return children.sort((a, b) => (b.wPerCapita ?? -1) - (a.wPerCapita ?? -1));
 }

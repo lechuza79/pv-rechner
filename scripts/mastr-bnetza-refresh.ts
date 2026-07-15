@@ -55,7 +55,7 @@ type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher";
 
 type ActorKind = "privat" | "gewerbe";
 type AggregateKey = `${string}|${string}|${string}|${number}`;
-type AggregateValue = { count: number; kwp: number };
+type AggregateValue = { count: number; kwp: number; kwh: number };
 type RegionLevel = "landkreis" | "gemeinde";
 type RegionMeta = { level: RegionLevel; name: string; parent: string };
 
@@ -77,6 +77,13 @@ const UNIT_SPECS: UnitSpec[] = [
 
 const ACTORS_FILE_PATTERN = /^Marktakteure(_\d+)?\.xml$/i;
 const ACTORS_RECORD_TAG = "Marktakteur";
+
+// Usable storage capacity lives on the Anlage, not the Einheit: EinheitenStromSpeicher
+// carries only Bruttoleistung (kW), which says how fast a battery charges, not how
+// much it holds. Nobody asks how many kilowatts of storage a Gemeinde has — the
+// number that matters is kWh, and it sits here, linked back by MaStR number.
+const STORAGE_FILE_PATTERN = /^AnlagenStromSpeicher(_\d+)?\.xml$/i;
+const STORAGE_RECORD_TAG = "AnlageStromSpeicher";
 
 // ─── BNetzA Katalog-Codes ──────────────────────────────────────────────────────
 // XML uses numeric codes for enum-like fields; the full mapping lives in
@@ -472,6 +479,59 @@ function parseKwp(s: string | undefined): number {
   return isNaN(v) ? 0 : v;
 }
 
+/**
+ * Einheit-MaStR-Nummer → usable capacity in kWh.
+ *
+ * One Anlage can list several Einheiten in VerknuepfteEinheitenMaStRNummern. The
+ * capacity is stated once for the whole Anlage, so splitting it evenly across the
+ * linked units is the only way to keep the sum right — assigning the full figure
+ * to each would multiply a shared battery by its number of units.
+ */
+async function buildStorageCapacityMap(zipPath: string): Promise<Map<string, number>> {
+  const directory = await unzipper.Open.file(zipPath);
+  const entries = directory.files
+    .filter((f) => f.type === "File" && STORAGE_FILE_PATTERN.test(f.path))
+    .map((f) => f.path);
+  if (entries.length === 0) {
+    log(`No AnlagenStromSpeicher XML found — storage capacity stays empty`, "warn");
+    return new Map();
+  }
+
+  const map = new Map<string, number>();
+  let rows = 0;
+  let skipped = 0;
+  for (const entryName of entries) {
+    await streamXmlRecords(zipPath, entryName, STORAGE_RECORD_TAG, (row) => {
+      rows++;
+      const kwh = parseKwp(row.NutzbareSpeicherkapazitaet);
+      const linked = (row.VerknuepfteEinheitenMaStRNummern ?? "").trim();
+      if (!kwh || kwh <= 0 || !linked) {
+        skipped++;
+        return;
+      }
+      const units = linked.split(/[,;]/).map((u) => u.trim()).filter(Boolean);
+      if (units.length === 0) {
+        skipped++;
+        return;
+      }
+      const share = kwh / units.length;
+      for (const u of units) {
+        // A unit can appear under more than one Anlage (extensions); sum, never overwrite.
+        map.set(u, (map.get(u) ?? 0) + share);
+      }
+      if (rows % 500_000 === 0) {
+        process.stderr.write(`\r  storage: ${rows.toLocaleString()} rows, ${map.size.toLocaleString()} units mapped`);
+      }
+    });
+  }
+  process.stderr.write("\n");
+  log(
+    `Storage capacity map: ${map.size.toLocaleString()} units (${rows.toLocaleString()} Anlagen, ${skipped.toLocaleString()} without capacity or link)`,
+    "ok",
+  );
+  return map;
+}
+
 async function buildActorMap(zipPath: string): Promise<Map<string, ActorKind>> {
   const directory = await unzipper.Open.file(zipPath);
   const actorEntries = directory.files
@@ -512,6 +572,7 @@ async function aggregateUnit(
   zipPath: string,
   spec: UnitSpec,
   actorMap: Map<string, ActorKind>,
+  capacityMap: Map<string, number>,
   agg: Map<AggregateKey, AggregateValue>,
   regions: Map<string, RegionMeta>,
 ): Promise<{ processed: number; accepted: number; skipped: Record<string, number> }> {
@@ -578,14 +639,18 @@ async function aggregateUnit(
         regions.set(regionId, { level: "gemeinde", name: row.Gemeinde, parent: kreisAgs });
       }
 
+      // Only storage has a capacity; for every other Träger kwh stays 0.
+      const kwh = spec.et === "speicher" ? (capacityMap.get(row.EinheitMastrNummer ?? "") ?? 0) : 0;
+
       const segment = spec.et === "solar" ? classifySolarSegment(row, actorMap) : "n/a";
       const key: AggregateKey = `${regionId}|${spec.et}|${segment}|${year}`;
       const existing = agg.get(key);
       if (existing) {
         existing.count++;
         existing.kwp += kwp;
+        existing.kwh += kwh;
       } else {
-        agg.set(key, { count: 1, kwp });
+        agg.set(key, { count: 1, kwp, kwh });
       }
       accepted++;
       if (processed > 0 && processed % 200_000 === 0) {
@@ -605,14 +670,23 @@ async function phaseAggregate(): Promise<void> {
 
   log("Step 1/3: building actor map...");
   const actorMap = await buildActorMap(zipPath);
+  // Millions of entries each. The actor map only classifies solar, the capacity
+  // map only applies to storage, and storage comes last — so the second is built
+  // only after the first is released. Holding both would put ~7M entries on the
+  // heap at once for no reason.
+  let capacityMap = new Map<string, number>();
 
   log("Step 2/3: streaming unit XMLs...");
   const agg = new Map<AggregateKey, AggregateValue>();
   const regions = new Map<string, RegionMeta>();
 
   for (const spec of UNIT_SPECS) {
+    if (spec.et === "speicher") {
+      actorMap.clear();
+      capacityMap = await buildStorageCapacityMap(zipPath);
+    }
     log(`  aggregating ${spec.et}...`);
-    const r = await aggregateUnit(zipPath, spec, actorMap, agg, regions);
+    const r = await aggregateUnit(zipPath, spec, actorMap, capacityMap, agg, regions);
     log(
       `    ${spec.et}: ${r.accepted.toLocaleString()} accepted / ${r.processed.toLocaleString()} total ` +
         `(skipped: status=${r.skipped.status}, gks=${r.skipped.gks}, gksShort=${r.skipped.gksShort}, ` +
@@ -621,8 +695,8 @@ async function phaseAggregate(): Promise<void> {
     );
   }
 
-  // Free actor map memory before serialising output.
-  actorMap.clear();
+  // Free the lookup map before serialising output.
+  capacityMap.clear();
 
   const kreisCount = Array.from(regions.values()).filter((r) => r.level === "landkreis").length;
   const gemeindeCount = regions.size - kreisCount;
@@ -639,6 +713,7 @@ async function phaseAggregate(): Promise<void> {
       year: parseInt(yearStr, 10),
       count: val.count,
       kwp: Math.round(val.kwp * 100) / 100,
+      kwh: Math.round(val.kwh * 100) / 100,
     };
   });
 
@@ -684,7 +759,7 @@ async function phaseUpload(): Promise<void> {
   const { readFile } = await import("node:fs/promises");
   const payload = JSON.parse(await readFile(AGGREGATES_OUT, "utf8"));
   const { aggregates, regions, generated_at, data_as_of, source, source_filename } = payload as {
-    aggregates: { region_id: string; energietraeger: string; segment: string; year: number; count: number; kwp: number }[];
+    aggregates: { region_id: string; energietraeger: string; segment: string; year: number; count: number; kwp: number; kwh: number }[];
     regions: { region_id: string; level: RegionLevel; name: string; parent: string }[];
     generated_at: string;
     data_as_of: string;

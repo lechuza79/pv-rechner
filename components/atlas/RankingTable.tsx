@@ -15,6 +15,9 @@ export type RankingRow = {
   wPerCapita: number | null;
   wPerCapitaDach: number | null;
   countRecent: number;
+  /** Places gained since the end of the year before last; positive = moved up. */
+  rankDelta: number | null;
+  rankDachDelta: number | null;
 };
 
 type SortKey = "wPerCapita" | "wPerCapitaDach" | "count" | "kwp" | "countRecent";
@@ -28,6 +31,37 @@ const COLUMNS: { key: SortKey; label: string; short: string }[] = [
 ];
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
+
+/**
+ * Rank change for the metric currently sorted by. Only the two per-capita columns
+ * have a historical ranking to compare against — sorting by plant count or
+ * capacity shows no delta rather than a made-up one.
+ */
+function deltaFor(row: RankingRow, sort: SortKey): number | null {
+  if (sort === "wPerCapita") return row.rankDelta;
+  if (sort === "wPerCapitaDach") return row.rankDachDelta;
+  return null;
+}
+
+function RankDelta({ value }: { value: number | null }) {
+  if (value === null || value === 0) return null;
+  const up = value > 0;
+  return (
+    <span
+      title={`${Math.abs(value)} ${Math.abs(value) === 1 ? "Platz" : "Plätze"} ${up ? "gutgemacht" : "verloren"} im letzten vollen Jahr`}
+      style={{
+        fontFamily: v("--font-mono"),
+        fontSize: 10,
+        fontWeight: 700,
+        color: up ? v("--color-positive") : v("--color-negative"),
+        whiteSpace: "nowrap",
+      }}
+    >
+      {up ? "▲" : "▼"}
+      {Math.abs(value)}
+    </span>
+  );
+}
 
 function fmtLeistung(kwp: number): string {
   if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
@@ -73,6 +107,17 @@ export default function RankingTable({
   const homeIndex = home ? sorted.findIndex((r) => r.region_id === home.region_id) : -1;
   const homeRow = homeIndex >= 0 ? sorted[homeIndex] : null;
 
+  // One scale for the list and the floating row. Capped at the runner-up: a
+  // single Gemeinde with a solar park (Riedenheim: 126.865 W/head against a
+  // second place of 17.705) would otherwise flatten every other bar to nothing.
+  const scale = useMemo(() => {
+    const vals = sorted.map((r) => r[sort]).filter((x): x is number => x !== null);
+    return Math.max(1, vals[1] ?? vals[0] ?? 1);
+  }, [sorted, sort]);
+  const barPct = (val: number | null) =>
+    val === null ? 0 : Math.min(100, Math.max(1, Math.round((val / scale) * 100)));
+  const stickyPct = barPct(homeRow ? homeRow[sort] : null);
+
   // Float the home row only while its real position is off-screen.
   useEffect(() => {
     const el = homeRowRef.current;
@@ -109,16 +154,18 @@ export default function RankingTable({
       <div style={S.list}>
         {sorted.map((r, i) => {
           const isHome = home?.region_id === r.region_id;
-          const max = Math.max(1, ...sorted.slice(0, 2).map((x) => (x[sort] as number) ?? 0));
           const val = r[sort];
-          const pct = val === null ? 0 : Math.min(100, Math.max(1, Math.round((val / max) * 100)));
+          const pct = barPct(val);
           return (
             <div
               key={r.region_id}
               ref={isHome ? homeRowRef : undefined}
               style={{ ...S.row, ...(isHome ? S.rowHome : null) }}
             >
-              <span style={S.rank}>{val === null ? "—" : `${i + 1}.`}</span>
+              <span style={S.rank}>
+                {val === null ? "—" : `${i + 1}.`}
+                <RankDelta value={deltaFor(r, sort)} />
+              </span>
               <span style={S.nameCell}>
                 {r.href ? (
                   <Link href={r.href} style={{ ...S.name, fontWeight: isHome ? 700 : 500 }}>
@@ -148,10 +195,26 @@ export default function RankingTable({
 
       {ready && homeRow && !homeVisible && (
         <div style={S.sticky}>
-          <span style={S.rank}>{homeIndex + 1}.</span>
+          <span style={S.rank}>
+            {homeIndex + 1}.
+            <RankDelta value={deltaFor(homeRow, sort)} />
+          </span>
           <span style={{ ...S.nameCell, fontWeight: 700 }}>
             {homeRow.name}
             <span style={S.stickyScope}>Ihre Gemeinde {scopeLabel}</span>
+          </span>
+          {/* Same bar and scale as the list, so the floating row reads as the row
+              it stands in for — not as a separate summary. */}
+          <span style={S.barCell}>
+            <span style={S.track}>
+              <span
+                style={{
+                  ...S.fill,
+                  width: `${stickyPct}%`,
+                  background: v("--color-accent"),
+                }}
+              />
+            </span>
           </span>
           <span style={S.val}>{cell(homeRow, sort)}</span>
         </div>
@@ -255,7 +318,7 @@ const S: Record<string, React.CSSProperties> = {
   list: { display: "flex", flexDirection: "column" },
   row: {
     display: "grid",
-    gridTemplateColumns: "34px minmax(0,1fr) minmax(60px,90px) 88px",
+    gridTemplateColumns: "52px minmax(0,1fr) minmax(60px,90px) 88px",
     alignItems: "center",
     gap: 8,
     padding: "7px 8px",
@@ -264,7 +327,7 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 13,
   },
   rowHome: { background: v("--color-bg-accent"), borderRadius: v("--radius-md") },
-  rank: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-muted") },
+  rank: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-muted"), display: "flex", alignItems: "baseline", gap: 3 },
   nameCell: { display: "flex", alignItems: "baseline", gap: 6, minWidth: 0 },
   name: { color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   hint: { fontSize: 10, color: v("--color-text-muted") },
@@ -276,7 +339,7 @@ const S: Record<string, React.CSSProperties> = {
     position: "sticky",
     bottom: 12,
     display: "grid",
-    gridTemplateColumns: "34px minmax(0,1fr) 88px",
+    gridTemplateColumns: "52px minmax(0,1fr) minmax(60px,90px) 88px",
     alignItems: "center",
     gap: 8,
     padding: "10px 12px",
