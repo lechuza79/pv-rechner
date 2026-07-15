@@ -199,9 +199,12 @@ export const globalStyles = `
   *{box-sizing:border-box;margin:0;padding:0}
   /* Smooth theme cross-fade — only enabled while a theme switch is in flight
      (ThemeController toggles .theme-anim on <html>), so normal hovers stay
-     instant and the initial (boot-script) theme paints without animating. */
+     instant and the initial (boot-script) theme paints without animating.
+     opacity is in the list because this !important rule replaces every
+     element's own transition for its duration: without it, anything fading in
+     during a switch (e.g. the switch's own tooltip) would jump instead. */
   html.theme-anim,html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{
-    transition:background-color .5s ease,border-color .5s ease,color .5s ease,fill .5s ease,stroke .5s ease,box-shadow .5s ease,background .5s ease !important;
+    transition:background-color .5s ease,border-color .5s ease,color .5s ease,fill .5s ease,stroke .5s ease,box-shadow .5s ease,background .5s ease,opacity .25s ease !important;
   }
   @media (prefers-reduced-motion:reduce){html.theme-anim,html.theme-anim *{transition:none !important}}
   input[type=number]::-webkit-inner-spin-button,

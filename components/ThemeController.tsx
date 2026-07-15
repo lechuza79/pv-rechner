@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { v } from "../lib/theme";
 import { resolveTheme, cycleFrom, type ThemePref, type ThemeMode } from "../lib/theme-schedule";
 
@@ -19,6 +19,9 @@ import { resolveTheme, cycleFrom, type ThemePref, type ThemeMode } from "../lib/
 
 const STORAGE_KEY = "sc-theme-pref";
 const HINT_MS = 3200;
+const HINT_FADE_MS = 250;
+/** Keep the tooltip this far from the viewport edge on small screens. */
+const HINT_EDGE_PAD = 12;
 
 const LABEL: Record<ThemePref, string> = {
   auto: "Automatisch",
@@ -72,11 +75,17 @@ export default function ThemeController() {
   const [resolved, setResolved] = useState<ThemeMode>("light");
   const [mounted, setMounted] = useState(false);
   const [hint, setHint] = useState<ThemePref | null>(null);
+  const [hintOn, setHintOn] = useState(false);
+  // Horizontal nudge that keeps the centred tooltip inside the viewport when the
+  // button sits near an edge (mobile: it is the last item in the header).
+  const [hintShift, setHintShift] = useState(0);
   const prefRef = useRef<ThemePref>("auto");
   // Which manual mode the last click out of auto landed on — keeps the cycle
   // symmetric so both manual modes stay reachable.
   const firstManualRef = useRef<ThemePref | null>(null);
-  const hintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const tipRef = useRef<HTMLDivElement>(null);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Adopt the preference the boot script already resolved, then keep it applied.
   useEffect(() => {
@@ -89,8 +98,20 @@ export default function ThemeController() {
   }, []);
 
   useEffect(() => () => {
-    if (hintTimer.current) clearTimeout(hintTimer.current);
+    if (hideTimer.current) clearTimeout(hideTimer.current);
   }, []);
+
+  // Centre the tooltip under the button, then pull it back inside the viewport
+  // if that would push it off an edge. Runs before paint so it never jumps.
+  useLayoutEffect(() => {
+    if (!hint || !wrapRef.current || !tipRef.current) return;
+    const anchor = wrapRef.current.getBoundingClientRect();
+    const width = tipRef.current.offsetWidth;
+    const centred = anchor.left + anchor.width / 2 - width / 2;
+    const min = HINT_EDGE_PAD;
+    const max = document.documentElement.clientWidth - width - HINT_EDGE_PAD;
+    setHintShift(Math.min(Math.max(centred, min), Math.max(min, max)) - centred);
+  }, [hint]);
 
   // In auto mode, re-evaluate every minute so the dusk/night crossover lands
   // without a reload. No tooltip here — the user did not do anything.
@@ -111,9 +132,13 @@ export default function ThemeController() {
     prefRef.current = next;
     setPref(next);
     setResolved(apply(next, true));
+    // The tooltip node is always mounted (see below), so it has already been
+    // painted at opacity 0 — flipping it on in the same tick transitions both
+    // ways without depending on requestAnimationFrame, which browsers throttle.
+    if (hideTimer.current) clearTimeout(hideTimer.current);
     setHint(next);
-    if (hintTimer.current) clearTimeout(hintTimer.current);
-    hintTimer.current = setTimeout(() => setHint(null), HINT_MS);
+    setHintOn(true);
+    hideTimer.current = setTimeout(() => setHintOn(false), HINT_MS);
   }, []);
 
   // SSR renders a stable placeholder; the icon syncs on mount (theme is already
@@ -124,7 +149,7 @@ export default function ThemeController() {
     ` (aktuell ${resolved === "dark" ? "dunkel" : resolved === "dusk" ? "Dämmerung" : "hell"})`;
 
   return (
-    <div style={{ position: "relative", display: "inline-flex" }}>
+    <div ref={wrapRef} style={{ position: "relative", display: "inline-flex" }}>
       <button
         type="button"
         onClick={cycle}
@@ -148,16 +173,19 @@ export default function ThemeController() {
         <ThemeIcon pref={icon} />
       </button>
 
-      {hint && (
-        <div
+      {/* Always mounted so the fade works in both directions; it is inert and
+          invisible until a switch happens. */}
+      <div
+          ref={tipRef}
           role="status"
           aria-live="polite"
+          aria-hidden={!hint}
           style={{
             position: "absolute",
             top: "calc(100% + 8px)",
-            right: 0,
+            left: "50%",
             zIndex: 200,
-            width: 232,
+            width: "min(232px, calc(100vw - 24px))",
             background: v("--color-bg"),
             border: `1px solid ${v("--color-border")}`,
             borderRadius: v("--radius-md"),
@@ -167,15 +195,20 @@ export default function ThemeController() {
             fontSize: 12.5,
             lineHeight: 1.5,
             color: v("--color-text-secondary"),
-            animation: "fu .3s ease-out",
+            opacity: hintOn ? 1 : 0,
+            transform: `translateX(calc(-50% + ${hintShift}px)) translateY(${hintOn ? 0 : -4}px)`,
+            transition: `opacity ${HINT_FADE_MS}ms ease, transform ${HINT_FADE_MS}ms ease`,
             pointerEvents: "none",
           }}
         >
-          <span style={{ fontWeight: 700, color: v("--color-text-primary") }}>{LABEL[hint]}</span>
-          {" — "}
-          {HINT[hint]}
+          {hint && (
+            <>
+              <span style={{ fontWeight: 700, color: v("--color-text-primary") }}>{LABEL[hint]}</span>
+              {" — "}
+              {HINT[hint]}
+            </>
+          )}
         </div>
-      )}
     </div>
   );
 }
