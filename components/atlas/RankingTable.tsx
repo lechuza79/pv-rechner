@@ -108,6 +108,9 @@ export default function RankingTable({
   const { home, setHome, ready } = useHomeGemeinde();
   const homeRowRef = useRef<HTMLDivElement | null>(null);
   const [homeVisible, setHomeVisible] = useState(true);
+  // The floating row lives outside the horizontal scroller (see below) and has to
+  // be shifted by hand to stay under the columns it belongs to.
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   const years = useMemo(
     () => Array.from(new Set(cells.map((c) => c.year))).sort((a, b) => b - a),
@@ -250,7 +253,7 @@ export default function RankingTable({
         <YearPicker years={years} value={zubauYear} onChange={setZubauYear} />
       </div>
 
-      <div style={S.scroller}>
+      <div style={S.scroller} onScroll={(e) => setScrollLeft(e.currentTarget.scrollLeft)}>
         <div style={S.table}>
           {/* Header: every column sorts, the first also picks what it shows. */}
           <div style={{ ...S.row, ...S.header }}>
@@ -318,10 +321,20 @@ export default function RankingTable({
             })}
           </div>
 
-          {/* Floating row: same grid as the list, so its bar and every value line
-              up under the column they stand in for. */}
-          {ready && homeRow && !homeVisible && (
-            <div style={{ ...S.row, ...S.sticky }}>
+        </div>
+      </div>
+
+      {/*
+        Outside the scroller on purpose. A parent with overflow-x: auto becomes the
+        containing block for position: sticky, and since that scroller is only as
+        tall as its content, "bottom: 10" inside it never fires — the row simply
+        stopped floating. Out here it sticks to the viewport again; the horizontal
+        offset is applied by hand so it still lines up with the columns.
+      */}
+      {ready && homeRow && !homeVisible && (
+        <div style={S.stickyWrap}>
+          <div style={{ ...S.table, transform: `translateX(${-scrollLeft}px)` }}>
+            <div style={{ ...S.row, ...S.stickyRow }}>
               <span style={S.rank}>
                 {rankOf.get(homeRow.region_id) ?? "—"}.
                 <RankDelta value={deltas.get(homeRow.region_id) ?? null} />
@@ -343,9 +356,9 @@ export default function RankingTable({
                 </span>
               ))}
             </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       {ready && !home && <HomePicker onPick={(hit, plz) => setHome({ ...hit, plz })} />}
       {ready && home && (
@@ -584,15 +597,17 @@ const S: Record<string, React.CSSProperties> = {
   track: { display: "block", height: 6, background: v("--color-bg-muted"), borderRadius: 3 },
   fill: { display: "block", height: "100%", borderRadius: 3 },
   val: { fontFamily: v("--font-mono"), fontSize: 11, textAlign: "right", whiteSpace: "nowrap" },
-  sticky: {
+  stickyWrap: {
     position: "sticky",
     bottom: 10,
     marginTop: 10,
+    overflow: "hidden",
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border-accent")}`,
     borderRadius: v("--radius-md"),
     boxShadow: "0 4px 14px rgba(0,0,0,0.10)",
   },
+  stickyRow: { borderBottom: "none", margin: 0 },
   stickyScope: { fontSize: 10, color: v("--color-text-muted"), fontWeight: 400 },
   dropdown: {
     position: "absolute",
