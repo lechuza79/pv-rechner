@@ -3,6 +3,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { getFundingPrograms } from "../../../lib/funding-data";
 import { matchFundingForAgs, type FundingProgram } from "../../../lib/funding-programs";
+import { rateLimit } from "../../../lib/rate-limit";
 
 // Resolves funding for the rechner. The 933 KB PLZ→AGS table and the program
 // dataset both live server-side; the client gets only the matched programs.
@@ -26,6 +27,9 @@ async function loadTable(): Promise<Record<string, PlzEntry[]>> {
 const headers = { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" };
 
 export async function GET(req: NextRequest) {
+  const limited = rateLimit(req, "funding");
+  if (limited) return limited;
+
   const plz = req.nextUrl.searchParams.get("plz") ?? "";
   const foe = req.nextUrl.searchParams.get("foe") ?? "";
   const all = await getFundingPrograms();

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { useSharedPlz, readLocation } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
-import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN, INSULATION_BESTAND } from "../../../lib/constants";
+import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
@@ -12,13 +12,18 @@ import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
 import GlossaryTerm from "../../../components/GlossaryTerm";
-import { calcExtraConsumption, calcKlimaAnnual, KLIMA_DEFAULT_M2, KLIMA_M2_PRESETS } from "../../../lib/consumption";
+import { calcExtraConsumption, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
+import { calcAircon } from "../../../lib/aircon";
+import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
+import { useCoolingDegree } from "../../../lib/useCoolingDegree";
+import KlimaDetailModal from "../../../components/KlimaDetailModal";
 import Chart from "./_components/Chart";
 import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import Header from "../../../components/Header";
-import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../../components/Icons";
+import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh, IconSun } from "../../../components/Icons";
+import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import { useChartExport } from "../../../lib/useChartExport";
 import { trackEvent } from "../../../lib/analytics";
 import ChartExportBar from "../../../components/ChartExportBar";
@@ -28,7 +33,16 @@ import ResultStats from "./_components/ResultStats";
 import ResultActions from "./_components/ResultActions";
 import ResultFunding from "./_components/ResultFunding";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
-import WpBuildingInputs from "../../../components/WpBuildingInputs";
+
+// Großverbraucher-Detailfragen in ihrer Akkordeon-Reihenfolge. Pro aktivem
+// Verbraucher wird immer nur die erste noch offene Frage aufgeklappt.
+const WP_FIELDS = ["wp-haustyp", "wp-flaeche", "wp-daemmung", "wp-heizsystem"] as const;
+const EA_FIELDS = ["ea-km"] as const;
+const KLIMA_FIELDS = ["klima-rooms"] as const;
+const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS, ...KLIMA_FIELDS];
+// Modell-Annahme für die Klima-Schnellschätzung, aus der geteilten Config (kein
+// Drift zum Klimaanlagen-Rechner). Langlabel auf den Kurznamen vor der Klammer.
+const KLIMA_DEVICE_LABEL = (CFG.devices.find(d => d.id === CFG.defaultDeviceId)?.label ?? "Split-Anlage").split(" (")[0];
 
 // ─── Main ────────────────────────────────────────────────────────────────────
 export default function PVRechner({ initialParams }: { initialParams?: Record<string, string | string[] | undefined> }) {
@@ -48,18 +62,42 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [ea, setEa] = useState(hasShare ? paramStr(initialParams, "ea", "nein", ["nein", "geplant", "ja"]) : "nein");
   const [eaKm, setEaKm] = useState(hasShare ? paramInt(initialParams, "km", 15000, 1000, 50000) : 15000);
   const [klima, setKlima] = useState(hasShare ? paramStr(initialParams, "kl", "nein", ["nein", "geplant", "ja"]) : "nein");
-  const [klimaM2, setKlimaM2] = useState(hasShare ? paramInt(initialParams, "km2", KLIMA_DEFAULT_M2, 20, 500) : KLIMA_DEFAULT_M2);
-  // Direkt übernommener Kühlstrom aus dem Klimaanlagen-Rechner (kWh/a). Hat Vorrang
-  // vor der Flächen-Schätzung; wird gelöscht, sobald der Nutzer die Wohnfläche ändert.
+  // Klimaanlage: Anzahl gekühlter Räume (statt Wohnfläche — die kollidierte mit
+  // der WP-Wohnfläche). Aus Räumen + Standort schätzen wir den Kühlstrom mit
+  // demselben Wettermodell wie der Klimaanlagen-Rechner (calcAircon), kein Drift.
+  const [klimaRooms, setKlimaRooms] = useState(hasShare ? paramInt(initialParams, "klr", 2, 1, 5) : 2);
+  // Direkt übernommener Kühlstrom (kWh/a) — aus dem Detail-Modal oder dem
+  // Klimaanlagen-Rechner. Hat Vorrang vor der Schnellschätzung; wird gelöscht,
+  // sobald der Nutzer die Räume ändert (dann greift wieder die Schätzung).
   const [klimaKwh, setKlimaKwh] = useState<number | null>(hasShare && initialParams?.klwh ? (() => { const n = Number(initialParams.klwh); return isFinite(n) && n >= 0 && n <= 20000 ? Math.round(n) : null; })() : null);
-  const setKlimaM2Manual = (m2: number) => { setKlimaM2(m2); setKlimaKwh(null); setOEv(null); };
+  const setKlimaRoomsManual = (n: number) => { setKlimaRooms(n); setKlimaKwh(null); setOEv(null); };
+  const [klimaDetailOpen, setKlimaDetailOpen] = useState(false);
 
   // Wärmepumpen-Gebäudedaten: nötig, damit der WP-Jahresstrom genauso aus dem
   // Heizwärmebedarf ÷ Arbeitszahl kommt wie im Wärmepumpen-Rechner (statt einer
   // Pauschale). Nur relevant wenn wp !== "nein". Bestand angenommen (LWWP).
   const [wpWohnflaeche, setWpWohnflaeche] = useState(hasShare ? paramInt(initialParams, "wf", DEFAULT_WP_BUILDING.wohnflaeche, 20, 1000) : DEFAULT_WP_BUILDING.wohnflaeche);
   const [wpInsulation, setWpInsulation] = useState(hasShare ? paramInt(initialParams, "wi", DEFAULT_WP_BUILDING.insulationIdx, 0, INSULATION_BESTAND.length - 1) : DEFAULT_WP_BUILDING.insulationIdx);
-  const [wpHeizsystem, setWpHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">(hasShare ? (paramStr(initialParams, "wh", DEFAULT_WP_BUILDING.heizsystem, ["fbh", "hk_neu", "hk_alt"]) as "fbh" | "hk_neu" | "hk_alt") : DEFAULT_WP_BUILDING.heizsystem);
+  const [wpHeizsystem, setWpHeizsystem] = useState<Heizsystem>(hasShare ? (paramStr(initialParams, "wh", DEFAULT_WP_BUILDING.heizsystem, ["fbh", "hk_neu", "hk_alt"]) as Heizsystem) : DEFAULT_WP_BUILDING.heizsystem);
+  // Haustyp (geteilte Wände) für den WP-Strom — 0 = freistehend (Default).
+  const [wpHaustyp, setWpHaustyp] = useState(hasShare ? paramInt(initialParams, "wht", 0, 0, HAUSTYP_WP.length - 1) : 0);
+
+  // Progressive Disclosure im Großverbraucher-Step: welche Detail-Fragen der
+  // Nutzer schon aktiv beantwortet hat (kein Preset vorausgewählt) + welche zum
+  // Nachbearbeiten wieder aufgeklappt ist. Bei geteilter URL gelten alle als
+  // gesetzt (die Werte kommen ja aus den Parametern → direkt eingeklappt zeigen).
+  const [gvAnswered, setGvAnswered] = useState<Set<string>>(() => hasShare ? new Set(GV_FIELDS) : new Set());
+  const [gvEditing, setGvEditing] = useState<string | null>(null);
+  const markGvAnswered = (key: string) => {
+    setGvAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
+    setGvEditing(null);
+  };
+  // Welche Frage einer Section ist offen: die zum Bearbeiten angeklickte, sonst
+  // die erste noch offene. null = alle beantwortet (alles eingeklappt).
+  const openGvField = (keys: readonly string[]): string | null => {
+    if (gvEditing && keys.includes(gvEditing)) return gvEditing;
+    return keys.find(k => !gvAnswered.has(k)) ?? null;
+  };
 
   // Editable overrides (null = use auto-calculated)
   const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 500 && n <= 200000 ? n : null; })() : null);
@@ -184,6 +222,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // damit der Ertrag stimmt, ohne dass die PLZ erneut eingegeben werden muss.
   useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); });
 
+  // Standort-Kühlgradstunden (für die Klima-Schnellschätzung + das Detail-Modal) —
+  // derselbe geteilte Hook wie im Klimaanlagen-Rechner. Fetch, sobald eine gültige
+  // PLZ vorliegt; ohne PLZ bleibt der deutsche Durchschnitt aus der Config.
+  const cooling = useCoolingDegree();
+  const coolingFetch = cooling.fetchForPlz;
+  useEffect(() => { if (/^\d{5}$/.test(plz)) coolingFetch(plz); }, [plz, coolingFetch]);
+
   // Dynamic market prices + feed-in rates
   const prices = usePrices();
   const feedInRates = useFeedInRates();
@@ -247,19 +292,32 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const kosten = Math.max(0, bruttoKosten - foerderung);
   // Grundverbrauch: direkt eingegeben oder aus Personenzahl geschätzt.
   const grundverbrauch = oVerbrauch ?? PERSONEN[personen].verbrauch;
-  // Effektiver Kühlstrom: übernommener Wert (Klimaanlagen-Rechner) hat Vorrang.
-  const klimaKwhEff = klima !== "nein" ? (klimaKwh ?? calcKlimaAnnual(klimaM2)) : 0;
+  // Schnellschätzung des Kühlstroms: dasselbe Wettermodell wie der Klimaanlagen-
+  // Rechner (calcAircon), mit Config-Defaults + gewählten Räumen + Standort-
+  // Kühlgradstunden. So driften Schnellschätzung und Detail-Rechnung nie.
+  const quickKlimaKwh = useMemo(
+    () => calcAircon({
+      deviceId: CFG.defaultDeviceId, rooms: klimaRooms, roomM2: CFG.defaultRoomM2,
+      exposure: CFG.defaultExposure, targetTemp: CFG.defaultTargetTemp, window: "day",
+      cdh: cooling.cdhSet.avg5, stromPrice: oStrom, pvActive: false,
+    }).electricityKwh,
+    [klimaRooms, cooling.cdhSet.avg5, oStrom],
+  );
+  // Effektiver Kühlstrom: übernommener Wert (Detail-Modal / Klimaanlagen-Rechner)
+  // hat Vorrang vor der Schnellschätzung. null wenn keine Klimaanlage.
+  const effKlimaKwh = klima !== "nein" ? (klimaKwh ?? quickKlimaKwh) : null;
+  const klimaKwhEff = effKlimaKwh ?? 0;
   // WP-Jahresstrom aus den Gebäudedaten — dieselbe Physik wie der Wärmepumpen-
   // Rechner (Heizwärmebedarf ÷ Arbeitszahl). null wenn keine WP.
   const wpKwh = useMemo(
     () => (wp !== "nein"
-      ? calcWpAnnualElectricity({ situation: "bestand", wohnflaeche: wpWohnflaeche, insulationIdx: wpInsulation, personen: PERSONEN[personen].count, heizsystem: wpHeizsystem, wpType: "lwwp" })
+      ? calcWpAnnualElectricity({ situation: "bestand", wohnflaeche: wpWohnflaeche, insulationIdx: wpInsulation, personen: PERSONEN[personen].count, heizsystem: wpHeizsystem, wpType: "lwwp", haustypFaktor: HAUSTYP_WP[wpHaustyp].faktor })
       : null),
-    [wp, wpWohnflaeche, wpInsulation, personen, wpHeizsystem],
+    [wp, wpWohnflaeche, wpInsulation, personen, wpHeizsystem, wpHaustyp],
   );
-  const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm, klima, klimaM2, klimaKwh, wpKwh);
+  const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm, klima, KLIMA_DEFAULT_M2, effKlimaKwh, wpKwh);
   const gesamtVerbrauch = grundverbrauch + extraVerbrauch;
-  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2, klimaKwh, wpKwh, kwp, ertragKwp: oErtrag, baseKwh: oVerbrauch });
+  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: oErtrag, baseKwh: oVerbrauch });
   const effEv = oEv !== null ? oEv : autoEv;
   // Volleinspeisung is incompatible with WP/E-Auto (they require self-consumption)
   const vollDisabled = wp !== "nein" || ea !== "nein";
@@ -282,12 +340,18 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       ...s,
       data: calc({
         kwp, kosten, strompreis: oStrom,
-        eigenverbrauch: effEinspeisungModus === "voll" ? 0 : Math.min(effEv + s.evDelta, 95),
+        // Szenario-EV zusätzlich gegen das physikalische Maximum kappen
+        // (Verbrauch/Ertrag): man kann nie mehr selbst verbrauchen, als man
+        // überhaupt verbraucht — sonst entsteht Phantom-Ersparnis in der
+        // optimistischen Kurve. jahresertrag=0 → Infinity → Cap greift nicht.
+        eigenverbrauch: effEinspeisungModus === "voll"
+          ? 0
+          : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
         einspeisung: effEinspeisungModus === "aus" ? 0 : effEinsp,
         stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
         batteryReplace: batteryReplaceCost(spKwh, prices),
       }),
-    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices]);
+    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag]);
 
   const real = scenarioData.find(s => s.id === "realistic")!;
   const be = real.data.be;
@@ -353,11 +417,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     p.set("p", String(personen));
     p.set("n", String(nutzung));
     p.set("wp", wp);
-    if (wp !== "nein") { p.set("wf", String(wpWohnflaeche)); p.set("wi", String(wpInsulation)); p.set("wh", wpHeizsystem); }
+    if (wp !== "nein") { p.set("wf", String(wpWohnflaeche)); p.set("wi", String(wpInsulation)); p.set("wh", wpHeizsystem); p.set("wht", String(wpHaustyp)); }
     p.set("ea", ea);
     if (ea !== "nein") p.set("km", String(eaKm));
     p.set("kl", klima);
-    if (klima !== "nein") p.set("km2", String(klimaM2));
+    if (klima !== "nein") p.set("klr", String(klimaRooms));
     if (klima !== "nein" && klimaKwh !== null) p.set("klwh", String(klimaKwh));
     if (anlage === 4) p.set("ck", String(customKwp));
     if (oKosten !== null) p.set("k", String(oKosten));
@@ -459,6 +523,15 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
         <Header
           onLoginClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }}
+        />
+
+        <KlimaDetailModal
+          open={klimaDetailOpen}
+          onClose={() => setKlimaDetailOpen(false)}
+          rooms={klimaRooms}
+          plz={plz}
+          stromPrice={oStrom}
+          onApply={kwh => { setKlimaKwh(kwh); setOEv(null); }}
         />
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
@@ -638,56 +711,133 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             {step === 3 && (
               <div>
-                <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
-                {wp !== "nein" && (
-                  <WpBuildingInputs
-                    wohnflaeche={wpWohnflaeche} insulationIdx={wpInsulation} heizsystem={wpHeizsystem} wpKwh={wpKwh ?? 0}
-                    onWohnflaeche={n => { setWpWohnflaeche(n); setOEv(null); }}
-                    onInsulation={i => { setWpInsulation(i); setOEv(null); }}
-                    onHeizsystem={h => { setWpHeizsystem(h); setOEv(null); }}
-                  />
-                )}
-                <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
-                {ea !== "nein" && (
-                  <div style={{ marginBottom: 18, marginTop: -10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Laufleistung ca.</div>
-                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                      {EA_KM_PRESETS.map(km => (
-                        <button key={km} onClick={() => { setEaKm(km); setOEv(null); }} style={{
-                          padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                          background: eaKm === km ? v('--color-accent-dim') : v('--color-bg-muted'),
-                          border: eaKm === km ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                          color: eaKm === km ? v('--color-accent') : v('--color-text-muted'),
-                        }}>{(km / 1000).toFixed(0)}k</button>
-                      ))}
-                      <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km" onCommit={n => { setEaKm(n); setOEv(null); }} />
-                    </div>
-                  </div>
-                )}
-                <TriToggle label="❄️ Klimaanlage" options={TRI} value={klima} onChange={v => { setKlima(v); setOEv(null); }} />
-                {klima !== "nein" && (
-                  <div style={{ marginBottom: 18, marginTop: -10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Wohnfläche ca.</div>
-                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                      {KLIMA_M2_PRESETS.map(m2 => (
-                        <button key={m2} onClick={() => setKlimaM2Manual(m2)} style={{
-                          padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                          background: klimaM2 === m2 ? v('--color-accent-dim') : v('--color-bg-muted'),
-                          border: klimaM2 === m2 ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                          color: klimaM2 === m2 ? v('--color-accent') : v('--color-text-muted'),
-                        }}>{m2} m²</button>
-                      ))}
-                      <PresetNumberInput value={klimaM2} presets={KLIMA_M2_PRESETS} min={20} max={500} unit="m²" onCommit={setKlimaM2Manual} />
-                    </div>
-                    <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6, lineHeight: 1.5 }}>
-                      Nur Kühlung im Sommer. Aus der Wohnfläche schätzen wir ~{calcKlimaAnnual(klimaM2).toLocaleString("de-DE")} kWh/Jahr.
-                    </div>
-                  </div>
-                )}
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 4, lineHeight: 1.5 }}>
-                  Alle drei erhöhen den Eigenverbrauch — Klimaanlagen besonders, weil sie genau dann
-                  kühlen, wenn die Sonne scheint.
+                {/* Warum diese Verbraucher zählen — Kontext als Infobox */}
+                <div style={{
+                  display: "flex", gap: 10, alignItems: "flex-start",
+                  background: v('--color-bg-accent'), border: `1px solid ${v('--color-border-accent')}`,
+                  borderRadius: v('--radius-md'), padding: "12px 14px", marginBottom: 18,
+                }}>
+                  <IconSun size={iconSizes.lg} color={v('--color-accent')} style={{ flexShrink: 0, marginTop: 1 }} />
+                  <span style={{ fontSize: 12.5, color: v('--color-text-secondary'), lineHeight: 1.55 }}>
+                    Alle drei erhöhen deinen Eigenverbrauch — Klimaanlagen besonders, weil sie genau dann
+                    kühlen, wenn die Sonne scheint. Die Wärmepumpe zieht ihren Strom vor allem im Winter,
+                    das E-Auto nur beim Laden tagsüber.
+                  </span>
                 </div>
+
+                {/* ── Wärmepumpe ── */}
+                <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
+                {wp !== "nein" && (() => {
+                  const openKey = openGvField(WP_FIELDS);
+                  return (
+                    <div style={{ marginBottom: 28, marginTop: -4 }}>
+                      <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
+                        Wie viel Heizstrom deine Wärmepumpe braucht, berechnen wir aus den Angaben zu deinem Gebäude.
+                      </div>
+                      <AccordionField label="Haustyp" open={openKey === "wp-haustyp"} answered={gvAnswered.has("wp-haustyp")} summary={HAUSTYP_WP[wpHaustyp].label} onEdit={() => setGvEditing("wp-haustyp")}>
+                        <ChoiceButtons options={HAUSTYP_WP} columns={2} selected={gvAnswered.has("wp-haustyp") ? wpHaustyp : null}
+                          onSelect={i => { setWpHaustyp(i); setOEv(null); markGvAnswered("wp-haustyp"); }} render={h => h.label} />
+                      </AccordionField>
+                      <AccordionField label="Wohnfläche" open={openKey === "wp-flaeche"} answered={gvAnswered.has("wp-flaeche")} summary={`${wpWohnflaeche} m²`} onEdit={() => setGvEditing("wp-flaeche")}>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                          {WP_M2_PRESETS.map(m2 => {
+                            const active = gvAnswered.has("wp-flaeche") && wpWohnflaeche === m2;
+                            return (
+                              <button key={m2} onClick={() => { setWpWohnflaeche(m2); setOEv(null); markGvAnswered("wp-flaeche"); }} style={{
+                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                                background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
+                                border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                                color: active ? v('--color-accent') : v('--color-text-muted'),
+                              }}>{m2} m²</button>
+                            );
+                          })}
+                          <PresetNumberInput value={wpWohnflaeche} presets={WP_M2_PRESETS} min={20} max={1000} unit="m²"
+                            onCommit={n => { setWpWohnflaeche(n); setOEv(null); markGvAnswered("wp-flaeche"); }}
+                            onFocus={() => setGvEditing("wp-flaeche")} onBlur={() => setGvEditing(null)} />
+                        </div>
+                      </AccordionField>
+                      <AccordionField label="Dämmzustand" open={openKey === "wp-daemmung"} answered={gvAnswered.has("wp-daemmung")} summary={INSULATION_BESTAND[wpInsulation].label} onEdit={() => setGvEditing("wp-daemmung")}>
+                        <ChoiceButtons options={INSULATION_BESTAND} columns={3} selected={gvAnswered.has("wp-daemmung") ? wpInsulation : null}
+                          onSelect={i => { setWpInsulation(i); setOEv(null); markGvAnswered("wp-daemmung"); }} render={ins => ins.label} />
+                      </AccordionField>
+                      <AccordionField label="Heizsystem" open={openKey === "wp-heizsystem"} answered={gvAnswered.has("wp-heizsystem")} summary={HEIZSYSTEM.find(h => h.id === wpHeizsystem)?.label} onEdit={() => setGvEditing("wp-heizsystem")}>
+                        <ChoiceButtons options={HEIZSYSTEM} columns={3} selected={gvAnswered.has("wp-heizsystem") ? HEIZSYSTEM.findIndex(h => h.id === wpHeizsystem) : null}
+                          onSelect={i => { setWpHeizsystem(HEIZSYSTEM[i].id as Heizsystem); setOEv(null); markGvAnswered("wp-heizsystem"); }}
+                          render={h => HEIZSYSTEM_SHORT[h.id]} />
+                      </AccordionField>
+                      {openKey === null && wpKwh != null && (
+                        <div className="sc-acc" style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.5 }}>
+                          Daraus ergeben sich rund <strong style={{ color: v('--color-text-primary') }}>{wpKwh.toLocaleString("de-DE")} kWh</strong> Heizstrom pro Jahr.
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+
+                {/* ── Elektroauto ── */}
+                <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
+                {ea !== "nein" && (() => {
+                  const openKey = openGvField(EA_FIELDS);
+                  return (
+                    <div style={{ marginBottom: 28, marginTop: -4 }}>
+                      <AccordionField label="Laufleistung ca." open={openKey === "ea-km"} answered={gvAnswered.has("ea-km")} summary={`${eaKm.toLocaleString("de-DE")} km`} onEdit={() => setGvEditing("ea-km")}>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                          {EA_KM_PRESETS.map(km => {
+                            const active = gvAnswered.has("ea-km") && eaKm === km;
+                            return (
+                              <button key={km} onClick={() => { setEaKm(km); setOEv(null); markGvAnswered("ea-km"); }} style={{
+                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                                background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
+                                border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                                color: active ? v('--color-accent') : v('--color-text-muted'),
+                              }}>{(km / 1000).toFixed(0)}k km</button>
+                            );
+                          })}
+                          <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km"
+                            onCommit={n => { setEaKm(n); setOEv(null); markGvAnswered("ea-km"); }}
+                            onFocus={() => setGvEditing("ea-km")} onBlur={() => setGvEditing(null)} />
+                        </div>
+                      </AccordionField>
+                    </div>
+                  );
+                })()}
+
+                {/* ── Klimaanlage ── */}
+                <TriToggle label="❄️ Klimaanlage" options={TRI} value={klima} onChange={v => { setKlima(v); setOEv(null); }} />
+                {klima !== "nein" && (() => {
+                  const openKey = openGvField(KLIMA_FIELDS);
+                  return (
+                    <div style={{ marginBottom: 28, marginTop: -4 }}>
+                      <AccordionField label="Gekühlte Räume" open={openKey === "klima-rooms"} answered={gvAnswered.has("klima-rooms")} summary={`${klimaRooms} ${klimaRooms === 1 ? "Raum" : "Räume"}`} onEdit={() => setGvEditing("klima-rooms")}>
+                        <ChoiceButtons options={[1, 2, 3, 4, 5]} selected={gvAnswered.has("klima-rooms") ? klimaRooms - 1 : null}
+                          onSelect={i => { setKlimaRoomsManual(i + 1); markGvAnswered("klima-rooms"); }} render={n => n} />
+                      </AccordionField>
+                      {openKey === null && (
+                        <div className="sc-acc" style={{
+                          background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`,
+                          borderRadius: v('--radius-sm'), padding: "10px 12px",
+                          display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap",
+                        }}>
+                          <div style={{ flex: "1 1 180px", minWidth: 0 }}>
+                            <div style={{ fontSize: 12.5, color: v('--color-text-secondary'), lineHeight: 1.5 }}>
+                              Kühlung im Sommer.{" "}
+                              {klimaKwh !== null
+                                ? <>Übernommen: <strong style={{ color: v('--color-text-primary') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh/Jahr</strong>.</>
+                                : <>Verbrauch ca. <strong style={{ color: v('--color-text-primary') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh/Jahr</strong>.</>}
+                            </div>
+                            <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 3, lineHeight: 1.4 }}>
+                              Angenommen: {KLIMA_DEVICE_LABEL}, ~{CFG.defaultRoomM2} m² je Raum.
+                            </div>
+                          </div>
+                          <button onClick={() => setKlimaDetailOpen(true)} style={{
+                            flexShrink: 0, padding: "8px 14px", borderRadius: v('--radius-sm'), fontSize: 12.5, fontWeight: 700, cursor: "pointer",
+                            background: v('--color-bg'), border: `1.5px solid ${v('--color-accent')}`, color: v('--color-accent'),
+                          }}>exakter berechnen</button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             )}
 
@@ -775,7 +925,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   </div>
                   {klimaKwh !== null && (
                     <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.4 }}>
-                      * Kühlstrom aus dem <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none" }}>Klimaanlagen-Rechner</Link> übernommen. Wohnfläche ändern für eine eigene Schätzung.
+                      * Kühlstrom aus den Details bzw. dem <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none" }}>Klimaanlagen-Rechner</Link> übernommen. Räume ändern für die Schnellschätzung.
                     </div>
                   )}
                 </div>
@@ -845,7 +995,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             <QuickSettings
               wp={wp} setWp={setWp} ea={ea} setEa={setEa} eaKm={eaKm} setEaKm={setEaKm}
-              klima={klima} setKlima={setKlima} klimaM2={klimaM2} setKlimaM2={setKlimaM2Manual}
+              klima={klima} setKlima={setKlima} klimaRooms={klimaRooms} setKlimaRooms={setKlimaRoomsManual}
+              onKlimaDetails={() => setKlimaDetailOpen(true)}
               speicher={speicher} setSpeicher={setSpeicher} spKwh={spKwh}
               oKosten={oKosten} setOKosten={setOKosten} setOEv={() => setOEv(null)}
             />
@@ -853,7 +1004,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             
             <ResultStats
               total={real.data.total} kosten={kosten}
-              wp={wp} ea={ea} eaKm={eaKm} effEv={effEv} autarkie={autarkie} jahresertrag={jahresertrag} baseKwh={grundverbrauch}
+              wp={wp} ea={ea} eaKm={eaKm} wpKwh={wpKwh ?? 0} effEv={effEv} autarkie={autarkie} jahresertrag={jahresertrag} baseKwh={grundverbrauch}
               oStrom={oStrom} fuelType={fuelType} setFuelType={setFuelType}
             />
 
@@ -961,6 +1112,17 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               <Link href="/methodik" onClick={() => trackEvent("pv_methodik")} style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
               <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
             </div>
+
+            {/* Hinweis auf die geplante EEG-Reform — nur relevant, wenn überhaupt
+                eingespeist wird (Teil/Voll). Datierter Sachstand, siehe FAQ. */}
+            {effEinspeisungModus !== "aus" && (
+              <div style={{
+                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "10px 14px", marginBottom: 16,
+                border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.6,
+              }}>
+                <strong style={{ fontWeight: 700 }}>Einspeisevergütung:</strong> für Inbetriebnahme bis Ende 2026 volle 20 Jahre garantiert (Bestandsschutz). Für Neuanlagen ab 2027 ist ein Wegfall geplant — beschlossen ist er noch nicht.
+              </div>
+            )}
 
             <ResultActions
               copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}

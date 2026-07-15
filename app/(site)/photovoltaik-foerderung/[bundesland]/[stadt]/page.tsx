@@ -5,6 +5,7 @@ import Header from "../../../../../components/Header";
 import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons";
 import { v, iconSizes } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
+import { jsonLdHtml } from "../../../../../lib/json-ld";
 import { cityBySlug, slugify, isCityPublished, publishedCities, type AtlasCity } from "../../../../../lib/atlas-cities";
 import { fundingAmount, fundingStandLabel, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
@@ -329,7 +330,7 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
             ))}
           </div>
         </div>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(faqJsonLd) }} />
 
         {/* ── Bestand (Trust-Signal, unten) ── */}
         {atlas && atlas.solar.total_count > 0 && (

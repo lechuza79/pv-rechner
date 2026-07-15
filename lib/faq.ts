@@ -92,5 +92,14 @@ export function pvRechnerFaq(): FaqEntry[] {
       links: [{ phrase: "die Förder-Übersicht", href: "/photovoltaik-foerderung" }],
       cta: { label: "Förderung vor Ort finden", href: "/photovoltaik-foerderung" },
     },
+    // Ausnahme zur "keine hardcoded Jahre"-Regel: das ist ein konkreter, datierter
+    // Sachstand zu einem geplanten Gesetz (kein rollierender "aktuelles Jahr"-Wert).
+    // Der EEG-Wächter aktualisiert diesen Text bei einer Rechtsänderung mit —
+    // bei Beschluss/Verwerfung Antwort + Stand-Datum anpassen.
+    {
+      q: "Fällt die Einspeisevergütung 2027 weg?",
+      a: "Geplant, aber noch nicht beschlossen: Ein Referentenentwurf des Bundeswirtschaftsministeriums sieht vor, die Einspeisevergütung für neue PV-Anlagen bis 25 kWp ab 2027 zu streichen (Stand: Juli 2026). Wichtig: Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung 20 Jahre garantiert (Bestandsschutz) — sie sind von der geplanten Änderung nicht betroffen. Ob und in welcher Form die Reform kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage.",
+      cta: { label: "Aktuelle Vergütung ansehen", href: "/datenstand" },
+    },
   ];
 }

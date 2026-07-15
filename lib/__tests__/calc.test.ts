@@ -230,6 +230,20 @@ describe("calc (25-year amortization)", () => {
     expect(flat.years[25].j).toBeLessThan(flat.years[1].j);
   });
 
+  it("pays the feed-in tariff for 20 years only, then stops (EEG runs out)", () => {
+    // eigenverbrauch 0 → feed-in is the only revenue, so year cashflow isolates it.
+    const r = calc({ ...baseCase, eigenverbrauch: 0, einspeisung: 8.0 });
+    expect(r.years[20].j).toBeGreaterThan(0); // year 20: tariff still paid
+    expect(r.years[21].j).toBe(0);            // year 21: out of EEG, no more feed-in
+    expect(r.years[25].j).toBe(0);
+  });
+
+  it("keeps self-consumption savings after year 20 (only feed-in stops)", () => {
+    // With real EV the plant still saves on grid electricity in years 21–25.
+    const r = calc({ ...baseCase, eigenverbrauch: 40 });
+    expect(r.years[21].j).toBeGreaterThan(0);
+  });
+
   it("is sensitive to eigenverbrauch (higher EV → higher total return)", () => {
     const lowEv = calc({ ...baseCase, eigenverbrauch: 20 }).total;
     const highEv = calc({ ...baseCase, eigenverbrauch: 60 }).total;

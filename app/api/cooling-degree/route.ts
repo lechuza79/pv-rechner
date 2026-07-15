@@ -3,6 +3,7 @@ import { supabase } from "../../../lib/supabase-server";
 import { PLZ_BL } from "../../../lib/plz-bundesland";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { cdhFromHourly, cdhFromDailyMinMax } from "../../../lib/aircon";
+import { rateLimit } from "../../../lib/rate-limit";
 
 // Cooling-degree-hours for a location are climatology — effectively stationary.
 // Cache hard on the CDN so repeat requests skip the function entirely.
@@ -19,6 +20,9 @@ interface CdhModes {
 }
 
 export async function GET(req: NextRequest) {
+  const limited = rateLimit(req, "cooling-degree");
+  if (limited) return limited;
+
   const lat = parseFloat(req.nextUrl.searchParams.get("lat") || "");
   const lon = parseFloat(req.nextUrl.searchParams.get("lon") || "");
   const plzPrefix = req.nextUrl.searchParams.get("plzPrefix") || "";

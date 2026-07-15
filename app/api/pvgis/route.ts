@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabase-server";
 import { PLZ_BL } from "../../../lib/plz-bundesland";
+import { rateLimit } from "../../../lib/rate-limit";
 
 // PVGIS values for a given rounded coordinate are effectively stationary.
 // Cache aggressively on the Vercel CDN so repeat requests skip the function entirely.
@@ -15,6 +16,9 @@ const FALLBACK: Record<string, number> = {
 };
 
 export async function GET(req: NextRequest) {
+  const limited = rateLimit(req, "pvgis");
+  if (limited) return limited;
+
   const lat = parseFloat(req.nextUrl.searchParams.get("lat") || "");
   const lon = parseFloat(req.nextUrl.searchParams.get("lon") || "");
   const plzPrefix = req.nextUrl.searchParams.get("plzPrefix") || "";

@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { FaqEntry, FaqLink } from "../lib/faq";
 import { IconChevronDown } from "./Icons";
 import { v, iconSizes } from "../lib/theme";
+import { jsonLdHtml } from "../lib/json-ld";
 
 // Visible FAQ accordion + matching FAQPage JSON-LD, both rendered from the same
 // items so structured data always mirrors on-page content. Server component —
@@ -89,7 +90,7 @@ export default function Faq({
       <style dangerouslySetInnerHTML={{ __html: faqCss }} />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
       />
       <h2 className="faq-heading">{title}</h2>
       <div>

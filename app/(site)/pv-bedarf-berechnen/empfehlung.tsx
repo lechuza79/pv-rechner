@@ -2,10 +2,10 @@
 import { useState, useCallback, useEffect } from "react";
 import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER, INSULATION_BESTAND } from "../../../lib/constants";
+import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, type Heizsystem } from "../../../lib/constants";
 import { recommend } from "../../../lib/recommend";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
-import WpBuildingInputs, { type Heizsystem } from "../../../components/WpBuildingInputs";
+import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import { trackEvent } from "../../../lib/analytics";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
 import OptionCard from "../../../components/OptionCard";
@@ -59,6 +59,13 @@ function parsePlzParam(sp: SP): string {
   return raw && /^\d{5}$/.test(raw) ? raw : "";
 }
 
+// Großverbraucher-Detailfragen in Akkordeon-Reihenfolge. Kein Haustyp — der
+// kommt hier schon aus der Dach-Frage; keine Klimaanlage — die hat in diesem
+// Flow keine Detailabfrage.
+const WP_FIELDS = ["wp-flaeche", "wp-daemmung", "wp-heizsystem"] as const;
+const EA_FIELDS = ["ea-km"] as const;
+const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS];
+
 export default function Empfehlung() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -91,6 +98,25 @@ export default function Empfehlung() {
   // Beim "Eingaben ändern" wird auf den letzten Eingabe-Step zurückgesetzt.
   const [wizardStep, setWizardStep] = useState(0);
   const step = isRecommendation ? 3 : wizardStep;
+
+  // Progressive Disclosure im Großverbraucher-Step: welche Detailfragen der
+  // Nutzer aktiv beantwortet hat (kein Preset vorausgewählt) + welche zum
+  // Nachbearbeiten aufgeklappt ist. Rein lokal — aus der URL lässt sich das
+  // NICHT ableiten: die Setter lassen Default-Werte weg, ein aktiv gewählter
+  // Default hinterlässt also keinen Parameter. Wer mit einem fertigen Ergebnis
+  // ankommt (view=ergebnis) hat alles gesetzt → direkt eingeklappt zeigen.
+  const [gvAnswered, setGvAnswered] = useState<Set<string>>(() =>
+    searchParams.get("view") === "ergebnis" ? new Set(GV_FIELDS) : new Set()
+  );
+  const [gvEditing, setGvEditing] = useState<string | null>(null);
+  const markGvAnswered = (key: string) => {
+    setGvAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
+    setGvEditing(null);
+  };
+  const openGvField = (keys: readonly string[]): string | null => {
+    if (gvEditing && keys.includes(gvEditing)) return gvEditing;
+    return keys.find(k => !gvAnswered.has(k)) ?? null;
+  };
 
   // Transient UI state — not worth persisting
   const [plzLoading, setPlzLoading] = useState(false);
@@ -384,33 +410,78 @@ export default function Empfehlung() {
             {step === 2 && (
               <div>
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={setWp} />
-                {wp !== "nein" ? (
-                  <WpBuildingInputs
-                    wohnflaeche={wpWohnflaeche} insulationIdx={wpInsulation} heizsystem={wpHeizsystem} wpKwh={wpKwh}
-                    onWohnflaeche={setWpWohnflaeche} onInsulation={setWpInsulation} onHeizsystem={setWpHeizsystem}
-                  />
-                ) : (
+                {wp !== "nein" ? (() => {
+                  const openKey = openGvField(WP_FIELDS);
+                  return (
+                    <div style={{ marginBottom: 28, marginTop: -4 }}>
+                      <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
+                        Wie viel Heizstrom deine Wärmepumpe braucht, berechnen wir aus den Angaben zu deinem Gebäude.
+                      </div>
+                      <AccordionField label="Wohnfläche" open={openKey === "wp-flaeche"} answered={gvAnswered.has("wp-flaeche")} summary={`${wpWohnflaeche} m²`} onEdit={() => setGvEditing("wp-flaeche")}>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                          {WP_M2_PRESETS.map(m2 => {
+                            const active = gvAnswered.has("wp-flaeche") && wpWohnflaeche === m2;
+                            return (
+                              <button key={m2} onClick={() => { setWpWohnflaeche(m2); markGvAnswered("wp-flaeche"); }} style={{
+                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                                background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
+                                border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                                color: active ? v('--color-accent') : v('--color-text-muted'),
+                              }}>{m2} m²</button>
+                            );
+                          })}
+                          <PresetNumberInput value={wpWohnflaeche} presets={WP_M2_PRESETS} min={20} max={1000} unit="m²"
+                            onCommit={n => { setWpWohnflaeche(n); markGvAnswered("wp-flaeche"); }}
+                            onFocus={() => setGvEditing("wp-flaeche")} onBlur={() => setGvEditing(null)} />
+                        </div>
+                      </AccordionField>
+                      <AccordionField label="Dämmzustand" open={openKey === "wp-daemmung"} answered={gvAnswered.has("wp-daemmung")} summary={INSULATION_BESTAND[wpInsulation].label} onEdit={() => setGvEditing("wp-daemmung")}>
+                        <ChoiceButtons options={INSULATION_BESTAND} columns={3} selected={gvAnswered.has("wp-daemmung") ? wpInsulation : null}
+                          onSelect={i => { setWpInsulation(i); markGvAnswered("wp-daemmung"); }} render={ins => ins.label} />
+                      </AccordionField>
+                      <AccordionField label="Heizsystem" open={openKey === "wp-heizsystem"} answered={gvAnswered.has("wp-heizsystem")} summary={HEIZSYSTEM.find(h => h.id === wpHeizsystem)?.label} onEdit={() => setGvEditing("wp-heizsystem")}>
+                        <ChoiceButtons options={HEIZSYSTEM} columns={3} selected={gvAnswered.has("wp-heizsystem") ? HEIZSYSTEM.findIndex(h => h.id === wpHeizsystem) : null}
+                          onSelect={i => { setWpHeizsystem(HEIZSYSTEM[i].id as Heizsystem); markGvAnswered("wp-heizsystem"); }}
+                          render={h => HEIZSYSTEM_SHORT[h.id]} />
+                      </AccordionField>
+                      {openKey === null && (
+                        <div className="sc-acc" style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.5 }}>
+                          Daraus ergeben sich rund <strong style={{ color: v('--color-text-primary') }}>{wpKwh.toLocaleString("de-DE")} kWh</strong> Heizstrom pro Jahr.
+                        </div>
+                      )}
+                    </div>
+                  );
+                })() : (
                   <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 16, lineHeight: 1.5, paddingLeft: 2 }}>
                     Eine Wärmepumpe erhöht deinen Stromverbrauch deutlich — eine größere PV-Anlage lohnt sich dann besonders.
                   </div>
                 )}
                 <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={setEa} />
-                {ea !== "nein" && (
-                  <div style={{ marginBottom: 18, marginTop: -10 }}>
-                    <div style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), marginBottom: 6 }}>Laufleistung ca.</div>
-                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                      {EA_KM_PRESETS.map(km => (
-                        <button key={km} onClick={() => setEaKm(km)} style={{
-                          padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                          background: eaKm === km ? v('--color-accent-dim') : v('--color-bg-muted'),
-                          border: eaKm === km ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                          color: eaKm === km ? v('--color-accent') : v('--color-text-muted'),
-                        }}>{(km / 1000).toFixed(0)}k</button>
-                      ))}
-                      <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km" onCommit={setEaKm} />
+                {ea !== "nein" && (() => {
+                  const openKey = openGvField(EA_FIELDS);
+                  return (
+                    <div style={{ marginBottom: 28, marginTop: -4 }}>
+                      <AccordionField label="Laufleistung ca." open={openKey === "ea-km"} answered={gvAnswered.has("ea-km")} summary={`${eaKm.toLocaleString("de-DE")} km`} onEdit={() => setGvEditing("ea-km")}>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                          {EA_KM_PRESETS.map(km => {
+                            const active = gvAnswered.has("ea-km") && eaKm === km;
+                            return (
+                              <button key={km} onClick={() => { setEaKm(km); markGvAnswered("ea-km"); }} style={{
+                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                                background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
+                                border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                                color: active ? v('--color-accent') : v('--color-text-muted'),
+                              }}>{(km / 1000).toFixed(0)}k km</button>
+                            );
+                          })}
+                          <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km"
+                            onCommit={n => { setEaKm(n); markGvAnswered("ea-km"); }}
+                            onFocus={() => setGvEditing("ea-km")} onBlur={() => setGvEditing(null)} />
+                        </div>
+                      </AccordionField>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
                 {ea === "nein" && (
                   <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: -10, marginBottom: 8, lineHeight: 1.5, paddingLeft: 2 }}>
                     Ein E-Auto erhöht deinen Verbrauch um ~2.700 kWh/Jahr (bei 15.000 km) — gut für die PV-Rentabilität.

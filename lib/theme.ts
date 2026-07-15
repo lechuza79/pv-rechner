@@ -234,14 +234,17 @@ export const globalStyles = `
   input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
   input[type=number]{-moz-appearance:textfield}
   @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-  /* Shared flyout reveal — dropdowns/popovers anchored under their trigger. */
-  @keyframes sc-flyout{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
-  .sc-flyout{animation:sc-flyout .18s ease-out}
+  /* Reveal — one motion, two semantic classes: accordions open with it, and so
+     do flyouts/popovers anchored under their trigger. */
+  @keyframes sc-reveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+  .sc-flyout{animation:sc-reveal .18s ease-out}
   /* Content swap — replay by changing the element's key, so a value changing
-     underneath the reader fades in instead of snapping. */
-  @keyframes sc-fade{from{opacity:0}to{opacity:1}}
-  .sc-fade{animation:sc-fade .28s ease-out}
-  @media (prefers-reduced-motion:reduce){.sc-flyout,.sc-fade{animation:none}}
+     underneath the reader fades in instead of snapping. Deliberately NOT named
+     sc-fade: the embed layout defines its own sc-fade with different motion,
+     and one name for two animations is a trap. */
+  @keyframes sc-swap{from{opacity:0}to{opacity:1}}
+  .sc-swap{animation:sc-swap .28s ease-out}
+  @media (prefers-reduced-motion:reduce){.sc-flyout,.sc-swap{animation:none}}
   @keyframes sc-dots{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
   @keyframes sc-map-pulse{0%,100%{opacity:.45}50%{opacity:1}}
   @keyframes sc-live-ring{0%{transform:translate(-50%,-50%) scale(1);opacity:.7}100%{transform:translate(-50%,-50%) scale(3.5);opacity:0}}
@@ -250,6 +253,11 @@ export const globalStyles = `
   @keyframes sc-plz-pulse{0%{box-shadow:0 0 0 0 rgba(19,101,234,.4)}70%{box-shadow:0 0 0 6px rgba(19,101,234,0)}100%{box-shadow:0 0 0 0 rgba(19,101,234,0)}}
   .sc-plz-pulse{animation:sc-plz-pulse 2s ease-out infinite}
   .fu{animation:fu .3s ease-out}
+  /* Akkordeon-Felder (Großverbraucher): Übergang zwischen Auswahl- und
+     Fertig-Zustand in beide Richtungen. React tauscht dabei das Element
+     (div ↔ button), die Animation läuft also bei jedem Wechsel neu an. */
+  .sc-acc{animation:sc-reveal .22s ease-out}
+  @media (prefers-reduced-motion:reduce){.sc-acc{animation:none}}
   .sc-live-dot{position:relative}
   .sc-live-dot::before,.sc-live-dot::after{content:'';position:absolute;top:50%;left:50%;width:100%;height:100%;border-radius:50%;background:var(--color-highlight);pointer-events:none;animation:sc-live-ring 1.8s ease-out infinite}
   .sc-live-dot::after{animation-delay:.9s}

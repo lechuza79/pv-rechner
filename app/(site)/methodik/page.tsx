@@ -212,7 +212,9 @@ export default async function MethodikPage() {
         <h2 style={S.h2}>Wärmepumpe, E-Auto & Klimaanlage</h2>
         <p style={S.p}>
           Alle drei erhöhen deinen Stromverbrauch — und damit auch die Menge Solarstrom,
-          die du selbst nutzen kannst. Eine Wärmepumpe verbraucht ca. 3.500 kWh/Jahr,
+          die du selbst nutzen kannst. Den Wärmepumpen-Strombedarf berechnen wir
+          individuell aus deinem Gebäude (Wohnfläche, Dämmung, Heizsystem, Haustyp) —
+          bei einem Standard-Einfamilienhaus sind das grob 6.000–8.000 kWh/Jahr;
           ein E-Auto je nach Fahrleistung 1.800–3.600 kWh/Jahr.
         </p>
         <p style={S.p}>
@@ -278,8 +280,25 @@ export default async function MethodikPage() {
         </p>
         <p style={S.p}>
           Wie viel <strong>Strom</strong> das kostet, hängt am Gerätetyp: Ein Monoblock mit Abluftschlauch zieht
-          für dieselbe Kühlung rund das Dreifache einer fest installierten Split-Anlage (Effizienz SEER ~2,5 vs.
-          ~6).
+          für dieselbe Kühlung rund das Vierfache einer fest installierten Split-Anlage.
+        </p>
+        <p style={S.p}>
+          Dahinter steckt eine bewusste Entscheidung, denn die Zahlen auf den <strong>Typenschildern</strong> darf
+          man nicht direkt vergleichen. Bei Split-Geräten steht dort ein Saisonwert, der Teillast und echte
+          Außentemperaturen berücksichtigt. Bei Monoblöcken steht ein Volllast-Wert, gemessen in einer Prüfkammer
+          ohne Außenwelt — dort kann keine warme Luft nachströmen, während genau das im Wohnzimmer passiert, sobald
+          der Schlauch die Raumluft nach draußen bläst. Die EU-Norm schließt Monoblöcke von der Saison-Messung
+          ausdrücklich aus, sie können diese Zahl also gar nicht haben. Ein „A" auf dem Monoblock entspricht
+          rechnerisch einem „F" beim Split — einer Klasse, die seit 2013 nicht mehr verkauft werden darf.
+        </p>
+        <p style={S.p}>
+          Wir rechnen deshalb nicht mit Typenschild-Werten, sondern stellen alle drei Gerätetypen auf dieselbe
+          Grundlage: die Effizienz im echten Betrieb über eine ganze Saison. Dafür ziehen wir von jedem
+          Typenschild-Wert denselben Realitäts-Abschlag von 15 % ab. Beim Monoblock kommt der Verlust durch die
+          nachströmende Warmluft hinzu — kein Sicherheitsaufschlag, sondern das Nachtragen eines Effekts, den sein
+          Messverfahren strukturell nicht enthalten kann. Ergebnis: Monoblock 1,5, mobile Split-Anlage 5,2, fest
+          installierte Split-Anlage 5,5. Alle Werte samt Typenschild-Angabe stehen auf der{" "}
+          <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Datenstand-Seite</Link>.
         </p>
         <p style={S.p}>
           Für den Standort kannst du zwischen drei <strong>Klimadaten-Modi</strong> umschalten: dem{" "}
@@ -308,11 +327,11 @@ export default async function MethodikPage() {
         </p>
         <div style={S.card}>
           <span style={S.label}>Berechnung</span>
-          <span style={S.accent}>Wärmebedarf:</span> 3.500 kWh Strom × COP 3,5 = 12.250 kWh Wärme/Jahr
+          <span style={S.accent}>Wärmebedarf (Beispiel Standard-Haus):</span> ~7.000 kWh Strom × COP 3,5 = 24.500 kWh Wärme/Jahr
           <br />
-          <span style={S.accent}>Gaskessel:</span> 12.250 kWh ÷ 0,90 Wirkungsgrad = 13.611 kWh Gas
+          <span style={S.accent}>Gaskessel:</span> 24.500 kWh ÷ 0,90 Wirkungsgrad = 27.222 kWh Gas
           <br />
-          <span style={S.accent}>Ölkessel:</span> 12.250 kWh ÷ 0,85 Wirkungsgrad = 14.412 kWh Öl
+          <span style={S.accent}>Ölkessel:</span> 24.500 kWh ÷ 0,85 Wirkungsgrad = 28.824 kWh Öl
           <br />
           <br />
           <span style={S.label}>Preise</span>

@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getChoroplethData, type Energietraeger, type SegmentFilter } from "../../../../lib/mastr-data";
+import { rateLimit } from "../../../../lib/rate-limit";
 
 const VALID_TYPES: Energietraeger[] = ["solar", "wind", "biomasse", "wasser", "speicher", "gesamt"];
 const VALID_SEGMENTS: SegmentFilter[] = ["alle", "privat_dach", "gewerbe_dach", "freiflaeche"];
 
 export async function GET(req: NextRequest) {
+  const limited = rateLimit(req, "mastr-choropleth");
+  if (limited) return limited;
+
   const parent = req.nextUrl.searchParams.get("parent") ?? "de";
   const typeParam = req.nextUrl.searchParams.get("type") ?? "solar";
   const segmentParam = req.nextUrl.searchParams.get("segment") ?? "alle";
@@ -31,6 +35,7 @@ export async function GET(req: NextRequest) {
       },
     );
   } catch (err) {
-    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
+    console.error("[mastr/choropleth] failed:", (err as Error).message);
+    return NextResponse.json({ error: "Daten konnten nicht geladen werden" }, { status: 500 });
   }
 }

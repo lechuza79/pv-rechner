@@ -366,11 +366,11 @@ async function resolveWpPrice(lastBase: number | null): Promise<WpResolution> {
 
 // ─── Plausibility Check ───────────────────────────────────────────────────────
 
-async function getLastPrices(): Promise<{ pvPriceSmall: number; pvPriceLarge: number; batteryPerKwh: number; electricityPrice: number | null; electricityIncrease: number | null; wpLwwpBase: number | null } | null> {
+async function getLastPrices(): Promise<{ pvPriceSmall: number; pvPriceLarge: number; batteryPerKwh: number; electricityPrice: number | null; electricityIncrease: number | null; wpLwwpBase: number | null; electricityHealth: string | null } | null> {
   if (!supabase) return null;
   const { data } = await supabase
     .from("market_prices")
-    .select("pv_price_small, pv_price_large, battery_per_kwh, electricity_price, electricity_increase, wp_lwwp_base")
+    .select("pv_price_small, pv_price_large, battery_per_kwh, electricity_price, electricity_increase, wp_lwwp_base, notes")
     .neq("source", "SCRAPE_ERROR")
     .gt("pv_price_small", 0)
     .order("valid_from", { ascending: false })
@@ -378,6 +378,10 @@ async function getLastPrices(): Promise<{ pvPriceSmall: number; pvPriceLarge: nu
     .single();
 
   if (!data) return null;
+  // Electricity scrape health of the previous good row, parsed back from the
+  // machine-greppable "Strom[<status>]" token in notes (null for old rows that
+  // predate this marker → treated as "not a prior miss").
+  const elecMatch = typeof data.notes === "string" ? data.notes.match(/Strom\[(\w+)/) : null;
   return {
     pvPriceSmall: Number(data.pv_price_small),
     pvPriceLarge: Number(data.pv_price_large),
@@ -385,6 +389,7 @@ async function getLastPrices(): Promise<{ pvPriceSmall: number; pvPriceLarge: nu
     electricityPrice: data.electricity_price != null ? Number(data.electricity_price) : null,
     electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : null,
     wpLwwpBase: data.wp_lwwp_base != null ? Number(data.wp_lwwp_base) : null,
+    electricityHealth: elecMatch ? elecMatch[1].toLowerCase() : null,
   };
 }
 
@@ -593,10 +598,19 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Plausibility check failed", issues, derived, lastPrices }, { status: 422 });
     }
 
-    // 4b. Electricity price (separate source, optional — if it fails we keep last known)
+    // 4b. Electricity price (separate single source, non-fatal — a failure keeps
+    // the last known value so it NEVER blocks the PV/battery update). Same
+    // graceful-degradation contract as battery/WP: but because a silently frozen
+    // electricity price would otherwise hide behind a green health check (the
+    // watcher only wakes on non-"ok" HEALTH), a scrape that misses for TWO
+    // consecutive runs flips HEALTH to DEGRADED. A single miss is tolerated as a
+    // transient blip (source briefly down / meta reworded once). The run-over-run
+    // streak is tracked via the "Strom[<status>]" token written into notes below
+    // and read back by getLastPrices() on the next run.
     const electricity = await scrapeElectricityPrice();
     let electricityPrice = lastPrices?.electricityPrice ?? null;
     let electricityNote = "kept last known value (no fresh scrape)";
+    let electricityFresh = false;
     if (electricity) {
       const newPrice = electricity.price;
       const inBounds = newPrice >= BOUNDS.electricityMin && newPrice <= BOUNDS.electricityMax;
@@ -606,9 +620,28 @@ export async function GET(req: Request) {
       if (inBounds && reasonableChange) {
         electricityPrice = newPrice;
         electricityNote = electricity.note;
+        electricityFresh = true;
       } else {
         electricityNote = `rejected (bounds: ${inBounds}, deviation: ${(deviation * 100).toFixed(1)}%); kept last value`;
       }
+    }
+
+    // Consecutive-miss tracking → only the SECOND straight miss flips HEALTH.
+    const prevElecFailed = lastPrices?.electricityHealth != null && lastPrices.electricityHealth !== "ok";
+    let electricityStatus: string;   // first word is machine-greppable: ok / MISS / STALE
+    let electricityHealthy: boolean;
+    if (electricityFresh) {
+      electricityStatus = "ok";
+      electricityHealthy = true;
+    } else if (prevElecFailed) {
+      electricityStatus = "STALE (2+ Läufe ohne frischen Strompreis — Quelle/Muster prüfen)";
+      electricityHealthy = false;    // flips HEALTH so the watcher springs
+    } else {
+      electricityStatus = "MISS (1 Lauf ohne frischen Strompreis, letzter Wert gehalten)";
+      electricityHealthy = true;     // single blip tolerated, HEALTH stays ok
+    }
+    if (!electricityHealthy) {
+      await notifyAdmin("Electricity price stale", `${electricityStatus}: ${electricityNote}`);
     }
 
     // 4c. Wärmepumpen-Grundpreis (Luft/Wasser) — non-fatal, keeps last/config on failure.
@@ -631,9 +664,10 @@ export async function GET(req: Request) {
       valid_from: new Date().toISOString().split("T")[0],
       source: `taptaphome.com (vormals solaranlagen-portal.com) + energie-experten.org + strom-report.de (auto)`,
       // Health string is read by the self-healing watcher agent. "HEALTH=ok/DEGRADED/FAILED"
-      // is a stable, machine-greppable prefix — keep it first. A WP degradation
-      // flips HEALTH too so the monthly report/heartbeat surfaces it.
-      notes: `HEALTH=${battery.healthy && wp.healthy ? "ok" : "DEGRADED"} · Battery[${battery.status}] → ${derived.batteryBase} € + ${derived.batteryPerKwh} €/kWh · PV: ${scraped.pvBySize.length} entries → ${derived.pvPriceSmall}/${derived.pvPriceLarge} · WP[${wp.status}] → ${wp.base} € + ${wp.perKw} €/kW · Strom: ${electricityNote}`,
+      // is a stable, machine-greppable prefix — keep it first. A WP OR electricity
+      // degradation flips HEALTH too so the monthly report/heartbeat surfaces it.
+      // "Strom[<status>]" is the greppable electricity marker the next run reads back.
+      notes: `HEALTH=${battery.healthy && wp.healthy && electricityHealthy ? "ok" : "DEGRADED"} · Battery[${battery.status}] → ${derived.batteryBase} € + ${derived.batteryPerKwh} €/kWh · PV: ${scraped.pvBySize.length} entries → ${derived.pvPriceSmall}/${derived.pvPriceLarge} · WP[${wp.status}] → ${wp.base} € + ${wp.perKw} €/kW · Strom[${electricityStatus}]: ${electricityNote}`,
       updated_by: "cron",
     });
 
@@ -646,10 +680,11 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       success: true,
-      health: battery.healthy && wp.healthy ? "ok" : "degraded",
+      health: battery.healthy && wp.healthy && electricityHealthy ? "ok" : "degraded",
       prices: { ...derived, electricityPrice, wpLwwpBase: wp.base, wpLwwpPerKw: wp.perKw },
       battery: { status: battery.status, samples: battery.samples },
       wp: { status: wp.status, ranges: wp.ranges },
+      electricity: { status: electricityStatus, note: electricityNote, healthy: electricityHealthy },
       raw: { pvEntries: scraped.pvBySize.length, electricity: electricityNote },
     });
   } catch (err) {

@@ -111,7 +111,7 @@ export default function SunControl({
       >
         <Donut pct={data.powerPct} />
         {/* Keyed so switching between Germany and a location fades. */}
-        <span key={place} className="sc-fade" style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+        <span key={place} className="sc-swap" style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
           <span style={{ fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
             {data.powerPct}%
           </span>
@@ -148,7 +148,7 @@ export default function SunControl({
           }}
         >
           {/* Keyed: entering a postcode swaps these lines — fade, don't snap. */}
-          <div key={place} className="sc-fade">
+          <div key={place} className="sc-swap">
             <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
               Sonnenleistung {plz ? `in ${plz}` : "in Deutschland"}: {data.powerPct} %
             </div>
@@ -274,7 +274,7 @@ export default function SunControl({
             })}
           </div>
 
-          <p key={pref} className="sc-fade" style={{ fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted"), margin: "8px 0 0" }}>
+          <p key={pref} className="sc-swap" style={{ fontSize: 12, lineHeight: 1.5, color: v("--color-text-muted"), margin: "8px 0 0" }}>
             {PREF_HINT[pref]}
           </p>
         </div>

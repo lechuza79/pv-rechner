@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND } from "../../../lib/constants";
+import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP } from "../../../lib/constants";
 import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { calcWpAnnualElectricity } from "../../../lib/heatpump";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
@@ -224,6 +224,7 @@ export async function GET(req: NextRequest) {
         personen: PERSONEN[personenIdx].count,
         heizsystem: paramStr(params, "wh", "hk_neu", ["fbh", "hk_neu", "hk_alt"]) as "fbh" | "hk_neu" | "hk_alt",
         wpType: "lwwp",
+        haustypFaktor: HAUSTYP_WP[paramInt(params, "wht", 0, 0, HAUSTYP_WP.length - 1)].faktor,
       })
     : null;
 

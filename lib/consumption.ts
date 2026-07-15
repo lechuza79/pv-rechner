@@ -112,7 +112,7 @@ const NIGHT_SHAPE = [
 // BDEW seasonal factor for base household consumption
 const BASE_MONTHLY = [1.17, 1.05, 1.08, 0.97, 0.93, 0.84, 0.87, 0.87, 0.91, 1.00, 1.13, 1.17];
 
-const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+export const DAYS_IN_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 // Normalize an hourly shape so it sums to exactly 1.0. Applied by construction
 // so hand-tuned weights can never silently drift the daily energy off (a tiny

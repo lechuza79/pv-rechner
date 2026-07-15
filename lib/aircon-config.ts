@@ -6,21 +6,118 @@
 //
 // Kühlung ist der Kern. Split-Geräte können zusätzlich HEIZEN (Luft-Luft-
 // Wärmepumpe, Arbeitszahl SCOP) — das modellieren wir als Übergangszeit-Heizung
-// (heatSpecKwhPerM2 + device.scop): ehrliche Teilheizung, die Gas spart. Für die
-// kalte Kernzeit und das ganze Haus bleibt der Wärmepumpen-Rechner die bessere
-// Adresse. Dieselbe Split-Heiz-Funktion (calcAirconHeating) nutzt auch der
-// Wärmepumpen-Rechner für seinen „Split als Teil-Ergänzung"-Block.
+// (heatStandards × heatTransitionShare + device.scop): ehrliche Teilheizung, die
+// Gas spart. Für die kalte Kernzeit und das ganze Haus bleibt der
+// Wärmepumpen-Rechner die bessere Adresse. Split-Heizen gibt es NUR hier
+// (calcAirconHeating hat genau einen Aufrufer: den Klimaanlagen-Rechner).
+
+import { INSULATION_BESTAND, INSULATION_NEUBAU } from "./constants";
 
 export type AcDeviceId = "monoblock" | "portasplit" | "split";
+
+// ─── Effizienz-Systematik (SEER) — BLOCKER beim Pflegen ──────────────────────
+// Der Gerätevergleich ist der Kern dieser Seite. Er ist nur ehrlich, wenn alle
+// drei Typen auf DERSELBEN Grundlage stehen. Das ist nicht trivial, weil die
+// Typenschilder es NICHT sind:
+//
+//   • Split + mobile Split (= "room air conditioner" nach VO (EU) 626/2011)
+//     tragen einen SEER: saisonal, mit Teillast, gemessen nach EN 14825 bei
+//     realer Temperaturdifferenz (27 °C innen / 35 °C außen).
+//   • Monoblock/Einkanal ist von EN 14825 ausdrücklich AUSGESCHLOSSEN und kann
+//     regulatorisch gar keinen SEER haben. Sein Label trägt einen Volllast-EER
+//     nach EN 14511 — gemessen in EINER 35-°C-Kammer, in der es kein Außen und
+//     damit keinen Pfad für nachströmende Warmluft gibt (626/2011 Anhang VII:
+//     der Kondensator wird "not supplied with outdoor air, but indoor air").
+//
+// Die Zahlen sind deshalb nicht nur unterschiedlich streng, sie liegen auf zwei
+// Skalen. Topten bringt es auf den Punkt: Ein Einkanalgerät der Klasse A
+// (EER 2,6) entspricht bei einem Split der Klasse F (SEER 2,6) — die ist seit
+// 2013 verboten. "Alle am Typenschild" wäre also gerade KEINE einheitliche
+// Grundlage, sondern der Vergleich zweier verschiedener Messverfahren.
+//
+// SYSTEMATIK: `seer` ist kein Typenschild-Wert, sondern die EFFEKTIVE
+// Jahres-Effizienz (Kühlenergie ab Raum / Strom über die Saison) — genau die
+// Größe, die das Modell braucht (electricityKwh = coolingDemandKwh / seer).
+// Sie wird für JEDEN Typ nach derselben Formel abgeleitet:
+//
+//   seer = labelValue × AC_REAL_FACTOR × structuralFactor
+//
+//   labelValue        markttypischer Labelwert (nicht Bestwert, nicht Minimum)
+//   AC_REAL_FACTOR    EINHEITLICH für alle Typen: Abschlag Labor → Realbetrieb
+//   structuralFactor  trägt NUR nach, was die jeweilige Prüfnorm strukturell
+//                     ausklammert. SEER-Skala = 1,0 (EN 14825 bildet Teillast
+//                     und reale ΔT bereits ab). Kein Ermessens-Abschlag!
+//
+// Der Monoblock ist damit der einzige Typ mit structuralFactor < 1 — und das
+// ist keine Ungleichbehandlung, sondern die Korrektur eines physikalischen
+// Effekts, den sein Prüfverfahren per Definition nicht enthalten kann.
+// Ein Typ darf NUR dann einen structuralFactor < 1 bekommen, wenn benannt ist,
+// welcher Effekt außerhalb seiner Prüfnorm-Grenze liegt. "Wert wirkt zu
+// optimistisch" ist kein Grund — siehe scripts/klimaanlage-verify.md.
+// Erzwungen von lib/__tests__/aircon.test.ts ("Effizienz-Systematik").
+
+/** Abschlag Labor → Realbetrieb, EINHEITLICH für alle Gerätetypen.
+ *  Peer-reviewed (Energy and Buildings 2025, akkreditierte kalorimetrische
+ *  Messung, 4 Split-Inverter): Abweichung zwischen genormtem SEER und realen
+ *  Endnutzer-Einstellungen "bis zu 50 %". "Bis zu" ist der Worst Case; wir
+ *  setzen mit 15 % bewusst das konservative Ende an, weil ein Rechner den
+ *  typischen Fall treffen soll, nicht den Extremfall. */
+export const AC_REAL_FACTOR = 0.85;
+
+/** Effektive Jahres-Effizienz aus Labelwert + struktureller Korrektur.
+ *  Einziger Weg, einen seer-Wert zu setzen — Handwerte driften. */
+export function effectiveSeer(labelValue: number, structuralFactor: number): number {
+  return Math.round(labelValue * AC_REAL_FACTOR * structuralFactor * 10) / 10;
+}
+
+// Gebäudestandard für das HEIZEN mit Split. Beim Kühlen fragen wir bewusst
+// Sonne/Lage statt Dämmung (solare Gewinne dominieren, siehe exposureOptions) —
+// beim Heizen ist die Dämmung dagegen der dominante Hebel, ein Wert für alle wäre
+// grob falsch (Altbau ~3× Neubau).
+//
+// GETEILTE RECHEN-BASIS: Der Jahres-Heizwärmebedarf je m² kommt aus
+// INSULATION_BESTAND / INSULATION_NEUBAU (lib/constants.ts) — dieselbe Tabelle
+// (dena Gebäudereport, DIN V 18599), auf der der Wärmepumpen-Rechner rechnet.
+// Hier NICHT nachbauen: sonst driften Klima- und WP-Rechner auseinander.
+// Die specKwh sind kanonisch; label/sub sind UI-Text dieses Rechners.
+export interface AcHeatStandard {
+  id: string;
+  label: string;
+  sub: string;
+  specKwh: number;   // kWh/m²·a Jahres-Heizwärmebedarf (kanonisch aus constants.ts)
+}
+
+export const AC_HEAT_STANDARDS: AcHeatStandard[] = [
+  { id: "unsaniert",   label: INSULATION_BESTAND[0].label, sub: INSULATION_BESTAND[0].sub, specKwh: INSULATION_BESTAND[0].specKwh },
+  { id: "teilsaniert", label: INSULATION_BESTAND[1].label, sub: INSULATION_BESTAND[1].sub, specKwh: INSULATION_BESTAND[1].specKwh },
+  { id: "saniert",     label: INSULATION_BESTAND[2].label, sub: INSULATION_BESTAND[2].sub, specKwh: INSULATION_BESTAND[2].specKwh },
+  // Neubau: gesetzlicher Mindeststandard als Bucket. Wer KfW 55/40 hat, liegt
+  // darunter und korrigiert die Heizwärme direkt im Ergebnis (InlineEdit).
+  { id: "neubau",      label: "Neubau (EnEV 2014)", sub: INSULATION_NEUBAU[0].sub, specKwh: INSULATION_NEUBAU[0].specKwh },
+];
 
 export interface AcDevice {
   id: AcDeviceId;
   label: string;
   what: string;            // plain-language "what it is" (shown in the UI)
-  seer: number;            // Seasonal Energy Efficiency Ratio (cooling). Strom = Kühlenergie / SEER
+  // ─ Typenschild (Transparenz + Prüfbarkeit; geht NICHT in die Rechnung) ─
+  labelMetric: "SEER" | "EER"; // Skala des Labels: Einkanal → EER, sonst SEER
+  labelValue: number;      // markttypischer Labelwert auf dieser Skala
+  labelClass: string;      // EU-Effizienzklasse zu labelValue (626/2011 Anh. II)
+  /** Trägt nach, was die Prüfnorm strukturell ausklammert. 1,0 = nichts. */
+  structuralFactor: number;
+  seer: number;            // EFFEKTIVE Jahres-Effizienz = effectiveSeer(...). Strom = Kühlenergie / seer
   // Heizen: Split-Geräte sind reversibel (Luft-Luft-Wärmepumpe). scop = Seasonal
   // Coefficient of Performance (Heizen); Heizstrom = Heizwärme / SCOP. canHeat=false
   // für Monoblocks — die heizen real kaum sinnvoll.
+  // OFFEN (07/2026): `scop` ist noch ein TYPENSCHILD-Wert, `seer` dagegen bereits
+  // die effektive Jahres-Effizienz. Innerhalb eines Geräts ist Kühlen damit
+  // realistisch und Heizen optimistisch gerechnet — dieselbe Asymmetrie, die die
+  // SEER-Systematik gerade beseitigt hat, nur auf der anderen Achse. Die Studie
+  // hinter AC_REAL_FACTOR misst SEER *und* SCOP, der Faktor wäre also belegt.
+  // Bewusst NICHT mitgezogen: `scop` hängt am Wärmepumpen-Rechner (Split als
+  // Teil-Ergänzung, calcAirconHeating) — das ist eigener Scope mit eigener
+  // Abnahme. Siehe scripts/klimaanlage-verify.md → "Offener Punkt: SCOP".
   canHeat: boolean;
   scop?: number;
   // Acquisition price model. Monoblock + PortaSplit: one device per room →
@@ -51,6 +148,7 @@ export interface AcConfig {
   // an veröffentlichten Verbräuchen (Split-Einzelraum ~100 kWh Strom/Jahr).
   buildingGain: number;
 
+  defaultDeviceId: AcDeviceId; // typisches Standardgerät (Schnellschätzung, Modal-Vorbelegung)
   defaultRooms: number;
   defaultRoomM2: number;       // gekühlte Fläche je Raum (nicht ganze Wohnfläche!)
   defaultTargetTemp: number;   // Wunsch-Innentemperatur °C
@@ -74,12 +172,21 @@ export interface AcConfig {
   // Dachgeschoss/Altbau (ADAC/Handwerker-Faustregel).
   sizingWPerM2: number;
 
-  // Heizen mit Split: thermische Heizwärme je m² beheizter Fläche in der
-  // ÜBERGANGSZEIT (Frühherbst, Frühjahr, milde Wintertage) — nicht das ganze
-  // Jahr und nicht die kalte Kernzeit. Grober Anhalt; im Ergebnis editierbar.
-  // Heizstrom = Heizwärme / device.scop. Auch der WP-Rechner nutzt diesen Wert
-  // für seinen „Split als Teil-Ergänzung"-Block (dort × Deckungsanteil).
-  heatSpecKwhPerM2: number;
+  // Heizen mit Split: Heizwärme je m² beheizter Fläche in der ÜBERGANGSZEIT.
+  //   Heizwärme/m²·a = heatStandards[x].specKwh × heatTransitionShare
+  // Der Gebäudestandard kommt aus der geteilten Tabelle (siehe AC_HEAT_STANDARDS),
+  // der Übergangszeit-Anteil ist die einzige klima-spezifische Annahme hier.
+  // Heizstrom = Heizwärme / device.scop.
+  heatStandards: AcHeatStandard[];
+  // Anteil des JAHRES-Heizwärmebedarfs, der in der Übergangszeit anfällt
+  // (Frühherbst, Frühjahr, milde Wintertage) — also dort, wo ein Split-Gerät die
+  // Last realistisch übernimmt. Die kalte Kernzeit (Dez–Feb) bleibt bewusst
+  // draußen: dort fällt die Effizienz und die Wärmepumpe ist die bessere Adresse.
+  // Herleitung über Heizgradtage: von ~2.100 Kd/a entfallen ~45 % auf Tage über
+  // ~5 °C Mitteltemperatur; konservativ auf 40 % gerundet. Modell-Annahme, kein
+  // Marktwert — im Ergebnis über die Heizwärme direkt editierbar.
+  heatTransitionShare: number;
+  defaultHeatStandard: string;   // id aus heatStandards (Vorbelegung im Ergebnis)
 
   // PV-Deckung: Anteil des Kühlstroms, den die eigene PV-Anlage übernimmt.
   // Kühlen tagsüber ist sonnen-deckungsstark, nachts kaum. Mit Batteriespeicher
@@ -127,7 +234,31 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       id: "monoblock",
       label: "Monoblock mit Abluftschlauch",
       what: "Ein Gerät, Schlauch zum Fenster raus. Günstig und laut — durch den Schlauchspalt zieht warme Luft nach, daher ineffizient. Der typische Hitzewellen-Spontankauf.",
-      seer: 2.5,         // Monoblock SEER ~2,0–2,8 (Verbraucher-Tests 2025/26)
+      // Label: EER 2,6 = Klasse A, der markttypische Wert (z. B. Klarstein
+      // Grandbreeze Pro). Gesetzliches Minimum 2,34 (R290), A+ ist am Markt die
+      // faktische Obergrenze. Kein SEER — EN 14825 schließt Einkanal aus.
+      labelMetric: "EER",
+      labelValue: 2.6,
+      labelClass: "A",
+      // Struktureller Nachtrag: INFILTRATION. Das Gerät bläst Raumluft durch den
+      // Schlauch nach draußen; der Unterdruck zieht 35-°C-Luft durch Fenster-/
+      // Türspalt nach. Im Prüfstand kann das nicht auftreten (Messung in einer
+      // einzigen 35-°C-Kammer, kein Außen), der Effekt liegt also außerhalb der
+      // Norm-Grenze — nicht "übersehen", sondern per Definition nicht drin.
+      // Höhe: In der EU quantifiziert das niemand. Das US-DOE rechnet ihn als
+      // einziger Regulator heraus (10 CFR 430 App. CC: sensible + latente Wärme
+      // der nachströmenden Luft wird von der Kälteleistung abgezogen), verwirft
+      // aber einen festen Umrechnungsfaktor ausdrücklich, weil Luftmengen je
+      // Gerät zu stark streuen. Deutsche Einordnung (energie-lexikon.info):
+      // nominell "ein SEER um 3", real "effektiv sogar deutlich unter 2".
+      // 0,7 ist der Faktor, der genau diesen Korridor trifft (2,6 → 1,5).
+      // Gegenprobe: ergibt Monoblock/Split ≈ 3,7× — plausibel zwischen den
+      // ~2–3×, die Verbrauchsangaben nahelegen, und den "bis zu siebenmal
+      // geringer", die test.de aus eigenen Messungen nennt (29.05.2026).
+      // KEIN Teillast-Bonus obendrauf: Monoblöcke takten an/aus, der SEER-
+      // Aufschlag "EER + 3" (Topten) gilt nur für Inverter-Geräte.
+      structuralFactor: 0.7,
+      seer: effectiveSeer(2.6, 0.7),   // → 1,5
       canHeat: false,    // Monoblock heizt real kaum sinnvoll (Abluftschlauch)
       perRoom: true,
       pricePerUnit: 400, // Gerätepreis, keine Montage
@@ -137,9 +268,25 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       id: "portasplit",
       label: "Mobile Split-Anlage (z. B. Midea PortaSplit)",
       what: "Tragbares Split-Gerät, Kompressor außen, kein Festeinbau. Deutlich effizienter als ein Monoblock. Ein Gerät pro Raum.",
-      seer: 4.3,         // A++ mobile Split (Midea PortaSplit Cool)
+      // Label: SEER 6,1 = A++ (Midea PortaSplit Datenblatt, 3,5 kW). Mobile
+      // Splits sind regulatorisch "room air conditioner" und stehen damit auf
+      // DERSELBEN SEER-Skala wie fest installierte — direkt vergleichbar.
+      labelMetric: "SEER",
+      labelValue: 6.1,
+      labelClass: "A++",
+      // 1,0: EN 14825 misst Teillast bei realer Temperaturdifferenz, es fehlt
+      // strukturell nichts. Der Nachteil des mobilen Splits (Kompressor-Einheit
+      // näher am Raum) steckt bereits im gemessenen Labelwert — 6,1 liegt genau
+      // deshalb am unteren Rand des Split-Markts (6–7).
+      // Der frühere Wert 4,3 war ein ~30-%-Abschlag auf genau dieses Label, den
+      // sonst kein Typ bekam — er machte den Vergleich kaputt, statt ihn zu
+      // härten. Deckt sich jetzt mit test.de (2025): die PortaSplit erreichte
+      // "eine Effizienz auf dem Niveau mancher fester Splitgeräte".
+      structuralFactor: 1.0,
+      seer: effectiveSeer(6.1, 1.0),   // → 5,2
       canHeat: true,
       scop: 3.6,         // mobile Split Heizen ~3,4–3,8 (Herstellerangaben 2026)
+                         // Typenschild-Wert — siehe "OFFEN (07/2026)" oben im Interface.
       perRoom: true,
       pricePerUnit: 800, // ~780–899 € (UVP/Amazon 2026)
       priceRange: [0.75, 1.3], // ~600–1.050 € je Gerät
@@ -148,9 +295,18 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       id: "split",
       label: "Fest installierte Split-Anlage",
       what: "Innen- und Außeneinheit, fest montiert. Effizientester Typ, braucht aber Installation durch einen Fachbetrieb. Mehrere Räume als Multisplit.",
-      seer: 6.0,         // fest installierte Split SEER ~5–8
+      // Label: SEER 6,5 = A++, Mitte des Marktkorridors 6–7, in dem die meisten
+      // Modelle liegen. Bewusst NICHT die Spitze (8,5–9,5, Topten-BAT-Liste) und
+      // nicht das gesetzliche Minimum 4,6 — der Rechner soll das Gerät treffen,
+      // das Leute tatsächlich einbauen lassen.
+      labelMetric: "SEER",
+      labelValue: 6.5,
+      labelClass: "A++",
+      structuralFactor: 1.0,   // EN 14825, siehe portasplit
+      seer: effectiveSeer(6.5, 1.0),   // → 5,5
       canHeat: true,
       scop: 4.2,         // fest installierte Split Heizen ~4,0–4,6 (A+++ Wärmepumpen-Split)
+                         // Typenschild-Wert — siehe "OFFEN (07/2026)" oben im Interface.
       perRoom: false,
       // 1 Raum (Monosplit) ~2.600 €, je weiterer Raum ~+1.900 € → 3 Räume ~6.400 €.
       // Deckt sich mit Festpreisen 2026: Monosplit 1.800–3.500 €, Montage allein
@@ -163,6 +319,7 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
 
   buildingGain: 33,      // Wh/(m²·K·h), kalibriert (siehe oben)
 
+  defaultDeviceId: "portasplit",
   defaultRooms: 1,
   defaultRoomM2: 20,
   defaultTargetTemp: 24,
@@ -180,7 +337,12 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
 
   sizingWPerM2: 85,
 
-  heatSpecKwhPerM2: 55,   // Übergangszeit-Heizwärme je m² (kWh/m²·a), editierbar
+  heatStandards: AC_HEAT_STANDARDS,
+  heatTransitionShare: 0.4,
+  // Vorbelegung: „Teilsaniert" — der Median des deutschen Bestands und der
+  // realistische Fall für den Gas-Vergleich in diesem Block. Ergibt 64 kWh/m²·a
+  // (vorher: 55 pauschal für ALLE, d. h. Neubau um Faktor ~2 zu hoch).
+  defaultHeatStandard: "teilsaniert",
 
   pvCoverage: {
     // Mit Speicher (Default): Akku verschiebt Tagstrom in Abend/Nacht.
@@ -210,7 +372,10 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
   stromPrice: 0.34,
   gridCo2PerKwh: 0.38,   // kg CO₂/kWh deutscher Strommix (UBA 2023, sinkend) — wie heatpump.ts
 
-  source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), Verbraucher-Tests 2025/26 (SEER), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), BDEW (Strom), UBA (Strommix-CO₂)",
-  validFrom: "2026-06-28",
-  reviewBy: "2027-04-30",
+  source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), EU-Verordnung 626/2011 + EN 14825/14511 (Effizienz-Skalen), Topten.eu + Hersteller-Datenblätter (Labelwerte), Energy and Buildings 2025 + test.de 2025/26 (Realbetrieb), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), dena Gebäudereport/DIN V 18599 (Heizwärmebedarf je Gebäudestandard, geteilt mit dem Wärmepumpen-Rechner), BDEW (Strom/Gas), UBA (Strommix-CO₂)",
+  validFrom: "2026-07-15",
+  // Von den beiden zusammengefuehrten Staenden gewinnt das FRUEHERE Pruefdatum:
+  // Der Quartals-Waechter laeuft ohnehin, und das spaetere Datum wuerde die
+  // Kuehl-Effizienzen laenger ungeprueft altern lassen.
+  reviewBy: "2026-10-15",
 };

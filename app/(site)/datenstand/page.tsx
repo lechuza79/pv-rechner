@@ -7,8 +7,10 @@ import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
-import { DEFAULT_AIRCON_CONFIG as AC } from "../../../lib/aircon-config";
+import { DEFAULT_AIRCON_CONFIG as AC, AC_REAL_FACTOR } from "../../../lib/aircon-config";
+import { acHeatSpecKwhPerM2 } from "../../../lib/aircon";
 import { DEFAULT_BALKON_CONFIG as BK } from "../../../lib/balkon-config";
+import { referenceYearKwh } from "../../../lib/solar-year";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS } from "../../../lib/constants";
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
@@ -312,9 +314,12 @@ export default async function DatenstandPage() {
           stand={monthYear(AC.validFrom)}
           intro="Annahmen des Klimaanlagen-Rechners: Geräte-Effizienz, Preise, Klima- und Hitzedaten. Kern ist Kühlung; Split-Geräte können zusätzlich in der Übergangszeit heizen (günstiger als Gas). Strompreis und Kühlgradstunden im Ergebnis editierbar."
           rows={[
-            { label: "Effizienz Kühlen (SEER): Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
-            { label: "Effizienz Heizen (SCOP): mobile Split / fest installiert", value: `${AC.devices[1].scop!.toLocaleString("de-DE")} / ${AC.devices[2].scop!.toLocaleString("de-DE")} (Monoblock heizt nicht)` },
-            { label: "Übergangszeit-Heizwärme (Split)", value: `${nf(AC.heatSpecKwhPerM2)} kWh/m²·a je beheizter Fläche (editierbar)` },
+            { label: "Effizienz Kühlen im Realbetrieb: Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
+            { label: "…davon Typenschild (EU-Label)", value: AC.devices.map((d) => `${d.labelMetric} ${d.labelValue.toLocaleString("de-DE")}`).join(" / ") },
+            { label: "…davon Abschlag Labor → Realbetrieb", value: `${((1 - AC_REAL_FACTOR) * 100).toLocaleString("de-DE")} % (einheitlich für alle Gerätetypen)` },
+            { label: "…davon Korrektur nachströmende Warmluft (nur Monoblock)", value: `${((1 - AC.devices[0].structuralFactor) * 100).toLocaleString("de-DE")} % (Effekt liegt außerhalb der Einkanal-Prüfnorm)` },
+            { label: "Effizienz Heizen (SCOP, Typenschild): mobile Split / fest installiert", value: `${AC.devices[1].scop!.toLocaleString("de-DE")} / ${AC.devices[2].scop!.toLocaleString("de-DE")} (Monoblock heizt nicht)` },
+            { label: "Übergangszeit-Heizwärme (Split)", value: `${AC.heatStandards.map((s) => `${s.label} ${nf(acHeatSpecKwhPerM2(s.id))}`).join(" · ")} — kWh/m²·a je beheizter Fläche, also ${nf(AC.heatTransitionShare * 100)} % des Jahres-Heizwärmebedarfs je Gebäudestandard (im Ergebnis editierbar)` },
             { label: "Anschaffung Monoblock / mobile Split", value: `~${nf(AC.devices[0].pricePerUnit!)} € / ~${nf(AC.devices[1].pricePerUnit!)} € je Gerät·Raum` },
             { label: "Anschaffung fest installierte Split", value: `${nf(AC.devices[2].priceBase!)} € + ${nf(AC.devices[2].pricePerRoom!)} €/Raum (Innengerät inkl. Montage Fachbetrieb)` },
             { label: "Kühlgradstunden Ø Deutschland", value: `${nf(AC.cdhNational)} K·h/a (Schwelle ${nf(AC.coolBaseTemp)} °C)` },
@@ -331,17 +336,24 @@ export default async function DatenstandPage() {
         <Section
           title="Balkonkraftwerk (Steckersolar)"
           stand={monthYear(BK.validFrom)}
-          intro="Annahmen des Balkonkraftwerk-Rechners: Set-Preise, Wechselrichter-Grenze und Eigenverbrauch. Der Standort-Ertrag kommt live von PVGIS, der Strompreis ist im Ergebnis editierbar."
+          intro="Annahmen des Balkonkraftwerk-Rechners. Ertrag, Eigenverbrauch und Speicher-Nutzen werden stündlich über ein Jahr simuliert — sie sind Ergebnis, nicht Annahme. Der Standort-Ertrag kommt live von PVGIS, der Strompreis ist im Ergebnis editierbar."
           rows={[
             { label: "Set-Preise: 1 Modul / 2 Module / 4 Module", value: BK.sets.map((s) => `~${nf(s.price)} €`).join(" / ") },
             { label: "Modul / Wechselrichter je Set", value: BK.sets.map((s) => `${nf(s.moduleWp)} Wp / ${nf(s.inverterW)} W`).join(" · ") },
-            { label: "Wechselrichter-Deckel", value: `${nf(BK.maxFullLoadHours)} Volllaststunden/a → 800 W ≈ ${nf(Math.round(0.8 * BK.maxFullLoadHours))} kWh/a` },
-            { label: "Ausrichtungsfaktor (aufgeständert / Geländer / Ost-West / verschattet)", value: BK.orientations.map((o) => nf(o.factor)).join(" / ") },
-            { label: "Eigenverbrauch", value: `grundlast-gedeckt, Anteil sinkt mit Anlagengröße (${nf(BK.selfShareMin * 100)}–${nf(BK.selfShareMax * 100)} %)` },
+            { label: "Gesetzliche Grenze", value: "2.000 Wp Module / 800 VA Wechselrichter (§ 8 Abs. 5a EEG) — das ist die einzige verbindliche Grenze" },
+            { label: "Schuko-Grenze der VDE-Vornorm", value: `${nf(BK.schukoMaxWp)} Wp (= 800 W + 20 %), DIN VDE V 0126-95 seit 01.12.2025 — freiwillige Vornorm, Produktnorm für Hersteller, gilt nur für Geräte ohne Speicher. Darüber: spezielle Einspeisesteckdose durch Elektrofachkraft, ~${nf(BK.energySocketCostMin)}–${nf(BK.energySocketCostMax)} €` },
+            { label: "Speicher-Größen & Aufpreis", value: BK.storage.filter((s) => s.kwh > 0).map((s) => `~${nf(s.kwh)} kWh: +${nf(s.price)} €`).join(" · ") },
+            { label: "Speicher: Wirkungsgrad / Lebensdauer", value: `${nf(BK.storageRoundtrip * 100)} % Lade-/Entlade-Wirkungsgrad · ${nf(BK.storageLifeYears)} Jahre` },
+            { label: "Speicher-Empfehlung nur bei Amortisation unter", value: `${nf(BK.storageRecommendMaxPayback)} Jahren — sonst empfehlen wir bewusst ohne` },
+            { label: "Berechnung", value: "Stunden-Simulation über 12 Monate: PVGIS-Monatsertrag × Tagesverlauf, am Wechselrichter (800 W) gekappt, gegen das Haushalts-Lastprofil gerechnet, Speicher Stunde für Stunde geladen/entladen" },
+            { label: "Haushalts-Lastprofil", value: "BDEW H0 / VDI 4655 — dieselbe Grundlage wie PV-Rechner und Live-Simulation" },
+            { label: "Ertrag je Ausrichtung (Anteil am optimal aufgeständerten)", value: BK.orientations.map((o) => `${o.id === "sued_flach" ? "aufgeständert" : o.id === "sued_gelaender" ? "Süd senkrecht" : o.id === "ost_west" ? "Ost/West" : "Nord"} ${nf(Math.round(referenceYearKwh(o.id) / referenceYearKwh("sued_flach") * 100))} %`).join(" · ") + " — gemessen, nicht geschätzt (eigene PVGIS-Stundenreihe je Ausrichtung)" },
+            { label: "Tag-Anteil am Verbrauch (selten / teils / oft zuhause)", value: BK.presence.map((p) => `${nf(p.tagQuote * 100)} %`).join(" / ") },
             { label: "Lebensdauer / Degradation", value: `${nf(BK.lifetimeYears)} Jahre · ${nf(BK.degradation * 100)} %/a` },
+            { label: "Strompreisanstieg", value: `${nf(prices.electricityIncrease * 100)} % / Jahr (systemweit wie PV-Rechner)` },
             { label: "Einspeisung", value: "keine Vergütung — Überschuss fließt unvergütet ins Netz" },
           ]}
-          source={`Marktpreise Steckersolar-Sets 2026, Solarpaket I (800-W-Grenze), HTW Berlin Stecker-Solar-Simulator (Eigenverbrauch), PVGIS (Ertrag). Nächste Prüfung bis ${monthYear(BK.reviewBy)}.`}
+          source={`Marktpreise Steckersolar-Sets 2026 (ADAC, Stiftung Warentest, Verbraucherzentrale); Speicher-Größen/-Preise an getesteten Geräten (Anker Solarbank 2 Pro ~1,6 kWh, Anker Solarbank 3 Pro ~2,7 kWh; Quervergleich Growatt Noah 2000, Zendure SolarFlow 800 Pro — heise Bestenliste, Stiftung Warentest). § 8 Abs. 5a EEG (2.000 Wp / 800 VA), DIN VDE V 0126-95 + DKE-Normauslegung vom 17.12.2025 (Schuko-Grenze der Vornorm), PVGIS (Stundenreihen je Ausrichtung). Nächste Prüfung bis ${monthYear(BK.reviewBy)}; die VDE-Vornorm wird spätestens Ende 2028 überprüft.`}
         />
 
         {/* ── Eigenverbrauch & Verbrauch (Modell-Annahmen) ── */}
