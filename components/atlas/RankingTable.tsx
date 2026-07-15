@@ -253,10 +253,6 @@ export default function RankingTable({
           <div style={{ ...S.row, ...S.header }}>
             <RankHeader mode={rankMode} onChange={setRankMode} sinceYear={lastFullYear} />
             <span style={S.headName}>Gemeinde</span>
-            {/* The bar draws whichever column is sorted, so it carries no measure
-                of its own — repeating that column's name here would print it twice
-                in one header. The sorted column is already marked in accent. */}
-            <span style={S.headName}>Vergleich</span>
             {COLUMNS.map((c) => (
               <button
                 key={c.key}
@@ -287,20 +283,19 @@ export default function RankingTable({
                     <span style={{ ...S.name, fontWeight: isHome ? 700 : 500 }}>{r.name}</span>
                     {r.population === null && <span style={S.hint}>unbewohnt</span>}
                   </span>
-                  <span style={S.barCell}>
-                    <span style={S.track}>
-                      <span
-                        style={{
-                          ...S.fill,
-                          width: `${barPct(val)}%`,
-                          background: isHome ? v("--color-accent") : v("--color-accent-light"),
-                        }}
-                      />
-                    </span>
-                  </span>
                   {COLUMNS.map((c) => (
                     <span key={c.key} style={cellStyle(c.key)}>
-                      {fmtCell(r, c.key)}
+                      {c.key === sort && (
+                        <span
+                          aria-hidden
+                          style={{
+                            ...S.cellBar,
+                            width: `${barPct(val)}%`,
+                            background: isHome ? v("--color-accent-dim") : v("--color-bg-accent"),
+                          }}
+                        />
+                      )}
+                      <span style={S.cellText}>{fmtCell(r, c.key)}</span>
                     </span>
                   ))}
                 </>
@@ -343,16 +338,15 @@ export default function RankingTable({
                 <span style={{ ...S.name, fontWeight: 700 }}>{homeRow.name}</span>
                 <span style={S.stickyScope}>{scopeLabel}</span>
               </span>
-              <span style={S.barCell}>
-                <span style={S.track}>
-                  <span
-                    style={{ ...S.fill, width: `${barPct(valueOf(homeRow, sort))}%`, background: v("--color-accent") }}
-                  />
-                </span>
-              </span>
               {COLUMNS.map((c) => (
                 <span key={c.key} style={cellStyle(c.key)}>
-                  {fmtCell(homeRow, c.key)}
+                  {c.key === sort && (
+                    <span
+                      aria-hidden
+                      style={{ ...S.cellBar, width: `${barPct(valueOf(homeRow, sort))}%`, background: v("--color-accent-dim") }}
+                    />
+                  )}
+                  <span style={S.cellText}>{fmtCell(homeRow, c.key)}</span>
                 </span>
               ))}
             </Link>
@@ -492,8 +486,12 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
   );
 }
 
-/** Rank · name · bar · one cell per column. Header, rows and floating row share it. */
-const GRID = "62px minmax(120px,1fr) minmax(44px,64px) repeat(5, minmax(56px, 76px))";
+/**
+ * Rank · name · one cell per column. Header, rows and floating row share it — the
+ * floating row exists to be compared against the list, so its columns have to land
+ * on the same pixels.
+ */
+const GRID = "58px minmax(110px,1fr) repeat(4, minmax(66px, 86px))";
 
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
@@ -509,7 +507,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   // Eight columns do not fit a phone. Scroll the table, never the page.
   scroller: { overflowX: "auto", margin: "0 -8px", padding: "0 8px" },
-  table: { minWidth: 620 },
+  table: { minWidth: 500 },
   row: {
     display: "grid",
     gridTemplateColumns: GRID,
@@ -542,24 +540,39 @@ const S: Record<string, React.CSSProperties> = {
   nameCell: { display: "flex", alignItems: "baseline", gap: 6, minWidth: 0 },
   name: { color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   hint: { fontSize: 10, color: v("--color-text-muted") },
-  barCell: { display: "block" },
-  track: { display: "block", height: 6, background: v("--color-bg-muted"), borderRadius: 3 },
-  fill: { display: "block", height: "100%", borderRadius: 3 },
-  val: { fontFamily: v("--font-mono"), fontSize: 11, textAlign: "right", whiteSpace: "nowrap" },
+  val: {
+    fontFamily: v("--font-mono"),
+    fontSize: 11,
+    textAlign: "right",
+    whiteSpace: "nowrap",
+    position: "relative",
+    padding: "3px 4px",
+    borderRadius: 3,
+  },
+  // The bar is the sorted value drawn, so it lives inside that value's cell rather
+  // than in a column of its own — a column header names a measure, and "the bar"
+  // is not one.
+  cellBar: { position: "absolute", right: 0, top: 0, bottom: 0, borderRadius: 3 },
+  cellText: { position: "relative" },
+  // Mirrors S.scroller's box exactly (same negative margin, same padding), so the
+  // row inside starts on the same pixel as a row in the list. Getting this wrong
+  // by 8px is what broke the alignment twice.
   stickyWrap: {
     position: "sticky",
-    bottom: 10,
-    marginTop: 10,
-    overflow: "hidden",
-    // Same horizontal inset as S.scroller, or the sticky grid lands 8px off the
-    // table's and the bars stop lining up — which is the whole point of it.
+    bottom: 4,
     margin: "10px -8px 0",
+    // Vertical padding gives the row's shadow room; overflow: hidden would crop it
+    // flat against the wrapper otherwise.
+    padding: "6px 8px",
+    overflow: "hidden",
+  },
+  stickyRow: {
+    borderBottom: "none",
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border-accent")}`,
     borderRadius: v("--radius-md"),
     boxShadow: "0 4px 14px rgba(0,0,0,0.10)",
   },
-  stickyRow: { borderBottom: "none", margin: 0, padding: "9px 16px" },
   rowLink: { textDecoration: "none", color: "inherit", cursor: "pointer" },
   stickyScope: { fontSize: 10, color: v("--color-text-muted"), fontWeight: 400 },
   dropdown: {

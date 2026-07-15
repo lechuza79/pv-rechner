@@ -166,6 +166,10 @@ export default async function AtlasPage({ params }: { params: Params }) {
 
         <div style={S.section}>
           <h2 style={S.h2}>Rangliste der {childNoun}</h2>
+          <p style={S.sub}>
+            „Privat" zählt private Dächer, Balkonkraftwerke und Hausbatterien, „Gewerbe"
+            gewerbliche Dächer, Freiflächen-Parks und gewerbliche Speicher.
+          </p>
           <RankingTable
             regions={ranking.regions}
             cells={ranking.cells}
