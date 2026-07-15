@@ -1,42 +1,55 @@
 "use client";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
 import Header from "../../../components/Header";
 import InfoTooltip from "../../../components/InfoTooltip";
+import StandortField from "../../../components/StandortField";
 import { IconArrowRight, IconRefresh, IconCheck } from "../../../components/Icons";
 import { v } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { PERSONEN } from "../../../lib/constants";
-import { DEFAULT_BALKON_CONFIG as CFG, type BalkonSetId } from "../../../lib/balkon-config";
-import { calcBalkon, recommendBalkonSet, type BalkonInputs } from "../../../lib/balkon";
+import { DEFAULT_BALKON_CONFIG as CFG, type BalkonSetId, type BalkonStorageId } from "../../../lib/balkon-config";
+import { calcBalkon, recommendBalkon, type BalkonInputs, type BalkonOption } from "../../../lib/balkon";
 import { trackEvent } from "../../../lib/analytics";
 import { DataSourceNote } from "../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 
-const STEPS = ["Haushalt & Standort", "Ausrichtung", "Set-Größe"];
+const STEPS = ["Haushalt & Standort", "Ausrichtung"];
 
-// Kurzbegründung je empfohlenem Set (Klartext für die Empfehlungs-Zeile).
-const REASON: Record<BalkonSetId, string> = {
-  single: "es reicht für deinen Bedarf und ist der günstigste Einstieg",
-  duo: "es ist die beste Balance aus Preis und Ertrag",
-  max: "so nutzt du den höchsten Ertrag, den dein Haushalt noch selbst verbraucht",
-};
+// Klartext-Beschreibung einer Konfiguration (Set + Speicher-Entscheidung).
+function storageName(id: BalkonStorageId): string {
+  const st = CFG.storage.find(s => s.id === id)!;
+  return st.kwh > 0 ? `mit ~${st.kwh.toLocaleString("de-DE")} kWh Speicher` : "ohne Speicher";
+}
+// Kurzlabel ohne Größen-Qualifier für die Karten-Überschrift ("4 Module").
+function setShort(setId: BalkonSetId): string {
+  return CFG.sets.find(s => s.id === setId)!.label.replace(/\s*\(.*\)/, "");
+}
+function configLabel(setId: BalkonSetId, storageId: BalkonStorageId): string {
+  return `${CFG.sets.find(s => s.id === setId)!.label}, ${storageName(storageId)}`;
+}
 
 export default function Balkon() {
   const [step, setStep] = useState(0);
-  const [setId, setSetId] = useState<BalkonInputs["setId"]>(CFG.defaultSet);
-  const [setTouched, setSetTouched] = useState(false); // hat der Nutzer selbst ein Set gewählt?
   const [orientationId, setOrientationId] = useState<BalkonInputs["orientationId"]>(CFG.defaultOrientation);
   const [presenceId, setPresenceId] = useState<BalkonInputs["presenceId"]>(CFG.defaultPresence);
   const [personen, setPersonen] = useState(1); // Index in PERSONEN (Default: 2 Personen)
+
+  // Manueller Wechsel auf eine Alternative (null = der Empfehlung folgen).
+  const [override, setOverride] = useState<{ setId: BalkonSetId; storageId: BalkonStorageId } | null>(null);
 
   // Standort → Ertrag (kWh/kWp) via PVGIS
   const [plz, setPlz] = useState("");
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzConfirmed, setPlzConfirmed] = useState(false);
   const [specificYield, setSpecificYield] = useState(CFG.specificYield);
+
+  // Einmaliger PLZ-Toast, sobald das Ergebnis erscheint und noch kein Standort
+  // gesetzt ist — nudget zur standortgenauen Ertragsrechnung (wie im PV-Rechner).
+  const [plzToast, setPlzToast] = useState(false);
+  const plzToastShown = useRef(false);
 
   // Editierbare Overrides im Ergebnis
   const [oStrom, setOStrom] = useState<number | null>(null);
@@ -45,19 +58,33 @@ export default function Balkon() {
 
   const prices = usePrices();
   const strompreis = oStrom ?? (prices.electricityPrice > 0 ? prices.electricityPrice : CFG.stromPrice);
+  // Strompreisanstieg systemweit konsistent mit dem PV-Rechner (gleiche Preis-Config).
+  const priceIncrease = prices.electricityIncrease;
   const haushaltKwh = oVerbrauch ?? PERSONEN[personen].verbrauch;
 
   const isResult = step >= STEPS.length;
+
+  // PLZ-Toast einmal einblenden, sobald das Ergebnis erscheint und noch kein
+  // Standort übernommen wurde.
+  useEffect(() => {
+    if (!isResult || plzConfirmed || /^\d{5}$/.test(plz) || plzToastShown.current) return;
+    plzToastShown.current = true;
+    setPlzToast(true);
+  }, [isResult, plzConfirmed, plz]);
+  // Auto-Ausblenden nach 6 s (eigener Effekt, damit der Timer unter StrictMode
+  // korrekt neu gesetzt wird).
+  useEffect(() => {
+    if (!plzToast) return;
+    const t = setTimeout(() => setPlzToast(false), 6000);
+    return () => clearTimeout(t);
+  }, [plzToast]);
+
   const next = () => {
     if (step >= STEPS.length) return;
     const target = step + 1;
-    // Beim Betreten des Set-Schritts das empfohlene Set vorbelegen, solange der
-    // Nutzer noch nicht selbst gewählt hat.
-    if (target === 2 && !setTouched) setSetId(recommendation.bestId);
     if (target === STEPS.length) trackEvent("balkon_ergebnis");
     setStep(target);
   };
-  const chooseSet = (id: BalkonSetId) => { setSetId(id); setSetTouched(true); setOInvest(null); };
   const back = () => step > 0 && setStep(step - 1);
 
   const fetchPvgis = useCallback(async (inputPlz: string) => {
@@ -82,19 +109,71 @@ export default function Balkon() {
     setPlzConfirmed(false);
   };
 
+  // Empfehlung: effizienteste Konfiguration (Set + Speicher) aus den Eingaben.
+  // Reagiert live auf die im Ergebnis editierbaren Werte (Strompreis, Verbrauch).
+  const recommendation = useMemo(
+    () => recommendBalkon({ orientationId, presenceId, haushaltKwh, specificYield, stromPrice: strompreis, priceIncrease }),
+    [orientationId, presenceId, haushaltKwh, specificYield, strompreis, priceIncrease],
+  );
+
+  // Aktive Konfiguration: gewählte Alternative oder — Default — die Empfehlung.
+  const active = override ?? { setId: recommendation.best.setId, storageId: recommendation.best.storageId };
+  const activeIsBest = active.setId === recommendation.best.setId && active.storageId === recommendation.best.storageId;
+
   const inputs: BalkonInputs = useMemo(() => ({
-    setId, orientationId, presenceId, haushaltKwh, specificYield, stromPrice: strompreis,
-    invest: oInvest ?? undefined,
-  }), [setId, orientationId, presenceId, haushaltKwh, specificYield, strompreis, oInvest]);
+    setId: active.setId, orientationId, presenceId, storageId: active.storageId,
+    haushaltKwh, specificYield, stromPrice: strompreis, priceIncrease, invest: oInvest ?? undefined,
+  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, strompreis, priceIncrease, oInvest]);
 
   const r = useMemo(() => calcBalkon(inputs), [inputs]);
   const amortLabel = isFinite(r.amortYears) ? `${r.amortYears.toFixed(1).replace(".", ",")} J.` : "—";
 
-  // Set-Empfehlung aus Haushalt, Anwesenheit, Ausrichtung und Standort.
-  const recommendation = useMemo(
-    () => recommendBalkonSet({ orientationId, presenceId, haushaltKwh, specificYield, stromPrice: strompreis }),
-    [orientationId, presenceId, haushaltKwh, specificYield, strompreis],
-  );
+  // Set-Größe und Speicher sind zwei GETRENNTE Entscheidungen. Jede ändert die
+  // aktive Konfiguration; stimmt sie wieder mit der Empfehlung überein, folgen
+  // wir automatisch der Empfehlung (override = null). Editierten Anschaffungspreis
+  // dabei verwerfen, da sich der Standardpreis mit der Wahl ändert.
+  const applySelection = (setId: BalkonSetId, storageId: BalkonStorageId) => {
+    setOInvest(null);
+    if (setId === recommendation.best.setId && storageId === recommendation.best.storageId) setOverride(null);
+    else setOverride({ setId, storageId });
+  };
+  const selectSize = (setId: BalkonSetId) => applySelection(setId, active.storageId);
+  const selectStorage = (storageId: BalkonStorageId) => applySelection(active.setId, storageId);
+  const resetToRecommendation = () => { setOverride(null); setOInvest(null); };
+  const resetAll = () => { setOverride(null); setOInvest(null); setStep(0); };
+
+  const findCombo = (setId: BalkonSetId, storageId: BalkonStorageId): BalkonOption =>
+    recommendation.ranked.find(o => o.setId === setId && o.storageId === storageId) ?? recommendation.best;
+
+  // Set-Größen-Karten (alle in einer Reihe): jede zeigt die Ersparnis beim AKTUELL
+  // gewählten Speicher — so sind alle Karten konsistent (kein Speicher-Durcheinander).
+  const sizeOptions = CFG.sets.map(s => findCombo(s.id, active.storageId));
+
+  // Speicher als aufklappbarer Schalter: an = eine Speichergröße gewählt.
+  const storageOptions = CFG.storage.filter(s => s.kwh > 0);
+  const storageOn = active.storageId !== "none";
+  const toggleStorage = () => {
+    if (storageOn) { selectStorage("none"); return; }
+    // Beim Einschalten die wirtschaftlichste Größe für das aktive Set vorwählen.
+    const bestForSet = recommendation.ranked
+      .filter(o => o.setId === active.setId && o.storageId !== "none")
+      .sort((a, b) => b.result.lifetimeSaving - a.result.lifetimeSaving)[0];
+    selectStorage(bestForSet?.storageId ?? storageOptions[0].id);
+  };
+
+  const activeCombo = findCombo(active.setId, active.storageId);
+
+  // Ein-Satz-Beschreibung der aktiven Konfiguration: die Empfehlung bekommt die
+  // volle Begründung, jede Abweichung den Vergleich zur Empfehlung.
+  const activeDescription = (): string => {
+    if (activeIsBest) return `${recommendation.setReason} ${recommendation.storageReason}`;
+    const dInvest = activeCombo.result.invest - recommendation.best.result.invest;
+    const dSave = activeCombo.result.savingPerYear - recommendation.best.result.savingPerYear;
+    if (dInvest <= 0) {
+      return `${Math.abs(dInvest).toLocaleString("de-DE")} € günstiger als die Empfehlung, dafür rund ${Math.abs(dSave).toLocaleString("de-DE")} €/Jahr weniger Ersparnis.`;
+    }
+    return `${dInvest.toLocaleString("de-DE")} € teurer für rund ${dSave.toLocaleString("de-DE")} €/Jahr mehr Ersparnis.`;
+  };
 
   // Cross-Flow-Teaser: Bei hohem Verbrauch holt eine Dachanlage deutlich mehr
   // (Balkon deckt nur die Grundlast). Schwelle bewusst konservativ.
@@ -106,11 +185,11 @@ export default function Balkon() {
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
-            {isResult ? "Dein Balkonkraftwerk" : "Lohnt sich ein Balkonkraftwerk?"}
+            {isResult ? "Deine Empfehlung" : "Lohnt sich ein Balkonkraftwerk?"}
           </h1>
           {!isResult && (
             <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>
-              Für Miete und Eigentum ohne eigenes Dach. Ertrag, Ersparnis und Amortisation — ohne Anmeldung.
+              Für Miete und Eigentum ohne eigenes Dach. Wir empfehlen dir die passende Größe — mit oder ohne Speicher.
             </p>
           )}
         </div>
@@ -149,7 +228,7 @@ export default function Balkon() {
                   <InfoTooltip title="Warum das zählt" ariaLabel="Warum fragen wir, ob tagsüber jemand zuhause ist?" size={12}>
                     Ein Balkonkraftwerk lohnt sich über den Strom, den du direkt verbrauchst, während die Sonne scheint.
                     Wer tagsüber zuhause ist (Homeoffice, Rente, Familie), nutzt mehr davon selbst — Überschuss fließt
-                    sonst unvergütet ins Netz.
+                    sonst unvergütet ins Netz. Das entscheidet auch, ob sich ein Speicher lohnt.
                   </InfoTooltip>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 20 }}>
@@ -206,62 +285,6 @@ export default function Balkon() {
               </div>
             )}
 
-            {/* 2: Set-Größe (mit Empfehlung aus den Angaben) */}
-            {step === 2 && (
-              <div>
-                <div style={{
-                  padding: "12px 14px", marginBottom: 14, borderRadius: v('--radius-md'),
-                  background: v('--color-accent-dim'), border: `1px solid ${v('--color-border-accent')}`,
-                  fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6,
-                }}>
-                  {recommendation.clear ? (
-                    <>Für deine Angaben passt <strong style={{ color: v('--color-accent') }}>{CFG.sets.find(s => s.id === recommendation.bestId)!.label}</strong> am besten — {REASON[recommendation.bestId]}. Du kannst aber jede Größe wählen.</>
-                  ) : (
-                    <>Mehrere Größen passen gut zu dir. Wähl nach Budget und verfügbarem Platz — hier der Vergleich.</>
-                  )}
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10 }}>
-                  {CFG.sets.map(s => {
-                    const res = recommendation.ranked.find(x => x.id === s.id)!.result;
-                    const isRec = recommendation.clear && recommendation.bestId === s.id;
-                    const selected = setId === s.id;
-                    return (
-                      <button key={s.id} onClick={() => chooseSet(s.id)} style={{
-                        textAlign: "left", padding: "14px 16px", borderRadius: v('--radius-md'), cursor: "pointer",
-                        background: selected ? v('--color-accent-dim') : v('--color-bg-muted'),
-                        border: selected ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
-                      }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: 6, minWidth: 0 }}>
-                            <span style={{ fontSize: 14, fontWeight: 700, color: selected ? v('--color-accent') : v('--color-text-primary') }}>{s.label}</span>
-                            {isRec && (
-                              <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v('--color-text-on-accent'), background: v('--color-accent'), borderRadius: v('--radius-sm'), padding: "2px 6px", whiteSpace: "nowrap" }}>
-                                <IconCheck size={10} /> Empfohlen
-                              </span>
-                            )}
-                          </span>
-                          <span style={{ textAlign: "right", whiteSpace: "nowrap", flexShrink: 0 }}>
-                            <span style={{ display: "block", fontSize: 9, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em" }}>Kosten ca.</span>
-                            <span style={{ fontSize: 13, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>{s.price.toLocaleString("de-DE")} €</span>
-                          </span>
-                        </div>
-                        <div style={{ fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 6 }}>{s.what}</div>
-                        <div style={{ fontSize: 11, marginTop: 6, fontFamily: v('--font-mono') }}>
-                          <span style={{ color: v('--color-positive'), fontWeight: 700 }}>~{res.savingPerYear.toLocaleString("de-DE")} €/Jahr sparen</span>
-                          <span style={{ color: v('--color-text-muted') }}> · {isFinite(res.amortYears) ? `${res.amortYears.toFixed(1).replace(".", ",")} J.` : "—"} Amortisation</span>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-                <SetPowerCurves sets={CFG.sets} selectedId={setId} orientationFactor={CFG.orientations.find(o => o.id === orientationId)!.factor} />
-                <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 10 }}>
-                  Der Wechselrichter darf seit 2024 bis <strong style={{ color: v('--color-text-primary') }}>800 Watt</strong> einspeisen,
-                  die Module bis 2.000 Wp. Wie die Kurve zeigt: mehr Module bringen morgens und abends mehr Ertrag — die Mittagsspitze bleibt bei 800 W gedeckelt.
-                </div>
-              </div>
-            )}
-
             {/* Nav */}
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
               {step > 0 ? (
@@ -270,47 +293,206 @@ export default function Balkon() {
                 <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
               )}
               <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Ergebnis anzeigen <IconArrowRight size={14} /></> : <>Weiter <IconArrowRight size={14} /></>}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Empfehlung anzeigen <IconArrowRight size={14} /></> : <>Weiter <IconArrowRight size={14} /></>}</span>
               </button>
             </div>
           </div>
         )}
 
-        {/* ── RESULT ── */}
+        {/* PLZ-Toast: einmaliger Nudge zur standortgenauen Ertragsrechnung */}
+        {plzToast && (
+          <div
+            className="fu"
+            onClick={() => {
+              const el = document.querySelector<HTMLInputElement>('input[aria-label="Postleitzahl eingeben"]');
+              if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus(); }
+              setPlzToast(false);
+            }}
+            style={{
+              position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
+              zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)", cursor: "pointer",
+              background: v('--color-accent'), color: v('--color-text-on-accent'),
+              borderRadius: v('--radius-md'), padding: "12px 16px",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 10,
+              fontSize: 13, fontWeight: 600, lineHeight: 1.4,
+            }}
+          >
+            <span style={{ flex: 1 }}>PLZ eingeben für einen standortgenauen Ertrag</span>
+            <button onClick={e => { e.stopPropagation(); setPlzToast(false); }} aria-label="Schließen" style={{ border: "none", background: "transparent", color: v('--color-text-on-accent'), fontSize: 18, lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85 }}>×</button>
+          </div>
+        )}
+
+        {/* ── RESULT (empfehlungsgetrieben) ── */}
         {isResult && (
           <div className="fu">
-            {/* Hero: Ersparnis/Jahr */}
+            {/* Auswahl (Set-Größe + Speicher) — klebt beim Scrollen oben, damit die
+                Wirkung auf die Kennzahlen darunter sichtbar bleibt. */}
+            <div style={{
+              position: "sticky", top: 0, zIndex: 20, background: v('--color-bg'),
+              paddingTop: 8, paddingBottom: 10, marginBottom: 6,
+              boxShadow: "0 8px 12px -8px rgba(0,0,0,0.12)",
+            }}>
+            {/* 1. Set-Größe — alle drei in einer Reihe. Blauer Rand markiert nur die
+                AKTIVE Wahl; die Empfehlung bleibt über Marker + Erhebung erkennbar. */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
+              {sizeOptions.map(o => {
+                const selected = active.setId === o.setId;
+                const isRec = o.setId === recommendation.best.setId;
+                return (
+                  <button key={o.setId} onClick={() => selectSize(o.setId)} style={{
+                    padding: "12px 6px", borderRadius: v('--radius-md'), cursor: "pointer", textAlign: "center",
+                    display: "flex", flexDirection: "column", alignItems: "center", gap: 2, minWidth: 0,
+                    background: selected ? v('--color-accent-dim') : v('--color-bg-muted'),
+                    border: `2px solid ${selected ? v('--color-accent') : v('--color-border')}`,
+                    boxShadow: isRec ? "0 4px 14px -4px rgba(19,101,234,0.30)" : "none",
+                  }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, whiteSpace: "nowrap", color: selected ? v('--color-accent') : v('--color-text-primary') }}>{setShort(o.setId)}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>~{o.result.savingPerYear.toLocaleString("de-DE")} €/J</span>
+                    {isRec && <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent') }}><IconCheck size={9} /> Empf.</span>}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 2. Speicher — aufklappbarer Schalter. Empfiehlt das Modell einen
+                Speicher, ist er an und die Größe steht aufgeklappt darunter. */}
+            <div>
+              <button onClick={toggleStorage} aria-expanded={storageOn} style={{
+                width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8,
+                padding: "10px 12px", borderRadius: v('--radius-md'), cursor: "pointer", textAlign: "left",
+                background: storageOn ? v('--color-accent-dim') : v('--color-bg-muted'),
+                border: `2px solid ${storageOn ? v('--color-accent') : v('--color-border')}`,
+              }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: storageOn ? v('--color-accent') : v('--color-text-primary') }}>Speicher</span>
+                  {recommendation.best.storageId !== "none" && (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent') }}><IconCheck size={9} /> Empf.</span>
+                  )}
+                  <InfoTooltip title="Was ein Speicher bringt" ariaLabel="Was bringt ein Speicher am Balkonkraftwerk?" size={12}>
+                    Ein kleiner Akku puffert den Tagesüberschuss für Abend und Nacht und hebt den Eigenverbrauch — er kostet aber
+                    extra und rechnet sich oft erst spät. Wir empfehlen ihn nur, wenn er sich klar amortisiert.
+                  </InfoTooltip>
+                </span>
+                <span aria-hidden style={{
+                  width: 38, height: 22, borderRadius: 11, flexShrink: 0, position: "relative", display: "inline-block",
+                  background: storageOn ? v('--color-accent') : v('--color-border-muted'), transition: "background 0.2s",
+                }}>
+                  <span style={{
+                    position: "absolute", top: 3, left: storageOn ? 19 : 3, width: 16, height: 16, borderRadius: "50%",
+                    background: v('--color-bg'), transition: "left 0.2s",
+                  }} />
+                </span>
+              </button>
+
+              {storageOn && (
+                <div style={{ display: "grid", gridTemplateColumns: `repeat(${storageOptions.length}, 1fr)`, gap: 6, marginTop: 8 }}>
+                  {storageOptions.map(st => {
+                    const selected = active.storageId === st.id;
+                    const rec = st.id === recommendation.best.storageId;
+                    return (
+                      <button key={st.id} onClick={() => selectStorage(st.id)} style={{
+                        padding: "8px 6px", borderRadius: v('--radius-md'), cursor: "pointer", textAlign: "center",
+                        display: "flex", flexDirection: "column", alignItems: "center", gap: 1,
+                        background: selected ? v('--color-accent-dim') : v('--color-bg-muted'),
+                        border: `2px solid ${selected ? v('--color-accent') : v('--color-border')}`,
+                      }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: selected ? v('--color-accent') : v('--color-text-primary') }}>~{st.kwh.toLocaleString("de-DE")} kWh</span>
+                        <span style={{ fontSize: 10, color: v('--color-text-muted') }}>+{st.price.toLocaleString("de-DE")} €{rec ? " · Empf." : ""}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+            </div>
+
+            {/* Beschreibung der aktiven Konfiguration */}
+            <div style={{ marginBottom: 16, padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-border-accent')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+              {activeIsBest ? (
+                <>
+                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: v('--color-text-muted'), marginBottom: 6 }}>
+                    Warum diese Konfiguration?
+                  </div>
+                  <div>{recommendation.setReason} {recommendation.storageReason}</div>
+                </>
+              ) : (
+                <div>
+                  {activeDescription()} Empfohlen wäre <strong style={{ color: v('--color-accent') }}>{configLabel(recommendation.best.setId, recommendation.best.storageId)}</strong>.{" "}
+                  <button onClick={resetToRecommendation} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), fontWeight: 700, cursor: "pointer", textDecoration: "underline", fontSize: 13, fontFamily: "inherit" }}>Zur Empfehlung</button>
+                </div>
+              )}
+            </div>
+
+            {/* Hero: Gesamt-Ersparnis über die Laufzeit (pro Jahr steht in den Karten) */}
             <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
               <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center" }}>
-                Ersparnis pro Jahr
+                Ersparnis in {CFG.lifetimeYears} Jahren
               </div>
               <div style={{ fontSize: 42, fontWeight: 800, color: v('--color-positive'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
-                {r.savingPerYear.toLocaleString("de-DE")} €
+                {(r.lifetimeSaving + r.invest).toLocaleString("de-DE")} €
               </div>
               <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, textAlign: "center" }}>
-                {r.annualYield.toLocaleString("de-DE")} kWh Ertrag/Jahr · davon {r.selfUsedKwh.toLocaleString("de-DE")} kWh selbst genutzt
+                ~{r.savingPerYear.toLocaleString("de-DE")} €/Jahr · {r.annualYield.toLocaleString("de-DE")} kWh Ertrag/Jahr · davon {r.selfUsedKwh.toLocaleString("de-DE")} kWh selbst genutzt
               </div>
 
-              {/* Editierbare Annahmen */}
+              {/* Editierbare Annahmen inkl. nachträglicher Standort-Eingabe */}
               <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
-                <div>Set-Preis: <InlineEdit value={r.invest} onCommit={val => setOInvest(Math.round(val))} unit=" €" min={100} max={3000} step={50} width={64} /></div>
+                <div>{r.storageKwh > 0 ? "Anschaffung (Set + Speicher)" : "Set-Preis"}: <InlineEdit value={r.invest} onCommit={val => setOInvest(Math.round(val))} unit=" €" min={100} max={4000} step={50} width={64} /></div>
                 <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
                 <div>Haushaltsverbrauch: <InlineEdit value={haushaltKwh} onCommit={val => setOVerbrauch(Math.round(val))} unit=" kWh" min={800} max={12000} step={100} width={76} /></div>
+                <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
               </div>
             </div>
 
             {/* Stats 2×2 */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
-              <StatCard label="Amortisation" value={amortLabel} help="So lange dauert es, bis die Ersparnis den Set-Preis wieder eingespielt hat." />
+              <StatCard label="Amortisation" value={amortLabel} help="So lange dauert es, bis die Ersparnis die Anschaffung wieder eingespielt hat." />
               <StatCard label="Autarkie" value={`${Math.round(r.autarky * 100)} %`} valueColor={v('--color-positive')} help="Anteil deines Jahresstroms, den das Balkonkraftwerk selbst deckt. Bei kleinen Anlagen zweistellig — es deckt die Grundlast, nicht den ganzen Haushalt." />
-              <StatCard label="Gewinn nach 20 J." value={`${r.lifetimeSaving > 0 ? "+" : ""}${r.lifetimeSaving.toLocaleString("de-DE")} €`} valueColor={r.lifetimeSaving >= 0 ? v('--color-positive') : v('--color-negative')} help="Summe der Stromersparnis über 20 Jahre (mit 0,5 % Moduldegradation pro Jahr), abzüglich Anschaffung. Strompreis konstant gerechnet — steigt er, wird es besser." />
+              <StatCard label="Gewinn nach 20 J." value={`${r.lifetimeSaving > 0 ? "+" : ""}${r.lifetimeSaving.toLocaleString("de-DE")} €`} valueColor={r.lifetimeSaving >= 0 ? v('--color-positive') : v('--color-negative')} help={`Summe der Stromersparnis über 20 Jahre, abzüglich Anschaffung. Gerechnet mit 0,5 % Moduldegradation und ${(priceIncrease * 100).toLocaleString("de-DE")} % Strompreisanstieg pro Jahr (wie im PV-Rechner). Ein Speicher zählt nur bis zu seiner Lebensdauer mit.`} />
               <StatCard label="CO₂ gespart" value={`${r.co2PerYear.toLocaleString("de-DE")} kg/J`} help="Vermiedener CO₂-Ausstoß pro Jahr, gerechnet mit dem deutschen Netzstrom-Mix (0,38 kg/kWh)." />
             </div>
+
+            {/* Tagesleistungskurve der empfohlenen/aktiven Set-Größe */}
+            <SetPowerCurves sets={CFG.sets} selectedId={active.setId} orientationFactor={CFG.orientations.find(o => o.id === orientationId)!.factor} />
+            <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5, margin: "10px 0 16px" }}>
+              Seit 2024 darfst du nur bis <strong style={{ color: v('--color-text-primary') }}>800 Watt</strong> einspeisen.
+              Nutzt du mehr Module
+              <InfoTooltip title="Wie viele Module sind erlaubt?" ariaLabel="Wie viele Module sind erlaubt?" size={12}>
+                Die Module dürfen zusammen bis <strong>2.000 Wp</strong> leisten — mehr als der Wechselrichter durchlässt. Das ist
+                erlaubt und sinnvoll: Die Mittagsspitze wird gekappt, morgens und abends kommt aber mehr an.
+              </InfoTooltip>
+              , hast du morgens und abends mehr Ertrag — die Mittagsspitze bleibt bei 800 W gedeckelt.
+            </div>
+
+            {/* Speicher: ehrliche Mehrkosten/Nutzen-Aufschlüsselung */}
+            {r.storageKwh > 0 && (() => {
+              const extraSaving = r.savingPerYear - r.baseSavingPerYear;
+              const paysOff = isFinite(r.storagePayback) && r.storagePayback <= CFG.storageLifeYears;
+              return (
+                <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
+                  <div style={{ fontWeight: 700, color: v('--color-text-primary'), marginBottom: 6 }}>
+                    Mit {r.storageKwh.toLocaleString("de-DE")}-kWh-Speicher
+                  </div>
+                  <div>
+                    Der Speicher nutzt rund <strong style={{ color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{r.storageAddedKwh.toLocaleString("de-DE")} kWh</strong> Überschuss
+                    zusätzlich selbst — das bringt <strong style={{ color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{extraSaving.toLocaleString("de-DE")} €/Jahr</strong> mehr,
+                    kostet aber <strong style={{ color: v('--color-negative'), fontFamily: v('--font-mono') }}>+{r.storagePrice.toLocaleString("de-DE")} €</strong> Aufpreis.
+                  </div>
+                  <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 8 }}>
+                    {paysOff ? (
+                      <>Der Speicher allein rechnet sich nach rund <strong style={{ color: v('--color-text-secondary') }}>{r.storagePayback.toFixed(1).replace(".", ",")} Jahren</strong> — innerhalb seiner Lebensdauer. Deshalb ist er bei deinem Verbrauch drin.</>
+                    ) : (
+                      <>Der Speicher allein amortisiert sich {isFinite(r.storagePayback) ? <>erst nach <strong style={{ color: v('--color-text-secondary') }}>{r.storagePayback.toFixed(1).replace(".", ",")} Jahren</strong></> : "in dieser Konstellation praktisch nicht"} — meist länger, als ein Balkonspeicher typischerweise hält. Ehrlich: <strong style={{ color: v('--color-text-secondary') }}>hier lohnt er sich nicht.</strong></>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Einspeise-/Anmeldehinweis */}
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
               {r.feedInKwh > 0 ? (
-                <>Rund <strong style={{ color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{r.feedInKwh.toLocaleString("de-DE")} kWh</strong> Überschuss fließen unvergütet ins Netz — bei Balkon-PV lohnt eine Einspeisevergütung nicht. Deshalb zählt nur der selbst genutzte Strom.</>
+                <>Rund <strong style={{ color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{r.feedInKwh.toLocaleString("de-DE")} kWh</strong> Überschuss fließen unvergütet ins Netz — für Balkonkraftwerke gibt es keine Einspeisevergütung. Deshalb zählt nur der selbst genutzte Strom.</>
               ) : (
                 <>Du nutzt praktisch den gesamten Ertrag selbst — kein Überschuss geht verloren.</>
               )}
@@ -345,7 +527,7 @@ export default function Balkon() {
               <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Eigenes Dach? Große Anlage rechnen <IconArrowRight size={12} /></span>
               </Link>
-              <button onClick={() => setStep(0)} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
+              <button onClick={resetAll} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={12} /> Neu berechnen</span>
               </button>
             </div>
@@ -395,7 +577,7 @@ function SetPowerCurves({ sets, selectedId, orientationFactor }: {
   const capY = yPix(capKw);
 
   return (
-    <div style={{ marginTop: 16, background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, borderRadius: v('--radius-md'), padding: "12px 10px 6px" }}>
+    <div style={{ marginTop: 4, background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, borderRadius: v('--radius-md'), padding: "12px 10px 6px" }}>
       <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, paddingLeft: 4 }}>Leistung an einem Sonnentag</div>
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }} role="img" aria-label="Tagesleistung der Set-Größen mit Wechselrichter-Deckelung">
         {/* Wechselrichter-Deckel (800 W) */}

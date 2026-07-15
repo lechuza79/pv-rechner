@@ -331,17 +331,21 @@ export default async function DatenstandPage() {
         <Section
           title="Balkonkraftwerk (Steckersolar)"
           stand={monthYear(BK.validFrom)}
-          intro="Annahmen des Balkonkraftwerk-Rechners: Set-Preise, Wechselrichter-Grenze und Eigenverbrauch. Der Standort-Ertrag kommt live von PVGIS, der Strompreis ist im Ergebnis editierbar."
+          intro="Annahmen des Balkonkraftwerk-Rechners: Set-Preise, Wechselrichter-Grenze, Speicher-Option und Eigenverbrauch. Der Standort-Ertrag kommt live von PVGIS, der Strompreis ist im Ergebnis editierbar."
           rows={[
             { label: "Set-Preise: 1 Modul / 2 Module / 4 Module", value: BK.sets.map((s) => `~${nf(s.price)} €`).join(" / ") },
             { label: "Modul / Wechselrichter je Set", value: BK.sets.map((s) => `${nf(s.moduleWp)} Wp / ${nf(s.inverterW)} W`).join(" · ") },
+            { label: "Speicher-Aufpreis (~1 kWh / ~2 kWh)", value: BK.storage.filter((s) => s.kwh > 0).map((s) => `+${nf(s.price)} €`).join(" / ") },
+            { label: "Speicher hebt Eigenverbrauch auf max.", value: `${nf(BK.storageSelfShareCap * 100)} % (Durchsatz ~${nf(BK.storageEffCyclesPerYear)} Vollzyklen/a · ${nf(BK.storageRoundtrip * 100)} % Wirkungsgrad · Lebensdauer ${nf(BK.storageLifeYears)} J.)` },
+            { label: "Speicher-Empfehlung nur bei Amortisation unter", value: `${nf(BK.storageRecommendMaxPayback)} Jahren — sonst empfehlen wir bewusst ohne` },
             { label: "Wechselrichter-Deckel", value: `${nf(BK.maxFullLoadHours)} Volllaststunden/a → 800 W ≈ ${nf(Math.round(0.8 * BK.maxFullLoadHours))} kWh/a` },
             { label: "Ausrichtungsfaktor (aufgeständert / Geländer / Ost-West / verschattet)", value: BK.orientations.map((o) => nf(o.factor)).join(" / ") },
             { label: "Eigenverbrauch", value: `grundlast-gedeckt, Anteil sinkt mit Anlagengröße (${nf(BK.selfShareMin * 100)}–${nf(BK.selfShareMax * 100)} %)` },
             { label: "Lebensdauer / Degradation", value: `${nf(BK.lifetimeYears)} Jahre · ${nf(BK.degradation * 100)} %/a` },
+            { label: "Strompreisanstieg", value: `${nf(prices.electricityIncrease * 100)} % / Jahr (systemweit wie PV-Rechner)` },
             { label: "Einspeisung", value: "keine Vergütung — Überschuss fließt unvergütet ins Netz" },
           ]}
-          source={`Marktpreise Steckersolar-Sets 2026, Solarpaket I (800-W-Grenze), HTW Berlin Stecker-Solar-Simulator (Eigenverbrauch), PVGIS (Ertrag). Nächste Prüfung bis ${monthYear(BK.reviewBy)}.`}
+          source={`Marktpreise Steckersolar-Sets + Speicher 2026 (ADAC, Stiftung Warentest 4/2026, Verbraucherzentrale), Solarpaket I (800-W-Grenze), HTW Berlin Stecker-Solar-Simulator (Eigenverbrauch), PVGIS (Ertrag). Nächste Prüfung bis ${monthYear(BK.reviewBy)}.`}
         />
 
         {/* ── Eigenverbrauch & Verbrauch (Modell-Annahmen) ── */}

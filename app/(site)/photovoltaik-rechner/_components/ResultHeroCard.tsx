@@ -1,7 +1,7 @@
 "use client";
 import InlineEdit from "../../../../components/InlineEdit";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
-import { IconArrowRight, IconCheck } from "../../../../components/Icons";
+import StandortField from "../../../../components/StandortField";
 import { v } from "../../../../lib/theme";
 
 interface ResultHeroCardProps {
@@ -112,37 +112,14 @@ export default function ResultHeroCard({
               </div>
             )}
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ color: v('--color-text-secondary') }}>Standort</span>
-            <form onSubmit={e => { e.preventDefault(); fetchPvgis(plz); }} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-              <input
-                value={plz}
-                placeholder="PLZ"
-                aria-label="Postleitzahl eingeben"
-                inputMode="numeric"
-                maxLength={5}
-                className={!plzSource && !plzLoading ? "sc-plz-pulse" : undefined}
-                onChange={e => setPlz(e.target.value.replace(/\D/g, "").slice(0, 5))}
-                style={{
-                  // fontSize >= 16px prevents iOS Safari auto-zoom on focus.
-                  width: 56, textAlign: "center", fontSize: 16, fontWeight: 700,
-                  fontFamily: v('--font-mono'),
-                  color: plz.length === 5 ? v('--color-accent') : v('--color-text-secondary'),
-                  background: plz.length === 5 ? v('--color-accent-dim') : v('--color-bg'),
-                  border: plz.length === 5 ? `1px solid ${v('--color-border-accent')}` : `1px dashed ${v('--color-text-faint')}`,
-                  borderRadius: v('--radius-sm'), padding: "3px 4px", outline: "none",
-                }}
-              />
-              {plz.length === 5 && !plzLoading && !plzSource && (
-                <button type="submit" aria-label="Standort übernehmen" style={{
-                  padding: "3px 6px", fontSize: 11, fontWeight: 700, lineHeight: 1,
-                  background: v('--color-accent'), color: v('--color-text-on-accent'),
-                  border: "none", borderRadius: v('--radius-sm'), cursor: "pointer",
-                }}><IconArrowRight size={12} color={v('--color-text-on-accent')} /></button>
-              )}
-              {plzSource && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{plzSource === "pvgis" ? <IconCheck size={10} /> : "~"}</span>}
-            </form>
-          </div>
+          <StandortField
+            plz={plz}
+            onPlzChange={setPlz}
+            loading={plzLoading}
+            confirmed={!!plzSource}
+            approximate={!!plzSource && plzSource !== "pvgis"}
+            onSubmit={() => fetchPvgis(plz)}
+          />
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ color: v('--color-text-secondary') }}>Speicher</span>
             <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary'), fontSize: 15 }}>

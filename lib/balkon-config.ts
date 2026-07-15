@@ -6,14 +6,15 @@
 // betragen. Anmeldung: nur noch Marktstammdatenregister, keine Netzbetreiber-
 // Genehmigung mehr.
 //
-// Wirtschaftlich zählt fast nur der SELBST genutzte Strom: Überschuss fließt in
-// der Regel unvergütet ins Netz (eine EEG-Einspeisevergütung lohnt die Anmeldung
-// bei dieser Größe nicht). Deshalb modellieren wir Ertrag → Eigenverbrauch →
-// Ersparnis, nicht Einspeiseerlöse.
+// Wirtschaftlich zählt fast nur der SELBST genutzte Strom: für Balkonkraftwerke
+// gibt es keine Einspeisevergütung, der Überschuss fließt unvergütet ins Netz.
+// Deshalb modellieren wir Ertrag → Eigenverbrauch → Ersparnis, nicht
+// Einspeiseerlöse.
 
 export type BalkonSetId = "single" | "duo" | "max";
 export type BalkonOrientationId = "sued_flach" | "sued_gelaender" | "ost_west" | "nord_schatten";
 export type BalkonPresenceId = "weg" | "teils" | "home";
+export type BalkonStorageId = "none" | "small" | "large";
 
 export interface BalkonSet {
   id: BalkonSetId;
@@ -38,13 +39,23 @@ export interface BalkonPresence {
   selfShareBase: number; // Eigenverbrauchsanteil bei Referenz-Ertrag
 }
 
+export interface BalkonStorage {
+  id: BalkonStorageId;
+  label: string;
+  sub: string;
+  kwh: number;   // nutzbare Kapazität (kWh)
+  price: number; // Mehrkosten inkl. Wechselrichter/App (€), 0 = ohne Speicher
+}
+
 export interface BalkonConfig {
   sets: BalkonSet[];
   orientations: BalkonOrientation[];
   presence: BalkonPresence[];
+  storage: BalkonStorage[];
   defaultSet: BalkonSetId;
   defaultOrientation: BalkonOrientationId;
   defaultPresence: BalkonPresenceId;
+  defaultStorage: BalkonStorageId;
 
   specificYield: number;    // Fallback kWh/kWp (optimaler Winkel), von PVGIS überschrieben
   maxFullLoadHours: number; // Wechselrichter-Deckel → Jahres-Volllaststunden-Grenze
@@ -57,6 +68,28 @@ export interface BalkonConfig {
   sizeExp: number;
   selfShareMin: number;
   selfShareMax: number;
+
+  // Speicher-Modell: eine Batterie schiebt den Tagesüberschuss in Abend/Nacht,
+  // aber nur begrenzt durch (a) den vorhandenen Überschuss, (b) die realistische
+  // Jahres-Durchsatzmenge (≈ ein Vollzyklus/Tag, saisonal gebremst × Wirkungsgrad)
+  // und (c) den Rest-Haushaltsbedarf. Werte ehrlich: Balkon-Überschuss ist im
+  // Winter minimal, an Sonnen-Wochenenden ist die kleine Batterie mittags voll →
+  // deshalb keine 365 Vollzyklen und eine Obergrenze beim Eigenverbrauch.
+  // Quellen: ADAC/Stiftung Warentest 4/2026, Verbraucherzentrale — mit Speicher
+  // steigt der Eigenverbrauch typisch von 30–50 % auf 60–80 %, nicht auf 100 %.
+  storageEffCyclesPerYear: number; // effektive Vollzyklen/Jahr
+  storageRoundtrip: number;        // Lade-/Entlade-Wirkungsgrad (0–1)
+  storageSelfShareCap: number;     // Eigenverbrauchs-Obergrenze mit Speicher (0–1)
+  storageLifeYears: number;        // realistische Speicher-Lebensdauer (Jahre) — der
+                                   // Speicher-Zusatznutzen zählt nur bis hierhin, danach
+                                   // laufen die Module weiter.
+  storageRecommendMaxPayback: number; // Ein Speicher wird nur EMPFOHLEN, wenn er sich
+                                   // innerhalb dieser Jahre selbst amortisiert. Deutlich
+                                   // unter der Lebensdauer, damit die Empfehlung ehrlich
+                                   // bleibt: Speicher nur da, wo er sich klar rechnet
+                                   // (viel Überschuss = tagsüber wenig Eigenverbrauch),
+                                   // sonst empfehlen wir bewusst ohne — Balkonspeicher
+                                   // amortisieren sich oft nicht.
 
   lifetimeYears: number;
   degradation: number;
@@ -84,9 +117,15 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
     { id: "teils", label: "Teils zuhause", sub: "Homeoffice-Tage, Familie", selfShareBase: 0.62 },
     { id: "home", label: "Oft zuhause", sub: "Homeoffice, Rente, Kinder", selfShareBase: 0.75 },
   ],
+  storage: [
+    { id: "none", label: "Ohne Speicher", sub: "Überschuss fließt unvergütet ins Netz", kwh: 0, price: 0 },
+    { id: "small", label: "~1 kWh Speicher", sub: "Puffert etwas Abendstrom", kwh: 1, price: 500 },
+    { id: "large", label: "~2 kWh Speicher", sub: "Für Abend/Nacht bei höherem Verbrauch", kwh: 2, price: 800 },
+  ],
   defaultSet: "duo",
   defaultOrientation: "sued_gelaender",
   defaultPresence: "teils",
+  defaultStorage: "none",
 
   specificYield: 950,
   maxFullLoadHours: 1250,
@@ -95,6 +134,12 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   sizeExp: 0.30,
   selfShareMin: 0.30,
   selfShareMax: 0.92,
+
+  storageEffCyclesPerYear: 200,
+  storageRoundtrip: 0.9,
+  storageSelfShareCap: 0.78,
+  storageLifeYears: 12,
+  storageRecommendMaxPayback: 8,
 
   lifetimeYears: 20,
   degradation: 0.005,
