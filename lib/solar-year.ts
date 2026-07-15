@@ -10,11 +10,18 @@
 // weder das eine noch das andere.
 //
 // Warum je Ausrichtung eine EIGENE Reihe (statt eines Faktors auf die Suedreihe):
-// Ost/West hat zwei flache Spitzen statt einer hohen — es wird also ganz anders
-// gekappt (10,3 % statt 20,4 % bei 2 kWp an 800 W) und laedt den Speicher anders.
-// Ein Faktor kann das prinzipiell nicht abbilden, er skaliert nur die Menge.
+// Die Reihen unterscheiden sich in der FORM, nicht nur in der Menge — Ost hat eine
+// fruehe, flache Spitze am Vormittag statt einer hohen mittags. Es wird also ganz
+// anders gekappt (gemessen 8,8 % statt 17,7 % bei 2 kWp an 800 W) und der Speicher
+// laedt zu einer anderen Tageszeit. Ein Faktor kann das prinzipiell nicht abbilden.
 // Nebenbei hat der Wechsel auf echte Reihen aufgedeckt, dass die frueheren Faktoren
 // grob daneben lagen (Ost/West 0,85 statt real 0,51; Nord 0,5 statt real 0,20).
+//
+// ACHTUNG "ost_west": Das ist eine reine OST-Reihe (Spitze am Vormittag), KEINE
+// geteilte Ost/West-Anlage mit zwei Spitzen. In der MENGE ist das unkritisch —
+// PVGIS gibt fuer Ost 506,4 und West 496,1 kWh/kWp, also 2 % Unterschied. In der
+// FORM ist es das nicht: Eine Westanlage liefert abends, wenn gekocht wird. Der
+// Eigenverbrauch wird dadurch fuer West falsch herum gerechnet (siehe unten).
 //
 // Jahresertraege der Reihen (kWh/kWp): Sued aufgestaendert 1013,3 · Sued senkrecht
 // 694,2 (0,69) · Ost/West senkrecht 513,6 (0,51) · Nord senkrecht 198,2 (0,20).
@@ -28,6 +35,41 @@
 // Nutzung: Die Reihe liefert die VERTEILUNG und die Ausrichtung. Die MENGE am
 // Standort kommt aus den PVGIS-Monatswerten (/api/pvgis), auf die jeder Monat
 // skaliert wird. Lizenz: PVGIS/EU JRC, frei mit Quellenangabe (lib/data-sources.ts).
+//
+// ─── Gegenprobe PVGIS-Treue + HTW-Divergenz (07/2026) ──────────────────────
+// Die Reihen wurden gegen eine PVGIS-Direktabfrage geprueft (v5_2 PVcalc,
+// 51,3 N / 9,5 O, 1 kWp, 14 % loss). Alle vier liegen innerhalb von 2,5 % —
+// die Reihen sind also sauber aus PVGIS erzeugt (Regressionstest in
+// lib/__tests__/balkon.test.ts nagelt das fest):
+//   Sued 35 Grad     1013,3 (PVGIS 995,7) · Sued senkrecht 694,2 (703,6)
+//   Ost/West senkr.   513,5 (Ost 506,4 / West 496,1) · Nord senkr. 198,2 (194,2)
+//
+// Gegen den HTW Stecker-Solar-Simulator sieht es anders aus — am selben Standort
+// und nach Kalibrierung auf gleichen Sued-Ertrag:
+//   Sued senkrecht  −1,8 %  ·  Ost/West  −14 %  ·  Nord  −48 %
+// Das Muster ist kein Zufall, sondern eine Signatur: Je weniger DIREKTE Sonne eine
+// Flaeche sieht, desto weiter laufen die beiden Werkzeuge auseinander. Sued lebt
+// von Direktstrahlung (beide einig), eine Nordwand fast nur von Diffusstrahlung
+// (Faktor 1,9 Unterschied). Der Streit liegt also im Diffusmodell: Die HTW rechnet
+// mit Klucher (1979), PVGIS mit Muneer (1990) — beide anisotrop, aber mit
+// gegenlaeufigem Nord-Fehler:
+//   - Klucher UEBERSCHAETZT senkrechte Nordflaechen um ~20 % (Mubarak et al. 2017,
+//     Energies 10(11) 1688 — Messdaten Hannover, gleiches Klima; Klucher ist dort
+//     das schlechteste von fuenf Modellen, Hay & Davies das beste).
+//   - Muneer UNTERSCHAETZT Nord um ~45 % (Toledo et al. 2020, Energies 13(3) 702) —
+//     allerdings gemessen in Murcia/Spanien, wo eine Nordwand wegen des hohen
+//     Direktanteils viel mehr abbekommt. Nicht auf Brandenburg uebertragbar.
+// Entschieden hat es eine echte MESSUNG in Berlin: Am HZB "Living Lab" lieferte die
+// Nordfassade 25 % der Suedfassade (Albinius et al. 2025, Energies 18(5) 1293 —
+// gemessener AC-Ertrag 2022). PVGIS sagt 24,7 %, die HTW 53,8 %. Unsere Seite trifft
+// die Messung, die HTW liegt beim Doppelten.
+// Wir bleiben also bei PVGIS — und zwar aus zwei Gruenden: Es ist dieselbe Quelle,
+// aus der der PV-Rechner und die Live-Simulation ihre Ertraege ziehen (eine zweite
+// Strahlungsphysik nur fuer den Balkon waere ein Bruch in der geteilten Rechen-
+// Basis), und es ist bei Nord die belegbar naehere Zahl.
+// Ehrliche Restunsicherheit: Der Muneer-Bias legt nahe, dass 198 kWh/kWp eher am
+// unteren Rand liegt (plausibler Bereich ~200–300). Fuer Nord bleibt das die
+// konservative Richtung — und das ist die Ausrichtung, von der wir ohnehin abraten.
 
 export interface SolarDayType {
   /** Wie viele Tage dieses Typs der Monat hat. */

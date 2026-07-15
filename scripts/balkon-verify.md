@@ -44,15 +44,36 @@ Stichtag steht in `DEFAULT_BALKON_CONFIG.reviewBy`.
   Netzbetreiber-Genehmigung? (BNetzA)
 
 **Nicht prüfen (Modell-/Physik-Konstanten):**
-- `specificYield` (PVGIS-Fallback), `maxFullLoadHours` (Wechselrichter-Deckel),
-  `orientations[].factor` (Einstrahlungsphysik)
-- `refYieldKwh` / `sizeExp` / `selfShareMin` / `selfShareMax` — Eigenverbrauchs-
-  Modell, kalibriert am HTW Berlin Stecker-Solar-Simulator
-- `storage[].kwh` / `storageEffCyclesPerYear` / `storageRoundtrip` /
-  `storageSelfShareCap` — Speicher-Durchsatz-Modell (Physik/Kalibrierung: mit
-  Speicher steigt der Eigenverbrauch typisch auf 60–80 %, gedeckelt bei 78 %)
+- `specificYield` — PVGIS-Fallback, greift nur ohne PLZ
+- `storageRoundtrip` / `storageLifeYears` / `storageRecommendMaxPayback` —
+  Speicher-Physik und Empfehl-Schwelle. **Offener Punkt:** die HTW misst 82,5 %
+  Wirkungsgrad, wir rechnen mit 90 % (Details im Kommentar in `balkon-config.ts`).
 - `lifetimeYears` / `degradation` / `gridCo2PerKwh` (Konvention/Physik; CO2-Faktor
   identisch zum WP-/Klima-Rechner)
+
+> **Stand 07/2026:** Dieser Abschnitt listete früher `maxFullLoadHours`,
+> `orientations[].factor`, `refYieldKwh`, `sizeExp`, `selfShareMin/Max`,
+> `storageEffCyclesPerYear` und `storageSelfShareCap`. Alle sieben existieren nicht
+> mehr — der Rechner leitet Clipping, Eigenverbrauch und Speicher-Nutzen seit dem
+> Umbau auf `lib/balkon-sim.ts` aus einer Stunden-Simulation her, statt sie als
+> kalibrierte Konstanten anzunehmen. Es gibt hier also nichts mehr zu kalibrieren.
+
+## Modell-Validierung (nicht quartalsweise — nur bei Modelländerungen)
+
+Das Modell wurde 07/2026 gegen den **HTW Berlin Stecker-Solar-Simulator** validiert
+(das öffentliche Standardwerkzeug für Balkon-PV). Ergebnis und Herleitung stehen als
+Kommentar in `lib/balkon-sim.ts`; die PVGIS-Treue der Ertragsreihen ist als
+Regressionstest in `lib/__tests__/balkon.test.ts` festgenagelt.
+
+Kurzfassung: Auf der Südachse decken sich beide Werkzeuge (−0,1 % / −1,8 %). Der
+Eigenverbrauch liegt bei uns 3–9 % höher (BDEW H0 vs. gemessene Lastprofile), bei
+Ost/West und Nord divergieren PVGIS und HTW im Strahlungsmodell — dort ist unsere
+Zahl die belegbar nähere (gemessene Nordfassade HZB Berlin: 25 % der Südfassade,
+PVGIS 24,7 %, HTW 53,8 %).
+
+**Wenn die Reihen in `lib/solar-year.ts` neu erzeugt werden:** die PVGIS-Direktabfrage
+im Test (`matches a direct PVGIS query per orientation`) ist die Kontrolle — schlägt
+sie an, wurde mit falschem Winkel oder Azimut abgerufen.
 
 ## So wird die Routine ausgelöst
 

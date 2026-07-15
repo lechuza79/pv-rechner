@@ -51,6 +51,41 @@ describe("Referenz-Sonnenjahr (geteilte Basis)", () => {
       });
     }
   });
+
+  // ─── Externe Validierung: sind die Reihen noch PVGIS? ──────────────────────
+  // Der Rest dieser Datei prueft nur Selbst-Konsistenz — das faengt einen
+  // Vorzeichenfehler, aber keine falsch abgerufene Reihe. Diese Werte stammen
+  // aus einer PVGIS-Direktabfrage (v5_2 PVcalc, lat 51.3 / lon 9.5, 1 kWp,
+  // 14 % loss), also aus DERSELBEN Quelle, aus der die Reihen erzeugt wurden.
+  // Toleranz 5 %: Unsere Reihen sind das reale Jahr 2023, PVcalc liefert das
+  // Mittel 2005–2020 — ein kleiner Versatz ist erwartet, ein grosser heisst,
+  // die Reihe wurde mit falschem Winkel/Azimut neu erzeugt.
+  it("matches a direct PVGIS query per orientation (external reference)", () => {
+    const PVGIS_DIRECT: Record<string, number> = {
+      sued_flach: 995.7,      // angle 35, aspect 0
+      sued_gelaender: 703.6,  // angle 90, aspect 0
+      ost_west: 501.3,        // Mittel aus Ost (506,4) und West (496,1), beide angle 90
+      nord_schatten: 194.2,   // angle 90, aspect 180
+    };
+    for (const [o, expected] of Object.entries(PVGIS_DIRECT)) {
+      const dev = Math.abs(referenceYearKwh(o) - expected) / expected;
+      expect(dev, `${o} weicht ${(dev * 100).toFixed(1)} % von PVGIS ab`).toBeLessThan(0.05);
+    }
+  });
+
+  it("keeps east/west a single morning-peaked series (it is east, not a split array)", () => {
+    // Die Reihe ist eine reine OST-Reihe: eine Spitze am Vormittag. Fruehere
+    // Kommentare behaupteten "zwei flache Spitzen" (= geteilte Ost/West-Anlage),
+    // was die Daten nie hergaben. Der Test nagelt die tatsaechliche Form fest,
+    // damit Beschreibung und Daten nicht wieder auseinanderlaufen.
+    const june = SOLAR_YEAR_DE.ost_west[5];
+    const sunniest = june[june.length - 1];
+    const peakHour = sunniest.w.indexOf(Math.max(...sunniest.w));
+    expect(peakHour).toBeLessThan(10);
+    // Nachmittags (ab 14 h) faellt sie klar ab — kein zweiter West-Buckel.
+    const afternoon = Math.max(...sunniest.w.slice(14));
+    expect(afternoon).toBeLessThan(Math.max(...sunniest.w) * 0.3);
+  });
 });
 
 describe("calcBalkon", () => {

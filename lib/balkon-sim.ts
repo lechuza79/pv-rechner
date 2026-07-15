@@ -11,9 +11,45 @@
 //   2. Ein Speicher lädt mittags und entlädt abends.
 //   3. Im Sommer gibt es Überschuss satt, im Winter praktisch keinen.
 // Mit Jahressummen ist all das unsichtbar: Der Standort wirkte bei gedeckelten
-// Anlagen gar nicht, und ein größerer Speicher brachte rechnerisch nie etwas.
-// Deshalb fallen Clipping, Eigenverbrauch und Speicher-Nutzen hier als ERGEBNIS
-// an, statt als kalibrierte Konstanten angenommen zu werden.
+// Anlagen gar nicht, und ein größerer Speicher brachte rechnerisch nie einen
+// Unterschied. Deshalb fallen Clipping, Eigenverbrauch und Speicher-Nutzen hier
+// als ERGEBNIS an, statt als kalibrierte Konstanten angenommen zu werden.
+//
+// ─── Validiert gegen den HTW Stecker-Solar-Simulator (07/2026) ──────────────
+// Gegenprobe gegen das oeffentliche Standardwerkzeug fuer Balkon-PV (HTW Berlin,
+// Datenstand 08/2024). Damit Modelle und nicht Standorte verglichen werden, wurde
+// unser Standort auf den HTW-Standort kalibriert (Lindenberg/Brandenburg, Wetter-
+// jahr 2017): Sued 35 Grad, 800 Wp am 800-W-Wechselrichter = 791 kWh/a bei beiden.
+// Referenzfall danach 800 Wp / 2.100 kWh Haushalt (HTW-Vorgabe fuer 2 Personen in
+// der Wohnung) / tagQuote 0,30.
+//
+//   Ertrag Sued aufgestaendert   790 vs 791 kWh   (−0,1 %)
+//   Ertrag Sued senkrecht        542 vs 552 kWh   (−1,8 %)
+//   Nutzungsgrad Sued 35 Grad   50,0 % vs 48,3 %  (+3,5 %)
+//   Nutzungsgrad Sued senkrecht 61,1 % vs 56,3 %  (+8,5 %)
+//   Speicher 1 kWh, Zugewinn    +144 vs +165 kWh  (−13 %), Saettigung bei beiden ~1,5 kWh
+//
+// Die Ertraege auf der Suedachse decken sich also praktisch. Die verbleibenden
+// Abweichungen sind ERKLAERBAR und laufen in bekannte Richtungen:
+//
+// 1. Eigenverbrauch etwas zu hoch (+3 bis +9 %): Wir rechnen mit dem BDEW-H0-
+//    Standardlastprofil, die HTW mit 41 GEMESSENEN Haushaltsprofilen. H0 ist
+//    geglaettet — echte Haushalte haben kurze harte Spitzen (Wasserkocher, Herd),
+//    die eine 800-W-Anlage nicht decken kann. Glaetten schoent den Eigenverbrauch
+//    also systematisch. Die Richtung ist erwartet, die Groesse klein; ein Wechsel
+//    auf gemessene Profile waere ein Eingriff in die geteilte Rechen-Basis
+//    (calcHourlyConsumption) und damit in JEDEN Rechner der Seite.
+// 2. Speicher-Zugewinn etwas zu niedrig (−13 %): Folge von 1. — wo direkt schon
+//    mehr genutzt wird, bleibt weniger Ueberschuss zum Einspeichern. Die
+//    Saettigungsgrenze (ab ~1,5 kWh bringt mehr Kapazitaet fast nichts) ist bei
+//    beiden Modellen dieselbe, und nur die traegt die Empfehlung.
+// 3. Ost/West und Nord: siehe lib/solar-year.ts — dort divergieren PVGIS und die
+//    HTW im Strahlungsmodell, das ist keine Eigenheit dieser Simulation.
+//
+// Nicht validiert: Verschattung (die HTW modelliert sie explizit, wir werfen sie
+// mit Nord in eine Option) und Ertraege oberhalb von 800 Wp (die HTW-Werte fuer
+// 2.000 Wp liegen 6,5 % unter unseren — teils die dokumentierte Verdichtungs-
+// Abweichung von +3,5 % im haertesten Clipping-Fall, siehe lib/solar-year.ts).
 
 import { calcHourlyConsumption, type HouseholdProfile } from "./consumption";
 import { SOLAR_YEAR_DE, referenceMonthKwh } from "./solar-year";
@@ -91,6 +127,15 @@ export function simulateBalkonYear(input: BalkonSimInput): BalkonSimResult {
         let surplus = acKwh - direct;
         const deficit = loadKwh - direct;
 
+        // Der Speicher haengt hier hinter dem Wechselrichter (AC-gekoppelt): Er
+        // laedt aus dem GEDECKELTEN Ertrag, die gekappte Mittagsspitze ist fuer ihn
+        // verloren. Reale Balkonspeicher (Anker, Zendure, Growatt) sind DC-gekoppelt
+        // und koennten sie einfangen. Nachgerechnet (07/2026): Fuer die angebotenen
+        // Groessen macht es exakt null Unterschied — 1,6 kWh sind aus dem normalen
+        // Vormittags-Ueberschuss laengst voll, bevor mittags ueberhaupt gekappt wird.
+        // Messbar wird es erst ab ~6 kWh (+46 kWh/a), und so grosse Speicher gibt es
+        // am Balkon nicht. Deshalb bleibt die einfachere AC-Kopplung stehen; die HTW
+        // modelliert an dieser Stelle ebenso.
         // Überschuss in den Speicher, soweit Platz ist.
         if (surplus > 0 && input.batteryKwh > 0) {
           const charge = Math.min(surplus, input.batteryKwh - soc);

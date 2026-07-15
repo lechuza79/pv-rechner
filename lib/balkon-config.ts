@@ -56,6 +56,19 @@ export interface BalkonOrientation {
   // PVGIS-Stundenreihe mit eigenem Tagesverlauf. Ein Faktor koennte nur die Menge
   // skalieren, nicht die Form — und lag frueher grob daneben (Ost/West 0,85 statt
   // real 0,51; Nord 0,5 statt real 0,20).
+  //
+  // BEKANNTE GRENZE (HTW-Validierung 07/2026): "ost_west" rechnet mit einer reinen
+  // OST-Reihe, und beide Optionen fassen je zwei Faelle zusammen, die sich
+  // unterschiedlich verhalten:
+  //   - Ost vs. West: In der Menge fast gleich (PVGIS 506 vs. 496 kWh/kWp), im
+  //     Eigenverbrauch nicht. West liefert abends, wenn gekocht wird. Die HTW misst
+  //     deshalb fuer West MEHR Eigenverbrauch als fuer Ost (294 vs. 288 kWh) trotz
+  //     weniger Ertrag — bei uns kommt es andersherum heraus (Ost +12 %). Wir
+  //     rechnen West also als Ost und liegen beim Vorzeichen falsch.
+  //   - Nord vs. verschattet: Eine verschattete Suedwand hat einen voellig anderen
+  //     Tagesverlauf als eine Nordwand; die Reihe ist echtes Nord, ohne Verschattung.
+  // Beides ist bewusst offen (eigene West-Reihe + getrennte Verschattungs-Option
+  // waeren die Fixes) — es haengt an der Frage, wie fein der Flow fragen soll.
 }
 
 export interface BalkonPresence {
@@ -103,7 +116,16 @@ export interface BalkonConfig {
   // (PVGIS-Monatswerte + calcHourlyConsumption), damit ergeben sich Clipping,
   // Eigenverbrauch und Speicher-Nutzen als Ergebnis statt als Annahme.
 
-  storageRoundtrip: number;        // Lade-/Entlade-Wirkungsgrad (0–1), Physik
+  // Lade-/Entlade-Wirkungsgrad (0–1), Physik. OFFENER PUNKT aus der HTW-Validierung
+  // (07/2026): Die HTW misst 82,5 % (Laden 91,7 % × Entladen 92 % × Batterie 97,8 %,
+  // PerMod-Modell) — unsere 90 % sind optimistischer. Die HTW rechnet allerdings
+  // AC-gekoppelt (zwei volle Wandlungen), waehrend die realen Balkonspeicher
+  // DC-gekoppelt sind und eine davon sparen; 90 % ist dort Herstellerangabe, also
+  // eher Obergrenze. Ein Wert um 85 % waere vermutlich ehrlicher — das senkt den
+  // Speicher-Zugewinn um rund 6 % und damit die Speicher-Empfehlung. Bewusst NICHT
+  // im Vorbeigehen geaendert: Der Wert steht auf /datenstand und veraendert
+  // Nutzer-Ergebnisse.
+  storageRoundtrip: number;
   storageLifeYears: number;        // realistische Speicher-Lebensdauer (Jahre) — der
                                    // Speicher-Zusatznutzen zählt nur bis hierhin, danach
                                    // laufen die Module weiter.
