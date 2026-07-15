@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { calcBalkon, recommendBalkon } from "../balkon";
 import { DEFAULT_BALKON_CONFIG as CFG } from "../balkon-config";
+import { SOLAR_YEAR_DE, REFERENCE_YEAR_KWH } from "../solar-year";
+import { DAYS_IN_MONTH } from "../consumption";
 
 const base = {
   setId: "duo" as const,
@@ -11,12 +13,57 @@ const base = {
   stromPrice: 0.34,
 };
 
+describe("Referenz-Sonnenjahr (geteilte Basis)", () => {
+  it("reproduces the PVGIS reference year and keeps the peaks", () => {
+    // Waechter fuer lib/solar-year.ts: Wird die Datei neu erzeugt, muessen Energie
+    // UND Spitze stimmen — sonst kippt still das Clipping und damit die Empfehlung.
+    expect(REFERENCE_YEAR_KWH).toBeGreaterThan(1000); // PVGIS 2023: 1012,7 kWh/kWp
+    expect(REFERENCE_YEAR_KWH).toBeLessThan(1025);
+
+    const peak = Math.max(...SOLAR_YEAR_DE.flatMap(month => month.flatMap(t => t.w)));
+    // Original-Spitze 902 W/kWp, durch die Mittelung im Sextil auf ~810 gedaempft.
+    // Faellt sie unter 800, clippt ein 1-kWp-Set gar nicht mehr — dann ist die
+    // Verdichtung zu grob geworden.
+    expect(peak).toBeGreaterThan(800);
+    expect(peak).toBeLessThanOrEqual(902);
+
+    // Jeder Monat braucht alle Tage — sonst fehlt Energie.
+    SOLAR_YEAR_DE.forEach((month, m) => {
+      const days = month.reduce((s, t) => s + t.days, 0);
+      expect(days).toBe(DAYS_IN_MONTH[m]);
+    });
+  });
+});
+
 describe("calcBalkon", () => {
-  it("caps annual yield at the inverter limit (clipping) for the max set", () => {
-    const r = calcBalkon({ ...base, setId: "max", orientationId: "sued_flach" });
-    // 2000 Wp × 950 × 1.0 = 1900 kWh raw, aber 800 W × 1250 h = 1000 kWh Deckel
-    expect(r.annualYield).toBe(1000);
-    expect(r.clipped).toBe(true);
+  it("clips the midday peak — more modules still yield more, just not proportionally", () => {
+    const max = calcBalkon({ ...base, setId: "max", orientationId: "sued_flach" });
+    const duo = calcBalkon({ ...base, setId: "duo", orientationId: "sued_flach" });
+    expect(max.clipped).toBe(true);
+    // Der Wechselrichter kappt die Spitze, nicht die Jahresmenge auf einen festen
+    // Deckel: morgens und abends kommt alles durch. Also mehr als duo …
+    expect(max.annualYield).toBeGreaterThan(duo.annualYield);
+    // … aber deutlich weniger als das Doppelte, weil mittags gekappt wird.
+    expect(max.annualYield).toBeLessThan(2 * duo.annualYield);
+  });
+
+  it("clipping eats more of the gain when the inverter already runs at the limit", () => {
+    // Aufgeständert steht die Anlage mittags am Anschlag → zusätzliche Module
+    // bringen relativ weniger als am (flacheren) Geländer. Physikalische
+    // Aussage, die vorher im harten Deckel unterging.
+    const ratio = (o: "sued_flach" | "sued_gelaender") =>
+      calcBalkon({ ...base, setId: "max", orientationId: o }).annualYield /
+      calcBalkon({ ...base, setId: "duo", orientationId: o }).annualYield;
+    expect(ratio("sued_flach")).toBeLessThan(ratio("sued_gelaender"));
+  });
+
+  it("location changes the result even for a clipped set", () => {
+    // Der eigentliche Grund für die Simulation: Ein sonnigerer Standort liegt
+    // LÄNGER an der 800-W-Grenze → mehr Ertrag, obwohl gedeckelt. Mit dem alten
+    // Jahres-Deckel war die PLZ hier komplett wirkungslos.
+    const dim = calcBalkon({ ...base, setId: "max", orientationId: "sued_flach", specificYield: 900 });
+    const bright = calcBalkon({ ...base, setId: "max", orientationId: "sued_flach", specificYield: 1150 });
+    expect(bright.annualYield).toBeGreaterThan(dim.annualYield);
   });
 
   it("does not clip a small vertically mounted set", () => {
@@ -115,9 +162,13 @@ describe("calcBalkon — Speicher", () => {
     expect(r.storageAddedKwh).toBeLessThanOrEqual(surplusWithoutStorage);
   });
 
-  it("self-consumption stays at or below the storage cap (never 100 %)", () => {
-    const r = calcBalkon({ ...base, storageId: "large", haushaltKwh: 5000 });
-    expect(r.selfShare).toBeLessThanOrEqual(CFG.storageSelfShareCap + 1e-9);
+  it("a big set on a small household always spills surplus", () => {
+    // Ergebnis der Simulation statt gesetzter Obergrenze: Wenn die Anlage gross
+    // und der Haushalt klein ist, ist an Sonnentagen irgendwann der Akku voll UND
+    // die Last gedeckt — der Rest fliesst unvergütet ab.
+    const r = calcBalkon({ ...base, setId: "max", orientationId: "sued_flach", haushaltKwh: 1200, storageId: "large" });
+    expect(r.feedInKwh).toBeGreaterThan(0);
+    expect(r.selfShare).toBeLessThan(1);
   });
 
   it("storage payback is finite and worse (longer) than the whole-system amortisation", () => {
@@ -161,11 +212,20 @@ describe("recommendBalkon", () => {
     expect(rec.best.setId).toBe("max");
   });
 
-  it("does not push the largest set when the inverter is already saturated (optimal orientation)", () => {
-    // Süd, aufgeständert lastet den 800-W-Wechselrichter fast aus → zusätzliche
-    // Module bringen kaum mehr Ertrag, kosten aber extra → duo schlägt max.
-    const rec = recommendBalkon({ ...base, orientationId: "sued_flach" });
-    expect(rec.best.setId).toBe("duo");
+  it("weighs the extra modules against what the inverter still lets through", () => {
+    // Süd, aufgeständert lastet den 800-W-Wechselrichter mittags aus → das grosse
+    // Set legt relativ weniger drauf als am Geländer. Es kann trotzdem gewinnen
+    // (morgens/abends kommt alles durch) — entscheidend ist, dass die Empfehlung
+    // den geringeren Zugewinn ueberhaupt sieht. Das alte Jahres-Deckel-Modell
+    // machte daraus faelschlich "bringt gar nichts".
+    const flat = recommendBalkon({ ...base, orientationId: "sued_flach" });
+    const rail = recommendBalkon({ ...base, orientationId: "sued_gelaender" });
+    const gain = (r: typeof flat) => {
+      const max = r.ranked.find(o => o.setId === "max" && o.storageId === "none")!.result.annualYield;
+      const duo = r.ranked.find(o => o.setId === "duo" && o.storageId === "none")!.result.annualYield;
+      return max / duo;
+    };
+    expect(gain(flat)).toBeLessThan(gain(rail));
   });
 
   it("recommends the largest set for a vertical balcony (angle loss favours more modules)", () => {
@@ -190,14 +250,14 @@ describe("recommendBalkon", () => {
     expect(home.storagePayback).toBeGreaterThan(away.storagePayback);
   });
 
-  it("a bigger storage brings nothing extra once the balcony surplus is the limit", () => {
-    // Kernaussage des Modells: Ein Balkon liefert zu wenig Überschuss, um einen
-    // grossen Speicher zu fuellen/leeren → die groessere Stufe schiebt dieselbe
-    // Menge, kostet aber mehr → sie gewinnt nie.
+  it("a bigger storage captures more — the gain is real, the price decides", () => {
+    // An Sonnentagen faellt mehr Ueberschuss an, als ein kleiner Akku fassen kann
+    // → der groessere sammelt mehr ein. Das Jahressummen-Modell verschluckte das
+    // (beide Groessen kamen auf dieselbe Menge), die Simulation sieht den
+    // Sommertag. Ob sich der Aufpreis lohnt, entscheidet die Wirtschaftlichkeit.
     const small = calcBalkon({ ...base, setId: "max", storageId: "small" });
     const large = calcBalkon({ ...base, setId: "max", storageId: "large" });
-    expect(large.storageAddedKwh).toBe(small.storageAddedKwh);
-    expect(large.lifetimeSaving).toBeLessThan(small.lifetimeSaving);
+    expect(large.storageAddedKwh).toBeGreaterThan(small.storageAddedKwh);
   });
 
   it("DOES recommend a storage when the household is away by day (much surplus)", () => {

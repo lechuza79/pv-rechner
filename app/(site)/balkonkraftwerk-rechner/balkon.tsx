@@ -45,6 +45,9 @@ export default function Balkon() {
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzConfirmed, setPlzConfirmed] = useState(false);
   const [specificYield, setSpecificYield] = useState(CFG.specificYield);
+  // 12 Monatswerte (kWh/kWp) von PVGIS — dieselbe Quelle wie der PV-Rechner.
+  // Ohne PLZ null, dann rechnet das Modell mit dem deutschen Durchschnittsprofil.
+  const [monthlyYield, setMonthlyYield] = useState<number[] | null>(null);
 
   // Einmaliger PLZ-Toast, sobald das Ergebnis erscheint und noch kein Standort
   // gesetzt ist — nudget zur standortgenauen Ertragsrechnung (wie im PV-Rechner).
@@ -112,6 +115,9 @@ export default function Balkon() {
         const res = await fetch(`/api/pvgis?lat=${coords[0]}&lon=${coords[1]}&plzPrefix=${inputPlz.slice(0, 2)}`);
         const data = await res.json();
         if (typeof data.annual === "number") setSpecificYield(data.annual);
+        // Monatsprofil übernehmen (wie im PV-Rechner) — ohne das gäbe es kein
+        // Sommer/Winter und der Standort bliebe bei gedeckelten Sets wirkungslos.
+        if (data.monthly && data.monthly.length === 12) setMonthlyYield(data.monthly);
       }
       setPlzConfirmed(true);
     } catch { /* Fallback bleibt */ }
@@ -126,8 +132,8 @@ export default function Balkon() {
   // Empfehlung: effizienteste Konfiguration (Set + Speicher) aus den Eingaben.
   // Reagiert live auf die im Ergebnis editierbaren Werte (Strompreis, Verbrauch).
   const recommendation = useMemo(
-    () => recommendBalkon({ orientationId, presenceId, haushaltKwh, specificYield, stromPrice: strompreis, priceIncrease }),
-    [orientationId, presenceId, haushaltKwh, specificYield, strompreis, priceIncrease],
+    () => recommendBalkon({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease }),
+    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, priceIncrease],
   );
 
   // Aktive Konfiguration: gewählte Alternative oder — Default — die Empfehlung.
@@ -136,8 +142,8 @@ export default function Balkon() {
 
   const inputs: BalkonInputs = useMemo(() => ({
     setId: active.setId, orientationId, presenceId, storageId: active.storageId,
-    haushaltKwh, specificYield, stromPrice: strompreis, priceIncrease, invest: oInvest ?? undefined,
-  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, strompreis, priceIncrease, oInvest]);
+    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease, invest: oInvest ?? undefined,
+  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, priceIncrease, oInvest]);
 
   const r = useMemo(() => calcBalkon(inputs), [inputs]);
   const amortLabel = isFinite(r.amortYears) ? `${r.amortYears.toFixed(1).replace(".", ",")} J.` : "—";

@@ -1,16 +1,23 @@
 // Balkon-PV / Steckersolar — reine Berechnungsfunktionen.
-// Modell und Kalibrierung: siehe lib/balkon-config.ts.
+//
+// Ertrag, Eigenverbrauch und Speicher-Nutzen kommen aus der Stunden-Simulation
+// (lib/balkon-sim.ts) auf der geteilten Rechen-Basis — siehe CLAUDE.md
+// „Geteilte Rechen-Basis". Hier steckt nur noch die Wirtschaftlichkeit:
+// Investition, Amortisation, Lebensdauer-Gewinn.
 
 import { DEFAULT_BALKON_CONFIG, type BalkonConfig, type BalkonSetId, type BalkonOrientationId, type BalkonPresenceId, type BalkonStorageId } from "./balkon-config";
 import { DEFAULT_PRICES } from "./prices-config";
+import { simulateBalkonYear, monthlyFromAnnual } from "./balkon-sim";
 
 export interface BalkonInputs {
   setId: BalkonSetId;
   orientationId: BalkonOrientationId;
   presenceId: BalkonPresenceId;
   storageId?: BalkonStorageId; // optionaler Speicher (Default: ohne)
-  haushaltKwh: number;     // Jahresverbrauch Haushalt (für Autarkie)
-  specificYield: number;   // kWh/kWp am Standort (PVGIS oder Fallback)
+  haushaltKwh: number;     // Jahresverbrauch Haushalt
+  specificYield: number;   // kWh/kWp im Jahr — Fallback, wenn kein Monatsprofil da ist
+  /** 12 Monatswerte kWh/kWp aus PVGIS. Ohne PLZ null → Fallback aus specificYield. */
+  monthlyYield?: number[] | null;
   stromPrice: number;      // €/kWh
   priceIncrease?: number;  // jährlicher Strompreisanstieg (Default: PV-Systemwert, 3 %)
   invest?: number;         // optional überschriebene Anschaffung (Set + Speicher)
@@ -186,40 +193,36 @@ export function calcBalkon(inputs: BalkonInputs, cfg: BalkonConfig = DEFAULT_BAL
   const moduleKwp = set.moduleWp / 1000;
   const inverterKw = set.inverterW / 1000;
 
-  // Rohertrag aus Modulleistung × Standort-Ertrag × Ausrichtung, gedeckelt durch
-  // den Wechselrichter (mehr Module bringen früh/spät mehr, die Mittagsspitze
-  // wird abgeschnitten — das bildet die Volllaststunden-Grenze ab).
-  const rawYield = moduleKwp * inputs.specificYield * orient.factor;
-  const inverterCap = inverterKw * cfg.maxFullLoadHours;
-  const annualYield = Math.round(Math.min(rawYield, inverterCap));
-  const clipped = inverterCap < rawYield;
+  // Standort: echtes PVGIS-Monatsprofil, sonst deutscher Durchschnitt aus der
+  // Jahressumme. Beides in kWh/kWp je Monat — dieselbe Quelle wie im PV-Rechner.
+  const monthlyYieldPerKwp = inputs.monthlyYield && inputs.monthlyYield.length === 12
+    ? inputs.monthlyYield
+    : monthlyFromAnnual(inputs.specificYield);
 
-  // Eigenverbrauchsanteil OHNE Speicher: sinkt mit der Anlagengröße relativ zur
-  // Grundlast.
-  let baseShare = presence.selfShareBase * Math.pow(cfg.refYieldKwh / Math.max(annualYield, 1), cfg.sizeExp);
-  baseShare = clamp(baseShare, cfg.selfShareMin, cfg.selfShareMax);
+  // Der Haushalt als geteiltes Lastprofil (BDEW H0): tagQuote steuert Tag/Nacht.
+  // Balkon-PV kennt keine WP/E-Auto/Klima-Zuschläge — der Rechner fragt nur nach
+  // dem Haushalt selbst.
+  const household = {
+    baseKwh: inputs.haushaltKwh,
+    tagQuote: presence.tagQuote,
+    wpActive: false,
+    eaActive: false,
+  };
 
-  // Mehr selbst nutzen als der Haushalt verbraucht, ist unmöglich.
-  const baseSelfUsedKwh = Math.round(Math.min(annualYield * baseShare, inputs.haushaltKwh));
+  const simBase = { moduleKwp, inverterKw, monthlyYieldPerKwp, orientationFactor: orient.factor, household, roundtrip: cfg.storageRoundtrip };
+  // Zwei Läufe: ohne Speicher als Referenz, mit Speicher für die aktive Wahl.
+  // Der Speicher-Nutzen ist damit eine echte Differenz aus der Simulation und
+  // keine angenommene Quote.
+  const simNoBattery = simulateBalkonYear({ ...simBase, batteryKwh: 0 });
+  const sim = storage.kwh > 0 ? simulateBalkonYear({ ...simBase, batteryKwh: storage.kwh }) : simNoBattery;
 
-  // Speicher schiebt Tagesüberschuss in Abend/Nacht — begrenzt durch (a) den
-  // vorhandenen Überschuss, (b) die realistische Jahres-Durchsatzmenge und (c)
-  // die Eigenverbrauchs-Obergrenze bzw. den Rest-Haushaltsbedarf. Ehrlich: ein
-  // Speicher hebt den Eigenverbrauch, macht die Anschaffung aber teurer.
-  let storageAddedKwh = 0;
-  if (storage.kwh > 0) {
-    const surplus = Math.max(0, annualYield - baseSelfUsedKwh);
-    const throughput = storage.kwh * cfg.storageEffCyclesPerYear * cfg.storageRoundtrip;
-    const capKwh = Math.min(inputs.haushaltKwh, annualYield * cfg.storageSelfShareCap);
-    const headroom = Math.max(0, capKwh - baseSelfUsedKwh);
-    // Abrunden: hält die Eigenverbrauchs-Obergrenze exakt ein und rechnet den
-    // Speicher-Nutzen eher konservativ als schön.
-    storageAddedKwh = Math.floor(Math.min(surplus, throughput, headroom));
-  }
-
-  const selfUsedKwh = baseSelfUsedKwh + storageAddedKwh;
+  const annualYield = sim.annualYield;
+  const clipped = sim.clippedKwh > 0;
+  const baseSelfUsedKwh = simNoBattery.selfUsedKwh;
+  const storageAddedKwh = Math.max(0, sim.selfUsedKwh - baseSelfUsedKwh);
+  const selfUsedKwh = sim.selfUsedKwh;
   const selfShare = annualYield > 0 ? selfUsedKwh / annualYield : 0;
-  const feedInKwh = Math.max(0, annualYield - selfUsedKwh);
+  const feedInKwh = sim.feedInKwh;
 
   const invest = inputs.invest ?? (set.price + storage.price);
   // Strompreisanstieg systemweit konsistent mit dem PV-Rechner (gleicher Wert aus

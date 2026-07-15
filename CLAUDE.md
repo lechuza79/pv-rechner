@@ -475,6 +475,31 @@ pv-rechner/
 | `InlineEdit` | `components/InlineEdit.tsx` | Click-to-Edit Zahlenwert im Ergebnis |
 | `Chart` | `components/Chart.tsx` | SVG-Amortisationskurve (3 Szenarien, kein D3) |
 
+## Geteilte Rechen-Basis (alle Rechner) — BLOCKER
+
+**Alle Rechner (PV, Wärmepumpe, Balkon, Klima, Simulation) rechnen auf derselben Grundlage.** Bevor du für einen Rechner eine Annahme triffst oder eine Konstante setzt: **prüfen, ob es die Größe hier schon gibt.** Eigene Fundamente sind der teuerste Fehler im Projekt — sie fallen erst auf, wenn die Ergebnisse zwischen den Rechnern auseinanderlaufen.
+
+| Wofür | Kanonische Quelle | Typische Falle |
+|---|---|---|
+| **Standort-Ertrag** | `/api/pvgis` liefert `annual` **und `monthly`** (12 Werte, in Supabase gecacht) | Nur `annual` nehmen → Sommer/Winter existiert nicht mehr, Standort wirkt bei gedeckelten Anlagen gar nicht |
+| **Stundenlast Haushalt** | `calcHourlyConsumption(household, hour, month)` + `HouseholdProfile` (`lib/consumption.ts`, BDEW H0 / VDI 4655) | Eigenes Lastprofil bauen |
+| **Tag/Nacht-Verhalten** | `tagQuote` (`NUTZUNG` in `lib/constants.ts`) | Eine eigene „Anwesenheits"-Größe erfinden |
+| **Jahresverbrauch je Haushalt** | `PERSONEN` (`lib/constants.ts`) | Eigene kWh-Tabelle |
+| **Strompreis + Anstieg** | `usePrices()` / `DEFAULT_PRICES` → `electricityPrice`, `electricityIncrease` (3 %/a) | Eigenen Preispfad annehmen oder „konstant" rechnen |
+| **Szenarien** | `SCENARIOS` (`lib/constants.ts`, ±1/3/5 %) | Eigene Spannen |
+| **CO₂-Preispfad** | `lib/co2-config.ts` | Eigene Pfad-Tabelle |
+| **CO₂ Netzstrom** | `gridCo2PerKwh` (WP-/Klima-/Balkon-Config identisch) | Abweichender Faktor je Rechner |
+| **Degradation / Laufzeit** | `DEGRAD`, `YEARS` (`lib/constants.ts`) | Eigene Werte |
+| **Standort-Eingabe (UI)** | `components/StandortField.tsx` (PV-Rechner + Balkon) | Zweites PLZ-Feld bauen |
+| **Marktpreise Hardware** | `market_prices` (gescrapt) → `usePrices()`, `useHeatpumpPrices()`; wo es keine Scrape-Quelle gibt: Config + Wächter-Runbook | Preise im Code verstreuen |
+
+**Drei Fragen vor dem ersten Code eines Rechners/Modells:**
+1. Welche Zeile der Tabelle trifft zu? → **benutzen**, nicht nachbauen.
+2. Weiche ich bewusst ab? → **Grund als Kommentar in den Code**, nicht nur in den Kopf. (Legitim z. B.: Balkon-Eigenverbrauch ist ein anderer HTW-Datensatz als Dach-PV.)
+3. **Welche Konstante rate ich hier gerade — und gibt es dafür im Projekt schon eine Quelle?**
+
+**Warum das hier steht (Balkon-Rechner, Juli 2026):** Der Balkon-Rechner bekam ein eigenes Fundament — eigenes Eigenverbrauchs-Power-Law, eigener Clipping-Deckel, eigene Speicher-Konstanten, konstanter Strompreis, eigene „Anwesenheits"-Größe — obwohl PVGIS-Monatswerte, `calcHourlyConsumption` und der Preispfad längst existierten. Er holte die Monatswerte sogar von PVGIS ab **und warf sie weg**. Folge: Der Standort wirkte auf die Empfehlung gar nicht, Sommer/Winter gab es nicht, und sechs geratene Konstanten mussten von Hand kalibriert werden. Das fiel erst nach mehreren Runden Nutzer-Feedback auf. **Eine Konstante, die du kalibrierst, ist fast immer eine, die woanders schon hergeleitet ist.**
+
 ## Embed-Widgets (Energie-Widgets)
 
 Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Kompakt, Karte, Simulation, Kennzahl). Galerie mit Live-Vorschau + Copy-Paste-Code: `app/(site)/energie-widgets`. **Alle Widgets sind auf einem Stand — beim Bauen eines neuen Widgets dieselbe Konvention einhalten:**

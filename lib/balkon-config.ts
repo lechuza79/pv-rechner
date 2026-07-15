@@ -10,6 +10,12 @@
 // gibt es keine Einspeisevergütung, der Überschuss fließt unvergütet ins Netz.
 // Deshalb modellieren wir Ertrag → Eigenverbrauch → Ersparnis, nicht
 // Einspeiseerlöse.
+//
+// Rechen-Basis: siehe CLAUDE.md „Geteilte Rechen-Basis". Standort-Ertrag kommt als
+// PVGIS-Monatsprofil, die Haushaltslast aus calcHourlyConsumption, der Tag/Nacht-
+// Split über die geteilte tagQuote — hier steht nur, was Balkon-spezifisch ist.
+
+import { NUTZUNG } from "./constants";
 
 export type BalkonSetId = "single" | "duo" | "max";
 export type BalkonOrientationId = "sued_flach" | "sued_gelaender" | "ost_west" | "nord_schatten";
@@ -36,7 +42,9 @@ export interface BalkonPresence {
   id: BalkonPresenceId;
   label: string;
   sub: string;
-  selfShareBase: number; // Eigenverbrauchsanteil bei Referenz-Ertrag
+  // Tag-Anteil am Haushaltsverbrauch (7–18 Uhr). GETEILTE Größe: dieselbe, mit der
+  // der PV-Rechner rechnet (NUTZUNG.tagQuote, BDEW H0) — nicht neu erfinden.
+  tagQuote: number;
 }
 
 export interface BalkonStorage {
@@ -57,29 +65,16 @@ export interface BalkonConfig {
   defaultPresence: BalkonPresenceId;
   defaultStorage: BalkonStorageId;
 
-  specificYield: number;    // Fallback kWh/kWp (optimaler Winkel), von PVGIS überschrieben
-  maxFullLoadHours: number; // Wechselrichter-Deckel → Jahres-Volllaststunden-Grenze
+  specificYield: number;    // Fallback kWh/kWp im Jahr, wenn keine PLZ gesetzt ist.
+                            // Mit PLZ kommen die 12 Monatswerte direkt von PVGIS.
 
-  // Eigenverbrauchs-Modell: Anteil sinkt, je größer die Anlage relativ zur
-  // Grundlast wird. Kalibriert an der Größenordnung des HTW-Berlin
-  // Stecker-Solar-Simulators (800 W / 2 Personen ≈ 55–60 % Eigenverbrauch,
-  // ~15 % Autarkie).
-  refYieldKwh: number;
-  sizeExp: number;
-  selfShareMin: number;
-  selfShareMax: number;
+  // HINWEIS: Clipping-Deckel, Eigenverbrauchs-Power-Law und Speicher-Durchsatz
+  // standen früher hier als kalibrierte Konstanten. Sie sind ersatzlos entfallen —
+  // lib/balkon-sim.ts simuliert das Jahr stündlich auf der geteilten Basis
+  // (PVGIS-Monatswerte + calcHourlyConsumption), damit ergeben sich Clipping,
+  // Eigenverbrauch und Speicher-Nutzen als Ergebnis statt als Annahme.
 
-  // Speicher-Modell: eine Batterie schiebt den Tagesüberschuss in Abend/Nacht,
-  // aber nur begrenzt durch (a) den vorhandenen Überschuss, (b) die realistische
-  // Jahres-Durchsatzmenge (≈ ein Vollzyklus/Tag, saisonal gebremst × Wirkungsgrad)
-  // und (c) den Rest-Haushaltsbedarf. Werte ehrlich: Balkon-Überschuss ist im
-  // Winter minimal, an Sonnen-Wochenenden ist die kleine Batterie mittags voll →
-  // deshalb keine 365 Vollzyklen und eine Obergrenze beim Eigenverbrauch.
-  // Quellen: ADAC/Stiftung Warentest 4/2026, Verbraucherzentrale — mit Speicher
-  // steigt der Eigenverbrauch typisch von 30–50 % auf 60–80 %, nicht auf 100 %.
-  storageEffCyclesPerYear: number; // effektive Vollzyklen/Jahr
-  storageRoundtrip: number;        // Lade-/Entlade-Wirkungsgrad (0–1)
-  storageSelfShareCap: number;     // Eigenverbrauchs-Obergrenze mit Speicher (0–1)
+  storageRoundtrip: number;        // Lade-/Entlade-Wirkungsgrad (0–1), Physik
   storageLifeYears: number;        // realistische Speicher-Lebensdauer (Jahre) — der
                                    // Speicher-Zusatznutzen zählt nur bis hierhin, danach
                                    // laufen die Module weiter.
@@ -112,10 +107,12 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
     { id: "ost_west", label: "Ost oder West", sub: "Halbtags Sonne", factor: 0.85 },
     { id: "nord_schatten", label: "Nord oder verschattet", sub: "Wenig direkte Sonne", factor: 0.5 },
   ],
+  // tagQuote wird aus der geteilten NUTZUNG-Tabelle referenziert (nicht abgeschrieben),
+  // damit Balkon- und PV-Rechner nicht auseinanderlaufen.
   presence: [
-    { id: "weg", label: "Tagsüber selten", sub: "Meist berufstätig außer Haus", selfShareBase: 0.5 },
-    { id: "teils", label: "Teils zuhause", sub: "Homeoffice-Tage, Familie", selfShareBase: 0.62 },
-    { id: "home", label: "Oft zuhause", sub: "Homeoffice, Rente, Kinder", selfShareBase: 0.75 },
+    { id: "weg", label: "Tagsüber selten", sub: "Meist berufstätig außer Haus", tagQuote: NUTZUNG[0].tagQuote },
+    { id: "teils", label: "Teils zuhause", sub: "Homeoffice-Tage, Familie", tagQuote: NUTZUNG[1].tagQuote },
+    { id: "home", label: "Oft zuhause", sub: "Homeoffice, Rente, Kinder", tagQuote: NUTZUNG[2].tagQuote },
   ],
   // Größen und Preise an echten, getesteten Geräten (Stand 2026-07). Das Segment
   // unter ~1,5 kWh ist als Einstieg vom Markt verschwunden (Zendure AB1000 läuft
@@ -135,16 +132,8 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   defaultStorage: "none",
 
   specificYield: 950,
-  maxFullLoadHours: 1250,
 
-  refYieldKwh: 550,
-  sizeExp: 0.30,
-  selfShareMin: 0.30,
-  selfShareMax: 0.92,
-
-  storageEffCyclesPerYear: 200,
   storageRoundtrip: 0.9,
-  storageSelfShareCap: 0.78,
   storageLifeYears: 12,
   storageRecommendMaxPayback: 8,
 
