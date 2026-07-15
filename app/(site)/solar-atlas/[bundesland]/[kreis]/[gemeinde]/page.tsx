@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "../../../../../../components/Header";
+import Breadcrumb from "../../../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../../../components/Icons";
 import { v } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import MetricToggle from "../../../../../../components/atlas/MetricToggle";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
+import SegmentDonut from "../../../../../../components/atlas/SegmentDonut";
+import ComparisonTable, { type CompareRow } from "../../../../../../components/atlas/ComparisonTable";
 import {
   resolveSlugPath,
   getRegionById,
@@ -14,7 +17,10 @@ import {
   rankableCount,
   lastFullYear,
   currentYear,
+  peerBand,
+  getTopGemeinden,
   type AtlasRegion,
+  type TopGemeinde,
 } from "../../../../../../lib/atlas";
 import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
@@ -30,17 +36,17 @@ const PILOT_NOINDEX = { index: false, follow: false } as const;
 
 const nf = (n: number) => n.toLocaleString("de-DE");
 
+/** "2026-07-15" → "15. Juli 2026". */
+function standLabel(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+}
+
 function fmtLeistung(kwp: number): string {
   if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
   return `${nf(Math.round(kwp))} kW`;
 }
-
-const SEGMENT_LABEL: Record<string, string> = {
-  steckersolar: "Steckersolar (Balkonkraftwerke)",
-  privat_dach: "Private Dächer",
-  gewerbe_dach: "Gewerbedächer",
-  freiflaeche: "Freiflächenanlagen",
-};
 
 type Params = { bundesland: string; kreis: string; gemeinde: string };
 
@@ -109,19 +115,81 @@ export default async function GemeindePage({ params }: { params: Params }) {
 
   const basePath = `/solar-atlas/${params.bundesland}/${params.kreis}`;
 
+  // Comparison set: the five best in the Kreis, plus the best in the Bundesland
+  // and nationwide — but only among Gemeinden of comparable size. Unfiltered, the
+  // national leader is a 55-inhabitant Koog at 48.115 W per head, which would sit
+  // on all 10.943 pages saying nothing. See peerBand().
+  const band = region.population ? peerBand(region.population) : { min: 0, max: 0 };
+  const [kreisTop, blTop, deTop] = await Promise.all([
+    getTopGemeinden({ prefix: kreis?.region_id ?? "", dachOnly: true, limit: 5 }),
+    region.population
+      ? getTopGemeinden({ prefix: blAgs, dachOnly: true, limit: 1, minPop: band.min, maxPop: band.max })
+      : Promise.resolve([]),
+    region.population
+      ? getTopGemeinden({ prefix: "", dachOnly: true, limit: 1, minPop: band.min, maxPop: band.max })
+      : Promise.resolve([]),
+  ]);
+
+  const kreisLabel = kreis?.name ?? "Landkreis";
+  const toRow = (t: TopGemeinde, scope: string): CompareRow => ({
+    label: t.name,
+    rang: t.rang,
+    scope,
+    name: t.name,
+    href: null,
+    population: t.population,
+    value: t.w_per_capita,
+    isSelf: t.region_id === region.region_id,
+  });
+
+  const vergleich: CompareRow[] = [
+    ...kreisTop.map((t) => toRow(t, kreisLabel)),
+    // Only add the wider benchmarks when they are not already in the Kreis list.
+    ...blTop.filter((t) => !kreisTop.some((k) => k.region_id === t.region_id)).map((t) => toRow(t, `${bl?.name ?? "Land"}, Größenklasse`)),
+    ...deTop
+      .filter((t) => ![...kreisTop, ...blTop].some((k) => k.region_id === t.region_id))
+      .map((t) => toRow(t, "bundesweit, Größenklasse")),
+  ];
+  // The Gemeinde itself, unless it already made the top five.
+  if (me && me.wPerCapitaDach !== null && !vergleich.some((r) => r.isSelf)) {
+    vergleich.push({
+      label: region.name,
+      rang: me.rankDach,
+      scope: kreisLabel,
+      name: region.name,
+      href: null,
+      population: region.population,
+      value: me.wPerCapitaDach,
+      isSelf: true,
+    });
+  }
+
   return (
     <div style={S.page}>
       <Header />
       <div style={S.wrap}>
-        <nav style={S.breadcrumb}>
-          <Link href="/solar-atlas" style={S.crumb}>Solar-Atlas</Link>
-          {" › "}
-          <Link href={`/solar-atlas/${params.bundesland}`} style={S.crumb}>{bl?.name ?? blAgs}</Link>
-          {" › "}
-          <Link href={basePath} style={S.crumb}>{kreis?.name ?? params.kreis}</Link>
-          {" › "}
-          <span>{region.name}</span>
-        </nav>
+        <Breadcrumb
+          items={[
+            { label: "Solar-Atlas", href: "/solar-atlas" },
+            { label: bl?.name ?? blAgs, href: `/solar-atlas/${params.bundesland}` },
+            { label: kreis?.name ?? params.kreis, href: basePath },
+            { label: region.name },
+          ]}
+        />
+
+        {/*
+          Data date above the headline, not buried in the footer: it is the first
+          thing a Verwaltung checks before quoting a number, and <time dateTime>
+          gives crawlers a machine-readable freshness signal on a page whose whole
+          value is being current.
+        */}
+        <div style={S.stand}>
+          Stand{" "}
+          <time dateTime={atlas.data_as_of} style={S.standDate}>
+            {standLabel(atlas.data_as_of)}
+          </time>{" "}
+          · Marktstammdatenregister · monatlich aktualisiert
+        </div>
 
         <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
         <p style={S.intro}>
@@ -185,29 +253,19 @@ export default async function GemeindePage({ params }: { params: Params }) {
           <div style={S.section}>
             <h2 style={S.h2}>Wo die Anlagen stehen</h2>
             <p style={S.sub}>Nach Anlagenart, gemessen an der installierten Leistung</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-              {(() => {
-                const max = Math.max(...atlas.solar.by_segment.map((s) => s.kwp));
-                return atlas.solar.by_segment.map((s) => (
-                  <div key={s.segment}>
-                    <div style={S.barHead}>
-                      <span>{SEGMENT_LABEL[s.segment] ?? s.segment}</span>
-                      <span style={S.barVal}>
-                        {fmtLeistung(s.kwp)} · {nf(s.count)} Anlagen
-                      </span>
-                    </div>
-                    <div style={S.barTrack}>
-                      <div
-                        style={{
-                          ...S.barFill,
-                          width: `${Math.max(2, Math.round((s.kwp / max) * 100))}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ));
-              })()}
-            </div>
+            <SegmentDonut segments={atlas.solar.by_segment} />
+          </div>
+        )}
+
+        {vergleich.length > 1 && (
+          <div style={S.section}>
+            <h2 style={S.h2}>Im Vergleich</h2>
+            <p style={S.sub}>
+              Solarleistung auf Dächern je Einwohner. Die bundesweite Spitze wäre ein Koog mit
+              55 Einwohnern — verglichen wird deshalb mit Gemeinden ähnlicher Größe
+              {region.population ? ` (${nf(band.min)} bis ${nf(band.max)} Einwohner)` : ""}.
+            </p>
+            <ComparisonTable rows={vergleich} />
           </div>
         )}
 
@@ -279,8 +337,8 @@ const S: Record<string, React.CSSProperties> = {
     padding: "20px 16px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  breadcrumb: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 8 },
-  crumb: { color: v("--color-text-secondary"), textDecoration: "none" },
+  stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: 6 },
+  standDate: { fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" },
   intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },

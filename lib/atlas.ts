@@ -196,3 +196,59 @@ function assignRank(children: AtlasChild[], metric: "wPerCapita" | "wPerCapitaDa
 export function rankableCount(children: AtlasChild[]): number {
   return children.filter((c) => c.wPerCapita !== null).length;
 }
+
+// ─── Leaderboards ─────────────────────────────────────────────────────────────
+
+export type TopGemeinde = {
+  region_id: string;
+  name: string;
+  slug: string;
+  parent_region_id: string;
+  population: number;
+  kwp: number;
+  w_per_capita: number;
+  rang: number;
+};
+
+/**
+ * Peer band for a size-class comparison: half to double the region's own
+ * population.
+ *
+ * Without it the national leader is Friedrichsgabekoog — 55 inhabitants,
+ * 48.115 W each, because one barn roof divided by 55 people beats every real
+ * town by a factor of 50. That number measures the denominator, not the effort,
+ * and putting it on all 10.943 pages would tell nobody anything.
+ *
+ * Within the band the comparison bites: Pilsting has 7.158 inhabitants to
+ * Höchberg's 9.564 and reaches 6.210 W per head on roofs alone against 954.
+ * Same size, same rules, six times the result — that is a benchmark a Gemeinde
+ * can act on.
+ */
+export function peerBand(population: number): { min: number; max: number } {
+  return { min: Math.round(population * 0.5), max: Math.round(population * 2) };
+}
+
+export async function getTopGemeinden(opts: {
+  prefix: string;
+  dachOnly: boolean;
+  limit: number;
+  minPop?: number;
+  maxPop?: number;
+}): Promise<TopGemeinde[]> {
+  const supabase = await db();
+  const { data, error } = await supabase.rpc("mastr_top_gemeinden", {
+    p_prefix: opts.prefix,
+    p_dach_only: opts.dachOnly,
+    p_limit: opts.limit,
+    p_min_pop: opts.minPop ?? 0,
+    p_max_pop: opts.maxPop ?? null,
+  });
+  if (error) throw new Error(`mastr_top_gemeinden failed: ${error.message}`);
+  return (data ?? []).map((r: TopGemeinde) => ({
+    ...r,
+    population: Number(r.population),
+    kwp: Number(r.kwp),
+    w_per_capita: Number(r.w_per_capita),
+    rang: Number(r.rang),
+  }));
+}

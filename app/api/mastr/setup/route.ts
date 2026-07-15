@@ -199,6 +199,55 @@ export async function GET(req: NextRequest) {
         GROUP BY 1, 2, 3
       $fn$;
 
+      -- Leaderboard of Gemeinden by solar per inhabitant, ranked in the database.
+      -- p_prefix scopes it: '' = nationwide, '09' = Bayern, '09679' = one Kreis.
+      -- Joining population here is what makes it possible at all — ranking 10.943
+      -- Gemeinden in Node would mean pulling the whole table across the wire.
+      -- p_min_pop / p_max_pop restrict the field to a size class. Without them the
+      -- national top is meaningless as a benchmark: it is a 26-inhabitant Koog
+      -- whose single barn roof, divided by 26, beats every real town by 50x. That
+      -- measures the denominator, not the effort.
+      CREATE OR REPLACE FUNCTION mastr_top_gemeinden(
+        p_prefix text,
+        p_dach_only boolean,
+        p_limit int,
+        p_min_pop int DEFAULT 0,
+        p_max_pop int DEFAULT NULL
+      )
+      RETURNS TABLE (
+        region_id text, name text, slug text, parent_region_id text,
+        population int, kwp numeric, w_per_capita numeric, rang bigint
+      )
+      LANGUAGE sql
+      STABLE
+      AS $fn$
+        WITH agg AS (
+          SELECT a.region_id, sum(a.kwp) AS kwp
+          FROM mastr_aggregates_gem a
+          WHERE a.energietraeger = 'solar'
+            AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
+            AND (NOT p_dach_only OR a.segment <> 'freiflaeche')
+          GROUP BY 1
+        ),
+        ranked AS (
+          SELECT r.region_id, r.name, r.slug, r.parent_region_id, r.population, agg.kwp,
+                 round(agg.kwp * 1000 / r.population) AS w_per_capita,
+                 rank() OVER (ORDER BY agg.kwp / r.population DESC) AS rang
+          FROM agg
+          JOIN mastr_regions r ON r.region_id = agg.region_id
+          -- Uninhabited areas (coastal waters, gemeindefreie Wälder) would divide
+          -- by zero and, with a solar park on them, top every table forever.
+          WHERE r.level = 'gemeinde' AND r.population > 0 AND r.slug IS NOT NULL
+            AND r.population >= p_min_pop
+            AND (p_max_pop IS NULL OR r.population <= p_max_pop)
+        )
+        SELECT * FROM ranked ORDER BY rang LIMIT p_limit
+      $fn$;
+
+      DROP FUNCTION IF EXISTS mastr_top_gemeinden(text, boolean, int);
+      REVOKE ALL ON FUNCTION mastr_top_gemeinden(text, boolean, int, int, int) FROM PUBLIC;
+      GRANT EXECUTE ON FUNCTION mastr_top_gemeinden(text, boolean, int, int, int) TO anon, authenticated, service_role;
+
       REVOKE ALL ON FUNCTION mastr_children(text, int, text[], int) FROM PUBLIC;
       REVOKE ALL ON FUNCTION mastr_region_series(text, text[]) FROM PUBLIC;
       GRANT EXECUTE ON FUNCTION mastr_children(text, int, text[], int) TO anon, authenticated, service_role;

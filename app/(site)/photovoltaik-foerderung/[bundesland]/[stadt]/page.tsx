@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "../../../../../components/Header";
+import Breadcrumb from "../../../../../components/Breadcrumb";
 import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons";
 import { v } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
@@ -199,13 +200,13 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
         <Link href={`/photovoltaik-foerderung/${slugify(city.bundesland)}`} style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 13, fontWeight: 600, color: v("--color-accent"), textDecoration: "none", marginBottom: 12 }}>
           <IconChevronLeft size={15} /> {city.bundesland}
         </Link>
-        <nav style={{ ...S.breadcrumb, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 20 }} aria-label="Brotkrümel">
-          <Link href="/photovoltaik-foerderung" style={{ color: "inherit", textDecoration: "none" }}>Förderung</Link>
-          <span aria-hidden style={{ width: 14, height: 1, background: v("--color-text-faint"), display: "inline-block" }} />
-          <Link href={`/photovoltaik-foerderung/${slugify(city.bundesland)}`} style={{ color: "inherit", textDecoration: "none" }}>{city.bundesland}</Link>
-          <span aria-hidden style={{ width: 14, height: 1, background: v("--color-text-faint"), display: "inline-block" }} />
-          <span style={{ color: v("--color-text-primary") }}>{city.name}</span>
-        </nav>
+        <Breadcrumb
+          items={[
+            { label: "Förderung", href: "/photovoltaik-foerderung" },
+            { label: city.bundesland, href: `/photovoltaik-foerderung/${slugify(city.bundesland)}` },
+            { label: city.name },
+          ]}
+        />
         <h1 style={S.h1}>Photovoltaik in {city.name}</h1>
         <p style={S.intro}>
           {!f
