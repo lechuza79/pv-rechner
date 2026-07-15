@@ -9,6 +9,7 @@ import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
 import { DEFAULT_AIRCON_CONFIG as AC } from "../../../lib/aircon-config";
 import { DEFAULT_BALKON_CONFIG as BK } from "../../../lib/balkon-config";
+import { referenceYearKwh } from "../../../lib/solar-year";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS } from "../../../lib/constants";
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
@@ -340,7 +341,7 @@ export default async function DatenstandPage() {
             { label: "Speicher-Empfehlung nur bei Amortisation unter", value: `${nf(BK.storageRecommendMaxPayback)} Jahren — sonst empfehlen wir bewusst ohne` },
             { label: "Berechnung", value: "Stunden-Simulation über 12 Monate: PVGIS-Monatsertrag × Tagesverlauf, am Wechselrichter (800 W) gekappt, gegen das Haushalts-Lastprofil gerechnet, Speicher Stunde für Stunde geladen/entladen" },
             { label: "Haushalts-Lastprofil", value: "BDEW H0 / VDI 4655 — dieselbe Grundlage wie PV-Rechner und Live-Simulation" },
-            { label: "Ausrichtungsfaktor (aufgeständert / Geländer / Ost-West / verschattet)", value: BK.orientations.map((o) => nf(o.factor)).join(" / ") },
+            { label: "Ertrag je Ausrichtung (Anteil am optimal aufgeständerten)", value: BK.orientations.map((o) => `${o.id === "sued_flach" ? "aufgeständert" : o.id === "sued_gelaender" ? "Süd senkrecht" : o.id === "ost_west" ? "Ost/West" : "Nord"} ${nf(Math.round(referenceYearKwh(o.id) / referenceYearKwh("sued_flach") * 100))} %`).join(" · ") + " — gemessen, nicht geschätzt (eigene PVGIS-Stundenreihe je Ausrichtung)" },
             { label: "Tag-Anteil am Verbrauch (selten / teils / oft zuhause)", value: BK.presence.map((p) => `${nf(p.tagQuote * 100)} %`).join(" / ") },
             { label: "Lebensdauer / Degradation", value: `${nf(BK.lifetimeYears)} Jahre · ${nf(BK.degradation * 100)} %/a` },
             { label: "Strompreisanstieg", value: `${nf(prices.electricityIncrease * 100)} % / Jahr (systemweit wie PV-Rechner)` },

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { calcBalkon, recommendBalkon } from "../balkon";
 import { DEFAULT_BALKON_CONFIG as CFG } from "../balkon-config";
-import { SOLAR_YEAR_DE, REFERENCE_YEAR_KWH } from "../solar-year";
+import { SOLAR_YEAR_DE, referenceYearKwh } from "../solar-year";
 import { DAYS_IN_MONTH } from "../consumption";
 
 const base = {
@@ -14,24 +14,42 @@ const base = {
 };
 
 describe("Referenz-Sonnenjahr (geteilte Basis)", () => {
-  it("reproduces the PVGIS reference year and keeps the peaks", () => {
-    // Waechter fuer lib/solar-year.ts: Wird die Datei neu erzeugt, muessen Energie
-    // UND Spitze stimmen — sonst kippt still das Clipping und damit die Empfehlung.
-    expect(REFERENCE_YEAR_KWH).toBeGreaterThan(1000); // PVGIS 2023: 1012,7 kWh/kWp
-    expect(REFERENCE_YEAR_KWH).toBeLessThan(1025);
+  // Waechter fuer lib/solar-year.ts: Wird die Datei neu erzeugt, muessen Energie,
+  // Spitze und Kalender stimmen — sonst kippt still das Clipping und damit die
+  // Empfehlung, ohne dass ein anderer Test anschlaegt.
+  const ORIENTATIONS = ["sued_flach", "sued_gelaender", "ost_west", "nord_schatten"];
 
-    const peak = Math.max(...SOLAR_YEAR_DE.flatMap(month => month.flatMap(t => t.w)));
-    // Original-Spitze 902 W/kWp, durch die Mittelung im Sextil auf ~810 gedaempft.
-    // Faellt sie unter 800, clippt ein 1-kWp-Set gar nicht mehr — dann ist die
-    // Verdichtung zu grob geworden.
+  it("reproduces the PVGIS reference year for the optimal orientation", () => {
+    expect(referenceYearKwh("sued_flach")).toBeGreaterThan(1000); // PVGIS 2023: 1013,3
+    expect(referenceYearKwh("sued_flach")).toBeLessThan(1025);
+  });
+
+  it("keeps the midday peak (otherwise nothing would ever clip)", () => {
+    const peak = Math.max(...SOLAR_YEAR_DE.sued_flach.flatMap(month => month.flatMap(t => t.w)));
+    // Original-Spitze 885 W/kWp, durch die Mittelung im Sextil leicht gedaempft.
+    // Faellt sie unter 800, clippt ein 1-kWp-Set gar nicht mehr → zu grob.
     expect(peak).toBeGreaterThan(800);
-    expect(peak).toBeLessThanOrEqual(902);
+    expect(peak).toBeLessThanOrEqual(885);
+  });
 
-    // Jeder Monat braucht alle Tage — sonst fehlt Energie.
-    SOLAR_YEAR_DE.forEach((month, m) => {
-      const days = month.reduce((s, t) => s + t.days, 0);
-      expect(days).toBe(DAYS_IN_MONTH[m]);
-    });
+  it("ranks the orientations physically (south > vertical south > east/west > north)", () => {
+    const rel = (o: string) => referenceYearKwh(o) / referenceYearKwh("sued_flach");
+    expect(rel("sued_flach")).toBeCloseTo(1, 5);
+    expect(rel("sued_gelaender")).toBeLessThan(rel("sued_flach"));
+    expect(rel("ost_west")).toBeLessThan(rel("sued_gelaender"));
+    expect(rel("nord_schatten")).toBeLessThan(rel("ost_west"));
+    // Gemessene Werte (PVGIS): 0,69 / 0,51 / 0,20 — frueher geraten mit 0,72 /
+    // 0,85 / 0,50, wobei Ost/West faelschlich ueber Sued-senkrecht lag.
+    expect(rel("ost_west")).toBeLessThan(0.6);
+    expect(rel("nord_schatten")).toBeLessThan(0.3);
+  });
+
+  it("covers every calendar day in every orientation", () => {
+    for (const o of ORIENTATIONS) {
+      SOLAR_YEAR_DE[o].forEach((month, m) => {
+        expect(month.reduce((s, t) => s + t.days, 0)).toBe(DAYS_IN_MONTH[m]);
+      });
+    }
   });
 });
 
@@ -67,10 +85,15 @@ describe("calcBalkon", () => {
   });
 
   it("does not clip a small vertically mounted set", () => {
+    // 500 Wp senkrecht erreichen nie die 600-W-Grenze des kleinen Wechselrichters:
+    // die Spitze der Suedsenkrecht-Reihe liegt bei ~810 W/kWp, also ~405 W.
     const r = calcBalkon({ ...base, setId: "single", orientationId: "sued_gelaender" });
-    // 500 Wp × 950 × 0.72 = 342 kWh < 600 W × 1250 = 750 kWh Deckel
     expect(r.clipped).toBe(false);
-    expect(r.annualYield).toBe(342);
+    // Ohne Clipping muss der Ertrag exakt der Referenzreihe entsprechen, skaliert
+    // auf den Standort — keine feste Zahl, damit der Test nicht an einer
+    // Kalibrierung klebt.
+    const expected = 0.5 * referenceYearKwh("sued_gelaender") * (base.specificYield / referenceYearKwh("sued_flach"));
+    expect(r.annualYield).toBeCloseTo(expected, 0);
   });
 
   it("never self-consumes more than the household uses", () => {

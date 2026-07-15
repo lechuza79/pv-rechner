@@ -12,6 +12,7 @@ import { usePrices } from "../../../lib/prices";
 import { PERSONEN } from "../../../lib/constants";
 import { DEFAULT_BALKON_CONFIG as CFG, type BalkonSetId, type BalkonStorageId } from "../../../lib/balkon-config";
 import { calcBalkon, recommendBalkon, type BalkonInputs, type BalkonOption } from "../../../lib/balkon";
+import { referenceYearKwh } from "../../../lib/solar-year";
 import { trackEvent } from "../../../lib/analytics";
 import { DataSourceNote } from "../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../lib/data-sources";
@@ -483,7 +484,7 @@ export default function Balkon() {
             </div>
 
             {/* Tagesleistungskurve der empfohlenen/aktiven Set-Größe */}
-            <SetPowerCurves sets={CFG.sets} selectedId={active.setId} orientationFactor={CFG.orientations.find(o => o.id === orientationId)!.factor} />
+            <SetPowerCurves sets={CFG.sets} selectedId={active.setId} orientationFactor={referenceYearKwh(orientationId) / referenceYearKwh("sued_flach")} />
             <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5, margin: "10px 0 16px" }}>
               Seit 2024 darfst du nur bis <strong style={{ color: v('--color-text-primary') }}>800 Watt</strong> einspeisen.
               Nutzt du mehr Module

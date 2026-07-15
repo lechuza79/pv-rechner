@@ -209,7 +209,7 @@ export function calcBalkon(inputs: BalkonInputs, cfg: BalkonConfig = DEFAULT_BAL
     eaActive: false,
   };
 
-  const simBase = { moduleKwp, inverterKw, monthlyYieldPerKwp, orientationFactor: orient.factor, household, roundtrip: cfg.storageRoundtrip };
+  const simBase = { moduleKwp, inverterKw, monthlyYieldPerKwp, orientation: orient.id, household, roundtrip: cfg.storageRoundtrip };
   // Zwei Läufe: ohne Speicher als Referenz, mit Speicher für die aktive Wahl.
   // Der Speicher-Nutzen ist damit eine echte Differenz aus der Simulation und
   // keine angenommene Quote.

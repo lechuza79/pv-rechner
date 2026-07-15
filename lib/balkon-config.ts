@@ -35,7 +35,10 @@ export interface BalkonOrientation {
   id: BalkonOrientationId;
   label: string;
   sub: string;
-  factor: number;     // Ertragsfaktor vs. optimal geneigter Südausrichtung
+  // Kein Ertragsfaktor mehr: Jede Ausrichtung hat in lib/solar-year.ts eine eigene
+  // PVGIS-Stundenreihe mit eigenem Tagesverlauf. Ein Faktor koennte nur die Menge
+  // skalieren, nicht die Form — und lag frueher grob daneben (Ost/West 0,85 statt
+  // real 0,51; Nord 0,5 statt real 0,20).
 }
 
 export interface BalkonPresence {
@@ -102,10 +105,10 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
     { id: "max", label: "4 Module (Maximum)", what: "~2.000 Wp am 800-W-Wechselrichter — mehr Ertrag morgens und abends, die Mittagsspitze wird gedrosselt.", moduleWp: 2000, inverterW: 800, price: 800 },
   ],
   orientations: [
-    { id: "sued_flach", label: "Süd, aufgeständert", sub: "Optimaler Winkel (Flachdach, Garten, Terrasse)", factor: 1.0 },
-    { id: "sued_gelaender", label: "Süd, senkrecht am Geländer", sub: "Klassischer Balkon", factor: 0.72 },
-    { id: "ost_west", label: "Ost oder West", sub: "Halbtags Sonne", factor: 0.85 },
-    { id: "nord_schatten", label: "Nord oder verschattet", sub: "Wenig direkte Sonne", factor: 0.5 },
+    { id: "sued_flach", label: "Süd, aufgeständert", sub: "Optimaler Winkel (Flachdach, Garten, Terrasse)" },
+    { id: "sued_gelaender", label: "Süd, senkrecht am Geländer", sub: "Klassischer Balkon" },
+    { id: "ost_west", label: "Ost oder West, senkrecht", sub: "Halbtags Sonne — rund halber Ertrag" },
+    { id: "nord_schatten", label: "Nord oder verschattet", sub: "Wenig direkte Sonne — lohnt selten" },
   ],
   // tagQuote wird aus der geteilten NUTZUNG-Tabelle referenziert (nicht abgeschrieben),
   // damit Balkon- und PV-Rechner nicht auseinanderlaufen.
