@@ -59,7 +59,7 @@ function fmtCapacity(kwp: number): string {
 }
 
 const SEGMENT_LABEL: Record<string, string> = {
-  steckersolar: "Steckersolar (Balkonkraftwerke)",
+  steckersolar: "Balkonkraftwerke",
   privat_dach: "Private Dächer",
   gewerbe_dach: "Gewerbedächer",
   freiflaeche: "Freiflächen-Parks",

@@ -15,7 +15,7 @@ export type SegmentSlice = { segment: string; count: number; kwp: number };
 const SEG: Record<string, { label: string; color: string }> = {
   privat_dach: { label: "Private Dächer", color: "#1365EA" },
   gewerbe_dach: { label: "Gewerbedächer", color: "#6A9EF2" },
-  steckersolar: { label: "Steckersolar", color: "#BCD6FF" },
+  steckersolar: { label: "Balkonkraftwerke", color: "#BCD6FF" },
   freiflaeche: { label: "Freifläche", color: "#073C93" },
 };
 

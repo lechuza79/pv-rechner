@@ -3,12 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { v } from "../../lib/theme";
-import { IconArrowUp, IconArrowDown, IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
+import { IconArrowUp, IconArrowDown, IconChevronDown } from "../Icons";
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
 import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
 
 type Owner = "alle" | "privat" | "gewerbe";
-type Metric = "count" | "kwp" | "perCapita" | "speicher" | "zubau";
+type Metric = "count" | "kwp" | "perCapita" | "speicher";
 /** What the first column shows — position, or movement. */
 type RankMode = "platz" | "delta";
 
@@ -21,7 +21,6 @@ type Row = {
   kwp: number;
   speicher: number;
   perCapita: number | null;
-  zubau: number;
 };
 
 const COLUMNS: { key: Metric; label: string }[] = [
@@ -29,7 +28,6 @@ const COLUMNS: { key: Metric; label: string }[] = [
   { key: "kwp", label: "Leistung" },
   { key: "perCapita", label: "Pro Kopf" },
   { key: "speicher", label: "Speicher" },
-  { key: "zubau", label: "Zubau" },
 ];
 
 const OWNERS: { key: Owner; label: string }[] = [
@@ -64,13 +62,13 @@ function valueOf(row: Row, m: Metric): number | null {
 }
 
 /** Rank movement, sized to sit inline with the rank number beside it. */
-function RankDelta({ value }: { value: number | null }) {
+function RankDelta({ value, sinceYear }: { value: number | null; sinceYear: number }) {
   if (value === null || value === 0) return null;
   const up = value > 0;
   const Icon = up ? IconArrowUp : IconArrowDown;
   return (
     <span
-      title={`${Math.abs(value)} ${Math.abs(value) === 1 ? "Platz" : "Plätze"} ${up ? "gutgemacht" : "verloren"} im letzten vollen Jahr`}
+      title={`${Math.abs(value)} ${Math.abs(value) === 1 ? "Platz" : "Plätze"} ${up ? "gutgemacht" : "verloren"} seit Ende ${sinceYear}`}
       style={{ ...S.delta, color: up ? v("--color-positive") : v("--color-negative") }}
     >
       <Icon size={9} />
@@ -82,10 +80,10 @@ function RankDelta({ value }: { value: number | null }) {
 /**
  * Sortable ranking of a region's children.
  *
- * Every filter runs on the raw segment × year cells the server shipped, so owner,
- * metric and Zubau year recombine without a round trip. The owner filter applies
- * to every column at once — a table where "Anlagen" counted everything while
- * "Pro Kopf" counted only private roofs would put two different worlds in one row.
+ * Every filter runs on the raw segment × year cells the server shipped, so owner
+ * and metric recombine without a round trip. The owner filter applies to every
+ * column at once — a table where "Anlagen" counted everything while "Pro Kopf"
+ * counted only private roofs would put two different worlds in one row.
  */
 export default function RankingTable({
   regions,
@@ -104,40 +102,38 @@ export default function RankingTable({
   const [owner, setOwner] = useState<Owner>("alle");
   const [sort, setSort] = useState<Metric>("perCapita");
   const [rankMode, setRankMode] = useState<RankMode>("platz");
-  const [zubauYear, setZubauYear] = useState(lastFullYear);
   const { home, setHome, ready } = useHomeGemeinde();
-  const homeRowRef = useRef<HTMLDivElement | null>(null);
+  const homeRowRef = useRef<HTMLElement | null>(null);
+  // A row is an <a> when the Gemeinde has a page and a <div> when it has none, so
+  // the ref has to accept both — a typed RefObject only accepts one.
+  const setHomeRow = (el: HTMLElement | null) => {
+    homeRowRef.current = el;
+  };
   const [homeVisible, setHomeVisible] = useState(true);
   // The floating row lives outside the horizontal scroller (see below) and has to
   // be shifted by hand to stay under the columns it belongs to.
   const [scrollLeft, setScrollLeft] = useState(0);
-
-  const years = useMemo(
-    () => Array.from(new Set(cells.map((c) => c.year))).sort((a, b) => b - a),
-    [cells],
-  );
 
   /** Aggregate the cells into rows; yearMax rewinds the state to that year. */
   const build = useMemo(() => {
     const keep = (segment: string) =>
       owner === "alle" ? SEGMENT_OWNER[segment] !== null : SEGMENT_OWNER[segment] === owner;
     return (yearMax: number | null): Row[] => {
-      const acc = new Map<string, { count: number; kwp: number; speicher: number; zubau: number }>();
+      const acc = new Map<string, { count: number; kwp: number; speicher: number }>();
       for (const c of cells) {
         if (!keep(c.segment)) continue;
         if (yearMax !== null && c.year > yearMax) continue;
-        const a = acc.get(c.region_id) ?? { count: 0, kwp: 0, speicher: 0, zubau: 0 };
+        const a = acc.get(c.region_id) ?? { count: 0, kwp: 0, speicher: 0 };
         if (c.segment.startsWith("batterie")) {
           a.speicher += c.kwh;
         } else {
           a.count += c.count;
           a.kwp += c.kwp;
-          if (c.year === zubauYear) a.zubau += c.count;
         }
         acc.set(c.region_id, a);
       }
       return regions.map((r) => {
-        const a = acc.get(r.region_id) ?? { count: 0, kwp: 0, speicher: 0, zubau: 0 };
+        const a = acc.get(r.region_id) ?? { count: 0, kwp: 0, speicher: 0 };
         return {
           region_id: r.region_id,
           name: r.name,
@@ -146,18 +142,17 @@ export default function RankingTable({
           count: a.count,
           kwp: a.kwp,
           speicher: a.speicher,
-          zubau: a.zubau,
           perCapita: r.population ? Math.round((a.kwp * 1000) / r.population) : null,
         };
       });
     };
-  }, [cells, regions, basePath, owner, zubauYear]);
+  }, [cells, regions, basePath, owner]);
 
   const rows = useMemo(() => build(null), [build]);
 
-  // Ranks now against ranks at the end of the year before last. The difference is
-  // the movement during the last complete year; the running year is excluded from
-  // both sides, or every Gemeinde would appear to collapse each January.
+  // Current rank against the rank at the end of the last complete year. Naming
+  // this "Veränderung zum Vorjahr" would be a lie: it spans that year-end to
+  // today, which in July is seven months, not twelve. The header says what it is.
   const deltas = useMemo(() => {
     const rank = (list: Row[]) => {
       const m = new Map<string, number>();
@@ -168,7 +163,7 @@ export default function RankingTable({
       return m;
     };
     const now = rank(rows);
-    const before = rank(build(lastFullYear - 1));
+    const before = rank(build(lastFullYear));
     const out = new Map<string, number | null>();
     for (const r of rows) {
       const a = before.get(r.region_id);
@@ -250,16 +245,18 @@ export default function RankingTable({
             </button>
           ))}
         </div>
-        <YearPicker years={years} value={zubauYear} onChange={setZubauYear} />
       </div>
 
       <div style={S.scroller} onScroll={(e) => setScrollLeft(e.currentTarget.scrollLeft)}>
         <div style={S.table}>
           {/* Header: every column sorts, the first also picks what it shows. */}
           <div style={{ ...S.row, ...S.header }}>
-            <RankHeader mode={rankMode} onChange={setRankMode} />
+            <RankHeader mode={rankMode} onChange={setRankMode} sinceYear={lastFullYear} />
             <span style={S.headName}>Gemeinde</span>
-            <span />
+            {/* The bar draws whichever column is sorted, so it carries no measure
+                of its own — repeating that column's name here would print it twice
+                in one header. The sorted column is already marked in accent. */}
+            <span style={S.headName}>Vergleich</span>
             {COLUMNS.map((c) => (
               <button
                 key={c.key}
@@ -271,7 +268,7 @@ export default function RankingTable({
                   fontWeight: sort === c.key ? 700 : 600,
                 }}
               >
-                {c.key === "zubau" ? `Zubau ${zubauYear}` : c.label}
+                {c.label}
               </button>
             ))}
           </div>
@@ -280,24 +277,14 @@ export default function RankingTable({
             {display.map((r) => {
               const isHome = home?.region_id === r.region_id;
               const val = valueOf(r, sort);
-              return (
-                <div
-                  key={r.region_id}
-                  ref={isHome ? homeRowRef : undefined}
-                  style={{ ...S.row, ...(isHome ? S.rowHome : null) }}
-                >
+              const inner = (
+                <>
                   <span style={S.rank}>
                     {val === null ? "—" : `${rankOf.get(r.region_id)}.`}
-                    <RankDelta value={deltas.get(r.region_id) ?? null} />
+                    <RankDelta value={deltas.get(r.region_id) ?? null} sinceYear={lastFullYear} />
                   </span>
                   <span style={S.nameCell}>
-                    {r.href ? (
-                      <Link href={r.href} style={{ ...S.name, fontWeight: isHome ? 700 : 500 }}>
-                        {r.name}
-                      </Link>
-                    ) : (
-                      <span style={S.name}>{r.name}</span>
-                    )}
+                    <span style={{ ...S.name, fontWeight: isHome ? 700 : 500 }}>{r.name}</span>
                     {r.population === null && <span style={S.hint}>unbewohnt</span>}
                   </span>
                   <span style={S.barCell}>
@@ -316,6 +303,19 @@ export default function RankingTable({
                       {fmtCell(r, c.key)}
                     </span>
                   ))}
+                </>
+              );
+              const style = { ...S.row, ...(isHome ? S.rowHome : null) };
+              // The whole row leads to the Gemeinde, not just its name — a 60px
+              // link inside a 620px row is a target nobody hits on a phone.
+              // Uninhabited areas have no page, so they stay a plain row.
+              return r.href ? (
+                <Link key={r.region_id} href={r.href} ref={isHome ? setHomeRow : undefined} style={{ ...style, ...S.rowLink }}>
+                  {inner}
+                </Link>
+              ) : (
+                <div key={r.region_id} ref={isHome ? setHomeRow : undefined} style={style}>
+                  {inner}
                 </div>
               );
             })}
@@ -334,10 +334,10 @@ export default function RankingTable({
       {ready && homeRow && !homeVisible && (
         <div style={S.stickyWrap}>
           <div style={{ ...S.table, transform: `translateX(${-scrollLeft}px)` }}>
-            <div style={{ ...S.row, ...S.stickyRow }}>
+            <Link href={homeRow.href ?? "#"} style={{ ...S.row, ...S.stickyRow, ...S.rowLink }}>
               <span style={S.rank}>
                 {rankOf.get(homeRow.region_id) ?? "—"}.
-                <RankDelta value={deltas.get(homeRow.region_id) ?? null} />
+                <RankDelta value={deltas.get(homeRow.region_id) ?? null} sinceYear={lastFullYear} />
               </span>
               <span style={S.nameCell}>
                 <span style={{ ...S.name, fontWeight: 700 }}>{homeRow.name}</span>
@@ -355,7 +355,7 @@ export default function RankingTable({
                   {fmtCell(homeRow, c.key)}
                 </span>
               ))}
-            </div>
+            </Link>
           </div>
         </div>
       )}
@@ -398,13 +398,13 @@ function useOutsideClose(open: boolean, close: () => void) {
   return ref;
 }
 
-function RankHeader({ mode, onChange }: { mode: RankMode; onChange: (m: RankMode) => void }) {
+function RankHeader({ mode, onChange, sinceYear }: { mode: RankMode; onChange: (m: RankMode) => void; sinceYear: number }) {
   const [open, setOpen] = useState(false);
   const ref = useOutsideClose(open, () => setOpen(false));
   return (
     <div ref={ref} style={{ position: "relative" }}>
       <button type="button" onClick={() => setOpen(!open)} style={S.headBtnLeft}>
-        {mode === "platz" ? "Platz" : "Veränd."}
+        {mode === "platz" ? "Platz" : `Δ ${sinceYear}`}
         <IconChevronDown size={7} />
       </button>
       {open && (
@@ -412,7 +412,7 @@ function RankHeader({ mode, onChange }: { mode: RankMode; onChange: (m: RankMode
           {(
             [
               ["platz", "Platzierung"],
-              ["delta", "Veränderung"],
+              ["delta", `Veränderung seit Ende ${sinceYear}`],
             ] as [RankMode, string][]
           ).map(([k, label]) => (
             <button
@@ -429,57 +429,6 @@ function RankHeader({ mode, onChange }: { mode: RankMode; onChange: (m: RankMode
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-function YearPicker({ years, value, onChange }: { years: number[]; value: number; onChange: (y: number) => void }) {
-  const [open, setOpen] = useState(false);
-  const ref = useOutsideClose(open, () => setOpen(false));
-  const idx = years.indexOf(value);
-  return (
-    <div style={S.yearBar}>
-      <button
-        type="button"
-        onClick={() => idx < years.length - 1 && onChange(years[idx + 1])}
-        disabled={idx >= years.length - 1}
-        style={{ ...S.yearBtn, borderRadius: "8px 0 0 8px", borderRight: "none", opacity: idx >= years.length - 1 ? 0.4 : 1 }}
-        title="Früheres Jahr"
-      >
-        <IconChevronLeft size={9} />
-      </button>
-      <div ref={ref} style={{ position: "relative", display: "flex" }}>
-        <button type="button" onClick={() => setOpen(!open)} style={{ ...S.yearBtn, borderRadius: 0, gap: 4, minWidth: 62 }}>
-          Zubau {value}
-          <IconChevronDown size={7} />
-        </button>
-        {open && (
-          <div style={{ ...S.dropdown, right: 0, left: "auto", maxHeight: 200, overflowY: "auto" }}>
-            {years.map((y) => (
-              <button
-                key={y}
-                type="button"
-                onClick={() => {
-                  onChange(y);
-                  setOpen(false);
-                }}
-                style={{ ...S.dropItem, fontWeight: y === value ? 700 : 400 }}
-              >
-                {y}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-      <button
-        type="button"
-        onClick={() => idx > 0 && onChange(years[idx - 1])}
-        disabled={idx <= 0}
-        style={{ ...S.yearBtn, borderRadius: "0 8px 8px 0", borderLeft: "none", opacity: idx <= 0 ? 0.4 : 1 }}
-        title="Späteres Jahr"
-      >
-        <IconChevronRight size={9} />
-      </button>
     </div>
   );
 }
@@ -602,12 +551,16 @@ const S: Record<string, React.CSSProperties> = {
     bottom: 10,
     marginTop: 10,
     overflow: "hidden",
+    // Same horizontal inset as S.scroller, or the sticky grid lands 8px off the
+    // table's and the bars stop lining up — which is the whole point of it.
+    margin: "10px -8px 0",
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border-accent")}`,
     borderRadius: v("--radius-md"),
     boxShadow: "0 4px 14px rgba(0,0,0,0.10)",
   },
-  stickyRow: { borderBottom: "none", margin: 0 },
+  stickyRow: { borderBottom: "none", margin: 0, padding: "9px 16px" },
+  rowLink: { textDecoration: "none", color: "inherit", cursor: "pointer" },
   stickyScope: { fontSize: 10, color: v("--color-text-muted"), fontWeight: 400 },
   dropdown: {
     position: "absolute",

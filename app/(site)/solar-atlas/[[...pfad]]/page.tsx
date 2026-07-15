@@ -166,11 +166,6 @@ export default async function AtlasPage({ params }: { params: Params }) {
 
         <div style={S.section}>
           <h2 style={S.h2}>Rangliste der {childNoun}</h2>
-          <p style={S.sub}>
-            Jede Spalte sortiert. Der Filter oben wirkt auf alle Werte: „Privat" zählt private
-            Dächer, Steckersolar und Hausbatterien, „Gewerbe" gewerbliche Dächer, Freiflächen-Parks
-            und gewerbliche Speicher.
-          </p>
           <RankingTable
             regions={ranking.regions}
             cells={ranking.cells}

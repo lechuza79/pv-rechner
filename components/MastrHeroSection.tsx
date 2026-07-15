@@ -30,7 +30,7 @@ const PRIMARY_SEGMENTS: { key: SegmentFilter; label: string }[] = [
 const SECONDARY_SEGMENT: { key: SegmentFilter; label: string } = { key: "freiflaeche", label: "Freifläche" };
 
 const SEGMENT_LABEL: Record<string, string> = {
-  steckersolar: "Steckersolar",
+  steckersolar: "Balkonkraftwerke",
   privat_dach: "Privat (Dach)",
   gewerbe_dach: "Gewerbe (Dach)",
   freiflaeche: "Freifläche",
@@ -404,7 +404,7 @@ const TRAEGER_DISPLAY: Record<Energietraeger, string> = {
 
 const SEGMENT_DISPLAY: Record<SegmentFilter, string> = {
   alle: "",
-  steckersolar: "Steckersolar",
+  steckersolar: "Balkonkraftwerke",
   privat_dach: "Privat",
   gewerbe_dach: "Gewerbe",
   freiflaeche: "Freifläche",
