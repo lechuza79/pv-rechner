@@ -51,6 +51,10 @@ export default function Balkon() {
   const [plzToast, setPlzToast] = useState(false);
   const plzToastShown = useRef(false);
 
+  // Klebt die Auswahl gerade oben? Nur dann bekommt sie einen Schatten (eingefadet).
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const [stuck, setStuck] = useState(false);
+
   // Editierbare Overrides im Ergebnis
   const [oStrom, setOStrom] = useState<number | null>(null);
   const [oInvest, setOInvest] = useState<number | null>(null);
@@ -78,6 +82,16 @@ export default function Balkon() {
     const t = setTimeout(() => setPlzToast(false), 6000);
     return () => clearTimeout(t);
   }, [plzToast]);
+
+  // Schatten der klebenden Auswahl erst zeigen, wenn sie wirklich oben anliegt.
+  useEffect(() => {
+    const el = stickyRef.current;
+    if (!el) return;
+    const onScroll = () => setStuck(el.getBoundingClientRect().top <= 0.5);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isResult]);
 
   const next = () => {
     if (step >= STEPS.length) return;
@@ -327,10 +341,11 @@ export default function Balkon() {
           <div className="fu">
             {/* Auswahl (Set-Größe + Speicher) — klebt beim Scrollen oben, damit die
                 Wirkung auf die Kennzahlen darunter sichtbar bleibt. */}
-            <div style={{
+            <div ref={stickyRef} style={{
               position: "sticky", top: 0, zIndex: 20, background: v('--color-bg'),
               paddingTop: 8, paddingBottom: 10, marginBottom: 6,
-              boxShadow: "0 8px 12px -8px rgba(0,0,0,0.12)",
+              boxShadow: stuck ? "0 8px 12px -8px rgba(0,0,0,0.12)" : "0 8px 12px -8px rgba(0,0,0,0)",
+              transition: "box-shadow 0.25s ease",
             }}>
             {/* 1. Set-Größe — alle drei in einer Reihe. Blauer Rand markiert nur die
                 AKTIVE Wahl; die Empfehlung bleibt über Marker + Erhebung erkennbar. */}
@@ -354,25 +369,14 @@ export default function Balkon() {
               })}
             </div>
 
-            {/* 2. Speicher — aufklappbarer Schalter. Empfiehlt das Modell einen
-                Speicher, ist er an und die Größe steht aufgeklappt darunter. */}
-            <div>
-              <button onClick={toggleStorage} aria-expanded={storageOn} style={{
-                width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8,
-                padding: "10px 12px", borderRadius: v('--radius-md'), cursor: "pointer", textAlign: "left",
-                background: storageOn ? v('--color-accent-dim') : v('--color-bg-muted'),
-                border: `2px solid ${storageOn ? v('--color-accent') : v('--color-border')}`,
+            {/* 2. Speicher — Schalter links, Größen rechts daneben, eine Zeile, ohne Box.
+                Der Tooltip steht bewusst NEBEN dem Schalter (Button im Button wäre
+                ungültiges HTML und würde den Schalter mit auslösen). */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <button onClick={toggleStorage} aria-pressed={storageOn} style={{
+                background: "none", border: "none", padding: 0, cursor: "pointer", flexShrink: 0,
+                display: "inline-flex", alignItems: "center", gap: 6,
               }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: storageOn ? v('--color-accent') : v('--color-text-primary') }}>Speicher</span>
-                  {recommendation.best.storageId !== "none" && (
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent') }}><IconCheck size={9} /> Empf.</span>
-                  )}
-                  <InfoTooltip title="Was ein Speicher bringt" ariaLabel="Was bringt ein Speicher am Balkonkraftwerk?" size={12}>
-                    Ein kleiner Akku puffert den Tagesüberschuss für Abend und Nacht und hebt den Eigenverbrauch — er kostet aber
-                    extra und rechnet sich oft erst spät. Wir empfehlen ihn nur, wenn er sich klar amortisiert.
-                  </InfoTooltip>
-                </span>
                 <span aria-hidden style={{
                   width: 38, height: 22, borderRadius: 11, flexShrink: 0, position: "relative", display: "inline-block",
                   background: storageOn ? v('--color-accent') : v('--color-border-muted'), transition: "background 0.2s",
@@ -382,22 +386,30 @@ export default function Balkon() {
                     background: v('--color-bg'), transition: "left 0.2s",
                   }} />
                 </span>
+                <span style={{ fontSize: 13, fontWeight: 700, whiteSpace: "nowrap", color: storageOn ? v('--color-accent') : v('--color-text-primary') }}>Speicher</span>
               </button>
+              <InfoTooltip title="Was ein Speicher bringt" ariaLabel="Was bringt ein Speicher am Balkonkraftwerk?" size={12}>
+                Ein kleiner Akku puffert den Tagesüberschuss für Abend und Nacht und hebt den Eigenverbrauch — er kostet aber
+                extra und rechnet sich oft erst spät. Wir empfehlen ihn nur, wenn er sich klar amortisiert.
+              </InfoTooltip>
+              {!storageOn && recommendation.best.storageId !== "none" && (
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent'), whiteSpace: "nowrap" }}><IconCheck size={9} /> Empf.</span>
+              )}
 
               {storageOn && (
-                <div style={{ display: "grid", gridTemplateColumns: `repeat(${storageOptions.length}, 1fr)`, gap: 6, marginTop: 8 }}>
+                <div style={{ display: "flex", gap: 6, flex: 1, minWidth: 0 }}>
                   {storageOptions.map(st => {
                     const selected = active.storageId === st.id;
                     const rec = st.id === recommendation.best.storageId;
                     return (
                       <button key={st.id} onClick={() => selectStorage(st.id)} style={{
-                        padding: "8px 6px", borderRadius: v('--radius-md'), cursor: "pointer", textAlign: "center",
-                        display: "flex", flexDirection: "column", alignItems: "center", gap: 1,
+                        flex: 1, minWidth: 0, padding: "6px 4px", borderRadius: v('--radius-md'), cursor: "pointer", textAlign: "center",
+                        display: "flex", flexDirection: "column", alignItems: "center", gap: 0,
                         background: selected ? v('--color-accent-dim') : v('--color-bg-muted'),
                         border: `2px solid ${selected ? v('--color-accent') : v('--color-border')}`,
                       }}>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: selected ? v('--color-accent') : v('--color-text-primary') }}>~{st.kwh.toLocaleString("de-DE")} kWh</span>
-                        <span style={{ fontSize: 10, color: v('--color-text-muted') }}>+{st.price.toLocaleString("de-DE")} €{rec ? " · Empf." : ""}</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, whiteSpace: "nowrap", color: selected ? v('--color-accent') : v('--color-text-primary') }}>~{st.kwh.toLocaleString("de-DE")} kWh</span>
+                        <span style={{ fontSize: 9, color: v('--color-text-muted'), whiteSpace: "nowrap" }}>+{st.price.toLocaleString("de-DE")} €{rec ? " · Empf." : ""}</span>
                       </button>
                     );
                   })}
