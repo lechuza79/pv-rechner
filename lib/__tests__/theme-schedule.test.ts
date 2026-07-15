@@ -73,6 +73,19 @@ describe("resolveTheme", () => {
     expect(resolveTheme("auto", noon)).toBe("light");
     expect(resolveTheme("auto", midnight)).toBe("dark");
   });
+
+  it("lets cloud dim the automatic mode, but never a manual choice", () => {
+    // Heavy cloud at midday: auto dims to dusk...
+    expect(resolveTheme("auto", noon, 0.1)).toBe("dusk");
+    // ...but someone who picked Hell by hand keeps Hell.
+    expect(resolveTheme("light", noon, 0.1)).toBe("light");
+    expect(resolveTheme("dark", noon, 1)).toBe("dark");
+  });
+
+  it("keeps a sunny midday light and never dims night further", () => {
+    expect(resolveTheme("auto", noon, 0.9)).toBe("light");
+    expect(resolveTheme("auto", midnight, 0)).toBe("dark");
+  });
 });
 
 describe("oppositeOf", () => {

@@ -2,6 +2,10 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { v } from "../lib/theme";
 import { resolveTheme, cycleFrom, type ThemePref, type ThemeMode } from "../lib/theme-schedule";
+import { useCachedFetch } from "../lib/use-cached-fetch";
+import { useLocation } from "../lib/location";
+import SolarNowBadge from "./SolarNowBadge";
+import type { SolarNowResponse } from "../lib/solar-now";
 
 // Header control for the colour scheme. One click from "Auto" always flips to
 // the opposite of what is on screen; the full cycle is auto → opposite → other
@@ -31,7 +35,7 @@ const LABEL: Record<ThemePref, string> = {
 
 // Full sentences — this is visible UI copy, not a label.
 const HINT: Record<ThemePref, string> = {
-  auto: "Das Farbschema folgt jetzt wieder der Tageszeit: tagsüber hell, zur Dämmerung gedimmt, nachts dunkel.",
+  auto: "Das Farbschema folgt jetzt wieder der Sonne: viel Sonne hell, wenig Sonne gedimmt, nachts dunkel.",
   light: "Das Farbschema bleibt jetzt immer hell, unabhängig von der Tageszeit.",
   dark: "Das Farbschema bleibt jetzt immer dunkel, unabhängig von der Tageszeit.",
 };
@@ -50,8 +54,8 @@ const THEME_COLOR: Record<ThemeMode, string> = {
   dark: "#12161C",
 };
 
-function apply(pref: ThemePref, animate: boolean): ThemeMode {
-  const resolved = resolveTheme(pref, new Date());
+function apply(pref: ThemePref, animate: boolean, util: number | null): ThemeMode {
+  const resolved = resolveTheme(pref, new Date(), util);
   const el = document.documentElement;
   const changed = el.getAttribute("data-theme") !== resolved;
   if (animate && changed) {
@@ -70,7 +74,20 @@ function apply(pref: ThemePref, animate: boolean): ThemeMode {
   return resolved;
 }
 
-export default function ThemeController() {
+export default function ThemeController({ compact }: { compact?: boolean } = {}) {
+  const { plz, setPlz } = useLocation();
+  // How much sun there is right now — nation-wide, or at the visitor's location
+  // once they set one. Drives both the figure in the header and how bright the
+  // page is; until it lands (or if it fails) the sun position alone decides.
+  const { data: solar } = useCachedFetch<SolarNowResponse | null>(
+    `/api/solar-now${plz ? `?plz=${plz}` : ""}`,
+    `solar-now-${plz ?? "de"}`,
+    null,
+  );
+  const util = solar?.utilisation ?? null;
+  const utilRef = useRef<number | null>(null);
+  utilRef.current = util;
+
   const [pref, setPref] = useState<ThemePref>("auto");
   const [resolved, setResolved] = useState<ThemeMode>("light");
   const [mounted, setMounted] = useState(false);
@@ -93,9 +110,17 @@ export default function ThemeController() {
     prefRef.current = initial;
     if (initial !== "auto") firstManualRef.current = initial;
     setPref(initial);
-    setResolved(apply(initial, false));
+    setResolved(apply(initial, false, utilRef.current));
     setMounted(true);
   }, []);
+
+  // Re-apply when a fresh reading arrives (or the location changes): the boot
+  // script painted from the sun position, this corrects it — the cross-fade
+  // makes the adjustment read as intentional rather than a flash.
+  useEffect(() => {
+    if (!mounted) return;
+    setResolved(apply(prefRef.current, true, util));
+  }, [util, mounted]);
 
   useEffect(() => () => {
     if (hideTimer.current) clearTimeout(hideTimer.current);
@@ -119,19 +144,20 @@ export default function ThemeController() {
     if (pref !== "auto") return;
     const id = window.setInterval(() => {
       if (prefRef.current !== "auto") return;
-      setResolved(apply("auto", true));
+      setResolved(apply("auto", true, utilRef.current));
     }, 60_000);
     return () => window.clearInterval(id);
   }, [pref]);
 
   const cycle = useCallback(() => {
     const current = prefRef.current;
-    const next = cycleFrom(current, resolveTheme(current, new Date()), firstManualRef.current);
+    const shown = resolveTheme(current, new Date(), utilRef.current);
+    const next = cycleFrom(current, shown, firstManualRef.current);
     if (current === "auto") firstManualRef.current = next;
     if (next === "auto") firstManualRef.current = null;
     prefRef.current = next;
     setPref(next);
-    setResolved(apply(next, true));
+    setResolved(apply(next, true, utilRef.current));
     // The tooltip node is always mounted (see below), so it has already been
     // painted at opacity 0 — flipping it on in the same tick transitions both
     // ways without depending on requestAnimationFrame, which browsers throttle.
@@ -149,7 +175,10 @@ export default function ThemeController() {
     ` (aktuell ${resolved === "dark" ? "dunkel" : resolved === "dusk" ? "Dämmerung" : "hell"})`;
 
   return (
-    <div ref={wrapRef} style={{ position: "relative", display: "inline-flex" }}>
+    <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+      <SolarNowBadge data={solar} plz={plz} onSetPlz={setPlz} compact={compact} />
+
+      <div ref={wrapRef} style={{ position: "relative", display: "inline-flex" }}>
       <button
         type="button"
         onClick={cycle}
@@ -209,6 +238,7 @@ export default function ThemeController() {
             </>
           )}
         </div>
+      </div>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { IconArrowRight, IconCheck } from "./Icons";
 import { useChartExport } from "../lib/useChartExport";
+import { useSharedPlz } from "../lib/location";
 import ChartExportBar from "./ChartExportBar";
 import ChartActionBar from "./ChartActionBar";
 import { PoweredBy, DataSourceNote } from "./PoweredBy";
@@ -47,6 +48,9 @@ export default function SimulationPanel({
   branding?: boolean;
 }) {
   const [plz, setPlz] = useState(initialPlz);
+  // One location across all calculators. Inside embeds this resolves to the
+  // in-memory store, so the widget stays free of browser storage.
+  useSharedPlz(plz, setPlz);
   const [coords, setCoords] = useState<[number, number] | null>(null);
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [hourly, setHourly] = useState<HourlyForecast | null>(null);

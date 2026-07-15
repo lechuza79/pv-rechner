@@ -2,6 +2,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
+import { useSharedPlz } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
 import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN, INSULATION_BESTAND } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
@@ -178,6 +179,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
   // Auto-fetch bei Share-URL mit PLZ
   useEffect(() => { if (plz) fetchPvgis(plz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Ohne PLZ im Link: den gemerkten Standort übernehmen und direkt anwenden,
+  // damit der Ertrag stimmt, ohne dass die PLZ erneut eingegeben werden muss.
+  useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); });
 
   // Dynamic market prices + feed-in rates
   const prices = usePrices();

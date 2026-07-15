@@ -236,6 +236,10 @@ export default function DatenschutzPage() {
           Zusätzlich nutzt die Website den lokalen Browser-Speicher (localStorage/sessionStorage), um öffentliche Energie- und Preisdaten zwischenzuspeichern und — wenn du auf „Speichern" klickst — deine Berechnung bis zum Login vorzuhalten. Diese Einträge enthalten keine Identifier und dienen keinem Tracking; die Speicherung ist für die gewünschte Funktion erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Du kannst sie jederzeit über die Einstellungen deines Browsers löschen.
         </p>
 
+        <p style={S.p}>
+          Ebenfalls im lokalen Browser-Speicher merken wir uns zwei Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong> und dein gewähltes <strong>Farbschema</strong> (hell, dunkel oder automatisch). Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst — sie bleibt auch bei einem späteren Besuch erhalten. Beide Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird ausschließlich für die Abfrage von Wetter- und Ertragsdaten für diesen Ort verwendet (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige jederzeit wieder entfernen oder den Browser-Speicher löschen. Rechtsgrundlage ist deine gewünschte Funktion (§ 25 Abs. 2 Nr. 2 TDDDG).
+        </p>
+
         <h2 style={S.h2}>8. Standortgenaue Ertragsprognose</h2>
         <p style={S.p}>
           Für eine realistische Ertragsprognose berechnen wir den

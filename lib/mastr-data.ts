@@ -69,6 +69,15 @@ const PLACEHOLDER: PlaceholderBl[] = [
   { ags: "16", solar_mw: 2700, wind_mw: 1800, biomasse_mw: 210, wasser_mw: 130, speicher_mw: 370 },
 ];
 
+/**
+ * Installed solar per Bundesland in MW, keyed by AGS. Single source for
+ * capacity weights — used by the nation-wide "current solar" average so that
+ * Bayern (27 % of Germany's solar) counts more than Bremen (0.2 %).
+ */
+export const SOLAR_STOCK_MW: Record<string, number> = Object.fromEntries(
+  PLACEHOLDER.map((p) => [p.ags, p.solar_mw]),
+);
+
 // Rough share of solar installations by segment (nation-wide approximation).
 // Will be replaced by actual segment counts from MaStR per region.
 const SOLAR_SEGMENT_SHARE: Record<Exclude<Segment, "n/a">, number> = {

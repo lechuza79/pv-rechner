@@ -11,6 +11,7 @@ import { usePrices } from "../../../lib/prices";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { calcAircon, compareDevices, acquisitionRange, calcAirconHeating, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
 import { trackEvent } from "../../../lib/analytics";
+import { useSharedPlz } from "../../../lib/location";
 import { bundeslandFromPlz } from "../../../lib/plz-bundesland";
 import { DataSourceNote } from "../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../lib/data-sources";
@@ -75,6 +76,7 @@ export default function Klimaanlage() {
 
   // Standort → Kühlgradstunden
   const [plz, setPlz] = useState("");
+  useSharedPlz(plz, setPlz); // one location across all calculators
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzConfirmed, setPlzConfirmed] = useState(false);
   const [cdhSet, setCdhSet] = useState<CdhModes>(() => ({

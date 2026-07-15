@@ -161,8 +161,8 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
           </nav>
         )}
 
-        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 14 }}>
-          <ThemeController />
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: isDesktop ? 14 : 8 }}>
+          <ThemeController compact={!isDesktop} />
           {isDesktop ? authElement : (
             <button
               onClick={() => setMenuOpen(!menuOpen)}

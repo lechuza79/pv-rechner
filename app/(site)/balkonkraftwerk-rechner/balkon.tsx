@@ -12,6 +12,7 @@ import { PERSONEN } from "../../../lib/constants";
 import { DEFAULT_BALKON_CONFIG as CFG, type BalkonSetId } from "../../../lib/balkon-config";
 import { calcBalkon, recommendBalkonSet, type BalkonInputs } from "../../../lib/balkon";
 import { trackEvent } from "../../../lib/analytics";
+import { useSharedPlz } from "../../../lib/location";
 import { DataSourceNote } from "../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 
@@ -34,6 +35,7 @@ export default function Balkon() {
 
   // Standort → Ertrag (kWh/kWp) via PVGIS
   const [plz, setPlz] = useState("");
+  useSharedPlz(plz, setPlz); // one location across all calculators
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzConfirmed, setPlzConfirmed] = useState(false);
   const [specificYield, setSpecificYield] = useState(CFG.specificYield);

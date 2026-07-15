@@ -41,8 +41,7 @@ export function sunTimes(
   lat = DE_LAT,
   lon = DE_LON,
 ): { sunrise: number; sunset: number } {
-  // Solar declination (radians), standard first-order approximation.
-  const decl = 0.4093 * Math.sin((2 * Math.PI) / 365 * (doy - 81));
+  const decl = declination(doy);
   const latRad = (lat * Math.PI) / 180;
   // Hour angle at sunrise; clamp guards the polar edge case (never hit in DE).
   const cosH = Math.max(-1, Math.min(1, -Math.tan(latRad) * Math.tan(decl)));
@@ -52,6 +51,69 @@ export function sunTimes(
     sunrise: solarNoonUtc - halfDayHours + tzOffsetHours,
     sunset: solarNoonUtc + halfDayHours + tzOffsetHours,
   };
+}
+
+/** Solar declination (radians) for a day of the year. */
+function declination(doy: number): number {
+  return 0.4093 * Math.sin((2 * Math.PI) / 365 * (doy - 81));
+}
+
+/**
+ * Solar elevation above the horizon, in degrees (negative = below).
+ * `utcHours` is the UTC time of day as a fraction.
+ */
+export function sunElevation(
+  doy: number,
+  utcHours: number,
+  lat = DE_LAT,
+  lon = DE_LON,
+): number {
+  const decl = declination(doy);
+  const latRad = (lat * Math.PI) / 180;
+  // Hour angle: 15° per hour away from local solar noon.
+  const solarHour = utcHours + lon / 15;
+  const H = ((solarHour - 12) * 15 * Math.PI) / 180;
+  const sinH =
+    Math.sin(latRad) * Math.sin(decl) +
+    Math.cos(latRad) * Math.cos(decl) * Math.cos(H);
+  return (Math.asin(Math.max(-1, Math.min(1, sinH))) * 180) / Math.PI;
+}
+
+/**
+ * Clear-sky global irradiance in W/m² for a given sun elevation — what the sky
+ * could deliver right now with no clouds. Haurwitz model; the reference we
+ * measure the real irradiance against, so a crisp winter noon counts as "full
+ * sun" even though its absolute value is far below a summer noon.
+ */
+export function clearSkyGhi(elevationDeg: number): number {
+  if (elevationDeg <= 0) return 0;
+  const cosZenith = Math.sin((elevationDeg * Math.PI) / 180);
+  if (cosZenith <= 0) return 0;
+  return Math.max(0, 1098 * cosZenith * Math.exp(-0.057 / cosZenith));
+}
+
+/** Sun is effectively down below this clear-sky level (W/m²). */
+export const NIGHT_GHI = 25;
+/** Below this share of the clear-sky potential, daylight is dimmed to dusk. */
+export const DIM_UTILISATION = 0.45;
+
+/**
+ * How much of the clear-sky potential is actually arriving (0–1).
+ * Returns null when the sun is too low for the ratio to mean anything.
+ */
+export function utilisation(actualGhi: number, clearSky: number): number | null {
+  if (clearSky < NIGHT_GHI) return null;
+  return Math.max(0, Math.min(1, actualGhi / clearSky));
+}
+
+/**
+ * Dim a sun-position theme with live conditions: heavy cloud turns a bright day
+ * into dusk, but never into night — night is only ever the sun being down.
+ * Unknown conditions (no data) leave the sun-position theme untouched.
+ */
+export function applyConditions(base: ThemeMode, util: number | null): ThemeMode {
+  if (util === null || base !== "light") return base;
+  return util < DIM_UTILISATION ? "dusk" : "light";
 }
 
 /** Classify a local clock hour into a theme given sunrise/sunset. */
@@ -79,11 +141,21 @@ export function scheduleTheme(date: Date, lat = DE_LAT, lon = DE_LON): ThemeMode
 // switch stays a clean light/dark flip.
 export type ThemePref = "auto" | "light" | "dark";
 
-/** Resolve the effective theme from a stored preference. */
-export function resolveTheme(pref: ThemePref, date: Date): ThemeMode {
+/**
+ * Resolve the effective theme from a stored preference.
+ * `util` is the live share of the clear-sky potential (see utilisation()); it
+ * only ever dims the automatic mode — picking "Hell" by hand must stay light
+ * however cloudy it is. null (no data yet, or request failed) falls back to the
+ * pure sun position, which is also what the boot script paints with.
+ */
+export function resolveTheme(
+  pref: ThemePref,
+  date: Date,
+  util: number | null = null,
+): ThemeMode {
   if (pref === "light") return "light";
   if (pref === "dark") return "dark";
-  return scheduleTheme(date);
+  return applyConditions(scheduleTheme(date), util);
 }
 
 /**
