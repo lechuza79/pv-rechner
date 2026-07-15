@@ -88,14 +88,11 @@ function RankDelta({ value, sinceYear }: { value: number | null; sinceYear: numb
 export default function RankingTable({
   regions,
   cells,
-  scopeLabel,
   basePath,
   lastFullYear,
 }: {
   regions: RankingRegion[];
   cells: ChildYearRow[];
-  /** e.g. "im Landkreis Würzburg" — caption of the floating row. */
-  scopeLabel: string;
   basePath: string;
   lastFullYear: number;
 }) {
@@ -336,7 +333,6 @@ export default function RankingTable({
               </span>
               <span style={S.nameCell}>
                 <span style={{ ...S.name, fontWeight: 700 }}>{homeRow.name}</span>
-                <span style={S.stickyScope}>{scopeLabel}</span>
               </span>
               {COLUMNS.map((c) => (
                 <span key={c.key} style={cellStyle(c.key)}>
@@ -574,7 +570,6 @@ const S: Record<string, React.CSSProperties> = {
     boxShadow: "0 4px 14px rgba(0,0,0,0.10)",
   },
   rowLink: { textDecoration: "none", color: "inherit", cursor: "pointer" },
-  stickyScope: { fontSize: 10, color: v("--color-text-muted"), fontWeight: 400 },
   dropdown: {
     position: "absolute",
     top: "calc(100% + 4px)",

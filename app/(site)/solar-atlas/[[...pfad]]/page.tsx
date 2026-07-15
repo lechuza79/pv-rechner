@@ -175,7 +175,6 @@ export default async function AtlasPage({ params }: { params: Params }) {
             cells={ranking.cells}
             basePath={basePath}
             lastFullYear={lastYear}
-            scopeLabel={region.level === "de" ? "in Deutschland" : `in ${region.name}`}
           />
         </div>
 
