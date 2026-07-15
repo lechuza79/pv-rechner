@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../../components/Header";
 import { IconArrowRight } from "../../../components/Icons";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import AtomstromWidget from "./AtomstromWidget";
 import AutoHeightIframe from "../../../components/AutoHeightIframe";
@@ -237,7 +237,7 @@ export default async function AtomstromImportPage() {
         </div>
 
         <Link href="/strommix-deutschland" style={S.cta}>
-          Live-Verlauf im Strommix-Dashboard <IconArrowRight size={14} />
+          Live-Verlauf im Strommix-Dashboard <IconArrowRight size={iconSizes.md} />
         </Link>
 
         <p style={S.source}>

@@ -14,6 +14,7 @@ import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { useChartExport } from "../../../../lib/useChartExport";
 import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
+import { iconSizes } from "../../../../lib/theme";
 import {
   WIDGET_SETTINGS_DEFAULTS,
   WidgetSettings,
@@ -283,7 +284,7 @@ function YearGroup({
         }}
         aria-label="Vorheriges Jahr"
       >
-        <IconChevronLeft size={10} />
+        <IconChevronLeft size={iconSizes.xs} />
       </button>
       <div ref={ref} style={{ position: "relative", display: "flex" }}>
         <button
@@ -300,7 +301,7 @@ function YearGroup({
           }}
         >
           {active ? selectedYear : "Jahr"}
-          <IconChevronDown size={8} />
+          <IconChevronDown size={iconSizes.xs} />
         </button>
         {open && (
           <div
@@ -371,7 +372,7 @@ function YearGroup({
         }}
         aria-label="Nächstes Jahr"
       >
-        <IconChevronRight size={10} />
+        <IconChevronRight size={iconSizes.xs} />
       </button>
     </div>
   );

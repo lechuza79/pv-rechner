@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { v } from "../lib/theme";
+import { v, iconSizes } from "../lib/theme";
 import {
   IconDownload,
   IconShare,
@@ -113,7 +113,7 @@ export default function ChartActionBar({
       <div ref={wrapRef} style={{ position: "relative", display: "inline-flex" }}>
         {copied && (
           <div style={{ ...S.toast, ...(menuUp ? null : S.toastBelow) }}>
-            <IconCheck size={13} color={v("--color-bg")} /> Link kopiert
+            <IconCheck size={iconSizes.sm} color={v("--color-bg")} /> Link kopiert
           </div>
         )}
         <button
@@ -168,7 +168,7 @@ export default function ChartActionBar({
     <div style={{ display: "flex", gap: 6, flexShrink: 0, position: "relative" }}>
       {copied && (
         <div style={S.toast}>
-          <IconCheck size={13} color={v("--color-bg")} /> Link kopiert
+          <IconCheck size={iconSizes.sm} color={v("--color-bg")} /> Link kopiert
         </div>
       )}
       {showDownload && (
@@ -241,7 +241,7 @@ function MenuItem({
         ...(disabled ? { opacity: 0.5, cursor: "wait" } : null),
       }}
     >
-      <Icon size={15} color={accent ? v("--color-accent") : muted ? v("--color-text-muted") : v("--color-text-secondary")} />
+      <Icon size={iconSizes.md} color={accent ? v("--color-accent") : muted ? v("--color-text-muted") : v("--color-text-secondary")} />
       <span>{label}</span>
     </button>
   );

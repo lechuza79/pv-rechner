@@ -6,7 +6,7 @@ import InlineEdit from "../../../components/InlineEdit";
 import Header from "../../../components/Header";
 import InfoTooltip from "../../../components/InfoTooltip";
 import { IconArrowRight, IconRefresh, IconCheck } from "../../../components/Icons";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { PERSONEN } from "../../../lib/constants";
 import { DEFAULT_BALKON_CONFIG as CFG, type BalkonSetId } from "../../../lib/balkon-config";
@@ -151,7 +151,7 @@ export default function Balkon() {
 
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: 4 }}>
                   Tagsüber jemand zuhause?
-                  <InfoTooltip title="Warum das zählt" ariaLabel="Warum fragen wir, ob tagsüber jemand zuhause ist?" size={12}>
+                  <InfoTooltip title="Warum das zählt" ariaLabel="Warum fragen wir, ob tagsüber jemand zuhause ist?" size={iconSizes.sm}>
                     Ein Balkonkraftwerk lohnt sich über den Strom, den du direkt verbrauchst, während die Sonne scheint.
                     Wer tagsüber zuhause ist (Homeoffice, Rente, Familie), nutzt mehr davon selbst — Überschuss fließt
                     sonst unvergütet ins Netz.
@@ -183,7 +183,7 @@ export default function Balkon() {
                     color: plzConfirmed || plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
                   }}>
                     {plzLoading ? "…" : plzConfirmed
-                      ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconCheck size={13} /> Übernommen</span>
+                      ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconCheck size={iconSizes.sm} /> Übernommen</span>
                       : "Übernehmen"}
                   </button>
                 </form>
@@ -241,7 +241,7 @@ export default function Balkon() {
                             <span style={{ fontSize: 14, fontWeight: 700, color: selected ? v('--color-accent') : v('--color-text-primary') }}>{s.label}</span>
                             {isRec && (
                               <span style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v('--color-text-on-accent'), background: v('--color-accent'), borderRadius: v('--radius-sm'), padding: "2px 6px", whiteSpace: "nowrap" }}>
-                                <IconCheck size={10} /> Empfohlen
+                                <IconCheck size={iconSizes.xs} /> Empfohlen
                               </span>
                             )}
                           </span>
@@ -275,7 +275,7 @@ export default function Balkon() {
                 <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
               )}
               <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Ergebnis anzeigen <IconArrowRight size={14} /></> : <>Weiter <IconArrowRight size={14} /></>}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Ergebnis anzeigen <IconArrowRight size={iconSizes.md} /></> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
               </button>
             </div>
           </div>
@@ -348,10 +348,10 @@ export default function Balkon() {
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
               <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Eigenes Dach? Große Anlage rechnen <IconArrowRight size={12} /></span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Eigenes Dach? Große Anlage rechnen <IconArrowRight size={iconSizes.sm} /></span>
               </Link>
               <button onClick={() => setStep(0)} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={12} /> Neu berechnen</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>
 
@@ -434,7 +434,7 @@ function StatCard({ label, value, sub, help, helpTitle, valueColor }: { label: s
     <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
       <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
         {label}
-        {help && <InfoTooltip title={helpTitle ?? label} ariaLabel="Mehr Infos" size={12}>{help}</InfoTooltip>}
+        {help && <InfoTooltip title={helpTitle ?? label} ariaLabel="Mehr Infos" size={iconSizes.sm}>{help}</InfoTooltip>}
       </div>
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: valueColor ?? v('--color-text-primary') }}>{value}</div>
       {sub && <div style={{ fontSize: 10, color: v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 2 }}>{sub}</div>}

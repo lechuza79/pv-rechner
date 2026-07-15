@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { IconCheck } from "../../../../components/Icons";
 import PresetNumberInput from "../../../../components/PresetNumberInput";
-import { v } from "../../../../lib/theme";
+import { v, iconSizes } from "../../../../lib/theme";
 import { SPEICHER, EA_KM_PRESETS } from "../../../../lib/constants";
 import { KLIMA_M2_PRESETS } from "../../../../lib/consumption";
 
@@ -83,20 +83,20 @@ export default function QuickSettings({
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         <button onClick={() => { setWp(wp === "nein" ? "ja" : "nein"); setOEv(null); }} style={toggleStyle(wp !== "nein")}>
           Wärmepumpe
-          <span style={checkboxStyle(wp !== "nein")}>{wp !== "nein" ? <IconCheck size={10} /> : ""}</span>
+          <span style={checkboxStyle(wp !== "nein")}>{wp !== "nein" ? <IconCheck size={iconSizes.xs} /> : ""}</span>
         </button>
         <button onClick={() => { setEa(ea === "nein" ? "ja" : "nein"); setOEv(null); }} style={toggleStyle(ea !== "nein")}>
           E-Auto
-          <span style={checkboxStyle(ea !== "nein")}>{ea !== "nein" ? <IconCheck size={10} /> : ""}</span>
+          <span style={checkboxStyle(ea !== "nein")}>{ea !== "nein" ? <IconCheck size={iconSizes.xs} /> : ""}</span>
         </button>
         <button onClick={() => { setKlima(klima === "nein" ? "ja" : "nein"); setOEv(null); }} style={toggleStyle(klima !== "nein")}>
           Klimaanlage
-          <span style={checkboxStyle(klima !== "nein")}>{klima !== "nein" ? <IconCheck size={10} /> : ""}</span>
+          <span style={checkboxStyle(klima !== "nein")}>{klima !== "nein" ? <IconCheck size={iconSizes.xs} /> : ""}</span>
         </button>
         <button onClick={handleSpeicherToggle} style={toggleStyle(speicher > 0)}>
           Speicher
           {speicher > 0 && <span style={{ fontSize: 11 }}>{spKwh} kWh</span>}
-          <span style={checkboxStyle(speicher > 0)}>{speicher > 0 ? <IconCheck size={10} /> : ""}</span>
+          <span style={checkboxStyle(speicher > 0)}>{speicher > 0 ? <IconCheck size={iconSizes.xs} /> : ""}</span>
         </button>
       </div>
       {spKostenPrompt && (

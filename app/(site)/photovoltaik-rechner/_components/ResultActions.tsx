@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { v } from "../../../../lib/theme";
+import { v, iconSizes } from "../../../../lib/theme";
 import { IconCheck, IconLink, IconShare, IconWhatsApp, IconArrowRight } from "../../../../components/Icons";
 import type { AuthState } from "../../../../lib/auth";
 
@@ -54,7 +54,7 @@ export default function ResultActions({
           cursor: saving ? "wait" : "pointer", fontFamily: v('--font-text'), transition: "all 0.2s",
           display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
         }}>
-          {saved ? <><IconCheck size={14} /> Gespeichert!</> : saving ? "Speichert..." : "Ergebnis speichern"}
+          {saved ? <><IconCheck size={iconSizes.md} /> Gespeichert!</> : saving ? "Speichert..." : "Ergebnis speichern"}
         </button>
       );
     }
@@ -74,22 +74,22 @@ export default function ResultActions({
     <>
       <div style={{ display: "flex", gap: 5, alignItems: "center", padding: "10px 0", marginBottom: 16 }}>
         <button onClick={onCopy} title={copied ? "Kopiert!" : "Link kopieren"} style={iconBtnStyle(copied)}>
-          {copied ? <IconCheck size={16} /> : <IconLink size={16} />}
+          {copied ? <IconCheck size={iconSizes.md} /> : <IconLink size={iconSizes.md} />}
         </button>
         {canShare && (
           <button onClick={onNativeShare} title="Teilen" style={iconBtnStyle()}>
-            <IconShare size={16} />
+            <IconShare size={iconSizes.md} />
           </button>
         )}
         <button onClick={onWhatsApp} title="WhatsApp" style={iconBtnStyle()}>
-          <IconWhatsApp size={16} />
+          <IconWhatsApp size={iconSizes.md} />
         </button>
         {primaryBtn()}
       </div>
       {authState.status === "authed" && savedCalcId && !saved && (
         <div style={{ textAlign: "center", marginBottom: 16 }}>
           <Link href="/dashboard" style={{ fontSize: 12, color: v('--color-text-muted'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>
-            Meine Berechnungen <IconArrowRight size={10} />
+            Meine Berechnungen <IconArrowRight size={iconSizes.xs} />
           </Link>
         </div>
       )}

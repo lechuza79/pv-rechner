@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { IconArrowRight } from "../../../components/Icons";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
@@ -238,7 +238,7 @@ export default async function DatenstandPage() {
       <div style={S.wrap}>
         <Link href="/" style={S.back}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={12} style={{ transform: "rotate(180deg)" }} /> Zurück zum Rechner
+            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück zum Rechner
           </span>
         </Link>
 

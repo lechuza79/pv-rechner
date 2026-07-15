@@ -12,7 +12,7 @@ import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import Header from "../../../components/Header";
@@ -432,7 +432,7 @@ export default function Empfehlung() {
                 <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
               )}
               <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <><IconSparkle size={14} /> Empfehlung anzeigen</> : <>Weiter <IconArrowRight size={14} /></>}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <><IconSparkle size={iconSizes.md} /> Empfehlung anzeigen</> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
               </button>
             </div>
           </div>
@@ -523,7 +523,7 @@ export default function Empfehlung() {
             }}>
               <summary style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>Warum diese Konfiguration?</span>
-                <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={10} /></span>
+                <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={iconSizes.xs} /></span>
               </summary>
               <div style={{ marginTop: 14, fontSize: 13, color: v('--color-text-muted'), lineHeight: 1.7 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px", marginBottom: 12 }}>
@@ -616,7 +616,7 @@ export default function Empfehlung() {
               background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer",
               fontFamily: v('--font-text'), marginBottom: 12,
             }}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Ergebnis anzeigen <IconArrowRight size={14} /></span>
+<span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Ergebnis anzeigen <IconArrowRight size={iconSizes.md} /></span>
             </button>
 
             {/* Share + Eingaben ändern */}
@@ -632,7 +632,7 @@ export default function Empfehlung() {
                 flex: 1, padding: "10px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
                 background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
                 fontFamily: v('--font-text'),
-              }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={14} /> Eingaben ändern</span></button>
+              }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.md} /> Eingaben ändern</span></button>
             </div>
 
             {/* Alternativen */}

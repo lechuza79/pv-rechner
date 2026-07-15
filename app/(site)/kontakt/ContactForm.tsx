@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { IconCheck, IconClose } from "../../../components/Icons";
 import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../../../lib/contact-topics";
 
@@ -121,7 +121,7 @@ export default function ContactForm() {
   if (status === "success") {
     return (
       <div style={{ ...S.message, ...S.success }}>
-        <IconCheck size={16} />
+        <IconCheck size={iconSizes.md} />
         <span>Danke für deine Nachricht! Wir melden uns in der Regel innerhalb von 1–2 Werktagen bei dir.</span>
       </div>
     );
@@ -197,7 +197,7 @@ export default function ContactForm() {
 
       {status === "error" && (
         <div style={{ ...S.message, ...S.error }}>
-          <IconClose size={16} />
+          <IconClose size={iconSizes.md} />
           <span>{errorText}</span>
         </div>
       )}

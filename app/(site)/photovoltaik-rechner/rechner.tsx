@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
-import { useSharedPlz } from "../../../lib/location";
+import { useSharedPlz, readLocation } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
 import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, DACHARTEN, INSULATION_BESTAND } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
@@ -14,7 +14,7 @@ import PresetNumberInput from "../../../components/PresetNumberInput";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import { calcExtraConsumption, calcKlimaAnnual, KLIMA_DEFAULT_M2, KLIMA_M2_PRESETS } from "../../../lib/consumption";
 import Chart from "./_components/Chart";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import Header from "../../../components/Header";
@@ -303,7 +303,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     // Live-Simulation via ?plz=): plzSource only fills once the async location
     // lookup returns, so without this guard the toast flashes "PLZ eingeben"
     // even though the location is set and being applied.
-    if (!isResult || plzSource || /^\d{5}$/.test(plz) || plzToastShown.current) return;
+    // A location arriving late retires the nudge instead of leaving it asking
+    // for something that is already set.
+    if (plzSource || /^\d{5}$/.test(plz)) { setPlzToast(false); return; }
+    // readLocation() rather than waiting for the adopted PLZ to land in state:
+    // the shared location is taken over in an effect, one render after this one
+    // would otherwise have decided to nag.
+    if (!isResult || plzToastShown.current || readLocation()) return;
     plzToastShown.current = true;
     setPlzToast(true);
   }, [isResult, plzSource, plz]);
@@ -464,7 +470,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               onClick={() => { if (typeof window !== "undefined") window.history.back(); }}
               style={{ background: "none", border: "none", color: v('--color-accent'), cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: v('--font-text'), padding: 0, marginBottom: 10, display: "inline-flex", alignItems: "center", gap: 4 }}
             >
-              <span style={{ transform: "rotate(180deg)", display: "inline-flex" }}><IconArrowRight size={13} /></span> Zurück zur Empfehlung
+              <span style={{ transform: "rotate(180deg)", display: "inline-flex" }}><IconArrowRight size={iconSizes.sm} /></span> Zurück zur Empfehlung
             </button>
             <div style={{ textAlign: "center" }}>
               <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Deine Empfehlung im Detail</h1>
@@ -690,7 +696,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 <button onClick={back} style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>Zurück</button>
               ) : <div />}
               <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <><IconSparkle size={14} /> Berechnen</> : <>Weiter <IconArrowRight size={14} /></>}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <><IconSparkle size={iconSizes.md} /> Berechnen</> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
               </button>
             </div>
           </div>
@@ -797,7 +803,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               }}>
                 <summary style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span>Warum diese Anlage?</span>
-                  <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={10} /></span>
+                  <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={iconSizes.xs} /></span>
                 </summary>
                 <div style={{ marginTop: 14, fontSize: 13, color: v('--color-text-muted'), lineHeight: 1.7 }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 16px", marginBottom: 12 }}>
@@ -966,7 +972,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             <button onClick={restart} style={{
               width: "100%", padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
               background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
-            }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={14} /> Neu berechnen</span></button>
+            }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={iconSizes.md} /> Neu berechnen</span></button>
 
             <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
               Keine Lead-Erfassung · Keine Werbung<br />

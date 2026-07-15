@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import { IconUser, IconMenu, IconClose, IconChevronDown } from "./Icons";
-import { v } from "../lib/theme";
+import { v, iconSizes } from "../lib/theme";
 import { useAuth } from "../lib/auth";
 import ThemeController from "./ThemeController";
 
@@ -173,8 +173,8 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
               }}
             >
               {menuOpen
-                ? <IconClose size={22} color={v('--color-text-primary')} />
-                : <IconMenu size={22} color={v('--color-text-primary')} />
+                ? <IconClose size={iconSizes.xl} color={v('--color-text-primary')} />
+                : <IconMenu size={iconSizes.xl} color={v('--color-text-primary')} />
               }
             </button>
           )}
@@ -272,7 +272,7 @@ function DesktopDropdown({
       >
         {triggerLabel}
         <IconChevronDown
-          size={14}
+          size={iconSizes.md}
           color={active ? v('--color-accent') : v('--color-text-muted')}
           style={{ transition: "transform 0.15s ease", transform: open ? "rotate(180deg)" : "none" }}
         />

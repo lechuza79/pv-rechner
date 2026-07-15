@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../../components/Header";
 import { IconArrowRight } from "../../../components/Icons";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { ATLAS_CITIES, cityPath, slugify, liveBundeslaender, type AtlasCity } from "../../../lib/atlas-cities";
 import { fundingAmount, fundingStandLabel, landProgramBundeslaender, type FundingProgram } from "../../../lib/funding-programs";
@@ -70,7 +70,7 @@ function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
           fontSize: 13, fontWeight: 700, padding: "8px 14px", borderRadius: v("--radius-md"),
         }}
       >
-        {primaryLabel} <IconArrowRight size={13} color={v("--color-text-on-accent")} />
+        {primaryLabel} <IconArrowRight size={iconSizes.sm} color={v("--color-text-on-accent")} />
       </Link>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12, marginTop: 10 }}>
@@ -79,7 +79,7 @@ function ProgramCard({ p, city }: { p: FundingProgram; city?: AtlasCity }) {
         )}
         {inRechner && (
           <Link href={`/photovoltaik-rechner?foe=${p.id}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={11} /></span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={iconSizes.xs} /></span>
           </Link>
         )}
         <span style={{ color: v("--color-text-muted") }}>{fundingStandLabel(p)}</span>
@@ -133,7 +133,7 @@ export default async function FoerderungPage() {
             <h2 id={slugify(bl)} style={S.h2}>{bl}</h2>
             {blWithPage.has(slugify(bl)) && (
               <Link href={`/photovoltaik-foerderung/${slugify(bl)}`} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, color: v("--color-accent"), textDecoration: "none", marginBottom: 10 }}>
-                {liveBundeslaender().some((b) => b.slug === slugify(bl)) ? `Alle Städte in ${bl}` : `${bl}-Förderung im Detail`} <IconArrowRight size={11} />
+                {liveBundeslaender().some((b) => b.slug === slugify(bl)) ? `Alle Städte in ${bl}` : `${bl}-Förderung im Detail`} <IconArrowRight size={iconSizes.xs} />
               </Link>
             )}
             {byLand.get(bl)!.map((p) => <ProgramCard key={p.id} p={p} city={cityByFundingId.get(p.id)} />)}

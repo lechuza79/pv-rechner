@@ -4,7 +4,7 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Header from "../../../components/Header";
 import { IconBolt, IconRefresh, IconLink, IconChevronDown } from "../../../components/Icons";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import {
   WIDGET_FONTS,
   WIDGET_THEME_DEFAULTS,
@@ -212,7 +212,7 @@ export default function WidgetsClient() {
             return (
               <div key={r.title} style={S.ruleCard}>
                 <div style={S.ruleIcon}>
-                  <Icon size={18} color={v("--color-accent")} />
+                  <Icon size={iconSizes.lg} color={v("--color-accent")} />
                 </div>
                 <div style={S.ruleTitle}>{r.title}</div>
                 <div style={S.ruleBody}>{r.body}</div>
@@ -622,7 +622,7 @@ function EmbedSnippet({
       <div style={S.snippetHeader}>
         <button type="button" onClick={() => setOpen((o) => !o)} style={S.snippetToggle} aria-expanded={open}>
           <IconChevronDown
-            size={14}
+            size={iconSizes.md}
             color={v("--color-text-secondary")}
             style={{ transition: "transform 0.15s ease", transform: open ? "rotate(180deg)" : "none" }}
           />
@@ -660,7 +660,7 @@ function PrivacySnippet() {
       <div style={S.snippetHeader}>
         <button type="button" onClick={() => setOpen((o) => !o)} style={S.snippetToggle} aria-expanded={open}>
           <IconChevronDown
-            size={14}
+            size={iconSizes.md}
             color={v("--color-text-secondary")}
             style={{ transition: "transform 0.15s ease", transform: open ? "rotate(180deg)" : "none" }}
           />

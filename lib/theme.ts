@@ -93,19 +93,26 @@ export const tokens = {
 export type TokenName = keyof typeof tokens;
 
 /**
- * Icon sizes — one place to tune how big icons read across the UI.
+ * Icon sizes — THE place to tune how big icons read across the UI.
  * Numbers (not CSS vars) because the icon components take a numeric `size`
  * prop, so they can be passed straight through.
  *
- * NOTE: every existing icon call site still passes its own magic number, so
- * changing these only affects call sites that opt in. Migrating the rest is a
- * separate sweep.
+ * Every icon call site uses these, so changing a value here changes the whole
+ * app. The scale replaced a spread of hand-picked pixel values (8, 10, 11, 12,
+ * 13, 14, 15, 16, 18, 22) — the odd steps in between were drift, not intent.
+ *
+ *   xs  dense inline glyphs (dropdown chevrons, small markers)
+ *   sm  inline with text (info tooltips, compact chevrons)
+ *   md  standard UI icon (buttons, list items)
+ *   lg  prominent
+ *   xl  touch targets (burger, close) and tool-card icons
  */
 export const iconSizes = {
   xs: 10,
   sm: 12,
   md: 14,
   lg: 18,
+  xl: 22,
 } as const;
 
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */

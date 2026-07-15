@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../../../components/Header";
 import { IconArrowRight } from "../../../../components/Icons";
-import { v } from "../../../../lib/theme";
+import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { getNuclearImport, dateLong, buildCitation } from "../figure";
 
@@ -82,7 +82,7 @@ export default async function AtomstromMethodikPage() {
       <div style={S.wrap}>
         <Link href="/atomstrom-import" style={S.back}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={12} style={{ transform: "rotate(180deg)" }} /> Zurück
+            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück
             zum Atomstrom-Import
           </span>
         </Link>

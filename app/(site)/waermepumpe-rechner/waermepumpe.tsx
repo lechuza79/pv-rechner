@@ -15,7 +15,7 @@ import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
 import Header from "../../../components/Header";
 import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck } from "../../../components/Icons";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
 
 const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizsystem"];
@@ -300,7 +300,7 @@ export default function Waermepumpe() {
                 <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
               )}
               <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Ergebnis anzeigen <IconArrowRight size={14} /></> : <>Weiter <IconArrowRight size={14} /></>}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Ergebnis anzeigen <IconArrowRight size={iconSizes.md} /></> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
               </button>
             </div>
           </div>
@@ -361,7 +361,7 @@ export default function Waermepumpe() {
             {zeigeWege && (
               <div style={{ marginBottom: 16 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                  <IconSparkle size={16} color={v('--color-accent')} />
+                  <IconSparkle size={iconSizes.md} color={v('--color-accent')} />
                   <span style={{ fontSize: 14, fontWeight: 700 }}>Realistische Wege</span>
                 </div>
                 <div style={{ display: "grid", gap: 8 }}>
@@ -465,7 +465,7 @@ export default function Waermepumpe() {
             >
               <summary style={{ fontSize: 14, fontWeight: 700, cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>Rechnung im Detail</span>
-                <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Aufschlüsseln <IconChevronDown size={10} /></span>
+                <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Aufschlüsseln <IconChevronDown size={iconSizes.xs} /></span>
               </summary>
               <div style={{ marginTop: 14, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.7 }}>
                 <DetailGrid items={[
@@ -511,7 +511,7 @@ export default function Waermepumpe() {
             {/* PV-Synergie */}
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${pvStatus !== "nein" ? v('--color-accent') : v('--color-border')}` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                <IconSun size={16} color={v('--color-accent')} />
+                <IconSun size={iconSizes.md} color={v('--color-accent')} />
                 <span style={{ fontSize: 14, fontWeight: 700 }}>Solaranlage einrechnen</span>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginBottom: pvStatus !== "nein" ? 14 : 0 }}>
@@ -552,10 +552,10 @@ export default function Waermepumpe() {
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
-                PV-Rechner öffnen <IconArrowRight size={12} />
+                PV-Rechner öffnen <IconArrowRight size={iconSizes.sm} />
               </Link>
               <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setKlimaBonus(true); setEffizienzBonus(true); setIncomeBonus(false); setOHeizlast(null); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={12} /> Neu berechnen</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>
 
@@ -618,7 +618,7 @@ function StatCard({ label, value, positive, help, helpTitle, helpAriaLabel }: { 
     <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
       <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
         {label}
-        {help && <InfoTooltip title={helpTitle} ariaLabel={helpAriaLabel ?? "Mehr Infos"} size={12}>{help}</InfoTooltip>}
+        {help && <InfoTooltip title={helpTitle} ariaLabel={helpAriaLabel ?? "Mehr Infos"} size={iconSizes.sm}>{help}</InfoTooltip>}
       </div>
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: positive ? v('--color-positive') : v('--color-text-primary') }}>{value}</div>
     </div>
@@ -653,7 +653,7 @@ function WegCard({ titel, kurz, r, active, onClick, situation, sanierung }: { ti
       }}>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          {active && <IconCheck size={14} color={v('--color-accent')} />}
+          {active && <IconCheck size={iconSizes.md} color={v('--color-accent')} />}
           <span style={{ fontSize: 13.5, fontWeight: 700, color: v('--color-text-primary') }}>{titel}</span>
         </div>
         <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginTop: 2, lineHeight: 1.4 }}>{kurz}</div>

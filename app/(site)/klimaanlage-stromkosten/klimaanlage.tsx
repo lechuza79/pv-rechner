@@ -6,7 +6,7 @@ import InlineEdit from "../../../components/InlineEdit";
 import Header from "../../../components/Header";
 import InfoTooltip from "../../../components/InfoTooltip";
 import { IconArrowRight, IconRefresh, IconSun, IconCheck } from "../../../components/Icons";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { calcAircon, compareDevices, acquisitionRange, calcAirconHeating, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
@@ -238,7 +238,7 @@ export default function Klimaanlage() {
 
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, marginTop: 22, textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: 4 }}>
                   Wie sonnig liegt der Raum?
-                  <InfoTooltip title="Warum Sonne, nicht Dämmung?" ariaLabel="Warum fragen wir nach der Sonne statt nach der Dämmung?" size={12}>
+                  <InfoTooltip title="Warum Sonne, nicht Dämmung?" ariaLabel="Warum fragen wir nach der Sonne statt nach der Dämmung?" size={iconSizes.sm}>
                     Beim Kühlen kommt der größte Wärmeeintrag durch die Fenster — Sonne, Ausrichtung, fehlende
                     Verschattung, vor allem ein Dachgeschoss. Wärmedämmung ist dagegen ein schwacher, teils
                     kontraproduktiver Hebel (sie hält Wärme auch im Haus). Deshalb fragen wir nach der Lage zur
@@ -302,7 +302,7 @@ export default function Klimaanlage() {
                     color: plzConfirmed || plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
                   }}>
                     {plzLoading ? "…" : plzConfirmed
-                      ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconCheck size={13} /> Übernommen</span>
+                      ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconCheck size={iconSizes.sm} /> Übernommen</span>
                       : "Übernehmen"}
                   </button>
                 </form>
@@ -343,7 +343,7 @@ export default function Klimaanlage() {
                 <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
               )}
               <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Ergebnis anzeigen <IconArrowRight size={14} /></> : <>Weiter <IconArrowRight size={14} /></>}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Ergebnis anzeigen <IconArrowRight size={iconSizes.md} /></> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
               </button>
             </div>
           </div>
@@ -365,7 +365,7 @@ export default function Klimaanlage() {
             <div style={{ padding: "24px 20px", marginBottom: 16, background: v('--color-bg-accent'), borderRadius: v('--radius-lg'), border: `1px solid ${v('--color-border-accent')}` }}>
               <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
                 Stromkosten pro Jahr · {result.device.label}
-                <InfoTooltip title="Was den Wert treibt" ariaLabel="Wie kommt die Stromkosten-Zahl zustande?" size={12}>
+                <InfoTooltip title="Was den Wert treibt" ariaLabel="Wie kommt die Stromkosten-Zahl zustande?" size={iconSizes.sm}>
                   Das ist ein <strong>Jahres</strong>betrag, nicht pro Monat. Die deutsche Kühlsaison ist kurz —
                   das Gerät läuft nur an heißen Tagen, und nachts ist es deutlich günstiger als ganztags. Deshalb
                   wirkt die Zahl oft niedriger als erwartet. Höher wird sie mit deinem Standort (PLZ), dem Modus
@@ -425,7 +425,7 @@ export default function Klimaanlage() {
               {/* Referenz: getroffene Auswahl, voll dargestellt */}
               <div style={{ padding: "12px 14px", borderRadius: v('--radius-sm'), background: v('--color-accent-dim'), border: `1.5px solid ${v('--color-accent')}`, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 10 }}>
                 <span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                  <span style={{ width: 16, height: 16, borderRadius: 4, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", background: v('--color-accent'), color: v('--color-text-on-accent') }}><IconCheck size={11} /></span>
+                  <span style={{ width: 16, height: 16, borderRadius: 4, flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", background: v('--color-accent'), color: v('--color-text-on-accent') }}><IconCheck size={iconSizes.xs} /></span>
                   <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-accent') }}>{result.device.label}</span>
                 </span>
                 <span style={{ display: "flex", gap: 12, flexShrink: 0, fontFamily: v('--font-mono'), fontSize: 13, alignItems: "baseline" }}>
@@ -486,7 +486,7 @@ export default function Klimaanlage() {
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${pvActive ? v('--color-accent') : v('--color-border')}` }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                  <IconSun size={16} color={v('--color-accent')} />
+                  <IconSun size={iconSizes.md} color={v('--color-accent')} />
                   <span style={{ fontSize: 14, fontWeight: 700 }}>Solaranlage</span>
                 </span>
                 <span style={{ display: "inline-flex", gap: 3, background: v('--color-bg-muted'), borderRadius: v('--radius-sm'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
@@ -542,7 +542,7 @@ export default function Klimaanlage() {
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                   <span style={{ fontSize: 14, fontWeight: 700 }}>Auch heizen?</span>
-                  <InfoTooltip title="Split-Klima als Heizung" ariaLabel="Wie gut heizt eine Split-Klimaanlage?" size={12}>
+                  <InfoTooltip title="Split-Klima als Heizung" ariaLabel="Wie gut heizt eine Split-Klimaanlage?" size={iconSizes.sm}>
                     Split-Geräte sind reversibel — sie funktionieren wie eine Luft-Luft-Wärmepumpe und heizen mit einer
                     Arbeitszahl (SCOP) von rund 4. In der Übergangszeit ist das günstiger als Gas. Für tiefe Winterkälte
                     und das ganze Haus sinkt die Effizienz — dann ist eine wassergeführte Wärmepumpe die bessere Wahl.
@@ -609,10 +609,10 @@ export default function Klimaanlage() {
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
               <Link href={pvRechnerHref} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Im PV-Rechner mitrechnen <IconArrowRight size={12} /></span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Im PV-Rechner mitrechnen <IconArrowRight size={iconSizes.sm} /></span>
               </Link>
               <button onClick={() => setStep(0)} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={12} /> Neu berechnen</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>
 
@@ -639,7 +639,7 @@ function GlossaryHint() {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
       SEER-Wert
-      <InfoTooltip title="SEER" ariaLabel="Was ist der SEER-Wert?" size={12}>
+      <InfoTooltip title="SEER" ariaLabel="Was ist der SEER-Wert?" size={iconSizes.sm}>
         SEER (Seasonal Energy Efficiency Ratio) ist die jahreszeitliche Effizienz: Wie viel Kühlung das Gerät
         pro Kilowattstunde Strom liefert. Monoblock ~2,5, fest installierte Split ~6 — also rund die dreifache
         Kühlung für denselben Strom.
@@ -653,7 +653,7 @@ function StatCard({ label, value, sub, help, helpTitle }: { label: string; value
     <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
       <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
         {label}
-        {help && <InfoTooltip title={helpTitle ?? label} ariaLabel="Mehr Infos" size={12}>{help}</InfoTooltip>}
+        {help && <InfoTooltip title={helpTitle ?? label} ariaLabel="Mehr Infos" size={iconSizes.sm}>{help}</InfoTooltip>}
       </div>
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-primary') }}>{value}</div>
       {sub && <div style={{ fontSize: 10, color: v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 2 }}>{sub}</div>}

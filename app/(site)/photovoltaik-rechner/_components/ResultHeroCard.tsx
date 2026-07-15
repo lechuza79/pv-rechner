@@ -2,7 +2,7 @@
 import InlineEdit from "../../../../components/InlineEdit";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
 import { IconArrowRight, IconCheck } from "../../../../components/Icons";
-import { v } from "../../../../lib/theme";
+import { v, iconSizes } from "../../../../lib/theme";
 
 interface ResultHeroCardProps {
   be: { i: number; kum: number } | undefined;
@@ -138,9 +138,9 @@ export default function ResultHeroCard({
                   padding: "3px 6px", fontSize: 11, fontWeight: 700, lineHeight: 1,
                   background: v('--color-accent'), color: v('--color-text-on-accent'),
                   border: "none", borderRadius: v('--radius-sm'), cursor: "pointer",
-                }}><IconArrowRight size={12} color={v('--color-text-on-accent')} /></button>
+                }}><IconArrowRight size={iconSizes.sm} color={v('--color-text-on-accent')} /></button>
               )}
-              {plzSource && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{plzSource === "pvgis" ? <IconCheck size={10} /> : "~"}</span>}
+              {plzSource && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{plzSource === "pvgis" ? <IconCheck size={iconSizes.xs} /> : "~"}</span>}
             </form>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>

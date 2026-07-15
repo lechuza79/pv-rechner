@@ -8,7 +8,7 @@ import ChartExportBar from "./ChartExportBar";
 import ChartActionBar from "./ChartActionBar";
 import { PoweredBy, DataSourceNote } from "./PoweredBy";
 import { DATA_SOURCES, sourceLabel } from "../lib/data-sources";
-import { v, tokens } from "../lib/theme";
+import { v, tokens, iconSizes } from "../lib/theme";
 import { PERSONEN, NUTZUNG } from "../lib/constants";
 import {
   WeatherData,
@@ -189,7 +189,7 @@ export default function SimulationPanel({
   };
   const ctaInner = (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>
-      {selectedKwp} kWp vollständig berechnen <IconArrowRight size={14} />
+      {selectedKwp} kWp vollständig berechnen <IconArrowRight size={iconSizes.md} />
     </span>
   );
 
@@ -224,7 +224,7 @@ export default function SimulationPanel({
               border: "none", cursor: "pointer", fontSize: 16, fontWeight: 700,
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
-              <IconArrowRight size={18} />
+              <IconArrowRight size={iconSizes.lg} />
             </button>
           )}
         </form>
@@ -301,7 +301,7 @@ export default function SimulationPanel({
               color: wpActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
               border: wpActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
             }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Wärmepumpe {wpActive ? <IconCheck size={12} /> : ""}</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Wärmepumpe {wpActive ? <IconCheck size={iconSizes.sm} /> : ""}</span>
             </button>
             <button onClick={() => setEaActive(!eaActive)} style={{
               flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
@@ -309,7 +309,7 @@ export default function SimulationPanel({
               color: eaActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
               border: eaActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
             }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>E-Auto {eaActive ? <IconCheck size={12} /> : ""}</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>E-Auto {eaActive ? <IconCheck size={iconSizes.sm} /> : ""}</span>
             </button>
             <button onClick={() => setKlimaActive(!klimaActive)} style={{
               flex: 1, padding: "7px 0", fontSize: 12, fontWeight: 600, borderRadius: v('--radius-sm'), cursor: "pointer",
@@ -317,7 +317,7 @@ export default function SimulationPanel({
               color: klimaActive ? v('--color-text-on-accent') : v('--color-text-secondary'),
               border: klimaActive ? `1px solid ${v('--color-accent')}` : `1px solid ${v('--color-border')}`,
             }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Klimaanlage {klimaActive ? <IconCheck size={12} /> : ""}</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Klimaanlage {klimaActive ? <IconCheck size={iconSizes.sm} /> : ""}</span>
             </button>
           </div>
           <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, textAlign: "center" }}>

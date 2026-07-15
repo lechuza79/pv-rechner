@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { v } from "../../../../lib/theme";
+import { v, iconSizes } from "../../../../lib/theme";
 import { IconArrowRight } from "../../../../components/Icons";
 import { FundingStatusBadge, FundingRates, FundingConditions } from "../../../../components/FundingProgramParts";
 import { fundingStandLabel, type FundingProgram } from "../../../../lib/funding-programs";
@@ -199,7 +199,7 @@ export default function ResultFunding({
       )}
 
       <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 12, fontSize: 12, color: v("--color-accent"), textDecoration: "none" }}>
-        Alle Förderprogramme <IconArrowRight size={11} />
+        Alle Förderprogramme <IconArrowRight size={iconSizes.xs} />
       </Link>
 
       {modalProgram && <FundingProgramModal program={modalProgram} onClose={() => setModalProgram(null)} />}
