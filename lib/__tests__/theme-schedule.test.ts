@@ -5,6 +5,8 @@ import {
   classifyHour,
   scheduleTheme,
   resolveTheme,
+  oppositeOf,
+  cycleFrom,
 } from "../theme-schedule";
 
 describe("dayOfYear", () => {
@@ -70,5 +72,50 @@ describe("resolveTheme", () => {
   it("falls back to the schedule in auto mode", () => {
     expect(resolveTheme("auto", noon)).toBe("light");
     expect(resolveTheme("auto", midnight)).toBe("dark");
+  });
+});
+
+describe("oppositeOf", () => {
+  it("flips light↔dark and treats dusk as dark-ish", () => {
+    expect(oppositeOf("light")).toBe("dark");
+    expect(oppositeOf("dark")).toBe("light");
+    expect(oppositeOf("dusk")).toBe("light");
+  });
+});
+
+describe("cycleFrom", () => {
+  it("first click out of auto always lands on the opposite of what is shown", () => {
+    expect(cycleFrom("auto", "light", null)).toBe("dark");
+    expect(cycleFrom("auto", "dark", null)).toBe("light");
+    expect(cycleFrom("auto", "dusk", null)).toBe("light");
+  });
+
+  it("walks auto → dark → light → auto when auto was showing light", () => {
+    const a = cycleFrom("auto", "light", null);
+    expect(a).toBe("dark");
+    const b = cycleFrom(a, "dark", a);
+    expect(b).toBe("light");
+    expect(cycleFrom(b, "light", a)).toBe("auto");
+  });
+
+  it("walks auto → light → dark → auto when auto was showing dark", () => {
+    const a = cycleFrom("auto", "dark", null);
+    expect(a).toBe("light");
+    const b = cycleFrom(a, "light", a);
+    expect(b).toBe("dark");
+    expect(cycleFrom(b, "dark", a)).toBe("auto");
+  });
+
+  it("keeps both manual modes reachable either way round", () => {
+    for (const start of ["light", "dusk", "dark"] as const) {
+      const seen = new Set<string>();
+      let pref = cycleFrom("auto", start, null);
+      const first = pref;
+      seen.add(pref);
+      pref = cycleFrom(pref, pref === "light" ? "light" : "dark", first);
+      seen.add(pref);
+      expect(seen).toEqual(new Set(["light", "dark"]));
+      expect(cycleFrom(pref, pref === "light" ? "light" : "dark", first)).toBe("auto");
+    }
   });
 });

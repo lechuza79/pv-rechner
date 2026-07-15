@@ -74,12 +74,39 @@ export function scheduleTheme(date: Date, lat = DE_LAT, lon = DE_LON): ThemeMode
   return classifyHour(hour, sunrise, sunset);
 }
 
-export type ThemePref = "auto" | "light" | "dusk" | "dark";
+// What the user can choose. "dusk" is deliberately NOT a preference: it is a
+// stage of the automatic sun cycle, not something you pick — so the manual
+// switch stays a clean light/dark flip.
+export type ThemePref = "auto" | "light" | "dark";
 
 /** Resolve the effective theme from a stored preference. */
 export function resolveTheme(pref: ThemePref, date: Date): ThemeMode {
   if (pref === "light") return "light";
-  if (pref === "dusk") return "dusk";
   if (pref === "dark") return "dark";
   return scheduleTheme(date);
+}
+
+/**
+ * The manual mode a click from auto lands on: always the opposite of what is
+ * currently on screen, so one click does what people expect. Dusk is dark-ish,
+ * so its opposite is light.
+ */
+export function oppositeOf(resolved: ThemeMode): ThemePref {
+  return resolved === "light" ? "dark" : "light";
+}
+
+/**
+ * Next preference when the switch is clicked: auto → opposite → other → auto.
+ * `firstManual` is the mode the last click-out-of-auto landed on; it makes the
+ * cycle symmetric (both manual modes stay reachable whichever way auto went).
+ */
+export function cycleFrom(
+  pref: ThemePref,
+  resolved: ThemeMode,
+  firstManual: ThemePref | null,
+): ThemePref {
+  if (pref === "auto") return oppositeOf(resolved);
+  const first = firstManual ?? pref;
+  if (pref === first) return first === "light" ? "dark" : "light";
+  return "auto";
 }

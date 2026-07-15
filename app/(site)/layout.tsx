@@ -12,8 +12,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 // "auto" tracks the sun over central Germany — keep this formula in sync with
 // the module. Reads/writes the same localStorage key as ThemeController.
 const themeBootScript = `(function(){try{
-var p=localStorage.getItem('sc-theme-pref')||'auto',r;
-if(p==='light')r='light';else if(p==='dusk')r='dusk';else if(p==='dark')r='dark';else{
+var p=localStorage.getItem('sc-theme-pref');
+if(p!=='light'&&p!=='dark')p='auto';
+var r;
+if(p==='light')r='light';else if(p==='dark')r='dark';else{
 var d=new Date(),lat=51.16,lon=10.45,
 s=Date.UTC(d.getFullYear(),0,0),
 doy=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-s)/864e5),

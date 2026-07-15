@@ -1,37 +1,43 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v } from "../lib/theme";
-import { resolveTheme, type ThemePref, type ThemeMode } from "../lib/theme-schedule";
+import { resolveTheme, cycleFrom, type ThemePref, type ThemeMode } from "../lib/theme-schedule";
 
-// Header control that cycles the theme preference Auto → Hell → Dunkel and keeps
-// the resolved theme (light/dusk/dark) applied to <html data-theme>.
+// Header control for the colour scheme. One click from "Auto" always flips to
+// the opposite of what is on screen; the full cycle is auto → opposite → other
+// → auto. Each switch shows a short tooltip explaining the new mode.
 //
 // "Auto" tracks the time of day (see lib/theme-schedule.ts): bright by day,
-// warm-dimmed at dusk/dawn, dark at night. A compact boot script in
-// app/(site)/layout.tsx has already applied the correct theme before first
-// paint (no flash); this component owns the runtime: the manual switch, periodic
-// re-evaluation in auto mode, and the smooth cross-fade on change.
+// warm-dimmed at dusk/dawn, dark at night. Dusk is a stage of that cycle, not a
+// pickable preference. A compact boot script in app/(site)/layout.tsx has
+// already applied the correct theme before first paint (no flash); this
+// component owns the runtime: the switch, periodic re-evaluation in auto mode,
+// and the smooth cross-fade on change.
 //
 // Persistence uses localStorage directly — this control only ever renders in the
 // (site) layout, never in the storage-free embed context.
 
 const STORAGE_KEY = "sc-theme-pref";
-const PREFS: ThemePref[] = ["auto", "light", "dusk", "dark"];
+const HINT_MS = 3200;
 
 const LABEL: Record<ThemePref, string> = {
-  auto: "Automatisch (Tageszeit)",
+  auto: "Automatisch",
   light: "Hell",
-  dusk: "Dämmerung",
   dark: "Dunkel",
+};
+
+// Full sentences — this is visible UI copy, not a label.
+const HINT: Record<ThemePref, string> = {
+  auto: "Das Farbschema folgt jetzt wieder der Tageszeit: tagsüber hell, zur Dämmerung gedimmt, nachts dunkel.",
+  light: "Das Farbschema bleibt jetzt immer hell, unabhängig von der Tageszeit.",
+  dark: "Das Farbschema bleibt jetzt immer dunkel, unabhängig von der Tageszeit.",
 };
 
 function readPref(): ThemePref {
   if (typeof document === "undefined") return "auto";
   const fromAttr = document.documentElement.getAttribute("data-theme-pref");
-  if (fromAttr === "light" || fromAttr === "dusk" || fromAttr === "dark" || fromAttr === "auto") {
-    return fromAttr;
-  }
-  return "auto";
+  // Anything else (including a stale "dusk" from an earlier build) heals to auto.
+  return fromAttr === "light" || fromAttr === "dark" ? fromAttr : "auto";
 }
 
 // Keep the mobile browser-chrome colour in step with the surface background.
@@ -65,19 +71,29 @@ export default function ThemeController() {
   const [pref, setPref] = useState<ThemePref>("auto");
   const [resolved, setResolved] = useState<ThemeMode>("light");
   const [mounted, setMounted] = useState(false);
+  const [hint, setHint] = useState<ThemePref | null>(null);
   const prefRef = useRef<ThemePref>("auto");
+  // Which manual mode the last click out of auto landed on — keeps the cycle
+  // symmetric so both manual modes stay reachable.
+  const firstManualRef = useRef<ThemePref | null>(null);
+  const hintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Adopt the preference the boot script already resolved, then keep it applied.
   useEffect(() => {
     const initial = readPref();
     prefRef.current = initial;
+    if (initial !== "auto") firstManualRef.current = initial;
     setPref(initial);
     setResolved(apply(initial, false));
     setMounted(true);
   }, []);
 
+  useEffect(() => () => {
+    if (hintTimer.current) clearTimeout(hintTimer.current);
+  }, []);
+
   // In auto mode, re-evaluate every minute so the dusk/night crossover lands
-  // without a reload.
+  // without a reload. No tooltip here — the user did not do anything.
   useEffect(() => {
     if (pref !== "auto") return;
     const id = window.setInterval(() => {
@@ -88,40 +104,79 @@ export default function ThemeController() {
   }, [pref]);
 
   const cycle = useCallback(() => {
-    const next = PREFS[(PREFS.indexOf(prefRef.current) + 1) % PREFS.length];
+    const current = prefRef.current;
+    const next = cycleFrom(current, resolveTheme(current, new Date()), firstManualRef.current);
+    if (current === "auto") firstManualRef.current = next;
+    if (next === "auto") firstManualRef.current = null;
     prefRef.current = next;
     setPref(next);
     setResolved(apply(next, true));
+    setHint(next);
+    if (hintTimer.current) clearTimeout(hintTimer.current);
+    hintTimer.current = setTimeout(() => setHint(null), HINT_MS);
   }, []);
 
   // SSR renders a stable placeholder; the icon syncs on mount (theme is already
   // correct via the boot script, only this small control catches up).
   const icon = !mounted ? "auto" : pref;
-  const nextLabel = LABEL[PREFS[(PREFS.indexOf(pref) + 1) % PREFS.length]];
+  const modeNow =
+    pref !== "auto" ? "" :
+    ` (aktuell ${resolved === "dark" ? "dunkel" : resolved === "dusk" ? "Dämmerung" : "hell"})`;
 
   return (
-    <button
-      type="button"
-      onClick={cycle}
-      aria-label={`Farbschema: ${LABEL[pref]}. Klicken für ${nextLabel}.`}
-      title={`Farbschema: ${LABEL[pref]}${pref === "auto" ? ` (aktuell ${resolved === "dark" ? "dunkel" : resolved === "dusk" ? "Dämmerung" : "hell"})` : ""}`}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 34,
-        height: 34,
-        borderRadius: v("--radius-sm"),
-        border: `1px solid ${v("--color-border")}`,
-        background: v("--color-bg-muted"),
-        color: v("--color-text-secondary"),
-        cursor: "pointer",
-        padding: 0,
-        flexShrink: 0,
-      }}
-    >
-      <ThemeIcon pref={icon} />
-    </button>
+    <div style={{ position: "relative", display: "inline-flex" }}>
+      <button
+        type="button"
+        onClick={cycle}
+        aria-label={`Farbschema: ${LABEL[pref]}${modeNow}. Klicken zum Wechseln.`}
+        title={`Farbschema: ${LABEL[pref]}${modeNow}`}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 34,
+          height: 34,
+          borderRadius: v("--radius-sm"),
+          border: `1px solid ${v("--color-border")}`,
+          background: v("--color-bg-muted"),
+          color: v("--color-text-secondary"),
+          cursor: "pointer",
+          padding: 0,
+          flexShrink: 0,
+        }}
+      >
+        <ThemeIcon pref={icon} />
+      </button>
+
+      {hint && (
+        <div
+          role="status"
+          aria-live="polite"
+          style={{
+            position: "absolute",
+            top: "calc(100% + 8px)",
+            right: 0,
+            zIndex: 200,
+            width: 232,
+            background: v("--color-bg"),
+            border: `1px solid ${v("--color-border")}`,
+            borderRadius: v("--radius-md"),
+            boxShadow: v("--shadow-md"),
+            padding: "9px 11px",
+            fontFamily: v("--font-text"),
+            fontSize: 12.5,
+            lineHeight: 1.5,
+            color: v("--color-text-secondary"),
+            animation: "fu .3s ease-out",
+            pointerEvents: "none",
+          }}
+        >
+          <span style={{ fontWeight: 700, color: v("--color-text-primary") }}>{LABEL[hint]}</span>
+          {" — "}
+          {HINT[hint]}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -133,15 +188,6 @@ function ThemeIcon({ pref }: { pref: ThemePref }) {
       <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={2} strokeLinecap="round">
         <circle cx="12" cy="12" r="4.2" />
         <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19" />
-      </svg>
-    );
-  }
-  if (pref === "dusk") {
-    // Sunset — half sun over the horizon with rays.
-    return (
-      <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 18a5 5 0 0 0-10 0" />
-        <path d="M12 2v3M4.5 10.5 6 12M19.5 10.5 18 12M2 18h2M20 18h2M22 22H2" />
       </svg>
     );
   }
