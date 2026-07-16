@@ -293,7 +293,7 @@ function Donut({ pct }: { pct: number }) {
 
   return (
     <svg width={iconSizes.md} height={iconSizes.md} viewBox="0 0 20 20" aria-hidden="true" style={{ flexShrink: 0 }}>
-      <circle cx={c} cy={c} r={r} fill="none" stroke={v("--color-border-muted")} strokeWidth={stroke} />
+      <circle cx={c} cy={c} r={r} fill="none" stroke={v("--color-track")} strokeWidth={stroke} />
       <circle
         cx={c}
         cy={c}

@@ -68,6 +68,12 @@ export const tokens = {
   // ─── Progress (1) ──────────────────────────────────────────────────────────
   '--color-progress-inactive': '#E9E9E9',
 
+  // ─── Track (1) ─────────────────────────────────────────────────────────────
+  // The unfilled part of a gauge/meter. Translucent so it composites over
+  // whatever sits behind it, and flips ink per theme — "10 % white" only reads
+  // on a dark ground, "10 % black" only on a light one.
+  '--color-track': 'rgba(0,0,0,0.10)',
+
   // ─── Shadows (3) ───────────────────────────────────────────────────────────
   // Tokenised so they invert for dark/dusk (black shadows vanish on dark grounds).
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.06)',    // cards, subtle lift
@@ -160,6 +166,7 @@ const darkTokens: Partial<Record<TokenName, string>> = {
   '--color-text-muted': '#78828F',
   '--color-text-faint': '#59616C',
   '--color-progress-inactive': '#2A313C',
+  '--color-track': 'rgba(255,255,255,0.10)',
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.45)',
   '--shadow-md': '0 4px 16px rgba(0,0,0,0.55)',
   '--shadow-lg': '0 10px 30px rgba(0,0,0,0.6)',
@@ -190,6 +197,7 @@ const duskTokens: Partial<Record<TokenName, string>> = {
   '--color-text-muted': '#8E7F8C',
   '--color-text-faint': '#6B5F6A',
   '--color-progress-inactive': '#3E3442',
+  '--color-track': 'rgba(255,255,255,0.10)',
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.35)',
   '--shadow-md': '0 4px 16px rgba(0,0,0,0.45)',
   '--shadow-lg': '0 10px 30px rgba(0,0,0,0.5)',
