@@ -41,18 +41,21 @@ describe("sunStage", () => {
     expect(sunStage(NIGHT, null)).toBe(0);
   });
 
-  it("in daylight, clarity picks the fine stage", () => {
+  it("in daylight, actual output picks the fine stage", () => {
     expect(sunStage(HIGH_SUN, { powerPct: 60, utilisation: 0.95 })).toBe(6);
-    expect(sunStage(HIGH_SUN, { powerPct: 45, utilisation: 0.74 })).toBe(5);
-    expect(sunStage(HIGH_SUN, { powerPct: 30, utilisation: 0.55 })).toBe(4);
+    expect(sunStage(HIGH_SUN, { powerPct: 40, utilisation: 0.74 })).toBe(5);
+    expect(sunStage(HIGH_SUN, { powerPct: 20, utilisation: 0.55 })).toBe(4);
     expect(sunStage(HIGH_SUN, { powerPct: 13, utilisation: 0.2 })).toBe(3);
   });
 
-  // Same low output, opposite sky: clarity keeps the clear one bright, dims the
-  // overcast one. This is the winter question, in the light zone.
-  it("keeps a clear (low-sun) noon bright but dims an overcast noon", () => {
-    expect(sunStage(HIGH_SUN, { powerPct: 20, utilisation: 0.95 })).toBe(6);
-    expect(sunStage(HIGH_SUN, { powerPct: 20, utilisation: 0.2 })).toBe(3);
+  // A clear but weak winter noon (~20 %) sits in the middle — honestly less sun,
+  // not darkness — while an overcast noon dims further. A low evening sun dims
+  // the same way, which is the point of following output, not clarity.
+  it("puts a weak-but-clear noon mid, an overcast noon lower", () => {
+    expect(sunStage(HIGH_SUN, { powerPct: 20, utilisation: 0.95 })).toBe(4);
+    expect(sunStage(HIGH_SUN, { powerPct: 12, utilisation: 0.2 })).toBe(3);
+    // A low, clear evening sun (17 %) dims too — no longer held bright by clarity.
+    expect(sunStage(HIGH_SUN, { powerPct: 17, utilisation: 0.71 })).toBe(4);
   });
 
   it("daylight with no reading yet is a bright stage, never the dark ones", () => {
@@ -68,7 +71,7 @@ describe("resolveTheme", () => {
   it("auto follows the sun stage", () => {
     expect(resolveTheme("auto", NIGHT)).toBe("s0");
     expect(resolveTheme("auto", HIGH_SUN, { powerPct: 60, utilisation: 0.95 })).toBe("s6");
-    expect(resolveTheme("auto", HIGH_SUN, { powerPct: 13, utilisation: 0.2 })).toBe("s3");
+    expect(resolveTheme("auto", HIGH_SUN, { powerPct: 12, utilisation: 0.2 })).toBe("s3");
   });
 });
 

@@ -129,11 +129,14 @@ const ELEV_DAY = 6;
 const ELEV_DUSK = 0;
 const ELEV_NIGHT = -6;
 
-// Within the light zone, clarity (utilisation) picks the fine stage: a clear
-// sky stays bright whatever the season, cloud dims the daytime page.
-const UTIL_S6 = 0.82;
-const UTIL_S5 = 0.66;
-const UTIL_S4 = 0.48;
+// Within the light zone, the actual output (% of full-sun capacity) picks the
+// fine stage — the page brightness tracks how much power the sun is really
+// making. It arcs up toward noon and dims in the evening and under cloud. A
+// clear but weak winter noon lands in the middle stages: honestly less sun, not
+// darkness. (Full sun ≈ 65 %; these are its slices.)
+const POWER_S6 = 48;
+const POWER_S5 = 33;
+const POWER_S4 = 15;
 
 /** Sun elevation right now for central Germany. */
 function elevationNow(date: Date): number {
@@ -144,23 +147,23 @@ function elevationNow(date: Date): number {
 /**
  * The brightness stage the live sun justifies (0–6).
  *
- * Elevation decides the zone — this is what keeps a clear DAWN dim (low sun →
- * dusk/night stages) while a clear WINTER NOON stays bright (sun up → light
- * zone, and clarity is high). Within the day, utilisation is the dimmer: it is
- * the share of the clear-sky potential arriving, i.e. how much cloud is in the
- * way, independent of how high the sun is.
+ * Elevation decides the zone: this is what keeps a clear DAWN dim (low sun →
+ * dusk/night stages) rather than jumping bright the instant the sky clears.
+ * Within the day, the real output is the dimmer — so a bright noon is bright, an
+ * overcast noon and a low evening sun both dim, each by how much power is
+ * actually there.
  */
 export function sunStage(date: Date, solar: SolarConditions | null): number {
   const elev = elevationNow(date);
   if (elev < ELEV_NIGHT) return 0;
   if (elev < ELEV_DUSK) return 1;
   if (elev < ELEV_DAY) return 2;
-  // Sun is up. Brightness by clarity; no reading yet → a neutral daylight stage.
-  const u = solar?.utilisation ?? null;
-  if (u === null) return 5;
-  if (u >= UTIL_S6) return 6;
-  if (u >= UTIL_S5) return 5;
-  if (u >= UTIL_S4) return 4;
+  // Sun is up. Brightness by output; no reading yet → a neutral daylight stage.
+  const p = solar?.powerPct ?? null;
+  if (p === null) return 5;
+  if (p >= POWER_S6) return 6;
+  if (p >= POWER_S5) return 5;
+  if (p >= POWER_S4) return 4;
   return 3;
 }
 
