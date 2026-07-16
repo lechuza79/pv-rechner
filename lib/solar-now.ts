@@ -46,7 +46,29 @@ export type SolarSample = {
   lon: number;
   ghi: number;
   temp: number;
+  /** Total high-cloud cover 0–100 (cirrus). Optional; absent = 0. */
+  cloudHigh?: number;
 };
+
+/**
+ * How much the high-cloud correction can cut irradiance, at 100 % cirrus.
+ * Measured against Höchberg over a full day: with 100 % high cloud the weather
+ * model applied essentially NO attenuation (its surface radiation sat on the
+ * clear-sky line), yet full cirrus really cuts ~15–25 %. So this is not
+ * double-counting what the model already did — it fills a gap the model leaves.
+ * Low and mid cloud are left to the model, which does dampen them.
+ */
+export const HIGH_CLOUD_MAX_CUT = 0.2;
+
+/**
+ * The model's surface irradiance, corrected for high cloud it under-weights.
+ * Gentle and bounded, so a clear sky (cloudHigh 0) is untouched and the value
+ * can never collapse.
+ */
+export function effectiveGhi(ghi: number, cloudHighPct = 0): number {
+  const cut = HIGH_CLOUD_MAX_CUT * Math.max(0, Math.min(100, cloudHighPct)) / 100;
+  return ghi * (1 - cut);
+}
 
 export type SolarNow = {
   /** Output as % of installed capacity (the honest "Leistung" figure). */
@@ -81,9 +103,12 @@ export function weightedSolarNow(
   for (const s of samples) {
     const w = weightsByAgs[s.ags] ?? 0;
     if (w <= 0) continue;
+    // Correct for cirrus the model under-weights; both the output figure and
+    // the clear-sky ratio use the same corrected irradiance so they stay in step.
+    const ghi = effectiveGhi(s.ghi, s.cloudHigh);
     wSum += w;
-    powerSum += w * capacityShare(s.ghi, s.temp);
-    ghiSum += w * s.ghi;
+    powerSum += w * capacityShare(ghi, s.temp);
+    ghiSum += w * ghi;
     clearSum += w * clearSkyGhi(sunElevation(doy, utcHours, s.lat, s.lon));
   }
 

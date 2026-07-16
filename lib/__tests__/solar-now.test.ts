@@ -3,6 +3,8 @@ import {
   SAMPLE_POINTS,
   capacityShare,
   weightedSolarNow,
+  effectiveGhi,
+  HIGH_CLOUD_MAX_CUT,
   dayOfYearUtc,
   type SolarSample,
 } from "../solar-now";
@@ -135,6 +137,40 @@ describe("capacityShare", () => {
     const share = capacityShare(1000, 25);
     expect(share).toBeGreaterThan(0.6);
     expect(share).toBeLessThan(0.9);
+  });
+});
+
+describe("effectiveGhi — cirrus the model under-weights", () => {
+  it("leaves a clear sky untouched", () => {
+    expect(effectiveGhi(600, 0)).toBe(600);
+    expect(effectiveGhi(600)).toBe(600);
+  });
+  it("cuts at most HIGH_CLOUD_MAX_CUT at full cirrus", () => {
+    expect(effectiveGhi(600, 100)).toBeCloseTo(600 * (1 - HIGH_CLOUD_MAX_CUT), 5);
+  });
+  it("scales linearly with cover and clamps out-of-range input", () => {
+    expect(effectiveGhi(600, 50)).toBeCloseTo(600 * (1 - HIGH_CLOUD_MAX_CUT / 2), 5);
+    expect(effectiveGhi(600, 150)).toBeCloseTo(effectiveGhi(600, 100), 5);
+    expect(effectiveGhi(600, -20)).toBe(600);
+  });
+});
+
+describe("weightedSolarNow with high cloud", () => {
+  const noonUtc = new Date(Date.UTC(2024, 5, 21, 11, 18));
+  const one = (over: Partial<SolarSample>): SolarSample[] =>
+    [{ ags: "09", lat: 48.9, lon: 11.5, ghi: 800, temp: 20, ...over }];
+
+  it("reports a lower figure under cirrus than under clear sky", () => {
+    const clear = weightedSolarNow(one({ cloudHigh: 0 }), { "09": 1 }, noonUtc);
+    const cirrus = weightedSolarNow(one({ cloudHigh: 100 }), { "09": 1 }, noonUtc);
+    expect(cirrus.powerPct).toBeLessThan(clear.powerPct);
+    expect(cirrus.utilisation!).toBeLessThan(clear.utilisation!);
+  });
+
+  it("treats a missing cloudHigh as clear", () => {
+    const bare = weightedSolarNow(one({}), { "09": 1 }, noonUtc);
+    const zero = weightedSolarNow(one({ cloudHigh: 0 }), { "09": 1 }, noonUtc);
+    expect(bare.powerPct).toBe(zero.powerPct);
   });
 });
 

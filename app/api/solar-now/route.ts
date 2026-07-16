@@ -26,16 +26,21 @@ const CDN_CACHE = "public, s-maxage=900, stale-while-revalidate=3600";
 const COORDS = plzCoords as unknown as Record<string, [number, number]>;
 
 type OpenMeteoPoint = {
-  current?: { shortwave_radiation?: number; temperature_2m?: number };
+  current?: {
+    shortwave_radiation?: number;
+    temperature_2m?: number;
+    cloud_cover_high?: number;
+  };
 };
 
 async function fetchPoints(
   points: { lat: number; lon: number }[],
-): Promise<{ ghi: number; temp: number }[]> {
+): Promise<{ ghi: number; temp: number; cloudHigh: number }[]> {
   const url = new URL("https://api.open-meteo.com/v1/forecast");
   url.searchParams.set("latitude", points.map((p) => p.lat).join(","));
   url.searchParams.set("longitude", points.map((p) => p.lon).join(","));
-  url.searchParams.set("current", "shortwave_radiation,temperature_2m");
+  // cloud_cover_high corrects the cirrus the radiation model under-weights.
+  url.searchParams.set("current", "shortwave_radiation,temperature_2m,cloud_cover_high");
   url.searchParams.set("timezone", "UTC");
 
   const res = await fetch(url.toString(), { signal: AbortSignal.timeout(5000) });
@@ -49,6 +54,7 @@ async function fetchPoints(
   return list.map((p) => ({
     ghi: p.current?.shortwave_radiation ?? 0,
     temp: p.current?.temperature_2m ?? 15,
+    cloudHigh: p.current?.cloud_cover_high ?? 0,
   }));
 }
 
