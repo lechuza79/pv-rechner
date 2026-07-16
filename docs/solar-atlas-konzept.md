@@ -318,6 +318,43 @@ Für die Leitkennzahl brauchen wir Einwohnerzahlen und amtliche Gemeindenamen.
 | **Personenbezug in kleinen Gemeinden** | Bei wenigen Anlagen im Ort sind Einzelanlagen re-identifizierbar | Nur Aggregate, keine Einzelanlagen, keine Adressen, keine Betreiber |
 | **Kannibalisierung der Förderseiten** | 117 Städte hätten zwei Seiten mit fast gleicher Überschrift | Entschieden: Förderseiten verlieren ihre Zahlen-Sektion und verlinken auf den Atlas |
 
+### 8.0 Datenkorrektheit: geprüft, nicht versprochen
+
+`npm run atlas:verify` rechnet die ganze Hierarchie durch und bricht mit Fehlercode ab, wenn
+etwas nicht aufgeht. **Der Monatslauf muss daran hängen.**
+
+Geprüft wird (Stand 2026-07-16, alles grün):
+
+| Prüfung | Ergebnis |
+|---|---|
+| Deutschland = Summe der 16 Länder | 6.149.747 Anlagen ✓ |
+| Jedes Land = Summe seiner Kreise | 16/16 ✓ |
+| Jeder Kreis = Summe seiner Gemeinden + nicht zuordenbarer Rest | 401/401 ✓ |
+| Doppelte Zellen (Blätter-Bug) | keine ✓ |
+| Slugs unter Geschwistern eindeutig | 11.166/11.166 ✓ |
+| Anlagen auf Schlüsseln ohne amtliche Gemeinde | **0** ✓ |
+
+Die letzte Zeile war die Sorge: Das MaStR kennt ~117 Gemeindeschlüssel mehr als das amtliche
+Verzeichnis (Altschlüssel nach Fusionen). Deren Anlagen zählen per Prefix in jede Summe, hätten
+aber keine Zeile in einer Rangliste — eine Liste, die nicht zu ihrer eigenen Überschrift
+addiert. Sie tragen faktisch keine einzige Anlage. Der Prüfer misst es trotzdem bei jedem Lauf,
+weil Fusionen jeden Monat passieren können.
+
+**Warum der Prüfer sich selbst misst.** Seine erste Fassung meldete „1.000 slugs checked" — bei
+11.361 Regionen. Er war in genau die stille 1000-Zeilen-Kappung gelaufen, gegen die er schützen
+soll, und hätte ein grünes Häkchen für ein Zehntel der Daten gesetzt. Er blättert jetzt nicht
+nur, sondern vergleicht die gelesene Zeilenzahl gegen die echte Tabellengröße und schlägt bei
+Abweichung an. Ein Prüfer, der seiner eigenen Vollständigkeit vertraut, ist kein Prüfer.
+
+**Dieselbe Kappung ist heute dreimal zugeschlagen** — im Leseweg der Rangliste, in zwei
+Wegwerf-Testskripten (eines meldete 272.310 Anlagen statt 21.717, weil PostgREST den
+Range-Header bei RPC-Aufrufen ignoriert und dreißigmal dieselbe Seite lieferte) und im Prüfer
+selbst. Merksatz für alles Weitere: **Supabase kappt bei 1.000 Zeilen ohne Fehler.** Jeder Lesepfad
+ohne Blättern ist ein stiller Datenverlust, und `.range()` über den JS-Client funktioniert,
+ein roher `Range`-Header bei RPC nicht.
+
+---
+
 ### 8.1 Die Index-Flut — und warum eine Schwelle sie nicht löst
 
 **Der naheliegende Reflex (Mindestschwelle, z. B. ab 50 Anlagen) greift nicht.** Deutschland hat
@@ -365,6 +402,28 @@ den wir hier machen können.
 **Nebeneffekt:** Wenn Welle 1 gut läuft und Welle 2 stockt, haben wir immer noch 400 starke
 Seiten und nichts verloren. Der Kernwert (Kommunen-Outreach) hängt ohnehin nicht am Ranking,
 sondern daran, dass die Seite existiert und die Kommune sie herzeigt.
+
+### 8.2 Der Cliff sitzt nicht bei den neuen Seiten — BLOCKER
+
+Die neuen Seiten sind auf `noindex` und stehen in keiner Sitemap; die Sitemap ist eine gepflegte
+Liste, kein Auto-Scan, sie können also nicht versehentlich hineinrutschen. Von dort droht nichts.
+
+**Das Cliff-Risiko sitzt bei den 117 bestehenden Förder-Stadtseiten**, die heute ranken:
+
+1. **Der Trennungs-Beschluss (Abschnitt 2) ist der gefährlichste Teil des ganzen Vorhabens.**
+   Den Förderseiten die Zahlen-Sektion zu nehmen heißt: Inhaltsverlust auf 117 rankenden Seiten
+   an einem Tag. Das ist das klassische Cliff-Muster. **Nicht mit Welle 1 zusammen**, sondern
+   frühestens danach, in Tranchen von ~20 Seiten, mit Search Console dazwischen. Im Zweifel gar
+   nicht: Die Kannibalisierung ist eine Vermutung, der Cliff wäre eine Tatsache.
+2. **Beim Merge ändern sich die Zahlen auf allen 117 Seiten**, weil sie die neue Tabelle lesen
+   (Balkonkraftwerke sind jetzt ein eigenes Segment). Inhaltlich richtig, aber eine Änderung auf
+   117 Seiten gleichzeitig — beobachten, nicht zeitgleich mit anderen Eingriffen fahren.
+3. **Vor jeder Welle:** Search Console auf „Gecrawlt – zurzeit nicht indexiert" prüfen. Steigt
+   der Wert nach einer Welle, ist die nächste gestoppt, nicht verkleinert.
+
+**Reihenfolge, die daraus folgt:** Merge (Zahlen ändern sich) → beobachten → Welle 1 (Kopf +
+Lkr. Würzburg) → beobachten → Welle 2 (Kreise) → beobachten → Förderseiten-Umbau, wenn überhaupt.
+Nie zwei Eingriffe gleichzeitig, sonst weiß niemand, welcher gewirkt hat.
 
 **Legal-Checkliste** (siehe CLAUDE.md): Punkt 1 (neue Datenquelle → Registry + `/datenstand`),
 Punkt 4 (Seiten mit Zahlen → Stand-Datum + Unverbindlichkeit), Punkt 5 (falls Widget),
