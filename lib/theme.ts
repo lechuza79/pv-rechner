@@ -220,18 +220,24 @@ const duskTokens: Partial<Record<TokenName, string>> = {
   '--shadow-lg': '0 10px 30px rgba(0,0,0,0.5)',
 };
 
-/** Overcast day — dimmed, cool-grey light surfaces; text/accent stay (dark on grey). */
+// Overcast day — a genuine medium grey, dark enough to read clearly as "dimmed"
+// against white. Text is darkened to match (a light page's greys would vanish
+// on this ground); dark text on the grey still clears 4.5:1.
 const overcastTokens: Partial<Record<TokenName, string>> = {
-  '--color-bg': '#DBDFE6',
-  '--color-bg-muted': '#D0D5DD',
-  '--color-bg-accent': '#D3DBEA',
-  '--color-border': '#C0C7D2',
-  '--color-border-muted': '#B8BFCA',
-  '--color-border-accent': '#A6C0E6',
-  '--color-chart-grid': '#C0C7D2',
-  '--color-chart-zero': '#9AA2AE',
-  '--color-progress-inactive': '#C0C7D2',
-  '--color-track': 'rgba(0,0,0,0.13)',
+  '--color-bg': '#BFC4CC',
+  '--color-bg-muted': '#B4BAC3',
+  '--color-bg-accent': '#B8C0CE',
+  '--color-border': '#969CA6',
+  '--color-border-muted': '#9EA4AE',
+  '--color-border-accent': '#7FA0CE',
+  '--color-text-primary': '#2C2F34',
+  '--color-text-secondary': '#494D53',
+  '--color-text-muted': '#5A5E65',
+  '--color-text-faint': '#787C83',
+  '--color-chart-grid': '#969CA6',
+  '--color-chart-zero': '#7A7F87',
+  '--color-progress-inactive': '#969CA6',
+  '--color-track': 'rgba(0,0,0,0.18)',
 };
 
 type Tokens = Partial<Record<TokenName, string>>;
