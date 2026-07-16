@@ -470,6 +470,20 @@ Weil Schritt 4 alle drei Übersichtsebenen abdeckt, fällt der Kopf der Hierarch
   bewusst unscharf halten?
 - **Stadtstaaten:** Berlin/Hamburg unkritisch (Slug = Bundesland, wie bei den Förderseiten).
   Bremen hat zwei Gemeinden und braucht eine echte Entscheidung.
-- **Kreisfreie Städte im Vergleich:** Sie stehen in keiner Kreis-Rangliste (sie *sind* der
-  Kreis). Wogegen vergleichen wir sie — Bundesland, oder eine bundesweite Liga vergleichbarer
-  Städte?
+- **Kreisfreie Städte (Welle-2-Aufgabe, zusammenhängend):** Betrifft 107 Städte, alle erst in
+  Welle 2 (kreisfreie Städte sind eigene Kreise, nicht Teil von Welle 1). Zwei Punkte, die
+  zusammen gelöst gehören:
+  - **URL:** Aktuell leitet `/solar-atlas/bayern/wuerzburg` (2 Segmente) auf
+    `/bayern/wuerzburg/wuerzburg` (3 Segmente) um — funktioniert, ist aber eine hässliche
+    Dopplung. Kanonisch soll die Stadt unter 2 Segmenten rendern, die 3-Segment-Variante 301
+    dorthin. Erfordert, das Blatt-Rendering aus der `[gemeinde]`-Route in eine geteilte
+    Komponente zu ziehen.
+  - **Vergleichsbasis:** Eine kreisfreie Stadt hat nur ein Kind (sich selbst), ihre
+    Kreis-Rangliste ist einzeilig und sinnlos. Sinnvoll ist der Vergleich mit anderen
+    Städten ähnlicher Größe (München ↔ Köln ↔ Frankfurt). Die Größenklassen-Peers dafür
+    existieren schon (`getTopGemeinden` mit Einwohner-Band); es fehlt, sie bei kreisfreien
+    Städten *statt* der Kreis-Rangliste zu zeigen.
+
+  Bewusst **nicht** für Welle 1 gemacht: Ein Umbau der Detail-Route birgt Regressionsrisiko für
+  die funktionierenden Welle-1-Gemeindeseiten, und der Nutzen (schönere URL auf noindex-Seiten)
+  ist bis Welle 2 null.
