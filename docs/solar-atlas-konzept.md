@@ -27,7 +27,7 @@ Die Höchberg-Anfrage ist der Beweis, dass die Nachfrage von selbst kommt.
 | Frage | Entscheidung |
 |---|---|
 | Umfang | **Pilot Landkreis Würzburg** (~32 Gemeinden), danach Rollout in Wellen (siehe 8.1) |
-| Verhältnis zu den Förder-Stadtseiten | **Trennen:** Förderseite = Geld, Atlas = Bestand. Die Zahlen-Sektion der Förderseiten weicht einem Link auf den Atlas |
+| Verhältnis zu den Förder-Stadtseiten | **Förderseiten bleiben unangetastet** (Entscheidung 2026-07-16). Ursprünglich war „trennen" geplant (Zahlen-Sektion raus, Link zum Atlas) — verworfen: Das wäre Inhaltsverlust auf 117 rankenden Seiten und damit das einzige echte Cliff-Risiko im Vorhaben. Die befürchtete Kannibalisierung ist eine Vermutung, der Cliff wäre eine Tatsache. Falls überhaupt, werden die Förderseiten später mit Atlas-Daten *angereichert*, nie beschnitten. |
 | URL-Schema | `/solar-atlas/[bundesland]/[kreis]/[gemeinde]` — Produktname statt Keyword, weil im Kommunen-Gespräch pitchbar |
 | Kennzahl | **Beide** — W/Kopf gesamt *und* W/Kopf Dach. Umschalter im Detail, beide Spalten in der Rangliste |
 | Segmente | Freifläche vs. Dach, innerhalb Dach gewerblich vs. privat, plus Steckersolar |
@@ -316,7 +316,7 @@ Für die Leitkennzahl brauchen wir Einwohnerzahlen und amtliche Gemeindenamen.
 |---|---|---|
 | **Index-Flut** | Der ernsteste — siehe 8.1 | Ausrollen in Wellen, Search Console als Bremse |
 | **Personenbezug in kleinen Gemeinden** | Bei wenigen Anlagen im Ort sind Einzelanlagen re-identifizierbar | Nur Aggregate, keine Einzelanlagen, keine Adressen, keine Betreiber |
-| **Kannibalisierung der Förderseiten** | 117 Städte hätten zwei Seiten mit fast gleicher Überschrift | Entschieden: Förderseiten verlieren ihre Zahlen-Sektion und verlinken auf den Atlas |
+| **Kannibalisierung der Förderseiten** | 117 Städte hätten zwei Seiten mit fast gleicher Überschrift | **Verworfen als Gegenmittel** (2026-07-16): Die Förderseiten bleiben unangetastet. Sie anzufassen wäre das größere Risiko (Cliff, siehe 8.2). Förderseite = Geld, Atlas = Bestand/Rangliste ist Unterschied genug; falls sie sich real ins Gehege kommen, an Search-Console-Daten reagieren, nicht auf Verdacht |
 
 ### 8.0 Datenkorrektheit: geprüft, nicht versprochen
 
@@ -408,22 +408,27 @@ sondern daran, dass die Seite existiert und die Kommune sie herzeigt.
 Die neuen Seiten sind auf `noindex` und stehen in keiner Sitemap; die Sitemap ist eine gepflegte
 Liste, kein Auto-Scan, sie können also nicht versehentlich hineinrutschen. Von dort droht nichts.
 
-**Das Cliff-Risiko sitzt bei den 117 bestehenden Förder-Stadtseiten**, die heute ranken:
+**Das theoretische Cliff-Risiko lag bei den 117 Förder-Stadtseiten** — und wurde durch die
+Entscheidung, sie nicht anzufassen, entschärft:
 
-1. **Der Trennungs-Beschluss (Abschnitt 2) ist der gefährlichste Teil des ganzen Vorhabens.**
-   Den Förderseiten die Zahlen-Sektion zu nehmen heißt: Inhaltsverlust auf 117 rankenden Seiten
-   an einem Tag. Das ist das klassische Cliff-Muster. **Nicht mit Welle 1 zusammen**, sondern
-   frühestens danach, in Tranchen von ~20 Seiten, mit Search Console dazwischen. Im Zweifel gar
-   nicht: Die Kannibalisierung ist eine Vermutung, der Cliff wäre eine Tatsache.
-2. **Beim Merge ändern sich die Zahlen auf allen 117 Seiten**, weil sie die neue Tabelle lesen
-   (Balkonkraftwerke sind jetzt ein eigenes Segment). Inhaltlich richtig, aber eine Änderung auf
-   117 Seiten gleichzeitig — beobachten, nicht zeitgleich mit anderen Eingriffen fahren.
+1. **Der ursprünglich geplante Trennungs-Beschluss wäre der gefährlichste Teil gewesen.** Den
+   Förderseiten die Zahlen-Sektion zu nehmen hieße Inhaltsverlust auf 117 rankenden Seiten an
+   einem Tag — das klassische Cliff-Muster. **Entscheidung 2026-07-16: machen wir nicht.** Die
+   Kannibalisierung ist eine Vermutung, der Cliff wäre eine Tatsache. Damit fällt das einzige
+   ernste Cliff-Risiko des Vorhabens weg.
+2. **Beim Merge ändern sich die Zahlen auf den 117 Seiten leicht**, weil sie die neue Tabelle
+   lesen (Balkonkraftwerke jetzt eigenes Segment, aktuellerer Stand). Am Beispiel Würzburg
+   geprüft: Die Kacheln (Solaranlagen, Leistung, Speicher) bleiben praktisch gleich, nur die
+   Segment-Aufteilung wird genauer. Das ist Anreicherung, kein Cliff — eine genauere
+   Segmentierung ist kein Inhaltsverlust. Trotzdem: nicht zeitgleich mit anderen Eingriffen
+   fahren, damit ein etwaiger Effekt zuordenbar bleibt.
 3. **Vor jeder Welle:** Search Console auf „Gecrawlt – zurzeit nicht indexiert" prüfen. Steigt
    der Wert nach einer Welle, ist die nächste gestoppt, nicht verkleinert.
 
-**Reihenfolge, die daraus folgt:** Merge (Zahlen ändern sich) → beobachten → Welle 1 (Kopf +
-Lkr. Würzburg) → beobachten → Welle 2 (Kreise) → beobachten → Förderseiten-Umbau, wenn überhaupt.
-Nie zwei Eingriffe gleichzeitig, sonst weiß niemand, welcher gewirkt hat.
+**Reihenfolge, die daraus folgt:** Merge (Zahlen ändern sich leicht) → beobachten → Welle 1
+(Kopf + Lkr. Würzburg) → beobachten → Welle 2 (Kreise) → beobachten → Welle 3+ (Gemeinden).
+Die Förderseiten bleiben in jeder Welle unangetastet. Nie zwei Eingriffe gleichzeitig, sonst
+weiß niemand, welcher gewirkt hat.
 
 **Legal-Checkliste** (siehe CLAUDE.md): Punkt 1 (neue Datenquelle → Registry + `/datenstand`),
 Punkt 4 (Seiten mit Zahlen → Stand-Datum + Unverbindlichkeit), Punkt 5 (falls Widget),
@@ -448,9 +453,10 @@ tausende Seiten im Index stehen.
 6. Ausgang von der Startseiten-Karte in den Atlas
 7. Abnahme im Browser
 8. **Welle 1 ausliefern** (Kopf + Lkr. Würzburg, indexiert) → Höchberg die Seite geben
-9. Erst danach: Förderseiten-Umbau, Welle 2
+9. Erst danach: Welle 2 (Kreise)
 
-**Nicht im Pilot:** Widget, Förderseiten-Umbau, Karte auf Atlas-Seiten.
+**Nicht im Pilot:** Widget, Karte auf Atlas-Seiten. **Nie:** Förderseiten anfassen (nur später
+optional mit Atlas-Daten anreichern, nie beschneiden).
 
 Weil Schritt 4 alle drei Übersichtsebenen abdeckt, fällt der Kopf der Hierarchie
 (Deutschland + Bundesländer) praktisch nebenbei ab.

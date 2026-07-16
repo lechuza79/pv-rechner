@@ -47,6 +47,11 @@ function fmtLeistung(kwp: number): string {
   return `${nf(Math.round(kwp))} kW`;
 }
 
+function fmtKwh(kwh: number): string {
+  if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
+  return `${nf(Math.round(kwh))} kWh`;
+}
+
 type Params = { bundesland: string; kreis: string; gemeinde: string };
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
@@ -79,6 +84,16 @@ export default async function GemeindePage({ params }: { params: Params }) {
   const lastYearRow = atlas.solar.by_year.find((y) => y.year === lastYear);
   const thisYearRow = atlas.solar.by_year.find((y) => y.year === thisYear);
   const speicher = atlas.speicher;
+
+  // Storage per roof kWp — the honest denominator is roof solar, not total: a
+  // village with a big open-field park has lots of kWp and few home batteries,
+  // and dividing by the park would fake a "no storage" picture. Only shown when
+  // there is enough of both to mean something.
+  const kwpDach = atlas.solar.by_segment
+    .filter((s) => s.segment !== "freiflaeche")
+    .reduce((a, s) => a + s.kwp, 0);
+  const speicherProKwp =
+    speicher.kwh_batterie > 0 && kwpDach > 100 ? speicher.kwh_batterie / kwpDach : null;
 
   const basePath = `/solar-atlas/${params.bundesland}/${params.kreis}`;
 
@@ -190,7 +205,11 @@ export default async function GemeindePage({ params }: { params: Params }) {
           </div>
           <div style={S.metric}>
             <div style={S.metricLabel}>Batteriespeicher</div>
-            <div style={S.metricValue}>{nf(speicher.count)}</div>
+            <div style={S.metricValue}>{fmtKwh(speicher.kwh_batterie)}</div>
+            <div style={S.metricSub}>
+              {nf(speicher.count)} Anlagen
+              {speicherProKwp !== null && ` · ${speicherProKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp`}
+            </div>
           </div>
           <div style={S.metric}>
             <div style={S.metricLabel}>Neu {lastYear}</div>
@@ -291,6 +310,7 @@ const S: Record<string, React.CSSProperties> = {
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 },
   metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
+  metricSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: 3, lineHeight: 1.4 },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
   sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px" },
   section: { marginBottom: 28 },

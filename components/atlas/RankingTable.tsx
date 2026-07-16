@@ -295,7 +295,15 @@ export default function RankingTable({
                   </span>
                   <span style={S.nameCell}>
                     <span style={{ ...S.name, fontWeight: isHome ? 700 : 500 }}>{r.name}</span>
-                    {r.population === null && <span style={S.hint}>unbewohnt</span>}
+                    {r.population === null ? (
+                      <span style={S.hint}>unbewohnt</span>
+                    ) : (
+                      // Population next to the name only under "Pro Kopf" — that is
+                      // where a small village leading a big town needs context: a
+                      // 850-inhabitant place tops the per-capita list easily, and the
+                      // number makes that legible instead of misleading.
+                      sort === "perCapita" && <span style={S.hint}>{nf(r.population)} Einw.</span>
+                    )}
                   </span>
                   {COLUMNS.map((c) => (
                     <span key={c.key} style={cellStyle(c.key)}>
@@ -351,6 +359,9 @@ export default function RankingTable({
               </span>
               <span style={S.nameCell}>
                 <span style={{ ...S.name, fontWeight: 700 }}>{homeRow.name}</span>
+                {sort === "perCapita" && homeRow.population !== null && (
+                  <span style={S.hint}>{nf(homeRow.population)} Einw.</span>
+                )}
               </span>
               {COLUMNS.map((c) => (
                 <span key={c.key} style={cellStyle(c.key)}>

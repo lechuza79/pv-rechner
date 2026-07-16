@@ -246,7 +246,7 @@ export async function loadChildren(
   }));
 }
 
-type SeriesRow = { energietraeger: string; segment: string; year: number; count: number; kwp: number };
+type SeriesRow = { energietraeger: string; segment: string; year: number; count: number; kwp: number; kwh: number };
 
 /** One region's segment x year series, summed over everything beneath it. */
 async function loadSeries(regionId: string, energietraeger: Energietraeger): Promise<SeriesRow[]> {
@@ -264,6 +264,7 @@ async function loadSeries(regionId: string, energietraeger: Energietraeger): Pro
     year: r.year,
     count: Number(r.count),
     kwp: Number(r.kwp),
+    kwh: Number(r.kwh ?? 0),
   }));
 }
 
@@ -460,7 +461,13 @@ export type RegionAtlas = {
     by_segment: SegmentBreakdown[];
     by_year: { year: number; count: number; kwp: number }[];
   };
-  speicher: { count: number; kwp: number };
+  /**
+   * count = all electricity stores; kwh_batterie = usable capacity of home and
+   * commercial batteries only. Pumped-storage capacity is excluded on purpose —
+   * one Goldisthal (8,7 GWh) would swamp the figure and make "kWh per kWp"
+   * meaningless. count still includes it so the tally stays honest.
+   */
+  speicher: { count: number; kwp: number; kwh_batterie: number };
   data_as_of: string;
 };
 
@@ -481,6 +488,7 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
   const yearBuckets: Record<number, { count: number; kwp: number }> = {};
   let speicherCount = 0;
   let speicherKwp = 0;
+  let batterieKwh = 0;
 
   for (const r of rows) {
     const count = Number(r.count);
@@ -488,6 +496,7 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
     if (r.energietraeger === "speicher") {
       speicherCount += count;
       speicherKwp += kwp;
+      if (r.segment.startsWith("batterie")) batterieKwh += Number(r.kwh);
       continue;
     }
     // solar
@@ -516,7 +525,7 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
   return {
     region_id: regionId,
     solar: { total_count: solarCount, total_kwp: solarKwp, by_segment, by_year },
-    speicher: { count: speicherCount, kwp: speicherKwp },
+    speicher: { count: speicherCount, kwp: speicherKwp, kwh_batterie: batterieKwh },
     data_as_of: await fetchMetaDataAsOf(),
   };
 }
