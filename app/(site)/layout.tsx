@@ -16,18 +16,19 @@ const themeBootScript = `(function(){try{
 var p=localStorage.getItem('sc-theme-pref');
 if(p!=='light'&&p!=='dark')p='auto';
 var r;
-if(p==='light')r='light';else if(p==='dark')r='dark';else{
+if(p==='light')r='s6';else if(p==='dark')r='s0';else{
+// No weather yet: pick the stage from the sun's elevation alone (below the
+// horizon -> night/dusk, up -> a neutral daylight stage). The controller
+// refines the daytime brightness once the live reading lands.
 var d=new Date(),lat=51.16,lon=10.45,
 s=Date.UTC(d.getFullYear(),0,0),
 doy=Math.floor((Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())-s)/864e5),
 dec=0.4093*Math.sin(2*Math.PI/365*(doy-81)),
 la=lat*Math.PI/180,
-ch=Math.max(-1,Math.min(1,-Math.tan(la)*Math.tan(dec))),
-hd=Math.acos(ch)*12/Math.PI,
-tz=-d.getTimezoneOffset()/60,
-sn=12-lon/15,sr=sn-hd+tz,ss=sn+hd+tz,
-h=d.getHours()+d.getMinutes()/60,b=50/60;
-r=(h<sr-b||h>ss+b)?'dark':((h<sr+b||h>ss-b)?'dusk':'light');
+uh=d.getUTCHours()+d.getUTCMinutes()/60,
+H=(uh+lon/15-12)*15*Math.PI/180,
+el=Math.asin(Math.max(-1,Math.min(1,Math.sin(la)*Math.sin(dec)+Math.cos(la)*Math.cos(dec)*Math.cos(H))))*180/Math.PI;
+r=el<-6?'s0':el<0?'s1':el<6?'s2':'s5';
 }
 var e=document.documentElement;
 e.setAttribute('data-theme',r);

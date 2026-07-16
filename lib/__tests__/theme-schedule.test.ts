@@ -1,13 +1,18 @@
 import { describe, it, expect } from "vitest";
 import {
   dayOfYear,
-  sunTimes,
-  classifyHour,
-  scheduleTheme,
+  sunStage,
   resolveTheme,
+  isLightStage,
+  stageId,
   oppositeOf,
   cycleFrom,
+  type ThemeStage,
 } from "../theme-schedule";
+
+// UTC-based so these are timezone-robust: sunStage reads the date's UTC hours.
+const HIGH_SUN = new Date(Date.UTC(2024, 5, 21, 11, 0)); // solar noon, sun ~62°
+const NIGHT = new Date(Date.UTC(2024, 5, 21, 0, 0)); // deep night
 
 describe("dayOfYear", () => {
   it("is 1 on Jan 1 and grows through the year", () => {
@@ -17,123 +22,92 @@ describe("dayOfYear", () => {
   });
 });
 
-describe("sunTimes (central Germany)", () => {
-  it("gives a long summer day and short winter day", () => {
-    const summer = sunTimes(183, 2); // ~Jul 1, CEST (+2)
-    const winter = sunTimes(1, 1); // Jan 1, CET (+1)
-    // Summer: sunrise ~5h, sunset ~21.5h
-    expect(summer.sunrise).toBeGreaterThan(4.5);
-    expect(summer.sunrise).toBeLessThan(6);
-    expect(summer.sunset).toBeGreaterThan(20.5);
-    expect(summer.sunset).toBeLessThan(22);
-    // Winter days are markedly shorter than summer days.
-    const summerLen = summer.sunset - summer.sunrise;
-    const winterLen = winter.sunset - winter.sunrise;
-    expect(winterLen).toBeLessThan(summerLen);
-    expect(winterLen).toBeGreaterThan(6); // still ~8h
+describe("stageId / isLightStage", () => {
+  it("formats and clamps to s0…s6", () => {
+    expect(stageId(3)).toBe("s3");
+    expect(stageId(9)).toBe("s6");
+    expect(stageId(-1)).toBe("s0");
+  });
+  it("s3–s6 are light backgrounds, s0–s2 dark", () => {
+    expect(isLightStage("s6")).toBe(true);
+    expect(isLightStage("s3")).toBe(true);
+    expect(isLightStage("s2")).toBe(false);
+    expect(isLightStage("s0")).toBe(false);
   });
 });
 
-describe("classifyHour", () => {
-  const sunrise = 6;
-  const sunset = 21;
-  const band = 50 / 60;
-  it("midday is light, deep night is dark", () => {
-    expect(classifyHour(13, sunrise, sunset, band)).toBe("light");
-    expect(classifyHour(2, sunrise, sunset, band)).toBe("dark");
+describe("sunStage", () => {
+  it("is 0 (deep night) when the sun is well down", () => {
+    expect(sunStage(NIGHT, null)).toBe(0);
   });
-  it("just around sunrise and sunset is dusk", () => {
-    expect(classifyHour(6, sunrise, sunset, band)).toBe("dusk");
-    expect(classifyHour(21, sunrise, sunset, band)).toBe("dusk");
-    expect(classifyHour(5.5, sunrise, sunset, band)).toBe("dusk");
-  });
-  it("well before sunrise / well after sunset is dark", () => {
-    expect(classifyHour(4, sunrise, sunset, band)).toBe("dark");
-    expect(classifyHour(23, sunrise, sunset, band)).toBe("dark");
-  });
-});
 
-describe("scheduleTheme (tz-robust times)", () => {
-  it("midday is light, midnight is dark year-round", () => {
-    expect(scheduleTheme(new Date(2024, 6, 1, 13, 0))).toBe("light");
-    expect(scheduleTheme(new Date(2024, 0, 1, 13, 0))).toBe("light");
-    expect(scheduleTheme(new Date(2024, 6, 1, 0, 30))).toBe("dark");
-    expect(scheduleTheme(new Date(2024, 0, 1, 0, 30))).toBe("dark");
+  it("in daylight, clarity picks the fine stage", () => {
+    expect(sunStage(HIGH_SUN, { powerPct: 60, utilisation: 0.95 })).toBe(6);
+    expect(sunStage(HIGH_SUN, { powerPct: 45, utilisation: 0.74 })).toBe(5);
+    expect(sunStage(HIGH_SUN, { powerPct: 30, utilisation: 0.55 })).toBe(4);
+    expect(sunStage(HIGH_SUN, { powerPct: 13, utilisation: 0.2 })).toBe(3);
+  });
+
+  // Same low output, opposite sky: clarity keeps the clear one bright, dims the
+  // overcast one. This is the winter question, in the light zone.
+  it("keeps a clear (low-sun) noon bright but dims an overcast noon", () => {
+    expect(sunStage(HIGH_SUN, { powerPct: 20, utilisation: 0.95 })).toBe(6);
+    expect(sunStage(HIGH_SUN, { powerPct: 20, utilisation: 0.2 })).toBe(3);
+  });
+
+  it("daylight with no reading yet is a bright stage, never the dark ones", () => {
+    expect(isLightStage(stageId(sunStage(HIGH_SUN, null)))).toBe(true);
   });
 });
 
 describe("resolveTheme", () => {
-  const noon = new Date(2024, 6, 1, 13, 0);
-  const midnight = new Date(2024, 6, 1, 0, 30);
-  it("honours explicit light/dark regardless of time", () => {
-    expect(resolveTheme("light", midnight)).toBe("light");
-    expect(resolveTheme("dark", noon)).toBe("dark");
+  it("pins the extremes for a manual choice, whatever the sun", () => {
+    expect(resolveTheme("light", NIGHT)).toBe("s6");
+    expect(resolveTheme("dark", HIGH_SUN, { powerPct: 60, utilisation: 1 })).toBe("s0");
   });
-  it("falls back to the schedule in auto mode", () => {
-    expect(resolveTheme("auto", noon)).toBe("light");
-    expect(resolveTheme("auto", midnight)).toBe("dark");
-  });
-
-  it("lets the live sun dim the automatic mode, but never a manual choice", () => {
-    const overcast = { powerPct: 13, utilisation: 0.1 };
-    expect(resolveTheme("auto", noon, overcast)).toBe("dusk");
-    // ...but someone who picked Hell by hand keeps Hell.
-    expect(resolveTheme("light", noon, overcast)).toBe("light");
-    expect(resolveTheme("dark", noon, { powerPct: 55, utilisation: 1 })).toBe("dark");
-  });
-
-  it("keeps a sunny midday light and takes night from the reading", () => {
-    expect(resolveTheme("auto", noon, { powerPct: 50, utilisation: 0.9 })).toBe("light");
-    expect(resolveTheme("auto", noon, { powerPct: 0, utilisation: null })).toBe("dark");
-  });
-
-  it("falls back to the sun position when there is no reading", () => {
-    expect(resolveTheme("auto", noon, null)).toBe("light");
-    expect(resolveTheme("auto", midnight, null)).toBe("dark");
+  it("auto follows the sun stage", () => {
+    expect(resolveTheme("auto", NIGHT)).toBe("s0");
+    expect(resolveTheme("auto", HIGH_SUN, { powerPct: 60, utilisation: 0.95 })).toBe("s6");
+    expect(resolveTheme("auto", HIGH_SUN, { powerPct: 13, utilisation: 0.2 })).toBe("s3");
   });
 });
 
 describe("oppositeOf", () => {
-  it("flips light↔dark and treats dusk as dark-ish", () => {
-    expect(oppositeOf("light")).toBe("dark");
-    expect(oppositeOf("dark")).toBe("light");
-    expect(oppositeOf("dusk")).toBe("light");
+  it("light stages flip to dark, dark stages to light", () => {
+    expect(oppositeOf("s6")).toBe("dark");
+    expect(oppositeOf("s3")).toBe("dark");
+    expect(oppositeOf("s2")).toBe("light");
+    expect(oppositeOf("s0")).toBe("light");
   });
 });
 
 describe("cycleFrom", () => {
-  it("first click out of auto always lands on the opposite of what is shown", () => {
-    expect(cycleFrom("auto", "light", null)).toBe("dark");
-    expect(cycleFrom("auto", "dark", null)).toBe("light");
-    expect(cycleFrom("auto", "dusk", null)).toBe("light");
+  it("first click out of auto lands on the opposite of what's shown", () => {
+    expect(cycleFrom("auto", "s6", null)).toBe("dark");
+    expect(cycleFrom("auto", "s0", null)).toBe("light");
+    expect(cycleFrom("auto", "s2", null)).toBe("light"); // dark-ish stage → light
   });
 
-  it("walks auto → dark → light → auto when auto was showing light", () => {
-    const a = cycleFrom("auto", "light", null);
+  it("walks auto → dark → light → auto when auto showed a light stage", () => {
+    const a = cycleFrom("auto", "s5", null);
     expect(a).toBe("dark");
-    const b = cycleFrom(a, "dark", a);
+    const b = cycleFrom(a, "s0", a);
     expect(b).toBe("light");
-    expect(cycleFrom(b, "light", a)).toBe("auto");
+    expect(cycleFrom(b, "s6", a)).toBe("auto");
   });
 
-  it("walks auto → light → dark → auto when auto was showing dark", () => {
-    const a = cycleFrom("auto", "dark", null);
-    expect(a).toBe("light");
-    const b = cycleFrom(a, "light", a);
-    expect(b).toBe("dark");
-    expect(cycleFrom(b, "dark", a)).toBe("auto");
-  });
-
-  it("keeps both manual modes reachable either way round", () => {
-    for (const start of ["light", "dusk", "dark"] as const) {
+  it("keeps both manual modes reachable whichever way auto went", () => {
+    for (const shown of ["s6", "s3", "s2", "s0"] as ThemeStage[]) {
       const seen = new Set<string>();
-      let pref = cycleFrom("auto", start, null);
+      let pref = cycleFrom("auto", shown, null);
       const first = pref;
       seen.add(pref);
-      pref = cycleFrom(pref, pref === "light" ? "light" : "dark", first);
+      const shown2: ThemeStage = pref === "light" ? "s6" : "s0";
+      pref = cycleFrom(pref, shown2, first);
       seen.add(pref);
       expect(seen).toEqual(new Set(["light", "dark"]));
-      expect(cycleFrom(pref, pref === "light" ? "light" : "dark", first)).toBe("auto");
+      const shown3: ThemeStage = pref === "light" ? "s6" : "s0";
+      expect(cycleFrom(pref, shown3, first)).toBe("auto");
     }
   });
 });

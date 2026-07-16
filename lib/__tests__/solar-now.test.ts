@@ -12,9 +12,6 @@ import {
   sunElevation,
   clearSkyGhi,
   utilisation,
-  themeFromSolar,
-  DIM_POWER_PCT,
-  DIM_UTILISATION,
   DE_LAT,
   DE_LON,
 } from "../theme-schedule";
@@ -63,68 +60,6 @@ describe("utilisation", () => {
     expect(utilisation(400, 800)).toBeCloseTo(0.5, 2);
     expect(utilisation(900, 800)).toBe(1);
     expect(utilisation(0, 800)).toBe(0);
-  });
-});
-
-// The four cases the brightness has to get right at once. Bright needs BOTH
-// real output and an unobstructed sky — either signal alone gets one of these
-// wrong.
-describe("themeFromSolar — the four cases", () => {
-  // Measured at Höchberg on a clear July morning, 06:35, sun 9.2° up: a
-  // cloudless sky manages only ~120 W/m² there, so "49 % of what's possible"
-  // is 49 % of almost nothing. Utilisation alone would call this a bright day.
-  it("dims a clear early morning — 5 % output is not a bright day", () => {
-    expect(themeFromSolar({ powerPct: 5, utilisation: 0.49 }, "light")).toBe("dusk");
-  });
-
-  // Output alone would fail this one: it is as low as the morning above.
-  it("keeps a crisp winter noon bright, though its output is low", () => {
-    expect(themeFromSolar({ powerPct: 20, utilisation: 0.95 }, "light")).toBe("light");
-  });
-
-  // ...and output alone would fail this one the other way: same output as the
-  // winter noon, but the sky is swallowing it.
-  it("dims an overcast summer noon", () => {
-    expect(themeFromSolar({ powerPct: 13, utilisation: 0.18 }, "light")).toBe("dusk");
-  });
-
-  it("keeps a sunny summer noon bright", () => {
-    expect(themeFromSolar({ powerPct: 52, utilisation: 0.95 }, "light")).toBe("light");
-  });
-
-  it("goes dark only when the output is gone, never from cloud alone", () => {
-    expect(themeFromSolar({ powerPct: 0, utilisation: null }, "light")).toBe("dark");
-    // Thickest imaginable cloud at midday still only dims to dusk.
-    expect(themeFromSolar({ powerPct: 11, utilisation: 0 }, "light")).toBe("dusk");
-  });
-
-  it("falls back to the sun position when there is no reading", () => {
-    expect(themeFromSolar(null, "light")).toBe("light");
-    expect(themeFromSolar(null, "dark")).toBe("dark");
-  });
-
-  // Guards the thresholds against the real geometry: a clear winter noon at
-  // Germany's latitude must land above the "dim" cut, or the page spends four
-  // months in dusk.
-  it("puts a clear winter noon above the dim threshold, a clear dawn below", () => {
-    const winterNoon = clearSkyGhi(sunElevation(DEC_21, SOLAR_NOON_UTC, DE_LAT, DE_LON));
-    const dawn = clearSkyGhi(9.2);
-    const winterNoonPct = capacityShare(winterNoon * 0.95, 2) * 100;
-    const dawnPct = capacityShare(dawn * 0.95, 15) * 100;
-
-    expect(dawnPct).toBeLessThan(DIM_POWER_PCT);
-    expect(winterNoonPct).toBeGreaterThan(DIM_POWER_PCT);
-    // Not just on the right side of the line — with room to spare, so a slightly
-    // different day does not flip the whole page.
-    expect(DIM_POWER_PCT - dawnPct).toBeGreaterThan(2);
-    expect(winterNoonPct - DIM_POWER_PCT).toBeGreaterThan(2);
-
-    // And the sky-clarity signal must not veto a clear winter noon.
-    expect(utilisation(winterNoon * 0.95, winterNoon)).toBeGreaterThan(DIM_UTILISATION);
-
-    // Both cases resolve the way a person would expect.
-    expect(themeFromSolar({ powerPct: dawnPct, utilisation: 0.95 }, "light")).toBe("dusk");
-    expect(themeFromSolar({ powerPct: winterNoonPct, utilisation: 0.95 }, "light")).toBe("light");
   });
 });
 

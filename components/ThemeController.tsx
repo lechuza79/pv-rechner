@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { resolveTheme, type ThemePref, type ThemeMode, type SolarConditions } from "../lib/theme-schedule";
+import { resolveTheme, type ThemePref, type ThemeStage, type SolarConditions } from "../lib/theme-schedule";
+import { stageBackground } from "../lib/theme";
 import { useCachedFetch } from "../lib/use-cached-fetch";
 import { useLocation } from "../lib/location";
 import SunControl from "./SunControl";
@@ -27,14 +28,7 @@ function readPref(): ThemePref {
   return fromAttr === "light" || fromAttr === "dark" ? fromAttr : "auto";
 }
 
-// Keep the mobile browser-chrome colour in step with the surface background.
-const THEME_COLOR: Record<ThemeMode, string> = {
-  light: "#FFFFFF",
-  dusk: "#26202B",
-  dark: "#12161C",
-};
-
-function apply(pref: ThemePref, animate: boolean, solar: SolarConditions | null): ThemeMode {
+function apply(pref: ThemePref, animate: boolean, solar: SolarConditions | null): ThemeStage {
   const resolved = resolveTheme(pref, new Date(), solar);
   const el = document.documentElement;
   const changed = el.getAttribute("data-theme") !== resolved;
@@ -49,8 +43,9 @@ function apply(pref: ThemePref, animate: boolean, solar: SolarConditions | null)
   } catch {
     // Private mode / storage disabled — theme still applies for this session.
   }
+  // Keep the mobile browser-chrome colour in step with the stage background.
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", THEME_COLOR[resolved]);
+  if (meta) meta.setAttribute("content", stageBackground(Number(resolved.slice(1))));
   return resolved;
 }
 

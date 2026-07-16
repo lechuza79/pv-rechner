@@ -220,23 +220,89 @@ const duskTokens: Partial<Record<TokenName, string>> = {
   '--shadow-lg': '0 10px 30px rgba(0,0,0,0.5)',
 };
 
-/** Resolved theme identifier used on the <html data-theme> attribute. */
-export type ResolvedTheme = 'light' | 'dusk' | 'dark';
-
-const OVERRIDES: Record<Exclude<ResolvedTheme, 'light'>, Partial<Record<TokenName, string>>> = {
-  dark: darkTokens,
-  dusk: duskTokens,
+/** Overcast day — dimmed, cool-grey light surfaces; text/accent stay (dark on grey). */
+const overcastTokens: Partial<Record<TokenName, string>> = {
+  '--color-bg': '#DBDFE6',
+  '--color-bg-muted': '#D0D5DD',
+  '--color-bg-accent': '#D3DBEA',
+  '--color-border': '#C0C7D2',
+  '--color-border-muted': '#B8BFCA',
+  '--color-border-accent': '#A6C0E6',
+  '--color-chart-grid': '#C0C7D2',
+  '--color-chart-zero': '#9AA2AE',
+  '--color-progress-inactive': '#C0C7D2',
+  '--color-track': 'rgba(0,0,0,0.13)',
 };
 
+type Tokens = Partial<Record<TokenName, string>>;
+const base = tokens as Record<TokenName, string>;
+
+// Interpolate one token value. Colours (#hex / rgba) blend channel-wise;
+// anything else (fonts, radii, shadows) snaps to the nearer anchor.
+function lerpValue(a: string, b: string, t: number): string {
+  const pa = parseColor(a);
+  const pb = parseColor(b);
+  if (!pa || !pb) return t < 0.5 ? a : b;
+  const ch = (i: number) => Math.round(pa[i] + (pb[i] - pa[i]) * t);
+  const alpha = +(pa[3] + (pb[3] - pa[3]) * t).toFixed(3);
+  if (alpha >= 1) {
+    return `#${[ch(0), ch(1), ch(2)].map((n) => n.toString(16).padStart(2, '0')).join('')}`;
+  }
+  return `rgba(${ch(0)},${ch(1)},${ch(2)},${alpha})`;
+}
+
+function parseColor(v: string): [number, number, number, number] | null {
+  const hex = /^#([0-9a-f]{6})$/i.exec(v.trim());
+  if (hex) {
+    const n = parseInt(hex[1], 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255, 1];
+  }
+  const rgba = /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*(?:,\s*([\d.]+)\s*)?\)$/i.exec(v.trim());
+  if (rgba) return [+rgba[1], +rgba[2], +rgba[3], rgba[4] === undefined ? 1 : +rgba[4]];
+  return null;
+}
+
+// Blend two anchor overrides (each a partial over the light base) at t.
+function lerpTokens(a: Tokens, b: Tokens, t: number): Tokens {
+  const keys = Array.from(new Set([...Object.keys(a), ...Object.keys(b)])) as TokenName[];
+  const out: Tokens = {};
+  keys.forEach((k) => {
+    const av = a[k] ?? base[k];
+    const bv = b[k] ?? base[k];
+    const v = lerpValue(av, bv, t);
+    if (v !== base[k]) out[k] = v; // keep the CSS to what actually differs
+  });
+  return out;
+}
+
+// The seven stages (see lib/theme-schedule.ts). s6 is the light base — no
+// override. Light zone (s3–s5) interpolates base→overcast (dark text
+// throughout); dark zone (s1) interpolates dusk→dark. The gap s2↔s3 is the one
+// hard flip: no smooth path crosses it with readable text.
+const STAGE_TOKENS: Tokens[] = [
+  darkTokens,                           // s0
+  lerpTokens(duskTokens, darkTokens, 0.5), // s1
+  duskTokens,                           // s2
+  overcastTokens,                       // s3
+  lerpTokens({}, overcastTokens, 2 / 3),   // s4
+  lerpTokens({}, overcastTokens, 1 / 3),   // s5
+  // s6 = base, emitted as no override
+];
+
+/** Background colour of a stage — for the mobile browser-chrome meta tag. */
+export function stageBackground(i: number): string {
+  return STAGE_TOKENS[i]?.['--color-bg'] ?? base['--color-bg'];
+}
+
 /**
- * CSS for the dark/dusk theme overrides. Emitted once in the site <head> after
- * getCssVariables(). Light needs no block — it is the :root base.
+ * CSS for the seven brightness-stage overrides, emitted once in the site <head>
+ * after getCssVariables(). s6 needs no block — it is the :root light base.
  */
 export function getThemeOverrides(): string {
-  return (Object.entries(OVERRIDES) as [keyof typeof OVERRIDES, Partial<Record<TokenName, string>>][])
-    .map(([theme, set]) => {
+  return STAGE_TOKENS
+    .map((set, i) => {
       const body = Object.entries(set).map(([k, val]) => `  ${k}: ${val};`).join('\n');
-      return `:root[data-theme="${theme}"] {\n${body}\n}`;
+      return `:root[data-theme="s${i}"] {\n${body}\n}`;
     })
     .join('\n');
 }

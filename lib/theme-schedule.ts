@@ -94,21 +94,6 @@ export function clearSkyGhi(elevationDeg: number): number {
 
 /** Sun is effectively down below this clear-sky level (W/m²). */
 export const NIGHT_GHI = 25;
-/** Below this share of the clear-sky potential, cloud is dimming the day. */
-export const DIM_UTILISATION = 0.45;
-/** Below this output (% of full-sun power) there is no real sun to speak of. */
-export const NIGHT_POWER_PCT = 1;
-/**
- * Below this output the day reads as dim, however clear the sky is.
- * The window is narrow and measured, not guessed — output at full sun:
- *   10.2 %  cloudless sunrise (sun 9°)      → must dim
- *   14.8 %  crisp winter noon, Flensburg    → must stay bright
- *   20.3 %  crisp winter noon, central DE
- *   12.8 %  overcast summer noon            → must dim
- * 13 sits clear of both edges. Lower and dawn stays bright; higher and northern
- * winter noons fall into permanent dusk.
- */
-export const DIM_POWER_PCT = 13;
 
 /**
  * How much of the clear-sky potential is actually arriving (0–1).
@@ -127,81 +112,96 @@ export type SolarConditions = {
   utilisation: number | null;
 };
 
+// ─── The seven brightness stages ───────────────────────────────────────────
+// s6 brightest (full sun) … s0 darkest (deep night). Three hand-tuned anchor
+// palettes (light = s6, dusk = s2, dark = s0) with interpolated stages between;
+// see lib/theme.ts. The one hard boundary is s3↔s2: s3–s6 are light backgrounds
+// with dark text, s0–s2 dark backgrounds with light text. There is no readable
+// theme in between (mid-grey has too little contrast for any text), so the flip
+// is tied to the sun crossing the horizon — day above, dusk/night below.
+export const STAGE_COUNT = 7;
+/** First stage that is a light background (dark text). Below this: dark bg. */
+export const FIRST_LIGHT_STAGE = 3;
+
+// Sun-elevation gates (degrees). Above DAY → light zone; the rest steps down
+// through dusk to night as the sun sinks past the horizon.
+const ELEV_DAY = 6;
+const ELEV_DUSK = 0;
+const ELEV_NIGHT = -6;
+
+// Within the light zone, clarity (utilisation) picks the fine stage: a clear
+// sky stays bright whatever the season, cloud dims the daytime page.
+const UTIL_S6 = 0.82;
+const UTIL_S5 = 0.66;
+const UTIL_S4 = 0.48;
+
+/** Sun elevation right now for central Germany. */
+function elevationNow(date: Date): number {
+  const utcHours = date.getUTCHours() + date.getUTCMinutes() / 60;
+  return sunElevation(dayOfYear(date), utcHours, DE_LAT, DE_LON);
+}
+
 /**
- * The theme the live sun justifies.
+ * The brightness stage the live sun justifies (0–6).
  *
- * Bright needs BOTH: real output AND a sky that is not swallowing it. Either
- * alone gets it wrong at the edges —
- *   - output alone can't tell an overcast summer noon (~13 %) from a crisp
- *     winter noon (~20 %); the first should dim, the second should not.
- *   - utilisation alone can't tell dawn from noon: at 9° elevation a cloudless
- *     sky still only manages ~120 W/m², so "49 % of what's possible" is 49 % of
- *     almost nothing — and the page would stay bright at 5 % output.
- *
- * Night is output being gone, never cloud: however thick the sky, a day dims to
- * dusk at most.
- * `fallback` (the sun position) stands in when there is no reading at all.
+ * Elevation decides the zone — this is what keeps a clear DAWN dim (low sun →
+ * dusk/night stages) while a clear WINTER NOON stays bright (sun up → light
+ * zone, and clarity is high). Within the day, utilisation is the dimmer: it is
+ * the share of the clear-sky potential arriving, i.e. how much cloud is in the
+ * way, independent of how high the sun is.
  */
-export function themeFromSolar(
-  solar: SolarConditions | null,
-  fallback: ThemeMode,
-): ThemeMode {
-  if (!solar) return fallback;
-  if (solar.powerPct < NIGHT_POWER_PCT) return "dark";
-  if (solar.powerPct < DIM_POWER_PCT) return "dusk";
-  if (solar.utilisation !== null && solar.utilisation < DIM_UTILISATION) return "dusk";
-  return "light";
+export function sunStage(date: Date, solar: SolarConditions | null): number {
+  const elev = elevationNow(date);
+  if (elev < ELEV_NIGHT) return 0;
+  if (elev < ELEV_DUSK) return 1;
+  if (elev < ELEV_DAY) return 2;
+  // Sun is up. Brightness by clarity; no reading yet → a neutral daylight stage.
+  const u = solar?.utilisation ?? null;
+  if (u === null) return 5;
+  if (u >= UTIL_S6) return 6;
+  if (u >= UTIL_S5) return 5;
+  if (u >= UTIL_S4) return 4;
+  return 3;
 }
 
-/** Classify a local clock hour into a theme given sunrise/sunset. */
-export function classifyHour(
-  hour: number,
-  sunrise: number,
-  sunset: number,
-  bandHours = DUSK_MINUTES / 60,
-): ThemeMode {
-  if (hour < sunrise - bandHours || hour > sunset + bandHours) return "dark";
-  if (hour < sunrise + bandHours || hour > sunset - bandHours) return "dusk";
-  return "light";
+/** The `data-theme` value for a stage number (clamped): "s0" … "s6". */
+export type ThemeStage = `s${number}`;
+export function stageId(n: number): ThemeStage {
+  return `s${Math.max(0, Math.min(STAGE_COUNT - 1, Math.round(n)))}` as ThemeStage;
+}
+/** True for the light-background stages (dark text). */
+export function isLightStage(stage: ThemeStage): boolean {
+  return Number(stage.slice(1)) >= FIRST_LIGHT_STAGE;
 }
 
-/** Resolve the auto theme for a given moment (defaults to now). */
-export function scheduleTheme(date: Date, lat = DE_LAT, lon = DE_LON): ThemeMode {
-  const tz = -date.getTimezoneOffset() / 60;
-  const { sunrise, sunset } = sunTimes(dayOfYear(date), tz, lat, lon);
-  const hour = date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
-  return classifyHour(hour, sunrise, sunset);
-}
-
-// What the user can choose. "dusk" is deliberately NOT a preference: it is a
-// stage of the automatic sun cycle, not something you pick — so the manual
-// switch stays a clean light/dark flip.
+// What the user can choose. The in-between stages are steps of the automatic
+// sun cycle, not things you pick — so the manual switch stays a clean
+// light/dark flip (brightest ↔ darkest).
 export type ThemePref = "auto" | "light" | "dark";
 
 /**
- * Resolve the effective theme from a stored preference.
+ * Resolve the effective theme stage from a stored preference.
  * `solar` is the live reading; it only ever drives the automatic mode — picking
- * "Hell" by hand must stay light however dark it is outside. null (no data yet,
- * or request failed) falls back to the pure sun position, which is also what the
- * boot script paints with.
+ * "Hell" by hand pins the brightest stage however dark it is outside. null (no
+ * data yet, or request failed) falls back to the sun position, which is also
+ * what the boot script paints with.
  */
 export function resolveTheme(
   pref: ThemePref,
   date: Date,
   solar: SolarConditions | null = null,
-): ThemeMode {
-  if (pref === "light") return "light";
-  if (pref === "dark") return "dark";
-  return themeFromSolar(solar, scheduleTheme(date));
+): ThemeStage {
+  if (pref === "light") return stageId(STAGE_COUNT - 1);
+  if (pref === "dark") return stageId(0);
+  return stageId(sunStage(date, solar));
 }
 
 /**
  * The manual mode a click from auto lands on: always the opposite of what is
- * currently on screen, so one click does what people expect. Dusk is dark-ish,
- * so its opposite is light.
+ * currently on screen, so one click does what people expect.
  */
-export function oppositeOf(resolved: ThemeMode): ThemePref {
-  return resolved === "light" ? "dark" : "light";
+export function oppositeOf(resolved: ThemeStage): ThemePref {
+  return isLightStage(resolved) ? "dark" : "light";
 }
 
 /**
@@ -211,7 +211,7 @@ export function oppositeOf(resolved: ThemeMode): ThemePref {
  */
 export function cycleFrom(
   pref: ThemePref,
-  resolved: ThemeMode,
+  resolved: ThemeStage,
   firstManual: ThemePref | null,
 ): ThemePref {
   if (pref === "auto") return oppositeOf(resolved);
