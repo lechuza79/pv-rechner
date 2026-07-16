@@ -21,6 +21,19 @@ export const tokens = {
   '--color-accent-dark': '#073C93',     // Hover, dark accent text
   '--color-accent-light': '#6A9EF2',    // Light accent, secondary interactive
 
+  // ─── Brand (2) ─────────────────────────────────────────────────────────────
+  // The logo mark's two blues. Kept apart from --color-accent even where the
+  // values match: the accent means "interactive", these mean "the brand" — a
+  // white-label tenant swaps one without the other.
+  //
+  // They do shift per theme so the mark keeps its footing on a dark ground, but
+  // the pair must always stay in the same order (brand above brand-deep), or
+  // the mark's layering inverts. That is why the deep one is NOT
+  // --color-accent-dark: that token means "the accent variant that contrasts
+  // with the background" and therefore flips to a light blue in dark mode.
+  '--color-brand': '#1365EA',
+  '--color-brand-deep': '#073C93',
+
   // ─── Semantic (5) ──────────────────────────────────────────────────────────
   '--color-positive': '#00D950',        // Positive values (Rendite, Ersparnis)
   '--color-highlight': '#3DFFC1',       // Highlight (Live-Indikator, jüngster Wert)
@@ -149,6 +162,8 @@ const darkTokens: Partial<Record<TokenName, string>> = {
   '--color-border': '#2A313C',
   '--color-border-muted': '#232A34',
   '--color-border-accent': '#31517F',
+  '--color-brand': '#4D8DF0',                       // mark, brightened for the dark ground
+  '--color-brand-deep': '#2D5FBF',                  // still a step below brand — layering holds
   '--color-accent': '#4D8DF0',                      // brightened blue for dark contrast
   '--color-accent-dim': 'rgba(77,141,240,0.16)',
   '--color-accent-dark': '#8FBBF7',                 // "hover / accent text" → lighter on dark
@@ -180,6 +195,8 @@ const duskTokens: Partial<Record<TokenName, string>> = {
   '--color-border': '#3E3442',
   '--color-border-muted': '#352C39',
   '--color-border-accent': '#5A4A78',
+  '--color-brand': '#6E9CEE',
+  '--color-brand-deep': '#3F6BC4',
   '--color-accent': '#6E9CEE',
   '--color-accent-dim': 'rgba(110,156,238,0.16)',
   '--color-accent-dark': '#A9C4F5',
