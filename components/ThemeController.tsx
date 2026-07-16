@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { resolveTheme, type ThemePref, type ThemeMode } from "../lib/theme-schedule";
+import { resolveTheme, type ThemePref, type ThemeMode, type SolarConditions } from "../lib/theme-schedule";
 import { useCachedFetch } from "../lib/use-cached-fetch";
 import { useLocation } from "../lib/location";
 import SunControl from "./SunControl";
@@ -34,8 +34,8 @@ const THEME_COLOR: Record<ThemeMode, string> = {
   dark: "#12161C",
 };
 
-function apply(pref: ThemePref, animate: boolean, util: number | null): ThemeMode {
-  const resolved = resolveTheme(pref, new Date(), util);
+function apply(pref: ThemePref, animate: boolean, solar: SolarConditions | null): ThemeMode {
+  const resolved = resolveTheme(pref, new Date(), solar);
   const el = document.documentElement;
   const changed = el.getAttribute("data-theme") !== resolved;
   if (animate && changed) {
@@ -61,9 +61,13 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
     `solar-now-${plz ?? "de"}`,
     null,
   );
-  const util = solar?.utilisation ?? null;
-  const utilRef = useRef<number | null>(null);
-  utilRef.current = util;
+  // The live reading that drives "auto": both numbers matter — see
+  // themeFromSolar(). Kept in a ref so the periodic re-check reads it fresh.
+  const conditions: SolarConditions | null = solar
+    ? { powerPct: solar.powerPct, utilisation: solar.utilisation }
+    : null;
+  const conditionsRef = useRef<SolarConditions | null>(null);
+  conditionsRef.current = conditions;
 
   const [pref, setPref] = useState<ThemePref>("auto");
   const [mounted, setMounted] = useState(false);
@@ -74,7 +78,7 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
     const initial = readPref();
     prefRef.current = initial;
     setPref(initial);
-    apply(initial, false, utilRef.current);
+    apply(initial, false, conditionsRef.current);
     setMounted(true);
   }, []);
 
@@ -83,8 +87,8 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
   // makes the adjustment read as intentional rather than a flash.
   useEffect(() => {
     if (!mounted) return;
-    apply(prefRef.current, true, util);
-  }, [util, mounted]);
+    apply(prefRef.current, true, conditionsRef.current);
+  }, [solar, mounted]);
 
   // In auto mode, re-evaluate every minute so the dusk/night crossover lands
   // without a reload.
@@ -92,7 +96,7 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
     if (pref !== "auto") return;
     const id = window.setInterval(() => {
       if (prefRef.current !== "auto") return;
-      apply("auto", true, utilRef.current);
+      apply("auto", true, conditionsRef.current);
     }, 60_000);
     return () => window.clearInterval(id);
   }, [pref]);
@@ -100,7 +104,7 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
   const choose = useCallback((next: ThemePref) => {
     prefRef.current = next;
     setPref(next);
-    apply(next, true, utilRef.current);
+    apply(next, true, conditionsRef.current);
   }, []);
 
   return (

@@ -74,17 +74,22 @@ describe("resolveTheme", () => {
     expect(resolveTheme("auto", midnight)).toBe("dark");
   });
 
-  it("lets cloud dim the automatic mode, but never a manual choice", () => {
-    // Heavy cloud at midday: auto dims to dusk...
-    expect(resolveTheme("auto", noon, 0.1)).toBe("dusk");
+  it("lets the live sun dim the automatic mode, but never a manual choice", () => {
+    const overcast = { powerPct: 13, utilisation: 0.1 };
+    expect(resolveTheme("auto", noon, overcast)).toBe("dusk");
     // ...but someone who picked Hell by hand keeps Hell.
-    expect(resolveTheme("light", noon, 0.1)).toBe("light");
-    expect(resolveTheme("dark", noon, 1)).toBe("dark");
+    expect(resolveTheme("light", noon, overcast)).toBe("light");
+    expect(resolveTheme("dark", noon, { powerPct: 55, utilisation: 1 })).toBe("dark");
   });
 
-  it("keeps a sunny midday light and never dims night further", () => {
-    expect(resolveTheme("auto", noon, 0.9)).toBe("light");
-    expect(resolveTheme("auto", midnight, 0)).toBe("dark");
+  it("keeps a sunny midday light and takes night from the reading", () => {
+    expect(resolveTheme("auto", noon, { powerPct: 50, utilisation: 0.9 })).toBe("light");
+    expect(resolveTheme("auto", noon, { powerPct: 0, utilisation: null })).toBe("dark");
+  });
+
+  it("falls back to the sun position when there is no reading", () => {
+    expect(resolveTheme("auto", noon, null)).toBe("light");
+    expect(resolveTheme("auto", midnight, null)).toBe("dark");
   });
 });
 

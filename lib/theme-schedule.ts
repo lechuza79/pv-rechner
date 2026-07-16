@@ -94,8 +94,21 @@ export function clearSkyGhi(elevationDeg: number): number {
 
 /** Sun is effectively down below this clear-sky level (W/m²). */
 export const NIGHT_GHI = 25;
-/** Below this share of the clear-sky potential, daylight is dimmed to dusk. */
+/** Below this share of the clear-sky potential, cloud is dimming the day. */
 export const DIM_UTILISATION = 0.45;
+/** Below this output (% of full-sun power) there is no real sun to speak of. */
+export const NIGHT_POWER_PCT = 1;
+/**
+ * Below this output the day reads as dim, however clear the sky is.
+ * The window is narrow and measured, not guessed — output at full sun:
+ *   10.2 %  cloudless sunrise (sun 9°)      → must dim
+ *   14.8 %  crisp winter noon, Flensburg    → must stay bright
+ *   20.3 %  crisp winter noon, central DE
+ *   12.8 %  overcast summer noon            → must dim
+ * 13 sits clear of both edges. Lower and dawn stays bright; higher and northern
+ * winter noons fall into permanent dusk.
+ */
+export const DIM_POWER_PCT = 13;
 
 /**
  * How much of the clear-sky potential is actually arriving (0–1).
@@ -106,14 +119,38 @@ export function utilisation(actualGhi: number, clearSky: number): number | null 
   return Math.max(0, Math.min(1, actualGhi / clearSky));
 }
 
+/** What the live reading says about the sun; null fields mean "not known". */
+export type SolarConditions = {
+  /** Output as % of what the panels make in full sun. */
+  powerPct: number;
+  /** Share of the clear-sky potential arriving (0–1), null when the sun is down. */
+  utilisation: number | null;
+};
+
 /**
- * Dim a sun-position theme with live conditions: heavy cloud turns a bright day
- * into dusk, but never into night — night is only ever the sun being down.
- * Unknown conditions (no data) leave the sun-position theme untouched.
+ * The theme the live sun justifies.
+ *
+ * Bright needs BOTH: real output AND a sky that is not swallowing it. Either
+ * alone gets it wrong at the edges —
+ *   - output alone can't tell an overcast summer noon (~13 %) from a crisp
+ *     winter noon (~20 %); the first should dim, the second should not.
+ *   - utilisation alone can't tell dawn from noon: at 9° elevation a cloudless
+ *     sky still only manages ~120 W/m², so "49 % of what's possible" is 49 % of
+ *     almost nothing — and the page would stay bright at 5 % output.
+ *
+ * Night is output being gone, never cloud: however thick the sky, a day dims to
+ * dusk at most.
+ * `fallback` (the sun position) stands in when there is no reading at all.
  */
-export function applyConditions(base: ThemeMode, util: number | null): ThemeMode {
-  if (util === null || base !== "light") return base;
-  return util < DIM_UTILISATION ? "dusk" : "light";
+export function themeFromSolar(
+  solar: SolarConditions | null,
+  fallback: ThemeMode,
+): ThemeMode {
+  if (!solar) return fallback;
+  if (solar.powerPct < NIGHT_POWER_PCT) return "dark";
+  if (solar.powerPct < DIM_POWER_PCT) return "dusk";
+  if (solar.utilisation !== null && solar.utilisation < DIM_UTILISATION) return "dusk";
+  return "light";
 }
 
 /** Classify a local clock hour into a theme given sunrise/sunset. */
@@ -143,19 +180,19 @@ export type ThemePref = "auto" | "light" | "dark";
 
 /**
  * Resolve the effective theme from a stored preference.
- * `util` is the live share of the clear-sky potential (see utilisation()); it
- * only ever dims the automatic mode — picking "Hell" by hand must stay light
- * however cloudy it is. null (no data yet, or request failed) falls back to the
- * pure sun position, which is also what the boot script paints with.
+ * `solar` is the live reading; it only ever drives the automatic mode — picking
+ * "Hell" by hand must stay light however dark it is outside. null (no data yet,
+ * or request failed) falls back to the pure sun position, which is also what the
+ * boot script paints with.
  */
 export function resolveTheme(
   pref: ThemePref,
   date: Date,
-  util: number | null = null,
+  solar: SolarConditions | null = null,
 ): ThemeMode {
   if (pref === "light") return "light";
   if (pref === "dark") return "dark";
-  return applyConditions(scheduleTheme(date), util);
+  return themeFromSolar(solar, scheduleTheme(date));
 }
 
 /**
