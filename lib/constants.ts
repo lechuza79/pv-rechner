@@ -77,13 +77,20 @@ export const TRI = [
 
 export const EA_KM_PRESETS = [10000, 15000, 20000];
 
+// Strompreis-Szenarien für die PV-Prognose. `explain` beschreibt die Annahme
+// aus PV-Sicht (hoher Strompreis-Anstieg = mehr Ersparnis). Die Bandbreite
+// bildet die 25-Jahres-Unsicherheit ab: 3 % als Mitte deckt sich mit dem
+// langjährigen Schnitt, die Ränder spannen von „kaum Anstieg" bis „kräftig".
 export const SCENARIOS = [
-  { id: "pessimistic", label: "Pessimistisch", color: "#EF4444", strom: 0.01, evDelta: -5 },
-  { id: "realistic", label: "Realistisch", color: "#00D950", strom: 0.03, evDelta: 0 },
-  { id: "optimistic", label: "Optimistisch", color: "#1365EA", strom: 0.05, evDelta: 5 },
+  { id: "pessimistic", label: "Pessimistisch", color: "#EF4444", strom: 0.01, evDelta: -5,
+    explain: "Vorsichtig gerechnet: Der Strompreis steigt nur langsam (+1 %/Jahr) — dein selbst genutzter Solarstrom spart dann entsprechend weniger." },
+  { id: "realistic", label: "Realistisch", color: "#00D950", strom: 0.03, evDelta: 0,
+    explain: "Mittlere Annahme: Der Strompreis steigt etwa wie im langjährigen Schnitt (+3 %/Jahr)." },
+  { id: "optimistic", label: "Optimistisch", color: "#1365EA", strom: 0.05, evDelta: 5,
+    explain: "Günstige Entwicklung: Steigt der Strompreis kräftig (+5 %/Jahr), lohnt sich jede selbst genutzte Kilowattstunde stärker." },
 ];
 
-export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "bl", "foe", "vb", "kl", "km2", "klr", "klwh", "wf", "wi", "wh", "wht"];
+export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "bl", "foe", "vb", "kl", "km2", "klr", "klwh", "wf", "wi", "wh", "wht", "sc"];
 
 // ─── Empfehlungs-Flow ───────────────────────────────────────────────────────
 // footprint = nutzbare Dachfläche (Empfehlung); wpFaktor = Heizlast-Faktor durch

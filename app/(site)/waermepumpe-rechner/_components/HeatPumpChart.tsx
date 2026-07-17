@@ -8,7 +8,7 @@ interface ScenarioData {
   amortisationsJahre: number | null;
 }
 
-export default function HeatPumpChart({ scenarios, horizon }: { scenarios: ScenarioData[]; horizon: number }) {
+export default function HeatPumpChart({ scenarios, horizon, highlightId = "realistic" }: { scenarios: ScenarioData[]; horizon: number; highlightId?: string }) {
   const W = 640, H = 280;
   const P = { t: 24, r: 16, b: 32, l: 52 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
@@ -38,9 +38,10 @@ export default function HeatPumpChart({ scenarios, horizon }: { scenarios: Scena
       {scenarios.map(s => {
         const pts = s.years.map(yr => `${x(yr.i)},${y(yr.kum)}`).join(" ");
         const be = s.amortisationsJahre !== null ? s.years.find(yr => yr.i === s.amortisationsJahre) : null;
+        const on = s.id === highlightId;
         return (
           <g key={s.id}>
-            <polyline points={pts} fill="none" stroke={s.color} strokeWidth={2.5} strokeLinejoin="round" opacity={s.id === "realistic" ? 1 : 0.45} />
+            <polyline points={pts} fill="none" stroke={s.color} strokeWidth={on ? 3 : 2} strokeLinejoin="round" opacity={on ? 1 : 0.35} />
             {be && (
               <>
                 <circle cx={x(be.i)} cy={y(be.kum)} r={4.5} fill={s.color} stroke="var(--color-bg)" strokeWidth={2} />

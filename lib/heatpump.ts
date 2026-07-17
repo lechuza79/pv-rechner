@@ -112,6 +112,10 @@ export interface HeatPumpScenarioResult extends HeatPumpResult {
   id: "pessimistic" | "realistic" | "optimistic";
   label: string;
   color: string;
+  /** Kurzangabe für den Szenario-Tab, z. B. „Strom +5 %/a". */
+  sub: string;
+  /** Erklärsatz des Szenarios (WP-Sicht: teurer Strom = ungünstig). */
+  explain: string;
 }
 
 // ─── Core functions ────────────────────────────────────────────────────────
@@ -301,13 +305,30 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
 
 // ─── Scenario wrappers (pessimistic/realistic/optimistic) ──────────────────
 
+// Die Szenario-Justierung (Arbeitszahl + Preispfade) — als eigener Helper, damit
+// nicht nur die Kern-Prognose, sondern auch der Sanierungswege-Vergleich auf der
+// Ergebnisseite mit demselben Szenario rechnet (sonst widerspräche der Wege-Block
+// dem oben gewählten Szenario).
+export function heatPumpScenarioAdj(id: string, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): { jazFactor: number; stromInflation: number; gasInflation: number } {
+  if (id === "pessimistic") return { jazFactor: 0.90, stromInflation: 0.05, gasInflation: 0.01 };
+  if (id === "optimistic") return { jazFactor: 1.05, stromInflation: 0.01, gasInflation: 0.04 };
+  return { jazFactor: 1.00, stromInflation: cfg.stromInflation, gasInflation: cfg.gasInflation };
+}
+
 export function calcHeatPumpScenarios(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): HeatPumpScenarioResult[] {
-  const scenarios: Array<Pick<HeatPumpScenarioResult, "id" | "label" | "color"> & { adj: { jazFactor: number; stromInflation: number; gasInflation: number } }> = [
-    { id: "pessimistic", label: "Pessimistisch", color: "#EF4444", adj: { jazFactor: 0.90, stromInflation: 0.05, gasInflation: 0.01 } },
-    { id: "realistic",   label: "Realistisch",   color: "#00D950", adj: { jazFactor: 1.00, stromInflation: cfg.stromInflation, gasInflation: cfg.gasInflation } },
-    { id: "optimistic",  label: "Optimistisch",  color: "#1365EA", adj: { jazFactor: 1.05, stromInflation: 0.01, gasInflation: 0.04 } },
+  // WP-Sicht: teurer Strom + billiges Gas ist ungünstig (Strom treibt die
+  // WP-Kosten, Gas die Referenz). Daher ist „Pessimistisch" = Strom steigt
+  // schnell / Gas kaum — spiegelbildlich zum PV-Rechner.
+  const gasPct = (r: number) => `${(r * 100).toLocaleString("de-DE")} %`;
+  const meta: Array<Pick<HeatPumpScenarioResult, "id" | "label" | "color" | "sub" | "explain">> = [
+    { id: "pessimistic", label: "Pessimistisch", color: "#EF4444", sub: "Strom +5 %/a",
+      explain: "Ungünstig für die Wärmepumpe: Der Strompreis steigt schnell (+5 %/Jahr), Gas kaum — und die Arbeitszahl fällt etwas schlechter aus." },
+    { id: "realistic",   label: "Realistisch",   color: "#00D950", sub: `Strom +${gasPct(cfg.stromInflation)}/a`,
+      explain: `Mittlere Annahme: Strompreis +${gasPct(cfg.stromInflation)}/Jahr, Gas +${gasPct(cfg.gasInflation)}/Jahr wie erwartet.` },
+    { id: "optimistic",  label: "Optimistisch",  color: "#1365EA", sub: "Strom +1 %/a",
+      explain: "Günstig für die Wärmepumpe: Der Strompreis bleibt fast stabil (+1 %/Jahr), Gas verteuert sich kräftig (+4 %/Jahr) — die WP spart mehr." },
   ];
-  return scenarios.map(s => ({ id: s.id, label: s.label, color: s.color, ...calcHeatPump(inputs, cfg, s.adj) }));
+  return meta.map(s => ({ ...s, ...calcHeatPump(inputs, cfg, heatPumpScenarioAdj(s.id, cfg)) }));
 }
 
 // ─── PV synergy: how much of WP electricity can a PV system cover? ─────────

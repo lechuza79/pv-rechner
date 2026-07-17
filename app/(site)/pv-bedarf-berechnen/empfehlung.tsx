@@ -1,9 +1,10 @@
 "use client";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useRouter, useSearchParams, type ReadonlyURLSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, type Heizsystem } from "../../../lib/constants";
-import { recommend } from "../../../lib/recommend";
+import { PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, HAUSTYPEN, DACHARTEN, SPEICHER, INSULATION_BESTAND, HEIZSYSTEM, SCENARIOS, HEIZSYSTEM_SHORT, WP_M2_PRESETS, type Heizsystem } from "../../../lib/constants";
+import { recommend, economicsForScenario } from "../../../lib/recommend";
+import ScenarioTabs from "../../../components/ScenarioTabs";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
 import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import { trackEvent } from "../../../lib/analytics";
@@ -98,6 +99,8 @@ export default function Empfehlung() {
   // Beim "Eingaben ändern" wird auf den letzten Eingabe-Step zurückgesetzt.
   const [wizardStep, setWizardStep] = useState(0);
   const step = isRecommendation ? 3 : wizardStep;
+  // Strompreis-Szenario für die gezeigte Rendite/Amortisation der Empfehlung.
+  const [scenario, setScenario] = useState("realistic");
 
   // Progressive Disclosure im Großverbraucher-Step: welche Detailfragen der
   // Nutzer aktiv beantwortet hat (kein Preset vorausgewählt) + welche zum
@@ -246,13 +249,31 @@ export default function Empfehlung() {
   });
 
   // Empfehlung berechnen (mit PLZ-spezifischem Ertrag und ggf. eigener Dachfläche)
-  const rec = isRecommendation ? recommend({
+  const recInput = {
     personen, nutzung, wp, ea, eaKm, klima,
     haustyp, dachart, budgetLimit: null,
     ertragKwp: ertragKwp ?? undefined,
     customRoofM2: customRoofM2 ?? undefined,
     wpWohnflaeche, wpInsulation, wpHeizsystem,
-  }, prices, feedIn) : null;
+  };
+  // Die Empfehlung selbst bleibt am realistischen Szenario verankert — sonst
+  // würde die empfohlene Anlagengröße beim Szenario-Umschalten springen.
+  const rec = isRecommendation ? recommend(recInput, prices, feedIn) : null;
+  // Rendite/Amortisation der empfohlenen Anlage je Strompreis-Szenario.
+  const recScenarios = useMemo(() => (rec
+    ? SCENARIOS.map(s => ({ ...s, eco: economicsForScenario(recInput, rec.kwp, rec.speicherKwh, { strom: s.strom, evDelta: s.evDelta }, prices, feedIn) }))
+    : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [rec?.kwp, rec?.speicherKwh, personen, nutzung, wp, ea, eaKm, klima, haustyp, dachart, ertragKwp, customRoofM2, wpWohnflaeche, wpInsulation, wpHeizsystem, prices, feedIn]);
+  const selRec = recScenarios.find(s => s.id === scenario) ?? recScenarios.find(s => s.id === "realistic");
+  // Alternativen ebenfalls im gewählten Szenario, sonst widerspräche der
+  // Vergleich der oben gewählten Annahme (gleiche Falle wie im WP-Rechner).
+  const selScenarioDef = SCENARIOS.find(s => s.id === scenario) ?? SCENARIOS[1];
+  const altEco = useMemo(() => (rec
+    ? rec.alternatives.map(alt => economicsForScenario(recInput, alt.kwp, alt.speicherKwh, { strom: selScenarioDef.strom, evDelta: selScenarioDef.evDelta }, prices, feedIn))
+    : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [rec?.kwp, rec?.speicherKwh, scenario, personen, nutzung, wp, ea, eaKm, klima, haustyp, dachart, ertragKwp, customRoofM2, wpWohnflaeche, wpInsulation, wpHeizsystem, prices, feedIn]);
 
   // Förderung für die empfohlene Anlage (gleiche Mathe wie Stadt-Seite + Rechner).
   // Nur aktive, pauschal berechenbare Programme tragen bei. Das zuletzt (am
@@ -512,6 +533,13 @@ export default function Empfehlung() {
         {/* ── RECOMMENDATION ── */}
         {isRecommendation && rec && (
           <div className="fu">
+            {/* Strompreis-Szenario ganz oben: bewegt die gezeigte Rendite und
+                Amortisation. Die empfohlene Anlagengröße bleibt bewusst fix. */}
+            <ScenarioTabs
+              tabs={SCENARIOS.map(s => ({ id: s.id, label: s.label, explain: s.explain, sub: `+${(s.strom * 100).toLocaleString("de-DE")} %/Jahr` }))}
+              selected={scenario}
+              onSelect={setScenario}
+            />
             {/* Hero */}
             <div style={{
               textAlign: "center", padding: "24px 20px 20px", marginBottom: 16,
@@ -531,14 +559,14 @@ export default function Empfehlung() {
               <div style={{ fontSize: 14, color: v('--color-text-secondary'), marginTop: 12 }}>
                 Geschätzte Investition: <span style={{ fontWeight: 700, color: v('--color-text-primary'), fontFamily: v('--font-mono') }}>{rec.reasoning.investition.toLocaleString("de-DE")} €</span>
               </div>
-              {rec.reasoning.paybackYears && (
+              {selRec?.eco.paybackYears && (
                 <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 4 }}>
-                  Amortisation in ca. {rec.reasoning.paybackYears} Jahren
+                  Amortisation in ca. {selRec.eco.paybackYears} Jahren
                 </div>
               )}
               <div style={{ fontSize: 13, color: v('--color-text-secondary'), marginTop: 8, paddingTop: 8, borderTop: `1px solid ${v('--color-border-accent')}` }}>
-                Rendite nach 25 Jahren: <span style={{ fontWeight: 700, color: rec.reasoning.npv25 >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono') }}>
-                  {rec.reasoning.npv25 >= 0 ? "+" : ""}{Math.round(rec.reasoning.npv25).toLocaleString("de-DE")} €
+                Rendite nach 25 Jahren: <span style={{ fontWeight: 700, color: (selRec?.eco.npv25 ?? 0) >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono') }}>
+                  {(selRec?.eco.npv25 ?? 0) >= 0 ? "+" : ""}{Math.round(selRec?.eco.npv25 ?? 0).toLocaleString("de-DE")} €
                 </span>
               </div>
               {rec.reasoning.budgetConstrained && (
@@ -730,8 +758,8 @@ export default function Empfehlung() {
                       </div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, paddingTop: 6, borderTop: `1px dashed ${v('--color-border')}` }}>
                         <span style={{ fontSize: 11, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</span>
-                        <span style={{ fontSize: 12, fontFamily: v('--font-mono'), fontWeight: 700, color: alt.npv25 >= 0 ? v('--color-positive') : v('--color-negative') }}>
-                          {alt.npv25 >= 0 ? "+" : ""}{Math.round(alt.npv25).toLocaleString("de-DE")} €
+                        <span style={{ fontSize: 12, fontFamily: v('--font-mono'), fontWeight: 700, color: (altEco[i]?.npv25 ?? alt.npv25) >= 0 ? v('--color-positive') : v('--color-negative') }}>
+                          {(altEco[i]?.npv25 ?? alt.npv25) >= 0 ? "+" : ""}{Math.round(altEco[i]?.npv25 ?? alt.npv25).toLocaleString("de-DE")} €
                         </span>
                       </div>
                     </button>

@@ -24,6 +24,7 @@ import { useFeedInRates } from "../../../lib/feedin";
 import Header from "../../../components/Header";
 import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh, IconSun } from "../../../components/Icons";
 import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
+import ScenarioTabs from "../../../components/ScenarioTabs";
 import { useChartExport } from "../../../lib/useChartExport";
 import { trackEvent } from "../../../lib/analytics";
 import ChartExportBar from "../../../components/ChartExportBar";
@@ -113,6 +114,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
   );
   const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", 950, 700, 1200) : 950);
+  // Gewähltes Szenario (Strompreis-Anstieg). Steuert ALLE Ergebniszahlen —
+  // Amortisation, Rendite, ⌀ Ersparnis, Chart-Hervorhebung — nicht nur die
+  // Amortisations-Kachel. Default „realistic" (3 %/a). Über die Kacheln wählbar.
+  const [scenario, setScenario] = useState(hasShare ? paramStr(initialParams, "sc", "realistic", ["pessimistic", "realistic", "optimistic"]) : "realistic");
 
   // PLZ → standortspezifischer Ertrag + Monatsprofil
   const [plz, setPlz] = useState(typeof initialParams?.plz === "string" && /^\d{5}$/.test(initialParams.plz) ? initialParams.plz : "");
@@ -264,7 +269,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       if (isResult) {
         const row = paramsToRow(
           { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
-          { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(real.data.years[YEARS - 1]?.kum ?? 0) }
+          { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
         );
         const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
         localStorage.setItem("pendingSave", JSON.stringify({ ...row, name: `${kwp} kWp${spLabel}` }));
@@ -353,8 +358,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       }),
     })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag]);
 
-  const real = scenarioData.find(s => s.id === "realistic")!;
-  const be = real.data.be;
+  // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
+  // „realistic", falls der State (z. B. aus einer alten Share-URL) nicht passt.
+  const sel = scenarioData.find(s => s.id === scenario) ?? scenarioData.find(s => s.id === "realistic")!;
+  const be = sel.data.be;
 
   const STEPS = ["Wie groß soll die Anlage werden?", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
   const isResult = step >= STEPS.length;
@@ -431,6 +438,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (oEinsp !== null) p.set("ei", String(oEinsp));
     p.set("eia", effEinspeisungModus === "voll" ? "2" : effEinspeisungModus === "aus" ? "0" : "1");
     p.set("er", String(oErtrag));
+    if (scenario !== "realistic") p.set("sc", scenario);
     if (plz) p.set("plz", plz);
     // Förderung: das wirksamste angerechnete Programm mitgeben, damit der Link
     // dieselbe Förderung vorab scharf schaltet.
@@ -488,7 +496,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     try {
       const row = paramsToRow(
         { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
-        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(real.data.years[YEARS - 1]?.kum ?? 0) }
+        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
       );
       const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
       const res = await fetch("/api/calculations", {
@@ -505,7 +513,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       }
     } catch { /* silent */ }
     setSaving(false);
-  }, [authState, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, kwp, spKwh, be, real, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [authState, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, kwp, spKwh, be, sel, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Empfehlungs-Kontext für "Warum diese Anlage?"
   const empfehlungKontext = flowType === "empfehlung" && htIdx >= 0 && daIdx >= 0 ? (() => {
@@ -881,6 +889,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
         {isResult && (
           <div className="fu">
+            {/* Szenario-Wahl ganz oben: sie rechnet ALLES darunter um
+                (Amortisation, Rendite, ⌀ Ersparnis, Chart). */}
+            <ScenarioTabs
+              tabs={scenarioData.map(s => ({ id: s.id, label: s.label, explain: s.explain, sub: `+${(s.strom * 100).toLocaleString("de-DE")} %/Jahr` }))}
+              selected={scenario}
+              onSelect={setScenario}
+            />
             <ResultHeroCard
               be={be} kosten={bruttoKosten} setOKosten={setOKosten}
               oStrom={oStrom} setOStrom={setOStrom} oErtrag={oErtrag} setOErtrag={setOErtrag}
@@ -1003,7 +1018,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             
             <ResultStats
-              total={real.data.total} kosten={kosten}
+              total={sel.data.total} kosten={kosten}
               wp={wp} ea={ea} eaKm={eaKm} wpKwh={wpKwh ?? 0} effEv={effEv} autarkie={autarkie} jahresertrag={jahresertrag} baseKwh={grundverbrauch}
               oStrom={oStrom} fuelType={fuelType} setFuelType={setFuelType}
             />
@@ -1039,7 +1054,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     ))}
                   </div>
                 </div>
-                <Chart scenarios={scenarioData} kosten={kosten} />
+                <Chart scenarios={scenarioData} kosten={kosten} highlightId={scenario} />
               </div>
               <ChartExportBar
                 onDownload={chartExport.downloadPng}
@@ -1051,19 +1066,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               />
             </div>
 
-            {/* Scenario pills */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-              {scenarioData.map(s => (
-                <div key={s.id} style={{
-                  flex: 1, padding: "10px 8px", borderRadius: v('--radius-md'), textAlign: "center",
-                  background: v('--color-bg'), borderTop: `3px solid ${s.color}`,
-                }}>
-                  <div style={{ fontSize: 10, color: s.color, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>{s.label}</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-primary'), margin: "4px 0 2px" }}>{s.data.be ? `${s.data.be.i} J.` : ">25 J."}</div>
-                  <div style={{ fontSize: 10, color: v('--color-text-muted') }}>Strom +{(s.strom * 100).toFixed(0)}%/a</div>
-                </div>
-              ))}
-            </div>
+            {/* Szenario-Wahl steht ganz oben; der Chart hebt das gewählte hervor. */}
 
             {/* Monthly production chart or PLZ CTA */}
             {!monthlyProfile && (
