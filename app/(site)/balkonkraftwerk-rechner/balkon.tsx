@@ -9,7 +9,8 @@ import StandortField from "../../../components/StandortField";
 import { IconArrowRight, IconRefresh, IconCheck } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
-import { PERSONEN } from "../../../lib/constants";
+import { PERSONEN, SCENARIOS } from "../../../lib/constants";
+import ScenarioTabs from "../../../components/ScenarioTabs";
 import { DEFAULT_BALKON_CONFIG as CFG, type BalkonSetId, type BalkonStorageId } from "../../../lib/balkon-config";
 import { calcBalkon, recommendBalkon, type BalkonInputs, type BalkonOption } from "../../../lib/balkon";
 import { referenceYearKwh } from "../../../lib/solar-year";
@@ -69,6 +70,11 @@ export default function Balkon() {
   const strompreis = oStrom ?? (prices.electricityPrice > 0 ? prices.electricityPrice : CFG.stromPrice);
   // Strompreisanstieg systemweit konsistent mit dem PV-Rechner (gleiche Preis-Config).
   const priceIncrease = prices.electricityIncrease;
+  // Strompreis-Szenario: bewegt alle gezeigten Zahlen. Die EMPFEHLUNG (welches
+  // Set / ob Speicher) bleibt am Basiswert verankert — sonst spränge sie beim
+  // Umschalten. Balkon-Szenarien kennen kein evDelta (eigenes HTW-Modell).
+  const [scenario, setScenario] = useState("realistic");
+  const scenarioStrom = (SCENARIOS.find(s => s.id === scenario) ?? SCENARIOS[1]).strom;
   const haushaltKwh = oVerbrauch ?? PERSONEN[personen].verbrauch;
 
   const isResult = step >= STEPS.length;
@@ -152,10 +158,16 @@ export default function Balkon() {
   const active = override ?? { setId: recommendation.best.setId, storageId: recommendation.best.storageId };
   const activeIsBest = active.setId === recommendation.best.setId && active.storageId === recommendation.best.storageId;
 
+  // Kartenzahlen im gewählten Szenario (die Empfehlung oben bleibt am Basiswert).
+  const scenarioRec = useMemo(
+    () => recommendBalkon({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom }),
+    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom],
+  );
+
   const inputs: BalkonInputs = useMemo(() => ({
     setId: active.setId, orientationId, presenceId, storageId: active.storageId,
-    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease, invest: oInvest ?? undefined,
-  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, priceIncrease, oInvest]);
+    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom, invest: oInvest ?? undefined,
+  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, oInvest]);
 
   const r = useMemo(() => calcBalkon(inputs), [inputs]);
   const amortLabel = isFinite(r.amortYears) ? `${r.amortYears.toFixed(1).replace(".", ",")} J.` : "—";
@@ -174,8 +186,10 @@ export default function Balkon() {
   const resetToRecommendation = () => { setOverride(null); setOInvest(null); };
   const resetAll = () => { setOverride(null); setOInvest(null); setStep(0); };
 
+  // Karten zeigen die Zahlen des gewählten Szenarios; welche Karte „Empfohlen"
+  // heißt, entscheidet weiter `recommendation` (Basiswert).
   const findCombo = (setId: BalkonSetId, storageId: BalkonStorageId): BalkonOption =>
-    recommendation.ranked.find(o => o.setId === setId && o.storageId === storageId) ?? recommendation.best;
+    scenarioRec.ranked.find(o => o.setId === setId && o.storageId === storageId) ?? scenarioRec.best;
 
   // Set-Größen-Karten (alle in einer Reihe): jede zeigt die Ersparnis beim AKTUELL
   // gewählten Speicher — so sind alle Karten konsistent (kein Speicher-Durcheinander).
@@ -357,6 +371,12 @@ export default function Balkon() {
         {/* ── RESULT (empfehlungsgetrieben) ── */}
         {isResult && (
           <div className="fu">
+            {/* Strompreis-Szenario ganz oben: rechnet alle Zahlen darunter um. */}
+            <ScenarioTabs
+              tabs={SCENARIOS.map(s => ({ id: s.id, label: s.label, explain: s.explain, sub: `+${(s.strom * 100).toLocaleString("de-DE")} %/Jahr` }))}
+              selected={scenario}
+              onSelect={setScenario}
+            />
             {/* Auswahl (Set-Größe + Speicher) — klebt beim Scrollen oben, damit die
                 Wirkung auf die Kennzahlen darunter sichtbar bleibt. */}
             <div ref={stickyRef} style={{
@@ -490,7 +510,7 @@ export default function Balkon() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
               <StatCard label="Amortisation" value={amortLabel} help="So lange dauert es, bis die Ersparnis die Anschaffung wieder eingespielt hat." />
               <StatCard label="Autarkie" value={`${Math.round(r.autarky * 100)} %`} valueColor={v('--color-positive')} help="Anteil deines Jahresstroms, den das Balkonkraftwerk selbst deckt. Bei kleinen Anlagen zweistellig — es deckt die Grundlast, nicht den ganzen Haushalt." />
-              <StatCard label="Gewinn nach 20 J." value={`${r.lifetimeSaving > 0 ? "+" : ""}${r.lifetimeSaving.toLocaleString("de-DE")} €`} valueColor={r.lifetimeSaving >= 0 ? v('--color-positive') : v('--color-negative')} help={`Summe der Stromersparnis über 20 Jahre, abzüglich Anschaffung. Gerechnet mit 0,5 % Moduldegradation und ${(priceIncrease * 100).toLocaleString("de-DE")} % Strompreisanstieg pro Jahr (wie im PV-Rechner). Ein Speicher zählt nur bis zu seiner Lebensdauer mit.`} />
+              <StatCard label="Gewinn nach 20 J." value={`${r.lifetimeSaving > 0 ? "+" : ""}${r.lifetimeSaving.toLocaleString("de-DE")} €`} valueColor={r.lifetimeSaving >= 0 ? v('--color-positive') : v('--color-negative')} help={`Summe der Stromersparnis über 20 Jahre, abzüglich Anschaffung. Gerechnet mit 0,5 % Moduldegradation und ${(scenarioStrom * 100).toLocaleString("de-DE")} % Strompreisanstieg pro Jahr (gewähltes Szenario). Ein Speicher zählt nur bis zu seiner Lebensdauer mit.`} />
               <StatCard label="CO₂ gespart" value={`${r.co2PerYear.toLocaleString("de-DE")} kg/J`} help="Vermiedener CO₂-Ausstoß pro Jahr, gerechnet mit dem deutschen Netzstrom-Mix (0,38 kg/kWh)." />
             </div>
 
