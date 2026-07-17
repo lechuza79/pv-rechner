@@ -19,9 +19,12 @@ import plzCoords from "../../../public/plz.json";
 // does not have to download the 176 KB postcode table just to pick a colour.
 
 const cache = new Map<string, { data: SolarNowResponse; ts: number }>();
-const TTL = 15 * 60 * 1000;
-// Matches the upstream refresh; every visitor shares one edge-cached answer.
-const CDN_CACHE = "public, s-maxage=900, stale-while-revalidate=3600";
+const TTL = 5 * 60 * 1000;
+// 5 min fresh so the morning/evening ramp shows nearly live; every visitor
+// shares one edge-cached answer (Open-Meteo is fetched server-side, not per
+// visitor). stale-while-revalidate keeps a last-good answer for an hour, which
+// cushions an upstream outage or a hit rate limit — the theme never goes blank.
+const CDN_CACHE = "public, s-maxage=300, stale-while-revalidate=3600";
 
 const COORDS = plzCoords as unknown as Record<string, [number, number]>;
 

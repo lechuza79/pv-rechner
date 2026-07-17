@@ -106,7 +106,7 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
     if (solar) lastFetchRef.current = Date.now();
   }, [solar]);
   useEffect(() => {
-    const REFRESH_MS = 15 * 60 * 1000; // matches Open-Meteo's 15-min cadence
+    const REFRESH_MS = 5 * 60 * 1000; // matches the server cache; catches the ramp
     const maybeRefresh = () => {
       if (document.visibilityState !== "visible") return;
       if (Date.now() - lastFetchRef.current < REFRESH_MS) return;
