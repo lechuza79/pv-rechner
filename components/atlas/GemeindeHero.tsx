@@ -80,17 +80,18 @@ function MetricPicker({ metric, onChange }: { metric: Metric; onChange: (m: Metr
   const [open, setOpen] = useState(false);
   const ref = useOutsideClose(open, () => setOpen(false));
   const idx = METRICS.findIndex((m) => m.key === metric);
+  // Wrap around — the metrics are a ring, not a list with ends. Stepping past the
+  // last returns to the first, so the arrows never dead-end.
   const go = (delta: number) => {
-    const next = METRICS[idx + delta];
-    if (next) onChange(next.key);
+    const next = (idx + delta + METRICS.length) % METRICS.length;
+    onChange(METRICS[next].key);
   };
   return (
     <div style={S.pickerBar}>
       <button
         type="button"
         onClick={() => go(-1)}
-        disabled={idx <= 0}
-        style={{ ...S.pickerArrow, borderRadius: "8px 0 0 8px", borderRight: "none", opacity: idx <= 0 ? 0.4 : 1 }}
+        style={{ ...S.pickerArrow, borderRadius: "8px 0 0 8px", borderRight: "none" }}
         title="Vorherige Kennzahl"
       >
         <IconChevronLeft size={9} />

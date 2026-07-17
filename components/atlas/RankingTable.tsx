@@ -263,7 +263,9 @@ export default function RankingTable({
             ))}
           </div>
 
-          <div>
+          {/* Re-keyed on metric+filter so the rows fade in on a switch instead of
+              snapping — the reorder and the value change land at once otherwise. */}
+          <div key={`${sort}-${owner}-${rankMode}`} style={S.rowsFade}>
             {display.map((r) => {
               const isHome = home?.region_id === r.region_id;
               const val = valueOf(r, sort);
@@ -331,7 +333,9 @@ export default function RankingTable({
       */}
       {ready && homeRow && (
         <div style={S.stickyWrap}>
-          <div style={{ ...S.table, transform: `translateX(${-scrollLeft}px)` }}>
+          {/* Keyed like the list, so the home row's value fades to the new metric
+              in step with it. The wrapper above stays mounted — it must not move. */}
+          <div key={`${sort}-${owner}-${rankMode}`} style={{ ...S.table, ...S.rowsFade, transform: `translateX(${-scrollLeft}px)` }}>
             <Link href={homeRow.href ?? "#"} style={{ ...S.row, ...S.stickyRow, ...S.rowLink }}>
               <span style={S.rank}>
                 {rankOf.get(homeRow.region_id) ?? "—"}.
@@ -570,6 +574,7 @@ const S: Record<string, React.CSSProperties> = {
   // Mirrors S.scroller's box exactly (same negative margin, same padding), so the
   // row inside starts on the same pixel as a row in the list. Getting this wrong
   // by 8px is what broke the alignment twice.
+  rowsFade: { animation: "fadeUp 0.2s ease-out" },
   stickyWrap: {
     position: "sticky",
     bottom: 4,
