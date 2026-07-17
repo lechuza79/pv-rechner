@@ -127,11 +127,11 @@ export type TokenName = keyof typeof tokens;
  *   xl  touch targets (burger, close) and tool-card icons
  */
 export const iconSizes = {
-  xs: 10,
-  sm: 12,
-  md: 14,
-  lg: 18,
-  xl: 22,
+  xs: 9,
+  sm: 11,
+  md: 13,
+  lg: 16,
+  xl: 20,
 } as const;
 
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
