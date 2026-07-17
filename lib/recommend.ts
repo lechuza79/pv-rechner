@@ -92,7 +92,23 @@ interface Candidate {
   paybackYears: number | null;
 }
 
-export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: FeedInRates): Recommendation {
+/** Gemeinsamer Rechen-Kontext: alles, was NICHT von der Anlagengröße abhängt.
+ *  Von recommend() und evalConfig() geteilt, damit die Empfehlung und die
+ *  Szenario-Rendite garantiert dasselbe Modell benutzen (kein Drift). */
+interface EvalCtx {
+  input: RecommendInput;
+  p: PriceConfig;
+  f: FeedInRates;
+  ertragKwp: number;
+  strompreis: number;
+  stromSteigerung: number;
+  wpKwh: number;
+  klima: string;
+  klimaM2: number;
+  totalConsumption: number;
+}
+
+function buildCtx(input: RecommendInput, prices?: PriceConfig, feedIn?: FeedInRates, stromSteigerungOverride?: number): EvalCtx {
   const p = prices ?? DEFAULT_PRICES;
   const f = feedIn ?? DEFAULT_FEED_IN;
   const ertragKwp = input.ertragKwp ?? DEFAULT_ERTRAG;
@@ -101,31 +117,84 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
   const strompreis = Number.isFinite(p.electricityPrice) && p.electricityPrice > 0
     ? p.electricityPrice
     : DEFAULT_PRICES.electricityPrice;
-  const stromSteigerung = Number.isFinite(p.electricityIncrease)
+  const stromSteigerung = stromSteigerungOverride ?? (Number.isFinite(p.electricityIncrease)
     ? p.electricityIncrease
-    : DEFAULT_PRICES.electricityIncrease;
+    : DEFAULT_PRICES.electricityIncrease);
 
-  // 1. Verbrauchsgrößen
   const baseConsumption = PERSONEN[input.personen].verbrauch;
-  // WP-Strom aus der exakten Methode (Heizwärmebedarf ÷ Arbeitszahl): echte
-  // Gebäudedaten wenn der Flow sie liefert, sonst das Standard-Gebäude. Immer mit
-  // der tatsächlichen Personenzahl (Warmwasser).
   const wpKwh = calcWpAnnualElectricity({
     ...DEFAULT_WP_BUILDING,
     wohnflaeche: input.wpWohnflaeche ?? DEFAULT_WP_BUILDING.wohnflaeche,
     insulationIdx: input.wpInsulation ?? DEFAULT_WP_BUILDING.insulationIdx,
     heizsystem: input.wpHeizsystem ?? DEFAULT_WP_BUILDING.heizsystem,
     personen: PERSONEN[input.personen].count,
-    // Haustyp (geteilte Wände) senkt den Wärmebedarf — konsistent mit dem
-    // WP-Rechner; der Empfehlungs-Flow fragt den Haustyp fürs Dach ohnehin ab.
     haustypFaktor: HAUSTYPEN[input.haustyp].wpFaktor,
   });
-  const wpConsumption = input.wp !== "nein" ? wpKwh : 0;
-  const eaConsumption = input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0;
   const klima = input.klima ?? "nein";
   const klimaM2 = input.klimaM2 ?? KLIMA_DEFAULT_M2;
+  const totalConsumption = baseConsumption
+    + (input.wp !== "nein" ? wpKwh : 0)
+    + (input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0)
+    + (klima !== "nein" ? calcKlimaAnnual(klimaM2) : 0);
+  return { input, p, f, ertragKwp, strompreis, stromSteigerung, wpKwh, klima, klimaM2, totalConsumption };
+}
+
+/** Bewertet EINE Konfiguration (kWp × Speicher). evDelta verschiebt die
+ *  Eigenverbrauchsquote wie in den PV-Szenarien (±5 pp), gekappt am
+ *  physikalischen Maximum (man kann nie mehr nutzen als man verbraucht). */
+function evalConfig(ctx: EvalCtx, kwpRounded: number, speicherKwh: number, evDelta = 0): Candidate {
+  const feedInCt = effectiveFeedInCtPerKwh(kwpRounded, ctx.f);
+  const evBase = calcEigenverbrauch({
+    personenIdx: ctx.input.personen, nutzungIdx: ctx.input.nutzung,
+    speicherKwh, wp: ctx.input.wp, ea: ctx.input.ea, eaKm: ctx.input.eaKm,
+    klima: ctx.klima, klimaM2: ctx.klimaM2, wpKwh: ctx.wpKwh,
+    kwp: kwpRounded, ertragKwp: ctx.ertragKwp,
+  });
+  const jahresertrag = kwpRounded * ctx.ertragKwp;
+  const evMax = jahresertrag > 0 ? (ctx.totalConsumption / jahresertrag) * 100 : 95;
+  const ev = evDelta === 0 ? evBase : Math.min(evBase + evDelta, 95, evMax);
+  const investition = estimateCost(kwpRounded, speicherKwh, ctx.p);
+  const result = calc({
+    kwp: kwpRounded, kosten: investition, strompreis: ctx.strompreis,
+    eigenverbrauch: ev, einspeisung: feedInCt,
+    stromSteigerung: ctx.stromSteigerung, ertragKwp: ctx.ertragKwp, monthly: null,
+    batteryReplace: batteryReplaceCost(speicherKwh, ctx.p),
+  });
+  return {
+    kwp: kwpRounded, speicherKwh, ev, investition,
+    npv25: result.total,
+    paybackYears: result.be?.i ?? null,
+  };
+}
+
+/** Rendite/Amortisation der EMPFOHLENEN Anlage unter einem Strompreis-Szenario.
+ *  Die Empfehlung selbst bleibt am realistischen Szenario verankert (sonst würde
+ *  die empfohlene Anlagengröße beim Umschalten springen) — nur ihre gezeigte
+ *  Wirtschaftlichkeit schwankt. Nutzt exakt dasselbe Modell wie recommend(). */
+export function economicsForScenario(
+  input: RecommendInput,
+  kwp: number,
+  speicherKwh: number,
+  scenario: { strom: number; evDelta: number },
+  prices?: PriceConfig,
+  feedIn?: FeedInRates,
+): { npv25: number; paybackYears: number | null; investition: number; eigenverbrauch: number } {
+  const ctx = buildCtx(input, prices, feedIn, scenario.strom);
+  const c = evalConfig(ctx, kwp, speicherKwh, scenario.evDelta);
+  return { npv25: c.npv25, paybackYears: c.paybackYears, investition: c.investition, eigenverbrauch: c.ev };
+}
+
+export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: FeedInRates): Recommendation {
+  const ctx = buildCtx(input, prices, feedIn);
+  const { ertragKwp, wpKwh } = ctx;
+
+  // 1. Verbrauchsgrößen (WP-Strom, Klima etc. kommen aus dem geteilten Kontext,
+  // damit Empfehlung und Szenario-Rendite dasselbe Modell nutzen).
+  const { klima, klimaM2, totalConsumption } = ctx;
+  const baseConsumption = PERSONEN[input.personen].verbrauch;
+  const wpConsumption = input.wp !== "nein" ? wpKwh : 0;
+  const eaConsumption = input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0;
   const klimaConsumption = klima !== "nein" ? calcKlimaAnnual(klimaM2) : 0;
-  const totalConsumption = baseConsumption + wpConsumption + eaConsumption + klimaConsumption;
   const dailyConsumption = totalConsumption / DAYS_PER_YEAR;
 
   // 2. Dachfläche → max. kWp (customRoofM2 hat Vorrang vor haustyp × dachart)
@@ -154,26 +223,8 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
   const startKwp = Math.min(KWP_MIN, maxKwp);
   for (let kwp = startKwp; kwp <= maxKwp + 1e-6; kwp += KWP_STEP) {
     const kwpRounded = Math.round(kwp * 2) / 2;
-    const feedInCt = effectiveFeedInCtPerKwh(kwpRounded, f);
     for (const speicherKwh of speicherTestOptions) {
-      const ev = calcEigenverbrauch({
-        personenIdx: input.personen, nutzungIdx: input.nutzung,
-        speicherKwh, wp: input.wp, ea: input.ea, eaKm: input.eaKm, klima, klimaM2, wpKwh,
-        kwp: kwpRounded, ertragKwp,
-      });
-      const investition = estimateCost(kwpRounded, speicherKwh, p);
-      const result = calc({
-        kwp: kwpRounded, kosten: investition, strompreis,
-        eigenverbrauch: ev, einspeisung: feedInCt,
-        stromSteigerung, ertragKwp, monthly: null,
-        batteryReplace: batteryReplaceCost(speicherKwh, p),
-      });
-      candidates.push({
-        kwp: kwpRounded, speicherKwh, ev,
-        investition,
-        npv25: result.total,
-        paybackYears: result.be?.i ?? null,
-      });
+      candidates.push(evalConfig(ctx, kwpRounded, speicherKwh));
     }
   }
 
