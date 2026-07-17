@@ -134,6 +134,20 @@ const SECTIONS: WidgetSection[] = [
     ],
   },
   {
+    id: "gemeinde-solar",
+    label: "Solaranlagen einer Gemeinde",
+    intro:
+      "Der Anlagenbestand einer einzelnen Gemeinde aus dem Marktstammdatenregister — Anlagen, Leistung und Leistung je Einwohner. Für Kommunen zum Einbetten auf der eigenen Website. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas.",
+    attribution: {
+      path: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
+      text: "Solaranlagen in Höchberg · Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [
+      { id: "gemeinde-solar", label: "Höchberg (Beispiel)", src: "/embed/gemeinde-solar", params: { ags: "09679147" }, height: 250, fixedWidth: 380 },
+    ],
+  },
+  {
     id: "simulation",
     label: "PV-Simulation (live)",
     intro:

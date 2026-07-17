@@ -8,6 +8,7 @@ import { v } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type OutsidePeer } from "../../../../../../components/atlas/GemeindeHero";
+import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import {
   resolveSlugPath,
   getRegionById,
@@ -259,16 +260,11 @@ export default async function GemeindePage({ params }: { params: Params }) {
         )}
 
         <div style={S.section}>
-          <div style={{ ...S.card, background: v("--color-bg-muted") }}>
-            <h2 style={{ ...S.h2, marginBottom: 6 }}>Sie arbeiten für die Gemeinde?</h2>
-            <p style={{ ...S.sub, marginBottom: 0 }}>
-              Diese Zahlen lassen sich als Widget auf der Website von {region.name} einbinden —
-              cookiefrei, ohne Browser-Speicher und monatlich aktuell.{" "}
-              <Link href="/energie-widgets" style={{ color: v("--color-accent") }}>
-                Zu den Widgets
-              </Link>
-            </p>
-          </div>
+          <GemeindeEmbedBox
+            name={region.name}
+            ags={region.region_id}
+            atlasPath={`/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`}
+          />
         </div>
 
         <div style={S.disclaimer}>
