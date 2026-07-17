@@ -320,6 +320,9 @@ export default function GemeindeHero({
         <div style={S.right}>
           <MetricPicker metric={metric} onChange={setMetric} />
 
+          {/* Re-keyed on filter+metric so the whole set fades in on a switch —
+              softens the reorder that a per-row width transition can't cover. */}
+          <div key={`${owner}-${metric}`} style={S.rowsFade}>
           {rows.map((r, i) => (
             <div key={`${r.region_id}-${r.scope}`}>
               {/* A gap row makes clear that ranks between the top and self are
@@ -352,6 +355,7 @@ export default function GemeindeHero({
               </div>
             </div>
           ))}
+          </div>
 
           {metric === "perCapita" && (
             <p style={S.peerNote}>
@@ -384,6 +388,7 @@ const S: Record<string, React.CSSProperties> = {
   left: { flex: "1 1 220px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, minWidth: 0 },
   right: { flex: "1 1 300px", minWidth: 0 },
   center: { animation: "fadeUp 0.18s ease-out" },
+  rowsFade: { animation: "fadeUp 0.2s ease-out" },
   centerValue: { fontFamily: v("--font-mono"), fontSize: 19, fontWeight: 700, lineHeight: 1.1 },
   centerLabel: { fontSize: 11, color: v("--color-text-secondary"), marginTop: 2 },
   centerSub: { fontSize: 10, color: v("--color-text-muted"), fontFamily: v("--font-mono") },

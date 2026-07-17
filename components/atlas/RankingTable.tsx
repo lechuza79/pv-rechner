@@ -116,13 +116,6 @@ export default function RankingTable({
   const [sort, setSort] = useState<Metric>("perCapita");
   const [rankMode, setRankMode] = useState<RankMode>("platz");
   const { home, setHome, ready } = useHomeGemeinde();
-  const homeRowRef = useRef<HTMLElement | null>(null);
-  // A row is an <a> when the Gemeinde has a page and a <div> when it has none, so
-  // the ref has to accept both — a typed RefObject only accepts one.
-  const setHomeRow = (el: HTMLElement | null) => {
-    homeRowRef.current = el;
-  };
-  const [homeVisible, setHomeVisible] = useState(true);
   // The floating row lives outside the horizontal scroller (see below) and has to
   // be shifted by hand to stay under the columns it belongs to.
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -206,19 +199,6 @@ export default function RankingTable({
   }, [sorted, rankMode, deltas]);
 
   const homeRow = home ? display.find((r) => r.region_id === home.region_id) ?? null : null;
-
-  useEffect(() => {
-    const el = homeRowRef.current;
-    if (!el) {
-      setHomeVisible(true);
-      return;
-    }
-    const io = new IntersectionObserver(([entry]) => setHomeVisible(entry.isIntersecting), {
-      rootMargin: "-40px 0px -80px 0px",
-    });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [homeRow?.region_id, sort, owner, rankMode]);
 
   // One scale for the list and the floating row, capped at the runner-up: a single
   // Gemeinde with a solar park (126.865 W/head against 17.705 on second place)
@@ -328,11 +308,11 @@ export default function RankingTable({
               // link inside a 620px row is a target nobody hits on a phone.
               // Uninhabited areas have no page, so they stay a plain row.
               return r.href ? (
-                <Link key={r.region_id} href={r.href} ref={isHome ? setHomeRow : undefined} style={{ ...style, ...S.rowLink }}>
+                <Link key={r.region_id} href={r.href} style={{ ...style, ...S.rowLink }}>
                   {inner}
                 </Link>
               ) : (
-                <div key={r.region_id} ref={isHome ? setHomeRow : undefined} style={style}>
+                <div key={r.region_id} style={style}>
                   {inner}
                 </div>
               );
@@ -349,7 +329,7 @@ export default function RankingTable({
         stopped floating. Out here it sticks to the viewport again; the horizontal
         offset is applied by hand so it still lines up with the columns.
       */}
-      {ready && homeRow && !homeVisible && (
+      {ready && homeRow && (
         <div style={S.stickyWrap}>
           <div style={{ ...S.table, transform: `translateX(${-scrollLeft}px)` }}>
             <Link href={homeRow.href ?? "#"} style={{ ...S.row, ...S.stickyRow, ...S.rowLink }}>
