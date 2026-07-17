@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import DonutChart from "../charts/DonutChart";
-import { IconChevronDown } from "../Icons";
+import { IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
 import { v } from "../../lib/theme";
 import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
 
@@ -71,6 +71,66 @@ type PeerRow = {
   isSelf: boolean;
 };
 
+/**
+ * Metric selector in the same shape as the energy charts' year picker: arrows to
+ * step through, a dropdown to jump. Consistency with that control is the point —
+ * the reader learns one pattern once.
+ */
+function MetricPicker({ metric, onChange }: { metric: Metric; onChange: (m: Metric) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useOutsideClose(open, () => setOpen(false));
+  const idx = METRICS.findIndex((m) => m.key === metric);
+  const go = (delta: number) => {
+    const next = METRICS[idx + delta];
+    if (next) onChange(next.key);
+  };
+  return (
+    <div style={S.pickerBar}>
+      <button
+        type="button"
+        onClick={() => go(-1)}
+        disabled={idx <= 0}
+        style={{ ...S.pickerArrow, borderRadius: "8px 0 0 8px", borderRight: "none", opacity: idx <= 0 ? 0.4 : 1 }}
+        title="Vorherige Kennzahl"
+      >
+        <IconChevronLeft size={9} />
+      </button>
+      <div ref={ref} style={{ position: "relative", display: "flex", flex: 1 }}>
+        <button type="button" onClick={() => setOpen(!open)} style={S.pickerLabel}>
+          {METRICS[idx]?.label}
+          <IconChevronDown size={8} />
+        </button>
+        {open && (
+          <div style={S.dropdown}>
+            {METRICS.map((m) => (
+              <button
+                key={m.key}
+                type="button"
+                onClick={() => {
+                  onChange(m.key);
+                  setOpen(false);
+                }}
+                style={{ ...S.dropItem, fontWeight: metric === m.key ? 700 : 400 }}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      <button
+        type="button"
+        onClick={() => go(1)}
+        disabled={idx >= METRICS.length - 1}
+        style={{ ...S.pickerArrow, borderRadius: "0 8px 8px 0", borderLeft: "none", opacity: idx >= METRICS.length - 1 ? 0.4 : 1 }}
+        title="Nächste Kennzahl"
+      >
+        <IconChevronRight size={9} />
+      </button>
+    </div>
+  );
+}
+
 function useOutsideClose(open: boolean, close: () => void) {
   const ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -113,8 +173,6 @@ export default function GemeindeHero({
   const [owner, setOwner] = useState<Owner>("alle");
   const [metric, setMetric] = useState<Metric>("perCapita");
   const [active, setActive] = useState<string | null>(null);
-  const [metricOpen, setMetricOpen] = useState(false);
-  const metricRef = useOutsideClose(metricOpen, () => setMetricOpen(false));
 
   const keep = (segment: string) =>
     owner === "alle" ? SEGMENT_OWNER[segment] !== null : SEGMENT_OWNER[segment] === owner;
@@ -166,9 +224,7 @@ export default function GemeindeHero({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [siblingCells, siblings, owner, metric, basePath, regionId]);
 
-  const rows: PeerRow[] = useMemo(() => {
-    const self = ranked.find((r) => r.isSelf);
-    const others = ranked.filter((r) => !r.isSelf);
+  const { rows, selfDetached } = useMemo(() => {
     // The size-class benchmark only exists per head. On absolute counts a
     // 7.000-inhabitant peer says nothing — the whole point of that row is that
     // population is held constant.
@@ -186,10 +242,16 @@ export default function GemeindeHero({
               isSelf: false,
             }))
         : [];
-    const top = [...others, ...ext].sort((a, b) => b.value - a.value).slice(0, 6);
-    // Self is never cut: Höchberg is 48th of 52, and a comparison table that drops
-    // the place it is about answers nothing.
-    return self ? [...top, self] : top;
+    // Sort self IN with everyone else, so it lands at its real position: under
+    // "Gewerbe" Höchberg may sit in the top few, under "Pro Kopf" near the bottom.
+    // Filtering it out first (the old bug) pinned it to the last row forever.
+    const all = [...ranked, ...ext].sort((a, b) => b.value - a.value);
+    const top = all.slice(0, 6);
+    if (top.some((r) => r.isSelf)) return { rows: top, selfDetached: false };
+    // Only when self is beyond the top rows is it appended — never cut, but marked
+    // as detached so a gap row can show the rows in between are skipped.
+    const self = all.find((r) => r.isSelf);
+    return { rows: self ? [...top, self] : top, selfDetached: Boolean(self) };
   }, [ranked, outside, owner, metric]);
 
   // Cap at the runner-up: one Gemeinde with a solar park (126.865 W/head against
@@ -256,55 +318,38 @@ export default function GemeindeHero({
         </div>
 
         <div style={S.right}>
-          <div ref={metricRef} style={{ position: "relative", marginBottom: 8 }}>
-            <button type="button" onClick={() => setMetricOpen(!metricOpen)} style={S.metricBtn}>
-              {METRICS.find((m) => m.key === metric)?.label}
-              <IconChevronDown size={8} />
-            </button>
-            {metricOpen && (
-              <div style={S.dropdown}>
-                {METRICS.map((m) => (
-                  <button
-                    key={m.key}
-                    type="button"
-                    onClick={() => {
-                      setMetric(m.key);
-                      setMetricOpen(false);
-                    }}
-                    style={{ ...S.dropItem, fontWeight: metric === m.key ? 700 : 400 }}
-                  >
-                    {m.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <MetricPicker metric={metric} onChange={setMetric} />
 
-          {rows.map((r) => (
-            <div key={`${r.region_id}-${r.scope}`} style={{ ...S.peerRow, ...(r.isSelf ? S.peerSelf : null) }}>
-              <span style={S.peerRank}>{r.rang}.</span>
-              <span style={S.peerName}>
-                {r.href && !r.isSelf ? (
-                  <Link href={r.href} style={S.peerLink}>
-                    {r.name}
-                  </Link>
-                ) : (
-                  <span style={{ ...S.peerLink, fontWeight: r.isSelf ? 700 : 500 }}>{r.name}</span>
-                )}
-                <span style={S.peerScope}>{r.scope}</span>
-              </span>
-              <span style={S.peerVal}>
-                <span>{fmtValue(r.value, metric)}</span>
-                <span style={S.track}>
-                  <span
-                    style={{
-                      ...S.fill,
-                      width: `${Math.min(100, Math.max(2, Math.round((r.value / scale) * 100)))}%`,
-                      background: r.isSelf ? v("--color-accent") : v("--color-accent-light"),
-                    }}
-                  />
+          {rows.map((r, i) => (
+            <div key={`${r.region_id}-${r.scope}`}>
+              {/* A gap row makes clear that ranks between the top and self are
+                  skipped — otherwise "6." then "48." reads as a data error. */}
+              {selfDetached && r.isSelf && i > 0 && <div style={S.gap}>⋯</div>}
+              <div style={{ ...S.peerRow, ...(r.isSelf ? S.peerSelf : null) }}>
+                <span style={S.peerRank}>{r.rang}.</span>
+                <span style={S.peerName}>
+                  {r.href && !r.isSelf ? (
+                    <Link href={r.href} style={S.peerLink}>
+                      {r.name}
+                    </Link>
+                  ) : (
+                    <span style={{ ...S.peerLink, fontWeight: r.isSelf ? 700 : 500 }}>{r.name}</span>
+                  )}
+                  <span style={S.peerScope}>{r.scope}</span>
                 </span>
-              </span>
+                <span style={S.peerVal}>
+                  <span>{fmtValue(r.value, metric)}</span>
+                  <span style={S.track}>
+                    <span
+                      style={{
+                        ...S.fill,
+                        width: `${Math.min(100, Math.max(2, Math.round((r.value / scale) * 100)))}%`,
+                        background: r.isSelf ? v("--color-accent") : v("--color-accent-light"),
+                      }}
+                    />
+                  </span>
+                </span>
+              </div>
             </div>
           ))}
 
@@ -359,19 +404,33 @@ const S: Record<string, React.CSSProperties> = {
   dot: { width: 8, height: 8, borderRadius: 2, flex: "0 0 auto" },
   legendVal: { fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") },
   empty: { fontSize: 12, color: v("--color-text-muted"), margin: 0 },
-  metricBtn: {
+  pickerBar: { display: "flex", alignItems: "stretch", marginBottom: 8 },
+  pickerArrow: {
+    border: `1px solid ${v("--color-border")}`,
+    background: v("--color-bg"),
+    color: v("--color-text-secondary"),
+    padding: "0 8px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pickerLabel: {
+    flex: 1,
     display: "inline-flex",
     alignItems: "center",
-    gap: 4,
-    background: "none",
-    border: "none",
-    padding: 0,
+    justifyContent: "center",
+    gap: 5,
+    border: `1px solid ${v("--color-border")}`,
+    background: v("--color-bg"),
+    padding: "6px 10px",
     fontFamily: "inherit",
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 600,
-    color: v("--color-text-muted"),
+    color: v("--color-text-primary"),
     cursor: "pointer",
   },
+  gap: { textAlign: "center", fontSize: 12, color: v("--color-text-muted"), lineHeight: 1, padding: "2px 0" },
   dropdown: {
     position: "absolute",
     top: "calc(100% + 4px)",
