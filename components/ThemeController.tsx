@@ -51,7 +51,7 @@ function apply(pref: ThemePref, animate: boolean, solar: SolarConditions | null)
 
 export default function ThemeController({ compact }: { compact?: boolean } = {}) {
   const { plz, setPlz } = useLocation();
-  const { data: solar } = useCachedFetch<SolarNowResponse | null>(
+  const { data: solar, refetch: refetchSolar } = useCachedFetch<SolarNowResponse | null>(
     `/api/solar-now${plz ? `?plz=${plz}` : ""}`,
     `solar-now-${plz ?? "de"}`,
     null,
@@ -95,6 +95,30 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
     }, 60_000);
     return () => window.clearInterval(id);
   }, [pref]);
+
+  // Keep the live reading fresh while the page stays open — otherwise the sun's
+  // *position* tracks (the minute timer above) but the power figure and the
+  // daytime brightness freeze on the load-time value. Refetch when the reading
+  // is older than the upstream refresh, but only while the tab is visible, so a
+  // page left open in the background does not burn function invocations.
+  const lastFetchRef = useRef(Date.now());
+  useEffect(() => {
+    if (solar) lastFetchRef.current = Date.now();
+  }, [solar]);
+  useEffect(() => {
+    const REFRESH_MS = 15 * 60 * 1000; // matches Open-Meteo's 15-min cadence
+    const maybeRefresh = () => {
+      if (document.visibilityState !== "visible") return;
+      if (Date.now() - lastFetchRef.current < REFRESH_MS) return;
+      refetchSolar();
+    };
+    const id = window.setInterval(maybeRefresh, 60_000);
+    document.addEventListener("visibilitychange", maybeRefresh);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener("visibilitychange", maybeRefresh);
+    };
+  }, [refetchSolar]);
 
   const choose = useCallback((next: ThemePref) => {
     prefRef.current = next;
