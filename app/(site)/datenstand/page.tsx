@@ -5,6 +5,7 @@ import { v, iconSizes } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
+import { FEEDIN_HISTORY_META, FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES } from "../../../lib/feedin-history";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
 import { DEFAULT_AIRCON_CONFIG as AC, AC_REAL_FACTOR } from "../../../lib/aircon-config";
@@ -279,6 +280,15 @@ export default async function DatenstandPage() {
             { label: `Volleinspeisung über ${nf(feedin.thresholdKwp)} kWp`, value: `${nf(feedin.vollOver10)} ct/kWh` },
           ]}
           source={feedin.source || "Bundesnetzagentur, § 48 EEG"}
+        />
+
+        {/* ── Historische Einspeisevergütung (Zeitreihe für die Zubau-Story) ── */}
+        <Section
+          title="Einspeisevergütung – historische Reihe"
+          stand={FEEDIN_HISTORY_META.dataAsOf}
+          intro="Jahresanfangs-Sätze für kleine Dachanlagen bei Inbetriebnahme, 2000 bis heute. Grundlage der Datenstory zum Solar-Zubau (photovoltaik-zubau-deutschland). Ab April 2012 sank die Vergütung unterjährig — die Jahreswerte sind Jahresanfangs-Repräsentanten."
+          rows={FEEDIN_HISTORY_YEARS.map((y, i) => ({ label: `${y}`, value: `${nf(FEEDIN_HISTORY_VALUES[i])} ct/kWh` }))}
+          source={FEEDIN_HISTORY_META.source}
         />
 
         {/* ── CO2-Preis (Heizen, für WP-Vergleich) ── */}

@@ -494,6 +494,61 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
   };
 }
 
+// ─── National yearly solar additions (for the "Zubau-Zeitleiste" story) ──────
+// Sums the whole solar aggregate table by commissioning year into one national
+// build-out curve. Verified against known figures (2011 ≈ 8 GW peak, 2013–15
+// trough ≈ 1.4 GW, 2023 ≈ 15 GW) — the MaStR commissioning-year shape matches
+// reality well enough for the national narrative. Two clean-ups are required:
+//  • The register carries bogus commissioning years (1900, 1923, …) from data
+//    entry errors — we clamp to a sane window [MIN_ZUBAU_YEAR, current year].
+//  • The current calendar year is still filling up, so it is flagged partial and
+//    the page renders it distinctly (never as a "collapse").
+
+export const MIN_ZUBAU_YEAR = 2000;
+
+export type NationalYearlyPoint = {
+  year: number;
+  count: number;
+  /** Newly commissioned capacity in that year, in kWp. */
+  kwp: number;
+  /** True for the current calendar year — data still incoming, not comparable. */
+  partial: boolean;
+};
+
+export type NationalSolarSeries = {
+  points: NationalYearlyPoint[];
+  data_as_of: string;
+  /** Last calendar year that is considered complete. */
+  lastCompleteYear: number;
+};
+
+export async function getNationalSolarByYear(): Promise<NationalSolarSeries> {
+  const rows = await loadSupabaseAggregates("solar");
+  const asOf = await fetchMetaDataAsOf();
+  // Derive the current year from the data-stand date, not the wall clock: the
+  // "partial" year is whichever one the export was cut in, which is exactly the
+  // year encoded in mastr_meta.imported_at. Falls back to the ISO string's year.
+  const currentYear = Number(asOf.substring(0, 4)) || new Date().getFullYear();
+
+  const byYear = new Map<number, { count: number; kwp: number }>();
+  for (const r of rows) {
+    const y = Number(r.year);
+    if (!Number.isFinite(y) || y < MIN_ZUBAU_YEAR || y > currentYear) continue;
+    const e = byYear.get(y) ?? { count: 0, kwp: 0 };
+    e.count += r.count;
+    e.kwp += Number(r.kwp);
+    byYear.set(y, e);
+  }
+
+  const points: NationalYearlyPoint[] = [];
+  for (let y = MIN_ZUBAU_YEAR; y <= currentYear; y++) {
+    const e = byYear.get(y) ?? { count: 0, kwp: 0 };
+    points.push({ year: y, count: e.count, kwp: e.kwp, partial: y === currentYear });
+  }
+
+  return { points, data_as_of: asOf, lastCompleteYear: currentYear - 1 };
+}
+
 export function allBundeslaenderSummary(
   energietraeger: Energietraeger,
   segment: SegmentFilter = "alle",

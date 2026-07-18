@@ -65,6 +65,12 @@ export const DATA_SOURCES = {
     name: "PVGIS (Europäische Kommission)",
     url: "https://joint-research-centre.ec.europa.eu/pvgis-online-tool_en",
   },
+  /** Historical EEG feed-in tariff series (statutory rates, 2000–today). */
+  eegVerguetung: {
+    name: "Bundesnetzagentur & Solarenergie-Förderverein (SFV)",
+    url: "https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/ErneuerbareEnergien/EEG_Foerderung/start.html",
+    note: "gesetzliche EEG-Vergütungssätze",
+  },
 } as const satisfies Record<string, DataSource>;
 
 /** "Energy-Charts (Fraunhofer ISE), CC BY 4.0" — the credit label as one string.

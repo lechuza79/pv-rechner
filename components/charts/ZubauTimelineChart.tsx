@@ -1,0 +1,412 @@
+"use client";
+
+/**
+ * Zubau-Zeitleiste: der jährliche PV-Zubau (Balken, GW/Jahr) mit zwei
+ * überlagerten Politik-/Markt-Linien (Einspeisevergütung + Haushaltsstrompreis,
+ * beide in ct/kWh auf einer geteilten rechten Achse) und kuratierten
+ * Politik-Markern auf der Zeitachse.
+ *
+ * Bewusst eine eigene Komponente statt LineChart/StackedBarChart: die Story
+ * lebt vom direkten Übereinanderlegen einer Mengen-Achse (GW) und einer
+ * Preis-Achse (ct/kWh) im selben Bild — das leistet keiner der generischen
+ * Charts. Balken und Linien teilen sich eine lineare Jahres-X-Achse, damit sie
+ * exakt fluchten.
+ */
+
+import { useMemo, useState, useCallback } from "react";
+import { LinePath } from "@visx/shape";
+import { scaleLinear } from "@visx/scale";
+import { Group } from "@visx/group";
+import { GridRows } from "@visx/grid";
+import { AxisBottom } from "@visx/axis";
+import { ParentSize } from "@visx/responsive";
+import { curveMonotoneX } from "d3-shape";
+
+export interface PolicyMarker {
+  year: number;
+  /** Kurzes Label an der Marke (z. B. "Nullsteuer"). */
+  label: string;
+}
+
+export interface ZubauTimelineProps {
+  /** Jahre, lückenlos aufsteigend (Balken-Stützstellen). */
+  years: number[];
+  /** Zubau je Jahr in GW, index-gleich zu years. */
+  additionsGw: number[];
+  /** true = laufendes/unvollständiges Jahr (wird ausgegraut dargestellt). */
+  partial: boolean[];
+  /** Einspeisevergütung ct/kWh, index-gleich zu years (null = keine Zahl). */
+  feedIn: (number | null)[];
+  /** Haushaltsstrompreis ct/kWh, index-gleich zu years (null = keine Zahl). */
+  price: (number | null)[];
+  markers: PolicyMarker[];
+  height?: number;
+}
+
+const cssVar = (t: string) => `var(${t})`;
+
+const COLOR_BARS = "--color-energy-solar";
+const COLOR_FEEDIN = "--color-accent";
+const COLOR_PRICE = "--color-negative";
+
+export default function ZubauTimelineChart(props: ZubauTimelineProps) {
+  const height = props.height ?? 420;
+  return (
+    <div style={{ width: "100%", height }}>
+      <ParentSize>
+        {({ width }) =>
+          width > 0 ? <Inner {...props} width={width} height={height} /> : null
+        }
+      </ParentSize>
+    </div>
+  );
+}
+
+interface HoverState {
+  idx: number;
+  x: number;
+}
+
+function Inner({
+  years,
+  additionsGw,
+  partial,
+  feedIn,
+  price,
+  markers,
+  width,
+  height,
+}: ZubauTimelineProps & { width: number; height: number }) {
+  const margin = { top: 34, right: 52, bottom: 30, left: 44 };
+  const innerWidth = Math.max(0, width - margin.left - margin.right);
+  const innerHeight = Math.max(0, height - margin.top - margin.bottom);
+
+  const domain: [number, number] = [years[0] - 0.5, years[years.length - 1] + 0.5];
+
+  const xScale = useMemo(
+    () => scaleLinear<number>({ domain, range: [0, innerWidth] }),
+    [domain[0], domain[1], innerWidth],
+  );
+
+  const maxGw = useMemo(() => Math.max(...additionsGw, 1), [additionsGw]);
+  const yLeft = useMemo(
+    () => scaleLinear<number>({ domain: [0, maxGw * 1.08], range: [innerHeight, 0], nice: true }),
+    [maxGw, innerHeight],
+  );
+
+  const maxCt = useMemo(() => {
+    let m = 0;
+    for (const v of feedIn) if (v != null && v > m) m = v;
+    for (const v of price) if (v != null && v > m) m = v;
+    return Math.max(m, 1);
+  }, [feedIn, price]);
+  const yRight = useMemo(
+    () => scaleLinear<number>({ domain: [0, maxCt * 1.08], range: [innerHeight, 0], nice: true }),
+    [maxCt, innerHeight],
+  );
+
+  const barW = Math.max(2, (innerWidth / years.length) * 0.62);
+
+  const feedInPts = useMemo(
+    () =>
+      years
+        .map((year, i) => ({ year, value: feedIn[i] }))
+        .filter((p): p is { year: number; value: number } => p.value != null),
+    [years, feedIn],
+  );
+  const pricePts = useMemo(
+    () =>
+      years
+        .map((year, i) => ({ year, value: price[i] }))
+        .filter((p): p is { year: number; value: number } => p.value != null),
+    [years, price],
+  );
+
+  const [hover, setHover] = useState<HoverState | null>(null);
+
+  const handleMove = useCallback(
+    (e: React.PointerEvent<SVGRectElement>) => {
+      const rect = (e.currentTarget as SVGRectElement).getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const yearFloat = xScale.invert(px);
+      let nearest = 0;
+      let best = Infinity;
+      for (let i = 0; i < years.length; i++) {
+        const d = Math.abs(years[i] - yearFloat);
+        if (d < best) {
+          best = d;
+          nearest = i;
+        }
+      }
+      setHover({ idx: nearest, x: xScale(years[nearest]) });
+    },
+    [xScale, years],
+  );
+
+  if (innerWidth <= 0 || innerHeight <= 0) return null;
+
+  const leftTicks = yLeft.ticks(5);
+  const rightTicks = yRight.ticks(5);
+  const xTicks: number[] = [];
+  for (let y = Math.ceil(years[0] / 5) * 5; y <= years[years.length - 1]; y += 5) xTicks.push(y);
+
+  return (
+    <div style={{ position: "relative", width, height }}>
+      <svg width={width} height={height} role="img">
+        <Group left={margin.left} top={margin.top}>
+          <GridRows
+            scale={yLeft}
+            width={innerWidth}
+            stroke="var(--color-chart-grid, #E9E9E9)"
+            strokeDasharray="2,4"
+            tickValues={leftTicks}
+          />
+
+          {/* Politik-Marker: vertikale Linie + nummerierter Badge oben.
+             Die Nummer verweist auf die Erklär-Liste unter dem Chart — so
+             überlappen auch benachbarte Jahre (2023/2024) nicht. */}
+          {markers.map((m, i) => {
+            const mx = xScale(m.year);
+            if (mx < 0 || mx > innerWidth) return null;
+            return (
+              <g key={`${m.year}-${m.label}`}>
+                <line
+                  x1={mx}
+                  x2={mx}
+                  y1={-2}
+                  y2={innerHeight}
+                  stroke="var(--color-text-muted, #949494)"
+                  strokeWidth={1}
+                  strokeDasharray="3,3"
+                  strokeOpacity={0.55}
+                />
+                <circle
+                  cx={mx}
+                  cy={-14}
+                  r={8}
+                  fill="var(--color-text-secondary, #777)"
+                />
+                <text
+                  x={mx}
+                  y={-14}
+                  textAnchor="middle"
+                  dominantBaseline="central"
+                  fontSize={10}
+                  fontWeight={700}
+                  fontFamily="var(--font-text, sans-serif)"
+                  fill="var(--color-bg, #fff)"
+                >
+                  {i + 1}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Zubau-Balken */}
+          {years.map((year, i) => {
+            const gw = additionsGw[i];
+            const h = innerHeight - yLeft(gw);
+            const isPartial = partial[i];
+            const active = hover?.idx === i;
+            return (
+              <rect
+                key={year}
+                x={xScale(year) - barW / 2}
+                y={yLeft(gw)}
+                width={barW}
+                height={Math.max(0, h)}
+                rx={1.5}
+                fill={cssVar(COLOR_BARS)}
+                opacity={isPartial ? 0.3 : active ? 1 : 0.82}
+              />
+            );
+          })}
+
+          {/* Vergütungs-Linie (ct/kWh, rechte Achse) */}
+          <LinePath<{ year: number; value: number }>
+            data={feedInPts}
+            x={(d) => xScale(d.year)}
+            y={(d) => yRight(d.value)}
+            stroke={cssVar(COLOR_FEEDIN)}
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            curve={curveMonotoneX}
+          />
+          {/* Strompreis-Linie (ct/kWh, rechte Achse) */}
+          <LinePath<{ year: number; value: number }>
+            data={pricePts}
+            x={(d) => xScale(d.year)}
+            y={(d) => yRight(d.value)}
+            stroke={cssVar(COLOR_PRICE)}
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            curve={curveMonotoneX}
+          />
+
+          {/* Hover-Führung + Punkte */}
+          {hover && (
+            <>
+              <line
+                x1={hover.x}
+                x2={hover.x}
+                y1={0}
+                y2={innerHeight}
+                stroke="var(--color-text-muted, #949494)"
+                strokeOpacity={0.4}
+                strokeWidth={1}
+              />
+              {feedIn[hover.idx] != null && (
+                <circle
+                  cx={hover.x}
+                  cy={yRight(feedIn[hover.idx] as number)}
+                  r={3.5}
+                  fill={cssVar(COLOR_FEEDIN)}
+                  stroke="var(--color-bg, #fff)"
+                  strokeWidth={1.5}
+                />
+              )}
+              {price[hover.idx] != null && (
+                <circle
+                  cx={hover.x}
+                  cy={yRight(price[hover.idx] as number)}
+                  r={3.5}
+                  fill={cssVar(COLOR_PRICE)}
+                  stroke="var(--color-bg, #fff)"
+                  strokeWidth={1.5}
+                />
+              )}
+            </>
+          )}
+
+          {/* Linke Y-Achse (GW) */}
+          {leftTicks.map((t) => (
+            <text
+              key={`l-${t}`}
+              x={-8}
+              y={yLeft(t)}
+              textAnchor="end"
+              dominantBaseline="middle"
+              fontSize={10}
+              fontFamily="var(--font-mono, monospace)"
+              fill="var(--color-text-muted, #949494)"
+            >
+              {t}
+            </text>
+          ))}
+          {/* Rechte Y-Achse (ct/kWh) */}
+          {rightTicks.map((t) => (
+            <text
+              key={`r-${t}`}
+              x={innerWidth + 8}
+              y={yRight(t)}
+              textAnchor="start"
+              dominantBaseline="middle"
+              fontSize={10}
+              fontFamily="var(--font-mono, monospace)"
+              fill="var(--color-text-muted, #949494)"
+            >
+              {t}
+            </text>
+          ))}
+
+          <AxisBottom
+            top={innerHeight}
+            scale={xScale}
+            tickValues={xTicks}
+            tickFormat={(v) => String(Math.round(v as number))}
+            stroke="var(--color-border, #E9E9E9)"
+            tickStroke="var(--color-border, #E9E9E9)"
+            tickLabelProps={() => ({
+              fill: "var(--color-text-muted, #949494)",
+              fontSize: 10,
+              fontFamily: "var(--font-mono, monospace)",
+              textAnchor: "middle",
+              dy: "0.25em",
+            })}
+          />
+
+          <rect
+            x={0}
+            y={0}
+            width={innerWidth}
+            height={innerHeight}
+            fill="transparent"
+            onPointerMove={handleMove}
+            onPointerLeave={() => setHover(null)}
+            style={{ cursor: "crosshair" }}
+          />
+        </Group>
+      </svg>
+
+      {hover && (
+        <Tooltip
+          left={Math.min(Math.max(margin.left + hover.x + 12, margin.left), width - 172)}
+          top={margin.top + 4}
+          year={years[hover.idx]}
+          partial={partial[hover.idx]}
+          gw={additionsGw[hover.idx]}
+          feedIn={feedIn[hover.idx]}
+          price={price[hover.idx]}
+        />
+      )}
+    </div>
+  );
+}
+
+function Tooltip({
+  left,
+  top,
+  year,
+  partial,
+  gw,
+  feedIn,
+  price,
+}: {
+  left: number;
+  top: number;
+  year: number;
+  partial: boolean;
+  gw: number;
+  feedIn: number | null;
+  price: number | null;
+}) {
+  const row = (label: string, colorToken: string, text: string) => (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, lineHeight: 1.55 }}>
+      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+        <span style={{ width: 8, height: 8, borderRadius: 2, background: cssVar(colorToken), flexShrink: 0 }} />
+        {label}
+      </span>
+      <span style={{ fontFamily: "var(--font-mono, monospace)", fontWeight: 600 }}>{text}</span>
+    </div>
+  );
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left,
+        top,
+        pointerEvents: "none",
+        background: "var(--color-bg, #fff)",
+        border: "1px solid var(--color-border, #E9E9E9)",
+        borderRadius: 8,
+        padding: "7px 9px",
+        fontSize: 11.5,
+        fontFamily: "var(--font-text, sans-serif)",
+        color: "var(--color-text-primary, #3F3F3F)",
+        boxShadow: "var(--shadow-md, 0 4px 14px rgba(0,0,0,0.08))",
+        minWidth: 156,
+        zIndex: 2,
+      }}
+    >
+      <div style={{ fontWeight: 700, marginBottom: 4, fontFamily: "var(--font-mono, monospace)" }}>
+        {year}
+        {partial ? " (läuft noch)" : ""}
+      </div>
+      {row("Zubau", COLOR_BARS, `${gw.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`)}
+      {feedIn != null &&
+        row("Vergütung", COLOR_FEEDIN, `${feedIn.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct`)}
+      {price != null &&
+        row("Strompreis", COLOR_PRICE, `${price.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct`)}
+    </div>
+  );
+}
