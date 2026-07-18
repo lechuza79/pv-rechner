@@ -7,9 +7,11 @@ import { supabase } from "../../../../lib/supabase-server";
 // are. No secrets, no writes — safe to poll.
 //
 // status:
-//   "ok"       – latest scrape healthy (≥2 agreeing sources) and fresh
-//   "degraded" – ran, but single-source / kept-last-value, OR data is stale
+//   "ok"       – latest scrape healthy (≥1 plausible source per value) and fresh
+//   "degraded" – kept-last-value / a value out of tolerance / data is stale
 //   "failed"   – the latest stored row is a scrape error, or nothing readable
+// Note: a single plausible battery source counts as healthy since 2026-07-18
+// (energie-experten.org blocks the Vercel IP; see scrape/route.ts for rationale).
 //
 // The watcher escalates to a human only when it cannot restore "ok" itself.
 
