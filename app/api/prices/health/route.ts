@@ -22,6 +22,14 @@ function daysSince(isoDate: string): number {
   return Math.floor((Date.now() - then) / 86_400_000);
 }
 
+// Read the live DB on every request. Without this, Next.js statically caches
+// this argument-less GET at build time and freezes the response until the next
+// deploy — the watcher/traffic light would then poll a deploy-time snapshot, not
+// the current pipeline state. (Diagnosed 2026-07-18: DB was ok, health served a
+// frozen DEGRADED snapshot from the deploy moment. The no-store header below only
+// governs the CDN/browser, not Next.js's route cache — this const does.)
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   if (!supabase) {
     return NextResponse.json({ status: "failed", reason: "database not configured" }, { status: 200 });
