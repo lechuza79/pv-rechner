@@ -238,6 +238,12 @@ const overcastTokens: Partial<Record<TokenName, string>> = {
   '--color-chart-zero': '#7A7F87',
   '--color-progress-inactive': '#969CA6',
   '--color-track': 'rgba(0,0,0,0.18)',
+  // Neon #00D950 (the brand green, kept everywhere else) sits at nearly the same
+  // lightness as this medium grey, so it reads washed-out here. Only on s3 does
+  // the positive green fall back a shade deeper. (Purely a look call — the
+  // luminance contrast is still below WCAG on grey either way; real
+  // accessibility is a separate pass.)
+  '--color-positive': '#00BD45',
 };
 
 type Tokens = Partial<Record<TokenName, string>>;

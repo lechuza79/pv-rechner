@@ -68,8 +68,9 @@ const S = {
   } as React.CSSProperties,
   success: {
     color: v('--color-positive'),
-    background: 'rgba(0,217,80,0.08)',
-    border: '1px solid rgba(0,217,80,0.2)',
+    // Derived from the positive token so the tint follows the theme (no fixed green).
+    background: 'color-mix(in srgb, var(--color-positive) 9%, transparent)',
+    border: '1px solid color-mix(in srgb, var(--color-positive) 24%, transparent)',
   } as React.CSSProperties,
   error: {
     color: v('--color-negative'),
