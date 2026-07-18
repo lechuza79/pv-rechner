@@ -7,7 +7,7 @@
 import OptionCard from "./OptionCard";
 import InlineEdit from "./InlineEdit";
 import InfoTooltip from "./InfoTooltip";
-import { v } from "../lib/theme";
+import { v, iconSizes } from "../lib/theme";
 import { DEFAULT_AIRCON_CONFIG as CFG, type AcDeviceId } from "../lib/aircon-config";
 import type { CoolingWindow } from "../lib/aircon";
 
@@ -99,7 +99,7 @@ export default function AirconDetailInputs({
       {/* Ausrichtung / Sonne */}
       <div style={{ ...labelStyle, display: "inline-flex", alignItems: "center", gap: 4 }}>
         Wie sonnig liegen die Räume?
-        <InfoTooltip title="Warum Sonne, nicht Dämmung?" ariaLabel="Warum fragen wir nach der Sonne statt nach der Dämmung?" size={12}>
+        <InfoTooltip title="Warum Sonne, nicht Dämmung?" ariaLabel="Warum fragen wir nach der Sonne statt nach der Dämmung?" size={iconSizes.sm}>
           Beim Kühlen kommt der größte Wärmeeintrag durch die Fenster — Sonne, Ausrichtung, fehlende Verschattung,
           vor allem ein Dachgeschoss. Deshalb fragen wir nach der Lage zur Sonne statt nach dem Dämmstandard.
         </InfoTooltip>

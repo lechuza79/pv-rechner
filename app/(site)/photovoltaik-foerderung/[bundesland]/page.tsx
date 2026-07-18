@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Header from "../../../../components/Header";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../components/Icons";
-import { v } from "../../../../lib/theme";
+import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { publishedBundeslaender, publishedCitiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
 import { getFundingPrograms } from "../../../../lib/funding-data";
@@ -97,7 +97,7 @@ function LandProgramBox({ p }: { p: FundingProgram }) {
         <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>Zur Quelle</a>
         {a.computable && a.active && (
           <Link href={`/photovoltaik-rechner?foe=${p.id}`} style={{ color: v("--color-accent"), textDecoration: "none" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={11} /></span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Im Rechner anwenden <IconArrowRight size={iconSizes.xs} /></span>
           </Link>
         )}
         <span style={{ color: v("--color-text-muted") }}>{fundingStandLabel(p)}</span>
@@ -190,7 +190,7 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
                   {f ? f.name : "Anlagenbestand und Beispielrechnungen"}
                 </span>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 700, color: v("--color-accent"), whiteSpace: "nowrap" }}>
-                  Ansehen <IconArrowRight size={12} />
+                  Ansehen <IconArrowRight size={iconSizes.sm} />
                 </span>
               </div>
             </Link>
@@ -215,7 +215,7 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
         )}
 
         <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 14, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
-          Alle Förderprogramme im Überblick <IconArrowRight size={11} />
+          Alle Förderprogramme im Überblick <IconArrowRight size={iconSizes.xs} />
         </Link>
 
         <p style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 24 }}>

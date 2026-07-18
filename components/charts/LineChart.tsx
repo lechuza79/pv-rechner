@@ -346,7 +346,7 @@ function LineChartInner({
             fontSize: 11.5,
             fontFamily: "var(--font-text, sans-serif)",
             color: "var(--color-text-primary, #3F3F3F)",
-            boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+            boxShadow: "var(--shadow-md, 0 4px 14px rgba(0,0,0,0.08))",
             minWidth: 150,
             zIndex: 2,
           }}

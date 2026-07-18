@@ -1,7 +1,7 @@
 "use client";
 import { YEAR, YEARS } from "../../../../lib/constants";
 
-export default function Chart({ scenarios, kosten }: { scenarios: { id: string; color: string; data: { years: { i: number; kum: number }[]; be: { i: number; kum: number } | undefined } }[]; kosten: number }) {
+export default function Chart({ scenarios, kosten, highlightId = "realistic" }: { scenarios: { id: string; color: string; data: { years: { i: number; kum: number }[]; be: { i: number; kum: number } | undefined } }[]; kosten: number; highlightId?: string }) {
   const W = 640, H = 280;
   const P = { t: 24, r: 16, b: 32, l: 52 };
   const cW = W - P.l - P.r, cH = H - P.t - P.b;
@@ -29,9 +29,10 @@ export default function Chart({ scenarios, kosten }: { scenarios: { id: string; 
       ))}
       {scenarios.map(s => {
         const pts = s.data.years.map((yr, i) => `${x(i)},${y(yr.kum)}`).join(" ");
+        const on = s.id === highlightId;
         return (
           <g key={s.id}>
-            <polyline points={pts} fill="none" stroke={s.color} strokeWidth={2.5} strokeLinejoin="round" opacity={s.id === "realistic" ? 1 : 0.45} />
+            <polyline points={pts} fill="none" stroke={s.color} strokeWidth={on ? 3 : 2} strokeLinejoin="round" opacity={on ? 1 : 0.35} />
             {s.data.be && (
               <>
                 <circle cx={x(s.data.be.i)} cy={y(s.data.be.kum)} r={4.5} fill={s.color} stroke="var(--color-bg)" strokeWidth={2} />

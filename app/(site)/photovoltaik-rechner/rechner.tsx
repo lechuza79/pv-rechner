@@ -2,6 +2,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
+import { useSharedPlz, readLocation } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
 import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
@@ -17,12 +18,13 @@ import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { useCoolingDegree } from "../../../lib/useCoolingDegree";
 import KlimaDetailModal from "../../../components/KlimaDetailModal";
 import Chart from "./_components/Chart";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
 import Header from "../../../components/Header";
 import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh, IconSun } from "../../../components/Icons";
 import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
+import ScenarioTabs from "../../../components/ScenarioTabs";
 import { useChartExport } from "../../../lib/useChartExport";
 import { trackEvent } from "../../../lib/analytics";
 import ChartExportBar from "../../../components/ChartExportBar";
@@ -112,6 +114,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
   );
   const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", 950, 700, 1200) : 950);
+  // Gewähltes Szenario (Strompreis-Anstieg). Steuert ALLE Ergebniszahlen —
+  // Amortisation, Rendite, ⌀ Ersparnis, Chart-Hervorhebung — nicht nur die
+  // Amortisations-Kachel. Default „realistic" (3 %/a). Über die Kacheln wählbar.
+  const [scenario, setScenario] = useState(hasShare ? paramStr(initialParams, "sc", "realistic", ["pessimistic", "realistic", "optimistic"]) : "realistic");
 
   // PLZ → standortspezifischer Ertrag + Monatsprofil
   const [plz, setPlz] = useState(typeof initialParams?.plz === "string" && /^\d{5}$/.test(initialParams.plz) ? initialParams.plz : "");
@@ -217,6 +223,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Auto-fetch bei Share-URL mit PLZ
   useEffect(() => { if (plz) fetchPvgis(plz); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Ohne PLZ im Link: den gemerkten Standort übernehmen und direkt anwenden,
+  // damit der Ertrag stimmt, ohne dass die PLZ erneut eingegeben werden muss.
+  useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); });
+
   // Standort-Kühlgradstunden (für die Klima-Schnellschätzung + das Detail-Modal) —
   // derselbe geteilte Hook wie im Klimaanlagen-Rechner. Fetch, sobald eine gültige
   // PLZ vorliegt; ohne PLZ bleibt der deutsche Durchschnitt aus der Config.
@@ -259,7 +269,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       if (isResult) {
         const row = paramsToRow(
           { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
-          { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(real.data.years[YEARS - 1]?.kum ?? 0) }
+          { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
         );
         const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
         localStorage.setItem("pendingSave", JSON.stringify({ ...row, name: `${kwp} kWp${spLabel}` }));
@@ -348,8 +358,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       }),
     })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag]);
 
-  const real = scenarioData.find(s => s.id === "realistic")!;
-  const be = real.data.be;
+  // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
+  // „realistic", falls der State (z. B. aus einer alten Share-URL) nicht passt.
+  const sel = scenarioData.find(s => s.id === scenario) ?? scenarioData.find(s => s.id === "realistic")!;
+  const be = sel.data.be;
 
   const STEPS = ["Wie groß soll die Anlage werden?", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
   const isResult = step >= STEPS.length;
@@ -362,7 +374,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     // Live-Simulation via ?plz=): plzSource only fills once the async location
     // lookup returns, so without this guard the toast flashes "PLZ eingeben"
     // even though the location is set and being applied.
-    if (!isResult || plzSource || /^\d{5}$/.test(plz) || plzToastShown.current) return;
+    // A location arriving late retires the nudge instead of leaving it asking
+    // for something that is already set.
+    if (plzSource || /^\d{5}$/.test(plz)) { setPlzToast(false); return; }
+    // readLocation() rather than waiting for the adopted PLZ to land in state:
+    // the shared location is taken over in an effect, one render after this one
+    // would otherwise have decided to nag.
+    if (!isResult || plzToastShown.current || readLocation()) return;
     plzToastShown.current = true;
     setPlzToast(true);
   }, [isResult, plzSource, plz]);
@@ -420,6 +438,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (oEinsp !== null) p.set("ei", String(oEinsp));
     p.set("eia", effEinspeisungModus === "voll" ? "2" : effEinspeisungModus === "aus" ? "0" : "1");
     p.set("er", String(oErtrag));
+    if (scenario !== "realistic") p.set("sc", scenario);
     if (plz) p.set("plz", plz);
     // Förderung: das wirksamste angerechnete Programm mitgeben, damit der Link
     // dieselbe Förderung vorab scharf schaltet.
@@ -477,7 +496,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     try {
       const row = paramsToRow(
         { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
-        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(real.data.years[YEARS - 1]?.kum ?? 0) }
+        { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
       );
       const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
       const res = await fetch("/api/calculations", {
@@ -494,7 +513,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       }
     } catch { /* silent */ }
     setSaving(false);
-  }, [authState, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, kwp, spKwh, be, real, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [authState, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, kwp, spKwh, be, sel, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Empfehlungs-Kontext für "Warum diese Anlage?"
   const empfehlungKontext = flowType === "empfehlung" && htIdx >= 0 && daIdx >= 0 ? (() => {
@@ -532,7 +551,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               onClick={() => { if (typeof window !== "undefined") window.history.back(); }}
               style={{ background: "none", border: "none", color: v('--color-accent'), cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: v('--font-text'), padding: 0, marginBottom: 10, display: "inline-flex", alignItems: "center", gap: 4 }}
             >
-              <span style={{ transform: "rotate(180deg)", display: "inline-flex" }}><IconArrowRight size={13} /></span> Zurück zur Empfehlung
+              <span style={{ transform: "rotate(180deg)", display: "inline-flex" }}><IconArrowRight size={iconSizes.sm} /></span> Zurück zur Empfehlung
             </button>
             <div style={{ textAlign: "center" }}>
               <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Deine Empfehlung im Detail</h1>
@@ -706,7 +725,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   background: v('--color-bg-accent'), border: `1px solid ${v('--color-border-accent')}`,
                   borderRadius: v('--radius-md'), padding: "12px 14px", marginBottom: 18,
                 }}>
-                  <IconSun size={18} color={v('--color-accent')} style={{ flexShrink: 0, marginTop: 1 }} />
+                  <IconSun size={iconSizes.lg} color={v('--color-accent')} style={{ flexShrink: 0, marginTop: 1 }} />
                   <span style={{ fontSize: 12.5, color: v('--color-text-secondary'), lineHeight: 1.55 }}>
                     Alle drei erhöhen deinen Eigenverbrauch — Klimaanlagen besonders, weil sie genau dann
                     kühlen, wenn die Sonne scheint. Die Wärmepumpe zieht ihren Strom vor allem im Winter,
@@ -835,7 +854,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 <button onClick={back} style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>Zurück</button>
               ) : <div />}
               <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <><IconSparkle size={14} /> Berechnen</> : <>Weiter <IconArrowRight size={14} /></>}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <><IconSparkle size={iconSizes.md} /> Berechnen</> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
               </button>
             </div>
           </div>
@@ -870,6 +889,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
         {isResult && (
           <div className="fu">
+            {/* Szenario-Wahl ganz oben: sie rechnet ALLES darunter um
+                (Amortisation, Rendite, ⌀ Ersparnis, Chart). */}
+            <ScenarioTabs
+              tabs={scenarioData.map(s => ({ id: s.id, label: s.label, explain: s.explain, sub: `+${(s.strom * 100).toLocaleString("de-DE")} %/Jahr` }))}
+              selected={scenario}
+              onSelect={setScenario}
+            />
             <ResultHeroCard
               be={be} kosten={bruttoKosten} setOKosten={setOKosten}
               oStrom={oStrom} setOStrom={setOStrom} oErtrag={oErtrag} setOErtrag={setOErtrag}
@@ -942,7 +968,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               }}>
                 <summary style={{ fontSize: 14, fontWeight: 700, color: v('--color-text-primary'), cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <span>Warum diese Anlage?</span>
-                  <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={10} /></span>
+                  <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Details <IconChevronDown size={iconSizes.xs} /></span>
                 </summary>
                 <div style={{ marginTop: 14, fontSize: 13, color: v('--color-text-muted'), lineHeight: 1.7 }}>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6px 16px", marginBottom: 12 }}>
@@ -992,7 +1018,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
             
             <ResultStats
-              total={real.data.total} kosten={kosten}
+              total={sel.data.total} kosten={kosten}
               wp={wp} ea={ea} eaKm={eaKm} wpKwh={wpKwh ?? 0} effEv={effEv} autarkie={autarkie} jahresertrag={jahresertrag} baseKwh={grundverbrauch}
               oStrom={oStrom} fuelType={fuelType} setFuelType={setFuelType}
             />
@@ -1028,7 +1054,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                     ))}
                   </div>
                 </div>
-                <Chart scenarios={scenarioData} kosten={kosten} />
+                <Chart scenarios={scenarioData} kosten={kosten} highlightId={scenario} />
               </div>
               <ChartExportBar
                 onDownload={chartExport.downloadPng}
@@ -1040,19 +1066,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               />
             </div>
 
-            {/* Scenario pills */}
-            <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-              {scenarioData.map(s => (
-                <div key={s.id} style={{
-                  flex: 1, padding: "10px 8px", borderRadius: v('--radius-md'), textAlign: "center",
-                  background: v('--color-bg'), borderTop: `3px solid ${s.color}`,
-                }}>
-                  <div style={{ fontSize: 10, color: s.color, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>{s.label}</div>
-                  <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-text-primary'), margin: "4px 0 2px" }}>{s.data.be ? `${s.data.be.i} J.` : ">25 J."}</div>
-                  <div style={{ fontSize: 10, color: v('--color-text-muted') }}>Strom +{(s.strom * 100).toFixed(0)}%/a</div>
-                </div>
-              ))}
-            </div>
+            {/* Szenario-Wahl steht ganz oben; der Chart hebt das gewählte hervor. */}
 
             {/* Monthly production chart or PLZ CTA */}
             {!monthlyProfile && (
@@ -1123,7 +1137,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             <button onClick={restart} style={{
               width: "100%", padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600,
               background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer",
-            }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={14} /> Neu berechnen</span></button>
+            }}><span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><IconRefresh size={iconSizes.md} /> Neu berechnen</span></button>
 
             <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "20px 0 8px", lineHeight: 1.6 }}>
               Keine Lead-Erfassung · Keine Werbung<br />

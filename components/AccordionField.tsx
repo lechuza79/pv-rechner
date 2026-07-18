@@ -5,7 +5,7 @@
 // zu einer kompakten Zusammenfassungs-Zeile ein (Label + Wert + Edit), die nächste
 // Frage öffnet. Ein Klick auf die Edit-Zeile öffnet die Frage wieder.
 import { ReactNode } from "react";
-import { v } from "../lib/theme";
+import { v, iconSizes } from "../lib/theme";
 import { IconEdit } from "./Icons";
 
 export function AccordionField({
@@ -55,7 +55,7 @@ export function AccordionField({
       >
         <span style={{ fontSize: 12, fontWeight: 600, color: v("--color-text-secondary") }}>{label}</span>
         <span style={{ marginLeft: "auto", fontSize: 13, fontWeight: 700, color: v("--color-text-primary") }}>{summary}</span>
-        <IconEdit size={13} color={v("--color-text-muted")} />
+        <IconEdit size={iconSizes.sm} color={v("--color-text-muted")} />
       </button>
     );
   }

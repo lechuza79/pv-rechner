@@ -7,7 +7,7 @@
 import { useState, useEffect, useMemo } from "react";
 import AirconDetailInputs from "./AirconDetailInputs";
 import { IconCheck } from "./Icons";
-import { v } from "../lib/theme";
+import { v, iconSizes } from "../lib/theme";
 import { DEFAULT_AIRCON_CONFIG as CFG, type AcDeviceId } from "../lib/aircon-config";
 import { calcAircon, type CoolingWindow, type AcInputs } from "../lib/aircon";
 import { useCoolingDegree } from "../lib/useCoolingDegree";
@@ -102,7 +102,7 @@ export default function KlimaDetailModal({ open, onClose, rooms, plz, stromPrice
               display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap",
             }}
           >
-            <IconCheck size={14} /> Übernehmen
+            <IconCheck size={iconSizes.md} /> Übernehmen
           </button>
         </div>
         <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5, textAlign: "center" }}>

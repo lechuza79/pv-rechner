@@ -7,13 +7,15 @@ import Header from "../../../components/Header";
 import InfoTooltip from "../../../components/InfoTooltip";
 import StandortField from "../../../components/StandortField";
 import { IconArrowRight, IconRefresh, IconCheck } from "../../../components/Icons";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
-import { PERSONEN } from "../../../lib/constants";
+import { PERSONEN, SCENARIOS } from "../../../lib/constants";
+import ScenarioTabs from "../../../components/ScenarioTabs";
 import { DEFAULT_BALKON_CONFIG as CFG, type BalkonSetId, type BalkonStorageId } from "../../../lib/balkon-config";
 import { calcBalkon, recommendBalkon, type BalkonInputs, type BalkonOption } from "../../../lib/balkon";
 import { referenceYearKwh } from "../../../lib/solar-year";
 import { trackEvent } from "../../../lib/analytics";
+import { useSharedPlz, readLocation } from "../../../lib/location";
 import { DataSourceNote } from "../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 
@@ -68,6 +70,11 @@ export default function Balkon() {
   const strompreis = oStrom ?? (prices.electricityPrice > 0 ? prices.electricityPrice : CFG.stromPrice);
   // Strompreisanstieg systemweit konsistent mit dem PV-Rechner (gleiche Preis-Config).
   const priceIncrease = prices.electricityIncrease;
+  // Strompreis-Szenario: bewegt alle gezeigten Zahlen. Die EMPFEHLUNG (welches
+  // Set / ob Speicher) bleibt am Basiswert verankert — sonst spränge sie beim
+  // Umschalten. Balkon-Szenarien kennen kein evDelta (eigenes HTW-Modell).
+  const [scenario, setScenario] = useState("realistic");
+  const scenarioStrom = (SCENARIOS.find(s => s.id === scenario) ?? SCENARIOS[1]).strom;
   const haushaltKwh = oVerbrauch ?? PERSONEN[personen].verbrauch;
 
   const isResult = step >= STEPS.length;
@@ -75,7 +82,13 @@ export default function Balkon() {
   // PLZ-Toast einmal einblenden, sobald das Ergebnis erscheint und noch kein
   // Standort übernommen wurde.
   useEffect(() => {
-    if (!isResult || plzConfirmed || /^\d{5}$/.test(plz) || plzToastShown.current) return;
+    // Ein spät eintreffender Standort nimmt den Hinweis zurück, statt weiter
+    // nach etwas zu fragen, das längst gesetzt ist.
+    if (plzConfirmed || /^\d{5}$/.test(plz)) { setPlzToast(false); return; }
+    // readLocation() statt auf den übernommenen Standort im State zu warten:
+    // die Übernahme landet einen Render später — bis dahin hätte dieser Effekt
+    // schon entschieden zu nudgen.
+    if (!isResult || plzToastShown.current || readLocation()) return;
     plzToastShown.current = true;
     setPlzToast(true);
   }, [isResult, plzConfirmed, plz]);
@@ -125,6 +138,10 @@ export default function Balkon() {
     setPlzLoading(false);
   }, []);
 
+  // Gemerkten Standort übernehmen und direkt anwenden — sonst stünde die PLZ
+  // nur im Feld, während weiter mit dem Bundesschnitt gerechnet wird.
+  useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); });
+
   const onPlzChange = (raw: string) => {
     setPlz(raw.replace(/\D/g, "").slice(0, 5));
     setPlzConfirmed(false);
@@ -141,10 +158,16 @@ export default function Balkon() {
   const active = override ?? { setId: recommendation.best.setId, storageId: recommendation.best.storageId };
   const activeIsBest = active.setId === recommendation.best.setId && active.storageId === recommendation.best.storageId;
 
+  // Kartenzahlen im gewählten Szenario (die Empfehlung oben bleibt am Basiswert).
+  const scenarioRec = useMemo(
+    () => recommendBalkon({ orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom }),
+    [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom],
+  );
+
   const inputs: BalkonInputs = useMemo(() => ({
     setId: active.setId, orientationId, presenceId, storageId: active.storageId,
-    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease, invest: oInvest ?? undefined,
-  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, priceIncrease, oInvest]);
+    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom, invest: oInvest ?? undefined,
+  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, oInvest]);
 
   const r = useMemo(() => calcBalkon(inputs), [inputs]);
   const amortLabel = isFinite(r.amortYears) ? `${r.amortYears.toFixed(1).replace(".", ",")} J.` : "—";
@@ -163,8 +186,10 @@ export default function Balkon() {
   const resetToRecommendation = () => { setOverride(null); setOInvest(null); };
   const resetAll = () => { setOverride(null); setOInvest(null); setStep(0); };
 
+  // Karten zeigen die Zahlen des gewählten Szenarios; welche Karte „Empfohlen"
+  // heißt, entscheidet weiter `recommendation` (Basiswert).
   const findCombo = (setId: BalkonSetId, storageId: BalkonStorageId): BalkonOption =>
-    recommendation.ranked.find(o => o.setId === setId && o.storageId === storageId) ?? recommendation.best;
+    scenarioRec.ranked.find(o => o.setId === setId && o.storageId === storageId) ?? scenarioRec.best;
 
   // Set-Größen-Karten (alle in einer Reihe): jede zeigt die Ersparnis beim AKTUELL
   // gewählten Speicher — so sind alle Karten konsistent (kein Speicher-Durcheinander).
@@ -246,7 +271,7 @@ export default function Balkon() {
 
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: 4 }}>
                   Tagsüber jemand zuhause?
-                  <InfoTooltip title="Warum das zählt" ariaLabel="Warum fragen wir, ob tagsüber jemand zuhause ist?" size={12}>
+                  <InfoTooltip title="Warum das zählt" ariaLabel="Warum fragen wir, ob tagsüber jemand zuhause ist?" size={iconSizes.sm}>
                     Ein Balkonkraftwerk lohnt sich über den Strom, den du direkt verbrauchst, während die Sonne scheint.
                     Wer tagsüber zuhause ist (Homeoffice, Rente, Familie), nutzt mehr davon selbst — Überschuss fließt
                     sonst unvergütet ins Netz. Das entscheidet auch, ob sich ein Speicher lohnt.
@@ -278,7 +303,7 @@ export default function Balkon() {
                     color: plzConfirmed || plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
                   }}>
                     {plzLoading ? "…" : plzConfirmed
-                      ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconCheck size={13} /> Übernommen</span>
+                      ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconCheck size={iconSizes.sm} /> Übernommen</span>
                       : "Übernehmen"}
                   </button>
                 </form>
@@ -314,7 +339,7 @@ export default function Balkon() {
                 <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
               )}
               <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Empfehlung anzeigen <IconArrowRight size={14} /></> : <>Weiter <IconArrowRight size={14} /></>}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Empfehlung anzeigen <IconArrowRight size={iconSizes.md} /></> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
               </button>
             </div>
           </div>
@@ -346,6 +371,12 @@ export default function Balkon() {
         {/* ── RESULT (empfehlungsgetrieben) ── */}
         {isResult && (
           <div className="fu">
+            {/* Strompreis-Szenario ganz oben: rechnet alle Zahlen darunter um. */}
+            <ScenarioTabs
+              tabs={SCENARIOS.map(s => ({ id: s.id, label: s.label, explain: s.explain, sub: `+${(s.strom * 100).toLocaleString("de-DE")} %/Jahr` }))}
+              selected={scenario}
+              onSelect={setScenario}
+            />
             {/* Auswahl (Set-Größe + Speicher) — klebt beim Scrollen oben, damit die
                 Wirkung auf die Kennzahlen darunter sichtbar bleibt. */}
             <div ref={stickyRef} style={{
@@ -370,7 +401,7 @@ export default function Balkon() {
                   }}>
                     <span style={{ fontSize: 13, fontWeight: 700, whiteSpace: "nowrap", color: selected ? v('--color-accent') : v('--color-text-primary') }}>{setShort(o.setId)}</span>
                     <span style={{ fontSize: 12, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>~{o.result.savingPerYear.toLocaleString("de-DE")} €/J</span>
-                    {isRec && <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent') }}><IconCheck size={9} /> Empf.</span>}
+                    {isRec && <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent') }}><IconCheck size={iconSizes.xs} /> Empf.</span>}
                   </button>
                 );
               })}
@@ -395,12 +426,12 @@ export default function Balkon() {
                 </span>
                 <span style={{ fontSize: 13, fontWeight: 700, whiteSpace: "nowrap", color: storageOn ? v('--color-accent') : v('--color-text-primary') }}>Speicher</span>
               </button>
-              <InfoTooltip title="Was ein Speicher bringt" ariaLabel="Was bringt ein Speicher am Balkonkraftwerk?" size={12}>
+              <InfoTooltip title="Was ein Speicher bringt" ariaLabel="Was bringt ein Speicher am Balkonkraftwerk?" size={iconSizes.sm}>
                 Ein kleiner Akku puffert den Tagesüberschuss für Abend und Nacht und hebt den Eigenverbrauch — er kostet aber
                 extra und rechnet sich oft erst spät. Wir empfehlen ihn nur, wenn er sich klar amortisiert.
               </InfoTooltip>
               {!storageOn && recommendation.best.storageId !== "none" && (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent'), whiteSpace: "nowrap" }}><IconCheck size={9} /> Empf.</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 2, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: v('--color-accent'), whiteSpace: "nowrap" }}><IconCheck size={iconSizes.xs} /> Empf.</span>
               )}
 
               {/* Größen: gleiche Höhe wie der Schalter (22 px, border-box), damit die
@@ -479,7 +510,7 @@ export default function Balkon() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
               <StatCard label="Amortisation" value={amortLabel} help="So lange dauert es, bis die Ersparnis die Anschaffung wieder eingespielt hat." />
               <StatCard label="Autarkie" value={`${Math.round(r.autarky * 100)} %`} valueColor={v('--color-positive')} help="Anteil deines Jahresstroms, den das Balkonkraftwerk selbst deckt. Bei kleinen Anlagen zweistellig — es deckt die Grundlast, nicht den ganzen Haushalt." />
-              <StatCard label="Gewinn nach 20 J." value={`${r.lifetimeSaving > 0 ? "+" : ""}${r.lifetimeSaving.toLocaleString("de-DE")} €`} valueColor={r.lifetimeSaving >= 0 ? v('--color-positive') : v('--color-negative')} help={`Summe der Stromersparnis über 20 Jahre, abzüglich Anschaffung. Gerechnet mit 0,5 % Moduldegradation und ${(priceIncrease * 100).toLocaleString("de-DE")} % Strompreisanstieg pro Jahr (wie im PV-Rechner). Ein Speicher zählt nur bis zu seiner Lebensdauer mit.`} />
+              <StatCard label="Gewinn nach 20 J." value={`${r.lifetimeSaving > 0 ? "+" : ""}${r.lifetimeSaving.toLocaleString("de-DE")} €`} valueColor={r.lifetimeSaving >= 0 ? v('--color-positive') : v('--color-negative')} help={`Summe der Stromersparnis über 20 Jahre, abzüglich Anschaffung. Gerechnet mit 0,5 % Moduldegradation und ${(scenarioStrom * 100).toLocaleString("de-DE")} % Strompreisanstieg pro Jahr (gewähltes Szenario). Ein Speicher zählt nur bis zu seiner Lebensdauer mit.`} />
               <StatCard label="CO₂ gespart" value={`${r.co2PerYear.toLocaleString("de-DE")} kg/J`} help="Vermiedener CO₂-Ausstoß pro Jahr, gerechnet mit dem deutschen Netzstrom-Mix (0,38 kg/kWh)." />
             </div>
 
@@ -488,7 +519,7 @@ export default function Balkon() {
             <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5, margin: "10px 0 16px" }}>
               Seit 2024 darfst du nur bis <strong style={{ color: v('--color-text-primary') }}>800 Watt</strong> einspeisen.
               Nutzt du mehr Module
-              <InfoTooltip title="Wie viele Module sind erlaubt?" ariaLabel="Wie viele Module sind erlaubt?" size={12}>
+              <InfoTooltip title="Wie viele Module sind erlaubt?" ariaLabel="Wie viele Module sind erlaubt?" size={iconSizes.sm}>
                 Die Module dürfen zusammen bis <strong>2.000 Wp</strong> leisten — mehr als der Wechselrichter durchlässt. Das ist
                 erlaubt und sinnvoll: Die Mittagsspitze wird gekappt, morgens und abends kommt aber mehr an.
               </InfoTooltip>
@@ -570,10 +601,10 @@ export default function Balkon() {
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
               <Link href="/photovoltaik-rechner" style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), textDecoration: "none", textAlign: "center" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Eigenes Dach? Große Anlage rechnen <IconArrowRight size={12} /></span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}>Eigenes Dach? Große Anlage rechnen <IconArrowRight size={iconSizes.sm} /></span>
               </Link>
               <button onClick={resetAll} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={12} /> Neu berechnen</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>
 
@@ -656,7 +687,7 @@ function StatCard({ label, value, sub, help, helpTitle, valueColor }: { label: s
     <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
       <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
         {label}
-        {help && <InfoTooltip title={helpTitle ?? label} ariaLabel="Mehr Infos" size={12}>{help}</InfoTooltip>}
+        {help && <InfoTooltip title={helpTitle ?? label} ariaLabel="Mehr Infos" size={iconSizes.sm}>{help}</InfoTooltip>}
       </div>
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: valueColor ?? v('--color-text-primary') }}>{value}</div>
       {sub && <div style={{ fontSize: 10, color: v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 2 }}>{sub}</div>}

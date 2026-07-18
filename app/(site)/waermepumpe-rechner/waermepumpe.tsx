@@ -5,17 +5,18 @@ import {
   SITUATION, WOHNFLAECHEN, INSULATION_BESTAND, INSULATION_NEUBAU,
   PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP,
 } from "../../../lib/constants";
-import { calcHeatPump, calcHeatPumpScenarios, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
+import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
 import { useHeatpumpPrices } from "../../../lib/prices";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
+import ScenarioTabs from "../../../components/ScenarioTabs";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
 import Header from "../../../components/Header";
 import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck } from "../../../components/Icons";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
 
 const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizsystem"];
@@ -52,6 +53,8 @@ export default function Waermepumpe() {
   const [heizkoerperTausch, setHeizkoerperTausch] = useState(false);  // Maßnahme: alte HK auf Niedertemperatur tauschen
   const [wegId, setWegId] = useState("ist");  // aktiver Sanierungs-/Maßnahmen-Weg (Szenario-Vergleich)
   const [showDetails, setShowDetails] = useState(false);
+  // Strompreis-Szenario (steuert TCO/Amortisation/Ersparnis/CO₂ + Chart).
+  const [scenario, setScenario] = useState("realistic");
 
   const isResult = step >= STEPS.length;
   const next = () => {
@@ -126,7 +129,10 @@ export default function Waermepumpe() {
     return list;
   }, [situation, heizsystem, insulationIdx]);
 
-  const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }, cfg) })), [wege, inputs, cfg]);
+  // Wege-Vergleich (und die Ist-Konklusion) mit dem gewählten Szenario rechnen,
+  // damit sie nicht dem oben gewählten Szenario widersprechen. Die editierbaren
+  // Detailwerte laufen weiter über `result` (Basisfall).
+  const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }, cfg, heatPumpScenarioAdj(scenario, cfg)) })), [wege, inputs, cfg, scenario]);
   const istResult = wegeResults.find(w => w.id === "ist")?.r ?? calcHeatPump(inputs, cfg);
   const istNegativ = istResult.tcoEinsparung < 0;
   const istKnapp = istResult.amortisationsJahre === null || istResult.amortisationsJahre > 15 || istNegativ;
@@ -139,6 +145,9 @@ export default function Waermepumpe() {
   const activeInputs = useMemo(() => ({ ...inputs, ...(activeWeg?.patch ?? {}) }), [inputs, activeWeg]);
   const result = useMemo(() => calcHeatPump(activeInputs, cfg), [activeInputs, cfg]);
   const scenarios = useMemo(() => calcHeatPumpScenarios(activeInputs, cfg), [activeInputs, cfg]);
+  // Gewähltes Szenario: treibt die Ergebnis-Zahlen (TCO/Amortisation/Ersparnis/
+  // CO₂). Die editierbaren Detailwerte unten bleiben auf `result` (Basisfall).
+  const sel = scenarios.find(s => s.id === scenario) ?? scenarios.find(s => s.id === "realistic")!;
 
   // Weg wechseln: baubezogene Overrides zurücksetzen, damit der Weg sauber greift
   const selectWeg = (id: string) => {
@@ -300,7 +309,7 @@ export default function Waermepumpe() {
                 <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
               )}
               <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Ergebnis anzeigen <IconArrowRight size={14} /></> : <>Weiter <IconArrowRight size={14} /></>}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Ergebnis anzeigen <IconArrowRight size={iconSizes.md} /></> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
               </button>
             </div>
           </div>
@@ -309,6 +318,13 @@ export default function Waermepumpe() {
         {/* ── RESULT ── */}
         {isResult && (
           <div className="fu">
+            {/* Strompreis-Szenario ganz oben: steuert TCO/Amortisation/Ersparnis/
+                CO₂ + Chart. Für die WP ist teurer Strom ungünstig (invertiert). */}
+            <ScenarioTabs
+              tabs={scenarios.map(s => ({ id: s.id, label: s.label, sub: s.sub, explain: s.explain }))}
+              selected={scenario}
+              onSelect={setScenario}
+            />
             {/* 1. Ist-Konklusion (klein, oben) */}
             {zeigeWege && (
               <div style={{ padding: "12px 14px", marginBottom: 12, borderRadius: v('--radius-md'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}` }}>
@@ -361,8 +377,8 @@ export default function Waermepumpe() {
             {zeigeWege && (
               <div style={{ marginBottom: 16 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                  <IconSparkle size={16} color={v('--color-accent')} />
-                  <span style={{ fontSize: 14, fontWeight: 700 }}>Realistische Wege</span>
+                  <IconSparkle size={iconSizes.md} color={v('--color-accent')} />
+                  <span style={{ fontSize: 14, fontWeight: 700 }}>Deine Wege zur Wärmepumpe</span>
                 </div>
                 <div style={{ display: "grid", gap: 8 }}>
                   {wegeResults.map(w => (
@@ -386,11 +402,11 @@ export default function Waermepumpe() {
               <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
                 Einsparung über {DEFAULT_HEATPUMP_CONFIG.years} Jahre
                 <InfoTooltip title="So wird die Einsparung berechnet" ariaLabel="Wie wird die Einsparung berechnet?">
-                  <TcoBreakdown r={result} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} />
+                  <TcoBreakdown r={sel} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} />
                 </InfoTooltip>
               </div>
-              <div style={{ fontSize: 42, fontWeight: 800, color: result.tcoEinsparung >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
-                {result.tcoEinsparung >= 0 ? "+" : ""}{result.tcoEinsparung.toLocaleString("de-DE")} €
+              <div style={{ fontSize: 42, fontWeight: 800, color: sel.tcoEinsparung >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
+                {sel.tcoEinsparung >= 0 ? "+" : ""}{sel.tcoEinsparung.toLocaleString("de-DE")} €
               </div>
               <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 4 }}>
                 vs. {situation === "neubau" ? null : "Weiterbetrieb"}
@@ -427,12 +443,12 @@ export default function Waermepumpe() {
 
             {/* Sekundäre Stats */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
-              <StatCard label="Amortisation" value={result.amortisationsJahre !== null ? `${result.amortisationsJahre} J` : "> 20 J"} positive={result.amortisationsJahre !== null && result.amortisationsJahre <= 15} />
-              <StatCard label="⌀ Ersparnis/Jahr" value={`${result.einsparungProJahr.toLocaleString("de-DE")} €`} positive={result.einsparungProJahr > 0} />
+              <StatCard label="Amortisation" value={sel.amortisationsJahre !== null ? `${sel.amortisationsJahre} J` : "> 20 J"} positive={sel.amortisationsJahre !== null && sel.amortisationsJahre <= 15} />
+              <StatCard label="⌀ Ersparnis/Jahr" value={`${sel.einsparungProJahr.toLocaleString("de-DE")} €`} positive={sel.einsparungProJahr > 0} />
               <StatCard
                 label="CO₂ 20 J"
-                value={`${Math.round(result.co2Einsparung / 1000).toLocaleString("de-DE")} t`}
-                positive={result.co2Einsparung > 0}
+                value={`${Math.round(sel.co2Einsparung / 1000).toLocaleString("de-DE")} t`}
+                positive={sel.co2Einsparung > 0}
                 helpTitle="CO₂-Einsparung"
                 helpAriaLabel="Was bedeutet die CO₂-Zahl?"
                 help="Vermiedener CO₂-Ausstoß über 20 Jahre: die Emissionen der fossilen Heizung minus die Emissionen aus dem Strom, den die Wärmepumpe verbraucht (deutscher Strommix). Es ist also netto eingespartes CO₂, nicht ausgestoßenes — der Stromverbrauch der Wärmepumpe ist schon abgezogen."
@@ -447,11 +463,12 @@ export default function Waermepumpe() {
               <HeatPumpChart
                 scenarios={scenarios.map(s => ({ id: s.id, color: s.color, years: s.years, amortisationsJahre: s.amortisationsJahre }))}
                 horizon={DEFAULT_HEATPUMP_CONFIG.years}
+                highlightId={scenario}
               />
               <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 10, fontSize: 11 }}>
                 {scenarios.map(s => (
-                  <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 4, color: v('--color-text-muted') }}>
-                    <span style={{ width: 10, height: 2, background: s.color, borderRadius: 1 }} /> {s.label}
+                  <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 4, color: s.id === scenario ? v('--color-text-secondary') : v('--color-text-muted'), fontWeight: s.id === scenario ? 700 : 400 }}>
+                    <span style={{ width: 10, height: 2, background: s.color, borderRadius: 1, opacity: s.id === scenario ? 1 : 0.5 }} /> {s.label}
                   </span>
                 ))}
               </div>
@@ -465,7 +482,7 @@ export default function Waermepumpe() {
             >
               <summary style={{ fontSize: 14, fontWeight: 700, cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span>Rechnung im Detail</span>
-                <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Aufschlüsseln <IconChevronDown size={10} /></span>
+                <span style={{ fontSize: 11, color: v('--color-text-muted'), fontWeight: 400, display: "inline-flex", alignItems: "center", gap: 4 }}>Aufschlüsseln <IconChevronDown size={iconSizes.xs} /></span>
               </summary>
               <div style={{ marginTop: 14, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.7 }}>
                 <DetailGrid items={[
@@ -511,7 +528,7 @@ export default function Waermepumpe() {
             {/* PV-Synergie */}
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16, border: `1px solid ${pvStatus !== "nein" ? v('--color-accent') : v('--color-border')}` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                <IconSun size={16} color={v('--color-accent')} />
+                <IconSun size={iconSizes.md} color={v('--color-accent')} />
                 <span style={{ fontSize: 14, fontWeight: 700 }}>Solaranlage einrechnen</span>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginBottom: pvStatus !== "nein" ? 14 : 0 }}>
@@ -552,10 +569,10 @@ export default function Waermepumpe() {
             {/* Aktionen */}
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
               <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
-                PV-Rechner öffnen <IconArrowRight size={12} />
+                PV-Rechner öffnen <IconArrowRight size={iconSizes.sm} />
               </Link>
               <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setKlimaBonus(true); setEffizienzBonus(true); setIncomeBonus(false); setOHeizlast(null); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={12} /> Neu berechnen</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>
 
@@ -618,7 +635,7 @@ function StatCard({ label, value, positive, help, helpTitle, helpAriaLabel }: { 
     <div style={{ padding: "14px 12px", borderRadius: v('--radius-md'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, textAlign: "center" }}>
       <div style={{ fontSize: 10, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 4, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
         {label}
-        {help && <InfoTooltip title={helpTitle} ariaLabel={helpAriaLabel ?? "Mehr Infos"} size={12}>{help}</InfoTooltip>}
+        {help && <InfoTooltip title={helpTitle} ariaLabel={helpAriaLabel ?? "Mehr Infos"} size={iconSizes.sm}>{help}</InfoTooltip>}
       </div>
       <div style={{ fontSize: 18, fontWeight: 800, fontFamily: v('--font-mono'), color: positive ? v('--color-positive') : v('--color-text-primary') }}>{value}</div>
     </div>
@@ -653,7 +670,7 @@ function WegCard({ titel, kurz, r, active, onClick, situation, sanierung }: { ti
       }}>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          {active && <IconCheck size={14} color={v('--color-accent')} />}
+          {active && <IconCheck size={iconSizes.md} color={v('--color-accent')} />}
           <span style={{ fontSize: 13.5, fontWeight: 700, color: v('--color-text-primary') }}>{titel}</span>
         </div>
         <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginTop: 2, lineHeight: 1.4 }}>{kurz}</div>

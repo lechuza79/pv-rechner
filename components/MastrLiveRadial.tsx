@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { v } from "../lib/theme";
+import { v, iconSizes } from "../lib/theme";
 import InfoTooltip from "./InfoTooltip";
 import { PoweredBy, DataSourceNote } from "./PoweredBy";
 import { type DataSource } from "../lib/data-sources";
@@ -819,7 +819,7 @@ export function MastrLiveRadial({
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             Auslastung
             <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
-              <InfoTooltip ariaLabel="Was bedeutet Auslastung?" size={14}>
+              <InfoTooltip ariaLabel="Was bedeutet Auslastung?" size={iconSizes.md}>
                 Anteil der gerade produzierten Leistung an der gesamten installierten
                 Leistung. Bei Solar tagsüber typisch 20–50 %, nachts 0 %.
               </InfoTooltip>

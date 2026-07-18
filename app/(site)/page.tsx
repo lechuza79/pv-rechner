@@ -5,7 +5,7 @@ import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser, 
 import { MastrHeroSection } from "../../components/MastrHeroSection";
 import Faq from "../../components/Faq";
 import { homeFaq } from "../../lib/faq";
-import { v } from "../../lib/theme";
+import { v, iconSizes } from "../../lib/theme";
 import { pageMetadata, energyOgImage } from "../../lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -117,7 +117,7 @@ export default function Home() {
                     display: "flex", alignItems: "center", justifyContent: "center",
                     marginBottom: 14,
                   }}>
-                    <Icon size={22} color={v('--color-accent')} />
+                    <Icon size={iconSizes.xl} color={v('--color-accent')} />
                   </div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 6 }}>
                     {tool.title}
@@ -130,7 +130,7 @@ export default function Home() {
                     fontSize: 13, fontWeight: 700, background: v('--color-accent'), color: v('--color-text-on-accent'),
                   }}>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                      {tool.cta} <IconArrowRight size={12} />
+                      {tool.cta} <IconArrowRight size={iconSizes.sm} />
                     </span>
                   </div>
                 </div>

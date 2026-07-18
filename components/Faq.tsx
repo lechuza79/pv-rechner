@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import { FaqEntry, FaqLink } from "../lib/faq";
 import { IconChevronDown } from "./Icons";
-import { v } from "../lib/theme";
+import { v, iconSizes } from "../lib/theme";
 import { jsonLdHtml } from "../lib/json-ld";
 
 // Visible FAQ accordion + matching FAQPage JSON-LD, both rendered from the same
@@ -110,7 +110,7 @@ export default function Faq({
               <summary className="faq-summary">
                 <span>{item.q}</span>
                 <span className="faq-chevron" style={{ display: "flex" }}>
-                  <IconChevronDown size={16} />
+                  <IconChevronDown size={iconSizes.md} />
                 </span>
               </summary>
               <div className="faq-answer" style={{ paddingBottom: 16 }}>

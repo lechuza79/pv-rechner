@@ -5,6 +5,7 @@ import { calcFuelCost25, calcWpGridCost25 } from "../../../../lib/calc";
 import { EA_KWH_PER_KM } from "../../../../lib/consumption";
 
 interface ResultStatsProps {
+  /** Rendite (25-J-Ende) des gewählten Szenarios — die Szenario-Wahl sitzt oben. */
   total: number;
   kosten: number;
   wp: string;

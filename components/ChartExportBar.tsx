@@ -1,6 +1,6 @@
 "use client";
 
-import { v } from "../lib/theme";
+import { v, iconSizes } from "../lib/theme";
 import { IconDownload, IconShare, IconWhatsApp, IconTwitter } from "./Icons";
 
 interface ChartExportBarProps {
@@ -39,21 +39,21 @@ export default function ChartExportBar({
         title="Als Bild herunterladen"
         style={{ ...btnBase, opacity: isExporting ? 0.5 : 1, cursor: isExporting ? "wait" : "pointer" }}
       >
-        <IconDownload size={15} />
+        <IconDownload size={iconSizes.md} />
       </button>
       {canNativeShare && onShare && (
         <button onClick={onShare} disabled={isExporting} title="Teilen" style={{ ...btnBase, opacity: isExporting ? 0.5 : 1 }}>
-          <IconShare size={15} />
+          <IconShare size={iconSizes.md} />
         </button>
       )}
       {onWhatsApp && (
         <button onClick={onWhatsApp} title="WhatsApp" style={btnBase}>
-          <IconWhatsApp size={15} />
+          <IconWhatsApp size={iconSizes.md} />
         </button>
       )}
       {onTwitter && (
         <button onClick={onTwitter} title="X / Twitter" style={btnBase}>
-          <IconTwitter size={15} />
+          <IconTwitter size={iconSizes.md} />
         </button>
       )}
     </div>

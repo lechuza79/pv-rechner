@@ -8,7 +8,7 @@ import StackedBarChart from "../../../components/charts/StackedBarChart";
 import {
   formatGWhIn, energyUnit, calcPeriodStats, CATEGORY_COLORS,
 } from "../../../lib/chart-utils";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 import { useChartExport } from "../../../lib/useChartExport";
 import ChartExportBar from "../../../components/ChartExportBar";
@@ -325,7 +325,7 @@ export default function EnergieClient() {
                 }}
                 title="Vorheriges Jahr"
               >
-                <IconChevronLeft size={10} />
+                <IconChevronLeft size={iconSizes.xs} />
               </button>
               <div ref={yearDropdownRef} style={{ position: "relative", display: "flex" }}>
                 <button
@@ -341,7 +341,7 @@ export default function EnergieClient() {
                   }}
                 >
                   {isYear ? selected : "Jahre"}
-                  <IconChevronDown size={8} />
+                  <IconChevronDown size={iconSizes.xs} />
                 </button>
                 {yearDropdownOpen && (
                   <div style={{
@@ -352,7 +352,7 @@ export default function EnergieClient() {
                     background: v("--color-bg"),
                     border: `1px solid ${v("--color-border")}`,
                     borderRadius: v("--radius-sm"),
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                    boxShadow: v("--shadow-md"),
                     zIndex: 20,
                     padding: "4px 0",
                     minWidth: 80,
@@ -402,7 +402,7 @@ export default function EnergieClient() {
                 }}
                 title="Nächstes Jahr"
               >
-                <IconChevronRight size={10} />
+                <IconChevronRight size={iconSizes.xs} />
               </button>
             </div>
 

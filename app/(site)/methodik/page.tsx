@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { IconArrowRight } from "../../../components/Icons";
 import GlossaryTerm from "../../../components/GlossaryTerm";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
@@ -143,7 +143,7 @@ export default async function MethodikPage() {
     <div style={S.page}>
       <div style={S.wrap}>
         <Link href="/" style={S.back}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconArrowRight size={12} style={{ transform: "rotate(180deg)" }} /> Zurück zum Rechner</span>
+<span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück zum Rechner</span>
         </Link>
 
         <h1 style={S.h1}>So rechnen wir</h1>

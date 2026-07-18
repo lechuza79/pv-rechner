@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import { IconUser, IconMenu, IconClose, IconChevronDown } from "./Icons";
-import { v } from "../lib/theme";
+import { v, iconSizes } from "../lib/theme";
 import { useAuth } from "../lib/auth";
+import ThemeController from "./ThemeController";
 
 interface HeaderProps {
   onLoginClick?: () => void;
@@ -25,8 +26,8 @@ interface NavItem {
 // anchor text matches each page's target term.
 const RECHNER_ITEMS: NavItem[] = [
   { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Lohnt sich meine PV-Anlage?", page: "rechner" },
-  { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Heizkosten und Förderung vergleichen — inkl. Split-Klima", page: "waermepumpe" },
-  { href: "/klimaanlage-stromkosten", label: "Klimaanlagen-Rechner", desc: "Kühlkosten, Gerätevergleich, PV-Deckung", page: "klima" },
+  { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Heizkosten und Förderung vergleichen", page: "waermepumpe" },
+  { href: "/klimaanlage-stromkosten", label: "Klimaanlagen-Rechner", desc: "Kühlkosten und Gerätevergleich — auch ergänzend zum Heizen", page: "klima" },
   { href: "/balkonkraftwerk-rechner", label: "Balkonkraftwerk-Rechner", desc: "Steckersolar für Miete und Eigentum", page: "balkon" },
   { href: "/pv-bedarf-berechnen", label: "PV-Bedarf berechnen", desc: "Welche Anlage passt zu mir?", page: "empfehlung" },
   { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge in Echtzeit", page: "simulation" },
@@ -160,7 +161,8 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
           </nav>
         )}
 
-        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: isDesktop ? 14 : 8 }}>
+          <ThemeController compact={!isDesktop} />
           {isDesktop ? authElement : (
             <button
               onClick={() => setMenuOpen(!menuOpen)}
@@ -171,8 +173,8 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
               }}
             >
               {menuOpen
-                ? <IconClose size={22} color={v('--color-text-primary')} />
-                : <IconMenu size={22} color={v('--color-text-primary')} />
+                ? <IconClose size={iconSizes.xl} color={v('--color-text-primary')} />
+                : <IconMenu size={iconSizes.xl} color={v('--color-text-primary')} />
               }
             </button>
           )}
@@ -198,7 +200,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             background: v('--color-bg'),
             borderBottom: `1px solid ${v('--color-border')}`,
             padding: "8px 24px 16px",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+            boxShadow: v('--shadow-md'),
           }}>
             <MobileSection title="Rentabilität berechnen" items={RECHNER_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
@@ -270,7 +272,7 @@ function DesktopDropdown({
       >
         {triggerLabel}
         <IconChevronDown
-          size={14}
+          size={iconSizes.md}
           color={active ? v('--color-accent') : v('--color-text-muted')}
           style={{ transition: "transform 0.15s ease", transform: open ? "rotate(180deg)" : "none" }}
         />
@@ -282,7 +284,7 @@ function DesktopDropdown({
             background: v('--color-bg'),
             border: `1px solid ${v('--color-border')}`,
             borderRadius: 14,
-            boxShadow: "0 8px 28px rgba(0,0,0,0.1)",
+            boxShadow: v('--shadow-lg'),
             padding: 8,
             width,
             display: "flex",

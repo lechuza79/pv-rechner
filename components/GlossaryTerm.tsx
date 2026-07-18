@@ -241,7 +241,7 @@ export default function GlossaryTerm({ id, children }: Props) {
               color: v("--color-text-secondary"),
               border: `1px solid ${v("--color-border")}`,
               borderRadius: v("--radius-md"),
-              boxShadow: "0 6px 24px rgba(0,0,0,0.12)",
+              boxShadow: v("--shadow-md"),
               padding: "10px 12px",
               fontFamily: v("--font-text"),
               fontSize: 12.5,

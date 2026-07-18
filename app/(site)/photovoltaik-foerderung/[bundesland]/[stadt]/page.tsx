@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Header from "../../../../../components/Header";
 import Breadcrumb from "../../../../../components/Breadcrumb";
 import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons";
-import { v } from "../../../../../lib/theme";
+import { v, iconSizes } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
 import { cityBySlug, slugify, isCityPublished, publishedCities, type AtlasCity } from "../../../../../lib/atlas-cities";
@@ -198,7 +198,7 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
       <Header />
       <div style={S.wrap}>
         <Link href={`/photovoltaik-foerderung/${slugify(city.bundesland)}`} style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 13, fontWeight: 600, color: v("--color-accent"), textDecoration: "none", marginBottom: 12 }}>
-          <IconChevronLeft size={15} /> {city.bundesland}
+          <IconChevronLeft size={iconSizes.md} /> {city.bundesland}
         </Link>
         <Breadcrumb
           items={[
@@ -257,7 +257,7 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
               </div>
             </div>
             <Link href="/photovoltaik-foerderung" style={{ display: "inline-block", marginTop: 10, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Alle Förderprogramme im Überblick <IconArrowRight size={11} /></span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Alle Förderprogramme im Überblick <IconArrowRight size={iconSizes.xs} /></span>
             </Link>
           </div>
         )}
@@ -316,7 +316,7 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
             {city.name} liefert rund {nf(city.yieldKwhKwp)} kWh pro kWp. Rechne mit deinen eigenen Werten.
           </div>
           <Link href={`/photovoltaik-rechner?er=${city.yieldKwhKwp}${ctaFoe}`} style={{ display: "inline-block", textDecoration: "none", padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: 14, fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent") }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{ctaFoe ? `Mit Förderung rechnen` : `Für ${city.name} rechnen`} <IconArrowRight size={13} /></span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{ctaFoe ? `Mit Förderung rechnen` : `Für ${city.name} rechnen`} <IconArrowRight size={iconSizes.sm} /></span>
           </Link>
         </div>
 

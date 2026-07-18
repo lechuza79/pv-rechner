@@ -74,6 +74,12 @@ const baseStyles = `
     --font-mono:ui-monospace,SFMono-Regular,Menlo,monospace;
     --radius-sm:6px;
     --radius-md:var(--widget-border-radius);
+    /* Shadows — light values (widgets default to a light background). Present so
+       recycled site components (ChartActionBar, charts) that reference the
+       shadow tokens keep their lift inside embeds. */
+    --shadow-sm:0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md:0 4px 16px rgba(0,0,0,0.08);
+    --shadow-lg:0 8px 28px rgba(0,0,0,0.10);
 
     /* Energie-Palette — feste, semantische Farben (nicht theme-bar), damit
        recycelte Energie-Charts (Line/Donut/Stacked) im Embed korrekt färben. */

@@ -12,6 +12,7 @@ import {
 } from "../../../../components/Icons";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import { useChartExport } from "../../../../lib/useChartExport";
+import { iconSizes } from "../../../../lib/theme";
 import {
   WIDGET_SETTINGS_DEFAULTS,
   type WidgetSettings,
@@ -280,7 +281,7 @@ function CountryMultitool({ idx, onChange }: { idx: number; onChange: (i: number
         aria-label="Vorheriges Land"
         style={{ ...btn, borderRadius: "var(--radius-sm) 0 0 var(--radius-sm)", borderRight: "none", opacity: idx === 0 ? 0.4 : 1 }}
       >
-        <IconChevronLeft size={10} />
+        <IconChevronLeft size={iconSizes.xs} />
       </button>
       <div ref={ref} style={{ position: "relative", display: "flex" }}>
         <button
@@ -290,7 +291,7 @@ function CountryMultitool({ idx, onChange }: { idx: number; onChange: (i: number
         >
           <span>{view.flag}</span>
           <span>{view.label}</span>
-          <IconChevronDown size={8} />
+          <IconChevronDown size={iconSizes.xs} />
         </button>
         {open && (
           <div
@@ -345,7 +346,7 @@ function CountryMultitool({ idx, onChange }: { idx: number; onChange: (i: number
         aria-label="Nächstes Land"
         style={{ ...btn, borderRadius: "0 var(--radius-sm) var(--radius-sm) 0", borderLeft: "none", opacity: idx === VIEWS.length - 1 ? 0.4 : 1 }}
       >
-        <IconChevronRight size={10} />
+        <IconChevronRight size={iconSizes.xs} />
       </button>
     </div>
   );

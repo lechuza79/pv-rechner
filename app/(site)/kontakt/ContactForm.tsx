@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { IconCheck, IconClose } from "../../../components/Icons";
 import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../../../lib/contact-topics";
 
@@ -68,8 +68,9 @@ const S = {
   } as React.CSSProperties,
   success: {
     color: v('--color-positive'),
-    background: 'rgba(0,217,80,0.08)',
-    border: '1px solid rgba(0,217,80,0.2)',
+    // Derived from the positive token so the tint follows the theme (no fixed green).
+    background: 'color-mix(in srgb, var(--color-positive) 9%, transparent)',
+    border: '1px solid color-mix(in srgb, var(--color-positive) 24%, transparent)',
   } as React.CSSProperties,
   error: {
     color: v('--color-negative'),
@@ -121,7 +122,7 @@ export default function ContactForm() {
   if (status === "success") {
     return (
       <div style={{ ...S.message, ...S.success }}>
-        <IconCheck size={16} />
+        <IconCheck size={iconSizes.md} />
         <span>Danke für deine Nachricht! Wir melden uns in der Regel innerhalb von 1–2 Werktagen bei dir.</span>
       </div>
     );
@@ -197,7 +198,7 @@ export default function ContactForm() {
 
       {status === "error" && (
         <div style={{ ...S.message, ...S.error }}>
-          <IconClose size={16} />
+          <IconClose size={iconSizes.md} />
           <span>{errorText}</span>
         </div>
       )}

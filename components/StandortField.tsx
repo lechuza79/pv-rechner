@@ -1,5 +1,5 @@
 "use client";
-import { v } from "../lib/theme";
+import { v, iconSizes } from "../lib/theme";
 import { IconArrowRight, IconCheck } from "./Icons";
 
 // Kompaktes „Standort"-Feld für die Ergebnisseite: PLZ eingeben → standortgenauer
@@ -49,10 +49,10 @@ export default function StandortField({
             padding: "3px 6px", fontSize: 11, fontWeight: 700, lineHeight: 1,
             background: v('--color-accent'), color: v('--color-text-on-accent'),
             border: "none", borderRadius: v('--radius-sm'), cursor: "pointer",
-          }}><IconArrowRight size={12} color={v('--color-text-on-accent')} /></button>
+          }}><IconArrowRight size={iconSizes.sm} color={v('--color-text-on-accent')} /></button>
         )}
         {loading && <span style={{ color: v('--color-accent'), fontSize: 10 }}>…</span>}
-        {confirmed && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{approximate ? "~" : <IconCheck size={10} />}</span>}
+        {confirmed && <span style={{ fontSize: 10, color: v('--color-text-faint') }}>{approximate ? "~" : <IconCheck size={iconSizes.xs} />}</span>}
       </form>
     </div>
   );

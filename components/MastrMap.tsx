@@ -252,7 +252,7 @@ export function MastrMap({
             padding: "6px 10px",
             fontSize: 13,
             pointerEvents: "none",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+            boxShadow: v("--shadow-sm"),
           }}
         >
           <div style={{ fontWeight: 600, color: v("--color-text-primary") }}>{info.name}</div>

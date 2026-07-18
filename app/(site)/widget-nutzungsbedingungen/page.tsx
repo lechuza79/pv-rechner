@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { IconArrowRight } from "../../../components/Icons";
-import { v } from "../../../lib/theme";
+import { v, iconSizes } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -61,7 +61,7 @@ export default function WidgetNutzungsbedingungenPage() {
       <div style={S.wrap}>
         <Link href="/energie-widgets" style={S.back}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={12} style={{ transform: "rotate(180deg)" }} /> Zurück zu den Widgets
+            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück zu den Widgets
           </span>
         </Link>
 

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { v } from "../../../../lib/theme";
+import { v, iconSizes } from "../../../../lib/theme";
 import { IconArrowRight } from "../../../../components/Icons";
 import { FundingStatusBadge, FundingRates, FundingConditions } from "../../../../components/FundingProgramParts";
 import { fundingStandLabel, type FundingProgram } from "../../../../lib/funding-programs";
@@ -22,7 +22,7 @@ function FundingProgramModal({ program, onClose }: { program: FundingProgram; on
   if (!mounted) return null;
   return createPortal(
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 16 }}>
-      <div onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" style={{ background: v("--color-bg"), borderRadius: v("--radius-lg"), maxWidth: 480, width: "100%", maxHeight: "85vh", overflowY: "auto", padding: "20px 18px", boxShadow: "0 10px 40px rgba(0,0,0,0.25)", fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
+      <div onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" style={{ background: v("--color-bg"), borderRadius: v("--radius-lg"), maxWidth: 480, width: "100%", maxHeight: "85vh", overflowY: "auto", padding: "20px 18px", boxShadow: v("--shadow-lg"), fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 8 }}>
           <span style={{ fontSize: 17, fontWeight: 800, lineHeight: 1.25 }}>{program.name}</span>
           <button onClick={onClose} aria-label="Schließen" style={{ border: "none", background: "transparent", fontSize: 24, lineHeight: 0.8, cursor: "pointer", color: v("--color-text-muted"), padding: 0 }}>×</button>
@@ -199,7 +199,7 @@ export default function ResultFunding({
       )}
 
       <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 12, fontSize: 12, color: v("--color-accent"), textDecoration: "none" }}>
-        Alle Förderprogramme <IconArrowRight size={11} />
+        Alle Förderprogramme <IconArrowRight size={iconSizes.xs} />
       </Link>
 
       {modalProgram && <FundingProgramModal program={modalProgram} onClose={() => setModalProgram(null)} />}
