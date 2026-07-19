@@ -177,7 +177,6 @@ export async function GET(req: Request) {
 
     // Healthy week that isn't the monthly digest slot → stay quiet (no inbox spam).
     if (!shouldSend) {
-      console.log(`[Price Report] Skipped (health=${health}, not monthly slot).`);
       return NextResponse.json({ success: true, sent: false, reason: "healthy, not monthly digest slot", health });
     }
 
