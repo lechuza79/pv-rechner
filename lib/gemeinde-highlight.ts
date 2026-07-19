@@ -1,8 +1,8 @@
-// Einleitungstext je Gemeinde: nicht die KPIs nacherzählen, sondern das
-// Auffälligste herausgreifen — was diese Gemeinde vom Bundesland-Schnitt
-// unterscheidet. Rein datengetrieben (Anlagen-Mix + Speicher + Pro-Kopf),
-// aktualisiert sich also mit dem Monatslauf von selbst; SEO über Ort +
-// Solaranlagen/Photovoltaik + Bundesland-Vergleich.
+// Einleitungstext je Gemeinde: nicht die KPIs nacherzählen, sondern gemeinde-
+// spezifische Fakten aneinanderreihen, die sich real unterscheiden — damit die
+// ~11.000 Seiten nicht als Near-Duplicate durchgehen. Rein datengetrieben
+// (Anlagen-Mix, Speicher, Pro-Kopf, Rang im Landkreis, Zubau-Trend), aktualisiert
+// sich mit dem Monatslauf von selbst. SEO über Ort + Solar/Photovoltaik + Vergleich.
 
 type SegRow = { segment: string; count: number; kwp: number };
 type MiniAtlas = {
@@ -23,21 +23,10 @@ function roofKwp(a: MiniAtlas): number {
   return a.solar.by_segment.filter((s) => s.segment !== "freiflaeche").reduce((x, s) => x + s.kwp, 0);
 }
 
-export function buildGemeindeHighlight(opts: {
-  name: string;
-  atlas: MiniAtlas;
-  blAtlas: MiniAtlas;
-  blName: string;
-  perCapita: number | null;
-  perCapitaVsBl: number | null;
-}): string {
-  const { name, atlas, blAtlas, blName, perCapita, perCapitaVsBl } = opts;
-
-  const base = `In ${name} sind ${nf(atlas.solar.total_count)} Solaranlagen mit ${fmtMW(
-    atlas.solar.total_kwp,
-  )} Photovoltaik-Leistung in Betrieb.`;
-
-  // Kandidaten: Abweichung ggü. dem Bundesland-Schnitt. Der stärkste gewinnt.
+/** Charakter-Satz: was diese Gemeinde ausmacht. Erst die markanten Ausreißer
+ *  gegenüber dem Bundesland; wenn keiner heraussticht, die tatsächliche
+ *  Mix-Zusammensetzung — die ist je Gemeinde verschieden, also nie textlos. */
+function characterSentence(atlas: MiniAtlas, blAtlas: MiniAtlas, blName: string): string | null {
   const cs: { mag: number; text: string }[] = [];
   const ff = shareKwp(atlas, "freiflaeche");
   if (ff > 0.3 && ff > shareKwp(blAtlas, "freiflaeche") * 1.3)
@@ -48,18 +37,69 @@ export function buildGemeindeHighlight(opts: {
   const gw = shareKwp(atlas, "gewerbe_dach");
   if (gw > 0.35 && gw > shareKwp(blAtlas, "gewerbe_dach") * 1.3)
     cs.push({ mag: gw, text: `Auffällig viel Gewerbe-Solar — ${pct(gw)} % der Leistung steht auf gewerblichen Dächern, mehr als im ${blName}-Schnitt.` });
-  // Balkonkraftwerke bewusst KEIN Aufhänger: nach Stückzahl zahlreich, nach
-  // Leistung irrelevant — und für die Bewertung zählt die Leistung. Alle
-  // Besonderheiten hier sind leistungsbasiert (kWp-Anteile), plus Speicher/Pro-Kopf.
   const rk = roofKwp(atlas);
   const sd = rk > 0 ? atlas.speicher.kwh_batterie / rk : 0;
   const rkBl = roofKwp(blAtlas);
   const sdBl = rkBl > 0 ? blAtlas.speicher.kwh_batterie / rkBl : 0;
   if (sd > 0 && sdBl > 0 && sd > sdBl * 1.25)
     cs.push({ mag: (sd - sdBl) / sdBl, text: `Überdurchschnittlich viele Hausbatterien — je installiertem kWp Dachleistung steht hier mehr Speicher als im ${blName}-Schnitt.` });
-
+  // Balkonkraftwerke bewusst KEIN Aufhänger: nach Stückzahl zahlreich, nach
+  // Leistung irrelevant — hier zählt die Leistung.
   cs.sort((a, b) => b.mag - a.mag);
-  const highlight = cs[0]?.text;
+  if (cs[0]) return cs[0].text;
+
+  // Fallback: die konkrete Zusammensetzung (je Gemeinde verschieden).
+  const parts: string[] = [];
+  if (pv >= 0.05) parts.push(`${pct(pv)} % private Dächer`);
+  if (gw >= 0.05) parts.push(`${pct(gw)} % Gewerbe`);
+  if (ff >= 0.05) parts.push(`${pct(ff)} % Freifläche`);
+  if (parts.length >= 2) return `Der Solarstrom verteilt sich auf ${parts.join(", ")}.`;
+  return null;
+}
+
+/** Rang nach installierter Solarleistung im Landkreis — je Gemeinde ein anderer. */
+function rankSentence(name: string, kreisName: string | null, rank: number | null, total: number | null): string | null {
+  if (!kreisName || rank == null || total == null || total < 3) return null;
+  if (rank === 1) return `Damit ist ${name} die solarstärkste Gemeinde im ${kreisName} (von ${total} nach installierter Leistung).`;
+  if (rank === total) return `Nach installierter Solarleistung steht ${name} damit an letzter Stelle im ${kreisName} (Platz ${total} von ${total}) — viel Luft nach oben.`;
+  return `Nach installierter Solarleistung steht ${name} damit auf Platz ${rank} von ${total} im ${kreisName}.`;
+}
+
+/** Zubau-Dynamik: letztes volles Jahr gegen Vorjahr — je Gemeinde eigener Verlauf. */
+function zubauSentence(byYear: { year: number; count: number }[], lastYear: number): string | null {
+  const last = byYear.find((y) => y.year === lastYear)?.count ?? 0;
+  const prev = byYear.find((y) => y.year === lastYear - 1)?.count ?? 0;
+  if (last <= 0) return null;
+  if (prev >= 3 && last > prev * 1.2)
+    return `Der Zubau zieht an: ${nf(last)} neue Solaranlagen ${lastYear} nach ${nf(prev)} im Vorjahr.`;
+  if (prev >= 3 && last < prev * 0.8)
+    return `Der Zubau hat nachgelassen: ${nf(last)} neue Anlagen ${lastYear} nach ${nf(prev)} im Vorjahr.`;
+  return `Zuletzt kamen ${nf(last)} Solaranlagen dazu (${lastYear}).`;
+}
+
+export function buildGemeindeHighlight(opts: {
+  name: string;
+  atlas: MiniAtlas;
+  blAtlas: MiniAtlas;
+  blName: string;
+  perCapita: number | null;
+  perCapitaVsBl: number | null;
+  kreisName?: string | null;
+  rankInKreis?: number | null;
+  kreisTotal?: number | null;
+  byYear?: { year: number; count: number }[];
+  lastYear?: number;
+}): string {
+  const { name, atlas, blAtlas, blName, perCapita, perCapitaVsBl } = opts;
+
+  const base = `In ${name} sind ${nf(atlas.solar.total_count)} Solaranlagen mit ${fmtMW(
+    atlas.solar.total_kwp,
+  )} Photovoltaik-Leistung in Betrieb.`;
+
+  const character = characterSentence(atlas, blAtlas, blName);
+  const rank = rankSentence(name, opts.kreisName ?? null, opts.rankInKreis ?? null, opts.kreisTotal ?? null);
+  const zubau =
+    opts.byYear && opts.lastYear != null ? zubauSentence(opts.byYear, opts.lastYear) : null;
 
   let perCap = "";
   if (perCapita !== null && perCapitaVsBl !== null) {
@@ -69,5 +109,5 @@ export function buildGemeindeHighlight(opts: {
         : `Je Einwohner sind das ${nf(perCapita)} W — ${pct(perCapitaVsBl)} % unter dem ${blName}-Schnitt, hier ist also noch viel Luft nach oben.`;
   }
 
-  return [base, highlight, perCap].filter(Boolean).join(" ");
+  return [base, character, rank, zubau, perCap].filter(Boolean).join(" ");
 }

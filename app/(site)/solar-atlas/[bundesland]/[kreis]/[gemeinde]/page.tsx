@@ -223,6 +223,25 @@ export default async function GemeindePage({ params }: { params: Params }) {
   }
   const outside = Array.from(outsideMap.values());
 
+  // Rang der Gemeinde nach installierter Solarleistung im Landkreis — aus den
+  // Ranking-Zellen des Kreises aggregiert (Speicher zählt nicht zur Leistung).
+  // Fürs Intro (ein je Gemeinde verschiedener, konkreter Fakt).
+  const kwpByRegion = new Map<string, number>();
+  for (const c of siblingData.cells) {
+    if (c.segment === "speicher") continue;
+    kwpByRegion.set(c.region_id, (kwpByRegion.get(c.region_id) ?? 0) + c.kwp);
+  }
+  const kreisTotal = siblingData.regions.length || null;
+  let rankInKreis: number | null = null;
+  if (kreisTotal) {
+    const ownKwp = kwpByRegion.get(region.region_id) ?? atlas.solar.total_kwp;
+    let r = 1;
+    kwpByRegion.forEach((kwp, rid) => {
+      if (rid !== region.region_id && kwp > ownKwp) r++;
+    });
+    rankInKreis = r;
+  }
+
   const crumbs: { label: string; href?: string }[] = [
     { label: "Solar-Atlas", href: "/solar-atlas" },
     { label: bl?.name ?? blAgs, href: `/solar-atlas/${params.bundesland}` },
@@ -281,6 +300,11 @@ export default async function GemeindePage({ params }: { params: Params }) {
             blName: bl?.name ?? "Landes",
             perCapita,
             perCapitaVsBl,
+            kreisName: kreis?.name ?? null,
+            rankInKreis,
+            kreisTotal,
+            byYear: atlas.solar.by_year,
+            lastYear,
           })}
         </p>
 
