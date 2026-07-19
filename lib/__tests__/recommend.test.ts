@@ -27,6 +27,28 @@ describe("recommend (PV system recommendation)", () => {
     expect(r).toHaveProperty("alternatives");
   });
 
+  it("threads the PVGIS monthly profile into the shown autarky (Zwischen- = Ergebnisseite)", () => {
+    // Vor dem Fix ignorierte die Empfehlung das Monatsprofil (immer deutscher
+    // Schnitt), während die Ergebnisseite das echte Profil nutzt → verschiedene
+    // Autarkie. Bei einer WP wirkt die Saisonform stark, also muss ein anderes
+    // Monatsprofil eine andere Autarkie ergeben — Beweis, dass es durchgereicht wird.
+    const wpInput: RecommendInput = { ...baseInput, wp: "ja" };
+    // Gleiche Jahressumme (960), gegensätzliche Saisonform. Nur die Anzeige-Autarkie
+    // hängt vom Profil ab (die empfohlene Größe folgt der NPV-Rechnung ohne Profil),
+    // die WP-Winterlast macht die Form aber sichtbar.
+    const summerHeavy = [20, 30, 60, 100, 140, 160, 160, 140, 90, 40, 10, 10];
+    const winterHeavy = [130, 120, 100, 70, 40, 20, 20, 40, 60, 90, 120, 150];
+    const rSummer = recommend({ ...wpInput, monthlyYieldPerKwp: summerHeavy });
+    const rWinter = recommend({ ...wpInput, monthlyYieldPerKwp: winterHeavy });
+    const rDefault = recommend({ ...wpInput, monthlyYieldPerKwp: null });
+    expect(rSummer.reasoning.autarkie).not.toBe(rWinter.reasoning.autarkie);
+    // Das Profil wirkt tatsächlich (mindestens eine Form weicht vom Default ab).
+    expect(
+      rSummer.reasoning.autarkie !== rDefault.reasoning.autarkie ||
+      rWinter.reasoning.autarkie !== rDefault.reasoning.autarkie,
+    ).toBe(true);
+  });
+
   it("reports sim-based autarky, and a battery lifts it (Bex' Reddit-Wunsch)", () => {
     const r = recommend(baseInput);
     expect(r.reasoning.autarkie).toBeGreaterThan(0);

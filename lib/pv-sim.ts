@@ -55,6 +55,12 @@ export interface PvSimResult {
   jahresertrag: number;     // kWh/a ins Haus
   gesamtVerbrauch: number;  // kWh/a (Simulationsgrundlage)
   monthly: SolarMonth[];    // 12 Monate für den Jahresverlauf
+  // WP-spezifische PV-Deckung (0–100 %): der Anteil der Wärmepumpen-Last, der aus
+  // PV/Speicher kommt. Bewusst NICHT die Haushalts-Jahres-Autarkie: die WP zieht
+  // ~80 % ihres Stroms Okt–Apr, genau wenn die PV schwächelt, deshalb liegt ihre
+  // reale Deckung weit unter dem Jahresmittel. Aus der Stundensimulation (pro-rata
+  // der WP an der Stundenlast). 0 ohne WP.
+  wpAutarky: number;
 }
 
 /** Autarkie + Jahresverlauf einer Dach-PV-Anlage aus der Stundensimulation. */
@@ -78,6 +84,9 @@ export function simulatePvYear({ kwp, speicherKwh, monthlyYieldPerKwp, ertragKwp
   const selfConsumption = sim.annualYield > 0
     ? Math.round((sim.selfUsedKwh / sim.annualYield) * 100)
     : 0;
+  const wpAutarky = sim.wpLoadKwh > 0
+    ? Math.round((sim.wpSelfCoveredKwh / sim.wpLoadKwh) * 100)
+    : 0;
 
   return {
     autarky: Math.min(autarky, 100),
@@ -85,6 +94,7 @@ export function simulatePvYear({ kwp, speicherKwh, monthlyYieldPerKwp, ertragKwp
     jahresertrag: sim.annualYield,
     gesamtVerbrauch: sim.consumptionKwh,
     monthly: sim.monthly,
+    wpAutarky: Math.min(wpAutarky, 100),
   };
 }
 
