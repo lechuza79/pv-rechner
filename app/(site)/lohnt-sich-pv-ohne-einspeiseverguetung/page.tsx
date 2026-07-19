@@ -3,7 +3,7 @@ import Link from "next/link";
 import { IconArrowRight } from "../../../components/Icons";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import Faq from "../../../components/Faq";
-import { pvSpeicherFaq } from "../../../lib/faq";
+import { pvOhneEinspeisungFaq } from "../../../lib/faq";
 import { v, iconSizes } from "../../../lib/theme";
 import { fetchMarketPrices, formatPriceDate } from "../../../lib/prices-server";
 import { type PriceConfig } from "../../../lib/prices-config";
@@ -14,32 +14,36 @@ import {
   calcWeightedFeedIn,
   estimateCost,
   batteryReplaceCost,
-  marginalPaybackYears,
-  BATTERY_LIFETIME_YEARS,
 } from "../../../lib/calc";
 import { simulatePvYear } from "../../../lib/pv-sim";
-import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS } from "../../../lib/constants";
+import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, FEED_IN_YEARS } from "../../../lib/constants";
 import { pageMetadata } from "../../../lib/seo";
 import Chart from "../photovoltaik-rechner/_components/Chart";
 
 // Figures on this page come live from the same models the calculator uses
 // (prices from Supabase market_prices with config fallback). ISR keeps them
-// fresh without a rebuild — same pattern as /datenstand.
+// fresh without a rebuild — same pattern as /lohnt-sich-pv-mit-speicher.
 export const revalidate = 3600;
+
+// Dated statement of a PENDING legislative process (EEG reform draft), not a
+// rolling "current year" value — deliberately hardcoded (see CLAUDE.md rule).
+// The EEG guardian updates it together with the reform notes in rechner.tsx
+// and lib/faq.ts when the legal situation changes.
+const REFORM_STAND = "Juli 2026";
 
 export async function generateMetadata(): Promise<Metadata> {
   const year = new Date().getFullYear();
   return pageMetadata({
-    path: "/lohnt-sich-pv-mit-speicher",
-    title: `Lohnt sich PV mit Speicher? Ehrliche Rechnung ${year}`,
+    path: "/lohnt-sich-pv-ohne-einspeiseverguetung",
+    title: `Lohnt sich PV ohne Einspeisevergütung? Ehrliche Rechnung ${year}`,
     description:
-      "Wann sich ein Batteriespeicher zur Photovoltaikanlage rechnet — und wann nicht. Mit transparenter Beispielrechnung auf Basis aktueller Marktpreise, ohne Verkaufsprosa und ohne Anmeldung.",
-    ogImageTitle: "Lohnt sich PV mit Speicher?",
-    ogImageSubtitle: "Ehrliche Beispielrechnung statt Verkaufsprosa.",
+      "Die Einspeisevergütung für Neuanlagen soll ab 2027 fallen — lohnt sich Photovoltaik dann noch? Ja, wenn der Eigenverbrauch stimmt. Mit Beispielrechnung bei Vergütung null, live gerechnet, ohne Anmeldung.",
+    ogImageTitle: "Lohnt sich PV ohne Einspeisevergütung?",
+    ogImageSubtitle: "Die ehrliche Rechnung zur EEG-Reform 2027.",
   });
 }
 
-// ─── Styles (same content-page conventions as /methodik) ────────────────────
+// ─── Styles (same content-page conventions as /lohnt-sich-pv-mit-speicher) ───
 const S = {
   page: {
     background: v("--color-bg"),
@@ -112,7 +116,6 @@ const S = {
     marginBottom: 6,
     display: "block",
   },
-  mono: { fontFamily: v("--font-mono"), fontSize: 12.5 },
   accent: { color: v("--color-accent"), fontWeight: 600 },
   positive: { color: v("--color-positive"), fontWeight: 600 },
   muted: { color: v("--color-text-muted") },
@@ -176,9 +179,10 @@ const S = {
 };
 
 // ─── Example calculation ─────────────────────────────────────────────────────
-// One reference household, three storage sizes — computed with the EXACT same
-// functions the calculator uses (shared calc base, CLAUDE.md). If a number here
-// ever differs from the tool, that's a bug, not a rounding choice.
+// One reference household, feed-in ON vs OFF — computed with the EXACT same
+// functions the calculator uses (shared calc base, CLAUDE.md). "Feed-in off" is
+// literally the calculator's Einspeisung-3-State "Aus" (einspeisung: 0), which
+// the deep links reproduce via the share param eia=0.
 const EX = {
   kwp: 10,
   ertragKwp: 950, // conservative German average, same default as the calculator without PLZ
@@ -195,21 +199,18 @@ interface ExampleRow {
   gewinn25: number;
   /** ⌀ Ersparnis/Jahr — same formula as the calculator's ResultStats. */
   ersparnisProJahr: number;
-  /** Three amortization curves (pess./real./opt.) for the <Chart> teaser —
-   *  computed exactly like the calculator (SCENARIOS + calc), so the picture
-   *  matches the tool 1:1. */
+  /** Three amortization curves (pess./real./opt.) for the <Chart> teaser. */
   scenarios: { id: string; color: string; data: ReturnType<typeof calc> }[];
-  /** Deep link that pre-loads this exact config in the calculator. */
+  /** Deep link that pre-loads this exact config (incl. feed-in state). */
   href: string;
 }
 
-// kWh → SPEICHER option index (share-URL param "s"). Indices are stable for
-// legacy share-URLs (see constants). Only the sizes this page uses are mapped.
+// kWh → SPEICHER option index (share-URL param "s").
 const SPEICHER_IDX: Record<number, number> = Object.fromEntries(
   SPEICHER.map((o, i) => [o.kwh, i] as const),
 );
 
-function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
+function computeExample(speicherKwh: number, feedInActive: boolean, prices: PriceConfig): ExampleRow {
   const baseKwh = PERSONEN[EX.personenIdx].verbrauch;
   const ev = calcEigenverbrauch({
     personenIdx: EX.personenIdx,
@@ -222,7 +223,10 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
     ertragKwp: EX.ertragKwp,
   });
   const kosten = estimateCost(EX.kwp, speicherKwh, prices);
-  const feedIn = calcWeightedFeedIn(EX.kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
+  // Feed-in OFF = the calculator's 3-state "Aus": einspeisung is simply 0.
+  const feedIn = feedInActive
+    ? calcWeightedFeedIn(EX.kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10)
+    : 0;
   const result = calc({
     kwp: EX.kwp,
     kosten,
@@ -243,9 +247,8 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
     ertragKwp: EX.ertragKwp,
     household: { baseKwh, tagQuote: NUTZUNG[EX.nutzungIdx].tagQuote, wpActive: false, eaActive: false },
   });
-  // Three scenario curves for the chart — identical construction to the
-  // calculator (rechner.tsx → scenarioData): scenario EV capped at the physical
-  // maximum (consumption / yield) so the optimistic curve can't invent savings.
+  // Scenario curves identical to the calculator (rechner.tsx → scenarioData):
+  // scenario EV capped at the physical maximum (consumption / yield).
   const jahresertrag = EX.kwp * EX.ertragKwp;
   const scenarios = SCENARIOS.map((s) => ({
     id: s.id,
@@ -262,11 +265,9 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
       batteryReplace: speicherKwh > 0 ? batteryReplaceCost(speicherKwh, prices) : 0,
     }),
   }));
-  // Deep-link params reproduce the teaser numbers 1:1 in the calculator. We
-  // pass strompreis (st) and Ertrag (er) explicitly because the page computes
-  // with the canonical price from prices-config (electricityPrice, e.g. 0,312 €),
-  // while the calculator's own default is a slightly higher hardcoded 0,34 € —
-  // without st the click would show a higher return than the teaser.
+  // Deep-link params reproduce the teaser numbers 1:1 in the calculator.
+  // eia=0 sets the Einspeisung-3-State to "Aus"; st/er are passed explicitly
+  // because the calculator's own defaults differ slightly (see Speicher guide).
   const params = new URLSearchParams({
     a: "2", // 10 kWp (ANLAGEN index)
     s: String(SPEICHER_IDX[speicherKwh] ?? 0),
@@ -274,6 +275,7 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
     n: String(EX.nutzungIdx),
     st: String(prices.electricityPrice),
     er: String(EX.ertragKwp),
+    eia: feedInActive ? "1" : "0",
   });
   return {
     speicherKwh,
@@ -289,8 +291,6 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
 }
 
 // One teaser card: title + amortization chart + result-style tiles + deep link.
-// Server component (Chart is the only client island), tiles reuse the exact
-// ResultStats look/tokens. Tiles wrap on narrow screens (mobile-first).
 function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; badge: string }) {
   const tileWrap = {
     background: v("--color-bg"),
@@ -377,19 +377,26 @@ function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; bad
 
 const eur = (n: number) => `${n.toLocaleString("de-DE")} €`;
 
-export default async function LohntSichPvMitSpeicherPage() {
+export default async function LohntSichPvOhneEinspeisungPage() {
   const prices = await fetchMarketPrices();
   const year = new Date().getFullYear();
-  const rows = [0, 5, 10].map((sp) => computeExample(sp, prices));
-  const [ohne, mit5, mit10] = rows;
+  // Feed-in OFF (the headline scenario) and feed-in ON (today's reference).
+  const ohneSpNull = computeExample(0, false, prices);
+  const mitSpNull = computeExample(10, false, prices);
+  const ohneSpEeg = computeExample(0, true, prices);
+  const mitSpEeg = computeExample(10, true, prices);
   const strompreisCt = (prices.electricityPrice * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 });
   const feedInCt = DEFAULT_FEED_IN.teilUnder10.toLocaleString("de-DE");
-  // Marginal view: does the storage SURCHARGE pay for itself within its lifetime?
-  const speicherAufpreis = mit10.kosten - ohne.kosten;
-  const aufpreisPayback = Math.round(
-    marginalPaybackYears(speicherAufpreis, mit10.gewinn25 - ohne.gewinn25),
-  );
-  const faqItems = pvSpeicherFaq(prices);
+  const priceRatio = Math.round(prices.electricityPrice * 100 / DEFAULT_FEED_IN.teilUnder10);
+  // Year-1 revenue split for the with-storage case (mechanism section): how much
+  // of the annual benefit is feed-in revenue vs self-consumption savings?
+  const jahresertrag = EX.kwp * EX.ertragKwp;
+  const evKwh = Math.round(jahresertrag * mitSpEeg.ev / 100);
+  const einspeiseKwh = jahresertrag - evKwh;
+  const ersparnis1 = Math.round(evKwh * prices.electricityPrice);
+  const erloes1 = Math.round(einspeiseKwh * DEFAULT_FEED_IN.teilUnder10 / 100);
+  const erloesAnteil = Math.round((erloes1 / (erloes1 + ersparnis1)) * 100);
+  const faqItems = pvOhneEinspeisungFaq(prices);
 
   return (
     <div style={S.page}>
@@ -400,81 +407,96 @@ export default async function LohntSichPvMitSpeicherPage() {
           </span>
         </Link>
 
-        <h1 style={S.h1}>Lohnt sich eine PV-Anlage mit Speicher?</h1>
+        <h1 style={S.h1}>Lohnt sich eine PV-Anlage ohne Einspeisevergütung?</h1>
         <p style={S.subtitle}>
-          Der ehrliche Realitätscheck: wann sich ein Batteriespeicher rechnet, wann nicht —
-          und was die Werbeversprechen gern weglassen. Alle Zahlen kommen aus demselben
-          Modell wie unser Rechner, mit aktuellen Marktpreisen.
+          Die Einspeisevergütung für Neuanlagen soll ab 2027 fallen — so sieht es ein
+          Gesetzentwurf vor. Hier ist die ehrliche Rechnung dazu: was die Vergütung heute
+          wirklich beiträgt, und ob sich eine Anlage auch mit Vergütung null trägt. Alle
+          Zahlen kommen aus demselben Modell wie unser Rechner, mit aktuellen Marktpreisen.
         </p>
 
         {/* ── Kurzantwort ── */}
         <div style={S.hero}>
           <span style={S.label}>Die Kurzantwort</span>
-          <strong style={S.strong}>Meistens ja — inzwischen.</strong> Bei den aktuellen
-          Speicherpreisen verdient ein passend dimensionierter Speicher seinen Aufpreis in
-          typischen Haushalten innerhalb seiner Lebensdauer zurück und erhöht den Gesamtgewinn
-          der Anlage deutlich. Das war vor einigen Jahren anders: Die Antwort ist mit den
-          Preisen gekippt, nicht die Physik. Es bleiben aber klare Fälle, in denen sich ein
-          Speicher <em>nicht</em> rechnet — sie stehen weiter unten.
+          <strong style={S.strong}>Ja — wenn der Eigenverbrauch stimmt.</strong> Eine
+          PV-Anlage verdient ihr Geld heute vor allem über den selbst verbrauchten Strom:
+          Jede selbst genutzte Kilowattstunde spart rund {strompreisCt} ct, die Einspeisung
+          bringt nur ca. {feedInCt} ct. Wer mit Speicher, Wärmepumpe oder E-Auto viel vom
+          eigenen Strom nutzt, ist von der Vergütung kaum abhängig — die Rechnung unten
+          zeigt es mit Vergütung null. Ohne nennenswerten Eigenverbrauch kippt die
+          Rechnung dagegen: Reine Einspeise-Konzepte tragen sich ohne Vergütung nicht.
         </div>
         <p style={{ ...S.p, fontSize: 11.5, marginBottom: 0 }}>
           Stand {formatPriceDate(prices.validFrom)} · unverbindliche Näherungswerte, ohne Gewähr.
         </p>
 
-        {/* ── Warum der Speicher die Rechnung verändert ── */}
-        <h2 style={S.h2}>Warum ein Speicher die Rechnung verändert</h2>
+        {/* ── EEG-Reform: Sachstand ── */}
+        <h2 style={S.h2}>Was gerade geplant ist — und was nicht</h2>
         <p style={S.p}>
-          Eine PV-Anlage produziert am meisten Strom mittags — verbraucht wird aber vor allem
-          morgens und abends. Ohne Speicher fließt der Überschuss ins Netz, und dafür gibt es
-          nur die <GlossaryTerm id="einspeiseverguetung">Einspeisevergütung</GlossaryTerm> von
-          aktuell {feedInCt} ct/kWh. Selbst verbrauchter Strom spart dagegen den vollen
-          Strompreis von rund {strompreisCt} ct/kWh.
-        </p>
-        <p style={S.p}>
-          Genau diese Lücke ist das Geschäftsmodell des Speichers: Er verschiebt den
-          Mittagsüberschuss in den Abend und die Nacht. Jede so verschobene Kilowattstunde
-          ist rund das Vierfache wert. Der{" "}
-          <GlossaryTerm id="eigenverbrauch">Eigenverbrauch</GlossaryTerm> — der Anteil des
-          Solarstroms, den du selbst nutzt — steigt dadurch typisch von 15–30 % auf 40–60 %.
-        </p>
-        <p style={S.p}>
-          Ob sich das <em>rechnet</em>, entscheidet der Preis pro Kilowattstunde{" "}
-          <GlossaryTerm id="speicherkapazitaet">Speicherkapazität</GlossaryTerm>. Und der ist
-          in den letzten Jahren stark gefallen — deshalb fällt die Antwort heute anders aus
-          als in älteren Ratgebern.
-        </p>
-
-        {/* ── Eigenverbrauch vs. Autarkie ── */}
-        <h2 style={S.h2}>Eigenverbrauch und Autarkie — nicht verwechseln</h2>
-        <p style={S.p}>
-          Zwei Prozentzahlen, die oft durcheinandergehen — und mit denen sich hervorragend
-          schönrechnen lässt:
+          Auslöser der Debatte ist ein <strong style={S.strong}>Referentenentwurf des
+          Bundeswirtschaftsministeriums</strong> zur EEG-Reform 2027. Wichtig vorweg: Das
+          ist ein laufendes Gesetzgebungsverfahren — <em>geplant</em>, nicht beschlossen.
+          Der Sachstand (Stand: {REFORM_STAND}):
         </p>
         <div style={S.card}>
-          <span style={S.accent}>Eigenverbrauch</span> — wie viel deines <em>erzeugten</em>{" "}
-          Solarstroms nutzt du selbst? Das ist die Größe, die Geld verdient.
+          <span style={S.accent}>Neuanlagen ab 2027:</span> Die dauerhaft garantierte
+          Einspeisevergütung für neue PV-Anlagen bis 25 kWp soll entfallen. Die
+          überarbeitete Entwurfsfassung sieht eine Übergangsphase vor: zunächst 36 Monate
+          reduzierte Vergütung, danach ein befristeter Bonus für die Direktvermarktung.
           <br />
-          <span style={S.accent}>Autarkie</span> — wie viel deines <em>Verbrauchs</em> deckst
-          du aus eigener Sonne? Das ist die gefühlte Unabhängigkeit vom Netz.
+          <span style={S.accent}>Bestandsschutz:</span> Anlagen, die bis Ende 2026 in
+          Betrieb gehen, behalten ihre zugesagte Vergütung für die vollen{" "}
+          {FEED_IN_YEARS} Jahre. Die Reform beträfe nach dem Entwurf ausschließlich
+          Neuanlagen.
+          <br />
+          <span style={S.accent}>Verfahrensstand:</span> Der Kabinettsbeschluss wurde
+          mehrfach verschoben und steht noch aus; danach müssten Bundestag und Bundesrat
+          zustimmen. Hintergrund ist die EU-Beihilfegenehmigung des EEG, die Ende 2026
+          ausläuft.
+          <br />
+          <span style={S.muted}>
+            Ohne Gewähr — verbindlich ist allein die offizielle Gesetzeslage. Die aktuell
+            geltenden Vergütungssätze stehen auf der{" "}
+            <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
+          </span>
         </div>
+
+        {/* ── Mechanismus ── */}
+        <h2 style={S.h2}>Warum die Vergütung die Rechnung längst nicht mehr trägt</h2>
         <p style={S.p}>
-          Die oft beworbenen „70–80 % Unabhängigkeit" beziehen sich auf die{" "}
-          <GlossaryTerm id="autarkie">Autarkie</GlossaryTerm> — nicht auf den Eigenverbrauch,
-          und sie sind kein Renditeversprechen. Wichtig zu wissen: Die Autarkie sättigt bei
-          rund 90 %. Ein Hausspeicher überbrückt gut einen Tag, aber keinen dunklen Winter —
-          im Dezember liefert selbst eine große Anlage nur einen Bruchteil ihres
-          Sommerertrags. Volle Netzunabhängigkeit ist mit einem Heimspeicher praktisch nicht
-          erreichbar, und die letzten Prozentpunkte sind die teuersten.
+          Selbst verbrauchter Strom spart den vollen Strompreis von rund {strompreisCt}{" "}
+          ct/kWh. Eingespeister Strom bringt die{" "}
+          <GlossaryTerm id="einspeiseverguetung">Einspeisevergütung</GlossaryTerm> von
+          aktuell {feedInCt} ct/kWh — selbst genutzter Strom ist damit rund das{" "}
+          {priceRatio}-Fache wert. Wirtschaftlich ist die Entscheidung damit seit Jahren
+          gefallen: Das Geld verdient der{" "}
+          <GlossaryTerm id="eigenverbrauch">Eigenverbrauch</GlossaryTerm>, nicht die
+          Einspeisung.
+        </p>
+        <p style={S.p}>
+          Konkret in unserem Beispielhaushalt mit Speicher: Von den jährlichen Einnahmen
+          im ersten Jahr kommen rund {eur(ersparnis1)} aus ersparten Stromkosten und nur
+          etwa {eur(erloes1)} aus der Einspeisung — die Vergütung steuert also rund{" "}
+          {erloesAnteil} % bei. Fällt sie weg, fehlt dieser Anteil; die Anlage bleibt
+          trotzdem rentabel, nur langsamer.
+        </p>
+        <p style={S.p}>
+          Dazu kommt: Die EEG-Vergütung ist <strong style={S.strong}>schon heute auf{" "}
+          {FEED_IN_YEARS} Jahre begrenzt</strong>. Unser Modell rechnet sie deshalb ohnehin
+          nur {FEED_IN_YEARS} Jahre an, danach null — die Eigenverbrauchs-Ersparnis läuft
+          über die gesamten {YEARS} Jahre weiter. Eine Anlage, die sich über den
+          Eigenverbrauch trägt, war also nie auf die Vergütung als Dauerstütze gebaut.
         </p>
 
-        {/* ── Beispielrechnung ── */}
-        <h2 style={S.h2}>Beispielrechnung: 10 kWp mit und ohne Speicher</h2>
+        {/* ── Beispielrechnung mit Vergütung null ── */}
+        <h2 style={S.h2}>Beispielrechnung: 10 kWp mit Vergütung null</h2>
         <p style={S.p}>
           Ein Beispielhaushalt: 3–4 Personen ({PERSONEN[EX.personenIdx].verbrauch.toLocaleString("de-DE")} kWh
           Jahresverbrauch), teils im Homeoffice, {EX.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>-Anlage,
-          konservativer Ertrag von {EX.ertragKwp} kWh pro kWp (deutscher Durchschnitt ohne
-          Standortdaten). Gerechnet mit unserem Modell im realistischen Szenario
-          (Strompreis +{(prices.electricityIncrease * 100).toLocaleString("de-DE")} %/Jahr):
+          konservativer Ertrag von {EX.ertragKwp} kWh pro kWp. Die Einspeisevergütung steht
+          in dieser Rechnung komplett auf null — im Rechner lässt sich die Einspeisung
+          dafür einfach auf „Aus" stellen, genau so sind diese Zahlen gerechnet
+          (realistisches Szenario, Strompreis +{(prices.electricityIncrease * 100).toLocaleString("de-DE")} %/Jahr):
         </p>
         <div style={{ ...S.card, padding: "6px 10px", overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -482,41 +504,48 @@ export default async function LohntSichPvMitSpeicherPage() {
               <tr>
                 <th style={S.th}></th>
                 <th style={S.thNum}>Ohne Speicher</th>
-                <th style={S.thNum}>5 kWh</th>
-                <th style={S.thNum}>10 kWh</th>
+                <th style={S.thNum}>Mit 10 kWh Speicher</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td style={S.td}>Investition</td>
-                {rows.map((r) => (
+                {[ohneSpNull, mitSpNull].map((r) => (
                   <td key={r.speicherKwh} style={S.tdNum}>{eur(r.kosten)}</td>
                 ))}
               </tr>
               <tr>
                 <td style={S.td}>Eigenverbrauch</td>
-                {rows.map((r) => (
+                {[ohneSpNull, mitSpNull].map((r) => (
                   <td key={r.speicherKwh} style={S.tdNum}>{r.ev} %</td>
                 ))}
               </tr>
               <tr>
                 <td style={S.td}>Autarkie</td>
-                {rows.map((r) => (
+                {[ohneSpNull, mitSpNull].map((r) => (
                   <td key={r.speicherKwh} style={S.tdNum}>{r.autarkie} %</td>
                 ))}
               </tr>
               <tr>
-                <td style={S.td}>Amortisation</td>
-                {rows.map((r) => (
+                <td style={S.td}>Amortisation (Vergütung null)</td>
+                {[ohneSpNull, mitSpNull].map((r) => (
                   <td key={r.speicherKwh} style={S.tdNum}>
                     {r.amortisation != null ? `~${r.amortisation} Jahre` : "—"}
                   </td>
                 ))}
               </tr>
               <tr>
-                <td style={{ ...S.td, borderBottom: "none" }}>Gewinn nach 25 Jahren</td>
-                {rows.map((r) => (
-                  <td key={r.speicherKwh} style={{ ...S.tdNum, borderBottom: "none", color: v("--color-positive"), fontWeight: 700 }}>
+                <td style={S.td}>Zum Vergleich: mit heutiger Vergütung</td>
+                {[ohneSpEeg, mitSpEeg].map((r) => (
+                  <td key={r.speicherKwh} style={{ ...S.tdNum, color: v("--color-text-muted") }}>
+                    {r.amortisation != null ? `~${r.amortisation} Jahre` : "—"}
+                  </td>
+                ))}
+              </tr>
+              <tr>
+                <td style={{ ...S.td, borderBottom: "none" }}>Gewinn nach {YEARS} Jahren (Vergütung null)</td>
+                {[ohneSpNull, mitSpNull].map((r) => (
+                  <td key={r.speicherKwh} style={{ ...S.tdNum, borderBottom: "none", color: r.gewinn25 >= 0 ? v("--color-positive") : v("--color-negative"), fontWeight: 700 }}>
                     {eur(r.gewinn25)}
                   </td>
                 ))}
@@ -525,102 +554,105 @@ export default async function LohntSichPvMitSpeicherPage() {
           </table>
         </div>
         <p style={S.p}>
-          Das Entscheidende ist der <strong style={S.strong}>Blick auf den Aufpreis</strong>:
-          Der 10-kWh-Speicher kostet hier {eur(speicherAufpreis)} extra und holt diesen
-          Aufpreis über den zusätzlichen Eigenverbrauch in rund {aufpreisPayback} Jahren
-          wieder herein — deutlich innerhalb seiner Lebensdauer. Über 25 Jahre wächst der
-          Gesamtgewinn von {eur(ohne.gewinn25)} auf {eur(mit10.gewinn25)}. Auffällig auch:
-          Der Schritt von 5 auf 10 kWh kostet nur noch {eur(mit10.kosten - mit5.kosten)},
-          weil die Installations-Basis nur einmal anfällt.
+          Zwei Dinge fallen auf — und wir sagen beide ehrlich. Erstens:{" "}
+          <strong style={S.strong}>Ohne Speicher wird es knapp.</strong> Mit Vergütung null
+          und nur {ohneSpNull.ev} % Eigenverbrauch trägt sich die Anlage gerade so
+          {ohneSpNull.amortisation != null ? ` (~${ohneSpNull.amortisation} Jahre Amortisation)` : ""} —
+          der Überschuss verpufft unvergütet ins Netz. Zweitens:{" "}
+          <strong style={S.strong}>Mit Speicher bleibt die Rechnung klar positiv.</strong>{" "}
+          Er hebt den Eigenverbrauch auf {mitSpNull.ev} %
+          {mitSpNull.amortisation != null ? `, verkürzt die Amortisation auf ~${mitSpNull.amortisation} Jahre` : ""}{" "}
+          und lässt über {YEARS} Jahre {eur(mitSpNull.gewinn25)} Gewinn übrig — nur{" "}
+          {eur(mitSpEeg.gewinn25 - mitSpNull.gewinn25)} weniger als mit heutiger Vergütung.
+          Genau das ist der Kern der Debatte: Fällt die Vergütung, entscheidet der
+          Eigenverbrauch — und der Speicher wird vom Nice-to-have zum tragenden Baustein.
         </p>
 
         {/* ── Zwei Beispiele mit Chart + Kacheln + Deep-Link in den Rechner ── */}
         <p style={{ ...S.p, marginTop: 18 }}>
-          Dieselben zwei Fälle als Amortisationskurve — die grüne Linie ist das realistische
-          Szenario, die blasseren Linien der vorsichtige und der günstige Verlauf. Ein Klick
-          öffnet die Anlage direkt im Rechner, wo du jede Annahme anpassen kannst:
+          Dieselben zwei Fälle als Amortisationskurve, beide mit Vergütung null — die grüne
+          Linie ist das realistische Szenario. Ein Klick öffnet die Anlage direkt im
+          Rechner mit abgeschalteter Einspeisung, wo du jede Annahme anpassen kannst:
         </p>
-        <TeaserCard row={ohne} title="10 kWp ohne Speicher" badge="10 kWp · kein Speicher" />
-        <TeaserCard row={mit10} title="10 kWp mit 10 kWh Speicher" badge="10 kWp · 10 kWh" />
+        <TeaserCard row={ohneSpNull} title="10 kWp ohne Speicher, Vergütung null" badge="10 kWp · Einspeisung aus" />
+        <TeaserCard row={mitSpNull} title="10 kWp mit 10 kWh Speicher, Vergütung null" badge="10 kWp · 10 kWh · Einspeisung aus" />
 
-        <p style={S.p}>
-          Ehrlichkeitshalber eingerechnet: ein <strong style={S.strong}>Akku-Tausch nach{" "}
-          {BATTERY_LIFETIME_YEARS} Jahren</strong> (zu dann voraussichtlich niedrigeren
-          Preisen) und die Modulalterung von 0,5 % pro Jahr. Nicht enthalten: Wartungskosten
-          (ca. 150–250 €/Jahr, betreffen alle Varianten gleichermaßen) und regionale
-          Förderung, die das Ergebnis weiter verbessern kann.
-        </p>
         <div style={S.card}>
           <span style={S.label}>Annahmen dieser Rechnung</span>
-          Strompreis {strompreisCt} ct/kWh · Einspeisevergütung {feedInCt} ct/kWh
-          (Teileinspeisung, 20 Jahre) · Preisstand {formatPriceDate(prices.validFrom)} ·
-          ohne Förderung · Modell kalibriert an HTW-Berlin-Simulationsdaten.
+          Strompreis {strompreisCt} ct/kWh · Einspeisevergütung 0 ct/kWh (Vergleichszeile:
+          Teileinspeisung {feedInCt} ct/kWh, {FEED_IN_YEARS} Jahre) · Preisstand{" "}
+          {formatPriceDate(prices.validFrom)} · ohne Förderung · inkl. Akku-Tausch und
+          0,5 % Modulalterung pro Jahr · Modell kalibriert an HTW-Berlin-Simulationsdaten.
           <br />
           <span style={S.muted}>
             Alle Beträge sind unverbindliche Näherungswerte ohne Gewähr — mit deinen echten
             Daten (Standort, Verbrauch, Angebotspreis) weicht das Ergebnis ab. Rechne es mit
-            dem{" "}
-            <Link href="/photovoltaik-rechner" style={S.link}>PV-Rechner</Link>{" "}
-            für deinen Fall durch; die Methodik steht offen auf der{" "}
+            dem <Link href="/photovoltaik-rechner" style={S.link}>PV-Rechner</Link> für
+            deinen Fall durch; die Methodik steht offen auf der{" "}
             <Link href="/methodik" style={S.link}>Methodik-Seite</Link>, alle Preisannahmen
             auf der <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
           </span>
         </div>
 
-        {/* ── Wann ja / wann nein ── */}
-        <h2 style={S.h2}>Wann sich ein Speicher lohnt</h2>
-        <div style={S.card}>
-          <span style={S.positive}>Berufstätigen-Haushalt:</span> Wer tagsüber weg ist,
-          verbraucht abends — genau dann liefert der Speicher.
-          <br />
-          <span style={S.positive}>Neuinstallation:</span> Speicher gleich mitkaufen ist pro
-          Kilowattstunde günstiger als nachrüsten, die Montage fällt nur einmal an.
-          <br />
-          <span style={S.positive}>E-Auto mit Abendladung:</span> Wer nach Feierabend lädt,
-          holt sich den Mittagsstrom über den Speicher ins Auto.
-          <br />
-          <span style={S.positive}>Niedrige Einspeisevergütung:</span> Je kleiner die
-          Vergütung, desto wertvoller jede selbst genutzte Kilowattstunde — die Vergütung
-          sinkt für Neuanlagen weiter.
-        </div>
-        <h2 style={S.h2}>Wann eher nicht</h2>
-        <div style={S.card}>
-          <span style={S.accent}>Alte Bestandsanlage mit hoher Vergütung:</span> Wer noch
-          über 30 ct/kWh Einspeisevergütung bekommt, verdient mit Einspeisen mehr als mit
-          Selbstverbrauch — Speicher lohnt dort nicht.
-          <br />
-          <span style={S.accent}>Sehr hoher Tagesverbrauch:</span> Wer ohnehin mittags
-          verbraucht (Homeoffice, Klimaanlage, Pool), nutzt den Strom schon direkt — der
-          Speicher hat weniger zu verschieben.
-          <br />
-          <span style={S.accent}>Deutlich überteuertes Angebot:</span> Die Rechnung oben gilt
-          für Marktpreise. Liegt der Angebotspreis pro Kilowattstunde weit darüber, kippt
-          sie — Vergleichsangebote einholen.
-          <br />
-          <span style={S.accent}>Überdimensionierung:</span> Ab einer gewissen Größe ist der
-          Speicher im Sommer ohnehin voll und im Winter leer — die zweite Hälfte eines zu
-          großen Speichers arbeitet kaum.
-        </div>
+        {/* ── Was den Eigenverbrauch hebt ── */}
+        <h2 style={S.h2}>Was den Eigenverbrauch hebt</h2>
         <p style={S.p}>
-          Ein Sonderfall ist die <strong style={S.strong}>Wärmepumpe</strong>: Sie erhöht
-          zwar den Stromverbrauch stark, zieht aber rund 80 % davon zwischen Oktober und
-          April — genau dann, wenn die Sonne wenig liefert und der Speicher selten voll
-          wird. Der Speicher-Nutzen fällt bei Wärmepumpen-Haushalten deshalb kleiner aus,
-          als die reine Verbrauchsmenge vermuten lässt; unser Modell rechnet diese
-          Saisonkorrektur explizit ein. Was eine Wärmepumpe selbst spart, zeigt der{" "}
-          <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link>.
+          Ohne Vergütung zählt nur noch, wie viel vom eigenen Strom im Haus bleibt. Die
+          wirksamen Hebel, grob nach Wirkung sortiert:
         </p>
+        <div style={S.card}>
+          <span style={S.positive}>Batteriespeicher:</span> verschiebt den Mittagsüberschuss
+          in Abend und Nacht — der größte einzelne Hebel. Ob und wann er sich rechnet,
+          steht im <Link href="/lohnt-sich-pv-mit-speicher" style={S.link}>Speicher-Ratgeber</Link>.
+          <br />
+          <span style={S.positive}>Wärmepumpe:</span> macht Heizen zum Stromverbrauch und
+          nutzt vor allem in der Übergangszeit viel eigenen Solarstrom. Was sie selbst
+          spart, rechnet der <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link>.
+          <br />
+          <span style={S.positive}>E-Auto:</span> wer tagsüber oder über den Speicher lädt,
+          holt sich den Solarstrom in den Tank — bei 15.000 km/Jahr sind das rund
+          2.700 kWh zusätzlicher Verbrauch.
+          <br />
+          <span style={S.positive}>Verbrauch in den Tag verschieben:</span> Spülmaschine,
+          Waschmaschine, Warmwasser mittags statt abends laufen lassen — kostenlos und
+          sofort wirksam.
+        </div>
+
+        {/* ── Wann es eng wird ── */}
+        <h2 style={S.h2}>Wo es ohne Vergütung eng wird</h2>
+        <div style={S.card}>
+          <span style={S.accent}>Volleinspeisung:</span> Konzepte, die den gesamten Strom
+          einspeisen (z. B. große Dächer ohne Eigenverbrauch), leben komplett von der
+          Vergütung — ohne sie tragen sie sich nicht.
+          <br />
+          <span style={S.accent}>Überdimensionierung:</span> „Das Dach voll machen" lohnt
+          ohne Vergütung weniger. Was über den eigenen Verbrauch hinausgeht, bringt nichts
+          mehr ein — die Anlage passend zum Verbrauch auszulegen wird wichtiger. Die{" "}
+          <Link href="/pv-bedarf-berechnen" style={S.link}>Empfehlung</Link> rechnet die
+          passende Größe aus.
+          <br />
+          <span style={S.accent}>Sehr niedriger Verbrauch:</span> Ein 1-Personen-Haushalt
+          mit 1.800 kWh/Jahr kann nur wenig Solarstrom selbst nutzen — hier verlängert
+          sich die Amortisation deutlich. Ein{" "}
+          <Link href="/balkonkraftwerk-rechner" style={S.link}>Balkonkraftwerk</Link> passt
+          dann oft besser als eine große Dachanlage.
+          <br />
+          <span style={S.accent}>Überteuerte Angebote:</span> Die Rechnung oben gilt für
+          Marktpreise. Ohne den Vergütungs-Puffer kippt sie bei deutlich überhöhten
+          Angebotspreisen schneller — Vergleichsangebote werden wichtiger.
+        </div>
 
         {/* ── CTA ── */}
         <div style={{ ...S.hero, marginTop: 28 }}>
           <span style={S.label}>Für deinen Fall durchrechnen</span>
           <p style={{ ...S.p, color: v("--color-text-primary"), marginBottom: 14 }}>
-            Vier Fragen, sofort das Ergebnis — ohne Anmeldung, ohne Verkaufsanrufe. Alle
-            Annahmen sind im Ergebnis sichtbar und anpassbar.
+            Im Rechner kannst du die Einspeisevergütung mit einem Klick abschalten und
+            siehst sofort, wie sich deine Anlage ohne Vergütung trägt — ohne Anmeldung,
+            ohne Verkaufsanrufe.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/photovoltaik-rechner" style={S.ctaButton}>
-              Anlage mit Speicher rechnen →
+            <Link href={mitSpNull.href} style={S.ctaButton}>
+              Ohne Vergütung rechnen →
             </Link>
             <Link href="/pv-bedarf-berechnen" style={S.ctaSecondary}>
               Was passt zu mir?
@@ -629,19 +661,20 @@ export default async function LohntSichPvMitSpeicherPage() {
         </div>
 
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
-        <Faq items={faqItems} title="Häufige Fragen zu PV mit Speicher" currentPath="/lohnt-sich-pv-mit-speicher" />
+        <Faq items={faqItems} title="Häufige Fragen zu PV ohne Einspeisevergütung" currentPath="/lohnt-sich-pv-ohne-einspeiseverguetung" />
 
         <p style={{ ...S.p, fontSize: 12 }}>
-          Verwandte Seiten: <Link href="/methodik" style={S.link}>So rechnen wir</Link> ·{" "}
+          Verwandte Seiten: <Link href="/lohnt-sich-pv-mit-speicher" style={S.link}>Lohnt sich PV mit Speicher?</Link> ·{" "}
+          <Link href="/methodik" style={S.link}>So rechnen wir</Link> ·{" "}
           <Link href="/datenstand" style={S.link}>Aktuelle Preise &amp; Annahmen</Link> ·{" "}
           <Link href="/photovoltaik-foerderung" style={S.link}>PV-Förderung vor Ort</Link> ·{" "}
-          <Link href="/balkonkraftwerk-rechner" style={S.link}>Balkonkraftwerk-Rechner</Link> ·{" "}
           <Link href="/glossar" style={S.link}>Glossar</Link>
         </p>
         <p style={{ ...S.p, fontSize: 11.5, marginTop: 16 }}>
           Zuletzt aktualisiert: {new Date().toLocaleDateString("de-DE", { month: "long", year: "numeric" })} —
           die Zahlen auf dieser Seite werden automatisch aus den aktuellen Marktpreisen
-          berechnet ({year}).
+          berechnet ({year}). Angaben zur geplanten EEG-Reform: Stand {REFORM_STAND}, ohne
+          Gewähr; verbindlich ist die offizielle Gesetzeslage.
         </p>
       </div>
     </div>
