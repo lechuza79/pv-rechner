@@ -17,6 +17,38 @@ export const FEED_IN_YEARS = 20;
 // Winter ~17% über Durchschnitt, Sommer ~15% unter
 export const CONSUMPTION_MONTHLY = [1.17, 1.05, 1.08, 0.97, 0.93, 0.84, 0.87, 0.87, 0.91, 1.00, 1.13, 1.17];
 
+// ─── Autarkiegrad-Kennfeld (HTW Berlin / Quaschning) ─────────────────────────
+// Der Autarkiegrad (Netz-Unabhängigkeit) lässt sich NICHT aus dem Eigenverbrauch
+// zurückrechnen — bei überdimensionierten Anlagen läuft eine Jahresbilanz gegen
+// 100 %, obwohl im Winter mangels Sonne immer Netzstrom gezogen wird. Der wahre
+// Wert kommt aus derselben zeitaufgelösten HTW-Simulation wie das
+// Eigenverbrauchs-Power-Law (25.000 Konfigurationen, 1-Min-Auflösung). HTW liefert
+// dazu ein eigenes Autarkie-Kennfeld über zwei Achsen:
+//   x = installierte kWp pro 1000 kWh Jahresverbrauch
+//   y = nutzbare Speicher-kWh pro 1000 kWh Jahresverbrauch
+// Werte hier sind eine verlustarme Ausdünnung der HTW-Matrix (Original: 162×162 in
+// 0,0625-Schritten). Bilinear interpoliert bleibt der Fehler im realistischen
+// Bereich (x 0,15–6, y 0–4) bei ⌀ 0,26 pp, max 2,7 pp (nur im Winzanlagen-Eck).
+// Quelle: solar.htw-berlin.de/rechner/unabhaengigkeitsrechner (Referenz-Ertrag
+// 1024 kWh/kWp — siehe AUTARKY_HTW_YIELD, wir skalieren die x-Achse auf den echten
+// Standort-Ertrag). Autarkie sättigt physikalisch bei ~90 %, nie 100 %.
+export const AUTARKY_HTW_YIELD = 1024;
+export const AUTARKY_X = [0, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 3.5, 4, 5, 6, 8, 10];
+export const AUTARKY_Y = [0, 0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4, 5];
+export const AUTARKY_GRID = [
+  [0, 0.166, 0.238, 0.279, 0.305, 0.338, 0.359, 0.374, 0.385, 0.393, 0.400, 0.411, 0.418, 0.429, 0.436], // y=0
+  [0, 0.223, 0.323, 0.366, 0.393, 0.426, 0.447, 0.461, 0.472, 0.480, 0.487, 0.497, 0.504, 0.513, 0.519], // y=0.25
+  [0, 0.237, 0.367, 0.421, 0.452, 0.489, 0.512, 0.529, 0.541, 0.551, 0.558, 0.570, 0.578, 0.589, 0.595], // y=0.5
+  [0, 0.242, 0.401, 0.469, 0.506, 0.548, 0.575, 0.593, 0.607, 0.618, 0.627, 0.640, 0.650, 0.663, 0.670], // y=0.75
+  [0, 0.242, 0.425, 0.511, 0.555, 0.605, 0.633, 0.653, 0.669, 0.680, 0.689, 0.703, 0.714, 0.728, 0.736], // y=1
+  [0, 0.242, 0.454, 0.569, 0.626, 0.685, 0.716, 0.738, 0.755, 0.768, 0.779, 0.795, 0.807, 0.824, 0.836], // y=1.5
+  [0, 0.242, 0.463, 0.594, 0.660, 0.727, 0.763, 0.787, 0.806, 0.821, 0.834, 0.853, 0.868, 0.888, 0.902], // y=2
+  [0, 0.242, 0.465, 0.606, 0.673, 0.744, 0.784, 0.809, 0.828, 0.844, 0.858, 0.879, 0.895, 0.917, 0.934], // y=2.5
+  [0, 0.242, 0.466, 0.613, 0.681, 0.756, 0.797, 0.822, 0.841, 0.857, 0.871, 0.892, 0.907, 0.931, 0.948], // y=3
+  [0, 0.242, 0.468, 0.623, 0.692, 0.769, 0.811, 0.839, 0.860, 0.876, 0.889, 0.908, 0.923, 0.946, 0.962], // y=4
+  [0, 0.242, 0.469, 0.628, 0.698, 0.776, 0.820, 0.849, 0.871, 0.889, 0.902, 0.921, 0.936, 0.958, 0.972], // y=5
+];
+
 // Gas/Öl-Marktpreis + CO2-Faktor — EINZIGE QUELLE (Single Source of Truth).
 // Preis in €/kWh, co2PerKwh in kg/kWh. FUEL, WP_FUEL_OPTIONS und
 // lib/heatpump-config.ts leiten ihre Gas-/Öl-Werte hieraus ab — bitte nur hier

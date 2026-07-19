@@ -180,6 +180,21 @@ export default async function MethodikPage() {
           deckst. Die oft genannten „70–80 %" beziehen sich meist auf den Autarkiegrad, nicht
           auf den Eigenverbrauch.
         </p>
+        <p style={S.p}>
+          Den Autarkiegrad rechnen wir mit einer <strong style={{ fontWeight: 700, color: v('--color-text-primary') }}>Stunden-Simulation
+          über ein ganzes Jahr</strong> — nicht aus dem Eigenverbrauch zurückgerechnet.
+          Das ist wichtig: Eine reine Jahresbilanz würde bei sehr großen Anlagen fälschlich
+          100 % anzeigen, weil sie den Sommerüberschuss gegen das Winterdefizit aufrechnet.
+          Das kann man aber nicht — im Dezember liefert selbst eine riesige Anlage nur einen
+          Bruchteil, und ein Hausspeicher überbrückt gut einen Tag, keinen dunklen Winter.
+          Die Simulation stellt darum Stunde für Stunde Erzeugung und Verbrauch gegenüber,
+          lädt und entlädt den Speicher und bildet so den Winter- und Tag/Nacht-Effekt direkt
+          ab — inklusive Wärmepumpe (zieht ihren Strom vor allem im Winter) und Standort.
+          Wir haben sie gegen das Unabhängigkeits-Kennfeld der HTW Berlin geprüft: bei
+          gleicher Verbrauchsannahme treffen sich beide auf etwa einen Prozentpunkt genau.
+          Ergebnis: Die Autarkie sättigt bei rund 90 % — volle Unabhängigkeit vom Netz ist mit
+          einem Hausspeicher praktisch nicht erreichbar.
+        </p>
         <div style={S.card}>
           <span style={S.label}>Einflussfaktoren</span>
           <span style={S.accent}>Anlagengröße</span> relativ zum Verbrauch

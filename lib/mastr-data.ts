@@ -4,11 +4,34 @@
 // filled, only `loadFromSupabase` needs to flip to true.
 
 import { BUNDESLAENDER, bundeslandByAgs } from "./mastr-regions";
+import { ENCLOSED_CITIES } from "./enclosed-cities";
 
 export type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
-export type Segment = "privat_dach" | "gewerbe_dach" | "freiflaeche" | "n/a";
-export type SegmentFilter = "alle" | "privat_dach" | "gewerbe_dach" | "freiflaeche";
-export type Level = "de" | "bundesland" | "landkreis";
+export type Segment = "steckersolar" | "privat_dach" | "gewerbe_dach" | "freiflaeche" | "n/a";
+export type SegmentFilter = "alle" | "steckersolar" | "privat_dach" | "gewerbe_dach" | "freiflaeche";
+export type Level = "de" | "bundesland" | "landkreis" | "gemeinde";
+
+/** AGS length per level. The key is nested, so a prefix of this length IS the parent. */
+export const LEVEL_LEN: Record<Exclude<Level, "de">, number> = {
+  bundesland: 2,
+  landkreis: 5,
+  gemeinde: 8,
+};
+
+/** Roof-mounted segments — everything except open-field. */
+export const DACH_SEGMENTE: Segment[] = ["steckersolar", "privat_dach", "gewerbe_dach"];
+
+export function levelOf(regionId: string): Level {
+  if (regionId === "de") return "de";
+  if (regionId.length === 2) return "bundesland";
+  if (regionId.length === 5) return "landkreis";
+  return "gemeinde";
+}
+
+/** Prefix to filter aggregates by. "de" means no filter — everything. */
+function prefixOf(regionId: string): string {
+  return regionId === "de" ? "" : regionId;
+}
 
 // "gesamt" = all renewables summed (solar + wind + biomasse + wasser); storage excluded
 const RENEWABLE_TRAEGER: Energietraeger[] = ["solar", "wind", "biomasse", "wasser"];
@@ -79,9 +102,10 @@ export const SOLAR_STOCK_MW: Record<string, number> = Object.fromEntries(
 );
 
 // Rough share of solar installations by segment (nation-wide approximation).
-// Will be replaced by actual segment counts from MaStR per region.
+// Only reachable when LOAD_FROM_SUPABASE is false, which it no longer is.
 const SOLAR_SEGMENT_SHARE: Record<Exclude<Segment, "n/a">, number> = {
-  privat_dach: 0.35,
+  steckersolar: 0.02,
+  privat_dach: 0.33,
   gewerbe_dach: 0.30,
   freiflaeche: 0.35,
 };
@@ -156,15 +180,6 @@ const PLACEHOLDER_AS_OF = "2025-01-31";
 
 // ─── Supabase path ────────────────────────────────────────────────────────────
 
-type AggregateRow = {
-  region_id: string;
-  energietraeger: string;
-  segment: string;
-  year: number;
-  count: number;
-  kwp: number;
-};
-
 let metaDataAsOfCache: string | null = null;
 let metaFetchedAt = 0;
 
@@ -180,45 +195,90 @@ async function fetchMetaDataAsOf(): Promise<string> {
   return metaDataAsOfCache;
 }
 
-async function loadSupabaseAggregates(energietraeger: Energietraeger): Promise<AggregateRow[]> {
+function traegerList(energietraeger: Energietraeger): string[] {
+  return energietraeger === "gesamt" ? RENEWABLE_TRAEGER : [energietraeger];
+}
+
+/** Stable display order for the solar segments. */
+const SEGMENT_ORDER: Record<string, number> = {
+  steckersolar: 0,
+  privat_dach: 1,
+  gewerbe_dach: 2,
+  freiflaeche: 3,
+};
+
+function sortSegments(list: SegmentBreakdown[]): SegmentBreakdown[] {
+  return list.sort((a, b) => (SEGMENT_ORDER[a.segment] ?? 99) - (SEGMENT_ORDER[b.segment] ?? 99));
+}
+
+export type ChildRow = {
+  region_id: string;
+  segment: string;
+  count: number;
+  kwp: number;
+  count_recent: number;
+};
+
+/**
+ * Children of a region, grouped in the database at the requested AGS length.
+ *
+ * The old path pulled the whole table into Node and grouped it there. At
+ * Gemeinde granularity (~10x the rows) that meant hundreds of paginated
+ * requests per page view, and any un-paginated query silently truncated at
+ * PostgREST's 1000-row cap. The rollup function returns at most a few hundred
+ * rows, so neither can happen.
+ */
+export async function loadChildren(
+  parent: string,
+  childLevel: Exclude<Level, "de">,
+  energietraeger: Energietraeger,
+  yearRecent?: number,
+  /** Cut the history off here. Passing last year yields the ranking as it stood then. */
+  yearMax?: number,
+): Promise<ChildRow[]> {
   const { supabase } = await import("./supabase-server");
   if (!supabase) throw new Error("Supabase not configured");
 
-  const etList: string[] =
-    energietraeger === "gesamt" ? RENEWABLE_TRAEGER : [energietraeger];
-
-  // Supabase / PostgREST default max_rows is 1000. For Solar (~28k buckets)
-  // and Gesamt (~45k buckets) we paginate with .range() until exhausted.
-  const PAGE = 1000;
-  const all: AggregateRow[] = [];
-  let from = 0;
-  while (true) {
-    const { data, error } = await supabase
-      .from("mastr_aggregates")
-      .select("region_id, energietraeger, segment, year, count, kwp")
-      .in("energietraeger", etList)
-      // Stable ordering is required for pagination — without it, Supabase
-      // may return duplicates or gaps across pages.
-      .order("region_id", { ascending: true })
-      .order("energietraeger", { ascending: true })
-      .order("segment", { ascending: true })
-      .order("year", { ascending: true })
-      .range(from, from + PAGE - 1);
-    if (error) throw new Error(`Supabase query failed: ${error.message}`);
-    if (!data || data.length === 0) break;
-    all.push(...(data as AggregateRow[]));
-    if (data.length < PAGE) break;
-    from += PAGE;
-  }
-  return all;
+  const { data, error } = await supabase.rpc("mastr_children", {
+    p_prefix: prefixOf(parent),
+    p_child_len: LEVEL_LEN[childLevel],
+    p_traeger: traegerList(energietraeger),
+    p_year_recent: yearRecent ?? null,
+    p_year_max: yearMax ?? null,
+  });
+  if (error) throw new Error(`mastr_children failed: ${error.message}`);
+  return (data ?? []).map((r: ChildRow) => ({
+    region_id: r.region_id,
+    segment: r.segment,
+    count: Number(r.count),
+    kwp: Number(r.kwp),
+    count_recent: Number(r.count_recent ?? 0),
+  }));
 }
 
-// Bundesland AGS = first 2 digits of the Landkreis AGS (region_id)
-function blPrefix(regionId: string): string {
-  return regionId.substring(0, 2);
+type SeriesRow = { energietraeger: string; segment: string; year: number; count: number; kwp: number; kwh: number };
+
+/** One region's segment x year series, summed over everything beneath it. */
+async function loadSeries(regionId: string, energietraeger: Energietraeger): Promise<SeriesRow[]> {
+  const { supabase } = await import("./supabase-server");
+  if (!supabase) throw new Error("Supabase not configured");
+
+  const { data, error } = await supabase.rpc("mastr_region_series", {
+    p_prefix: prefixOf(regionId),
+    p_traeger: traegerList(energietraeger),
+  });
+  if (error) throw new Error(`mastr_region_series failed: ${error.message}`);
+  return (data ?? []).map((r: SeriesRow) => ({
+    energietraeger: r.energietraeger,
+    segment: r.segment,
+    year: r.year,
+    count: Number(r.count),
+    kwp: Number(r.kwp),
+    kwh: Number(r.kwh ?? 0),
+  }));
 }
 
-function rowMatchesSegment(row: AggregateRow, segment: SegmentFilter): boolean {
+function rowMatchesSegment(row: { segment: string }, segment: SegmentFilter): boolean {
   if (segment === "alle") return true;
   // Segment filter only meaningful for solar; rows from other traegers have
   // segment='n/a' and should be excluded when user filters to privat/gewerbe/…
@@ -230,26 +290,32 @@ async function supabaseChoroplethData(
   energietraeger: Energietraeger,
   segment: SegmentFilter,
 ): Promise<{ data: ChoroplethEntry[]; source: "supabase"; data_as_of: string }> {
-  const rows = await loadSupabaseAggregates(energietraeger);
-  const asOf = await fetchMetaDataAsOf();
+  // One level down from the parent: DE → Bundesländer, Bundesland → Kreise,
+  // Kreis → Gemeinden. The map now carries Gemeinde geometry (lazy-loaded per
+  // Kreis), so the Kreis→Gemeinde step feeds the deepest drilldown.
+  const childLevel: Exclude<Level, "de"> =
+    parent === "de"
+      ? "bundesland"
+      : levelOf(parent) === "bundesland"
+        ? "landkreis"
+        : "gemeinde";
+  // A Landkreis that rings a kreisfreie Stadt gets that Stadt drawn into its map
+  // bundle (it sits in the Kreis's hole). Pull the Stadt's own value in too, so
+  // it is coloured and hovers like any other shape instead of a blank infill.
+  const enclosedCity = childLevel === "gemeinde" ? ENCLOSED_CITIES[parent] : undefined;
+  const [rows, cityRows, asOf] = await Promise.all([
+    loadChildren(parent, childLevel, energietraeger),
+    enclosedCity ? loadChildren(enclosedCity, "gemeinde", energietraeger) : Promise.resolve([]),
+    fetchMetaDataAsOf(),
+  ]);
 
   const byRegion = new Map<string, { count: number; kwp: number }>();
-
-  for (const r of rows) {
+  for (const r of [...rows, ...cityRows]) {
     if (!rowMatchesSegment(r, segment)) continue;
-    let regionKey: string;
-    if (parent === "de") {
-      // DE-Ebene aggregiert auf Bundesland — cleaner Einstiegsansicht.
-      regionKey = blPrefix(r.region_id);
-    } else {
-      // Bundesland-Ebene: nur Landkreise mit passendem AGS-Prefix.
-      if (!r.region_id.startsWith(parent)) continue;
-      regionKey = r.region_id;
-    }
-    const existing = byRegion.get(regionKey) ?? { count: 0, kwp: 0 };
+    const existing = byRegion.get(r.region_id) ?? { count: 0, kwp: 0 };
     existing.count += r.count;
     existing.kwp += r.kwp;
-    byRegion.set(regionKey, existing);
+    byRegion.set(r.region_id, existing);
   }
 
   const data: ChoroplethEntry[] = Array.from(byRegion.entries()).map(([region_id, v]) => ({
@@ -265,64 +331,51 @@ async function supabaseRegionSummary(
   energietraeger: Energietraeger,
   segment: SegmentFilter,
 ): Promise<RegionSummary> {
-  const rows = await loadSupabaseAggregates(energietraeger);
-  const asOf = await fetchMetaDataAsOf();
+  const [rows, asOf] = await Promise.all([loadSeries(regionId, energietraeger), fetchMetaDataAsOf()]);
 
-  // Match rows for this region (DE = all, BL = 2-digit prefix, LK = exact)
-  const matches = rows.filter((r) => {
-    if (regionId === "de") return true;
-    if (regionId.length === 2) return blPrefix(r.region_id) === regionId;
-    return r.region_id === regionId;
-  });
-
-  const filtered = matches.filter((r) => rowMatchesSegment(r, segment));
+  const filtered = rows.filter((r) => rowMatchesSegment(r, segment));
   const totalCount = filtered.reduce((s, r) => s + r.count, 0);
-  const totalKwp = filtered.reduce((s, r) => s + Number(r.kwp), 0);
+  const totalKwp = filtered.reduce((s, r) => s + r.kwp, 0);
 
   // by_segment (solar only): unfiltered segment distribution
   let by_segment: SegmentBreakdown[];
   if (energietraeger === "solar") {
     const buckets: Record<string, { count: number; kwp: number }> = {};
-    for (const r of matches) {
+    for (const r of rows) {
       const b = buckets[r.segment] ?? { count: 0, kwp: 0 };
       b.count += r.count;
-      b.kwp += Number(r.kwp);
+      b.kwp += r.kwp;
       buckets[r.segment] = b;
     }
-    by_segment = (Object.entries(buckets) as [string, { count: number; kwp: number }][])
-      .map(([segKey, v]) => ({ segment: segKey as Segment, ...v }))
-      .filter((s) => s.segment !== "n/a");
-    // Stable, predictable order
-    const order: Record<string, number> = { privat_dach: 0, gewerbe_dach: 1, freiflaeche: 2 };
-    by_segment.sort((a, b) => (order[a.segment] ?? 99) - (order[b.segment] ?? 99));
+    by_segment = sortSegments(
+      (Object.entries(buckets) as [string, { count: number; kwp: number }][])
+        .map(([segKey, v]) => ({ segment: segKey as Segment, ...v }))
+        .filter((s) => s.segment !== "n/a"),
+    );
   } else {
     by_segment = [{ segment: "n/a", count: totalCount, kwp: totalKwp }];
   }
 
   // Resolve region name + level
+  const level = levelOf(regionId);
   let name: string;
-  let level: Level;
-  if (regionId === "de") {
+  if (level === "de") {
     name = "Deutschland";
-    level = "de";
-  } else if (regionId.length === 2) {
-    const bl = bundeslandByAgs(regionId);
-    name = bl?.name ?? regionId;
-    level = "bundesland";
+  } else if (level === "bundesland") {
+    name = bundeslandByAgs(regionId)?.name ?? regionId;
   } else {
-    // Landkreis — look up the name from mastr_regions (populated by upload phase)
+    // Kreis/Gemeinde — name comes from mastr_regions (Destatis, authoritative)
     const { supabase } = await import("./supabase-server");
-    let lkName: string | null = null;
+    let lookedUp: string | null = null;
     if (supabase) {
       const { data } = await supabase
         .from("mastr_regions")
         .select("name")
         .eq("region_id", regionId)
         .maybeSingle();
-      lkName = (data as { name?: string } | null)?.name ?? null;
+      lookedUp = (data as { name?: string } | null)?.name ?? null;
     }
-    name = lkName ?? regionId;
-    level = "landkreis";
+    name = lookedUp ?? regionId;
   }
 
   return {
@@ -413,12 +466,13 @@ export async function getRegionSummary(
 }
 
 // ─── Region atlas (single region, all metrics in one query) ──────────────────
-// For region landing pages: loads only the requested region's rows (a city has
-// ~100 buckets) instead of the full table, and returns solar + storage + the
-// yearly build-out curve in one shot. SAFE ONLY for Kreis/Stadt (5-digit AGS,
-// ~100 buckets < PostgREST's 1000-row page cap). For a Bundesland (2-digit,
-// ~thousands of buckets) or "de" this single query would silently truncate at
-// 1000 rows — add pagination (see loadSupabaseAggregates) before using it there.
+// For region landing pages: solar + storage + the yearly build-out curve for one
+// region, summed over everything beneath it.
+//
+// Safe at every level now. It used to match a Kreis with .eq("region_id") — which
+// stopped matching anything the moment Gemeinde became the stored grain, and would
+// have shown every city page a silent zero. It now goes through the database
+// rollup, whose result is bounded by segment x year, never by region count.
 
 export type RegionAtlas = {
   region_id: string;
@@ -428,7 +482,20 @@ export type RegionAtlas = {
     by_segment: SegmentBreakdown[];
     by_year: { year: number; count: number; kwp: number }[];
   };
-  speicher: { count: number; kwp: number };
+  /**
+   * count = all electricity stores; kwh_batterie = usable capacity of home and
+   * commercial batteries only. Pumped-storage capacity is excluded on purpose —
+   * one Goldisthal (8,7 GWh) would swamp the figure and make "kWh per kWp"
+   * meaningless. count still includes it so the tally stays honest.
+   */
+  speicher: { count: number; kwp: number; kwh_batterie: number };
+  /** Weitere Erzeuger je Gemeinde (installierte Leistung kWp/kW), aus derselben
+   *  MaStR-Aggregation wie Solar. Für den Technologie-Mix. */
+  generators: {
+    wind: { count: number; kwp: number };
+    biomasse: { count: number; kwp: number };
+    wasser: { count: number; kwp: number };
+  };
   data_as_of: string;
 };
 
@@ -436,18 +503,12 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
   const { supabase } = await import("./supabase-server");
   if (!supabase) throw new Error("Supabase not configured");
 
-  let query = supabase
-    .from("mastr_aggregates")
-    .select("energietraeger, segment, year, count, kwp")
-    .in("energietraeger", ["solar", "speicher"]);
-  if (regionId !== "de") {
-    query = regionId.length === 2
-      ? query.like("region_id", `${regionId}%`)
-      : query.eq("region_id", regionId);
-  }
-  const { data, error } = await query;
-  if (error) throw new Error(`Supabase query failed: ${error.message}`);
-  const rows = (data ?? []) as AggregateRow[];
+  const { data, error } = await supabase.rpc("mastr_region_series", {
+    p_prefix: prefixOf(regionId),
+    p_traeger: ["solar", "speicher", "wind", "biomasse", "wasser"],
+  });
+  if (error) throw new Error(`mastr_region_series failed: ${error.message}`);
+  const rows = (data ?? []) as SeriesRow[];
 
   let solarCount = 0;
   let solarKwp = 0;
@@ -455,32 +516,50 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
   const yearBuckets: Record<number, { count: number; kwp: number }> = {};
   let speicherCount = 0;
   let speicherKwp = 0;
+  let batterieKwh = 0;
+  const gen: Record<string, { count: number; kwp: number }> = {
+    wind: { count: 0, kwp: 0 },
+    biomasse: { count: 0, kwp: 0 },
+    wasser: { count: 0, kwp: 0 },
+  };
 
   for (const r of rows) {
+    const count = Number(r.count);
     const kwp = Number(r.kwp);
     if (r.energietraeger === "speicher") {
-      speicherCount += r.count;
+      speicherCount += count;
       speicherKwp += kwp;
+      if (r.segment.startsWith("batterie")) batterieKwh += Number(r.kwh);
+      continue;
+    }
+    // Andere Erzeuger (Wind/Biomasse/Wasser) getrennt sammeln — NICHT als Solar
+    // zählen (der alte Fallback tat genau das, deshalb hier explizit verzweigt).
+    if (r.energietraeger !== "solar") {
+      const g = gen[r.energietraeger];
+      if (g) {
+        g.count += count;
+        g.kwp += kwp;
+      }
       continue;
     }
     // solar
-    solarCount += r.count;
+    solarCount += count;
     solarKwp += kwp;
     const seg = (segBuckets[r.segment] ??= { count: 0, kwp: 0 });
-    seg.count += r.count;
+    seg.count += count;
     seg.kwp += kwp;
     if (r.year) {
       const yr = (yearBuckets[r.year] ??= { count: 0, kwp: 0 });
-      yr.count += r.count;
+      yr.count += count;
       yr.kwp += kwp;
     }
   }
 
-  const order: Record<string, number> = { privat_dach: 0, gewerbe_dach: 1, freiflaeche: 2 };
-  const by_segment: SegmentBreakdown[] = (Object.entries(segBuckets) as [string, { count: number; kwp: number }][])
-    .map(([seg, v]) => ({ segment: seg as Segment, ...v }))
-    .filter((s) => s.segment !== "n/a")
-    .sort((a, b) => (order[a.segment] ?? 99) - (order[b.segment] ?? 99));
+  const by_segment: SegmentBreakdown[] = sortSegments(
+    (Object.entries(segBuckets) as [string, { count: number; kwp: number }][])
+      .map(([seg, v]) => ({ segment: seg as Segment, ...v }))
+      .filter((s) => s.segment !== "n/a"),
+  );
 
   const by_year = (Object.entries(yearBuckets) as [string, { count: number; kwp: number }][])
     .map(([year, v]) => ({ year: Number(year), ...v }))
@@ -489,7 +568,8 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
   return {
     region_id: regionId,
     solar: { total_count: solarCount, total_kwp: solarKwp, by_segment, by_year },
-    speicher: { count: speicherCount, kwp: speicherKwp },
+    speicher: { count: speicherCount, kwp: speicherKwp, kwh_batterie: batterieKwh },
+    generators: { wind: gen.wind, biomasse: gen.biomasse, wasser: gen.wasser },
     data_as_of: await fetchMetaDataAsOf(),
   };
 }

@@ -8,7 +8,7 @@ import { bundeslandByAgs } from "../lib/mastr-regions";
 
 import type { FeatureCollection as GeoJsonFeatureCollection, Geometry } from "geojson";
 
-type RegionProps = { id: string; name: string; bl?: string; kind?: string };
+type RegionProps = { id: string; name: string; bl?: string; kind?: string; kreis?: string };
 type FeatureCollection = GeoJsonFeatureCollection<Geometry, RegionProps>;
 
 export type RegionValue = {
@@ -17,15 +17,22 @@ export type RegionValue = {
 };
 
 export type MastrMapProps = {
-  /** "de" shows 16 Bundesländer; "bundesland" zooms into parentAgs + shows its Landkreise. */
-  level: "de" | "bundesland";
-  /** Required when level="bundesland" — 2-digit Bundesland AGS to zoom to. */
+  /**
+   * "de" shows the 16 Bundesländer; "bundesland" zooms into parentAgs and shows
+   * its Landkreise; "landkreis" zooms into parentAgs and shows its Gemeinden.
+   * The Gemeinde geometry for a Kreis is lazy-loaded on demand (one small file
+   * per Kreis), so the ~11.000 Gemeinde polygons never load all at once.
+   */
+  level: "de" | "bundesland" | "landkreis";
+  /** Zoom target: 2-digit Bundesland AGS (level=bundesland) or 5-digit Kreis AGS (level=landkreis). */
   parentAgs?: string;
-  /** Values to color the visible regions (BL on de-level, LK on bundesland-level). */
+  /** Values to color the visible regions (BL / LK / Gemeinde depending on level). */
   values: RegionValue[];
-  /** Highlighted region (BL on de-level, LK on bundesland-level). */
+  /** Highlighted region (BL / LK / Gemeinde depending on level). */
   selectedAgs?: string;
-  onSelect?: (ags: string) => void;
+  /** name is the clicked region's label from the geometry — lets the caller show
+   *  it immediately, before the (slower) summary API returns. */
+  onSelect?: (ags: string, name?: string) => void;
   valueLabel?: string;
   /** True while choropleth data is fetching — polygons animate with a pulse. */
   loading?: boolean;
@@ -37,6 +44,14 @@ export type MastrMapProps = {
 const COLOR_RAMP = [12, 26, 40, 55, 70, 85, 100].map(
   (pct) => `color-mix(in srgb, var(--color-accent) ${pct}%, var(--color-bg))`,
 );
+
+// Region label with its official designation, e.g. "Landkreis Würzburg" or
+// "Kreisfreie Stadt Flensburg". Bundesländer carry no designation → just the
+// name. Used for the hover box and for the name handed to onSelect (so a freshly
+// clicked Kreis reads its full name immediately, before the summary loads).
+function regionLabel(name: string, kind?: string): string {
+  return kind ? `${kind} ${name}` : name;
+}
 export function MastrMap({
   level,
   parentAgs,
@@ -47,15 +62,23 @@ export function MastrMap({
   loading = false,
 }: MastrMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  // Both dimensions are measured from the container. Its height is set by CSS
-  // (.mastr-map-box) and shrinks on narrow viewports at the SAME breakpoint as
-  // the single-column layout, so the map always fits its box and never pushes
-  // the KPI row off screen. The projection just scales into whatever box it gets.
+  // Only the WIDTH is measured. The height is derived from the geometry: we fit
+  // the projection to the width and make the box exactly as tall as the shape
+  // needs (see the projection memo). That kills the letterbox whitespace a fixed
+  // box left under flatter regions — and works for every level, page and embed.
   const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
   const [lkGeo, setLkGeo] = useState<FeatureCollection | null>(null);
   const [blGeo, setBlGeo] = useState<FeatureCollection | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
+
+  // Gemeinde geometry is loaded per Kreis, only when the user drills into one.
+  // Each Kreis bundle is a small file (~10-70 KB) served from public/geo; the
+  // full set (~11.000 polygons, several MB) is never loaded at once. Loaded
+  // bundles are kept in a ref cache so going up and back is instant and never
+  // re-fetches.
+  const gemCache = useRef<Map<string, FeatureCollection>>(new Map());
+  const [gemGeo, setGemGeo] = useState<FeatureCollection | null>(null);
+  const [gemKreis, setGemKreis] = useState<string | null>(null);
 
   // Clear any hover when the drilldown level changes. Without this a hovered
   // Bundesland id lingers after tapping into it, and the info box would show
@@ -69,13 +92,10 @@ export function MastrMap({
   useLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    setWidth(rect.width);
-    setHeight(rect.height);
+    setWidth(el.getBoundingClientRect().width);
     const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
         setWidth(entry.contentRect.width);
-        setHeight(entry.contentRect.height);
       }
     });
     ro.observe(el);
@@ -96,6 +116,37 @@ export function MastrMap({
         setBlGeo(null);
       });
   }, []);
+
+  // Lazy-load the Gemeinde bundle for the Kreis we drill into. The file name IS
+  // the 5-digit Kreis AGS (public/geo/gemeinden/<kreis>.geo.json), which matches
+  // the Landkreis ids one-to-one — so parentAgs always points at a real bundle.
+  useEffect(() => {
+    if (level !== "landkreis" || !parentAgs) return;
+    const kreis = parentAgs;
+    const cached = gemCache.current.get(kreis);
+    if (cached) {
+      setGemGeo(cached);
+      setGemKreis(kreis);
+      return;
+    }
+    let cancelled = false;
+    fetch(`/geo/gemeinden/${kreis}.geo.json`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then((geo: FeatureCollection) => {
+        if (cancelled) return;
+        gemCache.current.set(kreis, geo);
+        setGemGeo(geo);
+        setGemKreis(kreis);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setGemGeo(null);
+        setGemKreis(kreis);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [level, parentAgs]);
 
   const valueByAgs = useMemo(() => {
     const m = new Map<string, number>();
@@ -119,49 +170,63 @@ export function MastrMap({
   const {
     fillFeatures,
     projection,
+    contentHeight,
   } = useMemo(() => {
-    if (!lkGeo || !blGeo || width < 10 || height < 10) {
-      return { fillFeatures: [], projection: null };
+    const EMPTY = {
+      fillFeatures: [] as FeatureCollection["features"],
+      projection: null as ReturnType<typeof geoMercator> | null,
+      contentHeight: 0,
+    };
+    if (!lkGeo || !blGeo || width < 10) return EMPTY;
+
+    const PAD = 12;
+    // Cap so a tall outline (Deutschland, schmale Kreise) can't grow the box
+    // without bound; flatter outlines stay below it and shrink to fit exactly.
+    const MAX_H = 620;
+    // Fit the shape to the WIDTH and make the box exactly as tall as the shape —
+    // no letterbox gap. If that would exceed MAX_H, fall back to fitting both
+    // dimensions into width × MAX_H (centered). `fitObject` is the outline we
+    // zoom to; `features` are the polygons drawn inside it.
+    const fitToWidth = (fitObject: unknown, features: FeatureCollection["features"]) => {
+      const proj = geoMercator().fitWidth(Math.max(width - 2 * PAD, 10), fitObject as never);
+      const b = geoPath(proj).bounds(fitObject as never);
+      const naturalH = Math.round(b[1][1] - b[0][1] + 2 * PAD);
+      if (naturalH <= MAX_H) {
+        const shapeW = b[1][0] - b[0][0];
+        const [tx, ty] = proj.translate();
+        // Center horizontally, top-align vertically (both inside PAD).
+        proj.translate([tx + (width - shapeW) / 2 - b[0][0], ty + PAD - b[0][1]]);
+        return { fillFeatures: features, projection: proj, contentHeight: naturalH };
+      }
+      const capped = geoMercator().fitExtent(
+        [
+          [PAD, PAD],
+          [width - PAD, MAX_H - PAD],
+        ],
+        fitObject as never,
+      );
+      return { fillFeatures: features, projection: capped, contentHeight: MAX_H };
+    };
+
+    if (level === "landkreis" && parentAgs) {
+      // Zoom to the Kreis; render its Gemeinden as fill. Until the bundle for
+      // THIS Kreis has arrived (gemKreis === parentAgs), hold the placeholder
+      // rather than draw the previous Kreis's shapes.
+      if (!gemGeo || gemKreis !== parentAgs || gemGeo.features.length === 0) return EMPTY;
+      return fitToWidth(gemGeo, gemGeo.features);
     }
 
     if (level === "bundesland" && parentAgs) {
       // Zoom to the Bundesland; render its Landkreise as fill.
       const parentFeature = blGeo.features.find((f) => (f.properties as RegionProps).id === parentAgs);
-      if (!parentFeature) {
-        return { fillFeatures: [], projection: null };
-      }
-      const proj = geoMercator().fitExtent(
-        [
-          [20, 20],
-          [width - 20, height - 20],
-        ],
-        parentFeature as never,
-      );
-      // States are wider than tall, so fitExtent centers them vertically and
-      // leaves a big gap above. Shift the projection up so the state sits at
-      // the top of the box (height stays the same).
-      const bounds = geoPath(proj).bounds(parentFeature as never);
-      const dy = bounds[0][1] - 20;
-      if (dy > 0) {
-        const [tx, ty] = proj.translate();
-        proj.translate([tx, ty - dy]);
-      }
-      const lksInBl = lkGeo.features.filter((f) =>
-        (f.properties as RegionProps).id.startsWith(parentAgs),
-      );
-      return {
-        fillFeatures: lksInBl,
-        projection: proj,
-      };
+      if (!parentFeature) return EMPTY;
+      const lksInBl = lkGeo.features.filter((f) => (f.properties as RegionProps).id.startsWith(parentAgs));
+      return fitToWidth(parentFeature, lksInBl);
     }
 
-    // Default: de-level. Render Bundesländer as fill.
-    const proj = geoMercator().fitSize([width, height], lkGeo as never);
-    return {
-      fillFeatures: blGeo.features,
-      projection: proj,
-    };
-  }, [level, parentAgs, lkGeo, blGeo, width, height]);
+    // Default: de-level. Fit the whole country outline, render Bundesländer.
+    return fitToWidth(lkGeo, blGeo.features);
+  }, [level, parentAgs, lkGeo, blGeo, gemGeo, gemKreis, width]);
 
   const pathGen = useMemo(() => (projection ? geoPath(projection) : null), [projection]);
 
@@ -172,6 +237,7 @@ export function MastrMap({
       return {
         id: props.id,
         name: props.name,
+        label: regionLabel(props.name, props.kind),
         d: pathGen(f as never) ?? "",
       };
     });
@@ -180,7 +246,11 @@ export function MastrMap({
   const hoveredName = useMemo(() => {
     if (!hovered) return null;
     const f = fillFeatures.find((ft) => (ft.properties as RegionProps).id === hovered);
-    return f ? (f.properties as RegionProps).name : bundeslandByAgs(hovered)?.name ?? hovered;
+    if (f) {
+      const props = f.properties as RegionProps;
+      return regionLabel(props.name, props.kind);
+    }
+    return bundeslandByAgs(hovered)?.name ?? hovered;
   }, [hovered, fillFeatures]);
 
   // The on-map info box is a desktop hover affordance: it only shows a value
@@ -198,9 +268,11 @@ export function MastrMap({
     <div
       ref={containerRef}
       className={`mastr-map-box${level === "de" ? " mastr-map-box--de" : ""}`}
-      style={{ width: "100%", position: "relative" }}
+      // Height follows the shape (contentHeight). Until the geometry is measured
+      // it stays 0 → the CSS `.mastr-map-box` height acts as the loading box.
+      style={{ width: "100%", position: "relative", height: contentHeight > 0 ? contentHeight : undefined }}
     >
-      {!lkGeo || !blGeo || width < 10 || height < 10 || !projection ? (
+      {!projection || contentHeight < 10 ? (
         <div
           style={{
             width: "100%",
@@ -210,7 +282,7 @@ export function MastrMap({
           }}
         />
       ) : (
-        <svg width={width} height={height} role="img" aria-label="Deutschlandkarte">
+        <svg width={width} height={contentHeight} role="img" aria-label="Deutschlandkarte">
           <g
             style={
               loading ? { animation: "sc-map-pulse 1.4s ease-in-out infinite" } : undefined
@@ -222,6 +294,7 @@ export function MastrMap({
               return (
                 <path
                   key={p.id}
+                  data-ags={p.id}
                   d={p.d}
                   fill={fillFor(p.id)}
                   stroke={isSelected ? v("--color-accent-dark") : loading ? COLOR_RAMP[3] : v("--color-border")}
@@ -232,7 +305,7 @@ export function MastrMap({
                   }}
                   onMouseEnter={() => !loading && setHovered(p.id)}
                   onMouseLeave={() => setHovered(null)}
-                  onClick={() => !loading && onSelect?.(p.id)}
+                  onClick={() => !loading && onSelect?.(p.id, p.label)}
                 />
               );
             })}

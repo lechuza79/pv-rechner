@@ -149,9 +149,7 @@ export function MastrLiveRadial({
   helpOverlay = null,
   actions = null,
   onValue,
-  scale = 1,
   unit = "GW",
-  titleOverride,
   injected = null,
   highlightTs,
   bare = false,
@@ -160,8 +158,6 @@ export function MastrLiveRadial({
   installedKwp: number | null;
   traegerNav?: TraegerNav;
   size?: SizeVariant;
-  /** Skaliert den angezeigten Mittelwert (Standard 1 = national). Balken (relativ) bleiben. */
-  scale?: number;
   /** Einheit des Mittelwerts: "GW" national, "MW" für eine einzelne Gemeinde. */
   unit?: "GW" | "MW";
   /** Eigene Stundenwerte (ts + mw) statt des bundesweiten Live-Feeds — für die
@@ -169,8 +165,6 @@ export function MastrLiveRadial({
   injected?: { ts: string; mw: number }[] | null;
   /** Welcher Balken „jetzt" ist (Mitte + Highlight). Standard: der letzte. */
   highlightTs?: string;
-  /** Ersetzt die Kopfzeile „Letzte 24 Stunden" (z. B. „Höchberg · simuliert"). */
-  titleOverride?: string;
   /** Chromeless: kein eigener Rahmen/Kopf/Branding-Footer — für die Einbettung
    *  in eine geteilte Widget-Hülle (Gemeinde-Seite), die den Rahmen zeichnet. */
   bare?: boolean;
@@ -208,7 +202,11 @@ export function MastrLiveRadial({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Injizierte lokale Daten → kein bundesweiter Fetch.
+    // Injizierte lokale Daten → kein bundesweiter Fetch. `injected` liegt hier
+    // absichtlich NICHT in den Deps: Konsumenten (GemeindeSolarLive) mounten das
+    // Radial erst, wenn ihre Daten stehen, und schalten `injected` danach nicht
+    // mehr auf null. Ein künftiger Konsument, der genau das täte, müsste `injected`
+    // in die Deps aufnehmen, damit der bundesweite Fetch wieder anläuft.
     if (injected) {
       setLoading(false);
       return;
@@ -361,7 +359,7 @@ export function MastrLiveRadial({
   const display = hover ?? latest;
   const animatedGW = shownMw / 1000;
   // Mittelwert skaliert + in der gewählten Einheit (national GW, Gemeinde MW).
-  const centerValue = (unit === "MW" ? shownMw : animatedGW) * scale;
+  const centerValue = unit === "MW" ? shownMw : animatedGW;
   const displayPct =
     installedKwp && installedKwp > 0 ? ((display.mw * 1000) / installedKwp) * 100 : null;
   const displayDate = new Date(display.ts);
@@ -581,7 +579,7 @@ export function MastrLiveRadial({
               background: v("--color-highlight"),
             }}
           />
-          {titleOverride ?? "Letzte 24 Stunden"}
+          Letzte 24 Stunden
           <span
             style={{
               textTransform: "none",

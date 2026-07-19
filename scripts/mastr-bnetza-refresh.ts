@@ -37,6 +37,13 @@ const DEFAULT_SCHEMA_VERSION = process.env.BNETZA_SCHEMA_VERSION ?? "26.1";
 // How many days to walk back if today's filename is not yet published.
 const URL_LOOKBACK_DAYS = 7;
 
+// Gemeinde-grain aggregates live in their own table. mastr_aggregates still holds
+// the old Kreis-grain rows and is what the currently deployed code reads — one
+// database serves both dev and production, so overwriting it here would blank the
+// numbers on 117 city pages until a deploy caught up.
+// CLEANUP once the Solar-Atlas is merged: mastr_aggregates loses its last reader.
+const AGGREGATES_TABLE = "mastr_aggregates_gem";
+
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const CACHE_DIR = resolve(SCRIPT_DIR, ".cache", "bnetza");
 const SCHEMA_OUT = resolve(SCRIPT_DIR, "mastr-bnetza-schema.json");
@@ -48,8 +55,9 @@ type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher";
 
 type ActorKind = "privat" | "gewerbe";
 type AggregateKey = `${string}|${string}|${string}|${number}`;
-type AggregateValue = { count: number; kwp: number };
-type RegionMeta = { level: "landkreis"; name: string; parent: string };
+type AggregateValue = { count: number; kwp: number; kwh: number };
+type RegionLevel = "landkreis" | "gemeinde";
+type RegionMeta = { level: RegionLevel; name: string; parent: string };
 
 type UnitSpec = {
   et: Energietraeger;
@@ -69,6 +77,13 @@ const UNIT_SPECS: UnitSpec[] = [
 
 const ACTORS_FILE_PATTERN = /^Marktakteure(_\d+)?\.xml$/i;
 const ACTORS_RECORD_TAG = "Marktakteur";
+
+// Usable storage capacity lives on the Anlage, not the Einheit: EinheitenStromSpeicher
+// carries only Bruttoleistung (kW), which says how fast a battery charges, not how
+// much it holds. Nobody asks how many kilowatts of storage a Gemeinde has — the
+// number that matters is kWh, and it sits here, linked back by MaStR number.
+const STORAGE_FILE_PATTERN = /^AnlagenStromSpeicher(_\d+)?\.xml$/i;
+const STORAGE_RECORD_TAG = "AnlageStromSpeicher";
 
 // ─── BNetzA Katalog-Codes ──────────────────────────────────────────────────────
 // XML uses numeric codes for enum-like fields; the full mapping lives in
@@ -90,6 +105,15 @@ const SOLAR_ART_BALKON = "2961";
 
 // SolarNutzungsbereich (cat. 57) — building usage profile
 const NUTZUNG_HAUSHALT = "713";
+
+// Speicher-Technologie (cat. 29). "Speicher" in the MaStR is every kind of
+// electricity store, not just batteries — Goldisthal's 8,7 GWh pumped-storage
+// plant sits in the same file as a 10 kWh cellar battery. Lumping them together
+// would put "Batteriespeicher: 8.700.000 kWh" on one Gemeinde's page and wreck
+// any storage-per-kWp figure, so the segment column (unused for storage until
+// now) keeps them apart.
+const STORAGE_TECH_BATTERIE = "524";
+const STORAGE_TECH_PUMPSPEICHER = "1537";
 
 // ─── Logging helpers ──────────────────────────────────────────────────────────
 
@@ -432,7 +456,11 @@ function classifySolarSegment(
   // Primary signal: ArtDerSolaranlage (Freifläche / Gebäude / Balkonkraftwerk).
   const art = row.ArtDerSolaranlage;
   if (art === SOLAR_ART_FREIFLAECHE) return "freiflaeche";
-  if (art === SOLAR_ART_BALKON) return "privat_dach";
+  // Steckersolar is its own segment, not a small privat_dach: it is a quarter of
+  // all units but a rounding error in capacity, and Balkonkraftwerk subsidies are
+  // the most common municipal funding programme — so the count is exactly what a
+  // Gemeinde wants to see about its own scheme.
+  if (art === SOLAR_ART_BALKON) return "steckersolar";
 
   // Gebäude-Solar: split into privat / gewerbe via Nutzungsbereich (preferred,
   // explicitly captured by the operator) and fall back to actor type.
@@ -443,6 +471,25 @@ function classifySolarSegment(
   const nr = row.AnlagenbetreiberMastrNummer;
   const kind = nr ? actorMap.get(nr) : undefined;
   return kind === "privat" ? "privat_dach" : "gewerbe_dach";
+}
+
+/**
+ * Storage segment: technology first, then who runs it.
+ *
+ * Pumped storage is its own world — Goldisthal holds 8,7 GWh where a cellar
+ * battery holds 10 kWh — and asking whether it is "privat" is meaningless, so it
+ * never gets an operator split. Batteries do: a home battery next to a rooftop
+ * array is a different story from a commercial one, and that is the split a
+ * Gemeinde actually reads.
+ */
+function classifyStorage(row: Record<string, string>, actorMap: Map<string, ActorKind>): string {
+  const t = row.Technologie;
+  if (t === STORAGE_TECH_PUMPSPEICHER) return "pumpspeicher";
+  // Druckluft, Schwungrad, Wasserstoff and anything new the catalogue grows.
+  if (t !== STORAGE_TECH_BATTERIE) return "sonstige";
+  const nr = row.AnlagenbetreiberMastrNummer;
+  const kind = nr ? actorMap.get(nr) : undefined;
+  return kind === "privat" ? "batterie_privat" : "batterie_gewerbe";
 }
 
 function parseYear(s: string | undefined): number | null {
@@ -458,6 +505,59 @@ function parseKwp(s: string | undefined): number {
   // accept comma as a defensive fallback.
   const v = parseFloat(s.replace(",", "."));
   return isNaN(v) ? 0 : v;
+}
+
+/**
+ * Einheit-MaStR-Nummer → usable capacity in kWh.
+ *
+ * One Anlage can list several Einheiten in VerknuepfteEinheitenMaStRNummern. The
+ * capacity is stated once for the whole Anlage, so splitting it evenly across the
+ * linked units is the only way to keep the sum right — assigning the full figure
+ * to each would multiply a shared battery by its number of units.
+ */
+async function buildStorageCapacityMap(zipPath: string): Promise<Map<string, number>> {
+  const directory = await unzipper.Open.file(zipPath);
+  const entries = directory.files
+    .filter((f) => f.type === "File" && STORAGE_FILE_PATTERN.test(f.path))
+    .map((f) => f.path);
+  if (entries.length === 0) {
+    log(`No AnlagenStromSpeicher XML found — storage capacity stays empty`, "warn");
+    return new Map();
+  }
+
+  const map = new Map<string, number>();
+  let rows = 0;
+  let skipped = 0;
+  for (const entryName of entries) {
+    await streamXmlRecords(zipPath, entryName, STORAGE_RECORD_TAG, (row) => {
+      rows++;
+      const kwh = parseKwp(row.NutzbareSpeicherkapazitaet);
+      const linked = (row.VerknuepfteEinheitenMaStRNummern ?? "").trim();
+      if (!kwh || kwh <= 0 || !linked) {
+        skipped++;
+        return;
+      }
+      const units = linked.split(/[,;]/).map((u) => u.trim()).filter(Boolean);
+      if (units.length === 0) {
+        skipped++;
+        return;
+      }
+      const share = kwh / units.length;
+      for (const u of units) {
+        // A unit can appear under more than one Anlage (extensions); sum, never overwrite.
+        map.set(u, (map.get(u) ?? 0) + share);
+      }
+      if (rows % 500_000 === 0) {
+        process.stderr.write(`\r  storage: ${rows.toLocaleString()} rows, ${map.size.toLocaleString()} units mapped`);
+      }
+    });
+  }
+  process.stderr.write("\n");
+  log(
+    `Storage capacity map: ${map.size.toLocaleString()} units (${rows.toLocaleString()} Anlagen, ${skipped.toLocaleString()} without capacity or link)`,
+    "ok",
+  );
+  return map;
 }
 
 async function buildActorMap(zipPath: string): Promise<Map<string, ActorKind>> {
@@ -500,6 +600,7 @@ async function aggregateUnit(
   zipPath: string,
   spec: UnitSpec,
   actorMap: Map<string, ActorKind>,
+  capacityMap: Map<string, number>,
   agg: Map<AggregateKey, AggregateValue>,
   regions: Map<string, RegionMeta>,
 ): Promise<{ processed: number; accepted: number; skipped: Record<string, number> }> {
@@ -513,7 +614,7 @@ async function aggregateUnit(
     return { processed: 0, accepted: 0, skipped: { status: 0, gks: 0, year: 0, kwp: 0 } };
   }
 
-  const skipped = { status: 0, gks: 0, year: 0, kwp: 0 };
+  const skipped = { status: 0, gks: 0, gksShort: 0, year: 0, kwp: 0 };
   let accepted = 0;
   let processed = 0;
 
@@ -528,8 +629,16 @@ async function aggregateUnit(
         return;
       }
       const gks = (row.Gemeindeschluessel ?? "").trim();
-      if (!gks || gks.length < 5) {
+      if (!gks) {
         skipped.gks++;
+        return;
+      }
+      // Gemeinde is the atomic grain: everything above (Kreis, Bundesland, DE)
+      // is derived by prefix, so a row that cannot be placed in a Gemeinde has
+      // no home. Rows carrying only a Kreis-level key are counted separately —
+      // if this number is ever non-trivial, the rollup silently loses capacity.
+      if (gks.length < 8) {
+        skipped.gksShort++;
         return;
       }
       const year = parseYear(row.Inbetriebnahmedatum);
@@ -543,24 +652,38 @@ async function aggregateUnit(
         return;
       }
 
-      const regionId = gks.substring(0, 5);
+      const regionId = gks.substring(0, 8);
+      const kreisAgs = gks.substring(0, 5);
       const blAgs = gks.substring(0, 2);
 
-      // First-occurrence wins for region metadata. BNetzA records may carry
-      // either `Landkreis` or no name at all; we accept whatever the row
-      // provides and let the upload phase fill in placeholders if missing.
-      if (!regions.has(regionId) && row.Landkreis) {
-        regions.set(regionId, { level: "landkreis", name: row.Landkreis, parent: blAgs });
+      // First-occurrence wins for region metadata. These names are a fallback:
+      // they are operator free-text and carry no official designation (BNetzA
+      // lists both Landkreis and kreisfreie Stadt Würzburg as plain "Würzburg").
+      // The Destatis Gemeindeverzeichnis overwrites them on upload.
+      if (!regions.has(kreisAgs) && row.Landkreis) {
+        regions.set(kreisAgs, { level: "landkreis", name: row.Landkreis, parent: blAgs });
+      }
+      if (!regions.has(regionId) && row.Gemeinde) {
+        regions.set(regionId, { level: "gemeinde", name: row.Gemeinde, parent: kreisAgs });
       }
 
-      const segment = spec.et === "solar" ? classifySolarSegment(row, actorMap) : "n/a";
+      // Only storage has a capacity; for every other Träger kwh stays 0.
+      const kwh = spec.et === "speicher" ? (capacityMap.get(row.EinheitMastrNummer ?? "") ?? 0) : 0;
+
+      const segment =
+        spec.et === "solar"
+          ? classifySolarSegment(row, actorMap)
+          : spec.et === "speicher"
+            ? classifyStorage(row, actorMap)
+            : "n/a";
       const key: AggregateKey = `${regionId}|${spec.et}|${segment}|${year}`;
       const existing = agg.get(key);
       if (existing) {
         existing.count++;
         existing.kwp += kwp;
+        existing.kwh += kwh;
       } else {
-        agg.set(key, { count: 1, kwp });
+        agg.set(key, { count: 1, kwp, kwh });
       }
       accepted++;
       if (processed > 0 && processed % 200_000 === 0) {
@@ -580,25 +703,41 @@ async function phaseAggregate(): Promise<void> {
 
   log("Step 1/3: building actor map...");
   const actorMap = await buildActorMap(zipPath);
+  // Both maps are needed at the same time once storage is reached: the actor map
+  // to tell a home battery from a commercial one, the capacity map for its kWh.
+  // Together that is ~7M entries — hence --max-old-space-size in the npm script.
+  // The capacity map is still built late (storage is the last spec) so its memory
+  // is only held for the final pass.
+  let capacityMap = new Map<string, number>();
 
   log("Step 2/3: streaming unit XMLs...");
   const agg = new Map<AggregateKey, AggregateValue>();
   const regions = new Map<string, RegionMeta>();
 
   for (const spec of UNIT_SPECS) {
+    if (spec.et === "speicher") {
+      capacityMap = await buildStorageCapacityMap(zipPath);
+    }
     log(`  aggregating ${spec.et}...`);
-    const r = await aggregateUnit(zipPath, spec, actorMap, agg, regions);
+    const r = await aggregateUnit(zipPath, spec, actorMap, capacityMap, agg, regions);
     log(
       `    ${spec.et}: ${r.accepted.toLocaleString()} accepted / ${r.processed.toLocaleString()} total ` +
-        `(skipped: status=${r.skipped.status}, gks=${r.skipped.gks}, year=${r.skipped.year}, kwp=${r.skipped.kwp})`,
+        `(skipped: status=${r.skipped.status}, gks=${r.skipped.gks}, gksShort=${r.skipped.gksShort}, ` +
+        `year=${r.skipped.year}, kwp=${r.skipped.kwp})`,
       "ok",
     );
   }
 
-  // Free actor map memory before serialising output.
+  // Free the lookup maps before serialising output.
   actorMap.clear();
+  capacityMap.clear();
 
-  log(`Step 3/3: writing aggregates.json (${agg.size.toLocaleString()} buckets, ${regions.size} landkreise)`);
+  const kreisCount = Array.from(regions.values()).filter((r) => r.level === "landkreis").length;
+  const gemeindeCount = regions.size - kreisCount;
+  log(
+    `Step 3/3: writing aggregates.json (${agg.size.toLocaleString()} buckets, ` +
+      `${kreisCount} Kreise, ${gemeindeCount.toLocaleString()} Gemeinden)`,
+  );
   const aggregates = Array.from(agg.entries()).map(([key, val]) => {
     const [region_id, energietraeger, segment, yearStr] = key.split("|");
     return {
@@ -608,6 +747,7 @@ async function phaseAggregate(): Promise<void> {
       year: parseInt(yearStr, 10),
       count: val.count,
       kwp: Math.round(val.kwp * 100) / 100,
+      kwh: Math.round(val.kwh * 100) / 100,
     };
   });
 
@@ -653,8 +793,8 @@ async function phaseUpload(): Promise<void> {
   const { readFile } = await import("node:fs/promises");
   const payload = JSON.parse(await readFile(AGGREGATES_OUT, "utf8"));
   const { aggregates, regions, generated_at, data_as_of, source, source_filename } = payload as {
-    aggregates: { region_id: string; energietraeger: string; segment: string; year: number; count: number; kwp: number }[];
-    regions: { region_id: string; level: "landkreis"; name: string; parent: string }[];
+    aggregates: { region_id: string; energietraeger: string; segment: string; year: number; count: number; kwp: number; kwh: number }[];
+    regions: { region_id: string; level: RegionLevel; name: string; parent: string }[];
     generated_at: string;
     data_as_of: string;
     source: string;
@@ -684,27 +824,37 @@ async function phaseUpload(): Promise<void> {
     })),
   ];
 
-  log(`Upserting ${regionsRows.length} regions...`);
+  // Regions exist only so mastr_aggregates.region_id has a foreign key to point
+  // at. Their content — official name, designation, slug, population — belongs to
+  // the Destatis Gemeindeverzeichnis (scripts/destatis-gemeinden.ts); the names
+  // here are BNetzA free-text and would be a downgrade.
+  //
+  // ignoreDuplicates is therefore load-bearing, not an optimisation: a plain
+  // upsert would overwrite "Landkreis Würzburg" with "Würzburg" on every monthly
+  // run and quietly break the slug that tells the two Würzburgs apart.
+  log(`Filling region gaps (${regionsRows.length.toLocaleString()} candidates, existing rows untouched)...`);
   for (let i = 0; i < regionsRows.length; i += 500) {
     const batch = regionsRows.slice(i, i + 500);
-    const { error } = await supabase.from("mastr_regions").upsert(batch, { onConflict: "region_id" });
+    const { error } = await supabase
+      .from("mastr_regions")
+      .upsert(batch, { onConflict: "region_id", ignoreDuplicates: true });
     if (error) throw new Error(`mastr_regions upsert failed: ${error.message}`);
   }
-  log(`Regions upserted`, "ok");
+  log(`Regions ok`, "ok");
 
   // Full replace strategy: delete all rows, then batched insert. This keeps
   // the table clean (no ghost buckets from previous schema versions) and
   // matches the existing open-mastr workflow.
   log(`Deleting existing aggregates...`);
-  const { error: delErr } = await supabase.from("mastr_aggregates").delete().gte("year", 0);
+  const { error: delErr } = await supabase.from(AGGREGATES_TABLE).delete().gte("year", 0);
   if (delErr) throw new Error(`delete failed: ${delErr.message}`);
 
   log(`Inserting ${aggregates.length.toLocaleString()} aggregate rows (batches of 1000)...`);
   const BATCH = 1000;
   for (let i = 0; i < aggregates.length; i += BATCH) {
     const batch = aggregates.slice(i, i + BATCH);
-    const { error } = await supabase.from("mastr_aggregates").insert(batch);
-    if (error) throw new Error(`mastr_aggregates insert failed at batch ${i}: ${error.message}`);
+    const { error } = await supabase.from(AGGREGATES_TABLE).insert(batch);
+    if (error) throw new Error(`${AGGREGATES_TABLE} insert failed at batch ${i}: ${error.message}`);
     if ((i / BATCH) % 10 === 0) {
       process.stderr.write(`\r  ${i.toLocaleString()} / ${aggregates.length.toLocaleString()}`);
     }

@@ -7,7 +7,9 @@ import { MastrLiveRadial } from "./MastrLiveRadial";
 import { bundeslandByAgs } from "../lib/mastr-regions";
 import type { Energietraeger, RegionSummary, SegmentFilter } from "../lib/mastr-data";
 import { useCachedFetch } from "../lib/use-cached-fetch";
-import { DATA_SOURCES, sourceLabel } from "../lib/data-sources";
+import { DATA_SOURCES } from "../lib/data-sources";
+import { DataSourceNote } from "./PoweredBy";
+import { isEmbedContext } from "../lib/embed-context";
 import { v } from "../lib/theme";
 
 // Tab order: aggregate first, then individual renewables, then storage (separated)
@@ -30,6 +32,7 @@ const PRIMARY_SEGMENTS: { key: SegmentFilter; label: string }[] = [
 const SECONDARY_SEGMENT: { key: SegmentFilter; label: string } = { key: "freiflaeche", label: "Freifläche" };
 
 const SEGMENT_LABEL: Record<string, string> = {
+  steckersolar: "Balkonkraftwerke",
   privat_dach: "Privat (Dach)",
   gewerbe_dach: "Gewerbe (Dach)",
   freiflaeche: "Freifläche",
@@ -45,8 +48,9 @@ type ChoroplethResp = {
 export type MastrHeroSectionProps = {
   /** Initial selected region. Use "de" for the whole country. */
   initialRegion?: string;
-  /** Initial energy carrier. Defaults to "gesamt"; PV-focused pages pass "solar". */
-  initialEnergietraeger?: Energietraeger;
+  /** Vorgewählter Energieträger (Default "gesamt"). Auf den solar-fokussierten
+   *  Atlas-Seiten "solar", damit die Karten-KPI zur Solar-Zahl der Seite passt. */
+  initialTraeger?: Energietraeger;
   /** Called whenever the selected region changes (for URL sync, analytics, etc.) */
   onRegionChange?: (regionAgs: string | undefined) => void;
 };
@@ -54,12 +58,16 @@ export type MastrHeroSectionProps = {
 const CHOROPLETH_DEFAULT: ChoroplethResp = { source: "", data_as_of: "", data: [] };
 const SUMMARY_DEFAULT: RegionSummary | null = null;
 
-export function MastrHeroSection({ initialRegion, initialEnergietraeger = "gesamt", onRegionChange }: MastrHeroSectionProps) {
-  const [energietraeger, setEnergietraeger] = useState<Energietraeger>(initialEnergietraeger);
+export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onRegionChange }: MastrHeroSectionProps) {
+  const [energietraeger, setEnergietraeger] = useState<Energietraeger>(initialTraeger);
   const [segment, setSegment] = useState<SegmentFilter>("alle");
   const [selectedAgs, setSelectedAgs] = useState<string | undefined>(
     initialRegion && initialRegion !== "de" ? initialRegion : undefined,
   );
+  // The clicked region's name straight from the map geometry — shown instantly
+  // while the summary API (which also carries the name) is still loading, so a
+  // freshly-selected Kreis never reads a bare "Landkreis" placeholder.
+  const [selectedName, setSelectedName] = useState<string | undefined>(undefined);
 
   // Segment filter only applies to solar. Reset when switching away.
   const effectiveSegment: SegmentFilter = energietraeger === "solar" ? segment : "alle";
@@ -74,14 +82,31 @@ export function MastrHeroSection({ initialRegion, initialEnergietraeger = "gesam
     onRegionChange?.(selectedAgs);
   }, [selectedAgs, onRegionChange]);
 
-  // Drilldown levels derive from selectedAgs:
-  //   undefined  → de-level: show 16 Bundesländer
-  //   2-digit AGS → bundesland-level: zoom in, show LKs inside
-  //   5-digit AGS → bundesland-level with LK highlighted
+  // Embed pages have no atlas detail pages to link into — resolve this after
+  // mount (path-based) so the "Zur Gemeinde-/Landkreis-Seite" affordances stay
+  // out of embeds. SSR renders the site variant; embeds drop the links post-hydration.
+  const [isEmbed, setIsEmbed] = useState(false);
+  useEffect(() => setIsEmbed(isEmbedContext()), []);
+
+  // Drilldown levels derive from the length of selectedAgs:
+  //   undefined   → de-level: show 16 Bundesländer
+  //   2-digit AGS → bundesland-level: zoom into the Bundesland, show its Kreise
+  //   5-digit AGS → landkreis-level: zoom into the Kreis, show its Gemeinden
+  // A Gemeinde (8-digit) is never a persistent selection — clicking one leaves
+  // the map for its atlas page (handleSelect), so the deepest map view is the
+  // Kreis with its Gemeinden.
   const isBlSelected = selectedAgs?.length === 2;
   const isLkSelected = selectedAgs?.length === 5;
-  const parentAgs = isBlSelected ? selectedAgs : isLkSelected ? selectedAgs.slice(0, 2) : undefined;
-  const mapLevel: "de" | "bundesland" = parentAgs ? "bundesland" : "de";
+  const mapLevel: "de" | "bundesland" | "landkreis" = isLkSelected
+    ? "landkreis"
+    : isBlSelected
+      ? "bundesland"
+      : "de";
+  // Map zoom target AND choropleth parent: the selected region itself (BL shows
+  // Kreise, Kreis shows Gemeinden). The Bundesland for the breadcrumb is always
+  // the first two digits, regardless of how deep we are.
+  const parentAgs = isBlSelected || isLkSelected ? selectedAgs : undefined;
+  const blAgs = selectedAgs ? selectedAgs.slice(0, 2) : undefined;
   const choroplethParent = parentAgs ?? "de";
 
   const choroplethEndpoint = `/api/mastr/choropleth?parent=${choroplethParent}&type=${energietraeger}&segment=${effectiveSegment}`;
@@ -90,8 +115,9 @@ export function MastrHeroSection({ initialRegion, initialEnergietraeger = "gesam
 
   // Cache version bump — invalidates stale localStorage entries when the data
   // shape or granularity changes (bumped to v2 when choropleth moved from
-  // Bundesland- to Landkreis-aggregates).
-  const CACHE_VERSION = "v3";
+  // Bundesland- to Landkreis-aggregates; v4 adds Gemeinde-level + enclosed
+  // kreisfreie Städte to Kreis choropleths).
+  const CACHE_VERSION = "v4";
 
   const {
     data: choropleth,
@@ -118,15 +144,33 @@ export function MastrHeroSection({ initialRegion, initialEnergietraeger = "gesam
     { longLived: false, keyPrefix: "sc-mastr-" },
   );
 
-  const handleSelect = (ags: string) => {
-    setSelectedAgs((prev) => {
-      if (prev === ags) {
-        // Clicking the already-selected region goes up a level
-        if (ags.length === 5) return ags.slice(0, 2); // LK → BL
-        return undefined; // BL → DE
+  const handleSelect = (ags: string, name?: string) => {
+    // Gemeinde (8-digit): the deepest level. Leave the map for that Gemeinde's
+    // atlas detail page. Inside an embed there are no detail pages to go to, so
+    // the click drills no further — viewing the Kreis's Gemeinden and hovering
+    // for their values is the read-only payoff there.
+    if (ags.length === 8) {
+      if (!isEmbedContext()) {
+        window.location.href = `/api/atlas/goto?ags=${ags}`;
       }
-      return ags;
-    });
+      return;
+    }
+    if (selectedAgs === ags) {
+      // Clicking the already-selected region goes up a level. The parent's name
+      // resolves instantly (Bundesland lookup), so drop the geo-name fallback.
+      setSelectedAgs(ags.length === 5 ? ags.slice(0, 2) : undefined); // LK → BL, BL → DE
+      setSelectedName(undefined);
+    } else {
+      setSelectedAgs(ags);
+      setSelectedName(name); // show the clicked region's name immediately
+    }
+  };
+
+  // Breadcrumb jumps bypass handleSelect — clear the geo-name fallback too, so a
+  // later summary is the only source of the name for the target level.
+  const goToLevel = (ags: string | undefined) => {
+    setSelectedAgs(ags);
+    setSelectedName(undefined);
   };
 
   const values: RegionValue[] = useMemo(
@@ -154,13 +198,13 @@ export function MastrHeroSection({ initialRegion, initialEnergietraeger = "gesam
         />
       )}
 
-      {selectedAgs && parentAgs && (
+      {selectedAgs && blAgs && (
         <MapBreadcrumb
           isLk={isLkSelected}
-          blAgs={parentAgs}
-          blName={bundeslandByAgs(parentAgs)?.name ?? parentAgs}
-          lkName={isLkSelected ? summary?.name : undefined}
-          onGo={setSelectedAgs}
+          blAgs={blAgs}
+          blName={bundeslandByAgs(blAgs)?.name ?? blAgs}
+          lkName={isLkSelected ? summary?.name ?? selectedName : undefined}
+          onGo={goToLevel}
         />
       )}
 
@@ -168,7 +212,7 @@ export function MastrHeroSection({ initialRegion, initialEnergietraeger = "gesam
         className={
           "mastr-hero-grid" +
           (energietraeger === "solar" ? " has-filter" : "") +
-          (selectedAgs && parentAgs ? " has-breadcrumb" : "")
+          (selectedAgs ? " has-breadcrumb" : "")
         }
         style={{ marginTop: 16 }}
       >
@@ -182,6 +226,9 @@ export function MastrHeroSection({ initialRegion, initialEnergietraeger = "gesam
             valueLabel="MW"
             loading={choroplethLoading}
           />
+          {isLkSelected && !isEmbed && (
+            <GemeindeHint kreisAgs={selectedAgs} kreisName={summary?.name ?? selectedName} />
+          )}
         </div>
 
         <aside className="mastr-hero-aside" style={{ minWidth: 0 }}>
@@ -199,6 +246,7 @@ export function MastrHeroSection({ initialRegion, initialEnergietraeger = "gesam
           <SummaryPanel
             summary={summary}
             regionAgs={region}
+            fallbackName={selectedName}
             energietraeger={energietraeger}
             segment={effectiveSegment}
           />
@@ -215,28 +263,15 @@ export function MastrHeroSection({ initialRegion, initialEnergietraeger = "gesam
           textAlign: "right",
         }}
       >
-        Karte: © GeoBasis-DE / BKG 2024 (VG2500,{" "}
-        <a
-          href="https://www.govdata.de/dl-de/by-2-0"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "inherit", textDecoration: "underline" }}
-        >
-          dl-de/by-2-0
-        </a>
-        ) · Daten: Marktstammdatenregister / Bundesnetzagentur, Datenlizenz{" "}
-        <a
-          href="https://www.govdata.de/dl-de/by-2-0"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "inherit", textDecoration: "underline" }}
-        >
-          dl-de/by-2-0
-        </a>{" "}
-        (Daten aggregiert)
-        {!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
-          <> · Live-Erzeugung: {sourceLabel(DATA_SOURCES.energyCharts)}</>
-        )}
+        <DataSourceNote
+          source={[
+            DATA_SOURCES.bkg,
+            DATA_SOURCES.mastr,
+            ...(!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle"
+              ? [DATA_SOURCES.energyCharts]
+              : []),
+          ]}
+        />
       </div>
     </section>
   );
@@ -405,6 +440,7 @@ const TRAEGER_DISPLAY: Record<Energietraeger, string> = {
 
 const SEGMENT_DISPLAY: Record<SegmentFilter, string> = {
   alle: "",
+  steckersolar: "Balkonkraftwerke",
   privat_dach: "Privat",
   gewerbe_dach: "Gewerbe",
   freiflaeche: "Freifläche",
@@ -419,6 +455,33 @@ export function formatDataAsOf(iso: string): string {
   const m = /^(\d{4})-(\d{2})-\d{2}$/.exec(iso);
   if (!m) return iso;
   return `${MONTHS_DE[parseInt(m[2], 10) - 1]} ${m[1]}`;
+}
+
+// Shown under the map once you have drilled into a Kreis (which then shows its
+// Gemeinden). Tells the visitor the Gemeinden are clickable and offers a jump to
+// the Kreis's own atlas page. Not rendered inside embeds (no detail pages there).
+function GemeindeHint({ kreisAgs, kreisName }: { kreisAgs: string; kreisName?: string }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        gap: 8,
+        marginTop: 8,
+        fontSize: 12,
+        color: v("--color-text-muted"),
+      }}
+    >
+      <span>Tippen Sie auf eine Gemeinde, um ihre Solar-Zahlen im Detail zu sehen.</span>
+      <a
+        href={`/api/atlas/goto?ags=${kreisAgs}`}
+        style={{ color: v("--color-accent"), fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}
+      >
+        {kreisName ? `Alle Zahlen zu ${kreisName}` : "Zur Landkreis-Seite"} →
+      </a>
+    </div>
+  );
 }
 
 // Breadcrumb above the map: Deutschland › Bundesland › Landkreis. Each crumb
@@ -477,11 +540,14 @@ function MapBreadcrumb({
 function SummaryPanel({
   summary,
   regionAgs,
+  fallbackName,
   energietraeger,
   segment,
 }: {
   summary: RegionSummary | null;
   regionAgs: string;
+  /** Name from the map geometry, shown until the summary (with the authoritative name) loads. */
+  fallbackName?: string;
   energietraeger: Energietraeger;
   segment: SegmentFilter;
 }) {
@@ -494,7 +560,7 @@ function SummaryPanel({
   let regionName: string;
   if (isDE) regionName = "Deutschland";
   else if (isBl) regionName = bl?.name ?? regionAgs;
-  else regionName = summary?.name ?? regionAgs;
+  else regionName = summary?.name ?? fallbackName ?? regionAgs;
   const regionLabel = regionName + (bl?.short ? ` · ${bl.short}` : "");
   const traegerLabel = TRAEGER_DISPLAY[energietraeger];
   const segmentSuffix = segment !== "alle" ? ` · ${SEGMENT_DISPLAY[segment]}` : "";
