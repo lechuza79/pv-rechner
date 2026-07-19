@@ -23,6 +23,17 @@ import { SOLAR_YEAR_DE, referenceMonthKwh } from "./solar-year";
 // Roundtrip-Wirkungsgrad Hausspeicher (Laden × Entladen). Konservativ; moderne
 // LFP-Systeme liegen bei ~0,90–0,95.
 const BATTERY_ROUNDTRIP = 0.90;
+
+/** Monatswerte (kWh/kWp) auf den — evtl. manuell editierten — Jahresertrag skalieren:
+ *  die FORM (Sommer/Winter) kommt aus PVGIS, die MENGE aus ertragKwp. Ohne diese
+ *  Normierung würde ein manueller Ertrags-Edit im Ergebnis die Autarkie NICHT
+ *  bewegen (die Simulation läse die absolute PVGIS-Menge weiter). So bleibt sie
+ *  konsistent mit der Geldrechnung calc(), die genauso ertragKwp × Monatsform nimmt. */
+function monthlyScaledTo(monthlyYieldPerKwp: number[] | null, ertragKwp: number): number[] {
+  const raw = monthlyYieldPerKwp ?? monthlyFromAnnual(ertragKwp);
+  const sum = raw.reduce((a, b) => a + b, 0);
+  return sum > 0 ? raw.map(m => (m * ertragKwp) / sum) : raw;
+}
 // Dach-Referenzausrichtung: PVGIS-Monatswerte gelten für optimale Neigung, die
 // Süd-35°-Reihe liefert dazu die passende Tagesform. Der Rechner fragt (noch)
 // keine Ausrichtung ab — Süd-optimal ist die richtige Default-Annahme.
@@ -48,7 +59,7 @@ export interface PvSimResult {
 
 /** Autarkie + Jahresverlauf einer Dach-PV-Anlage aus der Stundensimulation. */
 export function simulatePvYear({ kwp, speicherKwh, monthlyYieldPerKwp, ertragKwp, household }: PvSimInput): PvSimResult {
-  const monthly = monthlyYieldPerKwp ?? monthlyFromAnnual(ertragKwp);
+  const monthly = monthlyScaledTo(monthlyYieldPerKwp, ertragKwp);
   const sim = simulateSolarYear({
     moduleKwp: kwp,
     // Dach-Wechselrichter ~ Anlagen-kWp: bei Süd-optimal liegt die Stundenspitze
@@ -121,7 +132,7 @@ export function simulateExampleDay(
   month: number,
   dayTypeIndex: number,
 ): ExampleDayResult {
-  const monthly = monthlyYieldPerKwp ?? monthlyFromAnnual(ertragKwp);
+  const monthly = monthlyScaledTo(monthlyYieldPerKwp, ertragKwp);
   const series = SOLAR_YEAR_DE[ROOFTOP_ORIENTATION][month];
   const dayType = series[Math.min(dayTypeIndex, series.length - 1)];
   const refOptimal = referenceMonthKwh(ROOFTOP_ORIENTATION, month);

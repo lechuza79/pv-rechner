@@ -1,6 +1,7 @@
-import { PERSONEN, HAUSTYPEN, DACHARTEN, SPEICHER } from "./constants";
+import { PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, SPEICHER } from "./constants";
 import { calcEigenverbrauch, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
-import { calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2 } from "./consumption";
+import { simulatePvYear } from "./pv-sim";
+import { calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "./consumption";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "./heatpump";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "./feedin-config";
@@ -47,6 +48,8 @@ export interface RecommendReasoning {
   nutzbarM2: number;
   eigenverbrauch: number;
   eigenverbrauchOhneSpeicher: number;
+  autarkie: number;                // aus der Stundensimulation (wie im PV-Rechner)
+  autarkieOhneSpeicher: number;    // gleiche Anlage, ohne Speicher → Speicher-Effekt
   paybackYears: number | null;
   budgetConstrained: boolean;
   investition: number;
@@ -137,6 +140,25 @@ function buildCtx(input: RecommendInput, prices?: PriceConfig, feedIn?: FeedInRa
     + (input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0)
     + (klima !== "nein" ? calcKlimaAnnual(klimaM2) : 0);
   return { input, p, f, ertragKwp, strompreis, stromSteigerung, wpKwh, klima, klimaM2, totalConsumption };
+}
+
+/** Autarkiegrad einer Konfiguration aus der Stunden-Jahressimulation (wie im
+ *  PV-Rechner) — NICHT für die Empfehlungs-Logik (die bleibt wirtschaftlich/NPV),
+ *  nur für die Anzeige, damit Empfehlung und Ergebnisseite dieselbe Autarkie
+ *  zeigen. Ohne PLZ: deutscher Durchschnitts-Ertrag (monthlyYieldPerKwp=null). */
+function autarkyFor(ctx: EvalCtx, kwp: number, speicherKwh: number): number {
+  const household: HouseholdProfile = {
+    baseKwh: PERSONEN[ctx.input.personen].verbrauch,
+    tagQuote: NUTZUNG[ctx.input.nutzung].tagQuote,
+    wpActive: ctx.input.wp !== "nein",
+    eaActive: ctx.input.ea !== "nein",
+    klimaActive: ctx.klima !== "nein",
+    klimaM2: ctx.klimaM2,
+    wpAnnualKwh: ctx.input.wp !== "nein" ? ctx.wpKwh : undefined,
+    eaAnnualKwh: ctx.input.ea !== "nein" ? calcEaAnnual(ctx.input.eaKm) : undefined,
+    klimaAnnualKwh: ctx.klima !== "nein" ? calcKlimaAnnual(ctx.klimaM2) : undefined,
+  };
+  return simulatePvYear({ kwp, speicherKwh, monthlyYieldPerKwp: null, ertragKwp: ctx.ertragKwp, household }).autarky;
 }
 
 /** Bewertet EINE Konfiguration (kWp × Speicher). evDelta verschiebt die
@@ -363,6 +385,8 @@ export function recommend(input: RecommendInput, prices?: PriceConfig, feedIn?: 
       nutzbarM2,
       eigenverbrauch: best.ev,
       eigenverbrauchOhneSpeicher: evOhneSpeicher,
+      autarkie: autarkyFor(ctx, best.kwp, best.speicherKwh),
+      autarkieOhneSpeicher: autarkyFor(ctx, best.kwp, 0),
       paybackYears: best.paybackYears,
       budgetConstrained,
       investition: best.investition,
