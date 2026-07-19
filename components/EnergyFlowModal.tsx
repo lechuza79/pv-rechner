@@ -1,10 +1,13 @@
 "use client";
 // Erklär-Modal für Autarkie & Eigenverbrauch am KONKRETEN Fall des Nutzers.
 // Oben zwei 100-%-Balken (Erzeugung / Verbrauch) als Kennzahl-Überblick, darunter
-// der Jahresverlauf und — als Drilldown — exemplarische Tage. Autarkie und
-// Eigenverbrauch beschreiben denselben selbst genutzten Solarstrom von zwei Seiten;
-// eine Sankey mit EINER geteilten kWh würde Scheingenauigkeit suggerieren, deshalb
-// getrennte Ansichten.
+// der Jahresverlauf und — als Drilldown — exemplarische Tage. Eigenverbrauch und
+// Autarkie sind zwei verschiedene Größen (Eigenverbrauch an der Erzeugung, Autarkie
+// am Verbrauch gemessen) und kommen aus verschiedenen Schätzern: Der Eigenverbrauch
+// wird als die editierbare Zahl der Ergebnisseite DURCHGEREICHT (treibt das Geld),
+// die Autarkie kommt aus der Stundensimulation. Die selbst genutzte kWh wird nur
+// EINMAL gezeigt (Erzeugungs-Seite), sonst stünden zwei leicht verschiedene kWh
+// gegeneinander.
 //
 // Jahres-Chart = VERBRAUCHS-Seite (woher kommt mein Strom: direkt / Speicher / Netz),
 // damit der Netzbezug als Segment sichtbar ist. Tages-Chart = 24-h-Detail eines
