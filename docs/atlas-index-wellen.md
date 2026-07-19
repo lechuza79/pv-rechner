@@ -60,6 +60,20 @@ Google deindexiert wieder.
    welche Bundesländer freigeschaltet sind), damit das Ausrollen ohne Code-Deploy je
    Charge geht — oder bewusst per Deploy je Welle.
 
+## Wirkungsmessung (Google Search Console API)
+Angebunden wie bei life-is-a-binge, dependency-frei (Service-Account-JWT, `node:crypto`):
+- `lib/google-auth.ts` (Token) + `lib/gsc-search-analytics.ts` (Search-Analytics-Query).
+- Route `GET /api/seo/gsc?prefix=/solar-atlas` (Auth: `Bearer $CRON_SECRET`) liefert
+  Impressions/Klicks je Atlas-Seite; der Wellen-Monitor ruft sie ab.
+- **Zwei manuelle Setup-Schritte (einmalig):**
+  1. Search Console (solar-check.io-Property) → Einstellungen → Nutzer → die
+     Service-Account-E-Mail (aus dem liab-Setup) als Nutzer hinzufügen (Lesend reicht).
+  2. Vercel (pv-rechner) → Env `GOOGLE_SERVICE_ACCOUNT_JSON` = derselbe base64-Key wie
+     bei liab. Optional `GSC_SITE_URL`, falls es eine URL-Präfix- statt Domain-Property
+     ist (Default `sc-domain:solar-check.io`).
+- Ohne diese Schritte liefert die Route `{configured:false}` und der Monitor erinnert
+  nur; danach liefert er die echten Zahlen.
+
 ## Empfehlung
 Start mit **0a (17)** → **0b (~400 Kreise)** → **Gemeinde-Wellen**. Vor Welle 1 die
 Thin-Schwelle setzen. Die Content-Qualität (Intro-Varianz, Credits, Meta) ist bereits
