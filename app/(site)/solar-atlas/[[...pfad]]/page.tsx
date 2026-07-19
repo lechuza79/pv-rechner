@@ -8,6 +8,7 @@ import { pageMetadata } from "../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd } from "../../../../lib/json-ld";
 import ZubauChart from "../../../../components/atlas/ZubauChart";
 import RankingTable from "../../../../components/atlas/RankingTable";
+import { MastrHeroSection } from "../../../../components/MastrHeroSection";
 import {
   resolveSlugPath,
   getRegionById,
@@ -209,6 +210,14 @@ export default async function AtlasPage({ params }: { params: Params }) {
             <div style={S.metricLabel}>Neu {thisYear} bisher</div>
             <div style={S.metricValue}>{nf(thisYearRow?.count ?? 0)}</div>
           </div>
+        </div>
+
+        <div style={S.section}>
+          <h2 style={S.h2}>Solaranlagen auf der Karte</h2>
+          <p style={S.sub}>
+            Tippen Sie auf ein Gebiet, um tiefer einzutauchen — bis auf Gemeindeebene.
+          </p>
+          <MastrHeroSection initialRegion={region.level === "de" ? "de" : region.region_id} />
         </div>
 
         <div style={S.section}>

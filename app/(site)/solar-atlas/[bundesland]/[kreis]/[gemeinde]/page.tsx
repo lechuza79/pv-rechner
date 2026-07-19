@@ -13,6 +13,7 @@ import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBo
 import GemeindePotentialBlock from "../../../../../../components/atlas/GemeindePotential";
 import GemeindeErneuerbareWidget from "../../../../../../components/atlas/GemeindeErneuerbareWidget";
 import GemeindeSolarLive from "../../../../../../components/atlas/GemeindeSolarLive";
+import { MastrHeroSection } from "../../../../../../components/MastrHeroSection";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
 import { getPvgisYield } from "../../../../../../lib/pvgis";
 import { computeGemeindePotential, type GemeindePotential } from "../../../../../../lib/gemeinde-potential";
@@ -364,6 +365,16 @@ export default async function GemeindePage({ params }: { params: Params }) {
             )}
           </div>
         </div>
+
+        {region.parent_region_id && (
+          <div style={S.section}>
+            <h2 style={S.h2}>{region.name} auf der Karte</h2>
+            <p style={S.sub}>
+              {kreis?.name ?? "Der Landkreis"} mit allen Gemeinden — tippen Sie auf ein Gebiet für die Details.
+            </p>
+            <MastrHeroSection initialRegion={region.parent_region_id} />
+          </div>
+        )}
 
         {atlas.solar.by_year.length >= 4 && (
           <div style={S.section}>
