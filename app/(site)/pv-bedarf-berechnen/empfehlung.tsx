@@ -125,6 +125,10 @@ export default function Empfehlung() {
   const [plzLoading, setPlzLoading] = useState(false);
   const [plzSource, setPlzSource] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+  // PVGIS-Monatsform des Standorts (12 × kWh/kWp) — nur der Ertrag (annual) steht
+  // in der URL, das Monatsprofil holen wir hier, damit die angezeigte Autarkie zur
+  // Ergebnisseite passt (die nutzt dasselbe Profil). Null → deutscher Schnitt.
+  const [monthlyProfile, setMonthlyProfile] = useState<number[] | null>(null);
 
   // Förderung am Standort: PLZ → zutreffende Programme (serverseitig aus der DB).
   // Eindeutige PLZ → Programme direkt; mehrdeutige PLZ überlassen wir der
@@ -204,7 +208,10 @@ export default function Empfehlung() {
   // Wenn die URL nur PLZ ohne Ertrag enthält (typischer Fall einer geteilten URL):
   // PVGIS-Daten beim Mount nachholen, damit der Empfänger denselben Ertrag sieht.
   useEffect(() => {
-    if (plz && !ertragKwp) fetchPvgis(plz);
+    // Monatsprofil immer nachholen, wenn eine PLZ da ist (auch wenn der Ertrag schon
+    // in der URL steht — das Profil steht dort nie), sonst zeigt die Zwischenseite
+    // die Autarkie mit der deutschen Durchschnittsform statt dem echten Standort.
+    if (plz && (!ertragKwp || !monthlyProfile)) fetchPvgis(plz);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -219,6 +226,7 @@ export default function Empfehlung() {
       const [lat, lon] = coords;
       const res = await fetch(`/api/pvgis?lat=${lat}&lon=${lon}&plzPrefix=${inputPlz.slice(0, 2)}`);
       const data = await res.json();
+      if (data.monthly && data.monthly.length === 12) setMonthlyProfile(data.monthly);
       if (data.annual && data.annual >= 700 && data.annual <= 1400) {
         // Write PLZ + Ertrag together: this runs after an async await, so the
         // updateUrl closure here predates setPlz and would otherwise drop the
@@ -253,6 +261,7 @@ export default function Empfehlung() {
     personen, nutzung, wp, ea, eaKm, klima,
     haustyp, dachart, budgetLimit: null,
     ertragKwp: ertragKwp ?? undefined,
+    monthlyYieldPerKwp: monthlyProfile,
     customRoofM2: customRoofM2 ?? undefined,
     wpWohnflaeche, wpInsulation, wpHeizsystem,
   };

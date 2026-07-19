@@ -31,6 +31,10 @@ export interface RecommendInput {
   dachart: number;         // Index in DACHARTEN
   budgetLimit: number | null;
   ertragKwp?: number;
+  // 12 × kWh/kWp aus PVGIS (Monatsform des Standorts) für die angezeigte Autarkie.
+  // Ohne PLZ null → deutscher Durchschnitt. Muss durchgereicht werden, damit Zwischen-
+  // und Ergebnisseite dieselbe Autarkie zeigen (die Ergebnisseite nutzt dasselbe Profil).
+  monthlyYieldPerKwp?: number[] | null;
   customRoofM2?: number;   // Override für nutzbare Dachfläche in m² (sonst aus haustyp × dachart)
   // WP-Gebäudedaten für den exakten Heizstrom (sonst Standard-Gebäude)
   wpWohnflaeche?: number;
@@ -109,6 +113,7 @@ interface EvalCtx {
   klima: string;
   klimaM2: number;
   totalConsumption: number;
+  monthlyYieldPerKwp: number[] | null;
 }
 
 function buildCtx(input: RecommendInput, prices?: PriceConfig, feedIn?: FeedInRates, stromSteigerungOverride?: number): EvalCtx {
@@ -139,13 +144,16 @@ function buildCtx(input: RecommendInput, prices?: PriceConfig, feedIn?: FeedInRa
     + (input.wp !== "nein" ? wpKwh : 0)
     + (input.ea !== "nein" ? calcEaAnnual(input.eaKm) : 0)
     + (klima !== "nein" ? calcKlimaAnnual(klimaM2) : 0);
-  return { input, p, f, ertragKwp, strompreis, stromSteigerung, wpKwh, klima, klimaM2, totalConsumption };
+  const monthlyYieldPerKwp = input.monthlyYieldPerKwp ?? null;
+  return { input, p, f, ertragKwp, strompreis, stromSteigerung, wpKwh, klima, klimaM2, totalConsumption, monthlyYieldPerKwp };
 }
 
 /** Autarkiegrad einer Konfiguration aus der Stunden-Jahressimulation (wie im
  *  PV-Rechner) — NICHT für die Empfehlungs-Logik (die bleibt wirtschaftlich/NPV),
- *  nur für die Anzeige, damit Empfehlung und Ergebnisseite dieselbe Autarkie
- *  zeigen. Ohne PLZ: deutscher Durchschnitts-Ertrag (monthlyYieldPerKwp=null). */
+ *  nur für die Anzeige. Nutzt dasselbe PVGIS-Monatsprofil wie die Ergebnisseite
+ *  (ctx.monthlyYieldPerKwp), damit Zwischen- und Ergebnisseite dieselbe Autarkie
+ *  zeigen. Nur ohne PLZ (Profil null) fällt es auf die deutsche Durchschnittsform
+ *  zurück — dann sieht die Ergebnisseite mangels PLZ ebenfalls den Schnitt. */
 function autarkyFor(ctx: EvalCtx, kwp: number, speicherKwh: number): number {
   const household: HouseholdProfile = {
     baseKwh: PERSONEN[ctx.input.personen].verbrauch,
@@ -158,7 +166,7 @@ function autarkyFor(ctx: EvalCtx, kwp: number, speicherKwh: number): number {
     eaAnnualKwh: ctx.input.ea !== "nein" ? calcEaAnnual(ctx.input.eaKm) : undefined,
     klimaAnnualKwh: ctx.klima !== "nein" ? calcKlimaAnnual(ctx.klimaM2) : undefined,
   };
-  return simulatePvYear({ kwp, speicherKwh, monthlyYieldPerKwp: null, ertragKwp: ctx.ertragKwp, household }).autarky;
+  return simulatePvYear({ kwp, speicherKwh, monthlyYieldPerKwp: ctx.monthlyYieldPerKwp, ertragKwp: ctx.ertragKwp, household }).autarky;
 }
 
 /** Bewertet EINE Konfiguration (kWp × Speicher). evDelta verschiebt die
