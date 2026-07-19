@@ -394,7 +394,9 @@ pv-rechner/
 │   ├── calc.ts                     # Pure Berechnungsfunktionen (EV, Amortisation, Kosten, URL-Helpers)
 │   ├── consumption.ts              # Zentrales Verbrauchsmodell: WP/E-Auto/Klimaanlage Konstanten, Stundenprofile (BDEW/VDI 4655)
 │   ├── simulation.ts               # Live-Simulation: PV-Momentanleistung aus Wetterdaten (NOCT-Modell)
+│   ├── balkon-sim.ts               # GETEILTE Stunden-Jahressimulation (simulateSolarYear): Erzeugung/Verbrauch/Speicher Stunde für Stunde. Balkon UND Dach-PV nutzen sie
 │   ├── balkon.ts + balkon-config.ts # Balkonkraftwerk-Rechner: Ertrag (Wechselrichter-Deckel) + Eigenverbrauch + Amortisation
+│   ├── pv-sim.ts                   # Dach-PV: Autarkie + Jahresverlauf + Beispieltage aus der Stundensimulation (nicht aus dem Eigenverbrauch zurückgerechnet). Geld bleibt am Power-Law
 │   ├── recommend.ts                # Empfehlungs-Algorithmus (optimale kWp + Speicher aus Haushalt + Dach)
 │   ├── glossary.ts                 # Fachbegriff-Datensatz (15 Begriffe: short/long/aliases) + Slug-Lookup
 │   ├── types.ts                    # CalcParams, CalculationRow, Konvertierung
@@ -495,6 +497,9 @@ pv-rechner/
 |---|---|---|
 | **Standort-Ertrag** | `/api/pvgis` liefert `annual` **und `monthly`** (12 Werte, in Supabase gecacht) | Nur `annual` nehmen → Sommer/Winter existiert nicht mehr, Standort wirkt bei gedeckelten Anlagen gar nicht |
 | **Stundenlast Haushalt** | `calcHourlyConsumption(household, hour, month)` + `HouseholdProfile` (`lib/consumption.ts`, BDEW H0 / VDI 4655) | Eigenes Lastprofil bauen |
+| **Stunden-Jahressimulation** | `simulateSolarYear` (`lib/balkon-sim.ts`): Erzeugung/Verbrauch/Speicher Stunde für Stunde; Balkon + Dach-PV teilen sie | Eigene Dispatch-Schleife bauen |
+| **Autarkie** | aus der Stundensimulation (`lib/pv-sim.ts → simulatePvYear`), NICHT aus dem Eigenverbrauch × Jahresbilanz zurückrechnen | Jahresbilanz → 100 % bei großen Anlagen; Wärmepumpen-Winter fehlt. Gegen HTW-Kennfeld validiert (`lib/__tests__/pv-sim.test.ts`, ±3 pp) |
+| **Eigenverbrauch fürs GELD** | `calcEigenverbrauch` (HTW-Power-Law, `lib/calc.ts`) — bewusst NICHT die Simulation | Simulation hat bei Stundenauflösung leichten Optimismus-Bias → würde die Ersparnis schönen |
 | **Tag/Nacht-Verhalten** | `tagQuote` (`NUTZUNG` in `lib/constants.ts`) | Eine eigene „Anwesenheits"-Größe erfinden |
 | **Jahresverbrauch je Haushalt** | `PERSONEN` (`lib/constants.ts`) | Eigene kWh-Tabelle |
 | **Strompreis + Anstieg** | `usePrices()` / `DEFAULT_PRICES` → `electricityPrice`, `electricityIncrease` (3 %/a) | Eigenen Preispfad annehmen oder „konstant" rechnen |

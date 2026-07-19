@@ -2,11 +2,16 @@ import { NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
 import { DEFAULT_PRICES } from "../../../../lib/prices-config";
 
-// ─── Monthly price report (email via Resend) ─────────────────────────────────
-// Vercel Cron: runs monthly, a couple of days after the price scrape.
-// Sends a digest of every market-tracked attribute to ADMIN_EMAILS with the
-// change vs. the previous month and the source per value. The HEALTH line
-// doubles as a heartbeat — if the pipeline degraded, the email says so.
+// ─── Weekly price report / health alert (email via Resend) ───────────────────
+// Vercel Cron: runs WEEKLY (Mondays). Two jobs in one, so the alert path never
+// depends on Claude/the scheduled-task watchers (which share a monthly spend
+// limit and can all go silent at once):
+//   • Pipeline healthy  → stay quiet, EXCEPT once a month (first Monday) send the
+//     full digest as before — the monthly heartbeat/change-log is preserved.
+//   • Pipeline degraded → email EVERY week until it recovers, so a broken source
+//     surfaces within days instead of waiting up to a month for the next digest.
+// This is the Vercel-native safety net: it runs even when every Claude watcher
+// is blocked. The self-healing watcher still handles the repair side on top.
 //
 // Auth: Authorization: Bearer $CRON_SECRET (Vercel Cron sends it automatically).
 
@@ -102,6 +107,15 @@ export async function GET(req: Request) {
     const health = (curr.notes?.match(/HEALTH=(\w+)/)?.[1] ?? "unbekannt").toUpperCase();
     const healthColor = health === "OK" ? "#00A03C" : "#EF4444";
 
+    // Weekly cadence, but only two situations actually send a mail:
+    //  1) health != OK        → weekly warning until the pipeline recovers.
+    //  2) first Monday of month → the monthly full digest (heartbeat), even if OK.
+    // getUTCDate() is evaluated at runtime (no hard-coded date, rollover-safe);
+    // days 1–7 contain exactly one Monday, so the digest fires once per month.
+    const isWarning = health !== "OK";
+    const isMonthlyDigestSlot = new Date().getUTCDate() <= 7;
+    const shouldSend = isWarning || isMonthlyDigestSlot;
+
     const sapSrc = "taptaphome.com (vormals solaranlagen-portal.com)";
     const battSrc = "taptaphome + energie-experten (Mittel)";
     const wpSrc = "taptaphome.com (WP-Kostenübersicht)";
@@ -129,10 +143,21 @@ export async function GET(req: Request) {
       feed ? row("Einspeisung Voll >10 kWp", `${fmt(feed.voll_over_10, 2)} ct/kWh`, "—", feedSrc) : "",
     ].join("");
 
-    const subject = `Solar Check – Preis-Report ${curr.valid_from}${health !== "OK" ? ` ⚠️ ${health}` : ""}`;
+    const subject = isWarning
+      ? `Solar Check – ⚠️ Preis-Pipeline ${health} (Stand ${curr.valid_from})`
+      : `Solar Check – Preis-Report ${curr.valid_from}`;
+    // A degraded run repeats weekly until fixed → tell the reader why, so a
+    // recurring mail reads as "still broken", not as a duplicate glitch.
+    const warningBanner = isWarning
+      ? `<p style="background:#FEF2F2;border:1px solid #EF4444;border-radius:8px;padding:12px 14px;margin:0 0 16px;font-size:14px;color:#3F3F3F">
+          <b style="color:#EF4444">⚠️ Die Preis-Pipeline ist nicht gesund (${health}).</b><br>
+          Der ausgelieferte Preis kann trotzdem stimmen (letzter guter Wert wird gehalten) — aber eine Datenquelle liefert nicht mehr sauber. Diese Warnung kommt wöchentlich, bis der Status wieder OK ist. Details siehe „Pipeline-Status" und die Quellen-Spalte unten.
+        </p>`
+      : "";
     const html = `<div style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;color:#3F3F3F">
-      <h2 style="margin:0 0 4px">Solar Check – Monatlicher Preis-Report</h2>
+      <h2 style="margin:0 0 4px">Solar Check – ${isWarning ? "Preis-Pipeline: Warnung" : "Monatlicher Preis-Report"}</h2>
       <p style="color:#777;margin:0 0 16px">Stand ${curr.valid_from}${prev ? ` · Vergleich zu ${prev.valid_from}` : " · (kein Vormonat zum Vergleich)"}</p>
+      ${warningBanner}
       <p style="margin:0 0 16px">Pipeline-Status: <b style="color:${healthColor}">${health}</b></p>
       <table style="border-collapse:collapse;width:100%;font-size:14px">
         <thead><tr style="text-align:left;color:#777;font-size:12px;text-transform:uppercase">
@@ -147,7 +172,13 @@ export async function GET(req: Request) {
     </div>`;
 
     if (dryRun) {
-      return NextResponse.json({ dryRun: true, subject, recipients: RECIPIENTS, health, html });
+      return NextResponse.json({ dryRun: true, subject, recipients: RECIPIENTS, health, shouldSend, isWarning, isMonthlyDigestSlot, html });
+    }
+
+    // Healthy week that isn't the monthly digest slot → stay quiet (no inbox spam).
+    if (!shouldSend) {
+      console.log(`[Price Report] Skipped (health=${health}, not monthly slot).`);
+      return NextResponse.json({ success: true, sent: false, reason: "healthy, not monthly digest slot", health });
     }
 
     if (!RESEND_API_KEY) {

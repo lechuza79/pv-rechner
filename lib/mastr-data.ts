@@ -4,6 +4,7 @@
 // filled, only `loadFromSupabase` needs to flip to true.
 
 import { BUNDESLAENDER, bundeslandByAgs } from "./mastr-regions";
+import { ENCLOSED_CITIES } from "./enclosed-cities";
 
 export type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
 export type Segment = "steckersolar" | "privat_dach" | "gewerbe_dach" | "freiflaeche" | "n/a";
@@ -289,16 +290,27 @@ async function supabaseChoroplethData(
   energietraeger: Energietraeger,
   segment: SegmentFilter,
 ): Promise<{ data: ChoroplethEntry[]; source: "supabase"; data_as_of: string }> {
-  // The map only ever draws Bundesländer (from DE) or Kreise (inside a
-  // Bundesland) — it has no Gemeinde geometry.
-  const childLevel: Exclude<Level, "de"> = parent === "de" ? "bundesland" : "landkreis";
-  const [rows, asOf] = await Promise.all([
+  // One level down from the parent: DE → Bundesländer, Bundesland → Kreise,
+  // Kreis → Gemeinden. The map now carries Gemeinde geometry (lazy-loaded per
+  // Kreis), so the Kreis→Gemeinde step feeds the deepest drilldown.
+  const childLevel: Exclude<Level, "de"> =
+    parent === "de"
+      ? "bundesland"
+      : levelOf(parent) === "bundesland"
+        ? "landkreis"
+        : "gemeinde";
+  // A Landkreis that rings a kreisfreie Stadt gets that Stadt drawn into its map
+  // bundle (it sits in the Kreis's hole). Pull the Stadt's own value in too, so
+  // it is coloured and hovers like any other shape instead of a blank infill.
+  const enclosedCity = childLevel === "gemeinde" ? ENCLOSED_CITIES[parent] : undefined;
+  const [rows, cityRows, asOf] = await Promise.all([
     loadChildren(parent, childLevel, energietraeger),
+    enclosedCity ? loadChildren(enclosedCity, "gemeinde", energietraeger) : Promise.resolve([]),
     fetchMetaDataAsOf(),
   ]);
 
   const byRegion = new Map<string, { count: number; kwp: number }>();
-  for (const r of rows) {
+  for (const r of [...rows, ...cityRows]) {
     if (!rowMatchesSegment(r, segment)) continue;
     const existing = byRegion.get(r.region_id) ?? { count: 0, kwp: 0 };
     existing.count += r.count;

@@ -298,15 +298,15 @@ export default function Klimaanlage() {
                     onChange={e => onPlzChange(e.target.value)}
                     style={{
                       flex: 1, padding: "12px 14px", fontSize: 15, fontFamily: v('--font-mono'),
-                      borderRadius: v('--radius-md'), border: `2px solid ${plzConfirmed ? v('--color-positive') : v('--color-border')}`,
+                      borderRadius: v('--radius-md'), border: `2px solid ${v('--color-border')}`,
                       background: v('--color-bg-muted'), color: v('--color-text-primary'), outline: "none", textAlign: "center", letterSpacing: "0.08em",
                     }}
                   />
                   <button type="submit" disabled={plz.length !== 5 || plzLoading || plzConfirmed} style={{
                     padding: "0 18px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, whiteSpace: "nowrap",
                     border: "none", cursor: plz.length === 5 && !plzConfirmed ? "pointer" : "default",
-                    background: plzConfirmed ? v('--color-positive') : plz.length === 5 ? v('--color-accent') : v('--color-bg-muted'),
-                    color: plzConfirmed || plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
+                    background: plzConfirmed ? v('--color-bg-muted') : plz.length === 5 ? v('--color-accent') : v('--color-bg-muted'),
+                    color: plzConfirmed ? v('--color-text-muted') : plz.length === 5 ? v('--color-text-on-accent') : v('--color-text-muted'),
                   }}>
                     {plzLoading ? "…" : plzConfirmed
                       ? <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconCheck size={iconSizes.sm} /> Übernommen</span>
@@ -314,7 +314,7 @@ export default function Klimaanlage() {
                   </button>
                 </form>
                 {plzConfirmed ? (
-                  <div style={{ fontSize: 12, color: v('--color-positive'), marginTop: 8, lineHeight: 1.5, fontWeight: 600 }}>
+                  <div style={{ fontSize: 12, color: v('--color-text-secondary'), marginTop: 8, lineHeight: 1.5, fontWeight: 600 }}>
                     Standort übernommen: {cdh.toLocaleString("de-DE")} Kühlgradstunden{cdhSource === "fallback" ? " (Durchschnitt)" : ""}.
                     {heatwave && heatwave.hotDays > 0 && ` Aktuell bis ${heatwave.maxTemp} °C.`}
                   </div>
