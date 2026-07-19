@@ -196,12 +196,19 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
   const [view, setView] = useState<string>("year");
   if (!open) return null;
 
+  // Der Eigenverbrauch ist die (ggf. manuell editierte) Zahl der Ergebnisseite,
+  // unverändert durchgereicht: Das Modal ERKLÄRT die Seite, es rechnet den Wert
+  // nicht neu — sonst zeigte es nach einem Override eine andere Zahl als das Geld.
+  // Die Autarkie kommt aus der Stundensimulation (anderer Nenner: der Verbrauch).
+  // Beide Prozente dürfen abweichen — sie messen Verschiedenes. Die selbst
+  // genutzte kWh wird nur EINMAL gezeigt (auf der Erzeugungs-Seite); auf der
+  // Verbrauchs-Seite steht der harte Netzbezug, damit nirgends zwei leicht
+  // verschiedene „selbst genutzt"-kWh gegeneinander stehen.
   const evPct = Math.round(effEv);
   const auPct = Math.round(autarkie);
-  const selbstGenutzt = evPct / 100 * jahresertrag;
-  const eingespeist = jahresertrag - selbstGenutzt;
-  const ausSonne = auPct / 100 * gesamtVerbrauch;
-  const ausNetz = gesamtVerbrauch - ausSonne;
+  const selbstGenutzt = (evPct / 100) * jahresertrag;
+  const eingespeist = Math.max(0, jahresertrag - selbstGenutzt);
+  const ausNetz = Math.max(0, gesamtVerbrauch - (auPct / 100) * gesamtVerbrauch);
 
   const ratio = jahresertrag / Math.max(gesamtVerbrauch, 1);
   const groß = ratio >= 1.8;
@@ -247,9 +254,9 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
           }}>×</button>
         </div>
         <p style={{ fontSize: 12, color: v('--color-text-muted'), marginBottom: 18, lineHeight: 1.5 }}>
-          Autarkie und Eigenverbrauch beschreiben denselben selbst genutzten Solarstrom — einmal
-          gemessen an deinem Verbrauch, einmal an deiner Erzeugung. Deshalb sind es zwei Blickwinkel,
-          nicht zwei getrennte Größen.
+          Zwei Blickwinkel auf dieselbe Anlage: Der Eigenverbrauch misst, wie viel deiner Erzeugung
+          du selbst nutzt, die Autarkie, wie viel deines Verbrauchs vom Dach kommt. Weil sie sich auf
+          Verschiedenes beziehen — Erzeugung bzw. Verbrauch — sind es zwei verschiedene Prozentwerte.
         </p>
 
         <Bar
@@ -264,7 +271,7 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
           label="Dein Verbrauch"
           total={gesamtVerbrauch}
           parts={[
-            { pct: auPct, color: GREEN, caption: `Autarkie ${auPct} %`, sub: `${Math.round(ausSonne).toLocaleString("de-DE")} kWh aus Sonne${speicherKwh > 0 ? " & Speicher" : ""}` },
+            { pct: auPct, color: GREEN, caption: `Autarkie ${auPct} %`, sub: `vom Dach${speicherKwh > 0 ? " & Speicher" : ""} gedeckt` },
             { pct: 100 - auPct, color: GRAY, caption: "Netzbezug", sub: `${Math.round(ausNetz).toLocaleString("de-DE")} kWh aus dem Netz` },
           ]}
         />
