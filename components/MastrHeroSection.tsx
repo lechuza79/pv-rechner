@@ -8,6 +8,7 @@ import { bundeslandByAgs } from "../lib/mastr-regions";
 import type { Energietraeger, RegionSummary, SegmentFilter } from "../lib/mastr-data";
 import { useCachedFetch } from "../lib/use-cached-fetch";
 import { DATA_SOURCES, sourceLabel } from "../lib/data-sources";
+import { isEmbedContext } from "../lib/embed-context";
 import { v } from "../lib/theme";
 
 // Tab order: aggregate first, then individual renewables, then storage (separated)
@@ -73,14 +74,31 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
     onRegionChange?.(selectedAgs);
   }, [selectedAgs, onRegionChange]);
 
-  // Drilldown levels derive from selectedAgs:
-  //   undefined  → de-level: show 16 Bundesländer
-  //   2-digit AGS → bundesland-level: zoom in, show LKs inside
-  //   5-digit AGS → bundesland-level with LK highlighted
+  // Embed pages have no atlas detail pages to link into — resolve this after
+  // mount (path-based) so the "Zur Gemeinde-/Landkreis-Seite" affordances stay
+  // out of embeds. SSR renders the site variant; embeds drop the links post-hydration.
+  const [isEmbed, setIsEmbed] = useState(false);
+  useEffect(() => setIsEmbed(isEmbedContext()), []);
+
+  // Drilldown levels derive from the length of selectedAgs:
+  //   undefined   → de-level: show 16 Bundesländer
+  //   2-digit AGS → bundesland-level: zoom into the Bundesland, show its Kreise
+  //   5-digit AGS → landkreis-level: zoom into the Kreis, show its Gemeinden
+  // A Gemeinde (8-digit) is never a persistent selection — clicking one leaves
+  // the map for its atlas page (handleSelect), so the deepest map view is the
+  // Kreis with its Gemeinden.
   const isBlSelected = selectedAgs?.length === 2;
   const isLkSelected = selectedAgs?.length === 5;
-  const parentAgs = isBlSelected ? selectedAgs : isLkSelected ? selectedAgs.slice(0, 2) : undefined;
-  const mapLevel: "de" | "bundesland" = parentAgs ? "bundesland" : "de";
+  const mapLevel: "de" | "bundesland" | "landkreis" = isLkSelected
+    ? "landkreis"
+    : isBlSelected
+      ? "bundesland"
+      : "de";
+  // Map zoom target AND choropleth parent: the selected region itself (BL shows
+  // Kreise, Kreis shows Gemeinden). The Bundesland for the breadcrumb is always
+  // the first two digits, regardless of how deep we are.
+  const parentAgs = isBlSelected || isLkSelected ? selectedAgs : undefined;
+  const blAgs = selectedAgs ? selectedAgs.slice(0, 2) : undefined;
   const choroplethParent = parentAgs ?? "de";
 
   const choroplethEndpoint = `/api/mastr/choropleth?parent=${choroplethParent}&type=${energietraeger}&segment=${effectiveSegment}`;
@@ -118,6 +136,16 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
   );
 
   const handleSelect = (ags: string) => {
+    // Gemeinde (8-digit): the deepest level. Leave the map for that Gemeinde's
+    // atlas detail page. Inside an embed there are no detail pages to go to, so
+    // the click drills no further — viewing the Kreis's Gemeinden and hovering
+    // for their values is the read-only payoff there.
+    if (ags.length === 8) {
+      if (!isEmbedContext()) {
+        window.location.href = `/api/atlas/goto?ags=${ags}`;
+      }
+      return;
+    }
     setSelectedAgs((prev) => {
       if (prev === ags) {
         // Clicking the already-selected region goes up a level
@@ -153,11 +181,11 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
         />
       )}
 
-      {selectedAgs && parentAgs && (
+      {selectedAgs && blAgs && (
         <MapBreadcrumb
           isLk={isLkSelected}
-          blAgs={parentAgs}
-          blName={bundeslandByAgs(parentAgs)?.name ?? parentAgs}
+          blAgs={blAgs}
+          blName={bundeslandByAgs(blAgs)?.name ?? blAgs}
           lkName={isLkSelected ? summary?.name : undefined}
           onGo={setSelectedAgs}
         />
@@ -167,7 +195,7 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
         className={
           "mastr-hero-grid" +
           (energietraeger === "solar" ? " has-filter" : "") +
-          (selectedAgs && parentAgs ? " has-breadcrumb" : "")
+          (selectedAgs ? " has-breadcrumb" : "")
         }
         style={{ marginTop: 16 }}
       >
@@ -181,6 +209,9 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
             valueLabel="MW"
             loading={choroplethLoading}
           />
+          {isLkSelected && !isEmbed && (
+            <GemeindeHint kreisAgs={selectedAgs} kreisName={summary?.name} />
+          )}
         </div>
 
         <aside className="mastr-hero-aside" style={{ minWidth: 0 }}>
@@ -214,7 +245,7 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
           textAlign: "right",
         }}
       >
-        Karte: © GeoBasis-DE / BKG 2024 (VG2500,{" "}
+        Karte: © GeoBasis-DE / BKG (Verwaltungsgebiete VG2500 · VG250 Gemeinden,{" "}
         <a
           href="https://www.govdata.de/dl-de/by-2-0"
           target="_blank"
@@ -419,6 +450,33 @@ export function formatDataAsOf(iso: string): string {
   const m = /^(\d{4})-(\d{2})-\d{2}$/.exec(iso);
   if (!m) return iso;
   return `${MONTHS_DE[parseInt(m[2], 10) - 1]} ${m[1]}`;
+}
+
+// Shown under the map once you have drilled into a Kreis (which then shows its
+// Gemeinden). Tells the visitor the Gemeinden are clickable and offers a jump to
+// the Kreis's own atlas page. Not rendered inside embeds (no detail pages there).
+function GemeindeHint({ kreisAgs, kreisName }: { kreisAgs: string; kreisName?: string }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        gap: 8,
+        marginTop: 8,
+        fontSize: 12,
+        color: v("--color-text-muted"),
+      }}
+    >
+      <span>Tippen Sie auf eine Gemeinde, um ihre Solar-Zahlen im Detail zu sehen.</span>
+      <a
+        href={`/api/atlas/goto?ags=${kreisAgs}`}
+        style={{ color: v("--color-accent"), fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}
+      >
+        {kreisName ? `Alle Zahlen zu ${kreisName}` : "Zur Landkreis-Seite"} →
+      </a>
+    </div>
+  );
 }
 
 // Breadcrumb above the map: Deutschland › Bundesland › Landkreis. Each crumb

@@ -14,6 +14,7 @@ import { referenceYearKwh } from "../../../lib/solar-year";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS } from "../../../lib/constants";
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
+import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 
 // ISR: re-render hourly so live market prices / feed-in rates stay current
 // without a deploy. The page reads from the same Supabase tables + config
@@ -389,6 +390,19 @@ export default async function DatenstandPage() {
             { label: "PLZ → Koordinaten", value: "WZB plz_geocoord, Apache License 2.0" },
           ]}
           source="Branchenübliche Konventionen · PVGIS (Photovoltaic Geographical Information System, EU JRC) · PLZ-Koordinaten: WZB plz_geocoord (Markus Konrad), Apache License 2.0"
+        />
+
+        {/* ── Solar-Atlas & Karte ── */}
+        <Section
+          title="Solar-Atlas & Karte"
+          stand="Amtliche Register"
+          intro="Der Bestand an Solaranlagen je Bundesland, Landkreis und Gemeinde stammt aus dem Marktstammdatenregister. Die Umrisse auf der Karte sind amtliche Verwaltungsgebiete, für das Web vereinfacht."
+          rows={[
+            { label: "Anlagenbestand (Anzahl & Leistung)", value: "Marktstammdatenregister der Bundesnetzagentur, je Gemeinde aggregiert" },
+            { label: "Kartenumrisse Bundesländer & Kreise", value: "BKG, Verwaltungsgebiete 1:2.500.000 (VG2500)" },
+            { label: "Kartenumrisse Gemeinden", value: "BKG, Verwaltungsgebiete 1:250.000 (VG250), ~11.000 Gemeinden, je Landkreis nachgeladen" },
+          ]}
+          source={`${sourceLabel(DATA_SOURCES.mastr)} · ${sourceLabel(DATA_SOURCES.bkg)}`}
         />
 
         <p style={S.note}>

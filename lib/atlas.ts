@@ -148,6 +148,21 @@ export async function getAncestors(region: AtlasRegion): Promise<AtlasRegion[]> 
   return chain;
 }
 
+/**
+ * Full canonical atlas path for a region id (AGS), e.g. "09679" →
+ * "/solar-atlas/bayern/landkreis-wuerzburg". Walks the parent chain and joins
+ * the slugs; the "de" root carries no slug and drops out. Returns null when the
+ * region or any ancestor has no slug (not yet in the registry). Lets the map
+ * link into a Gemeinde by AGS without shipping a slug table to the browser.
+ */
+export async function atlasPathForRegionId(regionId: string): Promise<string | null> {
+  const region = await getRegionById(regionId);
+  if (!region?.slug) return null;
+  const ancestors = await getAncestors(region);
+  const parts = [...ancestors, region].map((r) => r.slug).filter((s): s is string => !!s);
+  return `/solar-atlas/${parts.join("/")}`;
+}
+
 /** The level of a region's children, or null if it is a leaf. */
 export function childLevelOf(region: AtlasRegion): Exclude<Level, "de"> | null {
   if (region.level === "de") return "bundesland";

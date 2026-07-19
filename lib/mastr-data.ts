@@ -289,9 +289,15 @@ async function supabaseChoroplethData(
   energietraeger: Energietraeger,
   segment: SegmentFilter,
 ): Promise<{ data: ChoroplethEntry[]; source: "supabase"; data_as_of: string }> {
-  // The map only ever draws Bundesländer (from DE) or Kreise (inside a
-  // Bundesland) — it has no Gemeinde geometry.
-  const childLevel: Exclude<Level, "de"> = parent === "de" ? "bundesland" : "landkreis";
+  // One level down from the parent: DE → Bundesländer, Bundesland → Kreise,
+  // Kreis → Gemeinden. The map now carries Gemeinde geometry (lazy-loaded per
+  // Kreis), so the Kreis→Gemeinde step feeds the deepest drilldown.
+  const childLevel: Exclude<Level, "de"> =
+    parent === "de"
+      ? "bundesland"
+      : levelOf(parent) === "bundesland"
+        ? "landkreis"
+        : "gemeinde";
   const [rows, asOf] = await Promise.all([
     loadChildren(parent, childLevel, energietraeger),
     fetchMetaDataAsOf(),
