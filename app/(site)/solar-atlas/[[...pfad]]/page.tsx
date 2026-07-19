@@ -5,7 +5,7 @@ import Header from "../../../../components/Header";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
-import { jsonLdHtml, breadcrumbJsonLd } from "../../../../lib/json-ld";
+import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../lib/json-ld";
 import ZubauChart from "../../../../components/atlas/ZubauChart";
 import RankingTable from "../../../../components/atlas/RankingTable";
 import { MastrHeroSection } from "../../../../components/MastrHeroSection";
@@ -72,16 +72,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const region = await resolve(params.pfad);
   if (!region) return { robots: PILOT_NOINDEX };
   const title = headline(region);
-  const childLevel = childLevelOf(region);
-  const childNoun =
-    childLevel === "bundesland" ? "Bundesländer" : childLevel === "landkreis" ? "Kreise" : "Gemeinden";
   return {
     ...pageMetadata({
       title: `${title} – Bestand & Zubau`,
       description:
         region.level === "de"
           ? "Wie viel Photovoltaik steht in Deutschland? Bestand und Zubau aus dem Marktstammdatenregister, mit Rangliste aller Bundesländer nach Solarleistung je Einwohner."
-          : `Wie viele Solaranlagen stehen ${ortPhrase(region)}? Photovoltaik-Bestand, installierte Leistung und Zubau aus dem Marktstammdatenregister — je Einwohner vergleichbar, mit Rangliste der ${childNoun}.`,
+          : `Wie viele Solaranlagen stehen ${ortPhrase(region)}? Photovoltaik-Bestand, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister.`,
       path: `/solar-atlas${params.pfad?.length ? "/" + params.pfad.join("/") : ""}`,
     }),
     robots: PILOT_NOINDEX,
@@ -141,25 +138,19 @@ export default async function AtlasPage({ params }: { params: Params }) {
     crumbs.map((c) => ({ name: c.label, path: c.href })),
     BASE_URL,
   );
-  const datasetLd = {
-    "@context": "https://schema.org",
-    "@type": "Dataset",
+  const datasetLd = atlasDatasetJsonLd({
     name: `Solaranlagen-Bestand ${regionLabel}`,
     description: `Anlagenzahl und installierte Leistung der Photovoltaik ${ortPhrase(region)} aus dem Marktstammdatenregister, mit jährlichem Zubau und Rangliste der ${childNoun}.`,
     url: `${BASE_URL}${basePath}`,
-    license: "https://www.govdata.de/dl-de/by-2-0",
-    creator: { "@type": "Organization", name: "Solar Check", url: BASE_URL },
-    isBasedOn: "https://www.marktstammdatenregister.de",
     dateModified: atlas.data_as_of,
-    spatialCoverage: { "@type": "Place", name: regionLabel },
-    variableMeasured: [
-      { "@type": "PropertyValue", name: "Solaranlagen in Betrieb", value: atlas.solar.total_count },
-      { "@type": "PropertyValue", name: "Installierte Leistung", value: Math.round(atlas.solar.total_kwp), unitText: "kWp" },
-      ...(wPerCapita !== null
-        ? [{ "@type": "PropertyValue", name: "Solarleistung je Einwohner", value: wPerCapita, unitText: "W" }]
-        : []),
+    placeName: regionLabel,
+    variables: [
+      { name: "Solaranlagen in Betrieb", value: atlas.solar.total_count },
+      { name: "Installierte Leistung", value: Math.round(atlas.solar.total_kwp), unitText: "kWp" },
+      ...(wPerCapita !== null ? [{ name: "Solarleistung je Einwohner", value: wPerCapita, unitText: "W" }] : []),
     ],
-  };
+    baseUrl: BASE_URL,
+  });
 
   return (
     <div style={S.page}>

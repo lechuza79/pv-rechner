@@ -6,7 +6,7 @@ import Breadcrumb from "../../../../../../components/Breadcrumb";
 import { IconArrowRight, IconTrendUp, IconTrendDown } from "../../../../../../components/Icons";
 import { v } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
-import { jsonLdHtml, breadcrumbJsonLd } from "../../../../../../lib/json-ld";
+import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type OutsidePeer } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
@@ -235,27 +235,20 @@ export default async function GemeindePage({ params }: { params: Params }) {
     crumbs.map((c) => ({ name: c.label, path: c.href })),
     BASE_URL,
   );
-  const datasetLd = {
-    "@context": "https://schema.org",
-    "@type": "Dataset",
+  const datasetLd = atlasDatasetJsonLd({
     name: `Solaranlagen-Bestand ${region.name}`,
     description: `Anlagenzahl, installierte Leistung und Zubau der Photovoltaik in ${region.name}${kreis ? ` (${kreis.name})` : ""} aus dem Marktstammdatenregister.`,
     url: `${BASE_URL}${atlasPath}`,
-    license: "https://www.govdata.de/dl-de/by-2-0",
-    creator: { "@type": "Organization", name: "Solar Check", url: BASE_URL },
-    isBasedOn: "https://www.marktstammdatenregister.de",
     dateModified: atlas.data_as_of,
-    spatialCoverage: {
-      "@type": "Place",
-      name: region.name,
-      ...(kreis || bl ? { containedInPlace: { "@type": "Place", name: kreis?.name ?? bl?.name ?? "" } } : {}),
-    },
-    variableMeasured: [
-      { "@type": "PropertyValue", name: "Solaranlagen in Betrieb", value: atlas.solar.total_count },
-      { "@type": "PropertyValue", name: "Installierte Leistung", value: Math.round(atlas.solar.total_kwp), unitText: "kWp" },
-      { "@type": "PropertyValue", name: "Batteriespeicher-Kapazität", value: Math.round(speicher.kwh_batterie), unitText: "kWh" },
+    placeName: region.name,
+    containedInPlace: kreis?.name ?? bl?.name ?? undefined,
+    variables: [
+      { name: "Solaranlagen in Betrieb", value: atlas.solar.total_count },
+      { name: "Installierte Leistung", value: Math.round(atlas.solar.total_kwp), unitText: "kWp" },
+      { name: "Batteriespeicher-Kapazität", value: Math.round(speicher.kwh_batterie), unitText: "kWh" },
     ],
-  };
+    baseUrl: BASE_URL,
+  });
 
   return (
     <div style={S.page}>
@@ -347,6 +340,8 @@ export default async function GemeindePage({ params }: { params: Params }) {
             Höhe (Reihe streckt); das Radial nur wenn Koordinaten vorliegen, sonst
             füllt der Mix die Reihe allein. */}
         <div style={S.section}>
+          <h2 style={S.h2}>Erneuerbare Energien in {region.name}</h2>
+          <p style={S.sub}>Installierte Leistung nach Technologie und die heutige Solarleistung, simuliert</p>
           <div style={S.sideBySide}>
             <div style={S.sbsItem}>
               <GemeindeErneuerbareWidget

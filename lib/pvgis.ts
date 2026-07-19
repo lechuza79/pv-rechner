@@ -35,7 +35,7 @@ export async function getPvgisYield({
   // Sofort-Fallback wenn keine (plausiblen) Koordinaten
   if (isNaN(lat) || isNaN(lon) || lat < 47 || lat > 55 || lon < 5 || lon > 16) {
     const bl = PLZ_BL[plzPrefix] || "BY";
-    return { annual: FALLBACK[bl] || 1050, monthly: null, source: "fallback" };
+    return { annual: FALLBACK[bl] || NATIONAL_AVG_YIELD, monthly: null, source: "fallback" };
   }
 
   // Gerundete Koordinaten für Cache (0.01° ≈ 1 km)
@@ -90,6 +90,6 @@ export async function getPvgisYield({
   } catch {
     // Fallback auf Bundesland-Tabelle
     const bl = PLZ_BL[plzPrefix] || "BY";
-    return { annual: FALLBACK[bl] || 1050, monthly: null, source: "fallback" };
+    return { annual: FALLBACK[bl] || NATIONAL_AVG_YIELD, monthly: null, source: "fallback" };
   }
 }

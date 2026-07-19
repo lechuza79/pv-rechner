@@ -31,3 +31,45 @@ export function breadcrumbJsonLd(
     })),
   };
 }
+
+/**
+ * Dataset schema für die Solar-Atlas-Seiten (Übersicht + Gemeinde). Die
+ * konstanten, rechtlich relevanten Felder (Lizenz dl-de/by-2-0, creator, isBasedOn)
+ * leben hier an EINER Stelle — die Seiten geben nur Name/Beschreibung/URL/Ort und
+ * ihre Messgrößen. So driften Lizenz-/Attributions-Angaben zwischen den Seiten nicht.
+ */
+export function atlasDatasetJsonLd(opts: {
+  name: string;
+  description: string;
+  url: string;
+  dateModified: string;
+  placeName: string;
+  containedInPlace?: string;
+  variables: { name: string; value: number; unitText?: string }[];
+  baseUrl: string;
+}): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    license: "https://www.govdata.de/dl-de/by-2-0",
+    creator: { "@type": "Organization", name: "Solar Check", url: opts.baseUrl },
+    isBasedOn: "https://www.marktstammdatenregister.de",
+    dateModified: opts.dateModified,
+    spatialCoverage: {
+      "@type": "Place",
+      name: opts.placeName,
+      ...(opts.containedInPlace
+        ? { containedInPlace: { "@type": "Place", name: opts.containedInPlace } }
+        : {}),
+    },
+    variableMeasured: opts.variables.map((vv) => ({
+      "@type": "PropertyValue",
+      name: vv.name,
+      value: vv.value,
+      ...(vv.unitText ? { unitText: vv.unitText } : {}),
+    })),
+  };
+}
