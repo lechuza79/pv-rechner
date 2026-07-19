@@ -27,6 +27,17 @@ describe("recommend (PV system recommendation)", () => {
     expect(r).toHaveProperty("alternatives");
   });
 
+  it("reports sim-based autarky, and a battery lifts it (Bex' Reddit-Wunsch)", () => {
+    const r = recommend(baseInput);
+    expect(r.reasoning.autarkie).toBeGreaterThan(0);
+    expect(r.reasoning.autarkie).toBeLessThanOrEqual(100);
+    if (r.speicherKwh > 0) {
+      // Der Speicher hebt die Autarkie spürbar — der Kern-Nutzen, den die
+      // Empfehlung jetzt sichtbar macht.
+      expect(r.reasoning.autarkie).toBeGreaterThan(r.reasoning.autarkieOhneSpeicher);
+    }
+  });
+
   it("recommended kWp respects the roof's maximum capacity", () => {
     const r = recommend(baseInput);
     expect(r.kwp).toBeLessThanOrEqual(r.reasoning.maxRoofKwp);

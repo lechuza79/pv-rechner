@@ -242,3 +242,22 @@ export function IconCar({ size = 16, color = "currentColor", style }: IconProps)
     </svg>
   );
 }
+
+// Rank movement. A thin stroked arrow, not a filled triangle: it sits inline with
+// the rank number at the same font size, where a solid glyph would read as a
+// warning sign rather than a direction.
+export function IconArrowUp({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M4 10.5v-9m0 0L1 4.5m3-3l3 3" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function IconArrowDown({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M4 1.5v9m0 0l3-3m-3 3l-3-3" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}

@@ -173,7 +173,7 @@ describe("fetchWithTimeout retry logic", () => {
     const result = await fetchWithTimeout("https://example.com/test", 5000, 3);
     expect(result).toBe(mockOk);
     expect(fetch).toHaveBeenCalledTimes(2);
-  });
+  }, 20000); // real 1s backoff between attempts — generous headroom so CPU load can't trip the 5s default
 
   it("throws after all retries exhausted on 429", async () => {
     const { fetchWithTimeout } = await import("../energy-api");
@@ -187,7 +187,7 @@ describe("fetchWithTimeout retry logic", () => {
     ).rejects.toThrow("HTTP 429");
     // 1 initial + 2 retries = 3 calls
     expect(fetch).toHaveBeenCalledTimes(3);
-  });
+  }, 20000); // real 1s+2s backoff — generous headroom so CPU load can't trip the 5s default
 
   it("throws immediately on non-429 errors", async () => {
     const { fetchWithTimeout } = await import("../energy-api");

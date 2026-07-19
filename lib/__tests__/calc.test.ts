@@ -4,6 +4,7 @@ import {
   calcWeightedFeedIn,
   estimateCost,
   calcEigenverbrauch,
+  calcAutarkie,
   buildMonthlyEv,
   calcFuelCost,
   calcFuelCost25,
@@ -176,6 +177,62 @@ describe("calcEigenverbrauch", () => {
     // Huge consumption, small system → EV would be 100%, clamped down to 90
     const tinySystem = calcEigenverbrauch({ ...standard, kwp: 1, personenIdx: 3, nutzungIdx: 3, speicherKwh: 15 });
     expect(tinySystem).toBeLessThanOrEqual(90);
+  });
+});
+
+// ─── Autarkiegrad (HTW Berlin Unabhängigkeits-Kennfeld) ────────────────────────
+describe("calcAutarkie", () => {
+  // Reference yield = HTW's own 1024 kWh/kWp so x/y map 1:1 onto the lookup grid.
+  const ref = { ertragKwp: 1024 };
+
+  it("computes the Reddit case (22,5 kWp + 13 kWh) from the HTW field", () => {
+    // This config showed 100 % before — the old code back-derived autarky from a
+    // naive annual balance that averaged the winter dip away. Now the value is read
+    // straight from the HTW simulation field, which already contains the winter and
+    // day/night mismatch. These are the interpolated HTW results (±1 pp rounding),
+    // NOT a hardcoded ceiling — a smaller battery or lower yield moves them.
+    expect(calcAutarkie({ kwp: 22.5, speicherKwh: 13, gesamtVerbrauch: 3800, ertragKwp: 950 })).toBe(91);
+    expect(calcAutarkie({ kwp: 22.5, speicherKwh: 13, gesamtVerbrauch: 5000, ertragKwp: 950 })).toBe(86);
+    expect(calcAutarkie({ kwp: 22.5, speicherKwh: 13, gesamtVerbrauch: 6500, ertragKwp: 950 })).toBe(81);
+  });
+
+  it("matches the HTW field: no battery, well-sized → ~30 %", () => {
+    // x = 10 kWp / (3800/1000 × 1024/1024 scale)… use consumption so x≈1
+    const a = calcAutarkie({ kwp: 3.8, speicherKwh: 0, gesamtVerbrauch: 3800, ...ref });
+    expect(a).toBeGreaterThanOrEqual(28);
+    expect(a).toBeLessThanOrEqual(33);
+  });
+
+  it("matches the HTW field: with battery, well-sized → 50–70 %", () => {
+    // x≈1.2, y≈1.5 (HTW-recommended battery band)
+    const a = calcAutarkie({ kwp: 4.56, speicherKwh: 5.7, gesamtVerbrauch: 3800, ...ref });
+    expect(a).toBeGreaterThanOrEqual(50);
+    expect(a).toBeLessThanOrEqual(70);
+  });
+
+  it("rises with storage and with PV size (monotonic in both axes)", () => {
+    const base = calcAutarkie({ kwp: 6, speicherKwh: 0, gesamtVerbrauch: 4000, ...ref });
+    const moreStorage = calcAutarkie({ kwp: 6, speicherKwh: 8, gesamtVerbrauch: 4000, ...ref });
+    const morePv = calcAutarkie({ kwp: 10, speicherKwh: 0, gesamtVerbrauch: 4000, ...ref });
+    expect(moreStorage).toBeGreaterThan(base);
+    expect(morePv).toBeGreaterThan(base);
+  });
+
+  it("a sunnier location (higher yield) lifts autarky", () => {
+    const dull = calcAutarkie({ kwp: 6, speicherKwh: 6, gesamtVerbrauch: 4500, ertragKwp: 850 });
+    const sunny = calcAutarkie({ kwp: 6, speicherKwh: 6, gesamtVerbrauch: 4500, ertragKwp: 1150 });
+    expect(sunny).toBeGreaterThan(dull);
+  });
+
+  it("returns 0 for no PV or no consumption", () => {
+    expect(calcAutarkie({ kwp: 0, speicherKwh: 5, gesamtVerbrauch: 4000, ...ref })).toBe(0);
+    expect(calcAutarkie({ kwp: 8, speicherKwh: 5, gesamtVerbrauch: 0, ...ref })).toBe(0);
+  });
+
+  it("stays within 0–100 % for extreme inputs", () => {
+    const huge = calcAutarkie({ kwp: 100, speicherKwh: 100, gesamtVerbrauch: 2000, ...ref });
+    expect(huge).toBeGreaterThan(0);
+    expect(huge).toBeLessThanOrEqual(100);
   });
 });
 

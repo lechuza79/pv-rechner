@@ -71,6 +71,14 @@ export const DATA_SOURCES = {
     url: "https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/ErneuerbareEnergien/EEG_Foerderung/start.html",
     note: "gesetzliche EEG-Vergütungssätze",
   },
+  /** Administrative boundaries for the Solar-Atlas map (Bundesländer, Kreise, Gemeinden). */
+  bkg: {
+    name: "GeoBasis-DE / BKG (Verwaltungsgebiete VG2500 · VG250)",
+    license: "dl-de/by-2-0",
+    licenseUrl: "https://www.govdata.de/dl-de/by-2-0",
+    url: "https://gdz.bkg.bund.de",
+    note: "Geometrien vereinfacht",
+  },
 } as const satisfies Record<string, DataSource>;
 
 /** "Energy-Charts (Fraunhofer ISE), CC BY 4.0" — the credit label as one string.

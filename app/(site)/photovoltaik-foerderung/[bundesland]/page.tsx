@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "../../../../components/Header";
+import Breadcrumb from "../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
@@ -138,11 +139,9 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
     <div style={S.page}>
       <Header />
       <div style={S.wrap}>
-        <nav style={{ ...S.breadcrumb, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 20 }} aria-label="Brotkrümel">
-          <Link href="/photovoltaik-foerderung" style={{ color: "inherit", textDecoration: "none" }}>Förderung</Link>
-          <span aria-hidden style={{ width: 14, height: 1, background: v("--color-text-faint"), display: "inline-block" }} />
-          <span style={{ color: v("--color-text-primary") }}>{name}</span>
-        </nav>
+        <Breadcrumb
+          items={[{ label: "Förderung", href: "/photovoltaik-foerderung" }, { label: name }]}
+        />
 
         <h1 style={S.h1}>Photovoltaik-Förderung in {name}</h1>
         <p style={S.intro}>
