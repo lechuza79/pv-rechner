@@ -102,20 +102,34 @@ export function MastrMap({
     return () => ro.disconnect();
   }, []);
 
+  // The Bundesländer outlines (~260 KB) are all the DE level needs — both as
+  // fill polygons and as the fitSize target (their union IS the country
+  // outline). Load only them up front.
   useEffect(() => {
-    Promise.all([
-      fetch("/geo/de-landkreise.geo.json").then((r) => r.json()),
-      fetch("/geo/de-bundeslaender.geo.json").then((r) => r.json()),
-    ])
-      .then(([lk, bl]) => {
-        setLkGeo(lk);
-        setBlGeo(bl);
-      })
-      .catch(() => {
-        setLkGeo(null);
-        setBlGeo(null);
-      });
+    fetch("/geo/de-bundeslaender.geo.json")
+      .then((r) => r.json())
+      .then(setBlGeo)
+      .catch(() => setBlGeo(null));
   }, []);
+
+  // The Landkreis geometry (~630 KB) is only needed once the user drills into a
+  // Bundesland — lazy-load it on the first drill-down instead of blocking the
+  // initial DE render. Also triggered on landkreis-level (deep links land there
+  // directly) so navigating back up to the Bundesland is instant. The ref guard
+  // makes this a one-shot fetch; on failure it re-arms so a later drill-down
+  // retries.
+  const lkRequested = useRef(false);
+  useEffect(() => {
+    if (level === "de" || lkRequested.current) return;
+    lkRequested.current = true;
+    fetch("/geo/de-landkreise.geo.json")
+      .then((r) => r.json())
+      .then(setLkGeo)
+      .catch(() => {
+        lkRequested.current = false;
+        setLkGeo(null);
+      });
+  }, [level]);
 
   // Lazy-load the Gemeinde bundle for the Kreis we drill into. The file name IS
   // the 5-digit Kreis AGS (public/geo/gemeinden/<kreis>.geo.json), which matches
@@ -177,7 +191,7 @@ export function MastrMap({
       projection: null as ReturnType<typeof geoMercator> | null,
       contentHeight: 0,
     };
-    if (!lkGeo || !blGeo || width < 10) return EMPTY;
+    if (!blGeo || width < 10) return EMPTY;
 
     const PAD = 12;
     // Cap so a tall outline (Deutschland, schmale Kreise) can't grow the box
@@ -217,15 +231,19 @@ export function MastrMap({
     }
 
     if (level === "bundesland" && parentAgs) {
-      // Zoom to the Bundesland; render its Landkreise as fill.
+      // Zoom to the Bundesland; render its Landkreise as fill. The Landkreis
+      // geometry is lazy-loaded on drill-down — until it arrives, hold the
+      // placeholder (same loading box as the Gemeinde case above).
+      if (!lkGeo) return EMPTY;
       const parentFeature = blGeo.features.find((f) => (f.properties as RegionProps).id === parentAgs);
       if (!parentFeature) return EMPTY;
       const lksInBl = lkGeo.features.filter((f) => (f.properties as RegionProps).id.startsWith(parentAgs));
       return fitToWidth(parentFeature, lksInBl);
     }
 
-    // Default: de-level. Fit the whole country outline, render Bundesländer.
-    return fitToWidth(lkGeo, blGeo.features);
+    // Default: de-level. Fit the whole country outline (the Bundesländer union
+    // — identical bounds to the old Landkreis-based fit), render Bundesländer.
+    return fitToWidth(blGeo, blGeo.features);
   }, [level, parentAgs, lkGeo, blGeo, gemGeo, gemKreis, width]);
 
   const pathGen = useMemo(() => (projection ? geoPath(projection) : null), [projection]);

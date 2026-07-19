@@ -17,6 +17,23 @@ const nextConfig = {
         ],
       },
       {
+        // PLZ→AGS-Zuordnung — gleicher statischer, versionierter Datensatz
+        // wie plz.json, gleiches Caching.
+        source: "/plz-ags.json",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        // BKG-VG250-Geometrien für die Gemeinde-Karte (bis ~628 kB pro Datei,
+        // ~11 MB gesamt) — statisch und versioniert, ohne diesen Header
+        // revalidiert der Browser sie bei jedem Wiederbesuch.
+        source: "/geo/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
         // Harmlose Basis-Header global — MIME-Sniffing aus, Referrer sparsam.
         // Absichtlich KEIN X-Frame-Options hier: die /embed/*-Widgets müssen
         // fremd-einbettbar bleiben. Framing-Schutz sitzt gezielt auf den

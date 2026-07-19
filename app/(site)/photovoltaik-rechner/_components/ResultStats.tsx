@@ -14,20 +14,27 @@ interface ResultStatsProps {
   /** Building-based WP annual electricity (kWh) — same value the rest of the
    *  result page shows, NOT the old 3.500-kWh flat rate. */
   wpKwh: number;
+  /** Jahresarbeitszahl der WP (gebäudebasiert) — konsistent zum WP-Strom oben. */
+  jaz: number;
   effEv: number;
   autarkie: number;
+  /** WP-spezifische PV-Deckung (0–100 %) aus der Stundensimulation — NICHT die
+   *  Haushalts-Jahres-Autarkie (die überzeichnet die WP-Deckung im Winter). */
+  wpAutarky: number;
   jahresertrag: number;
   gesamtVerbrauch: number;
   speicherKwh: number;
   monthly: SolarMonth[];
   exampleDays: ExampleDayEntry[];
   oStrom: number;
+  /** Strompreis-Anstieg des GEWÄHLTEN Szenarios (±1/3/5 %) — Kachel folgt der Wahl oben. */
+  stromSteigerung: number;
   fuelType: "gas" | "oil";
   setFuelType: (v: "gas" | "oil") => void;
 }
 
 export default function ResultStats({
-  total, kosten, wp, wpKwh, effEv, autarkie, jahresertrag, gesamtVerbrauch, speicherKwh, monthly, exampleDays, oStrom, fuelType, setFuelType,
+  total, kosten, wp, wpKwh, jaz, effEv, autarkie, wpAutarky, jahresertrag, gesamtVerbrauch, speicherKwh, monthly, exampleDays, oStrom, stromSteigerung, fuelType, setFuelType,
 }: ResultStatsProps) {
   const [flowOpen, setFlowOpen] = useState(false);
   return (
@@ -91,13 +98,16 @@ export default function ResultStats({
       </div>
 
       {wp !== "nein" && (() => {
-        // WP-Deckung aus dem gemeinsamen Autarkiegrad (HTW-Kennfeld) — nicht neu
-        // aus dem Eigenverbrauch zurückrechnen (das lief bei großen Anlagen gegen
-        // 100 % und hat die WP-Ersparnis überzeichnet). autarkie kommt bereits aus
-        // calcAutarkie und ist physikalisch auf ~90 % gedeckelt.
-        const autarky = Math.min(autarkie / 100, 1);
-        const fuelCost = calcFuelCost25(wpKwh, fuelType);
-        const wpGridCost = calcWpGridCost25(wpKwh, autarky, oStrom, 0.03);
+        // WP-spezifische PV-Deckung aus der Stunden-Jahressimulation (pv-sim), NICHT
+        // die Haushalts-Jahres-Autarkie: Die WP zieht ~80 % ihres Stroms im dunklen
+        // Winterhalbjahr, wo die reale PV-Deckung weit unter dem Jahresmittel liegt.
+        // Die Jahres-Autarkie hätte die WP-Deckung grob verdoppelt und die 25-J-
+        // Ersparnis geschönt. Wärme = wpKwh × JAZ (gebäudebasiert, konsistent zum
+        // WP-Strom oben) statt fixer COP 3,5; Strompreis-Anstieg folgt dem gewählten
+        // Szenario (±1/3/5 %) statt fixer +3 %.
+        const wpCoverage = Math.min(wpAutarky / 100, 1);
+        const fuelCost = calcFuelCost25(wpKwh, fuelType, jaz);
+        const wpGridCost = calcWpGridCost25(wpKwh, wpCoverage, oStrom, stromSteigerung);
         const netSaving = fuelCost - wpGridCost;
         return (
           <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
@@ -134,7 +144,7 @@ export default function ResultStats({
               Ersparnis: {netSaving.toLocaleString("de-DE")} €
             </div>
             <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4, lineHeight: 1.5 }}>
-              {Math.round(wpKwh * 3.5).toLocaleString("de-DE")} kWh Wärme/Jahr · WP-Autarkie {Math.round(autarky * 100)} % · inkl. CO₂-Abgabe
+              {Math.round(wpKwh * jaz).toLocaleString("de-DE")} kWh Wärme/Jahr · PV-Deckung Heizstrom {Math.round(wpCoverage * 100)} % · inkl. CO₂-Abgabe
             </div>
           </div>
         );

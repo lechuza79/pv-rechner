@@ -10,8 +10,9 @@
 // Cost/feed-in figures are derived from the same models the calculators use and
 // the year is evaluated at render time — nothing here goes stale on rollover.
 // Never hardcode a year or a euro figure below.
-import { estimateCost } from "./calc";
+import { estimateCost, BATTERY_LIFETIME_YEARS } from "./calc";
 import { DEFAULT_FEED_IN } from "./feedin-config";
+import type { PriceConfig } from "./prices-config";
 
 export interface FaqLink {
   /** Exact phrase inside `a`; its first occurrence becomes a link. */
@@ -72,6 +73,7 @@ export function pvRechnerFaq(): FaqEntry[] {
     {
       q: "Lohnt sich ein Speicher zur PV-Anlage?",
       a: "Ein Speicher erhöht den Eigenverbrauch deutlich: Statt Strom für wenige Cent einzuspeisen, nutzt du ihn abends und nachts selbst und sparst den vollen Strompreis. Ob sich das rechnet, hängt von Speicherpreis und Verbrauchsprofil ab. Im Rechner kannst du Speichergrößen direkt vergleichen und siehst den Effekt auf Amortisation und Rendite sofort.",
+      links: [{ phrase: "Ob sich das rechnet", href: "/lohnt-sich-pv-mit-speicher" }],
       cta: { label: "Anlage mit Speicher rechnen", href: "/photovoltaik-rechner" },
     },
     {
@@ -100,6 +102,51 @@ export function pvRechnerFaq(): FaqEntry[] {
       q: "Fällt die Einspeisevergütung 2027 weg?",
       a: "Geplant, aber noch nicht beschlossen: Ein Referentenentwurf des Bundeswirtschaftsministeriums sieht vor, die Einspeisevergütung für neue PV-Anlagen bis 25 kWp ab 2027 zu streichen (Stand: Juli 2026). Wichtig: Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung 20 Jahre garantiert (Bestandsschutz) — sie sind von der geplanten Änderung nicht betroffen. Ob und in welcher Form die Reform kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage.",
       cta: { label: "Aktuelle Vergütung ansehen", href: "/datenstand" },
+    },
+  ];
+}
+
+/** FAQ for the "Lohnt sich PV mit Speicher?" guide page. Figures derive from
+ *  the same models the calculator uses (estimateCost, battery lifetime) so the
+ *  answers can never drift from what the tool computes. Pass the live PriceConfig
+ *  when available so FAQ figures match the example table on the same page. */
+export function pvSpeicherFaq(prices?: PriceConfig): FaqEntry[] {
+  // Exact delta (already 500-€-rounded via estimateCost) — must match the
+  // example table on /lohnt-sich-pv-mit-speicher, so no extra 1k-rounding here.
+  const storageAddon = estimateCost(10, 10, prices) - estimateCost(10, 0, prices);
+  return [
+    {
+      q: "Wie groß sollte ein Stromspeicher sein?",
+      a: "Für ein Einfamilienhaus sind 5–10 kWh typisch. Bei aktuellen Speicherpreisen ist der Aufpreis pro zusätzlicher Kilowattstunde klein, deshalb lohnt oft auch die nächstgrößere Stufe. Ab einer gewissen Größe bringt mehr Kapazität aber kaum noch etwas: Der Speicher ist im Sommer ohnehin voll, und im Winter fehlt die Sonne zum Laden. Die Empfehlung rechnet die wirtschaftlich sinnvolle Kombination aus Anlagengröße und Speicher für deinen Haushalt durch.",
+      links: [{ phrase: "Die Empfehlung", href: "/pv-bedarf-berechnen" }],
+      cta: { label: "Passende Größe finden", href: "/pv-bedarf-berechnen" },
+    },
+    {
+      q: "Wie lange hält ein Batteriespeicher?",
+      a: `Moderne Heimspeicher (LFP-Zellen) halten nach Garantie und Zyklenlebensdauer etwa ${BATTERY_LIFETIME_YEARS}–15 Jahre. In unserer Wirtschaftlichkeitsrechnung kalkulieren wir deshalb konservativ einen Akku-Tausch nach ${BATTERY_LIFETIME_YEARS} Jahren mit ein — zu dann voraussichtlich niedrigeren Preisen, weil Speicherpreise seit Jahren fallen. Ohne diesen Posten würde jede Speichergröße scheinbar rentabel.`,
+      cta: { label: "Methodik im Detail", href: "/methodik" },
+    },
+    {
+      q: "Was kostet ein Stromspeicher?",
+      a: `Als Teil einer neuen PV-Anlage kostet ein 10-kWh-Speicher aktuell rund ${storageAddon.toLocaleString("de-DE")} € zusätzlich (Installation inklusive). Die Preise sind in den letzten Jahren stark gefallen — genau das hat die Speicherfrage gedreht: Bei den früheren Preisen rechnete sich ein Speicher selten, heute meistens. Die aktuellen Marktpreise mit Stand und Quelle findest du auf der Datenstand-Seite.`,
+      links: [{ phrase: "Datenstand-Seite", href: "/datenstand" }],
+      cta: { label: "Anlage mit Speicher rechnen", href: "/photovoltaik-rechner" },
+    },
+    {
+      q: "Lohnt sich ein Speicher zum Nachrüsten?",
+      a: "Das hängt vor allem von der Einspeisevergütung deiner Anlage ab. Bei Bestandsanlagen mit alter, hoher Vergütung (teils über 30 ct/kWh) lohnt ein Speicher meist nicht — dort bringt Einspeisen mehr als Selbstverbrauchen. Bei neueren Anlagen mit niedriger Vergütung gilt dieselbe Rechnung wie beim Neukauf, allerdings ist die Nachrüstung pro Kilowattstunde etwas teurer, weil die Installation separat anfällt.",
+      cta: { label: "Speicher-Effekt durchrechnen", href: "/photovoltaik-rechner" },
+    },
+    {
+      q: "Kann ich mit einem Speicher komplett autark werden?",
+      a: "Praktisch nein. Auch mit großem Speicher sättigt die Autarkie bei rund 90 Prozent: Ein Hausspeicher überbrückt gut einen Tag, aber keinen dunklen Winter — im Dezember liefert selbst eine große Anlage nur einen Bruchteil ihres Sommerertrags. Realistisch sind ohne Speicher meist 25–35 Prozent Autarkie, mit Speicher 50–80 Prozent je nach Anlagen- und Speichergröße.",
+      cta: { label: "Autarkie für meinen Haushalt berechnen", href: "/photovoltaik-rechner" },
+    },
+    {
+      q: "Gibt es Förderung für Batteriespeicher?",
+      a: "Bundesweit gilt: Beim Kauf einer PV-Anlage mit Speicher entfällt die Mehrwertsteuer (Nullsteuersatz). Zusätzlich fördern einzelne Bundesländer und Kommunen Speicher mit Zuschüssen — die Programme wechseln häufig und sind oft schnell ausgeschöpft. Welche Förderung an deinem Ort gerade läuft, zeigt die Förder-Übersicht.",
+      links: [{ phrase: "die Förder-Übersicht", href: "/photovoltaik-foerderung" }],
+      cta: { label: "Förderung vor Ort finden", href: "/photovoltaik-foerderung" },
     },
   ];
 }

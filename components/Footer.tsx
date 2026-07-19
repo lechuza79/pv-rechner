@@ -21,11 +21,14 @@ const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
     label: "Tools",
     links: [
       { href: "/photovoltaik-rechner", label: "PV-Rechner" },
+      { href: "/balkonkraftwerk-rechner", label: "Balkonkraftwerk" },
       { href: "/waermepumpe-rechner", label: "Wärmepumpe" },
+      { href: "/klimaanlage-stromkosten", label: "Klimaanlage" },
       { href: "/pv-bedarf-berechnen", label: "PV-Bedarf" },
       { href: "/pv-simulation", label: "Live-Simulation" },
       { href: "/photovoltaik-foerderung", label: "Förderung" },
       { href: "/strommix-deutschland", label: "Strommix" },
+      { href: "/atomstrom-import", label: "Atomstrom-Import" },
     ],
   },
   {

@@ -306,7 +306,7 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [ ] Eurostat-Integration (Haushaltsstrompreise EU)
 - [ ] Spotpreis-Chart (Energy-Charts /price)
 - [ ] Grenzflüsse-Chart (Energy-Charts /cbpf)
-- [ ] EE-Ampel Widget für Startseite/Simulation
+- [x] EE-Ampel als Embed-Widget (`/embed/ee-ampel` + Galerie-Sektion): Ampel grün/gelb/rot nach aktuellem EE-Anteil am Erzeugungsmix (letzter vollständiger Datenpunkt via `trimIncompleteTail`, Ø 24 h via `calcPeriodStats` — dieselbe Datenbasis wie /strommix-deutschland, keine neue Quelle). Schwellen (≥65 % grün, <40 % rot) am typischen EE-Jahresmittel verankert, Ampelfarben fest semantisch. Einbindung auf Startseite/Simulation weiterhin offen
 - [ ] /energie/frankreich (Strommix FR inkl. Kernenergie)
 - [ ] Navigation-Updates (Hub + Header → /energie)
 - [ ] SEO-Metadata für /energie
@@ -322,7 +322,9 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] Daten landen in `mastr_aggregates`/`mastr_regions`/`mastr_meta` (Schema unverändert), `data_as_of` aus dem ZIP-Stichtag
 
 ### Phase 4: Content & Reichweite
-- [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
+- [x] Flaggschiff-Ratgeber **`/lohnt-sich-pv-mit-speicher`**: Server Component (ISR 3600), rechnet die Beispieltabelle (10 kWp × 0/5/10 kWh: Investition, EV, Autarkie aus der Stundensimulation, Amortisation, 25-J-Gewinn) live mit den geteilten Funktionen (`calcEigenverbrauch`, `calc`, `estimateCost`, `simulatePvYear`) und Live-Marktpreisen — driftet nie vom Rechner. FAQ via `pvSpeicherFaq(prices)` in `lib/faq.ts` (bekommt die Live-Preise durchgereicht, damit FAQ und Tabelle auf derselben Seite identische Beträge zeigen) + `<Faq>` (FAQPage-JSON-LD). In Sitemap (0.8); Rechner-FAQ verlinkt hin.
+  - Zwei **Beispiel-Teaser** (ohne / mit 10 kWh Speicher): recyceln die Rechner-`Chart`-Komponente (3-Szenarien-Amortisationskurve) + ResultStats-Kacheln (Amortisation / Rendite 25 J / ⌀ Ersparnis), gerechnet aus derselben `computeExample`-Quelle wie die Tabelle. Jeder Teaser hat einen Deep-Link `/photovoltaik-rechner?a=2&s=…&p=2&n=1&st=…&er=…`, der den Rechner exakt auf die Teaser-Zahlen vorbelegt (`st`/`er` explizit, weil der Rechner-Default-Strompreis 0,34 € vom kanonischen prices-config-Wert abweicht).
+- [ ] Weitere Long-Tail-Landingpages (z.B. `/pv-kaufen-vs-enpal-mieten`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
 - [ ] Blog/Ratgeber-Sektion
 

@@ -105,4 +105,30 @@ describe("simulatePvYear", () => {
     expect(small).toBeGreaterThan(big);
     expect(small).toBeLessThanOrEqual(100);
   });
+
+  // ── WP-spezifische PV-Deckung (für die WP-vs-Gas-Kachel) ──────────────────
+  // Kern: Die WP-Last liegt im dunklen Winterhalbjahr, wo die PV kaum deckt.
+  // Deshalb muss die WP-Deckung DEUTLICH unter der Haushalts-Jahres-Autarkie
+  // liegen — genau der Fehler, den die Kachel vorher gemacht hat (Jahres-Autarkie
+  // als WP-Deckung → grob doppelt so hohe Ersparnis).
+  it("wpAutarky liegt klar unter der Jahres-Autarkie (Winter-Mismatch der WP)", () => {
+    const hh: HouseholdProfile = { baseKwh: 4000, tagQuote: 0.30, wpActive: true, eaActive: false, wpAnnualKwh: 6000 };
+    const sim = simulatePvYear({ kwp: 12, speicherKwh: 8, monthlyYieldPerKwp: null, ertragKwp: 950, household: hh });
+    expect(sim.wpAutarky).toBeGreaterThan(0);
+    expect(sim.wpAutarky).toBeLessThanOrEqual(100);
+    // Die WP-Deckung ist saisonal ehrlich → merklich unter der Jahres-Autarkie.
+    expect(sim.wpAutarky).toBeLessThan(sim.autarky - 5);
+  });
+
+  it("wpAutarky ist 0 ohne Wärmepumpe", () => {
+    const sim = simulatePvYear({ kwp: 10, speicherKwh: 5, monthlyYieldPerKwp: null, ertragKwp: 950, household: pureHH() });
+    expect(sim.wpAutarky).toBe(0);
+  });
+
+  it("wpAutarky steigt mit mehr PV/Speicher", () => {
+    const hh: HouseholdProfile = { baseKwh: 4000, tagQuote: 0.30, wpActive: true, eaActive: false, wpAnnualKwh: 6000 };
+    const small = simulatePvYear({ kwp: 6, speicherKwh: 0, monthlyYieldPerKwp: null, ertragKwp: 950, household: hh }).wpAutarky;
+    const big = simulatePvYear({ kwp: 14, speicherKwh: 10, monthlyYieldPerKwp: null, ertragKwp: 950, household: hh }).wpAutarky;
+    expect(big).toBeGreaterThan(small);
+  });
 });

@@ -172,6 +172,19 @@ const AC_MONTHLY = normalizeMonthly([0, 0, 0, 0, 0.3, 1.5, 3.0, 3.0, 1.0, 0.1, 0
 
 // ─── Hourly consumption calculation ─────────────────────────────────────────
 
+/** Heat-pump-only load in Watts for a given hour/month (0 if no WP).
+ *  Own hourly (VDI 4655) + strong seasonal profile (winter ×1.8, summer ×0.15).
+ *  Exposed so the WP portion of the load can be read back out of the same source
+ *  the full-load simulation uses — needed for the seasonally honest WP-specific
+ *  PV coverage (a heat pump draws ~80 % of its power in the dark winter half,
+ *  exactly when PV is weakest, so the annual household autarky overstates it). */
+export function wpHourlyWatts(household: HouseholdProfile | null, hour: number, month: number): number {
+  if (!household?.wpActive) return 0;
+  const wpAnnual = household.wpAnnualKwh ?? WP_ANNUAL_KWH;
+  const wpDailyKwh = (wpAnnual / 365) * (WP_MONTHLY[month] || 1.0);
+  return wpDailyKwh * (WP_SHAPE[hour] || 1 / 24) * 1000;
+}
+
 /** Current household consumption in Watts for a given hour.
  *
  * Four independent load components, each with their own hourly + seasonal profile:
@@ -200,12 +213,9 @@ export function calcHourlyConsumption(household: HouseholdProfile | null, hour: 
   }
 
   // 2. Heat pump: building-based annual (or WP_ANNUAL_KWH default) with own
-  //    hourly + strong seasonal profile
-  if (household.wpActive) {
-    const wpAnnual = household.wpAnnualKwh ?? WP_ANNUAL_KWH;
-    const wpDailyKwh = (wpAnnual / 365) * (WP_MONTHLY[month] || 1.0);
-    totalWatts += wpDailyKwh * (WP_SHAPE[hour] || 1 / 24) * 1000;
-  }
+  //    hourly + strong seasonal profile (see wpHourlyWatts — single source, so
+  //    the WP-only load can be read back out for the WP-specific PV coverage).
+  totalWatts += wpHourlyWatts(household, hour, month);
 
   // 3. E-car: actual annual kWh if given (PV-Rechner), else EA_DEFAULT_KM ×
   //    EA_KWH_PER_KM. No strong seasonal pattern.
