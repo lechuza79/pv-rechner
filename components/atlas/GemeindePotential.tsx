@@ -102,22 +102,7 @@ export default function GemeindePotential({
 
 const S: Record<string, React.CSSProperties> = {
   section: { marginBottom: 28 },
-  card: {
-    background: v("--color-bg"),
-    border: `1px solid ${v("--color-border")}`,
-    borderRadius: v("--radius-lg"),
-    padding: "18px 18px 16px",
-  },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
-  sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px" },
-  lead: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "6px 0 18px" },
-  strong: { color: v("--color-text-primary"), fontWeight: 600 },
-  coverBlock: { marginBottom: 12 },
-  coverHead: { display: "flex", justifyContent: "space-between", fontSize: 13, color: v("--color-text-secondary"), marginBottom: 4 },
-  coverVal: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-text-primary") },
-  track: { height: 8, background: v("--color-bg-muted"), borderRadius: 4, overflow: "hidden" },
-  fill: { height: "100%", borderRadius: 4 },
-  note: { fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6, margin: "14px 0 0" },
   // Nebeneinander auf Desktop, gestapelt auf Mobil — über flex-wrap statt Media
   // Query (Inline-Styles). Bei 720px Breite passen drei ~200er-Karten in eine Reihe.
   cards: { display: "flex", flexWrap: "wrap", gap: 10 },

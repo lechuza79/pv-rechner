@@ -217,7 +217,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
           <p style={S.sub}>
             Tippen Sie auf ein Gebiet, um tiefer einzutauchen — bis auf Gemeindeebene.
           </p>
-          <MastrHeroSection initialRegion={region.level === "de" ? "de" : region.region_id} />
+          <MastrHeroSection initialRegion={region.level === "de" ? "de" : region.region_id} initialTraeger="solar" />
         </div>
 
         <div style={S.section}>

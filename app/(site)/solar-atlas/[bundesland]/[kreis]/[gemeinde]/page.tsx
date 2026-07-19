@@ -163,8 +163,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
       plzPrefix: (repPlz ?? "").slice(0, 2),
     });
     potential = computeGemeindePotential({
-      totalKwp: atlas.solar.total_kwp,
-      population: region.population,
       annual: yieldData.annual,
       monthly: yieldData.monthly,
     });
@@ -334,6 +332,16 @@ export default async function GemeindePage({ params }: { params: Params }) {
 
         {potential && <GemeindePotentialBlock plz={repPlz} p={potential} />}
 
+        {/* Ohne Einwohnerzahl gibt es keinen Potential-Block — der Rechner-Link
+            muss trotzdem erhalten bleiben (sonst hat die Seite keinen Weg dorthin). */}
+        {!potential && (
+          <div style={S.section}>
+            <Link href="/photovoltaik-rechner" style={S.cta}>
+              Rentabilität einer PV-Anlage berechnen <IconArrowRight size={14} />
+            </Link>
+          </div>
+        )}
+
         {/* Zwei standardisierte, einbettbare Widgets nebeneinander: Erneuerbaren-Mix
             (echte MaStR-Leistung) + standortgenaue 24h-Simulation. Beide auf gleicher
             Höhe (Reihe streckt); das Radial nur wenn Koordinaten vorliegen, sonst
@@ -348,6 +356,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
                 speicherKwh={speicher.kwh_batterie}
                 liveUrl={`https://solar-check.io${gemeindePath}`}
                 showSource={false}
+                showEmbed={false}
               />
             </div>
 
@@ -360,6 +369,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
                   name={region.name}
                   liveUrl={`https://solar-check.io${gemeindePath}`}
                   showSource={false}
+                  showEmbed={false}
                 />
               </div>
             )}
@@ -372,7 +382,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
             <p style={S.sub}>
               {kreis?.name ?? "Der Landkreis"} mit allen Gemeinden — tippen Sie auf ein Gebiet für die Details.
             </p>
-            <MastrHeroSection initialRegion={region.parent_region_id} />
+            <MastrHeroSection initialRegion={region.parent_region_id} initialTraeger="solar" />
           </div>
         )}
 
@@ -458,7 +468,6 @@ const S: Record<string, React.CSSProperties> = {
   standDate: { fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" },
   intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" },
-  strong: { color: v("--color-text-primary"), fontWeight: 600 },
   metricsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
@@ -487,16 +496,6 @@ const S: Record<string, React.CSSProperties> = {
   // 100 %) die gestreckte Höhe füllt.
   sideBySide: { display: "flex", flexWrap: "wrap", gap: 16, alignItems: "stretch" },
   sbsItem: { flex: "1 1 320px", minWidth: 0, display: "flex" },
-  card: {
-    background: v("--color-bg"),
-    border: `1px solid ${v("--color-border")}`,
-    borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
-  },
-  barHead: { display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 3 },
-  barVal: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-secondary") },
-  barTrack: { height: 8, background: v("--color-bg-muted"), borderRadius: 4 },
-  barFill: { height: "100%", background: v("--color-accent"), borderRadius: 4 },
   cta: {
     display: "inline-flex",
     alignItems: "center",

@@ -18,6 +18,9 @@ import { DATA_SOURCES } from "../../lib/data-sources";
 type Weather = {
   current: { time: string };
   hourly: { time: string[]; irradiance: number[]; temperature: number[] };
+  // /api/weather liefert bei Open-Meteo-Ausfall HTTP 200 mit source:"error" und
+  // leeren Reihen — daher NICHT über r.ok erkennbar, muss am Body geprüft werden.
+  source?: "open-meteo" | "error";
 };
 
 export default function GemeindeSolarLive({
@@ -47,7 +50,12 @@ export default function GemeindeSolarLive({
     let cancelled = false;
     fetch(`/api/weather?lat=${lat}&lon=${lon}`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("weather"))))
-      .then((d: Weather) => !cancelled && setWeather(d))
+      .then((d: Weather) => {
+        if (cancelled) return;
+        // Ausfall wird als 200 + source:"error" + leere Reihen signalisiert.
+        if (d.source === "error" || !d.hourly?.time?.length) setFailed(true);
+        else setWeather(d);
+      })
       .catch(() => !cancelled && setFailed(true));
     return () => {
       cancelled = true;

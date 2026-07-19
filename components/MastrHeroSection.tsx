@@ -47,6 +47,9 @@ type ChoroplethResp = {
 export type MastrHeroSectionProps = {
   /** Initial selected region. Use "de" for the whole country. */
   initialRegion?: string;
+  /** Vorgewählter Energieträger (Default "gesamt"). Auf den solar-fokussierten
+   *  Atlas-Seiten "solar", damit die Karten-KPI zur Solar-Zahl der Seite passt. */
+  initialTraeger?: Energietraeger;
   /** Called whenever the selected region changes (for URL sync, analytics, etc.) */
   onRegionChange?: (regionAgs: string | undefined) => void;
 };
@@ -54,8 +57,8 @@ export type MastrHeroSectionProps = {
 const CHOROPLETH_DEFAULT: ChoroplethResp = { source: "", data_as_of: "", data: [] };
 const SUMMARY_DEFAULT: RegionSummary | null = null;
 
-export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSectionProps) {
-  const [energietraeger, setEnergietraeger] = useState<Energietraeger>("gesamt");
+export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onRegionChange }: MastrHeroSectionProps) {
+  const [energietraeger, setEnergietraeger] = useState<Energietraeger>(initialTraeger);
   const [segment, setSegment] = useState<SegmentFilter>("alle");
   const [selectedAgs, setSelectedAgs] = useState<string | undefined>(
     initialRegion && initialRegion !== "de" ? initialRegion : undefined,
