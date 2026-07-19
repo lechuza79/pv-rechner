@@ -6,12 +6,19 @@ import Breadcrumb from "../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
-import { publishedBundeslaender, publishedCitiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
+import { publishedBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
 import { getFundingPrograms } from "../../../../lib/funding-data";
 import { landProgramBundeslaender, fundingAmount, fundingStandLabel, type FundingProgram } from "../../../../lib/funding-programs";
 import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
+import ScenarioCards from "../../../../components/ScenarioCards";
+import { MastrHeroSection } from "../../../../components/MastrHeroSection";
+import RegionSolarLive from "../../../../components/RegionSolarLive";
+import RegionAnlagentypWidget from "../../../../components/RegionAnlagentypWidget";
+import { buildAnlagentypSegments } from "../../../../lib/anlagentyp";
+import { BL_CENTROID } from "../../../../lib/bl-centroids";
+import { buildFundingScenarios } from "../../../../lib/funding-scenarios";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
-import { getRegionSummary, type RegionSummary } from "../../../../lib/mastr-data";
+import { getRegionSummary, type RegionSummary, type Segment, type SegmentBreakdown } from "../../../../lib/mastr-data";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
@@ -32,6 +39,49 @@ function fmtCapacity(kwp: number): string {
 /** 2-digit Bundesland AGS for the MaStR stock query, matched by name. */
 function bundeslandAgs(name: string): string | undefined {
   return BUNDESLAENDER.find((b) => b.name === name)?.ags;
+}
+
+const pct = (x: number) => `${Math.round(x * 100)} %`;
+
+/**
+ * Turn the MaStR segment split into a per-Bundesland characterisation. The
+ * numbers (roof vs. open-field share of installed kWp) genuinely differ by
+ * region — rural Länder are open-field-heavy, city states are almost all roof —
+ * so this is real differentiation, not boilerplate. Returns null when the stock
+ * data isn't available.
+ */
+function segmentInsight(name: string, solar: RegionSummary | null) {
+  if (!solar || solar.total_kwp <= 0 || solar.by_segment.length === 0) return null;
+  const seg = (s: Segment): SegmentBreakdown | undefined => solar.by_segment.find((x) => x.segment === s);
+  const privat = seg("privat_dach");
+  const gewerbe = seg("gewerbe_dach");
+  const frei = seg("freiflaeche");
+  const kwp = solar.total_kwp;
+  const sp = (privat?.kwp ?? 0) / kwp;
+  const sg = (gewerbe?.kwp ?? 0) / kwp;
+  const sf = (frei?.kwp ?? 0) / kwp;
+  const dach = sp + sg;
+
+  let sentence: string;
+  if (sf >= 0.5)
+    sentence = `Der Solarausbau in ${name} wird von großen Freiflächen-Solarparks getragen — sie stellen ${pct(sf)} der installierten Leistung, private und gewerbliche Dächer den Rest.`;
+  else if (sf >= 0.3)
+    sentence = `Neben den Dachanlagen prägen große Freiflächen-Solarparks den Bestand in ${name}: Sie machen ${pct(sf)} der installierten Leistung aus.`;
+  else if (sf <= 0.1)
+    sentence = `In ${name} steht fast die gesamte Leistung auf Dächern — private Dachanlagen allein stellen ${pct(sp)}, große Freiflächenanlagen spielen kaum eine Rolle.`;
+  else
+    sentence = `Der Bestand in ${name} ist überwiegend auf Dächern installiert (${pct(dach)} der Leistung), ergänzt um einzelne Freiflächen-Solarparks.`;
+
+  const avgKwp = solar.total_count > 0 ? kwp / solar.total_count : 0;
+  return {
+    sentence,
+    avgKwp,
+    parts: [
+      { key: "privat", label: "Private Dächer", share: sp, color: v("--color-accent-dark") },
+      { key: "gewerbe", label: "Gewerbe-Dächer", share: sg, color: v("--color-accent") },
+      { key: "frei", label: "Freifläche", share: sf, color: v("--color-accent-light") },
+    ].filter((p) => p.share > 0.005),
+  };
 }
 
 // Bundesländer that get a page: those with published cities (live or archived)
@@ -128,6 +178,24 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
     }
   }
 
+  const insight = segmentInsight(name, solar);
+
+  // Anlagentyp-Segmente (kWp) fürs Donut-Widget, aus dem MaStR-Bestand.
+  const anlagentypSegments = buildAnlagentypSegments(solar?.by_segment ?? []);
+  const blLiveUrl = `https://solar-check.io/photovoltaik-foerderung/${params.bundesland}`;
+
+  // Representative yield for the whole Bundesland: mean of the tracked cities'
+  // PVGIS ballparks (rounded to 10). Yield varies only ±5 % within a Land, so a
+  // mean is honest as "typischer Ertrag in {name}". Falls back to a national
+  // ballpark if — unexpectedly — no city is tracked. Examples run WITHOUT a
+  // local grant here: the municipal subsidy differs per city, so the Land-level
+  // lead shows the base economics and the CTA / city pages carry the grant.
+  const blCities = citiesInBundesland(params.bundesland);
+  const blYield = blCities.length > 0
+    ? Math.round(blCities.reduce((s, c) => s + c.yieldKwhKwp, 0) / blCities.length / 10) * 10
+    : 1000;
+  const scenarios = buildFundingScenarios(blYield);
+
   // Active municipal programs that currently pay out a computable grant — named
   // in the intro so the page leads with the concrete benefit.
   const activeCityNames = cities
@@ -197,10 +265,15 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
           );
         })}
 
+        {/* ── Was sich lohnt: drei greifbare Szenarien (PV, Wärmepumpe, Balkon) ── */}
+        <div style={{ marginTop: 26 }}>
+          <ScenarioCards regionName={name} pvHref={`/photovoltaik-rechner?er=${blYield}`} s={scenarios} />
+        </div>
+
         {solar && solar.total_count > 0 && (
           <div style={{ marginTop: 26 }}>
             <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 2px" }}>Photovoltaik in {name} in Zahlen</h2>
-            <p style={{ fontSize: 12, color: v("--color-text-muted"), margin: "0 0 4px" }}>Anlagenbestand aus dem Marktstammdatenregister</p>
+            <p style={{ fontSize: 12, color: v("--color-text-muted"), margin: "0 0 10px" }}>Anlagenbestand aus dem Marktstammdatenregister</p>
             <div style={S.metricsGrid}>
               <div style={S.metric}>
                 <div style={S.metricLabel}>Solaranlagen</div>
@@ -210,11 +283,46 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
                 <div style={S.metricLabel}>Installiert</div>
                 <div style={S.metricValue}>{fmtCapacity(solar.total_kwp)}</div>
               </div>
+              {insight && insight.avgKwp > 0 && (
+                <div style={S.metric}>
+                  <div style={S.metricLabel}>Ø Anlagengröße</div>
+                  <div style={S.metricValue}>{insight.avgKwp.toLocaleString("de-DE", { maximumFractionDigits: insight.avgKwp < 100 ? 1 : 0 })}<span style={{ fontSize: 14, fontWeight: 600, color: v("--color-text-secondary") }}> kWp</span></div>
+                </div>
+              )}
             </div>
+            {insight && (
+              <p style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 16px" }}>{insight.sentence}</p>
+            )}
+
+            {/* Zwei standardisierte Widgets nebeneinander: Anlagentyp-Donut (echter
+                MaStR-Bestand) + simulierte Momentanleistung. Gleiche Shell + Layout
+                wie die Gemeinde-Widgets; das Radial nur bei bekanntem Standort. */}
+            {anlagentypSegments.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "stretch" }}>
+                <div style={{ flex: "1 1 320px", minWidth: 0, display: "flex" }}>
+                  <RegionAnlagentypWidget name={name} segments={anlagentypSegments} liveUrl={blLiveUrl} showSource={false} showEmbed={false} />
+                </div>
+                {blAgs && BL_CENTROID[blAgs] && (
+                  <div style={{ flex: "1 1 320px", minWidth: 0, display: "flex" }}>
+                    {/* Auf der Seite trägt der Seitenfuß den Credit (Konvention:
+                        einmal pro Seite) — Widget-Quelle aus, sichtbar nur im Embed. */}
+                    <RegionSolarLive lat={BL_CENTROID[blAgs].lat} lon={BL_CENTROID[blAgs].lon} totalKwp={solar.total_kwp} name={name} liveUrl={blLiveUrl} showSource={false} showEmbed={false} />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
-        <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 14, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
+        {blAgs && (
+          <div style={{ marginTop: 30 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 2px" }}>Solaranlagen in {name} auf der Karte</h2>
+            <p style={{ fontSize: 12, color: v("--color-text-muted"), margin: "0 0 12px" }}>Installierte Leistung je Landkreis — tippe einen Kreis an, um hineinzuzoomen.</p>
+            <MastrHeroSection initialRegion={blAgs} initialTraeger="solar" />
+          </div>
+        )}
+
+        <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 24, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
           Alle Förderprogramme im Überblick <IconArrowRight size={iconSizes.xs} />
         </Link>
 
@@ -233,6 +341,18 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
                 dl-de/by-2-0
               </a>{" "}
               (Daten aggregiert).
+            </>
+          )}
+          {blAgs && BL_CENTROID[blAgs] && solar && solar.total_kwp > 0 && (
+            <>
+              {" "}Die simulierte Solarleistung nutzt Wetterdaten von{" "}
+              <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
+                Open-Meteo
+              </a>{" "}
+              (DWD, NOAA), Lizenz{" "}
+              <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
+                CC BY 4.0
+              </a>.
             </>
           )}
         </p>

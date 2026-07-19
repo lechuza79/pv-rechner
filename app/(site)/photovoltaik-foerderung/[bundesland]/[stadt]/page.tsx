@@ -7,14 +7,13 @@ import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons
 import { v, iconSizes } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
-import { cityBySlug, slugify, isCityPublished, publishedCities, type AtlasCity } from "../../../../../lib/atlas-cities";
-import { fundingAmount, fundingStandLabel, type FundingProgram } from "../../../../../lib/funding-programs";
+import { cityBySlug, slugify, isCityPublished, publishedCities } from "../../../../../lib/atlas-cities";
+import { fundingStandLabel, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
-import { FundingRates, FundingConditions, FundingStatusBadge, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
+import { FundingRates, FundingConditions, FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
+import { buildFundingExamples } from "../../../../../lib/funding-examples";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
-import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "../../../../../lib/calc";
-import { DEFAULT_FEED_IN } from "../../../../../lib/feedin-config";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
@@ -64,50 +63,6 @@ const SEGMENT_LABEL: Record<string, string> = {
   gewerbe_dach: "Gewerbedächer",
   freiflaeche: "Freiflächen-Parks",
 };
-
-type Example = {
-  kwp: number;
-  spKwh: number;
-  brutto: number;
-  foerderung: number;
-  /** True if a concrete € amount could be derived; false for free-text-only programs. */
-  foerderComputable: boolean;
-  netto: number;
-  amort: number | null;
-  total: number;
-};
-
-function buildExamples(city: AtlasCity, f: FundingProgram | undefined): Example[] {
-  const configs = [
-    { kwp: 5, spKwh: 0 },
-    { kwp: 10, spKwh: 5 },
-    { kwp: 15, spKwh: 10 },
-  ];
-  return configs.map(({ kwp, spKwh }) => {
-    const ertragKwp = city.yieldKwhKwp;
-    const ev = calcEigenverbrauch({
-      personenIdx: 2, nutzungIdx: 1, speicherKwh: spKwh,
-      wp: "nein", ea: "nein", eaKm: 15000, kwp, ertragKwp,
-    });
-    const brutto = estimateCost(kwp, spKwh);
-    const einspeisung = calcWeightedFeedIn(kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10);
-    // Shared funding math (single source of truth, also used by the rechner).
-    const fa = fundingAmount(f, kwp, spKwh, brutto);
-    const foerderComputable = fa.computable;
-    // Nur abziehen, wenn das Programm aktuell auch Anträge annimmt.
-    const foerderung = fa.active ? fa.total : 0;
-    const netto = Math.max(0, brutto - foerderung);
-    // Statische Beispiel-Annahmen (Strompreis 0,34 €/kWh, DEFAULT_PRICES via
-    // estimateCost): die Seite wird zur Build-Zeit statisch generiert, daher
-    // bewusst keine Live-Preise (usePrices) wie im interaktiven Rechner. Die
-    // Zahlen sind illustrativ — der CTA führt in den Rechner mit Live-Werten.
-    const result = calc({
-      kwp, kosten: netto, strompreis: 0.34, eigenverbrauch: ev,
-      einspeisung, stromSteigerung: 0.03, ertragKwp, monthly: null,
-    });
-    return { kwp, spKwh, brutto, foerderung, foerderComputable, netto, amort: result.be ? result.be.i : null, total: result.total };
-  });
-}
 
 function ZubauChart({ years }: { years: { year: number; count: number }[] }) {
   const currentYear = new Date().getFullYear();
@@ -176,7 +131,7 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
   const programs = await getFundingPrograms();
   const byId = new Map(programs.map((p) => [p.id, p]));
   const f = city.fundingId ? byId.get(city.fundingId) : undefined;
-  const examples = buildExamples(city, f);
+  const examples = buildFundingExamples(city.yieldKwhKwp, f);
   // Förderung im Rechner vorab scharf schalten — nur wenn sie sich pauschal
   // berechnen lässt UND aktuell Anträge angenommen werden.
   const ctaFoe = f && f.status === "aktiv" && examples[0]?.foerderComputable ? `&foe=${f.id}` : "";
@@ -266,36 +221,7 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
         <div style={S.section}>
           <h2 style={S.h2}>Beispielrechnungen für {city.name}</h2>
           <p style={S.sub}>Typische Anlagen, gerechnet mit {nf(city.yieldKwhKwp)} kWh/kWp{f?.status === "aktiv" && examples.some((e) => e.foerderung > 0) ? " inkl. lokaler Förderung" : ""}</p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
-            {examples.map((ex) => (
-              <div key={ex.kwp} style={S.card}>
-                <div style={{ fontSize: 17, fontWeight: 800 }}>{ex.kwp} kWp</div>
-                <div style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: 12 }}>
-                  {ex.spKwh > 0 ? `mit ${ex.spKwh} kWh Speicher` : "ohne Speicher"}
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 13 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: v("--color-text-secondary") }}>Investition</span>
-                    <span style={{ fontFamily: v("--font-mono") }}>{nf(ex.brutto)} €</span>
-                  </div>
-                  {ex.foerderung > 0 && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: v("--color-text-secondary") }}>Förderung</span>
-                      <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
-                    </div>
-                  )}
-                  <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 6 }}>
-                    <span style={{ color: v("--color-text-secondary") }}>Amortisation</span>
-                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{ex.amort !== null ? `${ex.amort} Jahre` : "> 25 J."}</span>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ color: v("--color-text-secondary") }}>Rendite 25 J.</span>
-                    <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: ex.total > 0 ? v("--color-positive") : v("--color-negative") }}>{ex.total > 0 ? "+" : ""}{nf(ex.total)} €</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ExampleCards examples={examples} />
           {f && f.status !== "aktiv" ? (
             <p style={{ ...S.sub, marginTop: 12, marginBottom: 0 }}>
               Die Förderung über das {f.name} ist {FUNDING_STATUS_NOTE[f.status]} —

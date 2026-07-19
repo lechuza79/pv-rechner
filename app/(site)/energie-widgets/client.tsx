@@ -148,6 +148,62 @@ const SECTIONS: WidgetSection[] = [
     ],
   },
   {
+    id: "gemeinde-erneuerbare",
+    label: "Erneuerbare Leistung einer Gemeinde",
+    intro:
+      "Die installierte erneuerbare Leistung einer Gemeinde nach Technologie (Solar, Wind, Biomasse, Wasserkraft) aus dem Marktstammdatenregister — als Donut. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas.",
+    attribution: {
+      path: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
+      text: "Erneuerbare Leistung in Höchberg · Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [
+      { id: "gemeinde-erneuerbare", label: "Höchberg (Beispiel)", src: "/embed/gemeinde-erneuerbare", params: { ags: "09679147" }, height: 360, fixedWidth: 380 },
+    ],
+  },
+  {
+    id: "gemeinde-solarleistung",
+    label: "Solarleistung einer Gemeinde (simuliert)",
+    intro:
+      "Der Tagesverlauf der Solarleistung des Gemeinde-Bestands, simuliert aus dem heutigen Wetter am Standort — kein Messwert, aber standortgenau. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas.",
+    attribution: {
+      path: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
+      text: "Solarleistung in Höchberg · Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [
+      { id: "gemeinde-solarleistung", label: "Höchberg (Beispiel)", src: "/embed/gemeinde-solarleistung", params: { ags: "09679147" }, height: 470, fixedWidth: 380 },
+    ],
+  },
+  {
+    id: "region-anlagentyp",
+    label: "Solarleistung eines Bundeslands nach Anlagentyp",
+    intro:
+      "Die installierte Solarleistung eines Bundeslands nach Anlagentyp (private Dächer, Gewerbe, Freifläche) aus dem Marktstammdatenregister — als Donut. Hier als Beispiel Mecklenburg-Vorpommern; den fertigen Code je Bundesland finden Sie auf dessen Förderseite.",
+    attribution: {
+      path: "/photovoltaik-foerderung/mecklenburg-vorpommern",
+      text: "Photovoltaik-Förderung in Mecklenburg-Vorpommern · Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [
+      { id: "region-anlagentyp", label: "Mecklenburg-Vorpommern (Beispiel)", src: "/embed/region-anlagentyp", params: { bl: "13" }, height: 360, fixedWidth: 380 },
+    ],
+  },
+  {
+    id: "region-solarleistung",
+    label: "Solarleistung eines Bundeslands (simuliert)",
+    intro:
+      "Die aktuelle Solarleistung des Anlagenbestands eines Bundeslands, simuliert aus dem heutigen Wetter — kein Messwert, aber nah dran. Hier als Beispiel Mecklenburg-Vorpommern; den fertigen Code je Bundesland finden Sie auf dessen Förderseite.",
+    attribution: {
+      path: "/photovoltaik-foerderung/mecklenburg-vorpommern",
+      text: "Solarleistung in Mecklenburg-Vorpommern · Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [
+      { id: "region-solarleistung", label: "Mecklenburg-Vorpommern (Beispiel)", src: "/embed/region-solarleistung", params: { bl: "13" }, height: 470, fixedWidth: 380 },
+    ],
+  },
+  {
     id: "simulation",
     label: "PV-Simulation (live)",
     intro:

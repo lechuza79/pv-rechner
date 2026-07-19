@@ -369,6 +369,18 @@ export async function captureNodeToBlob(node: HTMLElement, scale = 2): Promise<B
   clone
     .querySelectorAll<HTMLElement>('a')
     .forEach((a) => a.style.setProperty('text-decoration', 'none'));
+  // Freeze animations/transitions on the clone so every element renders at its
+  // RESTING style. Without this, intro animations restart on the fresh clone and
+  // get captured mid-flight — e.g. the radial's bars use `sc-bar-grow` with
+  // `animation-fill-mode: backwards` (opacity 0 before the run), so a freshly
+  // cloned card snapshots them at opacity 0 → the whole chart is missing from the
+  // PNG. `animation:none` reverts them to their base opacity (visible).
+  const freeze = (el: HTMLElement | SVGElement) => {
+    el.style.setProperty('animation', 'none', 'important');
+    el.style.setProperty('transition', 'none', 'important');
+  };
+  freeze(clone);
+  clone.querySelectorAll<HTMLElement | SVGElement>('*').forEach(freeze);
   clone.style.width = `${rect.width}px`;
   clone.style.margin = '0';
   wrapper.appendChild(clone);

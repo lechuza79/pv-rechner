@@ -62,12 +62,11 @@ export function MastrMap({
   loading = false,
 }: MastrMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  // Both dimensions are measured from the container. Its height is set by CSS
-  // (.mastr-map-box) and shrinks on narrow viewports at the SAME breakpoint as
-  // the single-column layout, so the map always fits its box and never pushes
-  // the KPI row off screen. The projection just scales into whatever box it gets.
+  // Only the WIDTH is measured. The height is derived from the geometry: we fit
+  // the projection to the width and make the box exactly as tall as the shape
+  // needs (see the projection memo). That kills the letterbox whitespace a fixed
+  // box left under flatter regions — and works for every level, page and embed.
   const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
   const [lkGeo, setLkGeo] = useState<FeatureCollection | null>(null);
   const [blGeo, setBlGeo] = useState<FeatureCollection | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -93,13 +92,10 @@ export function MastrMap({
   useLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    setWidth(rect.width);
-    setHeight(rect.height);
+    setWidth(el.getBoundingClientRect().width);
     const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
         setWidth(entry.contentRect.width);
-        setHeight(entry.contentRect.height);
       }
     });
     ro.observe(el);
@@ -174,77 +170,63 @@ export function MastrMap({
   const {
     fillFeatures,
     projection,
+    contentHeight,
   } = useMemo(() => {
-    if (!lkGeo || !blGeo || width < 10 || height < 10) {
-      return { fillFeatures: [], projection: null };
-    }
+    const EMPTY = {
+      fillFeatures: [] as FeatureCollection["features"],
+      projection: null as ReturnType<typeof geoMercator> | null,
+      contentHeight: 0,
+    };
+    if (!lkGeo || !blGeo || width < 10) return EMPTY;
+
+    const PAD = 12;
+    // Cap so a tall outline (Deutschland, schmale Kreise) can't grow the box
+    // without bound; flatter outlines stay below it and shrink to fit exactly.
+    const MAX_H = 620;
+    // Fit the shape to the WIDTH and make the box exactly as tall as the shape —
+    // no letterbox gap. If that would exceed MAX_H, fall back to fitting both
+    // dimensions into width × MAX_H (centered). `fitObject` is the outline we
+    // zoom to; `features` are the polygons drawn inside it.
+    const fitToWidth = (fitObject: unknown, features: FeatureCollection["features"]) => {
+      const proj = geoMercator().fitWidth(Math.max(width - 2 * PAD, 10), fitObject as never);
+      const b = geoPath(proj).bounds(fitObject as never);
+      const naturalH = Math.round(b[1][1] - b[0][1] + 2 * PAD);
+      if (naturalH <= MAX_H) {
+        const shapeW = b[1][0] - b[0][0];
+        const [tx, ty] = proj.translate();
+        // Center horizontally, top-align vertically (both inside PAD).
+        proj.translate([tx + (width - shapeW) / 2 - b[0][0], ty + PAD - b[0][1]]);
+        return { fillFeatures: features, projection: proj, contentHeight: naturalH };
+      }
+      const capped = geoMercator().fitExtent(
+        [
+          [PAD, PAD],
+          [width - PAD, MAX_H - PAD],
+        ],
+        fitObject as never,
+      );
+      return { fillFeatures: features, projection: capped, contentHeight: MAX_H };
+    };
 
     if (level === "landkreis" && parentAgs) {
       // Zoom to the Kreis; render its Gemeinden as fill. Until the bundle for
       // THIS Kreis has arrived (gemKreis === parentAgs), hold the placeholder
       // rather than draw the previous Kreis's shapes.
-      if (!gemGeo || gemKreis !== parentAgs || gemGeo.features.length === 0) {
-        return { fillFeatures: [], projection: null };
-      }
-      const proj = geoMercator().fitExtent(
-        [
-          [20, 20],
-          [width - 20, height - 20],
-        ],
-        gemGeo as never,
-      );
-      // Kreise are usually wider than tall — same top-align nudge as the
-      // Bundesland view so the shape sits at the top of the box.
-      const bounds = geoPath(proj).bounds(gemGeo as never);
-      const dy = bounds[0][1] - 20;
-      if (dy > 0) {
-        const [tx, ty] = proj.translate();
-        proj.translate([tx, ty - dy]);
-      }
-      return {
-        fillFeatures: gemGeo.features,
-        projection: proj,
-      };
+      if (!gemGeo || gemKreis !== parentAgs || gemGeo.features.length === 0) return EMPTY;
+      return fitToWidth(gemGeo, gemGeo.features);
     }
 
     if (level === "bundesland" && parentAgs) {
       // Zoom to the Bundesland; render its Landkreise as fill.
       const parentFeature = blGeo.features.find((f) => (f.properties as RegionProps).id === parentAgs);
-      if (!parentFeature) {
-        return { fillFeatures: [], projection: null };
-      }
-      const proj = geoMercator().fitExtent(
-        [
-          [20, 20],
-          [width - 20, height - 20],
-        ],
-        parentFeature as never,
-      );
-      // States are wider than tall, so fitExtent centers them vertically and
-      // leaves a big gap above. Shift the projection up so the state sits at
-      // the top of the box (height stays the same).
-      const bounds = geoPath(proj).bounds(parentFeature as never);
-      const dy = bounds[0][1] - 20;
-      if (dy > 0) {
-        const [tx, ty] = proj.translate();
-        proj.translate([tx, ty - dy]);
-      }
-      const lksInBl = lkGeo.features.filter((f) =>
-        (f.properties as RegionProps).id.startsWith(parentAgs),
-      );
-      return {
-        fillFeatures: lksInBl,
-        projection: proj,
-      };
+      if (!parentFeature) return EMPTY;
+      const lksInBl = lkGeo.features.filter((f) => (f.properties as RegionProps).id.startsWith(parentAgs));
+      return fitToWidth(parentFeature, lksInBl);
     }
 
-    // Default: de-level. Render Bundesländer as fill.
-    const proj = geoMercator().fitSize([width, height], lkGeo as never);
-    return {
-      fillFeatures: blGeo.features,
-      projection: proj,
-    };
-  }, [level, parentAgs, lkGeo, blGeo, gemGeo, gemKreis, width, height]);
+    // Default: de-level. Fit the whole country outline, render Bundesländer.
+    return fitToWidth(lkGeo, blGeo.features);
+  }, [level, parentAgs, lkGeo, blGeo, gemGeo, gemKreis, width]);
 
   const pathGen = useMemo(() => (projection ? geoPath(projection) : null), [projection]);
 
@@ -286,9 +268,11 @@ export function MastrMap({
     <div
       ref={containerRef}
       className={`mastr-map-box${level === "de" ? " mastr-map-box--de" : ""}`}
-      style={{ width: "100%", position: "relative" }}
+      // Height follows the shape (contentHeight). Until the geometry is measured
+      // it stays 0 → the CSS `.mastr-map-box` height acts as the loading box.
+      style={{ width: "100%", position: "relative", height: contentHeight > 0 ? contentHeight : undefined }}
     >
-      {!lkGeo || !blGeo || width < 10 || height < 10 || !projection ? (
+      {!projection || contentHeight < 10 ? (
         <div
           style={{
             width: "100%",
@@ -298,7 +282,7 @@ export function MastrMap({
           }}
         />
       ) : (
-        <svg width={width} height={height} role="img" aria-label="Deutschlandkarte">
+        <svg width={width} height={contentHeight} role="img" aria-label="Deutschlandkarte">
           <g
             style={
               loading ? { animation: "sc-map-pulse 1.4s ease-in-out infinite" } : undefined

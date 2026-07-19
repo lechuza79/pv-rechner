@@ -122,8 +122,7 @@ function MetricPicker({ metric, onChange }: { metric: Metric; onChange: (m: Metr
       <button
         type="button"
         onClick={() => go(1)}
-        disabled={idx >= METRICS.length - 1}
-        style={{ ...S.pickerArrow, borderRadius: "0 8px 8px 0", borderLeft: "none", opacity: idx >= METRICS.length - 1 ? 0.4 : 1 }}
+        style={{ ...S.pickerArrow, borderRadius: "0 8px 8px 0", borderLeft: "none" }}
         title="Nächste Kennzahl"
       >
         <IconChevronRight size={9} />
@@ -245,14 +244,16 @@ export default function GemeindeHero({
         : [];
     // Sort self IN with everyone else, so it lands at its real position: under
     // "Gewerbe" Höchberg may sit in the top few, under "Pro Kopf" near the bottom.
-    // Filtering it out first (the old bug) pinned it to the last row forever.
     const all = [...ranked, ...ext].sort((a, b) => b.value - a.value);
-    const top = all.slice(0, 6);
-    if (top.some((r) => r.isSelf)) return { rows: top, selfDetached: false };
-    // Only when self is beyond the top rows is it appended — never cut, but marked
-    // as detached so a gap row can show the rows in between are skipped.
-    const self = all.find((r) => r.isSelf);
-    return { rows: self ? [...top, self] : top, selfDetached: Boolean(self) };
+    // Always exactly five rows, and the reader's own Gemeinde is always one of
+    // them: top four leaders plus self as the fifth, shown at its real rank with
+    // a gap that says the ranks in between are skipped. When self is already in
+    // the top five it simply sits at its natural position.
+    const selfIdx = all.findIndex((r) => r.isSelf);
+    if (selfIdx === -1) return { rows: all.slice(0, 5), selfDetached: false };
+    if (selfIdx < 5) return { rows: all.slice(0, 5), selfDetached: false };
+    const leaders = all.filter((r) => !r.isSelf).slice(0, 4);
+    return { rows: [...leaders, all[selfIdx]], selfDetached: true };
   }, [ranked, outside, owner, metric]);
 
   // Cap at the runner-up: one Gemeinde with a solar park (126.865 W/head against
@@ -324,12 +325,17 @@ export default function GemeindeHero({
           {/* Re-keyed on filter+metric so the whole set fades in on a switch —
               softens the reorder that a per-row width transition can't cover. */}
           <div key={`${owner}-${metric}`} style={S.rowsFade}>
-          {rows.map((r, i) => (
-            <div key={`${r.region_id}-${r.scope}`}>
-              {/* A gap row makes clear that ranks between the top and self are
-                  skipped — otherwise "6." then "48." reads as a data error. */}
-              {selfDetached && r.isSelf && i > 0 && <div style={S.gap}>⋯</div>}
-              <div style={{ ...S.peerRow, ...(r.isSelf ? S.peerSelf : null) }}>
+          {rows.map((r) => {
+            // Five rows, always the same height. When self is beyond the top it
+            // takes the last slot and floats above the table (shadow) — its real
+            // rank makes clear the ranks in between are skipped, without a gap row
+            // that would change the block's height on every filter switch.
+            const floating = selfDetached && r.isSelf;
+            return (
+              <div
+                key={`${r.region_id}-${r.scope}`}
+                style={{ ...S.peerRow, ...(r.isSelf ? S.peerSelf : null), ...(floating ? S.peerFloat : null) }}
+              >
                 <span style={S.peerRank}>{r.rang}.</span>
                 <span style={S.peerName}>
                   {r.href && !r.isSelf ? (
@@ -354,16 +360,21 @@ export default function GemeindeHero({
                   </span>
                 </span>
               </div>
-            </div>
-          ))}
+            );
+          })}
           </div>
 
-          {metric === "perCapita" && (
-            <p style={S.peerNote}>
-              Verglichen mit Gemeinden ähnlicher Größe — die bundesweite Spitze wäre ein Koog mit
-              55 Einwohnern und sagte über {regionName} nichts.
-            </p>
-          )}
+          {/* Reserved height: the note only shows under "Pro Kopf", so without a
+              fixed slot the content below the card would jump on every metric
+              switch. */}
+          <div style={S.peerNoteWrap}>
+            {metric === "perCapita" && (
+              <p style={S.peerNote}>
+                Verglichen mit Gemeinden ähnlicher Größe — die bundesweite Spitze wäre ein Koog mit
+                55 Einwohnern und sagte über {regionName} nichts.
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -388,8 +399,8 @@ const S: Record<string, React.CSSProperties> = {
   split: { display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start" },
   left: { flex: "1 1 220px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, minWidth: 0 },
   right: { flex: "1 1 300px", minWidth: 0 },
-  center: { animation: "fadeUp 0.18s ease-out" },
-  rowsFade: { animation: "fadeUp 0.2s ease-out" },
+  center: { animation: "fu 0.18s ease-out" },
+  rowsFade: { animation: "fu 0.28s ease-out" },
   centerValue: { fontFamily: v("--font-mono"), fontSize: 19, fontWeight: 700, lineHeight: 1.1 },
   centerLabel: { fontSize: 11, color: v("--color-text-secondary"), marginTop: 2 },
   centerSub: { fontSize: 10, color: v("--color-text-muted"), fontFamily: v("--font-mono") },
@@ -436,7 +447,6 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-primary"),
     cursor: "pointer",
   },
-  gap: { textAlign: "center", fontSize: 12, color: v("--color-text-muted"), lineHeight: 1, padding: "2px 0" },
   dropdown: {
     position: "absolute",
     top: "calc(100% + 4px)",
@@ -473,7 +483,14 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 12,
     transition: "background 160ms ease",
   },
-  peerSelf: { background: v("--color-bg-accent") },
+  peerSelf: { background: v("--color-bg-accent"), boxShadow: `inset 0 0 0 1.5px ${v("--color-accent")}` },
+  // Detached self: lifted off the table with a drop shadow (keeps the blue outline).
+  peerFloat: {
+    background: v("--color-bg"),
+    boxShadow: `inset 0 0 0 1.5px ${v("--color-accent")}, 0 3px 12px rgba(0,0,0,0.12)`,
+    position: "relative",
+    zIndex: 1,
+  },
   peerRank: { fontFamily: v("--font-mono"), fontSize: 11, color: v("--color-text-muted") },
   peerName: { display: "flex", flexDirection: "column", minWidth: 0 },
   peerLink: { color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
@@ -481,5 +498,6 @@ const S: Record<string, React.CSSProperties> = {
   peerVal: { fontFamily: v("--font-mono"), fontSize: 11, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 },
   track: { display: "block", width: "100%", height: 4, background: v("--color-bg-muted"), borderRadius: 2 },
   fill: { display: "block", height: "100%", borderRadius: 2, marginLeft: "auto", transition: "width 220ms ease" },
+  peerNoteWrap: { minHeight: 44 },
   peerNote: { fontSize: 10, color: v("--color-text-muted"), lineHeight: 1.6, margin: "10px 0 0" },
 };
