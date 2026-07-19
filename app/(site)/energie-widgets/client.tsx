@@ -176,6 +176,34 @@ const SECTIONS: WidgetSection[] = [
     ],
   },
   {
+    id: "region-anlagentyp",
+    label: "Solarleistung eines Bundeslands nach Anlagentyp",
+    intro:
+      "Die installierte Solarleistung eines Bundeslands nach Anlagentyp (private Dächer, Gewerbe, Freifläche) aus dem Marktstammdatenregister — als Donut. Hier als Beispiel Mecklenburg-Vorpommern; den fertigen Code je Bundesland finden Sie auf dessen Förderseite.",
+    attribution: {
+      path: "/photovoltaik-foerderung/mecklenburg-vorpommern",
+      text: "Photovoltaik-Förderung in Mecklenburg-Vorpommern · Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [
+      { id: "region-anlagentyp", label: "Mecklenburg-Vorpommern (Beispiel)", src: "/embed/region-anlagentyp", params: { bl: "13" }, height: 360, fixedWidth: 380 },
+    ],
+  },
+  {
+    id: "region-solarleistung",
+    label: "Solarleistung eines Bundeslands (simuliert)",
+    intro:
+      "Die aktuelle Solarleistung des Anlagenbestands eines Bundeslands, simuliert aus dem heutigen Wetter — kein Messwert, aber nah dran. Hier als Beispiel Mecklenburg-Vorpommern; den fertigen Code je Bundesland finden Sie auf dessen Förderseite.",
+    attribution: {
+      path: "/photovoltaik-foerderung/mecklenburg-vorpommern",
+      text: "Solarleistung in Mecklenburg-Vorpommern · Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [
+      { id: "region-solarleistung", label: "Mecklenburg-Vorpommern (Beispiel)", src: "/embed/region-solarleistung", params: { bl: "13" }, height: 470, fixedWidth: 380 },
+    ],
+  },
+  {
     id: "simulation",
     label: "PV-Simulation (live)",
     intro:

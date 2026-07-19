@@ -4,6 +4,9 @@ import { v } from "../lib/theme";
 import DonutChart from "./charts/DonutChart";
 import GemeindeWidgetShell from "./atlas/GemeindeWidgetShell";
 import { DATA_SOURCES } from "../lib/data-sources";
+import type { AnlagentypSegment } from "../lib/anlagentyp";
+
+export type { AnlagentypSegment } from "../lib/anlagentyp";
 
 // Einbettbares Widget: installierte Solarleistung nach ANLAGENTYP (private
 // Dächer / Gewerbe-Dächer / Freifläche) je Bundesland — echte MaStR-Daten, kein
@@ -11,8 +14,6 @@ import { DATA_SOURCES } from "../lib/data-sources";
 // Variante: auf der PV-Förderseite ist die Bauform (Dach vs. Freifläche) die
 // relevante Differenzierung. Gleiche Shell + Donut wie das Gemeinde-Widget,
 // damit Land und Kommune visuell einheitlich sind.
-
-export type AnlagentypSegment = { key: string; label: string; color: string; kwp: number };
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 // Anteil in Prozent (Chart-Konvention: ab 10 % runden, darunter 1 Stelle).
@@ -61,7 +62,7 @@ export default function RegionAnlagentypWidget({
       shareText={shareText}
       shareUrl={liveUrl}
       filename={`solar-check-anlagentyp-${slug}.png`}
-      embedHash="gemeinde-erneuerbare"
+      embedHash="region-anlagentyp"
       showSource={showSource}
       showEmbed={showEmbed}
       branding={branding}

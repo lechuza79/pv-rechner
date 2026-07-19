@@ -14,6 +14,7 @@ import ScenarioCards from "../../../../components/ScenarioCards";
 import { MastrHeroSection } from "../../../../components/MastrHeroSection";
 import RegionSolarLive from "../../../../components/RegionSolarLive";
 import RegionAnlagentypWidget from "../../../../components/RegionAnlagentypWidget";
+import { buildAnlagentypSegments } from "../../../../lib/anlagentyp";
 import { BL_CENTROID } from "../../../../lib/bl-centroids";
 import { buildFundingScenarios } from "../../../../lib/funding-scenarios";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
@@ -41,13 +42,6 @@ function bundeslandAgs(name: string): string | undefined {
 }
 
 const pct = (x: number) => `${Math.round(x * 100)} %`;
-
-// Label + Farbe je Anlagentyp für das Donut-Widget (Blau-Ramp, fest je Typ).
-const ANLAGENTYP_META: Record<string, { key: string; label: string; color: string }> = {
-  privat_dach: { key: "privat", label: "Private Dächer", color: "#1365EA" },
-  gewerbe_dach: { key: "gewerbe", label: "Gewerbe-Dächer", color: "#6A9EF2" },
-  freiflaeche: { key: "frei", label: "Freifläche", color: "#073C93" },
-};
 
 /**
  * Turn the MaStR segment split into a per-Bundesland characterisation. The
@@ -187,12 +181,7 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
   const insight = segmentInsight(name, solar);
 
   // Anlagentyp-Segmente (kWp) fürs Donut-Widget, aus dem MaStR-Bestand.
-  const anlagentypSegments = (solar?.by_segment ?? [])
-    .map((s) => {
-      const m = ANLAGENTYP_META[s.segment];
-      return m ? { ...m, kwp: s.kwp } : null;
-    })
-    .filter((x): x is { key: string; label: string; color: string; kwp: number } => x != null);
+  const anlagentypSegments = buildAnlagentypSegments(solar?.by_segment ?? []);
   const blLiveUrl = `https://solar-check.io/photovoltaik-foerderung/${params.bundesland}`;
 
   // Representative yield for the whole Bundesland: mean of the tracked cities'
@@ -315,7 +304,9 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
                 </div>
                 {blAgs && BL_CENTROID[blAgs] && (
                   <div style={{ flex: "1 1 320px", minWidth: 0, display: "flex" }}>
-                    <RegionSolarLive lat={BL_CENTROID[blAgs].lat} lon={BL_CENTROID[blAgs].lon} totalKwp={solar.total_kwp} name={name} liveUrl={blLiveUrl} showSource showEmbed={false} />
+                    {/* Auf der Seite trägt der Seitenfuß den Credit (Konvention:
+                        einmal pro Seite) — Widget-Quelle aus, sichtbar nur im Embed. */}
+                    <RegionSolarLive lat={BL_CENTROID[blAgs].lat} lon={BL_CENTROID[blAgs].lon} totalKwp={solar.total_kwp} name={name} liveUrl={blLiveUrl} showSource={false} showEmbed={false} />
                   </div>
                 )}
               </div>
@@ -350,6 +341,18 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
                 dl-de/by-2-0
               </a>{" "}
               (Daten aggregiert).
+            </>
+          )}
+          {blAgs && BL_CENTROID[blAgs] && solar && solar.total_kwp > 0 && (
+            <>
+              {" "}Die simulierte Solarleistung nutzt Wetterdaten von{" "}
+              <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
+                Open-Meteo
+              </a>{" "}
+              (DWD, NOAA), Lizenz{" "}
+              <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
+                CC BY 4.0
+              </a>.
             </>
           )}
         </p>

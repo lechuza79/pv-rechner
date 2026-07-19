@@ -95,7 +95,7 @@ export default function RegionSolarLive({
       shareText={shareText}
       shareUrl={liveUrl}
       filename={`solar-check-solarleistung-${slug}.png`}
-      embedHash="gemeinde-solarleistung"
+      embedHash="region-solarleistung"
       showSource={showSource}
       // Vertikales Quellen-Label endet über der Auslastungs-Zeile des Radials,
       // statt bis zum Boden durchzulaufen.
