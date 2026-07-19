@@ -13,7 +13,7 @@
 // damit der Netzbezug als Segment sichtbar ist. Tages-Chart = 24-h-Detail eines
 // echten PVGIS-Tagestyps: zeigt den Innerhalb-des-Tages-Mismatch (mittags Überschuss,
 // nachts Netz), der in der Monatsbilanz verschwindet und die Rest-Autarkie erklärt.
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { v } from "../lib/theme";
 import type { SolarMonth } from "../lib/balkon-sim";
 import type { ExampleDayResult } from "../lib/pv-sim";
@@ -197,6 +197,57 @@ function Bar({ label, total, parts }: {
 
 export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVerbrauch, effEv, autarkie, speicherKwh, monthly, exampleDays }: EnergyFlowModalProps) {
   const [view, setView] = useState<string>("year");
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  // Latest onClose without re-running the modal effect when the parent passes
+  // a fresh inline closure on every render.
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  // Modal mechanics while open: lock body scroll, close on Escape, trap Tab
+  // focus inside the dialog, and return focus to the trigger on close/unmount.
+  useEffect(() => {
+    if (!open) return;
+    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeBtnRef.current?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        onCloseRef.current();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+      const focusables = Array.from(
+        dialog.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+      ).filter(el => !el.hasAttribute("disabled"));
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      // Wrap at the edges; if focus escaped the dialog, pull it back in.
+      if (e.shiftKey) {
+        if (active === first || !dialog.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else if (active === last || !dialog.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = prevOverflow;
+      trigger?.focus();
+    };
+  }, [open]);
+
   if (!open) return null;
 
   // Der Eigenverbrauch ist die (ggf. manuell editierte) Zahl der Ergebnisseite,
@@ -238,6 +289,7 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
       }}
     >
       <div
+        ref={dialogRef}
         onClick={e => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -251,7 +303,7 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
           <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em" }}>So verteilt sich dein Strom</h2>
-          <button onClick={onClose} aria-label="Schließen" style={{
+          <button ref={closeBtnRef} onClick={onClose} aria-label="Schließen" style={{
             border: "none", background: "transparent", color: v('--color-text-muted'),
             fontSize: 24, lineHeight: 0.8, cursor: "pointer", padding: 0,
           }}>×</button>
