@@ -83,6 +83,18 @@ const SECTIONS: WidgetSection[] = [
     variants: [{ id: "strommix", label: "Strommix", src: "/embed/strommix", height: 460 }],
   },
   {
+    id: "ee-ampel",
+    label: "EE-Ampel (Strommix live)",
+    intro:
+      "Zeigt auf einen Blick, ob der deutsche Strom gerade überwiegend erneuerbar ist. Grün heißt: guter Zeitpunkt für Stromverbrauch, etwa fürs Laden des E-Autos. Kompakt für Sidebar oder Faktenbox.",
+    attribution: {
+      path: "/strommix-deutschland",
+      text: "Strommix Deutschland – live bei Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [{ id: "ee-ampel", label: "EE-Ampel", src: "/embed/ee-ampel", height: 290, fixedWidth: 320 }],
+  },
+  {
     id: "strommix-anteil",
     label: "Kernenergie im Strommix",
     intro:
