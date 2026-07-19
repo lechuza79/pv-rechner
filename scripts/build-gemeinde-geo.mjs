@@ -26,7 +26,7 @@
  *   -filter 'GF == 4'      keep the land area only (drops water polygons)
  *   -proj wgs84            reproject UTM32S → lon/lat, matching the other geo files
  *   -dissolve2 AGS         merge multi-part Gemeinden (islands) into one feature
- *   -simplify 5% weighted  strong simplification, keep-shapes so nothing vanishes
+ *   -simplify 18% weighted strong simplification, keep-shapes so nothing vanishes
  *   -split kreis           one file per 5-digit AGS prefix
  */
 import { execFileSync } from "node:child_process";
@@ -76,7 +76,7 @@ execFileSync(
     "AGS",
     "copy-fields=GEN,BEZ",
     "-simplify",
-    "5%",
+    "18%",
     "visvalingam",
     "weighted",
     "keep-shapes",
@@ -87,7 +87,7 @@ execFileSync(
     "-split",
     "kreis",
     "-o",
-    "precision=0.0001",
+    "precision=0.00005",
     "format=geojson",
     tmpDir + "/",
   ],

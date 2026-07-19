@@ -60,6 +60,10 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
   const [selectedAgs, setSelectedAgs] = useState<string | undefined>(
     initialRegion && initialRegion !== "de" ? initialRegion : undefined,
   );
+  // The clicked region's name straight from the map geometry — shown instantly
+  // while the summary API (which also carries the name) is still loading, so a
+  // freshly-selected Kreis never reads a bare "Landkreis" placeholder.
+  const [selectedName, setSelectedName] = useState<string | undefined>(undefined);
 
   // Segment filter only applies to solar. Reset when switching away.
   const effectiveSegment: SegmentFilter = energietraeger === "solar" ? segment : "alle";
@@ -135,7 +139,7 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
     { longLived: false, keyPrefix: "sc-mastr-" },
   );
 
-  const handleSelect = (ags: string) => {
+  const handleSelect = (ags: string, name?: string) => {
     // Gemeinde (8-digit): the deepest level. Leave the map for that Gemeinde's
     // atlas detail page. Inside an embed there are no detail pages to go to, so
     // the click drills no further — viewing the Kreis's Gemeinden and hovering
@@ -146,14 +150,22 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
       }
       return;
     }
-    setSelectedAgs((prev) => {
-      if (prev === ags) {
-        // Clicking the already-selected region goes up a level
-        if (ags.length === 5) return ags.slice(0, 2); // LK → BL
-        return undefined; // BL → DE
-      }
-      return ags;
-    });
+    if (selectedAgs === ags) {
+      // Clicking the already-selected region goes up a level. The parent's name
+      // resolves instantly (Bundesland lookup), so drop the geo-name fallback.
+      setSelectedAgs(ags.length === 5 ? ags.slice(0, 2) : undefined); // LK → BL, BL → DE
+      setSelectedName(undefined);
+    } else {
+      setSelectedAgs(ags);
+      setSelectedName(name); // show the clicked region's name immediately
+    }
+  };
+
+  // Breadcrumb jumps bypass handleSelect — clear the geo-name fallback too, so a
+  // later summary is the only source of the name for the target level.
+  const goToLevel = (ags: string | undefined) => {
+    setSelectedAgs(ags);
+    setSelectedName(undefined);
   };
 
   const values: RegionValue[] = useMemo(
@@ -186,8 +198,8 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
           isLk={isLkSelected}
           blAgs={blAgs}
           blName={bundeslandByAgs(blAgs)?.name ?? blAgs}
-          lkName={isLkSelected ? summary?.name : undefined}
-          onGo={setSelectedAgs}
+          lkName={isLkSelected ? summary?.name ?? selectedName : undefined}
+          onGo={goToLevel}
         />
       )}
 
@@ -210,7 +222,7 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
             loading={choroplethLoading}
           />
           {isLkSelected && !isEmbed && (
-            <GemeindeHint kreisAgs={selectedAgs} kreisName={summary?.name} />
+            <GemeindeHint kreisAgs={selectedAgs} kreisName={summary?.name ?? selectedName} />
           )}
         </div>
 
@@ -229,6 +241,7 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
           <SummaryPanel
             summary={summary}
             regionAgs={region}
+            fallbackName={selectedName}
             energietraeger={energietraeger}
             segment={effectiveSegment}
           />
@@ -535,11 +548,14 @@ function MapBreadcrumb({
 function SummaryPanel({
   summary,
   regionAgs,
+  fallbackName,
   energietraeger,
   segment,
 }: {
   summary: RegionSummary | null;
   regionAgs: string;
+  /** Name from the map geometry, shown until the summary (with the authoritative name) loads. */
+  fallbackName?: string;
   energietraeger: Energietraeger;
   segment: SegmentFilter;
 }) {
@@ -552,7 +568,7 @@ function SummaryPanel({
   let regionName: string;
   if (isDE) regionName = "Deutschland";
   else if (isBl) regionName = bl?.name ?? regionAgs;
-  else regionName = summary?.name ?? regionAgs;
+  else regionName = summary?.name ?? fallbackName ?? regionAgs;
   const regionLabel = regionName + (bl?.short ? ` · ${bl.short}` : "");
   const traegerLabel = TRAEGER_DISPLAY[energietraeger];
   const segmentSuffix = segment !== "alle" ? ` · ${SEGMENT_DISPLAY[segment]}` : "";

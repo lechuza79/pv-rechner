@@ -30,7 +30,9 @@ export type MastrMapProps = {
   values: RegionValue[];
   /** Highlighted region (BL / LK / Gemeinde depending on level). */
   selectedAgs?: string;
-  onSelect?: (ags: string) => void;
+  /** name is the clicked region's label from the geometry — lets the caller show
+   *  it immediately, before the (slower) summary API returns. */
+  onSelect?: (ags: string, name?: string) => void;
   valueLabel?: string;
   /** True while choropleth data is fetching — polygons animate with a pulse. */
   loading?: boolean;
@@ -306,7 +308,7 @@ export function MastrMap({
                   }}
                   onMouseEnter={() => !loading && setHovered(p.id)}
                   onMouseLeave={() => setHovered(null)}
-                  onClick={() => !loading && onSelect?.(p.id)}
+                  onClick={() => !loading && onSelect?.(p.id, p.name)}
                 />
               );
             })}
