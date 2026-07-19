@@ -21,6 +21,7 @@ import KlimaDetailModal from "../../../components/KlimaDetailModal";
 import Chart from "./_components/Chart";
 import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
+import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { useFeedInRates } from "../../../lib/feedin";
 import Header from "../../../components/Header";
 import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh, IconSun } from "../../../components/Icons";
@@ -108,7 +109,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [oVerbrauch, setOVerbrauch] = useState<number | null>(hasShare && initialParams?.vb ? (() => { const n = Number(initialParams.vb); return isFinite(n) && n >= 500 && n <= 30000 ? n : null; })() : null);
   // Eingabemodus für Step 2: Personenzahl schätzen vs. Jahresverbrauch direkt kennen.
   const [verbrauchMode, setVerbrauchMode] = useState(oVerbrauch !== null);
-  const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", 0.34, 0.05, 1.0) : 0.34);
+  // Strompreis-Startwert aus der kanonischen Quelle (DEFAULT_PRICES, BNetzA-
+  // Strompreismonitor), NICHT hardcoded. Ein "st"-Param (geteilter Link oder
+  // Crosslink von der Ratgeberseite) hat weiterhin Vorrang; sonst wird der
+  // Default unten per usePrices() auf den Live-Wert aus market_prices nachgezogen.
+  const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", DEFAULT_PRICES.electricityPrice, 0.05, 1.0) : DEFAULT_PRICES.electricityPrice);
   const [oStromSynced, setOStromSynced] = useState(hasShare); // synced when share-URL — no auto-update
   const [oEinsp, setOEinsp] = useState<number | null>(hasShare && initialParams?.ei ? (() => { const n = Number(initialParams.ei); return isFinite(n) && n >= 0 && n <= 20 ? n : null; })() : null);
   const [einspeisungModus, setEinspeisungModus] = useState<"aus" | "teil" | "voll">(
