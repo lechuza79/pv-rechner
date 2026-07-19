@@ -164,15 +164,7 @@ export function MastrMap({
     return scaleQuantile<string>({ domain: nums, range: COLOR_RAMP });
   }, [values]);
 
-  // A shape whose Kreis differs from the one we drilled into: an enclosed
-  // kreisfreie Stadt sitting in the Landkreis's hole (e.g. Würzburg inside
-  // Landkreis Würzburg). It is a separate Kreis — not part of this choropleth —
-  // so it renders neutral-grey, not on the accent ramp.
-  const isForeign = (ags: string) =>
-    level === "landkreis" && !!parentAgs && ags.slice(0, 5) !== parentAgs;
-
   const fillFor = (ags: string) => {
-    if (isForeign(ags)) return v("--color-bg-muted");
     if (loading) return COLOR_RAMP[0]; // faint accent wash while loading, not grey
     const val = valueByAgs.get(ags) ?? 0;
     if (val <= 0) return COLOR_RAMP[0];
@@ -285,16 +277,9 @@ export function MastrMap({
   // drilling into a Bundesland the hovered id no longer exists in the (now
   // Landkreis-level) data, so the box hides instead of reading 0. On touch
   // there is no hover, so mobile relies on the KPI row under the map instead.
-  // Enclosed kreisfreie Städte carry no value in this Kreis's data, so also let
-  // the box show for a hovered foreign shape — with a "eigener Kreis" note in
-  // place of a value, so the grey infill reads as intentional, not missing data.
-  const hoveredForeign =
-    hovered !== null &&
-    isForeign(hovered) &&
-    fillFeatures.some((f) => (f.properties as RegionProps).id === hovered);
-  const hoverValid = hovered !== null && (valueByAgs.has(hovered) || hoveredForeign);
-  const info: { name: string; value: number | null } | null = hoverValid
-    ? { name: hoveredName ?? hovered!, value: hoveredForeign ? null : valueByAgs.get(hovered!) ?? 0 }
+  const hoverValid = hovered !== null && valueByAgs.has(hovered);
+  const info: { name: string; value: number } | null = hoverValid
+    ? { name: hoveredName ?? hovered!, value: valueByAgs.get(hovered!) ?? 0 }
     : null;
 
   return (
@@ -322,24 +307,14 @@ export function MastrMap({
             {fillPaths.map((p) => {
               const isHovered = hovered === p.id;
               const isSelected = selectedAgs === p.id;
-              const foreign = isForeign(p.id);
               return (
                 <path
                   key={p.id}
                   data-ags={p.id}
                   d={p.d}
                   fill={fillFor(p.id)}
-                  stroke={
-                    isSelected
-                      ? v("--color-accent-dark")
-                      : foreign
-                        ? v("--color-text-muted") // separate Kreis — set apart from the choropleth
-                        : loading
-                          ? COLOR_RAMP[3]
-                          : v("--color-border")
-                  }
-                  strokeWidth={isSelected ? 2 : isHovered ? 1.3 : foreign ? 0.9 : 0.5}
-                  strokeDasharray={foreign ? "3 2" : undefined}
+                  stroke={isSelected ? v("--color-accent-dark") : loading ? COLOR_RAMP[3] : v("--color-border")}
+                  strokeWidth={isSelected ? 2 : isHovered ? 1.3 : 0.5}
                   style={{
                     cursor: onSelect && !loading ? "pointer" : "default",
                     transition: "fill 240ms ease-out, stroke 120ms, stroke-width 120ms",
@@ -371,9 +346,7 @@ export function MastrMap({
         >
           <div style={{ fontWeight: 600, color: v("--color-text-primary") }}>{info.name}</div>
           <div style={{ color: v("--color-text-secondary"), fontVariantNumeric: "tabular-nums" }}>
-            {info.value === null
-              ? "eigener Kreis"
-              : `${info.value.toLocaleString("de-DE", { maximumFractionDigits: 0 })} ${valueLabel}`}
+            {info.value.toLocaleString("de-DE", { maximumFractionDigits: 0 })} {valueLabel}
           </div>
         </div>
       )}
