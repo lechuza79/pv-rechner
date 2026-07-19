@@ -322,7 +322,8 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] Daten landen in `mastr_aggregates`/`mastr_regions`/`mastr_meta` (Schema unverändert), `data_as_of` aus dem ZIP-Stichtag
 
 ### Phase 4: Content & Reichweite
-- [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
+- [x] Flaggschiff-Ratgeber **`/lohnt-sich-pv-mit-speicher`**: Server Component (ISR 3600), rechnet die Beispieltabelle (10 kWp × 0/5/10 kWh: Investition, EV, Autarkie aus der Stundensimulation, Amortisation, 25-J-Gewinn) live mit den geteilten Funktionen (`calcEigenverbrauch`, `calc`, `estimateCost`, `simulatePvYear`) und Live-Marktpreisen — driftet nie vom Rechner. FAQ via `pvSpeicherFaq(prices)` in `lib/faq.ts` (bekommt die Live-Preise durchgereicht, damit FAQ und Tabelle auf derselben Seite identische Beträge zeigen) + `<Faq>` (FAQPage-JSON-LD). In Sitemap (0.8); Rechner-FAQ verlinkt hin.
+- [ ] Weitere Long-Tail-Landingpages (z.B. `/pv-kaufen-vs-enpal-mieten`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
 - [ ] Blog/Ratgeber-Sektion
 
