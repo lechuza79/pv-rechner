@@ -18,8 +18,9 @@ import {
   BATTERY_LIFETIME_YEARS,
 } from "../../../lib/calc";
 import { simulatePvYear } from "../../../lib/pv-sim";
-import { PERSONEN, NUTZUNG } from "../../../lib/constants";
+import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS } from "../../../lib/constants";
 import { pageMetadata } from "../../../lib/seo";
+import Chart from "../photovoltaik-rechner/_components/Chart";
 
 // Figures on this page come live from the same models the calculator uses
 // (prices from Supabase market_prices with config fallback). ISR keeps them
@@ -227,7 +228,21 @@ interface ExampleRow {
   autarkie: number;
   amortisation: number | null;
   gewinn25: number;
+  /** ⌀ Ersparnis/Jahr — same formula as the calculator's ResultStats. */
+  ersparnisProJahr: number;
+  /** Three amortization curves (pess./real./opt.) for the <Chart> teaser —
+   *  computed exactly like the calculator (SCENARIOS + calc), so the picture
+   *  matches the tool 1:1. */
+  scenarios: { id: string; color: string; data: ReturnType<typeof calc> }[];
+  /** Deep link that pre-loads this exact config in the calculator. */
+  href: string;
 }
+
+// kWh → SPEICHER option index (share-URL param "s"). Indices are stable for
+// legacy share-URLs (see constants). Only the sizes this page uses are mapped.
+const SPEICHER_IDX: Record<number, number> = Object.fromEntries(
+  SPEICHER.map((o, i) => [o.kwh, i] as const),
+);
 
 function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
   const baseKwh = PERSONEN[EX.personenIdx].verbrauch;
@@ -263,6 +278,38 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
     ertragKwp: EX.ertragKwp,
     household: { baseKwh, tagQuote: NUTZUNG[EX.nutzungIdx].tagQuote, wpActive: false, eaActive: false },
   });
+  // Three scenario curves for the chart — identical construction to the
+  // calculator (rechner.tsx → scenarioData): scenario EV capped at the physical
+  // maximum (consumption / yield) so the optimistic curve can't invent savings.
+  const jahresertrag = EX.kwp * EX.ertragKwp;
+  const scenarios = SCENARIOS.map((s) => ({
+    id: s.id,
+    color: s.color,
+    data: calc({
+      kwp: EX.kwp,
+      kosten,
+      strompreis: prices.electricityPrice,
+      eigenverbrauch: Math.min(ev + s.evDelta, 95, (baseKwh / jahresertrag) * 100),
+      einspeisung: feedIn,
+      stromSteigerung: s.strom,
+      ertragKwp: EX.ertragKwp,
+      monthly: null,
+      batteryReplace: speicherKwh > 0 ? batteryReplaceCost(speicherKwh, prices) : 0,
+    }),
+  }));
+  // Deep-link params reproduce the teaser numbers 1:1 in the calculator. We
+  // pass strompreis (st) and Ertrag (er) explicitly because the page computes
+  // with the canonical price from prices-config (electricityPrice, e.g. 0,312 €),
+  // while the calculator's own default is a slightly higher hardcoded 0,34 € —
+  // without st the click would show a higher return than the teaser.
+  const params = new URLSearchParams({
+    a: "2", // 10 kWp (ANLAGEN index)
+    s: String(SPEICHER_IDX[speicherKwh] ?? 0),
+    p: String(EX.personenIdx),
+    n: String(EX.nutzungIdx),
+    st: String(prices.electricityPrice),
+    er: String(EX.ertragKwp),
+  });
   return {
     speicherKwh,
     kosten,
@@ -270,7 +317,97 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
     autarkie: sim.autarky,
     amortisation: result.be?.i ?? null,
     gewinn25: result.total,
+    ersparnisProJahr: Math.round((result.total + kosten) / YEARS),
+    scenarios,
+    href: `/photovoltaik-rechner?${params.toString()}`,
   };
+}
+
+// One teaser card: title + amortization chart + result-style tiles + deep link.
+// Server component (Chart is the only client island), tiles reuse the exact
+// ResultStats look/tokens. Tiles wrap on narrow screens (mobile-first).
+function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; badge: string }) {
+  const tileWrap = {
+    background: v("--color-bg"),
+    borderRadius: v("--radius-md"),
+    padding: "11px 12px",
+    border: `1px solid ${v("--color-border")}`,
+  } as const;
+  const tileLabel = {
+    fontSize: 10.5,
+    color: v("--color-text-secondary"),
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.04em",
+    fontWeight: 600,
+  } as const;
+  const tileValue = {
+    fontSize: 17,
+    fontWeight: 800,
+    fontFamily: v("--font-mono"),
+    marginTop: 4,
+    lineHeight: 1.15,
+  } as const;
+  return (
+    <div
+      style={{
+        background: v("--color-bg"),
+        borderRadius: v("--radius-lg"),
+        border: `1px solid ${v("--color-border")}`,
+        padding: 14,
+        marginBottom: 12,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
+        <strong style={{ fontSize: 14.5, fontWeight: 700, color: v("--color-text-primary") }}>{title}</strong>
+        <span style={{ fontSize: 11, fontWeight: 700, fontFamily: v("--font-mono"), color: v("--color-accent") }}>{badge}</span>
+      </div>
+      <Chart scenarios={row.scenarios} kosten={row.kosten} highlightId="realistic" />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(96px, 1fr))",
+          gap: 8,
+          marginTop: 10,
+        }}
+      >
+        <div style={tileWrap}>
+          <div style={tileLabel}>Amortisation</div>
+          <div style={{ ...tileValue, color: v("--color-accent") }}>
+            {row.amortisation != null ? `~${row.amortisation} J` : ">25 J"}
+          </div>
+        </div>
+        <div style={tileWrap}>
+          <div style={tileLabel}>Rendite 25 J</div>
+          <div style={{ ...tileValue, color: row.gewinn25 >= 0 ? v("--color-positive") : v("--color-negative") }}>
+            {row.gewinn25 > 0 ? "+" : ""}
+            {row.gewinn25.toLocaleString("de-DE")} €
+          </div>
+        </div>
+        <div style={tileWrap}>
+          <div style={tileLabel}>⌀ Ersparnis / Jahr</div>
+          <div style={{ ...tileValue, color: v("--color-positive") }}>{row.ersparnisProJahr.toLocaleString("de-DE")} €</div>
+        </div>
+      </div>
+      <Link
+        href={row.href}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          marginTop: 12,
+          padding: "9px 16px",
+          borderRadius: v("--radius-md"),
+          fontSize: 13,
+          fontWeight: 700,
+          background: v("--color-accent"),
+          color: v("--color-text-on-accent"),
+          textDecoration: "none",
+        }}
+      >
+        Im Rechner öffnen →
+      </Link>
+    </div>
+  );
 }
 
 const eur = (n: number) => `${n.toLocaleString("de-DE")} €`;
@@ -431,6 +568,16 @@ export default async function LohntSichPvMitSpeicherPage() {
           Der Schritt von 5 auf 10 kWh kostet nur noch {eur(mit10.kosten - mit5.kosten)},
           weil die Installations-Basis nur einmal anfällt.
         </p>
+
+        {/* ── Zwei Beispiele mit Chart + Kacheln + Deep-Link in den Rechner ── */}
+        <p style={{ ...S.p, marginTop: 18 }}>
+          Dieselben zwei Fälle als Amortisationskurve — die grüne Linie ist das realistische
+          Szenario, die blasseren Linien der vorsichtige und der günstige Verlauf. Ein Klick
+          öffnet die Anlage direkt im Rechner, wo du jede Annahme anpassen kannst:
+        </p>
+        <TeaserCard row={ohne} title="10 kWp ohne Speicher" badge="10 kWp · kein Speicher" />
+        <TeaserCard row={mit10} title="10 kWp mit 10 kWh Speicher" badge="10 kWp · 10 kWh" />
+
         <p style={S.p}>
           Ehrlichkeitshalber eingerechnet: ein <strong style={S.strong}>Akku-Tausch nach{" "}
           {BATTERY_LIFETIME_YEARS} Jahren</strong> (zu dann voraussichtlich niedrigeren
