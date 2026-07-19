@@ -13,6 +13,13 @@ import {
   paramInt,
   paramFloat,
   paramStr,
+  marginalPaybackYears,
+  selectByMarginalReturn,
+  batteryCost,
+  batteryReplaceCost,
+  BATTERY_LIFETIME_YEARS,
+  BATTERY_REPLACE_PRICE_FACTOR,
+  MAX_MARGINAL_PAYBACK_YEARS,
 } from "../calc";
 import { DEFAULT_PRICES } from "../prices-config";
 import { co2PriceForCalendarYear } from "../co2-config";
@@ -168,6 +175,38 @@ describe("calcEigenverbrauch", () => {
   it("ignores baseKwh when null (falls back to persons)", () => {
     const withNull = calcEigenverbrauch({ ...standard, baseKwh: null });
     expect(withNull).toBe(calcEigenverbrauch(standard));
+  });
+
+  // ── WP-Saisonkorrektur: Speicher-Boost × (1 − wpAnteil × 0,30) ────────────
+  // Das HTW-Power-Law kennt keine Wärmepumpe (VDI-4655-Haushaltsprofil). Für
+  // WP-Haushalte wird der SPEICHER-Boost gedämpft, weil ~80 % des WP-Stroms
+  // Okt–Apr anfällt — wenn der Speicher mangels Sonne kaum gefüllt wird.
+  // Trick für den isolierten Vergleich: baseKwh so setzen, dass beide Fälle
+  // denselben Gesamtverbrauch haben (7800 kWh) — dann sind x, y und tagQuote
+  // identisch und NUR die Saisonkorrektur unterscheidet die Ergebnisse.
+  describe("WP-Saisonkorrektur im Speicher-Boost", () => {
+    const wpCase = { ...standard, wp: "ja", wpKwh: 4000, baseKwh: 3800, kwp: 10 };
+    const sameLoadNoWp = { ...standard, wp: "nein", baseKwh: 7800, kwp: 10 };
+
+    it("dämpft den Speicher-Boost bei WP-Haushalten (gleicher Gesamtverbrauch)", () => {
+      const withWp = calcEigenverbrauch({ ...wpCase, speicherKwh: 10 });
+      const noWp = calcEigenverbrauch({ ...sameLoadNoWp, speicherKwh: 10 });
+      // wpAnteil = 4000/7800 ≈ 0,51 → Boost × 0,846 → EV klar niedriger.
+      expect(withWp).toBeLessThan(noWp);
+    });
+
+    it("greift NICHT ohne Speicher (Korrektur betrifft nur den Boost)", () => {
+      const withWp = calcEigenverbrauch({ ...wpCase, speicherKwh: 0 });
+      const noWp = calcEigenverbrauch({ ...sameLoadNoWp, speicherKwh: 0 });
+      expect(withWp).toBe(noWp);
+    });
+
+    it("dämpft stärker, je größer der WP-Anteil am Verbrauch ist", () => {
+      // Gesamt konstant 9000 kWh, WP-Anteil 2000 vs. 6000 kWh.
+      const smallWp = calcEigenverbrauch({ ...standard, wp: "ja", wpKwh: 2000, baseKwh: 7000, kwp: 10, speicherKwh: 10 });
+      const bigWp = calcEigenverbrauch({ ...standard, wp: "ja", wpKwh: 6000, baseKwh: 3000, kwp: 10, speicherKwh: 10 });
+      expect(bigWp).toBeLessThan(smallWp);
+    });
   });
 
   it("clamps to 10–90 % regardless of inputs", () => {
@@ -432,6 +471,166 @@ describe("paramFloat", () => {
 
   it("falls back when out of bounds", () => {
     expect(paramFloat({ a: "12.5" }, "a", 1.0, 0, 10)).toBe(1.0);
+  });
+});
+
+// ─── Marginal-return gate (drives EVERY storage recommendation) ─────────────
+describe("marginalPaybackYears", () => {
+  it("returns 0 when the upgrade costs nothing (or less)", () => {
+    expect(marginalPaybackYears(0, 5000)).toBe(0);
+    expect(marginalPaybackYears(-500, 5000)).toBe(0);
+  });
+
+  it("computes payback from avg annual saving: (Δnpv + Δinvest) / years", () => {
+    // Δinvest 1200, Δnpv 1300 over 25 years → avg saving (1300+1200)/25 = 100 €/a
+    // → payback 1200/100 = exactly 12 years.
+    expect(marginalPaybackYears(1200, 1300)).toBe(12);
+  });
+
+  it("returns Infinity when the upgrade never earns its money back", () => {
+    // Δnpv so negative that the avg annual saving is ≤ 0.
+    expect(marginalPaybackYears(1000, -3000)).toBe(Infinity);
+    expect(marginalPaybackYears(1000, -1000)).toBe(Infinity); // saving exactly 0
+  });
+
+  it("respects a custom horizon", () => {
+    // Same Δnpv over half the years means the annual saving was twice as high
+    // → the marginal payback halves.
+    expect(marginalPaybackYears(1200, 1300, 25)).toBe(12);
+    expect(marginalPaybackYears(1200, 1300, 12.5)).toBe(6);
+  });
+});
+
+describe("selectByMarginalReturn", () => {
+  const A = { investition: 10000, npv25: 10000 };
+
+  it("returns undefined for an empty candidate list", () => {
+    expect(selectByMarginalReturn([])).toBeUndefined();
+  });
+
+  it("tie-break: equally expensive candidates compete purely on NPV", () => {
+    const worse = { investition: 10000, npv25: 5000 };
+    const better = { investition: 10000, npv25: 6000 };
+    expect(selectByMarginalReturn([worse, better])).toBe(better);
+    expect(selectByMarginalReturn([better, worse])).toBe(better); // order-independent
+  });
+
+  it("accepts a pricier candidate whose extra capital pays back within the gate", () => {
+    // Δinvest 1200, Δnpv 1300 → marginal payback exactly 12 years (= gate limit).
+    const upgrade = { investition: 11200, npv25: 11300 };
+    expect(selectByMarginalReturn([A, upgrade])).toBe(upgrade);
+  });
+
+  it("rejects a pricier candidate just beyond the 12-year threshold", () => {
+    // Δinvest 1200, Δnpv 1200 → avg saving 96 €/a → payback 12,5 J > 12 → reject,
+    // although the upgrade has the higher total NPV. That is the whole point of
+    // the gate: pure NPV maximization would always pick this one.
+    const upgrade = { investition: 11200, npv25: 11200 };
+    expect(selectByMarginalReturn([A, upgrade])).toBe(A);
+    // Sanity: the same candidate passes with a laxer gate.
+    expect(selectByMarginalReturn([A, upgrade], 13)).toBe(upgrade);
+  });
+
+  it("never picks a pricier candidate with equal or lower NPV", () => {
+    const dud = { investition: 20000, npv25: 9999 };
+    const equal = { investition: 15000, npv25: 10000 };
+    expect(selectByMarginalReturn([A, dud, equal], Infinity)).toBe(A);
+  });
+
+  it("evaluates each upgrade against the CURRENT pick, not the cheapest", () => {
+    // B beats A (Δ1000 / Δnpv 1500 → payback 10 J ≤ 12).
+    // C has higher NPV than A and B, but vs B: Δ1500 / Δnpv 100 → ~23 J → reject.
+    const B = { investition: 11000, npv25: 11500 };
+    const C = { investition: 12500, npv25: 11600 };
+    expect(selectByMarginalReturn([C, A, B])).toBe(B);
+  });
+
+  it("filters out NaN candidates instead of letting them rank", () => {
+    const nanNpv = { investition: 10000, npv25: NaN };
+    const nanInvest = { investition: NaN, npv25: 99999 };
+    const valid = { investition: 10000, npv25: 5000 };
+    expect(selectByMarginalReturn([nanNpv, nanInvest, valid])).toBe(valid);
+    expect(selectByMarginalReturn([nanNpv, nanInvest])).toBeUndefined();
+  });
+
+  it("default gate is the documented battery lifetime (12 years)", () => {
+    expect(MAX_MARGINAL_PAYBACK_YEARS).toBe(12);
+  });
+});
+
+// ─── Battery cost & replacement (year-13 deduction, permanent break-even) ───
+describe("batteryCost / batteryReplaceCost", () => {
+  const p = { ...DEFAULT_PRICES, batteryBase: 1000, batteryPerKwh: 500 };
+
+  it("is base + per-kWh, and 0 without a battery", () => {
+    expect(batteryCost(10, p)).toBe(1000 + 10 * 500);
+    expect(batteryCost(0, p)).toBe(0);
+  });
+
+  it("replacement applies the future-price factor 0.7", () => {
+    expect(BATTERY_REPLACE_PRICE_FACTOR).toBe(0.7);
+    expect(batteryReplaceCost(10, p)).toBe(Math.round(6000 * 0.7));
+    expect(batteryReplaceCost(0, p)).toBe(0);
+  });
+});
+
+describe("calc with batteryReplace (Akku-Tausch)", () => {
+  // stromSteigerung 0 keeps the yearly cashflow nearly flat (~1.460 €/a, only
+  // 0,5 % degradation) so the curve shape is easy to reason about by hand.
+  const base = {
+    kwp: 10,
+    kosten: 15000,
+    strompreis: 0.30,
+    eigenverbrauch: 30,
+    einspeisung: 8.0,
+    stromSteigerung: 0,
+    ertragKwp: 1000,
+    monthly: null,
+  };
+
+  it("deducts the replacement exactly once, in year BATTERY_LIFETIME_YEARS", () => {
+    const without = calc(base);
+    const withReplace = calc({ ...base, batteryReplace: 5000 });
+    for (let i = 0; i <= 25; i++) {
+      const diffJ = without.years[i].j - withReplace.years[i].j;
+      if (i === BATTERY_LIFETIME_YEARS) {
+        expect(diffJ).toBeGreaterThanOrEqual(4999); // ±1 € rounding
+        expect(diffJ).toBeLessThanOrEqual(5001);
+      } else {
+        expect(Math.abs(diffJ)).toBeLessThanOrEqual(1);
+      }
+    }
+    // Total is exactly one replacement lower (±rounding).
+    expect(without.total - withReplace.total).toBeGreaterThanOrEqual(4999);
+    expect(without.total - withReplace.total).toBeLessThanOrEqual(5001);
+  });
+
+  it("break-even is the LATER crossing when the battery swap dips the curve below zero again", () => {
+    // Hand-constructed double crossing: ~1.460 €/a on 15.000 € invest crosses
+    // zero in year 11; the 5.000 € swap in year 13 pushes the balance back to
+    // ~-1.700 €, it recovers through years 14 (-300) and 15 (+1.000).
+    const r = calc({ ...base, batteryReplace: 5000 });
+    // First crossing happened before the swap …
+    expect(r.years[11].kum).toBeGreaterThanOrEqual(0);
+    expect(r.years[12].kum).toBeGreaterThanOrEqual(0);
+    // … the swap dips the curve below zero …
+    expect(r.years[BATTERY_LIFETIME_YEARS].kum).toBeLessThan(0);
+    expect(r.years[14].kum).toBeLessThan(0);
+    // … so break-even must be the SECOND crossing, not the first.
+    expect(r.be).toBeDefined();
+    expect(r.be!.i).toBe(15);
+    // And from break-even on, the curve stays non-negative for good.
+    for (let i = r.be!.i; i <= 25; i++) {
+      expect(r.years[i].kum).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it("without the double dip, the naive first crossing IS the break-even (control)", () => {
+    const r = calc(base); // no batteryReplace
+    const firstCrossing = r.years.find((y, idx) => idx > 0 && y.kum >= 0);
+    expect(r.be).toBeDefined();
+    expect(r.be!.i).toBe(firstCrossing!.i);
+    expect(r.be!.i).toBe(11);
   });
 });
 

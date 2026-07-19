@@ -79,8 +79,10 @@ export interface Recommendation {
   alternatives: Alternative[];
 }
 
-// Gewichteter Einspeise-Mischsatz für Anlagen über der 10-kWp-Schwelle
-function effectiveFeedInCtPerKwh(kwp: number, feedIn: FeedInRates): number {
+// Gewichteter Einspeise-Mischsatz für Anlagen über der 10-kWp-Schwelle.
+// Exported for testing only: the shared-base invariant test pins this against
+// calcWeightedFeedIn (calc.ts) — same EEG formula, must never drift apart.
+export function effectiveFeedInCtPerKwh(kwp: number, feedIn: FeedInRates): number {
   if (kwp <= 10) return feedIn.teilUnder10;
   return (10 * feedIn.teilUnder10 + (kwp - 10) * feedIn.teilOver10) / kwp;
 }
