@@ -306,7 +306,7 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [ ] Eurostat-Integration (Haushaltsstrompreise EU)
 - [ ] Spotpreis-Chart (Energy-Charts /price)
 - [ ] Grenzflüsse-Chart (Energy-Charts /cbpf)
-- [ ] EE-Ampel Widget für Startseite/Simulation
+- [x] EE-Ampel als Embed-Widget (`/embed/ee-ampel` + Galerie-Sektion): Ampel grün/gelb/rot nach aktuellem EE-Anteil am Erzeugungsmix (letzter vollständiger Datenpunkt via `trimIncompleteTail`, Ø 24 h via `calcPeriodStats` — dieselbe Datenbasis wie /strommix-deutschland, keine neue Quelle). Schwellen (≥65 % grün, <40 % rot) am typischen EE-Jahresmittel verankert, Ampelfarben fest semantisch. Einbindung auf Startseite/Simulation weiterhin offen
 - [ ] /energie/frankreich (Strommix FR inkl. Kernenergie)
 - [ ] Navigation-Updates (Hub + Header → /energie)
 - [ ] SEO-Metadata für /energie
