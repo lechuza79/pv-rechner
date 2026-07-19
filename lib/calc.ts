@@ -56,10 +56,14 @@ export function calcFuelCostPerYear({ fuelKwh, pricePerKwh, co2PerKwh, years = Y
   return out;
 }
 
-// Legacy wrapper — used by PV-Rechner (25 years, assumes COP 3.5 to derive thermal from electric)
-export function calcFuelCost25(wpKwhElectric: number, fuel: "gas" | "oil"): number {
+// Legacy wrapper — used by PV-Rechner (25 years). Converts the WP's electricity to
+// delivered heat via the JAZ, then to boiler fuel: same heat, gas/oil equivalent.
+// jaz defaults to 3,5, wird aber vom PV-Rechner mit der gebäudebasierten JAZ
+// überschrieben — dieselbe Arbeitszahl, mit der wpKwhElectric hergeleitet wurde,
+// sonst driften Wärmemenge und Vergleich auseinander.
+export function calcFuelCost25(wpKwhElectric: number, fuel: "gas" | "oil", jaz = 3.5): number {
   const f = FUEL[fuel];
-  const thermalKwh = wpKwhElectric * 3.5; // COP 3.5
+  const thermalKwh = wpKwhElectric * jaz;
   const fuelKwh = thermalKwh / f.efficiency;
   return calcFuelCost({ fuelKwh, pricePerKwh: f.price, co2PerKwh: f.co2PerKwh, years: YEARS, inflation: 0.02 });
 }

@@ -51,7 +51,7 @@
 // 2.000 Wp liegen 6,5 % unter unseren — teils die dokumentierte Verdichtungs-
 // Abweichung von +3,5 % im haertesten Clipping-Fall, siehe lib/solar-year.ts).
 
-import { calcHourlyConsumption, type HouseholdProfile } from "./consumption";
+import { calcHourlyConsumption, wpHourlyWatts, type HouseholdProfile } from "./consumption";
 import { SOLAR_YEAR_DE, referenceMonthKwh } from "./solar-year";
 
 // Die PVGIS-Monatswerte des Standorts (/api/pvgis) gelten fuer OPTIMALE Neigung.
@@ -106,6 +106,13 @@ export interface SolarYearResult extends BalkonSimResult {
   consumptionKwh: number;
   /** 12 Monatswerte für den Jahresverlauf. */
   monthly: SolarMonth[];
+  /** Wärmepumpen-Last über das Jahr (kWh) — 0 ohne WP. */
+  wpLoadKwh: number;
+  /** Davon aus PV/Speicher gedeckt (kWh), stundenweise pro-rata der WP an der
+   *  Gesamtlast zugeteilt. wpSelfCoveredKwh / wpLoadKwh ist die saisonal ehrliche
+   *  WP-PV-Deckung — deutlich unter der Jahres-Autarkie, weil die WP-Last im
+   *  dunklen Winterhalbjahr anfällt, wenn die PV kaum deckt. */
+  wpSelfCoveredKwh: number;
 }
 
 /** Stunden-Jahressimulation (12 Monate × Tagestypen × 24 h) mit durchlaufendem
@@ -115,6 +122,11 @@ export interface SolarYearResult extends BalkonSimResult {
 export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
   let annualYield = 0, rawYield = 0, clippedKwh = 0;
   let selfUsedKwh = 0, directUsedKwh = 0, feedInKwh = 0, consumptionKwh = 0;
+  // WP-spezifische Deckung: Wie viel der (winterlastigen) Wärmepumpen-Last aus
+  // PV/Speicher gedeckt wird. Pro-rata der WP an der Stundenlast — nur belastet,
+  // wenn der Haushalt eine WP hat (Balkon: immer 0, kein Overhead).
+  let wpLoadKwh = 0, wpSelfCoveredKwh = 0;
+  const trackWp = input.household.wpActive === true;
   let soc = 0; // Speicher-Ladestand (kWh), läuft über das ganze Jahr durch
   const monthly: SolarMonth[] = [];
 
@@ -175,16 +187,29 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
           mStored += charge;
         }
         // Restbedarf aus dem Speicher decken (Wirkungsgrad beim Entladen).
+        let dischargeCovered = 0;
         if (deficit > 0 && soc > 0) {
           const needed = deficit / input.roundtrip;
           const taken = Math.min(needed, soc);
           soc -= taken;
-          const covered = taken * input.roundtrip;
-          selfUsedKwh += covered;
-          mSelf += covered;
+          dischargeCovered = taken * input.roundtrip;
+          selfUsedKwh += dischargeCovered;
+          mSelf += dischargeCovered;
         }
         feedInKwh += surplus;
         mFeed += surplus;
+
+        // WP-spezifische Deckung: Die in dieser Stunde gedeckte Energie (direkt +
+        // aus dem Speicher) fließt physikalisch an alle gleichzeitigen Verbraucher.
+        // Sie pro-rata nach Last-Anteil aufzuteilen, ist die neutrale Zuordnung —
+        // im Winter ist die Deckung klein UND der WP-Anteil groß, also bekommt die
+        // WP wenig ab; im Sommer ist die WP-Last fast null. So fällt die ehrliche
+        // WP-Deckung als Ergebnis an, statt die Jahres-Autarkie zu missbrauchen.
+        if (trackWp && loadKwh > 0) {
+          const wpLoadHour = wpHourlyWatts(input.household, h, m) / 1000;
+          wpLoadKwh += wpLoadHour;
+          wpSelfCoveredKwh += (direct + dischargeCovered) * (wpLoadHour / loadKwh);
+        }
         }
       }
     }
@@ -209,6 +234,8 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
     feedInKwh: Math.round(feedInKwh),
     consumptionKwh: Math.round(consumptionKwh),
     monthly,
+    wpLoadKwh: Math.round(wpLoadKwh),
+    wpSelfCoveredKwh: Math.round(wpSelfCoveredKwh),
   };
 }
 

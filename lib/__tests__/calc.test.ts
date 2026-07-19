@@ -365,10 +365,22 @@ describe("calcFuelCost", () => {
 
 describe("calcFuelCost25 (legacy PV-Rechner wrapper)", () => {
   it("returns a positive value for typical WP-equivalent input", () => {
-    // 3000 kWh electric WP × COP 3.5 = 10500 kWh thermal → ~10500 / efficiency m³ gas
+    // 3000 kWh electric WP × JAZ 3.5 = 10500 kWh thermal → ~10500 / efficiency m³ gas
     const result = calcFuelCost25(3000, "gas");
     expect(result).toBeGreaterThan(0);
     expect(result).toBeLessThan(100000); // sanity bound
+  });
+
+  it("defaults to JAZ 3.5 for backward compatibility", () => {
+    expect(calcFuelCost25(3000, "gas", 3.5)).toBe(calcFuelCost25(3000, "gas"));
+  });
+
+  it("scales delivered heat (and thus fuel cost) with the JAZ", () => {
+    // Higher JAZ → same electricity delivers more heat → gas equivalent costs more.
+    const low = calcFuelCost25(3000, "gas", 3.0);
+    const high = calcFuelCost25(3000, "gas", 4.0);
+    expect(high).toBeGreaterThan(low);
+    expect(high / low).toBeCloseTo(4.0 / 3.0, 2);
   });
 });
 
