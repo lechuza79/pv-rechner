@@ -7,9 +7,11 @@ import { supabase } from "../../../../lib/supabase-server";
 // are. No secrets, no writes — safe to poll.
 //
 // status:
-//   "ok"       – latest scrape healthy (≥2 agreeing sources) and fresh
-//   "degraded" – ran, but single-source / kept-last-value, OR data is stale
+//   "ok"       – latest scrape healthy (≥1 plausible source per value) and fresh
+//   "degraded" – kept-last-value / a value out of tolerance / data is stale
 //   "failed"   – the latest stored row is a scrape error, or nothing readable
+// Note: a single plausible battery source counts as healthy since 2026-07-18
+// (energie-experten.org blocks the Vercel IP; see scrape/route.ts for rationale).
 //
 // The watcher escalates to a human only when it cannot restore "ok" itself.
 
@@ -19,6 +21,14 @@ function daysSince(isoDate: string): number {
   const then = new Date(isoDate + "T00:00:00Z").getTime();
   return Math.floor((Date.now() - then) / 86_400_000);
 }
+
+// Read the live DB on every request. Without this, Next.js statically caches
+// this argument-less GET at build time and freezes the response until the next
+// deploy — the watcher/traffic light would then poll a deploy-time snapshot, not
+// the current pipeline state. (Diagnosed 2026-07-18: DB was ok, health served a
+// frozen DEGRADED snapshot from the deploy moment. The no-store header below only
+// governs the CDN/browser, not Next.js's route cache — this const does.)
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   if (!supabase) {

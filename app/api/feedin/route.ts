@@ -7,6 +7,11 @@ const TTL = 60 * 60 * 1000; // 1 hour
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
 
+// Run on every request so the in-memory cache + CDN header below actually govern
+// freshness. Without this, Next.js statically caches this argument-less GET at
+// build time and never runs the handler again until the next deploy. (2026-07-18.)
+export const dynamic = "force-dynamic";
+
 // ─── GET: Current feed-in rates (public) ──────────────────────────────────────
 
 export async function GET() {

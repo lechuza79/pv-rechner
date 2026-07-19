@@ -88,12 +88,35 @@ export interface BalkonSimResult {
   feedInKwh: number;
 }
 
-/** Simuliert ein volles Jahr stündlich (12 Monate × Tage × 24 h).
- *  Der Speicher-Ladestand läuft über die Tage durch. */
-export function simulateBalkonYear(input: BalkonSimInput): BalkonSimResult {
+/** Ein Monat der Jahressimulation — alles in kWh. Basis für den Jahresverlauf.
+ *  Produktions-Seite: production = direct + stored + feedIn (Wohin geht der Ertrag?).
+ *  Verbrauchs-Seite:  consumption = selfUsed + gridDraw   (Woher kommt der Strom?). */
+export interface SolarMonth {
+  production: number;   // ins Haus gelieferter Ertrag (nach Wechselrichter)
+  consumption: number;  // Gesamtverbrauch des Monats
+  direct: number;       // Ertrag direkt verbraucht (ohne Umweg über den Speicher)
+  stored: number;       // Ertrag in den Speicher geladen (deckt später Verbrauch)
+  feedIn: number;       // Überschuss ins Netz
+  selfUsed: number;     // Verbrauch aus Sonne + Speicher gedeckt (direct + entladen)
+  gridDraw: number;     // aus dem Netz bezogen (= consumption − selfUsed)
+}
+
+export interface SolarYearResult extends BalkonSimResult {
+  /** Gesamtverbrauch über das Jahr (kWh) — die Simulationsgrundlage der Last. */
+  consumptionKwh: number;
+  /** 12 Monatswerte für den Jahresverlauf. */
+  monthly: SolarMonth[];
+}
+
+/** Stunden-Jahressimulation (12 Monate × Tagestypen × 24 h) mit durchlaufendem
+ *  Speicher-Ladestand. Kern für ALLE Rechner (Balkon + Dach-PV) — Eigenverbrauch,
+ *  Autarkie und Speicher-Nutzen fallen als Ergebnis an, nicht als Annahme.
+ *  Liefert zusätzlich die Monatsaufschlüsselung für den Jahresverlauf. */
+export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
   let annualYield = 0, rawYield = 0, clippedKwh = 0;
-  let selfUsedKwh = 0, directUsedKwh = 0, feedInKwh = 0;
-  let soc = 0; // Speicher-Ladestand (kWh)
+  let selfUsedKwh = 0, directUsedKwh = 0, feedInKwh = 0, consumptionKwh = 0;
+  let soc = 0; // Speicher-Ladestand (kWh), läuft über das ganze Jahr durch
+  const monthly: SolarMonth[] = [];
 
   const months = SOLAR_YEAR_DE[input.orientation] ?? SOLAR_YEAR_DE[LOCATION_REFERENCE];
 
@@ -108,6 +131,8 @@ export function simulateBalkonYear(input: BalkonSimInput): BalkonSimResult {
     const locationScale = refOptimal > 0 ? input.monthlyYieldPerKwp[m] / refOptimal : 0;
     const scale = locationScale * input.moduleKwp;
 
+    let mProd = 0, mCons = 0, mSelf = 0, mFeed = 0, mDirect = 0, mStored = 0;
+
     for (const dayType of months[m]) {
       for (let d = 0; d < dayType.days; d++) {
         for (let h = 0; h < 24; h++) {
@@ -117,13 +142,18 @@ export function simulateBalkonYear(input: BalkonSimInput): BalkonSimResult {
         rawYield += dcKwh;
         annualYield += acKwh;
         clippedKwh += dcKwh - acKwh;
+        mProd += acKwh;
 
         const loadKwh = calcHourlyConsumption(input.household, h, m) / 1000;
+        consumptionKwh += loadKwh;
+        mCons += loadKwh;
 
         // Direktverbrauch zuerst — er ist immer verlustfrei.
         const direct = Math.min(acKwh, loadKwh);
         directUsedKwh += direct;
         selfUsedKwh += direct;
+        mSelf += direct;
+        mDirect += direct;
         let surplus = acKwh - direct;
         const deficit = loadKwh - direct;
 
@@ -135,24 +165,39 @@ export function simulateBalkonYear(input: BalkonSimInput): BalkonSimResult {
         // Vormittags-Ueberschuss laengst voll, bevor mittags ueberhaupt gekappt wird.
         // Messbar wird es erst ab ~6 kWh (+46 kWh/a), und so grosse Speicher gibt es
         // am Balkon nicht. Deshalb bleibt die einfachere AC-Kopplung stehen; die HTW
-        // modelliert an dieser Stelle ebenso.
+        // modelliert an dieser Stelle ebenso. (Dach-PV nutzt dieselbe Kopplung — der
+        // Fehler ist bei Dach-Wechselrichtern noch kleiner, weil kaum geclippt wird.)
         // Überschuss in den Speicher, soweit Platz ist.
         if (surplus > 0 && input.batteryKwh > 0) {
           const charge = Math.min(surplus, input.batteryKwh - soc);
           soc += charge;
           surplus -= charge;
+          mStored += charge;
         }
         // Restbedarf aus dem Speicher decken (Wirkungsgrad beim Entladen).
         if (deficit > 0 && soc > 0) {
           const needed = deficit / input.roundtrip;
           const taken = Math.min(needed, soc);
           soc -= taken;
-          selfUsedKwh += taken * input.roundtrip;
+          const covered = taken * input.roundtrip;
+          selfUsedKwh += covered;
+          mSelf += covered;
         }
         feedInKwh += surplus;
+        mFeed += surplus;
         }
       }
     }
+
+    monthly.push({
+      production: Math.round(mProd),
+      consumption: Math.round(mCons),
+      direct: Math.round(mDirect),
+      stored: Math.round(mStored),
+      feedIn: Math.round(mFeed),
+      selfUsed: Math.round(mSelf),
+      gridDraw: Math.round(mCons - mSelf),
+    });
   }
 
   return {
@@ -162,7 +207,15 @@ export function simulateBalkonYear(input: BalkonSimInput): BalkonSimResult {
     selfUsedKwh: Math.round(selfUsedKwh),
     directUsedKwh: Math.round(directUsedKwh),
     feedInKwh: Math.round(feedInKwh),
+    consumptionKwh: Math.round(consumptionKwh),
+    monthly,
   };
+}
+
+/** Balkon-Wrapper: identische Berechnung wie bisher, nur die Balkon-Felder. */
+export function simulateBalkonYear(input: BalkonSimInput): BalkonSimResult {
+  const { annualYield, rawYield, clippedKwh, selfUsedKwh, directUsedKwh, feedInKwh } = simulateSolarYear(input);
+  return { annualYield, rawYield, clippedKwh, selfUsedKwh, directUsedKwh, feedInKwh };
 }
 
 /** Fallback-Monatsprofil, wenn keine PLZ gesetzt ist.

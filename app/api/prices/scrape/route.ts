@@ -230,7 +230,16 @@ async function resolveBatteryPrice(sapAllIn: { kwh: number; total: number } | nu
     return { value10kWh: null, status: "FAILED: no source delivered a plausible battery price", healthy: false, samples };
   }
   if (valid.length === 1) {
-    return { value10kWh: valid[0].value, status: `DEGRADED: single source (${valid[0].source}=${valid[0].value} €)`, healthy: false, samples };
+    // Single plausible source = HEALTHY (decision 2026-07-18). The second source
+    // (energie-experten.org) sits behind Cloudflare and blocks the Vercel server
+    // IP — permanently, not fixable by a parser change and not worth faking a
+    // browser UA for. The delivered price is already gated to the plausible
+    // 10-kWh window here AND to the max-deviation-vs-last check downstream, so a
+    // single good source is trustworthy enough to ship green. If that lone source
+    // dies or turns implausible → valid.length hits 0 → FAILED → the weekly
+    // report mail fires. Cross-check redundancy is given up knowingly; the alert
+    // path (not a second scrape) is the safety net now.
+    return { value10kWh: valid[0].value, status: `ok: single source (${valid[0].source}=${valid[0].value} €; Zweitquelle blockt Server-IP)`, healthy: true, samples };
   }
   // ≥2 sources: drop outliers vs. median, average the rest.
   const vals = valid.map(v => v.value).sort((a, b) => a - b);

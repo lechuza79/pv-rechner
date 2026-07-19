@@ -661,22 +661,20 @@ export default function Empfehlung() {
                     <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-primary') }}>{rec.reasoning.maxRoofKwp} kWp</div>
                   </div>
                   <div>
+                    <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Autarkie</div>
+                    <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-positive') }}>{rec.reasoning.autarkie}%</div>
+                  </div>
+                  <div>
                     <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Eigenverbrauch</div>
                     <div style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary') }}>{rec.reasoning.eigenverbrauch}%</div>
                   </div>
-                  {rec.speicherKwh > 0 && (
-                    <div>
-                      <div style={{ color: v('--color-text-secondary'), fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em" }}>Ohne Speicher</div>
-                      <div style={{ fontFamily: v('--font-mono'), fontWeight: 600, color: v('--color-text-secondary') }}>{rec.reasoning.eigenverbrauchOhneSpeicher}%</div>
-                    </div>
-                  )}
                 </div>
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, lineHeight: 1.6 }}>
                   {rec.kwp < rec.reasoning.maxRoofKwp
                     ? `Diese Konfiguration bringt über 25 Jahre die höchste Rendite — größere Anlagen senken den Eigenverbrauchsanteil zu stark.`
                     : `Die Empfehlung nutzt deine Dachfläche maximal aus (${rec.reasoning.maxRoofKwp} kWp).`
                   }
-                  {rec.speicherKwh > 0 && ` Der ${rec.speicherKwh.toLocaleString("de-DE")} kWh Speicher steigert den Eigenverbrauch von ${rec.reasoning.eigenverbrauchOhneSpeicher}% auf ${rec.reasoning.eigenverbrauch}%.`}
+                  {rec.speicherKwh > 0 && ` Der ${rec.speicherKwh.toLocaleString("de-DE")} kWh Speicher hebt deine Autarkie von ${rec.reasoning.autarkieOhneSpeicher}% auf ${rec.reasoning.autarkie}% (Eigenverbrauch ${rec.reasoning.eigenverbrauchOhneSpeicher}% → ${rec.reasoning.eigenverbrauch}%).`}
                 </div>
                 {wp !== "nein" && (
                   <div style={{ fontSize: 12, color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, marginTop: 10, lineHeight: 1.6 }}>
