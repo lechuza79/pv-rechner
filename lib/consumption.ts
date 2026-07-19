@@ -89,6 +89,8 @@ export interface HouseholdProfile {
   klimaActive?: boolean;    // Air conditioning (cooling only) active
   klimaM2?: number;         // Living area for AC sizing (m²)
   wpAnnualKwh?: number;     // WP electricity (kWh/a) from building data — falls back to WP_ANNUAL_KWH
+  eaAnnualKwh?: number;     // E-car electricity (kWh/a) — falls back to EA_DEFAULT_KM × EA_KWH_PER_KM
+  klimaAnnualKwh?: number;  // AC cooling electricity (kWh/a) — falls back to living-area estimate
 }
 
 // ─── Hourly load profiles ───────────────────────────────────────────────────
@@ -205,17 +207,21 @@ export function calcHourlyConsumption(household: HouseholdProfile | null, hour: 
     totalWatts += wpDailyKwh * (WP_SHAPE[hour] || 1 / 24) * 1000;
   }
 
-  // 3. E-car: EA_DEFAULT_KM * EA_KWH_PER_KM per year, no strong seasonal pattern
+  // 3. E-car: actual annual kWh if given (PV-Rechner), else EA_DEFAULT_KM ×
+  //    EA_KWH_PER_KM. No strong seasonal pattern.
   if (household.eaActive) {
-    const eaDailyKwh = calcEaAnnual(EA_DEFAULT_KM) / 365;
+    const eaAnnual = household.eaAnnualKwh ?? calcEaAnnual(EA_DEFAULT_KM);
+    const eaDailyKwh = eaAnnual / 365;
     totalWatts += eaDailyKwh * (EA_SHAPE[hour] || 1 / 24) * 1000;
   }
 
-  // 4. Air conditioning: cooling kWh from living area, summer + afternoon peak.
-  // Nullish coalescing (not ||) on AC_MONTHLY: winter months are a legit 0 and
-  // must stay 0 — a falsy-|| fallback would leak cooling into January.
+  // 4. Air conditioning: actual cooling kWh if given, else estimate from living
+  // area; summer + afternoon peak. Nullish coalescing (not ||) on AC_MONTHLY:
+  // winter months are a legit 0 and must stay 0 — a falsy-|| fallback would leak
+  // cooling into January.
   if (household.klimaActive) {
-    const klimaDailyKwh = (calcKlimaAnnual(household.klimaM2 ?? KLIMA_DEFAULT_M2) / 365) * (AC_MONTHLY[month] ?? 1.0);
+    const klimaAnnual = household.klimaAnnualKwh ?? calcKlimaAnnual(household.klimaM2 ?? KLIMA_DEFAULT_M2);
+    const klimaDailyKwh = (klimaAnnual / 365) * (AC_MONTHLY[month] ?? 1.0);
     totalWatts += klimaDailyKwh * (AC_SHAPE[hour] ?? 1 / 24) * 1000;
   }
 

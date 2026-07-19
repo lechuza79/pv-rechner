@@ -1,31 +1,35 @@
 "use client";
+import { useState } from "react";
 import { v } from "../../../../lib/theme";
 import { YEARS, FUEL } from "../../../../lib/constants";
 import { calcFuelCost25, calcWpGridCost25 } from "../../../../lib/calc";
-import { EA_KWH_PER_KM } from "../../../../lib/consumption";
+import EnergyFlowModal, { type ExampleDayEntry } from "../../../../components/EnergyFlowModal";
+import type { SolarMonth } from "../../../../lib/balkon-sim";
 
 interface ResultStatsProps {
   /** Rendite (25-J-Ende) des gewählten Szenarios — die Szenario-Wahl sitzt oben. */
   total: number;
   kosten: number;
   wp: string;
-  ea: string;
-  eaKm: number;
   /** Building-based WP annual electricity (kWh) — same value the rest of the
    *  result page shows, NOT the old 3.500-kWh flat rate. */
   wpKwh: number;
   effEv: number;
   autarkie: number;
   jahresertrag: number;
-  baseKwh: number;
+  gesamtVerbrauch: number;
+  speicherKwh: number;
+  monthly: SolarMonth[];
+  exampleDays: ExampleDayEntry[];
   oStrom: number;
   fuelType: "gas" | "oil";
   setFuelType: (v: "gas" | "oil") => void;
 }
 
 export default function ResultStats({
-  total, kosten, wp, ea, eaKm, wpKwh, effEv, autarkie, jahresertrag, baseKwh, oStrom, fuelType, setFuelType,
+  total, kosten, wp, wpKwh, effEv, autarkie, jahresertrag, gesamtVerbrauch, speicherKwh, monthly, exampleDays, oStrom, fuelType, setFuelType,
 }: ResultStatsProps) {
+  const [flowOpen, setFlowOpen] = useState(false);
   return (
     <>
       {/* Energie-Unabhängigkeit: Autarkie und Eigenverbrauch als Paar — die zwei
@@ -45,9 +49,31 @@ export default function ResultStats({
         </div>
         <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5, borderTop: `1px solid ${v('--color-border-muted')}`, paddingTop: 8 }}>
           <strong style={{ color: v('--color-text-secondary') }}>Autarkie</strong> misst deine Unabhängigkeit vom Netz,{" "}
-          <strong style={{ color: v('--color-text-secondary') }}>Eigenverbrauch</strong> wie gut die Anlage zu deinem Verbrauch passt. Ein Speicher hebt beide.
+          <strong style={{ color: v('--color-text-secondary') }}>Eigenverbrauch</strong> wie gut die Anlage zu deinem Verbrauch passt. Ein Speicher hebt beide.{" "}
+          <button
+            onClick={() => setFlowOpen(true)}
+            style={{
+              border: "none", background: "transparent", padding: 0, cursor: "pointer",
+              color: v('--color-accent'), fontWeight: 600, fontSize: 11, fontFamily: "inherit",
+              textDecoration: "underline", textUnderlineOffset: 2,
+            }}
+          >
+            So verteilt sich dein Strom
+          </button>
         </div>
       </div>
+
+      <EnergyFlowModal
+        open={flowOpen}
+        onClose={() => setFlowOpen(false)}
+        jahresertrag={jahresertrag}
+        gesamtVerbrauch={gesamtVerbrauch}
+        effEv={effEv}
+        autarkie={autarkie}
+        speicherKwh={speicherKwh}
+        monthly={monthly}
+        exampleDays={exampleDays}
+      />
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
         <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", border: `1px solid ${v('--color-border')}` }}>
@@ -65,7 +91,11 @@ export default function ResultStats({
       </div>
 
       {wp !== "nein" && (() => {
-        const autarky = Math.min(effEv / 100 * jahresertrag / (baseKwh + wpKwh + (ea !== "nein" ? Math.round(eaKm * EA_KWH_PER_KM) : 0)), 1);
+        // WP-Deckung aus dem gemeinsamen Autarkiegrad (HTW-Kennfeld) — nicht neu
+        // aus dem Eigenverbrauch zurückrechnen (das lief bei großen Anlagen gegen
+        // 100 % und hat die WP-Ersparnis überzeichnet). autarkie kommt bereits aus
+        // calcAutarkie und ist physikalisch auf ~90 % gedeckelt.
+        const autarky = Math.min(autarkie / 100, 1);
         const fuelCost = calcFuelCost25(wpKwh, fuelType);
         const wpGridCost = calcWpGridCost25(wpKwh, autarky, oStrom, 0.03);
         const netSaving = fuelCost - wpGridCost;

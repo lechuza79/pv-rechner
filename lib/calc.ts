@@ -1,4 +1,4 @@
-import { YEAR, YEARS, FEED_IN_YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN, NUTZUNG } from "./constants";
+import { YEAR, YEARS, FEED_IN_YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN, NUTZUNG, AUTARKY_X, AUTARKY_Y, AUTARKY_GRID, AUTARKY_HTW_YIELD } from "./constants";
 import { calcExtraConsumption, KLIMA_DEFAULT_M2, WP_ANNUAL_KWH } from "./consumption";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { co2PriceForCalendarYear } from "./co2-config";
@@ -199,6 +199,46 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
   const evMax = gesamt / jahresertrag;
   const ev = Math.round(Math.min(evBase + evBoost, evMax, 0.90) * 100);
   return Math.max(10, Math.min(ev, 90));
+}
+
+// ─── Autarkiegrad-REFERENZ (HTW-Kennfeld) ────────────────────────────────────
+// HINWEIS: Der Rechner nutzt für die Autarkie inzwischen die eigene Stunden-
+// Jahressimulation (lib/pv-sim.ts → simulatePvYear) — die bildet Standort,
+// Wärmepumpe und E-Auto mit ab, was ein Durchschnitts-Kennfeld nicht kann.
+// calcAutarkie bleibt als VALIDIERUNGS-REFERENZ im Code: das HTW-Autarkie-Kennfeld
+// (AUTARKY_GRID) ist HTWs eigenes 1-Min-Simulationsergebnis für einen
+// Standardhaushalt (~40 % Tagverbrauch). Der Test lib/__tests__/pv-sim.test.ts
+// nagelt fest, dass die Simulation dieses Kennfeld bei gleichem Tagverbrauch auf
+// ±3 pp trifft — ohne diese Referenz im Repo bräuchte man dafür externe Dateien.
+//
+// Anteil des Jahresverbrauchs, der aus Anlage + Speicher gedeckt wird. NICHT aus
+// dem Eigenverbrauch zurückrechnen (Jahresbilanz → fälschlich 100 % bei großen
+// Anlagen). Sättigt physikalisch bei ~90 %. Achsen:
+//   x = kWp pro 1000 kWh Verbrauch, auf den Standort-Ertrag skaliert (HTW-Ref
+//       1024 kWh/kWp). y = Speicher-kWh pro 1000 kWh Verbrauch.
+function interpAxis(grid: number[][], xi0: number, xi1: number, tx: number, yi: number): number {
+  const a = grid[yi][xi0], b = grid[yi][xi1];
+  return a + (b - a) * tx;
+}
+
+export function calcAutarkie({ kwp, speicherKwh, gesamtVerbrauch, ertragKwp }: { kwp: number; speicherKwh: number; gesamtVerbrauch: number; ertragKwp: number }): number {
+  if (gesamtVerbrauch <= 0 || kwp <= 0) return 0;
+  // x auf tatsächlichen Ertrag normieren: HTW rechnet mit 1024 kWh/kWp, unser
+  // Standort liefert ertragKwp — dieselbe erzeugte Energie, andere kWp-Zahl.
+  const yieldScale = ertragKwp / AUTARKY_HTW_YIELD;
+  const x = (kwp * yieldScale) / (gesamtVerbrauch / 1000);
+  const y = speicherKwh / (gesamtVerbrauch / 1000);
+  // Bilineare Interpolation im geklemmten Kennfeld
+  const cx = Math.min(Math.max(x, AUTARKY_X[0]), AUTARKY_X[AUTARKY_X.length - 1]);
+  const cy = Math.min(Math.max(y, AUTARKY_Y[0]), AUTARKY_Y[AUTARKY_Y.length - 1]);
+  let xi = 0; while (xi < AUTARKY_X.length - 2 && cx > AUTARKY_X[xi + 1]) xi++;
+  let yi = 0; while (yi < AUTARKY_Y.length - 2 && cy > AUTARKY_Y[yi + 1]) yi++;
+  const tx = (cx - AUTARKY_X[xi]) / (AUTARKY_X[xi + 1] - AUTARKY_X[xi]);
+  const ty = (cy - AUTARKY_Y[yi]) / (AUTARKY_Y[yi + 1] - AUTARKY_Y[yi]);
+  const top = interpAxis(AUTARKY_GRID, xi, xi + 1, tx, yi);
+  const bot = interpAxis(AUTARKY_GRID, xi, xi + 1, tx, yi + 1);
+  const frac = top + (bot - top) * ty;
+  return Math.round(frac * 100);
 }
 
 // ─── Amortisation (25 Jahre, monatlich wenn PVGIS-Profil vorhanden) ─────────

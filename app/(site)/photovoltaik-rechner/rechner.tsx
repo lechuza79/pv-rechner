@@ -6,13 +6,14 @@ import { useSharedPlz, readLocation } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
 import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
+import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
 import GlossaryTerm from "../../../components/GlossaryTerm";
-import { calcExtraConsumption, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
+import { calcExtraConsumption, calcEaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "../../../lib/consumption";
 import { calcAircon } from "../../../lib/aircon";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { useCoolingDegree } from "../../../lib/useCoolingDegree";
@@ -328,11 +329,37 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const vollDisabled = wp !== "nein" || ea !== "nein";
   const effEinspeisungModus = vollDisabled && einspeisungModus === "voll" ? "teil" : einspeisungModus;
   const jahresertrag = kwp * oErtrag;
-  // Autarkiegrad: welcher Anteil des Jahresverbrauchs aus der eigenen Anlage
-  // gedeckt wird. Selbstgenutzter Solarstrom = Eigenverbrauchsquote × Ertrag,
-  // physikalisch gedeckelt auf den Gesamtverbrauch (mehr als 100 % geht nicht).
-  const selbstgenutzt = Math.min(effEv / 100 * jahresertrag, gesamtVerbrauch);
-  const autarkie = gesamtVerbrauch > 0 ? Math.round(selbstgenutzt / gesamtVerbrauch * 100) : 0;
+  // Lastprofil für die Stundensimulation — dieselben Verbrauchswerte wie oben,
+  // nur als Stundenkurve (BDEW H0 + WP-Winterprofil + E-Auto + Klima).
+  const household = useMemo<HouseholdProfile>(() => ({
+    baseKwh: grundverbrauch,
+    tagQuote: NUTZUNG[nutzung].tagQuote,
+    wpActive: wp !== "nein",
+    eaActive: ea !== "nein",
+    klimaActive: klima !== "nein",
+    klimaM2: KLIMA_DEFAULT_M2,
+    wpAnnualKwh: wpKwh ?? undefined,
+    eaAnnualKwh: ea !== "nein" ? calcEaAnnual(eaKm) : undefined,
+    klimaAnnualKwh: effKlimaKwh ?? undefined,
+  }), [grundverbrauch, nutzung, wp, ea, klima, wpKwh, eaKm, effKlimaKwh]);
+  // Autarkiegrad + Jahresverlauf aus der Stunden-Jahressimulation (lib/pv-sim.ts).
+  // Zeitaufgelöst statt aus dem Eigenverbrauch zurückgerechnet: bildet den Winter-
+  // und Tag/Nacht-Mismatch direkt ab (keine 100-%-Fantasie bei großen Anlagen),
+  // rechnet Wärmepumpe/E-Auto/Standort korrekt mit und liefert die Monatsdaten fürs
+  // Modal. Gegen die HTW-Simulation validiert (±1 pp bei gleichem Tagverbrauch).
+  const pvSim = useMemo(
+    () => simulatePvYear({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: oErtrag, household }),
+    [kwp, spKwh, monthlyProfile, oErtrag, household],
+  );
+  const autarkie = pvSim.autarky;
+  // Beispieltage (24-h-Detail) für das Modal — sonniger/trüber Wintertag + Sommertag.
+  const exampleDays = useMemo(
+    () => EXAMPLE_DAYS.map(d => ({
+      key: d.key, label: d.label,
+      day: simulateExampleDay({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: oErtrag, household }, d.month, d.dayType),
+    })),
+    [kwp, spKwh, monthlyProfile, oErtrag, household],
+  );
 
   // Feed-in: weighted EEG rate based on system size + effective mode
   const autoEinsp = effEinspeisungModus === "voll"
@@ -1019,7 +1046,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             
             <ResultStats
               total={sel.data.total} kosten={kosten}
-              wp={wp} ea={ea} eaKm={eaKm} wpKwh={wpKwh ?? 0} effEv={effEv} autarkie={autarkie} jahresertrag={jahresertrag} baseKwh={grundverbrauch}
+              wp={wp} wpKwh={wpKwh ?? 0} effEv={effEv} autarkie={autarkie}
+              jahresertrag={jahresertrag} gesamtVerbrauch={gesamtVerbrauch} speicherKwh={spKwh} monthly={pvSim.monthly} exampleDays={exampleDays}
               oStrom={oStrom} fuelType={fuelType} setFuelType={setFuelType}
             />
 
