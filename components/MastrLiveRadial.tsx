@@ -149,11 +149,31 @@ export function MastrLiveRadial({
   helpOverlay = null,
   actions = null,
   onValue,
+  scale = 1,
+  unit = "GW",
+  titleOverride,
+  injected = null,
+  highlightTs,
+  bare = false,
 }: {
   energietraeger: Energietraeger;
   installedKwp: number | null;
   traegerNav?: TraegerNav;
   size?: SizeVariant;
+  /** Skaliert den angezeigten Mittelwert (Standard 1 = national). Balken (relativ) bleiben. */
+  scale?: number;
+  /** Einheit des Mittelwerts: "GW" national, "MW" für eine einzelne Gemeinde. */
+  unit?: "GW" | "MW";
+  /** Eigene Stundenwerte (ts + mw) statt des bundesweiten Live-Feeds — für die
+   *  standortgenaue Gemeinde-Simulation. Wenn gesetzt, wird nicht gefetcht. */
+  injected?: { ts: string; mw: number }[] | null;
+  /** Welcher Balken „jetzt" ist (Mitte + Highlight). Standard: der letzte. */
+  highlightTs?: string;
+  /** Ersetzt die Kopfzeile „Letzte 24 Stunden" (z. B. „Höchberg · simuliert"). */
+  titleOverride?: string;
+  /** Chromeless: kein eigener Rahmen/Kopf/Branding-Footer — für die Einbettung
+   *  in eine geteilte Widget-Hülle (Gemeinde-Seite), die den Rahmen zeichnet. */
+  bare?: boolean;
   /** Renders a small "Powered by Solar-Check.io" footer (for embeds). */
   branding?: boolean;
   /** Licence-required data-source credit(s) — always shown when set, not gated
@@ -188,6 +208,11 @@ export function MastrLiveRadial({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Injizierte lokale Daten → kein bundesweiter Fetch.
+    if (injected) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     const load = () => {
       setLoading(true);
@@ -233,6 +258,12 @@ export function MastrLiveRadial({
   // Abgeleitete bars + Skala — synchron pro Render, wechselt sofort beim
   // Energieträger-Tausch ohne Loading-Flash.
   const { bars, scaleMaxMw } = useMemo(() => {
+    // Injizierte lokale Stundenwerte (Gemeinde-Simulation): 1:1 als Balken, keine
+    // Carrier-Extraktion/Trimmung (die ist national-feed-spezifisch).
+    if (injected) {
+      const seq: Bar[] = injected.map((p) => ({ ts: p.ts, mw: p.mw, solarMissing: false }));
+      return { bars: seq, scaleMaxMw: Math.max(1, ...seq.map((b) => b.mw)) };
+    }
     // Cut the latency tail where weather-dependent carriers (solar/wind) aren't
     // reported yet — otherwise "gesamt" would omit them and read smaller than a
     // single sub-carrier. The generation endpoint already trims this, but we
@@ -263,13 +294,15 @@ export function MastrLiveRadial({
       seq.push({ ts: p.ts, mw, solarMissing });
     }
     return { bars: seq, scaleMaxMw: Math.max(1, maxGesamtMw) };
-  }, [rawPoints, energietraeger]);
+  }, [rawPoints, energietraeger, injected]);
   // The headline value = the newest *complete* reading. For the renewables total
   // that skips the still-incomplete tail (solar not reported yet), so the big
   // number never silently drops. Those paler tail bars stay in the ring and only
   // reveal "ohne Solar" when hovered. Single carriers use their newest bar.
   const latest: Bar | null = (() => {
     if (!bars.length) return null;
+    // Injizierte Daten: „jetzt" = die per highlightTs markierte Stunde.
+    if (injected) return bars.find((b) => b.ts === highlightTs) ?? bars[bars.length - 1];
     if (energietraeger === "gesamt") {
       for (let i = bars.length - 1; i >= 0; i--) {
         if (!bars[i].solarMissing) return bars[i];
@@ -327,6 +360,8 @@ export function MastrLiveRadial({
   // the value text swaps in place. The number itself is animated via shownMw.
   const display = hover ?? latest;
   const animatedGW = shownMw / 1000;
+  // Mittelwert skaliert + in der gewählten Einheit (national GW, Gemeinde MW).
+  const centerValue = (unit === "MW" ? shownMw : animatedGW) * scale;
   const displayPct =
     installedKwp && installedKwp > 0 ? ((display.mw * 1000) / installedKwp) * 100 : null;
   const displayDate = new Date(display.ts);
@@ -382,17 +417,22 @@ export function MastrLiveRadial({
   }));
 
   const isFlipped = helpOverlay != null;
-  const cardStyle: React.CSSProperties = {
-    background: v("--color-bg"),
-    border: `1px solid ${v("--color-border")}`,
-    // Embed widgets theme the corner radius via --widget-border-radius; on the
-    // main site that token is undefined, so it falls back to the original 12px.
-    borderRadius: "var(--widget-border-radius, 12px)",
-    padding: isCompact ? "12px 20px 14px" : "16px 20px 24px",
-    // Compact = Box passt sich dem Inhalt an (hug content); Default
-    // bleibt block-Level (volle Container-Breite).
-    display: isCompact ? "inline-block" : "block",
-  };
+  // Bare = chromeless: no own border/padding/title/branding-footer. Used when the
+  // radial is dropped INTO a shared widget shell (Gemeinde-Seite), so the shell —
+  // not the radial — draws the single frame + title + source/branding footer.
+  const cardStyle: React.CSSProperties = bare
+    ? { background: "transparent", border: "none", borderRadius: 0, padding: 0, display: "block" }
+    : {
+        background: v("--color-bg"),
+        border: `1px solid ${v("--color-border")}`,
+        // Embed widgets theme the corner radius via --widget-border-radius; on the
+        // main site that token is undefined, so it falls back to the original 12px.
+        borderRadius: "var(--widget-border-radius, 12px)",
+        padding: isCompact ? "12px 20px 14px" : "16px 20px 24px",
+        // Compact = Box passt sich dem Inhalt an (hug content); Default
+        // bleibt block-Level (volle Container-Breite).
+        display: isCompact ? "inline-block" : "block",
+      };
 
   return (
     <div
@@ -421,7 +461,7 @@ export function MastrLiveRadial({
           }}
         >
           <div style={cardStyle}>
-      {traegerNav ? (
+      {!bare && (traegerNav ? (
         <div
           style={{
             position: "relative",
@@ -541,7 +581,7 @@ export function MastrLiveRadial({
               background: v("--color-highlight"),
             }}
           />
-          Letzte 24 Stunden
+          {titleOverride ?? "Letzte 24 Stunden"}
           <span
             style={{
               textTransform: "none",
@@ -556,7 +596,7 @@ export function MastrLiveRadial({
             )}
           </span>
         </div>
-      )}
+      ))}
 
       <div style={{ position: "relative", width: SIZE, maxWidth: "100%", margin: "0 auto" }}>
         <svg
@@ -770,7 +810,7 @@ export function MastrLiveRadial({
               lineHeight: 1,
             }}
           >
-            {animatedGW.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+            {centerValue.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
           </div>
           <div
             style={{
@@ -780,7 +820,7 @@ export function MastrLiveRadial({
               letterSpacing: 0.5,
             }}
           >
-            GW
+            {unit}
           </div>
         </div>
       </div>
@@ -831,7 +871,7 @@ export function MastrLiveRadial({
         </div>
       )}
 
-      {dataSource && (
+      {!bare && dataSource && (
         <div
           style={{
             marginTop: 10,
@@ -845,7 +885,7 @@ export function MastrLiveRadial({
         </div>
       )}
 
-      {(branding || actions || (isCompact && traegerNav?.after)) && (
+      {!bare && (branding || actions || (isCompact && traegerNav?.after)) && (
         <div
           style={{
             marginTop: dataSource ? 6 : 10,

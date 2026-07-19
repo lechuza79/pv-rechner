@@ -45,6 +45,8 @@ type ChoroplethResp = {
 export type MastrHeroSectionProps = {
   /** Initial selected region. Use "de" for the whole country. */
   initialRegion?: string;
+  /** Initial energy carrier. Defaults to "gesamt"; PV-focused pages pass "solar". */
+  initialEnergietraeger?: Energietraeger;
   /** Called whenever the selected region changes (for URL sync, analytics, etc.) */
   onRegionChange?: (regionAgs: string | undefined) => void;
 };
@@ -52,8 +54,8 @@ export type MastrHeroSectionProps = {
 const CHOROPLETH_DEFAULT: ChoroplethResp = { source: "", data_as_of: "", data: [] };
 const SUMMARY_DEFAULT: RegionSummary | null = null;
 
-export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSectionProps) {
-  const [energietraeger, setEnergietraeger] = useState<Energietraeger>("gesamt");
+export function MastrHeroSection({ initialRegion, initialEnergietraeger = "gesamt", onRegionChange }: MastrHeroSectionProps) {
+  const [energietraeger, setEnergietraeger] = useState<Energietraeger>(initialEnergietraeger);
   const [segment, setSegment] = useState<SegmentFilter>("alle");
   const [selectedAgs, setSelectedAgs] = useState<string | undefined>(
     initialRegion && initialRegion !== "de" ? initialRegion : undefined,
