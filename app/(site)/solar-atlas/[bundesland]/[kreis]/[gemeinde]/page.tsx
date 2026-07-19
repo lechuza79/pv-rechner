@@ -7,6 +7,7 @@ import { IconArrowRight, IconTrendUp, IconTrendDown } from "../../../../../../co
 import { v } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
+import { atlasIsIndexable, atlasLevelReleased, atlasRobots } from "../../../../../../lib/atlas-index";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type OutsidePeer } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
@@ -37,12 +38,9 @@ export const revalidate = 3600;
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
-/**
- * Welle 0 (Pilot): gebaut und abgenommen, aber noch nicht im Index. Erst mit
- * Welle 1 geht die Seite indexiert raus — dann aber wirklich, denn ein Backlink
- * auf eine noindex-Seite verpufft, und die Kommune ist der ganze Anlass.
- */
-const PILOT_NOINDEX = { index: false, follow: false } as const;
+// Index-Freischaltung gestaffelt über lib/atlas-index (Wellen; Plan in
+// docs/atlas-index-wellen.md). Gemeinden gehen erst in einer späteren Welle
+// indexiert raus — und dann nur oberhalb der Anlagen-Schwelle.
 
 const nf = (n: number) => n.toLocaleString("de-DE");
 
@@ -84,14 +82,19 @@ type Params = { bundesland: string; kreis: string; gemeinde: string };
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
-  if (!region) return { robots: PILOT_NOINDEX };
+  if (!region) return { robots: atlasRobots(false) };
+  // Anlagenzahl (für die Thin-Schwelle) nur laden, wenn die Gemeinde-Ebene
+  // überhaupt freigeschaltet ist — sonst ist die Seite ohnehin noindex.
+  const anlagen = atlasLevelReleased("gemeinde")
+    ? (await getRegionAtlasData(region.region_id)).solar.total_count
+    : 0;
   return {
     ...pageMetadata({
       title: `Solaranlagen in ${region.name} – Bestand & Zubau`,
       description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum Landkreis.`,
       path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
     }),
-    robots: PILOT_NOINDEX,
+    robots: atlasRobots(atlasIsIndexable("gemeinde", anlagen)),
   };
 }
 

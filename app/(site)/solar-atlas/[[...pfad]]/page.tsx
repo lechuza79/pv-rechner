@@ -6,6 +6,7 @@ import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../lib/json-ld";
+import { atlasIsIndexable, atlasRobots } from "../../../../lib/atlas-index";
 import ZubauChart from "../../../../components/atlas/ZubauChart";
 import RankingTable from "../../../../components/atlas/RankingTable";
 import { MastrHeroSection } from "../../../../components/MastrHeroSection";
@@ -26,8 +27,6 @@ export const revalidate = 3600;
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
-/** Pilot: built and reviewable, out of the index until Welle 1. */
-const PILOT_NOINDEX = { index: false, follow: false } as const;
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
@@ -70,7 +69,7 @@ function ortPhrase(region: AtlasRegion): string {
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const region = await resolve(params.pfad);
-  if (!region) return { robots: PILOT_NOINDEX };
+  if (!region) return { robots: atlasRobots(false) };
   const title = headline(region);
   return {
     ...pageMetadata({
@@ -81,7 +80,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
           : `Wie viele Solaranlagen stehen ${ortPhrase(region)}? Photovoltaik-Bestand, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister.`,
       path: `/solar-atlas${params.pfad?.length ? "/" + params.pfad.join("/") : ""}`,
     }),
-    robots: PILOT_NOINDEX,
+    robots: atlasRobots(atlasIsIndexable(region.level)),
   };
 }
 
