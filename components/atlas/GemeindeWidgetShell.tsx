@@ -32,6 +32,7 @@ export default function GemeindeWidgetShell({
   showSource = true,
   showEmbed = true,
   branding = false,
+  sourceBottomInset = 0,
   children,
 }: {
   title: string;
@@ -45,6 +46,9 @@ export default function GemeindeWidgetShell({
   embedHash: string;
   /** Quellenzeile im Web zeigen. Embed: an. Atlas-Seite: aus (globaler Fuß). */
   showSource?: boolean;
+  /** Vertikales Quellen-Label unten um px kürzen — z. B. damit es über einer
+   *  Auslastungs-/Footer-Zeile im Widget-Body endet statt bis zum Boden zu laufen. */
+  sourceBottomInset?: number;
   /** „Einbetten"-Aktion anbieten. */
   showEmbed?: boolean;
   /** „Powered by solar-check.io" zeigen (im Embed an, auf der eigenen Seite aus). */
@@ -82,7 +86,7 @@ export default function GemeindeWidgetShell({
           Bild-Export ausgenommen); Platz dafür über paddingRight. */}
       <div style={{ ...S.body, ...(showSource ? S.bodyPad : null) }}>
         {showSource && (
-          <div data-sc-export-ignore="" title={`Quelle: ${fullSource}`} style={S.vsource}>
+          <div data-sc-export-ignore="" title={`Quelle: ${fullSource}`} style={{ ...S.vsource, bottom: sourceBottomInset }}>
             Quelle: {compactSource}
           </div>
         )}
