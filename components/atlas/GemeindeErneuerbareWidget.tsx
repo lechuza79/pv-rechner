@@ -17,9 +17,13 @@ function fmtKwh(kwh: number): string {
   if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
   return `${nf(kwh)} kWh`;
 }
-function fmtMW(kwp: number): string {
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(kwp)} kW`;
+// Anteil am Mix in Prozent (Chart-Konvention: ab 10 % runden, darunter 1 Stelle).
+function fmtPct(share: number): string {
+  const s =
+    share >= 9.95
+      ? Math.round(share).toLocaleString("de-DE")
+      : share.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  return `${s} %`;
 }
 
 // Unsere Blau-Shades (dunkel → hell), fest je Technologie.
@@ -104,7 +108,7 @@ export default function GemeindeErneuerbareWidget({
                 <div key={t.key} style={S.legItem}>
                   <span style={{ ...S.dot, background: t.color }} />
                   <span style={S.legLabel}>{t.label}</span>
-                  <span style={S.legVal}>{fmtMW(t.kwp)}</span>
+                  <span style={S.legVal}>{fmtPct((t.kwp / total) * 100)}</span>
                 </div>
               ))}
             </div>
@@ -112,8 +116,7 @@ export default function GemeindeErneuerbareWidget({
 
           {speicherKwh > 0 && (
             <p style={S.note}>
-              Dazu <strong style={S.strong}>{fmtKwh(speicherKwh)}</strong> Batteriespeicher-Kapazität
-              (puffert, erzeugt nicht).
+              Dazu <strong style={S.strong}>{fmtKwh(speicherKwh)}</strong> Batteriespeicher-Kapazität.
             </p>
           )}
         </>
@@ -129,8 +132,8 @@ const S: Record<string, React.CSSProperties> = {
   center: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" },
   centerValue: { fontFamily: v("--font-mono"), fontSize: 30, fontWeight: 700, color: v("--color-text-primary"), lineHeight: 1 },
   centerUnit: { fontSize: 13, color: v("--color-text-secondary"), marginTop: 4, letterSpacing: 0.5 },
-  legend: { display: "flex", flexDirection: "column", gap: 8, minWidth: 160 },
-  legItem: { display: "grid", gridTemplateColumns: "12px 1fr auto", alignItems: "center", gap: 8, fontSize: 13 },
+  legend: { display: "flex", flexDirection: "column", gap: 8 },
+  legItem: { display: "flex", alignItems: "center", gap: 8, fontSize: 13 },
   dot: { width: 10, height: 10, borderRadius: 3, flex: "0 0 auto" },
   legLabel: { color: v("--color-text-primary") },
   legVal: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-secondary") },
