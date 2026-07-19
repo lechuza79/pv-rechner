@@ -7,7 +7,8 @@ import { MastrLiveRadial } from "./MastrLiveRadial";
 import { bundeslandByAgs } from "../lib/mastr-regions";
 import type { Energietraeger, RegionSummary, SegmentFilter } from "../lib/mastr-data";
 import { useCachedFetch } from "../lib/use-cached-fetch";
-import { DATA_SOURCES, sourceLabel } from "../lib/data-sources";
+import { DATA_SOURCES } from "../lib/data-sources";
+import { DataSourceNote } from "./PoweredBy";
 import { isEmbedContext } from "../lib/embed-context";
 import { v } from "../lib/theme";
 
@@ -259,28 +260,15 @@ export function MastrHeroSection({ initialRegion, onRegionChange }: MastrHeroSec
           textAlign: "right",
         }}
       >
-        Karte: © GeoBasis-DE / BKG (Verwaltungsgebiete VG2500 · VG250 Gemeinden,{" "}
-        <a
-          href="https://www.govdata.de/dl-de/by-2-0"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "inherit", textDecoration: "underline" }}
-        >
-          dl-de/by-2-0
-        </a>
-        ) · Daten: Marktstammdatenregister / Bundesnetzagentur, Datenlizenz{" "}
-        <a
-          href="https://www.govdata.de/dl-de/by-2-0"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "inherit", textDecoration: "underline" }}
-        >
-          dl-de/by-2-0
-        </a>{" "}
-        (Daten aggregiert)
-        {!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
-          <> · Live-Erzeugung: {sourceLabel(DATA_SOURCES.energyCharts)}</>
-        )}
+        <DataSourceNote
+          source={[
+            DATA_SOURCES.bkg,
+            DATA_SOURCES.mastr,
+            ...(!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle"
+              ? [DATA_SOURCES.energyCharts]
+              : []),
+          ]}
+        />
       </div>
     </section>
   );
