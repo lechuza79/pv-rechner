@@ -54,6 +54,16 @@ const OWNERS: { key: Owner; label: string }[] = [
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
+/** Write (or clear) ?plz on the current URL without a navigation, so the address
+ *  bar stays a shareable deep-link to the marked Gemeinde. */
+function setUrlPlz(plz: string | null): void {
+  if (typeof window === "undefined") return;
+  const url = new URL(window.location.href);
+  if (plz) url.searchParams.set("plz", plz);
+  else url.searchParams.delete("plz");
+  window.history.replaceState(null, "", url.toString());
+}
+
 function fmtLeistung(kwp: number): string {
   if (kwp >= 1_000_000) return `${(kwp / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`;
   if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
@@ -116,9 +126,43 @@ export default function RankingTable({
   const [sort, setSort] = useState<Metric>("perCapita");
   const [rankMode, setRankMode] = useState<RankMode>("platz");
   const { home, setHome, ready } = useHomeGemeinde();
+  // A shared link can mark a Gemeinde via ?plz=. Resolved on the client (like the
+  // saved-home marker already is) so the page itself stays ISR-cached — reading
+  // searchParams on the server would force every atlas view to render fresh.
+  const [pinnedChildId, setPinnedChildId] = useState<string | null>(null);
+  // "andere Gemeinde" has to be able to drop a pin that came in through the URL,
+  // not just the saved home — so the pin is dismissable in local state.
+  const [pinDismissed, setPinDismissed] = useState(false);
   // The floating row lives outside the horizontal scroller (see below) and has to
   // be shifted by hand to stay under the columns it belongs to.
   const [scrollLeft, setScrollLeft] = useState(0);
+
+  // Resolve ?plz= to the child region it belongs to. A postcode can span several
+  // Gemeinden; the one that appears in this very list is the right match, so the
+  // list membership is the scope — no separate Kreis filter needed.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const plz = new URLSearchParams(window.location.search).get("plz") ?? "";
+    if (!/^\d{5}$/.test(plz)) {
+      setPinnedChildId(null);
+      return;
+    }
+    const childLen = regions[0]?.region_id.length ?? 8;
+    const ids = new Set(regions.map((r) => r.region_id));
+    let cancelled = false;
+    lookupPlz(plz)
+      .then((hits) => {
+        if (cancelled) return;
+        const match = hits.map((h) => h.region_id.slice(0, childLen)).find((id) => ids.has(id));
+        setPinnedChildId(match ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setPinnedChildId(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [regions]);
 
   /** Aggregate the cells into rows; yearMax rewinds the state to that year. */
   const build = useMemo(() => {
@@ -198,7 +242,59 @@ export default function RankingTable({
     return [...sorted].sort((a, b) => (deltas.get(b.region_id) ?? -Infinity) - (deltas.get(a.region_id) ?? -Infinity));
   }, [sorted, rankMode, deltas]);
 
-  const homeRow = home ? display.find((r) => r.region_id === home.region_id) ?? null : null;
+  // The children of this region carry keys at one fixed length (5 for Kreise under
+  // a Bundesland, 8 for Gemeinden under a Kreis). A saved home is always an 8-digit
+  // Gemeinde, so it has to be cut to the child length to match the right row — on a
+  // Bundesland page it marks the Kreis the home sits in.
+  const childLen = regions[0]?.region_id.length ?? 8;
+  const effectivePin = pinDismissed ? null : pinnedChildId;
+  const markedId = effectivePin ?? (home ? home.region_id.slice(0, childLen) : null);
+  const markedRow = markedId ? display.find((r) => r.region_id === markedId) ?? null : null;
+
+  // Keep the address bar in step with what is marked, so the link the viewer sees
+  // is the link they can share. Never overwrite a ?plz that is already there: a
+  // shared link owns the URL (and its pin may still be resolving), and once the
+  // user enters their own postcode that write already happened. Only a bare URL
+  // gets the saved home's postcode injected, once its row is on this page.
+  useEffect(() => {
+    if (!ready || typeof window === "undefined") return;
+    if (new URLSearchParams(window.location.search).has("plz")) return;
+    if (home?.plz && markedRow) setUrlPlz(home.plz);
+  }, [ready, home, markedRow]);
+
+  // Die schwebende Zeile rastet an der echten ein: sobald die markierte Zeile
+  // selbst im Blick ist, blenden wir die schwebende aus (kein Doppel).
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const [realRowVisible, setRealRowVisible] = useState(false);
+  useEffect(() => {
+    if (!markedId) {
+      setRealRowVisible(false);
+      return;
+    }
+    const el = rootRef.current?.querySelector('[data-marked="true"]');
+    if (!el) {
+      setRealRowVisible(false);
+      return;
+    }
+    const obs = new IntersectionObserver(([e]) => setRealRowVisible(e.isIntersecting), { threshold: 0.9 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [markedId, sort, owner, rankMode, display]);
+
+  const pick = (hit: GemeindeHit, plz: string) => {
+    setHome({ ...hit, plz });
+    // The viewer just chose their own Gemeinde — the link's pin is stale (its
+    // prop can't change without a navigation), so keep it dismissed and let the
+    // fresh home drive the marker.
+    setPinDismissed(true);
+    setUrlPlz(plz);
+  };
+
+  const reset = () => {
+    setHome(null);
+    setPinDismissed(true);
+    setUrlPlz(null);
+  };
 
   // One scale for the list and the floating row, capped at the runner-up: a single
   // Gemeinde with a solar park (126.865 W/head against 17.705 on second place)
@@ -220,7 +316,7 @@ export default function RankingTable({
   });
 
   return (
-    <div>
+    <div ref={rootRef}>
       <div style={S.controls}>
         <div style={S.chips}>
           {OWNERS.map((o) => (
@@ -266,8 +362,12 @@ export default function RankingTable({
           {/* Re-keyed on metric+filter so the rows fade in on a switch instead of
               snapping — the reorder and the value change land at once otherwise. */}
           <div key={`${sort}-${owner}-${rankMode}`} style={S.rowsFade}>
-            {display.map((r) => {
-              const isHome = home?.region_id === r.region_id;
+            {display.map((r, i) => {
+              const isMarked = markedId === r.region_id;
+              // Highlight-Zeile ohne Tabellenlinie oben und unten: diese Zeile UND
+              // die darüber verlieren ihre Trennlinie, damit nichts durch den
+              // Rahmen läuft.
+              const nextMarked = markedId !== null && display[i + 1]?.region_id === markedId;
               const val = valueOf(r, sort);
               const inner = (
                 <>
@@ -276,7 +376,7 @@ export default function RankingTable({
                     <RankDelta value={deltas.get(r.region_id) ?? null} sinceYear={lastFullYear} />
                   </span>
                   <span style={S.nameCell}>
-                    <span style={{ ...S.name, fontWeight: isHome ? 700 : 500 }}>{r.name}</span>
+                    <span style={{ ...S.name, fontWeight: isMarked ? 700 : 500 }}>{r.name}</span>
                     {r.population === null ? (
                       <span style={S.hint}>unbewohnt</span>
                     ) : (
@@ -296,7 +396,7 @@ export default function RankingTable({
                             style={{
                               ...S.fill,
                               width: `${barPct(val)}%`,
-                              background: isHome ? v("--color-accent") : v("--color-accent-light"),
+                              background: isMarked ? v("--color-accent") : v("--color-accent-light"),
                             }}
                           />
                         </span>
@@ -305,16 +405,21 @@ export default function RankingTable({
                   ))}
                 </>
               );
-              const style = { ...S.row, ...(isHome ? S.rowHome : null) };
+              const style = {
+                ...S.row,
+                ...(isMarked || nextMarked ? { borderBottom: "none" as const } : null),
+                ...(isMarked ? S.rowHome : null),
+              };
+              const marker = isMarked ? { "data-marked": "true" } : {};
               // The whole row leads to the Gemeinde, not just its name — a 60px
               // link inside a 620px row is a target nobody hits on a phone.
               // Uninhabited areas have no page, so they stay a plain row.
               return r.href ? (
-                <Link key={r.region_id} href={r.href} style={{ ...style, ...S.rowLink }}>
+                <Link key={r.region_id} href={r.href} {...marker} style={{ ...style, ...S.rowLink }}>
                   {inner}
                 </Link>
               ) : (
-                <div key={r.region_id} style={style}>
+                <div key={r.region_id} {...marker} style={style}>
                   {inner}
                 </div>
               );
@@ -331,28 +436,28 @@ export default function RankingTable({
         stopped floating. Out here it sticks to the viewport again; the horizontal
         offset is applied by hand so it still lines up with the columns.
       */}
-      {ready && homeRow && (
+      {ready && markedRow && !realRowVisible && (
         <div style={S.stickyWrap}>
-          {/* Keyed like the list, so the home row's value fades to the new metric
+          {/* Keyed like the list, so the marked row's value fades to the new metric
               in step with it. The wrapper above stays mounted — it must not move. */}
           <div key={`${sort}-${owner}-${rankMode}`} style={{ ...S.table, ...S.rowsFade, transform: `translateX(${-scrollLeft}px)` }}>
-            <Link href={homeRow.href ?? "#"} style={{ ...S.row, ...S.stickyRow, ...S.rowLink }}>
+            <Link href={markedRow.href ?? "#"} style={{ ...S.row, ...S.stickyRow, ...S.rowLink }}>
               <span style={S.rank}>
-                {rankOf.get(homeRow.region_id) ?? "—"}.
-                <RankDelta value={deltas.get(homeRow.region_id) ?? null} sinceYear={lastFullYear} />
+                {rankOf.get(markedRow.region_id) ?? "—"}.
+                <RankDelta value={deltas.get(markedRow.region_id) ?? null} sinceYear={lastFullYear} />
               </span>
               <span style={S.nameCell}>
-                <span style={{ ...S.name, fontWeight: 700 }}>{homeRow.name}</span>
-                {sort === "perCapita" && homeRow.population !== null && (
-                  <span style={S.hint}>{nf(homeRow.population)} Einw.</span>
+                <span style={{ ...S.name, fontWeight: 700 }}>{markedRow.name}</span>
+                {sort === "perCapita" && markedRow.population !== null && (
+                  <span style={S.hint}>{nf(markedRow.population)} Einw.</span>
                 )}
               </span>
               {COLUMNS.map((c) => (
                 <span key={c.key} style={cellStyle(c.key)}>
-                  <span>{fmtCell(homeRow, c.key)}</span>
+                  <span>{fmtCell(markedRow, c.key)}</span>
                   {c.key === sort && (
                     <span aria-hidden style={S.track}>
-                      <span style={{ ...S.fill, width: `${barPct(valueOf(homeRow, sort))}%`, background: v("--color-accent") }} />
+                      <span style={{ ...S.fill, width: `${barPct(valueOf(markedRow, sort))}%`, background: v("--color-accent") }} />
                     </span>
                   )}
                 </span>
@@ -362,23 +467,24 @@ export default function RankingTable({
         </div>
       )}
 
-      {ready && !home && <HomePicker onPick={(hit, plz) => setHome({ ...hit, plz })} />}
-      {ready && home && (
+      {ready && !markedRow && !home && <HomePicker onPick={pick} />}
+      {ready && markedRow && (
         <p style={S.note}>
-          {homeRow ? (
-            <>
-              Hervorgehoben: <strong>{home.name}</strong>
-            </>
-          ) : (
-            <>
-              <strong>{home.name}</strong> liegt nicht in dieser Liste.{" "}
-              <Link href={home.path} style={S.link}>
-                Zur Seite von {home.name}
-              </Link>
-            </>
-          )}{" "}
+          Hervorgehoben: <strong>{markedRow.name}</strong>
+          {effectivePin && !home && " (aus geteiltem Link)"} ·{" "}
+          <button type="button" onClick={reset} style={S.linkBtn}>
+            andere Gemeinde
+          </button>
+        </p>
+      )}
+      {ready && home && !markedRow && (
+        <p style={S.note}>
+          <strong>{home.name}</strong> liegt nicht in dieser Liste.{" "}
+          <Link href={home.path} style={S.link}>
+            Zur Seite von {home.name}
+          </Link>{" "}
           ·{" "}
-          <button type="button" onClick={() => setHome(null)} style={S.linkBtn}>
+          <button type="button" onClick={reset} style={S.linkBtn}>
             andere Gemeinde
           </button>
         </p>
@@ -468,9 +574,10 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
 
   return (
     <div style={S.picker}>
+      <p style={S.pickerTitle}>Eigene Gemeinde eingeben</p>
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 7 }}>
         <label htmlFor="home-plz" style={S.pickerLabel}>
-          Ihre Postleitzahl markiert Ihre Gemeinde in jeder Liste
+          Postleitzahl eingeben — deine Gemeinde wird in dieser und jeder weiteren Liste markiert.
         </label>
         <div style={{ display: "flex", gap: 8 }}>
           <input
@@ -551,7 +658,7 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     gap: 3,
   },
-  rowHome: { background: v("--color-bg-accent"), borderRadius: v("--radius-md") },
+  rowHome: { background: v("--color-bg-accent"), borderRadius: v("--radius-md"), boxShadow: `inset 0 0 0 1.5px ${v("--color-accent")}` },
   rank: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-muted"), display: "flex", alignItems: "center", gap: 4 },
   delta: { fontFamily: v("--font-mono"), fontSize: 12, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 1 },
   nameCell: { display: "flex", alignItems: "baseline", gap: 6, minWidth: 0 },
@@ -574,7 +681,7 @@ const S: Record<string, React.CSSProperties> = {
   // Mirrors S.scroller's box exactly (same negative margin, same padding), so the
   // row inside starts on the same pixel as a row in the list. Getting this wrong
   // by 8px is what broke the alignment twice.
-  rowsFade: { animation: "fadeUp 0.2s ease-out" },
+  rowsFade: { animation: "fu 0.28s ease-out" },
   stickyWrap: {
     position: "sticky",
     bottom: 4,
@@ -630,7 +737,8 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
   },
-  picker: { marginTop: 16, padding: "12px 14px", background: v("--color-bg-muted"), borderRadius: v("--radius-md") },
+  picker: { marginTop: 16, padding: "14px 16px", background: v("--color-bg-accent"), border: `1px solid ${v("--color-border-accent")}`, borderRadius: v("--radius-md") },
+  pickerTitle: { fontSize: 14, fontWeight: 700, color: v("--color-text-primary"), margin: "0 0 8px" },
   pickerLabel: { fontSize: 12, color: v("--color-text-secondary"), margin: 0 },
   input: {
     flex: "0 0 110px",

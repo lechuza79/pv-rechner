@@ -477,6 +477,13 @@ export type RegionAtlas = {
    * meaningless. count still includes it so the tally stays honest.
    */
   speicher: { count: number; kwp: number; kwh_batterie: number };
+  /** Weitere Erzeuger je Gemeinde (installierte Leistung kWp/kW), aus derselben
+   *  MaStR-Aggregation wie Solar. Für den Technologie-Mix. */
+  generators: {
+    wind: { count: number; kwp: number };
+    biomasse: { count: number; kwp: number };
+    wasser: { count: number; kwp: number };
+  };
   data_as_of: string;
 };
 
@@ -486,7 +493,7 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
 
   const { data, error } = await supabase.rpc("mastr_region_series", {
     p_prefix: prefixOf(regionId),
-    p_traeger: ["solar", "speicher"],
+    p_traeger: ["solar", "speicher", "wind", "biomasse", "wasser"],
   });
   if (error) throw new Error(`mastr_region_series failed: ${error.message}`);
   const rows = (data ?? []) as SeriesRow[];
@@ -498,6 +505,11 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
   let speicherCount = 0;
   let speicherKwp = 0;
   let batterieKwh = 0;
+  const gen: Record<string, { count: number; kwp: number }> = {
+    wind: { count: 0, kwp: 0 },
+    biomasse: { count: 0, kwp: 0 },
+    wasser: { count: 0, kwp: 0 },
+  };
 
   for (const r of rows) {
     const count = Number(r.count);
@@ -506,6 +518,16 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
       speicherCount += count;
       speicherKwp += kwp;
       if (r.segment.startsWith("batterie")) batterieKwh += Number(r.kwh);
+      continue;
+    }
+    // Andere Erzeuger (Wind/Biomasse/Wasser) getrennt sammeln — NICHT als Solar
+    // zählen (der alte Fallback tat genau das, deshalb hier explizit verzweigt).
+    if (r.energietraeger !== "solar") {
+      const g = gen[r.energietraeger];
+      if (g) {
+        g.count += count;
+        g.kwp += kwp;
+      }
       continue;
     }
     // solar
@@ -535,6 +557,7 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
     region_id: regionId,
     solar: { total_count: solarCount, total_kwp: solarKwp, by_segment, by_year },
     speicher: { count: speicherCount, kwp: speicherKwp, kwh_batterie: batterieKwh },
+    generators: { wind: gen.wind, biomasse: gen.biomasse, wasser: gen.wasser },
     data_as_of: await fetchMetaDataAsOf(),
   };
 }

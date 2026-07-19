@@ -148,6 +148,34 @@ const SECTIONS: WidgetSection[] = [
     ],
   },
   {
+    id: "gemeinde-erneuerbare",
+    label: "Erneuerbare Leistung einer Gemeinde",
+    intro:
+      "Die installierte erneuerbare Leistung einer Gemeinde nach Technologie (Solar, Wind, Biomasse, Wasserkraft) aus dem Marktstammdatenregister — als Donut. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas.",
+    attribution: {
+      path: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
+      text: "Erneuerbare Leistung in Höchberg · Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [
+      { id: "gemeinde-erneuerbare", label: "Höchberg (Beispiel)", src: "/embed/gemeinde-erneuerbare", params: { ags: "09679147" }, height: 360, fixedWidth: 380 },
+    ],
+  },
+  {
+    id: "gemeinde-solarleistung",
+    label: "Solarleistung einer Gemeinde (simuliert)",
+    intro:
+      "Der Tagesverlauf der Solarleistung des Gemeinde-Bestands, simuliert aus dem heutigen Wetter am Standort — kein Messwert, aber standortgenau. Für Kommunen zum Einbetten. Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas.",
+    attribution: {
+      path: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
+      text: "Solarleistung in Höchberg · Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [
+      { id: "gemeinde-solarleistung", label: "Höchberg (Beispiel)", src: "/embed/gemeinde-solarleistung", params: { ags: "09679147" }, height: 470, fixedWidth: 380 },
+    ],
+  },
+  {
     id: "simulation",
     label: "PV-Simulation (live)",
     intro:
