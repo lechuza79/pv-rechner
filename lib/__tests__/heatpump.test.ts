@@ -319,6 +319,59 @@ describe("estimatePvCoverageOfWp", () => {
   });
 });
 
+// ─── PV synergy branch inside the full TCO engine ──────────────────────────
+describe("calcHeatPump with PV synergy", () => {
+  const noPv = calcHeatPump(baseInputs);
+  const pvVorhanden = calcHeatPump({ ...baseInputs, pv: { status: "vorhanden", kwp: 10, speicherKwh: 10 } });
+  const pvGeplant = calcHeatPump({ ...baseInputs, pv: { status: "geplant", kwp: 10, speicherKwh: 10 } });
+
+  it("status 'nein' or kwp 0 disables the branch entirely", () => {
+    const off = calcHeatPump({ ...baseInputs, pv: { status: "nein", kwp: 10, speicherKwh: 10 } });
+    const zeroKwp = calcHeatPump({ ...baseInputs, pv: { status: "vorhanden", kwp: 0, speicherKwh: 0 } });
+    for (const r of [off, zeroKwp]) {
+      expect(r.pvCoverage).toBe(0);
+      expect(r.pvStromSavings).toBe(0);
+      expect(r.pvInvest).toBe(0);
+      expect(r.stromKosten).toBe(noPv.stromKosten);
+    }
+  });
+
+  it("existing PV cuts the WP electricity bill by exactly the coverage share", () => {
+    expect(pvVorhanden.pvCoverage).toBeGreaterThanOrEqual(0.05);
+    expect(pvVorhanden.pvCoverage).toBeLessThanOrEqual(0.35);
+    // stromKosten = costNoPv × (1 − coverage), year by year → totals must match.
+    // Result exposes pvCoverage rounded to 3 decimals, the engine used the exact
+    // value → tolerance scales with the bill (±0,0005 × Rechnung + Rundung).
+    const expected = noPv.stromKosten * (1 - pvVorhanden.pvCoverage);
+    const tol = noPv.stromKosten * 0.0005 + 2;
+    expect(Math.abs(pvVorhanden.stromKosten - expected)).toBeLessThanOrEqual(tol);
+    // And the savings are the complementary share (energy accounting closes).
+    expect(Math.abs(pvVorhanden.pvStromSavings - (noPv.stromKosten - pvVorhanden.stromKosten))).toBeLessThanOrEqual(2);
+  });
+
+  it("existing PV is sunk cost: no pvInvest, TCO strictly improves", () => {
+    expect(pvVorhanden.pvInvest).toBe(0);
+    expect(pvVorhanden.tcoWp).toBeLessThan(noPv.tcoWp);
+    // mehrInvest is not exported — year 0 of the chart starts at −mehrInvest.
+    expect(pvVorhanden.years[0].kum).toBe(noPv.years[0].kum);
+  });
+
+  it("planned PV adds its investment to TCO and mehrInvest (same coverage)", () => {
+    expect(pvGeplant.pvCoverage).toBe(pvVorhanden.pvCoverage);
+    expect(pvGeplant.pvInvest).toBeGreaterThan(0);
+    // Only the PV invest separates 'geplant' from 'vorhanden'.
+    expect(pvGeplant.tcoWp - pvVorhanden.tcoWp).toBe(pvGeplant.pvInvest);
+    // Chart year 0 = −mehrInvest → planned PV starts pvInvest deeper in the red.
+    expect(pvVorhanden.years[0].kum - pvGeplant.years[0].kum).toBe(pvGeplant.pvInvest);
+  });
+
+  it("honours the pvInvest override for planned PV", () => {
+    const custom = calcHeatPump({ ...baseInputs, pv: { status: "geplant", kwp: 10, speicherKwh: 10, pvInvest: 12345 } });
+    expect(custom.pvInvest).toBe(12345);
+    expect(custom.tcoWp - pvVorhanden.tcoWp).toBe(12345);
+  });
+});
+
 // ─── Config integrity ─────────────────────────────────────────────────────
 describe("DEFAULT_HEATPUMP_CONFIG", () => {
   it("has BEG cap below sum of all bonuses (cap actually bites)", () => {

@@ -1,8 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { calcBalkon, recommendBalkon } from "../balkon";
+import { simulateSolarYear, monthlyFromAnnual } from "../balkon-sim";
 import { DEFAULT_BALKON_CONFIG as CFG } from "../balkon-config";
 import { SOLAR_YEAR_DE, referenceYearKwh } from "../solar-year";
-import { DAYS_IN_MONTH } from "../consumption";
+import { DAYS_IN_MONTH, type HouseholdProfile } from "../consumption";
 
 const base = {
   setId: "duo" as const,
@@ -352,5 +353,73 @@ describe("recommendBalkon", () => {
     const rec = recommendBalkon(base);
     expect(rec.setReason.length).toBeGreaterThan(0);
     expect(rec.storageReason.length).toBeGreaterThan(0);
+  });
+});
+
+// ─── Energieerhaltung der geteilten Stunden-Jahressimulation ────────────────
+// simulateSolarYear ist der Kern für ALLE Rechner (Balkon + Dach-PV). Diese
+// Invarianten stellen sicher, dass in der Dispatch-Schleife keine Energie
+// erfunden oder verschluckt wird — egal wie die Speicher-/Clipping-Pfade
+// später umgebaut werden.
+describe("simulateSolarYear — Energieerhaltung", () => {
+  const hh: HouseholdProfile = { baseKwh: 3800, tagQuote: 0.30, wpActive: false, eaActive: false };
+  const baseInput = {
+    moduleKwp: 8,
+    inverterKw: 8,
+    monthlyYieldPerKwp: monthlyFromAnnual(950),
+    orientation: "sued_flach",
+    household: hh,
+    batteryKwh: 8,
+    roundtrip: 0.9,
+  };
+
+  it("Produktions-Bilanz: rawYield = annualYield + clippedKwh", () => {
+    const r = simulateSolarYear(baseInput);
+    expect(Math.abs(r.rawYield - (r.annualYield + r.clippedKwh))).toBeLessThanOrEqual(2);
+  });
+
+  it("Monatssummen decken sich mit den Jahressummen (±Monatsrundung)", () => {
+    const r = simulateSolarYear(baseInput);
+    const prod = r.monthly.reduce((s, m) => s + m.production, 0);
+    const cons = r.monthly.reduce((s, m) => s + m.consumption, 0);
+    expect(Math.abs(prod - r.annualYield)).toBeLessThanOrEqual(6);   // 12 × ±0,5 kWh
+    expect(Math.abs(cons - r.consumptionKwh)).toBeLessThanOrEqual(6);
+  });
+
+  it("jeder Monat: production = direct + stored + feedIn UND consumption = selfUsed + gridDraw", () => {
+    const r = simulateSolarYear(baseInput);
+    for (const m of r.monthly) {
+      expect(Math.abs(m.production - (m.direct + m.stored + m.feedIn))).toBeLessThanOrEqual(2);
+      expect(Math.abs(m.consumption - (m.selfUsed + m.gridDraw))).toBeLessThanOrEqual(1);
+    }
+  });
+
+  it("Speicher schafft keine Energie: Entlade-Beitrag ≤ Geladenes × Wirkungsgrad", () => {
+    const r = simulateSolarYear(baseInput);
+    const discharged = r.selfUsedKwh - r.directUsedKwh;
+    const stored = r.monthly.reduce((s, m) => s + m.stored, 0);
+    expect(discharged).toBeGreaterThan(0); // der Speicher trägt tatsächlich bei
+    expect(discharged).toBeLessThanOrEqual(stored * baseInput.roundtrip + 7); // +Monatsrundung
+  });
+
+  it("ohne Speicher: selfUsed = directUsed exakt, kein stored", () => {
+    const r = simulateSolarYear({ ...baseInput, batteryKwh: 0 });
+    expect(r.selfUsedKwh).toBe(r.directUsedKwh);
+    expect(r.monthly.every(m => m.stored === 0)).toBe(true);
+  });
+
+  it("Eigennutzung überschreitet weder Verbrauch noch Ertrag", () => {
+    const r = simulateSolarYear(baseInput);
+    expect(r.selfUsedKwh).toBeLessThanOrEqual(r.consumptionKwh);
+    expect(r.selfUsedKwh).toBeLessThanOrEqual(r.annualYield);
+  });
+
+  it("WP-Zuteilung bleibt innerhalb der Bilanz (wpSelfCovered ≤ selfUsed, wpLoad ≤ Verbrauch)", () => {
+    const wpHh: HouseholdProfile = { ...hh, wpActive: true, wpAnnualKwh: 5000 };
+    const r = simulateSolarYear({ ...baseInput, household: wpHh });
+    expect(r.wpLoadKwh).toBeGreaterThan(0);
+    expect(r.wpLoadKwh).toBeLessThanOrEqual(r.consumptionKwh + 1);
+    expect(r.wpSelfCoveredKwh).toBeGreaterThan(0);
+    expect(r.wpSelfCoveredKwh).toBeLessThanOrEqual(r.selfUsedKwh + 1);
   });
 });
