@@ -1,5 +1,6 @@
 import { calc, calcEigenverbrauch, estimateCost, calcWeightedFeedIn } from "./calc";
 import { DEFAULT_FEED_IN } from "./feedin-config";
+import { DEFAULT_PRICES } from "./prices-config";
 import { fundingAmount, type FundingProgram } from "./funding-programs";
 
 // Shared example-calculation model for the funding landing pages. The city page
@@ -31,8 +32,8 @@ const EXAMPLE_CONFIGS = [
  * to subtract its grant (city page); omit it for a yield-only view (Bundesland
  * page, where the grant varies by municipality).
  *
- * Static assumptions on purpose (Strompreis 0,34 €/kWh, DEFAULT_PRICES via
- * estimateCost): these pages are statically generated, so no live prices — the
+ * Assumptions come from the canonical DEFAULT_PRICES (Strompreis + Anstieg) and
+ * estimateCost: these pages are statically generated, so no live prices — the
  * numbers are illustrative and the CTA leads into the rechner with live values.
  */
 export function buildFundingExamples(yieldKwhKwp: number, f?: FundingProgram): FundingExample[] {
@@ -50,8 +51,8 @@ export function buildFundingExamples(yieldKwhKwp: number, f?: FundingProgram): F
     const foerderung = fa.active ? fa.total : 0;
     const netto = Math.max(0, brutto - foerderung);
     const result = calc({
-      kwp, kosten: netto, strompreis: 0.34, eigenverbrauch: ev,
-      einspeisung, stromSteigerung: 0.03, ertragKwp: yieldKwhKwp, monthly: null,
+      kwp, kosten: netto, strompreis: DEFAULT_PRICES.electricityPrice, eigenverbrauch: ev,
+      einspeisung, stromSteigerung: DEFAULT_PRICES.electricityIncrease, ertragKwp: yieldKwhKwp, monthly: null,
     });
     return { kwp, spKwh, brutto, foerderung, foerderComputable, netto, amort: result.be ? result.be.i : null, total: result.total };
   });

@@ -84,6 +84,44 @@ export function calcWeightedFeedIn(kwp: number, rateUnder: number, rateOver: num
   return Math.round((threshold * rateUnder + (kwp - threshold) * rateOver) / kwp * 100) / 100;
 }
 
+// ─── PV-Vollnutzen über einen Horizont (für den WP-Rechner) ──────────────────
+// Bewertet eine (geplante/vorhandene) PV-Anlage mit ihrem GESAMTEN Nutzen —
+// nicht nur der WP-Strom-Deckung. Selbst verbrauchter Solarstrom spart je nach
+// dem, was er verdrängt, zwei verschiedene Preise:
+//   • verdrängt er WP-Strom → günstiger WP-Tarif (§14a, ~0,24 €)
+//   • verdrängt er Haushaltsstrom → voller Haushaltspreis (~0,31 €)
+// Eingespeister Überschuss bringt die (feste, nicht steigende) EEG-Vergütung,
+// nur die ersten FEED_IN_YEARS. Produktion degradiert jährlich (DEGRAD), die
+// selbst gedeckten Preise steigen mit priceIncrease. Reine Funktion, damit sie
+// gegen den PV-Rechner testbar bleibt.
+export function calcPvBenefitPerYear(params: {
+  wpSelfKwh: number;      // jährlich selbst verbrauchter Solarstrom, der WP-Strom verdrängt (Jahr 0)
+  houseSelfKwh: number;   // jährlich selbst verbrauchter Solarstrom, der Haushaltsstrom verdrängt (Jahr 0)
+  feedKwh: number;        // jährlich eingespeister Überschuss (Jahr 0)
+  wpPrice: number;        // €/kWh WP-Tarif (Jahr 0)
+  housePrice: number;     // €/kWh Haushaltspreis (Jahr 0)
+  feedInEur: number;      // €/kWh EEG-Vergütung (fest, Jahr 0..feedInYears)
+  years: number;
+  priceIncrease: number;
+  feedInYears?: number;
+}): number[] {
+  const { wpSelfKwh, houseSelfKwh, feedKwh, wpPrice, housePrice, feedInEur, years, priceIncrease, feedInYears = FEED_IN_YEARS } = params;
+  const out: number[] = [];
+  for (let i = 0; i < years; i++) {
+    const deg = Math.pow(1 - DEGRAD, i);
+    const escal = Math.pow(1 + priceIncrease, i);
+    const selfSavings = (wpSelfKwh * wpPrice + houseSelfKwh * housePrice) * deg * escal;
+    const feedRevenue = i < feedInYears ? feedKwh * feedInEur * deg : 0;
+    out.push(selfSavings + feedRevenue);
+  }
+  return out;
+}
+
+/** Summe von calcPvBenefitPerYear über den Horizont (gerundet). */
+export function calcPvBenefitOverHorizon(params: Parameters<typeof calcPvBenefitPerYear>[0]): number {
+  return Math.round(calcPvBenefitPerYear(params).reduce((a, b) => a + b, 0));
+}
+
 // ─── Kostenschätzung ─────────────────────────────────────────────────────────
 export function estimateCost(kwp: number, spKwh: number, prices?: PriceConfig): number {
   const p = prices ?? DEFAULT_PRICES;
@@ -95,13 +133,20 @@ export function estimateCost(kwp: number, spKwh: number, prices?: PriceConfig): 
 }
 
 // ─── Speicher-Lebensdauer & Ersatz ───────────────────────────────────────────
-// Ein Heimspeicher hält ~13 Jahre (Garantie/Zyklenlebensdauer LFP), danach
-// fällig: Ersatz. Über den 25-Jahre-Horizont fällt also genau ein Akku-Tausch
-// an. Ohne diesen Posten rechnet sich jede Speichergröße scheinbar, weil der
-// Akku „25 Jahre gratis weiterläuft" — das überdimensioniert die Empfehlung.
-export const BATTERY_LIFETIME_YEARS = 13;
-// Ersatzakku in ~13 Jahren ist günstiger als heute (Preisverfall ~-3 %/Jahr).
-export const BATTERY_REPLACE_PRICE_FACTOR = 0.7;
+// KONVENTION, NICHT WÄCHTER-GEPRÜFT: die folgenden Speicher-Annahmen (Lebensdauer,
+// Ersatzpreis-Faktor, Grenzrendite-Gate) sind Modell-Konstanten, keine gescrapten
+// Marktdaten — kein Runbook/Wächter überwacht sie (analog zur Inflations-Konvention,
+// die scripts/waermepumpe-verify.md ausdrücklich unter „Nicht prüfen" führt). Bei
+// spürbaren Marktverschiebungen manuell nachziehen.
+// Ein Heimspeicher hält ~15 Jahre (LFP-Marktstandard 2026: 15–20 J Garantie/
+// Zyklenlebensdauer), danach fällig: Ersatz. Über den 25-Jahre-Horizont fällt
+// also genau ein Akku-Tausch an. Ohne diesen Posten rechnet sich jede
+// Speichergröße scheinbar, weil der Akku „25 Jahre gratis weiterläuft" — das
+// überdimensioniert die Empfehlung.
+export const BATTERY_LIFETIME_YEARS = 15;
+// Ersatzakku in ~15 Jahren ist günstiger als heute (Preisverfall ~-3 %/Jahr →
+// 0,97^15 ≈ 0,63).
+export const BATTERY_REPLACE_PRICE_FACTOR = 0.63;
 
 /** Reine Speicher-Kosten (ohne PV, ohne 500er-Rundung). */
 export function batteryCost(spKwh: number, prices?: PriceConfig): number {
@@ -122,9 +167,9 @@ export function batteryReplaceCost(spKwh: number, prices?: PriceConfig): number 
 //
 // Dieses Gate bewertet stattdessen den Grenznutzen: ein Upgrade wird nur
 // akzeptiert, wenn sich das *zusätzliche* Kapital innerhalb seiner Lebensdauer
-// amortisiert. Default 12 Jahre = typische Heimspeicher-Lebensdauer; ein
-// Speicher, der sich nicht in seiner Lebenszeit rechnet, ist eine Fehlinvestition.
-export const MAX_MARGINAL_PAYBACK_YEARS = 12;
+// amortisiert. Default 13 Jahre ≈ Heimspeicher-Lebensdauer (15 J) minus Puffer;
+// ein Speicher, der sich nicht in seiner Lebenszeit rechnet, ist eine Fehlinvestition.
+export const MAX_MARGINAL_PAYBACK_YEARS = 13;
 
 /** Marginale Amortisationszeit eines Upgrades in Jahren:
  *  zusätzliche Investition geteilt durch die ⌀ jährliche Mehrersparnis.
@@ -202,7 +247,12 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
   // Physikalische Grenze: max. Eigenverbrauch = Gesamtverbrauch / Jahresertrag
   const evMax = gesamt / jahresertrag;
   const ev = Math.round(Math.min(evBase + evBoost, evMax, 0.90) * 100);
-  return Math.max(10, Math.min(ev, 90));
+  // 10 %-Untergrenze als Sanity-Floor — aber NIE über das physikalische Maximum:
+  // bei kleinem Haushalt auf großem Dach (evMax < 10 %) kann man nicht 10 %
+  // selbst verbrauchen. Sonst würden überdimensionierte Anlagen künstlich
+  // schöngerechnet und die Empfehlung zu groß dimensioniert.
+  const floorPct = Math.min(10, Math.round(evMax * 100));
+  return Math.max(floorPct, Math.min(ev, 90));
 }
 
 // ─── Autarkiegrad-REFERENZ (HTW-Kennfeld) ────────────────────────────────────

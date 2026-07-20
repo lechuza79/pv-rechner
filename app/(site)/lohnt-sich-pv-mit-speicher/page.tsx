@@ -18,7 +18,7 @@ import {
   BATTERY_LIFETIME_YEARS,
 } from "../../../lib/calc";
 import { simulatePvYear } from "../../../lib/pv-sim";
-import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS } from "../../../lib/constants";
+import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, NO_PLZ_DEFAULT_YIELD } from "../../../lib/constants";
 import { pageMetadata } from "../../../lib/seo";
 import Chart from "../photovoltaik-rechner/_components/Chart";
 
@@ -216,7 +216,7 @@ function formatPriceDate(isoDate: string): string {
 // ever differs from the tool, that's a bug, not a rounding choice.
 const EX = {
   kwp: 10,
-  ertragKwp: 950, // conservative German average, same default as the calculator without PLZ
+  ertragKwp: NO_PLZ_DEFAULT_YIELD, // conservative German average, same default as the calculator without PLZ
   personenIdx: 2, // 3–4 Personen → 3.800 kWh/a
   nutzungIdx: 1, // "Teils zuhause" → tagQuote 0.30 (HTW-Standardprofil)
 };
@@ -297,11 +297,11 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
       batteryReplace: speicherKwh > 0 ? batteryReplaceCost(speicherKwh, prices) : 0,
     }),
   }));
-  // Deep-link params reproduce the teaser numbers 1:1 in the calculator. We
-  // pass strompreis (st) and Ertrag (er) explicitly because the page computes
-  // with the canonical price from prices-config (electricityPrice, e.g. 0,312 €),
-  // while the calculator's own default is a slightly higher hardcoded 0,34 € —
-  // without st the click would show a higher return than the teaser.
+  // Deep-link params reproduce the teaser numbers 1:1 in the calculator. We pass
+  // strompreis (st) and Ertrag (er) explicitly to pin the exact figures used
+  // here — both the page and the calculator default to the canonical price
+  // (prices-config electricityPrice), so st just guarantees a 1:1 match even if
+  // the live price later moves.
   const params = new URLSearchParams({
     a: "2", // 10 kWp (ANLAGEN index)
     s: String(SPEICHER_IDX[speicherKwh] ?? 0),

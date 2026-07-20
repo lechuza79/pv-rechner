@@ -12,6 +12,7 @@
 // (calcAirconHeating hat genau einen Aufrufer: den Klimaanlagen-Rechner).
 
 import { INSULATION_BESTAND, INSULATION_NEUBAU } from "./constants";
+import { DEFAULT_PRICES } from "./prices-config";
 
 export type AcDeviceId = "monoblock" | "portasplit" | "split";
 
@@ -369,7 +370,7 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
   heatwaveThreshold: 30,
   heatwaveMinDays: 3,
 
-  stromPrice: 0.34,
+  stromPrice: DEFAULT_PRICES.electricityPrice, // kanonischer Haushaltspreis (kein eigener Wert → kein Drift)
   gridCo2PerKwh: 0.38,   // kg CO₂/kWh deutscher Strommix (UBA 2023, sinkend) — wie heatpump.ts
 
   source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), EU-Verordnung 626/2011 + EN 14825/14511 (Effizienz-Skalen), Topten.eu + Hersteller-Datenblätter (Labelwerte), Energy and Buildings 2025 + test.de 2025/26 (Realbetrieb), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), dena Gebäudereport/DIN V 18599 (Heizwärmebedarf je Gebäudestandard, geteilt mit dem Wärmepumpen-Rechner), BDEW (Strom/Gas), UBA (Strommix-CO₂)",
