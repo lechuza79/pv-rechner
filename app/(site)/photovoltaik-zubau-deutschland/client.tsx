@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import ZubauTimelineChart, { PolicyMarker } from "../../../components/charts/ZubauTimelineChart";
+import EventTimeline from "../../../components/charts/EventTimeline";
 import { v } from "../../../lib/theme";
 import type { NationalSolarSeries } from "../../../lib/mastr-data";
 import { FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES, FEEDIN_HISTORY_META } from "../../../lib/feedin-history";
@@ -65,6 +67,7 @@ function LegendDot({ token, label }: { token: string; label: string }) {
 }
 
 export default function ZubauDeutschlandClient({ series }: { series: NationalSolarSeries | null }) {
+  const [activeEvent, setActiveEvent] = useState(0);
   const card: React.CSSProperties = {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
@@ -125,12 +128,24 @@ export default function ZubauDeutschlandClient({ series }: { series: NationalSol
           feedIn={feedIn}
           price={price}
           markers={CHART_MARKERS}
+          activeYear={MARKERS[activeEvent].year}
           height={430}
         />
-        <p style={{ fontSize: 11.5, color: v("--color-text-muted"), margin: "4px 0 0", paddingLeft: 44 }}>
+
+        {/* Synchrone Ereignis-Timeline (ersetzt den früheren Textblock) */}
+        <div style={{ marginTop: 6 }}>
+          <EventTimeline
+            events={MARKERS}
+            active={activeEvent}
+            onChange={setActiveEvent}
+            startYear={years[0]}
+            endYear={years[years.length - 1]}
+          />
+        </div>
+
+        <p style={{ fontSize: 11.5, color: v("--color-text-muted"), margin: "12px 0 0", paddingLeft: 44 }}>
           Das laufende Jahr ({years[years.length - 1]}) ist ausgegraut — die Anlagen dieses Jahres sind
-          noch nicht vollständig gemeldet, der Balken ist deshalb kein Rückgang. Die nummerierten Marken
-          erklären wir unten.
+          noch nicht vollständig gemeldet, der Balken ist deshalb kein Rückgang.
         </p>
       </div>
 
@@ -155,51 +170,9 @@ export default function ZubauDeutschlandClient({ series }: { series: NationalSol
         </p>
       </div>
 
-      {/* Politik-Marker erklärt */}
+      {/* Ausblick 2027 (liegt außerhalb der Chart-Achse, daher als Notiz) */}
       <div style={card}>
-        <h2 style={{ fontSize: 17, fontWeight: 700, margin: "0 0 12px", color: v("--color-text-primary") }}>
-          Die Weichenstellungen im Detail
-        </h2>
-        <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 12 }}>
-          {MARKERS.map((m, i) => (
-            <li key={m.year} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-              <span
-                style={{
-                  flexShrink: 0,
-                  width: 22,
-                  height: 22,
-                  borderRadius: "50%",
-                  background: v("--color-text-secondary"),
-                  color: v("--color-bg"),
-                  fontSize: 12,
-                  fontWeight: 700,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginTop: 1,
-                }}
-              >
-                {i + 1}
-              </span>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary") }}>
-                  {m.year} · {m.label}
-                </div>
-                <div style={{ fontSize: 13.5, lineHeight: 1.55, color: v("--color-text-secondary") }}>{m.text}</div>
-              </div>
-            </li>
-          ))}
-        </ol>
-        <div
-          style={{
-            marginTop: 14,
-            paddingTop: 12,
-            borderTop: `1px solid ${v("--color-border")}`,
-            fontSize: 13.5,
-            lineHeight: 1.55,
-            color: v("--color-text-secondary"),
-          }}
-        >
+        <div style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary") }}>
           <strong style={{ color: v("--color-text-primary") }}>Ausblick 2027:</strong> Ein Referentenentwurf
           sieht eine EEG-Reform für Neuanlagen ab 2027 vor. Für heute installierte Anlagen gilt Bestandsschutz —
           die 20-jährige Vergütungsgarantie bleibt.

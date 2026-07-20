@@ -40,8 +40,13 @@ export interface ZubauTimelineProps {
   /** Haushaltsstrompreis ct/kWh, index-gleich zu years (null = keine Zahl). */
   price: (number | null)[];
   markers: PolicyMarker[];
+  /** Jahr des aktiven Markers (aus der Timeline darunter) — wird betont. */
+  activeYear?: number | null;
   height?: number;
 }
+
+/** Plot-Ränder — exportiert, damit die Event-Timeline darunter exakt fluchtet. */
+export const PLOT_MARGIN = { top: 34, right: 52, bottom: 30, left: 44 };
 
 const cssVar = (t: string) => `var(${t})`;
 
@@ -74,10 +79,11 @@ function Inner({
   feedIn,
   price,
   markers,
+  activeYear,
   width,
   height,
 }: ZubauTimelineProps & { width: number; height: number }) {
-  const margin = { top: 34, right: 52, bottom: 30, left: 44 };
+  const margin = PLOT_MARGIN;
   const innerWidth = Math.max(0, width - margin.left - margin.right);
   const innerHeight = Math.max(0, height - margin.top - margin.bottom);
 
@@ -168,6 +174,7 @@ function Inner({
           {markers.map((m, i) => {
             const mx = xScale(m.year);
             if (mx < 0 || mx > innerWidth) return null;
+            const isActive = activeYear === m.year;
             return (
               <g key={`${m.year}-${m.label}`}>
                 <line
@@ -175,23 +182,23 @@ function Inner({
                   x2={mx}
                   y1={-2}
                   y2={innerHeight}
-                  stroke="var(--color-text-muted, #949494)"
-                  strokeWidth={1}
-                  strokeDasharray="3,3"
-                  strokeOpacity={0.55}
+                  stroke={isActive ? cssVar(COLOR_FEEDIN) : "var(--color-text-muted, #949494)"}
+                  strokeWidth={isActive ? 1.75 : 1}
+                  strokeDasharray={isActive ? undefined : "3,3"}
+                  strokeOpacity={isActive ? 0.9 : 0.5}
                 />
                 <circle
                   cx={mx}
                   cy={-14}
-                  r={8}
-                  fill="var(--color-text-secondary, #777)"
+                  r={isActive ? 9.5 : 8}
+                  fill={isActive ? cssVar(COLOR_FEEDIN) : "var(--color-text-secondary, #777)"}
                 />
                 <text
                   x={mx}
                   y={-14}
                   textAnchor="middle"
                   dominantBaseline="central"
-                  fontSize={10}
+                  fontSize={isActive ? 11 : 10}
                   fontWeight={700}
                   fontFamily="var(--font-text, sans-serif)"
                   fill="var(--color-bg, #fff)"
