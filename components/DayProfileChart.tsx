@@ -13,6 +13,7 @@ export const DAY_C_DIRECT = "var(--color-positive)";      // direkt aus der Sonn
 export const DAY_C_BATTERY = "var(--color-accent-light)"; // aus dem Speicher — helles Blau
 export const DAY_C_GRID = "var(--color-text-muted)";      // aus dem Netz — grau
 export const DAY_C_SUN = "#F4B740";                        // Erzeugung — Sonnengelb
+export const DAY_C_SOC = "var(--color-accent)";            // Speicherstand-Linie — kräftiges Blau
 
 export function DayLegendDot({ color, label }: { color: string; label: string }) {
   return (
@@ -27,15 +28,23 @@ export function DayLegendDot({ color, label }: { color: string; label: string })
  *  Stunde der gedeckte Verbrauch (direkt / Speicher / Netz). `scaleMax` ist eine
  *  GEMEINSAME y-Skala über alle verglichenen Tage (sonst wirkt ein schwächerer
  *  Tag hochgezoomt). `showLegend` blendet die Legende aus, wenn der Aufrufer
- *  eine gemeinsame Legende für mehrere Charts zeigt. */
+ *  eine gemeinsame Legende für mehrere Charts zeigt.
+ *
+ *  `socMax` (> 0) blendet zusätzlich die **Speicherstand-Linie** ein: der
+ *  Füllstand des Akkus über den Tag, skaliert auf [0, socMax]. Sie steigt
+ *  mittags (Überschuss lädt) und fällt abends (Speicher deckt den Verbrauch) —
+ *  macht Laden/Entladen sichtbar. Der Modal setzt den Prop NICHT, bleibt also
+ *  unverändert; nur der EEG-Ratgeber nutzt die Linie. */
 export default function DayProfileChart({
   hours,
   scaleMax,
   showLegend = true,
+  socMax = 0,
 }: {
   hours: DayHour[];
   scaleMax: number;
   showLegend?: boolean;
+  socMax?: number;
 }) {
   const W = 340, H = 148, padB = 18, padT = 10, chartH = H - padB - padT;
   const maxY = Math.max(scaleMax, 0.1);
@@ -46,9 +55,19 @@ export default function DayProfileChart({
   const prodArea = `${slot / 2},${base} ` +
     hours.map((h, i) => `${i * slot + slot / 2},${yOf(Math.min(h.prod, maxY))}`).join(" ") +
     ` ${23 * slot + slot / 2},${base}`;
+
+  // Speicherstand-Linie: eigene Skala [0, socMax] über die volle Chart-Höhe
+  // (leichter Headroom), damit das Laden/Entladen als Kurvenform lesbar ist —
+  // unabhängig von der kWh/h-Skala der Balken.
+  const showSoc = socMax > 0;
+  const cx = (i: number) => i * slot + slot / 2;
+  const ySoc = (kwh: number) => base - (Math.min(kwh, socMax) / socMax) * chartH * 0.9;
+  const socLine = showSoc ? hours.map((h, i) => `${cx(i)},${ySoc(h.soc)}`).join(" ") : "";
+  const socFill = showSoc ? `${cx(0)},${base} ${socLine} ${cx(23)},${base}` : "";
+
   return (
     <div>
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }} role="img" aria-label="Tagesverlauf: Erzeugung und Verbrauch über 24 Stunden">
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }} role="img" aria-label="Tagesverlauf: Erzeugung, Verbrauch und Speicherstand über 24 Stunden">
         {/* Erzeugung als gelbe Fläche */}
         <polygon points={prodArea} fill={DAY_C_SUN} fillOpacity={0.22} stroke={DAY_C_SUN} strokeWidth={1.4} strokeLinejoin="round" />
         {/* Verbrauchs-Deckung je Stunde: direkt / Speicher / Netz */}
@@ -70,6 +89,13 @@ export default function DayProfileChart({
             </g>
           );
         })}
+        {/* Speicherstand-Linie (füllt mittags, entlädt abends) */}
+        {showSoc && (
+          <>
+            <polygon points={socFill} fill={DAY_C_SOC} fillOpacity={0.09} />
+            <polyline points={socLine} fill="none" stroke={DAY_C_SOC} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+          </>
+        )}
         {[0, 6, 12, 18].map((hr) => (
           <text key={hr} x={hr * slot + slot / 2} y={H - 5} textAnchor="middle" fontSize={9.5} fill={v("--color-text-muted")} fontFamily={v("--font-text")}>{hr}:00</text>
         ))}
@@ -80,6 +106,7 @@ export default function DayProfileChart({
           <DayLegendDot color={DAY_C_DIRECT} label="direkt" />
           <DayLegendDot color={DAY_C_BATTERY} label="Speicher" />
           <DayLegendDot color={DAY_C_GRID} label="Netz" />
+          {showSoc && <DayLegendDot color={DAY_C_SOC} label="Speicherstand" />}
         </div>
       )}
     </div>

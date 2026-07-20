@@ -73,9 +73,13 @@ export const tokens = {
 
   // ─── Text (5) ──────────────────────────────────────────────────────────────
   '--color-text-primary': '#3F3F3F',    // Headings, strong text, values
-  '--color-text-secondary': '#777777',  // Body text, labels, descriptions
-  '--color-text-muted': '#949494',      // Dimmed text, hints
-  '--color-text-faint': '#BEBEBE',      // Very light text, placeholders
+  // A11y (WCAG 2.1 AA, BFSG): body/label greys darkened so they clear 4.5:1 on
+  // white — secondary 5.3:1, muted 5.1:1 (was 4.48/3.03). faint is placeholder-
+  // only (not essential text), darkened from 1.86:1 to 3.45:1. See audit
+  // docs/audit-backlog-2026-07-19.md §4. Dark/Dusk/Overcast nachgezogen (N8).
+  '--color-text-secondary': '#6B6B6B',  // Body text, labels, descriptions
+  '--color-text-muted': '#6E6E6E',      // Dimmed text, hints
+  '--color-text-faint': '#8A8A8A',      // Very light text, placeholders
   '--color-text-on-accent': '#FFFFFF',  // Text on accent-colored backgrounds
 
   // ─── Progress (1) ──────────────────────────────────────────────────────────
@@ -178,8 +182,8 @@ const darkTokens: Partial<Record<TokenName, string>> = {
   '--color-chart-zero': '#4C5561',
   '--color-text-primary': '#E7EBF1',
   '--color-text-secondary': '#9AA6B4',
-  '--color-text-muted': '#78828F',
-  '--color-text-faint': '#59616C',
+  '--color-text-muted': '#838D9A',                 // A11y: 5.4:1 on dark bg (was 4.66)
+  '--color-text-faint': '#6C7683',                 // A11y: 3.9:1 placeholder tier (was 2.90)
   '--color-progress-inactive': '#2A313C',
   '--color-track': 'rgba(255,255,255,0.10)',
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.45)',
@@ -211,8 +215,8 @@ const duskTokens: Partial<Record<TokenName, string>> = {
   '--color-chart-zero': '#5E5566',
   '--color-text-primary': '#F0E6EC',                // warm off-white
   '--color-text-secondary': '#B7A6B4',
-  '--color-text-muted': '#8E7F8C',
-  '--color-text-faint': '#6B5F6A',
+  '--color-text-muted': '#9E8D9B',                 // A11y: 5.1:1 on dusk bg (was 4.20)
+  '--color-text-faint': '#7C6E7A',                 // A11y: 3.3:1 placeholder tier (was 2.62)
   '--color-progress-inactive': '#3E3442',
   '--color-track': 'rgba(255,255,255,0.10)',
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.35)',
@@ -232,8 +236,8 @@ const overcastTokens: Partial<Record<TokenName, string>> = {
   '--color-border-accent': '#7FA0CE',
   '--color-text-primary': '#2C2F34',
   '--color-text-secondary': '#494D53',
-  '--color-text-muted': '#5A5E65',
-  '--color-text-faint': '#787C83',
+  '--color-text-muted': '#4C5056',                 // A11y: 4.6:1 on overcast bg (was 3.72)
+  '--color-text-faint': '#5E626A',                 // A11y: 3.5:1 placeholder tier (was 2.39)
   '--color-chart-grid': '#969CA6',
   '--color-chart-zero': '#7A7F87',
   '--color-progress-inactive': '#969CA6',

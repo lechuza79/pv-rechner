@@ -19,8 +19,8 @@ import {
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
 import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, FEED_IN_YEARS } from "../../../lib/constants";
 import { pageMetadata } from "../../../lib/seo";
-import EinspeisungVergleich, { type VergleichView } from "./_components/EinspeisungVergleich";
-import DayProfileChart, { DAY_C_SUN, DAY_C_DIRECT, DAY_C_BATTERY, DAY_C_GRID, DayLegendDot } from "../../../components/DayProfileChart";
+import SpeicherVergleich, { type VergleichColumn, type ColScenario, type ScenarioTabMeta } from "./_components/SpeicherVergleich";
+import DayProfileChart, { DAY_C_SUN, DAY_C_DIRECT, DAY_C_BATTERY, DAY_C_GRID, DAY_C_SOC, DayLegendDot } from "../../../components/DayProfileChart";
 
 // Figures on this page come live from the same models the calculator uses
 // (prices from Supabase market_prices with config fallback). ISR keeps them
@@ -294,9 +294,37 @@ function computeExample(speicherKwh: number, feedInActive: boolean, prices: Pric
 
 const eur = (n: number) => `${n.toLocaleString("de-DE")} €`;
 
-// The realistic-scenario line for the tab switcher (single line, no fan).
-function realisticLine(row: ExampleRow) {
-  return row.scenarios.find((s) => s.id === "realistic") ?? row.scenarios[0];
+// Deep link that opens the calculator on this exact config in "ohne Vergütung"
+// mode (eia=0). Includes the scenario (sc) unless it's the default (realistic),
+// so the calculator lands on the same Strompreis-Szenario as the active tab.
+function deepLink(speicherKwh: number, scenarioId: string, prices: PriceConfig): string {
+  const params = new URLSearchParams({
+    a: "2", // 10 kWp (ANLAGEN index)
+    s: String(SPEICHER_IDX[speicherKwh] ?? 0),
+    p: String(EX.personenIdx),
+    n: String(EX.nutzungIdx),
+    st: String(prices.electricityPrice),
+    er: String(EX.ertragKwp),
+    eia: "0", // Einspeisung „Aus" — page premise
+  });
+  if (scenarioId !== "realistic") params.set("sc", scenarioId);
+  return `/photovoltaik-rechner?${params.toString()}`;
+}
+
+// One comparison column (a storage size) → per-scenario amortisation/gewinn/line
+// derived from the already-computed scenario curves, so the tabs switch without
+// any recompute on the client.
+function toColumn(key: string, title: string, sub: string, row: ExampleRow, prices: PriceConfig): VergleichColumn {
+  const byScenario: Record<string, ColScenario> = {};
+  for (const s of row.scenarios) {
+    byScenario[s.id] = {
+      amortisation: s.data.be?.i ?? null,
+      gewinn25: s.data.total,
+      line: s,
+      href: deepLink(row.speicherKwh, s.id, prices),
+    };
+  }
+  return { key, title, sub, kosten: row.kosten, byScenario };
 }
 
 export default async function LohntSichPvOhneEinspeisungPage() {
@@ -319,33 +347,29 @@ export default async function LohntSichPvOhneEinspeisungPage() {
   const erloesAnteil = Math.round((erloes1 / (erloes1 + ersparnis1)) * 100);
   const faqItems = pvOhneEinspeisungFaq(prices);
 
-  // Amortisation-Vergleich (Tab-Umschalter): dieselbe Anlage, zwei Vergütungs-
-  // Zustände. Die Einspeisung wirkt nur auf Amortisation/Gewinn, nicht auf EV/
-  // Autarkie — deshalb reicht EIN System mit Speicher.
-  const vergleichViews: VergleichView[] = [
-    {
-      id: "mit",
-      tabLabel: "Mit Einspeisevergütung",
-      tabSub: "Stand heute",
-      explain: `Bei der heute geltenden Vergütung amortisiert sich diese Anlage in rund ${mitSpEeg.amortisation ?? ">25"} Jahren. Den größten Teil des Gewinns trägt schon jetzt der Eigenverbrauch, nicht die Einspeisung.`,
-      amortisation: mitSpEeg.amortisation,
-      gewinn25: mitSpEeg.gewinn25,
-      line: realisticLine(mitSpEeg),
-      kosten: mitSpEeg.kosten,
-      href: mitSpEeg.href,
-    },
-    {
-      id: "ohne",
-      tabLabel: "Ohne Einspeisevergütung",
-      tabSub: "geplant ab 2027",
-      explain: `Fällt die Vergütung weg, rückt die Amortisation auf rund ${mitSpNull.amortisation ?? ">25"} Jahre — nur ${eur(mitSpEeg.gewinn25 - mitSpNull.gewinn25)} weniger Gewinn über die Laufzeit. Die Anlage bleibt klar im Plus, weil sie ihr Geld über den Eigenverbrauch verdient.`,
-      amortisation: mitSpNull.amortisation,
-      gewinn25: mitSpNull.gewinn25,
-      line: realisticLine(mitSpNull),
-      kosten: mitSpNull.kosten,
-      href: mitSpNull.href,
-    },
+  // Amortisations-Vergleich: alles im „ohne Vergütung"-Modus (einspeisung 0).
+  // Oben Strompreis-Szenario-Tabs (SCENARIOS), darunter zwei Spalten ohne↔mit
+  // Speicher — der aktive Tab schaltet beide Spalten. Zahlen je Szenario aus den
+  // bereits berechneten Kurven; keine Client-Rechnung.
+  const ohneSpNull = computeExample(0, false, prices); // ohne Speicher, ohne Vergütung
+  // mitSpNull (10 kWh, ohne Vergütung) ist oben schon berechnet.
+  const scenarioTabs: ScenarioTabMeta[] = SCENARIOS.map((s) => ({
+    id: s.id,
+    label: s.label,
+    sub: `+${(s.strom * 100).toLocaleString("de-DE")} %/Jahr`,
+    explain: s.explain,
+  }));
+  const vergleichColumns: VergleichColumn[] = [
+    toColumn("ohne", "Ohne Speicher", "10 kWp · kein Speicher", ohneSpNull, prices),
+    toColumn("mit", "Mit 10 kWh Speicher", "10 kWp · 10 kWh Speicher", mitSpNull, prices),
   ];
+  // Realistic-scenario headline figures for the surrounding prose.
+  const ohneReal = ohneSpNull.scenarios.find((s) => s.id === "realistic")?.data;
+  const mitReal = mitSpNull.scenarios.find((s) => s.id === "realistic")?.data;
+  const ohneRealAmort = ohneReal?.be?.i ?? null;
+  const mitRealAmort = mitReal?.be?.i ?? null;
+  const ohneRealGewinn = ohneReal?.total ?? 0;
+  const mitRealGewinn = mitReal?.total ?? 0;
 
   // Tagesverlauf-Vergleich (geteilte Stundensimulation): derselbe sonnige
   // Beispieltag, nur Speicher 0 vs. 10 kWh. Zeigt, wie der Mittagsüberschuss mit
@@ -467,23 +491,36 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         </p>
 
         {/* ── Beispielrechnung mit Vergütung null ── */}
-        <h2 style={S.h2}>Beispielrechnung: mit und ohne Vergütung im Vergleich</h2>
+        <h2 style={S.h2}>Beispielrechnung: ohne Vergütung, mit und ohne Speicher</h2>
         <p style={S.p}>
           Ein Beispielhaushalt: 3–4 Personen ({PERSONEN[EX.personenIdx].verbrauch.toLocaleString("de-DE")} kWh
-          Jahresverbrauch), teils im Homeoffice, {EX.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>-Anlage
-          mit 10 kWh Speicher, konservativer Ertrag von {EX.ertragKwp} kWh pro kWp. Wechsle
-          unten zwischen der heute geltenden Vergütung und dem geplanten Fall ohne
-          Vergütung — dieselbe Anlage, dieselbe Simulation, nur die Einspeisung ändert sich:
+          Jahresverbrauch), teils im Homeoffice, {EX.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>-Anlage,
+          konservativer Ertrag von {EX.ertragKwp} kWh pro kWp. Beide Spalten rechnen{" "}
+          <strong style={S.strong}>ohne Einspeisevergütung</strong> (Einspeisung auf „Aus"),
+          also im geplanten Fall ab 2027. Oben wählst du, wie stark der Strompreis steigt —
+          das schaltet beide Spalten gleichzeitig:
         </p>
-        <EinspeisungVergleich views={vergleichViews} />
+        <SpeicherVergleich tabs={scenarioTabs} columns={vergleichColumns} />
+        <p style={S.p}>
+          Im realistischen Szenario (+{(prices.electricityIncrease * 100).toLocaleString("de-DE")} %/Jahr)
+          zeigt sich der Speicher-Effekt deutlich:{" "}
+          <strong style={S.strong}>ohne Speicher</strong> amortisiert sich die Anlage
+          {ohneRealAmort != null ? ` erst in ~${ohneRealAmort} Jahren` : " kaum im Zeitraum"}
+          {" "}({eur(ohneRealGewinn)} Gewinn über {YEARS} Jahre), weil der Mittagsüberschuss
+          unvergütet ins Netz verpufft. <strong style={S.strong}>Mit 10 kWh Speicher</strong>{" "}
+          {mitRealAmort != null ? `sinkt sie auf ~${mitRealAmort} Jahre` : "bleibt sie im Zeitraum"}
+          {" "}und der Gewinn steigt auf {eur(mitRealGewinn)} — genau das ist der Kern der
+          Debatte: Fällt die Vergütung, wird der Speicher vom Nice-to-have zum tragenden
+          Baustein.
+        </p>
 
         <div style={S.card}>
           <span style={S.label}>Annahmen dieser Rechnung</span>
-          10 kWp + 10 kWh · Strompreis {strompreisCt} ct/kWh · Vergleich: heutige
-          Teileinspeisung {feedInCt} ct/kWh ({FEED_IN_YEARS} Jahre) gegen Einspeisung 0
-          ct/kWh · Preisstand {formatPriceDate(prices.validFrom)} · ohne Förderung · inkl.
-          Akku-Tausch und 0,5 % Modulalterung pro Jahr · Modell kalibriert an
-          HTW-Berlin-Simulationsdaten.
+          10 kWp · Strompreis {strompreisCt} ct/kWh · Einspeisung 0 ct/kWh (Vergütung
+          weggefallen; heute wären es {feedInCt} ct/kWh Teileinspeisung über{" "}
+          {FEED_IN_YEARS} Jahre) · Preisstand {formatPriceDate(prices.validFrom)} · ohne
+          Förderung · inkl. Akku-Tausch und 0,5 % Modulalterung pro Jahr · Modell kalibriert
+          an HTW-Berlin-Simulationsdaten.
           <br />
           <span style={S.muted}>
             Alle Beträge sind unverbindliche Näherungswerte ohne Gewähr — mit deinen echten
@@ -499,8 +536,9 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         <h2 style={S.h2}>Was den Eigenverbrauch hebt</h2>
         <p style={S.p}>
           Ohne Vergütung zählt nur noch, wie viel vom eigenen Strom im Haus bleibt. Am
-          klarsten sieht man das an einem einzelnen sonnigen Tag ({exDay.label.toLowerCase()}) —
-          links ohne, rechts mit Speicher, sonst gleiche Anlage:
+          klarsten sieht man das an einem einzelnen sonnigen Tag ({exDay.label.toLowerCase()})
+          bei unserem Beispielhaushalt (3–4 Personen, 10 kWp) — links ohne, rechts mit
+          Speicher, sonst gleiche Anlage. Die blaue Linie ist der Speicherstand:
         </p>
         <div style={S.card}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 16 }}>
@@ -519,10 +557,11 @@ export default async function LohntSichPvOhneEinspeisungPage() {
               <div style={{ fontSize: 12.5, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 6, textAlign: "center" }}>
                 Mit 10 kWh Speicher
               </div>
-              <DayProfileChart hours={dayMit.hours} scaleMax={dayScaleMax} showLegend={false} />
+              <DayProfileChart hours={dayMit.hours} scaleMax={dayScaleMax} showLegend={false} socMax={10} />
               <div style={{ fontSize: 11.5, color: v("--color-text-secondary"), textAlign: "center", marginTop: 6, lineHeight: 1.5 }}>
-                Selbst genutzt: <strong style={{ fontFamily: v("--font-mono") }}>{selfMit} %</strong> — der
-                Mittags­überschuss lädt den Speicher und deckt den Abend, statt ins Netz zu fließen.
+                Selbst genutzt: <strong style={{ fontFamily: v("--font-mono") }}>{selfMit} %</strong> — mittags
+                lädt der Überschuss den Speicher (Linie steigt), abends entlädt er und deckt
+                den Verbrauch (Linie fällt), statt Strom aus dem Netz zu ziehen.
               </div>
             </div>
           </div>
@@ -531,13 +570,16 @@ export default async function LohntSichPvOhneEinspeisungPage() {
             <DayLegendDot color={DAY_C_DIRECT} label="direkt genutzt" />
             <DayLegendDot color={DAY_C_BATTERY} label="aus dem Speicher" />
             <DayLegendDot color={DAY_C_GRID} label="aus dem Netz" />
+            <DayLegendDot color={DAY_C_SOC} label="Speicherstand" />
           </div>
         </div>
         <p style={S.p}>
           Die grüne und blaue Fläche zusammen ist der selbst genutzte Solarstrom — genau
           das, was ohne Vergütung das Geld verdient. Der Speicher vergrößert sie, indem er
           den Mittagsberg in den Abend schiebt. Dieselbe Logik steckt hinter der Autarkie,
-          die unser Rechner ausweist. Die wirksamen Hebel, grob nach Wirkung sortiert:
+          die unser Rechner ausweist —{" "}
+          <Link href={mitSpNull.href} style={S.link}>im Rechner öffnen und selbst variieren</Link>.
+          Die wirksamen Hebel, grob nach Wirkung sortiert:
         </p>
         <div style={S.card}>
           <strong style={S.strong}>Batteriespeicher:</strong> verschiebt den Mittagsüberschuss
