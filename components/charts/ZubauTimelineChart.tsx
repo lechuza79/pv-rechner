@@ -173,13 +173,16 @@ function Inner({
             );
           })}
 
-          {/* Vergütungs-Linie (Signalgrün, ct/kWh, rechte Achse) */}
+          {/* Beide Linien mit weißer Unterlinie (Halo), damit sie sich von den
+             Balken und voneinander abheben. Reihenfolge: Preis-Halo → Preis →
+             Vergütungs-Halo → Vergütung — so trennt am Kreuzungspunkt eine weiße
+             Kante die grüne Vergütungslinie sichtbar von der grauen Preislinie. */}
           <LinePath<{ year: number; value: number }>
-            data={feedInPts}
+            data={pricePts}
             x={(d) => xScale(d.year)}
             y={(d) => yRight(d.value)}
-            stroke={cssVar(COLOR_FEEDIN)}
-            strokeWidth={2.5}
+            stroke="var(--color-bg, #fff)"
+            strokeWidth={5.5}
             strokeLinecap="round"
             curve={curveMonotoneX}
           />
@@ -189,6 +192,25 @@ function Inner({
             x={(d) => xScale(d.year)}
             y={(d) => yRight(d.value)}
             stroke={cssVar(COLOR_PRICE)}
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            curve={curveMonotoneX}
+          />
+          <LinePath<{ year: number; value: number }>
+            data={feedInPts}
+            x={(d) => xScale(d.year)}
+            y={(d) => yRight(d.value)}
+            stroke="var(--color-bg, #fff)"
+            strokeWidth={5.5}
+            strokeLinecap="round"
+            curve={curveMonotoneX}
+          />
+          {/* Vergütungs-Linie (Signalgrün, ct/kWh, rechte Achse) */}
+          <LinePath<{ year: number; value: number }>
+            data={feedInPts}
+            x={(d) => xScale(d.year)}
+            y={(d) => yRight(d.value)}
+            stroke={cssVar(COLOR_FEEDIN)}
             strokeWidth={2.5}
             strokeLinecap="round"
             curve={curveMonotoneX}

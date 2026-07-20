@@ -146,7 +146,12 @@ export default function EventTimeline({ events, active, onChange, startYear, end
             go(-1);
           }
         }}
-        style={{ marginTop: 12, outline: "none" }}
+        style={{
+          marginTop: 12,
+          outline: "none",
+          paddingLeft: PLOT_MARGIN.left,
+          paddingRight: PLOT_MARGIN.right,
+        }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button onClick={() => go(-1)} disabled={active === 0} aria-label="Vorheriges Ereignis" style={navBtn(active === 0)}>
