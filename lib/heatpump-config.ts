@@ -111,7 +111,7 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   gasInvestNeubau: 12000,
   years: 20,
   gasInflation: 0.02,
-  stromInflation: 0.03,
+  stromInflation: 0.02, // p.a. — konsistent mit PV-Rechner (SCENARIOS realistic + electricityIncrease)
   source: "Fraunhofer ISE WPsmart, BWP Preisübersicht 2024, BAFA BEG 2026, BDEW",
   validFrom: "2026-04-01",
   reviewBy: "2027-01-31",

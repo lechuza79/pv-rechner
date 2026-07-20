@@ -16,7 +16,9 @@
 // indem E_WP als Teil des Gesamtverbrauchs übergeben wird.
 
 import { DEFAULT_HEATPUMP_CONFIG, type HeatPumpConfig } from "./heatpump-config";
-import { estimateCost, co2SurchargeOverToday } from "./calc";
+import { co2SurchargeOverToday, calcWeightedFeedIn, calcPvBenefitPerYear } from "./calc";
+import { DEFAULT_PRICES } from "./prices-config";
+import { DEFAULT_FEED_IN } from "./feedin-config";
 import { calcHeatDemand, calcHeatLoad, flowTempForSystem, calcJAZ } from "./heatpump-core";
 
 // Reine Bedarfs-/JAZ-Funktionen + WP-Jahresstrom + Standard-Gebäude leben in
@@ -47,12 +49,12 @@ export interface HeatPumpInputs {
   // sinkt auf hk_neu-Niveau (55→45°C), was die JAZ hebt. Ist-Zustand (false):
   // WP läuft mit alten Heizkörpern bei 55°C, keine Extrakosten, schlechtere JAZ.
   heizkoerperTausch?: boolean;
-  // PV synergy (computed from /rechner conventions)
+  // PV-Synergie: nur Anlagengröße + Speicher nötig — die WP-zurechenbare
+  // Deckung wird konservativ heuristisch geschätzt (estimatePvCoverageOfWp).
   pv?: {
     status: "nein" | "geplant" | "vorhanden";
     kwp: number;
     speicherKwh: number;
-    pvInvest?: number;           // optional override for PV cost
   };
   // Optional overrides (editable in result view)
   override?: {
@@ -85,13 +87,13 @@ export interface HeatPumpResult {
   beg: { rate: number; amount: number; breakdown: { label: string; rate: number }[] };
   investNetto: number;
   // 20-year cost totals
-  stromKosten: number;           // Σ WP electricity (bereits um PV-Deckung bereinigt)
+  stromKosten: number;           // Σ WP electricity zum vollen Netzpreis (PV separat als pvBenefit)
   wartungWp: number;             // Σ WP maintenance
-  tcoWp: number;                 // Invest + Strom + Wartung
-  // PV synergy
-  pvCoverage: number;            // Anteil WP-Strom aus PV (0–0.35)
-  pvStromSavings: number;        // Σ 20J eingesparte WP-Stromkosten durch PV
-  pvInvest: number;              // PV-Investitionskosten (nur bei status="geplant" angerechnet)
+  tcoWp: number;                 // Invest + Strom + Wartung − pvBenefit
+  // PV synergy (nur der WP-zurechenbare Teil — NICHT der volle PV-Nutzen)
+  pvCoverage: number;            // Anteil WP-Strom, den die PV zusätzlich deckt
+  pvStromSavings: number;        // = pvBenefit (Synergie); Alias für Abwärtskompatibilität
+  pvBenefit: number;             // Σ 20J WP-Synergie: wpSelfKwh × (WP-Tarif − Einspeisung)
   // Gas reference
   gasKosten: number;             // Σ Gas fuel cost
   gasFix: number;                // Σ Grundgebühr
@@ -210,31 +212,58 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   }, cfg);
   const investNetto = inputs.override?.investNetto ?? (investBrutto - beg.amount);
 
-  // 4. 20-Jahre Betriebskosten WP (mit PV-Synergie)
+  // 4. 20-Jahre Betriebskosten WP — WP-Strom zum VOLLEN Netzpreis (WP-Tarif).
+  // Die PV wird separat mit ihrem GESAMTEN Nutzen gutgeschrieben (pvBenefit),
+  // damit "PV geplant" die Wärmepumpe nicht künstlich verteuert: früher wurden
+  // die vollen PV-Kosten angerechnet, aber nur die WP-Strom-Deckung als Nutzen.
   const stromPrice = inputs.override?.stromPrice ?? cfg.wpTarif;
-  // PV-Deckung: 0 wenn nein, sonst HTW-kalibrierte Heuristik
-  const pvActive = inputs.pv && inputs.pv.status !== "nein" && inputs.pv.kwp > 0;
-  const pvCoverage = pvActive ? estimatePvCoverageOfWp(inputs.pv!.kwp, eWp, inputs.pv!.speicherKwh) : 0;
-  const gridFrac = 1 - pvCoverage;
   let stromKosten = 0;
-  let pvStromSavings = 0;
   const stromPerYear: number[] = [];
   for (let i = 0; i < cfg.years; i++) {
-    const p = stromPrice * Math.pow(1 + adj.stromInflation, i);
-    const costNoPv = eWp * p;
-    const cost = costNoPv * gridFrac;
-    pvStromSavings += costNoPv - cost;
+    const cost = eWp * stromPrice * Math.pow(1 + adj.stromInflation, i);
     stromKosten += cost;
     stromPerYear.push(cost);
   }
   stromKosten = Math.round(stromKosten);
-  pvStromSavings = Math.round(pvStromSavings);
-  // PV-Invest nur anrechnen wenn "geplant" — "vorhanden" ist Sunk Cost
-  const pvInvest = (inputs.pv?.status === "geplant" && inputs.pv.kwp > 0)
-    ? (inputs.pv.pvInvest ?? estimateCost(inputs.pv.kwp, inputs.pv.speicherKwh))
-    : 0;
+
+  // PV-SYNERGIE (nur der WP-zurechenbare Teil, NICHT der volle PV-Nutzen):
+  // Der WP-Rechner vergleicht Wärmepumpe gegen Gas. Die Haushaltsstrom-Ersparnis
+  // und die Einspeisung einer PV fallen aber AUCH bei Gas an — sie hängen nicht
+  // an der WP-Entscheidung und dürfen ihr nicht gutgeschrieben werden (sonst
+  // sähe jede WP für PV-Besitzer wie ein Selbstläufer aus; Council-Audit).
+  // WP-zurechenbar ist allein der Solarstrom, den die WP ZUSÄTZLICH selbst
+  // verbraucht: ohne WP würde er eingespeist (Einspeisevergütung), mit WP spart
+  // er den WP-Tarif → Synergie = wpSelfKwh × (WP-Tarif − Einspeisung). Die PV
+  // selbst (Kosten UND voller Nutzen) gehört in den PV-Rechner, nicht hierher.
+  const pvActive = !!inputs.pv && inputs.pv.status !== "nein" && inputs.pv.kwp > 0;
+  let pvCoverage = 0;
+  let pvBenefit = 0;
+  let pvStromSavings = 0;
+  let pvBenefitPerYear: number[] = new Array(cfg.years).fill(0);
+  if (pvActive) {
+    const pv = inputs.pv!;
+    // Anteil des WP-Stroms, den die PV deckt: konservative, MONOTONE HTW-Heuristik
+    // (steigt sauber mit Anlagengröße und Speicher, gedeckelt bei 35 %). Bewusst
+    // NICHT aus der Differenz zweier Eigenverbrauchs-Quoten gerechnet — die rundet
+    // intern auf ganze Prozent, deckelt und hat einen Boden; ihre Differenz ist
+    // nicht-monoton (Speicher würde die Deckung senken) und liefert unmögliche
+    // Werte. Die WP läuft v. a. im Winter mit wenig Sonne → 35 %-Deckel ist real.
+    const wpSelfKwh = estimatePvCoverageOfWp(pv.kwp, eWp, pv.speicherKwh) * eWp;
+    pvCoverage = eWp > 0 ? wpSelfKwh / eWp : 0;
+    const feedInEur = calcWeightedFeedIn(pv.kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10, DEFAULT_FEED_IN.thresholdKwp) / 100;
+    // Ersparnis: WP-Strom, den die Sonne deckt (WP-Tarif, steigt) …
+    const wpSaving = calcPvBenefitPerYear({ wpSelfKwh, houseSelfKwh: 0, feedKwh: 0, wpPrice: stromPrice, housePrice: DEFAULT_PRICES.electricityPrice, feedInEur, years: cfg.years, priceIncrease: adj.stromInflation });
+    // … minus die entgangene Einspeisung dieses Stroms (fest, nur EEG-Zeitraum).
+    const foregoneFeed = calcPvBenefitPerYear({ wpSelfKwh: 0, houseSelfKwh: 0, feedKwh: wpSelfKwh, wpPrice: stromPrice, housePrice: DEFAULT_PRICES.electricityPrice, feedInEur, years: cfg.years, priceIncrease: adj.stromInflation });
+    pvBenefitPerYear = wpSaving.map((s, i) => s - foregoneFeed[i]);
+    pvBenefit = Math.round(pvBenefitPerYear.reduce((a, b) => a + b, 0));
+    pvStromSavings = pvBenefit; // die Synergie IST die WP-Ersparnis durch PV
+  }
+
+  // Kein PV-Invest im WP-Vergleich: die PV-Anschaffung ist eine eigene
+  // Entscheidung (PV-Rechner), nicht Teil der Wärmepumpe-vs-Gas-Rechnung.
   const wartungWp = cfg.wpMaintenance * cfg.years;
-  const tcoWp = investNetto + pvInvest + stromKosten + wartungWp;
+  const tcoWp = investNetto + stromKosten + wartungWp - pvBenefit;
 
   // 5. 20-Jahre Gas-Referenz
   const gasPrice = inputs.override?.gasPrice ?? cfg.gasPriceCtPerKwh / 100;
@@ -261,8 +290,8 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   const gasInvest = inputs.situation === "neubau" ? cfg.gasInvestNeubau : 0;
   const tcoGas = gasKosten + gasFix + gasWartung + gasInvest;
 
-  // 6. Vergleich (pvInvest bereits in tcoWp enthalten bei status="geplant")
-  const mehrInvest = (investNetto + pvInvest) - gasInvest;
+  // 6. Vergleich (PV-Invest ist NICHT Teil der WP-Rechnung — eigene Entscheidung)
+  const mehrInvest = investNetto - gasInvest;
   const tcoEinsparung = Math.round(tcoGas - tcoWp);
   const einsparungProJahr = Math.round(tcoEinsparung / cfg.years);
 
@@ -272,8 +301,9 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   years.push({ i: 0, kum: Math.round(kum), annual: 0 });
   let amortisationsJahre: number | null = null;
   for (let i = 0; i < cfg.years; i++) {
-    // stromPerYear[i] ist bereits um PV-Deckung bereinigt
-    const annualSaving = (gasPerYear[i] + cfg.gasFixCostPerYear + cfg.gasMaintenance) - (stromPerYear[i] + cfg.wpMaintenance);
+    // WP-Seite: voller Netzstrom minus PV-Vollnutzen des Jahres (WP-Deckung +
+    // Haushaltsstrom-Ersparnis + Einspeisung) — so folgt die Kurve exakt dem TCO.
+    const annualSaving = (gasPerYear[i] + cfg.gasFixCostPerYear + cfg.gasMaintenance) - (stromPerYear[i] + cfg.wpMaintenance - pvBenefitPerYear[i]);
     kum += annualSaving;
     years.push({ i: i + 1, kum: Math.round(kum), annual: Math.round(annualSaving) });
     if (amortisationsJahre === null && kum >= 0) amortisationsJahre = i + 1;
@@ -296,7 +326,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
     stromKosten, wartungWp, tcoWp,
     pvCoverage: Math.round(pvCoverage * 1000) / 1000,
     pvStromSavings,
-    pvInvest,
+    pvBenefit,
     gasKosten, gasFix, gasWartung, gasInvest, tcoGas,
     tcoEinsparung, einsparungProJahr, amortisationsJahre,
     co2Einsparung, co2WpProM2Jahr, years,

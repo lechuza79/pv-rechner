@@ -1,4 +1,4 @@
-import { PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, SPEICHER } from "./constants";
+import { PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, SPEICHER, NO_PLZ_DEFAULT_YIELD } from "./constants";
 import { calcEigenverbrauch, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
 import { simulatePvYear } from "./pv-sim";
 import { calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "./consumption";
@@ -17,7 +17,7 @@ const ALT_SIZE_DIFF_KWP = 3;          // "Max Dachnutzung" wird angeboten ab die
 const ALT_NPV_TOLERANCE = 0.95;       // Alternativen müssen ≥ 95 % NPV der Hauptempfehlung erreichen
 const ALT_MIN_INVEST_DELTA = 2000;    // "Günstiger Einstieg" braucht min. 2.000 € Investitions-Abstand
 const ALT_MIN_INVEST_DELTA_RATIO = 0.15; // ODER min. 15 % weniger Investition
-const DEFAULT_ERTRAG = 950;
+const DEFAULT_ERTRAG = NO_PLZ_DEFAULT_YIELD;
 
 export interface RecommendInput {
   personen: number;        // Index in PERSONEN
