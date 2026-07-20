@@ -331,45 +331,39 @@ describe("calcHeatPump with PV synergy", () => {
     for (const r of [off, zeroKwp]) {
       expect(r.pvCoverage).toBe(0);
       expect(r.pvStromSavings).toBe(0);
-      expect(r.pvInvest).toBe(0);
+      expect(r.pvBenefit).toBe(0);
       expect(r.stromKosten).toBe(noPv.stromKosten);
     }
   });
 
-  it("charges WP electricity at full grid price; PV credited separately as full benefit", () => {
-    expect(pvVorhanden.pvCoverage).toBeGreaterThanOrEqual(0.05);
-    expect(pvVorhanden.pvCoverage).toBeLessThanOrEqual(0.35);
-    // New model: WP electricity is billed at the full grid price regardless of PV;
-    // the PV shows up as a separate pvBenefit, not as a reduced electricity bill.
+  it("credits only the WP synergy, not the full PV benefit", () => {
+    expect(pvVorhanden.pvCoverage).toBeGreaterThan(0);
+    expect(pvVorhanden.pvCoverage).toBeLessThanOrEqual(1);
+    // WP electricity is billed at the full grid price regardless of PV.
     expect(pvVorhanden.stromKosten).toBe(noPv.stromKosten);
-    // The full PV benefit must exceed the WP-only coverage savings, because it now
-    // also includes household self-consumption + feed-in revenue.
-    expect(pvVorhanden.pvStromSavings).toBeGreaterThan(0);
-    expect(pvVorhanden.pvBenefit).toBeGreaterThan(pvVorhanden.pvStromSavings);
-    // TCO improves by exactly the full PV benefit (no PV invest for existing PV).
+    // TCO improves by EXACTLY the synergy credit (no PV cost, no household/feed-in).
     expect(noPv.tcoWp - pvVorhanden.tcoWp).toBe(pvVorhanden.pvBenefit);
+    expect(pvVorhanden.pvBenefit).toBeGreaterThan(0);
+    // The synergy is a fraction of the full PV value: a 10 kWp system's full
+    // 20-year benefit is tens of thousands of € — the WP-attributable synergy
+    // (solar the WP self-consumes instead of feeding in cheaply) is far smaller.
+    // This guards against the over-crediting the Council flagged.
+    expect(pvVorhanden.pvBenefit).toBeLessThan(20000);
+    expect(pvVorhanden.pvStromSavings).toBe(pvVorhanden.pvBenefit); // alias
   });
 
-  it("existing PV is sunk cost: no pvInvest, TCO strictly improves", () => {
-    expect(pvVorhanden.pvInvest).toBe(0);
+  it("existing PV improves the TCO without touching the chart's year-0 investment", () => {
     expect(pvVorhanden.tcoWp).toBeLessThan(noPv.tcoWp);
-    // mehrInvest is not exported — year 0 of the chart starts at −mehrInvest.
+    // PV cost is NOT part of the WP comparison → year-0 (−mehrInvest) unchanged.
     expect(pvVorhanden.years[0].kum).toBe(noPv.years[0].kum);
   });
 
-  it("planned PV adds its investment to TCO and mehrInvest (same coverage)", () => {
-    expect(pvGeplant.pvCoverage).toBe(pvVorhanden.pvCoverage);
-    expect(pvGeplant.pvInvest).toBeGreaterThan(0);
-    // Only the PV invest separates 'geplant' from 'vorhanden'.
-    expect(pvGeplant.tcoWp - pvVorhanden.tcoWp).toBe(pvGeplant.pvInvest);
-    // Chart year 0 = −mehrInvest → planned PV starts pvInvest deeper in the red.
-    expect(pvVorhanden.years[0].kum - pvGeplant.years[0].kum).toBe(pvGeplant.pvInvest);
-  });
-
-  it("honours the pvInvest override for planned PV", () => {
-    const custom = calcHeatPump({ ...baseInputs, pv: { status: "geplant", kwp: 10, speicherKwh: 10, pvInvest: 12345 } });
-    expect(custom.pvInvest).toBe(12345);
-    expect(custom.tcoWp - pvVorhanden.tcoWp).toBe(12345);
+  it("'geplant' and 'vorhanden' are identical for the WP calc (PV cost belongs to the PV-Rechner)", () => {
+    // Only the synergy matters to the WP-vs-gas verdict; the PV purchase itself is
+    // a separate decision, so planned vs existing PV make no difference here.
+    expect(pvGeplant.pvBenefit).toBe(pvVorhanden.pvBenefit);
+    expect(pvGeplant.tcoWp).toBe(pvVorhanden.tcoWp);
+    expect(pvGeplant.years[0].kum).toBe(pvVorhanden.years[0].kum);
   });
 });
 

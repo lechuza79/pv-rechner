@@ -297,11 +297,11 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
       batteryReplace: speicherKwh > 0 ? batteryReplaceCost(speicherKwh, prices) : 0,
     }),
   }));
-  // Deep-link params reproduce the teaser numbers 1:1 in the calculator. We
-  // pass strompreis (st) and Ertrag (er) explicitly because the page computes
-  // with the canonical price from prices-config (electricityPrice, e.g. 0,312 €),
-  // while the calculator's own default is a slightly higher hardcoded 0,34 € —
-  // without st the click would show a higher return than the teaser.
+  // Deep-link params reproduce the teaser numbers 1:1 in the calculator. We pass
+  // strompreis (st) and Ertrag (er) explicitly to pin the exact figures used
+  // here — both the page and the calculator default to the canonical price
+  // (prices-config electricityPrice), so st just guarantees a 1:1 match even if
+  // the live price later moves.
   const params = new URLSearchParams({
     a: "2", // 10 kWp (ANLAGEN index)
     s: String(SPEICHER_IDX[speicherKwh] ?? 0),

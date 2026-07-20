@@ -580,15 +580,9 @@ export default function Waermepumpe() {
                   </details>
 
                   <div style={{ marginTop: 10, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
-                    Voller PV-Nutzen: <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.pvBenefit.toLocaleString("de-DE")} €</span> über {DEFAULT_HEATPUMP_CONFIG.years} Jahre (Haushaltsstrom-Ersparnis + Einspeisung + <span style={{ fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> WP-Strom-Deckung)
-                    {pvStatus === "geplant" && result.pvInvest > 0 && (
-                      <> · PV-Invest <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary') }}>{result.pvInvest.toLocaleString("de-DE")} €</span> wird mit angerechnet</>
-                    )}
-                    {pvStatus === "vorhanden" && (
-                      <> · PV-Invest bereits getätigt, wird nicht angerechnet</>
-                    )}
+                    WP-Synergie durch PV: <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.pvBenefit.toLocaleString("de-DE")} €</span> über {DEFAULT_HEATPUMP_CONFIG.years} Jahre — die PV deckt <span style={{ fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> des WP-Strombedarfs.
                     <div style={{ marginTop: 4, fontSize: 11, color: v('--color-text-faint') }}>
-                      Gerechnet wie im PV-Rechner (HTW-Lastprofile, Bundesschnitt-Ertrag ohne PLZ). Selbst genutzter Solarstrom spart beim WP-Strom den WP-Tarif, beim Haushaltsstrom den vollen Preis.
+                      Angerechnet wird nur der Solarstrom, den die Wärmepumpe zusätzlich selbst verbraucht (spart den WP-Tarif statt niedriger Einspeisung). Die PV-Anschaffung und ihr voller Nutzen (Haushaltsstrom, Einspeisung) rechnest du im <Link href="/photovoltaik-rechner" style={{ color: v('--color-accent'), textDecoration: "underline" }}>PV-Rechner</Link> — das gehört nicht in die Wärmepumpe-vs-Gas-Rechnung.
                     </div>
                   </div>
                 </div>
@@ -634,9 +628,9 @@ function TcoBreakdown({ r, situation, jahre, sanierungHinweis }: { r: HeatPumpRe
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontWeight: 700, marginBottom: 2 }}>Wärmepumpe kostet</div>
         <Row label="Investition (nach Förderung)" val={r.investNetto} />
-        {r.pvInvest > 0 && <Row label="PV-Anlage" val={r.pvInvest} />}
         <Row label="Strom" val={r.stromKosten} />
         <Row label="Wartung" val={r.wartungWp} />
+        {r.pvBenefit > 0 && <Row label="− PV-Synergie" val={-r.pvBenefit} />}
         <div style={{ borderTop: `1px solid ${v('--color-border')}`, marginTop: 2, paddingTop: 2 }}><Row label="Summe" val={r.tcoWp} strong /></div>
       </div>
       <div style={{ marginBottom: 8 }}>
