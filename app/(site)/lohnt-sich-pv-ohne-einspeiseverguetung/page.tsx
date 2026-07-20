@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../../components/Header";
 import Breadcrumb from "../../../components/Breadcrumb";
+import ProConLists from "../../../components/ProConLists";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import Faq from "../../../components/Faq";
 import { pvOhneEinspeisungFaq } from "../../../lib/faq";
@@ -54,7 +55,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto" },
+  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: 60 },
   back: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
@@ -582,49 +583,25 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           den Mittagsberg in den Abend schiebt. Dieselbe Logik steckt hinter der Autarkie,
           die unser Rechner ausweist —{" "}
           <Link href={mitSpNull.href} style={S.link}>im Rechner öffnen und selbst variieren</Link>.
-          Die wirksamen Hebel, grob nach Wirkung sortiert:
         </p>
-        <div style={S.card}>
-          <strong style={S.strong}>Batteriespeicher:</strong> verschiebt den Mittagsüberschuss
-          in Abend und Nacht — der größte einzelne Hebel. Ob und wann er sich rechnet,
-          steht im <Link href="/lohnt-sich-pv-mit-speicher" style={S.link}>Speicher-Ratgeber</Link>.
-          <br />
-          <strong style={S.strong}>Wärmepumpe:</strong> macht Heizen zum Stromverbrauch und
-          nutzt vor allem in der Übergangszeit viel eigenen Solarstrom. Was sie selbst
-          spart, rechnet der <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link>.
-          <br />
-          <strong style={S.strong}>E-Auto:</strong> wer tagsüber oder über den Speicher lädt,
-          holt sich den Solarstrom in den Tank — bei 15.000 km/Jahr sind das rund
-          2.700 kWh zusätzlicher Verbrauch.
-          <br />
-          <strong style={S.strong}>Verbrauch in den Tag verschieben:</strong> Spülmaschine,
-          Waschmaschine, Warmwasser mittags statt abends laufen lassen — kostenlos und
-          sofort wirksam.
-        </div>
 
-        {/* ── Wann es eng wird ── */}
-        <h2 style={S.h2}>Wo es ohne Vergütung eng wird</h2>
-        <div style={S.card}>
-          <span style={S.accent}>Volleinspeisung:</span> Konzepte, die den gesamten Strom
-          einspeisen (z. B. große Dächer ohne Eigenverbrauch), leben komplett von der
-          Vergütung — ohne sie tragen sie sich nicht.
-          <br />
-          <span style={S.accent}>Überdimensionierung:</span> „Das Dach voll machen" lohnt
-          ohne Vergütung weniger. Was über den eigenen Verbrauch hinausgeht, bringt nichts
-          mehr ein — die Anlage passend zum Verbrauch auszulegen wird wichtiger. Die{" "}
-          <Link href="/pv-bedarf-berechnen" style={S.link}>Empfehlung</Link> rechnet die
-          passende Größe aus.
-          <br />
-          <span style={S.accent}>Sehr niedriger Verbrauch:</span> Ein 1-Personen-Haushalt
-          mit 1.800 kWh/Jahr kann nur wenig Solarstrom selbst nutzen — hier verlängert
-          sich die Amortisation deutlich. Ein{" "}
-          <Link href="/balkonkraftwerk-rechner" style={S.link}>Balkonkraftwerk</Link> passt
-          dann oft besser als eine große Dachanlage.
-          <br />
-          <span style={S.accent}>Überteuerte Angebote:</span> Die Rechnung oben gilt für
-          Marktpreise. Ohne den Vergütungs-Puffer kippt sie bei deutlich überhöhten
-          Angebotspreisen schneller — Vergleichsangebote werden wichtiger.
-        </div>
+        <h2 style={S.h2}>Die wichtigsten Hebel — und wo es eng wird</h2>
+        <ProConLists
+          proTitle="Was den Eigenverbrauch hebt"
+          conTitle="Wo es ohne Vergütung eng wird"
+          proItems={[
+            { term: "Batteriespeicher", desc: <>verschiebt den Mittagsüberschuss in Abend und Nacht — der größte einzelne Hebel. Ob und wann er sich rechnet, steht im <Link href="/lohnt-sich-pv-mit-speicher" style={S.link}>Speicher-Ratgeber</Link>.</> },
+            { term: "Wärmepumpe", desc: <>macht Heizen zum Stromverbrauch und nutzt vor allem in der Übergangszeit viel eigenen Solarstrom. Was sie selbst spart, rechnet der <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link>.</> },
+            { term: "E-Auto", desc: <>wer tagsüber oder über den Speicher lädt, holt sich den Solarstrom in den Tank — bei 15.000 km/Jahr sind das rund 2.700 kWh zusätzlicher Verbrauch.</> },
+            { term: "Verbrauch in den Tag verschieben", desc: <>Spülmaschine, Waschmaschine, Warmwasser mittags statt abends laufen lassen — kostenlos und sofort wirksam.</> },
+          ]}
+          conItems={[
+            { term: "Volleinspeisung", desc: <>Konzepte, die den gesamten Strom einspeisen (z. B. große Dächer ohne Eigenverbrauch), leben komplett von der Vergütung — ohne sie tragen sie sich nicht.</> },
+            { term: "Überdimensionierung", desc: <>„Das Dach voll machen" lohnt ohne Vergütung weniger. Was über den eigenen Verbrauch hinausgeht, bringt nichts mehr ein — die Anlage passend zum Verbrauch auszulegen wird wichtiger. Die <Link href="/pv-bedarf-berechnen" style={S.link}>Empfehlung</Link> rechnet die passende Größe aus.</> },
+            { term: "Sehr niedriger Verbrauch", desc: <>Ein 1-Personen-Haushalt mit 1.800 kWh/Jahr kann nur wenig Solarstrom selbst nutzen — hier verlängert sich die Amortisation deutlich. Ein <Link href="/balkonkraftwerk-rechner" style={S.link}>Balkonkraftwerk</Link> passt dann oft besser als eine große Dachanlage.</> },
+            { term: "Überteuerte Angebote", desc: <>Die Rechnung oben gilt für Marktpreise. Ohne den Vergütungs-Puffer kippt sie bei deutlich überhöhten Angebotspreisen schneller — Vergleichsangebote werden wichtiger.</> },
+          ]}
+        />
 
         {/* ── CTA ── */}
         <div style={{ ...S.hero, marginTop: 28 }}>

@@ -3,6 +3,8 @@ import Link from "next/link";
 import Header from "../../../components/Header";
 import Breadcrumb from "../../../components/Breadcrumb";
 import GlossaryTerm from "../../../components/GlossaryTerm";
+import ProConLists from "../../../components/ProConLists";
+import { IconArrowUp } from "../../../components/Icons";
 import Faq from "../../../components/Faq";
 import { pvSpeicherFaq } from "../../../lib/faq";
 import { v } from "../../../lib/theme";
@@ -49,7 +51,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto" },
+  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: 60 },
   back: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
@@ -159,18 +161,18 @@ const S = {
     borderBottom: `1px solid ${v("--color-border")}`,
   },
   td: {
-    fontSize: v("--font-size-small"),
+    fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
-    padding: "9px 6px",
+    padding: "10px 6px",
     borderBottom: `1px solid ${v("--color-border")}`,
     lineHeight: 1.4,
   },
   tdNum: {
     fontFamily: v("--font-mono"),
-    fontSize: v("--font-size-small"),
+    fontSize: v("--font-size-body"),
     color: v("--color-text-primary"),
     textAlign: "right" as const,
-    padding: "9px 6px",
+    padding: "10px 6px",
     borderBottom: `1px solid ${v("--color-border")}`,
     whiteSpace: "nowrap" as const,
   },
@@ -194,6 +196,10 @@ interface ExampleRow {
   autarkie: number;
   amortisation: number | null;
   gewinn25: number;
+  /** Ø jährliche Rendite in % = Gewinn(25 J) / Investition / Laufzeit. Leitet
+   *  sich aus derselben 25-J-Gewinnzahl ab wie die Rendite-Kachel im Rechner,
+   *  nur als annualisierte Prozent-Größe. */
+  renditePa: number;
   /** ⌀ Ersparnis/Jahr — same formula as the calculator's ResultStats. */
   ersparnisProJahr: number;
   /** Three amortization curves (pess./real./opt.) for the <Chart> teaser —
@@ -283,11 +289,15 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
     autarkie: sim.autarky,
     amortisation: result.be?.i ?? null,
     gewinn25: result.total,
+    renditePa: kosten > 0 ? (result.total / kosten / YEARS) * 100 : 0,
     ersparnisProJahr: Math.round((result.total + kosten) / YEARS),
     scenarios,
     href: `/photovoltaik-rechner?${params.toString()}`,
   };
 }
+
+// German percent with one decimal, e.g. 5,1 %.
+const pct1 = (n: number) => `${n.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} %`;
 
 // One teaser card: title + amortization chart + result-style tiles + deep link.
 // Server component (Chart is the only client island), tiles reuse the exact
@@ -519,6 +529,22 @@ export default async function LohntSichPvMitSpeicherPage() {
                 ))}
               </tr>
               <tr>
+                <td style={S.td}>Rendite (25 J)</td>
+                {rows.map((r, i) => {
+                  const delta = r.renditePa - rows[0].renditePa;
+                  return (
+                    <td key={r.speicherKwh} style={S.tdNum}>
+                      <div>{pct1(r.renditePa)}<span style={{ color: v("--color-text-muted"), fontSize: v("--font-size-caption") }}> p.a.</span></div>
+                      {i > 0 && delta >= 0.05 && (
+                        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-positive"), opacity: 0.7, marginTop: 2, display: "inline-flex", alignItems: "center", gap: 2, justifyContent: "flex-end" }}>
+                          <IconArrowUp size={9} /> +{delta.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                        </div>
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+              <tr>
                 <td style={{ ...S.td, borderBottom: "none" }}>Gewinn nach 25 Jahren</td>
                 {rows.map((r) => (
                   <td key={r.speicherKwh} style={{ ...S.tdNum, borderBottom: "none", color: v("--color-positive"), fontWeight: 700 }}>
@@ -572,40 +598,24 @@ export default async function LohntSichPvMitSpeicherPage() {
           </span>
         </div>
 
-        {/* ── Wann ja / wann nein ── */}
-        <h2 style={S.h2}>Wann sich ein Speicher lohnt</h2>
-        <div style={S.card}>
-          <span style={S.positive}>Berufstätigen-Haushalt:</span> Wer tagsüber weg ist,
-          verbraucht abends — genau dann liefert der Speicher.
-          <br />
-          <span style={S.positive}>Neuinstallation:</span> Speicher gleich mitkaufen ist pro
-          Kilowattstunde günstiger als nachrüsten, die Montage fällt nur einmal an.
-          <br />
-          <span style={S.positive}>E-Auto mit Abendladung:</span> Wer nach Feierabend lädt,
-          holt sich den Mittagsstrom über den Speicher ins Auto.
-          <br />
-          <span style={S.positive}>Niedrige Einspeisevergütung:</span> Je kleiner die
-          Vergütung, desto wertvoller jede selbst genutzte Kilowattstunde — die Vergütung
-          sinkt für Neuanlagen weiter.
-        </div>
-        <h2 style={S.h2}>Wann eher nicht</h2>
-        <div style={S.card}>
-          <span style={S.accent}>Alte Bestandsanlage mit hoher Vergütung:</span> Wer noch
-          über 30 ct/kWh Einspeisevergütung bekommt, verdient mit Einspeisen mehr als mit
-          Selbstverbrauch — Speicher lohnt dort nicht.
-          <br />
-          <span style={S.accent}>Sehr hoher Tagesverbrauch:</span> Wer ohnehin mittags
-          verbraucht (Homeoffice, Klimaanlage, Pool), nutzt den Strom schon direkt — der
-          Speicher hat weniger zu verschieben.
-          <br />
-          <span style={S.accent}>Deutlich überteuertes Angebot:</span> Die Rechnung oben gilt
-          für Marktpreise. Liegt der Angebotspreis pro Kilowattstunde weit darüber, kippt
-          sie — Vergleichsangebote einholen.
-          <br />
-          <span style={S.accent}>Überdimensionierung:</span> Ab einer gewissen Größe ist der
-          Speicher im Sommer ohnehin voll und im Winter leer — die zweite Hälfte eines zu
-          großen Speichers arbeitet kaum.
-        </div>
+        {/* ── Wann ja / wann nein (zwei Listen nebeneinander) ── */}
+        <h2 style={S.h2}>Lohnt sich ein Speicher — für wen?</h2>
+        <ProConLists
+          proTitle="Wann es sich lohnt"
+          conTitle="Wo es eng wird"
+          proItems={[
+            { term: "Berufstätigen-Haushalt", desc: "Wer tagsüber weg ist, verbraucht abends — genau dann liefert der Speicher." },
+            { term: "Neuinstallation", desc: "Speicher gleich mitkaufen ist pro Kilowattstunde günstiger als nachrüsten, die Montage fällt nur einmal an." },
+            { term: "E-Auto mit Abendladung", desc: "Wer nach Feierabend lädt, holt sich den Mittagsstrom über den Speicher ins Auto." },
+            { term: "Niedrige Einspeisevergütung", desc: "Je kleiner die Vergütung, desto wertvoller jede selbst genutzte Kilowattstunde — die Vergütung sinkt für Neuanlagen weiter." },
+          ]}
+          conItems={[
+            { term: "Alte Bestandsanlage mit hoher Vergütung", desc: "Wer noch über 30 ct/kWh Einspeisevergütung bekommt, verdient mit Einspeisen mehr als mit Selbstverbrauch — Speicher lohnt dort nicht." },
+            { term: "Sehr hoher Tagesverbrauch", desc: "Wer ohnehin mittags verbraucht (Homeoffice, Klimaanlage, Pool), nutzt den Strom schon direkt — der Speicher hat weniger zu verschieben." },
+            { term: "Deutlich überteuertes Angebot", desc: "Die Rechnung oben gilt für Marktpreise. Liegt der Angebotspreis pro Kilowattstunde weit darüber, kippt sie — Vergleichsangebote einholen." },
+            { term: "Überdimensionierung", desc: "Ab einer gewissen Größe ist der Speicher im Sommer ohnehin voll und im Winter leer — die zweite Hälfte eines zu großen Speichers arbeitet kaum." },
+          ]}
+        />
         <p style={S.p}>
           Ein Sonderfall ist die <strong style={S.strong}>Wärmepumpe</strong>: Sie erhöht
           zwar den Stromverbrauch stark, zieht aber rund 80 % davon zwischen Oktober und

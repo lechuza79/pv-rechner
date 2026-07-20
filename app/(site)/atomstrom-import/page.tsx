@@ -34,7 +34,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto" },
+  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto", paddingTop: 60 },
   h1: {
     fontSize: v("--font-size-h1"),
     fontWeight: 800,
