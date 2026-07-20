@@ -33,8 +33,10 @@
  *
  * WARTUNG: Der aktuelle Satz kommt separat aus lib/feedin-config.ts (Live-Wert
  *   für den Rechner). Diese Reihe ist ein historischer Stichtags-Datenstand und
- *   wächst nur nach unten (neues Jahr anhängen), wenn die BNetzA den
- *   Jahresanfangs-Satz veröffentlicht. Kein Auto-Update.
+ *   wächst nur nach unten (neues Jahr anhängen). Der Januar-Lauf des Wächters
+ *   `eeg-verguetung-verify-halbjaehrlich` hängt den neuen Jahreswert automatisch
+ *   an — Prozedur in scripts/zubau-story-verify.md (Teil A). Kein manuelles
+ *   Nachpflegen nötig.
  */
 
 export const FEEDIN_HISTORY_META = {
