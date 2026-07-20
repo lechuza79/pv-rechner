@@ -63,6 +63,12 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
     text: "Das Solarpaket I und das Balkonkraftwerk-Privileg vereinfachen Anmeldung und Betrieb. Steckersolar wird zur privilegierten Maßnahme — der Zubau bleibt auf Rekordniveau.",
     government: "Ampel-Koalition (SPD/Grüne/FDP), Wirtschafts- und Klimaminister Robert Habeck (Grüne).",
   },
+  {
+    year: 2025,
+    label: "Solarspitzen-Gesetz",
+    text: "Für neue Anlagen entfällt die Einspeisevergütung in Stunden mit negativen Börsenpreisen, und ohne Smart Meter ist die Einspeisung auf 60 % gedeckelt (die Ausfälle werden am Ende der 20 Jahre nachvergütet). Der Anreiz verschiebt sich weiter Richtung Eigenverbrauch und Speicher.",
+    government: "SPD/Grüne-Minderheitsregierung, Kanzler Scholz (nach dem Bruch der Ampel) — Ende Januar 2025 im Bundestag mit den Stimmen der Union beschlossen.",
+  },
 ];
 
 export const ZUBAU_WIDGET_SOURCES: DataSource[] = [DATA_SOURCES.mastr, DATA_SOURCES.eegVerguetung, DATA_SOURCES.eurostat];
