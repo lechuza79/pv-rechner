@@ -69,6 +69,12 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
     text: "Für neue Anlagen entfällt die Einspeisevergütung in Stunden mit negativen Börsenpreisen, und ohne Smart Meter ist die Einspeisung auf 60 % gedeckelt (die Ausfälle werden am Ende der 20 Jahre nachvergütet). Der Anreiz verschiebt sich weiter Richtung Eigenverbrauch und Speicher.",
     government: "SPD/Grüne-Minderheitsregierung, Kanzler Scholz (nach dem Bruch der Ampel) — Ende Januar 2025 im Bundestag mit den Stimmen der Union beschlossen.",
   },
+  {
+    year: 2027,
+    label: "EEG-Reform (geplant)",
+    text: "Ein Referentenentwurf sieht eine EEG-Reform für Neuanlagen ab 2027 vor — hin zu einer marktnäheren Förderung. Noch nicht beschlossen. Für heute installierte Anlagen gilt Bestandsschutz: die 20-jährige Vergütungsgarantie bleibt.",
+    planned: true,
+  },
 ];
 
 export const ZUBAU_WIDGET_SOURCES: DataSource[] = [DATA_SOURCES.mastr, DATA_SOURCES.eegVerguetung, DATA_SOURCES.eurostat];
@@ -87,13 +93,32 @@ function alignToYears(targetYears: number[], srcYears: number[], srcValues: numb
   return targetYears.map((y) => (map.has(y) ? (map.get(y) as number) : null));
 }
 
-/** Rohserie → Chart-Arrays. Von Seite und Embed geteilt. */
+/** Ausblicksjahr mit geplanter Weichenstellung (EEG-Reform). Wird als leerer
+ * Platzhalter-Balken gezeigt, SOLANGE die echten MaStR-Daten es nicht erreichen —
+ * rollover-sicher: sobald 2027 real gemeldet ist, entfällt der Platzhalter. */
+export const OUTLOOK_YEAR = 2027;
+
+/** Rohserie → Chart-Arrays (inkl. leerem Platzhalter fürs Ausblicksjahr). Von
+ * Seite und Embed geteilt. */
 export function prepareZubauData(series: NationalSolarSeries) {
   const years = series.points.map((p) => p.year);
+  const additionsGw = series.points.map((p) => p.kwp / 1e6);
+  const partial = series.points.map((p) => p.partial);
+  const future = series.points.map(() => false);
+
+  const lastReal = years[years.length - 1] ?? OUTLOOK_YEAR;
+  for (let y = lastReal + 1; y <= OUTLOOK_YEAR; y++) {
+    years.push(y);
+    additionsGw.push(0);
+    partial.push(false);
+    future.push(true);
+  }
+
   return {
     years,
-    additionsGw: series.points.map((p) => p.kwp / 1e6),
-    partial: series.points.map((p) => p.partial),
+    additionsGw,
+    partial,
+    future,
     feedIn: alignToYears(years, FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES),
     price: alignToYears(years, PRICE_YEARS, PRICE_HOUSEHOLD),
   };
@@ -113,7 +138,7 @@ export default function ZubauWidget({
   branding?: boolean;
 }) {
   const [active, setActive] = useState(0);
-  const { years, additionsGw, partial, feedIn, price } = prepareZubauData(series);
+  const { years, additionsGw, partial, future, feedIn, price } = prepareZubauData(series);
   const isEmbed = variant === "embed";
 
   const chartExport = useChartExport({
@@ -162,6 +187,7 @@ export default function ZubauWidget({
           years={years}
           additionsGw={additionsGw}
           partial={partial}
+          future={future}
           feedIn={feedIn}
           price={price}
           height={420}

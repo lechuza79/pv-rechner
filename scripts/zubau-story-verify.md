@@ -72,6 +72,15 @@ Stil der bestehenden `ZUBAU_EVENTS` (`components/charts/ZubauWidget.tsx`):
   belegt (kein Partei-Lob/-Tadel). Beispiel-Stil: „Ampel-Koalition (SPD/Grüne/
   FDP), Wirtschaftsminister … (…)."
 
+**Geplante/angekündigte Weichenstellung (Ausblick):** Ist eine Reform erst
+angekündigt (Referentenentwurf), aber noch nicht beschlossen, bekommt die Marke
+`planned: true` — sie erscheint als **hohler** Dot und als **leerer Platzhalter-
+Balken** im Ausblicksjahr (`OUTLOOK_YEAR` in `ZubauWidget.tsx`). Sobald sie in
+Kraft ist: `planned` entfernen, `government` (wer beschlossen hat) ergänzen, den
+Text auf „in Kraft" umstellen. Der Platzhalter-Balken verschwindet automatisch,
+sobald die MaStR-Daten das Jahr erreichen (rollover-sicher). Rückt der Ausblick
+weiter in die Zukunft, `OUTLOOK_YEAR` anheben.
+
 Den Kandidaten in den Wächter-Report (`/api/alert`) schreiben. **Ein Mensch**
 formuliert final, prüft Jahr + Neutralität und trägt ihn in `ZUBAU_EVENTS` ein —
 Begründung: die Seite ist zitierfähig und muss 100 % korrekt sein; kuratierten

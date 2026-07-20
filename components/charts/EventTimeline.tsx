@@ -18,6 +18,8 @@ export interface TimelineEvent {
   text: string;
   /** Wer die Entscheidung getroffen hat (regierende Koalition + Ressort), neutral. */
   government?: string;
+  /** true = geplant/noch nicht beschlossen (Ausblick) — Dot hohl statt gefüllt. */
+  planned?: boolean;
 }
 
 interface Props {
@@ -88,6 +90,7 @@ export default function EventTimeline({ events, active, onChange, startYear, end
           />
           {events.map((e, i) => {
             const isActive = i === active;
+            const isPlanned = !!e.planned;
             const d = isActive ? 24 : 15;
             return (
               <button
@@ -108,10 +111,10 @@ export default function EventTimeline({ events, active, onChange, startYear, end
                   padding: 0,
                   boxSizing: "border-box",
                   borderRadius: "50%",
-                  border: `2px solid ${v("--color-bg")}`,
+                  border: isPlanned ? `2px dashed ${v("--color-accent")}` : `2px solid ${v("--color-bg")}`,
                   cursor: "pointer",
-                  background: v("--color-accent"),
-                  color: v("--color-bg"),
+                  background: isPlanned ? v("--color-bg") : v("--color-accent"),
+                  color: isPlanned ? v("--color-accent") : v("--color-bg"),
                   fontSize: 12,
                   fontWeight: 700,
                   fontFamily: v("--font-text"),

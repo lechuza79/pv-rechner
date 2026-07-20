@@ -24,6 +24,8 @@ export interface ZubauTimelineProps {
   additionsGw: number[];
   /** true = laufendes/unvollständiges Jahr (wird ausgegraut dargestellt). */
   partial: boolean[];
+  /** true = künftiges Jahr ohne Daten (leerer, gestrichelter Platzhalter-Balken). */
+  future?: boolean[];
   /** Einspeisevergütung ct/kWh, index-gleich zu years (null = keine Zahl). */
   feedIn: (number | null)[];
   /** Haushaltsstrompreis ct/kWh, index-gleich zu years (null = keine Zahl). */
@@ -66,6 +68,7 @@ function Inner({
   years,
   additionsGw,
   partial,
+  future,
   feedIn,
   price,
   width,
@@ -156,8 +159,22 @@ function Inner({
             tickValues={leftTicks}
           />
 
-          {/* Zubau-Balken (blau, oben leicht abgerundet) */}
+          {/* Zubau-Balken (blau, oben leicht abgerundet). Künftiges Jahr ohne
+             Daten = leerer, gestrichelter Platzhalter über die volle Höhe. */}
           {years.map((year, i) => {
+            if (future?.[i]) {
+              return (
+                <path
+                  key={year}
+                  d={topRoundedRect(xScale(year) - barW / 2, 0, barW, innerHeight, 2.5)}
+                  fill="none"
+                  stroke={cssVar(COLOR_BARS)}
+                  strokeWidth={1}
+                  strokeDasharray="3,3"
+                  strokeOpacity={0.35}
+                />
+              );
+            }
             const gw = additionsGw[i];
             const yTop = yLeft(gw);
             const h = innerHeight - yTop;
@@ -317,6 +334,7 @@ function Inner({
           top={margin.top + 4}
           year={years[hover.idx]}
           partial={partial[hover.idx]}
+          future={!!future?.[hover.idx]}
           gw={additionsGw[hover.idx]}
           feedIn={feedIn[hover.idx]}
           price={price[hover.idx]}
@@ -331,6 +349,7 @@ function Tooltip({
   top,
   year,
   partial,
+  future,
   gw,
   feedIn,
   price,
@@ -339,6 +358,7 @@ function Tooltip({
   top: number;
   year: number;
   partial: boolean;
+  future: boolean;
   gw: number;
   feedIn: number | null;
   price: number | null;
@@ -373,9 +393,11 @@ function Tooltip({
     >
       <div style={{ fontWeight: 700, marginBottom: 4, fontFamily: "var(--font-mono, monospace)" }}>
         {year}
-        {partial ? " (läuft noch)" : ""}
+        {future ? " (geplant)" : partial ? " (läuft noch)" : ""}
       </div>
-      {row("Zubau", COLOR_BARS, `${gw.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`)}
+      {future
+        ? <div style={{ color: "var(--color-text-muted, #949494)" }}>Ausblick — noch keine Daten</div>
+        : row("Zubau", COLOR_BARS, `${gw.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`)}
       {feedIn != null &&
         row("Vergütung", COLOR_FEEDIN, `${feedIn.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct`)}
       {price != null &&

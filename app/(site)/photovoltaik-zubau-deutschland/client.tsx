@@ -79,16 +79,10 @@ export default function ZubauDeutschlandClient({ series }: { series: NationalSol
         </p>
       </section>
 
-      {/* Interaktives, einbettbares Widget (Chart + Ereignis-Timeline) */}
+      {/* Interaktives, einbettbares Widget (Chart + Ereignis-Timeline).
+          Der Ausblick 2027 lebt jetzt als geplante Marke rechts in der Timeline
+          (leerer Platzhalter-Balken), nicht mehr als eigener Absatz. */}
       <ZubauWidget series={series} variant="page" />
-
-      <section style={textCol}>
-        <p style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary"), margin: 0 }}>
-          <strong style={{ color: v("--color-text-primary") }}>Ausblick 2027:</strong> Ein Referentenentwurf
-          sieht eine EEG-Reform für Neuanlagen ab 2027 vor. Für heute installierte Anlagen gilt Bestandsschutz —
-          die 20-jährige Vergütungsgarantie bleibt.
-        </p>
-      </section>
 
       <section style={textCol}>
         <h2 style={{ fontSize: 18, fontWeight: 700, margin: "0 0 8px", color: v("--color-text-primary") }}>
