@@ -133,6 +133,11 @@ export function estimateCost(kwp: number, spKwh: number, prices?: PriceConfig): 
 }
 
 // ─── Speicher-Lebensdauer & Ersatz ───────────────────────────────────────────
+// KONVENTION, NICHT WÄCHTER-GEPRÜFT: die folgenden Speicher-Annahmen (Lebensdauer,
+// Ersatzpreis-Faktor, Grenzrendite-Gate) sind Modell-Konstanten, keine gescrapten
+// Marktdaten — kein Runbook/Wächter überwacht sie (analog zur Inflations-Konvention,
+// die scripts/waermepumpe-verify.md ausdrücklich unter „Nicht prüfen" führt). Bei
+// spürbaren Marktverschiebungen manuell nachziehen.
 // Ein Heimspeicher hält ~15 Jahre (LFP-Marktstandard 2026: 15–20 J Garantie/
 // Zyklenlebensdauer), danach fällig: Ersatz. Über den 25-Jahre-Horizont fällt
 // also genau ein Akku-Tausch an. Ohne diesen Posten rechnet sich jede

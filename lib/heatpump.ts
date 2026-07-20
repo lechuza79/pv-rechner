@@ -16,25 +16,10 @@
 // indem E_WP als Teil des Gesamtverbrauchs übergeben wird.
 
 import { DEFAULT_HEATPUMP_CONFIG, type HeatPumpConfig } from "./heatpump-config";
-import { co2SurchargeOverToday, calcEigenverbrauch, calcWeightedFeedIn, calcPvBenefitPerYear } from "./calc";
+import { co2SurchargeOverToday, calcWeightedFeedIn, calcPvBenefitPerYear } from "./calc";
 import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
-import { PERSONEN } from "./constants";
 import { calcHeatDemand, calcHeatLoad, flowTempForSystem, calcJAZ } from "./heatpump-core";
-
-// Standard-Ertrag ohne PLZ (Bundesschnitt) — der WP-Flow fragt keinen Standort
-// ab; der PV-Rechner nutzt denselben Default, wenn keine PLZ gesetzt ist.
-const PV_DEFAULT_YIELD_KWP = 950;
-
-// Haushalts-Grundverbrauch (ohne WP) aus der Personenzahl schätzen — dieselbe
-// PERSONEN-Tabelle wie im PV-Rechner. Head-count kann 3,5 sein (3–4-Bucket).
-function householdKwhFromPersonen(count: number): number {
-  const idx = count <= 1 ? 0 : count <= 2 ? 1 : count <= 4 ? 2 : 3;
-  return PERSONEN[idx].verbrauch;
-}
-function personenIdxFromCount(count: number): number {
-  return count <= 1 ? 0 : count <= 2 ? 1 : count <= 4 ? 2 : 3;
-}
 
 // Reine Bedarfs-/JAZ-Funktionen + WP-Jahresstrom + Standard-Gebäude leben in
 // heatpump-core.ts (calc-frei, zyklusfrei). Hier re-exportiert, damit bestehende
@@ -64,18 +49,12 @@ export interface HeatPumpInputs {
   // sinkt auf hk_neu-Niveau (55→45°C), was die JAZ hebt. Ist-Zustand (false):
   // WP läuft mit alten Heizkörpern bei 55°C, keine Extrakosten, schlechtere JAZ.
   heizkoerperTausch?: boolean;
-  // PV synergy (computed from /rechner conventions)
+  // PV-Synergie: nur Anlagengröße + Speicher nötig — die WP-zurechenbare
+  // Deckung wird konservativ heuristisch geschätzt (estimatePvCoverageOfWp).
   pv?: {
     status: "nein" | "geplant" | "vorhanden";
     kwp: number;
     speicherKwh: number;
-    pvInvest?: number;           // optional override for PV cost
-    // Haushaltsdaten für den VOLLEN PV-Nutzen (Haushaltsstrom-Ersparnis +
-    // Einspeisung, nicht nur WP-Deckung). Fehlen sie, wird aus der Personenzahl
-    // ein Standard-Haushalt abgeleitet.
-    haushaltKwh?: number;        // Haushalts-Grundverbrauch ohne WP (kWh/a)
-    nutzungIdx?: number;         // Nutzungsprofil (Tag/Nacht) 0–3
-    ertragKwp?: number;          // Standortertrag kWh/kWp (default Bundesschnitt)
   };
   // Optional overrides (editable in result view)
   override?: {
@@ -263,17 +242,13 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   let pvBenefitPerYear: number[] = new Array(cfg.years).fill(0);
   if (pvActive) {
     const pv = inputs.pv!;
-    const ertragKwp = pv.ertragKwp ?? PV_DEFAULT_YIELD_KWP;
-    const householdBase = pv.haushaltKwh ?? householdKwhFromPersonen(inputs.personen);
-    const nutzungIdx = pv.nutzungIdx ?? 1; // teils zuhause (HTW-Standardprofil)
-    const pIdx = personenIdxFromCount(inputs.personen);
-    const pvProd = pv.kwp * ertragKwp;
-    // Eigenverbrauch MIT und OHNE Wärmepumpe (dieselbe geteilte HTW-Funktion wie
-    // im PV-Rechner). Die Differenz × Produktion ist der Solarstrom, den die WP
-    // zusätzlich selbst verbraucht — der Haushalt konkurriert dabei um die Sonne.
-    const evWp = calcEigenverbrauch({ personenIdx: pIdx, nutzungIdx, speicherKwh: pv.speicherKwh, wp: "ja", ea: "nein", eaKm: 0, wpKwh: eWp, kwp: pv.kwp, ertragKwp, baseKwh: householdBase }) / 100;
-    const evNoWp = calcEigenverbrauch({ personenIdx: pIdx, nutzungIdx, speicherKwh: pv.speicherKwh, wp: "nein", ea: "nein", eaKm: 0, wpKwh: null, kwp: pv.kwp, ertragKwp, baseKwh: householdBase }) / 100;
-    const wpSelfKwh = Math.max(0, Math.min((evWp - evNoWp) * pvProd, eWp));
+    // Anteil des WP-Stroms, den die PV deckt: konservative, MONOTONE HTW-Heuristik
+    // (steigt sauber mit Anlagengröße und Speicher, gedeckelt bei 35 %). Bewusst
+    // NICHT aus der Differenz zweier Eigenverbrauchs-Quoten gerechnet — die rundet
+    // intern auf ganze Prozent, deckelt und hat einen Boden; ihre Differenz ist
+    // nicht-monoton (Speicher würde die Deckung senken) und liefert unmögliche
+    // Werte. Die WP läuft v. a. im Winter mit wenig Sonne → 35 %-Deckel ist real.
+    const wpSelfKwh = estimatePvCoverageOfWp(pv.kwp, eWp, pv.speicherKwh) * eWp;
     pvCoverage = eWp > 0 ? wpSelfKwh / eWp : 0;
     const feedInEur = calcWeightedFeedIn(pv.kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10, DEFAULT_FEED_IN.thresholdKwp) / 100;
     // Ersparnis: WP-Strom, den die Sonne deckt (WP-Tarif, steigt) …

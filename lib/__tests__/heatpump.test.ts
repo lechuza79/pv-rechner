@@ -338,7 +338,9 @@ describe("calcHeatPump with PV synergy", () => {
 
   it("credits only the WP synergy, not the full PV benefit", () => {
     expect(pvVorhanden.pvCoverage).toBeGreaterThan(0);
-    expect(pvVorhanden.pvCoverage).toBeLessThanOrEqual(1);
+    // Coverage is bounded by the conservative HTW heuristic (≤ 35 %): the WP runs
+    // mostly in winter when PV yield is low, so it can never cover most of it.
+    expect(pvVorhanden.pvCoverage).toBeLessThanOrEqual(0.35);
     // WP electricity is billed at the full grid price regardless of PV.
     expect(pvVorhanden.stromKosten).toBe(noPv.stromKosten);
     // TCO improves by EXACTLY the synergy credit (no PV cost, no household/feed-in).
@@ -347,9 +349,25 @@ describe("calcHeatPump with PV synergy", () => {
     // The synergy is a fraction of the full PV value: a 10 kWp system's full
     // 20-year benefit is tens of thousands of € — the WP-attributable synergy
     // (solar the WP self-consumes instead of feeding in cheaply) is far smaller.
-    // This guards against the over-crediting the Council flagged.
     expect(pvVorhanden.pvBenefit).toBeLessThan(20000);
     expect(pvVorhanden.pvStromSavings).toBe(pvVorhanden.pvBenefit); // alias
+  });
+
+  it("synergy rises monotonically with PV size and with storage (no physical inversions)", () => {
+    // Guards the defect an earlier estimator had: differencing two rounded/clamped
+    // self-consumption quotas produced non-monotonic coverage (a battery LOWERED
+    // it, big systems peaked then crashed). The HTW heuristic must be smooth.
+    const bySize = [2, 5, 10, 15, 20, 30].map(kwp =>
+      calcHeatPump({ ...baseInputs, pv: { status: "vorhanden", kwp, speicherKwh: 0 } }).pvBenefit);
+    for (let i = 1; i < bySize.length; i++) expect(bySize[i]).toBeGreaterThanOrEqual(bySize[i - 1]);
+
+    const byStorage = [0, 2, 5, 10, 15].map(sp =>
+      calcHeatPump({ ...baseInputs, pv: { status: "vorhanden", kwp: 10, speicherKwh: sp } }).pvBenefit);
+    for (let i = 1; i < byStorage.length; i++) expect(byStorage[i]).toBeGreaterThanOrEqual(byStorage[i - 1]);
+
+    // And coverage never breaks the physical 35 % ceiling, even in the worst corner.
+    const corner = calcHeatPump({ ...baseInputs, personen: 1, wohnflaeche: 60, pv: { status: "vorhanden", kwp: 15, speicherKwh: 10 } });
+    expect(corner.pvCoverage).toBeLessThanOrEqual(0.35);
   });
 
   it("existing PV improves the TCO without touching the chart's year-0 investment", () => {
