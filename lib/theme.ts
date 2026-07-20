@@ -125,7 +125,7 @@ export const tokens = {
   // ─── Layout (3) ────────────────────────────────────────────────────────────
   '--page-max-width': '480px',       // Rechner/Tools — kompakte, fokussierte Spalte
   '--content-max-width': '640px',    // Redaktionelle Lese-/Textseiten (Ratgeber, Methodik, …)
-  '--header-max-width': '960px',
+  '--header-max-width': '1040px',
 } as const;
 
 export type TokenName = keyof typeof tokens;

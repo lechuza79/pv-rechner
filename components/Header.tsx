@@ -65,7 +65,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   const [isDesktop, setIsDesktop] = useState(true);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
+    const mq = window.matchMedia("(min-width: 1000px)");
     setIsDesktop(mq.matches);
     const handler = (e: MediaQueryListEvent) => {
       setIsDesktop(e.matches);
@@ -85,6 +85,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     display: "inline-flex",
     alignItems: "center",
     gap: 6,
+    whiteSpace: "nowrap",
   });
 
   const mobileLinkStyle = (page: string): React.CSSProperties => ({
@@ -273,6 +274,7 @@ function DesktopDropdown({
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
+          whiteSpace: "nowrap",
           cursor: "pointer",
           color: active ? v('--color-accent') : v('--color-text-secondary'),
         }}
