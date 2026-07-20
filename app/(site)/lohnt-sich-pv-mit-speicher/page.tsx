@@ -18,7 +18,7 @@ import {
   BATTERY_LIFETIME_YEARS,
 } from "../../../lib/calc";
 import { simulatePvYear } from "../../../lib/pv-sim";
-import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS } from "../../../lib/constants";
+import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, NO_PLZ_DEFAULT_YIELD } from "../../../lib/constants";
 import { pageMetadata } from "../../../lib/seo";
 import Chart from "../photovoltaik-rechner/_components/Chart";
 
@@ -216,7 +216,7 @@ function formatPriceDate(isoDate: string): string {
 // ever differs from the tool, that's a bug, not a rounding choice.
 const EX = {
   kwp: 10,
-  ertragKwp: 950, // conservative German average, same default as the calculator without PLZ
+  ertragKwp: NO_PLZ_DEFAULT_YIELD, // conservative German average, same default as the calculator without PLZ
   personenIdx: 2, // 3–4 Personen → 3.800 kWh/a
   nutzungIdx: 1, // "Teils zuhause" → tagQuote 0.30 (HTW-Standardprofil)
 };

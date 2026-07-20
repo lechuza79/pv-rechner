@@ -32,7 +32,7 @@
 // PVGIS-Monatsprofil, die Haushaltslast aus calcHourlyConsumption, der Tag/Nacht-
 // Split über die geteilte tagQuote — hier steht nur, was Balkon-spezifisch ist.
 
-import { NUTZUNG } from "./constants";
+import { NUTZUNG, NO_PLZ_DEFAULT_YIELD } from "./constants";
 import { DEFAULT_PRICES } from "./prices-config";
 
 export type BalkonSetId = "single" | "duo" | "max";
@@ -186,7 +186,7 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   defaultPresence: "teils",
   defaultStorage: "none",
 
-  specificYield: 950,
+  specificYield: NO_PLZ_DEFAULT_YIELD, // konservativer Bundesschnitt; per PLZ von PVGIS überschrieben
 
   schukoMaxWp: 960,
   energySocketCostMin: 100,

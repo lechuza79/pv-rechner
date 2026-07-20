@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP } from "../../../lib/constants";
+import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, NO_PLZ_DEFAULT_YIELD } from "../../../lib/constants";
 import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { calcWpAnnualElectricity } from "../../../lib/heatpump";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
@@ -204,7 +204,7 @@ export async function GET(req: NextRequest) {
   const ea = paramStr(params, "ea", "nein", ["nein", "geplant", "ja"]);
   const eaKm = paramInt(params, "km", 15000, 1000, 50000);
   const customKwp = paramFloat(params, "ck", 12, 1, 50);
-  const ertragKwp = paramInt(params, "er", 950, 700, 1400);
+  const ertragKwp = paramInt(params, "er", NO_PLZ_DEFAULT_YIELD, 700, 1400);
   const strompreis = paramFloat(params, "st", DEFAULT_PRICES.electricityPrice, 0.05, 1.0);
   const einspeisungModus = params.eia === "2" ? "voll" : params.eia === "0" ? "aus" : "teil";
   const plz = params.plz || "";
