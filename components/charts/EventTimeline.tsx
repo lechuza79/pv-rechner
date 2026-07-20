@@ -16,6 +16,8 @@ export interface TimelineEvent {
   year: number;
   label: string;
   text: string;
+  /** Wer die Entscheidung getroffen hat (regierende Koalition + Ressort), neutral. */
+  government?: string;
 }
 
 interface Props {
@@ -166,6 +168,11 @@ export default function EventTimeline({ events, active, onChange, startYear, end
                   {e.label}
                 </div>
                 <div style={{ fontSize: 14, lineHeight: 1.55, color: v("--color-text-secondary") }}>{e.text}</div>
+                {e.government && (
+                  <div style={{ fontSize: 12.5, lineHeight: 1.5, color: v("--color-text-muted"), marginTop: 6 }}>
+                    <strong style={{ fontWeight: 700 }}>Regierung:</strong> {e.government}
+                  </div>
+                )}
               </div>
             ))}
           </div>

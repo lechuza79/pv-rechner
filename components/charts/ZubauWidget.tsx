@@ -37,26 +37,31 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
     year: 2000,
     label: "EEG-Start",
     text: "Das Erneuerbare-Energien-Gesetz garantiert erstmals eine feste Vergütung über 20 Jahre. Damit wird eine kleine Dachanlage überhaupt erst kalkulierbar.",
+    government: "Rot-grüne Koalition (SPD/Grüne), Kanzler Schröder — als Initiative aus dem Parlament um Hermann Scheer (SPD) und Hans-Josef Fell (Grüne).",
   },
   {
     year: 2004,
     label: "EEG-Novelle",
     text: "Die Vergütung steigt auf ihren Höchststand von über 57 ct/kWh. Der erste große Zubau-Boom beginnt — Einspeisen allein trägt die Anlage.",
+    government: "Rot-grüne Koalition (SPD/Grüne), Umweltminister Jürgen Trittin (Grüne).",
   },
   {
     year: 2012,
     label: "Vergütungskürzung",
     text: "Drastische Kürzungen und der Wechsel auf monatliche Degression. Der Satz fällt unter den Haushaltsstrompreis — Einspeisen lohnt weniger als der selbst genutzte Strom, der Kleindach-Zubau bricht ein.",
+    government: "Schwarz-gelbe Koalition (CDU/CSU/FDP), Kanzlerin Merkel — Umweltminister Röttgen (CDU) und Wirtschaftsminister Rösler (FDP).",
   },
   {
     year: 2023,
     label: "Nullsteuer",
     text: "0 % Mehrwertsteuer auf Kauf und Montage von PV-Anlagen. Zusammen mit den nach 2022 stark gestiegenen Strompreisen wird der Eigenverbrauch so lukrativ, dass der Zubau explodiert — obwohl die Vergütung niedrig bleibt.",
+    government: "Ampel-Koalition (SPD/Grüne/FDP), Kanzler Scholz — Finanzminister Christian Lindner (FDP), im Jahressteuergesetz 2022.",
   },
   {
     year: 2024,
     label: "Solarpaket I",
     text: "Das Solarpaket I und das Balkonkraftwerk-Privileg vereinfachen Anmeldung und Betrieb. Steckersolar wird zur privilegierten Maßnahme — der Zubau bleibt auf Rekordniveau.",
+    government: "Ampel-Koalition (SPD/Grüne/FDP), Wirtschafts- und Klimaminister Robert Habeck (Grüne).",
   },
 ];
 

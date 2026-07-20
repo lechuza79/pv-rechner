@@ -67,6 +67,10 @@ Stil der bestehenden `ZUBAU_EVENTS` (`components/charts/ZubauWidget.tsx`):
 - `label`: 1–2 Wörter (z. B. „EEG-Reform"),
 - `text`: EIN neutraler Satz in derselben Tonalität wie die vorhandenen Marken,
   belegt durch Primärquelle (Gesetz/Bundesnetzagentur), keine Wertung.
+- `government`: WER die Entscheidung getroffen hat — regierende Koalition
+  (Parteien) + Kanzler/in + verantwortliches Ressort/Minister, neutral und
+  belegt (kein Partei-Lob/-Tadel). Beispiel-Stil: „Ampel-Koalition (SPD/Grüne/
+  FDP), Wirtschaftsminister … (…)."
 
 Den Kandidaten in den Wächter-Report (`/api/alert`) schreiben. **Ein Mensch**
 formuliert final, prüft Jahr + Neutralität und trägt ihn in `ZUBAU_EVENTS` ein —
