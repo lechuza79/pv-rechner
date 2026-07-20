@@ -24,9 +24,12 @@
  *   • Solarenergie-Förderverein Deutschland (SFV), EEG-Vergütungstabellen —
  *     Werte 2000–2012.
  *   Diese Sätze sind gesetzlich festgelegte EEG-Werte (§§ 48/49 EEG bzw.
- *   Vorgänger) — öffentliche Fakten, gegen SFV + englische Wikipedia
- *   quergeprüft. Belastbarkeit gut außer den drei degressions-unscharfen
- *   Jahren 2014/2019/2020 (Sekundärquellen streuen ±0,5 ct).
+ *   Vorgänger) — öffentliche Fakten. Die Januar-Werte 2013–2022 wurden zusätzlich
+ *   gegen die Monatstabellen von solarbranche.de und solarcheck-deutschland.de
+ *   (beide BNetzA-basiert) abgeglichen (u. a. 2017 = 12,30; 2019 = 11,47
+ *   korrigiert). 2022 = 6,83 ist bewusst der Januar-Wert vor der EEG-2023-Reform;
+ *   die Anhebung auf 8,20 (Teileinspeisung) galt erst ab 30.07.2022 und steht
+ *   daher in der Reihe bei 2023.
  *
  * WARTUNG: Der aktuelle Satz kommt separat aus lib/feedin-config.ts (Live-Wert
  *   für den Rechner). Diese Reihe ist ein historischer Stichtags-Datenstand und
@@ -53,6 +56,6 @@ export const FEEDIN_HISTORY_YEARS: number[] = [
 /** ct/kWh, index-gleich zu FEEDIN_HISTORY_YEARS. */
 export const FEEDIN_HISTORY_VALUES: number[] = [
   50.62, 50.62, 48.1, 45.7, 57.4, 54.53, 51.8, 49.21, 46.75, 43.01, 39.14,
-  28.74, 24.43, 17.02, 13.15, 12.41, 12.31, 12.2, 12.2, 11.0, 9.87, 8.16, 6.83,
+  28.74, 24.43, 17.02, 13.15, 12.41, 12.31, 12.3, 12.2, 11.47, 9.87, 8.16, 6.83,
   8.2, 8.11, 7.94, 7.78,
 ];

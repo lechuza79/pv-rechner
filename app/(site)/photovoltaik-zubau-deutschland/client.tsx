@@ -165,17 +165,17 @@ export default function ZubauDeutschlandClient({ series }: { series: NationalSol
         </h2>
         <p style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 10px" }}>
           Der <strong>erste Boom</strong> (rund 2009–2012) lief über die Einspeisevergütung: Wer eine
-          Anlage aufs Dach setzte, bekam für jede eingespeiste Kilowattstunde ein Vielfaches dessen, was
-          Strom damals kostete. Als die Vergütung 2012 drastisch gekürzt wurde und unter den
-          Haushaltsstrompreis fiel, kippte die Logik — und der Zubau brach über Jahre ein.
+          Anlage aufs Dach setzte, bekam für jede eingespeiste Kilowattstunde deutlich mehr, als eine
+          Kilowattstunde Strom damals kostete. Als die Vergütung 2012 drastisch gekürzt wurde und unter
+          den Haushaltsstrompreis fiel, kippte die Logik — und der Zubau brach über Jahre ein.
         </p>
         <p style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary"), margin: 0 }}>
           Der <strong>zweite Boom</strong> (ab 2022) hat einen anderen Motor: nicht mehr das Einspeisen,
-          sondern der <strong>Eigenverbrauch</strong>. Als die Strompreise 2022 sprunghaft stiegen, wurde
-          jede selbst genutzte Kilowattstunde bares Geld wert. Die Nullsteuer 2023 nahm zusätzlich die
-          Anschaffungshürde. Ergebnis: Rekord-Zubau bei gleichzeitig niedriger Vergütung — der Beweis,
-          dass heute der Strompreis die Anlage trägt, nicht mehr die Förderung. Der Höchststand liegt bei
-          über {boomPeak.toLocaleString("de-DE", { maximumFractionDigits: 0 })} GW in einem einzigen Jahr.
+          sondern der <strong>Eigenverbrauch</strong>. Als die Strompreise in der Energiekrise 2022/2023
+          sprunghaft stiegen, wurde jede selbst genutzte Kilowattstunde bares Geld wert. Die Nullsteuer
+          2023 nahm zusätzlich die Anschaffungshürde. Ergebnis: Rekord-Zubau bei gleichzeitig niedriger
+          Vergütung — der Beweis, dass heute der Strompreis die Anlage trägt, nicht mehr die Förderung.
+          Der Höchststand liegt bei über {Math.floor(boomPeak)} GW in einem einzigen Jahr.
         </p>
       </div>
 
