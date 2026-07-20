@@ -65,6 +65,13 @@ export const DATA_SOURCES = {
     name: "PVGIS (Europäische Kommission)",
     url: "https://joint-research-centre.ec.europa.eu/pvgis-online-tool_en",
   },
+  /** Household + industry electricity prices (EU harmonised series). */
+  eurostat: {
+    name: "Eurostat",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://ec.europa.eu/eurostat/databrowser/product/view/nrg_pc_204",
+  },
   /** Historical EEG feed-in tariff series (statutory rates, 2000–today). */
   eegVerguetung: {
     name: "Bundesnetzagentur & Solarenergie-Förderverein (SFV)",

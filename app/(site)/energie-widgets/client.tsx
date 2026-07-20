@@ -119,6 +119,18 @@ const SECTIONS: WidgetSection[] = [
     variants: [{ id: "zubau-erneuerbare-atom", label: "Zubau EE vs. Atom", src: "/embed/zubau-erneuerbare-atom", height: 420 }],
   },
   {
+    id: "pv-zubau-deutschland",
+    label: "PV-Zubau & Förderung (Deutschland)",
+    intro:
+      "Der jährliche Photovoltaik-Zubau in Deutschland mit sinkender Einspeisevergütung und steigendem Strompreis auf einer Zeitachse — plus interaktiver Ereignis-Timeline, die die politischen Weichenstellungen erklärt.",
+    attribution: {
+      path: "/photovoltaik-zubau-deutschland",
+      text: "Wie Förderung den Solarausbau geformt hat – Solar Check",
+    },
+    showFrameWidth: true,
+    variants: [{ id: "pv-zubau-deutschland", label: "PV-Zubau", src: "/embed/pv-zubau-deutschland", height: 680 }],
+  },
+  {
     id: "karte",
     label: "Deutschland-Karte",
     intro:
