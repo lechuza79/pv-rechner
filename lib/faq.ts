@@ -170,7 +170,7 @@ export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
     },
     {
       q: "Fällt die Einspeisevergütung 2027 weg?",
-      a: "Geplant, aber noch nicht beschlossen: Ein Referentenentwurf des Bundeswirtschaftsministeriums sieht vor, die dauerhaft garantierte Einspeisevergütung für neue PV-Anlagen bis 25 kWp ab 2027 zu streichen. Die überarbeitete Entwurfsfassung sieht eine Übergangsphase vor: Neuanlagen sollen zunächst 36 Monate eine reduzierte Vergütung erhalten, danach ist ein zeitlich befristeter Bonus für die Direktvermarktung vorgesehen (Stand: Juli 2026). Ein Kabinettsbeschluss steht noch aus; Bundestag und Bundesrat müssen ebenfalls zustimmen. Ob und in welcher Form die Reform kommt, ist offen — verbindlich ist allein die offizielle Gesetzeslage.",
+      a: "Geplant, aber noch nicht beschlossen: Ein Referentenentwurf des Bundeswirtschaftsministeriums sieht vor, die dauerhaft garantierte Einspeisevergütung für neue PV-Anlagen bis 25 kWp ab 2027 zu streichen. Die überarbeitete Entwurfsfassung sieht eine Übergangsphase vor: Neuanlagen sollen zunächst 36 Monate eine reduzierte Vergütung erhalten, danach ist ein zeitlich befristeter Bonus für die Direktvermarktung vorgesehen (Stand: Juli 2026). Zu diesem Stand war die Reform noch nicht final beschlossen — der Weg durch Kabinett, Bundestag und Bundesrat stand noch aus. Ob und in welcher Form die Reform kommt, ist offen — verbindlich ist allein die offizielle Gesetzeslage.",
       cta: { label: "Aktuelle Vergütung ansehen", href: "/datenstand" },
     },
     {

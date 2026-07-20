@@ -410,7 +410,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         <h1 style={S.h1}>Lohnt sich eine PV-Anlage ohne Einspeisevergütung?</h1>
         <p style={S.subtitle}>
           Die Einspeisevergütung für Neuanlagen soll ab 2027 fallen — so sieht es ein
-          Gesetzentwurf vor. Hier ist die ehrliche Rechnung dazu: was die Vergütung heute
+          Reformentwurf vor. Hier ist die ehrliche Rechnung dazu: was die Vergütung heute
           wirklich beiträgt, und ob sich eine Anlage auch mit Vergütung null trägt. Alle
           Zahlen kommen aus demselben Modell wie unser Rechner, mit aktuellen Marktpreisen.
         </p>
@@ -449,10 +449,10 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           {FEED_IN_YEARS} Jahre. Die Reform beträfe nach dem Entwurf ausschließlich
           Neuanlagen.
           <br />
-          <span style={S.accent}>Verfahrensstand:</span> Der Kabinettsbeschluss wurde
-          mehrfach verschoben und steht noch aus; danach müssten Bundestag und Bundesrat
-          zustimmen. Hintergrund ist die EU-Beihilfegenehmigung des EEG, die Ende 2026
-          ausläuft.
+          <span style={S.accent}>Verfahrensstand:</span> Zum Stand {REFORM_STAND} war die
+          Reform noch nicht final beschlossen — der Weg durch Kabinett, Bundestag und
+          Bundesrat stand noch aus. Hintergrund ist die EU-Beihilfegenehmigung des EEG,
+          die Ende 2026 ausläuft.
           <br />
           <span style={S.muted}>
             Ohne Gewähr — verbindlich ist allein die offizielle Gesetzeslage. Die aktuell
