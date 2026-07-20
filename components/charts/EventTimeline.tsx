@@ -57,24 +57,34 @@ export default function EventTimeline({ events, active, onChange, startYear, end
 
   return (
     <div>
-      {/* Track — Ränder = Chart-Plot-Ränder, damit die Punkte unter den Balken sitzen */}
+      {/* Track — Ränder = Chart-Plot-Ränder, damit die Punkte unter den Balken sitzen.
+         Die Verbindungslinie beginnt am ersten Punkt (nicht am linken Rand). */}
       <div style={{ position: "relative", paddingLeft: PLOT_MARGIN.left, paddingRight: PLOT_MARGIN.right }}>
         <div role="tablist" aria-label="Politische Weichenstellungen" style={{ position: "relative", height: 30 }}>
-          <div style={{ position: "absolute", left: 0, right: 0, top: 14, height: 2, background: v("--color-border") }} />
           <div
             style={{
               position: "absolute",
-              left: 0,
-              width: `${pos(events[active].year)}%`,
+              left: `${pos(events[0].year)}%`,
+              width: `${pos(events[events.length - 1].year) - pos(events[0].year)}%`,
+              top: 14,
+              height: 2,
+              background: v("--color-border"),
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: `${pos(events[0].year)}%`,
+              width: `${pos(events[active].year) - pos(events[0].year)}%`,
               top: 14,
               height: 2,
               background: v("--color-accent"),
-              transition: "width .25s ease",
+              transition: "width .25s ease, left .25s ease",
             }}
           />
           {events.map((e, i) => {
             const isActive = i === active;
-            const d = isActive ? 24 : 16;
+            const d = isActive ? 24 : 15;
             return (
               <button
                 key={e.year}
@@ -92,22 +102,22 @@ export default function EventTimeline({ events, active, onChange, startYear, end
                   width: d,
                   height: d,
                   borderRadius: "50%",
-                  border: "none",
+                  border: `2px solid ${v("--color-bg")}`,
                   cursor: "pointer",
-                  background: isActive ? v("--color-accent") : v("--color-text-muted"),
+                  background: v("--color-accent"),
                   color: v("--color-bg"),
-                  fontSize: isActive ? 12 : 10,
+                  fontSize: 12,
                   fontWeight: 700,
                   fontFamily: v("--font-text"),
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  boxShadow: isActive ? `0 0 0 4px ${v("--color-bg-accent")}` : "none",
+                  boxShadow: isActive ? `0 2px 6px rgba(19,101,234,0.35)` : "none",
                   transition: "all .2s ease",
                   zIndex: isActive ? 2 : 1,
                 }}
               >
-                {i + 1}
+                {isActive ? i + 1 : ""}
               </button>
             );
           })}
@@ -162,9 +172,6 @@ export default function EventTimeline({ events, active, onChange, startYear, end
           >
             ›
           </button>
-        </div>
-        <div style={{ fontSize: 11.5, color: v("--color-text-muted"), marginTop: 10, textAlign: "center" }}>
-          {active + 1} / {events.length} · tippen, wischen oder mit ← → blättern
         </div>
       </div>
     </div>

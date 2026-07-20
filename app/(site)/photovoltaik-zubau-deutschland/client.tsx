@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import ZubauTimelineChart, { PolicyMarker } from "../../../components/charts/ZubauTimelineChart";
+import ZubauTimelineChart from "../../../components/charts/ZubauTimelineChart";
 import EventTimeline from "../../../components/charts/EventTimeline";
-import { v } from "../../../lib/theme";
+import ChartExportBar from "../../../components/ChartExportBar";
+import { useChartExport } from "../../../lib/useChartExport";
+import { v, tokens } from "../../../lib/theme";
 import type { NationalSolarSeries } from "../../../lib/mastr-data";
 import { FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES, FEEDIN_HISTORY_META } from "../../../lib/feedin-history";
 import { PRICE_YEARS, PRICE_HOUSEHOLD, PRICE_META } from "../../../lib/strommix-history";
@@ -40,8 +42,6 @@ const MARKERS: { year: number; label: string; text: string }[] = [
   },
 ];
 
-const CHART_MARKERS: PolicyMarker[] = MARKERS.map((m) => ({ year: m.year, label: m.label }));
-
 /** Werte einer Jahresreihe auf die Zielachse legen (null wo keine Zahl). */
 function alignToYears(targetYears: number[], srcYears: number[], srcValues: number[]): (number | null)[] {
   const map = new Map<number, number>();
@@ -57,17 +57,25 @@ function Label({ children }: { children: React.ReactNode }) {
   );
 }
 
-function LegendDot({ token, label }: { token: string; label: string }) {
-  return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: v("--color-text-secondary") }}>
-      <span style={{ width: 10, height: 10, borderRadius: 2, background: `var(${token})`, flexShrink: 0 }} />
-      {label}
-    </span>
-  );
-}
-
 export default function ZubauDeutschlandClient({ series }: { series: NationalSolarSeries | null }) {
   const [activeEvent, setActiveEvent] = useState(0);
+  // Chart-Export (Teilen/Download): Titel, Legende, Quelle + Branding werden im
+  // exportierten Bild rekomponiert — auch wenn die Legende auf der Seite fehlt.
+  const chartExport = useChartExport({
+    context: {
+      title: "Photovoltaik-Zubau in Deutschland",
+      subtitle: "Zubau pro Jahr, Einspeisevergütung & Strompreis seit 2000",
+      legend: [
+        { color: tokens["--color-accent"], label: "Zubau pro Jahr (GW)" },
+        { color: tokens["--color-positive"], label: "Einspeisevergütung (ct/kWh)" },
+        { color: tokens["--color-text-secondary"], label: "Haushaltsstrompreis (ct/kWh)" },
+      ],
+      source: "MaStR (Bundesnetzagentur) · BNetzA/SFV · Eurostat",
+    },
+    filename: "solar-check-pv-zubau-deutschland",
+    shareText:
+      "Wie Förderung den Solarausbau in Deutschland geformt hat – Zubau, Einspeisevergütung & Strompreis seit 2000",
+  });
   const card: React.CSSProperties = {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
@@ -115,22 +123,16 @@ export default function ZubauDeutschlandClient({ series }: { series: NationalSol
           die beiden Linien zeigen, warum: die sinkende Einspeisevergütung und der steigende Strompreis.
         </p>
 
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 18px", margin: "12px 0 2px" }}>
-          <LegendDot token="--color-energy-solar" label="Zubau pro Jahr (GW, linke Achse)" />
-          <LegendDot token="--color-accent" label="Einspeisevergütung (ct/kWh, rechte Achse)" />
-          <LegendDot token="--color-negative" label="Haushaltsstrompreis (ct/kWh, rechte Achse)" />
+        <div ref={chartExport.chartRef} style={{ marginTop: 12 }}>
+          <ZubauTimelineChart
+            years={years}
+            additionsGw={additionsGw}
+            partial={partial}
+            feedIn={feedIn}
+            price={price}
+            height={430}
+          />
         </div>
-
-        <ZubauTimelineChart
-          years={years}
-          additionsGw={additionsGw}
-          partial={partial}
-          feedIn={feedIn}
-          price={price}
-          markers={CHART_MARKERS}
-          activeYear={MARKERS[activeEvent].year}
-          height={430}
-        />
 
         {/* Synchrone Ereignis-Timeline (ersetzt den früheren Textblock) */}
         <div style={{ marginTop: 6 }}>
@@ -143,14 +145,21 @@ export default function ZubauDeutschlandClient({ series }: { series: NationalSol
           />
         </div>
 
-        <p style={{ fontSize: 11.5, color: v("--color-text-muted"), margin: "12px 0 0", paddingLeft: 44 }}>
-          Das laufende Jahr ({years[years.length - 1]}) ist ausgegraut — die Anlagen dieses Jahres sind
-          noch nicht vollständig gemeldet, der Balken ist deshalb kein Rückgang.
-        </p>
+        {/* Teilen / Download (Bild mit Titel, Legende, Quelle & Branding) */}
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
+          <ChartExportBar
+            onDownload={chartExport.downloadPng}
+            onShare={chartExport.sharePng}
+            onWhatsApp={chartExport.shareWhatsApp}
+            onTwitter={chartExport.shareTwitter}
+            isExporting={chartExport.isExporting}
+            canNativeShare={chartExport.canNativeShare}
+          />
+        </div>
       </div>
 
       {/* Die Story in zwei Absätzen */}
-      <div style={card}>
+      <div style={{ padding: "0 2px" }}>
         <h2 style={{ fontSize: 17, fontWeight: 700, margin: "0 0 8px", color: v("--color-text-primary") }}>
           Zwei Booms, ein Wendepunkt
         </h2>
@@ -171,7 +180,7 @@ export default function ZubauDeutschlandClient({ series }: { series: NationalSol
       </div>
 
       {/* Ausblick 2027 (liegt außerhalb der Chart-Achse, daher als Notiz) */}
-      <div style={card}>
+      <div style={{ padding: "0 2px" }}>
         <div style={{ fontSize: 14, lineHeight: 1.6, color: v("--color-text-secondary") }}>
           <strong style={{ color: v("--color-text-primary") }}>Ausblick 2027:</strong> Ein Referentenentwurf
           sieht eine EEG-Reform für Neuanlagen ab 2027 vor. Für heute installierte Anlagen gilt Bestandsschutz —
@@ -180,7 +189,7 @@ export default function ZubauDeutschlandClient({ series }: { series: NationalSol
       </div>
 
       {/* Förder-Überblick (verlinkt, nicht nachgebaut) */}
-      <div style={card}>
+      <div style={{ padding: "0 2px" }}>
         <h2 style={{ fontSize: 17, fontWeight: 700, margin: "0 0 8px", color: v("--color-text-primary") }}>
           Und die regionale Förderung?
         </h2>

@@ -2,15 +2,10 @@
 
 /**
  * Zubau-Zeitleiste: der jährliche PV-Zubau (Balken, GW/Jahr) mit zwei
- * überlagerten Politik-/Markt-Linien (Einspeisevergütung + Haushaltsstrompreis,
- * beide in ct/kWh auf einer geteilten rechten Achse) und kuratierten
- * Politik-Markern auf der Zeitachse.
- *
- * Bewusst eine eigene Komponente statt LineChart/StackedBarChart: die Story
- * lebt vom direkten Übereinanderlegen einer Mengen-Achse (GW) und einer
- * Preis-Achse (ct/kWh) im selben Bild — das leistet keiner der generischen
- * Charts. Balken und Linien teilen sich eine lineare Jahres-X-Achse, damit sie
- * exakt fluchten.
+ * überlagerten Markt-/Politik-Linien (Einspeisevergütung + Haushaltsstrompreis,
+ * beide in ct/kWh auf einer geteilten rechten Achse). Die Ereignis-Marken leben
+ * in der interaktiven EventTimeline direkt darunter (gleiche Plot-Ränder + Jahres-
+ * Domäne) — der Chart selbst bleibt bewusst frei von Markern.
  */
 
 import { useMemo, useState, useCallback } from "react";
@@ -21,12 +16,6 @@ import { GridRows } from "@visx/grid";
 import { AxisBottom } from "@visx/axis";
 import { ParentSize } from "@visx/responsive";
 import { curveMonotoneX } from "d3-shape";
-
-export interface PolicyMarker {
-  year: number;
-  /** Kurzes Label an der Marke (z. B. "Nullsteuer"). */
-  label: string;
-}
 
 export interface ZubauTimelineProps {
   /** Jahre, lückenlos aufsteigend (Balken-Stützstellen). */
@@ -39,29 +28,30 @@ export interface ZubauTimelineProps {
   feedIn: (number | null)[];
   /** Haushaltsstrompreis ct/kWh, index-gleich zu years (null = keine Zahl). */
   price: (number | null)[];
-  markers: PolicyMarker[];
-  /** Jahr des aktiven Markers (aus der Timeline darunter) — wird betont. */
-  activeYear?: number | null;
   height?: number;
 }
 
 /** Plot-Ränder — exportiert, damit die Event-Timeline darunter exakt fluchtet. */
-export const PLOT_MARGIN = { top: 34, right: 52, bottom: 30, left: 44 };
+export const PLOT_MARGIN = { top: 18, right: 52, bottom: 30, left: 44 };
 
 const cssVar = (t: string) => `var(${t})`;
 
-const COLOR_BARS = "--color-energy-solar";
-const COLOR_FEEDIN = "--color-accent";
-const COLOR_PRICE = "--color-negative";
+const COLOR_BARS = "--color-accent"; // Blau
+const COLOR_FEEDIN = "--color-positive"; // Signalgrün
+const COLOR_PRICE = "--color-text-secondary"; // Grau
+
+/** Rechteck mit nur oben abgerundeten Ecken. */
+function topRoundedRect(x: number, y: number, w: number, h: number, r: number): string {
+  const rr = Math.max(0, Math.min(r, w / 2, h));
+  return `M${x},${y + h} L${x},${y + rr} Q${x},${y} ${x + rr},${y} L${x + w - rr},${y} Q${x + w},${y} ${x + w},${y + rr} L${x + w},${y + h} Z`;
+}
 
 export default function ZubauTimelineChart(props: ZubauTimelineProps) {
   const height = props.height ?? 420;
   return (
     <div style={{ width: "100%", height }}>
       <ParentSize>
-        {({ width }) =>
-          width > 0 ? <Inner {...props} width={width} height={height} /> : null
-        }
+        {({ width }) => (width > 0 ? <Inner {...props} width={width} height={height} /> : null)}
       </ParentSize>
     </div>
   );
@@ -78,8 +68,6 @@ function Inner({
   partial,
   feedIn,
   price,
-  markers,
-  activeYear,
   width,
   height,
 }: ZubauTimelineProps & { width: number; height: number }) {
@@ -168,68 +156,24 @@ function Inner({
             tickValues={leftTicks}
           />
 
-          {/* Politik-Marker: vertikale Linie + nummerierter Badge oben.
-             Die Nummer verweist auf die Erklär-Liste unter dem Chart — so
-             überlappen auch benachbarte Jahre (2023/2024) nicht. */}
-          {markers.map((m, i) => {
-            const mx = xScale(m.year);
-            if (mx < 0 || mx > innerWidth) return null;
-            const isActive = activeYear === m.year;
-            return (
-              <g key={`${m.year}-${m.label}`}>
-                <line
-                  x1={mx}
-                  x2={mx}
-                  y1={-2}
-                  y2={innerHeight}
-                  stroke={isActive ? cssVar(COLOR_FEEDIN) : "var(--color-text-muted, #949494)"}
-                  strokeWidth={isActive ? 1.75 : 1}
-                  strokeDasharray={isActive ? undefined : "3,3"}
-                  strokeOpacity={isActive ? 0.9 : 0.5}
-                />
-                <circle
-                  cx={mx}
-                  cy={-14}
-                  r={isActive ? 9.5 : 8}
-                  fill={isActive ? cssVar(COLOR_FEEDIN) : "var(--color-text-secondary, #777)"}
-                />
-                <text
-                  x={mx}
-                  y={-14}
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  fontSize={isActive ? 11 : 10}
-                  fontWeight={700}
-                  fontFamily="var(--font-text, sans-serif)"
-                  fill="var(--color-bg, #fff)"
-                >
-                  {i + 1}
-                </text>
-              </g>
-            );
-          })}
-
-          {/* Zubau-Balken */}
+          {/* Zubau-Balken (blau, oben leicht abgerundet) */}
           {years.map((year, i) => {
             const gw = additionsGw[i];
-            const h = innerHeight - yLeft(gw);
+            const yTop = yLeft(gw);
+            const h = innerHeight - yTop;
             const isPartial = partial[i];
             const active = hover?.idx === i;
             return (
-              <rect
+              <path
                 key={year}
-                x={xScale(year) - barW / 2}
-                y={yLeft(gw)}
-                width={barW}
-                height={Math.max(0, h)}
-                rx={1.5}
+                d={topRoundedRect(xScale(year) - barW / 2, yTop, barW, Math.max(0, h), 2.5)}
                 fill={cssVar(COLOR_BARS)}
-                opacity={isPartial ? 0.3 : active ? 1 : 0.82}
+                opacity={isPartial ? 0.28 : active ? 1 : 0.85}
               />
             );
           })}
 
-          {/* Vergütungs-Linie (ct/kWh, rechte Achse) */}
+          {/* Vergütungs-Linie (Signalgrün, ct/kWh, rechte Achse) */}
           <LinePath<{ year: number; value: number }>
             data={feedInPts}
             x={(d) => xScale(d.year)}
@@ -239,7 +183,7 @@ function Inner({
             strokeLinecap="round"
             curve={curveMonotoneX}
           />
-          {/* Strompreis-Linie (ct/kWh, rechte Achse) */}
+          {/* Strompreis-Linie (Grau, ct/kWh, rechte Achse) */}
           <LinePath<{ year: number; value: number }>
             data={pricePts}
             x={(d) => xScale(d.year)}
