@@ -99,6 +99,31 @@ async function fetchFromSupabase(
   };
 }
 
+// Monday 00:00 UTC of ISO week `week` in ISO year `year` (Jan 4 is always in W01).
+function isoWeekStartUtc(year: number, week: number): number {
+  const jan4 = Date.UTC(year, 0, 4);
+  const day = new Date(jan4).getUTCDay() || 7; // 1=Mon … 7=Sun
+  const mondayW1 = jan4 - (day - 1) * 86400000;
+  return mondayW1 + (week - 1) * 7 * 86400000;
+}
+
+// For ongoing ranges served from energy_weekly: drop trailing rows whose ISO
+// week is not guaranteed complete yet. The weekly backfill cron upserts the
+// in-progress week with partial sums, so a week only counts as final once it
+// has ended AND one full cron interval (7 days) has passed over it.
+function trimIncompleteTrailingWeeks(data: GenerationDataPoint[]): GenerationDataPoint[] {
+  const cutoff = Date.now() - 7 * 86400000;
+  let end = data.length;
+  while (end > 0) {
+    const m = /^(\d{4})-W(\d{2})$/.exec(String(data[end - 1].ts));
+    if (!m) break;
+    const weekEnd = isoWeekStartUtc(Number(m[1]), Number(m[2])) + 7 * 86400000;
+    if (weekEnd <= cutoff) break;
+    end--;
+  }
+  return data.slice(0, end);
+}
+
 // ─── GET Handler ──────────────────────────────────────────────────────────────
 
 export async function GET(req: NextRequest) {
@@ -153,19 +178,26 @@ export async function GET(req: NextRequest) {
       endStr = now.toISOString().replace("Z", "+01:00").slice(0, 19) + "+01:00";
     }
 
-    // For finished past ranges spanning roughly a year or more, try the
-    // pre-aggregated weekly table in Supabase first. Threshold 6000 hours
-    // (~9 months) covers full years, 12-month windows and multi-year ranges
-    // — but stays away from short ranges where 15-min granularity matters.
-    // Requires isPast so we never hand back partial-week data for ongoing
-    // periods.
-    if (isAbsolute && isPast && rangeHours > 6000) {
+    // For ranges spanning roughly a year or more, try the pre-aggregated
+    // weekly table in Supabase first. Threshold 6000 hours (~9 months) covers
+    // full years, 12-month windows and multi-year ranges — but stays away from
+    // short ranges where 15-min granularity matters. Ongoing ranges (e.g. the
+    // Max view "2015 – heute") are served from the weekly table too — a single
+    // direct Energy-Charts query over a decade of 15-min data is not viable —
+    // but with not-yet-complete trailing weeks trimmed, so we never hand back
+    // partial-week data.
+    if (isAbsolute && rangeHours > 6000) {
       const dbResult = await fetchFromSupabase(country, range.start, range.end);
       if (dbResult && dbResult.data.length > 0) {
-        store.set(cacheKey, dbResult);
-        return NextResponse.json(dbResult, {
-          headers: { "Cache-Control": `public, s-maxage=${isPast ? 2592000 : 3600}` },
-        });
+        if (!isPast) {
+          dbResult.data = trimIncompleteTrailingWeeks(dbResult.data);
+        }
+        if (dbResult.data.length > 0) {
+          store.set(cacheKey, dbResult);
+          return NextResponse.json(dbResult, {
+            headers: { "Cache-Control": `public, s-maxage=${isPast ? 2592000 : 3600}` },
+          });
+        }
       }
       // Supabase empty → fallback to Energy-Charts (yearly chunks)
     }
