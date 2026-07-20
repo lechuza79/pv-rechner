@@ -21,7 +21,7 @@ import { useState } from "react";
 import { v } from "../../lib/theme";
 import { PoweredBy, DataSourceNote } from "../PoweredBy";
 import ChartActionBar from "../ChartActionBar";
-import { DATA_SOURCES, sourceLabel } from "../../lib/data-sources";
+import { DATA_SOURCES, sourceLabel, type DataSource } from "../../lib/data-sources";
 import { useChartExport } from "../../lib/useChartExport";
 import ZubauTimelineChart from "./ZubauTimelineChart";
 import EventTimeline, { TimelineEvent } from "./EventTimeline";
@@ -65,7 +65,7 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
   },
 ];
 
-export const ZUBAU_WIDGET_SOURCES = [DATA_SOURCES.mastr, DATA_SOURCES.eegVerguetung, DATA_SOURCES.eurostat];
+export const ZUBAU_WIDGET_SOURCES: DataSource[] = [DATA_SOURCES.mastr, DATA_SOURCES.eegVerguetung, DATA_SOURCES.eurostat];
 export const ZUBAU_EMBED_HASH = "pv-zubau-deutschland";
 
 const WIDGET_TITLE = "Photovoltaik-Zubau in Deutschland";
@@ -125,6 +125,13 @@ export default function ZubauWidget({
   const copyLink = () =>
     navigator.clipboard?.writeText(`${SHARE_TEXT}\n${LIVE_URL}`).catch(() => {});
 
+  // Volle Quelle für den title-Tooltip + Bild-Export; kompakte Kurzform (ohne
+  // Klammer-Zusätze) für das schlanke vertikale Label an der rechten Kante.
+  const fullSource = ZUBAU_WIDGET_SOURCES.map(sourceLabel).join(" · ");
+  const compactSource = ZUBAU_WIDGET_SOURCES.map(
+    (s) => `${s.name.replace(/\s*\([^)]*\)/g, "")}${s.license ? `, ${s.license}` : ""}`,
+  ).join(" · ");
+
   return (
     <div ref={chartExport.chartRef} style={S.frame}>
       {/* Titel/Label — im Embed sichtbar, auf der Seite nur im Bild-Export. */}
@@ -136,32 +143,33 @@ export default function ZubauWidget({
         <div style={S.sub}>{WIDGET_SUBLINE}</div>
       </div>
 
-      <ZubauTimelineChart
-        years={years}
-        additionsGw={additionsGw}
-        partial={partial}
-        feedIn={feedIn}
-        price={price}
-        height={420}
-      />
-
-      <div style={{ marginTop: 6 }}>
-        <EventTimeline
-          events={ZUBAU_EVENTS}
-          active={active}
-          onChange={setActive}
-          startYear={years[0]}
-          endYear={years[years.length - 1]}
+      {/* Chart + Timeline; im Embed steht die Quelle vertikal schlank an der
+          rechten Kante (Konvention — nie als horizontaler Block). Aus dem
+          Bild-Export ausgenommen; der Export-Fuß trägt die volle Quelle. */}
+      <div style={{ position: "relative", ...(isEmbed ? { paddingRight: 16 } : null) }}>
+        {isEmbed && (
+          <div data-sc-export-ignore="" title={`Quelle: ${fullSource}`} style={S.vsource}>
+            Quelle: {compactSource}
+          </div>
+        )}
+        <ZubauTimelineChart
+          years={years}
+          additionsGw={additionsGw}
+          partial={partial}
+          feedIn={feedIn}
+          price={price}
+          height={420}
         />
-      </div>
-
-      {/* Sichtbare Quelle nur im Embed (Standalone braucht eigene Attribution);
-          aus dem Bild-Export ausgenommen — der Export-Fuß trägt sie voll. */}
-      {isEmbed && (
-        <div data-sc-export-ignore="" style={S.webSource}>
-          <DataSourceNote source={ZUBAU_WIDGET_SOURCES} />
+        <div style={{ marginTop: 6 }}>
+          <EventTimeline
+            events={ZUBAU_EVENTS}
+            active={active}
+            onChange={setActive}
+            startYear={years[0]}
+            endYear={years[years.length - 1]}
+          />
         </div>
-      )}
+      </div>
 
       <div style={S.footer}>
         <div style={S.rule} />
@@ -213,7 +221,26 @@ const S: Record<string, React.CSSProperties> = {
   header: { marginBottom: 10 },
   title: { fontSize: 17, fontWeight: 800, letterSpacing: "-0.01em", margin: "0 0 3px", lineHeight: 1.25, color: v("--color-text-primary") },
   sub: { fontSize: 12.5, color: v("--color-text-muted"), margin: 0, lineHeight: 1.4 },
-  webSource: { marginTop: 10, fontSize: 10.5, lineHeight: 1.4, color: v("--color-text-muted") },
+  // Quelle vertikal an der rechten Kante — schlank, mit vollem Text im title-
+  // Tooltip; Umbruch erlaubt (mehrere Spalten bei mehreren Quellen).
+  vsource: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    right: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    writingMode: "vertical-rl",
+    transform: "rotate(180deg)",
+    maxHeight: "100%",
+    fontSize: 9,
+    lineHeight: 1.4,
+    letterSpacing: 0.2,
+    color: v("--color-text-faint"),
+    textAlign: "center",
+    pointerEvents: "none",
+  },
   footer: { marginTop: 12 },
   rule: { height: 1, background: v("--color-border"), opacity: 0.6, marginBottom: 8 },
   actions: { display: "flex", alignItems: "center", gap: 8, fontSize: 10.5, color: v("--color-text-muted") },
