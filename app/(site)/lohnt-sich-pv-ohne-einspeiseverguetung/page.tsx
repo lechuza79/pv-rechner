@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Header from "../../../components/Header";
 import { IconArrowRight } from "../../../components/Icons";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import Faq from "../../../components/Faq";
@@ -15,10 +16,11 @@ import {
   estimateCost,
   batteryReplaceCost,
 } from "../../../lib/calc";
-import { simulatePvYear } from "../../../lib/pv-sim";
+import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
 import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, FEED_IN_YEARS } from "../../../lib/constants";
 import { pageMetadata } from "../../../lib/seo";
-import Chart from "../photovoltaik-rechner/_components/Chart";
+import EinspeisungVergleich, { type VergleichView } from "./_components/EinspeisungVergleich";
+import DayProfileChart, { DAY_C_SUN, DAY_C_DIRECT, DAY_C_BATTERY, DAY_C_GRID, DayLegendDot } from "../../../components/DayProfileChart";
 
 // Figures on this page come live from the same models the calculator uses
 // (prices from Supabase market_prices with config fallback). ISR keeps them
@@ -290,101 +292,20 @@ function computeExample(speicherKwh: number, feedInActive: boolean, prices: Pric
   };
 }
 
-// One teaser card: title + amortization chart + result-style tiles + deep link.
-function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; badge: string }) {
-  const tileWrap = {
-    background: v("--color-bg"),
-    borderRadius: v("--radius-md"),
-    padding: "11px 12px",
-    border: `1px solid ${v("--color-border")}`,
-  } as const;
-  const tileLabel = {
-    fontSize: 10.5,
-    color: v("--color-text-secondary"),
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.04em",
-    fontWeight: 600,
-  } as const;
-  const tileValue = {
-    fontSize: 17,
-    fontWeight: 800,
-    fontFamily: v("--font-mono"),
-    marginTop: 4,
-    lineHeight: 1.15,
-  } as const;
-  return (
-    <div
-      style={{
-        background: v("--color-bg"),
-        borderRadius: v("--radius-lg"),
-        border: `1px solid ${v("--color-border")}`,
-        padding: 14,
-        marginBottom: 12,
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 4 }}>
-        <strong style={{ fontSize: 14.5, fontWeight: 700, color: v("--color-text-primary") }}>{title}</strong>
-        <span style={{ fontSize: 11, fontWeight: 700, fontFamily: v("--font-mono"), color: v("--color-accent") }}>{badge}</span>
-      </div>
-      <Chart scenarios={row.scenarios} kosten={row.kosten} highlightId="realistic" />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(96px, 1fr))",
-          gap: 8,
-          marginTop: 10,
-        }}
-      >
-        <div style={tileWrap}>
-          <div style={tileLabel}>Amortisation</div>
-          <div style={{ ...tileValue, color: v("--color-accent") }}>
-            {row.amortisation != null ? `~${row.amortisation} J` : ">25 J"}
-          </div>
-        </div>
-        <div style={tileWrap}>
-          <div style={tileLabel}>Rendite 25 J</div>
-          <div style={{ ...tileValue, color: row.gewinn25 >= 0 ? v("--color-positive") : v("--color-negative") }}>
-            {row.gewinn25 > 0 ? "+" : ""}
-            {row.gewinn25.toLocaleString("de-DE")} €
-          </div>
-        </div>
-        <div style={tileWrap}>
-          <div style={tileLabel}>⌀ Ersparnis / Jahr</div>
-          <div style={{ ...tileValue, color: v("--color-positive") }}>{row.ersparnisProJahr.toLocaleString("de-DE")} €</div>
-        </div>
-      </div>
-      <Link
-        href={row.href}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          marginTop: 12,
-          padding: "9px 16px",
-          borderRadius: v("--radius-md"),
-          fontSize: 13,
-          fontWeight: 700,
-          background: v("--color-accent"),
-          color: v("--color-text-on-accent"),
-          textDecoration: "none",
-        }}
-      >
-        Im Rechner öffnen →
-      </Link>
-    </div>
-  );
-}
-
 const eur = (n: number) => `${n.toLocaleString("de-DE")} €`;
+
+// The realistic-scenario line for the tab switcher (single line, no fan).
+function realisticLine(row: ExampleRow) {
+  return row.scenarios.find((s) => s.id === "realistic") ?? row.scenarios[0];
+}
 
 export default async function LohntSichPvOhneEinspeisungPage() {
   const prices = await fetchMarketPrices();
   const year = new Date().getFullYear();
-  // Feed-in OFF (the headline scenario) and feed-in ON (today's reference).
-  const ohneSpNull = computeExample(0, false, prices);
-  const mitSpNull = computeExample(10, false, prices);
-  const ohneSpEeg = computeExample(0, true, prices);
-  const mitSpEeg = computeExample(10, true, prices);
+  // ONE typical system (10 kWp + 10 kWh) in two feed-in states: today's tariff
+  // vs. the planned "no feed-in" case (calculator's 3-state "Aus", einspeisung 0).
+  const mitSpEeg = computeExample(10, true, prices);   // mit Einspeisevergütung (heute)
+  const mitSpNull = computeExample(10, false, prices); // ohne Einspeisevergütung (geplant)
   const strompreisCt = (prices.electricityPrice * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 });
   const feedInCt = DEFAULT_FEED_IN.teilUnder10.toLocaleString("de-DE");
   const priceRatio = Math.round(prices.electricityPrice * 100 / DEFAULT_FEED_IN.teilUnder10);
@@ -398,8 +319,65 @@ export default async function LohntSichPvOhneEinspeisungPage() {
   const erloesAnteil = Math.round((erloes1 / (erloes1 + ersparnis1)) * 100);
   const faqItems = pvOhneEinspeisungFaq(prices);
 
+  // Amortisation-Vergleich (Tab-Umschalter): dieselbe Anlage, zwei Vergütungs-
+  // Zustände. Die Einspeisung wirkt nur auf Amortisation/Gewinn, nicht auf EV/
+  // Autarkie — deshalb reicht EIN System mit Speicher.
+  const vergleichViews: VergleichView[] = [
+    {
+      id: "mit",
+      tabLabel: "Mit Einspeisevergütung",
+      tabSub: "Stand heute",
+      explain: `Bei der heute geltenden Vergütung amortisiert sich diese Anlage in rund ${mitSpEeg.amortisation ?? ">25"} Jahren. Den größten Teil des Gewinns trägt schon jetzt der Eigenverbrauch, nicht die Einspeisung.`,
+      amortisation: mitSpEeg.amortisation,
+      gewinn25: mitSpEeg.gewinn25,
+      line: realisticLine(mitSpEeg),
+      kosten: mitSpEeg.kosten,
+      href: mitSpEeg.href,
+    },
+    {
+      id: "ohne",
+      tabLabel: "Ohne Einspeisevergütung",
+      tabSub: "geplant ab 2027",
+      explain: `Fällt die Vergütung weg, rückt die Amortisation auf rund ${mitSpNull.amortisation ?? ">25"} Jahre — nur ${eur(mitSpEeg.gewinn25 - mitSpNull.gewinn25)} weniger Gewinn über die Laufzeit. Die Anlage bleibt klar im Plus, weil sie ihr Geld über den Eigenverbrauch verdient.`,
+      amortisation: mitSpNull.amortisation,
+      gewinn25: mitSpNull.gewinn25,
+      line: realisticLine(mitSpNull),
+      kosten: mitSpNull.kosten,
+      href: mitSpNull.href,
+    },
+  ];
+
+  // Tagesverlauf-Vergleich (geteilte Stundensimulation): derselbe sonnige
+  // Beispieltag, nur Speicher 0 vs. 10 kWh. Zeigt, wie der Mittagsüberschuss mit
+  // Speicher in den Abend wandert → die selbst genutzte (grüne) Fläche wächst.
+  const exDay = EXAMPLE_DAYS.find((d) => d.key === "summer") ?? EXAMPLE_DAYS[0];
+  const dayHousehold = {
+    baseKwh: PERSONEN[EX.personenIdx].verbrauch,
+    tagQuote: NUTZUNG[EX.nutzungIdx].tagQuote,
+    wpActive: false,
+    eaActive: false,
+  };
+  const dayOhne = simulateExampleDay(
+    { kwp: EX.kwp, speicherKwh: 0, monthlyYieldPerKwp: null, ertragKwp: EX.ertragKwp, household: dayHousehold },
+    exDay.month, exDay.dayType,
+  );
+  const dayMit = simulateExampleDay(
+    { kwp: EX.kwp, speicherKwh: 10, monthlyYieldPerKwp: null, ertragKwp: EX.ertragKwp, household: dayHousehold },
+    exDay.month, exDay.dayType,
+  );
+  // Gemeinsame y-Skala über beide Tage, sonst wirkt der Speicher-Tag verzerrt.
+  const dayScaleMax = Math.max(
+    ...dayOhne.hours.map((h) => Math.max(h.prod, h.cons)),
+    ...dayMit.hours.map((h) => Math.max(h.prod, h.cons)),
+  );
+  // Selbst genutzter Anteil des Tages (direkt + aus Speicher) an der Erzeugung.
+  const daySelf = (d: typeof dayOhne) => (d.prod > 0 ? Math.round(((d.prod - d.feedIn) / d.prod) * 100) : 0);
+  const selfOhne = daySelf(dayOhne);
+  const selfMit = daySelf(dayMit);
+
   return (
     <div style={S.page}>
+      <Header />
       <div style={S.wrap}>
         <Link href="/" style={S.back}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
@@ -489,100 +467,23 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         </p>
 
         {/* ── Beispielrechnung mit Vergütung null ── */}
-        <h2 style={S.h2}>Beispielrechnung: 10 kWp mit Vergütung null</h2>
+        <h2 style={S.h2}>Beispielrechnung: mit und ohne Vergütung im Vergleich</h2>
         <p style={S.p}>
           Ein Beispielhaushalt: 3–4 Personen ({PERSONEN[EX.personenIdx].verbrauch.toLocaleString("de-DE")} kWh
-          Jahresverbrauch), teils im Homeoffice, {EX.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>-Anlage,
-          konservativer Ertrag von {EX.ertragKwp} kWh pro kWp. Die Einspeisevergütung steht
-          in dieser Rechnung komplett auf null — im Rechner lässt sich die Einspeisung
-          dafür einfach auf „Aus" stellen, genau so sind diese Zahlen gerechnet
-          (realistisches Szenario, Strompreis +{(prices.electricityIncrease * 100).toLocaleString("de-DE")} %/Jahr):
+          Jahresverbrauch), teils im Homeoffice, {EX.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>-Anlage
+          mit 10 kWh Speicher, konservativer Ertrag von {EX.ertragKwp} kWh pro kWp. Wechsle
+          unten zwischen der heute geltenden Vergütung und dem geplanten Fall ohne
+          Vergütung — dieselbe Anlage, dieselbe Simulation, nur die Einspeisung ändert sich:
         </p>
-        <div style={{ ...S.card, padding: "6px 10px", overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={S.th}></th>
-                <th style={S.thNum}>Ohne Speicher</th>
-                <th style={S.thNum}>Mit 10 kWh Speicher</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={S.td}>Investition</td>
-                {[ohneSpNull, mitSpNull].map((r) => (
-                  <td key={r.speicherKwh} style={S.tdNum}>{eur(r.kosten)}</td>
-                ))}
-              </tr>
-              <tr>
-                <td style={S.td}>Eigenverbrauch</td>
-                {[ohneSpNull, mitSpNull].map((r) => (
-                  <td key={r.speicherKwh} style={S.tdNum}>{r.ev} %</td>
-                ))}
-              </tr>
-              <tr>
-                <td style={S.td}>Autarkie</td>
-                {[ohneSpNull, mitSpNull].map((r) => (
-                  <td key={r.speicherKwh} style={S.tdNum}>{r.autarkie} %</td>
-                ))}
-              </tr>
-              <tr>
-                <td style={S.td}>Amortisation (Vergütung null)</td>
-                {[ohneSpNull, mitSpNull].map((r) => (
-                  <td key={r.speicherKwh} style={S.tdNum}>
-                    {r.amortisation != null ? `~${r.amortisation} Jahre` : "—"}
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <td style={S.td}>Zum Vergleich: mit heutiger Vergütung</td>
-                {[ohneSpEeg, mitSpEeg].map((r) => (
-                  <td key={r.speicherKwh} style={{ ...S.tdNum, color: v("--color-text-muted") }}>
-                    {r.amortisation != null ? `~${r.amortisation} Jahre` : "—"}
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <td style={{ ...S.td, borderBottom: "none" }}>Gewinn nach {YEARS} Jahren (Vergütung null)</td>
-                {[ohneSpNull, mitSpNull].map((r) => (
-                  <td key={r.speicherKwh} style={{ ...S.tdNum, borderBottom: "none", color: r.gewinn25 >= 0 ? v("--color-positive") : v("--color-negative"), fontWeight: 700 }}>
-                    {eur(r.gewinn25)}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p style={S.p}>
-          Zwei Dinge fallen auf — und wir sagen beide ehrlich. Erstens:{" "}
-          <strong style={S.strong}>Ohne Speicher wird es knapp.</strong> Mit Vergütung null
-          und nur {ohneSpNull.ev} % Eigenverbrauch trägt sich die Anlage gerade so
-          {ohneSpNull.amortisation != null ? ` (~${ohneSpNull.amortisation} Jahre Amortisation)` : ""} —
-          der Überschuss verpufft unvergütet ins Netz. Zweitens:{" "}
-          <strong style={S.strong}>Mit Speicher bleibt die Rechnung klar positiv.</strong>{" "}
-          Er hebt den Eigenverbrauch auf {mitSpNull.ev} %
-          {mitSpNull.amortisation != null ? `, verkürzt die Amortisation auf ~${mitSpNull.amortisation} Jahre` : ""}{" "}
-          und lässt über {YEARS} Jahre {eur(mitSpNull.gewinn25)} Gewinn übrig — nur{" "}
-          {eur(mitSpEeg.gewinn25 - mitSpNull.gewinn25)} weniger als mit heutiger Vergütung.
-          Genau das ist der Kern der Debatte: Fällt die Vergütung, entscheidet der
-          Eigenverbrauch — und der Speicher wird vom Nice-to-have zum tragenden Baustein.
-        </p>
-
-        {/* ── Zwei Beispiele mit Chart + Kacheln + Deep-Link in den Rechner ── */}
-        <p style={{ ...S.p, marginTop: 18 }}>
-          Dieselben zwei Fälle als Amortisationskurve, beide mit Vergütung null — die grüne
-          Linie ist das realistische Szenario. Ein Klick öffnet die Anlage direkt im
-          Rechner mit abgeschalteter Einspeisung, wo du jede Annahme anpassen kannst:
-        </p>
-        <TeaserCard row={ohneSpNull} title="10 kWp ohne Speicher, Vergütung null" badge="10 kWp · Einspeisung aus" />
-        <TeaserCard row={mitSpNull} title="10 kWp mit 10 kWh Speicher, Vergütung null" badge="10 kWp · 10 kWh · Einspeisung aus" />
+        <EinspeisungVergleich views={vergleichViews} />
 
         <div style={S.card}>
           <span style={S.label}>Annahmen dieser Rechnung</span>
-          Strompreis {strompreisCt} ct/kWh · Einspeisevergütung 0 ct/kWh (Vergleichszeile:
-          Teileinspeisung {feedInCt} ct/kWh, {FEED_IN_YEARS} Jahre) · Preisstand{" "}
-          {formatPriceDate(prices.validFrom)} · ohne Förderung · inkl. Akku-Tausch und
-          0,5 % Modulalterung pro Jahr · Modell kalibriert an HTW-Berlin-Simulationsdaten.
+          10 kWp + 10 kWh · Strompreis {strompreisCt} ct/kWh · Vergleich: heutige
+          Teileinspeisung {feedInCt} ct/kWh ({FEED_IN_YEARS} Jahre) gegen Einspeisung 0
+          ct/kWh · Preisstand {formatPriceDate(prices.validFrom)} · ohne Förderung · inkl.
+          Akku-Tausch und 0,5 % Modulalterung pro Jahr · Modell kalibriert an
+          HTW-Berlin-Simulationsdaten.
           <br />
           <span style={S.muted}>
             Alle Beträge sind unverbindliche Näherungswerte ohne Gewähr — mit deinen echten
@@ -597,23 +498,61 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         {/* ── Was den Eigenverbrauch hebt ── */}
         <h2 style={S.h2}>Was den Eigenverbrauch hebt</h2>
         <p style={S.p}>
-          Ohne Vergütung zählt nur noch, wie viel vom eigenen Strom im Haus bleibt. Die
-          wirksamen Hebel, grob nach Wirkung sortiert:
+          Ohne Vergütung zählt nur noch, wie viel vom eigenen Strom im Haus bleibt. Am
+          klarsten sieht man das an einem einzelnen sonnigen Tag ({exDay.label.toLowerCase()}) —
+          links ohne, rechts mit Speicher, sonst gleiche Anlage:
         </p>
         <div style={S.card}>
-          <span style={S.positive}>Batteriespeicher:</span> verschiebt den Mittagsüberschuss
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 16 }}>
+            <div>
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 6, textAlign: "center" }}>
+                Ohne Speicher
+              </div>
+              <DayProfileChart hours={dayOhne.hours} scaleMax={dayScaleMax} showLegend={false} />
+              <div style={{ fontSize: 11.5, color: v("--color-text-secondary"), textAlign: "center", marginTop: 6, lineHeight: 1.5 }}>
+                Selbst genutzt: <strong style={{ fontFamily: v("--font-mono") }}>{selfOhne} %</strong> ·{" "}
+                <strong style={{ fontFamily: v("--font-mono") }}>{dayOhne.feedIn.toLocaleString("de-DE")}</strong> kWh
+                Mittags­überschuss fließen ungenutzt ins Netz, abends kommt Strom zurück.
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: 12.5, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 6, textAlign: "center" }}>
+                Mit 10 kWh Speicher
+              </div>
+              <DayProfileChart hours={dayMit.hours} scaleMax={dayScaleMax} showLegend={false} />
+              <div style={{ fontSize: 11.5, color: v("--color-text-secondary"), textAlign: "center", marginTop: 6, lineHeight: 1.5 }}>
+                Selbst genutzt: <strong style={{ fontFamily: v("--font-mono") }}>{selfMit} %</strong> — der
+                Mittags­überschuss lädt den Speicher und deckt den Abend, statt ins Netz zu fließen.
+              </div>
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 12, marginTop: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <DayLegendDot color={DAY_C_SUN} label="Erzeugung" />
+            <DayLegendDot color={DAY_C_DIRECT} label="direkt genutzt" />
+            <DayLegendDot color={DAY_C_BATTERY} label="aus dem Speicher" />
+            <DayLegendDot color={DAY_C_GRID} label="aus dem Netz" />
+          </div>
+        </div>
+        <p style={S.p}>
+          Die grüne und blaue Fläche zusammen ist der selbst genutzte Solarstrom — genau
+          das, was ohne Vergütung das Geld verdient. Der Speicher vergrößert sie, indem er
+          den Mittagsberg in den Abend schiebt. Dieselbe Logik steckt hinter der Autarkie,
+          die unser Rechner ausweist. Die wirksamen Hebel, grob nach Wirkung sortiert:
+        </p>
+        <div style={S.card}>
+          <strong style={S.strong}>Batteriespeicher:</strong> verschiebt den Mittagsüberschuss
           in Abend und Nacht — der größte einzelne Hebel. Ob und wann er sich rechnet,
           steht im <Link href="/lohnt-sich-pv-mit-speicher" style={S.link}>Speicher-Ratgeber</Link>.
           <br />
-          <span style={S.positive}>Wärmepumpe:</span> macht Heizen zum Stromverbrauch und
+          <strong style={S.strong}>Wärmepumpe:</strong> macht Heizen zum Stromverbrauch und
           nutzt vor allem in der Übergangszeit viel eigenen Solarstrom. Was sie selbst
           spart, rechnet der <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link>.
           <br />
-          <span style={S.positive}>E-Auto:</span> wer tagsüber oder über den Speicher lädt,
+          <strong style={S.strong}>E-Auto:</strong> wer tagsüber oder über den Speicher lädt,
           holt sich den Solarstrom in den Tank — bei 15.000 km/Jahr sind das rund
           2.700 kWh zusätzlicher Verbrauch.
           <br />
-          <span style={S.positive}>Verbrauch in den Tag verschieben:</span> Spülmaschine,
+          <strong style={S.strong}>Verbrauch in den Tag verschieben:</strong> Spülmaschine,
           Waschmaschine, Warmwasser mittags statt abends laufen lassen — kostenlos und
           sofort wirksam.
         </div>

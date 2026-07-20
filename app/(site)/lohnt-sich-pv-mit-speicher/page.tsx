@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Header from "../../../components/Header";
 import { IconArrowRight } from "../../../components/Icons";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import Faq from "../../../components/Faq";
@@ -393,6 +394,7 @@ export default async function LohntSichPvMitSpeicherPage() {
 
   return (
     <div style={S.page}>
+      <Header />
       <div style={S.wrap}>
         <Link href="/" style={S.back}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
