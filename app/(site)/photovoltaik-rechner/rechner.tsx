@@ -7,7 +7,7 @@ import { paramsToRow } from "../../../lib/types";
 import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
-import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
+import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
@@ -21,6 +21,7 @@ import KlimaDetailModal from "../../../components/KlimaDetailModal";
 import Chart from "./_components/Chart";
 import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
+import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { useFeedInRates } from "../../../lib/feedin";
 import Header from "../../../components/Header";
 import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh, IconSun } from "../../../components/Icons";
@@ -108,7 +109,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [oVerbrauch, setOVerbrauch] = useState<number | null>(hasShare && initialParams?.vb ? (() => { const n = Number(initialParams.vb); return isFinite(n) && n >= 500 && n <= 30000 ? n : null; })() : null);
   // Eingabemodus für Step 2: Personenzahl schätzen vs. Jahresverbrauch direkt kennen.
   const [verbrauchMode, setVerbrauchMode] = useState(oVerbrauch !== null);
-  const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", 0.34, 0.05, 1.0) : 0.34);
+  // Strompreis-Startwert aus der kanonischen Quelle (DEFAULT_PRICES, BNetzA-
+  // Strompreismonitor), NICHT hardcoded. Ein "st"-Param (geteilter Link oder
+  // Crosslink von der Ratgeberseite) hat weiterhin Vorrang; sonst wird der
+  // Default unten per usePrices() auf den Live-Wert aus market_prices nachgezogen.
+  const [oStrom, setOStrom] = useState(hasShare ? paramFloat(initialParams, "st", DEFAULT_PRICES.electricityPrice, 0.05, 1.0) : DEFAULT_PRICES.electricityPrice);
   const [oStromSynced, setOStromSynced] = useState(hasShare); // synced when share-URL — no auto-update
   const [oEinsp, setOEinsp] = useState<number | null>(hasShare && initialParams?.ei ? (() => { const n = Number(initialParams.ei); return isFinite(n) && n >= 0 && n <= 20 ? n : null; })() : null);
   const [einspeisungModus, setEinspeisungModus] = useState<"aus" | "teil" | "voll">(
@@ -239,10 +244,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const prices = usePrices();
   const feedInRates = useFeedInRates();
 
-  // Sync electricity price default once when central price loads — only for fresh calculations (not share-URLs)
+  // Sync electricity price default once when central price loads — only for fresh calculations (not share-URLs).
+  // Mark as synced even when the fetched price equals the current default:
+  // otherwise this effect re-runs after the user's first manual edit and
+  // snaps the value back to the central price.
   useEffect(() => {
-    if (!oStromSynced && prices.electricityPrice > 0 && prices.electricityPrice !== oStrom) {
-      setOStrom(prices.electricityPrice);
+    if (!oStromSynced && prices.electricityPrice > 0) {
+      if (prices.electricityPrice !== oStrom) setOStrom(prices.electricityPrice);
       setOStromSynced(true);
     }
   }, [prices.electricityPrice, oStromSynced, oStrom]);
@@ -321,6 +329,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       : null),
     [wp, wpWohnflaeche, wpInsulation, personen, wpHeizsystem, wpHaustyp],
   );
+  // Gebäudebasierte Jahresarbeitszahl — dieselbe JAZ, mit der wpKwh oben aus dem
+  // Heizwärmebedarf hergeleitet wurde. Treibt die Wärmemenge (wpKwh × JAZ) und den
+  // Gas-Vergleich in der WP-Kachel, damit sie nicht mehr an fixer COP 3,5 hängen.
+  const wpJaz = useMemo(
+    () => calcJAZ("lwwp", flowTempForSystem(wpHeizsystem)),
+    [wpHeizsystem],
+  );
   const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm, klima, KLIMA_DEFAULT_M2, effKlimaKwh, wpKwh);
   const gesamtVerbrauch = grundverbrauch + extraVerbrauch;
   const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: oErtrag, baseKwh: oVerbrauch });
@@ -342,11 +357,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     eaAnnualKwh: ea !== "nein" ? calcEaAnnual(eaKm) : undefined,
     klimaAnnualKwh: effKlimaKwh ?? undefined,
   }), [grundverbrauch, nutzung, wp, ea, klima, wpKwh, eaKm, effKlimaKwh]);
-  // Autarkiegrad + Jahresverlauf aus der Stunden-Jahressimulation (lib/pv-sim.ts).
-  // Zeitaufgelöst statt aus dem Eigenverbrauch zurückgerechnet: bildet den Winter-
-  // und Tag/Nacht-Mismatch direkt ab (keine 100-%-Fantasie bei großen Anlagen),
-  // rechnet Wärmepumpe/E-Auto/Standort korrekt mit und liefert die Monatsdaten fürs
-  // Modal. Gegen die HTW-Simulation validiert (±1 pp bei gleichem Tagverbrauch).
+  // Autarkiegrad + Jahresverlauf aus der Stunden-Jahressimulation (lib/pv-sim.ts →
+  // simulatePvYear). Zeitaufgelöst statt aus dem Eigenverbrauch zurückgerechnet:
+  // bildet den Winter- und Tag/Nacht-Mismatch direkt ab (keine 100-%-Fantasie bei
+  // großen Anlagen), rechnet Wärmepumpe/E-Auto/Standort korrekt mit und liefert die
+  // Monatsdaten fürs Modal sowie die WP-spezifische PV-Deckung (pvSim.wpAutarky) für
+  // die WP-Kachel. Gegen das HTW-Kennfeld validiert (±3 pp bei gleichem Tagverbrauch).
   const pvSim = useMemo(
     () => simulatePvYear({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: oErtrag, household }),
     [kwp, spKwh, monthlyProfile, oErtrag, household],
@@ -489,7 +505,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         { label: "Amortisation", value: be ? `${be.i}` : ">25", unit: "Jahre" },
         { label: "Eigenverbrauch", value: `${Math.round(effEv)}`, unit: "%" },
         { label: "Kosten", value: kosten.toLocaleString("de-DE"), unit: "€" },
-        { label: "Strompreis", value: `${oStrom}`, unit: "ct/kWh" },
+        { label: "Strompreis", value: oStrom.toLocaleString("de-DE"), unit: "€/kWh" },
       ] : undefined,
       legend: SCENARIOS.map(s => ({ color: s.color, label: s.label })),
     },
@@ -1046,9 +1062,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             
             <ResultStats
               total={sel.data.total} kosten={kosten}
-              wp={wp} wpKwh={wpKwh ?? 0} effEv={effEv} autarkie={autarkie}
+              wp={wp} wpKwh={wpKwh ?? 0} jaz={wpJaz} effEv={effEv} autarkie={autarkie} wpAutarky={pvSim.wpAutarky}
               jahresertrag={jahresertrag} gesamtVerbrauch={gesamtVerbrauch} speicherKwh={spKwh} monthly={pvSim.monthly} exampleDays={exampleDays}
-              oStrom={oStrom} fuelType={fuelType} setFuelType={setFuelType}
+              oStrom={oStrom} stromSteigerung={sel.strom} fuelType={fuelType} setFuelType={setFuelType}
             />
 
             {spKwh > 0 && effEinspeisungModus !== "voll" && (
@@ -1075,8 +1091,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-primary') }}>Amortisation</span>
                   <div style={{ display: "flex", gap: 12 }}>
                     {SCENARIOS.map(s => (
-                      <span key={s.id} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: v('--color-text-secondary') }}>
-                        <span style={{ width: 8, height: 3, borderRadius: 2, background: s.color, display: "inline-block", opacity: s.id === "realistic" ? 1 : 0.5 }} />
+                      <span key={s.id} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: s.id === scenario ? v('--color-text-secondary') : v('--color-text-muted'), fontWeight: s.id === scenario ? 700 : 400 }}>
+                        <span style={{ width: 8, height: 3, borderRadius: 2, background: s.color, display: "inline-block", opacity: s.id === scenario ? 1 : 0.5 }} />
                         {s.label}
                       </span>
                     ))}

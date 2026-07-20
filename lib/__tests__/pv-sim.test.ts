@@ -105,4 +105,74 @@ describe("simulatePvYear", () => {
     expect(small).toBeGreaterThan(big);
     expect(small).toBeLessThanOrEqual(100);
   });
+
+  // ── WP-spezifische PV-Deckung (für die WP-vs-Gas-Kachel) ──────────────────
+  // Kern: Die WP-Last liegt im dunklen Winterhalbjahr, wo die PV kaum deckt.
+  // Deshalb muss die WP-Deckung DEUTLICH unter der Haushalts-Jahres-Autarkie
+  // liegen — genau der Fehler, den die Kachel vorher gemacht hat (Jahres-Autarkie
+  // als WP-Deckung → grob doppelt so hohe Ersparnis).
+  it("wpAutarky liegt klar unter der Jahres-Autarkie (Winter-Mismatch der WP)", () => {
+    const hh: HouseholdProfile = { baseKwh: 4000, tagQuote: 0.30, wpActive: true, eaActive: false, wpAnnualKwh: 6000 };
+    const sim = simulatePvYear({ kwp: 12, speicherKwh: 8, monthlyYieldPerKwp: null, ertragKwp: 950, household: hh });
+    expect(sim.wpAutarky).toBeGreaterThan(0);
+    expect(sim.wpAutarky).toBeLessThanOrEqual(100);
+    // Die WP-Deckung ist saisonal ehrlich → merklich unter der Jahres-Autarkie.
+    expect(sim.wpAutarky).toBeLessThan(sim.autarky - 5);
+  });
+
+  it("wpAutarky ist 0 ohne Wärmepumpe", () => {
+    const sim = simulatePvYear({ kwp: 10, speicherKwh: 5, monthlyYieldPerKwp: null, ertragKwp: 950, household: pureHH() });
+    expect(sim.wpAutarky).toBe(0);
+  });
+
+  it("wpAutarky steigt mit mehr PV/Speicher", () => {
+    const hh: HouseholdProfile = { baseKwh: 4000, tagQuote: 0.30, wpActive: true, eaActive: false, wpAnnualKwh: 6000 };
+    const small = simulatePvYear({ kwp: 6, speicherKwh: 0, monthlyYieldPerKwp: null, ertragKwp: 950, household: hh }).wpAutarky;
+    const big = simulatePvYear({ kwp: 14, speicherKwh: 10, monthlyYieldPerKwp: null, ertragKwp: 950, household: hh }).wpAutarky;
+    expect(big).toBeGreaterThan(small);
+  });
+
+  // ── Ertrags-Normierung (monthlyScaledTo): Form aus PVGIS, Menge aus ertragKwp ──
+  // Fixiert den Fix vom 2026-07-19: Ein manuell editierter Jahresertrag muss die
+  // Simulation (und damit die Autarkie) bewegen. Vorher las die Simulation die
+  // absolute PVGIS-Monatssumme weiter — der Edit war wirkungslos und die Autarkie
+  // inkonsistent zur Geldrechnung calc(), die ertragKwp × Monatsform nimmt.
+  describe("Ertrags-Normierung (Monatsprofil auf ertragKwp skaliert)", () => {
+    // PVGIS-artige Monatsform, Jahressumme 960 kWh/kWp — bewusst ≠ ertragKwp.
+    const profile = [20, 30, 60, 100, 140, 160, 160, 140, 90, 40, 10, 10];
+    const profileSum = profile.reduce((a, b) => a + b, 0); // 960
+
+    it("skaliert die Jahresmenge auf ertragKwp, nicht auf die Profil-Summe", () => {
+      const kwp = 10;
+      const ertragKwp = 1100; // z. B. manuell editiert oder sonniger Standort
+      const sim = simulatePvYear({ kwp, speicherKwh: 0, monthlyYieldPerKwp: profile, ertragKwp, household: pureHH() });
+      // Menge folgt ertragKwp (±2 % — Wechselrichter-Deckel kappt praktisch nichts) …
+      expect(Math.abs(sim.jahresertrag - kwp * ertragKwp) / (kwp * ertragKwp)).toBeLessThan(0.02);
+      // … und NICHT der rohen Profil-Summe (die läge 12,7 % darunter).
+      expect(sim.jahresertrag).toBeGreaterThan(kwp * profileSum * 1.05);
+    });
+
+    it("höheres ertragKwp bei fester Profil-Form → höhere Autarkie", () => {
+      const base = { kwp: 6, speicherKwh: 5, monthlyYieldPerKwp: profile, household: pureHH() };
+      const dull = simulatePvYear({ ...base, ertragKwp: 850 });
+      const sunny = simulatePvYear({ ...base, ertragKwp: 1150 });
+      expect(sunny.autarky).toBeGreaterThan(dull.autarky);
+      expect(sunny.jahresertrag).toBeGreaterThan(dull.jahresertrag);
+    });
+
+    it("die FORM bleibt erhalten: Sommer/Winter-Verhältnis des Profils schlägt durch", () => {
+      const sim = simulatePvYear({ kwp: 10, speicherKwh: 0, monthlyYieldPerKwp: profile, ertragKwp: 1000, household: pureHH() });
+      // Juli/Januar im Profil: 160/20 = 8× — die simulierte Produktion muss die
+      // Saisonform tragen (Toleranz für Tagestyp-Diskretisierung).
+      const jul = sim.monthly[6].production;
+      const jan = sim.monthly[0].production;
+      expect(jul / jan).toBeGreaterThan(5);
+    });
+
+    it("ohne Monatsprofil (null) liefert der Fallback ebenfalls ertragKwp als Menge", () => {
+      const kwp = 8;
+      const sim = simulatePvYear({ kwp, speicherKwh: 0, monthlyYieldPerKwp: null, ertragKwp: 950, household: pureHH() });
+      expect(Math.abs(sim.jahresertrag - kwp * 950) / (kwp * 950)).toBeLessThan(0.02);
+    });
+  });
 });

@@ -2,6 +2,8 @@ import { MetadataRoute } from "next";
 import { liveCities, archivedCities, slugify, publishedBundeslaender } from "../lib/atlas-cities";
 import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
+import { atlasLevelReleased } from "../lib/atlas-index";
+import { BUNDESLAENDER } from "../lib/mastr-regions";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -52,6 +54,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  // Solar-Atlas: nur die freigeschalteten Wellen (lib/atlas-index). Aktuell 0a =
+  // Deutschland + Bundesländer; Landkreise/Gemeinden folgen gestaffelt.
+  const atlasPages: MetadataRoute.Sitemap = [];
+  if (atlasLevelReleased("de")) {
+    atlasPages.push({ url: `${BASE_URL}/solar-atlas`, lastModified: now, changeFrequency: "monthly", priority: 0.6 });
+  }
+  if (atlasLevelReleased("bundesland")) {
+    for (const bl of BUNDESLAENDER) {
+      atlasPages.push({
+        url: `${BASE_URL}/solar-atlas/${slugify(bl.name)}`,
+        lastModified: now,
+        changeFrequency: "monthly",
+        priority: 0.6,
+      });
+    }
+  }
+
   return [
     { url: BASE_URL, changeFrequency: "monthly", priority: 1 },
     { url: `${BASE_URL}/photovoltaik-rechner`, changeFrequency: "monthly", priority: 0.9 },
@@ -60,12 +79,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/klimaanlage-stromkosten`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/balkonkraftwerk-rechner`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE_URL}/lohnt-sich-pv-mit-speicher`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/pv-simulation`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/strommix-deutschland`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/atomstrom-import`, lastModified: now, changeFrequency: "daily", priority: 0.7 },
     { url: `${BASE_URL}/atomstrom-import/methodik`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/energie-widgets`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${BASE_URL}/widget-nutzungsbedingungen`, changeFrequency: "yearly", priority: 0.3 },
+    ...atlasPages,
     ...bundeslandPages,
     ...cityPages,
     ...archivedCityPages,

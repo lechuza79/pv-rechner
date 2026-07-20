@@ -306,7 +306,7 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [ ] Eurostat-Integration (Haushaltsstrompreise EU)
 - [ ] Spotpreis-Chart (Energy-Charts /price)
 - [ ] Grenzflüsse-Chart (Energy-Charts /cbpf)
-- [ ] EE-Ampel Widget für Startseite/Simulation
+- [x] EE-Ampel als Embed-Widget (`/embed/ee-ampel` + Galerie-Sektion): Ampel grün/gelb/rot nach aktuellem EE-Anteil am Erzeugungsmix (letzter vollständiger Datenpunkt via `trimIncompleteTail`, Ø 24 h via `calcPeriodStats` — dieselbe Datenbasis wie /strommix-deutschland, keine neue Quelle). Schwellen (≥65 % grün, <40 % rot) am typischen EE-Jahresmittel verankert, Ampelfarben fest semantisch. Einbindung auf Startseite/Simulation weiterhin offen
 - [ ] /energie/frankreich (Strommix FR inkl. Kernenergie)
 - [ ] Navigation-Updates (Hub + Header → /energie)
 - [ ] SEO-Metadata für /energie
@@ -322,7 +322,9 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] Daten landen in `mastr_aggregates`/`mastr_regions`/`mastr_meta` (Schema unverändert), `data_as_of` aus dem ZIP-Stichtag
 
 ### Phase 4: Content & Reichweite
-- [ ] 3–5 Long-Tail-Landingpages (z.B. `/lohnt-sich-pv-mit-speicher`)
+- [x] Flaggschiff-Ratgeber **`/lohnt-sich-pv-mit-speicher`**: Server Component (ISR 3600), rechnet die Beispieltabelle (10 kWp × 0/5/10 kWh: Investition, EV, Autarkie aus der Stundensimulation, Amortisation, 25-J-Gewinn) live mit den geteilten Funktionen (`calcEigenverbrauch`, `calc`, `estimateCost`, `simulatePvYear`) und Live-Marktpreisen — driftet nie vom Rechner. FAQ via `pvSpeicherFaq(prices)` in `lib/faq.ts` (bekommt die Live-Preise durchgereicht, damit FAQ und Tabelle auf derselben Seite identische Beträge zeigen) + `<Faq>` (FAQPage-JSON-LD). In Sitemap (0.8); Rechner-FAQ verlinkt hin.
+  - Zwei **Beispiel-Teaser** (ohne / mit 10 kWh Speicher): recyceln die Rechner-`Chart`-Komponente (3-Szenarien-Amortisationskurve) + ResultStats-Kacheln (Amortisation / Rendite 25 J / ⌀ Ersparnis), gerechnet aus derselben `computeExample`-Quelle wie die Tabelle. Jeder Teaser hat einen Deep-Link `/photovoltaik-rechner?a=2&s=…&p=2&n=1&st=…&er=…`, der den Rechner exakt auf die Teaser-Zahlen vorbelegt (`st`/`er` explizit, weil der Rechner-Default-Strompreis 0,34 € vom kanonischen prices-config-Wert abweicht).
+- [ ] Weitere Long-Tail-Landingpages (z.B. `/pv-kaufen-vs-enpal-mieten`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
 - [ ] Blog/Ratgeber-Sektion
 
@@ -525,7 +527,8 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 - `lib/useWidgetTheme.ts` — **einziger** Theming-Weg: `useWidgetTheme({ onSettings })`. Wendet Theme (URL-Param + same-origin postMessage) auf `--widget-*` an; `onSettings` liefert die funktionalen Flags. Keine inline-Kopien mehr.
 - `lib/widget-settings.ts` — `WidgetSettings` (`share`, `range`, `switchable`, `embed`, `branding`). URL-Param **und** postMessage teilen sich denselben Parser (kein Drift, akzeptiert alle Ranges inkl. 24h).
 - `lib/widget-theme.ts` + `app/(embed)/layout.tsx` — Theme-Tokens `--widget-*` + Alias-Kette auf die Site-Tokens `--color-*` (recycelte Komponenten themen dadurch mit).
-- `components/ChartActionBar.tsx` — Aktionsleiste: `variant="bar"` (breite Widgets, Footer) oder `variant="menu"` (⋯ für kleine Widgets; `menuUp` wenn im Footer). `showDownload={false}` wo kein Chart/SVG exportierbar ist (Karte, Kennzahl).
+- `components/ChartActionBar.tsx` — Aktionsleiste: `variant="bar"` (sichtbare Icon-Reihe Herunterladen·Teilen·Einbetten) für **breite UND mittelgroße/zweispaltige** Widgets; `variant="menu"` (⋯) **nur für die ganz kleinen** (Einzel-KPI, Karte), wo eine Reihe die Höhe sprengt (`menuUp` wenn im Footer). `showDownload={false}` wo kein Chart/SVG exportierbar ist (Karte, Kennzahl).
+- **Quellenangabe (regulatorisch, dl-de/by-2-0 + CC BY 4.0):** sichtbarer Kurz-Credit **wo die Daten stehen** — reicht **einmal pro Seite** (globaler Seitenfuß, verlinkt Lizenz/`/datenstand`), NICHT unter jedem Block. Im **Embed** trägt das Widget seine Quelle selbst (Standalone) — **vertikal schlank an der rechten Kante** (`writing-mode: vertical-rl`, kompakte Kurzform Name + Lizenzkürzel, voller Text im `title`-Tooltip), **NIE als horizontaler Block** (wuchert über mehrere Zeilen = Fail). **Jedes exportierbare Bild** trägt die volle Quelle fest ein: ein `data-sc-export-only`-Fuß mit `<DataSourceNote plain>` (+ `PoweredBy`) ist im Web `display:none`, erscheint aber im PNG — so bleibt jede verteilte Kopie attribuiert, egal ob der Web-Credit sichtbar ist. Reiner Hover-Tooltip ohne sichtbaren Text ist NICHT ausreichend (fehlt in Screenshot/Druck/Mobil). Muster: `components/atlas/GemeindeWidgetShell.tsx` (+ `strommix-anteil` als bestehendes Beispiel für die vertikale Quelle).
 - `components/PoweredBy.tsx` — **das** „Powered by solar-check.io" (Marken-Icon inklusive). Überall verwenden, nie inline nachbauen.
 - Download/Teilen: `lib/useChartExport.ts` (composed Widget-Bild: Titel + Werte/Legende + Branding, ohne CTA; braucht eine SVG im `chartRef`).
 
@@ -535,6 +538,11 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 - **Teilen = aktueller Zustand** als Deep-Link auf die passende Live-Seite (z. B. `/strommix-deutschland?range=…`, `/pv-simulation?plz=…`).
 - **Galerie:** neues Widget als Sektion in `SECTIONS` (`app/(site)/energie-widgets/client.tsx`); fixe Query-Params pro Variante über das `params`-Feld (nicht in `src` hängen — kollidiert mit `embed=0`/Theme). iframe-Höhe **großzügig** (Footer/2-zeilige Legende).
 - **Recycling statt Neubau:** Startseite und Karten-Embed nutzen dieselbe `MastrHeroSection` (eine Ansicht, eine Quelle). Einzel-KPIs (`/embed/kennzahl`) recyceln die exportierte `Kachel`.
+- **Quellenangabe (BLOCKER):** Jedes Widget, das externe Daten zeigt, trägt einen Quell-Credit — und zwar so, dass er auch im geteilten Bild überlebt:
+  1. **Web-Credit über `DataSourceNote`** (`components/PoweredBy.tsx`) mit den Einträgen aus `lib/data-sources.ts` — **nie inline getippt** (driftet gegen die SSOT), einmal sichtbar wo die Daten stehen, **unabhängig vom `branding`-Flag** (branding gated nur „Powered by", nicht den Lizenz-Credit).
+  2. **Exportierbares Widget** (Chart/SVG im `chartRef`) → ein `data-sc-export-only`-Fuß mit `<DataSourceNote … plain />` **+ `PoweredBy`** bäckt Quelle + Marke fest ins PNG; der Web-Fuß wird per `data-sc-export-ignore` aus dem Bild gedroppt (Mechanik: `captureNodeToBlob`/`buildExportSvg` in `lib/chart-export.ts`). Kein reiner Hover-Tooltip als Quelle.
+  3. **Kein exportierbares SVG** (Karte, Kennzahl, Gemeinde-KPI) → `showDownload={false}`, Credit bleibt trotzdem sichtbar.
+  4. **Neue Datenquelle** → zuerst als Eintrag in `lib/data-sources.ts` erfassen (Legal-Checkliste 1), dann rendern — nicht umgekehrt.
 - **Kein Browser-Storage im Embed-Kontext (§ 25 TDDDG):** `lib/embed-context.ts → isEmbedContext()` — alle Cache-Hooks (`lib/energy.ts`, `lib/use-cached-fetch.ts`, `lib/prices.ts`, `lib/feedin.ts`) fallen unter `/embed/*` auf In-Memory-Maps zurück. Widgets sind gegenüber Einbettenden als „cookielos, kein Browser-Speicher" beworben — beim Bauen neuer Widgets nicht brechen.
 - **Rechtliches:** Nutzungsbedingungen unter `/widget-nutzungsbedingungen` (aus Galerie verlinkt), Datenschutz-Textbaustein für Einbettende in der Galerie, `ChartActionBar` enthält einen branding-unabhängigen „Anbieter & Impressum"-Menüpunkt (§ 5 DDG).
 - Icons/Buttons aus `components/Icons.tsx`.

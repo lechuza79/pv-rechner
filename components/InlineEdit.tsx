@@ -2,6 +2,18 @@
 import { useState } from "react";
 import { v } from "../lib/theme";
 
+// Parses German-formatted number input. Comma is the decimal separator; dots
+// are thousand separators ("1.400,5"). Without a comma, a lone dot is only a
+// thousand separator when it matches the strict grouping pattern ("1.400",
+// "12.500.000") — otherwise it is treated as a decimal point, so "2.5" means
+// 2,5 and not 25 (users routinely type the dot from numeric keypads).
+export function parseGermanNumber(input: string): number {
+  const t = input.trim();
+  if (t.includes(",")) return parseFloat(t.replace(/\./g, "").replace(",", "."));
+  if (/^-?\d{1,3}(\.\d{3})+$/.test(t)) return parseFloat(t.replace(/\./g, ""));
+  return parseFloat(t);
+}
+
 // `step` is accepted for API compatibility (callers pass it) but currently unused —
 // the component does free-form text entry with min/max validation, no stepping.
 // Kept on the prop signature in case we add arrow-key increment later.
@@ -15,8 +27,7 @@ export default function InlineEdit({ value, onCommit, unit, step: _step = 1, min
   };
 
   const commit = () => {
-    const raw = draft.replace(/\./g, "").replace(",", ".");
-    const n = parseFloat(raw);
+    const n = parseGermanNumber(draft);
     if (!isNaN(n) && n >= min && n <= max) {
       onCommit(Math.round(n * 1000) / 1000);
     }

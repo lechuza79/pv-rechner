@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { recommend, type RecommendInput } from "../recommend";
-import { SPEICHER, PERSONEN } from "../constants";
+import { recommend, economicsForScenario, effectiveFeedInCtPerKwh, type RecommendInput } from "../recommend";
+import { SPEICHER, PERSONEN, SCENARIOS } from "../constants";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "../heatpump-core";
+import { calcWeightedFeedIn } from "../calc";
+import { DEFAULT_FEED_IN } from "../feedin-config";
 
 // Canonical input: 4-person household, normal usage, EFH with Satteldach,
 // no WP, no EA, no budget cap. This should land somewhere around 8 kWp
@@ -25,6 +27,28 @@ describe("recommend (PV system recommendation)", () => {
     expect(r).toHaveProperty("speicherIdx");
     expect(r).toHaveProperty("reasoning");
     expect(r).toHaveProperty("alternatives");
+  });
+
+  it("threads the PVGIS monthly profile into the shown autarky (Zwischen- = Ergebnisseite)", () => {
+    // Vor dem Fix ignorierte die Empfehlung das Monatsprofil (immer deutscher
+    // Schnitt), während die Ergebnisseite das echte Profil nutzt → verschiedene
+    // Autarkie. Bei einer WP wirkt die Saisonform stark, also muss ein anderes
+    // Monatsprofil eine andere Autarkie ergeben — Beweis, dass es durchgereicht wird.
+    const wpInput: RecommendInput = { ...baseInput, wp: "ja" };
+    // Gleiche Jahressumme (960), gegensätzliche Saisonform. Nur die Anzeige-Autarkie
+    // hängt vom Profil ab (die empfohlene Größe folgt der NPV-Rechnung ohne Profil),
+    // die WP-Winterlast macht die Form aber sichtbar.
+    const summerHeavy = [20, 30, 60, 100, 140, 160, 160, 140, 90, 40, 10, 10];
+    const winterHeavy = [130, 120, 100, 70, 40, 20, 20, 40, 60, 90, 120, 150];
+    const rSummer = recommend({ ...wpInput, monthlyYieldPerKwp: summerHeavy });
+    const rWinter = recommend({ ...wpInput, monthlyYieldPerKwp: winterHeavy });
+    const rDefault = recommend({ ...wpInput, monthlyYieldPerKwp: null });
+    expect(rSummer.reasoning.autarkie).not.toBe(rWinter.reasoning.autarkie);
+    // Das Profil wirkt tatsächlich (mindestens eine Form weicht vom Default ab).
+    expect(
+      rSummer.reasoning.autarkie !== rDefault.reasoning.autarkie ||
+      rWinter.reasoning.autarkie !== rDefault.reasoning.autarkie,
+    ).toBe(true);
   });
 
   it("reports sim-based autarky, and a battery lifts it (Bex' Reddit-Wunsch)", () => {
@@ -189,6 +213,62 @@ describe("recommend (PV system recommendation)", () => {
         expect(Number.isFinite(alt.investition)).toBe(true);
       }
     }
+  });
+
+  // ── Drift-Invariante: economicsForScenario ≡ recommend() ──────────────────
+  // economicsForScenario ist deklariert als "nutzt exakt dasselbe Modell wie
+  // recommend()". Der Zwischenseiten-Umschalter zeigt damit die Wirtschaftlichkeit
+  // der Empfehlung — driften die beiden, zeigt er andere Zahlen als die
+  // Empfehlung selbst. Dieser Test nagelt die Identität im realistischen
+  // Szenario fest (das Szenario, an dem die Empfehlung verankert ist).
+  it("economicsForScenario reproduces the recommendation exactly (realistic scenario, no drift)", () => {
+    const realistic = SCENARIOS.find(s => s.id === "realistic")!;
+    const inputs: RecommendInput[] = [
+      baseInput,
+      { ...baseInput, wp: "ja" },
+      { ...baseInput, ea: "ja", eaKm: 20000 },
+      { ...baseInput, personen: 3, wp: "ja", ea: "ja", haustyp: 3, dachart: 3 },
+      { ...baseInput, personen: 0, nutzung: 0, haustyp: 0, dachart: 2 },
+      { ...baseInput, wp: "ja", klima: "ja", klimaM2: 80 },
+    ];
+    for (const input of inputs) {
+      const r = recommend(input);
+      const eco = economicsForScenario(input, r.kwp, r.speicherKwh, { strom: realistic.strom, evDelta: realistic.evDelta });
+      expect(eco.npv25).toBe(r.reasoning.npv25);
+      expect(eco.paybackYears).toBe(r.reasoning.paybackYears);
+      expect(eco.investition).toBe(r.reasoning.investition);
+      expect(eco.eigenverbrauch).toBe(r.reasoning.eigenverbrauch);
+    }
+  });
+
+  it("economicsForScenario orders the scenarios sensibly (pessimistic ≤ realistic ≤ optimistic)", () => {
+    const r = recommend(baseInput);
+    const [pess, real, opt] = SCENARIOS.map(s =>
+      economicsForScenario(baseInput, r.kwp, r.speicherKwh, { strom: s.strom, evDelta: s.evDelta }),
+    );
+    expect(pess.npv25).toBeLessThan(real.npv25);
+    expect(real.npv25).toBeLessThan(opt.npv25);
+    // Die Investition hängt nicht am Strompreis-Szenario.
+    expect(pess.investition).toBe(real.investition);
+    expect(opt.investition).toBe(real.investition);
+  });
+
+  // ── Geteilte-Basis-Invariante: EEG-Mischsatz doppelt implementiert ────────
+  // effectiveFeedInCtPerKwh (recommend.ts) und calcWeightedFeedIn (calc.ts)
+  // rechnen dieselbe EEG-Formel (≤10 kWp voller Satz, darüber gewichtet).
+  // calcWeightedFeedIn rundet auf 2 Nachkommastellen, die recommend-Variante
+  // nicht — deshalb ±0,005 ct Toleranz. Driftet eine der beiden Formeln
+  // (anderer Schwellwert, andere Gewichtung), schlägt dieser Test an.
+  it("effectiveFeedInCtPerKwh matches calcWeightedFeedIn up to rounding (shared EEG formula)", () => {
+    const f = DEFAULT_FEED_IN;
+    for (const kwp of [3, 5, 8, 10, 10.5, 12, 15, 20, 29.5, 40]) {
+      const fromRecommend = effectiveFeedInCtPerKwh(kwp, f);
+      const fromCalc = calcWeightedFeedIn(kwp, f.teilUnder10, f.teilOver10, f.thresholdKwp);
+      expect(Math.abs(fromRecommend - fromCalc)).toBeLessThanOrEqual(0.005 + 1e-9);
+    }
+    // At and below the threshold both must return the small-system rate exactly.
+    expect(effectiveFeedInCtPerKwh(10, f)).toBe(f.teilUnder10);
+    expect(effectiveFeedInCtPerKwh(5, f)).toBe(f.teilUnder10);
   });
 
   it("survives an incomplete PriceConfig (e.g. stale cache without electricity fields)", () => {

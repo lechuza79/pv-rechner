@@ -5,8 +5,11 @@ import Header from "../../../../components/Header";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
+import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../lib/json-ld";
+import { atlasIsIndexable, atlasRobots } from "../../../../lib/atlas-index";
 import ZubauChart from "../../../../components/atlas/ZubauChart";
 import RankingTable from "../../../../components/atlas/RankingTable";
+import { MastrHeroSection } from "../../../../components/MastrHeroSection";
 import {
   resolveSlugPath,
   getRegionById,
@@ -22,8 +25,8 @@ import { getRegionAtlasData } from "../../../../lib/mastr-data";
 
 export const revalidate = 3600;
 
-/** Pilot: built and reviewable, out of the index until Welle 1. */
-const PILOT_NOINDEX = { index: false, follow: false } as const;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
+
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
@@ -56,20 +59,28 @@ function headline(region: AtlasRegion): string {
   return `Solaranlagen ${nennt ? "im" : "in"} ${region.name}`;
 }
 
+/** Locative phrase for headings and copy: "in Deutschland", "in Bayern",
+ *  "im Landkreis Würzburg". region.name already carries the "Landkreis" prefix. */
+function ortPhrase(region: AtlasRegion): string {
+  if (region.level === "de") return "in Deutschland";
+  const nennt = region.bezeichnung === "Landkreis" || region.bezeichnung === "Kreis";
+  return `${nennt ? "im" : "in"} ${region.name}`;
+}
+
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const region = await resolve(params.pfad);
-  if (!region) return { robots: PILOT_NOINDEX };
+  if (!region) return { robots: atlasRobots(false) };
   const title = headline(region);
   return {
     ...pageMetadata({
-      title: `${title} – Bestand, Zubau und Rangliste`,
+      title: `${title} – Bestand & Zubau`,
       description:
         region.level === "de"
-          ? "Wie viel Photovoltaik steht in Deutschland? Bestand und Zubau aus dem Marktstammdatenregister, mit Rangliste aller Bundesländer nach Leistung je Einwohner."
-          : `Wie viele Solaranlagen stehen in ${region.name}? Bestand, Zubau und Rangliste aus dem Marktstammdatenregister — je Einwohner vergleichbar.`,
+          ? "Wie viel Photovoltaik steht in Deutschland? Bestand und Zubau aus dem Marktstammdatenregister, mit Rangliste aller Bundesländer nach Solarleistung je Einwohner."
+          : `Wie viele Solaranlagen stehen ${ortPhrase(region)}? Photovoltaik-Bestand, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister.`,
       path: `/solar-atlas${params.pfad?.length ? "/" + params.pfad.join("/") : ""}`,
     }),
-    robots: PILOT_NOINDEX,
+    robots: atlasRobots(atlasIsIndexable(region.level)),
   };
 }
 
@@ -120,9 +131,33 @@ export default async function AtlasPage({ params }: { params: Params }) {
   const childNoun =
     childLevel === "bundesland" ? "Bundesländer" : childLevel === "landkreis" ? "Kreise" : "Gemeinden";
 
+  const regionLabel = region.level === "de" ? "Deutschland" : region.name;
+
+  const breadcrumbLd = breadcrumbJsonLd(
+    crumbs.map((c) => ({ name: c.label, path: c.href })),
+    BASE_URL,
+  );
+  const datasetLd = atlasDatasetJsonLd({
+    name: `Solaranlagen-Bestand ${regionLabel}`,
+    description: `Anlagenzahl und installierte Leistung der Photovoltaik ${ortPhrase(region)} aus dem Marktstammdatenregister, mit jährlichem Zubau und Rangliste der ${childNoun}.`,
+    url: `${BASE_URL}${basePath}`,
+    dateModified: atlas.data_as_of,
+    placeName: regionLabel,
+    variables: [
+      { name: "Solaranlagen in Betrieb", value: atlas.solar.total_count },
+      { name: "Installierte Leistung", value: Math.round(atlas.solar.total_kwp), unitText: "kWp" },
+      ...(wPerCapita !== null ? [{ name: "Solarleistung je Einwohner", value: wPerCapita, unitText: "W" }] : []),
+    ],
+    baseUrl: BASE_URL,
+  });
+
   return (
     <div style={S.page}>
       <Header />
+      {crumbs.length > 1 && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
+      )}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
       <div style={S.wrap}>
         {crumbs.length > 1 ? <Breadcrumb items={crumbs} /> : <div style={{ height: 8 }} />}
 
@@ -137,8 +172,11 @@ export default async function AtlasPage({ params }: { params: Params }) {
         <h1 style={S.h1}>{headline(region)}</h1>
         <p style={S.intro}>
           <strong style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</strong> mit zusammen{" "}
-          <strong style={S.strong}>{fmtLeistung(atlas.solar.total_kwp)}</strong> sind hier in Betrieb,
-          verteilt auf {nf(children.length)} {childNoun}.
+          <strong style={S.strong}>{fmtLeistung(atlas.solar.total_kwp)}</strong> installierter Leistung
+          sind {ortPhrase(region)} in Betrieb, verteilt auf {nf(children.length)} {childNoun}.
+          {wPerCapita !== null && (
+            <> Das sind {nf(wPerCapita)} Watt Photovoltaik-Leistung je Einwohner.</>
+          )}
         </p>
 
         <div style={S.metricsGrid}>
@@ -165,7 +203,17 @@ export default async function AtlasPage({ params }: { params: Params }) {
         </div>
 
         <div style={S.section}>
-          <h2 style={S.h2}>Rangliste der {childNoun}</h2>
+          <h2 style={S.h2}>Solaranlagen auf der Karte</h2>
+          <p style={S.sub}>
+            Tippen Sie auf ein Gebiet, um tiefer einzutauchen — bis auf Gemeindeebene.
+          </p>
+          <MastrHeroSection initialRegion={region.level === "de" ? "de" : region.region_id} initialTraeger="solar" />
+        </div>
+
+        <div style={S.section}>
+          <h2 style={S.h2}>
+            {region.level === "de" ? "Rangliste der Bundesländer" : `Rangliste der ${childNoun} ${ortPhrase(region)}`}
+          </h2>
           <p style={S.sub}>
             „Privat" zählt private Dächer, Balkonkraftwerke und Hausbatterien, „Gewerbe"
             gewerbliche Dächer, Freiflächen-Parks und gewerbliche Speicher.
@@ -180,7 +228,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
 
         {atlas.solar.by_year.length >= 4 && (
           <div style={S.section}>
-            <h2 style={S.h2}>Zubau pro Jahr</h2>
+            <h2 style={S.h2}>Zubau pro Jahr {ortPhrase(region)}</h2>
             <p style={S.sub}>Neu in Betrieb genommene Solaranlagen</p>
             <ZubauChart years={atlas.solar.by_year} />
           </div>
@@ -194,7 +242,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
                 Wie der deutsche Ausbau gegenüber anderen Ländern dasteht, zeigt der Ländervergleich.
               </p>
               <Link href="/laendervergleich" style={S.link}>
-                Zum Ländervergleich
+                Photovoltaik-Ausbau im Ländervergleich
               </Link>
             </div>
           </div>

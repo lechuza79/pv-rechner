@@ -1,5 +1,8 @@
 import { v } from "../lib/theme";
 import type { FundingProgram, FundingStatus } from "../lib/funding-programs";
+import type { FundingExample } from "../lib/funding-examples";
+
+const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
 // Shared, data-bound building blocks for rendering a funding program. Used by
 // the overview, the Bundesland page, the city page and the result modal so the
@@ -52,6 +55,44 @@ export function FundingRates({ rates, bordered = false }: { rates: FundingProgra
         >
           <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
           <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, textAlign: "right" }}>{r.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** The three example-system cards (5 / 10 / 15 kWp) with Investition, optional
+ *  Förderung, Amortisation and 25-year Rendite. Shared by the city and the
+ *  Bundesland page so the lead block stays identical. */
+export function ExampleCards({ examples }: { examples: FundingExample[] }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
+      {examples.map((ex) => (
+        <div key={ex.kwp} style={{ background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "16px 18px" }}>
+          <div style={{ fontSize: 17, fontWeight: 800 }}>{ex.kwp} kWp</div>
+          <div style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: 12 }}>
+            {ex.spKwh > 0 ? `mit ${ex.spKwh} kWh Speicher` : "ohne Speicher"}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 13 }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ color: v("--color-text-secondary") }}>Investition</span>
+              <span style={{ fontFamily: v("--font-mono") }}>{nf(ex.brutto)} €</span>
+            </div>
+            {ex.foerderung > 0 && (
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: v("--color-text-secondary") }}>Förderung</span>
+                <span style={{ fontFamily: v("--font-mono"), color: v("--color-positive"), fontWeight: 700 }}>− {nf(ex.foerderung)} €</span>
+              </div>
+            )}
+            <div style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${v("--color-border")}`, paddingTop: 6 }}>
+              <span style={{ color: v("--color-text-secondary") }}>Amortisation</span>
+              <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{ex.amort !== null ? `${ex.amort} Jahre` : "> 25 J."}</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ color: v("--color-text-secondary") }}>Rendite 25 J.</span>
+              <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: ex.total > 0 ? v("--color-positive") : v("--color-negative") }}>{ex.total > 0 ? "+" : ""}{nf(ex.total)} €</span>
+            </div>
+          </div>
         </div>
       ))}
     </div>
