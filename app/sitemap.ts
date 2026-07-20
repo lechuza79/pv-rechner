@@ -60,6 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/klimaanlage-stromkosten`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/balkonkraftwerk-rechner`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${BASE_URL}/ratgeber`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/lohnt-sich-pv-mit-speicher`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/lohnt-sich-pv-ohne-einspeiseverguetung`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/pv-simulation`, changeFrequency: "monthly", priority: 0.8 },

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../../components/Header";
+import Breadcrumb from "../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
@@ -186,6 +187,7 @@ export default async function AtomstromImportPage() {
         dangerouslySetInnerHTML={{ __html: jsonLdHtml(faqJsonLd) }}
       />
       <div style={S.wrap}>
+        <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Atomstrom-Import" }]} jsonLd />
         <h1 style={S.h1}>Wie viel Atomstrom importiert Deutschland?</h1>
         <p style={S.subtitle}>
           Deutschland hat seine eigenen Kernkraftwerke abgeschaltet — bezieht über das europäische

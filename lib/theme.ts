@@ -122,8 +122,9 @@ export const tokens = {
   '--radius-md': '12px',                // Medium: buttons, cards, panels
   '--radius-lg': '20px',                // Large: hero cards, outer containers
 
-  // ─── Layout (2) ────────────────────────────────────────────────────────────
-  '--page-max-width': '480px',
+  // ─── Layout (3) ────────────────────────────────────────────────────────────
+  '--page-max-width': '480px',       // Rechner/Tools — kompakte, fokussierte Spalte
+  '--content-max-width': '640px',    // Redaktionelle Lese-/Textseiten (Ratgeber, Methodik, …)
   '--header-max-width': '960px',
 } as const;
 

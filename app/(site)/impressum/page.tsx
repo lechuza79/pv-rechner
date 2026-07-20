@@ -1,7 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowRight } from "../../../components/Icons";
-import { v, iconSizes } from "../../../lib/theme";
+import Header from "../../../components/Header";
+import Breadcrumb from "../../../components/Breadcrumb";
+import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import ObfuscatedEmail from "../../../components/ObfuscatedEmail";
 
@@ -20,7 +21,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v('--page-max-width'), margin: "0 auto" },
+  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto" },
   back: {
     fontSize: v('--font-size-small'),
     color: v('--color-text-secondary'),
@@ -74,10 +75,9 @@ const S = {
 export default function ImpressumPage() {
   return (
     <div style={S.page}>
+      <Header />
       <div style={S.wrap}>
-        <Link href="/" style={S.back}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück zum Rechner</span>
-        </Link>
+        <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Impressum" }]} jsonLd />
 
         <h1 style={S.h1}>Impressum</h1>
 

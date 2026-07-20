@@ -1,7 +1,7 @@
 import { Metadata } from "next";
-import Link from "next/link";
-import { IconArrowRight } from "../../../components/Icons";
-import { v, iconSizes } from "../../../lib/theme";
+import Header from "../../../components/Header";
+import Breadcrumb from "../../../components/Breadcrumb";
+import { v } from "../../../lib/theme";
 import { allGlossaryEntries } from "../../../lib/glossary";
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto" },
+  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto" },
   back: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
@@ -85,13 +85,9 @@ export default function GlossarPage() {
   const entries = allGlossaryEntries();
   return (
     <div style={S.page}>
+      <Header />
       <div style={S.wrap}>
-        <Link href="/" style={S.back}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} />{" "}
-            Zurück zur Startseite
-          </span>
-        </Link>
+        <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Glossar" }]} jsonLd />
 
         <h1 style={S.h1}>Glossar</h1>
         <p style={S.subtitle}>

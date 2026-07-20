@@ -21,7 +21,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   } as React.CSSProperties,
-  wrap: { maxWidth: v('--page-max-width'), margin: "0 auto" } as React.CSSProperties,
+  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto" } as React.CSSProperties,
   back: {
     fontSize: v('--font-size-small'),
     color: v('--color-text-secondary'),

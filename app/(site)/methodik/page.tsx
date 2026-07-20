@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowRight } from "../../../components/Icons";
+import Header from "../../../components/Header";
+import Breadcrumb from "../../../components/Breadcrumb";
 import GlossaryTerm from "../../../components/GlossaryTerm";
-import { v, iconSizes } from "../../../lib/theme";
+import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
@@ -26,7 +27,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v('--page-max-width'), margin: "0 auto" },
+  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto" },
   back: {
     fontSize: v('--font-size-small'),
     color: v('--color-text-secondary'),
@@ -141,10 +142,9 @@ export default async function MethodikPage() {
   const co2Y0 = new Date().getFullYear();
   return (
     <div style={S.page}>
+      <Header />
       <div style={S.wrap}>
-        <Link href="/" style={S.back}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück zum Rechner</span>
-        </Link>
+        <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Methodik" }]} jsonLd />
 
         <h1 style={S.h1}>So rechnen wir</h1>
         <p style={S.subtitle}>

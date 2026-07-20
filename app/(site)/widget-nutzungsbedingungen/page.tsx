@@ -20,7 +20,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v('--page-max-width'), margin: "0 auto" },
+  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto" },
   back: {
     fontSize: v('--font-size-small'),
     color: v('--color-text-secondary'),

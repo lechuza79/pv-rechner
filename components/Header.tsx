@@ -56,6 +56,8 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/klimaanlage-stromkosten") ? "klima" :
     pathname.startsWith("/balkonkraftwerk-rechner") ? "balkon" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
+    pathname.startsWith("/ratgeber") ? "ratgeber" :
+    pathname.startsWith("/lohnt-sich-pv") ? "ratgeber" :
     pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""
   );
@@ -152,6 +154,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
               activePage={activePage}
             />
             <Link href="/photovoltaik-foerderung" style={linkStyle("foerderung")}>PV-Förderung</Link>
+            <Link href="/ratgeber" style={linkStyle("ratgeber")}>Ratgeber</Link>
             <DesktopDropdown
               triggerLabel="Strommix & Energiedaten"
               triggerHref="/strommix-deutschland"
@@ -207,6 +210,10 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
             <Link href="/photovoltaik-foerderung" style={mobileLinkStyle("foerderung")} onClick={closeMenu}>PV-Förderung</Link>
+
+            <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
+
+            <Link href="/ratgeber" style={mobileLinkStyle("ratgeber")} onClick={closeMenu}>Ratgeber</Link>
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
