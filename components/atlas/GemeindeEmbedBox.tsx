@@ -1,79 +1,45 @@
-"use client";
-
-import { useState } from "react";
 import { v } from "../../lib/theme";
-
-const BASE = "https://solar-check.io";
+import { IconArrowRight } from "../Icons";
 
 /**
- * "Diese Zahlen auf Ihrer Website einbinden" — the Outreach conversion.
+ * "Diese Zahlen auf Ihrer Website einbinden" — der Outreach-Aufhänger für
+ * Kommunen. Bewusst OHNE rohen Code: Zielgruppe ist die Rathaus-/Pressestelle,
+ * kein Entwickler. Stattdessen eine Live-Vorschau (die echten Zahlen der
+ * Gemeinde) + ein Weg zur Widget-Galerie, wo man das Feld anpasst (hell/dunkel,
+ * Größe) und den fertigen Code samt Backlink bekommt — plus Kontakt.
  *
- * The <a> below the iframe is the point: it sits in the municipality's own HTML,
- * so search engines count it as a backlink to the atlas page. That backlink, not
- * the iframe, is the distribution lever the whole Gemeinde layer exists for.
+ * Der SEO-Backlink zur Atlas-Seite entsteht weiterhin, sobald die Kommune das
+ * Feld einbettet; der Code dafür liegt jetzt in der Galerie statt hier.
  */
-export default function GemeindeEmbedBox({
-  name,
-  ags,
-  atlasPath,
-}: {
-  name: string;
-  ags: string;
-  atlasPath: string | null;
-}) {
-  const [copied, setCopied] = useState(false);
-
-  const src = `${BASE}/embed/gemeinde-solar?ags=${ags}`;
-  const linkHref = atlasPath ? `${BASE}${atlasPath}` : BASE;
-  const code = [
-    `<iframe`,
-    `  src="${src}"`,
-    `  width="480"`,
-    `  height="240"`,
-    `  style="border:0;display:block;width:100%;max-width:480px"`,
-    `  title="Solaranlagen in ${name} — Solar Check"`,
-    `  loading="lazy"`,
-    `></iframe>`,
-    `<p style="margin:6px 0 0;font:13px/1.4 system-ui,sans-serif">`,
-    `  <a href="${linkHref}" target="_blank" rel="noopener">Solaranlagen in ${name} · Solar Check</a>`,
-    `</p>`,
-  ].join("\n");
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // clipboard blocked — the code is visible to select by hand
-    }
-  };
+export default function GemeindeEmbedBox({ name, ags }: { name: string; ags: string }) {
+  const previewSrc = `/embed/gemeinde-solar?ags=${ags}&embed=0`;
+  const galleryHref = `/energie-widgets?ags=${ags}&name=${encodeURIComponent(name)}#gemeinde-solar`;
 
   return (
     <div style={S.card}>
       <h2 style={S.h2}>Sie arbeiten für die Gemeinde {name}?</h2>
       <p style={S.sub}>
         Diese Zahlen lassen sich als kleines Feld auf der Website von {name} einbinden — cookiefrei,
-        ohne Browser-Speicher, monatlich aktuell. Code kopieren und einfügen:
+        ohne Browser-Speicher, monatlich automatisch aktuell. So sieht es aus:
       </p>
 
-      <div style={S.snippetWrap}>
-        <div style={S.snippetHead}>
-          <span style={S.snippetLabel}>Einbetten-Code</span>
-          <button type="button" onClick={copy} style={S.copyBtn}>
-            {copied ? "Kopiert ✓" : "Kopieren"}
-          </button>
-        </div>
-        <pre style={S.pre}>{code}</pre>
+      <div style={S.previewWrap}>
+        <iframe
+          src={previewSrc}
+          title={`Solaranlagen in ${name} — Vorschau`}
+          loading="lazy"
+          style={S.preview}
+        />
       </div>
 
-      <div style={S.links}>
-        <a href={src} target="_blank" rel="noopener noreferrer" style={S.link}>
-          Vorschau des Felds
+      <div style={S.actions}>
+        <a href={galleryHref} style={S.cta}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            Ansehen, anpassen &amp; einbetten <IconArrowRight size={16} />
+          </span>
         </a>
-        <span style={S.dot}>·</span>
-        <a href="/energie-widgets" style={S.link}>
-          Weitere Widgets & Anpassung
+        <a href="/kontakt" style={S.contact}>
+          Wir richten es Ihnen ein — Kontakt aufnehmen
         </a>
       </div>
     </div>
@@ -84,46 +50,34 @@ const S: Record<string, React.CSSProperties> = {
   card: {
     background: v("--color-bg-muted"),
     borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
+    padding: "18px 20px",
   },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 6px" },
-  sub: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.6, margin: "0 0 12px" },
-  snippetWrap: {
+  sub: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.6, margin: "0 0 14px" },
+  previewWrap: {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-md"),
-    overflow: "hidden",
+    padding: 8,
+    maxWidth: 420,
   },
-  snippetHead: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "6px 10px",
-    borderBottom: `1px solid ${v("--color-border")}`,
+  preview: {
+    border: 0,
+    display: "block",
+    width: "100%",
+    height: 250,
+    borderRadius: v("--radius-sm"),
   },
-  snippetLabel: { fontSize: 11, color: v("--color-text-muted"), fontWeight: 600 },
-  copyBtn: {
-    border: "none",
+  actions: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px", marginTop: 16 },
+  cta: {
+    display: "inline-block",
     background: v("--color-accent"),
     color: v("--color-text-on-accent"),
-    fontFamily: "inherit",
-    fontSize: 12,
-    fontWeight: 600,
-    padding: "4px 12px",
-    borderRadius: v("--radius-sm"),
-    cursor: "pointer",
+    fontSize: 14,
+    fontWeight: 700,
+    padding: "10px 16px",
+    borderRadius: v("--radius-md"),
+    textDecoration: "none",
   },
-  pre: {
-    margin: 0,
-    padding: "10px 12px",
-    fontSize: 11,
-    lineHeight: 1.5,
-    fontFamily: v("--font-mono"),
-    color: v("--color-text-secondary"),
-    overflowX: "auto",
-    whiteSpace: "pre",
-  },
-  links: { display: "flex", alignItems: "center", gap: 8, marginTop: 10, fontSize: 12 },
-  link: { color: v("--color-accent"), textDecoration: "none" },
-  dot: { color: v("--color-text-muted") },
+  contact: { fontSize: 13, color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
 };

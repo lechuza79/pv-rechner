@@ -93,6 +93,18 @@ export default function Home() {
       {/* MaStR Hero Map — wider container, breaks out of the 480px column */}
       <div style={{ maxWidth: 760, margin: "0 auto 36px" }}>
         <MastrHeroSection />
+        <div style={{ textAlign: "center", marginTop: 12 }}>
+          <Link
+            href="/solar-atlas"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              fontSize: 14, fontWeight: 700, textDecoration: "none",
+              color: v('--color-accent'),
+            }}
+          >
+            Zum Solar-Atlas: Bestand in ganz Deutschland <IconArrowRight size={iconSizes.sm} />
+          </Link>
+        </div>
       </div>
 
       {/* Tool Cards — breiter Container, 2-spaltig auf Desktop */}

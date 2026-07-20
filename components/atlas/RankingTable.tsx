@@ -3,12 +3,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { v } from "../../lib/theme";
-import { IconArrowUp, IconArrowDown, IconChevronDown } from "../Icons";
+import { IconArrowUp, IconArrowDown, IconChevronDown, IconArrowRight } from "../Icons";
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
 import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
 
 type Owner = "alle" | "privat" | "gewerbe";
 type Metric = "count" | "kwp" | "perCapita" | "speicher";
+/** Sort key: a numeric metric column (descending), the name column (A–Z), or
+ *  population (descending). Name and population share the name-column dropdown. */
+type Sort = Metric | "name" | "population";
 /** What the first column shows — position, or movement. */
 type RankMode = "platz" | "delta";
 
@@ -83,8 +86,18 @@ function fmtCell(row: Row, m: Metric): string {
   return nf(row[m] as number);
 }
 
-function valueOf(row: Row, m: Metric): number | null {
-  return m === "perCapita" ? row.perCapita : (row[m] as number);
+/** Small inhabitant count shown behind the name. Bundesländer carry millions —
+ *  shorten those to "17,9 Mio."; Kreise and Gemeinden stay whole numbers. */
+function fmtPop(pop: number, inMillions: boolean): string {
+  if (inMillions) return `${(pop / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} Mio.`;
+  return nf(pop);
+}
+
+function valueOf(row: Row, m: Sort): number | null {
+  if (m === "name") return null;
+  if (m === "perCapita") return row.perCapita;
+  if (m === "population") return row.population;
+  return row[m] as number;
 }
 
 /** Rank movement, sized to sit inline with the rank number beside it. */
@@ -116,14 +129,19 @@ export default function RankingTable({
   cells,
   basePath,
   lastFullYear,
+  popInMillions = false,
 }: {
   regions: RankingRegion[];
   cells: ChildYearRow[];
   basePath: string;
   lastFullYear: number;
+  /** Bundesländer carry millions of inhabitants — show the Einwohner column in
+   *  millions there (unit in the header, plain number in the cell). Kreise and
+   *  Gemeinden stay whole numbers. */
+  popInMillions?: boolean;
 }) {
   const [owner, setOwner] = useState<Owner>("alle");
-  const [sort, setSort] = useState<Metric>("perCapita");
+  const [sort, setSort] = useState<Sort>("perCapita");
   const [rankMode, setRankMode] = useState<RankMode>("platz");
   const { home, setHome, ready } = useHomeGemeinde();
   // A shared link can mark a Gemeinde via ?plz=. Resolved on the client (like the
@@ -204,6 +222,9 @@ export default function RankingTable({
   // this "Veränderung zum Vorjahr" would be a lie: it spans that year-end to
   // today, which in July is seven months, not twelve. The header says what it is.
   const deltas = useMemo(() => {
+    // Rank movement is only meaningful for the growth metrics. Alphabetical order
+    // has no "rank", and population barely moves year to year — no delta there.
+    if (sort === "name" || sort === "population") return new Map<string, number | null>();
     const rank = (list: Row[]) => {
       const m = new Map<string, number>();
       list
@@ -224,6 +245,7 @@ export default function RankingTable({
   }, [rows, build, sort, lastFullYear]);
 
   const sorted = useMemo(() => {
+    if (sort === "name") return [...rows].sort((a, b) => a.name.localeCompare(b.name, "de"));
     const withVal = rows.filter((r) => valueOf(r, sort) !== null);
     const without = rows.filter((r) => valueOf(r, sort) === null);
     withVal.sort((a, b) => (valueOf(b, sort) as number) - (valueOf(a, sort) as number));
@@ -341,7 +363,7 @@ export default function RankingTable({
           {/* Header: every column sorts, the first also picks what it shows. */}
           <div style={{ ...S.row, ...S.header }}>
             <RankHeader mode={rankMode} onChange={setRankMode} sinceYear={lastFullYear} />
-            <span style={S.headName}>Gemeinde</span>
+            <NameHeader sort={sort} onChange={setSort} />
             {COLUMNS.map((c) => (
               <button
                 key={c.key}
@@ -377,15 +399,9 @@ export default function RankingTable({
                   </span>
                   <span style={S.nameCell}>
                     <span style={{ ...S.name, fontWeight: isMarked ? 700 : 500 }}>{r.name}</span>
-                    {r.population === null ? (
-                      <span style={S.hint}>unbewohnt</span>
-                    ) : (
-                      // Population next to the name only under "Pro Kopf" — that is
-                      // where a small village leading a big town needs context: a
-                      // 850-inhabitant place tops the per-capita list easily, and the
-                      // number makes that legible instead of misleading.
-                      sort === "perCapita" && <span style={S.hint}>{nf(r.population)} Einw.</span>
-                    )}
+                    <span style={S.hint}>
+                      {r.population === null ? "unbewohnt" : fmtPop(r.population, popInMillions)}
+                    </span>
                   </span>
                   {COLUMNS.map((c) => (
                     <span key={c.key} style={cellStyle(c.key)}>
@@ -415,8 +431,11 @@ export default function RankingTable({
               // link inside a 620px row is a target nobody hits on a phone.
               // Uninhabited areas have no page, so they stay a plain row.
               return r.href ? (
-                <Link key={r.region_id} href={r.href} {...marker} style={{ ...style, ...S.rowLink }}>
+                <Link key={r.region_id} href={r.href} {...marker} className="atlas-rank-row" style={{ ...style, ...S.rowLink }}>
                   {inner}
+                  <span className="atlas-go" style={S.go} aria-hidden>
+                    <IconArrowRight size={13} />
+                  </span>
                 </Link>
               ) : (
                 <div key={r.region_id} {...marker} style={style}>
@@ -448,9 +467,9 @@ export default function RankingTable({
               </span>
               <span style={S.nameCell}>
                 <span style={{ ...S.name, fontWeight: 700 }}>{markedRow.name}</span>
-                {sort === "perCapita" && markedRow.population !== null && (
-                  <span style={S.hint}>{nf(markedRow.population)} Einw.</span>
-                )}
+                <span style={S.hint}>
+                  {markedRow.population === null ? "unbewohnt" : fmtPop(markedRow.population, popInMillions)}
+                </span>
               </span>
               {COLUMNS.map((c) => (
                 <span key={c.key} style={cellStyle(c.key)}>
@@ -467,7 +486,14 @@ export default function RankingTable({
         </div>
       )}
 
-      {ready && !markedRow && !home && <HomePicker onPick={pick} />}
+      {/* PLZ-CTA sticht wie die aktive Kommune am unteren Rand — sobald eine
+          Gemeinde gewählt ist, ersetzt die schwebende Kommunen-Zeile darüber diese
+          Karte (sich gegenseitig ausschließende Bedingungen, gleicher Slot). */}
+      {ready && !markedRow && !home && (
+        <div style={S.stickyPicker}>
+          <HomePicker onPick={pick} />
+        </div>
+      )}
       {ready && markedRow && (
         <p style={S.note}>
           Hervorgehoben: <strong>{markedRow.name}</strong>
@@ -550,6 +576,57 @@ function RankHeader({ mode, onChange, sinceYear }: { mode: RankMode; onChange: (
   );
 }
 
+/**
+ * Name column header — a dropdown twin of RankHeader. It flips the sort between
+ * alphabetical (A–Z) and by inhabitants: the two orderings that have no value
+ * column of their own. "(Einwohner)" in the label names the small number shown
+ * behind each place name.
+ */
+function NameHeader({ sort, onChange }: { sort: Sort; onChange: (s: Sort) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useOutsideClose(open, () => setOpen(false));
+  const active = sort === "name" || sort === "population";
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        title="Sortieren: alphabetisch oder nach Einwohnerzahl"
+        style={{
+          ...S.headNameBtn,
+          color: active ? v("--color-accent") : v("--color-text-muted"),
+          fontWeight: active ? 700 : 600,
+        }}
+      >
+        Name (Einwohner)
+        <IconChevronDown size={7} />
+      </button>
+      {open && (
+        <div style={S.dropdown}>
+          {(
+            [
+              ["name", "Name (A–Z)"],
+              ["population", "Einwohner"],
+            ] as [Sort, string][]
+          ).map(([k, label]) => (
+            <button
+              key={k}
+              type="button"
+              onClick={() => {
+                onChange(k);
+                setOpen(false);
+              }}
+              style={{ ...S.dropItem, fontWeight: sort === k ? 700 : 400 }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => void }) {
   const [plz, setPlz] = useState("");
   const [hits, setHits] = useState<GemeindeHit[] | null>(null);
@@ -615,7 +692,7 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  * floating row exists to be compared against the list, so its columns have to land
  * on the same pixels.
  */
-const GRID = "58px minmax(110px,1fr) repeat(4, minmax(66px, 86px))";
+const GRID = "58px minmax(120px,1fr) repeat(4, minmax(66px, 86px)) 14px";
 
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
@@ -643,7 +720,18 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 13,
   },
   header: { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 6, marginBottom: 2 },
-  headName: { fontSize: 11, color: v("--color-text-muted"), fontWeight: 600 },
+  headNameBtn: {
+    background: "none",
+    border: "none",
+    padding: 0,
+    fontFamily: "inherit",
+    fontSize: 11,
+    textAlign: "left",
+    cursor: "pointer",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 3,
+  },
   headBtn: { background: "none", border: "none", padding: 0, fontFamily: "inherit", fontSize: 11, textAlign: "right", cursor: "pointer" },
   headBtnLeft: {
     background: "none",
@@ -676,8 +764,9 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "flex-end",
     gap: 3,
   },
-  track: { display: "block", width: "100%", height: 4, background: v("--color-bg-muted"), borderRadius: 2 },
-  fill: { display: "block", height: "100%", borderRadius: 2, marginLeft: "auto" },
+  track: { display: "block", width: "100%", height: 4, background: v("--color-border"), borderRadius: 2 },
+  // Links verankert → der Balken wächst nach rechts (kein marginLeft:auto mehr).
+  fill: { display: "block", height: "100%", borderRadius: 2 },
   // Mirrors S.scroller's box exactly (same negative margin, same padding), so the
   // row inside starts on the same pixel as a row in the list. Getting this wrong
   // by 8px is what broke the alignment twice.
@@ -691,6 +780,9 @@ const S: Record<string, React.CSSProperties> = {
     padding: "6px 8px",
     overflow: "hidden",
   },
+  // Same sticky-bottom slot as the marked-Gemeinde row: the PLZ-CTA floats here
+  // until a Gemeinde is picked, then the marked row (rendered above) takes over.
+  stickyPicker: { position: "sticky", bottom: 4, zIndex: 2 },
   stickyRow: {
     borderBottom: "none",
     background: v("--color-bg"),
@@ -699,6 +791,10 @@ const S: Record<string, React.CSSProperties> = {
     boxShadow: "0 4px 14px rgba(0,0,0,0.10)",
   },
   rowLink: { textDecoration: "none", color: "inherit", cursor: "pointer" },
+  // Blauer „→" am Zeilenende, erst bei Hover sichtbar (Klickbarkeits-Affordanz).
+  // Opacity/Slide-Transition steuert die globale CSS-Regel .atlas-rank-row (theme.ts),
+  // weil Inline-Styles kein :hover können. Die 14px-Spur dafür steckt in GRID.
+  go: { display: "flex", alignItems: "center", justifyContent: "flex-end", color: v("--color-accent") },
   dropdown: {
     position: "absolute",
     top: "calc(100% + 4px)",

@@ -84,7 +84,7 @@ export default function GemeindeSolarWidget(props: GemeindeWidgetProps) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(88px, 1fr))", gap: 8 }}>
         <Kachel label="Anlagen" value={nf(count)} />
         <Kachel label="Installiert" value={fmtLeistung(kwp)} />
-        {wPerCapitaDach !== null && <Kachel label="W je Einwohner" value={`${nf(wPerCapitaDach)} W`} hint="Dach" />}
+        {wPerCapitaDach !== null && <Kachel label="Leistung je Einwohner" value={`${nf(wPerCapitaDach)} W`} hint="Dach" />}
         {speicherKwh > 0 && <Kachel label="Speicher" value={fmtKwh(speicherKwh)} />}
       </div>
 

@@ -29,7 +29,7 @@ const OWNERS: { key: Owner; label: string }[] = [
 ];
 
 const METRICS: { key: Metric; label: string }[] = [
-  { key: "perCapita", label: "Solarleistung je Einwohner" },
+  { key: "perCapita", label: "Leistung je Einwohner" },
   { key: "count", label: "Zahl der Anlagen" },
   { key: "kwp", label: "Installierte Leistung" },
   { key: "speicher", label: "Speicherkapazität" },
@@ -160,6 +160,7 @@ export default function GemeindeHero({
   outside,
   regionId,
   regionName,
+  kreisName,
   basePath,
 }: {
   cells: HeroCell[];
@@ -168,6 +169,7 @@ export default function GemeindeHero({
   outside: OutsidePeer[];
   regionId: string;
   regionName: string;
+  kreisName?: string;
   basePath: string;
 }) {
   const [owner, setOwner] = useState<Owner>("alle");
@@ -207,7 +209,11 @@ export default function GemeindeHero({
       .map((r) => {
         const a = acc.get(r.region_id) ?? { count: 0, kwp: 0, speicher: 0 };
         const value =
-          metric === "perCapita" ? (r.population ? Math.round((a.kwp * 1000) / r.population) : null) : a[metric];
+          metric === "perCapita"
+            ? r.population
+              ? Math.round((a.kwp * 1000) / r.population)
+              : null
+            : a[metric];
         return { region: r, value };
       })
       .filter((x): x is { region: RankingRegion; value: number } => x.value !== null);
@@ -320,7 +326,10 @@ export default function GemeindeHero({
         </div>
 
         <div style={S.right}>
-          <MetricPicker metric={metric} onChange={setMetric} />
+          <div style={S.rankHead}>
+            <div style={S.rankTitle}>{`Top Kommunen${kreisName ? ` im ${kreisName}` : ""}`}</div>
+            <MetricPicker metric={metric} onChange={setMetric} />
+          </div>
 
           {/* Re-keyed on filter+metric so the whole set fades in on a switch —
               softens the reorder that a per-row width transition can't cover. */}
@@ -421,7 +430,17 @@ const S: Record<string, React.CSSProperties> = {
   dot: { width: 8, height: 8, borderRadius: 2, flex: "0 0 auto" },
   legendVal: { fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") },
   empty: { fontSize: 12, color: v("--color-text-muted"), margin: 0 },
-  pickerBar: { display: "flex", alignItems: "stretch", marginBottom: 8 },
+  // Titel links (darf 2-zeilig umbrechen), Multitool rechts.
+  rankHead: { display: "flex", alignItems: "center", gap: 12, marginBottom: 10 },
+  rankTitle: {
+    flex: "1 1 auto",
+    minWidth: 0,
+    fontSize: 13,
+    fontWeight: 700,
+    lineHeight: 1.25,
+    color: v("--color-text-primary"),
+  },
+  pickerBar: { display: "flex", alignItems: "stretch", flex: "0 0 auto", maxWidth: "58%" },
   pickerArrow: {
     border: `1px solid ${v("--color-border")}`,
     background: v("--color-bg"),
@@ -496,8 +515,9 @@ const S: Record<string, React.CSSProperties> = {
   peerLink: { color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   peerScope: { fontSize: 9, color: v("--color-text-muted") },
   peerVal: { fontFamily: v("--font-mono"), fontSize: 11, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 },
-  track: { display: "block", width: "100%", height: 4, background: v("--color-bg-muted"), borderRadius: 2 },
-  fill: { display: "block", height: "100%", borderRadius: 2, marginLeft: "auto", transition: "width 220ms ease" },
+  track: { display: "block", width: "100%", height: 4, background: v("--color-border"), borderRadius: 2 },
+  // Links verankert → Balken wächst nach rechts (kein marginLeft:auto).
+  fill: { display: "block", height: "100%", borderRadius: 2, transition: "width 220ms ease" },
   peerNoteWrap: { minHeight: 44 },
   peerNote: { fontSize: 10, color: v("--color-text-muted"), lineHeight: 1.6, margin: "10px 0 0" },
 };

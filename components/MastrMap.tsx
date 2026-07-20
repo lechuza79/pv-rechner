@@ -32,7 +32,7 @@ export type MastrMapProps = {
   selectedAgs?: string;
   /** name is the clicked region's label from the geometry — lets the caller show
    *  it immediately, before the (slower) summary API returns. */
-  onSelect?: (ags: string, name?: string) => void;
+  onSelect?: (ags: string, name?: string, kreisfrei?: boolean) => void;
   valueLabel?: string;
   /** True while choropleth data is fetching — polygons animate with a pulse. */
   loading?: boolean;
@@ -52,6 +52,11 @@ const COLOR_RAMP = [12, 26, 40, 55, 70, 85, 100].map(
 function regionLabel(name: string, kind?: string): string {
   return kind ? `${kind} ${name}` : name;
 }
+
+// Kreisfreie Städte / Stadtkreise sit at Kreis level but contain a single Gemeinde
+// (themselves). Drilling into one is a dead-end zoom that only shows the city again,
+// so a click on one navigates straight to its detail page instead of drilling.
+const KREISFREI_KINDS = new Set(["Kreisfreie Stadt", "Stadtkreis"]);
 export function MastrMap({
   level,
   parentAgs,
@@ -256,6 +261,7 @@ export function MastrMap({
         id: props.id,
         name: props.name,
         label: regionLabel(props.name, props.kind),
+        kreisfrei: KREISFREI_KINDS.has(props.kind ?? ""),
         d: pathGen(f as never) ?? "",
       };
     });
@@ -323,7 +329,7 @@ export function MastrMap({
                   }}
                   onMouseEnter={() => !loading && setHovered(p.id)}
                   onMouseLeave={() => setHovered(null)}
-                  onClick={() => !loading && onSelect?.(p.id, p.label)}
+                  onClick={() => !loading && onSelect?.(p.id, p.label, p.kreisfrei)}
                 />
               );
             })}

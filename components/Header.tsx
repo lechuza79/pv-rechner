@@ -39,6 +39,7 @@ const RECHNER_ITEMS: NavItem[] = [
 const ENERGIE_ITEMS: NavItem[] = [
   { href: "/strommix-deutschland", label: "Strommix Deutschland", desc: "Live-Stromerzeugung, Verlauf und Kernenergie", page: "energie" },
   { href: "/atomstrom-import", label: "Atomstrom-Import", desc: "Wie viel Kernstrom Deutschland aus dem Ausland bezieht", page: "atomstrom" },
+  { href: "/solar-atlas", label: "Solar-Atlas", desc: "Solar-Bestand je Region — Deutschland, Länder, Kreise", page: "atlas" },
   { href: "/energie-widgets", label: "Charts einbetten", desc: "Kostenlose Energie-Widgets für die eigene Website", page: "widgets" },
 ];
 
@@ -50,6 +51,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/pv-simulation") ? "simulation" :
     pathname.startsWith("/strommix-deutschland") ? "energie" :
     pathname.startsWith("/atomstrom-import") ? "atomstrom" :
+    pathname.startsWith("/solar-atlas") ? "atlas" :
     pathname.startsWith("/energie-widgets") ? "widgets" :
     pathname.startsWith("/photovoltaik-rechner") ? "rechner" :
     pathname.startsWith("/waermepumpe-rechner") ? "waermepumpe" :

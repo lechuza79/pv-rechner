@@ -144,12 +144,21 @@ export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onR
     { longLived: false, keyPrefix: "sc-mastr-" },
   );
 
-  const handleSelect = (ags: string, name?: string) => {
+  const handleSelect = (ags: string, name?: string, kreisfrei?: boolean) => {
     // Gemeinde (8-digit): the deepest level. Leave the map for that Gemeinde's
     // atlas detail page. Inside an embed there are no detail pages to go to, so
     // the click drills no further — viewing the Kreis's Gemeinden and hovering
     // for their values is the read-only payoff there.
     if (ags.length === 8) {
+      if (!isEmbedContext()) {
+        window.location.href = `/api/atlas/goto?ags=${ags}`;
+      }
+      return;
+    }
+    // Kreisfreie Stadt / Stadtkreis (5-digit, but a single Gemeinde): drilling
+    // only re-shows the city, a dead-end zoom. Go straight to its page instead —
+    // goto resolves the 5-digit AGS to the city's leaf page. Not in embeds.
+    if (ags.length === 5 && kreisfrei) {
       if (!isEmbedContext()) {
         window.location.href = `/api/atlas/goto?ags=${ags}`;
       }

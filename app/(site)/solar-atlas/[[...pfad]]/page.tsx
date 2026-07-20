@@ -9,6 +9,7 @@ import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../li
 import { atlasIsIndexable, atlasRobots } from "../../../../lib/atlas-index";
 import ZubauChart from "../../../../components/atlas/ZubauChart";
 import RankingTable from "../../../../components/atlas/RankingTable";
+import TendTag from "../../../../components/atlas/TendTag";
 import { MastrHeroSection } from "../../../../components/MastrHeroSection";
 import {
   resolveSlugPath,
@@ -128,6 +129,34 @@ export default async function AtlasPage({ params }: { params: Params }) {
     ? Math.round((atlas.solar.total_kwp * 1000) / region.population)
     : null;
 
+  // Tendenz je Kennzahl wie auf der Gemeinde-Seite, hier gegen die übergeordnete
+  // Ebene: Kreis→Bundesland, Bundesland→Deutschland. Deutschland selbst hat keinen
+  // Elternteil → keine Tendenz. Ein zusätzlicher Rollup-Fetch für den Eltern-Schnitt.
+  const parentId =
+    region.level === "landkreis"
+      ? region.region_id.slice(0, 2)
+      : region.level === "bundesland"
+        ? "de"
+        : null;
+  const [parentRegion, parentAtlas] = parentId
+    ? await Promise.all([getRegionById(parentId), getRegionAtlasData(parentId)])
+    : [null, null];
+  const parentPop = parentRegion?.population ?? null;
+  const perCapDev = (regionVal: number, parentVal: number | undefined): number | null => {
+    if (!region.population || !parentPop || !parentVal) return null;
+    return regionVal / region.population / (parentVal / parentPop) - 1;
+  };
+  const tAnlagen = parentAtlas ? perCapDev(atlas.solar.total_count, parentAtlas.solar.total_count) : null;
+  const tLeistung = parentAtlas ? perCapDev(atlas.solar.total_kwp, parentAtlas.solar.total_kwp) : null;
+  // Zubau je Einwohner ggü. dem Eltern-Schnitt (letztes volles Jahr + laufendes).
+  const parentLastYear = parentAtlas?.solar.by_year.find((y) => y.year === lastYear)?.count;
+  const parentThisYear = parentAtlas?.solar.by_year.find((y) => y.year === thisYear)?.count;
+  const tNeuLast = parentAtlas ? perCapDev(lastYearRow?.count ?? 0, parentLastYear) : null;
+  const tNeuThis = parentAtlas ? perCapDev(thisYearRow?.count ?? 0, parentThisYear) : null;
+  const hasTend = tAnlagen !== null || tLeistung !== null;
+  const parentSchnitt =
+    region.level === "bundesland" ? "dem Bundesschnitt" : `dem ${parentRegion?.name ?? "Landes"}-Schnitt`;
+
   const childNoun =
     childLevel === "bundesland" ? "Bundesländer" : childLevel === "landkreis" ? "Kreise" : "Gemeinden";
 
@@ -179,36 +208,52 @@ export default async function AtlasPage({ params }: { params: Params }) {
           )}
         </p>
 
-        <div style={S.metricsGrid}>
+        <div style={{ ...S.metricsGrid, marginBottom: hasTend ? 4 : 28 }}>
           <div style={S.metric}>
             <div style={S.metricLabel}>Solaranlagen</div>
             <div style={S.metricValue}>{nf(atlas.solar.total_count)}</div>
+            <TendTag dev={tAnlagen} />
           </div>
           <div style={S.metric}>
             <div style={S.metricLabel}>Installiert</div>
             <div style={S.metricValue}>{fmtLeistung(atlas.solar.total_kwp)}</div>
+            <TendTag dev={tLeistung} />
           </div>
           <div style={S.metric}>
-            <div style={S.metricLabel}>W je Einwohner</div>
-            <div style={S.metricValue}>{wPerCapita === null ? "—" : nf(wPerCapita)}</div>
+            {/* Label kurz („je Einwohner"), weil „Leistung je Einwohner" die
+                schmale Kachel umbricht — die Einheit W steht am Wert. */}
+            <div style={S.metricLabel}>je Einwohner</div>
+            <div style={S.metricValue}>{wPerCapita === null ? "—" : `${nf(wPerCapita)} W`}</div>
+            <TendTag dev={tLeistung} />
           </div>
           <div style={S.metric}>
             <div style={S.metricLabel}>Neu {lastYear}</div>
             <div style={S.metricValue}>{nf(lastYearRow?.count ?? 0)}</div>
+            <TendTag dev={tNeuLast} />
           </div>
           <div style={S.metric}>
             <div style={S.metricLabel}>Neu {thisYear} bisher</div>
             <div style={S.metricValue}>{nf(thisYearRow?.count ?? 0)}</div>
+            <TendTag dev={tNeuThis} />
           </div>
         </div>
+        {hasTend && (
+          <p style={S.tendCaption}>Tendenz: je Einwohner gegenüber {parentSchnitt}.</p>
+        )}
 
-        <div style={S.section}>
-          <h2 style={S.h2}>Solaranlagen auf der Karte</h2>
-          <p style={S.sub}>
-            Tippen Sie auf ein Gebiet, um tiefer einzutauchen — bis auf Gemeindeebene.
-          </p>
-          <MastrHeroSection initialRegion={region.level === "de" ? "de" : region.region_id} initialTraeger="solar" />
-        </div>
+        {/* Karte nur ab Bundesland-Ebene: die Deutschland-Übersicht zeigt dieselbe
+            interaktive Karte schon auf der Startseite — auf der DE-Atlas-Seite wäre
+            sie redundant (und dupliziert Inhalt gegenüber der Startseite). Ab
+            Bundesland/Kreis zeigt die Karte die konkrete Region und ist einzigartig. */}
+        {region.level !== "de" && (
+          <div style={S.section}>
+            <h2 style={S.h2}>Solaranlagen auf der Karte</h2>
+            <p style={S.sub}>
+              Tippen Sie auf ein Gebiet, um tiefer einzutauchen — bis auf Gemeindeebene.
+            </p>
+            <MastrHeroSection initialRegion={region.region_id} initialTraeger="solar" />
+          </div>
+        )}
 
         <div style={S.section}>
           <h2 style={S.h2}>
@@ -223,6 +268,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
             cells={ranking.cells}
             basePath={basePath}
             lastFullYear={lastYear}
+            popInMillions={childLevel === "bundesland"}
           />
         </div>
 
@@ -297,9 +343,10 @@ const S: Record<string, React.CSSProperties> = {
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 },
   metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
+  tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: "0 2px 24px" },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
   sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px", lineHeight: 1.6 },
-  section: { marginBottom: 28 },
+  section: { marginBottom: 50 },
   card: {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,

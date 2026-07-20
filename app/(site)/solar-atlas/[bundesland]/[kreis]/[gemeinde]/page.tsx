@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "../../../../../../components/Header";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
-import { IconArrowRight, IconTrendUp, IconTrendDown } from "../../../../../../components/Icons";
+import { IconArrowRight } from "../../../../../../components/Icons";
+import TendTag from "../../../../../../components/atlas/TendTag";
 import { v } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
@@ -59,23 +60,6 @@ function fmtLeistung(kwp: number): string {
 function fmtKwh(kwh: number): string {
   if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
   return `${nf(Math.round(kwh))} kWh`;
-}
-
-/** Tendenz je Einwohner ggü. Bundesland-Schnitt: grün über, rot unter, bei ±0 neutral. */
-function TendTag({ dev }: { dev: number | null }) {
-  if (dev === null) return null;
-  const pct = Math.round(Math.abs(dev) * 100);
-  if (pct === 0) {
-    return <span style={{ ...S.tend, color: v("--color-text-muted") }}>±0 %</span>;
-  }
-  const up = dev > 0;
-  const color = up ? v("--color-positive") : v("--color-negative");
-  return (
-    <span style={{ ...S.tend, color }}>
-      {up ? <IconTrendUp size={11} color={color} /> : <IconTrendDown size={11} color={color} />}
-      {pct} %
-    </span>
-  );
 }
 
 type Params = { bundesland: string; kreis: string; gemeinde: string };
@@ -347,6 +331,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
           outside={outside}
           regionId={region.region_id}
           regionName={region.name}
+          kreisName={kreis?.name ?? undefined}
           basePath={basePath}
         />
 
@@ -435,11 +420,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
         )}
 
         <div style={S.section}>
-          <GemeindeEmbedBox
-            name={region.name}
-            ags={region.region_id}
-            atlasPath={`/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`}
-          />
+          <GemeindeEmbedBox name={region.name} ags={region.region_id} />
         </div>
 
         <div style={S.disclaimer}>
@@ -500,19 +481,10 @@ const S: Record<string, React.CSSProperties> = {
   metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
   metricSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: 3, lineHeight: 1.4 },
-  tend: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 3,
-    marginTop: 4,
-    fontFamily: v("--font-mono"),
-    fontSize: 11,
-    fontWeight: 600,
-  },
   tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: "0 2px 22px" },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
   sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px" },
-  section: { marginBottom: 28 },
+  section: { marginBottom: 50 },
   // Erneuerbare-Mix + 24h-Sim nebeneinander; auf Mobil untereinander (flex-wrap).
   // stretch → beide Karten gleich hoch; sbsItem als flex, damit die Karte (height
   // 100 %) die gestreckte Höhe füllt.

@@ -390,4 +390,10 @@ export const globalStyles = `
   }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
+  .footer-cols{display:grid;grid-template-columns:repeat(3,1fr);max-width:600px;margin:0 auto;gap:0}
+  .footer-cols>div{padding:0 22px}
+  .footer-cols>div+div{border-left:1px solid var(--color-border)}
+  @media (max-width:640px){.footer-cols{grid-template-columns:1fr;max-width:none;gap:20px}.footer-cols>div{padding:0}.footer-cols>div+div{border-left:none}}
+  .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
+  .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
 `;
