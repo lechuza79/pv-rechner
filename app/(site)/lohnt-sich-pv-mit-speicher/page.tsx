@@ -196,10 +196,6 @@ interface ExampleRow {
   autarkie: number;
   amortisation: number | null;
   gewinn25: number;
-  /** Ø jährliche Rendite in % = Gewinn(25 J) / Investition / Laufzeit. Leitet
-   *  sich aus derselben 25-J-Gewinnzahl ab wie die Rendite-Kachel im Rechner,
-   *  nur als annualisierte Prozent-Größe. */
-  renditePa: number;
   /** ⌀ Ersparnis/Jahr — same formula as the calculator's ResultStats. */
   ersparnisProJahr: number;
   /** Three amortization curves (pess./real./opt.) for the <Chart> teaser —
@@ -289,7 +285,6 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
     autarkie: sim.autarky,
     amortisation: result.be?.i ?? null,
     gewinn25: result.total,
-    renditePa: kosten > 0 ? (result.total / kosten / YEARS) * 100 : 0,
     ersparnisProJahr: Math.round((result.total + kosten) / YEARS),
     scenarios,
     href: `/photovoltaik-rechner?${params.toString()}`,
@@ -297,7 +292,6 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
 }
 
 // German percent with one decimal, e.g. 5,1 %.
-const pct1 = (n: number) => `${n.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} %`;
 
 // One teaser card: title + amortization chart + result-style tiles + deep link.
 // Server component (Chart is the only client island), tiles reuse the exact
@@ -529,28 +523,23 @@ export default async function LohntSichPvMitSpeicherPage() {
                 ))}
               </tr>
               <tr>
-                <td style={S.td}>Rendite (25 J)</td>
+                <td style={{ ...S.td, borderBottom: "none" }}>Gewinn nach 25 Jahren</td>
                 {rows.map((r, i) => {
-                  const delta = r.renditePa - rows[0].renditePa;
+                  // Mehrgewinn des Speichers gegenüber "ohne Speicher", in %.
+                  const mehrPct = i > 0 && rows[0].gewinn25 > 0
+                    ? Math.round(((r.gewinn25 - rows[0].gewinn25) / rows[0].gewinn25) * 100)
+                    : 0;
                   return (
-                    <td key={r.speicherKwh} style={S.tdNum}>
-                      <div>{pct1(r.renditePa)}<span style={{ color: v("--color-text-muted"), fontSize: v("--font-size-caption") }}> p.a.</span></div>
-                      {i > 0 && delta >= 0.05 && (
-                        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-positive"), opacity: 0.7, marginTop: 2, display: "inline-flex", alignItems: "center", gap: 2, justifyContent: "flex-end" }}>
-                          <IconArrowUp size={9} /> +{delta.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                    <td key={r.speicherKwh} style={{ ...S.tdNum, borderBottom: "none", color: v("--color-positive"), fontWeight: 700 }}>
+                      {eur(r.gewinn25)}
+                      {mehrPct > 0 && (
+                        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-positive"), opacity: 0.75, fontWeight: 600, marginTop: 2, display: "inline-flex", alignItems: "center", gap: 2, justifyContent: "flex-end" }}>
+                          <IconArrowUp size={9} /> +{mehrPct} %
                         </div>
                       )}
                     </td>
                   );
                 })}
-              </tr>
-              <tr>
-                <td style={{ ...S.td, borderBottom: "none" }}>Gewinn nach 25 Jahren</td>
-                {rows.map((r) => (
-                  <td key={r.speicherKwh} style={{ ...S.tdNum, borderBottom: "none", color: v("--color-positive"), fontWeight: 700 }}>
-                    {eur(r.gewinn25)}
-                  </td>
-                ))}
               </tr>
             </tbody>
           </table>
