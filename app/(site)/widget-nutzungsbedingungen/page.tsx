@@ -22,14 +22,14 @@ const S = {
   },
   wrap: { maxWidth: v('--page-max-width'), margin: "0 auto" },
   back: {
-    fontSize: 13,
+    fontSize: v('--font-size-small'),
     color: v('--color-text-secondary'),
     textDecoration: "none",
     display: "inline-block",
     marginBottom: 24,
   },
   h1: {
-    fontSize: 22,
+    fontSize: v('--font-size-h1'),
     fontWeight: 800,
     letterSpacing: "-0.02em",
     color: v('--color-text-primary'),
@@ -37,17 +37,17 @@ const S = {
     marginBottom: 24,
   },
   h2: {
-    fontSize: 16,
+    fontSize: v('--font-size-h2'),
     fontWeight: 700,
     color: v('--color-text-primary'),
     marginTop: 28,
     marginBottom: 10,
   },
   p: {
-    fontSize: 13,
+    fontSize: v('--font-size-body'),
     color: v('--color-text-muted'),
     lineHeight: 1.7,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   a: {
     color: v('--color-accent'),

@@ -23,14 +23,14 @@ const S = {
   } as React.CSSProperties,
   wrap: { maxWidth: v('--page-max-width'), margin: "0 auto" } as React.CSSProperties,
   back: {
-    fontSize: 13,
+    fontSize: v('--font-size-small'),
     color: v('--color-text-secondary'),
     textDecoration: "none",
     display: "inline-block",
     marginBottom: 24,
   } as React.CSSProperties,
   h1: {
-    fontSize: 22,
+    fontSize: v('--font-size-h1'),
     fontWeight: 800,
     letterSpacing: "-0.02em",
     color: v('--color-text-primary'),
@@ -38,7 +38,7 @@ const S = {
     marginBottom: 24,
   } as React.CSSProperties,
   p: {
-    fontSize: 14,
+    fontSize: v('--font-size-body'),
     lineHeight: 1.7,
     color: v('--color-text-secondary'),
     marginBottom: 16,
@@ -58,7 +58,7 @@ export default function Kontakt() {
 
         <ContactForm />
 
-        <p style={{ ...S.p, marginTop: 24, fontSize: 13, color: v('--color-text-muted') }}>
+        <p style={{ ...S.p, marginTop: 24, fontSize: v('--font-size-small'), color: v('--color-text-muted') }}>
           Alternativ erreichst du uns direkt per E-Mail:{" "}
           <ObfuscatedEmail user="hey" domain="solar-check.io" style={{ color: v('--color-accent'), fontWeight: 600 }} />.
           {" "}Wir antworten in der Regel innerhalb von 1–2 Werktagen.

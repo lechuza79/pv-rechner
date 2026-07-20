@@ -103,6 +103,20 @@ export const tokens = {
   '--font-text': "var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
   '--font-mono': "var(--font-jetbrains-mono),'JetBrains Mono',monospace",
 
+  // ─── Typografie-Skala (7) ──────────────────────────────────────────────────
+  // Modulare Skala, Basis 15px (Fließtext), Verhältnis ~1.2, gerundet auf
+  // ganze/halbe px. EINE Leseskala für alle Content-/Textseiten (Ratgeber,
+  // Methodik, Glossar, Impressum, …), damit dieselbe Rolle überall dieselbe
+  // Größe hat. Die interaktiven Rechner/Flows und Embed-Widgets nutzen sie
+  // bewusst NICHT — dort ist die kompakte Größe gewollt.
+  '--font-size-caption': '12px',        // Uppercase-Labels, Bildunterschriften
+  '--font-size-small': '13px',          // Sekundär-/Tabellentext, Fußnoten
+  '--font-size-body': '15px',           // Basis: Fließtext
+  '--font-size-lead': '17px',           // Hero/Einleitung (Subtitle)
+  '--font-size-h3': '18px',             // Kleine Überschrift
+  '--font-size-h2': '21px',             // Sektions-Überschrift
+  '--font-size-h1': '26px',             // Seiten-Titel
+
   // ─── Radii (3) ─────────────────────────────────────────────────────────────
   '--radius-sm': '6px',                 // Small: inputs, checkboxes, pills
   '--radius-md': '12px',                // Medium: buttons, cards, panels

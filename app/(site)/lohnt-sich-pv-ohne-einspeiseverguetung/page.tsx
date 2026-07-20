@@ -56,38 +56,38 @@ const S = {
   },
   wrap: { maxWidth: v("--page-max-width"), margin: "0 auto" },
   back: {
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
     textDecoration: "none",
     display: "inline-block",
     marginBottom: 24,
   },
   h1: {
-    fontSize: 22,
+    fontSize: v("--font-size-h1"),
     fontWeight: 800,
     letterSpacing: "-0.02em",
     color: v("--color-text-primary"),
     lineHeight: 1.25,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
     marginBottom: 24,
     lineHeight: 1.6,
   },
   h2: {
-    fontSize: 16,
+    fontSize: v("--font-size-h2"),
     fontWeight: 700,
     color: v("--color-text-primary"),
     marginTop: 32,
     marginBottom: 10,
   },
   p: {
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
     lineHeight: 1.7,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   strong: { fontWeight: 700, color: v("--color-text-primary") },
   card: {
@@ -96,7 +96,7 @@ const S = {
     padding: "14px 16px",
     border: `1px solid ${v("--color-border")}`,
     marginBottom: 12,
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
     lineHeight: 1.7,
   },
@@ -105,12 +105,12 @@ const S = {
     borderRadius: v("--radius-lg"),
     padding: "16px 18px",
     marginBottom: 8,
-    fontSize: 13.5,
+    fontSize: v("--font-size-body"),
     color: v("--color-text-primary"),
     lineHeight: 1.7,
   },
   label: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
@@ -126,7 +126,7 @@ const S = {
     display: "inline-block",
     padding: "10px 18px",
     borderRadius: v("--radius-md"),
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
     background: v("--color-accent"),
     color: v("--color-text-on-accent"),
@@ -136,7 +136,7 @@ const S = {
     display: "inline-block",
     padding: "10px 18px",
     borderRadius: v("--radius-md"),
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
     border: `1px solid ${v("--color-border")}`,
     color: v("--color-accent"),
@@ -144,7 +144,7 @@ const S = {
   },
   th: {
     textAlign: "left" as const,
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
@@ -154,7 +154,7 @@ const S = {
   },
   thNum: {
     textAlign: "right" as const,
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
@@ -163,18 +163,18 @@ const S = {
     borderBottom: `1px solid ${v("--color-border")}`,
   },
   td: {
-    fontSize: 12.5,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-muted"),
-    padding: "8px 6px",
+    padding: "9px 6px",
     borderBottom: `1px solid ${v("--color-border")}`,
     lineHeight: 1.4,
   },
   tdNum: {
     fontFamily: v("--font-mono"),
-    fontSize: 12.5,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-primary"),
     textAlign: "right" as const,
-    padding: "8px 6px",
+    padding: "9px 6px",
     borderBottom: `1px solid ${v("--color-border")}`,
     whiteSpace: "nowrap" as const,
   },
@@ -428,7 +428,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           zeigt es mit Vergütung null. Ohne nennenswerten Eigenverbrauch kippt die
           Rechnung dagegen: Reine Einspeise-Konzepte tragen sich ohne Vergütung nicht.
         </div>
-        <p style={{ ...S.p, fontSize: 11.5, marginBottom: 0 }}>
+        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginBottom: 0 }}>
           Stand {formatPriceDate(prices.validFrom)} · unverbindliche Näherungswerte, ohne Gewähr.
         </p>
 
@@ -543,22 +543,22 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         <div style={S.card}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 16 }}>
             <div>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 6, textAlign: "center" }}>
+              <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 6, textAlign: "center" }}>
                 Ohne Speicher
               </div>
               <DayProfileChart hours={dayOhne.hours} scaleMax={dayScaleMax} showLegend={false} />
-              <div style={{ fontSize: 11.5, color: v("--color-text-secondary"), textAlign: "center", marginTop: 6, lineHeight: 1.5 }}>
+              <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), textAlign: "center", marginTop: 6, lineHeight: 1.5 }}>
                 Selbst genutzt: <strong style={{ fontFamily: v("--font-mono") }}>{selfOhne} %</strong> ·{" "}
                 <strong style={{ fontFamily: v("--font-mono") }}>{dayOhne.feedIn.toLocaleString("de-DE")}</strong> kWh
                 Mittags­überschuss fließen ungenutzt ins Netz, abends kommt Strom zurück.
               </div>
             </div>
             <div>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 6, textAlign: "center" }}>
+              <div style={{ fontSize: v("--font-size-small"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 6, textAlign: "center" }}>
                 Mit 10 kWh Speicher
               </div>
               <DayProfileChart hours={dayMit.hours} scaleMax={dayScaleMax} showLegend={false} socMax={10} />
-              <div style={{ fontSize: 11.5, color: v("--color-text-secondary"), textAlign: "center", marginTop: 6, lineHeight: 1.5 }}>
+              <div style={{ fontSize: v("--font-size-small"), color: v("--color-text-secondary"), textAlign: "center", marginTop: 6, lineHeight: 1.5 }}>
                 Selbst genutzt: <strong style={{ fontFamily: v("--font-mono") }}>{selfMit} %</strong> — mittags
                 lädt der Überschuss den Speicher (Linie steigt), abends entlädt er und deckt
                 den Verbrauch (Linie fällt), statt Strom aus dem Netz zu ziehen.
@@ -644,14 +644,14 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
         <Faq items={faqItems} title="Häufige Fragen zu PV ohne Einspeisevergütung" currentPath="/lohnt-sich-pv-ohne-einspeiseverguetung" />
 
-        <p style={{ ...S.p, fontSize: 12 }}>
+        <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
           Verwandte Seiten: <Link href="/lohnt-sich-pv-mit-speicher" style={S.link}>Lohnt sich PV mit Speicher?</Link> ·{" "}
           <Link href="/methodik" style={S.link}>So rechnen wir</Link> ·{" "}
           <Link href="/datenstand" style={S.link}>Aktuelle Preise &amp; Annahmen</Link> ·{" "}
           <Link href="/photovoltaik-foerderung" style={S.link}>PV-Förderung vor Ort</Link> ·{" "}
           <Link href="/glossar" style={S.link}>Glossar</Link>
         </p>
-        <p style={{ ...S.p, fontSize: 11.5, marginTop: 16 }}>
+        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
           Zuletzt aktualisiert: {new Date().toLocaleDateString("de-DE", { month: "long", year: "numeric" })} —
           die Zahlen auf dieser Seite werden automatisch aus den aktuellen Marktpreisen
           berechnet ({year}). Angaben zur geplanten EEG-Reform: Stand {REFORM_STAND}, ohne
