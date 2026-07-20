@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { DEFAULT_PRICES } from "../../../lib/prices-config";
 
 async function getSupabase() {
   const cookieStore = await cookies();
@@ -113,7 +114,7 @@ export async function POST(req: NextRequest) {
       ea_km: int(body.ea_km, 1000, 50000) ?? 15000,
       o_kosten: float(body.o_kosten, 500, 200000) ?? null,
       o_ev: float(body.o_ev, 5, 95) ?? null,
-      o_strom: float(body.o_strom, 0.05, 1.0) ?? 0.34,
+      o_strom: float(body.o_strom, 0.05, 1.0) ?? DEFAULT_PRICES.electricityPrice,
       o_einsp: float(body.o_einsp, 0, 20) ?? null,
       einspeisung_modus: einspeisungModus,
       o_ertrag: oErtrag,

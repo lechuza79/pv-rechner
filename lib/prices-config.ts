@@ -23,7 +23,7 @@ export const DEFAULT_PRICES: PriceConfig = {
   batteryBase: 1500,       // € fixe Installations-Basis (Wechselrichter + Montage, ~stabil)
   batteryPerKwh: 225,      // €/kWh Zell-Preis, trackt Markt (2-Quellen-Mittel Q2/2026: ~3.750 €/10 kWh all-in)
   electricityPrice: 0.312, // €/kWh Haushaltsstrom (BNetzA Strompreismonitor 06/2026)
-  electricityIncrease: 0.03,
+  electricityIncrease: 0.02, // p.a. — 2026er Prognosen 0,5–2 %/Jahr (vorher 3 %, zu hoch)
   validFrom: "2026-06-16",
   source: null,
 };

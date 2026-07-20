@@ -336,17 +336,18 @@ describe("calcHeatPump with PV synergy", () => {
     }
   });
 
-  it("existing PV cuts the WP electricity bill by exactly the coverage share", () => {
+  it("charges WP electricity at full grid price; PV credited separately as full benefit", () => {
     expect(pvVorhanden.pvCoverage).toBeGreaterThanOrEqual(0.05);
     expect(pvVorhanden.pvCoverage).toBeLessThanOrEqual(0.35);
-    // stromKosten = costNoPv × (1 − coverage), year by year → totals must match.
-    // Result exposes pvCoverage rounded to 3 decimals, the engine used the exact
-    // value → tolerance scales with the bill (±0,0005 × Rechnung + Rundung).
-    const expected = noPv.stromKosten * (1 - pvVorhanden.pvCoverage);
-    const tol = noPv.stromKosten * 0.0005 + 2;
-    expect(Math.abs(pvVorhanden.stromKosten - expected)).toBeLessThanOrEqual(tol);
-    // And the savings are the complementary share (energy accounting closes).
-    expect(Math.abs(pvVorhanden.pvStromSavings - (noPv.stromKosten - pvVorhanden.stromKosten))).toBeLessThanOrEqual(2);
+    // New model: WP electricity is billed at the full grid price regardless of PV;
+    // the PV shows up as a separate pvBenefit, not as a reduced electricity bill.
+    expect(pvVorhanden.stromKosten).toBe(noPv.stromKosten);
+    // The full PV benefit must exceed the WP-only coverage savings, because it now
+    // also includes household self-consumption + feed-in revenue.
+    expect(pvVorhanden.pvStromSavings).toBeGreaterThan(0);
+    expect(pvVorhanden.pvBenefit).toBeGreaterThan(pvVorhanden.pvStromSavings);
+    // TCO improves by exactly the full PV benefit (no PV invest for existing PV).
+    expect(noPv.tcoWp - pvVorhanden.tcoWp).toBe(pvVorhanden.pvBenefit);
   });
 
   it("existing PV is sunk cost: no pvInvest, TCO strictly improves", () => {

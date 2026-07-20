@@ -116,7 +116,7 @@ export const EA_KM_PRESETS = [10000, 15000, 20000];
 export const SCENARIOS = [
   { id: "pessimistic", label: "Pessimistisch", color: "#EF4444", strom: 0.01, evDelta: -5,
     explain: "Vorsichtig gerechnet: Der Strompreis steigt nur langsam (+1 %/Jahr) — dein selbst genutzter Solarstrom spart dann entsprechend weniger." },
-  { id: "realistic", label: "Realistisch", color: "#00D950", strom: 0.03, evDelta: 0,
+  { id: "realistic", label: "Realistisch", color: "#00D950", strom: 0.02, evDelta: 0,
     explain: "Mittlere Annahme: Der Strompreis steigt etwa wie im langjährigen Schnitt (+3 %/Jahr)." },
   { id: "optimistic", label: "Optimistisch", color: "#1365EA", strom: 0.05, evDelta: 5,
     explain: "Günstige Entwicklung: Steigt der Strompreis kräftig (+5 %/Jahr), lohnt sich jede selbst genutzte Kilowattstunde stärker." },

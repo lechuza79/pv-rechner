@@ -3,7 +3,7 @@ import { useState, useMemo, type ReactNode } from "react";
 import Link from "next/link";
 import {
   SITUATION, WOHNFLAECHEN, INSULATION_BESTAND, INSULATION_NEUBAU,
-  PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP,
+  PERSONEN, NUTZUNG, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP,
 } from "../../../lib/constants";
 import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
@@ -38,6 +38,10 @@ export default function Waermepumpe() {
   const [pvStatus, setPvStatus] = useState<"nein" | "geplant" | "vorhanden">("nein");
   const [pvKwp, setPvKwp] = useState<number>(10);
   const [pvSpeicher, setPvSpeicher] = useState<number>(10);
+  // Haushaltsdaten für den vollen PV-Nutzen (analog PV-Rechner). null = aus der
+  // Personenzahl abgeleiteter Standard-Haushalt.
+  const [pvHaushaltKwh, setPvHaushaltKwh] = useState<number | null>(null);
+  const [pvNutzung, setPvNutzung] = useState<number>(1); // teils zuhause
 
   // ── Result overrides (editable) ──────────────────────────────
   const [oGasPrice, setOGasPrice] = useState<number | null>(null);
@@ -85,7 +89,7 @@ export default function Waermepumpe() {
     personen: PERSONEN[personen].count,
     heizsystem, wpType, heizkoerperTausch,
     haustypFaktor: HAUSTYP_WP[haustypIdx].faktor,
-    pv: pvStatus !== "nein" ? { status: pvStatus, kwp: pvKwp, speicherKwh: pvSpeicher } : undefined,
+    pv: pvStatus !== "nein" ? { status: pvStatus, kwp: pvKwp, speicherKwh: pvSpeicher, haushaltKwh: pvHaushaltKwh ?? undefined, nutzungIdx: pvNutzung } : undefined,
     override: {
       qGes: oQges ?? undefined,
       heizlast: oHeizlast ?? undefined,
@@ -97,7 +101,7 @@ export default function Waermepumpe() {
       gasCo2: fuel.co2PerKwh,
       incomeBonus, klimaBonus, effizienzBonus,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, fuel, incomeBonus, klimaBonus, effizienzBonus]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, pvStatus, pvKwp, pvSpeicher, pvHaushaltKwh, pvNutzung, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, fuel, incomeBonus, klimaBonus, effizienzBonus]);
 
   // ── Realistische Wege (Szenario-Vergleich) ───────────────────
   // Ein unsaniertes Haus bleibt selten 20 Jahre unangetastet. Statt nur den
@@ -550,8 +554,33 @@ export default function Waermepumpe() {
                 <div style={{ fontSize: 13, lineHeight: 2, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 12 }}>
                   <div>Anlagengröße: <InlineEdit value={pvKwp} onCommit={v => setPvKwp(v)} unit=" kWp" min={2} max={30} step={0.5} width={60} fmt={v => (Math.round(v * 10) / 10).toString().replace(".", ",")} /></div>
                   <div>Batteriespeicher: <InlineEdit value={pvSpeicher} onCommit={v => setPvSpeicher(v)} unit=" kWh" min={0} max={30} step={1} width={60} /></div>
-                  <div style={{ marginTop: 8, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
-                    PV deckt <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> des WP-Strombedarfs ({result.pvStromSavings.toLocaleString("de-DE")} € Ersparnis über {DEFAULT_HEATPUMP_CONFIG.years} Jahre)
+
+                  {/* Aufklappbarer Haushalts-Block — für den vollen PV-Nutzen (analog PV-Rechner).
+                      Ohne diese Angaben wird ein Standard-Haushalt aus der Personenzahl abgeleitet. */}
+                  <details style={{ marginTop: 6 }}>
+                    <summary style={{ cursor: "pointer", fontSize: 12.5, color: v('--color-accent'), fontWeight: 600, listStyle: "none", display: "flex", alignItems: "center", gap: 6 }}>
+                      <IconChevronDown size={iconSizes.sm} /> Haushaltsstrom &amp; Nutzung anpassen
+                    </summary>
+                    <div style={{ marginTop: 8, paddingLeft: 4, borderLeft: `2px solid ${v('--color-border')}`, paddingBottom: 4 }}>
+                      <div style={{ marginBottom: 6 }}>
+                        Haushaltsstrom (ohne WP): <InlineEdit value={pvHaushaltKwh ?? PERSONEN[personen].verbrauch} onCommit={val => setPvHaushaltKwh(Math.round(val))} unit=" kWh" min={500} max={20000} step={100} width={72} />
+                      </div>
+                      <div style={{ fontSize: 12, color: v('--color-text-muted'), marginBottom: 6 }}>Tagsüber jemand zuhause?</div>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                        {NUTZUNG.map((n, i) => (
+                          <button key={i} onClick={() => setPvNutzung(i)} style={{
+                            padding: "8px 6px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer", textAlign: "left", lineHeight: 1.3,
+                            background: pvNutzung === i ? v('--color-accent-dim') : v('--color-bg-muted'),
+                            border: pvNutzung === i ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                            color: pvNutzung === i ? v('--color-accent') : v('--color-text-secondary'),
+                          }}>{n.label}</button>
+                        ))}
+                      </div>
+                    </div>
+                  </details>
+
+                  <div style={{ marginTop: 10, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
+                    Voller PV-Nutzen: <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.pvBenefit.toLocaleString("de-DE")} €</span> über {DEFAULT_HEATPUMP_CONFIG.years} Jahre (Haushaltsstrom-Ersparnis + Einspeisung + <span style={{ fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> WP-Strom-Deckung)
                     {pvStatus === "geplant" && result.pvInvest > 0 && (
                       <> · PV-Invest <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary') }}>{result.pvInvest.toLocaleString("de-DE")} €</span> wird mit angerechnet</>
                     )}
@@ -559,7 +588,7 @@ export default function Waermepumpe() {
                       <> · PV-Invest bereits getätigt, wird nicht angerechnet</>
                     )}
                     <div style={{ marginTop: 4, fontSize: 11, color: v('--color-text-faint') }}>
-                      Quelle: HTW Berlin Lastprofile. Winter-Schwäche berücksichtigt — realistische Bandbreite 10–30 %.
+                      Gerechnet wie im PV-Rechner (HTW-Lastprofile, Bundesschnitt-Ertrag ohne PLZ). Selbst genutzter Solarstrom spart beim WP-Strom den WP-Tarif, beim Haushaltsstrom den vollen Preis.
                     </div>
                   </div>
                 </div>

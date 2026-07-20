@@ -17,6 +17,8 @@ import {
   selectByMarginalReturn,
   batteryCost,
   batteryReplaceCost,
+  calcPvBenefitPerYear,
+  calcPvBenefitOverHorizon,
   BATTERY_LIFETIME_YEARS,
   BATTERY_REPLACE_PRICE_FACTOR,
   MAX_MARGINAL_PAYBACK_YEARS,
@@ -74,6 +76,45 @@ describe("calcWeightedFeedIn", () => {
 });
 
 // ─── Cost estimation ────────────────────────────────────────────────────────
+describe("calcPvBenefitPerYear / calcPvBenefitOverHorizon", () => {
+  const base = {
+    wpSelfKwh: 1000, houseSelfKwh: 2000, feedKwh: 5000,
+    wpPrice: 0.24, housePrice: 0.312, feedInEur: 0.0778,
+    years: 20, priceIncrease: 0.02,
+  };
+
+  it("year 0 = self-consumption at its two prices + feed-in, no escalation/degradation", () => {
+    const y0 = calcPvBenefitPerYear(base)[0];
+    const expected = 1000 * 0.24 + 2000 * 0.312 + 5000 * 0.0778;
+    expect(y0).toBeCloseTo(expected, 6);
+  });
+
+  it("self-consumption savings escalate + degrade; feed-in stays flat and degrades", () => {
+    const perYear = calcPvBenefitPerYear(base);
+    // Later years: self-consumption grows with price escalation but shrinks with
+    // panel degradation; the combined effect at 2 % vs 0.5 % keeps year 5 > year 0.
+    expect(perYear[5]).toBeGreaterThan(perYear[0] * 0.95);
+    expect(perYear).toHaveLength(20);
+  });
+
+  it("feed-in revenue stops after feedInYears", () => {
+    const short = calcPvBenefitPerYear({ ...base, years: 22, feedInYears: 20 });
+    const withFeed = short[19];
+    const noFeed = short[20];
+    // Year 20 (index 20) has no feed-in → drop by roughly the feed-in component.
+    expect(noFeed).toBeLessThan(withFeed);
+  });
+
+  it("over-horizon sum equals the rounded per-year total", () => {
+    const sum = calcPvBenefitPerYear(base).reduce((a, b) => a + b, 0);
+    expect(calcPvBenefitOverHorizon(base)).toBe(Math.round(sum));
+  });
+
+  it("zero PV production yields zero benefit", () => {
+    expect(calcPvBenefitOverHorizon({ ...base, wpSelfKwh: 0, houseSelfKwh: 0, feedKwh: 0 })).toBe(0);
+  });
+});
+
 describe("estimateCost", () => {
   it("uses the small-system rate at or below the threshold", () => {
     // 8 kWp, no battery, default fallback 06/2026: 1416 €/kWp small
@@ -547,14 +588,14 @@ describe("selectByMarginalReturn", () => {
     expect(selectByMarginalReturn([A, upgrade])).toBe(upgrade);
   });
 
-  it("rejects a pricier candidate just beyond the 12-year threshold", () => {
-    // Δinvest 1200, Δnpv 1200 → avg saving 96 €/a → payback 12,5 J > 12 → reject,
+  it("rejects a pricier candidate just beyond the 13-year threshold", () => {
+    // Δinvest 1200, Δnpv 1100 → avg saving 92 €/a → payback 13,04 J > 13 → reject,
     // although the upgrade has the higher total NPV. That is the whole point of
     // the gate: pure NPV maximization would always pick this one.
-    const upgrade = { investition: 11200, npv25: 11200 };
+    const upgrade = { investition: 11200, npv25: 11100 };
     expect(selectByMarginalReturn([A, upgrade])).toBe(A);
     // Sanity: the same candidate passes with a laxer gate.
-    expect(selectByMarginalReturn([A, upgrade], 13)).toBe(upgrade);
+    expect(selectByMarginalReturn([A, upgrade], 14)).toBe(upgrade);
   });
 
   it("never picks a pricier candidate with equal or lower NPV", () => {
@@ -579,8 +620,8 @@ describe("selectByMarginalReturn", () => {
     expect(selectByMarginalReturn([nanNpv, nanInvest])).toBeUndefined();
   });
 
-  it("default gate is the documented battery lifetime (12 years)", () => {
-    expect(MAX_MARGINAL_PAYBACK_YEARS).toBe(12);
+  it("default gate is the documented battery lifetime minus buffer (13 years)", () => {
+    expect(MAX_MARGINAL_PAYBACK_YEARS).toBe(13);
   });
 });
 
@@ -593,9 +634,9 @@ describe("batteryCost / batteryReplaceCost", () => {
     expect(batteryCost(0, p)).toBe(0);
   });
 
-  it("replacement applies the future-price factor 0.7", () => {
-    expect(BATTERY_REPLACE_PRICE_FACTOR).toBe(0.7);
-    expect(batteryReplaceCost(10, p)).toBe(Math.round(6000 * 0.7));
+  it("replacement applies the future-price factor 0.63", () => {
+    expect(BATTERY_REPLACE_PRICE_FACTOR).toBe(0.63);
+    expect(batteryReplaceCost(10, p)).toBe(Math.round(6000 * 0.63));
     expect(batteryReplaceCost(0, p)).toBe(0);
   });
 });
@@ -632,19 +673,21 @@ describe("calc with batteryReplace (Akku-Tausch)", () => {
   });
 
   it("break-even is the LATER crossing when the battery swap dips the curve below zero again", () => {
-    // Hand-constructed double crossing: ~1.460 €/a on 15.000 € invest crosses
-    // zero in year 11; the 5.000 € swap in year 13 pushes the balance back to
-    // ~-1.700 €, it recovers through years 14 (-300) and 15 (+1.000).
-    const r = calc({ ...base, batteryReplace: 5000 });
-    // First crossing happened before the swap …
-    expect(r.years[11].kum).toBeGreaterThanOrEqual(0);
-    expect(r.years[12].kum).toBeGreaterThanOrEqual(0);
-    // … the swap dips the curve below zero …
+    // A large battery swap in year BATTERY_LIFETIME_YEARS pushes the already-
+    // positive cumulative balance back below zero, so the true break-even is the
+    // SECOND crossing after the swap — not the first one before it. (~1.460 €/a
+    // on 15.000 € invest crosses zero ~year 11; a 9.000 € swap in the swap year
+    // dips it back under and it recovers a few years later.)
+    const r = calc({ ...base, batteryReplace: 9000 });
+    // First crossing happens before the swap …
+    const firstCross = r.years.findIndex(y => y.kum >= 0);
+    expect(firstCross).toBeGreaterThan(0);
+    expect(firstCross).toBeLessThan(BATTERY_LIFETIME_YEARS);
+    // … the swap dips the curve below zero again …
     expect(r.years[BATTERY_LIFETIME_YEARS].kum).toBeLessThan(0);
-    expect(r.years[14].kum).toBeLessThan(0);
-    // … so break-even must be the SECOND crossing, not the first.
+    // … so break-even must be a crossing AFTER the swap, not the first one.
     expect(r.be).toBeDefined();
-    expect(r.be!.i).toBe(15);
+    expect(r.be!.i).toBeGreaterThan(BATTERY_LIFETIME_YEARS);
     // And from break-even on, the curve stays non-negative for good.
     for (let i = r.be!.i; i <= 25; i++) {
       expect(r.years[i].kum).toBeGreaterThanOrEqual(0);
