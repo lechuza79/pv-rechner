@@ -244,10 +244,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const prices = usePrices();
   const feedInRates = useFeedInRates();
 
-  // Sync electricity price default once when central price loads — only for fresh calculations (not share-URLs)
+  // Sync electricity price default once when central price loads — only for fresh calculations (not share-URLs).
+  // Mark as synced even when the fetched price equals the current default:
+  // otherwise this effect re-runs after the user's first manual edit and
+  // snaps the value back to the central price.
   useEffect(() => {
-    if (!oStromSynced && prices.electricityPrice > 0 && prices.electricityPrice !== oStrom) {
-      setOStrom(prices.electricityPrice);
+    if (!oStromSynced && prices.electricityPrice > 0) {
+      if (prices.electricityPrice !== oStrom) setOStrom(prices.electricityPrice);
       setOStromSynced(true);
     }
   }, [prices.electricityPrice, oStromSynced, oStrom]);
@@ -502,7 +505,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         { label: "Amortisation", value: be ? `${be.i}` : ">25", unit: "Jahre" },
         { label: "Eigenverbrauch", value: `${Math.round(effEv)}`, unit: "%" },
         { label: "Kosten", value: kosten.toLocaleString("de-DE"), unit: "€" },
-        { label: "Strompreis", value: `${oStrom}`, unit: "ct/kWh" },
+        { label: "Strompreis", value: oStrom.toLocaleString("de-DE"), unit: "€/kWh" },
       ] : undefined,
       legend: SCENARIOS.map(s => ({ color: s.color, label: s.label })),
     },

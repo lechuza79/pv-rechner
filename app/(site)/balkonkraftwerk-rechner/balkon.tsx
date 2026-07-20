@@ -132,8 +132,10 @@ export default function Balkon() {
         // Monatsprofil übernehmen (wie im PV-Rechner) — ohne das gäbe es kein
         // Sommer/Winter und der Standort bliebe bei gedeckelten Sets wirkungslos.
         if (data.monthly && data.monthly.length === 12) setMonthlyYield(data.monthly);
+        // Nur bestätigen, wenn die PLZ auch aufgelöst wurde — sonst würde
+        // "Standort übernommen" angezeigt, während der Bundesschnitt gilt.
+        setPlzConfirmed(true);
       }
-      setPlzConfirmed(true);
     } catch { /* Fallback bleibt */ }
     setPlzLoading(false);
   }, []);
