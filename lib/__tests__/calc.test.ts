@@ -145,6 +145,25 @@ describe("calcEigenverbrauch", () => {
     expect(ev).toBeLessThan(30);
   });
 
+  it("does not floor EV above the physical maximum for tiny household + huge roof", () => {
+    // 1 person (1800 kWh) on a 30 kWp roof (28500 kWh/kWp yield):
+    // physical max EV = 1800 / 28500 = 6.3 %. The 10 % sanity floor must NOT
+    // push it back up to 10 % — that would be physically impossible and would
+    // bias the recommendation toward oversized systems.
+    const tinyLoadHugeRoof = { ...standard, personenIdx: 0, speicherKwh: 0, kwp: 30 };
+    const evMaxPct = Math.round((1800 / (30 * 1000)) * 100); // 6
+    const ev = calcEigenverbrauch(tinyLoadHugeRoof);
+    expect(ev).toBeLessThanOrEqual(evMaxPct);
+    expect(ev).toBeLessThan(10);
+  });
+
+  it("still applies the 10 % floor for normally sized systems", () => {
+    // Standard household where the physical max is well above 10 % — the floor
+    // stays in effect (regression guard so the fix didn't remove it entirely).
+    const ev = calcEigenverbrauch({ ...standard, kwp: 8, speicherKwh: 0 });
+    expect(ev).toBeGreaterThanOrEqual(10);
+  });
+
   it("is higher with storage than without (storage boost is positive)", () => {
     const withStorage = calcEigenverbrauch({ ...standard, speicherKwh: 10 });
     const noStorage = calcEigenverbrauch({ ...standard, speicherKwh: 0 });
@@ -209,10 +228,17 @@ describe("calcEigenverbrauch", () => {
     });
   });
 
-  it("clamps to 10–90 % regardless of inputs", () => {
-    // Massive system, tiny consumption → EV would be ~5%, clamped up
+  it("caps at the physical max (not the 10 % floor) for a massive system on tiny load", () => {
+    // 50 kWp on 1 person (1800 kWh) → physical max = 1800/50000 = 3.6 %.
+    // The 10 % floor must NOT apply here: you cannot self-consume 10 % of a
+    // 50-kWp harvest with an 1800-kWh load. (Previously this was floored to 10 %.)
     const tinyConsumption = calcEigenverbrauch({ ...standard, kwp: 50, personenIdx: 0, nutzungIdx: 0, speicherKwh: 0 });
-    expect(tinyConsumption).toBeGreaterThanOrEqual(10);
+    const evMaxPct = Math.round((1800 / (50 * 1000)) * 100); // 4
+    expect(tinyConsumption).toBeLessThanOrEqual(evMaxPct);
+    expect(tinyConsumption).toBeLessThan(10);
+  });
+
+  it("clamps down to 90 % for a huge consumption + tiny system", () => {
     // Huge consumption, small system → EV would be 100%, clamped down to 90
     const tinySystem = calcEigenverbrauch({ ...standard, kwp: 1, personenIdx: 3, nutzungIdx: 3, speicherKwh: 15 });
     expect(tinySystem).toBeLessThanOrEqual(90);

@@ -202,7 +202,12 @@ export function calcEigenverbrauch({ personenIdx, nutzungIdx, speicherKwh, wp, e
   // Physikalische Grenze: max. Eigenverbrauch = Gesamtverbrauch / Jahresertrag
   const evMax = gesamt / jahresertrag;
   const ev = Math.round(Math.min(evBase + evBoost, evMax, 0.90) * 100);
-  return Math.max(10, Math.min(ev, 90));
+  // 10 %-Untergrenze als Sanity-Floor — aber NIE über das physikalische Maximum:
+  // bei kleinem Haushalt auf großem Dach (evMax < 10 %) kann man nicht 10 %
+  // selbst verbrauchen. Sonst würden überdimensionierte Anlagen künstlich
+  // schöngerechnet und die Empfehlung zu groß dimensioniert.
+  const floorPct = Math.min(10, Math.round(evMax * 100));
+  return Math.max(floorPct, Math.min(ev, 90));
 }
 
 // ─── Autarkiegrad-REFERENZ (HTW-Kennfeld) ────────────────────────────────────
