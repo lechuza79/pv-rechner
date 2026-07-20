@@ -9,7 +9,7 @@ import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../li
 import { atlasIsIndexable, atlasRobots } from "../../../../lib/atlas-index";
 import ZubauChart from "../../../../components/atlas/ZubauChart";
 import RankingTable from "../../../../components/atlas/RankingTable";
-import TendTag from "../../../../components/atlas/TendTag";
+import AtlasKpiRow from "../../../../components/atlas/AtlasKpiRow";
 import { MastrHeroSection } from "../../../../components/MastrHeroSection";
 import {
   resolveSlugPath,
@@ -129,33 +129,43 @@ export default async function AtlasPage({ params }: { params: Params }) {
     ? Math.round((atlas.solar.total_kwp * 1000) / region.population)
     : null;
 
-  // Tendenz je Kennzahl wie auf der Gemeinde-Seite, hier gegen die übergeordnete
-  // Ebene: Kreis→Bundesland, Bundesland→Deutschland. Deutschland selbst hat keinen
-  // Elternteil → keine Tendenz. Ein zusätzlicher Rollup-Fetch für den Eltern-Schnitt.
-  const parentId =
+  // Vergleichs-Ebenen für die „Tendenz je Einwohner" (in der KPI-Reihe umschaltbar):
+  // Kreis → Bundesland/Deutschland, Bundesland → Deutschland; Default ist die
+  // nächsthöhere Ebene. Deutschland selbst hat keinen Elternteil → keine Tendenz.
+  const refChain =
     region.level === "landkreis"
-      ? region.region_id.slice(0, 2)
+      ? [{ key: "bundesland", ags: region.region_id.slice(0, 2) }, { key: "de", ags: "de" }]
       : region.level === "bundesland"
-        ? "de"
-        : null;
-  const [parentRegion, parentAtlas] = parentId
-    ? await Promise.all([getRegionById(parentId), getRegionAtlasData(parentId)])
-    : [null, null];
-  const parentPop = parentRegion?.population ?? null;
-  const perCapDev = (regionVal: number, parentVal: number | undefined): number | null => {
-    if (!region.population || !parentPop || !parentVal) return null;
-    return regionVal / region.population / (parentVal / parentPop) - 1;
-  };
-  const tAnlagen = parentAtlas ? perCapDev(atlas.solar.total_count, parentAtlas.solar.total_count) : null;
-  const tLeistung = parentAtlas ? perCapDev(atlas.solar.total_kwp, parentAtlas.solar.total_kwp) : null;
-  // Zubau je Einwohner ggü. dem Eltern-Schnitt (letztes volles Jahr + laufendes).
-  const parentLastYear = parentAtlas?.solar.by_year.find((y) => y.year === lastYear)?.count;
-  const parentThisYear = parentAtlas?.solar.by_year.find((y) => y.year === thisYear)?.count;
-  const tNeuLast = parentAtlas ? perCapDev(lastYearRow?.count ?? 0, parentLastYear) : null;
-  const tNeuThis = parentAtlas ? perCapDev(thisYearRow?.count ?? 0, parentThisYear) : null;
-  const hasTend = tAnlagen !== null || tLeistung !== null;
-  const parentSchnitt =
-    region.level === "bundesland" ? "dem Bundesschnitt" : `dem ${parentRegion?.name ?? "Landes"}-Schnitt`;
+        ? [{ key: "de", ags: "de" }]
+        : [];
+  const refData = await Promise.all(
+    refChain.map(async (r) => {
+      const [a, reg] = await Promise.all([getRegionAtlasData(r.ags), getRegionById(r.ags)]);
+      return { key: r.key, name: r.key === "de" ? "Deutschland" : reg?.name ?? r.ags, atlas: a, pop: reg?.population ?? null };
+    }),
+  );
+  type AtlasData = Awaited<ReturnType<typeof getRegionAtlasData>>;
+  const perCapOf = (a: AtlasData, pop: number | null) =>
+    pop
+      ? {
+          count: a.solar.total_count / pop,
+          kwp: a.solar.total_kwp / pop,
+          neuLast: (a.solar.by_year.find((y) => y.year === lastYear)?.count ?? 0) / pop,
+          neuThis: (a.solar.by_year.find((y) => y.year === thisYear)?.count ?? 0) / pop,
+        }
+      : { count: null, kwp: null, neuLast: null, neuThis: null };
+  const regionPerCap = perCapOf(atlas, region.population ?? null);
+  const kpiRefs = refData
+    .filter((r) => r.pop)
+    .map((r) => ({ key: r.key, name: r.name, perCap: perCapOf(r.atlas, r.pop) }));
+  const kpiTiles = [
+    { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
+    { label: "Installiert", value: fmtLeistung(atlas.solar.total_kwp), metric: "kwp" },
+    { label: "je Einwohner", value: wPerCapita === null ? "—" : `${nf(wPerCapita)} W`, metric: "kwp" },
+    { label: `Neu ${lastYear}`, value: nf(lastYearRow?.count ?? 0), metric: "neuLast" },
+    { label: `Neu ${thisYear} bisher`, value: nf(thisYearRow?.count ?? 0), metric: "neuThis" },
+  ];
+  const defaultRefKey = kpiRefs[0]?.key ?? "";
 
   const childNoun =
     childLevel === "bundesland" ? "Bundesländer" : childLevel === "landkreis" ? "Kreise" : "Gemeinden";
@@ -208,38 +218,12 @@ export default async function AtlasPage({ params }: { params: Params }) {
           )}
         </p>
 
-        <div style={{ ...S.metricsGrid, marginBottom: hasTend ? 4 : 28 }}>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Solaranlagen</div>
-            <div style={S.metricValue}>{nf(atlas.solar.total_count)}</div>
-            <TendTag dev={tAnlagen} />
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Installiert</div>
-            <div style={S.metricValue}>{fmtLeistung(atlas.solar.total_kwp)}</div>
-            <TendTag dev={tLeistung} />
-          </div>
-          <div style={S.metric}>
-            {/* Label kurz („je Einwohner"), weil „Leistung je Einwohner" die
-                schmale Kachel umbricht — die Einheit W steht am Wert. */}
-            <div style={S.metricLabel}>je Einwohner</div>
-            <div style={S.metricValue}>{wPerCapita === null ? "—" : `${nf(wPerCapita)} W`}</div>
-            <TendTag dev={tLeistung} />
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Neu {lastYear}</div>
-            <div style={S.metricValue}>{nf(lastYearRow?.count ?? 0)}</div>
-            <TendTag dev={tNeuLast} />
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Neu {thisYear} bisher</div>
-            <div style={S.metricValue}>{nf(thisYearRow?.count ?? 0)}</div>
-            <TendTag dev={tNeuThis} />
-          </div>
-        </div>
-        {hasTend && (
-          <p style={S.tendCaption}>Tendenz: je Einwohner gegenüber {parentSchnitt}.</p>
-        )}
+        <AtlasKpiRow
+          tiles={kpiTiles}
+          regionPerCap={regionPerCap}
+          references={kpiRefs}
+          defaultRefKey={defaultRefKey}
+        />
 
         {/* Karte nur ab Bundesland-Ebene: die Deutschland-Übersicht zeigt dieselbe
             interaktive Karte schon auf der Startseite — auf der DE-Atlas-Seite wäre

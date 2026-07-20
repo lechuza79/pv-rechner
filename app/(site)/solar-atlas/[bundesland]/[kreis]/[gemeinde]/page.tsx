@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Header from "../../../../../../components/Header";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../../../components/Icons";
-import TendTag from "../../../../../../components/atlas/TendTag";
+import AtlasKpiRow from "../../../../../../components/atlas/AtlasKpiRow";
 import { v } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
@@ -108,29 +108,51 @@ export default async function GemeindePage({ params }: { params: Params }) {
   const speicherProKwp =
     speicher.kwh_batterie > 0 && kwpDach > 100 ? speicher.kwh_batterie / kwpDach : null;
 
-  // Bundesland-Schnitt als Vergleichsbasis für die Pro-Kopf-Kennzahl (±% zum
-  // Landesschnitt über dem Donut). Gleiche Rollup-Quelle wie die Gemeinde selbst.
-  const [blAtlas, blRegion] = await Promise.all([getRegionAtlasData(blAgs), getRegionById(blAgs)]);
+  // Vergleichs-Ebenen für die „Tendenz je Einwohner" (in der KPI-Reihe umschaltbar):
+  // Landkreis, Bundesland, Deutschland. Pro-Kopf je Ebene fertig gerechnet, Default
+  // ist die nächsthöhere Ebene (Landkreis).
+  const kreisAgs = region.region_id.slice(0, 5);
+  const [blAtlas, blRegion, kreisAtlas, deAtlas, deRegion] = await Promise.all([
+    getRegionAtlasData(blAgs),
+    getRegionById(blAgs),
+    getRegionAtlasData(kreisAgs),
+    getRegionAtlasData("de"),
+    getRegionById("de"),
+  ]);
   const perCapita = region.population
     ? Math.round((atlas.solar.total_kwp * 1000) / region.population)
     : null;
-  const blPerCapita = blRegion?.population
-    ? (blAtlas.solar.total_kwp * 1000) / blRegion.population
-    : null;
+  const blPerCapita = blRegion?.population ? (blAtlas.solar.total_kwp * 1000) / blRegion.population : null;
   const perCapitaVsBl = perCapita != null && blPerCapita ? perCapita / blPerCapita - 1 : null;
 
-  // Tendenz je Kennzahl = Wert je Einwohner ggü. dem Bundesland-Schnitt (grün über,
-  // rot unter). Alle über dieselbe Pro-Kopf-Normierung, damit vergleichbar.
-  const blPop = blRegion?.population ?? null;
-  const perCapDev = (gemVal: number, blVal: number): number | null => {
-    if (!region.population || !blPop || !blVal) return null;
-    return gemVal / region.population / (blVal / blPop) - 1;
-  };
-  // Tendenz je Einwohner ggü. Bundesland-Schnitt. Nur beim reinen Zubau (Neu)
-  // weggelassen — der ist ein Momentwert, keine sinnvolle Pro-Kopf-Tendenz.
-  const tAnlagen = perCapDev(atlas.solar.total_count, blAtlas.solar.total_count);
-  const tLeistung = perCapitaVsBl;
-  const tSpeicher = perCapDev(speicher.kwh_batterie, blAtlas.speicher.kwh_batterie);
+  type AtlasData = Awaited<ReturnType<typeof getRegionAtlasData>>;
+  const perCapOf = (a: AtlasData, pop: number | null | undefined) =>
+    pop
+      ? {
+          count: a.solar.total_count / pop,
+          kwp: a.solar.total_kwp / pop,
+          speicher: a.speicher.kwh_batterie / pop,
+          neu: (a.solar.by_year.find((y) => y.year === lastYear)?.count ?? 0) / pop,
+        }
+      : { count: null, kwp: null, speicher: null, neu: null };
+  const regionPerCap = perCapOf(atlas, region.population);
+  const kpiRefs = [
+    { key: "landkreis", name: kreis?.name ?? "Landkreis", perCap: perCapOf(kreisAtlas, kreis?.population) },
+    { key: "bundesland", name: bl?.name ?? "Bundesland", perCap: perCapOf(blAtlas, blRegion?.population) },
+    { key: "de", name: "Deutschland", perCap: perCapOf(deAtlas, deRegion?.population) },
+  ].filter((r) => Object.values(r.perCap).some((x) => x !== null));
+  const kpiTiles = [
+    { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
+    { label: "Installiert", value: fmtLeistung(atlas.solar.total_kwp), metric: "kwp" },
+    { label: "je Einwohner", value: perCapita === null ? "—" : `${nf(perCapita)} W`, metric: "kwp" },
+    {
+      label: "Batteriespeicher",
+      value: fmtKwh(speicher.kwh_batterie),
+      metric: "speicher",
+      sub: `${nf(speicher.count)} Anlagen${speicherProKwp !== null ? ` · ${speicherProKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp` : ""}`,
+    },
+    { label: `Neu ${lastYear}`, value: nf(lastYearRow?.count ?? 0), metric: "neu" },
+  ];
 
   // „Angebot trifft Nachfrage" + Beispiele: braucht den Standort-Ertrag. Nur für
   // bewohnte Gemeinden sinnvoll (Waldgebiete o. Ä. haben keinen Bedarf). Der
@@ -295,34 +317,12 @@ export default async function GemeindePage({ params }: { params: Params }) {
           })}
         </p>
 
-        <div style={S.metricsGrid}>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Solaranlagen</div>
-            <div style={S.metricValue}>{nf(atlas.solar.total_count)}</div>
-            <TendTag dev={tAnlagen} />
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Installiert</div>
-            <div style={S.metricValue}>{fmtLeistung(atlas.solar.total_kwp)}</div>
-            <TendTag dev={tLeistung} />
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Batteriespeicher</div>
-            <div style={S.metricValue}>{fmtKwh(speicher.kwh_batterie)}</div>
-            <TendTag dev={tSpeicher} />
-            <div style={S.metricSub}>
-              {nf(speicher.count)} Anlagen
-              {speicherProKwp !== null && ` · ${speicherProKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp`}
-            </div>
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Neu {lastYear}</div>
-            <div style={S.metricValue}>{nf(lastYearRow?.count ?? 0)}</div>
-          </div>
-        </div>
-        {perCapitaVsBl !== null && (
-          <p style={S.tendCaption}>Tendenz: je Einwohner gegenüber dem {bl?.name ?? "Landes"}-Schnitt.</p>
-        )}
+        <AtlasKpiRow
+          tiles={kpiTiles}
+          regionPerCap={regionPerCap}
+          references={kpiRefs}
+          defaultRefKey="landkreis"
+        />
 
         <GemeindeHero
           cells={atlas.solar.by_segment}
