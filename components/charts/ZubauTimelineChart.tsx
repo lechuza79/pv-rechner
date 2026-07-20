@@ -160,21 +160,10 @@ function Inner({
           />
 
           {/* Zubau-Balken (blau, oben leicht abgerundet). Künftiges Jahr ohne
-             Daten = leerer, gestrichelter Platzhalter über die volle Höhe. */}
+             Daten = leerer Slot (kein Balken) — es gibt schlicht noch keine
+             Anlagen; die Achse reicht trotzdem bis dorthin. */}
           {years.map((year, i) => {
-            if (future?.[i]) {
-              return (
-                <path
-                  key={year}
-                  d={topRoundedRect(xScale(year) - barW / 2, 0, barW, innerHeight, 2.5)}
-                  fill="none"
-                  stroke={cssVar(COLOR_BARS)}
-                  strokeWidth={1}
-                  strokeDasharray="3,3"
-                  strokeOpacity={0.35}
-                />
-              );
-            }
+            if (future?.[i]) return null;
             const gw = additionsGw[i];
             const yTop = yLeft(gw);
             const h = innerHeight - yTop;
@@ -395,9 +384,7 @@ function Tooltip({
         {year}
         {future ? " (geplant)" : partial ? " (läuft noch)" : ""}
       </div>
-      {future
-        ? <div style={{ color: "var(--color-text-muted, #949494)" }}>Ausblick — noch keine Daten</div>
-        : row("Zubau", COLOR_BARS, `${gw.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`)}
+      {row("Zubau", COLOR_BARS, future ? "noch kein Zubau" : `${gw.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`)}
       {feedIn != null &&
         row("Vergütung", COLOR_FEEDIN, `${feedIn.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct`)}
       {price != null &&
