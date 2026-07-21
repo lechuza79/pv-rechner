@@ -60,8 +60,8 @@ export default function ZubauDeutschlandClient({ series }: { series: NationalSol
         </h2>
         <p style={{ fontSize: 15, lineHeight: 1.65, color: v("--color-text-secondary"), margin: "0 0 10px" }}>
           Der <strong>erste Boom</strong> (rund 2009–2012) lief über die Einspeisevergütung: Wer eine
-          Anlage aufs Dach setzte, bekam für jede eingespeiste Kilowattstunde deutlich mehr, als eine
-          Kilowattstunde Strom damals kostete. Als die Vergütung 2012 drastisch gekürzt wurde und unter
+          Anlage aufs Dach setzte, bekam für jede eingespeiste Kilowattstunde zunächst deutlich mehr, als
+          eine Kilowattstunde Strom kostete. Als die Vergütung 2012 drastisch gekürzt wurde und unter
           den Haushaltsstrompreis fiel, kippte die Logik — und der Zubau brach über Jahre ein.
         </p>
         <p style={{ fontSize: 15, lineHeight: 1.65, color: v("--color-text-secondary"), margin: 0 }}>

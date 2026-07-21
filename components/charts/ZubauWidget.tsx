@@ -61,7 +61,7 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
     year: 2024,
     label: "Solarpaket I",
     text: "Das Solarpaket I und das Balkonkraftwerk-Privileg vereinfachen Anmeldung und Betrieb. Steckersolar wird zur privilegierten Maßnahme — der Zubau bleibt auf Rekordniveau.",
-    government: "Ampel-Koalition (SPD/Grüne/FDP), Wirtschafts- und Klimaminister Robert Habeck (Grüne).",
+    government: "Ampel-Koalition (SPD/Grüne/FDP), Kanzler Scholz — Solarpaket I aus dem Wirtschafts- und Klimaministerium (Robert Habeck, Grüne), das Balkonkraftwerk-Privileg (WEG/BGB) aus dem Justizministerium (Marco Buschmann, FDP).",
   },
   {
     year: 2025,
