@@ -1,5 +1,6 @@
 import { v } from "../../lib/theme";
 import { IconArrowRight } from "../Icons";
+import GemeindeKontaktButton from "./GemeindeKontaktButton";
 
 /**
  * "Diese Zahlen auf Ihrer Website einbinden" — der Outreach-Aufhänger für
@@ -7,7 +8,9 @@ import { IconArrowRight } from "../Icons";
  * die Rathaus-/Pressestelle, kein Entwickler, und die Widgets stehen direkt
  * darüber auf der Seite schon live. Ein zweites Mal dasselbe zu zeigen erklärt
  * nichts — der Kasten sagt stattdessen, was man mit allen Widgets tun kann,
- * und führt in die Galerie (Anpassung + fertiger Code) oder zum Kontakt.
+ * und führt in die Galerie (Anpassung + fertiger Code) oder öffnet das
+ * Kontaktformular als Modal auf dieser Seite. Bewusst kein Sprung auf /kontakt:
+ * wer hier fragt, will die Zahlen der Gemeinde nicht verlieren.
  *
  * Der SEO-Backlink zur Atlas-Seite entsteht weiterhin, sobald die Kommune ein
  * Widget einbettet; der Code dafür liegt in der Galerie statt hier.
@@ -37,9 +40,7 @@ export default function GemeindeEmbedBox({ name, ags }: { name: string; ags: str
             Widgets ansehen, anpassen &amp; einbetten <IconArrowRight size={16} />
           </span>
         </a>
-        <a href="/kontakt" style={S.contact}>
-          Wir richten es Ihnen ein — Kontakt aufnehmen
-        </a>
+        <GemeindeKontaktButton name={name} />
       </div>
     </div>
   );
@@ -64,5 +65,4 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: v("--radius-md"),
     textDecoration: "none",
   },
-  contact: { fontSize: 13, color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
 };

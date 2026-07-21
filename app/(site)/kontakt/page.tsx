@@ -3,7 +3,7 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import ObfuscatedEmail from "../../../components/ObfuscatedEmail";
-import ContactForm from "./ContactForm";
+import ContactForm from "../../../components/ContactForm";
 
 export const metadata: Metadata = pageMetadata({
   path: "/kontakt",
