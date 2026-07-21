@@ -34,12 +34,11 @@ export default function GemeindeKontaktButton({ name }: { name: string }) {
       <Modal
         open={open}
         onClose={() => setOpen(false)}
-        title="Widget einrichten lassen"
-        intro={
-          <ContactPerson
-            note={`Ich melde mich in der Regel innerhalb von 1–2 Werktagen. Die Angaben zu ${name} sind schon eingetragen — ergänzen Sie einfach, worum es geht.`}
-          />
-        }
+        // Reiner Anzeigetext. Der Mail-Betreff kommt AUSSCHLIESSLICH aus der
+        // Themen-Allowlist (initialTopic unten, serverseitig gegengeprüft) —
+        // der Gemeindename darf hier stehen, aber niemals in einen Mail-Header.
+        title={`Fragen zum Widget für ${name}`}
+        intro={<ContactPerson note="Ich melde mich in der Regel innerhalb von 1–2 Werktagen." />}
       >
         <ContactForm
           // Festes Thema aus der Allowlist: daraus baut der Server den

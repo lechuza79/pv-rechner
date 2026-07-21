@@ -49,9 +49,10 @@ const S: Record<string, React.CSSProperties> = {
     height: AVATAR_PX,
     borderRadius: "50%",
     // Fläche hinter dem Freisteller: gibt dem transparenten Bild Halt. Bewusst
-    // die Basis-Fläche, damit sich der Kreis von getönten Blöcken (etwa dem
-    // Hilfe-Block der Kommunen-Box auf --color-bg-accent) abhebt statt darin
-    // zu verschwinden — in hell wie dunkel.
+    // die Basis-Fläche — sie ist in jedem Token-Satz die hellste bzw. dunkelste
+    // Stufe, der Kreis franst dort weder in hell noch in dunkel aus. Liegt der
+    // Block selbst auf dieser Stufe (Hilfe-Block der Kommunen-Box), fügt sich
+    // der Kreis nahtlos ein, statt als zweite Scheibe aufzutragen.
     background: v("--color-bg"),
     objectFit: "cover",
     flexShrink: 0,

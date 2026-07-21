@@ -67,19 +67,23 @@ const S: Record<string, React.CSSProperties> = {
     lineHeight: 1.6,
     margin: `0 0 ${space.lg}px`,
   },
-  // Eigene Fläche statt Trennlinie. --color-bg-accent hebt sich vom
-  // --color-bg-muted der Karte ab, und weil beide Tokens im dunklen Token-Satz
-  // eigene Werte haben, bleibt der Abstand dort erhalten.
+  // Eigene Fläche statt Trennlinie — aber als Abstufung DERSELBEN Farbfamilie
+  // wie die Karte, nicht als eigener Farbton: --color-bg ist die Nachbarstufe
+  // von --color-bg-muted, auf dem die Karte liegt. In hell setzt sich der Block
+  // dadurch hell ab, in dunkel dunkel; in beiden Token-Sätzen bleibt der
+  // Unterschied sichtbar, ohne dass ein blauer Akzent dazwischenfährt.
   help: {
     marginTop: space.xl,
     padding: pad("xl"),
-    background: v("--color-bg-accent"),
+    background: v("--color-bg"),
     borderRadius: v("--radius-md"),
   },
+  // Fließtext, keine Überschrift: Größe und Farbe kommen aus der Skala, ohne
+  // Fettung. Der Satz leitet den Kontakt-Weg ein, er gliedert nichts.
   helpTitle: {
     fontSize: v("--font-size-body"),
-    fontWeight: 700,
-    color: v("--color-text-primary"),
+    lineHeight: 1.6,
+    color: v("--color-text-secondary"),
     margin: `0 0 ${space.lg}px`,
   },
   actions: {
