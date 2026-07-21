@@ -26,7 +26,12 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type Re
 import { createPortal } from "react-dom";
 import { v } from "../lib/theme";
 
-const DURATION_MS = 180;
+const DURATION_MS = 220;
+// „Bewegung reduzieren" heißt Bewegung, nicht Rückmeldung: das Fenster fährt
+// dann nicht mehr ein, blendet aber weiter auf. Ein harter Schnitt wäre kein
+// Zugewinn an Zugänglichkeit, sondern nur weniger Feedback — und er sieht aus
+// wie ein Fehler („das Fenster ist einfach da").
+const DURATION_REDUCED_MS = 140;
 const MOBILE_MAX_PX = 640;
 
 interface ModalProps {
@@ -86,30 +91,49 @@ export default function Modal({
 
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_MAX_PX}px)`);
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
-  const duration = reducedMotion ? 0 : DURATION_MS;
+  const duration = reducedMotion ? DURATION_REDUCED_MS : DURATION_MS;
 
   // Zwei Zustände, damit es auch beim SCHLIESSEN eine Animation gibt:
   // `rendered` hält den Dialog im DOM, `shown` fährt ihn hinein bzw. hinaus.
   const [rendered, setRendered] = useState(open);
   const [shown, setShown] = useState(false);
 
+  // Schritt 1 — im DOM halten: beim Öffnen sofort, beim Schließen erst nach der
+  // Ausblende-Animation (sonst verschwindet der Dialog hart).
   useEffect(() => {
     if (open) {
       setRendered(true);
-      // Ein Frame im Ausgangszustand, sonst gibt es nichts zu überblenden.
-      // Timer als Rückfallebene: in nicht sichtbaren Tabs pausiert der Browser
-      // requestAnimationFrame — ohne ihn bliebe der Dialog unsichtbar hängen.
-      const raf = requestAnimationFrame(() => setShown(true));
-      const fallback = setTimeout(() => setShown(true), 50);
-      return () => {
-        cancelAnimationFrame(raf);
-        clearTimeout(fallback);
-      };
+      return;
     }
     setShown(false);
     const timer = setTimeout(() => setRendered(false), duration);
     return () => clearTimeout(timer);
   }, [open, duration]);
+
+  // Schritt 2 — einfahren, NACHDEM der Ausgangszustand tatsächlich im Bild war.
+  // Bewusst ein eigener Effekt mit `rendered` in den Dependencies: erst dann ist
+  // der Dialog eingehängt. Würde man (wie zuvor) im selben Durchlauf wie das
+  // Einhängen umschalten, sieht der Browser nie den Startwert, hat also nichts
+  // zu interpolieren — das Fenster ist schlagartig da.
+  // Zwei verschachtelte Frames, weil der erste noch zum Einhänge-Frame gehört;
+  // der Startzustand braucht einen eigenen, gemalten Frame.
+  useEffect(() => {
+    if (!open || !rendered) return;
+    let inner = 0;
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => setShown(true));
+    });
+    // Rückfallebene für nicht sichtbare Tabs: dort pausiert der Browser
+    // requestAnimationFrame komplett, der Dialog bliebe sonst unsichtbar
+    // hängen. Großzügig bemessen, damit der Timer im sichtbaren Fall NIE vor
+    // den beiden Frames zuschlägt und die Animation überspringt.
+    const fallback = setTimeout(() => setShown(true), 250);
+    return () => {
+      cancelAnimationFrame(outer);
+      cancelAnimationFrame(inner);
+      clearTimeout(fallback);
+    };
+  }, [open, rendered]);
 
   // Modal-Mechanik, solange offen: Scroll-Sperre, Escape, Tab-Falle, Fokus.
   // Bewusst an `open` gekoppelt (nicht an `rendered`), damit der Fokus sofort
@@ -165,7 +189,16 @@ export default function Modal({
   if (!rendered || !canPortal) return null;
 
   const radius = v("--radius-lg");
-  const hiddenTransform = isMobile ? "translateY(100%)" : "translateY(8px) scale(0.98)";
+  // Bei „Bewegung reduzieren" bleibt das Fenster an Ort und Stelle und blendet
+  // nur auf — die Bewegung ist das, was stört, nicht der Übergang.
+  const hiddenTransform = reducedMotion
+    ? "none"
+    : isMobile
+      ? "translateY(100%)"
+      : "translateY(12px) scale(0.96)";
+  const dialogTransition = reducedMotion
+    ? `opacity ${duration}ms ease-out`
+    : `opacity ${duration}ms ease-out, transform ${duration}ms ease-out`;
 
   return createPortal(
     <div
@@ -206,7 +239,7 @@ export default function Modal({
           outline: "none",
           opacity: shown ? 1 : 0,
           transform: shown ? "none" : hiddenTransform,
-          transition: `opacity ${duration}ms ease-out, transform ${duration}ms ease-out`,
+          transition: dialogTransition,
         }}
       >
         <div style={S.head}>
