@@ -298,6 +298,72 @@ export const SEGMENT_OWNER: Record<string, "privat" | "gewerbe" | null> = {
   "n/a": null,
 };
 
+export type AtlasOwner = "alle" | "privat" | "gewerbe";
+
+/** True when a segment belongs to the selected owner filter. "alle" means every
+ *  segment that HAS an owner — pumped storage and "sonstige" stay out, exactly as
+ *  in the donut and the ranking table. */
+export function ownerKeeps(owner: AtlasOwner, segment: string): boolean {
+  const o = SEGMENT_OWNER[segment];
+  return owner === "alle" ? o != null : o === owner;
+}
+
+/** The numbers behind the KPI tiles, cut to one owner. */
+export type AtlasOwnerSlice = {
+  count: number;
+  kwp: number;
+  /** Roof-mounted only — the honest denominator for "storage per kWp". */
+  kwpDach: number;
+  speicherKwh: number;
+  speicherCount: number;
+  /** Plants newly in operation in `year`. */
+  neu: number;
+};
+
+/**
+ * One owner's slice of a region's stock.
+ *
+ * Every figure comes out of SEGMENT_OWNER, the same table the donut and the
+ * ranking use — a second owner mapping here is how tiles and chart start telling
+ * different stories about the same place.
+ */
+export function atlasOwnerSlice(
+  atlas: {
+    solar: {
+      by_segment: { segment: string; count: number; kwp: number }[];
+      by_year_segment: { year: number; segment: string; count: number; kwp: number }[];
+    };
+    speicher: { by_segment: { segment: string; count: number; kwh: number }[] };
+  },
+  owner: AtlasOwner,
+  year: number,
+): AtlasOwnerSlice {
+  const slice: AtlasOwnerSlice = {
+    count: 0,
+    kwp: 0,
+    kwpDach: 0,
+    speicherKwh: 0,
+    speicherCount: 0,
+    neu: 0,
+  };
+  for (const s of atlas.solar.by_segment) {
+    if (!ownerKeeps(owner, s.segment)) continue;
+    slice.count += s.count;
+    slice.kwp += s.kwp;
+    if (s.segment !== "freiflaeche") slice.kwpDach += s.kwp;
+  }
+  for (const s of atlas.solar.by_year_segment) {
+    if (s.year !== year || !ownerKeeps(owner, s.segment)) continue;
+    slice.neu += s.count;
+  }
+  for (const s of atlas.speicher.by_segment) {
+    if (!ownerKeeps(owner, s.segment)) continue;
+    slice.speicherKwh += s.kwh;
+    slice.speicherCount += s.count;
+  }
+  return slice;
+}
+
 /** One (child, segment, year) cell — the grain the ranking table filters on. */
 export type ChildYearRow = {
   region_id: string;

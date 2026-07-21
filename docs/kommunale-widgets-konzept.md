@@ -57,3 +57,28 @@ auf der Widget-Seite, aus der URL vorausgefüllt.
 - Was passiert mit den alten `/embed/gemeinde-*`-URLs (Redirects, damit bestehende
   Einbettungen nicht brechen)?
 - Kontakt: eigener „Für Kommunen"-Betreff in `lib/contact-topics.ts`?
+
+## Umgesetzt am 2026-07-21 (Gemeinde-Seite)
+
+Vorstufe zum Widget-Umbau — die Gemeinde-Seite selbst wurde aufgeräumt, damit das
+Hero-Widget später als Ganzes einbettbar ist:
+
+- **KPI-Kacheln sind Teil des Hero-Widgets** (`components/atlas/GemeindeHero.tsx`
+  rendert `AtlasKpiRow`), nicht mehr ein Geschwister-Element darüber. Der
+  Eigentümer-Filter im Hero steuert damit Kacheln, Donut und Rangliste gemeinsam.
+- **Der Filter wirkt auf Werte UND Vergleichsbasis:** unter „Privat" vergleicht die
+  Tendenz die privaten Zahlen der Gemeinde mit den **privaten** Zahlen der gewählten
+  Ebene (Landkreis / Bundesland / Deutschland). Privat gegen Gesamtbestand wäre eine
+  Prozentzahl ohne Aussage. Die umschaltbare Vergleichsebene bleibt erhalten; eine
+  Notiz unter den Kacheln benennt die Einschränkung.
+- **Ohne DB-Umbau:** `lib/mastr-data.ts` behält die Kombination Segment × Jahr
+  (`solar.by_year_segment`) und den Speicher je Segment (`speicher.by_segment`) aus
+  derselben RPC-Antwort, statt beide Achsen wegzuaggregieren. Der Eigentümer-Schnitt
+  liegt als `atlasOwnerSlice` in `lib/atlas.ts` und benutzt `SEGMENT_OWNER` — dieselbe
+  Quelle wie Donut und Rangliste (Test: `lib/__tests__/atlas-owner-slice.test.ts`).
+- **Lead-Kasten ohne Beispiel-Vorschau:** die Widgets stehen auf der Seite ohnehin
+  live; der Kasten erklärt jetzt in ganzen Sätzen, was die Kommune einbetten kann,
+  und führt in die Galerie bzw. zum Kontakt.
+
+Weiterhin offen (Folgeschritt): einzeln einbettbare Hero-Teile per `parts`-Setting,
+Konsolidierung der drei `/embed/gemeinde-*`-Widgets, Kategorien in der Widget-Galerie.
