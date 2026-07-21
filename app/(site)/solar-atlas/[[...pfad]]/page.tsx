@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import Header from "../../../../components/Header";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
@@ -192,7 +191,6 @@ export default async function AtlasPage({ params }: { params: Params }) {
 
   return (
     <div style={S.page}>
-      <Header />
       {crumbs.length > 1 && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       )}

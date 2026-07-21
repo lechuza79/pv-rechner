@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Header from "../../components/Header";
 import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser, IconSnowflake, IconEuro, IconPanel } from "../../components/Icons";
 import { MastrHeroSection } from "../../components/MastrHeroSection";
 import Faq from "../../components/Faq";
@@ -79,7 +78,6 @@ export default function Home() {
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
 
-        <Header />
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 

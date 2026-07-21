@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Header from "../../../components/Header";
 import Breadcrumb from "../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
@@ -79,7 +78,6 @@ const S = {
 export default function RatgeberPage() {
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Ratgeber" }]} jsonLd />
 

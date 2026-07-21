@@ -3,11 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signOut } from "../../../lib/auth";
 import type { CalculationRow } from "../../../lib/types";
 import { rowToParams, paramsToInitial } from "../../../lib/types";
 import { v, iconSizes } from "../../../lib/theme";
-import Header from "../../../components/Header";
 import { IconEdit, IconClose } from "../../../components/Icons";
 import { IconPlus, IconCheck } from "../../../components/Icons";
 
@@ -67,12 +65,6 @@ export default function DashboardClient({
     router.push(`/photovoltaik-rechner?${sp.toString()}`);
   };
 
-  const handleLogout = async () => {
-    await signOut();
-    router.push("/");
-    router.refresh();
-  };
-
   const startEditing = (calc: CalculationRow) => {
     setEditingId(calc.id);
     setEditName(calc.name);
@@ -102,7 +94,6 @@ export default function DashboardClient({
       background: v('--color-bg'), fontFamily: v('--font-text'),
       color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px",
     }}>
-        <Header onLogoutClick={handleLogout} />
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 

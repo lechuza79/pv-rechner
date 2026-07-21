@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Logo from "./Logo";
 import { IconUser, IconMenu, IconClose, IconChevronDown } from "./Icons";
 import { v, iconSizes } from "../lib/theme";
-import { useAuth } from "../lib/auth";
+import { useAuth, signOut } from "../lib/auth";
 import ThemeController from "./ThemeController";
 
 interface HeaderProps {
@@ -45,7 +45,16 @@ const ENERGIE_ITEMS: NavItem[] = [
 
 export default function Header({ onLoginClick, onLogoutClick, activePage: activePageProp }: HeaderProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const authState = useAuth();
+  // Abmelden ohne durchgereichten Handler: nach dem Abmelden weg von der
+  // geschützten Seite und den Server-State auffrischen — sonst bliebe man auf
+  // dem Dashboard mit veralteter Sitzungsansicht stehen.
+  const defaultLogout = async () => {
+    await signOut();
+    router.push("/");
+    router.refresh();
+  };
   const activePage = activePageProp ?? (
     pathname === "/" ? "" :
     pathname.startsWith("/pv-simulation") ? "simulation" :
@@ -103,8 +112,13 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
   const authElement = authState.status === "loading" ? null :
     authState.status === "authed" ? (
-      onLogoutClick ? (
-        <button onClick={() => { onLogoutClick(); closeMenu(); }} style={{
+      // Der Header sitzt im Seitenlayout und bekommt darum keine Handler mehr
+      // durchgereicht. „Abmelden" leitet sich deshalb aus dem Pfad ab (auf dem
+      // Dashboard) und meldet selbst ab — sonst stünde dort ein Dashboard-Link
+      // auf sich selbst und gar kein Abmelden. Ein explizit übergebener Handler
+      // gewinnt weiterhin.
+      onLogoutClick || pathname.startsWith("/dashboard") ? (
+        <button onClick={() => { (onLogoutClick ?? defaultLogout)(); closeMenu(); }} style={{
           background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
           color: v('--color-text-muted'), cursor: "pointer", padding: isDesktop ? 0 : "12px 0",
           fontFamily: v('--font-text'),

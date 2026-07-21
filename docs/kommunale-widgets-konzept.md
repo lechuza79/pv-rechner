@@ -57,3 +57,53 @@ auf der Widget-Seite, aus der URL vorausgefüllt.
 - Was passiert mit den alten `/embed/gemeinde-*`-URLs (Redirects, damit bestehende
   Einbettungen nicht brechen)?
 - Kontakt: eigener „Für Kommunen"-Betreff in `lib/contact-topics.ts`?
+
+---
+
+## Nachtrag 2026-07-21 — entschiedene Punkte (Briefing für die Umsetzungs-Session)
+
+Aus dem Gespräch nach dem Perf-/Infra-Tag. Das hier ist **beschlossen**, nicht mehr offen:
+
+### 1. KPI-Kacheln werden Teil des Hero-Widgets
+Heute steht `AtlasKpiRow` **über** `GemeindeHero` als eigenes Geschwister-Element,
+serverseitig über *alle* Anlagen gerechnet. Deshalb reagieren Werte und Tendenzen
+nicht auf den Eigentümer-Filter, der **im** Hero sitzt.
+
+→ Die Kacheln wandern **ins Hero-Widget**. Der dort vorhandene Filter
+(alle/privat/gewerbe) steuert sie damit automatisch mit.
+
+### 2. Filter wirkt auf Werte UND Vergleichsbasis
+Bei „Privat" zeigen die Kacheln die **privaten** Zahlen, und die Tendenz vergleicht
+gegen die **privaten** Zahlen der gewählten Ebene (Landkreis/Land/Deutschland).
+Zweck: „Wie schlägt sich die Kommune **in dieser Kategorie**?" — nicht Privat gegen
+Gesamt, das wäre eine unsinnige Prozentzahl.
+
+### 3. Datenlage — kein DB-Umbau nötig
+`mastr_region_series` liefert pro Zeile **Segment UND Jahr**; `getRegionAtlasData`
+aggregiert das heute nur getrennt weg (`by_segment` bzw. `by_year`). Wer die
+Kombination behält, kann **alle fünf Kacheln** eigentümer-filtern:
+- direkt splittbar (aus `by_segment`): Solaranlagen, Installiert, je Einwohner
+- braucht Segment×Jahr: **Neu {Jahr}**
+- braucht Speicher-nach-Segment: **Batteriespeicher** (`batterie_privat`/`_gewerbe`
+  stehen bereits in `SEGMENT_OWNER`)
+Die Eigentümer-Zuordnung **muss** `SEGMENT_OWNER` aus `lib/atlas.ts` benutzen —
+dieselbe Quelle wie Donut und Rangliste, sonst driften Kacheln und Diagramm.
+
+### 4. Hero-Teile einzeln einbettbar
+Gewünscht: nicht nur das ganze Hero-Widget, sondern auch **Teile** (nur Kacheln /
+nur Donut / nur Rangliste).
+**Empfehlung (mit dem Nutzer abgestimmt):** *ein* Widget mit **Teil-Settings**
+(`parts=kacheln,donut,rangliste`) statt drei neuer Widgets — sonst sind bald sechs
+Varianten zu pflegen. Deckt sich mit der Konsolidierungs-Idee weiter oben
+(die drei alten `/embed/gemeinde-*` zusammenführen, alte URLs per Redirect halten).
+
+### 5. Widget-Galerie bekommt Kategorien
+`/energie-widgets` wird langsam unübersichtlich → Kategorien einführen, u. a.
+**„Kommunen"** und **„Allgemein"**. Kommt sinnvollerweise zusammen mit dem
+Regions-Setting (oben beschrieben) in einem Rutsch.
+
+### Reihenfolge-Vorschlag
+1. Segment×Jahr in `getRegionAtlasData` erhalten (Datenform)
+2. KPI-Kacheln ins Hero ziehen + Filter auf Werte & Vergleichsbasis
+3. Teil-Settings + Konsolidierung der Gemeinde-Embeds (inkl. Redirects)
+4. Galerie-Kategorien + Regions-Setting

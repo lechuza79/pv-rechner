@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import Header from "../../../components/Header";
 import Breadcrumb from "../../../components/Breadcrumb";
 import { v } from "../../../lib/theme";
 import { allGlossaryEntries } from "../../../lib/glossary";
@@ -85,7 +84,6 @@ export default function GlossarPage() {
   const entries = allGlossaryEntries();
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Glossar" }]} jsonLd />
 

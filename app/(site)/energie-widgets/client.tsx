@@ -2,7 +2,6 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Header from "../../../components/Header";
 import { IconBolt, IconRefresh, IconLink, IconChevronDown } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import {
@@ -291,7 +290,6 @@ export default function WidgetsClient() {
 
   return (
     <div style={S.page}>
-      <Header activePage="widgets" />
       <div style={S.wrap}>
         <h1 style={S.h1}>Energie-Widgets für die eigene Website</h1>
         <p style={S.subtitle}>

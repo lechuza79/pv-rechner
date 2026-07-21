@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Header from "../../../components/Header";
 import Breadcrumb from "../../../components/Breadcrumb";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import ProConLists from "../../../components/ProConLists";
@@ -398,7 +397,6 @@ export default async function LohntSichPvMitSpeicherPage() {
 
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <Breadcrumb
           items={[

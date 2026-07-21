@@ -3,6 +3,7 @@ import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import { getCssVariables, getThemeOverrides, globalStyles } from "../../lib/theme";
 import { jsonLdHtml } from "../../lib/json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
+import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -139,6 +140,16 @@ export default function RootLayout({
         }}
       >
         <GlossaryProvider>
+          {/* Header zentral: früher band ihn jede Seite selbst ein — zehn hatten
+              es vergessen (u. a. /kontakt, /methodik, /glossar und die
+              Ratgeber-Flaggschiffseite), was Sackgassen ohne Navigation ergab.
+              Hier kann ihn keine Seite mehr vergessen. Den aktiven Menüpunkt
+              erkennt er selbst am Pfad. */}
+          {/* Außenabstand zentral: früher lieferte ihn der jeweilige
+              Seiten-Container ("20px 16px"), in dem der Header mit drinsteckte.
+              Jetzt sitzt er im Layout und bringt seinen Rahmen selbst mit —
+              analog zum Footer darunter. */}
+          <div style={{ padding: "20px 16px 0" }}><Header /></div>
           {children}
           <div style={{ padding: "0 16px" }}><Footer /></div>
         </GlossaryProvider>

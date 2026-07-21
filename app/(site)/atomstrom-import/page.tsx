@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Header from "../../../components/Header";
 import Breadcrumb from "../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
@@ -177,7 +176,6 @@ export default async function AtomstromImportPage() {
 
   return (
     <div style={S.page}>
-      <Header />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetJsonLd) }}

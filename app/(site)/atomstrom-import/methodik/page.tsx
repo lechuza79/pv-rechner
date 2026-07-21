@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import Header from "../../../../components/Header";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
@@ -70,7 +69,6 @@ export default async function AtomstromMethodikPage() {
 
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <Breadcrumb
           items={[

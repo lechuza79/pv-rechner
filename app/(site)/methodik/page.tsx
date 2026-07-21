@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Header from "../../../components/Header";
 import Breadcrumb from "../../../components/Breadcrumb";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import { v } from "../../../lib/theme";
@@ -142,7 +141,6 @@ export default async function MethodikPage() {
   const co2Y0 = new Date().getFullYear();
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Methodik" }]} jsonLd />
 

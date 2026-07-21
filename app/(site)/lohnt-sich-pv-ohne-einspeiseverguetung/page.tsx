@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Header from "../../../components/Header";
 import Breadcrumb from "../../../components/Breadcrumb";
 import ProConLists from "../../../components/ProConLists";
 import GlossaryTerm from "../../../components/GlossaryTerm";
@@ -402,7 +401,6 @@ export default async function LohntSichPvOhneEinspeisungPage() {
 
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <Breadcrumb
           items={[
