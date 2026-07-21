@@ -29,7 +29,8 @@ const S = {
   },
   // Äußerer Rahmen etwas breiter als die Lesespalte, damit das Chart-Widget
   // bewusst über die Textbreite hinausragen darf (Breakout).
-  wrap: { maxWidth: 880, margin: "0 auto", paddingTop: 60 },
+  // 20 (Header-Margin) + 20 (Seiten-Padding) + 20 = 60 px unter dem Header.
+  wrap: { maxWidth: 880, margin: "0 auto", paddingTop: 20 },
   textCol: { maxWidth: v("--content-max-width"), margin: "0 auto" },
 };
 

@@ -22,18 +22,26 @@ export type Crumb = {
  * Atlas) stay unchanged.
  */
 export default function Breadcrumb({ items, jsonLd = false }: { items: Crumb[]; jsonLd?: boolean }) {
+  // Die Startseite wird generell nicht angezeigt — zentral hier gefiltert, damit
+  // die Aufrufer sie weiter mitgeben können (und das strukturierte Datenblatt
+  // dieselbe Kette abbildet wie die sichtbare Spur).
+  const crumbs = items.filter((it) => it.href !== "/");
+  // Bleibt nur die aktuelle Seite übrig (typisch für Seiten direkt unter der
+  // Startseite), ist das keine Spur mehr — dann gar nichts rendern, auch kein
+  // BreadcrumbList mit einem einzigen Eintrag.
+  if (crumbs.length < 2) return null;
   return (
     <>
       {jsonLd && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: jsonLdHtml(breadcrumbJsonLd(items.map((it) => ({ name: it.label, path: it.href })), BASE_URL)),
+            __html: jsonLdHtml(breadcrumbJsonLd(crumbs.map((it) => ({ name: it.label, path: it.href })), BASE_URL)),
           }}
         />
       )}
       <nav style={S.nav} aria-label="Brotkrümel">
-        {items.map((item, i) => (
+        {crumbs.map((item, i) => (
           <span key={`${item.label}-${i}`} style={S.item}>
             {i > 0 && <span aria-hidden style={S.sep} />}
             {item.href ? (
@@ -55,15 +63,18 @@ export default function Breadcrumb({ items, jsonLd = false }: { items: Crumb[]; 
 const S: Record<string, React.CSSProperties> = {
   nav: {
     fontSize: v("--font-size-small"),
-    color: v("--color-text-secondary"),
     display: "flex",
     alignItems: "center",
     flexWrap: "wrap",
     gap: 8,
+    paddingBottom: 12,
     marginBottom: 20,
+    borderBottom: `1px solid ${v("--color-border")}`,
   },
   item: { display: "inline-flex", alignItems: "center", gap: 8 },
   sep: { width: 14, height: 1, background: v("--color-text-faint"), display: "inline-block" },
-  link: { color: "inherit", textDecoration: "none" },
-  current: { color: v("--color-text-primary") },
+  // Spur in Blau-Shades statt Grau: Links im hellen Akzent, die aktuelle Seite
+  // noch eine Stufe heller (sie ist kein Ziel mehr).
+  link: { color: v("--color-accent-light"), textDecoration: "none" },
+  current: { color: "color-mix(in srgb, var(--color-accent) 45%, var(--color-bg))" },
 };
