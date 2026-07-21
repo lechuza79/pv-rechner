@@ -52,6 +52,12 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
     government: "Schwarz-gelbe Koalition (CDU/CSU/FDP), Kanzlerin Merkel — Umweltminister Röttgen (CDU) und Wirtschaftsminister Rösler (FDP).",
   },
   {
+    year: 2022,
+    label: "Energiekrise",
+    text: "Nach dem russischen Angriff auf die Ukraine explodieren Gas- und Strompreise. Damit wird jede selbst genutzte Kilowattstunde deutlich wertvoller — der Preisschock ist die Ursache des folgenden Zubau-Sprungs, nicht seine Folge. Im selben Jahr wird die Einspeisevergütung erstmals seit Langem wieder angehoben (Osterpaket/EEG 2023, höhere Sätze ab Ende Juli 2022).",
+    government: "Ampel-Koalition (SPD/Grüne/FDP), Kanzler Scholz — die Vergütungsanhebung kam mit dem „Osterpaket“ aus dem Wirtschafts- und Klimaministerium (Robert Habeck, Grüne). Der Preisschock selbst war keine politische Entscheidung.",
+  },
+  {
     year: 2023,
     label: "Nullsteuer",
     text: "0 % Mehrwertsteuer auf Kauf und Montage von PV-Anlagen. Zusammen mit den nach 2022 stark gestiegenen Strompreisen wird der Eigenverbrauch so lukrativ, dass der Zubau explodiert — obwohl die Vergütung niedrig bleibt.",

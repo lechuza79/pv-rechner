@@ -73,7 +73,7 @@ export default function EventTimeline({ events, active, onChange, startYear, end
       {/* Track — Ränder = Chart-Plot-Ränder, damit die Punkte unter den Balken sitzen.
          Die Verbindungslinie beginnt am ersten Punkt (nicht am linken Rand). */}
       <div style={{ position: "relative", paddingLeft: PLOT_MARGIN.left, paddingRight: PLOT_MARGIN.right }}>
-        <div role="tablist" aria-label="Politische Weichenstellungen" style={{ position: "relative", height: 30 }}>
+        <div role="tablist" aria-label="Weichenstellungen im Solarausbau" style={{ position: "relative", height: 30 }}>
           {/* Graue Grundlinie bis zum letzten echten Ereignis */}
           <div
             style={{
