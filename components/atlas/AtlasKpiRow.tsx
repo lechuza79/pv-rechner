@@ -22,6 +22,7 @@ export default function AtlasKpiRow({
   references,
   defaultRefKey,
   note,
+  footnote,
 }: {
   tiles: KpiTile[];
   regionPerCap: PerCap;
@@ -30,6 +31,10 @@ export default function AtlasKpiRow({
   /** Satz hinter der Vergleichs-Erklärung, z. B. wenn ein Eigentümer-Filter aktiv
    *  ist und Werte wie Vergleichsbasis auf dieselbe Kategorie eingeschränkt sind. */
   note?: string;
+  /** Eigene Zeile direkt unter den Kacheln — für das, was eine Kachel bewusst
+   *  NICHT enthält. Steht über der Tendenz-Zeile und dunkler als diese, weil es
+   *  eine Aussage über die Zahlen ist und keine Fußnote zur Vergleichslogik. */
+  footnote?: string;
 }) {
   const [refKey, setRefKey] = useState(defaultRefKey);
   const ref = references.find((r) => r.key === refKey) ?? references[0] ?? null;
@@ -48,7 +53,7 @@ export default function AtlasKpiRow({
           Kacheln blenden dann um, statt hart zu springen. */}
       <div
         key={tiles.map((t) => t.value).join("|")}
-        style={{ ...S.grid, marginBottom: references.length ? space.sm : space.xxxl }}
+        style={{ ...S.grid, marginBottom: references.length || footnote ? space.sm : space.xxxl }}
       >
         {tiles.map((t, i) => (
           <div key={i} style={S.metric}>
@@ -59,6 +64,9 @@ export default function AtlasKpiRow({
           </div>
         ))}
       </div>
+      {footnote && (
+        <div style={{ ...S.footnote, marginBottom: ref ? space.sm : space.xxl }}>{footnote}</div>
+      )}
       {ref && (
         <div style={S.caption}>
           Tendenz: je Einwohner gegenüber dem Durchschnitt in{" "}
@@ -132,6 +140,12 @@ const S: Record<string, React.CSSProperties> = {
   metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
   metricSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: space.xxs, lineHeight: 1.4 },
+  footnote: {
+    fontSize: 12,
+    color: v("--color-text-secondary"),
+    margin: `0 ${space.xxs}px`,
+    lineHeight: 1.5,
+  },
   caption: { fontSize: 11, color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.xxl}px`, lineHeight: 1.5 },
   captionStrong: { color: v("--color-text-secondary"), fontWeight: 600 },
   pickerBtn: {

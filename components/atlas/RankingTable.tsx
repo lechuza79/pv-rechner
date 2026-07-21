@@ -44,7 +44,7 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
   },
   {
     key: "speicher",
-    label: "Speicher",
+    label: "Batteriespeicher",
     hint: "Nutzbare Kapazität der Batteriespeicher, nicht ihre Leistung. Eine Hausbatterie hält typisch 5 bis 15 kWh. Pumpspeicherwerke sind nicht enthalten.",
   },
 ];

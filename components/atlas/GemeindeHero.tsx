@@ -20,6 +20,10 @@ export type KpiOwnerData = {
   tiles: KpiTile[];
   perCap: Record<string, number | null>;
   references: RefLevel[];
+  /** Was die Speicher-Kachel bewusst auslässt (Pumpspeicher, andere Bauarten) —
+   *  null, wo es nichts auszulassen gibt, also in fast jeder Gemeinde. Unter
+   *  „Privat"/„Gewerbe" immer null: ein Pumpspeicherwerk hat keinen Eigentümer. */
+  speicherHinweis?: string | null;
 };
 
 /** A size-class benchmark from outside the Kreis. Per-capita only — see below. */
@@ -45,7 +49,9 @@ const METRICS: { key: Metric; label: string }[] = [
   { key: "perCapita", label: "Leistung je Einwohner" },
   { key: "count", label: "Zahl der Anlagen" },
   { key: "kwp", label: "Installierte Leistung" },
-  { key: "speicher", label: "Speicherkapazität" },
+  // Beim Namen genannt: sortiert wird nach Batteriekapazität, Pumpspeicher zählt
+  // hier nicht mit (sonst gewinnt jede Rangliste die Gemeinde mit dem Kraftwerk).
+  { key: "speicher", label: "Batteriespeicher" },
 ];
 
 /**
@@ -310,6 +316,7 @@ export default function GemeindeHero({
         regionPerCap={kpi[owner].perCap}
         references={kpi[owner].references}
         defaultRefKey="landkreis"
+        footnote={kpi[owner].speicherHinweis ?? undefined}
         note={
           owner === "privat"
             ? "Verglichen werden nur private Anlagen, auch beim Durchschnitt."

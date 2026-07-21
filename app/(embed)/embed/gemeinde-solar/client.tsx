@@ -85,7 +85,10 @@ export default function GemeindeSolarWidget(props: GemeindeWidgetProps) {
         <Kachel label="Anlagen" value={nf(count)} />
         <Kachel label="Installiert" value={fmtLeistung(kwp)} />
         {wPerCapitaDach !== null && <Kachel label="Leistung je Einwohner" value={`${nf(wPerCapitaDach)} W`} hint="Dach" />}
-        {speicherKwh > 0 && <Kachel label="Speicher" value={fmtKwh(speicherKwh)} />}
+        {/* „Batteriespeicher", nicht „Speicher": der Wert zählt nur Batterien, wie
+            auf der Atlas-Seite. Ein Pumpspeicherwerk im Ort steckt nicht darin —
+            das Widget darf nicht mehr behaupten als die Seite. */}
+        {speicherKwh > 0 && <Kachel label="Batteriespeicher" value={fmtKwh(speicherKwh)} />}
       </div>
 
       <div style={{ marginTop: 12 }}>

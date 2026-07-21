@@ -351,9 +351,63 @@ export type AtlasOwnerSlice = {
   /** Storage facilities: all of them under "alle" (pumped storage included),
    *  that owner's batteries under privat/gewerbe. */
   speicherCount: number;
+  /** Batteries only — the tally that belongs to speicherKwh. The tile's headline
+   *  figure and its subline must count the same things, otherwise Herdecke reads
+   *  "14,2 MWh" over "513 Anlagen" while the capacity describes only 512 of them. */
+  batterieCount: number;
+  /** Everything stored here that is NOT a battery, kept apart instead of dropped:
+   *  a pumped-storage plant in the Gemeinde is real and gets its own line under
+   *  the tile (see speicherHinweis). Empty under privat/gewerbe — these have no
+   *  owner to file them under. */
+  nichtBatterie: { pumpspeicherCount: number; pumpspeicherKwh: number; sonstigeCount: number; sonstigeKwh: number };
   /** Plants newly in operation in `year`. */
   neu: number;
 };
+
+/**
+ * The sentence under the storage tile — what the tile deliberately leaves out.
+ *
+ * Only batteries make up the capacity figure (see speicherHasKapazitaet), and
+ * that rule is invisible unless the exception is named where it happens: in
+ * Goldisthal the tile would otherwise report no storage at all next to one of
+ * Europe's largest pumped-storage plants. Roughly 27 of 11.247 Gemeinden carry a
+ * pumped-storage plant and about 405 some other non-battery unit, so this line
+ * stays absent almost everywhere.
+ *
+ * Returns null when there is nothing to disclose.
+ */
+export function speicherHinweis(nb: AtlasOwnerSlice["nichtBatterie"]): string | null {
+  const parts: string[] = [];
+  if (nb.pumpspeicherCount > 0) {
+    const eins = nb.pumpspeicherCount === 1;
+    const werk = eins ? "ein Pumpspeicherwerk" : `${nf(nb.pumpspeicherCount)} Pumpspeicherwerke`;
+    parts.push(
+      `Dazu ${eins ? "kommt" : "kommen"} ${werk} mit ${fmtSpeicherKwh(nb.pumpspeicherKwh)} Kapazität — Kraftwerksmaßstab, ` +
+        `deshalb steht es nicht in der Kachel oben.`,
+    );
+  }
+  if (nb.sonstigeCount > 0) {
+    const anlagen =
+      nb.sonstigeCount === 1 ? "ein weiterer Speicher" : `${nf(nb.sonstigeCount)} weitere Speicher`;
+    const verb = nb.sonstigeCount === 1 ? "ist" : "sind";
+    parts.push(
+      nb.sonstigeKwh > 0
+        ? `${cap(anlagen)} anderer Bauart mit ${fmtSpeicherKwh(nb.sonstigeKwh)} ${verb} ebenfalls erfasst, aber nicht mitgezählt.`
+        : `${cap(anlagen)} anderer Bauart ${verb} erfasst, ohne dass eine Kapazität hinterlegt ist.`,
+    );
+  }
+  return parts.length ? parts.join(" ") : null;
+}
+
+const nf = (n: number) => n.toLocaleString("de-DE");
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** kWh → MWh/GWh once the number stops being readable. */
+export function fmtSpeicherKwh(kwh: number): string {
+  if (kwh >= 1_000_000) return `${(kwh / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GWh`;
+  if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
+  return `${nf(Math.round(kwh))} kWh`;
+}
 
 /**
  * One owner's slice of a region's stock.
@@ -379,6 +433,8 @@ export function atlasOwnerSlice(
     kwpDach: 0,
     speicherKwh: 0,
     speicherCount: 0,
+    batterieCount: 0,
+    nichtBatterie: { pumpspeicherCount: 0, pumpspeicherKwh: 0, sonstigeCount: 0, sonstigeKwh: 0 },
     neu: 0,
   };
   for (const s of atlas.solar.by_segment) {
@@ -394,7 +450,16 @@ export function atlasOwnerSlice(
   for (const s of atlas.speicher.by_segment) {
     if (!ownerKeepsSpeicher(owner, s.segment)) continue;
     slice.speicherCount += s.count;
-    if (speicherHasKapazitaet(s.segment)) slice.speicherKwh += s.kwh;
+    if (speicherHasKapazitaet(s.segment)) {
+      slice.speicherKwh += s.kwh;
+      slice.batterieCount += s.count;
+    } else if (s.segment === "pumpspeicher") {
+      slice.nichtBatterie.pumpspeicherCount += s.count;
+      slice.nichtBatterie.pumpspeicherKwh += s.kwh;
+    } else {
+      slice.nichtBatterie.sonstigeCount += s.count;
+      slice.nichtBatterie.sonstigeKwh += s.kwh;
+    }
   }
   return slice;
 }

@@ -29,6 +29,7 @@ import {
   getPeerLeaders,
   getRankingData,
   atlasOwnerSlice,
+  speicherHinweis,
   type AtlasOwner,
   type PeerLeader,
 } from "../../../../../../lib/atlas";
@@ -138,13 +139,17 @@ export default async function GemeindePage({ params }: { params: Params }) {
         { label: "Installiert", value: fmtLeistung(s.kwp), metric: "kwp" },
         { label: "je Einwohner", value: wPerHead === null ? "—" : `${nf(wPerHead)} W`, metric: "kwp" },
         {
+          // Unterzeile zählt Batterien, nicht alle Speicher: Kapazität und Anzahl
+          // müssen dasselbe meinen. Was sonst noch in der Gemeinde steht, sagt die
+          // Zeile unter den Kacheln (speicherHinweis) — mit Zahl und Begründung.
           label: "Batteriespeicher",
           value: fmtKwh(s.speicherKwh),
           metric: "speicher",
-          sub: `${nf(s.speicherCount)} Anlagen${proKwp !== null ? ` · ${proKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp` : ""}`,
+          sub: `${nf(s.batterieCount)} Batterien${proKwp !== null ? ` · ${proKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp` : ""}`,
         },
         { label: `Neu ${lastYear}`, value: nf(s.neu), metric: "neu" },
       ],
+      speicherHinweis: speicherHinweis(s.nichtBatterie),
       perCap: perCapOf(atlas, region.population, owner),
       references: [
         { key: "landkreis", name: kreis?.name ?? "Landkreis", perCap: perCapOf(kreisAtlas, kreis?.population, owner) },
