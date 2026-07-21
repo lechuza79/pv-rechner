@@ -73,12 +73,16 @@ export const tokens = {
 
   // ─── Text (5) ──────────────────────────────────────────────────────────────
   '--color-text-primary': '#3F3F3F',    // Headings, strong text, values
-  // A11y (WCAG 2.1 AA, BFSG): body/label greys darkened so they clear 4.5:1 on
-  // white — secondary 5.3:1, muted 5.1:1 (was 4.48/3.03). faint is placeholder-
-  // only (not essential text), darkened from 1.86:1 to 3.45:1. See audit
+  // A11y (WCAG 2.1 AA, BFSG): body/label greys clear 4.5:1 on --color-bg AND on
+  // --color-bg-muted (the tinted surfaces are the tighter constraint), while
+  // keeping secondary/muted visibly apart as a hierarchy (14 hex steps — the
+  // first AA fix had collapsed them to 3 steps). Ratios (WCAG 2.1 formula):
+  //   secondary #646464 → 5.92:1 on #FFFFFF, 5.57:1 on #F8F8F8
+  //   muted     #727272 → 4.81:1 on #FFFFFF, 4.53:1 on #F8F8F8
+  // faint is placeholder-only (not essential text), 3.45:1. See audit
   // docs/audit-backlog-2026-07-19.md §4. Dark/Dusk/Overcast nachgezogen (N8).
-  '--color-text-secondary': '#6B6B6B',  // Body text, labels, descriptions
-  '--color-text-muted': '#6E6E6E',      // Dimmed text, hints
+  '--color-text-secondary': '#646464',  // Body text, labels, descriptions
+  '--color-text-muted': '#727272',      // Dimmed text, hints
   '--color-text-faint': '#8A8A8A',      // Very light text, placeholders
   '--color-text-on-accent': '#FFFFFF',  // Text on accent-colored backgrounds
 
@@ -249,9 +253,22 @@ const overcastTokens: Partial<Record<TokenName, string>> = {
   '--color-border': '#969CA6',
   '--color-border-muted': '#9EA4AE',
   '--color-border-accent': '#7FA0CE',
+  // The interactive accent: base #1365EA only reaches 2.94:1 on this grey — real
+  // text (inline links, CTAs, accent spans) fails AA. Darkened until it clears
+  // 4.5:1 on bg AND bg-muted; white text on accent surfaces gets even stronger.
+  //   accent #0A429D → 5.26:1 on #BFC4CC, 4.72:1 on #B4BAC3, white on it 9.21:1
+  // accent-dark (#073C93, hover) is darker still, so hover contrast only rises.
+  '--color-accent': '#0A429D',
   '--color-text-primary': '#2C2F34',
-  '--color-text-secondary': '#494D53',
-  '--color-text-muted': '#4C5056',                 // A11y: 4.6:1 on overcast bg (was 3.72)
+  // A11y: both greys must clear 4.5:1 on bg #BFC4CC AND bg-muted #B4BAC3 — the
+  // muted surface is the bottleneck, so "muted heller" is impossible here
+  // (the old pair #494D53/#4C5056 sat at 4.35/4.15 on bg-muted = below AA and
+  // only 3 steps apart). Spread restored by darkening both, secondary more
+  // (14 hex steps apart, like light). Ratios (WCAG 2.1 formula):
+  //   secondary #383C41 → 6.34:1 on #BFC4CC, 5.69:1 on #B4BAC3
+  //   muted     #464A4F → 5.09:1 on #BFC4CC, 4.57:1 on #B4BAC3
+  '--color-text-secondary': '#383C41',
+  '--color-text-muted': '#464A4F',
   '--color-text-faint': '#5E626A',                 // A11y: 3.5:1 placeholder tier (was 2.39)
   '--color-chart-grid': '#969CA6',
   '--color-chart-zero': '#7A7F87',

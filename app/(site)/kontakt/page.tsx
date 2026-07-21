@@ -1,5 +1,6 @@
 import { Metadata } from "next";
-import Link from "next/link";
+import Header from "../../../components/Header";
+import Breadcrumb from "../../../components/Breadcrumb";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import ObfuscatedEmail from "../../../components/ObfuscatedEmail";
@@ -21,14 +22,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   } as React.CSSProperties,
-  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto" } as React.CSSProperties,
-  back: {
-    fontSize: v('--font-size-small'),
-    color: v('--color-text-secondary'),
-    textDecoration: "none",
-    display: "inline-block",
-    marginBottom: 24,
-  } as React.CSSProperties,
+  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto", paddingTop: 60 } as React.CSSProperties,
   h1: {
     fontSize: v('--font-size-h1'),
     fontWeight: 800,
@@ -40,7 +34,8 @@ const S = {
   p: {
     fontSize: v('--font-size-body'),
     lineHeight: 1.7,
-    color: v('--color-text-secondary'),
+    // muted, not secondary: the body-text grey every other content page uses
+    color: v('--color-text-muted'),
     marginBottom: 16,
   } as React.CSSProperties,
 };
@@ -48,8 +43,9 @@ const S = {
 export default function Kontakt() {
   return (
     <div style={S.page}>
+      <Header />
       <div style={S.wrap}>
-        <Link href="/" style={S.back}>← Zurück</Link>
+        <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Kontakt" }]} jsonLd />
         <h1 style={S.h1}>Kontakt</h1>
 
         <p style={S.p}>

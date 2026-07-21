@@ -1,8 +1,7 @@
 import { Metadata } from "next";
-import Link from "next/link";
 import Header from "../../../../components/Header";
-import { IconArrowRight } from "../../../../components/Icons";
-import { v, iconSizes } from "../../../../lib/theme";
+import Breadcrumb from "../../../../components/Breadcrumb";
+import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { getNuclearImport, dateLong, buildCitation } from "../figure";
 
@@ -27,14 +26,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto" },
-  back: {
-    fontSize: v("--font-size-small"),
-    color: v("--color-text-secondary"),
-    textDecoration: "none",
-    display: "inline-block",
-    marginBottom: 20,
-  },
+  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto", paddingTop: 60 },
   h1: {
     fontSize: v("--font-size-h1"),
     fontWeight: 800,
@@ -80,12 +72,14 @@ export default async function AtomstromMethodikPage() {
     <div style={S.page}>
       <Header />
       <div style={S.wrap}>
-        <Link href="/atomstrom-import" style={S.back}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück
-            zum Atomstrom-Import
-          </span>
-        </Link>
+        <Breadcrumb
+          items={[
+            { label: "Start", href: "/" },
+            { label: "Atomstrom-Import", href: "/atomstrom-import" },
+            { label: "Methodik" },
+          ]}
+          jsonLd
+        />
 
         <h1 style={S.h1}>Methodik &amp; Quellenangabe</h1>
 

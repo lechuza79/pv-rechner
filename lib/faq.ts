@@ -101,7 +101,8 @@ export function pvRechnerFaq(): FaqEntry[] {
     {
       q: "Fällt die Einspeisevergütung 2027 weg?",
       a: "Geplant, aber noch nicht beschlossen: Ein Referentenentwurf des Bundeswirtschaftsministeriums sieht vor, die Einspeisevergütung für neue PV-Anlagen bis 25 kWp ab 2027 zu streichen (Stand: Juli 2026). Wichtig: Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung 20 Jahre garantiert (Bestandsschutz) — sie sind von der geplanten Änderung nicht betroffen. Ob und in welcher Form die Reform kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage.",
-      cta: { label: "Aktuelle Vergütung ansehen", href: "/datenstand" },
+      links: [{ phrase: "Einspeisevergütung", href: "/datenstand" }],
+      cta: { label: "Ratgeber: Lohnt sich PV ohne Einspeisevergütung?", href: "/lohnt-sich-pv-ohne-einspeiseverguetung" },
     },
   ];
 }

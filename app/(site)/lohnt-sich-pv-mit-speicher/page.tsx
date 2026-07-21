@@ -636,7 +636,8 @@ export default async function LohntSichPvMitSpeicherPage() {
         <Faq items={faqItems} title="Häufige Fragen zu PV mit Speicher" currentPath="/lohnt-sich-pv-mit-speicher" />
 
         <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
-          Verwandte Seiten: <Link href="/methodik" style={S.link}>So rechnen wir</Link> ·{" "}
+          Verwandte Seiten: <Link href="/lohnt-sich-pv-ohne-einspeiseverguetung" style={S.link}>Lohnt sich PV ohne Einspeisevergütung?</Link> ·{" "}
+          <Link href="/methodik" style={S.link}>So rechnen wir</Link> ·{" "}
           <Link href="/datenstand" style={S.link}>Aktuelle Preise &amp; Annahmen</Link> ·{" "}
           <Link href="/photovoltaik-foerderung" style={S.link}>PV-Förderung vor Ort</Link> ·{" "}
           <Link href="/balkonkraftwerk-rechner" style={S.link}>Balkonkraftwerk-Rechner</Link> ·{" "}

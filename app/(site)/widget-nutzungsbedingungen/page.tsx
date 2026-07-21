@@ -1,7 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowRight } from "../../../components/Icons";
-import { v, iconSizes } from "../../../lib/theme";
+import Header from "../../../components/Header";
+import Breadcrumb from "../../../components/Breadcrumb";
+import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -20,14 +21,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto" },
-  back: {
-    fontSize: v('--font-size-small'),
-    color: v('--color-text-secondary'),
-    textDecoration: "none",
-    display: "inline-block",
-    marginBottom: 24,
-  },
+  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto", paddingTop: 60 },
   h1: {
     fontSize: v('--font-size-h1'),
     fontWeight: 800,
@@ -58,12 +52,12 @@ const S = {
 export default function WidgetNutzungsbedingungenPage() {
   return (
     <div style={S.page}>
+      <Header />
       <div style={S.wrap}>
-        <Link href="/energie-widgets" style={S.back}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück zu den Widgets
-          </span>
-        </Link>
+        <Breadcrumb
+          items={[{ label: "Start", href: "/" }, { label: "Widget-Nutzungsbedingungen" }]}
+          jsonLd
+        />
 
         <h1 style={S.h1}>Widget-Nutzungsbedingungen</h1>
 
