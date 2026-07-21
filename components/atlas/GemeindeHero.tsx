@@ -5,9 +5,22 @@ import Link from "next/link";
 import DonutChart from "../charts/DonutChart";
 import { IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
 import { v } from "../../lib/theme";
-import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
+import { SEGMENT_OWNER, type AtlasOwner, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
+import AtlasKpiRow, { type KpiTile, type RefLevel } from "./AtlasKpiRow";
 
 export type HeroCell = { segment: string; count: number; kwp: number };
+
+/**
+ * Everything the KPI tiles need for ONE owner filter — values and the comparison
+ * basis. Both are cut the same way: under "Privat" the tendency measures the
+ * Gemeinde's private plants against the private plants of the chosen level, never
+ * against its whole stock.
+ */
+export type KpiOwnerData = {
+  tiles: KpiTile[];
+  perCap: Record<string, number | null>;
+  references: RefLevel[];
+};
 
 /** A size-class benchmark from outside the Kreis. Per-capita only — see below. */
 export type OutsidePeer = {
@@ -19,7 +32,7 @@ export type OutsidePeer = {
   values: Record<Owner, number | null>;
 };
 
-type Owner = "alle" | "privat" | "gewerbe";
+type Owner = AtlasOwner;
 type Metric = "perCapita" | "count" | "kwp" | "speicher";
 
 const OWNERS: { key: Owner; label: string }[] = [
@@ -154,6 +167,7 @@ function useOutsideClose(open: boolean, close: () => void) {
  * different stories side by side.
  */
 export default function GemeindeHero({
+  kpi,
   cells,
   siblings,
   siblingCells,
@@ -163,6 +177,7 @@ export default function GemeindeHero({
   kreisName,
   basePath,
 }: {
+  kpi: Record<Owner, KpiOwnerData>;
   cells: HeroCell[];
   siblings: RankingRegion[];
   siblingCells: ChildYearRow[];
@@ -287,6 +302,22 @@ export default function GemeindeHero({
           </button>
         ))}
       </div>
+
+      {/* Die Kacheln gehören ins Widget, nicht darüber: sonst zeigt der Filter
+          „Privat" eine private Rangliste neben Gesamt-Kennzahlen. */}
+      <AtlasKpiRow
+        tiles={kpi[owner].tiles}
+        regionPerCap={kpi[owner].perCap}
+        references={kpi[owner].references}
+        defaultRefKey="landkreis"
+        note={
+          owner === "privat"
+            ? "Verglichen werden nur private Anlagen, auch beim Durchschnitt."
+            : owner === "gewerbe"
+              ? "Verglichen werden nur gewerbliche Anlagen, auch beim Durchschnitt."
+              : undefined
+        }
+      />
 
       <div style={S.split}>
         <div style={S.left}>

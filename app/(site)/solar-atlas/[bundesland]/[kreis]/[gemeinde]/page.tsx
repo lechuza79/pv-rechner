@@ -3,13 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../../../components/Icons";
-import AtlasKpiRow from "../../../../../../components/atlas/AtlasKpiRow";
 import { v } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
 import { atlasIsIndexable, atlasLevelReleased, atlasRobots } from "../../../../../../lib/atlas-index";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
-import GemeindeHero, { type OutsidePeer } from "../../../../../../components/atlas/GemeindeHero";
+import GemeindeHero, {
+  type OutsidePeer,
+  type KpiOwnerData,
+} from "../../../../../../components/atlas/GemeindeHero";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindePotentialBlock from "../../../../../../components/atlas/GemeindePotential";
 import GemeindeErneuerbareWidget from "../../../../../../components/atlas/GemeindeErneuerbareWidget";
@@ -26,6 +28,8 @@ import {
   peerBand,
   getPeerLeaders,
   getRankingData,
+  atlasOwnerSlice,
+  type AtlasOwner,
   type PeerLeader,
 } from "../../../../../../lib/atlas";
 import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
@@ -102,52 +106,58 @@ export default async function GemeindePage({ params }: { params: Params }) {
     getRegionById("de"),
   ]);
 
-  const lastYearRow = atlas.solar.by_year.find((y) => y.year === lastYear);
   const speicher = atlas.speicher;
 
-  // Storage per roof kWp — the honest denominator is roof solar, not total: a
-  // village with a big open-field park has lots of kWp and few home batteries,
-  // and dividing by the park would fake a "no storage" picture. Only shown when
-  // there is enough of both to mean something.
-  const kwpDach = atlas.solar.by_segment
-    .filter((s) => s.segment !== "freiflaeche")
-    .reduce((a, s) => a + s.kwp, 0);
-  const speicherProKwp =
-    speicher.kwh_batterie > 0 && kwpDach > 100 ? speicher.kwh_batterie / kwpDach : null;
   const perCapita = region.population
     ? Math.round((atlas.solar.total_kwp * 1000) / region.population)
     : null;
   const blPerCapita = blRegion?.population ? (blAtlas.solar.total_kwp * 1000) / blRegion.population : null;
   const perCapitaVsBl = perCapita != null && blPerCapita ? perCapita / blPerCapita - 1 : null;
 
+  // Die Kacheln gibt es für jeden Eigentümer-Filter fertig gerechnet — auch die
+  // Vergleichsbasis. Wer „Privat" wählt, sieht die privaten Zahlen der Gemeinde
+  // gegen die PRIVATEN Zahlen von Landkreis/Land/Bund; privat gegen Gesamtbestand
+  // wäre eine Prozentzahl ohne Aussage. Serverseitig vorgerechnet, weil alle drei
+  // Schnitte ohnehin schon geladen sind — der Filter schaltet dann nur um.
   type AtlasData = Awaited<ReturnType<typeof getRegionAtlasData>>;
-  const perCapOf = (a: AtlasData, pop: number | null | undefined) =>
-    pop
-      ? {
-          count: a.solar.total_count / pop,
-          kwp: a.solar.total_kwp / pop,
-          speicher: a.speicher.kwh_batterie / pop,
-          neu: (a.solar.by_year.find((y) => y.year === lastYear)?.count ?? 0) / pop,
-        }
-      : { count: null, kwp: null, speicher: null, neu: null };
-  const regionPerCap = perCapOf(atlas, region.population);
-  const kpiRefs = [
-    { key: "landkreis", name: kreis?.name ?? "Landkreis", perCap: perCapOf(kreisAtlas, kreis?.population) },
-    { key: "bundesland", name: bl?.name ?? "Bundesland", perCap: perCapOf(blAtlas, blRegion?.population) },
-    { key: "de", name: "Deutschland", perCap: perCapOf(deAtlas, deRegion?.population) },
-  ].filter((r) => Object.values(r.perCap).some((x) => x !== null));
-  const kpiTiles = [
-    { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
-    { label: "Installiert", value: fmtLeistung(atlas.solar.total_kwp), metric: "kwp" },
-    { label: "je Einwohner", value: perCapita === null ? "—" : `${nf(perCapita)} W`, metric: "kwp" },
-    {
-      label: "Batteriespeicher",
-      value: fmtKwh(speicher.kwh_batterie),
-      metric: "speicher",
-      sub: `${nf(speicher.count)} Anlagen${speicherProKwp !== null ? ` · ${speicherProKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp` : ""}`,
-    },
-    { label: `Neu ${lastYear}`, value: nf(lastYearRow?.count ?? 0), metric: "neu" },
-  ];
+  const perCapOf = (a: AtlasData, pop: number | null | undefined, owner: AtlasOwner) => {
+    if (!pop) return { count: null, kwp: null, speicher: null, neu: null };
+    const s = atlasOwnerSlice(a, owner, lastYear);
+    return { count: s.count / pop, kwp: s.kwp / pop, speicher: s.speicherKwh / pop, neu: s.neu / pop };
+  };
+
+  const kpiForOwner = (owner: AtlasOwner): KpiOwnerData => {
+    const s = atlasOwnerSlice(atlas, owner, lastYear);
+    const wPerHead = region.population ? Math.round((s.kwp * 1000) / region.population) : null;
+    // Speicher je kWp nur gegen Dachanlagen: ein Freiflächenpark im Nenner
+    // täuscht ein „hier speichert niemand" vor.
+    const proKwp = s.speicherKwh > 0 && s.kwpDach > 100 ? s.speicherKwh / s.kwpDach : null;
+    return {
+      tiles: [
+        { label: "Solaranlagen", value: nf(s.count), metric: "count" },
+        { label: "Installiert", value: fmtLeistung(s.kwp), metric: "kwp" },
+        { label: "je Einwohner", value: wPerHead === null ? "—" : `${nf(wPerHead)} W`, metric: "kwp" },
+        {
+          label: "Batteriespeicher",
+          value: fmtKwh(s.speicherKwh),
+          metric: "speicher",
+          sub: `${nf(s.speicherCount)} Anlagen${proKwp !== null ? ` · ${proKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp` : ""}`,
+        },
+        { label: `Neu ${lastYear}`, value: nf(s.neu), metric: "neu" },
+      ],
+      perCap: perCapOf(atlas, region.population, owner),
+      references: [
+        { key: "landkreis", name: kreis?.name ?? "Landkreis", perCap: perCapOf(kreisAtlas, kreis?.population, owner) },
+        { key: "bundesland", name: bl?.name ?? "Bundesland", perCap: perCapOf(blAtlas, blRegion?.population, owner) },
+        { key: "de", name: "Deutschland", perCap: perCapOf(deAtlas, deRegion?.population, owner) },
+      ].filter((r) => Object.values(r.perCap).some((x) => x !== null)),
+    };
+  };
+  const kpi: Record<AtlasOwner, KpiOwnerData> = {
+    alle: kpiForOwner("alle"),
+    privat: kpiForOwner("privat"),
+    gewerbe: kpiForOwner("gewerbe"),
+  };
 
   const basePath = `/solar-atlas/${params.bundesland}/${params.kreis}`;
   const gemeindePath = `${basePath}/${params.gemeinde}`;
@@ -302,14 +312,8 @@ export default async function GemeindePage({ params }: { params: Params }) {
           })}
         </p>
 
-        <AtlasKpiRow
-          tiles={kpiTiles}
-          regionPerCap={regionPerCap}
-          references={kpiRefs}
-          defaultRefKey="landkreis"
-        />
-
         <GemeindeHero
+          kpi={kpi}
           cells={atlas.solar.by_segment}
           siblings={siblingData.regions}
           siblingCells={siblingData.cells}

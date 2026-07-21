@@ -21,11 +21,15 @@ export default function AtlasKpiRow({
   regionPerCap,
   references,
   defaultRefKey,
+  note,
 }: {
   tiles: KpiTile[];
   regionPerCap: PerCap;
   references: RefLevel[];
   defaultRefKey: string;
+  /** Satz hinter der Vergleichs-Erklärung, z. B. wenn ein Eigentümer-Filter aktiv
+   *  ist und Werte wie Vergleichsbasis auf dieselbe Kategorie eingeschränkt sind. */
+  note?: string;
 }) {
   const [refKey, setRefKey] = useState(defaultRefKey);
   const ref = references.find((r) => r.key === refKey) ?? references[0] ?? null;
@@ -40,7 +44,12 @@ export default function AtlasKpiRow({
 
   return (
     <>
-      <div style={{ ...S.grid, marginBottom: references.length ? 6 : 28 }}>
+      {/* Neu gekeyt, sobald sich die Werte ändern (z. B. Eigentümer-Filter) — die
+          Kacheln blenden dann um, statt hart zu springen. */}
+      <div
+        key={tiles.map((t) => t.value).join("|")}
+        style={{ ...S.grid, marginBottom: references.length ? 6 : 28 }}
+      >
         {tiles.map((t, i) => (
           <div key={i} style={S.metric}>
             <div style={S.metricLabel}>{t.label}</div>
@@ -58,7 +67,7 @@ export default function AtlasKpiRow({
           ) : (
             <strong style={S.captionStrong}>{ref.name}</strong>
           )}
-          .
+          .{note ? ` ${note}` : ""}
         </div>
       )}
     </>
@@ -113,7 +122,12 @@ function RefPicker({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))", gap: 10 },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
+    gap: 10,
+    animation: "fu 0.28s ease-out",
+  },
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 },
   metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },

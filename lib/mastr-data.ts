@@ -491,6 +491,13 @@ export type RegionAtlas = {
     total_kwp: number;
     by_segment: SegmentBreakdown[];
     by_year: { year: number; count: number; kwp: number }[];
+    /**
+     * The (segment x year) grain the RPC already delivers, kept instead of being
+     * summed away twice. by_segment and by_year each drop one of the two axes,
+     * which makes "new in <year>, private only" impossible to answer from them.
+     * Small enough to carry (segments x years, not regions).
+     */
+    by_year_segment: { year: number; segment: string; count: number; kwp: number }[];
   };
   /**
    * count = all electricity stores; kwh_batterie = usable capacity of home and
@@ -498,7 +505,14 @@ export type RegionAtlas = {
    * one Goldisthal (8,7 GWh) would swamp the figure and make "kWh per kWp"
    * meaningless. count still includes it so the tally stays honest.
    */
-  speicher: { count: number; kwp: number; kwh_batterie: number };
+  speicher: {
+    count: number;
+    kwp: number;
+    kwh_batterie: number;
+    /** Per segment (batterie_privat / batterie_gewerbe / pumpspeicher / …), so a
+     *  storage figure can follow the same owner filter as the solar figures. */
+    by_segment: { segment: string; count: number; kwp: number; kwh: number }[];
+  };
   /** Weitere Erzeuger je Gemeinde (installierte Leistung kWp/kW), aus derselben
    *  MaStR-Aggregation wie Solar. Für den Technologie-Mix. */
   generators: {
@@ -527,9 +541,11 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
   let solarKwp = 0;
   const segBuckets: Record<string, { count: number; kwp: number }> = {};
   const yearBuckets: Record<number, { count: number; kwp: number }> = {};
+  const yearSegBuckets: Record<string, { year: number; segment: string; count: number; kwp: number }> = {};
   let speicherCount = 0;
   let speicherKwp = 0;
   let batterieKwh = 0;
+  const speicherSegBuckets: Record<string, { segment: string; count: number; kwp: number; kwh: number }> = {};
   const gen: Record<string, { count: number; kwp: number }> = {
     wind: { count: 0, kwp: 0 },
     biomasse: { count: 0, kwp: 0 },
@@ -542,7 +558,12 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
     if (r.energietraeger === "speicher") {
       speicherCount += count;
       speicherKwp += kwp;
-      if (r.segment.startsWith("batterie")) batterieKwh += Number(r.kwh);
+      const kwh = Number(r.kwh);
+      if (r.segment.startsWith("batterie")) batterieKwh += kwh;
+      const sp = (speicherSegBuckets[r.segment] ??= { segment: r.segment, count: 0, kwp: 0, kwh: 0 });
+      sp.count += count;
+      sp.kwp += kwp;
+      if (r.segment.startsWith("batterie")) sp.kwh += kwh;
       continue;
     }
     // Andere Erzeuger (Wind/Biomasse/Wasser) getrennt sammeln — NICHT als Solar
@@ -565,6 +586,14 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
       const yr = (yearBuckets[r.year] ??= { count: 0, kwp: 0 });
       yr.count += count;
       yr.kwp += kwp;
+      const ys = (yearSegBuckets[`${r.year}|${r.segment}`] ??= {
+        year: r.year,
+        segment: r.segment,
+        count: 0,
+        kwp: 0,
+      });
+      ys.count += count;
+      ys.kwp += kwp;
     }
   }
 
@@ -580,8 +609,19 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
 
   return {
     region_id: regionId,
-    solar: { total_count: solarCount, total_kwp: solarKwp, by_segment, by_year },
-    speicher: { count: speicherCount, kwp: speicherKwp, kwh_batterie: batterieKwh },
+    solar: {
+      total_count: solarCount,
+      total_kwp: solarKwp,
+      by_segment,
+      by_year,
+      by_year_segment: Object.values(yearSegBuckets).sort((a, b) => a.year - b.year),
+    },
+    speicher: {
+      count: speicherCount,
+      kwp: speicherKwp,
+      kwh_batterie: batterieKwh,
+      by_segment: Object.values(speicherSegBuckets),
+    },
     generators: { wind: gen.wind, biomasse: gen.biomasse, wasser: gen.wasser },
     data_as_of: await fetchMetaDataAsOf(),
   };
