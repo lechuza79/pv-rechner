@@ -1,6 +1,5 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import Header from "../../../components/Header";
 import SimulationPanel from "../../../components/SimulationPanel";
 import { v } from "../../../lib/theme";
 
@@ -17,7 +16,6 @@ export default function LiveSimulation() {
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
 
-      <Header />
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 

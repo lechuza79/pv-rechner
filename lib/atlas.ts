@@ -8,7 +8,9 @@
 //
 // Gemeinde is the only stored grain; Kreis, Bundesland and DE are prefix rollups.
 
+import { unstable_cache } from "next/cache";
 import { loadChildren, LEVEL_LEN, type Level, type ChildRow } from "./mastr-data";
+import { withDbTimeout } from "./db-timeout";
 
 export type AtlasRegion = {
   region_id: string;
@@ -99,16 +101,21 @@ async function db() {
 const REGION_COLUMNS =
   "region_id, level, name, bezeichnung, slug, parent_region_id, population, area_km2, population_as_of";
 
-export async function getRegionById(regionId: string): Promise<AtlasRegion | null> {
+async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | null> {
   const supabase = await db();
-  const { data, error } = await supabase
-    .from("mastr_regions")
-    .select(REGION_COLUMNS)
-    .eq("region_id", regionId)
-    .maybeSingle();
+  const { data, error } = await withDbTimeout(
+    supabase.from("mastr_regions").select(REGION_COLUMNS).eq("region_id", regionId).maybeSingle(),
+    "getRegionById",
+  );
   if (error) throw new Error(`getRegionById failed: ${error.message}`);
   return (data as AtlasRegion) ?? null;
 }
+
+// Regions-Identität (Name, Einwohner, Slug) ist stabil — cachen spart die
+// wiederholten Lookups (Kreis-, Land-, Deutschland-Region auf jeder Seite).
+export const getRegionById = unstable_cache(getRegionByIdUncached, ["region-by-id-v1"], {
+  revalidate: 3600,
+});
 
 /**
  * Resolve a slug path to a region. Slugs are unique among siblings, so each
@@ -116,17 +123,15 @@ export async function getRegionById(regionId: string): Promise<AtlasRegion | nul
  * kreisfreie Stadt) apart from "landkreis-wuerzburg" and lets twenty Neustadts
  * coexist.
  */
-export async function resolveSlugPath(slugs: string[]): Promise<AtlasRegion | null> {
+async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | null> {
   const supabase = await db();
   let parent = "de";
   let region: AtlasRegion | null = null;
   for (const slug of slugs) {
-    const { data, error } = await supabase
-      .from("mastr_regions")
-      .select(REGION_COLUMNS)
-      .eq("parent_region_id", parent)
-      .eq("slug", slug)
-      .maybeSingle();
+    const { data, error } = await withDbTimeout(
+      supabase.from("mastr_regions").select(REGION_COLUMNS).eq("parent_region_id", parent).eq("slug", slug).maybeSingle(),
+      "resolveSlugPath",
+    );
     if (error) throw new Error(`resolveSlugPath failed: ${error.message}`);
     if (!data) return null;
     region = data as AtlasRegion;
@@ -134,6 +139,12 @@ export async function resolveSlugPath(slugs: string[]): Promise<AtlasRegion | nu
   }
   return region;
 }
+
+// Slug→Region ist stabil und wird pro Seite doppelt aufgelöst (generateMetadata
+// + Render) — cachen dedupt das und spart die N seriellen Segment-Lookups.
+export const resolveSlugPath = unstable_cache(resolveSlugPathUncached, ["resolve-slug-v1"], {
+  revalidate: 3600,
+});
 
 /** Ancestors from Deutschland down to (but excluding) the region — for breadcrumbs. */
 export async function getAncestors(region: AtlasRegion): Promise<AtlasRegion[]> {
@@ -287,6 +298,72 @@ export const SEGMENT_OWNER: Record<string, "privat" | "gewerbe" | null> = {
   "n/a": null,
 };
 
+export type AtlasOwner = "alle" | "privat" | "gewerbe";
+
+/** True when a segment belongs to the selected owner filter. "alle" means every
+ *  segment that HAS an owner — pumped storage and "sonstige" stay out, exactly as
+ *  in the donut and the ranking table. */
+export function ownerKeeps(owner: AtlasOwner, segment: string): boolean {
+  const o = SEGMENT_OWNER[segment];
+  return owner === "alle" ? o != null : o === owner;
+}
+
+/** The numbers behind the KPI tiles, cut to one owner. */
+export type AtlasOwnerSlice = {
+  count: number;
+  kwp: number;
+  /** Roof-mounted only — the honest denominator for "storage per kWp". */
+  kwpDach: number;
+  speicherKwh: number;
+  speicherCount: number;
+  /** Plants newly in operation in `year`. */
+  neu: number;
+};
+
+/**
+ * One owner's slice of a region's stock.
+ *
+ * Every figure comes out of SEGMENT_OWNER, the same table the donut and the
+ * ranking use — a second owner mapping here is how tiles and chart start telling
+ * different stories about the same place.
+ */
+export function atlasOwnerSlice(
+  atlas: {
+    solar: {
+      by_segment: { segment: string; count: number; kwp: number }[];
+      by_year_segment: { year: number; segment: string; count: number; kwp: number }[];
+    };
+    speicher: { by_segment: { segment: string; count: number; kwh: number }[] };
+  },
+  owner: AtlasOwner,
+  year: number,
+): AtlasOwnerSlice {
+  const slice: AtlasOwnerSlice = {
+    count: 0,
+    kwp: 0,
+    kwpDach: 0,
+    speicherKwh: 0,
+    speicherCount: 0,
+    neu: 0,
+  };
+  for (const s of atlas.solar.by_segment) {
+    if (!ownerKeeps(owner, s.segment)) continue;
+    slice.count += s.count;
+    slice.kwp += s.kwp;
+    if (s.segment !== "freiflaeche") slice.kwpDach += s.kwp;
+  }
+  for (const s of atlas.solar.by_year_segment) {
+    if (s.year !== year || !ownerKeeps(owner, s.segment)) continue;
+    slice.neu += s.count;
+  }
+  for (const s of atlas.speicher.by_segment) {
+    if (!ownerKeeps(owner, s.segment)) continue;
+    slice.speicherKwh += s.kwh;
+    slice.speicherCount += s.count;
+  }
+  return slice;
+}
+
 /** One (child, segment, year) cell — the grain the ranking table filters on. */
 export type ChildYearRow = {
   region_id: string;
@@ -315,7 +392,7 @@ export type RankingRegion = {
  * is instant, while a round trip per click would not be. The payload is bounded
  * by children × segments × years: a Kreis with 55 Gemeinden lands around 150 KB.
  */
-export async function getRankingData(
+async function getRankingDataUncached(
   region: AtlasRegion,
 ): Promise<{ regions: RankingRegion[]; cells: ChildYearRow[] }> {
   const childLevel = childLevelOf(region);
@@ -324,15 +401,24 @@ export async function getRankingData(
   const supabase = await db();
   const [cells, regionsRes] = await Promise.all([
     loadAllCells(supabase, prefixOf(region.region_id), LEVEL_LEN[childLevel]),
-    supabase
-      .from("mastr_regions")
-      .select("region_id, name, slug, population")
-      .eq("parent_region_id", region.region_id),
+    withDbTimeout(
+      supabase
+        .from("mastr_regions")
+        .select("region_id, name, slug, population")
+        .eq("parent_region_id", region.region_id),
+      "getRankingData/regions",
+    ),
   ]);
   if (regionsRes.error) throw new Error(`getRankingData failed: ${regionsRes.error.message}`);
 
   return { regions: regionsRes.data as RankingRegion[], cells };
 }
+
+// Kreis-/Regions-Rangliste: über alle Gemeinden desselben Kreises identisch —
+// cachen spart die wiederholte Zellen-Aggregation auf jeder Gemeinde-Seite.
+export const getRankingData = unstable_cache(getRankingDataUncached, ["ranking-data-v1"], {
+  revalidate: 3600,
+});
 
 /**
  * Paginated read of the ranking cells.
@@ -352,18 +438,21 @@ async function loadAllCells(
   const MAX = 20_000;
   const all: ChildYearRow[] = [];
   for (let from = 0; from < MAX; from += PAGE) {
-    const { data, error } = await supabase
-      .rpc("mastr_children_by_year", {
-        p_prefix: prefix,
-        p_child_len: childLen,
-        p_traeger: ["solar", "speicher"],
-        p_year_min: null,
-      })
-      // Stable order is required for paging — without it rows can repeat or vanish.
-      .order("region_id", { ascending: true })
-      .order("segment", { ascending: true })
-      .order("year", { ascending: true })
-      .range(from, from + PAGE - 1);
+    const { data, error } = await withDbTimeout(
+      supabase
+        .rpc("mastr_children_by_year", {
+          p_prefix: prefix,
+          p_child_len: childLen,
+          p_traeger: ["solar", "speicher"],
+          p_year_min: null,
+        })
+        // Stable order is required for paging — without it rows can repeat or vanish.
+        .order("region_id", { ascending: true })
+        .order("segment", { ascending: true })
+        .order("year", { ascending: true })
+        .range(from, from + PAGE - 1),
+      "mastr_children_by_year",
+    );
     if (error) throw new Error(`mastr_children_by_year failed: ${error.message}`);
     const rows = (data ?? []) as ChildYearRow[];
     all.push(
@@ -414,7 +503,7 @@ export function peerBand(population: number): { min: number; max: number } {
 
 export type Owner = "alle" | "privat" | "gewerbe";
 
-export async function getTopGemeinden(opts: {
+async function getTopGemeindenUncached(opts: {
   prefix: string;
   owner: Owner;
   limit: number;
@@ -422,13 +511,16 @@ export async function getTopGemeinden(opts: {
   maxPop?: number;
 }): Promise<TopGemeinde[]> {
   const supabase = await db();
-  const { data, error } = await supabase.rpc("mastr_top_gemeinden", {
-    p_prefix: opts.prefix,
-    p_owner: opts.owner,
-    p_limit: opts.limit,
-    p_min_pop: opts.minPop ?? 0,
-    p_max_pop: opts.maxPop ?? null,
-  });
+  const { data, error } = await withDbTimeout(
+    supabase.rpc("mastr_top_gemeinden", {
+      p_prefix: opts.prefix,
+      p_owner: opts.owner,
+      p_limit: opts.limit,
+      p_min_pop: opts.minPop ?? 0,
+      p_max_pop: opts.maxPop ?? null,
+    }),
+    "mastr_top_gemeinden",
+  );
   if (error) throw new Error(`mastr_top_gemeinden failed: ${error.message}`);
   return (data ?? []).map((r: TopGemeinde) => ({
     ...r,
@@ -438,3 +530,53 @@ export async function getTopGemeinden(opts: {
     rang: Number(r.rang),
   }));
 }
+
+// Die bundesweiten Größenklassen-Spitzen (prefix "") sind der teuerste Teil der
+// Gemeinde-Seite (~5 s, Scan über alle Gemeinden) — aber je (Band × Eigentümer)
+// identisch über tausende Gemeinden. Cachen macht praktisch jede Seite nach der
+// ersten pro Band schnell. revalidate großzügig, ändert sich nur mit dem Bestand.
+export const getTopGemeinden = unstable_cache(getTopGemeindenUncached, ["top-gemeinden-v1"], {
+  revalidate: 86400,
+});
+
+// Größenklassen-Anführer in EINEM Aufruf: alle 3 Eigentümer × 2 Bezüge (eigenes
+// Land, bundesweit). Ersetzt die früheren 6 Einzelabfragen, die sich in der DB
+// stauten — ein Scan statt sechs. Gecacht wie die Spitzen (nur bandabhängig).
+export type PeerLeader = {
+  owner: Owner;
+  scope: "de" | "bl";
+  region_id: string;
+  name: string;
+  slug: string;
+  parent_region_id: string;
+  population: number;
+  kwp: number;
+  w_per_capita: number;
+};
+
+async function getPeerLeadersUncached(
+  blPrefix: string,
+  minPop: number,
+  maxPop: number,
+): Promise<PeerLeader[]> {
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase.rpc("mastr_peer_leaders", {
+      p_bl_prefix: blPrefix,
+      p_min_pop: minPop,
+      p_max_pop: maxPop,
+    }),
+    "mastr_peer_leaders",
+  );
+  if (error) throw new Error(`mastr_peer_leaders failed: ${error.message}`);
+  return (data ?? []).map((r: PeerLeader) => ({
+    ...r,
+    population: Number(r.population),
+    kwp: Number(r.kwp),
+    w_per_capita: Number(r.w_per_capita),
+  }));
+}
+
+export const getPeerLeaders = unstable_cache(getPeerLeadersUncached, ["peer-leaders-v1"], {
+  revalidate: 86400,
+});

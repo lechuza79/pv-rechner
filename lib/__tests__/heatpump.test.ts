@@ -139,39 +139,59 @@ describe("calcInvestBrutto", () => {
   });
 });
 
-// ─── BEG funding (Bestand only, capped at 70 % / 30.000 €) ────────────────
+// ─── BEG funding (Bestand only; KfW 458 ab 21.07.2026: Klima 16 %, Einkommen 40/30/10 %, Deckel 70/80 % · 28.000 €) ──
 describe("calcBegSubsidy", () => {
   it("returns 0 % for Neubau (no funding eligible)", () => {
-    const r = calcBegSubsidy("neubau", "lwwp", 30000);
+    const r = calcBegSubsidy("neubau", "lwwp", 28000);
     expect(r.rate).toBe(0);
     expect(r.amount).toBe(0);
   });
 
-  it("Bestand default (Klima + Effizienz an): 30 + 20 + 5 = 55 %", () => {
-    const r = calcBegSubsidy("bestand", "lwwp", 30000);
-    expect(r.rate).toBeCloseTo(0.55, 2);
-    expect(r.amount).toBe(Math.round(30000 * 0.55));
+  it("Bestand default (nur Klima-Bonus, kein Einkommen): 30 + 16 = 46 %", () => {
+    const r = calcBegSubsidy("bestand", "lwwp", 28000);
+    expect(r.rate).toBeCloseTo(0.46, 2);
+    expect(r.amount).toBe(Math.round(28000 * 0.46));
   });
 
-  it("Bestand with income bonus: capped at 70 %", () => {
-    const r = calcBegSubsidy("bestand", "lwwp", 40000, { incomeBonus: true });
-    expect(r.rate).toBe(0.70); // 30 + 20 + 5 + 30 = 85 → capped to 70
-    // 40k > 30k cap → only 30k förderfähig
-    expect(r.amount).toBe(Math.round(30000 * 0.70));
-  });
-
-  it("only Grundförderung when both bonuses off (30 %)", () => {
-    const r = calcBegSubsidy("bestand", "lwwp", 30000, { klimaBonus: false, effizienzBonus: false });
+  it("only Grundförderung when Klima off, no income (30 %)", () => {
+    const r = calcBegSubsidy("bestand", "lwwp", 28000, { klimaBonus: false });
     expect(r.rate).toBeCloseTo(0.30, 2);
     expect(r.breakdown).toHaveLength(1);
   });
 
-  it("Förderbetrag bounded by 30.000 € förderfähige Kosten", () => {
-    const small = calcBegSubsidy("bestand", "lwwp", 20000);
-    const large = calcBegSubsidy("bestand", "lwwp", 100000);
-    // Both at 55%: 20k → 11k, 100k → capped to 30k → 16.5k
-    expect(small.amount).toBe(11000);
-    expect(large.amount).toBe(16500);
+  it("Einkommens-Bonus staffelt 40/30/10 % nach Haushaltseinkommen", () => {
+    const rate = (income: number) => calcBegSubsidy("bestand", "lwwp", 28000, { klimaBonus: false, haushaltseinkommen: income }).rate;
+    expect(rate(28000)).toBeCloseTo(0.70, 2); // 30 + 40
+    expect(rate(38000)).toBeCloseTo(0.60, 2); // 30 + 30
+    expect(rate(48000)).toBeCloseTo(0.40, 2); // 30 + 10
+    expect(rate(60000)).toBeCloseTo(0.30, 2); // über 50k → kein Bonus
+  });
+
+  it("niedrigstes Einkommen hebt den Deckel auf 80 % (statt 70 %)", () => {
+    // 30 + 16 + 40 = 86 → für ≤ 30.000 € gilt 80 %
+    const r = calcBegSubsidy("bestand", "lwwp", 28000, { klimaBonus: true, haushaltseinkommen: 30000 });
+    expect(r.rate).toBe(0.80);
+    expect(r.amount).toBe(Math.round(28000 * 0.80));
+  });
+
+  it("mittleres Einkommen bleibt beim Regeldeckel 70 %", () => {
+    // 30 + 16 + 30 = 76 → auf 70 % gedeckelt
+    const r = calcBegSubsidy("bestand", "lwwp", 28000, { klimaBonus: true, haushaltseinkommen: 40000 });
+    expect(r.rate).toBe(0.70);
+  });
+
+  it("Familienzuschlag hebt die Einkommensgrenze um 10.000 €", () => {
+    const ohne = calcBegSubsidy("bestand", "lwwp", 28000, { klimaBonus: false, haushaltseinkommen: 48000 });
+    const mit  = calcBegSubsidy("bestand", "lwwp", 28000, { klimaBonus: false, haushaltseinkommen: 48000, kindImHaushalt: true });
+    expect(ohne.rate).toBeCloseTo(0.40, 2); // 48k → 10 %-Stufe: 30 + 10
+    expect(mit.rate).toBeCloseTo(0.60, 2);  // 48k − 10k = 38k → 30 %-Stufe: 30 + 30
+  });
+
+  it("Förderbetrag bounded by 28.000 € förderfähige Kosten", () => {
+    const small = calcBegSubsidy("bestand", "lwwp", 20000);   // 46 % von 20k
+    const large = calcBegSubsidy("bestand", "lwwp", 100000);  // 46 % von gedeckelten 28k
+    expect(small.amount).toBe(Math.round(20000 * 0.46)); // 9.200
+    expect(large.amount).toBe(Math.round(28000 * 0.46)); // 12.880
   });
 });
 
@@ -331,44 +351,57 @@ describe("calcHeatPump with PV synergy", () => {
     for (const r of [off, zeroKwp]) {
       expect(r.pvCoverage).toBe(0);
       expect(r.pvStromSavings).toBe(0);
-      expect(r.pvInvest).toBe(0);
+      expect(r.pvBenefit).toBe(0);
       expect(r.stromKosten).toBe(noPv.stromKosten);
     }
   });
 
-  it("existing PV cuts the WP electricity bill by exactly the coverage share", () => {
-    expect(pvVorhanden.pvCoverage).toBeGreaterThanOrEqual(0.05);
+  it("credits only the WP synergy, not the full PV benefit", () => {
+    expect(pvVorhanden.pvCoverage).toBeGreaterThan(0);
+    // Coverage is bounded by the conservative HTW heuristic (≤ 35 %): the WP runs
+    // mostly in winter when PV yield is low, so it can never cover most of it.
     expect(pvVorhanden.pvCoverage).toBeLessThanOrEqual(0.35);
-    // stromKosten = costNoPv × (1 − coverage), year by year → totals must match.
-    // Result exposes pvCoverage rounded to 3 decimals, the engine used the exact
-    // value → tolerance scales with the bill (±0,0005 × Rechnung + Rundung).
-    const expected = noPv.stromKosten * (1 - pvVorhanden.pvCoverage);
-    const tol = noPv.stromKosten * 0.0005 + 2;
-    expect(Math.abs(pvVorhanden.stromKosten - expected)).toBeLessThanOrEqual(tol);
-    // And the savings are the complementary share (energy accounting closes).
-    expect(Math.abs(pvVorhanden.pvStromSavings - (noPv.stromKosten - pvVorhanden.stromKosten))).toBeLessThanOrEqual(2);
+    // WP electricity is billed at the full grid price regardless of PV.
+    expect(pvVorhanden.stromKosten).toBe(noPv.stromKosten);
+    // TCO improves by EXACTLY the synergy credit (no PV cost, no household/feed-in).
+    expect(noPv.tcoWp - pvVorhanden.tcoWp).toBe(pvVorhanden.pvBenefit);
+    expect(pvVorhanden.pvBenefit).toBeGreaterThan(0);
+    // The synergy is a fraction of the full PV value: a 10 kWp system's full
+    // 20-year benefit is tens of thousands of € — the WP-attributable synergy
+    // (solar the WP self-consumes instead of feeding in cheaply) is far smaller.
+    expect(pvVorhanden.pvBenefit).toBeLessThan(20000);
+    expect(pvVorhanden.pvStromSavings).toBe(pvVorhanden.pvBenefit); // alias
   });
 
-  it("existing PV is sunk cost: no pvInvest, TCO strictly improves", () => {
-    expect(pvVorhanden.pvInvest).toBe(0);
+  it("synergy rises monotonically with PV size and with storage (no physical inversions)", () => {
+    // Guards the defect an earlier estimator had: differencing two rounded/clamped
+    // self-consumption quotas produced non-monotonic coverage (a battery LOWERED
+    // it, big systems peaked then crashed). The HTW heuristic must be smooth.
+    const bySize = [2, 5, 10, 15, 20, 30].map(kwp =>
+      calcHeatPump({ ...baseInputs, pv: { status: "vorhanden", kwp, speicherKwh: 0 } }).pvBenefit);
+    for (let i = 1; i < bySize.length; i++) expect(bySize[i]).toBeGreaterThanOrEqual(bySize[i - 1]);
+
+    const byStorage = [0, 2, 5, 10, 15].map(sp =>
+      calcHeatPump({ ...baseInputs, pv: { status: "vorhanden", kwp: 10, speicherKwh: sp } }).pvBenefit);
+    for (let i = 1; i < byStorage.length; i++) expect(byStorage[i]).toBeGreaterThanOrEqual(byStorage[i - 1]);
+
+    // And coverage never breaks the physical 35 % ceiling, even in the worst corner.
+    const corner = calcHeatPump({ ...baseInputs, personen: 1, wohnflaeche: 60, pv: { status: "vorhanden", kwp: 15, speicherKwh: 10 } });
+    expect(corner.pvCoverage).toBeLessThanOrEqual(0.35);
+  });
+
+  it("existing PV improves the TCO without touching the chart's year-0 investment", () => {
     expect(pvVorhanden.tcoWp).toBeLessThan(noPv.tcoWp);
-    // mehrInvest is not exported — year 0 of the chart starts at −mehrInvest.
+    // PV cost is NOT part of the WP comparison → year-0 (−mehrInvest) unchanged.
     expect(pvVorhanden.years[0].kum).toBe(noPv.years[0].kum);
   });
 
-  it("planned PV adds its investment to TCO and mehrInvest (same coverage)", () => {
-    expect(pvGeplant.pvCoverage).toBe(pvVorhanden.pvCoverage);
-    expect(pvGeplant.pvInvest).toBeGreaterThan(0);
-    // Only the PV invest separates 'geplant' from 'vorhanden'.
-    expect(pvGeplant.tcoWp - pvVorhanden.tcoWp).toBe(pvGeplant.pvInvest);
-    // Chart year 0 = −mehrInvest → planned PV starts pvInvest deeper in the red.
-    expect(pvVorhanden.years[0].kum - pvGeplant.years[0].kum).toBe(pvGeplant.pvInvest);
-  });
-
-  it("honours the pvInvest override for planned PV", () => {
-    const custom = calcHeatPump({ ...baseInputs, pv: { status: "geplant", kwp: 10, speicherKwh: 10, pvInvest: 12345 } });
-    expect(custom.pvInvest).toBe(12345);
-    expect(custom.tcoWp - pvVorhanden.tcoWp).toBe(12345);
+  it("'geplant' and 'vorhanden' are identical for the WP calc (PV cost belongs to the PV-Rechner)", () => {
+    // Only the synergy matters to the WP-vs-gas verdict; the PV purchase itself is
+    // a separate decision, so planned vs existing PV make no difference here.
+    expect(pvGeplant.pvBenefit).toBe(pvVorhanden.pvBenefit);
+    expect(pvGeplant.tcoWp).toBe(pvVorhanden.tcoWp);
+    expect(pvGeplant.years[0].kum).toBe(pvVorhanden.years[0].kum);
   });
 });
 
@@ -376,8 +409,9 @@ describe("calcHeatPump with PV synergy", () => {
 describe("DEFAULT_HEATPUMP_CONFIG", () => {
   it("has BEG cap below sum of all bonuses (cap actually bites)", () => {
     const cfg = DEFAULT_HEATPUMP_CONFIG;
-    const allBonuses = cfg.begGrundfoerderung + cfg.begKlimaBonus + cfg.begEffizienzBonus + cfg.begEinkommensBonus;
-    expect(allBonuses).toBeGreaterThan(cfg.begMaxRate); // means cap is meaningful
+    const topIncome = Math.max(...cfg.begEinkommensStaffel.map(t => t.rate));
+    const allBonuses = cfg.begGrundfoerderung + cfg.begKlimaBonus + topIncome;
+    expect(allBonuses).toBeGreaterThan(cfg.begMaxRateLowIncome); // 30 + 16 + 40 = 86 % > 80 % → Deckel greift
   });
 
   it("flow temps escalate FBH < HK_neu < HK_alt", () => {

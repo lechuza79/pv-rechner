@@ -73,9 +73,17 @@ export const tokens = {
 
   // ─── Text (5) ──────────────────────────────────────────────────────────────
   '--color-text-primary': '#3F3F3F',    // Headings, strong text, values
-  '--color-text-secondary': '#777777',  // Body text, labels, descriptions
-  '--color-text-muted': '#949494',      // Dimmed text, hints
-  '--color-text-faint': '#BEBEBE',      // Very light text, placeholders
+  // A11y (WCAG 2.1 AA, BFSG): body/label greys clear 4.5:1 on --color-bg AND on
+  // --color-bg-muted (the tinted surfaces are the tighter constraint), while
+  // keeping secondary/muted visibly apart as a hierarchy (14 hex steps — the
+  // first AA fix had collapsed them to 3 steps). Ratios (WCAG 2.1 formula):
+  //   secondary #646464 → 5.92:1 on #FFFFFF, 5.57:1 on #F8F8F8
+  //   muted     #727272 → 4.81:1 on #FFFFFF, 4.53:1 on #F8F8F8
+  // faint is placeholder-only (not essential text), 3.45:1. See audit
+  // docs/audit-backlog-2026-07-19.md §4. Dark/Dusk/Overcast nachgezogen (N8).
+  '--color-text-secondary': '#646464',  // Body text, labels, descriptions
+  '--color-text-muted': '#727272',      // Dimmed text, hints
+  '--color-text-faint': '#8A8A8A',      // Very light text, placeholders
   '--color-text-on-accent': '#FFFFFF',  // Text on accent-colored backgrounds
 
   // ─── Progress (1) ──────────────────────────────────────────────────────────
@@ -99,14 +107,29 @@ export const tokens = {
   '--font-text': "var(--font-dm-sans),'DM Sans',system-ui,sans-serif",
   '--font-mono': "var(--font-jetbrains-mono),'JetBrains Mono',monospace",
 
+  // ─── Typografie-Skala (7) ──────────────────────────────────────────────────
+  // Modulare Skala, Basis 15px (Fließtext), Verhältnis ~1.2, gerundet auf
+  // ganze/halbe px. EINE Leseskala für alle Content-/Textseiten (Ratgeber,
+  // Methodik, Glossar, Impressum, …), damit dieselbe Rolle überall dieselbe
+  // Größe hat. Die interaktiven Rechner/Flows und Embed-Widgets nutzen sie
+  // bewusst NICHT — dort ist die kompakte Größe gewollt.
+  '--font-size-caption': '12px',        // Uppercase-Labels, Bildunterschriften
+  '--font-size-small': '13px',          // Sekundär-/Tabellentext, Fußnoten
+  '--font-size-body': '15px',           // Basis: Fließtext
+  '--font-size-lead': '17px',           // Hero/Einleitung (Subtitle)
+  '--font-size-h3': '18px',             // Kleine Überschrift
+  '--font-size-h2': '21px',             // Sektions-Überschrift
+  '--font-size-h1': '26px',             // Seiten-Titel
+
   // ─── Radii (3) ─────────────────────────────────────────────────────────────
   '--radius-sm': '6px',                 // Small: inputs, checkboxes, pills
   '--radius-md': '12px',                // Medium: buttons, cards, panels
   '--radius-lg': '20px',                // Large: hero cards, outer containers
 
-  // ─── Layout (2) ────────────────────────────────────────────────────────────
-  '--page-max-width': '480px',
-  '--header-max-width': '960px',
+  // ─── Layout (3) ────────────────────────────────────────────────────────────
+  '--page-max-width': '480px',       // Rechner/Tools — kompakte, fokussierte Spalte
+  '--content-max-width': '640px',    // Redaktionelle Lese-/Textseiten (Ratgeber, Methodik, …)
+  '--header-max-width': '1040px',
 } as const;
 
 export type TokenName = keyof typeof tokens;
@@ -178,8 +201,8 @@ const darkTokens: Partial<Record<TokenName, string>> = {
   '--color-chart-zero': '#4C5561',
   '--color-text-primary': '#E7EBF1',
   '--color-text-secondary': '#9AA6B4',
-  '--color-text-muted': '#78828F',
-  '--color-text-faint': '#59616C',
+  '--color-text-muted': '#838D9A',                 // A11y: 5.4:1 on dark bg (was 4.66)
+  '--color-text-faint': '#6C7683',                 // A11y: 3.9:1 placeholder tier (was 2.90)
   '--color-progress-inactive': '#2A313C',
   '--color-track': 'rgba(255,255,255,0.10)',
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.45)',
@@ -211,8 +234,8 @@ const duskTokens: Partial<Record<TokenName, string>> = {
   '--color-chart-zero': '#5E5566',
   '--color-text-primary': '#F0E6EC',                // warm off-white
   '--color-text-secondary': '#B7A6B4',
-  '--color-text-muted': '#8E7F8C',
-  '--color-text-faint': '#6B5F6A',
+  '--color-text-muted': '#9E8D9B',                 // A11y: 5.1:1 on dusk bg (was 4.20)
+  '--color-text-faint': '#7C6E7A',                 // A11y: 3.3:1 placeholder tier (was 2.62)
   '--color-progress-inactive': '#3E3442',
   '--color-track': 'rgba(255,255,255,0.10)',
   '--shadow-sm': '0 1px 3px rgba(0,0,0,0.35)',
@@ -230,10 +253,23 @@ const overcastTokens: Partial<Record<TokenName, string>> = {
   '--color-border': '#969CA6',
   '--color-border-muted': '#9EA4AE',
   '--color-border-accent': '#7FA0CE',
+  // The interactive accent: base #1365EA only reaches 2.94:1 on this grey — real
+  // text (inline links, CTAs, accent spans) fails AA. Darkened until it clears
+  // 4.5:1 on bg AND bg-muted; white text on accent surfaces gets even stronger.
+  //   accent #0A429D → 5.26:1 on #BFC4CC, 4.72:1 on #B4BAC3, white on it 9.21:1
+  // accent-dark (#073C93, hover) is darker still, so hover contrast only rises.
+  '--color-accent': '#0A429D',
   '--color-text-primary': '#2C2F34',
-  '--color-text-secondary': '#494D53',
-  '--color-text-muted': '#5A5E65',
-  '--color-text-faint': '#787C83',
+  // A11y: both greys must clear 4.5:1 on bg #BFC4CC AND bg-muted #B4BAC3 — the
+  // muted surface is the bottleneck, so "muted heller" is impossible here
+  // (the old pair #494D53/#4C5056 sat at 4.35/4.15 on bg-muted = below AA and
+  // only 3 steps apart). Spread restored by darkening both, secondary more
+  // (14 hex steps apart, like light). Ratios (WCAG 2.1 formula):
+  //   secondary #383C41 → 6.34:1 on #BFC4CC, 5.69:1 on #B4BAC3
+  //   muted     #464A4F → 5.09:1 on #BFC4CC, 4.57:1 on #B4BAC3
+  '--color-text-secondary': '#383C41',
+  '--color-text-muted': '#464A4F',
+  '--color-text-faint': '#5E626A',                 // A11y: 3.5:1 placeholder tier (was 2.39)
   '--color-chart-grid': '#969CA6',
   '--color-chart-zero': '#7A7F87',
   '--color-progress-inactive': '#969CA6',
@@ -390,4 +426,10 @@ export const globalStyles = `
   }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
+  .footer-cols{display:grid;grid-template-columns:repeat(3,1fr);max-width:600px;margin:0 auto;gap:0}
+  .footer-cols>div{padding:0 22px}
+  .footer-cols>div+div{border-left:1px solid var(--color-border)}
+  @media (max-width:640px){.footer-cols{grid-template-columns:1fr;max-width:none;gap:20px}.footer-cols>div{padding:0}.footer-cols>div+div{border-left:none}}
+  .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
+  .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
 `;

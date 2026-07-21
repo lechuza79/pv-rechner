@@ -53,7 +53,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Der Anteil deines Solarstroms, den du selbst nutzt, statt ihn ins Netz einzuspeisen — der wichtigste Hebel für die Rendite.",
     long:
-      "Der Eigenverbrauch ist der Anteil des selbst erzeugten Solarstroms, den du direkt im Haushalt nutzt, statt ihn ins öffentliche Netz einzuspeisen. Er ist der wichtigste Faktor für die Wirtschaftlichkeit: Jede selbst verbrauchte Kilowattstunde spart dir den vollen Strompreis (ca. 34 ct), während eingespeister Strom nur die deutlich niedrigere Einspeisevergütung (ca. 8 ct) bringt. Speicher, Wärmepumpe und E-Auto erhöhen den Eigenverbrauch, eine sehr große Anlage relativ zum Verbrauch senkt ihn.",
+      "Der Eigenverbrauch ist der Anteil des selbst erzeugten Solarstroms, den du direkt im Haushalt nutzt, statt ihn ins öffentliche Netz einzuspeisen. Er ist der wichtigste Faktor für die Wirtschaftlichkeit: Jede selbst verbrauchte Kilowattstunde spart dir den vollen Strompreis (ca. 31 ct), während eingespeister Strom nur die deutlich niedrigere Einspeisevergütung (ca. 8 ct) bringt. Speicher, Wärmepumpe und E-Auto erhöhen den Eigenverbrauch, eine sehr große Anlage relativ zum Verbrauch senkt ihn.",
   },
   autarkie: {
     term: "Autarkie",
@@ -77,7 +77,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short:
       "Du nutzt den Solarstrom zuerst selbst und speist nur den Überschuss ein — der Normalfall bei Hausanlagen.",
     long:
-      "Bei der Teileinspeisung (auch Überschusseinspeisung) verbrauchst du den Solarstrom vorrangig selbst und speist nur den nicht genutzten Überschuss ins Netz ein. Das ist der Regelfall für Haushalte, weil der selbst genutzte Strom (gesparter Strompreis ~34 ct) deutlich mehr wert ist als die Einspeisevergütung (~8 ct). Die Einspeisevergütung ist bei Teileinspeisung niedriger als bei Volleinspeisung, dafür sparst du beim eigenen Verbrauch.",
+      "Bei der Teileinspeisung (auch Überschusseinspeisung) verbrauchst du den Solarstrom vorrangig selbst und speist nur den nicht genutzten Überschuss ins Netz ein. Das ist der Regelfall für Haushalte, weil der selbst genutzte Strom (gesparter Strompreis ~31 ct) deutlich mehr wert ist als die Einspeisevergütung (~8 ct). Die Einspeisevergütung ist bei Teileinspeisung niedriger als bei Volleinspeisung, dafür sparst du beim eigenen Verbrauch.",
   },
   volleinspeisung: {
     term: "Volleinspeisung",

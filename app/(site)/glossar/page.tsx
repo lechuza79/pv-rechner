@@ -1,7 +1,6 @@
 import { Metadata } from "next";
-import Link from "next/link";
-import { IconArrowRight } from "../../../components/Icons";
-import { v, iconSizes } from "../../../lib/theme";
+import Breadcrumb from "../../../components/Breadcrumb";
+import { v } from "../../../lib/theme";
 import { allGlossaryEntries } from "../../../lib/glossary";
 
 export const metadata: Metadata = {
@@ -19,27 +18,27 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto" },
+  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: 60 },
   back: {
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
     textDecoration: "none",
     display: "inline-block",
     marginBottom: 24,
   },
   h1: {
-    fontSize: 22,
+    fontSize: v("--font-size-h1"),
     fontWeight: 800,
     letterSpacing: "-0.02em",
     color: v("--color-text-primary"),
     lineHeight: 1.2,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
     marginBottom: 24,
-    lineHeight: 1.5,
+    lineHeight: 1.6,
   },
   nav: {
     display: "flex",
@@ -48,7 +47,7 @@ const S = {
     marginBottom: 28,
   },
   navLink: {
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     fontWeight: 600,
     color: v("--color-accent"),
     textDecoration: "none",
@@ -63,18 +62,18 @@ const S = {
     marginTop: 18,
   },
   term: {
-    fontSize: 16,
+    fontSize: v("--font-size-h3"),
     fontWeight: 700,
     color: v("--color-text-primary"),
     marginBottom: 8,
   },
   body: {
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
     lineHeight: 1.7,
   },
   aliases: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     color: v("--color-text-faint"),
     marginTop: 6,
     fontFamily: v("--font-mono"),
@@ -86,12 +85,7 @@ export default function GlossarPage() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <Link href="/" style={S.back}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} />{" "}
-            Zurück zur Startseite
-          </span>
-        </Link>
+        <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Glossar" }]} jsonLd />
 
         <h1 style={S.h1}>Glossar</h1>
         <p style={S.subtitle}>

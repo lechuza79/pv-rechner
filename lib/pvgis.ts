@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-server";
 import { PLZ_BL } from "./plz-bundesland";
+import { NATIONAL_AVG_YIELD } from "./constants";
 
 // Standort-Ertrag (kWh/kWp) als servernutzbarer Helper. War vorher nur in der
 // API-Route eingeschlossen; herausgezogen, damit Server Components (z. B. die
@@ -14,8 +15,6 @@ const FALLBACK: Record<string, number> = {
   SN: 1067, ST: 1074, SH: 983, TH: 1041,
 };
 
-/** Grober bundesweiter Mittelwert — nur zur Einordnung („über/unter dem Schnitt"). */
-export const NATIONAL_AVG_YIELD = 1050;
 
 export type PvgisYield = {
   annual: number;

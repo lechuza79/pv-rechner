@@ -216,7 +216,13 @@ export default function GlossaryTerm({ id, children }: Props) {
           padding: 0,
           margin: 0,
           cursor: "help",
-          borderBottom: `1px dashed ${v("--color-text-faint")}`,
+          // Dotted, light-blue underline sitting close to the word (small offset)
+          // instead of a far dashed baseline rule.
+          textDecoration: "underline",
+          textDecorationStyle: "dotted",
+          textDecorationColor: v("--color-accent-light"),
+          textDecorationThickness: "1px",
+          textUnderlineOffset: "2px",
           lineHeight: "inherit",
           display: "inline",
         }}

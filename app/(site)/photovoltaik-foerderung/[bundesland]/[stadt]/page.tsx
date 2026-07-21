@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Header from "../../../../../components/Header";
 import Breadcrumb from "../../../../../components/Breadcrumb";
 import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons";
 import { v, iconSizes } from "../../../../../lib/theme";
@@ -150,7 +149,6 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
 
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <Link href={`/photovoltaik-foerderung/${slugify(city.bundesland)}`} style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 13, fontWeight: 600, color: v("--color-accent"), textDecoration: "none", marginBottom: 12 }}>
           <IconChevronLeft size={iconSizes.md} /> {city.bundesland}

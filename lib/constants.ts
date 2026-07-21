@@ -13,6 +13,18 @@ export const DEGRAD = 0.005;
 // wird die Einspeisevergütung also nur bis Jahr 20 gezahlt.
 export const FEED_IN_YEARS = 20;
 
+// ─── PV-Standortertrag (kWh/kWp·a) ───────────────────────────────────────────
+// Kanonische Quelle für den Ertrag ist PVGIS (ortsgenau via PLZ, lib/pvgis.ts).
+// NATIONAL_AVG_YIELD ist der PVGIS-Bundesschnitt (optimale Ausrichtung) und dient
+// serverseitig als Fallback, wenn PVGIS nicht erreichbar ist. Hier zentral, damit
+// Client (Rechner/Empfehlung/Balkon) und Server denselben Wert teilen.
+export const NATIONAL_AVG_YIELD = 1050;
+// Ohne PLZ zeigen die Rechner einen bewusst KONSERVATIVEN Ertrag: der Bundesschnitt
+// minus 100 kWh Puffer für nicht-optimale Dachausrichtung/-neigung (echte Dächer
+// liegen selten im PVGIS-Optimum). Abgeleitet aus dem geprüften Modell, nicht
+// frei gegriffen — sobald der Nutzer eine PLZ eingibt, ersetzt der PVGIS-Wert ihn.
+export const NO_PLZ_DEFAULT_YIELD = NATIONAL_AVG_YIELD - 100; // = 950
+
 // Saisonaler Verbrauchsfaktor (BDEW Standardlastprofil H0)
 // Winter ~17% über Durchschnitt, Sommer ~15% unter
 export const CONSUMPTION_MONTHLY = [1.17, 1.05, 1.08, 0.97, 0.93, 0.84, 0.87, 0.87, 0.91, 1.00, 1.13, 1.17];
@@ -116,8 +128,8 @@ export const EA_KM_PRESETS = [10000, 15000, 20000];
 export const SCENARIOS = [
   { id: "pessimistic", label: "Pessimistisch", color: "#EF4444", strom: 0.01, evDelta: -5,
     explain: "Vorsichtig gerechnet: Der Strompreis steigt nur langsam (+1 %/Jahr) — dein selbst genutzter Solarstrom spart dann entsprechend weniger." },
-  { id: "realistic", label: "Realistisch", color: "#00D950", strom: 0.03, evDelta: 0,
-    explain: "Mittlere Annahme: Der Strompreis steigt etwa wie im langjährigen Schnitt (+3 %/Jahr)." },
+  { id: "realistic", label: "Realistisch", color: "#00D950", strom: 0.02, evDelta: 0,
+    explain: "Mittlere Annahme: Der Strompreis steigt moderat (+2 %/Jahr), wie die aktuellen Prognosen erwarten." },
   { id: "optimistic", label: "Optimistisch", color: "#1365EA", strom: 0.05, evDelta: 5,
     explain: "Günstige Entwicklung: Steigt der Strompreis kräftig (+5 %/Jahr), lohnt sich jede selbst genutzte Kilowattstunde stärker." },
 ];

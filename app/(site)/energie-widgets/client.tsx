@@ -2,7 +2,6 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Header from "../../../components/Header";
 import { IconBolt, IconRefresh, IconLink, IconChevronDown } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import {
@@ -93,6 +92,18 @@ const SECTIONS: WidgetSection[] = [
     },
     showFrameWidth: false,
     variants: [{ id: "ee-ampel", label: "EE-Ampel", src: "/embed/ee-ampel", height: 290, fixedWidth: 320 }],
+  },
+  {
+    id: "foerder-check",
+    label: "Wärmepumpen-Förderung",
+    intro:
+      "Ein schlanker Rechner für die BEG-Förderung: Kosten, alte Heizung und Einkommen eingeben, Zuschuss sofort sehen. Verlinkt zum vollen Wärmepumpen-Rechner. Ideal als Faktenbox in einem Ratgeber-Artikel.",
+    attribution: {
+      path: "/waermepumpe-rechner",
+      text: "Wärmepumpen-Förderung berechnen – Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [{ id: "foerder-check", label: "Förder-Check", src: "/embed/foerder-check", height: 640, fixedWidth: 380 }],
   },
   {
     id: "strommix-anteil",
@@ -291,7 +302,6 @@ export default function WidgetsClient() {
 
   return (
     <div style={S.page}>
-      <Header activePage="widgets" />
       <div style={S.wrap}>
         <h1 style={S.h1}>Energie-Widgets für die eigene Website</h1>
         <p style={S.subtitle}>

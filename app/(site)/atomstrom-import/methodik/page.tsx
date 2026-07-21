@@ -1,8 +1,6 @@
 import { Metadata } from "next";
-import Link from "next/link";
-import Header from "../../../../components/Header";
-import { IconArrowRight } from "../../../../components/Icons";
-import { v, iconSizes } from "../../../../lib/theme";
+import Breadcrumb from "../../../../components/Breadcrumb";
+import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { getNuclearImport, dateLong, buildCitation } from "../figure";
 
@@ -27,16 +25,9 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto" },
-  back: {
-    fontSize: 13,
-    color: v("--color-text-secondary"),
-    textDecoration: "none",
-    display: "inline-block",
-    marginBottom: 20,
-  },
+  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto", paddingTop: 60 },
   h1: {
-    fontSize: 22,
+    fontSize: v("--font-size-h1"),
     fontWeight: 800,
     letterSpacing: "-0.02em",
     color: v("--color-text-primary"),
@@ -44,11 +35,11 @@ const S = {
     marginBottom: 24,
   },
   section: { marginTop: 32 },
-  h2: { fontSize: 16, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 8 },
-  p: { fontSize: 13.5, color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: 10 },
+  h2: { fontSize: v("--font-size-h2"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 8 },
+  p: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: 12 },
   formula: {
     fontFamily: v("--font-mono"),
-    fontSize: 12.5,
+    fontSize: v("--font-size-small"),
     lineHeight: 1.7,
     color: v("--color-text-primary"),
     background: v("--color-bg-muted"),
@@ -62,12 +53,12 @@ const S = {
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-md"),
     padding: "14px 16px",
-    fontSize: 12.5,
+    fontSize: v("--font-size-small"),
     lineHeight: 1.65,
     color: v("--color-text-primary"),
     fontFamily: v("--font-mono"),
   },
-  source: { fontSize: 11.5, color: v("--color-text-faint"), marginTop: 28, lineHeight: 1.6 },
+  source: { fontSize: v("--font-size-small"), color: v("--color-text-faint"), marginTop: 28, lineHeight: 1.6 },
 };
 
 export default async function AtomstromMethodikPage() {
@@ -78,14 +69,15 @@ export default async function AtomstromMethodikPage() {
 
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
-        <Link href="/atomstrom-import" style={S.back}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück
-            zum Atomstrom-Import
-          </span>
-        </Link>
+        <Breadcrumb
+          items={[
+            { label: "Start", href: "/" },
+            { label: "Atomstrom-Import", href: "/atomstrom-import" },
+            { label: "Methodik" },
+          ]}
+          jsonLd
+        />
 
         <h1 style={S.h1}>Methodik &amp; Quellenangabe</h1>
 

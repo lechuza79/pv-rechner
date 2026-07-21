@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Header from "../../../../../../components/Header";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
-import { IconArrowRight, IconTrendUp, IconTrendDown } from "../../../../../../components/Icons";
+import { IconArrowRight } from "../../../../../../components/Icons";
 import { v } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
 import { atlasIsIndexable, atlasLevelReleased, atlasRobots } from "../../../../../../lib/atlas-index";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
-import GemeindeHero, { type OutsidePeer } from "../../../../../../components/atlas/GemeindeHero";
+import GemeindeHero, {
+  type OutsidePeer,
+  type KpiOwnerData,
+} from "../../../../../../components/atlas/GemeindeHero";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindePotentialBlock from "../../../../../../components/atlas/GemeindePotential";
 import GemeindeErneuerbareWidget from "../../../../../../components/atlas/GemeindeErneuerbareWidget";
@@ -17,17 +19,18 @@ import GemeindeSolarLive from "../../../../../../components/atlas/GemeindeSolarL
 import { MastrHeroSection } from "../../../../../../components/MastrHeroSection";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
 import { getPvgisYield } from "../../../../../../lib/pvgis";
-import { computeGemeindePotential, type GemeindePotential } from "../../../../../../lib/gemeinde-potential";
+import { computeGemeindePotential } from "../../../../../../lib/gemeinde-potential";
 import { buildGemeindeHighlight } from "../../../../../../lib/gemeinde-highlight";
 import {
   resolveSlugPath,
   getRegionById,
   lastFullYear,
   peerBand,
-  getTopGemeinden,
+  getPeerLeaders,
   getRankingData,
-  type TopGemeinde,
-  type Owner,
+  atlasOwnerSlice,
+  type AtlasOwner,
+  type PeerLeader,
 } from "../../../../../../lib/atlas";
 import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
@@ -61,23 +64,6 @@ function fmtKwh(kwh: number): string {
   return `${nf(Math.round(kwh))} kWh`;
 }
 
-/** Tendenz je Einwohner ggü. Bundesland-Schnitt: grün über, rot unter, bei ±0 neutral. */
-function TendTag({ dev }: { dev: number | null }) {
-  if (dev === null) return null;
-  const pct = Math.round(Math.abs(dev) * 100);
-  if (pct === 0) {
-    return <span style={{ ...S.tend, color: v("--color-text-muted") }}>±0 %</span>;
-  }
-  const up = dev > 0;
-  const color = up ? v("--color-positive") : v("--color-negative");
-  return (
-    <span style={{ ...S.tend, color }}>
-      {up ? <IconTrendUp size={11} color={color} /> : <IconTrendDown size={11} color={color} />}
-      {pct} %
-    </span>
-  );
-}
-
 type Params = { bundesland: string; kreis: string; gemeinde: string };
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
@@ -102,74 +88,76 @@ export default async function GemeindePage({ params }: { params: Params }) {
   const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
   if (!region || region.level !== "gemeinde") notFound();
 
-  const kreis = region.parent_region_id ? await getRegionById(region.parent_region_id) : null;
   const blAgs = region.region_id.slice(0, 2);
   const bl = bundeslandByAgs(blAgs);
-
-  // The Gemeinde's own numbers, its siblings (for the rank) and both parents
-  // (for the comparison bars).
-  const atlas = await getRegionAtlasData(region.region_id);
-
+  const kreisAgs = region.region_id.slice(0, 5);
   const lastYear = lastFullYear();
-  const lastYearRow = atlas.solar.by_year.find((y) => y.year === lastYear);
+
+  // Alle voneinander unabhängigen Reads in einem Rutsch statt seriell: die
+  // Gemeinde selbst, die Eltern-Schnitte (Landkreis/Land/Deutschland) und der
+  // Kreis. Spart den Wasserfall; die Reads sind zusätzlich gecacht.
+  const [kreis, atlas, blAtlas, blRegion, kreisAtlas, deAtlas, deRegion] = await Promise.all([
+    region.parent_region_id ? getRegionById(region.parent_region_id) : Promise.resolve(null),
+    getRegionAtlasData(region.region_id),
+    getRegionAtlasData(blAgs),
+    getRegionById(blAgs),
+    getRegionAtlasData(kreisAgs),
+    getRegionAtlasData("de"),
+    getRegionById("de"),
+  ]);
+
   const speicher = atlas.speicher;
 
-  // Storage per roof kWp — the honest denominator is roof solar, not total: a
-  // village with a big open-field park has lots of kWp and few home batteries,
-  // and dividing by the park would fake a "no storage" picture. Only shown when
-  // there is enough of both to mean something.
-  const kwpDach = atlas.solar.by_segment
-    .filter((s) => s.segment !== "freiflaeche")
-    .reduce((a, s) => a + s.kwp, 0);
-  const speicherProKwp =
-    speicher.kwh_batterie > 0 && kwpDach > 100 ? speicher.kwh_batterie / kwpDach : null;
-
-  // Bundesland-Schnitt als Vergleichsbasis für die Pro-Kopf-Kennzahl (±% zum
-  // Landesschnitt über dem Donut). Gleiche Rollup-Quelle wie die Gemeinde selbst.
-  const [blAtlas, blRegion] = await Promise.all([getRegionAtlasData(blAgs), getRegionById(blAgs)]);
   const perCapita = region.population
     ? Math.round((atlas.solar.total_kwp * 1000) / region.population)
     : null;
-  const blPerCapita = blRegion?.population
-    ? (blAtlas.solar.total_kwp * 1000) / blRegion.population
-    : null;
+  const blPerCapita = blRegion?.population ? (blAtlas.solar.total_kwp * 1000) / blRegion.population : null;
   const perCapitaVsBl = perCapita != null && blPerCapita ? perCapita / blPerCapita - 1 : null;
 
-  // Tendenz je Kennzahl = Wert je Einwohner ggü. dem Bundesland-Schnitt (grün über,
-  // rot unter). Alle über dieselbe Pro-Kopf-Normierung, damit vergleichbar.
-  const blPop = blRegion?.population ?? null;
-  const perCapDev = (gemVal: number, blVal: number): number | null => {
-    if (!region.population || !blPop || !blVal) return null;
-    return gemVal / region.population / (blVal / blPop) - 1;
+  // Die Kacheln gibt es für jeden Eigentümer-Filter fertig gerechnet — auch die
+  // Vergleichsbasis. Wer „Privat" wählt, sieht die privaten Zahlen der Gemeinde
+  // gegen die PRIVATEN Zahlen von Landkreis/Land/Bund; privat gegen Gesamtbestand
+  // wäre eine Prozentzahl ohne Aussage. Serverseitig vorgerechnet, weil alle drei
+  // Schnitte ohnehin schon geladen sind — der Filter schaltet dann nur um.
+  type AtlasData = Awaited<ReturnType<typeof getRegionAtlasData>>;
+  const perCapOf = (a: AtlasData, pop: number | null | undefined, owner: AtlasOwner) => {
+    if (!pop) return { count: null, kwp: null, speicher: null, neu: null };
+    const s = atlasOwnerSlice(a, owner, lastYear);
+    return { count: s.count / pop, kwp: s.kwp / pop, speicher: s.speicherKwh / pop, neu: s.neu / pop };
   };
-  // Tendenz je Einwohner ggü. Bundesland-Schnitt. Nur beim reinen Zubau (Neu)
-  // weggelassen — der ist ein Momentwert, keine sinnvolle Pro-Kopf-Tendenz.
-  const tAnlagen = perCapDev(atlas.solar.total_count, blAtlas.solar.total_count);
-  const tLeistung = perCapitaVsBl;
-  const tSpeicher = perCapDev(speicher.kwh_batterie, blAtlas.speicher.kwh_batterie);
 
-  // „Angebot trifft Nachfrage" + Beispiele: braucht den Standort-Ertrag. Nur für
-  // bewohnte Gemeinden sinnvoll (Waldgebiete o. Ä. haben keinen Bedarf). Der
-  // Ertrag kommt über den geteilten PVGIS-Weg; repräsentative PLZ aus der AGS.
-  let potential: GemeindePotential | null = null;
-  let repPlz: string | null = null;
-  let geoLat: number | null = null;
-  let geoLon: number | null = null;
-  if (region.population) {
-    const geo = await gemeindeGeo(region.region_id);
-    repPlz = geo?.plz ?? null;
-    geoLat = Number.isFinite(geo?.lat) ? (geo?.lat ?? null) : null;
-    geoLon = Number.isFinite(geo?.lon) ? (geo?.lon ?? null) : null;
-    const yieldData = await getPvgisYield({
-      lat: geo?.lat ?? NaN,
-      lon: geo?.lon ?? NaN,
-      plzPrefix: (repPlz ?? "").slice(0, 2),
-    });
-    potential = computeGemeindePotential({
-      annual: yieldData.annual,
-      monthly: yieldData.monthly,
-    });
-  }
+  const kpiForOwner = (owner: AtlasOwner): KpiOwnerData => {
+    const s = atlasOwnerSlice(atlas, owner, lastYear);
+    const wPerHead = region.population ? Math.round((s.kwp * 1000) / region.population) : null;
+    // Speicher je kWp nur gegen Dachanlagen: ein Freiflächenpark im Nenner
+    // täuscht ein „hier speichert niemand" vor.
+    const proKwp = s.speicherKwh > 0 && s.kwpDach > 100 ? s.speicherKwh / s.kwpDach : null;
+    return {
+      tiles: [
+        { label: "Solaranlagen", value: nf(s.count), metric: "count" },
+        { label: "Installiert", value: fmtLeistung(s.kwp), metric: "kwp" },
+        { label: "je Einwohner", value: wPerHead === null ? "—" : `${nf(wPerHead)} W`, metric: "kwp" },
+        {
+          label: "Batteriespeicher",
+          value: fmtKwh(s.speicherKwh),
+          metric: "speicher",
+          sub: `${nf(s.speicherCount)} Anlagen${proKwp !== null ? ` · ${proKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp` : ""}`,
+        },
+        { label: `Neu ${lastYear}`, value: nf(s.neu), metric: "neu" },
+      ],
+      perCap: perCapOf(atlas, region.population, owner),
+      references: [
+        { key: "landkreis", name: kreis?.name ?? "Landkreis", perCap: perCapOf(kreisAtlas, kreis?.population, owner) },
+        { key: "bundesland", name: bl?.name ?? "Bundesland", perCap: perCapOf(blAtlas, blRegion?.population, owner) },
+        { key: "de", name: "Deutschland", perCap: perCapOf(deAtlas, deRegion?.population, owner) },
+      ].filter((r) => Object.values(r.perCap).some((x) => x !== null)),
+    };
+  };
+  const kpi: Record<AtlasOwner, KpiOwnerData> = {
+    alle: kpiForOwner("alle"),
+    privat: kpiForOwner("privat"),
+    gewerbe: kpiForOwner("gewerbe"),
+  };
 
   const basePath = `/solar-atlas/${params.bundesland}/${params.kreis}`;
   const gemeindePath = `${basePath}/${params.gemeinde}`;
@@ -189,40 +177,54 @@ export default async function GemeindePage({ params }: { params: Params }) {
   // Gemeinde's population it bites: Pilsting has 7.158 to Höchberg's 9.564 and
   // reaches 6.210 W per head against 954.
   const band = region.population ? peerBand(region.population) : { min: 0, max: 0 };
-  const OWNERS: Owner[] = ["alle", "privat", "gewerbe"];
-  const [siblingData, ...outsideByOwner] = await Promise.all([
+
+  // Standort-Ertrag (Geo→PVGIS), Kreis-Rangliste und bundesweite Vergleichs-
+  // gemeinden hängen nicht voneinander ab → in einem Rutsch statt seriell. Der
+  // Ertrag speist „Angebot trifft Nachfrage" + Beispiele; nur für bewohnte
+  // Gemeinden sinnvoll (Waldgebiete o. Ä. haben keinen Bedarf), repräsentative
+  // PLZ aus der AGS. Die Vergleichs-Anführer (3 Eigentümer × 2 Bezüge) kommen aus
+  // einem einzigen Aufruf (getPeerLeaders) statt sechs, die sich in der DB stauten.
+  const [geoYield, siblingData, peerRows] = await Promise.all([
+    region.population
+      ? gemeindeGeo(region.region_id).then(async (geo) => {
+          const y = await getPvgisYield({
+            lat: geo?.lat ?? NaN,
+            lon: geo?.lon ?? NaN,
+            plzPrefix: (geo?.plz ?? "").slice(0, 2),
+          });
+          return { geo, potential: computeGemeindePotential({ annual: y.annual, monthly: y.monthly }) };
+        })
+      : Promise.resolve({ geo: null, potential: null }),
     // The Kreis in raw cells: the table ranks it client-side per owner AND per
     // metric, which no fixed RPC result could serve.
     kreis ? getRankingData(kreis) : Promise.resolve({ regions: [], cells: [] }),
-    ...OWNERS.map(async (owner) => {
-      if (!region.population) return { owner, rows: [] as TopGemeinde[] };
-      const [blTop, deTop] = await Promise.all([
-        getTopGemeinden({ prefix: blAgs, owner, limit: 1, minPop: band.min, maxPop: band.max }),
-        getTopGemeinden({ prefix: "", owner, limit: 1, minPop: band.min, maxPop: band.max }),
-      ]);
-      return { owner, rows: [...blTop.map((t) => ({ ...t, scope: `${bl?.name ?? "Land"}, Größenklasse` })), ...deTop.map((t) => ({ ...t, scope: "bundesweit, Größenklasse" }))] };
-    }),
+    region.population ? getPeerLeaders(blAgs, band.min, band.max) : Promise.resolve([] as PeerLeader[]),
   ]);
+
+  const potential = geoYield.potential;
+  const repPlz = geoYield.geo?.plz ?? null;
+  const geoLat = Number.isFinite(geoYield.geo?.lat) ? (geoYield.geo?.lat ?? null) : null;
+  const geoLon = Number.isFinite(geoYield.geo?.lon) ? (geoYield.geo?.lon ?? null) : null;
 
   // One row per outside peer, carrying a value for each owner filter so switching
   // is a lookup rather than a refetch.
+  const scopeLabel = (s: "de" | "bl") =>
+    s === "bl" ? `${bl?.name ?? "Land"}, Größenklasse` : "bundesweit, Größenklasse";
   const outsideMap = new Map<string, OutsidePeer>();
-  for (const { owner, rows } of outsideByOwner) {
-    for (const t of rows as (TopGemeinde & { scope: string })[]) {
-      if (t.region_id === region.region_id) continue;
-      const row =
-        outsideMap.get(t.region_id) ??
-        {
-          region_id: t.region_id,
-          name: t.name,
-          href: null,
-          population: t.population,
-          scope: t.scope,
-          values: { alle: null, privat: null, gewerbe: null },
-        };
-      row.values[owner] = t.w_per_capita;
-      outsideMap.set(t.region_id, row);
-    }
+  for (const p of peerRows) {
+    if (p.region_id === region.region_id) continue;
+    const row =
+      outsideMap.get(p.region_id) ??
+      {
+        region_id: p.region_id,
+        name: p.name,
+        href: null,
+        population: p.population,
+        scope: scopeLabel(p.scope),
+        values: { alle: null, privat: null, gewerbe: null },
+      };
+    row.values[p.owner] = p.w_per_capita;
+    outsideMap.set(p.region_id, row);
   }
   const outside = Array.from(outsideMap.values());
 
@@ -274,7 +276,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
 
   return (
     <div style={S.page}>
-      <Header />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
       <div style={S.wrap}>
@@ -311,42 +312,15 @@ export default async function GemeindePage({ params }: { params: Params }) {
           })}
         </p>
 
-        <div style={S.metricsGrid}>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Solaranlagen</div>
-            <div style={S.metricValue}>{nf(atlas.solar.total_count)}</div>
-            <TendTag dev={tAnlagen} />
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Installiert</div>
-            <div style={S.metricValue}>{fmtLeistung(atlas.solar.total_kwp)}</div>
-            <TendTag dev={tLeistung} />
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Batteriespeicher</div>
-            <div style={S.metricValue}>{fmtKwh(speicher.kwh_batterie)}</div>
-            <TendTag dev={tSpeicher} />
-            <div style={S.metricSub}>
-              {nf(speicher.count)} Anlagen
-              {speicherProKwp !== null && ` · ${speicherProKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp`}
-            </div>
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Neu {lastYear}</div>
-            <div style={S.metricValue}>{nf(lastYearRow?.count ?? 0)}</div>
-          </div>
-        </div>
-        {perCapitaVsBl !== null && (
-          <p style={S.tendCaption}>Tendenz: je Einwohner gegenüber dem {bl?.name ?? "Landes"}-Schnitt.</p>
-        )}
-
         <GemeindeHero
+          kpi={kpi}
           cells={atlas.solar.by_segment}
           siblings={siblingData.regions}
           siblingCells={siblingData.cells}
           outside={outside}
           regionId={region.region_id}
           regionName={region.name}
+          kreisName={kreis?.name ?? undefined}
           basePath={basePath}
         />
 
@@ -435,11 +409,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
         )}
 
         <div style={S.section}>
-          <GemeindeEmbedBox
-            name={region.name}
-            ags={region.region_id}
-            atlasPath={`/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`}
-          />
+          <GemeindeEmbedBox name={region.name} ags={region.region_id} />
         </div>
 
         <div style={S.disclaimer}>
@@ -500,19 +470,10 @@ const S: Record<string, React.CSSProperties> = {
   metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
   metricSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: 3, lineHeight: 1.4 },
-  tend: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 3,
-    marginTop: 4,
-    fontFamily: v("--font-mono"),
-    fontSize: 11,
-    fontWeight: 600,
-  },
   tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: "0 2px 22px" },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
   sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px" },
-  section: { marginBottom: 28 },
+  section: { marginBottom: 50 },
   // Erneuerbare-Mix + 24h-Sim nebeneinander; auf Mobil untereinander (flex-wrap).
   // stretch → beide Karten gleich hoch; sbsItem als flex, damit die Karte (height
   // 100 %) die gestreckte Höhe füllt.

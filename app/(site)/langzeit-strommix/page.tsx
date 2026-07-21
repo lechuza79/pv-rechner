@@ -1,4 +1,3 @@
-import Header from "../../../components/Header";
 import { v } from "../../../lib/theme";
 import LangzeitStrommixClient from "./client";
 
@@ -12,7 +11,6 @@ export const metadata = {
 export default function LangzeitStrommixPage() {
   return (
     <div style={{ background: v("--color-bg"), minHeight: "100vh", fontFamily: v("--font-text") }}>
-      <Header />
       <main style={{ padding: "24px 16px" }}>
         <LangzeitStrommixClient />
       </main>

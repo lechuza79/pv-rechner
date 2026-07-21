@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowRight } from "../../../components/Icons";
-import { v, iconSizes } from "../../../lib/theme";
+import Breadcrumb from "../../../components/Breadcrumb";
+import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
@@ -39,24 +39,24 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto" },
+  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: 60 },
   back: {
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
     textDecoration: "none",
     display: "inline-block",
     marginBottom: 24,
   },
   h1: {
-    fontSize: 22,
+    fontSize: v("--font-size-h1"),
     fontWeight: 800,
     letterSpacing: "-0.02em",
     color: v("--color-text-primary"),
     lineHeight: 1.2,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
     marginBottom: 28,
     lineHeight: 1.6,
@@ -64,18 +64,18 @@ const S = {
   section: { marginTop: 30 },
   h2row: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 4 },
   h2: {
-    fontSize: 16,
+    fontSize: v("--font-size-h2"),
     fontWeight: 700,
     color: v("--color-text-primary"),
   },
   stand: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     color: v("--color-accent"),
     fontFamily: v("--font-mono"),
     whiteSpace: "nowrap" as const,
   },
-  intro: { fontSize: 12.5, color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 12 },
+  intro: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 12 },
   card: {
     background: v("--color-bg"),
     borderRadius: v("--radius-md"),
@@ -89,7 +89,7 @@ const S = {
     gap: 14,
     padding: "11px 14px",
     borderTop: `1px solid ${v("--color-border")}`,
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
   },
   rowFirst: {
     display: "flex",
@@ -97,12 +97,12 @@ const S = {
     justifyContent: "space-between",
     gap: 14,
     padding: "11px 14px",
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
   },
   rowLabel: { color: v("--color-text-muted"), lineHeight: 1.4 },
   rowValue: {
     fontFamily: v("--font-mono"),
-    fontSize: 12.5,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-primary"),
     fontWeight: 600,
     textAlign: "right" as const,
@@ -110,13 +110,13 @@ const S = {
     maxWidth: "62%",
   },
   source: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     color: v("--color-text-faint"),
     marginTop: 8,
     lineHeight: 1.5,
   },
   note: {
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-muted"),
     lineHeight: 1.65,
     background: v("--color-bg-accent"),
@@ -240,11 +240,7 @@ export default async function DatenstandPage() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <Link href="/" style={S.back}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück zum Rechner
-          </span>
-        </Link>
+        <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Datenstand" }]} jsonLd />
 
         <h1 style={S.h1}>Datenstand</h1>
         <p style={S.subtitle}>
@@ -312,7 +308,7 @@ export default async function DatenstandPage() {
             { label: "Warmwasser je Person", value: `${nf(HP.wwPerPerson)} kWh/a` },
             { label: "Investition Luft/Wasser (Basis laufend aktualisiert)", value: `${nf(prices.wpLwwpBase)} € + ${nf(prices.wpLwwpPerKw)} €/kW` },
             { label: "Investition Sole/Wasser", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },
-            { label: "BEG-Förderung (Grund + Boni)", value: `${nf(HP.begGrundfoerderung * 100)}–${nf(HP.begMaxRate * 100)} %, max. ${nf(HP.begMaxCap)} €` },
+            { label: "BEG-Förderung (Grund + Boni)", value: `${nf(HP.begGrundfoerderung * 100)}–${nf(HP.begMaxRateLowIncome * 100)} %, max. ${nf(HP.begMaxCap)} €` },
             { label: "WP-Stromtarif (§ 14a EnWG)", value: `${(HP.wpTarif * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct/kWh` },
             { label: "Gas-Referenz", value: `${nf(HP.gasPriceCtPerKwh)} ct/kWh, ${nf(HP.gasCo2PerKwh * 1000)} g CO₂/kWh` },
           ]}

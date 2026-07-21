@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowRight } from "../../../components/Icons";
+import Breadcrumb from "../../../components/Breadcrumb";
 import GlossaryTerm from "../../../components/GlossaryTerm";
-import { v, iconSizes } from "../../../lib/theme";
+import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
@@ -26,40 +26,40 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v('--page-max-width'), margin: "0 auto" },
+  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto", paddingTop: 60 },
   back: {
-    fontSize: 13,
+    fontSize: v('--font-size-small'),
     color: v('--color-text-secondary'),
     textDecoration: "none",
     display: "inline-block",
     marginBottom: 24,
   },
   h1: {
-    fontSize: 22,
+    fontSize: v('--font-size-h1'),
     fontWeight: 800,
     letterSpacing: "-0.02em",
     color: v('--color-text-primary'),
     lineHeight: 1.2,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: v('--font-size-lead'),
     color: v('--color-text-muted'),
     marginBottom: 28,
-    lineHeight: 1.5,
+    lineHeight: 1.6,
   },
   h2: {
-    fontSize: 16,
+    fontSize: v('--font-size-h2'),
     fontWeight: 700,
     color: v('--color-text-primary'),
     marginTop: 32,
     marginBottom: 10,
   },
   p: {
-    fontSize: 13,
+    fontSize: v('--font-size-body'),
     color: v('--color-text-muted'),
     lineHeight: 1.7,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   card: {
     background: v('--color-bg'),
@@ -67,12 +67,12 @@ const S = {
     padding: "14px 16px",
     border: `1px solid ${v('--color-border')}`,
     marginBottom: 12,
-    fontSize: 13,
+    fontSize: v('--font-size-body'),
     color: v('--color-text-muted'),
     lineHeight: 1.7,
   },
   label: {
-    fontSize: 11,
+    fontSize: v('--font-size-caption'),
     fontWeight: 700,
     color: v('--color-text-secondary'),
     textTransform: "uppercase" as const,
@@ -82,7 +82,7 @@ const S = {
   },
   mono: {
     fontFamily: v('--font-mono'),
-    fontSize: 12,
+    fontSize: v('--font-size-small'),
     color: v('--color-accent'),
   },
   accent: { color: v('--color-accent'), fontWeight: 600 },
@@ -95,7 +95,7 @@ const S = {
     display: "flex",
     justifyContent: "center",
     gap: 20,
-    fontSize: 12,
+    fontSize: v('--font-size-small'),
   },
   footerLink: {
     color: v('--color-text-muted'),
@@ -142,9 +142,7 @@ export default async function MethodikPage() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <Link href="/" style={S.back}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück zum Rechner</span>
-        </Link>
+        <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Methodik" }]} jsonLd />
 
         <h1 style={S.h1}>So rechnen wir</h1>
         <p style={S.subtitle}>

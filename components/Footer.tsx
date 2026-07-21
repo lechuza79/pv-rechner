@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { v } from "../lib/theme";
+import { BUNDESLAENDER } from "../lib/mastr-regions";
+import { slugify } from "../lib/atlas-cities";
+import { atlasLevelReleased } from "../lib/atlas-index";
 
 const linkStyle: React.CSSProperties = {
   fontSize: 11,
@@ -15,6 +18,17 @@ const groupLabelStyle: React.CSSProperties = {
   color: v("--color-text-muted"),
   marginBottom: 8,
 };
+
+// Solar-Atlas-Übersichtsseiten (Welle 0a): Deutschland + Bundesländer. Nur die
+// per lib/atlas-index freigeschalteten Ebenen werden verlinkt — so bleiben die
+// Footer-Links deckungsgleich mit dem, was indexierbar/in der Sitemap ist, und
+// müssen bei einer neuen Welle nicht separat gepflegt werden.
+const atlasLinks: { href: string; label: string }[] = [
+  ...(atlasLevelReleased("de") ? [{ href: "/solar-atlas", label: "Deutschland" }] : []),
+  ...(atlasLevelReleased("bundesland")
+    ? BUNDESLAENDER.map((bl) => ({ href: `/solar-atlas/${slugify(bl.name)}`, label: bl.name }))
+    : []),
+];
 
 const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
   {
@@ -34,6 +48,7 @@ const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
   {
     label: "Mehr",
     links: [
+      { href: "/ratgeber", label: "Ratgeber" },
       { href: "/methodik", label: "Methodik" },
       { href: "/datenstand", label: "Datenstand" },
       { href: "/glossar", label: "Glossar" },
@@ -48,11 +63,11 @@ const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
 export default function Footer() {
   return (
     <div style={{ padding: "16px 0" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "20px 48px" }}>
-        {GROUPS.map((g) => (
-          <div key={g.label} style={{ textAlign: "center" }}>
+      <div className="footer-cols">
+        {[...GROUPS, ...(atlasLinks.length > 0 ? [{ label: "Solar-Atlas", links: atlasLinks }] : [])].map((g) => (
+          <div key={g.label} style={{ textAlign: "left" }}>
             <div style={groupLabelStyle}>{g.label}</div>
-            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {g.links.map((l) => (
                 <Link key={l.href} href={l.href} style={linkStyle}>{l.label}</Link>
               ))}

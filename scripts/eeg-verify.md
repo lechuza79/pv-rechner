@@ -61,3 +61,23 @@ spawnt einen Recherche-Agenten.
 - **Bei `ok`:** nichts ändern (Sätze noch im laufenden Halbjahr gültig).
 - **Bei REFORM-HINWEIS:** nicht blind Zahlen tauschen, **kein** Auto-Fix — erst
   dem Nutzer melden, weil eine Reform die Berechnungslogik selbst betreffen kann.
+
+## Zusätzlich prüfen: Reform-Sachstand der Ratgeberseiten (kein Auto-Fix)
+
+Die datierten EEG-2027-Reform-Aussagen leben an drei Stellen und müssen bei
+Verfahrensfortschritt (Kabinett → Bundestag → Bundesrat → Inkrafttreten)
+nachgezogen werden — **nie automatisch**, immer als Vorschlag an den Nutzer,
+weil eine Reform die Berechnungslogik selbst betrifft:
+
+- `app/(site)/lohnt-sich-pv-ohne-einspeiseverguetung/page.tsx` — Konstante
+  `REFORM_STAND` (Stand-Datum) + der „Verfahrensstand"-Absatz. Der Text ist
+  bewusst beschluss-fest formuliert („Zum Stand … war die Reform noch nicht
+  final beschlossen …"), trägt also einen einzelnen Zwischenschritt; bei
+  echtem Inkrafttreten oder finaler Beschlussfassung muss er trotzdem neu.
+- `lib/faq.ts → pvOhneEinspeisungFaq` — die Reform-FAQ-Antworten.
+- Die Reform-Notiz im PV-Rechner + `lib/feedin-config.ts` (bestehende Notiz).
+
+**Prüfpunkt (jeder Halbjahres-Lauf):** Ist der auf diesen Seiten beschriebene
+Verfahrensstand noch korrekt (aktueller Stand von Kabinettsbeschluss/
+Bundestag/Bundesrat/EU-Beihilfegenehmigung)? Bei Änderung → `REFORM_STAND`
+hochsetzen und die Texte angleichen, dem Nutzer als Diff vorschlagen.

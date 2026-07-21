@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Header from "../../../../components/Header";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, iconSizes } from "../../../../lib/theme";
@@ -205,7 +204,6 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
 
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <Breadcrumb
           items={[{ label: "Förderung", href: "/photovoltaik-foerderung" }, { label: name }]}

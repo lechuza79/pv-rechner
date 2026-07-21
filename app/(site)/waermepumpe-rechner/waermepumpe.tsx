@@ -14,7 +14,6 @@ import HeatPumpChart from "./_components/HeatPumpChart";
 import ScenarioTabs from "../../../components/ScenarioTabs";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
-import Header from "../../../components/Header";
 import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
@@ -47,9 +46,9 @@ export default function Waermepumpe() {
   const [oInvest, setOInvest] = useState<number | null>(null);
   const [oQges, setOQges] = useState<number | null>(null);
   const [oHeizlast, setOHeizlast] = useState<number | null>(null);
-  const [incomeBonus, setIncomeBonus] = useState(false);
-  const [klimaBonus, setKlimaBonus] = useState(true);          // BEG Klima-Bonus (Eigennutzer, alte fossile Heizung)
-  const [effizienzBonus, setEffizienzBonus] = useState(true);  // BEG Effizienz-Bonus (nat. Kältemittel / Erdsonde)
+  const [klimaBonus, setKlimaBonus] = useState(true);            // BEG Klima-Geschwindigkeits-Bonus (Eigennutzer, alte fossile Heizung)
+  const [einkommen, setEinkommen] = useState<EinkommenKey>("none");   // BEG Einkommens-Bonus (gestaffelt nach Haushaltseinkommen)
+  const [kindImHaushalt, setKindImHaushalt] = useState(false);        // Familienzuschlag hebt die Einkommensgrenze
   const [heizkoerperTausch, setHeizkoerperTausch] = useState(false);  // Maßnahme: alte HK auf Niedertemperatur tauschen
   const [wegId, setWegId] = useState("ist");  // aktiver Sanierungs-/Maßnahmen-Weg (Szenario-Vergleich)
   const [showDetails, setShowDetails] = useState(false);
@@ -95,9 +94,9 @@ export default function Waermepumpe() {
       gasPrice: oGasPrice ?? fuel.price,
       gasEfficiency: fuel.efficiency,
       gasCo2: fuel.co2PerKwh,
-      incomeBonus, klimaBonus, effizienzBonus,
+      klimaBonus, haushaltseinkommen: einkommenIncome(einkommen), kindImHaushalt,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, fuel, incomeBonus, klimaBonus, effizienzBonus]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, fuel, klimaBonus, einkommen, kindImHaushalt]);
 
   // ── Realistische Wege (Szenario-Vergleich) ───────────────────
   // Ein unsaniertes Haus bleibt selten 20 Jahre unangetastet. Statt nur den
@@ -160,7 +159,6 @@ export default function Waermepumpe() {
   // ── Render ───────────────────────────────────────────────────
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
-      <Header />
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
@@ -358,15 +356,27 @@ export default function Waermepumpe() {
                   <span style={{ display: "inline-block", width: 13, height: 13, borderRadius: 3, background: v('--color-accent'), flexShrink: 0 }} />
                   Grundförderung 30 % — bekommt jeder Heizungstausch im Bestand
                 </div>
-                <BonusToggle checked={klimaBonus} onChange={c => { setKlimaBonus(c); setOInvest(null); }} label="Eigengenutzte Immobilie +20 %" tipTitle="Klima-Geschwindigkeits-Bonus">
-                  20 % Zusatzförderung für selbstnutzende Eigentümer, die eine funktionierende alte fossile Heizung (Öl, Gas, Kohle) durch die Wärmepumpe ersetzen. Vermieter oder wer keine alte fossile Heizung hat, bekommt ihn nicht. Quelle: BAFA/KfW BEG EM 2026.
+                <BonusToggle checked={klimaBonus} onChange={c => { setKlimaBonus(c); setOInvest(null); }} label="Eigengenutzte Immobilie +16 %" tipTitle="Klima-Geschwindigkeits-Bonus">
+                  16 % Zusatzförderung für selbstnutzende Eigentümer, die eine funktionierende alte fossile Heizung (Öl, Kohle, Gas-Etagenheizung — oder eine mindestens 20 Jahre alte Gasheizung) durch die Wärmepumpe ersetzen. Vermieter oder wer keine solche Heizung ersetzt, bekommt ihn nicht. Der Bonus sinkt ab dem 1. Februar 2027 schrittweise. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
                 </BonusToggle>
-                <BonusToggle checked={effizienzBonus} onChange={c => { setEffizienzBonus(c); setOInvest(null); }} label="Effizienz-Bonus +5 %" tipTitle="Effizienz-Bonus">
-                  5 % Zusatzförderung für Wärmepumpen mit natürlichem Kältemittel (z. B. R290/Propan) oder mit Erdreich/Wasser als Wärmequelle. Die meisten modernen Luft-Wärmepumpen erfüllen das. Quelle: BAFA/KfW BEG EM 2026.
-                </BonusToggle>
-                <BonusToggle checked={incomeBonus} onChange={c => { setIncomeBonus(c); setOInvest(null); }} label="Einkommens-Bonus +30 %" tipTitle="Einkommens-Bonus">
-                  30 % Zusatzförderung für Haushalte mit einem zu versteuernden Jahreseinkommen bis 40.000 €. Die Gesamtförderung ist bei 70 % gedeckelt, maximal 30.000 € förderfähige Kosten. Quelle: BAFA/KfW BEG EM 2026.
-                </BonusToggle>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                    Einkommens-Bonus
+                    <InfoTooltip title="Einkommens-Bonus" ariaLabel="Einkommens-Bonus">
+                      Zusatzförderung für selbstnutzende Eigentümer, gestaffelt nach zu versteuerndem Haushaltsjahreseinkommen: bis 30.000 € +40 %, bis 40.000 € +30 %, bis 50.000 € +10 %. Bei der untersten Stufe steigt der Förderdeckel auf 80 %. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
+                    </InfoTooltip>
+                  </span>
+                  <select value={einkommen} onChange={e => { setEinkommen(e.target.value as EinkommenKey); setOInvest(null); }}
+                    style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer" }}>
+                    {EINKOMMEN_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+                  </select>
+                </div>
+                {einkommen !== "none" && (
+                  <label style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: v('--color-text-secondary'), cursor: "pointer", marginBottom: 4 }}>
+                    <input type="checkbox" checked={kindImHaushalt} onChange={e => { setKindImHaushalt(e.target.checked); setOInvest(null); }} style={{ cursor: "pointer" }} />
+                    Mindestens ein Kind im Haushalt (Einkommensgrenze +10.000 €)
+                  </label>
+                )}
                 {oInvest !== null && (
                   <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6 }}>Investition manuell überschrieben — Förderung wirkt erst wieder nach Zurücksetzen.</div>
                 )}
@@ -515,11 +525,11 @@ export default function Waermepumpe() {
                 )}
 
                 <div style={{ fontSize: 11, color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, marginTop: 12, lineHeight: 1.6 }}>
-                  Quellen: Fraunhofer ISE „WPsmart im Bestand" (JAZ-Modell), BWP Preisübersicht 2024 (Investition), BAFA/KfW BEG 2026 (Förderung), BDEW (Strom-/Gaspreise), dena-Gebäudereport &amp; DIN V 18599 (Heizwärmebedarf), BEHG + EU ETS2 (CO₂-Preispfad).
+                  Quellen: Fraunhofer ISE „WPsmart im Bestand" (JAZ-Modell), BWP Preisübersicht 2024 (Investition), KfW Merkblatt 458 / BEG EM ab 21.07.2026 (Förderung), BDEW (Strom-/Gaspreise), dena-Gebäudereport &amp; DIN V 18599 (Heizwärmebedarf), BEHG + EU ETS2 (CO₂-Preispfad).
                 </div>
                 {inputs.situation === "bestand" && result.beg.amount > 0 && (
                   <div style={{ fontSize: 11, color: v('--color-text-muted'), paddingTop: 8, lineHeight: 1.6 }}>
-                    Angenommen ist der Regelfall: selbstnutzender Eigentümer, Austausch einer funktionsfähigen fossilen Heizung, Wärmepumpe mit natürlichem Kältemittel. Die Förderung muss vor der Beauftragung bei der KfW beantragt werden — ob die Boni bei dir greifen, hängt von deiner individuellen Situation ab.
+                    Angenommen ist der Regelfall: selbstnutzender Eigentümer, der eine funktionsfähige alte fossile Heizung ersetzt (Grundförderung + Klima-Geschwindigkeits-Bonus). Der Einkommens-Bonus hängt von deinem Haushaltseinkommen ab und ist standardmäßig nicht eingerechnet. Die Förderung muss vor der Beauftragung bei der KfW beantragt werden — ob die Boni bei dir greifen, hängt von deiner individuellen Situation ab.
                   </div>
                 )}
               </div>
@@ -550,16 +560,11 @@ export default function Waermepumpe() {
                 <div style={{ fontSize: 13, lineHeight: 2, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 12 }}>
                   <div>Anlagengröße: <InlineEdit value={pvKwp} onCommit={v => setPvKwp(v)} unit=" kWp" min={2} max={30} step={0.5} width={60} fmt={v => (Math.round(v * 10) / 10).toString().replace(".", ",")} /></div>
                   <div>Batteriespeicher: <InlineEdit value={pvSpeicher} onCommit={v => setPvSpeicher(v)} unit=" kWh" min={0} max={30} step={1} width={60} /></div>
-                  <div style={{ marginTop: 8, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
-                    PV deckt <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> des WP-Strombedarfs ({result.pvStromSavings.toLocaleString("de-DE")} € Ersparnis über {DEFAULT_HEATPUMP_CONFIG.years} Jahre)
-                    {pvStatus === "geplant" && result.pvInvest > 0 && (
-                      <> · PV-Invest <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary') }}>{result.pvInvest.toLocaleString("de-DE")} €</span> wird mit angerechnet</>
-                    )}
-                    {pvStatus === "vorhanden" && (
-                      <> · PV-Invest bereits getätigt, wird nicht angerechnet</>
-                    )}
+
+                  <div style={{ marginTop: 10, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6 }}>
+                    WP-Synergie durch PV: <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.pvBenefit.toLocaleString("de-DE")} €</span> über {DEFAULT_HEATPUMP_CONFIG.years} Jahre — die PV deckt <span style={{ fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> des WP-Strombedarfs.
                     <div style={{ marginTop: 4, fontSize: 11, color: v('--color-text-faint') }}>
-                      Quelle: HTW Berlin Lastprofile. Winter-Schwäche berücksichtigt — realistische Bandbreite 10–30 %.
+                      Angerechnet wird nur der Solarstrom, den die Wärmepumpe zusätzlich selbst verbraucht (spart den WP-Tarif statt niedriger Einspeisung). Die PV-Anschaffung und ihr voller Nutzen (Haushaltsstrom, Einspeisung) rechnest du im <Link href="/photovoltaik-rechner" style={{ color: v('--color-accent'), textDecoration: "underline" }}>PV-Rechner</Link> — das gehört nicht in die Wärmepumpe-vs-Gas-Rechnung.
                     </div>
                   </div>
                 </div>
@@ -571,7 +576,7 @@ export default function Waermepumpe() {
               <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
                 PV-Rechner öffnen <IconArrowRight size={iconSizes.sm} />
               </Link>
-              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setKlimaBonus(true); setEffizienzBonus(true); setIncomeBonus(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
+              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setKlimaBonus(true); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>
@@ -605,9 +610,9 @@ function TcoBreakdown({ r, situation, jahre, sanierungHinweis }: { r: HeatPumpRe
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontWeight: 700, marginBottom: 2 }}>Wärmepumpe kostet</div>
         <Row label="Investition (nach Förderung)" val={r.investNetto} />
-        {r.pvInvest > 0 && <Row label="PV-Anlage" val={r.pvInvest} />}
         <Row label="Strom" val={r.stromKosten} />
         <Row label="Wartung" val={r.wartungWp} />
+        {r.pvBenefit > 0 && <Row label="− PV-Synergie" val={-r.pvBenefit} />}
         <div style={{ borderTop: `1px solid ${v('--color-border')}`, marginTop: 2, paddingTop: 2 }}><Row label="Summe" val={r.tcoWp} strong /></div>
       </div>
       <div style={{ marginBottom: 8 }}>
@@ -641,6 +646,18 @@ function StatCard({ label, value, positive, help, helpTitle, helpAriaLabel }: { 
     </div>
   );
 }
+
+// BEG Einkommens-Bonus (KfW 458 ab 21.07.2026): gestaffelt nach zu versteuerndem
+// Haushaltsjahreseinkommen. Das repräsentative Einkommen pro Stufe reicht, weil die
+// Rechen-Engine (calcBegSubsidy) daraus die Stufe + den Familienzuschlag ableitet.
+type EinkommenKey = "none" | "bis50" | "bis40" | "bis30";
+const EINKOMMEN_OPTIONS: { key: EinkommenKey; label: string; income?: number }[] = [
+  { key: "none",  label: "über 50.000 € / kein Bonus" },
+  { key: "bis50", label: "bis 50.000 € (+10 %)", income: 50000 },
+  { key: "bis40", label: "bis 40.000 € (+30 %)", income: 40000 },
+  { key: "bis30", label: "bis 30.000 € (+40 %)", income: 30000 },
+];
+const einkommenIncome = (k: EinkommenKey): number | undefined => EINKOMMEN_OPTIONS.find(o => o.key === k)?.income;
 
 function BonusToggle({ checked, onChange, label, tipTitle, children }: { checked: boolean; onChange: (c: boolean) => void; label: string; tipTitle: string; children: ReactNode }) {
   return (

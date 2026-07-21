@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Logo from "./Logo";
 import { IconUser, IconMenu, IconClose, IconChevronDown } from "./Icons";
 import { v, iconSizes } from "../lib/theme";
-import { useAuth } from "../lib/auth";
+import { useAuth, signOut } from "../lib/auth";
 import ThemeController from "./ThemeController";
 
 interface HeaderProps {
@@ -46,17 +46,28 @@ const FOERDERUNG_ITEMS: NavItem[] = [
 const ENERGIE_ITEMS: NavItem[] = [
   { href: "/strommix-deutschland", label: "Strommix Deutschland", desc: "Live-Stromerzeugung, Verlauf und Kernenergie", page: "energie" },
   { href: "/atomstrom-import", label: "Atomstrom-Import", desc: "Wie viel Kernstrom Deutschland aus dem Ausland bezieht", page: "atomstrom" },
+  { href: "/solar-atlas", label: "Solar-Atlas", desc: "Solar-Bestand je Region — Deutschland, Länder, Kreise", page: "atlas" },
   { href: "/energie-widgets", label: "Charts einbetten", desc: "Kostenlose Energie-Widgets für die eigene Website", page: "widgets" },
 ];
 
 export default function Header({ onLoginClick, onLogoutClick, activePage: activePageProp }: HeaderProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const authState = useAuth();
+  // Abmelden ohne durchgereichten Handler: nach dem Abmelden weg von der
+  // geschützten Seite und den Server-State auffrischen — sonst bliebe man auf
+  // dem Dashboard mit veralteter Sitzungsansicht stehen.
+  const defaultLogout = async () => {
+    await signOut();
+    router.push("/");
+    router.refresh();
+  };
   const activePage = activePageProp ?? (
     pathname === "/" ? "" :
     pathname.startsWith("/pv-simulation") ? "simulation" :
     pathname.startsWith("/strommix-deutschland") ? "energie" :
     pathname.startsWith("/atomstrom-import") ? "atomstrom" :
+    pathname.startsWith("/solar-atlas") ? "atlas" :
     pathname.startsWith("/energie-widgets") ? "widgets" :
     pathname.startsWith("/photovoltaik-rechner") ? "rechner" :
     pathname.startsWith("/waermepumpe-rechner") ? "waermepumpe" :
@@ -64,6 +75,8 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/balkonkraftwerk-rechner") ? "balkon" :
     pathname.startsWith("/photovoltaik-zubau-deutschland") ? "zubau" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
+    pathname.startsWith("/ratgeber") ? "ratgeber" :
+    pathname.startsWith("/lohnt-sich-pv") ? "ratgeber" :
     pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""
   );
@@ -71,7 +84,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   const [isDesktop, setIsDesktop] = useState(true);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
+    const mq = window.matchMedia("(min-width: 1000px)");
     setIsDesktop(mq.matches);
     const handler = (e: MediaQueryListEvent) => {
       setIsDesktop(e.matches);
@@ -91,6 +104,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     display: "inline-flex",
     alignItems: "center",
     gap: 6,
+    whiteSpace: "nowrap",
   });
 
   const mobileLinkStyle = (page: string): React.CSSProperties => ({
@@ -106,8 +120,13 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
   const authElement = authState.status === "loading" ? null :
     authState.status === "authed" ? (
-      onLogoutClick ? (
-        <button onClick={() => { onLogoutClick(); closeMenu(); }} style={{
+      // Der Header sitzt im Seitenlayout und bekommt darum keine Handler mehr
+      // durchgereicht. „Abmelden" leitet sich deshalb aus dem Pfad ab (auf dem
+      // Dashboard) und meldet selbst ab — sonst stünde dort ein Dashboard-Link
+      // auf sich selbst und gar kein Abmelden. Ein explizit übergebener Handler
+      // gewinnt weiterhin.
+      onLogoutClick || pathname.startsWith("/dashboard") ? (
+        <button onClick={() => { (onLogoutClick ?? defaultLogout)(); closeMenu(); }} style={{
           background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
           color: v('--color-text-muted'), cursor: "pointer", padding: isDesktop ? 0 : "12px 0",
           fontFamily: v('--font-text'),
@@ -165,6 +184,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
               items={FOERDERUNG_ITEMS}
               activePage={activePage}
             />
+            <Link href="/ratgeber" style={linkStyle("ratgeber")}>Ratgeber</Link>
             <DesktopDropdown
               triggerLabel="Strommix & Energiedaten"
               triggerHref="/strommix-deutschland"
@@ -220,6 +240,10 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
             <MobileSection title="PV-Förderung" items={FOERDERUNG_ITEMS} activePage={activePage} onNavigate={closeMenu} />
+
+            <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
+
+            <Link href="/ratgeber" style={mobileLinkStyle("ratgeber")} onClick={closeMenu}>Ratgeber</Link>
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
@@ -279,6 +303,7 @@ function DesktopDropdown({
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
+          whiteSpace: "nowrap",
           cursor: "pointer",
           color: active ? v('--color-accent') : v('--color-text-secondary'),
         }}

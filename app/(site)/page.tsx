@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Header from "../../components/Header";
 import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser, IconSnowflake, IconEuro, IconPanel } from "../../components/Icons";
 import { MastrHeroSection } from "../../components/MastrHeroSection";
 import Faq from "../../components/Faq";
@@ -79,7 +78,6 @@ export default function Home() {
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
 
-        <Header />
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
@@ -93,6 +91,18 @@ export default function Home() {
       {/* MaStR Hero Map — wider container, breaks out of the 480px column */}
       <div style={{ maxWidth: 760, margin: "0 auto 36px" }}>
         <MastrHeroSection />
+        <div style={{ textAlign: "center", marginTop: 12 }}>
+          <Link
+            href="/solar-atlas"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              fontSize: 14, fontWeight: 700, textDecoration: "none",
+              color: v('--color-accent'),
+            }}
+          >
+            Zum Solar-Atlas: Bestand in ganz Deutschland <IconArrowRight size={iconSizes.sm} />
+          </Link>
+        </div>
       </div>
 
       {/* Tool Cards — breiter Container, 2-spaltig auf Desktop */}

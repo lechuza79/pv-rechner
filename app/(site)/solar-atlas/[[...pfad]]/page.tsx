@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import Header from "../../../../components/Header";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
@@ -9,6 +8,7 @@ import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../li
 import { atlasIsIndexable, atlasRobots } from "../../../../lib/atlas-index";
 import ZubauChart from "../../../../components/atlas/ZubauChart";
 import RankingTable from "../../../../components/atlas/RankingTable";
+import AtlasKpiRow from "../../../../components/atlas/AtlasKpiRow";
 import { MastrHeroSection } from "../../../../components/MastrHeroSection";
 import {
   resolveSlugPath,
@@ -128,6 +128,44 @@ export default async function AtlasPage({ params }: { params: Params }) {
     ? Math.round((atlas.solar.total_kwp * 1000) / region.population)
     : null;
 
+  // Vergleichs-Ebenen für die „Tendenz je Einwohner" (in der KPI-Reihe umschaltbar):
+  // Kreis → Bundesland/Deutschland, Bundesland → Deutschland; Default ist die
+  // nächsthöhere Ebene. Deutschland selbst hat keinen Elternteil → keine Tendenz.
+  const refChain =
+    region.level === "landkreis"
+      ? [{ key: "bundesland", ags: region.region_id.slice(0, 2) }, { key: "de", ags: "de" }]
+      : region.level === "bundesland"
+        ? [{ key: "de", ags: "de" }]
+        : [];
+  const refData = await Promise.all(
+    refChain.map(async (r) => {
+      const [a, reg] = await Promise.all([getRegionAtlasData(r.ags), getRegionById(r.ags)]);
+      return { key: r.key, name: r.key === "de" ? "Deutschland" : reg?.name ?? r.ags, atlas: a, pop: reg?.population ?? null };
+    }),
+  );
+  type AtlasData = Awaited<ReturnType<typeof getRegionAtlasData>>;
+  const perCapOf = (a: AtlasData, pop: number | null) =>
+    pop
+      ? {
+          count: a.solar.total_count / pop,
+          kwp: a.solar.total_kwp / pop,
+          neuLast: (a.solar.by_year.find((y) => y.year === lastYear)?.count ?? 0) / pop,
+          neuThis: (a.solar.by_year.find((y) => y.year === thisYear)?.count ?? 0) / pop,
+        }
+      : { count: null, kwp: null, neuLast: null, neuThis: null };
+  const regionPerCap = perCapOf(atlas, region.population ?? null);
+  const kpiRefs = refData
+    .filter((r) => r.pop)
+    .map((r) => ({ key: r.key, name: r.name, perCap: perCapOf(r.atlas, r.pop) }));
+  const kpiTiles = [
+    { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
+    { label: "Installiert", value: fmtLeistung(atlas.solar.total_kwp), metric: "kwp" },
+    { label: "je Einwohner", value: wPerCapita === null ? "—" : `${nf(wPerCapita)} W`, metric: "kwp" },
+    { label: `Neu ${lastYear}`, value: nf(lastYearRow?.count ?? 0), metric: "neuLast" },
+    { label: `Neu ${thisYear} bisher`, value: nf(thisYearRow?.count ?? 0), metric: "neuThis" },
+  ];
+  const defaultRefKey = kpiRefs[0]?.key ?? "";
+
   const childNoun =
     childLevel === "bundesland" ? "Bundesländer" : childLevel === "landkreis" ? "Kreise" : "Gemeinden";
 
@@ -153,7 +191,6 @@ export default async function AtlasPage({ params }: { params: Params }) {
 
   return (
     <div style={S.page}>
-      <Header />
       {crumbs.length > 1 && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       )}
@@ -179,36 +216,26 @@ export default async function AtlasPage({ params }: { params: Params }) {
           )}
         </p>
 
-        <div style={S.metricsGrid}>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Solaranlagen</div>
-            <div style={S.metricValue}>{nf(atlas.solar.total_count)}</div>
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Installiert</div>
-            <div style={S.metricValue}>{fmtLeistung(atlas.solar.total_kwp)}</div>
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>W je Einwohner</div>
-            <div style={S.metricValue}>{wPerCapita === null ? "—" : nf(wPerCapita)}</div>
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Neu {lastYear}</div>
-            <div style={S.metricValue}>{nf(lastYearRow?.count ?? 0)}</div>
-          </div>
-          <div style={S.metric}>
-            <div style={S.metricLabel}>Neu {thisYear} bisher</div>
-            <div style={S.metricValue}>{nf(thisYearRow?.count ?? 0)}</div>
-          </div>
-        </div>
+        <AtlasKpiRow
+          tiles={kpiTiles}
+          regionPerCap={regionPerCap}
+          references={kpiRefs}
+          defaultRefKey={defaultRefKey}
+        />
 
-        <div style={S.section}>
-          <h2 style={S.h2}>Solaranlagen auf der Karte</h2>
-          <p style={S.sub}>
-            Tippen Sie auf ein Gebiet, um tiefer einzutauchen — bis auf Gemeindeebene.
-          </p>
-          <MastrHeroSection initialRegion={region.level === "de" ? "de" : region.region_id} initialTraeger="solar" />
-        </div>
+        {/* Karte nur ab Bundesland-Ebene: die Deutschland-Übersicht zeigt dieselbe
+            interaktive Karte schon auf der Startseite — auf der DE-Atlas-Seite wäre
+            sie redundant (und dupliziert Inhalt gegenüber der Startseite). Ab
+            Bundesland/Kreis zeigt die Karte die konkrete Region und ist einzigartig. */}
+        {region.level !== "de" && (
+          <div style={S.section}>
+            <h2 style={S.h2}>Solaranlagen auf der Karte</h2>
+            <p style={S.sub}>
+              Tippen Sie auf ein Gebiet, um tiefer einzutauchen — bis auf Gemeindeebene.
+            </p>
+            <MastrHeroSection initialRegion={region.region_id} initialTraeger="solar" />
+          </div>
+        )}
 
         <div style={S.section}>
           <h2 style={S.h2}>
@@ -223,6 +250,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
             cells={ranking.cells}
             basePath={basePath}
             lastFullYear={lastYear}
+            popInMillions={childLevel === "bundesland"}
           />
         </div>
 
@@ -297,9 +325,10 @@ const S: Record<string, React.CSSProperties> = {
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 },
   metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
+  tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: "0 2px 24px" },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
   sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px", lineHeight: 1.6 },
-  section: { marginBottom: 28 },
+  section: { marginBottom: 50 },
   card: {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,

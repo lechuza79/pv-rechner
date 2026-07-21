@@ -3,7 +3,9 @@
 // real data pipeline is still being populated. Once mastr_aggregates is
 // filled, only `loadFromSupabase` needs to flip to true.
 
+import { unstable_cache } from "next/cache";
 import { BUNDESLAENDER, bundeslandByAgs } from "./mastr-regions";
+import { withDbTimeout } from "./db-timeout";
 import { ENCLOSED_CITIES } from "./enclosed-cities";
 
 export type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
@@ -188,7 +190,10 @@ async function fetchMetaDataAsOf(): Promise<string> {
   if (metaDataAsOfCache && Date.now() - metaFetchedAt < 5 * 60 * 1000) return metaDataAsOfCache;
   const { supabase } = await import("./supabase-server");
   if (!supabase) return PLACEHOLDER_AS_OF;
-  const { data } = await supabase.from("mastr_meta").select("imported_at").eq("id", 1).maybeSingle();
+  const { data } = await withDbTimeout(
+    supabase.from("mastr_meta").select("imported_at").eq("id", 1).maybeSingle(),
+    "getDataAsOf",
+  );
   const iso = data?.imported_at ?? PLACEHOLDER_AS_OF;
   metaDataAsOfCache = typeof iso === "string" ? iso.substring(0, 10) : PLACEHOLDER_AS_OF;
   metaFetchedAt = Date.now();
@@ -239,13 +244,16 @@ export async function loadChildren(
   const { supabase } = await import("./supabase-server");
   if (!supabase) throw new Error("Supabase not configured");
 
-  const { data, error } = await supabase.rpc("mastr_children", {
-    p_prefix: prefixOf(parent),
-    p_child_len: LEVEL_LEN[childLevel],
-    p_traeger: traegerList(energietraeger),
-    p_year_recent: yearRecent ?? null,
-    p_year_max: yearMax ?? null,
-  });
+  const { data, error } = await withDbTimeout(
+    supabase.rpc("mastr_children", {
+      p_prefix: prefixOf(parent),
+      p_child_len: LEVEL_LEN[childLevel],
+      p_traeger: traegerList(energietraeger),
+      p_year_recent: yearRecent ?? null,
+      p_year_max: yearMax ?? null,
+    }),
+    "mastr_children",
+  );
   if (error) throw new Error(`mastr_children failed: ${error.message}`);
   return (data ?? []).map((r: ChildRow) => ({
     region_id: r.region_id,
@@ -263,10 +271,13 @@ async function loadSeries(regionId: string, energietraeger: Energietraeger): Pro
   const { supabase } = await import("./supabase-server");
   if (!supabase) throw new Error("Supabase not configured");
 
-  const { data, error } = await supabase.rpc("mastr_region_series", {
-    p_prefix: prefixOf(regionId),
-    p_traeger: traegerList(energietraeger),
-  });
+  const { data, error } = await withDbTimeout(
+    supabase.rpc("mastr_region_series", {
+      p_prefix: prefixOf(regionId),
+      p_traeger: traegerList(energietraeger),
+    }),
+    "mastr_region_series",
+  );
   if (error) throw new Error(`mastr_region_series failed: ${error.message}`);
   return (data ?? []).map((r: SeriesRow) => ({
     energietraeger: r.energietraeger,
@@ -368,11 +379,10 @@ async function supabaseRegionSummary(
     const { supabase } = await import("./supabase-server");
     let lookedUp: string | null = null;
     if (supabase) {
-      const { data } = await supabase
-        .from("mastr_regions")
-        .select("name")
-        .eq("region_id", regionId)
-        .maybeSingle();
+      const { data } = await withDbTimeout(
+        supabase.from("mastr_regions").select("name").eq("region_id", regionId).maybeSingle(),
+        "regionName",
+      );
       lookedUp = (data as { name?: string } | null)?.name ?? null;
     }
     name = lookedUp ?? regionId;
@@ -481,6 +491,13 @@ export type RegionAtlas = {
     total_kwp: number;
     by_segment: SegmentBreakdown[];
     by_year: { year: number; count: number; kwp: number }[];
+    /**
+     * The (segment x year) grain the RPC already delivers, kept instead of being
+     * summed away twice. by_segment and by_year each drop one of the two axes,
+     * which makes "new in <year>, private only" impossible to answer from them.
+     * Small enough to carry (segments x years, not regions).
+     */
+    by_year_segment: { year: number; segment: string; count: number; kwp: number }[];
   };
   /**
    * count = all electricity stores; kwh_batterie = usable capacity of home and
@@ -488,7 +505,14 @@ export type RegionAtlas = {
    * one Goldisthal (8,7 GWh) would swamp the figure and make "kWh per kWp"
    * meaningless. count still includes it so the tally stays honest.
    */
-  speicher: { count: number; kwp: number; kwh_batterie: number };
+  speicher: {
+    count: number;
+    kwp: number;
+    kwh_batterie: number;
+    /** Per segment (batterie_privat / batterie_gewerbe / pumpspeicher / …), so a
+     *  storage figure can follow the same owner filter as the solar figures. */
+    by_segment: { segment: string; count: number; kwp: number; kwh: number }[];
+  };
   /** Weitere Erzeuger je Gemeinde (installierte Leistung kWp/kW), aus derselben
    *  MaStR-Aggregation wie Solar. Für den Technologie-Mix. */
   generators: {
@@ -499,14 +523,17 @@ export type RegionAtlas = {
   data_as_of: string;
 };
 
-export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas> {
+async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas> {
   const { supabase } = await import("./supabase-server");
   if (!supabase) throw new Error("Supabase not configured");
 
-  const { data, error } = await supabase.rpc("mastr_region_series", {
-    p_prefix: prefixOf(regionId),
-    p_traeger: ["solar", "speicher", "wind", "biomasse", "wasser"],
-  });
+  const { data, error } = await withDbTimeout(
+    supabase.rpc("mastr_region_series", {
+      p_prefix: prefixOf(regionId),
+      p_traeger: ["solar", "speicher", "wind", "biomasse", "wasser"],
+    }),
+    "mastr_region_series/atlas",
+  );
   if (error) throw new Error(`mastr_region_series failed: ${error.message}`);
   const rows = (data ?? []) as SeriesRow[];
 
@@ -514,9 +541,11 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
   let solarKwp = 0;
   const segBuckets: Record<string, { count: number; kwp: number }> = {};
   const yearBuckets: Record<number, { count: number; kwp: number }> = {};
+  const yearSegBuckets: Record<string, { year: number; segment: string; count: number; kwp: number }> = {};
   let speicherCount = 0;
   let speicherKwp = 0;
   let batterieKwh = 0;
+  const speicherSegBuckets: Record<string, { segment: string; count: number; kwp: number; kwh: number }> = {};
   const gen: Record<string, { count: number; kwp: number }> = {
     wind: { count: 0, kwp: 0 },
     biomasse: { count: 0, kwp: 0 },
@@ -529,7 +558,12 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
     if (r.energietraeger === "speicher") {
       speicherCount += count;
       speicherKwp += kwp;
-      if (r.segment.startsWith("batterie")) batterieKwh += Number(r.kwh);
+      const kwh = Number(r.kwh);
+      if (r.segment.startsWith("batterie")) batterieKwh += kwh;
+      const sp = (speicherSegBuckets[r.segment] ??= { segment: r.segment, count: 0, kwp: 0, kwh: 0 });
+      sp.count += count;
+      sp.kwp += kwp;
+      if (r.segment.startsWith("batterie")) sp.kwh += kwh;
       continue;
     }
     // Andere Erzeuger (Wind/Biomasse/Wasser) getrennt sammeln — NICHT als Solar
@@ -552,6 +586,14 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
       const yr = (yearBuckets[r.year] ??= { count: 0, kwp: 0 });
       yr.count += count;
       yr.kwp += kwp;
+      const ys = (yearSegBuckets[`${r.year}|${r.segment}`] ??= {
+        year: r.year,
+        segment: r.segment,
+        count: 0,
+        kwp: 0,
+      });
+      ys.count += count;
+      ys.kwp += kwp;
     }
   }
 
@@ -567,12 +609,31 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
 
   return {
     region_id: regionId,
-    solar: { total_count: solarCount, total_kwp: solarKwp, by_segment, by_year },
-    speicher: { count: speicherCount, kwp: speicherKwp, kwh_batterie: batterieKwh },
+    solar: {
+      total_count: solarCount,
+      total_kwp: solarKwp,
+      by_segment,
+      by_year,
+      by_year_segment: Object.values(yearSegBuckets).sort((a, b) => a.year - b.year),
+    },
+    speicher: {
+      count: speicherCount,
+      kwp: speicherKwp,
+      kwh_batterie: batterieKwh,
+      by_segment: Object.values(speicherSegBuckets),
+    },
     generators: { wind: gen.wind, biomasse: gen.biomasse, wasser: gen.wasser },
     data_as_of: await fetchMetaDataAsOf(),
   };
 }
+
+// Aggregat-Reads (region_series) sind über tausende Atlas-Seiten identisch — vor
+// allem die DE-/Land-/Kreis-Schnitte, die jede Gemeinde-Seite für die Tendenz
+// braucht. Cachen spart die wiederholte, teure Aggregation. Args (regionId) sind
+// Teil des Cache-Keys; revalidate passend zur monatlichen Datenaktualität + ISR.
+export const getRegionAtlasData = unstable_cache(getRegionAtlasDataUncached, ["region-atlas-v2"], {
+  revalidate: 3600,
+});
 
 // ─── National yearly solar additions (for the "Zubau-Zeitleiste" story) ──────
 // Sums the whole solar aggregate table by commissioning year into one national
