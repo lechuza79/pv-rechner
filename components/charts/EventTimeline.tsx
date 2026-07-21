@@ -20,6 +20,9 @@ export interface TimelineEvent {
   government?: string;
   /** true = geplant/noch nicht beschlossen (Ausblick) — Dot hohl statt gefüllt. */
   planned?: boolean;
+  /** true = einschneidender Wendepunkt (die Kurve knickt sichtbar) — bekommt im
+   *  Chart zusätzlich eine gepunktete Vertikale. Bewusst sparsam vergeben. */
+  major?: boolean;
 }
 
 interface Props {

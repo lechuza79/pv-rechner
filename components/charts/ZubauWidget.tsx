@@ -44,18 +44,21 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
     label: "EEG-Novelle",
     text: "Die Vergütung steigt auf ihren Höchststand von über 57 ct/kWh. Der erste große Zubau-Boom beginnt — Einspeisen allein trägt die Anlage.",
     government: "Rot-grüne Koalition (SPD/Grüne), Umweltminister Jürgen Trittin (Grüne).",
+    major: true,
   },
   {
     year: 2012,
     label: "Vergütungskürzung",
     text: "Drastische Kürzungen und der Wechsel auf monatliche Degression. Der Satz fällt unter den Haushaltsstrompreis — Einspeisen lohnt weniger als der selbst genutzte Strom, der Kleindach-Zubau bricht ein.",
     government: "Schwarz-gelbe Koalition (CDU/CSU/FDP), Kanzlerin Merkel — Umweltminister Röttgen (CDU) und Wirtschaftsminister Rösler (FDP).",
+    major: true,
   },
   {
     year: 2022,
     label: "Energiekrise",
     text: "Nach dem russischen Angriff auf die Ukraine explodieren Gas- und Strompreise. Damit wird jede selbst genutzte Kilowattstunde deutlich wertvoller — der Preisschock ist die Ursache des folgenden Zubau-Sprungs, nicht seine Folge. Im selben Jahr wird die Einspeisevergütung erstmals seit Langem wieder angehoben (Osterpaket/EEG 2023, höhere Sätze ab Ende Juli 2022).",
     government: "Ampel-Koalition (SPD/Grüne/FDP), Kanzler Scholz — die Vergütungsanhebung kam mit dem „Osterpaket“ aus dem Wirtschafts- und Klimaministerium (Robert Habeck, Grüne). Der Preisschock selbst war keine politische Entscheidung.",
+    major: true,
   },
   {
     year: 2023,
@@ -83,6 +86,9 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
     government: "Schwarz-rote Koalition (CDU/CSU/SPD), Kanzler Merz — Referentenentwurf aus dem Wirtschaftsministerium (Katharina Reiche, CDU), abgestimmt mit Umweltminister Carsten Schneider (SPD).",
   },
 ];
+
+/** Jahre der einschneidenden Wendepunkte — im Chart als gepunktete Vertikale. */
+export const ZUBAU_MILESTONE_YEARS: number[] = ZUBAU_EVENTS.filter((e) => e.major).map((e) => e.year);
 
 export const ZUBAU_WIDGET_SOURCES: DataSource[] = [DATA_SOURCES.mastr, DATA_SOURCES.eegVerguetung, DATA_SOURCES.eurostat];
 export const ZUBAU_EMBED_HASH = "pv-zubau-deutschland";
@@ -197,6 +203,7 @@ export default function ZubauWidget({
           future={future}
           feedIn={feedIn}
           price={price}
+          milestoneYears={ZUBAU_MILESTONE_YEARS}
           height={420}
         />
         <div style={{ marginTop: 6 }}>

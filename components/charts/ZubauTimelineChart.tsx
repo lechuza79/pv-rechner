@@ -30,6 +30,8 @@ export interface ZubauTimelineProps {
   feedIn: (number | null)[];
   /** Haushaltsstrompreis ct/kWh, index-gleich zu years (null = keine Zahl). */
   price: (number | null)[];
+  /** Jahre einschneidender Wendepunkte — bekommen eine gepunktete Vertikale. */
+  milestoneYears?: number[];
   height?: number;
 }
 
@@ -71,6 +73,7 @@ function Inner({
   future,
   feedIn,
   price,
+  milestoneYears,
   width,
   height,
 }: ZubauTimelineProps & { width: number; height: number }) {
@@ -158,6 +161,27 @@ function Inner({
             strokeDasharray="2,4"
             tickValues={leftTicks}
           />
+
+          {/* Einschneidende Wendepunkte: gepunktete Vertikale, hinter den Daten.
+             Bewusst nur wenige — sie markieren die Stellen, an denen die Kurve
+             sichtbar knickt. */}
+          {milestoneYears?.map((year) => {
+            const mx = xScale(year);
+            if (mx < 0 || mx > innerWidth) return null;
+            return (
+              <line
+                key={`ms-${year}`}
+                x1={mx}
+                x2={mx}
+                y1={0}
+                y2={innerHeight}
+                stroke="var(--color-text-muted, #949494)"
+                strokeWidth={1}
+                strokeDasharray="2,4"
+                strokeOpacity={0.55}
+              />
+            );
+          })}
 
           {/* Zubau-Balken (blau, oben leicht abgerundet). Künftiges Jahr ohne
              Daten = leerer Slot (kein Balken) — es gibt schlicht noch keine
