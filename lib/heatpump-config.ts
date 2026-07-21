@@ -37,13 +37,16 @@ export interface HeatPumpConfig {
   investSwwpPerKw: number;
   // Radiator replacement cost (triggered when old radiators selected)
   heizkoerperTauschKosten: number;
-  // BEG funding rates (BAFA/KfW 2026)
-  begGrundfoerderung: number;    // 30%
-  begKlimaBonus: number;         // 20% — Bestand only, heizungstausch
-  begEffizienzBonus: number;     // 5% — SWWP or natural refrigerant
-  begEinkommensBonus: number;    // 30% — opt-in (low income)
-  begMaxCap: number;             // Max förderfähige Kosten
-  begMaxRate: number;            // Cap overall at 70%
+  // BEG funding rates — KfW Merkblatt Nr. 458 (BEG EM), gültig ab 21.07.2026 (GmodG)
+  begGrundfoerderung: number;    // 30% — jeder Heizungstausch im Bestand
+  begKlimaBonus: number;         // 16% — Bestand, Austausch funktionsfähige fossile Heizung (Eigennutzer); sinkt ab 01.02.2027
+  // Einkommens-Bonus: gestaffelt nach zu versteuerndem Haushaltsjahreseinkommen.
+  // Aufsteigend nach maxIncome sortiert; der erste Treffer (income ≤ maxIncome) gilt.
+  begEinkommensStaffel: { maxIncome: number; rate: number }[];
+  begFamilienzuschlag: number;   // € — hebt die maßgebliche Einkommensgrenze bei ≥1 Kind im Haushalt
+  begMaxCap: number;             // Förderhöchstbetrag förderfähige Kosten (1. Wohneinheit); sinkt ab 01.02.2027
+  begMaxRate: number;            // Gesamt-Obergrenze Fördersatz (Regelfall) — 70%
+  begMaxRateLowIncome: number;   // Gesamt-Obergrenze niedrigstes Einkommen (≤30.000 € bzw. ≤40.000 € mit Kind) — 80%
   // Electricity price (§14a EnWG WP tariff, BDEW 2026)
   wpTarif: number;               // €/kWh
   wpMaintenance: number;         // €/a
@@ -94,11 +97,16 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   investSwwpPerKw: 1800,
   heizkoerperTauschKosten: 6000,
   begGrundfoerderung: 0.30,
-  begKlimaBonus: 0.20,
-  begEffizienzBonus: 0.05,
-  begEinkommensBonus: 0.30,
-  begMaxCap: 30000,
+  begKlimaBonus: 0.16,
+  begEinkommensStaffel: [
+    { maxIncome: 30000, rate: 0.40 },
+    { maxIncome: 40000, rate: 0.30 },
+    { maxIncome: 50000, rate: 0.10 },
+  ],
+  begFamilienzuschlag: 10000,
+  begMaxCap: 28000,
   begMaxRate: 0.70,
+  begMaxRateLowIncome: 0.80,
   wpTarif: 0.24,
   wpMaintenance: 200,
   gridCo2PerKwh: 0.38,   // DE-Netzmix 2024, konservativ statisch
@@ -112,7 +120,7 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   years: 20,
   gasInflation: 0.02,
   stromInflation: 0.02, // p.a. — konsistent mit PV-Rechner (SCENARIOS realistic + electricityIncrease)
-  source: "Fraunhofer ISE WPsmart, BWP Preisübersicht 2024, BAFA BEG 2026, BDEW",
-  validFrom: "2026-04-01",
-  reviewBy: "2027-01-31",
+  source: "Fraunhofer ISE WPsmart, BWP Preisübersicht 2024, KfW Merkblatt 458 (BEG EM, gültig ab 21.07.2026), BDEW",
+  validFrom: "2026-07-21",
+  reviewBy: "2027-01-25",   // vor der ersten Degression der Boni/Förderhöchstbeträge zum 01.02.2027
 };

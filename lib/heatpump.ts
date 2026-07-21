@@ -7,7 +7,7 @@
 //   JAZ      = a − b × T_Vorlauf                            (Fraunhofer ISE WPsmart)
 //   E_WP     = Q_ges / JAZ                                  (Energiebilanz)
 //   Invest   = base + perKw × Heizlast                      (BWP Preisübersicht)
-//   BEG      = Grund 30% + Klima 20% + Effizienz 5% (+Einkommen 30%)  — Bestand only
+//   BEG      = Grund 30% + Klima 16% (+Einkommen 40/30/10%, einkommensgestaffelt)  — Bestand only
 //   Gas-Ref  = fuelKwh × (price × 1.02^t + CO2_t)  + Grundgebühr + Wartung
 //   TCO_WP   = Invest_netto + Σ Strom + Σ Wartung
 //   Einsparung = TCO_Gas − TCO_WP
@@ -66,9 +66,9 @@ export interface HeatPumpInputs {
     gasPrice?: number;           // €/kWh
     gasEfficiency?: number;      // heating efficiency
     gasCo2?: number;             // kg CO2/kWh
-    incomeBonus?: boolean;       // opt-in BEG Einkommens-Bonus
-    klimaBonus?: boolean;        // BEG Klima-Bonus (Eigennutzer) — default true
-    effizienzBonus?: boolean;    // BEG Effizienz-Bonus (nat. Kältemittel) — default true
+    klimaBonus?: boolean;           // BEG Klima-Geschwindigkeits-Bonus (Eigennutzer) — default true
+    haushaltseinkommen?: number;    // zu versteuerndes Haushaltsjahreseinkommen (€) für den gestaffelten Einkommens-Bonus; undefined = kein Bonus
+    kindImHaushalt?: boolean;       // Familienzuschlag: hebt die Einkommensgrenze (begFamilienzuschlag)
   };
 }
 
@@ -135,43 +135,49 @@ export function calcInvestBrutto(wpType: "lwwp" | "swwp", heizlastKw: number, do
 }
 
 export interface BegOptions {
-  incomeBonus?: boolean;      // Einkommens-Bonus (bis 40.000 € Haushaltseinkommen)
-  klimaBonus?: boolean;       // Klima-Geschwindigkeits-Bonus (Eigennutzer, alte fossile Heizung) — default true
-  effizienzBonus?: boolean;   // Effizienz-Bonus (natürliches Kältemittel / Erdsonde) — default true
+  klimaBonus?: boolean;           // Klima-Geschwindigkeits-Bonus (Eigennutzer, alte fossile Heizung) — default true
+  haushaltseinkommen?: number;    // zu versteuerndes Haushaltsjahreseinkommen (€); undefined/über der obersten Stufe = kein Einkommens-Bonus
+  kindImHaushalt?: boolean;       // Familienzuschlag: hebt die maßgebliche Einkommensgrenze um begFamilienzuschlag
 }
 
+// KfW Merkblatt Nr. 458 (BEG EM), gültig ab 21.07.2026:
+//   Grundförderung 30 % (immer, Bestand)
+//   + Klima-Geschwindigkeits-Bonus 16 % (Eigennutzer, alte fossile Heizung)
+//   + Einkommens-Bonus gestaffelt 40/30/10 % nach Haushaltseinkommen
+//   Deckel 70 % (Regelfall) bzw. 80 % (niedrigstes Einkommen), max. 28.000 € Kosten.
+// Der frühere Effizienz-Bonus (5 % für natürliches Kältemittel) ist mit der Reform entfallen.
 export function calcBegSubsidy(situation: "bestand" | "neubau", wpType: "lwwp" | "swwp", investBrutto: number, opts: BegOptions = {}, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG) {
+  void wpType; // Kältemittel-/Quellentyp spielt für die Fördersätze keine Rolle mehr (Effizienz-Bonus entfallen)
   if (situation === "neubau") {
     return { rate: 0, amount: 0, breakdown: [{ label: "Neubau ohne BEG-Förderung", rate: 0 }] };
   }
-  // Boni sind an individuelle Voraussetzungen gebunden → abwählbar. Default an,
-  // weil die Kern-Zielgruppe (selbstnutzende Eigentümer, alte fossile Heizung,
-  // moderne WP mit R290) sie in der Regel bekommt. Grundförderung immer.
   const klimaBonus = opts.klimaBonus ?? true;
-  const effizienzBonus = opts.effizienzBonus ?? true;
-  const incomeBonus = opts.incomeBonus ?? false;
 
   const breakdown: { label: string; rate: number }[] = [];
   let rate = cfg.begGrundfoerderung;
   breakdown.push({ label: "Grundförderung", rate: cfg.begGrundfoerderung });
 
-  // Klima-Geschwindigkeits-Bonus: Tausch einer funktionierenden fossilen Heizung
+  // Klima-Geschwindigkeits-Bonus: Tausch einer funktionierenden (alten) fossilen Heizung
   if (klimaBonus) {
     rate += cfg.begKlimaBonus;
     breakdown.push({ label: "Klima-Geschwindigkeits-Bonus", rate: cfg.begKlimaBonus });
   }
 
-  // Effizienz-Bonus: SWWP oder natürliches Kältemittel (bei LWWP R290 angenommen)
-  if (effizienzBonus) {
-    rate += cfg.begEffizienzBonus;
-    breakdown.push({ label: wpType === "swwp" ? "Effizienz-Bonus (Sole/Wasser)" : "Effizienz-Bonus (R290)", rate: cfg.begEffizienzBonus });
+  // Einkommens-Bonus: gestaffelt. Ein Kind im Haushalt hebt die maßgebliche
+  // Einkommensgrenze (Familienzuschlag) → wir rechnen es als Abzug vom Einkommen.
+  // Die 80 %-Obergrenze gilt nur für die unterste Einkommensstufe.
+  let lowIncome = false;
+  if (opts.haushaltseinkommen != null && opts.haushaltseinkommen > 0) {
+    const adjusted = opts.haushaltseinkommen - (opts.kindImHaushalt ? cfg.begFamilienzuschlag : 0);
+    const tier = cfg.begEinkommensStaffel.find(t => adjusted <= t.maxIncome);
+    if (tier) {
+      rate += tier.rate;
+      breakdown.push({ label: "Einkommens-Bonus", rate: tier.rate });
+      if (adjusted <= cfg.begEinkommensStaffel[0].maxIncome) lowIncome = true;
+    }
   }
 
-  if (incomeBonus) {
-    rate += cfg.begEinkommensBonus;
-    breakdown.push({ label: "Einkommens-Bonus", rate: cfg.begEinkommensBonus });
-  }
-  rate = Math.min(rate, cfg.begMaxRate);
+  rate = Math.min(rate, lowIncome ? cfg.begMaxRateLowIncome : cfg.begMaxRate);
 
   const cappedInvest = Math.min(investBrutto, cfg.begMaxCap);
   const amount = Math.round(cappedInvest * rate);
@@ -206,9 +212,9 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   // 3. Investition & Förderung
   const investBrutto = calcInvestBrutto(inputs.wpType, heizlastKw, doHkTausch, cfg);
   const beg = calcBegSubsidy(inputs.situation, inputs.wpType, investBrutto, {
-    incomeBonus: inputs.override?.incomeBonus ?? false,
     klimaBonus: inputs.override?.klimaBonus ?? true,
-    effizienzBonus: inputs.override?.effizienzBonus ?? true,
+    haushaltseinkommen: inputs.override?.haushaltseinkommen,
+    kindImHaushalt: inputs.override?.kindImHaushalt,
   }, cfg);
   const investNetto = inputs.override?.investNetto ?? (investBrutto - beg.amount);
 

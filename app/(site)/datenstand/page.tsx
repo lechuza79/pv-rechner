@@ -302,7 +302,7 @@ export default async function DatenstandPage() {
             { label: "Warmwasser je Person", value: `${nf(HP.wwPerPerson)} kWh/a` },
             { label: "Investition Luft/Wasser (Basis laufend aktualisiert)", value: `${nf(prices.wpLwwpBase)} € + ${nf(prices.wpLwwpPerKw)} €/kW` },
             { label: "Investition Sole/Wasser", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },
-            { label: "BEG-Förderung (Grund + Boni)", value: `${nf(HP.begGrundfoerderung * 100)}–${nf(HP.begMaxRate * 100)} %, max. ${nf(HP.begMaxCap)} €` },
+            { label: "BEG-Förderung (Grund + Boni)", value: `${nf(HP.begGrundfoerderung * 100)}–${nf(HP.begMaxRateLowIncome * 100)} %, max. ${nf(HP.begMaxCap)} €` },
             { label: "WP-Stromtarif (§ 14a EnWG)", value: `${(HP.wpTarif * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct/kWh` },
             { label: "Gas-Referenz", value: `${nf(HP.gasPriceCtPerKwh)} ct/kWh, ${nf(HP.gasCo2PerKwh * 1000)} g CO₂/kWh` },
           ]}

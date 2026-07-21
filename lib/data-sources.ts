@@ -65,6 +65,11 @@ export const DATA_SOURCES = {
     name: "PVGIS (Europäische Kommission)",
     url: "https://joint-research-centre.ec.europa.eu/pvgis-online-tool_en",
   },
+  /** BEG heat-pump funding rates (Grundförderung + Boni, cap, income tiers). */
+  beg: {
+    name: "KfW / BMWE (BEG Heizungsförderung, Merkblatt 458)",
+    url: "https://www.kfw.de/458",
+  },
   /** Administrative boundaries for the Solar-Atlas map (Bundesländer, Kreise, Gemeinden). */
   bkg: {
     name: "GeoBasis-DE / BKG (Verwaltungsgebiete VG2500 · VG250)",
