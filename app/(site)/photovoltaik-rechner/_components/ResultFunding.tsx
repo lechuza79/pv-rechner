@@ -1,52 +1,47 @@
 "use client";
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 import Link from "next/link";
 import { v, iconSizes } from "../../../../lib/theme";
 import { IconArrowRight } from "../../../../components/Icons";
+import Modal from "../../../../components/Modal";
 import { FundingStatusBadge, FundingRates, FundingConditions } from "../../../../components/FundingProgramParts";
 import { fundingStandLabel, type FundingProgram } from "../../../../lib/funding-programs";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
 // Detail-Modal: zeigt alles, was wir zum Programm haben, ohne die Seite zu
-// verlassen (Portal + Esc/Klick-außen schließt).
-function FundingProgramModal({ program, onClose }: { program: FundingProgram; onClose: () => void }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+// verlassen. Mechanik (Escape, Klick daneben, Fokus, Bottom-Sheet auf schmalen
+// Bildschirmen) kommt aus dem geteilten Modal.
+//
+// `program` bleibt beim Schließen kurz erhalten, weil der Dialog sonst leer
+// ausblendet — das Modal bleibt bis zum Ende der Animation gemountet.
+function FundingProgramModal({ program, onClose }: { program: FundingProgram | null; onClose: () => void }) {
+  const [shownProgram, setShownProgram] = useState(program);
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
-  if (!mounted) return null;
-  return createPortal(
-    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: 16 }}>
-      <div onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" style={{ background: v("--color-bg"), borderRadius: v("--radius-lg"), maxWidth: 480, width: "100%", maxHeight: "85vh", overflowY: "auto", padding: "20px 18px", boxShadow: v("--shadow-lg"), fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 8 }}>
-          <span style={{ fontSize: 17, fontWeight: 800, lineHeight: 1.25 }}>{program.name}</span>
-          <button onClick={onClose} aria-label="Schließen" style={{ border: "none", background: "transparent", fontSize: 24, lineHeight: 0.8, cursor: "pointer", color: v("--color-text-muted"), padding: 0 }}>×</button>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
-          <FundingStatusBadge status={program.status} />
-          <span style={{ fontSize: 12, color: v("--color-text-secondary") }}>{program.traeger}</span>
-        </div>
-        <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 12 }}>
-          Förderfähig: <span style={{ color: v("--color-text-primary") }}>{program.coveredCosts}</span>{program.maxFoerderung ? ` · ${program.maxFoerderung}` : ""}
-        </div>
-        <div style={{ marginBottom: 14 }}>
-          <FundingRates rates={program.rates} bordered />
-        </div>
-        <div style={{ marginBottom: program.conditions.length > 0 ? 14 : 0 }}>
-          <FundingConditions conditions={program.conditions} />
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
-          <a href={program.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 700 }}>Zur offiziellen Quelle ›</a>
-          <span style={{ color: v("--color-text-muted") }}>{fundingStandLabel(program)}</span>
-        </div>
+    if (program) setShownProgram(program);
+  }, [program]);
+  if (!shownProgram) return null;
+
+  return (
+    <Modal open={!!program} onClose={onClose} title={shownProgram.name}>
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
+        <FundingStatusBadge status={shownProgram.status} />
+        <span style={{ fontSize: 12, color: v("--color-text-secondary") }}>{shownProgram.traeger}</span>
       </div>
-    </div>,
-    document.body,
+      <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 12 }}>
+        Förderfähig: <span style={{ color: v("--color-text-primary") }}>{shownProgram.coveredCosts}</span>{shownProgram.maxFoerderung ? ` · ${shownProgram.maxFoerderung}` : ""}
+      </div>
+      <div style={{ marginBottom: 14 }}>
+        <FundingRates rates={shownProgram.rates} bordered />
+      </div>
+      <div style={{ marginBottom: shownProgram.conditions.length > 0 ? 14 : 0 }}>
+        <FundingConditions conditions={shownProgram.conditions} />
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", fontSize: 12 }}>
+        <a href={shownProgram.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 700 }}>Zur offiziellen Quelle ›</a>
+        <span style={{ color: v("--color-text-muted") }}>{fundingStandLabel(shownProgram)}</span>
+      </div>
+    </Modal>
   );
 }
 
@@ -202,7 +197,7 @@ export default function ResultFunding({
         Alle Förderprogramme <IconArrowRight size={iconSizes.xs} />
       </Link>
 
-      {modalProgram && <FundingProgramModal program={modalProgram} onClose={() => setModalProgram(null)} />}
+      <FundingProgramModal program={modalProgram} onClose={() => setModalProgram(null)} />
     </div>
   );
 }

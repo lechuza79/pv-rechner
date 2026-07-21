@@ -325,6 +325,8 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] Flaggschiff-Ratgeber **`/lohnt-sich-pv-mit-speicher`**: Server Component (ISR 3600), rechnet die Beispieltabelle (10 kWp × 0/5/10 kWh: Investition, EV, Autarkie aus der Stundensimulation, Amortisation, 25-J-Gewinn) live mit den geteilten Funktionen (`calcEigenverbrauch`, `calc`, `estimateCost`, `simulatePvYear`) und Live-Marktpreisen — driftet nie vom Rechner. FAQ via `pvSpeicherFaq(prices)` in `lib/faq.ts` (bekommt die Live-Preise durchgereicht, damit FAQ und Tabelle auf derselben Seite identische Beträge zeigen) + `<Faq>` (FAQPage-JSON-LD). In Sitemap (0.8); Rechner-FAQ verlinkt hin.
   - Zwei **Beispiel-Teaser** (ohne / mit 10 kWh Speicher): recyceln die Rechner-`Chart`-Komponente (3-Szenarien-Amortisationskurve) + ResultStats-Kacheln (Amortisation / Rendite 25 J / ⌀ Ersparnis), gerechnet aus derselben `computeExample`-Quelle wie die Tabelle. Jeder Teaser hat einen Deep-Link `/photovoltaik-rechner?a=2&s=…&p=2&n=1&st=…&er=…`, der den Rechner exakt auf die Teaser-Zahlen vorbelegt (`st`/`er` explizit, weil der Rechner-Default-Strompreis 0,34 € vom kanonischen prices-config-Wert abweicht).
 - [x] Ratgeber **`/lohnt-sich-pv-ohne-einspeiseverguetung`** (EEG-Reform 2027): gleiches Muster wie der Speicher-Ratgeber (ISR, live gerechnet, `pvOhneEinspeisungFaq` in `lib/faq.ts`, Teaser mit Deep-Link `eia=0` = Einspeise-3-State „Aus"). Reform-Aussagen als datierter Sachstand (`REFORM_STAND`, Entwurf ≠ beschlossen) — EEG-Wächter pflegt sie zusammen mit der Rechner-Notiz. Preis-Fetch der Guide-Seiten geteilt in `lib/prices-server.ts` (Speicher-Seite umgestellt).
+- [x] Daten-Story **`/photovoltaik-zubau-deutschland`** („Wie Förderung den Solarausbau geformt hat", in Hauptnav unter PV-Förderung + Sitemap): nationaler PV-Zubau pro Jahr (Balken) mit überlagerter Einspeisevergütung (grün) + Haushaltsstrompreis (grau, beide ct/kWh, geteilte rechte Achse) und interaktiver **Ereignis-Timeline** (ARIA-Tabs, tippen/wischen/←→, alle Panels im DOM). Erzählt den Vergütungs-getriebenen Boom bis 2012 und den Eigenverbrauchs-getriebenen ab 2022. **Artikel = Fließtext über dem Widget; das Chart+Timeline ist ein eigenständiges, einbettbares Widget** (`components/charts/ZubauWidget.tsx`, geteilt): eigene Route `/embed/pv-zubau-deutschland` (ISR, noindex, `useWidgetTheme`, `embed=`/`branding=`-Flags, eigenes Label für Fremd-Embeds), Galerie-Sektion `pv-zubau-deutschland`, Quelle/`PoweredBy`/Export nach Widget-Konvention. Bausteine: `components/charts/ZubauTimelineChart.tsx` (Balken + 2 Halo-Linien) + `EventTimeline.tsx`.
+  - **Datenpflege (Runbook `scripts/zubau-story-verify.md`):** Balken = MaStR (`getNationalSolarByYear`, live/ISR, laufendes Jahr auto als unvollständig — **selbstwartend**). Vergütungsreihe `lib/feedin-history.ts` (2000–heute, gegen BNetzA-/SFV-Monatstabellen geprüft) + Strompreisreihe `lib/strommix-history.ts` = jährliche Ein-Wert-Anhänge, **automatisiert am `eeg-verguetung-verify-halbjaehrlich`-Wächter** (Januar: Vergütung, Juli: Eurostat-Preis). Neue **Politik-Marken** (`ZUBAU_EVENTS`) schlägt der `foerder-news-waechter` nur **vor** (Kandidat im Report) — Formulierung + Eintrag macht ein Mensch (zitierfähige Seite). Neue Quelle `eurostat` in `lib/data-sources.ts`; Reihe auf `/datenstand`.
 - [ ] Weitere Long-Tail-Landingpages (z.B. `/pv-kaufen-vs-enpal-mieten`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
 - [ ] Blog/Ratgeber-Sektion
@@ -548,6 +550,20 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 - **Rechtliches:** Nutzungsbedingungen unter `/widget-nutzungsbedingungen` (aus Galerie verlinkt), Datenschutz-Textbaustein für Einbettende in der Galerie, `ChartActionBar` enthält einen branding-unabhängigen „Anbieter & Impressum"-Menüpunkt (§ 5 DDG).
 - Icons/Buttons aus `components/Icons.tsx`.
 
+## Modals — BLOCKER
+
+**`components/Modal.tsx` ist DER Modal-Baustein. Modals werden nicht pro Stelle neu gebaut.** Die aufrufende Stelle liefert nur `open`, `onClose`, `title` (optional `intro`, `ariaLabel`, `maxWidth`) und den Inhalt als Children — das gesamte Verhalten kommt aus dem Baustein:
+
+- **Desktop zentriert, schmale Bildschirme (≤ 640 px) als Bottom-Sheet**, das von unten einfährt (oben abgerundet, unten bündig).
+- **Sanftes Ein- UND Ausblenden** (220 ms). Der Dialog bleibt bis zum Ende der Ausblende-Animation gemountet — wer ihn selbst mit `{x && <Modal …>}` aus dem Baum nimmt, killt genau diese Animation. Stattdessen `open={!!x}` und den Inhalt kurz halten (Muster: `FundingProgramModal` in `ResultFunding.tsx`). Der Umschalt-Effekt hängt an `rendered`, nicht nur an `open`: der Ausgangszustand braucht einen eigenen, gemalten Frame (zwei verschachtelte `requestAnimationFrame`), sonst gibt es nichts zu interpolieren.
+- **`prefers-reduced-motion` nimmt die BEWEGUNG, nicht die Rückmeldung:** das Fenster fährt dann nicht mehr ein, blendet aber weiter auf (140 ms). Die Animation ganz abzuschalten war ein Fehlgriff — das sah aus wie ein Bug („das Fenster ist einfach da") und war der Grund, warum der Übergang auf einem Rechner mit aktiviertem Systemschalter zu fehlen schien.
+- **Höhe begrenzt, Inhalt scrollt INNEN** (`dvh`) — der Absenden-Knopf bleibt auf flachen Displays und bei eingeblendeter Tastatur erreichbar.
+- **Schließen** per Escape, Klick daneben und ×. **Fokus** wandert beim Öffnen in den Dialog, bleibt per Tab-Falle darin und springt beim Schließen auf das auslösende Element zurück. Die Seite dahinter scrollt nicht mit. Gerendert per Portal an `document.body`.
+
+**Die Fokus-Falle beim Nachbauen:** Der Mechanik-Effekt darf NICHT am `onClose`-Callback hängen (die Aufrufer übergeben eine frische Inline-Funktion pro Render) — sonst läuft sein Aufräumen mitten im Tippen und reißt den Fokus aus dem Eingabefeld. Deshalb `onCloseRef` + Effekt nur an `open`. Genau solche Details sind der Grund für den geteilten Baustein.
+
+**Warum zentral (Juli 2026):** Es gab drei handgebaute Overlays (Klima-Detail, Energiefluss, Förderprogramm), die sich in Fokus-Rückgabe, Tab-Falle, Scroll-Sperre und Mobil-Verhalten unterschieden — dieselbe Streuung wie beim Header, bevor er ins Layout wanderte. Alle drei laufen jetzt über `Modal`. **Ausgenommen ist bewusst das Burger-Menü im Header** (`components/Header.tsx`): ein Navigations-Flyout, kein Dialog — es darf weder den Fokus fangen noch als Sheet einfahren.
+
 ## Design-System
 
 | Element | Wert |
@@ -578,6 +594,9 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 - **Grau**: Neutrale Dimensionen (kWh, kWp, Prozent, Labels)
 
 **CSS Custom Properties System:** Alle Design-Tokens in `lib/theme.ts` definiert, als `:root` CSS-Variablen in `layout.tsx` injiziert. Inline-Styles referenzieren Tokens via `v('--color-accent')` Helper. Für Whitelabeling: anderes Token-Set laden (z.B. `[data-theme="solateur-x"]` Overrides).
+
+**Abstands-Skala (`space` + `pad()` in `lib/theme.ts`):** Zahlen statt CSS-Variablen — wie `iconSizes`, weil Abstände in Inline-Styles stehen (`gap: space.md`, `padding: pad("lg", "xl")`). Stufen: 2 · 4 · 6 · 8 · 12 · 16 · 24 · 32 · 48. **10, 14, 18 und 28 gibt es bewusst nicht** — sie waren Drift, keine Absicht; wer sie brauchte, entscheidet sich sichtbar für die Stufe darunter oder darüber. Neue Komponenten setzen Abstände **nur** aus der Skala.
+*Migrationsstand:* umgestellt sind Solar-Atlas-Gemeindeseite, Kommunen-Box + Kontakt-Einstieg, `Modal`, `ContactForm`/`ContactPerson`, `AtlasKpiRow`. Der Rest (Rechner-Flows, Energie-Seiten, Embed-Widgets) ist noch handgesetzt und wird stückweise nachgezogen — bewusst nicht in einem Rutsch, weil jede Rundung eine sichtbare Änderung ist.
 
 ## SEO-Strategie
 

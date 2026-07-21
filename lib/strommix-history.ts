@@ -169,6 +169,11 @@ export const CO2_ABSOLUTE_VALUES: number[] = [
 // aller Steuern/Abgaben. Industrie = Klasse 2–20 GWh, ohne MwSt. (erstattbar).
 // Erst ab 2007, weil vor der Marktliberalisierung keine vergleichbare Reihe
 // existiert. Quelle: Eurostat (nrg_pc_204 / nrg_pc_205), CC BY 4.0.
+//
+// WARTUNG: Diese Reihe speist auch die Zubau-Datenstory (Strompreislinie). Der
+// Juli-Lauf des Wächters `eeg-verguetung-verify-halbjaehrlich` hängt das zuletzt
+// bei Eurostat vollständig publizierte Jahr an — Prozedur in
+// scripts/zubau-story-verify.md (Teil B).
 // ---------------------------------------------------------------------------
 
 export const PRICE_META = {
