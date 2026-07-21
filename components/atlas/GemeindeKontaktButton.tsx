@@ -1,11 +1,14 @@
 "use client";
 
-// Der Kontakt-Weg im Lead-Kasten einer Gemeinde-Seite. Öffnet das Formular als
-// Modal auf derselben Seite, statt auf /kontakt zu navigieren: die Zahlen, wegen
-// derer jemand schreibt, bleiben stehen — und es entsteht gar kein "Wie komme
-// ich hier wieder weg"-Problem.
+// Der Hilfe-Weg im Lead-Kasten einer Gemeinde-Seite: Porträt, Name und ein
+// Textlink, der das Kontaktformular als Modal auf derselben Seite öffnet, statt
+// auf /kontakt zu navigieren — die Zahlen, wegen derer jemand schreibt, bleiben
+// stehen, und es entsteht gar kein "Wie komme ich hier wieder weg"-Problem.
 //
-// Nur dieser Knopf ist ein Client-Component, der Kasten drumherum bleibt
+// Bewusst ein Textlink, kein zweiter Knopf: Primär ist "selbst einbetten", das
+// hier ist das Angebot für alle, die es nicht selbst machen wollen.
+//
+// Nur dieser Teil ist ein Client-Component, der Kasten drumherum bleibt
 // serverseitig gerendert.
 
 import { useState } from "react";
@@ -19,9 +22,13 @@ export default function GemeindeKontaktButton({ name }: { name: string }) {
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} style={S.trigger}>
-        Wir richten es Ihnen ein — Kontakt aufnehmen
-      </button>
+      {/* Porträt + Name sagen bereits "hier antwortet ein Mensch" — eine
+          zusätzliche Zusage darunter wäre an dieser Stelle nur Text. */}
+      <ContactPerson>
+        <button type="button" onClick={() => setOpen(true)} style={S.trigger}>
+          Kontakt aufnehmen
+        </button>
+      </ContactPerson>
 
       <Modal
         open={open}
@@ -47,6 +54,7 @@ export default function GemeindeKontaktButton({ name }: { name: string }) {
 
 const S: Record<string, React.CSSProperties> = {
   trigger: {
+    display: "block",
     fontFamily: "inherit",
     fontSize: 13,
     color: v("--color-accent"),
@@ -54,7 +62,10 @@ const S: Record<string, React.CSSProperties> = {
     background: "none",
     border: "none",
     padding: 0,
+    marginTop: 2,
     cursor: "pointer",
     textAlign: "left",
+    textDecoration: "underline",
+    textUnderlineOffset: 3,
   },
 };

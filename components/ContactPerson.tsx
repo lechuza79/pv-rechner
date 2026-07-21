@@ -17,13 +17,22 @@ import { v } from "../lib/theme";
  * eine dezente Füllung aus dem Theme — sonst franst die runde Kante auf hellem
  * wie dunklem Grund aus.
  */
-export default function ContactPerson({ note }: { note: string }) {
+export default function ContactPerson({
+  note,
+  children,
+}: {
+  /** Kurze Zusage unter dem Namen. */
+  note?: string;
+  /** Alternativ zur Zusage: was unter dem Namen stehen soll, z. B. ein Link. */
+  children?: React.ReactNode;
+}) {
   return (
     <span style={S.row}>
       <img src="/sebastian-schaeder.webp" width={56} height={56} alt="" style={S.avatar} />
       <span style={S.text}>
         <strong style={S.name}>Sebastian Schäder</strong>
         {note}
+        {children}
       </span>
     </span>
   );

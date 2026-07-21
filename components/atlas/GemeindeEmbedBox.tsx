@@ -40,6 +40,14 @@ export default function GemeindeEmbedBox({ name, ags }: { name: string; ags: str
             Widgets ansehen, anpassen &amp; einbetten <IconArrowRight size={16} />
           </span>
         </a>
+      </div>
+
+      {/* Sekundärer Weg, deutlich abgesetzt vom Haupt-Knopf: Wer es nicht
+          selbst einbetten will, findet hier ein Gesicht statt eines Formulars.
+          Genau hier entscheidet eine Rathaus- oder Pressestelle, ob sie
+          schreibt. Bewusst nur EIN Kontakt-Einstieg in der Box. */}
+      <div style={S.help}>
+        <p style={S.helpTitle}>Sie brauchen Hilfe bei der Einrichtung?</p>
         <GemeindeKontaktButton name={name} />
       </div>
     </div>
@@ -54,6 +62,17 @@ const S: Record<string, React.CSSProperties> = {
   },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 6px" },
   sub: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.6, margin: "0 0 12px" },
+  help: {
+    marginTop: 18,
+    paddingTop: 16,
+    borderTop: `1px solid ${v("--color-border")}`,
+  },
+  helpTitle: {
+    fontSize: 13,
+    fontWeight: 700,
+    color: v("--color-text-primary"),
+    margin: "0 0 10px",
+  },
   actions: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px", marginTop: 16 },
   cta: {
     display: "inline-block",
