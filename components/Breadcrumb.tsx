@@ -68,13 +68,13 @@ const S: Record<string, React.CSSProperties> = {
     flexWrap: "wrap",
     gap: 8,
     paddingBottom: 12,
-    marginBottom: 20,
+    marginBottom: 30,
     borderBottom: `1px solid ${v("--color-border")}`,
   },
   item: { display: "inline-flex", alignItems: "center", gap: 8 },
   sep: { width: 14, height: 1, background: v("--color-text-faint"), display: "inline-block" },
-  // Spur in Blau-Shades statt Grau: Links im hellen Akzent, die aktuelle Seite
-  // noch eine Stufe heller (sie ist kein Ziel mehr).
+  // Nur die Links tragen Farbe (heller Akzent). Die aktuelle Seite ist kein
+  // Ziel mehr und steht deshalb in hellem Grau, nicht im Link-Blau.
   link: { color: v("--color-accent-light"), textDecoration: "none" },
-  current: { color: "color-mix(in srgb, var(--color-accent) 45%, var(--color-bg))" },
+  current: { color: v("--color-text-faint") },
 };
