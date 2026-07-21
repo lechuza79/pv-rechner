@@ -300,12 +300,44 @@ export const SEGMENT_OWNER: Record<string, "privat" | "gewerbe" | null> = {
 
 export type AtlasOwner = "alle" | "privat" | "gewerbe";
 
-/** True when a segment belongs to the selected owner filter. "alle" means every
- *  segment that HAS an owner — pumped storage and "sonstige" stay out, exactly as
- *  in the donut and the ranking table. */
+/** True when a solar segment belongs to the selected owner filter. "alle" means
+ *  every segment that HAS an owner — "sonstige" stays out, exactly as in the
+ *  donut and the ranking table. Solar only; storage has its own rule below. */
 export function ownerKeeps(owner: AtlasOwner, segment: string): boolean {
   const o = SEGMENT_OWNER[segment];
   return owner === "alle" ? o != null : o === owner;
+}
+
+/**
+ * Same question for storage — and it needs its own answer.
+ *
+ * Bauform (battery vs. pumped storage vs. Druckluft/Wasserstoff) and Eigentümer
+ * (private vs. commercial) are two independent axes. The owner filter may cut
+ * along the second one; it must never quietly redraw the first. So under "alle"
+ * the tally is every storage facility in the region, pumped storage included —
+ * the same figure the tile showed before an owner filter existed. Under
+ * privat/gewerbe it is that owner's batteries, because batterie_privat and
+ * batterie_gewerbe carry a real operator split from the MaStR; pumped storage
+ * has no owner to ask about and therefore appears in neither.
+ *
+ * Passing storage through ownerKeeps() instead is how "alle" silently lost the
+ * pumped-storage plants (Herdecke 513 → 512 units) in July 2026.
+ */
+export function ownerKeepsSpeicher(owner: AtlasOwner, segment: string): boolean {
+  return owner === "alle" ? true : SEGMENT_OWNER[segment] === owner;
+}
+
+/**
+ * Which storage segments contribute usable capacity (kWh).
+ *
+ * A separate and much older decision from the one above, and it holds for every
+ * owner filter: only batteries count towards kWh, because one Goldisthal
+ * (8,7 GWh) beside cellar batteries (10 kWh each) would swamp the figure and
+ * make "kWh je kWp" meaningless. The unit tally still includes it — capacity and
+ * tally answer different questions.
+ */
+export function speicherHasKapazitaet(segment: string): boolean {
+  return segment.startsWith("batterie");
 }
 
 /** The numbers behind the KPI tiles, cut to one owner. */
@@ -314,7 +346,10 @@ export type AtlasOwnerSlice = {
   kwp: number;
   /** Roof-mounted only — the honest denominator for "storage per kWp". */
   kwpDach: number;
+  /** Usable capacity — batteries only, in every owner filter. */
   speicherKwh: number;
+  /** Storage facilities: all of them under "alle" (pumped storage included),
+   *  that owner's batteries under privat/gewerbe. */
   speicherCount: number;
   /** Plants newly in operation in `year`. */
   neu: number;
@@ -357,9 +392,9 @@ export function atlasOwnerSlice(
     slice.neu += s.count;
   }
   for (const s of atlas.speicher.by_segment) {
-    if (!ownerKeeps(owner, s.segment)) continue;
-    slice.speicherKwh += s.kwh;
+    if (!ownerKeepsSpeicher(owner, s.segment)) continue;
     slice.speicherCount += s.count;
+    if (speicherHasKapazitaet(s.segment)) slice.speicherKwh += s.kwh;
   }
   return slice;
 }
