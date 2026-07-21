@@ -498,14 +498,29 @@ export const globalStyles = `
      Schirmen ein Wisch-Slider (Embla). Der Umschaltpunkt steht hier UND als
      Embla-Breakpoint in AtlasKpiRow — beide bei 760px, sonst wischt der Desktop
      an einem Grid vorbei. */
-  .kpi-viewport{overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
-  .kpi-viewport::-webkit-scrollbar{display:none}
+  /* KPI-Reihe des Solar-Atlas: sechs Kacheln nebeneinander, auf schmalen
+     Schirmen eine wischbare Leiste (Bordmittel, keine Slider-Bibliothek). */
   .kpi-reihe{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+  /* Fokusrahmen NACH INNEN: ein aeusserer Ring wuerde vom Scrollfenster
+     abgeschnitten und haette Polsterung gebraucht, die die Ruheposition um zwei
+     Pixel verschiebt (und damit den linken Verlauf flackern laesst). */
+  .kpi-reihe:focus-visible{outline:2px solid var(--color-accent);outline-offset:-2px;border-radius:12px}
   @media (max-width:760px){
-    .kpi-reihe{display:flex;gap:8px}
-    .kpi-reihe .kpi-kachel{flex:0 0 46%;min-width:0}
+    .kpi-reihe{
+      display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;
+      /* Rastung: jede Kachel kommt links zum Stehen. mandatory statt proximity,
+         damit nie eine halbe Kachel stehen bleibt. */
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .kpi-reihe::-webkit-scrollbar{display:none}
+    /* 44 % laesst die dritte Kachel angeschnitten stehen — das ist der Hinweis,
+       dass es weitergeht. Glatte Werte (50 %) wuerden genau das verstecken. */
+    .kpi-reihe .kpi-kachel{flex:0 0 44%;min-width:0;scroll-snap-align:start}
   }
-  @media (max-width:420px){.kpi-reihe .kpi-kachel{flex:0 0 60%}}
+  @media (max-width:420px){.kpi-reihe .kpi-kachel{flex:0 0 58%}}
+  @media (prefers-reduced-motion:reduce){.kpi-reihe{scroll-behavior:auto}}
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
   .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
 `;

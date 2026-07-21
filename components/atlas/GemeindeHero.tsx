@@ -176,7 +176,6 @@ export default function GemeindeHero({
   cells,
   siblings,
   siblingCells,
-  outside,
   regionId,
   regionName,
   kreisName,
@@ -186,7 +185,18 @@ export default function GemeindeHero({
   cells: HeroCell[];
   siblings: RankingRegion[];
   siblingCells: ChildYearRow[];
-  outside: OutsidePeer[];
+  /**
+   * Größenklassen-Anführer (halbe bis doppelte Einwohnerzahl). Bewusst NICHT
+   * gerendert: Die Aussage „so schlagen sich ähnlich große Orte" ist ein
+   * Einordnungs-Fakt und keine Ranglisten-Zeile — in der Tabelle hat sie das
+   * Ranking kaputtgemacht. Die Daten bleiben in der Schnittstelle, bis
+   * entschieden ist, wo die Aussage hingehört (Intro oder Tendenz-Zeile).
+   *
+   * Die Größenklasse selbst ist gut begründet und darf nicht verlorengehen:
+   * ohne sie gewinnt bundesweit ein Koog mit 55 Einwohnern und 48.115 W je Kopf
+   * — eine Zahl, die den Nenner misst, nicht die Leistung.
+   */
+  outside?: OutsidePeer[];
   regionId: string;
   regionName: string;
   kreisName?: string;
@@ -253,15 +263,16 @@ export default function GemeindeHero({
   /**
    * Zwei Blöcke statt einer Liste — und das ist kein Layout-Detail.
    *
-   * Die Kreis-Rangliste und die Größenklassen-Anführer haben verschiedene
-   * Grundgesamtheiten: „Platz 1 im Landkreis" und „Spitze bundesweit unter
-   * Gemeinden ähnlicher Größe" sind zwei Aussagen, die nichts miteinander zu tun
-   * haben. Vorher wurden sie zusammen sortiert und alle drei trugen eine „1." —
-   * jede Zahl für sich richtig, die Liste als Ganzes irreführend (untereinander
-   * dreimal Platz 1, dann eine unerklärte Lücke von Rang 2 auf Rang 5).
+   * Die Tabelle beantwortet EINE Frage: „Wo stehe ich unter meinen Nachbarn?"
+   * Nur Gemeinden desselben Landkreises, durchgehende Ränge, die eigene Gemeinde
+   * an ihrer echten Position.
    *
-   * Jetzt: oben die Rangliste mit durchgehenden Rängen, unten abgesetzt und ohne
-   * Nummern die Vergleichszeilen, jede mit ihrem Bezug im Text.
+   * Die Größenklassen-Spitze („Wie schlage ich mich gegen ähnlich große Orte
+   * bundesweit?") stand hier früher mit drin — eine andere Grundgesamtheit in
+   * derselben nummerierten Liste. Das erzeugte drei Zeilen mit einer „1." und
+   * eine unerklärte Lücke von Rang 2 auf Rang 5. Sie später ohne Nummer
+   * anzuhängen war nur ein Pflaster: die Aussage ist ein Einordnungs-Fakt, keine
+   * Ranglisten-Zeile, und gehört deshalb gar nicht in diese Tabelle.
    */
   const { rows, selfDetached } = useMemo(() => {
     // Immer genau fünf Zeilen, und die eigene Gemeinde ist immer eine davon:
@@ -274,34 +285,12 @@ export default function GemeindeHero({
     return { rows: [...leaders, ranked[selfIdx]], selfDetached: true };
   }, [ranked]);
 
-  // Der Größenklassen-Vergleich existiert nur pro Kopf: bei absoluten Zahlen
-  // sagt eine 7.000-Einwohner-Gemeinde nichts — der Sinn dieser Zeilen ist
-  // gerade, dass die Einwohnerzahl konstant gehalten wird.
-  const vergleich = useMemo(
-    () =>
-      metric === "perCapita"
-        ? outside
-            .filter((o) => o.values[owner] !== null)
-            .map((o) => ({
-              region_id: o.region_id,
-              name: o.name,
-              href: o.href,
-              scope: o.scope,
-              value: o.values[owner] as number,
-              rang: null,
-              isSelf: false,
-            }))
-            .sort((a, b) => b.value - a.value)
-        : [],
-    [outside, owner, metric],
-  );
-
   // Cap at the runner-up: one Gemeinde with a solar park (126.865 W/head against
   // 17.705 on second place) would flatten every other bar to a hairline.
   const scale = useMemo(() => {
-    const vals = [...rows, ...vergleich].map((r) => r.value).sort((a, b) => b - a);
+    const vals = rows.map((r) => r.value).sort((a, b) => b - a);
     return Math.max(1, vals[1] ?? vals[0] ?? 1);
-  }, [rows, vergleich]);
+  }, [rows]);
 
   return (
     <div style={S.card}>
@@ -401,18 +390,6 @@ export default function GemeindeHero({
                 floating={selfDetached && r.isSelf}
               />
             ))}
-
-            {/* Zweiter Block: andere Grundgesamtheit, deshalb sichtbar abgesetzt
-                und ohne Rangnummern. Jede Zeile sagt selbst, worauf sie sich
-                bezieht. */}
-            {vergleich.length > 0 && (
-              <>
-                <div style={S.vergleichKopf}>Zum Vergleich</div>
-                {vergleich.map((r) => (
-                  <PeerZeile key={`${r.region_id}-${r.scope}`} row={r} metric={metric} scale={scale} />
-                ))}
-              </>
-            )}
           </div>
 
           {/* Reserved height: the note only shows under "Pro Kopf", so without a
@@ -421,9 +398,8 @@ export default function GemeindeHero({
           <div style={S.peerNoteWrap}>
             {metric === "perCapita" && (
               <p style={S.peerNote}>
-                Die Vergleichszeilen stehen außerhalb der Rangliste: sie führen Gemeinden ähnlicher
-                Größe an, nicht den Landkreis. Ohne diese Eingrenzung wäre die bundesweite Spitze ein
-                Koog mit 55 Einwohnern und sagte über {regionName} nichts.
+                Verglichen werden nur Gemeinden im selben Landkreis — {regionName} steht an seiner
+                echten Position, auch wenn die Ränge davor übersprungen sind.
               </p>
             )}
           </div>
@@ -481,16 +457,6 @@ function PeerZeile({
 
 const S: Record<string, React.CSSProperties> = {
   card: { marginBottom: 28 },
-  vergleichKopf: {
-    fontSize: 11,
-    fontWeight: 700,
-    letterSpacing: "0.04em",
-    textTransform: "uppercase",
-    color: v("--color-text-muted"),
-    borderTop: `1px solid ${v("--color-border")}`,
-    margin: "10px 0 4px",
-    paddingTop: 10,
-  },
   chips: { display: "flex", gap: 4, marginBottom: 14 },
   chip: {
     border: `1px solid ${v("--color-border")}`,

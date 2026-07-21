@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
 import { v, space, pad } from "../../lib/theme";
 import { IconChevronDown } from "../Icons";
 import TendTag from "./TendTag";
@@ -96,39 +95,54 @@ export default function AtlasKpiRow({
 }
 
 /**
- * Die Kachel-Reihe: auf breiten Schirmen alle Kacheln nebeneinander, auf schmalen
- * ein Slider.
+ * Die Kachel-Reihe: auf breiten Schirmen alle sechs nebeneinander, auf schmalen
+ * eine wischbare Leiste.
  *
- * Embla übernimmt nur das Wischen — kein Loop, keine Pfeile, kein Autoplay: für
- * sechs Kacheln gäbe es nichts zu loopen (die bekannte Falle, dass Embla den Loop
- * still abschaltet, wenn die Slides den Viewport nicht füllen), und dragFree
- * bleibt aus, damit die Kacheln an ihrer Kante einrasten.
+ * Mit Bordmitteln statt Slider-Bibliothek: overflow-x plus scroll-snap ist genau
+ * das, was hier gebraucht wird. Wischen mit Trägheit und sauberes Einrasten
+ * liefert der Browser selbst — inklusive Tastaturbedienung (die Leiste ist
+ * fokussierbar, die Pfeiltasten scrollen) und Bildschirmleser. Eine Bibliothek
+ * brächte Loop, Pfeile und Autoplay mit, von denen wir nichts brauchen, und
+ * würde bei sechs Kacheln ohne Loop ohnehin nur das nachbauen, was der Browser
+ * kann.
  *
- * Der Slider läuft NUR unterhalb der Umbruchbreite: darüber wird der Embla-
- * Container per CSS wieder zum Grid, damit auf dem Desktop nichts wischbar ist,
- * was gar nicht überläuft.
+ * Dass es weitergeht, zeigen zwei Dinge: die nächste Kachel ist angeschnitten
+ * (die Kachelbreite geht bewusst nicht glatt auf), und an der Kante liegt ein
+ * weicher Verlauf, der verschwindet, sobald dort nichts mehr kommt.
  */
 function KachelReihe({ tiles, dev }: { tiles: KpiTile[]; dev: (m?: string) => number | null }) {
-  // Ohne JavaScript gibt es keinen Slider — dann darf die Reihe nicht mit
-  // overflow:hidden abgeschnitten sein, sonst sind die hinteren Kacheln
-  // unerreichbar. Bis Embla montiert ist, scrollt der Rahmen nativ.
-  const [sliderBereit, setSliderBereit] = useState(false);
-  useEffect(() => setSliderBereit(true), []);
+  const leiste = useRef<HTMLDivElement | null>(null);
+  const [restLinks, setRestLinks] = useState(false);
+  const [restRechts, setRestRechts] = useState(false);
 
-  const [emblaRef] = useEmblaCarousel({
-    align: "start",
-    containScroll: "trimSnaps",
-    active: true,
-    breakpoints: { "(min-width: 761px)": { active: false } },
-  });
+  useEffect(() => {
+    const el = leiste.current;
+    if (!el) return;
+    const pruefen = () => {
+      // 2 px Toleranz: Browser runden die Scrollposition, sonst bleibt der
+      // Verlauf am Ende als Ein-Pixel-Rest stehen.
+      setRestLinks(el.scrollLeft > 2);
+      setRestRechts(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
+    };
+    pruefen();
+    el.addEventListener("scroll", pruefen, { passive: true });
+    const ro = new ResizeObserver(pruefen);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", pruefen);
+      ro.disconnect();
+    };
+  }, [tiles.length]);
 
   return (
-    <div
-      className="kpi-viewport"
-      ref={emblaRef}
-      style={{ ...S.viewport, overflowX: sliderBereit ? "hidden" : "auto" }}
-    >
-      <div className="kpi-reihe">
+    <div style={S.viewport}>
+      <div
+        className="kpi-reihe"
+        ref={leiste}
+        tabIndex={0}
+        role="group"
+        aria-label="Kennzahlen — seitlich scrollbar"
+      >
         {tiles.map((t, i) => (
           <div key={i} className="kpi-kachel" style={S.metric}>
             <div style={S.metricLabel}>{t.label}</div>
@@ -141,6 +155,8 @@ function KachelReihe({ tiles, dev }: { tiles: KpiTile[]; dev: (m?: string) => nu
           </div>
         ))}
       </div>
+      {restLinks && <span aria-hidden style={{ ...S.kante, ...S.kanteLinks }} />}
+      {restRechts && <span aria-hidden style={{ ...S.kante, ...S.kanteRechts }} />}
     </div>
   );
 }
@@ -200,7 +216,11 @@ const S: Record<string, React.CSSProperties> = {
   // sie animiert transform, und genau darüber schiebt Embla den Slider. Beides
   // auf demselben Element heißt, dass die Animation Embla überschreibt — der
   // Slider sprang dann vertikal statt horizontal.
-  viewport: { marginBottom: space.sm, animation: "fu 0.28s ease-out" },
+  viewport: { position: "relative", marginBottom: space.sm, animation: "fu 0.28s ease-out" },
+  // Weicher Auslauf an der Kante — zeigt, dass seitlich noch etwas kommt.
+  kante: { position: "absolute", top: 0, bottom: 0, width: 24, pointerEvents: "none" },
+  kanteLinks: { left: 0, background: `linear-gradient(to right, ${v("--color-bg")}, transparent)` },
+  kanteRechts: { right: 0, background: `linear-gradient(to left, ${v("--color-bg")}, transparent)` },
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: pad("lg") },
   metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
