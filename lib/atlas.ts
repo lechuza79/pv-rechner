@@ -10,6 +10,7 @@
 
 import { unstable_cache } from "next/cache";
 import { loadChildren, LEVEL_LEN, type Level, type ChildRow } from "./mastr-data";
+import { withDbTimeout } from "./db-timeout";
 
 export type AtlasRegion = {
   region_id: string;
@@ -102,11 +103,10 @@ const REGION_COLUMNS =
 
 async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | null> {
   const supabase = await db();
-  const { data, error } = await supabase
-    .from("mastr_regions")
-    .select(REGION_COLUMNS)
-    .eq("region_id", regionId)
-    .maybeSingle();
+  const { data, error } = await withDbTimeout(
+    supabase.from("mastr_regions").select(REGION_COLUMNS).eq("region_id", regionId).maybeSingle(),
+    "getRegionById",
+  );
   if (error) throw new Error(`getRegionById failed: ${error.message}`);
   return (data as AtlasRegion) ?? null;
 }
@@ -128,12 +128,10 @@ async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | n
   let parent = "de";
   let region: AtlasRegion | null = null;
   for (const slug of slugs) {
-    const { data, error } = await supabase
-      .from("mastr_regions")
-      .select(REGION_COLUMNS)
-      .eq("parent_region_id", parent)
-      .eq("slug", slug)
-      .maybeSingle();
+    const { data, error } = await withDbTimeout(
+      supabase.from("mastr_regions").select(REGION_COLUMNS).eq("parent_region_id", parent).eq("slug", slug).maybeSingle(),
+      "resolveSlugPath",
+    );
     if (error) throw new Error(`resolveSlugPath failed: ${error.message}`);
     if (!data) return null;
     region = data as AtlasRegion;
@@ -337,10 +335,13 @@ async function getRankingDataUncached(
   const supabase = await db();
   const [cells, regionsRes] = await Promise.all([
     loadAllCells(supabase, prefixOf(region.region_id), LEVEL_LEN[childLevel]),
-    supabase
-      .from("mastr_regions")
-      .select("region_id, name, slug, population")
-      .eq("parent_region_id", region.region_id),
+    withDbTimeout(
+      supabase
+        .from("mastr_regions")
+        .select("region_id, name, slug, population")
+        .eq("parent_region_id", region.region_id),
+      "getRankingData/regions",
+    ),
   ]);
   if (regionsRes.error) throw new Error(`getRankingData failed: ${regionsRes.error.message}`);
 
@@ -371,18 +372,21 @@ async function loadAllCells(
   const MAX = 20_000;
   const all: ChildYearRow[] = [];
   for (let from = 0; from < MAX; from += PAGE) {
-    const { data, error } = await supabase
-      .rpc("mastr_children_by_year", {
-        p_prefix: prefix,
-        p_child_len: childLen,
-        p_traeger: ["solar", "speicher"],
-        p_year_min: null,
-      })
-      // Stable order is required for paging — without it rows can repeat or vanish.
-      .order("region_id", { ascending: true })
-      .order("segment", { ascending: true })
-      .order("year", { ascending: true })
-      .range(from, from + PAGE - 1);
+    const { data, error } = await withDbTimeout(
+      supabase
+        .rpc("mastr_children_by_year", {
+          p_prefix: prefix,
+          p_child_len: childLen,
+          p_traeger: ["solar", "speicher"],
+          p_year_min: null,
+        })
+        // Stable order is required for paging — without it rows can repeat or vanish.
+        .order("region_id", { ascending: true })
+        .order("segment", { ascending: true })
+        .order("year", { ascending: true })
+        .range(from, from + PAGE - 1),
+      "mastr_children_by_year",
+    );
     if (error) throw new Error(`mastr_children_by_year failed: ${error.message}`);
     const rows = (data ?? []) as ChildYearRow[];
     all.push(
@@ -441,13 +445,16 @@ async function getTopGemeindenUncached(opts: {
   maxPop?: number;
 }): Promise<TopGemeinde[]> {
   const supabase = await db();
-  const { data, error } = await supabase.rpc("mastr_top_gemeinden", {
-    p_prefix: opts.prefix,
-    p_owner: opts.owner,
-    p_limit: opts.limit,
-    p_min_pop: opts.minPop ?? 0,
-    p_max_pop: opts.maxPop ?? null,
-  });
+  const { data, error } = await withDbTimeout(
+    supabase.rpc("mastr_top_gemeinden", {
+      p_prefix: opts.prefix,
+      p_owner: opts.owner,
+      p_limit: opts.limit,
+      p_min_pop: opts.minPop ?? 0,
+      p_max_pop: opts.maxPop ?? null,
+    }),
+    "mastr_top_gemeinden",
+  );
   if (error) throw new Error(`mastr_top_gemeinden failed: ${error.message}`);
   return (data ?? []).map((r: TopGemeinde) => ({
     ...r,
@@ -487,11 +494,14 @@ async function getPeerLeadersUncached(
   maxPop: number,
 ): Promise<PeerLeader[]> {
   const supabase = await db();
-  const { data, error } = await supabase.rpc("mastr_peer_leaders", {
-    p_bl_prefix: blPrefix,
-    p_min_pop: minPop,
-    p_max_pop: maxPop,
-  });
+  const { data, error } = await withDbTimeout(
+    supabase.rpc("mastr_peer_leaders", {
+      p_bl_prefix: blPrefix,
+      p_min_pop: minPop,
+      p_max_pop: maxPop,
+    }),
+    "mastr_peer_leaders",
+  );
   if (error) throw new Error(`mastr_peer_leaders failed: ${error.message}`);
   return (data ?? []).map((r: PeerLeader) => ({
     ...r,

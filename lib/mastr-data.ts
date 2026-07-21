@@ -5,6 +5,7 @@
 
 import { unstable_cache } from "next/cache";
 import { BUNDESLAENDER, bundeslandByAgs } from "./mastr-regions";
+import { withDbTimeout } from "./db-timeout";
 import { ENCLOSED_CITIES } from "./enclosed-cities";
 
 export type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
@@ -189,7 +190,10 @@ async function fetchMetaDataAsOf(): Promise<string> {
   if (metaDataAsOfCache && Date.now() - metaFetchedAt < 5 * 60 * 1000) return metaDataAsOfCache;
   const { supabase } = await import("./supabase-server");
   if (!supabase) return PLACEHOLDER_AS_OF;
-  const { data } = await supabase.from("mastr_meta").select("imported_at").eq("id", 1).maybeSingle();
+  const { data } = await withDbTimeout(
+    supabase.from("mastr_meta").select("imported_at").eq("id", 1).maybeSingle(),
+    "getDataAsOf",
+  );
   const iso = data?.imported_at ?? PLACEHOLDER_AS_OF;
   metaDataAsOfCache = typeof iso === "string" ? iso.substring(0, 10) : PLACEHOLDER_AS_OF;
   metaFetchedAt = Date.now();
@@ -240,13 +244,16 @@ export async function loadChildren(
   const { supabase } = await import("./supabase-server");
   if (!supabase) throw new Error("Supabase not configured");
 
-  const { data, error } = await supabase.rpc("mastr_children", {
-    p_prefix: prefixOf(parent),
-    p_child_len: LEVEL_LEN[childLevel],
-    p_traeger: traegerList(energietraeger),
-    p_year_recent: yearRecent ?? null,
-    p_year_max: yearMax ?? null,
-  });
+  const { data, error } = await withDbTimeout(
+    supabase.rpc("mastr_children", {
+      p_prefix: prefixOf(parent),
+      p_child_len: LEVEL_LEN[childLevel],
+      p_traeger: traegerList(energietraeger),
+      p_year_recent: yearRecent ?? null,
+      p_year_max: yearMax ?? null,
+    }),
+    "mastr_children",
+  );
   if (error) throw new Error(`mastr_children failed: ${error.message}`);
   return (data ?? []).map((r: ChildRow) => ({
     region_id: r.region_id,
@@ -264,10 +271,13 @@ async function loadSeries(regionId: string, energietraeger: Energietraeger): Pro
   const { supabase } = await import("./supabase-server");
   if (!supabase) throw new Error("Supabase not configured");
 
-  const { data, error } = await supabase.rpc("mastr_region_series", {
-    p_prefix: prefixOf(regionId),
-    p_traeger: traegerList(energietraeger),
-  });
+  const { data, error } = await withDbTimeout(
+    supabase.rpc("mastr_region_series", {
+      p_prefix: prefixOf(regionId),
+      p_traeger: traegerList(energietraeger),
+    }),
+    "mastr_region_series",
+  );
   if (error) throw new Error(`mastr_region_series failed: ${error.message}`);
   return (data ?? []).map((r: SeriesRow) => ({
     energietraeger: r.energietraeger,
@@ -369,11 +379,10 @@ async function supabaseRegionSummary(
     const { supabase } = await import("./supabase-server");
     let lookedUp: string | null = null;
     if (supabase) {
-      const { data } = await supabase
-        .from("mastr_regions")
-        .select("name")
-        .eq("region_id", regionId)
-        .maybeSingle();
+      const { data } = await withDbTimeout(
+        supabase.from("mastr_regions").select("name").eq("region_id", regionId).maybeSingle(),
+        "regionName",
+      );
       lookedUp = (data as { name?: string } | null)?.name ?? null;
     }
     name = lookedUp ?? regionId;
@@ -504,10 +513,13 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
   const { supabase } = await import("./supabase-server");
   if (!supabase) throw new Error("Supabase not configured");
 
-  const { data, error } = await supabase.rpc("mastr_region_series", {
-    p_prefix: prefixOf(regionId),
-    p_traeger: ["solar", "speicher", "wind", "biomasse", "wasser"],
-  });
+  const { data, error } = await withDbTimeout(
+    supabase.rpc("mastr_region_series", {
+      p_prefix: prefixOf(regionId),
+      p_traeger: ["solar", "speicher", "wind", "biomasse", "wasser"],
+    }),
+    "mastr_region_series/atlas",
+  );
   if (error) throw new Error(`mastr_region_series failed: ${error.message}`);
   const rows = (data ?? []) as SeriesRow[];
 
