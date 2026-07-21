@@ -11,6 +11,9 @@
 import { unstable_cache } from "next/cache";
 import { loadChildren, LEVEL_LEN, type Level, type ChildRow } from "./mastr-data";
 import { withDbTimeout } from "./db-timeout";
+import { fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
+
+export { fmtPvLeistung, fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
 
 export type AtlasRegion = {
   region_id: string;
@@ -101,6 +104,19 @@ async function db() {
 const REGION_COLUMNS =
   "region_id, level, name, bezeichnung, slug, parent_region_id, population, area_km2, population_as_of";
 
+/**
+ * Eine Zeile aus mastr_regions als Region — mit bereinigtem Anzeigenamen.
+ *
+ * Hier und nicht im Import, weil der gespeicherte Name den Slug erzeugt und der
+ * in Links, Sitemaps und Caches steckt: 50 Kreis-URLs umzubenennen wäre ein
+ * Redirect-Thema, kein Textfix. Die Doppelung ist ein Darstellungsfehler — also
+ * beim Anzeigen lösen und die Adressen in Ruhe lassen.
+ */
+function asRegion(row: unknown): AtlasRegion {
+  const r = row as AtlasRegion;
+  return { ...r, name: regionDisplayName(r.name) };
+}
+
 async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | null> {
   const supabase = await db();
   const { data, error } = await withDbTimeout(
@@ -108,7 +124,7 @@ async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | nu
     "getRegionById",
   );
   if (error) throw new Error(`getRegionById failed: ${error.message}`);
-  return (data as AtlasRegion) ?? null;
+  return data ? asRegion(data) : null;
 }
 
 // Regions-Identität (Name, Einwohner, Slug) ist stabil — cachen spart die
@@ -134,7 +150,7 @@ async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | n
     );
     if (error) throw new Error(`resolveSlugPath failed: ${error.message}`);
     if (!data) return null;
-    region = data as AtlasRegion;
+    region = asRegion(data);
     parent = region.region_id;
   }
   return region;
@@ -383,7 +399,7 @@ export function speicherHinweis(nb: AtlasOwnerSlice["nichtBatterie"]): string | 
     const werk = eins ? "ein Pumpspeicherwerk" : `${nf(nb.pumpspeicherCount)} Pumpspeicherwerke`;
     parts.push(
       `Dazu ${eins ? "kommt" : "kommen"} ${werk} mit ${fmtSpeicherKwh(nb.pumpspeicherKwh)} Kapazität — Kraftwerksmaßstab, ` +
-        `deshalb steht es nicht in der Kachel oben.`,
+        `deshalb ${eins ? "steht es" : "stehen sie"} nicht in der Kachel oben.`,
     );
   }
   if (nb.sonstigeCount > 0) {
@@ -401,13 +417,6 @@ export function speicherHinweis(nb: AtlasOwnerSlice["nichtBatterie"]): string | 
 
 const nf = (n: number) => n.toLocaleString("de-DE");
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-/** kWh → MWh/GWh once the number stops being readable. */
-export function fmtSpeicherKwh(kwh: number): string {
-  if (kwh >= 1_000_000) return `${(kwh / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GWh`;
-  if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
-  return `${nf(Math.round(kwh))} kWh`;
-}
 
 /**
  * One owner's slice of a region's stock.

@@ -6,20 +6,14 @@ import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
+import { fmtPvLeistung, fmtSpeicherKwh } from "../../../../lib/atlas-format";
 
 const BASE = "https://solar-check.io";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
-function fmtLeistung(kwp: number): string {
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(kwp)} kW`;
-}
-
-function fmtKwh(kwh: number): string {
-  if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
-  return `${nf(kwh)} kWh`;
-}
+const fmtLeistung = fmtPvLeistung;
+const fmtKwh = fmtSpeicherKwh;
 
 export type GemeindeWidgetProps = {
   name?: string;

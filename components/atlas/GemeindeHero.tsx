@@ -6,7 +6,8 @@ import DonutChart from "../charts/DonutChart";
 import { IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
 import { v } from "../../lib/theme";
 import { SEGMENT_OWNER, type AtlasOwner, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
-import AtlasKpiRow, { type KpiTile, type RefLevel } from "./AtlasKpiRow";
+import { fmtPvLeistung as fmtLeistung, fmtSpeicherKwh } from "../../lib/atlas-format";
+import AtlasKpiRow, { type KpiGroup, type RefLevel } from "./AtlasKpiRow";
 
 export type HeroCell = { segment: string; count: number; kwp: number };
 
@@ -17,13 +18,11 @@ export type HeroCell = { segment: string; count: number; kwp: number };
  * against its whole stock.
  */
 export type KpiOwnerData = {
-  tiles: KpiTile[];
+  /** Zwei Blöcke: alles zur Solaranlage links, alles zum Speicher rechts. Der
+   *  Pumpspeicher-Hinweis hängt an der Speicher-Gruppe, wo er hingehört. */
+  groups: KpiGroup[];
   perCap: Record<string, number | null>;
   references: RefLevel[];
-  /** Was die Speicher-Kachel bewusst auslässt (Pumpspeicher, andere Bauarten) —
-   *  null, wo es nichts auszulassen gibt, also in fast jeder Gemeinde. Unter
-   *  „Privat"/„Gewerbe" immer null: ein Pumpspeicherwerk hat keinen Eigentümer. */
-  speicherHinweis?: string | null;
 };
 
 /** A size-class benchmark from outside the Kreis. Per-capita only — see below. */
@@ -68,15 +67,10 @@ const SEG: Record<string, { label: string; color: string }> = {
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
-function fmtLeistung(kwp: number): string {
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(kwp)} kW`;
-}
-
 function fmtValue(v: number, m: Metric): string {
   if (m === "perCapita") return `${nf(v)} W`;
   if (m === "kwp") return fmtLeistung(v);
-  if (m === "speicher") return v >= 1000 ? `${(v / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh` : `${nf(v)} kWh`;
+  if (m === "speicher") return fmtSpeicherKwh(v);
   return nf(v);
 }
 
@@ -312,11 +306,10 @@ export default function GemeindeHero({
       {/* Die Kacheln gehören ins Widget, nicht darüber: sonst zeigt der Filter
           „Privat" eine private Rangliste neben Gesamt-Kennzahlen. */}
       <AtlasKpiRow
-        tiles={kpi[owner].tiles}
+        groups={kpi[owner].groups}
         regionPerCap={kpi[owner].perCap}
         references={kpi[owner].references}
         defaultRefKey="landkreis"
-        footnote={kpi[owner].speicherHinweis ?? undefined}
         note={
           owner === "privat"
             ? "Verglichen werden nur private Anlagen, auch beim Durchschnitt."

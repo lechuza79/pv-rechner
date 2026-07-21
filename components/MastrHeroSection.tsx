@@ -232,7 +232,7 @@ export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onR
             values={values}
             selectedAgs={selectedAgs}
             onSelect={handleSelect}
-            valueLabel="MW"
+            valueLabel={energietraeger === "solar" ? "MWp" : "MW"}
             loading={choroplethLoading}
           />
           {isLkSelected && !isEmbed && (
@@ -574,6 +574,9 @@ function SummaryPanel({
   const traegerLabel = TRAEGER_DISPLAY[energietraeger];
   const segmentSuffix = segment !== "alle" ? ` · ${SEGMENT_DISPLAY[segment]}` : "";
 
+  // Photovoltaik wird in Peak-Leistung angegeben (kWp/MWp), Wind, Biomasse und
+  // Speicher in normaler Nennleistung — die Einheit folgt deshalb der Auswahl.
+  const peak = energietraeger === "solar" ? "p" : "";
   const totalMw = summary ? summary.total_kwp / 1000 : null;
   const totalCount = summary ? summary.total_count : null;
   const avgKwp = summary && summary.total_count > 0 ? summary.total_kwp / summary.total_count : null;
@@ -601,8 +604,8 @@ function SummaryPanel({
           value={
             totalMw !== null
               ? totalMw >= 1000
-                ? `${(totalMw / 1000).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW`
-                : `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW`
+                ? `${(totalMw / 1000).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW${peak}`
+                : `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW${peak}`
               : <LoadingDots />
           }
         />

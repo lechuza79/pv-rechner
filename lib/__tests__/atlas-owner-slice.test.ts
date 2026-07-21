@@ -157,6 +157,7 @@ describe("Hinweis unter der Speicher-Kachel", () => {
       sonstigeKwh: 0,
     });
     expect(text).toContain("Dazu kommen 4 Pumpspeicherwerke");
+    expect(text).toContain("stehen sie nicht in der Kachel");
     expect(text).toContain("9,5 GWh");
   });
 

@@ -33,6 +33,7 @@ import {
   type AtlasOwner,
   type PeerLeader,
 } from "../../../../../../lib/atlas";
+import { fmtPvLeistung, fmtSpeicherKwh } from "../../../../../../lib/atlas-format";
 import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
@@ -55,15 +56,11 @@ function standLabel(iso: string): string {
   return d.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 }
 
-function fmtLeistung(kwp: number): string {
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(Math.round(kwp))} kW`;
-}
+const fmtLeistung = fmtPvLeistung;
+const fmtKwh = fmtSpeicherKwh;
 
-function fmtKwh(kwh: number): string {
-  if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
-  return `${nf(Math.round(kwh))} kWh`;
-}
+/** Ab so vielen Batterien ist ein Mittelwert eine Aussage und kein Zufall. */
+const MIN_BATTERIEN_FUER_MITTEL = 5;
 
 type Params = { bundesland: string; kreis: string; gemeinde: string };
 
@@ -133,23 +130,59 @@ export default async function GemeindePage({ params }: { params: Params }) {
     // Speicher je kWp nur gegen Dachanlagen: ein Freiflächenpark im Nenner
     // täuscht ein „hier speichert niemand" vor.
     const proKwp = s.speicherKwh > 0 && s.kwpDach > 100 ? s.speicherKwh / s.kwpDach : null;
+    // Durchschnittsgröße je Batterie. Erst ab einer Handvoll Anlagen gezeigt:
+    // bei zwei oder drei Speichern ist ein Mittelwert kein Typwert, sondern ein
+    // Zufallsprodukt — ein gewerblicher Großspeicher zieht ihn auf ein Vielfaches
+    // dessen, was in den Kellern der Gemeinde wirklich steht.
+    const avgBatterie = s.batterieCount >= MIN_BATTERIEN_FUER_MITTEL ? s.speicherKwh / s.batterieCount : null;
+    // Unter „Alle" mischt der Mittelwert zwei sehr verschiedene Welten: in
+    // Herdecke stehen 495 Hausbatterien mit im Schnitt 9 kWh neben 17
+    // gewerblichen mit im Schnitt 583 kWh. Der Wert bleibt richtig, aber er
+    // beschreibt dann keinen typischen Keller — das muss dranstehen.
+    const gemischt =
+      owner === "alle" &&
+      ["batterie_privat", "batterie_gewerbe"].every(
+        (seg) => (speicher.by_segment.find((x) => x.segment === seg)?.count ?? 0) > 0,
+      );
+    const avgSub = avgBatterie === null
+      ? s.batterieCount > 0
+        ? "zu wenige für einen Mittelwert"
+        : undefined
+      : gemischt
+        ? "Haushalte und Gewerbe gemischt"
+        : undefined;
     return {
-      tiles: [
-        { label: "Solaranlagen", value: nf(s.count), metric: "count" },
-        { label: "Installiert", value: fmtLeistung(s.kwp), metric: "kwp" },
-        { label: "je Einwohner", value: wPerHead === null ? "—" : `${nf(wPerHead)} W`, metric: "kwp" },
+      groups: [
         {
-          // Unterzeile zählt Batterien, nicht alle Speicher: Kapazität und Anzahl
-          // müssen dasselbe meinen. Was sonst noch in der Gemeinde steht, sagt die
-          // Zeile unter den Kacheln (speicherHinweis) — mit Zahl und Begründung.
-          label: "Batteriespeicher",
-          value: fmtKwh(s.speicherKwh),
-          metric: "speicher",
-          sub: `${nf(s.batterieCount)} Batterien${proKwp !== null ? ` · ${proKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp` : ""}`,
+          title: "Solaranlagen",
+          tiles: [
+            { label: "Anlagen", value: nf(s.count), metric: "count" },
+            { label: "Installiert", value: fmtLeistung(s.kwp), metric: "kwp" },
+            { label: "je Einwohner", value: wPerHead === null ? "—" : `${nf(wPerHead)} W`, metric: "kwp" },
+            { label: `Neu ${lastYear}`, value: nf(s.neu), metric: "neu" },
+          ],
         },
-        { label: `Neu ${lastYear}`, value: nf(s.neu), metric: "neu" },
+        {
+          title: "Batteriespeicher",
+          tiles: [
+            {
+              label: "Kapazität",
+              value: fmtKwh(s.speicherKwh),
+              metric: "speicher",
+              sub: proKwp !== null ? `${proKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp` : undefined,
+            },
+            // Zählt Batterien, nicht alle Speicher: Anzahl und Kapazität müssen
+            // dasselbe meinen. Was sonst noch im Ort steht, sagt die Zeile darunter.
+            { label: "Anzahl", value: nf(s.batterieCount) },
+            {
+              label: "⌀ Größe",
+              value: avgBatterie === null ? "—" : `${avgBatterie.toLocaleString("de-DE", { maximumFractionDigits: 1 })} kWh`,
+              sub: avgSub,
+            },
+          ],
+          note: speicherHinweis(s.nichtBatterie) ?? undefined,
+        },
       ],
-      speicherHinweis: speicherHinweis(s.nichtBatterie),
       perCap: perCapOf(atlas, region.population, owner),
       references: [
         { key: "landkreis", name: kreis?.name ?? "Landkreis", perCap: perCapOf(kreisAtlas, kreis?.population, owner) },

@@ -15,26 +15,30 @@ import TendTag from "./TendTag";
 type PerCap = Record<string, number | null>;
 export type RefLevel = { key: string; name: string; perCap: PerCap };
 export type KpiTile = { label: string; value: string; metric?: string; sub?: string };
+/**
+ * Eine Kachel-Gruppe, z. B. „Solaranlagen" und „Speicher".
+ *
+ * Ohne Titel rendert die Gruppe als schlichte Kachelreihe — so bleibt die
+ * Kreis-/Bundesland-Seite unverändert, während die Gemeinde-Seite zwei benannte
+ * Blöcke zeigt. `note` gehört zur Gruppe (etwa der Pumpspeicher-Hinweis), nicht
+ * unter die ganze Reihe: dort stünde er neben Zahlen, über die er nichts sagt.
+ */
+export type KpiGroup = { title?: string; tiles: KpiTile[]; note?: string };
 
 export default function AtlasKpiRow({
-  tiles,
+  groups,
   regionPerCap,
   references,
   defaultRefKey,
   note,
-  footnote,
 }: {
-  tiles: KpiTile[];
+  groups: KpiGroup[];
   regionPerCap: PerCap;
   references: RefLevel[];
   defaultRefKey: string;
   /** Satz hinter der Vergleichs-Erklärung, z. B. wenn ein Eigentümer-Filter aktiv
    *  ist und Werte wie Vergleichsbasis auf dieselbe Kategorie eingeschränkt sind. */
   note?: string;
-  /** Eigene Zeile direkt unter den Kacheln — für das, was eine Kachel bewusst
-   *  NICHT enthält. Steht über der Tendenz-Zeile und dunkler als diese, weil es
-   *  eine Aussage über die Zahlen ist und keine Fußnote zur Vergleichslogik. */
-  footnote?: string;
 }) {
   const [refKey, setRefKey] = useState(defaultRefKey);
   const ref = references.find((r) => r.key === refKey) ?? references[0] ?? null;
@@ -47,26 +51,12 @@ export default function AtlasKpiRow({
     return a / b - 1;
   };
 
+  const grouped = groups.length > 1;
+
   return (
     <>
-      {/* Neu gekeyt, sobald sich die Werte ändern (z. B. Eigentümer-Filter) — die
-          Kacheln blenden dann um, statt hart zu springen. */}
-      <div
-        key={tiles.map((t) => t.value).join("|")}
-        style={{ ...S.grid, marginBottom: references.length || footnote ? space.sm : space.xxxl }}
-      >
-        {tiles.map((t, i) => (
-          <div key={i} style={S.metric}>
-            <div style={S.metricLabel}>{t.label}</div>
-            <div style={S.metricValue}>{t.value}</div>
-            <TendTag dev={dev(t.metric)} />
-            {t.sub && <div style={S.metricSub}>{t.sub}</div>}
-          </div>
-        ))}
-      </div>
-      {footnote && (
-        <div style={{ ...S.footnote, marginBottom: ref ? space.sm : space.xxl }}>{footnote}</div>
-      )}
+      {/* Die Tendenz-Erklärung steht ÜBER den Kacheln: sie sagt, was die kleinen
+          Pfeile IN den Kacheln bedeuten — das gehört davor, nicht dahinter. */}
       {ref && (
         <div style={S.caption}>
           Tendenz: je Einwohner gegenüber dem Durchschnitt in{" "}
@@ -78,6 +68,30 @@ export default function AtlasKpiRow({
           .{note ? ` ${note}` : ""}
         </div>
       )}
+
+      {/* Neu gekeyt, sobald sich die Werte ändern (z. B. Eigentümer-Filter) — die
+          Kacheln blenden dann um, statt hart zu springen. */}
+      <div
+        key={groups.flatMap((g) => g.tiles.map((t) => t.value)).join("|")}
+        style={{ ...S.groups, marginBottom: space.xxl }}
+      >
+        {groups.map((g, gi) => (
+          <div key={gi} style={grouped ? S.group : undefined}>
+            {g.title && <div style={S.groupTitle}>{g.title}</div>}
+            <div style={grouped ? S.gridNarrow : S.grid}>
+              {g.tiles.map((t, i) => (
+                <div key={i} style={S.metric}>
+                  <div style={S.metricLabel}>{t.label}</div>
+                  <div style={S.metricValue}>{t.value}</div>
+                  <TendTag dev={dev(t.metric)} />
+                  {t.sub && <div style={S.metricSub}>{t.sub}</div>}
+                </div>
+              ))}
+            </div>
+            {g.note && <div style={S.footnote}>{g.note}</div>}
+          </div>
+        ))}
+      </div>
     </>
   );
 }
@@ -130,11 +144,34 @@ function RefPicker({
 }
 
 const S: Record<string, React.CSSProperties> = {
+  // Zwei Gruppen nebeneinander, ab schmalen Breiten untereinander: minmax sorgt
+  // dafür, dass die Speicher-Gruppe umbricht, statt sich auf 120 px zu quetschen.
+  groups: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: space.lg,
+    animation: "fu 0.28s ease-out",
+  },
+  group: { minWidth: 0 },
+  groupTitle: {
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: "0.04em",
+    textTransform: "uppercase",
+    color: v("--color-text-secondary"),
+    marginBottom: space.xs,
+  },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
     gap: space.md,
-    animation: "fu 0.28s ease-out",
+  },
+  // Innerhalb einer Gruppe darf eine Kachel schmaler werden — sonst passen bei
+  // 280 px Gruppenbreite nur zwei nebeneinander und die dritte steht allein.
+  gridNarrow: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(88px, 1fr))",
+    gap: space.sm,
   },
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: pad("lg") },
   metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
@@ -143,10 +180,10 @@ const S: Record<string, React.CSSProperties> = {
   footnote: {
     fontSize: 12,
     color: v("--color-text-secondary"),
-    margin: `0 ${space.xxs}px`,
+    margin: `${space.xs}px ${space.xxs}px 0`,
     lineHeight: 1.5,
   },
-  caption: { fontSize: 11, color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.xxl}px`, lineHeight: 1.5 },
+  caption: { fontSize: 11, color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.sm}px`, lineHeight: 1.5 },
   captionStrong: { color: v("--color-text-secondary"), fontWeight: 600 },
   pickerBtn: {
     display: "inline-flex",

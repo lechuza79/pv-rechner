@@ -6,6 +6,7 @@ import { v } from "../../lib/theme";
 import { IconArrowUp, IconArrowDown, IconChevronDown, IconArrowRight } from "../Icons";
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
 import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
+import { fmtPvLeistung, fmtSpeicherKwh } from "../../lib/atlas-format";
 
 type Owner = "alle" | "privat" | "gewerbe";
 type Metric = "count" | "kwp" | "perCapita" | "speicher";
@@ -67,17 +68,9 @@ function setUrlPlz(plz: string | null): void {
   window.history.replaceState(null, "", url.toString());
 }
 
-function fmtLeistung(kwp: number): string {
-  if (kwp >= 1_000_000) return `${(kwp / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`;
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(kwp)} kW`;
-}
 
-function fmtSpeicher(kwh: number): string {
-  if (kwh >= 1_000_000) return `${(kwh / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GWh`;
-  if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
-  return `${nf(kwh)} kWh`;
-}
+const fmtLeistung = fmtPvLeistung;
+const fmtSpeicher = fmtSpeicherKwh;
 
 function fmtCell(row: Row, m: Metric): string {
   if (m === "kwp") return fmtLeistung(row.kwp);

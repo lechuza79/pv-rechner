@@ -21,6 +21,7 @@ import {
   currentYear,
   type AtlasRegion,
 } from "../../../../lib/atlas";
+import { fmtPvLeistung as fmtLeistung } from "../../../../lib/atlas-format";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 
 export const revalidate = 3600;
@@ -29,12 +30,6 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
-
-function fmtLeistung(kwp: number): string {
-  if (kwp >= 1_000_000) return `${(kwp / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`;
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(kwp)} kW`;
-}
 
 function standLabel(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
@@ -217,7 +212,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
         </p>
 
         <AtlasKpiRow
-          tiles={kpiTiles}
+          groups={[{ tiles: kpiTiles }]}
           regionPerCap={regionPerCap}
           references={kpiRefs}
           defaultRefKey={defaultRefKey}
