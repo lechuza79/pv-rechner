@@ -603,6 +603,20 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           ]}
         />
 
+        {/* ── Ausblick: bidirektionales Laden (V2H) — bewusst NICHT in der ✓-Liste ── */}
+        <div style={{ ...S.card, marginTop: 20 }}>
+          <span style={S.label}>Ausblick: das E-Auto als Speicher</span>
+          Perspektivisch könnte das E-Auto der größte Eigenverbrauchs-Hebel überhaupt
+          werden: Als fahrender Großspeicher mit 40–80 kWh fasst es ein Vielfaches eines
+          Heimspeichers, und mit bidirektionalem Laden (Vehicle-to-Home) könnte es
+          tagsüber Solarstrom aufnehmen und abends das Haus versorgen. Heute ist das aber
+          noch keine belastbare Ersparnis-Rechnung: Es hängt an der Verfügbarkeit passender
+          Fahrzeuge und Wallboxen und ist regulatorisch wie abrechnungstechnisch ungeklärt —
+          unter anderem droht bei der Rückspeisung eine Doppelbelastung mit Netzentgelten
+          und Steuern. Wir beobachten das, rechnen es aber erst, wenn die Rahmenbedingungen
+          stehen (Stand {REFORM_STAND}).
+        </div>
+
         {/* ── CTA ── */}
         <div style={{ ...S.hero, marginTop: 28 }}>
           <span style={S.label}>Für deinen Fall durchrechnen</span>
