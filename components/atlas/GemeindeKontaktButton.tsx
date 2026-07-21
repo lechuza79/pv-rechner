@@ -11,6 +11,7 @@
 import { useState } from "react";
 import Modal from "../Modal";
 import ContactForm from "../ContactForm";
+import ContactPerson from "../ContactPerson";
 import { v } from "../../lib/theme";
 
 export default function GemeindeKontaktButton({ name }: { name: string }) {
@@ -26,7 +27,11 @@ export default function GemeindeKontaktButton({ name }: { name: string }) {
         open={open}
         onClose={() => setOpen(false)}
         title="Widget einrichten lassen"
-        intro={`Wir melden uns in der Regel innerhalb von 1–2 Werktagen. Die Angaben zu ${name} sind schon eingetragen — ergänzen Sie einfach, worum es geht.`}
+        intro={
+          <ContactPerson
+            note={`Ich melde mich in der Regel innerhalb von 1–2 Werktagen. Die Angaben zu ${name} sind schon eingetragen — ergänzen Sie einfach, worum es geht.`}
+          />
+        }
       >
         <ContactForm
           // Festes Thema aus der Allowlist: daraus baut der Server den
