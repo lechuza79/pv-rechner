@@ -33,6 +33,13 @@ const RECHNER_ITEMS: NavItem[] = [
   { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge in Echtzeit", page: "simulation" },
 ];
 
+// PV-Förderung group: the regional funding directory plus the national data
+// story that puts it in context (how policy shaped the build-out).
+const FOERDERUNG_ITEMS: NavItem[] = [
+  { href: "/photovoltaik-foerderung", label: "Förderprogramme", desc: "Bundes-, Landes- und Kommunalförderung nach Region", page: "foerderung" },
+  { href: "/photovoltaik-zubau-deutschland", label: "Solar-Zubau & Förderung", desc: "Wie Förderung den Ausbau geformt hat — die Datenstory", page: "zubau" },
+];
+
 // Energy-data hub: the dashboard plus the embeddable widgets. The embed page is
 // surfaced here (not as a top-level slot) so it becomes crawlable without
 // spending a scarce nav slot on a publisher feature.
@@ -55,6 +62,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/waermepumpe-rechner") ? "waermepumpe" :
     pathname.startsWith("/klimaanlage-stromkosten") ? "klima" :
     pathname.startsWith("/balkonkraftwerk-rechner") ? "balkon" :
+    pathname.startsWith("/photovoltaik-zubau-deutschland") ? "zubau" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
     pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""
@@ -151,7 +159,12 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
               items={RECHNER_ITEMS}
               activePage={activePage}
             />
-            <Link href="/photovoltaik-foerderung" style={linkStyle("foerderung")}>PV-Förderung</Link>
+            <DesktopDropdown
+              triggerLabel="PV-Förderung"
+              triggerHref="/photovoltaik-foerderung"
+              items={FOERDERUNG_ITEMS}
+              activePage={activePage}
+            />
             <DesktopDropdown
               triggerLabel="Strommix & Energiedaten"
               triggerHref="/strommix-deutschland"
@@ -206,7 +219,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
-            <Link href="/photovoltaik-foerderung" style={mobileLinkStyle("foerderung")} onClick={closeMenu}>PV-Förderung</Link>
+            <MobileSection title="PV-Förderung" items={FOERDERUNG_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
