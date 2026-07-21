@@ -18,9 +18,9 @@ const linkStyle = { color: v("--color-accent"), textDecoration: "none", fontWeig
 
 // Scoped styles: hide the native marker, animate the chevron, reveal the answer.
 const faqCss = `
-.faq-heading{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);margin:0 0 6px}
+.faq-heading{font-size:var(--font-size-caption);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);margin:0 0 6px}
 .faq-item{border-bottom:1px solid var(--color-border)}
-.faq-summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;font-size:14.5px;font-weight:700;color:var(--color-text-primary);line-height:1.4}
+.faq-summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;font-size:var(--font-size-h3);font-weight:700;color:var(--color-text-primary);line-height:1.35}
 .faq-summary::-webkit-details-marker{display:none}
 .faq-chevron{flex:none;color:var(--color-text-muted);transition:transform 0.22s ease}
 .faq-item[open] .faq-summary .faq-chevron{transform:rotate(180deg)}
@@ -116,7 +116,7 @@ export default function Faq({
               <div className="faq-answer" style={{ paddingBottom: 16 }}>
                 <p
                   style={{
-                    fontSize: 13.5,
+                    fontSize: v("--font-size-body"),
                     fontWeight: 400,
                     color: v("--color-text-muted"),
                     lineHeight: 1.7,
@@ -132,7 +132,7 @@ export default function Faq({
                       display: "inline-block",
                       padding: "8px 16px",
                       borderRadius: v("--radius-md"),
-                      fontSize: 13,
+                      fontSize: v("--font-size-small"),
                       fontWeight: 700,
                       background: v("--color-accent"),
                       color: v("--color-text-on-accent"),

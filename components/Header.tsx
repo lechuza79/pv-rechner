@@ -58,6 +58,8 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/klimaanlage-stromkosten") ? "klima" :
     pathname.startsWith("/balkonkraftwerk-rechner") ? "balkon" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
+    pathname.startsWith("/ratgeber") ? "ratgeber" :
+    pathname.startsWith("/lohnt-sich-pv") ? "ratgeber" :
     pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""
   );
@@ -65,7 +67,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   const [isDesktop, setIsDesktop] = useState(true);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
+    const mq = window.matchMedia("(min-width: 1000px)");
     setIsDesktop(mq.matches);
     const handler = (e: MediaQueryListEvent) => {
       setIsDesktop(e.matches);
@@ -85,6 +87,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     display: "inline-flex",
     alignItems: "center",
     gap: 6,
+    whiteSpace: "nowrap",
   });
 
   const mobileLinkStyle = (page: string): React.CSSProperties => ({
@@ -154,6 +157,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
               activePage={activePage}
             />
             <Link href="/photovoltaik-foerderung" style={linkStyle("foerderung")}>PV-Förderung</Link>
+            <Link href="/ratgeber" style={linkStyle("ratgeber")}>Ratgeber</Link>
             <DesktopDropdown
               triggerLabel="Strommix & Energiedaten"
               triggerHref="/strommix-deutschland"
@@ -209,6 +213,10 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
             <Link href="/photovoltaik-foerderung" style={mobileLinkStyle("foerderung")} onClick={closeMenu}>PV-Förderung</Link>
+
+            <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
+
+            <Link href="/ratgeber" style={mobileLinkStyle("ratgeber")} onClick={closeMenu}>Ratgeber</Link>
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
@@ -268,6 +276,7 @@ function DesktopDropdown({
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
+          whiteSpace: "nowrap",
           cursor: "pointer",
           color: active ? v('--color-accent') : v('--color-text-secondary'),
         }}

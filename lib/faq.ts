@@ -150,3 +150,49 @@ export function pvSpeicherFaq(prices?: PriceConfig): FaqEntry[] {
     },
   ];
 }
+
+/** FAQ for the "Lohnt sich PV ohne Einspeisevergütung?" guide page.
+ *
+ *  Ausnahme zur "keine hardcoded Jahre"-Regel: die EEG-Reform-Antworten sind
+ *  datierte Sachstände zu einem LAUFENDEN Gesetzgebungsverfahren (Stand: Juli
+ *  2026, Referentenentwurf — nicht beschlossen). Der EEG-Wächter aktualisiert
+ *  diese Texte bei einer Rechtsänderung mit; bei Beschluss/Verwerfung Antworten
+ *  + Stand-Datum anpassen. Konsistent halten mit der Reform-Notiz im Rechner
+ *  (rechner.tsx) und pvRechnerFaq oben. */
+export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
+  const feedInCt = DEFAULT_FEED_IN.teilUnder10.toLocaleString("de-DE");
+  const strompreisCt = Math.round((prices?.electricityPrice ?? 0.31) * 100);
+  return [
+    {
+      q: "Lohnt sich eine PV-Anlage ohne Einspeisevergütung?",
+      a: `Ja — wenn der Eigenverbrauch stimmt. Die Vergütung bringt aktuell nur ca. ${feedInCt} ct/kWh, selbst verbrauchter Strom spart dagegen den vollen Strompreis von rund ${strompreisCt} ct/kWh. Wer mit Speicher, Wärmepumpe oder E-Auto einen großen Teil des Solarstroms selbst nutzt, verdient das Geld ohnehin über den Eigenverbrauch — die Vergütung ist dann nur noch ein Bonus. Ohne nennenswerten Eigenverbrauch (z. B. reine Volleinspeisung) rechnet sich eine Anlage ohne Vergütung dagegen nicht.`,
+      cta: { label: "Ohne Vergütung durchrechnen", href: "/photovoltaik-rechner" },
+    },
+    {
+      q: "Fällt die Einspeisevergütung 2027 weg?",
+      a: "Geplant, aber noch nicht beschlossen: Ein Referentenentwurf des Bundeswirtschaftsministeriums sieht vor, die dauerhaft garantierte Einspeisevergütung für neue PV-Anlagen bis 25 kWp ab 2027 zu streichen. Die überarbeitete Entwurfsfassung sieht eine Übergangsphase vor: Neuanlagen sollen zunächst 36 Monate eine reduzierte Vergütung erhalten, danach ist ein zeitlich befristeter Bonus für die Direktvermarktung vorgesehen (Stand: Juli 2026). Zu diesem Stand war die Reform noch nicht final beschlossen — der Weg durch Kabinett, Bundestag und Bundesrat stand noch aus. Ob und in welcher Form die Reform kommt, ist offen — verbindlich ist allein die offizielle Gesetzeslage.",
+      cta: { label: "Aktuelle Vergütung ansehen", href: "/datenstand" },
+    },
+    {
+      q: "Bin ich betroffen, wenn meine Anlage schon läuft?",
+      a: "Nein. Für Anlagen, die bis Ende 2026 in Betrieb gehen, gilt Bestandsschutz: Die bei Inbetriebnahme zugesagte Einspeisevergütung bleibt für die vollen 20 Jahre garantiert. Die geplante Reform betrifft nach dem aktuellen Entwurf ausschließlich Neuanlagen ab 2027 (Stand: Juli 2026).",
+      cta: { label: "Meine Anlage nachrechnen", href: "/photovoltaik-rechner" },
+    },
+    {
+      q: "Was passiert nach den 20 Jahren EEG-Vergütung?",
+      a: "Die EEG-Vergütung endet nach 20 Jahren — das ist schon heute so und hat mit der geplanten Reform nichts zu tun. Danach fließt für eingespeisten Strom ohne neue Vermarktung nichts mehr, die Ersparnis durch Eigenverbrauch läuft aber unverändert weiter. Unser Rechner kalkuliert genau so: Vergütung nur 20 Jahre, Eigenverbrauch über die gesamte Laufzeit. Eine Anlage, die sich vor allem über Eigenverbrauch trägt, ist von diesem Auslaufen kaum abhängig.",
+      cta: { label: "Methodik im Detail", href: "/methodik" },
+    },
+    {
+      q: "Was ist Direktvermarktung — und geht das für kleine Anlagen?",
+      a: "Bei der Direktvermarktung verkauft ein Dienstleister deinen Überschussstrom an der Strombörse; du erhältst den Marktpreis abzüglich einer Gebühr. Bisher ist das erst für größere Anlagen Pflicht und für kleine Hausanlagen wegen der Fixkosten selten attraktiv. Sollte die geplante Reform kommen, dürfte sich dieser Markt für Kleinanlagen entwickeln — seriös beziffern lassen sich die künftigen Erlöse heute aber nicht. Unsere Beispielrechnung setzt sie deshalb konservativ mit null an.",
+      cta: { label: "Konservativ durchrechnen", href: "/photovoltaik-rechner" },
+    },
+    {
+      q: "Sollte ich meine Anlage noch 2026 in Betrieb nehmen?",
+      a: "Wer ohnehin eine Anlage plant, sichert sich mit einer Inbetriebnahme bis Ende 2026 die aktuelle Einspeisevergütung für 20 Jahre — das ist der greifbare Vorteil des Bestandsschutzes. Ein Grund zur Panik ist die Reform aber nicht: Eine passend dimensionierte Anlage mit hohem Eigenverbrauch rechnet sich auch ohne Vergütung. Wichtig ist eine realistische Rechnung für den eigenen Haushalt, keine Torschluss-Entscheidung. Das ist eine allgemeine Einordnung, keine individuelle Beratung.",
+      links: [{ phrase: "hohem Eigenverbrauch", href: "/lohnt-sich-pv-mit-speicher" }],
+      cta: { label: "Meinen Fall durchrechnen", href: "/photovoltaik-rechner" },
+    },
+  ];
+}

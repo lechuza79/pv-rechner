@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../../components/Header";
+import Breadcrumb from "../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
@@ -33,16 +34,16 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto" },
+  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto", paddingTop: 60 },
   h1: {
-    fontSize: 22,
+    fontSize: v("--font-size-h1"),
     fontWeight: 800,
     letterSpacing: "-0.02em",
     color: v("--color-text-primary"),
     lineHeight: 1.25,
-    marginBottom: 8,
+    marginBottom: 10,
   },
-  subtitle: { fontSize: 13.5, color: v("--color-text-muted"), marginBottom: 24, lineHeight: 1.6 },
+  subtitle: { fontSize: v("--font-size-lead"), color: v("--color-text-muted"), marginBottom: 24, lineHeight: 1.6 },
   hero: {
     background: v("--color-bg-accent"),
     border: `1px solid ${v("--color-border-accent")}`,
@@ -51,7 +52,7 @@ const S = {
     textAlign: "center" as const,
   },
   heroLabel: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     letterSpacing: "0.04em",
     textTransform: "uppercase" as const,
@@ -66,25 +67,25 @@ const S = {
     color: v("--color-energy-nuclear-import"),
   },
   heroUnit: { fontSize: 22, fontWeight: 700, color: v("--color-text-muted"), marginLeft: 6 },
-  heroSub: { fontSize: 12.5, color: v("--color-text-muted"), marginTop: 12, lineHeight: 1.6 },
+  heroSub: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), marginTop: 12, lineHeight: 1.6 },
   heroStand: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontFamily: v("--font-mono"),
     color: v("--color-accent"),
     fontWeight: 700,
     marginTop: 8,
   },
   section: { marginTop: 32 },
-  h2: { fontSize: 16, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 8 },
+  h2: { fontSize: v("--font-size-h2"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 8 },
   faqHeading: {
-    fontSize: 12,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     letterSpacing: "0.05em",
     textTransform: "uppercase" as const,
     color: v("--color-text-secondary"),
     marginBottom: 10,
   },
-  p: { fontSize: 13.5, color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: 10 },
+  p: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: 12 },
   cta: {
     display: "inline-flex",
     alignItems: "center",
@@ -94,11 +95,11 @@ const S = {
     borderRadius: v("--radius-md"),
     background: v("--color-accent"),
     color: v("--color-text-on-accent"),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
     textDecoration: "none",
   },
-  source: { fontSize: 11.5, color: v("--color-text-faint"), marginTop: 28, lineHeight: 1.6 },
+  source: { fontSize: v("--font-size-small"), color: v("--color-text-faint"), marginTop: 28, lineHeight: 1.6 },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
 };
 
@@ -186,6 +187,7 @@ export default async function AtomstromImportPage() {
         dangerouslySetInnerHTML={{ __html: jsonLdHtml(faqJsonLd) }}
       />
       <div style={S.wrap}>
+        <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Atomstrom-Import" }]} jsonLd />
         <h1 style={S.h1}>Wie viel Atomstrom importiert Deutschland?</h1>
         <p style={S.subtitle}>
           Deutschland hat seine eigenen Kernkraftwerke abgeschaltet — bezieht über das europäische

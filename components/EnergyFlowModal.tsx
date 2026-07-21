@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import { v } from "../lib/theme";
 import type { SolarMonth } from "../lib/balkon-sim";
 import type { ExampleDayResult } from "../lib/pv-sim";
+import DayProfileChart, { DAY_C_DIRECT as C_DIRECT, DAY_C_BATTERY as C_BATTERY, DAY_C_GRID as C_GRID } from "./DayProfileChart";
 
 export interface ExampleDayEntry {
   key: string;
@@ -38,11 +39,8 @@ interface EnergyFlowModalProps {
 
 const MONTH_LABELS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 
-// Semantische Farben — überall gleich, damit die Ansichten zusammen lesen:
-const C_DIRECT = "var(--color-positive)";       // direkt aus der Sonne — grün
-const C_BATTERY = "var(--color-accent-light)";  // aus dem Speicher — helles Blau
-const C_GRID = "var(--color-text-muted)";       // aus dem Netz — grau
-const C_SUN = "#F4B740";                          // Erzeugung — Sonnengelb
+// Semantische Farben (C_DIRECT/C_BATTERY/C_GRID/C_SUN) kommen jetzt aus der
+// geteilten DayProfileChart-Komponente — eine Quelle für Modal + EEG-Ratgeber.
 
 function LegendDot({ color, label }: { color: string; label: string }) {
   return (
@@ -100,54 +98,9 @@ function YearChart({ monthly }: { monthly: SolarMonth[] }) {
  *  Netz). Sichtbar wird: mittags viel mehr Sonne als Bedarf (Überschuss lädt Speicher
  *  und wird eingespeist), abends/nachts kein Solar → erst Speicher, dann Netz. */
 function DayChart({ day, scaleMax }: { day: ExampleDayResult; scaleMax: number }) {
-  const W = 340, H = 148, padB = 18, padT = 10, chartH = H - padB - padT;
-  const hours = day.hours;
-  // GEMEINSAME Skala über alle Beispieltage (nicht pro Tag), sonst wirkt ein
-  // trüber Tag mit wenig Erzeugung „hochgezoomt" und der Direktverbrauch täuscht
-  // größer als am sonnigen Tag. So sind die Tage ehrlich vergleichbar.
-  const maxY = Math.max(scaleMax, 0.1);
-  const slot = W / 24;
-  const barW = slot * 0.66;
-  const yOf = (kwh: number) => padT + chartH - (kwh / maxY) * chartH;
-  // Erzeugungs-Fläche (Stundenmitte-Punkte), zurück auf die Grundlinie.
-  const base = padT + chartH;
-  const prodArea = `${slot / 2},${base} ` +
-    hours.map((h, i) => `${i * slot + slot / 2},${yOf(Math.min(h.prod, maxY))}`).join(" ") +
-    ` ${23 * slot + slot / 2},${base}`;
   return (
     <div>
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }} role="img" aria-label="Tagesverlauf: Erzeugung und Verbrauch über 24 Stunden">
-        {/* Erzeugung als gelbe Fläche */}
-        <polygon points={prodArea} fill={C_SUN} fillOpacity={0.22} stroke={C_SUN} strokeWidth={1.4} strokeLinejoin="round" />
-        {/* Verbrauchs-Deckung je Stunde: direkt / Speicher / Netz */}
-        {hours.map((h, i) => {
-          const x = i * slot + (slot - barW) / 2;
-          const segs = [
-            { v: h.direct, c: C_DIRECT },
-            { v: h.discharge, c: C_BATTERY },
-            { v: h.grid, c: C_GRID },
-          ];
-          let cursor = base;
-          return (
-            <g key={i}>
-              {segs.map((s, k) => {
-                const hh = (s.v / maxY) * chartH;
-                cursor -= hh;
-                return hh > 0.3 ? <rect key={k} x={x} y={cursor} width={barW} height={hh} fill={s.c} /> : null;
-              })}
-            </g>
-          );
-        })}
-        {[0, 6, 12, 18].map(hr => (
-          <text key={hr} x={hr * slot + slot / 2} y={H - 5} textAnchor="middle" fontSize={9.5} fill={v('--color-text-muted')} fontFamily={v('--font-text')}>{hr}:00</text>
-        ))}
-      </svg>
-      <div style={{ display: "flex", gap: 10, marginTop: 4, justifyContent: "center", flexWrap: "wrap" }}>
-        <LegendDot color={C_SUN} label="Erzeugung" />
-        <LegendDot color={C_DIRECT} label="direkt" />
-        <LegendDot color={C_BATTERY} label="Speicher" />
-        <LegendDot color={C_GRID} label="Netz" />
-      </div>
+      <DayProfileChart hours={day.hours} scaleMax={scaleMax} />
       <div style={{ fontSize: 11.5, color: v('--color-text-secondary'), textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
         Erzeugung <strong style={{ fontFamily: v('--font-mono') }}>{day.prod.toLocaleString("de-DE")}</strong> kWh ·
         Verbrauch <strong style={{ fontFamily: v('--font-mono') }}>{day.cons.toLocaleString("de-DE")}</strong> kWh ·

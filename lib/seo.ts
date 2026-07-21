@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
+export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
 /**
  * Build a branded OG image URL (1200x630) rendered by /api/og in "brand" mode.
