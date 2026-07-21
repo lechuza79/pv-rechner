@@ -175,14 +175,17 @@ export default async function GemeindePage({ params }: { params: Params }) {
           title: "Batteriespeicher",
           tiles: [
             {
-              label: "Kapazität",
+              label: "Batteriespeicher",
               ...speicherKwhTeile(s.speicherKwh),
               metric: "speicher",
               sub: proKwp !== null ? fmtSpeicherJeKwp(proKwp) : undefined,
             },
             // Zählt Batterien, nicht alle Speicher: Anzahl und Kapazität müssen
             // dasselbe meinen. Was sonst noch im Ort steht, sagt die Zeile darunter.
-            { label: "Anzahl", value: nf(s.batterieCount), unit: "Batterien", sub: avgSub },
+            // Ohne Einheit: die Kachel steht in der Gruppe "Batteriespeicher"
+            // und traegt die Beschriftung "Anzahl" — das Wort dahinter waere
+            // dieselbe Aussage ein drittes Mal.
+            { label: "Batterien", value: nf(s.batterieCount), sub: avgSub },
           ],
           note: speicherHinweis(s.nichtBatterie) ?? undefined,
         },

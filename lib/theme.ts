@@ -42,6 +42,16 @@ export const tokens = {
   '--color-negative-dim': 'rgba(239,68,68,0.06)',  // Negative background
   '--color-negative-border': 'rgba(239,68,68,0.2)', // Negative border
 
+  // Dieselbe Semantik als LESBARER TEXT. Das Marken-Grün #00D950 ist eine
+  // Flächen- und Grafikfarbe: als 11-px-Text auf hellem Grund kommt es auf
+  // 1,79:1 und ist praktisch nicht lesbar (WCAG AA fordert 4,5:1) — dasselbe gilt
+  // fuer das Rot mit 3,54:1. Kleine farbige Zahlen (Tendenz-Tags, Deltas) nehmen
+  // deshalb diese Stufen; Flaechen, Balken und Chart-Linien behalten die
+  // Markenfarben. Gemessen nach WCAG 2.1 gegen --color-bg-muted:
+  //   positive-text #0C6E2F → 6,02:1 · negative-text #C81E1E → 5,40:1
+  '--color-positive-text': '#0C6E2F',
+  '--color-negative-text': '#C81E1E',
+
   // ─── Chart (4) ─────────────────────────────────────────────────────────────
   '--color-chart-positive-bg': 'rgba(0,217,80,0.08)',
   '--color-chart-negative-bg': 'rgba(239,68,68,0.05)',
@@ -235,6 +245,10 @@ const darkTokens: Partial<Record<TokenName, string>> = {
   '--color-accent-dark': '#8FBBF7',                 // "hover / accent text" → lighter on dark
   '--color-accent-light': '#3E74CC',
   '--color-positive': '#2BE06E',
+  // Auf dunklem Grund sind die Markenfarben selbst schon kontraststark
+  // (9,24:1 bzw. 5,6:1) — Text- und Flaechenfarbe fallen hier zusammen.
+  '--color-positive-text': '#2BE06E',
+  '--color-negative-text': '#F26D6D',
   '--color-negative': '#F26D6D',
   '--color-negative-dim': 'rgba(242,109,109,0.12)',
   '--color-negative-border': 'rgba(242,109,109,0.32)',
@@ -268,6 +282,8 @@ const duskTokens: Partial<Record<TokenName, string>> = {
   '--color-accent-dark': '#A9C4F5',
   '--color-accent-light': '#5A7FC8',
   '--color-positive': '#3BD97A',
+  '--color-positive-text': '#3BD97A',                // 7,71:1 auf dem Daemmerungs-Grund
+  '--color-negative-text': '#F07D72',
   '--color-negative': '#F07D72',
   '--color-negative-dim': 'rgba(240,125,114,0.12)',
   '--color-negative-border': 'rgba(240,125,114,0.30)',
@@ -323,6 +339,11 @@ const overcastTokens: Partial<Record<TokenName, string>> = {
   // luminance contrast is still below WCAG on grey either way; real
   // accessibility is a separate pass.)
   '--color-positive': '#00BD45',
+  // Auf diesem mittleren Grau ist der Textbedarf am groessten: selbst das
+  // tiefere #00BD45 kommt nur auf 1,29:1. Gemessen gegen bg-muted #B4BAC3:
+  //   positive-text #0A4A20 → 5,34:1 · negative-text #8A1212 → 4,94:1
+  '--color-positive-text': '#0A4A20',
+  '--color-negative-text': '#8A1212',
 };
 
 type Tokens = Partial<Record<TokenName, string>>;
@@ -473,6 +494,18 @@ export const globalStyles = `
   .footer-cols>div{padding:0 22px}
   .footer-cols>div+div{border-left:1px solid var(--color-border)}
   @media (max-width:640px){.footer-cols{grid-template-columns:1fr;max-width:none;gap:20px}.footer-cols>div{padding:0}.footer-cols>div+div{border-left:none}}
+  /* KPI-Reihe des Solar-Atlas: sechs Kacheln nebeneinander, auf schmalen
+     Schirmen ein Wisch-Slider (Embla). Der Umschaltpunkt steht hier UND als
+     Embla-Breakpoint in AtlasKpiRow — beide bei 760px, sonst wischt der Desktop
+     an einem Grid vorbei. */
+  .kpi-viewport{overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+  .kpi-viewport::-webkit-scrollbar{display:none}
+  .kpi-reihe{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+  @media (max-width:760px){
+    .kpi-reihe{display:flex;gap:8px}
+    .kpi-reihe .kpi-kachel{flex:0 0 46%;min-width:0}
+  }
+  @media (max-width:420px){.kpi-reihe .kpi-kachel{flex:0 0 60%}}
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
   .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
 `;

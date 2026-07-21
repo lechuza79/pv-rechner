@@ -496,7 +496,8 @@ const S: Record<string, React.CSSProperties> = {
     border: `1px solid ${v("--color-border")}`,
     borderRadius: 999,
     padding: "5px 12px",
-    fontSize: 12,
+    // Fliesstextgroesse aus der Token-Skala, wie die Tendenz-Zeile darunter.
+    fontSize: v("--font-size-body"),
     fontWeight: 600,
     cursor: "pointer",
     fontFamily: "inherit",

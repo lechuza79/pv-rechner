@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 import { v, space, pad } from "../../lib/theme";
 import { IconChevronDown } from "../Icons";
 import TendTag from "./TendTag";
@@ -56,7 +57,11 @@ export default function AtlasKpiRow({
     return a / b - 1;
   };
 
-  const grouped = groups.length > 1;
+  // Eine Reihe statt Gruppenblöcke: die Kacheln sind schmal genug, dass alle
+  // sechs nebeneinander passen. Die Gruppen-Titel entfallen dabei — deshalb muss
+  // jede Kachel-Beschriftung für sich stehen ("Batterien", nicht "Anzahl").
+  const alleKacheln = groups.flatMap((g) => g.tiles);
+  const hinweise = groups.map((g) => g.note).filter((n): n is string => !!n);
 
   return (
     <>
@@ -76,31 +81,67 @@ export default function AtlasKpiRow({
 
       {/* Neu gekeyt, sobald sich die Werte ändern (z. B. Eigentümer-Filter) — die
           Kacheln blenden dann um, statt hart zu springen. */}
-      <div
+      <KachelReihe
         key={groups.flatMap((g) => g.tiles.map((t) => t.value)).join("|")}
-        style={{ ...S.groups, marginBottom: space.xxl }}
-      >
-        {groups.map((g, gi) => (
-          <div key={gi} style={grouped ? S.group : undefined}>
-            {g.title && <div style={S.groupTitle}>{g.title}</div>}
-            <div style={grouped ? S.gridNarrow : S.grid}>
-              {g.tiles.map((t, i) => (
-                <div key={i} style={S.metric}>
-                  <div style={S.metricLabel}>{t.label}</div>
-                  <div style={S.metricValue}>
-                    {t.value}
-                    {t.unit && <span style={S.metricUnit}> {t.unit}</span>}
-                  </div>
-                  <TendTag dev={dev(t.metric)} />
-                  {t.sub && <div style={S.metricSub}>{t.sub}</div>}
-                </div>
-              ))}
+        tiles={alleKacheln}
+        dev={dev}
+      />
+      {hinweise.map((h, i) => (
+        <div key={i} style={S.footnote}>
+          {h}
+        </div>
+      ))}
+    </>
+  );
+}
+
+/**
+ * Die Kachel-Reihe: auf breiten Schirmen alle Kacheln nebeneinander, auf schmalen
+ * ein Slider.
+ *
+ * Embla übernimmt nur das Wischen — kein Loop, keine Pfeile, kein Autoplay: für
+ * sechs Kacheln gäbe es nichts zu loopen (die bekannte Falle, dass Embla den Loop
+ * still abschaltet, wenn die Slides den Viewport nicht füllen), und dragFree
+ * bleibt aus, damit die Kacheln an ihrer Kante einrasten.
+ *
+ * Der Slider läuft NUR unterhalb der Umbruchbreite: darüber wird der Embla-
+ * Container per CSS wieder zum Grid, damit auf dem Desktop nichts wischbar ist,
+ * was gar nicht überläuft.
+ */
+function KachelReihe({ tiles, dev }: { tiles: KpiTile[]; dev: (m?: string) => number | null }) {
+  // Ohne JavaScript gibt es keinen Slider — dann darf die Reihe nicht mit
+  // overflow:hidden abgeschnitten sein, sonst sind die hinteren Kacheln
+  // unerreichbar. Bis Embla montiert ist, scrollt der Rahmen nativ.
+  const [sliderBereit, setSliderBereit] = useState(false);
+  useEffect(() => setSliderBereit(true), []);
+
+  const [emblaRef] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    active: true,
+    breakpoints: { "(min-width: 761px)": { active: false } },
+  });
+
+  return (
+    <div
+      className="kpi-viewport"
+      ref={emblaRef}
+      style={{ ...S.viewport, overflowX: sliderBereit ? "hidden" : "auto" }}
+    >
+      <div className="kpi-reihe">
+        {tiles.map((t, i) => (
+          <div key={i} className="kpi-kachel" style={S.metric}>
+            <div style={S.metricLabel}>{t.label}</div>
+            <div style={S.metricValue}>
+              {t.value}
+              {t.unit && <span style={S.metricUnit}> {t.unit}</span>}
             </div>
-            {g.note && <div style={S.footnote}>{g.note}</div>}
+            <TendTag dev={dev(t.metric)} />
+            {t.sub && <div style={S.metricSub}>{t.sub}</div>}
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -152,35 +193,14 @@ function RefPicker({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  // Zwei Gruppen nebeneinander, ab schmalen Breiten untereinander: minmax sorgt
-  // dafür, dass die Speicher-Gruppe umbricht, statt sich auf 120 px zu quetschen.
-  groups: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-    gap: space.lg,
-    animation: "fu 0.28s ease-out",
-  },
-  group: { minWidth: 0 },
-  groupTitle: {
-    fontSize: 11,
-    fontWeight: 700,
-    letterSpacing: "0.04em",
-    textTransform: "uppercase",
-    color: v("--color-text-secondary"),
-    marginBottom: space.xs,
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
-    gap: space.md,
-  },
-  // Innerhalb einer Gruppe darf eine Kachel schmaler werden — sonst passen bei
-  // 280 px Gruppenbreite nur zwei nebeneinander und die dritte steht allein.
-  gridNarrow: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(88px, 1fr))",
-    gap: space.sm,
-  },
+  // Layout NICHT inline: Inline-Styles schlagen jede Media Query, der Slider
+  // hätte auf dem Handy nie umgeschaltet. Grid/Flex stehen deshalb komplett im
+  // CSS-Block (lib/theme.ts, .kpi-reihe) — hier bleibt nur die Einblend-Animation.
+  // Die Einblend-Animation gehört auf den äußeren Rahmen, NICHT auf die Reihe:
+  // sie animiert transform, und genau darüber schiebt Embla den Slider. Beides
+  // auf demselben Element heißt, dass die Animation Embla überschreibt — der
+  // Slider sprang dann vertikal statt horizontal.
+  viewport: { marginBottom: space.sm, animation: "fu 0.28s ease-out" },
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: pad("lg") },
   metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
