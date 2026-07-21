@@ -4,7 +4,7 @@
 // (Anlagen-Mix, Speicher, Pro-Kopf, Rang im Landkreis, Zubau-Trend), aktualisiert
 // sich mit dem Monatslauf von selbst. SEO über Ort + Solar/Photovoltaik + Vergleich.
 
-import { fmtPvLeistung } from "./atlas-format";
+import { fmtPvLeistung, fmtWattProKopf } from "./atlas-format";
 
 type SegRow = { segment: string; count: number; kwp: number };
 type MiniAtlas = {
@@ -112,8 +112,8 @@ export function buildGemeindeHighlight(opts: {
   if (perCapita !== null && perCapitaVsBl !== null) {
     perCap =
       perCapitaVsBl >= 0
-        ? `Je Einwohner sind das ${nf(perCapita)} W Photovoltaik — ${pct(perCapitaVsBl)} % über dem ${blName}-Schnitt.`
-        : `Je Einwohner sind das ${nf(perCapita)} W — ${pct(perCapitaVsBl)} % unter dem ${blName}-Schnitt, hier ist also noch viel Luft nach oben.`;
+        ? `Je Einwohner sind das ${fmtWattProKopf(perCapita)} Photovoltaik — ${pct(perCapitaVsBl)} % über dem ${blName}-Schnitt.`
+        : `Je Einwohner sind das ${fmtWattProKopf(perCapita)} — ${pct(perCapitaVsBl)} % unter dem ${blName}-Schnitt, hier ist also noch viel Luft nach oben.`;
   }
 
   return [base, character, rank, zubau, perCap].filter(Boolean).join(" ");

@@ -6,6 +6,23 @@
 // Leistungs-Formatters, fünf davon mit der falschen Einheit.
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
+const dez = (n: number, stellen: number) => n.toLocaleString("de-DE", { maximumFractionDigits: stellen });
+
+/**
+ * Zahl und Einheit — getrennt.
+ *
+ * Eine Quelle für beides, aber NICHT zu einem Textblock verschmolzen: in einer
+ * Kachel ist der Zahlenwert die dominante Angabe und die Einheit steht kleiner
+ * daneben. Wer nur den fertigen String bekommt, kann das nicht mehr setzen —
+ * genau so ist beim Zusammenführen der sechs Formatter-Kopien die
+ * Größenstaffelung in den Kacheln verlorengegangen.
+ *
+ * Faustregel: `fmt…()` für Fließtext, `…Teile()` überall dort, wo die Zahl groß
+ * gesetzt wird.
+ */
+export type Messwert = { value: string; unit: string };
+
+const zusammen = (m: Messwert) => `${m.value} ${m.unit}`;
 
 /**
  * Installierte Photovoltaik-Leistung.
@@ -18,17 +35,56 @@ const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
  * NICHT für Speicher (kWh) und nicht für einen Technologie-Mix aus Solar, Wind
  * und Biomasse — dort ist die Nennleistung keine Peak-Leistung.
  */
-export function fmtPvLeistung(kwp: number): string {
-  if (kwp >= 1_000_000) return `${(kwp / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GWp`;
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWp`;
-  return `${nf(kwp)} kWp`;
+export function pvLeistungTeile(kwp: number): Messwert {
+  if (kwp >= 1_000_000) return { value: dez(kwp / 1_000_000, 1), unit: "GWp" };
+  if (kwp >= 1000) return { value: dez(kwp / 1000, 1), unit: "MWp" };
+  return { value: nf(kwp), unit: "kWp" };
 }
+export const fmtPvLeistung = (kwp: number): string => zusammen(pvLeistungTeile(kwp));
+
+/**
+ * Installierte Photovoltaik je Einwohner.
+ *
+ * Auch das ist Peak-Leistung, nur geteilt durch die Einwohnerzahl — also Wp,
+ * nicht W. Stand vorher an sechs Stellen als "W" da und wäre dieselbe stille
+ * Falschaussage wie kW/kWp.
+ */
+export const wattProKopfTeile = (w: number): Messwert => ({ value: nf(w), unit: "Wp" });
+export const fmtWattProKopf = (w: number): string => zusammen(wattProKopfTeile(w));
 
 /** Speicherkapazität — kWh, ab vier Stellen MWh/GWh. */
-export function fmtSpeicherKwh(kwh: number): string {
-  if (kwh >= 1_000_000) return `${(kwh / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GWh`;
-  if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
-  return `${nf(kwh)} kWh`;
+export function speicherKwhTeile(kwh: number): Messwert {
+  if (kwh >= 1_000_000) return { value: dez(kwh / 1_000_000, 1), unit: "GWh" };
+  if (kwh >= 1000) return { value: dez(kwh / 1000, 1), unit: "MWh" };
+  return { value: nf(kwh), unit: "kWh" };
+}
+export const fmtSpeicherKwh = (kwh: number): string => zusammen(speicherKwhTeile(kwh));
+
+/**
+ * Durchschnittliche Größe einer Hausbatterie.
+ *
+ * Eigene Funktion statt speicherKwhTeile, weil hier eine Nachkommastelle zählt:
+ * Hausbatterien liegen bei 5 bis 15 kWh, gerundet wären 8,7 und 9,4 dieselbe
+ * Zahl.
+ */
+export const batterieMittelTeile = (kwh: number): Messwert => ({ value: dez(kwh, 1), unit: "kWh" });
+export const fmtBatterieMittel = (kwh: number): string => zusammen(batterieMittelTeile(kwh));
+
+/**
+ * Speicherdichte: Batteriekapazität je installiertem kWp DACHLEISTUNG.
+ *
+ * Der Nenner lässt Freiflächen-Parks bewusst weg (ein Solarpark ohne Batterie
+ * würde sonst ein "hier speichert niemand" vortäuschen) — dann muss der Nenner
+ * auch drangeschrieben stehen, sonst behauptet die Zeile etwas anderes, als sie
+ * rechnet.
+ */
+export function fmtSpeicherJeKwp(kwhProKwp: number): string {
+  return `${kwhProKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp Dach`;
+}
+
+/** Standort-Ertrag: Jahresertrag je installiertem kWp. */
+export function fmtErtragProKwp(kwhProKwp: number): string {
+  return `${Math.round(kwhProKwp).toLocaleString("de-DE")} kWh/kWp`;
 }
 
 // ─── Regionsnamen ─────────────────────────────────────────────────────────────

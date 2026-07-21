@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { fmtPvLeistung, fmtSpeicherKwh, regionDisplayName } from "../atlas-format";
+import {
+  fmtPvLeistung,
+  fmtSpeicherKwh,
+  fmtWattProKopf,
+  fmtBatterieMittel,
+  fmtSpeicherJeKwp,
+  fmtErtragProKwp,
+  regionDisplayName,
+} from "../atlas-format";
 
 /**
  * Installierte Photovoltaik ist eine Peak-Leistung. Sechs Dateien hatten je eine
@@ -13,10 +21,37 @@ describe("Einheit der installierten PV-Leistung", () => {
     expect(fmtPvLeistung(2_400_000)).toBe("2,4 GWp");
   });
 
+  it("schaltet die Größenordnung genau bei 1.000 um", () => {
+    expect(fmtPvLeistung(999)).toBe("999 kWp");
+    expect(fmtPvLeistung(1000)).toBe("1 MWp");
+    expect(fmtPvLeistung(999_999)).toBe("1.000 MWp");
+    expect(fmtPvLeistung(1_000_000)).toBe("1 GWp");
+  });
+
   it("hält Speicher davon getrennt (Energie, nicht Leistung)", () => {
     expect(fmtSpeicherKwh(117)).toBe("117 kWh");
+    expect(fmtSpeicherKwh(999)).toBe("999 kWh");
+    expect(fmtSpeicherKwh(1000)).toBe("1 MWh");
     expect(fmtSpeicherKwh(14_203)).toBe("14,2 MWh");
+    expect(fmtSpeicherKwh(1_000_000)).toBe("1 GWh");
     expect(fmtSpeicherKwh(9_470_000)).toBe("9,5 GWh");
+  });
+
+  it("schreibt auch die Pro-Kopf-Leistung als Peak", () => {
+    // Installierte Leistung geteilt durch Einwohner bleibt Peak-Leistung.
+    expect(fmtWattProKopf(526)).toBe("526 Wp");
+    expect(fmtWattProKopf(1234)).toBe("1.234 Wp");
+  });
+
+  it("zeigt die mittlere Batteriegröße mit einer Nachkommastelle", () => {
+    // 8,7 und 9,4 kWh sind verschiedene Speicher — gerundet wären beide "9".
+    expect(fmtBatterieMittel(8.72)).toBe("8,7 kWh");
+    expect(fmtBatterieMittel(583.05)).toBe("583,1 kWh");
+  });
+
+  it("benennt die zusammengesetzten Einheiten vollständig", () => {
+    expect(fmtSpeicherJeKwp(1.639)).toBe("1,64 kWh je kWp Dach");
+    expect(fmtErtragProKwp(1030.4)).toBe("1.030 kWh/kWp");
   });
 });
 

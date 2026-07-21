@@ -33,7 +33,13 @@ import {
   type AtlasOwner,
   type PeerLeader,
 } from "../../../../../../lib/atlas";
-import { fmtPvLeistung, fmtSpeicherKwh } from "../../../../../../lib/atlas-format";
+import {
+  fmtBatterieMittel,
+  fmtSpeicherJeKwp,
+  pvLeistungTeile,
+  speicherKwhTeile,
+  wattProKopfTeile,
+} from "../../../../../../lib/atlas-format";
 import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
@@ -55,9 +61,6 @@ function standLabel(iso: string): string {
   if (Number.isNaN(d.getTime())) return iso;
   return d.toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 }
-
-const fmtLeistung = fmtPvLeistung;
-const fmtKwh = fmtSpeicherKwh;
 
 /** Ab so vielen Batterien ist ein Mittelwert eine Aussage und kein Zufall. */
 const MIN_BATTERIEN_FUER_MITTEL = 5;
@@ -144,21 +147,27 @@ export default async function GemeindePage({ params }: { params: Params }) {
       ["batterie_privat", "batterie_gewerbe"].every(
         (seg) => (speicher.by_segment.find((x) => x.segment === seg)?.count ?? 0) > 0,
       );
-    const avgSub = avgBatterie === null
-      ? s.batterieCount > 0
-        ? "zu wenige für einen Mittelwert"
-        : undefined
-      : gemischt
-        ? "Haushalte und Gewerbe gemischt"
-        : undefined;
+    // Anzahl und Durchschnittsgröße stehen in EINER Kachel: die Zahl der
+    // Batterien ist die Aussage, wie groß eine typische ist die Erläuterung dazu.
+    // Die Einschränkungen bleiben sichtbar, sie sind der ehrliche Teil.
+    const avgSub =
+      avgBatterie === null
+        ? s.batterieCount > 0
+          ? "⌀ Größe: zu wenige für einen Mittelwert"
+          : undefined
+        : `⌀ ${fmtBatterieMittel(avgBatterie)}${gemischt ? " · Haushalte und Gewerbe gemischt" : ""}`;
     return {
       groups: [
         {
           title: "Solaranlagen",
           tiles: [
             { label: "Anlagen", value: nf(s.count), metric: "count" },
-            { label: "Installiert", value: fmtLeistung(s.kwp), metric: "kwp" },
-            { label: "je Einwohner", value: wPerHead === null ? "—" : `${nf(wPerHead)} W`, metric: "kwp" },
+            { label: "Installiert", ...pvLeistungTeile(s.kwp), metric: "kwp" },
+            {
+              label: "je Einwohner",
+              ...(wPerHead === null ? { value: "—" } : wattProKopfTeile(wPerHead)),
+              metric: "kwp",
+            },
             { label: `Neu ${lastYear}`, value: nf(s.neu), metric: "neu" },
           ],
         },
@@ -167,18 +176,13 @@ export default async function GemeindePage({ params }: { params: Params }) {
           tiles: [
             {
               label: "Kapazität",
-              value: fmtKwh(s.speicherKwh),
+              ...speicherKwhTeile(s.speicherKwh),
               metric: "speicher",
-              sub: proKwp !== null ? `${proKwp.toLocaleString("de-DE", { maximumFractionDigits: 2 })} kWh je kWp` : undefined,
+              sub: proKwp !== null ? fmtSpeicherJeKwp(proKwp) : undefined,
             },
             // Zählt Batterien, nicht alle Speicher: Anzahl und Kapazität müssen
             // dasselbe meinen. Was sonst noch im Ort steht, sagt die Zeile darunter.
-            { label: "Anzahl", value: nf(s.batterieCount) },
-            {
-              label: "⌀ Größe",
-              value: avgBatterie === null ? "—" : `${avgBatterie.toLocaleString("de-DE", { maximumFractionDigits: 1 })} kWh`,
-              sub: avgSub,
-            },
+            { label: "Anzahl", value: nf(s.batterieCount), unit: "Batterien", sub: avgSub },
           ],
           note: speicherHinweis(s.nichtBatterie) ?? undefined,
         },
@@ -246,8 +250,12 @@ export default async function GemeindePage({ params }: { params: Params }) {
 
   // One row per outside peer, carrying a value for each owner filter so switching
   // is a lookup rather than a refetch.
+  // Diese Zeilen stehen NICHT in der Kreis-Rangliste, sie kommen aus einer
+  // anderen Grundgesamtheit (Gemeinden ähnlicher Einwohnerzahl). Deshalb tragen
+  // sie ihren Bezug im Text statt einer Rangnummer — eine "1." neben den
+  // Kreis-Rängen hat dreimal Platz 1 in einer Liste erzeugt.
   const scopeLabel = (s: "de" | "bl") =>
-    s === "bl" ? `${bl?.name ?? "Land"}, Größenklasse` : "bundesweit, Größenklasse";
+    s === "bl" ? `Spitze in ${bl?.name ?? "diesem Land"}, ähnliche Größe` : "Spitze bundesweit, ähnliche Größe";
   const outsideMap = new Map<string, OutsidePeer>();
   for (const p of peerRows) {
     if (p.region_id === region.region_id) continue;

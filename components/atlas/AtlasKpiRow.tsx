@@ -14,7 +14,12 @@ import TendTag from "./TendTag";
  */
 type PerCap = Record<string, number | null>;
 export type RefLevel = { key: string; name: string; perCap: PerCap };
-export type KpiTile = { label: string; value: string; metric?: string; sub?: string };
+/**
+ * Eine Kachel. `value` ist der Zahlenwert, `unit` die Einheit — bewusst getrennt:
+ * die Zahl trägt die Kachel, die Einheit steht kleiner daneben. Als ein String
+ * übergeben würde sie in Kachelgröße mitschreien.
+ */
+export type KpiTile = { label: string; value: string; unit?: string; metric?: string; sub?: string };
 /**
  * Eine Kachel-Gruppe, z. B. „Solaranlagen" und „Speicher".
  *
@@ -82,7 +87,10 @@ export default function AtlasKpiRow({
               {g.tiles.map((t, i) => (
                 <div key={i} style={S.metric}>
                   <div style={S.metricLabel}>{t.label}</div>
-                  <div style={S.metricValue}>{t.value}</div>
+                  <div style={S.metricValue}>
+                    {t.value}
+                    {t.unit && <span style={S.metricUnit}> {t.unit}</span>}
+                  </div>
                   <TendTag dev={dev(t.metric)} />
                   {t.sub && <div style={S.metricSub}>{t.sub}</div>}
                 </div>
@@ -176,6 +184,8 @@ const S: Record<string, React.CSSProperties> = {
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: pad("lg") },
   metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
+  // Die Einheit ordnet sich unter: kleiner, ruhiger, aber lesbar.
+  metricUnit: { fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary") },
   metricSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: space.xxs, lineHeight: 1.4 },
   footnote: {
     fontSize: 12,
@@ -183,7 +193,7 @@ const S: Record<string, React.CSSProperties> = {
     margin: `${space.xs}px ${space.xxs}px 0`,
     lineHeight: 1.5,
   },
-  caption: { fontSize: 11, color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.sm}px`, lineHeight: 1.5 },
+  caption: { fontSize: v("--font-size-body"), color: v("--color-text-secondary"), margin: `0 ${space.xxs}px ${space.sm}px`, lineHeight: 1.5 },
   captionStrong: { color: v("--color-text-secondary"), fontWeight: 600 },
   pickerBtn: {
     display: "inline-flex",
@@ -194,7 +204,7 @@ const S: Record<string, React.CSSProperties> = {
     padding: 0,
     margin: 0,
     fontFamily: "inherit",
-    fontSize: 11,
+    fontSize: "inherit",
     fontWeight: 700,
     color: v("--color-accent"),
     cursor: "pointer",

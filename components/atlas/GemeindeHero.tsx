@@ -6,7 +6,12 @@ import DonutChart from "../charts/DonutChart";
 import { IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
 import { v } from "../../lib/theme";
 import { SEGMENT_OWNER, type AtlasOwner, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
-import { fmtPvLeistung as fmtLeistung, fmtSpeicherKwh } from "../../lib/atlas-format";
+import {
+  fmtPvLeistung as fmtLeistung,
+  fmtSpeicherKwh,
+  fmtWattProKopf,
+  pvLeistungTeile,
+} from "../../lib/atlas-format";
 import AtlasKpiRow, { type KpiGroup, type RefLevel } from "./AtlasKpiRow";
 
 export type HeroCell = { segment: string; count: number; kwp: number };
@@ -68,7 +73,7 @@ const SEG: Record<string, { label: string; color: string }> = {
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
 function fmtValue(v: number, m: Metric): string {
-  if (m === "perCapita") return `${nf(v)} W`;
+  if (m === "perCapita") return fmtWattProKopf(v);
   if (m === "kwp") return fmtLeistung(v);
   if (m === "speicher") return fmtSpeicherKwh(v);
   return nf(v);
@@ -245,11 +250,35 @@ export default function GemeindeHero({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [siblingCells, siblings, owner, metric, basePath, regionId]);
 
+  /**
+   * Zwei Blöcke statt einer Liste — und das ist kein Layout-Detail.
+   *
+   * Die Kreis-Rangliste und die Größenklassen-Anführer haben verschiedene
+   * Grundgesamtheiten: „Platz 1 im Landkreis" und „Spitze bundesweit unter
+   * Gemeinden ähnlicher Größe" sind zwei Aussagen, die nichts miteinander zu tun
+   * haben. Vorher wurden sie zusammen sortiert und alle drei trugen eine „1." —
+   * jede Zahl für sich richtig, die Liste als Ganzes irreführend (untereinander
+   * dreimal Platz 1, dann eine unerklärte Lücke von Rang 2 auf Rang 5).
+   *
+   * Jetzt: oben die Rangliste mit durchgehenden Rängen, unten abgesetzt und ohne
+   * Nummern die Vergleichszeilen, jede mit ihrem Bezug im Text.
+   */
   const { rows, selfDetached } = useMemo(() => {
-    // The size-class benchmark only exists per head. On absolute counts a
-    // 7.000-inhabitant peer says nothing — the whole point of that row is that
-    // population is held constant.
-    const ext: PeerRow[] =
+    // Immer genau fünf Zeilen, und die eigene Gemeinde ist immer eine davon:
+    // vier Spitzenreiter plus sie selbst an ihrem echten Rang. Die Sprungmarke
+    // sagt, dass die Ränge dazwischen übersprungen sind.
+    const selfIdx = ranked.findIndex((r) => r.isSelf);
+    if (selfIdx === -1) return { rows: ranked.slice(0, 5), selfDetached: false };
+    if (selfIdx < 5) return { rows: ranked.slice(0, 5), selfDetached: false };
+    const leaders = ranked.filter((r) => !r.isSelf).slice(0, 4);
+    return { rows: [...leaders, ranked[selfIdx]], selfDetached: true };
+  }, [ranked]);
+
+  // Der Größenklassen-Vergleich existiert nur pro Kopf: bei absoluten Zahlen
+  // sagt eine 7.000-Einwohner-Gemeinde nichts — der Sinn dieser Zeilen ist
+  // gerade, dass die Einwohnerzahl konstant gehalten wird.
+  const vergleich = useMemo(
+    () =>
       metric === "perCapita"
         ? outside
             .filter((o) => o.values[owner] !== null)
@@ -259,30 +288,20 @@ export default function GemeindeHero({
               href: o.href,
               scope: o.scope,
               value: o.values[owner] as number,
-              rang: 1,
+              rang: null,
               isSelf: false,
             }))
-        : [];
-    // Sort self IN with everyone else, so it lands at its real position: under
-    // "Gewerbe" Höchberg may sit in the top few, under "Pro Kopf" near the bottom.
-    const all = [...ranked, ...ext].sort((a, b) => b.value - a.value);
-    // Always exactly five rows, and the reader's own Gemeinde is always one of
-    // them: top four leaders plus self as the fifth, shown at its real rank with
-    // a gap that says the ranks in between are skipped. When self is already in
-    // the top five it simply sits at its natural position.
-    const selfIdx = all.findIndex((r) => r.isSelf);
-    if (selfIdx === -1) return { rows: all.slice(0, 5), selfDetached: false };
-    if (selfIdx < 5) return { rows: all.slice(0, 5), selfDetached: false };
-    const leaders = all.filter((r) => !r.isSelf).slice(0, 4);
-    return { rows: [...leaders, all[selfIdx]], selfDetached: true };
-  }, [ranked, outside, owner, metric]);
+            .sort((a, b) => b.value - a.value)
+        : [],
+    [outside, owner, metric],
+  );
 
   // Cap at the runner-up: one Gemeinde with a solar park (126.865 W/head against
   // 17.705 on second place) would flatten every other bar to a hairline.
   const scale = useMemo(() => {
-    const vals = rows.map((r) => r.value).sort((a, b) => b - a);
+    const vals = [...rows, ...vergleich].map((r) => r.value).sort((a, b) => b - a);
     return Math.max(1, vals[1] ?? vals[0] ?? 1);
-  }, [rows]);
+  }, [rows, vergleich]);
 
   return (
     <div style={S.card}>
@@ -328,7 +347,12 @@ export default function GemeindeHero({
               <div onMouseLeave={() => setActive(null)} style={{ display: "inline-block" }}>
                 <DonutChart segments={slices} size={170}>
                   <div key={shown?.key ?? "total"} style={S.center}>
-                    <div style={S.centerValue}>{fmtLeistung(shown ? shown.value : total)}</div>
+                    <div style={S.centerValue}>
+                      {/* Zahl groß, Einheit untergeordnet — dieselbe Staffelung
+                          wie in den Kacheln. */}
+                      {pvLeistungTeile(shown ? shown.value : total).value}
+                      <span style={S.centerUnit}> {pvLeistungTeile(shown ? shown.value : total).unit}</span>
+                    </div>
                     <div style={S.centerLabel}>{shown ? shown.label : "gesamt"}</div>
                     <div style={S.centerSub}>
                       {shown ? `${nf(shown.count)} Anlagen` : `${Math.round(total > 0 ? 100 : 0)} %`}
@@ -365,43 +389,30 @@ export default function GemeindeHero({
           {/* Re-keyed on filter+metric so the whole set fades in on a switch —
               softens the reorder that a per-row width transition can't cover. */}
           <div key={`${owner}-${metric}`} style={S.rowsFade}>
-          {rows.map((r) => {
-            // Five rows, always the same height. When self is beyond the top it
-            // takes the last slot and floats above the table (shadow) — its real
-            // rank makes clear the ranks in between are skipped, without a gap row
-            // that would change the block's height on every filter switch.
-            const floating = selfDetached && r.isSelf;
-            return (
-              <div
+            {rows.map((r) => (
+              <PeerZeile
                 key={`${r.region_id}-${r.scope}`}
-                style={{ ...S.peerRow, ...(r.isSelf ? S.peerSelf : null), ...(floating ? S.peerFloat : null) }}
-              >
-                <span style={S.peerRank}>{r.rang}.</span>
-                <span style={S.peerName}>
-                  {r.href && !r.isSelf ? (
-                    <Link href={r.href} style={S.peerLink}>
-                      {r.name}
-                    </Link>
-                  ) : (
-                    <span style={{ ...S.peerLink, fontWeight: r.isSelf ? 700 : 500 }}>{r.name}</span>
-                  )}
-                  <span style={S.peerScope}>{r.scope}</span>
-                </span>
-                <span style={S.peerVal}>
-                  <span>{fmtValue(r.value, metric)}</span>
-                  <span style={S.track}>
-                    <span
-                      style={{
-                        ...S.fill,
-                        width: `${Math.min(100, Math.max(2, Math.round((r.value / scale) * 100)))}%`,
-                        background: r.isSelf ? v("--color-accent") : v("--color-accent-light"),
-                      }}
-                    />
-                  </span>
-                </span>
-              </div>
-            );
-          })}
+                row={r}
+                metric={metric}
+                scale={scale}
+                // Five rows, always the same height. When self is beyond the top
+                // it takes the last slot and floats above the table (shadow) —
+                // its real rank makes clear the ranks in between are skipped.
+                floating={selfDetached && r.isSelf}
+              />
+            ))}
+
+            {/* Zweiter Block: andere Grundgesamtheit, deshalb sichtbar abgesetzt
+                und ohne Rangnummern. Jede Zeile sagt selbst, worauf sie sich
+                bezieht. */}
+            {vergleich.length > 0 && (
+              <>
+                <div style={S.vergleichKopf}>Zum Vergleich</div>
+                {vergleich.map((r) => (
+                  <PeerZeile key={`${r.region_id}-${r.scope}`} row={r} metric={metric} scale={scale} />
+                ))}
+              </>
+            )}
           </div>
 
           {/* Reserved height: the note only shows under "Pro Kopf", so without a
@@ -410,8 +421,9 @@ export default function GemeindeHero({
           <div style={S.peerNoteWrap}>
             {metric === "perCapita" && (
               <p style={S.peerNote}>
-                Verglichen mit Gemeinden ähnlicher Größe — die bundesweite Spitze wäre ein Koog mit
-                55 Einwohnern und sagte über {regionName} nichts.
+                Die Vergleichszeilen stehen außerhalb der Rangliste: sie führen Gemeinden ähnlicher
+                Größe an, nicht den Landkreis. Ohne diese Eingrenzung wäre die bundesweite Spitze ein
+                Koog mit 55 Einwohnern und sagte über {regionName} nichts.
               </p>
             )}
           </div>
@@ -421,8 +433,64 @@ export default function GemeindeHero({
   );
 }
 
+/**
+ * Eine Zeile der Rangliste. Ohne `rang` (Vergleichsblock) bleibt die Spalte leer
+ * statt eine Nummer zu erfinden — genau die erfundene "1." war der Fehler.
+ */
+function PeerZeile({
+  row,
+  metric,
+  scale,
+  floating = false,
+}: {
+  row: PeerRow;
+  metric: Metric;
+  scale: number;
+  floating?: boolean;
+}) {
+  return (
+    <div
+      style={{ ...S.peerRow, ...(row.isSelf ? S.peerSelf : null), ...(floating ? S.peerFloat : null) }}
+    >
+      <span style={S.peerRank}>{row.rang === null ? "" : `${row.rang}.`}</span>
+      <span style={S.peerName}>
+        {row.href && !row.isSelf ? (
+          <Link href={row.href} style={S.peerLink}>
+            {row.name}
+          </Link>
+        ) : (
+          <span style={{ ...S.peerLink, fontWeight: row.isSelf ? 700 : 500 }}>{row.name}</span>
+        )}
+        <span style={S.peerScope}>{row.scope}</span>
+      </span>
+      <span style={S.peerVal}>
+        <span>{fmtValue(row.value, metric)}</span>
+        <span style={S.track}>
+          <span
+            style={{
+              ...S.fill,
+              width: `${Math.min(100, Math.max(2, Math.round((row.value / scale) * 100)))}%`,
+              background: row.isSelf ? v("--color-accent") : v("--color-accent-light"),
+            }}
+          />
+        </span>
+      </span>
+    </div>
+  );
+}
+
 const S: Record<string, React.CSSProperties> = {
   card: { marginBottom: 28 },
+  vergleichKopf: {
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: "0.04em",
+    textTransform: "uppercase",
+    color: v("--color-text-muted"),
+    borderTop: `1px solid ${v("--color-border")}`,
+    margin: "10px 0 4px",
+    paddingTop: 10,
+  },
   chips: { display: "flex", gap: 4, marginBottom: 14 },
   chip: {
     border: `1px solid ${v("--color-border")}`,
@@ -442,6 +510,7 @@ const S: Record<string, React.CSSProperties> = {
   center: { animation: "fu 0.18s ease-out" },
   rowsFade: { animation: "fu 0.28s ease-out" },
   centerValue: { fontFamily: v("--font-mono"), fontSize: 19, fontWeight: 700, lineHeight: 1.1 },
+  centerUnit: { fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary") },
   centerLabel: { fontSize: 11, color: v("--color-text-secondary"), marginTop: 2 },
   centerSub: { fontSize: 10, color: v("--color-text-muted"), fontFamily: v("--font-mono") },
   legend: { display: "flex", flexWrap: "wrap", gap: "4px 10px", justifyContent: "center" },

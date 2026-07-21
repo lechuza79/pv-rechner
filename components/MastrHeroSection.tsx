@@ -615,7 +615,7 @@ function SummaryPanel({
         />
         <Kachel
           label="⌀ Größe"
-          value={avgKwp !== null ? `${avgKwp.toFixed(0)} kWp` : <LoadingDots />}
+          value={avgKwp !== null ? `${avgKwp.toFixed(0)} kW${peak}` : <LoadingDots />}
         />
       </div>
       {summary && energietraeger === "solar" && segment === "alle" && summary.by_segment.length > 1 && (

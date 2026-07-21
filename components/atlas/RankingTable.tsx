@@ -6,7 +6,7 @@ import { v } from "../../lib/theme";
 import { IconArrowUp, IconArrowDown, IconChevronDown, IconArrowRight } from "../Icons";
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
 import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
-import { fmtPvLeistung, fmtSpeicherKwh } from "../../lib/atlas-format";
+import { fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "../../lib/atlas-format";
 
 type Owner = "alle" | "privat" | "gewerbe";
 type Metric = "count" | "kwp" | "perCapita" | "speicher";
@@ -36,7 +36,7 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
   {
     key: "kwp",
     label: "Leistung",
-    hint: "Installierte Spitzenleistung aller Solaranlagen zusammen. Ein Einfamilienhaus liegt typisch bei 10 kW, ein Freiflächen-Park bei mehreren Tausend.",
+    hint: "Installierte Spitzenleistung aller Solaranlagen zusammen. Ein Einfamilienhaus liegt typisch bei 10 kWp, ein Freiflächen-Park bei mehreren Tausend.",
   },
   {
     key: "perCapita",
@@ -75,7 +75,7 @@ const fmtSpeicher = fmtSpeicherKwh;
 function fmtCell(row: Row, m: Metric): string {
   if (m === "kwp") return fmtLeistung(row.kwp);
   if (m === "speicher") return fmtSpeicher(row.speicher);
-  if (m === "perCapita") return row.perCapita === null ? "—" : `${nf(row.perCapita)} W`;
+  if (m === "perCapita") return row.perCapita === null ? "—" : fmtWattProKopf(row.perCapita);
   return nf(row[m] as number);
 }
 

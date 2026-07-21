@@ -494,6 +494,35 @@ pv-rechner/
 | `InlineEdit` | `components/InlineEdit.tsx` | Click-to-Edit Zahlenwert im Ergebnis |
 | `Chart` | `components/Chart.tsx` | SVG-Amortisationskurve (3 Szenarien, kein D3) |
 
+## Zahlen und Einheiten — BLOCKER (schwerster Fehler im Projekt)
+
+**Eine falsche Einheit, eine falsche Zahl oder eine Aussage, die nicht zur Zahl daneben passt, ist der schwerste Fehler, den dieses Projekt machen kann — schwerer als ein Layout-Bug und schwerer als ein Ausfall.** Ein Ausfall fällt sofort auf und ist in Minuten behoben. Eine falsche Einheit fällt niemandem auf, steht monatelang auf jeder Seite und zerstört genau das, womit die Seite wirbt: dass hier ehrlich gerechnet wird. Wer einmal eine falsche Zahl gesehen hat, glaubt auch der richtigen nicht mehr.
+
+**Einheiten haben genau eine Quelle und werden NIE handgeschrieben.** Keine Einheit direkt an eine Zahl kleben (`${wert} kW`), sondern die Funktion aufrufen. Für den Atlas ist das `lib/atlas-format.ts`; für Rechner-Werte die jeweilige Formatier-Funktion des Moduls. Eine zweite Kopie eines Formatters ist ein Fehler, kein Duplikat.
+
+| Größe | Einheit | Funktion |
+|---|---|---|
+| Installierte PV-Leistung | **kWp / MWp / GWp** (Peak!) | `fmtPvLeistung` |
+| PV-Leistung je Einwohner | **Wp** | `fmtWattProKopf` |
+| Momentanleistung (Live-Simulation, Erzeugung) | **W / kW / MW / GW** | eigene Chart-Formatter |
+| Technologie-Mix (Solar + Wind + Biomasse) | **kW / MW** — kein Peak | widget-eigen |
+| Speicherkapazität | **kWh / MWh / GWh** | `fmtSpeicherKwh` |
+| Mittlere Batteriegröße | **kWh, 1 Nachkommastelle** | `fmtBatterieMittel` |
+| Speicherdichte / Standort-Ertrag | **kWh je kWp Dach / kWh/kWp** | `fmtSpeicherJeKwp`, `fmtErtragProKwp` |
+
+**Zahl und Einheit: eine Quelle, aber getrennt abrufbar.** Jede Größe hat ein `…Teile()` (liefert `{ value, unit }`) und ein `fmt…()` (fertiger String für Fließtext). Wo eine Zahl groß gesetzt wird — Kacheln, Donut-Mitte, Hero-Werte —, wird **immer** `…Teile()` benutzt: der Zahlenwert trägt die Kachel, die Einheit steht kleiner daneben. **Eine Vereinheitlichung im Code darf die Darstellung nicht mit vereinheitlichen** — beim Zusammenführen der sechs Formatter-Kopien ging genau diese Staffelung verloren, und die Einheit schrie plötzlich in Kachelgröße mit.
+
+**Erzwungen von `lib/__tests__/einheiten-waechter.test.ts`:** der Test schlägt an, sobald in Atlas- oder Widget-Code wieder eine Einheit an eine Zahl geklebt wird. Ausnahmen kommen mit Begründung in die Liste im Test — die Regex aufweichen ist nie die Lösung. `lib/__tests__/atlas-format.test.ts` nagelt zusätzlich die Umschalt-Schwellen fest.
+
+**Aussagen zählen wie Zahlen.** Vor dem Merge jeder Oberfläche mit Zahlen prüfen:
+1. **Sagt die Beschriftung dasselbe, was die Zahl misst?** („513 Anlagen" über einer Kapazität, die nur 512 Batterien meint; „Speicher" über einem Wert, der nur Batterien zählt; „je kWp", wenn der Nenner nur Dachanlagen sind.)
+2. **Stimmt der Nenner?** Jede Pro-Kopf-, Je-kWp- und Durchschnittszahl trägt ihren Nenner sichtbar.
+3. **Trägt ein Mittelwert überhaupt?** Bei sehr kleinen Stückzahlen oder gemischten Grundgesamtheiten (Haushalt + Gewerbe) entweder unterdrücken oder dranschreiben, was gemischt ist.
+4. **Grammatik ist Teil der Richtigkeit** — „1 neue Anlagen" ist derselbe Fehler in Worten. Singular/Plural immer mitbauen.
+5. **Weggelassenes sichtbar erklären.** Was bewusst nicht in einer Zahl steckt (z. B. Pumpspeicher in der Speicher-Kachel), gehört sichtbar an die Zahl — nicht nur in einen Code-Kommentar.
+
+**Bei Verdacht: messen, nicht schätzen.** Eine aggregierte Abfrage gegen die echten Daten kostet Sekunden und ist die einzige Art, eine Zahl zu belegen (DB dabei schonen, siehe unten).
+
 ## Geteilte Rechen-Basis (alle Rechner) — BLOCKER
 
 **Alle Rechner (PV, Wärmepumpe, Balkon, Klima, Simulation) rechnen auf derselben Grundlage.** Bevor du für einen Rechner eine Annahme triffst oder eine Konstante setzt: **prüfen, ob es die Größe hier schon gibt.** Eigene Fundamente sind der teuerste Fehler im Projekt — sie fallen erst auf, wenn die Ergebnisse zwischen den Rechnern auseinanderlaufen.

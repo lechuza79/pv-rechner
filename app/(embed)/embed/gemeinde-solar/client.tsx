@@ -6,7 +6,7 @@ import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
-import { fmtPvLeistung, fmtSpeicherKwh } from "../../../../lib/atlas-format";
+import { fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "../../../../lib/atlas-format";
 
 const BASE = "https://solar-check.io";
 
@@ -78,7 +78,7 @@ export default function GemeindeSolarWidget(props: GemeindeWidgetProps) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(88px, 1fr))", gap: 8 }}>
         <Kachel label="Anlagen" value={nf(count)} />
         <Kachel label="Installiert" value={fmtLeistung(kwp)} />
-        {wPerCapitaDach !== null && <Kachel label="Leistung je Einwohner" value={`${nf(wPerCapitaDach)} W`} hint="Dach" />}
+        {wPerCapitaDach !== null && <Kachel label="Leistung je Einwohner" value={fmtWattProKopf(wPerCapitaDach)} hint="Dach" />}
         {/* „Batteriespeicher", nicht „Speicher": der Wert zählt nur Batterien, wie
             auf der Atlas-Seite. Ein Pumpspeicherwerk im Ort steckt nicht darin —
             das Widget darf nicht mehr behaupten als die Seite. */}
