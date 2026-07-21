@@ -72,8 +72,9 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
   {
     year: 2027,
     label: "EEG-Reform (geplant)",
-    text: "Ein Referentenentwurf sieht eine EEG-Reform für Neuanlagen ab 2027 vor — hin zu einer marktnäheren Förderung. Noch nicht beschlossen. Für heute installierte Anlagen gilt Bestandsschutz: die 20-jährige Vergütungsgarantie bleibt.",
+    text: "Ein Referentenentwurf sieht vor, die feste Einspeisevergütung für Neuanlagen ab 2027 durch marktnähere Modelle (verpflichtende Direktvermarktung) zu ersetzen. Noch nicht beschlossen. Für heute installierte Anlagen gilt Bestandsschutz — die 20-jährige Vergütungsgarantie bleibt.",
     planned: true,
+    government: "Schwarz-rote Koalition (CDU/CSU/SPD), Kanzler Merz — Referentenentwurf aus dem Wirtschaftsministerium (Katharina Reiche, CDU), abgestimmt mit Umweltminister Carsten Schneider (SPD).",
   },
 ];
 
