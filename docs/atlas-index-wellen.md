@@ -78,3 +78,32 @@ Angebunden wie bei life-is-a-binge, dependency-frei (Service-Account-JWT, `node:
 Start mit **0a (17)** → **0b (~400 Kreise)** → **Gemeinde-Wellen**. Vor Welle 1 die
 Thin-Schwelle setzen. Die Content-Qualität (Intro-Varianz, Credits, Meta) ist bereits
 adressiert — offen ist im Kern nur die Freischalt-Mechanik + die Schwelle.
+
+---
+
+## Offen: Wie zeigen wir Speicher ehrlich? (2026-07-21, vertagt)
+
+**Nicht gelöst, bewusst vertagt.** Die Speicher-Kachel der Gemeinde-Seite hat zwei
+Fragen offen, die zusammen evaluiert werden sollten:
+
+**1. Pumpspeicher raus aus der Kapazität — stimmt das noch?**
+Heute zählt die kWh-Zahl nur Batterien; Pumpspeicher fliegt raus, weil ein
+Goldisthal (~8,5 GWh) neben Kellerbatterien (~10 kWh) jede Zahl unlesbar macht.
+Einwand des Betreibers: **Ein Ausreißer ist trotzdem real.** Steht in einer
+Gemeinde ein Pumpspeicherwerk, IST das ihre Speicherkapazität — sie wegzulassen
+ist eine Design-Entscheidung, die man auch andersherum treffen kann. Zu klären:
+Verschweigen wir gerade eine echte Zahl, oder schützen wir die Lesbarkeit? Und
+falls Letzteres: Warum steht das nirgends sichtbar an der Kachel?
+
+**2. Anzahl und Kapazität meinen Unterschiedliches.**
+In Gemeinden mit Pumpspeicher zeigt die Kachel z. B. „14,2 MWh" mit Unterzeile
+„513 Anlagen" — die Kapazität meint 512 Batterien, die Anzahl 513 Speicher.
+Der Vorschlag „513 Speicher, davon 512 Batterien" wurde **verworfen**: versteht
+niemand. Ideen des Betreibers stattdessen:
+- bei „privat" nur Batteriespeicher zeigen, bei „gewerbe" beides
+- oder ganz auf **Kapazität** als Leitgröße gehen statt auf Anlagenzahl
+
+**Nicht einzeln flicken.** Beide Punkte hängen an derselben Frage — was soll die
+Kachel eigentlich aussagen? Erst beantworten, dann bauen. Zusammen mit dem
+Eigentümer-Filter denken (der regelt privat/gewerbe, NICHT die Bauform — diese
+Verwechslung war schon einmal ein Fehler, siehe Tests in lib/__tests__).
