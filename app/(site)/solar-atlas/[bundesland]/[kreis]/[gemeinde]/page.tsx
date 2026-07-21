@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Header from "../../../../../../components/Header";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../../../components/Icons";
 import AtlasKpiRow from "../../../../../../components/atlas/AtlasKpiRow";
@@ -267,7 +266,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
 
   return (
     <div style={S.page}>
-      <Header />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
       <div style={S.wrap}>

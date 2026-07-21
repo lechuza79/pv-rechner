@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Header from "../../../../components/Header";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
@@ -78,7 +77,6 @@ export default async function AtomstromMethodikPage() {
 
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <Link href="/atomstrom-import" style={S.back}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>

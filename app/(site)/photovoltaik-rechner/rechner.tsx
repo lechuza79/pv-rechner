@@ -23,7 +23,6 @@ import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { useFeedInRates } from "../../../lib/feedin";
-import Header from "../../../components/Header";
 import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh, IconSun } from "../../../components/Icons";
 import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import ScenarioTabs from "../../../components/ScenarioTabs";
@@ -571,10 +570,6 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
   return (
     <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), padding: "20px 16px" }}>
-
-        <Header
-          onLoginClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }}
-        />
 
         <KlimaDetailModal
           open={klimaDetailOpen}

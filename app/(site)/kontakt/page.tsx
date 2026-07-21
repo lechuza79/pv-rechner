@@ -1,9 +1,9 @@
 import { Metadata } from "next";
-import Link from "next/link";
 import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import ObfuscatedEmail from "../../../components/ObfuscatedEmail";
 import ContactForm from "./ContactForm";
+import BackLink from "../../../components/BackLink";
 
 export const metadata: Metadata = pageMetadata({
   path: "/kontakt",
@@ -49,7 +49,7 @@ export default function Kontakt() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <Link href="/" style={S.back}>← Zurück</Link>
+        <BackLink style={S.back} />
         <h1 style={S.h1}>Kontakt</h1>
 
         <p style={S.p}>
