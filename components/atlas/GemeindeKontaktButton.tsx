@@ -15,6 +15,7 @@ import { useState } from "react";
 import Modal from "../Modal";
 import ContactForm from "../ContactForm";
 import ContactPerson from "../ContactPerson";
+import { IconArrowRight } from "../Icons";
 import { v } from "../../lib/theme";
 
 export default function GemeindeKontaktButton({ name }: { name: string }) {
@@ -26,7 +27,7 @@ export default function GemeindeKontaktButton({ name }: { name: string }) {
           zusätzliche Zusage darunter wäre an dieser Stelle nur Text. */}
       <ContactPerson>
         <button type="button" onClick={() => setOpen(true)} style={S.trigger}>
-          Kontakt aufnehmen
+          Kontakt aufnehmen <IconArrowRight size={14} />
         </button>
       </ContactPerson>
 
@@ -53,19 +54,23 @@ export default function GemeindeKontaktButton({ name }: { name: string }) {
 }
 
 const S: Record<string, React.CSSProperties> = {
+  // Sekundäre Knopf-Variante des Projekts (wie ChartExportBar/ResultActions):
+  // heller Grund, Akzent-Rahmen, Akzent-Schrift. Der gefüllte Akzent-Knopf
+  // bleibt dem primären Weg vorbehalten — hier muss die Rangfolge sichtbar
+  // bleiben: erst selbst einbetten, dann Hilfe holen.
   trigger: {
-    display: "block",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
     fontFamily: "inherit",
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
+    fontWeight: 700,
     color: v("--color-accent"),
-    fontWeight: 600,
-    background: "none",
-    border: "none",
-    padding: 0,
-    marginTop: 2,
+    background: v("--color-bg"),
+    border: `1px solid ${v("--color-border-accent")}`,
+    borderRadius: v("--radius-md"),
+    padding: "8px 14px",
+    marginTop: 8,
     cursor: "pointer",
-    textAlign: "left",
-    textDecoration: "underline",
-    textUnderlineOffset: 3,
   },
 };

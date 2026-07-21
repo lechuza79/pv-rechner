@@ -61,17 +61,21 @@ const S: Record<string, React.CSSProperties> = {
     padding: "18px 20px",
   },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 6px" },
-  sub: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.6, margin: "0 0 12px" },
+  sub: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.6, margin: "0 0 12px" },
+  // Eigene Fläche statt Trennlinie. --color-bg-accent hebt sich vom
+  // --color-bg-muted der Karte ab, und weil beide Tokens im dunklen Token-Satz
+  // eigene Werte haben, bleibt der Abstand dort erhalten.
   help: {
     marginTop: 18,
-    paddingTop: 16,
-    borderTop: `1px solid ${v("--color-border")}`,
+    padding: "16px 18px",
+    background: v("--color-bg-accent"),
+    borderRadius: v("--radius-md"),
   },
   helpTitle: {
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
     color: v("--color-text-primary"),
-    margin: "0 0 10px",
+    margin: "0 0 12px",
   },
   actions: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px", marginTop: 16 },
   cta: {

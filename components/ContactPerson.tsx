@@ -28,7 +28,7 @@ export default function ContactPerson({
 }) {
   return (
     <span style={S.row}>
-      <img src="/sebastian-schaeder.webp" width={56} height={56} alt="" style={S.avatar} />
+      <img src="/sebastian-schaeder.webp" width={AVATAR_PX} height={AVATAR_PX} alt="" style={S.avatar} />
       <span style={S.text}>
         <strong style={S.name}>Sebastian Schäder</strong>
         {note}
@@ -38,16 +38,29 @@ export default function ContactPerson({
   );
 }
 
+/** Anzeigegröße. Die ausgelieferte Datei ist 216 px = 3× davon (Retina). Wer
+ *  hier hochzählt, muss public/sebastian-schaeder.webp mitwachsen lassen. */
+const AVATAR_PX = 72;
+
 const S: Record<string, React.CSSProperties> = {
-  row: { display: "flex", alignItems: "center", gap: 12 },
+  row: { display: "flex", alignItems: "center", gap: 14 },
   avatar: {
-    width: 56,
-    height: 56,
+    width: AVATAR_PX,
+    height: AVATAR_PX,
     borderRadius: "50%",
-    background: v("--color-bg-muted"),
+    // Fläche hinter dem Freisteller: gibt dem transparenten Bild Halt. Bewusst
+    // die Basis-Fläche, damit sich der Kreis von getönten Blöcken (etwa dem
+    // Hilfe-Block der Kommunen-Box auf --color-bg-accent) abhebt statt darin
+    // zu verschwinden — in hell wie dunkel.
+    background: v("--color-bg"),
     objectFit: "cover",
     flexShrink: 0,
   },
-  text: { display: "block", fontSize: 13, lineHeight: 1.5, color: v("--color-text-muted") },
-  name: { display: "block", fontWeight: 700, color: v("--color-text-primary") },
+  text: { display: "block", fontSize: v("--font-size-small"), lineHeight: 1.5, color: v("--color-text-muted") },
+  name: {
+    display: "block",
+    fontSize: v("--font-size-body"),
+    fontWeight: 700,
+    color: v("--color-text-primary"),
+  },
 };
