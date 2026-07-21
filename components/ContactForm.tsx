@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { v, iconSizes } from "../../../lib/theme";
-import { IconCheck, IconClose } from "../../../components/Icons";
-import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../../../lib/contact-topics";
+import { v, iconSizes } from "../lib/theme";
+import { IconCheck, IconClose } from "./Icons";
+import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../lib/contact-topics";
 
 const S = {
   form: { marginTop: 24, display: "flex", flexDirection: "column", gap: 14 } as React.CSSProperties,
@@ -81,11 +81,26 @@ const S = {
 
 type Status = "idle" | "sending" | "success" | "error";
 
-export default function ContactForm() {
+/**
+ * Das Kontaktformular. Eine Implementierung für zwei Orte: die Kontaktseite und
+ * das Modal auf den Gemeinde-Seiten (dort mit vorbelegtem Thema + Text, damit
+ * niemand die Seite verlassen muss, um eine Frage zu stellen).
+ *
+ * Vorbelegen heißt vorbelegen, nicht festnageln: Thema und Text bleiben
+ * editierbar. Der Mail-Betreff entsteht serverseitig ausschließlich aus der
+ * CONTACT_TOPICS-Allowlist — durchgereichter Text landet nie im Header.
+ */
+export default function ContactForm({
+  initialTopic = DEFAULT_CONTACT_TOPIC,
+  initialMessage = "",
+}: {
+  initialTopic?: ContactTopic;
+  initialMessage?: string;
+} = {}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [topic, setTopic] = useState<ContactTopic>(DEFAULT_CONTACT_TOPIC);
-  const [message, setMessage] = useState("");
+  const [topic, setTopic] = useState<ContactTopic>(initialTopic);
+  const [message, setMessage] = useState(initialMessage);
   const [website, setWebsite] = useState(""); // honeypot
   const [status, setStatus] = useState<Status>("idle");
   const [errorText, setErrorText] = useState("");

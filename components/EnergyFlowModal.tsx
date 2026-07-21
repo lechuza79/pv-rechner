@@ -13,7 +13,8 @@
 // damit der Netzbezug als Segment sichtbar ist. Tages-Chart = 24-h-Detail eines
 // echten PVGIS-Tagestyps: zeigt den Innerhalb-des-Tages-Mismatch (mittags Überschuss,
 // nachts Netz), der in der Monatsbilanz verschwindet und die Rest-Autarkie erklärt.
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import Modal from "./Modal";
 import { v } from "../lib/theme";
 import type { SolarMonth } from "../lib/balkon-sim";
 import type { ExampleDayResult } from "../lib/pv-sim";
@@ -150,58 +151,6 @@ function Bar({ label, total, parts }: {
 
 export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVerbrauch, effEv, autarkie, speicherKwh, monthly, exampleDays }: EnergyFlowModalProps) {
   const [view, setView] = useState<string>("year");
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const closeBtnRef = useRef<HTMLButtonElement>(null);
-  // Latest onClose without re-running the modal effect when the parent passes
-  // a fresh inline closure on every render.
-  const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
-
-  // Modal mechanics while open: lock body scroll, close on Escape, trap Tab
-  // focus inside the dialog, and return focus to the trigger on close/unmount.
-  useEffect(() => {
-    if (!open) return;
-    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    closeBtnRef.current?.focus();
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.stopPropagation();
-        onCloseRef.current();
-        return;
-      }
-      if (e.key !== "Tab") return;
-      const dialog = dialogRef.current;
-      if (!dialog) return;
-      const focusables = Array.from(
-        dialog.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
-      ).filter(el => !el.hasAttribute("disabled"));
-      if (focusables.length === 0) return;
-      const first = focusables[0];
-      const last = focusables[focusables.length - 1];
-      const active = document.activeElement;
-      // Wrap at the edges; if focus escaped the dialog, pull it back in.
-      if (e.shiftKey) {
-        if (active === first || !dialog.contains(active)) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else if (active === last || !dialog.contains(active)) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = prevOverflow;
-      trigger?.focus();
-    };
-  }, [open]);
-
-  if (!open) return null;
 
   // Der Eigenverbrauch ist die (ggf. manuell editierte) Zahl der Ergebnisseite,
   // unverändert durchgereicht: Das Modal ERKLÄRT die Seite, es rechnet den Wert
@@ -234,142 +183,116 @@ export default function EnergyFlowModal({ open, onClose, jahresertrag, gesamtVer
   );
 
   return (
-    <div
-      onClick={onClose}
-      style={{
-        position: "fixed", inset: 0, zIndex: 1000, background: "rgba(0,0,0,0.45)",
-        display: "flex", alignItems: "flex-end", justifyContent: "center",
-      }}
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="So verteilt sich dein Strom"
+      ariaLabel="Autarkie und Eigenverbrauch erklärt"
+      intro="Zwei Blickwinkel auf dieselbe Anlage: Der Eigenverbrauch misst, wie viel deiner Erzeugung du selbst nutzt, die Autarkie, wie viel deines Verbrauchs vom Dach kommt. Weil sie sich auf Verschiedenes beziehen — Erzeugung bzw. Verbrauch — sind es zwei verschiedene Prozentwerte."
     >
-      <div
-        ref={dialogRef}
-        onClick={e => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-label="Autarkie und Eigenverbrauch erklärt"
-        style={{
-          background: v('--color-bg'), color: v('--color-text-primary'), fontFamily: v('--font-text'),
-          width: "100%", maxWidth: 480, maxHeight: "92vh", overflowY: "auto",
-          borderTopLeftRadius: v('--radius-lg'), borderTopRightRadius: v('--radius-lg'),
-          padding: "20px 18px 22px", boxShadow: "0 -8px 40px rgba(0,0,0,0.3)",
-        }}
-      >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em" }}>So verteilt sich dein Strom</h2>
-          <button ref={closeBtnRef} onClick={onClose} aria-label="Schließen" style={{
-            border: "none", background: "transparent", color: v('--color-text-muted'),
-            fontSize: 24, lineHeight: 0.8, cursor: "pointer", padding: 0,
-          }}>×</button>
-        </div>
-        <p style={{ fontSize: 12, color: v('--color-text-muted'), marginBottom: 18, lineHeight: 1.5 }}>
-          Zwei Blickwinkel auf dieselbe Anlage: Der Eigenverbrauch misst, wie viel deiner Erzeugung
-          du selbst nutzt, die Autarkie, wie viel deines Verbrauchs vom Dach kommt. Weil sie sich auf
-          Verschiedenes beziehen — Erzeugung bzw. Verbrauch — sind es zwei verschiedene Prozentwerte.
-        </p>
 
-        <Bar
-          label="Deine Erzeugung"
-          total={jahresertrag}
-          parts={[
-            { pct: evPct, color: GREEN, caption: `Eigenverbrauch ${evPct} %`, sub: `${Math.round(selbstGenutzt).toLocaleString("de-DE")} kWh selbst genutzt` },
-            { pct: 100 - evPct, color: BLUE, caption: "Einspeisung", sub: `${Math.round(eingespeist).toLocaleString("de-DE")} kWh ins Netz` },
-          ]}
-        />
-        <Bar
-          label="Dein Verbrauch"
-          total={gesamtVerbrauch}
-          parts={[
-            { pct: auPct, color: GREEN, caption: `Autarkie ${auPct} %`, sub: `vom Dach${speicherKwh > 0 ? " & Speicher" : ""} gedeckt` },
-            { pct: 100 - auPct, color: GRAY, caption: "Netzbezug", sub: `${Math.round(ausNetz).toLocaleString("de-DE")} kWh aus dem Netz` },
-          ]}
-        />
+      <Bar
+        label="Deine Erzeugung"
+        total={jahresertrag}
+        parts={[
+          { pct: evPct, color: GREEN, caption: `Eigenverbrauch ${evPct} %`, sub: `${Math.round(selbstGenutzt).toLocaleString("de-DE")} kWh selbst genutzt` },
+          { pct: 100 - evPct, color: BLUE, caption: "Einspeisung", sub: `${Math.round(eingespeist).toLocaleString("de-DE")} kWh ins Netz` },
+        ]}
+      />
+      <Bar
+        label="Dein Verbrauch"
+        total={gesamtVerbrauch}
+        parts={[
+          { pct: auPct, color: GREEN, caption: `Autarkie ${auPct} %`, sub: `vom Dach${speicherKwh > 0 ? " & Speicher" : ""} gedeckt` },
+          { pct: 100 - auPct, color: GRAY, caption: "Netzbezug", sub: `${Math.round(ausNetz).toLocaleString("de-DE")} kWh aus dem Netz` },
+        ]}
+      />
 
-        {/* Drilldown: Jahr ↔ Beispieltage */}
-        <div style={{ borderTop: `1px solid ${v('--color-border-muted')}`, paddingTop: 14, marginTop: 4 }}>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
-            {tabs.map(t => {
-              const on = view === t.key;
-              return (
-                <button
-                  key={t.key}
-                  onClick={() => setView(t.key)}
-                  style={{
-                    border: `1px solid ${on ? v('--color-accent') : v('--color-border')}`,
-                    background: on ? v('--color-accent') : "transparent",
-                    color: on ? v('--color-text-on-accent') : v('--color-text-secondary'),
-                    fontSize: 11.5, fontWeight: 600, fontFamily: "inherit",
-                    padding: "5px 10px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",
-                  }}
-                >
-                  {t.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {view === "year" ? (
-            <>
-              <p style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 8 }}>
-                Jeder Balken ist dein Verbrauch eines Monats — woher der Strom kommt: direkt aus der
-                Sonne, aus dem Speicher oder aus dem Netz. Im Winter reicht die Sonne nicht, deshalb
-                wächst dort der graue Netz-Anteil.
-              </p>
-              {monthly.length === 12 && <YearChart monthly={monthly} />}
-            </>
-          ) : activeDay ? (
-            <>
-              <p style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 8 }}>
-                Ein einzelner {activeDay.label.toLowerCase()} über 24 Stunden. Mittags liefert die Sonne
-                oft weit mehr als gebraucht wird — der Überschuss lädt den Speicher und wird eingespeist.
-                Abends und nachts kommt nichts vom Dach: erst springt der Speicher ein, dann das Netz.
-              </p>
-              <DayChart day={activeDay.day} scaleMax={dayScaleMax} />
-            </>
-          ) : null}
+      {/* Drilldown: Jahr ↔ Beispieltage */}
+      <div style={{ borderTop: `1px solid ${v('--color-border-muted')}`, paddingTop: 14, marginTop: 4 }}>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+          {tabs.map(t => {
+            const on = view === t.key;
+            return (
+              <button
+                key={t.key}
+                onClick={() => setView(t.key)}
+                style={{
+                  border: `1px solid ${on ? v('--color-accent') : v('--color-border')}`,
+                  background: on ? v('--color-accent') : "transparent",
+                  color: on ? v('--color-text-on-accent') : v('--color-text-secondary'),
+                  fontSize: 11.5, fontWeight: 600, fontFamily: "inherit",
+                  padding: "5px 10px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",
+                }}
+              >
+                {t.label}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Fallspezifische Einordnung */}
-        <div style={{
-          marginTop: 16, padding: "12px 14px", background: v('--color-bg-accent'),
-          borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border-accent')}`,
-          fontSize: 12.5, lineHeight: 1.6, color: v('--color-text-secondary'),
-        }}>
-          {groß && (
-            <>
-              <strong style={{ color: v('--color-text-primary') }}>Deine Anlage ist groß für deinen Verbrauch.</strong>{" "}
-              Du deckst fast deinen ganzen Bedarf selbst ({auPct} % Autarkie), aber ein großer Teil des
-              Sonnenstroms passt zeitlich nicht in deinen Verbrauch und wird eingespeist — deshalb ist der
-              Eigenverbrauch mit {evPct} % niedrig. Beides ist bei einer üppig dimensionierten Anlage normal.
-            </>
-          )}
-          {klein && (
-            <>
-              <strong style={{ color: v('--color-text-primary') }}>Deine Anlage ist knapp bemessen.</strong>{" "}
-              Fast jede erzeugte Kilowattstunde findet direkt Abnehmer ({evPct} % Eigenverbrauch), aber übers
-              Jahr reicht die Sonne nicht für deinen ganzen Bedarf — die Autarkie bleibt bei {auPct} %.
-            </>
-          )}
-          {!groß && !klein && (
-            <>
-              <strong style={{ color: v('--color-text-primary') }}>Deine Anlage passt gut zu deinem Verbrauch.</strong>{" "}
-              Ein solider Teil des Sonnenstroms wird direkt genutzt ({evPct} % Eigenverbrauch) und deckt einen
-              großen Teil deines Bedarfs ({auPct} % Autarkie).
-            </>
-          )}
-        </div>
-
-        <p style={{ fontSize: 11.5, color: v('--color-text-muted'), marginTop: 14, lineHeight: 1.6 }}>
-          <strong style={{ color: v('--color-text-secondary'), fontWeight: 600 }}>Warum nicht 100 % Autarkie?</strong>{" "}
-          Im Dezember und Januar liefert selbst eine große Anlage nur einen Bruchteil, und ein Hausspeicher
-          überbrückt gut einen Tag — keinen dunklen Winter. Deshalb bleibt immer ein Rest Netzbezug. Volle
-          Unabhängigkeit ist mit einem Hausspeicher praktisch nicht erreichbar.
-        </p>
-        <p style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
-          Autarkie, Jahresverlauf und Beispieltage aus einer Stunden-Jahressimulation (Erzeugung,
-          Verbrauch und Speicher Stunde für Stunde, echte PVGIS-Tagestypen), geprüft gegen das
-          Unabhängigkeits-Kennfeld der HTW Berlin. Werte gerundet.
-        </p>
+        {view === "year" ? (
+          <>
+            <p style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 8 }}>
+              Jeder Balken ist dein Verbrauch eines Monats — woher der Strom kommt: direkt aus der
+              Sonne, aus dem Speicher oder aus dem Netz. Im Winter reicht die Sonne nicht, deshalb
+              wächst dort der graue Netz-Anteil.
+            </p>
+            {monthly.length === 12 && <YearChart monthly={monthly} />}
+          </>
+        ) : activeDay ? (
+          <>
+            <p style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 8 }}>
+              Ein einzelner {activeDay.label.toLowerCase()} über 24 Stunden. Mittags liefert die Sonne
+              oft weit mehr als gebraucht wird — der Überschuss lädt den Speicher und wird eingespeist.
+              Abends und nachts kommt nichts vom Dach: erst springt der Speicher ein, dann das Netz.
+            </p>
+            <DayChart day={activeDay.day} scaleMax={dayScaleMax} />
+          </>
+        ) : null}
       </div>
-    </div>
+
+      {/* Fallspezifische Einordnung */}
+      <div style={{
+        marginTop: 16, padding: "12px 14px", background: v('--color-bg-accent'),
+        borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border-accent')}`,
+        fontSize: 12.5, lineHeight: 1.6, color: v('--color-text-secondary'),
+      }}>
+        {groß && (
+          <>
+            <strong style={{ color: v('--color-text-primary') }}>Deine Anlage ist groß für deinen Verbrauch.</strong>{" "}
+            Du deckst fast deinen ganzen Bedarf selbst ({auPct} % Autarkie), aber ein großer Teil des
+            Sonnenstroms passt zeitlich nicht in deinen Verbrauch und wird eingespeist — deshalb ist der
+            Eigenverbrauch mit {evPct} % niedrig. Beides ist bei einer üppig dimensionierten Anlage normal.
+          </>
+        )}
+        {klein && (
+          <>
+            <strong style={{ color: v('--color-text-primary') }}>Deine Anlage ist knapp bemessen.</strong>{" "}
+            Fast jede erzeugte Kilowattstunde findet direkt Abnehmer ({evPct} % Eigenverbrauch), aber übers
+            Jahr reicht die Sonne nicht für deinen ganzen Bedarf — die Autarkie bleibt bei {auPct} %.
+          </>
+        )}
+        {!groß && !klein && (
+          <>
+            <strong style={{ color: v('--color-text-primary') }}>Deine Anlage passt gut zu deinem Verbrauch.</strong>{" "}
+            Ein solider Teil des Sonnenstroms wird direkt genutzt ({evPct} % Eigenverbrauch) und deckt einen
+            großen Teil deines Bedarfs ({auPct} % Autarkie).
+          </>
+        )}
+      </div>
+
+      <p style={{ fontSize: 11.5, color: v('--color-text-muted'), marginTop: 14, lineHeight: 1.6 }}>
+        <strong style={{ color: v('--color-text-secondary'), fontWeight: 600 }}>Warum nicht 100 % Autarkie?</strong>{" "}
+        Im Dezember und Januar liefert selbst eine große Anlage nur einen Bruchteil, und ein Hausspeicher
+        überbrückt gut einen Tag — keinen dunklen Winter. Deshalb bleibt immer ein Rest Netzbezug. Volle
+        Unabhängigkeit ist mit einem Hausspeicher praktisch nicht erreichbar.
+      </p>
+      <p style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
+        Autarkie, Jahresverlauf und Beispieltage aus einer Stunden-Jahressimulation (Erzeugung,
+        Verbrauch und Speicher Stunde für Stunde, echte PVGIS-Tagestypen), geprüft gegen das
+        Unabhängigkeits-Kennfeld der HTW Berlin. Werte gerundet.
+      </p>
+    </Modal>
   );
 }

@@ -1,14 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
+import { safeInternalPath } from "../../../../lib/internal-path";
 
+// Shared with the "?from=" back link on /kontakt — one rule for "is this a path
+// on our own site", so a fix on one side cannot leave the other side open.
 function safeNextPath(raw: string | null): string {
-  if (!raw) return "/";
-  // Must be a same-origin path: starts with "/" but not with "//" or "/\"
-  // (those open the door for protocol-relative or backslash-host tricks).
-  if (!raw.startsWith("/")) return "/";
-  if (raw.startsWith("//") || raw.startsWith("/\\")) return "/";
-  return raw;
+  return safeInternalPath(raw) ?? "/";
 }
 
 export async function GET(request: NextRequest) {

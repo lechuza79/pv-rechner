@@ -550,6 +550,20 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 - **Rechtliches:** Nutzungsbedingungen unter `/widget-nutzungsbedingungen` (aus Galerie verlinkt), Datenschutz-Textbaustein für Einbettende in der Galerie, `ChartActionBar` enthält einen branding-unabhängigen „Anbieter & Impressum"-Menüpunkt (§ 5 DDG).
 - Icons/Buttons aus `components/Icons.tsx`.
 
+## Modals — BLOCKER
+
+**`components/Modal.tsx` ist DER Modal-Baustein. Modals werden nicht pro Stelle neu gebaut.** Die aufrufende Stelle liefert nur `open`, `onClose`, `title` (optional `intro`, `ariaLabel`, `maxWidth`) und den Inhalt als Children — das gesamte Verhalten kommt aus dem Baustein:
+
+- **Desktop zentriert, schmale Bildschirme (≤ 640 px) als Bottom-Sheet**, das von unten einfährt (oben abgerundet, unten bündig).
+- **Sanftes Ein- UND Ausblenden** (220 ms). Der Dialog bleibt bis zum Ende der Ausblende-Animation gemountet — wer ihn selbst mit `{x && <Modal …>}` aus dem Baum nimmt, killt genau diese Animation. Stattdessen `open={!!x}` und den Inhalt kurz halten (Muster: `FundingProgramModal` in `ResultFunding.tsx`). Der Umschalt-Effekt hängt an `rendered`, nicht nur an `open`: der Ausgangszustand braucht einen eigenen, gemalten Frame (zwei verschachtelte `requestAnimationFrame`), sonst gibt es nichts zu interpolieren.
+- **`prefers-reduced-motion` nimmt die BEWEGUNG, nicht die Rückmeldung:** das Fenster fährt dann nicht mehr ein, blendet aber weiter auf (140 ms). Die Animation ganz abzuschalten war ein Fehlgriff — das sah aus wie ein Bug („das Fenster ist einfach da") und war der Grund, warum der Übergang auf einem Rechner mit aktiviertem Systemschalter zu fehlen schien.
+- **Höhe begrenzt, Inhalt scrollt INNEN** (`dvh`) — der Absenden-Knopf bleibt auf flachen Displays und bei eingeblendeter Tastatur erreichbar.
+- **Schließen** per Escape, Klick daneben und ×. **Fokus** wandert beim Öffnen in den Dialog, bleibt per Tab-Falle darin und springt beim Schließen auf das auslösende Element zurück. Die Seite dahinter scrollt nicht mit. Gerendert per Portal an `document.body`.
+
+**Die Fokus-Falle beim Nachbauen:** Der Mechanik-Effekt darf NICHT am `onClose`-Callback hängen (die Aufrufer übergeben eine frische Inline-Funktion pro Render) — sonst läuft sein Aufräumen mitten im Tippen und reißt den Fokus aus dem Eingabefeld. Deshalb `onCloseRef` + Effekt nur an `open`. Genau solche Details sind der Grund für den geteilten Baustein.
+
+**Warum zentral (Juli 2026):** Es gab drei handgebaute Overlays (Klima-Detail, Energiefluss, Förderprogramm), die sich in Fokus-Rückgabe, Tab-Falle, Scroll-Sperre und Mobil-Verhalten unterschieden — dieselbe Streuung wie beim Header, bevor er ins Layout wanderte. Alle drei laufen jetzt über `Modal`. **Ausgenommen ist bewusst das Burger-Menü im Header** (`components/Header.tsx`): ein Navigations-Flyout, kein Dialog — es darf weder den Fokus fangen noch als Sheet einfahren.
+
 ## Design-System
 
 | Element | Wert |

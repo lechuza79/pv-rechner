@@ -1,5 +1,6 @@
 import { v } from "../../lib/theme";
 import { IconArrowRight } from "../Icons";
+import GemeindeKontaktButton from "./GemeindeKontaktButton";
 
 /**
  * "Diese Zahlen auf Ihrer Website einbinden" — der Outreach-Aufhänger für
@@ -7,7 +8,9 @@ import { IconArrowRight } from "../Icons";
  * die Rathaus-/Pressestelle, kein Entwickler, und die Widgets stehen direkt
  * darüber auf der Seite schon live. Ein zweites Mal dasselbe zu zeigen erklärt
  * nichts — der Kasten sagt stattdessen, was man mit allen Widgets tun kann,
- * und führt in die Galerie (Anpassung + fertiger Code) oder zum Kontakt.
+ * und führt in die Galerie (Anpassung + fertiger Code) oder öffnet das
+ * Kontaktformular als Modal auf dieser Seite. Bewusst kein Sprung auf /kontakt:
+ * wer hier fragt, will die Zahlen der Gemeinde nicht verlieren.
  *
  * Der SEO-Backlink zur Atlas-Seite entsteht weiterhin, sobald die Kommune ein
  * Widget einbettet; der Code dafür liegt in der Galerie statt hier.
@@ -37,9 +40,15 @@ export default function GemeindeEmbedBox({ name, ags }: { name: string; ags: str
             Widgets ansehen, anpassen &amp; einbetten <IconArrowRight size={16} />
           </span>
         </a>
-        <a href="/kontakt" style={S.contact}>
-          Wir richten es Ihnen ein — Kontakt aufnehmen
-        </a>
+      </div>
+
+      {/* Sekundärer Weg, deutlich abgesetzt vom Haupt-Knopf: Wer es nicht
+          selbst einbetten will, findet hier ein Gesicht statt eines Formulars.
+          Genau hier entscheidet eine Rathaus- oder Pressestelle, ob sie
+          schreibt. Bewusst nur EIN Kontakt-Einstieg in der Box. */}
+      <div style={S.help}>
+        <p style={S.helpTitle}>Sie brauchen Hilfe bei der Einrichtung?</p>
+        <GemeindeKontaktButton name={name} />
       </div>
     </div>
   );
@@ -52,7 +61,22 @@ const S: Record<string, React.CSSProperties> = {
     padding: "18px 20px",
   },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 6px" },
-  sub: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.6, margin: "0 0 12px" },
+  sub: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.6, margin: "0 0 12px" },
+  // Eigene Fläche statt Trennlinie. --color-bg-accent hebt sich vom
+  // --color-bg-muted der Karte ab, und weil beide Tokens im dunklen Token-Satz
+  // eigene Werte haben, bleibt der Abstand dort erhalten.
+  help: {
+    marginTop: 18,
+    padding: "16px 18px",
+    background: v("--color-bg-accent"),
+    borderRadius: v("--radius-md"),
+  },
+  helpTitle: {
+    fontSize: v("--font-size-body"),
+    fontWeight: 700,
+    color: v("--color-text-primary"),
+    margin: "0 0 12px",
+  },
   actions: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px", marginTop: 16 },
   cta: {
     display: "inline-block",
@@ -64,5 +88,4 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: v("--radius-md"),
     textDecoration: "none",
   },
-  contact: { fontSize: 13, color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
 };
