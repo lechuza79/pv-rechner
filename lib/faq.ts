@@ -197,3 +197,53 @@ export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
     },
   ];
 }
+
+/** FAQ für den Ratgeber „Bidirektionales Laden”.
+ *
+ *  Alle Sachstands-Aussagen sind an Primärquellen geprüft (Juli 2026) und bewusst
+ *  datiert formuliert — das Feld bewegt sich schnell, und mehrere weit verbreitete
+ *  Behauptungen sind schlicht falsch (siehe Kommentare in lib/v2h-config.ts).
+ *  Beim Pflegen gilt: Was Wallbox-Shops und Ratgeberportale schreiben, ist keine
+ *  Quelle — dort wird durchgängig V2L als „bidirektional” verkauft. */
+export function bidiLadenFaq(): FaqEntry[] {
+  return [
+    {
+      q: "Ist bidirektionales Laden in Deutschland erlaubt?",
+      a: "Ja. Seit Januar 2026 werden E-Autos beim Rückspeisen wie Stromspeicher behandelt, Netzentgelte fallen nur noch einmal an. Seit Ende Februar 2026 gibt es außerdem die technische Anschlussnorm. Erlaubt heißt aber nicht verfügbar: Wer Strom ins öffentliche Netz zurückspeisen und dafür Geld sehen will, braucht einen digitalen Zähler — den haben in Deutschland erst 5,5 % der Haushalte — und die Abrechnungsregeln dafür fehlen weiterhin. Die Bundesnetzagentur hat ihre eigene Frist Ende Juni 2026 verstreichen lassen. (Stand: Juli 2026)",
+      cta: { label: "Alle Annahmen und Quellen", href: "/datenstand" },
+    },
+    {
+      q: "Kann ich eine bidirektionale Wallbox einfach kaufen und mein E-Auto anschließen?",
+      a: "In aller Regel nein — und das ist der größte Irrtum beim Thema. Bidirektionales Laden wird 2026 nicht als freies Gerät verkauft, sondern als geschlossenes Paket aus einem bestimmten Auto, einer dafür freigegebenen Wallbox und meist einem passenden Stromtarif. Der Grund liegt in der Zertifizierung: Nachgewiesen wird immer das Gespann aus Fahrzeug und Ladestation, nicht die Wallbox allein. Wer „bidirektional” in einer Anzeige liest, sollte deshalb zuerst fragen, welche Wallbox der Fahrzeughersteller namentlich freigegeben hat.",
+    },
+    {
+      q: "Welche Autos können wirklich ins Hausnetz einspeisen?",
+      a: "Deutlich weniger, als die Werbung vermuten lässt. Ins Hausnetz speisen können in Deutschland vor allem Fahrzeuge des VW-Konzerns mit großem Akku (ID.-Modelle, Cupra, Škoda, Audi Q4, Ford Explorer und Capri) sowie der BMW iX3 der Neuen Klasse. Viele populäre Modelle — etwa Hyundai Ioniq 5 und Kia EV6 — bieten dagegen nur eine Steckdose am Fahrzeug, an der sich einzelne Geräte betreiben lassen. Das nennen Hersteller ebenfalls „bidirektional”, mit Hausversorgung hat es aber nichts zu tun.",
+    },
+    {
+      q: "Was ist der Unterschied zwischen V2L, V2H und V2G?",
+      a: "V2L heißt: Am Auto hängt eine Steckdose, aus der ein einzelnes Gerät läuft — praktisch beim Camping, für das Haus bedeutungslos. V2H heißt: Das Auto versorgt über eine Wallbox das ganze Haus, ersetzt also zeitweise einen Heimspeicher. V2G heißt: Der Strom geht ins öffentliche Netz zurück, wofür es Geld geben kann. Die drei werden im Marketing regelmäßig vermischt — V2L kann fast jedes E-Auto, V2H nur wenige, V2G in Deutschland derzeit praktisch nur eines.",
+    },
+    {
+      q: "Kann ich mit meinem Auto Geld verdienen?",
+      a: "Im Juli 2026 gibt es in Deutschland genau ein buchbares Angebot: BMW zusammen mit E.ON, gebunden an den iX3 und die passende Wallbox. Vergütet wird dabei vor allem die Bereitschaft — 24 Cent je Stunde, in der das Auto angesteckt ist, gedeckelt bei 720 Euro im Jahr — plus eine Vergütung je zurückgespeister Kilowattstunde. Angebote von Ford und Volkswagen sind angekündigt, aber noch nicht abschließbar. Wichtig für PV-Besitzer: Alle drei schließen Haushalte mit eigener Photovoltaik im Eigenverbrauch bislang aus.",
+    },
+    {
+      q: "Lohnt sich das Puffern von Solarstrom über das Auto?",
+      a: "Nur, wenn du keinen Heimspeicher hast — und selbst dann kommt es stark darauf an, wann das Auto zuhause steht. Wer einen Speicher besitzt, gewinnt durch das Auto praktisch nichts dazu: Der Speicher fängt den Tagesüberschuss bereits ab. Und wer pendelt, hat das Auto genau dann nicht am Netz, wenn die Sonne scheint. Am ehesten trägt es bei viel Zeit zuhause, großer Anlage und keinem vorhandenen Speicher.",
+      cta: { label: "Mit Speicher vergleichen", href: "/lohnt-sich-pv-mit-speicher" },
+    },
+    {
+      q: "Schadet das Rückspeisen dem Autoakku?",
+      a: "Jede zusätzliche Ladung zählt auf die Lebensdauer — das lässt sich nicht wegdiskutieren. Wie stark, hängt vom Umfang ab. Wichtiger ist der Blick in die Garantiebedingungen: Volkswagen rechnet bei kleineren Akkus die abgegebene Energie in eine „virtuelle Fahrstrecke” um, Audi führt dafür einen eigenen Zähler. Bei älterer Volkswagen-Software gilt zudem eine harte Obergrenze von 10.000 Kilowattstunden Entlademenge — bei zehn Kilowattstunden Hausverbrauch am Tag ist die nach gut drei Jahren erreicht. Für die meisten asiatischen Hersteller gibt es zur Garantiewirkung bislang keine offizielle Aussage.",
+    },
+    {
+      q: "Gibt es eine Förderung für bidirektionale Wallboxen?",
+      a: "Für Einfamilienhäuser nicht — weder vom Bund, noch von einem der 16 Bundesländer, noch von einer belegbaren Kommune. Die häufig noch beworbene KfW-Förderung „Solarstrom für Elektroautos” ist seit der Haushaltskrise beendet und nicht mehr beantragbar; Ratgeberportale führen sie trotzdem weiter. Einen Zuschlag gibt es ausschließlich im Bundesprogramm für Mehrparteienhäuser ab drei Wohneinheiten: dort 2.000 statt 1.500 Euro je Stellplatz, wenn der Ladepunkt rückspeisefähig ist. (Stand: Juli 2026)",
+    },
+    {
+      q: "Funktioniert mein Haus damit auch bei Stromausfall?",
+      a: "Nicht automatisch. Notstrom ist eine eigene Funktion, die nicht jede bidirektionale Wallbox mitbringt und die zusätzliche Technik im Zählerschrank verlangt. Wenn sie vorhanden ist, ist der Autoakku allerdings ein starker Notstromspeicher: Ein großer Fahrzeugakku trägt einen durchschnittlichen Haushalt mehrere Tage — ein typischer Heimspeicher knapp einen.",
+    },
+  ];
+}

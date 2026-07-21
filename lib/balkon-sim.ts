@@ -59,6 +59,34 @@ import { SOLAR_YEAR_DE, referenceMonthKwh } from "./solar-year";
 // ergiebiger dieser Standort ist — dieser Faktor gilt dann fuer jede Ausrichtung.
 const LOCATION_REFERENCE = "sued_flach";
 
+/** E-Auto als Speicher (V2H). Optional — ohne dieses Feld rechnet die Simulation
+ *  exakt wie bisher; für Balkon- und Dach-PV ändert sich nichts.
+ *
+ *  Ein Auto ist derselbe Speicher wie der Heimspeicher, nur mit drei Ergänzungen:
+ *  Es ist nicht immer da, ein Teil des Akkus muss fürs Fahren bleiben, und die
+ *  Wallbox deckelt die Leistung. Mehr ist V2H rechnerisch nicht. */
+export interface CarBatteryInput {
+  /** Nutzbare Akkukapazität (kWh). */
+  usableKwh: number;
+  /** Lade-/Entladegrenze der Wallbox (kW) — die echte Grenze, nicht die Akkugröße. */
+  wallboxKw: number;
+  /** Roundtrip-Wirkungsgrad über die Wallbox (0–1). */
+  roundtrip: number;
+  /** Fahr-Reserve: so viel bleibt fürs Fahren gesperrt (kWh). */
+  minReserveKwh: number;
+  /** 24 Werte 0..1 — Anteil der Stunde, in der das Auto werktags angesteckt ist. */
+  availabilityByHour: number[];
+  /** 24 Werte für Samstag/Sonntag. Ohne Wochenend-Trennung rechnet sich ein
+   *  Pendler-Auto systematisch zu schlecht: Es stünde rechnerisch an 7 statt an
+   *  5 Tagen tagsüber weg — dabei sind gerade die beiden Tage, an denen es in der
+   *  Sonne steht, für V2H die wertvollsten. */
+  availabilityWeekend: number[];
+  /** Fahrbedarf pro Tag (kWh) — entlädt den Akku, während das Auto unterwegs ist. */
+  drivingKwhPerDay: number;
+  /** false = lädt nur (heutiger Normalfall), true = speist auch ins Haus zurück. */
+  bidirectional: boolean;
+}
+
 export interface BalkonSimInput {
   moduleKwp: number;
   inverterKw: number;
@@ -71,6 +99,8 @@ export interface BalkonSimInput {
   batteryKwh: number;
   /** Lade-/Entlade-Wirkungsgrad (0–1). */
   roundtrip: number;
+  /** E-Auto als Speicher. Weglassen = kein Auto (Verhalten unverändert). */
+  car?: CarBatteryInput;
 }
 
 export interface BalkonSimResult {
@@ -113,6 +143,14 @@ export interface SolarYearResult extends BalkonSimResult {
    *  WP-PV-Deckung — deutlich unter der Jahres-Autarkie, weil die WP-Last im
    *  dunklen Winterhalbjahr anfällt, wenn die PV kaum deckt. */
   wpSelfCoveredKwh: number;
+  /** Fahrstrom über das Jahr (kWh) — 0 ohne Auto. */
+  carDrivingKwh: number;
+  /** Davon aus eigener PV geladen (kWh). Das ist der V2H-Gewinn auf der Ladeseite. */
+  carFromPvKwh: number;
+  /** Aus dem Netz nachgeladen, damit das Auto fahren kann (kWh). Kostet Geld. */
+  carFromGridKwh: number;
+  /** Aus dem Auto zurück ins Haus gespeist (kWh) — nur bei bidirektionalem Betrieb. */
+  carToHomeKwh: number;
 }
 
 /** Stunden-Jahressimulation (12 Monate × Tagestypen × 24 h) mit durchlaufendem
@@ -129,6 +167,33 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
   const trackWp = input.household.wpActive === true;
   let soc = 0; // Speicher-Ladestand (kWh), läuft über das ganze Jahr durch
   const monthly: SolarMonth[] = [];
+
+  // ─── E-Auto als Speicher (V2H) ─────────────────────────────────────────────
+  // WICHTIG für Aufrufer: Wenn hier ein Auto übergeben wird, muss household.eaActive
+  // FALSE sein. Sonst zählt der Fahrstrom doppelt — einmal als Haushaltslast und
+  // einmal als Akku-Entladung. Der PV-Rechner kennt das E-Auto als VERBRAUCHER,
+  // V2H macht es zum SPEICHER; das sind zwei verschiedene Rollen.
+  const car = input.car;
+  let carSoc = car ? car.minReserveKwh : 0; // startet mit Fahr-Reserve, nicht voll
+  let carDrivingKwh = 0, carFromPvKwh = 0, carFromGridKwh = 0, carToHomeKwh = 0;
+  // Fahrbedarf auf die Stunden verteilen, in denen das Auto unterwegs ist. Steht es
+  // rechnerisch immer zuhause, wird der Bedarf gleichmäßig über den Tag verteilt —
+  // gefahren wird ja trotzdem. Werktag und Wochenende getrennt, weil die
+  // Abwesenheit sich unterscheidet.
+  const awayShareOf = (a: number[]) => a.reduce((s, v) => s + (1 - v), 0);
+  const perAwayHourOf = (a: number[]) => {
+    const away = awayShareOf(a);
+    return away > 0 ? (car!.drivingKwhPerDay / away) : (car!.drivingKwhPerDay / 24);
+  };
+  const weekdayAway = car ? awayShareOf(car.availabilityByHour) : 0;
+  const weekendAway = car ? awayShareOf(car.availabilityWeekend) : 0;
+  const weekdayPerHour = car ? perAwayHourOf(car.availabilityByHour) : 0;
+  const weekendPerHour = car ? perAwayHourOf(car.availabilityWeekend) : 0;
+  // Laufender Tageszähler für die Wochentags-Unterscheidung. Die Tagestypen sind
+  // nach Sonnigkeit gruppiert, nicht chronologisch — dadurch verteilen sich die
+  // „Wochenenden" gleichmäßig über trübe und sonnige Tage, was statistisch genau
+  // richtig ist.
+  let dayCounter = 0;
 
   const months = SOLAR_YEAR_DE[input.orientation] ?? SOLAR_YEAR_DE[LOCATION_REFERENCE];
 
@@ -147,6 +212,8 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
 
     for (const dayType of months[m]) {
       for (let d = 0; d < dayType.days; d++) {
+        const isWeekend = dayCounter % 7 >= 5;
+        dayCounter++;
         for (let h = 0; h < 24; h++) {
         // Referenz ist W je kWp → /1000 = kWh in dieser Stunde je kWp.
         const dcKwh = (dayType.w[h] / 1000) * scale;
@@ -196,6 +263,83 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
           selfUsedKwh += dischargeCovered;
           mSelf += dischargeCovered;
         }
+
+        // ─── E-Auto: fahren, laden, zurückspeisen ───────────────────────────
+        // Reihenfolge ist bewusst: Fahren geht vor Rückspeisen. Wer morgens mit
+        // leerem Akku dasteht, weil das Haus ihn nachts leergesaugt hat, hat vom
+        // rechnerischen Vorteil nichts.
+        if (car) {
+          const availCurve = isWeekend ? car.availabilityWeekend : car.availabilityByHour;
+          const avail = availCurve[h] ?? 1;
+          const awayShare = isWeekend ? weekendAway : weekdayAway;
+          const perAwayHour = isWeekend ? weekendPerHour : weekdayPerHour;
+
+          // 1. Fahren — entlädt den Akku, während das Auto unterwegs ist.
+          const need = perAwayHour * (awayShare > 0 ? (1 - avail) : 1);
+          if (need > 0) {
+            const fromBattery = Math.min(need, carSoc);
+            carSoc -= fromBattery;
+            // Was der heimische Akku nicht hergab, wurde unterwegs geladen —
+            // das kostet genauso Geld wie Netzstrom zuhause.
+            carFromGridKwh += need - fromBattery;
+            carDrivingKwh += need;
+          }
+
+          if (avail > 0) {
+            // Die Wallbox deckelt, was in dieser Stunde durch den Anschluss passt —
+            // für Laden UND Entladen zusammen.
+            let budget = car.wallboxKw * avail;
+
+            // 2. PV-Überschuss ins Auto (nach dem Heimspeicher: der ist klein und
+            //    regelt fein, das Auto nimmt die Grobmenge).
+            if (surplus > 0 && budget > 0) {
+              const charge = Math.min(surplus, budget, car.usableKwh - carSoc);
+              if (charge > 0) {
+                carSoc += charge;
+                surplus -= charge;
+                budget -= charge;
+                carFromPvKwh += charge;
+                // Zählt in der Monatsbilanz als eingespeichert — das Auto IST ein
+                // Speicher. Sonst ginge die Gleichung production = direct + stored
+                // + feedIn nicht mehr auf.
+                mStored += charge;
+              }
+            }
+
+            // 3. Restbedarf des Hauses aus dem Auto decken — nur oberhalb der
+            //    Fahr-Reserve. Dadurch kann netzgeladene Energie nie ins Haus
+            //    zurückfließen (das wäre ein Verlustgeschäft).
+            const restDeficit = deficit - dischargeCovered;
+            if (car.bidirectional && restDeficit > 0 && budget > 0) {
+              // Rückspeisen erst OBERHALB von Reserve + einem Tag Fahrbedarf.
+              // Ohne diese Schwelle speist das Auto abends alles ins Haus und muss
+              // nachts fürs Fahren aus dem Netz nachladen — dann verschiebt man
+              // Energie nur im Kreis und verliert dabei den Wirkungsgrad. Genau das
+              // trat im ersten Lauf auf (V2H rechnete sich beim Pendler negativ).
+              // Jede reale Steuerung hält diesen Puffer vor.
+              const floor = car.minReserveKwh + car.drivingKwhPerDay;
+              const usable = Math.max(0, carSoc - floor);
+              const taken = Math.min(restDeficit / car.roundtrip, usable, budget);
+              if (taken > 0) {
+                carSoc -= taken;
+                budget -= taken;
+                const covered = taken * car.roundtrip;
+                carToHomeKwh += covered;
+                selfUsedKwh += covered;
+                mSelf += covered;
+              }
+            }
+
+            // 4. Unter die Fahr-Reserve gefallen? Aus dem Netz nachladen — das Auto
+            //    muss morgens fahren können, auch wenn die Sonne nicht lieferte.
+            if (carSoc < car.minReserveKwh && budget > 0) {
+              const top = Math.min(car.minReserveKwh - carSoc, budget);
+              carSoc += top;
+              carFromGridKwh += top;
+            }
+          }
+        }
+
         feedInKwh += surplus;
         mFeed += surplus;
 
@@ -236,6 +380,10 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
     monthly,
     wpLoadKwh: Math.round(wpLoadKwh),
     wpSelfCoveredKwh: Math.round(wpSelfCoveredKwh),
+    carDrivingKwh: Math.round(carDrivingKwh),
+    carFromPvKwh: Math.round(carFromPvKwh),
+    carFromGridKwh: Math.round(carFromGridKwh),
+    carToHomeKwh: Math.round(carToHomeKwh),
   };
 }
 

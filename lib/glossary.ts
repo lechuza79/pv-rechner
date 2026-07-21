@@ -23,6 +23,39 @@ export interface GlossaryEntry {
 // lookup key for <GlossaryTerm id="...">. Don't rename a key without updating
 // every usage; renaming `term` (the display text) is free.
 export const GLOSSARY: Record<string, GlossaryEntry> = {
+  "bidirektionales-laden": {
+    term: "Bidirektionales Laden",
+    aliases: ["bidirektional", "Bidi"],
+    short:
+      "Strom fließt nicht nur in das Auto hinein, sondern auch wieder heraus \u2014 ins Haus oder ins Netz.",
+    long:
+      "Beim bidirektionalen Laden wird der Autoakku zum Stromspeicher. Der Begriff wird allerdings uneinheitlich verwendet: Manche Hersteller bezeichnen schon eine Steckdose am Fahrzeug so. Entscheidend ist, ob der Hersteller eine Wallbox namentlich freigibt \u2014 nur dann l\u00e4sst sich damit auch das Haus versorgen.",
+  },
+  v2h: {
+    term: "V2H (Vehicle-to-Home)",
+    aliases: ["Vehicle-to-Home", "V2H"],
+    short:
+      "Das Auto gibt seinen Strom an das eigene Haus ab und ersetzt damit zeitweise einen Heimspeicher.",
+    long:
+      "V2H braucht eine passende Ladestation und ein daf\u00fcr freigegebenes Fahrzeug. Wirtschaftlich lohnt es sich vor allem dann, wenn noch kein Heimspeicher vorhanden ist \u2014 steht bereits einer im Keller, f\u00e4ngt der den Solar\u00fcberschuss ohnehin ab.",
+  },
+  v2g: {
+    term: "V2G (Vehicle-to-Grid)",
+    aliases: ["Vehicle-to-Grid", "V2G"],
+    short:
+      "Das Auto speist Strom ins \u00f6ffentliche Netz zur\u00fcck \u2014 daf\u00fcr kann es Geld geben.",
+    long:
+      "V2G setzt einen digitalen Z\u00e4hler, einen Einspeisevertrag und die Freigabe des Netzbetreibers voraus. In Deutschland gibt es dazu bislang nur einzelne Angebote, die jeweils an ein bestimmtes Fahrzeugmodell gebunden sind.",
+  },
+  v2l: {
+    term: "V2L (Vehicle-to-Load)",
+    aliases: ["Vehicle-to-Load", "V2L"],
+    short:
+      "Aus dem Auto l\u00e4sst sich \u00fcber eine Steckdose ein einzelnes Ger\u00e4t betreiben \u2014 etwa eine Kaffeemaschine beim Camping.",
+    long:
+      "V2L k\u00f6nnen inzwischen die meisten E-Autos. Mit der Versorgung eines Hauses hat es nichts zu tun, wird in der Werbung aber h\u00e4ufig ebenfalls \u201ebidirektional\u201c genannt.",
+  },
+
   kwp: {
     term: "kWp",
     aliases: ["Kilowatt-Peak", "Kilowattpeak"],
