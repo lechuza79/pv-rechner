@@ -130,7 +130,22 @@ export async function GET(req: NextRequest) {
       CREATE INDEX IF NOT EXISTS idx_mag_region_prefix
         ON mastr_aggregates_gem (region_id text_pattern_ops);
 
+      -- Vorberechneter Rollup je Region-Ebene (region_key: '' = DE, 2 = Land,
+      -- 5 = Kreis, 8 = Gemeinde). Ersetzt die Live-Aggregation in region_series.
+      -- Wird nach jedem Datenlauf via mastr_refresh_region_rollup() neu befüllt.
+      CREATE TABLE IF NOT EXISTS mastr_region_rollup (
+        region_key text NOT NULL,
+        energietraeger text NOT NULL,
+        segment text NOT NULL,
+        year int NOT NULL,
+        count bigint NOT NULL DEFAULT 0,
+        kwp numeric NOT NULL DEFAULT 0,
+        kwh numeric NOT NULL DEFAULT 0,
+        PRIMARY KEY (region_key, energietraeger, segment, year)
+      );
+
       ALTER TABLE mastr_aggregates_gem ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE mastr_region_rollup ENABLE ROW LEVEL SECURITY;
       DO $$ BEGIN
         IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_aggregates_gem_anon_read') THEN
           CREATE POLICY mastr_aggregates_gem_anon_read ON mastr_aggregates_gem FOR SELECT TO anon USING (true);
@@ -138,7 +153,37 @@ export async function GET(req: NextRequest) {
         IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_aggregates_gem_service_write') THEN
           CREATE POLICY mastr_aggregates_gem_service_write ON mastr_aggregates_gem FOR ALL TO service_role USING (true);
         END IF;
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_region_rollup_anon_read') THEN
+          CREATE POLICY mastr_region_rollup_anon_read ON mastr_region_rollup FOR SELECT TO anon USING (true);
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_region_rollup_service_write') THEN
+          CREATE POLICY mastr_region_rollup_service_write ON mastr_region_rollup FOR ALL TO service_role USING (true);
+        END IF;
       END $$;
+
+      -- Rollup NUR für die teuren Ebenen: Kreis (5) / Land (2) / Bund ('').
+      -- Gemeinde bleibt draußen — ein 8-stelliger Prefix trifft in region_series
+      -- per PK schon genau eine Zeile, da braucht es keinen Rollup. Alle Keys sind
+      -- 8-stellig, daher summieren die drei Ebenen disjunkt (kein Doppelzählen).
+      -- Statement-Timeout hier bewusst aufheben (läuft nur beim Datenlauf).
+      CREATE OR REPLACE FUNCTION mastr_refresh_region_rollup()
+      RETURNS void LANGUAGE plpgsql AS $fn$
+      BEGIN
+        SET LOCAL statement_timeout = 0;
+        TRUNCATE mastr_region_rollup;
+        INSERT INTO mastr_region_rollup (region_key, energietraeger, segment, year, count, kwp, kwh)
+        SELECT left(region_id,5), energietraeger, segment, year, sum(count)::bigint, sum(kwp), sum(kwh)
+          FROM mastr_aggregates_gem GROUP BY 1,2,3,4
+        UNION ALL
+        SELECT left(region_id,2), energietraeger, segment, year, sum(count)::bigint, sum(kwp), sum(kwh)
+          FROM mastr_aggregates_gem GROUP BY 1,2,3,4
+        UNION ALL
+        SELECT '', energietraeger, segment, year, sum(count)::bigint, sum(kwp), sum(kwh)
+          FROM mastr_aggregates_gem GROUP BY energietraeger, segment, year;
+      END;
+      $fn$;
+      REVOKE ALL ON FUNCTION mastr_refresh_region_rollup() FROM PUBLIC;
+      GRANT EXECUTE ON FUNCTION mastr_refresh_region_rollup() TO service_role;
     `,
   });
   results.push({ step: "mastr_aggregates_gem", status: e2gem ? "error" : "ok", error: e2gem?.message });
@@ -193,6 +238,12 @@ export async function GET(req: NextRequest) {
       -- One region's full series (segment x year), summed over everything below it.
       -- Bounded by construction: energietraeger x segment x year, never by region
       -- count — so it is safe at Gemeinde, Kreis, Bundesland and DE alike.
+      -- Selbstheilend: liest zuerst den vorberechneten Rollup (Kreis/Land/Bund,
+      -- Punkt-Lookup per PK region_key) — das war der Kaltstart-Killer, weil DE/Land
+      -- vorher alle 591k Zeilen live neu aggregierten. Fehlt der Schlüssel im Rollup
+      -- (Gemeinde-Ebene, oder Rollup noch nicht befüllt), fällt sie auf den
+      -- Live-Scan zurück. Ein leerer/halber Rollup kann die Seite so nie brechen.
+      -- Gemeinde-Prefix (8-stellig) trifft per PK genau eine Zeile → ohnehin schnell.
       DROP FUNCTION IF EXISTS mastr_region_series(text, text[]);
       CREATE OR REPLACE FUNCTION mastr_region_series(
         p_prefix text,
@@ -202,10 +253,15 @@ export async function GET(req: NextRequest) {
       LANGUAGE sql
       STABLE
       AS $fn$
+        SELECT energietraeger, segment, year, count, kwp, kwh
+        FROM mastr_region_rollup
+        WHERE region_key = p_prefix AND energietraeger = ANY(p_traeger)
+        UNION ALL
         SELECT a.energietraeger, a.segment, a.year, sum(a.count)::bigint, sum(a.kwp), sum(a.kwh)
         FROM mastr_aggregates_gem a
         WHERE a.energietraeger = ANY(p_traeger)
           AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
+          AND NOT EXISTS (SELECT 1 FROM mastr_region_rollup WHERE region_key = p_prefix)
         GROUP BY 1, 2, 3
       $fn$;
 
@@ -303,6 +359,80 @@ export async function GET(req: NextRequest) {
     `,
   });
   results.push({ step: "mastr_rollup_functions", status: e2b ? "error" : "ok", error: e2b?.message });
+
+  // 2d. Größenklassen-Anführer in EINEM Aufruf.
+  //
+  //     Die Gemeinde-Seite zeigt, wer in derselben Größenklasse pro Kopf führt —
+  //     je Eigentümer-Filter (alle/privat/gewerbe) und je Bezug (eigenes Land,
+  //     bundesweit), also 6 Werte. Vorher waren das 6 separate Abfragen, die sich
+  //     in der DB stauten (jede ein eigener Scan). Diese Funktion macht EINEN Scan
+  //     und liefert alle 6 Anführer — ein Round-Trip statt sechs.
+  const { error: e2d } = await supabase.rpc("exec_sql", {
+    sql: `
+      CREATE OR REPLACE FUNCTION mastr_peer_leaders(
+        p_bl_prefix text,
+        p_min_pop int,
+        p_max_pop int
+      )
+      RETURNS TABLE (
+        owner text, scope text, region_id text, name text, slug text,
+        parent_region_id text, population int, kwp numeric, w_per_capita numeric
+      )
+      LANGUAGE sql
+      STABLE
+      AS $fn$
+        WITH g AS (
+          SELECT a.region_id,
+                 sum(a.kwp) AS kwp_alle,
+                 sum(a.kwp) FILTER (WHERE a.segment IN ('privat_dach', 'steckersolar')) AS kwp_privat,
+                 sum(a.kwp) FILTER (WHERE a.segment IN ('gewerbe_dach', 'freiflaeche')) AS kwp_gewerbe
+          FROM mastr_aggregates_gem a
+          WHERE a.energietraeger = 'solar'
+          GROUP BY 1
+        ),
+        gp AS (
+          SELECT g.region_id, r.name, r.slug, r.parent_region_id, r.population,
+                 g.kwp_alle, g.kwp_privat, g.kwp_gewerbe
+          FROM g JOIN mastr_regions r ON r.region_id = g.region_id
+          -- Uninhabited areas would divide by zero and top every table forever.
+          WHERE r.level = 'gemeinde' AND r.population > 0 AND r.slug IS NOT NULL
+            AND r.population >= p_min_pop
+            AND (p_max_pop IS NULL OR r.population <= p_max_pop)
+        ),
+        cand AS (
+          SELECT o.owner, s.scope, gp.region_id, gp.name, gp.slug, gp.parent_region_id, gp.population,
+                 CASE o.owner WHEN 'privat' THEN gp.kwp_privat
+                              WHEN 'gewerbe' THEN gp.kwp_gewerbe
+                              ELSE gp.kwp_alle END AS kwp
+          FROM gp
+          CROSS JOIN (VALUES ('alle'), ('privat'), ('gewerbe')) AS o(owner)
+          CROSS JOIN (VALUES ('de'), ('bl')) AS s(scope)
+          WHERE (s.scope = 'de' OR gp.region_id LIKE p_bl_prefix || '%')
+        ),
+        ranked AS (
+          SELECT owner, scope, region_id, name, slug, parent_region_id, population, kwp,
+                 round(kwp * 1000 / population) AS w_per_capita,
+                 row_number() OVER (PARTITION BY owner, scope ORDER BY kwp / population DESC) AS rn
+          FROM cand
+          WHERE kwp IS NOT NULL AND kwp > 0
+        )
+        SELECT owner, scope, region_id, name, slug, parent_region_id, population, kwp, w_per_capita
+        FROM ranked WHERE rn = 1
+      $fn$;
+      REVOKE ALL ON FUNCTION mastr_peer_leaders(text, int, int) FROM PUBLIC;
+      GRANT EXECUTE ON FUNCTION mastr_peer_leaders(text, int, int) TO anon, authenticated, service_role;
+    `,
+  });
+  results.push({ step: "mastr_peer_leaders", status: e2d ? "error" : "ok", error: e2d?.message });
+
+  // 2e. Rollup befüllen — als EIGENER Schritt nach allem DDL. Struktur +
+  //     selbstheilende region_series sind da schon committed; scheitert die
+  //     Befüllung (Timeout o. Ä.), bleibt die Seite über den Fallback-Scan
+  //     korrekt und wird beim nächsten erfolgreichen Refresh schnell.
+  const { error: e2e } = await supabase.rpc("exec_sql", {
+    sql: `SELECT mastr_refresh_region_rollup();`,
+  });
+  results.push({ step: "mastr_region_rollup_refresh", status: e2e ? "error" : "ok", error: e2e?.message });
 
   // 3. mastr_meta — single-row metadata (last import, source version)
   const { error: e3 } = await supabase.rpc("exec_sql", {

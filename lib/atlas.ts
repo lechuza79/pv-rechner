@@ -8,6 +8,7 @@
 //
 // Gemeinde is the only stored grain; Kreis, Bundesland and DE are prefix rollups.
 
+import { unstable_cache } from "next/cache";
 import { loadChildren, LEVEL_LEN, type Level, type ChildRow } from "./mastr-data";
 
 export type AtlasRegion = {
@@ -99,7 +100,7 @@ async function db() {
 const REGION_COLUMNS =
   "region_id, level, name, bezeichnung, slug, parent_region_id, population, area_km2, population_as_of";
 
-export async function getRegionById(regionId: string): Promise<AtlasRegion | null> {
+async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | null> {
   const supabase = await db();
   const { data, error } = await supabase
     .from("mastr_regions")
@@ -110,13 +111,19 @@ export async function getRegionById(regionId: string): Promise<AtlasRegion | nul
   return (data as AtlasRegion) ?? null;
 }
 
+// Regions-Identität (Name, Einwohner, Slug) ist stabil — cachen spart die
+// wiederholten Lookups (Kreis-, Land-, Deutschland-Region auf jeder Seite).
+export const getRegionById = unstable_cache(getRegionByIdUncached, ["region-by-id-v1"], {
+  revalidate: 3600,
+});
+
 /**
  * Resolve a slug path to a region. Slugs are unique among siblings, so each
  * segment is looked up within its parent — that is what keeps "wuerzburg" (the
  * kreisfreie Stadt) apart from "landkreis-wuerzburg" and lets twenty Neustadts
  * coexist.
  */
-export async function resolveSlugPath(slugs: string[]): Promise<AtlasRegion | null> {
+async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | null> {
   const supabase = await db();
   let parent = "de";
   let region: AtlasRegion | null = null;
@@ -134,6 +141,12 @@ export async function resolveSlugPath(slugs: string[]): Promise<AtlasRegion | nu
   }
   return region;
 }
+
+// Slug→Region ist stabil und wird pro Seite doppelt aufgelöst (generateMetadata
+// + Render) — cachen dedupt das und spart die N seriellen Segment-Lookups.
+export const resolveSlugPath = unstable_cache(resolveSlugPathUncached, ["resolve-slug-v1"], {
+  revalidate: 3600,
+});
 
 /** Ancestors from Deutschland down to (but excluding) the region — for breadcrumbs. */
 export async function getAncestors(region: AtlasRegion): Promise<AtlasRegion[]> {
@@ -315,7 +328,7 @@ export type RankingRegion = {
  * is instant, while a round trip per click would not be. The payload is bounded
  * by children × segments × years: a Kreis with 55 Gemeinden lands around 150 KB.
  */
-export async function getRankingData(
+async function getRankingDataUncached(
   region: AtlasRegion,
 ): Promise<{ regions: RankingRegion[]; cells: ChildYearRow[] }> {
   const childLevel = childLevelOf(region);
@@ -333,6 +346,12 @@ export async function getRankingData(
 
   return { regions: regionsRes.data as RankingRegion[], cells };
 }
+
+// Kreis-/Regions-Rangliste: über alle Gemeinden desselben Kreises identisch —
+// cachen spart die wiederholte Zellen-Aggregation auf jeder Gemeinde-Seite.
+export const getRankingData = unstable_cache(getRankingDataUncached, ["ranking-data-v1"], {
+  revalidate: 3600,
+});
 
 /**
  * Paginated read of the ranking cells.
@@ -414,7 +433,7 @@ export function peerBand(population: number): { min: number; max: number } {
 
 export type Owner = "alle" | "privat" | "gewerbe";
 
-export async function getTopGemeinden(opts: {
+async function getTopGemeindenUncached(opts: {
   prefix: string;
   owner: Owner;
   limit: number;
@@ -438,3 +457,50 @@ export async function getTopGemeinden(opts: {
     rang: Number(r.rang),
   }));
 }
+
+// Die bundesweiten Größenklassen-Spitzen (prefix "") sind der teuerste Teil der
+// Gemeinde-Seite (~5 s, Scan über alle Gemeinden) — aber je (Band × Eigentümer)
+// identisch über tausende Gemeinden. Cachen macht praktisch jede Seite nach der
+// ersten pro Band schnell. revalidate großzügig, ändert sich nur mit dem Bestand.
+export const getTopGemeinden = unstable_cache(getTopGemeindenUncached, ["top-gemeinden-v1"], {
+  revalidate: 86400,
+});
+
+// Größenklassen-Anführer in EINEM Aufruf: alle 3 Eigentümer × 2 Bezüge (eigenes
+// Land, bundesweit). Ersetzt die früheren 6 Einzelabfragen, die sich in der DB
+// stauten — ein Scan statt sechs. Gecacht wie die Spitzen (nur bandabhängig).
+export type PeerLeader = {
+  owner: Owner;
+  scope: "de" | "bl";
+  region_id: string;
+  name: string;
+  slug: string;
+  parent_region_id: string;
+  population: number;
+  kwp: number;
+  w_per_capita: number;
+};
+
+async function getPeerLeadersUncached(
+  blPrefix: string,
+  minPop: number,
+  maxPop: number,
+): Promise<PeerLeader[]> {
+  const supabase = await db();
+  const { data, error } = await supabase.rpc("mastr_peer_leaders", {
+    p_bl_prefix: blPrefix,
+    p_min_pop: minPop,
+    p_max_pop: maxPop,
+  });
+  if (error) throw new Error(`mastr_peer_leaders failed: ${error.message}`);
+  return (data ?? []).map((r: PeerLeader) => ({
+    ...r,
+    population: Number(r.population),
+    kwp: Number(r.kwp),
+    w_per_capita: Number(r.w_per_capita),
+  }));
+}
+
+export const getPeerLeaders = unstable_cache(getPeerLeadersUncached, ["peer-leaders-v1"], {
+  revalidate: 86400,
+});

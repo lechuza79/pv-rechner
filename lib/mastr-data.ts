@@ -3,6 +3,7 @@
 // real data pipeline is still being populated. Once mastr_aggregates is
 // filled, only `loadFromSupabase` needs to flip to true.
 
+import { unstable_cache } from "next/cache";
 import { BUNDESLAENDER, bundeslandByAgs } from "./mastr-regions";
 import { ENCLOSED_CITIES } from "./enclosed-cities";
 
@@ -499,7 +500,7 @@ export type RegionAtlas = {
   data_as_of: string;
 };
 
-export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas> {
+async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas> {
   const { supabase } = await import("./supabase-server");
   if (!supabase) throw new Error("Supabase not configured");
 
@@ -573,6 +574,14 @@ export async function getRegionAtlasData(regionId: string): Promise<RegionAtlas>
     data_as_of: await fetchMetaDataAsOf(),
   };
 }
+
+// Aggregat-Reads (region_series) sind über tausende Atlas-Seiten identisch — vor
+// allem die DE-/Land-/Kreis-Schnitte, die jede Gemeinde-Seite für die Tendenz
+// braucht. Cachen spart die wiederholte, teure Aggregation. Args (regionId) sind
+// Teil des Cache-Keys; revalidate passend zur monatlichen Datenaktualität + ISR.
+export const getRegionAtlasData = unstable_cache(getRegionAtlasDataUncached, ["region-atlas-v2"], {
+  revalidate: 3600,
+});
 
 export function allBundeslaenderSummary(
   energietraeger: Energietraeger,
