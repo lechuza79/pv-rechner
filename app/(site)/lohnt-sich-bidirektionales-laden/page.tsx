@@ -3,7 +3,7 @@ import Link from "next/link";
 import Breadcrumb from "../../../components/Breadcrumb";
 import Faq from "../../../components/Faq";
 import { bidiLadenFaq } from "../../../lib/faq";
-import { v } from "../../../lib/theme";
+import { v, space, pad } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { fetchSpotPrices } from "../../../lib/energy-api";
 import { calcArbitrage, toSpotHours, type SpotHour } from "../../../lib/v2h-arbitrage";
@@ -30,23 +30,23 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const S = {
-  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "20px 16px" },
+  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: pad("xxl", "xl") },
   wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: 60 },
-  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.25, marginBottom: 10 },
-  subtitle: { fontSize: v("--font-size-lead"), color: v("--color-text-muted"), marginBottom: 24, lineHeight: 1.6 },
-  h2: { fontSize: v("--font-size-h2"), fontWeight: 700, marginTop: 32, marginBottom: 10 },
-  p: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: 12 },
+  h1: { fontSize: v("--font-size-h1"), fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.25, marginBottom: space.lg },
+  subtitle: { fontSize: v("--font-size-lead"), color: v("--color-text-muted"), marginBottom: space.xxl, lineHeight: 1.6 },
+  h2: { fontSize: v("--font-size-h2"), fontWeight: 700, marginTop: space.xxxl, marginBottom: space.lg },
+  p: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7, marginBottom: space.lg },
   strong: { fontWeight: 700, color: v("--color-text-primary") },
-  hero: { background: v("--color-bg-accent"), borderRadius: v("--radius-lg"), padding: "16px 18px", marginBottom: 16, fontSize: v("--font-size-body"), color: v("--color-text-primary"), lineHeight: 1.7 },
-  card: { background: v("--color-bg"), borderRadius: v("--radius-md"), padding: "14px 16px", border: `1px solid ${v("--color-border")}`, marginBottom: 12, fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7 },
-  label: { fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-text-secondary"), textTransform: "uppercase" as const, letterSpacing: "0.04em", marginBottom: 6, display: "block" },
+  hero: { background: v("--color-bg-accent"), borderRadius: v("--radius-lg"), padding: pad("xl", "xl"), marginBottom: space.xl, fontSize: v("--font-size-body"), color: v("--color-text-primary"), lineHeight: 1.7 },
+  card: { background: v("--color-bg"), borderRadius: v("--radius-md"), padding: pad("xl", "xl"), border: `1px solid ${v("--color-border")}`, marginBottom: space.lg, fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.7 },
+  label: { fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-text-secondary"), textTransform: "uppercase" as const, letterSpacing: "0.04em", marginBottom: space.sm, display: "block" },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
-  th: { textAlign: "left" as const, fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-text-secondary"), textTransform: "uppercase" as const, letterSpacing: "0.04em", padding: "8px 6px", borderBottom: `1px solid ${v("--color-border")}` },
-  thNum: { textAlign: "right" as const, fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-text-secondary"), textTransform: "uppercase" as const, letterSpacing: "0.04em", padding: "8px 6px", borderBottom: `1px solid ${v("--color-border")}` },
-  td: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), padding: "10px 6px", borderBottom: `1px solid ${v("--color-border")}`, lineHeight: 1.4 },
-  tdNum: { fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), color: v("--color-text-primary"), textAlign: "right" as const, padding: "10px 6px", borderBottom: `1px solid ${v("--color-border")}`, whiteSpace: "nowrap" as const },
-  note: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 8 },
-  scroll: { overflowX: "auto" as const, marginBottom: 12 },
+  th: { textAlign: "left" as const, fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-text-secondary"), textTransform: "uppercase" as const, letterSpacing: "0.04em", padding: pad("md", "sm"), borderBottom: `1px solid ${v("--color-border")}` },
+  thNum: { textAlign: "right" as const, fontSize: v("--font-size-caption"), fontWeight: 700, color: v("--color-text-secondary"), textTransform: "uppercase" as const, letterSpacing: "0.04em", padding: pad("md", "sm"), borderBottom: `1px solid ${v("--color-border")}` },
+  td: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), padding: pad("lg", "sm"), borderBottom: `1px solid ${v("--color-border")}`, lineHeight: 1.4 },
+  tdNum: { fontFamily: v("--font-mono"), fontSize: v("--font-size-body"), color: v("--color-text-primary"), textAlign: "right" as const, padding: pad("lg", "sm"), borderBottom: `1px solid ${v("--color-border")}`, whiteSpace: "nowrap" as const },
+  note: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginTop: space.md },
+  scroll: { overflowX: "auto" as const, marginBottom: space.lg },
 };
 
 const HOUSEHOLD = { baseKwh: 3800, tagQuote: 0.30, wpActive: false, eaActive: false };
@@ -379,9 +379,9 @@ export default async function Page() {
 
         <h2 style={S.h2}>Wie es rechtlich steht</h2>
         <div style={S.card}>
-          <p style={{ ...S.p, marginBottom: 8 }}>{V2G_STAND_DE.netzentgelte}</p>
-          <p style={{ ...S.p, marginBottom: 8 }}>{V2G_STAND_DE.abrechnung}</p>
-          <p style={{ ...S.p, marginBottom: 8 }}>{V2G_STAND_DE.steuer}</p>
+          <p style={{ ...S.p, marginBottom: space.md }}>{V2G_STAND_DE.netzentgelte}</p>
+          <p style={{ ...S.p, marginBottom: space.md }}>{V2G_STAND_DE.abrechnung}</p>
+          <p style={{ ...S.p, marginBottom: space.md }}>{V2G_STAND_DE.steuer}</p>
           <p style={{ ...S.p, marginBottom: 0 }}>{V2G_STAND_DE.huerde}</p>
         </div>
 

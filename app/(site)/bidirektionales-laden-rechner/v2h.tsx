@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
-import { v } from "../../../lib/theme";
+import { v, space, pad } from "../../../lib/theme";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
 import {
@@ -24,7 +24,7 @@ function Card({ children, tone = "plain" }: { children: React.ReactNode; tone?: 
   return (
     <div style={{
       background: bg, border: `1px solid ${v("--color-border")}`,
-      borderRadius: 14, padding: 18, marginBottom: 14,
+      borderRadius: v("--radius-lg"), padding: pad("xl"), marginBottom: space.xl,
     }}>{children}</div>
   );
 }
@@ -47,7 +47,7 @@ function VehicleCard({ vehicle, selected, onClick }: {
     <div style={{
       border: selected ? `2px solid ${v("--color-accent")}` : `2px solid ${v("--color-border")}`,
       background: selected ? v("--color-accent-dim") : v("--color-bg-muted"),
-      borderRadius: 12, overflow: "hidden", display: "flex", flexDirection: "column",
+      borderRadius: v("--radius-md"), overflow: "hidden", display: "flex", flexDirection: "column",
     }}>
       <button onClick={onClick} style={{
         border: "none", background: "transparent", padding: 0, cursor: "pointer",
@@ -59,15 +59,15 @@ function VehicleCard({ vehicle, selected, onClick }: {
             width: "100%", aspectRatio: "16 / 10", objectFit: "cover", display: "block",
           }} />
         )}
-        <div style={{ padding: "8px 10px 6px" }}>
+        <div style={{ padding: pad("md", "lg") }}>
           <div style={{ fontSize: 13.5, fontWeight: 700, color: v("--color-text-primary") }}>{vehicle.label}</div>
-          <div style={{ fontSize: 11.5, color: v("--color-text-secondary"), marginTop: 2, lineHeight: 1.35 }}>
+          <div style={{ fontSize: 11.5, color: v("--color-text-secondary"), marginTop: space.xxs, lineHeight: 1.35 }}>
             {vehicle.usableKwh} kWh · {vehicle.note}
           </div>
         </div>
       </button>
       {img && (
-        <div style={{ fontSize: 9.5, color: v("--color-text-muted"), padding: "0 10px 7px", lineHeight: 1.35 }}>
+        <div style={{ fontSize: 9.5, color: v("--color-text-muted"), padding: pad("xxs", "lg"), lineHeight: 1.35 }}>
           Foto:{" "}
           <a href={img.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: "inherit" }}>{img.author}</a>
           {" · "}
@@ -82,8 +82,8 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
   return (
     <div style={{ flex: "1 1 130px" }}>
       <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-muted"), fontWeight: 700 }}>{label}</div>
-      <div style={{ fontSize: 22, fontWeight: 700, fontFamily: v("--font-mono"), marginTop: 4 }}>{value}</div>
-      {sub && <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginTop: 2, lineHeight: 1.35 }}>{sub}</div>}
+      <div style={{ fontSize: 22, fontWeight: 700, fontFamily: v("--font-mono"), marginTop: space.xs }}>{value}</div>
+      {sub && <div style={{ fontSize: 12, color: v("--color-text-secondary"), marginTop: space.xxs, lineHeight: 1.35 }}>{sub}</div>}
     </div>
   );
 }
@@ -133,15 +133,15 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
   const isResult = step === 2;
 
   return (
-    <div style={{ background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "20px 16px" }}>
+    <div style={{ background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: pad("xxl", "xl") }}>
       <div style={{ maxWidth: v("--page-max-width"), margin: "0 auto" }}>
 
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
+        <div style={{ textAlign: "center", marginBottom: space.xxl }}>
           <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
             {isResult ? "Was in deinem Autoakku steckt" : "Bidirektionales Laden"}
           </h1>
           {!isResult && (
-            <p style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: 6, lineHeight: 1.45 }}>
+            <p style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: space.sm, lineHeight: 1.45 }}>
               Ein E-Auto hat den fünf- bis achtfachen Akku eines Heimspeichers. Wir zeigen,
               was davon heute nutzbar ist — und was das Zurückspeisen wert wäre.
             </p>
@@ -150,8 +150,8 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
 
         {step === 0 && (
           <Card>
-            <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12 }}>Welches Auto fährst du — oder planst du?</h2>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: space.lg }}>Welches Auto fährst du — oder planst du?</h2>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.lg }}>
               {vehicles.map(x => (
                 <VehicleCard key={x.id} vehicle={x} selected={vehicleId === x.id}
                   onClick={() => setVehicleId(x.id)} />
@@ -161,12 +161,12 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
                 selected={vehicleId === "custom"} onClick={() => setVehicleId("custom")} />
             </div>
             {vehicleId === "custom" && (
-              <div style={{ marginTop: 12, fontSize: 14 }}>
+              <div style={{ marginTop: space.lg, fontSize: 14 }}>
                 Nutzbare Akkukapazität:{" "}
                 <InlineEdit value={customKwh} onCommit={setCustomKwh} unit="kWh" />
               </div>
             )}
-            <p style={{ fontSize: 12, color: v("--color-text-secondary"), marginTop: 12, lineHeight: 1.45 }}>
+            <p style={{ fontSize: 12, color: v("--color-text-secondary"), marginTop: space.lg, lineHeight: 1.45 }}>
               Alle gezeigten Modelle können zurückspeisen. Ob dein Fahrzeug es kann, hängt
               oft am Software-Stand — beim Kauf ausdrücklich danach fragen.
             </p>
@@ -176,23 +176,23 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
 
         {step === 1 && (
           <Card>
-            <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 12 }}>Wann steht das Auto zuhause?</h2>
-            <div style={{ display: "grid", gap: 8 }}>
+            <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: space.lg }}>Wann steht das Auto zuhause?</h2>
+            <div style={{ display: "grid", gap: space.md }}>
               {V2H_PROFILES.map(p => (
                 <OptionCard key={p.id} selected={profileId === p.id} onClick={() => setProfileId(p.id)}
                   label={p.label} sub={p.what} />
               ))}
             </div>
-            <div style={{ marginTop: 16 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 8 }}>Wie viele Personen im Haushalt?</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            <div style={{ marginTop: space.xl }}>
+              <div style={{ fontSize: 13, fontWeight: 700, marginBottom: space.md }}>Wie viele Personen im Haushalt?</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.md }}>
                 {PERSONEN.map((p, i) => (
                   <OptionCard key={p.label} selected={personen === i} onClick={() => setPersonen(i)}
                     label={p.label} sub={`${p.verbrauch.toLocaleString("de-DE")} kWh im Jahr`} />
                 ))}
               </div>
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", gap: space.md }}>
               <button onClick={() => setStep(0)} style={btn("ghost")}>Zurück</button>
               <button onClick={() => setStep(2)} style={btn()}>Ergebnis</button>
             </div>
@@ -206,15 +206,15 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
               <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-muted"), fontWeight: 700 }}>
                 Frei verfügbar im Akku
               </div>
-              <div style={{ fontSize: 40, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-accent"), lineHeight: 1.1, marginTop: 4 }}>
+              <div style={{ fontSize: 40, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-accent"), lineHeight: 1.1, marginTop: space.xs }}>
                 {Math.round(r.freeKwh)} kWh
               </div>
-              <p style={{ fontSize: 14, marginTop: 8, lineHeight: 1.5 }}>
+              <p style={{ fontSize: 14, marginTop: space.md, lineHeight: 1.5 }}>
                 Das trägt deinen Haushalt rund <strong>{r.daysWinter.toFixed(1)} Tage</strong> durch
                 den Winter — ein typischer Heimspeicher mit 10 kWh schafft knapp einen.
                 Nach Abzug von {reserve} kWh, die du fürs Fahren zurückhältst.
               </p>
-              <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 16 }}>
+              <div style={{ display: "flex", gap: space.xl, flexWrap: "wrap", marginTop: space.xl }}>
                 <Stat label="Notstrom" value={`${r.daysWinter.toFixed(1)} Tage`} sub="bei Ausfall im Winter" />
                 <Stat label="Im Jahresmittel" value={`${r.daysAvg.toFixed(1)} Tage`} />
                 <Stat label="Handelbar am Tag" value={`${Math.round(r.volume)} kWh`} sub="begrenzt durch die Wallbox" />
@@ -226,11 +226,11 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
               <div style={{
                 display: "inline-block", fontSize: 11, fontWeight: 700, padding: "3px 8px",
                 borderRadius: 6, background: v("--color-bg-muted"), color: v("--color-text-secondary"),
-                marginBottom: 10,
+                marginBottom: space.lg,
               }}>
                 Gedankenmodell — so geht es in Deutschland noch nicht
               </div>
-              <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>
+              <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: space.md }}>
                 Was Zurückspeisen wert wäre
               </h2>
               {priceError ? (
@@ -242,7 +242,7 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
                   <div style={{ fontSize: 34, fontWeight: 800, fontFamily: v("--font-mono"), color: v("--color-positive"), lineHeight: 1.1 }}>
                     {euro(r.revenue)} €
                   </div>
-                  <p style={{ fontSize: 14, marginTop: 8, lineHeight: 1.5 }}>
+                  <p style={{ fontSize: 14, marginTop: space.md, lineHeight: 1.5 }}>
                     pro Jahr, wenn du günstig lädst und zur Preisspitze zurückspeist.
                     Gerechnet mit den <strong>echten deutschen Börsenpreisen</strong> vom{" "}
                     {new Date(periodStart).toLocaleDateString("de-DE")} bis{" "}
@@ -250,14 +250,14 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
                     dabei im Mittel um {factor?.medianSpreadCt.toString().replace(".", ",")} Cent je Kilowattstunde
                     zwischen der günstigsten und der teuersten Zeit des Tages.
                   </p>
-                  <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 16 }}>
+                  <div style={{ display: "flex", gap: space.xl, flexWrap: "wrap", marginTop: space.xl }}>
                     <Stat label="Zusätzliche Ladezyklen" value={`${Math.round(r.cycles)}/Jahr`} sub="geht auf die Akkugarantie" />
                     <Stat label="Wallbox" value={`${euro(wallbox)} €`} sub="bidirektional, mit Montage" />
                     {r.payback && (
                       <Stat label="Wäre bezahlt nach" value={`${r.payback.toFixed(1)} Jahren`} />
                     )}
                   </div>
-                  <div style={{ fontSize: 13, marginTop: 14 }}>
+                  <div style={{ fontSize: 13, marginTop: space.xl }}>
                     Wallbox-Preis anpassen: <InlineEdit value={wallbox} onCommit={setWallbox} unit="€" />
                     {"  ·  "}Fahr-Reserve: <InlineEdit value={reserve} onCommit={setReserve} unit="kWh" />
                   </div>
@@ -267,8 +267,8 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
 
             {/* ── Was der Zahl fehlt: ehrlich und sichtbar ─────────────────────── */}
             <Card tone="note">
-              <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>Warum das eine Obergrenze ist</h2>
-              <ul style={{ fontSize: 13.5, lineHeight: 1.6, paddingLeft: 18, margin: 0, color: v("--color-text-secondary") }}>
+              <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: space.md }}>Warum das eine Obergrenze ist</h2>
+              <ul style={{ fontSize: 13.5, lineHeight: 1.6, paddingLeft: space.xl, margin: 0, color: v("--color-text-secondary") }}>
                 <li>Gerechnet ist der reine Börsenpreis. <strong>Netzentgelte, Steuern und Umlagen fehlen</strong> — die Doppelbelastung ist zwar seit Januar 2026 entfallen, wie abgerechnet wird, ist aber noch offen.</li>
                 <li>Du brauchst einen <strong>dynamischen Stromtarif und ein intelligentes Messsystem</strong>. Beides gibt es in Deutschland noch nicht flächendeckend.</li>
                 <li>Die zusätzlichen Ladezyklen <strong>zählen auf die Akkugarantie</strong>. Wir rechnen sie nicht in Geld um — dafür ist die Datenlage zu dünn.</li>
@@ -278,13 +278,13 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
 
             {/* ── Was heute schon geht ─────────────────────────────────────────── */}
             <Card>
-              <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>Was heute schon funktioniert</h2>
+              <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: space.md }}>Was heute schon funktioniert</h2>
               <p style={{ fontSize: 14, lineHeight: 1.55 }}>
                 <strong>Notstrom.</strong> Fällt das Netz aus, trägt dein Auto den Haushalt
                 rund {r.daysWinter.toFixed(1)} Tage. Das braucht keinen Tarif und keine
                 Regulierung — nur die passende Wallbox.
               </p>
-              <p style={{ fontSize: 14, lineHeight: 1.55, marginTop: 10 }}>
+              <p style={{ fontSize: 14, lineHeight: 1.55, marginTop: space.lg }}>
                 <strong>Sonne puffern</strong> geht ebenfalls: eigener Solarstrom tagsüber ins
                 Auto, abends zurück ins Haus. Wirtschaftlich bringt das heute allerdings
                 wenig — hast du bereits einen Heimspeicher, fängt der den Überschuss schon
@@ -294,7 +294,7 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
 
             {/* ── Die eigentliche Botschaft ────────────────────────────────────── */}
             <Card tone="hero">
-              <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 8 }}>Die Entscheidung fällt beim Autokauf</h2>
+              <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: space.md }}>Die Entscheidung fällt beim Autokauf</h2>
               <p style={{ fontSize: 14, lineHeight: 1.55 }}>
                 Die Wallbox kannst du später kaufen — dann, wenn Tarife und Messsysteme da
                 sind. Was du heute entscheidest, ist das Auto. Rückspeisefähigkeit kostet
@@ -306,28 +306,28 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
 
             {/* ── Ausblick: Ausland ────────────────────────────────────────────── */}
             <Card>
-              <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>Anderswo läuft das bereits</h2>
-              <p style={{ fontSize: 12.5, color: v("--color-text-muted"), marginBottom: 12 }}>
+              <h2 style={{ fontSize: 15, fontWeight: 700, marginBottom: space.xs }}>Anderswo läuft das bereits</h2>
+              <p style={{ fontSize: 12.5, color: v("--color-text-muted"), marginBottom: space.lg }}>
                 Beispiele aus dem Ausland — keine Aussage über deutsche Konditionen.
               </p>
               {V2G_EXAMPLES.map(x => (
-                <div key={x.country} style={{ marginBottom: 12 }}>
+                <div key={x.country} style={{ marginBottom: space.lg }}>
                   <div style={{ fontSize: 14, fontWeight: 700 }}>{x.country}</div>
                   <div style={{ fontSize: 12, color: v("--color-accent"), fontWeight: 600 }}>{x.status}</div>
-                  <div style={{ fontSize: 13.5, color: v("--color-text-secondary"), lineHeight: 1.5, marginTop: 2 }}>{x.what}</div>
+                  <div style={{ fontSize: 13.5, color: v("--color-text-secondary"), lineHeight: 1.5, marginTop: space.xxs }}>{x.what}</div>
                 </div>
               ))}
-              <div style={{ fontSize: 12.5, color: v("--color-text-secondary"), lineHeight: 1.6, marginTop: 14, paddingTop: 12, borderTop: `1px solid ${v("--color-border")}` }}>
+              <div style={{ fontSize: 12.5, color: v("--color-text-secondary"), lineHeight: 1.6, marginTop: space.xl, paddingTop: space.lg, borderTop: `1px solid ${v("--color-border")}` }}>
                 <strong>Stand Deutschland ({V2G_STAND_DE.stand}):</strong> {V2G_STAND_DE.netzentgelte}{" "}
                 {V2G_STAND_DE.abrechnung} {V2G_STAND_DE.norm} {V2G_STAND_DE.huerde}
               </div>
             </Card>
 
-            <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", gap: space.md }}>
               <button onClick={() => setStep(0)} style={btn("ghost")}>Neu berechnen</button>
             </div>
 
-            <p style={{ fontSize: 11.5, color: v("--color-text-muted"), lineHeight: 1.5, marginTop: 16, textAlign: "center" }}>
+            <p style={{ fontSize: 11.5, color: v("--color-text-muted"), lineHeight: 1.5, marginTop: space.xl, textAlign: "center" }}>
               Alle Angaben ohne Gewähr. Preisdaten: Bundesnetzagentur | SMARD.de über
               Energy-Charts (Fraunhofer ISE), CC BY 4.0. Verbindlich sind die Konditionen
               deines Stromanbieters.
@@ -341,7 +341,7 @@ export default function V2hClient({ factors, priceError, periodStart, periodEnd 
 
 function btn(kind: "primary" | "ghost" = "primary"): React.CSSProperties {
   return {
-    marginTop: 16, padding: "12px 18px", borderRadius: 10, fontSize: 14, fontWeight: 700,
+    marginTop: space.xl, padding: pad("lg", "xl"), borderRadius: 10, fontSize: 14, fontWeight: 700,
     cursor: "pointer", fontFamily: "inherit", flex: 1,
     background: kind === "primary" ? v("--color-accent") : "transparent",
     color: kind === "primary" ? v("--color-text-on-accent") : v("--color-text-secondary"),
