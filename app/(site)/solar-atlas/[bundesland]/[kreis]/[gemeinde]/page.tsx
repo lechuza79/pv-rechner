@@ -18,17 +18,16 @@ import GemeindeSolarLive from "../../../../../../components/atlas/GemeindeSolarL
 import { MastrHeroSection } from "../../../../../../components/MastrHeroSection";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
 import { getPvgisYield } from "../../../../../../lib/pvgis";
-import { computeGemeindePotential, type GemeindePotential } from "../../../../../../lib/gemeinde-potential";
+import { computeGemeindePotential } from "../../../../../../lib/gemeinde-potential";
 import { buildGemeindeHighlight } from "../../../../../../lib/gemeinde-highlight";
 import {
   resolveSlugPath,
   getRegionById,
   lastFullYear,
   peerBand,
-  getTopGemeinden,
+  getPeerLeaders,
   getRankingData,
-  type TopGemeinde,
-  type Owner,
+  type PeerLeader,
 } from "../../../../../../lib/atlas";
 import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
@@ -86,15 +85,24 @@ export default async function GemeindePage({ params }: { params: Params }) {
   const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
   if (!region || region.level !== "gemeinde") notFound();
 
-  const kreis = region.parent_region_id ? await getRegionById(region.parent_region_id) : null;
   const blAgs = region.region_id.slice(0, 2);
   const bl = bundeslandByAgs(blAgs);
-
-  // The Gemeinde's own numbers, its siblings (for the rank) and both parents
-  // (for the comparison bars).
-  const atlas = await getRegionAtlasData(region.region_id);
-
+  const kreisAgs = region.region_id.slice(0, 5);
   const lastYear = lastFullYear();
+
+  // Alle voneinander unabhängigen Reads in einem Rutsch statt seriell: die
+  // Gemeinde selbst, die Eltern-Schnitte (Landkreis/Land/Deutschland) und der
+  // Kreis. Spart den Wasserfall; die Reads sind zusätzlich gecacht.
+  const [kreis, atlas, blAtlas, blRegion, kreisAtlas, deAtlas, deRegion] = await Promise.all([
+    region.parent_region_id ? getRegionById(region.parent_region_id) : Promise.resolve(null),
+    getRegionAtlasData(region.region_id),
+    getRegionAtlasData(blAgs),
+    getRegionById(blAgs),
+    getRegionAtlasData(kreisAgs),
+    getRegionAtlasData("de"),
+    getRegionById("de"),
+  ]);
+
   const lastYearRow = atlas.solar.by_year.find((y) => y.year === lastYear);
   const speicher = atlas.speicher;
 
@@ -107,18 +115,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
     .reduce((a, s) => a + s.kwp, 0);
   const speicherProKwp =
     speicher.kwh_batterie > 0 && kwpDach > 100 ? speicher.kwh_batterie / kwpDach : null;
-
-  // Vergleichs-Ebenen für die „Tendenz je Einwohner" (in der KPI-Reihe umschaltbar):
-  // Landkreis, Bundesland, Deutschland. Pro-Kopf je Ebene fertig gerechnet, Default
-  // ist die nächsthöhere Ebene (Landkreis).
-  const kreisAgs = region.region_id.slice(0, 5);
-  const [blAtlas, blRegion, kreisAtlas, deAtlas, deRegion] = await Promise.all([
-    getRegionAtlasData(blAgs),
-    getRegionById(blAgs),
-    getRegionAtlasData(kreisAgs),
-    getRegionAtlasData("de"),
-    getRegionById("de"),
-  ]);
   const perCapita = region.population
     ? Math.round((atlas.solar.total_kwp * 1000) / region.population)
     : null;
@@ -154,29 +150,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
     { label: `Neu ${lastYear}`, value: nf(lastYearRow?.count ?? 0), metric: "neu" },
   ];
 
-  // „Angebot trifft Nachfrage" + Beispiele: braucht den Standort-Ertrag. Nur für
-  // bewohnte Gemeinden sinnvoll (Waldgebiete o. Ä. haben keinen Bedarf). Der
-  // Ertrag kommt über den geteilten PVGIS-Weg; repräsentative PLZ aus der AGS.
-  let potential: GemeindePotential | null = null;
-  let repPlz: string | null = null;
-  let geoLat: number | null = null;
-  let geoLon: number | null = null;
-  if (region.population) {
-    const geo = await gemeindeGeo(region.region_id);
-    repPlz = geo?.plz ?? null;
-    geoLat = Number.isFinite(geo?.lat) ? (geo?.lat ?? null) : null;
-    geoLon = Number.isFinite(geo?.lon) ? (geo?.lon ?? null) : null;
-    const yieldData = await getPvgisYield({
-      lat: geo?.lat ?? NaN,
-      lon: geo?.lon ?? NaN,
-      plzPrefix: (repPlz ?? "").slice(0, 2),
-    });
-    potential = computeGemeindePotential({
-      annual: yieldData.annual,
-      monthly: yieldData.monthly,
-    });
-  }
-
   const basePath = `/solar-atlas/${params.bundesland}/${params.kreis}`;
   const gemeindePath = `${basePath}/${params.gemeinde}`;
 
@@ -195,40 +168,54 @@ export default async function GemeindePage({ params }: { params: Params }) {
   // Gemeinde's population it bites: Pilsting has 7.158 to Höchberg's 9.564 and
   // reaches 6.210 W per head against 954.
   const band = region.population ? peerBand(region.population) : { min: 0, max: 0 };
-  const OWNERS: Owner[] = ["alle", "privat", "gewerbe"];
-  const [siblingData, ...outsideByOwner] = await Promise.all([
+
+  // Standort-Ertrag (Geo→PVGIS), Kreis-Rangliste und bundesweite Vergleichs-
+  // gemeinden hängen nicht voneinander ab → in einem Rutsch statt seriell. Der
+  // Ertrag speist „Angebot trifft Nachfrage" + Beispiele; nur für bewohnte
+  // Gemeinden sinnvoll (Waldgebiete o. Ä. haben keinen Bedarf), repräsentative
+  // PLZ aus der AGS. Die Vergleichs-Anführer (3 Eigentümer × 2 Bezüge) kommen aus
+  // einem einzigen Aufruf (getPeerLeaders) statt sechs, die sich in der DB stauten.
+  const [geoYield, siblingData, peerRows] = await Promise.all([
+    region.population
+      ? gemeindeGeo(region.region_id).then(async (geo) => {
+          const y = await getPvgisYield({
+            lat: geo?.lat ?? NaN,
+            lon: geo?.lon ?? NaN,
+            plzPrefix: (geo?.plz ?? "").slice(0, 2),
+          });
+          return { geo, potential: computeGemeindePotential({ annual: y.annual, monthly: y.monthly }) };
+        })
+      : Promise.resolve({ geo: null, potential: null }),
     // The Kreis in raw cells: the table ranks it client-side per owner AND per
     // metric, which no fixed RPC result could serve.
     kreis ? getRankingData(kreis) : Promise.resolve({ regions: [], cells: [] }),
-    ...OWNERS.map(async (owner) => {
-      if (!region.population) return { owner, rows: [] as TopGemeinde[] };
-      const [blTop, deTop] = await Promise.all([
-        getTopGemeinden({ prefix: blAgs, owner, limit: 1, minPop: band.min, maxPop: band.max }),
-        getTopGemeinden({ prefix: "", owner, limit: 1, minPop: band.min, maxPop: band.max }),
-      ]);
-      return { owner, rows: [...blTop.map((t) => ({ ...t, scope: `${bl?.name ?? "Land"}, Größenklasse` })), ...deTop.map((t) => ({ ...t, scope: "bundesweit, Größenklasse" }))] };
-    }),
+    region.population ? getPeerLeaders(blAgs, band.min, band.max) : Promise.resolve([] as PeerLeader[]),
   ]);
+
+  const potential = geoYield.potential;
+  const repPlz = geoYield.geo?.plz ?? null;
+  const geoLat = Number.isFinite(geoYield.geo?.lat) ? (geoYield.geo?.lat ?? null) : null;
+  const geoLon = Number.isFinite(geoYield.geo?.lon) ? (geoYield.geo?.lon ?? null) : null;
 
   // One row per outside peer, carrying a value for each owner filter so switching
   // is a lookup rather than a refetch.
+  const scopeLabel = (s: "de" | "bl") =>
+    s === "bl" ? `${bl?.name ?? "Land"}, Größenklasse` : "bundesweit, Größenklasse";
   const outsideMap = new Map<string, OutsidePeer>();
-  for (const { owner, rows } of outsideByOwner) {
-    for (const t of rows as (TopGemeinde & { scope: string })[]) {
-      if (t.region_id === region.region_id) continue;
-      const row =
-        outsideMap.get(t.region_id) ??
-        {
-          region_id: t.region_id,
-          name: t.name,
-          href: null,
-          population: t.population,
-          scope: t.scope,
-          values: { alle: null, privat: null, gewerbe: null },
-        };
-      row.values[owner] = t.w_per_capita;
-      outsideMap.set(t.region_id, row);
-    }
+  for (const p of peerRows) {
+    if (p.region_id === region.region_id) continue;
+    const row =
+      outsideMap.get(p.region_id) ??
+      {
+        region_id: p.region_id,
+        name: p.name,
+        href: null,
+        population: p.population,
+        scope: scopeLabel(p.scope),
+        values: { alle: null, privat: null, gewerbe: null },
+      };
+    row.values[p.owner] = p.w_per_capita;
+    outsideMap.set(p.region_id, row);
   }
   const outside = Array.from(outsideMap.values());
 

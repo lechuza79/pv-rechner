@@ -862,6 +862,15 @@ async function phaseUpload(): Promise<void> {
   process.stderr.write("\n");
   log(`Aggregates upserted`, "ok");
 
+  // Vorberechneten Region-Rollup (Kreis/Land/Bund) neu aufbauen, sonst zeigen die
+  // Atlas-Seiten bis zum nächsten Setup-Lauf noch die alten Summen. region_series
+  // fällt zwar auf den Live-Scan zurück, aber nur bis der Rollup wieder passt —
+  // hier direkt frischziehen. Die Funktion hebt ihr Statement-Timeout selbst auf.
+  log(`Rebuilding region rollup...`);
+  const { error: rollupErr } = await supabase.rpc("mastr_refresh_region_rollup");
+  if (rollupErr) throw new Error(`mastr_refresh_region_rollup failed: ${rollupErr.message}`);
+  log(`Region rollup rebuilt`, "ok");
+
   const totalUnits = aggregates.reduce((s, a) => s + a.count, 0);
   const { error: metaErr } = await supabase
     .from("mastr_meta")
