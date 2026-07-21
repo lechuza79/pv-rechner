@@ -139,7 +139,7 @@ const SECTIONS: WidgetSection[] = [
       text: "Wie Förderung den Solarausbau geformt hat – Solar Check",
     },
     showFrameWidth: true,
-    variants: [{ id: "pv-zubau-deutschland", label: "PV-Zubau", src: "/embed/pv-zubau-deutschland", height: 680 }],
+    variants: [{ id: "pv-zubau-deutschland", label: "PV-Zubau", src: "/embed/pv-zubau-deutschland", height: 760 }],
   },
   {
     id: "karte",
