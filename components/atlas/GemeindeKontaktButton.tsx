@@ -16,7 +16,7 @@ import Modal from "../Modal";
 import ContactForm from "../ContactForm";
 import ContactPerson from "../ContactPerson";
 import { IconArrowRight } from "../Icons";
-import { v } from "../../lib/theme";
+import { v, space, pad } from "../../lib/theme";
 
 export default function GemeindeKontaktButton({ name }: { name: string }) {
   const [open, setOpen] = useState(false);
@@ -61,7 +61,7 @@ const S: Record<string, React.CSSProperties> = {
   trigger: {
     display: "inline-flex",
     alignItems: "center",
-    gap: 6,
+    gap: space.sm,
     fontFamily: "inherit",
     fontSize: v("--font-size-small"),
     fontWeight: 700,
@@ -69,8 +69,8 @@ const S: Record<string, React.CSSProperties> = {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border-accent")}`,
     borderRadius: v("--radius-md"),
-    padding: "8px 14px",
-    marginTop: 8,
+    padding: pad("md", "lg"),
+    marginTop: space.md,
     cursor: "pointer",
   },
 };

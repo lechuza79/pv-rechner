@@ -157,6 +157,49 @@ export const iconSizes = {
   xl: 20,
 } as const;
 
+/**
+ * Abstands-Skala — Innenabstände, Außenabstände und Lücken.
+ *
+ * Zahlen statt CSS-Variablen, aus demselben Grund wie bei iconSizes: die
+ * Abstände stehen in Inline-Styles (`gap: space.md`), und dort ist eine Zahl
+ * direkt verwendbar, ein `var(...)`-String nur in manchen Eigenschaften.
+ *
+ * Bewusst KURZ. Der Bestand kannte praktisch jede gerade Zahl von 2 bis 32
+ * (10, 14, 18 und 28 kamen hundertfach vor) — das war Drift, keine Absicht. Die
+ * Skala ist 4-basiert, mit 2 und 6 als den beiden Halbschritten, die im Kleinen
+ * wirklich unterscheidbar sind. 10, 14, 18 und 28 fehlen absichtlich: wer sie
+ * braucht, entscheidet sich sichtbar für die Stufe darunter oder darüber.
+ *
+ *   xxs  2   Haaransatz: Symbol an Text schieben
+ *   xs   4   Label zu Wert
+ *   sm   6   dichte Reihen (Symbol + Text, Chips)
+ *   md   8   Standard-Lücke innerhalb einer Komponente
+ *   lg   12  Innenabstand kompakter Kästen, Abstand zwischen Feldern
+ *   xl   16  Kartenpolster, Abstand zwischen Karten
+ *   xxl  24  Blockpolster, Abstand zwischen Blöcken
+ *   xxxl 32  Trennung zweier Abschnitte
+ *   huge 48  Trennung auf Seitenebene
+ */
+export const space = {
+  xxs: 2,
+  xs: 4,
+  sm: 6,
+  md: 8,
+  lg: 12,
+  xl: 16,
+  xxl: 24,
+  xxxl: 32,
+  huge: 48,
+} as const;
+
+/**
+ * Innenabstand aus der Skala: `pad("lg", "xl")` → "12px 16px".
+ * Ein Argument = allseitig gleich.
+ */
+export function pad(y: keyof typeof space, x?: keyof typeof space): string {
+  return x === undefined ? `${space[y]}px` : `${space[y]}px ${space[x]}px`;
+}
+
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
 export const v = (name: TokenName): string => `var(${name})`;
 

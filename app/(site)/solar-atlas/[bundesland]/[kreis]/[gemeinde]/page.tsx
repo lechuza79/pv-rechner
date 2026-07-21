@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../../../components/Icons";
-import { v } from "../../../../../../lib/theme";
+import { v, space, pad } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
 import { atlasIsIndexable, atlasLevelReleased, atlasRobots } from "../../../../../../lib/atlas-index";
@@ -453,39 +453,39 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: "20px 16px",
+    padding: pad("xxl", "xl"),
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: 6 },
+  stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },
   standDate: { fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
-  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" },
-  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" },
+  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xxl}px` },
   metricsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
-    gap: 10,
-    marginBottom: 8,
+    gap: space.md,
+    marginBottom: space.md,
   },
-  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 },
-  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 },
+  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: pad("lg") },
+  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
-  metricSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: 3, lineHeight: 1.4 },
-  tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: "0 2px 22px" },
-  h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
-  sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px" },
-  section: { marginBottom: 50 },
+  metricSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: space.xxs, lineHeight: 1.4 },
+  tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.xxl}px` },
+  h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.xs}px` },
+  sub: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` },
+  section: { marginBottom: space.huge },
   // Erneuerbare-Mix + 24h-Sim nebeneinander; auf Mobil untereinander (flex-wrap).
   // stretch → beide Karten gleich hoch; sbsItem als flex, damit die Karte (height
   // 100 %) die gestreckte Höhe füllt.
-  sideBySide: { display: "flex", flexWrap: "wrap", gap: 16, alignItems: "stretch" },
+  sideBySide: { display: "flex", flexWrap: "wrap", gap: space.xl, alignItems: "stretch" },
   sbsItem: { flex: "1 1 320px", minWidth: 0, display: "flex" },
   cta: {
     display: "inline-flex",
     alignItems: "center",
-    gap: 6,
+    gap: space.sm,
     background: v("--color-accent"),
     color: v("--color-text-on-accent"),
-    padding: "10px 16px",
+    padding: pad("lg", "xl"),
     borderRadius: v("--radius-md"),
     fontSize: 14,
     fontWeight: 600,
@@ -495,7 +495,7 @@ const S: Record<string, React.CSSProperties> = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "12px 14px",
+    padding: pad("lg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-md"),
     fontSize: 14,
@@ -507,8 +507,8 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-muted"),
     lineHeight: 1.6,
     borderTop: `1px solid ${v("--color-border")}`,
-    paddingTop: 12,
-    marginBottom: 32,
+    paddingTop: space.lg,
+    marginBottom: space.xxxl,
   },
   licLink: { color: "inherit", textDecoration: "underline" },
 };

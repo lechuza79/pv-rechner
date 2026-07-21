@@ -1,4 +1,4 @@
-import { v } from "../lib/theme";
+import { v, space } from "../lib/theme";
 
 /**
  * „Hier antwortet ein Mensch" — Porträt plus Zusage, an jeder Kontakt-Stelle
@@ -43,7 +43,7 @@ export default function ContactPerson({
 const AVATAR_PX = 72;
 
 const S: Record<string, React.CSSProperties> = {
-  row: { display: "flex", alignItems: "center", gap: 14 },
+  row: { display: "flex", alignItems: "center", gap: space.lg },
   avatar: {
     width: AVATAR_PX,
     height: AVATAR_PX,

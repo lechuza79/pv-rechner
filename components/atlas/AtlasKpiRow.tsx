@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { v } from "../../lib/theme";
+import { v, space, pad } from "../../lib/theme";
 import { IconChevronDown } from "../Icons";
 import TendTag from "./TendTag";
 
@@ -48,7 +48,7 @@ export default function AtlasKpiRow({
           Kacheln blenden dann um, statt hart zu springen. */}
       <div
         key={tiles.map((t) => t.value).join("|")}
-        style={{ ...S.grid, marginBottom: references.length ? 6 : 28 }}
+        style={{ ...S.grid, marginBottom: references.length ? space.sm : space.xxxl }}
       >
         {tiles.map((t, i) => (
           <div key={i} style={S.metric}>
@@ -125,19 +125,19 @@ const S: Record<string, React.CSSProperties> = {
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
-    gap: 10,
+    gap: space.md,
     animation: "fu 0.28s ease-out",
   },
-  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 },
-  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 },
+  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: pad("lg") },
+  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
-  metricSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: 3, lineHeight: 1.4 },
-  caption: { fontSize: 11, color: v("--color-text-muted"), margin: "0 2px 22px", lineHeight: 1.5 },
+  metricSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: space.xxs, lineHeight: 1.4 },
+  caption: { fontSize: 11, color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.xxl}px`, lineHeight: 1.5 },
   captionStrong: { color: v("--color-text-secondary"), fontWeight: 600 },
   pickerBtn: {
     display: "inline-flex",
     alignItems: "center",
-    gap: 3,
+    gap: space.xxs,
     background: "none",
     border: "none",
     padding: 0,
@@ -150,14 +150,14 @@ const S: Record<string, React.CSSProperties> = {
   },
   dropdown: {
     position: "absolute",
-    top: "calc(100% + 4px)",
+    top: `calc(100% + ${space.xs}px)`,
     left: 0,
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-sm"),
     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
     zIndex: 20,
-    padding: "4px 0",
+    padding: `${space.xs}px 0`,
     minWidth: 150,
     display: "block",
   },
@@ -167,7 +167,7 @@ const S: Record<string, React.CSSProperties> = {
     background: "none",
     border: "none",
     textAlign: "left",
-    padding: "6px 12px",
+    padding: pad("sm", "lg"),
     fontSize: 12,
     fontFamily: "inherit",
     color: v("--color-text-primary"),

@@ -1,4 +1,4 @@
-import { v } from "../../lib/theme";
+import { v, space, pad } from "../../lib/theme";
 import { IconArrowRight } from "../Icons";
 import GemeindeKontaktButton from "./GemeindeKontaktButton";
 
@@ -36,7 +36,7 @@ export default function GemeindeEmbedBox({ name, ags }: { name: string; ags: str
 
       <div style={S.actions}>
         <a href={galleryHref} style={S.cta}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: space.sm }}>
             Widgets ansehen, anpassen &amp; einbetten <IconArrowRight size={16} />
           </span>
         </a>
@@ -58,16 +58,21 @@ const S: Record<string, React.CSSProperties> = {
   card: {
     background: v("--color-bg-muted"),
     borderRadius: v("--radius-lg"),
-    padding: "18px 20px",
+    padding: pad("xl", "xxl"),
   },
-  h2: { fontSize: 16, fontWeight: 700, margin: "0 0 6px" },
-  sub: { fontSize: v("--font-size-small"), color: v("--color-text-secondary"), lineHeight: 1.6, margin: "0 0 12px" },
+  h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.sm}px` },
+  sub: {
+    fontSize: v("--font-size-small"),
+    color: v("--color-text-secondary"),
+    lineHeight: 1.6,
+    margin: `0 0 ${space.lg}px`,
+  },
   // Eigene Fläche statt Trennlinie. --color-bg-accent hebt sich vom
   // --color-bg-muted der Karte ab, und weil beide Tokens im dunklen Token-Satz
   // eigene Werte haben, bleibt der Abstand dort erhalten.
   help: {
-    marginTop: 18,
-    padding: "16px 18px",
+    marginTop: space.xl,
+    padding: pad("xl"),
     background: v("--color-bg-accent"),
     borderRadius: v("--radius-md"),
   },
@@ -75,16 +80,22 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: v("--font-size-body"),
     fontWeight: 700,
     color: v("--color-text-primary"),
-    margin: "0 0 12px",
+    margin: `0 0 ${space.lg}px`,
   },
-  actions: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px", marginTop: 16 },
+  actions: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: `${space.md}px ${space.xl}px`,
+    marginTop: space.xl,
+  },
   cta: {
     display: "inline-block",
     background: v("--color-accent"),
     color: v("--color-text-on-accent"),
     fontSize: 14,
     fontWeight: 700,
-    padding: "10px 16px",
+    padding: pad("lg", "xl"),
     borderRadius: v("--radius-md"),
     textDecoration: "none",
   },

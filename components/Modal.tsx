@@ -24,7 +24,7 @@
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { v } from "../lib/theme";
+import { v, space } from "../lib/theme";
 
 const DURATION_MS = 220;
 // „Bewegung reduzieren" heißt Bewegung, nicht Rückmeldung: das Fenster fährt
@@ -211,7 +211,7 @@ export default function Modal({
         display: "flex",
         justifyContent: "center",
         alignItems: isMobile ? "flex-end" : "center",
-        padding: isMobile ? 0 : 16,
+        padding: isMobile ? 0 : space.xl,
         opacity: shown ? 1 : 0,
         transition: `opacity ${duration}ms ease-out`,
       }}
@@ -231,10 +231,11 @@ export default function Modal({
           maxWidth,
           // dvh statt vh: bei eingeblendeter Tastatur schrumpft die Höhe mit,
           // sonst rutscht der Absenden-Knopf unter die Tastatur.
-          maxHeight: isMobile ? "92dvh" : "calc(100dvh - 32px)",
+          maxHeight: isMobile ? "92dvh" : `calc(100dvh - ${space.xl * 2}px)`,
           overflowY: "auto",
           borderRadius: isMobile ? `${radius} ${radius} 0 0` : radius,
-          padding: "20px 18px 18px",
+          // Oben etwas großzügiger als unten/seitlich — der Titel bekommt Luft.
+          padding: `${space.xxl}px ${space.xl}px ${space.xl}px`,
           boxShadow: "0 -8px 40px rgba(0,0,0,0.3)",
           outline: "none",
           opacity: shown ? 1 : 0,
@@ -257,7 +258,13 @@ export default function Modal({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  head: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 4 },
+  head: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: space.lg,
+    marginBottom: space.xs,
+  },
   h2: { fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.25 },
   close: {
     border: "none",
@@ -269,5 +276,5 @@ const S: Record<string, React.CSSProperties> = {
     padding: 0,
     flexShrink: 0,
   },
-  intro: { fontSize: 12, color: v("--color-text-muted"), marginBottom: 18, lineHeight: 1.5 },
+  intro: { fontSize: 12, color: v("--color-text-muted"), marginBottom: space.xl, lineHeight: 1.5 },
 };
