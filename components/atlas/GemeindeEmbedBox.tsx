@@ -6,7 +6,7 @@ import { IconArrowRight } from "../Icons";
  * Kommunen. Bewusst OHNE rohen Code und OHNE Beispiel-Vorschau: Zielgruppe ist
  * die Rathaus-/Pressestelle, kein Entwickler, und die Widgets stehen direkt
  * darüber auf der Seite schon live. Ein zweites Mal dasselbe zu zeigen erklärt
- * nichts — der Kasten sagt stattdessen, was man mit allen Bausteinen tun kann,
+ * nichts — der Kasten sagt stattdessen, was man mit allen Widgets tun kann,
  * und führt in die Galerie (Anpassung + fertiger Code) oder zum Kontakt.
  *
  * Der SEO-Backlink zur Atlas-Seite entsteht weiterhin, sobald die Kommune ein
@@ -19,9 +19,9 @@ export default function GemeindeEmbedBox({ name, ags }: { name: string; ags: str
     <div style={S.card}>
       <h2 style={S.h2}>Sie arbeiten für die Gemeinde {name}?</h2>
       <p style={S.sub}>
-        Alle Bausteine dieser Seite können Sie auf der Website von {name} einbinden — die
+        Alle Widgets dieser Seite können Sie auf der Website von {name} einbinden — die
         Kennzahlen zum Anlagenbestand, den Erneuerbaren-Mix, die simulierte Solarleistung des
-        heutigen Tages und die Karte. Sie wählen aus, welcher Baustein es sein soll, passen ihn an
+        heutigen Tages und die Karte. Sie wählen aus, welches Widget es sein soll, passen es an
         Ihr Erscheinungsbild an (hell oder dunkel, Größe) und kopieren die fertige Zeile in Ihr
         Redaktionssystem.
       </p>
@@ -34,7 +34,7 @@ export default function GemeindeEmbedBox({ name, ags }: { name: string; ags: str
       <div style={S.actions}>
         <a href={galleryHref} style={S.cta}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            Bausteine ansehen, anpassen &amp; einbetten <IconArrowRight size={16} />
+            Widgets ansehen, anpassen &amp; einbetten <IconArrowRight size={16} />
           </span>
         </a>
         <a href="/kontakt" style={S.contact}>
