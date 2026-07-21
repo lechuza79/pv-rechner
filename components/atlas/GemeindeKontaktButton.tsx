@@ -9,7 +9,8 @@
 // serverseitig gerendert.
 
 import { useState } from "react";
-import ContactModal from "../ContactModal";
+import Modal from "../Modal";
+import ContactForm from "../ContactForm";
 import { v } from "../../lib/theme";
 
 export default function GemeindeKontaktButton({ name }: { name: string }) {
@@ -21,17 +22,20 @@ export default function GemeindeKontaktButton({ name }: { name: string }) {
         Wir richten es Ihnen ein — Kontakt aufnehmen
       </button>
 
-      <ContactModal
+      <Modal
         open={open}
         onClose={() => setOpen(false)}
         title="Widget einrichten lassen"
         intro={`Wir melden uns in der Regel innerhalb von 1–2 Werktagen. Die Angaben zu ${name} sind schon eingetragen — ergänzen Sie einfach, worum es geht.`}
-        // Festes Thema aus der Allowlist: daraus baut der Server den
-        // Mail-Betreff. Der Gemeindename steht im Nachrichtentext, nie im
-        // Betreff — Freitext gehört nicht in einen Mail-Header.
-        initialTopic="Widget für eine Kommune"
-        initialMessage={`Wir möchten die Solar-Zahlen für ${name} auf unserer Website einbinden.\n\n`}
-      />
+      >
+        <ContactForm
+          // Festes Thema aus der Allowlist: daraus baut der Server den
+          // Mail-Betreff. Der Gemeindename steht im Nachrichtentext, nie im
+          // Betreff — Freitext gehört nicht in einen Mail-Header.
+          initialTopic="Widget für eine Kommune"
+          initialMessage={`Wir möchten die Solar-Zahlen für ${name} auf unserer Website einbinden.\n\n`}
+        />
+      </Modal>
     </>
   );
 }
