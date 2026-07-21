@@ -37,6 +37,13 @@ export default function EventTimeline({ events, active, onChange, startYear, end
   const domainEnd = endYear + 0.5;
   const pos = (year: number) => ((year - domainStart) / (domainEnd - domainStart)) * 100;
 
+  // Pale blue = wie der ausgegraute 2026-Balken (Akzent Richtung Hintergrund
+  // gemischt). Für geplante Ausblicks-Marken + die Linie zu ihnen.
+  const PALE = "color-mix(in srgb, var(--color-accent) 32%, var(--color-bg))";
+  const plannedIdx = events.findIndex((e) => e.planned);
+  const lastRealIdx = plannedIdx === -1 ? events.length - 1 : Math.max(0, plannedIdx - 1);
+  const progressIdx = Math.min(active, lastRealIdx);
+
   const go = (dir: number) => {
     const n = active + dir;
     if (n >= 0 && n < events.length) onChange(n);
@@ -67,21 +74,36 @@ export default function EventTimeline({ events, active, onChange, startYear, end
          Die Verbindungslinie beginnt am ersten Punkt (nicht am linken Rand). */}
       <div style={{ position: "relative", paddingLeft: PLOT_MARGIN.left, paddingRight: PLOT_MARGIN.right }}>
         <div role="tablist" aria-label="Politische Weichenstellungen" style={{ position: "relative", height: 30 }}>
+          {/* Graue Grundlinie bis zum letzten echten Ereignis */}
           <div
             style={{
               position: "absolute",
               left: `${pos(events[0].year)}%`,
-              width: `${pos(events[events.length - 1].year) - pos(events[0].year)}%`,
+              width: `${pos(events[lastRealIdx].year) - pos(events[0].year)}%`,
               top: 14,
               height: 2,
               background: v("--color-border"),
             }}
           />
+          {/* Pale-blaue Linie zum geplanten Ausblick (wie der 2026-Balken) */}
+          {plannedIdx !== -1 && (
+            <div
+              style={{
+                position: "absolute",
+                left: `${pos(events[lastRealIdx].year)}%`,
+                width: `${pos(events[events.length - 1].year) - pos(events[lastRealIdx].year)}%`,
+                top: 14,
+                height: 2,
+                background: PALE,
+              }}
+            />
+          )}
+          {/* Akzent-Fortschritt bis zum aktiven Ereignis (gedeckelt am letzten echten) */}
           <div
             style={{
               position: "absolute",
               left: `${pos(events[0].year)}%`,
-              width: `${pos(events[active].year) - pos(events[0].year)}%`,
+              width: `${pos(events[progressIdx].year) - pos(events[0].year)}%`,
               top: 14,
               height: 2,
               background: v("--color-accent"),
@@ -111,10 +133,10 @@ export default function EventTimeline({ events, active, onChange, startYear, end
                   padding: 0,
                   boxSizing: "border-box",
                   borderRadius: "50%",
-                  border: isPlanned ? `2px dashed ${v("--color-accent")}` : `2px solid ${v("--color-bg")}`,
+                  border: `2px solid ${v("--color-bg")}`,
                   cursor: "pointer",
-                  background: isPlanned ? v("--color-bg") : v("--color-accent"),
-                  color: isPlanned ? v("--color-accent") : v("--color-bg"),
+                  background: isPlanned ? PALE : v("--color-accent"),
+                  color: v("--color-bg"),
                   fontSize: 12,
                   fontWeight: 700,
                   fontFamily: v("--font-text"),
