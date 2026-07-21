@@ -56,7 +56,7 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
   {
     year: 2022,
     label: "Energiekrise",
-    text: "Nach dem russischen Angriff auf die Ukraine explodieren Gas- und Strompreise. Damit wird jede selbst genutzte Kilowattstunde deutlich wertvoller — der Preisschock ist die Ursache des folgenden Zubau-Sprungs, nicht seine Folge. Im selben Jahr wird die Einspeisevergütung erstmals seit Langem wieder angehoben (Osterpaket/EEG 2023, höhere Sätze ab Ende Juli 2022).",
+    text: "Nach dem russischen Angriff auf die Ukraine explodieren Gas- und Strompreise. Damit wird jede selbst genutzte Kilowattstunde deutlich wertvoller — der Preisschock ist die Ursache des folgenden Zubau-Sprungs, nicht seine Folge. Im selben Jahr wird die Einspeisevergütung erstmals seit Langem wieder angehoben (Osterpaket/EEG 2023) — die höheren Sätze gelten für Anlagen, die ab Ende Juli 2022 in Betrieb gehen.",
     government: "Ampel-Koalition (SPD/Grüne/FDP), Kanzler Scholz — die Vergütungsanhebung kam mit dem „Osterpaket“ aus dem Wirtschafts- und Klimaministerium (Robert Habeck, Grüne). Der Preisschock selbst war keine politische Entscheidung.",
     major: true,
   },
