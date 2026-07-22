@@ -409,7 +409,7 @@ export const globalStyles = `
      element's own transition for its duration: without it, anything fading in
      during a switch (e.g. the switch's own tooltip) would jump instead. */
   html.theme-anim,html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{
-    transition:background-color .5s ease,border-color .5s ease,color .5s ease,fill .5s ease,stroke .5s ease,box-shadow .5s ease,background .5s ease,opacity .25s ease !important;
+    transition:background-color .8s ease,border-color .8s ease,color .8s ease,fill .8s ease,stroke .8s ease,box-shadow .8s ease,background .8s ease,opacity .25s ease !important;
   }
   @media (prefers-reduced-motion:reduce){html.theme-anim,html.theme-anim *{transition:none !important}}
   input[type=number]::-webkit-inner-spin-button,
