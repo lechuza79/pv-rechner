@@ -107,9 +107,13 @@ const S: Record<string, React.CSSProperties> = {
   // Nebeneinander auf Desktop, gestapelt auf Mobil — über flex-wrap statt Media
   // Query (Inline-Styles). Bei 720px Breite passen drei ~200er-Karten in eine Reihe.
   cards: { display: "flex", flexWrap: "wrap", gap: 10 },
+  // Flex-Spalte, damit der CTA per margin-top:auto unten andockt. Die Karten sind
+  // durch align-items:stretch (Zeile "cards") ohnehin gleich hoch — so stehen die
+  // CTAs aller drei Karten auf einer Linie, egal wie lang der Text darüber ist.
   exCard: {
     flex: "1 1 190px",
-    display: "block",
+    display: "flex",
+    flexDirection: "column",
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-lg"),
@@ -139,6 +143,8 @@ const S: Record<string, React.CSSProperties> = {
     display: "inline-flex",
     alignItems: "center",
     gap: 6,
+    marginTop: "auto",
+    alignSelf: "flex-start",
     fontSize: 13,
     fontWeight: 600,
     color: v("--color-accent"),

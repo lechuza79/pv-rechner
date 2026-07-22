@@ -53,12 +53,24 @@ export type MastrHeroSectionProps = {
   initialTraeger?: Energietraeger;
   /** Called whenever the selected region changes (for URL sync, analytics, etc.) */
   onRegionChange?: (regionAgs: string | undefined) => void;
+  /**
+   * Sichtbaren Quell-Credit zeigen. Default true. Auf `false` NUR dort, wo eine
+   * umgebende Seite die Quelle bereits im Fuß trägt (einmal pro Seite reicht,
+   * dl-de/by-2-0). Der Credit bleibt trotzdem sichtbar, sobald das Widget
+   * eingebettet ist (Standalone-Kontext) — dann ersetzt kein Seitenfuß ihn.
+   */
+  showSource?: boolean;
 };
 
 const CHOROPLETH_DEFAULT: ChoroplethResp = { source: "", data_as_of: "", data: [] };
 const SUMMARY_DEFAULT: RegionSummary | null = null;
 
-export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onRegionChange }: MastrHeroSectionProps) {
+export function MastrHeroSection({
+  initialRegion,
+  initialTraeger = "gesamt",
+  onRegionChange,
+  showSource = true,
+}: MastrHeroSectionProps) {
   const [energietraeger, setEnergietraeger] = useState<Energietraeger>(initialTraeger);
   const [segment, setSegment] = useState<SegmentFilter>("alle");
   const [selectedAgs, setSelectedAgs] = useState<string | undefined>(
@@ -264,24 +276,31 @@ export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onR
           )}
         </aside>
       </div>
-      <div
-        style={{
-          fontSize: 10,
-          color: v("--color-text-faint"),
-          marginTop: 10,
-          textAlign: "right",
-        }}
-      >
-        <DataSourceNote
-          source={[
-            DATA_SOURCES.bkg,
-            DATA_SOURCES.mastr,
-            ...(!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle"
-              ? [DATA_SOURCES.energyCharts]
-              : []),
-          ]}
-        />
-      </div>
+      {/* Quell-Credit: sichtbar, AUSSER eine umgebende Seite trägt ihn schon
+          (showSource=false) UND wir sind nicht im Embed. Im Embed steht kein
+          Seitenfuß dahinter, deshalb zeigt das Widget die Quelle dort immer —
+          das ist der nachhaltige Teil (dl-de/by-2-0 verlangt Namensnennung pro
+          verteiltem Werk). */}
+      {(showSource || isEmbed) && (
+        <div
+          style={{
+            fontSize: 10,
+            color: v("--color-text-faint"),
+            marginTop: 10,
+            textAlign: "right",
+          }}
+        >
+          <DataSourceNote
+            source={[
+              DATA_SOURCES.bkg,
+              DATA_SOURCES.mastr,
+              ...(!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle"
+                ? [DATA_SOURCES.energyCharts]
+                : []),
+            ]}
+          />
+        </div>
+      )}
     </section>
   );
 }

@@ -380,10 +380,17 @@ export default async function GemeindePage({ params }: { params: Params }) {
             (echte MaStR-Leistung) + standortgenaue 24h-Simulation. Beide auf gleicher
             Höhe (Reihe streckt); das Radial nur wenn Koordinaten vorliegen, sonst
             füllt der Mix die Reihe allein. */}
-        {/* Keine eigene Section-Überschrift: die beiden Widgets tragen ihre Titel
-            selbst ("Erneuerbare Leistung …" / "Solarleistung heute …") — eine
-            Dach-Überschrift wäre nur eine dritte, redundante Formulierung. */}
+        {/* Section-Überschrift bewusst aus einem ANDEREN Blickwinkel als die
+            Widget-Titel ("Erneuerbare Leistung …" / "Solarleistung heute …"):
+            fragende H2 mit lokalem Keyword + Technologie-Nennung (SEO), keine
+            Wortwiederholung. */}
         <div style={S.section}>
+          <h2 style={S.h2}>Wie grün ist der Strom in {region.name}?</h2>
+          <p style={S.sub}>
+            Nicht nur Photovoltaik: auch Wasserkraft und Biomasse speisen ein. So verteilt sich
+            die installierte Leistung nach Technologie — und so viel liefern die Solaranlagen bei
+            aktuellem Wetter.
+          </p>
           <div style={S.sideBySide}>
             <div style={S.sbsItem}>
               <GemeindeErneuerbareWidget
@@ -419,7 +426,9 @@ export default async function GemeindePage({ params }: { params: Params }) {
             <p style={S.sub}>
               {kreis?.name ?? "Der Landkreis"} mit allen Gemeinden — tippen Sie auf ein Gebiet für die Details.
             </p>
-            <MastrHeroSection initialRegion={region.parent_region_id} initialTraeger="solar" />
+            {/* showSource=false: der Quellen-Fuß der Seite trägt BKG + MaStR schon.
+                Im Embed zeigt die Karte ihre Quelle weiterhin selbst. */}
+            <MastrHeroSection initialRegion={region.parent_region_id} initialTraeger="solar" showSource={false} />
           </div>
         )}
 
@@ -462,6 +471,13 @@ export default async function GemeindePage({ params }: { params: Params }) {
           (Daten aggregiert). Einwohnerzahlen und Gebietsstand: Statistisches Bundesamt,
           Gemeindeverzeichnis{region.population_as_of ? `, Stand ${standLabel(region.population_as_of)}` : ""},
           Datenlizenz dl-de/by-2-0.{" "}
+          {region.parent_region_id && (
+            // Kartengeometrien: die Karte selbst zeigt ihren Credit auf dieser Seite
+            // nicht mehr (showSource=false), daher steht die BKG-Attribution hier.
+            <>
+              Kartengeometrien: GeoBasis-DE / BKG, Datenlizenz dl-de/by-2-0 (vereinfacht).{" "}
+            </>
+          )}
           {geoLat !== null && geoLon !== null && (
             <>
               Die simulierte Solarleistung nutzt Wetterdaten von{" "}
