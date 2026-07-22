@@ -55,11 +55,15 @@ export default function KennzahlWidget({
   const totalCount = summary ? summary.total_count : null;
   const avgKwp = summary && summary.total_count > 0 ? summary.total_kwp / summary.total_count : null;
 
+  // Photovoltaik traegt Peak-Leistung (kWp/MWp), Wind und Biomasse nicht — die
+  // Einheit folgt dem gewaehlten Energietraeger, sonst behauptet das Widget Peak
+  // fuer ein Windrad.
+  const peak = traeger === "solar" ? "p" : "";
   const isLeistung = metric === "leistung";
   const label = isLeistung ? "Deutschland" : "Anlagen";
   const value = isLeistung
     ? totalMw !== null
-      ? `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW`
+      ? `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW${peak}`
       : <LoadingDots />
     : totalCount !== null
       ? totalCount.toLocaleString("de-DE")
@@ -67,8 +71,8 @@ export default function KennzahlWidget({
   const hint = isLeistung
     ? `installiert · ${traegerLabel}`
     : avgKwp !== null
-      ? `⌀ ${avgKwp.toFixed(0)} kWp`
-      : "⌀ — kWp";
+      ? `⌀ ${avgKwp.toFixed(0)} kW${peak}`
+      : `⌀ — kW${peak}`;
   const shareText = isLeistung
     ? `Installierte ${traegerLabel}-Leistung in Deutschland – Solar Check`
     : `Anzahl ${traegerLabel}-Anlagen in Deutschland – Solar Check`;

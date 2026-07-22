@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { v } from "../../lib/theme";
+import { fmtPvLeistung, fmtErtragProKwp } from "../../lib/atlas-format";
+import { v, space } from "../../lib/theme";
 import { IconArrowRight, IconTrendUp, IconTrendDown } from "../Icons";
 import { writeLocation } from "../../lib/location";
 import type { GemeindePotential } from "../../lib/gemeinde-potential";
@@ -13,7 +14,6 @@ import type { GemeindePotential } from "../../lib/gemeinde-potential";
 // die Seite serverseitig (computeGemeindePotential).
 
 const nfEuro = (n: number) => `${Math.round(n).toLocaleString("de-DE")} €`;
-const nfInt = (n: number) => Math.round(n).toLocaleString("de-DE");
 
 /** Auf 100 € gerundet — die Beispiele sind Größenordnungen, keine Zusagen. */
 const round100 = (n: number) => Math.round(n / 100) * 100;
@@ -56,7 +56,7 @@ export default function GemeindePotential({
               verschenkt ein typisches Einfamilienhaus hier in 5 Jahren ohne eigene Anlage
             </div>
             <div style={S.exSub}>
-              {p.pvKwp} kWp · Ersparnis + Einspeisung · {nfInt(p.yieldKwhKwp)} kWh/kWp am Standort
+              {fmtPvLeistung(p.pvKwp)} · Ersparnis + Einspeisung · {fmtErtragProKwp(p.yieldKwhKwp)} am Standort
             </div>
             <span style={S.exCta}>
               Selbst durchrechnen <IconArrowRight size={14} />
@@ -101,14 +101,19 @@ export default function GemeindePotential({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  section: { marginBottom: 28 },
+  // Einheitlicher Section-Abstand (space.huge) wie die übrigen Blöcke der Seite.
+  section: { marginBottom: space.huge },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
   // Nebeneinander auf Desktop, gestapelt auf Mobil — über flex-wrap statt Media
   // Query (Inline-Styles). Bei 720px Breite passen drei ~200er-Karten in eine Reihe.
   cards: { display: "flex", flexWrap: "wrap", gap: 10 },
+  // Flex-Spalte, damit der CTA per margin-top:auto unten andockt. Die Karten sind
+  // durch align-items:stretch (Zeile "cards") ohnehin gleich hoch — so stehen die
+  // CTAs aller drei Karten auf einer Linie, egal wie lang der Text darüber ist.
   exCard: {
     flex: "1 1 190px",
-    display: "block",
+    display: "flex",
+    flexDirection: "column",
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-lg"),
@@ -138,6 +143,8 @@ const S: Record<string, React.CSSProperties> = {
     display: "inline-flex",
     alignItems: "center",
     gap: 6,
+    marginTop: "auto",
+    alignSelf: "flex-start",
     fontSize: 13,
     fontWeight: 600,
     color: v("--color-accent"),

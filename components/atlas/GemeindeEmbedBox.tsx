@@ -60,7 +60,7 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: v("--radius-lg"),
     padding: pad("xl", "xxl"),
   },
-  h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.sm}px` },
+  h2: { fontSize: v("--font-size-lead"), fontWeight: 700, margin: `0 0 ${space.sm}px` },
   sub: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
@@ -97,7 +97,7 @@ const S: Record<string, React.CSSProperties> = {
     display: "inline-block",
     background: v("--color-accent"),
     color: v("--color-text-on-accent"),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
     padding: pad("lg", "xl"),
     borderRadius: v("--radius-md"),

@@ -21,6 +21,7 @@ import {
   currentYear,
   type AtlasRegion,
 } from "../../../../lib/atlas";
+import { fmtPvLeistung as fmtLeistung, pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 
 export const revalidate = 3600;
@@ -29,12 +30,6 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
-
-function fmtLeistung(kwp: number): string {
-  if (kwp >= 1_000_000) return `${(kwp / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`;
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(kwp)} kW`;
-}
 
 function standLabel(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
@@ -159,8 +154,12 @@ export default async function AtlasPage({ params }: { params: Params }) {
     .map((r) => ({ key: r.key, name: r.name, perCap: perCapOf(r.atlas, r.pop) }));
   const kpiTiles = [
     { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
-    { label: "Installiert", value: fmtLeistung(atlas.solar.total_kwp), metric: "kwp" },
-    { label: "je Einwohner", value: wPerCapita === null ? "—" : `${nf(wPerCapita)} W`, metric: "kwp" },
+    { label: "Installiert", ...pvLeistungTeile(atlas.solar.total_kwp), metric: "kwp" },
+    {
+      label: "je Einwohner",
+      ...(wPerCapita === null ? { value: "—" } : wattProKopfTeile(wPerCapita)),
+      metric: "kwp",
+    },
     { label: `Neu ${lastYear}`, value: nf(lastYearRow?.count ?? 0), metric: "neuLast" },
     { label: `Neu ${thisYear} bisher`, value: nf(thisYearRow?.count ?? 0), metric: "neuThis" },
   ];
@@ -184,7 +183,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
     variables: [
       { name: "Solaranlagen in Betrieb", value: atlas.solar.total_count },
       { name: "Installierte Leistung", value: Math.round(atlas.solar.total_kwp), unitText: "kWp" },
-      ...(wPerCapita !== null ? [{ name: "Solarleistung je Einwohner", value: wPerCapita, unitText: "W" }] : []),
+      ...(wPerCapita !== null ? [{ name: "Solarleistung je Einwohner", value: wPerCapita, unitText: "Wp" }] : []),
     ],
     baseUrl: BASE_URL,
   });
@@ -212,12 +211,12 @@ export default async function AtlasPage({ params }: { params: Params }) {
           <strong style={S.strong}>{fmtLeistung(atlas.solar.total_kwp)}</strong> installierter Leistung
           sind {ortPhrase(region)} in Betrieb, verteilt auf {nf(children.length)} {childNoun}.
           {wPerCapita !== null && (
-            <> Das sind {nf(wPerCapita)} Watt Photovoltaik-Leistung je Einwohner.</>
+            <> Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.</>
           )}
         </p>
 
         <AtlasKpiRow
-          tiles={kpiTiles}
+          groups={[{ tiles: kpiTiles }]}
           regionPerCap={regionPerCap}
           references={kpiRefs}
           defaultRefKey={defaultRefKey}

@@ -6,6 +6,7 @@ import { v } from "../../lib/theme";
 import { IconArrowUp, IconArrowDown, IconChevronDown, IconArrowRight } from "../Icons";
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
 import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
+import { fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "../../lib/atlas-format";
 
 type Owner = "alle" | "privat" | "gewerbe";
 type Metric = "count" | "kwp" | "perCapita" | "speicher";
@@ -35,7 +36,7 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
   {
     key: "kwp",
     label: "Leistung",
-    hint: "Installierte Spitzenleistung aller Solaranlagen zusammen. Ein Einfamilienhaus liegt typisch bei 10 kW, ein Freiflächen-Park bei mehreren Tausend.",
+    hint: "Installierte Spitzenleistung aller Solaranlagen zusammen. Ein Einfamilienhaus liegt typisch bei 10 kWp, ein Freiflächen-Park bei mehreren Tausend.",
   },
   {
     key: "perCapita",
@@ -44,7 +45,7 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
   },
   {
     key: "speicher",
-    label: "Speicher",
+    label: "Batteriespeicher",
     hint: "Nutzbare Kapazität der Batteriespeicher, nicht ihre Leistung. Eine Hausbatterie hält typisch 5 bis 15 kWh. Pumpspeicherwerke sind nicht enthalten.",
   },
 ];
@@ -67,22 +68,14 @@ function setUrlPlz(plz: string | null): void {
   window.history.replaceState(null, "", url.toString());
 }
 
-function fmtLeistung(kwp: number): string {
-  if (kwp >= 1_000_000) return `${(kwp / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`;
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(kwp)} kW`;
-}
 
-function fmtSpeicher(kwh: number): string {
-  if (kwh >= 1_000_000) return `${(kwh / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GWh`;
-  if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
-  return `${nf(kwh)} kWh`;
-}
+const fmtLeistung = fmtPvLeistung;
+const fmtSpeicher = fmtSpeicherKwh;
 
 function fmtCell(row: Row, m: Metric): string {
   if (m === "kwp") return fmtLeistung(row.kwp);
   if (m === "speicher") return fmtSpeicher(row.speicher);
-  if (m === "perCapita") return row.perCapita === null ? "—" : `${nf(row.perCapita)} W`;
+  if (m === "perCapita") return row.perCapita === null ? "—" : fmtWattProKopf(row.perCapita);
   return nf(row[m] as number);
 }
 

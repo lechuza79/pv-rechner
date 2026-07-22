@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { atlasOwnerSlice, ownerKeeps, ownerKeepsSpeicher } from "../atlas";
+import { atlasOwnerSlice, ownerKeeps, ownerKeepsSpeicher, speicherHinweis } from "../atlas";
 
 // A small stand-in stock: private roofs + Steckersolar on one side, commercial
 // roofs + open field on the other, plus a pumped-storage plant that belongs to
@@ -100,6 +100,23 @@ describe("Eigentümer-Filter vs. Speicher-Bauform", () => {
     expect(atlasOwnerSlice(atlas, "alle", 2025).speicherKwh).toBe(1_400);
   });
 
+  it("zählt in batterieCount nur Batterien — die Größe unter der Kachel", () => {
+    // Der Bruch, um den es geht: 66 Speicher stehen im Ort, aber nur 64 davon
+    // stecken in der kWh-Zahl. Die Kachel zeigt deshalb 64.
+    const alle = atlasOwnerSlice(atlas, "alle", 2025);
+    expect(alle.batterieCount).toBe(64);
+    expect(alle.speicherCount).toBe(67);
+    // Und je Eigentümer ist beides identisch, weil dort ohnehin nur Batterien sind.
+    for (const owner of ["privat", "gewerbe"] as const) {
+      const s = atlasOwnerSlice(atlas, owner, 2025);
+      expect(s.batterieCount).toBe(s.speicherCount);
+    }
+    // Anders als speicherCount addiert sich batterieCount sauber auf.
+    expect(alle.batterieCount).toBe(
+      atlasOwnerSlice(atlas, "privat", 2025).batterieCount + atlasOwnerSlice(atlas, "gewerbe", 2025).batterieCount,
+    );
+  });
+
   it("hält die Speicher-Regel von der Solar-Regel getrennt", () => {
     // Solar: Pumpspeicher gibt es dort nicht, „alle" heißt „hat einen Eigentümer".
     expect(ownerKeeps("alle", "pumpspeicher")).toBe(false);
@@ -111,5 +128,64 @@ describe("Eigentümer-Filter vs. Speicher-Bauform", () => {
     expect(ownerKeepsSpeicher("gewerbe", "pumpspeicher")).toBe(false);
     expect(ownerKeepsSpeicher("privat", "batterie_privat")).toBe(true);
     expect(ownerKeepsSpeicher("gewerbe", "batterie_gewerbe")).toBe(true);
+  });
+});
+
+/**
+ * Was die Kachel auslässt, muss sichtbar dastehen — sonst ist „nur Batterien"
+ * eine Entscheidung, die nur im Code steht. In Goldisthal (336 Einwohner, keine
+ * einzige Hausbatterie, aber eines der größten Pumpspeicherwerke Europas) wäre
+ * die Seite ohne diese Zeile schlicht falsch.
+ */
+describe("Hinweis unter der Speicher-Kachel", () => {
+  it("nennt Pumpspeicher mit echter Zahl und Begründung", () => {
+    const alle = atlasOwnerSlice(atlas, "alle", 2025);
+    const text = speicherHinweis(alle.nichtBatterie);
+    expect(text).not.toBeNull();
+    expect(text).toContain("Pumpspeicherwerk");
+    expect(text).toContain("634 MWh");
+    expect(text).toContain("Kraftwerksmaßstab");
+    expect(text).toContain("Dazu kommt ein Pumpspeicherwerk");
+  });
+
+  it("bleibt im Plural grammatikalisch heil", () => {
+    // Goldisthal führt vier Blöcke — „Dazu kommt 4 Pumpspeicherwerke" wäre kaputt.
+    const text = speicherHinweis({
+      pumpspeicherCount: 4,
+      pumpspeicherKwh: 9_470_000,
+      sonstigeCount: 0,
+      sonstigeKwh: 0,
+    });
+    expect(text).toContain("Dazu kommen 4 Pumpspeicherwerke");
+    expect(text).toContain("stehen sie nicht in der Kachel");
+    expect(text).toContain("9,5 GWh");
+  });
+
+  it("erwähnt Speicher anderer Bauart getrennt, ohne sie Kraftwerk zu nennen", () => {
+    const text = speicherHinweis({
+      pumpspeicherCount: 0,
+      pumpspeicherKwh: 0,
+      sonstigeCount: 2,
+      sonstigeKwh: 0,
+    });
+    expect(text).toContain("anderer Bauart");
+    expect(text).not.toContain("Pumpspeicher");
+    expect(text).toContain("ohne dass eine Kapazität hinterlegt ist");
+  });
+
+  it("schweigt in der normalen Gemeinde ohne Großspeicher", () => {
+    const nurBatterien = {
+      solar: atlas.solar,
+      speicher: { by_segment: [{ segment: "batterie_privat", count: 60, kwh: 500 }] },
+    };
+    expect(speicherHinweis(atlasOwnerSlice(nurBatterien, "alle", 2025).nichtBatterie)).toBeNull();
+  });
+
+  it("erscheint nicht, sobald ein Eigentümer gewählt ist", () => {
+    // Ein Pumpspeicherwerk ist weder privat noch gewerblich — unter „Privat"
+    // wäre der Hinweis eine Aussage über etwas, das gar nicht im Schnitt liegt.
+    for (const owner of ["privat", "gewerbe"] as const) {
+      expect(speicherHinweis(atlasOwnerSlice(atlas, owner, 2025).nichtBatterie)).toBeNull();
+    }
   });
 });

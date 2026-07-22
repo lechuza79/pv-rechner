@@ -40,16 +40,16 @@ export default function Breadcrumb({ items, jsonLd = false }: { items: Crumb[]; 
           }}
         />
       )}
-      <nav style={S.nav} aria-label="Brotkrümel">
+      <nav className="crumb-nav" style={S.nav} aria-label="Brotkrümel">
         {crumbs.map((item, i) => (
-          <span key={`${item.label}-${i}`} style={S.item}>
+          <span key={`${item.label}-${i}`} className="crumb-item" style={S.item}>
             {i > 0 && <span aria-hidden style={S.sep} />}
             {item.href ? (
-              <Link href={item.href} style={S.link}>
+              <Link href={item.href} className="crumb-label" style={S.link}>
                 {item.label}
               </Link>
             ) : (
-              <span style={S.current} aria-current="page">
+              <span className="crumb-label" style={S.current} aria-current="page">
                 {item.label}
               </span>
             )}
@@ -65,7 +65,6 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: v("--font-size-small"),
     display: "flex",
     alignItems: "center",
-    flexWrap: "wrap",
     gap: 8,
     paddingBottom: 12,
     marginBottom: 30,

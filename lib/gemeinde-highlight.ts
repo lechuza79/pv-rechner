@@ -4,6 +4,8 @@
 // (Anlagen-Mix, Speicher, Pro-Kopf, Rang im Landkreis, Zubau-Trend), aktualisiert
 // sich mit dem Monatslauf von selbst. SEO über Ort + Solar/Photovoltaik + Vergleich.
 
+import { fmtPvLeistung, fmtWattProKopf } from "./atlas-format";
+
 type SegRow = { segment: string; count: number; kwp: number };
 type MiniAtlas = {
   solar: { total_count: number; total_kwp: number; by_segment: SegRow[] };
@@ -11,8 +13,7 @@ type MiniAtlas = {
 };
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
-const fmtMW = (kwp: number) =>
-  kwp >= 1000 ? `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW` : `${nf(kwp)} kW`;
+const fmtMW = fmtPvLeistung;
 const pct = (f: number) => Math.round(Math.abs(f) * 100);
 
 function shareKwp(a: MiniAtlas, seg: string): number {
@@ -70,11 +71,17 @@ function zubauSentence(byYear: { year: number; count: number }[], lastYear: numb
   const last = byYear.find((y) => y.year === lastYear)?.count ?? 0;
   const prev = byYear.find((y) => y.year === lastYear - 1)?.count ?? 0;
   if (last <= 0) return null;
+  // Kleine Gemeinden bauen einzelne Anlagen zu — "1 neue Anlagen" stand real auf
+  // der Seite, solange der Satz nur die Mehrzahl kannte.
+  const eins = last === 1;
+  const anlagen = (wort: string) => `${nf(last)} ${eins ? `neue ${wort}` : `neue ${wort}n`}`;
   if (prev >= 3 && last > prev * 1.2)
-    return `Der Zubau zieht an: ${nf(last)} neue Solaranlagen ${lastYear} nach ${nf(prev)} im Vorjahr.`;
+    return `Der Zubau zieht an: ${anlagen("Solaranlage")} ${lastYear} nach ${nf(prev)} im Vorjahr.`;
   if (prev >= 3 && last < prev * 0.8)
-    return `Der Zubau hat nachgelassen: ${nf(last)} neue Anlagen ${lastYear} nach ${nf(prev)} im Vorjahr.`;
-  return `Zuletzt kamen ${nf(last)} Solaranlagen dazu (${lastYear}).`;
+    return `Der Zubau hat nachgelassen: ${anlagen("Anlage")} ${lastYear} nach ${nf(prev)} im Vorjahr.`;
+  return eins
+    ? `Zuletzt kam eine Solaranlage dazu (${lastYear}).`
+    : `Zuletzt kamen ${nf(last)} Solaranlagen dazu (${lastYear}).`;
 }
 
 export function buildGemeindeHighlight(opts: {
@@ -105,8 +112,8 @@ export function buildGemeindeHighlight(opts: {
   if (perCapita !== null && perCapitaVsBl !== null) {
     perCap =
       perCapitaVsBl >= 0
-        ? `Je Einwohner sind das ${nf(perCapita)} W Photovoltaik — ${pct(perCapitaVsBl)} % über dem ${blName}-Schnitt.`
-        : `Je Einwohner sind das ${nf(perCapita)} W — ${pct(perCapitaVsBl)} % unter dem ${blName}-Schnitt, hier ist also noch viel Luft nach oben.`;
+        ? `Je Einwohner sind das ${fmtWattProKopf(perCapita)} Photovoltaik — ${pct(perCapitaVsBl)} % über dem ${blName}-Schnitt.`
+        : `Je Einwohner sind das ${fmtWattProKopf(perCapita)} — ${pct(perCapitaVsBl)} % unter dem ${blName}-Schnitt, hier ist also noch viel Luft nach oben.`;
   }
 
   return [base, character, rank, zubau, perCap].filter(Boolean).join(" ");

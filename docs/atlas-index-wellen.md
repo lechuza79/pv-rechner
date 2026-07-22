@@ -81,10 +81,63 @@ adressiert — offen ist im Kern nur die Freischalt-Mechanik + die Schwelle.
 
 ---
 
-## Offen: Wie zeigen wir Speicher ehrlich? (2026-07-21, vertagt)
+## Entschieden: Wie zeigen wir Speicher ehrlich? (2026-07-21)
 
-**Nicht gelöst, bewusst vertagt.** Die Speicher-Kachel der Gemeinde-Seite hat zwei
-Fragen offen, die zusammen evaluiert werden sollten:
+**Gelöst.** Die Kachel misst Hausspeicher, Großspeicher ist eine eigene Aussage:
+
+- Die Kachel „Batteriespeicher" zeigt die Batteriekapazität, und die Unterzeile
+  zählt **Batterien statt aller Speicher** — Zahl und Unterzeile meinen damit
+  überall dasselbe. Das betrifft nicht nur Pumpspeicher-Orte, sondern **432 von
+  11.247 Gemeinden** (siehe Messung unten).
+- Wo ein Nicht-Batterie-Speicher steht, kommt darunter eine **eigene sichtbare
+  Zeile mit der echten Zahl und der Begründung** („Kraftwerksmaßstab, deshalb
+  steht es nicht in der Kachel oben"). Nichts wird unterschlagen, die Regel steht
+  an der Kachel statt nur im Code.
+- Die Zeile erscheint **nur unter „Alle"** — ein Pumpspeicherwerk ist weder privat
+  noch gewerblich. Der Eigentümer-Filter bleibt damit sauber auf seiner Achse.
+- Ranglisten und Widget heißen ebenfalls „Batteriespeicher"; die Regel steht auf
+  `/datenstand`. Pure Funktion + Tests: `speicherHinweis` in `lib/atlas.ts`,
+  `lib/__tests__/atlas-owner-slice.test.ts`.
+
+**Verworfen wurde bewusst:** Pumpspeicher in die Kapazität mitzuzählen (Herdecke
+läge dann bei 648 MWh und die 512 Hausbatterien wären unsichtbar; jeder
+Gemeindevergleich würde nur noch messen, ob zufällig ein Kraftwerk dasteht) —
+und „bei privat nur Batterien, bei gewerbe beides" (lässt den Eigentümer-Filter
+doch wieder die Bauform verschieben).
+
+### Datenlage (gemessen 2026-07-21, eine aggregierte Abfrage)
+
+- 11.247 Gemeinden gesamt.
+- **27** mit Pumpspeicher (0,2 %), 78 Blöcke, zusammen ~147 GWh.
+- **405** mit „sonstige" Nicht-Batterie-Speichern (3,6 %), meist winzig
+  (Median ~10 kWh) — also gerade **kein** Kraftwerksfall, entsprechend anders
+  formuliert.
+- Zusammen **432 Gemeinden (3,8 %)**, in denen Anzahl und Kapazität vorher
+  auseinanderliefen.
+- Größenverhältnis Herdecke: 512 Batterien = 14,2 MWh, ein Koepchenwerk = 634 MWh
+  (45-fach). Goldisthal: 9,5 GWh Pumpspeicher, null Hausbatterien.
+
+### Offen (nicht Darstellung, sondern Datenqualität): Doppelzählung Kreis Waldshut
+
+Im Kreis Waldshut tragen **Häusern, Waldshut-Tiengen und Ühlingen-Birkendorf
+jeweils exakt dieselben 30,3 GWh mit je 4 Blöcken** — offensichtlich dasselbe
+Kraftwerk, das mehreren Gemeinden zugeordnet wird. Die Beträge sind zusätzlich
+rechnerisch auf Blöcke gestückelt (Drittel-Werte mit Nachkommastellen,
+z. B. 7.569.083,33 kWh).
+
+Das ist ein Problem im Register-Import, nicht in der Darstellung, und wurde hier
+**bewusst nur dokumentiert, nicht repariert**. Es ist aber ein weiterer Grund,
+**Pumpspeicher nicht zur Leitzahl zu machen**: als benannter Einzelfakt neben der
+Kachel ist die Zahl tragbar, als vergleichbare Kennzahl oder Ranglisten-Kriterium
+wäre sie es nicht. Vor einer prominenteren Verwendung müsste die Zuordnung je
+Gemeinde geprüft werden.
+
+---
+
+## Ursprüngliche Fragestellung (Archiv)
+
+Die Speicher-Kachel der Gemeinde-Seite hatte zwei Fragen offen, die zusammen
+evaluiert wurden:
 
 **1. Pumpspeicher raus aus der Kapazität — stimmt das noch?**
 Heute zählt die kWh-Zahl nur Batterien; Pumpspeicher fliegt raus, weil ein
@@ -107,3 +160,6 @@ niemand. Ideen des Betreibers stattdessen:
 Kachel eigentlich aussagen? Erst beantworten, dann bauen. Zusammen mit dem
 Eigentümer-Filter denken (der regelt privat/gewerbe, NICHT die Bauform — diese
 Verwechslung war schon einmal ein Fehler, siehe Tests in lib/__tests__).
+
+→ Beantwortet oben: die Kachel misst Hausspeicher, Großspeicher steht als eigene
+Zeile daneben.

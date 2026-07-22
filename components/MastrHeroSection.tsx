@@ -53,12 +53,24 @@ export type MastrHeroSectionProps = {
   initialTraeger?: Energietraeger;
   /** Called whenever the selected region changes (for URL sync, analytics, etc.) */
   onRegionChange?: (regionAgs: string | undefined) => void;
+  /**
+   * Sichtbaren Quell-Credit zeigen. Default true. Auf `false` NUR dort, wo eine
+   * umgebende Seite die Quelle bereits im Fuß trägt (einmal pro Seite reicht,
+   * dl-de/by-2-0). Der Credit bleibt trotzdem sichtbar, sobald das Widget
+   * eingebettet ist (Standalone-Kontext) — dann ersetzt kein Seitenfuß ihn.
+   */
+  showSource?: boolean;
 };
 
 const CHOROPLETH_DEFAULT: ChoroplethResp = { source: "", data_as_of: "", data: [] };
 const SUMMARY_DEFAULT: RegionSummary | null = null;
 
-export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onRegionChange }: MastrHeroSectionProps) {
+export function MastrHeroSection({
+  initialRegion,
+  initialTraeger = "gesamt",
+  onRegionChange,
+  showSource = true,
+}: MastrHeroSectionProps) {
   const [energietraeger, setEnergietraeger] = useState<Energietraeger>(initialTraeger);
   const [segment, setSegment] = useState<SegmentFilter>("alle");
   const [selectedAgs, setSelectedAgs] = useState<string | undefined>(
@@ -232,7 +244,7 @@ export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onR
             values={values}
             selectedAgs={selectedAgs}
             onSelect={handleSelect}
-            valueLabel="MW"
+            valueLabel={energietraeger === "solar" ? "MWp" : "MW"}
             loading={choroplethLoading}
           />
           {isLkSelected && !isEmbed && (
@@ -264,24 +276,31 @@ export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onR
           )}
         </aside>
       </div>
-      <div
-        style={{
-          fontSize: 10,
-          color: v("--color-text-faint"),
-          marginTop: 10,
-          textAlign: "right",
-        }}
-      >
-        <DataSourceNote
-          source={[
-            DATA_SOURCES.bkg,
-            DATA_SOURCES.mastr,
-            ...(!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle"
-              ? [DATA_SOURCES.energyCharts]
-              : []),
-          ]}
-        />
-      </div>
+      {/* Quell-Credit: sichtbar, AUSSER eine umgebende Seite trägt ihn schon
+          (showSource=false) UND wir sind nicht im Embed. Im Embed steht kein
+          Seitenfuß dahinter, deshalb zeigt das Widget die Quelle dort immer —
+          das ist der nachhaltige Teil (dl-de/by-2-0 verlangt Namensnennung pro
+          verteiltem Werk). */}
+      {(showSource || isEmbed) && (
+        <div
+          style={{
+            fontSize: 10,
+            color: v("--color-text-faint"),
+            marginTop: 10,
+            textAlign: "right",
+          }}
+        >
+          <DataSourceNote
+            source={[
+              DATA_SOURCES.bkg,
+              DATA_SOURCES.mastr,
+              ...(!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle"
+                ? [DATA_SOURCES.energyCharts]
+                : []),
+            ]}
+          />
+        </div>
+      )}
     </section>
   );
 }
@@ -574,6 +593,9 @@ function SummaryPanel({
   const traegerLabel = TRAEGER_DISPLAY[energietraeger];
   const segmentSuffix = segment !== "alle" ? ` · ${SEGMENT_DISPLAY[segment]}` : "";
 
+  // Photovoltaik wird in Peak-Leistung angegeben (kWp/MWp), Wind, Biomasse und
+  // Speicher in normaler Nennleistung — die Einheit folgt deshalb der Auswahl.
+  const peak = energietraeger === "solar" ? "p" : "";
   const totalMw = summary ? summary.total_kwp / 1000 : null;
   const totalCount = summary ? summary.total_count : null;
   const avgKwp = summary && summary.total_count > 0 ? summary.total_kwp / summary.total_count : null;
@@ -601,8 +623,8 @@ function SummaryPanel({
           value={
             totalMw !== null
               ? totalMw >= 1000
-                ? `${(totalMw / 1000).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW`
-                : `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW`
+                ? `${(totalMw / 1000).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW${peak}`
+                : `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW${peak}`
               : <LoadingDots />
           }
         />
@@ -612,7 +634,7 @@ function SummaryPanel({
         />
         <Kachel
           label="⌀ Größe"
-          value={avgKwp !== null ? `${avgKwp.toFixed(0)} kWp` : <LoadingDots />}
+          value={avgKwp !== null ? `${avgKwp.toFixed(0)} kW${peak}` : <LoadingDots />}
         />
       </div>
       {summary && energietraeger === "solar" && segment === "alle" && summary.by_segment.length > 1 && (

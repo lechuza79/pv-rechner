@@ -23,7 +23,10 @@ export default function TendTag({ dev }: { dev: number | null }) {
     return <span style={{ ...tendStyle, color: v("--color-text-muted") }}>±0 %</span>;
   }
   const up = dev > 0;
-  const color = up ? v("--color-positive") : v("--color-negative");
+  // Textstufe der Semantik, nicht die Markenfarbe: das Neon-Gruen kommt als
+  // 11-px-Zahl auf 1,79:1 und ist damit kaum lesbar. Gruen bleibt Gruen, nur
+  // dunkel genug zum Lesen (siehe --color-positive-text in lib/theme.ts).
+  const color = up ? v("--color-positive-text") : v("--color-negative-text");
   return (
     <span style={{ ...tendStyle, color }}>
       {up ? <IconTrendUp size={11} color={color} /> : <IconTrendDown size={11} color={color} />}
