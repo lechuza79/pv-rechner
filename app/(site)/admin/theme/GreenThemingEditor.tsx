@@ -129,8 +129,12 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
         Mail und Embeds ziehen beim nächsten Aufbau nach).
       </p>
 
+      {/* ── Sticky control head: the stage chips + live preview stay pinned to the
+           top while you scroll the pickers below, so a colour you pick is always
+           visible in context. Save lives in a pinned bar at the bottom. ── */}
+      <div style={{ position: "sticky", top: 0, zIndex: 5, background: v("--color-bg"), paddingTop: 4, paddingBottom: 12, marginBottom: 14, borderBottom: `1px solid ${v("--color-border")}` }}>
       {/* ── Stage selector ── */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
         {STAGES.map((s) => {
           const active = s.id === stage;
           const count = Object.keys(draft[s.id] ?? {}).length;
@@ -168,7 +172,6 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
           border: `1px solid var(--color-border)`,
           borderRadius: 14,
           padding: 16,
-          marginBottom: 14,
           display: "flex", flexDirection: "column", gap: 16,
           transition: "background 0.2s ease",
         }}
@@ -227,25 +230,26 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
           </div>
         </div>
       </div>
+      </div>{/* end sticky control head */}
 
       {/* ── Token editors for the selected stage ── */}
       <TokenGroup title="Positiv-Grün — UI-Signalfarbe" tokens={positiveTokens} draft={draft} stage={stage} onSet={setToken} onReset={resetToken} />
       <TokenGroup title="Energie-Grün — Datenvisualisierung" tokens={energyTokens} draft={draft} stage={stage} onSet={setToken} onReset={resetToken} />
 
-      {/* ── Actions ── */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 6 }}>
+      {/* ── Actions (pinned to the bottom so Save is always in reach) ── */}
+      <div style={{ position: "sticky", bottom: 0, zIndex: 5, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 12, paddingTop: 12, paddingBottom: 12, background: v("--color-bg"), borderTop: `1px solid ${v("--color-border")}` }}>
         <button
           onClick={save}
           disabled={!dirty || status === "saving"}
           style={{
-            padding: "10px 20px", borderRadius: v("--radius-md"), fontSize: 14, fontWeight: 700,
+            padding: "12px 28px", borderRadius: v("--radius-md"), fontSize: 15, fontWeight: 700,
             background: dirty ? v("--color-accent") : v("--color-bg-muted"),
             color: dirty ? v("--color-text-on-accent") : v("--color-text-faint"),
             border: "none", cursor: dirty && status !== "saving" ? "pointer" : "default",
-            fontFamily: v("--font-text"),
+            fontFamily: v("--font-text"), boxShadow: dirty ? v("--shadow-sm") : "none",
           }}
         >
-          {status === "saving" ? "Speichern…" : "Speichern"}
+          {status === "saving" ? "Speichern…" : dirty ? "Speichern" : "Gespeichert ✓"}
         </button>
         {dirty && (
           <button onClick={discard} style={{ padding: "10px 16px", borderRadius: v("--radius-md"), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v("--color-border")}`, color: v("--color-text-secondary"), cursor: "pointer" }}>
