@@ -230,7 +230,7 @@ export function MastrHeroSection({
           lkName={isLkSelected ? summary?.name ?? selectedName : undefined}
           onGo={goToLevel}
         />
-        <RegionSearch />
+        <RegionSearch onPick={handleSelect} />
       </div>
 
       <div
@@ -594,11 +594,12 @@ type SearchHit = { region_id: string; name: string; label: string };
 
 /**
  * Regionssuche rechts in der Karten-Bar. Klick auf die Lupe klappt das Feld auf
- * und fokussiert; Tippen (ab 2 Zeichen, entprellt) fragt /api/atlas/search ab;
- * ein Treffer navigiert über /api/atlas/goto (löst die Slug-Kette serverseitig).
- * Findet Gemeinden, Kreise und Bundesländer.
+ * und fokussiert; Tippen (ab 2 Zeichen, entprellt) fragt /api/atlas/search ab.
+ * Ein Treffer verhält sich wie ein Klick auf die Karte (onPick = handleSelect):
+ * Bundesland/Landkreis filtern die Karte an Ort und Stelle, Gemeinde/kreisfreie
+ * Stadt öffnen ihre Seite. Findet Gemeinden, Kreise und Bundesländer.
  */
-function RegionSearch() {
+function RegionSearch({ onPick }: { onPick: (ags: string, name: string, kreisfrei: boolean) => void }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [hits, setHits] = useState<SearchHit[]>([]);
@@ -654,8 +655,12 @@ function RegionSearch() {
     return () => clearTimeout(t);
   }, [q]);
 
-  const go = (ags: string) => {
-    window.location.href = `/api/atlas/goto?ags=${ags}`;
+  // Wie ein Karten-Klick: BL/Kreis filtern die Karte (setSelectedAgs im Parent),
+  // Gemeinde/kreisfreie Stadt öffnen ihre Seite. Die kreisfrei-Info steckt im
+  // Label ("Kreisfreie Stadt" / "Stadtkreis").
+  const pick = (h: SearchHit) => {
+    close();
+    onPick(h.region_id, h.name, /Kreisfreie Stadt|Stadtkreis/i.test(h.label));
   };
 
   const onKey = (e: React.KeyboardEvent) => {
@@ -668,7 +673,7 @@ function RegionSearch() {
       setActive((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter" && hits.length) {
       const h = hits[active >= 0 ? active : 0];
-      if (h) go(h.region_id);
+      if (h) pick(h);
     }
   };
 
@@ -708,7 +713,7 @@ function RegionSearch() {
                 role="option"
                 aria-selected={i === active}
                 onMouseEnter={() => setActive(i)}
-                onClick={() => go(h.region_id)}
+                onClick={() => pick(h)}
                 style={{ ...SB.hit, background: i === active ? v("--color-bg-muted") : "transparent" }}
               >
                 <span style={SB.hitName}>{h.name}</span>
