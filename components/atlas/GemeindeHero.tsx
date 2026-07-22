@@ -86,7 +86,6 @@ type PeerRow = {
   region_id: string;
   name: string;
   href: string | null;
-  scope: string;
   value: number;
   rang: number | null;
   isSelf: boolean;
@@ -249,7 +248,6 @@ export default function GemeindeHero({
       region_id: x.region.region_id,
       name: x.region.name,
       href: x.region.slug ? `${basePath}/${x.region.slug}` : null,
-      scope: "im Landkreis",
       value: x.value,
       rang: i + 1,
       isSelf: x.region.region_id === regionId,
@@ -375,7 +373,7 @@ export default function GemeindeHero({
           <div key={`${owner}-${metric}`} style={S.rowsFade}>
             {rows.map((r) => (
               <PeerZeile
-                key={`${r.region_id}-${r.scope}`}
+                key={r.region_id}
                 row={r}
                 metric={metric}
                 scale={scale}
@@ -432,7 +430,6 @@ function PeerZeile({
         ) : (
           <span style={{ ...S.peerLink, fontWeight: row.isSelf ? 700 : 500 }}>{row.name}</span>
         )}
-        <span style={S.peerScope}>{row.scope}</span>
       </span>
       <span style={S.peerVal}>
         <span>{fmtValue(row.value, metric)}</span>
@@ -577,8 +574,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   peerRank: { fontFamily: v("--font-mono"), fontSize: 11, color: v("--color-text-muted") },
   peerName: { display: "flex", flexDirection: "column", minWidth: 0 },
-  peerLink: { color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
-  peerScope: { fontSize: 9, color: v("--color-text-muted") },
+  peerLink: { fontSize: v("--font-size-body"), color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   peerVal: { fontFamily: v("--font-mono"), fontSize: 11, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 },
   track: { display: "block", width: "100%", height: 4, background: v("--color-border"), borderRadius: 2 },
   // Links verankert → Balken wächst nach rechts (kein marginLeft:auto).
