@@ -466,7 +466,8 @@ const S: Record<string, React.CSSProperties> = {
     // Switching filter redraws every number; without this the table jumps.
     transition: "background 160ms ease, color 160ms ease",
   },
-  split: { display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start" },
+  // Abstand über dem Donut-/Ranglisten-Block = Luft unter der Kennzahl-Zeile.
+  split: { display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start", marginTop: 24 },
   left: { flex: "1 1 220px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, minWidth: 0 },
   right: { flex: "1 1 300px", minWidth: 0 },
   center: { animation: "fu 0.18s ease-out", textAlign: "center" },

@@ -320,14 +320,16 @@ export default async function GemeindePage({ params }: { params: Params }) {
           Data date above the headline, not buried in the footer: it is the first
           thing a Verwaltung checks before quoting a number, and <time dateTime>
           gives crawlers a machine-readable freshness signal on a page whose whole
-          value is being current.
+          value is being current. Die Quelle (Marktstammdatenregister) steht hier
+          NICHT — der rechtlich nötige Lizenz-Credit steht vollständig im
+          Quellen-Fuß; oben zählt nur die Aktualität.
         */}
         <div style={S.stand}>
           Stand{" "}
           <time dateTime={atlas.data_as_of} style={S.standDate}>
             {standLabel(atlas.data_as_of)}
           </time>{" "}
-          · Marktstammdatenregister · monatlich aktualisiert
+          · monatlich aktualisiert
         </div>
 
         <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
