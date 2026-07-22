@@ -226,7 +226,12 @@ function Tile({ t, dev, showSub = false }: { t: KpiTile; dev: number | null; sho
           Media Query. */}
       <div className="kpi-val">{t.value}</div>
       {t.unit && <div className="kpi-unit">{t.unit}</div>}
-      <TendTag dev={dev} />
+      {/* Tendenz immer am unteren Kachelrand (margin-top:auto in der Flex-Spalte):
+          so stehen die Pfeile aller Kacheln auf EINER Linie, egal ob die Kachel
+          eine Einheit-Zeile hat oder nicht. */}
+      <div className="kpi-tend">
+        <TendTag dev={dev} />
+      </div>
       {showSub && t.sub && <div style={S.tileSub}>{t.sub}</div>}
     </>
   );
@@ -331,12 +336,15 @@ const S: Record<string, React.CSSProperties> = {
     paddingTop: space.xs,
     borderTop: `1px solid ${v("--color-border")}`,
   },
-  // Eigenständige Kachel (titellose Einzelgruppe): eigener Hintergrund.
+  // Eigenständige Kachel (titellose Einzelgruppe): eigener Hintergrund. Flex-Spalte
+  // wie die Gruppen-Zellen, damit die Tendenz auch hier unten andockt.
   standalone: {
     background: v("--color-bg-muted"),
     borderRadius: v("--radius-md"),
     padding: pad("lg"),
     minWidth: 0,
+    display: "flex",
+    flexDirection: "column",
   },
 
   tileLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },

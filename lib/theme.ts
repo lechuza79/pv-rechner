@@ -536,7 +536,10 @@ export const globalStyles = `
      umbrechen. border-left je Zelle wuerde beim Umbruch an falscher Stelle
      sitzen. */
   .kpi-tilerow{display:grid;grid-template-columns:repeat(var(--kpi-tiles,1),minmax(0,1fr));gap:1px;background:var(--color-border)}
-  .kpi-cell{min-width:0;background:var(--color-bg-muted);padding:4px 12px}
+  /* Flex-Spalte, damit die Tendenz (.kpi-tend, margin-top:auto) unten andockt und
+     alle Kacheln einer Reihe die Pfeile auf gleicher Linie zeigen. */
+  .kpi-cell{min-width:0;background:var(--color-bg-muted);padding:4px 12px;display:flex;flex-direction:column}
+  .kpi-tend{margin-top:auto}
   /* Wert + Einheit als Klassen, damit die Schrift auf schmalen Schirmen
      schrumpfen kann (inline schluege jede Media Query). Einheit heller, eigene
      Zeile mit echtem Abstand. Zahlen brechen NIE um (nowrap) — eine umgebrochene
