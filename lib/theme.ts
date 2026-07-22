@@ -528,7 +528,10 @@ export const globalStyles = `
   /* Gruppierte Kennzahlen (Gemeinde-Seite): je Gruppe eine Box, Boxen
      nebeneinander. Spaltenbreite folgt der Kennzahl-Zahl (--kpi-group-cols,
      z. B. "4fr 2fr"); auf schmalen Schirmen stapeln die Boxen. */
-  .kpi-groups{display:grid;grid-template-columns:var(--kpi-group-cols,1fr);gap:12px;align-items:start;animation:fu 0.28s ease-out}
+  /* align-items:stretch — beide Gruppen-Boxen gleich hoch (die hoehere zieht die
+     andere mit). Der Flip-Wrapper reicht die Hoehe per height:100% bis zur grauen
+     Flaeche durch (siehe GroupBox). */
+  .kpi-groups{display:grid;grid-template-columns:var(--kpi-group-cols,1fr);gap:12px;align-items:stretch;animation:fu 0.28s ease-out}
   /* Erster Render-Frame auf dem Handy (bevor der isMobile-Hook auf die Wischzeile
      umschaltet): Boxen stapeln statt ueber den schmalen Viewport zu laufen. */
   @media (max-width:640px){.kpi-groups{grid-template-columns:1fr;gap:8px}}
@@ -576,7 +579,7 @@ export const globalStyles = `
   /* Intro-Absatz: auf breiten Schirmen voll, auf schmalen eingeklappt mit weichem
      Verlauf und „Weiterlesen". Voller Text bleibt im DOM (SEO), nur per Hoehe
      beschnitten. */
-  .intro-clamp{margin:0 0 24px}
+  .intro-clamp{margin:0 0 48px}
   .intro-text{font-size:15px;line-height:1.6;color:var(--color-text-secondary);margin:0}
   .intro-more{display:none;background:none;border:none;padding:0;margin-top:10px;font-family:inherit;font-size:14px;font-weight:700;color:var(--color-accent);cursor:pointer}
   @media (max-width:640px){

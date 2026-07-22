@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import DonutChart from "../charts/DonutChart";
 import { IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
-import { v, tokens } from "../../lib/theme";
+import { v, tokens, space } from "../../lib/theme";
 import { SEGMENT_OWNER, type AtlasOwner, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
 import {
   fmtPvLeistung as fmtLeistung,
@@ -451,7 +451,8 @@ function PeerZeile({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  card: { marginBottom: 28 },
+  // Einheitlicher Section-Abstand (space.huge) — wie die übrigen Blöcke der Seite.
+  card: { marginBottom: space.huge },
   chips: { display: "flex", gap: 4, marginBottom: 14 },
   chip: {
     border: `1px solid ${v("--color-border")}`,

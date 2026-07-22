@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { fmtPvLeistung, fmtErtragProKwp } from "../../lib/atlas-format";
-import { v } from "../../lib/theme";
+import { v, space } from "../../lib/theme";
 import { IconArrowRight, IconTrendUp, IconTrendDown } from "../Icons";
 import { writeLocation } from "../../lib/location";
 import type { GemeindePotential } from "../../lib/gemeinde-potential";
@@ -101,7 +101,8 @@ export default function GemeindePotential({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  section: { marginBottom: 28 },
+  // Einheitlicher Section-Abstand (space.huge) wie die übrigen Blöcke der Seite.
+  section: { marginBottom: space.huge },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
   // Nebeneinander auf Desktop, gestapelt auf Mobil — über flex-wrap statt Media
   // Query (Inline-Styles). Bei 720px Breite passen drei ~200er-Karten in eine Reihe.

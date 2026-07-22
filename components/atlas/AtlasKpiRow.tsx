@@ -208,10 +208,13 @@ function GroupBox({ group, dev }: { group: KpiGroup; dev: (m?: string) => number
   if (!hasBack) return front;
 
   return (
-    <div style={{ perspective: 1200 }}>
+    // height:100% durchgereicht, damit die graue Fläche die (per stretch) gleich
+    // hohe Grid-Zelle füllt — sonst bliebe die Flip-Box auf ihrer natürlichen Höhe.
+    <div style={{ perspective: 1200, height: "100%" }}>
       <div
         style={{
           position: "relative",
+          height: "100%",
           transformStyle: "preserve-3d",
           transition: "transform 0.5s cubic-bezier(.4,0,.2,1)",
           transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
@@ -219,7 +222,7 @@ function GroupBox({ group, dev }: { group: KpiGroup; dev: (m?: string) => number
       >
         {/* Vorderseite definiert die Höhe; Fade auf halber Drehung verdeckt das
             Durchscheinen in Browsern ohne sauberes backface-visibility. */}
-        <div style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", opacity: flipped ? 0 : 1, transition: "opacity 0.1s ease 0.2s" }}>
+        <div style={{ height: "100%", backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", opacity: flipped ? 0 : 1, transition: "opacity 0.1s ease 0.2s" }}>
           {front}
         </div>
         {/* Rückseite: gleiche Maße, gegengleich eingeblendet. */}
@@ -344,6 +347,8 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: v("--radius-md"),
     padding: pad("lg"),
     minWidth: 0,
+    // Füllt die (per align-items:stretch) gleich hohe Grid-Zelle.
+    height: "100%",
   },
   // Titelzeile: Titel links, Fragezeichen rechts.
   groupHead: {
