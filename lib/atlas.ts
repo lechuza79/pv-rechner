@@ -133,6 +133,53 @@ export const getRegionById = unstable_cache(getRegionByIdUncached, ["region-by-i
   revalidate: 3600,
 });
 
+/** Ein Suchtreffer für die Karten-Suche: nur das, was das Vorschlags-Item und die
+ *  Navigation (über /api/atlas/goto?ags=) brauchen. */
+export type RegionHit = {
+  region_id: string;
+  name: string;
+  level: Exclude<Level, "de">;
+};
+
+/**
+ * Namenssuche über alle navigierbaren Regionen (Bundesland, Kreis, Gemeinde) für
+ * das Autosuggest der Karte. Enthält-Suche (auch „Tölz" findet „Bad Tölz"),
+ * grob nach Einwohnerzahl vorsortiert; Präfix-Treffer wandern danach nach oben,
+ * weil sie fast immer das Gemeinte sind. Nur Regionen mit Slug (haben eine
+ * Atlas-Seite). Bewusst OHNE Cache — die Anfragen sind zu divers; die DB wird
+ * über ein Mindest-Query (2 Zeichen), ein hartes Limit und den CDN-Cache der
+ * Route geschont.
+ */
+export async function searchRegions(q: string): Promise<RegionHit[]> {
+  const term = q.trim().replace(/[%_,]/g, ""); // ILIKE-Platzhalter + PostgREST-Trenner raus
+  if (term.length < 2) return [];
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase
+      .from("mastr_regions")
+      .select("region_id, level, name, population")
+      .ilike("name", `%${term}%`)
+      .in("level", ["bundesland", "landkreis", "gemeinde"])
+      .not("slug", "is", null)
+      .order("population", { ascending: false, nullsFirst: false })
+      .limit(40),
+    "searchRegions",
+  );
+  if (error) throw new Error(`searchRegions failed: ${error.message}`);
+  const lower = term.toLowerCase();
+  const rows = (data ?? []).map((r) => ({
+    region_id: String(r.region_id),
+    name: regionDisplayName(String(r.name)),
+    level: r.level as Exclude<Level, "de">,
+  }));
+  // Stabil: Präfix-Treffer nach vorn, sonst bleibt die Population-Ordnung.
+  rows.sort(
+    (a, b) =>
+      Number(b.name.toLowerCase().startsWith(lower)) - Number(a.name.toLowerCase().startsWith(lower)),
+  );
+  return rows.slice(0, 8);
+}
+
 /**
  * Resolve a slug path to a region. Slugs are unique among siblings, so each
  * segment is looked up within its parent — that is what keeps "wuerzburg" (the

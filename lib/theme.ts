@@ -465,6 +465,10 @@ export const globalStyles = `
   .sc-live-dot::before,.sc-live-dot::after{content:'';position:absolute;top:50%;left:50%;width:100%;height:100%;border-radius:50%;background:var(--color-highlight);pointer-events:none;animation:sc-live-ring 1.8s ease-out infinite}
   .sc-live-dot::after{animation-delay:.9s}
   .sc-live-bar{animation:sc-live-bar 1.8s ease-in-out infinite}
+  /* Navigations-Bar über der Karte: Breadcrumb links, Regionssuche rechts. wrap,
+     damit auf schmalen Schirmen mit langem Breadcrumb + offener Suche nichts
+     überläuft (die Suche rutscht dann in die nächste Zeile). */
+  .mastr-mapbar{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;margin-top:14px;min-width:0;flex-wrap:wrap}
   .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,430px) 300px;gap:48px;align-items:start;justify-content:center}
   .mastr-hero-aside{display:grid;gap:12px}
   .mastr-kpis{display:grid;gap:10px}

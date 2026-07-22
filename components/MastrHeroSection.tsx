@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { MastrMap, type RegionValue } from "./MastrMap";
 import { LoadingDots } from "./LoadingDots";
 import { MastrLiveRadial } from "./MastrLiveRadial";
@@ -219,21 +219,24 @@ export function MastrHeroSection({
         />
       )}
 
-      {selectedAgs && blAgs && (
+      {/* Navigations-Bar über der Karte — jetzt auch auf DE-Ebene (dort nur
+          „Deutschland"). Breadcrumb links, Regionssuche rechts. */}
+      <div className="mastr-mapbar">
         <MapBreadcrumb
+          selectedAgs={selectedAgs}
           isLk={isLkSelected}
           blAgs={blAgs}
-          blName={bundeslandByAgs(blAgs)?.name ?? blAgs}
+          blName={blAgs ? bundeslandByAgs(blAgs)?.name ?? blAgs : undefined}
           lkName={isLkSelected ? summary?.name ?? selectedName : undefined}
           onGo={goToLevel}
         />
-      )}
+        <RegionSearch />
+      </div>
 
       <div
         className={
-          "mastr-hero-grid" +
-          (energietraeger === "solar" ? " has-filter" : "") +
-          (selectedAgs ? " has-breadcrumb" : "")
+          "mastr-hero-grid has-breadcrumb" +
+          (energietraeger === "solar" ? " has-filter" : "")
         }
         style={{ marginTop: 16 }}
       >
@@ -515,15 +518,18 @@ function GemeindeHint({ kreisAgs, kreisName }: { kreisAgs: string; kreisName?: s
 // Breadcrumb above the map: Deutschland › Bundesland › Landkreis. Each crumb
 // jumps to that level; the last (current) level carries an ✕ to go up one.
 function MapBreadcrumb({
+  selectedAgs,
   isLk,
   blAgs,
   blName,
   lkName,
   onGo,
 }: {
+  /** Aktuelle Ebene: undefined = Deutschland, sonst 2/5-stellige AGS. */
+  selectedAgs?: string;
   isLk: boolean;
-  blAgs: string;
-  blName: string;
+  blAgs?: string;
+  blName?: string;
   lkName?: string;
   onGo: (ags: string | undefined) => void;
 }) {
@@ -548,8 +554,17 @@ function MapBreadcrumb({
       </button>
     </span>
   );
+  // Deutschland-Ebene: nur der Wurzel-Krümel, ohne Link/Schließen — er ist die
+  // aktuelle Ebene, es gibt keine höhere.
+  if (!selectedAgs) {
+    return (
+      <nav aria-label="Navigation" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", minWidth: 0 }}>
+        <span style={{ ...current, gap: 0 }}>Deutschland</span>
+      </nav>
+    );
+  }
   return (
-    <nav aria-label="Navigation" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginTop: 14 }}>
+    <nav aria-label="Navigation" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", minWidth: 0 }}>
       <button style={link} onClick={() => onGo(undefined)}>Deutschland</button>
       <span style={sep}>›</span>
       {isLk ? (
@@ -559,11 +574,233 @@ function MapBreadcrumb({
           <Current label={lkName ?? "Landkreis"} up={blAgs} />
         </>
       ) : (
-        <Current label={blName} up={undefined} />
+        <Current label={blName ?? "Bundesland"} up={undefined} />
       )}
     </nav>
   );
 }
+
+// Lupe — inline, weil Icons.tsx keine Such-Glyphe hat.
+function SearchGlyph({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden style={{ flexShrink: 0 }}>
+      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+      <path d="M20 20l-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+type SearchHit = { region_id: string; name: string; level: "bundesland" | "landkreis" | "gemeinde" };
+const LEVEL_LABEL: Record<SearchHit["level"], string> = {
+  gemeinde: "Gemeinde",
+  landkreis: "Landkreis",
+  bundesland: "Bundesland",
+};
+
+/**
+ * Regionssuche rechts in der Karten-Bar. Klick auf die Lupe klappt das Feld auf
+ * und fokussiert; Tippen (ab 2 Zeichen, entprellt) fragt /api/atlas/search ab;
+ * ein Treffer navigiert über /api/atlas/goto (löst die Slug-Kette serverseitig).
+ * Findet Gemeinden, Kreise und Bundesländer.
+ */
+function RegionSearch() {
+  const [open, setOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const [hits, setHits] = useState<SearchHit[]>([]);
+  const [active, setActive] = useState(-1);
+  const [loading, setLoading] = useState(false);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const close = () => {
+    setOpen(false);
+    setQ("");
+    setHits([]);
+    setActive(-1);
+  };
+
+  // Beim Aufklappen ins Feld fokussieren — zuverlässiger als ein rAF im Klick,
+  // weil der Effekt erst nach dem sichtbaren Re-Render läuft.
+  useEffect(() => {
+    if (open) inputRef.current?.focus();
+  }, [open]);
+
+  // Außerhalb geklickt → schließen.
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) close();
+    };
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [open]);
+
+  // Entprellte Suche.
+  useEffect(() => {
+    const term = q.trim();
+    if (term.length < 2) {
+      setHits([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    const t = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/atlas/search?q=${encodeURIComponent(term)}`);
+        const json = (await res.json()) as { hits?: SearchHit[] };
+        setHits(json.hits ?? []);
+        setActive(-1);
+      } catch {
+        setHits([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 200);
+    return () => clearTimeout(t);
+  }, [q]);
+
+  const go = (ags: string) => {
+    window.location.href = `/api/atlas/goto?ags=${ags}`;
+  };
+
+  const onKey = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") return close();
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActive((i) => Math.min(i + 1, hits.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActive((i) => Math.max(i - 1, 0));
+    } else if (e.key === "Enter" && hits.length) {
+      const h = hits[active >= 0 ? active : 0];
+      if (h) go(h.region_id);
+    }
+  };
+
+  return (
+    <div ref={wrapRef} style={{ position: "relative", flexShrink: 0 }}>
+      <div style={{ ...SB.field, ...(open ? SB.fieldOpen : null) }}>
+        <button
+          type="button"
+          onClick={() => (open ? close() : setOpen(true))}
+          style={SB.iconBtn}
+          aria-label={open ? "Suche schließen" : "Region suchen"}
+          title="Region suchen"
+        >
+          <SearchGlyph />
+        </button>
+        <input
+          ref={inputRef}
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          onKeyDown={onKey}
+          placeholder="Gemeinde, Kreis, Land …"
+          aria-label="Region suchen"
+          style={{ ...SB.input, ...(open ? SB.inputOpen : null) }}
+          tabIndex={open ? 0 : -1}
+        />
+      </div>
+
+      {open && q.trim().length >= 2 && (
+        <div style={SB.dropdown} role="listbox">
+          {loading && !hits.length ? (
+            <div style={SB.empty}>Suche …</div>
+          ) : hits.length ? (
+            hits.map((h, i) => (
+              <button
+                key={h.region_id}
+                type="button"
+                role="option"
+                aria-selected={i === active}
+                onMouseEnter={() => setActive(i)}
+                onClick={() => go(h.region_id)}
+                style={{ ...SB.hit, background: i === active ? v("--color-bg-muted") : "transparent" }}
+              >
+                <span style={SB.hitName}>{h.name}</span>
+                <span style={SB.hitLevel}>{LEVEL_LABEL[h.level]}</span>
+              </button>
+            ))
+          ) : (
+            <div style={SB.empty}>Nichts gefunden</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+const SB: Record<string, React.CSSProperties> = {
+  field: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    border: `1px solid transparent`,
+    borderRadius: 10,
+    padding: "3px 4px",
+    transition: "border-color 0.18s ease, background 0.18s ease",
+    color: v("--color-text-secondary"),
+  },
+  fieldOpen: {
+    border: `1px solid ${v("--color-border")}`,
+    background: v("--color-bg"),
+  },
+  iconBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "none",
+    border: "none",
+    padding: 4,
+    margin: 0,
+    color: "inherit",
+    cursor: "pointer",
+  },
+  input: {
+    width: 0,
+    opacity: 0,
+    border: "none",
+    outline: "none",
+    background: "none",
+    padding: 0,
+    fontFamily: "inherit",
+    fontSize: 13,
+    color: v("--color-text-primary"),
+    transition: "width 0.2s ease, opacity 0.2s ease",
+  },
+  inputOpen: { width: 190, opacity: 1, paddingRight: 4 },
+  dropdown: {
+    position: "absolute",
+    top: "calc(100% + 4px)",
+    right: 0,
+    minWidth: 240,
+    maxWidth: 300,
+    background: v("--color-bg"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: 10,
+    boxShadow: "0 8px 28px rgba(0,0,0,0.12)",
+    padding: 4,
+    zIndex: 30,
+    maxHeight: 320,
+    overflowY: "auto",
+  },
+  hit: {
+    display: "flex",
+    alignItems: "baseline",
+    justifyContent: "space-between",
+    gap: 10,
+    width: "100%",
+    background: "none",
+    border: "none",
+    borderRadius: 7,
+    padding: "8px 10px",
+    textAlign: "left",
+    cursor: "pointer",
+    fontFamily: "inherit",
+  },
+  hitName: { fontSize: 14, color: v("--color-text-primary"), fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+  hitLevel: { fontSize: 11, color: v("--color-text-muted"), flexShrink: 0 },
+  empty: { padding: "10px 12px", fontSize: 13, color: v("--color-text-muted") },
+};
 
 function SummaryPanel({
   summary,
