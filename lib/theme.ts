@@ -538,14 +538,17 @@ export const globalStyles = `
   .kpi-tilerow{display:grid;grid-template-columns:repeat(var(--kpi-tiles,1),minmax(0,1fr));gap:1px;background:var(--color-border)}
   /* Flex-Spalte, damit die Tendenz (.kpi-tend, margin-top:auto) unten andockt und
      alle Kacheln einer Reihe die Pfeile auf gleicher Linie zeigen. */
-  .kpi-cell{min-width:0;background:var(--color-bg-muted);padding:4px 12px;display:flex;flex-direction:column}
-  .kpi-tend{margin-top:auto}
+  .kpi-cell{min-width:0;background:var(--color-bg-muted);padding:8px 12px;display:flex;flex-direction:column}
+  /* Tendenz unten (margin-top:auto) MIT festem Mindestabstand zum Zahlenblock
+     (padding-top): sonst klebt der Pfeil auf den einheitenlosen wie den
+     einheittragenden Kacheln je nach Zeilenzahl mal eng, mal weit. */
+  .kpi-tend{margin-top:auto;padding-top:14px}
   /* Wert + Einheit als Klassen, damit die Schrift auf schmalen Schirmen
      schrumpfen kann (inline schluege jede Media Query). Einheit heller, eigene
      Zeile mit echtem Abstand. Zahlen brechen NIE um (nowrap) — eine umgebrochene
      "10.043" ist unlesbar; auf schmalen Schirmen sorgt 2x2 fuer genug Breite. */
   .kpi-val{font-family:var(--font-mono);font-size:22px;font-weight:700;line-height:1.1;white-space:nowrap}
-  .kpi-unit{font-family:var(--font-mono);font-size:var(--font-size-small);font-weight:600;color:var(--color-text-muted);margin-top:2px;margin-bottom:6px}
+  .kpi-unit{font-family:var(--font-mono);font-size:var(--font-size-small);font-weight:600;color:var(--color-text-muted);margin-top:2px}
   /* Titellose Einzelgruppe (Kreis-/Bundesland): schlichte Kachelreihe. */
   .kpi-plainrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;animation:fu 0.28s ease-out}
   @media (max-width:640px){.kpi-groups{grid-template-columns:1fr;gap:8px}}
