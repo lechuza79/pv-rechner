@@ -536,25 +536,27 @@ export const globalStyles = `
      umbrechen. border-left je Zelle wuerde beim Umbruch an falscher Stelle
      sitzen. */
   .kpi-tilerow{display:grid;grid-template-columns:repeat(var(--kpi-tiles,1),minmax(0,1fr));gap:1px;background:var(--color-border)}
-  /* Flex-Spalte, damit die Tendenz (.kpi-tend, margin-top:auto) unten andockt und
-     alle Kacheln einer Reihe die Pfeile auf gleicher Linie zeigen. */
-  .kpi-cell{min-width:0;background:var(--color-bg-muted);padding:8px 12px;display:flex;flex-direction:column}
-  /* Tendenz unten (margin-top:auto) MIT festem Mindestabstand zum Zahlenblock
-     (padding-top): sonst klebt der Pfeil auf den einheitenlosen wie den
-     einheittragenden Kacheln je nach Zeilenzahl mal eng, mal weit. */
-  .kpi-tend{margin-top:auto;padding-top:14px}
+  .kpi-cell{min-width:0;background:var(--color-bg-muted);padding:12px}
   /* Wert + Einheit als Klassen, damit die Schrift auf schmalen Schirmen
      schrumpfen kann (inline schluege jede Media Query). Einheit heller, eigene
-     Zeile mit echtem Abstand. Zahlen brechen NIE um (nowrap) — eine umgebrochene
-     "10.043" ist unlesbar; auf schmalen Schirmen sorgt 2x2 fuer genug Breite. */
+     Zeile — immer vorhanden (leer bei einheitenlosen Kacheln), damit die Tendenz
+     ueberall gleich sitzt. Zahlen brechen NIE um (nowrap). */
   .kpi-val{font-family:var(--font-mono);font-size:22px;font-weight:700;line-height:1.1;white-space:nowrap}
   .kpi-unit{font-family:var(--font-mono);font-size:var(--font-size-small);font-weight:600;color:var(--color-text-muted);margin-top:2px}
+  /* Der EINE Abstand: zwischen Zahlenblock und Tendenz. */
+  .kpi-tend{margin-top:10px}
   /* Titellose Einzelgruppe (Kreis-/Bundesland): schlichte Kachelreihe. */
   .kpi-plainrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;animation:fu 0.28s ease-out}
   @media (max-width:640px){.kpi-groups{grid-template-columns:1fr;gap:8px}}
-  /* Auf schmalen Schirmen hoechstens zwei Kennzahlen nebeneinander — vier in
-     einer 340px-Box zwaengen breite Zahlen wie "10.043" ausser Form. */
-  @media (max-width:520px){.kpi-tilerow{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi-val{font-size:19px}}
+  /* Auf schmalen Schirmen wird die Kennzahl-Reihe eine wischbare Leiste: die
+     Kacheln stehen nebeneinander und scrollen horizontal mit Rastung, statt zu
+     2x2 umzubrechen. Wenige Kacheln (Speicher) fuellen die Breite (flex-grow),
+     viele (Solaranlagen) laufen ueber und lassen die naechste angeschnitten. */
+  @media (max-width:640px){
+    .kpi-tilerow{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .kpi-tilerow::-webkit-scrollbar{display:none}
+    .kpi-cell{flex:1 0 44%;scroll-snap-align:start}
+  }
 
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
   .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}

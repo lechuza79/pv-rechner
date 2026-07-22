@@ -225,10 +225,10 @@ function Tile({ t, dev, showSub = false }: { t: KpiTile; dev: number | null; sho
           Schirmen per Media Query kleiner werden kann — inline schlägt jede
           Media Query. */}
       <div className="kpi-val">{t.value}</div>
-      {t.unit && <div className="kpi-unit">{t.unit}</div>}
-      {/* Tendenz immer am unteren Kachelrand (margin-top:auto in der Flex-Spalte):
-          so stehen die Pfeile aller Kacheln auf EINER Linie, egal ob die Kachel
-          eine Einheit-Zeile hat oder nicht. */}
+      {/* Einheit-Zeile IMMER da (leer per non-breaking space, wenn es keine gibt):
+          so haben alle Kacheln dieselbe Struktur, die Tendenz fluchtet und es
+          gibt genau EINEN Abstand zwischen Zahl und Tendenz — ohne Bottom-Align. */}
+      <div className="kpi-unit">{t.unit || " "}</div>
       <div className="kpi-tend">
         <TendTag dev={dev} />
       </div>
@@ -336,15 +336,12 @@ const S: Record<string, React.CSSProperties> = {
     paddingTop: space.xs,
     borderTop: `1px solid ${v("--color-border")}`,
   },
-  // Eigenständige Kachel (titellose Einzelgruppe): eigener Hintergrund. Flex-Spalte
-  // wie die Gruppen-Zellen, damit die Tendenz auch hier unten andockt.
+  // Eigenständige Kachel (titellose Einzelgruppe): eigener Hintergrund.
   standalone: {
     background: v("--color-bg-muted"),
     borderRadius: v("--radius-md"),
     padding: pad("lg"),
     minWidth: 0,
-    display: "flex",
-    flexDirection: "column",
   },
 
   tileLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
