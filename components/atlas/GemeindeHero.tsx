@@ -194,7 +194,6 @@ export default function GemeindeHero({
   siblings,
   siblingCells,
   regionId,
-  regionName,
   kreisName,
   basePath,
 }: {
@@ -207,7 +206,6 @@ export default function GemeindeHero({
   // einer anderen Grundgesamtheit kamen). Er lebt jetzt als eigene Kachelreihe
   // über dem Hero — siehe components/atlas/GemeindePeerTiles.tsx.
   regionId: string;
-  regionName: string;
   kreisName?: string;
   basePath: string;
 }) {
@@ -399,18 +397,6 @@ export default function GemeindeHero({
               />
             ))}
           </div>
-
-          {/* Reserved height: the note only shows under "Pro Kopf", so without a
-              fixed slot the content below the card would jump on every metric
-              switch. */}
-          <div style={S.peerNoteWrap}>
-            {metric === "perCapita" && (
-              <p style={S.peerNote}>
-                Verglichen werden nur Gemeinden im selben Landkreis — {regionName} steht an seiner
-                echten Position, auch wenn die Ränge davor übersprungen sind.
-              </p>
-            )}
-          </div>
         </div>
       </div>
     </div>
@@ -594,6 +580,4 @@ const S: Record<string, React.CSSProperties> = {
   track: { display: "block", width: "100%", height: 4, background: v("--color-border"), borderRadius: 2 },
   // Links verankert → Balken wächst nach rechts (kein marginLeft:auto).
   fill: { display: "block", height: "100%", borderRadius: 2, transition: "width 220ms ease" },
-  peerNoteWrap: { minHeight: 44 },
-  peerNote: { fontSize: 10, color: v("--color-text-muted"), lineHeight: 1.6, margin: "10px 0 0" },
 };

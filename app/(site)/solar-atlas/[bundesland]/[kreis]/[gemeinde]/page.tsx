@@ -359,7 +359,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
           siblings={siblingData.regions}
           siblingCells={siblingData.cells}
           regionId={region.region_id}
-          regionName={region.name}
           kreisName={kreis?.name ?? undefined}
           basePath={basePath}
         />
