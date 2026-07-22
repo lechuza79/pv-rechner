@@ -30,16 +30,6 @@ export type KpiOwnerData = {
   references: RefLevel[];
 };
 
-/** A size-class benchmark from outside the Kreis. Per-capita only — see below. */
-export type OutsidePeer = {
-  region_id: string;
-  name: string;
-  href: string | null;
-  population: number;
-  scope: string;
-  values: Record<Owner, number | null>;
-};
-
 type Owner = AtlasOwner;
 type Metric = "perCapita" | "count" | "kwp" | "speicher";
 
@@ -185,18 +175,10 @@ export default function GemeindeHero({
   cells: HeroCell[];
   siblings: RankingRegion[];
   siblingCells: ChildYearRow[];
-  /**
-   * Größenklassen-Anführer (halbe bis doppelte Einwohnerzahl). Bewusst NICHT
-   * gerendert: Die Aussage „so schlagen sich ähnlich große Orte" ist ein
-   * Einordnungs-Fakt und keine Ranglisten-Zeile — in der Tabelle hat sie das
-   * Ranking kaputtgemacht. Die Daten bleiben in der Schnittstelle, bis
-   * entschieden ist, wo die Aussage hingehört (Intro oder Tendenz-Zeile).
-   *
-   * Die Größenklasse selbst ist gut begründet und darf nicht verlorengehen:
-   * ohne sie gewinnt bundesweit ein Koog mit 55 Einwohnern und 48.115 W je Kopf
-   * — eine Zahl, die den Nenner misst, nicht die Leistung.
-   */
-  outside?: OutsidePeer[];
+  // Der Größenklassen-Vergleich stand hier einmal als Zeile in der Rangliste und
+  // hat sie kaputtgemacht (drei Mal „Platz 1" in einer Liste, weil die Zeilen aus
+  // einer anderen Grundgesamtheit kamen). Er lebt jetzt als eigene Kachelreihe
+  // über dem Hero — siehe components/atlas/GemeindePeerTiles.tsx.
   regionId: string;
   regionName: string;
   kreisName?: string;

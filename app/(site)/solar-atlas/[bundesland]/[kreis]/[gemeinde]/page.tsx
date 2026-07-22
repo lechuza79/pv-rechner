@@ -8,10 +8,8 @@ import { pageMetadata } from "../../../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../../../lib/json-ld";
 import { atlasIsIndexable, atlasLevelReleased, atlasRobots } from "../../../../../../lib/atlas-index";
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
-import GemeindeHero, {
-  type OutsidePeer,
-  type KpiOwnerData,
-} from "../../../../../../components/atlas/GemeindeHero";
+import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/atlas/GemeindeHero";
+import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindePotentialBlock from "../../../../../../components/atlas/GemeindePotential";
 import GemeindeErneuerbareWidget from "../../../../../../components/atlas/GemeindeErneuerbareWidget";
@@ -26,12 +24,12 @@ import {
   getRegionById,
   lastFullYear,
   peerBand,
-  getPeerLeaders,
+  getPeerContext,
   getRankingData,
   atlasOwnerSlice,
   speicherHinweis,
   type AtlasOwner,
-  type PeerLeader,
+  type PeerRow,
 } from "../../../../../../lib/atlas";
 import {
   fmtBatterieMittel,
@@ -227,8 +225,9 @@ export default async function GemeindePage({ params }: { params: Params }) {
   // gemeinden hängen nicht voneinander ab → in einem Rutsch statt seriell. Der
   // Ertrag speist „Angebot trifft Nachfrage" + Beispiele; nur für bewohnte
   // Gemeinden sinnvoll (Waldgebiete o. Ä. haben keinen Bedarf), repräsentative
-  // PLZ aus der AGS. Die Vergleichs-Anführer (3 Eigentümer × 2 Bezüge) kommen aus
-  // einem einzigen Aufruf (getPeerLeaders) statt sechs, die sich in der DB stauten.
+  // PLZ aus der AGS. Der Größenklassen-Vergleich (Anführer UND eigener Platz,
+  // 3 Eigentümer × 2 Bezüge) kommt aus einem einzigen Aufruf über die
+  // vorberechneten Gemeinde-Summen — früher ein ~5-s-Scan über alle Rohzeilen.
   const [geoYield, siblingData, peerRows] = await Promise.all([
     region.population
       ? gemeindeGeo(region.region_id).then(async (geo) => {
@@ -243,39 +242,15 @@ export default async function GemeindePage({ params }: { params: Params }) {
     // The Kreis in raw cells: the table ranks it client-side per owner AND per
     // metric, which no fixed RPC result could serve.
     kreis ? getRankingData(kreis) : Promise.resolve({ regions: [], cells: [] }),
-    region.population ? getPeerLeaders(blAgs, band.min, band.max) : Promise.resolve([] as PeerLeader[]),
+    region.population
+      ? getPeerContext(region.region_id, blAgs, band.min, band.max)
+      : Promise.resolve([] as PeerRow[]),
   ]);
 
   const potential = geoYield.potential;
   const repPlz = geoYield.geo?.plz ?? null;
   const geoLat = Number.isFinite(geoYield.geo?.lat) ? (geoYield.geo?.lat ?? null) : null;
   const geoLon = Number.isFinite(geoYield.geo?.lon) ? (geoYield.geo?.lon ?? null) : null;
-
-  // One row per outside peer, carrying a value for each owner filter so switching
-  // is a lookup rather than a refetch.
-  // Diese Zeilen stehen NICHT in der Kreis-Rangliste, sie kommen aus einer
-  // anderen Grundgesamtheit (Gemeinden ähnlicher Einwohnerzahl). Deshalb tragen
-  // sie ihren Bezug im Text statt einer Rangnummer — eine "1." neben den
-  // Kreis-Rängen hat dreimal Platz 1 in einer Liste erzeugt.
-  const scopeLabel = (s: "de" | "bl") =>
-    s === "bl" ? `Spitze in ${bl?.name ?? "diesem Land"}, ähnliche Größe` : "Spitze bundesweit, ähnliche Größe";
-  const outsideMap = new Map<string, OutsidePeer>();
-  for (const p of peerRows) {
-    if (p.region_id === region.region_id) continue;
-    const row =
-      outsideMap.get(p.region_id) ??
-      {
-        region_id: p.region_id,
-        name: p.name,
-        href: null,
-        population: p.population,
-        scope: scopeLabel(p.scope),
-        values: { alle: null, privat: null, gewerbe: null },
-      };
-    row.values[p.owner] = p.w_per_capita;
-    outsideMap.set(p.region_id, row);
-  }
-  const outside = Array.from(outsideMap.values());
 
   // Rang der Gemeinde nach installierter Solarleistung im Landkreis — aus den
   // Ranking-Zellen des Kreises aggregiert (Speicher zählt nicht zur Leistung).
@@ -361,12 +336,15 @@ export default async function GemeindePage({ params }: { params: Params }) {
           })}
         </p>
 
+        {!!region.population && (
+          <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
+        )}
+
         <GemeindeHero
           kpi={kpi}
           cells={atlas.solar.by_segment}
           siblings={siblingData.regions}
           siblingCells={siblingData.cells}
-          outside={outside}
           regionId={region.region_id}
           regionName={region.name}
           kreisName={kreis?.name ?? undefined}

@@ -648,44 +648,65 @@ export const getTopGemeinden = unstable_cache(getTopGemeindenUncached, ["top-gem
   revalidate: 86400,
 });
 
-// Größenklassen-Anführer in EINEM Aufruf: alle 3 Eigentümer × 2 Bezüge (eigenes
-// Land, bundesweit). Ersetzt die früheren 6 Einzelabfragen, die sich in der DB
-// stauten — ein Scan statt sechs. Gecacht wie die Spitzen (nur bandabhängig).
-export type PeerLeader = {
-  owner: Owner;
+// Größenklassen-Vergleich in EINEM Aufruf: Anführer der Klasse ('leader') und
+// die eigene Gemeinde mit ihrem Platz ('self'), je Bezug (eigenes Land,
+// bundesweit). Gerankt nach Dach-Solarleistung je Einwohner (ohne Freifläche).
+//
+// Liest aus der vorberechneten Tabelle mastr_gemeinde_solar (~11k Zeilen, eine je
+// bewohnter Gemeinde) statt aus den ~562k Rohzeilen. Vorher war genau diese
+// Aggregation der teuerste Teil der Gemeinde-Seite (~5 s) — und der Cache darüber
+// half kaum, weil die Größenklasse an der Einwohnerzahl hängt und der Schlüssel
+// damit praktisch je Gemeinde verschieden ist. Siehe mastr_peer_context.
+export type PeerRow = {
+  kind: "leader" | "self";
   scope: "de" | "bl";
   region_id: string;
   name: string;
   slug: string;
+  /** Slugs der Eltern-Ebenen — zusammen mit `slug` der volle Atlas-Pfad. */
+  kreis_slug: string | null;
+  bl_slug: string | null;
   parent_region_id: string;
   population: number;
   kwp: number;
   w_per_capita: number;
+  rang: number;
+  total: number;
 };
 
-async function getPeerLeadersUncached(
+/** Atlas-Pfad einer Vergleichs-Gemeinde, oder null wenn ein Slug fehlt. */
+export function peerHref(r: PeerRow): string | null {
+  if (!r.bl_slug || !r.kreis_slug || !r.slug) return null;
+  return `/solar-atlas/${r.bl_slug}/${r.kreis_slug}/${r.slug}`;
+}
+
+async function getPeerContextUncached(
+  regionId: string,
   blPrefix: string,
   minPop: number,
   maxPop: number,
-): Promise<PeerLeader[]> {
+): Promise<PeerRow[]> {
   const supabase = await db();
   const { data, error } = await withDbTimeout(
-    supabase.rpc("mastr_peer_leaders", {
+    supabase.rpc("mastr_peer_context", {
+      p_region_id: regionId,
       p_bl_prefix: blPrefix,
       p_min_pop: minPop,
       p_max_pop: maxPop,
     }),
-    "mastr_peer_leaders",
+    "mastr_peer_context",
   );
-  if (error) throw new Error(`mastr_peer_leaders failed: ${error.message}`);
-  return (data ?? []).map((r: PeerLeader) => ({
+  if (error) throw new Error(`mastr_peer_context failed: ${error.message}`);
+  return (data ?? []).map((r: PeerRow) => ({
     ...r,
     population: Number(r.population),
     kwp: Number(r.kwp),
     w_per_capita: Number(r.w_per_capita),
+    rang: Number(r.rang),
+    total: Number(r.total),
   }));
 }
 
-export const getPeerLeaders = unstable_cache(getPeerLeadersUncached, ["peer-leaders-v1"], {
+export const getPeerContext = unstable_cache(getPeerContextUncached, ["peer-context-v1"], {
   revalidate: 86400,
 });

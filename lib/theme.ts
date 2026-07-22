@@ -500,7 +500,10 @@ export const globalStyles = `
      an einem Grid vorbei. */
   /* KPI-Reihe des Solar-Atlas: sechs Kacheln nebeneinander, auf schmalen
      Schirmen eine wischbare Leiste (Bordmittel, keine Slider-Bibliothek). */
-  .kpi-reihe{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+  /* Spaltenzahl als Variable: die Kennzahlen-Reihe hat sechs Kacheln, der
+     Groessenklassen-Vergleich vier. Eine Regel mit --kpi-cols statt zwei
+     Klassen, die auseinanderlaufen koennen. */
+  .kpi-reihe{display:grid;grid-template-columns:repeat(var(--kpi-cols,6),minmax(0,1fr));gap:8px}
   /* Fokusrahmen NACH INNEN: ein aeusserer Ring wuerde vom Scrollfenster
      abgeschnitten und haette Polsterung gebraucht, die die Ruheposition um zwei
      Pixel verschiebt (und damit den linken Verlauf flackern laesst). */

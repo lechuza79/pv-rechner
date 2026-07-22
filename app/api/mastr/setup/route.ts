@@ -360,70 +360,161 @@ export async function GET(req: NextRequest) {
   });
   results.push({ step: "mastr_rollup_functions", status: e2b ? "error" : "ok", error: e2b?.message });
 
-  // 2d. Größenklassen-Anführer in EINEM Aufruf.
+  // 2d. Größenklassen-Vergleich: Solarleistung je Gemeinde als eigene Tabelle.
   //
-  //     Die Gemeinde-Seite zeigt, wer in derselben Größenklasse pro Kopf führt —
-  //     je Eigentümer-Filter (alle/privat/gewerbe) und je Bezug (eigenes Land,
-  //     bundesweit), also 6 Werte. Vorher waren das 6 separate Abfragen, die sich
-  //     in der DB stauten (jede ein eigener Scan). Diese Funktion macht EINEN Scan
-  //     und liefert alle 6 Anführer — ein Round-Trip statt sechs.
+  //     Die Gemeinde-Seite vergleicht gegen Gemeinden ähnlicher Größe (halbe bis
+  //     doppelte Einwohnerzahl) — wer dort pro Kopf führt UND auf welchem Platz
+  //     die eigene Gemeinde steht. Beides braucht dieselbe Grundgesamtheit:
+  //     Solar-kWp je Gemeinde, aufgeteilt nach Eigentümer-Filter.
+  //
+  //     Diese Summe live zu bilden hieß: bei JEDEM Seitenaufruf ein GROUP BY über
+  //     alle ~562k Zeilen von mastr_aggregates_gem (~5 s). Der Cache darüber half
+  //     kaum, weil die Größenklasse an der Einwohnerzahl der jeweiligen Gemeinde
+  //     hängt — der Cache-Schlüssel ist damit praktisch je Gemeinde verschieden.
+  //     Genau diese Sorte Abfrage hat die DB am 2026-07-21 lahmgelegt.
+  //
+  //     Vorberechnet sind es ~11k Zeilen (eine je bewohnter Gemeinde). Ein Scan
+  //     darüber ist Millisekunden statt Sekunden, und Anführer wie eigener Platz
+  //     fallen aus demselben Scan ab. Befüllt wird nach jedem Datenlauf, analog
+  //     zu mastr_region_rollup.
   const { error: e2d } = await supabase.rpc("exec_sql", {
     sql: `
-      CREATE OR REPLACE FUNCTION mastr_peer_leaders(
+      -- kwp_dach = alles AUSSER Freifläche. Der Größenklassen-Vergleich rankt nach
+      -- dieser Spalte, nicht nach kwp_alle: sonst führt fast jede Klasse eine
+      -- Gemeinde mit einem einzigen Freiflächen-Solarpark an (Neukieritzsch:
+      -- 61.633 Wp/Kopf gegen einen Klassen-Median von ~1.600), was den Maßstab
+      -- zerstört. Dachleistung ist das, was eine Gemeinde selbst beeinflusst —
+      -- dieselbe Grenze zieht bereits die Speicherdichte (fmtSpeicherJeKwp).
+      CREATE TABLE IF NOT EXISTS mastr_gemeinde_solar (
+        region_id text PRIMARY KEY,
+        population int NOT NULL,
+        kwp_alle numeric NOT NULL DEFAULT 0,
+        kwp_dach numeric NOT NULL DEFAULT 0
+      );
+      -- Jede Abfrage grenzt zuerst auf das Einwohner-Band ein.
+      CREATE INDEX IF NOT EXISTS idx_mgs_population ON mastr_gemeinde_solar (population);
+
+      ALTER TABLE mastr_gemeinde_solar ENABLE ROW LEVEL SECURITY;
+      DO $$ BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_gemeinde_solar_anon_read') THEN
+          CREATE POLICY mastr_gemeinde_solar_anon_read ON mastr_gemeinde_solar FOR SELECT TO anon USING (true);
+        END IF;
+        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_gemeinde_solar_service_write') THEN
+          CREATE POLICY mastr_gemeinde_solar_service_write ON mastr_gemeinde_solar FOR ALL TO service_role USING (true);
+        END IF;
+      END $$;
+
+      -- Namen/Slugs bewusst NICHT mitkopiert: die stehen in mastr_regions und
+      -- würden hier still veralten. 11k Zeilen dagegen zu joinen ist billig.
+      -- Statement-Timeout nur hier aus (läuft im Datenlauf, nicht im Request).
+      CREATE OR REPLACE FUNCTION mastr_refresh_gemeinde_solar()
+      RETURNS void LANGUAGE plpgsql AS $fn$
+      BEGIN
+        SET LOCAL statement_timeout = 0;
+        TRUNCATE mastr_gemeinde_solar;
+        INSERT INTO mastr_gemeinde_solar (region_id, population, kwp_alle, kwp_dach)
+        SELECT a.region_id, r.population,
+               sum(a.kwp),
+               -- Dach = alles außer Freifläche; künftige Dach-Segmente zählen so
+               -- automatisch mit, ohne dass diese Liste gepflegt werden muss.
+               coalesce(sum(a.kwp) FILTER (WHERE a.segment <> 'freiflaeche'), 0)
+        FROM mastr_aggregates_gem a
+        JOIN mastr_regions r ON r.region_id = a.region_id
+        WHERE a.energietraeger = 'solar'
+          -- Unbewohnte Gebiete würden durch null teilen und jede Tabelle anführen.
+          AND r.level = 'gemeinde' AND r.population > 0 AND r.slug IS NOT NULL
+        GROUP BY a.region_id, r.population;
+      END;
+      $fn$;
+      REVOKE ALL ON FUNCTION mastr_refresh_gemeinde_solar() FROM PUBLIC;
+      GRANT EXECUTE ON FUNCTION mastr_refresh_gemeinde_solar() TO service_role;
+
+      -- Anführer der Größenklasse UND eigener Platz in EINEM Scan, gerankt nach
+      -- Dach-Solarleistung je Einwohner (kwp_dach, ohne Freifläche — siehe Tabelle).
+      -- kind = 'leader' (stärkste Gemeinde der Klasse) bzw. 'self' (die aufgerufene
+      -- Gemeinde, mit Rang und Klassengröße), je Bezug (eigenes Land / bundesweit).
+      --
+      -- Selbstheilend wie mastr_region_series: ist die vorberechnete Tabelle noch
+      -- leer (frisches Setup, Datenlauf abgebrochen), fällt src auf den Live-Scan
+      -- zurück. Ein halber Rollup kann die Seite so nie brechen — nur verlangsamen.
+      DROP FUNCTION IF EXISTS mastr_peer_leaders(text, int, int);
+      DROP FUNCTION IF EXISTS mastr_peer_context(text, text, int, int);
+      CREATE OR REPLACE FUNCTION mastr_peer_context(
+        p_region_id text,
         p_bl_prefix text,
         p_min_pop int,
         p_max_pop int
       )
       RETURNS TABLE (
-        owner text, scope text, region_id text, name text, slug text,
-        parent_region_id text, population int, kwp numeric, w_per_capita numeric
+        kind text, scope text, region_id text, name text, slug text,
+        kreis_slug text, bl_slug text,
+        parent_region_id text, population int, kwp numeric, w_per_capita numeric,
+        rang int, total int
       )
       LANGUAGE sql
       STABLE
       AS $fn$
-        WITH g AS (
-          SELECT a.region_id,
-                 sum(a.kwp) AS kwp_alle,
-                 sum(a.kwp) FILTER (WHERE a.segment IN ('privat_dach', 'steckersolar')) AS kwp_privat,
-                 sum(a.kwp) FILTER (WHERE a.segment IN ('gewerbe_dach', 'freiflaeche')) AS kwp_gewerbe
+        WITH src AS (
+          SELECT s.region_id, s.population, s.kwp_dach
+          FROM mastr_gemeinde_solar s
+          WHERE s.population >= p_min_pop
+            AND (p_max_pop IS NULL OR s.population <= p_max_pop)
+          UNION ALL
+          SELECT a.region_id, r.population,
+                 coalesce(sum(a.kwp) FILTER (WHERE a.segment <> 'freiflaeche'), 0)
           FROM mastr_aggregates_gem a
+          JOIN mastr_regions r ON r.region_id = a.region_id
           WHERE a.energietraeger = 'solar'
-          GROUP BY 1
-        ),
-        gp AS (
-          SELECT g.region_id, r.name, r.slug, r.parent_region_id, r.population,
-                 g.kwp_alle, g.kwp_privat, g.kwp_gewerbe
-          FROM g JOIN mastr_regions r ON r.region_id = g.region_id
-          -- Uninhabited areas would divide by zero and top every table forever.
-          WHERE r.level = 'gemeinde' AND r.population > 0 AND r.slug IS NOT NULL
+            AND r.level = 'gemeinde' AND r.population > 0 AND r.slug IS NOT NULL
             AND r.population >= p_min_pop
             AND (p_max_pop IS NULL OR r.population <= p_max_pop)
+            AND NOT EXISTS (SELECT 1 FROM mastr_gemeinde_solar)
+          GROUP BY a.region_id, r.population
         ),
         cand AS (
-          SELECT o.owner, s.scope, gp.region_id, gp.name, gp.slug, gp.parent_region_id, gp.population,
-                 CASE o.owner WHEN 'privat' THEN gp.kwp_privat
-                              WHEN 'gewerbe' THEN gp.kwp_gewerbe
-                              ELSE gp.kwp_alle END AS kwp
-          FROM gp
-          CROSS JOIN (VALUES ('alle'), ('privat'), ('gewerbe')) AS o(owner)
+          SELECT s.scope, src.region_id, src.population, src.kwp_dach AS kwp
+          FROM src
           CROSS JOIN (VALUES ('de'), ('bl')) AS s(scope)
-          WHERE (s.scope = 'de' OR gp.region_id LIKE p_bl_prefix || '%')
+          WHERE (s.scope = 'de' OR src.region_id LIKE p_bl_prefix || '%')
         ),
         ranked AS (
-          SELECT owner, scope, region_id, name, slug, parent_region_id, population, kwp,
+          SELECT scope, region_id, population, kwp,
                  round(kwp * 1000 / population) AS w_per_capita,
-                 row_number() OVER (PARTITION BY owner, scope ORDER BY kwp / population DESC) AS rn
+                 row_number() OVER (PARTITION BY scope ORDER BY kwp / population DESC) AS rn,
+                 count(*) OVER (PARTITION BY scope) AS total
           FROM cand
           WHERE kwp IS NOT NULL AND kwp > 0
+        ),
+        picked AS (
+          SELECT CASE WHEN region_id = p_region_id THEN 'self' ELSE 'leader' END AS kind, *
+          FROM ranked
+          WHERE rn = 1 OR region_id = p_region_id
         )
-        SELECT owner, scope, region_id, name, slug, parent_region_id, population, kwp, w_per_capita
-        FROM ranked WHERE rn = 1
+        -- Kreis- und Land-Slug gleich mitgeben: der Link auf eine fremde Gemeinde
+        -- braucht den vollen Pfad. Über atlasPathForRegionId wären das je
+        -- Spitzenreiter mehrere zusätzliche Round-Trips; hier sind es zwei Joins
+        -- auf eine kleine Tabelle im ohnehin laufenden Statement.
+        SELECT p.kind, p.scope, p.region_id, r.name, r.slug,
+               k.slug AS kreis_slug, b.slug AS bl_slug, r.parent_region_id,
+               p.population, p.kwp, p.w_per_capita, p.rn::int AS rang, p.total::int AS total
+        FROM picked p
+        JOIN mastr_regions r ON r.region_id = p.region_id
+        LEFT JOIN mastr_regions k ON k.region_id = r.parent_region_id
+        LEFT JOIN mastr_regions b ON b.region_id = k.parent_region_id
       $fn$;
-      REVOKE ALL ON FUNCTION mastr_peer_leaders(text, int, int) FROM PUBLIC;
-      GRANT EXECUTE ON FUNCTION mastr_peer_leaders(text, int, int) TO anon, authenticated, service_role;
+      REVOKE ALL ON FUNCTION mastr_peer_context(text, text, int, int) FROM PUBLIC;
+      GRANT EXECUTE ON FUNCTION mastr_peer_context(text, text, int, int) TO anon, authenticated, service_role;
     `,
   });
-  results.push({ step: "mastr_peer_leaders", status: e2d ? "error" : "ok", error: e2d?.message });
+  results.push({ step: "mastr_peer_context", status: e2d ? "error" : "ok", error: e2d?.message });
+
+  // 2d-2. Vorberechnete Gemeinde-Summen befüllen — eigener Schritt nach dem DDL,
+  //       damit ein Timeout hier die Funktionen oben nicht zurückrollt (die
+  //       Selbstheilung trägt die Seite dann über den Live-Scan).
+  const { error: e2d2 } = await supabase.rpc("exec_sql", {
+    sql: `SELECT mastr_refresh_gemeinde_solar();`,
+  });
+  results.push({ step: "mastr_gemeinde_solar_refresh", status: e2d2 ? "error" : "ok", error: e2d2?.message });
 
   // 2e. Rollup befüllen — als EIGENER Schritt nach allem DDL. Struktur +
   //     selbstheilende region_series sind da schon committed; scheitert die
