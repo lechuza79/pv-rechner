@@ -18,6 +18,8 @@
  *   tsx scripts/kommunen-kontakt-refresh.ts --wikidata   # Wikidata abrufen + cachen + Deckung melden
  *   tsx scripts/kommunen-kontakt-refresh.ts --upload      # Cache → Supabase (500er-Batches)
  *   tsx scripts/kommunen-kontakt-refresh.ts --wikidata --upload
+ *   tsx scripts/kommunen-kontakt-refresh.ts --forms --bl=10   # Kontaktlinks (ein BL testen)
+ *   tsx scripts/kommunen-kontakt-refresh.ts --forms           # Kontaktlinks (alle Lücken)
  *   tsx scripts/kommunen-kontakt-refresh.ts --stats       # Deckung aus der DB
  *   ... --upload --dry                                     # nichts schreiben
  *
@@ -250,6 +252,174 @@ async function upload(dry: boolean): Promise<void> {
   log(`kommunen_kontakt aktualisiert (${payload.length.toLocaleString()} Zeilen)`, "ok");
 }
 
+// ─── Kontaktformular-Scrape ─────────────────────────────────────────────────
+
+const FETCH_TIMEOUT_MS = 12000;
+const CONCURRENCY = 5; // parallele Fremd-Hosts — schonend, jeder Host nur 1×
+
+function stripTags(s: string): string {
+  return s.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function deUmlaut(s: string): string {
+  return s.replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss");
+}
+
+function safeHost(u: string): string {
+  try {
+    return new URL(u).host.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
+}
+
+interface Anchor {
+  href: string;
+  text: string;
+}
+
+function extractAnchors(html: string): Anchor[] {
+  const out: Anchor[] = [];
+  const re = /<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html))) out.push({ href: m[1], text: stripTags(m[2]) });
+  return out;
+}
+
+// Bewertet einen Link daraufhin, wie sehr er nach „Kontaktformular/Kontakt"
+// aussieht. Höher = besser. mailto:/tel:/Anker werden verworfen.
+function scoreCandidate(href: string, text: string): number {
+  if (/^(mailto:|tel:|javascript:|#)/i.test(href.trim())) return 0;
+  const h = deUmlaut(href.toLowerCase());
+  const t = deUmlaut(text.toLowerCase());
+  let score = 0;
+  if (/kontakt[-_/ ]?formular/.test(h) || /kontakt[-_/ ]?formular/.test(t)) score = 100;
+  else if (/\bkontakt\b/.test(t) || /[-_/]kontakt(\b|[-_/.])/.test(h)) score = 60;
+  else if (h.includes("buergerservice") || t.includes("buergerservice")) score = 45;
+  else if (/schreiben sie uns|ihre nachricht|nachricht senden|\banliegen\b/.test(t)) score = 45;
+  return score;
+}
+
+function findKontaktUrl(html: string, baseUrl: string): string | null {
+  const baseHost = safeHost(baseUrl);
+  let best: { url: string; score: number } | null = null;
+  for (const a of extractAnchors(html)) {
+    const base = scoreCandidate(a.href, a.text);
+    if (base <= 0) continue;
+    let abs: string;
+    try {
+      abs = new URL(a.href, baseUrl).toString();
+    } catch {
+      continue;
+    }
+    const score = safeHost(abs) === baseHost ? base : base - 25; // intern bevorzugen
+    if (!best || score > best.score) best = { url: abs, score };
+  }
+  return best && best.score >= 60 ? best.url : null;
+}
+
+async function fetchText(url: string): Promise<string | null> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": USER_AGENT, Accept: "text/html" },
+      signal: ctrl.signal,
+      redirect: "follow",
+    });
+    if (!res.ok) return null;
+    if (!(res.headers.get("content-type") ?? "").includes("html")) return null;
+    return await res.text();
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function pool<T>(
+  items: T[],
+  n: number,
+  worker: (item: T) => Promise<void>,
+): Promise<void> {
+  let idx = 0;
+  const runners = Array.from({ length: Math.min(n, items.length) }, async () => {
+    while (idx < items.length) await worker(items[idx++]);
+  });
+  await Promise.all(runners);
+}
+
+interface FormsOpts {
+  bl?: string;
+  limit?: number;
+  refetch: boolean;
+  dry: boolean;
+}
+
+async function scrapeForms(opts: FormsOpts): Promise<void> {
+  const supabase = await makeClient();
+
+  // Kandidaten: Website vorhanden; ohne --refetch nur die noch leeren (resumbar).
+  const candidates: { region_id: string; website: string }[] = [];
+  const PAGE = 1000;
+  for (let from = 0; ; from += PAGE) {
+    let q = supabase
+      .from("kommunen_kontakt")
+      .select("region_id, website")
+      .not("website", "is", null)
+      .order("region_id")
+      .range(from, from + PAGE - 1);
+    if (!opts.refetch) q = q.is("kontakt_url", null);
+    if (opts.bl) q = q.like("region_id", `${opts.bl}%`);
+    const { data, error } = await q;
+    if (error) throw new Error(`read candidates failed: ${error.message}`);
+    if (!data || data.length === 0) break;
+    for (const r of data) candidates.push(r as { region_id: string; website: string });
+    if (data.length < PAGE) break;
+  }
+
+  const list = opts.limit ? candidates.slice(0, opts.limit) : candidates;
+  log(`${list.length.toLocaleString()} Gemeinden zu prüfen${opts.bl ? ` (BL-Prefix ${opts.bl})` : ""}...`);
+
+  const now = new Date().toISOString();
+  const found: { region_id: string; kontakt_url: string; updated_at: string }[] = [];
+  let done = 0;
+  let errors = 0;
+  await pool(list, CONCURRENCY, async (c) => {
+    const html = await fetchText(c.website);
+    done++;
+    if (!html) {
+      errors++;
+    } else {
+      const url = findKontaktUrl(html, c.website);
+      if (url) found.push({ region_id: c.region_id, kontakt_url: url, updated_at: now });
+    }
+    if (done % 50 === 0) log(`  ${done}/${list.length} geprüft, ${found.length} gefunden`);
+  });
+
+  const rate = list.length ? ((100 * found.length) / list.length).toFixed(1) : "0";
+  log(
+    `${found.length}/${list.length} Kontaktlinks gefunden (${rate}%), ` +
+      `${errors} Seiten nicht erreichbar`,
+    "ok",
+  );
+
+  if (opts.dry) {
+    found.slice(0, 20).forEach((f) => log(`  ${f.region_id} → ${f.kontakt_url}`));
+    log("--dry: nichts geschrieben", "ok");
+    return;
+  }
+  // Nur kontakt_url + updated_at im Payload → website/email/Workflow-Felder bleiben.
+  for (let i = 0; i < found.length; i += 500) {
+    const batch = found.slice(i, i + 500);
+    const { error } = await supabase
+      .from("kommunen_kontakt")
+      .upsert(batch, { onConflict: "region_id" });
+    if (error) throw new Error(`upsert failed (batch ${i}): ${error.message}`);
+  }
+  log(`kontakt_url gespeichert (${found.length.toLocaleString()} Zeilen)`, "ok");
+}
+
 // ─── Stats ────────────────────────────────────────────────────────────────────
 
 async function stats(): Promise<void> {
@@ -280,16 +450,31 @@ async function main(): Promise<void> {
   const doSetup = argv.includes("--setup");
   const doWikidata = argv.includes("--wikidata");
   const doUpload = argv.includes("--upload");
+  const doForms = argv.includes("--forms");
   const doStats = argv.includes("--stats");
 
-  if (!doSetup && !doWikidata && !doUpload && !doStats) {
-    log("Nichts zu tun. Flags: --setup --wikidata --upload --stats [--dry]", "err");
+  const blArg = argv.find((a) => a.startsWith("--bl="));
+  const limitArg = argv.find((a) => a.startsWith("--limit="));
+  const formsOpts: FormsOpts = {
+    bl: blArg?.slice(5),
+    limit: limitArg ? parseInt(limitArg.slice(8), 10) : undefined,
+    refetch: argv.includes("--refetch"),
+    dry,
+  };
+
+  if (!doSetup && !doWikidata && !doUpload && !doForms && !doStats) {
+    log(
+      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --stats [--dry]\n" +
+        "  --forms [--bl=10] [--limit=N] [--refetch]  Kontaktlink je Website suchen",
+      "err",
+    );
     process.exit(1);
   }
 
   if (doSetup) await setup();
   if (doWikidata) writeCache(await fetchWikidata());
   if (doUpload) await upload(dry);
+  if (doForms) await scrapeForms(formsOpts);
   if (doStats) await stats();
   log("Fertig", "ok");
 }
