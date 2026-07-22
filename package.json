@@ -15,6 +15,7 @@
     "mastr:refresh": "tsx scripts/mastr-refresh.ts",
     "mastr:refresh-bnetza": "NODE_OPTIONS=--max-old-space-size=8192 tsx scripts/mastr-bnetza-refresh.ts",
     "destatis:gemeinden": "tsx scripts/destatis-gemeinden.ts",
+    "kommunen:kontakt": "tsx scripts/kommunen-kontakt-refresh.ts",
     "postinstall": "node -e \"if(!process.env.VERCEL && !process.env.CI){require('child_process').execSync('git config core.hooksPath .githooks',{stdio:'inherit'})}\"",
     "atlas:verify": "tsx scripts/atlas-verify.ts"
   },
