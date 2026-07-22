@@ -162,7 +162,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
           <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
         </button>
       ) : (
-        <Link href="/photovoltaik-rechner" style={{ ...(isDesktop ? linkStyle("") : mobileLinkStyle("")), gap: isDesktop ? 6 : 8 }} onClick={closeMenu}>
+        <Link href="/login" style={{ ...(isDesktop ? linkStyle("") : mobileLinkStyle("")), gap: isDesktop ? 6 : 8 }} onClick={closeMenu}>
           <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
         </Link>
       )
