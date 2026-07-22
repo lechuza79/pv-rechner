@@ -350,12 +350,16 @@ const S: Record<string, React.CSSProperties> = {
     // Füllt die (per align-items:stretch) gleich hohe Grid-Zelle.
     height: "100%",
   },
-  // Titelzeile: Titel links, Fragezeichen rechts.
+  // Titelzeile: Titel links, Fragezeichen rechts. Feste Mindesthöhe, damit der
+  // Kopf mit UND ohne Fragezeichen gleich hoch ist — sonst wird die Box mit
+  // Fragezeichen höher und die Innenabstände laufen zwischen den Gruppen
+  // auseinander (das Fragezeichen ist größer als der Titel-Text).
   groupHead: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     gap: space.sm,
+    minHeight: 20,
     marginBottom: space.sm,
   },
   groupTitle: {

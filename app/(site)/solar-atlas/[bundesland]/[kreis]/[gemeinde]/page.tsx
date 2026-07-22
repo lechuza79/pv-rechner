@@ -380,9 +380,10 @@ export default async function GemeindePage({ params }: { params: Params }) {
             (echte MaStR-Leistung) + standortgenaue 24h-Simulation. Beide auf gleicher
             Höhe (Reihe streckt); das Radial nur wenn Koordinaten vorliegen, sonst
             füllt der Mix die Reihe allein. */}
+        {/* Keine eigene Section-Überschrift: die beiden Widgets tragen ihre Titel
+            selbst ("Erneuerbare Leistung …" / "Solarleistung heute …") — eine
+            Dach-Überschrift wäre nur eine dritte, redundante Formulierung. */}
         <div style={S.section}>
-          <h2 style={S.h2}>Erneuerbare Energien in {region.name}</h2>
-          <p style={S.sub}>Installierte Leistung nach Technologie und die heutige Solarleistung, simuliert</p>
           <div style={S.sideBySide}>
             <div style={S.sbsItem}>
               <GemeindeErneuerbareWidget
@@ -453,13 +454,13 @@ export default async function GemeindePage({ params }: { params: Params }) {
         </div>
 
         <div style={S.disclaimer}>
-          Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur), Stand {atlas.data_as_of},
+          Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur), Stand {standLabel(atlas.data_as_of)},
           monatlich aktualisiert, Datenlizenz{" "}
           <a href="https://www.govdata.de/dl-de/by-2-0" target="_blank" rel="noopener noreferrer" style={S.licLink}>
             dl-de/by-2-0
           </a>{" "}
           (Daten aggregiert). Einwohnerzahlen und Gebietsstand: Statistisches Bundesamt,
-          Gemeindeverzeichnis{region.population_as_of ? `, Stand ${region.population_as_of}` : ""},
+          Gemeindeverzeichnis{region.population_as_of ? `, Stand ${standLabel(region.population_as_of)}` : ""},
           Datenlizenz dl-de/by-2-0.{" "}
           {geoLat !== null && geoLon !== null && (
             <>
