@@ -133,12 +133,19 @@ export const getRegionById = unstable_cache(getRegionByIdUncached, ["region-by-i
   revalidate: 3600,
 });
 
-/** Ein Suchtreffer für die Karten-Suche: nur das, was das Vorschlags-Item und die
- *  Navigation (über /api/atlas/goto?ags=) brauchen. */
+/** Ein Suchtreffer für die Karten-Suche: `label` ist die anzuzeigende Gattung
+ *  (die echte `bezeichnung`, z. B. „Kreisfreie Stadt", nicht die technische
+ *  Ebene). Die Navigation läuft über /api/atlas/goto?ags=<region_id>. */
 export type RegionHit = {
   region_id: string;
   name: string;
-  level: Exclude<Level, "de">;
+  label: string;
+};
+
+const LEVEL_FALLBACK: Record<string, string> = {
+  bundesland: "Bundesland",
+  landkreis: "Landkreis",
+  gemeinde: "Gemeinde",
 };
 
 /**
@@ -157,7 +164,7 @@ export async function searchRegions(q: string): Promise<RegionHit[]> {
   const { data, error } = await withDbTimeout(
     supabase
       .from("mastr_regions")
-      .select("region_id, level, name, population")
+      .select("region_id, level, name, bezeichnung, population")
       .ilike("name", `%${term}%`)
       .in("level", ["bundesland", "landkreis", "gemeinde"])
       .not("slug", "is", null)
@@ -167,11 +174,18 @@ export async function searchRegions(q: string): Promise<RegionHit[]> {
   );
   if (error) throw new Error(`searchRegions failed: ${error.message}`);
   const lower = term.toLowerCase();
-  const rows = (data ?? []).map((r) => ({
-    region_id: String(r.region_id),
-    name: regionDisplayName(String(r.name)),
-    level: r.level as Exclude<Level, "de">,
-  }));
+  const rows = (data ?? [])
+    // Kreisfreie Städte stehen doppelt in der Tabelle — auf Kreis-Ebene (5-stellig)
+    // UND auf Gemeinde-Ebene (8-stellig, z. B. 09663 + 09663000). In der Suche nur
+    // einmal: die 8-stellige Dublette raus, die Kreis-Ebene deckt die Stadt ab.
+    .filter((r) => !(r.bezeichnung === "Kreisfreie Stadt" && String(r.region_id).length === 8))
+    .map((r) => ({
+      region_id: String(r.region_id),
+      name: regionDisplayName(String(r.name)),
+      // Echte Gattung statt technischer Ebene: eine kreisfreie Stadt ist kein
+      // „Landkreis", auch wenn sie auf dessen Ebene liegt.
+      label: (r.bezeichnung as string | null) || LEVEL_FALLBACK[r.level] || "Region",
+    }));
   // Stabil: Präfix-Treffer nach vorn, sonst bleibt die Population-Ordnung.
   rows.sort(
     (a, b) =>

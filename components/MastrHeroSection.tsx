@@ -590,12 +590,7 @@ function SearchGlyph({ size = 16 }: { size?: number }) {
   );
 }
 
-type SearchHit = { region_id: string; name: string; level: "bundesland" | "landkreis" | "gemeinde" };
-const LEVEL_LABEL: Record<SearchHit["level"], string> = {
-  gemeinde: "Gemeinde",
-  landkreis: "Landkreis",
-  bundesland: "Bundesland",
-};
+type SearchHit = { region_id: string; name: string; label: string };
 
 /**
  * Regionssuche rechts in der Karten-Bar. Klick auf die Lupe klappt das Feld auf
@@ -717,7 +712,7 @@ function RegionSearch() {
                 style={{ ...SB.hit, background: i === active ? v("--color-bg-muted") : "transparent" }}
               >
                 <span style={SB.hitName}>{h.name}</span>
-                <span style={SB.hitLevel}>{LEVEL_LABEL[h.level]}</span>
+                <span style={SB.hitLevel}>{h.label}</span>
               </button>
             ))
           ) : (
