@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { tokens, v } from "../../../../lib/theme";
 import type { ThemeOverrides } from "../../../../lib/theme-overrides";
 import OptionCard from "../../../../components/OptionCard";
@@ -65,6 +66,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
       <div style={{ maxWidth: 640, margin: "0 auto" }}>
 
         <div style={{ marginBottom: 32 }}>
+          <Link href="/admin" style={{ fontSize: 12, fontWeight: 600, color: v('--color-accent'), textDecoration: "none", display: "inline-block", marginBottom: 10 }}>← Admin-Backend</Link>
           <div style={{ fontSize: 12, fontWeight: 700, color: v('--color-accent'), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Admin</div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: v('--color-text-primary'), marginBottom: 4 }}>Design System</h1>
           <p style={{ fontSize: 13, color: v('--color-text-muted') }}>Alle Tokens und Komponenten auf einen Blick.</p>
