@@ -47,6 +47,13 @@ export const revalidate = 3600;
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
+// Größenklassen-Platzierung vorerst geparkt (Nutzer-Entscheidung 2026-07-22):
+// die Kachelreihe wird nicht gerendert und die Abfrage nicht ausgeführt, bis die
+// Darstellung final ist. Komponente (GemeindePeerTiles), Datenzugriff
+// (getPeerContext) und die vorberechnete Tabelle bleiben im Repo — Reaktivierung
+// ist ein einziges Flag. Solange false: keine zusätzliche DB-Last pro Aufruf.
+const SHOW_PEER_TILES = false;
+
 // Index-Freischaltung gestaffelt über lib/atlas-index (Wellen; Plan in
 // docs/atlas-index-wellen.md). Gemeinden gehen erst in einer späteren Welle
 // indexiert raus — und dann nur oberhalb der Anlagen-Schwelle.
@@ -242,7 +249,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
     // The Kreis in raw cells: the table ranks it client-side per owner AND per
     // metric, which no fixed RPC result could serve.
     kreis ? getRankingData(kreis) : Promise.resolve({ regions: [], cells: [] }),
-    region.population
+    SHOW_PEER_TILES && region.population
       ? getPeerContext(region.region_id, blAgs, band.min, band.max)
       : Promise.resolve([] as PeerRow[]),
   ]);
@@ -336,7 +343,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
           })}
         </p>
 
-        {!!region.population && (
+        {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
         )}
 

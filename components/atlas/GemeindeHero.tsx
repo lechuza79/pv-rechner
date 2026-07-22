@@ -48,17 +48,21 @@ const METRICS: { key: Metric; label: string }[] = [
   { key: "speicher", label: "Batteriespeicher" },
 ];
 
-/**
- * Category colours, fixed. A slice that means "Freifläche" cannot change meaning
- * between light and dark (widget convention: theme owns background, text and
- * accent, never semantics).
- */
-const SEG: Record<string, { label: string; color: string }> = {
-  privat_dach: { label: "Private Dächer", color: "#1365EA" },
-  gewerbe_dach: { label: "Gewerbedächer", color: "#6A9EF2" },
-  steckersolar: { label: "Balkonkraftwerke", color: "#BCD6FF" },
-  freiflaeche: { label: "Freifläche", color: "#073C93" },
+const SEG: Record<string, { label: string }> = {
+  privat_dach: { label: "Private Dächer" },
+  gewerbe_dach: { label: "Gewerbedächer" },
+  steckersolar: { label: "Balkonkraftwerke" },
+  freiflaeche: { label: "Freifläche" },
 };
+
+/**
+ * Donut-Farben nach GRÖSSE, nicht nach Kategorie: das größte Segment am
+ * dunkelsten, dann heller. Welcher Anlagentyp welche Farbe hat, steht in der
+ * Legende daneben — die Farbe kodiert hier den Rang, damit das Auge die
+ * Reihenfolge ohne Prozentlesen erfasst. Hex statt Token, weil der Donut auch
+ * im Embed rendert, wo die CSS-Variablen fehlen (Blau-Accent-Familie, dunkel→hell).
+ */
+const DONUT_RAMP = ["#073C93", "#1365EA", "#6A9EF2", "#BCD6FF"];
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
@@ -195,8 +199,10 @@ export default function GemeindeHero({
     () =>
       cells
         .filter((c) => c.kwp > 0 && SEG[c.segment] && keep(c.segment))
-        .map((c) => ({ key: c.segment, label: SEG[c.segment].label, color: SEG[c.segment].color, value: c.kwp, count: c.count }))
-        .sort((a, b) => b.value - a.value),
+        .map((c) => ({ key: c.segment, label: SEG[c.segment].label, value: c.kwp, count: c.count }))
+        .sort((a, b) => b.value - a.value)
+        // Farbe erst nach dem Sortieren: nach Rang dunkel→hell (siehe DONUT_RAMP).
+        .map((s, i) => ({ ...s, color: DONUT_RAMP[Math.min(i, DONUT_RAMP.length - 1)] })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [cells, owner],
   );
@@ -318,16 +324,14 @@ export default function GemeindeHero({
               <div onMouseLeave={() => setActive(null)} style={{ display: "inline-block" }}>
                 <DonutChart segments={slices} size={170}>
                   <div key={shown?.key ?? "total"} style={S.center}>
-                    <div style={S.centerValue}>
-                      {/* Zahl groß, Einheit untergeordnet — dieselbe Staffelung
-                          wie in den Kacheln. */}
-                      {pvLeistungTeile(shown ? shown.value : total).value}
-                      <span style={S.centerUnit}> {pvLeistungTeile(shown ? shown.value : total).unit}</span>
-                    </div>
-                    <div style={S.centerLabel}>{shown ? shown.label : "gesamt"}</div>
-                    <div style={S.centerSub}>
-                      {shown ? `${nf(shown.count)} Anlagen` : `${Math.round(total > 0 ? 100 : 0)} %`}
-                    </div>
+                    {/* Zahl groß und zentriert, Einheit klein darunter. Kein
+                        „gesamt"/„100 %" mehr — die Summe steht schon als Kennzahl
+                        oben, hier war sie doppelt. Beim Überfahren eines Segments
+                        tritt dessen Name + Anlagenzahl an die Stelle. */}
+                    <div style={S.centerValue}>{pvLeistungTeile(shown ? shown.value : total).value}</div>
+                    <div style={S.centerUnit}>{pvLeistungTeile(shown ? shown.value : total).unit}</div>
+                    {shown && <div style={S.centerLabel}>{shown.label}</div>}
+                    {shown && <div style={S.centerSub}>{nf(shown.count)} Anlagen</div>}
                   </div>
                 </DonutChart>
               </div>
@@ -456,11 +460,12 @@ const S: Record<string, React.CSSProperties> = {
   split: { display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start" },
   left: { flex: "1 1 220px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, minWidth: 0 },
   right: { flex: "1 1 300px", minWidth: 0 },
-  center: { animation: "fu 0.18s ease-out" },
+  center: { animation: "fu 0.18s ease-out", textAlign: "center" },
   rowsFade: { animation: "fu 0.28s ease-out" },
-  centerValue: { fontFamily: v("--font-mono"), fontSize: 19, fontWeight: 700, lineHeight: 1.1 },
-  centerUnit: { fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary") },
-  centerLabel: { fontSize: 11, color: v("--color-text-secondary"), marginTop: 2 },
+  centerValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700, lineHeight: 1.1 },
+  // Einheit als eigene Zeile unter dem Wert, kleiner und heller.
+  centerUnit: { fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary"), marginTop: 1 },
+  centerLabel: { fontSize: 11, color: v("--color-text-secondary"), marginTop: 4 },
   centerSub: { fontSize: 10, color: v("--color-text-muted"), fontFamily: v("--font-mono") },
   legend: { display: "flex", flexWrap: "wrap", gap: "4px 10px", justifyContent: "center" },
   legendItem: {

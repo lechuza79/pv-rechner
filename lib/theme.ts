@@ -524,6 +524,32 @@ export const globalStyles = `
   }
   @media (max-width:420px){.kpi-reihe .kpi-kachel{flex:0 0 58%}}
   @media (prefers-reduced-motion:reduce){.kpi-reihe{scroll-behavior:auto}}
+
+  /* Gruppierte Kennzahlen (Gemeinde-Seite): je Gruppe eine Box, Boxen
+     nebeneinander. Spaltenbreite folgt der Kennzahl-Zahl (--kpi-group-cols,
+     z. B. "4fr 2fr"); auf schmalen Schirmen stapeln die Boxen. */
+  .kpi-groups{display:grid;grid-template-columns:var(--kpi-group-cols,1fr);gap:12px;align-items:start;animation:fu 0.28s ease-out}
+  /* Kennzahlen innerhalb einer Box, gleich breite Spalten (--kpi-tiles). Die
+     Trennlinien entstehen aus 1px gap auf border-Farbe, den die Zellen bis auf
+     den Spalt ueberdecken — so bleibt das Liniengitter korrekt, egal ob die
+     Zellen in einer Reihe stehen (Desktop) oder auf schmalen Schirmen zu 2x2
+     umbrechen. border-left je Zelle wuerde beim Umbruch an falscher Stelle
+     sitzen. */
+  .kpi-tilerow{display:grid;grid-template-columns:repeat(var(--kpi-tiles,1),minmax(0,1fr));gap:1px;background:var(--color-border)}
+  .kpi-cell{min-width:0;background:var(--color-bg-muted);padding:4px 12px}
+  /* Wert + Einheit als Klassen, damit die Schrift auf schmalen Schirmen
+     schrumpfen kann (inline schluege jede Media Query). Einheit heller, eigene
+     Zeile mit echtem Abstand. Zahlen brechen NIE um (nowrap) — eine umgebrochene
+     "10.043" ist unlesbar; auf schmalen Schirmen sorgt 2x2 fuer genug Breite. */
+  .kpi-val{font-family:var(--font-mono);font-size:22px;font-weight:700;line-height:1.1;white-space:nowrap}
+  .kpi-unit{font-family:var(--font-mono);font-size:var(--font-size-small);font-weight:600;color:var(--color-text-muted);margin-top:2px;margin-bottom:6px}
+  /* Titellose Einzelgruppe (Kreis-/Bundesland): schlichte Kachelreihe. */
+  .kpi-plainrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;animation:fu 0.28s ease-out}
+  @media (max-width:640px){.kpi-groups{grid-template-columns:1fr;gap:8px}}
+  /* Auf schmalen Schirmen hoechstens zwei Kennzahlen nebeneinander — vier in
+     einer 340px-Box zwaengen breite Zahlen wie "10.043" ausser Form. */
+  @media (max-width:520px){.kpi-tilerow{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi-val{font-size:19px}}
+
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
   .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
 `;

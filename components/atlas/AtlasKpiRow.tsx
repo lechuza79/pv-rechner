@@ -16,17 +16,20 @@ type PerCap = Record<string, number | null>;
 export type RefLevel = { key: string; name: string; perCap: PerCap };
 /**
  * Eine Kachel. `value` ist der Zahlenwert, `unit` die Einheit — bewusst getrennt:
- * die Zahl trägt die Kachel, die Einheit steht kleiner daneben. Als ein String
- * übergeben würde sie in Kachelgröße mitschreien.
+ * die Zahl trägt die Kachel, die Einheit steht als eigene Zeile klein darunter.
+ * Als ein String übergeben würde sie in Kachelgröße mitschreien und je nach
+ * Zahlbreite mal daneben, mal umgebrochen stehen (uneinheitlich).
  */
 export type KpiTile = { label: string; value: string; unit?: string; metric?: string; sub?: string };
 /**
- * Eine Kachel-Gruppe, z. B. „Solaranlagen" und „Speicher".
+ * Eine Kachel-Gruppe, z. B. „Solaranlagen" und „Batteriespeicher".
  *
- * Ohne Titel rendert die Gruppe als schlichte Kachelreihe — so bleibt die
- * Kreis-/Bundesland-Seite unverändert, während die Gemeinde-Seite zwei benannte
- * Blöcke zeigt. `note` gehört zur Gruppe (etwa der Pumpspeicher-Hinweis), nicht
- * unter die ganze Reihe: dort stünde er neben Zahlen, über die er nichts sagt.
+ * Bei mehreren Gruppen wird jede zu EINER Box mit Titel; die Kennzahlen darin
+ * sind durch dünne senkrechte Linien getrennt statt als einzelne Kacheln zu
+ * schweben. Eine einzelne titellose Gruppe (Kreis-/Bundesland-Seite) bleibt eine
+ * schlichte Reihe eigenständiger Kacheln. `note` gehört zur Gruppe (etwa der
+ * Pumpspeicher-Hinweis), nicht unter die ganze Reihe: dort stünde er neben
+ * Zahlen, über die er nichts sagt.
  */
 export type KpiGroup = { title?: string; tiles: KpiTile[]; note?: string };
 
@@ -56,11 +59,10 @@ export default function AtlasKpiRow({
     return a / b - 1;
   };
 
-  // Eine Reihe statt Gruppenblöcke: die Kacheln sind schmal genug, dass alle
-  // sechs nebeneinander passen. Die Gruppen-Titel entfallen dabei — deshalb muss
-  // jede Kachel-Beschriftung für sich stehen ("Batterien", nicht "Anzahl").
-  const alleKacheln = groups.flatMap((g) => g.tiles);
-  const hinweise = groups.map((g) => g.note).filter((n): n is string => !!n);
+  const grouped = groups.length > 1;
+  // Neu gekeyt, sobald sich die Werte ändern (z. B. Eigentümer-Filter) — die
+  // Kacheln blenden dann um, statt hart zu springen.
+  const valuesKey = groups.flatMap((g) => g.tiles.map((t) => t.value)).join("|");
 
   return (
     <>
@@ -78,86 +80,70 @@ export default function AtlasKpiRow({
         </div>
       )}
 
-      {/* Neu gekeyt, sobald sich die Werte ändern (z. B. Eigentümer-Filter) — die
-          Kacheln blenden dann um, statt hart zu springen. */}
-      <KachelReihe
-        key={groups.flatMap((g) => g.tiles.map((t) => t.value)).join("|")}
-        tiles={alleKacheln}
-        dev={dev}
-      />
-      {hinweise.map((h, i) => (
-        <div key={i} style={S.footnote}>
-          {h}
+      {grouped ? (
+        // Gruppen als eigene Boxen nebeneinander; die Spaltenbreite folgt der Zahl
+        // der Kennzahlen (4 : 2 → doppelt so breite Solaranlagen-Box), damit die
+        // einzelnen Werte in beiden Boxen etwa gleich breit sind. Auf schmalen
+        // Schirmen stapeln sie (Media Query in lib/theme.ts, .kpi-groups).
+        <div
+          key={valuesKey}
+          className="kpi-groups"
+          style={{ "--kpi-group-cols": groups.map((g) => `${g.tiles.length}fr`).join(" ") } as React.CSSProperties}
+        >
+          {groups.map((g, gi) => (
+            <div key={gi} style={S.groupBox}>
+              {g.title && <div style={S.groupTitle}>{g.title}</div>}
+              <div
+                className="kpi-tilerow"
+                style={{ "--kpi-tiles": g.tiles.length } as React.CSSProperties}
+              >
+                {g.tiles.map((t, i) => (
+                  // Trennlinie kommt aus .kpi-cell + .kpi-cell (jede Zelle außer
+                  // der ersten), nicht aus einer i>0-Prüfung — so kann sie auf
+                  // schmalen Schirmen per Media Query weichen.
+                  <div key={i} className="kpi-cell">
+                    <Tile t={t} dev={dev(t.metric)} />
+                  </div>
+                ))}
+              </div>
+              {g.note && <div style={S.groupNote}>{g.note}</div>}
+            </div>
+          ))}
         </div>
-      ))}
+      ) : (
+        // Einzelne titellose Gruppe: schlichte Reihe eigenständiger Kacheln,
+        // unverändert für Kreis-/Bundesland-Seite.
+        <div key={valuesKey} className="kpi-plainrow" style={{ marginBottom: space.sm }}>
+          {groups[0]?.tiles.map((t, i) => (
+            <div key={i} style={S.standalone}>
+              <Tile t={t} dev={dev(t.metric)} />
+            </div>
+          ))}
+          {groups[0]?.note && <div style={S.groupNote}>{groups[0].note}</div>}
+        </div>
+      )}
     </>
   );
 }
 
 /**
- * Die Kachel-Reihe: auf breiten Schirmen alle sechs nebeneinander, auf schmalen
- * eine wischbare Leiste.
- *
- * Mit Bordmitteln statt Slider-Bibliothek: overflow-x plus scroll-snap ist genau
- * das, was hier gebraucht wird. Wischen mit Trägheit und sauberes Einrasten
- * liefert der Browser selbst — inklusive Tastaturbedienung (die Leiste ist
- * fokussierbar, die Pfeiltasten scrollen) und Bildschirmleser. Eine Bibliothek
- * brächte Loop, Pfeile und Autoplay mit, von denen wir nichts brauchen, und
- * würde bei sechs Kacheln ohne Loop ohnehin nur das nachbauen, was der Browser
- * kann.
- *
- * Dass es weitergeht, zeigen zwei Dinge: die nächste Kachel ist angeschnitten
- * (die Kachelbreite geht bewusst nicht glatt auf), und an der Kante liegt ein
- * weicher Verlauf, der verschwindet, sobald dort nichts mehr kommt.
+ * Der Inhalt einer Kachel: Beschriftung, Wert, Einheit als eigene Zeile darunter
+ * (klein, heller), Tendenzpfeil, optionale Fußzeile. Die Einheit steht IMMER
+ * unter dem Wert — nie mal daneben, mal umgebrochen —, damit die Kacheln als
+ * Raster ruhig lesen.
  */
-function KachelReihe({ tiles, dev }: { tiles: KpiTile[]; dev: (m?: string) => number | null }) {
-  const leiste = useRef<HTMLDivElement | null>(null);
-  const [restLinks, setRestLinks] = useState(false);
-  const [restRechts, setRestRechts] = useState(false);
-
-  useEffect(() => {
-    const el = leiste.current;
-    if (!el) return;
-    const pruefen = () => {
-      // 2 px Toleranz: Browser runden die Scrollposition, sonst bleibt der
-      // Verlauf am Ende als Ein-Pixel-Rest stehen.
-      setRestLinks(el.scrollLeft > 2);
-      setRestRechts(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
-    };
-    pruefen();
-    el.addEventListener("scroll", pruefen, { passive: true });
-    const ro = new ResizeObserver(pruefen);
-    ro.observe(el);
-    return () => {
-      el.removeEventListener("scroll", pruefen);
-      ro.disconnect();
-    };
-  }, [tiles.length]);
-
+function Tile({ t, dev }: { t: KpiTile; dev: number | null }) {
   return (
-    <div style={S.viewport}>
-      <div
-        className="kpi-reihe"
-        ref={leiste}
-        tabIndex={0}
-        role="group"
-        aria-label="Kennzahlen — seitlich scrollbar"
-      >
-        {tiles.map((t, i) => (
-          <div key={i} className="kpi-kachel" style={S.metric}>
-            <div style={S.metricLabel}>{t.label}</div>
-            <div style={S.metricValue}>
-              {t.value}
-              {t.unit && <span style={S.metricUnit}> {t.unit}</span>}
-            </div>
-            <TendTag dev={dev(t.metric)} />
-            {t.sub && <div style={S.metricSub}>{t.sub}</div>}
-          </div>
-        ))}
-      </div>
-      {restLinks && <span aria-hidden style={{ ...S.kante, ...S.kanteLinks }} />}
-      {restRechts && <span aria-hidden style={{ ...S.kante, ...S.kanteRechts }} />}
-    </div>
+    <>
+      <div style={S.tileLabel}>{t.label}</div>
+      {/* Wert + Einheit als Klassen (nicht inline), damit die Schrift auf schmalen
+          Schirmen per Media Query kleiner werden kann — inline schlägt jede
+          Media Query. */}
+      <div className="kpi-val">{t.value}</div>
+      {t.unit && <div className="kpi-unit">{t.unit}</div>}
+      <TendTag dev={dev} />
+      {t.sub && <div style={S.tileSub}>{t.sub}</div>}
+    </>
   );
 }
 
@@ -209,31 +195,44 @@ function RefPicker({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  // Layout NICHT inline: Inline-Styles schlagen jede Media Query, der Slider
-  // hätte auf dem Handy nie umgeschaltet. Grid/Flex stehen deshalb komplett im
-  // CSS-Block (lib/theme.ts, .kpi-reihe) — hier bleibt nur die Einblend-Animation.
-  // Die Einblend-Animation gehört auf den äußeren Rahmen, NICHT auf die Reihe:
-  // sie animiert transform, und genau darüber schiebt Embla den Slider. Beides
-  // auf demselben Element heißt, dass die Animation Embla überschreibt — der
-  // Slider sprang dann vertikal statt horizontal.
-  viewport: { position: "relative", marginBottom: space.sm, animation: "fu 0.28s ease-out" },
-  // Weicher Auslauf an der Kante — zeigt, dass seitlich noch etwas kommt.
-  kante: { position: "absolute", top: 0, bottom: 0, width: 24, pointerEvents: "none" },
-  kanteLinks: { left: 0, background: `linear-gradient(to right, ${v("--color-bg")}, transparent)` },
-  kanteRechts: { right: 0, background: `linear-gradient(to left, ${v("--color-bg")}, transparent)` },
-  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: pad("lg") },
-  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
-  metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
-  // Die Einheit ordnet sich unter: kleiner, ruhiger, aber lesbar.
-  metricUnit: { fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary") },
-  metricSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: space.xxs, lineHeight: 1.4 },
-  footnote: {
+  // Eine Gruppen-Box: gemeinsame Fläche, Titel oben, Kennzahlen innen durch Linien
+  // getrennt. Ecken/Hintergrund wie die übrigen Panels.
+  groupBox: {
+    background: v("--color-bg-muted"),
+    borderRadius: v("--radius-md"),
+    padding: pad("lg"),
+    minWidth: 0,
+  },
+  groupTitle: {
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: "0.04em",
+    textTransform: "uppercase",
+    color: v("--color-text-secondary"),
+    marginBottom: space.sm,
+  },
+  // Eigenständige Kachel (titellose Einzelgruppe): eigener Hintergrund.
+  standalone: {
+    background: v("--color-bg-muted"),
+    borderRadius: v("--radius-md"),
+    padding: pad("lg"),
+    minWidth: 0,
+  },
+
+  tileLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
+  tileSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: space.xxs, lineHeight: 1.4 },
+  groupNote: {
     fontSize: 12,
     color: v("--color-text-secondary"),
-    margin: `${space.xs}px ${space.xxs}px 0`,
+    margin: `${space.sm}px ${space.xxs}px 0`,
     lineHeight: 1.5,
   },
-  caption: { fontSize: v("--font-size-body"), color: v("--color-text-secondary"), margin: `0 ${space.xxs}px ${space.sm}px`, lineHeight: 1.5 },
+  caption: {
+    fontSize: v("--font-size-body"),
+    color: v("--color-text-secondary"),
+    margin: `0 ${space.xxs}px ${space.sm}px`,
+    lineHeight: 1.5,
+  },
   captionStrong: { color: v("--color-text-secondary"), fontWeight: 600 },
   pickerBtn: {
     display: "inline-flex",
