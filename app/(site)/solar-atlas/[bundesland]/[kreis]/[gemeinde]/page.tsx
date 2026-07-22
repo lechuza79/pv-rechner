@@ -439,8 +439,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
           </div>
         )}
 
-
-
         {(ownCity || hasLandProgram) && (
           <div style={S.section}>
             <h2 style={S.h2}>Förderung in {region.name}</h2>
@@ -515,17 +513,6 @@ const S: Record<string, React.CSSProperties> = {
   stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },
   standDate: { fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
-  metricsGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
-    gap: space.md,
-    marginBottom: space.md,
-  },
-  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: pad("lg") },
-  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
-  metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
-  metricSub: { fontSize: 10, color: v("--color-text-muted"), marginTop: space.xxs, lineHeight: 1.4 },
-  tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.xxl}px` },
   h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.xs}px` },
   sub: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` },
   section: { marginBottom: space.huge },
