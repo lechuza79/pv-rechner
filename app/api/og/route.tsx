@@ -5,6 +5,15 @@ import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryRepl
 import { calcWpAnnualElectricity } from "../../../lib/heatpump";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
+import { tokens } from "../../../lib/theme";
+
+// The OG image is a fixed light-brand render (satori has no CSS variables), so
+// colours are read as raw literals from the single source (theme.ts base tokens)
+// rather than re-typed hex — same values, no drift.
+const C_POSITIVE = tokens["--color-positive"];
+const C_ACCENT = tokens["--color-accent"];
+const C_NEGATIVE = tokens["--color-negative"];
+const C_TEXT = tokens["--color-text-primary"];
 
 export const runtime = "edge";
 
@@ -139,7 +148,7 @@ export async function GET(req: NextRequest) {
         y1: cy + innerR * Math.sin(a),
         x2: cx + (innerR + len) * Math.cos(a),
         y2: cy + (innerR + len) * Math.sin(a),
-        color: i === N - 1 ? "#00D950" : "#1365EA",
+        color: i === N - 1 ? C_POSITIVE : C_ACCENT,
       };
     });
     const gwStr = data.currentGW.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -159,7 +168,7 @@ export async function GET(req: NextRequest) {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", flexDirection: "column", width: 560 }}>
               <div style={{ display: "flex", alignItems: "center" }}>
-                <div style={{ width: 12, height: 12, borderRadius: 6, background: "#00D950", marginRight: 10 }} />
+                <div style={{ width: 12, height: 12, borderRadius: 6, background: C_POSITIVE, marginRight: 10 }} />
                 <span style={{ fontSize: 17, color: "#777777", letterSpacing: 1 }}>ERNEUERBARE · GERADE EBEN</span>
               </div>
               <span style={{ fontSize: 50, fontWeight: 700, color: "#1365EA", lineHeight: 1.15, marginTop: 14 }}>
@@ -250,7 +259,7 @@ export async function GET(req: NextRequest) {
   const rendite25j = result.total;
   const avgSavings = Math.round(rendite25j / 25);
 
-  const amortColor = amortYears !== null ? "#1365EA" : "#EF4444";
+  const amortColor = amortYears !== null ? C_ACCENT : C_NEGATIVE;
   const amortText = amortYears !== null ? `${amortYears}` : ">25";
   const renditeStr = `${rendite25j > 0 ? "+" : ""}${fmt(rendite25j)}`;
   const savingsStr = `${avgSavings > 0 ? "+" : ""}${fmt(avgSavings)}`;
@@ -313,13 +322,13 @@ export async function GET(req: NextRequest) {
           <div style={{ display: "flex", gap: 40 }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>RENDITE 25 J.</span>
-              <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: rendite25j > 0 ? "#00D950" : "#EF4444" }}>
+              <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: rendite25j > 0 ? C_POSITIVE : C_NEGATIVE }}>
                 {`${renditeStr} \u20AC`}
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <span style={{ fontSize: 14, color: "#777777", letterSpacing: 1 }}>ERSPARNIS / JAHR</span>
-              <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: avgSavings > 0 ? "#00D950" : "#3F3F3F" }}>
+              <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "JetBrains Mono", color: avgSavings > 0 ? C_POSITIVE : C_TEXT }}>
                 {`${savingsStr} \u20AC`}
               </span>
             </div>

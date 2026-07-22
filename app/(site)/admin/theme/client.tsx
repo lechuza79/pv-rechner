@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import { tokens, v } from "../../../../lib/theme";
+import type { ThemeOverrides } from "../../../../lib/theme-overrides";
 import OptionCard from "../../../../components/OptionCard";
 import TriToggle from "../../../../components/TriToggle";
 import InlineEdit from "../../../../components/InlineEdit";
 import Chart from "../../photovoltaik-rechner/_components/Chart";
+import GreenThemingEditor from "./GreenThemingEditor";
 
 // Group tokens by category for display
 const tokenGroups: { label: string; prefix: string }[] = [
@@ -32,21 +34,21 @@ function isColor(value: string) {
 // Sample chart data for demo
 const sampleScenarios = [
   {
-    id: "pessimistic", color: "#EF4444",
+    id: "pessimistic", color: v("--color-negative"),
     data: {
       years: Array.from({ length: 26 }, (_, i) => ({ i, kum: -15000 + i * 700 })),
       be: { i: 21, kum: 0 },
     },
   },
   {
-    id: "realistic", color: "#00D950",
+    id: "realistic", color: v("--color-positive"),
     data: {
       years: Array.from({ length: 26 }, (_, i) => ({ i, kum: -15000 + i * 1100 })),
       be: { i: 14, kum: 0 },
     },
   },
   {
-    id: "optimistic", color: "#1365EA",
+    id: "optimistic", color: v("--color-accent"),
     data: {
       years: Array.from({ length: 26 }, (_, i) => ({ i, kum: -15000 + i * 1500 })),
       be: { i: 10, kum: 0 },
@@ -54,7 +56,7 @@ const sampleScenarios = [
   },
 ];
 
-export default function ThemeClient() {
+export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }) {
   const [triValue, setTriValue] = useState("nein");
   const [editValue, setEditValue] = useState(15000);
 
@@ -67,6 +69,9 @@ export default function ThemeClient() {
           <h1 style={{ fontSize: 24, fontWeight: 800, color: v('--color-text-primary'), marginBottom: 4 }}>Design System</h1>
           <p style={{ fontSize: 13, color: v('--color-text-muted') }}>Alle Tokens und Komponenten auf einen Blick.</p>
         </div>
+
+        {/* ── GREEN THEMING (interactive, persistent) ── */}
+        <GreenThemingEditor initial={overrides} />
 
         {/* ── COLOR TOKENS ── */}
         {tokenGroups.map(group => {

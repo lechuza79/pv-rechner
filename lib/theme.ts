@@ -2,7 +2,7 @@
 // Used by getCssVariables() (injected in layout.tsx) and v() helper (for inline styles).
 // For whitelabeling: swap token values per tenant, UI updates automatically.
 //
-// v2: Consolidated from Figma design. See theme-v1.ts for previous token set.
+// v2: Consolidated from Figma design (the previous v1 token set has been removed).
 
 export const tokens = {
   // ─── Backgrounds (3) ────────────────────────────────────────────────────────
@@ -396,6 +396,19 @@ export function getThemeOverrides(): string {
       return `:root[data-theme="s${i}"] {\n${body}\n}`;
     })
     .join('\n');
+}
+
+/** Number of brightness stages (s0 … s6). */
+export const STAGE_COUNT = STAGE_TOKENS.length + 1; // + s6 (the base)
+
+/**
+ * The effective token values a stage resolves to from the design system alone
+ * (base ⊕ the stage's own overrides), BEFORE any admin theming overlay. s6 is
+ * the base. Used by the admin theming preview to render any stage in isolation,
+ * and as the "default" a per-stage admin override falls back to.
+ */
+export function stageDefaults(i: number): Record<TokenName, string> {
+  return { ...base, ...(STAGE_TOKENS[i] ?? {}) };
 }
 
 /** Global reset + animations (shared across all pages) */
