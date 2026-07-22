@@ -165,8 +165,11 @@ export default async function GemeindePage({ params }: { params: Params }) {
       groups: [
         {
           title: "Solaranlagen",
+          // Erste Kennzahl ist die Anzahl — beide Boxen (Anlagen wie Speicher)
+          // beginnen mit "Anzahl", dann folgt das Mengenmaß. Der Box-Titel sagt
+          // schon "Solaranlagen", deshalb "Anzahl" statt des redundanten "Anlagen".
           tiles: [
-            { label: "Anlagen", value: nf(s.count), metric: "count" },
+            { label: "Anzahl", value: nf(s.count), metric: "count" },
             { label: "Installiert", ...pvLeistungTeile(s.kwp), metric: "kwp" },
             {
               label: "je Einwohner",
@@ -178,19 +181,19 @@ export default async function GemeindePage({ params }: { params: Params }) {
         },
         {
           title: "Batteriespeicher",
+          // Gleiche Reihenfolge wie bei den Solaranlagen: erst Anzahl, dann die
+          // Kapazität. Der Box-Titel trägt "Batteriespeicher", deshalb "Anzahl"
+          // und "Kapazität" statt "Batterien"/"Batteriespeicher".
+          // Anzahl zählt nur Batterien (nicht Pumpspeicher) — Anzahl und Kapazität
+          // müssen dasselbe meinen; der Rest steht als Erklärung auf der Rückseite.
           tiles: [
+            { label: "Anzahl", value: nf(s.batterieCount), sub: avgSub },
             {
-              label: "Batteriespeicher",
+              label: "Kapazität",
               ...speicherKwhTeile(s.speicherKwh),
               metric: "speicher",
               sub: proKwp !== null ? fmtSpeicherJeKwp(proKwp) : undefined,
             },
-            // Zählt Batterien, nicht alle Speicher: Anzahl und Kapazität müssen
-            // dasselbe meinen. Was sonst noch im Ort steht, sagt die Zeile darunter.
-            // Ohne Einheit: die Kachel steht in der Gruppe "Batteriespeicher"
-            // und traegt die Beschriftung "Anzahl" — das Wort dahinter waere
-            // dieselbe Aussage ein drittes Mal.
-            { label: "Batterien", value: nf(s.batterieCount), sub: avgSub },
           ],
           note: speicherHinweis(s.nichtBatterie) ?? undefined,
         },

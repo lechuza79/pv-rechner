@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../lib/theme";
-import { IconChevronDown } from "../Icons";
+import { IconChevronDown, IconHelpCircle, IconClose } from "../Icons";
 import TendTag from "./TendTag";
 
 /**
@@ -91,23 +91,7 @@ export default function AtlasKpiRow({
           style={{ "--kpi-group-cols": groups.map((g) => `${g.tiles.length}fr`).join(" ") } as React.CSSProperties}
         >
           {groups.map((g, gi) => (
-            <div key={gi} style={S.groupBox}>
-              {g.title && <div style={S.groupTitle}>{g.title}</div>}
-              <div
-                className="kpi-tilerow"
-                style={{ "--kpi-tiles": g.tiles.length } as React.CSSProperties}
-              >
-                {g.tiles.map((t, i) => (
-                  // Trennlinie kommt aus .kpi-cell + .kpi-cell (jede Zelle außer
-                  // der ersten), nicht aus einer i>0-Prüfung — so kann sie auf
-                  // schmalen Schirmen per Media Query weichen.
-                  <div key={i} className="kpi-cell">
-                    <Tile t={t} dev={dev(t.metric)} />
-                  </div>
-                ))}
-              </div>
-              {g.note && <div style={S.groupNote}>{g.note}</div>}
-            </div>
+            <GroupBox key={gi} group={g} dev={dev} />
           ))}
         </div>
       ) : (
@@ -116,7 +100,7 @@ export default function AtlasKpiRow({
         <div key={valuesKey} className="kpi-plainrow" style={{ marginBottom: space.sm }}>
           {groups[0]?.tiles.map((t, i) => (
             <div key={i} style={S.standalone}>
-              <Tile t={t} dev={dev(t.metric)} />
+              <Tile t={t} dev={dev(t.metric)} showSub />
             </div>
           ))}
           {groups[0]?.note && <div style={S.groupNote}>{groups[0].note}</div>}
@@ -127,12 +111,113 @@ export default function AtlasKpiRow({
 }
 
 /**
- * Der Inhalt einer Kachel: Beschriftung, Wert, Einheit als eigene Zeile darunter
- * (klein, heller), Tendenzpfeil, optionale Fußzeile. Die Einheit steht IMMER
- * unter dem Wert — nie mal daneben, mal umgebrochen —, damit die Kacheln als
- * Raster ruhig lesen.
+ * Eine Gruppen-Box mit Umdreh-Funktion. Hat die Gruppe erklärungsbedürftige
+ * Zusatzangaben (Kachel-Fußnoten wie „⌀ 16 kWh, gemischt" oder der
+ * Pumpspeicher-Hinweis), stehen die NICHT unter den Zahlen — sie verstopfen dort
+ * die ruhige Kachel — sondern auf der Rückseite, erreichbar über das Fragezeichen
+ * oben rechts. Ohne solche Angaben (z. B. die Solaranlagen-Box) gibt es kein
+ * Fragezeichen und keine Rückseite. Flip-Technik wie components/MastrLiveRadial.
  */
-function Tile({ t, dev }: { t: KpiTile; dev: number | null }) {
+function GroupBox({ group, dev }: { group: KpiGroup; dev: (m?: string) => number | null }) {
+  const [flipped, setFlipped] = useState(false);
+  const explains = group.tiles
+    .filter((t): t is KpiTile & { sub: string } => !!t.sub)
+    .map((t) => ({ label: t.label, sub: t.sub }));
+  const hasBack = explains.length > 0 || !!group.note;
+
+  const front = (
+    <div style={S.groupBox}>
+      <div style={S.groupHead}>
+        {group.title && <div style={S.groupTitle}>{group.title}</div>}
+        {hasBack && (
+          <button
+            type="button"
+            onClick={() => setFlipped(true)}
+            style={S.helpBtn}
+            aria-label="Erklärung zu diesen Zahlen anzeigen"
+            title="Was bedeuten diese Zahlen?"
+          >
+            <IconHelpCircle size={15} />
+          </button>
+        )}
+      </div>
+      <div className="kpi-tilerow" style={{ "--kpi-tiles": group.tiles.length } as React.CSSProperties}>
+        {group.tiles.map((t, i) => (
+          // Trennlinie kommt aus .kpi-cell + .kpi-cell — kann auf schmalen
+          // Schirmen per Media Query zum 2×2-Gitter werden.
+          <div key={i} className="kpi-cell">
+            <Tile t={t} dev={dev(t.metric)} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  if (!hasBack) return front;
+
+  return (
+    <div style={{ perspective: 1200 }}>
+      <div
+        style={{
+          position: "relative",
+          transformStyle: "preserve-3d",
+          transition: "transform 0.5s cubic-bezier(.4,0,.2,1)",
+          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+        }}
+      >
+        {/* Vorderseite definiert die Höhe; Fade auf halber Drehung verdeckt das
+            Durchscheinen in Browsern ohne sauberes backface-visibility. */}
+        <div style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", opacity: flipped ? 0 : 1, transition: "opacity 0.1s ease 0.2s" }}>
+          {front}
+        </div>
+        {/* Rückseite: gleiche Maße, gegengleich eingeblendet. */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            transform: "rotateY(180deg)",
+            opacity: flipped ? 1 : 0,
+            transition: "opacity 0.1s ease 0.2s",
+          }}
+        >
+          <div style={{ ...S.groupBox, height: "100%", overflow: "auto" }}>
+            <div style={S.groupHead}>
+              {group.title && <div style={S.groupTitle}>{group.title}</div>}
+              <button
+                type="button"
+                onClick={() => setFlipped(false)}
+                style={S.helpBtn}
+                aria-label="Zurück zu den Zahlen"
+                title="Zurück"
+              >
+                <IconClose size={15} />
+              </button>
+            </div>
+            {explains.map((e, i) => (
+              <div key={i} style={S.explainRow}>
+                <span style={S.explainLabel}>{e.label}</span>
+                <span>{e.sub}</span>
+              </div>
+            ))}
+            {group.note && <div style={S.explainNote}>{group.note}</div>}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Der Inhalt einer Kachel: Beschriftung, Wert, Einheit als eigene Zeile darunter
+ * (klein, heller), Tendenzpfeil. Die Einheit steht IMMER unter dem Wert — nie mal
+ * daneben, mal umgebrochen —, damit die Kacheln als Raster ruhig lesen. Die
+ * Fußnote (`sub`) rendert hier nur, wenn `showSub` gesetzt ist: in der
+ * Gruppen-Box wandert sie auf die Rückseite (GroupBox), in der schlichten Reihe
+ * bleibt sie sichtbar.
+ */
+function Tile({ t, dev, showSub = false }: { t: KpiTile; dev: number | null; showSub?: boolean }) {
   return (
     <>
       <div style={S.tileLabel}>{t.label}</div>
@@ -142,7 +227,7 @@ function Tile({ t, dev }: { t: KpiTile; dev: number | null }) {
       <div className="kpi-val">{t.value}</div>
       {t.unit && <div className="kpi-unit">{t.unit}</div>}
       <TendTag dev={dev} />
-      {t.sub && <div style={S.tileSub}>{t.sub}</div>}
+      {showSub && t.sub && <div style={S.tileSub}>{t.sub}</div>}
     </>
   );
 }
@@ -203,13 +288,48 @@ const S: Record<string, React.CSSProperties> = {
     padding: pad("lg"),
     minWidth: 0,
   },
+  // Titelzeile: Titel links, Fragezeichen rechts.
+  groupHead: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: space.sm,
+    marginBottom: space.sm,
+  },
   groupTitle: {
     fontSize: 11,
     fontWeight: 700,
     letterSpacing: "0.04em",
     textTransform: "uppercase",
     color: v("--color-text-secondary"),
-    marginBottom: space.sm,
+  },
+  helpBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "none",
+    border: "none",
+    padding: 2,
+    margin: 0,
+    color: v("--color-text-muted"),
+    cursor: "pointer",
+    flexShrink: 0,
+  },
+  // Rückseite: je eine Zeile Erklärung, Kennzahl-Name fett davor.
+  explainRow: {
+    fontSize: 12,
+    color: v("--color-text-secondary"),
+    lineHeight: 1.5,
+    marginBottom: space.xs,
+  },
+  explainLabel: { fontWeight: 700, color: v("--color-text-primary"), marginRight: space.xs },
+  explainNote: {
+    fontSize: 12,
+    color: v("--color-text-muted"),
+    lineHeight: 1.5,
+    marginTop: space.xs,
+    paddingTop: space.xs,
+    borderTop: `1px solid ${v("--color-border")}`,
   },
   // Eigenständige Kachel (titellose Einzelgruppe): eigener Hintergrund.
   standalone: {

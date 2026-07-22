@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import DonutChart from "../charts/DonutChart";
 import { IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
-import { v } from "../../lib/theme";
+import { v, tokens } from "../../lib/theme";
 import { SEGMENT_OWNER, type AtlasOwner, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
 import {
   fmtPvLeistung as fmtLeistung,
@@ -59,10 +59,19 @@ const SEG: Record<string, { label: string }> = {
  * Donut-Farben nach GRÖSSE, nicht nach Kategorie: das größte Segment am
  * dunkelsten, dann heller. Welcher Anlagentyp welche Farbe hat, steht in der
  * Legende daneben — die Farbe kodiert hier den Rang, damit das Auge die
- * Reihenfolge ohne Prozentlesen erfasst. Hex statt Token, weil der Donut auch
- * im Embed rendert, wo die CSS-Variablen fehlen (Blau-Accent-Familie, dunkel→hell).
+ * Reihenfolge ohne Prozentlesen erfasst.
+ *
+ * Die Rampe ist die Accent-Familie dunkel→hell, aus den TOKENS gelesen (nicht
+ * als Hex getippt): accent-dark → accent → accent-light → border-accent. Als
+ * konkrete Hex-Werte, weil der Donut auch im Embed rendert, wo die CSS-Variablen
+ * fehlen — aber die eine Quelle bleibt das Token-Set in lib/theme.ts.
  */
-const DONUT_RAMP = ["#073C93", "#1365EA", "#6A9EF2", "#BCD6FF"];
+const DONUT_RAMP = [
+  tokens["--color-accent-dark"],
+  tokens["--color-accent"],
+  tokens["--color-accent-light"],
+  tokens["--color-border-accent"],
+];
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
