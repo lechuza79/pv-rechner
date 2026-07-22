@@ -60,6 +60,7 @@ export default function AtlasKpiRow({
   };
 
   const grouped = groups.length > 1;
+  const isMobile = useIsMobile();
   // Neu gekeyt, sobald sich die Werte ändern (z. B. Eigentümer-Filter) — die
   // Kacheln blenden dann um, statt hart zu springen.
   const valuesKey = groups.flatMap((g) => g.tiles.map((t) => t.value)).join("|");
@@ -81,19 +82,26 @@ export default function AtlasKpiRow({
       )}
 
       {grouped ? (
-        // Gruppen als eigene Boxen nebeneinander; die Spaltenbreite folgt der Zahl
-        // der Kennzahlen (4 : 2 → doppelt so breite Solaranlagen-Box), damit die
-        // einzelnen Werte in beiden Boxen etwa gleich breit sind. Auf schmalen
-        // Schirmen stapeln sie (Media Query in lib/theme.ts, .kpi-groups).
-        <div
-          key={valuesKey}
-          className="kpi-groups"
-          style={{ "--kpi-group-cols": groups.map((g) => `${g.tiles.length}fr`).join(" ") } as React.CSSProperties}
-        >
-          {groups.map((g, gi) => (
-            <GroupBox key={gi} group={g} dev={dev} />
-          ))}
-        </div>
+        isMobile ? (
+          // Auf dem Handy EINE durchgehende Wischzeile über alle Gruppen: einzelne
+          // graue Kacheln, man wischt die ganze Zeile (nicht innerhalb einer Box).
+          // Der Gruppentitel steht über seinem Kachel-Bündel; Erklärungen stehen
+          // hier direkt an der Kachel (kein Umdrehen — dafür ist auf dem Handy kein
+          // Platz).
+          <MobileKpiRow key={valuesKey} groups={groups} dev={dev} />
+        ) : (
+          // Desktop: Gruppen als eigene Boxen nebeneinander; die Spaltenbreite folgt
+          // der Zahl der Kennzahlen (4 : 2 → doppelt so breite Solaranlagen-Box).
+          <div
+            key={valuesKey}
+            className="kpi-groups"
+            style={{ "--kpi-group-cols": groups.map((g) => `${g.tiles.length}fr`).join(" ") } as React.CSSProperties}
+          >
+            {groups.map((g, gi) => (
+              <GroupBox key={gi} group={g} dev={dev} />
+            ))}
+          </div>
+        )
       ) : (
         // Einzelne titellose Gruppe: schlichte Reihe eigenständiger Kacheln,
         // unverändert für Kreis-/Bundesland-Seite.
@@ -107,6 +115,50 @@ export default function AtlasKpiRow({
         </div>
       )}
     </>
+  );
+}
+
+/**
+ * Ist der Bildschirm schmal? Erst nach dem Mounten echt ausgewertet (matchMedia
+ * gibt es serverseitig nicht) — der erste Render ist „desktop", damit Server und
+ * Client übereinstimmen; auf dem Handy schaltet der Effekt sofort um.
+ */
+function useIsMobile(): boolean {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width:640px)");
+    const update = () => setMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return mobile;
+}
+
+/**
+ * Handy-Ansicht der Kennzahlen: EINE horizontal wischbare Zeile über alle Gruppen.
+ * Jede Gruppe ist ein Bündel aus Titel und einzelnen grauen Kacheln; gewischt wird
+ * die ganze Zeile. Erklärungen (Kachel-Fußnoten, Pumpspeicher-Hinweis) stehen hier
+ * direkt an der Kachel bzw. unter der Gruppe — das Umdrehen der Desktop-Box passt
+ * auf dem Handy nicht in eine Wischzeile.
+ */
+function MobileKpiRow({ groups, dev }: { groups: KpiGroup[]; dev: (m?: string) => number | null }) {
+  return (
+    <div className="kpi-mrow">
+      {groups.map((g, gi) => (
+        <div className="kpi-mgroup" key={gi}>
+          {g.title && <div className="kpi-mtitle">{g.title}</div>}
+          <div className="kpi-mcards">
+            {g.tiles.map((t, i) => (
+              <div className="kpi-mcard" key={i}>
+                <Tile t={t} dev={dev(t.metric)} showSub />
+              </div>
+            ))}
+          </div>
+          {g.note && <div className="kpi-mnote">{g.note}</div>}
+        </div>
+      ))}
+    </div>
   );
 }
 

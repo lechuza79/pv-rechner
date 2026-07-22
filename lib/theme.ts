@@ -529,6 +529,9 @@ export const globalStyles = `
      nebeneinander. Spaltenbreite folgt der Kennzahl-Zahl (--kpi-group-cols,
      z. B. "4fr 2fr"); auf schmalen Schirmen stapeln die Boxen. */
   .kpi-groups{display:grid;grid-template-columns:var(--kpi-group-cols,1fr);gap:12px;align-items:start;animation:fu 0.28s ease-out}
+  /* Erster Render-Frame auf dem Handy (bevor der isMobile-Hook auf die Wischzeile
+     umschaltet): Boxen stapeln statt ueber den schmalen Viewport zu laufen. */
+  @media (max-width:640px){.kpi-groups{grid-template-columns:1fr;gap:8px}}
   /* Kennzahlen innerhalb einer Box, gleich breite Spalten (--kpi-tiles). Die
      Trennlinien entstehen aus 1px gap auf border-Farbe, den die Zellen bis auf
      den Spalt ueberdecken — so bleibt das Liniengitter korrekt, egal ob die
@@ -547,15 +550,42 @@ export const globalStyles = `
   .kpi-tend{margin-top:10px}
   /* Titellose Einzelgruppe (Kreis-/Bundesland): schlichte Kachelreihe. */
   .kpi-plainrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;animation:fu 0.28s ease-out}
-  @media (max-width:640px){.kpi-groups{grid-template-columns:1fr;gap:8px}}
-  /* Auf schmalen Schirmen wird die Kennzahl-Reihe eine wischbare Leiste: die
-     Kacheln stehen nebeneinander und scrollen horizontal mit Rastung, statt zu
-     2x2 umzubrechen. Wenige Kacheln (Speicher) fuellen die Breite (flex-grow),
-     viele (Solaranlagen) laufen ueber und lassen die naechste angeschnitten. */
+
+  /* Handy: EINE wischbare Zeile ueber alle Gruppen (MobileKpiRow). Der Container
+     scrollt horizontal — gewischt wird die ganze Zeile, die grauen Kacheln sind
+     einzeln (kein umschliessender Kasten). Jede Gruppe: Titel ueber ihren Kacheln. */
+  .kpi-mrow{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;animation:fu 0.28s ease-out}
+  .kpi-mrow::-webkit-scrollbar{display:none}
+  .kpi-mgroup{flex:0 0 auto;display:flex;flex-direction:column;gap:6px}
+  .kpi-mtitle{font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--color-text-secondary)}
+  .kpi-mcards{display:flex;gap:8px}
+  .kpi-mcard{flex:0 0 auto;min-width:120px;background:var(--color-bg-muted);border-radius:var(--radius-md);padding:12px;scroll-snap-align:start}
+  .kpi-mnote{font-size:12px;color:var(--color-text-secondary);line-height:1.5;max-width:260px}
+
+  /* Breadcrumb: auf breiten Schirmen umbrechend (genug Platz), auf schmalen
+     EINZEILIG — die mittleren Begriffe schrumpfen mit Auslassungspunkten, erster
+     und letzter bleiben ganz. */
+  .crumb-nav{flex-wrap:wrap}
   @media (max-width:640px){
-    .kpi-tilerow{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-    .kpi-tilerow::-webkit-scrollbar{display:none}
-    .kpi-cell{flex:1 0 44%;scroll-snap-align:start}
+    .crumb-nav{flex-wrap:nowrap;overflow:hidden}
+    .crumb-item{min-width:0}
+    .crumb-item:first-child,.crumb-item:last-child{flex-shrink:0}
+    .crumb-label{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  }
+
+  /* Intro-Absatz: auf breiten Schirmen voll, auf schmalen eingeklappt mit weichem
+     Verlauf und „Weiterlesen". Voller Text bleibt im DOM (SEO), nur per Hoehe
+     beschnitten. */
+  .intro-clamp{margin:0 0 24px}
+  .intro-text{font-size:15px;line-height:1.6;color:var(--color-text-secondary);margin:0}
+  .intro-more{display:none;background:none;border:none;padding:0;margin-top:10px;font-family:inherit;font-size:14px;font-weight:700;color:var(--color-accent);cursor:pointer}
+  @media (max-width:640px){
+    .intro-clamp:not(.intro-open) .intro-text{
+      max-height:132px;overflow:hidden;
+      -webkit-mask-image:linear-gradient(180deg,#000 62%,transparent);
+      mask-image:linear-gradient(180deg,#000 62%,transparent);
+    }
+    .intro-clamp:not(.intro-open) .intro-more{display:inline-block}
   }
 
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}

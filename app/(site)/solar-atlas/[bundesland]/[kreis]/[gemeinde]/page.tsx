@@ -10,6 +10,7 @@ import { atlasIsIndexable, atlasLevelReleased, atlasRobots } from "../../../../.
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
+import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindePotentialBlock from "../../../../../../components/atlas/GemeindePotential";
 import GemeindeErneuerbareWidget from "../../../../../../components/atlas/GemeindeErneuerbareWidget";
@@ -330,7 +331,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
         </div>
 
         <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
-        <p style={S.intro}>
+        <CollapsibleIntro>
           {buildGemeindeHighlight({
             name: region.name,
             atlas,
@@ -344,7 +345,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
             byYear: atlas.solar.by_year,
             lastYear,
           })}
-        </p>
+        </CollapsibleIntro>
 
         {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
@@ -496,7 +497,6 @@ const S: Record<string, React.CSSProperties> = {
   stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },
   standDate: { fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
-  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xxl}px` },
   metricsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
