@@ -107,7 +107,7 @@ function MetricPicker({ metric, onChange }: { metric: Metric; onChange: (m: Metr
     onChange(METRICS[next].key);
   };
   return (
-    <div style={S.pickerBar}>
+    <div className="rank-picker">
       <button
         type="button"
         onClick={() => go(-1)}
@@ -118,7 +118,22 @@ function MetricPicker({ metric, onChange }: { metric: Metric; onChange: (m: Metr
       </button>
       <div ref={ref} style={{ position: "relative", display: "flex", flex: 1 }}>
         <button type="button" onClick={() => setOpen(!open)} style={S.pickerLabel}>
-          {METRICS[idx]?.label}
+          {/* Alle Labels übereinander gestapelt: die (unsichtbaren) längeren
+              spannen die Breite auf, das aktive ist sichtbar. So bleibt der Picker
+              beim Metrik-Wechsel gleich breit — sonst verschiebt sich der Platz der
+              Überschrift daneben und die ganze Rangliste springt. Kein fester
+              Pixelwert: neue Kennzahlen bemessen sich automatisch mit. */}
+          <span style={S.pickerLabelStack}>
+            {METRICS.map((m) => (
+              <span
+                key={m.key}
+                aria-hidden={m.key !== metric}
+                style={{ gridArea: "1 / 1", visibility: m.key === metric ? "visible" : "hidden" }}
+              >
+                {m.label}
+              </span>
+            ))}
+          </span>
           <IconChevronDown size={8} />
         </button>
         {open && (
@@ -363,7 +378,7 @@ export default function GemeindeHero({
         </div>
 
         <div style={S.right}>
-          <div style={S.rankHead}>
+          <div className="rank-head">
             <div style={S.rankTitle}>{`Top Kommunen${kreisName ? ` im ${kreisName}` : ""}`}</div>
             <MetricPicker metric={metric} onChange={setMetric} />
           </div>
@@ -493,7 +508,6 @@ const S: Record<string, React.CSSProperties> = {
   legendVal: { fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") },
   empty: { fontSize: 12, color: v("--color-text-muted"), margin: 0 },
   // Titel links (darf 2-zeilig umbrechen), Multitool rechts.
-  rankHead: { display: "flex", alignItems: "center", gap: 12, marginBottom: 10 },
   rankTitle: {
     flex: "1 1 auto",
     minWidth: 0,
@@ -502,7 +516,6 @@ const S: Record<string, React.CSSProperties> = {
     lineHeight: 1.25,
     color: v("--color-text-primary"),
   },
-  pickerBar: { display: "flex", alignItems: "stretch", flex: "0 0 auto", maxWidth: "58%" },
   pickerArrow: {
     border: `1px solid ${v("--color-border")}`,
     background: v("--color-bg"),
@@ -513,6 +526,8 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
   },
+  // Der Label-Stapel bemisst sich am längsten Eintrag (grid, alle in einer Zelle).
+  pickerLabelStack: { display: "grid", justifyItems: "center" },
   pickerLabel: {
     flex: 1,
     display: "inline-flex",

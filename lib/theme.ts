@@ -591,6 +591,17 @@ export const globalStyles = `
     .intro-clamp:not(.intro-open) .intro-more{display:inline-block}
   }
 
+  /* Ranglisten-Kopf: Titel + Kennzahl-Umschalter. Auf breiten Schirmen
+     nebeneinander (der Umschalter hat feste Breite, siehe pickerLabelStack, damit
+     der Titel-Platz konstant bleibt und nichts springt); auf schmalen Schirmen
+     gestapelt — Titel volle Breite (2 statt 3 Zeilen), Umschalter darunter. */
+  .rank-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .rank-picker{display:flex;align-items:stretch;flex:0 0 auto;max-width:58%}
+  @media (max-width:640px){
+    .rank-head{flex-direction:column;align-items:stretch;gap:8px}
+    .rank-picker{align-self:flex-start;max-width:none}
+  }
+
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
   .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
 `;
