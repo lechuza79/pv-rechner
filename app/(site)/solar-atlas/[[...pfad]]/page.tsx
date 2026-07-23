@@ -26,12 +26,30 @@ import { fmtPvLeistung as fmtLeistung, pvLeistungTeile, wattProKopfTeile } from 
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 
 export const revalidate = 3600;
-// Ohne generateStaticParams behandelt Next diese dynamische Route als voll
-// dynamisch (no-store, kein CDN-Cache). Ein leeres Array reicht: nichts wird zur
-// Build-Zeit vorgerendert (keine DB-Last im Build), aber die Route wird ISR —
-// jeder Pfad rendert einmal on-demand und liegt dann s-maxage=3600 im CDN.
-export function generateStaticParams() {
-  return [];
+// Zwei Ziele:
+// 1) Ohne generateStaticParams behandelt Next die dynamische Route als voll
+//    dynamisch (no-store). Mit ihr wird sie ISR (s-maxage=3600).
+// 2) Die INDEXIERTEN Ebenen (DE + Bundesländer, siehe lib/atlas-index.ts) werden
+//    beim Build vorgerendert → statisch, KEIN Kaltrender, crawl-freundlich.
+//    Kreise/Gemeinden sind noindex + zu zahlreich → bleiben on-demand ISR.
+//    Möglich seit mastr_children über den Rollup läuft (~0,1s statt >8s), sonst
+//    liefen die 17 Parallel-Renders in den DB-Timeout. Slugs aus der DB (16 Zeilen).
+export async function generateStaticParams() {
+  try {
+    const { supabase } = await import("../../../../lib/supabase-server");
+    if (!supabase) return [{ pfad: [] as string[] }];
+    const { data } = await supabase
+      .from("mastr_regions")
+      .select("slug")
+      .eq("level", "bundesland")
+      .not("slug", "is", null);
+    return [
+      { pfad: [] as string[] },
+      ...((data ?? []) as { slug: string }[]).map((r) => ({ pfad: [r.slug] })),
+    ];
+  } catch {
+    return [{ pfad: [] as string[] }];
+  }
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
