@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
 import { DEFAULT_PRICES } from "../../../../lib/prices-config";
+import { tokens } from "../../../../lib/theme";
+
+// This report is an HTML e-mail (no CSS variables), so colours are read as raw
+// literals from the single source (theme.ts base tokens). Replaces the old
+// hand-typed #00A03C — the one green in the codebase that matched no token.
+const C_POSITIVE = tokens["--color-positive"];
+const C_NEGATIVE = tokens["--color-negative"];
 
 // ─── Weekly price report / health alert (email via Resend) ───────────────────
 // Vercel Cron: runs WEEKLY (Mondays). Two jobs in one, so the alert path never
@@ -43,7 +50,7 @@ function delta(curr: number | null | undefined, prev: number | null | undefined,
   const d = curr - prev;
   if (Math.abs(d) < Math.pow(10, -digits) / 2) return `<span style="color:#777">±0</span>`;
   const sign = d > 0 ? "+" : "−";
-  const color = d > 0 ? "#EF4444" : "#00A03C"; // teurer = rot, günstiger = grün
+  const color = d > 0 ? C_NEGATIVE : C_POSITIVE; // teurer = rot, günstiger = grün
   return `<span style="color:${color}">${sign}${fmt(Math.abs(d), digits)}</span>`;
 }
 
@@ -105,7 +112,7 @@ export async function GET(req: Request) {
     const feed = feedData as FeedRow | null;
 
     const health = (curr.notes?.match(/HEALTH=(\w+)/)?.[1] ?? "unbekannt").toUpperCase();
-    const healthColor = health === "OK" ? "#00A03C" : "#EF4444";
+    const healthColor = health === "OK" ? C_POSITIVE : C_NEGATIVE;
 
     // Weekly cadence, but only two situations actually send a mail:
     //  1) health != OK        → weekly warning until the pipeline recovers.
@@ -149,8 +156,8 @@ export async function GET(req: Request) {
     // A degraded run repeats weekly until fixed → tell the reader why, so a
     // recurring mail reads as "still broken", not as a duplicate glitch.
     const warningBanner = isWarning
-      ? `<p style="background:#FEF2F2;border:1px solid #EF4444;border-radius:8px;padding:12px 14px;margin:0 0 16px;font-size:14px;color:#3F3F3F">
-          <b style="color:#EF4444">⚠️ Die Preis-Pipeline ist nicht gesund (${health}).</b><br>
+      ? `<p style="background:#FEF2F2;border:1px solid ${C_NEGATIVE};border-radius:8px;padding:12px 14px;margin:0 0 16px;font-size:14px;color:#3F3F3F">
+          <b style="color:${C_NEGATIVE}">⚠️ Die Preis-Pipeline ist nicht gesund (${health}).</b><br>
           Der ausgelieferte Preis kann trotzdem stimmen (letzter guter Wert wird gehalten) — aber eine Datenquelle liefert nicht mehr sauber. Diese Warnung kommt wöchentlich, bis der Status wieder OK ist. Details siehe „Pipeline-Status" und die Quellen-Spalte unten.
         </p>`
       : "";

@@ -569,7 +569,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // grundverbrauch/extraVerbrauch/gesamtVerbrauch oben aufgelöst (respektiert oVerbrauch).
 
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), padding: "20px 16px" }}>
+    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), padding: "0 16px 20px" }}>
 
         <KlimaDetailModal
           open={klimaDetailOpen}

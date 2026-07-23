@@ -323,7 +323,9 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: pad("xxl", "xl"),
+    // Top-Padding 0: der Abstand Header→Content kommt zentral aus dem Layout
+    // (headerContentGap), analog zu den übrigen (site)-Seiten.
+    padding: "0 16px 20px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
   stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },

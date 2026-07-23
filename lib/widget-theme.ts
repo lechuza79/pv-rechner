@@ -8,6 +8,8 @@
 // validation, and the named font options, so the demo (which BUILDS the query
 // and the live preview) and the widgets (which PARSE the query) never drift.
 
+import { tokens } from "./theme";
+
 /** Short URL param -> CSS custom property for colors + radius. */
 export const WIDGET_THEME_PARAMS: Record<string, string> = {
   bg: "--widget-bg",
@@ -45,7 +47,7 @@ export const WIDGET_THEME_DEFAULTS: WidgetThemeSelection = {
   bg: "#FFFFFF",
   fg: "#3F3F3F",
   accent: "#1365EA",
-  highlight: "#3DFFC1",
+  highlight: tokens["--color-highlight"], // single source (theme.ts) — no re-typed hex
   radius: "14px",
   font: "system",
 };

@@ -31,9 +31,9 @@ const S = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: "20px 16px",
+    padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto", paddingTop: 60 },
+  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   h1: {
     fontSize: v("--font-size-h1"),
     fontWeight: 800,

@@ -20,9 +20,9 @@ const S = {
     fontFamily: v('--font-text'),
     color: v('--color-text-primary'),
     minHeight: "100vh",
-    padding: "20px 16px",
+    padding: "0 16px 20px",
   } as React.CSSProperties,
-  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto", paddingTop: 60 } as React.CSSProperties,
+  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto", paddingTop: "var(--content-lede-top)" } as React.CSSProperties,
   person: { margin: "20px 0 4px" } as React.CSSProperties,
   h1: {
     fontSize: v('--font-size-h1'),

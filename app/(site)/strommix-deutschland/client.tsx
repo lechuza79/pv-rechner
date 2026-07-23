@@ -277,7 +277,7 @@ export default function EnergieClient() {
   return (
     <div style={{ maxWidth: 640, margin: "0 auto" }}>
       {/* Hero */}
-      <div style={{ textAlign: "center", marginBottom: 28, paddingTop: 10 }}>
+      <div style={{ textAlign: "center", marginBottom: 28 }}>
         <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
           Deutschlands Energiedaten
         </h1>

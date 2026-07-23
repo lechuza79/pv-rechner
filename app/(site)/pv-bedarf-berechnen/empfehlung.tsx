@@ -337,7 +337,7 @@ export default function Empfehlung() {
   };
 
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
+    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
 
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
