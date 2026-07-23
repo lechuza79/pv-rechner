@@ -42,6 +42,7 @@ import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
 import { landProgramBundeslaender } from "../../../../../../lib/funding-programs";
+import { DATA_SOURCES } from "../../../../../../lib/data-sources";
 
 export const revalidate = 3600;
 // Ohne generateStaticParams wäre die Route voll dynamisch (no-store). Leeres
@@ -470,7 +471,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
           <a href="https://www.govdata.de/dl-de/by-2-0" target="_blank" rel="noopener noreferrer" style={S.licLink}>
             dl-de/by-2-0
           </a>{" "}
-          (Daten aggregiert). Einwohnerzahlen und Gebietsstand: Statistisches Bundesamt,
+          (Daten aggregiert). Einwohnerzahlen und Gebietsstand: {DATA_SOURCES.destatis.name},
           Gemeindeverzeichnis{region.population_as_of ? `, Stand ${standLabel(region.population_as_of)}` : ""},
           Datenlizenz dl-de/by-2-0.{" "}
           {region.parent_region_id && (
@@ -498,6 +499,19 @@ export default async function GemeindePage({ params }: { params: Params }) {
               .{" "}
             </>
           )}
+          {region.population ? (
+            // Der Standort-Ertrag der Beispielrechnungen („Was das für Sie
+            // bedeutet") kommt von PVGIS — hier genannt, weil der Ertrag sichtbar
+            // ist (… kWh/kWp am Standort). Wird client-seitig geladen, die Quelle
+            // gehört trotzdem sichtbar hierher.
+            <>
+              Der Standort-Ertrag (kWh/kWp) in den Beispielrechnungen stammt von{" "}
+              <a href={DATA_SOURCES.pvgis.url} target="_blank" rel="noopener noreferrer" style={S.licLink}>
+                PVGIS
+              </a>{" "}
+              (Europäische Kommission).{" "}
+            </>
+          ) : null}
           Gezählt werden nur Anlagen in Betrieb. Alle Angaben sind
           Näherungswerte ohne Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit.
         </div>

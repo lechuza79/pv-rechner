@@ -2,6 +2,7 @@
 
 import LineChart, { LineSeries } from "../../../components/charts/LineChart";
 import { v } from "../../../lib/theme";
+import { DATA_SOURCES } from "../../../lib/data-sources";
 import {
   STROMMIX_HISTORY_META,
   STROMMIX_HISTORY_YEARS,
@@ -142,10 +143,10 @@ export default function LangzeitStrommixClient() {
         <div style={{ marginTop: 16, paddingTop: 12, borderTop: `1px solid ${v("--color-border")}`, fontSize: 11, lineHeight: 1.6, color: v("--color-text-muted") }}>
           <div>
             <strong>Mix &amp; CO₂:</strong>{" "}
-            <a href={STROMMIX_HISTORY_META.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-text-secondary") }}>
-              Umweltbundesamt
+            <a href={DATA_SOURCES.uba.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-text-secondary") }}>
+              {DATA_SOURCES.uba.name}
             </a>
-            , {STROMMIX_HISTORY_META.license} (Datenbasis AG Energiebilanzen).
+            , {DATA_SOURCES.uba.license} ({DATA_SOURCES.uba.note}).
           </div>
           <div>
             <strong>Preise:</strong>{" "}

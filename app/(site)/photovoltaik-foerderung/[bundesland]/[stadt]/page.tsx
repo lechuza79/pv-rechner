@@ -13,6 +13,7 @@ import { FundingRates, FundingConditions, FundingStatusBadge, ExampleCards, FUND
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
+import { DATA_SOURCES } from "../../../../../lib/data-sources";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
@@ -329,6 +330,11 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
           </a>{" "}
           (Daten aggregiert).
           {f ? ` Förderdaten redaktionell gepflegt, Stand ${f.stand}.` : ""}
+          {" "}Der angegebene Standort-Ertrag (kWh/kWp) stammt von{" "}
+          <a href={DATA_SOURCES.pvgis.url} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
+            PVGIS
+          </a>{" "}
+          (Europäische Kommission).
           {" "}Alle Angaben sind Näherungswerte ohne Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit und stellen keine
           Rechts-, Steuer- oder Anlageberatung dar. Förderkonditionen ändern sich und Budgets können erschöpft sein — verbindlich
           ist allein die offizielle Quelle des jeweiligen Programms. Beispielrechnungen sind unverbindliche Schätzungen.

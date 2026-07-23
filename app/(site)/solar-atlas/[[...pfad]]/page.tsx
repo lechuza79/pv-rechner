@@ -24,6 +24,7 @@ import {
 } from "../../../../lib/atlas";
 import { fmtPvLeistung as fmtLeistung, pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
+import { DATA_SOURCES } from "../../../../lib/data-sources";
 
 export const revalidate = 3600;
 // Zwei Ziele:
@@ -319,7 +320,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
           <a href="https://www.govdata.de/dl-de/by-2-0" target="_blank" rel="noopener noreferrer" style={S.licLink}>
             dl-de/by-2-0
           </a>{" "}
-          (Daten aggregiert). Einwohnerzahlen: Statistisches Bundesamt, Gemeindeverzeichnis
+          (Daten aggregiert). Einwohnerzahlen: {DATA_SOURCES.destatis.name}, Gemeindeverzeichnis
           {region.population_as_of ? `, Stand ${standLabel(region.population_as_of)}` : ""}, Datenlizenz
           dl-de/by-2-0.{" "}
           {region.level !== "de" && (
