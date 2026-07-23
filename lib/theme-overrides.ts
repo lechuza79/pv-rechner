@@ -44,26 +44,32 @@ export function stageIndex(id: StageId): number {
   return Number.isFinite(n) ? Math.max(0, Math.min(STAGE_COUNT - 1, n)) : 0;
 }
 
-// ─── Editable green tokens ───────────────────────────────────────────────────
-// The two semantic green ROLES the audit surfaced. Every one is editable per
-// stage. `alpha` marks tokens whose value is an rgba (needs a text field, the
-// native colour picker has no alpha channel).
-export type GreenRole = "positive" | "energy";
+// ─── Editable signal-colour tokens ───────────────────────────────────────────
+// The semantic colour ROLES the audit surfaced. Started with green (positive +
+// energy); red (negative) was added so the same per-stage editor tunes the
+// negative signal colour too. Every token is editable per stage. `alpha` marks
+// tokens whose value is an rgba (needs a text field — the native colour picker
+// has no alpha channel).
+export type ThemeRole = "positive" | "energy" | "negative";
 
-export interface GreenToken {
+export interface ThemeToken {
   token: TokenName;
   label: string;
-  role: GreenRole;
+  role: ThemeRole;
   /** Value carries transparency (rgba) rather than a solid hex. */
   alpha?: boolean;
 }
 
-export const GREEN_TOKENS: GreenToken[] = [
+export const THEME_TOKENS: ThemeToken[] = [
   // Positiv-Grün — UI-Signalfarbe
   { token: "--color-positive", label: "Positiv-Grün", role: "positive" },
   { token: "--color-highlight", label: "Highlight (Live)", role: "positive" },
   { token: "--color-awareness", label: "Awareness", role: "positive" },
   { token: "--color-chart-positive-bg", label: "Chart-Fläche", role: "positive", alpha: true },
+  // Negativ-Rot — UI-Signalfarbe (Kosten, Verluste, Tendenz-Badges „unter Schnitt")
+  { token: "--color-negative", label: "Negativ-Rot", role: "negative" },
+  { token: "--color-negative-text", label: "Negativ-Text (lesbar)", role: "negative" },
+  { token: "--color-chart-negative-bg", label: "Chart-Fläche", role: "negative", alpha: true },
   // Energie-Grün — Datenvisualisierung
   { token: "--color-energy-solar", label: "Solar", role: "energy" },
   { token: "--color-energy-wind", label: "Wind onshore", role: "energy" },
@@ -74,7 +80,7 @@ export const GREEN_TOKENS: GreenToken[] = [
   { token: "--color-energy-cat-renewable", label: "Erneuerbare (Summe)", role: "energy" },
 ];
 
-const EDITABLE_TOKENS = new Set<string>(GREEN_TOKENS.map((g) => g.token));
+const EDITABLE_TOKENS = new Set<string>(THEME_TOKENS.map((g) => g.token));
 const VALID_STAGES = new Set<string>(STAGES.map((s) => s.id));
 
 // ─── Overrides shape ─────────────────────────────────────────────────────────
