@@ -195,7 +195,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
       )}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
       <div style={S.wrap}>
-        {crumbs.length > 1 ? <Breadcrumb items={crumbs} /> : <div style={{ height: 8 }} />}
+        {crumbs.length > 1 ? <Breadcrumb items={crumbs} /> : null}
 
         <div style={S.stand}>
           Stand{" "}
@@ -307,7 +307,7 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: "20px 16px",
+    padding: "0 16px 20px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
   stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: 6 },

@@ -507,7 +507,7 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: pad("xxl", "xl"),
+    padding: "0 16px 24px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
   stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },

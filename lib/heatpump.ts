@@ -20,6 +20,7 @@ import { co2SurchargeOverToday, calcWeightedFeedIn, calcPvBenefitPerYear } from 
 import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { calcHeatDemand, calcHeatLoad, flowTempForSystem, calcJAZ } from "./heatpump-core";
+import { v } from "./theme";
 
 // Reine Bedarfs-/JAZ-Funktionen + WP-Jahresstrom + Standard-Gebäude leben in
 // heatpump-core.ts (calc-frei, zyklusfrei). Hier re-exportiert, damit bestehende
@@ -357,11 +358,11 @@ export function calcHeatPumpScenarios(inputs: HeatPumpInputs, cfg: HeatPumpConfi
   // schnell / Gas kaum — spiegelbildlich zum PV-Rechner.
   const gasPct = (r: number) => `${(r * 100).toLocaleString("de-DE")} %`;
   const meta: Array<Pick<HeatPumpScenarioResult, "id" | "label" | "color" | "sub" | "explain">> = [
-    { id: "pessimistic", label: "Pessimistisch", color: "#EF4444", sub: "Strom +5 %/a",
+    { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), sub: "Strom +5 %/a",
       explain: "Ungünstig für die Wärmepumpe: Der Strompreis steigt schnell (+5 %/Jahr), Gas kaum — und die Arbeitszahl fällt etwas schlechter aus." },
-    { id: "realistic",   label: "Realistisch",   color: "#00D950", sub: `Strom +${gasPct(cfg.stromInflation)}/a`,
+    { id: "realistic",   label: "Realistisch",   color: v("--color-positive"), sub: `Strom +${gasPct(cfg.stromInflation)}/a`,
       explain: `Mittlere Annahme: Strompreis +${gasPct(cfg.stromInflation)}/Jahr, Gas +${gasPct(cfg.gasInflation)}/Jahr wie erwartet.` },
-    { id: "optimistic",  label: "Optimistisch",  color: "#1365EA", sub: "Strom +1 %/a",
+    { id: "optimistic",  label: "Optimistisch",  color: v("--color-accent"), sub: "Strom +1 %/a",
       explain: "Günstig für die Wärmepumpe: Der Strompreis bleibt fast stabil (+1 %/Jahr), Gas verteuert sich kräftig (+4 %/Jahr) — die WP spart mehr." },
   ];
   return meta.map(s => ({ ...s, ...calcHeatPump(inputs, cfg, heatPumpScenarioAdj(s.id, cfg)) }));

@@ -1,3 +1,5 @@
+import { v } from "./theme";
+
 // ─── Zeitkonstanten ──────────────────────────────────────────────────────────
 // YEAR = current calendar year, used as the projection start year (Chart x-axis,
 // amortization timeline). Computed at module load → re-evaluated per dev-server
@@ -126,11 +128,11 @@ export const EA_KM_PRESETS = [10000, 15000, 20000];
 // bildet die 25-Jahres-Unsicherheit ab: 3 % als Mitte deckt sich mit dem
 // langjährigen Schnitt, die Ränder spannen von „kaum Anstieg" bis „kräftig".
 export const SCENARIOS = [
-  { id: "pessimistic", label: "Pessimistisch", color: "#EF4444", strom: 0.01, evDelta: -5,
+  { id: "pessimistic", label: "Pessimistisch", color: v("--color-negative"), strom: 0.01, evDelta: -5,
     explain: "Vorsichtig gerechnet: Der Strompreis steigt nur langsam (+1 %/Jahr) — dein selbst genutzter Solarstrom spart dann entsprechend weniger." },
-  { id: "realistic", label: "Realistisch", color: "#00D950", strom: 0.02, evDelta: 0,
+  { id: "realistic", label: "Realistisch", color: v("--color-positive"), strom: 0.02, evDelta: 0,
     explain: "Mittlere Annahme: Der Strompreis steigt moderat (+2 %/Jahr), wie die aktuellen Prognosen erwarten." },
-  { id: "optimistic", label: "Optimistisch", color: "#1365EA", strom: 0.05, evDelta: 5,
+  { id: "optimistic", label: "Optimistisch", color: v("--color-accent"), strom: 0.05, evDelta: 5,
     explain: "Günstige Entwicklung: Steigt der Strompreis kräftig (+5 %/Jahr), lohnt sich jede selbst genutzte Kilowattstunde stärker." },
 ];
 
