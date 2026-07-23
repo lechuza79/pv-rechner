@@ -20,6 +20,7 @@
  *   tsx scripts/kommunen-kontakt-refresh.ts --wikidata --upload
  *   tsx scripts/kommunen-kontakt-refresh.ts --forms --bl=10   # Kontaktlinks (ein BL testen)
  *   tsx scripts/kommunen-kontakt-refresh.ts --forms           # Kontaktlinks (alle Lücken)
+ *   tsx scripts/kommunen-kontakt-refresh.ts --probe           # Lücken: Kontakt-Pfade anklopfen
  *   tsx scripts/kommunen-kontakt-refresh.ts --stats       # Deckung aus der DB
  *   ... --upload --dry                                     # nichts schreiben
  *
@@ -356,11 +357,16 @@ interface FormsOpts {
   dry: boolean;
 }
 
-async function scrapeForms(opts: FormsOpts): Promise<void> {
-  const supabase = await makeClient();
+type Candidate = { region_id: string; website: string };
+type FoundUrl = { region_id: string; kontakt_url: string; updated_at: string };
 
-  // Kandidaten: Website vorhanden; ohne --refetch nur die noch leeren (resumbar).
-  const candidates: { region_id: string; website: string }[] = [];
+// Kandidaten: Website vorhanden; ohne --refetch nur die noch leeren (resumbar).
+// Von --forms UND --probe geteilt.
+async function readCandidates(
+  supabase: Awaited<ReturnType<typeof makeClient>>,
+  opts: FormsOpts,
+): Promise<Candidate[]> {
+  const rows: Candidate[] = [];
   const PAGE = 1000;
   for (let from = 0; ; from += PAGE) {
     let q = supabase
@@ -374,15 +380,40 @@ async function scrapeForms(opts: FormsOpts): Promise<void> {
     const { data, error } = await q;
     if (error) throw new Error(`read candidates failed: ${error.message}`);
     if (!data || data.length === 0) break;
-    for (const r of data) candidates.push(r as { region_id: string; website: string });
+    for (const r of data) rows.push(r as Candidate);
     if (data.length < PAGE) break;
   }
+  return opts.limit ? rows.slice(0, opts.limit) : rows;
+}
 
-  const list = opts.limit ? candidates.slice(0, opts.limit) : candidates;
+// Nur kontakt_url + updated_at → website/email/Workflow-Felder bleiben erhalten.
+async function saveKontaktUrls(
+  supabase: Awaited<ReturnType<typeof makeClient>>,
+  found: FoundUrl[],
+  dry: boolean,
+): Promise<void> {
+  if (dry) {
+    found.slice(0, 20).forEach((f) => log(`  ${f.region_id} → ${f.kontakt_url}`));
+    log("--dry: nichts geschrieben", "ok");
+    return;
+  }
+  for (let i = 0; i < found.length; i += 500) {
+    const batch = found.slice(i, i + 500);
+    const { error } = await supabase
+      .from("kommunen_kontakt")
+      .upsert(batch, { onConflict: "region_id" });
+    if (error) throw new Error(`upsert failed (batch ${i}): ${error.message}`);
+  }
+  log(`kontakt_url gespeichert (${found.length.toLocaleString()} Zeilen)`, "ok");
+}
+
+async function scrapeForms(opts: FormsOpts): Promise<void> {
+  const supabase = await makeClient();
+  const list = await readCandidates(supabase, opts);
   log(`${list.length.toLocaleString()} Gemeinden zu prüfen${opts.bl ? ` (BL-Prefix ${opts.bl})` : ""}...`);
 
   const now = new Date().toISOString();
-  const found: { region_id: string; kontakt_url: string; updated_at: string }[] = [];
+  const found: FoundUrl[] = [];
   let done = 0;
   let errors = 0;
   await pool(list, CONCURRENCY, async (c) => {
@@ -403,21 +434,76 @@ async function scrapeForms(opts: FormsOpts): Promise<void> {
       `${errors} Seiten nicht erreichbar`,
     "ok",
   );
+  await saveKontaktUrls(supabase, found, opts.dry);
+}
 
-  if (opts.dry) {
-    found.slice(0, 20).forEach((f) => log(`  ${f.region_id} → ${f.kontakt_url}`));
-    log("--dry: nichts geschrieben", "ok");
-    return;
+// ─── Billiger Nachschlag: Kontakt-Pfade direkt anklopfen ─────────────────────
+// Fängt Seiten, deren Navigation per JavaScript nachlädt (kein <a> im HTML, das
+// der --forms-Scan sieht). Gängige Gemeinde-Pfade in Prioritätsreihenfolge.
+
+const PROBE_PATHS = ["kontakt", "kontaktformular", "rathaus/kontakt", "buergerservice/kontakt"];
+
+async function fetchProbe(url: string): Promise<{ finalUrl: string; html: string } | null> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": USER_AGENT, Accept: "text/html" },
+      signal: ctrl.signal,
+      redirect: "follow",
+    });
+    if (!res.ok) return null;
+    if (!(res.headers.get("content-type") ?? "").includes("html")) return null;
+    return { finalUrl: res.url, html: await res.text() };
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
   }
-  // Nur kontakt_url + updated_at im Payload → website/email/Workflow-Felder bleiben.
-  for (let i = 0; i < found.length; i += 500) {
-    const batch = found.slice(i, i + 500);
-    const { error } = await supabase
-      .from("kommunen_kontakt")
-      .upsert(batch, { onConflict: "region_id" });
-    if (error) throw new Error(`upsert failed (batch ${i}): ${error.message}`);
+}
+
+// Nur akzeptieren, wenn die (ggf. umgeleitete) End-URL noch "kontakt" trägt UND
+// die Seite das Wort enthält — filtert Soft-404s, die still auf die Startseite
+// umleiten und sonst als Falschtreffer durchgingen.
+function probeAccept(finalUrl: string, html: string): boolean {
+  let path = "";
+  try {
+    path = new URL(finalUrl).pathname.toLowerCase();
+  } catch {
+    return false;
   }
-  log(`kontakt_url gespeichert (${found.length.toLocaleString()} Zeilen)`, "ok");
+  return path.includes("kontakt") && /kontakt/i.test(html);
+}
+
+async function probeForms(opts: FormsOpts): Promise<void> {
+  const supabase = await makeClient();
+  const list = await readCandidates(supabase, opts);
+  log(`${list.length.toLocaleString()} Lücken anklopfen (${PROBE_PATHS.join(", ")})...`);
+
+  const now = new Date().toISOString();
+  const found: FoundUrl[] = [];
+  let done = 0;
+  await pool(list, CONCURRENCY, async (c) => {
+    for (const p of PROBE_PATHS) {
+      let target: string;
+      try {
+        target = new URL(p, c.website).toString();
+      } catch {
+        continue;
+      }
+      const r = await fetchProbe(target);
+      if (r && probeAccept(r.finalUrl, r.html)) {
+        found.push({ region_id: c.region_id, kontakt_url: r.finalUrl, updated_at: now });
+        break;
+      }
+    }
+    done++;
+    if (done % 50 === 0) log(`  ${done}/${list.length} geklopft, ${found.length} gefunden`);
+  });
+
+  const rate = list.length ? ((100 * found.length) / list.length).toFixed(1) : "0";
+  log(`${found.length}/${list.length} zusätzliche Kontaktlinks gefunden (${rate}%)`, "ok");
+  await saveKontaktUrls(supabase, found, opts.dry);
 }
 
 // ─── Stats ────────────────────────────────────────────────────────────────────
@@ -451,6 +537,7 @@ async function main(): Promise<void> {
   const doWikidata = argv.includes("--wikidata");
   const doUpload = argv.includes("--upload");
   const doForms = argv.includes("--forms");
+  const doProbe = argv.includes("--probe");
   const doStats = argv.includes("--stats");
 
   const blArg = argv.find((a) => a.startsWith("--bl="));
@@ -462,10 +549,11 @@ async function main(): Promise<void> {
     dry,
   };
 
-  if (!doSetup && !doWikidata && !doUpload && !doForms && !doStats) {
+  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doStats) {
     log(
-      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --stats [--dry]\n" +
-        "  --forms [--bl=10] [--limit=N] [--refetch]  Kontaktlink je Website suchen",
+      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --stats [--dry]\n" +
+        "  --forms [--bl=10] [--limit=N] [--refetch]  Kontaktlink aus der Startseite\n" +
+        "  --probe [--bl=10] [--limit=N]              Kontakt-Pfade direkt anklopfen (Lücken)",
       "err",
     );
     process.exit(1);
@@ -475,6 +563,7 @@ async function main(): Promise<void> {
   if (doWikidata) writeCache(await fetchWikidata());
   if (doUpload) await upload(dry);
   if (doForms) await scrapeForms(formsOpts);
+  if (doProbe) await probeForms(formsOpts);
   if (doStats) await stats();
   log("Fertig", "ok");
 }
