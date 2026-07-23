@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
+import { renderOutreachDraft } from "../../../../lib/kommunen-outreach-draft";
 
 // Admin-Cockpit für den Kommunen-Outreach. Liest/schreibt kommunen_kontakt
 // (interne, nicht-öffentliche Tabelle) über den Service-Client. Auth läuft über
@@ -25,6 +26,10 @@ async function isAdmin(): Promise<boolean> {
 const PAGE_SIZE = 50;
 const STATUSES = ["offen", "entwurf", "kontaktiert", "geantwortet", "zu"];
 
+// Eine Quelle für das Zeilen-Shape (GET, PATCH, POST liefern dasselbe zurück).
+const SELECT =
+  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, mastr_regions!inner(name, bezeichnung, population)";
+
 export async function GET(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!serviceDb) return NextResponse.json({ error: "DB not configured" }, { status: 500 });
@@ -40,10 +45,7 @@ export async function GET(req: NextRequest) {
   // liefert Name/Einwohner und erlaubt die Namenssuche auf Top-Ebene.
   let query = serviceDb
     .from("kommunen_kontakt")
-    .select(
-      "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, mastr_regions!inner(name, bezeichnung, population)",
-      { count: "exact" },
-    )
+    .select(SELECT, { count: "exact" })
     .order("region_id")
     .range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
 
@@ -74,6 +76,8 @@ export async function PATCH(req: NextRequest) {
     outreach_status?: string;
     notes?: string;
     channel?: string;
+    draft_subject?: string;
+    draft_body?: string;
   };
   if (!body.region_id) return NextResponse.json({ error: "region_id fehlt" }, { status: 400 });
 
@@ -90,16 +94,58 @@ export async function PATCH(req: NextRequest) {
   }
   if (body.notes !== undefined) patch.notes = body.notes;
   if (body.channel !== undefined) patch.channel = body.channel || null;
+  if (body.draft_subject !== undefined) patch.draft_subject = body.draft_subject;
+  if (body.draft_body !== undefined) patch.draft_body = body.draft_body;
 
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
     .update(patch)
     .eq("region_id", body.region_id)
-    .select(
-      "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, mastr_regions!inner(name, bezeichnung, population)",
-    )
+    .select(SELECT)
     .single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   return NextResponse.json({ row: data });
+}
+
+// Anschreiben aus dem Template + echten Solar-Zahlen der Gemeinde generieren und
+// als Entwurf speichern. Kein LLM — deterministisch, sofort.
+export async function POST(req: NextRequest) {
+  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!serviceDb) return NextResponse.json({ error: "DB not configured" }, { status: 500 });
+
+  const { region_id } = (await req.json()) as { region_id?: string };
+  if (!region_id) return NextResponse.json({ error: "region_id fehlt" }, { status: 400 });
+
+  // Name + Solar-Kennzahlen. kwp_alle aus dem Rollup (schont die große Tabelle).
+  const [{ data: reg }, { data: solar }] = await Promise.all([
+    serviceDb.from("mastr_regions").select("name, population").eq("region_id", region_id).single(),
+    serviceDb
+      .from("mastr_gemeinde_solar")
+      .select("kwp_alle, population")
+      .eq("region_id", region_id)
+      .maybeSingle(),
+  ]);
+  if (!reg) return NextResponse.json({ error: "Gemeinde nicht gefunden" }, { status: 404 });
+
+  const draft = renderOutreachDraft({
+    name: reg.name,
+    kwpAlle: solar?.kwp_alle ?? 0,
+    population: reg.population ?? solar?.population ?? null,
+  });
+
+  const { data, error } = await serviceDb
+    .from("kommunen_kontakt")
+    .update({
+      draft_subject: draft.subject,
+      draft_body: draft.body,
+      draft_generated_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    })
+    .eq("region_id", region_id)
+    .select(SELECT)
+    .single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  return NextResponse.json({ row: data, draft });
 }

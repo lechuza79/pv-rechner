@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../../../lib/theme";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
+import Modal from "../../../../components/Modal";
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -18,6 +19,9 @@ type Lead = {
   contacted_at: string | null;
   responded_at: string | null;
   notes: string | null;
+  draft_subject: string | null;
+  draft_body: string | null;
+  draft_generated_at: string | null;
   mastr_regions: Region | Region[];
 };
 
@@ -150,7 +154,7 @@ export default function KommunenCockpit() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 720 }}>
           <thead>
             <tr>
-              {["Gemeinde", "Kontakt", "Status", "Notiz"].map((h) => (
+              {["Gemeinde", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
                 <th key={h} style={thStyle}>
                   {h}
                 </th>
@@ -163,7 +167,7 @@ export default function KommunenCockpit() {
             ))}
             {!loading && rows.length === 0 && (
               <tr>
-                <td colSpan={4} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
+                <td colSpan={5} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
                   Keine Gemeinden für diesen Filter.
                 </td>
               </tr>
@@ -196,6 +200,7 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
   const r = region(lead);
   const [notes, setNotes] = useState(lead.notes ?? "");
   const [busy, setBusy] = useState(false);
+  const [draftOpen, setDraftOpen] = useState(false);
   const savedNotes = useRef(lead.notes ?? "");
 
   const patch = useCallback(
@@ -282,6 +287,14 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
         )}
       </td>
 
+      {/* Anschreiben */}
+      <td style={tdStyle}>
+        <button style={draftBtn} onClick={() => setDraftOpen(true)}>
+          {lead.draft_body ? "Anschreiben ✎" : "Anschreiben +"}
+        </button>
+        <DraftModal open={draftOpen} lead={lead} onClose={() => setDraftOpen(false)} onPatched={onPatched} />
+      </td>
+
       {/* Notiz */}
       <td style={tdStyle}>
         <input
@@ -296,6 +309,119 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
         />
       </td>
     </tr>
+  );
+}
+
+// ─── Anschreiben-Modal ────────────────────────────────────────────────────────
+
+function DraftModal({
+  open,
+  lead,
+  onClose,
+  onPatched,
+}: {
+  open: boolean;
+  lead: Lead;
+  onClose: () => void;
+  onPatched: (l: Lead) => void;
+}) {
+  const r = region(lead);
+  const [subject, setSubject] = useState(lead.draft_subject ?? "");
+  const [body, setBody] = useState(lead.draft_body ?? "");
+  const [busy, setBusy] = useState(false);
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const generate = useCallback(async () => {
+    setBusy(true);
+    try {
+      const res = await fetch("/api/admin/kommunen", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ region_id: lead.region_id }),
+      });
+      if (res.ok) {
+        const { row, draft } = await res.json();
+        setSubject(draft.subject);
+        setBody(draft.body);
+        onPatched(row);
+      }
+    } finally {
+      setBusy(false);
+    }
+  }, [lead.region_id, onPatched]);
+
+  // Beim Öffnen ohne vorhandenen Entwurf einmal generieren.
+  useEffect(() => {
+    if (open && !body && !busy) generate();
+    // Nur beim Öffnen — generate/body absichtlich nicht in den Deps.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  const save = useCallback(async () => {
+    setBusy(true);
+    try {
+      const res = await fetch("/api/admin/kommunen", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ region_id: lead.region_id, draft_subject: subject, draft_body: body }),
+      });
+      if (res.ok) onPatched((await res.json()).row);
+    } finally {
+      setBusy(false);
+    }
+  }, [lead.region_id, subject, body, onPatched]);
+
+  const copy = useCallback(async (text: string, which: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopied(which);
+    setTimeout(() => setCopied(null), 1500);
+  }, []);
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={`Anschreiben · ${r?.name ?? lead.region_id}`}
+      intro="Aus Vorlage + echten Solar-Zahlen der Gemeinde erzeugt. Vor dem Versenden prüfen und anpassen."
+      maxWidth={640}
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
+        {lead.kontakt_url && (
+          <a href={lead.kontakt_url} target="_blank" rel="noopener noreferrer" style={{ ...linkStyle, fontSize: 13 }}>
+            Kontaktseite öffnen ↗
+          </a>
+        )}
+
+        <label style={fieldLabel}>Betreff</label>
+        <div style={{ display: "flex", gap: space.xs }}>
+          <input value={subject} onChange={(e) => setSubject(e.target.value)} style={{ ...inputStyle, flex: 1 }} aria-label="Betreff" />
+          <button style={miniBtn} onClick={() => copy(subject, "subject")}>
+            {copied === "subject" ? "kopiert ✓" : "kopieren"}
+          </button>
+        </div>
+
+        <label style={fieldLabel}>Nachricht</label>
+        <textarea
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          rows={14}
+          style={{ ...inputStyle, width: "100%", resize: "vertical", lineHeight: 1.5, fontFamily: v("--font-text") }}
+          aria-label="Nachricht"
+        />
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center" }}>
+          <button style={primaryBtn} disabled={busy} onClick={() => copy(body, "body")}>
+            {copied === "body" ? "Text kopiert ✓" : "Text kopieren"}
+          </button>
+          <button style={pagerBtn} disabled={busy} onClick={save}>
+            Speichern
+          </button>
+          <button style={pagerBtn} disabled={busy} onClick={generate}>
+            {busy ? "…" : "Neu generieren"}
+          </button>
+        </div>
+      </div>
+    </Modal>
   );
 }
 
@@ -383,4 +509,47 @@ const pagerBtn: React.CSSProperties = {
   background: v("--color-bg"),
   color: v("--color-text-primary"),
   cursor: "pointer",
+};
+
+const draftBtn: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 600,
+  padding: pad("xs", "sm"),
+  borderRadius: v("--radius-sm"),
+  border: `1px solid ${v("--color-border")}`,
+  background: v("--color-bg"),
+  color: v("--color-accent"),
+  cursor: "pointer",
+  whiteSpace: "nowrap",
+};
+
+const primaryBtn: React.CSSProperties = {
+  fontSize: 13,
+  fontWeight: 700,
+  padding: pad("sm", "md"),
+  borderRadius: v("--radius-sm"),
+  border: `1px solid ${v("--color-accent")}`,
+  background: v("--color-accent"),
+  color: v("--color-text-on-accent"),
+  cursor: "pointer",
+};
+
+const miniBtn: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 600,
+  padding: pad("xs", "sm"),
+  borderRadius: v("--radius-sm"),
+  border: `1px solid ${v("--color-border")}`,
+  background: v("--color-bg-muted"),
+  color: v("--color-text-secondary"),
+  cursor: "pointer",
+  whiteSpace: "nowrap",
+};
+
+const fieldLabel: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 700,
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+  color: v("--color-text-muted"),
 };
