@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
-import { v } from "../../../../lib/theme";
+import RegionSearch from "../../../../components/atlas/RegionSearch";
+import { v, space, pad } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../lib/json-ld";
 import { atlasIsIndexable, atlasRobots } from "../../../../lib/atlas-index";
@@ -25,6 +26,13 @@ import { fmtPvLeistung as fmtLeistung, pvLeistungTeile, wattProKopfTeile } from 
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 
 export const revalidate = 3600;
+// Ohne generateStaticParams behandelt Next diese dynamische Route als voll
+// dynamisch (no-store, kein CDN-Cache). Ein leeres Array reicht: nichts wird zur
+// Build-Zeit vorgerendert (keine DB-Last im Build), aber die Route wird ISR —
+// jeder Pfad rendert einmal on-demand und liegt dann s-maxage=3600 im CDN.
+export function generateStaticParams() {
+  return [];
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -195,14 +203,14 @@ export default async function AtlasPage({ params }: { params: Params }) {
       )}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
       <div style={S.wrap}>
-        {crumbs.length > 1 ? <Breadcrumb items={crumbs} /> : null}
+        <Breadcrumb items={crumbs} rightSlot={<RegionSearch align="right" />} />
 
         <div style={S.stand}>
           Stand{" "}
           <time dateTime={atlas.data_as_of} style={S.standDate}>
             {standLabel(atlas.data_as_of)}
           </time>{" "}
-          · Marktstammdatenregister · monatlich aktualisiert
+          · monatlich aktualisiert
         </div>
 
         <h1 style={S.h1}>{headline(region)}</h1>
@@ -215,12 +223,14 @@ export default async function AtlasPage({ params }: { params: Params }) {
           )}
         </p>
 
-        <AtlasKpiRow
-          groups={[{ tiles: kpiTiles }]}
-          regionPerCap={regionPerCap}
-          references={kpiRefs}
-          defaultRefKey={defaultRefKey}
-        />
+        <div style={S.section}>
+          <AtlasKpiRow
+            groups={[{ tiles: kpiTiles }]}
+            regionPerCap={regionPerCap}
+            references={kpiRefs}
+            defaultRefKey={defaultRefKey}
+          />
+        </div>
 
         {/* Karte nur ab Bundesland-Ebene: die Deutschland-Übersicht zeigt dieselbe
             interaktive Karte schon auf der Startseite — auf der DE-Atlas-Seite wäre
@@ -232,7 +242,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
             <p style={S.sub}>
               Tippen Sie auf ein Gebiet, um tiefer einzutauchen — bis auf Gemeindeebene.
             </p>
-            <MastrHeroSection initialRegion={region.region_id} initialTraeger="solar" />
+            <MastrHeroSection initialRegion={region.region_id} initialTraeger="solar" showSource={false} />
           </div>
         )}
 
@@ -286,14 +296,20 @@ export default async function AtlasPage({ params }: { params: Params }) {
         )}
 
         <div style={S.disclaimer}>
-          Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur), Stand {atlas.data_as_of},
+          Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur), Stand {standLabel(atlas.data_as_of)},
           monatlich aktualisiert, Datenlizenz{" "}
           <a href="https://www.govdata.de/dl-de/by-2-0" target="_blank" rel="noopener noreferrer" style={S.licLink}>
             dl-de/by-2-0
           </a>{" "}
           (Daten aggregiert). Einwohnerzahlen: Statistisches Bundesamt, Gemeindeverzeichnis
-          {region.population_as_of ? `, Stand ${region.population_as_of}` : ""}, Datenlizenz
-          dl-de/by-2-0. Gezählt werden nur Anlagen in Betrieb. Alle Angaben sind Näherungswerte ohne
+          {region.population_as_of ? `, Stand ${standLabel(region.population_as_of)}` : ""}, Datenlizenz
+          dl-de/by-2-0.{" "}
+          {region.level !== "de" && (
+            // Kartengeometrien: die Karte zeigt ihren Credit auf dieser Seite nicht
+            // mehr (showSource=false), daher steht die BKG-Attribution hier.
+            <>Kartengeometrien: GeoBasis-DE / BKG, Datenlizenz dl-de/by-2-0 (vereinfacht). </>
+          )}
+          Gezählt werden nur Anlagen in Betrieb. Alle Angaben sind Näherungswerte ohne
           Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit.
         </div>
       </div>
@@ -307,32 +323,34 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
+    // Top-Padding 0: der Abstand Header→Content kommt zentral aus dem Layout
+    // (headerContentGap), analog zu den übrigen (site)-Seiten.
     padding: "0 16px 20px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: 6 },
+  stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },
   standDate: { fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
-  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" },
-  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" },
+  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xxl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
   metricsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
-    gap: 10,
-    marginBottom: 28,
+    gap: space.lg,
+    marginBottom: space.xxl,
   },
-  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 },
-  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 },
+  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: space.xl },
+  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
-  tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: "0 2px 24px" },
-  h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
-  sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px", lineHeight: 1.6 },
-  section: { marginBottom: 50 },
+  tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.xxl}px` },
+  h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.xs}px` },
+  sub: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px`, lineHeight: 1.6 },
+  section: { marginBottom: space.huge },
   card: {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
+    padding: pad("xl"),
   },
   link: { color: v("--color-accent"), textDecoration: "none", fontSize: 14, fontWeight: 600 },
   disclaimer: {
@@ -340,8 +358,8 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-muted"),
     lineHeight: 1.6,
     borderTop: `1px solid ${v("--color-border")}`,
-    paddingTop: 12,
-    marginBottom: 32,
+    paddingTop: space.lg,
+    marginBottom: space.xxxl,
   },
   licLink: { color: "inherit", textDecoration: "underline" },
 };

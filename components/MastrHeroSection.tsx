@@ -11,6 +11,7 @@ import { DATA_SOURCES } from "../lib/data-sources";
 import { DataSourceNote } from "./PoweredBy";
 import { isEmbedContext } from "../lib/embed-context";
 import { v } from "../lib/theme";
+import RegionSearch from "./atlas/RegionSearch";
 
 // Tab order: aggregate first, then individual renewables, then storage (separated)
 const RENEWABLE_TRAEGER: { key: Energietraeger; label: string }[] = [
@@ -219,21 +220,24 @@ export function MastrHeroSection({
         />
       )}
 
-      {selectedAgs && blAgs && (
+      {/* Navigations-Bar über der Karte — jetzt auch auf DE-Ebene (dort nur
+          „Deutschland"). Breadcrumb links, Regionssuche rechts. */}
+      <div className="mastr-mapbar">
         <MapBreadcrumb
+          selectedAgs={selectedAgs}
           isLk={isLkSelected}
           blAgs={blAgs}
-          blName={bundeslandByAgs(blAgs)?.name ?? blAgs}
+          blName={blAgs ? bundeslandByAgs(blAgs)?.name ?? blAgs : undefined}
           lkName={isLkSelected ? summary?.name ?? selectedName : undefined}
           onGo={goToLevel}
         />
-      )}
+        <RegionSearch onPick={handleSelect} />
+      </div>
 
       <div
         className={
-          "mastr-hero-grid" +
-          (energietraeger === "solar" ? " has-filter" : "") +
-          (selectedAgs ? " has-breadcrumb" : "")
+          "mastr-hero-grid has-breadcrumb" +
+          (energietraeger === "solar" ? " has-filter" : "")
         }
         style={{ marginTop: 16 }}
       >
@@ -501,7 +505,6 @@ function GemeindeHint({ kreisAgs, kreisName }: { kreisAgs: string; kreisName?: s
         color: v("--color-text-muted"),
       }}
     >
-      <span>Tippen Sie auf eine Gemeinde, um ihre Solar-Zahlen im Detail zu sehen.</span>
       <a
         href={`/api/atlas/goto?ags=${kreisAgs}`}
         style={{ color: v("--color-accent"), fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}
@@ -515,15 +518,18 @@ function GemeindeHint({ kreisAgs, kreisName }: { kreisAgs: string; kreisName?: s
 // Breadcrumb above the map: Deutschland › Bundesland › Landkreis. Each crumb
 // jumps to that level; the last (current) level carries an ✕ to go up one.
 function MapBreadcrumb({
+  selectedAgs,
   isLk,
   blAgs,
   blName,
   lkName,
   onGo,
 }: {
+  /** Aktuelle Ebene: undefined = Deutschland, sonst 2/5-stellige AGS. */
+  selectedAgs?: string;
   isLk: boolean;
-  blAgs: string;
-  blName: string;
+  blAgs?: string;
+  blName?: string;
   lkName?: string;
   onGo: (ags: string | undefined) => void;
 }) {
@@ -548,8 +554,17 @@ function MapBreadcrumb({
       </button>
     </span>
   );
+  // Deutschland-Ebene: nur der Wurzel-Krümel, ohne Link/Schließen — er ist die
+  // aktuelle Ebene, es gibt keine höhere.
+  if (!selectedAgs) {
+    return (
+      <nav aria-label="Navigation" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", minWidth: 0 }}>
+        <span style={{ ...current, gap: 0 }}>Deutschland</span>
+      </nav>
+    );
+  }
   return (
-    <nav aria-label="Navigation" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginTop: 14 }}>
+    <nav aria-label="Navigation" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", minWidth: 0 }}>
       <button style={link} onClick={() => onGo(undefined)}>Deutschland</button>
       <span style={sep}>›</span>
       {isLk ? (
@@ -559,7 +574,7 @@ function MapBreadcrumb({
           <Current label={lkName ?? "Landkreis"} up={blAgs} />
         </>
       ) : (
-        <Current label={blName} up={undefined} />
+        <Current label={blName ?? "Bundesland"} up={undefined} />
       )}
     </nav>
   );

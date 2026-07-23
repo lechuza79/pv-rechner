@@ -316,7 +316,7 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
           <div style={{ marginTop: 30 }}>
             <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 2px" }}>Solaranlagen in {name} auf der Karte</h2>
             <p style={{ fontSize: 12, color: v("--color-text-muted"), margin: "0 0 12px" }}>Installierte Leistung je Landkreis — tippe einen Kreis an, um hineinzuzoomen.</p>
-            <MastrHeroSection initialRegion={blAgs} initialTraeger="solar" />
+            <MastrHeroSection initialRegion={blAgs} initialTraeger="solar" showSource={false} />
           </div>
         )}
 
@@ -340,6 +340,11 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
               </a>{" "}
               (Daten aggregiert).
             </>
+          )}
+          {blAgs && (
+            // Karte zeigt ihren Credit auf dieser Seite nicht mehr (showSource=false),
+            // daher steht die BKG-Attribution der Kartengeometrien hier.
+            <> Kartengeometrien: GeoBasis-DE / BKG, Datenlizenz dl-de/by-2-0 (vereinfacht).</>
           )}
           {blAgs && BL_CENTROID[blAgs] && solar && solar.total_kwp > 0 && (
             <>

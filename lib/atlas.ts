@@ -133,6 +133,67 @@ export const getRegionById = unstable_cache(getRegionByIdUncached, ["region-by-i
   revalidate: 3600,
 });
 
+/** Ein Suchtreffer für die Karten-Suche: `label` ist die anzuzeigende Gattung
+ *  (die echte `bezeichnung`, z. B. „Kreisfreie Stadt", nicht die technische
+ *  Ebene). Die Navigation läuft über /api/atlas/goto?ags=<region_id>. */
+export type RegionHit = {
+  region_id: string;
+  name: string;
+  label: string;
+};
+
+const LEVEL_FALLBACK: Record<string, string> = {
+  bundesland: "Bundesland",
+  landkreis: "Landkreis",
+  gemeinde: "Gemeinde",
+};
+
+/**
+ * Namenssuche über alle navigierbaren Regionen (Bundesland, Kreis, Gemeinde) für
+ * das Autosuggest der Karte. Enthält-Suche (auch „Tölz" findet „Bad Tölz"),
+ * grob nach Einwohnerzahl vorsortiert; Präfix-Treffer wandern danach nach oben,
+ * weil sie fast immer das Gemeinte sind. Nur Regionen mit Slug (haben eine
+ * Atlas-Seite). Bewusst OHNE Cache — die Anfragen sind zu divers; die DB wird
+ * über ein Mindest-Query (2 Zeichen), ein hartes Limit und den CDN-Cache der
+ * Route geschont.
+ */
+export async function searchRegions(q: string): Promise<RegionHit[]> {
+  const term = q.trim().replace(/[%_,]/g, ""); // ILIKE-Platzhalter + PostgREST-Trenner raus
+  if (term.length < 2) return [];
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase
+      .from("mastr_regions")
+      .select("region_id, level, name, bezeichnung, population")
+      .ilike("name", `%${term}%`)
+      .in("level", ["bundesland", "landkreis", "gemeinde"])
+      .not("slug", "is", null)
+      .order("population", { ascending: false, nullsFirst: false })
+      .limit(40),
+    "searchRegions",
+  );
+  if (error) throw new Error(`searchRegions failed: ${error.message}`);
+  const lower = term.toLowerCase();
+  const rows = (data ?? [])
+    // Kreisfreie Städte stehen doppelt in der Tabelle — auf Kreis-Ebene (5-stellig)
+    // UND auf Gemeinde-Ebene (8-stellig, z. B. 09663 + 09663000). In der Suche nur
+    // einmal: die 8-stellige Dublette raus, die Kreis-Ebene deckt die Stadt ab.
+    .filter((r) => !(r.bezeichnung === "Kreisfreie Stadt" && String(r.region_id).length === 8))
+    .map((r) => ({
+      region_id: String(r.region_id),
+      name: regionDisplayName(String(r.name)),
+      // Echte Gattung statt technischer Ebene: eine kreisfreie Stadt ist kein
+      // „Landkreis", auch wenn sie auf dessen Ebene liegt.
+      label: (r.bezeichnung as string | null) || LEVEL_FALLBACK[r.level] || "Region",
+    }));
+  // Stabil: Präfix-Treffer nach vorn, sonst bleibt die Population-Ordnung.
+  rows.sort(
+    (a, b) =>
+      Number(b.name.toLowerCase().startsWith(lower)) - Number(a.name.toLowerCase().startsWith(lower)),
+  );
+  return rows.slice(0, 8);
+}
+
 /**
  * Resolve a slug path to a region. Slugs are unique among siblings, so each
  * segment is looked up within its parent — that is what keeps "wuerzburg" (the
@@ -211,7 +272,7 @@ export function childLevelOf(region: AtlasRegion): Exclude<Level, "de"> | null {
  * roll into the parent by prefix, so a Kreis total can exceed the sum of its
  * listed Gemeinden — getRegionUnassigned() reports that gap.
  */
-export async function getChildren(region: AtlasRegion, energietraeger = "solar"): Promise<AtlasChild[]> {
+async function getChildrenUncached(region: AtlasRegion, energietraeger = "solar"): Promise<AtlasChild[]> {
   const childLevel = childLevelOf(region);
   if (!childLevel) return [];
 
@@ -278,6 +339,13 @@ export async function getChildren(region: AtlasRegion, energietraeger = "solar")
 
   return children.sort((a, b) => (b.wPerCapita ?? -1) - (a.wPerCapita ?? -1));
 }
+
+// Gecacht wie die übrigen Atlas-Reads: der interne mastr_children-RPC ist ein
+// POST und würde die aufrufende Seite sonst auf „dynamisch" kippen (kein
+// ISR/CDN-Cache). unstable_cache kapselt das Ergebnis, die Route bleibt statisch.
+export const getChildren = unstable_cache(getChildrenUncached, ["children-v2"], {
+  revalidate: 3600,
+});
 
 function assignRank(children: AtlasChild[], metric: "wPerCapita" | "wPerCapitaDach", field: "rank" | "rankDach") {
   const ranked = children.filter((c) => c[metric] !== null).sort((a, b) => (b[metric] as number) - (a[metric] as number));
