@@ -171,6 +171,18 @@ async function setup(): Promise<void> {
       notes text,
       updated_at timestamptz NOT NULL DEFAULT now()
     );
+    -- Outreach-Workflow-Felder (idempotent nachgezogen). status/notes/verified
+    -- sind oben schon in der Basistabelle; hier die Kanal-/Zeitstempel-/Entwurfs-
+    -- Felder für das Admin-Cockpit. Ein Entwurf je Gemeinde inline (MVP; falls
+    -- Versionen nötig werden, später in eine eigene Tabelle auslagern).
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS channel text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS contacted_at timestamptz;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS responded_at timestamptz;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_subject text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_body text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_generated_at timestamptz;
+    -- Filter „nach Status" schnell halten (Cockpit-Tabs).
+    CREATE INDEX IF NOT EXISTS idx_kk_status ON kommunen_kontakt (outreach_status);
     ALTER TABLE kommunen_kontakt ENABLE ROW LEVEL SECURITY;
     DO $$ BEGIN
       IF NOT EXISTS (
