@@ -45,7 +45,7 @@ export default function LoginForm({ next = "/dashboard" }: { next?: string }) {
   };
 
   return (
-    <div style={{ background: v("--color-bg"), minHeight: "70vh", padding: "40px 16px", fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
+    <div style={{ background: v("--color-bg"), minHeight: "70vh", padding: "0 16px 40px", fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
       <div style={{ maxWidth: 420, margin: "0 auto" }}>
         <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", marginBottom: 6 }}>Anmelden</h1>
         <p style={{ fontSize: 14, color: v("--color-text-muted"), marginBottom: 20, lineHeight: 1.5 }}>

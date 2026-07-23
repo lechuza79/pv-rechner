@@ -140,6 +140,14 @@ export const tokens = {
   '--page-max-width': '480px',       // Rechner/Tools — kompakte, fokussierte Spalte
   '--content-max-width': '640px',    // Redaktionelle Lese-/Textseiten (Ratgeber, Methodik, …)
   '--header-max-width': '1040px',
+
+  // Redaktionelle Kopf-Luft NUR auf Lese-/Textseiten — zusätzlich zum zentralen
+  // headerContentGap (48). Bewusst mehr als bei Tool-/Datenseiten, damit lange
+  // Texte oben atmen (redaktionelles Muster): 48 + 48 = 96px über der
+  // Überschrift. EIN Wert statt in jeder Seite getippt; auf schmalen Schirmen
+  // kleiner (Override in globalStyles → 24px, Total 72px), weil der große
+  // Abstand dort zu viel leeren Raum über der Überschrift lässt.
+  '--content-lede-top': '48px',
 } as const;
 
 export type TokenName = keyof typeof tokens;
@@ -209,6 +217,19 @@ export const space = {
 export function pad(y: keyof typeof space, x?: keyof typeof space): string {
   return x === undefined ? `${space[y]}px` : `${space[y]}px ${space[x]}px`;
 }
+
+/**
+ * Abstand Header → Seiteninhalt. EINE Quelle.
+ *
+ * Früher setzte ihn jede Seite selbst als oberes Padding auf ihrem Wurzel-
+ * Container (meist 20px), plus der Header brachte einen `marginBottom:20` mit —
+ * zusammen ~40px, aber überall leicht unterschiedlich (24/40/0), weil jede Seite
+ * ihren eigenen Wert tippte. Jetzt sitzt der Abstand zentral im (site)-Layout
+ * unter dem Header; keine Seite setzt mehr eigenes Top-Padding. Skalenwert
+ * (space.huge = 48) — bewusst großzügig, damit die Rechner-Hero-Fragen oben Luft
+ * haben. Lese-/Textseiten legen darüber noch --content-lede-top drauf.
+ */
+export const headerContentGap = space.huge; // 48
 
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
 export const v = (name: TokenName): string => `var(${name})`;
@@ -436,6 +457,10 @@ export function stageDefaults(i: number): Record<TokenName, string> {
 export const globalStyles = `
   html{scroll-behavior:smooth}
   *{box-sizing:border-box;margin:0;padding:0}
+  /* Redaktionelle Kopf-Luft (Lese-Seiten) auf schmalen Schirmen zurücknehmen:
+     60px über der Überschrift wirken auf dem Handy wie ein Fehler, auf dem
+     Desktop wie gewollte Ruhe. Siehe --content-lede-top. */
+  @media (max-width:640px){:root{--content-lede-top:24px}}
   /* Smooth theme cross-fade — only enabled while a theme switch is in flight
      (ThemeController toggles .theme-anim on <html>), so normal hovers stay
      instant and the initial (boot-script) theme paints without animating.
