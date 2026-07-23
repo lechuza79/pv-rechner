@@ -6,7 +6,7 @@ import {
   effectiveValue,
   stageIndex,
   STAGES,
-  GREEN_TOKENS,
+  THEME_TOKENS,
 } from "../theme-overrides";
 import { stageDefaults } from "../theme";
 
@@ -99,10 +99,12 @@ describe("effectiveValue", () => {
 });
 
 describe("catalogue", () => {
-  it("has seven stages and every green token maps to a known role", () => {
+  it("has seven stages and every token maps to a known role", () => {
     expect(STAGES).toHaveLength(7);
     expect(STAGES.map((s) => s.id)).toEqual(["s6", "s5", "s4", "s3", "s2", "s1", "s0"]);
-    expect(GREEN_TOKENS.every((t) => t.role === "positive" || t.role === "energy")).toBe(true);
+    expect(
+      THEME_TOKENS.every((t) => t.role === "positive" || t.role === "energy" || t.role === "negative"),
+    ).toBe(true);
   });
   it("stageIndex clamps to the valid range", () => {
     expect(stageIndex("s6")).toBe(6);

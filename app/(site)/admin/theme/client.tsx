@@ -62,8 +62,8 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
   const [editValue, setEditValue] = useState(15000);
 
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
-      <div style={{ maxWidth: 640, margin: "0 auto" }}>
+    <div style={{ fontFamily: v('--font-text'), color: v('--color-text-primary') }}>
+      <div style={{ maxWidth: 640 }}>
 
         <div style={{ marginBottom: 32 }}>
           <Link href="/admin" style={{ fontSize: 12, fontWeight: 600, color: v('--color-accent'), textDecoration: "none", display: "inline-block", marginBottom: 10 }}>← Admin-Backend</Link>

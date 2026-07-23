@@ -2,13 +2,14 @@
 
 import { useMemo, useState } from "react";
 import { stageDefaults, v, type TokenName } from "../../../../lib/theme";
+import TendTag from "../../../../components/atlas/TendTag";
 import {
   STAGES,
-  GREEN_TOKENS,
+  THEME_TOKENS,
   stageIndex,
   type StageId,
   type ThemeOverrides,
-  type GreenToken,
+  type ThemeToken,
 } from "../../../../lib/theme-overrides";
 
 // ─── Admin editor: per-stage, per-shade green overrides ──────────────────────
@@ -114,19 +115,20 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
   }
 
   const stageMeta = STAGES.find((s) => s.id === stage)!;
-  const positiveTokens = GREEN_TOKENS.filter((t) => t.role === "positive");
-  const energyTokens = GREEN_TOKENS.filter((t) => t.role === "energy");
+  const positiveTokens = THEME_TOKENS.filter((t) => t.role === "positive");
+  const negativeTokens = THEME_TOKENS.filter((t) => t.role === "negative");
+  const energyTokens = THEME_TOKENS.filter((t) => t.role === "energy");
   const overrideCount = Object.values(draft).reduce((n, set) => n + Object.keys(set ?? {}).length, 0);
 
   return (
     <div style={{ marginBottom: 28 }}>
       <h2 style={{ fontSize: 11, fontWeight: 700, color: v("--color-text-secondary"), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
-        Grün-Theming — pro Helligkeitsstufe
+        Signalfarben-Theming — pro Helligkeitsstufe
       </h2>
       <p style={{ fontSize: 13, color: v("--color-text-muted"), marginBottom: 14, lineHeight: 1.5 }}>
-        Stufe wählen, dann jede Grün-Abstufung für diese Stufe einzeln anpassen. Die Vorschau zeigt die
-        Töne im echten Kontext dieser Stufe. Speichern wirkt sofort auf der ganzen Seite (Vorschaubild,
-        Mail und Embeds ziehen beim nächsten Aufbau nach).
+        Stufe wählen, dann jede Signalfarbe (Positiv-Grün, Negativ-Rot, Energie-Grün) für diese Stufe
+        einzeln anpassen. Die Vorschau zeigt die Töne im echten Kontext dieser Stufe. Speichern wirkt
+        sofort auf der ganzen Seite (Vorschaubild, Mail und Embeds ziehen beim nächsten Aufbau nach).
       </p>
 
       {/* ── Sticky control head: the stage chips + live preview stay pinned to the
@@ -229,11 +231,26 @@ export default function GreenThemingEditor({ initial }: { initial: ThemeOverride
             ))}
           </div>
         </div>
+
+        {/* Tendenz-Badges (Atlas-KPIs): positiv/negativ/neutral in dieser Stufen-
+            Palette. Die Badge zieht ihre Farben aus denselben Tokens wie oben
+            (Positiv-Grün) plus den Negativ-Tokens — hier sichtbar, damit man den
+            Kontrast auf jedem Hintergrund prüfen kann. Rot ist hier nicht
+            editierbar (kein Grün-Token), aber der Ton folgt der Stufe. */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 10, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600 }}>
+            Tendenz-Badges
+          </span>
+          <TendTag dev={0.18} />
+          <TendTag dev={-0.28} />
+          <TendTag dev={0} />
+        </div>
       </div>
       </div>{/* end sticky control head */}
 
       {/* ── Token editors for the selected stage ── */}
       <TokenGroup title="Positiv-Grün — UI-Signalfarbe" tokens={positiveTokens} draft={draft} stage={stage} onSet={setToken} onReset={resetToken} />
+      <TokenGroup title="Negativ-Rot — UI-Signalfarbe" tokens={negativeTokens} draft={draft} stage={stage} onSet={setToken} onReset={resetToken} />
       <TokenGroup title="Energie-Grün — Datenvisualisierung" tokens={energyTokens} draft={draft} stage={stage} onSet={setToken} onReset={resetToken} />
 
       {/* ── Actions (pinned to the bottom so Save is always in reach) ── */}
@@ -276,7 +293,7 @@ function TokenGroup({
   title, tokens, draft, stage, onSet, onReset,
 }: {
   title: string;
-  tokens: GreenToken[];
+  tokens: ThemeToken[];
   draft: Draft;
   stage: StageId;
   onSet: (token: TokenName, value: string) => void;
