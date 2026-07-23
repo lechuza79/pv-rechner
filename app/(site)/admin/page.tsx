@@ -15,7 +15,7 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
 
 // The admin tools. Add a row here when a new admin page ships.
 const TOOLS: { href: string; title: string; desc: string }[] = [
-  { href: "/admin/theme", title: "Grün-Theming", desc: "Grüntöne pro Helligkeitsstufe anpassen — Positiv- und Energie-Farben, live vorschaubar." },
+  { href: "/admin/theme", title: "Signalfarben-Theming", desc: "Grün, Rot und Energie-Farben pro Helligkeitsstufe anpassen — live vorschaubar." },
   { href: "/admin/prices", title: "Marktpreise", desc: "PV-/Speicher-Preise scrapen, manuell überschreiben, Historie ansehen." },
 ];
 
@@ -30,8 +30,8 @@ export default async function AdminHub() {
   }
 
   return (
-    <div style={{ background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "20px 16px" }}>
-      <div style={{ maxWidth: 640, margin: "0 auto" }}>
+    <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
+      <div style={{ maxWidth: 640 }}>
         <div style={{ marginBottom: 24 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-accent"), letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>Admin</div>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: v("--color-text-primary"), marginBottom: 4 }}>Admin-Backend</h1>

@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Logo from "./Logo";
 import { IconUser, IconMenu, IconClose, IconChevronDown } from "./Icons";
 import { v, iconSizes } from "../lib/theme";
-import { useAuth, useIsAdmin, signOut } from "../lib/auth";
+import { useAuth, signOut } from "../lib/auth";
 import ThemeController from "./ThemeController";
 
 interface HeaderProps {
@@ -54,7 +54,6 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   const pathname = usePathname();
   const router = useRouter();
   const authState = useAuth();
-  const isAdmin = useIsAdmin(authState.status === "authed" ? authState.user.id : null);
   // Abmelden ohne durchgereichten Handler: nach dem Abmelden weg von der
   // geschützten Seite und den Server-State auffrischen — sonst bliebe man auf
   // dem Dashboard mit veralteter Sitzungsansicht stehen.
@@ -119,54 +118,55 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     padding: "12px 0",
   });
 
-  // Admin-Eintrag: nur für eingeloggte Admins (isAdmin ist sonst false). Führt
-  // ins Admin-Backend (/admin) mit allen internen Views. Steht vor Dashboard/
-  // Abmelden, in Desktop-Leiste und Burger-Menü.
-  const adminLink = isAdmin ? (
-    <Link href="/admin" style={isDesktop ? linkStyle("admin") : mobileLinkStyle("admin")} onClick={closeMenu}>
-      <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent')} /> Admin
-    </Link>
-  ) : null;
+  const email = authState.status === "authed" ? authState.user.email ?? "" : "";
+  const doLogout = () => { (onLogoutClick ?? defaultLogout)(); closeMenu(); };
 
-  const authElement = authState.status === "loading" ? (
-    adminLink
-  ) : authState.status === "authed" ? (
-    <>
-      {adminLink}
-      {// Der Header sitzt im Seitenlayout und bekommt darum keine Handler mehr
-      // durchgereicht. „Abmelden" leitet sich deshalb aus dem Pfad ab (auf dem
-      // Dashboard) und meldet selbst ab — sonst stünde dort ein Dashboard-Link
-      // auf sich selbst und gar kein Abmelden. Ein explizit übergebener Handler
-      // gewinnt weiterhin.
-      onLogoutClick || pathname.startsWith("/dashboard") ? (
-        <button onClick={() => { (onLogoutClick ?? defaultLogout)(); closeMenu(); }} style={{
-          background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
-          color: v('--color-text-muted'), cursor: "pointer", padding: isDesktop ? 0 : "12px 0",
-          fontFamily: v('--font-text'),
+  // Einloggen-Element (für Desktop-Leiste UND Burger, Styling folgt isDesktop).
+  const loginElement = onLoginClick ? (
+    <button onClick={() => { onLoginClick(); closeMenu(); }} style={{
+      background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
+      color: v('--color-text-secondary'), cursor: "pointer", padding: isDesktop ? 0 : "12px 0",
+      fontFamily: v('--font-text'), display: "flex", alignItems: "center", gap: isDesktop ? 6 : 8,
+    }}>
+      <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
+    </button>
+  ) : (
+    <Link href="/login" style={{ ...(isDesktop ? linkStyle("") : mobileLinkStyle("")), gap: isDesktop ? 6 : 8 }} onClick={closeMenu}>
+      <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
+    </Link>
+  );
+
+  // Oben rechts, eingeloggt: EIN Profil-Menü (Dropdown) statt loser Links —
+  // ersetzt den Einloggen-Knopf. Inhalt bewusst schlank: Konto + Abmelden. Die
+  // internen Ziele (Dashboard, Admin) navigiert man über die Sidebar des
+  // internen Bereichs, den man über „Mein Konto" betritt.
+  const desktopAuth = authState.status === "loading" ? null
+    : authState.status === "authed"
+      ? <ProfileMenu email={email} onLogout={doLogout} />
+      : loginElement;
+
+  // Burger-Menü, eingeloggt: dieselbe schlanke Profil-Sektion als Liste.
+  const mobileAuth = authState.status === "loading" ? null
+    : authState.status === "authed" ? (
+      <>
+        <div style={{
+          fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
+          color: v('--color-text-muted'), padding: "14px 0 4px",
+        }}>
+          {email || "Mein Konto"}
+        </div>
+        <Link href="/dashboard" style={mobileLinkStyle("dashboard")} onClick={closeMenu}>
+          <IconUser size={16} color={v('--color-accent-light')} /> Mein Konto
+        </Link>
+        <button onClick={doLogout} style={{
+          background: "none", border: "none", fontSize: 16, fontWeight: 600,
+          color: v('--color-text-muted'), cursor: "pointer", padding: "12px 0",
+          fontFamily: v('--font-text'), textAlign: "left",
         }}>
           Abmelden
         </button>
-      ) : (
-        <Link href="/dashboard" style={isDesktop ? linkStyle("dashboard") : mobileLinkStyle("dashboard")} onClick={closeMenu}>
-          <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Dashboard
-        </Link>
-      )}
-    </>
-    ) : (
-      onLoginClick ? (
-        <button onClick={() => { onLoginClick(); closeMenu(); }} style={{
-          background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
-          color: v('--color-text-secondary'), cursor: "pointer", padding: isDesktop ? 0 : "12px 0",
-          fontFamily: v('--font-text'), display: "flex", alignItems: "center", gap: isDesktop ? 6 : 8,
-        }}>
-          <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
-        </button>
-      ) : (
-        <Link href="/login" style={{ ...(isDesktop ? linkStyle("") : mobileLinkStyle("")), gap: isDesktop ? 6 : 8 }} onClick={closeMenu}>
-          <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
-        </Link>
-      )
-    );
+      </>
+    ) : loginElement;
 
   return (
     <header style={{
@@ -210,7 +210,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: isDesktop ? 14 : 8 }}>
           <ThemeController compact={!isDesktop} />
-          {isDesktop ? authElement : (
+          {isDesktop ? desktopAuth : (
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
@@ -265,11 +265,83 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
-            {authElement}
+            {mobileAuth}
           </nav>
         </>
       )}
     </header>
+  );
+}
+
+// Profil-Menü oben rechts (Desktop, eingeloggt). Ein Icon-Knopf öffnet ein
+// Dropdown mit Mail, den internen Zielen und Abmelden — statt drei loser Links
+// in der Leiste. Schließt bei Klick daneben und mit Escape.
+function ProfileMenu({ email, onLogout }: { email: string; onLogout: () => void }) {
+  const [open, setOpen] = useState(false);
+  const wrap = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => { if (wrap.current && !wrap.current.contains(e.target as Node)) setOpen(false); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("mousedown", onDoc); document.removeEventListener("keydown", onKey); };
+  }, [open]);
+
+  const itemStyle: React.CSSProperties = {
+    display: "block", width: "100%", textAlign: "left", textDecoration: "none",
+    padding: "10px 12px", borderRadius: 10, fontSize: 14, fontWeight: 600,
+    color: v('--color-text-primary'), background: "transparent",
+    border: "none", cursor: "pointer", fontFamily: v('--font-text'),
+  };
+  const hover = (on: boolean) => (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.background = on ? v('--color-bg-muted') : "transparent";
+  };
+
+  return (
+    <div ref={wrap} style={{ position: "relative" }}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label="Profil-Menü"
+        style={{
+          display: "inline-flex", alignItems: "center", gap: 6,
+          padding: "6px 10px", borderRadius: 999, cursor: "pointer",
+          background: open ? v('--color-accent-dim') : v('--color-bg-muted'),
+          border: `1px solid ${open ? v('--color-accent') : v('--color-border')}`,
+        }}
+      >
+        <IconUser size={16} color={v('--color-accent')} />
+        <IconChevronDown size={iconSizes.md} color={v('--color-text-muted')} style={{ transition: "transform 0.15s ease", transform: open ? "rotate(180deg)" : "none" }} />
+      </button>
+
+      {open && (
+        <div role="menu" style={{
+          position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 100,
+          background: v('--color-bg'), border: `1px solid ${v('--color-border')}`,
+          borderRadius: 14, boxShadow: v('--shadow-lg'), padding: 8, minWidth: 220,
+          display: "flex", flexDirection: "column", gap: 2,
+        }}>
+          {email && (
+            <div style={{
+              fontSize: 12, color: v('--color-text-muted'), padding: "6px 12px 8px",
+              borderBottom: `1px solid ${v('--color-border')}`, marginBottom: 4,
+              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+            }}>
+              {email}
+            </div>
+          )}
+          <Link href="/dashboard" role="menuitem" onClick={() => setOpen(false)} style={itemStyle} onMouseEnter={hover(true)} onMouseLeave={hover(false)}>
+            Mein Konto
+          </Link>
+          <button role="menuitem" onClick={() => { setOpen(false); onLogout(); }} style={{ ...itemStyle, color: v('--color-text-muted') }} onMouseEnter={hover(true)} onMouseLeave={hover(false)}>
+            Abmelden
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
