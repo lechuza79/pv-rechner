@@ -27,7 +27,53 @@ einer kleinen Menge zu validieren, bevor man skaliert.
 - [ ] **Thin-Schwelle:** Gemeinden ohne nennenswerten Bestand haben keinen Eigenwert.
       Vorschlag: **< ~10 Anlagen → `noindex`** (oder Canonical auf die Landkreis-Seite).
       Zahl tunebar. Nimmt genau die Seiten raus, die als Doorway/Thin durchgehen.
+      Für **Welle 1** bewusst höher ansetzen (nur substanzstarke Gemeinden zuerst),
+      Schwelle je Welle absenken — 10 bleibt die dauerhafte Untergrenze.
 - [ ] Prüfen, ob der Intro-Text bei sehr kleinen Gemeinden noch genug variiert.
+- [ ] **Zwei echte, gemeinde-spezifische Fakten je Seite** (der eigentliche Thin-Hebel,
+      nicht Text-Varianz): **größte Einzelanlage** (kWp + Typ + Jahr, aus MaStR) +
+      **benannter Nachbarvergleich**. Beide selbstwartend im Monatslauf, liefern pro
+      Seite genuin andere Wörter — mehr wert als jede Formulierungs-Variante.
+- [ ] Aufhänger im Intro **datengetrieben rotieren** (mal Rang, mal Zubau, mal Pro-Kopf
+      zuerst — je nachdem was für die Gemeinde auffällig ist), nicht Synonyme streuen
+      (Content-„Spinning" ist ein Thin-Signal, kein Gegenmittel).
+- [x] **Kreis-Rangliste bleibt vollständig** (eigene Zeile hervorgehoben) — Fenster-
+      Ausschnitt verworfen (nimmt dem Nutzer den Kreis-Überblick; Tabellen-Duplikat ist
+      SEO-seitig gering, der unique Rest der Seite überwiegt).
+
+## Abhängigkeit: teilt Rangliste + Freiflächen-Regel mit dem Award-Konzept
+Die Gemeinde-Anreicherung baut **keine eigene Rangliste**. „Rang im Kreis" und der
+Nachbarvergleich sind **dieselbe Rechnung** wie die Award-Vergabe (Sieger je Landkreis,
+Konzept im Memory `project_kommunen_outreach`). Zwei parallele Ranglisten würden
+auseinanderlaufen — genau der Fehler, den wir vermeiden.
+
+**Reihenfolge (entschieden 2026-07-23):**
+1. **Award-Feature zuerst** — baut die Rangliste (`mastr_gemeinde_solar`-Rollup,
+   NICHT Voll-Aggregation über `mastr_aggregates_gem` — hat Production umgelegt) +
+   Badge-Widget. Liefert die geteilte Rang-Quelle für alle folgenden Schritte.
+2. **Bundesland-Seiten als Anreicherungs-Pilot** (die 17 sind bereits live/indexierbar).
+   KEIN Thin-Problem (nur 17, je Land einzigartig) — Ziel ist Ranking, nicht Duplikat-
+   Vermeidung: **hier liegt das echte Suchvolumen** („Photovoltaik Bayern"), und es ist
+   der **risikoärmste Sandkasten**, um die Anreicherungs-Bausteine zu bauen, die danach
+   nach unten kaskadieren. Fokus **redaktionelle Tiefe**, NICHT mehr KPI-Kacheln:
+   Landesförderung + Bundesvergleich (Rang unter 16) + größte Anlagen/auffällige Kreise +
+   genuin unterschiedlicher Einstieg. Vorher (~2 Wochen nach 0a-Launch = ab Anfang
+   August) kurz die Search Console prüfen, für welche Begriffe die BL-Seiten auftauchen,
+   und die Anreicherung darauf richten statt zu raten.
+3. **Bausteine runter auf Kreise, dann Gemeinden** — dieselben Bausteine (größte Anlage,
+   Nachbarvergleich/Rang aus der Award-Rangliste, Aufhänger-Rotation), plus die Gemeinde-
+   Freischaltung (`gemeinde: true` für die Teilmenge + Sitemap). Neue Kommunenseiten
+   **erst anreichern, dann zur Indexierung einreichen** — Google soll die Seite gleich im
+   starken Zustand sehen, nicht erst eine dünne Version bewerten. So sind Badge,
+   Award-Seite und Gemeindeseite garantiert zahlengleich.
+
+**Übernommene Regel (Freiflächen-Falle):** Absolute/pro-Kopf-Rohzahlen werden von
+Freiflächen-Parks vergiftet (eine 24-Ew.-Gemeinde mit einem Park = absurder Pro-Kopf-
+Wert). Deshalb gilt für Fakten UND Schwelle: **Bürger-Vergleich = Dach-Leistung pro
+Kopf** (Freiflächen raus, Einwohner-Schwelle), Freiflächen als eigener, ehrlich
+betitelter Fakt daneben. Ein Award/eine Platzierung ist ein genuin einzigartiger Fakt,
+aber nur ~8 % gewinnen — er veredelt die starken Seiten, ersetzt aber NICHT den
+Thin-Fix der Masse (größte Anlage + Nachbarvergleich auf **jeder** Seite).
 
 ## Die Wellen
 - **Welle 0a — Fundament (17 Seiten):** Deutschland + 16 Bundesländer freischalten.
