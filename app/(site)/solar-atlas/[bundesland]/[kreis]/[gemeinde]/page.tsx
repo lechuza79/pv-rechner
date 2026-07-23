@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
+import RegionSearch from "../../../../../../components/atlas/RegionSearch";
 import { IconArrowRight } from "../../../../../../components/Icons";
 import { v, space, pad } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
@@ -45,6 +46,12 @@ import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
 import { landProgramBundeslaender } from "../../../../../../lib/funding-programs";
 
 export const revalidate = 3600;
+// Ohne generateStaticParams wäre die Route voll dynamisch (no-store). Leeres
+// Array = keine Vorab-Renders (zu viele Gemeinden), aber ISR: jede Gemeinde-Seite
+// rendert einmal on-demand und liegt dann s-maxage=3600 im CDN.
+export function generateStaticParams() {
+  return [];
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -314,7 +321,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
       <div style={S.wrap}>
-        <Breadcrumb items={crumbs} />
+        <Breadcrumb items={crumbs} rightSlot={<RegionSearch align="right" />} />
 
         {/*
           Data date above the headline, not buried in the footer: it is the first

@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { MastrMap, type RegionValue } from "./MastrMap";
 import { LoadingDots } from "./LoadingDots";
 import { MastrLiveRadial } from "./MastrLiveRadial";
@@ -11,6 +11,7 @@ import { DATA_SOURCES } from "../lib/data-sources";
 import { DataSourceNote } from "./PoweredBy";
 import { isEmbedContext } from "../lib/embed-context";
 import { v } from "../lib/theme";
+import RegionSearch from "./atlas/RegionSearch";
 
 // Tab order: aggregate first, then individual renewables, then storage (separated)
 const RENEWABLE_TRAEGER: { key: Energietraeger; label: string }[] = [
@@ -504,7 +505,6 @@ function GemeindeHint({ kreisAgs, kreisName }: { kreisAgs: string; kreisName?: s
         color: v("--color-text-muted"),
       }}
     >
-      <span>Tippen Sie auf eine Gemeinde, um ihre Solar-Zahlen im Detail zu sehen.</span>
       <a
         href={`/api/atlas/goto?ags=${kreisAgs}`}
         style={{ color: v("--color-accent"), fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}
@@ -579,228 +579,6 @@ function MapBreadcrumb({
     </nav>
   );
 }
-
-// Lupe — inline, weil Icons.tsx keine Such-Glyphe hat.
-function SearchGlyph({ size = 16 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden style={{ flexShrink: 0 }}>
-      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
-      <path d="M20 20l-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-type SearchHit = { region_id: string; name: string; label: string };
-
-/**
- * Regionssuche rechts in der Karten-Bar. Klick auf die Lupe klappt das Feld auf
- * und fokussiert; Tippen (ab 2 Zeichen, entprellt) fragt /api/atlas/search ab.
- * Ein Treffer verhält sich wie ein Klick auf die Karte (onPick = handleSelect):
- * Bundesland/Landkreis filtern die Karte an Ort und Stelle, Gemeinde/kreisfreie
- * Stadt öffnen ihre Seite. Findet Gemeinden, Kreise und Bundesländer.
- */
-function RegionSearch({ onPick }: { onPick: (ags: string, name: string, kreisfrei: boolean) => void }) {
-  const [open, setOpen] = useState(false);
-  const [q, setQ] = useState("");
-  const [hits, setHits] = useState<SearchHit[]>([]);
-  const [active, setActive] = useState(-1);
-  const [loading, setLoading] = useState(false);
-  const wrapRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const close = () => {
-    setOpen(false);
-    setQ("");
-    setHits([]);
-    setActive(-1);
-  };
-
-  // Beim Aufklappen ins Feld fokussieren — zuverlässiger als ein rAF im Klick,
-  // weil der Effekt erst nach dem sichtbaren Re-Render läuft.
-  useEffect(() => {
-    if (open) inputRef.current?.focus();
-  }, [open]);
-
-  // Außerhalb geklickt → schließen.
-  useEffect(() => {
-    if (!open) return;
-    const onDoc = (e: MouseEvent) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) close();
-    };
-    document.addEventListener("mousedown", onDoc);
-    return () => document.removeEventListener("mousedown", onDoc);
-  }, [open]);
-
-  // Entprellte Suche.
-  useEffect(() => {
-    const term = q.trim();
-    if (term.length < 2) {
-      setHits([]);
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    const t = setTimeout(async () => {
-      try {
-        const res = await fetch(`/api/atlas/search?q=${encodeURIComponent(term)}`);
-        const json = (await res.json()) as { hits?: SearchHit[] };
-        setHits(json.hits ?? []);
-        setActive(-1);
-      } catch {
-        setHits([]);
-      } finally {
-        setLoading(false);
-      }
-    }, 200);
-    return () => clearTimeout(t);
-  }, [q]);
-
-  // Wie ein Karten-Klick: BL/Kreis filtern die Karte (setSelectedAgs im Parent),
-  // Gemeinde/kreisfreie Stadt öffnen ihre Seite. Die kreisfrei-Info steckt im
-  // Label ("Kreisfreie Stadt" / "Stadtkreis").
-  const pick = (h: SearchHit) => {
-    close();
-    onPick(h.region_id, h.name, /Kreisfreie Stadt|Stadtkreis/i.test(h.label));
-  };
-
-  const onKey = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape") return close();
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setActive((i) => Math.min(i + 1, hits.length - 1));
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setActive((i) => Math.max(i - 1, 0));
-    } else if (e.key === "Enter" && hits.length) {
-      const h = hits[active >= 0 ? active : 0];
-      if (h) pick(h);
-    }
-  };
-
-  return (
-    <div ref={wrapRef} style={{ position: "relative", flexShrink: 0 }}>
-      <div style={{ ...SB.field, ...(open ? SB.fieldOpen : null) }}>
-        <button
-          type="button"
-          onClick={() => (open ? close() : setOpen(true))}
-          style={SB.iconBtn}
-          aria-label={open ? "Suche schließen" : "Region suchen"}
-          title="Region suchen"
-        >
-          <SearchGlyph />
-        </button>
-        <input
-          ref={inputRef}
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          onKeyDown={onKey}
-          placeholder="Gemeinde, Kreis, Land …"
-          aria-label="Region suchen"
-          style={{ ...SB.input, ...(open ? SB.inputOpen : null) }}
-          tabIndex={open ? 0 : -1}
-        />
-      </div>
-
-      {open && q.trim().length >= 2 && (
-        <div style={SB.dropdown} role="listbox">
-          {loading && !hits.length ? (
-            <div style={SB.empty}>Suche …</div>
-          ) : hits.length ? (
-            hits.map((h, i) => (
-              <button
-                key={h.region_id}
-                type="button"
-                role="option"
-                aria-selected={i === active}
-                onMouseEnter={() => setActive(i)}
-                onClick={() => pick(h)}
-                style={{ ...SB.hit, background: i === active ? v("--color-bg-muted") : "transparent" }}
-              >
-                <span style={SB.hitName}>{h.name}</span>
-                <span style={SB.hitLevel}>{h.label}</span>
-              </button>
-            ))
-          ) : (
-            <div style={SB.empty}>Nichts gefunden</div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-const SB: Record<string, React.CSSProperties> = {
-  field: {
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-    border: `1px solid transparent`,
-    borderRadius: 10,
-    padding: "3px 4px",
-    transition: "border-color 0.18s ease, background 0.18s ease",
-    color: v("--color-text-secondary"),
-  },
-  fieldOpen: {
-    border: `1px solid ${v("--color-border")}`,
-    background: v("--color-bg"),
-  },
-  iconBtn: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "none",
-    border: "none",
-    padding: 4,
-    margin: 0,
-    color: "inherit",
-    cursor: "pointer",
-  },
-  input: {
-    width: 0,
-    opacity: 0,
-    border: "none",
-    outline: "none",
-    background: "none",
-    padding: 0,
-    fontFamily: "inherit",
-    fontSize: 13,
-    color: v("--color-text-primary"),
-    transition: "width 0.2s ease, opacity 0.2s ease",
-  },
-  inputOpen: { width: 190, opacity: 1, paddingRight: 4 },
-  dropdown: {
-    position: "absolute",
-    top: "calc(100% + 4px)",
-    right: 0,
-    minWidth: 240,
-    maxWidth: 300,
-    background: v("--color-bg"),
-    border: `1px solid ${v("--color-border")}`,
-    borderRadius: 10,
-    boxShadow: "0 8px 28px rgba(0,0,0,0.12)",
-    padding: 4,
-    zIndex: 30,
-    maxHeight: 320,
-    overflowY: "auto",
-  },
-  hit: {
-    display: "flex",
-    alignItems: "baseline",
-    justifyContent: "space-between",
-    gap: 10,
-    width: "100%",
-    background: "none",
-    border: "none",
-    borderRadius: 7,
-    padding: "8px 10px",
-    textAlign: "left",
-    cursor: "pointer",
-    fontFamily: "inherit",
-  },
-  hitName: { fontSize: 14, color: v("--color-text-primary"), fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
-  hitLevel: { fontSize: 11, color: v("--color-text-muted"), flexShrink: 0 },
-  empty: { padding: "10px 12px", fontSize: 13, color: v("--color-text-muted") },
-};
 
 function SummaryPanel({
   summary,

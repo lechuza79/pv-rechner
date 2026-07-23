@@ -94,14 +94,16 @@ function valueOf(row: Row, m: Sort): number | null {
 }
 
 /** Rank movement, sized to sit inline with the rank number beside it. */
-function RankDelta({ value, sinceYear }: { value: number | null; sinceYear: number }) {
+function RankDelta({ value, sinceYear, onAccent = false }: { value: number | null; sinceYear: number; onAccent?: boolean }) {
   if (value === null || value === 0) return null;
   const up = value > 0;
   const Icon = up ? IconArrowUp : IconArrowDown;
   return (
     <span
       title={`${Math.abs(value)} ${Math.abs(value) === 1 ? "Platz" : "Plätze"} ${up ? "gutgemacht" : "verloren"} seit Ende ${sinceYear}`}
-      style={{ ...S.delta, color: up ? v("--color-positive") : v("--color-negative") }}
+      // Auf der blau gefüllten Zeile weiß statt grün/rot — der Pfeil trägt die
+      // Richtung, grün auf Blau würde untergehen.
+      style={{ ...S.delta, color: onAccent ? v("--color-text-on-accent") : up ? v("--color-positive") : v("--color-negative") }}
     >
       <Icon size={9} />
       {Math.abs(value)}
@@ -278,23 +280,49 @@ export default function RankingTable({
   }, [ready, home, markedRow]);
 
   // Die schwebende Zeile rastet an der echten ein: sobald die markierte Zeile
-  // selbst im Blick ist, blenden wir die schwebende aus (kein Doppel).
+  // selbst im Blick ist, blenden wir die schwebende aus (kein Doppel). Ist sie
+  // aus dem Blick, merken wir uns die RICHTUNG — liegt sie oberhalb (schon
+  // vorbeigescrollt), klebt die Kopie oben; liegt sie unterhalb (noch nicht
+  // erreicht), klebt sie unten. So peekt sie immer an der Kante, hinter der die
+  // echte Zeile wirklich steht.
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const [realRowVisible, setRealRowVisible] = useState(false);
+  const [markedPos, setMarkedPos] = useState<"visible" | "above" | "below">("visible");
   useEffect(() => {
     if (!markedId) {
-      setRealRowVisible(false);
+      setMarkedPos("visible");
       return;
     }
     const el = rootRef.current?.querySelector('[data-marked="true"]');
     if (!el) {
-      setRealRowVisible(false);
+      setMarkedPos("visible");
       return;
     }
-    const obs = new IntersectionObserver(([e]) => setRealRowVisible(e.isIntersecting), { threshold: 0.9 });
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setMarkedPos("visible");
+        } else {
+          const rootTop = e.rootBounds?.top ?? 0;
+          setMarkedPos(e.boundingClientRect.top < rootTop ? "above" : "below");
+        }
+      },
+      { threshold: 0.9 },
+    );
     obs.observe(el);
     return () => obs.disconnect();
   }, [markedId, sort, owner, rankMode, display]);
+
+  // Höhe der oben klebenden Kopie, um sie per negativem Rand aus dem Fluss zu
+  // nehmen — sonst schöbe sie beim Einblenden den ganzen Rest nach unten (die
+  // Kopie sitzt VOR dem Scroller, ihr Slot liegt beim Einblenden schon über dem
+  // sichtbaren Bereich, also fällt der Versatz nur ohne diesen Trick auf).
+  const topPeekRef = useRef<HTMLDivElement | null>(null);
+  const [topPeekH, setTopPeekH] = useState(56);
+  useEffect(() => {
+    if (markedPos === "above" && topPeekRef.current) {
+      setTopPeekH(topPeekRef.current.offsetHeight);
+    }
+  }, [markedPos, sort, owner, rankMode, display]);
 
   const pick = (hit: GemeindeHit, plz: string) => {
     setHome({ ...hit, plz });
@@ -330,6 +358,52 @@ export default function RankingTable({
     fontWeight: sort === key ? 600 : 400,
   });
 
+  // Zellen einer Zeile. `onAccent` = die Zeile ist blau gefüllt (aktive Kommune):
+  // Text wird weiß, der Balken weiß auf hellem Schienen-Weiß. Ein Renderer für
+  // Liste UND schwebende Kopie, damit beide identisch aussehen.
+  const ON_ACCENT = v("--color-text-on-accent");
+  const ON_ACCENT_DIM = "rgba(255,255,255,0.72)";
+  const rowCells = (r: Row, onAccent: boolean) => (
+    <>
+      <span style={{ ...S.rank, ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}>
+        {valueOf(r, sort) === null ? "—" : `${rankOf.get(r.region_id)}.`}
+        <RankDelta value={deltas.get(r.region_id) ?? null} sinceYear={lastFullYear} onAccent={onAccent} />
+      </span>
+      <span style={S.nameCell}>
+        <span style={{ ...S.name, fontWeight: onAccent ? 700 : 500, ...(onAccent ? { color: ON_ACCENT } : null) }}>{r.name}</span>
+        <span style={{ ...S.hint, ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}>
+          {r.population === null ? "unbewohnt" : fmtPop(r.population, popInMillions)}
+        </span>
+      </span>
+      {COLUMNS.map((c) => (
+        <span key={c.key} style={{ ...cellStyle(c.key), ...(onAccent ? { color: ON_ACCENT } : null) }}>
+          <span>{fmtCell(r, c.key)}</span>
+          {c.key === sort && (
+            <span aria-hidden style={{ ...S.track, ...(onAccent ? { background: "rgba(255,255,255,0.28)" } : null) }}>
+              <span style={{ ...S.fill, width: `${barPct(valueOf(r, sort))}%`, background: onAccent ? ON_ACCENT : v("--color-accent-light") }} />
+            </span>
+          )}
+        </span>
+      ))}
+    </>
+  );
+
+  // Die schwebende Kopie der markierten Zeile — oben wie unten dieselbe. Folgt
+  // dem Horizontal-Scroll der Liste (translateX), damit die Spalten fluchten.
+  const floatingRow = markedRow ? (
+    <div
+      key={`${sort}-${owner}-${rankMode}`}
+      style={{ ...S.table, ...S.rowsFade, transform: `translateX(${-scrollLeft}px)` }}
+    >
+      <Link href={markedRow.href ?? "#"} className="atlas-rank-row" style={{ ...S.row, ...S.stickyRow, ...S.rowLink }}>
+        {rowCells(markedRow, true)}
+        <span className="atlas-go" style={{ ...S.go, color: ON_ACCENT }} aria-hidden>
+          <IconArrowRight size={13} />
+        </span>
+      </Link>
+    </div>
+  ) : null;
+
   return (
     <div ref={rootRef}>
       <div style={S.controls}>
@@ -350,6 +424,15 @@ export default function RankingTable({
           ))}
         </div>
       </div>
+
+      {/* Oben klebende Kopie: nur wenn die echte Zeile OBERHALB liegt (schon
+          vorbeigescrollt). Vor dem Scroller, damit sie per sticky-top an der
+          Viewport-Oberkante fängt; negativer Rand hält den Fluss ruhig. */}
+      {ready && markedRow && markedPos === "above" && (
+        <div ref={topPeekRef} style={{ ...S.stickyWrapTop, marginBottom: -topPeekH }}>
+          {floatingRow}
+        </div>
+      )}
 
       <div style={S.scroller} onScroll={(e) => setScrollLeft(e.currentTarget.scrollLeft)}>
         <div style={S.table}>
@@ -383,37 +466,6 @@ export default function RankingTable({
               // die darüber verlieren ihre Trennlinie, damit nichts durch den
               // Rahmen läuft.
               const nextMarked = markedId !== null && display[i + 1]?.region_id === markedId;
-              const val = valueOf(r, sort);
-              const inner = (
-                <>
-                  <span style={S.rank}>
-                    {val === null ? "—" : `${rankOf.get(r.region_id)}.`}
-                    <RankDelta value={deltas.get(r.region_id) ?? null} sinceYear={lastFullYear} />
-                  </span>
-                  <span style={S.nameCell}>
-                    <span style={{ ...S.name, fontWeight: isMarked ? 700 : 500 }}>{r.name}</span>
-                    <span style={S.hint}>
-                      {r.population === null ? "unbewohnt" : fmtPop(r.population, popInMillions)}
-                    </span>
-                  </span>
-                  {COLUMNS.map((c) => (
-                    <span key={c.key} style={cellStyle(c.key)}>
-                      <span>{fmtCell(r, c.key)}</span>
-                      {c.key === sort && (
-                        <span aria-hidden style={S.track}>
-                          <span
-                            style={{
-                              ...S.fill,
-                              width: `${barPct(val)}%`,
-                              background: isMarked ? v("--color-accent") : v("--color-accent-light"),
-                            }}
-                          />
-                        </span>
-                      )}
-                    </span>
-                  ))}
-                </>
-              );
               const style = {
                 ...S.row,
                 ...(isMarked || nextMarked ? { borderBottom: "none" as const } : null),
@@ -425,14 +477,14 @@ export default function RankingTable({
               // Uninhabited areas have no page, so they stay a plain row.
               return r.href ? (
                 <Link key={r.region_id} href={r.href} {...marker} className="atlas-rank-row" style={{ ...style, ...S.rowLink }}>
-                  {inner}
-                  <span className="atlas-go" style={S.go} aria-hidden>
+                  {rowCells(r, isMarked)}
+                  <span className="atlas-go" style={{ ...S.go, ...(isMarked ? { color: ON_ACCENT } : null) }} aria-hidden>
                     <IconArrowRight size={13} />
                   </span>
                 </Link>
               ) : (
                 <div key={r.region_id} {...marker} style={style}>
-                  {inner}
+                  {rowCells(r, isMarked)}
                 </div>
               );
             })}
@@ -442,41 +494,14 @@ export default function RankingTable({
       </div>
 
       {/*
-        Outside the scroller on purpose. A parent with overflow-x: auto becomes the
-        containing block for position: sticky, and since that scroller is only as
-        tall as its content, "bottom: 10" inside it never fires — the row simply
-        stopped floating. Out here it sticks to the viewport again; the horizontal
-        offset is applied by hand so it still lines up with the columns.
+        Unten klebende Kopie: nur wenn die echte Zeile UNTERHALB liegt (noch nicht
+        erreicht). Außerhalb des Scrollers mit Absicht — ein Elternteil mit
+        overflow-x: auto wird zum Containing Block für position: sticky, und da der
+        nur so hoch ist wie sein Inhalt, feuert "bottom: 4" darin nie. Hier draußen
+        klebt sie wieder an der Viewport-Kante.
       */}
-      {ready && markedRow && !realRowVisible && (
-        <div style={S.stickyWrap}>
-          {/* Keyed like the list, so the marked row's value fades to the new metric
-              in step with it. The wrapper above stays mounted — it must not move. */}
-          <div key={`${sort}-${owner}-${rankMode}`} style={{ ...S.table, ...S.rowsFade, transform: `translateX(${-scrollLeft}px)` }}>
-            <Link href={markedRow.href ?? "#"} style={{ ...S.row, ...S.stickyRow, ...S.rowLink }}>
-              <span style={S.rank}>
-                {rankOf.get(markedRow.region_id) ?? "—"}.
-                <RankDelta value={deltas.get(markedRow.region_id) ?? null} sinceYear={lastFullYear} />
-              </span>
-              <span style={S.nameCell}>
-                <span style={{ ...S.name, fontWeight: 700 }}>{markedRow.name}</span>
-                <span style={S.hint}>
-                  {markedRow.population === null ? "unbewohnt" : fmtPop(markedRow.population, popInMillions)}
-                </span>
-              </span>
-              {COLUMNS.map((c) => (
-                <span key={c.key} style={cellStyle(c.key)}>
-                  <span>{fmtCell(markedRow, c.key)}</span>
-                  {c.key === sort && (
-                    <span aria-hidden style={S.track}>
-                      <span style={{ ...S.fill, width: `${barPct(valueOf(markedRow, sort))}%`, background: v("--color-accent") }} />
-                    </span>
-                  )}
-                </span>
-              ))}
-            </Link>
-          </div>
-        </div>
+      {ready && markedRow && markedPos === "below" && (
+        <div style={S.stickyWrap}>{floatingRow}</div>
       )}
 
       {/* PLZ-CTA sticht wie die aktive Kommune am unteren Rand — sobald eine
@@ -739,7 +764,8 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     gap: 3,
   },
-  rowHome: { background: v("--color-bg-accent"), borderRadius: v("--radius-md"), boxShadow: `inset 0 0 0 1.5px ${v("--color-accent")}` },
+  // Aktive Kommune voll in unserem Blau (weiße Schrift via rowCells onAccent).
+  rowHome: { background: v("--color-accent"), borderRadius: v("--radius-md") },
   rank: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-muted"), display: "flex", alignItems: "center", gap: 4 },
   delta: { fontFamily: v("--font-mono"), fontSize: 12, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 1 },
   nameCell: { display: "flex", alignItems: "baseline", gap: 6, minWidth: 0 },
@@ -773,15 +799,28 @@ const S: Record<string, React.CSSProperties> = {
     padding: "6px 8px",
     overflow: "hidden",
   },
+  // Oben klebende Kopie: gleicher horizontaler Kasten wie unten (fluchtende
+  // Spalten), aber an der Oberkante. z-index über den Listenzeilen; marginBottom
+  // wird inline auf die gemessene Höhe negiert (kein Fluss-Versatz).
+  stickyWrapTop: {
+    position: "sticky",
+    top: 4,
+    zIndex: 3,
+    margin: "0 -8px",
+    padding: "6px 8px",
+    overflow: "hidden",
+  },
   // Same sticky-bottom slot as the marked-Gemeinde row: the PLZ-CTA floats here
   // until a Gemeinde is picked, then the marked row (rendered above) takes over.
   stickyPicker: { position: "sticky", bottom: 4, zIndex: 2 },
   stickyRow: {
     borderBottom: "none",
-    background: v("--color-bg"),
-    border: `1px solid ${v("--color-border-accent")}`,
+    // Voll in unserem Blau — die schwebende Kopie sieht aus wie die aktive Zeile
+    // in der Liste, nur mit Schlagschatten abgehoben.
+    background: v("--color-accent"),
+    border: `1px solid ${v("--color-accent-dark")}`,
     borderRadius: v("--radius-md"),
-    boxShadow: "0 4px 14px rgba(0,0,0,0.10)",
+    boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
   },
   rowLink: { textDecoration: "none", color: "inherit", cursor: "pointer" },
   // Blauer „→" am Zeilenende, erst bei Hover sichtbar (Klickbarkeits-Affordanz).

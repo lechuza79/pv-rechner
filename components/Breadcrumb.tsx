@@ -21,18 +21,28 @@ export type Crumb = {
  * (SEO) — opt-in, so pages that render their own breadcrumb schema (Förder,
  * Atlas) stay unchanged.
  */
-export default function Breadcrumb({ items, jsonLd = false }: { items: Crumb[]; jsonLd?: boolean }) {
+export default function Breadcrumb({
+  items,
+  jsonLd = false,
+  rightSlot,
+}: {
+  items: Crumb[];
+  jsonLd?: boolean;
+  /** Optionales Element rechts in der Zeile (z. B. die Atlas-Regionssuche). */
+  rightSlot?: React.ReactNode;
+}) {
   // Die Startseite wird generell nicht angezeigt — zentral hier gefiltert, damit
   // die Aufrufer sie weiter mitgeben können (und das strukturierte Datenblatt
   // dieselbe Kette abbildet wie die sichtbare Spur).
   const crumbs = items.filter((it) => it.href !== "/");
   // Bleibt nur die aktuelle Seite übrig (typisch für Seiten direkt unter der
   // Startseite), ist das keine Spur mehr — dann gar nichts rendern, auch kein
-  // BreadcrumbList mit einem einzigen Eintrag.
-  if (crumbs.length < 2) return null;
+  // BreadcrumbList mit einem einzigen Eintrag. Mit rightSlot (Suche) rendern wir
+  // trotzdem, damit die Suche auch auf der obersten Atlas-Ebene erscheint.
+  if (crumbs.length < 2 && !rightSlot) return null;
   return (
     <>
-      {jsonLd && (
+      {jsonLd && crumbs.length >= 2 && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -41,20 +51,23 @@ export default function Breadcrumb({ items, jsonLd = false }: { items: Crumb[]; 
         />
       )}
       <nav className="crumb-nav" style={S.nav} aria-label="Brotkrümel">
-        {crumbs.map((item, i) => (
-          <span key={`${item.label}-${i}`} className="crumb-item" style={S.item}>
-            {i > 0 && <span aria-hidden style={S.sep} />}
-            {item.href ? (
-              <Link href={item.href} className="crumb-label" style={S.link}>
-                {item.label}
-              </Link>
-            ) : (
-              <span className="crumb-label" style={S.current} aria-current="page">
-                {item.label}
-              </span>
-            )}
-          </span>
-        ))}
+        <span className="crumb-trail">
+          {crumbs.map((item, i) => (
+            <span key={`${item.label}-${i}`} className="crumb-item" style={S.item}>
+              {i > 0 && <span aria-hidden style={S.sep} />}
+              {item.href ? (
+                <Link href={item.href} className="crumb-label" style={S.link}>
+                  {item.label}
+                </Link>
+              ) : (
+                <span className="crumb-label" style={S.current} aria-current="page">
+                  {item.label}
+                </span>
+              )}
+            </span>
+          ))}
+        </span>
+        {rightSlot && <span className="crumb-right">{rightSlot}</span>}
       </nav>
     </>
   );
@@ -65,7 +78,8 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: v("--font-size-small"),
     display: "flex",
     alignItems: "center",
-    gap: 8,
+    justifyContent: "space-between",
+    gap: 12,
     paddingBottom: 12,
     marginBottom: 30,
     borderBottom: `1px solid ${v("--color-border")}`,

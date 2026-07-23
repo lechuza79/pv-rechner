@@ -272,7 +272,7 @@ export function childLevelOf(region: AtlasRegion): Exclude<Level, "de"> | null {
  * roll into the parent by prefix, so a Kreis total can exceed the sum of its
  * listed Gemeinden — getRegionUnassigned() reports that gap.
  */
-export async function getChildren(region: AtlasRegion, energietraeger = "solar"): Promise<AtlasChild[]> {
+async function getChildrenUncached(region: AtlasRegion, energietraeger = "solar"): Promise<AtlasChild[]> {
   const childLevel = childLevelOf(region);
   if (!childLevel) return [];
 
@@ -339,6 +339,13 @@ export async function getChildren(region: AtlasRegion, energietraeger = "solar")
 
   return children.sort((a, b) => (b.wPerCapita ?? -1) - (a.wPerCapita ?? -1));
 }
+
+// Gecacht wie die übrigen Atlas-Reads: der interne mastr_children-RPC ist ein
+// POST und würde die aufrufende Seite sonst auf „dynamisch" kippen (kein
+// ISR/CDN-Cache). unstable_cache kapselt das Ergebnis, die Route bleibt statisch.
+export const getChildren = unstable_cache(getChildrenUncached, ["children-v2"], {
+  revalidate: 3600,
+});
 
 function assignRank(children: AtlasChild[], metric: "wPerCapita" | "wPerCapitaDach", field: "rank" | "rankDach") {
   const ranked = children.filter((c) => c[metric] !== null).sort((a, b) => (b[metric] as number) - (a[metric] as number));
