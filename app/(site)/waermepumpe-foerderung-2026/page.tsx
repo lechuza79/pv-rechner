@@ -5,6 +5,8 @@ import ProConLists from "../../../components/ProConLists";
 import Faq from "../../../components/Faq";
 import AutoHeightIframe from "../../../components/AutoHeightIframe";
 import { DataSourceNote } from "../../../components/PoweredBy";
+import GlossaryTerm from "../../../components/GlossaryTerm";
+import StickyCta from "./StickyCta";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 import { waermepumpeFoerderungFaq } from "../../../lib/faq";
 import { v } from "../../../lib/theme";
@@ -38,7 +40,7 @@ const S = {
     minHeight: "100vh",
     padding: "20px 16px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: 60 },
+  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: 60, paddingBottom: 88 },
   h1: {
     fontSize: v("--font-size-h1"),
     fontWeight: 800,
@@ -280,9 +282,10 @@ export default function WaermepumpeFoerderungPage() {
         {/* ── Die drei Bausteine ── */}
         <h2 style={S.h2}>Wie sich der Zuschuss zusammensetzt</h2>
         <p style={S.p}>
-          Der Fördersatz ist kein fester Wert, sondern wird aus bis zu drei Bausteinen
-          zusammengesetzt. Alle beziehen sich auf die förderfähigen Kosten (gedeckelt bei{" "}
-          {eur(HP.begMaxCap)} für die erste Wohnung):
+          Der Fördersatz der{" "}
+          <GlossaryTerm id="beg">BEG</GlossaryTerm>-Heizungsförderung ist kein fester Wert,
+          sondern wird aus bis zu drei Bausteinen zusammengesetzt. Alle beziehen sich auf die
+          förderfähigen Kosten (gedeckelt bei {eur(HP.begMaxCap)} für die erste Wohnung):
         </p>
 
         <div style={S.card}>
@@ -295,10 +298,11 @@ export default function WaermepumpeFoerderungPage() {
           <span style={S.accent}>2. Klima-Geschwindigkeits-Bonus — +{pct(HP.begKlimaBonus)}</span>
           <br />
           Nur für <strong style={S.strong}>selbstnutzende Eigentümer</strong>, die eine noch
-          funktionierende fossile Heizung ersetzen. Öl-, Kohle- und Nachtspeicherheizungen
-          zählen <strong style={S.strong}>unabhängig vom Alter</strong>. Gas-, Holz- und
-          Pelletheizungen zählen erst <strong style={S.strong}>ab 20 Jahren</strong> — das
-          Baujahr steht auf dem Typenschild am Kessel. Dieser Bonus soll ab dem 1. Februar 2027
+          funktionierende fossile Heizung ersetzen. Öl-, Kohle-, Gas-Etagen- und
+          Nachtspeicherheizungen zählen <strong style={S.strong}>unabhängig vom Alter</strong>.
+          Zentrale Gas-, Holz- und Pelletheizungen zählen erst{" "}
+          <strong style={S.strong}>ab 20 Jahren</strong> (gerechnet ab Einbau) — das Baujahr
+          steht auf dem Typenschild am Kessel. Dieser Bonus soll ab dem 1. Februar 2027
           schrittweise sinken.
         </div>
         <div style={S.card}>
@@ -374,7 +378,7 @@ export default function WaermepumpeFoerderungPage() {
         </p>
 
         {/* ── Interaktiver Förder-Check (Embed) ── */}
-        <h2 style={S.h2}>Deine Förderung selbst ausrechnen</h2>
+        <h2 id="foerder-check" style={{ ...S.h2, scrollMarginTop: 80 }}>Deine Förderung selbst ausrechnen</h2>
         <p style={S.p}>
           Beantworte ein paar Fragen — Gebäude, alte Heizung, Einkommen — und der Förder-Check
           führt dich Schritt für Schritt zu deinem BEG-Zuschuss. Er rechnet mit derselben
@@ -390,8 +394,9 @@ export default function WaermepumpeFoerderungPage() {
         </div>
         <p style={{ ...S.p, marginTop: 14 }}>
           Für die vollständige Rechnung — inklusive Betriebskosten, Vergleich mit deiner alten
-          Gas- oder Ölheizung und der Amortisation über 20 Jahre — geht es weiter im{" "}
-          <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link>.
+          Gas- oder Ölheizung und der{" "}
+          <GlossaryTerm id="amortisation">Amortisation</GlossaryTerm> über 20 Jahre — geht es
+          weiter im <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link>.
         </p>
 
         {/* ── Wer bekommt viel / wenig ── */}
@@ -403,12 +408,12 @@ export default function WaermepumpeFoerderungPage() {
             { term: "Eigennutzer mit alter Ölheizung", desc: "Öl-, Kohle- und Nachtspeicherheizungen lösen den Klima-Bonus unabhängig vom Alter aus." },
             { term: "Niedriges bis mittleres Einkommen", desc: "Der Einkommens-Bonus greift bis zur obersten Staffelgrenze — hier steckt der größte einzelne Hebel." },
             { term: "Familie knapp über einer Grenze", desc: "Der Familienzuschlag senkt das anzusetzende Einkommen und kann eine Stufe höher heben." },
-            { term: "Alte Gasheizung ab 20 Jahren", desc: "Ab dieser Grenze zählt auch die Gasheizung für den Klima-Bonus — Baujahr auf dem Typenschild prüfen." },
+            { term: "Alte Gasheizung ab 20 Jahren", desc: "Ab dieser Grenze zählt auch die zentrale Gasheizung — Gas-Etagenheizungen sogar unabhängig vom Alter. Baujahr auf dem Typenschild prüfen." },
           ]}
           conItems={[
             { term: "Vermieter", desc: "Klima- und Einkommens-Bonus sind an Selbstnutzung gebunden — es bleibt die Grundförderung." },
             { term: "Höheres Einkommen", desc: "Über der obersten Einkommensgrenze entfällt der Einkommens-Bonus komplett." },
-            { term: "Junge Gas- oder Pelletheizung", desc: "Unter 20 Jahren zählt eine funktionierende Gas-/Biomasseheizung nicht für den Klima-Bonus." },
+            { term: "Junge zentrale Gas- oder Pelletheizung", desc: "Unter 20 Jahren zählt eine funktionierende zentrale Gas- oder Biomasseheizung nicht für den Klima-Bonus (Gas-Etage ausgenommen)." },
             { term: "Neubau", desc: "Kein prozentualer Zuschuss — dort läuft die Förderung nur über KfW-Kredite fürs ganze Gebäude." },
           ]}
         />
@@ -416,10 +421,11 @@ export default function WaermepumpeFoerderungPage() {
         {/* ── Ehrlicher Hinweis ── */}
         <div style={S.card}>
           <span style={S.label}>Ehrlich gesagt</span>
-          Wenn du das Alter deiner Gas- oder Biomasseheizung nicht kennst, ist der Klima-Bonus
-          unsicher — er hängt an der 20-Jahre-Grenze. Bei Öl, Kohle und Nachtspeicher ist er
-          dagegen sicher. Plane einen unsicheren Bonus lieber nicht fest ein, bis du das
-          Baujahr am Typenschild oder in den Schornsteinfeger-Unterlagen geprüft hast.
+          Wenn du das Alter deiner zentralen Gas- oder Biomasseheizung nicht kennst, ist der
+          Klima-Bonus unsicher — er hängt bei diesen an der 20-Jahre-Grenze. Bei Öl, Kohle,
+          Gas-Etagen- und Nachtspeicherheizungen ist er dagegen unabhängig vom Alter sicher.
+          Plane einen unsicheren Bonus lieber nicht fest ein, bis du das Baujahr am Typenschild
+          oder in den Schornsteinfeger-Unterlagen geprüft hast.
           <br />
           <span style={S.muted}>
             Alle Beträge auf dieser Seite sind unverbindliche Näherungswerte ohne Gewähr und
@@ -472,7 +478,11 @@ export default function WaermepumpeFoerderungPage() {
           Fördersätze auf dieser Seite werden direkt aus den geprüften Werten berechnet und
           bleiben so mit dem Rechner konsistent.
         </p>
+        {/* Sentinel: sobald sichtbar, blendet sich die Sticky-Leiste aus, damit
+            sie den Footer/Rechtstext nicht verdeckt. */}
+        <div id="sc-cta-sentinel" style={{ height: 1 }} aria-hidden />
       </div>
+      <StickyCta foerderHref="#foerder-check" />
     </div>
   );
 }

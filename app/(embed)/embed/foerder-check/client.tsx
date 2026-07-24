@@ -294,7 +294,7 @@ function FlowView({
         hint="Die Art der alten Heizung entscheidet über den Klima-Geschwindigkeits-Bonus."
       >
         <OptionRow
-          label="Öl, Kohle oder Nachtspeicher"
+          label="Öl, Kohle, Gas-Etage oder Nachtspeicher"
           sub={`Klima-Bonus +${Math.round(cfg.begKlimaBonus * 100)} % (unabhängig vom Alter)`}
           onClick={() => {
             setFossil(true);
@@ -303,7 +303,7 @@ function FlowView({
           }}
         />
         <OptionRow
-          label="Gasheizung, Holz oder Pellets"
+          label="Gas-Zentralheizung, Holz oder Pellets"
           sub="Klima-Bonus nur ab 20 Jahren – Alter wird gleich gefragt"
           onClick={() => {
             go("alter");

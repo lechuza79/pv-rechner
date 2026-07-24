@@ -226,7 +226,7 @@ export function waermepumpeFoerderungFaq(): FaqEntry[] {
     },
     {
       q: "Wer bekommt den Klima-Geschwindigkeits-Bonus?",
-      a: `Den Klima-Bonus von ${klima} bekommen nur selbstnutzende Eigentümer, die eine noch funktionierende fossile Heizung ersetzen. Öl-, Kohle- und Nachtspeicherheizungen zählen unabhängig vom Alter. Gas-, Holz- und Pelletheizungen zählen erst, wenn sie mindestens 20 Jahre alt sind — das Baujahr steht auf dem Typenschild am Kessel. Vermieter bekommen diesen Bonus nicht. Ab dem 1. Februar 2027 soll der Bonus schrittweise sinken.`,
+      a: `Den Klima-Bonus von ${klima} bekommen nur selbstnutzende Eigentümer, die eine noch funktionierende fossile Heizung ersetzen. Öl-, Kohle-, Gas-Etagen- und Nachtspeicherheizungen zählen unabhängig vom Alter. Zentrale Gas-, Holz- und Pelletheizungen zählen erst, wenn ihr Einbau mindestens 20 Jahre zurückliegt — das Baujahr steht auf dem Typenschild am Kessel. Vermieter bekommen diesen Bonus nicht. Ab dem 1. Februar 2027 soll der Bonus schrittweise sinken.`,
       cta: { label: "Klima-Bonus einrechnen", href: "/waermepumpe-rechner" },
     },
     {
@@ -246,7 +246,7 @@ export function waermepumpeFoerderungFaq(): FaqEntry[] {
     },
     {
       q: "Ich kenne das Alter meiner Gasheizung nicht — bekomme ich den Klima-Bonus?",
-      a: "Bei Öl-, Kohle- und Nachtspeicherheizungen ist der Klima-Bonus unabhängig vom Alter sicher. Bei Gas-, Holz- und Pelletheizungen hängt er an der 20-Jahre-Grenze. Das Baujahr steht auf dem Typenschild am Heizkessel oder in den Unterlagen des Schornsteinfegers. Solange das Alter unklar ist, solltest du den Bonus vorsichtshalber nicht fest einplanen — verbindlich ist am Ende der Zuschussbescheid der KfW.",
+      a: "Bei Öl-, Kohle-, Gas-Etagen- und Nachtspeicherheizungen ist der Klima-Bonus unabhängig vom Alter sicher. Bei zentralen Gas-, Holz- und Pelletheizungen hängt er an der 20-Jahre-Grenze. Das Baujahr steht auf dem Typenschild am Heizkessel oder in den Unterlagen des Schornsteinfegers. Solange das Alter unklar ist, solltest du den Bonus vorsichtshalber nicht fest einplanen — verbindlich ist am Ende der Zuschussbescheid der KfW.",
       cta: { label: "Beide Fälle durchrechnen", href: "/waermepumpe-rechner" },
     },
   ];

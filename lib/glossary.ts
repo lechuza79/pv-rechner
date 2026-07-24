@@ -118,6 +118,14 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     long:
       "Der COP (Coefficient of Performance) ist das Verhältnis von abgegebener Wärme zu eingesetztem Strom in einem bestimmten Betriebspunkt, gemessen unter Normbedingungen. Ein COP von 4 heißt: 1 kWh Strom ergibt 4 kWh Wärme. Der COP ist ein Momentanwert im Labor — für die tatsächlichen Heizkosten ist die JAZ (Jahresarbeitszahl) aussagekräftiger, weil sie den Durchschnitt über ein ganzes Jahr mit allen Temperaturen abbildet.",
   },
+  beg: {
+    term: "BEG",
+    aliases: ["Bundesförderung für effiziente Gebäude", "BEG-Förderung", "BEG Einzelmaßnahme"],
+    short:
+      "Bundesförderung für effiziente Gebäude — das staatliche Zuschussprogramm für Heizungstausch und Sanierung, für den Heizungstausch umgesetzt über die KfW.",
+    long:
+      "Die BEG (Bundesförderung für effiziente Gebäude) ist das zentrale Förderprogramm des Bundes für energetische Maßnahmen an Wohngebäuden. Für den Heizungstausch — etwa den Einbau einer Wärmepumpe im Bestand — gibt es einen Zuschuss über die KfW (Zuschuss 458), der sich aus einer Grundförderung und mehreren Boni zusammensetzt (Klima-Geschwindigkeits-Bonus, Einkommens-Bonus). Daneben fördert die BEG auch Dämmung, Fenster und Anlagentechnik. Die Sätze und Bedingungen ändern sich regelmäßig; verbindlich ist stets die jeweils gültige Richtlinie und der Zuschussbescheid der KfW.",
+  },
   noct: {
     term: "NOCT",
     aliases: ["Nominal Operating Cell Temperature", "Normale Betriebstemperatur"],
