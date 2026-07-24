@@ -7,6 +7,7 @@ import AutoHeightIframe from "../../../components/AutoHeightIframe";
 import { DataSourceNote } from "../../../components/PoweredBy";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import StickyCta from "./StickyCta";
+import WpRechnerModal from "./WpRechnerModal";
 import { DATA_SOURCES } from "../../../lib/data-sources";
 import { waermepumpeFoerderungFaq } from "../../../lib/faq";
 import { v } from "../../../lib/theme";
@@ -396,7 +397,7 @@ export default function WaermepumpeFoerderungPage() {
           Für die vollständige Rechnung — inklusive Betriebskosten, Vergleich mit deiner alten
           Gas- oder Ölheizung und der{" "}
           <GlossaryTerm id="amortisation">Amortisation</GlossaryTerm> über 20 Jahre — geht es
-          weiter im <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link>.
+          weiter im <a href="#wp-rechner" style={S.link}>Wärmepumpen-Rechner</a>.
         </p>
 
         {/* ── Wer bekommt viel / wenig ── */}
@@ -445,9 +446,9 @@ export default function WaermepumpeFoerderungPage() {
             Daten durch, ohne Anmeldung.
           </p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/waermepumpe-rechner" style={S.ctaButton}>
+            <a href="#wp-rechner" style={S.ctaButton}>
               Wärmepumpe durchrechnen →
-            </Link>
+            </a>
             <Link href="/photovoltaik-foerderung" style={S.ctaSecondary}>
               PV-Förderung vor Ort
             </Link>
@@ -483,6 +484,7 @@ export default function WaermepumpeFoerderungPage() {
         <div id="sc-cta-sentinel" style={{ height: 1 }} aria-hidden />
       </div>
       <StickyCta foerderHref="#foerder-check" />
+      <WpRechnerModal />
     </div>
   );
 }

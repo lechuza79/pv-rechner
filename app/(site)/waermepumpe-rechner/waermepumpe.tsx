@@ -20,7 +20,10 @@ import { trackEvent } from "../../../lib/analytics";
 
 const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizsystem"];
 
-export default function Waermepumpe() {
+// `embedded` = gerendert in einem Modal (z. B. aus dem Förder-Ratgeber), nicht
+// als eigene Seite: dann ohne 100vh-Höhe, ohne Seitentitel und volle Breite —
+// den Titel liefert der Modal-Header. Kein iframe, keine URL-/Storage-Kopplung.
+export default function Waermepumpe({ embedded = false }: { embedded?: boolean } = {}) {
   // ── Step state ───────────────────────────────────────────────
   const [step, setStep] = useState(0);
   const [situation, setSituation] = useState<"bestand" | "neubau">("bestand");
@@ -166,18 +169,20 @@ export default function Waermepumpe() {
 
   // ── Render ───────────────────────────────────────────────────
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
-            {isResult ? "Deine Wärmepumpen-Prognose" : "Lohnt sich eine Wärmepumpe?"}
-          </h1>
-          {!isResult && (
-            <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>
-              Fünf Fragen, ehrlich berechnet. Keine Anmeldung.
-            </p>
-          )}
-        </div>
+    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: embedded ? undefined : "100vh", padding: embedded ? 0 : "0 16px 20px" }}>
+      <div style={{ maxWidth: embedded ? "100%" : v('--page-max-width'), margin: "0 auto" }}>
+        {!embedded && (
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+              {isResult ? "Deine Wärmepumpen-Prognose" : "Lohnt sich eine Wärmepumpe?"}
+            </h1>
+            {!isResult && (
+              <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>
+                Fünf Fragen, ehrlich berechnet. Keine Anmeldung.
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Progress */}
         {!isResult && (

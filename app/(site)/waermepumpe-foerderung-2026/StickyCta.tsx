@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { v } from "../../../lib/theme";
 
@@ -45,17 +44,19 @@ export default function StickyCta({ foerderHref }: { foerderHref: string }) {
         right: 0,
         bottom: 0,
         zIndex: 60,
-        background: v("--color-bg"),
-        borderTop: `1px solid ${v("--color-border")}`,
-        boxShadow: "0 -4px 16px rgba(0,0,0,0.06)",
-        padding: "10px 12px calc(10px + env(safe-area-inset-bottom))",
+        // 90%-opaque background that fades out towards the top (no hard edge) —
+        // content scrolls softly under the bar. color-mix keeps it theme-aware.
+        background: `linear-gradient(to top, color-mix(in srgb, ${v("--color-bg")} 90%, transparent) 0%, color-mix(in srgb, ${v("--color-bg")} 90%, transparent) 55%, transparent 100%)`,
+        backdropFilter: "blur(4px)",
+        WebkitBackdropFilter: "blur(4px)",
+        padding: "24px 12px calc(12px + env(safe-area-inset-bottom))",
         transform: hidden ? "translateY(130%)" : "none",
         transition: "transform 0.28s ease",
       }}
     >
       <div style={{ maxWidth: 640, margin: "0 auto", display: "flex", gap: 8 }}>
-        <Link
-          href="/waermepumpe-rechner"
+        <a
+          href="#wp-rechner"
           style={{
             ...base,
             background: v("--color-accent"),
@@ -63,7 +64,7 @@ export default function StickyCta({ foerderHref }: { foerderHref: string }) {
           }}
         >
           Wärmepumpe rechnen
-        </Link>
+        </a>
         <a
           href={foerderHref}
           style={{
