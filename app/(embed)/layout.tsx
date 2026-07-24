@@ -140,6 +140,20 @@ const baseStyles = `
     to   { opacity: 1; transform: none }
   }
 
+  /* Fade-Up — dieselbe Step-/Reveal-Bewegung wie auf der Site (lib/theme.ts).
+     Hier gespiegelt, damit Widgets mit einem eigenen Schritt-Flow (Förder-Check)
+     dieselbe Transition fahren wie die großen Rechner. Replay beim Schrittwechsel
+     über einen wechselnden key auf dem animierten Element. */
+  @keyframes fu {
+    from { opacity: 0; transform: translateY(10px) }
+    to   { opacity: 1; transform: translateY(0) }
+  }
+
+  /* Bewegung respektiert die Systemeinstellung. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important }
+  }
+
   /* Map widget: map left, value tiles right (like the main site). Stacks on
      very narrow embeds. */
   .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:24px;align-items:start}
