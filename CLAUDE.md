@@ -881,10 +881,24 @@ abmahnsicher ist, und jede Abkürzung reißt die Lücke wieder auf:
    Impressum-Menüpunkt). Prüfen, ob der Datenschutz-Baustein in der Galerie
    (`/energie-widgets`) noch zutrifft (neue Datenflüsse?).
 6. **E-Mail-Versand** → an Nutzer nur transaktional (Auth, angeforderte Funktion).
-   Werbe-/Outreach-Mails NUR nach den Leitplanken in `docs/outreach-process-konzept.md`
-   (§ 7 UWG: keine Kaltakquise, auch nicht B2B). Newsletter o. Ä. → Double-Opt-in +
-   Datenschutzerklärung. Mail-Betreff/Header nie aus Freitext bauen (Allowlist-Muster
-   wie `lib/contact-topics.ts`).
+   Werbe-/Outreach-Mails nach den Leitplanken in `docs/outreach-process-konzept.md`.
+   **§ 7 UWG kalibriert (Judge-Prüfung Juli 2026, ersetzt das frühere pauschale
+   „keine Kaltakquise"):** Eine unverlangte Outreach-Mail mit kostenlosem Widget-/
+   Backlink-Angebot ist zwar mit hoher Wahrscheinlichkeit „Werbung" und damit
+   *materiell* angreifbar — ABER das Durchsetzungsrisiko ist niedrig und überwiegend
+   theoretisch: Der Empfänger selbst (auch eine Kommune) ist nach § 8 Abs. 3 UWG **nicht**
+   abmahnbefugt; nur Mitbewerber/Verbände/IHK könnten, und die bekommen B2G-Mails an
+   Rathaus-Postfächer praktisch nicht mit. „Massenversand" ist kein eigener Tatbestand
+   (jede einzelne Mail zählt) — schubweise senkt nur das Entdeckungsrisiko, nicht die
+   Rechtslage. **Maßvolle, schubweise Kaltakquise ist damit eine bewusste unternehmerische
+   Entscheidung, kein Verbot.** Risiko-frei sitzt es, wenn der Erstkontakt **nicht** als
+   unverlangte Mail läuft, sondern über das **Kontaktformular** der Zielstelle oder einen
+   **Permission-Ask** (Anruf/Formular „darf ich Ihnen das schicken?") → die Folge-Mail ist
+   dann angefordert und § 7 entfällt. Bei jeder Outreach-Mail Pflicht: Klarname +
+   „Betreiber solar-check.io" + Impressum-Link + Datenschutz-Einzeiler (Art. 14 DSGVO);
+   Rollen-Postfächer (info@/rathaus@) statt Klarnamen bevorzugen (dämpft den DSGVO-Strang).
+   Newsletter o. Ä. → Double-Opt-in + Datenschutzerklärung. Mail-Betreff/Header nie aus
+   Freitext bauen (Allowlist-Muster wie `lib/contact-topics.ts`).
 7. **Neue personenbezogene Daten** (Formularfelder, Account-Felder) → Datenschutzerklärung
    ergänzen (Zweck, Rechtsgrundlage, Empfänger, Speicherdauer); Eingaben serverseitig
    validieren + escapen; öffentliche POST-Endpoints mit Rate-Limit + Honeypot
