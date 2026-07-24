@@ -36,6 +36,7 @@ export default function InternalShell({
       title: "Admin",
       links: [
         { href: "/admin", label: "Übersicht", exact: true },
+        { href: "/admin/awards", label: "Kommunen-Awards" },
         { href: "/admin/theme", label: "Signalfarben-Theming" },
         { href: "/admin/prices", label: "Marktpreise" },
       ],
