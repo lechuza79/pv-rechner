@@ -150,10 +150,10 @@ export default function LangzeitStrommixClient() {
           </div>
           <div>
             <strong>Preise:</strong>{" "}
-            <a href={PRICE_META.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-text-secondary") }}>
-              Eurostat
+            <a href={DATA_SOURCES.eurostat.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-text-secondary") }}>
+              {DATA_SOURCES.eurostat.name}
             </a>
-            , {PRICE_META.license}.
+            , {DATA_SOURCES.eurostat.license}.
           </div>
         </div>
       </div>
