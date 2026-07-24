@@ -20,7 +20,10 @@ import { trackEvent } from "../../../lib/analytics";
 
 const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizsystem"];
 
-export default function Waermepumpe() {
+// `embedded` = gerendert in einem Modal (z. B. aus dem Förder-Ratgeber), nicht
+// als eigene Seite: dann ohne 100vh-Höhe, ohne Seitentitel und volle Breite —
+// den Titel liefert der Modal-Header. Kein iframe, keine URL-/Storage-Kopplung.
+export default function Waermepumpe({ embedded = false }: { embedded?: boolean } = {}) {
   // ── Step state ───────────────────────────────────────────────
   const [step, setStep] = useState(0);
   const [situation, setSituation] = useState<"bestand" | "neubau">("bestand");
@@ -46,7 +49,11 @@ export default function Waermepumpe() {
   const [oInvest, setOInvest] = useState<number | null>(null);
   const [oQges, setOQges] = useState<number | null>(null);
   const [oHeizlast, setOHeizlast] = useState<number | null>(null);
-  const [klimaBonus, setKlimaBonus] = useState(true);            // BEG Klima-Geschwindigkeits-Bonus (Eigennutzer, alte fossile Heizung)
+  // BEG Klima-Geschwindigkeits-Bonus: braucht BEIDES — Selbstnutzung und eine
+  // passende alte Heizung. Früher war das ein einziger Schalter, was Vermietern
+  // fälschlich den Bonus geben konnte und das Alterskriterium verdeckte.
+  const [selbstnutzer, setSelbstnutzer] = useState(true);        // Eigennutzer? (Bedingung für Klima- UND Einkommens-Bonus)
+  const [altheizung, setAltheizung] = useState<AltheizungKey>("gas_alt"); // welche Heizung wird ersetzt
   const [einkommen, setEinkommen] = useState<EinkommenKey>("none");   // BEG Einkommens-Bonus (gestaffelt nach Haushaltseinkommen)
   const [kindImHaushalt, setKindImHaushalt] = useState(false);        // Familienzuschlag hebt die Einkommensgrenze
   const [heizkoerperTausch, setHeizkoerperTausch] = useState(false);  // Maßnahme: alte HK auf Niedertemperatur tauschen
@@ -94,9 +101,13 @@ export default function Waermepumpe() {
       gasPrice: oGasPrice ?? fuel.price,
       gasEfficiency: fuel.efficiency,
       gasCo2: fuel.co2PerKwh,
-      klimaBonus, haushaltseinkommen: einkommenIncome(einkommen), kindImHaushalt,
+      // Beide Boni setzen Selbstnutzung voraus (KfW 458) — als Vermieter bleibt
+      // nur die Grundförderung, deshalb hier weder Klima noch Einkommen.
+      klimaBonus: selbstnutzer && altheizungKlima(altheizung),
+      haushaltseinkommen: selbstnutzer ? einkommenIncome(einkommen) : undefined,
+      kindImHaushalt: selbstnutzer && kindImHaushalt,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, fuel, klimaBonus, einkommen, kindImHaushalt]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt]);
 
   // ── Realistische Wege (Szenario-Vergleich) ───────────────────
   // Ein unsaniertes Haus bleibt selten 20 Jahre unangetastet. Statt nur den
@@ -158,18 +169,20 @@ export default function Waermepumpe() {
 
   // ── Render ───────────────────────────────────────────────────
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 24 }}>
-          <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
-            {isResult ? "Deine Wärmepumpen-Prognose" : "Lohnt sich eine Wärmepumpe?"}
-          </h1>
-          {!isResult && (
-            <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>
-              Fünf Fragen, ehrlich berechnet. Keine Anmeldung.
-            </p>
-          )}
-        </div>
+    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: embedded ? undefined : "100vh", padding: embedded ? 0 : "0 16px 20px" }}>
+      <div style={{ maxWidth: embedded ? "100%" : v('--page-max-width'), margin: "0 auto" }}>
+        {!embedded && (
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+              {isResult ? "Deine Wärmepumpen-Prognose" : "Lohnt sich eine Wärmepumpe?"}
+            </h1>
+            {!isResult && (
+              <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6 }}>
+                Fünf Fragen, ehrlich berechnet. Keine Anmeldung.
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Progress */}
         {!isResult && (
@@ -356,26 +369,46 @@ export default function Waermepumpe() {
                   <span style={{ display: "inline-block", width: 13, height: 13, borderRadius: 3, background: v('--color-accent'), flexShrink: 0 }} />
                   Grundförderung 30 % — bekommt jeder Heizungstausch im Bestand
                 </div>
-                <BonusToggle checked={klimaBonus} onChange={c => { setKlimaBonus(c); setOInvest(null); }} label="Eigengenutzte Immobilie +16 %" tipTitle="Klima-Geschwindigkeits-Bonus">
-                  16 % Zusatzförderung für selbstnutzende Eigentümer, die eine funktionierende alte fossile Heizung (Öl, Kohle, Gas-Etagenheizung — oder eine mindestens 20 Jahre alte Gasheizung) durch die Wärmepumpe ersetzen. Vermieter oder wer keine solche Heizung ersetzt, bekommt ihn nicht. Der Bonus sinkt ab dem 1. Februar 2027 schrittweise. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
+                <BonusToggle checked={selbstnutzer} onChange={c => { setSelbstnutzer(c); setOInvest(null); }} label="Ich wohne selbst im Gebäude" tipTitle="Selbstnutzung">
+                  Sowohl der Klima-Geschwindigkeits-Bonus als auch der Einkommens-Bonus setzen voraus, dass du selbst im Gebäude wohnst. Wer vermietet, bekommt nur die Grundförderung von 30 %. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
                 </BonusToggle>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                    Einkommens-Bonus
-                    <InfoTooltip title="Einkommens-Bonus" ariaLabel="Einkommens-Bonus">
-                      Zusatzförderung für selbstnutzende Eigentümer, gestaffelt nach zu versteuerndem Haushaltsjahreseinkommen: bis 30.000 € +40 %, bis 40.000 € +30 %, bis 50.000 € +10 %. Bei der untersten Stufe steigt der Förderdeckel auf 80 %. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
-                    </InfoTooltip>
-                  </span>
-                  <select value={einkommen} onChange={e => { setEinkommen(e.target.value as EinkommenKey); setOInvest(null); }}
-                    style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer" }}>
-                    {EINKOMMEN_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
-                  </select>
-                </div>
-                {einkommen !== "none" && (
-                  <label style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: v('--color-text-secondary'), cursor: "pointer", marginBottom: 4 }}>
-                    <input type="checkbox" checked={kindImHaushalt} onChange={e => { setKindImHaushalt(e.target.checked); setOInvest(null); }} style={{ cursor: "pointer" }} />
-                    Mindestens ein Kind im Haushalt (Einkommensgrenze +10.000 €)
-                  </label>
+                {selbstnutzer ? (
+                  <>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        Alte Heizung
+                        <InfoTooltip title="Klima-Geschwindigkeits-Bonus" ariaLabel="Klima-Geschwindigkeits-Bonus">
+                          16 % Zusatzförderung, wenn eine funktionierende fossile Heizung ersetzt wird: Öl, Kohle und Nachtspeicher zählen unabhängig vom Alter, Gas-, Holz- und Pelletheizungen erst ab 20 Jahren. Das Baujahr steht auf dem Typenschild am Kessel. Der Bonus sinkt ab dem 1. Februar 2027 schrittweise. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
+                        </InfoTooltip>
+                      </span>
+                      <select value={altheizung} onChange={e => { setAltheizung(e.target.value as AltheizungKey); setOInvest(null); }}
+                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer" }}>
+                        {ALTHEIZUNG_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+                      </select>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: v('--color-text-secondary'), marginBottom: 4, flexWrap: "wrap" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        Einkommens-Bonus
+                        <InfoTooltip title="Einkommens-Bonus" ariaLabel="Einkommens-Bonus">
+                          Zusatzförderung für selbstnutzende Eigentümer, gestaffelt nach zu versteuerndem Haushaltsjahreseinkommen: bis 30.000 € +40 %, bis 40.000 € +30 %, bis 50.000 € +10 %. Bei der untersten Stufe steigt der Förderdeckel auf 80 %. Quelle: KfW Merkblatt 458 (BEG EM), gültig ab 21.07.2026.
+                        </InfoTooltip>
+                      </span>
+                      <select value={einkommen} onChange={e => { setEinkommen(e.target.value as EinkommenKey); setOInvest(null); }}
+                        style={{ fontSize: 12, padding: "3px 6px", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, background: v('--color-bg'), color: v('--color-text-secondary'), cursor: "pointer" }}>
+                        {EINKOMMEN_OPTIONS.map(o => <option key={o.key} value={o.key}>{o.label}</option>)}
+                      </select>
+                    </div>
+                    {einkommen !== "none" && (
+                      <label style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: v('--color-text-secondary'), cursor: "pointer", marginBottom: 4 }}>
+                        <input type="checkbox" checked={kindImHaushalt} onChange={e => { setKindImHaushalt(e.target.checked); setOInvest(null); }} style={{ cursor: "pointer" }} />
+                        Mindestens ein Kind im Haushalt (Einkommensgrenze +10.000 €)
+                      </label>
+                    )}
+                  </>
+                ) : (
+                  <div style={{ fontSize: 11.5, color: v('--color-text-muted'), lineHeight: 1.5, marginTop: 2 }}>
+                    Als Vermieter bleibt es bei der Grundförderung — Klima- und Einkommens-Bonus sind an die Selbstnutzung gebunden.
+                  </div>
                 )}
                 {oInvest !== null && (
                   <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 6 }}>Investition manuell überschrieben — Förderung wirkt erst wieder nach Zurücksetzen.</div>
@@ -529,7 +562,7 @@ export default function Waermepumpe() {
                 </div>
                 {inputs.situation === "bestand" && result.beg.amount > 0 && (
                   <div style={{ fontSize: 11, color: v('--color-text-muted'), paddingTop: 8, lineHeight: 1.6 }}>
-                    Angenommen ist der Regelfall: selbstnutzender Eigentümer, der eine funktionsfähige alte fossile Heizung ersetzt (Grundförderung + Klima-Geschwindigkeits-Bonus). Der Einkommens-Bonus hängt von deinem Haushaltseinkommen ab und ist standardmäßig nicht eingerechnet. Die Förderung muss vor der Beauftragung bei der KfW beantragt werden — ob die Boni bei dir greifen, hängt von deiner individuellen Situation ab.
+                    Voreingestellt ist der Regelfall: selbstnutzender Eigentümer, der eine mindestens 20 Jahre alte Gasheizung ersetzt (Grundförderung + Klima-Geschwindigkeits-Bonus). Selbstnutzung und alte Heizung kannst du oben umstellen; der Einkommens-Bonus hängt von deinem Haushaltseinkommen ab und ist standardmäßig nicht eingerechnet. Die Förderung muss vor der Beauftragung bei der KfW beantragt werden — ob die Boni bei dir greifen, hängt von deiner individuellen Situation ab.
                   </div>
                 )}
               </div>
@@ -576,7 +609,7 @@ export default function Waermepumpe() {
               <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
                 PV-Rechner öffnen <IconArrowRight size={iconSizes.sm} />
               </Link>
-              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setKlimaBonus(true); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
+              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>
@@ -658,6 +691,17 @@ const EINKOMMEN_OPTIONS: { key: EinkommenKey; label: string; income?: number }[]
   { key: "bis30", label: "bis 30.000 € (+40 %)", income: 30000 },
 ];
 const einkommenIncome = (k: EinkommenKey): number | undefined => EINKOMMEN_OPTIONS.find(o => o.key === k)?.income;
+
+// Welche alte Heizung ersetzt wird, entscheidet über den Klima-Geschwindigkeits-Bonus:
+// Öl/Kohle/Nachtspeicher zählen unabhängig vom Alter, Gas/Biomasse erst ab 20 Jahren.
+type AltheizungKey = "oel_kohle" | "gas_alt" | "gas_neu" | "andere";
+const ALTHEIZUNG_OPTIONS: { key: AltheizungKey; label: string; klima: boolean }[] = [
+  { key: "oel_kohle", label: "Öl, Kohle oder Nachtspeicher", klima: true },
+  { key: "gas_alt",   label: "Gas, Holz oder Pellets — 20 Jahre oder älter", klima: true },
+  { key: "gas_neu",   label: "Gas, Holz oder Pellets — jünger als 20 Jahre", klima: false },
+  { key: "andere",    label: "Etwas anderes (z. B. schon Strom/Wärmepumpe)", klima: false },
+];
+const altheizungKlima = (k: AltheizungKey): boolean => ALTHEIZUNG_OPTIONS.find(o => o.key === k)?.klima ?? false;
 
 function BonusToggle({ checked, onChange, label, tipTitle, children }: { checked: boolean; onChange: (c: boolean) => void; label: string; tipTitle: string; children: ReactNode }) {
   return (

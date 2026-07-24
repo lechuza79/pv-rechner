@@ -172,7 +172,8 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     <header style={{
       maxWidth: v('--header-max-width'),
       margin: "0 auto",
-      marginBottom: 20,
+      // Kein marginBottom mehr: der Header→Content-Abstand sitzt zentral im
+      // (site)-Layout (headerContentGap), nicht am Header selbst.
       position: "relative",
     }}>
       <div style={{

@@ -5,6 +5,7 @@ import { IconArrowRight } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { jsonLdHtml } from "../../../lib/json-ld";
+import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 import AtomstromWidget from "./AtomstromWidget";
 import AutoHeightIframe from "../../../components/AutoHeightIframe";
 import FaqAccordion, { AccordionItem } from "./FaqAccordion";
@@ -31,9 +32,9 @@ const S = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: "20px 16px",
+    padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto", paddingTop: 60 },
+  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   h1: {
     fontSize: v("--font-size-h1"),
     fontWeight: 800,
@@ -242,7 +243,7 @@ export default async function AtomstromImportPage() {
         </Link>
 
         <p style={S.source}>
-          Datenquelle: Energy-Charts (Fraunhofer ISE), Lizenz CC BY 4.0 — Grenzflüsse und nationale
+          Datenquelle: {sourceLabel(DATA_SOURCES.energyCharts)} — Grenzflüsse und nationale
           Strommixe. Berechnung und Darstellung: Solar Check. Der Wert aktualisiert sich stündlich
           und ist eine rechnerische Näherung, kein gemessener Importwert.
         </p>

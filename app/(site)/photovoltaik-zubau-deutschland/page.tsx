@@ -25,12 +25,12 @@ const S = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: "20px 16px",
+    padding: "0 16px 20px",
   },
   // Äußerer Rahmen etwas breiter als die Lesespalte, damit das Chart-Widget
-  // bewusst über die Textbreite hinausragen darf (Breakout).
-  // 20 (Header-Margin) + 20 (Seiten-Padding) + 10 = 50 px unter dem Header.
-  wrap: { maxWidth: 880, margin: "0 auto", paddingTop: 10 },
+  // bewusst über die Textbreite hinausragen darf (Breakout). Kein eigenes
+  // Top-Padding — der Kopf-Abstand kommt zentral aus dem Layout (32 px).
+  wrap: { maxWidth: 880, margin: "0 auto" },
   textCol: { maxWidth: v("--content-max-width"), margin: "0 auto" },
 };
 

@@ -83,6 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/ratgeber`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/lohnt-sich-pv-mit-speicher`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/lohnt-sich-pv-ohne-einspeiseverguetung`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/waermepumpe-foerderung-2026`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/pv-simulation`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/strommix-deutschland`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/atomstrom-import`, lastModified: now, changeFrequency: "daily", priority: 0.7 },

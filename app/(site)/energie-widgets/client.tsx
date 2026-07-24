@@ -789,7 +789,6 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    paddingTop: 20,
   },
   wrap: { maxWidth: 720, margin: "0 auto", padding: "0 16px 64px" },
   h1: { fontSize: 28, fontWeight: 800, letterSpacing: "-0.02em", marginTop: 0, marginBottom: 10 },

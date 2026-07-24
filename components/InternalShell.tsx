@@ -48,9 +48,10 @@ export default function InternalShell({
       style={{
         maxWidth: v("--header-max-width"),
         margin: "0 auto",
-        // Top-Abstand wie die übrigen Seiten (de-facto 20px). Wird mit der
-        // Header-Abstand-Standardisierung (#3) noch auf einen Token gezogen.
-        padding: `20px ${space.md}px 0`,
+        // Kein eigenes Top-Padding mehr: der Header→Content-Abstand kommt
+        // zentral aus dem (site)-Layout (headerContentGap). Hier bleibt nur das
+        // horizontale Seiten-Gutter (16px, wie alle Seiten).
+        padding: `0 ${space.xl}px 0`,
         display: "flex",
         flexDirection: narrow ? "column" : "row",
         gap: narrow ? space.md : space.xl,

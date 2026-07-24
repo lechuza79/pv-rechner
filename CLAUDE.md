@@ -573,7 +573,8 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 
 **Konventionen:**
 - **Theme = nur** Hintergrund/Text/Akzent/Highlight/Ecken/Schrift. Semantische Farben (grün=positiv, rot=negativ, Kategorie-/Energieträger-Farben) bleiben **fest** — nie an Theme-Token hängen.
-- **Flags:** `embed=0` blendet den Einbetten-Button aus (setzt die Galerie auf ihren Vorschau-iframes; **nicht** im Copy-Paste-Code). `branding=0` blendet „Powered by" aus (interne Integrationen; extern = Premium, nie im Gratis-Code angeboten). Beide default `true`.
+- **Flags:** `embed=0` blendet den Einbetten-Button aus (setzt die Galerie auf ihren Vorschau-iframes; **nicht** im Copy-Paste-Code). `branding=0` blendet „Powered by" aus (interne Integrationen; extern = Premium, nie im Gratis-Code angeboten). `onsite=1` = **First-Party-Embed** (siehe nächster Punkt). Alle default so, dass der externe Copy-Paste-Code die volle Attribution trägt; `embed`/`onsite` werden **nie** in den Copy-Paste-Code serialisiert.
+- **First-Party-Embed — BLOCKER-Konvention:** Wenn **wir** einen eigenen Rechner/ein eigenes Widget auf einer **eigenen** Seite einbetten, iframe-`src` immer mit `?onsite=1`. Dann: (1) die **Aktions-CTAs direkt als Leiste** (`variant="bar"`: Teilen, Einbetten … sichtbar, **kein** ⋯-Menü), (2) **kein** „Powered by" (redundant auf der eigenen Seite), (3) **keine** Widget-eigene Quellenangabe — die Quelle steht **einmal zentral** auf der einbettenden Seite bzw. im Seiten-Footer (per `DataSourceNote` aus `lib/data-sources.ts`, nicht inline). Der externe Embed (ohne `onsite`) behält Powered-by **und** In-Widget-Quelle (Lizenzpflicht dl-de/by · CC BY). Mechanik: Flag in `lib/widget-settings.ts`, ausgewertet im Widget (Muster: `app/(embed)/embed/foerder-check/client.tsx`, eingebettet auf `/waermepumpe-foerderung-2026`).
 - **Teilen = aktueller Zustand** als Deep-Link auf die passende Live-Seite (z. B. `/strommix-deutschland?range=…`, `/pv-simulation?plz=…`).
 - **Galerie:** neues Widget als Sektion in `SECTIONS` (`app/(site)/energie-widgets/client.tsx`); fixe Query-Params pro Variante über das `params`-Feld (nicht in `src` hängen — kollidiert mit `embed=0`/Theme). iframe-Höhe **großzügig** (Footer/2-zeilige Legende).
 - **Recycling statt Neubau:** Startseite und Karten-Embed nutzen dieselbe `MastrHeroSection` (eine Ansicht, eine Quelle). Einzel-KPIs (`/embed/kennzahl`) recyceln die exportierte `Kachel`.
@@ -639,6 +640,11 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 
 **Abstands-Skala (`space` + `pad()` in `lib/theme.ts`):** Zahlen statt CSS-Variablen — wie `iconSizes`, weil Abstände in Inline-Styles stehen (`gap: space.md`, `padding: pad("lg", "xl")`). Stufen: 2 · 4 · 6 · 8 · 12 · 16 · 24 · 32 · 48. **10, 14, 18 und 28 gibt es bewusst nicht** — sie waren Drift, keine Absicht; wer sie brauchte, entscheidet sich sichtbar für die Stufe darunter oder darüber. Neue Komponenten setzen Abstände **nur** aus der Skala.
 *Migrationsstand:* umgestellt sind Solar-Atlas-Gemeindeseite, Kommunen-Box + Kontakt-Einstieg, `Modal`, `ContactForm`/`ContactPerson`, `AtlasKpiRow`. Der Rest (Rechner-Flows, Energie-Seiten, Embed-Widgets) ist noch handgesetzt und wird stückweise nachgezogen — bewusst nicht in einem Rutsch, weil jede Rundung eine sichtbare Änderung ist.
+
+**Header→Content-Abstand (`headerContentGap` + `--content-lede-top` in `lib/theme.ts`) — BLOCKER:** Der Abstand zwischen Header und Seiteninhalt kommt aus **einer** Quelle, nicht mehr aus jeder Seite einzeln. Früher brachte der Header einen `marginBottom:20` mit und **jede** Seite legte zusätzlich eigenes Top-Padding drauf (20/24/40/0 + innere Hero-`paddingTop`) — projektweit driftend, sichtbar 32–108px. Jetzt:
+- **`headerContentGap`** (= `space.huge`, 48px) sitzt als unteres Padding des Header-Wrappers im `app/(site)/layout.tsx`. Der Header hat **kein** `marginBottom` mehr, und **keine** (site)-Seite setzt eigenes Top-Padding — Wurzel-Container tragen nur noch horizontales Gutter (16px) + Bottom. Gilt für alle Tool-/Daten-Seiten (Rechner, Startseite, Strommix, Atlas, Förderung, Simulation, …) einheitlich, Desktop **und** Mobile.
+- **Lese-/Textseiten** (Ratgeber, Methodik, Glossar, Impressum, Datenschutz, Kontakt, Datenstand, `lohnt-sich-*`, Atomstrom, Nutzungsbedingungen) legen über die Basis noch `--content-lede-top` (Token, Desktop 48px → Total 96px; auf ≤640px per Media-Query 24px → Total 72px). Das ist die einzige zulässige Extra-Kopf-Luft und lebt ausschließlich in diesem Token, nicht als handgetippter `paddingTop` in den Seiten.
+- **Neue (site)-Seite:** KEIN eigenes Top-Padding am Wurzel-Container setzen (der Gap kommt zentral). Lese-Seite → inneren Text-Wrapper mit `paddingTop: "var(--content-lede-top)"` versehen. Innere Hero-/Titel-Wrapper bekommen **kein** eigenes `paddingTop` (war die alte Drift-Quelle).
 
 ## SEO-Strategie
 
@@ -882,10 +888,24 @@ abmahnsicher ist, und jede Abkürzung reißt die Lücke wieder auf:
    Impressum-Menüpunkt). Prüfen, ob der Datenschutz-Baustein in der Galerie
    (`/energie-widgets`) noch zutrifft (neue Datenflüsse?).
 6. **E-Mail-Versand** → an Nutzer nur transaktional (Auth, angeforderte Funktion).
-   Werbe-/Outreach-Mails NUR nach den Leitplanken in `docs/outreach-process-konzept.md`
-   (§ 7 UWG: keine Kaltakquise, auch nicht B2B). Newsletter o. Ä. → Double-Opt-in +
-   Datenschutzerklärung. Mail-Betreff/Header nie aus Freitext bauen (Allowlist-Muster
-   wie `lib/contact-topics.ts`).
+   Werbe-/Outreach-Mails nach den Leitplanken in `docs/outreach-process-konzept.md`.
+   **§ 7 UWG kalibriert (Judge-Prüfung Juli 2026, ersetzt das frühere pauschale
+   „keine Kaltakquise"):** Eine unverlangte Outreach-Mail mit kostenlosem Widget-/
+   Backlink-Angebot ist zwar mit hoher Wahrscheinlichkeit „Werbung" und damit
+   *materiell* angreifbar — ABER das Durchsetzungsrisiko ist niedrig und überwiegend
+   theoretisch: Der Empfänger selbst (auch eine Kommune) ist nach § 8 Abs. 3 UWG **nicht**
+   abmahnbefugt; nur Mitbewerber/Verbände/IHK könnten, und die bekommen B2G-Mails an
+   Rathaus-Postfächer praktisch nicht mit. „Massenversand" ist kein eigener Tatbestand
+   (jede einzelne Mail zählt) — schubweise senkt nur das Entdeckungsrisiko, nicht die
+   Rechtslage. **Maßvolle, schubweise Kaltakquise ist damit eine bewusste unternehmerische
+   Entscheidung, kein Verbot.** Risiko-frei sitzt es, wenn der Erstkontakt **nicht** als
+   unverlangte Mail läuft, sondern über das **Kontaktformular** der Zielstelle oder einen
+   **Permission-Ask** (Anruf/Formular „darf ich Ihnen das schicken?") → die Folge-Mail ist
+   dann angefordert und § 7 entfällt. Bei jeder Outreach-Mail Pflicht: Klarname +
+   „Betreiber solar-check.io" + Impressum-Link + Datenschutz-Einzeiler (Art. 14 DSGVO);
+   Rollen-Postfächer (info@/rathaus@) statt Klarnamen bevorzugen (dämpft den DSGVO-Strang).
+   Newsletter o. Ä. → Double-Opt-in + Datenschutzerklärung. Mail-Betreff/Header nie aus
+   Freitext bauen (Allowlist-Muster wie `lib/contact-topics.ts`).
 7. **Neue personenbezogene Daten** (Formularfelder, Account-Felder) → Datenschutzerklärung
    ergänzen (Zweck, Rechtsgrundlage, Empfänger, Speicherdauer); Eingaben serverseitig
    validieren + escapen; öffentliche POST-Endpoints mit Rate-Limit + Honeypot

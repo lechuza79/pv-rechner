@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
-import { getCssVariables, getThemeOverrides, globalStyles } from "../../lib/theme";
+import { getCssVariables, getThemeOverrides, globalStyles, headerContentGap } from "../../lib/theme";
 import { getOverrideCss } from "../../lib/theme-overrides";
 import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
 import { jsonLdHtml } from "../../lib/json-ld";
@@ -153,8 +153,12 @@ export default async function RootLayout({
           {/* Außenabstand zentral: früher lieferte ihn der jeweilige
               Seiten-Container ("20px 16px"), in dem der Header mit drinsteckte.
               Jetzt sitzt er im Layout und bringt seinen Rahmen selbst mit —
-              analog zum Footer darunter. */}
-          <div style={{ padding: "20px 16px 0" }}><Header /></div>
+              analog zum Footer darunter. Das untere Padding ist der EINE
+              Header→Content-Abstand (headerContentGap): früher brachte ihn jede
+              Seite selbst als Top-Padding mit (plus Header-marginBottom), was
+              projektweit driftete. Keine Seite setzt jetzt noch eigenes
+              Top-Padding. */}
+          <div style={{ padding: `20px 16px ${headerContentGap}px` }}><Header /></div>
           {children}
           <div style={{ padding: "0 16px" }}><Footer /></div>
         </GlossaryProvider>

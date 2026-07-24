@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import DonutChart from "../charts/DonutChart";
-import { IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
+import { IconArrowRight, IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
 import { v, tokens, space } from "../../lib/theme";
 import { SEGMENT_OWNER, type AtlasOwner, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
 import {
@@ -418,19 +418,13 @@ function PeerZeile({
   scale: number;
   floating?: boolean;
 }) {
-  return (
-    <div
-      style={{ ...S.peerRow, ...(row.isSelf ? S.peerSelf : null), ...(floating ? S.peerFloat : null) }}
-    >
+  // Dezente Hervorhebung der eigenen Zeile (kein Link hier → keine kräftige
+  // Blaufüllung wie in der großen Rangliste, wo die Zeile klickbar ist).
+  const cells = (
+    <>
       <span style={S.peerRank}>{row.rang === null ? "" : `${row.rang}.`}</span>
       <span style={S.peerName}>
-        {row.href && !row.isSelf ? (
-          <Link href={row.href} style={S.peerLink}>
-            {row.name}
-          </Link>
-        ) : (
-          <span style={{ ...S.peerLink, fontWeight: row.isSelf ? 700 : 500 }}>{row.name}</span>
-        )}
+        <span style={{ ...S.peerLink, fontWeight: row.isSelf ? 700 : 500 }}>{row.name}</span>
       </span>
       <span style={S.peerVal}>
         <span>{fmtValue(row.value, metric)}</span>
@@ -444,6 +438,24 @@ function PeerZeile({
           />
         </span>
       </span>
+    </>
+  );
+  const style = { ...S.peerRow, ...(row.isSelf ? S.peerSelf : null), ...(floating ? S.peerFloat : null) };
+  // Ganze Zeile klickbar (nicht nur der Name) mit Hover-„→", wie in der großen
+  // Rangliste. Die eigene Zeile ist die aktuelle Seite → kein Link, kein Pfeil.
+  // Abgesetzt (Rang jenseits der Top 5) → gezackte Oberkante (.peer-float) als
+  // Bruch, der die übersprungenen Ränge andeutet: es ist NICHT der 5. Platz.
+  return row.href && !row.isSelf ? (
+    <Link href={row.href} className="atlas-rank-row" style={{ ...style, ...S.peerRowLink }}>
+      {cells}
+      <span className="atlas-go" style={S.peerGo} aria-hidden>
+        <IconArrowRight size={12} />
+      </span>
+    </Link>
+  ) : (
+    <div style={style}>
+      {cells}
+      <span aria-hidden />
     </div>
   );
 }
@@ -556,7 +568,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   peerRow: {
     display: "grid",
-    gridTemplateColumns: "26px minmax(0,1fr) 88px",
+    gridTemplateColumns: "26px minmax(0,1fr) 88px 14px",
     alignItems: "center",
     gap: 8,
     padding: "5px 6px",
@@ -565,11 +577,29 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 12,
     transition: "background 160ms ease",
   },
+  peerRowLink: { textDecoration: "none", color: "inherit", cursor: "pointer" },
+  // Hover-„→" am Zeilenende (Sichtbarkeit steuert die globale .atlas-rank-row-Regel).
+  peerGo: { display: "flex", alignItems: "center", justifyContent: "flex-end", color: v("--color-accent") },
+  // Dezente Hervorhebung: heller Blauton + blaue Kontur (kein Link → nicht kräftig).
   peerSelf: { background: v("--color-bg-accent"), boxShadow: `inset 0 0 0 1.5px ${v("--color-accent")}` },
-  // Detached self: lifted off the table with a drop shadow (keeps the blue outline).
+  // Abgesetzt: als eigene, HELLERE Karte aus der Tabelle gelöst — Fläche etwas
+  // aufgehellt gegenüber dem Seitenhintergrund (color-mix mit Weiß, folgt jedem
+  // Theme), damit die abgerissenen Zacken als Box-Rand lesen (nicht als heller
+  // Streifen IN der Box). Leichte Kontur überschreibt die von peerSelf. Zacken-
+  // Oberkante + Schatten kommen aus der .peer-float-Regel (Maske + filter).
+  // Abgesetzt (nur wenn der eigene Rang jenseits der Top 5 liegt): saubere,
+  // hellere Karte, aus der Tabelle gehoben (Schatten). Obere Ecken SCHARF, unten
+  // abgerundet; die Oberkante ist eine gestrichelte BLAUE Linie (Abriss-
+  // Perforation → „nicht der 5. Platz"). Seiten/Boden dezent grau.
   peerFloat: {
-    background: v("--color-bg"),
-    boxShadow: `inset 0 0 0 1.5px ${v("--color-accent")}, 0 3px 12px rgba(0,0,0,0.12)`,
+    background: `color-mix(in srgb, ${v("--color-bg")}, #fff 45%)`,
+    borderTop: `1px dashed ${v("--color-accent")}`,
+    borderRight: `1px solid ${v("--color-border")}`,
+    borderBottom: `1px solid ${v("--color-border")}`,
+    borderLeft: `1px solid ${v("--color-border")}`,
+    boxSizing: "border-box",
+    boxShadow: "0 3px 12px rgba(0,0,0,0.14)",
+    borderRadius: `0 0 ${v("--radius-sm")} ${v("--radius-sm")}`,
     position: "relative",
     zIndex: 1,
   },

@@ -140,6 +140,14 @@ export const tokens = {
   '--page-max-width': '480px',       // Rechner/Tools — kompakte, fokussierte Spalte
   '--content-max-width': '640px',    // Redaktionelle Lese-/Textseiten (Ratgeber, Methodik, …)
   '--header-max-width': '1040px',
+
+  // Redaktionelle Kopf-Luft NUR auf Lese-/Textseiten — zusätzlich zum zentralen
+  // headerContentGap (48). Bewusst mehr als bei Tool-/Datenseiten, damit lange
+  // Texte oben atmen (redaktionelles Muster): 48 + 48 = 96px über der
+  // Überschrift. EIN Wert statt in jeder Seite getippt; auf schmalen Schirmen
+  // kleiner (Override in globalStyles → 24px, Total 72px), weil der große
+  // Abstand dort zu viel leeren Raum über der Überschrift lässt.
+  '--content-lede-top': '48px',
 } as const;
 
 export type TokenName = keyof typeof tokens;
@@ -209,6 +217,19 @@ export const space = {
 export function pad(y: keyof typeof space, x?: keyof typeof space): string {
   return x === undefined ? `${space[y]}px` : `${space[y]}px ${space[x]}px`;
 }
+
+/**
+ * Abstand Header → Seiteninhalt. EINE Quelle.
+ *
+ * Früher setzte ihn jede Seite selbst als oberes Padding auf ihrem Wurzel-
+ * Container (meist 20px), plus der Header brachte einen `marginBottom:20` mit —
+ * zusammen ~40px, aber überall leicht unterschiedlich (24/40/0), weil jede Seite
+ * ihren eigenen Wert tippte. Jetzt sitzt der Abstand zentral im (site)-Layout
+ * unter dem Header; keine Seite setzt mehr eigenes Top-Padding. Skalenwert
+ * (space.huge = 48) — bewusst großzügig, damit die Rechner-Hero-Fragen oben Luft
+ * haben. Lese-/Textseiten legen darüber noch --content-lede-top drauf.
+ */
+export const headerContentGap = space.huge; // 48
 
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
 export const v = (name: TokenName): string => `var(${name})`;
@@ -436,6 +457,10 @@ export function stageDefaults(i: number): Record<TokenName, string> {
 export const globalStyles = `
   html{scroll-behavior:smooth}
   *{box-sizing:border-box;margin:0;padding:0}
+  /* Redaktionelle Kopf-Luft (Lese-Seiten) auf schmalen Schirmen zurücknehmen:
+     60px über der Überschrift wirken auf dem Handy wie ein Fehler, auf dem
+     Desktop wie gewollte Ruhe. Siehe --content-lede-top. */
+  @media (max-width:640px){:root{--content-lede-top:24px}}
   /* Smooth theme cross-fade — only enabled while a theme switch is in flight
      (ThemeController toggles .theme-anim on <html>), so normal hovers stay
      instant and the initial (boot-script) theme paints without animating.
@@ -478,6 +503,10 @@ export const globalStyles = `
   .sc-live-dot::before,.sc-live-dot::after{content:'';position:absolute;top:50%;left:50%;width:100%;height:100%;border-radius:50%;background:var(--color-highlight);pointer-events:none;animation:sc-live-ring 1.8s ease-out infinite}
   .sc-live-dot::after{animation-delay:.9s}
   .sc-live-bar{animation:sc-live-bar 1.8s ease-in-out infinite}
+  /* Navigations-Bar über der Karte: Breadcrumb links, Regionssuche rechts. wrap,
+     damit auf schmalen Schirmen mit langem Breadcrumb + offener Suche nichts
+     überläuft (die Suche rutscht dann in die nächste Zeile). */
+  .mastr-mapbar{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;margin-top:12px;min-width:0;flex-wrap:wrap}
   .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,430px) 300px;gap:48px;align-items:start;justify-content:center}
   .mastr-hero-aside{display:grid;gap:12px}
   .mastr-kpis{display:grid;gap:10px}
@@ -578,12 +607,14 @@ export const globalStyles = `
   .kpi-mcard{flex:0 0 auto;min-width:120px;background:var(--color-bg-muted);border-radius:var(--radius-md);padding:12px;scroll-snap-align:start}
   .kpi-mnote{font-size:12px;color:var(--color-text-secondary);line-height:1.5;max-width:260px}
 
-  /* Breadcrumb: auf breiten Schirmen umbrechend (genug Platz), auf schmalen
-     EINZEILIG — die mittleren Begriffe schrumpfen mit Auslassungspunkten, erster
-     und letzter bleiben ganz. */
-  .crumb-nav{flex-wrap:wrap}
+  /* Breadcrumb: Kruemel-Spur links (.crumb-trail), optionale Suche rechts
+     (.crumb-right). Auf breiten Schirmen bricht die Spur um (genug Platz), auf
+     schmalen EINZEILIG — die mittleren Begriffe schrumpfen mit
+     Auslassungspunkten, erster und letzter bleiben ganz; die Suche rechts bleibt. */
+  .crumb-trail{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
+  .crumb-right{flex-shrink:0}
   @media (max-width:640px){
-    .crumb-nav{flex-wrap:nowrap;overflow:hidden}
+    .crumb-trail{flex-wrap:nowrap;overflow:hidden}
     .crumb-item{min-width:0}
     .crumb-item:first-child,.crumb-item:last-child{flex-shrink:0}
     .crumb-label{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -617,4 +648,5 @@ export const globalStyles = `
 
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
   .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
+
 `;

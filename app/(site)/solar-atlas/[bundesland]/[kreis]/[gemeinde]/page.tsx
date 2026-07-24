@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
+import RegionSearch from "../../../../../../components/atlas/RegionSearch";
 import { IconArrowRight } from "../../../../../../components/Icons";
 import { v, space, pad } from "../../../../../../lib/theme";
 import { pageMetadata } from "../../../../../../lib/seo";
@@ -12,13 +13,11 @@ import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/at
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
-import GemeindePotentialBlock from "../../../../../../components/atlas/GemeindePotential";
+import GemeindePotentialClient from "../../../../../../components/atlas/GemeindePotentialClient";
 import GemeindeErneuerbareWidget from "../../../../../../components/atlas/GemeindeErneuerbareWidget";
 import GemeindeSolarLive from "../../../../../../components/atlas/GemeindeSolarLive";
 import { MastrHeroSection } from "../../../../../../components/MastrHeroSection";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
-import { getPvgisYield } from "../../../../../../lib/pvgis";
-import { computeGemeindePotential } from "../../../../../../lib/gemeinde-potential";
 import { buildGemeindeHighlight } from "../../../../../../lib/gemeinde-highlight";
 import {
   resolveSlugPath,
@@ -43,8 +42,15 @@ import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
 import { landProgramBundeslaender } from "../../../../../../lib/funding-programs";
+import { DATA_SOURCES } from "../../../../../../lib/data-sources";
 
 export const revalidate = 3600;
+// Ohne generateStaticParams wäre die Route voll dynamisch (no-store). Leeres
+// Array = keine Vorab-Renders (zu viele Gemeinden), aber ISR: jede Gemeinde-Seite
+// rendert einmal on-demand und liegt dann s-maxage=3600 im CDN.
+export function generateStaticParams() {
+  return [];
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -232,24 +238,18 @@ export default async function GemeindePage({ params }: { params: Params }) {
   // reaches 6.210 W per head against 954.
   const band = region.population ? peerBand(region.population) : { min: 0, max: 0 };
 
-  // Standort-Ertrag (Geo→PVGIS), Kreis-Rangliste und bundesweite Vergleichs-
-  // gemeinden hängen nicht voneinander ab → in einem Rutsch statt seriell. Der
-  // Ertrag speist „Angebot trifft Nachfrage" + Beispiele; nur für bewohnte
-  // Gemeinden sinnvoll (Waldgebiete o. Ä. haben keinen Bedarf), repräsentative
-  // PLZ aus der AGS. Der Größenklassen-Vergleich (Anführer UND eigener Platz,
-  // 3 Eigentümer × 2 Bezüge) kommt aus einem einzigen Aufruf über die
-  // vorberechneten Gemeinde-Summen — früher ein ~5-s-Scan über alle Rohzeilen.
-  const [geoYield, siblingData, peerRows] = await Promise.all([
-    region.population
-      ? gemeindeGeo(region.region_id).then(async (geo) => {
-          const y = await getPvgisYield({
-            lat: geo?.lat ?? NaN,
-            lon: geo?.lon ?? NaN,
-            plzPrefix: (geo?.plz ?? "").slice(0, 2),
-          });
-          return { geo, potential: computeGemeindePotential({ annual: y.annual, monthly: y.monthly }) };
-        })
-      : Promise.resolve({ geo: null, potential: null }),
+  // Standort (Geo), Kreis-Rangliste und bundesweite Vergleichsgemeinden hängen
+  // nicht voneinander ab → in einem Rutsch statt seriell. Die Lage (repräsentative
+  // PLZ + lat/lon aus der AGS) kommt aus einer lokalen Tabelle — schnell, server-
+  // seitig. Der langsame Teil (Standort-Ertrag von PVGIS, extern) wird NICHT mehr
+  // hier abgewartet: er speist nur die „Was das für Sie bedeutet"-Beispiele und
+  // wird client-seitig nachgeladen (GemeindePotentialClient → /api/pvgis), damit
+  // der Server-Render sofort steht. Nur für bewohnte Gemeinden sinnvoll
+  // (Waldgebiete o. Ä. haben keinen Bedarf). Der Größenklassen-Vergleich
+  // (Anführer UND eigener Platz, 3 Eigentümer × 2 Bezüge) kommt aus einem einzigen
+  // Aufruf über die vorberechneten Gemeinde-Summen.
+  const [geo, siblingData, peerRows] = await Promise.all([
+    region.population ? gemeindeGeo(region.region_id) : Promise.resolve(null),
     // The Kreis in raw cells: the table ranks it client-side per owner AND per
     // metric, which no fixed RPC result could serve.
     kreis ? getRankingData(kreis) : Promise.resolve({ regions: [], cells: [] }),
@@ -258,10 +258,9 @@ export default async function GemeindePage({ params }: { params: Params }) {
       : Promise.resolve([] as PeerRow[]),
   ]);
 
-  const potential = geoYield.potential;
-  const repPlz = geoYield.geo?.plz ?? null;
-  const geoLat = Number.isFinite(geoYield.geo?.lat) ? (geoYield.geo?.lat ?? null) : null;
-  const geoLon = Number.isFinite(geoYield.geo?.lon) ? (geoYield.geo?.lon ?? null) : null;
+  const repPlz = geo?.plz ?? null;
+  const geoLat = Number.isFinite(geo?.lat) ? (geo?.lat ?? null) : null;
+  const geoLon = Number.isFinite(geo?.lon) ? (geo?.lon ?? null) : null;
 
   // Rang der Gemeinde nach installierter Solarleistung im Landkreis — aus den
   // Ranking-Zellen des Kreises aggregiert (Speicher zählt nicht zur Leistung).
@@ -314,7 +313,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
       <div style={S.wrap}>
-        <Breadcrumb items={crumbs} />
+        <Breadcrumb items={crumbs} rightSlot={<RegionSearch align="right" />} />
 
         {/*
           Data date above the headline, not buried in the footer: it is the first
@@ -363,11 +362,18 @@ export default async function GemeindePage({ params }: { params: Params }) {
           basePath={basePath}
         />
 
-        {potential && <GemeindePotentialBlock plz={repPlz} p={potential} />}
-
-        {/* Ohne Einwohnerzahl gibt es keinen Potential-Block — der Rechner-Link
-            muss trotzdem erhalten bleiben (sonst hat die Seite keinen Weg dorthin). */}
-        {!potential && (
+        {/* „Was das für Sie bedeutet": die drei Beispielrechnungen brauchen den
+            Standort-Ertrag (PVGIS, extern/langsam). Er wird client-seitig
+            nachgeladen (Skeleton → Zahlen), damit der Server-Render nicht darauf
+            wartet — dieselbe pure Rechnung, gleiche Zahlen wie zuvor server-seitig.
+            Gezeigt wird der Block wie bisher für jede bewohnte Gemeinde (die
+            repräsentative PLZ reicht; ohne Koordinate fällt der Ertrag sauber auf
+            den Bundesland-Wert zurück). */}
+        {region.population ? (
+          <GemeindePotentialClient plz={repPlz} lat={geoLat} lon={geoLon} />
+        ) : (
+          // Ohne Einwohnerzahl gibt es keinen Potential-Block — der Rechner-Link
+          // muss trotzdem erhalten bleiben (sonst hat die Seite keinen Weg dorthin).
           <div style={S.section}>
             <Link href="/photovoltaik-rechner" style={S.cta}>
               Rentabilität einer PV-Anlage berechnen <IconArrowRight size={14} />
@@ -465,7 +471,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
           <a href="https://www.govdata.de/dl-de/by-2-0" target="_blank" rel="noopener noreferrer" style={S.licLink}>
             dl-de/by-2-0
           </a>{" "}
-          (Daten aggregiert). Einwohnerzahlen und Gebietsstand: Statistisches Bundesamt,
+          (Daten aggregiert). Einwohnerzahlen und Gebietsstand: {DATA_SOURCES.destatis.name},
           Gemeindeverzeichnis{region.population_as_of ? `, Stand ${standLabel(region.population_as_of)}` : ""},
           Datenlizenz dl-de/by-2-0.{" "}
           {region.parent_region_id && (
@@ -493,6 +499,19 @@ export default async function GemeindePage({ params }: { params: Params }) {
               .{" "}
             </>
           )}
+          {region.population ? (
+            // Der Standort-Ertrag der Beispielrechnungen („Was das für Sie
+            // bedeutet") kommt von PVGIS — hier genannt, weil der Ertrag sichtbar
+            // ist (… kWh/kWp am Standort). Wird client-seitig geladen, die Quelle
+            // gehört trotzdem sichtbar hierher.
+            <>
+              Der Standort-Ertrag (kWh/kWp) in den Beispielrechnungen stammt von{" "}
+              <a href={DATA_SOURCES.pvgis.url} target="_blank" rel="noopener noreferrer" style={S.licLink}>
+                PVGIS
+              </a>{" "}
+              (Europäische Kommission).{" "}
+            </>
+          ) : null}
           Gezählt werden nur Anlagen in Betrieb. Alle Angaben sind
           Näherungswerte ohne Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit.
         </div>
@@ -507,7 +526,7 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: pad("xxl", "xl"),
+    padding: "0 16px 24px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
   stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },

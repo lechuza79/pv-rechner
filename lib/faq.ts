@@ -13,6 +13,7 @@
 import { estimateCost, BATTERY_LIFETIME_YEARS } from "./calc";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import type { PriceConfig } from "./prices-config";
+import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
 
 export interface FaqLink {
   /** Exact phrase inside `a`; its first occurrence becomes a link. */
@@ -194,6 +195,59 @@ export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
       a: "Wer ohnehin eine Anlage plant, sichert sich mit einer Inbetriebnahme bis Ende 2026 die aktuelle Einspeisevergütung für 20 Jahre — das ist der greifbare Vorteil des Bestandsschutzes. Ein Grund zur Panik ist die Reform aber nicht: Eine passend dimensionierte Anlage mit hohem Eigenverbrauch rechnet sich auch ohne Vergütung. Wichtig ist eine realistische Rechnung für den eigenen Haushalt, keine Torschluss-Entscheidung. Das ist eine allgemeine Einordnung, keine individuelle Beratung.",
       links: [{ phrase: "hohem Eigenverbrauch", href: "/lohnt-sich-pv-mit-speicher" }],
       cta: { label: "Meinen Fall durchrechnen", href: "/photovoltaik-rechner" },
+    },
+  ];
+}
+
+/** FAQ for the heat-pump funding guide (/waermepumpe-foerderung-2026).
+ *  All rates/caps come from the geprüfte BEG config (KfW Merkblatt 458) — never
+ *  hardcode a percentage or euro figure here. */
+export function waermepumpeFoerderungFaq(): FaqEntry[] {
+  const c = DEFAULT_HEATPUMP_CONFIG;
+  const pct = (r: number) => `${Math.round(r * 100)} %`;
+  const grund = pct(c.begGrundfoerderung);
+  const klima = pct(c.begKlimaBonus);
+  const staffel = c.begEinkommensStaffel;
+  const einkommenGrenze = staffel[staffel.length - 1].maxIncome.toLocaleString("de-DE");
+  const maxZuschuss = Math.round(c.begMaxCap * c.begMaxRateLowIncome).toLocaleString("de-DE");
+  const capKosten = c.begMaxCap.toLocaleString("de-DE");
+  const familie = c.begFamilienzuschlag.toLocaleString("de-DE");
+  return [
+    {
+      q: "Wie viel Förderung gibt es für eine Wärmepumpe?",
+      a: `Für den Heizungstausch im Bestand gibt es eine Grundförderung von ${grund} der Kosten — die bekommt jeder, auch Vermieter. Selbstnutzende Eigentümer können mit dem Klima-Geschwindigkeits-Bonus (+${klima}) und einem einkommensabhängigen Bonus auf bis zu ${pct(c.begMaxRateLowIncome)} kommen. Gefördert werden Kosten bis ${capKosten} € für die erste Wohneinheit, der maximale Zuschuss liegt damit bei ${maxZuschuss} €. Die genaue Summe für deinen Fall rechnet der Förder-Check aus.`,
+      links: [{ phrase: "Förder-Check", href: "/waermepumpe-rechner" }],
+      cta: { label: "Meine Förderung berechnen", href: "/waermepumpe-rechner" },
+    },
+    {
+      q: "Bekomme ich Förderung für eine Wärmepumpe im Neubau?",
+      a: "Nein — den BEG-Zuschuss gibt es nur für den Heizungstausch in einem bestehenden Gebäude. Im Neubau wird die Wärmepumpe nicht direkt bezuschusst; dort läuft die Förderung über zinsgünstige Kredite der KfW im Programm „Klimafreundlicher Neubau“, die das ganze Gebäude betreffen, nicht die einzelne Heizung.",
+      cta: { label: "Wärmepumpe im Bestand rechnen", href: "/waermepumpe-rechner" },
+    },
+    {
+      q: "Wer bekommt den Klima-Geschwindigkeits-Bonus?",
+      a: `Den Klima-Bonus von ${klima} bekommen nur selbstnutzende Eigentümer, die eine noch funktionierende fossile Heizung ersetzen. Öl-, Kohle-, Gas-Etagen- und Nachtspeicherheizungen zählen unabhängig vom Alter. Zentrale Gas-, Holz- und Pelletheizungen zählen erst, wenn ihr Einbau mindestens 20 Jahre zurückliegt — das Baujahr steht auf dem Typenschild am Kessel. Vermieter bekommen diesen Bonus nicht. Ab dem 1. Februar 2027 soll der Bonus schrittweise sinken.`,
+      cta: { label: "Klima-Bonus einrechnen", href: "/waermepumpe-rechner" },
+    },
+    {
+      q: "Wie funktioniert der Einkommens-Bonus?",
+      a: `Der Einkommens-Bonus richtet sich nach dem zu versteuernden Haushaltsjahreseinkommen: bis ${staffel[0].maxIncome.toLocaleString("de-DE")} € gibt es +${Math.round(staffel[0].rate * 100)} %, bis ${staffel[1].maxIncome.toLocaleString("de-DE")} € +${Math.round(staffel[1].rate * 100)} %, bis ${einkommenGrenze} € +${Math.round(staffel[2].rate * 100)} %. Er gilt nur für selbstnutzende Eigentümer. Maßgeblich ist das zu versteuernde Einkommen aus dem Steuerbescheid, nicht das Bruttogehalt — es liegt meist deutlich darunter.`,
+      cta: { label: "Einkommens-Bonus berechnen", href: "/waermepumpe-rechner" },
+    },
+    {
+      q: "Was bringt der Familienzuschlag?",
+      a: `Lebt mindestens ein minderjähriges Kind im Haushalt, wird das anzusetzende Einkommen einmalig um ${familie} € gesenkt. Dadurch kann eine höhere Bonusstufe greifen — ein Haushalt knapp über einer Einkommensgrenze rutscht so in die nächstbessere Stufe. Die Anzahl der Kinder spielt keine Rolle: Es zählt nur, ob ein Kind im Haushalt lebt oder nicht.`,
+      cta: { label: "Mit Kind durchrechnen", href: "/waermepumpe-rechner" },
+    },
+    {
+      q: "Bekommen Vermieter Förderung für eine Wärmepumpe?",
+      a: `Ja, aber nur die Grundförderung von ${grund}. Der Klima-Geschwindigkeits-Bonus und der Einkommens-Bonus sind an die Selbstnutzung gebunden und entfallen für vermietete Objekte. Für ein selbst bewohntes Haus mit alter Ölheizung und niedrigem Einkommen kann die Förderung dagegen bis ${pct(c.begMaxRateLowIncome)} erreichen.`,
+      cta: { label: "Förderung vergleichen", href: "/waermepumpe-rechner" },
+    },
+    {
+      q: "Ich kenne das Alter meiner Gasheizung nicht — bekomme ich den Klima-Bonus?",
+      a: "Bei Öl-, Kohle-, Gas-Etagen- und Nachtspeicherheizungen ist der Klima-Bonus unabhängig vom Alter sicher. Bei zentralen Gas-, Holz- und Pelletheizungen hängt er an der 20-Jahre-Grenze. Das Baujahr steht auf dem Typenschild am Heizkessel oder in den Unterlagen des Schornsteinfegers. Solange das Alter unklar ist, solltest du den Bonus vorsichtshalber nicht fest einplanen — verbindlich ist am Ende der Zuschussbescheid der KfW.",
+      cta: { label: "Beide Fälle durchrechnen", href: "/waermepumpe-rechner" },
     },
   ];
 }
