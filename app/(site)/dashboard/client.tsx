@@ -90,12 +90,9 @@ export default function DashboardClient({
   };
 
   return (
-    <div style={{
-      background: v('--color-bg'), fontFamily: v('--font-text'),
-      color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px",
-    }}>
+    <div style={{ fontFamily: v('--font-text'), color: v('--color-text-primary') }}>
 
-      <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
+      <div style={{ maxWidth: v('--page-max-width') }}>
 
         <h1 style={{ fontSize: 20, fontWeight: 800, marginBottom: 4 }}>Meine Berechnungen</h1>
         <p style={{ fontSize: 13, color: v('--color-text-muted'), marginBottom: 20 }}>{userEmail}</p>

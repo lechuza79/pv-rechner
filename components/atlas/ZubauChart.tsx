@@ -35,9 +35,11 @@ export default function ZubauChart({
             <div
               key={r.year}
               title={
+                // Kleine Gemeinden bauen einzelne Anlagen zu — "1 neue Anlagen"
+                // ist derselbe Fehler wie eine falsche Einheit, nur in Worten.
                 partial
-                  ? `${r.year}: ${nf(r.count)} neue Anlagen bisher — Jahr läuft noch`
-                  : `${r.year}: ${nf(r.count)} neue Anlagen`
+                  ? `${r.year}: ${nf(r.count)} neue ${r.count === 1 ? "Anlage" : "Anlagen"} bisher — Jahr läuft noch`
+                  : `${r.year}: ${nf(r.count)} neue ${r.count === 1 ? "Anlage" : "Anlagen"}`
               }
               style={{ flex: 1, height: "100%", display: "flex", alignItems: "flex-end" }}
             >

@@ -11,6 +11,7 @@ import { DATA_SOURCES } from "../lib/data-sources";
 import { DataSourceNote } from "./PoweredBy";
 import { isEmbedContext } from "../lib/embed-context";
 import { v } from "../lib/theme";
+import RegionSearch from "./atlas/RegionSearch";
 
 // Tab order: aggregate first, then individual renewables, then storage (separated)
 const RENEWABLE_TRAEGER: { key: Energietraeger; label: string }[] = [
@@ -53,12 +54,24 @@ export type MastrHeroSectionProps = {
   initialTraeger?: Energietraeger;
   /** Called whenever the selected region changes (for URL sync, analytics, etc.) */
   onRegionChange?: (regionAgs: string | undefined) => void;
+  /**
+   * Sichtbaren Quell-Credit zeigen. Default true. Auf `false` NUR dort, wo eine
+   * umgebende Seite die Quelle bereits im Fuß trägt (einmal pro Seite reicht,
+   * dl-de/by-2-0). Der Credit bleibt trotzdem sichtbar, sobald das Widget
+   * eingebettet ist (Standalone-Kontext) — dann ersetzt kein Seitenfuß ihn.
+   */
+  showSource?: boolean;
 };
 
 const CHOROPLETH_DEFAULT: ChoroplethResp = { source: "", data_as_of: "", data: [] };
 const SUMMARY_DEFAULT: RegionSummary | null = null;
 
-export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onRegionChange }: MastrHeroSectionProps) {
+export function MastrHeroSection({
+  initialRegion,
+  initialTraeger = "gesamt",
+  onRegionChange,
+  showSource = true,
+}: MastrHeroSectionProps) {
   const [energietraeger, setEnergietraeger] = useState<Energietraeger>(initialTraeger);
   const [segment, setSegment] = useState<SegmentFilter>("alle");
   const [selectedAgs, setSelectedAgs] = useState<string | undefined>(
@@ -207,21 +220,24 @@ export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onR
         />
       )}
 
-      {selectedAgs && blAgs && (
+      {/* Navigations-Bar über der Karte — jetzt auch auf DE-Ebene (dort nur
+          „Deutschland"). Breadcrumb links, Regionssuche rechts. */}
+      <div className="mastr-mapbar">
         <MapBreadcrumb
+          selectedAgs={selectedAgs}
           isLk={isLkSelected}
           blAgs={blAgs}
-          blName={bundeslandByAgs(blAgs)?.name ?? blAgs}
+          blName={blAgs ? bundeslandByAgs(blAgs)?.name ?? blAgs : undefined}
           lkName={isLkSelected ? summary?.name ?? selectedName : undefined}
           onGo={goToLevel}
         />
-      )}
+        <RegionSearch onPick={handleSelect} />
+      </div>
 
       <div
         className={
-          "mastr-hero-grid" +
-          (energietraeger === "solar" ? " has-filter" : "") +
-          (selectedAgs ? " has-breadcrumb" : "")
+          "mastr-hero-grid has-breadcrumb" +
+          (energietraeger === "solar" ? " has-filter" : "")
         }
         style={{ marginTop: 16 }}
       >
@@ -232,7 +248,7 @@ export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onR
             values={values}
             selectedAgs={selectedAgs}
             onSelect={handleSelect}
-            valueLabel="MW"
+            valueLabel={energietraeger === "solar" ? "MWp" : "MW"}
             loading={choroplethLoading}
           />
           {isLkSelected && !isEmbed && (
@@ -264,24 +280,31 @@ export function MastrHeroSection({ initialRegion, initialTraeger = "gesamt", onR
           )}
         </aside>
       </div>
-      <div
-        style={{
-          fontSize: 10,
-          color: v("--color-text-faint"),
-          marginTop: 10,
-          textAlign: "right",
-        }}
-      >
-        <DataSourceNote
-          source={[
-            DATA_SOURCES.bkg,
-            DATA_SOURCES.mastr,
-            ...(!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle"
-              ? [DATA_SOURCES.energyCharts]
-              : []),
-          ]}
-        />
-      </div>
+      {/* Quell-Credit: sichtbar, AUSSER eine umgebende Seite trägt ihn schon
+          (showSource=false) UND wir sind nicht im Embed. Im Embed steht kein
+          Seitenfuß dahinter, deshalb zeigt das Widget die Quelle dort immer —
+          das ist der nachhaltige Teil (dl-de/by-2-0 verlangt Namensnennung pro
+          verteiltem Werk). */}
+      {(showSource || isEmbed) && (
+        <div
+          style={{
+            fontSize: 10,
+            color: v("--color-text-faint"),
+            marginTop: 10,
+            textAlign: "right",
+          }}
+        >
+          <DataSourceNote
+            source={[
+              DATA_SOURCES.bkg,
+              DATA_SOURCES.mastr,
+              ...(!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle"
+                ? [DATA_SOURCES.energyCharts]
+                : []),
+            ]}
+          />
+        </div>
+      )}
     </section>
   );
 }
@@ -482,7 +505,6 @@ function GemeindeHint({ kreisAgs, kreisName }: { kreisAgs: string; kreisName?: s
         color: v("--color-text-muted"),
       }}
     >
-      <span>Tippen Sie auf eine Gemeinde, um ihre Solar-Zahlen im Detail zu sehen.</span>
       <a
         href={`/api/atlas/goto?ags=${kreisAgs}`}
         style={{ color: v("--color-accent"), fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}
@@ -496,15 +518,18 @@ function GemeindeHint({ kreisAgs, kreisName }: { kreisAgs: string; kreisName?: s
 // Breadcrumb above the map: Deutschland › Bundesland › Landkreis. Each crumb
 // jumps to that level; the last (current) level carries an ✕ to go up one.
 function MapBreadcrumb({
+  selectedAgs,
   isLk,
   blAgs,
   blName,
   lkName,
   onGo,
 }: {
+  /** Aktuelle Ebene: undefined = Deutschland, sonst 2/5-stellige AGS. */
+  selectedAgs?: string;
   isLk: boolean;
-  blAgs: string;
-  blName: string;
+  blAgs?: string;
+  blName?: string;
   lkName?: string;
   onGo: (ags: string | undefined) => void;
 }) {
@@ -529,8 +554,17 @@ function MapBreadcrumb({
       </button>
     </span>
   );
+  // Deutschland-Ebene: nur der Wurzel-Krümel, ohne Link/Schließen — er ist die
+  // aktuelle Ebene, es gibt keine höhere.
+  if (!selectedAgs) {
+    return (
+      <nav aria-label="Navigation" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", minWidth: 0 }}>
+        <span style={{ ...current, gap: 0 }}>Deutschland</span>
+      </nav>
+    );
+  }
   return (
-    <nav aria-label="Navigation" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginTop: 14 }}>
+    <nav aria-label="Navigation" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", minWidth: 0 }}>
       <button style={link} onClick={() => onGo(undefined)}>Deutschland</button>
       <span style={sep}>›</span>
       {isLk ? (
@@ -540,7 +574,7 @@ function MapBreadcrumb({
           <Current label={lkName ?? "Landkreis"} up={blAgs} />
         </>
       ) : (
-        <Current label={blName} up={undefined} />
+        <Current label={blName ?? "Bundesland"} up={undefined} />
       )}
     </nav>
   );
@@ -574,6 +608,9 @@ function SummaryPanel({
   const traegerLabel = TRAEGER_DISPLAY[energietraeger];
   const segmentSuffix = segment !== "alle" ? ` · ${SEGMENT_DISPLAY[segment]}` : "";
 
+  // Photovoltaik wird in Peak-Leistung angegeben (kWp/MWp), Wind, Biomasse und
+  // Speicher in normaler Nennleistung — die Einheit folgt deshalb der Auswahl.
+  const peak = energietraeger === "solar" ? "p" : "";
   const totalMw = summary ? summary.total_kwp / 1000 : null;
   const totalCount = summary ? summary.total_count : null;
   const avgKwp = summary && summary.total_count > 0 ? summary.total_kwp / summary.total_count : null;
@@ -601,8 +638,8 @@ function SummaryPanel({
           value={
             totalMw !== null
               ? totalMw >= 1000
-                ? `${(totalMw / 1000).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW`
-                : `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW`
+                ? `${(totalMw / 1000).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} GW${peak}`
+                : `${totalMw.toLocaleString("de-DE", { maximumFractionDigits: 0 })} MW${peak}`
               : <LoadingDots />
           }
         />
@@ -612,7 +649,7 @@ function SummaryPanel({
         />
         <Kachel
           label="⌀ Größe"
-          value={avgKwp !== null ? `${avgKwp.toFixed(0)} kWp` : <LoadingDots />}
+          value={avgKwp !== null ? `${avgKwp.toFixed(0)} kW${peak}` : <LoadingDots />}
         />
       </div>
       {summary && energietraeger === "solar" && segment === "alle" && summary.by_segment.length > 1 && (

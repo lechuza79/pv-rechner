@@ -2,7 +2,7 @@
 // Used by getCssVariables() (injected in layout.tsx) and v() helper (for inline styles).
 // For whitelabeling: swap token values per tenant, UI updates automatically.
 //
-// v2: Consolidated from Figma design. See theme-v1.ts for previous token set.
+// v2: Consolidated from Figma design (the previous v1 token set has been removed).
 
 export const tokens = {
   // ─── Backgrounds (3) ────────────────────────────────────────────────────────
@@ -41,6 +41,16 @@ export const tokens = {
   '--color-negative': '#EF4444',        // Negative values (Kosten, Verluste)
   '--color-negative-dim': 'rgba(239,68,68,0.06)',  // Negative background
   '--color-negative-border': 'rgba(239,68,68,0.2)', // Negative border
+
+  // Dieselbe Semantik als LESBARER TEXT. Das Marken-Grün #00D950 ist eine
+  // Flächen- und Grafikfarbe: als 11-px-Text auf hellem Grund kommt es auf
+  // 1,79:1 und ist praktisch nicht lesbar (WCAG AA fordert 4,5:1) — dasselbe gilt
+  // fuer das Rot mit 3,54:1. Kleine farbige Zahlen (Tendenz-Tags, Deltas) nehmen
+  // deshalb diese Stufen; Flaechen, Balken und Chart-Linien behalten die
+  // Markenfarben. Gemessen nach WCAG 2.1 gegen --color-bg-muted:
+  //   positive-text #0C6E2F → 6,02:1 · negative-text #C81E1E → 5,40:1
+  '--color-positive-text': '#0C6E2F',
+  '--color-negative-text': '#C81E1E',
 
   // ─── Chart (4) ─────────────────────────────────────────────────────────────
   '--color-chart-positive-bg': 'rgba(0,217,80,0.08)',
@@ -130,6 +140,14 @@ export const tokens = {
   '--page-max-width': '480px',       // Rechner/Tools — kompakte, fokussierte Spalte
   '--content-max-width': '640px',    // Redaktionelle Lese-/Textseiten (Ratgeber, Methodik, …)
   '--header-max-width': '1040px',
+
+  // Redaktionelle Kopf-Luft NUR auf Lese-/Textseiten — zusätzlich zum zentralen
+  // headerContentGap (48). Bewusst mehr als bei Tool-/Datenseiten, damit lange
+  // Texte oben atmen (redaktionelles Muster): 48 + 48 = 96px über der
+  // Überschrift. EIN Wert statt in jeder Seite getippt; auf schmalen Schirmen
+  // kleiner (Override in globalStyles → 24px, Total 72px), weil der große
+  // Abstand dort zu viel leeren Raum über der Überschrift lässt.
+  '--content-lede-top': '48px',
 } as const;
 
 export type TokenName = keyof typeof tokens;
@@ -200,6 +218,19 @@ export function pad(y: keyof typeof space, x?: keyof typeof space): string {
   return x === undefined ? `${space[y]}px` : `${space[y]}px ${space[x]}px`;
 }
 
+/**
+ * Abstand Header → Seiteninhalt. EINE Quelle.
+ *
+ * Früher setzte ihn jede Seite selbst als oberes Padding auf ihrem Wurzel-
+ * Container (meist 20px), plus der Header brachte einen `marginBottom:20` mit —
+ * zusammen ~40px, aber überall leicht unterschiedlich (24/40/0), weil jede Seite
+ * ihren eigenen Wert tippte. Jetzt sitzt der Abstand zentral im (site)-Layout
+ * unter dem Header; keine Seite setzt mehr eigenes Top-Padding. Skalenwert
+ * (space.huge = 48) — bewusst großzügig, damit die Rechner-Hero-Fragen oben Luft
+ * haben. Lese-/Textseiten legen darüber noch --content-lede-top drauf.
+ */
+export const headerContentGap = space.huge; // 48
+
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
 export const v = (name: TokenName): string => `var(${name})`;
 
@@ -235,6 +266,10 @@ const darkTokens: Partial<Record<TokenName, string>> = {
   '--color-accent-dark': '#8FBBF7',                 // "hover / accent text" → lighter on dark
   '--color-accent-light': '#3E74CC',
   '--color-positive': '#2BE06E',
+  // Auf dunklem Grund sind die Markenfarben selbst schon kontraststark
+  // (9,24:1 bzw. 5,6:1) — Text- und Flaechenfarbe fallen hier zusammen.
+  '--color-positive-text': '#2BE06E',
+  '--color-negative-text': '#F26D6D',
   '--color-negative': '#F26D6D',
   '--color-negative-dim': 'rgba(242,109,109,0.12)',
   '--color-negative-border': 'rgba(242,109,109,0.32)',
@@ -268,6 +303,8 @@ const duskTokens: Partial<Record<TokenName, string>> = {
   '--color-accent-dark': '#A9C4F5',
   '--color-accent-light': '#5A7FC8',
   '--color-positive': '#3BD97A',
+  '--color-positive-text': '#3BD97A',                // 7,71:1 auf dem Daemmerungs-Grund
+  '--color-negative-text': '#F07D72',
   '--color-negative': '#F07D72',
   '--color-negative-dim': 'rgba(240,125,114,0.12)',
   '--color-negative-border': 'rgba(240,125,114,0.30)',
@@ -323,6 +360,11 @@ const overcastTokens: Partial<Record<TokenName, string>> = {
   // luminance contrast is still below WCAG on grey either way; real
   // accessibility is a separate pass.)
   '--color-positive': '#00BD45',
+  // Auf diesem mittleren Grau ist der Textbedarf am groessten: selbst das
+  // tiefere #00BD45 kommt nur auf 1,29:1. Gemessen gegen bg-muted #B4BAC3:
+  //   positive-text #0A4A20 → 5,34:1 · negative-text #8A1212 → 4,94:1
+  '--color-positive-text': '#0A4A20',
+  '--color-negative-text': '#8A1212',
 };
 
 type Tokens = Partial<Record<TokenName, string>>;
@@ -398,10 +440,27 @@ export function getThemeOverrides(): string {
     .join('\n');
 }
 
+/** Number of brightness stages (s0 … s6). */
+export const STAGE_COUNT = STAGE_TOKENS.length + 1; // + s6 (the base)
+
+/**
+ * The effective token values a stage resolves to from the design system alone
+ * (base ⊕ the stage's own overrides), BEFORE any admin theming overlay. s6 is
+ * the base. Used by the admin theming preview to render any stage in isolation,
+ * and as the "default" a per-stage admin override falls back to.
+ */
+export function stageDefaults(i: number): Record<TokenName, string> {
+  return { ...base, ...(STAGE_TOKENS[i] ?? {}) };
+}
+
 /** Global reset + animations (shared across all pages) */
 export const globalStyles = `
   html{scroll-behavior:smooth}
   *{box-sizing:border-box;margin:0;padding:0}
+  /* Redaktionelle Kopf-Luft (Lese-Seiten) auf schmalen Schirmen zurücknehmen:
+     60px über der Überschrift wirken auf dem Handy wie ein Fehler, auf dem
+     Desktop wie gewollte Ruhe. Siehe --content-lede-top. */
+  @media (max-width:640px){:root{--content-lede-top:24px}}
   /* Smooth theme cross-fade — only enabled while a theme switch is in flight
      (ThemeController toggles .theme-anim on <html>), so normal hovers stay
      instant and the initial (boot-script) theme paints without animating.
@@ -444,6 +503,10 @@ export const globalStyles = `
   .sc-live-dot::before,.sc-live-dot::after{content:'';position:absolute;top:50%;left:50%;width:100%;height:100%;border-radius:50%;background:var(--color-highlight);pointer-events:none;animation:sc-live-ring 1.8s ease-out infinite}
   .sc-live-dot::after{animation-delay:.9s}
   .sc-live-bar{animation:sc-live-bar 1.8s ease-in-out infinite}
+  /* Navigations-Bar über der Karte: Breadcrumb links, Regionssuche rechts. wrap,
+     damit auf schmalen Schirmen mit langem Breadcrumb + offener Suche nichts
+     überläuft (die Suche rutscht dann in die nächste Zeile). */
+  .mastr-mapbar{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;margin-top:12px;min-width:0;flex-wrap:wrap}
   .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,430px) 300px;gap:48px;align-items:start;justify-content:center}
   .mastr-hero-aside{display:grid;gap:12px}
   .mastr-kpis{display:grid;gap:10px}
@@ -473,6 +536,117 @@ export const globalStyles = `
   .footer-cols>div{padding:0 22px}
   .footer-cols>div+div{border-left:1px solid var(--color-border)}
   @media (max-width:640px){.footer-cols{grid-template-columns:1fr;max-width:none;gap:20px}.footer-cols>div{padding:0}.footer-cols>div+div{border-left:none}}
+  /* KPI-Reihe des Solar-Atlas: sechs Kacheln nebeneinander, auf schmalen
+     Schirmen ein Wisch-Slider (Embla). Der Umschaltpunkt steht hier UND als
+     Embla-Breakpoint in AtlasKpiRow — beide bei 760px, sonst wischt der Desktop
+     an einem Grid vorbei. */
+  /* KPI-Reihe des Solar-Atlas: sechs Kacheln nebeneinander, auf schmalen
+     Schirmen eine wischbare Leiste (Bordmittel, keine Slider-Bibliothek). */
+  /* Spaltenzahl als Variable: die Kennzahlen-Reihe hat sechs Kacheln, der
+     Groessenklassen-Vergleich vier. Eine Regel mit --kpi-cols statt zwei
+     Klassen, die auseinanderlaufen koennen. */
+  .kpi-reihe{display:grid;grid-template-columns:repeat(var(--kpi-cols,6),minmax(0,1fr));gap:8px}
+  /* Fokusrahmen NACH INNEN: ein aeusserer Ring wuerde vom Scrollfenster
+     abgeschnitten und haette Polsterung gebraucht, die die Ruheposition um zwei
+     Pixel verschiebt (und damit den linken Verlauf flackern laesst). */
+  .kpi-reihe:focus-visible{outline:2px solid var(--color-accent);outline-offset:-2px;border-radius:12px}
+  @media (max-width:760px){
+    .kpi-reihe{
+      display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;
+      /* Rastung: jede Kachel kommt links zum Stehen. mandatory statt proximity,
+         damit nie eine halbe Kachel stehen bleibt. */
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .kpi-reihe::-webkit-scrollbar{display:none}
+    /* 44 % laesst die dritte Kachel angeschnitten stehen — das ist der Hinweis,
+       dass es weitergeht. Glatte Werte (50 %) wuerden genau das verstecken. */
+    .kpi-reihe .kpi-kachel{flex:0 0 44%;min-width:0;scroll-snap-align:start}
+  }
+  @media (max-width:420px){.kpi-reihe .kpi-kachel{flex:0 0 58%}}
+  @media (prefers-reduced-motion:reduce){.kpi-reihe{scroll-behavior:auto}}
+
+  /* Gruppierte Kennzahlen (Gemeinde-Seite): je Gruppe eine Box, Boxen
+     nebeneinander. Spaltenbreite folgt der Kennzahl-Zahl (--kpi-group-cols,
+     z. B. "4fr 2fr"); auf schmalen Schirmen stapeln die Boxen. */
+  /* align-items:stretch — beide Gruppen-Boxen gleich hoch (die hoehere zieht die
+     andere mit). Der Flip-Wrapper reicht die Hoehe per height:100% bis zur grauen
+     Flaeche durch (siehe GroupBox). */
+  .kpi-groups{display:grid;grid-template-columns:var(--kpi-group-cols,1fr);gap:12px;align-items:stretch;animation:fu 0.28s ease-out}
+  /* Erster Render-Frame auf dem Handy (bevor der isMobile-Hook auf die Wischzeile
+     umschaltet): Boxen stapeln statt ueber den schmalen Viewport zu laufen. */
+  @media (max-width:640px){.kpi-groups{grid-template-columns:1fr;gap:8px}}
+  /* Kennzahlen innerhalb einer Box, gleich breite Spalten (--kpi-tiles). Die
+     Trennlinien entstehen aus 1px gap auf border-Farbe, den die Zellen bis auf
+     den Spalt ueberdecken — so bleibt das Liniengitter korrekt, egal ob die
+     Zellen in einer Reihe stehen (Desktop) oder auf schmalen Schirmen zu 2x2
+     umbrechen. border-left je Zelle wuerde beim Umbruch an falscher Stelle
+     sitzen. */
+  .kpi-tilerow{display:grid;grid-template-columns:repeat(var(--kpi-tiles,1),minmax(0,1fr));gap:1px;background:var(--color-border)}
+  .kpi-cell{min-width:0;background:var(--color-bg-muted);padding:12px}
+  /* Wert + Einheit als Klassen, damit die Schrift auf schmalen Schirmen
+     schrumpfen kann (inline schluege jede Media Query). Einheit heller, eigene
+     Zeile — immer vorhanden (leer bei einheitenlosen Kacheln), damit die Tendenz
+     ueberall gleich sitzt. Zahlen brechen NIE um (nowrap). */
+  .kpi-val{font-family:var(--font-mono);font-size:22px;font-weight:700;line-height:1.1;white-space:nowrap}
+  .kpi-unit{font-family:var(--font-mono);font-size:var(--font-size-small);font-weight:600;color:var(--color-text-muted);margin-top:2px}
+  /* Der EINE Abstand: zwischen Zahlenblock und Tendenz. */
+  .kpi-tend{margin-top:10px}
+  /* Titellose Einzelgruppe (Kreis-/Bundesland): schlichte Kachelreihe. */
+  .kpi-plainrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;animation:fu 0.28s ease-out}
+
+  /* Handy: EINE wischbare Zeile ueber alle Gruppen (MobileKpiRow). Der Container
+     scrollt horizontal — gewischt wird die ganze Zeile, die grauen Kacheln sind
+     einzeln (kein umschliessender Kasten). Jede Gruppe: Titel ueber ihren Kacheln. */
+  .kpi-mrow{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;animation:fu 0.28s ease-out}
+  .kpi-mrow::-webkit-scrollbar{display:none}
+  .kpi-mgroup{flex:0 0 auto;display:flex;flex-direction:column;gap:6px}
+  .kpi-mtitle{font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--color-text-secondary)}
+  .kpi-mcards{display:flex;gap:8px}
+  .kpi-mcard{flex:0 0 auto;min-width:120px;background:var(--color-bg-muted);border-radius:var(--radius-md);padding:12px;scroll-snap-align:start}
+  .kpi-mnote{font-size:12px;color:var(--color-text-secondary);line-height:1.5;max-width:260px}
+
+  /* Breadcrumb: Kruemel-Spur links (.crumb-trail), optionale Suche rechts
+     (.crumb-right). Auf breiten Schirmen bricht die Spur um (genug Platz), auf
+     schmalen EINZEILIG — die mittleren Begriffe schrumpfen mit
+     Auslassungspunkten, erster und letzter bleiben ganz; die Suche rechts bleibt. */
+  .crumb-trail{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
+  .crumb-right{flex-shrink:0}
+  @media (max-width:640px){
+    .crumb-trail{flex-wrap:nowrap;overflow:hidden}
+    .crumb-item{min-width:0}
+    .crumb-item:first-child,.crumb-item:last-child{flex-shrink:0}
+    .crumb-label{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  }
+
+  /* Intro-Absatz: auf breiten Schirmen voll, auf schmalen eingeklappt mit weichem
+     Verlauf und „Weiterlesen". Voller Text bleibt im DOM (SEO), nur per Hoehe
+     beschnitten. */
+  .intro-clamp{margin:0 0 48px}
+  .intro-text{font-size:15px;line-height:1.6;color:var(--color-text-secondary);margin:0}
+  .intro-more{display:none;background:none;border:none;padding:0;margin-top:10px;font-family:inherit;font-size:14px;font-weight:700;color:var(--color-accent);cursor:pointer}
+  @media (max-width:640px){
+    .intro-clamp:not(.intro-open) .intro-text{
+      max-height:132px;overflow:hidden;
+      -webkit-mask-image:linear-gradient(180deg,#000 62%,transparent);
+      mask-image:linear-gradient(180deg,#000 62%,transparent);
+    }
+    .intro-clamp:not(.intro-open) .intro-more{display:inline-block}
+  }
+
+  /* Ranglisten-Kopf: Titel + Kennzahl-Umschalter. Auf breiten Schirmen
+     nebeneinander (der Umschalter hat feste Breite, siehe pickerLabelStack, damit
+     der Titel-Platz konstant bleibt und nichts springt); auf schmalen Schirmen
+     gestapelt — Titel volle Breite (2 statt 3 Zeilen), Umschalter darunter. */
+  .rank-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .rank-picker{display:flex;align-items:stretch;flex:0 0 auto;max-width:58%}
+  @media (max-width:640px){
+    .rank-head{flex-direction:column;align-items:stretch;gap:8px}
+    .rank-picker{align-self:flex-start;max-width:none}
+  }
+
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
   .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
+
 `;

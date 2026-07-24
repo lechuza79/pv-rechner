@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { supabase } from "./supabase-server";
 import { PLZ_BL } from "./plz-bundesland";
 import { NATIONAL_AVG_YIELD } from "./constants";
@@ -22,7 +23,7 @@ export type PvgisYield = {
   source: "cache" | "pvgis" | "fallback";
 };
 
-export async function getPvgisYield({
+async function getPvgisYieldUncached({
   lat,
   lon,
   plzPrefix,
@@ -92,3 +93,12 @@ export async function getPvgisYield({
     return { annual: FALLBACK[bl] || NATIONAL_AVG_YIELD, monthly: null, source: "fallback" };
   }
 }
+
+// Gecacht, damit aufrufende Server Components (Gemeinde-Detailseite) statisch/ISR
+// bleiben: der PVGIS-`fetch` trägt ein AbortSignal und die Cache-Befüllung ist ein
+// Supabase-`upsert` (POST) — beides ist für Next nicht cachebar und würde die
+// Route sonst auf „dynamisch" kippen. Der Standort-Ertrag ist praktisch statisch
+// (eigener Supabase-Cache dahinter), daher langer revalidate.
+export const getPvgisYield = unstable_cache(getPvgisYieldUncached, ["pvgis-yield-v1"], {
+  revalidate: 86400,
+});

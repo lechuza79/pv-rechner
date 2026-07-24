@@ -6,20 +6,14 @@ import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
+import { fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "../../../../lib/atlas-format";
 
 const BASE = "https://solar-check.io";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
-function fmtLeistung(kwp: number): string {
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(kwp)} kW`;
-}
-
-function fmtKwh(kwh: number): string {
-  if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
-  return `${nf(kwh)} kWh`;
-}
+const fmtLeistung = fmtPvLeistung;
+const fmtKwh = fmtSpeicherKwh;
 
 export type GemeindeWidgetProps = {
   name?: string;
@@ -84,8 +78,11 @@ export default function GemeindeSolarWidget(props: GemeindeWidgetProps) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(88px, 1fr))", gap: 8 }}>
         <Kachel label="Anlagen" value={nf(count)} />
         <Kachel label="Installiert" value={fmtLeistung(kwp)} />
-        {wPerCapitaDach !== null && <Kachel label="Leistung je Einwohner" value={`${nf(wPerCapitaDach)} W`} hint="Dach" />}
-        {speicherKwh > 0 && <Kachel label="Speicher" value={fmtKwh(speicherKwh)} />}
+        {wPerCapitaDach !== null && <Kachel label="Leistung je Einwohner" value={fmtWattProKopf(wPerCapitaDach)} hint="Dach" />}
+        {/* „Batteriespeicher", nicht „Speicher": der Wert zählt nur Batterien, wie
+            auf der Atlas-Seite. Ein Pumpspeicherwerk im Ort steckt nicht darin —
+            das Widget darf nicht mehr behaupten als die Seite. */}
+        {speicherKwh > 0 && <Kachel label="Batteriespeicher" value={fmtKwh(speicherKwh)} />}
       </div>
 
       <div style={{ marginTop: 12 }}>

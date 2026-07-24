@@ -66,3 +66,27 @@ jobs:
             scripts/.cache/bnetza/resolved.json
           if-no-files-found: warn
           retention-days: 90
+
+  # Nach dem Datenlauf alle Atlas-Gemeinde- (und Kreis-)Seiten aufwärmen: die
+  # ISR-Seiten sind jetzt stale und rendern beim nächsten Zugriff neu — dieser
+  # Crawl löst das gedrosselt aus, damit der erste echte Besucher eine gecachte
+  # Seite bekommt statt den Kaltrender zu zahlen. Läuft NUR bei erfolgreichem
+  # refresh; die Drosselung (Conc/Delay) schont die Supabase-Instanz.
+  warm:
+    needs: refresh
+    runs-on: ubuntu-latest
+    # ~11k Gemeinden gedrosselt (~2 req/s) = gut 1,5–2 h; großzügig gedeckelt.
+    timeout-minutes: 180
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci
+      - name: Warm atlas pages (throttled)
+        run: npm run atlas:warm

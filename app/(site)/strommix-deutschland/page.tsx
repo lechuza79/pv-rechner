@@ -21,7 +21,7 @@ export default function EnergiePage() {
         fontFamily: v("--font-text"),
         color: v("--color-text-primary"),
         minHeight: "100vh",
-        padding: "20px 16px",
+        padding: "0 16px 20px",
       }}
     >
       <Suspense fallback={null}>

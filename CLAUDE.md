@@ -494,6 +494,35 @@ pv-rechner/
 | `InlineEdit` | `components/InlineEdit.tsx` | Click-to-Edit Zahlenwert im Ergebnis |
 | `Chart` | `components/Chart.tsx` | SVG-Amortisationskurve (3 Szenarien, kein D3) |
 
+## Zahlen und Einheiten — BLOCKER (schwerster Fehler im Projekt)
+
+**Eine falsche Einheit, eine falsche Zahl oder eine Aussage, die nicht zur Zahl daneben passt, ist der schwerste Fehler, den dieses Projekt machen kann — schwerer als ein Layout-Bug und schwerer als ein Ausfall.** Ein Ausfall fällt sofort auf und ist in Minuten behoben. Eine falsche Einheit fällt niemandem auf, steht monatelang auf jeder Seite und zerstört genau das, womit die Seite wirbt: dass hier ehrlich gerechnet wird. Wer einmal eine falsche Zahl gesehen hat, glaubt auch der richtigen nicht mehr.
+
+**Einheiten haben genau eine Quelle und werden NIE handgeschrieben.** Keine Einheit direkt an eine Zahl kleben (`${wert} kW`), sondern die Funktion aufrufen. Für den Atlas ist das `lib/atlas-format.ts`; für Rechner-Werte die jeweilige Formatier-Funktion des Moduls. Eine zweite Kopie eines Formatters ist ein Fehler, kein Duplikat.
+
+| Größe | Einheit | Funktion |
+|---|---|---|
+| Installierte PV-Leistung | **kWp / MWp / GWp** (Peak!) | `fmtPvLeistung` |
+| PV-Leistung je Einwohner | **Wp** | `fmtWattProKopf` |
+| Momentanleistung (Live-Simulation, Erzeugung) | **W / kW / MW / GW** | eigene Chart-Formatter |
+| Technologie-Mix (Solar + Wind + Biomasse) | **kW / MW** — kein Peak | widget-eigen |
+| Speicherkapazität | **kWh / MWh / GWh** | `fmtSpeicherKwh` |
+| Mittlere Batteriegröße | **kWh, 1 Nachkommastelle** | `fmtBatterieMittel` |
+| Speicherdichte / Standort-Ertrag | **kWh je kWp Dach / kWh/kWp** | `fmtSpeicherJeKwp`, `fmtErtragProKwp` |
+
+**Zahl und Einheit: eine Quelle, aber getrennt abrufbar.** Jede Größe hat ein `…Teile()` (liefert `{ value, unit }`) und ein `fmt…()` (fertiger String für Fließtext). Wo eine Zahl groß gesetzt wird — Kacheln, Donut-Mitte, Hero-Werte —, wird **immer** `…Teile()` benutzt: der Zahlenwert trägt die Kachel, die Einheit steht kleiner daneben. **Eine Vereinheitlichung im Code darf die Darstellung nicht mit vereinheitlichen** — beim Zusammenführen der sechs Formatter-Kopien ging genau diese Staffelung verloren, und die Einheit schrie plötzlich in Kachelgröße mit.
+
+**Erzwungen von `lib/__tests__/einheiten-waechter.test.ts`:** der Test schlägt an, sobald in Atlas- oder Widget-Code wieder eine Einheit an eine Zahl geklebt wird. Ausnahmen kommen mit Begründung in die Liste im Test — die Regex aufweichen ist nie die Lösung. `lib/__tests__/atlas-format.test.ts` nagelt zusätzlich die Umschalt-Schwellen fest.
+
+**Aussagen zählen wie Zahlen.** Vor dem Merge jeder Oberfläche mit Zahlen prüfen:
+1. **Sagt die Beschriftung dasselbe, was die Zahl misst?** („513 Anlagen" über einer Kapazität, die nur 512 Batterien meint; „Speicher" über einem Wert, der nur Batterien zählt; „je kWp", wenn der Nenner nur Dachanlagen sind.)
+2. **Stimmt der Nenner?** Jede Pro-Kopf-, Je-kWp- und Durchschnittszahl trägt ihren Nenner sichtbar.
+3. **Trägt ein Mittelwert überhaupt?** Bei sehr kleinen Stückzahlen oder gemischten Grundgesamtheiten (Haushalt + Gewerbe) entweder unterdrücken oder dranschreiben, was gemischt ist.
+4. **Grammatik ist Teil der Richtigkeit** — „1 neue Anlagen" ist derselbe Fehler in Worten. Singular/Plural immer mitbauen.
+5. **Weggelassenes sichtbar erklären.** Was bewusst nicht in einer Zahl steckt (z. B. Pumpspeicher in der Speicher-Kachel), gehört sichtbar an die Zahl — nicht nur in einen Code-Kommentar.
+
+**Bei Verdacht: messen, nicht schätzen.** Eine aggregierte Abfrage gegen die echten Daten kostet Sekunden und ist die einzige Art, eine Zahl zu belegen (DB dabei schonen, siehe unten).
+
 ## Geteilte Rechen-Basis (alle Rechner) — BLOCKER
 
 **Alle Rechner (PV, Wärmepumpe, Balkon, Klima, Simulation) rechnen auf derselben Grundlage.** Bevor du für einen Rechner eine Annahme triffst oder eine Konstante setzt: **prüfen, ob es die Größe hier schon gibt.** Eigene Fundamente sind der teuerste Fehler im Projekt — sie fallen erst auf, wenn die Ergebnisse zwischen den Rechnern auseinanderlaufen.
@@ -595,8 +624,19 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 
 **CSS Custom Properties System:** Alle Design-Tokens in `lib/theme.ts` definiert, als `:root` CSS-Variablen in `layout.tsx` injiziert. Inline-Styles referenzieren Tokens via `v('--color-accent')` Helper. Für Whitelabeling: anderes Token-Set laden (z.B. `[data-theme="solateur-x"]` Overrides).
 
+**Farb-Single-Source — BLOCKER:** Kein Grün (und generell keine Design-Farbe) wird als Hex-Literal getippt. `lib/theme.ts` ist die **einzige** Quelle. In CSS-Kontexten `v('--token')`; in CSS-losen Kontexten (OG-Bild via satori, Preis-Mail, Chart-Szenario-Configs) `tokens['--token']` importieren — nie neu tippen. Grund (Audit Juli 2026): Grün war an ~20 Stellen kopiert (u. a. der Ausreißer `#00A03C` nur in der Preis-Mail), driftete gegeneinander und ließ sich nicht zentral steuern. Bewusst fix bleibt einzig das Ampel-Grün der EE-Ampel (`ee-ampel/client.tsx`, per Konvention semantisch fest, darf dem Theme NICHT folgen). `lib/theme-v1.ts` (Alt-Token-Set) wurde gelöscht.
+
+**Admin-Theming pro Helligkeitsstufe (`/admin/theme` → „Signalfarben-Theming"):** Das 7-stufige Tageslicht-Theme (s0 Nacht … s6 volle Sonne, `lib/theme.ts` + `theme-schedule.ts`) bleibt die berechnete Grundlage. Darüber liegt eine **Admin-Overlay-Schicht**: jede Signalfarbe (Positiv-Rolle Grün + **Negativ-Rolle Rot** + Energie-Rolle, Katalog `THEME_TOKENS` in `lib/theme-overrides.ts`) ist **pro Stufe einzeln** editierbar. Gespeicherte Overrides (Supabase `theme_overrides`, Single-Row-JSONB) werden im Site-Layout als zusätzliche `:root[data-theme="sN"]`-Blöcke **nach** Basis + Stufen-CSS injiziert (gewinnen per Source-Order, theme.ts bleibt unangetastet). Read gecacht (`getSavedThemeOverrides`, `unstable_cache` + Tag → 1 DB-Read pro Cache-Fenster, statische Seiten bleiben statisch), Refresh sofort via `revalidateTag` beim Speichern (`saveThemeOverrides`). Editor `app/(site)/admin/theme/GreenThemingEditor.tsx`: Stufen-Wähler → Live-Vorschau der Shades im echten Kontext (Rendite/Ersparnis-Kachel, Amortisationskurve, Energie-Strommix-Balken, **Tendenz-Badges** aus dem Solar-Atlas) in der gewählten Stufe + Farbregler pro Token. Save = admin-guarded `POST /api/theme` (sanitisiert: nur bekannte Tokens, nur Hex/rgba — der Wert wird CSS im `<head>`). Tabelle anlegen: `GET /api/theme/setup` (CRON_SECRET). Sichtbare UI folgt sofort; abgeleitete Bilder (OG, Mail, Embeds) ziehen beim nächsten Aufbau nach.
+
+**Admin-Backend (`/admin`):** Geschützte Übersicht (gleicher `ADMIN_EMAILS`-Guard) mit Kacheln zu den internen Views (Grün-Theming, Marktpreise) — neue Admin-Seiten hier als Kachel ergänzen. Erreichbar über einen **„Admin"-Eintrag im Header**, der nur eingeloggten Admins erscheint. Die Admin-Erkennung läuft **client-seitig** über `useIsAdmin` (`lib/auth.ts`) → `GET /api/admin/status` (nur für eingeloggte Nutzer, pro Session gecacht), damit die öffentlichen Seiten **statisch bleiben** und die Admin-Mail-Liste nicht in den Browser wandert — bewusst NICHT im Layout auf `getUser()` prüfen (das würde jede Seite dynamisch machen).
+
 **Abstands-Skala (`space` + `pad()` in `lib/theme.ts`):** Zahlen statt CSS-Variablen — wie `iconSizes`, weil Abstände in Inline-Styles stehen (`gap: space.md`, `padding: pad("lg", "xl")`). Stufen: 2 · 4 · 6 · 8 · 12 · 16 · 24 · 32 · 48. **10, 14, 18 und 28 gibt es bewusst nicht** — sie waren Drift, keine Absicht; wer sie brauchte, entscheidet sich sichtbar für die Stufe darunter oder darüber. Neue Komponenten setzen Abstände **nur** aus der Skala.
 *Migrationsstand:* umgestellt sind Solar-Atlas-Gemeindeseite, Kommunen-Box + Kontakt-Einstieg, `Modal`, `ContactForm`/`ContactPerson`, `AtlasKpiRow`. Der Rest (Rechner-Flows, Energie-Seiten, Embed-Widgets) ist noch handgesetzt und wird stückweise nachgezogen — bewusst nicht in einem Rutsch, weil jede Rundung eine sichtbare Änderung ist.
+
+**Header→Content-Abstand (`headerContentGap` + `--content-lede-top` in `lib/theme.ts`) — BLOCKER:** Der Abstand zwischen Header und Seiteninhalt kommt aus **einer** Quelle, nicht mehr aus jeder Seite einzeln. Früher brachte der Header einen `marginBottom:20` mit und **jede** Seite legte zusätzlich eigenes Top-Padding drauf (20/24/40/0 + innere Hero-`paddingTop`) — projektweit driftend, sichtbar 32–108px. Jetzt:
+- **`headerContentGap`** (= `space.huge`, 48px) sitzt als unteres Padding des Header-Wrappers im `app/(site)/layout.tsx`. Der Header hat **kein** `marginBottom` mehr, und **keine** (site)-Seite setzt eigenes Top-Padding — Wurzel-Container tragen nur noch horizontales Gutter (16px) + Bottom. Gilt für alle Tool-/Daten-Seiten (Rechner, Startseite, Strommix, Atlas, Förderung, Simulation, …) einheitlich, Desktop **und** Mobile.
+- **Lese-/Textseiten** (Ratgeber, Methodik, Glossar, Impressum, Datenschutz, Kontakt, Datenstand, `lohnt-sich-*`, Atomstrom, Nutzungsbedingungen) legen über die Basis noch `--content-lede-top` (Token, Desktop 48px → Total 96px; auf ≤640px per Media-Query 24px → Total 72px). Das ist die einzige zulässige Extra-Kopf-Luft und lebt ausschließlich in diesem Token, nicht als handgetippter `paddingTop` in den Seiten.
+- **Neue (site)-Seite:** KEIN eigenes Top-Padding am Wurzel-Container setzen (der Gap kommt zentral). Lese-Seite → inneren Text-Wrapper mit `paddingTop: "var(--content-lede-top)"` versehen. Innere Hero-/Titel-Wrapper bekommen **kein** eigenes `paddingTop` (war die alte Drift-Quelle).
 
 ## SEO-Strategie
 

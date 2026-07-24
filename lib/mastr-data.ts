@@ -560,10 +560,14 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
       speicherKwp += kwp;
       const kwh = Number(r.kwh);
       if (r.segment.startsWith("batterie")) batterieKwh += kwh;
+      // Kapazität je Bauform vollständig mitführen, auch für Pumpspeicher: die
+      // Kachel filtert später selbst (nur Batterien), aber die Zeile darunter
+      // nennt das Pumpspeicherwerk mit seiner echten Zahl. Wurde die kWh schon
+      // hier verworfen, stand dort "0 kWh" — die Zahl war zweimal versteckt.
       const sp = (speicherSegBuckets[r.segment] ??= { segment: r.segment, count: 0, kwp: 0, kwh: 0 });
       sp.count += count;
       sp.kwp += kwp;
-      if (r.segment.startsWith("batterie")) sp.kwh += kwh;
+      sp.kwh += kwh;
       continue;
     }
     // Andere Erzeuger (Wind/Biomasse/Wasser) getrennt sammeln — NICHT als Solar

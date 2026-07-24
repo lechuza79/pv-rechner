@@ -37,9 +37,9 @@ const S = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: "20px 16px",
+    padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: 60 },
+  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   back: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
@@ -405,6 +405,16 @@ export default async function DatenstandPage() {
           intro="Der Bestand an Solaranlagen je Bundesland, Landkreis und Gemeinde stammt aus dem Marktstammdatenregister. Die Umrisse auf der Karte sind amtliche Verwaltungsgebiete, für das Web vereinfacht."
           rows={[
             { label: "Anlagenbestand (Anzahl & Leistung)", value: "Marktstammdatenregister der Bundesnetzagentur, je Gemeinde aggregiert" },
+            {
+              label: "Speicherkapazität",
+              value:
+                "Zählt ausschließlich Batteriespeicher — Hausbatterien und gewerbliche Batterien. Pumpspeicherwerke und Speicher anderer Bauart bleiben draußen, weil ein Kraftwerk mit mehreren hundert Megawattstunden neben Hausbatterien von je rund 10 Kilowattstunden jede Vergleichszahl unbrauchbar macht. Steht so ein Speicher in der Gemeinde, weisen wir ihn mit seiner echten Zahl in einer eigenen Zeile unter den Kacheln aus — er fehlt also nicht, er wird nur nicht mit den Batterien verrechnet.",
+            },
+            {
+              label: "Zahl der Speicher",
+              value:
+                "Die Anzahl unter der Kachel zählt dieselben Anlagen wie die Kapazität, also nur Batterien. Ranglisten sortieren ebenfalls nach Batteriekapazität.",
+            },
             { label: "Kartenumrisse Bundesländer & Kreise", value: "BKG, Verwaltungsgebiete 1:2.500.000 (VG2500)" },
             { label: "Kartenumrisse Gemeinden", value: "BKG, Verwaltungsgebiete 1:250.000 (VG250), ~11.000 Gemeinden, je Landkreis nachgeladen" },
           ]}

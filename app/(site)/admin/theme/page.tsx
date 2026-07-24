@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "../../../../lib/supabase-server-component";
+import { getSavedThemeOverrides } from "../../../../lib/theme-overrides-data";
 import ThemeClient from "./client";
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean);
@@ -17,5 +18,6 @@ export default async function ThemePage() {
     redirect("/");
   }
 
-  return <ThemeClient />;
+  const overrides = await getSavedThemeOverrides();
+  return <ThemeClient overrides={overrides} />;
 }

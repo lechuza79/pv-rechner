@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
-import { v } from "../../../../lib/theme";
+import RegionSearch from "../../../../components/atlas/RegionSearch";
+import { v, space, pad } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../lib/json-ld";
 import { atlasIsIndexable, atlasRobots } from "../../../../lib/atlas-index";
@@ -21,20 +22,41 @@ import {
   currentYear,
   type AtlasRegion,
 } from "../../../../lib/atlas";
+import { fmtPvLeistung as fmtLeistung, pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
+import { DATA_SOURCES } from "../../../../lib/data-sources";
 
 export const revalidate = 3600;
+// Zwei Ziele:
+// 1) Ohne generateStaticParams behandelt Next die dynamische Route als voll
+//    dynamisch (no-store). Mit ihr wird sie ISR (s-maxage=3600).
+// 2) Die INDEXIERTEN Ebenen (DE + Bundesländer, siehe lib/atlas-index.ts) werden
+//    beim Build vorgerendert → statisch, KEIN Kaltrender, crawl-freundlich.
+//    Kreise/Gemeinden sind noindex + zu zahlreich → bleiben on-demand ISR.
+//    Möglich seit mastr_children über den Rollup läuft (~0,1s statt >8s), sonst
+//    liefen die 17 Parallel-Renders in den DB-Timeout. Slugs aus der DB (16 Zeilen).
+export async function generateStaticParams() {
+  try {
+    const { supabase } = await import("../../../../lib/supabase-server");
+    if (!supabase) return [{ pfad: [] as string[] }];
+    const { data } = await supabase
+      .from("mastr_regions")
+      .select("slug")
+      .eq("level", "bundesland")
+      .not("slug", "is", null);
+    return [
+      { pfad: [] as string[] },
+      ...((data ?? []) as { slug: string }[]).map((r) => ({ pfad: [r.slug] })),
+    ];
+  } catch {
+    return [{ pfad: [] as string[] }];
+  }
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
-
-function fmtLeistung(kwp: number): string {
-  if (kwp >= 1_000_000) return `${(kwp / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`;
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(kwp)} kW`;
-}
 
 function standLabel(iso: string): string {
   const d = new Date(`${iso}T00:00:00Z`);
@@ -159,8 +181,12 @@ export default async function AtlasPage({ params }: { params: Params }) {
     .map((r) => ({ key: r.key, name: r.name, perCap: perCapOf(r.atlas, r.pop) }));
   const kpiTiles = [
     { label: "Solaranlagen", value: nf(atlas.solar.total_count), metric: "count" },
-    { label: "Installiert", value: fmtLeistung(atlas.solar.total_kwp), metric: "kwp" },
-    { label: "je Einwohner", value: wPerCapita === null ? "—" : `${nf(wPerCapita)} W`, metric: "kwp" },
+    { label: "Installiert", ...pvLeistungTeile(atlas.solar.total_kwp), metric: "kwp" },
+    {
+      label: "je Einwohner",
+      ...(wPerCapita === null ? { value: "—" } : wattProKopfTeile(wPerCapita)),
+      metric: "kwp",
+    },
     { label: `Neu ${lastYear}`, value: nf(lastYearRow?.count ?? 0), metric: "neuLast" },
     { label: `Neu ${thisYear} bisher`, value: nf(thisYearRow?.count ?? 0), metric: "neuThis" },
   ];
@@ -184,7 +210,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
     variables: [
       { name: "Solaranlagen in Betrieb", value: atlas.solar.total_count },
       { name: "Installierte Leistung", value: Math.round(atlas.solar.total_kwp), unitText: "kWp" },
-      ...(wPerCapita !== null ? [{ name: "Solarleistung je Einwohner", value: wPerCapita, unitText: "W" }] : []),
+      ...(wPerCapita !== null ? [{ name: "Solarleistung je Einwohner", value: wPerCapita, unitText: "Wp" }] : []),
     ],
     baseUrl: BASE_URL,
   });
@@ -196,14 +222,14 @@ export default async function AtlasPage({ params }: { params: Params }) {
       )}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdHtml(datasetLd) }} />
       <div style={S.wrap}>
-        {crumbs.length > 1 ? <Breadcrumb items={crumbs} /> : <div style={{ height: 8 }} />}
+        <Breadcrumb items={crumbs} rightSlot={<RegionSearch align="right" />} />
 
         <div style={S.stand}>
           Stand{" "}
           <time dateTime={atlas.data_as_of} style={S.standDate}>
             {standLabel(atlas.data_as_of)}
           </time>{" "}
-          · Marktstammdatenregister · monatlich aktualisiert
+          · monatlich aktualisiert
         </div>
 
         <h1 style={S.h1}>{headline(region)}</h1>
@@ -212,16 +238,18 @@ export default async function AtlasPage({ params }: { params: Params }) {
           <strong style={S.strong}>{fmtLeistung(atlas.solar.total_kwp)}</strong> installierter Leistung
           sind {ortPhrase(region)} in Betrieb, verteilt auf {nf(children.length)} {childNoun}.
           {wPerCapita !== null && (
-            <> Das sind {nf(wPerCapita)} Watt Photovoltaik-Leistung je Einwohner.</>
+            <> Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.</>
           )}
         </p>
 
-        <AtlasKpiRow
-          tiles={kpiTiles}
-          regionPerCap={regionPerCap}
-          references={kpiRefs}
-          defaultRefKey={defaultRefKey}
-        />
+        <div style={S.section}>
+          <AtlasKpiRow
+            groups={[{ tiles: kpiTiles }]}
+            regionPerCap={regionPerCap}
+            references={kpiRefs}
+            defaultRefKey={defaultRefKey}
+          />
+        </div>
 
         {/* Karte nur ab Bundesland-Ebene: die Deutschland-Übersicht zeigt dieselbe
             interaktive Karte schon auf der Startseite — auf der DE-Atlas-Seite wäre
@@ -233,7 +261,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
             <p style={S.sub}>
               Tippen Sie auf ein Gebiet, um tiefer einzutauchen — bis auf Gemeindeebene.
             </p>
-            <MastrHeroSection initialRegion={region.region_id} initialTraeger="solar" />
+            <MastrHeroSection initialRegion={region.region_id} initialTraeger="solar" showSource={false} />
           </div>
         )}
 
@@ -287,14 +315,20 @@ export default async function AtlasPage({ params }: { params: Params }) {
         )}
 
         <div style={S.disclaimer}>
-          Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur), Stand {atlas.data_as_of},
+          Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur), Stand {standLabel(atlas.data_as_of)},
           monatlich aktualisiert, Datenlizenz{" "}
           <a href="https://www.govdata.de/dl-de/by-2-0" target="_blank" rel="noopener noreferrer" style={S.licLink}>
             dl-de/by-2-0
           </a>{" "}
-          (Daten aggregiert). Einwohnerzahlen: Statistisches Bundesamt, Gemeindeverzeichnis
-          {region.population_as_of ? `, Stand ${region.population_as_of}` : ""}, Datenlizenz
-          dl-de/by-2-0. Gezählt werden nur Anlagen in Betrieb. Alle Angaben sind Näherungswerte ohne
+          (Daten aggregiert). Einwohnerzahlen: {DATA_SOURCES.destatis.name}, Gemeindeverzeichnis
+          {region.population_as_of ? `, Stand ${standLabel(region.population_as_of)}` : ""}, Datenlizenz
+          dl-de/by-2-0.{" "}
+          {region.level !== "de" && (
+            // Kartengeometrien: die Karte zeigt ihren Credit auf dieser Seite nicht
+            // mehr (showSource=false), daher steht die BKG-Attribution hier.
+            <>Kartengeometrien: GeoBasis-DE / BKG, Datenlizenz dl-de/by-2-0 (vereinfacht). </>
+          )}
+          Gezählt werden nur Anlagen in Betrieb. Alle Angaben sind Näherungswerte ohne
           Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit.
         </div>
       </div>
@@ -308,32 +342,34 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: "20px 16px",
+    // Top-Padding 0: der Abstand Header→Content kommt zentral aus dem Layout
+    // (headerContentGap), analog zu den übrigen (site)-Seiten.
+    padding: "0 16px 20px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: 6 },
+  stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },
   standDate: { fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
-  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" },
-  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" },
+  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xxl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
   metricsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
-    gap: 10,
-    marginBottom: 28,
+    gap: space.lg,
+    marginBottom: space.xxl,
   },
-  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 },
-  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 },
+  metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: space.xl },
+  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: space.xs },
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 },
-  tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: "0 2px 24px" },
-  h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
-  sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px", lineHeight: 1.6 },
-  section: { marginBottom: 50 },
+  tendCaption: { fontSize: 11, color: v("--color-text-muted"), margin: `0 ${space.xxs}px ${space.xxl}px` },
+  h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.xs}px` },
+  sub: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px`, lineHeight: 1.6 },
+  section: { marginBottom: space.huge },
   card: {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-lg"),
-    padding: "16px 18px",
+    padding: pad("xl"),
   },
   link: { color: v("--color-accent"), textDecoration: "none", fontSize: 14, fontWeight: 600 },
   disclaimer: {
@@ -341,8 +377,8 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-muted"),
     lineHeight: 1.6,
     borderTop: `1px solid ${v("--color-border")}`,
-    paddingTop: 12,
-    marginBottom: 32,
+    paddingTop: space.lg,
+    marginBottom: space.xxxl,
   },
   licLink: { color: "inherit", textDecoration: "underline" },
 };

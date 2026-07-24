@@ -1,5 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import WidgetAutoHeight from "../../components/WidgetAutoHeight";
+import { tokens } from "../../lib/theme";
+
+// Green/energy values are NOT re-typed here — they are read from the single
+// source (lib/theme.ts tokens) so the embed palette can never drift from the
+// site palette. The widget-specific *structure* (--widget-* tokens, color-mix
+// aliases) stays local; only the raw literals come from tokens.
+const energyVars = Object.entries(tokens)
+  .filter(([k]) => k.startsWith("--color-energy"))
+  .map(([k, val]) => `    ${k}:${val};`)
+  .join("\n");
 
 // Standalone root layout for embeddable widgets.
 // No site header/footer, no global CSS variables, no external font CDN.
@@ -33,8 +43,8 @@ const baseStyles = `
     --widget-muted:#777777;
     --widget-accent:#1365EA;
     --widget-accent-fg:#FFFFFF;
-    --widget-highlight:#3DFFC1;
-    --widget-awareness:#3DFFC1;
+    --widget-highlight:${tokens["--color-highlight"]};
+    --widget-awareness:${tokens["--color-awareness"]};
     --widget-border-radius:14px;
     --widget-font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 
@@ -58,7 +68,7 @@ const baseStyles = `
        black/white, so derived tones stay correct on a dark widget theme. */
     --color-accent-dark:color-mix(in srgb,var(--widget-accent) 78%,var(--widget-ink));
     --color-accent-light:color-mix(in srgb,var(--widget-accent) 55%,var(--widget-bg));
-    --color-positive:#00D950;
+    --color-positive:${tokens["--color-positive"]};
     --color-text-on-accent:var(--widget-accent-fg);
     --color-bg-muted:color-mix(in srgb,var(--widget-ink) 6%,var(--widget-bg));
     --color-bg-accent:color-mix(in srgb,var(--widget-accent) 8%,var(--widget-bg));
@@ -82,24 +92,10 @@ const baseStyles = `
     --shadow-lg:0 8px 28px rgba(0,0,0,0.10);
 
     /* Energie-Palette — feste, semantische Farben (nicht theme-bar), damit
-       recycelte Energie-Charts (Line/Donut/Stacked) im Embed korrekt färben. */
-    --color-energy-solar:#4CAF50;
-    --color-energy-wind:#66BB6A;
-    --color-energy-wind-offshore:#2E7D32;
-    --color-energy-hydro:#81C784;
-    --color-energy-biomass:#A5D6A7;
-    --color-energy-geothermal:#C8E6C9;
-    --color-energy-gas:#BC8F6F;
-    --color-energy-coal:#8D6E63;
-    --color-energy-coal-gas:#8D6E63;
-    --color-energy-lignite:#5D4037;
-    --color-energy-oil:#A1887F;
-    --color-energy-other:#BDBDBD;
-    --color-energy-nuclear:#EF85F8;
-    --color-energy-nuclear-import:#EA00FF;
-    --color-energy-cat-renewable:#4CAF50;
-    --color-energy-cat-fossil:#8D6E63;
-    --color-energy-cat-other:#BDBDBD;
+       recycelte Energie-Charts (Line/Donut/Stacked) im Embed korrekt färben.
+       Aus lib/theme.ts generiert (siehe energyVars oben), damit sie nie von der
+       Site-Palette abweicht. */
+${energyVars}
   }
   body{
     background:transparent;
@@ -138,6 +134,20 @@ const baseStyles = `
   @keyframes sc-fade {
     from { opacity: 0; transform: translateY(4px) }
     to   { opacity: 1; transform: none }
+  }
+
+  /* Fade-Up — dieselbe Step-/Reveal-Bewegung wie auf der Site (lib/theme.ts).
+     Hier gespiegelt, damit Widgets mit einem eigenen Schritt-Flow (Förder-Check)
+     dieselbe Transition fahren wie die großen Rechner. Replay beim Schrittwechsel
+     über einen wechselnden key auf dem animierten Element. */
+  @keyframes fu {
+    from { opacity: 0; transform: translateY(10px) }
+    to   { opacity: 1; transform: translateY(0) }
+  }
+
+  /* Bewegung respektiert die Systemeinstellung. */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important }
   }
 
   /* Map widget: map left, value tiles right (like the main site). Stacks on
