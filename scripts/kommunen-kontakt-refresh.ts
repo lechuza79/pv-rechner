@@ -35,6 +35,7 @@
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import * as unzipper from "unzipper";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const CACHE_DIR = resolve(SCRIPT_DIR, ".cache", "kommunen");
@@ -181,6 +182,11 @@ async function setup(): Promise<void> {
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_subject text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_body text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_generated_at timestamptz;
+    -- Politische Ausrichtung (Zweitstimmenanteil BTW 2025, je Gemeinde) für die
+    -- Outreach-Priorisierung. Misst die Bürger-Wahl, NICHT die Rathaus-Partei.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS gruene_pct numeric;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS linke_pct numeric;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS spd_pct numeric;
     -- Filter „nach Status" schnell halten (Cockpit-Tabs).
     CREATE INDEX IF NOT EXISTS idx_kk_status ON kommunen_kontakt (outreach_status);
     ALTER TABLE kommunen_kontakt ENABLE ROW LEVEL SECURITY;
@@ -518,6 +524,129 @@ async function probeForms(opts: FormsOpts): Promise<void> {
   await saveKontaktUrls(supabase, found, opts.dry);
 }
 
+// ─── Politische Ausrichtung (BTW 2025 Zweitstimmen je Gemeinde) ──────────────
+// Bundeswahlleiterin, Wahlbezirks-Ergebnisse (~95k Wahlbezirke) → je Gemeinde
+// aggregiert. AGS = Land(2)+Regierungsbezirk(1)+Kreis(2)+Gemeinde(3). Misst die
+// Bürger-Wahl (Zweitstimme), NICHT die Rathaus-Partei. Quelle amtlich/offen.
+
+const WBZ_ZIP_URL =
+  "https://www.bundeswahlleiterin.de/dam/jcr/e79a7bd3-0607-4e87-9752-8e601e299e00/btw25_wbz.zip";
+const WBZ_ZIP = resolve(CACHE_DIR, "btw25_wbz.zip");
+const WBZ_ENTRY = "btw25_wbz_ergebnisse.csv";
+
+interface WahlRow {
+  region_id: string;
+  gruene_pct: number;
+  linke_pct: number;
+  spd_pct: number;
+}
+
+function padNum(s: string, n: number): string {
+  return (s ?? "").padStart(n, "0").slice(-n);
+}
+
+async function ensureWahlZip(): Promise<void> {
+  if (existsSync(WBZ_ZIP)) {
+    log(`Wahl-ZIP im Cache: ${WBZ_ZIP}`);
+    return;
+  }
+  mkdirSync(CACHE_DIR, { recursive: true });
+  log("Lade Wahlbezirks-Ergebnisse (Bundeswahlleiterin, ~6 MB)...");
+  const res = await fetch(WBZ_ZIP_URL, { headers: { "User-Agent": USER_AGENT } });
+  if (!res.ok) throw new Error(`Download HTTP ${res.status}`);
+  const buf = Buffer.from(await res.arrayBuffer());
+  writeFileSync(WBZ_ZIP, buf);
+  log(`ZIP gespeichert (${(buf.length / 1e6).toFixed(1)} MB)`, "ok");
+}
+
+async function parseWahl(): Promise<WahlRow[]> {
+  await ensureWahlZip();
+  const dir = await unzipper.Open.file(WBZ_ZIP);
+  const entry = dir.files.find((f) => f.path === WBZ_ENTRY);
+  if (!entry) throw new Error(`Eintrag ${WBZ_ENTRY} nicht im ZIP`);
+  const csv = (await entry.buffer()).toString("utf8");
+
+  const lines = csv.split(/\r?\n/);
+  const headerIdx = lines.findIndex((l) => l.replace(/^﻿/, "").startsWith("Wahlkreis;"));
+  if (headerIdx < 0) throw new Error("Header-Zeile nicht gefunden");
+  const H = lines[headerIdx].replace(/^﻿/, "").split(";");
+  const col = (name: string): number => {
+    const i = H.indexOf(name);
+    if (i < 0) throw new Error(`Spalte fehlt: ${name}`);
+    return i;
+  };
+  const iLand = col("Land");
+  const iRB = col("Regierungsbezirk");
+  const iKreis = col("Kreis");
+  const iGem = col("Gemeinde");
+  const iGueltig = col("Gültige - Zweitstimmen");
+  const iGruene = col("GRÜNE - Zweitstimmen");
+  const iLinke = col("Die Linke - Zweitstimmen");
+  const iSpd = col("SPD - Zweitstimmen");
+
+  const agg = new Map<string, { g: number; l: number; s: number; v: number }>();
+  let wbz = 0;
+  for (let i = headerIdx + 1; i < lines.length; i++) {
+    const c = lines[i].split(";");
+    if (c.length <= iGueltig || !c[iLand]) continue;
+    wbz++;
+    const ags = padNum(c[iLand], 2) + padNum(c[iRB], 1) + padNum(c[iKreis], 2) + padNum(c[iGem], 3);
+    const cur = agg.get(ags) ?? { g: 0, l: 0, s: 0, v: 0 };
+    cur.g += Number(c[iGruene]) || 0;
+    cur.l += Number(c[iLinke]) || 0;
+    cur.s += Number(c[iSpd]) || 0;
+    cur.v += Number(c[iGueltig]) || 0;
+    agg.set(ags, cur);
+  }
+
+  const rows: WahlRow[] = [];
+  agg.forEach((t, region_id) => {
+    if (t.v <= 0) return;
+    rows.push({
+      region_id,
+      gruene_pct: Math.round((1000 * t.g) / t.v) / 10,
+      linke_pct: Math.round((1000 * t.l) / t.v) / 10,
+      spd_pct: Math.round((1000 * t.s) / t.v) / 10,
+    });
+  });
+  log(`${rows.length.toLocaleString()} Gemeinden aggregiert (aus ${wbz.toLocaleString()} Wahlbezirken)`, "ok");
+  return rows;
+}
+
+async function uploadWahl(dry: boolean): Promise<void> {
+  const rows = await parseWahl();
+  const supabase = await makeClient();
+  const valid = await validGemeindeIds(supabase);
+  const payload = rows.filter((r) => valid.has(r.region_id));
+  log(
+    `${payload.length.toLocaleString()} Zeilen zum Upsert ` +
+      `(${(rows.length - payload.length).toLocaleString()} verworfen: kein Gemeinde-AGS)`,
+  );
+
+  if (dry) {
+    const top = [...payload].sort((a, b) => b.gruene_pct - a.gruene_pct).slice(0, 12);
+    const { data } = await supabase
+      .from("mastr_regions")
+      .select("region_id, name")
+      .in("region_id", top.map((r) => r.region_id));
+    const nm = new Map((data ?? []).map((r) => [(r as { region_id: string }).region_id, (r as { name: string }).name]));
+    log("Top 12 nach Grünen-Anteil:");
+    top.forEach((r) =>
+      log(`  ${(nm.get(r.region_id) ?? r.region_id).padEnd(24)} Grüne ${r.gruene_pct}% · Linke ${r.linke_pct}% · SPD ${r.spd_pct}%`),
+    );
+    log("--dry: nichts geschrieben", "ok");
+    return;
+  }
+
+  const now = new Date().toISOString();
+  for (let i = 0; i < payload.length; i += 500) {
+    const batch = payload.slice(i, i + 500).map((r) => ({ ...r, updated_at: now }));
+    const { error } = await supabase.from("kommunen_kontakt").upsert(batch, { onConflict: "region_id" });
+    if (error) throw new Error(`upsert failed (batch ${i}): ${error.message}`);
+  }
+  log(`Politik-Anteile gespeichert (${payload.length.toLocaleString()} Zeilen)`, "ok");
+}
+
 // ─── Stats ────────────────────────────────────────────────────────────────────
 
 async function stats(): Promise<void> {
@@ -550,6 +679,7 @@ async function main(): Promise<void> {
   const doUpload = argv.includes("--upload");
   const doForms = argv.includes("--forms");
   const doProbe = argv.includes("--probe");
+  const doWahl = argv.includes("--wahl");
   const doStats = argv.includes("--stats");
 
   const blArg = argv.find((a) => a.startsWith("--bl="));
@@ -561,11 +691,12 @@ async function main(): Promise<void> {
     dry,
   };
 
-  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doStats) {
+  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doStats) {
     log(
-      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --stats [--dry]\n" +
+      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --stats [--dry]\n" +
         "  --forms [--bl=10] [--limit=N] [--refetch]  Kontaktlink aus der Startseite\n" +
-        "  --probe [--bl=10] [--limit=N]              Kontakt-Pfade direkt anklopfen (Lücken)",
+        "  --probe [--bl=10] [--limit=N]              Kontakt-Pfade direkt anklopfen (Lücken)\n" +
+        "  --wahl [--dry]                             Grünen/Linke/SPD-Anteil je Gemeinde (BTW 2025)",
       "err",
     );
     process.exit(1);
@@ -576,6 +707,7 @@ async function main(): Promise<void> {
   if (doUpload) await upload(dry);
   if (doForms) await scrapeForms(formsOpts);
   if (doProbe) await probeForms(formsOpts);
+  if (doWahl) await uploadWahl(dry);
   if (doStats) await stats();
   log("Fertig", "ok");
 }

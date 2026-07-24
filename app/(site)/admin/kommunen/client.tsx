@@ -22,6 +22,9 @@ type Lead = {
   draft_subject: string | null;
   draft_body: string | null;
   draft_generated_at: string | null;
+  gruene_pct: number | null;
+  linke_pct: number | null;
+  spd_pct: number | null;
   mastr_regions: Region | Region[];
 };
 
@@ -49,6 +52,7 @@ export default function KommunenCockpit() {
   const [status, setStatus] = useState("");
   const [hasLink, setHasLink] = useState(false);
   const [q, setQ] = useState("");
+  const [sort, setSort] = useState("");
   const [page, setPage] = useState(0);
 
   const [rows, setRows] = useState<Lead[]>([]);
@@ -72,6 +76,7 @@ export default function KommunenCockpit() {
     if (status) params.set("status", status);
     if (hasLink) params.set("hasLink", "1");
     if (qDebounced) params.set("q", qDebounced);
+    if (sort) params.set("sort", sort);
     params.set("page", String(page));
     try {
       const res = await fetch(`/api/admin/kommunen?${params.toString()}`);
@@ -85,7 +90,7 @@ export default function KommunenCockpit() {
     } finally {
       setLoading(false);
     }
-  }, [bl, status, hasLink, qDebounced, page]);
+  }, [bl, status, hasLink, qDebounced, sort, page]);
 
   useEffect(() => {
     load();
@@ -94,7 +99,7 @@ export default function KommunenCockpit() {
   // Filterwechsel → zurück auf Seite 1.
   useEffect(() => {
     setPage(0);
-  }, [bl, status, hasLink, qDebounced]);
+  }, [bl, status, hasLink, qDebounced, sort]);
 
   const patchLead = useCallback((updated: Lead) => {
     setRows((prev) => prev.map((r) => (r.region_id === updated.region_id ? updated : r)));
@@ -133,6 +138,11 @@ export default function KommunenCockpit() {
           <input type="checkbox" checked={hasLink} onChange={(e) => setHasLink(e.target.checked)} />
           nur mit Kontaktlink
         </label>
+        <select value={sort} onChange={(e) => setSort(e.target.value)} style={selectStyle} aria-label="Sortierung">
+          <option value="">Sortierung: Standard</option>
+          <option value="gruen">Grün-affin zuerst</option>
+          <option value="links">Links-affin zuerst</option>
+        </select>
       </div>
 
       {/* Status-Tabs */}
@@ -154,7 +164,7 @@ export default function KommunenCockpit() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 720 }}>
           <thead>
             <tr>
-              {["Gemeinde", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
+              {["Gemeinde", "Politik", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
                 <th key={h} style={thStyle}>
                   {h}
                 </th>
@@ -167,7 +177,7 @@ export default function KommunenCockpit() {
             ))}
             {!loading && rows.length === 0 && (
               <tr>
-                <td colSpan={5} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
+                <td colSpan={6} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
                   Keine Gemeinden für diesen Filter.
                 </td>
               </tr>
@@ -235,6 +245,22 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           {r?.bezeichnung ?? "Gemeinde"}
           {r?.population != null && ` · ${r.population.toLocaleString("de-DE")} Ew.`}
         </div>
+      </td>
+
+      {/* Politik (BTW 2025 Zweitstimme) */}
+      <td style={tdStyle}>
+        {lead.gruene_pct != null ? (
+          <div style={{ fontSize: 12, whiteSpace: "nowrap" }}>
+            <span style={{ color: v("--color-positive"), fontWeight: 700 }}>
+              Grüne {lead.gruene_pct.toLocaleString("de-DE")}%
+            </span>
+            <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
+              Linke {lead.linke_pct?.toLocaleString("de-DE") ?? "–"}% · SPD {lead.spd_pct?.toLocaleString("de-DE") ?? "–"}%
+            </div>
+          </div>
+        ) : (
+          <span style={{ fontSize: 11, color: v("--color-text-muted") }}>—</span>
+        )}
       </td>
 
       {/* Kontakt */}

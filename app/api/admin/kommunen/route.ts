@@ -28,7 +28,7 @@ const STATUSES = ["offen", "entwurf", "kontaktiert", "geantwortet", "zu"];
 
 // Eine Quelle für das Zeilen-Shape (GET, PATCH, POST liefern dasselbe zurück).
 const SELECT =
-  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, mastr_regions!inner(name, bezeichnung, population)";
+  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, gruene_pct, linke_pct, spd_pct, mastr_regions!inner(name, bezeichnung, population)";
 
 export async function GET(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -39,15 +39,19 @@ export async function GET(req: NextRequest) {
   const status = sp.get("status") ?? "";
   const hasLink = sp.get("hasLink") === "1";
   const q = (sp.get("q") ?? "").trim();
+  const sort = sp.get("sort") ?? "";
   const page = Math.max(0, parseInt(sp.get("page") ?? "0", 10) || 0);
 
   // Immer inner-join auf mastr_regions (jede Zeile hat per FK eine Gemeinde) —
   // liefert Name/Einwohner und erlaubt die Namenssuche auf Top-Ebene.
-  let query = serviceDb
-    .from("kommunen_kontakt")
-    .select(SELECT, { count: "exact" })
-    .order("region_id")
-    .range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
+  let query = serviceDb.from("kommunen_kontakt").select(SELECT, { count: "exact" });
+
+  // Sortierung: nach Grünen-/Linke-Anteil (Outreach-Priorisierung) oder Standard.
+  if (sort === "gruen") query = query.order("gruene_pct", { ascending: false, nullsFirst: false });
+  else if (sort === "links") query = query.order("linke_pct", { ascending: false, nullsFirst: false });
+  else query = query.order("region_id");
+
+  query = query.range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
 
   if (bl) query = query.like("region_id", `${bl}%`);
   if (status) query = query.eq("outreach_status", status);
