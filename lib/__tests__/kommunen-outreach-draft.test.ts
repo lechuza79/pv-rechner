@@ -1,21 +1,34 @@
 import { describe, it, expect } from "vitest";
-import { renderOutreachDraft } from "../kommunen-outreach-draft";
+import { renderOutreachDraft, type DraftContext } from "../kommunen-outreach-draft";
+
+const base: DraftContext = {
+  name: "Testdorf",
+  kwpAlle: 73_900,
+  population: 133_000,
+  pageUrl: "https://solar-check.io/solar-atlas/bayern/landkreis-x/testdorf",
+  perzentil: 50,
+  rangKreis: 5,
+  kreisGemeinden: 20,
+};
 
 describe("renderOutreachDraft", () => {
-  const d = renderOutreachDraft({ name: "Testdorf", kwpAlle: 73_900, population: 133_000 });
+  const d = renderOutreachDraft(base);
 
   it("nennt die Gemeinde im Betreff und Text", () => {
     expect(d.subject).toContain("Testdorf");
     expect(d.body).toContain("Testdorf");
   });
 
-  it("nutzt Peak-Einheiten (kWp/MWp, Wp je Kopf) — nie bare kW/MW/W", () => {
-    expect(d.body).toMatch(/MWp/); // 73,9 MWp
-    expect(d.body).toMatch(/Wp je Einwohnerin/);
-    // Keine handgeschriebene Nicht-Peak-Einheit an einer Zahl.
+  it("nutzt Peak-Einheit (kWp/MWp) — nie bare kW/MW; keine Pro-Kopf-Angabe im Body", () => {
+    expect(d.body).toMatch(/MWp/);
     expect(d.body).not.toMatch(/\d\s?kW(?![ph])/);
     expect(d.body).not.toMatch(/\d\s?MW(?!p)/);
-    expect(d.body).not.toMatch(/\sW je/);
+    // Pro Kopf inkl. Freifläche wäre ein Artefakt → bewusst nicht im Body.
+    expect(d.body).not.toMatch(/je Einwohner/);
+  });
+
+  it("verlinkt die Gemeinde-Atlas-Seite, wenn vorhanden", () => {
+    expect(d.body).toContain(base.pageUrl!);
   });
 
   it("trägt die Pflicht-Signatur (Klarname + Impressum + Datenschutz)", () => {
@@ -25,16 +38,31 @@ describe("renderOutreachDraft", () => {
     expect(d.body).toContain("solar-check.io/datenschutz");
   });
 
-  it("fällt bei fehlenden Solardaten auf einen sauberen Text zurück (keine 0-kWp-Aussage)", () => {
-    const z = renderOutreachDraft({ name: "Leerhausen", kwpAlle: 0, population: 500 });
-    expect(z.body).not.toMatch(/0\s?kWp/);
-    expect(z.body).toContain("Leerhausen");
-    expect(z.body).toContain("Sebastian Schäder");
+  it("hat die entschärfte Bedingung + den Design-Satz", () => {
+    expect(d.body).toContain("Farben und Schrift passe ich an Ihre Website an");
+    expect(d.body).not.toContain("einzige Bedingung");
   });
 
-  it("lässt die Pro-Kopf-Angabe weg, wenn keine Einwohnerzahl da ist", () => {
-    const n = renderOutreachDraft({ name: "Ohnedorf", kwpAlle: 5000, population: null });
-    expect(n.body).toContain("MWp");
-    expect(n.body).not.toMatch(/je Einwohnerin/);
+  it("Betreff-Catcher: Landkreis-Sieger nur bei echtem Landkreis (≥3 Gemeinden)", () => {
+    expect(renderOutreachDraft({ ...base, rangKreis: 1, kreisGemeinden: 20 }).subject).toContain(
+      "Spitzenreiter in Ihrem Landkreis",
+    );
+    // Kreisfreie Stadt (kreisGemeinden < 3) → kein Landkreis-Betreff.
+    expect(renderOutreachDraft({ ...base, rangKreis: 1, kreisGemeinden: 1, perzentil: 60 }).subject).not.toContain(
+      "Landkreis",
+    );
+  });
+
+  it("Betreff-Catcher: Top 10 % / Top 25 % nach Perzentil", () => {
+    expect(renderOutreachDraft({ ...base, rangKreis: 3, perzentil: 95 }).subject).toContain("Top 10 %");
+    expect(renderOutreachDraft({ ...base, rangKreis: 3, perzentil: 80 }).subject).toContain("Top 25 %");
+    expect(renderOutreachDraft({ ...base, rangKreis: 3, perzentil: 40 }).subject).toContain("So steht Testdorf");
+  });
+
+  it("fällt bei fehlenden Solardaten sauber zurück (kein 0-kWp, kein Link)", () => {
+    const z = renderOutreachDraft({ ...base, kwpAlle: 0, pageUrl: null, perzentil: null, rangKreis: null, kreisGemeinden: null });
+    expect(z.body).not.toMatch(/0\s?kWp/);
+    expect(z.body).toContain("Übersicht des Solar-Ausbaus");
+    expect(z.body).toContain("Testdorf");
   });
 });

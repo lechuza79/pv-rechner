@@ -187,6 +187,11 @@ async function setup(): Promise<void> {
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS gruene_pct numeric;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS linke_pct numeric;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS spd_pct numeric;
+    -- Rang der Dach-Leistung pro Kopf (park-immun) für den Betreff-Catcher +
+    -- späteren Award. Perzentil bundesweit + Rang im Landkreis (5-stelliger AGS).
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS dach_perzentil integer;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS dach_rang_kreis integer;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS kreis_gemeinden integer;
     -- Filter „nach Status" schnell halten (Cockpit-Tabs).
     CREATE INDEX IF NOT EXISTS idx_kk_status ON kommunen_kontakt (outreach_status);
     ALTER TABLE kommunen_kontakt ENABLE ROW LEVEL SECURITY;
@@ -647,6 +652,101 @@ async function uploadWahl(dry: boolean): Promise<void> {
   log(`Politik-Anteile gespeichert (${payload.length.toLocaleString()} Zeilen)`, "ok");
 }
 
+// ─── Rang Dach-Leistung pro Kopf (Betreff-Catcher + Award-Fundament) ─────────
+// Park-immun (nur Dach), aus dem Rollup mastr_gemeinde_solar. Perzentil bundesweit
+// (unter allen bewohnten Gemeinden) + Rang im Landkreis. Kein GROUP BY auf der
+// großen Tabelle — der Rollup hat je Gemeinde schon eine Zeile.
+
+interface RangRow {
+  region_id: string;
+  dach_perzentil: number;
+  dach_rang_kreis: number;
+  kreis_gemeinden: number;
+}
+
+async function uploadRang(dry: boolean): Promise<void> {
+  const supabase = await makeClient();
+
+  const gs: { region_id: string; population: number | null; kwp_dach: number | null }[] = [];
+  const PAGE = 1000;
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await supabase
+      .from("mastr_gemeinde_solar")
+      .select("region_id, population, kwp_dach")
+      .range(from, from + PAGE - 1);
+    if (error) throw new Error(`read gemeinde_solar failed: ${error.message}`);
+    if (!data || data.length === 0) break;
+    gs.push(...(data as typeof gs));
+    if (data.length < PAGE) break;
+  }
+
+  // Dach-Wp pro Kopf je Gemeinde (nur mit Einwohnern).
+  const wpk = new Map<string, number>();
+  for (const g of gs) {
+    if (g.population && g.population > 0) {
+      wpk.set(g.region_id, ((g.kwp_dach ?? 0) * 1000) / g.population);
+    }
+  }
+
+  // Bundesweites Perzentil (aufsteigend sortiert → höchster Wert = 100).
+  const sorted = Array.from(wpk.entries()).sort((a, b) => a[1] - b[1]);
+  const n = sorted.length;
+  const perzentil = new Map<string, number>();
+  sorted.forEach(([id], i) => perzentil.set(id, n > 1 ? Math.round((100 * i) / (n - 1)) : 100));
+
+  // Rang im Landkreis (5-stelliger AGS), 1 = höchste Dach-Leistung pro Kopf.
+  const byKreis = new Map<string, string[]>();
+  wpk.forEach((_v, id) => {
+    const k = id.slice(0, 5);
+    let arr = byKreis.get(k);
+    if (!arr) {
+      arr = [];
+      byKreis.set(k, arr);
+    }
+    arr.push(id);
+  });
+  const rangKreis = new Map<string, number>();
+  const kreisSize = new Map<string, number>();
+  byKreis.forEach((ids) => {
+    ids.sort((a, b) => (wpk.get(b) ?? 0) - (wpk.get(a) ?? 0));
+    ids.forEach((id, i) => {
+      rangKreis.set(id, i + 1);
+      kreisSize.set(id, ids.length);
+    });
+  });
+
+  const rows: RangRow[] = [];
+  wpk.forEach((_v, region_id) => {
+    rows.push({
+      region_id,
+      dach_perzentil: perzentil.get(region_id) ?? 0,
+      dach_rang_kreis: rangKreis.get(region_id) ?? 0,
+      kreis_gemeinden: kreisSize.get(region_id) ?? 0,
+    });
+  });
+  log(`${rows.length.toLocaleString()} Gemeinden mit Rang berechnet`, "ok");
+
+  if (dry) {
+    const valid = await validGemeindeIds(supabase);
+    const top = rows.filter((r) => valid.has(r.region_id)).sort((a, b) => b.dach_perzentil - a.dach_perzentil).slice(0, 8);
+    const { data } = await supabase.from("mastr_regions").select("region_id, name").in("region_id", top.map((r) => r.region_id));
+    const nm = new Map((data ?? []).map((r) => [(r as { region_id: string }).region_id, (r as { name: string }).name]));
+    top.forEach((r) =>
+      log(`  ${(nm.get(r.region_id) ?? r.region_id).padEnd(22)} Perzentil ${r.dach_perzentil} · Kreis-Rang ${r.dach_rang_kreis}/${r.kreis_gemeinden}`),
+    );
+    log("--dry: nichts geschrieben", "ok");
+    return;
+  }
+
+  const now = new Date().toISOString();
+  for (let i = 0; i < rows.length; i += 500) {
+    const batch = rows.slice(i, i + 500).map((r) => ({ ...r, updated_at: now }));
+    const { error } = await supabase.from("kommunen_kontakt").upsert(batch, { onConflict: "region_id" });
+    if (error) throw new Error(`upsert failed (batch ${i}): ${error.message}`);
+  }
+  log(`Rang gespeichert (${rows.length.toLocaleString()} Zeilen)`, "ok");
+}
+
 // ─── Stats ────────────────────────────────────────────────────────────────────
 
 async function stats(): Promise<void> {
@@ -680,6 +780,7 @@ async function main(): Promise<void> {
   const doForms = argv.includes("--forms");
   const doProbe = argv.includes("--probe");
   const doWahl = argv.includes("--wahl");
+  const doRang = argv.includes("--rang");
   const doStats = argv.includes("--stats");
 
   const blArg = argv.find((a) => a.startsWith("--bl="));
@@ -691,12 +792,13 @@ async function main(): Promise<void> {
     dry,
   };
 
-  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doStats) {
+  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doRang && !doStats) {
     log(
-      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --stats [--dry]\n" +
+      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --rang --stats [--dry]\n" +
         "  --forms [--bl=10] [--limit=N] [--refetch]  Kontaktlink aus der Startseite\n" +
         "  --probe [--bl=10] [--limit=N]              Kontakt-Pfade direkt anklopfen (Lücken)\n" +
-        "  --wahl [--dry]                             Grünen/Linke/SPD-Anteil je Gemeinde (BTW 2025)",
+        "  --wahl [--dry]                             Grünen/Linke/SPD-Anteil je Gemeinde (BTW 2025)\n" +
+        "  --rang [--dry]                             Dach-pro-Kopf Perzentil + Landkreis-Rang",
       "err",
     );
     process.exit(1);
@@ -708,6 +810,7 @@ async function main(): Promise<void> {
   if (doForms) await scrapeForms(formsOpts);
   if (doProbe) await probeForms(formsOpts);
   if (doWahl) await uploadWahl(dry);
+  if (doRang) await uploadRang(dry);
   if (doStats) await stats();
   log("Fertig", "ok");
 }

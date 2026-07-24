@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { renderOutreachDraft } from "../../../../lib/kommunen-outreach-draft";
+import { atlasPathForRegionId } from "../../../../lib/atlas";
+
+const SITE_URL = "https://solar-check.io";
 
 // Admin-Cockpit für den Kommunen-Outreach. Liest/schreibt kommunen_kontakt
 // (interne, nicht-öffentliche Tabelle) über den Service-Client. Auth läuft über
@@ -121,14 +124,17 @@ export async function POST(req: NextRequest) {
   const { region_id } = (await req.json()) as { region_id?: string };
   if (!region_id) return NextResponse.json({ error: "region_id fehlt" }, { status: 400 });
 
-  // Name + Solar-Kennzahlen. kwp_alle aus dem Rollup (schont die große Tabelle).
-  const [{ data: reg }, { data: solar }] = await Promise.all([
+  // Name + Solar-Kennzahlen (kwp_alle aus dem Rollup, schont die große Tabelle) +
+  // Rang (für den Betreff-Catcher) + Atlas-Pfad der Gemeinde (für den Link).
+  const [{ data: reg }, { data: solar }, { data: rank }, path] = await Promise.all([
     serviceDb.from("mastr_regions").select("name, population").eq("region_id", region_id).single(),
+    serviceDb.from("mastr_gemeinde_solar").select("kwp_alle, population").eq("region_id", region_id).maybeSingle(),
     serviceDb
-      .from("mastr_gemeinde_solar")
-      .select("kwp_alle, population")
+      .from("kommunen_kontakt")
+      .select("dach_perzentil, dach_rang_kreis, kreis_gemeinden")
       .eq("region_id", region_id)
       .maybeSingle(),
+    atlasPathForRegionId(region_id),
   ]);
   if (!reg) return NextResponse.json({ error: "Gemeinde nicht gefunden" }, { status: 404 });
 
@@ -136,6 +142,10 @@ export async function POST(req: NextRequest) {
     name: reg.name,
     kwpAlle: solar?.kwp_alle ?? 0,
     population: reg.population ?? solar?.population ?? null,
+    pageUrl: path ? `${SITE_URL}${path}` : null,
+    perzentil: rank?.dach_perzentil ?? null,
+    rangKreis: rank?.dach_rang_kreis ?? null,
+    kreisGemeinden: rank?.kreis_gemeinden ?? null,
   });
 
   const { data, error } = await serviceDb
