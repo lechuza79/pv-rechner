@@ -16,7 +16,6 @@ import PresetNumberInput from "../../../components/PresetNumberInput";
 import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { useFeedInRates } from "../../../lib/feedin";
-import Header from "../../../components/Header";
 import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh } from "../../../components/Icons";
 
 // ─── URL slug mappings (sprechende Werte statt Indizes) ─────────────────────
@@ -338,9 +337,8 @@ export default function Empfehlung() {
   };
 
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
+    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
 
-        <Header />
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 

@@ -1,46 +1,54 @@
-import { v } from "../../lib/theme";
+import { v, space, pad } from "../../lib/theme";
 import { IconArrowRight } from "../Icons";
+import GemeindeKontaktButton from "./GemeindeKontaktButton";
 
 /**
  * "Diese Zahlen auf Ihrer Website einbinden" — der Outreach-Aufhänger für
- * Kommunen. Bewusst OHNE rohen Code: Zielgruppe ist die Rathaus-/Pressestelle,
- * kein Entwickler. Stattdessen eine Live-Vorschau (die echten Zahlen der
- * Gemeinde) + ein Weg zur Widget-Galerie, wo man das Feld anpasst (hell/dunkel,
- * Größe) und den fertigen Code samt Backlink bekommt — plus Kontakt.
+ * Kommunen. Bewusst OHNE rohen Code und OHNE Beispiel-Vorschau: Zielgruppe ist
+ * die Rathaus-/Pressestelle, kein Entwickler, und die Widgets stehen direkt
+ * darüber auf der Seite schon live. Ein zweites Mal dasselbe zu zeigen erklärt
+ * nichts — der Kasten sagt stattdessen, was man mit allen Widgets tun kann,
+ * und führt in die Galerie (Anpassung + fertiger Code) oder öffnet das
+ * Kontaktformular als Modal auf dieser Seite. Bewusst kein Sprung auf /kontakt:
+ * wer hier fragt, will die Zahlen der Gemeinde nicht verlieren.
  *
- * Der SEO-Backlink zur Atlas-Seite entsteht weiterhin, sobald die Kommune das
- * Feld einbettet; der Code dafür liegt jetzt in der Galerie statt hier.
+ * Der SEO-Backlink zur Atlas-Seite entsteht weiterhin, sobald die Kommune ein
+ * Widget einbettet; der Code dafür liegt in der Galerie statt hier.
  */
 export default function GemeindeEmbedBox({ name, ags }: { name: string; ags: string }) {
-  const previewSrc = `/embed/gemeinde-solar?ags=${ags}&embed=0`;
   const galleryHref = `/energie-widgets?ags=${ags}&name=${encodeURIComponent(name)}#gemeinde-solar`;
 
   return (
     <div style={S.card}>
       <h2 style={S.h2}>Sie arbeiten für die Gemeinde {name}?</h2>
       <p style={S.sub}>
-        Diese Zahlen lassen sich als kleines Feld auf der Website von {name} einbinden — cookiefrei,
-        ohne Browser-Speicher, monatlich automatisch aktuell. So sieht es aus:
+        Alle Widgets dieser Seite können Sie auf der Website von {name} einbinden — die
+        Kennzahlen zum Anlagenbestand, den Erneuerbaren-Mix, die simulierte Solarleistung des
+        heutigen Tages und die Karte. Sie wählen aus, welches Widget es sein soll, passen es an
+        Ihr Erscheinungsbild an (hell oder dunkel, Größe) und kopieren die fertige Zeile in Ihr
+        Redaktionssystem.
       </p>
-
-      <div style={S.previewWrap}>
-        <iframe
-          src={previewSrc}
-          title={`Solaranlagen in ${name} — Vorschau`}
-          loading="lazy"
-          style={S.preview}
-        />
-      </div>
+      <p style={S.sub}>
+        Die Zahlen aktualisieren sich danach von selbst, sobald das Marktstammdatenregister neue
+        Daten veröffentlicht. Die Widgets setzen keine Cookies und legen nichts im Browser Ihrer
+        Besucher ab.
+      </p>
 
       <div style={S.actions}>
         <a href={galleryHref} style={S.cta}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            Ansehen, anpassen &amp; einbetten <IconArrowRight size={16} />
+          <span style={{ display: "inline-flex", alignItems: "center", gap: space.sm }}>
+            Widgets ansehen, anpassen &amp; einbetten <IconArrowRight size={16} />
           </span>
         </a>
-        <a href="/kontakt" style={S.contact}>
-          Wir richten es Ihnen ein — Kontakt aufnehmen
-        </a>
+      </div>
+
+      {/* Sekundärer Weg, deutlich abgesetzt vom Haupt-Knopf: Wer es nicht
+          selbst einbetten will, findet hier ein Gesicht statt eines Formulars.
+          Genau hier entscheidet eine Rathaus- oder Pressestelle, ob sie
+          schreibt. Bewusst nur EIN Kontakt-Einstieg in der Box. */}
+      <div style={S.help}>
+        <p style={S.helpTitle}>Sie brauchen Hilfe bei der Einrichtung?</p>
+        <GemeindeKontaktButton name={name} />
       </div>
     </div>
   );
@@ -50,34 +58,49 @@ const S: Record<string, React.CSSProperties> = {
   card: {
     background: v("--color-bg-muted"),
     borderRadius: v("--radius-lg"),
-    padding: "18px 20px",
+    padding: pad("xl", "xxl"),
   },
-  h2: { fontSize: 16, fontWeight: 700, margin: "0 0 6px" },
-  sub: { fontSize: 13, color: v("--color-text-secondary"), lineHeight: 1.6, margin: "0 0 14px" },
-  previewWrap: {
+  h2: { fontSize: v("--font-size-lead"), fontWeight: 700, margin: `0 0 ${space.sm}px` },
+  sub: {
+    fontSize: v("--font-size-small"),
+    color: v("--color-text-secondary"),
+    lineHeight: 1.6,
+    margin: `0 0 ${space.lg}px`,
+  },
+  // Eigene Fläche statt Trennlinie — aber als Abstufung DERSELBEN Farbfamilie
+  // wie die Karte, nicht als eigener Farbton: --color-bg ist die Nachbarstufe
+  // von --color-bg-muted, auf dem die Karte liegt. In hell setzt sich der Block
+  // dadurch hell ab, in dunkel dunkel; in beiden Token-Sätzen bleibt der
+  // Unterschied sichtbar, ohne dass ein blauer Akzent dazwischenfährt.
+  help: {
+    marginTop: space.xl,
+    padding: pad("xl"),
     background: v("--color-bg"),
-    border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-md"),
-    padding: 8,
-    maxWidth: 420,
   },
-  preview: {
-    border: 0,
-    display: "block",
-    width: "100%",
-    height: 250,
-    borderRadius: v("--radius-sm"),
+  // Fließtext, keine Überschrift: Größe und Farbe kommen aus der Skala, ohne
+  // Fettung. Der Satz leitet den Kontakt-Weg ein, er gliedert nichts.
+  helpTitle: {
+    fontSize: v("--font-size-body"),
+    lineHeight: 1.6,
+    color: v("--color-text-secondary"),
+    margin: `0 0 ${space.lg}px`,
   },
-  actions: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px", marginTop: 16 },
+  actions: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: `${space.md}px ${space.xl}px`,
+    marginTop: space.xl,
+  },
   cta: {
     display: "inline-block",
     background: v("--color-accent"),
     color: v("--color-text-on-accent"),
-    fontSize: 14,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
-    padding: "10px 16px",
+    padding: pad("lg", "xl"),
     borderRadius: v("--radius-md"),
     textDecoration: "none",
   },
-  contact: { fontSize: 13, color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
 };

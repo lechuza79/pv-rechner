@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { v } from "../lib/theme";
+import { BASE_URL } from "../lib/seo";
+import { breadcrumbJsonLd, jsonLdHtml } from "../lib/json-ld";
 
 export type Crumb = {
   label: string;
@@ -14,40 +16,78 @@ export type Crumb = {
  * The separator is a thin rule, not a chevron: that is the established look on
  * the Förder pages, and a shared trail is worth more than a nicer arrow on one
  * branch of the site.
+ *
+ * Pass `jsonLd` to also emit a BreadcrumbList JSON-LD block from the SAME items
+ * (SEO) — opt-in, so pages that render their own breadcrumb schema (Förder,
+ * Atlas) stay unchanged.
  */
-export default function Breadcrumb({ items }: { items: Crumb[] }) {
+export default function Breadcrumb({
+  items,
+  jsonLd = false,
+  rightSlot,
+}: {
+  items: Crumb[];
+  jsonLd?: boolean;
+  /** Optionales Element rechts in der Zeile (z. B. die Atlas-Regionssuche). */
+  rightSlot?: React.ReactNode;
+}) {
+  // Die Startseite wird generell nicht angezeigt — zentral hier gefiltert, damit
+  // die Aufrufer sie weiter mitgeben können (und das strukturierte Datenblatt
+  // dieselbe Kette abbildet wie die sichtbare Spur).
+  const crumbs = items.filter((it) => it.href !== "/");
+  // Bleibt nur die aktuelle Seite übrig (typisch für Seiten direkt unter der
+  // Startseite), ist das keine Spur mehr — dann gar nichts rendern, auch kein
+  // BreadcrumbList mit einem einzigen Eintrag. Mit rightSlot (Suche) rendern wir
+  // trotzdem, damit die Suche auch auf der obersten Atlas-Ebene erscheint.
+  if (crumbs.length < 2 && !rightSlot) return null;
   return (
-    <nav style={S.nav} aria-label="Brotkrümel">
-      {items.map((item, i) => (
-        <span key={`${item.label}-${i}`} style={S.item}>
-          {i > 0 && <span aria-hidden style={S.sep} />}
-          {item.href ? (
-            <Link href={item.href} style={S.link}>
-              {item.label}
-            </Link>
-          ) : (
-            <span style={S.current} aria-current="page">
-              {item.label}
+    <>
+      {jsonLd && crumbs.length >= 2 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: jsonLdHtml(breadcrumbJsonLd(crumbs.map((it) => ({ name: it.label, path: it.href })), BASE_URL)),
+          }}
+        />
+      )}
+      <nav className="crumb-nav" style={S.nav} aria-label="Brotkrümel">
+        <span className="crumb-trail">
+          {crumbs.map((item, i) => (
+            <span key={`${item.label}-${i}`} className="crumb-item" style={S.item}>
+              {i > 0 && <span aria-hidden style={S.sep} />}
+              {item.href ? (
+                <Link href={item.href} className="crumb-label" style={S.link}>
+                  {item.label}
+                </Link>
+              ) : (
+                <span className="crumb-label" style={S.current} aria-current="page">
+                  {item.label}
+                </span>
+              )}
             </span>
-          )}
+          ))}
         </span>
-      ))}
-    </nav>
+        {rightSlot && <span className="crumb-right">{rightSlot}</span>}
+      </nav>
+    </>
   );
 }
 
 const S: Record<string, React.CSSProperties> = {
   nav: {
-    fontSize: 12,
-    color: v("--color-text-secondary"),
+    fontSize: v("--font-size-small"),
     display: "flex",
     alignItems: "center",
-    flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 20,
+    justifyContent: "space-between",
+    gap: 12,
+    paddingBottom: 12,
+    marginBottom: 30,
+    borderBottom: `1px solid ${v("--color-border")}`,
   },
   item: { display: "inline-flex", alignItems: "center", gap: 8 },
   sep: { width: 14, height: 1, background: v("--color-text-faint"), display: "inline-block" },
-  link: { color: "inherit", textDecoration: "none" },
-  current: { color: v("--color-text-primary") },
+  // Nur die Links tragen Farbe (heller Akzent). Die aktuelle Seite ist kein
+  // Ziel mehr und steht deshalb in hellem Grau, nicht im Link-Blau.
+  link: { color: v("--color-accent-light"), textDecoration: "none" },
+  current: { color: v("--color-text-faint") },
 };

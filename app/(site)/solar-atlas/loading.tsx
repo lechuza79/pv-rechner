@@ -1,4 +1,3 @@
-import Header from "../../../components/Header";
 import { v } from "../../../lib/theme";
 
 /**
@@ -16,11 +15,10 @@ export default function Loading() {
       style={{
         background: v("--color-bg"),
         minHeight: "100vh",
-        padding: "20px 16px",
+        padding: "0 16px 20px",
         fontFamily: v("--font-text"),
       }}
     >
-      <Header activePage="atlas" />
       <div
         style={{
           maxWidth: 720,

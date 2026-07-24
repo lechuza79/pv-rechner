@@ -1,12 +1,14 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowRight } from "../../../components/Icons";
+import Breadcrumb from "../../../components/Breadcrumb";
 import GlossaryTerm from "../../../components/GlossaryTerm";
+import ProConLists from "../../../components/ProConLists";
+import { IconArrowUp } from "../../../components/Icons";
 import Faq from "../../../components/Faq";
 import { pvSpeicherFaq } from "../../../lib/faq";
-import { v, iconSizes } from "../../../lib/theme";
-import { supabase } from "../../../lib/supabase-server";
-import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
+import { v } from "../../../lib/theme";
+import { fetchMarketPrices, formatPriceDate } from "../../../lib/prices-server";
+import { type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
 import {
   calc,
@@ -46,42 +48,42 @@ const S = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: "20px 16px",
+    padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto" },
+  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   back: {
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
     textDecoration: "none",
     display: "inline-block",
     marginBottom: 24,
   },
   h1: {
-    fontSize: 22,
+    fontSize: v("--font-size-h1"),
     fontWeight: 800,
     letterSpacing: "-0.02em",
     color: v("--color-text-primary"),
     lineHeight: 1.25,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
     marginBottom: 24,
     lineHeight: 1.6,
   },
   h2: {
-    fontSize: 16,
+    fontSize: v("--font-size-h2"),
     fontWeight: 700,
     color: v("--color-text-primary"),
     marginTop: 32,
     marginBottom: 10,
   },
   p: {
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
     lineHeight: 1.7,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   strong: { fontWeight: 700, color: v("--color-text-primary") },
   card: {
@@ -90,7 +92,7 @@ const S = {
     padding: "14px 16px",
     border: `1px solid ${v("--color-border")}`,
     marginBottom: 12,
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
     lineHeight: 1.7,
   },
@@ -99,12 +101,12 @@ const S = {
     borderRadius: v("--radius-lg"),
     padding: "16px 18px",
     marginBottom: 8,
-    fontSize: 13.5,
+    fontSize: v("--font-size-body"),
     color: v("--color-text-primary"),
     lineHeight: 1.7,
   },
   label: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
@@ -112,7 +114,7 @@ const S = {
     marginBottom: 6,
     display: "block",
   },
-  mono: { fontFamily: v("--font-mono"), fontSize: 12.5 },
+  mono: { fontFamily: v("--font-mono"), fontSize: v("--font-size-small") },
   accent: { color: v("--color-accent"), fontWeight: 600 },
   positive: { color: v("--color-positive"), fontWeight: 600 },
   muted: { color: v("--color-text-muted") },
@@ -121,7 +123,7 @@ const S = {
     display: "inline-block",
     padding: "10px 18px",
     borderRadius: v("--radius-md"),
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
     background: v("--color-accent"),
     color: v("--color-text-on-accent"),
@@ -131,7 +133,7 @@ const S = {
     display: "inline-block",
     padding: "10px 18px",
     borderRadius: v("--radius-md"),
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
     fontWeight: 700,
     border: `1px solid ${v("--color-border")}`,
     color: v("--color-accent"),
@@ -139,7 +141,7 @@ const S = {
   },
   th: {
     textAlign: "left" as const,
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
@@ -149,7 +151,7 @@ const S = {
   },
   thNum: {
     textAlign: "right" as const,
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     color: v("--color-text-secondary"),
     textTransform: "uppercase" as const,
@@ -158,57 +160,22 @@ const S = {
     borderBottom: `1px solid ${v("--color-border")}`,
   },
   td: {
-    fontSize: 12.5,
+    fontSize: v("--font-size-body"),
     color: v("--color-text-muted"),
-    padding: "8px 6px",
+    padding: "10px 6px",
     borderBottom: `1px solid ${v("--color-border")}`,
     lineHeight: 1.4,
   },
   tdNum: {
     fontFamily: v("--font-mono"),
-    fontSize: 12.5,
+    fontSize: v("--font-size-body"),
     color: v("--color-text-primary"),
     textAlign: "right" as const,
-    padding: "8px 6px",
+    padding: "10px 6px",
     borderBottom: `1px solid ${v("--color-border")}`,
     whiteSpace: "nowrap" as const,
   },
 };
-
-// ─── Live prices (Supabase market_prices, fallback = config snapshot) ────────
-async function fetchPrices(): Promise<PriceConfig> {
-  if (!supabase) return DEFAULT_PRICES;
-  try {
-    const { data } = await supabase
-      .from("market_prices")
-      .select("*")
-      .neq("source", "SCRAPE_ERROR")
-      .gt("pv_price_small", 0)
-      .lte("valid_from", new Date().toISOString().split("T")[0])
-      .order("valid_from", { ascending: false })
-      .limit(1)
-      .single();
-    if (!data) return DEFAULT_PRICES;
-    return {
-      pvPriceSmall: Number(data.pv_price_small),
-      pvPriceLarge: Number(data.pv_price_large),
-      pvThresholdKwp: Number(data.pv_threshold_kwp),
-      batteryBase: Number(data.battery_base),
-      batteryPerKwh: Number(data.battery_per_kwh),
-      electricityPrice: data.electricity_price != null ? Number(data.electricity_price) : DEFAULT_PRICES.electricityPrice,
-      electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : DEFAULT_PRICES.electricityIncrease,
-      validFrom: data.valid_from,
-      source: data.source,
-    };
-  } catch {
-    return DEFAULT_PRICES;
-  }
-}
-
-function formatPriceDate(isoDate: string): string {
-  const d = new Date(isoDate + "T00:00:00");
-  return d.toLocaleDateString("de-DE", { month: "long", year: "numeric" });
-}
 
 // ─── Example calculation ─────────────────────────────────────────────────────
 // One reference household, three storage sizes — computed with the EXACT same
@@ -323,6 +290,8 @@ function computeExample(speicherKwh: number, prices: PriceConfig): ExampleRow {
   };
 }
 
+// German percent with one decimal, e.g. 5,1 %.
+
 // One teaser card: title + amortization chart + result-style tiles + deep link.
 // Server component (Chart is the only client island), tiles reuse the exact
 // ResultStats look/tokens. Tiles wrap on narrow screens (mobile-first).
@@ -413,7 +382,7 @@ function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; bad
 const eur = (n: number) => `${n.toLocaleString("de-DE")} €`;
 
 export default async function LohntSichPvMitSpeicherPage() {
-  const prices = await fetchPrices();
+  const prices = await fetchMarketPrices();
   const year = new Date().getFullYear();
   const rows = [0, 5, 10].map((sp) => computeExample(sp, prices));
   const [ohne, mit5, mit10] = rows;
@@ -429,11 +398,14 @@ export default async function LohntSichPvMitSpeicherPage() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <Link href="/" style={S.back}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zur Startseite
-          </span>
-        </Link>
+        <Breadcrumb
+          items={[
+            { label: "Start", href: "/" },
+            { label: "Ratgeber", href: "/ratgeber" },
+            { label: "Lohnt sich PV mit Speicher?" },
+          ]}
+          jsonLd
+        />
 
         <h1 style={S.h1}>Lohnt sich eine PV-Anlage mit Speicher?</h1>
         <p style={S.subtitle}>
@@ -452,7 +424,7 @@ export default async function LohntSichPvMitSpeicherPage() {
           Preisen gekippt, nicht die Physik. Es bleiben aber klare Fälle, in denen sich ein
           Speicher <em>nicht</em> rechnet — sie stehen weiter unten.
         </div>
-        <p style={{ ...S.p, fontSize: 11.5, marginBottom: 0 }}>
+        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginBottom: 0 }}>
           Stand {formatPriceDate(prices.validFrom)} · unverbindliche Näherungswerte, ohne Gewähr.
         </p>
 
@@ -550,11 +522,22 @@ export default async function LohntSichPvMitSpeicherPage() {
               </tr>
               <tr>
                 <td style={{ ...S.td, borderBottom: "none" }}>Gewinn nach 25 Jahren</td>
-                {rows.map((r) => (
-                  <td key={r.speicherKwh} style={{ ...S.tdNum, borderBottom: "none", color: v("--color-positive"), fontWeight: 700 }}>
-                    {eur(r.gewinn25)}
-                  </td>
-                ))}
+                {rows.map((r, i) => {
+                  // Mehrgewinn des Speichers gegenüber "ohne Speicher", in %.
+                  const mehrPct = i > 0 && rows[0].gewinn25 > 0
+                    ? Math.round(((r.gewinn25 - rows[0].gewinn25) / rows[0].gewinn25) * 100)
+                    : 0;
+                  return (
+                    <td key={r.speicherKwh} style={{ ...S.tdNum, borderBottom: "none", color: v("--color-positive"), fontWeight: 700 }}>
+                      {eur(r.gewinn25)}
+                      {mehrPct > 0 && (
+                        <div style={{ fontSize: v("--font-size-caption"), color: v("--color-positive"), opacity: 0.75, fontWeight: 600, marginTop: 2, display: "inline-flex", alignItems: "center", gap: 2, justifyContent: "flex-end" }}>
+                          <IconArrowUp size={9} /> +{mehrPct} %
+                        </div>
+                      )}
+                    </td>
+                  );
+                })}
               </tr>
             </tbody>
           </table>
@@ -602,40 +585,24 @@ export default async function LohntSichPvMitSpeicherPage() {
           </span>
         </div>
 
-        {/* ── Wann ja / wann nein ── */}
-        <h2 style={S.h2}>Wann sich ein Speicher lohnt</h2>
-        <div style={S.card}>
-          <span style={S.positive}>Berufstätigen-Haushalt:</span> Wer tagsüber weg ist,
-          verbraucht abends — genau dann liefert der Speicher.
-          <br />
-          <span style={S.positive}>Neuinstallation:</span> Speicher gleich mitkaufen ist pro
-          Kilowattstunde günstiger als nachrüsten, die Montage fällt nur einmal an.
-          <br />
-          <span style={S.positive}>E-Auto mit Abendladung:</span> Wer nach Feierabend lädt,
-          holt sich den Mittagsstrom über den Speicher ins Auto.
-          <br />
-          <span style={S.positive}>Niedrige Einspeisevergütung:</span> Je kleiner die
-          Vergütung, desto wertvoller jede selbst genutzte Kilowattstunde — die Vergütung
-          sinkt für Neuanlagen weiter.
-        </div>
-        <h2 style={S.h2}>Wann eher nicht</h2>
-        <div style={S.card}>
-          <span style={S.accent}>Alte Bestandsanlage mit hoher Vergütung:</span> Wer noch
-          über 30 ct/kWh Einspeisevergütung bekommt, verdient mit Einspeisen mehr als mit
-          Selbstverbrauch — Speicher lohnt dort nicht.
-          <br />
-          <span style={S.accent}>Sehr hoher Tagesverbrauch:</span> Wer ohnehin mittags
-          verbraucht (Homeoffice, Klimaanlage, Pool), nutzt den Strom schon direkt — der
-          Speicher hat weniger zu verschieben.
-          <br />
-          <span style={S.accent}>Deutlich überteuertes Angebot:</span> Die Rechnung oben gilt
-          für Marktpreise. Liegt der Angebotspreis pro Kilowattstunde weit darüber, kippt
-          sie — Vergleichsangebote einholen.
-          <br />
-          <span style={S.accent}>Überdimensionierung:</span> Ab einer gewissen Größe ist der
-          Speicher im Sommer ohnehin voll und im Winter leer — die zweite Hälfte eines zu
-          großen Speichers arbeitet kaum.
-        </div>
+        {/* ── Wann ja / wann nein (zwei Listen nebeneinander) ── */}
+        <h2 style={S.h2}>Lohnt sich ein Speicher — für wen?</h2>
+        <ProConLists
+          proTitle="Wann es sich lohnt"
+          conTitle="Wo es eng wird"
+          proItems={[
+            { term: "Berufstätigen-Haushalt", desc: "Wer tagsüber weg ist, verbraucht abends — genau dann liefert der Speicher." },
+            { term: "Neuinstallation", desc: "Speicher gleich mitkaufen ist pro Kilowattstunde günstiger als nachrüsten, die Montage fällt nur einmal an." },
+            { term: "E-Auto mit Abendladung", desc: "Wer nach Feierabend lädt, holt sich den Mittagsstrom über den Speicher ins Auto." },
+            { term: "Niedrige Einspeisevergütung", desc: "Je kleiner die Vergütung, desto wertvoller jede selbst genutzte Kilowattstunde — die Vergütung sinkt für Neuanlagen weiter." },
+          ]}
+          conItems={[
+            { term: "Alte Bestandsanlage mit hoher Vergütung", desc: "Wer noch über 30 ct/kWh Einspeisevergütung bekommt, verdient mit Einspeisen mehr als mit Selbstverbrauch — Speicher lohnt dort nicht." },
+            { term: "Sehr hoher Tagesverbrauch", desc: "Wer ohnehin mittags verbraucht (Homeoffice, Klimaanlage, Pool), nutzt den Strom schon direkt — der Speicher hat weniger zu verschieben." },
+            { term: "Deutlich überteuertes Angebot", desc: "Die Rechnung oben gilt für Marktpreise. Liegt der Angebotspreis pro Kilowattstunde weit darüber, kippt sie — Vergleichsangebote einholen." },
+            { term: "Überdimensionierung", desc: "Ab einer gewissen Größe ist der Speicher im Sommer ohnehin voll und im Winter leer — die zweite Hälfte eines zu großen Speichers arbeitet kaum." },
+          ]}
+        />
         <p style={S.p}>
           Ein Sonderfall ist die <strong style={S.strong}>Wärmepumpe</strong>: Sie erhöht
           zwar den Stromverbrauch stark, zieht aber rund 80 % davon zwischen Oktober und
@@ -666,14 +633,15 @@ export default async function LohntSichPvMitSpeicherPage() {
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
         <Faq items={faqItems} title="Häufige Fragen zu PV mit Speicher" currentPath="/lohnt-sich-pv-mit-speicher" />
 
-        <p style={{ ...S.p, fontSize: 12 }}>
-          Verwandte Seiten: <Link href="/methodik" style={S.link}>So rechnen wir</Link> ·{" "}
+        <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
+          Verwandte Seiten: <Link href="/lohnt-sich-pv-ohne-einspeiseverguetung" style={S.link}>Lohnt sich PV ohne Einspeisevergütung?</Link> ·{" "}
+          <Link href="/methodik" style={S.link}>So rechnen wir</Link> ·{" "}
           <Link href="/datenstand" style={S.link}>Aktuelle Preise &amp; Annahmen</Link> ·{" "}
           <Link href="/photovoltaik-foerderung" style={S.link}>PV-Förderung vor Ort</Link> ·{" "}
           <Link href="/balkonkraftwerk-rechner" style={S.link}>Balkonkraftwerk-Rechner</Link> ·{" "}
           <Link href="/glossar" style={S.link}>Glossar</Link>
         </p>
-        <p style={{ ...S.p, fontSize: 11.5, marginTop: 16 }}>
+        <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
           Zuletzt aktualisiert: {new Date().toLocaleDateString("de-DE", { month: "long", year: "numeric" })} —
           die Zahlen auf dieser Seite werden automatisch aus den aktuellen Marktpreisen
           berechnet ({year}).

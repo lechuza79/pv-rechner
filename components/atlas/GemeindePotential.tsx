@@ -1,19 +1,25 @@
 "use client";
 
 import Link from "next/link";
-import { v } from "../../lib/theme";
+import { fmtPvLeistung, fmtErtragProKwp } from "../../lib/atlas-format";
+import { v, space } from "../../lib/theme";
 import { IconArrowRight, IconTrendUp, IconTrendDown } from "../Icons";
+import { LoadingDots } from "../LoadingDots";
 import { writeLocation } from "../../lib/location";
 import type { GemeindePotential } from "../../lib/gemeinde-potential";
 
 // Modellblock „Angebot trifft Nachfrage" + drei greifbare Beispiele, die mit
 // vorbefüllter PLZ in die Rechner leiten. Client-Komponente, weil der Klick die
 // Gemeinde-PLZ in den geteilten Standort-Speicher schreibt — so übernehmen
-// PV- und Balkon-Rechner sie ohne erneute Eingabe. Die Zahlen selbst rechnet
-// die Seite serverseitig (computeGemeindePotential).
+// PV- und Balkon-Rechner sie ohne erneute Eingabe.
+//
+// Der Standort-Ertrag (PVGIS) speist die Zahlen und wird client-seitig
+// nachgeladen (GemeindePotentialClient), damit er den Server-Render der Seite
+// nicht blockiert. Solange er fehlt, ist `p === null`: Label, Layout und Links
+// stehen schon, nur die Zahlen zeigen LoadingDots — dieselbe Preloader-
+// Konvention wie in den MaStR-Hero-Kacheln.
 
 const nfEuro = (n: number) => `${Math.round(n).toLocaleString("de-DE")} €`;
-const nfInt = (n: number) => Math.round(n).toLocaleString("de-DE");
 
 /** Auf 100 € gerundet — die Beispiele sind Größenordnungen, keine Zusagen. */
 const round100 = (n: number) => Math.round(n / 100) * 100;
@@ -33,7 +39,8 @@ export default function GemeindePotential({
   p,
 }: {
   plz: string | null;
-  p: GemeindePotential;
+  /** null = Standort-Ertrag lädt noch (Zahlen als LoadingDots, Layout steht). */
+  p: GemeindePotential | null;
 }) {
   const remember = () => {
     if (plz) writeLocation(plz);
@@ -50,14 +57,16 @@ export default function GemeindePotential({
           <Link href={pvHref} onClick={remember} style={S.exCard}>
             <div style={S.exValRow}>
               <TrendBadge dir="down" />
-              <span style={S.exVal}>{nfEuro(round100(p.pvFiveYearBenefit))}</span>
+              <span style={S.exVal}>{p ? nfEuro(round100(p.pvFiveYearBenefit)) : <LoadingDots />}</span>
             </div>
             <div style={S.exLabel}>
               verschenkt ein typisches Einfamilienhaus hier in 5 Jahren ohne eigene Anlage
             </div>
-            <div style={S.exSub}>
-              {p.pvKwp} kWp · Ersparnis + Einspeisung · {nfInt(p.yieldKwhKwp)} kWh/kWp am Standort
-            </div>
+            {p && (
+              <div style={S.exSub}>
+                {fmtPvLeistung(p.pvKwp)} · Ersparnis + Einspeisung · {fmtErtragProKwp(p.yieldKwhKwp)} am Standort
+              </div>
+            )}
             <span style={S.exCta}>
               Selbst durchrechnen <IconArrowRight size={14} />
             </span>
@@ -66,7 +75,7 @@ export default function GemeindePotential({
           <Link href="/waermepumpe-rechner" onClick={remember} style={S.exCard}>
             <div style={S.exValRow}>
               <TrendBadge dir="up" />
-              <span style={S.exVal}>{nfEuro(round100(p.wpTco20))}</span>
+              <span style={S.exVal}>{p ? nfEuro(round100(p.wpTco20)) : <LoadingDots />}</span>
             </div>
             <div style={S.exLabel}>
               spart eine Wärmepumpe gegenüber Gas über 20 Jahre — statt weiter fürs Heizen draufzuzahlen
@@ -80,16 +89,20 @@ export default function GemeindePotential({
           <Link href="/balkonkraftwerk-rechner" onClick={remember} style={S.exCard}>
             <div style={S.exValRow}>
               <TrendBadge dir="up" />
-              <span style={S.exVal}>{nfEuro(round100(p.balkonSavingPerYear))}/Jahr</span>
+              <span style={S.exVal}>
+                {p ? `${nfEuro(round100(p.balkonSavingPerYear))}/Jahr` : <LoadingDots />}
+              </span>
             </div>
             <div style={S.exLabel}>
               bringt ein Balkonkraftwerk — auch zur Miete, ohne eigenes Dach
             </div>
-            <div style={S.exSub}>
-              {Number.isFinite(p.balkonAmortYears)
-                ? `Empfohlenes Set · nach ${Math.round(p.balkonAmortYears)} Jahren bezahlt`
-                : "Empfohlenes Set"}
-            </div>
+            {p && (
+              <div style={S.exSub}>
+                {Number.isFinite(p.balkonAmortYears)
+                  ? `Empfohlenes Set · nach ${Math.round(p.balkonAmortYears)} Jahren bezahlt`
+                  : "Empfohlenes Set"}
+              </div>
+            )}
             <span style={S.exCta}>
               Balkonkraftwerk rechnen <IconArrowRight size={14} />
             </span>
@@ -101,14 +114,19 @@ export default function GemeindePotential({
 }
 
 const S: Record<string, React.CSSProperties> = {
-  section: { marginBottom: 28 },
+  // Einheitlicher Section-Abstand (space.huge) wie die übrigen Blöcke der Seite.
+  section: { marginBottom: space.huge },
   h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" },
   // Nebeneinander auf Desktop, gestapelt auf Mobil — über flex-wrap statt Media
   // Query (Inline-Styles). Bei 720px Breite passen drei ~200er-Karten in eine Reihe.
   cards: { display: "flex", flexWrap: "wrap", gap: 10 },
+  // Flex-Spalte, damit der CTA per margin-top:auto unten andockt. Die Karten sind
+  // durch align-items:stretch (Zeile "cards") ohnehin gleich hoch — so stehen die
+  // CTAs aller drei Karten auf einer Linie, egal wie lang der Text darüber ist.
   exCard: {
     flex: "1 1 190px",
-    display: "block",
+    display: "flex",
+    flexDirection: "column",
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-lg"),
@@ -138,6 +156,8 @@ const S: Record<string, React.CSSProperties> = {
     display: "inline-flex",
     alignItems: "center",
     gap: 6,
+    marginTop: "auto",
+    alignSelf: "flex-start",
     fontSize: 13,
     fontWeight: 600,
     color: v("--color-accent"),

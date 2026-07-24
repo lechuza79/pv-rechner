@@ -324,6 +324,9 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 ### Phase 4: Content & Reichweite
 - [x] Flaggschiff-Ratgeber **`/lohnt-sich-pv-mit-speicher`**: Server Component (ISR 3600), rechnet die Beispieltabelle (10 kWp × 0/5/10 kWh: Investition, EV, Autarkie aus der Stundensimulation, Amortisation, 25-J-Gewinn) live mit den geteilten Funktionen (`calcEigenverbrauch`, `calc`, `estimateCost`, `simulatePvYear`) und Live-Marktpreisen — driftet nie vom Rechner. FAQ via `pvSpeicherFaq(prices)` in `lib/faq.ts` (bekommt die Live-Preise durchgereicht, damit FAQ und Tabelle auf derselben Seite identische Beträge zeigen) + `<Faq>` (FAQPage-JSON-LD). In Sitemap (0.8); Rechner-FAQ verlinkt hin.
   - Zwei **Beispiel-Teaser** (ohne / mit 10 kWh Speicher): recyceln die Rechner-`Chart`-Komponente (3-Szenarien-Amortisationskurve) + ResultStats-Kacheln (Amortisation / Rendite 25 J / ⌀ Ersparnis), gerechnet aus derselben `computeExample`-Quelle wie die Tabelle. Jeder Teaser hat einen Deep-Link `/photovoltaik-rechner?a=2&s=…&p=2&n=1&st=…&er=…`, der den Rechner exakt auf die Teaser-Zahlen vorbelegt (`st`/`er` explizit, weil der Rechner-Default-Strompreis 0,34 € vom kanonischen prices-config-Wert abweicht).
+- [x] Ratgeber **`/lohnt-sich-pv-ohne-einspeiseverguetung`** (EEG-Reform 2027): gleiches Muster wie der Speicher-Ratgeber (ISR, live gerechnet, `pvOhneEinspeisungFaq` in `lib/faq.ts`, Teaser mit Deep-Link `eia=0` = Einspeise-3-State „Aus"). Reform-Aussagen als datierter Sachstand (`REFORM_STAND`, Entwurf ≠ beschlossen) — EEG-Wächter pflegt sie zusammen mit der Rechner-Notiz. Preis-Fetch der Guide-Seiten geteilt in `lib/prices-server.ts` (Speicher-Seite umgestellt).
+- [x] Daten-Story **`/photovoltaik-zubau-deutschland`** („Wie Förderung den Solarausbau geformt hat", in Hauptnav unter PV-Förderung + Sitemap): nationaler PV-Zubau pro Jahr (Balken) mit überlagerter Einspeisevergütung (grün) + Haushaltsstrompreis (grau, beide ct/kWh, geteilte rechte Achse) und interaktiver **Ereignis-Timeline** (ARIA-Tabs, tippen/wischen/←→, alle Panels im DOM). Erzählt den Vergütungs-getriebenen Boom bis 2012 und den Eigenverbrauchs-getriebenen ab 2022. **Artikel = Fließtext über dem Widget; das Chart+Timeline ist ein eigenständiges, einbettbares Widget** (`components/charts/ZubauWidget.tsx`, geteilt): eigene Route `/embed/pv-zubau-deutschland` (ISR, noindex, `useWidgetTheme`, `embed=`/`branding=`-Flags, eigenes Label für Fremd-Embeds), Galerie-Sektion `pv-zubau-deutschland`, Quelle/`PoweredBy`/Export nach Widget-Konvention. Bausteine: `components/charts/ZubauTimelineChart.tsx` (Balken + 2 Halo-Linien) + `EventTimeline.tsx`.
+  - **Datenpflege (Runbook `scripts/zubau-story-verify.md`):** Balken = MaStR (`getNationalSolarByYear`, live/ISR, laufendes Jahr auto als unvollständig — **selbstwartend**). Vergütungsreihe `lib/feedin-history.ts` (2000–heute, gegen BNetzA-/SFV-Monatstabellen geprüft) + Strompreisreihe `lib/strommix-history.ts` = jährliche Ein-Wert-Anhänge, **automatisiert am `eeg-verguetung-verify-halbjaehrlich`-Wächter** (Januar: Vergütung, Juli: Eurostat-Preis). Neue **Politik-Marken** (`ZUBAU_EVENTS`) schlägt der `foerder-news-waechter` nur **vor** (Kandidat im Report) — Formulierung + Eintrag macht ein Mensch (zitierfähige Seite). Neue Quelle `eurostat` in `lib/data-sources.ts`; Reihe auf `/datenstand`.
 - [ ] Weitere Long-Tail-Landingpages (z.B. `/pv-kaufen-vs-enpal-mieten`)
 - [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
 - [ ] Blog/Ratgeber-Sektion
@@ -491,6 +494,35 @@ pv-rechner/
 | `InlineEdit` | `components/InlineEdit.tsx` | Click-to-Edit Zahlenwert im Ergebnis |
 | `Chart` | `components/Chart.tsx` | SVG-Amortisationskurve (3 Szenarien, kein D3) |
 
+## Zahlen und Einheiten — BLOCKER (schwerster Fehler im Projekt)
+
+**Eine falsche Einheit, eine falsche Zahl oder eine Aussage, die nicht zur Zahl daneben passt, ist der schwerste Fehler, den dieses Projekt machen kann — schwerer als ein Layout-Bug und schwerer als ein Ausfall.** Ein Ausfall fällt sofort auf und ist in Minuten behoben. Eine falsche Einheit fällt niemandem auf, steht monatelang auf jeder Seite und zerstört genau das, womit die Seite wirbt: dass hier ehrlich gerechnet wird. Wer einmal eine falsche Zahl gesehen hat, glaubt auch der richtigen nicht mehr.
+
+**Einheiten haben genau eine Quelle und werden NIE handgeschrieben.** Keine Einheit direkt an eine Zahl kleben (`${wert} kW`), sondern die Funktion aufrufen. Für den Atlas ist das `lib/atlas-format.ts`; für Rechner-Werte die jeweilige Formatier-Funktion des Moduls. Eine zweite Kopie eines Formatters ist ein Fehler, kein Duplikat.
+
+| Größe | Einheit | Funktion |
+|---|---|---|
+| Installierte PV-Leistung | **kWp / MWp / GWp** (Peak!) | `fmtPvLeistung` |
+| PV-Leistung je Einwohner | **Wp** | `fmtWattProKopf` |
+| Momentanleistung (Live-Simulation, Erzeugung) | **W / kW / MW / GW** | eigene Chart-Formatter |
+| Technologie-Mix (Solar + Wind + Biomasse) | **kW / MW** — kein Peak | widget-eigen |
+| Speicherkapazität | **kWh / MWh / GWh** | `fmtSpeicherKwh` |
+| Mittlere Batteriegröße | **kWh, 1 Nachkommastelle** | `fmtBatterieMittel` |
+| Speicherdichte / Standort-Ertrag | **kWh je kWp Dach / kWh/kWp** | `fmtSpeicherJeKwp`, `fmtErtragProKwp` |
+
+**Zahl und Einheit: eine Quelle, aber getrennt abrufbar.** Jede Größe hat ein `…Teile()` (liefert `{ value, unit }`) und ein `fmt…()` (fertiger String für Fließtext). Wo eine Zahl groß gesetzt wird — Kacheln, Donut-Mitte, Hero-Werte —, wird **immer** `…Teile()` benutzt: der Zahlenwert trägt die Kachel, die Einheit steht kleiner daneben. **Eine Vereinheitlichung im Code darf die Darstellung nicht mit vereinheitlichen** — beim Zusammenführen der sechs Formatter-Kopien ging genau diese Staffelung verloren, und die Einheit schrie plötzlich in Kachelgröße mit.
+
+**Erzwungen von `lib/__tests__/einheiten-waechter.test.ts`:** der Test schlägt an, sobald in Atlas- oder Widget-Code wieder eine Einheit an eine Zahl geklebt wird. Ausnahmen kommen mit Begründung in die Liste im Test — die Regex aufweichen ist nie die Lösung. `lib/__tests__/atlas-format.test.ts` nagelt zusätzlich die Umschalt-Schwellen fest.
+
+**Aussagen zählen wie Zahlen.** Vor dem Merge jeder Oberfläche mit Zahlen prüfen:
+1. **Sagt die Beschriftung dasselbe, was die Zahl misst?** („513 Anlagen" über einer Kapazität, die nur 512 Batterien meint; „Speicher" über einem Wert, der nur Batterien zählt; „je kWp", wenn der Nenner nur Dachanlagen sind.)
+2. **Stimmt der Nenner?** Jede Pro-Kopf-, Je-kWp- und Durchschnittszahl trägt ihren Nenner sichtbar.
+3. **Trägt ein Mittelwert überhaupt?** Bei sehr kleinen Stückzahlen oder gemischten Grundgesamtheiten (Haushalt + Gewerbe) entweder unterdrücken oder dranschreiben, was gemischt ist.
+4. **Grammatik ist Teil der Richtigkeit** — „1 neue Anlagen" ist derselbe Fehler in Worten. Singular/Plural immer mitbauen.
+5. **Weggelassenes sichtbar erklären.** Was bewusst nicht in einer Zahl steckt (z. B. Pumpspeicher in der Speicher-Kachel), gehört sichtbar an die Zahl — nicht nur in einen Code-Kommentar.
+
+**Bei Verdacht: messen, nicht schätzen.** Eine aggregierte Abfrage gegen die echten Daten kostet Sekunden und ist die einzige Art, eine Zahl zu belegen (DB dabei schonen, siehe unten).
+
 ## Geteilte Rechen-Basis (alle Rechner) — BLOCKER
 
 **Alle Rechner (PV, Wärmepumpe, Balkon, Klima, Simulation) rechnen auf derselben Grundlage.** Bevor du für einen Rechner eine Annahme triffst oder eine Konstante setzt: **prüfen, ob es die Größe hier schon gibt.** Eigene Fundamente sind der teuerste Fehler im Projekt — sie fallen erst auf, wenn die Ergebnisse zwischen den Rechnern auseinanderlaufen.
@@ -547,6 +579,20 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 - **Rechtliches:** Nutzungsbedingungen unter `/widget-nutzungsbedingungen` (aus Galerie verlinkt), Datenschutz-Textbaustein für Einbettende in der Galerie, `ChartActionBar` enthält einen branding-unabhängigen „Anbieter & Impressum"-Menüpunkt (§ 5 DDG).
 - Icons/Buttons aus `components/Icons.tsx`.
 
+## Modals — BLOCKER
+
+**`components/Modal.tsx` ist DER Modal-Baustein. Modals werden nicht pro Stelle neu gebaut.** Die aufrufende Stelle liefert nur `open`, `onClose`, `title` (optional `intro`, `ariaLabel`, `maxWidth`) und den Inhalt als Children — das gesamte Verhalten kommt aus dem Baustein:
+
+- **Desktop zentriert, schmale Bildschirme (≤ 640 px) als Bottom-Sheet**, das von unten einfährt (oben abgerundet, unten bündig).
+- **Sanftes Ein- UND Ausblenden** (220 ms). Der Dialog bleibt bis zum Ende der Ausblende-Animation gemountet — wer ihn selbst mit `{x && <Modal …>}` aus dem Baum nimmt, killt genau diese Animation. Stattdessen `open={!!x}` und den Inhalt kurz halten (Muster: `FundingProgramModal` in `ResultFunding.tsx`). Der Umschalt-Effekt hängt an `rendered`, nicht nur an `open`: der Ausgangszustand braucht einen eigenen, gemalten Frame (zwei verschachtelte `requestAnimationFrame`), sonst gibt es nichts zu interpolieren.
+- **`prefers-reduced-motion` nimmt die BEWEGUNG, nicht die Rückmeldung:** das Fenster fährt dann nicht mehr ein, blendet aber weiter auf (140 ms). Die Animation ganz abzuschalten war ein Fehlgriff — das sah aus wie ein Bug („das Fenster ist einfach da") und war der Grund, warum der Übergang auf einem Rechner mit aktiviertem Systemschalter zu fehlen schien.
+- **Höhe begrenzt, Inhalt scrollt INNEN** (`dvh`) — der Absenden-Knopf bleibt auf flachen Displays und bei eingeblendeter Tastatur erreichbar.
+- **Schließen** per Escape, Klick daneben und ×. **Fokus** wandert beim Öffnen in den Dialog, bleibt per Tab-Falle darin und springt beim Schließen auf das auslösende Element zurück. Die Seite dahinter scrollt nicht mit. Gerendert per Portal an `document.body`.
+
+**Die Fokus-Falle beim Nachbauen:** Der Mechanik-Effekt darf NICHT am `onClose`-Callback hängen (die Aufrufer übergeben eine frische Inline-Funktion pro Render) — sonst läuft sein Aufräumen mitten im Tippen und reißt den Fokus aus dem Eingabefeld. Deshalb `onCloseRef` + Effekt nur an `open`. Genau solche Details sind der Grund für den geteilten Baustein.
+
+**Warum zentral (Juli 2026):** Es gab drei handgebaute Overlays (Klima-Detail, Energiefluss, Förderprogramm), die sich in Fokus-Rückgabe, Tab-Falle, Scroll-Sperre und Mobil-Verhalten unterschieden — dieselbe Streuung wie beim Header, bevor er ins Layout wanderte. Alle drei laufen jetzt über `Modal`. **Ausgenommen ist bewusst das Burger-Menü im Header** (`components/Header.tsx`): ein Navigations-Flyout, kein Dialog — es darf weder den Fokus fangen noch als Sheet einfahren.
+
 ## Design-System
 
 | Element | Wert |
@@ -577,6 +623,20 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 - **Grau**: Neutrale Dimensionen (kWh, kWp, Prozent, Labels)
 
 **CSS Custom Properties System:** Alle Design-Tokens in `lib/theme.ts` definiert, als `:root` CSS-Variablen in `layout.tsx` injiziert. Inline-Styles referenzieren Tokens via `v('--color-accent')` Helper. Für Whitelabeling: anderes Token-Set laden (z.B. `[data-theme="solateur-x"]` Overrides).
+
+**Farb-Single-Source — BLOCKER:** Kein Grün (und generell keine Design-Farbe) wird als Hex-Literal getippt. `lib/theme.ts` ist die **einzige** Quelle. In CSS-Kontexten `v('--token')`; in CSS-losen Kontexten (OG-Bild via satori, Preis-Mail, Chart-Szenario-Configs) `tokens['--token']` importieren — nie neu tippen. Grund (Audit Juli 2026): Grün war an ~20 Stellen kopiert (u. a. der Ausreißer `#00A03C` nur in der Preis-Mail), driftete gegeneinander und ließ sich nicht zentral steuern. Bewusst fix bleibt einzig das Ampel-Grün der EE-Ampel (`ee-ampel/client.tsx`, per Konvention semantisch fest, darf dem Theme NICHT folgen). `lib/theme-v1.ts` (Alt-Token-Set) wurde gelöscht.
+
+**Admin-Theming pro Helligkeitsstufe (`/admin/theme` → „Signalfarben-Theming"):** Das 7-stufige Tageslicht-Theme (s0 Nacht … s6 volle Sonne, `lib/theme.ts` + `theme-schedule.ts`) bleibt die berechnete Grundlage. Darüber liegt eine **Admin-Overlay-Schicht**: jede Signalfarbe (Positiv-Rolle Grün + **Negativ-Rolle Rot** + Energie-Rolle, Katalog `THEME_TOKENS` in `lib/theme-overrides.ts`) ist **pro Stufe einzeln** editierbar. Gespeicherte Overrides (Supabase `theme_overrides`, Single-Row-JSONB) werden im Site-Layout als zusätzliche `:root[data-theme="sN"]`-Blöcke **nach** Basis + Stufen-CSS injiziert (gewinnen per Source-Order, theme.ts bleibt unangetastet). Read gecacht (`getSavedThemeOverrides`, `unstable_cache` + Tag → 1 DB-Read pro Cache-Fenster, statische Seiten bleiben statisch), Refresh sofort via `revalidateTag` beim Speichern (`saveThemeOverrides`). Editor `app/(site)/admin/theme/GreenThemingEditor.tsx`: Stufen-Wähler → Live-Vorschau der Shades im echten Kontext (Rendite/Ersparnis-Kachel, Amortisationskurve, Energie-Strommix-Balken, **Tendenz-Badges** aus dem Solar-Atlas) in der gewählten Stufe + Farbregler pro Token. Save = admin-guarded `POST /api/theme` (sanitisiert: nur bekannte Tokens, nur Hex/rgba — der Wert wird CSS im `<head>`). Tabelle anlegen: `GET /api/theme/setup` (CRON_SECRET). Sichtbare UI folgt sofort; abgeleitete Bilder (OG, Mail, Embeds) ziehen beim nächsten Aufbau nach.
+
+**Admin-Backend (`/admin`):** Geschützte Übersicht (gleicher `ADMIN_EMAILS`-Guard) mit Kacheln zu den internen Views (Grün-Theming, Marktpreise) — neue Admin-Seiten hier als Kachel ergänzen. Erreichbar über einen **„Admin"-Eintrag im Header**, der nur eingeloggten Admins erscheint. Die Admin-Erkennung läuft **client-seitig** über `useIsAdmin` (`lib/auth.ts`) → `GET /api/admin/status` (nur für eingeloggte Nutzer, pro Session gecacht), damit die öffentlichen Seiten **statisch bleiben** und die Admin-Mail-Liste nicht in den Browser wandert — bewusst NICHT im Layout auf `getUser()` prüfen (das würde jede Seite dynamisch machen).
+
+**Abstands-Skala (`space` + `pad()` in `lib/theme.ts`):** Zahlen statt CSS-Variablen — wie `iconSizes`, weil Abstände in Inline-Styles stehen (`gap: space.md`, `padding: pad("lg", "xl")`). Stufen: 2 · 4 · 6 · 8 · 12 · 16 · 24 · 32 · 48. **10, 14, 18 und 28 gibt es bewusst nicht** — sie waren Drift, keine Absicht; wer sie brauchte, entscheidet sich sichtbar für die Stufe darunter oder darüber. Neue Komponenten setzen Abstände **nur** aus der Skala.
+*Migrationsstand:* umgestellt sind Solar-Atlas-Gemeindeseite, Kommunen-Box + Kontakt-Einstieg, `Modal`, `ContactForm`/`ContactPerson`, `AtlasKpiRow`. Der Rest (Rechner-Flows, Energie-Seiten, Embed-Widgets) ist noch handgesetzt und wird stückweise nachgezogen — bewusst nicht in einem Rutsch, weil jede Rundung eine sichtbare Änderung ist.
+
+**Header→Content-Abstand (`headerContentGap` + `--content-lede-top` in `lib/theme.ts`) — BLOCKER:** Der Abstand zwischen Header und Seiteninhalt kommt aus **einer** Quelle, nicht mehr aus jeder Seite einzeln. Früher brachte der Header einen `marginBottom:20` mit und **jede** Seite legte zusätzlich eigenes Top-Padding drauf (20/24/40/0 + innere Hero-`paddingTop`) — projektweit driftend, sichtbar 32–108px. Jetzt:
+- **`headerContentGap`** (= `space.huge`, 48px) sitzt als unteres Padding des Header-Wrappers im `app/(site)/layout.tsx`. Der Header hat **kein** `marginBottom` mehr, und **keine** (site)-Seite setzt eigenes Top-Padding — Wurzel-Container tragen nur noch horizontales Gutter (16px) + Bottom. Gilt für alle Tool-/Daten-Seiten (Rechner, Startseite, Strommix, Atlas, Förderung, Simulation, …) einheitlich, Desktop **und** Mobile.
+- **Lese-/Textseiten** (Ratgeber, Methodik, Glossar, Impressum, Datenschutz, Kontakt, Datenstand, `lohnt-sich-*`, Atomstrom, Nutzungsbedingungen) legen über die Basis noch `--content-lede-top` (Token, Desktop 48px → Total 96px; auf ≤640px per Media-Query 24px → Total 72px). Das ist die einzige zulässige Extra-Kopf-Luft und lebt ausschließlich in diesem Token, nicht als handgetippter `paddingTop` in den Seiten.
+- **Neue (site)-Seite:** KEIN eigenes Top-Padding am Wurzel-Container setzen (der Gap kommt zentral). Lese-Seite → inneren Text-Wrapper mit `paddingTop: "var(--content-lede-top)"` versehen. Innere Hero-/Titel-Wrapper bekommen **kein** eigenes `paddingTop` (war die alte Drift-Quelle).
 
 ## SEO-Strategie
 

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Header from "../../components/Header";
 import { IconSun, IconBolt, IconSparkle, IconArrowRight, IconBattery, IconUser, IconSnowflake, IconEuro, IconPanel } from "../../components/Icons";
 import { MastrHeroSection } from "../../components/MastrHeroSection";
 import Faq from "../../components/Faq";
@@ -77,14 +76,13 @@ const tools = [
 
 export default function Home() {
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
+    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
 
-        <Header />
 
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
 
         {/* Hero Text */}
-        <div style={{ textAlign: "center", marginBottom: 20, paddingTop: 10 }}>
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", color: v('--color-text-primary'), lineHeight: 1.2 }}>Energie ehrlich berechnet.</h1>
           <p style={{ fontSize: 14, color: v('--color-text-muted'), marginTop: 8, lineHeight: 1.5 }}>Acht Tools. Ohne Anmeldung, ohne Verkaufsanrufe.</p>
         </div>

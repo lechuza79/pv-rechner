@@ -1,10 +1,11 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowRight } from "../../../components/Icons";
-import { v, iconSizes } from "../../../lib/theme";
+import Breadcrumb from "../../../components/Breadcrumb";
+import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
+import { FEEDIN_HISTORY_META, FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES } from "../../../lib/feedin-history";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
 import { DEFAULT_AIRCON_CONFIG as AC, AC_REAL_FACTOR } from "../../../lib/aircon-config";
@@ -36,26 +37,26 @@ const S = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    padding: "20px 16px",
+    padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v("--page-max-width"), margin: "0 auto" },
+  wrap: { maxWidth: v("--content-max-width"), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   back: {
-    fontSize: 13,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
     textDecoration: "none",
     display: "inline-block",
     marginBottom: 24,
   },
   h1: {
-    fontSize: 22,
+    fontSize: v("--font-size-h1"),
     fontWeight: 800,
     letterSpacing: "-0.02em",
     color: v("--color-text-primary"),
     lineHeight: 1.2,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: v("--font-size-lead"),
     color: v("--color-text-muted"),
     marginBottom: 28,
     lineHeight: 1.6,
@@ -63,18 +64,18 @@ const S = {
   section: { marginTop: 30 },
   h2row: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 4 },
   h2: {
-    fontSize: 16,
+    fontSize: v("--font-size-h2"),
     fontWeight: 700,
     color: v("--color-text-primary"),
   },
   stand: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     fontWeight: 700,
     color: v("--color-accent"),
     fontFamily: v("--font-mono"),
     whiteSpace: "nowrap" as const,
   },
-  intro: { fontSize: 12.5, color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 12 },
+  intro: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 12 },
   card: {
     background: v("--color-bg"),
     borderRadius: v("--radius-md"),
@@ -88,7 +89,7 @@ const S = {
     gap: 14,
     padding: "11px 14px",
     borderTop: `1px solid ${v("--color-border")}`,
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
   },
   rowFirst: {
     display: "flex",
@@ -96,12 +97,12 @@ const S = {
     justifyContent: "space-between",
     gap: 14,
     padding: "11px 14px",
-    fontSize: 13,
+    fontSize: v("--font-size-body"),
   },
   rowLabel: { color: v("--color-text-muted"), lineHeight: 1.4 },
   rowValue: {
     fontFamily: v("--font-mono"),
-    fontSize: 12.5,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-primary"),
     fontWeight: 600,
     textAlign: "right" as const,
@@ -109,13 +110,13 @@ const S = {
     maxWidth: "62%",
   },
   source: {
-    fontSize: 11,
+    fontSize: v("--font-size-caption"),
     color: v("--color-text-faint"),
     marginTop: 8,
     lineHeight: 1.5,
   },
   note: {
-    fontSize: 12,
+    fontSize: v("--font-size-small"),
     color: v("--color-text-muted"),
     lineHeight: 1.65,
     background: v("--color-bg-accent"),
@@ -239,11 +240,7 @@ export default async function DatenstandPage() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <Link href="/" style={S.back}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück zum Rechner
-          </span>
-        </Link>
+        <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Datenstand" }]} jsonLd />
 
         <h1 style={S.h1}>Datenstand</h1>
         <p style={S.subtitle}>
@@ -280,6 +277,15 @@ export default async function DatenstandPage() {
             { label: `Volleinspeisung über ${nf(feedin.thresholdKwp)} kWp`, value: `${nf(feedin.vollOver10)} ct/kWh` },
           ]}
           source={feedin.source || "Bundesnetzagentur, § 48 EEG"}
+        />
+
+        {/* ── Historische Einspeisevergütung (Zeitreihe für die Zubau-Story) ── */}
+        <Section
+          title="Einspeisevergütung – historische Reihe"
+          stand={FEEDIN_HISTORY_META.dataAsOf}
+          intro="Jahresanfangs-Sätze für kleine Dachanlagen bei Inbetriebnahme, 2000 bis heute. Grundlage der Datenstory zum Solar-Zubau (photovoltaik-zubau-deutschland). Ab April 2012 sank die Vergütung unterjährig — die Jahreswerte sind Jahresanfangs-Repräsentanten."
+          rows={FEEDIN_HISTORY_YEARS.map((y, i) => ({ label: `${y}`, value: `${nf(FEEDIN_HISTORY_VALUES[i])} ct/kWh` }))}
+          source={FEEDIN_HISTORY_META.source}
         />
 
         {/* ── CO2-Preis (Heizen, für WP-Vergleich) ── */}
@@ -399,6 +405,16 @@ export default async function DatenstandPage() {
           intro="Der Bestand an Solaranlagen je Bundesland, Landkreis und Gemeinde stammt aus dem Marktstammdatenregister. Die Umrisse auf der Karte sind amtliche Verwaltungsgebiete, für das Web vereinfacht."
           rows={[
             { label: "Anlagenbestand (Anzahl & Leistung)", value: "Marktstammdatenregister der Bundesnetzagentur, je Gemeinde aggregiert" },
+            {
+              label: "Speicherkapazität",
+              value:
+                "Zählt ausschließlich Batteriespeicher — Hausbatterien und gewerbliche Batterien. Pumpspeicherwerke und Speicher anderer Bauart bleiben draußen, weil ein Kraftwerk mit mehreren hundert Megawattstunden neben Hausbatterien von je rund 10 Kilowattstunden jede Vergleichszahl unbrauchbar macht. Steht so ein Speicher in der Gemeinde, weisen wir ihn mit seiner echten Zahl in einer eigenen Zeile unter den Kacheln aus — er fehlt also nicht, er wird nur nicht mit den Batterien verrechnet.",
+            },
+            {
+              label: "Zahl der Speicher",
+              value:
+                "Die Anzahl unter der Kachel zählt dieselben Anlagen wie die Kapazität, also nur Batterien. Ranglisten sortieren ebenfalls nach Batteriekapazität.",
+            },
             { label: "Kartenumrisse Bundesländer & Kreise", value: "BKG, Verwaltungsgebiete 1:2.500.000 (VG2500)" },
             { label: "Kartenumrisse Gemeinden", value: "BKG, Verwaltungsgebiete 1:250.000 (VG250), ~11.000 Gemeinden, je Landkreis nachgeladen" },
           ]}

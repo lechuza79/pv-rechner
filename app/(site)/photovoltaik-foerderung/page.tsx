@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Header from "../../../components/Header";
 import { IconArrowRight } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
@@ -27,7 +26,7 @@ const LEVEL_LABEL: Record<FundingProgram["level"], string> = {
 };
 
 const S = {
-  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "20px 16px" } as React.CSSProperties,
+  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
   intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 20px" } as React.CSSProperties,
@@ -109,7 +108,6 @@ export default async function FoerderungPage() {
 
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <h1 style={S.h1}>PV-Förderung im Überblick</h1>
         <p style={S.intro}>

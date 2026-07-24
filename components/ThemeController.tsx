@@ -33,8 +33,10 @@ function apply(pref: ThemePref, animate: boolean, solar: SolarConditions | null)
   const el = document.documentElement;
   const changed = el.getAttribute("data-theme") !== resolved;
   if (animate && changed) {
+    // Keep the class on a touch longer than the .8s cross-fade in lib/theme.ts,
+    // otherwise removing it mid-fade would cut the transition short.
     el.classList.add("theme-anim");
-    window.setTimeout(() => el.classList.remove("theme-anim"), 560);
+    window.setTimeout(() => el.classList.remove("theme-anim"), 860);
   }
   el.setAttribute("data-theme", resolved);
   el.setAttribute("data-theme-pref", pref);
@@ -85,38 +87,25 @@ export default function ThemeController({ compact }: { compact?: boolean } = {})
     apply(prefRef.current, true, conditionsRef.current);
   }, [solar, mounted]);
 
-  // In auto mode, re-evaluate every minute so the dusk/night crossover lands
-  // without a reload.
+  // One clock drives both the figure and the brightness. Every minute (while the
+  // tab is visible) we re-read the sun: inside the 5-min cache this is free — no
+  // network — but it still hands the effect above a fresh reading, so the shade
+  // re-evaluates against the current clock and the dusk/night fade lands minute
+  // by minute. Every ~5 min the cache expires and a real fetch updates the power
+  // figure. The point is that the figure and the shade now ALWAYS come from the
+  // same reading applied in the same moment, so they can never drift apart — the
+  // old design re-evaluated the shade on its own timer while the % was frozen on
+  // the load-time value, which let the brightness cross the dawn light/dark line
+  // with a stale number stuck beside it.
   useEffect(() => {
-    if (pref !== "auto") return;
-    const id = window.setInterval(() => {
-      if (prefRef.current !== "auto") return;
-      apply("auto", true, conditionsRef.current);
-    }, 60_000);
-    return () => window.clearInterval(id);
-  }, [pref]);
-
-  // Keep the live reading fresh while the page stays open — otherwise the sun's
-  // *position* tracks (the minute timer above) but the power figure and the
-  // daytime brightness freeze on the load-time value. Refetch when the reading
-  // is older than the upstream refresh, but only while the tab is visible, so a
-  // page left open in the background does not burn function invocations.
-  const lastFetchRef = useRef(Date.now());
-  useEffect(() => {
-    if (solar) lastFetchRef.current = Date.now();
-  }, [solar]);
-  useEffect(() => {
-    const REFRESH_MS = 5 * 60 * 1000; // matches the server cache; catches the ramp
-    const maybeRefresh = () => {
-      if (document.visibilityState !== "visible") return;
-      if (Date.now() - lastFetchRef.current < REFRESH_MS) return;
-      refetchSolar();
+    const tick = () => {
+      if (document.visibilityState === "visible") refetchSolar();
     };
-    const id = window.setInterval(maybeRefresh, 60_000);
-    document.addEventListener("visibilitychange", maybeRefresh);
+    const id = window.setInterval(tick, 60_000);
+    document.addEventListener("visibilitychange", tick);
     return () => {
       window.clearInterval(id);
-      document.removeEventListener("visibilitychange", maybeRefresh);
+      document.removeEventListener("visibilitychange", tick);
     };
   }, [refetchSolar]);
 

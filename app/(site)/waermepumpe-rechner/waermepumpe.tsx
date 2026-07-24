@@ -14,7 +14,6 @@ import HeatPumpChart from "./_components/HeatPumpChart";
 import ScenarioTabs from "../../../components/ScenarioTabs";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
-import Header from "../../../components/Header";
 import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
@@ -167,8 +166,7 @@ export default function Waermepumpe() {
 
   // ── Render ───────────────────────────────────────────────────
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
-      <Header />
+    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>

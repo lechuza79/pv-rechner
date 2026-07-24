@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { IconArrowRight } from "../../../components/Icons";
-import { v, iconSizes } from "../../../lib/theme";
+import Breadcrumb from "../../../components/Breadcrumb";
+import { v } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -18,18 +18,11 @@ const S = {
     fontFamily: v('--font-text'),
     color: v('--color-text-primary'),
     minHeight: "100vh",
-    padding: "20px 16px",
+    padding: "0 16px 20px",
   },
-  wrap: { maxWidth: v('--page-max-width'), margin: "0 auto" },
-  back: {
-    fontSize: 13,
-    color: v('--color-text-secondary'),
-    textDecoration: "none",
-    display: "inline-block",
-    marginBottom: 24,
-  },
+  wrap: { maxWidth: v('--content-max-width'), margin: "0 auto", paddingTop: "var(--content-lede-top)" },
   h1: {
-    fontSize: 22,
+    fontSize: v('--font-size-h1'),
     fontWeight: 800,
     letterSpacing: "-0.02em",
     color: v('--color-text-primary'),
@@ -37,17 +30,17 @@ const S = {
     marginBottom: 24,
   },
   h2: {
-    fontSize: 16,
+    fontSize: v('--font-size-h2'),
     fontWeight: 700,
     color: v('--color-text-primary'),
     marginTop: 28,
     marginBottom: 10,
   },
   p: {
-    fontSize: 13,
+    fontSize: v('--font-size-body'),
     color: v('--color-text-muted'),
     lineHeight: 1.7,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   a: {
     color: v('--color-accent'),
@@ -59,11 +52,10 @@ export default function WidgetNutzungsbedingungenPage() {
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <Link href="/energie-widgets" style={S.back}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-            <IconArrowRight size={iconSizes.sm} style={{ transform: "rotate(180deg)" }} /> Zurück zu den Widgets
-          </span>
-        </Link>
+        <Breadcrumb
+          items={[{ label: "Start", href: "/" }, { label: "Widget-Nutzungsbedingungen" }]}
+          jsonLd
+        />
 
         <h1 style={S.h1}>Widget-Nutzungsbedingungen</h1>
 

@@ -23,7 +23,6 @@ import { v, iconSizes } from "../../../lib/theme";
 import { usePrices } from "../../../lib/prices";
 import { DEFAULT_PRICES } from "../../../lib/prices-config";
 import { useFeedInRates } from "../../../lib/feedin";
-import Header from "../../../components/Header";
 import { IconArrowRight, IconSparkle, IconChevronDown, IconRefresh, IconSun } from "../../../components/Icons";
 import { AccordionField, ChoiceButtons } from "../../../components/AccordionField";
 import ScenarioTabs from "../../../components/ScenarioTabs";
@@ -570,11 +569,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // grundverbrauch/extraVerbrauch/gesamtVerbrauch oben aufgelöst (respektiert oVerbrauch).
 
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), padding: "20px 16px" }}>
-
-        <Header
-          onLoginClick={() => { setShowLogin(!showLogin); setLoginSent(false); setLoginError(""); }}
-        />
+    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), padding: "0 16px 20px" }}>
 
         <KlimaDetailModal
           open={klimaDetailOpen}
@@ -1167,7 +1162,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "10px 14px", marginBottom: 16,
                 border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.6,
               }}>
-                <strong style={{ fontWeight: 700 }}>Einspeisevergütung:</strong> für Inbetriebnahme bis Ende 2026 volle 20 Jahre garantiert (Bestandsschutz). Für Neuanlagen ab 2027 ist ein Wegfall geplant — beschlossen ist er noch nicht.
+                <strong style={{ fontWeight: 700 }}>Einspeisevergütung:</strong> für Inbetriebnahme bis Ende 2026 volle 20 Jahre garantiert (Bestandsschutz). Für Neuanlagen ab 2027 ist ein Wegfall geplant — beschlossen ist er noch nicht.{" "}
+                <Link href="/lohnt-sich-pv-ohne-einspeiseverguetung" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Was das für die Rechnung bedeutet →</Link>
               </div>
             )}
 

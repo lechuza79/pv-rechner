@@ -169,7 +169,17 @@ function startsWithDesignation(name: string): boolean {
   return SELF_DESIGNATING.includes(first);
 }
 
-/** Full display name for a Kreis, e.g. "Landkreis Würzburg", "Region Hannover". */
+/**
+ * Full display name for a Kreis, e.g. "Landkreis Würzburg", "Region Hannover".
+ *
+ * Beware: 50 Kreise already carry the designation at the END of their name
+ * ("Ennepe-Ruhr-Kreis", "Hochsauerlandkreis"), which this prefix rule doubles —
+ * "Kreis Ennepe-Ruhr-Kreis". Deliberately NOT fixed here: the stored name feeds
+ * the slug, and renaming 50 live URLs is a redirect job, not a text fix. The
+ * doubling is stripped when the name is displayed
+ * (lib/atlas-format.ts → regionDisplayName). Touch this only together with a
+ * slug migration.
+ */
 function kreisDisplayName(core: string, txtKz: string): string {
   if (startsWithDesignation(core)) return core;
   const prefix = KREIS_SLUG_PREFIX[txtKz] ?? "";

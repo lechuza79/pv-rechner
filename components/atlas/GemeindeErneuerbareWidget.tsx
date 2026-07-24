@@ -4,6 +4,7 @@ import { v } from "../../lib/theme";
 import DonutChart from "../charts/DonutChart";
 import GemeindeWidgetShell from "./GemeindeWidgetShell";
 import { DATA_SOURCES } from "../../lib/data-sources";
+import { fmtSpeicherKwh } from "../../lib/atlas-format";
 
 // Einbettbares Widget: installierte erneuerbare Leistung nach Technologie je
 // Gemeinde (echte MaStR-Daten, kein Modell). Donut in unseren Blau-Shades;
@@ -13,10 +14,7 @@ import { DATA_SOURCES } from "../../lib/data-sources";
 type Gen = { count: number; kwp: number };
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
-function fmtKwh(kwh: number): string {
-  if (kwh >= 1000) return `${(kwh / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh`;
-  return `${nf(kwh)} kWh`;
-}
+const fmtKwh = fmtSpeicherKwh;
 // Anteil am Mix in Prozent (Chart-Konvention: ab 10 % runden, darunter 1 Stelle).
 function fmtPct(share: number): string {
   const s =

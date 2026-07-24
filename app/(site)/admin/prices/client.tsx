@@ -22,8 +22,8 @@ interface PriceRow {
 }
 
 const S = {
-  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "24px 16px" } as const,
-  wrap: { maxWidth: 600, margin: "0 auto" } as const,
+  page: { fontFamily: v("--font-text"), color: v("--color-text-primary") } as const,
+  wrap: { maxWidth: 600 } as const,
   h1: { fontSize: 22, fontWeight: 700, marginBottom: 24 } as const,
   h2: { fontSize: 18, fontWeight: 600, marginTop: 32, marginBottom: 12 } as const,
   card: { background: "#fff", border: `1px solid ${v("--color-border")}`, borderRadius: 14, padding: 20, marginBottom: 16 } as const,

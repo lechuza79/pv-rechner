@@ -491,6 +491,13 @@ export type RegionAtlas = {
     total_kwp: number;
     by_segment: SegmentBreakdown[];
     by_year: { year: number; count: number; kwp: number }[];
+    /**
+     * The (segment x year) grain the RPC already delivers, kept instead of being
+     * summed away twice. by_segment and by_year each drop one of the two axes,
+     * which makes "new in <year>, private only" impossible to answer from them.
+     * Small enough to carry (segments x years, not regions).
+     */
+    by_year_segment: { year: number; segment: string; count: number; kwp: number }[];
   };
   /**
    * count = all electricity stores; kwh_batterie = usable capacity of home and
@@ -498,7 +505,14 @@ export type RegionAtlas = {
    * one Goldisthal (8,7 GWh) would swamp the figure and make "kWh per kWp"
    * meaningless. count still includes it so the tally stays honest.
    */
-  speicher: { count: number; kwp: number; kwh_batterie: number };
+  speicher: {
+    count: number;
+    kwp: number;
+    kwh_batterie: number;
+    /** Per segment (batterie_privat / batterie_gewerbe / pumpspeicher / …), so a
+     *  storage figure can follow the same owner filter as the solar figures. */
+    by_segment: { segment: string; count: number; kwp: number; kwh: number }[];
+  };
   /** Weitere Erzeuger je Gemeinde (installierte Leistung kWp/kW), aus derselben
    *  MaStR-Aggregation wie Solar. Für den Technologie-Mix. */
   generators: {
@@ -527,9 +541,11 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
   let solarKwp = 0;
   const segBuckets: Record<string, { count: number; kwp: number }> = {};
   const yearBuckets: Record<number, { count: number; kwp: number }> = {};
+  const yearSegBuckets: Record<string, { year: number; segment: string; count: number; kwp: number }> = {};
   let speicherCount = 0;
   let speicherKwp = 0;
   let batterieKwh = 0;
+  const speicherSegBuckets: Record<string, { segment: string; count: number; kwp: number; kwh: number }> = {};
   const gen: Record<string, { count: number; kwp: number }> = {
     wind: { count: 0, kwp: 0 },
     biomasse: { count: 0, kwp: 0 },
@@ -542,7 +558,16 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
     if (r.energietraeger === "speicher") {
       speicherCount += count;
       speicherKwp += kwp;
-      if (r.segment.startsWith("batterie")) batterieKwh += Number(r.kwh);
+      const kwh = Number(r.kwh);
+      if (r.segment.startsWith("batterie")) batterieKwh += kwh;
+      // Kapazität je Bauform vollständig mitführen, auch für Pumpspeicher: die
+      // Kachel filtert später selbst (nur Batterien), aber die Zeile darunter
+      // nennt das Pumpspeicherwerk mit seiner echten Zahl. Wurde die kWh schon
+      // hier verworfen, stand dort "0 kWh" — die Zahl war zweimal versteckt.
+      const sp = (speicherSegBuckets[r.segment] ??= { segment: r.segment, count: 0, kwp: 0, kwh: 0 });
+      sp.count += count;
+      sp.kwp += kwp;
+      sp.kwh += kwh;
       continue;
     }
     // Andere Erzeuger (Wind/Biomasse/Wasser) getrennt sammeln — NICHT als Solar
@@ -565,6 +590,14 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
       const yr = (yearBuckets[r.year] ??= { count: 0, kwp: 0 });
       yr.count += count;
       yr.kwp += kwp;
+      const ys = (yearSegBuckets[`${r.year}|${r.segment}`] ??= {
+        year: r.year,
+        segment: r.segment,
+        count: 0,
+        kwp: 0,
+      });
+      ys.count += count;
+      ys.kwp += kwp;
     }
   }
 
@@ -580,8 +613,19 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
 
   return {
     region_id: regionId,
-    solar: { total_count: solarCount, total_kwp: solarKwp, by_segment, by_year },
-    speicher: { count: speicherCount, kwp: speicherKwp, kwh_batterie: batterieKwh },
+    solar: {
+      total_count: solarCount,
+      total_kwp: solarKwp,
+      by_segment,
+      by_year,
+      by_year_segment: Object.values(yearSegBuckets).sort((a, b) => a.year - b.year),
+    },
+    speicher: {
+      count: speicherCount,
+      kwp: speicherKwp,
+      kwh_batterie: batterieKwh,
+      by_segment: Object.values(speicherSegBuckets),
+    },
     generators: { wind: gen.wind, biomasse: gen.biomasse, wasser: gen.wasser },
     data_as_of: await fetchMetaDataAsOf(),
   };
@@ -594,6 +638,61 @@ async function getRegionAtlasDataUncached(regionId: string): Promise<RegionAtlas
 export const getRegionAtlasData = unstable_cache(getRegionAtlasDataUncached, ["region-atlas-v2"], {
   revalidate: 3600,
 });
+
+// ─── National yearly solar additions (for the "Zubau-Zeitleiste" story) ──────
+// Sums the whole solar aggregate table by commissioning year into one national
+// build-out curve. Verified against known figures (2011 ≈ 8 GW peak, 2013–15
+// trough ≈ 1.4 GW, 2023 ≈ 15 GW) — the MaStR commissioning-year shape matches
+// reality well enough for the national narrative. Two clean-ups are required:
+//  • The register carries bogus commissioning years (1900, 1923, …) from data
+//    entry errors — we clamp to a sane window [MIN_ZUBAU_YEAR, current year].
+//  • The current calendar year is still filling up, so it is flagged partial and
+//    the page renders it distinctly (never as a "collapse").
+
+export const MIN_ZUBAU_YEAR = 2000;
+
+export type NationalYearlyPoint = {
+  year: number;
+  count: number;
+  /** Newly commissioned capacity in that year, in kWp. */
+  kwp: number;
+  /** True for the current calendar year — data still incoming, not comparable. */
+  partial: boolean;
+};
+
+export type NationalSolarSeries = {
+  points: NationalYearlyPoint[];
+  data_as_of: string;
+  /** Last calendar year that is considered complete. */
+  lastCompleteYear: number;
+};
+
+export async function getNationalSolarByYear(): Promise<NationalSolarSeries> {
+  // "de" → prefix "" → the RPC sums the whole country by segment × year.
+  const [rows, asOf] = await Promise.all([loadSeries("de", "solar"), fetchMetaDataAsOf()]);
+  // Derive the current year from the data-stand date, not the wall clock: the
+  // "partial" year is whichever one the export was cut in, which is exactly the
+  // year encoded in mastr_meta.imported_at. Falls back to the ISO string's year.
+  const currentYear = Number(asOf.substring(0, 4)) || new Date().getFullYear();
+
+  const byYear = new Map<number, { count: number; kwp: number }>();
+  for (const r of rows) {
+    const y = Number(r.year);
+    if (!Number.isFinite(y) || y < MIN_ZUBAU_YEAR || y > currentYear) continue;
+    const e = byYear.get(y) ?? { count: 0, kwp: 0 };
+    e.count += r.count;
+    e.kwp += Number(r.kwp);
+    byYear.set(y, e);
+  }
+
+  const points: NationalYearlyPoint[] = [];
+  for (let y = MIN_ZUBAU_YEAR; y <= currentYear; y++) {
+    const e = byYear.get(y) ?? { count: 0, kwp: 0 };
+    points.push({ year: y, count: e.count, kwp: e.kwp, partial: y === currentYear });
+  }
+
+  return { points, data_as_of: asOf, lastCompleteYear: currentYear - 1 };
+}
 
 export function allBundeslaenderSummary(
   energietraeger: Energietraeger,

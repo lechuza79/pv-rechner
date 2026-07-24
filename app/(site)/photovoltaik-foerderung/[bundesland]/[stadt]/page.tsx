@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Header from "../../../../../components/Header";
 import Breadcrumb from "../../../../../components/Breadcrumb";
 import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons";
 import { v, iconSizes } from "../../../../../lib/theme";
@@ -14,6 +13,7 @@ import { FundingRates, FundingConditions, FundingStatusBadge, ExampleCards, FUND
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
+import { DATA_SOURCES } from "../../../../../lib/data-sources";
 
 // ISR: read live funding data from Supabase, re-render at most hourly.
 export const revalidate = 3600;
@@ -97,7 +97,7 @@ function ZubauChart({ years }: { years: { year: number; count: number }[] }) {
 }
 
 const S = {
-  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "20px 16px" } as React.CSSProperties,
+  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
   breadcrumb: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 6 } as React.CSSProperties,
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
@@ -150,7 +150,6 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
 
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <Link href={`/photovoltaik-foerderung/${slugify(city.bundesland)}`} style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 13, fontWeight: 600, color: v("--color-accent"), textDecoration: "none", marginBottom: 12 }}>
           <IconChevronLeft size={iconSizes.md} /> {city.bundesland}
@@ -331,6 +330,11 @@ export default async function StadtPage({ params }: { params: { bundesland: stri
           </a>{" "}
           (Daten aggregiert).
           {f ? ` Förderdaten redaktionell gepflegt, Stand ${f.stand}.` : ""}
+          {" "}Der angegebene Standort-Ertrag (kWh/kWp) stammt von{" "}
+          <a href={DATA_SOURCES.pvgis.url} target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
+            PVGIS
+          </a>{" "}
+          (Europäische Kommission).
           {" "}Alle Angaben sind Näherungswerte ohne Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit und stellen keine
           Rechts-, Steuer- oder Anlageberatung dar. Förderkonditionen ändern sich und Budgets können erschöpft sein — verbindlich
           ist allein die offizielle Quelle des jeweiligen Programms. Beispielrechnungen sind unverbindliche Schätzungen.

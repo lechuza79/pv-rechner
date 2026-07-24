@@ -65,6 +65,19 @@ export const DATA_SOURCES = {
     name: "PVGIS (Europäische Kommission)",
     url: "https://joint-research-centre.ec.europa.eu/pvgis-online-tool_en",
   },
+  /** Household + industry electricity prices (EU harmonised series). */
+  eurostat: {
+    name: "Eurostat",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    url: "https://ec.europa.eu/eurostat/databrowser/product/view/nrg_pc_204",
+  },
+  /** Historical EEG feed-in tariff series (statutory rates, 2000–today). */
+  eegVerguetung: {
+    name: "Bundesnetzagentur & Solarenergie-Förderverein (SFV)",
+    url: "https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/ErneuerbareEnergien/EEG_Foerderung/start.html",
+    note: "gesetzliche EEG-Vergütungssätze",
+  },
   /** BEG heat-pump funding rates (Grundförderung + Boni, cap, income tiers). */
   beg: {
     name: "KfW / BMWE (BEG Heizungsförderung, Merkblatt 458)",
@@ -77,6 +90,21 @@ export const DATA_SOURCES = {
     licenseUrl: "https://www.govdata.de/dl-de/by-2-0",
     url: "https://gdz.bkg.bund.de",
     note: "Geometrien vereinfacht",
+  },
+  /** Municipality population + territorial status (Gemeindeverzeichnis). */
+  destatis: {
+    name: "Statistisches Bundesamt",
+    license: "dl-de/by-2-0",
+    licenseUrl: "https://www.govdata.de/dl-de/by-2-0",
+    url: "https://www.destatis.de",
+  },
+  /** Long-run gross electricity generation + CO₂ intensity (1990–today). */
+  uba: {
+    name: "Umweltbundesamt",
+    license: "dl-de/by-2-0",
+    licenseUrl: "https://www.govdata.de/dl-de/by-2-0",
+    url: "https://www.umweltbundesamt.de/daten/umweltzustand-trends/energie/erneuerbare-konventionelle-stromerzeugung",
+    note: "Datenbasis: AG Energiebilanzen",
   },
 } as const satisfies Record<string, DataSource>;
 

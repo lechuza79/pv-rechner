@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { v, iconSizes } from "../../../lib/theme";
-import { IconCheck, IconClose } from "../../../components/Icons";
-import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../../../lib/contact-topics";
+import { v, iconSizes, space, pad } from "../lib/theme";
+import { IconCheck, IconClose } from "./Icons";
+import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../lib/contact-topics";
 
 const S = {
-  form: { marginTop: 24, display: "flex", flexDirection: "column", gap: 14 } as React.CSSProperties,
+  form: { marginTop: space.xxl, display: "flex", flexDirection: "column", gap: space.lg } as React.CSSProperties,
   label: {
     fontSize: 12,
     fontWeight: 700,
@@ -14,7 +14,7 @@ const S = {
     textTransform: "uppercase",
     letterSpacing: "0.02em",
   } as React.CSSProperties,
-  field: { display: "flex", flexDirection: "column", gap: 6 } as React.CSSProperties,
+  field: { display: "flex", flexDirection: "column", gap: space.sm } as React.CSSProperties,
   input: {
     fontFamily: v('--font-text'),
     fontSize: 14,
@@ -22,7 +22,7 @@ const S = {
     background: v('--color-bg-muted'),
     border: `1px solid ${v('--color-border')}`,
     borderRadius: v('--radius-sm'),
-    padding: "10px 12px",
+    padding: pad("lg"),
     outline: "none",
   } as React.CSSProperties,
   textarea: {
@@ -32,7 +32,7 @@ const S = {
     background: v('--color-bg-muted'),
     border: `1px solid ${v('--color-border')}`,
     borderRadius: v('--radius-sm'),
-    padding: "10px 12px",
+    padding: pad("lg"),
     outline: "none",
     resize: "vertical",
     minHeight: 120,
@@ -52,19 +52,19 @@ const S = {
     background: v('--color-accent'),
     border: "none",
     borderRadius: v('--radius-md'),
-    padding: "12px 20px",
+    padding: pad("lg", "xxl"),
     cursor: "pointer",
-    marginTop: 4,
+    marginTop: space.xs,
   } as React.CSSProperties,
   buttonDisabled: { opacity: 0.6, cursor: "default" } as React.CSSProperties,
   message: {
     display: "flex",
     alignItems: "center",
-    gap: 8,
+    gap: space.md,
     fontSize: 13,
     borderRadius: v('--radius-sm'),
-    padding: "10px 12px",
-    marginTop: 4,
+    padding: pad("lg"),
+    marginTop: space.xs,
   } as React.CSSProperties,
   success: {
     color: v('--color-positive'),
@@ -81,11 +81,26 @@ const S = {
 
 type Status = "idle" | "sending" | "success" | "error";
 
-export default function ContactForm() {
+/**
+ * Das Kontaktformular. Eine Implementierung für zwei Orte: die Kontaktseite und
+ * das Modal auf den Gemeinde-Seiten (dort mit vorbelegtem Thema + Text, damit
+ * niemand die Seite verlassen muss, um eine Frage zu stellen).
+ *
+ * Vorbelegen heißt vorbelegen, nicht festnageln: Thema und Text bleiben
+ * editierbar. Der Mail-Betreff entsteht serverseitig ausschließlich aus der
+ * CONTACT_TOPICS-Allowlist — durchgereichter Text landet nie im Header.
+ */
+export default function ContactForm({
+  initialTopic = DEFAULT_CONTACT_TOPIC,
+  initialMessage = "",
+}: {
+  initialTopic?: ContactTopic;
+  initialMessage?: string;
+} = {}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [topic, setTopic] = useState<ContactTopic>(DEFAULT_CONTACT_TOPIC);
-  const [message, setMessage] = useState("");
+  const [topic, setTopic] = useState<ContactTopic>(initialTopic);
+  const [message, setMessage] = useState(initialMessage);
   const [website, setWebsite] = useState(""); // honeypot
   const [status, setStatus] = useState<Status>("idle");
   const [errorText, setErrorText] = useState("");

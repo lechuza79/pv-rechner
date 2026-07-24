@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Header from "../../../../components/Header";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, iconSizes } from "../../../../lib/theme";
@@ -116,7 +115,7 @@ export async function generateMetadata({ params }: { params: { bundesland: strin
 }
 
 const S = {
-  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "20px 16px" } as React.CSSProperties,
+  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
   breadcrumb: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 6 } as React.CSSProperties,
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
@@ -205,7 +204,6 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
 
   return (
     <div style={S.page}>
-      <Header />
       <div style={S.wrap}>
         <Breadcrumb
           items={[{ label: "Förderung", href: "/photovoltaik-foerderung" }, { label: name }]}
@@ -318,7 +316,7 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
           <div style={{ marginTop: 30 }}>
             <h2 style={{ fontSize: 16, fontWeight: 800, margin: "0 0 2px" }}>Solaranlagen in {name} auf der Karte</h2>
             <p style={{ fontSize: 12, color: v("--color-text-muted"), margin: "0 0 12px" }}>Installierte Leistung je Landkreis — tippe einen Kreis an, um hineinzuzoomen.</p>
-            <MastrHeroSection initialRegion={blAgs} initialTraeger="solar" />
+            <MastrHeroSection initialRegion={blAgs} initialTraeger="solar" showSource={false} />
           </div>
         )}
 
@@ -342,6 +340,11 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
               </a>{" "}
               (Daten aggregiert).
             </>
+          )}
+          {blAgs && (
+            // Karte zeigt ihren Credit auf dieser Seite nicht mehr (showSource=false),
+            // daher steht die BKG-Attribution der Kartengeometrien hier.
+            <> Kartengeometrien: GeoBasis-DE / BKG, Datenlizenz dl-de/by-2-0 (vereinfacht).</>
           )}
           {blAgs && BL_CENTROID[blAgs] && solar && solar.total_kwp > 0 && (
             <>

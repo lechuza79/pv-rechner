@@ -1,8 +1,11 @@
 import { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
-import { getCssVariables, getThemeOverrides, globalStyles } from "../../lib/theme";
+import { getCssVariables, getThemeOverrides, globalStyles, headerContentGap } from "../../lib/theme";
+import { getOverrideCss } from "../../lib/theme-overrides";
+import { getSavedThemeOverrides } from "../../lib/theme-overrides-data";
 import { jsonLdHtml } from "../../lib/json-ld";
 import { GlossaryProvider } from "../../components/GlossaryTerm";
+import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -106,11 +109,14 @@ const softwareAppJsonLd = {
   inLanguage: "de",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Admin theming overlay (per-stage green overrides), injected after the base
+  // + stage CSS so it wins by source order. Cached read → no DB hit per request.
+  const overrideCss = getOverrideCss(await getSavedThemeOverrides());
   return (
     <html lang="de" className={`${dmSans.variable} ${jetBrainsMono.variable}`} suppressHydrationWarning>
       {/* suppressHydrationWarning: the theme boot script sets data-theme /
@@ -119,7 +125,7 @@ export default function RootLayout({
       <head>
         <meta name="google-site-verification" content="OdndfgILkY22LlMHqIT8_ASdidCYTyqksv6LC9zw67o" />
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
-        <style dangerouslySetInnerHTML={{ __html: getCssVariables() + getThemeOverrides() + globalStyles }} />
+        <style dangerouslySetInnerHTML={{ __html: getCssVariables() + getThemeOverrides() + overrideCss + globalStyles }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdHtml(organizationJsonLd) }}
@@ -139,6 +145,20 @@ export default function RootLayout({
         }}
       >
         <GlossaryProvider>
+          {/* Header zentral: früher band ihn jede Seite selbst ein — zehn hatten
+              es vergessen (u. a. /kontakt, /methodik, /glossar und die
+              Ratgeber-Flaggschiffseite), was Sackgassen ohne Navigation ergab.
+              Hier kann ihn keine Seite mehr vergessen. Den aktiven Menüpunkt
+              erkennt er selbst am Pfad. */}
+          {/* Außenabstand zentral: früher lieferte ihn der jeweilige
+              Seiten-Container ("20px 16px"), in dem der Header mit drinsteckte.
+              Jetzt sitzt er im Layout und bringt seinen Rahmen selbst mit —
+              analog zum Footer darunter. Das untere Padding ist der EINE
+              Header→Content-Abstand (headerContentGap): früher brachte ihn jede
+              Seite selbst als Top-Padding mit (plus Header-marginBottom), was
+              projektweit driftete. Keine Seite setzt jetzt noch eigenes
+              Top-Padding. */}
+          <div style={{ padding: `20px 16px ${headerContentGap}px` }}><Header /></div>
           {children}
           <div style={{ padding: "0 16px" }}><Footer /></div>
         </GlossaryProvider>

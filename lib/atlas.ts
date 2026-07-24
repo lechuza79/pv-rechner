@@ -11,6 +11,9 @@
 import { unstable_cache } from "next/cache";
 import { loadChildren, LEVEL_LEN, type Level, type ChildRow } from "./mastr-data";
 import { withDbTimeout } from "./db-timeout";
+import { fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
+
+export { fmtPvLeistung, fmtSpeicherKwh, regionDisplayName } from "./atlas-format";
 
 export type AtlasRegion = {
   region_id: string;
@@ -101,6 +104,19 @@ async function db() {
 const REGION_COLUMNS =
   "region_id, level, name, bezeichnung, slug, parent_region_id, population, area_km2, population_as_of";
 
+/**
+ * Eine Zeile aus mastr_regions als Region — mit bereinigtem Anzeigenamen.
+ *
+ * Hier und nicht im Import, weil der gespeicherte Name den Slug erzeugt und der
+ * in Links, Sitemaps und Caches steckt: 50 Kreis-URLs umzubenennen wäre ein
+ * Redirect-Thema, kein Textfix. Die Doppelung ist ein Darstellungsfehler — also
+ * beim Anzeigen lösen und die Adressen in Ruhe lassen.
+ */
+function asRegion(row: unknown): AtlasRegion {
+  const r = row as AtlasRegion;
+  return { ...r, name: regionDisplayName(r.name) };
+}
+
 async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | null> {
   const supabase = await db();
   const { data, error } = await withDbTimeout(
@@ -108,7 +124,7 @@ async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | nu
     "getRegionById",
   );
   if (error) throw new Error(`getRegionById failed: ${error.message}`);
-  return (data as AtlasRegion) ?? null;
+  return data ? asRegion(data) : null;
 }
 
 // Regions-Identität (Name, Einwohner, Slug) ist stabil — cachen spart die
@@ -116,6 +132,67 @@ async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | nu
 export const getRegionById = unstable_cache(getRegionByIdUncached, ["region-by-id-v1"], {
   revalidate: 3600,
 });
+
+/** Ein Suchtreffer für die Karten-Suche: `label` ist die anzuzeigende Gattung
+ *  (die echte `bezeichnung`, z. B. „Kreisfreie Stadt", nicht die technische
+ *  Ebene). Die Navigation läuft über /api/atlas/goto?ags=<region_id>. */
+export type RegionHit = {
+  region_id: string;
+  name: string;
+  label: string;
+};
+
+const LEVEL_FALLBACK: Record<string, string> = {
+  bundesland: "Bundesland",
+  landkreis: "Landkreis",
+  gemeinde: "Gemeinde",
+};
+
+/**
+ * Namenssuche über alle navigierbaren Regionen (Bundesland, Kreis, Gemeinde) für
+ * das Autosuggest der Karte. Enthält-Suche (auch „Tölz" findet „Bad Tölz"),
+ * grob nach Einwohnerzahl vorsortiert; Präfix-Treffer wandern danach nach oben,
+ * weil sie fast immer das Gemeinte sind. Nur Regionen mit Slug (haben eine
+ * Atlas-Seite). Bewusst OHNE Cache — die Anfragen sind zu divers; die DB wird
+ * über ein Mindest-Query (2 Zeichen), ein hartes Limit und den CDN-Cache der
+ * Route geschont.
+ */
+export async function searchRegions(q: string): Promise<RegionHit[]> {
+  const term = q.trim().replace(/[%_,]/g, ""); // ILIKE-Platzhalter + PostgREST-Trenner raus
+  if (term.length < 2) return [];
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase
+      .from("mastr_regions")
+      .select("region_id, level, name, bezeichnung, population")
+      .ilike("name", `%${term}%`)
+      .in("level", ["bundesland", "landkreis", "gemeinde"])
+      .not("slug", "is", null)
+      .order("population", { ascending: false, nullsFirst: false })
+      .limit(40),
+    "searchRegions",
+  );
+  if (error) throw new Error(`searchRegions failed: ${error.message}`);
+  const lower = term.toLowerCase();
+  const rows = (data ?? [])
+    // Kreisfreie Städte stehen doppelt in der Tabelle — auf Kreis-Ebene (5-stellig)
+    // UND auf Gemeinde-Ebene (8-stellig, z. B. 09663 + 09663000). In der Suche nur
+    // einmal: die 8-stellige Dublette raus, die Kreis-Ebene deckt die Stadt ab.
+    .filter((r) => !(r.bezeichnung === "Kreisfreie Stadt" && String(r.region_id).length === 8))
+    .map((r) => ({
+      region_id: String(r.region_id),
+      name: regionDisplayName(String(r.name)),
+      // Echte Gattung statt technischer Ebene: eine kreisfreie Stadt ist kein
+      // „Landkreis", auch wenn sie auf dessen Ebene liegt.
+      label: (r.bezeichnung as string | null) || LEVEL_FALLBACK[r.level] || "Region",
+    }));
+  // Stabil: Präfix-Treffer nach vorn, sonst bleibt die Population-Ordnung.
+  rows.sort(
+    (a, b) =>
+      Number(b.name.toLowerCase().startsWith(lower)) - Number(a.name.toLowerCase().startsWith(lower)),
+  );
+  return rows.slice(0, 8);
+}
 
 /**
  * Resolve a slug path to a region. Slugs are unique among siblings, so each
@@ -134,7 +211,7 @@ async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | n
     );
     if (error) throw new Error(`resolveSlugPath failed: ${error.message}`);
     if (!data) return null;
-    region = data as AtlasRegion;
+    region = asRegion(data);
     parent = region.region_id;
   }
   return region;
@@ -195,7 +272,7 @@ export function childLevelOf(region: AtlasRegion): Exclude<Level, "de"> | null {
  * roll into the parent by prefix, so a Kreis total can exceed the sum of its
  * listed Gemeinden — getRegionUnassigned() reports that gap.
  */
-export async function getChildren(region: AtlasRegion, energietraeger = "solar"): Promise<AtlasChild[]> {
+async function getChildrenUncached(region: AtlasRegion, energietraeger = "solar"): Promise<AtlasChild[]> {
   const childLevel = childLevelOf(region);
   if (!childLevel) return [];
 
@@ -263,6 +340,13 @@ export async function getChildren(region: AtlasRegion, energietraeger = "solar")
   return children.sort((a, b) => (b.wPerCapita ?? -1) - (a.wPerCapita ?? -1));
 }
 
+// Gecacht wie die übrigen Atlas-Reads: der interne mastr_children-RPC ist ein
+// POST und würde die aufrufende Seite sonst auf „dynamisch" kippen (kein
+// ISR/CDN-Cache). unstable_cache kapselt das Ergebnis, die Route bleibt statisch.
+export const getChildren = unstable_cache(getChildrenUncached, ["children-v2"], {
+  revalidate: 3600,
+});
+
 function assignRank(children: AtlasChild[], metric: "wPerCapita" | "wPerCapitaDach", field: "rank" | "rankDach") {
   const ranked = children.filter((c) => c[metric] !== null).sort((a, b) => (b[metric] as number) - (a[metric] as number));
   ranked.forEach((c, i) => {
@@ -297,6 +381,165 @@ export const SEGMENT_OWNER: Record<string, "privat" | "gewerbe" | null> = {
   sonstige: null,
   "n/a": null,
 };
+
+export type AtlasOwner = "alle" | "privat" | "gewerbe";
+
+/** True when a solar segment belongs to the selected owner filter. "alle" means
+ *  every segment that HAS an owner — "sonstige" stays out, exactly as in the
+ *  donut and the ranking table. Solar only; storage has its own rule below. */
+export function ownerKeeps(owner: AtlasOwner, segment: string): boolean {
+  const o = SEGMENT_OWNER[segment];
+  return owner === "alle" ? o != null : o === owner;
+}
+
+/**
+ * Same question for storage — and it needs its own answer.
+ *
+ * Bauform (battery vs. pumped storage vs. Druckluft/Wasserstoff) and Eigentümer
+ * (private vs. commercial) are two independent axes. The owner filter may cut
+ * along the second one; it must never quietly redraw the first. So under "alle"
+ * the tally is every storage facility in the region, pumped storage included —
+ * the same figure the tile showed before an owner filter existed. Under
+ * privat/gewerbe it is that owner's batteries, because batterie_privat and
+ * batterie_gewerbe carry a real operator split from the MaStR; pumped storage
+ * has no owner to ask about and therefore appears in neither.
+ *
+ * Passing storage through ownerKeeps() instead is how "alle" silently lost the
+ * pumped-storage plants (Herdecke 513 → 512 units) in July 2026.
+ */
+export function ownerKeepsSpeicher(owner: AtlasOwner, segment: string): boolean {
+  return owner === "alle" ? true : SEGMENT_OWNER[segment] === owner;
+}
+
+/**
+ * Which storage segments contribute usable capacity (kWh).
+ *
+ * A separate and much older decision from the one above, and it holds for every
+ * owner filter: only batteries count towards kWh, because one Goldisthal
+ * (8,7 GWh) beside cellar batteries (10 kWh each) would swamp the figure and
+ * make "kWh je kWp" meaningless. The unit tally still includes it — capacity and
+ * tally answer different questions.
+ */
+export function speicherHasKapazitaet(segment: string): boolean {
+  return segment.startsWith("batterie");
+}
+
+/** The numbers behind the KPI tiles, cut to one owner. */
+export type AtlasOwnerSlice = {
+  count: number;
+  kwp: number;
+  /** Roof-mounted only — the honest denominator for "storage per kWp". */
+  kwpDach: number;
+  /** Usable capacity — batteries only, in every owner filter. */
+  speicherKwh: number;
+  /** Storage facilities: all of them under "alle" (pumped storage included),
+   *  that owner's batteries under privat/gewerbe. */
+  speicherCount: number;
+  /** Batteries only — the tally that belongs to speicherKwh. The tile's headline
+   *  figure and its subline must count the same things, otherwise Herdecke reads
+   *  "14,2 MWh" over "513 Anlagen" while the capacity describes only 512 of them. */
+  batterieCount: number;
+  /** Everything stored here that is NOT a battery, kept apart instead of dropped:
+   *  a pumped-storage plant in the Gemeinde is real and gets its own line under
+   *  the tile (see speicherHinweis). Empty under privat/gewerbe — these have no
+   *  owner to file them under. */
+  nichtBatterie: { pumpspeicherCount: number; pumpspeicherKwh: number; sonstigeCount: number; sonstigeKwh: number };
+  /** Plants newly in operation in `year`. */
+  neu: number;
+};
+
+/**
+ * The sentence under the storage tile — what the tile deliberately leaves out.
+ *
+ * Only batteries make up the capacity figure (see speicherHasKapazitaet), and
+ * that rule is invisible unless the exception is named where it happens: in
+ * Goldisthal the tile would otherwise report no storage at all next to one of
+ * Europe's largest pumped-storage plants. Roughly 27 of 11.247 Gemeinden carry a
+ * pumped-storage plant and about 405 some other non-battery unit, so this line
+ * stays absent almost everywhere.
+ *
+ * Returns null when there is nothing to disclose.
+ */
+export function speicherHinweis(nb: AtlasOwnerSlice["nichtBatterie"]): string | null {
+  const parts: string[] = [];
+  if (nb.pumpspeicherCount > 0) {
+    const eins = nb.pumpspeicherCount === 1;
+    const werk = eins ? "ein Pumpspeicherwerk" : `${nf(nb.pumpspeicherCount)} Pumpspeicherwerke`;
+    parts.push(
+      `Dazu ${eins ? "kommt" : "kommen"} ${werk} mit ${fmtSpeicherKwh(nb.pumpspeicherKwh)} Kapazität — Kraftwerksmaßstab, ` +
+        `deshalb ${eins ? "steht es" : "stehen sie"} nicht in der Kachel oben.`,
+    );
+  }
+  if (nb.sonstigeCount > 0) {
+    const anlagen =
+      nb.sonstigeCount === 1 ? "ein weiterer Speicher" : `${nf(nb.sonstigeCount)} weitere Speicher`;
+    const verb = nb.sonstigeCount === 1 ? "ist" : "sind";
+    parts.push(
+      nb.sonstigeKwh > 0
+        ? `${cap(anlagen)} anderer Bauart mit ${fmtSpeicherKwh(nb.sonstigeKwh)} ${verb} ebenfalls erfasst, aber nicht mitgezählt.`
+        : `${cap(anlagen)} anderer Bauart ${verb} erfasst, ohne dass eine Kapazität hinterlegt ist.`,
+    );
+  }
+  return parts.length ? parts.join(" ") : null;
+}
+
+const nf = (n: number) => n.toLocaleString("de-DE");
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/**
+ * One owner's slice of a region's stock.
+ *
+ * Every figure comes out of SEGMENT_OWNER, the same table the donut and the
+ * ranking use — a second owner mapping here is how tiles and chart start telling
+ * different stories about the same place.
+ */
+export function atlasOwnerSlice(
+  atlas: {
+    solar: {
+      by_segment: { segment: string; count: number; kwp: number }[];
+      by_year_segment: { year: number; segment: string; count: number; kwp: number }[];
+    };
+    speicher: { by_segment: { segment: string; count: number; kwh: number }[] };
+  },
+  owner: AtlasOwner,
+  year: number,
+): AtlasOwnerSlice {
+  const slice: AtlasOwnerSlice = {
+    count: 0,
+    kwp: 0,
+    kwpDach: 0,
+    speicherKwh: 0,
+    speicherCount: 0,
+    batterieCount: 0,
+    nichtBatterie: { pumpspeicherCount: 0, pumpspeicherKwh: 0, sonstigeCount: 0, sonstigeKwh: 0 },
+    neu: 0,
+  };
+  for (const s of atlas.solar.by_segment) {
+    if (!ownerKeeps(owner, s.segment)) continue;
+    slice.count += s.count;
+    slice.kwp += s.kwp;
+    if (s.segment !== "freiflaeche") slice.kwpDach += s.kwp;
+  }
+  for (const s of atlas.solar.by_year_segment) {
+    if (s.year !== year || !ownerKeeps(owner, s.segment)) continue;
+    slice.neu += s.count;
+  }
+  for (const s of atlas.speicher.by_segment) {
+    if (!ownerKeepsSpeicher(owner, s.segment)) continue;
+    slice.speicherCount += s.count;
+    if (speicherHasKapazitaet(s.segment)) {
+      slice.speicherKwh += s.kwh;
+      slice.batterieCount += s.count;
+    } else if (s.segment === "pumpspeicher") {
+      slice.nichtBatterie.pumpspeicherCount += s.count;
+      slice.nichtBatterie.pumpspeicherKwh += s.kwh;
+    } else {
+      slice.nichtBatterie.sonstigeCount += s.count;
+      slice.nichtBatterie.sonstigeKwh += s.kwh;
+    }
+  }
+  return slice;
+}
 
 /** One (child, segment, year) cell — the grain the ranking table filters on. */
 export type ChildYearRow = {
@@ -473,44 +716,65 @@ export const getTopGemeinden = unstable_cache(getTopGemeindenUncached, ["top-gem
   revalidate: 86400,
 });
 
-// Größenklassen-Anführer in EINEM Aufruf: alle 3 Eigentümer × 2 Bezüge (eigenes
-// Land, bundesweit). Ersetzt die früheren 6 Einzelabfragen, die sich in der DB
-// stauten — ein Scan statt sechs. Gecacht wie die Spitzen (nur bandabhängig).
-export type PeerLeader = {
-  owner: Owner;
+// Größenklassen-Vergleich in EINEM Aufruf: Anführer der Klasse ('leader') und
+// die eigene Gemeinde mit ihrem Platz ('self'), je Bezug (eigenes Land,
+// bundesweit). Gerankt nach Dach-Solarleistung je Einwohner (ohne Freifläche).
+//
+// Liest aus der vorberechneten Tabelle mastr_gemeinde_solar (~11k Zeilen, eine je
+// bewohnter Gemeinde) statt aus den ~562k Rohzeilen. Vorher war genau diese
+// Aggregation der teuerste Teil der Gemeinde-Seite (~5 s) — und der Cache darüber
+// half kaum, weil die Größenklasse an der Einwohnerzahl hängt und der Schlüssel
+// damit praktisch je Gemeinde verschieden ist. Siehe mastr_peer_context.
+export type PeerRow = {
+  kind: "leader" | "self";
   scope: "de" | "bl";
   region_id: string;
   name: string;
   slug: string;
+  /** Slugs der Eltern-Ebenen — zusammen mit `slug` der volle Atlas-Pfad. */
+  kreis_slug: string | null;
+  bl_slug: string | null;
   parent_region_id: string;
   population: number;
   kwp: number;
   w_per_capita: number;
+  rang: number;
+  total: number;
 };
 
-async function getPeerLeadersUncached(
+/** Atlas-Pfad einer Vergleichs-Gemeinde, oder null wenn ein Slug fehlt. */
+export function peerHref(r: PeerRow): string | null {
+  if (!r.bl_slug || !r.kreis_slug || !r.slug) return null;
+  return `/solar-atlas/${r.bl_slug}/${r.kreis_slug}/${r.slug}`;
+}
+
+async function getPeerContextUncached(
+  regionId: string,
   blPrefix: string,
   minPop: number,
   maxPop: number,
-): Promise<PeerLeader[]> {
+): Promise<PeerRow[]> {
   const supabase = await db();
   const { data, error } = await withDbTimeout(
-    supabase.rpc("mastr_peer_leaders", {
+    supabase.rpc("mastr_peer_context", {
+      p_region_id: regionId,
       p_bl_prefix: blPrefix,
       p_min_pop: minPop,
       p_max_pop: maxPop,
     }),
-    "mastr_peer_leaders",
+    "mastr_peer_context",
   );
-  if (error) throw new Error(`mastr_peer_leaders failed: ${error.message}`);
-  return (data ?? []).map((r: PeerLeader) => ({
+  if (error) throw new Error(`mastr_peer_context failed: ${error.message}`);
+  return (data ?? []).map((r: PeerRow) => ({
     ...r,
     population: Number(r.population),
     kwp: Number(r.kwp),
     w_per_capita: Number(r.w_per_capita),
+    rang: Number(r.rang),
+    total: Number(r.total),
   }));
 }
 
-export const getPeerLeaders = unstable_cache(getPeerLeadersUncached, ["peer-leaders-v1"], {
+export const getPeerContext = unstable_cache(getPeerContextUncached, ["peer-context-v1"], {
   revalidate: 86400,
 });

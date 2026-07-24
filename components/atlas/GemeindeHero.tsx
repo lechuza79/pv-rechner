@@ -3,23 +3,34 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import DonutChart from "../charts/DonutChart";
-import { IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
-import { v } from "../../lib/theme";
-import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
+import { IconArrowRight, IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
+import { v, tokens, space } from "../../lib/theme";
+import { SEGMENT_OWNER, type AtlasOwner, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
+import {
+  fmtPvLeistung as fmtLeistung,
+  fmtSpeicherKwh,
+  fmtWattProKopf,
+  pvLeistungTeile,
+} from "../../lib/atlas-format";
+import AtlasKpiRow, { type KpiGroup, type RefLevel } from "./AtlasKpiRow";
 
 export type HeroCell = { segment: string; count: number; kwp: number };
 
-/** A size-class benchmark from outside the Kreis. Per-capita only — see below. */
-export type OutsidePeer = {
-  region_id: string;
-  name: string;
-  href: string | null;
-  population: number;
-  scope: string;
-  values: Record<Owner, number | null>;
+/**
+ * Everything the KPI tiles need for ONE owner filter — values and the comparison
+ * basis. Both are cut the same way: under "Privat" the tendency measures the
+ * Gemeinde's private plants against the private plants of the chosen level, never
+ * against its whole stock.
+ */
+export type KpiOwnerData = {
+  /** Zwei Blöcke: alles zur Solaranlage links, alles zum Speicher rechts. Der
+   *  Pumpspeicher-Hinweis hängt an der Speicher-Gruppe, wo er hingehört. */
+  groups: KpiGroup[];
+  perCap: Record<string, number | null>;
+  references: RefLevel[];
 };
 
-type Owner = "alle" | "privat" | "gewerbe";
+type Owner = AtlasOwner;
 type Metric = "perCapita" | "count" | "kwp" | "speicher";
 
 const OWNERS: { key: Owner; label: string }[] = [
@@ -32,32 +43,42 @@ const METRICS: { key: Metric; label: string }[] = [
   { key: "perCapita", label: "Leistung je Einwohner" },
   { key: "count", label: "Zahl der Anlagen" },
   { key: "kwp", label: "Installierte Leistung" },
-  { key: "speicher", label: "Speicherkapazität" },
+  // Beim Namen genannt: sortiert wird nach Batteriekapazität, Pumpspeicher zählt
+  // hier nicht mit (sonst gewinnt jede Rangliste die Gemeinde mit dem Kraftwerk).
+  { key: "speicher", label: "Batteriespeicher" },
 ];
 
-/**
- * Category colours, fixed. A slice that means "Freifläche" cannot change meaning
- * between light and dark (widget convention: theme owns background, text and
- * accent, never semantics).
- */
-const SEG: Record<string, { label: string; color: string }> = {
-  privat_dach: { label: "Private Dächer", color: "#1365EA" },
-  gewerbe_dach: { label: "Gewerbedächer", color: "#6A9EF2" },
-  steckersolar: { label: "Balkonkraftwerke", color: "#BCD6FF" },
-  freiflaeche: { label: "Freifläche", color: "#073C93" },
+const SEG: Record<string, { label: string }> = {
+  privat_dach: { label: "Private Dächer" },
+  gewerbe_dach: { label: "Gewerbedächer" },
+  steckersolar: { label: "Balkonkraftwerke" },
+  freiflaeche: { label: "Freifläche" },
 };
+
+/**
+ * Donut-Farben nach GRÖSSE, nicht nach Kategorie: das größte Segment am
+ * dunkelsten, dann heller. Welcher Anlagentyp welche Farbe hat, steht in der
+ * Legende daneben — die Farbe kodiert hier den Rang, damit das Auge die
+ * Reihenfolge ohne Prozentlesen erfasst.
+ *
+ * Die Rampe ist die Accent-Familie dunkel→hell, aus den TOKENS gelesen (nicht
+ * als Hex getippt): accent-dark → accent → accent-light → border-accent. Als
+ * konkrete Hex-Werte, weil der Donut auch im Embed rendert, wo die CSS-Variablen
+ * fehlen — aber die eine Quelle bleibt das Token-Set in lib/theme.ts.
+ */
+const DONUT_RAMP = [
+  tokens["--color-accent-dark"],
+  tokens["--color-accent"],
+  tokens["--color-accent-light"],
+  tokens["--color-border-accent"],
+];
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
-function fmtLeistung(kwp: number): string {
-  if (kwp >= 1000) return `${(kwp / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MW`;
-  return `${nf(kwp)} kW`;
-}
-
 function fmtValue(v: number, m: Metric): string {
-  if (m === "perCapita") return `${nf(v)} W`;
+  if (m === "perCapita") return fmtWattProKopf(v);
   if (m === "kwp") return fmtLeistung(v);
-  if (m === "speicher") return v >= 1000 ? `${(v / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} MWh` : `${nf(v)} kWh`;
+  if (m === "speicher") return fmtSpeicherKwh(v);
   return nf(v);
 }
 
@@ -65,7 +86,6 @@ type PeerRow = {
   region_id: string;
   name: string;
   href: string | null;
-  scope: string;
   value: number;
   rang: number | null;
   isSelf: boolean;
@@ -87,7 +107,7 @@ function MetricPicker({ metric, onChange }: { metric: Metric; onChange: (m: Metr
     onChange(METRICS[next].key);
   };
   return (
-    <div style={S.pickerBar}>
+    <div className="rank-picker">
       <button
         type="button"
         onClick={() => go(-1)}
@@ -98,7 +118,22 @@ function MetricPicker({ metric, onChange }: { metric: Metric; onChange: (m: Metr
       </button>
       <div ref={ref} style={{ position: "relative", display: "flex", flex: 1 }}>
         <button type="button" onClick={() => setOpen(!open)} style={S.pickerLabel}>
-          {METRICS[idx]?.label}
+          {/* Alle Labels übereinander gestapelt: die (unsichtbaren) längeren
+              spannen die Breite auf, das aktive ist sichtbar. So bleibt der Picker
+              beim Metrik-Wechsel gleich breit — sonst verschiebt sich der Platz der
+              Überschrift daneben und die ganze Rangliste springt. Kein fester
+              Pixelwert: neue Kennzahlen bemessen sich automatisch mit. */}
+          <span style={S.pickerLabelStack}>
+            {METRICS.map((m) => (
+              <span
+                key={m.key}
+                aria-hidden={m.key !== metric}
+                style={{ gridArea: "1 / 1", visibility: m.key === metric ? "visible" : "hidden" }}
+              >
+                {m.label}
+              </span>
+            ))}
+          </span>
           <IconChevronDown size={8} />
         </button>
         {open && (
@@ -154,21 +189,23 @@ function useOutsideClose(open: boolean, close: () => void) {
  * different stories side by side.
  */
 export default function GemeindeHero({
+  kpi,
   cells,
   siblings,
   siblingCells,
-  outside,
   regionId,
-  regionName,
   kreisName,
   basePath,
 }: {
+  kpi: Record<Owner, KpiOwnerData>;
   cells: HeroCell[];
   siblings: RankingRegion[];
   siblingCells: ChildYearRow[];
-  outside: OutsidePeer[];
+  // Der Größenklassen-Vergleich stand hier einmal als Zeile in der Rangliste und
+  // hat sie kaputtgemacht (drei Mal „Platz 1" in einer Liste, weil die Zeilen aus
+  // einer anderen Grundgesamtheit kamen). Er lebt jetzt als eigene Kachelreihe
+  // über dem Hero — siehe components/atlas/GemeindePeerTiles.tsx.
   regionId: string;
-  regionName: string;
   kreisName?: string;
   basePath: string;
 }) {
@@ -183,8 +220,10 @@ export default function GemeindeHero({
     () =>
       cells
         .filter((c) => c.kwp > 0 && SEG[c.segment] && keep(c.segment))
-        .map((c) => ({ key: c.segment, label: SEG[c.segment].label, color: SEG[c.segment].color, value: c.kwp, count: c.count }))
-        .sort((a, b) => b.value - a.value),
+        .map((c) => ({ key: c.segment, label: SEG[c.segment].label, value: c.kwp, count: c.count }))
+        .sort((a, b) => b.value - a.value)
+        // Farbe erst nach dem Sortieren: nach Rang dunkel→hell (siehe DONUT_RAMP).
+        .map((s, i) => ({ ...s, color: DONUT_RAMP[Math.min(i, DONUT_RAMP.length - 1)] })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [cells, owner],
   );
@@ -222,7 +261,6 @@ export default function GemeindeHero({
       region_id: x.region.region_id,
       name: x.region.name,
       href: x.region.slug ? `${basePath}/${x.region.slug}` : null,
-      scope: "im Landkreis",
       value: x.value,
       rang: i + 1,
       isSelf: x.region.region_id === regionId,
@@ -230,37 +268,30 @@ export default function GemeindeHero({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [siblingCells, siblings, owner, metric, basePath, regionId]);
 
+  /**
+   * Zwei Blöcke statt einer Liste — und das ist kein Layout-Detail.
+   *
+   * Die Tabelle beantwortet EINE Frage: „Wo stehe ich unter meinen Nachbarn?"
+   * Nur Gemeinden desselben Landkreises, durchgehende Ränge, die eigene Gemeinde
+   * an ihrer echten Position.
+   *
+   * Die Größenklassen-Spitze („Wie schlage ich mich gegen ähnlich große Orte
+   * bundesweit?") stand hier früher mit drin — eine andere Grundgesamtheit in
+   * derselben nummerierten Liste. Das erzeugte drei Zeilen mit einer „1." und
+   * eine unerklärte Lücke von Rang 2 auf Rang 5. Sie später ohne Nummer
+   * anzuhängen war nur ein Pflaster: die Aussage ist ein Einordnungs-Fakt, keine
+   * Ranglisten-Zeile, und gehört deshalb gar nicht in diese Tabelle.
+   */
   const { rows, selfDetached } = useMemo(() => {
-    // The size-class benchmark only exists per head. On absolute counts a
-    // 7.000-inhabitant peer says nothing — the whole point of that row is that
-    // population is held constant.
-    const ext: PeerRow[] =
-      metric === "perCapita"
-        ? outside
-            .filter((o) => o.values[owner] !== null)
-            .map((o) => ({
-              region_id: o.region_id,
-              name: o.name,
-              href: o.href,
-              scope: o.scope,
-              value: o.values[owner] as number,
-              rang: 1,
-              isSelf: false,
-            }))
-        : [];
-    // Sort self IN with everyone else, so it lands at its real position: under
-    // "Gewerbe" Höchberg may sit in the top few, under "Pro Kopf" near the bottom.
-    const all = [...ranked, ...ext].sort((a, b) => b.value - a.value);
-    // Always exactly five rows, and the reader's own Gemeinde is always one of
-    // them: top four leaders plus self as the fifth, shown at its real rank with
-    // a gap that says the ranks in between are skipped. When self is already in
-    // the top five it simply sits at its natural position.
-    const selfIdx = all.findIndex((r) => r.isSelf);
-    if (selfIdx === -1) return { rows: all.slice(0, 5), selfDetached: false };
-    if (selfIdx < 5) return { rows: all.slice(0, 5), selfDetached: false };
-    const leaders = all.filter((r) => !r.isSelf).slice(0, 4);
-    return { rows: [...leaders, all[selfIdx]], selfDetached: true };
-  }, [ranked, outside, owner, metric]);
+    // Immer genau fünf Zeilen, und die eigene Gemeinde ist immer eine davon:
+    // vier Spitzenreiter plus sie selbst an ihrem echten Rang. Die Sprungmarke
+    // sagt, dass die Ränge dazwischen übersprungen sind.
+    const selfIdx = ranked.findIndex((r) => r.isSelf);
+    if (selfIdx === -1) return { rows: ranked.slice(0, 5), selfDetached: false };
+    if (selfIdx < 5) return { rows: ranked.slice(0, 5), selfDetached: false };
+    const leaders = ranked.filter((r) => !r.isSelf).slice(0, 4);
+    return { rows: [...leaders, ranked[selfIdx]], selfDetached: true };
+  }, [ranked]);
 
   // Cap at the runner-up: one Gemeinde with a solar park (126.865 W/head against
   // 17.705 on second place) would flatten every other bar to a hairline.
@@ -288,6 +319,22 @@ export default function GemeindeHero({
         ))}
       </div>
 
+      {/* Die Kacheln gehören ins Widget, nicht darüber: sonst zeigt der Filter
+          „Privat" eine private Rangliste neben Gesamt-Kennzahlen. */}
+      <AtlasKpiRow
+        groups={kpi[owner].groups}
+        regionPerCap={kpi[owner].perCap}
+        references={kpi[owner].references}
+        defaultRefKey="landkreis"
+        note={
+          owner === "privat"
+            ? "Verglichen werden nur private Anlagen, auch beim Durchschnitt."
+            : owner === "gewerbe"
+              ? "Verglichen werden nur gewerbliche Anlagen, auch beim Durchschnitt."
+              : undefined
+        }
+      />
+
       <div style={S.split}>
         <div style={S.left}>
           {slices.length === 0 ? (
@@ -297,11 +344,14 @@ export default function GemeindeHero({
               <div onMouseLeave={() => setActive(null)} style={{ display: "inline-block" }}>
                 <DonutChart segments={slices} size={170}>
                   <div key={shown?.key ?? "total"} style={S.center}>
-                    <div style={S.centerValue}>{fmtLeistung(shown ? shown.value : total)}</div>
-                    <div style={S.centerLabel}>{shown ? shown.label : "gesamt"}</div>
-                    <div style={S.centerSub}>
-                      {shown ? `${nf(shown.count)} Anlagen` : `${Math.round(total > 0 ? 100 : 0)} %`}
-                    </div>
+                    {/* Zahl groß und zentriert, Einheit klein darunter. Kein
+                        „gesamt"/„100 %" mehr — die Summe steht schon als Kennzahl
+                        oben, hier war sie doppelt. Beim Überfahren eines Segments
+                        tritt dessen Name + Anlagenzahl an die Stelle. */}
+                    <div style={S.centerValue}>{pvLeistungTeile(shown ? shown.value : total).value}</div>
+                    <div style={S.centerUnit}>{pvLeistungTeile(shown ? shown.value : total).unit}</div>
+                    {shown && <div style={S.centerLabel}>{shown.label}</div>}
+                    {shown && <div style={S.centerSub}>{nf(shown.count)} Anlagen</div>}
                   </div>
                 </DonutChart>
               </div>
@@ -326,7 +376,7 @@ export default function GemeindeHero({
         </div>
 
         <div style={S.right}>
-          <div style={S.rankHead}>
+          <div className="rank-head">
             <div style={S.rankTitle}>{`Top Kommunen${kreisName ? ` im ${kreisName}` : ""}`}</div>
             <MetricPicker metric={metric} onChange={setMetric} />
           </div>
@@ -334,55 +384,18 @@ export default function GemeindeHero({
           {/* Re-keyed on filter+metric so the whole set fades in on a switch —
               softens the reorder that a per-row width transition can't cover. */}
           <div key={`${owner}-${metric}`} style={S.rowsFade}>
-          {rows.map((r) => {
-            // Five rows, always the same height. When self is beyond the top it
-            // takes the last slot and floats above the table (shadow) — its real
-            // rank makes clear the ranks in between are skipped, without a gap row
-            // that would change the block's height on every filter switch.
-            const floating = selfDetached && r.isSelf;
-            return (
-              <div
-                key={`${r.region_id}-${r.scope}`}
-                style={{ ...S.peerRow, ...(r.isSelf ? S.peerSelf : null), ...(floating ? S.peerFloat : null) }}
-              >
-                <span style={S.peerRank}>{r.rang}.</span>
-                <span style={S.peerName}>
-                  {r.href && !r.isSelf ? (
-                    <Link href={r.href} style={S.peerLink}>
-                      {r.name}
-                    </Link>
-                  ) : (
-                    <span style={{ ...S.peerLink, fontWeight: r.isSelf ? 700 : 500 }}>{r.name}</span>
-                  )}
-                  <span style={S.peerScope}>{r.scope}</span>
-                </span>
-                <span style={S.peerVal}>
-                  <span>{fmtValue(r.value, metric)}</span>
-                  <span style={S.track}>
-                    <span
-                      style={{
-                        ...S.fill,
-                        width: `${Math.min(100, Math.max(2, Math.round((r.value / scale) * 100)))}%`,
-                        background: r.isSelf ? v("--color-accent") : v("--color-accent-light"),
-                      }}
-                    />
-                  </span>
-                </span>
-              </div>
-            );
-          })}
-          </div>
-
-          {/* Reserved height: the note only shows under "Pro Kopf", so without a
-              fixed slot the content below the card would jump on every metric
-              switch. */}
-          <div style={S.peerNoteWrap}>
-            {metric === "perCapita" && (
-              <p style={S.peerNote}>
-                Verglichen mit Gemeinden ähnlicher Größe — die bundesweite Spitze wäre ein Koog mit
-                55 Einwohnern und sagte über {regionName} nichts.
-              </p>
-            )}
+            {rows.map((r) => (
+              <PeerZeile
+                key={r.region_id}
+                row={r}
+                metric={metric}
+                scale={scale}
+                // Five rows, always the same height. When self is beyond the top
+                // it takes the last slot and floats above the table (shadow) —
+                // its real rank makes clear the ranks in between are skipped.
+                floating={selfDetached && r.isSelf}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -390,14 +403,73 @@ export default function GemeindeHero({
   );
 }
 
+/**
+ * Eine Zeile der Rangliste. Ohne `rang` (Vergleichsblock) bleibt die Spalte leer
+ * statt eine Nummer zu erfinden — genau die erfundene "1." war der Fehler.
+ */
+function PeerZeile({
+  row,
+  metric,
+  scale,
+  floating = false,
+}: {
+  row: PeerRow;
+  metric: Metric;
+  scale: number;
+  floating?: boolean;
+}) {
+  // Dezente Hervorhebung der eigenen Zeile (kein Link hier → keine kräftige
+  // Blaufüllung wie in der großen Rangliste, wo die Zeile klickbar ist).
+  const cells = (
+    <>
+      <span style={S.peerRank}>{row.rang === null ? "" : `${row.rang}.`}</span>
+      <span style={S.peerName}>
+        <span style={{ ...S.peerLink, fontWeight: row.isSelf ? 700 : 500 }}>{row.name}</span>
+      </span>
+      <span style={S.peerVal}>
+        <span>{fmtValue(row.value, metric)}</span>
+        <span style={S.track}>
+          <span
+            style={{
+              ...S.fill,
+              width: `${Math.min(100, Math.max(2, Math.round((row.value / scale) * 100)))}%`,
+              background: row.isSelf ? v("--color-accent") : v("--color-accent-light"),
+            }}
+          />
+        </span>
+      </span>
+    </>
+  );
+  const style = { ...S.peerRow, ...(row.isSelf ? S.peerSelf : null), ...(floating ? S.peerFloat : null) };
+  // Ganze Zeile klickbar (nicht nur der Name) mit Hover-„→", wie in der großen
+  // Rangliste. Die eigene Zeile ist die aktuelle Seite → kein Link, kein Pfeil.
+  // Abgesetzt (Rang jenseits der Top 5) → gezackte Oberkante (.peer-float) als
+  // Bruch, der die übersprungenen Ränge andeutet: es ist NICHT der 5. Platz.
+  return row.href && !row.isSelf ? (
+    <Link href={row.href} className="atlas-rank-row" style={{ ...style, ...S.peerRowLink }}>
+      {cells}
+      <span className="atlas-go" style={S.peerGo} aria-hidden>
+        <IconArrowRight size={12} />
+      </span>
+    </Link>
+  ) : (
+    <div style={style}>
+      {cells}
+      <span aria-hidden />
+    </div>
+  );
+}
+
 const S: Record<string, React.CSSProperties> = {
-  card: { marginBottom: 28 },
+  // Einheitlicher Section-Abstand (space.huge) — wie die übrigen Blöcke der Seite.
+  card: { marginBottom: space.huge },
   chips: { display: "flex", gap: 4, marginBottom: 14 },
   chip: {
     border: `1px solid ${v("--color-border")}`,
     borderRadius: 999,
     padding: "5px 12px",
-    fontSize: 12,
+    // Fliesstextgroesse aus der Token-Skala, wie die Tendenz-Zeile darunter.
+    fontSize: v("--font-size-body"),
     fontWeight: 600,
     cursor: "pointer",
     fontFamily: "inherit",
@@ -405,13 +477,16 @@ const S: Record<string, React.CSSProperties> = {
     // Switching filter redraws every number; without this the table jumps.
     transition: "background 160ms ease, color 160ms ease",
   },
-  split: { display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start" },
+  // Abstand über dem Donut-/Ranglisten-Block = Luft unter der Kennzahl-Zeile.
+  split: { display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start", marginTop: 24 },
   left: { flex: "1 1 220px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12, minWidth: 0 },
   right: { flex: "1 1 300px", minWidth: 0 },
-  center: { animation: "fu 0.18s ease-out" },
+  center: { animation: "fu 0.18s ease-out", textAlign: "center" },
   rowsFade: { animation: "fu 0.28s ease-out" },
-  centerValue: { fontFamily: v("--font-mono"), fontSize: 19, fontWeight: 700, lineHeight: 1.1 },
-  centerLabel: { fontSize: 11, color: v("--color-text-secondary"), marginTop: 2 },
+  centerValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700, lineHeight: 1.1 },
+  // Einheit als eigene Zeile unter dem Wert, kleiner und heller.
+  centerUnit: { fontSize: v("--font-size-small"), fontWeight: 600, color: v("--color-text-secondary"), marginTop: 1 },
+  centerLabel: { fontSize: 11, color: v("--color-text-secondary"), marginTop: 4 },
   centerSub: { fontSize: 10, color: v("--color-text-muted"), fontFamily: v("--font-mono") },
   legend: { display: "flex", flexWrap: "wrap", gap: "4px 10px", justifyContent: "center" },
   legendItem: {
@@ -431,7 +506,6 @@ const S: Record<string, React.CSSProperties> = {
   legendVal: { fontFamily: v("--font-mono"), fontWeight: 600, color: v("--color-text-primary") },
   empty: { fontSize: 12, color: v("--color-text-muted"), margin: 0 },
   // Titel links (darf 2-zeilig umbrechen), Multitool rechts.
-  rankHead: { display: "flex", alignItems: "center", gap: 12, marginBottom: 10 },
   rankTitle: {
     flex: "1 1 auto",
     minWidth: 0,
@@ -440,7 +514,6 @@ const S: Record<string, React.CSSProperties> = {
     lineHeight: 1.25,
     color: v("--color-text-primary"),
   },
-  pickerBar: { display: "flex", alignItems: "stretch", flex: "0 0 auto", maxWidth: "58%" },
   pickerArrow: {
     border: `1px solid ${v("--color-border")}`,
     background: v("--color-bg"),
@@ -451,6 +524,8 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
   },
+  // Der Label-Stapel bemisst sich am längsten Eintrag (grid, alle in einer Zelle).
+  pickerLabelStack: { display: "grid", justifyItems: "center" },
   pickerLabel: {
     flex: 1,
     display: "inline-flex",
@@ -493,7 +568,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   peerRow: {
     display: "grid",
-    gridTemplateColumns: "26px minmax(0,1fr) 88px",
+    gridTemplateColumns: "26px minmax(0,1fr) 88px 14px",
     alignItems: "center",
     gap: 8,
     padding: "5px 6px",
@@ -502,22 +577,37 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 12,
     transition: "background 160ms ease",
   },
+  peerRowLink: { textDecoration: "none", color: "inherit", cursor: "pointer" },
+  // Hover-„→" am Zeilenende (Sichtbarkeit steuert die globale .atlas-rank-row-Regel).
+  peerGo: { display: "flex", alignItems: "center", justifyContent: "flex-end", color: v("--color-accent") },
+  // Dezente Hervorhebung: heller Blauton + blaue Kontur (kein Link → nicht kräftig).
   peerSelf: { background: v("--color-bg-accent"), boxShadow: `inset 0 0 0 1.5px ${v("--color-accent")}` },
-  // Detached self: lifted off the table with a drop shadow (keeps the blue outline).
+  // Abgesetzt: als eigene, HELLERE Karte aus der Tabelle gelöst — Fläche etwas
+  // aufgehellt gegenüber dem Seitenhintergrund (color-mix mit Weiß, folgt jedem
+  // Theme), damit die abgerissenen Zacken als Box-Rand lesen (nicht als heller
+  // Streifen IN der Box). Leichte Kontur überschreibt die von peerSelf. Zacken-
+  // Oberkante + Schatten kommen aus der .peer-float-Regel (Maske + filter).
+  // Abgesetzt (nur wenn der eigene Rang jenseits der Top 5 liegt): saubere,
+  // hellere Karte, aus der Tabelle gehoben (Schatten). Obere Ecken SCHARF, unten
+  // abgerundet; die Oberkante ist eine gestrichelte BLAUE Linie (Abriss-
+  // Perforation → „nicht der 5. Platz"). Seiten/Boden dezent grau.
   peerFloat: {
-    background: v("--color-bg"),
-    boxShadow: `inset 0 0 0 1.5px ${v("--color-accent")}, 0 3px 12px rgba(0,0,0,0.12)`,
+    background: `color-mix(in srgb, ${v("--color-bg")}, #fff 45%)`,
+    borderTop: `1px dashed ${v("--color-accent")}`,
+    borderRight: `1px solid ${v("--color-border")}`,
+    borderBottom: `1px solid ${v("--color-border")}`,
+    borderLeft: `1px solid ${v("--color-border")}`,
+    boxSizing: "border-box",
+    boxShadow: "0 3px 12px rgba(0,0,0,0.14)",
+    borderRadius: `0 0 ${v("--radius-sm")} ${v("--radius-sm")}`,
     position: "relative",
     zIndex: 1,
   },
   peerRank: { fontFamily: v("--font-mono"), fontSize: 11, color: v("--color-text-muted") },
   peerName: { display: "flex", flexDirection: "column", minWidth: 0 },
-  peerLink: { color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
-  peerScope: { fontSize: 9, color: v("--color-text-muted") },
+  peerLink: { fontSize: v("--font-size-body"), color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   peerVal: { fontFamily: v("--font-mono"), fontSize: 11, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 },
   track: { display: "block", width: "100%", height: 4, background: v("--color-border"), borderRadius: 2 },
   // Links verankert → Balken wächst nach rechts (kein marginLeft:auto).
   fill: { display: "block", height: "100%", borderRadius: 2, transition: "width 220ms ease" },
-  peerNoteWrap: { minHeight: 44 },
-  peerNote: { fontSize: 10, color: v("--color-text-muted"), lineHeight: 1.6, margin: "10px 0 0" },
 };

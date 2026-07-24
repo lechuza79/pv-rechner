@@ -871,6 +871,14 @@ async function phaseUpload(): Promise<void> {
   if (rollupErr) throw new Error(`mastr_refresh_region_rollup failed: ${rollupErr.message}`);
   log(`Region rollup rebuilt`, "ok");
 
+  // Dasselbe für die Gemeinde-Summen, aus denen der Größenklassen-Vergleich
+  // liest. Ohne diesen Schritt vergleicht die Gemeinde-Seite gegen den
+  // Vormonats-Bestand (falsche Plätze), statt gegen den frisch importierten.
+  log(`Rebuilding Gemeinde solar totals...`);
+  const { error: gemErr } = await supabase.rpc("mastr_refresh_gemeinde_solar");
+  if (gemErr) throw new Error(`mastr_refresh_gemeinde_solar failed: ${gemErr.message}`);
+  log(`Gemeinde solar totals rebuilt`, "ok");
+
   const totalUnits = aggregates.reduce((s, a) => s + a.count, 0);
   const { error: metaErr } = await supabase
     .from("mastr_meta")

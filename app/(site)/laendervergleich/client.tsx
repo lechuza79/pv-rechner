@@ -3,8 +3,9 @@
 import LineChart, { LineSeries } from "../../../components/charts/LineChart";
 import AutoHeightIframe from "../../../components/AutoHeightIframe";
 import { v } from "../../../lib/theme";
+import { DataSourceNote } from "../../../components/PoweredBy";
+import { DATA_SOURCES } from "../../../lib/data-sources";
 import {
-  COUNTRY_COMPARE_META,
   YEARS_2000_2024,
   WINDSOLAR_SHARE_SERIES,
   CO2_INTENSITY_COMPARE_SERIES,
@@ -120,15 +121,7 @@ export default function LaendervergleichClient() {
         />
 
         <div style={{ marginTop: 22, paddingTop: 12, borderTop: `1px solid ${v("--color-border")}`, fontSize: 11, lineHeight: 1.6, color: v("--color-text-muted") }}>
-          Quelle:{" "}
-          <a href={COUNTRY_COMPARE_META.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-text-secondary") }}>
-            {COUNTRY_COMPARE_META.source}
-          </a>{" "}
-          ·{" "}
-          <a href={COUNTRY_COMPARE_META.licenseUrl} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-text-secondary") }}>
-            {COUNTRY_COMPARE_META.license}
-          </a>
-          . Bevölkerung für Pro-Kopf aus Embers Verbrauchsdaten abgeleitet.
+          <DataSourceNote source={DATA_SOURCES.ember} />. Bevölkerung für Pro-Kopf aus Embers Verbrauchsdaten abgeleitet.
         </div>
       </div>
     </div>

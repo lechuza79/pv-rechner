@@ -3,7 +3,6 @@ import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
-import Header from "../../../components/Header";
 import InfoTooltip from "../../../components/InfoTooltip";
 import { IconArrowRight, IconRefresh, IconSun, IconCheck } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
@@ -161,8 +160,7 @@ export default function Klimaanlage() {
   const potentialNet = Math.round(result.runningCost * (1 - potentialCoverage));
 
   return (
-    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "20px 16px" }}>
-      <Header />
+    <div style={{ background: v('--color-bg'), fontFamily: v('--font-text'), color: v('--color-text-primary'), minHeight: "100vh", padding: "0 16px 20px" }}>
       <div style={{ maxWidth: v('--page-max-width'), margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>

@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Logo from "./Logo";
 import { IconUser, IconMenu, IconClose, IconChevronDown } from "./Icons";
 import { v, iconSizes } from "../lib/theme";
-import { useAuth } from "../lib/auth";
+import { useAuth, signOut } from "../lib/auth";
 import ThemeController from "./ThemeController";
 
 interface HeaderProps {
@@ -33,6 +33,13 @@ const RECHNER_ITEMS: NavItem[] = [
   { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge in Echtzeit", page: "simulation" },
 ];
 
+// PV-Förderung group: the regional funding directory plus the national data
+// story that puts it in context (how policy shaped the build-out).
+const FOERDERUNG_ITEMS: NavItem[] = [
+  { href: "/photovoltaik-foerderung", label: "Förderprogramme", desc: "Bundes-, Landes- und Kommunalförderung nach Region", page: "foerderung" },
+  { href: "/photovoltaik-zubau-deutschland", label: "Solar-Zubau & Förderung", desc: "Wie Förderung den Ausbau geformt hat — die Datenstory", page: "zubau" },
+];
+
 // Energy-data hub: the dashboard plus the embeddable widgets. The embed page is
 // surfaced here (not as a top-level slot) so it becomes crawlable without
 // spending a scarce nav slot on a publisher feature.
@@ -45,7 +52,16 @@ const ENERGIE_ITEMS: NavItem[] = [
 
 export default function Header({ onLoginClick, onLogoutClick, activePage: activePageProp }: HeaderProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const authState = useAuth();
+  // Abmelden ohne durchgereichten Handler: nach dem Abmelden weg von der
+  // geschützten Seite und den Server-State auffrischen — sonst bliebe man auf
+  // dem Dashboard mit veralteter Sitzungsansicht stehen.
+  const defaultLogout = async () => {
+    await signOut();
+    router.push("/");
+    router.refresh();
+  };
   const activePage = activePageProp ?? (
     pathname === "/" ? "" :
     pathname.startsWith("/pv-simulation") ? "simulation" :
@@ -57,7 +73,10 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/waermepumpe-rechner") ? "waermepumpe" :
     pathname.startsWith("/klimaanlage-stromkosten") ? "klima" :
     pathname.startsWith("/balkonkraftwerk-rechner") ? "balkon" :
+    pathname.startsWith("/photovoltaik-zubau-deutschland") ? "zubau" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
+    pathname.startsWith("/ratgeber") ? "ratgeber" :
+    pathname.startsWith("/lohnt-sich-pv") ? "ratgeber" :
     pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""
   );
@@ -65,7 +84,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   const [isDesktop, setIsDesktop] = useState(true);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
+    const mq = window.matchMedia("(min-width: 1000px)");
     setIsDesktop(mq.matches);
     const handler = (e: MediaQueryListEvent) => {
       setIsDesktop(e.matches);
@@ -85,6 +104,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     display: "inline-flex",
     alignItems: "center",
     gap: 6,
+    whiteSpace: "nowrap",
   });
 
   const mobileLinkStyle = (page: string): React.CSSProperties => ({
@@ -98,42 +118,62 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     padding: "12px 0",
   });
 
-  const authElement = authState.status === "loading" ? null :
-    authState.status === "authed" ? (
-      onLogoutClick ? (
-        <button onClick={() => { onLogoutClick(); closeMenu(); }} style={{
-          background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
-          color: v('--color-text-muted'), cursor: "pointer", padding: isDesktop ? 0 : "12px 0",
-          fontFamily: v('--font-text'),
+  const email = authState.status === "authed" ? authState.user.email ?? "" : "";
+  const doLogout = () => { (onLogoutClick ?? defaultLogout)(); closeMenu(); };
+
+  // Einloggen-Element (für Desktop-Leiste UND Burger, Styling folgt isDesktop).
+  const loginElement = onLoginClick ? (
+    <button onClick={() => { onLoginClick(); closeMenu(); }} style={{
+      background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
+      color: v('--color-text-secondary'), cursor: "pointer", padding: isDesktop ? 0 : "12px 0",
+      fontFamily: v('--font-text'), display: "flex", alignItems: "center", gap: isDesktop ? 6 : 8,
+    }}>
+      <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
+    </button>
+  ) : (
+    <Link href="/login" style={{ ...(isDesktop ? linkStyle("") : mobileLinkStyle("")), gap: isDesktop ? 6 : 8 }} onClick={closeMenu}>
+      <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
+    </Link>
+  );
+
+  // Oben rechts, eingeloggt: EIN Profil-Menü (Dropdown) statt loser Links —
+  // ersetzt den Einloggen-Knopf. Inhalt bewusst schlank: Konto + Abmelden. Die
+  // internen Ziele (Dashboard, Admin) navigiert man über die Sidebar des
+  // internen Bereichs, den man über „Mein Konto" betritt.
+  const desktopAuth = authState.status === "loading" ? null
+    : authState.status === "authed"
+      ? <ProfileMenu email={email} onLogout={doLogout} />
+      : loginElement;
+
+  // Burger-Menü, eingeloggt: dieselbe schlanke Profil-Sektion als Liste.
+  const mobileAuth = authState.status === "loading" ? null
+    : authState.status === "authed" ? (
+      <>
+        <div style={{
+          fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em",
+          color: v('--color-text-muted'), padding: "14px 0 4px",
+        }}>
+          {email || "Mein Konto"}
+        </div>
+        <Link href="/dashboard" style={mobileLinkStyle("dashboard")} onClick={closeMenu}>
+          <IconUser size={16} color={v('--color-accent-light')} /> Mein Konto
+        </Link>
+        <button onClick={doLogout} style={{
+          background: "none", border: "none", fontSize: 16, fontWeight: 600,
+          color: v('--color-text-muted'), cursor: "pointer", padding: "12px 0",
+          fontFamily: v('--font-text'), textAlign: "left",
         }}>
           Abmelden
         </button>
-      ) : (
-        <Link href="/dashboard" style={isDesktop ? linkStyle("dashboard") : mobileLinkStyle("dashboard")} onClick={closeMenu}>
-          <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Dashboard
-        </Link>
-      )
-    ) : (
-      onLoginClick ? (
-        <button onClick={() => { onLoginClick(); closeMenu(); }} style={{
-          background: "none", border: "none", fontSize: isDesktop ? 14 : 16, fontWeight: 600,
-          color: v('--color-text-secondary'), cursor: "pointer", padding: isDesktop ? 0 : "12px 0",
-          fontFamily: v('--font-text'), display: "flex", alignItems: "center", gap: isDesktop ? 6 : 8,
-        }}>
-          <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
-        </button>
-      ) : (
-        <Link href="/photovoltaik-rechner" style={{ ...(isDesktop ? linkStyle("") : mobileLinkStyle("")), gap: isDesktop ? 6 : 8 }} onClick={closeMenu}>
-          <IconUser size={isDesktop ? 14 : 16} color={v('--color-accent-light')} /> Einloggen
-        </Link>
-      )
-    );
+      </>
+    ) : loginElement;
 
   return (
     <header style={{
       maxWidth: v('--header-max-width'),
       margin: "0 auto",
-      marginBottom: 20,
+      // Kein marginBottom mehr: der Header→Content-Abstand sitzt zentral im
+      // (site)-Layout (headerContentGap), nicht am Header selbst.
       position: "relative",
     }}>
       <div style={{
@@ -153,7 +193,13 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
               items={RECHNER_ITEMS}
               activePage={activePage}
             />
-            <Link href="/photovoltaik-foerderung" style={linkStyle("foerderung")}>PV-Förderung</Link>
+            <DesktopDropdown
+              triggerLabel="PV-Förderung"
+              triggerHref="/photovoltaik-foerderung"
+              items={FOERDERUNG_ITEMS}
+              activePage={activePage}
+            />
+            <Link href="/ratgeber" style={linkStyle("ratgeber")}>Ratgeber</Link>
             <DesktopDropdown
               triggerLabel="Strommix & Energiedaten"
               triggerHref="/strommix-deutschland"
@@ -165,7 +211,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: isDesktop ? 14 : 8 }}>
           <ThemeController compact={!isDesktop} />
-          {isDesktop ? authElement : (
+          {isDesktop ? desktopAuth : (
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
@@ -208,7 +254,11 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
-            <Link href="/photovoltaik-foerderung" style={mobileLinkStyle("foerderung")} onClick={closeMenu}>PV-Förderung</Link>
+            <MobileSection title="PV-Förderung" items={FOERDERUNG_ITEMS} activePage={activePage} onNavigate={closeMenu} />
+
+            <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
+
+            <Link href="/ratgeber" style={mobileLinkStyle("ratgeber")} onClick={closeMenu}>Ratgeber</Link>
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
@@ -216,11 +266,83 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
-            {authElement}
+            {mobileAuth}
           </nav>
         </>
       )}
     </header>
+  );
+}
+
+// Profil-Menü oben rechts (Desktop, eingeloggt). Ein Icon-Knopf öffnet ein
+// Dropdown mit Mail, den internen Zielen und Abmelden — statt drei loser Links
+// in der Leiste. Schließt bei Klick daneben und mit Escape.
+function ProfileMenu({ email, onLogout }: { email: string; onLogout: () => void }) {
+  const [open, setOpen] = useState(false);
+  const wrap = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => { if (wrap.current && !wrap.current.contains(e.target as Node)) setOpen(false); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("mousedown", onDoc); document.removeEventListener("keydown", onKey); };
+  }, [open]);
+
+  const itemStyle: React.CSSProperties = {
+    display: "block", width: "100%", textAlign: "left", textDecoration: "none",
+    padding: "10px 12px", borderRadius: 10, fontSize: 14, fontWeight: 600,
+    color: v('--color-text-primary'), background: "transparent",
+    border: "none", cursor: "pointer", fontFamily: v('--font-text'),
+  };
+  const hover = (on: boolean) => (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.background = on ? v('--color-bg-muted') : "transparent";
+  };
+
+  return (
+    <div ref={wrap} style={{ position: "relative" }}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        aria-label="Profil-Menü"
+        style={{
+          display: "inline-flex", alignItems: "center", gap: 6,
+          padding: "6px 10px", borderRadius: 999, cursor: "pointer",
+          background: open ? v('--color-accent-dim') : v('--color-bg-muted'),
+          border: `1px solid ${open ? v('--color-accent') : v('--color-border')}`,
+        }}
+      >
+        <IconUser size={16} color={v('--color-accent')} />
+        <IconChevronDown size={iconSizes.md} color={v('--color-text-muted')} style={{ transition: "transform 0.15s ease", transform: open ? "rotate(180deg)" : "none" }} />
+      </button>
+
+      {open && (
+        <div role="menu" style={{
+          position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 100,
+          background: v('--color-bg'), border: `1px solid ${v('--color-border')}`,
+          borderRadius: 14, boxShadow: v('--shadow-lg'), padding: 8, minWidth: 220,
+          display: "flex", flexDirection: "column", gap: 2,
+        }}>
+          {email && (
+            <div style={{
+              fontSize: 12, color: v('--color-text-muted'), padding: "6px 12px 8px",
+              borderBottom: `1px solid ${v('--color-border')}`, marginBottom: 4,
+              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+            }}>
+              {email}
+            </div>
+          )}
+          <Link href="/dashboard" role="menuitem" onClick={() => setOpen(false)} style={itemStyle} onMouseEnter={hover(true)} onMouseLeave={hover(false)}>
+            Mein Konto
+          </Link>
+          <button role="menuitem" onClick={() => { setOpen(false); onLogout(); }} style={{ ...itemStyle, color: v('--color-text-muted') }} onMouseEnter={hover(true)} onMouseLeave={hover(false)}>
+            Abmelden
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -268,6 +390,7 @@ function DesktopDropdown({
           display: "inline-flex",
           alignItems: "center",
           gap: 6,
+          whiteSpace: "nowrap",
           cursor: "pointer",
           color: active ? v('--color-accent') : v('--color-text-secondary'),
         }}

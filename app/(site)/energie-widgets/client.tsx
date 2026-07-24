@@ -2,7 +2,6 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Header from "../../../components/Header";
 import { IconBolt, IconRefresh, IconLink, IconChevronDown } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import {
@@ -129,6 +128,18 @@ const SECTIONS: WidgetSection[] = [
     },
     showFrameWidth: true,
     variants: [{ id: "zubau-erneuerbare-atom", label: "Zubau EE vs. Atom", src: "/embed/zubau-erneuerbare-atom", height: 420 }],
+  },
+  {
+    id: "pv-zubau-deutschland",
+    label: "PV-Zubau & Förderung (Deutschland)",
+    intro:
+      "Der jährliche Photovoltaik-Zubau in Deutschland mit sinkender Einspeisevergütung und steigendem Strompreis auf einer Zeitachse — plus interaktiver Ereignis-Timeline, die die politischen Weichenstellungen erklärt.",
+    attribution: {
+      path: "/photovoltaik-zubau-deutschland",
+      text: "Wie Förderung den Solarausbau geformt hat – Solar Check",
+    },
+    showFrameWidth: true,
+    variants: [{ id: "pv-zubau-deutschland", label: "PV-Zubau", src: "/embed/pv-zubau-deutschland", height: 760 }],
   },
   {
     id: "karte",
@@ -291,7 +302,6 @@ export default function WidgetsClient() {
 
   return (
     <div style={S.page}>
-      <Header activePage="widgets" />
       <div style={S.wrap}>
         <h1 style={S.h1}>Energie-Widgets für die eigene Website</h1>
         <p style={S.subtitle}>
@@ -779,7 +789,6 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: v("--font-text"),
     color: v("--color-text-primary"),
     minHeight: "100vh",
-    paddingTop: 20,
   },
   wrap: { maxWidth: 720, margin: "0 auto", padding: "0 16px 64px" },
   h1: { fontSize: 28, fontWeight: 800, letterSpacing: "-0.02em", marginTop: 0, marginBottom: 10 },
