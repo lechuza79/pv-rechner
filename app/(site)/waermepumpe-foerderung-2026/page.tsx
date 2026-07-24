@@ -374,9 +374,9 @@ export default function WaermepumpeFoerderungPage() {
         {/* ── Interaktiver Förder-Check (Embed) ── */}
         <h2 style={S.h2}>Deine Förderung selbst ausrechnen</h2>
         <p style={S.p}>
-          Trag deine eigenen Werte ein — Kosten, alte Heizung, Einkommen — und der Förder-Check
-          zeigt dir sofort den Zuschuss. Er rechnet mit derselben geprüften Engine wie die
-          Tabelle oben, ohne Anmeldung:
+          Beantworte ein paar Fragen — Gebäude, alte Heizung, Einkommen — und der Förder-Check
+          führt dich Schritt für Schritt zu deinem BEG-Zuschuss. Er rechnet mit derselben
+          geprüften Engine wie die Tabelle oben, ohne Anmeldung:
         </p>
         <AutoHeightIframe
           src="/embed/foerder-check"
