@@ -23,6 +23,14 @@ export interface WidgetSettings {
    * hiding it externally is a future premium feature, so it is never offered in
    * the free copy-paste embed code. */
   branding: boolean;
+  /** First-party embed: this widget is embedded by us on one of our OWN pages
+   * (onsite=1), not on a third-party site. In that case the surrounding page
+   * already carries the CTAs' context, the "Powered by" line is redundant, and
+   * the data source is credited centrally in the page footer — so the widget
+   * shows its actions as a direct bar (no ⋯), and drops its own "Powered by" and
+   * source note. Default false (external embed: keep branding + in-widget source
+   * per the licence terms). Never offered in the copy-paste embed code. */
+  onsite: boolean;
 }
 
 export const WIDGET_SETTINGS_DEFAULTS: WidgetSettings = {
@@ -31,6 +39,7 @@ export const WIDGET_SETTINGS_DEFAULTS: WidgetSettings = {
   switchable: true,
   embed: true,
   branding: true,
+  onsite: false,
 };
 
 const RANGES: readonly WidgetRange[] = ["24h", "7d", "30d", "year"];
@@ -45,6 +54,7 @@ export function parseWidgetSettingsQuery(search: string): Partial<WidgetSettings
   if (p.has("switch")) out.switchable = p.get("switch") !== "0";
   if (p.has("embed")) out.embed = p.get("embed") !== "0";
   if (p.has("branding")) out.branding = p.get("branding") !== "0";
+  if (p.has("onsite")) out.onsite = p.get("onsite") !== "0";
   return out;
 }
 
@@ -58,6 +68,7 @@ export function parseWidgetSettingsObject(obj: unknown): Partial<WidgetSettings>
   if (typeof s.switchable === "boolean") out.switchable = s.switchable;
   if (typeof s.embed === "boolean") out.embed = s.embed;
   if (typeof s.branding === "boolean") out.branding = s.branding;
+  if (typeof s.onsite === "boolean") out.onsite = s.onsite;
   if (typeof s.range === "string" && RANGES.indexOf(s.range as WidgetRange) !== -1) {
     out.range = s.range as WidgetRange;
   }
@@ -66,8 +77,9 @@ export function parseWidgetSettingsObject(obj: unknown): Partial<WidgetSettings>
 
 /** Build URL params from a selection, omitting any value equal to the default
  * so the standard widget yields a clean, param-free embed URL.
- * NOTE: `embed` is intentionally NOT serialised here — it is a gallery-only
- * runtime flag (embed=0), never part of the copy-paste embed code. */
+ * NOTE: `embed` and `onsite` are intentionally NOT serialised here — they are
+ * first-party runtime flags (embed=0 on the gallery, onsite=1 on our own pages),
+ * never part of the copy-paste embed code handed to external embedders. */
 export function buildWidgetSettingsQuery(s: WidgetSettings): URLSearchParams {
   const p = new URLSearchParams();
   if (s.share !== WIDGET_SETTINGS_DEFAULTS.share) p.set("share", s.share ? "1" : "0");

@@ -4,6 +4,8 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import ProConLists from "../../../components/ProConLists";
 import Faq from "../../../components/Faq";
 import AutoHeightIframe from "../../../components/AutoHeightIframe";
+import { DataSourceNote } from "../../../components/PoweredBy";
+import { DATA_SOURCES } from "../../../lib/data-sources";
 import { waermepumpeFoerderungFaq } from "../../../lib/faq";
 import { v } from "../../../lib/theme";
 import { calcBegSubsidy, calcInvestBrutto, calcHeatLoad } from "../../../lib/heatpump";
@@ -379,10 +381,13 @@ export default function WaermepumpeFoerderungPage() {
           geprüften Engine wie die Tabelle oben, ohne Anmeldung:
         </p>
         <AutoHeightIframe
-          src="/embed/foerder-check"
+          src="/embed/foerder-check?onsite=1"
           title="BEG-Förder-Check für Wärmepumpen"
           fallbackHeight={520}
         />
+        <div style={{ marginTop: 8, fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+          <DataSourceNote source={DATA_SOURCES.beg} />
+        </div>
         <p style={{ ...S.p, marginTop: 14 }}>
           Für die vollständige Rechnung — inklusive Betriebskosten, Vergleich mit deiner alten
           Gas- oder Ölheizung und der Amortisation über 20 Jahre — geht es weiter im{" "}

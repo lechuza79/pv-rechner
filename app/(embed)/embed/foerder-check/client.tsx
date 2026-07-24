@@ -52,10 +52,15 @@ type Screen = "gebaeude" | "heizung" | "alter" | "nutzung" | "einkommen" | "kind
 export default function FoerderCheckWidget() {
   const [showEmbed, setShowEmbed] = useState(true);
   const [showBranding, setShowBranding] = useState(true);
+  // First-party embed (onsite=1): our own page carries CTAs' context, source and
+  // impressum — so we show the actions as a direct bar and drop "Powered by" +
+  // the in-widget source note (page footer credits it). See widget convention.
+  const [onsite, setOnsite] = useState(false);
   useWidgetTheme({
     onSettings: (s) => {
       if (typeof s.embed === "boolean") setShowEmbed(s.embed);
       if (typeof s.branding === "boolean") setShowBranding(s.branding);
+      if (typeof s.onsite === "boolean") setOnsite(s.onsite);
     },
   });
 
@@ -126,37 +131,16 @@ export default function FoerderCheckWidget() {
         margin: "0 auto",
       }}
     >
-      {/* ── Kopf ── */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2, minHeight: 18 }}>
-        {history.length > 0 && (
-          <button
-            onClick={back}
-            aria-label="Zurück"
-            style={{
-              border: "none",
-              background: "none",
-              padding: 0,
-              cursor: "pointer",
-              color: "var(--widget-muted)",
-              fontSize: 12,
-              fontFamily: "inherit",
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            ← Zurück
-          </button>
-        )}
-      </div>
-      <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.2, marginBottom: 2 }}>
+      {/* ── Kopf: Titel als Überschrift + Trennlinie darunter ── */}
+      <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: 0.1, lineHeight: 1.2 }}>
         Wärmepumpen-Förderung berechnen
       </div>
-      <div style={{ fontSize: 11, color: "var(--widget-muted)", marginBottom: 14 }}>
+      <div style={{ fontSize: 11.5, color: "var(--widget-muted)", marginTop: 3 }}>
         {screen === "result"
           ? "Dein geschätzter BEG-Zuschuss der KfW."
           : "In wenigen Fragen zum BEG-Zuschuss der KfW."}
       </div>
+      <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, margin: "12px 0 14px" }} />
 
       {screen === "result" ? (
         <ResultView
@@ -186,26 +170,51 @@ export default function FoerderCheckWidget() {
         />
       )}
 
-      {/* ── Footer: Quelle + Marke + Aktionen ── */}
+      {/* ── Footer: Zurück (unten) + Quelle + Marke + Aktionen ── */}
+      {/* onsite = First-Party-Embed: direkte Aktionsleiste, kein "Powered by",
+          keine Widget-eigene Quelle (die einbettende Seite/der Footer trägt sie). */}
       <div style={{ marginTop: 14 }}>
+        {history.length > 0 && (
+          <button
+            onClick={back}
+            aria-label="Zurück"
+            style={{
+              border: "none",
+              background: "none",
+              padding: 0,
+              marginBottom: 12,
+              cursor: "pointer",
+              color: "var(--widget-muted)",
+              fontSize: 12,
+              fontFamily: "inherit",
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            ← Zurück
+          </button>
+        )}
         <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
-        <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: 6 }}>
-          <DataSourceNote source={DATA_SOURCES.beg} />
-        </div>
+        {!onsite && (
+          <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: 6 }}>
+            <DataSourceNote source={DATA_SOURCES.beg} />
+          </div>
+        )}
         <div
           style={{
             fontSize: 10.5,
             color: "var(--widget-muted)",
             display: "flex",
-            justifyContent: showBranding ? "space-between" : "flex-end",
+            justifyContent: showBranding && !onsite ? "space-between" : "flex-end",
             alignItems: "center",
             gap: 8,
           }}
         >
-          {showBranding && <PoweredBy />}
+          {showBranding && !onsite && <PoweredBy />}
           <ChartActionBar
-            variant="menu"
-            menuUp
+            variant={onsite ? "bar" : "menu"}
+            menuUp={!onsite}
             showDownload={false}
             size={28}
             onDownload={() => {}}
