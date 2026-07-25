@@ -1,113 +1,165 @@
-// Kommunen-Solar-Award: welche Gemeinde führt in welcher Kategorie, je Ebene
-// (Deutschland / Bundesland / Landkreis). Reine Rechenfunktionen — kein DB- und
-// kein Next-Import, damit Server-Seiten, Admin-Ansicht und (später) das
-// Badge-Widget dieselbe Quelle benutzen. Die Rangliste, die hier entsteht, ist
-// dieselbe, aus der die Gemeinde-Detailseite später "Rang im Kreis" und den
-// Nachbarvergleich zieht — es darf keine zweite geben.
+// Kommunen-Solar-Award: Sieger je Kategorie × Vergleichsgruppe × geografischem
+// Bezug. Reine Rechenfunktionen — kein DB-/Next-Import, damit Backend-Ansicht,
+// Atlas-Seite und (später) das Badge dieselbe Rangliste benutzen. Es darf keine
+// zweite geben.
 //
-// Ehrlichkeits-Regel (BLOCKER, aus dem Award-Konzept): absolute und Pro-Kopf-
-// Rohzahlen werden von einem einzelnen Freiflächen-Solarpark vergiftet (eine
-// 24-Einwohner-Gemeinde mit einem Park = absurder Wp/Kopf). Deshalb rechnet die
-// Bürger-Merit-Achse auf DACHLEISTUNG (kwpDach, ohne Freifläche) UND nur oberhalb
-// einer Einwohner-Schwelle. Jede Kategorie ist danach betitelt, was sie misst.
-
-/** Solar-Kennzahlen einer bewohnten Gemeinde. kwpDach = alles außer Freifläche
- *  (kommt schon so aus dem Rollup `mastr_gemeinde_solar`). Die Balkon- und
- *  Zubau-Felder sind optional: solange der Rollup sie nicht trägt, sind die
- *  entsprechenden Kategorien schlicht "ohne Datengrundlage" statt falsch. */
-export type GemeindeStats = {
-  regionId: string; // 8-stelliger AGS
-  population: number; // > 0 (unbewohnte sind im Rollup ausgefiltert)
-  kwpAlle: number;
-  kwpDach: number;
-  balkonCount?: number;
-  balkonKwp?: number;
-  zubauKwpLastYear?: number;
-  zubauCountLastYear?: number;
-};
+// Das Modell ist an echten Daten verifiziert (2026-07-25):
+//  - Pro Kopf NUR bei Haushalts-Kategorien (privates Dach, Balkon, private
+//    Batterie). Bei Großanlagen (Freifläche, Wind, Biomasse, Wasser) ist „pro
+//    Kopf" nachweislich absurd (Büttel: 24 Ew, 100 MWp Park → 4,2 Mio Wp/Kopf) —
+//    deshalb gibt es dort schlicht keine Pro-Kopf-Kategorie, nur absolut.
+//  - Rollen-Achse (kreisfrei/Hauptstadt) fängt die Städte, Größen-Drittel die
+//    Dörfer. Größengrenzen kommen aus der Verteilung (Terzile), nicht gesetzt.
 
 export type AwardScopeLevel = "de" | "bundesland" | "landkreis";
+export type Traeger = "buerger" | "gewerbe";
+export type Messart = "proKopf" | "absolut";
+export type SizeBand = "klein" | "mittel" | "gross";
+export type Role = "gemeinde" | "stadt" | "grosse-kreisstadt" | "kreisfrei" | "hauptstadt";
 
-/** Steuert, mit welchem kanonischen Formatter die Zahl angezeigt wird — die
- *  Einheit wird NIE im Award-Modul geschrieben (siehe lib/atlas-format.ts). */
-export type MetricFormat = "wattProKopf" | "pvLeistung" | "count" | "countPer1000";
+/** Wie die Zahl angezeigt wird — die Einheit schreibt die Anzeige über den
+ *  kanonischen Formatter, nie das Modul (lib/atlas-format.ts). */
+export type MetricFormat = "wattProKopf" | "pvLeistung" | "count" | "countPer1000" | "whProKopf" | "speicherKwh";
+
+/** Solar-/Speicher-/EE-Kennzahlen einer bewohnten Gemeinde, je Träger getrennt.
+ *  Kommt aus dem Rollup `mastr_gemeinde_award` (ein DB-seitiger Lauf), Name +
+ *  Bezeichnung aus `mastr_regions`. */
+export type GemeindeStats = {
+  regionId: string; // 8-stelliger AGS
+  name: string;
+  bezeichnung: string; // amtliche Bezeichnung → Rolle
+  population: number;
+  privatDachKwp: number;
+  gewerbeDachKwp: number;
+  freiflaecheKwp: number;
+  balkonCount: number;
+  balkonKwp: number;
+  batteriePrivatKwh: number;
+  batterieGewerbeKwh: number;
+  windKwp: number;
+  biomasseKwp: number;
+  wasserKwp: number;
+  solarZubauKwp: number;
+};
+
+// ─── Kategorien ────────────────────────────────────────────────────────────────
 
 export type AwardCategory = {
   key: string;
-  /** Kurzer, ehrlicher Titel — sagt, was gemessen wird. */
   label: string;
-  /** Eine Zeile: was diese Auszeichnung bedeutet (und was NICHT). */
   merit: string;
-  /** Nenner ist die Einwohnerzahl. */
-  perCapita: boolean;
-  /** Unterliegt der Einwohner-Schwelle (nur sinnvoll bei Pro-Kopf-Kategorien:
-   *  schützt vor Kleinst-Gemeinden mit absurdem Nenner). */
-  minPopulation: boolean;
+  traeger: Traeger;
+  messart: Messart;
   format: MetricFormat;
-  /** Die zu rankende Größe. `null` = Datengrundlage fehlt (optionales Feld nicht
-   *  gesetzt) oder Nenner ungültig → Gemeinde ist in dieser Kategorie nicht
-   *  wertbar. */
   metric: (g: GemeindeStats) => number | null;
 };
 
-const wpProKopf = (kwp: number, pop: number): number | null =>
-  pop > 0 ? (kwp * 1000) / pop : null;
+const perCapita = (val: number, pop: number): number | null => (pop > 0 ? (val * 1000) / pop : null);
+const pos = (n: number): number | null => (n > 0 ? n : null);
 
-/** Die fünf Kategorien des Konzepts. Reihenfolge = Anzeigereihenfolge.
- *
- *  Bürger-Merit zuerst (Dach pro Kopf), dann die absolute Gesamtleistung
- *  (ehrlich inkl. Freifläche/Gewerbe), dann die beiden Balkon-Kategorien (park-
- *  immun, glaubwürdig absolut UND pro Kopf) und der Zubau. */
 export const AWARD_CATEGORIES: AwardCategory[] = [
+  // Bürger, pro Kopf — verifiziert aussagekräftig (skaliert mit Haushalten).
   {
-    key: "solardach-spitzenreiter",
+    key: "dach-privat-pk",
     label: "Solardach-Spitzenreiter",
-    merit:
-      "Meiste Dach-Solarleistung je Einwohner — was die Bürgerinnen und Bürger selbst aufs Dach gebracht haben (Freiflächen zählen nicht mit).",
-    perCapita: true,
-    minPopulation: true,
+    merit: "Meiste private Dach-Solarleistung je Einwohner.",
+    traeger: "buerger",
+    messart: "proKopf",
     format: "wattProKopf",
-    metric: (g) => wpProKopf(g.kwpDach, g.population),
+    metric: (g) => perCapita(g.privatDachKwp, g.population),
   },
+  {
+    key: "balkon-pk",
+    label: "Balkon-Pionier",
+    merit: "Meiste Balkonkraftwerke je 1.000 Einwohner — die sauberste Bürgerzahl.",
+    traeger: "buerger",
+    messart: "proKopf",
+    format: "countPer1000",
+    metric: (g) => perCapita(g.balkonCount, g.population),
+  },
+  {
+    key: "batterie-privat-pk",
+    label: "Speicher-Vorreiter",
+    merit: "Meiste private Batteriekapazität je Einwohner.",
+    traeger: "buerger",
+    messart: "proKopf",
+    format: "whProKopf",
+    metric: (g) => perCapita(g.batteriePrivatKwh, g.population),
+  },
+  // Bürger, absolut — belohnt die großen Städte-Bürgerschaften.
+  {
+    key: "balkon-abs",
+    label: "Balkon-Hauptstadt",
+    merit: "Meiste Balkonkraftwerke insgesamt.",
+    traeger: "buerger",
+    messart: "absolut",
+    format: "count",
+    metric: (g) => pos(g.balkonCount),
+  },
+  // Gewerbe / Standort, absolut — pro Kopf hier verifiziert absurd, daher nur so.
   {
     key: "solar-standort",
     label: "Solar-Standort",
-    merit:
-      "Höchste gesamte installierte Solarleistung — inklusive Gewerbe- und Freiflächenanlagen. Misst den Standort, nicht das Bürger-Engagement.",
-    perCapita: false,
-    minPopulation: false,
+    merit: "Höchste gewerbliche + Freiflächen-Solarleistung. Misst den Standort, nicht die Bürger.",
+    traeger: "gewerbe",
+    messart: "absolut",
     format: "pvLeistung",
-    metric: (g) => (g.kwpAlle > 0 ? g.kwpAlle : null),
+    metric: (g) => pos(g.gewerbeDachKwp + g.freiflaecheKwp),
   },
   {
-    key: "balkon-pionier",
-    label: "Balkon-Pionier",
-    merit:
-      "Meiste Balkonkraftwerke je Einwohner — die sauberste Bürger-Kennzahl, unbeeinflusst von großen Anlagen.",
-    perCapita: true,
-    minPopulation: true,
-    format: "countPer1000",
-    metric: (g) =>
-      g.balkonCount == null ? null : g.population > 0 ? (g.balkonCount * 1000) / g.population : null,
+    key: "freiflaeche-standort",
+    label: "Freiflächen-Standort",
+    merit: "Höchste Freiflächen-Solarleistung (Solarparks).",
+    traeger: "gewerbe",
+    messart: "absolut",
+    format: "pvLeistung",
+    metric: (g) => pos(g.freiflaecheKwp),
   },
   {
-    key: "balkon-hauptstadt",
-    label: "Balkon-Hauptstadt",
-    merit: "Meiste Balkonkraftwerke insgesamt — absolute Zahl, park-immun.",
-    perCapita: false,
-    minPopulation: false,
-    format: "count",
-    metric: (g) => (g.balkonCount == null ? null : g.balkonCount > 0 ? g.balkonCount : null),
+    key: "gewerbespeicher-abs",
+    label: "Gewerbespeicher-Standort",
+    merit: "Höchste gewerbliche Batteriekapazität.",
+    traeger: "gewerbe",
+    messart: "absolut",
+    format: "speicherKwh",
+    metric: (g) => pos(g.batterieGewerbeKwh),
   },
   {
-    key: "zubau-champion",
+    key: "wind-standort",
+    label: "Wind-Standort",
+    merit: "Höchste installierte Windleistung.",
+    traeger: "gewerbe",
+    messart: "absolut",
+    format: "pvLeistung",
+    metric: (g) => pos(g.windKwp),
+  },
+  {
+    key: "biomasse-standort",
+    label: "Biomasse-Standort",
+    merit: "Höchste installierte Biomasseleistung.",
+    traeger: "gewerbe",
+    messart: "absolut",
+    format: "pvLeistung",
+    metric: (g) => pos(g.biomasseKwp),
+  },
+  {
+    key: "wasser-standort",
+    label: "Wasserkraft-Standort",
+    merit: "Höchste installierte Wasserkraftleistung.",
+    traeger: "gewerbe",
+    messart: "absolut",
+    format: "pvLeistung",
+    metric: (g) => pos(g.wasserKwp),
+  },
+  // Dynamik.
+  {
+    key: "zubau",
     label: "Zubau-Champion",
-    merit: "Größter Solar-Zubau im letzten vollständigen Jahr (neu installierte Leistung).",
-    perCapita: false,
-    minPopulation: false,
+    merit: "Größter Solar-Zubau im letzten vollständigen Jahr.",
+    traeger: "gewerbe",
+    messart: "absolut",
     format: "pvLeistung",
-    metric: (g) =>
-      g.zubauKwpLastYear == null ? null : g.zubauKwpLastYear > 0 ? g.zubauKwpLastYear : null,
+    metric: (g) => pos(g.solarZubauKwp),
   },
 ];
 
@@ -115,110 +167,149 @@ export const AWARD_CATEGORY_BY_KEY: Record<string, AwardCategory> = Object.fromE
   AWARD_CATEGORIES.map((c) => [c.key, c]),
 );
 
-export type AwardOptions = {
-  /** Einwohner-Schwelle für Pro-Kopf-Kategorien. Der zentrale Stellknopf beim
-   *  Festzurren: zu niedrig → Kleinst-Gemeinden mit einem einzigen Ausreißer
-   *  gewinnen; zu hoch → echte kleine Vorreiter fallen raus. */
-  minPopulation: number;
+// ─── Rolle (Vergleichsgruppe) ───────────────────────────────────────────────────
+
+/** Die 16 Landeshauptstädte — fixe, bekannte Liste (ändert sich nicht). Als
+ *  Rolle ein Querschnitt: eine Hauptstadt ist meist auch kreisfrei, wird aber
+ *  ihrer Hauptstadt-Gruppe zugeordnet (Hauptstadt gegen Hauptstadt). */
+const HAUPTSTAEDTE = new Set([
+  "Stuttgart", "München", "Berlin", "Potsdam", "Bremen", "Hamburg", "Wiesbaden",
+  "Schwerin", "Hannover", "Düsseldorf", "Mainz", "Saarbrücken", "Dresden",
+  "Magdeburg", "Kiel", "Erfurt",
+]);
+
+export const ROLE_LABELS: Record<Role, string> = {
+  gemeinde: "Gemeinden",
+  stadt: "Städte & Märkte",
+  "grosse-kreisstadt": "Große Kreisstädte",
+  kreisfrei: "Kreisfreie Städte",
+  hauptstadt: "Landeshauptstädte",
 };
 
-export const DEFAULT_AWARD_OPTIONS: AwardOptions = {
-  minPopulation: 2000,
+/** Amtliche Rolle einer Gemeinde. Aus der Bezeichnung (mastr_regions), plus die
+ *  fixe Hauptstadt-Liste als Querschnitt. */
+export function roleOf(g: GemeindeStats): Role {
+  if (g.population > 50000 && HAUPTSTAEDTE.has(g.name)) return "hauptstadt";
+  const b = g.bezeichnung;
+  if (b === "Kreisfreie Stadt" || b === "Stadtkreis") return "kreisfrei";
+  if (b === "Große Kreisstadt") return "grosse-kreisstadt";
+  if (b === "Stadt" || b === "Markt") return "stadt";
+  return "gemeinde";
+}
+
+// ─── Größen-Drittel (Terzile) ────────────────────────────────────────────────────
+
+export const SIZE_LABELS: Record<SizeBand, string> = {
+  klein: "kleine",
+  mittel: "mittlere",
+  gross: "große",
 };
 
-/** Zu welcher Region der jeweiligen Ebene gehört die Gemeinde? Aus dem AGS:
- *  2 Ziffern = Bundesland, 5 Ziffern = Landkreis. */
+function quantile(sortedAsc: number[], q: number): number {
+  if (sortedAsc.length === 0) return 0;
+  const i = (sortedAsc.length - 1) * q;
+  const lo = Math.floor(i);
+  const hi = Math.ceil(i);
+  return sortedAsc[lo] + (sortedAsc[hi] - sortedAsc[lo]) * (i - lo);
+}
+
+/** Terzil-Grenzen der Einwohnerzahl über eine Menge — die Größenklassen-Grenzen
+ *  kommen so aus der Verteilung selbst, nicht aus einer gesetzten Zahl. */
+export function populationTertiles(gemeinden: GemeindeStats[]): { c1: number; c2: number } {
+  const pops = gemeinden.map((g) => g.population).sort((a, b) => a - b);
+  return { c1: Math.round(quantile(pops, 1 / 3)), c2: Math.round(quantile(pops, 2 / 3)) };
+}
+
+export function sizeBandOf(population: number, c1: number, c2: number): SizeBand {
+  if (population < c1) return "klein";
+  if (population < c2) return "mittel";
+  return "gross";
+}
+
+// ─── Rangrechnung ────────────────────────────────────────────────────────────────
+
 export function scopeIdOf(regionId: string, level: AwardScopeLevel): string {
   if (level === "de") return "de";
   if (level === "bundesland") return regionId.slice(0, 2);
   return regionId.slice(0, 5);
 }
 
-/** Ist die Gemeinde in dieser Kategorie überhaupt wertbar? */
-export function isEligible(g: GemeindeStats, cat: AwardCategory, opts: AwardOptions): boolean {
-  const m = cat.metric(g);
-  if (m == null || m <= 0) return false;
-  if (cat.minPopulation && g.population < opts.minPopulation) return false;
-  return true;
-}
-
 export type RankedGemeinde = {
   regionId: string;
-  rank: number; // 1-basiert
-  value: number; // die gerankte Kennzahl (roh, ohne Einheit)
+  name: string;
+  rank: number;
+  value: number;
   population: number;
 };
 
-/** Rangliste innerhalb einer schon auf die Ebene gefilterten Menge. Absteigend
- *  nach Kennzahl; nicht wertbare Gemeinden fallen raus. Deterministisch: bei
- *  Gleichstand entscheidet der AGS, damit die Reihenfolge stabil bleibt. */
-export function rankGemeinden(
-  gemeinden: GemeindeStats[],
-  cat: AwardCategory,
-  opts: AwardOptions,
-): RankedGemeinde[] {
-  const eligible = gemeinden
-    .filter((g) => isEligible(g, cat, opts))
-    .map((g) => ({ g, value: cat.metric(g) as number }));
-  eligible.sort((a, b) => b.value - a.value || a.g.regionId.localeCompare(b.g.regionId));
-  return eligible.map((e, i) => ({
+/** Rangliste einer schon gefilterten Menge, absteigend; Gleichstand nach AGS
+ *  (stabil). Nicht wertbare (Kennzahl 0/leer) fallen raus. */
+export function rankGemeinden(gemeinden: GemeindeStats[], cat: AwardCategory): RankedGemeinde[] {
+  const scored = gemeinden
+    .map((g) => ({ g, value: cat.metric(g) }))
+    .filter((e): e is { g: GemeindeStats; value: number } => e.value != null && e.value > 0);
+  scored.sort((a, b) => b.value - a.value || a.g.regionId.localeCompare(b.g.regionId));
+  return scored.map((e, i) => ({
     regionId: e.g.regionId,
+    name: e.g.name,
     rank: i + 1,
     value: e.value,
     population: e.g.population,
   }));
 }
 
-export type ScopeRanking = {
-  scopeId: string;
+export type ViewOptions = {
   level: AwardScopeLevel;
-  entries: RankedGemeinde[]; // vollständige Rangliste dieser Region (top zuerst)
-  total: number; // Anzahl wertbarer Gemeinden im Scope
+  splitByRole: boolean;
+  splitBySize: boolean;
+  minPopulation?: number;
 };
 
-/** Gruppiert die Gemeinden nach der gewählten Ebene und rankt jede Gruppe. Für
- *  Ebene "de" gibt es genau eine Gruppe. */
-export function rankByScope(
+export type WinnerGroup = {
+  scopeId: string;
+  role: Role | null;
+  sizeBand: SizeBand | null;
+  winner: RankedGemeinde;
+  total: number;
+};
+
+/** Der Kern: Sieger je Kombination aus geografischem Bezug, optional Rolle und
+ *  optional Größen-Drittel. Die Größengrenzen werden über die GESAMTE wertbare
+ *  Menge gebildet (stabile Klassendefinition überall), nicht je Region. */
+export function computeWinners(
   gemeinden: GemeindeStats[],
   cat: AwardCategory,
-  level: AwardScopeLevel,
-  opts: AwardOptions,
-): ScopeRanking[] {
+  opts: ViewOptions,
+): WinnerGroup[] {
+  const floor = opts.minPopulation ?? 0;
+  const pool = gemeinden.filter((g) => {
+    const m = cat.metric(g);
+    return m != null && m > 0 && g.population >= floor;
+  });
+
+  const t = opts.splitBySize ? populationTertiles(pool) : { c1: 0, c2: 0 };
+
   const groups = new Map<string, GemeindeStats[]>();
-  for (const g of gemeinden) {
-    const id = scopeIdOf(g.regionId, level);
-    const arr = groups.get(id);
+  const meta = new Map<string, { scopeId: string; role: Role | null; sizeBand: SizeBand | null }>();
+  for (const g of pool) {
+    const scopeId = scopeIdOf(g.regionId, opts.level);
+    const role = opts.splitByRole ? roleOf(g) : null;
+    const sizeBand = opts.splitBySize ? sizeBandOf(g.population, t.c1, t.c2) : null;
+    const key = [scopeId, role ?? "", sizeBand ?? ""].join("|");
+    const arr = groups.get(key);
     if (arr) arr.push(g);
-    else groups.set(id, [g]);
+    else {
+      groups.set(key, [g]);
+      meta.set(key, { scopeId, role, sizeBand });
+    }
   }
-  const out: ScopeRanking[] = [];
-  for (const [scopeId, list] of Array.from(groups.entries())) {
-    const entries = rankGemeinden(list, cat, opts);
-    if (entries.length === 0) continue;
-    out.push({ scopeId, level, entries, total: entries.length });
+
+  const out: WinnerGroup[] = [];
+  for (const [key, list] of Array.from(groups.entries())) {
+    const ranked = rankGemeinden(list, cat);
+    if (ranked.length === 0) continue;
+    const m = meta.get(key)!;
+    out.push({ scopeId: m.scopeId, role: m.role, sizeBand: m.sizeBand, winner: ranked[0], total: ranked.length });
   }
-  // Stabile Reihenfolge der Scopes (nach ID), für reproduzierbare Ausgaben.
-  out.sort((a, b) => a.scopeId.localeCompare(b.scopeId));
   return out;
-}
-
-/** Die Sieger (Rang 1) je Region einer Ebene. */
-export function scopeWinners(
-  gemeinden: GemeindeStats[],
-  cat: AwardCategory,
-  level: AwardScopeLevel,
-  opts: AwardOptions,
-): { scopeId: string; winner: RankedGemeinde; total: number }[] {
-  return rankByScope(gemeinden, cat, level, opts).map((s) => ({
-    scopeId: s.scopeId,
-    winner: s.entries[0],
-    total: s.total,
-  }));
-}
-
-/** Hat die Kategorie in dieser Grundgesamtheit überhaupt eine Datengrundlage?
- *  (Balkon/Zubau sind erst nach der Rollup-Erweiterung befüllt.) Erkennt es
- *  daran, ob IRGENDEINE Gemeinde einen Wert liefert. */
-export function categoryHasData(gemeinden: GemeindeStats[], cat: AwardCategory): boolean {
-  return gemeinden.some((g) => cat.metric(g) != null);
 }

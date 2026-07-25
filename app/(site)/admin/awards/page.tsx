@@ -2,16 +2,18 @@ import { redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import { createClient } from "../../../../lib/supabase-server-component";
 import { supabase } from "../../../../lib/supabase-server";
-import { bundeslandByAgs } from "../../../../lib/mastr-regions";
+import { bundeslandByAgs, BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import {
   AWARD_CATEGORIES,
-  categoryHasData,
-  rankByScope,
-  scopeWinners,
+  AWARD_CATEGORY_BY_KEY,
+  ROLE_LABELS,
+  SIZE_LABELS,
+  computeWinners,
+  populationTertiles,
+  type AwardScopeLevel,
   type GemeindeStats,
-  type MetricFormat,
 } from "../../../../lib/awards";
-import AwardsClient, { type AwardsPayload, type CategoryView, type AwardRow } from "./client";
+import AwardsClient, { type AwardsPayload, type WinnerRow } from "./client";
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
   .split(",")
@@ -23,60 +25,59 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-// Backend-Prototyp: die Award-Rangliste sichtbar machen, bevor irgendwas visuell
-// wird. Hier zurren wir Kategorien und Einwohner-Schwelle fest.
-
-/** Alle bewohnten Gemeinden mit ihren Solar-Kennzahlen aus dem schmalen Rollup
- *  (~11k Zeilen, ms statt Sekunden — NIE live über mastr_aggregates_gem, das hat
- *  die DB am 2026-07-21 lahmgelegt). Paginiert (PostgREST deckelt bei 1000) und
- *  eine Stunde gecacht: die Zahlen ändern sich nur im Monatslauf. */
-const loadAllGemeindeStats = unstable_cache(
+/** Breite Award-Grundtabelle (~11k Zeilen, ms) — NIE live über die Rohzeilen. */
+const loadAwardStats = unstable_cache(
   async (): Promise<GemeindeStats[]> => {
     if (!supabase) return [];
-    const pageSize = 1000;
-    const rows: GemeindeStats[] = [];
-    for (let from = 0; ; from += pageSize) {
-      const { data, error } = await supabase
-        .from("mastr_gemeinde_solar")
-        .select("region_id, population, kwp_alle, kwp_dach")
-        .order("region_id", { ascending: true })
-        .range(from, from + pageSize - 1);
-      if (error || !data || data.length === 0) break;
-      for (const r of data) {
-        rows.push({
-          regionId: r.region_id as string,
-          population: r.population as number,
-          kwpAlle: Number(r.kwp_alle),
-          kwpDach: Number(r.kwp_dach),
-        });
-      }
-      if (data.length < pageSize) break;
-    }
-    return rows;
+    // Kennzahlen aus dem Rollup, Name + Bezeichnung (für die Rolle) aus mastr_regions.
+    const stats = await pageAll("mastr_gemeinde_award", "*");
+    const regions = await pageAll("mastr_regions", "region_id, name, bezeichnung", (q) => q.eq("level", "gemeinde"));
+    const meta = new Map(regions.map((r) => [r.region_id as string, r]));
+    return stats.map((r) => {
+      const m = meta.get(r.region_id as string);
+      return {
+        regionId: r.region_id as string,
+        name: (m?.name as string) ?? (r.region_id as string),
+        bezeichnung: (m?.bezeichnung as string) ?? "Gemeinde",
+        population: r.population as number,
+        privatDachKwp: Number(r.privat_dach_kwp),
+        gewerbeDachKwp: Number(r.gewerbe_dach_kwp),
+        freiflaecheKwp: Number(r.freiflaeche_kwp),
+        balkonCount: Number(r.balkon_count),
+        balkonKwp: Number(r.balkon_kwp),
+        batteriePrivatKwh: Number(r.batterie_privat_kwh),
+        batterieGewerbeKwh: Number(r.batterie_gewerbe_kwh),
+        windKwp: Number(r.wind_kwp),
+        biomasseKwp: Number(r.biomasse_kwp),
+        wasserKwp: Number(r.wasser_kwp),
+        solarZubauKwp: Number(r.solar_zubau_kwp),
+      };
+    });
   },
-  ["admin-awards-gemeinde-stats"],
+  ["admin-awards-stats-v2"],
   { revalidate: 3600 },
 );
 
-/** Namen der angezeigten Gemeinden nachladen (nur die ~130 Sieger/Top-Zeilen,
- *  nicht alle 11k) — Namen stehen in mastr_regions, nicht im Rollup. */
-async function loadNames(regionIds: string[]): Promise<Map<string, string>> {
-  const map = new Map<string, string>();
-  if (!supabase || regionIds.length === 0) return map;
-  const { data } = await supabase
-    .from("mastr_regions")
-    .select("region_id, name")
-    .in("region_id", regionIds);
-  for (const r of data ?? []) map.set(r.region_id as string, r.name as string);
-  return map;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function pageAll(table: string, select: string, refine?: (q: any) => any): Promise<any[]> {
+  if (!supabase) return [];
+  const size = 1000;
+  const out: unknown[] = [];
+  for (let from = 0; ; from += size) {
+    let q = supabase.from(table).select(select).order("region_id", { ascending: true }).range(from, from + size - 1);
+    if (refine) q = refine(q);
+    const { data, error } = await q;
+    if (error || !data || data.length === 0) break;
+    out.push(...data);
+    if (data.length < size) break;
+  }
+  return out as any[];
 }
-
-const DE_TOP_N = 10;
 
 export default async function AwardsAdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ minPop?: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const authClient = await createClient();
   const {
@@ -87,66 +88,75 @@ export default async function AwardsAdminPage({
   }
 
   const sp = await searchParams;
-  const parsed = parseInt(sp.minPop ?? "", 10);
-  const minPop = Number.isFinite(parsed) && parsed >= 0 ? parsed : 2000;
-  const opts = { minPopulation: minPop };
+  const catKey = AWARD_CATEGORY_BY_KEY[sp.cat ?? ""] ? sp.cat! : AWARD_CATEGORIES[0].key;
+  const cat = AWARD_CATEGORY_BY_KEY[catKey];
+  const level: AwardScopeLevel = (["de", "bundesland", "landkreis"] as const).includes(sp.level as AwardScopeLevel)
+    ? (sp.level as AwardScopeLevel)
+    : "bundesland";
+  const splitByRole = sp.role === "1";
+  const splitBySize = sp.size === "1";
+  const bl = /^\d{2}$/.test(sp.bl ?? "") ? sp.bl! : "";
+  const parsedFloor = parseInt(sp.minPop ?? "", 10);
+  const minPop = Number.isFinite(parsedFloor) && parsedFloor >= 0 ? parsedFloor : 0;
 
-  const stats = await loadAllGemeindeStats();
+  const stats = await loadAwardStats();
+  const nameOf = new Map(stats.map((s) => [s.regionId, s.name]));
 
-  // Erst rechnen (nur region_ids), dann Namen für die angezeigten Zeilen holen.
-  type Raw = { key: string; deTop: { regionId: string; value: number; population: number; rank: number }[]; blWinners: { regionId: string; value: number; population: number }[]; eligibleTotal: number; hasData: boolean; format: MetricFormat };
-  const raw: Raw[] = AWARD_CATEGORIES.map((cat) => {
-    const hasData = categoryHasData(stats, cat);
-    if (!hasData) {
-      return { key: cat.key, deTop: [], blWinners: [], eligibleTotal: 0, hasData, format: cat.format };
-    }
-    const deScope = rankByScope(stats, cat, "de", opts)[0];
-    const deTop = (deScope?.entries ?? []).slice(0, DE_TOP_N).map((e) => ({
-      regionId: e.regionId,
-      value: e.value,
-      population: e.population,
-      rank: e.rank,
-    }));
-    const blWinners = scopeWinners(stats, cat, "bundesland", opts)
-      .map((w) => ({ regionId: w.winner.regionId, value: w.winner.value, population: w.winner.population }))
-      .sort((a, b) => b.value - a.value);
-    return { key: cat.key, deTop, blWinners, eligibleTotal: deScope?.total ?? 0, hasData, format: cat.format };
-  });
+  const groups = computeWinners(stats, cat, { level, splitByRole, splitBySize, minPopulation: minPop });
 
-  const ids = Array.from(
-    new Set(raw.flatMap((r) => [...r.deTop.map((x) => x.regionId), ...r.blWinners.map((x) => x.regionId)])),
+  // Kreis-Namen für die Landkreis-Ebene: nur die angezeigten nachschlagen wäre
+  // ein Extra-Read; die Kreis-AGS haben keinen Gemeinde-Namen im Lookup. Für die
+  // Verifikation reicht die Kreis-AGS als Label plus der Siegername.
+  let rows: WinnerRow[] = groups.map((grp) => ({
+    scopeId: grp.scopeId,
+    scopeLabel:
+      level === "de"
+        ? "Deutschland"
+        : level === "bundesland"
+          ? bundeslandByAgs(grp.scopeId)?.name ?? grp.scopeId
+          : `Kreis ${grp.scopeId}`,
+    roleLabel: grp.role ? ROLE_LABELS[grp.role] : null,
+    sizeLabel: grp.sizeBand ? SIZE_LABELS[grp.sizeBand] : null,
+    winnerName: nameOf.get(grp.winner.regionId) ?? grp.winner.regionId,
+    winnerBl: bundeslandByAgs(grp.winner.regionId.slice(0, 2))?.short ?? "",
+    value: grp.winner.value,
+    population: grp.winner.population,
+    total: grp.total,
+  }));
+
+  if (bl && level !== "de") rows = rows.filter((r) => r.scopeId.slice(0, 2) === bl);
+
+  rows.sort(
+    (a, b) =>
+      a.scopeId.localeCompare(b.scopeId) ||
+      (a.sizeLabel ?? "").localeCompare(b.sizeLabel ?? "") ||
+      (a.roleLabel ?? "").localeCompare(b.roleLabel ?? ""),
   );
-  const names = await loadNames(ids);
 
-  const rowOf = (x: { regionId: string; value: number; population: number; rank?: number }): AwardRow => ({
-    regionId: x.regionId,
-    name: names.get(x.regionId) ?? x.regionId,
-    blShort: bundeslandByAgs(x.regionId.slice(0, 2))?.short ?? x.regionId.slice(0, 2),
-    value: x.value,
-    population: x.population,
-    rank: x.rank ?? 0,
-  });
-
-  const categories: CategoryView[] = AWARD_CATEGORIES.map((cat) => {
-    const r = raw.find((x) => x.key === cat.key)!;
-    return {
-      key: cat.key,
-      label: cat.label,
-      merit: cat.merit,
-      format: cat.format,
-      perCapita: cat.perCapita,
-      minPopulation: cat.minPopulation,
-      hasData: r.hasData,
-      eligibleTotal: r.eligibleTotal,
-      deTop: r.deTop.map(rowOf),
-      blWinners: r.blWinners.map(rowOf),
-    };
-  });
+  // Terzil-Grenzen zur Info (nur wenn Größen-Split aktiv).
+  let tertiles: { c1: number; c2: number } | null = null;
+  if (splitBySize) {
+    const pool = stats.filter((s) => {
+      const m = cat.metric(s);
+      return m != null && m > 0 && s.population >= minPop;
+    });
+    tertiles = populationTertiles(pool);
+  }
 
   const payload: AwardsPayload = {
-    minPop,
+    categories: AWARD_CATEGORIES.map((c) => ({
+      key: c.key,
+      label: c.label,
+      merit: c.merit,
+      traeger: c.traeger,
+      messart: c.messart,
+    })),
+    bundeslaender: BUNDESLAENDER.map((b) => ({ ags: b.ags, name: b.name })),
+    selection: { cat: catKey, level, splitByRole, splitBySize, bl, minPop },
+    activeCategory: { key: cat.key, label: cat.label, merit: cat.merit, format: cat.format, messart: cat.messart },
+    tertiles,
     totalGemeinden: stats.length,
-    categories,
+    rows,
   };
 
   return <AwardsClient payload={payload} />;

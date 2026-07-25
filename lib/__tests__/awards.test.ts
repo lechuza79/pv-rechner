@@ -1,25 +1,40 @@
 import { describe, it, expect } from "vitest";
 import {
+  AWARD_CATEGORIES,
   AWARD_CATEGORY_BY_KEY,
-  DEFAULT_AWARD_OPTIONS,
-  categoryHasData,
-  isEligible,
-  rankByScope,
+  computeWinners,
+  populationTertiles,
   rankGemeinden,
+  roleOf,
   scopeIdOf,
-  scopeWinners,
+  sizeBandOf,
   type GemeindeStats,
 } from "../awards";
 
-const dach = AWARD_CATEGORY_BY_KEY["solardach-spitzenreiter"];
-const standort = AWARD_CATEGORY_BY_KEY["solar-standort"];
-const balkonPionier = AWARD_CATEGORY_BY_KEY["balkon-pionier"];
-const opts = DEFAULT_AWARD_OPTIONS;
-
-// Hilfsbau: minimaler Gemeinde-Datensatz mit sinnvollen Defaults.
+// Minimaler Datensatz mit sinnvollen Defaults.
 function g(regionId: string, over: Partial<GemeindeStats> = {}): GemeindeStats {
-  return { regionId, population: 5000, kwpAlle: 1000, kwpDach: 1000, ...over };
+  return {
+    regionId,
+    name: over.name ?? regionId,
+    bezeichnung: "Gemeinde",
+    population: 5000,
+    privatDachKwp: 0,
+    gewerbeDachKwp: 0,
+    freiflaecheKwp: 0,
+    balkonCount: 0,
+    balkonKwp: 0,
+    batteriePrivatKwh: 0,
+    batterieGewerbeKwh: 0,
+    windKwp: 0,
+    biomasseKwp: 0,
+    wasserKwp: 0,
+    solarZubauKwp: 0,
+    ...over,
+  };
 }
+
+const dach = AWARD_CATEGORY_BY_KEY["dach-privat-pk"];
+const standort = AWARD_CATEGORY_BY_KEY["solar-standort"];
 
 describe("scopeIdOf", () => {
   it("liest Bundesland (2) und Landkreis (5) aus dem AGS", () => {
@@ -29,104 +44,109 @@ describe("scopeIdOf", () => {
   });
 });
 
-describe("Freiflächen-Regel", () => {
-  // Der Kern des Konzepts: ein einzelner Freiflächenpark in einer winzigen
-  // Gemeinde darf NICHT die Pro-Kopf-Bürgerkennzahl anführen.
-  const dorfMitPark = g("09111001", {
-    population: 3000,
-    kwpAlle: 40000, // riesiger Park
-    kwpDach: 300, // aber kaum Dächer
-  });
-  const echterDachvorreiter = g("09111002", {
-    population: 3000,
-    kwpAlle: 6000,
-    kwpDach: 6000, // alles auf Dächern
-  });
-
-  it("rankt Solardach-Spitzenreiter nach Dachleistung, nicht nach Gesamt", () => {
-    const ranking = rankGemeinden([dorfMitPark, echterDachvorreiter], dach, opts);
-    expect(ranking[0].regionId).toBe("09111002"); // der Dachvorreiter führt
-    expect(ranking[1].regionId).toBe("09111001");
-  });
-
-  it("lässt den Park-Standort aber ehrlich die absolute Kategorie gewinnen", () => {
-    const ranking = rankGemeinden([dorfMitPark, echterDachvorreiter], standort, opts);
-    expect(ranking[0].regionId).toBe("09111001"); // hier zählt Gesamt
+describe("verifiziertes Modell: keine Pro-Kopf-Kategorie bei Großanlagen", () => {
+  it("hat Freifläche/Wind/Wasser/Biomasse nur absolut", () => {
+    const grossanlage = ["freiflaeche-standort", "wind-standort", "wasser-standort", "biomasse-standort"];
+    for (const key of grossanlage) {
+      expect(AWARD_CATEGORY_BY_KEY[key].messart).toBe("absolut");
+    }
+    // Und die Bürger-Pro-Kopf-Kategorien existieren.
+    expect(dach.messart).toBe("proKopf");
+    expect(AWARD_CATEGORY_BY_KEY["balkon-pk"].messart).toBe("proKopf");
   });
 });
 
-describe("Einwohner-Schwelle", () => {
-  it("schließt Kleinst-Gemeinden aus den Pro-Kopf-Kategorien aus", () => {
-    const winzling = g("09111003", { population: 100, kwpDach: 5000 }); // absurde Pro-Kopf-Zahl
-    expect(isEligible(winzling, dach, opts)).toBe(false);
-    // In der absoluten Kategorie ohne Schwelle bleibt sie wertbar.
-    expect(isEligible(winzling, standort, opts)).toBe(true);
+describe("roleOf", () => {
+  it("leitet die Rolle aus der Bezeichnung ab", () => {
+    expect(roleOf(g("1", { bezeichnung: "Gemeinde" }))).toBe("gemeinde");
+    expect(roleOf(g("1", { bezeichnung: "Markt" }))).toBe("stadt");
+    expect(roleOf(g("1", { bezeichnung: "Stadt" }))).toBe("stadt");
+    expect(roleOf(g("1", { bezeichnung: "Große Kreisstadt" }))).toBe("grosse-kreisstadt");
+    expect(roleOf(g("1", { bezeichnung: "Kreisfreie Stadt" }))).toBe("kreisfrei");
+    expect(roleOf(g("1", { bezeichnung: "Stadtkreis" }))).toBe("kreisfrei");
   });
 
-  it("lässt Gemeinden ab der Schwelle zu", () => {
-    const gross = g("09111004", { population: 2000, kwpDach: 5000 });
-    expect(isEligible(gross, dach, opts)).toBe(true);
-  });
-
-  it("respektiert eine geänderte Schwelle", () => {
-    const mittel = g("09111005", { population: 1500, kwpDach: 5000 });
-    expect(isEligible(mittel, dach, { minPopulation: 2000 })).toBe(false);
-    expect(isEligible(mittel, dach, { minPopulation: 1000 })).toBe(true);
+  it("erkennt Landeshauptstädte als Querschnitt (vor kreisfrei)", () => {
+    expect(roleOf(g("09162000", { name: "München", bezeichnung: "Kreisfreie Stadt", population: 1500000 }))).toBe("hauptstadt");
+    // Gleichnamiges Dorf ohne Größe ist keine Hauptstadt.
+    expect(roleOf(g("1", { name: "München", bezeichnung: "Gemeinde", population: 800 }))).toBe("gemeinde");
   });
 });
 
-describe("Wertbarkeit", () => {
-  it("wertet keine Gemeinde ohne Solarleistung", () => {
-    expect(isEligible(g("09111006", { kwpAlle: 0, kwpDach: 0 }), standort, opts)).toBe(false);
-  });
+describe("Freiflächen-Ehrlichkeit (Standort ≠ Bürger)", () => {
+  const dorfMitPark = g("09111001", { population: 3000, privatDachKwp: 200, freiflaecheKwp: 40000, gewerbeDachKwp: 0 });
+  const dachdorf = g("09111002", { population: 3000, privatDachKwp: 6000 });
 
-  it("markiert Kategorien ohne Datengrundlage (Balkon vor Rollup-Erweiterung)", () => {
-    const ohneBalkon = [g("09111007"), g("09111008")]; // balkonCount undefined
-    expect(categoryHasData(ohneBalkon, balkonPionier)).toBe(false);
-    expect(categoryHasData(ohneBalkon, dach)).toBe(true);
+  it("privates Dach pro Kopf ignoriert den Park", () => {
+    expect(rankGemeinden([dorfMitPark, dachdorf], dach)[0].regionId).toBe("09111002");
   });
-
-  it("wertet Balkon-Kategorien sobald die Daten da sind", () => {
-    const mitBalkon = [
-      g("09111009", { population: 4000, balkonCount: 120 }),
-      g("09111010", { population: 4000, balkonCount: 40 }),
-    ];
-    expect(categoryHasData(mitBalkon, balkonPionier)).toBe(true);
-    const ranking = rankGemeinden(mitBalkon, balkonPionier, opts);
-    expect(ranking[0].regionId).toBe("09111009");
+  it("Solar-Standort belohnt den Park", () => {
+    expect(rankGemeinden([dorfMitPark, dachdorf], standort)[0].regionId).toBe("09111001");
   });
 });
 
-describe("rankByScope / scopeWinners", () => {
+describe("Größen-Drittel", () => {
+  it("bildet Terzil-Grenzen aus der Verteilung", () => {
+    const gem = [1000, 2000, 3000, 4000, 5000, 6000].map((p, i) => g(`0${i}`, { population: p }));
+    const { c1, c2 } = populationTertiles(gem);
+    expect(c1).toBeLessThan(c2);
+    expect(c1).toBeGreaterThanOrEqual(2000);
+    expect(c2).toBeLessThanOrEqual(5000);
+  });
+  it("ordnet Einwohnerzahl der Klasse zu", () => {
+    expect(sizeBandOf(500, 1083, 4167)).toBe("klein");
+    expect(sizeBandOf(2000, 1083, 4167)).toBe("mittel");
+    expect(sizeBandOf(9000, 1083, 4167)).toBe("gross");
+  });
+});
+
+describe("computeWinners", () => {
   const gemeinden: GemeindeStats[] = [
-    // Bayern (09), zwei Kreise
-    g("09111001", { population: 5000, kwpDach: 5000 }), // Kreis 09111
-    g("09111002", { population: 5000, kwpDach: 3000 }),
-    g("09222001", { population: 5000, kwpDach: 9000 }), // Kreis 09222
-    // Baden-Württemberg (08)
-    g("08111001", { population: 5000, kwpDach: 4000 }),
+    g("09111001", { population: 5000, privatDachKwp: 5000 }), // BY, Kreis 09111 — 1000 Wp/Kopf
+    g("09111002", { population: 5000, privatDachKwp: 3000 }),
+    g("09222001", { population: 5000, privatDachKwp: 9000 }), // BY, Kreis 09222
+    g("08111001", { population: 5000, privatDachKwp: 4000 }), // BW
   ];
 
-  it("kürt je Bundesland genau einen Sieger", () => {
-    const winners = scopeWinners(gemeinden, dach, "bundesland", opts);
-    const by = Object.fromEntries(winners.map((w) => [w.scopeId, w.winner.regionId]));
-    expect(by["09"]).toBe("09222001"); // stärkstes Dach je Kopf in Bayern
+  it("kürt je Bundesland einen Sieger", () => {
+    const w = computeWinners(gemeinden, dach, { level: "bundesland", splitByRole: false, splitBySize: false });
+    const by = Object.fromEntries(w.map((x) => [x.scopeId, x.winner.regionId]));
+    expect(by["09"]).toBe("09222001");
     expect(by["08"]).toBe("08111001");
-    expect(winners).toHaveLength(2);
+    expect(w).toHaveLength(2);
   });
 
   it("kürt je Landkreis einen Sieger", () => {
-    const winners = scopeWinners(gemeinden, dach, "landkreis", opts);
-    const by = Object.fromEntries(winners.map((w) => [w.scopeId, w.winner.regionId]));
-    expect(by["09111"]).toBe("09111001");
-    expect(by["09222"]).toBe("09222001");
-    expect(by["08111"]).toBe("08111001");
+    const w = computeWinners(gemeinden, dach, { level: "landkreis", splitByRole: false, splitBySize: false });
+    expect(w.find((x) => x.scopeId === "09111")!.winner.regionId).toBe("09111001");
+    expect(w.find((x) => x.scopeId === "09222")!.winner.regionId).toBe("09222001");
   });
 
-  it("liefert für Deutschland eine einzige Gruppe mit vollständigem Ranking", () => {
-    const scopes = rankByScope(gemeinden, dach, "de", opts);
-    expect(scopes).toHaveLength(1);
-    expect(scopes[0].entries[0].regionId).toBe("09222001");
-    expect(scopes[0].total).toBe(4);
+  it("splittet nach Größe: jede Klasse bekommt einen eigenen Sieger", () => {
+    const pool = [
+      g("09a", { population: 500, privatDachKwp: 5000 }), // klein, hohe Pro-Kopf
+      g("09b", { population: 3000, privatDachKwp: 6000 }), // mittel
+      g("09c", { population: 9000, privatDachKwp: 9000 }), // groß
+    ];
+    const w = computeWinners(pool, dach, { level: "de", splitByRole: false, splitBySize: true });
+    const bands = Object.fromEntries(w.map((x) => [x.sizeBand, x.winner.regionId]));
+    expect(bands.klein).toBe("09a");
+    expect(bands.mittel).toBe("09b");
+    expect(bands.gross).toBe("09c");
+  });
+
+  it("respektiert eine Einwohner-Untergrenze", () => {
+    const pool = [g("09a", { population: 100, privatDachKwp: 9999 }), g("09b", { population: 3000, privatDachKwp: 100 })];
+    const w = computeWinners(pool, dach, { level: "de", splitByRole: false, splitBySize: false, minPopulation: 500 });
+    expect(w).toHaveLength(1);
+    expect(w[0].winner.regionId).toBe("09b");
+  });
+});
+
+describe("Katalog", () => {
+  it("hat für jede Kategorie einen eindeutigen Schlüssel und ein Label", () => {
+    const keys = AWARD_CATEGORIES.map((c) => c.key);
+    expect(new Set(keys).size).toBe(keys.length);
+    for (const c of AWARD_CATEGORIES) expect(c.label.length).toBeGreaterThan(0);
   });
 });
