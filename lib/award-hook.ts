@@ -1,0 +1,191 @@
+// Anschreiben-Aufhänger: aus allen Platzierungen einer Gemeinde den EINEN
+// wählen, der im Outreach-Brief am besten zieht — wahr, glaubwürdig,
+// schmeichelhaft. Löst den „Städte-Catcher" von selbst: die Auswahl nimmt die
+// stärkste glaubwürdige Platzierung über ALLE Kategorien, also gewinnt das Dorf
+// mit „Dach pro Kopf", die Stadt mit „Solar-Standort".
+//
+// Reine Funktionen auf dem Award-Rechenkern — eine Rangquelle, keine zweite.
+
+import {
+  AWARD_CATEGORIES,
+  AWARD_CATEGORY_BY_KEY,
+  rankGemeinden,
+  scopeIdOf,
+  type AwardScopeLevel,
+  type GemeindeStats,
+  type Traeger,
+} from "./awards";
+
+export type HookLevel = "kreis" | "land" | "bund";
+const SCOPE_OF: Record<HookLevel, AwardScopeLevel> = { kreis: "landkreis", land: "bundesland", bund: "de" };
+
+export type Placement = {
+  categoryKey: string;
+  level: HookLevel;
+  scopeId: string;
+  rank: number;
+  total: number;
+};
+
+export type HookKind = "sieger" | "podium" | "perzentil" | "neutral";
+
+export type Hook = {
+  kind: HookKind;
+  categoryKey: string | null;
+  categoryLabel: string | null;
+  traeger: Traeger | null;
+  level: HookLevel | null;
+  scopeId: string | null;
+  rank: number | null;
+  total: number | null;
+  percentile: number | null; // 0..1, nur bei kind === "perzentil"
+};
+
+export type HookSettings = {
+  /** Glaubwürdigkeit: Mindest-Teilnehmer, damit „Sieger"/„Podium" zählt. */
+  minTotal: number;
+  /** Perzentil-Grenze, z. B. 0,10 = „Top 10 %". */
+  percentileCut: number;
+  /** Bei Gleichstand die Bürger-Kategorie bevorzugen (Rathaus-Adressat). */
+  preferBuerger: boolean;
+  /** Höhere Ebene sticht (Bund > Land > Kreis). */
+  preferHigherLevel: boolean;
+};
+
+export const DEFAULT_HOOK_SETTINGS: HookSettings = {
+  minTotal: 5,
+  percentileCut: 0.1,
+  preferBuerger: true,
+  preferHigherLevel: true,
+};
+
+/** Für jede Gemeinde ihre Platzierungen: je Kategorie × Ebene (Kreis/Land/Bund)
+ *  Rang und Gruppengröße. Ebene = geografischer Bezug, KEINE Rollen-/Größen-
+ *  Aufteilung — für einen Brief ist „Platz 1 von 34 im Landkreis" die klarste,
+ *  nachprüfbare Aussage. Einmal rechnen, dann je Gemeinde nachschlagen. */
+export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Placement[]> {
+  const out = new Map<string, Placement[]>();
+  const push = (id: string, p: Placement) => {
+    const arr = out.get(id);
+    if (arr) arr.push(p);
+    else out.set(id, [p]);
+  };
+  const levels: HookLevel[] = ["kreis", "land", "bund"];
+  for (const cat of AWARD_CATEGORIES) {
+    for (const level of levels) {
+      const groups = new Map<string, GemeindeStats[]>();
+      for (const g of gemeinden) {
+        const m = cat.metric(g);
+        if (m == null || m <= 0) continue;
+        const sid = scopeIdOf(g.regionId, SCOPE_OF[level]);
+        const arr = groups.get(sid);
+        if (arr) arr.push(g);
+        else groups.set(sid, [g]);
+      }
+      for (const [sid, list] of Array.from(groups.entries())) {
+        const ranked = rankGemeinden(list, cat);
+        const total = ranked.length;
+        for (const r of ranked) push(r.regionId, { categoryKey: cat.key, level, scopeId: sid, rank: r.rank, total });
+      }
+    }
+  }
+  return out;
+}
+
+const NEUTRAL: Hook = {
+  kind: "neutral",
+  categoryKey: null,
+  categoryLabel: null,
+  traeger: null,
+  level: null,
+  scopeId: null,
+  rank: null,
+  total: null,
+  percentile: null,
+};
+
+const levelRank = (l: HookLevel): number => (l === "bund" ? 3 : l === "land" ? 2 : 1);
+
+/** Den besten Aufhänger aus den Platzierungen wählen. Ein echter Sieg schlägt ein
+ *  Podium schlägt ein Perzentil; darüber sticht die Ebene (oder — abgeschaltet —
+ *  die Lokalität) und die Träger-Präferenz. Nichts Glaubwürdiges → neutral. */
+export function selectHook(placements: Placement[] | undefined, settings: HookSettings = DEFAULT_HOOK_SETTINGS): Hook {
+  let best: Hook = NEUTRAL;
+  let bestScore = -Infinity;
+
+  for (const p of placements ?? []) {
+    const cat = AWARD_CATEGORY_BY_KEY[p.categoryKey];
+    if (!cat) continue;
+    const ratio = p.rank / Math.max(p.total, 1);
+
+    let kind: HookKind | null = null;
+    if (p.total >= settings.minTotal && p.rank === 1) kind = "sieger";
+    else if (p.total >= settings.minTotal && p.rank <= 3) kind = "podium";
+    else if (p.total >= settings.minTotal && ratio <= settings.percentileCut) kind = "perzentil";
+    if (!kind) continue;
+
+    let score = kind === "sieger" ? 300 : kind === "podium" ? 200 : 100;
+    const lvl = levelRank(p.level);
+    score += (settings.preferHigherLevel ? lvl : 4 - lvl) * 10;
+    if (settings.preferBuerger && cat.traeger === "buerger") score += 5;
+    score += Math.min(p.total, 1000) / 200; // größere Grundgesamtheit = beeindruckender
+    score += (1 - ratio) * 3; // Feinschliff nach Platz
+
+    if (score > bestScore) {
+      bestScore = score;
+      best = {
+        kind,
+        categoryKey: cat.key,
+        categoryLabel: cat.label,
+        traeger: cat.traeger,
+        level: p.level,
+        scopeId: p.scopeId,
+        rank: p.rank,
+        total: p.total,
+        percentile: kind === "perzentil" ? ratio : null,
+      };
+    }
+  }
+  return best;
+}
+
+// ─── Text ────────────────────────────────────────────────────────────────────
+
+export type HookNames = { gemeinde: string; kreis: string; land: string };
+
+function scopeIn(level: HookLevel, n: HookNames): string {
+  if (level === "kreis") return `im ${n.kreis}`;
+  if (level === "land") return `in ${n.land}`;
+  return "bundesweit";
+}
+
+/** Betreff (Catcher) + Einstiegssatz aus dem gewählten Aufhänger. Reiner Text,
+ *  keine Freitext-Interpolation von außen (Allowlist-Muster). */
+export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg: string } {
+  const wo = hook.level ? scopeIn(hook.level, n) : "";
+  const titel = hook.categoryLabel ?? "";
+  switch (hook.kind) {
+    case "sieger":
+      return {
+        betreff: `${n.gemeinde} ist ${titel} ${wo}`,
+        einstieg: `${n.gemeinde} steht beim Thema Solar ganz vorn: aktuell ${titel} ${wo} — Platz 1 von ${hook.total} Gemeinden.`,
+      };
+    case "podium":
+      return {
+        betreff: `${n.gemeinde}: Platz ${hook.rank} ${wo} bei „${titel}“`,
+        einstieg: `${n.gemeinde} gehört ${wo} zur Spitze: Platz ${hook.rank} von ${hook.total} bei „${titel}“.`,
+      };
+    case "perzentil": {
+      const pct = Math.max(1, Math.round((hook.percentile ?? 0.1) * 100));
+      return {
+        betreff: `${n.gemeinde} gehört bei „${titel}“ zu den besten ${pct} %`,
+        einstieg: `${n.gemeinde} liegt bei „${titel}“ ${wo} unter den besten ${pct} % (Platz ${hook.rank} von ${hook.total}).`,
+      };
+    }
+    default:
+      return {
+        betreff: `So steht ${n.gemeinde} beim Solarausbau da`,
+        einstieg: `Wir haben den Solarausbau in ${n.gemeinde} aus den amtlichen Anlagendaten aufbereitet — hier der Überblick für Ihre Gemeinde.`,
+      };
+  }
+}

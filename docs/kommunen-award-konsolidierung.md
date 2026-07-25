@@ -60,6 +60,15 @@ fehlt. Die Rang-Kennzahlen liegen schon vor (s.o.), es fehlt die **Darstellung**
 4. **Badge-Widget** (Embed) + Verknüpfung ins Anschreiben (Städte-Catcher).
 5. Optional: Award-Übersichtsseiten (Landkreis/Bundesland) als weitere Content-Fläche.
 
+## Backlog (geparkt)
+
+- **Neutrale Badge-Variante + Print-Download.** Der erste SVG-Badge-Entwurf (flach, Rang
+  über Insignie) taugt evtl. als *neutrales* Ding — nicht das hochglanz-Award-Siegel,
+  sondern eine schlichte, seriöse Auszeichnung. Dazu: **Download für Print** (Gemeindeblatt)
+  inkl. **QR-Code** zurück auf die Gemeinde-Atlasseite. Der Hochglanz-Award-Look (etracker-
+  Niveau) kommt NICHT aus KI-SVG — dafür Template-Kit oder Designer (siehe Tool-Bewertung
+  2026-07-25). Award-Rechenkern + Hook-Logik stehen unabhängig davon.
+
 ## Koordination
 
 - **Eine** Session besitzt die Atlas-Gemeinde-Seiten (Award + Thin-Content zusammen).

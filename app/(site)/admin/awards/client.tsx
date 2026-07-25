@@ -65,6 +65,9 @@ export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
           Bezug und optional je Rolle bzw. Größenklasse — gerechnet aus {nf(totalGemeinden)}{" "}
           bewohnten Gemeinden. Noch keine Darstellung nach außen.
         </p>
+        <a href="/admin/awards/anschreiben" style={{ display: "inline-block", marginTop: space.sm, fontSize: 13, fontWeight: 600, color: v("--color-accent"), textDecoration: "none" }}>
+          → Anschreiben-Aufhänger je Gemeinde
+        </a>
       </header>
 
       {/* Steuerung: alles per URL, Änderung schickt das Formular direkt ab. */}

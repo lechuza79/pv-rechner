@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
-import { unstable_cache } from "next/cache";
 import { createClient } from "../../../../lib/supabase-server-component";
-import { supabase } from "../../../../lib/supabase-server";
 import { bundeslandByAgs, BUNDESLAENDER } from "../../../../lib/mastr-regions";
+import { loadAwardStats } from "../../../../lib/awards-server";
 import {
   AWARD_CATEGORIES,
   AWARD_CATEGORY_BY_KEY,
@@ -11,7 +10,6 @@ import {
   computeWinners,
   populationTertiles,
   type AwardScopeLevel,
-  type GemeindeStats,
 } from "../../../../lib/awards";
 import AwardsClient, { type AwardsPayload, type WinnerRow } from "./client";
 
@@ -24,55 +22,6 @@ export const metadata = {
   title: "Kommunen-Awards – Solar Check Admin",
   robots: { index: false, follow: false },
 };
-
-/** Breite Award-Grundtabelle (~11k Zeilen, ms) — NIE live über die Rohzeilen. */
-const loadAwardStats = unstable_cache(
-  async (): Promise<GemeindeStats[]> => {
-    if (!supabase) return [];
-    // Kennzahlen aus dem Rollup, Name + Bezeichnung (für die Rolle) aus mastr_regions.
-    const stats = await pageAll("mastr_gemeinde_award", "*");
-    const regions = await pageAll("mastr_regions", "region_id, name, bezeichnung", (q) => q.eq("level", "gemeinde"));
-    const meta = new Map(regions.map((r) => [r.region_id as string, r]));
-    return stats.map((r) => {
-      const m = meta.get(r.region_id as string);
-      return {
-        regionId: r.region_id as string,
-        name: (m?.name as string) ?? (r.region_id as string),
-        bezeichnung: (m?.bezeichnung as string) ?? "Gemeinde",
-        population: r.population as number,
-        privatDachKwp: Number(r.privat_dach_kwp),
-        gewerbeDachKwp: Number(r.gewerbe_dach_kwp),
-        freiflaecheKwp: Number(r.freiflaeche_kwp),
-        balkonCount: Number(r.balkon_count),
-        balkonKwp: Number(r.balkon_kwp),
-        batteriePrivatKwh: Number(r.batterie_privat_kwh),
-        batterieGewerbeKwh: Number(r.batterie_gewerbe_kwh),
-        windKwp: Number(r.wind_kwp),
-        biomasseKwp: Number(r.biomasse_kwp),
-        wasserKwp: Number(r.wasser_kwp),
-        solarZubauKwp: Number(r.solar_zubau_kwp),
-      };
-    });
-  },
-  ["admin-awards-stats-v2"],
-  { revalidate: 3600 },
-);
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function pageAll(table: string, select: string, refine?: (q: any) => any): Promise<any[]> {
-  if (!supabase) return [];
-  const size = 1000;
-  const out: unknown[] = [];
-  for (let from = 0; ; from += size) {
-    let q = supabase.from(table).select(select).order("region_id", { ascending: true }).range(from, from + size - 1);
-    if (refine) q = refine(q);
-    const { data, error } = await q;
-    if (error || !data || data.length === 0) break;
-    out.push(...data);
-    if (data.length < size) break;
-  }
-  return out as any[];
-}
 
 export default async function AwardsAdminPage({
   searchParams,
