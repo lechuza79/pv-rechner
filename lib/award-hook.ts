@@ -19,6 +19,24 @@ import {
 export type HookLevel = "kreis" | "land" | "bund";
 const SCOPE_OF: Record<HookLevel, AwardScopeLevel> = { kreis: "landkreis", land: "bundesland", bund: "de" };
 
+export const LEVEL_LABEL: Record<HookLevel, string> = { kreis: "Landkreis", land: "Bundesland", bund: "bundesweit" };
+
+/** Fertige Anschreiben-Zeile je Gemeinde — vorberechnet und gecacht, damit die
+ *  Suche in der Ansicht nur noch filtert (nicht neu rechnet). */
+export type HookExample = {
+  regionId: string;
+  name: string;
+  bl: string;
+  population: number;
+  kind: HookKind;
+  categoryKey: string | null;
+  level: HookLevel | null;
+  scopeId: string | null;
+  betreff: string;
+  einstieg: string;
+  others: string[];
+};
+
 export type Placement = {
   categoryKey: string;
   level: HookLevel;
