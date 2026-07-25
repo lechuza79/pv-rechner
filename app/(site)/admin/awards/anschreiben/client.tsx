@@ -97,8 +97,20 @@ export default function HooksClient({ payload }: { payload: HooksPayload }) {
         </button>
       </form>
 
-      <div style={{ fontSize: 12, color: v("--color-text-muted") }}>
-        {mode === "suche" ? `${rows.length} Treffer für „${q}"` : "Je ein Beispiel pro Aufhänger-Art (mittelgroße Gemeinden)."}
+      <div style={{ fontSize: 12, color: v("--color-text-muted"), display: "flex", gap: space.sm, alignItems: "baseline", flexWrap: "wrap" }}>
+        {mode === "suche" ? (
+          <>
+            <span>{rows.length} Treffer für „{q}"</span>
+            <Link
+              href={`/admin/awards/anschreiben?cut=${settings.cut}&buerger=${settings.buerger ? 1 : 0}&hoch=${settings.hoch ? 1 : 0}`}
+              style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 600 }}
+            >
+              × Suche löschen
+            </Link>
+          </>
+        ) : (
+          <span>Je ein Beispiel pro Aufhänger-Art (mittelgroße Gemeinden).</span>
+        )}
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
