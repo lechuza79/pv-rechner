@@ -29,7 +29,10 @@ async function isAdmin(): Promise<boolean> {
 }
 
 const PAGE_SIZE = 50;
-const STATUSES = ["offen", "entwurf", "kontaktiert", "geantwortet", "zu"];
+// „gesperrt" ist ein harter Sperr-Status: keine Entwurf-Erzeugung mehr (nach
+// Widerspruch/Unterlassung). Bewusst als Status, damit ein Admin ihn bei Irrtum
+// wieder ändern kann — der Schutz sitzt in der Draft-Erzeugung (POST unten).
+const STATUSES = ["offen", "entwurf", "kontaktiert", "geantwortet", "zu", "gesperrt"];
 
 // Eine Quelle für das Zeilen-Shape (GET, PATCH, POST liefern dasselbe zurück).
 const SELECT =
@@ -129,12 +132,17 @@ export async function POST(req: NextRequest) {
   // Name + Atlas-Pfad + der Anschreiben-Aufhänger aus der Award-Hook-Logik (eine
   // Quelle mit der Vorschau /admin/awards/anschreiben — kein Drift). Der Index ist
   // prozess-lokal memoisiert, der Lookup je Gemeinde damit billig.
-  const [{ data: reg }, path, index] = await Promise.all([
+  const [{ data: reg }, { data: leadRow }, path, index] = await Promise.all([
     serviceDb.from("mastr_regions").select("name").eq("region_id", region_id).single(),
+    serviceDb.from("kommunen_kontakt").select("outreach_status").eq("region_id", region_id).maybeSingle(),
     atlasPathForRegionId(region_id),
     buildHookIndex(DEFAULT_HOOK_SETTINGS),
   ]);
   if (!reg) return NextResponse.json({ error: "Gemeinde nicht gefunden" }, { status: 404 });
+  // Harte Sperre: für gesperrte Gemeinden nie ein Anschreiben erzeugen.
+  if (leadRow?.outreach_status === "gesperrt") {
+    return NextResponse.json({ error: "Gemeinde ist gesperrt — kein Anschreiben." }, { status: 403 });
+  }
 
   const hook = index.rows.find((r) => r.regionId === region_id);
   const draft = renderOutreachDraft({
