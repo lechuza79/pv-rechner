@@ -190,6 +190,34 @@ export const AWARD_CATEGORY_BY_KEY: Record<string, AwardCategory> = Object.fromE
   AWARD_CATEGORIES.map((c) => [c.key, c]),
 );
 
+/** Bekannte Solar-Freiflächen-Doppelzählungen (MaStR, gemessen von der Dedup-
+ *  Session 2026-07-25): dieselbe Anlage steht in zwei Nachbargemeinden desselben
+ *  Kreises mit IDENTISCHEM krummem kWp — also Doppelzählung, kein echter Split.
+ *  Behandlung: HALBIEREN. Jede der beiden behält kwp/2 (Summe über beide = eine
+ *  Nennleistung), weil der physische Host im Register nicht bestimmbar ist. Wert
+ *  hier = abzuziehende kWp (halber Park). Betrifft nur `freiflaecheKwp` →
+ *  Kategorien Solar-Standort + Freiflächen-Standort (keine Aufhänger).
+ *  Feste geprüfte Liste; regelbasierte Auto-Erkennung (identischer, NICHT runder
+ *  kWp in >1 Gemeinde desselben Kreises) gehört später in den MaStR-Wächter. */
+export const FREIFLAECHE_DEDUP_ABZUG: Record<string, number> = {
+  "09471154": 19999.3 / 2, "09471172": 19999.3 / 2, // Lisberg / Pommersfelden
+  "09478120": 9993.0 / 2, "09478165": 9993.0 / 2, // Ebensfeld / Bad Staffelstein
+  "01059051": 9974.6 / 2, "01059158": 9974.6 / 2, // Klein Rheide / Schafflund
+  "09778157": 4693.5 / 2, "09778219": 4693.5 / 2, // Kirchhaslach / Woringen
+  "07235074": 3612.0 / 2, "07235094": 3612.0 / 2, // Leiwen / Newel
+  "09278118": 1579.5 / 2, "09278144": 1579.5 / 2, // Bogen / Laberweinting
+  "13071092": 1499.5 / 2, "13071101": 1499.5 / 2, // Malchin / Möllenhagen
+  "05358004": 1440.0 / 2, "05358036": 1440.0 / 2, // Aldenhoven / Linnich
+  "09277124": 1296.8 / 2, "09277151": 1296.8 / 2, // Hebertsfelden / Unterdietfurt
+  "09275128": 1249.7 / 2, "09275135": 1249.7 / 2, // Hutthurm / Neukirchen vorm Wald
+};
+
+/** Freiflächen-Leistung einer Gemeinde nach Abzug bekannter Doppelzählungen. */
+export function dedupFreiflaeche(regionId: string, freiflaecheKwp: number): number {
+  const abzug = FREIFLAECHE_DEDUP_ABZUG[regionId] ?? 0;
+  return Math.max(0, freiflaecheKwp - abzug);
+}
+
 /** Belegwert einer Kategorie anzeigefertig — Einheit aus dem kanonischen Atlas-
  *  Formatter (nie handgeschrieben, außer den dimensionslosen Zähl-/Pro-Kopf-Fällen). */
 export function formatAwardValue(value: number, format: MetricFormat): string {

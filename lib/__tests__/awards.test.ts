@@ -3,6 +3,7 @@ import {
   AWARD_CATEGORIES,
   AWARD_CATEGORY_BY_KEY,
   computeWinners,
+  dedupFreiflaeche,
   populationTertiles,
   rankGemeinden,
   roleOf,
@@ -140,6 +141,20 @@ describe("computeWinners", () => {
     const w = computeWinners(pool, dach, { level: "de", splitByRole: false, splitBySize: false, minPopulation: 500 });
     expect(w).toHaveLength(1);
     expect(w[0].winner.regionId).toBe("09b");
+  });
+});
+
+describe("Freiflächen-Doppelzählung", () => {
+  it("halbiert die bekannte Park-Dublette (zieht den halben Park ab)", () => {
+    // Lisberg/Pommersfelden teilen sich 19.999,3 kWp → jede behält die Hälfte.
+    expect(dedupFreiflaeche("09471154", 19999.3)).toBeCloseTo(9999.65, 1);
+    expect(dedupFreiflaeche("09471172", 19999.3)).toBeCloseTo(9999.65, 1);
+  });
+  it("lässt unbetroffene Gemeinden unverändert", () => {
+    expect(dedupFreiflaeche("09999999", 5000)).toBe(5000);
+  });
+  it("wird nie negativ", () => {
+    expect(dedupFreiflaeche("09471154", 100)).toBe(0);
   });
 });
 

@@ -1,6 +1,6 @@
 import "server-only";
 import { supabase } from "./supabase-server";
-import { AWARD_CATEGORY_BY_KEY, formatAwardValue, type GemeindeStats } from "./awards";
+import { AWARD_CATEGORY_BY_KEY, dedupFreiflaeche, formatAwardValue, type GemeindeStats } from "./awards";
 import { bundeslandByAgs } from "./mastr-regions";
 import {
   LEVEL_LABEL,
@@ -69,7 +69,8 @@ export const loadAwardStats = memoize(async (): Promise<GemeindeStats[]> => {
       population: r.population as number,
       privatDachKwp: Number(r.privat_dach_kwp),
       gewerbeDachKwp: Number(r.gewerbe_dach_kwp),
-      freiflaecheKwp: Number(r.freiflaeche_kwp),
+      // Bekannte Doppelzählungen abziehen, bevor Solar-Standort/Freifläche ranken.
+      freiflaecheKwp: dedupFreiflaeche(r.region_id as string, Number(r.freiflaeche_kwp)),
       balkonCount: Number(r.balkon_count),
       balkonKwp: Number(r.balkon_kwp),
       batteriePrivatKwh: Number(r.batterie_privat_kwh),
