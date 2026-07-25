@@ -321,6 +321,13 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] Alte Zenodo-Pipeline (`scripts/mastr-refresh.ts`) bleibt als Fallback im Repo, ohne Auto-Trigger
 - [x] Daten landen in `mastr_aggregates`/`mastr_regions`/`mastr_meta` (Schema unverändert), `data_as_of` aus dem ZIP-Stichtag
 
+**Kommunen-Outreach (interner Bereich, für Widget-Distribution an Gemeinden)**
+- Ziel: die ~11.000 Gemeinden anschreiben, damit sie das Solar-Widget einbetten (Backlinks/Reichweite). Rechtsrahmen kalibriert (Legal-Checkliste #6): maßvolle, schubweise Outreach ist eine bewusste Entscheidung, Kontaktformular/Permission-first ist risikofrei.
+- **Tabelle `kommunen_kontakt`** (Supabase, RLS **nur service_role** — interne Daten, kein anon-Read; bewusste Abweichung vom Atlas-Muster): `region_id` = 8-stelliger AGS (FK auf `mastr_regions`). Spalten: `website`/`email`/`kontakt_url`, Workflow (`outreach_status`, `channel`, `contacted_at`, `responded_at`, `notes`, `draft_subject/body`), Politik (`gruene_pct/linke_pct/spd_pct`, BTW 2025 Zweitstimme), Rang (`dach_perzentil`, `dach_rang_kreis`, `kreis_gemeinden` — Dach-Leistung pro Kopf, park-immun).
+- **Befüllung: `scripts/kommunen-kontakt-refresh.ts`** (Phasen kombinierbar): `--setup` (Tabelle/Spalten), `--wikidata` (Website je Gemeinde aus P856), `--forms`/`--probe` (Kontakt-/Formularlink: Startseiten-Scan + Pfad-Anklopfen), `--wahl` (Grünen/Linke/SPD-Anteil aus den Bundeswahlleiterin-Wahlbezirks-Ergebnissen, je Gemeinde aggregiert), `--rang` (Dach-pro-Kopf-Perzentil + Landkreis-Rang aus Rollup `mastr_gemeinde_solar`), `--stats`. DB-schonend (500er-Upserts, keine Voll-Aggregation der großen Tabelle).
+- **Cockpit `/admin/kommunen`** (Admin-Guard + `InternalShell`, als Kachel in `/admin` + Sidebar): filtern (Bundesland/Status/hat-Link) + Namenssuche + Sortierung „Grün-/Links-affin"; Status pflegen; **Anschreiben-Generator** (`lib/kommunen-outreach-draft.ts`, reine Funktion, **Template statt LLM**): rang-abhängiger Catcher-Betreff (park-immun), Link auf die Gemeinde-Atlas-Seite, Pflicht-Signatur, Einheiten nur aus `atlas-format`. API `/api/admin/kommunen` (GET/PATCH/POST). Kein Auto-Versand — der Absende-Klick bleibt beim Menschen.
+- **Award-Konzept** (evaluiert, geparkt) als stärkerer Embed-Aufhänger: gehört zusammen mit der Thin-Content-/Atlas-Arbeit in **eine** fokussierte Session (gleiche Gemeinde-Seiten) — Briefing in `docs/kommunen-award-konsolidierung.md`.
+
 ### Phase 4: Content & Reichweite
 - [x] Flaggschiff-Ratgeber **`/lohnt-sich-pv-mit-speicher`**: Server Component (ISR 3600), rechnet die Beispieltabelle (10 kWp × 0/5/10 kWh: Investition, EV, Autarkie aus der Stundensimulation, Amortisation, 25-J-Gewinn) live mit den geteilten Funktionen (`calcEigenverbrauch`, `calc`, `estimateCost`, `simulatePvYear`) und Live-Marktpreisen — driftet nie vom Rechner. FAQ via `pvSpeicherFaq(prices)` in `lib/faq.ts` (bekommt die Live-Preise durchgereicht, damit FAQ und Tabelle auf derselben Seite identische Beträge zeigen) + `<Faq>` (FAQPage-JSON-LD). In Sitemap (0.8); Rechner-FAQ verlinkt hin.
   - Zwei **Beispiel-Teaser** (ohne / mit 10 kWh Speicher): recyceln die Rechner-`Chart`-Komponente (3-Szenarien-Amortisationskurve) + ResultStats-Kacheln (Amortisation / Rendite 25 J / ⌀ Ersparnis), gerechnet aus derselben `computeExample`-Quelle wie die Tabelle. Jeder Teaser hat einen Deep-Link `/photovoltaik-rechner?a=2&s=…&p=2&n=1&st=…&er=…`, der den Rechner exakt auf die Teaser-Zahlen vorbelegt (`st`/`er` explizit, weil der Rechner-Default-Strompreis 0,34 € vom kanonischen prices-config-Wert abweicht).
@@ -566,7 +573,8 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 
 **Konventionen:**
 - **Theme = nur** Hintergrund/Text/Akzent/Highlight/Ecken/Schrift. Semantische Farben (grün=positiv, rot=negativ, Kategorie-/Energieträger-Farben) bleiben **fest** — nie an Theme-Token hängen.
-- **Flags:** `embed=0` blendet den Einbetten-Button aus (setzt die Galerie auf ihren Vorschau-iframes; **nicht** im Copy-Paste-Code). `branding=0` blendet „Powered by" aus (interne Integrationen; extern = Premium, nie im Gratis-Code angeboten). Beide default `true`.
+- **Flags:** `embed=0` blendet den Einbetten-Button aus (setzt die Galerie auf ihren Vorschau-iframes; **nicht** im Copy-Paste-Code). `branding=0` blendet „Powered by" aus (interne Integrationen; extern = Premium, nie im Gratis-Code angeboten). `onsite=1` = **First-Party-Embed** (siehe nächster Punkt). Alle default so, dass der externe Copy-Paste-Code die volle Attribution trägt; `embed`/`onsite` werden **nie** in den Copy-Paste-Code serialisiert.
+- **First-Party-Embed — BLOCKER-Konvention:** Wenn **wir** einen eigenen Rechner/ein eigenes Widget auf einer **eigenen** Seite einbetten, iframe-`src` immer mit `?onsite=1`. Dann: (1) die **Aktions-CTAs direkt als Leiste** (`variant="bar"`: Teilen, Einbetten … sichtbar, **kein** ⋯-Menü), (2) **kein** „Powered by" (redundant auf der eigenen Seite), (3) **keine** Widget-eigene Quellenangabe — die Quelle steht **einmal zentral** auf der einbettenden Seite bzw. im Seiten-Footer (per `DataSourceNote` aus `lib/data-sources.ts`, nicht inline). Der externe Embed (ohne `onsite`) behält Powered-by **und** In-Widget-Quelle (Lizenzpflicht dl-de/by · CC BY). Mechanik: Flag in `lib/widget-settings.ts`, ausgewertet im Widget (Muster: `app/(embed)/embed/foerder-check/client.tsx`, eingebettet auf `/waermepumpe-foerderung-2026`).
 - **Teilen = aktueller Zustand** als Deep-Link auf die passende Live-Seite (z. B. `/strommix-deutschland?range=…`, `/pv-simulation?plz=…`).
 - **Galerie:** neues Widget als Sektion in `SECTIONS` (`app/(site)/energie-widgets/client.tsx`); fixe Query-Params pro Variante über das `params`-Feld (nicht in `src` hängen — kollidiert mit `embed=0`/Theme). iframe-Höhe **großzügig** (Footer/2-zeilige Legende).
 - **Recycling statt Neubau:** Startseite und Karten-Embed nutzen dieselbe `MastrHeroSection` (eine Ansicht, eine Quelle). Einzel-KPIs (`/embed/kennzahl`) recyceln die exportierte `Kachel`.
@@ -880,10 +888,24 @@ abmahnsicher ist, und jede Abkürzung reißt die Lücke wieder auf:
    Impressum-Menüpunkt). Prüfen, ob der Datenschutz-Baustein in der Galerie
    (`/energie-widgets`) noch zutrifft (neue Datenflüsse?).
 6. **E-Mail-Versand** → an Nutzer nur transaktional (Auth, angeforderte Funktion).
-   Werbe-/Outreach-Mails NUR nach den Leitplanken in `docs/outreach-process-konzept.md`
-   (§ 7 UWG: keine Kaltakquise, auch nicht B2B). Newsletter o. Ä. → Double-Opt-in +
-   Datenschutzerklärung. Mail-Betreff/Header nie aus Freitext bauen (Allowlist-Muster
-   wie `lib/contact-topics.ts`).
+   Werbe-/Outreach-Mails nach den Leitplanken in `docs/outreach-process-konzept.md`.
+   **§ 7 UWG kalibriert (Judge-Prüfung Juli 2026, ersetzt das frühere pauschale
+   „keine Kaltakquise"):** Eine unverlangte Outreach-Mail mit kostenlosem Widget-/
+   Backlink-Angebot ist zwar mit hoher Wahrscheinlichkeit „Werbung" und damit
+   *materiell* angreifbar — ABER das Durchsetzungsrisiko ist niedrig und überwiegend
+   theoretisch: Der Empfänger selbst (auch eine Kommune) ist nach § 8 Abs. 3 UWG **nicht**
+   abmahnbefugt; nur Mitbewerber/Verbände/IHK könnten, und die bekommen B2G-Mails an
+   Rathaus-Postfächer praktisch nicht mit. „Massenversand" ist kein eigener Tatbestand
+   (jede einzelne Mail zählt) — schubweise senkt nur das Entdeckungsrisiko, nicht die
+   Rechtslage. **Maßvolle, schubweise Kaltakquise ist damit eine bewusste unternehmerische
+   Entscheidung, kein Verbot.** Risiko-frei sitzt es, wenn der Erstkontakt **nicht** als
+   unverlangte Mail läuft, sondern über das **Kontaktformular** der Zielstelle oder einen
+   **Permission-Ask** (Anruf/Formular „darf ich Ihnen das schicken?") → die Folge-Mail ist
+   dann angefordert und § 7 entfällt. Bei jeder Outreach-Mail Pflicht: Klarname +
+   „Betreiber solar-check.io" + Impressum-Link + Datenschutz-Einzeiler (Art. 14 DSGVO);
+   Rollen-Postfächer (info@/rathaus@) statt Klarnamen bevorzugen (dämpft den DSGVO-Strang).
+   Newsletter o. Ä. → Double-Opt-in + Datenschutzerklärung. Mail-Betreff/Header nie aus
+   Freitext bauen (Allowlist-Muster wie `lib/contact-topics.ts`).
 7. **Neue personenbezogene Daten** (Formularfelder, Account-Felder) → Datenschutzerklärung
    ergänzen (Zweck, Rechtsgrundlage, Empfänger, Speicherdauer); Eingaben serverseitig
    validieren + escapen; öffentliche POST-Endpoints mit Rate-Limit + Honeypot

@@ -27,6 +27,12 @@ export const RATGEBER: RatgeberEntry[] = [
     teaser:
       "Die Einspeisevergütung für Neuanlagen soll ab 2027 fallen — trägt sich Photovoltaik dann noch? Mit Beispielrechnung bei Vergütung null und dem Blick auf den Eigenverbrauch.",
   },
+  {
+    slug: "/waermepumpe-foerderung-2026",
+    title: "Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es?",
+    teaser:
+      "Grundförderung, Klima-Bonus, Einkommens-Bonus: Wie sich der BEG-Zuschuss für den Heizungstausch zusammensetzt — mit live gerechneten Beispielfällen und dem Förder-Check zum selbst Ausprobieren.",
+  },
 ];
 
 /** Guide entry for a given path, or undefined if the path isn't a guide. */

@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
+import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { getNuclearImport, dateLong, buildCitation } from "../figure";
 
 // ISR: same hourly refresh + same live source as the overview page, so the
@@ -124,7 +125,7 @@ Datenquelle: Energy-Charts (Fraunhofer ISE)`}
         </div>
 
         <p style={S.source}>
-          Datenquelle: Energy-Charts (Fraunhofer ISE), Lizenz CC BY 4.0 — Grenzflüsse und nationale
+          Datenquelle: {sourceLabel(DATA_SOURCES.energyCharts)} — Grenzflüsse und nationale
           Strommixe. Berechnung und Darstellung: Solar Check. Der Wert aktualisiert sich stündlich
           und ist eine rechnerische Näherung, kein gemessener Importwert.
         </p>

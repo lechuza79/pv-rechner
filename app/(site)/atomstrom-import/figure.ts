@@ -5,6 +5,7 @@
 // never drift. Both are ISR (revalidate 3600), so the double fetch is cached.
 
 import { computeNuclearImport } from "../../../lib/nuclear-import";
+import { DATA_SOURCES } from "../../../lib/data-sources";
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 export const PAGE_URL = `${BASE_URL}/atomstrom-import`;
@@ -34,6 +35,6 @@ export const dateLong = (d: Date) =>
 /** Ready-to-cite attribution string (CC BY 4.0). */
 export function buildCitation(avgGw: number | null, standStr: string): string {
   return avgGw != null
-    ? `Atomstrom-Import Deutschland: rund ${nf1(avgGw)} GW im Durchschnitt (7-Tage-Mittel, Stand ${standStr}). Quelle: Solar Check (solar-check.io), berechnet aus Daten von Energy-Charts / Fraunhofer ISE (CC BY 4.0). ${PAGE_URL}`
-    : `Atomstrom-Import Deutschland: rechnerischer Kernstrom-Import aus sechs Nachbarländern. Quelle: Solar Check (solar-check.io), berechnet aus Daten von Energy-Charts / Fraunhofer ISE (CC BY 4.0). ${PAGE_URL}`;
+    ? `Atomstrom-Import Deutschland: rund ${nf1(avgGw)} GW im Durchschnitt (7-Tage-Mittel, Stand ${standStr}). Quelle: Solar Check (solar-check.io), berechnet aus Daten von ${DATA_SOURCES.energyCharts.name}, ${DATA_SOURCES.energyCharts.license}. ${PAGE_URL}`
+    : `Atomstrom-Import Deutschland: rechnerischer Kernstrom-Import aus sechs Nachbarländern. Quelle: Solar Check (solar-check.io), berechnet aus Daten von ${DATA_SOURCES.energyCharts.name}, ${DATA_SOURCES.energyCharts.license}. ${PAGE_URL}`;
 }

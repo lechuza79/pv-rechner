@@ -91,6 +91,21 @@ export const DATA_SOURCES = {
     url: "https://gdz.bkg.bund.de",
     note: "Geometrien vereinfacht",
   },
+  /** Municipality population + territorial status (Gemeindeverzeichnis). */
+  destatis: {
+    name: "Statistisches Bundesamt",
+    license: "dl-de/by-2-0",
+    licenseUrl: "https://www.govdata.de/dl-de/by-2-0",
+    url: "https://www.destatis.de",
+  },
+  /** Long-run gross electricity generation + CO₂ intensity (1990–today). */
+  uba: {
+    name: "Umweltbundesamt",
+    license: "dl-de/by-2-0",
+    licenseUrl: "https://www.govdata.de/dl-de/by-2-0",
+    url: "https://www.umweltbundesamt.de/daten/umweltzustand-trends/energie/erneuerbare-konventionelle-stromerzeugung",
+    note: "Datenbasis: AG Energiebilanzen",
+  },
 } as const satisfies Record<string, DataSource>;
 
 /** "Energy-Charts (Fraunhofer ISE), CC BY 4.0" — the credit label as one string.

@@ -211,6 +211,13 @@ export async function GET(req: NextRequest) {
       -- p_year_max cuts the history off at a year: passing last year's number
       -- yields the ranking as it stood back then, which is what the rank delta on
       -- a Gemeinde page compares against.
+      -- Land (2) / Kreis (5): aus dem vorberechneten mastr_region_rollup lesen
+      -- (region_key hat genau diese Länge = left(region_id, p_child_len)) statt
+      -- live über 562k Gemeinde-Zeilen zu aggregieren — das war der Kaltstart-
+      -- Killer unter Parallel-Last (>8s → Timeout). Gemeinde-Kinder (len 8, ~55
+      -- pro Kreis) bleiben Live-Scan. Selbstheilend wie mastr_region_series: fehlt
+      -- der Rollup für diese Ebene/Prefix, fällt der 2. Zweig auf Live zurück
+      -- (bei vorhandenem Rollup ist sein NOT EXISTS falsch → kein Doppelzählen).
       CREATE OR REPLACE FUNCTION mastr_children(
         p_prefix text,
         p_child_len int,
@@ -222,14 +229,30 @@ export async function GET(req: NextRequest) {
       LANGUAGE sql
       STABLE
       AS $fn$
-        SELECT
-          left(a.region_id, p_child_len) AS region_id,
-          a.segment,
-          sum(a.count)::bigint,
-          sum(a.kwp),
-          sum(CASE WHEN p_year_recent IS NOT NULL AND a.year = p_year_recent THEN a.count ELSE 0 END)::bigint
+        SELECT r.region_key AS region_id, r.segment,
+               sum(r.count)::bigint, sum(r.kwp),
+               sum(CASE WHEN p_year_recent IS NOT NULL AND r.year = p_year_recent THEN r.count ELSE 0 END)::bigint
+        FROM mastr_region_rollup r
+        WHERE p_child_len IN (2, 5)
+          AND length(r.region_key) = p_child_len
+          AND (p_prefix = '' OR r.region_key LIKE p_prefix || '%')
+          AND r.energietraeger = ANY(p_traeger)
+          AND (p_year_max IS NULL OR r.year <= p_year_max)
+        GROUP BY 1, 2
+        UNION ALL
+        SELECT left(a.region_id, p_child_len) AS region_id, a.segment,
+               sum(a.count)::bigint, sum(a.kwp),
+               sum(CASE WHEN p_year_recent IS NOT NULL AND a.year = p_year_recent THEN a.count ELSE 0 END)::bigint
         FROM mastr_aggregates_gem a
-        WHERE a.energietraeger = ANY(p_traeger)
+        WHERE (
+                p_child_len NOT IN (2, 5)
+                OR NOT EXISTS (
+                  SELECT 1 FROM mastr_region_rollup r2
+                  WHERE length(r2.region_key) = p_child_len
+                    AND (p_prefix = '' OR r2.region_key LIKE p_prefix || '%')
+                )
+              )
+          AND a.energietraeger = ANY(p_traeger)
           AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
           AND (p_year_max IS NULL OR a.year <= p_year_max)
         GROUP BY 1, 2
@@ -269,6 +292,7 @@ export async function GET(req: NextRequest) {
       -- Feeds the ranking table, which filters (privat/gewerbe) and picks a Zubau
       -- year client-side — shipping the grain once beats a round trip per filter.
       -- Bounded: children x segment x years, a few thousand rows at most.
+      -- Rollup für Land/Kreis wie bei mastr_children (inkl. Selbstheilung).
       CREATE OR REPLACE FUNCTION mastr_children_by_year(
         p_prefix text,
         p_child_len int,
@@ -279,15 +303,28 @@ export async function GET(req: NextRequest) {
       LANGUAGE sql
       STABLE
       AS $fn$
-        SELECT
-          left(a.region_id, p_child_len) AS region_id,
-          a.segment,
-          a.year,
-          sum(a.count)::bigint,
-          sum(a.kwp),
-          sum(a.kwh)
+        SELECT r.region_key AS region_id, r.segment, r.year,
+               sum(r.count)::bigint, sum(r.kwp), sum(r.kwh)
+        FROM mastr_region_rollup r
+        WHERE p_child_len IN (2, 5)
+          AND length(r.region_key) = p_child_len
+          AND (p_prefix = '' OR r.region_key LIKE p_prefix || '%')
+          AND r.energietraeger = ANY(p_traeger)
+          AND (p_year_min IS NULL OR r.year >= p_year_min)
+        GROUP BY 1, 2, 3
+        UNION ALL
+        SELECT left(a.region_id, p_child_len) AS region_id, a.segment, a.year,
+               sum(a.count)::bigint, sum(a.kwp), sum(a.kwh)
         FROM mastr_aggregates_gem a
-        WHERE a.energietraeger = ANY(p_traeger)
+        WHERE (
+                p_child_len NOT IN (2, 5)
+                OR NOT EXISTS (
+                  SELECT 1 FROM mastr_region_rollup r2
+                  WHERE length(r2.region_key) = p_child_len
+                    AND (p_prefix = '' OR r2.region_key LIKE p_prefix || '%')
+                )
+              )
+          AND a.energietraeger = ANY(p_traeger)
           AND (p_prefix = '' OR a.region_id LIKE p_prefix || '%')
           AND (p_year_min IS NULL OR a.year >= p_year_min)
         GROUP BY 1, 2, 3

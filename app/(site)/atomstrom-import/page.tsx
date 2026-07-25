@@ -5,6 +5,7 @@ import { IconArrowRight } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { jsonLdHtml } from "../../../lib/json-ld";
+import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 import AtomstromWidget from "./AtomstromWidget";
 import AutoHeightIframe from "../../../components/AutoHeightIframe";
 import FaqAccordion, { AccordionItem } from "./FaqAccordion";
@@ -242,7 +243,7 @@ export default async function AtomstromImportPage() {
         </Link>
 
         <p style={S.source}>
-          Datenquelle: Energy-Charts (Fraunhofer ISE), Lizenz CC BY 4.0 — Grenzflüsse und nationale
+          Datenquelle: {sourceLabel(DATA_SOURCES.energyCharts)} — Grenzflüsse und nationale
           Strommixe. Berechnung und Darstellung: Solar Check. Der Wert aktualisiert sich stündlich
           und ist eine rechnerische Näherung, kein gemessener Importwert.
         </p>
