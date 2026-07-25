@@ -3,15 +3,18 @@ import { useState, useMemo, type ReactNode } from "react";
 import Link from "next/link";
 import {
   SITUATION, WOHNFLAECHEN, INSULATION_BESTAND, INSULATION_NEUBAU,
-  PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP,
+  PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP, YEAR,
 } from "../../../lib/constants";
-import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
+import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
+import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { useHeatpumpPrices } from "../../../lib/prices";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
-import ScenarioTabs from "../../../components/ScenarioTabs";
+import GasPriceStackChart from "../../../components/charts/GasPriceStackChart";
+import HeatCostCompareChart from "../../../components/charts/HeatCostCompareChart";
+import Modal from "../../../components/Modal";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import InfoTooltip from "../../../components/InfoTooltip";
 import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck } from "../../../components/Icons";
@@ -59,8 +62,17 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const [heizkoerperTausch, setHeizkoerperTausch] = useState(false);  // Maßnahme: alte HK auf Niedertemperatur tauschen
   const [wegId, setWegId] = useState("ist");  // aktiver Sanierungs-/Maßnahmen-Weg (Szenario-Vergleich)
   const [showDetails, setShowDetails] = useState(false);
-  // Strompreis-Szenario (steuert TCO/Amortisation/Ersparnis/CO₂ + Chart).
-  const [scenario, setScenario] = useState("realistic");
+  // Szenario-Auswahl (steuert TCO/Amortisation/Ersparnis/CO₂ + Chart):
+  //  "gruengas"                       = aktueller Gesetzentwurf (GModG Bio-Treppe),
+  //                                     reale Rechtslage → Default, hervorgehoben.
+  //  "pessimistic"/"realistic"/"optimistic" = reine Preis-Annahmen OHNE Grüngas.
+  const [scenario, setScenario] = useState("gruengas");
+  // Grüngas-Pflicht ist genau der Gesetzentwurf-Fall — kein eigener Schalter mehr.
+  const greenGas = scenario === "gruengas";
+  // "Mehr erfahren"-Modal: sammelt alle erklärenden Texte zum Grüngas-Szenario.
+  const [showGasInfo, setShowGasInfo] = useState(false);
+  // Secondary-Block "Marktübliche Preissteigerung" (die 3 Preis-Modelle) auf-/zugeklappt.
+  const [preisExpanded, setPreisExpanded] = useState(false);
 
   const isResult = step >= STEPS.length;
   const next = () => {
@@ -91,6 +103,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
     personen: PERSONEN[personen].count,
     heizsystem, wpType, heizkoerperTausch,
     haustypFaktor: HAUSTYP_WP[haustypIdx].faktor,
+    greenGas,
     pv: pvStatus !== "nein" ? { status: pvStatus, kwp: pvKwp, speicherKwh: pvSpeicher } : undefined,
     override: {
       qGes: oQges ?? undefined,
@@ -107,7 +120,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
       haushaltseinkommen: selbstnutzer ? einkommenIncome(einkommen) : undefined,
       kindImHaushalt: selbstnutzer && kindImHaushalt,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt]);
 
   // ── Realistische Wege (Szenario-Vergleich) ───────────────────
   // Ein unsaniertes Haus bleibt selten 20 Jahre unangetastet. Statt nur den
@@ -154,10 +167,57 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const activeWeg = (zeigeWege ? wegeResults.find(w => w.id === wegId) : null) ?? wegeResults.find(w => w.id === "ist");
   const activeInputs = useMemo(() => ({ ...inputs, ...(activeWeg?.patch ?? {}) }), [inputs, activeWeg]);
   const result = useMemo(() => calcHeatPump(activeInputs, cfg), [activeInputs, cfg]);
-  const scenarios = useMemo(() => calcHeatPumpScenarios(activeInputs, cfg), [activeInputs, cfg]);
-  // Gewähltes Szenario: treibt die Ergebnis-Zahlen (TCO/Amortisation/Ersparnis/
-  // CO₂). Die editierbaren Detailwerte unten bleiben auf `result` (Basisfall).
-  const sel = scenarios.find(s => s.id === scenario) ?? scenarios.find(s => s.id === "realistic")!;
+  // Die drei Preis-Szenarien rechnen bewusst OHNE Grüngas-Pflicht — sie zeigen die
+  // reine Energiepreis-Bandbreite ("was, wenn die Pflicht doch nicht greift").
+  const scenariosPlain = useMemo(() => calcHeatPumpScenarios({ ...activeInputs, greenGas: false }, cfg), [activeInputs, cfg]);
+  // Gesetzentwurf-Fall: Grüngas-Pflicht (Bio-Treppe) mit realistischen Nebenannahmen
+  // (Strompreis/Arbeitszahl wie "realistisch", Gaspreis-Mittelpfad). Reale Rechtslage.
+  const gruengasResult = useMemo(() => calcHeatPump({ ...activeInputs, greenGas: true }, cfg, heatPumpScenarioAdj("realistic", cfg)), [activeInputs, cfg]);
+
+  // Meta des Gesetzentwurf-Falls (Label/Erklärung für Auswahl + Hero).
+  const GRUENGAS_META = {
+    id: "gruengas", label: "Aktueller Gesetzentwurf", color: v('--color-positive'),
+    sub: "Grüngas-Pflicht ab 2029",
+    explain: "Das Gebäudemodernisierungsgesetz (beschlossen Juli 2026) verpflichtet neue Gasheizungen ab 2029, einen wachsenden Anteil Biomethan beizumischen — 10 % steigend auf 60 % (2040). Das verteuert Gas deutlich. Die Kostenhöhe folgt dem IW-Report 36/2026 (plausibler Korridor, keine exakte Prognose).",
+  };
+
+  // Gewählter Fall: treibt die Ergebnis-Zahlen (TCO/Amortisation/Ersparnis/CO₂).
+  const selPrice = scenariosPlain.find(s => s.id === scenario) ?? scenariosPlain.find(s => s.id === "realistic")!;
+  const sel = greenGas ? { ...GRUENGAS_META, ...gruengasResult } : selPrice;
+
+  // Amortisationskurve: bei Gesetzentwurf die Grüngas-Kurve hervorgehoben (grün) +
+  // die 3 Preis-Szenarien als graue Vergleichslinien; sonst die 3 in Ampelfarben.
+  const chartScenarios = greenGas
+    ? [
+        ...scenariosPlain.map(s => ({ id: s.id, color: v('--color-text-muted'), years: s.years, amortisationsJahre: s.amortisationsJahre })),
+        { id: "gruengas", color: v('--color-positive'), years: gruengasResult.years, amortisationsJahre: gruengasResult.amortisationsJahre },
+      ]
+    : scenariosPlain.map(s => ({ id: s.id, color: s.color, years: s.years, amortisationsJahre: s.amortisationsJahre }));
+
+  // Mehr-Ersparnis durch die Grüngas-Pflicht gegenüber reiner Preisfortschreibung.
+  const realisticPlain = scenariosPlain.find(s => s.id === "realistic")!;
+  const greenGasDelta = Math.abs(gruengasResult.tcoEinsparung - realisticPlain.tcoEinsparung);
+  // PV-Deckung für die WP+PV-Linie: echter Wert, wenn eine PV im Rechner aktiv ist;
+  // sonst die Deckung einer typischen Ergänzungs-PV (10 kWp + 5 kWh), transparent
+  // ausgewiesen. Basis: dieselbe HTW-Heuristik wie im WP-Rechner (geteilt).
+  const pvCoverageForChart = result.pvCoverage > 0
+    ? result.pvCoverage
+    : estimatePvCoverageOfWp(10, result.eWp, 5);
+  // Charts zeigen den Gesetzentwurf-Fall (Bio-Treppe, Mittelpfad "base").
+  const gasStackData = useMemo(() => gasMixSeries(DEFAULT_HEATPUMP_CONFIG.years, "base", YEAR), []);
+  const heatCostData = useMemo(
+    () => heatCostComparisonSeries({
+      years: DEFAULT_HEATPUMP_CONFIG.years,
+      startYear: YEAR,
+      scenario: "base",
+      gasEfficiency: fuel.efficiency,
+      jaz: gruengasResult.jaz,
+      wpTarifEurKwh: oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif,
+      stromInflation: heatPumpScenarioAdj("realistic", cfg).stromInflation,
+      pvCoverage: pvCoverageForChart,
+    }),
+    [fuel.efficiency, gruengasResult.jaz, oStromPrice, cfg, pvCoverageForChart]
+  );
 
   // Weg wechseln: baubezogene Overrides zurücksetzen, damit der Weg sauber greift
   const selectWeg = (id: string) => {
@@ -329,13 +389,91 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
         {/* ── RESULT ── */}
         {isResult && (
           <div className="fu">
-            {/* Strompreis-Szenario ganz oben: steuert TCO/Amortisation/Ersparnis/
-                CO₂ + Chart. Für die WP ist teurer Strom ungünstig (invertiert). */}
-            <ScenarioTabs
-              tabs={scenarios.map(s => ({ id: s.id, label: s.label, sub: s.sub, explain: s.explain }))}
-              selected={scenario}
-              onSelect={setScenario}
-            />
+            {/* Szenario-Auswahl ganz oben: der aktuelle Gesetzentwurf (Grüngas-Pflicht,
+                reale Rechtslage) gesondert + hervorgehoben, darunter drei reine
+                Preis-Annahmen ohne Grüngas. Die Wahl rechnet alle Zahlen darunter um. */}
+            <div style={{ marginBottom: 16 }}>
+              {/* Primär: der Gesetzentwurf (Grüngas-Pflicht). Klickbare Kachel; das
+                  „Mehr erfahren" darin öffnet das Modal (stopPropagation, damit der
+                  Kachel-Klick nicht zugleich das Szenario umstellt). */}
+              <div role="button" tabIndex={0} aria-pressed={greenGas}
+                onClick={() => { setScenario("gruengas"); setPreisExpanded(false); }}
+                onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setScenario("gruengas"); setPreisExpanded(false); } }}
+                style={{ cursor: "pointer", padding: "12px 14px", borderRadius: v('--radius-md'), background: greenGas ? v('--color-accent-dim') : v('--color-bg'), border: `1.5px solid ${greenGas ? v('--color-accent') : v('--color-border')}` }}>
+                <span style={{ display: "inline-block", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v('--color-text-on-accent'), background: v('--color-accent'), padding: "2px 7px", borderRadius: 999, marginBottom: 6 }}>Aktueller Gesetzentwurf</span>
+                <div style={{ fontSize: 14, fontWeight: 700, color: greenGas ? v('--color-accent') : v('--color-text-primary') }}>Grüngas-Pflicht ab 2029</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 10, marginTop: 2 }}>
+                  <span style={{ fontSize: 11.5, color: v('--color-text-muted') }}>Gas wird durch die gesetzliche Biomethan-Beimischung Jahr für Jahr teurer</span>
+                  <button onClick={e => { e.stopPropagation(); setShowGasInfo(true); }} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), cursor: "pointer", fontSize: 12, fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0 }}>Mehr erfahren →</button>
+                </div>
+              </div>
+
+              {/* Secondary: die reinen Preis-Modelle, standardmäßig eingeklappt. */}
+              <div style={{ marginTop: 8, borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: !greenGas ? v('--color-bg-muted') : "transparent" }}>
+                <button onClick={() => setPreisExpanded(p => !p)} aria-expanded={preisExpanded}
+                  style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, padding: "10px 14px", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
+                  <span style={{ fontSize: 12.5, fontWeight: 600, color: !greenGas ? v('--color-text-primary') : v('--color-text-secondary') }}>
+                    Marktübliche Preissteigerung{!greenGas ? ` · ${sel.label}` : ""}
+                  </span>
+                  <span style={{ display: "inline-flex", transform: preisExpanded ? "rotate(180deg)" : "none", transition: "transform .15s", color: v('--color-text-muted') }}><IconChevronDown size={iconSizes.sm} /></span>
+                </button>
+                {preisExpanded && (
+                  <div style={{ padding: "0 14px 12px" }}>
+                    <p style={{ fontSize: 11.5, color: v('--color-text-secondary'), lineHeight: 1.55, margin: "0 0 10px" }}>
+                      Ohne die Grüngas-Pflicht — nur die normale Teuerung. Die drei Modelle spannen auf, wie stark Strom- und Gaspreis in {DEFAULT_HEATPUMP_CONFIG.years} Jahren steigen könnten (allgemeine Inflation plus CO₂-Preis auf fossile Energie). Aus Sicht der Wärmepumpe von ungünstig (Strom teuer, Gas billig) bis günstig (Strom stabil, Gas teuer).
+                    </p>
+                    <div style={{ display: "flex", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: v('--color-bg') }} role="tablist" aria-label="Preis-Modell">
+                      {scenariosPlain.map(s => {
+                        const on = !greenGas && s.id === scenario;
+                        return (
+                          <button key={s.id} role="tab" aria-selected={on} onClick={() => { setScenario(s.id); setPreisExpanded(true); }}
+                            style={{ flex: 1, padding: "9px 6px", cursor: "pointer", textAlign: "center", background: on ? v('--color-accent-dim') : "transparent", border: "none", borderBottom: `2px solid ${on ? v('--color-accent') : "transparent"}` }}>
+                            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.03em", color: on ? v('--color-accent') : v('--color-text-muted') }}>{s.label}</div>
+                            <div style={{ fontSize: 10, color: v('--color-text-muted'), fontFamily: v('--font-mono'), marginTop: 2 }}>{s.sub}</div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {!greenGas && (
+                      <div style={{ fontSize: 11.5, color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 10 }}>{sel.explain}</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Modal: alle erklärenden Grüngas-Texte gebündelt (Modal-Baustein →
+                Transitions/Fokus/Bottom-Sheet kommen aus components/Modal.tsx). */}
+            <Modal open={showGasInfo} onClose={() => setShowGasInfo(false)} title="Grüngas-Pflicht: was dahintersteckt" intro="Warum eine neue Gasheizung durch das Heizungsgesetz teurer wird — und wie wir das rechnen." maxWidth={560}>
+              {/* Kernaussage */}
+              <div style={{ padding: "10px 12px", borderRadius: v('--radius-md'), background: v('--color-chart-positive-bg'), marginBottom: 18, fontSize: 12.5, lineHeight: 1.6, color: v('--color-text-secondary') }}>
+                Durch die Grüngas-Pflicht spart die Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre{" "}
+                <span style={{ fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>+{greenGasDelta.toLocaleString("de-DE")} €</span>{" "}mehr als bei reiner Preisfortschreibung.
+              </div>
+              {/* Chart B: Heizkosten je kWh Wärme */}
+              <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Heizkosten je Kilowattstunde Wärme</div>
+              <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginBottom: 8 }}>Gasheizung mit Grüngas-Pflicht gegen Wärmepumpe, {YEAR}–{YEAR + DEFAULT_HEATPUMP_CONFIG.years - 1}</div>
+              <HeatCostCompareChart data={heatCostData} pvCoveragePct={Math.round(pvCoverageForChart * 100)} />
+              {/* Chart A: Gaspreis-Zusammensetzung */}
+              <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", margin: "20px 0 2px" }}>Woraus sich der Gaspreis zusammensetzt</div>
+              <div style={{ fontSize: 11.5, color: v('--color-text-muted'), marginBottom: 8 }}>Endkundenpreis in ct/kWh — der Biomethan-Block wächst mit der Bio-Treppe</div>
+              <GasPriceStackChart data={gasStackData} />
+              {/* Erklärabschnitte */}
+              <div style={{ fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'), marginTop: 22, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 16 }}>
+                {[
+                  { h: "Die Bio-Treppe (§ 43 GModG)", p: "Das Gebäudemodernisierungsgesetz (beschlossen im Juli 2026) verpflichtet jede neu eingebaute Gasheizung, ab 2029 einen wachsenden Anteil klimaneutrales Gas beizumischen: 10 % (2029), 15 % (2030), 30 % (2035), 60 % (2040) und 100 % ab 2045. Biomethan kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung." },
+                  { h: "Beschlossen ist die Pflicht, nicht der Preis", p: "Die Beimischpflicht selbst ist geltendes Recht. Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht." },
+                  { h: "Warum wir je Kilowattstunde Wärme rechnen", p: "Gas- und Strompreis lassen sich nicht direkt vergleichen: Eine Wärmepumpe macht aus einer Kilowattstunde Strom rund drei Kilowattstunden Wärme, ein Gaskessel aus einer Kilowattstunde Gas nur knapp eine. Deshalb rechnen wir beide auf die Kosten pro gelieferter Kilowattstunde Wärme um — die Jahresarbeitszahl der Wärmepumpe und der Kesselwirkungsgrad sind darin enthalten. Grundgebühr und Wartung bleiben außen vor, sie gehören nicht in einen Preis-je-Kilowattstunde-Vergleich." },
+                  { h: "Quelle", p: "IW-Report 36/2026 „Wie hoch sind die Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz?“ (Henger, Küper, Wünsch — Institut der deutschen Wirtschaft, Juli 2026). Die Preispfade stammen aus dem Anhang der Studie." },
+                ].map((s, i) => (
+                  <div key={i} style={{ marginTop: i === 0 ? 0 : 14 }}>
+                    <div style={{ fontSize: 13.5, fontWeight: 700, color: v('--color-text-primary'), marginBottom: 4 }}>{s.h}</div>
+                    <p style={{ margin: 0 }}>{s.p}</p>
+                  </div>
+                ))}
+              </div>
+            </Modal>
+
             {/* 1. Ist-Konklusion (klein, oben) */}
             {zeigeWege && (
               <div style={{ padding: "12px 14px", marginBottom: 12, borderRadius: v('--radius-md'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}` }}>
@@ -458,7 +596,9 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 </select>
                 {situation === "neubau" ? "(Neubau)" : null}
                 <InfoTooltip title="Wie sich der Brennstoffpreis entwickelt" ariaLabel="Wie sich der Gaspreis in der Rechnung entwickelt">
-                  Der heutige Brennstoffpreis steigt in der Rechnung jedes Jahr — durch allgemeine Teuerung (realistisch rund 2 % pro Jahr) und durch den steigenden CO₂-Preis auf fossile Energie. Der CO₂-Preis liegt 2026 und 2027 bei 55–65 € pro Tonne und klettert ab 2028 mit dem EU-Emissionshandel voraussichtlich um etwa 8 € pro Tonne und Jahr. Die im heutigen Preis schon enthaltene CO₂-Abgabe wird dabei nicht doppelt gezählt. Die drei Szenarien im Diagramm rechnen mit unterschiedlich starkem Anstieg.
+                  {greenGas
+                    ? <>Das Grüngas-Szenario ist aktiv: Der Gaspreis folgt dem GModG-Gas-Mix — mit der Bio-Treppe wird ab 2029 zunehmend teures Biomethan beigemischt, dazu steigen Netzentgelte und CO₂-Preis. Details und Verlauf siehst du im Grüngas-Block weiter unten. Die drei Szenarien im Diagramm rechnen mit niedrigem, mittlerem und hohem Preispfad.</>
+                    : <>Der heutige Brennstoffpreis steigt in der Rechnung jedes Jahr — durch allgemeine Teuerung (realistisch rund 2 % pro Jahr) und durch den steigenden CO₂-Preis auf fossile Energie. Der CO₂-Preis liegt 2026 und 2027 bei 55–65 € pro Tonne und klettert ab 2028 mit dem EU-Emissionshandel voraussichtlich um etwa 8 € pro Tonne und Jahr. Die im heutigen Preis schon enthaltene CO₂-Abgabe wird dabei nicht doppelt gezählt. Die drei Szenarien im Diagramm rechnen mit unterschiedlich starkem Anstieg.</>}
                 </InfoTooltip>
               </div>
 
@@ -478,7 +618,9 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   </select>
                 </div>
                 <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={result.jaz} onCommit={v => setOJaz(v)} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
-                <div>Gaspreis: <InlineEdit value={Math.round((oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => setOGasPrice(v / 100)} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} /></div>
+                <div>Gaspreis: {greenGas
+                  ? <span style={{ fontStyle: "italic", color: v('--color-text-muted') }}>folgt dem Grüngas-Pfad (Block unten)</span>
+                  : <InlineEdit value={Math.round((oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => setOGasPrice(v / 100)} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} />}</div>
                 <div>WP-Strompreis: <InlineEdit value={Math.round((oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => setOStromPrice(v / 100)} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
                 <div>Investition (netto): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} />{situation === "bestand" ? <span style={{ fontSize: 12, color: v('--color-text-muted') }}> · nach {Math.round(result.beg.rate * 100)} % Förderung</span> : null}</div>
               </div>
@@ -501,19 +643,30 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
             {/* Chart */}
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "16px 12px 8px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10, paddingLeft: 4 }}>
-                Kumulierte Einsparung · 3 Szenarien
+                {greenGas ? "Kumulierte Einsparung · Gesetzentwurf vs. Preis-Szenarien" : "Kumulierte Einsparung · 3 Szenarien"}
               </div>
               <HeatPumpChart
-                scenarios={scenarios.map(s => ({ id: s.id, color: s.color, years: s.years, amortisationsJahre: s.amortisationsJahre }))}
+                scenarios={chartScenarios}
                 horizon={DEFAULT_HEATPUMP_CONFIG.years}
-                highlightId={scenario}
+                highlightId={greenGas ? "gruengas" : scenario}
               />
-              <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 10, fontSize: 11 }}>
-                {scenarios.map(s => (
-                  <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 4, color: s.id === scenario ? v('--color-text-secondary') : v('--color-text-muted'), fontWeight: s.id === scenario ? 700 : 400 }}>
-                    <span style={{ width: 10, height: 2, background: s.color, borderRadius: 1, opacity: s.id === scenario ? 1 : 0.5 }} /> {s.label}
-                  </span>
-                ))}
+              <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 16, marginTop: 10, fontSize: 11 }}>
+                {greenGas ? (
+                  <>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, color: v('--color-text-secondary'), fontWeight: 700 }}>
+                      <span style={{ width: 10, height: 2, background: v('--color-positive'), borderRadius: 1 }} /> Mit Grüngas-Pflicht
+                    </span>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, color: v('--color-text-muted') }}>
+                      <span style={{ width: 10, height: 2, background: v('--color-text-muted'), borderRadius: 1, opacity: 0.5 }} /> Preis-Szenarien (ohne)
+                    </span>
+                  </>
+                ) : (
+                  scenariosPlain.map(s => (
+                    <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 4, color: s.id === scenario ? v('--color-text-secondary') : v('--color-text-muted'), fontWeight: s.id === scenario ? 700 : 400 }}>
+                      <span style={{ width: 10, height: 2, background: s.color, borderRadius: 1, opacity: s.id === scenario ? 1 : 0.5 }} /> {s.label}
+                    </span>
+                  ))
+                )}
               </div>
             </div>
 

@@ -20,6 +20,9 @@ import { co2SurchargeOverToday, calcWeightedFeedIn, calcPvBenefitPerYear } from 
 import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { calcHeatDemand, calcHeatLoad, flowTempForSystem, calcJAZ } from "./heatpump-core";
+import { YEAR } from "./constants";
+import { gasMixPriceEurForYear } from "./greengas";
+import type { GasScenario } from "./greengas-config";
 import { v } from "./theme";
 
 // Reine Bedarfs-/JAZ-Funktionen + WP-Jahresstrom + Standard-Gebäude leben in
@@ -57,6 +60,11 @@ export interface HeatPumpInputs {
     kwp: number;
     speicherKwh: number;
   };
+  // Grüngas-Modus (GModG Bio-Treppe): ersetzt den Gas-Referenzpreis-Pfad durch den
+  // zeitvariablen GModG-Gas-Mix (Biomethan-Beimischung + steigende Netzentgelte +
+  // CO₂), Modell lib/greengas.ts (IW-Report 36/2026). Default aus — bewusst als
+  // klar gekennzeichnetes, zuschaltbares Szenario, nie als Standard.
+  greenGas?: boolean;
   // Optional overrides (editable in result view)
   override?: {
     qGes?: number;               // thermal demand override (kWh/a)
@@ -187,8 +195,8 @@ export function calcBegSubsidy(situation: "bestand" | "neubau", wpType: "lwwp" |
 
 // ─── Main TCO calculation ──────────────────────────────────────────────────
 
-export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG, scenarioAdj?: { jazFactor: number; stromInflation: number; gasInflation: number }): HeatPumpResult {
-  const adj = scenarioAdj ?? { jazFactor: 1, stromInflation: cfg.stromInflation, gasInflation: cfg.gasInflation };
+export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG, scenarioAdj?: { jazFactor: number; stromInflation: number; gasInflation: number; gasScenario?: GasScenario }): HeatPumpResult {
+  const adj = scenarioAdj ?? { jazFactor: 1, stromInflation: cfg.stromInflation, gasInflation: cfg.gasInflation, gasScenario: "base" as GasScenario };
 
   // 1. Heizwärmebedarf
   const demand = calcHeatDemand(inputs.situation, inputs.wohnflaeche, inputs.insulationIdx, inputs.personen, cfg, inputs.haustypFaktor ?? 1);
@@ -277,17 +285,30 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   const gasEff = Math.max(0.5, inputs.override?.gasEfficiency ?? cfg.gasEfficiency);  // gegen /0
   const gasCo2 = inputs.override?.gasCo2 ?? cfg.gasCo2PerKwh;
   const fuelKwh = qGes / gasEff;
+  // Grüngas-Modus (GModG Bio-Treppe): der Gaspreis wird Jahr für Jahr neu gemischt
+  // (teures Biomethan verdrängt Erdgas, Netzentgelt + CO₂ steigen eigenständig) —
+  // das kann das simple „Preis × Teuerung"-Modell nicht abbilden. Modell +
+  // Szenario-Korridor (low/base/high, gemappt auf Pessimistisch/Realistisch/
+  // Optimistisch aus WP-Sicht): lib/greengas.ts.
+  const greenGas = !!inputs.greenGas;
+  const gasScenario: GasScenario = adj.gasScenario ?? "base";
   // Inline per-year gas cost (need array for chart)
   const gasPerYear: number[] = [];
   let gasKosten = 0;
   for (let i = 0; i < cfg.years; i++) {
-    // Gaspreis (11 ct) ist ein heutiger All-in-Preis und enthält die CO2-Abgabe
-    // 2026 bereits. Daher nur den ANSTIEG des CO2-Preises über das heutige Niveau
-    // aufschlagen (co2SurchargeOverToday), sonst wird die 2026-Komponente doppelt
-    // gezählt. Kalenderjahr-verankert (rollover-sicher) via lib/co2-config.ts.
-    const co2Surcharge = gasCo2 * co2SurchargeOverToday(i) / 1000;
-    const basePrice = gasPrice * Math.pow(1 + adj.gasInflation, i);
-    const y = fuelKwh * (basePrice + co2Surcharge);
+    let y: number;
+    if (greenGas) {
+      // Zeitvariabler GModG-Gas-Mix-Endkundenpreis (€/kWh, brutto, CO₂ inklusive).
+      y = fuelKwh * gasMixPriceEurForYear(YEAR + i, gasScenario);
+    } else {
+      // Gaspreis (11 ct) ist ein heutiger All-in-Preis und enthält die CO2-Abgabe
+      // 2026 bereits. Daher nur den ANSTIEG des CO2-Preises über das heutige Niveau
+      // aufschlagen (co2SurchargeOverToday), sonst wird die 2026-Komponente doppelt
+      // gezählt. Kalenderjahr-verankert (rollover-sicher) via lib/co2-config.ts.
+      const co2Surcharge = gasCo2 * co2SurchargeOverToday(i) / 1000;
+      const basePrice = gasPrice * Math.pow(1 + adj.gasInflation, i);
+      y = fuelKwh * (basePrice + co2Surcharge);
+    }
     gasKosten += y;
     gasPerYear.push(y);
   }
@@ -316,7 +337,10 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
     if (amortisationsJahre === null && kum >= 0) amortisationsJahre = i + 1;
   }
 
-  // 8. CO₂-Einsparung
+  // 8. CO₂-Einsparung — bewusst gegen FOSSILES Gas gerechnet, auch im Grüngas-Modus.
+  // Grüngas ist ein KOSTEN-Szenario (teure Biomethan-Pflicht); die Emissions-Kachel
+  // beantwortet die andere Frage „wie viel CO₂ spart die WP gegenüber fossilem Gas".
+  // Beide Effekte getrennt zu halten ist ehrlicher, als sie zu vermischen.
   const co2Gas = fuelKwh * gasCo2 * cfg.years;
   const gridCo2 = cfg.gridCo2PerKwh; // kg CO2/kWh German grid mix (konservativ statisch)
   const co2Wp = eWp * gridCo2 * cfg.years;
@@ -346,10 +370,13 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
 // nicht nur die Kern-Prognose, sondern auch der Sanierungswege-Vergleich auf der
 // Ergebnisseite mit demselben Szenario rechnet (sonst widerspräche der Wege-Block
 // dem oben gewählten Szenario).
-export function heatPumpScenarioAdj(id: string, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): { jazFactor: number; stromInflation: number; gasInflation: number } {
-  if (id === "pessimistic") return { jazFactor: 0.90, stromInflation: 0.05, gasInflation: 0.01 };
-  if (id === "optimistic") return { jazFactor: 1.05, stromInflation: 0.01, gasInflation: 0.04 };
-  return { jazFactor: 1.00, stromInflation: cfg.stromInflation, gasInflation: cfg.gasInflation };
+export function heatPumpScenarioAdj(id: string, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): { jazFactor: number; stromInflation: number; gasInflation: number; gasScenario: GasScenario } {
+  // gasScenario mappt auf den IW-Preiskorridor (nur im Grüngas-Modus wirksam):
+  // „Pessimistisch für die WP" = Gas bleibt billig → low; „Optimistisch" = Gas
+  // wird teuer → high. Spiegelbildlich zur gasInflation-Logik.
+  if (id === "pessimistic") return { jazFactor: 0.90, stromInflation: 0.05, gasInflation: 0.01, gasScenario: "low" };
+  if (id === "optimistic") return { jazFactor: 1.05, stromInflation: 0.01, gasInflation: 0.04, gasScenario: "high" };
+  return { jazFactor: 1.00, stromInflation: cfg.stromInflation, gasInflation: cfg.gasInflation, gasScenario: "base" };
 }
 
 export function calcHeatPumpScenarios(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): HeatPumpScenarioResult[] {
