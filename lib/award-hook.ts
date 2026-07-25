@@ -34,11 +34,14 @@ const HOOK_TRAEGER: Traeger = "buerger";
  *  Wert ist dann ein Nenner-Artefakt, kein Ausbau. Nur Pro-Kopf-Kategorien. */
 export const HOOK_MIN_POPULATION = 2000;
 
-/** Bekannte Register-Fehler → nie ein Aufhänger, nur neutral (Gegenprüfung
- *  2026-07-25): Finsing (Gewerbe-Batterie als privat gemeldet), Waldshut-Trio
- *  (dasselbe Kraftwerk mehreren Gemeinden zugeordnet). Bis die Anlagen-
- *  Entdopplung in der Pipeline steht (eigener Task). */
-export const HOOK_QUARANTINE = new Set(["09177118", "08337045", "08337126", "08337128"]);
+/** Bekannte Register-Fehler → nie ein Aufhänger, nur neutral. Aktuell nur
+ *  Finsing (09177118): eine Gewerbe-Batterie ist dort als privat gemeldet und
+ *  würde sonst „Speicher-Vorreiter/-Hauptstadt Nr. 1".
+ *  Das Waldshut-Trio ist NICHT hier: die Dedup-Session hat gemessen, dass das ein
+ *  Pumpspeicher-Fehler (kWh) ist — er fasst keine Solar-Award-Kategorie an. Die 10
+ *  echten Solar-Doppelzählungen treffen nur „Solar-Standort" (kein Aufhänger,
+ *  Bürger-only) und bekommen eine eigene Leitplanke in der Rangliste. */
+export const HOOK_QUARANTINE = new Set(["09177118"]);
 
 /** Spike-Wächter: liegt ein Pro-Kopf-Wert extrem über dem Gruppen-Median, ist das
  *  eher ein Datenfehler als ein echter Vorreiter → nicht krönen (fällt auf
