@@ -47,7 +47,7 @@ Den vollständigen Solar-Überblick für ${c.name} — monatlich aus dem amtlich
 
 Genau diese Übersicht biete ich Ihnen als kostenloses, einbettbares Widget für die Website von ${c.name} an: cookielos, ohne Anmeldung, automatisch aktuell. Optisch fügt es sich in Ihren Auftritt ein — Farben und Schrift passe ich an Ihre Website an. Ihre Bürgerinnen und Bürger sehen auf einen Blick, wie weit der Solar-Ausbau vor Ort ist — das motiviert erfahrungsgemäß zum Mitmachen.
 
-Das ist kostenlos und ohne Vertrieb dahinter; über einen Quellenlink zurück freue ich mich, aber mehr braucht es nicht. Wenn Sie mögen, schicke ich Ihnen gern den Einbettungscode und einen Vorschau-Link.
+Das ist kostenlos und ohne Vertrieb dahinter. Der Einbettungscode enthält einen kleinen, sichtbaren Quellenhinweis „Daten von solar-check.io“ unter dem Widget — der bleibt bitte stehen; eine Whitelabel-Variante ohne Hinweis biete ich auf Anfrage an. Wenn Sie mögen, schicke ich Ihnen gern den Einbettungscode und einen Vorschau-Link.
 
 Mit freundlichen Grüßen
 ${SIGNATURE}
