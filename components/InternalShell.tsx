@@ -122,11 +122,14 @@ function Sidebar({ sections, horizontal }: { sections: NavSection[]; horizontal:
         top: space.md,
         display: "flex",
         flexDirection: "column",
-        gap: space.xxl,
+        gap: space.lg,
       }}
     >
-      {sections.map((s) => (
-        <div key={s.title}>
+      {sections.map((s, i) => (
+        <div
+          key={s.title}
+          style={i > 0 ? { borderTop: `1px solid ${v("--color-border-muted")}`, paddingTop: space.lg } : undefined}
+        >
           <div style={sectionTitleStyle}>{s.title}</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {s.links.map((l) =>
@@ -159,9 +162,9 @@ const sectionTitleStyle: React.CSSProperties = {
   fontWeight: 700,
   textTransform: "uppercase",
   letterSpacing: "0.06em",
-  color: v("--color-text-muted"),
+  color: v("--color-text-faint"),
   padding: `0 ${space.sm}px`,
-  marginBottom: space.xs,
+  marginBottom: space.sm,
 };
 
 const groupLabelStyle: React.CSSProperties = {

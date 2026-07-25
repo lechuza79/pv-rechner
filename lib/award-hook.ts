@@ -21,6 +21,12 @@ const SCOPE_OF: Record<HookLevel, AwardScopeLevel> = { kreis: "landkreis", land:
 
 export const LEVEL_LABEL: Record<HookLevel, string> = { kreis: "Landkreis", land: "Bundesland", bund: "bundesweit" };
 
+/** Kategorien, die NICHT als Anschreiben-Aufhänger taugen: Wind/Biomasse/Wasser
+ *  sind kein Solar und für ein Solar-Outreach off-brand („Biomasse-Hauptstadt"
+ *  macht als Aufhänger keinen Sinn). Sie bleiben in der Award-Rangliste, werden
+ *  aber nicht zum Betreff. */
+export const HOOK_EXCLUDED = new Set(["wind-standort", "biomasse-standort", "wasser-standort"]);
+
 /** Fertige Anschreiben-Zeile je Gemeinde — vorberechnet und gecacht, damit die
  *  Suche in der Ansicht nur noch filtert (nicht neu rechnet). */
 export type HookExample = {
@@ -90,6 +96,7 @@ export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Place
   };
   const levels: HookLevel[] = ["kreis", "land", "bund"];
   for (const cat of AWARD_CATEGORIES) {
+    if (HOOK_EXCLUDED.has(cat.key)) continue; // off-brand als Aufhänger, bleibt aber in der Rangliste
     for (const level of levels) {
       const groups = new Map<string, GemeindeStats[]>();
       for (const g of gemeinden) {
@@ -186,7 +193,7 @@ export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg:
     case "sieger":
       return {
         betreff: `${n.gemeinde} ist ${titel} ${wo}`,
-        einstieg: `${n.gemeinde} steht beim Thema Solar ganz vorn: aktuell ${titel} ${wo} — Platz 1 von ${hook.total} Gemeinden.`,
+        einstieg: `${n.gemeinde} ist ${wo} die Nummer 1 bei „${titel}“ — Platz 1 von ${hook.total} Gemeinden.`,
       };
     case "podium":
       return {
