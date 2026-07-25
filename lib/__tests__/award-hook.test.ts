@@ -52,7 +52,11 @@ describe("Aufhänger-Guardrails (Gegenprüfung 2026-07-25)", () => {
 
 describe("selectHook", () => {
   const P = (over: Partial<Placement>): Placement => ({
-    categoryKey: "dach-privat-pk", level: "kreis", scopeId: "09111", rank: 1, total: 20, ...over,
+    categoryKey: "dach-privat-pk", level: "kreis", scopeId: "09111", rank: 1, total: 20, value: 100, spike: false, ...over,
+  });
+
+  it("überspringt Spike-Platzierungen (Datenfehler-Verdacht)", () => {
+    expect(selectHook([P({ rank: 1, total: 20, spike: true })]).kind).toBe("neutral");
   });
 
   it("wählt einen Sieg", () => {
@@ -100,13 +104,13 @@ describe("selectHook", () => {
 describe("hookText", () => {
   it("baut Betreff und Einstieg je Aufhänger-Art", () => {
     const sieg = hookText(
-      { kind: "sieger", categoryKey: "balkon-pk", categoryLabel: "Balkon-Pionier", traeger: "buerger", level: "kreis", scopeId: "09111", rank: 1, total: 34, percentile: null },
+      { kind: "sieger", categoryKey: "balkon-pk", categoryLabel: "Balkon-Pionier", traeger: "buerger", level: "kreis", scopeId: "09111", rank: 1, total: 34, percentile: null, value: 65 },
       names,
     );
     expect(sieg.betreff).toContain("Musterdorf ist Balkon-Pionier im Landkreis Musterkreis");
     expect(sieg.einstieg).toContain("Platz 1 von 34");
 
-    const neutral = hookText({ ...{ kind: "neutral", categoryKey: null, categoryLabel: null, traeger: null, level: null, scopeId: null, rank: null, total: null, percentile: null } }, names);
+    const neutral = hookText({ kind: "neutral", categoryKey: null, categoryLabel: null, traeger: null, level: null, scopeId: null, rank: null, total: null, percentile: null, value: null }, names);
     expect(neutral.betreff).toContain("So steht Musterdorf beim Solarausbau da");
   });
 });

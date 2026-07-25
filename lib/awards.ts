@@ -10,6 +10,11 @@
 //    deshalb gibt es dort schlicht keine Pro-Kopf-Kategorie, nur absolut.
 //  - Rollen-Achse (kreisfrei/Hauptstadt) fängt die Städte, Größen-Drittel die
 //    Dörfer. Größengrenzen kommen aus der Verteilung (Terzile), nicht gesetzt.
+//
+// Ausnahme vom „kein Import": die kanonischen Einheiten-Formatter (rein, ohne
+// DB/Next) — Einheiten werden nie handgeschrieben (Zahlen-Korrektheit-BLOCKER).
+
+import { fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "./atlas-format";
 
 export type AwardScopeLevel = "de" | "bundesland" | "landkreis";
 export type Traeger = "buerger" | "gewerbe";
@@ -184,6 +189,25 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
 export const AWARD_CATEGORY_BY_KEY: Record<string, AwardCategory> = Object.fromEntries(
   AWARD_CATEGORIES.map((c) => [c.key, c]),
 );
+
+/** Belegwert einer Kategorie anzeigefertig — Einheit aus dem kanonischen Atlas-
+ *  Formatter (nie handgeschrieben, außer den dimensionslosen Zähl-/Pro-Kopf-Fällen). */
+export function formatAwardValue(value: number, format: MetricFormat): string {
+  switch (format) {
+    case "wattProKopf":
+      return fmtWattProKopf(value);
+    case "pvLeistung":
+      return fmtPvLeistung(value);
+    case "speicherKwh":
+      return fmtSpeicherKwh(value);
+    case "count":
+      return `${Math.round(value).toLocaleString("de-DE")} Anlagen`;
+    case "countPer1000":
+      return `${value.toLocaleString("de-DE", { maximumFractionDigits: 1 })} je 1.000 Ew.`;
+    case "whProKopf":
+      return `${Math.round(value).toLocaleString("de-DE")} Wh/Kopf`;
+  }
+}
 
 // ─── Rolle (Vergleichsgruppe) ───────────────────────────────────────────────────
 

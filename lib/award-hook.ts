@@ -34,6 +34,18 @@ const HOOK_TRAEGER: Traeger = "buerger";
  *  Wert ist dann ein Nenner-Artefakt, kein Ausbau. Nur Pro-Kopf-Kategorien. */
 export const HOOK_MIN_POPULATION = 2000;
 
+/** Bekannte Register-Fehler → nie ein Aufhänger, nur neutral (Gegenprüfung
+ *  2026-07-25): Finsing (Gewerbe-Batterie als privat gemeldet), Waldshut-Trio
+ *  (dasselbe Kraftwerk mehreren Gemeinden zugeordnet). Bis die Anlagen-
+ *  Entdopplung in der Pipeline steht (eigener Task). */
+export const HOOK_QUARANTINE = new Set(["09177118", "08337045", "08337126", "08337128"]);
+
+/** Spike-Wächter: liegt ein Pro-Kopf-Wert extrem über dem Gruppen-Median, ist das
+ *  eher ein Datenfehler als ein echter Vorreiter → nicht krönen (fällt auf
+ *  neutral). Konservativ, weil „neutral statt Superlativ" ein sicherer Fehlschlag
+ *  ist; die absolute Absicherung ist der sichtbare Belegwert in der Ansicht. */
+const SPIKE_FACTOR = 12;
+
 /** Fertige Anschreiben-Zeile je Gemeinde — vorberechnet und gecacht, damit die
  *  Suche in der Ansicht nur noch filtert (nicht neu rechnet). */
 export type HookExample = {
@@ -48,6 +60,9 @@ export type HookExample = {
   betreff: string;
   einstieg: string;
   others: string[];
+  /** Belegwert des gewählten Aufhängers, fertig formatiert (z. B. „2.480 Wp/Kopf",
+   *  „53,4 MWh") — damit der Mensch einen Ausreißer sieht. Null bei neutral. */
+  valueStr: string | null;
 };
 
 export type Placement = {
@@ -56,6 +71,9 @@ export type Placement = {
   scopeId: string;
   rank: number;
   total: number;
+  value: number;
+  /** Pro-Kopf-Wert weit über dem Gruppen-Median → Datenfehler-Verdacht. */
+  spike: boolean;
 };
 
 export type HookKind = "sieger" | "podium" | "perzentil" | "neutral";
@@ -70,6 +88,7 @@ export type Hook = {
   rank: number | null;
   total: number | null;
   percentile: number | null; // 0..1, nur bei kind === "perzentil"
+  value: number | null; // roher Belegwert des Aufhängers
 };
 
 export type HookSettings = {
@@ -101,13 +120,16 @@ export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Place
     if (arr) arr.push(p);
     else out.set(id, [p]);
   };
+  // Bekannte Fehl-Gemeinden ganz aus der Aufhänger-Bildung nehmen (nur neutral).
+  const pool = gemeinden.filter((g) => !HOOK_QUARANTINE.has(g.regionId));
   const levels: HookLevel[] = ["kreis", "land", "bund"];
   for (const cat of AWARD_CATEGORIES) {
     if (cat.traeger !== HOOK_TRAEGER) continue; // nur Bürger-Leistung wird zum Aufhänger
     const floor = cat.messart === "proKopf" ? HOOK_MIN_POPULATION : 0;
+    const isProKopf = cat.messart === "proKopf";
     for (const level of levels) {
       const groups = new Map<string, GemeindeStats[]>();
-      for (const g of gemeinden) {
+      for (const g of pool) {
         if (g.population < floor) continue; // Pro-Kopf: Nenner-Artefakt kleiner Gemeinden vermeiden
         const m = cat.metric(g);
         if (m == null || m <= 0) continue;
@@ -119,7 +141,13 @@ export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Place
       for (const [sid, list] of Array.from(groups.entries())) {
         const ranked = rankGemeinden(list, cat);
         const total = ranked.length;
-        for (const r of ranked) push(r.regionId, { categoryKey: cat.key, level, scopeId: sid, rank: r.rank, total });
+        // Median der Gruppe für den Spike-Wächter (nur Pro-Kopf sinnvoll — bei
+        // absoluten Kategorien liegt der Sieger naturgemäß weit über dem Median).
+        const median = total ? ranked[Math.floor(total / 2)].value : 0;
+        for (const r of ranked) {
+          const spike = isProKopf && median > 0 && r.value > SPIKE_FACTOR * median;
+          push(r.regionId, { categoryKey: cat.key, level, scopeId: sid, rank: r.rank, total, value: r.value, spike });
+        }
       }
     }
   }
@@ -136,6 +164,7 @@ const NEUTRAL: Hook = {
   rank: null,
   total: null,
   percentile: null,
+  value: null,
 };
 
 const levelRank = (l: HookLevel): number => (l === "bund" ? 3 : l === "land" ? 2 : 1);
@@ -148,6 +177,7 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
   let bestScore = -Infinity;
 
   for (const p of placements ?? []) {
+    if (p.spike) continue; // Datenfehler-Verdacht → kein Aufhänger (fällt auf neutral)
     const cat = AWARD_CATEGORY_BY_KEY[p.categoryKey];
     if (!cat) continue;
     const ratio = p.rank / Math.max(p.total, 1);
@@ -177,6 +207,7 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
         rank: p.rank,
         total: p.total,
         percentile: kind === "perzentil" ? ratio : null,
+        value: p.value,
       };
     }
   }

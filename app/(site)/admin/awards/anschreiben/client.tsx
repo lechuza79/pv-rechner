@@ -121,7 +121,10 @@ export default function HooksClient({ payload }: { payload: HooksPayload }) {
             <div key={r.regionId} style={{ border: `1px solid ${v("--color-border")}`, borderLeft: `3px solid ${kindColor(r.kind)}`, borderRadius: v("--radius-md"), padding: pad("md", "lg") }}>
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: space.md, flexWrap: "wrap" }}>
                 <div style={{ fontWeight: 700, color: v("--color-text-primary") }}>
-                  {r.name} <span style={{ fontSize: 12, fontWeight: 400, color: v("--color-text-muted") }}>({r.bl}, {nf(r.population)} Ew)</span>
+                  {r.name}{" "}
+                  <span style={{ fontSize: 12, fontWeight: 400, color: v("--color-text-muted") }}>
+                    ({r.bl}, {nf(r.population)} Ew{r.valueStr ? ` · Beleg: ${r.valueStr}` : ""})
+                  </span>
                 </div>
                 <span style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: kindColor(r.kind) }}>{KIND_LABEL[r.kind]}</span>
               </div>

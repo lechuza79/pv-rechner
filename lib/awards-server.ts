@@ -1,6 +1,6 @@
 import "server-only";
 import { supabase } from "./supabase-server";
-import { AWARD_CATEGORY_BY_KEY, type GemeindeStats } from "./awards";
+import { AWARD_CATEGORY_BY_KEY, formatAwardValue, type GemeindeStats } from "./awards";
 import { bundeslandByAgs } from "./mastr-regions";
 import {
   LEVEL_LABEL,
@@ -132,6 +132,10 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
       betreff: t.betreff,
       einstieg: t.einstieg,
       others,
+      valueStr:
+        hook.value != null && hook.categoryKey
+          ? formatAwardValue(hook.value, AWARD_CATEGORY_BY_KEY[hook.categoryKey].format)
+          : null,
     };
   });
 
