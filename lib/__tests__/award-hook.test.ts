@@ -30,6 +30,26 @@ describe("computePlacements", () => {
   });
 });
 
+describe("Aufhänger-Guardrails (Gegenprüfung 2026-07-25)", () => {
+  it("nimmt nur Bürger-Kategorien als Aufhänger (kein Standort/Gewerbe/Zubau)", () => {
+    const gem = [
+      g("09111001", { population: 5000, gewerbeDachKwp: 9000, freiflaecheKwp: 5000, windKwp: 9000, solarZubauKwp: 9000, privatDachKwp: 100 }),
+    ];
+    const keys = new Set((computePlacements(gem).get("09111001") ?? []).map((p) => p.categoryKey));
+    for (const off of ["solar-standort", "freiflaeche-standort", "zubau", "wind-standort", "gewerbespeicher-abs"]) {
+      expect(keys.has(off)).toBe(false);
+    }
+  });
+
+  it("schließt Pro-Kopf-Aufhänger für Gemeinden unter der Einwohner-Schwelle aus", () => {
+    const winzling = g("09111001", { population: 300, privatDachKwp: 9000 }); // absurde Pro-Kopf-Zahl
+    const stadt = g("09111002", { population: 5000, privatDachKwp: 3000 });
+    const pl = computePlacements([winzling, stadt]);
+    expect((pl.get("09111001") ?? []).some((p) => p.categoryKey === "dach-privat-pk")).toBe(false);
+    expect((pl.get("09111002") ?? []).some((p) => p.categoryKey === "dach-privat-pk")).toBe(true);
+  });
+});
+
 describe("selectHook", () => {
   const P = (over: Partial<Placement>): Placement => ({
     categoryKey: "dach-privat-pk", level: "kreis", scopeId: "09111", rank: 1, total: 20, ...over,

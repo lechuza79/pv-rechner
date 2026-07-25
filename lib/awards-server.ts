@@ -43,7 +43,11 @@ async function pageAll(table: string, select: string, refine?: (q: any) => any):
     let q = supabase.from(table).select(select).order("region_id", { ascending: true }).range(from, from + size - 1);
     if (refine) q = refine(q);
     const { data, error } = await q;
-    if (error || !data || data.length === 0) break;
+    // Fehler werfen statt still abbrechen: ein Teil-Ergebnis (z. B. nur die ersten
+    // 3.000 Gemeinden) würde sonst eine Stunde lang falsche Ranglisten cachen. Der
+    // Aufrufer memoisiert nur erfolgreiche, vollständige Läufe.
+    if (error) throw new Error(`Award-Daten laden (${table}): ${error.message}`);
+    if (!data || data.length === 0) break;
     out.push(...data);
     if (data.length < size) break;
   }

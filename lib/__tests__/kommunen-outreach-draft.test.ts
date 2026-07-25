@@ -36,6 +36,16 @@ describe("renderOutreachDraft", () => {
     expect(d.body).not.toContain("einzige Bedingung");
   });
 
+  it("behauptet keine falsche Aktualität (monatlich statt tagesaktuell)", () => {
+    expect(d.body).toContain("monatlich");
+    expect(d.body).not.toContain("tagesaktuell");
+  });
+
+  it("trägt den Art.-14-DSGVO-Hinweis (Herkunft/Zweck/Widerspruch)", () => {
+    expect(d.body).toContain("Art. 14 DSGVO");
+    expect(d.body).toContain("Widerspruchsrecht");
+  });
+
   it("klebt keine nackte Leistungseinheit an eine Zahl (Zahlen-Korrektheit)", () => {
     expect(d.body).not.toMatch(/\d\s?kW(?![ph])/);
     expect(d.body).not.toMatch(/\d\s?MW(?!p)/);

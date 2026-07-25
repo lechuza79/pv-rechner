@@ -21,11 +21,18 @@ const SCOPE_OF: Record<HookLevel, AwardScopeLevel> = { kreis: "landkreis", land:
 
 export const LEVEL_LABEL: Record<HookLevel, string> = { kreis: "Landkreis", land: "Bundesland", bund: "bundesweit" };
 
-/** Kategorien, die NICHT als Anschreiben-Aufhänger taugen: Wind/Biomasse/Wasser
- *  sind kein Solar und für ein Solar-Outreach off-brand („Biomasse-Hauptstadt"
- *  macht als Aufhänger keinen Sinn). Sie bleiben in der Award-Rangliste, werden
- *  aber nicht zum Betreff. */
-export const HOOK_EXCLUDED = new Set(["wind-standort", "biomasse-standort", "wasser-standort"]);
+/** Nur BÜRGER-Kategorien werden zum Anschreiben-Aufhänger (Gegenprüfung 2026-07-25):
+ *  Standort-/Gewerbe-Kategorien (Solar-Standort, Freifläche, Gewerbespeicher,
+ *  Wind/Biomasse/Wasser, Zubau inkl. Freifläche) messen fremde Investoren-Projekte,
+ *  nicht die Leistung der Gemeinde — ein Dorf mit Investoren-Park wäre sonst
+ *  „Zubau-Champion". Sie bleiben in der Award-Rangliste, taugen aber nicht als
+ *  Betreff einer Mail ans Rathaus. */
+const HOOK_TRAEGER: Traeger = "buerger";
+
+/** Einwohner-Untergrenze für Pro-Kopf-Aufhänger (wie der öffentliche Atlas,
+ *  `p_min_pop`): sonst führt ein 30-Einwohner-Koog jede Pro-Kopf-Liste an — der
+ *  Wert ist dann ein Nenner-Artefakt, kein Ausbau. Nur Pro-Kopf-Kategorien. */
+export const HOOK_MIN_POPULATION = 2000;
 
 /** Fertige Anschreiben-Zeile je Gemeinde — vorberechnet und gecacht, damit die
  *  Suche in der Ansicht nur noch filtert (nicht neu rechnet). */
@@ -96,10 +103,12 @@ export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Place
   };
   const levels: HookLevel[] = ["kreis", "land", "bund"];
   for (const cat of AWARD_CATEGORIES) {
-    if (HOOK_EXCLUDED.has(cat.key)) continue; // off-brand als Aufhänger, bleibt aber in der Rangliste
+    if (cat.traeger !== HOOK_TRAEGER) continue; // nur Bürger-Leistung wird zum Aufhänger
+    const floor = cat.messart === "proKopf" ? HOOK_MIN_POPULATION : 0;
     for (const level of levels) {
       const groups = new Map<string, GemeindeStats[]>();
       for (const g of gemeinden) {
+        if (g.population < floor) continue; // Pro-Kopf: Nenner-Artefakt kleiner Gemeinden vermeiden
         const m = cat.metric(g);
         if (m == null || m <= 0) continue;
         const sid = scopeIdOf(g.regionId, SCOPE_OF[level]);
