@@ -3,28 +3,21 @@ import { renderOutreachDraft, type DraftContext } from "../kommunen-outreach-dra
 
 const base: DraftContext = {
   name: "Testdorf",
-  kwpAlle: 73_900,
-  population: 133_000,
   pageUrl: "https://solar-check.io/solar-atlas/bayern/landkreis-x/testdorf",
-  perzentil: 50,
-  rangKreis: 5,
-  kreisGemeinden: 20,
+  betreff: "Testdorf ist Balkon-Pionier im Landkreis Musterkreis",
+  einstieg: "Testdorf ist im Landkreis Musterkreis die Nummer 1 bei „Balkon-Pionier“ — Platz 1 von 20 Gemeinden.",
 };
 
 describe("renderOutreachDraft", () => {
   const d = renderOutreachDraft(base);
 
-  it("nennt die Gemeinde im Betreff und Text", () => {
-    expect(d.subject).toContain("Testdorf");
-    expect(d.body).toContain("Testdorf");
+  it("übernimmt Betreff und Einstieg aus der Hook-Logik", () => {
+    expect(d.subject).toBe(base.betreff);
+    expect(d.body).toContain(base.einstieg);
   });
 
-  it("nutzt Peak-Einheit (kWp/MWp) — nie bare kW/MW; keine Pro-Kopf-Angabe im Body", () => {
-    expect(d.body).toMatch(/MWp/);
-    expect(d.body).not.toMatch(/\d\s?kW(?![ph])/);
-    expect(d.body).not.toMatch(/\d\s?MW(?!p)/);
-    // Pro Kopf inkl. Freifläche wäre ein Artefakt → bewusst nicht im Body.
-    expect(d.body).not.toMatch(/je Einwohner/);
+  it("nennt die Gemeinde im Text", () => {
+    expect(d.body).toContain("Testdorf");
   });
 
   it("verlinkt die Gemeinde-Atlas-Seite, wenn vorhanden", () => {
@@ -38,31 +31,20 @@ describe("renderOutreachDraft", () => {
     expect(d.body).toContain("solar-check.io/datenschutz");
   });
 
-  it("hat die entschärfte Bedingung + den Design-Satz", () => {
+  it("hat den entschärften Design-Satz, keine harte Bedingung", () => {
     expect(d.body).toContain("Farben und Schrift passe ich an Ihre Website an");
     expect(d.body).not.toContain("einzige Bedingung");
   });
 
-  it("Betreff-Catcher: Landkreis-Sieger nur bei echtem Landkreis (≥3 Gemeinden)", () => {
-    expect(renderOutreachDraft({ ...base, rangKreis: 1, kreisGemeinden: 20 }).subject).toContain(
-      "Spitzenreiter in Ihrem Landkreis",
-    );
-    // Kreisfreie Stadt (kreisGemeinden < 3) → kein Landkreis-Betreff.
-    expect(renderOutreachDraft({ ...base, rangKreis: 1, kreisGemeinden: 1, perzentil: 60 }).subject).not.toContain(
-      "Landkreis",
-    );
+  it("klebt keine nackte Leistungseinheit an eine Zahl (Zahlen-Korrektheit)", () => {
+    expect(d.body).not.toMatch(/\d\s?kW(?![ph])/);
+    expect(d.body).not.toMatch(/\d\s?MW(?!p)/);
   });
 
-  it("Betreff-Catcher: Top 10 % / Top 25 % nach Perzentil", () => {
-    expect(renderOutreachDraft({ ...base, rangKreis: 3, perzentil: 95 }).subject).toContain("Top 10 %");
-    expect(renderOutreachDraft({ ...base, rangKreis: 3, perzentil: 80 }).subject).toContain("Top 25 %");
-    expect(renderOutreachDraft({ ...base, rangKreis: 3, perzentil: 40 }).subject).toContain("So steht Testdorf");
-  });
-
-  it("fällt bei fehlenden Solardaten sauber zurück (kein 0-kWp, kein Link)", () => {
-    const z = renderOutreachDraft({ ...base, kwpAlle: 0, pageUrl: null, perzentil: null, rangKreis: null, kreisGemeinden: null });
-    expect(z.body).not.toMatch(/0\s?kWp/);
+  it("fällt ohne Atlas-Link sauber zurück", () => {
+    const z = renderOutreachDraft({ ...base, pageUrl: null });
     expect(z.body).toContain("Übersicht des Solar-Ausbaus");
     expect(z.body).toContain("Testdorf");
+    expect(z.body).not.toContain("null");
   });
 });
