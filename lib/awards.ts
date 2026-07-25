@@ -96,6 +96,24 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     format: "count",
     metric: (g) => pos(g.balkonCount),
   },
+  {
+    key: "dach-privat-abs",
+    label: "Solardach-Hauptstadt",
+    merit: "Meiste private Dach-Solarleistung insgesamt — Bürger-Solar auf den Dächern, kein Gewerbe/Park.",
+    traeger: "buerger",
+    messart: "absolut",
+    format: "pvLeistung",
+    metric: (g) => pos(g.privatDachKwp),
+  },
+  {
+    key: "batterie-privat-abs",
+    label: "Speicher-Hauptstadt",
+    merit: "Meiste private Batteriekapazität insgesamt.",
+    traeger: "buerger",
+    messart: "absolut",
+    format: "speicherKwh",
+    metric: (g) => pos(g.batteriePrivatKwh),
+  },
   // Gewerbe / Standort, absolut — pro Kopf hier verifiziert absurd, daher nur so.
   {
     key: "solar-standort",
