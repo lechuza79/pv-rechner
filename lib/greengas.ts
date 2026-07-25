@@ -133,6 +133,54 @@ export interface HeatCostPoint {
   wpPv: number | null;
 }
 
+// ─── Jährliche Heizkosten in € (Muster-Haus) — für die Ratgeber-Grafik ───────
+// Anders als heatCostComparisonSeries (ct/kWh Wärme, systemneutral) liefert dies
+// die konkreten Jahreskosten in € für ein bestimmtes Haus (Gas-Menge + WP-Strom),
+// plus die 20-Jahre-Summen. Basis: derselbe Gas-Mix-Pfad + Strompreis wie überall.
+export interface AnnualHeatingCostResult {
+  /** Jahresreihe: gas/wp/wpPv sind €/Jahr (wpPv immer gesetzt). */
+  series: HeatCostPoint[];
+  /** Summen über den ganzen Horizont, €. */
+  totals: { gas: number; wp: number; wpPv: number };
+}
+
+export function annualHeatingCostSeries(opts: {
+  years: number;
+  startYear?: number;
+  scenario?: GasScenario;
+  /** Gas-Endenergiebedarf des Hauses, kWh/Jahr (= Wärmebedarf / Kesselwirkungsgrad). */
+  fuelKwh: number;
+  /** Strombedarf der Wärmepumpe, kWh/Jahr. */
+  eWpKwh: number;
+  /** WP-Strompreis heute, €/kWh. */
+  wpTarifEurKwh: number;
+  /** Jährliche Strompreis-Steigerung (z. B. 0,02). */
+  stromInflation: number;
+  /** Anteil des WP-Stroms, den eine PV deckt (0..1). */
+  pvCoverage?: number;
+  cfg?: GreenGasConfig;
+}): AnnualHeatingCostResult {
+  const {
+    years, startYear = YEAR, scenario = "base",
+    fuelKwh, eWpKwh, wpTarifEurKwh, stromInflation, pvCoverage = 0, cfg = GREEN_GAS_CONFIG,
+  } = opts;
+  const cov = Math.max(0, Math.min(1, pvCoverage));
+  const series: HeatCostPoint[] = [];
+  const totals = { gas: 0, wp: 0, wpPv: 0 };
+  for (let i = 0; i < years; i++) {
+    const year = startYear + i;
+    const gas = fuelKwh * gasMixPriceEurForYear(year, scenario, cfg);
+    const stromCost = eWpKwh * wpTarifEurKwh * Math.pow(1 + stromInflation, i);
+    const wp = stromCost;
+    const wpPv = stromCost * (1 - cov);
+    series.push({ year, gas, wp, wpPv });
+    totals.gas += gas;
+    totals.wp += wp;
+    totals.wpPv += wpPv;
+  }
+  return { series, totals };
+}
+
 export function heatCostComparisonSeries(opts: {
   years: number;
   startYear?: number;

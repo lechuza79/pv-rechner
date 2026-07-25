@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { v } from "../../../lib/theme";
+import { v } from "../../../../lib/theme";
 
 // Sticky bottom CTA bar for the funding guide: the two actions the page offers —
 // the full Wärmepumpen-Rechner and the on-page Förder-Check — always in reach.

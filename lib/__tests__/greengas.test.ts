@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { gasQuoteForYear, gasMixForYear, gasMixPriceEurForYear, gasMixSeries, heatCostComparisonSeries } from "../greengas";
+import { gasQuoteForYear, gasMixForYear, gasMixPriceEurForYear, gasMixSeries, heatCostComparisonSeries, annualHeatingCostSeries } from "../greengas";
 
 // Referenzwerte: IW-Report 36/2026, Tabelle 3-2 + Anhang Kap. 6 (Abb. 6-1/6-2).
 // Der Gas-Mix-Endkundenpreis (brutto) im Basisszenario für den MFH-Beispielhaushalt:
@@ -101,6 +101,32 @@ describe("gasMixSeries", () => {
     expect(s).toHaveLength(20);
     expect(s[0].year).toBe(2026);
     expect(s[19].year).toBe(2045);
+  });
+});
+
+describe("annualHeatingCostSeries (Jahreskosten in €)", () => {
+  const base = {
+    years: 20, startYear: 2026, scenario: "base" as const,
+    fuelKwh: 10000, eWpKwh: 2700, wpTarifEurKwh: 0.24, stromInflation: 0.02, pvCoverage: 0.3,
+  };
+
+  it("Gas-Jahreskosten = Gasmenge × Gas-Mix-Preis (2026 ~1.080 € bei 10.000 kWh)", () => {
+    const s = annualHeatingCostSeries(base).series;
+    expect(s[0].gas).toBeCloseTo(1080, -1); // ±5 €
+    // 2040 (i=14): Gas-Mix ~19,5 ct → ~1.952 €
+    expect(s.find(p => p.year === 2040)!.gas).toBeCloseTo(1952, -1);
+  });
+
+  it("PV senkt die WP-Jahreskosten um den Deckungsanteil", () => {
+    const s = annualHeatingCostSeries(base).series;
+    expect(s[0].wpPv).toBeCloseTo(s[0].wp * 0.7, 5);
+  });
+
+  it("Summen sind die Jahres-Summen und geordnet (Gas > WP > WP+PV)", () => {
+    const { series, totals } = annualHeatingCostSeries(base);
+    expect(totals.gas).toBeCloseTo(series.reduce((a, p) => a + p.gas, 0), 5);
+    expect(totals.gas).toBeGreaterThan(totals.wp);
+    expect(totals.wp).toBeGreaterThan(totals.wpPv);
   });
 });
 

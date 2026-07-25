@@ -2,14 +2,14 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import Modal from "../../../components/Modal";
+import Modal from "../../../../components/Modal";
 
 // The full Wärmepumpen-Rechner is a heavy client flow — load it lazily and only
 // once the modal is opened, so the guide page stays light. It's a self-contained
 // component (no URL/storage coupling), rendered directly in our shared Modal
 // (no iframe). Opened via the "#wp-rechner" hash so plain server-rendered links
 // (sticky CTA, hero CTA) can trigger it without extra client wiring.
-const Waermepumpe = dynamic(() => import("../waermepumpe-rechner/waermepumpe"), {
+const Waermepumpe = dynamic(() => import("../../waermepumpe-rechner/waermepumpe"), {
   ssr: false,
   loading: () => (
     <div style={{ padding: "48px 0", textAlign: "center", color: "var(--color-text-muted)", fontSize: 14 }}>

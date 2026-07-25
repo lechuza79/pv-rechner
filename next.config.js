@@ -79,6 +79,10 @@ const nextConfig = {
       { source: "/empfehlung", destination: "/pv-bedarf-berechnen", permanent: true },
       { source: "/simulation", destination: "/pv-simulation", permanent: true },
       { source: "/embed-demo", destination: "/energie-widgets", permanent: true },
+      // Ratgeber unter /ratgeber/ gebündelt (Slug-Umstellung Juli 2026) — alte flache Pfade dauerhaft umleiten
+      { source: "/lohnt-sich-pv-mit-speicher", destination: "/ratgeber/lohnt-sich-pv-mit-speicher", permanent: true },
+      { source: "/lohnt-sich-pv-ohne-einspeiseverguetung", destination: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung", permanent: true },
+      { source: "/waermepumpe-foerderung-2026", destination: "/ratgeber/waermepumpe-foerderung-2026", permanent: true },
       // Förder-Stadtseiten: flache Slugs → Hierarchie Bundesland/Kommune.
       // Feste historische Zuordnung (alte URLs wachsen nicht mehr) — bei neuer
       // Stadt hier ergänzen (Quelle: lib/atlas-cities.ts).

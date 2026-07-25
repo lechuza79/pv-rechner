@@ -106,6 +106,18 @@ const SECTIONS: WidgetSection[] = [
     variants: [{ id: "foerder-check", label: "Förder-Check", src: "/embed/foerder-check", height: 640, fixedWidth: 380 }],
   },
   {
+    id: "gruengas-heizkosten",
+    label: "Wärmepumpe vs. Gasheizung",
+    intro:
+      "Heizkosten je Kilowattstunde Wärme bis 2045: Eine neue Gasheizung wird durch die Grüngas-Pflicht (Heizungsgesetz) Jahr für Jahr teurer, die Wärmepumpe bleibt günstig – mit PV noch günstiger. Zahlen nach dem IW-Report. Ideal als Faktenbox in einem Heizungs-Ratgeber.",
+    attribution: {
+      path: "/waermepumpe-rechner",
+      text: "Wärmepumpe vs. neue Gasheizung mit Grüngas-Pflicht – Solar Check",
+    },
+    showFrameWidth: false,
+    variants: [{ id: "gruengas-heizkosten", label: "Heizkosten-Vergleich", src: "/embed/gruengas-heizkosten", height: 500, fixedWidth: 520 }],
+  },
+  {
     id: "strommix-anteil",
     label: "Kernenergie im Strommix",
     intro:

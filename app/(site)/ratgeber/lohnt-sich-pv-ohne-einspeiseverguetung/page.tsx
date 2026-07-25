@@ -1,26 +1,26 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Breadcrumb from "../../../components/Breadcrumb";
-import ProConLists from "../../../components/ProConLists";
-import GlossaryTerm from "../../../components/GlossaryTerm";
-import Faq from "../../../components/Faq";
-import { pvOhneEinspeisungFaq } from "../../../lib/faq";
-import { v } from "../../../lib/theme";
-import { fetchMarketPrices, formatPriceDate } from "../../../lib/prices-server";
-import { type PriceConfig } from "../../../lib/prices-config";
-import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
+import Breadcrumb from "../../../../components/Breadcrumb";
+import ProConLists from "../../../../components/ProConLists";
+import GlossaryTerm from "../../../../components/GlossaryTerm";
+import Faq from "../../../../components/Faq";
+import { pvOhneEinspeisungFaq } from "../../../../lib/faq";
+import { v } from "../../../../lib/theme";
+import { fetchMarketPrices, formatPriceDate } from "../../../../lib/prices-server";
+import { type PriceConfig } from "../../../../lib/prices-config";
+import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
 import {
   calc,
   calcEigenverbrauch,
   calcWeightedFeedIn,
   estimateCost,
   batteryReplaceCost,
-} from "../../../lib/calc";
-import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
-import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, FEED_IN_YEARS, NO_PLZ_DEFAULT_YIELD } from "../../../lib/constants";
-import { pageMetadata } from "../../../lib/seo";
+} from "../../../../lib/calc";
+import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../../lib/pv-sim";
+import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, FEED_IN_YEARS, NO_PLZ_DEFAULT_YIELD } from "../../../../lib/constants";
+import { pageMetadata } from "../../../../lib/seo";
 import SpeicherVergleich, { type VergleichColumn, type ColScenario, type ScenarioTabMeta } from "./_components/SpeicherVergleich";
-import DayProfileChart, { DAY_C_SUN, DAY_C_DIRECT, DAY_C_BATTERY, DAY_C_GRID, DAY_C_SOC, DayLegendDot } from "../../../components/DayProfileChart";
+import DayProfileChart, { DAY_C_SUN, DAY_C_DIRECT, DAY_C_BATTERY, DAY_C_GRID, DAY_C_SOC, DayLegendDot } from "../../../../components/DayProfileChart";
 
 // Figures on this page come live from the same models the calculator uses
 // (prices from Supabase market_prices with config fallback). ISR keeps them
@@ -36,7 +36,7 @@ const REFORM_STAND = "Juli 2026";
 export async function generateMetadata(): Promise<Metadata> {
   const year = new Date().getFullYear();
   return pageMetadata({
-    path: "/lohnt-sich-pv-ohne-einspeiseverguetung",
+    path: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung",
     title: `Lohnt sich PV ohne Einspeisevergütung? Ehrliche Rechnung ${year}`,
     description:
       "Die Einspeisevergütung für Neuanlagen soll ab 2027 fallen — lohnt sich Photovoltaik dann noch? Ja, wenn der Eigenverbrauch stimmt. Mit Beispielrechnung bei Vergütung null, live gerechnet, ohne Anmeldung.",
@@ -588,7 +588,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           proTitle="Was den Eigenverbrauch hebt"
           conTitle="Wo es ohne Vergütung eng wird"
           proItems={[
-            { term: "Batteriespeicher", desc: <>verschiebt den Mittagsüberschuss in Abend und Nacht — der größte einzelne Hebel. Ob und wann er sich rechnet, steht im <Link href="/lohnt-sich-pv-mit-speicher" style={S.link}>Speicher-Ratgeber</Link>.</> },
+            { term: "Batteriespeicher", desc: <>verschiebt den Mittagsüberschuss in Abend und Nacht — der größte einzelne Hebel. Ob und wann er sich rechnet, steht im <Link href="/ratgeber/lohnt-sich-pv-mit-speicher" style={S.link}>Speicher-Ratgeber</Link>.</> },
             { term: "Wärmepumpe", desc: <>macht Heizen zum Stromverbrauch und nutzt vor allem in der Übergangszeit viel eigenen Solarstrom. Was sie selbst spart, rechnet der <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link>.</> },
             { term: "E-Auto", desc: <>wer tagsüber oder über den Speicher lädt, holt sich den Solarstrom in den Tank — bei 15.000 km/Jahr sind das rund 2.700 kWh zusätzlicher Verbrauch.</> },
             { term: "Verbrauch in den Tag verschieben", desc: <>Spülmaschine, Waschmaschine, Warmwasser mittags statt abends laufen lassen — kostenlos und sofort wirksam.</> },
@@ -634,10 +634,10 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         </div>
 
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
-        <Faq items={faqItems} title="Häufige Fragen zu PV ohne Einspeisevergütung" currentPath="/lohnt-sich-pv-ohne-einspeiseverguetung" />
+        <Faq items={faqItems} title="Häufige Fragen zu PV ohne Einspeisevergütung" currentPath="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" />
 
         <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
-          Verwandte Seiten: <Link href="/lohnt-sich-pv-mit-speicher" style={S.link}>Lohnt sich PV mit Speicher?</Link> ·{" "}
+          Verwandte Seiten: <Link href="/ratgeber/lohnt-sich-pv-mit-speicher" style={S.link}>Lohnt sich PV mit Speicher?</Link> ·{" "}
           <Link href="/methodik" style={S.link}>So rechnen wir</Link> ·{" "}
           <Link href="/datenstand" style={S.link}>Aktuelle Preise &amp; Annahmen</Link> ·{" "}
           <Link href="/photovoltaik-foerderung" style={S.link}>PV-Förderung vor Ort</Link> ·{" "}

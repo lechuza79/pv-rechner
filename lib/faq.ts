@@ -74,7 +74,7 @@ export function pvRechnerFaq(): FaqEntry[] {
     {
       q: "Lohnt sich ein Speicher zur PV-Anlage?",
       a: "Ein Speicher erhöht den Eigenverbrauch deutlich: Statt Strom für wenige Cent einzuspeisen, nutzt du ihn abends und nachts selbst und sparst den vollen Strompreis. Ob sich das rechnet, hängt von Speicherpreis und Verbrauchsprofil ab. Im Rechner kannst du Speichergrößen direkt vergleichen und siehst den Effekt auf Amortisation und Rendite sofort.",
-      links: [{ phrase: "Ob sich das rechnet", href: "/lohnt-sich-pv-mit-speicher" }],
+      links: [{ phrase: "Ob sich das rechnet", href: "/ratgeber/lohnt-sich-pv-mit-speicher" }],
       cta: { label: "Anlage mit Speicher rechnen", href: "/photovoltaik-rechner" },
     },
     {
@@ -103,7 +103,7 @@ export function pvRechnerFaq(): FaqEntry[] {
       q: "Fällt die Einspeisevergütung 2027 weg?",
       a: "Geplant, aber noch nicht beschlossen: Ein Referentenentwurf des Bundeswirtschaftsministeriums sieht vor, die Einspeisevergütung für neue PV-Anlagen bis 25 kWp ab 2027 zu streichen (Stand: Juli 2026). Wichtig: Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung 20 Jahre garantiert (Bestandsschutz) — sie sind von der geplanten Änderung nicht betroffen. Ob und in welcher Form die Reform kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage.",
       links: [{ phrase: "Einspeisevergütung", href: "/datenstand" }],
-      cta: { label: "Ratgeber: Lohnt sich PV ohne Einspeisevergütung?", href: "/lohnt-sich-pv-ohne-einspeiseverguetung" },
+      cta: { label: "Ratgeber: Lohnt sich PV ohne Einspeisevergütung?", href: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" },
     },
   ];
 }
@@ -193,13 +193,13 @@ export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
     {
       q: "Sollte ich meine Anlage noch 2026 in Betrieb nehmen?",
       a: "Wer ohnehin eine Anlage plant, sichert sich mit einer Inbetriebnahme bis Ende 2026 die aktuelle Einspeisevergütung für 20 Jahre — das ist der greifbare Vorteil des Bestandsschutzes. Ein Grund zur Panik ist die Reform aber nicht: Eine passend dimensionierte Anlage mit hohem Eigenverbrauch rechnet sich auch ohne Vergütung. Wichtig ist eine realistische Rechnung für den eigenen Haushalt, keine Torschluss-Entscheidung. Das ist eine allgemeine Einordnung, keine individuelle Beratung.",
-      links: [{ phrase: "hohem Eigenverbrauch", href: "/lohnt-sich-pv-mit-speicher" }],
+      links: [{ phrase: "hohem Eigenverbrauch", href: "/ratgeber/lohnt-sich-pv-mit-speicher" }],
       cta: { label: "Meinen Fall durchrechnen", href: "/photovoltaik-rechner" },
     },
   ];
 }
 
-/** FAQ for the heat-pump funding guide (/waermepumpe-foerderung-2026).
+/** FAQ for the heat-pump funding guide (/ratgeber/waermepumpe-foerderung-2026).
  *  All rates/caps come from the geprüfte BEG config (KfW Merkblatt 458) — never
  *  hardcode a percentage or euro figure here. */
 export function waermepumpeFoerderungFaq(): FaqEntry[] {
@@ -248,6 +248,40 @@ export function waermepumpeFoerderungFaq(): FaqEntry[] {
       q: "Ich kenne das Alter meiner Gasheizung nicht — bekomme ich den Klima-Bonus?",
       a: "Bei Öl-, Kohle-, Gas-Etagen- und Nachtspeicherheizungen ist der Klima-Bonus unabhängig vom Alter sicher. Bei zentralen Gas-, Holz- und Pelletheizungen hängt er an der 20-Jahre-Grenze. Das Baujahr steht auf dem Typenschild am Heizkessel oder in den Unterlagen des Schornsteinfegers. Solange das Alter unklar ist, solltest du den Bonus vorsichtshalber nicht fest einplanen — verbindlich ist am Ende der Zuschussbescheid der KfW.",
       cta: { label: "Beide Fälle durchrechnen", href: "/waermepumpe-rechner" },
+    },
+  ];
+}
+
+/** FAQ für den Ratgeber „Gasheizung oder Wärmepumpe" (GModG-Grüngas-Pflicht). */
+export function gasheizungWaermepumpeFaq(): FaqEntry[] {
+  return [
+    {
+      q: "Darf ich 2026 noch eine neue Gasheizung einbauen?",
+      a: "Ja. Das Gebäudemodernisierungsgesetz (GModG) hebt die 65-Prozent-Erneuerbaren-Pflicht auf und lässt neue Gasheizungen wieder grundsätzlich zu. Die Anschaffung ist günstiger als eine Wärmepumpe — aber ab 2029 greift die Grüngas-Pflicht, die den Gasbetrieb Jahr für Jahr teurer macht.",
+      links: [{ phrase: "Wärmepumpe", href: "/waermepumpe-rechner" }],
+    },
+    {
+      q: "Was ist die Grüngas-Pflicht?",
+      a: "Wer ab 2029 eine neue Gasheizung betreibt, muss einen steigenden Anteil klimaneutrales Gas (Biomethan) beimischen: 10 Prozent 2029, 30 Prozent 2035, 60 Prozent 2040 und 100 Prozent ab 2045 — die sogenannte Bio-Treppe (§ 43 GModG). Biomethan kostet rund doppelt so viel wie Erdgas, deshalb steigt der Gaspreis deutlich stärker als durch die normale Teuerung.",
+    },
+    {
+      q: "Wie viel teurer wird Gas dadurch?",
+      a: "Für einen typischen Haushalt steigen die reinen Gaskosten laut IW-Report von rund 1.080 Euro (2026) auf etwa 1.950 Euro (2040) und 2.370 Euro (2045) — annähernd eine Verdopplung. Neben der Biomethan-Beimischung treiben steigende Gasnetzentgelte den Preis, weil immer weniger Haushalte am Gasnetz hängen und die Fixkosten auf weniger Schultern verteilt werden.",
+    },
+    {
+      q: "Geht eine Wärmepumpe auch im unsanierten Altbau?",
+      a: "Ja. Die verbreitete Annahme, im Altbau brauche man erst eine Vollsanierung, stimmt so pauschal nicht. Eine Luft-Wasser-Wärmepumpe arbeitet auch bei höheren Vorlauftemperaturen — nur mit etwas schlechterer Arbeitszahl, also höherem Stromverbrauch. Weil die Gasheizung durch die Grüngas-Pflicht so stark teurer wird, ist die Wärmepumpe selbst im unsanierten Haus über 20 Jahre klar günstiger. Größere Heizkörper oder eine Teilsanierung verbessern die Arbeitszahl zusätzlich.",
+      cta: { label: "Für mein Haus rechnen", href: "/waermepumpe-rechner" },
+    },
+    {
+      q: "Lohnt sich die Wärmepumpe trotz höherer Anschaffung?",
+      a: "In den meisten Fällen ja. Die Wärmepumpe kostet in der Anschaffung mehr, aber die BEG-Förderung deckt oft 50 bis 70 Prozent, und die laufenden Kosten liegen deutlich unter denen einer Gasheizung mit Grüngas-Pflicht. Über 20 Jahre entsteht so ein Vorsprung von mehreren zehntausend Euro. Wie es für dein Haus aussieht, rechnet der Wärmepumpen-Rechner aus.",
+      links: [{ phrase: "BEG-Förderung", href: "/ratgeber/waermepumpe-foerderung-2026" }],
+      cta: { label: "Ersparnis berechnen", href: "/waermepumpe-rechner" },
+    },
+    {
+      q: "Ist die Grüngas-Pflicht schon beschlossen?",
+      a: "Die Beimischpflicht (Bio-Treppe) steht als § 43 im GModG, das im Juli 2026 beschlossen wurde — sie ist geltendes Recht. Die genaue Höhe der künftigen Biomethan- und Netzentgeltkosten ist dagegen eine Prognose des IW-Reports, ein plausibler Korridor, keine exakte Vorhersage. Ändert der Gesetzgeber die Vorgaben, ändern sich auch die Kosten.",
     },
   ];
 }

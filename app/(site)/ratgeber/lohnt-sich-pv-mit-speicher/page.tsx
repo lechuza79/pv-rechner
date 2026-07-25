@@ -1,15 +1,15 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Breadcrumb from "../../../components/Breadcrumb";
-import GlossaryTerm from "../../../components/GlossaryTerm";
-import ProConLists from "../../../components/ProConLists";
-import { IconArrowUp } from "../../../components/Icons";
-import Faq from "../../../components/Faq";
-import { pvSpeicherFaq } from "../../../lib/faq";
-import { v } from "../../../lib/theme";
-import { fetchMarketPrices, formatPriceDate } from "../../../lib/prices-server";
-import { type PriceConfig } from "../../../lib/prices-config";
-import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
+import Breadcrumb from "../../../../components/Breadcrumb";
+import GlossaryTerm from "../../../../components/GlossaryTerm";
+import ProConLists from "../../../../components/ProConLists";
+import { IconArrowUp } from "../../../../components/Icons";
+import Faq from "../../../../components/Faq";
+import { pvSpeicherFaq } from "../../../../lib/faq";
+import { v } from "../../../../lib/theme";
+import { fetchMarketPrices, formatPriceDate } from "../../../../lib/prices-server";
+import { type PriceConfig } from "../../../../lib/prices-config";
+import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
 import {
   calc,
   calcEigenverbrauch,
@@ -18,11 +18,11 @@ import {
   batteryReplaceCost,
   marginalPaybackYears,
   BATTERY_LIFETIME_YEARS,
-} from "../../../lib/calc";
-import { simulatePvYear } from "../../../lib/pv-sim";
-import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, NO_PLZ_DEFAULT_YIELD } from "../../../lib/constants";
-import { pageMetadata } from "../../../lib/seo";
-import Chart from "../photovoltaik-rechner/_components/Chart";
+} from "../../../../lib/calc";
+import { simulatePvYear } from "../../../../lib/pv-sim";
+import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, NO_PLZ_DEFAULT_YIELD } from "../../../../lib/constants";
+import { pageMetadata } from "../../../../lib/seo";
+import Chart from "../../photovoltaik-rechner/_components/Chart";
 
 // Figures on this page come live from the same models the calculator uses
 // (prices from Supabase market_prices with config fallback). ISR keeps them
@@ -32,7 +32,7 @@ export const revalidate = 3600;
 export async function generateMetadata(): Promise<Metadata> {
   const year = new Date().getFullYear();
   return pageMetadata({
-    path: "/lohnt-sich-pv-mit-speicher",
+    path: "/ratgeber/lohnt-sich-pv-mit-speicher",
     title: `Lohnt sich PV mit Speicher? Ehrliche Rechnung ${year}`,
     description:
       "Wann sich ein Batteriespeicher zur Photovoltaikanlage rechnet — und wann nicht. Mit transparenter Beispielrechnung auf Basis aktueller Marktpreise, ohne Verkaufsprosa und ohne Anmeldung.",
@@ -631,10 +631,10 @@ export default async function LohntSichPvMitSpeicherPage() {
         </div>
 
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
-        <Faq items={faqItems} title="Häufige Fragen zu PV mit Speicher" currentPath="/lohnt-sich-pv-mit-speicher" />
+        <Faq items={faqItems} title="Häufige Fragen zu PV mit Speicher" currentPath="/ratgeber/lohnt-sich-pv-mit-speicher" />
 
         <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
-          Verwandte Seiten: <Link href="/lohnt-sich-pv-ohne-einspeiseverguetung" style={S.link}>Lohnt sich PV ohne Einspeisevergütung?</Link> ·{" "}
+          Verwandte Seiten: <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" style={S.link}>Lohnt sich PV ohne Einspeisevergütung?</Link> ·{" "}
           <Link href="/methodik" style={S.link}>So rechnen wir</Link> ·{" "}
           <Link href="/datenstand" style={S.link}>Aktuelle Preise &amp; Annahmen</Link> ·{" "}
           <Link href="/photovoltaik-foerderung" style={S.link}>PV-Förderung vor Ort</Link> ·{" "}

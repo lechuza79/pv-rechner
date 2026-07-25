@@ -83,6 +83,12 @@ export const DATA_SOURCES = {
     name: "KfW / BMWE (BEG Heizungsförderung, Merkblatt 458)",
     url: "https://www.kfw.de/458",
   },
+  /** GModG gas-price scenarios (Bio-Treppe, Biomethan/Netzentgelt/CO₂ paths). */
+  iw: {
+    name: "Institut der deutschen Wirtschaft (IW-Report 36/2026)",
+    url: "https://www.iwkoeln.de",
+    note: "Preisszenarien Gebäudemodernisierungsgesetz",
+  },
   /** Administrative boundaries for the Solar-Atlas map (Bundesländer, Kreise, Gemeinden). */
   bkg: {
     name: "GeoBasis-DE / BKG (Verwaltungsgebiete VG2500 · VG250)",

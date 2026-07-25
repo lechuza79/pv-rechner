@@ -1,19 +1,19 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Breadcrumb from "../../../components/Breadcrumb";
-import ProConLists from "../../../components/ProConLists";
-import Faq from "../../../components/Faq";
-import AutoHeightIframe from "../../../components/AutoHeightIframe";
-import { DataSourceNote } from "../../../components/PoweredBy";
-import GlossaryTerm from "../../../components/GlossaryTerm";
+import Breadcrumb from "../../../../components/Breadcrumb";
+import ProConLists from "../../../../components/ProConLists";
+import Faq from "../../../../components/Faq";
+import AutoHeightIframe from "../../../../components/AutoHeightIframe";
+import { DataSourceNote } from "../../../../components/PoweredBy";
+import GlossaryTerm from "../../../../components/GlossaryTerm";
 import StickyCta from "./StickyCta";
 import WpRechnerModal from "./WpRechnerModal";
-import { DATA_SOURCES } from "../../../lib/data-sources";
-import { waermepumpeFoerderungFaq } from "../../../lib/faq";
-import { v } from "../../../lib/theme";
-import { calcBegSubsidy, calcInvestBrutto, calcHeatLoad } from "../../../lib/heatpump";
-import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
-import { pageMetadata } from "../../../lib/seo";
+import { DATA_SOURCES } from "../../../../lib/data-sources";
+import { waermepumpeFoerderungFaq } from "../../../../lib/faq";
+import { v } from "../../../../lib/theme";
+import { calcBegSubsidy, calcInvestBrutto, calcHeatLoad } from "../../../../lib/heatpump";
+import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../../lib/heatpump-config";
+import { pageMetadata } from "../../../../lib/seo";
 
 // Figures on this page come live from the same BEG engine the calculator and
 // the Förder-Check widget use (calcBegSubsidy + the geprüfte config, KfW
@@ -23,7 +23,7 @@ export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
-    path: "/waermepumpe-foerderung-2026",
+    path: "/ratgeber/waermepumpe-foerderung-2026",
     title: "Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es wirklich?",
     description:
       "Grundförderung, Klima-Bonus, Einkommens-Bonus: Wie sich der BEG-Zuschuss für den Heizungstausch zusammensetzt — mit live gerechneten Beispielfällen nach KfW Merkblatt 458 und dem Förder-Check zum selbst Durchrechnen. Ohne Anmeldung.",
@@ -465,11 +465,11 @@ export default function WaermepumpeFoerderungPage() {
         </p>
 
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
-        <Faq items={faqItems} title="Häufige Fragen zur Wärmepumpen-Förderung" currentPath="/waermepumpe-foerderung-2026" />
+        <Faq items={faqItems} title="Häufige Fragen zur Wärmepumpen-Förderung" currentPath="/ratgeber/waermepumpe-foerderung-2026" />
 
         <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
           Verwandte Seiten: <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link> ·{" "}
-          <Link href="/lohnt-sich-pv-mit-speicher" style={S.link}>Lohnt sich PV mit Speicher?</Link> ·{" "}
+          <Link href="/ratgeber/lohnt-sich-pv-mit-speicher" style={S.link}>Lohnt sich PV mit Speicher?</Link> ·{" "}
           <Link href="/photovoltaik-foerderung" style={S.link}>PV-Förderung vor Ort</Link> ·{" "}
           <Link href="/datenstand" style={S.link}>Aktuelle Werte &amp; Annahmen</Link> ·{" "}
           <Link href="/glossar" style={S.link}>Glossar</Link>

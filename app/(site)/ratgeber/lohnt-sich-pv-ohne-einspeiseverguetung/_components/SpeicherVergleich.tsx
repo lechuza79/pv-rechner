@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { v } from "../../../../lib/theme";
-import Chart from "../../photovoltaik-rechner/_components/Chart";
-import ScenarioTabs from "../../../../components/ScenarioTabs";
+import { v } from "../../../../../lib/theme";
+import Chart from "../../../photovoltaik-rechner/_components/Chart";
+import ScenarioTabs from "../../../../../components/ScenarioTabs";
 
 // Amortisation comparison for the EEG guide, ALL in the "ohne Einspeisevergütung"
 // mode (the page's premise, einspeisung=0). Top = Strompreis-Szenario tabs (the
