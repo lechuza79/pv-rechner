@@ -39,6 +39,13 @@ const eur = (n: number) => `${Math.round(n).toLocaleString("de-DE")} €`;
 // Y-Achse (jährliche €-Beträge): akkurat, ohne verlustbehaftetes k-Runden.
 const axisEur = (n: number) => n.toLocaleString("de-DE");
 
+// Rechteck mit nur oben abgerundeten Ecken (unten eckig, sitzt bündig auf der
+// Nulllinie). SVG rx würde alle vier Ecken runden.
+function roundedTopRect(x: number, y: number, w: number, h: number, r: number): string {
+  const rr = Math.max(0, Math.min(r, w / 2, h));
+  return `M${x},${y + h} L${x},${y + rr} Q${x},${y} ${x + rr},${y} L${x + w - rr},${y} Q${x + w},${y} ${x + w},${y + rr} L${x + w},${y + h} Z`;
+}
+
 function niceMax(max: number): number {
   const step = Math.pow(10, Math.floor(Math.log10(max / 4)));
   const s = (max / 4 / step <= 2 ? 2 : max / 4 / step <= 5 ? 5 : 10) * step;
@@ -223,10 +230,10 @@ export default function GasVsWpChart({
             const lx = bx(j) - 7; // vertikaler Betrag links vom Balken
             return (
               <g key={s.key}>
-                {/* grauer Track (volle Höhe = Referenz Gas-Gesamtkosten) */}
-                <rect x={bx(j)} y={barTop} width={barW} height={barMaxH} rx={3} fill={`color-mix(in srgb, ${v("--color-text-muted")} 14%, transparent)`} />
-                <rect x={bx(j)} y={y0 - h} width={barW} height={h} rx={3} fill={s.color} />
-                <g transform={`translate(${lx}, ${y0 - 2}) rotate(-90)`}>
+                {/* grauer Track (volle Höhe = Referenz Gas-Gesamtkosten), oben rund, unten eckig */}
+                <path d={roundedTopRect(bx(j), barTop, barW, barMaxH, 3)} fill={`color-mix(in srgb, ${v("--color-text-muted")} 14%, transparent)`} />
+                <path d={roundedTopRect(bx(j), y0 - h, barW, h, 3)} fill={s.color} />
+                <g transform={`translate(${lx}, ${y0 - 9}) rotate(-90)`}>
                   <text x={0} y={0} textAnchor="start" dominantBaseline="central" fontWeight={700} fill="var(--color-text-secondary)" fontFamily="var(--font-mono)">
                     <tspan style={{ fontSize: v("--font-size-caption") }}>{Math.round(val / 1000).toLocaleString("de-DE")}</tspan>
                     <tspan dx="3" style={{ fontSize: "9px" }} fill="var(--color-text-muted)">T€</tspan>
