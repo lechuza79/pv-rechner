@@ -109,13 +109,17 @@ const SECTIONS: WidgetSection[] = [
     id: "gruengas-heizkosten",
     label: "Wärmepumpe vs. Gasheizung",
     intro:
-      "Heizkosten je Kilowattstunde Wärme bis 2045: Eine neue Gasheizung wird durch die Grüngas-Pflicht (Heizungsgesetz) Jahr für Jahr teurer, die Wärmepumpe bleibt günstig – mit PV noch günstiger. Zahlen nach dem IW-Report. Ideal als Faktenbox in einem Heizungs-Ratgeber.",
+      "Gasheizung mit Grüngas-Pflicht (Heizungsgesetz) gegen Wärmepumpe über 20 Jahre – die Gasheizung wird Jahr für Jahr teurer, die Wärmepumpe bleibt günstig, mit PV noch günstiger. Zahlen nach dem IW-Report. Wähle das ganze Kombi-Widget oder nur einen Teil: die 20-Jahres-Balken (Kurzantwort) oder den Linien-Verlauf.",
     attribution: {
       path: "/waermepumpe-rechner",
       text: "Wärmepumpe vs. neue Gasheizung mit Grüngas-Pflicht – Solar Check",
     },
     showFrameWidth: false,
-    variants: [{ id: "gruengas-heizkosten", label: "Heizkosten-Vergleich", src: "/embed/gruengas-heizkosten", height: 500, fixedWidth: 520 }],
+    variants: [
+      { id: "gruengas-voll", label: "Ganzes Widget", src: "/embed/gruengas-heizkosten", height: 560, fixedWidth: 640 },
+      { id: "gruengas-balken", label: "Nur Balken", src: "/embed/gruengas-heizkosten", params: { view: "bars" }, height: 420, fixedWidth: 480 },
+      { id: "gruengas-linien", label: "Nur Linien", src: "/embed/gruengas-heizkosten", params: { view: "lines" }, height: 480, fixedWidth: 640 },
+    ],
   },
   {
     id: "strommix-anteil",

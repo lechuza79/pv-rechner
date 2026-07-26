@@ -2,6 +2,7 @@ import { YEAR, YEARS, FEED_IN_YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN
 import { calcExtraConsumption, KLIMA_DEFAULT_M2, WP_ANNUAL_KWH } from "./consumption";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { co2PriceForCalendarYear } from "./co2-config";
+import { gasMixPriceEurForYear } from "./greengas";
 
 // ─── Fuel comparison (WP vs. Gas/Öl) ────────────────────────────────────────
 // CO2-Preis pro Projektions-Offset i. Dünner Adapter: i mappt auf das absolute
@@ -61,10 +62,19 @@ export function calcFuelCostPerYear({ fuelKwh, pricePerKwh, co2PerKwh, years = Y
 // jaz defaults to 3,5, wird aber vom PV-Rechner mit der gebäudebasierten JAZ
 // überschrieben — dieselbe Arbeitszahl, mit der wpKwhElectric hergeleitet wurde,
 // sonst driften Wärmemenge und Vergleich auseinander.
-export function calcFuelCost25(wpKwhElectric: number, fuel: "gas" | "oil", jaz = 3.5): number {
+export function calcFuelCost25(wpKwhElectric: number, fuel: "gas" | "oil", jaz = 3.5, greenGas = false): number {
   const f = FUEL[fuel];
   const thermalKwh = wpKwhElectric * jaz;
   const fuelKwh = thermalKwh / f.efficiency;
+  // Grüngas-Modus (nur Gas): eine NEUE Gasheizung fällt unter die GModG-Bio-Treppe
+  // ab 2029 — der Gaspreis folgt dem Grüngas-Pfad (kalenderjahr-verankert) statt
+  // flacher Teuerung. Der Mix-Preis enthält die CO₂-Abgabe bereits, daher hier
+  // KEIN separater CO₂-Aufschlag (sonst Doppelzählung). Konsistent zum WP-Rechner.
+  if (greenGas && fuel === "gas") {
+    let total = 0;
+    for (let i = 0; i < YEARS; i++) total += fuelKwh * gasMixPriceEurForYear(YEAR + i);
+    return Math.round(total);
+  }
   return calcFuelCost({ fuelKwh, pricePerKwh: f.price, co2PerKwh: f.co2PerKwh, years: YEARS, inflation: 0.02 });
 }
 

@@ -25,9 +25,15 @@ export default function WidgetAutoHeight() {
     ro.observe(document.body);
     // Fonts/Bilder können nach dem ersten Paint noch nachladen.
     window.addEventListener("load", post);
+    // Nach-Meldungen: Client-seitige Layout-Änderungen kurz nach dem Mount (z. B.
+    // First-Party-Embeds, die per URL-Flag `onsite` ihre Hülle ausblenden und
+    // dadurch schrumpfen) trifft der ResizeObserver-Erstlauf mitunter nicht
+    // zuverlässig — ein paar verzögerte Re-Posts fangen die endgültige Höhe ein.
+    const timers = [80, 300, 700].map((ms) => window.setTimeout(post, ms));
     return () => {
       ro.disconnect();
       window.removeEventListener("load", post);
+      timers.forEach(clearTimeout);
     };
   }, []);
   return null;

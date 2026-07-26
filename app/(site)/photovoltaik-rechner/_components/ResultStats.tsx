@@ -106,7 +106,9 @@ export default function ResultStats({
         // WP-Strom oben) statt fixer COP 3,5; Strompreis-Anstieg folgt dem gewählten
         // Szenario (±1/3/5 %) statt fixer +3 %.
         const wpCoverage = Math.min(wpAutarky / 100, 1);
-        const fuelCost = calcFuelCost25(wpKwh, fuelType, jaz);
+        // Gas-Referenz mit Grüngas-Pflicht (neue Gasheizung ab 2029, GModG) —
+        // konsistent zum Wärmepumpen-Rechner; Öl bleibt flach.
+        const fuelCost = calcFuelCost25(wpKwh, fuelType, jaz, fuelType === "gas");
         const wpGridCost = calcWpGridCost25(wpKwh, wpCoverage, oStrom, stromSteigerung);
         const netSaving = fuelCost - wpGridCost;
         return (

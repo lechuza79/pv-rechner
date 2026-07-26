@@ -5,13 +5,9 @@ import ProConLists from "../../../../components/ProConLists";
 import Faq from "../../../../components/Faq";
 import { gasheizungWaermepumpeFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
-import { calcHeatPump, heatPumpScenarioAdj, type HeatPumpInputs } from "../../../../lib/heatpump";
-import { DEFAULT_HEATPUMP_CONFIG } from "../../../../lib/heatpump-config";
-import { annualHeatingCostSeries } from "../../../../lib/greengas";
-import { PERSONEN, HAUSTYP_WP } from "../../../../lib/constants";
 import { pageMetadata } from "../../../../lib/seo";
 import ArticleMeta from "../../../../components/ArticleMeta";
-import GasVsWpChart, { type MusterVariant } from "./_components/GasVsWpChart";
+import AutoHeightIframe from "../../../../components/AutoHeightIframe";
 
 // Zahlen kommen live aus denselben Modellen wie der Wärmepumpen-Rechner
 // (calcHeatPump + Grüngas-Preispfad). ISR hält sie frisch ohne Rebuild.
@@ -50,40 +46,12 @@ const S = {
   small: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6 },
 };
 
-// ─── Live-Rechnung: zwei Muster-EFH (teilsaniert / unsaniert) ─────────────────
-// Beide 140 m², freistehend, mit den EXAKT gleichen Funktionen wie der Rechner
-// (shared calc base). Unsaniert bewusst mit alten Heizkörpern (hk_alt) → ehrlich
-// schlechtere Arbeitszahl, trotzdem klar günstiger als die Gasheizung.
-const cfg = DEFAULT_HEATPUMP_CONFIG;
-const PV_COVERAGE = 0.3;
-
-function musterVariant(key: string, label: string, insulationIdx: number, heizsystem: HeatPumpInputs["heizsystem"], explain: string): MusterVariant {
-  const inputs: HeatPumpInputs = {
-    situation: "bestand", wohnflaeche: 140, insulationIdx,
-    personen: PERSONEN[2].count, heizsystem, wpType: "lwwp",
-    haustypFaktor: HAUSTYP_WP[0].faktor, override: { klimaBonus: true },
-  };
-  const r = calcHeatPump({ ...inputs, greenGas: true }, cfg, heatPumpScenarioAdj("realistic"));
-  const fuelKwh = r.qGes / cfg.gasEfficiency;
-  const { series, totals } = annualHeatingCostSeries({
-    years: 20, fuelKwh, eWpKwh: r.eWp, wpTarifEurKwh: cfg.wpTarif, stromInflation: cfg.stromInflation, pvCoverage: PV_COVERAGE,
-  });
-  return {
-    key, label,
-    sub: `Freistehendes Einfamilienhaus, 140 m² · Arbeitszahl ${r.jaz.toLocaleString("de-DE")} · rund ${Math.round(fuelKwh / 100) / 10} MWh Gas im Jahr`,
-    explain, series, totals,
-  };
-}
-
+// Das Grüngas-Widget (Kombi aus Balken + Linien) lebt als EIN Bauteil unter
+// /embed/gruengas-heizkosten und wird hier per First-Party-Embed (onsite=1)
+// eingebunden — wie alle Widgets. In der Kurzantwort die Balken-Ansicht, weiter
+// unten der Linien-Verlauf; beides dieselbe Komponente, gerechnet auf der
+// geteilten Engine (lib/greengas-muster).
 export default function GasheizungWaermepumpePage() {
-  // Unsaniert bewusst zuerst (Default, links): der stärkere Fall, der den Irrtum
-  // „im Altbau geht keine Wärmepumpe" direkt widerlegt.
-  const variants = [
-    musterVariant("unsan", "Unsaniert", 0, "hk_alt",
-      "Auch im unsanierten Altbau — wo viele die Wärmepumpe für unmöglich halten — bleibt sie über 20 Jahre klar günstiger, gerade weil die Gasheizung so teuer wird."),
-    musterVariant("teil", "Teilsaniert", 1, "hk_neu",
-      "Im teilsanierten Haus fällt die Ersparnis etwas kleiner aus — schlicht weil weniger (teures) Gas gebraucht wird. Günstiger als die Gasheizung bleibt die Wärmepumpe trotzdem klar."),
-  ];
   const faqItems = gasheizungWaermepumpeFaq();
 
   return (
@@ -121,6 +89,14 @@ export default function GasheizungWaermepumpePage() {
           Durch die gesetzliche Beimischung von teurem Biomethan und steigende Netzentgelte
           verdoppeln sich die Gaskosten bis 2040 nahezu. Die Wärmepumpe bleibt dagegen günstig
           — und das gilt selbst im unsanierten Altbau, wo viele sie für unmöglich halten.
+          <div style={{ marginTop: 14 }}>
+            <AutoHeightIframe
+              src="/embed/gruengas-heizkosten?onsite=1&view=bars"
+              title="Gesamtkosten über 20 Jahre: Wärmepumpe vs. Gasheizung"
+              fallbackHeight={200}
+              framed={false}
+            />
+          </div>
         </div>
         <p style={{ ...S.small, marginBottom: 0 }}>
           Stand {GESETZ_STAND} · Muster-Einfamilienhaus, live gerechnet · unverbindliche Näherungswerte, ohne Gewähr.
@@ -137,8 +113,14 @@ export default function GasheizungWaermepumpePage() {
           Rechnung über 20 Jahre zeigt, was das bedeutet:
         </p>
 
-        {/* ── Chart: prominent direkt nach der Einordnung ── */}
-        <GasVsWpChart variants={variants} pvCoveragePct={Math.round(PV_COVERAGE * 100)} />
+        {/* ── Linien-Verlauf: dasselbe Widget wie oben, Ansicht „Linien" ── */}
+        <div style={{ marginBottom: 16 }}>
+          <AutoHeightIframe
+            src="/embed/gruengas-heizkosten?onsite=1&view=lines"
+            title="Heizkosten-Entwicklung bis 2045: Wärmepumpe vs. Gasheizung"
+            fallbackHeight={430}
+          />
+        </div>
 
         {/* ── Grüngas-Pflicht: Details ── */}
         <h2 style={S.h2}>Warum die neue Gasheizung zur Kostenfalle wird</h2>
@@ -148,7 +130,9 @@ export default function GasheizungWaermepumpePage() {
           10 Prozent 2029, 30 Prozent 2035, 60 Prozent 2040 und 100 Prozent ab 2045. Dieses
           Biomethan kostet rund doppelt so viel wie Erdgas. Dazu steigen die Gasnetzentgelte,
           weil immer weniger Haushalte am Gasnetz hängen und dessen Fixkosten sich auf weniger
-          Schultern verteilen.
+          Schultern verteilen. Die Beimischpflicht trifft dabei <strong style={S.strong}>neu
+          eingebaute</strong> Gasheizungen ab 2029 — wer bereits eine Gasheizung hat, genießt
+          Bestandsschutz. Wer jetzt aber neu entscheidet, sollte mit diesen Kosten rechnen.
         </p>
         <div style={S.card}>
           <span style={S.accent}>Das Ergebnis:</span> Der Gaspreis je Kilowattstunde steigt laut

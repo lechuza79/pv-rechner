@@ -31,6 +31,11 @@ export interface WidgetSettings {
    * source note. Default false (external embed: keep branding + in-widget source
    * per the licence terms). Never offered in the copy-paste embed code. */
   onsite: boolean;
+  /** Which part of a multi-part (combo) widget to show. Widget-specific values
+   * (e.g. the Grüngas widget: "full" | "bars" | "lines"); widgets that aren't
+   * multi-part ignore it. Lets an embedder pick the whole combo or just a part,
+   * exactly like the map widget's variants. Default "full". */
+  view: string;
 }
 
 export const WIDGET_SETTINGS_DEFAULTS: WidgetSettings = {
@@ -40,6 +45,7 @@ export const WIDGET_SETTINGS_DEFAULTS: WidgetSettings = {
   embed: true,
   branding: true,
   onsite: false,
+  view: "full",
 };
 
 const RANGES: readonly WidgetRange[] = ["24h", "7d", "30d", "year"];
@@ -55,6 +61,8 @@ export function parseWidgetSettingsQuery(search: string): Partial<WidgetSettings
   if (p.has("embed")) out.embed = p.get("embed") !== "0";
   if (p.has("branding")) out.branding = p.get("branding") !== "0";
   if (p.has("onsite")) out.onsite = p.get("onsite") !== "0";
+  const view = p.get("view");
+  if (view) out.view = view;
   return out;
 }
 
@@ -72,6 +80,7 @@ export function parseWidgetSettingsObject(obj: unknown): Partial<WidgetSettings>
   if (typeof s.range === "string" && RANGES.indexOf(s.range as WidgetRange) !== -1) {
     out.range = s.range as WidgetRange;
   }
+  if (typeof s.view === "string") out.view = s.view;
   return out;
 }
 
