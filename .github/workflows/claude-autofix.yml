@@ -25,6 +25,11 @@ on:
 permissions:
   contents: write
   issues: write
+  # Die Action tauscht ein OIDC-Token gegen ihre GitHub-Berechtigung ein. Ohne
+  # id-token bricht sie beim Token-Setup ab, bevor das Modell überhaupt läuft
+  # ("Could not fetch an OIDC token") — der Fehler sieht nach Schlüsselproblem
+  # aus, ist aber reine Workflow-Konfiguration.
+  id-token: write
 
 concurrency:
   group: claude-autofix
