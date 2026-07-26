@@ -266,7 +266,7 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
     },
     {
       q: "Wie viel teurer wird Gas dadurch?",
-      a: "Für einen typischen Haushalt steigen die reinen Gaskosten laut IW-Report von rund 1.080 Euro (2026) auf etwa 1.950 Euro (2040) und 2.370 Euro (2045) — annähernd eine Verdopplung. Neben der Biomethan-Beimischung treiben steigende Gasnetzentgelte den Preis, weil immer weniger Haushalte am Gasnetz hängen und die Fixkosten auf weniger Schultern verteilt werden.",
+      a: "Der Gaspreis je Kilowattstunde steigt laut IW-Report von rund 11 Cent (2026) auf etwa 20 Cent (2040) und 24 Cent (2045) — annähernd eine Verdopplung. Für einen typischen Haushalt mit rund 10.000 Kilowattstunden Verbrauch sind das etwa 1.080 Euro (2026), 1.950 Euro (2040) und 2.370 Euro (2045); ein größerer, unsanierter Altbau wie im Chart oben verbraucht mehr und zahlt entsprechend mehr. Neben der Biomethan-Beimischung treiben steigende Gasnetzentgelte den Preis, weil immer weniger Haushalte am Gasnetz hängen und die Fixkosten auf weniger Schultern verteilt werden.",
     },
     {
       q: "Geht eine Wärmepumpe auch im unsanierten Altbau?",

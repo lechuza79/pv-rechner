@@ -56,7 +56,7 @@ const S = {
 const cfg = DEFAULT_HEATPUMP_CONFIG;
 const PV_COVERAGE = 0.3;
 
-function musterVariant(key: string, label: string, insulationIdx: number, heizsystem: HeatPumpInputs["heizsystem"]): MusterVariant {
+function musterVariant(key: string, label: string, insulationIdx: number, heizsystem: HeatPumpInputs["heizsystem"], explain: string): MusterVariant {
   const inputs: HeatPumpInputs = {
     situation: "bestand", wohnflaeche: 140, insulationIdx,
     personen: PERSONEN[2].count, heizsystem, wpType: "lwwp",
@@ -70,14 +70,18 @@ function musterVariant(key: string, label: string, insulationIdx: number, heizsy
   return {
     key, label,
     sub: `Freistehendes Einfamilienhaus, 140 m² · Arbeitszahl ${r.jaz.toLocaleString("de-DE")} · rund ${Math.round(fuelKwh / 100) / 10} MWh Gas im Jahr`,
-    series, totals,
+    explain, series, totals,
   };
 }
 
 export default function GasheizungWaermepumpePage() {
+  // Unsaniert bewusst zuerst (Default, links): der stärkere Fall, der den Irrtum
+  // „im Altbau geht keine Wärmepumpe" direkt widerlegt.
   const variants = [
-    musterVariant("teil", "Teilsaniert", 1, "hk_neu"),
-    musterVariant("unsan", "Unsaniert", 0, "hk_alt"),
+    musterVariant("unsan", "Unsaniert", 0, "hk_alt",
+      "Auch im unsanierten Altbau — wo viele die Wärmepumpe für unmöglich halten — bleibt sie über 20 Jahre klar günstiger, gerade weil die Gasheizung so teuer wird."),
+    musterVariant("teil", "Teilsaniert", 1, "hk_neu",
+      "Im teilsanierten Haus fällt die Ersparnis etwas kleiner aus — schlicht weil weniger (teures) Gas gebraucht wird. Günstiger als die Gasheizung bleibt die Wärmepumpe trotzdem klar."),
   ];
   const faqItems = gasheizungWaermepumpeFaq();
 
@@ -139,10 +143,11 @@ export default function GasheizungWaermepumpePage() {
           Schultern verteilen.
         </p>
         <div style={S.card}>
-          <span style={S.accent}>Das Ergebnis:</span> Für einen typischen Haushalt steigen die
-          reinen Gaskosten laut Institut der deutschen Wirtschaft von rund 1.080 € (2026) auf
-          etwa 1.950 € (2040) — fast eine Verdopplung. Der CO₂-Preis ist dabei nur ein kleiner
-          Teil; den Löwenanteil macht das teure Grüngas aus.
+          <span style={S.accent}>Das Ergebnis:</span> Der Gaspreis je Kilowattstunde steigt laut
+          Institut der deutschen Wirtschaft von rund 11 Cent (2026) auf etwa 20 Cent (2040) —
+          fast eine Verdopplung — und bis 2045 weiter auf rund 24 Cent. Wie stark das aufs Jahr
+          durchschlägt, hängt vom Verbrauch ab (im Chart oben der Muster-Altbau). Der CO₂-Preis
+          ist dabei nur ein kleiner Teil; den Löwenanteil macht das teure Grüngas aus.
         </div>
 
         {/* ── Altbau ── */}
