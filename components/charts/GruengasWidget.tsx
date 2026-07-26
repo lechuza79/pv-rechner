@@ -28,7 +28,6 @@ const SERIES: { key: Key; color: string; label: string; short: string }[] = [
 ];
 
 const eur = (n: number) => `${Math.round(n).toLocaleString("de-DE")} €`;
-const axisEur = (n: number) => n.toLocaleString("de-DE");
 
 // 2 Nachkommastellen: hält Server-/Client-Render exakt gleich (kein Hydration-
 // Mismatch durch Float-Abweichungen); sub-Pixel, visuell egal.
@@ -91,7 +90,7 @@ export default function GruengasWidget({
   });
 
   // ── Linien-SVG-Maße (viewBox nah an der Pixelbreite) ──
-  const W = narrow ? 320 : 640, H = narrow ? 200 : 280, P = { t: 14, r: 14, b: 28, l: 44 };
+  const W = narrow ? 320 : 640, H = narrow ? 200 : 280, P = { t: 24, r: 14, b: 28, l: 12 };
   const cH = H - P.t - P.b;
   const y0 = P.t + cH;
   const linienW = linesFullWidth ? W - P.l - P.r : 348;
@@ -166,6 +165,8 @@ export default function GruengasWidget({
       </div>
       <svg viewBox={`0 0 ${BW} ${BH}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
         aria-label={`20-Jahres-Gesamtkosten ${m.label}: Gasheizung, Wärmepumpe, Wärmepumpe + PV`}>
+        {/* Grundlinie unter den Balken */}
+        <line x1={8} x2={BW - 8} y1={by0} y2={by0} stroke="var(--color-chart-zero)" strokeWidth={1} />
         {SERIES.map((s, j) => {
           const val = m.totals[s.key];
           const h = Math.max(3, (val / barMax) * bMaxH);
@@ -273,11 +274,10 @@ export default function GruengasWidget({
             aria-label={`Jährliche Heizkosten ${m.label}: Gasheizung steigt, Wärmepumpe bleibt günstig`}
             onMouseLeave={() => setHoverLine(null)}>
             {yTicks.map(val => (
-              <g key={val}>
-                <line x1={P.l} x2={P.l + linienW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
-                <text x={P.l - 6} y={yL(val)} textAnchor="end" dominantBaseline="middle" fontSize={11} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{axisEur(val)}</text>
-              </g>
+              <line key={val} x1={P.l} x2={P.l + linienW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
             ))}
+            {/* Achsen-Label statt Zahlen — der Hover zeigt die exakten Werte. */}
+            <text x={P.l} y={12} textAnchor="start" fontSize={11} fontWeight={600} fill="var(--color-text-muted)">Heizkosten pro Jahr</text>
             {xYears.map(yr => <text key={yr} x={xL(yr - startYear)} y={y0 + 18} textAnchor="middle" fontSize={12} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{yr}</text>)}
 
             <line x1={P.l} x2={showBarsInSvg ? W - P.r : P.l + linienW} y1={y0} y2={y0} stroke="var(--color-chart-zero)" strokeWidth={1} />

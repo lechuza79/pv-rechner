@@ -93,7 +93,7 @@ export default function GasheizungWaermepumpePage() {
               verdoppeln sich die Gaskosten bis 2040 nahezu. Die Wärmepumpe bleibt dagegen günstig
               — und das gilt selbst im unsanierten Altbau, wo viele sie für unmöglich halten.
             </div>
-            <div style={{ flex: "1 1 260px", minWidth: 0 }}>
+            <div style={{ flex: "1 1 260px", minWidth: 0, borderLeft: `1px solid ${v("--color-border")}`, paddingLeft: 20 }}>
               <AutoHeightIframe
                 src="/embed/gruengas-heizkosten?onsite=1&view=bars"
                 title="Gesamtkosten über 20 Jahre: Wärmepumpe vs. Gasheizung"
