@@ -7,7 +7,8 @@ import { gasheizungWaermepumpeFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import ArticleMeta from "../../../../components/ArticleMeta";
-import AutoHeightIframe from "../../../../components/AutoHeightIframe";
+import GruengasWidget from "../../../../components/charts/GruengasWidget";
+import { greengasMusterVariants, PV_COVERAGE } from "../../../../lib/greengas-muster";
 
 // Zahlen kommen live aus denselben Modellen wie der Wärmepumpen-Rechner
 // (calcHeatPump + Grüngas-Preispfad). ISR hält sie frisch ohne Rebuild.
@@ -46,13 +47,15 @@ const S = {
   small: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6 },
 };
 
-// Das Grüngas-Widget (Kombi aus Balken + Linien) lebt als EIN Bauteil unter
-// /embed/gruengas-heizkosten und wird hier per First-Party-Embed (onsite=1)
-// eingebunden — wie alle Widgets. In der Kurzantwort die Balken-Ansicht, weiter
-// unten der Linien-Verlauf; beides dieselbe Komponente, gerechnet auf der
-// geteilten Engine (lib/greengas-muster).
+// Das Grüngas-Widget (Kombi aus Balken + Linien) ist EIN geteiltes Bauteil
+// (components/charts/GruengasWidget); als /embed/gruengas-heizkosten einbettbar
+// und hier direkt gerendert — wie die Landkarte auf der Startseite. In der
+// Kurzantwort die Balken-Ansicht (mobil horizontal, Desktop vertikal neben dem
+// Text), weiter unten der Linien-Verlauf. Zahlen aus der geteilten Engine.
 export default function GasheizungWaermepumpePage() {
   const faqItems = gasheizungWaermepumpeFaq();
+  const variants = greengasMusterVariants();
+  const pvPct = Math.round(PV_COVERAGE * 100);
 
   return (
     <div style={S.page}>
@@ -81,21 +84,21 @@ export default function GasheizungWaermepumpePage() {
           modified="2026-07-26"
         />
 
-        {/* ── Kurzantwort ── */}
+        {/* ── Kurzantwort: Text + Balken-Ansicht des Widgets (mobil darunter,
+             Desktop daneben) ── */}
         <div style={S.hero}>
           <span style={S.label}>Die Kurzantwort</span>
-          <strong style={S.strong}>Die Wärmepumpe ist die günstigste Variante — und zwar deutlich.</strong> Eine neue
-          Gasheizung ist in der Anschaffung billiger, wird im Betrieb aber zur Kostenfalle:
-          Durch die gesetzliche Beimischung von teurem Biomethan und steigende Netzentgelte
-          verdoppeln sich die Gaskosten bis 2040 nahezu. Die Wärmepumpe bleibt dagegen günstig
-          — und das gilt selbst im unsanierten Altbau, wo viele sie für unmöglich halten.
-          <div style={{ marginTop: 14 }}>
-            <AutoHeightIframe
-              src="/embed/gruengas-heizkosten?onsite=1&view=bars"
-              title="Gesamtkosten über 20 Jahre: Wärmepumpe vs. Gasheizung"
-              fallbackHeight={200}
-              framed={false}
-            />
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 20, alignItems: "flex-start", marginTop: 4 }}>
+            <div style={{ flex: "1 1 240px", minWidth: 0 }}>
+              <strong style={S.strong}>Die Wärmepumpe ist die günstigste Variante — und zwar deutlich.</strong> Eine neue
+              Gasheizung ist in der Anschaffung billiger, wird im Betrieb aber zur Kostenfalle:
+              Durch die gesetzliche Beimischung von teurem Biomethan und steigende Netzentgelte
+              verdoppeln sich die Gaskosten bis 2040 nahezu. Die Wärmepumpe bleibt dagegen günstig
+              — und das gilt selbst im unsanierten Altbau, wo viele sie für unmöglich halten.
+            </div>
+            <div style={{ flex: "1 1 260px", minWidth: 0 }}>
+              <GruengasWidget variants={variants} pvCoveragePct={pvPct} view="bars" />
+            </div>
           </div>
         </div>
         <p style={{ ...S.small, marginBottom: 0 }}>
@@ -113,13 +116,9 @@ export default function GasheizungWaermepumpePage() {
           Rechnung über 20 Jahre zeigt, was das bedeutet:
         </p>
 
-        {/* ── Linien-Verlauf: dasselbe Widget wie oben, Ansicht „Linien" ── */}
-        <div style={{ marginBottom: 16 }}>
-          <AutoHeightIframe
-            src="/embed/gruengas-heizkosten?onsite=1&view=lines"
-            title="Heizkosten-Entwicklung bis 2045: Wärmepumpe vs. Gasheizung"
-            fallbackHeight={430}
-          />
+        {/* ── Linien-Verlauf: dasselbe Widget, Ansicht „Linien" ── */}
+        <div style={{ border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "16px 16px 14px", marginBottom: 16 }}>
+          <GruengasWidget variants={variants} pvCoveragePct={pvPct} view="lines" />
         </div>
 
         {/* ── Grüngas-Pflicht: Details ── */}

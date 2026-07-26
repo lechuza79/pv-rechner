@@ -31,9 +31,13 @@ const axisEur = (n: number) => n.toLocaleString("de-DE");
 
 // Rechteck mit nur oben abgerundeten Ecken (unten eckig, sitzt bündig auf der
 // Nulllinie). SVG rx würde alle vier Ecken runden.
+// 2 Nachkommastellen: hält Server- und Client-Render exakt gleich (sonst
+// Hydration-Mismatch durch minimale Float-Abweichungen); sub-Pixel, visuell egal.
+const r2 = (n: number) => Math.round(n * 100) / 100;
+
 function roundedTopRect(x: number, y: number, w: number, h: number, r: number): string {
   const rr = Math.max(0, Math.min(r, w / 2, h));
-  return `M${x},${y + h} L${x},${y + rr} Q${x},${y} ${x + rr},${y} L${x + w - rr},${y} Q${x + w},${y} ${x + w},${y + rr} L${x + w},${y + h} Z`;
+  return `M${r2(x)},${r2(y + h)} L${r2(x)},${r2(y + rr)} Q${r2(x)},${r2(y)} ${r2(x + rr)},${r2(y)} L${r2(x + w - rr)},${r2(y)} Q${r2(x + w)},${r2(y)} ${r2(x + w)},${r2(y + rr)} L${r2(x + w)},${r2(y + h)} Z`;
 }
 
 function niceMax(max: number): number {
@@ -84,8 +88,8 @@ export default function GruengasWidget({
   const n = pts.length;
   const startYear = pts[0].year, endYear = pts[n - 1].year;
   const yMax = niceMax(Math.max(...pts.map(p => p.gas)));
-  const xL = (i: number) => P.l + (i / (n - 1)) * linienW;
-  const yL = (val: number) => y0 - (val / yMax) * cH;
+  const xL = (i: number) => r2(P.l + (i / (n - 1)) * linienW);
+  const yL = (val: number) => r2(y0 - (val / yMax) * cH);
   const yTicks: number[] = [];
   for (let val = 0; val <= yMax; val += yMax / 4) yTicks.push(val);
   const xYears = [startYear, Math.round((startYear + endYear) / 2), endYear];
@@ -141,25 +145,34 @@ export default function GruengasWidget({
     </>
   );
 
-  // Horizontaler Balken-Block (Ersparnis + Gesamtkosten nebeneinander) — für
-  // "bars" (Kurzantwort) und für "full" auf schmalen Screens.
-  const barsBlock = (
-    <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-      <div style={{ flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <span style={lblStyle}>Ersparnis</span>
-          {ersparnisTip}
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
-          {plusBadge}
-          {amtHtml(ersparnis, 19)}
-        </div>
+  const trackBg = `color-mix(in srgb, ${v("--color-text-muted")} 14%, transparent)`;
+  const ersparnisRow = (size: number) => (
+    <>
+      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        <span style={lblStyle}>Ersparnis</span>
+        {ersparnisTip}
       </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
+        {plusBadge}
+        {amtHtml(ersparnis, size)}
+      </div>
+    </>
+  );
+  const gesamtkostenHeader = (
+    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+      <span style={lblStyle}>Gesamtkosten</span>
+      {gesamtkostenTip}
+    </div>
+  );
+
+  // Balken-Block. Schmal (mobil): Ersparnis links, Gesamtkosten als HORIZONTALE
+  // Balken rechts. Breit (Desktop, neben dem Text): Ersparnis oben, darunter
+  // Gesamtkosten als VERTIKALE Balken (Säulen).
+  const barsBlockHorizontal = (
+    <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+      <div style={{ flexShrink: 0 }}>{ersparnisRow(19)}</div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 6 }}>
-          <span style={lblStyle}>Gesamtkosten</span>
-          {gesamtkostenTip}
-        </div>
+        <div style={{ marginBottom: 6 }}>{gesamtkostenHeader}</div>
         {SERIES.map(s => {
           const val = m.totals[s.key];
           return (
@@ -168,7 +181,7 @@ export default function GruengasWidget({
                 <span style={{ fontSize: 11.5, color: v("--color-text-secondary") }}>{s.label}</span>
                 {amtHtml(val, 12, 700)}
               </div>
-              <div style={{ height: 11, background: `color-mix(in srgb, ${v("--color-text-muted")} 14%, transparent)`, borderRadius: 4, overflow: "hidden" }}>
+              <div style={{ height: 11, background: trackBg, borderRadius: 4, overflow: "hidden" }}>
                 <div style={{ width: `${(val / barMax) * 100}%`, height: "100%", background: s.color, borderRadius: 4 }} />
               </div>
             </div>
@@ -177,6 +190,28 @@ export default function GruengasWidget({
       </div>
     </div>
   );
+  const barsBlockVertical = (
+    <div>
+      {ersparnisRow(20)}
+      <div style={{ borderTop: `1px solid ${v("--color-border")}`, marginTop: 14, marginBottom: 10 }} />
+      <div style={{ marginBottom: 10 }}>{gesamtkostenHeader}</div>
+      <div style={{ display: "flex", gap: 14, alignItems: "flex-end" }}>
+        {SERIES.map(s => {
+          const val = m.totals[s.key];
+          return (
+            <div key={s.key} style={{ flex: 1, minWidth: 0, textAlign: "center" }}>
+              <div style={{ marginBottom: 5 }}>{amtHtml(val, 13, 700)}</div>
+              <div style={{ position: "relative", height: 130, background: trackBg, borderRadius: "4px 4px 0 0", overflow: "hidden" }}>
+                <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: `${(val / barMax) * 100}%`, background: s.color, borderRadius: "4px 4px 0 0" }} />
+              </div>
+              <div style={{ marginTop: 6, fontSize: 11, color: v("--color-text-muted") }}>{s.short}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+  const barsBlock = narrow ? barsBlockHorizontal : barsBlockVertical;
 
   return (
     <div>
