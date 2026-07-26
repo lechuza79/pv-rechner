@@ -208,10 +208,19 @@ function verdict(seconds: number, limits: { warn: number; fail: number }): "grue
 
 async function main() {
   const lines: string[] = [];
-  // `problems` = ein Mensch muss ran. NUR das löst eine Benachrichtigung aus.
-  // `selfHealed` = wurde bereits repariert, reine Protokollzeile.
-  // `warnings` = auffällig, aber nichts zu tun; steht im Log.
-  const problems: string[] = [];
+  // Die drei Kategorien entscheiden, WER etwas tut — und der Betreiber ist
+  // dabei ausdrücklich nicht vorgesehen. Er kann nicht programmieren; ihn auf
+  // einen Befund hinzuweisen, den er nicht selbst beheben kann, ist keine
+  // Benachrichtigung, sondern eine Sackgasse.
+  //
+  // `selfHealed` = hat sich schon repariert, reine Protokollzeile.
+  // `warnings`   = auffällig, nichts zu tun, steht im Log.
+  // `forClaude`  = braucht Analyse und einen Code-Fix → geht an Claude
+  //                (Workflow rot + der stündliche Wächter greift es auf).
+  //                NUR wenn Claude selbst nicht weiterkommt, wird daraus eine
+  //                echte Frage an den Betreiber — formuliert als Entscheidung,
+  //                nicht als Aufgabe.
+  const forClaude: string[] = [];
   const selfHealed: string[] = [];
   const warnings: string[] = [];
 
@@ -246,13 +255,13 @@ async function main() {
         `nach Washington verschoben hätte. (Live läuft aktuell ${regions.join("/") || "unbekannt"}.)`,
     );
   } else if (configState === "abweichend") {
-    problems.push(
+    forClaude.push(
       `In vercel.json steht eine andere Region als ${EXPECTED_REGION}. Das überschreibe ich nicht — wenn das ` +
         `Absicht war, gehört der Timeout in lib/db-timeout.ts mit angehoben; wenn nicht, gehört die Zeile ` +
         `zurück auf ["${EXPECTED_REGION}"].`,
     );
   } else if (configState === "nicht-lesbar") {
-    problems.push(`vercel.json ist nicht lesbar oder kein gültiges JSON — jeder Deploy scheitert damit.`);
+    forClaude.push(`vercel.json ist nicht lesbar oder kein gültiges JSON — jeder Deploy scheitert damit.`);
   }
 
   const wrongRegion = regions.filter((r) => r !== EXPECTED_REGION);
@@ -261,7 +270,7 @@ async function main() {
       configState === "repariert"
         ? `Die Einstellung war aus vercel.json verschwunden und ist wieder drin — der nächste Deploy holt die Server zurück.`
         : `In vercel.json steht ${EXPECTED_REGION}, live greift es trotzdem nicht: das deutet auf eine Region-Einstellung im Vercel-Projekt selbst hin, die die Datei übersteuert.`;
-    problems.push(
+    forClaude.push(
       `Function-Region ist live ${wrongRegion.join("/")} statt ${EXPECTED_REGION}. Die Datenbank steht in Frankfurt — ` +
         `aus einer anderen Region kostet jeder Datenbank-Zugriff Latenz über den Atlantik, und genau daran ist ` +
         `der Atlas im Juli 2026 gestorben. ${nachwirkung}`,
@@ -276,11 +285,11 @@ async function main() {
   // ── Statuscodes ───────────────────────────────────────────────────────────
   for (const p of pageProbes) {
     if (![200, 301, 308].includes(p.status)) {
-      problems.push(`${p.label} antwortet mit ${p.status || "keiner Antwort"} (${p.cache || "—"}).`);
+      forClaude.push(`${p.label} antwortet mit ${p.status || "keiner Antwort"} (${p.cache || "—"}).`);
     }
   }
   if (cold && cold.status !== 200) {
-    problems.push(`Atlas-Gemeindeseite antwortet mit ${cold.status || "keiner Antwort"} — ${cold.url}`);
+    forClaude.push(`Atlas-Gemeindeseite antwortet mit ${cold.status || "keiner Antwort"} — ${cold.url}`);
   }
 
   // ── Zeiten ────────────────────────────────────────────────────────────────
@@ -290,7 +299,7 @@ async function main() {
       `Rest ${pageProbes.map((p) => p.seconds.toFixed(1)).join(" / ")} s`,
   );
   const pageVerdict = verdict(slowest.seconds, SLOW.page);
-  if (pageVerdict === "rot") problems.push(`${slowest.label} braucht ${slowest.seconds.toFixed(2)} s — deutlich zu lang.`);
+  if (pageVerdict === "rot") forClaude.push(`${slowest.label} braucht ${slowest.seconds.toFixed(2)} s — deutlich zu lang.`);
   else if (pageVerdict === "gelb") warnings.push(`${slowest.label} braucht ${slowest.seconds.toFixed(2)} s.`);
 
   if (cold && coldResult) {
@@ -303,7 +312,7 @@ async function main() {
     lines.push(`Langsamste Seite: ${cold.url}`);
     const coldVerdict = verdict(cold.seconds, SLOW.atlasCold);
     if (coldVerdict === "rot") {
-      problems.push(
+      forClaude.push(
         `Eine frisch aufgebaute Atlas-Seite braucht ${cold.seconds.toFixed(2)} s. Nur noch ${luft.toFixed(1)} s ` +
           `bis zur Notbremse (${NOTBREMSE_S} s), ab der die Seite einen Fehler zeigt. Das ist die Vorstufe zum ` +
           `Ausfall — auch wenn gerade noch alles mit 200 antwortet.`,
@@ -316,13 +325,13 @@ async function main() {
   }
 
   // ── Bericht ───────────────────────────────────────────────────────────────
-  const ampel = problems.length ? "ROT" : selfHealed.length ? "REPARIERT" : warnings.length ? "GELB" : "GRUEN";
+  const ampel = forClaude.length ? "ROT" : selfHealed.length ? "REPARIERT" : warnings.length ? "GELB" : "GRUEN";
   const report = [
     `Solar Check Gesundheitscheck: ${ampel}`,
     "",
     ...lines,
     ...(selfHealed.length ? ["", "Selbst repariert (nichts zu tun):", ...selfHealed.map((s) => `- ${s}`)] : []),
-    ...(problems.length ? ["", "Muss ein Mensch anschauen:", ...problems.map((p) => `- ${p}`)] : []),
+    ...(forClaude.length ? ["", "Fuer Claude zur Analyse:", ...forClaude.map((p) => `- ${p}`)] : []),
     ...(warnings.length ? ["", "Auffaellig (nichts zu tun):", ...warnings.map((w) => `- ${w}`)] : []),
   ].join("\n");
 
@@ -333,7 +342,7 @@ async function main() {
   // bei Selbstheilung — was der Check allein repariert hat, ist keine Nachricht
   // wert, sondern eine Protokollzeile. Wer für jede Regung eine Mail bekommt,
   // filtert den Absender weg und verpasst dann die eine, die zählt.
-  if (ALERT && problems.length) {
+  if (ALERT && forClaude.length) {
     const secret = process.env.CRON_SECRET;
     if (!secret) {
       console.error("\n--alert gesetzt, aber CRON_SECRET fehlt — keine Meldung verschickt.");
@@ -353,9 +362,9 @@ async function main() {
 
   // Exit-Codes steuern, was die GitHub-Action als Nächstes tut:
   //   2 = selbst repariert → die Action committet die Korrektur und deployt
-  //   1 = ein Mensch muss ran → Workflow rot
+  //   1 = braucht Analyse → Workflow rot, Claude-Autofix springt an
   //   0 = alles im Rahmen
-  if (problems.length) process.exit(1);
+  if (forClaude.length) process.exit(1);
   if (selfHealed.length) process.exit(2);
 }
 
