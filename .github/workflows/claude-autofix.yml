@@ -79,7 +79,28 @@ jobs:
             echo "weiter=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Befund einsammeln
+      # Der auslösende Befund kommt aus dem Lauf, der rot wurde — NICHT aus einer
+      # frischen Messung. Die Kaltrender-Zeiten streuen stark (1,6–5,4 s je nach
+      # Gemeindegröße), also misst eine neue Messung eine andere Stichprobe als
+      # die, die den Alarm ausgelöst hat: der Autofix startet wegen 5,4 s, misst
+      # 2,9 s, findet nichts zu tun und hat die Tagesbremse trotzdem verbraucht.
+      # Genau das ist im ersten scharfen Test passiert.
+      - name: Auslösenden Befund holen
+        if: steps.budget.outputs.weiter == 'true' && github.event_name == 'workflow_run'
+        id: ausloeser
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run view ${{ github.event.workflow_run.id }} --log 2>/dev/null \
+            | sed -n 's/.*Gesundheitscheck\t[0-9T:.-]*Z //p' > /tmp/ausloeser.txt || true
+          if [ ! -s /tmp/ausloeser.txt ]; then
+            echo "(Log des auslösenden Laufs nicht lesbar)" > /tmp/ausloeser.txt
+          fi
+          cat /tmp/ausloeser.txt
+
+      # Zusätzlich frisch messen — der Vergleich zeigt, ob der Befund noch
+      # besteht oder ob es ein Ausreißer war.
+      - name: Gegenmessung
         if: steps.budget.outputs.weiter == 'true'
         id: befund
         env:
@@ -87,12 +108,16 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           set +e
-          npm run health-check > /tmp/befund.txt 2>&1
+          npm run health-check > /tmp/jetzt.txt 2>&1
           set -e
-          cat /tmp/befund.txt
+          cat /tmp/jetzt.txt
           {
             echo 'text<<BEFUND_ENDE'
-            cat /tmp/befund.txt
+            echo "── Auslösender Befund (der Lauf, der rot wurde) ──"
+            cat /tmp/ausloeser.txt 2>/dev/null || echo "(manuell ausgelöst, kein Auslöser-Befund)"
+            echo ""
+            echo "── Gegenmessung (jetzt, andere Stichprobe) ──"
+            cat /tmp/jetzt.txt
             echo 'BEFUND_ENDE'
           } >> "$GITHUB_OUTPUT"
 
@@ -113,6 +138,14 @@ jobs:
 
             BEFUND:
             ${{ steps.befund.outputs.text }}
+
+            ZUM LESEN DES BEFUNDS: Der auslösende Befund ist der, der den Alarm ausgelöst hat.
+            Die Gegenmessung ist eine frische Stichprobe — sie trifft andere Gemeinden, und die
+            Kaltrender-Zeiten streuen stark (gemessen 1,6–5,4 s je nach Gemeindegröße). Ist die
+            Gegenmessung grün, heißt das NICHT, dass nichts zu tun ist: der auslösende Befund
+            bleibt gültig. Nimm den langsameren der beiden ernst und geh der Ursache nach. Nur
+            wenn beide klar im grünen Bereich liegen, ist es ein Ausreißer — schreib das dann
+            als Ergebnis hin und ändere nichts.
 
             WARUM DU DAS MACHST UND NICHT DER BETREIBER:
             Der Betreiber ist UX-Architekt und programmiert nicht. Ein Befund wie "eine
