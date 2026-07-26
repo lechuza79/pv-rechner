@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import InfoTooltip from "../InfoTooltip";
 import ChartActionBar from "../ChartActionBar";
-import { PoweredBy, DataSourceNote } from "../PoweredBy";
+import { PoweredBy } from "../PoweredBy";
 import { useChartExport } from "../../lib/useChartExport";
 import { DATA_SOURCES } from "../../lib/data-sources";
 import { v } from "../../lib/theme";
@@ -81,7 +81,10 @@ export default function GruengasWidget({
   const showBilanzOverlay = view === "full" && !narrow;
   const linesFullWidth = narrow || view === "lines";
 
-  const { chartRef, downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare } = useChartExport({
+  // Kein Bild-Export (Download/Bild-Teilen) — bewusst raus: ein PNG ohne
+  // Quellenangabe ist ein Attributions-Risiko. Geteilt wird nur der Link auf die
+  // Seite (dort steht die Quelle). shareWhatsApp/shareTwitter öffnen Share-URLs.
+  const { shareWhatsApp, shareTwitter } = useChartExport({
     context: { title: `Gasheizung vs. Wärmepumpe — ${m.label}` },
     filename: "waermepumpe-vs-gasheizung-gruengas",
     shareText: SHARE_TEXT,
@@ -229,7 +232,7 @@ export default function GruengasWidget({
   const SOURCE_SHORT = DATA_SOURCES.iw.name;
 
   return (
-    <div ref={chartRef} style={{
+    <div style={{
       position: "relative",
       // Solider Hintergrund überall AUSSER der reinen Balken-Ansicht onsite
       // (Kurzantwort, blendet in die Box). Solide = der Download-PNG hat einen
@@ -388,22 +391,22 @@ export default function GruengasWidget({
         </div>
       )}
 
-      {/* Aktionsleiste (+ Powered-by extern). Bei reiner Balken-Ansicht onsite: keine. */}
+      {/* Teilen-Leiste (Link-basiert; kein Bild-Export). Powered-by nur extern.
+          Reine Balken-Ansicht onsite: keine. */}
       {!(onsite && isBars) && (
-        <div data-sc-export-ignore style={{ display: "flex", justifyContent: branding && !onsite ? "space-between" : "flex-end", alignItems: "center", gap: 8, marginTop: 10 }}>
+        <div style={{ display: "flex", justifyContent: branding && !onsite ? "space-between" : "flex-end", alignItems: "center", gap: 8, marginTop: 10 }}>
           {branding && !onsite && <PoweredBy />}
           <ChartActionBar
             variant="bar"
-            showDownload
+            showDownload={false}
             size={28}
-            onDownload={downloadPng}
+            onDownload={() => {}}
+            isExporting={false}
+            canNativeShare={false}
             onCopyLink={() => navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {})}
-            onShareImage={canNativeShare ? sharePng : undefined}
             onWhatsApp={shareWhatsApp}
             onTwitter={shareTwitter}
             onEmbed={showEmbed && !onsite ? () => window.open("/energie-widgets#gruengas-heizkosten", "_blank", "noopener") : undefined}
-            isExporting={isExporting}
-            canNativeShare={canNativeShare}
           />
         </div>
       )}
@@ -415,12 +418,6 @@ export default function GruengasWidget({
           {SOURCE_SHORT}
         </div>
       )}
-      {/* IMMER vorhanden (display:none, nur im PNG sichtbar): Quelle + Marke fest
-          ins Bild gebacken — jeder Download ist attribuiert, auch onsite. */}
-      <div data-sc-export-only style={{ display: "none", fontSize: 10.5, color: v("--color-text-muted"), marginTop: 12, lineHeight: 1.5 }}>
-        <DataSourceNote source={DATA_SOURCES.iw} plain />
-        <div style={{ marginTop: 4 }}><PoweredBy /></div>
-      </div>
     </div>
   );
 }
