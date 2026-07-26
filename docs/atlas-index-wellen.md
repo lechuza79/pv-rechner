@@ -163,20 +163,24 @@ doch wieder die Bauform verschieben).
 - Größenverhältnis Herdecke: 512 Batterien = 14,2 MWh, ein Koepchenwerk = 634 MWh
   (45-fach). Goldisthal: 9,5 GWh Pumpspeicher, null Hausbatterien.
 
-### Offen (nicht Darstellung, sondern Datenqualität): Doppelzählung Kreis Waldshut
+### Erledigt (2026-07-25): Doppelzählung Kreis Waldshut (Pumpspeicher)
 
 Im Kreis Waldshut tragen **Häusern, Waldshut-Tiengen und Ühlingen-Birkendorf
-jeweils exakt dieselben 30,3 GWh mit je 4 Blöcken** — offensichtlich dasselbe
-Kraftwerk, das mehreren Gemeinden zugeordnet wird. Die Beträge sind zusätzlich
-rechnerisch auf Blöcke gestückelt (Drittel-Werte mit Nachkommastellen,
-z. B. 7.569.083,33 kWh).
+jeweils exakt dieselben 30,3 GWh mit je 4 Blöcken** — dasselbe Kraftwerk
+(Schluchseewerk-Kaskade, gemeinsames Oberbecken), das mehreren Gemeinden zugeordnet
+wird. Bundesweit ~38 % Überzählung der Pumpspeicher-kWh (Dedup-Session gemessen).
 
-Das ist ein Problem im Register-Import, nicht in der Darstellung, und wurde hier
-**bewusst nur dokumentiert, nicht repariert**. Es ist aber ein weiterer Grund,
-**Pumpspeicher nicht zur Leitzahl zu machen**: als benannter Einzelfakt neben der
-Kachel ist die Zahl tragbar, als vergleichbare Kennzahl oder Ranglisten-Kriterium
-wäre sie es nicht. Vor einer prominenteren Verwendung müsste die Zuordnung je
-Gemeinde geprüft werden.
+**Gelöst durch B2 (Weglassen statt Reimport):** Die Speicher-Kachel zeigt bei
+Pumpspeicher jetzt **keine kWh-Zahl mehr**, sondern nur den benannten Fakt
+(„Pumpspeicherwerk vorhanden — Kapazität systemübergreifend, nicht je Gemeinde
+zurechenbar"). Anzahl ok, Summe nicht (`speicherHinweis` in `lib/atlas.ts`, Tests
+in `lib/__tests__/atlas-owner-slice.test.ts`). Ein 3-GB-Reimport wäre für den
+Zweck unverhältnismäßig gewesen. Batterie-Kachel bleibt unverändert (sauber).
+
+Getrennter Fall: die **10 echten Solar-Freiflächen-Doppelzählungen** (nicht
+Pumpspeicher) sind im Award über `dedupFreiflaeche` halbiert (`lib/awards.ts`) —
+regelbasierte Auto-Erkennung (identischer, NICHT runder kWp in >1 Gemeinde
+desselben Kreises) gehört später in den MaStR-Wächter.
 
 ---
 
