@@ -698,6 +698,20 @@ Das verhindert "Cannot find module './XXX.js'" Fehler die auftreten wenn Dev-Ser
 | Vercel (Production) | `solar-check.io` ✅ |
 | Vercel (Preview) | `pv-rechner-alpha.vercel.app` |
 | Domain-Registrar | All-Inkl |
+| **Function-Region** | **`fra1` (Frankfurt)** — `regions` in `vercel.json` |
+
+**Function-Region `fra1` — BLOCKER, nicht ohne Not ändern.** Vercels Default für neue Projekte ist `iad1` (Washington), Supabase liegt in `eu-central-1`. In dieser Kombination kostet **jeder** DB-Roundtrip ~90 ms Atlantik-Latenz — eine Atlas-Seite macht Dutzende davon. Folge (24.–26.07.2026): Kaltrender einer Gemeindeseite 6,8–8,1 s, direkt am 8-s-Fast-Fail aus `lib/db-timeout.ts` → über 2.300 Timeouts und hunderte 500er quer über den Atlas, **zwei Tage lang unbemerkt**. Nach dem Umzug nach Frankfurt: 0,4–4,0 s. Region und `DB_READ_TIMEOUT_MS` hängen zusammen — wer die Functions aus der EU zieht, muss den Timeout mit anheben. Prüfen lässt es sich am zweiten Segment von `x-vercel-id` (`fra1::fra1::…`), der tägliche Wächter tut das automatisch.
+
+**`vercel.json` verträgt keine Kommentare.** Vercel validiert die Datei strikt gegen ein Schema und bricht den Deploy bei jedem unbekannten Top-Level-Schlüssel ab — auch bei einem reinen `"//kommentar"`. Das scheitert **vor** dem Build, also ohne Build-Log und ohne sichtbaren Fehlergrund (State `ERROR`, leere Logs). Begründungen gehören daher in den Code, den die Einstellung betrifft (hier: `lib/db-timeout.ts`), nicht in die Konfigurationsdatei.
+
+### Monitoring
+
+Zwei getrennte Ebenen — Datenwerte und Verfügbarkeit:
+
+- **Datenwerte:** die Wächter als scheduled-tasks (Preise, EEG, CO₂, BEG-Förderung, Geräte-Config, Legal, Atlas-Index-Wellen). Sie prüfen, ob die *Zahlen* noch stimmen, und melden per Mail (`/api/alert`).
+- **Verfügbarkeit + Antwortzeit:** scheduled-task `solar-check-error-triage-daily` (täglich 08:20). Zieht Vercels Fehler-Cluster und Statuscode-Verteilung der letzten 24 h und misst zusätzlich einen echten Atlas-**Kaltrender** (zufällige Gemeinde, `x-vercel-cache: MISS` erzwungen).
+
+**Der Frühindikator ist der Abstand zur Notbremse, nicht der Statuscode.** Genau daran ist der Juli-Ausfall zwei Tage lang vorbeigelaufen: 500er tauchen erst auf, wenn es schon zu spät ist — eine Seite, die 6 s statt 1 s braucht, liefert noch sauber 200 und steht trotzdem kurz vorm Kippen. Der Wächter schlägt deshalb bei einem Kaltrender über 5 s Alarm, **auch ohne einen einzigen Fehler im Log**, und prüft dann als Erstes die Function-Region.
 
 ### Domains
 
