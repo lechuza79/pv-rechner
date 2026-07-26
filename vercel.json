@@ -4,6 +4,7 @@
       "staging": false
     }
   },
+  "regions": ["fra1"],
   "crons": [
     {
       "path": "/api/prices/scrape",

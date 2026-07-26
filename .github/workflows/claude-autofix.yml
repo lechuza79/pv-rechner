@@ -1,0 +1,194 @@
+name: Claude Autofix
+
+# Springt an, wenn der Gesundheitscheck rot wird, und lässt Claude den Befund
+# analysieren und — wo möglich — selbst beheben.
+#
+# WARUM ES DAS GIBT: Der Ausfall vom 24.–26.07.2026 lief zwei Tage unbemerkt.
+# Die erste Fassung des Monitorings meldete Befunde an den Betreiber — der aber
+# nicht programmiert und mit einem "eine Atlas-Seite braucht 5,4 s"-Hinweis
+# nichts anfangen kann. Ein Alarm an einen Menschen, der ihn nicht beheben kann,
+# ist kein Monitoring, sondern eine Sackgasse. Also übernimmt Claude: analysieren,
+# beheben, verifizieren, ausliefern. Der Betreiber hört nur, wenn eine
+# Entscheidung ansteht, die ihm gehört.
+#
+# Der deterministische Teil der Selbstheilung (Function-Region) sitzt weiter in
+# scripts/health-check.ts und braucht kein Modell. Dieser Workflow ist für alles,
+# was Analyse braucht — schleichend gestiegene Renderzeiten, neue Fehlerklassen,
+# kaputte Routen.
+
+on:
+  workflow_run:
+    workflows: ["Health Check"]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+  # Die Action tauscht ein OIDC-Token gegen ihre GitHub-Berechtigung ein. Ohne
+  # id-token bricht sie beim Token-Setup ab, bevor das Modell überhaupt läuft
+  # ("Could not fetch an OIDC token") — der Fehler sieht nach Schlüsselproblem
+  # aus, ist aber reine Workflow-Konfiguration.
+  id-token: write
+
+concurrency:
+  group: claude-autofix
+  cancel-in-progress: false
+
+jobs:
+  autofix:
+    # Nur bei rotem Gesundheitscheck. Exit-Code 2 (Selbstheilung) lässt den
+    # Workflow grün und kommt hier gar nicht erst an.
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Kostenbremse: höchstens ein Analyse-Lauf pro Tag. Ein Befund, der über
+      # Tage besteht (weil er eine menschliche Entscheidung braucht), würde sonst
+      # alle 3 Stunden einen Modell-Lauf auslösen und Geld verbrennen, ohne dass
+      # sich etwas ändert.
+      - name: Tagesbremse
+        id: budget
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          heute=$(date -u +%Y-%m-%d)
+          # Alle heutigen Läufe dieses Workflows zählen, den laufenden abziehen.
+          laeufe=$(gh run list --workflow=claude-autofix.yml --limit 20 \
+            --json createdAt,databaseId --jq \
+            "[.[] | select(.createdAt | startswith(\"$heute\")) | select(.databaseId != ${{ github.run_id }})] | length")
+          echo "Heutige Analyse-Läufe bisher: $laeufe"
+          if [ "$laeufe" -ge 1 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+            echo "Tagesbremse greift — heute lief schon eine Analyse. Kein weiterer Modell-Lauf."
+            echo "weiter=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "weiter=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Der auslösende Befund kommt aus dem Lauf, der rot wurde — NICHT aus einer
+      # frischen Messung. Die Kaltrender-Zeiten streuen stark (1,6–5,4 s je nach
+      # Gemeindegröße), also misst eine neue Messung eine andere Stichprobe als
+      # die, die den Alarm ausgelöst hat: der Autofix startet wegen 5,4 s, misst
+      # 2,9 s, findet nichts zu tun und hat die Tagesbremse trotzdem verbraucht.
+      # Genau das ist im ersten scharfen Test passiert.
+      - name: Auslösenden Befund holen
+        if: steps.budget.outputs.weiter == 'true' && github.event_name == 'workflow_run'
+        id: ausloeser
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run view ${{ github.event.workflow_run.id }} --log 2>/dev/null \
+            | sed -n 's/.*Gesundheitscheck\t[0-9T:.-]*Z //p' > /tmp/ausloeser.txt || true
+          if [ ! -s /tmp/ausloeser.txt ]; then
+            echo "(Log des auslösenden Laufs nicht lesbar)" > /tmp/ausloeser.txt
+          fi
+          cat /tmp/ausloeser.txt
+
+      # Zusätzlich frisch messen — der Vergleich zeigt, ob der Befund noch
+      # besteht oder ob es ein Ausreißer war.
+      - name: Gegenmessung
+        if: steps.budget.outputs.weiter == 'true'
+        id: befund
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          set +e
+          npm run health-check > /tmp/jetzt.txt 2>&1
+          set -e
+          cat /tmp/jetzt.txt
+          {
+            echo 'text<<BEFUND_ENDE'
+            echo "── Auslösender Befund (der Lauf, der rot wurde) ──"
+            cat /tmp/ausloeser.txt 2>/dev/null || echo "(manuell ausgelöst, kein Auslöser-Befund)"
+            echo ""
+            echo "── Gegenmessung (jetzt, andere Stichprobe) ──"
+            cat /tmp/jetzt.txt
+            echo 'BEFUND_ENDE'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Claude analysiert und behebt
+        if: steps.budget.outputs.weiter == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: |
+            {
+              "model": "claude-opus-5",
+              "allowedTools": ["Bash", "Read", "Edit", "Write", "Grep", "Glob"]
+            }
+          prompt: |
+            Du bist der technische Verantwortliche für die Production-Website solar-check.io.
+            Der automatische Gesundheitscheck ist rot. Analysiere den Befund, behebe ihn wo
+            möglich, verifiziere die Behebung und liefere sie aus. Antworte auf Deutsch.
+
+            BEFUND:
+            ${{ steps.befund.outputs.text }}
+
+            ZUM LESEN DES BEFUNDS: Der auslösende Befund ist der, der den Alarm ausgelöst hat.
+            Die Gegenmessung ist eine frische Stichprobe — sie trifft andere Gemeinden, und die
+            Kaltrender-Zeiten streuen stark (gemessen 1,6–5,4 s je nach Gemeindegröße). Ist die
+            Gegenmessung grün, heißt das NICHT, dass nichts zu tun ist: der auslösende Befund
+            bleibt gültig. Nimm den langsameren der beiden ernst und geh der Ursache nach. Nur
+            wenn beide klar im grünen Bereich liegen, ist es ein Ausreißer — schreib das dann
+            als Ergebnis hin und ändere nichts.
+
+            WARUM DU DAS MACHST UND NICHT DER BETREIBER:
+            Der Betreiber ist UX-Architekt und programmiert nicht. Ein Befund wie "eine
+            Atlas-Seite braucht 5,4 Sekunden" ist für ihn keine Handlungsanweisung. Gib ihm
+            deshalb keine technischen Aufgaben zurück. Was du selbst lösen kannst, löst du.
+
+            DER AUSLÖSER-VORFALL (24.–26.07.2026), damit du die Schwellen einordnen kannst:
+            Die Serverless-Functions liefen in Washington, die Datenbank in Frankfurt. Jeder
+            Datenbank-Zugriff kostete ~90 ms Atlantik-Latenz, eine Atlas-Seite macht Dutzende
+            davon. Der Kaltrender lag bei 6,8–8,1 s und kippte damit reihenweise in den
+            8-Sekunden-Fast-Fail aus lib/db-timeout.ts — über 2.300 Timeouts, zwei Tage lang
+            unbemerkt. Seither steht `regions: ["fra1"]` in vercel.json. Die Lehre: der
+            Frühindikator ist der Abstand zur Notbremse, nicht der Statuscode.
+
+            SO GEHST DU VOR:
+            1. Lies CLAUDE.md (Abschnitte "Deployment & Workflow" und "Monitoring") und
+               scripts/health-check.ts, damit du die Schwellen und die Architektur kennst.
+            2. Grenze die Ursache ein, bevor du etwas änderst. Miss, statt zu raten — bei
+               Renderzeiten heißt das: welche Datenabfragen dauern, und warum gerade jetzt.
+               Schau in die Git-Historie der letzten Tage, ob eine Änderung die Zeit erklärt.
+            3. Behebe, was du sicher beheben kannst. Danach `npx tsc --noEmit` und
+               `npx vitest run` — beide müssen grün sein.
+            4. Verifiziere am lebenden System: `npm run health-check` erneut laufen lassen
+               und zeigen, dass der Wert wirklich besser ist. Ein Fix ohne Nachmessung ist
+               kein Fix, sondern eine Behauptung.
+            5. Committe auf main (deutsche Commit-Message, die den Befund und die Ursache
+               erklärt) und pushe. Der Deploy läuft automatisch.
+
+            WAS DU NICHT OHNE RÜCKFRAGE ÄNDERST:
+            - Berechnungslogik, Zahlen, Einheiten oder Annahmen der Rechner. Laut CLAUDE.md
+              ist eine falsche Zahl der schwerste Fehler im Projekt — sie zerstört genau das,
+              womit die Seite wirbt.
+            - Rechtstexte (Impressum, Datenschutz, Nutzungsbedingungen).
+            - Datenbank-Migrationen oder irgendetwas, das Daten löscht.
+            - Die Schwellen im Gesundheitscheck hochsetzen, damit der Befund verschwindet.
+              Das behebt nichts, es versteckt nur.
+
+            DIE DATENBANK SCHONEN: keine parallelen Anfrage-Bursts, keine Crawls über viele
+            Atlas-Seiten. Ein ungedrosselter Lauf hat die Datenbank im Juli 2026 schon einmal
+            lahmgelegt.
+
+            WENN DU NICHT WEITERKOMMST oder die Behebung eine Produktentscheidung berührt:
+            Lege ein GitHub-Issue an (`gh issue create`) mit dem Titel "Gesundheitscheck:
+            <kurzer Befund>". Beschreibe darin in Klartext ohne Fachbegriffe, was klemmt, was
+            du versucht hast, und welche Entscheidung du vom Betreiber brauchst — formuliert
+            als Frage mit einer klaren Empfehlung, nicht als technische Aufgabe.

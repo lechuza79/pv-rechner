@@ -465,9 +465,14 @@ export function speicherHinweis(nb: AtlasOwnerSlice["nichtBatterie"]): string | 
   if (nb.pumpspeicherCount > 0) {
     const eins = nb.pumpspeicherCount === 1;
     const werk = eins ? "ein Pumpspeicherwerk" : `${nf(nb.pumpspeicherCount)} Pumpspeicherwerke`;
+    // Bewusst KEINE kWh-Zahl: ein Pumpspeicher ist eine Kaskade mit einem
+    // Oberbecken, das mehrere Gemeinden speist (Schluchsee → drei Gemeinden). Die
+    // Register-Summe ist systemübergreifend verschmiert (~38 % Überzählung
+    // bundesweit) — es gibt keine ehrliche „je Gemeinde"-Kapazität. Anzahl ok,
+    // Summe nicht. (Dedup-Session B2, 2026-07-25.)
     parts.push(
-      `Dazu ${eins ? "kommt" : "kommen"} ${werk} mit ${fmtSpeicherKwh(nb.pumpspeicherKwh)} Kapazität — Kraftwerksmaßstab, ` +
-        `deshalb ${eins ? "steht es" : "stehen sie"} nicht in der Kachel oben.`,
+      `Dazu ${eins ? "kommt" : "kommen"} ${werk} — die Kapazität ist systemübergreifend ` +
+        `(gemeinsames Oberbecken über mehrere Gemeinden) und deshalb keiner einzelnen Gemeinde zurechenbar.`,
     );
   }
   if (nb.sonstigeCount > 0) {

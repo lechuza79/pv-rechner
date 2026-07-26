@@ -42,6 +42,7 @@ const STATUS: { key: string; label: string; color: Token; bg: Token }[] = [
   { key: "kontaktiert", label: "Kontaktiert", color: "--color-accent-dark", bg: "--color-accent-dim" },
   { key: "geantwortet", label: "Geantwortet", color: "--color-positive", bg: "--color-bg-muted" },
   { key: "zu", label: "Zu", color: "--color-text-muted", bg: "--color-bg-muted" },
+  { key: "gesperrt", label: "Gesperrt", color: "--color-negative", bg: "--color-bg-muted" },
 ];
 const STATUS_LABEL: Record<string, string> = Object.fromEntries(STATUS.map((s) => [s.key, s.label]));
 
@@ -352,13 +353,16 @@ function DraftModal({
   onPatched: (l: Lead) => void;
 }) {
   const r = region(lead);
+  const blocked = lead.outreach_status === "gesperrt";
   const [subject, setSubject] = useState(lead.draft_subject ?? "");
   const [body, setBody] = useState(lead.draft_body ?? "");
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  const [genError, setGenError] = useState<string | null>(null);
 
   const generate = useCallback(async () => {
     setBusy(true);
+    setGenError(null);
     try {
       const res = await fetch("/api/admin/kommunen", {
         method: "POST",
@@ -370,15 +374,38 @@ function DraftModal({
         setSubject(draft.subject);
         setBody(draft.body);
         onPatched(row);
+      } else {
+        setGenError((await res.json()).error ?? `HTTP ${res.status}`);
       }
     } finally {
       setBusy(false);
     }
   }, [lead.region_id, onPatched]);
 
-  // Beim Öffnen ohne vorhandenen Entwurf einmal generieren.
+  // Status setzen (z. B. „als kontaktiert markieren" für den schnellen Durchlauf).
+  const setStatus = useCallback(
+    async (outreach_status: string) => {
+      setBusy(true);
+      try {
+        const res = await fetch("/api/admin/kommunen", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ region_id: lead.region_id, outreach_status }),
+        });
+        if (res.ok) {
+          onPatched((await res.json()).row);
+          onClose();
+        }
+      } finally {
+        setBusy(false);
+      }
+    },
+    [lead.region_id, onPatched, onClose],
+  );
+
+  // Beim Öffnen ohne vorhandenen Entwurf einmal generieren — außer bei Sperre.
   useEffect(() => {
-    if (open && !body && !busy) generate();
+    if (open && !body && !busy && !blocked) generate();
     // Nur beim Öffnen — generate/body absichtlich nicht in den Deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -412,40 +439,75 @@ function DraftModal({
       maxWidth={640}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
-        {lead.kontakt_url && (
-          <a href={lead.kontakt_url} target="_blank" rel="noopener noreferrer" style={{ ...linkStyle, fontSize: 13 }}>
-            Kontaktseite öffnen ↗
-          </a>
+        {blocked ? (
+          <div style={{ background: v("--color-bg-muted"), border: `1px solid ${v("--color-negative")}`, borderRadius: v("--radius-sm"), padding: pad("md", "md"), fontSize: 13, color: v("--color-text-secondary") }}>
+            Diese Gemeinde ist <strong style={{ color: v("--color-negative") }}>gesperrt</strong> — es wird kein Anschreiben
+            erzeugt oder versendet. Um die Sperre aufzuheben, den Status in der Tabelle ändern.
+          </div>
+        ) : (
+          <>
+            {/* Erstkontakt bevorzugt über das Kontaktformular (dann ist die Folge-Mail angefordert). */}
+            <div style={{ background: v("--color-accent-dim"), borderRadius: v("--radius-sm"), padding: pad("sm", "md"), fontSize: 12.5, color: v("--color-text-secondary"), lineHeight: 1.5 }}>
+              Erstkontakt am besten über das <strong>Kontaktformular</strong> der Gemeinde — dann ist die Folge-Mail
+              angefordert (rechtlich sauber). Text unten kopieren, Formular öffnen, einfügen.
+            </div>
+            <div style={{ display: "flex", gap: space.sm, flexWrap: "wrap" }}>
+              {lead.kontakt_url ? (
+                <a href={lead.kontakt_url} target="_blank" rel="noopener noreferrer" style={{ ...primaryBtn, textDecoration: "none", display: "inline-block" }}>
+                  Kontaktformular öffnen ↗
+                </a>
+              ) : (
+                <span style={{ fontSize: 12, color: v("--color-text-muted") }}>Kein Kontaktformular hinterlegt.</span>
+              )}
+              {lead.email && (
+                <a
+                  href={`mailto:${lead.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}
+                  style={{ ...pagerBtn, textDecoration: "none", display: "inline-block" }}
+                >
+                  Als Mail öffnen (Fallback)
+                </a>
+              )}
+            </div>
+
+            <label style={fieldLabel}>Betreff</label>
+            <div style={{ display: "flex", gap: space.xs }}>
+              <input value={subject} onChange={(e) => setSubject(e.target.value)} style={{ ...inputStyle, flex: 1 }} aria-label="Betreff" />
+              <button style={miniBtn} onClick={() => copy(subject, "subject")}>
+                {copied === "subject" ? "kopiert ✓" : "kopieren"}
+              </button>
+            </div>
+
+            <label style={fieldLabel}>Nachricht</label>
+            <textarea
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              rows={14}
+              style={{ ...inputStyle, width: "100%", resize: "vertical", lineHeight: 1.5, fontFamily: v("--font-text") }}
+              aria-label="Nachricht"
+            />
+
+            {genError && <div style={{ color: v("--color-negative"), fontSize: 12 }}>Fehler: {genError}</div>}
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center" }}>
+              <button style={primaryBtn} disabled={busy} onClick={() => copy(body, "body")}>
+                {copied === "body" ? "Text kopiert ✓" : "Text kopieren"}
+              </button>
+              <button style={pagerBtn} disabled={busy} onClick={save}>
+                Speichern
+              </button>
+              <button style={pagerBtn} disabled={busy} onClick={generate}>
+                {busy ? "…" : "Neu generieren"}
+              </button>
+              <button
+                style={{ ...pagerBtn, marginLeft: "auto", color: v("--color-positive"), fontWeight: 700 }}
+                disabled={busy}
+                onClick={() => setStatus("kontaktiert")}
+              >
+                Als kontaktiert markieren →
+              </button>
+            </div>
+          </>
         )}
-
-        <label style={fieldLabel}>Betreff</label>
-        <div style={{ display: "flex", gap: space.xs }}>
-          <input value={subject} onChange={(e) => setSubject(e.target.value)} style={{ ...inputStyle, flex: 1 }} aria-label="Betreff" />
-          <button style={miniBtn} onClick={() => copy(subject, "subject")}>
-            {copied === "subject" ? "kopiert ✓" : "kopieren"}
-          </button>
-        </div>
-
-        <label style={fieldLabel}>Nachricht</label>
-        <textarea
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          rows={14}
-          style={{ ...inputStyle, width: "100%", resize: "vertical", lineHeight: 1.5, fontFamily: v("--font-text") }}
-          aria-label="Nachricht"
-        />
-
-        <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center" }}>
-          <button style={primaryBtn} disabled={busy} onClick={() => copy(body, "body")}>
-            {copied === "body" ? "Text kopiert ✓" : "Text kopieren"}
-          </button>
-          <button style={pagerBtn} disabled={busy} onClick={save}>
-            Speichern
-          </button>
-          <button style={pagerBtn} disabled={busy} onClick={generate}>
-            {busy ? "…" : "Neu generieren"}
-          </button>
-        </div>
       </div>
     </Modal>
   );

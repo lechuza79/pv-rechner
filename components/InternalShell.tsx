@@ -16,7 +16,7 @@ import { v, space, pad } from "../lib/theme";
  * Bildschirm für Navigation draufgeht.
  */
 
-type NavLink = { href: string; label: string; exact?: boolean };
+type NavLink = { href?: string; label: string; exact?: boolean; children?: NavLink[] };
 type NavSection = { title: string; links: NavLink[] };
 
 export default function InternalShell({
@@ -33,10 +33,22 @@ export default function InternalShell({
   ];
   if (isAdmin) {
     sections.push({
-      title: "Admin",
+      title: "Kommunen",
+      links: [
+        { href: "/admin/kommunen", label: "Outreach" },
+        {
+          label: "Award",
+          children: [
+            { href: "/admin/awards", label: "Rangliste", exact: true },
+            { href: "/admin/awards/anschreiben", label: "Anschreiben" },
+          ],
+        },
+      ],
+    });
+    sections.push({
+      title: "System",
       links: [
         { href: "/admin", label: "Übersicht", exact: true },
-        { href: "/admin/kommunen", label: "Kommunen-Outreach" },
         { href: "/admin/theme", label: "Signalfarben-Theming" },
         { href: "/admin/prices", label: "Marktpreise" },
       ],
@@ -70,12 +82,15 @@ export default function InternalShell({
 
 function Sidebar({ sections, horizontal }: { sections: NavSection[]; horizontal: boolean }) {
   const pathname = usePathname();
-  const isActive = (l: NavLink) => (l.exact ? pathname === l.href : pathname.startsWith(l.href));
+  const isActive = (l: NavLink) => (!!l.href && (l.exact ? pathname === l.href : pathname.startsWith(l.href)));
 
   if (horizontal) {
-    // Schmale Schirme: alle Links als eine scrollbare Pillen-Reihe (Sektionen
-    // aufgelöst — für ein Band sind Überschriften zu viel).
-    const links = sections.flatMap((s) => s.links);
+    // Schmale Schirme: alle Links (inkl. Untergruppen-Kinder) als eine
+    // scrollbare Pillen-Reihe (Sektionen aufgelöst).
+    const links = sections
+      .flatMap((s) => s.links)
+      .flatMap((l) => l.children ?? [l])
+      .filter((l): l is NavLink & { href: string } => !!l.href);
     return (
       <nav
         aria-label="Interner Bereich"
@@ -110,33 +125,55 @@ function Sidebar({ sections, horizontal }: { sections: NavSection[]; horizontal:
         gap: space.lg,
       }}
     >
-      {sections.map((s) => (
-        <div key={s.title}>
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              color: v("--color-text-muted"),
-              padding: `0 ${space.sm}px`,
-              marginBottom: space.xs,
-            }}
-          >
-            {s.title}
-          </div>
+      {sections.map((s, i) => (
+        <div
+          key={s.title}
+          style={i > 0 ? { borderTop: `1px solid ${v("--color-border-muted")}`, paddingTop: space.lg } : undefined}
+        >
+          <div style={sectionTitleStyle}>{s.title}</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {s.links.map((l) => (
-              <Link key={l.href} href={l.href} style={itemStyle(isActive(l))}>
-                {l.label}
-              </Link>
-            ))}
+            {s.links.map((l) =>
+              l.children ? (
+                <div key={l.label} style={{ marginTop: space.xs }}>
+                  <div style={groupLabelStyle}>{l.label}</div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    {l.children.map((c) => (
+                      <Link key={c.href} href={c.href!} style={{ ...itemStyle(isActive(c)), paddingLeft: space.lg }}>
+                        {c.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <Link key={l.href} href={l.href!} style={itemStyle(isActive(l))}>
+                  {l.label}
+                </Link>
+              ),
+            )}
           </div>
         </div>
       ))}
     </nav>
   );
 }
+
+const sectionTitleStyle: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 700,
+  textTransform: "uppercase",
+  letterSpacing: "0.06em",
+  color: v("--color-text-faint"),
+  padding: `0 ${space.sm}px`,
+  marginBottom: space.sm,
+};
+
+const groupLabelStyle: React.CSSProperties = {
+  fontSize: 12,
+  fontWeight: 700,
+  color: v("--color-text-secondary"),
+  padding: `0 ${space.sm}px`,
+  marginBottom: 2,
+};
 
 function itemStyle(active: boolean): React.CSSProperties {
   return {

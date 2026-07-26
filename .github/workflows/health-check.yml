@@ -1,0 +1,99 @@
+name: Health Check
+
+# Misst alle 3 Stunden, was ein echter Besucher auf solar-check.io erlebt:
+# Statuscodes, Antwortzeiten und vor allem den ABSTAND ZUR NOTBREMSE beim
+# frischen Aufbau einer Atlas-Gemeindeseite.
+#
+# Warum GitHub Actions und nicht ein Wächter in der App: Der Ausfall vom
+# 24.–26.07.2026 lief zwei Tage unbemerkt. Ein Monitoring, das nur läuft wenn
+# jemand ein Programm offen hat, hätte ihn genauso verpasst. Dieser Workflow
+# läuft, egal ob jemand am Rechner sitzt — und schlägt bei Fehlschlag über
+# GitHubs eigene Benachrichtigung UND per Mail (/api/alert) auf.
+#
+# Warum alle 3 Stunden und nicht öfter: Der Schaden wächst hier über Tage, nicht
+# über Minuten. Häufiger würde nur unnötig Last auf die Datenbank geben — jeder
+# Kaltaufbau kostet echte Datenbank-Reads.
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"
+  # Nach jedem Deploy auf main: fängt eine Regression am selben Tag statt beim
+  # nächsten Zufallstreffer. Genau die Lücke, durch die der Juli-Ausfall fiel —
+  # zwischen der letzten Messung (21.07.) und dem Ausfall lagen ein Dutzend
+  # ungemessene Atlas-Änderungen.
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "lib/**"
+      - "components/**"
+      - "vercel.json"
+      - "next.config.js"
+  workflow_dispatch: {}
+
+# Schreibrecht, damit der Check die Function-Region selbst zurücksetzen kann —
+# der einzige Befund mit genau einer richtigen Antwort. Alles Mehrdeutige wird
+# nur gemeldet, nie automatisch geändert.
+permissions:
+  contents: write
+
+concurrency:
+  group: health-check
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Bei einem Push erst kurz warten — sonst misst der Check noch das alte
+      # Deployment und eine frische Regression bliebe unentdeckt.
+      - name: Auf Deployment warten
+        if: github.event_name == 'push'
+        run: sleep 180
+
+      # Exit 2 = der Check hat etwas selbst repariert (nur die Function-Region).
+      # Das ist kein Fehlschlag, sondern der Erfolgsfall der Selbstheilung — der
+      # Workflow bleibt grün und liefert die Korrektur im nächsten Schritt aus.
+      - name: Gesundheitscheck
+        id: check
+        run: |
+          set +e
+          npm run health-check -- --alert
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          [ "$code" = "2" ] && exit 0
+          exit $code
+
+      - name: Selbstheilung ausliefern
+        if: steps.check.outputs.code == '2'
+        run: |
+          git config user.name "solar-check health-check"
+          git config user.email "noreply@solar-check.io"
+          git add vercel.json
+          git commit -m "Selbstheilung: Function-Region auf fra1 zurueckgesetzt
+
+          Der Gesundheitscheck hat gemessen, dass die Serverless-Functions
+          nicht mehr in Frankfurt laufen, und den fehlenden regions-Eintrag in
+          vercel.json wieder gesetzt. Die Datenbank steht in eu-central-1 —
+          aus einer anderen Region kostet jeder DB-Roundtrip Atlantik-Latenz
+          und der Atlas laeuft in den 8-s-Fast-Fail (Vorfall 24.-26.07.2026,
+          siehe lib/db-timeout.ts).
+
+          Automatisch erzeugt. Nur diese eine Einstellung wird selbst
+          korrigiert — sie hat genau eine richtige Antwort."
+          git push

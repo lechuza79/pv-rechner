@@ -18,7 +18,8 @@
     "kommunen:kontakt": "tsx scripts/kommunen-kontakt-refresh.ts",
     "postinstall": "node -e \"if(!process.env.VERCEL && !process.env.CI){require('child_process').execSync('git config core.hooksPath .githooks',{stdio:'inherit'})}\"",
     "atlas:verify": "tsx scripts/atlas-verify.ts",
-    "atlas:warm": "tsx scripts/atlas-warm.ts"
+    "atlas:warm": "tsx scripts/atlas-warm.ts",
+    "health-check": "tsx scripts/health-check.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",

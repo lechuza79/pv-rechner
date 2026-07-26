@@ -11,6 +11,22 @@
 // Setup-/Cron-Routen, die absichtlich lange laufen (exec_sql, Rollup-Aufbau).
 // Der Timeout gehört nur in den Seiten-Lesepfad.
 
+// Die Function-Region gehört zu diesem Timeout: `regions: ["fra1"]` in
+// vercel.json hält die Functions in Frankfurt, wo auch Supabase steht
+// (eu-central-1). Auf Vercels Default iad1 (Washington) kostete JEDER
+// Roundtrip ~90 ms Atlantik-Latenz, und eine Atlas-Seite macht Dutzende davon:
+// der Kaltrender lag bei 6,8–8,1 s und kippte damit reihenweise in genau diesen
+// Fast-Fail (2.300+ Timeouts / 500er quer über den Atlas, 24.–26.07.2026). Wer
+// die Region wieder aus der EU zieht, muss diesen Timeout mit anheben — sonst
+// kommen die 500er zurück. (Der Grund steht hier und nicht in vercel.json:
+// Vercel validiert die Datei strikt gegen ein Schema und lehnt einen Deploy mit
+// unbekanntem Schlüssel — auch einem reinen Kommentar-Key — komplett ab.)
+//
+// Überwacht wird der Abstand zu diesem Wert von scripts/health-check.ts (läuft
+// als GitHub-Action alle 3 h und nach jedem inhaltlichen Push): der Check baut
+// echte Atlas-Gemeindeseiten frisch auf und schlägt an, sobald die langsamste
+// über 5 s braucht — also lange bevor hier jemand in den Fast-Fail läuft. Wer
+// DB_READ_TIMEOUT_MS ändert, muss die Schwellen dort mit anpassen.
 export const DB_READ_TIMEOUT_MS = 8000;
 
 /**

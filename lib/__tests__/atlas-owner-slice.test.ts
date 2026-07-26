@@ -138,14 +138,16 @@ describe("Eigentümer-Filter vs. Speicher-Bauform", () => {
  * die Seite ohne diese Zeile schlicht falsch.
  */
 describe("Hinweis unter der Speicher-Kachel", () => {
-  it("nennt Pumpspeicher mit echter Zahl und Begründung", () => {
+  it("nennt Pumpspeicher als Fakt OHNE kWh-Zahl (systemübergreifend, nicht zurechenbar)", () => {
     const alle = atlasOwnerSlice(atlas, "alle", 2025);
     const text = speicherHinweis(alle.nichtBatterie);
     expect(text).not.toBeNull();
-    expect(text).toContain("Pumpspeicherwerk");
-    expect(text).toContain("634 MWh");
-    expect(text).toContain("Kraftwerksmaßstab");
     expect(text).toContain("Dazu kommt ein Pumpspeicherwerk");
+    expect(text).toContain("systemübergreifend");
+    expect(text).toContain("keiner einzelnen Gemeinde zurechenbar");
+    // Die (überzählte) Register-Summe darf NICHT als Zahl auftauchen.
+    expect(text).not.toContain("634 MWh");
+    expect(text).not.toMatch(/MWh|GWh/);
   });
 
   it("bleibt im Plural grammatikalisch heil", () => {
@@ -157,8 +159,8 @@ describe("Hinweis unter der Speicher-Kachel", () => {
       sonstigeKwh: 0,
     });
     expect(text).toContain("Dazu kommen 4 Pumpspeicherwerke");
-    expect(text).toContain("stehen sie nicht in der Kachel");
-    expect(text).toContain("9,5 GWh");
+    expect(text).toContain("systemübergreifend");
+    expect(text).not.toMatch(/GWh/);
   });
 
   it("erwähnt Speicher anderer Bauart getrennt, ohne sie Kraftwerk zu nennen", () => {

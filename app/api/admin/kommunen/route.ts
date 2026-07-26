@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { renderOutreachDraft } from "../../../../lib/kommunen-outreach-draft";
+import { buildHookIndex } from "../../../../lib/awards-server";
+import { DEFAULT_HOOK_SETTINGS } from "../../../../lib/award-hook";
 import { atlasPathForRegionId } from "../../../../lib/atlas";
 
 const SITE_URL = "https://solar-check.io";
@@ -27,7 +29,10 @@ async function isAdmin(): Promise<boolean> {
 }
 
 const PAGE_SIZE = 50;
-const STATUSES = ["offen", "entwurf", "kontaktiert", "geantwortet", "zu"];
+// „gesperrt" ist ein harter Sperr-Status: keine Entwurf-Erzeugung mehr (nach
+// Widerspruch/Unterlassung). Bewusst als Status, damit ein Admin ihn bei Irrtum
+// wieder ändern kann — der Schutz sitzt in der Draft-Erzeugung (POST unten).
+const STATUSES = ["offen", "entwurf", "kontaktiert", "geantwortet", "zu", "gesperrt"];
 
 // Eine Quelle für das Zeilen-Shape (GET, PATCH, POST liefern dasselbe zurück).
 const SELECT =
@@ -124,28 +129,29 @@ export async function POST(req: NextRequest) {
   const { region_id } = (await req.json()) as { region_id?: string };
   if (!region_id) return NextResponse.json({ error: "region_id fehlt" }, { status: 400 });
 
-  // Name + Solar-Kennzahlen (kwp_alle aus dem Rollup, schont die große Tabelle) +
-  // Rang (für den Betreff-Catcher) + Atlas-Pfad der Gemeinde (für den Link).
-  const [{ data: reg }, { data: solar }, { data: rank }, path] = await Promise.all([
-    serviceDb.from("mastr_regions").select("name, population").eq("region_id", region_id).single(),
-    serviceDb.from("mastr_gemeinde_solar").select("kwp_alle, population").eq("region_id", region_id).maybeSingle(),
-    serviceDb
-      .from("kommunen_kontakt")
-      .select("dach_perzentil, dach_rang_kreis, kreis_gemeinden")
-      .eq("region_id", region_id)
-      .maybeSingle(),
+  // Name + Atlas-Pfad + der Anschreiben-Aufhänger aus der Award-Hook-Logik (eine
+  // Quelle mit der Vorschau /admin/awards/anschreiben — kein Drift). Der Index ist
+  // prozess-lokal memoisiert, der Lookup je Gemeinde damit billig.
+  const [{ data: reg }, { data: leadRow }, path, index] = await Promise.all([
+    serviceDb.from("mastr_regions").select("name").eq("region_id", region_id).single(),
+    serviceDb.from("kommunen_kontakt").select("outreach_status").eq("region_id", region_id).maybeSingle(),
     atlasPathForRegionId(region_id),
+    buildHookIndex(DEFAULT_HOOK_SETTINGS),
   ]);
   if (!reg) return NextResponse.json({ error: "Gemeinde nicht gefunden" }, { status: 404 });
+  // Harte Sperre: für gesperrte Gemeinden nie ein Anschreiben erzeugen.
+  if (leadRow?.outreach_status === "gesperrt") {
+    return NextResponse.json({ error: "Gemeinde ist gesperrt — kein Anschreiben." }, { status: 403 });
+  }
 
+  const hook = index.rows.find((r) => r.regionId === region_id);
   const draft = renderOutreachDraft({
     name: reg.name,
-    kwpAlle: solar?.kwp_alle ?? 0,
-    population: reg.population ?? solar?.population ?? null,
     pageUrl: path ? `${SITE_URL}${path}` : null,
-    perzentil: rank?.dach_perzentil ?? null,
-    rangKreis: rank?.dach_rang_kreis ?? null,
-    kreisGemeinden: rank?.kreis_gemeinden ?? null,
+    betreff: hook?.betreff ?? `So steht ${reg.name} beim Solar-Ausbau da`,
+    einstieg:
+      hook?.einstieg ??
+      `Wir haben den Solarausbau in ${reg.name} aus den amtlichen Anlagendaten aufbereitet — hier der Überblick für Ihre Gemeinde.`,
   });
 
   const { data, error } = await serviceDb
