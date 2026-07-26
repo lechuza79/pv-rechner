@@ -86,73 +86,78 @@ export default function GruengasHeizkostenWidget() {
 
       <GruengasWidget variants={variants} pvCoveragePct={Math.round(PV_COVERAGE * 100)} view={view} />
 
-      {!onsite && (
-        <>
-          {/* CTA in den vollen Rechner — aus dem Export ausgenommen. */}
-          <a
-            data-sc-export-ignore
-            href={CTA_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "block",
-              textAlign: "center",
-              marginTop: 14,
-              padding: "10px 14px",
-              borderRadius: "var(--radius-md)",
-              background: "var(--widget-accent)",
-              color: "var(--widget-accent-fg)",
-              fontSize: 13,
-              fontWeight: 700,
-              textDecoration: "none",
-            }}
-          >
-            Für dein Haus durchrechnen →
-          </a>
+      {/* CTA in den vollen Rechner — nur extern (onsite: die Artikelseite hat
+          ihre eigene CTA). Nicht in der reinen Balken-Ansicht. */}
+      {!onsite && view !== "bars" && (
+        <a
+          data-sc-export-ignore
+          href={CTA_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "block",
+            textAlign: "center",
+            marginTop: 14,
+            padding: "10px 14px",
+            borderRadius: "var(--radius-md)",
+            background: "var(--widget-accent)",
+            color: "var(--widget-accent-fg)",
+            fontSize: 13,
+            fontWeight: 700,
+            textDecoration: "none",
+          }}
+        >
+          Für dein Haus durchrechnen →
+        </a>
+      )}
 
-          {/* Footer: sichtbare Quelle + Marke + Aktionen — aus dem Export
-              ausgenommen, weil der export-only-Fuß unten Quelle + Marke fest ins
-              PNG bäckt. */}
-          <div data-sc-export-ignore style={{ marginTop: 14 }}>
-            <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
+      {/* Aktionen/Quelle. onsite: nur die Aktionsleiste (Teilen/Herunterladen) —
+          Quelle steuert die Artikelseite zentral bei. Extern: Quelle + Marke +
+          Aktionen (Lizenzpflicht). Reine Balken-Ansicht onsite: nichts. */}
+      {(!onsite || view !== "bars") && (
+        <div data-sc-export-ignore style={{ marginTop: 14 }}>
+          <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
+          {!onsite && (
             <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: 6, lineHeight: 1.45 }}>
               <DataSourceNote source={DATA_SOURCES.iw} />
             </div>
-            <div
-              style={{
-                fontSize: 10.5,
-                color: "var(--widget-muted)",
-                display: "flex",
-                justifyContent: showBranding ? "space-between" : "flex-end",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              {showBranding && <PoweredBy />}
-              <ChartActionBar
-                variant="bar"
-                showDownload
-                size={28}
-                onDownload={downloadPng}
-                onCopyLink={() => navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {})}
-                onShareImage={canNativeShare ? sharePng : undefined}
-                onWhatsApp={shareWhatsApp}
-                onTwitter={shareTwitter}
-                onEmbed={showEmbed ? () => window.open("/energie-widgets#gruengas-heizkosten", "_blank", "noopener") : undefined}
-                isExporting={isExporting}
-                canNativeShare={canNativeShare}
-              />
-            </div>
+          )}
+          <div
+            style={{
+              fontSize: 10.5,
+              color: "var(--widget-muted)",
+              display: "flex",
+              justifyContent: showBranding && !onsite ? "space-between" : "flex-end",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            {showBranding && !onsite && <PoweredBy />}
+            <ChartActionBar
+              variant="bar"
+              showDownload
+              size={28}
+              onDownload={downloadPng}
+              onCopyLink={() => navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {})}
+              onShareImage={canNativeShare ? sharePng : undefined}
+              onWhatsApp={shareWhatsApp}
+              onTwitter={shareTwitter}
+              onEmbed={showEmbed ? () => window.open("/energie-widgets#gruengas-heizkosten", "_blank", "noopener") : undefined}
+              isExporting={isExporting}
+              canNativeShare={canNativeShare}
+            />
           </div>
+        </div>
+      )}
 
-          {/* Nur im PNG-Export sichtbar: Quelle + Marke fest eingebacken. */}
-          <div data-sc-export-only style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", marginTop: 12, lineHeight: 1.5 }}>
-            <DataSourceNote source={DATA_SOURCES.iw} plain />
-            <div style={{ marginTop: 4 }}>
-              <PoweredBy />
-            </div>
+      {/* Nur im PNG-Export sichtbar: Quelle + Marke fest eingebacken (nur extern). */}
+      {!onsite && (
+        <div data-sc-export-only style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", marginTop: 12, lineHeight: 1.5 }}>
+          <DataSourceNote source={DATA_SOURCES.iw} plain />
+          <div style={{ marginTop: 4 }}>
+            <PoweredBy />
           </div>
-        </>
+        </div>
       )}
     </div>
   );

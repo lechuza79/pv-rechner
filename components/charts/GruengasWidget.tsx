@@ -75,7 +75,6 @@ export default function GruengasWidget({
   const showLines = !barsOnly;
   const showBarsInSvg = view === "full" && !narrow;
   const showBilanzOverlay = view === "full" && !narrow;
-  const showBarsBlock = barsOnly || (view === "full" && narrow);
   const linesFullWidth = narrow || linesOnly;
 
   // ── SVG-Maße: viewBox nah an der Pixelbreite (breit ~600, schmal ~320), sonst
@@ -190,28 +189,46 @@ export default function GruengasWidget({
       </div>
     </div>
   );
-  const barsBlockVertical = (
+  // Eigenständige VERTIKALE Balken für view="bars" — im Stil des Gesamtwidgets:
+  // feste Balkenbreite, grauer Track, oben rund, gedrehte (vertikale) T€-Summe
+  // links am Balken, Kürzel darunter. Immer vertikal (auch mobil).
+  const BW = 300, BH = 176, BP = { t: 6, b: 26, l: 14 };
+  const by0 = BH - BP.b;
+  const bTop = BP.t + 4;
+  const bMaxH = by0 - bTop;
+  const bBarW = 26; // feste Breite
+  const bGap = 46;
+  const bGroupW = SERIES.length * bBarW + (SERIES.length - 1) * bGap;
+  const bStartX = Math.max(BP.l + 24, (BW - bGroupW) / 2);
+  const bbx = (j: number) => bStartX + j * (bBarW + bGap);
+  const barsVerticalSvg = (
     <div>
       {ersparnisRow(20)}
       <div style={{ borderTop: `1px solid ${v("--color-border")}`, marginTop: 14, marginBottom: 10 }} />
-      <div style={{ marginBottom: 10 }}>{gesamtkostenHeader}</div>
-      <div style={{ display: "flex", gap: 14, alignItems: "flex-end" }}>
-        {SERIES.map(s => {
+      <div style={{ marginBottom: 2 }}>{gesamtkostenHeader}</div>
+      <svg viewBox={`0 0 ${BW} ${BH}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
+        aria-label={`20-Jahres-Gesamtkosten ${m.label}: Gasheizung, Wärmepumpe, Wärmepumpe + PV`}>
+        {SERIES.map((s, j) => {
           const val = m.totals[s.key];
+          const h = Math.max(3, (val / barMax) * bMaxH);
+          const lx = bbx(j) - 8;
           return (
-            <div key={s.key} style={{ flex: 1, minWidth: 0, textAlign: "center" }}>
-              <div style={{ marginBottom: 5 }}>{amtHtml(val, 13, 700)}</div>
-              <div style={{ position: "relative", height: 130, background: trackBg, borderRadius: "4px 4px 0 0", overflow: "hidden" }}>
-                <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: `${(val / barMax) * 100}%`, background: s.color, borderRadius: "4px 4px 0 0" }} />
-              </div>
-              <div style={{ marginTop: 6, fontSize: 11, color: v("--color-text-muted") }}>{s.short}</div>
-            </div>
+            <g key={s.key}>
+              <path d={roundedTopRect(bbx(j), bTop, bBarW, bMaxH, 3)} fill={trackBg} />
+              <path d={roundedTopRect(bbx(j), by0 - h, bBarW, h, 3)} fill={s.color} />
+              <g transform={`translate(${lx}, ${by0 - 8}) rotate(-90)`}>
+                <text x={0} y={0} textAnchor="start" dominantBaseline="central" fontWeight={700} fill="var(--color-text-secondary)" fontFamily="var(--font-mono)">
+                  <tspan style={{ fontSize: v("--font-size-caption") }}>{Math.round(val / 1000).toLocaleString("de-DE")}</tspan>
+                  <tspan dx="3" style={{ fontSize: "9px" }} fill="var(--color-text-muted)">T€</tspan>
+                </text>
+              </g>
+              <text x={bbx(j) + bBarW / 2} y={by0 + 16} textAnchor="middle" fontSize={11} fill="var(--color-text-muted)">{s.short}</text>
+            </g>
           );
         })}
-      </div>
+      </svg>
     </div>
   );
-  const barsBlock = narrow ? barsBlockHorizontal : barsBlockVertical;
 
   return (
     <div>
@@ -306,10 +323,13 @@ export default function GruengasWidget({
         </div>
       )}
 
-      {/* Balken-Block (bars-Ansicht, oder full auf schmalen Screens) */}
-      {showBarsBlock && (
-        <div style={showLines ? { marginTop: 14, paddingTop: 14, borderTop: `1px solid ${v("--color-border")}` } : undefined}>
-          {barsBlock}
+      {/* view="bars": eigenständige vertikale Balken (immer). */}
+      {barsOnly && barsVerticalSvg}
+
+      {/* view="full" auf schmalen Screens: horizontale Balken unter dem Chart. */}
+      {view === "full" && narrow && (
+        <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${v("--color-border")}` }}>
+          {barsBlockHorizontal}
         </div>
       )}
 

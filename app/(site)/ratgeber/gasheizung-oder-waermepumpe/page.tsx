@@ -7,8 +7,9 @@ import { gasheizungWaermepumpeFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import ArticleMeta from "../../../../components/ArticleMeta";
-import GruengasWidget from "../../../../components/charts/GruengasWidget";
-import { greengasMusterVariants, PV_COVERAGE } from "../../../../lib/greengas-muster";
+import AutoHeightIframe from "../../../../components/AutoHeightIframe";
+import { DataSourceNote } from "../../../../components/PoweredBy";
+import { DATA_SOURCES } from "../../../../lib/data-sources";
 
 // Zahlen kommen live aus denselben Modellen wie der Wärmepumpen-Rechner
 // (calcHeatPump + Grüngas-Preispfad). ISR hält sie frisch ohne Rebuild.
@@ -47,15 +48,11 @@ const S = {
   small: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6 },
 };
 
-// Das Grüngas-Widget (Kombi aus Balken + Linien) ist EIN geteiltes Bauteil
-// (components/charts/GruengasWidget); als /embed/gruengas-heizkosten einbettbar
-// und hier direkt gerendert — wie die Landkarte auf der Startseite. In der
-// Kurzantwort die Balken-Ansicht (mobil horizontal, Desktop vertikal neben dem
-// Text), weiter unten der Linien-Verlauf. Zahlen aus der geteilten Engine.
+// EIN Grüngas-Widget (/embed/gruengas-heizkosten) — per First-Party-Embed
+// (onsite=1) eingebunden, wie alle Widgets. In der Kurzantwort die Balken-Ansicht
+// (view=bars), weiter unten das ganze Kombi-Widget (view=full).
 export default function GasheizungWaermepumpePage() {
   const faqItems = gasheizungWaermepumpeFaq();
-  const variants = greengasMusterVariants();
-  const pvPct = Math.round(PV_COVERAGE * 100);
 
   return (
     <div style={S.page}>
@@ -97,7 +94,12 @@ export default function GasheizungWaermepumpePage() {
               — und das gilt selbst im unsanierten Altbau, wo viele sie für unmöglich halten.
             </div>
             <div style={{ flex: "1 1 260px", minWidth: 0 }}>
-              <GruengasWidget variants={variants} pvCoveragePct={pvPct} view="bars" />
+              <AutoHeightIframe
+                src="/embed/gruengas-heizkosten?onsite=1&view=bars"
+                title="Gesamtkosten über 20 Jahre: Wärmepumpe vs. Gasheizung"
+                fallbackHeight={300}
+                framed={false}
+              />
             </div>
           </div>
         </div>
@@ -116,9 +118,14 @@ export default function GasheizungWaermepumpePage() {
           Rechnung über 20 Jahre zeigt, was das bedeutet:
         </p>
 
-        {/* ── Linien-Verlauf: dasselbe Widget, Ansicht „Linien" ── */}
-        <div style={{ border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "16px 16px 14px", marginBottom: 16 }}>
-          <GruengasWidget variants={variants} pvCoveragePct={pvPct} view="lines" />
+        {/* ── Das ganze Kombi-Widget (Graph + Ersparnis + Kosten) ── */}
+        <AutoHeightIframe
+          src="/embed/gruengas-heizkosten?onsite=1&view=full"
+          title="Gasheizung vs. Wärmepumpe über 20 Jahre — Heizkosten-Verlauf und Gesamtkosten"
+          fallbackHeight={520}
+        />
+        <div style={{ margin: "8px 0 16px", fontSize: v("--font-size-caption"), color: v("--color-text-muted") }}>
+          <DataSourceNote source={DATA_SOURCES.iw} />
         </div>
 
         {/* ── Grüngas-Pflicht: Details ── */}
