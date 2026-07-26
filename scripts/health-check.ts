@@ -40,7 +40,12 @@ const EXPECTED_REGION = "fra1";
 // der ~11k Gemeindeseiten hat nie jemand aufgerufen, jeder Erstbesucher zahlt
 // den vollen Render). Rot liegt bewusst deutlich unter der Notbremse: bei 5 s
 // ist noch Luft zum Reagieren, bei 8 s ist die Seite tot.
-const SLOW = { atlasCold: { warn: 3.0, fail: 5.0 }, page: { warn: 2.0, fail: 4.0 } };
+//
+// Gelb sitzt bei 4 s und nicht enger: der Normalbereich lag nach dem
+// Frankfurt-Umzug bei 1,8–3,2 s, eine Warnschwelle mittendrin würde bei fast
+// jedem Lauf anschlagen. Eine Warnung, die immer angeht, liest nach zwei Wochen
+// niemand mehr — und dann geht auch die rote unter.
+const SLOW = { atlasCold: { warn: 4.0, fail: 5.0 }, page: { warn: 2.0, fail: 4.0 } };
 
 const NOTBREMSE_S = DB_READ_TIMEOUT_MS / 1000;
 
@@ -250,7 +255,10 @@ async function main() {
 
   console.log(report);
 
-  if (ALERT && (problems.length || warnings.length)) {
+  // Mail NUR bei Rot. Gelb steht im Workflow-Log und geht zusätzlich in den
+  // täglichen Triage-Bericht ein — wer bei jeder Warnung eine Mail bekommt,
+  // filtert den Absender irgendwann weg und verpasst dann die eine, die zählt.
+  if (ALERT && problems.length) {
     const secret = process.env.CRON_SECRET;
     if (!secret) {
       console.error("\n--alert gesetzt, aber CRON_SECRET fehlt — keine Mail verschickt.");
