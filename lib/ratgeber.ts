@@ -6,7 +6,7 @@
 // the display order on the overview.
 
 export interface RatgeberEntry {
-  /** Path under the site root, e.g. "/lohnt-sich-pv-mit-speicher". */
+  /** Path under the site root, e.g. "/ratgeber/lohnt-sich-pv-mit-speicher". */
   slug: string;
   /** Card + breadcrumb title. */
   title: string;
@@ -16,22 +16,28 @@ export interface RatgeberEntry {
 
 export const RATGEBER: RatgeberEntry[] = [
   {
-    slug: "/lohnt-sich-pv-mit-speicher",
+    slug: "/ratgeber/lohnt-sich-pv-mit-speicher",
     title: "Lohnt sich PV mit Speicher?",
     teaser:
       "Der ehrliche Realitätscheck: wann sich ein Batteriespeicher zur PV-Anlage rechnet und wann nicht — mit live gerechneter Beispielrechnung auf Basis aktueller Marktpreise.",
   },
   {
-    slug: "/lohnt-sich-pv-ohne-einspeiseverguetung",
+    slug: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung",
     title: "Lohnt sich PV ohne Einspeisevergütung?",
     teaser:
       "Die Einspeisevergütung für Neuanlagen soll ab 2027 fallen — trägt sich Photovoltaik dann noch? Mit Beispielrechnung bei Vergütung null und dem Blick auf den Eigenverbrauch.",
   },
   {
-    slug: "/waermepumpe-foerderung-2026",
+    slug: "/ratgeber/waermepumpe-foerderung-2026",
     title: "Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es?",
     teaser:
       "Grundförderung, Klima-Bonus, Einkommens-Bonus: Wie sich der BEG-Zuschuss für den Heizungstausch zusammensetzt — mit live gerechneten Beispielfällen und dem Förder-Check zum selbst Ausprobieren.",
+  },
+  {
+    slug: "/ratgeber/gasheizung-oder-waermepumpe",
+    title: "Gasheizung oder Wärmepumpe: Was rechnet sich noch?",
+    teaser:
+      "Das neue Heizungsgesetz erlaubt Gasheizungen wieder — aber die Grüngas-Pflicht macht sie ab 2029 zur Kostenfalle. Die ehrliche Rechnung über 20 Jahre, umschaltbar zwischen teilsaniertem und unsaniertem Altbau.",
   },
 ];
 

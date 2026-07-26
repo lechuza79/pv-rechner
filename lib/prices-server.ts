@@ -1,6 +1,6 @@
 // Server-side market price lookup for guide pages (ISR): latest valid row from
 // Supabase `market_prices`, falling back to the config snapshot. Extracted from
-// /lohnt-sich-pv-mit-speicher so every guide page reads prices the same way and
+// /ratgeber/lohnt-sich-pv-mit-speicher so every guide page reads prices the same way and
 // the fetch logic cannot drift between pages.
 import { supabase } from "./supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";

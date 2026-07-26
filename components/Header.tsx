@@ -76,7 +76,6 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/photovoltaik-zubau-deutschland") ? "zubau" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
     pathname.startsWith("/ratgeber") ? "ratgeber" :
-    pathname.startsWith("/lohnt-sich-pv") ? "ratgeber" :
     pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""
   );

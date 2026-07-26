@@ -1163,7 +1163,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.6,
               }}>
                 <strong style={{ fontWeight: 700 }}>Einspeisevergütung:</strong> für Inbetriebnahme bis Ende 2026 volle 20 Jahre garantiert (Bestandsschutz). Für Neuanlagen ab 2027 ist ein Wegfall geplant — beschlossen ist er noch nicht.{" "}
-                <Link href="/lohnt-sich-pv-ohne-einspeiseverguetung" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Was das für die Rechnung bedeutet →</Link>
+                <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Was das für die Rechnung bedeutet →</Link>
               </div>
             )}
 
