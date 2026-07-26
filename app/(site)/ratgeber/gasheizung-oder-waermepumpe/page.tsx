@@ -10,6 +10,7 @@ import { DEFAULT_HEATPUMP_CONFIG } from "../../../../lib/heatpump-config";
 import { annualHeatingCostSeries } from "../../../../lib/greengas";
 import { PERSONEN, HAUSTYP_WP } from "../../../../lib/constants";
 import { pageMetadata } from "../../../../lib/seo";
+import ArticleMeta from "../../../../components/ArticleMeta";
 import GasVsWpChart, { type MusterVariant } from "./_components/GasVsWpChart";
 
 // Zahlen kommen live aus denselben Modellen wie der Wärmepumpen-Rechner
@@ -101,14 +102,21 @@ export default function GasheizungWaermepumpePage() {
         <p style={S.subtitle}>
           Das neue Heizungsgesetz erlaubt Gasheizungen wieder — die Anschaffung ist günstig,
           die Entscheidung fühlt sich einfach an. Aber ab 2029 greift die Grüngas-Pflicht, und
-          die macht eine neue Gasheizung Jahr für Jahr teurer. Hier ist die ehrliche Rechnung,
-          mit denselben Zahlen wie unser Rechner.
+          die macht eine neue Gasheizung Jahr für Jahr teurer.
         </p>
+
+        <ArticleMeta
+          headline="Gasheizung oder Wärmepumpe: Was rechnet sich noch?"
+          description="Gasheizung vs. Wärmepumpe über 20 Jahre — auch im unsanierten Altbau."
+          path="/ratgeber/gasheizung-oder-waermepumpe"
+          published="2026-07-25"
+          modified="2026-07-26"
+        />
 
         {/* ── Kurzantwort ── */}
         <div style={S.hero}>
           <span style={S.label}>Die Kurzantwort</span>
-          <strong style={S.strong}>Die Wärmepumpe — und zwar deutlich.</strong> Eine neue
+          <strong style={S.strong}>Die Wärmepumpe ist die günstigste Variante — und zwar deutlich.</strong> Eine neue
           Gasheizung ist in der Anschaffung billiger, wird im Betrieb aber zur Kostenfalle:
           Durch die gesetzliche Beimischung von teurem Biomethan und steigende Netzentgelte
           verdoppeln sich die Gaskosten bis 2040 nahezu. Die Wärmepumpe bleibt dagegen günstig

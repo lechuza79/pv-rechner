@@ -5,6 +5,7 @@ import GlossaryTerm from "../../../../components/GlossaryTerm";
 import ProConLists from "../../../../components/ProConLists";
 import { IconArrowUp } from "../../../../components/Icons";
 import Faq from "../../../../components/Faq";
+import ArticleMeta from "../../../../components/ArticleMeta";
 import { pvSpeicherFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
 import { fetchMarketPrices, formatPriceDate } from "../../../../lib/prices-server";
@@ -410,9 +411,15 @@ export default async function LohntSichPvMitSpeicherPage() {
         <h1 style={S.h1}>Lohnt sich eine PV-Anlage mit Speicher?</h1>
         <p style={S.subtitle}>
           Der ehrliche Realitätscheck: wann sich ein Batteriespeicher rechnet, wann nicht —
-          und was die Werbeversprechen gern weglassen. Alle Zahlen kommen aus demselben
-          Modell wie unser Rechner, mit aktuellen Marktpreisen.
+          und was die Werbeversprechen gern weglassen.
         </p>
+        <ArticleMeta
+          headline="Lohnt sich eine PV-Anlage mit Speicher?"
+          description="Wann sich ein Batteriespeicher zur PV-Anlage rechnet — und wann nicht."
+          path="/ratgeber/lohnt-sich-pv-mit-speicher"
+          published="2026-07-19"
+          modified="2026-07-26"
+        />
 
         {/* ── Kurzantwort ── */}
         <div style={S.hero}>

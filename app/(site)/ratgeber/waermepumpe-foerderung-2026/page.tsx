@@ -3,6 +3,7 @@ import Link from "next/link";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import ProConLists from "../../../../components/ProConLists";
 import Faq from "../../../../components/Faq";
+import ArticleMeta from "../../../../components/ArticleMeta";
 import AutoHeightIframe from "../../../../components/AutoHeightIframe";
 import { DataSourceNote } from "../../../../components/PoweredBy";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
@@ -249,9 +250,15 @@ export default function WaermepumpeFoerderungPage() {
         <p style={S.subtitle}>
           Der Staat übernimmt beim Heizungstausch einen erheblichen Teil der Kosten — aber
           wie viel genau, hängt davon ab, wer du bist und was du bisher heizt. Hier steht,
-          wie sich der Zuschuss zusammensetzt, mit Beispielrechnungen aus derselben Engine
-          wie unser Wärmepumpen-Rechner.
+          wie sich der Zuschuss zusammensetzt.
         </p>
+        <ArticleMeta
+          headline="Wärmepumpen-Förderung 2026: Wie viel Zuschuss gibt es wirklich?"
+          description="Grundförderung, Klima-Bonus, Einkommens-Bonus: wie sich der BEG-Zuschuss zusammensetzt."
+          path="/ratgeber/waermepumpe-foerderung-2026"
+          published="2026-07-20"
+          modified="2026-07-26"
+        />
 
         {/* ── Kurzantwort ── */}
         <div style={S.hero}>

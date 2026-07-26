@@ -73,3 +73,29 @@ export function atlasDatasetJsonLd(opts: {
     })),
   };
 }
+
+/**
+ * Article schema für die redaktionellen Ratgeber-Seiten. datePublished/
+ * dateModified sind bewusste Stichtage (kein rollierendes „heute"), damit die
+ * Freshness-Angabe ehrlich bleibt. Autor/Publisher konstant Solar Check.
+ */
+export function articleJsonLd(opts: {
+  headline: string;
+  description: string;
+  url: string;
+  datePublished: string; // ISO, z. B. "2026-07-25"
+  dateModified: string; // ISO
+  baseUrl: string;
+}): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: opts.headline,
+    description: opts.description,
+    mainEntityOfPage: opts.url,
+    datePublished: opts.datePublished,
+    dateModified: opts.dateModified,
+    author: { "@type": "Organization", name: "Solar Check", url: opts.baseUrl },
+    publisher: { "@type": "Organization", name: "Solar Check", url: opts.baseUrl },
+  };
+}

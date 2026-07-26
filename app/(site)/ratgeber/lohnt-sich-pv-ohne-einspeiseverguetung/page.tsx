@@ -4,6 +4,7 @@ import Breadcrumb from "../../../../components/Breadcrumb";
 import ProConLists from "../../../../components/ProConLists";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
 import Faq from "../../../../components/Faq";
+import ArticleMeta from "../../../../components/ArticleMeta";
 import { pvOhneEinspeisungFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
 import { fetchMarketPrices, formatPriceDate } from "../../../../lib/prices-server";
@@ -414,10 +415,16 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         <h1 style={S.h1}>Lohnt sich eine PV-Anlage ohne Einspeisevergütung?</h1>
         <p style={S.subtitle}>
           Die Einspeisevergütung für Neuanlagen soll ab 2027 fallen — so sieht es ein
-          Reformentwurf vor. Hier ist die ehrliche Rechnung dazu: was die Vergütung heute
-          wirklich beiträgt, und ob sich eine Anlage auch mit Vergütung null trägt. Alle
-          Zahlen kommen aus demselben Modell wie unser Rechner, mit aktuellen Marktpreisen.
+          Reformentwurf vor. Was die Vergütung heute wirklich beiträgt, und ob sich eine
+          Anlage auch mit Vergütung null trägt.
         </p>
+        <ArticleMeta
+          headline="Lohnt sich eine PV-Anlage ohne Einspeisevergütung?"
+          description="Trägt sich Photovoltaik, wenn die Einspeisevergütung ab 2027 fällt?"
+          path="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung"
+          published="2026-07-21"
+          modified="2026-07-26"
+        />
 
         {/* ── Kurzantwort ── */}
         <div style={S.hero}>
