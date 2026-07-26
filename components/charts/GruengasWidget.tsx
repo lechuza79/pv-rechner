@@ -226,7 +226,10 @@ export default function GruengasWidget({
   return (
     <div ref={chartRef} style={{
       position: "relative",
-      background: onsite ? "transparent" : v("--color-bg"),
+      // Solider Hintergrund überall AUSSER der reinen Balken-Ansicht onsite
+      // (Kurzantwort, blendet in die Box). Solide = der Download-PNG hat einen
+      // Hintergrund (transparenter Export ist ein Fehler).
+      background: onsite && isBars ? "transparent" : v("--color-bg"),
       border: onsite ? "none" : `1px solid ${v("--color-border")}`,
       borderRadius: onsite ? 0 : v("--radius-lg"),
       padding: isBars ? 0 : "16px 24px 14px 16px",
@@ -276,9 +279,16 @@ export default function GruengasWidget({
             {yTicks.map(val => (
               <line key={val} x1={P.l} x2={P.l + linienW} y1={yL(val)} y2={yL(val)} stroke="var(--color-chart-grid)" strokeWidth={0.5} />
             ))}
-            {/* Achsen-Label statt Zahlen — der Hover zeigt die exakten Werte. */}
-            <text x={P.l} y={12} textAnchor="start" fontSize={11} fontWeight={600} fill="var(--color-text-muted)">Heizkosten pro Jahr</text>
-            {xYears.map(yr => <text key={yr} x={xL(yr - startYear)} y={y0 + 18} textAnchor="middle" fontSize={12} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{yr}</text>)}
+            {/* Achsen-Label statt Zahlen (Hover zeigt exakte Werte) — gleiche
+                Label-Typo wie „Gesamtkosten"/„Ersparnis": Caption, 700, Versalien. */}
+            <text x={P.l} y={13} textAnchor="start" style={{ fontSize: v("--font-size-caption"), letterSpacing: "0.5px" }} fontWeight={700} fill="var(--color-text-muted)">HEIZKOSTEN PRO JAHR</text>
+            {/* Rand-Jahre linksbündig/rechtsbündig, damit „2026" nicht abschneidet */}
+            {xYears.map((yr, i) => {
+              const last = i === xYears.length - 1;
+              const anchor = i === 0 ? "start" : last ? "end" : "middle";
+              const xpos = i === 0 ? P.l : last ? P.l + linienW : xL(yr - startYear);
+              return <text key={yr} x={xpos} y={y0 + 18} textAnchor={anchor} fontSize={12} fill="var(--color-text-muted)" fontFamily="var(--font-mono)">{yr}</text>;
+            })}
 
             <line x1={P.l} x2={showBarsInSvg ? W - P.r : P.l + linienW} y1={y0} y2={y0} stroke="var(--color-chart-zero)" strokeWidth={1} />
 
@@ -386,7 +396,7 @@ export default function GruengasWidget({
             onShareImage={canNativeShare ? sharePng : undefined}
             onWhatsApp={shareWhatsApp}
             onTwitter={shareTwitter}
-            onEmbed={showEmbed ? () => window.open("/energie-widgets#gruengas-heizkosten", "_blank", "noopener") : undefined}
+            onEmbed={showEmbed && !onsite ? () => window.open("/energie-widgets#gruengas-heizkosten", "_blank", "noopener") : undefined}
             isExporting={isExporting}
             canNativeShare={canNativeShare}
           />
@@ -400,12 +410,12 @@ export default function GruengasWidget({
           {SOURCE_SHORT}
         </div>
       )}
-      {!onsite && (
-        <div data-sc-export-only style={{ display: "none", fontSize: 10.5, color: v("--color-text-muted"), marginTop: 12, lineHeight: 1.5 }}>
-          <DataSourceNote source={DATA_SOURCES.iw} plain />
-          <div style={{ marginTop: 4 }}><PoweredBy /></div>
-        </div>
-      )}
+      {/* IMMER vorhanden (display:none, nur im PNG sichtbar): Quelle + Marke fest
+          ins Bild gebacken — jeder Download ist attribuiert, auch onsite. */}
+      <div data-sc-export-only style={{ display: "none", fontSize: 10.5, color: v("--color-text-muted"), marginTop: 12, lineHeight: 1.5 }}>
+        <DataSourceNote source={DATA_SOURCES.iw} plain />
+        <div style={{ marginTop: 4 }}><PoweredBy /></div>
+      </div>
     </div>
   );
 }
