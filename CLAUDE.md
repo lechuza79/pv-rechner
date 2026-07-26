@@ -711,7 +711,19 @@ Zwei getrennte Ebenen — Datenwerte und Verfügbarkeit:
 - **Datenwerte:** die Wächter als scheduled-tasks (Preise, EEG, CO₂, BEG-Förderung, Geräte-Config, Legal, Atlas-Index-Wellen). Sie prüfen, ob die *Zahlen* noch stimmen, und melden per Mail (`/api/alert`).
 - **Verfügbarkeit + Antwortzeit:** scheduled-task `solar-check-error-triage-daily` (täglich 08:20). Zieht Vercels Fehler-Cluster und Statuscode-Verteilung der letzten 24 h und misst zusätzlich einen echten Atlas-**Kaltrender** (zufällige Gemeinde, `x-vercel-cache: MISS` erzwungen).
 
-**Der Frühindikator ist der Abstand zur Notbremse, nicht der Statuscode.** Genau daran ist der Juli-Ausfall zwei Tage lang vorbeigelaufen: 500er tauchen erst auf, wenn es schon zu spät ist — eine Seite, die 6 s statt 1 s braucht, liefert noch sauber 200 und steht trotzdem kurz vorm Kippen. Der Wächter schlägt deshalb bei einem Kaltrender über 5 s Alarm, **auch ohne einen einzigen Fehler im Log**, und prüft dann als Erstes die Function-Region.
+- **Der harte Automatismus:** GitHub-Action `.github/workflows/health-check.yml` (alle 3 h + nach jedem Push auf `main`, der `app/`, `lib/`, `components/`, `vercel.json` oder `next.config.js` berührt). Ruft `npm run health-check` (`scripts/health-check.ts`). Schlägt der Check an, wird der Workflow rot (GitHub benachrichtigt) **und** es geht eine Mail über `/api/alert` raus.
+
+**Warum die Action und nicht nur der scheduled-task:** Die scheduled-tasks laufen nur, wenn die App offen ist. Ein Monitoring, das eine offene App voraussetzt, hätte den Juli-Ausfall genauso verschlafen. Die Action läuft immer; der scheduled-task ist die zusätzliche, klügere Auswertung (Fehler-Cluster, Bewertung, Handlungsempfehlung).
+
+**Der Frühindikator ist der Abstand zur Notbremse, nicht der Statuscode.** Genau daran ist der Juli-Ausfall zwei Tage lang vorbeigelaufen: 500er tauchen erst auf, wenn es schon zu spät ist — eine Seite, die 6 s statt 1 s braucht, liefert noch sauber 200 und steht trotzdem kurz vorm Kippen. Beide Wächter schlagen deshalb bei einem Kaltrender über 5 s an, **auch ohne einen einzigen Fehler im Log**, und prüfen dann als Erstes die Function-Region.
+
+### Performance messen — BLOCKER
+
+Der Juli-Ausfall ist nicht an einem fehlenden Perf-Fix gescheitert, sondern am **Messen**. Am 21.07. wurde in Production gemessen (Gemeinde kalt 1,8 s) und das zu Recht als Erfolg gemeldet. Dann gingen bis zum 24.07. rund ein Dutzend Atlas-Änderungen live — jede kostete etwas Renderzeit, keine wurde nachgemessen — bis die Summe an den 8-s-Fast-Fail stieß. Drei Regeln, damit das nicht wiederkommt:
+
+1. **Ein Messwert ist kein Zustand.** „Jetzt ist es schnell" gilt bis zur nächsten Änderung. Deshalb misst die Health-Check-Action **nach jedem inhaltlichen Push**, nicht nur nach Perf-Arbeit.
+2. **Immer gegen Production messen, nie nur lokal.** Lokal läuft der Server in Deutschland neben der Datenbank — die Atlantik-Latenz der Function-Region ist dort strukturell unsichtbar. Ein lokaler Messwert kann diese ganze Fehlerklasse prinzipiell nicht finden.
+3. **Mehrere Stichproben, den langsamsten werten.** Die Kaltrender-Zeiten streuen stark (0,4–5,2 s je nach Gemeindegröße). Eine einzelne Seite kann beruhigend aussehen, während ein Drittel nah an der Notbremse steht — die Notbremse trifft aber die langsamste Seite zuerst, nicht die durchschnittliche.
 
 ### Domains
 
