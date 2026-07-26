@@ -195,8 +195,11 @@ export default function GasheizungWaermepumpePage() {
         />
 
         <p style={{ ...S.small, marginTop: 24 }}>
-          Preispfade nach dem IW-Report 36/2026 „Mehrkostenrisiken durch das
-          Gebäudemodernisierungsgesetz" (Institut der deutschen Wirtschaft). Die Beimischpflicht
+          Preispfade nach dem{" "}
+          <a href={DATA_SOURCES.iw.url} target="_blank" rel="noopener noreferrer" style={S.link}>
+            IW-Report 36/2026 „Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz"
+          </a>{" "}
+          (Institut der deutschen Wirtschaft). Die Beimischpflicht
           ist beschlossenes Recht; die Kostenhöhe ist ein plausibler Korridor, keine
           punktgenaue Prognose. Die Heizkosten-Grafik gibt es auch als{" "}
           <Link href="/energie-widgets#gruengas-heizkosten" style={S.link}>Widget zum Einbetten</Link>.
