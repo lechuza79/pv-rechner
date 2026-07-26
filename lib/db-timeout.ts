@@ -21,6 +21,12 @@
 // kommen die 500er zurück. (Der Grund steht hier und nicht in vercel.json:
 // Vercel validiert die Datei strikt gegen ein Schema und lehnt einen Deploy mit
 // unbekanntem Schlüssel — auch einem reinen Kommentar-Key — komplett ab.)
+//
+// Überwacht wird der Abstand zu diesem Wert von scripts/health-check.ts (läuft
+// als GitHub-Action alle 3 h und nach jedem inhaltlichen Push): der Check baut
+// echte Atlas-Gemeindeseiten frisch auf und schlägt an, sobald die langsamste
+// über 5 s braucht — also lange bevor hier jemand in den Fast-Fail läuft. Wer
+// DB_READ_TIMEOUT_MS ändert, muss die Schwellen dort mit anpassen.
 export const DB_READ_TIMEOUT_MS = 8000;
 
 /**
