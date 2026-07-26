@@ -127,15 +127,20 @@ export default function GruengasWidget({
   const plusBadge = (
     <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 18, height: 18, padding: "0 4px", borderRadius: 6, border: `1px solid ${v("--color-positive")}`, background: `color-mix(in srgb, ${v("--color-positive")} 12%, transparent)`, color: v("--color-positive-text"), fontFamily: v("--font-mono"), fontSize: 14, fontWeight: 800, lineHeight: 1 }}>+</span>
   );
+  // Interaktive „?"-Trigger vom PNG-Export ausnehmen (funktionieren im Bild nicht).
   const ersparnisTip = (
-    <InfoTooltip title="Ersparnis über 20 Jahre" ariaLabel="Was bedeutet die Ersparnis?">
-      Summe aller Heizkosten der Gasheizung minus der Wärmepumpe mit PV über 20 Jahre — inklusive Grüngas-Pflicht, steigender Strompreise und CO₂-Preis.
-    </InfoTooltip>
+    <span data-sc-export-ignore style={{ display: "inline-flex" }}>
+      <InfoTooltip title="Ersparnis über 20 Jahre" ariaLabel="Was bedeutet die Ersparnis?">
+        Summe aller Heizkosten der Gasheizung minus der Wärmepumpe mit PV über 20 Jahre — inklusive Grüngas-Pflicht, steigender Strompreise und CO₂-Preis.
+      </InfoTooltip>
+    </span>
   );
   const gesamtkostenTip = (
-    <InfoTooltip title="Gesamtkosten über 20 Jahre" ariaLabel="Was bedeuten die Gesamtkosten?">
-      Aufsummierte Heizkosten über 20 Jahre je Variante: Gasheizung, Wärmepumpe mit Netzstrom und Wärmepumpe mit rund {pvCoveragePct} % Solarstrom.
-    </InfoTooltip>
+    <span data-sc-export-ignore style={{ display: "inline-flex" }}>
+      <InfoTooltip title="Gesamtkosten über 20 Jahre" ariaLabel="Was bedeuten die Gesamtkosten?">
+        Aufsummierte Heizkosten über 20 Jahre je Variante: Gasheizung, Wärmepumpe mit Netzstrom und Wärmepumpe mit rund {pvCoveragePct} % Solarstrom.
+      </InfoTooltip>
+    </span>
   );
 
   // Gedrehte (vertikale) Betrags-Summe für die Balken (Desktop volle Zahl).
@@ -230,8 +235,8 @@ export default function GruengasWidget({
       // (Kurzantwort, blendet in die Box). Solide = der Download-PNG hat einen
       // Hintergrund (transparenter Export ist ein Fehler).
       background: onsite && isBars ? "transparent" : v("--color-bg"),
-      border: onsite ? "none" : `1px solid ${v("--color-border")}`,
-      borderRadius: onsite ? 0 : v("--radius-lg"),
+      border: onsite && isBars ? "none" : `1px solid ${v("--color-border")}`,
+      borderRadius: onsite && isBars ? 0 : v("--radius-lg"),
       padding: isBars ? 0 : "16px 24px 14px 16px",
       boxSizing: "border-box",
     }}>
@@ -243,7 +248,7 @@ export default function GruengasWidget({
             So entwickeln sich die jährlichen Heizkosten für ein typisches{" "}
             <span style={{ whiteSpace: "nowrap" }}>
               Einfamilienhaus{" "}
-              <span style={{ verticalAlign: "middle" }}>
+              <span data-sc-export-ignore style={{ verticalAlign: "middle" }}>
                 <InfoTooltip title="Das Muster-Haus" ariaLabel="Angaben zum Muster-Haus">{m.sub}</InfoTooltip>
               </span>
             </span>
