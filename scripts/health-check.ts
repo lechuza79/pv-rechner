@@ -26,6 +26,7 @@
  *   CRON_SECRET            für --alert
  */
 
+import { readFileSync, writeFileSync } from "node:fs";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
 
 const BASE_URL = (process.env.HEALTH_BASE_URL ?? "https://solar-check.io").replace(/\/$/, "");
@@ -162,6 +163,43 @@ async function measureColdAtlas(): Promise<{ worst: Probe; all: Probe[] } | null
   return { worst: hits.reduce((a, b) => (b.seconds > a.seconds ? b : a)), all: hits };
 }
 
+/**
+ * Selbstheilung für den einen Befund, der eine eindeutig richtige Antwort hat:
+ * die Function-Region. Fehlt `regions` in vercel.json, wird der Eintrag wieder
+ * gesetzt — es gibt keinen zweiten sinnvollen Wert, solange die Datenbank in
+ * Frankfurt steht. Steht dort etwas ANDERES, hat das ein Mensch entschieden;
+ * dann wird nur gemeldet. (Gleiche Linie wie beim Förder-Wächter: selbstheilen
+ * nur in der sicheren Richtung, alles Mehrdeutige bleibt Vorschlag.)
+ *
+ * Das Committen übernimmt der Aufrufer (GitHub-Action) — hier wird nur die
+ * Datei korrigiert, damit die Funktion auch lokal gefahrlos läuft.
+ */
+export function healRegionConfig(
+  path = "vercel.json",
+): "repariert" | "abweichend" | "schon-richtig" | "nicht-lesbar" {
+  let cfg: Record<string, unknown>;
+  try {
+    cfg = JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
+  } catch {
+    return "nicht-lesbar";
+  }
+
+  const current = cfg.regions;
+  if (Array.isArray(current) && current.length) {
+    return current.length === 1 && current[0] === EXPECTED_REGION ? "schon-richtig" : "abweichend";
+  }
+
+  cfg.regions = [EXPECTED_REGION];
+  // Schlüssel-Reihenfolge stabil halten (regions direkt nach git), damit der
+  // Diff klein bleibt und nicht die ganze Datei umsortiert wird.
+  const ordered: Record<string, unknown> = {};
+  if ("git" in cfg) ordered.git = cfg.git;
+  ordered.regions = cfg.regions;
+  for (const [k, val] of Object.entries(cfg)) if (k !== "git" && k !== "regions") ordered[k] = val;
+  writeFileSync(path, `${JSON.stringify(ordered, null, 2)}\n`);
+  return "repariert";
+}
+
 function verdict(seconds: number, limits: { warn: number; fail: number }): "gruen" | "gelb" | "rot" {
   if (seconds >= limits.fail) return "rot";
   if (seconds >= limits.warn) return "gelb";
@@ -170,7 +208,11 @@ function verdict(seconds: number, limits: { warn: number; fail: number }): "grue
 
 async function main() {
   const lines: string[] = [];
+  // `problems` = ein Mensch muss ran. NUR das löst eine Benachrichtigung aus.
+  // `selfHealed` = wurde bereits repariert, reine Protokollzeile.
+  // `warnings` = auffällig, aber nichts zu tun; steht im Log.
   const problems: string[] = [];
+  const selfHealed: string[] = [];
   const warnings: string[] = [];
 
   const pageProbes: Probe[] = [];
@@ -187,12 +229,42 @@ async function main() {
   const regions = Array.from(
     new Set([...pageProbes, ...(coldResult?.all ?? [])].map((p) => p.region).filter(Boolean)),
   );
+  // Zwei getrennte Fragen, und beide müssen gestellt werden:
+  //
+  // (a) LÄUFT es gerade richtig? → aus den Antwort-Headern.
+  // (b) BLEIBT es richtig? → aus vercel.json.
+  //
+  // Nur (a) zu prüfen wäre zu spät: Nimmt jemand den regions-Eintrag heraus,
+  // läuft Production bis zum nächsten Deploy weiter in Frankfurt und der Check
+  // meldet fröhlich grün — der Ausfall ist dann schon scharf und geht beim
+  // nächsten Push los. Deshalb wird die Datei unabhängig von der Messung
+  // geprüft und repariert, solange noch nichts kaputt ist.
+  const configState = healRegionConfig();
+  if (configState === "repariert") {
+    selfHealed.push(
+      `In vercel.json fehlte die Frankfurt-Einstellung — eingetragen, bevor der nächste Deploy die Server ` +
+        `nach Washington verschoben hätte. (Live läuft aktuell ${regions.join("/") || "unbekannt"}.)`,
+    );
+  } else if (configState === "abweichend") {
+    problems.push(
+      `In vercel.json steht eine andere Region als ${EXPECTED_REGION}. Das überschreibe ich nicht — wenn das ` +
+        `Absicht war, gehört der Timeout in lib/db-timeout.ts mit angehoben; wenn nicht, gehört die Zeile ` +
+        `zurück auf ["${EXPECTED_REGION}"].`,
+    );
+  } else if (configState === "nicht-lesbar") {
+    problems.push(`vercel.json ist nicht lesbar oder kein gültiges JSON — jeder Deploy scheitert damit.`);
+  }
+
   const wrongRegion = regions.filter((r) => r !== EXPECTED_REGION);
   if (wrongRegion.length) {
+    const nachwirkung =
+      configState === "repariert"
+        ? `Die Einstellung war aus vercel.json verschwunden und ist wieder drin — der nächste Deploy holt die Server zurück.`
+        : `In vercel.json steht ${EXPECTED_REGION}, live greift es trotzdem nicht: das deutet auf eine Region-Einstellung im Vercel-Projekt selbst hin, die die Datei übersteuert.`;
     problems.push(
-      `Function-Region ist ${wrongRegion.join("/")} statt ${EXPECTED_REGION}. Die Datenbank steht in Frankfurt — ` +
+      `Function-Region ist live ${wrongRegion.join("/")} statt ${EXPECTED_REGION}. Die Datenbank steht in Frankfurt — ` +
         `aus einer anderen Region kostet jeder Datenbank-Zugriff Latenz über den Atlantik, und genau daran ist ` +
-        `der Atlas im Juli 2026 gestorben. Prüfen: "regions" in vercel.json.`,
+        `der Atlas im Juli 2026 gestorben. ${nachwirkung}`,
     );
   }
   lines.push(
@@ -244,44 +316,54 @@ async function main() {
   }
 
   // ── Bericht ───────────────────────────────────────────────────────────────
-  const ampel = problems.length ? "ROT" : warnings.length ? "GELB" : "GRUEN";
+  const ampel = problems.length ? "ROT" : selfHealed.length ? "REPARIERT" : warnings.length ? "GELB" : "GRUEN";
   const report = [
     `Solar Check Gesundheitscheck: ${ampel}`,
     "",
     ...lines,
-    ...(problems.length ? ["", "Probleme:", ...problems.map((p) => `- ${p}`)] : []),
-    ...(warnings.length ? ["", "Auffaellig:", ...warnings.map((w) => `- ${w}`)] : []),
+    ...(selfHealed.length ? ["", "Selbst repariert (nichts zu tun):", ...selfHealed.map((s) => `- ${s}`)] : []),
+    ...(problems.length ? ["", "Muss ein Mensch anschauen:", ...problems.map((p) => `- ${p}`)] : []),
+    ...(warnings.length ? ["", "Auffaellig (nichts zu tun):", ...warnings.map((w) => `- ${w}`)] : []),
   ].join("\n");
 
   console.log(report);
 
-  // Mail NUR bei Rot. Gelb steht im Workflow-Log und geht zusätzlich in den
-  // täglichen Triage-Bericht ein — wer bei jeder Warnung eine Mail bekommt,
-  // filtert den Absender irgendwann weg und verpasst dann die eine, die zählt.
+  // BENACHRICHTIGUNG NUR, WENN DER BETREIBER SELBST ETWAS TUN MUSS.
+  // Nicht bei Gelb (auffällig, aber nichts zu tun) und ausdrücklich auch nicht
+  // bei Selbstheilung — was der Check allein repariert hat, ist keine Nachricht
+  // wert, sondern eine Protokollzeile. Wer für jede Regung eine Mail bekommt,
+  // filtert den Absender weg und verpasst dann die eine, die zählt.
   if (ALERT && problems.length) {
     const secret = process.env.CRON_SECRET;
     if (!secret) {
-      console.error("\n--alert gesetzt, aber CRON_SECRET fehlt — keine Mail verschickt.");
+      console.error("\n--alert gesetzt, aber CRON_SECRET fehlt — keine Meldung verschickt.");
     } else {
       const res = await fetch(`${BASE_URL}/api/alert`, {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${secret}` },
         body: JSON.stringify({
-          subject: `Gesundheitscheck ${ampel}`,
+          subject: `Handlungsbedarf — Gesundheitscheck ${ampel}`,
           body: report,
           tag: "health-check",
         }),
       });
-      console.log(res.ok ? "\nMeldung per Mail verschickt." : `\nMail fehlgeschlagen: ${res.status}`);
+      console.log(res.ok ? "\nMeldung verschickt (Handlungsbedarf)." : `\nMeldung fehlgeschlagen: ${res.status}`);
     }
   }
 
-  // Exit 1 lässt den GitHub-Workflow rot werden — das ist der Kanal, der auch
-  // dann greift, wenn niemand eine App offen hat.
+  // Exit-Codes steuern, was die GitHub-Action als Nächstes tut:
+  //   2 = selbst repariert → die Action committet die Korrektur und deployt
+  //   1 = ein Mensch muss ran → Workflow rot
+  //   0 = alles im Rahmen
   if (problems.length) process.exit(1);
+  if (selfHealed.length) process.exit(2);
 }
 
-main().catch((e) => {
-  console.error("Gesundheitscheck selbst fehlgeschlagen:", e);
-  process.exit(1);
-});
+// Nur beim direkten Aufruf messen — beim Import (Test der Selbstheilung) nicht,
+// sonst würde jeder Testlauf Production abfragen.
+if (process.argv[1] && /health-check\.ts$/.test(process.argv[1])) {
+  main().catch((e) => {
+    console.error("Gesundheitscheck selbst fehlgeschlagen:", e);
+    process.exit(1);
+  });
+}

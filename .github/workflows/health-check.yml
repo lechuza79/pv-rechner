@@ -31,8 +31,11 @@ on:
       - "next.config.js"
   workflow_dispatch: {}
 
+# Schreibrecht, damit der Check die Function-Region selbst zurücksetzen kann —
+# der einzige Befund mit genau einer richtigen Antwort. Alles Mehrdeutige wird
+# nur gemeldet, nie automatisch geändert.
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: health-check
@@ -63,5 +66,34 @@ jobs:
         if: github.event_name == 'push'
         run: sleep 180
 
+      # Exit 2 = der Check hat etwas selbst repariert (nur die Function-Region).
+      # Das ist kein Fehlschlag, sondern der Erfolgsfall der Selbstheilung — der
+      # Workflow bleibt grün und liefert die Korrektur im nächsten Schritt aus.
       - name: Gesundheitscheck
-        run: npm run health-check -- --alert
+        id: check
+        run: |
+          set +e
+          npm run health-check -- --alert
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          [ "$code" = "2" ] && exit 0
+          exit $code
+
+      - name: Selbstheilung ausliefern
+        if: steps.check.outputs.code == '2'
+        run: |
+          git config user.name "solar-check health-check"
+          git config user.email "noreply@solar-check.io"
+          git add vercel.json
+          git commit -m "Selbstheilung: Function-Region auf fra1 zurueckgesetzt
+
+          Der Gesundheitscheck hat gemessen, dass die Serverless-Functions
+          nicht mehr in Frankfurt laufen, und den fehlenden regions-Eintrag in
+          vercel.json wieder gesetzt. Die Datenbank steht in eu-central-1 —
+          aus einer anderen Region kostet jeder DB-Roundtrip Atlantik-Latenz
+          und der Atlas laeuft in den 8-s-Fast-Fail (Vorfall 24.-26.07.2026,
+          siehe lib/db-timeout.ts).
+
+          Automatisch erzeugt. Nur diese eine Einstellung wird selbst
+          korrigiert — sie hat genau eine richtige Antwort."
+          git push
