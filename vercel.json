@@ -4,6 +4,8 @@
       "staging": false
     }
   },
+  "//regions": "Serverless Functions in Frankfurt statt Vercels Default iad1 (Washington). Supabase liegt in eu-central-1: aus iad1 kostete JEDER DB-Roundtrip ~90 ms Atlantik-Latenz, und eine Atlas-Seite macht Dutzende davon — Kaltrender lag bei 6,8–8,1 s und kippte damit reihenweise in den 8-s-Fast-Fail aus lib/db-timeout.ts (2.300+ Timeouts / 500er zwischen dem 24. und 26.07.2026). Aus demselben Grund richtig fuer PVGIS und Open-Meteo (beide EU) und fuer den Datenschutz (Nutzerdaten bleiben in der EU). NICHT ohne Not aendern.",
+  "regions": ["fra1"],
   "crons": [
     {
       "path": "/api/prices/scrape",
