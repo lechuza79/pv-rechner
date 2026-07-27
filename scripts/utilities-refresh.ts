@@ -242,6 +242,7 @@ type Zwischenstand = {
 };
 
 const ZWISCHEN_DATEI = resolve(SCRIPT_DIR, ".cache", "utilities", "registerlauf.json");
+const PROFIL_DATEI = resolve(SCRIPT_DIR, ".cache", "utilities", "profillauf.json");
 
 function ladeZwischenstand(): Zwischenstand | null {
   if (!existsSync(ZWISCHEN_DATEI)) return null;
@@ -517,6 +518,10 @@ async function holeSeite(url: string): Promise<string | null> {
 
 type ProfilErgebnis = {
   id: string;
+  /** Muss mit, obwohl unveraendert: Ein Einfuegen-oder-Aktualisieren ist im Kern
+   *  ein INSERT und scheitert sonst an der Pflichtspalte. Genau daran ist der
+   *  erste vollstaendige Lauf nach 814 abgeklopften Websites gestorben. */
+  name: string;
   impressum_url: string | null;
   rollen_email: string | null;
   personen_email: string | null;
@@ -570,6 +575,7 @@ async function profilFuer(
 
   return {
     id: u.id,
+    name: u.name,
     impressum_url: impUrl,
     rollen_email: rollen,
     personen_email: person,
@@ -627,6 +633,13 @@ async function laufProfil(opts: { limit?: number; erneut: boolean; dry: boolean 
       `Themen ${zaehler.themen} · davon Förder-Fundstelle ${zaehler.foerderung}`,
     "ok",
   );
+
+  // Erst ablegen, dann schreiben. Beim ersten vollstaendigen Lauf sind 814
+  // Ergebnisse verlorengegangen, weil das Schreiben scheiterte — und ein neuer
+  // Lauf belastet nicht nur uns, sondern 910 fremde Server ein zweites Mal.
+  mkdirSync(dirname(PROFIL_DATEI), { recursive: true });
+  writeFileSync(PROFIL_DATEI, JSON.stringify(ergebnisse));
+  log(`Ergebnisse abgelegt (utilities/profillauf.json)`);
 
   if (opts.dry) {
     log("Trockenlauf — nichts geschrieben", "ok");
