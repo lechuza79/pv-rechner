@@ -1,47 +1,16 @@
 // Google Search Console — Search-Analytics-Query (Impressions/Klicks je Seite).
 // Auth über lib/google-auth.ts (geteilter Service-Account, webmasters-Scope).
+// Property-Auflösung in lib/gsc-site.ts (geteilt mit dem Index-Status).
 // Docs: https://developers.google.com/webmaster-tools/v1/searchanalytics/query
 //
-// Property: GSC_SITE_URL (Default Domain-Property "sc-domain:solar-check.io").
-// Ist es eine URL-Präfix-Property, GSC_SITE_URL="https://solar-check.io/" setzen.
+// GRENZE DIESES MODULS: Impressionen sagen NICHT, ob eine Seite im Index ist.
+// Eine Seite ohne Impressionen kann indexiert sein (nur nie ausgeliefert) oder
+// Google völlig unbekannt. Dafür lib/gsc-index-status.ts benutzen.
 
 import { getGoogleAccessToken, getServiceAccountCredentials } from "./google-auth";
+import { GSC_API_BASE, resolveGscSiteUrl } from "./gsc-site";
 
-const GSC_API_BASE = "https://www.googleapis.com/webmasters/v3";
 const MAX_ROWS = 25_000; // GSC-Hardlimit
-
-// Property-URL: explizit per GSC_SITE_URL, sonst automatisch aus den Properties
-// ermittelt, auf die der Service-Account Zugriff hat (Domain vs. URL-Präfix egal).
-let resolvedSite: string | null = null;
-
-async function resolveSiteUrl(token: string): Promise<string> {
-  if (process.env.GSC_SITE_URL) return process.env.GSC_SITE_URL;
-  if (resolvedSite) return resolvedSite;
-
-  const res = await fetch(`${GSC_API_BASE}/sites`, {
-    headers: { Authorization: `Bearer ${token}` },
-    signal: AbortSignal.timeout(15_000),
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`GSC sites.list fehlgeschlagen: ${res.status} ${text.slice(0, 200)}`);
-  }
-  const data = (await res.json()) as { siteEntry?: { siteUrl: string; permissionLevel: string }[] };
-  const sites = data.siteEntry ?? [];
-  const match =
-    sites.find((s) => s.siteUrl === "sc-domain:solar-check.io") ??
-    sites.find((s) => s.siteUrl === "https://solar-check.io/") ??
-    sites.find((s) => s.siteUrl.includes("solar-check.io"));
-  if (!match) {
-    throw new Error(
-      `Service-Account hat auf keine solar-check.io-Property Zugriff. Sichtbare Properties: ${
-        sites.map((s) => s.siteUrl).join(", ") || "(keine)"
-      }. In der Search Console die SA-E-Mail als Nutzer der solar-check.io-Property hinzufügen.`,
-    );
-  }
-  resolvedSite = match.siteUrl;
-  return match.siteUrl;
-}
 
 export type PageRow = {
   url: string;
@@ -69,7 +38,7 @@ export async function querySearchAnalyticsByPage(opts: {
   if (!creds) throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON nicht konfiguriert");
 
   const token = await getGoogleAccessToken(creds);
-  const siteUrl = await resolveSiteUrl(token);
+  const siteUrl = await resolveGscSiteUrl(token);
   const url = `${GSC_API_BASE}/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`;
   const res = await fetch(url, {
     method: "POST",
@@ -93,4 +62,54 @@ export async function querySearchAnalyticsByPage(opts: {
   return (data.rows ?? [])
     .map((r): PageRow => ({ url: r.keys[0], impressions: r.impressions, clicks: r.clicks, ctr: r.ctr, position: r.position }))
     .filter((r) => !prefixes?.length || prefixes.some((p) => r.url.startsWith(p)));
+}
+
+export type DayRow = { date: string; impressions: number; clicks: number };
+
+/** Impressionen je TAG (optional auf URL-Präfixe gefiltert). Ohne diese Sicht
+ *  ist eine 28-Tage-Summe nicht interpretierbar: 139 Impressionen können aus
+ *  vier Wochen stammen oder aus den letzten drei Tagen — mit völlig anderer
+ *  Bedeutung. Deshalb gehört sie in jede Auswertung einer frisch
+ *  freigeschalteten Seitenfamilie. */
+export async function querySearchAnalyticsByDate(opts: {
+  startDate: string;
+  endDate: string;
+  urlPrefixFilter?: string[];
+}): Promise<DayRow[]> {
+  const creds = getServiceAccountCredentials();
+  if (!creds) throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON nicht konfiguriert");
+
+  const token = await getGoogleAccessToken(creds);
+  const siteUrl = await resolveGscSiteUrl(token);
+  const res = await fetch(`${GSC_API_BASE}/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      startDate: opts.startDate,
+      endDate: opts.endDate,
+      // Seite mitnehmen, damit der Präfix-Filter greift — GSC kann nicht nach
+      // URL-Präfix filtern und gleichzeitig nur nach Datum gruppieren.
+      dimensions: ["date", "page"],
+      rowLimit: MAX_ROWS,
+      dataState: "final",
+    }),
+    signal: AbortSignal.timeout(30_000),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`GSC-Query (nach Datum) fehlgeschlagen: ${res.status} ${text.slice(0, 300)}`);
+  }
+
+  const data = (await res.json()) as { rows?: GscRow[] };
+  const prefixes = opts.urlPrefixFilter;
+  const proTag = new Map<string, DayRow>();
+  for (const r of data.rows ?? []) {
+    const [date, page] = r.keys;
+    if (prefixes?.length && !prefixes.some((p) => page.startsWith(p))) continue;
+    const cur = proTag.get(date) ?? { date, impressions: 0, clicks: 0 };
+    cur.impressions += r.impressions;
+    cur.clicks += r.clicks;
+    proTag.set(date, cur);
+  }
+  return Array.from(proTag.values()).sort((a, b) => a.date.localeCompare(b.date));
 }
