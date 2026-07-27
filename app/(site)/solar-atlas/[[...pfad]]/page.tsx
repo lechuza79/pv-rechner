@@ -30,27 +30,28 @@ export const revalidate = 3600;
 // Zwei Ziele:
 // 1) Ohne generateStaticParams behandelt Next die dynamische Route als voll
 //    dynamisch (no-store). Mit ihr wird sie ISR (s-maxage=3600).
-// 2) Die INDEXIERTEN Ebenen (DE + Bundesländer, siehe lib/atlas-index.ts) werden
-//    beim Build vorgerendert → statisch, KEIN Kaltrender, crawl-freundlich.
-//    Kreise/Gemeinden sind noindex + zu zahlreich → bleiben on-demand ISR.
-//    Möglich seit mastr_children über den Rollup läuft (~0,1s statt >8s), sonst
-//    liefen die 17 Parallel-Renders in den DB-Timeout. Slugs aus der DB (16 Zeilen).
-export async function generateStaticParams() {
-  try {
-    const { supabase } = await import("../../../../lib/supabase-server");
-    if (!supabase) return [{ pfad: [] as string[] }];
-    const { data } = await supabase
-      .from("mastr_regions")
-      .select("slug")
-      .eq("level", "bundesland")
-      .not("slug", "is", null);
-    return [
-      { pfad: [] as string[] },
-      ...((data ?? []) as { slug: string }[]).map((r) => ({ pfad: [r.slug] })),
-    ];
-  } catch {
-    return [{ pfad: [] as string[] }];
-  }
+// 2) NUR die Deutschland-Übersicht wird beim Build vorgerendert. Die 16
+//    Bundesland-Seiten kommen on-demand (ISR, s-maxage=3600) — wie Kreise und
+//    Gemeinden.
+//
+//    Vorher standen sie hier mit drin, damit die indexierten Ebenen statisch und
+//    ohne Kaltrender ausgeliefert werden. Das hat am 27.07.2026 die Produktion
+//    lahmgelegt: Next rendert die Einträge dieser Liste PARALLEL, also liefen 17
+//    Seiten × mehrere DB-Abfragen gleichzeitig aus dem Build-Container. Der
+//    Egress kippte reproduzierbar mit „fetch failed" auf 11–13 der 16 Seiten
+//    (dieselbe Build-Phase meldete zeitgleich HTTP 429 von api.energy-charts.info,
+//    also nicht nur die Datenbank). Drei Deploys in Folge scheiterten, ein
+//    sauberer Rebuild desselben Stands ebenfalls — kein Ausreißer, sondern die
+//    Last selbst. Die Datenbank war dabei durchgehend gesund (REST-Abfrage von
+//    außen 0,13 s), es ist also die Gleichzeitigkeit, nicht die Quelle.
+//
+//    Der Preis ist ein Kaltrender je Bundesland-Seite beim ersten Aufruf nach
+//    einem Deploy (gemessen 0,4–4,0 s in fra1); danach liegt sie im CDN. Ein
+//    Build, der nicht durchläuft, kostet dagegen ALLE Seiten. Wer den Vorrender
+//    zurückholen will, braucht vorher eine Wiederholung mit Backoff in der
+//    DB-Schicht — nicht einfach die Liste wieder füllen.
+export function generateStaticParams() {
+  return [{ pfad: [] as string[] }];
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
