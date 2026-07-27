@@ -966,7 +966,23 @@ Nicht bei UI-Texten oder reinen Code-Änderungen.
    ist. Belegte Fundstellen gehören mit **Seitenzahl** in den Code, zusammen mit
    dem Datum der Prüfung und dem Pfad zum Volltext.
 
-7. **Kommst du an eine Quelle nicht heran: den Betreiber fragen — kurz und
+7. **Auch Wächter-Meldungen sind unbelegt, bis du sie geprüft hast — und zwar in
+   BEIDE Richtungen.** Ein Wächter-Report liest sich wie ein Prüfergebnis, ist
+   aber nur die Aussage einer früheren Session. Das gilt für seine Quellen
+   ebenso wie für seine technischen Zusagen über unseren eigenen Code:
+   - **Quellenangabe:** Der Geräte-Wächter meldete einen Monoblock-Preis als
+     „test.de, tatsächlich getestete Geräte, Schnitt ~550 €". Tatsächlich testet
+     die Stiftung Warentest seit 2021 keine Monoblöcke mehr — die Preise stammen
+     von der französischen Partnerorganisation und werden nur referiert. Die
+     empfohlene Änderung war trotzdem richtig, aber die Begründung im Report war
+     es nicht. Zahlen aus einem Report nie mit dessen Quellenetikett übernehmen.
+   - **Technische Zusage:** Derselbe Fehlertyp trifft Sätze über den Code. Der
+     Atlas-Monitor schrieb, nach dem Umlegen des Schalters „füllt sich die
+     Sitemap automatisch". Für Landkreise gab es dort gar keinen Zweig — die
+     Freischaltung wäre halb wirkungslos live gegangen. Jede Behauptung „X
+     passiert dann von selbst" vor dem Umsetzen am Code nachsehen, nicht glauben.
+
+8. **Kommst du an eine Quelle nicht heran: den Betreiber fragen — kurz und
    deutlich.** Ein Satz genügt: was du brauchst, wofür, und was ohne die Quelle
    ungeprüft bleibt. Nicht auf eine schwächere Quelle ausweichen, die Aussage
    nicht stillschweigend abschwächen und nicht nach dem ersten Fehlschlag (401,
