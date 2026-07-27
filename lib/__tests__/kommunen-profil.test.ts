@@ -7,6 +7,7 @@ import {
   extractVerantwortlich,
   extractAdressen,
   extractThemen,
+  VERSORGER_VOKABULAR,
 } from "../kommunen-profil";
 
 // Die Testfälle sind KEINE erfundenen Beispiele: es sind die echten Fehler und
@@ -31,6 +32,15 @@ describe("Text-Aufbereitung", () => {
 
   it("decodeEntities beherrscht benannte und numerische Formen", () => {
     expect(decodeEntities("Stra&szlig;e &#38; Weg &#x26; Platz")).toBe("Straße & Weg & Platz");
+  });
+
+  it("stürzt an einer unsinnigen Entity nicht ab", () => {
+    // Echter Abbruch am 27.07.2026: eine bayerische Seite enthielt &#3627867934;
+    // — String.fromCodePoint wirft dabei, und der Lauf starb nach 75 von 2.056
+    // Gemeinden. Ein kaputtes Zeichen darf nie einen ganzen Lauf mitreißen.
+    expect(() => decodeEntities("Text &#3627867934; weiter")).not.toThrow();
+    expect(decodeEntities("Text &#3627867934; weiter")).toBe("Text &#3627867934; weiter");
+    expect(decodeEntities("&#xFFFFFFFF;")).toBe("&#xFFFFFFFF;");
   });
 
   it("domainOf normalisiert www und Protokoll", () => {
@@ -107,6 +117,47 @@ describe("Adressen", () => {
     const a = extractAdressen("datenschutz@engen.de noreply@engen.de", "engen.de", istGemeindeDomain);
     expect(a.rollenEmail).toBeNull();
     expect(a.personenEmail).toBeNull();
+  });
+});
+
+describe("Vokabular austauschbar (Versorger-Modul)", () => {
+  it("erkennt Unternehmenskommunikation als operative Stelle", () => {
+    const v = extractVerantwortlich(
+      "Verantwortlich für den Inhalt: Leiterin Unternehmenskommunikation, Frau Muster",
+      VERSORGER_VOKABULAR,
+    );
+    expect(v?.operativ).toBe(true);
+    expect(v?.funktion).toMatch(/Unternehmenskommunikation/i);
+  });
+
+  it("markiert die Geschäftsführung NICHT als operativ", () => {
+    // Dieselbe Falle wie der Bürgermeister bei den Kommunen: die gesetzliche
+    // Vertretung steht im Impressum, pflegt aber die Website nicht.
+    const v = extractVerantwortlich("Vertreten durch die Geschäftsführerin Dr. Anna Beispiel", VERSORGER_VOKABULAR);
+    expect(v?.operativ).toBe(false);
+    expect(v?.funktion).toMatch(/Geschäftsführerin/i);
+  });
+
+  it("nimmt Bewerbungs-Postfächer nicht als Kontakt", () => {
+    const a = extractAdressen("bewerbung@stadtwerke-x.de presse@stadtwerke-x.de", "stadtwerke-x.de", () => false, VERSORGER_VOKABULAR);
+    expect(a.rollenEmail).toBe("presse@stadtwerke-x.de");
+  });
+
+  it("findet Versorger-Themen mit eigener Priorität", () => {
+    const html = `<nav>
+      <a href="/waermepumpe">Wärmepumpe</a>
+      <a href="/balkonkraftwerk">Balkonkraftwerk</a>
+      <a href="/mieterstrom">Mieterstrom</a>
+    </nav>`;
+    const t = extractThemen(html, "https://stadtwerke-x.de", VERSORGER_VOKABULAR);
+    expect(t.map((x) => x.thema)).toEqual(["solar", "waermepumpe", "buergerbeteiligung"]);
+  });
+
+  it("dieselben Regeln gelten weiter — fremde Domain bleibt draußen", () => {
+    // Die drei Fehlerregeln hängen am Modul, nicht am Vokabular.
+    const a = extractAdressen("info@agentur-xy.de", "stadtwerke-x.de", () => false, VERSORGER_VOKABULAR);
+    expect(a.rollenEmail).toBeNull();
+    expect(a.verwaltungDomain).toBeNull();
   });
 });
 
