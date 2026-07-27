@@ -619,7 +619,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   ? <span style={{ fontStyle: "italic", color: v('--color-text-muted') }}>folgt dem Grüngas-Pfad (Block unten)</span>
                   : <InlineEdit value={Math.round((oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => setOGasPrice(v / 100)} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} />}</div>
                 <div>WP-Strompreis: <InlineEdit value={Math.round((oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => setOStromPrice(v / 100)} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
-                <div>Investition (nach Förderung): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} />{situation === "bestand" ? <span style={{ fontSize: 12, color: v('--color-text-muted') }}> · nach {Math.round(result.beg.rate * 100)} % Förderung</span> : null}</div>
+                <div>Investition (nach Förderung): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} />{situation === "bestand" ? <span style={{ fontSize: 12, color: v('--color-text-muted') }}> · {result.investBrutto.toLocaleString("de-DE")} € vor {Math.round(result.beg.rate * 100)} % Förderung</span> : null}</div>
               </div>
             </div>
 
