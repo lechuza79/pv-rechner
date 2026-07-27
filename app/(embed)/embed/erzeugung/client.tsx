@@ -5,6 +5,7 @@ import { MastrLiveRadial } from "../../../../components/MastrLiveRadial";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
+import { WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
 
 // Where share/embed point — the canonical live page for this widget.
@@ -217,6 +218,9 @@ export default function ErzeugungWidget({
   return (
     <div
       ref={chartExport.chartRef}
+      // Der Ring wird durch mehr Breite nicht größer — ohne Grenze steht er
+      // im Bild verloren in einer leeren Fläche.
+      style={{ maxWidth: WIDGET_MAX_WIDTH_COMPACT, margin: "0 auto" }}
       // Unsichtbarer Pointer-Event-Wrapper für Autoswitch-Pause bei Hover/Tap.
       onPointerEnter={(e) => {
         if (e.pointerType === "mouse") hoveringRef.current = true;

@@ -7,7 +7,7 @@ import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
 import { ExportBox, WidgetExportFooter } from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
-import { WIDGETS, WIDGET_MAX_WIDTH } from "../../../../lib/widget-registry";
+import { WIDGETS, WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
 import {
   WIDGET_SETTINGS_DEFAULTS,
@@ -61,7 +61,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
     borderRadius: "var(--widget-border-radius)",
     fontFamily: "var(--widget-font-family)",
     padding: 18,
-    maxWidth: WIDGET_MAX_WIDTH,
+    maxWidth: WIDGET_MAX_WIDTH_COMPACT,
     margin: "0 auto",
     boxSizing: "border-box",
     overflow: "hidden",
@@ -126,6 +126,10 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
             alignItems: "center",
             justifyContent: "center",
             gap: 24,
+            // Der Kasten umschließt Ring + Legende, statt sich auf die volle
+            // Kartenbreite zu ziehen: sonst rahmt er vor allem Leere.
+            width: "fit-content",
+            margin: "0 auto",
           }}
         >
           <DonutChart segments={donutSegments} size={170}>

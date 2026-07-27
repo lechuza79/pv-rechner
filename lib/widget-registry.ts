@@ -59,6 +59,14 @@ const SITE = "https://solar-check.io";
  */
 export const WIDGET_MAX_WIDTH = 900;
 
+/**
+ * Für Karten, deren Inhalt rund oder kompakt ist (Ring, Donut, Einzel-KPI).
+ * Ein Kreis wird durch mehr Breite nicht größer — die Fläche daneben bleibt
+ * einfach leer, und im Bild steht das Motiv verloren in der Mitte. Solche
+ * Karten umschließen ihren Inhalt, statt jede angebotene Breite zu füllen.
+ */
+export const WIDGET_MAX_WIDTH_COMPACT = 560;
+
 export const WIDGETS = {
   gruengasHeizkosten: {
     id: "gruengas-heizkosten",
