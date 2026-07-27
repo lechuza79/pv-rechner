@@ -239,6 +239,19 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(stackFunding(fundingForAgs("03103000"), 10, 5, 20000).total).toBe(0);
     expect(stackFunding(fundingForAgs("05512000"), 10, 5, 20000).total).toBe(0); // Bottrop
   });
+
+  // Frankfurt: the Mini-PV (Balkonkraftwerk) pot has been empty since 2025-06-03
+  // while the rest of the Klimabonus keeps running. Promising a balcony rate here
+  // would send people into applications that cannot be granted — the roof-PV rate
+  // is verified and must stay. Council 3/3, foerder-news-waechter 2026-07-27.
+  it("Frankfurt promises no balcony rate while the Mini-PV pot is empty", () => {
+    const p = getFundingProgram("frankfurt-klimabonus")!;
+    const balkon = p.rates?.find((r) => /balkon/i.test(r.label));
+    expect(balkon).toBeDefined();
+    expect(balkon!.value).not.toMatch(/\d\s*%/); // no percentage = no money promise
+    expect(p.status).toBe("aktiv"); // roof PV keeps running
+    expect(p.percentOfCost).toBe(0.2);
+  });
 });
 
 describe("atlas-cities registry", () => {
