@@ -207,7 +207,11 @@ export function buildExportSvg(
     let lx = PAD + 16;
     const ly = legendY + 16;
     context.legend.forEach(item => {
-      p.push(`<rect x="${lx}" y="${ly - 5}" width="10" height="10" rx="2" fill="${item.color}"/>`);
+      // resolveVars, weil Serienfarben als CSS-Variable ankommen (SCENARIOS in
+      // lib/constants.ts nutzen v("--color-…")). Ein var() in einem SVG-Attribut
+      // ist ungültig und rendert SCHWARZ — die Legende zeigte damit für alle drei
+      // Szenarien dasselbe Kästchen, während die Kurven farbig blieben.
+      p.push(`<rect x="${lx}" y="${ly - 5}" width="10" height="10" rx="2" fill="${resolveVars(item.color)}"/>`);
       p.push(`<text x="${lx + 14}" y="${ly + 3}" font-family="${FONT_TEXT}" font-size="11" fill="${tokens['--color-text-muted']}">${esc(item.label)}</text>`);
       lx += 14 + item.label.length * 6.5 + 16; // approximate text width + gap
     });

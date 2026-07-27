@@ -587,6 +587,38 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 - **Rechtliches:** Nutzungsbedingungen unter `/widget-nutzungsbedingungen` (aus Galerie verlinkt), Datenschutz-Textbaustein für Einbettende in der Galerie, `ChartActionBar` enthält einen branding-unabhängigen „Anbieter & Impressum"-Menüpunkt (§ 5 DDG).
 - Icons/Buttons aus `components/Icons.tsx`.
 
+## Das geteilte Bild (Download/Teilen) — BLOCKER
+
+**Ein Bild hat kein Hover, kein Tippen und keine „?"-Knöpfe.** Alles, was die Seite interaktiv erklärt, fehlt im PNG — und das PNG ist genau die Fassung, die auf fremden Seiten, in Chats und in Präsentationen landet, ohne dass jemand nachfragen kann. Ein Bild, dem die Legende, die Skala oder der gewählte Zustand fehlt, ist keine schwache Version der Seite, sondern eine **missverständliche**.
+
+**Mechanik: `components/WidgetExport.tsx` — drei Bausteine, eine Regel.**
+
+| Was | Baustein | Beispiel |
+|---|---|---|
+| Interaktives (Umschalter, CTA, Aktionen, „?"-Knopf, Hover-Tooltip) | `<ExportIgnore>` bzw. `data-sc-export-ignore` | Gebäudestand-Umschalter |
+| Nur fürs Bild (Skala, Legende, gewählter Zustand, Quelle, Marke) | `<ExportOnly>` / `<ExportOnlyG>` (im SVG) | y-Achsen-Beträge |
+| Hilfetexte hinter „?" | **nichts tun** — `InfoTooltip` meldet sich selbst an | „Was bedeutet die Ersparnis?" |
+
+**Der Selbstmelde-Mechanismus ist der Kern.** Ein `InfoTooltip` innerhalb eines `<ExportNotesProvider>` trägt seinen Text automatisch in den `<WidgetExportFooter>` ein und nimmt seinen Knopf aus dem Bild. Niemand muss daran denken, einen Tooltip ins Bild zu kopieren — genau dieses Danken-Müssen war die Fehlerquelle. Neue Widgets deshalb **immer** in `<ExportNotesProvider>` wickeln und den `<WidgetExportFooter>` als letztes Element setzen.
+
+**Checkliste vor dem Merge eines exportierbaren Widgets** (am erzeugten PNG, nicht am Code):
+1. **Legende?** Online oft entbehrlich (Hover benennt die Serie) — im Bild Pflicht, sobald mehr als eine Serie/Farbe vorkommt.
+2. **Skala?** Wo online die Zahlen am Hover hängen, gehören mindestens zwei Stufen ins Bild (Größenordnung).
+3. **Gewählter Zustand?** Land, Zeitraum, Variante, Gebäudestand — was ein Umschalter bestimmt, muss im Bild als Text stehen, sonst zeigt das Bild eine Auswahl, die niemand kennt.
+4. **Hilfetexte?** Alles hinter „?" steht im Bild-Fuß.
+5. **Quelle + Marke?** Immer im Bild (Lizenzpflicht dl-de/by · CC BY), auch wenn die Seite sie zentral trägt.
+6. **Nichts Totes?** Keine Knöpfe, Pfeile, Umschalter im Bild — sie sehen aus wie bedienbar und sind es nicht.
+
+**Sichtbarkeit der Fußzeile je Zustand** (in allen Widgets gleich):
+- **Embed (extern):** CTA + Aktionen + Marke dauerhaft; Quelle **vertikal an der rechten Kante** (nie als horizontaler Block).
+- **Eigene Seite (`onsite`):** CTA + Aktionen; Quelle blendet beim Überfahren ein, Marke entfällt (die Seite trägt beides).
+- **Ausschnitt auf eigener Seite** (z. B. nur die Balken als Kurzantwort im Artikel): nackt — der Artikel führt, ein zweiter identischer Knopf wenige Absätze über dem nächsten ist Lärm.
+- **Bild:** kein CTA, keine Aktionen — dafür der Export-Fuß.
+
+**Erzwungen von `e2e/widget-export.spec.ts`:** klickt „Als Bild herunterladen", prüft, dass ein echtes PNG herauskommt (Größe + Maße aus dem PNG-Header — ein kollabiertes Bild ist wenige Dutzend Bytes groß und fällt sonst niemandem auf) und dass Legende, Hilfetexte und Quelle im Bild-Fuß stehen. Mit `EXPORT_OUT_DIR=<pfad>` legt der Lauf das Bild zum Ansehen ab. **Ein Export-Widget prüft man am Bild, nicht am Bildschirm.**
+
+**Farben im komponierten Export** (`buildExportSvg`, der `mode: "compose"`-Pfad): Serienfarben laufen durch `resolveVars`. Ein `var(--color-…)` in einem SVG-Attribut ist ungültig und rendert **schwarz** — so zeigte die Rechner-Legende monatelang drei schwarze Kästchen zu drei farbigen Kurven.
+
 ## Modals — BLOCKER
 
 **`components/Modal.tsx` ist DER Modal-Baustein. Modals werden nicht pro Stelle neu gebaut.** Die aufrufende Stelle liefert nur `open`, `onClose`, `title` (optional `intro`, `ariaLabel`, `maxWidth`) und den Inhalt als Children — das gesamte Verhalten kommt aus dem Baustein:

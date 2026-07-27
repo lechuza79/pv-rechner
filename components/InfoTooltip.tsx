@@ -3,6 +3,8 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { v } from "../lib/theme";
 import { IconHelpCircle } from "./Icons";
+import { EXPORT_IGNORE_ATTR } from "../lib/chart-export";
+import { nodeToText, useRegisterExportNote } from "./WidgetExport";
 
 // A small help-icon trigger that shows an explanatory tooltip on hover (desktop)
 // or tap (mobile). Unlike the native `title` attribute — which never fires on
@@ -26,9 +28,16 @@ interface Props {
   size?: number;
   /** Accessible label for the trigger button. */
   ariaLabel?: string;
+  /**
+   * Carry this text into the exported image (inside an ExportNotesProvider).
+   * On by default: a PNG has no hover, so a help text that stays behind the "?"
+   * is simply lost. Turn off only for hints that are meaningless in a still
+   * image ("click a year to compare").
+   */
+  exportNote?: boolean;
 }
 
-export default function InfoTooltip({ title, children, size = 13, ariaLabel = "Mehr Infos" }: Props) {
+export default function InfoTooltip({ title, children, size = 13, ariaLabel = "Mehr Infos", exportNote = true }: Props) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const tooltipRef = useRef<HTMLSpanElement>(null);
   const [open, setOpen] = useState(false);
@@ -42,6 +51,10 @@ export default function InfoTooltip({ title, children, size = 13, ariaLabel = "M
   const tooltipId = useId();
 
   useEffect(() => setMounted(true), []);
+
+  // Hand the help text to the image footer. Text (not nodes) so the dependency
+  // is stable across renders.
+  useRegisterExportNote(title, nodeToText(children), exportNote);
 
   // Position the tooltip relative to the trigger, clamped to the viewport on all
   // four edges. Runs as a layout effect so the position is set before paint.
@@ -105,6 +118,9 @@ export default function InfoTooltip({ title, children, size = 13, ariaLabel = "M
       <button
         ref={triggerRef}
         type="button"
+        // A "?" you cannot click is noise in a still image — the text it hides
+        // is carried into the export footer instead (see useRegisterExportNote).
+        {...{ [EXPORT_IGNORE_ATTR]: "" }}
         aria-label={ariaLabel}
         aria-describedby={open ? tooltipId : undefined}
         onMouseEnter={() => setOpen(true)}
