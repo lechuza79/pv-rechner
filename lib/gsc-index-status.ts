@@ -220,19 +220,34 @@ export function daysSinceDownload(s: SitemapStatus, now = Date.now()): number | 
  * unentdeckt), aber er ist selbstwartend und fängt genau den Fall ab, der hier
  * wirklich vorkommt: eine neue Seitenfamilie geht live.
  */
+export type Einreichungsbedarf = {
+  noetig: boolean;
+  grund: string | null;
+  /** Darf der Wächter selbst einreichen? Nur in der sicheren Richtung. */
+  automatisch: boolean;
+};
+
 export function brauchtNeueEinreichung(
   s: SitemapStatus,
   eigeneUrlAnzahl: number | null,
   schwelleTage: number,
   now = Date.now(),
-): { noetig: boolean; grund: string | null } {
+): Einreichungsbedarf {
   const tage = daysSinceDownload(s, now);
-  if (tage === null) return { noetig: true, grund: "nie abgerufen" };
-  if (tage >= schwelleTage) return { noetig: true, grund: `seit ${tage} Tagen nicht abgerufen` };
+  if (tage === null) return { noetig: true, grund: "nie abgerufen", automatisch: true };
+  if (tage >= schwelleTage) return { noetig: true, grund: `seit ${tage} Tagen nicht abgerufen`, automatisch: true };
+
   if (eigeneUrlAnzahl !== null && eigeneUrlAnzahl !== s.submittedUrls) {
-    return { noetig: true, grund: `Google kennt ${s.submittedUrls} URLs, die Sitemap hat ${eigeneUrlAnzahl}` };
+    const gewachsen = eigeneUrlAnzahl > s.submittedUrls;
+    return {
+      noetig: true,
+      automatisch: gewachsen,
+      grund: gewachsen
+        ? `Google kennt ${s.submittedUrls} URLs, die Sitemap hat ${eigeneUrlAnzahl} — neue Seiten sind live`
+        : `Die Sitemap ist von ${s.submittedUrls} auf ${eigeneUrlAnzahl} URLs GESCHRUMPFT. Gewollter Rückbau einer Welle — oder ist ein Zweig in app/sitemap.ts still ausgefallen? Erst klären, dann mit force=1 einreichen.`,
+    };
   }
-  return { noetig: false, grund: null };
+  return { noetig: false, grund: null, automatisch: false };
 }
 
 /** URLs in unserer eigenen Sitemap zählen. Null, wenn sie nicht abrufbar ist —
