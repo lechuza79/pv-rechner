@@ -12,6 +12,7 @@ import {
   IconChevronRight,
 } from "../../../../components/Icons";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
+import { WIDGETS } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
 import { iconSizes } from "../../../../lib/theme";
 import {
@@ -231,7 +232,7 @@ export default function ZubauWidget() {
         </div>
 
         {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
-        <WidgetExportFooter source={DATA_SOURCES.ember} branding={settings.branding} />
+        <WidgetExportFooter widget={WIDGETS.zubauErneuerbareAtom} branding={settings.branding} />
       </div>
     </div>
   );

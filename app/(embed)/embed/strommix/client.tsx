@@ -12,6 +12,7 @@ import ChartActionBar from "../../../../components/ChartActionBar";
 import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
 import { ExportBox, ExportOnly, WidgetExportFooter } from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
+import { WIDGETS } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
 import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
@@ -691,7 +692,7 @@ function Footer({
 
       {/* Nur im Bild: Fußnoten-Box, Datenquelle links, Marke rechts. */}
       <WidgetExportFooter
-        source={DATA_SOURCES.energyCharts}
+        widget={WIDGETS.strommix}
         branding={branding}
         note="Die Farbabstufungen innerhalb Grün sind die einzelnen erneuerbaren Träger (Wind, Solar, Wasser, Biomasse)."
       />

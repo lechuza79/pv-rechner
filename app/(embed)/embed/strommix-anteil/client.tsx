@@ -7,6 +7,7 @@ import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
 import { ExportBox, WidgetExportFooter } from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
+import { WIDGETS } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
 import {
   WIDGET_SETTINGS_DEFAULTS,
@@ -218,7 +219,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
         </div>
 
         {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
-        <WidgetExportFooter source={DATA_SOURCES.energyCharts} branding={settings.branding} />
+        <WidgetExportFooter widget={WIDGETS.strommixAnteil} branding={settings.branding} />
       </div>
     </div>
   );

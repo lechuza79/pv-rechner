@@ -250,6 +250,7 @@ export default function EnergieClient() {
   const energyChartExport = useChartExport({
     context: {
       title: "Stromerzeugung nach Energieträger in Deutschland",
+      kind: "chart",
       subtitle: rangeLabel,
       stats: stats ? (() => {
         const u = energyUnit(stats.totalGenerationGWh);

@@ -16,6 +16,7 @@
 
 import { domToBlob } from 'modern-screenshot';
 import { tokens, TokenName } from './theme';
+import { brandLabel, type WidgetKind } from './widget-registry';
 
 /** Marker attribute: elements carrying it are excluded from a node snapshot. */
 export const EXPORT_IGNORE_ATTR = 'data-sc-export-ignore';
@@ -51,6 +52,9 @@ export interface ExportContext {
   /** Selected state (period, region, variant) — an image has no switcher, so
    * whatever a control decided has to be written out. */
   heading?: string;
+  /** Decides the brand wording in the image: a tool invites you to compute,
+   * a chart to explore. Defaults to "chart" — the safer claim. */
+  kind?: WidgetKind;
   stats?: ExportStat[];             // summary widgets row
   legend?: ExportLegendItem[];      // colored legend items below chart
   /** Footnotes: what the page explains on hover / behind "?" plus assumptions.
@@ -330,7 +334,7 @@ export function buildExportSvg(
   const logoX = totalW - PAD - 8 - logoW;
   const textX = logoX - 10;
 
-  p.push(`<text x="${textX}" y="${footerCenterY}" text-anchor="end" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-secondary']}">Interaktiv selbst rechnen:</text>`);
+  p.push(`<text x="${textX}" y="${footerCenterY}" text-anchor="end" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-secondary']}">${esc(brandLabel(context.kind ?? 'chart'))}</text>`);
   if (logoBase64Cache) {
     p.push(`<image href="${logoBase64Cache}" x="${logoX}" y="${footerCenterY - logoH / 2}" width="${logoW}" height="${logoH}"/>`);
   }

@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import InfoTooltip from "../InfoTooltip";
-import ChartActionBar from "../ChartActionBar";
-import { PoweredBy } from "../PoweredBy";
 import {
   ExportBox,
   ExportNotesProvider,
+  WidgetFooter,
+  WidgetSourceEdge,
   ExportOnly,
   ExportOnlyG,
   WidgetExportFooter,
@@ -14,7 +14,7 @@ import {
 } from "../WidgetExport";
 import { useChartExport } from "../../lib/useChartExport";
 import { EXPORT_IGNORE_ATTR } from "../../lib/chart-export";
-import { DATA_SOURCES } from "../../lib/data-sources";
+import { WIDGETS } from "../../lib/widget-registry";
 import { v } from "../../lib/theme";
 import type { MusterVariant } from "../../lib/greengas-muster";
 
@@ -59,9 +59,6 @@ function niceMax(max: number): number {
   const s = (max / 4 / step <= 2 ? 2 : max / 4 / step <= 5 ? 5 : 10) * step;
   return Math.ceil(max / s) * s;
 }
-
-const SHARE_URL = "https://solar-check.io/ratgeber/gasheizung-oder-waermepumpe";
-const SHARE_TEXT = "Wärmepumpe vs. neue Gasheizung mit Grüngas-Pflicht – Solar Check";
 
 interface Props {
   variants: MusterVariant[];
@@ -117,8 +114,8 @@ function GruengasCard({
     useChartExport({
       context: { title: `Gasheizung vs. Wärmepumpe — ${m.label}` },
       filename: "waermepumpe-vs-gasheizung-gruengas",
-      shareText: SHARE_TEXT,
-      shareUrl: SHARE_URL,
+      shareText: WIDGETS.gruengasHeizkosten.shareText,
+      shareUrl: WIDGETS.gruengasHeizkosten.shareUrl,
       mode: "node",
     });
 
@@ -432,70 +429,28 @@ function GruengasCard({
         </div>
       )}
 
-      {/* ── Fußzeile: überall gleich aufgebaut ───────────────────────────────
-          Zeile 1: Handlungsaufforderung links, Aktionen rechts.
-          Zeile 2: Marke (nur extern) — die Quelle sitzt vertikal an der Kante.
-          Im Bild ersetzt der Export-Fuß beides.
+      {/* Fußzeile + Quelle: geteilte Bausteine (components/WidgetExport).
           Ausnahme mit Grund: der reine Balken-Ausschnitt auf unserer eigenen
-          Seite (Kurzantwort im Ratgeber) bleibt nackt — dort führt der Artikel,
-          und ein zweiter identischer Knopf drei Absätze über dem nächsten ist
-          Lärm, keine Konsequenz. */}
+          Seite bleibt nackt — dort führt der Artikel. */}
       {!(onsite && isBars) && (
-      <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: 14 }}>
-        <div style={{ display: "flex", flexDirection: narrow ? "column" : "row", alignItems: narrow ? "stretch" : "center", justifyContent: "space-between", gap: 10 }}>
-          <a href="/waermepumpe-rechner" style={{ flexShrink: 0, textAlign: "center", padding: "9px 16px", borderRadius: v("--radius-md"), background: v("--color-accent"), color: v("--color-text-on-accent"), fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
-            Für dein Haus durchrechnen →
-          </a>
-          <div style={{ display: "flex", justifyContent: narrow ? "center" : "flex-end" }}>
-            <ChartActionBar
-              variant="bar"
-              size={28}
-              onDownload={downloadPng}
-              onShareImage={canNativeShare ? sharePng : undefined}
-              isExporting={isExporting}
-              canNativeShare={canNativeShare}
-              onCopyLink={() => navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {})}
-              onWhatsApp={shareWhatsApp}
-              onTwitter={shareTwitter}
-              onEmbed={showEmbed && !onsite ? () => window.open("/energie-widgets#gruengas-heizkosten", "_blank", "noopener") : undefined}
-            />
-          </div>
-        </div>
-
-        {/* Marke: nur extern (auf der eigenen Seite redundant). */}
-        {branding && !onsite && (
-          <div style={{ display: "flex", marginTop: 8, fontSize: 10.5, color: v("--color-text-muted") }}>
-            <PoweredBy />
-          </div>
-        )}
-      </div>
+        <WidgetFooter
+          widget={WIDGETS.gruengasHeizkosten}
+          chartExport={{ downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare }}
+          onsite={onsite}
+          branding={branding}
+          showEmbed={showEmbed}
+          narrow={narrow}
+        />
       )}
 
-      {/* Quelle: vertikal an der rechten Kante (Widget-Konvention — nie als
-          horizontaler Block). Extern dauerhaft, auf der eigenen Seite blendet
-          sie beim Überfahren ein. Im Bild steht sie im Export-Fuß. */}
       {!(onsite && isBars) && (
-        <div
-          {...{ [EXPORT_IGNORE_ATTR]: "" }}
-          title={`Quelle: ${DATA_SOURCES.iw.name}`}
-          style={{
-            position: "absolute", top: 0, bottom: 0, right: 4,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            writingMode: "vertical-rl", transform: "rotate(180deg)",
-            fontSize: 9, lineHeight: 1.4, letterSpacing: 0.2,
-            color: v("--color-text-faint"), pointerEvents: "none",
-            opacity: !onsite || showCredit ? 1 : 0,
-            transition: "opacity .18s ease-out",
-          }}
-        >
-          {DATA_SOURCES.iw.name}
-        </div>
+        <WidgetSourceEdge widget={WIDGETS.gruengasHeizkosten} visible={!onsite || showCredit} />
       )}
 
       {/* Nur im Bild: Legende, die Texte hinter den „?", Quelle + Marke. */}
       <WidgetExportFooter
+        widget={WIDGETS.gruengasHeizkosten}
         legend={legend}
-        source={DATA_SOURCES.iw}
         note={`Muster-Einfamilienhaus, ${m.label.toLowerCase()} · Näherungswerte, ohne Gewähr`}
       />
     </div>

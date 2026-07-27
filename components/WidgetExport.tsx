@@ -3,7 +3,10 @@
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useState } from "react";
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/chart-export";
 import { DataSourceNote, PoweredBy } from "./PoweredBy";
+import ChartActionBar from "./ChartActionBar";
 import type { DataSource } from "../lib/data-sources";
+import { brandLabel, type WidgetDef } from "../lib/widget-registry";
+import type { useChartExport } from "../lib/useChartExport";
 import { v } from "../lib/theme";
 
 // Export layer for widgets: everything the website explains INTERACTIVELY has to
@@ -151,7 +154,149 @@ export function nodeToText(node: React.ReactNode): string {
   return "";
 }
 
-// ─── 3. The image-only footer ────────────────────────────────────────────────
+// ─── 3. The footer on the PAGE ───────────────────────────────────────────────
+
+/**
+ * The visible footer every widget shares: one next step on the left, the action
+ * bar on the right, the brand below (external only). Built from the registry
+ * entry, so a widget cannot quietly grow its own arrangement — which is exactly
+ * how the footers drifted apart before (some with CTA, some without, the brand
+ * once left, once right, the source once vertical, once a block).
+ *
+ * The source itself is NOT here: it sits vertically along the card's right edge
+ * (widget convention) and, in the image, in {@link WidgetExportFooter}.
+ */
+export function WidgetFooter({
+  widget,
+  chartExport,
+  onCopyLink,
+  onsite = false,
+  branding = true,
+  showEmbed = false,
+  showDownload = true,
+  narrow = false,
+}: {
+  widget: WidgetDef;
+  chartExport: Pick<
+    ReturnType<typeof useChartExport>,
+    "downloadPng" | "sharePng" | "shareWhatsApp" | "shareTwitter" | "isExporting" | "canNativeShare"
+  >;
+  onCopyLink?: () => void;
+  /** First-party embed on our own pages: no brand line (the page carries it). */
+  onsite?: boolean;
+  branding?: boolean;
+  showEmbed?: boolean;
+  /** false where nothing capturable exists (map, single KPI). */
+  showDownload?: boolean;
+  narrow?: boolean;
+}) {
+  const copy =
+    onCopyLink ??
+    (() => {
+      navigator.clipboard?.writeText(`${widget.shareText}\n${widget.shareUrl}`).catch(() => {});
+    });
+
+  return (
+    <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: 14 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: narrow ? "column" : "row",
+          alignItems: narrow ? "stretch" : "center",
+          justifyContent: widget.cta ? "space-between" : "flex-end",
+          gap: 10,
+        }}
+      >
+        {widget.cta && (
+          <a
+            href={widget.cta.href}
+            style={{
+              flexShrink: 0,
+              textAlign: "center",
+              padding: "9px 16px",
+              borderRadius: v("--radius-md"),
+              background: v("--color-accent"),
+              color: v("--color-text-on-accent"),
+              fontSize: 13,
+              fontWeight: 700,
+              textDecoration: "none",
+            }}
+          >
+            {widget.cta.label} →
+          </a>
+        )}
+        <div style={{ display: "flex", justifyContent: narrow ? "center" : "flex-end" }}>
+          <ChartActionBar
+            variant="bar"
+            size={28}
+            showDownload={showDownload && widget.exportable !== false}
+            onDownload={chartExport.downloadPng}
+            onShareImage={chartExport.canNativeShare ? chartExport.sharePng : undefined}
+            isExporting={chartExport.isExporting}
+            canNativeShare={chartExport.canNativeShare}
+            onCopyLink={copy}
+            onWhatsApp={chartExport.shareWhatsApp}
+            onTwitter={chartExport.shareTwitter}
+            onEmbed={
+              showEmbed && !onsite
+                ? () => window.open(`/energie-widgets#${widget.id}`, "_blank", "noopener")
+                : undefined
+            }
+          />
+        </div>
+      </div>
+
+      {branding && !onsite && (
+        <div style={{ display: "flex", marginTop: 8, fontSize: 10.5, color: v("--color-text-muted") }}>
+          <PoweredBy />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * The source credit as the convention demands it: vertical along the right edge
+ * of the card, never a horizontal block. External embeds show it permanently
+ * (licence), on our own pages it fades in on hover — there the page credits.
+ */
+export function WidgetSourceEdge({
+  widget,
+  visible = true,
+}: {
+  widget: WidgetDef;
+  visible?: boolean;
+}) {
+  const label = widget.sources.map((s) => s.name).join(" · ");
+  return (
+    <div
+      {...{ [EXPORT_IGNORE_ATTR]: "" }}
+      title={`Quelle: ${label}`}
+      style={{
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        right: 4,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        writingMode: "vertical-rl",
+        transform: "rotate(180deg)",
+        fontSize: 9,
+        lineHeight: 1.4,
+        letterSpacing: 0.2,
+        color: v("--color-text-faint"),
+        pointerEvents: "none",
+        opacity: visible ? 1 : 0,
+        transition: "opacity .18s ease-out",
+      }}
+    >
+      {label}
+    </div>
+  );
+}
+
+// ─── 4. The image-only footer ────────────────────────────────────────────────
 
 export interface ExportLegendEntry {
   color: string;
@@ -166,19 +311,26 @@ export interface ExportLegendEntry {
  * Hidden on the page — the page has hover, the image doesn't.
  */
 export function WidgetExportFooter({
+  widget,
   legend,
   source,
   branding = true,
   note,
 }: {
+  /** Registry entry — carries sources and decides the brand wording. Pass this
+   * rather than `source`; it keeps image, page footer and gallery in sync. */
+  widget?: WidgetDef;
   legend?: ExportLegendEntry[];
-  source: DataSource | DataSource[];
+  /** Only for charts without a registry entry (page-level one-offs). */
+  source?: DataSource | DataSource[];
   /** Off only where the brand is already in the frame. */
   branding?: boolean;
   /** Extra line (assumptions, reference year) that only the image needs. */
   note?: string;
 }) {
   const notes = useExportNotes();
+  const sources = widget?.sources ?? source;
+  if (!sources) return null;
   return (
     <ExportOnly>
       <div
@@ -234,9 +386,9 @@ export function WidgetExportFooter({
             deshalb trägt die Markenzeile hier die Einladung. */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 16 }}>
           <span style={{ flex: 1, minWidth: 0 }}>
-            <DataSourceNote source={source} plain label="Datenquelle:" />
+            <DataSourceNote source={sources} plain label="Datenquelle:" />
           </span>
-          {branding && <PoweredBy label="Interaktiv selbst rechnen:" />}
+          {branding && <PoweredBy label={brandLabel(widget?.kind ?? "chart")} />}
         </div>
       </div>
     </ExportOnly>

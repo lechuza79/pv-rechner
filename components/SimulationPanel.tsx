@@ -159,6 +159,7 @@ export default function SimulationPanel({
   const simChartExport = useChartExport({
     context: {
       title: `Tagesverlauf · ${selectedKwp} kWp`,
+      kind: "tool",
       subtitle: plz ? `PLZ ${plz}` : undefined,
       stats: hourlyPoints.length > 0 ? [
         { label: "Anlagengröße", value: `${selectedKwp}`, unit: "kWp" },

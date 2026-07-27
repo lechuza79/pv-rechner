@@ -22,6 +22,7 @@ import { v, tokens } from "../../lib/theme";
 import { PoweredBy } from "../PoweredBy";
 import ChartActionBar from "../ChartActionBar";
 import { DATA_SOURCES, sourceLabel, type DataSource } from "../../lib/data-sources";
+import { WIDGETS } from "../../lib/widget-registry";
 import { useChartExport } from "../../lib/useChartExport";
 import { ExportBox, WidgetExportFooter } from "../WidgetExport";
 import ZubauTimelineChart from "./ZubauTimelineChart";
@@ -251,7 +252,7 @@ export default function ZubauWidget({
         {/* Nur im Bild: Legende (drei Reihen auf zwei Achsen — ohne sie ist das
             Bild nicht lesbar), Erläuterung, Datenquelle + Marke. */}
         <WidgetExportFooter
-          source={ZUBAU_WIDGET_SOURCES}
+          widget={WIDGETS.pvZubau}
           legend={[
             { color: tokens["--color-accent"], label: "Zubau pro Jahr (GW, linke Achse)", shape: "box" },
             { color: tokens["--color-positive"], label: "Einspeisevergütung (ct/kWh, rechte Achse)" },

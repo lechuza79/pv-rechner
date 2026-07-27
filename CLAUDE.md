@@ -587,6 +587,18 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 - **Rechtliches:** Nutzungsbedingungen unter `/widget-nutzungsbedingungen` (aus Galerie verlinkt), Datenschutz-Textbaustein für Einbettende in der Galerie, `ChartActionBar` enthält einen branding-unabhängigen „Anbieter & Impressum"-Menüpunkt (§ 5 DDG).
 - Icons/Buttons aus `components/Icons.tsx`.
 
+## Chart-Baukasten: das Widget-Register — BLOCKER
+
+**`lib/widget-registry.ts` ist die Identität eines Widgets: Titel, Art, Teilen-Ziel, Datenquellen, der eine nächste Schritt.** Vorher stand all das in jedem Widget einzeln — und driftete: Teilen-Texte, die „live" versprachen, wo ein festes Jahr steht; Fußzeilen, die mal einen Knopf hatten und mal nicht; eine Quelle mal vertikal, mal als Block. Jedes neue Chart begann damit, das vorige zu kopieren — so kam die Zubau-Story ohne Legende und das erste Grüngas-Bild ohne Quelle in die Welt.
+
+- **`kind` ist eine inhaltliche Aussage, keine Kategorie:** `tool` = man gibt eigene Zahlen ein → im Bild „Interaktiv selbst rechnen:"; `chart` = es bildet Daten ab → „Interaktives Chart:". Ein Chart zum „Rechnen" einzuladen ist eine kleine Lüge — dort gibt es nichts einzugeben. Der Wortlaut kommt aus `brandLabel()`, nie getippt.
+- **`cta`** ist der eine nächste Schritt, imperativ und konkret („Für dein Haus durchrechnen"), niemals „Mehr erfahren". Den Pfeil setzt der Baustein.
+- **Bausteine, die den Eintrag nehmen:** `WidgetFooter` (Fußzeile auf der Seite: Schritt links, Aktionen rechts, Marke darunter), `WidgetSourceEdge` (Quelle vertikal an der Kante), `WidgetExportFooter` (Bild-Fuß). Wer eine eigene Fußzeile baut, bricht die Einheitlichkeit — es gibt keinen Grund dafür.
+- **Übersicht:** `/admin/charts` listet alle Einträge samt Art, Bild-Zeile, nächstem Schritt und Quelle **aus dem Register** (kann nicht veralten) und beschreibt die fünf Schritte für ein neues Chart.
+- **Erzwungen von `lib/__tests__/widget-registry.test.ts`:** Vollständigkeit jedes Eintrags, konkrete CTA, richtige Bild-Zeile je Art, `exportable: false` wo kein Bild entstehen kann.
+
+**Neues Chart: erst der Register-Eintrag, dann die Karte, dann die beiden Fußzeilen aus den Bausteinen.** In dieser Reihenfolge ist ein neues Chart kleiner als das vorige.
+
 ## Das geteilte Bild (Download/Teilen) — BLOCKER
 
 **Ein Bild hat kein Hover, kein Tippen und keine „?"-Knöpfe.** Alles, was die Seite interaktiv erklärt, fehlt im PNG — und das PNG ist genau die Fassung, die auf fremden Seiten, in Chats und in Präsentationen landet, ohne dass jemand nachfragen kann. Ein Bild, dem die Legende, die Skala oder der gewählte Zustand fehlt, ist keine schwache Version der Seite, sondern eine **missverständliche**.

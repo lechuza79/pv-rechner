@@ -500,6 +500,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const chartExport = useChartExport({
     context: {
       title: "Amortisation",
+      kind: "tool",
       subtitle: `${kwp} kWp${spKwh > 0 ? ` · ${spKwh} kWh Speicher` : ""}`,
       stats: isResult ? [
         { label: "Amortisation", value: be ? `${be.i}` : ">25", unit: "Jahre" },
