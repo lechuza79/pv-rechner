@@ -51,8 +51,25 @@ export type GemeindeStats = {
 
 export type AwardCategory = {
   key: string;
+  /** Interner Kurzname (Backend-Ansichten). NICHT nach außen verwenden — siehe
+   *  `bestleistung`/`thema`. */
   label: string;
   merit: string;
+  /**
+   * Klartext für die Außenkommunikation, als Nominalphrase: „die meisten
+   * Balkonkraftwerke je 1.000 Einwohner".
+   *
+   * WARUM ES DAS GIBT (27.07.2026): Im Anschreiben stand vorher der interne
+   * Titel — „Erlenbach a.Main ist Speicher-Hauptstadt im Landkreis Miltenberg".
+   * Der sagt nicht, was gemessen wurde, klingt bei 9.717 Einwohnern nach
+   * Marketing-Erfindung, und die Auszeichnung existiert öffentlich nirgends.
+   * Eine Verwaltung liest so etwas als Werbung. Die nackte Messgröße ist
+   * belegbar und wirkt stärker als jedes Kunstwort.
+   */
+  bestleistung: string;
+  /** Dasselbe ohne Superlativ, für Platzierungen unterhalb von Platz 1:
+   *  „Balkonkraftwerke je 1.000 Einwohner". */
+  thema: string;
   traeger: Traeger;
   messart: Messart;
   format: MetricFormat;
@@ -68,6 +85,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "dach-privat-pk",
     label: "Solardach-Spitzenreiter",
     merit: "Meiste private Dach-Solarleistung je Einwohner.",
+    bestleistung: "die meiste private Solarleistung auf den Dächern je Einwohner",
+    thema: "private Solarleistung auf den Dächern je Einwohner",
     traeger: "buerger",
     messart: "proKopf",
     format: "wattProKopf",
@@ -77,6 +96,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "balkon-pk",
     label: "Balkon-Pionier",
     merit: "Meiste Balkonkraftwerke je 1.000 Einwohner — die sauberste Bürgerzahl.",
+    bestleistung: "die meisten Balkonkraftwerke je 1.000 Einwohner",
+    thema: "Balkonkraftwerke je 1.000 Einwohner",
     traeger: "buerger",
     messart: "proKopf",
     format: "countPer1000",
@@ -86,6 +107,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "batterie-privat-pk",
     label: "Speicher-Vorreiter",
     merit: "Meiste private Batteriekapazität je Einwohner.",
+    bestleistung: "die meiste private Speicherkapazität je Einwohner",
+    thema: "private Speicherkapazität je Einwohner",
     traeger: "buerger",
     messart: "proKopf",
     format: "whProKopf",
@@ -96,6 +119,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "balkon-abs",
     label: "Balkon-Hauptstadt",
     merit: "Meiste Balkonkraftwerke insgesamt.",
+    bestleistung: "die meisten Balkonkraftwerke insgesamt",
+    thema: "Balkonkraftwerke insgesamt",
     traeger: "buerger",
     messart: "absolut",
     format: "count",
@@ -105,6 +130,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "dach-privat-abs",
     label: "Solardach-Hauptstadt",
     merit: "Meiste private Dach-Solarleistung insgesamt — Bürger-Solar auf den Dächern, kein Gewerbe/Park.",
+    bestleistung: "die meiste private Solarleistung auf den Dächern",
+    thema: "private Solarleistung auf den Dächern",
     traeger: "buerger",
     messart: "absolut",
     format: "pvLeistung",
@@ -114,6 +141,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "batterie-privat-abs",
     label: "Speicher-Hauptstadt",
     merit: "Meiste private Batteriekapazität insgesamt.",
+    bestleistung: "die meiste private Speicherkapazität",
+    thema: "private Speicherkapazität",
     traeger: "buerger",
     messart: "absolut",
     format: "speicherKwh",
@@ -124,6 +153,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "solar-standort",
     label: "Solar-Standort",
     merit: "Höchste gewerbliche + Freiflächen-Solarleistung. Misst den Standort, nicht die Bürger.",
+    bestleistung: "die meiste installierte Solarleistung insgesamt",
+    thema: "installierte Solarleistung insgesamt",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -133,6 +164,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "freiflaeche-standort",
     label: "Freiflächen-Standort",
     merit: "Höchste Freiflächen-Solarleistung (Solarparks).",
+    bestleistung: "die meiste Solarleistung auf Freiflächen",
+    thema: "Solarleistung auf Freiflächen",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -142,6 +175,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "gewerbespeicher-abs",
     label: "Gewerbespeicher-Standort",
     merit: "Höchste gewerbliche Batteriekapazität.",
+    bestleistung: "die meiste gewerbliche Speicherkapazität",
+    thema: "gewerbliche Speicherkapazität",
     traeger: "gewerbe",
     messart: "absolut",
     format: "speicherKwh",
@@ -151,6 +186,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "wind-standort",
     label: "Wind-Standort",
     merit: "Höchste installierte Windleistung.",
+    bestleistung: "die meiste Windleistung",
+    thema: "Windleistung",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -160,6 +197,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "biomasse-standort",
     label: "Biomasse-Standort",
     merit: "Höchste installierte Biomasseleistung.",
+    bestleistung: "die meiste Biomasseleistung",
+    thema: "Biomasseleistung",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -169,6 +208,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "wasser-standort",
     label: "Wasserkraft-Standort",
     merit: "Höchste installierte Wasserkraftleistung.",
+    bestleistung: "die meiste Wasserkraftleistung",
+    thema: "Wasserkraftleistung",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -179,6 +220,8 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "zubau",
     label: "Zubau-Champion",
     merit: "Größter Solar-Zubau im letzten vollständigen Jahr.",
+    bestleistung: "den größten Solar-Zubau im letzten Jahr",
+    thema: "Solar-Zubau im letzten Jahr",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",

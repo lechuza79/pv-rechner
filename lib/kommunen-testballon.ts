@@ -52,7 +52,9 @@ export type AuswahlRegeln = {
 
 export const TESTBALLON_REGELN: AuswahlRegeln = {
   ziel: 100,
-  charge1: 15,
+  // Erste Aussendung 50 (Vorgabe des Betreibers 27.07.2026: „test sollten
+  // 50-100 sein"). Vorher 15 — zu wenig, um aus den Antworten etwas abzulesen.
+  charge1: 50,
   kleinAnteil: 2 / 3,
   grenze: 10_000,
 };
@@ -68,8 +70,7 @@ export const TESTBALLON_REGELN: AuswahlRegeln = {
  *     nicht eine verbrannte Gemeinde.
  *  3. Zwei Töpfe nach Einwohnerzahl, damit der Testballon nicht nur aus
  *     Großstädten besteht — der Ausbau soll für kleine Gemeinden funktionieren.
- *  4. Charge 1 nimmt anteilig aus beiden Töpfen, damit die 15 repräsentativ für
- *     die 100 sind. Sonst testet man an Großstädten und versendet an Dörfer.
+ *  4. Charge 1 (50) nimmt die STÄRKSTEN aus beiden Töpfen — die Sieger zuerst.
  */
 export function waehleTestballon(kandidaten: Kandidat[], regeln = TESTBALLON_REGELN): Auswahl {
   const poolGesamt = kandidaten.length;
@@ -113,24 +114,14 @@ export function waehleTestballon(kandidaten: Kandidat[], regeln = TESTBALLON_REG
     if (rest > 0) nimmGross.push(...gross.slice(nimmGross.length, nimmGross.length + rest));
   }
 
-  // Charge 1 anteilig aus beiden Töpfen — und GLEICHMÄSSIG VERTEILT, nicht die
-  // ersten N. Die Spitze der Liste sind die größten Gemeinden; wer sie als Test
-  // nimmt, prüft an München und versendet danach an Dörfer. Jede k-te Position
-  // macht die 15 zum Abbild der 100.
+  // Charge 1 = die STÄRKSTEN zuerst, anteilig aus beiden Töpfen. Vorgabe des
+  // Betreibers: die Sieger zuerst anschreiben. Beide Listen sind bereits nach
+  // Aufhänger-Stärke sortiert, also sind die ersten N auch die stärksten.
   const c1Klein = Math.round(regeln.charge1 * regeln.kleinAnteil);
   const c1Gross = regeln.charge1 - c1Klein;
-  const verteilt = (liste: Kandidat[], anzahl: number): Set<number> => {
-    const treffer = new Set<number>();
-    if (anzahl <= 0 || !liste.length) return treffer;
-    const schritt = liste.length / Math.min(anzahl, liste.length);
-    for (let i = 0; i < anzahl && i < liste.length; i++) treffer.add(Math.floor(i * schritt));
-    return treffer;
-  };
-  const c1KleinIdx = verteilt(nimmKlein, c1Klein);
-  const c1GrossIdx = verteilt(nimmGross, c1Gross);
   const gewaehlt: { regionId: string; charge: number }[] = [];
-  nimmKlein.forEach((k, i) => gewaehlt.push({ regionId: k.regionId, charge: c1KleinIdx.has(i) ? 1 : 2 }));
-  nimmGross.forEach((k, i) => gewaehlt.push({ regionId: k.regionId, charge: c1GrossIdx.has(i) ? 1 : 2 }));
+  nimmKlein.forEach((k, i) => gewaehlt.push({ regionId: k.regionId, charge: i < c1Klein ? 1 : 2 }));
+  nimmGross.forEach((k, i) => gewaehlt.push({ regionId: k.regionId, charge: i < c1Gross ? 1 : 2 }));
 
   return {
     gewaehlt,

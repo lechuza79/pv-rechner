@@ -152,8 +152,8 @@ export default function KommunenCockpit() {
         </label>
         <select value={charge} onChange={(e) => setCharge(e.target.value)} style={selectStyle} aria-label="Versandliste">
           <option value="">Alle Gemeinden</option>
-          <option value="1">Testballon · Charge 1 (15)</option>
-          <option value="2">Testballon · Charge 2 (85)</option>
+          <option value="1">Testballon · Charge 1 (50)</option>
+          <option value="2">Testballon · Charge 2 (50)</option>
         </select>
         <select value={sort} onChange={(e) => setSort(e.target.value)} style={selectStyle} aria-label="Sortierung">
           <option value="">Sortierung: Standard</option>

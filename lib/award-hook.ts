@@ -236,23 +236,30 @@ function scopeIn(level: HookLevel, n: HookNames): string {
  *  keine Freitext-Interpolation von außen (Allowlist-Muster). */
 export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg: string } {
   const wo = hook.level ? scopeIn(hook.level, n) : "";
-  const titel = hook.categoryLabel ?? "";
+  // KEIN interner Titel nach außen (siehe `bestleistung` in lib/awards.ts):
+  // „Erlenbach a.Main ist Speicher-Hauptstadt" sagt nicht, was gemessen wurde,
+  // klingt bei 9.717 Einwohnern erfunden, und die Auszeichnung gibt es
+  // öffentlich nirgends. Stattdessen die Messgröße im Klartext — jeder Satzteil
+  // belegbar und ohne Erklärung verständlich.
+  const cat = hook.categoryKey ? AWARD_CATEGORY_BY_KEY[hook.categoryKey] : null;
+  const bestleistung = cat?.bestleistung ?? "den größten Solar-Ausbau";
+  const thema = cat?.thema ?? "Solar-Ausbau";
   switch (hook.kind) {
     case "sieger":
       return {
-        betreff: `${n.gemeinde} ist ${titel} ${wo}`,
-        einstieg: `${n.gemeinde} ist ${wo} die Nummer 1 bei „${titel}“ — Platz 1 von ${hook.total} Gemeinden.`,
+        betreff: `${n.gemeinde} hat ${bestleistung} ${wo}`,
+        einstieg: `${n.gemeinde} hat ${bestleistung} ${wo} — Platz 1 von ${hook.total} Gemeinden.`,
       };
     case "podium":
       return {
-        betreff: `${n.gemeinde}: Platz ${hook.rank} ${wo} bei „${titel}“`,
-        einstieg: `${n.gemeinde} gehört ${wo} zur Spitze: Platz ${hook.rank} von ${hook.total} bei „${titel}“.`,
+        betreff: `${n.gemeinde}: Platz ${hook.rank} ${wo} bei ${thema}`,
+        einstieg: `${n.gemeinde} liegt bei ${thema} ${wo} auf Platz ${hook.rank} von ${hook.total} Gemeinden.`,
       };
     case "perzentil": {
       const pct = Math.max(1, Math.round((hook.percentile ?? 0.1) * 100));
       return {
-        betreff: `${n.gemeinde} gehört bei „${titel}“ zu den besten ${pct} %`,
-        einstieg: `${n.gemeinde} liegt bei „${titel}“ ${wo} unter den besten ${pct} % (Platz ${hook.rank} von ${hook.total}).`,
+        betreff: `${n.gemeinde} gehört bei ${thema} zu den besten ${pct} %`,
+        einstieg: `${n.gemeinde} liegt bei ${thema} ${wo} unter den besten ${pct} % — Platz ${hook.rank} von ${hook.total} Gemeinden.`,
       };
     }
     default:

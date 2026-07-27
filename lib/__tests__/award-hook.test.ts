@@ -102,14 +102,45 @@ describe("selectHook", () => {
 });
 
 describe("hookText", () => {
-  it("baut Betreff und Einstieg je Aufhänger-Art", () => {
-    const sieg = hookText(
-      { kind: "sieger", categoryKey: "balkon-pk", categoryLabel: "Balkon-Pionier", traeger: "buerger", level: "kreis", scopeId: "09111", rank: 1, total: 34, percentile: null, value: 65 },
+  const sieger = (key: string, label: string) =>
+    hookText(
+      { kind: "sieger", categoryKey: key, categoryLabel: label, traeger: "buerger", level: "kreis", scopeId: "09111", rank: 1, total: 34, percentile: null, value: 65 },
       names,
     );
-    expect(sieg.betreff).toContain("Musterdorf ist Balkon-Pionier im Landkreis Musterkreis");
-    expect(sieg.einstieg).toContain("Platz 1 von 34");
 
+  it("nennt die Messgröße im Klartext, nicht den internen Titel", () => {
+    // Vorher stand hier der Titel: „Musterdorf ist Balkon-Pionier im Landkreis".
+    // Der sagt nicht, was gemessen wurde, und die Auszeichnung existiert
+    // öffentlich nirgends — eine Verwaltung liest das als Marketing-Erfindung.
+    const s = sieger("balkon-pk", "Balkon-Pionier");
+    expect(s.betreff).toBe("Musterdorf hat die meisten Balkonkraftwerke je 1.000 Einwohner im Landkreis Musterkreis");
+    expect(s.einstieg).toContain("Platz 1 von 34");
+  });
+
+  it("lässt die internen Titel NIRGENDS nach außen", () => {
+    // Blocker: sobald ein Kunstwort im Brief steht, müssten wir es öffentlich
+    // führen, pflegen und verteidigen. Gilt für jede Kategorie.
+    for (const [key, label] of [
+      ["balkon-pk", "Balkon-Pionier"],
+      ["batterie-privat-abs", "Speicher-Hauptstadt"],
+      ["dach-privat-pk", "Solardach-Spitzenreiter"],
+      ["dach-privat-abs", "Solardach-Hauptstadt"],
+    ] as const) {
+      const s = sieger(key, label);
+      expect(`${s.betreff} ${s.einstieg}`).not.toContain(label);
+    }
+  });
+
+  it("formuliert Platzierungen unterhalb von Platz 1 ohne Superlativ", () => {
+    const p = hookText(
+      { kind: "podium", categoryKey: "balkon-pk", categoryLabel: "Balkon-Pionier", traeger: "buerger", level: "kreis", scopeId: "09111", rank: 3, total: 34, percentile: null, value: 40 },
+      names,
+    );
+    expect(p.betreff).toBe("Musterdorf: Platz 3 im Landkreis Musterkreis bei Balkonkraftwerke je 1.000 Einwohner");
+    expect(p.betreff).not.toContain("die meisten");
+  });
+
+  it("fällt ohne Aufhänger auf einen neutralen Satz zurück", () => {
     const neutral = hookText({ kind: "neutral", categoryKey: null, categoryLabel: null, traeger: null, level: null, scopeId: null, rank: null, total: null, percentile: null, value: null }, names);
     expect(neutral.betreff).toContain("So steht Musterdorf beim Solarausbau da");
   });

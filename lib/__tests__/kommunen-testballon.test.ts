@@ -45,8 +45,7 @@ describe("Versandliste", () => {
     expect(r.bericht.grossGewaehlt).toBe(2);
   });
 
-  it("Charge 1 ist repräsentativ, nicht nur die größten", () => {
-    // Sonst testet man an Großstädten und versendet dann an Dörfer.
+  it("Charge 1 nimmt die stärksten Aufhänger, anteilig aus beiden Größen", () => {
     const kandidaten = [
       ...Array.from({ length: 10 }, (_, i) => K({ regionId: `klein${i}`, population: 2000, hookRang: i + 1, hookTotal: 10 })),
       ...Array.from({ length: 10 }, (_, i) => K({ regionId: `gross${i}`, population: 50_000, hookRang: i + 1, hookTotal: 10 })),
@@ -55,6 +54,8 @@ describe("Versandliste", () => {
     expect(c1).toHaveLength(3);
     expect(c1.filter((g) => g.regionId.startsWith("klein"))).toHaveLength(2);
     expect(c1.filter((g) => g.regionId.startsWith("gross"))).toHaveLength(1);
+    // die stärksten, also Rang 1 und 2 je Topf
+    expect(c1.map((g) => g.regionId).sort()).toEqual(["gross0", "klein0", "klein1"]);
   });
 
   it("meldet eine nicht erreichte Mischung, statt sie still zu füllen", () => {
