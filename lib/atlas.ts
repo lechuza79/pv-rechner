@@ -117,6 +117,25 @@ function asRegion(row: unknown): AtlasRegion {
   return { ...r, name: regionDisplayName(r.name) };
 }
 
+/**
+ * Haltbarkeit der Gebiets-STAMMDATEN (Name, Slug, Zugehörigkeit, Einwohner) —
+ * bewusst getrennt von den MaStR-Anlagenzahlen, die bei 1 h bleiben.
+ *
+ * Warum getrennt: Beide lagen bei 1 h, obwohl es zwei völlig verschiedene Dinge
+ * sind. Anlagenzahlen wechseln mit dem monatlichen Datenlauf; das Verzeichnis
+ * wechselt bei Gebietsreformen (zum 1. Januar) und Einwohner-Fortschreibungen.
+ * Stündlich neu zu laden brachte nichts und kostete auf jeder Atlas-Seite
+ * mehrere serielle Datenbank-Roundtrips — bei nebenläufigen Kaltrendern genau
+ * die Reads, die in den 8-s-Fast-Fail liefen (0,7 % 500er, 24.–27.07.2026).
+ *
+ * Warum 7 Tage und nicht 30: Die Einwohnerzahl ist der Nenner der Pro-Kopf-Werte.
+ * Wird sie mit dem Datenlauf fortgeschrieben, sollen neue Anlagen nicht länger
+ * als nötig auf einen alten Nenner treffen — 7 Tage liegt sicher unter dem
+ * monatlichen Datenlauf-Abstand und ist trotzdem 168× seltener als vorher.
+ * Ein Deploy leert den Cache ohnehin.
+ */
+const STAMMDATEN_TTL = 60 * 60 * 24 * 7;
+
 async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | null> {
   const supabase = await db();
   const { data, error } = await withDbTimeout(
@@ -129,8 +148,15 @@ async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | nu
 
 // Regions-Identität (Name, Einwohner, Slug) ist stabil — cachen spart die
 // wiederholten Lookups (Kreis-, Land-, Deutschland-Region auf jeder Seite).
+//
+// Bewusst deutlich länger als die Anlagenzahlen (STAMMDATEN_TTL statt 1 h): das
+// hier ist das Gebietsverzeichnis (wer heißt wie, gehört wohin, wie viele
+// Einwohner), kein MaStR-Messwert. Es ändert sich bei Gebietsreformen, also
+// praktisch nie, wurde aber stündlich neu geholt — und weil sich 11k Gemeinden
+// nur ~400 Kreise und 16 Bundesländer teilen, ist genau dieser Cache der Hebel:
+// greift er, kostet eine Gemeindeseite die Vorfahren-Lookups gar nicht mehr.
 export const getRegionById = unstable_cache(getRegionByIdUncached, ["region-by-id-v1"], {
-  revalidate: 3600,
+  revalidate: STAMMDATEN_TTL,
 });
 
 /** Ein Suchtreffer für die Karten-Suche: `label` ist die anzuzeigende Gattung
@@ -219,8 +245,11 @@ async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | n
 
 // Slug→Region ist stabil und wird pro Seite doppelt aufgelöst (generateMetadata
 // + Render) — cachen dedupt das und spart die N seriellen Segment-Lookups.
+// Stammdaten-Haltbarkeit (siehe STAMMDATEN_TTL): eine Gemeindeseite löst drei
+// Segmente einzeln und nacheinander auf (Bundesland → Kreis → Gemeinde); das war
+// der häufigste Verursacher der Atlas-Timeouts.
 export const resolveSlugPath = unstable_cache(resolveSlugPathUncached, ["resolve-slug-v1"], {
-  revalidate: 3600,
+  revalidate: STAMMDATEN_TTL,
 });
 
 /** Ancestors from Deutschland down to (but excluding) the region — for breadcrumbs. */
