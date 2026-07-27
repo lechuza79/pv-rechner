@@ -29,7 +29,7 @@
 
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -108,8 +108,14 @@ async function setup(): Promise<void> {
     -- idempotent). Die MaStR-Nummer ist der Schlüssel für den wiederholten
     -- Import: sie bleibt gleich, der Firmenname kann sich ändern.
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS mastr_nummer text;
-    CREATE UNIQUE INDEX IF NOT EXISTS idx_utilities_mastr ON utilities (mastr_nummer)
-      WHERE mastr_nummer IS NOT NULL;
+    -- Voller Unique-Index, KEIN Teil-Index: Ein Teil-Index (… WHERE mastr_nummer
+    -- IS NOT NULL) taugt nicht als Konfliktziel eines Upserts — Postgres kann ihn
+    -- nur nutzen, wenn dieselbe Bedingung mit angegeben wird, und das kann der
+    -- Client nicht. Leere Werte stören hier nicht: Postgres behandelt sie in
+    -- Unique-Indizes als voneinander verschieden, von Hand angelegte Versorger
+    -- ohne Registernummer bleiben also nebeneinander möglich.
+    DROP INDEX IF EXISTS idx_utilities_mastr;
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_utilities_mastr ON utilities (mastr_nummer);
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS telefon text;
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS plz text;
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS ort text;
@@ -223,7 +229,39 @@ function normWebsite(s: string | undefined): string | null {
   return /^https?:\/\//i.test(roh) ? roh : `https://${roh}`;
 }
 
-async function importRegister(dry: boolean): Promise<void> {
+/** Zwischenstand des Registerlaufs. Der Lauf liest 22 GB und dauert rund 20
+ *  Minuten; ohne Ablage würde jeder Fehler beim Schreiben ihn komplett
+ *  wiederholen. Genau das ist beim ersten Versuch passiert. */
+type Zwischenstand = {
+  gelesen_am: string;
+  akteure: Akteur[];
+  gebiete: Record<string, { ags: string; n: number; anteil: number }[]>;
+};
+
+const ZWISCHEN_DATEI = resolve(SCRIPT_DIR, ".cache", "utilities", "registerlauf.json");
+
+function ladeZwischenstand(): Zwischenstand | null {
+  if (!existsSync(ZWISCHEN_DATEI)) return null;
+  try {
+    return JSON.parse(readFileSync(ZWISCHEN_DATEI, "utf8")) as Zwischenstand;
+  } catch {
+    return null;
+  }
+}
+
+function speichereZwischenstand(z: Zwischenstand): void {
+  mkdirSync(dirname(ZWISCHEN_DATEI), { recursive: true });
+  writeFileSync(ZWISCHEN_DATEI, JSON.stringify(z));
+  log(`Zwischenstand abgelegt (${ZWISCHEN_DATEI.split("/").slice(-2).join("/")})`);
+}
+
+async function importRegister(dry: boolean, neuLesen: boolean): Promise<void> {
+  const zwischen = neuLesen ? null : ladeZwischenstand();
+  if (zwischen) {
+    log(`Zwischenstand vom ${new Date(zwischen.gelesen_am).toLocaleString("de-DE")} wird verwendet (--refetch liest neu)`);
+    await schreibeRegister(zwischen.akteure, new Map(Object.entries(zwischen.gebiete)), dry);
+    return;
+  }
   const { findCachedZip, listZipEntries, streamXmlRecords } = await import("./mastr-bnetza-refresh");
   const zipPath = findCachedZip();
   log(`Registerexport: ${zipPath.split("/").pop()}`);
@@ -322,16 +360,31 @@ async function importRegister(dry: boolean): Promise<void> {
     gebiete.set(nr, liste);
   }
 
+  speichereZwischenstand({
+    gelesen_am: new Date().toISOString(),
+    akteure: Array.from(akteure.values()),
+    gebiete: Object.fromEntries(gebiete),
+  });
+
+  await schreibeRegister(Array.from(akteure.values()), gebiete, dry);
+}
+
+// ── Schreiben ─────────────────────────────────────────────────────────────────
+
+async function schreibeRegister(
+  akteure: Akteur[],
+  gebiete: Map<string, { ags: string; n: number; anteil: number }[]>,
+  dry: boolean,
+): Promise<void> {
   if (dry) {
-    log(`Trockenlauf: ${akteure.size} Versorger, ${gebiete.size} mit Gebiet — nichts geschrieben`, "ok");
+    log(`Trockenlauf: ${akteure.length} Versorger, ${gebiete.size} mit Gebiet — nichts geschrieben`, "ok");
     return;
   }
 
-  // ── 5. Schreiben ────────────────────────────────────────────────────────────
   const supabase = await makeClient();
   const gueltigeGemeinden = await ladeGemeindeIds(supabase);
 
-  const zeilen = Array.from(akteure.values()).map((a) => {
+  const zeilen = akteure.map((a) => {
     const gebiet = (gebiete.get(a.mastr_nummer) ?? []).filter(
       (g) => g.n >= MIN_ANLAGEN && g.anteil >= MIN_ANTEIL && gueltigeGemeinden.has(g.ags),
     );
@@ -497,18 +550,38 @@ async function clearDemo(): Promise<void> {
 
 // ─── Bestand ──────────────────────────────────────────────────────────────────
 
+/** Alle Zeilen einer Tabelle, seitenweise.
+ *  Ein einfaches `select()` liefert nur die ersten 1.000 Zeilen — der Bericht
+ *  meldete damit „1.000 Zuordnungen" bei 11.407 tatsächlichen und daraufhin 924
+ *  Versorger als angeblich ohne Gebiet. Ein Bericht, der still bei 1.000 abschneidet,
+ *  ist schlimmer als keiner. */
+async function alleZeilen(supabase: SupabaseLike, tabelle: string, spalten: string): Promise<Record<string, unknown>[]> {
+  const out: Record<string, unknown>[] = [];
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await supabase.from(tabelle).select(spalten).range(von, von + 999);
+    if (error) throw new Error(`${tabelle}: ${error.message}`);
+    if (!data?.length) break;
+    out.push(...data);
+    if (data.length < 1000) break;
+  }
+  return out;
+}
+
 async function stats(): Promise<void> {
   const supabase = await makeClient();
 
-  const { data: utils, error: e1 } = await supabase.from("utilities").select("id, name, typ, status");
-  if (e1) throw new Error(e1.message);
-  const { data: links, error: e2 } = await supabase
-    .from("utility_communes")
-    .select("utility_id, commune_id, rolle, zuordnung_quelle");
-  if (e2) throw new Error(e2.message);
-
-  const u = utils ?? [];
-  const l = links ?? [];
+  const u = (await alleZeilen(supabase, "utilities", "id, name, typ, status")) as {
+    id: string;
+    name: string;
+    typ: string;
+    status: string;
+  }[];
+  const l = (await alleZeilen(supabase, "utility_communes", "utility_id, commune_id, rolle, zuordnung_quelle")) as {
+    utility_id: string;
+    commune_id: string;
+    rolle: string;
+    zuordnung_quelle: string;
+  }[];
   log(`${u.length} Versorger erfasst`);
   for (const typ of ["stadtwerk", "regionalversorger", "genossenschaft"]) {
     const n = u.filter((r) => r.typ === typ).length;
@@ -517,7 +590,7 @@ async function stats(): Promise<void> {
 
   const gebiet = l.filter((r) => r.rolle !== "beteiligung");
   log(`${gebiet.length} Gemeinde-Zuordnungen im Gebiet (${l.length} insgesamt)`);
-  for (const q of ["verlinkt", "recherchiert", "vermutet"]) {
+  for (const q of ["gemessen", "verlinkt", "recherchiert", "vermutet"]) {
     const n = gebiet.filter((r) => r.zuordnung_quelle === q).length;
     log(`  ${q}: ${n}`);
   }
@@ -553,14 +626,15 @@ async function main(): Promise<void> {
         "  --stats       Bestand + Deckung melden\n" +
         "  --seed-demo   12 Beispieldatensätze (Namen Platzhalter, Zahlen echt)\n" +
         "  --clear-demo  Beispieldatensätze wieder entfernen\n" +
-        "  --dry         nichts schreiben",
+        "  --dry         nichts schreiben\n" +
+        "  --refetch     Registerexport neu lesen statt Zwischenstand",
       "err",
     );
     process.exit(1);
   }
   if (doSetup) await setup();
   if (doClear) await clearDemo();
-  if (doImport) await importRegister(dry);
+  if (doImport) await importRegister(dry, argv.includes("--refetch"));
   if (doSeed) await seedDemo();
   if (doStats) await stats();
   log("Fertig", "ok");

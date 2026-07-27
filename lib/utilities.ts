@@ -472,6 +472,36 @@ export type UtilityHighlights = {
   zubauAnteil: Kennzahl;
 };
 
+/** Anteil einer Erzeugerart an der installierten Erzeugungsleistung des Gebiets. */
+export type Erzeugungsanteil = { art: string; kw: number; anteil: number };
+
+/**
+ * Woraus die Erzeugungsleistung im Gebiet besteht.
+ *
+ * Das ist ein echter Anteil mit echtem Nenner: die Summe der installierten
+ * Leistung im Gebiet. Es ist ausdrücklich NICHT der Anteil am Strommix — dafür
+ * bräuchte es Verbrauch und Erzeugungsmengen, nicht Nennleistungen.
+ *
+ * Alles, was hier gezählt wird, ist erneuerbar (Solar, Wind, Biomasse, Wasser).
+ * Konventionelle Erzeugung steht im Register in eigenen Dateien, die unsere
+ * Auswertung bisher nicht liest — deshalb ist die Gesamtsumme hier gleichbedeutend
+ * mit „installierte erneuerbare Leistung", und ein „Anteil erneuerbar" wäre
+ * zwangsläufig 100 %. Das wäre keine Aussage, sondern ein Artefakt.
+ */
+export function erzeugungsMix(area: UtilityArea): Erzeugungsanteil[] {
+  const teile = [
+    { art: "Solar", kw: area.solarKwp },
+    { art: "Wind", kw: area.stats.windKwp },
+    { art: "Biomasse", kw: area.stats.biomasseKwp },
+    { art: "Wasser", kw: area.stats.wasserKwp },
+  ].filter((t) => t.kw > 0);
+  const summe = teile.reduce((s, t) => s + t.kw, 0);
+  if (summe <= 0) return [];
+  return teile
+    .map((t) => ({ ...t, anteil: t.kw / summe }))
+    .sort((a, b) => b.kw - a.kw);
+}
+
 /**
  * Die drei Kennzahlen, die in der Tabelle hervorgehoben werden.
  *

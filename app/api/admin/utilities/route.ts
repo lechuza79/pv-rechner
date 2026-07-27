@@ -5,6 +5,7 @@ import { loadUtilityBundle, hookFor } from "../../../../lib/utilities-server";
 import {
   UTILITY_TYP_LABEL,
   computeHighlights,
+  erzeugungsMix,
   utilityCategoryLabel,
   type UtilityArea,
   type UtilityTyp,
@@ -42,6 +43,14 @@ function toView(
     atlasUrl,
     /** Hervorgehobene Kennzahlen, jeweils mit ihrem Vergleichsmaßstab. */
     highlights: computeHighlights(area, alle.length ? alle : [area]),
+    /** Woraus sich die Erzeugungsleistung zusammensetzt — echter Anteil an der
+     *  installierten Leistung im Gebiet, NICHT am Strommix. */
+    mix: erzeugungsMix(area).map((t) => ({
+      art: t.art,
+      anzeige: fmtMixLeistung(t.kw),
+      anteil: t.anteil,
+      prozent: `${(t.anteil * 100).toLocaleString("de-DE", { maximumFractionDigits: 0 })} %`,
+    })),
     name: u.name,
     typ: u.typ,
     typLabel: UTILITY_TYP_LABEL[u.typ],

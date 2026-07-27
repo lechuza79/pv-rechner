@@ -65,6 +65,7 @@ type Versorger = {
   werte: Werte;
   aufhaenger: string;
   aufhaengerHinweis: string;
+  mix: { art: string; anzeige: string; anteil: number; prozent: string }[];
 };
 
 type Zuordnung = {
@@ -97,6 +98,15 @@ type ErfassungsZeile = {
   website: string | null;
   kontaktUrl: string | null;
   versorger: { id: string; name: string }[];
+};
+
+/** Farben der Erzeugerarten — dieselbe Semantik wie in den Energie-Charts:
+ *  Grün-Töne für Erneuerbare, nach Technologie unterschieden. */
+const ERZEUGER_FARBE: Record<string, string> = {
+  Solar: v("--color-energy-solar"),
+  Wind: v("--color-energy-wind"),
+  Biomasse: v("--color-energy-biomass"),
+  Wasser: v("--color-energy-hydro"),
 };
 
 // ─── Cockpit ──────────────────────────────────────────────────────────────────
@@ -473,6 +483,37 @@ function Detail({
           aria-label={`Notiz ${u.name}`}
         />
       </div>
+
+      <Abschnitt titel="Zusammensetzung der Erzeugungsleistung">
+        {u.mix.length === 0 ? (
+          <p style={{ color: v("--color-text-muted") }}>Keine Erzeugungsanlagen im Gebiet erfasst.</p>
+        ) : (
+          <>
+            <div style={{ display: "flex", height: 10, borderRadius: 999, overflow: "hidden", border: `1px solid ${v("--color-border")}` }}>
+              {u.mix.map((t) => (
+                <div
+                  key={t.art}
+                  style={{ width: `${t.anteil * 100}%`, background: ERZEUGER_FARBE[t.art] ?? v("--color-text-muted") }}
+                  title={`${t.art}: ${t.anzeige} (${t.prozent})`}
+                />
+              ))}
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: space.md, marginTop: space.xs, fontSize: 12 }}>
+              {u.mix.map((t) => (
+                <span key={t.art} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  <span style={{ width: 9, height: 9, borderRadius: 2, background: ERZEUGER_FARBE[t.art] ?? v("--color-text-muted") }} />
+                  {t.art} <strong style={{ fontFamily: v("--font-mono") }}>{t.prozent}</strong>
+                  <span style={{ color: v("--color-text-muted") }}>({t.anzeige})</span>
+                </span>
+              ))}
+            </div>
+            <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>
+              Anteil an der installierten Leistung im Gebiet — nicht am Strommix. Gezählt wird, was
+              erneuerbar erzeugt; konventionelle Anlagen wertet unsere Auswertung nicht aus.
+            </p>
+          </>
+        )}
+      </Abschnitt>
 
       <Abschnitt titel="Kennzahlen im Gebiet">
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: space.sm }}>
