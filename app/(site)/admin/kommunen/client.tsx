@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../../../lib/theme";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
+import { OUTREACH_STATUS, OUTREACH_STATUS_LABEL } from "../../../../lib/outreach-status";
 import Modal from "../../../../components/Modal";
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
@@ -33,18 +34,10 @@ function region(l: Lead): Region {
 }
 
 // ─── Status-Katalog ───────────────────────────────────────────────────────────
+// Geteilt mit dem Versorger-Cockpit (lib/outreach-status.ts) — eine Quelle.
 
-type Token = Parameters<typeof v>[0];
-
-const STATUS: { key: string; label: string; color: Token; bg: Token }[] = [
-  { key: "offen", label: "Offen", color: "--color-text-secondary", bg: "--color-bg-muted" },
-  { key: "entwurf", label: "Entwurf", color: "--color-accent", bg: "--color-accent-dim" },
-  { key: "kontaktiert", label: "Kontaktiert", color: "--color-accent-dark", bg: "--color-accent-dim" },
-  { key: "geantwortet", label: "Geantwortet", color: "--color-positive", bg: "--color-bg-muted" },
-  { key: "zu", label: "Zu", color: "--color-text-muted", bg: "--color-bg-muted" },
-  { key: "gesperrt", label: "Gesperrt", color: "--color-negative", bg: "--color-bg-muted" },
-];
-const STATUS_LABEL: Record<string, string> = Object.fromEntries(STATUS.map((s) => [s.key, s.label]));
+const STATUS = OUTREACH_STATUS;
+const STATUS_LABEL = OUTREACH_STATUS_LABEL;
 
 // ─── Cockpit ──────────────────────────────────────────────────────────────────
 

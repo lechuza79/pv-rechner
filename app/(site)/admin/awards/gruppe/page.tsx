@@ -3,9 +3,9 @@ import Link from "next/link";
 import { createClient } from "../../../../../lib/supabase-server-component";
 import { loadAwardStats, loadKreisNames } from "../../../../../lib/awards-server";
 import { bundeslandByAgs } from "../../../../../lib/mastr-regions";
-import { AWARD_CATEGORY_BY_KEY, rankGemeinden, scopeIdOf, type AwardScopeLevel, type MetricFormat } from "../../../../../lib/awards";
+import { AWARD_CATEGORY_BY_KEY, formatAwardValue, rankGemeinden, scopeIdOf, type AwardScopeLevel } from "../../../../../lib/awards";
 import { v, space, pad } from "../../../../../lib/theme";
-import { fmtPvLeistung, fmtWattProKopf, fmtSpeicherKwh } from "../../../../../lib/atlas-format";
+
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
   .split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
@@ -15,17 +15,6 @@ export const metadata = { title: "Award-Gruppe – Solar Check Admin", robots: {
 const SCOPE_OF: Record<string, AwardScopeLevel> = { kreis: "landkreis", land: "bundesland", bund: "de" };
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 const MAX_ROWS = 120;
-
-function formatValue(value: number, format: MetricFormat): string {
-  switch (format) {
-    case "wattProKopf": return fmtWattProKopf(value);
-    case "pvLeistung": return fmtPvLeistung(value);
-    case "speicherKwh": return fmtSpeicherKwh(value);
-    case "count": return `${nf(value)} Anlagen`;
-    case "countPer1000": return `${value.toLocaleString("de-DE", { maximumFractionDigits: 1 })} je 1.000 Ew.`;
-    case "whProKopf": return `${nf(value)} Wh/Kopf`;
-  }
-}
 
 export default async function GruppePage({
   searchParams,
@@ -79,7 +68,7 @@ export default async function GruppePage({
             }}>
               <span style={{ fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-text-muted"), textAlign: "right" }}>{r.rank}.</span>
               <span style={{ fontSize: 14, fontWeight: isMark ? 700 : 500, color: v("--color-text-primary") }}>{r.name}</span>
-              <span style={{ fontFamily: v("--font-mono"), fontSize: 13, color: isMark ? v("--color-accent") : v("--color-text-secondary") }}>{formatValue(r.value, cat.format)}</span>
+              <span style={{ fontFamily: v("--font-mono"), fontSize: 13, color: isMark ? v("--color-accent") : v("--color-text-secondary") }}>{formatAwardValue(r.value, cat.format)}</span>
             </li>
           );
         })}
@@ -89,7 +78,7 @@ export default async function GruppePage({
             <li style={{ display: "grid", gridTemplateColumns: "48px 1fr auto", gap: space.md, alignItems: "baseline", padding: pad("xs", "md"), borderRadius: v("--radius-sm"), background: v("--color-accent-dim") }}>
               <span style={{ fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-text-muted"), textAlign: "right" }}>{markRank.rank}.</span>
               <span style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary") }}>{markRank.name}</span>
-              <span style={{ fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-accent") }}>{formatValue(markRank.value, cat.format)}</span>
+              <span style={{ fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-accent") }}>{formatAwardValue(markRank.value, cat.format)}</span>
             </li>
           </>
         )}
