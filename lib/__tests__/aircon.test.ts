@@ -115,10 +115,13 @@ describe("acquisitionCost", () => {
   const porta = CFG.devices.find(d => d.id === "portasplit")!;
   const split = CFG.devices.find(d => d.id === "split")!;
 
+  // Gegen die Config gerechnet, nicht gegen abgetippte Beträge: geprüft wird das
+  // Skalieren je Raum. Ein belegter Preis-Update darf hier nicht rot werden — der
+  // Preis hat genau eine Quelle (aircon-config), der Test ist keine zweite Kopie.
   it("scales per-room devices by the room counter", () => {
-    expect(acquisitionCost(mono, 1)).toBe(400);
-    expect(acquisitionCost(mono, 3)).toBe(1200);
-    expect(acquisitionCost(porta, 2)).toBe(1600);
+    expect(acquisitionCost(mono, 1)).toBe(mono.pricePerUnit);
+    expect(acquisitionCost(mono, 3)).toBe(mono.pricePerUnit! * 3);
+    expect(acquisitionCost(porta, 2)).toBe(porta.pricePerUnit! * 2);
   });
 
   it("prices the fixed split as base + per indoor unit (per room), not per kW", () => {
