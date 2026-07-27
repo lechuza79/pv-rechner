@@ -55,8 +55,13 @@ heutige Datum.
 >    biogenes Flüssiggas, Wasserstoff und Derivate)?
 > 3. **§ 42a / Quotengesetz:** Ist das angekündigte Gesetz zur Grüngas- und
 >    Grünheizölquote für Inverkehrbringer vorgelegt oder beschlossen? Wenn ja:
->    welche Quoten mit welchen Jahren? Das ist der Punkt, an dem aus der heutigen
->    IW-Annahme („100 % bis 2045") echte Gesetzeszahlen werden könnten.
+>    welche Quoten mit welchen Jahren, und ab wann (Start war mit 2028 angekündigt)?
+>    Das ist der Punkt, an dem aus der heutigen IW-Annahme („100 % bis 2045") echte
+>    Gesetzeszahlen werden könnten — und der einzige Strang, der auch
+>    **Bestandsheizungen** verteuert (die Quote setzt beim Brennstoff an, nicht bei
+>    der Anlage). Kommt sie, muss der Ratgeber-Abschnitt „Und wenn ich schon eine
+>    Gasheizung habe?" mit echten Zahlen nachgezogen werden — bis dahin steht dort
+>    bewusst „belastbar rechnen lässt sich das heute noch nicht".
 >
 > Für JEDE Angabe die Fundstelle (URL + Datum) nennen. Wo du nichts Amtliches
 > findest, schreibe „nicht belegbar" — rate nicht und nimm keinen Presseartikel

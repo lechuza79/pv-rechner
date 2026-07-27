@@ -24,10 +24,17 @@
 // 15 % (2030), 30 % (2035), 60 % (2040). Eine 100-%-Stufe gibt es dort NICHT. Der
 // Sprung auf 100 % bis 2045 ist eine Modellannahme des IW-Reports, abgeleitet aus
 // § 42a GModG: der kündigt ein gesondertes Gesetz an, das Inverkehrbringer von Gas,
-// Öl und Flüssiggas verpflichtet, ab 2045 vollständig auf klimaneutrale Brennstoffe
-// umzustellen. Dieses Quotengesetz ist noch nicht beschlossen (soll bis 01.12.2026
-// vorgelegt werden). Jede Zahl, die aus dem Jahr 2045 stammt, ist damit
-// IW-Annahme — nie als Gesetzesfolge beschriften.
+// Öl und Flüssiggas verpflichtet, ab 2028 schrittweise und ab 2045 vollständig auf
+// klimaneutrale Brennstoffe umzustellen. Dieses Quotengesetz ist noch nicht
+// beschlossen (soll bis 01.12.2026 vorgelegt werden). Jede Zahl, die aus dem Jahr
+// 2045 stammt, ist damit IW-Annahme — nie als Gesetzesfolge beschriften.
+//
+// GELTUNGSBEREICH — die zweite Falle: Die Bio-Treppe erfasst nur Heizungen, die NACH
+// Inkrafttreten des GModG eingebaut werden. Die Quote nach § 42a setzt dagegen beim
+// BRENNSTOFF an (Inverkehrbringer) und trifft damit auch Bestandsheizungen. „Wer
+// schon eine Gasheizung hat, hat Bestandsschutz" ist deshalb nur für die Bio-Treppe
+// richtig — nicht für die Beimischung insgesamt. Wir rechnen bewusst NUR die
+// Bio-Treppe (Neuanlagen); die Quote hat noch keine belastbaren Zahlen.
 //
 // Referenz-Gebäude: MFH-Werte des Reports (Beispielhaushalt MFH1). Der Report
 // weist für EFH minimal andere Ausgangswerte aus (Erdgas 5,5 statt 5,2; Netz 2,6
@@ -68,7 +75,10 @@ export interface GreenGasConfig {
 
 export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Gesetzliche Stufen (§ 43 GModG): 2029: 10 %, 2030: 15 %, 2035: 30 %, 2040: 60 %.
-  // 2028 „bis zu 1 %" → als 0 angesetzt (konservativ, wie Abb. 4-3).
+  // Die Bio-Treppe hat KEINE 2028er-Stufe. Das „bis zu 1 % ab 2028", das in
+  // Berichten kursiert, gehört zur Quote nach § 42a (Inverkehrbringer-Ebene) und
+  // ist in ihrer Höhe noch nicht gesetzlich festgelegt — hier deshalb konservativ
+  // als 0 angesetzt (wie im IW-Report, Abb. 4-3).
   // 2045: 100 % ist KEINE Gesetzesstufe, sondern die IW-Annahme aus § 42a (siehe oben).
   quoteStops: { 2026: 0, 2028: 0, 2029: 0.1, 2030: 0.15, 2035: 0.3, 2040: 0.6, 2045: 1.0 },
   erdgasCt2026: 5.2,

@@ -263,7 +263,11 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
     },
     {
       q: "Was ist die Grüngas-Pflicht?",
-      a: `Wer ab 2029 eine neue Gasheizung betreibt, muss einen steigenden Anteil klimafreundlicher Brennstoffe beimischen — die sogenannte Bio-Treppe (§ 43 GModG). Das Gesetz nennt vier Stufen: ${bioTreppeStufenText("Prozent")}. Eine 100-Prozent-Stufe steht dort nicht; dass Heizungsbrennstoffe ab 2045 vollständig klimaneutral sein sollen, folgt aus einer eigenen Ankündigung des Gesetzes (§ 42a GModG), für die ein gesondertes Quotengesetz erst noch kommen muss. Anrechenbar sind neben Biomethan auch Bioöl, biogenes Flüssiggas sowie Wasserstoff und daraus hergestellte Derivate. Biomethan kostet rund doppelt so viel wie Erdgas, deshalb steigt der Gaspreis deutlich stärker als durch die normale Teuerung.`,
+      a: `Die Bio-Treppe (§ 43 GModG) gilt für Gas- und Ölheizungen, die nach dem Inkrafttreten des Gesetzes eingebaut werden. Wer eine solche Heizung betreibt, muss ab 2029 einen steigenden Anteil klimafreundlicher Brennstoffe beimischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText("Prozent")}. Eine 100-Prozent-Stufe steht dort nicht; dass Heizungsbrennstoffe ab 2045 vollständig klimaneutral sein sollen, folgt aus einer eigenen Ankündigung des Gesetzes (§ 42a GModG), für die ein gesondertes Quotengesetz erst noch kommen muss. Anrechenbar sind neben Biomethan auch Bioöl, biogenes Flüssiggas sowie Wasserstoff und daraus hergestellte Derivate. Biomethan kostet rund doppelt so viel wie Erdgas, deshalb steigt der Gaspreis deutlich stärker als durch die normale Teuerung.`,
+    },
+    {
+      q: "Gilt die Grüngas-Pflicht auch für meine bestehende Gasheizung?",
+      a: `Die Bio-Treppe nicht — sie erfasst nur Heizungen, die nach dem Inkrafttreten des GModG eingebaut werden. Ganz verschont bleiben Bestandsanlagen aber voraussichtlich nicht: Dasselbe Gesetz kündigt in § 42a eine Grüngas- und Grünheizölquote an, die ab 2028 die Anbieter von Gas, Heizöl und Flüssiggas verpflichtet, ihrem Brennstoff schrittweise klimafreundliche Anteile beizumischen. Diese Quote setzt beim Brennstoff an, nicht bei der Heizung, und wirkt damit auch auf ältere Anlagen. Wie hoch sie ausfällt, ist noch offen: Die Ausgestaltung ist einem eigenen Gesetz vorbehalten, das bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} vorgelegt werden soll. Unsere Rechnung bildet deshalb nur die Bio-Treppe für neue Heizungen ab.`,
     },
     {
       q: "Wie viel teurer wird Gas dadurch?",

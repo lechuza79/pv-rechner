@@ -129,23 +129,33 @@ export default function GasheizungWaermepumpePage() {
         {/* ── Grüngas-Pflicht: Details ── */}
         <h2 style={S.h2}>Warum die neue Gasheizung zur Kostenfalle wird</h2>
         <p style={S.p}>
-          Wer ab 2029 eine neue Gasheizung betreibt, muss einen wachsenden Anteil
-          klimafreundlicher Brennstoffe beimischen — die <strong style={S.strong}>Bio-Treppe</strong>.
-          Das Gesetz nennt vier Stufen: {bioTreppeStufenText("Prozent")}. Anrechenbar sind neben
-          Biomethan auch Bioöl, biogenes Flüssiggas sowie Wasserstoff und daraus hergestellte
-          Derivate. Beim leitungsgebundenen Gas führt das in der Praxis zu Biomethan, und das
-          kostet rund doppelt so viel wie Erdgas. Dazu steigen die Gasnetzentgelte,
-          weil immer weniger Haushalte am Gasnetz hängen und dessen Fixkosten sich auf weniger
-          Schultern verteilen. Die Beimischpflicht trifft dabei <strong style={S.strong}>neu
-          eingebaute</strong> Gasheizungen ab 2029 — wer bereits eine Gasheizung hat, genießt
-          Bestandsschutz. Wer jetzt aber neu entscheidet, sollte mit diesen Kosten rechnen.
+          Die <strong style={S.strong}>Bio-Treppe</strong> gilt für Gas- und Ölheizungen, die{" "}
+          <strong style={S.strong}>nach dem Inkrafttreten des Gesetzes eingebaut</strong> werden.
+          Wer eine solche Heizung betreibt, muss ab 2029 einen wachsenden Anteil klimafreundlicher
+          Brennstoffe beimischen. Das Gesetz nennt vier Stufen: {bioTreppeStufenText("Prozent")}.
+          Anrechenbar sind neben Biomethan auch Bioöl, biogenes Flüssiggas sowie Wasserstoff und
+          daraus hergestellte Derivate. Beim leitungsgebundenen Gas führt das in der Praxis zu
+          Biomethan, und das kostet rund doppelt so viel wie Erdgas. Dazu steigen die
+          Gasnetzentgelte, weil immer weniger Haushalte am Gasnetz hängen und dessen Fixkosten
+          sich auf weniger Schultern verteilen.
         </p>
         <p style={S.p}>
-          Über 2040 hinaus schreibt die Bio-Treppe nichts fort — eine 100-Prozent-Stufe steht
-          nicht im Gesetz. Dass Heizungsbrennstoffe ab 2045 vollständig klimaneutral sein sollen,
-          ergibt sich aus einer eigenen Ankündigung des Gesetzes (§ 42a GModG): Die Quote für die
-          Brennstoff-Anbieter soll bis zum {GMODG_RECHTSSTAND.quoteGesetzBis} in einem gesonderten
-          Gesetz festgelegt werden. Solange das aussteht, ist alles, was für 2045 gerechnet wird,
+          <strong style={S.strong}>Und wenn ich schon eine Gasheizung habe?</strong> Von der
+          Bio-Treppe wird sie nicht erfasst — die trifft nur neu eingebaute Anlagen. Ganz
+          verschont bleiben Bestandsheizungen aber voraussichtlich nicht: Dasselbe Gesetz kündigt
+          in § 42a eine <strong style={S.strong}>Grüngas- und Grünheizölquote</strong> an, die ab
+          2028 nicht die Heizung, sondern die Anbieter von Gas, Heizöl und Flüssiggas
+          verpflichtet, ihrem Brennstoff schrittweise klimafreundliche Anteile beizumischen. Das
+          wirkt auf alle, die diesen Brennstoff kaufen — auch auf alte Anlagen. Wie hoch die Quote
+          ausfällt, steht allerdings noch nicht fest: Die Ausgestaltung ist einem eigenen Gesetz
+          vorbehalten, das bis zum {GMODG_RECHTSSTAND.quoteGesetzBis} vorgelegt werden soll.
+          Belastbar rechnen lässt sich damit heute noch nicht.
+        </p>
+        <p style={S.p}>
+          Aus derselben Ankündigung stammt die Zahl für 2045. Über 2040 hinaus schreibt die
+          Bio-Treppe nämlich nichts fort — eine 100-Prozent-Stufe steht nicht im Gesetz. Dass
+          Heizungsbrennstoffe ab 2045 vollständig klimaneutral sein sollen, ist das Ziel hinter
+          jener Quote. Solange sie nicht beschlossen ist, ist alles, was für 2045 gerechnet wird,
           eine Annahme — und keine Folge des heutigen Gesetzes.
         </p>
         <div style={S.card}>
