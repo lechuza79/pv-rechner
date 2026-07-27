@@ -1,20 +1,42 @@
 import { describe, it, expect } from "vitest";
 import { gasQuoteForYear, gasMixForYear, gasMixPriceEurForYear, gasMixSeries, heatCostComparisonSeries, annualHeatingCostSeries } from "../greengas";
+import { BIO_TREPPE_STUFEN, bioTreppeStufenText } from "../greengas-config";
 
 // Referenzwerte: IW-Report 36/2026, Tabelle 3-2 + Anhang Kap. 6 (Abb. 6-1/6-2).
 // Der Gas-Mix-Endkundenpreis (brutto) im Basisszenario für den MFH-Beispielhaushalt:
 //   2026: 10,9 ct/kWh  ·  2040: 19,5 ct/kWh  ·  2045: 23,7 ct/kWh
 // Bei 10.000 kWh Jahresverbrauch: 1.080 € (2026) → 1.952 € (2040) → 2.366 € (2045).
+// ACHTUNG: Alles ab 2041 beruht auf der IW-Annahme „100 % klimaneutral bis 2045".
+// Gesetzlich (§ 43 GModG) endet die Bio-Treppe bei 60 % im Jahr 2040.
 
 describe("Bio-Treppe (Grüngasquote)", () => {
-  it("folgt den gesetzlichen Stützstellen", () => {
+  it("folgt den gesetzlichen Stufen des § 43 GModG", () => {
+    // Die vier Stufen, die WIRKLICH im Gesetz stehen — mehr gibt es nicht.
     expect(gasQuoteForYear(2026)).toBe(0);
     expect(gasQuoteForYear(2028)).toBe(0);
     expect(gasQuoteForYear(2029)).toBeCloseTo(0.1, 5);
     expect(gasQuoteForYear(2030)).toBeCloseTo(0.15, 5);
     expect(gasQuoteForYear(2035)).toBeCloseTo(0.3, 5);
     expect(gasQuoteForYear(2040)).toBeCloseTo(0.6, 5);
+  });
+
+  it("die Stufen-Liste für Texte enthält genau die vier Gesetzesstufen", () => {
+    // Verhindert, dass in Ratgeber/FAQ/Rechner wieder eine erfundene Stufe auftaucht.
+    expect(BIO_TREPPE_STUFEN.map((s) => [s.year, s.pct])).toEqual([
+      [2029, 10],
+      [2030, 15],
+      [2035, 30],
+      [2040, 60],
+    ]);
+    expect(bioTreppeStufenText()).toBe("10 % (2029), 15 % (2030), 30 % (2035) und 60 % (2040)");
+    expect(bioTreppeStufenText()).not.toMatch(/100|2045/);
+  });
+
+  it("2045 = 100 % ist IW-Modellannahme, keine Gesetzesstufe", () => {
+    // Der Report schreibt bis zur Klimaneutralität 2045 fort (§ 42a kündigt dafür
+    // ein eigenes Gesetz an). Der Wert bleibt im Modell — aber nicht im Gesetzes-Text.
     expect(gasQuoteForYear(2045)).toBeCloseTo(1.0, 5);
+    expect(BIO_TREPPE_STUFEN.some((s) => s.year === 2045)).toBe(false);
   });
 
   it("interpoliert Zwischenjahre linear", () => {
@@ -24,7 +46,7 @@ describe("Bio-Treppe (Grüngasquote)", () => {
     expect(gasQuoteForYear(2037)).toBeCloseTo(0.42, 5);
   });
 
-  it("bleibt ab 2045 bei 100 %", () => {
+  it("bleibt nach 2045 auf dem Endwert der Modellannahme (100 %)", () => {
     expect(gasQuoteForYear(2046)).toBe(1.0);
     expect(gasQuoteForYear(2050)).toBe(1.0);
   });

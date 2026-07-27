@@ -11,14 +11,16 @@ import GruengasWidget from "../../../../components/charts/GruengasWidget";
 import { greengasMusterVariants, PV_COVERAGE } from "../../../../lib/greengas-muster";
 import { DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
+import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../../lib/greengas-config";
 
 // Zahlen kommen live aus denselben Modellen wie der Wärmepumpen-Rechner
 // (calcHeatPump + Grüngas-Preispfad). ISR hält sie frisch ohne Rebuild.
 export const revalidate = 3600;
 
-// Datierter Sachstand eines beschlossenen Gesetzes — bewusst als Stichtag, kein
-// rollierender „aktuelles Jahr"-Wert (CLAUDE.md-Regel).
-const GESETZ_STAND = "Juli 2026";
+// Datierter Sachstand des Gesetzgebungsverfahrens — bewusst als Stichtag, kein
+// rollierender „aktuelles Jahr"-Wert (CLAUDE.md-Regel). Stufen und Verfahrensstand
+// kommen aus lib/greengas-config (eine Quelle für Artikel, FAQ und Rechner).
+const GESETZ_STAND = GMODG_RECHTSSTAND.stand;
 
 export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({
@@ -95,7 +97,7 @@ export default function GasheizungWaermepumpePage() {
               <strong style={S.strong}>Die Wärmepumpe ist die günstigste Variante — und zwar deutlich.</strong> Eine neue
               Gasheizung ist in der Anschaffung billiger, wird im Betrieb aber zur Kostenfalle:
               Durch die gesetzliche Beimischung von teurem Biomethan und steigende Netzentgelte
-              verdoppeln sich die Gaskosten bis 2040 nahezu. Die Wärmepumpe bleibt dagegen günstig
+              verdoppeln sich die Gaskosten bis 2040 laut IW-Report nahezu. Die Wärmepumpe bleibt dagegen günstig
               — und das gilt selbst im unsanierten Altbau, wo viele sie für unmöglich halten.
             </div>
             <div style={{ flex: "1 1 260px", minWidth: 0, borderLeft: `1px solid ${v("--color-border")}`, paddingLeft: 20 }}>
@@ -110,9 +112,9 @@ export default function GasheizungWaermepumpePage() {
         {/* ── Das Gesetz ── */}
         <h2 style={S.h2}>Das neue Heizungsgesetz: Gasheizung wieder erlaubt</h2>
         <p style={S.p}>
-          Mit dem <strong style={S.strong}>Gebäudemodernisierungsgesetz (GModG)</strong>, im Juli
-          2026 beschlossen, fällt die umstrittene 65-Prozent-Erneuerbaren-Pflicht. Eine neue
-          Gas- oder Ölheizung darf wieder grundsätzlich eingebaut werden. Das klingt nach
+          Mit dem <strong style={S.strong}>Gebäudemodernisierungsgesetz (GModG)</strong> fällt die
+          umstrittene 65-Prozent-Erneuerbaren-Pflicht. {gmodgStandSatz()} Eine neue
+          Gas- oder Ölheizung darf damit wieder grundsätzlich eingebaut werden. Das klingt nach
           Entwarnung — doch das Gesetz verschiebt die Kosten nur: vom günstigen Einbau in den
           teuren Betrieb. Denn ab 2029 muss jede neue Gasheizung teures Grüngas beimischen. Die
           Rechnung über 20 Jahre zeigt, was das bedeutet:
@@ -128,18 +130,29 @@ export default function GasheizungWaermepumpePage() {
         <h2 style={S.h2}>Warum die neue Gasheizung zur Kostenfalle wird</h2>
         <p style={S.p}>
           Wer ab 2029 eine neue Gasheizung betreibt, muss einen wachsenden Anteil
-          klimaneutrales Gas beimischen — die <strong style={S.strong}>Bio-Treppe</strong>:
-          10 Prozent 2029, 30 Prozent 2035, 60 Prozent 2040 und 100 Prozent ab 2045. Dieses
-          Biomethan kostet rund doppelt so viel wie Erdgas. Dazu steigen die Gasnetzentgelte,
+          klimafreundlicher Brennstoffe beimischen — die <strong style={S.strong}>Bio-Treppe</strong>.
+          Das Gesetz nennt vier Stufen: {bioTreppeStufenText("Prozent")}. Anrechenbar sind neben
+          Biomethan auch Bioöl, biogenes Flüssiggas sowie Wasserstoff und daraus hergestellte
+          Derivate. Beim leitungsgebundenen Gas führt das in der Praxis zu Biomethan, und das
+          kostet rund doppelt so viel wie Erdgas. Dazu steigen die Gasnetzentgelte,
           weil immer weniger Haushalte am Gasnetz hängen und dessen Fixkosten sich auf weniger
           Schultern verteilen. Die Beimischpflicht trifft dabei <strong style={S.strong}>neu
           eingebaute</strong> Gasheizungen ab 2029 — wer bereits eine Gasheizung hat, genießt
           Bestandsschutz. Wer jetzt aber neu entscheidet, sollte mit diesen Kosten rechnen.
         </p>
+        <p style={S.p}>
+          Über 2040 hinaus schreibt die Bio-Treppe nichts fort — eine 100-Prozent-Stufe steht
+          nicht im Gesetz. Dass Heizungsbrennstoffe ab 2045 vollständig klimaneutral sein sollen,
+          ergibt sich aus einer eigenen Ankündigung des Gesetzes (§ 42a GModG): Die Quote für die
+          Brennstoff-Anbieter soll bis zum {GMODG_RECHTSSTAND.quoteGesetzBis} in einem gesonderten
+          Gesetz festgelegt werden. Solange das aussteht, ist alles, was für 2045 gerechnet wird,
+          eine Annahme — und keine Folge des heutigen Gesetzes.
+        </p>
         <div style={S.card}>
           <span style={S.accent}>Das Ergebnis:</span> Der Gaspreis je Kilowattstunde steigt laut
           Institut der deutschen Wirtschaft von rund 11 Cent (2026) auf etwa 20 Cent (2040) —
-          fast eine Verdopplung — und bis 2045 weiter auf rund 24 Cent. Wie stark das aufs Jahr
+          fast eine Verdopplung. Den vom IW für 2045 gerechneten Wert von rund 24 Cent trägt
+          dessen Annahme einer dann vollständig klimaneutralen Versorgung. Wie stark das aufs Jahr
           durchschlägt, hängt vom Verbrauch ab (im Chart oben der Muster-Altbau). Der CO₂-Preis
           ist dabei nur ein kleiner Teil; den Löwenanteil macht das teure Grüngas aus.
         </div>
@@ -199,9 +212,10 @@ export default function GasheizungWaermepumpePage() {
           <a href={DATA_SOURCES.iw.url} target="_blank" rel="noopener noreferrer" style={S.link}>
             IW-Report 36/2026 „Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz"
           </a>{" "}
-          (Institut der deutschen Wirtschaft). Die Beimischpflicht
-          ist beschlossenes Recht; die Kostenhöhe ist ein plausibler Korridor, keine
-          punktgenaue Prognose. Die Heizkosten-Grafik gibt es auch als{" "}
+          (Institut der deutschen Wirtschaft), einem arbeitgebernahen Institut. Beschlossen ist
+          die Beimischpflicht mit ihren vier Stufen bis 2040; die Kostenhöhe und die Fortschreibung
+          bis 2045 sind Annahmen des Reports — ein plausibler Korridor, keine punktgenaue
+          Prognose. Die Heizkosten-Grafik gibt es auch als{" "}
           <Link href="/energie-widgets#gruengas-heizkosten" style={S.link}>Widget zum Einbetten</Link>.
         </p>
       </div>

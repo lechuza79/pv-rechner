@@ -8,6 +8,7 @@ import {
 import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
+import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
 import { useHeatpumpPrices } from "../../../lib/prices";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
@@ -63,11 +64,11 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const [wegId, setWegId] = useState("ist");  // aktiver Sanierungs-/Maßnahmen-Weg (Szenario-Vergleich)
   const [showDetails, setShowDetails] = useState(false);
   // Szenario-Auswahl (steuert TCO/Amortisation/Ersparnis/CO₂ + Chart):
-  //  "gruengas"                       = aktueller Gesetzentwurf (GModG Bio-Treppe),
-  //                                     reale Rechtslage → Default, hervorgehoben.
+  //  "gruengas"                       = beschlossenes Heizungsgesetz (GModG Bio-Treppe),
+  //                                     beschlossen 10.07.2026 → Default, hervorgehoben.
   //  "pessimistic"/"realistic"/"optimistic" = reine Preis-Annahmen OHNE Grüngas.
   const [scenario, setScenario] = useState("gruengas");
-  // Grüngas-Pflicht ist genau der Gesetzentwurf-Fall — kein eigener Schalter mehr.
+  // Grüngas-Pflicht ist genau der Gesetzes-Fall — kein eigener Schalter mehr.
   const greenGas = scenario === "gruengas";
   // "Mehr erfahren"-Modal: sammelt alle erklärenden Texte zum Grüngas-Szenario.
   const [showGasInfo, setShowGasInfo] = useState(false);
@@ -170,22 +171,22 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // Die drei Preis-Szenarien rechnen bewusst OHNE Grüngas-Pflicht — sie zeigen die
   // reine Energiepreis-Bandbreite ("was, wenn die Pflicht doch nicht greift").
   const scenariosPlain = useMemo(() => calcHeatPumpScenarios({ ...activeInputs, greenGas: false }, cfg), [activeInputs, cfg]);
-  // Gesetzentwurf-Fall: Grüngas-Pflicht (Bio-Treppe) mit realistischen Nebenannahmen
+  // Gesetzes-Fall: Grüngas-Pflicht (Bio-Treppe) mit realistischen Nebenannahmen
   // (Strompreis/Arbeitszahl wie "realistisch", Gaspreis-Mittelpfad). Reale Rechtslage.
   const gruengasResult = useMemo(() => calcHeatPump({ ...activeInputs, greenGas: true }, cfg, heatPumpScenarioAdj("realistic", cfg)), [activeInputs, cfg]);
 
-  // Meta des Gesetzentwurf-Falls (Label/Erklärung für Auswahl + Hero).
+  // Meta des Gesetzes-Falls (Label/Erklärung für Auswahl + Hero).
   const GRUENGAS_META = {
-    id: "gruengas", label: "Aktueller Gesetzentwurf", color: v('--color-positive'),
+    id: "gruengas", label: "Neues Heizungsgesetz", color: v('--color-positive'),
     sub: "Grüngas-Pflicht ab 2029",
-    explain: "Das Gebäudemodernisierungsgesetz (beschlossen Juli 2026) verpflichtet neue Gasheizungen ab 2029, einen wachsenden Anteil Biomethan beizumischen — 10 % steigend auf 60 % (2040). Das verteuert Gas deutlich. Die Kostenhöhe folgt dem IW-Report 36/2026 (plausibler Korridor, keine exakte Prognose).",
+    explain: `Das Gebäudemodernisierungsgesetz (beschlossen ${GMODG_RECHTSSTAND.beschlossenAm}) verpflichtet neue Gasheizungen ab 2029, einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen — 10 % steigend auf 60 % (2040). Das verteuert Gas deutlich. Die Kostenhöhe folgt dem IW-Report 36/2026 (plausibler Korridor, keine exakte Prognose).`,
   };
 
   // Gewählter Fall: treibt die Ergebnis-Zahlen (TCO/Amortisation/Ersparnis/CO₂).
   const selPrice = scenariosPlain.find(s => s.id === scenario) ?? scenariosPlain.find(s => s.id === "realistic")!;
   const sel = greenGas ? { ...GRUENGAS_META, ...gruengasResult } : selPrice;
 
-  // Amortisationskurve: bei Gesetzentwurf die Grüngas-Kurve hervorgehoben (grün) +
+  // Amortisationskurve: beim Gesetzes-Fall die Grüngas-Kurve hervorgehoben (grün) +
   // die 3 Preis-Szenarien als graue Vergleichslinien; sonst die 3 in Ampelfarben.
   const chartScenarios = greenGas
     ? [
@@ -203,7 +204,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const pvCoverageForChart = result.pvCoverage > 0
     ? result.pvCoverage
     : estimatePvCoverageOfWp(10, result.eWp, 5);
-  // Charts zeigen den Gesetzentwurf-Fall (Bio-Treppe, Mittelpfad "base").
+  // Charts zeigen den Gesetzes-Fall (Bio-Treppe, Mittelpfad "base").
   const gasStackData = useMemo(() => gasMixSeries(DEFAULT_HEATPUMP_CONFIG.years, "base", YEAR), []);
   const heatCostData = useMemo(
     () => heatCostComparisonSeries({
@@ -389,18 +390,18 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
         {/* ── RESULT ── */}
         {isResult && (
           <div className="fu">
-            {/* Szenario-Auswahl ganz oben: der aktuelle Gesetzentwurf (Grüngas-Pflicht,
-                reale Rechtslage) gesondert + hervorgehoben, darunter drei reine
+            {/* Szenario-Auswahl ganz oben: das beschlossene Heizungsgesetz (Grüngas-Pflicht,
+                beschlossen, Inkrafttreten mit der Verkündung) gesondert + hervorgehoben, darunter drei reine
                 Preis-Annahmen ohne Grüngas. Die Wahl rechnet alle Zahlen darunter um. */}
             <div style={{ marginBottom: 16 }}>
-              {/* Primär: der Gesetzentwurf (Grüngas-Pflicht). Klickbare Kachel; das
+              {/* Primär: das Heizungsgesetz (Grüngas-Pflicht). Klickbare Kachel; das
                   „Mehr erfahren" darin öffnet das Modal (stopPropagation, damit der
                   Kachel-Klick nicht zugleich das Szenario umstellt). */}
               <div role="button" tabIndex={0} aria-pressed={greenGas}
                 onClick={() => { setScenario("gruengas"); setPreisExpanded(false); }}
                 onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setScenario("gruengas"); setPreisExpanded(false); } }}
                 style={{ cursor: "pointer", padding: "12px 14px", borderRadius: v('--radius-md'), background: greenGas ? v('--color-accent-dim') : v('--color-bg'), border: `1.5px solid ${greenGas ? v('--color-accent') : v('--color-border')}` }}>
-                <span style={{ display: "inline-block", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v('--color-text-on-accent'), background: v('--color-accent'), padding: "2px 7px", borderRadius: 999, marginBottom: 6 }}>Aktueller Gesetzentwurf</span>
+                <span style={{ display: "inline-block", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v('--color-text-on-accent'), background: v('--color-accent'), padding: "2px 7px", borderRadius: 999, marginBottom: 6 }}>Neues Heizungsgesetz</span>
                 <div style={{ fontSize: 14, fontWeight: 700, color: greenGas ? v('--color-accent') : v('--color-text-primary') }}>Grüngas-Pflicht ab 2029</div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 10, marginTop: 2 }}>
                   <span style={{ fontSize: 11.5, color: v('--color-text-muted') }}>Gas wird durch die gesetzliche Biomethan-Beimischung Jahr für Jahr teurer</span>
@@ -461,8 +462,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               {/* Erklärabschnitte */}
               <div style={{ fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'), marginTop: 22, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 16 }}>
                 {[
-                  { h: "Die Bio-Treppe (§ 43 GModG)", p: "Das Gebäudemodernisierungsgesetz (beschlossen im Juli 2026) verpflichtet jede neu eingebaute Gasheizung, ab 2029 einen wachsenden Anteil klimaneutrales Gas beizumischen: 10 % (2029), 15 % (2030), 30 % (2035), 60 % (2040) und 100 % ab 2045. Biomethan kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung." },
-                  { h: "Beschlossen ist die Pflicht, nicht der Preis", p: "Die Beimischpflicht selbst ist geltendes Recht. Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht." },
+                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet jede neu eingebaute Gasheizung, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioöl, biogenes Flüssiggas sowie Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung.` },
+                  { h: "Beschlossen ist die Pflicht, nicht der Preis", p: `${gmodgStandSatz()} Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Ebenfalls Annahme ist der Weg nach 2040: Eine 100-%-Stufe steht nicht im Gesetz, die vollständige Klimaneutralität ab 2045 kündigt § 42a GModG nur an und soll bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht.` },
                   { h: "Warum wir je Kilowattstunde Wärme rechnen", p: "Gas- und Strompreis lassen sich nicht direkt vergleichen: Eine Wärmepumpe macht aus einer Kilowattstunde Strom rund drei Kilowattstunden Wärme, ein Gaskessel aus einer Kilowattstunde Gas nur knapp eine. Deshalb rechnen wir beide auf die Kosten pro gelieferter Kilowattstunde Wärme um — die Jahresarbeitszahl der Wärmepumpe und der Kesselwirkungsgrad sind darin enthalten. Grundgebühr und Wartung bleiben außen vor, sie gehören nicht in einen Preis-je-Kilowattstunde-Vergleich." },
                   { h: "Quelle", p: "IW-Report 36/2026 „Wie hoch sind die Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz?“ (Henger, Küper, Wünsch — Institut der deutschen Wirtschaft, Juli 2026). Die Preispfade stammen aus dem Anhang der Studie." },
                 ].map((s, i) => (
@@ -643,7 +644,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
             {/* Chart */}
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "16px 12px 8px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10, paddingLeft: 4 }}>
-                {greenGas ? "Kumulierte Einsparung · Gesetzentwurf vs. Preis-Szenarien" : "Kumulierte Einsparung · 3 Szenarien"}
+                {greenGas ? "Kumulierte Einsparung · Heizungsgesetz vs. Preis-Szenarien" : "Kumulierte Einsparung · 3 Szenarien"}
               </div>
               <HeatPumpChart
                 scenarios={chartScenarios}

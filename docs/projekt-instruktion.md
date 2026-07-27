@@ -26,6 +26,8 @@ Du arbeitest am PV Rechner, einem kostenlosen PV-Rentabilitätsrechner ohne Lead
 - UI-Texte auf Deutsch, Code auf Englisch (außer Domänen-Begriffe)
 - Teste Änderungen auf Konsistenz mit dem bestehenden Design (dark theme #0c0c0c, Akzent #22c55e, DM Sans + JetBrains Mono)
 - Keine Libraries einführen ohne konkreten Grund
+- Bei Content mit Gesetzes- oder Studienbezug gilt die Faktenprüfungs-Konvention
+  aus CLAUDE.md — Primärquellen per Websuche, Nachweisliste vor Commit
 
 ## Phasen
 

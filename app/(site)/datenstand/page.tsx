@@ -8,6 +8,7 @@ import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
 import { FEEDIN_HISTORY_META, FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES } from "../../../lib/feedin-history";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
+import { GREEN_GAS_CONFIG as GG, bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
 import { DEFAULT_AIRCON_CONFIG as AC, AC_REAL_FACTOR } from "../../../lib/aircon-config";
 import { acHeatSpecKwhPerM2 } from "../../../lib/aircon";
 import { DEFAULT_BALKON_CONFIG as BK } from "../../../lib/balkon-config";
@@ -313,6 +314,22 @@ export default async function DatenstandPage() {
             { label: "Gas-Referenz", value: `${nf(HP.gasPriceCtPerKwh)} ct/kWh, ${nf(HP.gasCo2PerKwh * 1000)} g CO₂/kWh` },
           ]}
           source={`${HP.source}. Luft/Wasser-Grundpreis laufend aus Marktdaten (taptaphome.com).`}
+        />
+
+        {/* ── Grüngas-Pfad (Gas-Referenz im WP-Rechner + Ratgeber) ── */}
+        <Section
+          title="Grüngas-Pflicht (Bio-Treppe)"
+          stand={monthYear(GG.validFrom)}
+          intro={`Preispfad einer neu eingebauten Gasheizung unter dem Gebäudemodernisierungsgesetz — die Vergleichsgröße im Wärmepumpen-Rechner. ${gmodgStandSatz()} Gesetzlich stehen genau vier Beimischstufen bis 2040 fest; der Sprung auf ${nf(GG.quoteStops[2045] * 100)} % bis 2045 ist dagegen eine Annahme der zugrunde liegenden Studie. Sie stützt sich auf § 42a GModG, der die Klimaneutralität der Brennstoffe ab 2045 nur ankündigt — geregelt werden soll sie in einem eigenen Quotengesetz bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis}. Anrechenbar sind neben Biomethan auch Bioöl, biogenes Flüssiggas sowie Wasserstoff und dessen Derivate; für leitungsgebundenes Gas rechnen wir mit Biomethan als Leitpreis.`}
+          rows={[
+            { label: "Beimischpflicht laut § 43 GModG (vier Stufen, keine weitere)", value: bioTreppeStufenText() },
+            { label: "Annahme der Studie für 2045 (nicht im Gesetz)", value: `${nf(GG.quoteStops[2045] * 100)} %` },
+            { label: "Erdgas / Biomethan (Beschaffung + Vertrieb, 2026)", value: `${nf(GG.erdgasCt2026)} / ${nf(GG.biomethanCt2026)} ct/kWh netto` },
+            { label: "Biomethan 2045 (niedrig – mittel – hoch)", value: `${nf(GG.biomethanCt2045.low)} – ${nf(GG.biomethanCt2045.base)} – ${nf(GG.biomethanCt2045.high)} ct/kWh netto` },
+            { label: "Gasnetzentgelt 2026 → 2045 (mittel)", value: `${nf(GG.netzCt2026)} → ${nf(GG.netzCt2045.base)} ct/kWh netto` },
+            { label: "CO₂-Preis 2026 → 2045 (mittel)", value: `${nf(GG.co2EurT2026.base)} → ${nf(GG.co2EurT2045.base)} €/t, nur auf den fossilen Anteil` },
+          ]}
+          source={`${GG.source}. Das IW ist ein arbeitgebernahes Institut; die Preispfade sind ein plausibler Korridor, keine punktgenaue Prognose. Nächste Prüfung bis ${monthYear(GG.reviewBy)}.`}
         />
 
         {/* ── Klimaanlagen-Rechner ── */}

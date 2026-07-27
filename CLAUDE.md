@@ -892,6 +892,55 @@ Wenn ein Fix auf Production einen Folgefehler verursacht:
 - Wenn nach einem Deploy ein Folgefehler auftaucht: **Erst alle zusammenhängenden Issues sammeln**, dann in einem Commit fixen — nicht Bug für Bug einzeln deployen
 - Ausnahme: Echte unabhängige Bugs die erst durch Nutzertests sichtbar werden
 
+### Faktenprüfung bei Content mit Rechts-, Zahlen- oder Studienbezug — BLOCKER
+
+Gilt für Ratgeber-Artikel, FAQ-Inhalte, Methodik-Seiten, Rechner-Annahmen und
+Glossar — überall wo Gesetze, Fristen, Prozentwerte oder Studienzahlen stehen.
+Nicht bei UI-Texten oder reinen Code-Änderungen.
+
+1. **Primärquelle statt Gedächtnis.** Jede rechtliche oder numerische Angabe wird
+   per Websuche gegen Gesetzestext, Bundesgesetzblatt, Ministeriumsseite oder die
+   Studie selbst geprüft. Sekundärartikel gelten nicht als Beleg. Besonders
+   kritisch bei allem, was jünger ist als der Trainingsstand — Gesetzesentwürfe
+   und beschlossene Fassungen weichen regelmäßig ab.
+
+2. **Vier Zustände sauber trennen:** Was steht im Gesetz? Was ist Prognose? Was
+   stammt aus einem anderen Gesetz? Was ist beschlossen / verkündet / in Kraft?
+   Nie vermischen.
+
+3. **Studienzahlen zuschreiben.** „laut IW-Report" statt als Faktum setzen. Gilt
+   auch für davon abgeleitete Rechenwerte.
+
+4. **Nachweisliste vor Commit.** Jede überprüfbare Aussage mit der Quelle, an der
+   sie geprüft wurde. Nicht belegbare Aussagen fliegen raus, statt als TODO
+   markiert zu werden.
+
+5. **Rechner-Annahmen mitziehen.** Wenn sich eine geprüfte Zahl ändert, prüfen ob
+   sie auch in Rechenlogik, Widgets oder JSON-LD steckt.
+
+**Auslöser (Juli 2026):** Im GModG-Content stand in drei Texten — Ratgeber, FAQ und
+Rechner-Modal — eine „100 % ab 2045"-Stufe der Bio-Treppe, die es in § 43 GModG
+nie gab. Sie war aus der Modellannahme des IW-Reports (Fortschreibung bis zur
+Klimaneutralität 2045, die § 42a GModG nur ankündigt) zu einer Gesetzesaussage
+geworden. Zusätzlich war die 2030er-Stufe (15 %) in den Texten verlorengegangen,
+obwohl die Rechenkurve sie hatte. Konsequenz im Code: Stufen und Verfahrensstand
+kommen jetzt aus **einer** Quelle (`BIO_TREPPE_STUFEN`, `bioTreppeStufenText()`,
+`gmodgStandSatz()` in `lib/greengas-config.ts`), und ein Test nagelt fest, dass
+die Stufenliste genau die vier Gesetzesstufen enthält — dieselbe Logik wie bei
+den Einheiten: eine zweite handgetippte Kopie ist ein Fehler, kein Duplikat.
+
+**Ein datierter Rechtsstand braucht einen Wächter, sonst ist er eine tickende
+Bombe.** `GMODG_RECHTSSTAND.verkuendet` ist ein Sachstands-Schalter: Solange er
+`false` ist, sagen Ratgeber, FAQ, WP-Rechner-Modal und `/datenstand`, die
+Verkündung stehe noch aus — nach der Verkündung wäre das eine falsche
+Rechtsaussage auf vier Oberflächen. Deshalb prüft ihn der tägliche
+`foerder-news-waechter` (Schritt 4c) mit; Runbook `scripts/gruengas-verify.md`.
+Selbstheilung nur beim Verkündungs-Flag (Council + Bundesgesetzblatt-Fundstelle,
+genau eine richtige Antwort); geänderte Stufenwerte oder ein beschlossenes
+Quotengesetz nach § 42a sind **Vorschlag an den Menschen**. Wer künftig einen
+„Stand: Monat/Jahr"-Fakt in Content schreibt, hängt ihn an einen Wächter — oder
+er wird still falsch.
+
 ### Kein Overengineering
 
 - Keine Libraries einführen ohne konkreten Grund

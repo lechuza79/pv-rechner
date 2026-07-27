@@ -51,7 +51,7 @@ export default function GasPriceStackChart({ data }: { data: GasMixYear[] }) {
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
-      aria-label="Gas-Endkundenpreis nach Bestandteilen bis zum Jahr der vollen Grüngas-Pflicht">
+      aria-label="Gas-Endkundenpreis nach Bestandteilen über die Jahre der Grüngas-Pflicht">
       {/* Y-Grid + Labels */}
       {yTicks.map(val => (
         <g key={val}>

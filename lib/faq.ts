@@ -12,6 +12,7 @@
 // Never hardcode a year or a euro figure below.
 import { estimateCost, BATTERY_LIFETIME_YEARS } from "./calc";
 import { DEFAULT_FEED_IN } from "./feedin-config";
+import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "./greengas-config";
 import type { PriceConfig } from "./prices-config";
 import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
 
@@ -262,11 +263,11 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
     },
     {
       q: "Was ist die Grüngas-Pflicht?",
-      a: "Wer ab 2029 eine neue Gasheizung betreibt, muss einen steigenden Anteil klimaneutrales Gas (Biomethan) beimischen: 10 Prozent 2029, 30 Prozent 2035, 60 Prozent 2040 und 100 Prozent ab 2045 — die sogenannte Bio-Treppe (§ 43 GModG). Biomethan kostet rund doppelt so viel wie Erdgas, deshalb steigt der Gaspreis deutlich stärker als durch die normale Teuerung.",
+      a: `Wer ab 2029 eine neue Gasheizung betreibt, muss einen steigenden Anteil klimafreundlicher Brennstoffe beimischen — die sogenannte Bio-Treppe (§ 43 GModG). Das Gesetz nennt vier Stufen: ${bioTreppeStufenText("Prozent")}. Eine 100-Prozent-Stufe steht dort nicht; dass Heizungsbrennstoffe ab 2045 vollständig klimaneutral sein sollen, folgt aus einer eigenen Ankündigung des Gesetzes (§ 42a GModG), für die ein gesondertes Quotengesetz erst noch kommen muss. Anrechenbar sind neben Biomethan auch Bioöl, biogenes Flüssiggas sowie Wasserstoff und daraus hergestellte Derivate. Biomethan kostet rund doppelt so viel wie Erdgas, deshalb steigt der Gaspreis deutlich stärker als durch die normale Teuerung.`,
     },
     {
       q: "Wie viel teurer wird Gas dadurch?",
-      a: "Der Gaspreis je Kilowattstunde steigt laut IW-Report von rund 11 Cent (2026) auf etwa 20 Cent (2040) und 24 Cent (2045) — annähernd eine Verdopplung. Für einen typischen Haushalt mit rund 10.000 Kilowattstunden Verbrauch sind das etwa 1.080 Euro (2026), 1.950 Euro (2040) und 2.370 Euro (2045); ein größerer, unsanierter Altbau wie im Chart oben verbraucht mehr und zahlt entsprechend mehr. Neben der Biomethan-Beimischung treiben steigende Gasnetzentgelte den Preis, weil immer weniger Haushalte am Gasnetz hängen und die Fixkosten auf weniger Schultern verteilt werden.",
+      a: "Der Gaspreis je Kilowattstunde steigt laut IW-Report von rund 11 Cent (2026) auf etwa 20 Cent (2040) — annähernd eine Verdopplung. Für einen typischen Haushalt mit rund 10.000 Kilowattstunden Verbrauch sind das etwa 1.080 Euro (2026) und 1.950 Euro (2040); ein größerer, unsanierter Altbau wie im Chart oben verbraucht mehr und zahlt entsprechend mehr. Der vom IW für 2045 gerechnete Wert von rund 24 Cent (etwa 2.370 Euro im Jahr) liegt jenseits der gesetzlichen Stufen: Er unterstellt eine vollständig klimaneutrale Versorgung, die noch in einem eigenen Gesetz geregelt werden muss. Neben der Beimischung treiben steigende Gasnetzentgelte den Preis, weil immer weniger Haushalte am Gasnetz hängen und die Fixkosten auf weniger Schultern verteilt werden.",
     },
     {
       q: "Geht eine Wärmepumpe auch im unsanierten Altbau?",
@@ -281,7 +282,7 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
     },
     {
       q: "Ist die Grüngas-Pflicht schon beschlossen?",
-      a: "Die Beimischpflicht (Bio-Treppe) steht als § 43 im GModG, das im Juli 2026 beschlossen wurde — sie ist geltendes Recht. Die genaue Höhe der künftigen Biomethan- und Netzentgeltkosten ist dagegen eine Prognose des IW-Reports, ein plausibler Korridor, keine exakte Vorhersage. Ändert der Gesetzgeber die Vorgaben, ändern sich auch die Kosten.",
+      a: `Die Beimischpflicht (Bio-Treppe) steht als § 43 im GModG. ${gmodgStandSatz()} Beschlossen ist damit die Pflicht — nicht der Preis: Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist eine Annahme des IW-Reports, ein plausibler Korridor und keine exakte Vorhersage. Noch offen ist außerdem die Quote für die Brennstoff-Anbieter, die das Gesetz nur ankündigt (§ 42a GModG) und die bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden soll.`,
     },
   ];
 }
