@@ -22,6 +22,10 @@ export const EXPORT_IGNORE_ATTR = 'data-sc-export-ignore';
 /** Marker attribute: elements hidden on the page but revealed in the snapshot;
  * the attribute value is the `display` to apply (e.g. "flex"). */
 export const EXPORT_ONLY_ATTR = 'data-sc-export-only';
+/** Marker attribute: extra CSS applied to the element in the snapshot only —
+ * for framing that helps a still image but would double up on the page
+ * (e.g. a box around the chart area). Value is plain CSS text. */
+export const EXPORT_CSS_ATTR = 'data-sc-export-css';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -367,6 +371,12 @@ export async function captureNodeToBlob(node: HTMLElement, scale = 2): Promise<B
     .querySelectorAll<HTMLElement>(`[${EXPORT_ONLY_ATTR}]`)
     .forEach((el) => {
       el.style.display = el.getAttribute(EXPORT_ONLY_ATTR) || 'block';
+    });
+  // Image-only styling (frames, boxes) that would double up on the page.
+  clone
+    .querySelectorAll<HTMLElement>(`[${EXPORT_CSS_ATTR}]`)
+    .forEach((el) => {
+      el.style.cssText += ';' + (el.getAttribute(EXPORT_CSS_ATTR) || '');
     });
   // Links aren't clickable in a PNG — drop underlines so credits read as plain
   // text (matches the print footers that already use the plain DataSourceNote).

@@ -598,6 +598,9 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 | Interaktives (Umschalter, CTA, Aktionen, „?"-Knopf, Hover-Tooltip) | `<ExportIgnore>` bzw. `data-sc-export-ignore` | Gebäudestand-Umschalter |
 | Nur fürs Bild (Skala, Legende, gewählter Zustand, Quelle, Marke) | `<ExportOnly>` / `<ExportOnlyG>` (im SVG) | y-Achsen-Beträge |
 | Hilfetexte hinter „?" | **nichts tun** — `InfoTooltip` meldet sich selbst an | „Was bedeutet die Ersparnis?" |
+| Rahmen/Abstände nur im Bild | `<ExportBox>` bzw. `data-sc-export-css` | Kasten um die Chart-Fläche |
+
+**Aufbau des Bildes** (von oben): Titel · Untertitel · Zwischenüberschrift mit dem gewählten Zustand · **Chart in einem hellen Kasten** (graue Linie, runde Ecken) · Legende · **Fußnoten in einer grauen Box** (die Texte hinter den „?" plus Annahmen) · Fußzeile mit **Datenquelle links** und der Marke rechts. Die Markenzeile heißt im Bild bewusst nicht „Powered by", sondern lädt ein („Interaktiv selbst rechnen: solar-check.io") — im Bild gibt es keinen Knopf mehr, der das täte. Beide Beschriftungen sind Parameter von `PoweredBy` / `DataSourceNote`, nicht getippter Text.
 
 **Der Selbstmelde-Mechanismus ist der Kern.** Ein `InfoTooltip` innerhalb eines `<ExportNotesProvider>` trägt seinen Text automatisch in den `<WidgetExportFooter>` ein und nimmt seinen Knopf aus dem Bild. Niemand muss daran denken, einen Tooltip ins Bild zu kopieren — genau dieses Danken-Müssen war die Fehlerquelle. Neue Widgets deshalb **immer** in `<ExportNotesProvider>` wickeln und den `<WidgetExportFooter>` als letztes Element setzen.
 

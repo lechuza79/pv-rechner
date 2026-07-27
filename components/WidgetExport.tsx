@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useId, useMemo, useState } from "react";
-import { EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/chart-export";
+import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/chart-export";
 import { DataSourceNote, PoweredBy } from "./PoweredBy";
 import type { DataSource } from "../lib/data-sources";
 import { v } from "../lib/theme";
@@ -34,6 +34,21 @@ export function ExportOnly({
 }) {
   const props = { [EXPORT_ONLY_ATTR]: display, style: { display: "none", ...style } };
   return <div {...props}>{children}</div>;
+}
+
+/**
+ * Frames its children in the exported image only — a light grey outline with
+ * rounded corners around the chart area. On the page the widget card already
+ * provides that frame; a second one inside it would just be noise.
+ */
+export function ExportBox({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+  const css = `border:1px solid ${v("--color-border")};border-radius:${v("--radius-md")};padding:10px 10px 6px;`;
+  const props = { [EXPORT_CSS_ATTR]: css };
+  return (
+    <div {...props} style={style}>
+      {children}
+    </div>
+  );
 }
 
 /** SVG variant of {@link ExportOnly} — a <g> instead of a <div>, so scale
@@ -168,9 +183,8 @@ export function WidgetExportFooter({
     <ExportOnly>
       <div
         style={{
+          // Keine Trennlinie: Chart- und Fußnoten-Box gliedern das Bild bereits.
           marginTop: 12,
-          paddingTop: 10,
-          borderTop: `1px solid ${v("--color-border")}`,
           fontSize: 10,
           lineHeight: 1.5,
           color: v("--color-text-muted"),
@@ -195,24 +209,34 @@ export function WidgetExportFooter({
           </div>
         )}
 
-        {notes.length > 0 && (
-          <div style={{ marginBottom: 8 }}>
+        {/* Fußnoten in einer ruhigen grauen Box: im Bild sind das mehrere
+            Zeilen Fließtext, die sonst mit der Quellzeile verschwimmen. */}
+        {(notes.length > 0 || note) && (
+          <div
+            style={{
+              background: v("--color-bg-muted"),
+              borderRadius: v("--radius-md"),
+              padding: "9px 11px",
+              marginBottom: 8,
+            }}
+          >
             {notes.map((n) => (
               <div key={n.id} style={{ marginTop: 3 }}>
                 {n.title && <strong style={{ color: v("--color-text-secondary"), fontWeight: 700 }}>{n.title}: </strong>}
                 {n.text}
               </div>
             ))}
+            {note && <div style={{ marginTop: notes.length > 0 ? 6 : 0 }}>{note}</div>}
           </div>
         )}
 
-        {note && <div style={{ marginBottom: 8 }}>{note}</div>}
-
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <span>
-            <DataSourceNote source={source} plain />
+        {/* Datenquelle links, Marke rechts. Im Bild gibt es keine Knöpfe mehr —
+            deshalb trägt die Markenzeile hier die Einladung. */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 16 }}>
+          <span style={{ flex: 1, minWidth: 0 }}>
+            <DataSourceNote source={source} plain label="Datenquelle:" />
           </span>
-          {branding && <PoweredBy />}
+          {branding && <PoweredBy label="Interaktiv selbst rechnen:" />}
         </div>
       </div>
     </ExportOnly>

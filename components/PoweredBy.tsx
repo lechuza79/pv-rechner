@@ -15,11 +15,15 @@ import { type DataSource, sourceLabel } from "../lib/data-sources";
 export function DataSourceNote({
   source,
   plain = false,
+  label = "Quelle:",
 }: {
   source: DataSource | DataSource[];
   /** Render provider/licence as flat text (no underline). Used in the PNG
    * export where the "link" isn't clickable anyway. */
   plain?: boolean;
+  /** Leading word. "Datenquelle:" in exported images, where it has to be clear
+   * that the credit refers to the DATA, not to the chart. */
+  label?: string;
 }) {
   const sources = Array.isArray(source) ? source : [source];
   const linkStyle: React.CSSProperties = plain
@@ -27,7 +31,7 @@ export function DataSourceNote({
     : { color: "inherit", textDecoration: "underline", textUnderlineOffset: 2 };
   return (
     <span>
-      Quelle:{" "}
+      {label}{" "}
       {sources.map((s, i) => (
         <span key={s.name}>
           {i > 0 && " · "}
@@ -67,14 +71,16 @@ export function dataSourceCredit(source: DataSource): string {
 
 /**
  * Shared "Powered by solar-check.io" attribution for embed widgets. One source
- * of truth so every widget's footer looks identical. The brand mark keeps its
+ * of truth so every widget's footer looks identical. `label` swaps the leading
+ * words — in an exported image the widget's buttons are gone, so the brand line
+ * carries the invitation instead ("Interaktiv selbst rechnen:"). The brand mark keeps its
  * fixed brand colours (it's a logo); the link text follows the widget accent so
  * it fits the host theme (on the default theme the accent IS the brand blue).
  */
-export function PoweredBy() {
+export function PoweredBy({ label = "Powered by" }: { label?: string } = {}) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 5, whiteSpace: "nowrap" }}>
-      <span>Powered by</span>
+      <span>{label}</span>
       <a
         href="https://solar-check.io"
         target="_blank"

@@ -5,6 +5,7 @@ import InfoTooltip from "../InfoTooltip";
 import ChartActionBar from "../ChartActionBar";
 import { PoweredBy } from "../PoweredBy";
 import {
+  ExportBox,
   ExportNotesProvider,
   ExportOnly,
   ExportOnlyG,
@@ -306,11 +307,12 @@ function GruengasCard({
               );
             })}
           </div>
-          {/* Im Bild ersetzt eine Zeile den Umschalter — sonst bliebe offen,
-              welcher Gebäudestand abgebildet ist. */}
+          {/* Im Bild ersetzt eine Zwischenüberschrift den Umschalter — sonst
+              bliebe offen, welcher Gebäudestand abgebildet ist. */}
           <ExportOnly style={{ marginBottom: 8 }}>
-            <span style={{ ...lblStyle, marginRight: 6 }}>Gebäudestand</span>
-            <span style={{ fontSize: 12.5, fontWeight: 700, color: v("--color-text-primary") }}>{m.label}</span>
+            <span style={{ fontSize: 13.5, fontWeight: 700, color: v("--color-text-primary") }}>
+              Gebäude: {m.label}
+            </span>
           </ExportOnly>
           <div style={{ fontSize: 11.5, color: v("--color-text-secondary"), lineHeight: 1.5, marginBottom: 8, padding: "0 2px" }}>
             {m.explain}
@@ -319,11 +321,12 @@ function GruengasCard({
       )}
 
       {/* Nur Balken (Kurzantwort) */}
-      {isBars && barsOnlyWidget}
+      {isBars && <ExportBox>{barsOnlyWidget}</ExportBox>}
 
-      {/* Linien-Chart (full + lines) */}
+      {/* Linien-Chart (full + lines) — im Bild in einer eigenen hellen Box,
+          damit Chart und Fußnoten sichtbar getrennt sind. */}
       {showLines && (
-        <div style={{ position: "relative" }}>
+        <ExportBox style={{ position: "relative" }}>
           <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
             aria-label={`Jährliche Heizkosten ${m.label}: Gasheizung steigt, Wärmepumpe bleibt günstig`}
             onMouseLeave={() => setHoverLine(null)}>
@@ -419,7 +422,7 @@ function GruengasCard({
               ))}
             </div>
           )}
-        </div>
+        </ExportBox>
       )}
 
       {/* view=full, schmal: horizontale Balken unter dem Chart */}
