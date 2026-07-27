@@ -2,9 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import LineChart, { type LineSeries } from "../../../../components/charts/LineChart";
-import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
-import { ExportBox, ExportOnly, WidgetExportFooter } from "../../../../components/WidgetExport";
+import {
+  ExportBox,
+  ExportOnly,
+  WidgetExportFooter,
+  WidgetFooter,
+  WidgetSourceEdge,
+} from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import {
   IconChevronDown,
@@ -24,7 +28,9 @@ import {
   YEARS_2010_2024,
 } from "../../../../lib/country-comparison";
 
-const SHARE_URL = "https://solar-check.io/laendervergleich";
+// Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
+// Register — ein Eintrag speist Fußzeile, Quellen-Kante und Bild-Fuß.
+const WIDGET = WIDGETS.zubauErneuerbareAtom;
 
 const byLabel = (label: string) =>
   ZUBAU_BY_COUNTRY.find((c) => c.label === label)!;
@@ -81,23 +87,27 @@ export default function ZubauWidget() {
   const view = VIEWS[idx];
   const { series, sub } = useMemo(() => seriesFor(view), [view]);
 
+  // Abgeleitet, nicht doppelt gepflegt: der Register-Titel plus das gewählte
+  // Land — ohne es teilt man ein Bild, dessen Bezug niemand kennt.
+  const shareText =
+    view.kind === "compare"
+      ? "Zubau Wind + Solar: Deutschland vs. China"
+      : `${WIDGET.title} — ${view.label}`;
+
   const chartExport = useChartExport({
     context: {
-      title: "Zubau: Erneuerbare vs. Atomkraft",
+      title: WIDGET.title,
       subtitle: view.kind === "compare" ? "Deutschland ↔ China" : `${view.flag} ${view.label}`,
       source: sourceLabel(DATA_SOURCES.ember),
     },
     filename: "solar-check-zubau-erneuerbare-atom.png",
-    shareText:
-      view.kind === "compare"
-        ? "Zubau Wind + Solar: Deutschland vs. China"
-        : `Zubau Erneuerbare vs. Atomkraft — ${view.label}`,
-    shareUrl: SHARE_URL,
+    shareText,
+    shareUrl: WIDGET.shareUrl,
     mode: "node",
   });
 
   const copyLink = () => {
-    navigator.clipboard?.writeText(SHARE_URL).catch(() => {});
+    navigator.clipboard?.writeText(`${shareText}\n${WIDGET.shareUrl}`).catch(() => {});
   };
 
   return (
@@ -161,31 +171,9 @@ export default function ZubauWidget() {
       </div>
 
       <div style={{ position: "relative", paddingRight: 18 }}>
-        {/* Source credit — web only, vertical along the right edge of the chart
-            area. Dropped from the export (it uses the horizontal print footer). */}
-        <div
-          data-sc-export-ignore=""
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            right: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            writingMode: "vertical-rl",
-            transform: "rotate(180deg)",
-            fontSize: 9,
-            lineHeight: 1,
-            letterSpacing: 0.2,
-            color: "var(--color-text-faint)",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-          }}
-        >
-          <DataSourceNote source={DATA_SOURCES.ember} plain />
-        </div>
+        {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Auf einer
+            eigenen Seite (onsite) kreditiert die Seite zentral. */}
+        <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
         <ExportBox key={view.id} style={{ animation: "sc-fade 0.35s ease" }}>
           <LineChart years={YEARS_2010_2024} series={series} unit="GW" xDomain={[2010, 2024]} height={300} />
         </ExportBox>
@@ -194,53 +182,18 @@ export default function ZubauWidget() {
         </div>
       </div>
 
-      {/* Footer: divider (both) + web footer (page) + print footer (image). */}
-      <div style={{ marginTop: 12 }}>
-        <div data-sc-export-ignore="" style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
-
-        {/* Web footer — dropped from the export image. Source is shown vertically
-            in the chart area (above); here only action bar + Powered-by. */}
-        <div data-sc-export-ignore="">
-          {(settings.branding || settings.share) && (
-            <div
-              style={{
-                fontSize: 10.5,
-                color: "var(--widget-muted)",
-                display: "flex",
-                justifyContent: settings.share ? "space-between" : "flex-end",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              {settings.share && (
-                <ChartActionBar
-                  onDownload={chartExport.downloadPng}
-                  onCopyLink={copyLink}
-                  onWhatsApp={chartExport.shareWhatsApp}
-                  onTwitter={chartExport.shareTwitter}
-                  onShareImage={chartExport.sharePng}
-                  onEmbed={
-                    settings.embed
-                      ? () => window.open("/energie-widgets#zubau-erneuerbare-atom", "_blank", "noopener")
-                      : undefined
-                  }
-                  isExporting={chartExport.isExporting}
-                  canNativeShare={chartExport.canNativeShare}
-                  size={30}
-                />
-              )}
-              {settings.branding && (
-                <span style={{ marginLeft: "auto", display: "inline-flex" }}>
-                  <PoweredBy />
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
-        <WidgetExportFooter widget={WIDGETS.zubauErneuerbareAtom} branding={settings.branding} />
-      </div>
+      {/* Sichtbare Fußzeile (nächster Schritt · Aktionen · Marke) und Bild-Fuß
+          (Datenquelle · Marke) — beide aus dem geteilten Baustein. */}
+      <WidgetFooter
+        widget={WIDGET}
+        chartExport={chartExport}
+        onCopyLink={copyLink}
+        share={settings.share}
+        branding={settings.branding}
+        showEmbed={settings.embed}
+        onsite={settings.onsite}
+      />
+      <WidgetExportFooter widget={WIDGET} branding={settings.branding} />
     </div>
   );
 }

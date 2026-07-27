@@ -19,12 +19,10 @@
 
 import { useState } from "react";
 import { v, tokens } from "../../lib/theme";
-import { PoweredBy } from "../PoweredBy";
-import ChartActionBar from "../ChartActionBar";
-import { DATA_SOURCES, sourceLabel, type DataSource } from "../../lib/data-sources";
+import { sourceLabel, type DataSource } from "../../lib/data-sources";
 import { WIDGETS } from "../../lib/widget-registry";
 import { useChartExport } from "../../lib/useChartExport";
-import { ExportBox, WidgetExportFooter } from "../WidgetExport";
+import { ExportBox, WidgetExportFooter, WidgetFooter, WidgetSourceEdge } from "../WidgetExport";
 import ZubauTimelineChart from "./ZubauTimelineChart";
 import EventTimeline, { TimelineEvent } from "./EventTimeline";
 import type { NationalSolarSeries } from "../../lib/mastr-data";
@@ -92,14 +90,16 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
 /** Jahre der einschneidenden Wendepunkte — im Chart als gepunktete Vertikale. */
 export const ZUBAU_MILESTONE_YEARS: number[] = ZUBAU_EVENTS.filter((e) => e.major).map((e) => e.year);
 
-export const ZUBAU_WIDGET_SOURCES: DataSource[] = [DATA_SOURCES.mastr, DATA_SOURCES.eegVerguetung, DATA_SOURCES.eurostat];
-export const ZUBAU_EMBED_HASH = "pv-zubau-deutschland";
+// Quellen NICHT zweitgelistet: der Artikel-Fuß zitiert dieselben Einträge wie
+// das Widget, sonst driften Seite und Bild auseinander.
+export const ZUBAU_WIDGET_SOURCES: DataSource[] = WIDGETS.pvZubau.sources;
+export const ZUBAU_EMBED_HASH = WIDGETS.pvZubau.id;
 
-const WIDGET_TITLE = "Photovoltaik-Zubau in Deutschland";
+// Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
+// Register — ein Eintrag speist Fußzeile, Quellen-Kante und Bild-Fuß.
+const WIDGET = WIDGETS.pvZubau;
+const WIDGET_TITLE = WIDGET.title;
 const WIDGET_SUBLINE = "Zubau pro Jahr, Einspeisevergütung & Strompreis seit 2000";
-const LIVE_URL = "https://solar-check.io/photovoltaik-zubau-deutschland";
-const SHARE_TEXT =
-  "Wie Förderung den Solarausbau in Deutschland geformt hat – Zubau, Einspeisevergütung & Strompreis seit 2000";
 
 /** Werte einer Jahresreihe auf die Zielachse legen (null wo keine Zahl). */
 function alignToYears(targetYears: number[], srcYears: number[], srcValues: number[]): (number | null)[] {
@@ -163,20 +163,10 @@ export default function ZubauWidget({
       source: ZUBAU_WIDGET_SOURCES.map(sourceLabel).join(" · "),
     },
     filename: "solar-check-pv-zubau-deutschland",
-    shareText: SHARE_TEXT,
-    shareUrl: LIVE_URL,
+    shareText: WIDGET.shareText,
+    shareUrl: WIDGET.shareUrl,
     mode: "node",
   });
-
-  const copyLink = () =>
-    navigator.clipboard?.writeText(`${SHARE_TEXT}\n${LIVE_URL}`).catch(() => {});
-
-  // Volle Quelle für den title-Tooltip + Bild-Export; kompakte Kurzform (ohne
-  // Klammer-Zusätze) für das schlanke vertikale Label an der rechten Kante.
-  const fullSource = ZUBAU_WIDGET_SOURCES.map(sourceLabel).join(" · ");
-  const compactSource = ZUBAU_WIDGET_SOURCES.map(
-    (s) => `${s.name.replace(/\s*\([^)]*\)/g, "")}${s.license ? `, ${s.license}` : ""}`,
-  ).join(" · ");
 
   return (
     <div ref={chartExport.chartRef} style={S.frame}>
@@ -193,11 +183,9 @@ export default function ZubauWidget({
           rechten Kante (Konvention — nie als horizontaler Block). Aus dem
           Bild-Export ausgenommen; der Export-Fuß trägt die volle Quelle. */}
       <div style={{ position: "relative", ...(isEmbed ? { paddingRight: 16 } : null) }}>
-        {isEmbed && (
-          <div data-sc-export-ignore="" title={`Quelle: ${fullSource}`} style={S.vsource}>
-            Quelle: {compactSource}
-          </div>
-        )}
+        {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Im Artikel
+            trägt der Seitenfuß die Quelle — dort bleibt das Widget ruhig. */}
+        <WidgetSourceEdge widget={WIDGET} visible={isEmbed} />
         <ExportBox>
           <ZubauTimelineChart
             years={years}
@@ -224,35 +212,23 @@ export default function ZubauWidget({
         </div>
       </div>
 
-      <div style={S.footer}>
-        <div data-sc-export-ignore="" style={S.rule} />
-        <div
-          data-sc-export-ignore=""
-          style={{ ...S.actions, justifyContent: isEmbed && branding ? "space-between" : "flex-end" }}
-        >
-          {isEmbed && branding && <PoweredBy />}
-          <ChartActionBar
-            variant="bar"
-            size={30}
-            onDownload={chartExport.downloadPng}
-            onCopyLink={copyLink}
-            onWhatsApp={chartExport.shareWhatsApp}
-            onTwitter={chartExport.shareTwitter}
-            onShareImage={chartExport.sharePng}
-            onEmbed={
-              showEmbed
-                ? () => window.open(`/energie-widgets#${ZUBAU_EMBED_HASH}`, "_blank", "noopener")
-                : undefined
-            }
-            isExporting={chartExport.isExporting}
-            canNativeShare={chartExport.canNativeShare}
-          />
-        </div>
+      <div>
+        {/* Sichtbare Fußzeile aus dem geteilten Baustein. Im Artikel (variant
+            "page") entfällt der nächste Schritt: er führte auf genau die Seite,
+            auf der das Widget schon steht. */}
+        <WidgetFooter
+          widget={WIDGET}
+          chartExport={chartExport}
+          onsite={!isEmbed}
+          branding={branding}
+          showCta={isEmbed}
+          showEmbed={showEmbed}
+        />
 
         {/* Nur im Bild: Legende (drei Reihen auf zwei Achsen — ohne sie ist das
             Bild nicht lesbar), Erläuterung, Datenquelle + Marke. */}
         <WidgetExportFooter
-          widget={WIDGETS.pvZubau}
+          widget={WIDGET}
           legend={[
             { color: tokens["--color-accent"], label: "Zubau pro Jahr (GW, linke Achse)", shape: "box" },
             { color: tokens["--color-positive"], label: "Einspeisevergütung (ct/kWh, rechte Achse)" },
@@ -282,37 +258,4 @@ const S: Record<string, React.CSSProperties> = {
   header: { marginBottom: 10 },
   title: { fontSize: 17, fontWeight: 800, letterSpacing: "-0.01em", margin: "0 0 3px", lineHeight: 1.25, color: v("--color-text-primary") },
   sub: { fontSize: 12.5, color: v("--color-text-muted"), margin: 0, lineHeight: 1.4 },
-  // Quelle vertikal an der rechten Kante — schlank, mit vollem Text im title-
-  // Tooltip; Umbruch erlaubt (mehrere Spalten bei mehreren Quellen).
-  vsource: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    writingMode: "vertical-rl",
-    transform: "rotate(180deg)",
-    maxHeight: "100%",
-    fontSize: 9,
-    lineHeight: 1.4,
-    letterSpacing: 0.2,
-    color: v("--color-text-faint"),
-    textAlign: "center",
-    pointerEvents: "none",
-  },
-  footer: { marginTop: 12 },
-  rule: { height: 1, background: v("--color-border"), opacity: 0.6, marginBottom: 8 },
-  actions: { display: "flex", alignItems: "center", gap: 8, fontSize: 10.5, color: v("--color-text-muted") },
-  exportFoot: {
-    display: "none",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 24,
-    marginTop: 8,
-    fontSize: 10.5,
-    color: v("--color-text-muted"),
-    lineHeight: 1.4,
-  },
 };

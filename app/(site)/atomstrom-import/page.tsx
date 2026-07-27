@@ -194,7 +194,7 @@ export default async function AtomstromImportPage() {
         </p>
 
         <AutoHeightIframe
-          src="/embed/strommix-anteil"
+          src="/embed/strommix-anteil?onsite=1"
           title="Kernenergie im deutschen Strommix"
           fallbackHeight={400}
         />
@@ -205,7 +205,7 @@ export default async function AtomstromImportPage() {
 
         <div style={S.section}>
           <AutoHeightIframe
-            src="/embed/zubau-erneuerbare-atom"
+            src="/embed/zubau-erneuerbare-atom?onsite=1"
             title="Zubau: Erneuerbare vs. Atomkraft"
             fallbackHeight={420}
           />

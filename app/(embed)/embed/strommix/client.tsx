@@ -8,9 +8,13 @@ import {
   IconChevronLeft,
   IconChevronRight,
 } from "../../../../components/Icons";
-import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
-import { ExportBox, ExportOnly, WidgetExportFooter } from "../../../../components/WidgetExport";
+import {
+  ExportBox,
+  ExportOnly,
+  WidgetExportFooter,
+  WidgetFooter,
+  WidgetSourceEdge,
+} from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { WIDGETS, WIDGET_MAX_WIDTH } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
@@ -23,9 +27,9 @@ import {
   WidgetRange,
 } from "../../../../lib/widget-settings";
 
-// Where the share buttons point — the canonical source page for this widget.
-const SHARE_URL = "https://solar-check.io/strommix-deutschland";
-const SHARE_TEXT = "Strommix Deutschland – live bei Solar Check";
+// Identity (title, share target, sources, next step) comes from the register —
+// one entry feeds the page footer, the source edge and the image footer alike.
+const WIDGET = WIDGETS.strommix;
 
 function rangeToTab(range: WidgetRange): TabState {
   if (range === "24h") return { id: "24h" };
@@ -103,10 +107,10 @@ export default function StrommixWidget() {
   const [tab, setTab] = useState<TabState>({ id: "7d" });
 
   const chartExport = useChartExport({
-    context: { title: "Strommix Deutschland", subtitle: tabLabel(tab), source: sourceLabel(DATA_SOURCES.energyCharts) },
+    context: { title: WIDGET.title, subtitle: tabLabel(tab), source: sourceLabel(DATA_SOURCES.energyCharts) },
     filename: "solar-check-strommix.png",
-    shareText: SHARE_TEXT,
-    shareUrl: SHARE_URL,
+    shareText: WIDGET.shareText,
+    shareUrl: WIDGET.shareUrl,
     mode: "node",
   });
 
@@ -138,41 +142,14 @@ export default function StrommixWidget() {
     >
       <TopBar tab={tab} onTab={setTab} switchable={settings.switchable} />
       <div style={{ position: "relative", paddingRight: 18 }}>
-        {/* Source credit — web only, vertical along the right edge of the chart
-            area. Dropped from the export (it uses the horizontal print footer). */}
-        <div
-          data-sc-export-ignore=""
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            right: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            writingMode: "vertical-rl",
-            transform: "rotate(180deg)",
-            fontSize: 9,
-            lineHeight: 1,
-            letterSpacing: 0.2,
-            color: "var(--color-text-faint)",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-          }}
-        >
-          <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
-        </div>
+        {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Auf einer
+            eigenen Seite (onsite) kreditiert die Seite zentral. */}
+        <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
         <ExportBox>
           <ChartArea tab={tab} />
         </ExportBox>
       </div>
-      <Footer
-        share={settings.share}
-        embed={settings.embed}
-        branding={settings.branding}
-        chartExport={chartExport}
-      />
+      <Footer settings={settings} chartExport={chartExport} />
     </div>
   );
 }
@@ -626,76 +603,30 @@ function CenteredMessage({
 }
 
 function Footer({
-  share,
-  embed,
-  branding,
+  settings,
   chartExport,
 }: {
-  share: boolean;
-  embed: boolean;
-  branding: boolean;
+  settings: WidgetSettings;
   chartExport: ReturnType<typeof useChartExport>;
 }) {
-  const copyLink = () => {
-    navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {});
-  };
-
   return (
     <div style={{ marginTop: 12 }}>
-      <div
-        data-sc-export-ignore=""
-        style={{
-          height: 1,
-          background: "var(--widget-muted)",
-          opacity: 0.2,
-          marginBottom: 8,
-        }}
+      {/* Sichtbare Fußzeile: nächster Schritt links, Aktionen rechts, Marke
+          darunter — aus dem geteilten Baustein, damit sie in allen Widgets
+          gleich aussieht. */}
+      <WidgetFooter
+        widget={WIDGET}
+        chartExport={chartExport}
+        share={settings.share}
+        branding={settings.branding}
+        showEmbed={settings.embed}
+        onsite={settings.onsite}
       />
-
-      {/* Web footer — dropped from the export image. Source is shown vertically
-          in the chart area (above); here only action bar + Powered-by. */}
-      <div data-sc-export-ignore="">
-        {(share || branding) && (
-          <div
-            style={{
-              fontSize: 10.5,
-              color: "var(--widget-muted)",
-              display: "flex",
-              justifyContent: share ? (branding ? "space-between" : "flex-start") : "flex-end",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            {share && (
-              <ChartActionBar
-                onDownload={chartExport.downloadPng}
-                onCopyLink={copyLink}
-                onWhatsApp={chartExport.shareWhatsApp}
-                onTwitter={chartExport.shareTwitter}
-                onShareImage={chartExport.sharePng}
-                onEmbed={
-                  embed
-                    ? () => window.open("/energie-widgets#strommix", "_blank", "noopener")
-                    : undefined
-                }
-                isExporting={chartExport.isExporting}
-                canNativeShare={chartExport.canNativeShare}
-                size={30}
-              />
-            )}
-            {branding && (
-              <span style={{ display: "inline-flex", marginLeft: "auto" }}>
-                <PoweredBy />
-              </span>
-            )}
-          </div>
-        )}
-      </div>
 
       {/* Nur im Bild: Fußnoten-Box, Datenquelle links, Marke rechts. */}
       <WidgetExportFooter
-        widget={WIDGETS.strommix}
-        branding={branding}
+        widget={WIDGET}
+        branding={settings.branding}
         note="Die Farbabstufungen innerhalb Grün sind die einzelnen erneuerbaren Träger (Wind, Solar, Wasser, Biomasse)."
       />
     </div>

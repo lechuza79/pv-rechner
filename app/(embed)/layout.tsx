@@ -153,7 +153,11 @@ ${energyVars}
   /* Map widget: map left, value tiles right (like the main site). Stacks on
      very narrow embeds. */
   .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:24px;align-items:start}
-  .mastr-hero-aside{display:grid;gap:12px}
+  /* minmax(0,1fr): ohne die Null-Untergrenze wird die Spur so breit wie das
+     breiteste Kind — das Live-Radial bringt eine Mindestbreite von 280px mit und
+     schob die ganze Spalte über den rechten Rand hinaus (abgeschnitten vom
+     overflow:hidden der Widget-Hülle). So schrumpft stattdessen der Ring. */
+  .mastr-hero-aside{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
   .mastr-kpis{display:grid;gap:10px}
   .mastr-map-box{width:100%;height:600px}
   @media (max-width:600px){
@@ -164,6 +168,10 @@ ${energyVars}
     .mastr-hero-grid.has-breadcrumb .mastr-map-box{height:376px}
     .mastr-hero-grid.has-filter.has-breadcrumb .mastr-map-box{height:328px}
     .mastr-hero-aside .mastr-summary{order:-1}
+    /* Gestapelt: Karte umschließt den Ring, statt sich über die volle Breite zu
+       ziehen (mehr Breite macht den Ring nicht größer). Zweispaltig bleibt sie
+       spaltenbreit und damit bündig zu den Kacheln darunter. */
+    .mastr-live{width:fit-content;margin-inline:auto}
     .mastr-kpis{grid-template-columns:repeat(3,1fr);gap:8px}
     .mastr-kpis .kachel-tile{padding:10px}
     .mastr-kpis .kachel-value{font-size:15px !important;letter-spacing:-0.4px}

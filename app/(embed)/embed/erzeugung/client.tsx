@@ -5,12 +5,14 @@ import { MastrLiveRadial } from "../../../../components/MastrLiveRadial";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
-import { WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
+import { WIDGETS, WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
+import { ExportNotesProvider, WidgetExportFooter } from "../../../../components/WidgetExport";
 import { useChartExport } from "../../../../lib/useChartExport";
+import { v } from "../../../../lib/theme";
 
-// Where share/embed point — the canonical live page for this widget.
-const SHARE_URL = "https://solar-check.io/strommix-deutschland";
-const SHARE_TEXT = "Stromerzeugung in Deutschland – live bei Solar Check";
+// Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
+// Register — ein Eintrag speist Teilen-Aktion und Bild-Fuß.
+const WIDGET = WIDGETS.erzeugung;
 
 type Traeger = "gesamt" | "solar" | "wind" | "biomasse" | "wasser";
 
@@ -62,8 +64,8 @@ export default function ErzeugungWidget({
       source: `${sourceLabel(DATA_SOURCES.energyCharts)} · ${sourceLabel(DATA_SOURCES.mastr)}`,
     },
     filename: `solar-check-erzeugung-${traeger}.png`,
-    shareText: SHARE_TEXT,
-    shareUrl: SHARE_URL,
+    shareText: WIDGET.shareText,
+    shareUrl: WIDGET.shareUrl,
     mode: "node",
   });
 
@@ -74,7 +76,9 @@ export default function ErzeugungWidget({
       menuUp={compact}
       size={compact ? 26 : 28}
       onDownload={chartExport.downloadPng}
-      onCopyLink={() => navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {})}
+      onCopyLink={() =>
+        navigator.clipboard?.writeText(`${WIDGET.shareText}\n${WIDGET.shareUrl}`).catch(() => {})
+      }
       onWhatsApp={chartExport.shareWhatsApp}
       onTwitter={chartExport.shareTwitter}
       onShareImage={chartExport.sharePng}
@@ -215,7 +219,24 @@ export default function ErzeugungWidget({
     </div>
   );
 
+  // Was der Ring farblich unterscheidet, erklärt auf der Seite der Hover — im
+  // Bild gibt es keinen. Ohne diese Legende sind blaue und grüne Striche dort
+  // nicht auseinanderzuhalten.
+  const exportFooter = (
+    <WidgetExportFooter
+      widget={WIDGET}
+      branding={showBranding}
+      legend={[
+        { color: v("--color-accent"), label: "Erzeugung je Stunde", shape: "line" },
+        { color: v("--color-highlight"), label: "Jüngster gemeldeter Wert", shape: "line" },
+      ]}
+      note={HELP_TEXT}
+    />
+  );
+
   return (
+    // Sammelt die Texte hinter den „?" (hier: Auslastung) für den Bild-Fuß.
+    <ExportNotesProvider>
     <div
       ref={chartExport.chartRef}
       // Der Ring wird durch mehr Breite nicht größer — ohne Grenze steht er
@@ -241,6 +262,7 @@ export default function ErzeugungWidget({
         // percentage, whose denominator comes from the MaStR.
         dataSource={[DATA_SOURCES.energyCharts, DATA_SOURCES.mastr]}
         actions={actionBar}
+        exportFooter={exportFooter}
         onValue={setGw}
         helpOverlay={showHelp ? helpPanel : null}
         traegerNav={{
@@ -258,5 +280,6 @@ export default function ErzeugungWidget({
         }}
       />
     </div>
+    </ExportNotesProvider>
   );
 }

@@ -259,7 +259,9 @@ export function MastrHeroSection({
         <aside className="mastr-hero-aside" style={{ minWidth: 0 }}>
           {/* Live radial — shown on the homepage AND in the embed (same view).
               On mobile it drops below the KPI row (via CSS order) so map +
-              numbers share the first screen. */}
+              numbers share the first screen. Once stacked, .mastr-live makes the
+              card hug the ring (see the stacked media query) — a ring does not
+              get bigger from more width, so full width would frame empty space. */}
           {!selectedAgs && energietraeger !== "speicher" && effectiveSegment === "alle" && (
             <div className="mastr-live">
               <MastrLiveRadial

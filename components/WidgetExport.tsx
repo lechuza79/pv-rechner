@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useId, useMemo, useS
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/chart-export";
 import { DataSourceNote, PoweredBy } from "./PoweredBy";
 import ChartActionBar from "./ChartActionBar";
-import type { DataSource } from "../lib/data-sources";
+import { sourceLabel, type DataSource } from "../lib/data-sources";
 import { brandLabel, type WidgetDef } from "../lib/widget-registry";
 import type { useChartExport } from "../lib/useChartExport";
 import { v } from "../lib/theme";
@@ -172,6 +172,8 @@ export function WidgetFooter({
   onCopyLink,
   onsite = false,
   branding = true,
+  share = true,
+  showCta = true,
   showEmbed = false,
   showDownload = true,
   narrow = false,
@@ -185,6 +187,12 @@ export function WidgetFooter({
   /** First-party embed on our own pages: no brand line (the page carries it). */
   onsite?: boolean;
   branding?: boolean;
+  /** The embedder opted out of the action bar (share=0). Only the buttons go —
+   * the next step and the brand line are not sharing, they are attribution. */
+  share?: boolean;
+  /** Off where the widget sits on the very page its next step leads to: a
+   * button pointing at the page you are already reading is noise, not a step. */
+  showCta?: boolean;
   showEmbed?: boolean;
   /** false where nothing capturable exists (map, single KPI). */
   showDownload?: boolean;
@@ -195,6 +203,7 @@ export function WidgetFooter({
     (() => {
       navigator.clipboard?.writeText(`${widget.shareText}\n${widget.shareUrl}`).catch(() => {});
     });
+  const cta = showCta ? widget.cta : undefined;
 
   return (
     <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: 14 }}>
@@ -202,14 +211,18 @@ export function WidgetFooter({
         style={{
           display: "flex",
           flexDirection: narrow ? "column" : "row",
+          // Umbrechen statt abschneiden: in einem schmalen Embed passen der
+          // nächste Schritt und die Aktionsleiste nicht nebeneinander, und die
+          // Karte schneidet Überstehendes ab (overflow: hidden).
+          flexWrap: "wrap",
           alignItems: narrow ? "stretch" : "center",
-          justifyContent: widget.cta ? "space-between" : "flex-end",
+          justifyContent: cta ? "space-between" : "flex-end",
           gap: 10,
         }}
       >
-        {widget.cta && (
+        {cta && (
           <a
-            href={widget.cta.href}
+            href={cta.href}
             style={{
               flexShrink: 0,
               textAlign: "center",
@@ -222,28 +235,30 @@ export function WidgetFooter({
               textDecoration: "none",
             }}
           >
-            {widget.cta.label} →
+            {cta.label} →
           </a>
         )}
-        <div style={{ display: "flex", justifyContent: narrow ? "center" : "flex-end" }}>
-          <ChartActionBar
-            variant="bar"
-            size={28}
-            showDownload={showDownload && widget.exportable !== false}
-            onDownload={chartExport.downloadPng}
-            onShareImage={chartExport.canNativeShare ? chartExport.sharePng : undefined}
-            isExporting={chartExport.isExporting}
-            canNativeShare={chartExport.canNativeShare}
-            onCopyLink={copy}
-            onWhatsApp={chartExport.shareWhatsApp}
-            onTwitter={chartExport.shareTwitter}
-            onEmbed={
-              showEmbed && !onsite
-                ? () => window.open(`/energie-widgets#${widget.id}`, "_blank", "noopener")
-                : undefined
-            }
-          />
-        </div>
+        {share && (
+          <div style={{ display: "flex", justifyContent: narrow ? "center" : "flex-end" }}>
+            <ChartActionBar
+              variant="bar"
+              size={28}
+              showDownload={showDownload && widget.exportable !== false}
+              onDownload={chartExport.downloadPng}
+              onShareImage={chartExport.canNativeShare ? chartExport.sharePng : undefined}
+              isExporting={chartExport.isExporting}
+              canNativeShare={chartExport.canNativeShare}
+              onCopyLink={copy}
+              onWhatsApp={chartExport.shareWhatsApp}
+              onTwitter={chartExport.shareTwitter}
+              onEmbed={
+                showEmbed && !onsite
+                  ? () => window.open(`/energie-widgets#${widget.id}`, "_blank", "noopener")
+                  : undefined
+              }
+            />
+          </div>
+        )}
       </div>
 
       {branding && !onsite && (
@@ -267,11 +282,18 @@ export function WidgetSourceEdge({
   widget: WidgetDef;
   visible?: boolean;
 }) {
-  const label = widget.sources.map((s) => s.name).join(" · ");
+  // Sichtbar: Kurzform Name + Lizenzkürzel — das Lizenzkürzel ist der Teil, den
+  // die Lizenz verlangt (dl-de/by-2-0, CC BY 4.0), und darf deshalb nicht in den
+  // Tooltip wandern. Klammer-Zusätze („(Fraunhofer ISE)") fliegen raus, sonst
+  // wird die schmale Kante mehrspaltig; der volle Text steht im title.
+  const label = widget.sources
+    .map((s) => `${s.name.replace(/\s*\([^)]*\)/g, "")}${s.license ? `, ${s.license}` : ""}`)
+    .join(" · ");
+  const full = widget.sources.map(sourceLabel).join(" · ");
   return (
     <div
       {...{ [EXPORT_IGNORE_ATTR]: "" }}
-      title={`Quelle: ${label}`}
+      title={`Quelle: ${full}`}
       style={{
         position: "absolute",
         top: 0,

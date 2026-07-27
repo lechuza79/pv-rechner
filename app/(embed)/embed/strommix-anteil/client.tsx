@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import DonutChart from "../../../../components/charts/DonutChart";
-import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
-import { ExportBox, WidgetExportFooter } from "../../../../components/WidgetExport";
+import {
+  ExportBox,
+  WidgetExportFooter,
+  WidgetFooter,
+  WidgetSourceEdge,
+} from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import { WIDGETS, WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
@@ -15,7 +18,9 @@ import {
 } from "../../../../lib/widget-settings";
 import type { StrommixYtd } from "../../../../lib/strommix-ytd";
 
-const SHARE_URL = "https://solar-check.io/atomstrom-import";
+// Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
+// Register — ein Eintrag speist Fußzeile, Quellen-Kante und Bild-Fuß.
+const WIDGET = WIDGETS.strommixAnteil;
 
 // Prozent-Formatierung nach Chart-Konvention: ab 10 % runden, sonst 1 Stelle,
 // unter 0,1 % zwei Stellen.
@@ -35,22 +40,26 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
     onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
 
+  // Abgeleitet, nicht doppelt gepflegt: der Register-Text plus die Live-Zahl.
+  // Ohne Daten bleibt es exakt der Register-Text.
+  const shareText = ytd
+    ? `${fmtPct(ytd.nuclearShare)} Kernenergie im deutschen Strommix ${ytd.year} (inkl. importiertem Atomstrom)`
+    : WIDGET.shareText;
+
   const chartExport = useChartExport({
     context: {
-      title: "Kernenergie im deutschen Strommix",
+      title: WIDGET.title,
       subtitle: ytd ? `${ytd.year} · inkl. importiertem Atomstrom` : undefined,
       source: sourceLabel(DATA_SOURCES.energyCharts),
     },
     filename: "solar-check-strommix-kernenergie.png",
-    shareText: ytd
-      ? `${fmtPct(ytd.nuclearShare)} Kernenergie im deutschen Strommix ${ytd.year} (inkl. importiertem Atomstrom)`
-      : "Kernenergie im deutschen Strommix",
-    shareUrl: SHARE_URL,
+    shareText,
+    shareUrl: WIDGET.shareUrl,
     mode: "node",
   });
 
   const copyLink = () => {
-    navigator.clipboard?.writeText(SHARE_URL).catch(() => {});
+    navigator.clipboard?.writeText(`${shareText}\n${WIDGET.shareUrl}`).catch(() => {});
   };
 
   const root: React.CSSProperties = {
@@ -94,31 +103,9 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
       </div>
 
       <div style={{ position: "relative", paddingRight: 18 }}>
-        {/* Source credit — web only, vertical along the right edge of the chart
-            area. Dropped from the export (it uses the horizontal print footer). */}
-        <div
-          data-sc-export-ignore=""
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            right: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            writingMode: "vertical-rl",
-            transform: "rotate(180deg)",
-            fontSize: 9,
-            lineHeight: 1,
-            letterSpacing: 0.2,
-            color: "var(--color-text-faint)",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-          }}
-        >
-          <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
-        </div>
+        {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Auf einer
+            eigenen Seite (onsite) kreditiert die Seite zentral. */}
+        <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
         <ExportBox
           style={{
             display: "flex",
@@ -180,53 +167,18 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
         </div>
       </div>
 
-      {/* Footer: divider (both) + web footer (page) + print footer (image). */}
-      <div style={{ marginTop: 12 }}>
-        <div data-sc-export-ignore="" style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
-
-        {/* Web footer — dropped from the export image. Source is shown vertically
-            in the chart area (above); here only action bar + Powered-by. */}
-        <div data-sc-export-ignore="">
-          {(settings.branding || settings.share) && (
-            <div
-              style={{
-                fontSize: 10.5,
-                color: "var(--widget-muted)",
-                display: "flex",
-                justifyContent: settings.share ? "space-between" : "flex-end",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              {settings.share && (
-                <ChartActionBar
-                  onDownload={chartExport.downloadPng}
-                  onCopyLink={copyLink}
-                  onWhatsApp={chartExport.shareWhatsApp}
-                  onTwitter={chartExport.shareTwitter}
-                  onShareImage={chartExport.sharePng}
-                  onEmbed={
-                    settings.embed
-                      ? () => window.open("/energie-widgets#strommix-anteil", "_blank", "noopener")
-                      : undefined
-                  }
-                  isExporting={chartExport.isExporting}
-                  canNativeShare={chartExport.canNativeShare}
-                  size={30}
-                />
-              )}
-              {settings.branding && (
-                <span style={{ marginLeft: "auto", display: "inline-flex" }}>
-                  <PoweredBy />
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
-        <WidgetExportFooter widget={WIDGETS.strommixAnteil} branding={settings.branding} />
-      </div>
+      {/* Sichtbare Fußzeile (nächster Schritt · Aktionen · Marke) und Bild-Fuß
+          (Datenquelle · Marke) — beide aus dem geteilten Baustein. */}
+      <WidgetFooter
+        widget={WIDGET}
+        chartExport={chartExport}
+        onCopyLink={copyLink}
+        share={settings.share}
+        branding={settings.branding}
+        showEmbed={settings.embed}
+        onsite={settings.onsite}
+      />
+      <WidgetExportFooter widget={WIDGET} branding={settings.branding} />
     </div>
   );
 }
