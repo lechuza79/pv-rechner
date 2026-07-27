@@ -36,6 +36,7 @@ type Werte = {
 
 type Versorger = {
   id: string;
+  atlasUrl: string | null;
   name: string;
   typ: UtilityTyp;
   typLabel: string;
@@ -68,6 +69,9 @@ type Zuordnung = {
   einwohner: number | null;
   hatDaten: boolean;
   solar: string | null;
+  website: string | null;
+  kontaktUrl: string | null;
+  atlasUrl: string | null;
 };
 
 type Platzierung = {
@@ -295,10 +299,17 @@ function VersorgerKarte({ u, onChanged }: { u: Versorger; onChanged: () => void 
         <button style={secondaryBtn} onClick={() => setOffen(true)}>
           {u.gemeindeCount} {u.gemeindeCount === 1 ? "Gemeinde" : "Gemeinden"} · Details
         </button>
-        {u.website && (
+        {u.atlasUrl && (
+          <a href={u.atlasUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+            Unsere Gemeindeseite ↗
+          </a>
+        )}
+        {u.website ? (
           <a href={u.website} target="_blank" rel="noopener noreferrer" style={linkStyle}>
             Website ↗
           </a>
+        ) : (
+          <span style={{ fontSize: 12, color: v("--color-text-muted") }}>keine Website hinterlegt</span>
         )}
         {u.kontaktseiteUrl && (
           <a href={u.kontaktseiteUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
@@ -429,19 +440,50 @@ function DetailModal({
 
         <Abschnitt titel={`Zugeordnete Gemeinden (${gemeinden.length})`}>
           {laden && <p style={{ color: v("--color-text-muted") }}>Lädt…</p>}
-          <div style={{ display: "grid", gap: 4 }}>
+          <div style={{ display: "grid", gap: space.xs }}>
             {gemeinden.map((g) => (
               <div
                 key={g.regionId}
-                style={{ display: "flex", alignItems: "center", gap: space.sm, fontSize: 12, padding: "4px 0", borderBottom: `1px solid ${v("--color-border")}` }}
+                style={{ fontSize: 12, padding: "6px 0", borderBottom: `1px solid ${v("--color-border")}` }}
               >
-                <span style={{ fontWeight: 700, flex: 1 }}>{g.name}</span>
-                <span style={{ color: v("--color-text-muted") }}>{ZUORDNUNG_ROLLE_LABEL[g.rolle]}</span>
-                <span style={{ ...quelleBadge(g.quelle) }}>{ZUORDNUNG_QUELLE_LABEL[g.quelle]}</span>
-                {!g.hatDaten && <span style={{ color: v("--color-negative") }}>keine Anlagendaten</span>}
-                <button style={miniBtn} onClick={() => entfernen(g.regionId)} aria-label={`${g.name} entfernen`}>
-                  ✕
-                </button>
+                <div style={{ display: "flex", alignItems: "center", gap: space.sm }}>
+                  <span style={{ fontWeight: 700, flex: 1 }}>
+                    {g.name}
+                    {g.einwohner != null && (
+                      <span style={{ fontWeight: 400, color: v("--color-text-muted") }}>
+                        {" "}
+                        · {g.einwohner.toLocaleString("de-DE")} Ew.
+                      </span>
+                    )}
+                    {g.solar && <span style={{ fontWeight: 400, color: v("--color-text-muted") }}> · {g.solar} Solar</span>}
+                  </span>
+                  <span style={{ color: v("--color-text-muted") }}>{ZUORDNUNG_ROLLE_LABEL[g.rolle]}</span>
+                  <span style={{ ...quelleBadge(g.quelle) }}>{ZUORDNUNG_QUELLE_LABEL[g.quelle]}</span>
+                  <button style={miniBtn} onClick={() => entfernen(g.regionId)} aria-label={`${g.name} entfernen`}>
+                    ✕
+                  </button>
+                </div>
+                {/* Zwei Wege nach draußen: die Gemeinde-Website zum Nachsehen,
+                    wer dort versorgt — und unsere Atlas-Seite, die man dem
+                    Versorger später zeigt. */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginTop: 2 }}>
+                  {g.atlasUrl && (
+                    <a href={g.atlasUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                      Unsere Gemeindeseite ↗
+                    </a>
+                  )}
+                  {g.website && (
+                    <a href={g.website} target="_blank" rel="noopener noreferrer" style={{ ...linkStyle, color: v("--color-text-secondary") }}>
+                      {g.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")} ↗
+                    </a>
+                  )}
+                  {g.kontaktUrl && (
+                    <a href={g.kontaktUrl} target="_blank" rel="noopener noreferrer" style={{ ...linkStyle, color: v("--color-text-secondary") }}>
+                      Kontaktseite ↗
+                    </a>
+                  )}
+                  {!g.hatDaten && <span style={{ color: v("--color-negative") }}>keine Anlagendaten</span>}
+                </div>
               </div>
             ))}
           </div>

@@ -10,6 +10,7 @@ import {
 } from "../../../../lib/utilities";
 import { naeherungsHinweis } from "../../../../lib/utility-hook";
 import { isOutreachStatus } from "../../../../lib/outreach-status";
+import { atlasPathForRegionId } from "../../../../lib/atlas";
 import { fmtMixLeistung, fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "../../../../lib/atlas-format";
 
 // Cockpit-API für Stadtwerke / Energieversorger. Interne Tabellen ohne
@@ -18,14 +19,20 @@ import { fmtMixLeistung, fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from ".
 
 export const dynamic = "force-dynamic";
 
+// Die Atlas-Seite wird verlinkt, um sie dem Versorger zu zeigen — deshalb immer
+// die öffentliche Adresse, nicht die lokale.
+const SITE_URL = "https://solar-check.io";
+
 const TYPEN = Object.keys(UTILITY_TYP_LABEL) as UtilityTyp[];
 
 /** Ein Versorger, anzeigefertig. Zahlen kommen fertig formatiert aus den
  *  kanonischen Formattern — die Oberfläche klebt nie selbst eine Einheit an. */
-function toView(area: UtilityArea, hook: ReturnType<typeof hookFor>) {
+function toView(area: UtilityArea, hook: ReturnType<typeof hookFor>, atlasUrl: string | null = null) {
   const u = area.utility;
   return {
     id: u.id,
+    /** Unsere Atlas-Seite der Sitzgemeinde — das, was man dem Versorger zeigt. */
+    atlasUrl,
     name: u.name,
     typ: u.typ,
     typLabel: UTILITY_TYP_LABEL[u.typ],
@@ -84,10 +91,25 @@ export async function GET(req: NextRequest) {
   if (detailId) {
     const area = bundle.areas.find((a) => a.utility.id === detailId);
     if (!area) return NextResponse.json({ error: "Versorger nicht gefunden" }, { status: 404 });
-    const gemeinden = bundle.memberships
-      .filter((m) => m.utilityId === detailId)
+
+    const eigene = bundle.memberships.filter((m) => m.utilityId === detailId);
+    const ids = eigene.map((m) => m.regionId);
+
+    // Zu jeder Gemeinde die beiden Wege nach draußen: ihre eigene Website (für
+    // die Recherche, wer dort versorgt) und unsere Atlas-Seite (das, was man dem
+    // Versorger später zeigt).
+    const [{ data: kontakte }, pfade] = await Promise.all([
+      serviceDb.from("kommunen_kontakt").select("region_id, website, kontakt_url").in("region_id", ids),
+      Promise.all(ids.map((id) => atlasPathForRegionId(id))),
+    ]);
+    const kontaktByRegion = new Map((kontakte ?? []).map((k) => [k.region_id as string, k]));
+    const pfadByRegion = new Map(ids.map((id, i) => [id, pfade[i]]));
+
+    const gemeinden = eigene
       .map((m) => {
         const g = bundle.statsByRegion.get(m.regionId);
+        const k = kontaktByRegion.get(m.regionId);
+        const pfad = pfadByRegion.get(m.regionId) ?? null;
         return {
           regionId: m.regionId,
           name: g?.name ?? m.regionId,
@@ -96,6 +118,9 @@ export async function GET(req: NextRequest) {
           einwohner: g?.population ?? null,
           hatDaten: !!g,
           solar: g ? fmtPvLeistung(g.privatDachKwp + g.gewerbeDachKwp + g.freiflaecheKwp + g.balkonKwp) : null,
+          website: (k?.website as string) ?? null,
+          kontaktUrl: (k?.kontakt_url as string) ?? null,
+          atlasUrl: pfad ? `${SITE_URL}${pfad}` : null,
         };
       })
       .sort((a, b) => (b.einwohner ?? 0) - (a.einwohner ?? 0));
@@ -127,7 +152,13 @@ export async function GET(req: NextRequest) {
   if (status) areas = areas.filter((a) => a.utility.status === status);
   if (q) areas = areas.filter((a) => a.utility.name.toLowerCase().includes(q));
 
-  const rows = areas.map((a) => toView(a, hookFor(a, bundle.placements)));
+  // Atlas-Pfad der Sitzgemeinde je Versorger (Regionslookup ist gecacht).
+  const sitzPfade = await Promise.all(
+    areas.map((a) => (a.utility.sitzGemeindeId ? atlasPathForRegionId(a.utility.sitzGemeindeId) : null)),
+  );
+  const rows = areas.map((a, i) =>
+    toView(a, hookFor(a, bundle.placements), sitzPfade[i] ? `${SITE_URL}${sitzPfade[i]}` : null),
+  );
   return NextResponse.json({ rows, total: rows.length, erfasstGesamt: bundle.areas.length });
 }
 
