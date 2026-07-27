@@ -48,6 +48,9 @@ function loadEnvFile(): void {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SupabaseLike = any;
+
 async function makeClient() {
   loadEnvFile();
   const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -101,6 +104,38 @@ async function setup(): Promise<void> {
     -- Überschneidungen finden: welche Gemeinde hängt an mehreren Versorgern?
     CREATE INDEX IF NOT EXISTS idx_uc_commune ON utility_communes (commune_id);
 
+    -- Aus dem Marktstammdatenregister übernommene Stammdaten (Nachtrag,
+    -- idempotent). Die MaStR-Nummer ist der Schlüssel für den wiederholten
+    -- Import: sie bleibt gleich, der Firmenname kann sich ändern.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS mastr_nummer text;
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_utilities_mastr ON utilities (mastr_nummer)
+      WHERE mastr_nummer IS NOT NULL;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS telefon text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS plz text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS ort text;
+    -- Ergebnisse des Website-Laufs (Impressum + Themen). Getrennt von den
+    -- Registerdaten, weil sie eine andere Herkunft und Haltbarkeit haben.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS impressum_url text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS rollen_email text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS personen_email text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS verantwortlich_zeile text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS verantwortlich_funktion text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS verantwortlich_operativ boolean;
+    -- Themen-Fundstellen: welches Thema, mit Direktlink. Kandidat, KEIN geprüftes
+    -- Programm — die Förder-Fundstelle sagt nur „hier steht etwas von Förderung".
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS themen jsonb;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS profil_geprueft_am timestamptz;
+
+    -- Belege der gemessenen Zuordnung.
+    ALTER TABLE utility_communes ADD COLUMN IF NOT EXISTS anlagen int;
+    ALTER TABLE utility_communes ADD COLUMN IF NOT EXISTS anteil numeric;
+    -- 'gemessen' als vierte Herkunft nachziehen (die Tabelle kann älter sein).
+    DO $$ BEGIN
+      ALTER TABLE utility_communes DROP CONSTRAINT IF EXISTS utility_communes_zuordnung_quelle_check;
+      ALTER TABLE utility_communes ADD CONSTRAINT utility_communes_zuordnung_quelle_check
+        CHECK (zuordnung_quelle IN ('gemessen', 'verlinkt', 'recherchiert', 'vermutet'));
+    END $$;
+
     ALTER TABLE utilities ENABLE ROW LEVEL SECURITY;
     ALTER TABLE utility_communes ENABLE ROW LEVEL SECURITY;
     DO $$ BEGIN
@@ -128,6 +163,260 @@ async function setup(): Promise<void> {
   await supabase.rpc("exec_sql", { sql: "NOTIFY pgrst, 'reload schema';" });
   await new Promise((r) => setTimeout(r, 2000));
   log("Schema-Cache neu geladen", "ok");
+}
+
+// ─── Import aus dem Marktstammdatenregister ───────────────────────────────────
+
+/** Marktfunktion 1 = Stromnetzbetreiber (Marktfunktionen.xml im Gesamtdatenexport). */
+const MF_STROMNETZBETREIBER = "1";
+/** Personenart 517 = Organisation/juristische Person (Katalog 27). */
+const PERSONENART_ORGANISATION = "517";
+/** Land 84 = Deutschland. */
+const LAND_DEUTSCHLAND = "84";
+
+/** Belastbarkeits-Schwelle der gemessenen Zuordnung: unter drei Anlagen ODER
+ *  unter 5 % der Gemeinde ist ein Netzbetreiber dort ein Randfall — meist ein
+ *  einzelner Anschluss am Ortsrand, nicht das Ortsnetz. Beides wird trotzdem
+ *  gespeichert, aber nur oberhalb der Schwelle gilt die Gemeinde als Gebiet. */
+const MIN_ANLAGEN = 3;
+const MIN_ANTEIL = 0.05;
+
+/** Ab so vielen Gemeinden ist es kein Stadtwerk mehr, sondern ein Flächennetz
+ *  (Westnetz 1.368, Bayernwerk 1.186). Nur eine Vorbelegung — im Cockpit
+ *  änderbar, weil die Grenze eine Einschätzung ist und keine Messung. */
+const REGIONAL_AB_GEMEINDEN = 100;
+
+type Akteur = {
+  mastr_nummer: string;
+  name: string;
+  website: string | null;
+  email: string | null;
+  telefon: string | null;
+  plz: string | null;
+  ort: string | null;
+};
+
+function typVon(name: string, gemeinden: number): string {
+  if (/genossenschaft|\beG\b|\be\.\s?G\b/i.test(name)) return "genossenschaft";
+  if (gemeinden >= REGIONAL_AB_GEMEINDEN) return "regionalversorger";
+  return "stadtwerk";
+}
+
+/** MaStR-Nummern sind Präfix + Ziffern (SEL982068309366). Für die Millionen
+ *  Standort-Zuordnungen wird nur der Zahlenteil behalten: als Zahl statt als
+ *  Zeichenkette braucht die Tabelle einen Bruchteil des Speichers, und mehr als
+ *  die Identität wird hier nicht gebraucht. */
+function nurZiffern(s: string | undefined): number | null {
+  if (!s) return null;
+  const m = s.match(/(\d{6,})$/);
+  return m ? Number(m[1]) : null;
+}
+
+function saubereFirma(s: string): string {
+  // Das Register verwendet an einigen Stellen das fernöstliche Und-Zeichen.
+  return s.replace(/＆/g, "&").replace(/\s+/g, " ").trim();
+}
+
+function normWebsite(s: string | undefined): string | null {
+  const roh = (s ?? "").trim();
+  if (!roh || roh.length < 4) return null;
+  return /^https?:\/\//i.test(roh) ? roh : `https://${roh}`;
+}
+
+async function importRegister(dry: boolean): Promise<void> {
+  const { findCachedZip, listZipEntries, streamXmlRecords } = await import("./mastr-bnetza-refresh");
+  const zipPath = findCachedZip();
+  log(`Registerexport: ${zipPath.split("/").pop()}`);
+  const entries = (await listZipEntries(zipPath)).map((e) => e.name);
+  const passend = (re: RegExp) => entries.filter((n) => re.test(n)).sort();
+
+  // ── 1. Netzbetreiber als Marktakteure ───────────────────────────────────────
+  const akteure = new Map<string, Akteur>();
+  for (const datei of passend(/^Marktakteure(_\d+)?\.xml$/i)) {
+    await streamXmlRecords(zipPath, datei, "Marktakteur", (r) => {
+      if (r.Marktfunktion !== MF_STROMNETZBETREIBER) return;
+      if (r.Personenart !== PERSONENART_ORGANISATION) return;
+      if (r.Land !== LAND_DEUTSCHLAND) return;
+      const nr = r.MastrNummer;
+      const name = saubereFirma(r.Firmenname ?? "");
+      if (!nr || !name) return;
+      akteure.set(nr, {
+        mastr_nummer: nr,
+        name,
+        website: normWebsite(r.Webseite),
+        email: (r.Email ?? "").trim() || null,
+        telefon: (r.Telefon ?? "").trim() || null,
+        plz: (r.Postleitzahl ?? "").trim() || null,
+        ort: (r.Ort ?? "").trim() || null,
+      });
+    });
+  }
+  log(`${akteure.size} Stromnetzbetreiber in Deutschland`, "ok");
+
+  // ── 2. Standort → Netzbetreiber ─────────────────────────────────────────────
+  const nbIndex = new Map<string, number>();
+  const indexNb: string[] = [];
+  const lokNb = new Map<number, number>();
+  const napDateien = passend(/^Netzanschlusspunkte(_\d+)?\.xml$/i);
+  for (let i = 0; i < napDateien.length; i++) {
+    const datei = napDateien[i];
+    await streamXmlRecords(zipPath, datei, "Netzanschlusspunkt", (r) => {
+      const lok = nurZiffern(r.LokationMaStRNummer);
+      const nb = r.NetzbetreiberMaStRNummer;
+      if (lok == null || !nb) return;
+      let id = nbIndex.get(nb);
+      if (id === undefined) {
+        id = indexNb.length;
+        nbIndex.set(nb, id);
+        indexNb.push(nb);
+      }
+      lokNb.set(lok, id);
+    });
+    if ((i + 1) % 10 === 0 || i === napDateien.length - 1) {
+      log(`  Standorte [${i + 1}/${napDateien.length}]: ${lokNb.size.toLocaleString("de-DE")}`);
+    }
+  }
+
+  // ── 3. Anlagen → (Netzbetreiber, Gemeinde) ──────────────────────────────────
+  // Solar allein genügt: Photovoltaik steht in praktisch jeder Gemeinde, und
+  // gesucht ist nur, WELCHE Gemeinden an einem Netz hängen. Die Leistungszahlen
+  // des Gebiets kommen später aus den vorhandenen Gemeinde-Summen.
+  const paare = new Map<string, { n: number }>();
+  const jeGemeinde = new Map<string, number>();
+  let zugeordnet = 0;
+  let ohneNetz = 0;
+  const solarDateien = passend(/^EinheitenSolar(_\d+)?\.xml$/i);
+  for (let i = 0; i < solarDateien.length; i++) {
+    const datei = solarDateien[i];
+    await streamXmlRecords(zipPath, datei, "EinheitSolar", (r) => {
+      const ags = r.Gemeindeschluessel;
+      if (!ags || ags.length !== 8) return;
+      jeGemeinde.set(ags, (jeGemeinde.get(ags) ?? 0) + 1);
+      const lok = nurZiffern(r.LokationMaStRNummer);
+      const nb = lok == null ? undefined : lokNb.get(lok);
+      if (nb === undefined) {
+        ohneNetz++;
+        return;
+      }
+      zugeordnet++;
+      const key = `${nb}|${ags}`;
+      const eintrag = paare.get(key);
+      if (eintrag) eintrag.n++;
+      else paare.set(key, { n: 1 });
+    });
+    if ((i + 1) % 8 === 0 || i === solarDateien.length - 1) {
+      log(`  Anlagen [${i + 1}/${solarDateien.length}]: ${zugeordnet.toLocaleString("de-DE")} zugeordnet`);
+    }
+  }
+  const quote = (zugeordnet / Math.max(zugeordnet + ohneNetz, 1)) * 100;
+  log(`${zugeordnet.toLocaleString("de-DE")} Anlagen zugeordnet, ${ohneNetz.toLocaleString("de-DE")} ohne Netzbetreiber (${quote.toFixed(1)} %)`, "ok");
+
+  // ── 4. Gebiete je Netzbetreiber ─────────────────────────────────────────────
+  const gebiete = new Map<string, { ags: string; n: number; anteil: number }[]>();
+  for (const [key, { n }] of Array.from(paare.entries())) {
+    const [idStr, ags] = key.split("|");
+    const nr = indexNb[Number(idStr)];
+    const anteil = n / Math.max(jeGemeinde.get(ags) ?? 1, 1);
+    const liste = gebiete.get(nr) ?? [];
+    liste.push({ ags, n, anteil });
+    gebiete.set(nr, liste);
+  }
+
+  if (dry) {
+    log(`Trockenlauf: ${akteure.size} Versorger, ${gebiete.size} mit Gebiet — nichts geschrieben`, "ok");
+    return;
+  }
+
+  // ── 5. Schreiben ────────────────────────────────────────────────────────────
+  const supabase = await makeClient();
+  const gueltigeGemeinden = await ladeGemeindeIds(supabase);
+
+  const zeilen = Array.from(akteure.values()).map((a) => {
+    const gebiet = (gebiete.get(a.mastr_nummer) ?? []).filter(
+      (g) => g.n >= MIN_ANLAGEN && g.anteil >= MIN_ANTEIL && gueltigeGemeinden.has(g.ags),
+    );
+    return { akteur: a, gebiet };
+  });
+
+  for (let i = 0; i < zeilen.length; i += 200) {
+    const teil = zeilen.slice(i, i + 200);
+    const { error } = await supabase.from("utilities").upsert(
+      teil.map(({ akteur, gebiet }) => ({
+        mastr_nummer: akteur.mastr_nummer,
+        name: akteur.name,
+        typ: typVon(akteur.name, gebiet.length),
+        website: akteur.website,
+        kontakt_email: akteur.email,
+        telefon: akteur.telefon,
+        plz: akteur.plz,
+        ort: akteur.ort,
+        updated_at: new Date().toISOString(),
+      })),
+      { onConflict: "mastr_nummer" },
+    );
+    if (error) throw new Error(`utilities upsert: ${error.message}`);
+  }
+  log(`${zeilen.length} Versorger geschrieben`, "ok");
+
+  // IDs zurücklesen, um die Zuordnungen zu hängen.
+  const idByMastr = new Map<string, string>();
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await supabase
+      .from("utilities")
+      .select("id, mastr_nummer")
+      .not("mastr_nummer", "is", null)
+      .range(von, von + 999);
+    if (error) throw new Error(error.message);
+    if (!data?.length) break;
+    for (const r of data) idByMastr.set(r.mastr_nummer as string, r.id as string);
+    if (data.length < 1000) break;
+  }
+
+  // Zuordnungen: nur die gemessenen ersetzen. Von Hand gepflegte Zuordnungen
+  // (verlinkt/recherchiert/vermutet) gehören dem Menschen und bleiben stehen.
+  const links: Record<string, unknown>[] = [];
+  for (const { akteur, gebiet } of zeilen) {
+    const uid = idByMastr.get(akteur.mastr_nummer);
+    if (!uid) continue;
+    for (const g of gebiet) {
+      links.push({
+        utility_id: uid,
+        commune_id: g.ags,
+        rolle: "versorgungsgebiet",
+        zuordnung_quelle: "gemessen",
+        anlagen: g.n,
+        anteil: Number(g.anteil.toFixed(3)),
+      });
+    }
+  }
+  const { error: delErr } = await supabase.from("utility_communes").delete().eq("zuordnung_quelle", "gemessen");
+  if (delErr) throw new Error(`alte Messung entfernen: ${delErr.message}`);
+  for (let i = 0; i < links.length; i += 500) {
+    const { error } = await supabase
+      .from("utility_communes")
+      .upsert(links.slice(i, i + 500), { onConflict: "utility_id,commune_id" });
+    if (error) throw new Error(`utility_communes upsert: ${error.message}`);
+  }
+  log(`${links.length} gemessene Gemeinde-Zuordnungen geschrieben`, "ok");
+}
+
+/** Gemeinde-Schlüssel, die es in unserem Verzeichnis wirklich gibt. Das Register
+ *  kennt auch stillgelegte Schlüssel (nach Gebietsreformen); die würden am
+ *  Fremdschlüssel scheitern und den ganzen Stapel mitreißen. */
+async function ladeGemeindeIds(supabase: SupabaseLike): Promise<Set<string>> {
+  const out = new Set<string>();
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await supabase
+      .from("mastr_regions")
+      .select("region_id")
+      .eq("level", "gemeinde")
+      .range(von, von + 999);
+    if (error) throw new Error(error.message);
+    if (!data?.length) break;
+    for (const r of data) out.add(r.region_id as string);
+    if (data.length < 1000) break;
+  }
+  return out;
 }
 
 // ─── Beispieldaten ────────────────────────────────────────────────────────────
@@ -250,23 +539,28 @@ async function stats(): Promise<void> {
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const doSetup = argv.includes("--setup");
+  const doImport = argv.includes("--import");
   const doStats = argv.includes("--stats");
   const doSeed = argv.includes("--seed-demo");
   const doClear = argv.includes("--clear-demo");
+  const dry = argv.includes("--dry");
 
-  if (!doSetup && !doStats && !doSeed && !doClear) {
+  if (!doSetup && !doImport && !doStats && !doSeed && !doClear) {
     log(
       "Nichts zu tun. Flags:\n" +
-        "  --setup       Tabellen anlegen (idempotent)\n" +
+        "  --setup       Tabellen anlegen/erweitern (idempotent)\n" +
+        "  --import      Netzbetreiber + gemessene Netzgebiete aus dem Registerexport\n" +
         "  --stats       Bestand + Deckung melden\n" +
         "  --seed-demo   12 Beispieldatensätze (Namen Platzhalter, Zahlen echt)\n" +
-        "  --clear-demo  Beispieldatensätze wieder entfernen",
+        "  --clear-demo  Beispieldatensätze wieder entfernen\n" +
+        "  --dry         nichts schreiben",
       "err",
     );
     process.exit(1);
   }
   if (doSetup) await setup();
   if (doClear) await clearDemo();
+  if (doImport) await importRegister(dry);
   if (doSeed) await seedDemo();
   if (doStats) await stats();
   log("Fertig", "ok");

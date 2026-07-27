@@ -8,15 +8,22 @@ import {
   UTILITY_TYP_LABEL,
   ZUORDNUNG_QUELLE_LABEL,
   ZUORDNUNG_ROLLE_LABEL,
+  type Kennzahl,
   type UtilityTyp,
   type ZuordnungQuelle,
   type ZuordnungRolle,
 } from "../../../../lib/utilities";
 import Modal from "../../../../components/Modal";
 
-// Cockpit für Stadtwerke / Energieversorger. Aufbau wie das Kommunen-Cockpit:
-// filtern, Status pflegen, Notiz. Zusätzlich die Gebiets-Aggregate und der
-// Aufhänger — beide immer mit ihrem Näherungs-Hinweis, nie ohne.
+// Cockpit für Stadtwerke / Energieversorger.
+//
+// Tabelle statt Karten: Bei rund 900 Versorgern ist Vergleichen die Hauptarbeit,
+// und dafür müssen gleiche Zahlen untereinander stehen. Die Details liegen in
+// einer aufklappbaren Zeile darunter — sichtbar wird nur, was man gerade braucht.
+//
+// Hervorhebungen zeigen NIE eine Zahl allein als „gut", sondern immer ihren
+// Bezug (Median der erfassten Versorger). Eine grüne Zahl ohne Vergleichsgröße
+// wäre eine Behauptung.
 
 // ─── Typen (Spiegel der API-Antwort) ──────────────────────────────────────────
 
@@ -37,6 +44,7 @@ type Werte = {
 type Versorger = {
   id: string;
   atlasUrl: string | null;
+  highlights: { dachProKopf: Kennzahl; buergerAnteil: Kennzahl; zubauAnteil: Kennzahl };
   name: string;
   typ: UtilityTyp;
   typLabel: string;
@@ -50,7 +58,6 @@ type Versorger = {
   gemeindeCount: number;
   einwohner: number;
   quellen: Record<ZuordnungQuelle, number>;
-  vermutetAnteil: number;
   ueberlappend: number;
   ohneDaten: number;
   mehrereBundeslaender: boolean;
@@ -58,7 +65,6 @@ type Versorger = {
   werte: Werte;
   aufhaenger: string;
   aufhaengerHinweis: string;
-  aufhaengerKategorie: string | null;
 };
 
 type Zuordnung = {
@@ -98,62 +104,87 @@ type ErfassungsZeile = {
 export default function VersorgerCockpit() {
   const [tab, setTab] = useState<"liste" | "erfassung">("liste");
   const [bl, setBl] = useState("");
+  const [typ, setTyp] = useState("");
   const [status, setStatus] = useState("");
   const [q, setQ] = useState("");
+  const [nurGebiet, setNurGebiet] = useState(true);
+  const [sort, setSort] = useState("gemeinden");
+  const [page, setPage] = useState(0);
 
   const [rows, setRows] = useState<Versorger[]>([]);
+  const [total, setTotal] = useState(0);
+  const [pageSize, setPageSize] = useState(50);
   const [erfasstGesamt, setErfasstGesamt] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [neuOffen, setNeuOffen] = useState(false);
   const [neuSitz, setNeuSitz] = useState<{ regionId: string; name: string } | null>(null);
 
+  const [qDebounced, setQDebounced] = useState("");
+  useEffect(() => {
+    const t = setTimeout(() => setQDebounced(q), 350);
+    return () => clearTimeout(t);
+  }, [q]);
+
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     const params = new URLSearchParams();
     if (bl) params.set("bl", bl);
+    if (typ) params.set("typ", typ);
     if (status) params.set("status", status);
-    if (q) params.set("q", q);
+    if (qDebounced) params.set("q", qDebounced);
+    if (nurGebiet) params.set("gebiet", "1");
+    params.set("sort", sort);
+    params.set("page", String(page));
     try {
       const res = await fetch(`/api/admin/utilities?${params.toString()}`);
       if (!res.ok) throw new Error((await res.json()).error ?? `HTTP ${res.status}`);
       const json = await res.json();
       setRows(json.rows);
+      setTotal(json.total);
+      setPageSize(json.pageSize);
       setErfasstGesamt(json.erfasstGesamt);
     } catch (e) {
       setError((e as Error).message);
     } finally {
       setLoading(false);
     }
-  }, [bl, status, q]);
+  }, [bl, typ, status, qDebounced, nurGebiet, sort, page]);
 
   useEffect(() => {
     load();
   }, [load]);
 
-  const neuMitSitz = (regionId: string, name: string) => {
-    setNeuSitz({ regionId, name });
-    setNeuOffen(true);
-  };
+  useEffect(() => {
+    setPage(0);
+  }, [bl, typ, status, qDebounced, nurGebiet, sort]);
+
+  const maxPage = Math.max(0, Math.ceil(total / pageSize) - 1);
 
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
       <div style={{ marginBottom: space.lg }}>
         <div style={labelKicker}>Admin</div>
         <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 4 }}>Stadtwerke &amp; Energieversorger</h1>
-        <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.6 }}>
-          Versorger erfassen, Gemeinden zuordnen, Gebiets-Kennzahlen ansehen. Die Zuordnung der
-          Versorgungsgebiete ist eine Näherung — Netzbetreiber, Grundversorger und Vertrieb haben
-          verschiedene Gebiete, und öffentlich dokumentiert ist keines davon.
+        <p style={{ fontSize: 13, color: v("--color-text-muted"), lineHeight: 1.6, maxWidth: 760 }}>
+          Die Netzgebiete sind aus den amtlichen Anlagendaten abgeleitet: Jede Anlage hängt an einem
+          Netzanschlusspunkt, und der nennt seinen Netzbetreiber. Das ist eine Auszählung mit Beleg —
+          aber es ist das <strong>Netz</strong>gebiet, nicht der Vertrieb. Strom verkaufen viele auch
+          außerhalb davon, und das steht in keinem Register.
         </p>
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: "flex", gap: space.xs, marginBottom: space.md }}>
+      <div style={{ display: "flex", gap: space.xs, marginBottom: space.md, alignItems: "center" }}>
         <Tab active={tab === "liste"} label={`Versorger (${erfasstGesamt})`} onClick={() => setTab("liste")} />
         <Tab active={tab === "erfassung"} label="Erfassung" onClick={() => setTab("erfassung")} />
-        <button style={{ ...primaryBtn, marginLeft: "auto" }} onClick={() => neuMitSitz("", "")}>
+        <button
+          style={{ ...primaryBtn, marginLeft: "auto" }}
+          onClick={() => {
+            setNeuSitz(null);
+            setNeuOffen(true);
+          }}
+        >
           + Versorger anlegen
         </button>
       </div>
@@ -169,6 +200,14 @@ export default function VersorgerCockpit() {
                 </option>
               ))}
             </select>
+            <select value={typ} onChange={(e) => setTyp(e.target.value)} style={selectStyle} aria-label="Typ">
+              <option value="">Alle Typen</option>
+              {(Object.keys(UTILITY_TYP_LABEL) as UtilityTyp[]).map((t) => (
+                <option key={t} value={t}>
+                  {UTILITY_TYP_LABEL[t]}
+                </option>
+              ))}
+            </select>
             <select value={status} onChange={(e) => setStatus(e.target.value)} style={selectStyle} aria-label="Status">
               <option value="">Alle Status</option>
               {OUTREACH_STATUS.map((s) => (
@@ -177,6 +216,12 @@ export default function VersorgerCockpit() {
                 </option>
               ))}
             </select>
+            <select value={sort} onChange={(e) => setSort(e.target.value)} style={selectStyle} aria-label="Sortierung">
+              <option value="gemeinden">Größtes Gebiet zuerst</option>
+              <option value="einwohner">Meiste Einwohner zuerst</option>
+              <option value="erzeugung">Meiste Erzeugung zuerst</option>
+              <option value="name">Name</option>
+            </select>
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
@@ -184,26 +229,68 @@ export default function VersorgerCockpit() {
               style={inputStyle}
               aria-label="Versorger suchen"
             />
+            <label style={{ display: "flex", alignItems: "center", gap: space.xs, fontSize: 13, cursor: "pointer" }}>
+              <input type="checkbox" checked={nurGebiet} onChange={(e) => setNurGebiet(e.target.checked)} />
+              nur mit Gebiet
+            </label>
           </div>
 
           <div style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: space.sm }}>
-            {loading ? "Lädt…" : `${rows.length} Versorger`}
+            {loading ? "Lädt…" : `${total.toLocaleString("de-DE")} Versorger`}
             {error && <span style={{ color: v("--color-negative"), marginLeft: space.sm }}>Fehler: {error}</span>}
           </div>
 
-          <div style={{ display: "grid", gap: space.sm }}>
-            {rows.map((u) => (
-              <VersorgerKarte key={u.id} u={u} onChanged={load} />
-            ))}
-            {!loading && rows.length === 0 && (
-              <div style={{ ...cardStyle, textAlign: "center", color: v("--color-text-muted") }}>
-                Noch kein Versorger für diesen Filter. Über „Erfassung“ die größten Gemeinden durchgehen.
-              </div>
-            )}
+          <div style={{ overflowX: "auto", border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md") }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 900 }}>
+              <thead>
+                <tr>
+                  <th style={{ ...thStyle, width: 26 }} aria-label="Aufklappen" />
+                  <th style={thStyle}>Versorger</th>
+                  <th style={thStyle}>Gemeinden</th>
+                  <th style={thStyle}>Einwohner</th>
+                  <th style={thStyle}>Erzeugung</th>
+                  <th style={thStyle}>Dach je Ew.</th>
+                  <th style={thStyle}>Bürger-Anteil</th>
+                  <th style={thStyle}>Zubau</th>
+                  <th style={thStyle}>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((u) => (
+                  <VersorgerZeile key={u.id} u={u} onChanged={load} />
+                ))}
+                {!loading && rows.length === 0 && (
+                  <tr>
+                    <td colSpan={9} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
+                      Kein Versorger für diesen Filter.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
+
+          {total > pageSize && (
+            <div style={{ display: "flex", alignItems: "center", gap: space.md, marginTop: space.md, fontSize: 13 }}>
+              <button style={secondaryBtn} disabled={page <= 0} onClick={() => setPage((p) => Math.max(0, p - 1))}>
+                ← Zurück
+              </button>
+              <span style={{ color: v("--color-text-muted") }}>
+                Seite {page + 1} / {maxPage + 1}
+              </span>
+              <button style={secondaryBtn} disabled={page >= maxPage} onClick={() => setPage((p) => Math.min(maxPage, p + 1))}>
+                Weiter →
+              </button>
+            </div>
+          )}
         </>
       ) : (
-        <Erfassung onAnlegen={neuMitSitz} />
+        <Erfassung
+          onAnlegen={(regionId, name) => {
+            setNeuSitz({ regionId, name });
+            setNeuOffen(true);
+          }}
+        />
       )}
 
       <NeuModal
@@ -220,11 +307,10 @@ export default function VersorgerCockpit() {
   );
 }
 
-// ─── Karte je Versorger ───────────────────────────────────────────────────────
+// ─── Tabellenzeile mit aufklappbarem Detail ───────────────────────────────────
 
-function VersorgerKarte({ u, onChanged }: { u: Versorger; onChanged: () => void }) {
+function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void }) {
   const [offen, setOffen] = useState(false);
-  const [notiz, setNotiz] = useState(u.notiz ?? "");
   const [busy, setBusy] = useState(false);
 
   const patch = useCallback(
@@ -245,60 +331,122 @@ function VersorgerKarte({ u, onChanged }: { u: Versorger; onChanged: () => void 
   );
 
   const statusMeta = OUTREACH_STATUS.find((s) => s.key === u.status) ?? OUTREACH_STATUS[0];
-  const land = u.bundeslandAgs ? BUNDESLAENDER.find((b) => b.ags === u.bundeslandAgs)?.name : null;
+  const land = u.bundeslandAgs ? BUNDESLAENDER.find((b) => b.ags === u.bundeslandAgs)?.short : null;
 
   return (
-    <div style={{ ...cardStyle, opacity: busy ? 0.6 : 1 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "baseline" }}>
-        <div style={{ fontSize: 16, fontWeight: 700 }}>{u.name}</div>
-        <span style={badge}>{u.typLabel}</span>
-        {land && (
-          <span style={{ fontSize: 12, color: v("--color-text-muted") }}>
-            {land}
-            {u.mehrereBundeslaender && " (Gebiet reicht darüber hinaus)"}
-          </span>
-        )}
-        <select
-          value={u.status}
-          onChange={(e) => patch({ status: e.target.value })}
-          style={{
-            ...selectStyle,
-            marginLeft: "auto",
-            fontWeight: 700,
-            color: v(statusMeta.color),
-            background: v(statusMeta.bg),
-          }}
-          aria-label={`Status ${u.name}`}
-        >
-          {OUTREACH_STATUS.map((s) => (
-            <option key={s.key} value={s.key}>
-              {OUTREACH_STATUS_LABEL[s.key]}
-            </option>
-          ))}
-        </select>
+    <>
+      <tr style={{ borderTop: `1px solid ${v("--color-border")}`, opacity: busy ? 0.6 : 1, background: offen ? v("--color-bg-muted") : undefined }}>
+        <td style={{ ...tdStyle, textAlign: "center" }}>
+          <button
+            onClick={() => setOffen((o) => !o)}
+            style={{ ...miniBtn, width: 22, padding: 0 }}
+            aria-expanded={offen}
+            aria-label={`${u.name} ${offen ? "zuklappen" : "aufklappen"}`}
+          >
+            {offen ? "−" : "+"}
+          </button>
+        </td>
+        <td style={tdStyle}>
+          <div style={{ fontWeight: 700 }}>{u.name}</div>
+          <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
+            {u.typLabel}
+            {land && ` · ${land}`}
+            {u.mehrereBundeslaender && " · länderübergreifend"}
+          </div>
+        </td>
+        <td style={{ ...tdStyle, fontFamily: v("--font-mono") }}>{u.gemeindeCount.toLocaleString("de-DE")}</td>
+        <td style={{ ...tdStyle, fontFamily: v("--font-mono") }}>{u.einwohner.toLocaleString("de-DE")}</td>
+        <td style={{ ...tdStyle, fontFamily: v("--font-mono") }}>{u.werte.erzeugung}</td>
+        <KennzahlZelle k={u.highlights.dachProKopf} />
+        <KennzahlZelle k={u.highlights.buergerAnteil} />
+        <KennzahlZelle k={u.highlights.zubauAnteil} />
+        <td style={tdStyle}>
+          <select
+            value={u.status}
+            onChange={(e) => patch({ status: e.target.value })}
+            style={{ ...selectStyle, fontWeight: 700, color: v(statusMeta.color), background: v(statusMeta.bg) }}
+            aria-label={`Status ${u.name}`}
+          >
+            {OUTREACH_STATUS.map((s) => (
+              <option key={s.key} value={s.key}>
+                {OUTREACH_STATUS_LABEL[s.key]}
+              </option>
+            ))}
+          </select>
+        </td>
+      </tr>
+      {offen && (
+        <tr style={{ background: v("--color-bg-muted") }}>
+          <td colSpan={9} style={{ padding: pad("md", "lg"), borderTop: `1px solid ${v("--color-border")}` }}>
+            <Detail u={u} onChanged={onChanged} onPatch={patch} />
+          </td>
+        </tr>
+      )}
+    </>
+  );
+}
+
+/** Eine hervorgehobene Kennzahl. Die Farbe sagt „im Vergleich zu den anderen
+ *  erfassten Versorgern" — der Bezug steht im Titel und im Detail nochmal aus-
+ *  geschrieben, damit die Farbe nie allein für sich spricht. */
+function KennzahlZelle({ k }: { k: Kennzahl }) {
+  const farbe = k.niveau === "hoch" ? v("--color-positive") : k.niveau === "niedrig" ? v("--color-text-muted") : v("--color-text-primary");
+  return (
+    <td style={{ ...tdStyle, fontFamily: v("--font-mono"), color: farbe, fontWeight: k.niveau === "hoch" ? 700 : 400 }} title={k.referenz}>
+      {k.anzeige}
+      {k.niveau === "hoch" && <span style={{ marginLeft: 4 }} aria-label="überdurchschnittlich">▲</span>}
+    </td>
+  );
+}
+
+// ─── Detail ───────────────────────────────────────────────────────────────────
+
+function Detail({
+  u,
+  onChanged,
+  onPatch,
+}: {
+  u: Versorger;
+  onChanged: () => void;
+  onPatch: (body: Record<string, string>) => Promise<void>;
+}) {
+  const [gemeinden, setGemeinden] = useState<Zuordnung[]>([]);
+  const [platzierungen, setPlatzierungen] = useState<Platzierung[]>([]);
+  const [laden, setLaden] = useState(true);
+  const [notiz, setNotiz] = useState(u.notiz ?? "");
+
+  const load = useCallback(async () => {
+    setLaden(true);
+    try {
+      const res = await fetch(`/api/admin/utilities?id=${u.id}`);
+      if (res.ok) {
+        const json = await res.json();
+        setGemeinden(json.gemeinden);
+        setPlatzierungen(json.platzierungen);
+      }
+    } finally {
+      setLaden(false);
+    }
+  }, [u.id]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const entfernen = async (regionId: string) => {
+    await fetch(`/api/admin/utilities/zuordnung?utility_id=${u.id}&commune_id=${regionId}`, { method: "DELETE" });
+    await load();
+    onChanged();
+  };
+
+  return (
+    <div style={{ display: "grid", gap: space.md, fontSize: 13 }}>
+      <div style={{ padding: pad("sm", "md"), background: v("--color-bg"), borderRadius: v("--radius-sm"), border: `1px solid ${v("--color-border")}` }}>
+        <div style={{ fontWeight: 700 }}>{u.aufhaenger}</div>
+        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4 }}>{u.aufhaengerHinweis}</div>
       </div>
 
-      {/* Aufhänger — die Zeile, die später in die Ansprache geht. */}
-      <div style={{ marginTop: space.sm, padding: pad("sm", "md"), background: v("--color-bg-muted"), borderRadius: v("--radius-sm") }}>
-        <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.5 }}>{u.aufhaenger}</div>
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>
-          {u.aufhaengerHinweis}
-        </div>
-      </div>
-
-      {/* Gebiets-Kennzahlen */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: space.md, marginTop: space.sm, fontSize: 12 }}>
-        <Kennzahl label="Erzeugung gesamt" wert={u.werte.erzeugung} />
-        <Kennzahl label="davon Solar" wert={u.werte.solar} />
-        <Kennzahl label="Speicher" wert={u.werte.speicher} />
-        <Kennzahl label="Zubau letztes Jahr" wert={u.werte.zubau} />
-        <Kennzahl label="Einwohner im Gebiet" wert={u.einwohner.toLocaleString("de-DE")} />
-      </div>
-
-      <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center", marginTop: space.sm }}>
-        <button style={secondaryBtn} onClick={() => setOffen(true)}>
-          {u.gemeindeCount} {u.gemeindeCount === 1 ? "Gemeinde" : "Gemeinden"} · Details
-        </button>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: space.md, alignItems: "center" }}>
         {u.atlasUrl && (
           <a href={u.atlasUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
             Unsere Gemeindeseite ↗
@@ -306,15 +454,10 @@ function VersorgerKarte({ u, onChanged }: { u: Versorger; onChanged: () => void 
         )}
         {u.website ? (
           <a href={u.website} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-            Website ↗
+            {u.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")} ↗
           </a>
         ) : (
           <span style={{ fontSize: 12, color: v("--color-text-muted") }}>keine Website hinterlegt</span>
-        )}
-        {u.kontaktseiteUrl && (
-          <a href={u.kontaktseiteUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-            Kontaktseite ↗
-          </a>
         )}
         {u.kontaktEmail && (
           <a href={`mailto:${u.kontaktEmail}`} style={linkStyle}>
@@ -324,19 +467,105 @@ function VersorgerKarte({ u, onChanged }: { u: Versorger; onChanged: () => void 
         <input
           value={notiz}
           onChange={(e) => setNotiz(e.target.value)}
-          onBlur={() => notiz !== (u.notiz ?? "") && patch({ notiz })}
+          onBlur={() => notiz !== (u.notiz ?? "") && onPatch({ notiz })}
           placeholder="Notiz…"
-          style={{ ...inputStyle, flex: 1, minWidth: 160 }}
+          style={{ ...inputStyle, flex: 1, minWidth: 200 }}
           aria-label={`Notiz ${u.name}`}
         />
       </div>
 
-      <DetailModal open={offen} utility={u} onClose={() => setOffen(false)} onChanged={onChanged} />
+      <Abschnitt titel="Kennzahlen im Gebiet">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: space.sm }}>
+          <Kachel label="Erzeugung gesamt" wert={u.werte.erzeugung} />
+          <Kachel label="Solar gesamt" wert={u.werte.solar} />
+          <Kachel label="Dach privat" wert={u.werte.dachPrivat} />
+          <Kachel label="Dach gewerblich" wert={u.werte.dachGewerbe} />
+          <Kachel label="Freifläche" wert={u.werte.freiflaeche} />
+          <Kachel label="Wind" wert={u.werte.wind} />
+          <Kachel label="Biomasse" wert={u.werte.biomasse} />
+          <Kachel label="Wasser" wert={u.werte.wasser} />
+          <Kachel label="Speicher" wert={u.werte.speicher} />
+          <Kachel label="Zubau letztes Jahr" wert={u.werte.zubau} />
+        </div>
+        <div style={{ display: "grid", gap: 2, marginTop: space.sm, fontSize: 11, color: v("--color-text-muted") }}>
+          <div>Dach je Einwohner: {u.highlights.dachProKopf.anzeige} — {u.highlights.dachProKopf.referenz}</div>
+          <div>Bürger-Anteil: {u.highlights.buergerAnteil.anzeige} — {u.highlights.buergerAnteil.referenz}</div>
+          <div>Zubau: {u.highlights.zubauAnteil.anzeige} — {u.highlights.zubauAnteil.referenz}</div>
+          <div>
+            „Zubau“ ist das letzte vollständige Kalenderjahr — die Anlagendaten kennen nur das
+            Inbetriebnahme-Jahr, kein rollierendes 12-Monats-Fenster.
+          </div>
+        </div>
+      </Abschnitt>
+
+      <Abschnitt titel="Platzierungen">
+        {platzierungen.length === 0 ? (
+          <p style={{ color: v("--color-text-muted") }}>Keine Platzierung im Spitzenfeld.</p>
+        ) : (
+          <ul style={{ paddingLeft: 18, margin: 0 }}>
+            {platzierungen.map((p, i) => (
+              <li key={i} style={{ marginBottom: 2 }}>
+                {p.kategorie}: Platz {p.rang} von {p.gesamt} ({p.ebene}
+                {p.groessenklasse ? `, ${p.groessenklasse}e Versorger` : ""})
+                {!p.belastbar && <span style={{ color: v("--color-text-muted") }}> — zu kleines Feld</span>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Abschnitt>
+
+      <Abschnitt titel={`Zugeordnete Gemeinden (${gemeinden.length})`}>
+        {laden && <p style={{ color: v("--color-text-muted") }}>Lädt…</p>}
+        <div style={{ display: "grid", gap: 2, maxHeight: 320, overflowY: "auto" }}>
+          {gemeinden.map((g) => (
+            <div
+              key={g.regionId}
+              style={{ display: "flex", alignItems: "center", gap: space.sm, fontSize: 12, padding: "3px 0", borderBottom: `1px solid ${v("--color-border")}` }}
+            >
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <strong>{g.name}</strong>
+                {g.einwohner != null && (
+                  <span style={{ color: v("--color-text-muted") }}> · {g.einwohner.toLocaleString("de-DE")} Ew.</span>
+                )}
+                {g.solar && <span style={{ color: v("--color-text-muted") }}> · {g.solar} Solar</span>}
+              </span>
+              {g.atlasUrl && (
+                <a href={g.atlasUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                  Gemeindeseite ↗
+                </a>
+              )}
+              {g.website && (
+                <a
+                  href={g.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ ...linkStyle, color: v("--color-text-secondary") }}
+                >
+                  Website ↗
+                </a>
+              )}
+              <span style={{ color: v("--color-text-muted") }}>{ZUORDNUNG_ROLLE_LABEL[g.rolle]}</span>
+              <span style={quelleBadge(g.quelle)}>{ZUORDNUNG_QUELLE_LABEL[g.quelle]}</span>
+              {!g.hatDaten && <span style={{ color: v("--color-negative") }}>keine Anlagendaten</span>}
+              <button style={miniBtn} onClick={() => entfernen(g.regionId)} aria-label={`${g.name} entfernen`}>
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+        <GemeindeHinzufuegen
+          utilityId={u.id}
+          onAdded={() => {
+            load();
+            onChanged();
+          }}
+        />
+      </Abschnitt>
     </div>
   );
 }
 
-function Kennzahl({ label, wert }: { label: string; wert: string }) {
+function Kachel({ label, wert }: { label: string; wert: string }) {
   return (
     <div>
       <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: v("--color-text-muted") }}>
@@ -347,156 +576,9 @@ function Kennzahl({ label, wert }: { label: string; wert: string }) {
   );
 }
 
-// ─── Detail: Gemeinden + Platzierungen ────────────────────────────────────────
-
-function DetailModal({
-  open,
-  utility,
-  onClose,
-  onChanged,
-}: {
-  open: boolean;
-  utility: Versorger;
-  onClose: () => void;
-  onChanged: () => void;
-}) {
-  const [gemeinden, setGemeinden] = useState<Zuordnung[]>([]);
-  const [platzierungen, setPlatzierungen] = useState<Platzierung[]>([]);
-  const [laden, setLaden] = useState(false);
-
-  const load = useCallback(async () => {
-    setLaden(true);
-    try {
-      const res = await fetch(`/api/admin/utilities?id=${utility.id}`);
-      if (res.ok) {
-        const json = await res.json();
-        setGemeinden(json.gemeinden);
-        setPlatzierungen(json.platzierungen);
-      }
-    } finally {
-      setLaden(false);
-    }
-  }, [utility.id]);
-
-  useEffect(() => {
-    if (open) load();
-  }, [open, load]);
-
-  const entfernen = async (regionId: string) => {
-    await fetch(`/api/admin/utilities/zuordnung?utility_id=${utility.id}&commune_id=${regionId}`, {
-      method: "DELETE",
-    });
-    await load();
-    onChanged();
-  };
-
-  return (
-    <Modal open={open} onClose={onClose} title={utility.name} maxWidth={640}>
-      <div style={{ fontSize: 13, lineHeight: 1.6 }}>
-        <div style={{ padding: pad("sm", "md"), background: v("--color-bg-muted"), borderRadius: v("--radius-sm"), marginBottom: space.md }}>
-          <strong>{utility.aufhaenger}</strong>
-          <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4 }}>{utility.aufhaengerHinweis}</div>
-        </div>
-
-        <Abschnitt titel="Kennzahlen im Gebiet">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: space.sm }}>
-            <Kennzahl label="Erzeugung gesamt" wert={utility.werte.erzeugung} />
-            <Kennzahl label="Solar gesamt" wert={utility.werte.solar} />
-            <Kennzahl label="Dach privat" wert={utility.werte.dachPrivat} />
-            <Kennzahl label="Dach gewerblich" wert={utility.werte.dachGewerbe} />
-            <Kennzahl label="Freifläche" wert={utility.werte.freiflaeche} />
-            <Kennzahl label="Wind" wert={utility.werte.wind} />
-            <Kennzahl label="Biomasse" wert={utility.werte.biomasse} />
-            <Kennzahl label="Wasser" wert={utility.werte.wasser} />
-            <Kennzahl label="Speicher" wert={utility.werte.speicher} />
-            <Kennzahl label="Zubau letztes Jahr" wert={utility.werte.zubau} />
-            {utility.werte.dachProKopf && <Kennzahl label="Dach privat je Ew." wert={utility.werte.dachProKopf} />}
-          </div>
-          <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.sm }}>
-            Summe über die zugeordneten Gemeinden. „Zubau“ ist das letzte vollständige Kalenderjahr — die
-            amtlichen Anlagendaten kennen nur das Inbetriebnahme-Jahr, kein rollierendes 12-Monats-Fenster.
-          </p>
-        </Abschnitt>
-
-        <Abschnitt titel="Platzierungen">
-          {platzierungen.length === 0 ? (
-            <p style={{ color: v("--color-text-muted") }}>
-              Noch keine Platzierung im Spitzenfeld — oder zu wenige Versorger erfasst.
-            </p>
-          ) : (
-            <ul style={{ paddingLeft: 18, margin: 0 }}>
-              {platzierungen.map((p, i) => (
-                <li key={i} style={{ marginBottom: 4 }}>
-                  {p.kategorie}: Platz {p.rang} von {p.gesamt} ({p.ebene}
-                  {p.groessenklasse ? `, ${p.groessenklasse}e Versorger` : ""})
-                  {!p.belastbar && (
-                    <span style={{ color: v("--color-text-muted") }}> — zu kleines Feld, nicht als Aufhänger nutzbar</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </Abschnitt>
-
-        <Abschnitt titel={`Zugeordnete Gemeinden (${gemeinden.length})`}>
-          {laden && <p style={{ color: v("--color-text-muted") }}>Lädt…</p>}
-          <div style={{ display: "grid", gap: space.xs }}>
-            {gemeinden.map((g) => (
-              <div
-                key={g.regionId}
-                style={{ fontSize: 12, padding: "6px 0", borderBottom: `1px solid ${v("--color-border")}` }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: space.sm }}>
-                  <span style={{ fontWeight: 700, flex: 1 }}>
-                    {g.name}
-                    {g.einwohner != null && (
-                      <span style={{ fontWeight: 400, color: v("--color-text-muted") }}>
-                        {" "}
-                        · {g.einwohner.toLocaleString("de-DE")} Ew.
-                      </span>
-                    )}
-                    {g.solar && <span style={{ fontWeight: 400, color: v("--color-text-muted") }}> · {g.solar} Solar</span>}
-                  </span>
-                  <span style={{ color: v("--color-text-muted") }}>{ZUORDNUNG_ROLLE_LABEL[g.rolle]}</span>
-                  <span style={{ ...quelleBadge(g.quelle) }}>{ZUORDNUNG_QUELLE_LABEL[g.quelle]}</span>
-                  <button style={miniBtn} onClick={() => entfernen(g.regionId)} aria-label={`${g.name} entfernen`}>
-                    ✕
-                  </button>
-                </div>
-                {/* Zwei Wege nach draußen: die Gemeinde-Website zum Nachsehen,
-                    wer dort versorgt — und unsere Atlas-Seite, die man dem
-                    Versorger später zeigt. */}
-                <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginTop: 2 }}>
-                  {g.atlasUrl && (
-                    <a href={g.atlasUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
-                      Unsere Gemeindeseite ↗
-                    </a>
-                  )}
-                  {g.website && (
-                    <a href={g.website} target="_blank" rel="noopener noreferrer" style={{ ...linkStyle, color: v("--color-text-secondary") }}>
-                      {g.website.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")} ↗
-                    </a>
-                  )}
-                  {g.kontaktUrl && (
-                    <a href={g.kontaktUrl} target="_blank" rel="noopener noreferrer" style={{ ...linkStyle, color: v("--color-text-secondary") }}>
-                      Kontaktseite ↗
-                    </a>
-                  )}
-                  {!g.hatDaten && <span style={{ color: v("--color-negative") }}>keine Anlagendaten</span>}
-                </div>
-              </div>
-            ))}
-          </div>
-          <GemeindeHinzufuegen utilityId={utility.id} onAdded={() => { load(); onChanged(); }} />
-        </Abschnitt>
-      </div>
-    </Modal>
-  );
-}
-
 function Abschnitt({ titel, children }: { titel: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: space.lg }}>
+    <div>
       <div style={{ ...labelKicker, marginBottom: space.xs }}>{titel}</div>
       {children}
     </div>
@@ -535,8 +617,8 @@ function GemeindeHinzufuegen({ utilityId, onAdded }: { utilityId: string; onAdde
   };
 
   return (
-    <div style={{ marginTop: space.md }}>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: space.xs, marginBottom: space.xs }}>
+    <div style={{ marginTop: space.sm }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: space.xs }}>
         <select value={rolle} onChange={(e) => setRolle(e.target.value as ZuordnungRolle)} style={selectStyle} aria-label="Rolle">
           {(Object.keys(ZUORDNUNG_ROLLE_LABEL) as ZuordnungRolle[]).map((r) => (
             <option key={r} value={r}>
@@ -544,23 +626,28 @@ function GemeindeHinzufuegen({ utilityId, onAdded }: { utilityId: string; onAdde
             </option>
           ))}
         </select>
-        <select value={quelle} onChange={(e) => setQuelle(e.target.value as ZuordnungQuelle)} style={selectStyle} aria-label="Herkunft der Zuordnung">
-          {(Object.keys(ZUORDNUNG_QUELLE_LABEL) as ZuordnungQuelle[]).map((qk) => (
+        <select
+          value={quelle}
+          onChange={(e) => setQuelle(e.target.value as ZuordnungQuelle)}
+          style={selectStyle}
+          aria-label="Herkunft der Zuordnung"
+        >
+          {(["verlinkt", "recherchiert", "vermutet"] as ZuordnungQuelle[]).map((qk) => (
             <option key={qk} value={qk}>
               Herkunft: {ZUORDNUNG_QUELLE_LABEL[qk]}
             </option>
           ))}
         </select>
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Gemeinde suchen und zuordnen…"
+          style={{ ...inputStyle, flex: 1, minWidth: 200 }}
+          aria-label="Gemeinde suchen"
+        />
       </div>
-      <input
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Gemeinde suchen und zuordnen…"
-        style={{ ...inputStyle, width: "100%" }}
-        aria-label="Gemeinde suchen"
-      />
       {treffer.length > 0 && (
-        <div style={{ border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-sm"), marginTop: 4, maxHeight: 200, overflowY: "auto" }}>
+        <div style={{ border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-sm"), marginTop: 4, maxHeight: 200, overflowY: "auto", background: v("--color-bg") }}>
           {treffer.map((t) => (
             <button
               key={t.regionId}
@@ -573,15 +660,15 @@ function GemeindeHinzufuegen({ utilityId, onAdded }: { utilityId: string; onAdde
             >
               <strong>{t.name}</strong>{" "}
               <span style={{ color: v("--color-text-muted") }}>
-                {t.bezeichnung} · {t.einwohner.toLocaleString("de-DE")} Ew.
+                {t.bezeichnung} · {t.einwohner?.toLocaleString("de-DE")} Ew.
               </span>
             </button>
           ))}
         </div>
       )}
       <p style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 4, lineHeight: 1.5 }}>
-        „Herkunft“ ehrlich setzen: <em>verlinkt</em> nur, wenn die Zuordnung auf der Gemeinde- oder
-        Versorger-Website steht. Sie entscheidet, wie belastbar das Aggregat später ausgewiesen wird.
+        Von Hand ergänzte Zuordnungen überleben den nächsten Registerlauf — überschrieben wird nur, was
+        als <em>gemessen</em> markiert ist.
       </p>
     </div>
   );
@@ -611,9 +698,9 @@ function Erfassung({ onAnlegen }: { onAnlegen: (regionId: string, name: string) 
 
   return (
     <div>
-      <p style={{ fontSize: 13, color: v("--color-text-muted"), marginBottom: space.sm, lineHeight: 1.6 }}>
-        Die größten Gemeinden zuerst. Das zuständige Stadtwerk steht meist auf der Gemeinde-Website
-        verlinkt — von dort Name und Kontakt übernehmen und den Versorger anlegen.
+      <p style={{ fontSize: 13, color: v("--color-text-muted"), marginBottom: space.sm, lineHeight: 1.6, maxWidth: 760 }}>
+        Die größten Gemeinden zuerst — zum Nacharbeiten dort, wo die Messung nichts gefunden hat oder
+        ein zweiter Versorger fehlt.
       </p>
       <div style={{ display: "flex", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
         <select value={limit} onChange={(e) => setLimit(Number(e.target.value))} style={selectStyle} aria-label="Anzahl">
@@ -743,7 +830,7 @@ function NeuModal({
       title="Versorger anlegen"
       intro={
         sitz?.name
-          ? `Sitz: ${sitz.name}. Die Sitzgemeinde wird gleich als Versorgungsgebiet zugeordnet; weitere Gemeinden danach im Detail.`
+          ? `Sitz: ${sitz.name}. Die Sitzgemeinde wird gleich als Versorgungsgebiet zugeordnet.`
           : "Ohne Sitzgemeinde anlegen — Gemeinden danach im Detail zuordnen."
       }
       maxWidth={480}
@@ -788,8 +875,6 @@ function Feld({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 
-// ─── Bausteine ────────────────────────────────────────────────────────────────
-
 function Tab({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
   return (
     <button
@@ -817,13 +902,6 @@ const labelKicker: React.CSSProperties = {
   textTransform: "uppercase",
 };
 
-const cardStyle: React.CSSProperties = {
-  background: v("--color-bg"),
-  border: `1px solid ${v("--color-border")}`,
-  borderRadius: v("--radius-md"),
-  padding: pad("md", "lg"),
-};
-
 const inputStyle: React.CSSProperties = {
   padding: pad("xs", "sm"),
   fontSize: 13,
@@ -836,11 +914,7 @@ const inputStyle: React.CSSProperties = {
 
 const selectStyle: React.CSSProperties = { ...inputStyle, cursor: "pointer" };
 
-const secondaryBtn: React.CSSProperties = {
-  ...inputStyle,
-  cursor: "pointer",
-  background: v("--color-bg-muted"),
-};
+const secondaryBtn: React.CSSProperties = { ...inputStyle, cursor: "pointer" };
 
 const primaryBtn: React.CSSProperties = {
   ...inputStyle,
@@ -851,29 +925,32 @@ const primaryBtn: React.CSSProperties = {
   borderColor: v("--color-accent"),
 };
 
-const miniBtn: React.CSSProperties = {
-  ...secondaryBtn,
-  padding: "2px 6px",
-  fontSize: 11,
-  lineHeight: 1,
-};
-
+const miniBtn: React.CSSProperties = { ...secondaryBtn, padding: "2px 6px", fontSize: 11, lineHeight: 1 };
 const miniPrimary: React.CSSProperties = { ...primaryBtn, padding: "4px 8px", fontSize: 12 };
 
 const badge: React.CSSProperties = {
   fontSize: 11,
   fontWeight: 700,
-  padding: "2px 8px",
+  padding: "1px 7px",
   borderRadius: 999,
-  background: v("--color-bg-muted"),
+  background: v("--color-bg"),
   color: v("--color-text-secondary"),
+  whiteSpace: "nowrap",
 };
 
-/** Herkunft der Zuordnung farblich: vermutet muss ins Auge fallen. */
+/** Herkunft der Zuordnung farblich: „gemessen" ist belegt, „vermutet" muss
+ *  auffallen. Die beiden mittleren bleiben neutral. */
 function quelleBadge(q: ZuordnungQuelle): React.CSSProperties {
   return {
     ...badge,
-    color: q === "vermutet" ? v("--color-negative") : q === "verlinkt" ? v("--color-positive") : v("--color-text-secondary"),
+    color:
+      q === "vermutet"
+        ? v("--color-negative")
+        : q === "gemessen"
+          ? v("--color-positive")
+          : q === "verlinkt"
+            ? v("--color-accent")
+            : v("--color-text-secondary"),
   };
 }
 
@@ -882,6 +959,7 @@ const linkStyle: React.CSSProperties = {
   textDecoration: "none",
   fontSize: 12,
   fontWeight: 600,
+  whiteSpace: "nowrap",
 };
 
 const thStyle: React.CSSProperties = {
@@ -893,6 +971,7 @@ const thStyle: React.CSSProperties = {
   letterSpacing: "0.06em",
   color: v("--color-text-muted"),
   background: v("--color-bg-muted"),
+  whiteSpace: "nowrap",
 };
 
-const tdStyle: React.CSSProperties = { padding: pad("xs", "sm"), verticalAlign: "top" };
+const tdStyle: React.CSSProperties = { padding: pad("xs", "sm"), verticalAlign: "middle" };

@@ -4,6 +4,7 @@ import { isAdminSession } from "../../../../lib/admin-guard";
 import { loadUtilityBundle, hookFor } from "../../../../lib/utilities-server";
 import {
   UTILITY_TYP_LABEL,
+  computeHighlights,
   utilityCategoryLabel,
   type UtilityArea,
   type UtilityTyp,
@@ -24,15 +25,23 @@ export const dynamic = "force-dynamic";
 const SITE_URL = "https://solar-check.io";
 
 const TYPEN = Object.keys(UTILITY_TYP_LABEL) as UtilityTyp[];
+const PAGE_SIZE = 50;
 
 /** Ein Versorger, anzeigefertig. Zahlen kommen fertig formatiert aus den
  *  kanonischen Formattern — die Oberfläche klebt nie selbst eine Einheit an. */
-function toView(area: UtilityArea, hook: ReturnType<typeof hookFor>, atlasUrl: string | null = null) {
+function toView(
+  area: UtilityArea,
+  hook: ReturnType<typeof hookFor>,
+  atlasUrl: string | null = null,
+  alle: UtilityArea[] = [],
+) {
   const u = area.utility;
   return {
     id: u.id,
     /** Unsere Atlas-Seite der Sitzgemeinde — das, was man dem Versorger zeigt. */
     atlasUrl,
+    /** Hervorgehobene Kennzahlen, jeweils mit ihrem Vergleichsmaßstab. */
+    highlights: computeHighlights(area, alle.length ? alle : [area]),
     name: u.name,
     typ: u.typ,
     typLabel: UTILITY_TYP_LABEL[u.typ],
@@ -141,25 +150,51 @@ export async function GET(req: NextRequest) {
       }));
 
     return NextResponse.json({
-      row: toView(area, hookFor(area, bundle.placements)),
+      row: toView(area, hookFor(area, bundle.placements), null, bundle.areas),
       gemeinden,
       platzierungen,
     });
   }
 
+  const typ = sp.get("typ") ?? "";
+  const nurGebiet = sp.get("gebiet") === "1";
+  const sort = sp.get("sort") ?? "";
+  const seite = Math.max(0, parseInt(sp.get("page") ?? "0", 10) || 0);
+
   let areas = bundle.areas;
   if (bl) areas = areas.filter((a) => a.bundeslandAgs === bl);
   if (status) areas = areas.filter((a) => a.utility.status === status);
+  if (typ) areas = areas.filter((a) => a.utility.typ === typ);
+  if (nurGebiet) areas = areas.filter((a) => a.gemeindeCount > 0);
   if (q) areas = areas.filter((a) => a.utility.name.toLowerCase().includes(q));
+
+  // Sortierung. Standard ist „größtes Gebiet zuerst" — beim Durchgehen von
+  // hunderten Versorgern ist das die nützlichste Reihenfolge.
+  const sortierer: Record<string, (a: UtilityArea, b: UtilityArea) => number> = {
+    name: (a, b) => a.utility.name.localeCompare(b.utility.name, "de"),
+    einwohner: (a, b) => b.stats.population - a.stats.population,
+    erzeugung: (a, b) => b.erzeugungKw - a.erzeugungKw,
+    gemeinden: (a, b) => b.gemeindeCount - a.gemeindeCount,
+  };
+  areas = [...areas].sort(sortierer[sort] ?? sortierer.gemeinden);
+
+  const gesamt = areas.length;
+  const seiteAreas = areas.slice(seite * PAGE_SIZE, seite * PAGE_SIZE + PAGE_SIZE);
 
   // Atlas-Pfad der Sitzgemeinde je Versorger (Regionslookup ist gecacht).
   const sitzPfade = await Promise.all(
-    areas.map((a) => (a.utility.sitzGemeindeId ? atlasPathForRegionId(a.utility.sitzGemeindeId) : null)),
+    seiteAreas.map((a) => (a.utility.sitzGemeindeId ? atlasPathForRegionId(a.utility.sitzGemeindeId) : null)),
   );
-  const rows = areas.map((a, i) =>
-    toView(a, hookFor(a, bundle.placements), sitzPfade[i] ? `${SITE_URL}${sitzPfade[i]}` : null),
+  const rows = seiteAreas.map((a, i) =>
+    toView(a, hookFor(a, bundle.placements), sitzPfade[i] ? `${SITE_URL}${sitzPfade[i]}` : null, bundle.areas),
   );
-  return NextResponse.json({ rows, total: rows.length, erfasstGesamt: bundle.areas.length });
+  return NextResponse.json({
+    rows,
+    total: gesamt,
+    page: seite,
+    pageSize: PAGE_SIZE,
+    erfasstGesamt: bundle.areas.length,
+  });
 }
 
 // Versorger anlegen. Die Sitzgemeinde wird zugleich als Gebiets-Zuordnung

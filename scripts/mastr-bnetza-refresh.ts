@@ -234,7 +234,7 @@ async function phaseDownload(schemaVersion: string): Promise<{ zipPath: string; 
   return { zipPath, resolved };
 }
 
-function findCachedZip(): string {
+export function findCachedZip(): string {
   if (!existsSync(CACHE_DIR)) {
     throw new Error(`Cache dir does not exist: ${CACHE_DIR}. Run --download first.`);
   }
@@ -260,7 +260,7 @@ type EntryInfo = {
   uncompressedSize: number;
 };
 
-async function listZipEntries(zipPath: string): Promise<EntryInfo[]> {
+export async function listZipEntries(zipPath: string): Promise<EntryInfo[]> {
   const directory = await unzipper.Open.file(zipPath);
   return directory.files
     .filter((f) => f.type === "File")
@@ -282,7 +282,11 @@ async function listZipEntries(zipPath: string): Promise<EntryInfo[]> {
  *
  * Memory: only one record is held at a time (fields are flat key/value).
  */
-async function streamXmlRecords(
+/** Höchstzahl tolerierter Parser-Fehler je Datei — darüber ist nicht ein Zeichen
+ *  kaputt, sondern die Datei, und dann ist Weiterlesen kein Dienst mehr. */
+const MAX_PARSE_FEHLER = 50;
+
+export async function streamXmlRecords(
   zipPath: string,
   entryName: string,
   recordTag: string,
@@ -300,6 +304,7 @@ async function streamXmlRecords(
     let textBuffer = "";
     let currentRecord: Record<string, string> | null = null;
     let count = 0;
+    let parseFehler = 0;
 
     parser.on("opentag", (tag: { name: string }) => {
       if (!inRecord) {
@@ -343,9 +348,31 @@ async function streamXmlRecords(
       recordDepth--;
     });
 
+    // Nach einem Parser-Fehler WEITERLESEN statt abbrechen.
+    //
+    // Der Kommentar an dieser Stelle versprach das schon, der Code tat das
+    // Gegenteil: ein einziges kaputtes Zeichen irgendwo in 22 GB hätte den
+    // ganzen Monatslauf gekippt. Genau diese Fehlerklasse ist real aufgetreten —
+    // eine Anlagen-Datei enthält eine ungültige numerische Zeichenreferenz, und
+    // ein strenger Parser gibt dort auf (bei der Outreach-Session nach 75 von
+    // 2.056 Gemeinden, bei einem Probelauf hier nach 56 von 64 Dateien).
+    //
+    // Ein übersprungener Satz von Millionen ist ein vertretbarer Verlust, ein
+    // abgebrochener Lauf nicht. Die Zahl wird am Ende gemeldet, nie verschwiegen.
     parser.on("error", (err: Error) => {
-      // sax error handling: resume after error to keep streaming
-      reject(err);
+      parseFehler++;
+      if (parseFehler > MAX_PARSE_FEHLER) {
+        reject(new Error(`${entryName}: über ${MAX_PARSE_FEHLER} Parser-Fehler — Datei gilt als defekt (${err.message})`));
+        return;
+      }
+      // sax braucht beides: Fehler zurücksetzen und den Strom weiterlaufen lassen.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const innen = (parser as any)._parser;
+      if (innen) innen.error = null;
+      parser.resume();
+      inRecord = false;
+      currentRecord = null;
+      currentField = null;
     });
 
     parser.on("end", () => resolvePromise(count));
@@ -940,7 +967,14 @@ async function main() {
   log("Done.", "ok");
 }
 
-main().catch((err) => {
-  log((err as Error).message, "err");
-  process.exit(1);
-});
+// Nur laufen, wenn das Skript DIREKT aufgerufen wurde. Andere Skripte binden
+// die Streaming- und ZIP-Helfer von hier ein (statt sie zu kopieren) — ohne
+// diese Prüfung würde dabei jedes Mal dieser Lauf mitstarten, „keine Phase
+// gewählt" melden und den Aufrufer wortlos beenden.
+const direktAufgerufen = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
+if (direktAufgerufen) {
+  main().catch((err) => {
+    log((err as Error).message, "err");
+    process.exit(1);
+  });
+}

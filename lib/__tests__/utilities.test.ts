@@ -5,6 +5,8 @@ import {
   computeUtilityPlacements,
   findOverlaps,
   UTILITY_CATEGORY_BY_KEY,
+  buergerAnteil,
+  computeHighlights,
   utilityCategoryLabel,
   type UtilityArea,
   type UtilityMembership,
@@ -129,7 +131,7 @@ describe("Gebiets-Aggregation", () => {
       ],
       stats,
     );
-    expect(area.quellen).toEqual({ verlinkt: 1, recherchiert: 0, vermutet: 1 });
+    expect(area.quellen).toEqual({ gemessen: 0, verlinkt: 1, recherchiert: 0, vermutet: 1 });
     expect(area.vermutetAnteil).toBe(0.5);
   });
 
@@ -290,5 +292,49 @@ describe("Einheiten der Gebiets-Kategorien", () => {
       // Wettbewerbsnamen und gehören nicht in ein B2B-Gespräch.
       expect(label).not.toMatch(/Spitzenreiter|Hauptstadt|Champion|Pionier|Vorreiter/);
     }
+  });
+});
+
+// ─── Highlights ───────────────────────────────────────────────────────────────
+
+describe("Hervorgehobene Kennzahlen", () => {
+  const stats = new Map([
+    ["09111000", gemeinde("09111000", { privatDachKwp: 20000, population: 10000 })],
+    ["09112000", gemeinde("09112000", { privatDachKwp: 2000, population: 10000 })],
+    ["09113000", gemeinde("09113000", { privatDachKwp: 5000, population: 10000 })],
+  ]);
+  const areas = ["a", "b", "c"].map((id, i) =>
+    aggregateArea(versorger(id), [zuordnung(id, `0911${i + 1}000`)], stats),
+  );
+
+  it("hebt nur hervor, was deutlich über dem Median liegt", () => {
+    const hoch = computeHighlights(areas[0], areas);
+    const niedrig = computeHighlights(areas[1], areas);
+    expect(hoch.dachProKopf.niveau).toBe("hoch");
+    expect(niedrig.dachProKopf.niveau).toBe("niedrig");
+  });
+
+  it("nennt zu jeder Hervorhebung ihren Vergleichsmaßstab", () => {
+    // Eine grüne Zahl ohne Bezugsgröße wäre eine Behauptung, keine Einordnung.
+    const h = computeHighlights(areas[0], areas);
+    for (const k of [h.dachProKopf, h.buergerAnteil, h.zubauAnteil]) {
+      expect(k.referenz.length).toBeGreaterThan(0);
+      expect(k.referenz).toMatch(/Median|kein Vergleichswert/);
+    }
+  });
+
+  it("rechnet den Bürger-Anteil gegen die GESAMTE Solarleistung des Gebiets", () => {
+    const nurGewerbe = new Map([
+      ["09111000", gemeinde("09111000", { privatDachKwp: 1000, gewerbeDachKwp: 3000, freiflaecheKwp: 0, balkonKwp: 0 })],
+    ]);
+    const a = aggregateArea(versorger("x"), [zuordnung("x", "09111000")], nurGewerbe);
+    expect(buergerAnteil(a)).toBeCloseTo(0.25, 3);
+  });
+
+  it("liefert keine Einordnung, wenn es nichts zu vergleichen gibt", () => {
+    const leer = aggregateArea(versorger("y"), [], new Map());
+    const h = computeHighlights(leer, [leer]);
+    expect(h.dachProKopf.wert).toBeNull();
+    expect(h.dachProKopf.niveau).toBeNull();
   });
 });

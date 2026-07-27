@@ -18,6 +18,7 @@
 //     ist deshalb immer das letzte vollständige Kalenderjahr — kein rollierendes
 //     12-Monats-Fenster. Ein solches bräuchte Monatsauflösung im MaStR-Import.
 
+import { fmtWattProKopf } from "./atlas-format";
 import {
   AWARD_CATEGORY_BY_KEY,
   populationTertiles,
@@ -53,12 +54,17 @@ export const ZUORDNUNG_ROLLE_LABEL: Record<ZuordnungRolle, string> = {
 export const AREA_ROLLEN: ZuordnungRolle[] = ["sitz", "versorgungsgebiet"];
 
 /** Woher die Zuordnung stammt — steigt von unten nach oben in der Verlässlichkeit.
+ *  `gemessen`: aus den amtlichen Anlagendaten abgeleitet. Jede Anlage hängt an
+ *    einem Netzanschlusspunkt, und der nennt seinen Netzbetreiber — wer in einer
+ *    Gemeinde die Anlagen anschließt, betreibt dort das Netz. Das ist eine
+ *    Auszählung mit Beleg (Anlagenzahl + Anteil), keine Einschätzung.
  *  `verlinkt`: auf der Gemeinde- oder Versorger-Website ausgewiesen.
  *  `recherchiert`: aus einer anderen belastbaren Quelle (Presse, Satzung).
  *  `vermutet`: plausibel, aber unbelegt. */
-export type ZuordnungQuelle = "verlinkt" | "recherchiert" | "vermutet";
+export type ZuordnungQuelle = "gemessen" | "verlinkt" | "recherchiert" | "vermutet";
 
 export const ZUORDNUNG_QUELLE_LABEL: Record<ZuordnungQuelle, string> = {
+  gemessen: "gemessen",
   verlinkt: "verlinkt",
   recherchiert: "recherchiert",
   vermutet: "vermutet",
@@ -81,6 +87,12 @@ export type UtilityMembership = {
   regionId: string; // 8-stelliger AGS
   rolle: ZuordnungRolle;
   quelle: ZuordnungQuelle;
+  /** Nur bei `quelle: "gemessen"`: Anlagen dieses Netzbetreibers in der Gemeinde. */
+  anlagen?: number | null;
+  /** Nur bei `quelle: "gemessen"`: Anteil an allen Anlagen der Gemeinde, 0..1.
+   *  In 2.583 von 11.016 Gemeinden gibt es mehr als einen Netzbetreiber — der
+   *  Anteil sagt, wie stark dieser dort vertreten ist. */
+  anteil?: number | null;
 };
 
 // ─── Gebiets-Aggregat ─────────────────────────────────────────────────────────
@@ -119,7 +131,7 @@ export type UtilityArea = {
   zubauKwp: number;
 };
 
-const LEER_QUELLEN: Record<ZuordnungQuelle, number> = { verlinkt: 0, recherchiert: 0, vermutet: 0 };
+const LEER_QUELLEN: Record<ZuordnungQuelle, number> = { gemessen: 0, verlinkt: 0, recherchiert: 0, vermutet: 0 };
 
 const NULL_STATS = (id: string, name: string): GemeindeStats => ({
   regionId: id,
@@ -403,6 +415,102 @@ export function computeUtilityPlacements(areas: UtilityArea[]): Map<string, Util
     }
   }
   return out;
+}
+
+// ─── Highlights ───────────────────────────────────────────────────────────────
+
+/**
+ * Eine Kennzahl mit Einordnung.
+ *
+ * Das `niveau` ist KEINE Wertung der Zahl an sich, sondern ihr Verhältnis zum
+ * Median der erfassten Versorger — und der Bezug steht deshalb sichtbar dabei.
+ * „Grün" ohne Vergleichsgröße wäre eine Behauptung; „grün, Median liegt bei
+ * 412 Wp" ist eine Einordnung.
+ */
+export type Kennzahl = {
+  wert: number | null;
+  /** Fertig formatiert, Einheit aus dem kanonischen Formatter. */
+  anzeige: string;
+  niveau: "hoch" | "mittel" | "niedrig" | null;
+  /** Woran gemessen wurde — gehört immer mit angezeigt. */
+  referenz: string;
+};
+
+/** Ab welchem Verhältnis zum Median eine Zahl hervorgehoben wird. Bewusst
+ *  großzügig: bei ±10 % ist der Unterschied Rauschen, keine Auszeichnung. */
+const HOCH_AB = 1.25;
+const NIEDRIG_BIS = 0.75;
+
+function median(werte: number[]): number | null {
+  const s = werte.filter((n) => n > 0).sort((a, b) => a - b);
+  if (s.length === 0) return null;
+  return s[Math.floor(s.length / 2)];
+}
+
+function einordnen(wert: number | null, med: number | null): "hoch" | "mittel" | "niedrig" | null {
+  if (wert == null || med == null || med <= 0) return null;
+  if (wert >= med * HOCH_AB) return "hoch";
+  if (wert <= med * NIEDRIG_BIS) return "niedrig";
+  return "mittel";
+}
+
+/** Anteil der privaten Dachanlagen an der gesamten Solarleistung des Gebiets.
+ *  Ehrlicher Nenner: ALLE Solaranlagen im Gebiet. Die Zahl sagt, wie viel vom
+ *  Ausbau auf Bürgerdächern liegt und wie viel auf Gewerbehallen und Parks. */
+export function buergerAnteil(area: UtilityArea): number | null {
+  return area.solarKwp > 0 ? area.stats.privatDachKwp / area.solarKwp : null;
+}
+
+/** Private Dach-Solarleistung je Einwohner, in Wp. */
+export function dachProKopf(area: UtilityArea): number | null {
+  return area.stats.population > 0 ? (area.stats.privatDachKwp * 1000) / area.stats.population : null;
+}
+
+export type UtilityHighlights = {
+  dachProKopf: Kennzahl;
+  buergerAnteil: Kennzahl;
+  zubauAnteil: Kennzahl;
+};
+
+/**
+ * Die drei Kennzahlen, die in der Tabelle hervorgehoben werden.
+ *
+ * Bewusst NICHT dabei: ein „Anteil Erneuerbare am Strommix". Dafür bräuchte es
+ * den Verbrauch und die konventionelle Erzeugung im Gebiet — beides steht in
+ * den Anlagendaten nicht. Eine solche Zahl wäre geschätzt und würde neben
+ * gemessenen Werten wie eine gemessene aussehen.
+ */
+export function computeHighlights(area: UtilityArea, alle: UtilityArea[]): UtilityHighlights {
+  const pool = alle.filter((a) => a.gemeindeCount > 0);
+  const medDach = median(pool.map((a) => dachProKopf(a) ?? 0));
+  const medBuerger = median(pool.map((a) => buergerAnteil(a) ?? 0));
+  const medZubau = median(pool.map((a) => (a.solarKwp > 0 ? a.zubauKwp / a.solarKwp : 0)));
+
+  const dach = dachProKopf(area);
+  const buerger = buergerAnteil(area);
+  const zubau = area.solarKwp > 0 ? area.zubauKwp / area.solarKwp : null;
+  const pct = (n: number | null) => (n == null ? "—" : `${(n * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} %`);
+
+  return {
+    dachProKopf: {
+      wert: dach,
+      anzeige: dach == null ? "—" : fmtWattProKopf(dach),
+      niveau: einordnen(dach, medDach),
+      referenz: medDach ? `Median ${fmtWattProKopf(medDach)}` : "kein Vergleichswert",
+    },
+    buergerAnteil: {
+      wert: buerger,
+      anzeige: pct(buerger),
+      niveau: einordnen(buerger, medBuerger),
+      referenz: medBuerger ? `Median ${pct(medBuerger)} · Anteil an aller Solarleistung im Gebiet` : "kein Vergleichswert",
+    },
+    zubauAnteil: {
+      wert: zubau,
+      anzeige: pct(zubau),
+      niveau: einordnen(zubau, medZubau),
+      referenz: medZubau ? `Median ${pct(medZubau)} · Zubau des letzten Jahres am Bestand` : "kein Vergleichswert",
+    },
+  };
 }
 
 /** Größenklasse eines Versorgers innerhalb der erfassten Menge. */
