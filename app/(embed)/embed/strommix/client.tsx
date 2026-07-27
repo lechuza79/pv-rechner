@@ -12,7 +12,7 @@ import ChartActionBar from "../../../../components/ChartActionBar";
 import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
 import { ExportBox, ExportOnly, WidgetExportFooter } from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
-import { WIDGETS } from "../../../../lib/widget-registry";
+import { WIDGETS, WIDGET_MAX_WIDTH } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
 import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
@@ -129,6 +129,8 @@ export default function StrommixWidget() {
         borderRadius: "var(--widget-border-radius)",
         fontFamily: "var(--widget-font-family)",
         padding: 20,
+        maxWidth: WIDGET_MAX_WIDTH,
+        margin: "0 auto",
         boxSizing: "border-box",
         overflow: "hidden",
       }}

@@ -258,7 +258,9 @@ export default function ZubauWidget({
             { color: tokens["--color-positive"], label: "Einspeisevergütung (ct/kWh, rechte Achse)" },
             { color: tokens["--color-text-secondary"], label: "Haushaltsstrompreis (ct/kWh, rechte Achse)" },
           ]}
-          note="Der hell eingefärbte letzte Balken ist das laufende Jahr und damit noch unvollständig."
+          // Die Zeitleiste zeigt im Bild nur EIN Ereignis — ohne diese Zeile
+          // bleiben die Punkte davor und danach unerklärt.
+          note={`Ereignis ${active + 1} von ${ZUBAU_EVENTS.length} der Zeitleiste (${ZUBAU_EVENTS[active].year} · ${ZUBAU_EVENTS[active].label}); die übrigen Wendepunkte stehen interaktiv auf solar-check.io. Der hell eingefärbte letzte Balken ist das laufende Jahr und damit noch unvollständig.`}
         />
       </div>
     </div>

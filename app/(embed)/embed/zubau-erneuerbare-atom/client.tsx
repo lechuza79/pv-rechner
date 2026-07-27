@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
 import LineChart, { type LineSeries } from "../../../../components/charts/LineChart";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
-import { ExportBox, WidgetExportFooter } from "../../../../components/WidgetExport";
+import { ExportBox, ExportOnly, WidgetExportFooter } from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import {
   IconChevronDown,
@@ -12,7 +12,7 @@ import {
   IconChevronRight,
 } from "../../../../components/Icons";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
-import { WIDGETS } from "../../../../lib/widget-registry";
+import { WIDGETS, WIDGET_MAX_WIDTH } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
 import { iconSizes } from "../../../../lib/theme";
 import {
@@ -110,6 +110,8 @@ export default function ZubauWidget() {
         borderRadius: "var(--widget-border-radius)",
         fontFamily: "var(--widget-font-family)",
         padding: 18,
+        maxWidth: WIDGET_MAX_WIDTH,
+        margin: "0 auto",
         boxSizing: "border-box",
         overflow: "hidden",
       }}
@@ -124,6 +126,11 @@ export default function ZubauWidget() {
           <CountryMultitool idx={idx} onChange={setIdx} />
         </span>
       </div>
+      {/* Im Bild ersetzt der Ländername den Wähler — ohne ihn zeigt das Bild
+          Zahlen, von denen niemand weiß, für welches Land sie gelten. */}
+      <ExportOnly style={{ fontSize: 13.5, fontWeight: 700, color: "var(--widget-fg)", marginTop: 2 }}>
+        {view.kind === "compare" ? "Deutschland ↔ China" : `${view.flag} ${view.label}`}
+      </ExportOnly>
       <div style={{ fontSize: 12, color: "var(--widget-muted)", marginBottom: 12 }}>{sub}</div>
 
       {/* KPIs: Zubau-Summe 2010–2024 — Kreis = Farbcode, Zahl neutral, geboxt */}

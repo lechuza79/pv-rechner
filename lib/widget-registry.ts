@@ -47,6 +47,18 @@ export interface WidgetDef {
 
 const SITE = "https://solar-check.io";
 
+/**
+ * Obergrenze für die Breite einer Widget-Karte.
+ *
+ * Ohne sie füllt ein Zeitreihen-Chart jede angebotene Breite — im Embed auf
+ * einer breiten Seite und erst recht im heruntergeladenen Bild, das dadurch
+ * extrem flach wird (2560 px breit, 700 px hoch). Eine Kurve in so einem
+ * Streifen wirkt flacher als sie ist: die Breite verzerrt die Aussage, nicht
+ * nur das Layout. Schmalere Karten (Kurzantwort, Einzel-KPI) setzen ihren
+ * eigenen, kleineren Wert.
+ */
+export const WIDGET_MAX_WIDTH = 900;
+
 export const WIDGETS = {
   gruengasHeizkosten: {
     id: "gruengas-heizkosten",
