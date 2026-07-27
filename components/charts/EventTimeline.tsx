@@ -188,7 +188,7 @@ export default function EventTimeline({ events, active, onChange, startYear, end
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button onClick={() => go(-1)} disabled={active === 0} aria-label="Vorheriges Ereignis" style={navBtn(active === 0)}>
+          <button data-sc-export-ignore="" onClick={() => go(-1)} disabled={active === 0} aria-label="Vorheriges Ereignis" style={navBtn(active === 0)}>
             ‹
           </button>
           <div style={{ flex: 1, minHeight: 92 }}>
@@ -209,6 +209,7 @@ export default function EventTimeline({ events, active, onChange, startYear, end
             ))}
           </div>
           <button
+            data-sc-export-ignore=""
             onClick={() => go(1)}
             disabled={active === events.length - 1}
             aria-label="Nächstes Ereignis"

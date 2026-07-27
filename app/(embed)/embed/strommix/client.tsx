@@ -10,6 +10,7 @@ import {
 } from "../../../../components/Icons";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
+import { ExportBox, ExportOnly, WidgetExportFooter } from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { useChartExport } from "../../../../lib/useChartExport";
 import { useGenerationMix, useNuclearImport } from "../../../../lib/energy";
@@ -159,7 +160,9 @@ export default function StrommixWidget() {
         >
           <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
         </div>
-        <ChartArea tab={tab} />
+        <ExportBox>
+          <ChartArea tab={tab} />
+        </ExportBox>
       </div>
       <Footer
         share={settings.share}
@@ -194,6 +197,9 @@ function TopBar({
       <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
         Strommix Deutschland
       </div>
+      {/* Im Bild ersetzt der gewählte Zeitraum die Umschalter — sonst zeigt das
+          Bild eine Auswahl, die niemand mehr sehen kann. */}
+      <ExportOnly style={{ fontSize: 12, fontWeight: 700 }}>{tabLabel(tab)}</ExportOnly>
       {switchable && (
         <div data-sc-export-ignore="" style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <button
@@ -634,6 +640,7 @@ function Footer({
   return (
     <div style={{ marginTop: 12 }}>
       <div
+        data-sc-export-ignore=""
         style={{
           height: 1,
           background: "var(--widget-muted)",
@@ -682,14 +689,12 @@ function Footer({
         )}
       </div>
 
-      {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
-      <div
-        data-sc-export-only="flex"
-        style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", alignItems: "center", justifyContent: "space-between", gap: 32 }}
-      >
-        <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
-        {branding && <PoweredBy />}
-      </div>
+      {/* Nur im Bild: Fußnoten-Box, Datenquelle links, Marke rechts. */}
+      <WidgetExportFooter
+        source={DATA_SOURCES.energyCharts}
+        branding={branding}
+        note="Die Farbabstufungen innerhalb Grün sind die einzelnen erneuerbaren Träger (Wind, Solar, Wasser, Biomasse)."
+      />
     </div>
   );
 }

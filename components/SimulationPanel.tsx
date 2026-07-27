@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { IconArrowRight, IconCheck } from "./Icons";
 import { useChartExport } from "../lib/useChartExport";
+import { EXPORT_IGNORE_ATTR } from "../lib/chart-export";
 import { useSharedPlz } from "../lib/location";
 import ChartExportBar from "./ChartExportBar";
 import ChartActionBar from "./ChartActionBar";
@@ -169,6 +170,17 @@ export default function SimulationPanel({
           { color: tokens['--color-negative'], label: "Verbrauch" },
           { color: tokens['--color-positive'], label: "Eigenverbrauch" },
         ] : []),
+      ],
+      heading: plz ? `Standort ${plz} · heute` : "Heute",
+      notes: [
+        {
+          title: "Was hier steht",
+          text: `Erwartete Leistung einer ${selectedKwp}-kWp-Anlage über den Tag, gerechnet aus der aktuellen Wettervorhersage (Bewölkung, Temperatur) für den gewählten Standort — keine Messung einer realen Anlage.`,
+        },
+        ...(hasConsumption ? [{
+          title: "Eigenverbrauch",
+          text: "Die grüne Fläche ist der Teil der Erzeugung, der zeitgleich im Haushalt gebraucht wird; der Rest geht ins Netz.",
+        }] : []),
       ],
       source: sourceLabel(DATA_SOURCES.openMeteo),
     },
@@ -567,9 +579,10 @@ function DailyChart({ points, kwp }: { points: HourlyPoint[]; kwp: number }) {
         kW
       </text>
 
-      {/* Legend */}
+      {/* Legend — im exportierten Bild ausgeblendet: der Bildrahmen setzt die
+          Legende ohnehin größer darunter, doppelt liest sich wie ein Fehler. */}
       {hasConsumption && (
-        <g transform={`translate(${P.l}, ${H - 6})`}>
+        <g {...{ [EXPORT_IGNORE_ATTR]: "" }} transform={`translate(${P.l}, ${H - 6})`}>
           <line x1={0} x2={16} y1={0} y2={0} stroke="var(--color-accent)" strokeWidth={2} />
           <text x={20} y={0} dominantBaseline="middle" fontSize={9} fill="var(--color-text-muted)">Erzeugung</text>
           <line x1={90} x2={106} y1={0} y2={0} stroke="var(--color-negative)" strokeWidth={1.5} strokeDasharray="4,3" opacity={0.7} />

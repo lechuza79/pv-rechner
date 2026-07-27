@@ -4,6 +4,7 @@ import { useState } from "react";
 import DonutChart from "../../../../components/charts/DonutChart";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
+import { ExportBox, WidgetExportFooter } from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import { useChartExport } from "../../../../lib/useChartExport";
@@ -115,7 +116,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
         >
           <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
         </div>
-        <div
+        <ExportBox
           style={{
             display: "flex",
             flexWrap: "wrap",
@@ -162,7 +163,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
               </div>
             ))}
           </div>
-        </div>
+        </ExportBox>
 
         <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--widget-muted)", textAlign: "center", marginTop: 16 }}>
           Jahr bis dato ({ytd.weeks} Wochen): {twh(ytd.nuclearGwh)} TWh importierter
@@ -174,7 +175,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
 
       {/* Footer: divider (both) + web footer (page) + print footer (image). */}
       <div style={{ marginTop: 12 }}>
-        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
+        <div data-sc-export-ignore="" style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
 
         {/* Web footer — dropped from the export image. Source is shown vertically
             in the chart area (above); here only action bar + Powered-by. */}
@@ -217,13 +218,7 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
         </div>
 
         {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
-        <div
-          data-sc-export-only="flex"
-          style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", alignItems: "center", justifyContent: "space-between", gap: 32 }}
-        >
-          <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
-          {settings.branding && <PoweredBy />}
-        </div>
+        <WidgetExportFooter source={DATA_SOURCES.energyCharts} branding={settings.branding} />
       </div>
     </div>
   );

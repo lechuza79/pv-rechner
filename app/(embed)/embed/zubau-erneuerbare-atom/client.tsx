@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
 import LineChart, { type LineSeries } from "../../../../components/charts/LineChart";
 import ChartActionBar from "../../../../components/ChartActionBar";
 import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
+import { ExportBox, WidgetExportFooter } from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import {
   IconChevronDown,
@@ -177,9 +178,9 @@ export default function ZubauWidget() {
         >
           <DataSourceNote source={DATA_SOURCES.ember} plain />
         </div>
-        <div key={view.id} style={{ animation: "sc-fade 0.35s ease" }}>
+        <ExportBox key={view.id} style={{ animation: "sc-fade 0.35s ease" }}>
           <LineChart years={YEARS_2010_2024} series={series} unit="GW" xDomain={[2010, 2024]} height={300} />
-        </div>
+        </ExportBox>
         <div style={{ fontSize: 11, color: "var(--widget-muted)", marginTop: 2, paddingLeft: 48 }}>
           Neu ans Netz gebrachte Leistung pro Jahr (GW, netto inkl. Rückbau). Negativ = mehr abgebaut als zugebaut.
         </div>
@@ -187,7 +188,7 @@ export default function ZubauWidget() {
 
       {/* Footer: divider (both) + web footer (page) + print footer (image). */}
       <div style={{ marginTop: 12 }}>
-        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
+        <div data-sc-export-ignore="" style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
 
         {/* Web footer — dropped from the export image. Source is shown vertically
             in the chart area (above); here only action bar + Powered-by. */}
@@ -230,13 +231,7 @@ export default function ZubauWidget() {
         </div>
 
         {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
-        <div
-          data-sc-export-only="flex"
-          style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", alignItems: "center", justifyContent: "space-between", gap: 32 }}
-        >
-          <DataSourceNote source={DATA_SOURCES.ember} plain />
-          {settings.branding && <PoweredBy />}
-        </div>
+        <WidgetExportFooter source={DATA_SOURCES.ember} branding={settings.branding} />
       </div>
     </div>
   );

@@ -618,6 +618,8 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung Standard+Ko
 - **Ausschnitt auf eigener Seite** (z. B. nur die Balken als Kurzantwort im Artikel): nackt — der Artikel führt, ein zweiter identischer Knopf wenige Absätze über dem nächsten ist Lärm.
 - **Bild:** kein CTA, keine Aktionen — dafür der Export-Fuß.
 
+**Zwei Wege, eine Systematik.** Selbst-enthaltende Karten werden 1:1 abfotografiert (`mode: "node"`); die Seiten-Charts (Rechner, Simulation, Strommix-Seite) komponiert `buildExportSvg` aus dem `ExportContext` (`heading`, `stats`, `legend`, `notes`, `source`) um das Chart-SVG herum. **Die Marker gelten in beiden Wegen** (`applyExportMarkers`) — vorher ignorierte der komponierte Weg sie, weshalb die Simulation ihre kleine Chart-Legende ein zweites Mal ins Bild trug. Wer einen Seiten-Chart exportierbar macht, füllt `notes` + `source`; wer eine Widget-Karte baut, nimmt `WidgetExportFooter`. Beide erzeugen dasselbe Bild-Layout.
+
 **Erzwungen von `e2e/widget-export.spec.ts`:** klickt „Als Bild herunterladen", prüft, dass ein echtes PNG herauskommt (Größe + Maße aus dem PNG-Header — ein kollabiertes Bild ist wenige Dutzend Bytes groß und fällt sonst niemandem auf) und dass Legende, Hilfetexte und Quelle im Bild-Fuß stehen. Mit `EXPORT_OUT_DIR=<pfad>` legt der Lauf das Bild zum Ansehen ab. **Ein Export-Widget prüft man am Bild, nicht am Bildschirm.**
 
 **Farben im komponierten Export** (`buildExportSvg`, der `mode: "compose"`-Pfad): Serienfarben laufen durch `resolveVars`. Ein `var(--color-…)` in einem SVG-Attribut ist ungültig und rendert **schwarz** — so zeigte die Rechner-Legende monatelang drei schwarze Kästchen zu drei farbigen Kurven.

@@ -14,6 +14,7 @@ import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import { calcExtraConsumption, calcEaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "../../../lib/consumption";
+import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 import { calcAircon } from "../../../lib/aircon";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { useCoolingDegree } from "../../../lib/useCoolingDegree";
@@ -507,6 +508,19 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         { label: "Strompreis", value: oStrom.toLocaleString("de-DE"), unit: "€/kWh" },
       ] : undefined,
       legend: SCENARIOS.map(s => ({ color: s.color, label: s.label })),
+      // Was im Bild sonst fehlt: die Annahmen hinter der Kurve. Auf der Seite
+      // stehen sie editierbar im Hero, im PNG gäbe es sie sonst nirgends.
+      notes: isResult ? [
+        {
+          title: "Annahmen",
+          text: `${kwp} kWp${spKwh > 0 ? ` mit ${spKwh} kWh Speicher` : " ohne Speicher"} · Eigenverbrauch ${Math.round(effEv)} % · Strompreis ${oStrom.toLocaleString("de-DE")} €/kWh · ${YEARS} Jahre Laufzeit, 0,5 % Leistungsverlust pro Jahr.`,
+        },
+        {
+          title: "Szenarien",
+          text: "Die drei Kurven unterscheiden sich im angenommenen Strompreisanstieg (1 %, 3 % und 5 % pro Jahr) und im Eigenverbrauch (±5 Prozentpunkte).",
+        },
+      ] : undefined,
+      source: `${sourceLabel(DATA_SOURCES.pvgis)} (Standort-Ertrag) · Marktpreise taptaphome.com`,
     },
     filename: "solar-check-amortisation.png",
     shareText: `PV-Amortisation: ${kwp} kWp${spKwh > 0 ? ` + ${spKwh} kWh Speicher` : ""} – ${be ? `${be.i} Jahre` : ">25 Jahre"}`,

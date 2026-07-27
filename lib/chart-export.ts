@@ -40,12 +40,40 @@ export interface ExportLegendItem {
   label: string;     // e.g. "Erneuerbare"
 }
 
+export interface ExportNoteItem {
+  title?: string;    // e.g. "Das Muster-Haus"
+  text: string;
+}
+
 export interface ExportContext {
   title: string;                    // e.g. "Stromerzeugung nach Energieträger in Deutschland"
   subtitle?: string;                // e.g. "Die letzten 30 Tage"
+  /** Selected state (period, region, variant) — an image has no switcher, so
+   * whatever a control decided has to be written out. */
+  heading?: string;
   stats?: ExportStat[];             // summary widgets row
   legend?: ExportLegendItem[];      // colored legend items below chart
+  /** Footnotes: what the page explains on hover / behind "?" plus assumptions.
+   * Rendered in a grey box above the credit line. */
+  notes?: ExportNoteItem[];
   source?: string;                  // data-source credit, e.g. "Energy-Charts (Fraunhofer ISE), CC BY 4.0"
+}
+
+/**
+ * Applies the export markers to a detached clone: drop the interactive bits,
+ * reveal the image-only ones, add image-only styling. Shared by BOTH export
+ * paths — otherwise a chart marked up for one path silently ignores the markers
+ * in the other (the on-site charts kept a second, tiny legend inside the chart
+ * SVG because only the 1:1 path honoured data-sc-export-ignore).
+ */
+export function applyExportMarkers(root: Element): void {
+  root.querySelectorAll(`[${EXPORT_IGNORE_ATTR}]`).forEach((el) => el.remove());
+  root.querySelectorAll<HTMLElement>(`[${EXPORT_ONLY_ATTR}]`).forEach((el) => {
+    el.style.display = el.getAttribute(EXPORT_ONLY_ATTR) || 'block';
+  });
+  root.querySelectorAll<HTMLElement>(`[${EXPORT_CSS_ATTR}]`).forEach((el) => {
+    el.style.cssText += ';' + (el.getAttribute(EXPORT_CSS_ATTR) || '');
+  });
 }
 
 // ─── Asset Cache ────────────────────────────────────────────────────────────
@@ -118,14 +146,38 @@ export function resolveVars(svgString: string): string {
 
 const PAD = 16;           // outer padding
 const TITLE_H = 44;       // title + subtitle row
+const HEADING_H = 22;     // selected-state heading
 const STATS_H = 72;       // stat widgets row
 const STATS_GAP = 8;      // gap between stat boxes
 const LEGEND_H = 36;      // legend row
-const FOOTER_H = 44;      // "Powered by" footer
+const NOTE_LINE_H = 15;   // one wrapped footnote line
+const NOTE_PAD = 10;      // padding inside the grey footnote box
+const FOOTER_H = 34;      // credit line: data source left, brand right
 const CARD_R = 20;        // card border radius
 const INNER_R = 14;       // inner card radius
 const FONT_TEXT = "'DM Sans',system-ui,sans-serif";
 const FONT_MONO = "'JetBrains Mono',monospace";
+
+/** Rough character width of DM Sans at a given size — SVG has no text wrapping,
+ * so footnotes have to be broken into lines by hand. */
+function wrapText(text: string, maxWidth: number, fontSize: number): string[] {
+  const perChar = fontSize * 0.52;
+  const maxChars = Math.max(20, Math.floor(maxWidth / perChar));
+  const words = text.split(' ');
+  const lines: string[] = [];
+  let line = '';
+  for (const word of words) {
+    const candidate = line ? `${line} ${word}` : word;
+    if (candidate.length > maxChars && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = candidate;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
 
 // ─── SVG Composition ────────────────────────────────────────────────────────
 
@@ -141,21 +193,46 @@ export function buildExportSvg(
   const innerW = chartWidth;
   const totalW = innerW + PAD * 2;
 
+  // Footnotes: wrap by hand, then the grey box knows its height.
+  const noteWidth = innerW - 2 * NOTE_PAD - 8;
+  const noteLines: { text: string; bold?: string }[] = [];
+  (context.notes ?? []).forEach((n) => {
+    const full = n.title ? `${n.title}: ${n.text}` : n.text;
+    wrapText(full, noteWidth, 10).forEach((line, i) => {
+      noteLines.push(i === 0 && n.title ? { text: line, bold: n.title } : { text: line });
+    });
+  });
+  const hasNotes = noteLines.length > 0;
+  const notesBoxH = hasNotes ? noteLines.length * NOTE_LINE_H + 2 * NOTE_PAD : 0;
+
+  // Die Quellzeile teilt sich die Fußzeile mit der Markenzeile rechts — ohne
+  // eigenen Umbruch läuft eine lange Quelle in die Marke hinein (SVG bricht
+  // Text nicht um). Deshalb: umbrechen und den Fuß mitwachsen lassen.
+  const BRAND_W = 250;
+  const sourceLines = context.source
+    ? wrapText(`Datenquelle: ${context.source}`, innerW - BRAND_W - 16, 10)
+    : [];
+  const footerH = Math.max(FOOTER_H, sourceLines.length * 13 + 16);
+
   // Calculate vertical layout
   let y = PAD;
   const titleY = y; y += TITLE_H;
+  const headingY = context.heading ? y : 0; if (context.heading) y += HEADING_H;
   const statsY = hasStats ? y : 0; if (hasStats) y += STATS_H + 8;
   const chartY = y;
   const chartBoxH = chartHeight + 16; // padding inside chart card
   y += chartBoxH;
   const legendY = hasLegend ? y + 4 : 0; if (hasLegend) y += LEGEND_H;
+  const notesY = hasNotes ? y + 4 : 0; if (hasNotes) y += notesBoxH + 4;
   y += 8; // gap before footer
-  const footerY = y; y += FOOTER_H;
+  const footerY = y; y += footerH;
   const totalH = y + PAD;
 
-  // Serialize chart SVG
+  // Serialize chart SVG. Die Marker gelten hier genauso wie beim 1:1-Weg —
+  // sonst bliebe z. B. eine zweite kleine Legende im Chart selbst stehen.
   const serializer = new XMLSerializer();
   const cloned = chartSvg.cloneNode(true) as SVGSVGElement;
+  applyExportMarkers(cloned);
   let chartStr = resolveVars(serializer.serializeToString(cloned));
   const innerMatch = chartStr.match(/<svg[^>]*>([\s\S]*)<\/svg>/);
   const chartInner = innerMatch ? innerMatch[1] : chartStr;
@@ -181,6 +258,11 @@ export function buildExportSvg(
     // Measure title width approximately (14px bold ≈ 8px per char)
     const titleTextW = context.title.length * 8;
     p.push(`<text x="${PAD + 8 + titleTextW + 12}" y="${titleY + 20}" font-family="${FONT_TEXT}" font-size="13" font-weight="400" fill="${tokens['--color-text-secondary']}">${esc(context.subtitle)}</text>`);
+  }
+
+  // ── Zwischenüberschrift: der gewählte Zustand (Zeitraum, Region, Variante) ──
+  if (context.heading) {
+    p.push(`<text x="${PAD + 8}" y="${headingY + 14}" font-family="${FONT_TEXT}" font-size="13" font-weight="700" fill="${tokens['--color-text-primary']}">${esc(context.heading)}</text>`);
   }
 
   // ── Stats Widgets ──
@@ -221,26 +303,43 @@ export function buildExportSvg(
     });
   }
 
-  // ── Footer: "Powered by" + Logo ──
-  p.push(`<rect x="${PAD}" y="${footerY}" width="${innerW}" height="${FOOTER_H}" rx="12" fill="${tokens['--color-bg-muted']}"/>`);
+  // ── Fußnoten in einer grauen Box (wie im 1:1-Weg) ──
+  if (hasNotes) {
+    p.push(`<rect x="${PAD}" y="${notesY}" width="${innerW}" height="${notesBoxH}" rx="${INNER_R}" fill="${tokens['--color-bg-muted']}"/>`);
+    noteLines.forEach((line, i) => {
+      const ly = notesY + NOTE_PAD + 11 + i * NOTE_LINE_H;
+      if (line.bold) {
+        // Erste Zeile eines Eintrags: Stichwort fett, Rest normal.
+        const rest = line.text.slice(line.bold.length + 1);
+        p.push(`<text x="${PAD + NOTE_PAD}" y="${ly}" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}"><tspan font-weight="700" fill="${tokens['--color-text-secondary']}">${esc(line.bold)}:</tspan>${esc(rest)}</text>`);
+      } else {
+        p.push(`<text x="${PAD + NOTE_PAD}" y="${ly}" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}">${esc(line.text)}</text>`);
+      }
+    });
+  }
 
+  // ── Fußzeile: Datenquelle links, Marke rechts ──
+  // Kein grauer Balken mehr: die Fußnoten-Box trägt jetzt die Fläche, zwei
+  // graue Blöcke übereinander lesen sich als ein zerfallener Fuß.
   const logoW = 90;
   const logoH = 90 * (62 / 263); // ≈ 21
-  const footerCenterY = footerY + FOOTER_H / 2;
+  const footerCenterY = footerY + footerH / 2;
 
-  // Right-aligned: "Powered by" text + logo
-  const logoX = totalW - PAD - 10 - logoW;
-  const textX = logoX - 15;
+  // Rechts: Einladung + Logo. Im Bild gibt es keinen Knopf mehr, der zum
+  // Rechner führt — deshalb "Interaktiv selbst rechnen" statt "Powered by".
+  const logoX = totalW - PAD - 8 - logoW;
+  const textX = logoX - 10;
 
-  p.push(`<text x="${textX}" y="${footerCenterY}" text-anchor="end" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="11" fill="${tokens['--color-text-secondary']}">Powered by</text>`);
+  p.push(`<text x="${textX}" y="${footerCenterY}" text-anchor="end" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-secondary']}">Interaktiv selbst rechnen:</text>`);
   if (logoBase64Cache) {
     p.push(`<image href="${logoBase64Cache}" x="${logoX}" y="${footerCenterY - logoH / 2}" width="${logoW}" height="${logoH}"/>`);
   }
 
   // Left-aligned: data-source credit (licence-required on shared images).
-  if (context.source) {
-    p.push(`<text x="${PAD + 10}" y="${footerCenterY}" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}">Quelle: ${esc(context.source)}</text>`);
-  }
+  sourceLines.forEach((line, i) => {
+    const ly = footerCenterY - ((sourceLines.length - 1) * 13) / 2 + i * 13;
+    p.push(`<text x="${PAD + 8}" y="${ly}" dominant-baseline="central" font-family="${FONT_TEXT}" font-size="10" fill="${tokens['--color-text-muted']}">${esc(line)}</text>`);
+  });
 
   p.push(`</svg>`);
   return p.join('\n');
@@ -365,19 +464,7 @@ export async function captureNodeToBlob(node: HTMLElement, scale = 2): Promise<B
   wrapper.style.cssText =
     'position:fixed;top:0;left:-100000px;pointer-events:none;opacity:1;';
   const clone = node.cloneNode(true) as HTMLElement;
-  clone.querySelectorAll(`[${EXPORT_IGNORE_ATTR}]`).forEach((el) => el.remove());
-  // Reveal print-only elements; the attribute value is the display to use.
-  clone
-    .querySelectorAll<HTMLElement>(`[${EXPORT_ONLY_ATTR}]`)
-    .forEach((el) => {
-      el.style.display = el.getAttribute(EXPORT_ONLY_ATTR) || 'block';
-    });
-  // Image-only styling (frames, boxes) that would double up on the page.
-  clone
-    .querySelectorAll<HTMLElement>(`[${EXPORT_CSS_ATTR}]`)
-    .forEach((el) => {
-      el.style.cssText += ';' + (el.getAttribute(EXPORT_CSS_ATTR) || '');
-    });
+  applyExportMarkers(clone);
   // Links aren't clickable in a PNG — drop underlines so credits read as plain
   // text (matches the print footers that already use the plain DataSourceNote).
   clone

@@ -18,11 +18,12 @@
  */
 
 import { useState } from "react";
-import { v } from "../../lib/theme";
-import { PoweredBy, DataSourceNote } from "../PoweredBy";
+import { v, tokens } from "../../lib/theme";
+import { PoweredBy } from "../PoweredBy";
 import ChartActionBar from "../ChartActionBar";
 import { DATA_SOURCES, sourceLabel, type DataSource } from "../../lib/data-sources";
 import { useChartExport } from "../../lib/useChartExport";
+import { ExportBox, WidgetExportFooter } from "../WidgetExport";
 import ZubauTimelineChart from "./ZubauTimelineChart";
 import EventTimeline, { TimelineEvent } from "./EventTimeline";
 import type { NationalSolarSeries } from "../../lib/mastr-data";
@@ -196,16 +197,21 @@ export default function ZubauWidget({
             Quelle: {compactSource}
           </div>
         )}
-        <ZubauTimelineChart
-          years={years}
-          additionsGw={additionsGw}
-          partial={partial}
-          future={future}
-          feedIn={feedIn}
-          price={price}
-          milestoneYears={ZUBAU_MILESTONE_YEARS}
-          height={420}
-        />
+        <ExportBox>
+          <ZubauTimelineChart
+            years={years}
+            additionsGw={additionsGw}
+            partial={partial}
+            future={future}
+            feedIn={feedIn}
+            price={price}
+            milestoneYears={ZUBAU_MILESTONE_YEARS}
+            height={420}
+          />
+        </ExportBox>
+        {/* Die Zeitleiste ist reine Bedienung — im Bild wären die Punkte und
+            Blätter-Pfeile tote Knöpfe. Der Text des aktiven Ereignisses bleibt
+            über die eigene Export-Markierung in EventTimeline erhalten. */}
         <div style={{ marginTop: 6 }}>
           <EventTimeline
             events={ZUBAU_EVENTS}
@@ -218,7 +224,7 @@ export default function ZubauWidget({
       </div>
 
       <div style={S.footer}>
-        <div style={S.rule} />
+        <div data-sc-export-ignore="" style={S.rule} />
         <div
           data-sc-export-ignore=""
           style={{ ...S.actions, justifyContent: isEmbed && branding ? "space-between" : "flex-end" }}
@@ -242,11 +248,17 @@ export default function ZubauWidget({
           />
         </div>
 
-        {/* Nur im Bild-Export sichtbar: volle Quelle (+ Marke) fest ins PNG. */}
-        <div data-sc-export-only="flex" style={S.exportFoot}>
-          <DataSourceNote source={ZUBAU_WIDGET_SOURCES} plain />
-          <PoweredBy />
-        </div>
+        {/* Nur im Bild: Legende (drei Reihen auf zwei Achsen — ohne sie ist das
+            Bild nicht lesbar), Erläuterung, Datenquelle + Marke. */}
+        <WidgetExportFooter
+          source={ZUBAU_WIDGET_SOURCES}
+          legend={[
+            { color: tokens["--color-accent"], label: "Zubau pro Jahr (GW, linke Achse)", shape: "box" },
+            { color: tokens["--color-positive"], label: "Einspeisevergütung (ct/kWh, rechte Achse)" },
+            { color: tokens["--color-text-secondary"], label: "Haushaltsstrompreis (ct/kWh, rechte Achse)" },
+          ]}
+          note="Der hell eingefärbte letzte Balken ist das laufende Jahr und damit noch unvollständig."
+        />
       </div>
     </div>
   );
