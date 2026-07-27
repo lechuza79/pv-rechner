@@ -5,6 +5,7 @@ import {
   computeUtilityPlacements,
   findOverlaps,
   UTILITY_CATEGORY_BY_KEY,
+  besteAdresse,
   buergerAnteil,
   computeHighlights,
   utilityCategoryLabel,
@@ -48,6 +49,17 @@ function versorger(id: string, over: Partial<UtilityRecord> = {}): UtilityRecord
     sitzGemeindeId: null,
     status: "offen",
     notiz: null,
+    telefon: null,
+    ort: null,
+    impressumUrl: null,
+    rollenEmail: null,
+    personenEmail: null,
+    verantwortlichZeile: null,
+    verantwortlichFunktion: null,
+    verantwortlichOperativ: null,
+    verbundDomain: null,
+    themen: [],
+    profilGeprueftAm: null,
     ...over,
   };
 }
@@ -336,5 +348,36 @@ describe("Hervorgehobene Kennzahlen", () => {
     const h = computeHighlights(leer, [leer]);
     expect(h.dachProKopf.wert).toBeNull();
     expect(h.dachProKopf.niveau).toBeNull();
+  });
+});
+
+// ─── Kontaktwahl ──────────────────────────────────────────────────────────────
+
+describe("Welche Adresse angeschrieben würde", () => {
+  it("nimmt das Rollen-Postfach der Website vor der Meldeadresse im Register", () => {
+    // Die Registeradresse ist die Meldeadresse gegenüber der Bundesnetzagentur —
+    // meist Verwaltung, nicht Kommunikation.
+    const u = versorger("a", { rollenEmail: "presse@sw.de", kontaktEmail: "melde@sw.de" });
+    expect(besteAdresse(u)?.adresse).toBe("presse@sw.de");
+  });
+
+  it("fällt auf die Meldeadresse zurück, wenn die Website nichts hergab", () => {
+    const u = versorger("a", { kontaktEmail: "melde@sw.de" });
+    expect(besteAdresse(u)?.adresse).toBe("melde@sw.de");
+  });
+
+  it("nimmt eine Personen-Adresse zuletzt", () => {
+    // Datenschutz-Leitplanke des Projekts: Rollen-Postfach vor Klarname.
+    const u = versorger("a", { personenEmail: "max.mustermann@sw.de" });
+    expect(besteAdresse(u)?.adresse).toBe("max.mustermann@sw.de");
+  });
+
+  it("liefert nichts, wenn es nichts gibt — statt etwas zu erfinden", () => {
+    expect(besteAdresse(versorger("a"))).toBeNull();
+  });
+
+  it("nennt zu jeder Adresse ihre Herkunft", () => {
+    const u = versorger("a", { rollenEmail: "info@sw.de" });
+    expect(besteAdresse(u)?.art.length).toBeGreaterThan(0);
   });
 });

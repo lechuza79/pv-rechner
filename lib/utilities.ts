@@ -70,6 +70,21 @@ export const ZUORDNUNG_QUELLE_LABEL: Record<ZuordnungQuelle, string> = {
   vermutet: "vermutet",
 };
 
+/** Ein Themen-Fund auf der Website: worüber der Versorger berichtet, mit
+ *  Direktlink. Bei `foerderung` ist das ein KANDIDAT — „hier steht etwas von
+ *  Förderung" —, nie ein geprüftes Programm. Ob es eines gibt, wie hoch es ist
+ *  und ob es noch läuft, entscheidet allein die Prüfung nach dem Förder-Runbook. */
+export type Themenfund = { thema: string; url: string; begriff: string };
+
+export const THEMA_LABEL: Record<string, string> = {
+  solar: "Solar",
+  speicher: "Speicher",
+  waermepumpe: "Wärmepumpe",
+  foerderung: "Förderung",
+  klima: "Klimaschutz",
+  buergerbeteiligung: "Bürgerbeteiligung",
+};
+
 export type UtilityRecord = {
   id: string;
   name: string;
@@ -80,7 +95,30 @@ export type UtilityRecord = {
   sitzGemeindeId: string | null;
   status: string;
   notiz: string | null;
+  telefon: string | null;
+  ort: string | null;
+  /** Ergebnisse des Website-Laufs. */
+  impressumUrl: string | null;
+  rollenEmail: string | null;
+  personenEmail: string | null;
+  verantwortlichZeile: string | null;
+  verantwortlichFunktion: string | null;
+  verantwortlichOperativ: boolean | null;
+  verbundDomain: string | null;
+  themen: Themenfund[];
+  profilGeprueftAm: string | null;
 };
+
+/** Die Adresse, an die man tatsächlich schreiben würde.
+ *  Rollen-Postfach vor Registeradresse: Das Register nennt die Meldeadresse
+ *  gegenüber der Bundesnetzagentur — meist Verwaltung, nicht Kommunikation.
+ *  Personen-Adressen kommen zuletzt (Datenschutz-Leitplanke des Projekts). */
+export function besteAdresse(u: UtilityRecord): { adresse: string; art: string } | null {
+  if (u.rollenEmail) return { adresse: u.rollenEmail, art: "Rollen-Postfach von der Website" };
+  if (u.kontaktEmail) return { adresse: u.kontaktEmail, art: "Meldeadresse im Register" };
+  if (u.personenEmail) return { adresse: u.personenEmail, art: "Personen-Adresse aus dem Impressum" };
+  return null;
+}
 
 export type UtilityMembership = {
   utilityId: string;

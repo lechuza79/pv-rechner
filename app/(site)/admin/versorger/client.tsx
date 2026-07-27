@@ -66,6 +66,14 @@ type Versorger = {
   aufhaenger: string;
   aufhaengerHinweis: string;
   mix: { art: string; anzeige: string; anteil: number; prozent: string }[];
+  telefon: string | null;
+  ort: string | null;
+  impressumUrl: string | null;
+  verbundDomain: string | null;
+  profilGeprueft: boolean;
+  kontakt: { adresse: string; art: string } | null;
+  verantwortlich: { zeile: string; funktion: string | null; operativ: boolean } | null;
+  themen: { thema: string; url: string; begriff: string; label: string }[];
 };
 
 type Zuordnung = {
@@ -262,6 +270,8 @@ export default function VersorgerCockpit() {
                   <th style={thStyle}>Dach je Ew.</th>
                   <th style={thStyle}>Bürger-Anteil</th>
                   <th style={thStyle}>Zubau</th>
+                  <th style={thStyle}>Themen</th>
+                  <th style={thStyle}>Kontakt</th>
                   <th style={thStyle}>Status</th>
                 </tr>
               </thead>
@@ -271,7 +281,7 @@ export default function VersorgerCockpit() {
                 ))}
                 {!loading && rows.length === 0 && (
                   <tr>
-                    <td colSpan={9} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
+                    <td colSpan={11} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
                       Kein Versorger für diesen Filter.
                     </td>
                   </tr>
@@ -371,6 +381,35 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
         <KennzahlZelle k={u.highlights.buergerAnteil} />
         <KennzahlZelle k={u.highlights.zubauAnteil} />
         <td style={tdStyle}>
+          {u.themen.length === 0 ? (
+            <span style={{ color: v("--color-text-muted"), fontSize: 11 }}>{u.profilGeprueft ? "—" : "ungeprüft"}</span>
+          ) : (
+            <span style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+              {u.themen.slice(0, 3).map((t) => (
+                <a
+                  key={t.thema}
+                  href={t.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={themaChip(t.thema)}
+                  title={`Fundstelle: „${t.begriff}"`}
+                >
+                  {t.label}
+                </a>
+              ))}
+            </span>
+          )}
+        </td>
+        <td style={tdStyle}>
+          {u.kontakt ? (
+            <a href={`mailto:${u.kontakt.adresse}`} style={linkStyle} title={u.kontakt.art}>
+              {u.kontakt.adresse}
+            </a>
+          ) : (
+            <span style={{ color: v("--color-text-muted"), fontSize: 11 }}>—</span>
+          )}
+        </td>
+        <td style={tdStyle}>
           <select
             value={u.status}
             onChange={(e) => patch({ status: e.target.value })}
@@ -387,7 +426,7 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
       </tr>
       {offen && (
         <tr style={{ background: v("--color-bg-muted") }}>
-          <td colSpan={9} style={{ padding: pad("md", "lg"), borderTop: `1px solid ${v("--color-border")}` }}>
+          <td colSpan={11} style={{ padding: pad("md", "lg"), borderTop: `1px solid ${v("--color-border")}` }}>
             <Detail u={u} onChanged={onChanged} onPatch={patch} />
           </td>
         </tr>
@@ -483,6 +522,59 @@ function Detail({
           aria-label={`Notiz ${u.name}`}
         />
       </div>
+
+      <Abschnitt titel="Kontakt und Themen">
+        <div style={{ display: "grid", gap: 3, fontSize: 12 }}>
+          {u.kontakt ? (
+            <div>
+              <a href={`mailto:${u.kontakt.adresse}`} style={linkStyle}>
+                {u.kontakt.adresse}
+              </a>{" "}
+              <span style={{ color: v("--color-text-muted") }}>— {u.kontakt.art}</span>
+            </div>
+          ) : (
+            <div style={{ color: v("--color-text-muted") }}>Keine E-Mail-Adresse gefunden.</div>
+          )}
+          {u.telefon && <div style={{ color: v("--color-text-secondary") }}>{u.telefon}</div>}
+          {u.verantwortlich && (
+            <div>
+              <strong>{u.verantwortlich.funktion ?? "Verantwortlich"}</strong>{" "}
+              <span style={{ color: v("--color-text-muted") }}>
+                {u.verantwortlich.operativ ? "(operative Stelle)" : "(gesetzliche Vertretung — sagt nicht, wer die Website pflegt)"}
+              </span>
+              <div style={{ color: v("--color-text-muted"), fontSize: 11 }}>{u.verantwortlich.zeile}</div>
+            </div>
+          )}
+          {u.verbundDomain && (
+            <div style={{ color: v("--color-text-muted") }}>
+              Adresse auf fremder Domain: <strong>{u.verbundDomain}</strong> — Hinweis auf Konzernmutter oder
+              Dienstleister.
+            </div>
+          )}
+          {u.impressumUrl && (
+            <div>
+              <a href={u.impressumUrl} target="_blank" rel="noopener noreferrer" style={linkStyle}>
+                Impressum ansehen ↗
+              </a>
+            </div>
+          )}
+          {u.themen.length > 0 && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 4 }}>
+              {u.themen.map((t) => (
+                <a key={t.thema} href={t.url} target="_blank" rel="noopener noreferrer" style={themaChip(t.thema)}>
+                  {t.label}
+                </a>
+              ))}
+            </div>
+          )}
+          {u.themen.some((t) => t.thema === "foerderung") && (
+            <div style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.5 }}>
+              Der Förder-Chip heißt nur: Auf dieser Website steht irgendwo etwas von Förderung. Ob es ein
+              Programm gibt, wie hoch es ist und ob es noch läuft, entscheidet die Prüfung an der Quelle.
+            </div>
+          )}
+        </div>
+      </Abschnitt>
 
       <Abschnitt titel="Zusammensetzung der Erzeugungsleistung">
         {u.mix.length === 0 ? (
@@ -992,6 +1084,24 @@ function quelleBadge(q: ZuordnungQuelle): React.CSSProperties {
           : q === "verlinkt"
             ? v("--color-accent")
             : v("--color-text-secondary"),
+  };
+}
+
+/** Themen-Chip. „Förderung" faellt bewusst auf: ein Versorger, der selbst
+ *  foerdert, investiert schon in unser Thema — der waermste Einstieg. Der Chip
+ *  fuehrt auf die Fundstelle; er behauptet NICHT, dass es ein Programm gibt. */
+function themaChip(thema: string): React.CSSProperties {
+  const foerder = thema === "foerderung";
+  return {
+    fontSize: 10,
+    fontWeight: 700,
+    padding: "1px 6px",
+    borderRadius: 999,
+    textDecoration: "none",
+    whiteSpace: "nowrap",
+    color: foerder ? v("--color-text-on-accent") : v("--color-text-secondary"),
+    background: foerder ? v("--color-accent") : v("--color-bg"),
+    border: `1px solid ${foerder ? v("--color-accent") : v("--color-border")}`,
   };
 }
 

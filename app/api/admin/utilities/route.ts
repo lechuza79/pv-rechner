@@ -6,6 +6,8 @@ import {
   UTILITY_TYP_LABEL,
   computeHighlights,
   erzeugungsMix,
+  besteAdresse,
+  THEMA_LABEL,
   utilityCategoryLabel,
   type UtilityArea,
   type UtilityTyp,
@@ -87,6 +89,21 @@ function toView(
           ? fmtWattProKopf((area.stats.privatDachKwp * 1000) / area.stats.population)
           : null,
     },
+    // Kontakt + Themen aus dem Website-Lauf.
+    telefon: u.telefon,
+    ort: u.ort,
+    impressumUrl: u.impressumUrl,
+    verbundDomain: u.verbundDomain,
+    profilGeprueft: !!u.profilGeprueftAm,
+    kontakt: besteAdresse(u),
+    verantwortlich: u.verantwortlichZeile
+      ? {
+          zeile: u.verantwortlichZeile,
+          funktion: u.verantwortlichFunktion,
+          operativ: !!u.verantwortlichOperativ,
+        }
+      : null,
+    themen: u.themen.map((t) => ({ ...t, label: THEMA_LABEL[t.thema] ?? t.thema })),
     aufhaenger: hook.headline,
     aufhaengerHinweis: hook.hinweis,
     aufhaengerKategorie: hook.categoryKey ? utilityCategoryLabel(hook.categoryKey) : null,

@@ -13,6 +13,7 @@ import {
   type ZuordnungQuelle,
   type ZuordnungRolle,
   type UtilityTyp,
+  type Themenfund,
 } from "./utilities";
 import { selectUtilityHook, utilityHookText, type UtilityHookText } from "./utility-hook";
 
@@ -39,6 +40,17 @@ function toRecord(r: Row): UtilityRecord {
     sitzGemeindeId: (r.sitz_gemeinde_id as string) ?? null,
     status: (r.status as string) ?? "offen",
     notiz: (r.notiz as string) ?? null,
+    telefon: (r.telefon as string) ?? null,
+    ort: (r.ort as string) ?? null,
+    impressumUrl: (r.impressum_url as string) ?? null,
+    rollenEmail: (r.rollen_email as string) ?? null,
+    personenEmail: (r.personen_email as string) ?? null,
+    verantwortlichZeile: (r.verantwortlich_zeile as string) ?? null,
+    verantwortlichFunktion: (r.verantwortlich_funktion as string) ?? null,
+    verantwortlichOperativ: (r.verantwortlich_operativ as boolean) ?? null,
+    verbundDomain: (r.verbund_domain as string) ?? null,
+    themen: Array.isArray(r.themen) ? (r.themen as Themenfund[]) : [],
+    profilGeprueftAm: (r.profil_geprueft_am as string) ?? null,
   };
 }
 

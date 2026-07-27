@@ -131,6 +131,9 @@ async function setup(): Promise<void> {
     -- Programm — die Förder-Fundstelle sagt nur „hier steht etwas von Förderung".
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS themen jsonb;
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS profil_geprueft_am timestamptz;
+    -- Adresse auf FREMDER Domain: bei Versorgern ein Hinweis auf Konzernmutter
+    -- oder Dienstleister. Kein Fehler, sondern ein Fund fuer den Menschen.
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS verbund_domain text;
 
     -- Belege der gemessenen Zuordnung.
     ALTER TABLE utility_communes ADD COLUMN IF NOT EXISTS anlagen int;
@@ -472,6 +475,171 @@ async function ladeGemeindeIds(supabase: SupabaseLike): Promise<Set<string>> {
   return out;
 }
 
+// ─── Website-Lauf: Ansprechpartner + Themen ───────────────────────────────────
+
+/**
+ * Was auf der Website steht: wer verantwortlich ist, welches Rollen-Postfach es
+ * gibt und über welche Themen der Versorger berichtet.
+ *
+ * Die Auswertung selbst kommt aus `lib/kommunen-profil.ts` — dasselbe Modul, das
+ * die Kommunen-Session an ~90 Gemeinden gemessen hat, nur mit dem
+ * Versorger-Vokabular. KEINE zweite Kontaktsuche: die drei teuer erkauften Regeln
+ * (nur eigene Domain zählt, fremde Domain ist ein Fund, Sonderzeichen VOR dem
+ * Entfernen der Tags auflösen) sollen nicht in einer Kopie verlorengehen.
+ *
+ * Was dieser Lauf ausdrücklich NICHT tut, weil dort gemessen wurde, dass es
+ * nichts bringt: Links aus der Navigation verfolgen (1 brauchbarer Treffer auf
+ * 15, dazu mehrere falsche) und die Kontaktseite zusätzlich durchsuchen (0 %
+ * zusätzliche Treffer — die Begriffe stehen im Menü, das auf jeder Unterseite
+ * gleich ist).
+ */
+
+const UA = "solar-check.io versorger-profil/1.0 (+https://solar-check.io; hey@solar-check.io)";
+const ABRUF_TIMEOUT_MS = 15000;
+/** Gleichzeitige Abrufe. Vier verschiedene Hosts parallel ist höflich; mehr
+ *  bringt wenig, weil ohnehin jeder Host nur einmal drankommt. */
+const PARALLEL = 4;
+
+async function holeSeite(url: string): Promise<string | null> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), ABRUF_TIMEOUT_MS);
+    const res = await fetch(url, { headers: { "User-Agent": UA }, signal: ctrl.signal, redirect: "follow" });
+    clearTimeout(t);
+    if (!res.ok) return null;
+    const typ = res.headers.get("content-type") ?? "";
+    if (typ && !/text\/html|application\/xhtml/i.test(typ)) return null;
+    return await res.text();
+  } catch {
+    return null;
+  }
+}
+
+type ProfilErgebnis = {
+  id: string;
+  impressum_url: string | null;
+  rollen_email: string | null;
+  personen_email: string | null;
+  verantwortlich_zeile: string | null;
+  verantwortlich_funktion: string | null;
+  verantwortlich_operativ: boolean | null;
+  verbund_domain: string | null;
+  themen: { thema: string; url: string; begriff: string }[];
+  profil_geprueft_am: string;
+};
+
+async function profilFuer(
+  u: { id: string; name: string; website: string },
+  profil: typeof import("../lib/kommunen-profil"),
+): Promise<ProfilErgebnis | null> {
+  const start = /^https?:\/\//i.test(u.website) ? u.website : `https://${u.website}`;
+  const html = await holeSeite(start);
+  if (!html) return null;
+
+  const dom = profil.domainOf(start);
+  const vok = profil.VERSORGER_VOKABULAR;
+  const themen = profil.extractThemen(html, start, vok);
+  const impUrl = profil.findImpressumUrl(html, start);
+
+  let rollen: string | null = null;
+  let person: string | null = null;
+  let verbund: string | null = null;
+  let zeile: string | null = null;
+  let funktion: string | null = null;
+  let operativ: boolean | null = null;
+
+  if (impUrl) {
+    const imp = await holeSeite(impUrl);
+    if (imp) {
+      const text = profil.toText(imp);
+      const v = profil.extractVerantwortlich(text, vok);
+      // Fremde Domain gilt hier NICHT als verwandt: bei Gemeinden belegt sie die
+      // gemeinsame Verwaltung, bei Versorgern wäre es eine Konzernmutter oder ein
+      // Dienstleister — das ist ein Fund für den Menschen, keine eigene Adresse.
+      const a = profil.extractAdressen(text, dom, () => false, vok);
+      rollen = a.rollenEmail;
+      person = a.personenEmail;
+      verbund = a.verwaltungDomain;
+      if (v) {
+        zeile = v.zeile;
+        funktion = v.funktion;
+        operativ = v.operativ;
+      }
+    }
+  }
+
+  return {
+    id: u.id,
+    impressum_url: impUrl,
+    rollen_email: rollen,
+    personen_email: person,
+    verantwortlich_zeile: zeile,
+    verantwortlich_funktion: funktion,
+    verantwortlich_operativ: operativ,
+    verbund_domain: verbund,
+    themen,
+    profil_geprueft_am: new Date().toISOString(),
+  };
+}
+
+async function laufProfil(opts: { limit?: number; erneut: boolean; dry: boolean }): Promise<void> {
+  const supabase = await makeClient();
+  const profil = await import("../lib/kommunen-profil");
+
+  let query = supabase.from("utilities").select("id, name, website").not("website", "is", null);
+  if (!opts.erneut) query = query.is("profil_geprueft_am", null);
+  const { data, error } = await query.order("name").limit(opts.limit ?? 2000);
+  if (error) throw new Error(error.message);
+
+  const offen = (data ?? []) as { id: string; name: string; website: string }[];
+  log(`${offen.length} Websites abzuklopfen (${opts.erneut ? "alle" : "noch ungeprüfte"})`);
+  if (offen.length === 0) return;
+
+  const zaehler = { erreicht: 0, impressum: 0, rollen: 0, verantwortlich: 0, operativ: 0, themen: 0, foerderung: 0 };
+  const ergebnisse: ProfilErgebnis[] = [];
+  let naechster = 0;
+
+  async function arbeiter(): Promise<void> {
+    for (;;) {
+      const i = naechster++;
+      if (i >= offen.length) return;
+      const u = offen[i];
+      const e = await profilFuer(u, profil);
+      if (e) {
+        zaehler.erreicht++;
+        if (e.impressum_url) zaehler.impressum++;
+        if (e.rollen_email) zaehler.rollen++;
+        if (e.verantwortlich_zeile) zaehler.verantwortlich++;
+        if (e.verantwortlich_operativ) zaehler.operativ++;
+        if (e.themen.length) zaehler.themen++;
+        if (e.themen.some((t) => t.thema === "foerderung")) zaehler.foerderung++;
+        ergebnisse.push(e);
+      }
+      if ((i + 1) % 50 === 0) log(`  [${i + 1}/${offen.length}] erreicht ${zaehler.erreicht}`);
+    }
+  }
+
+  await Promise.all(Array.from({ length: PARALLEL }, () => arbeiter()));
+
+  log(
+    `Erreicht ${zaehler.erreicht} · Impressum ${zaehler.impressum} · Rollen-Postfach ${zaehler.rollen} · ` +
+      `Verantwortliche ${zaehler.verantwortlich} (operativ ${zaehler.operativ}) · ` +
+      `Themen ${zaehler.themen} · davon Förder-Fundstelle ${zaehler.foerderung}`,
+    "ok",
+  );
+
+  if (opts.dry) {
+    log("Trockenlauf — nichts geschrieben", "ok");
+    return;
+  }
+  for (let i = 0; i < ergebnisse.length; i += 200) {
+    const teil = ergebnisse.slice(i, i + 200).map((e) => ({ ...e, themen: e.themen }));
+    const { error: upErr } = await supabase.from("utilities").upsert(teil, { onConflict: "id" });
+    if (upErr) throw new Error(`Profil schreiben: ${upErr.message}`);
+  }
+  log(`${ergebnisse.length} Profile geschrieben`, "ok");
+}
+
 // ─── Beispieldaten ────────────────────────────────────────────────────────────
 
 /** Erkennungszeichen der Beispieldatensätze — nur so sind sie wieder restlos
@@ -613,16 +781,18 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const doSetup = argv.includes("--setup");
   const doImport = argv.includes("--import");
+  const doProfil = argv.includes("--profil");
   const doStats = argv.includes("--stats");
   const doSeed = argv.includes("--seed-demo");
   const doClear = argv.includes("--clear-demo");
   const dry = argv.includes("--dry");
 
-  if (!doSetup && !doImport && !doStats && !doSeed && !doClear) {
+  if (!doSetup && !doImport && !doProfil && !doStats && !doSeed && !doClear) {
     log(
       "Nichts zu tun. Flags:\n" +
         "  --setup       Tabellen anlegen/erweitern (idempotent)\n" +
         "  --import      Netzbetreiber + gemessene Netzgebiete aus dem Registerexport\n" +
+        "  --profil      Websites abklopfen: Ansprechpartner + Themen\n" +
         "  --stats       Bestand + Deckung melden\n" +
         "  --seed-demo   12 Beispieldatensätze (Namen Platzhalter, Zahlen echt)\n" +
         "  --clear-demo  Beispieldatensätze wieder entfernen\n" +
@@ -635,6 +805,14 @@ async function main(): Promise<void> {
   if (doSetup) await setup();
   if (doClear) await clearDemo();
   if (doImport) await importRegister(dry, argv.includes("--refetch"));
+  if (doProfil) {
+    const limitArg = argv.find((a) => a.startsWith("--limit="));
+    await laufProfil({
+      limit: limitArg ? parseInt(limitArg.slice(8), 10) : undefined,
+      erneut: argv.includes("--refetch"),
+      dry,
+    });
+  }
   if (doSeed) await seedDemo();
   if (doStats) await stats();
   log("Fertig", "ok");
