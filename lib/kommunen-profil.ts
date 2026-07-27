@@ -98,7 +98,7 @@ export const KOMMUNEN_VOKABULAR: Vokabular = {
     // Beleg, Betrag/Bedingungen/Stichtag geprüft, Änderungsdatum mitgeprüft).
     // NIE automatisch nach funding_programs schreiben — das wäre genau die
     // Drift, gegen die der Förder-Wächter gebaut wurde.
-    { thema: "foerderung", re: /förderprogramm|foerderprogramm|förderrichtlinie|zuschuss|förderung\s*(solar|photovoltaik|energie|klima)|(solar|photovoltaik|energie|klima)\w*förder/i },
+    { thema: "foerderung", re: /förderprogramm|foerderprogramm|förderrichtlinie|(förder|foerder)\w*\s*(solar|photovoltaik|energie|klima|sanier)|(solar|photovoltaik|energie|klima|sanier)\w*\s*(förder|foerder)|zuschuss\s*(für\s*)?(solar|photovoltaik|energie|klima)/i },
     { thema: "klima", re: /klimaschutz|klimamanag|klimaanpassung|klimaneutral|nachhaltigkeit|energiewende|energiemanag/i },
     { thema: "blatt", re: /amtsblatt|mitteilungsblatt|gemeindeblatt|gemeindebote|stadtanzeiger/i },
     { thema: "presse", re: /pressestelle|pressearbeit|pressekontakt|öffentlichkeitsarbeit|oeffentlichkeitsarbeit/i },

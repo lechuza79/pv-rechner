@@ -25,6 +25,15 @@ type Lead = {
   gruene_pct: number | null;
   linke_pct: number | null;
   spd_pct: number | null;
+  kampagne: string | null;
+  charge: number | null;
+  rollen_email: string | null;
+  verantwortlich_funktion: string | null;
+  verantwortlich_operativ: boolean | null;
+  verwaltung_domain: string | null;
+  thema_solar_url: string | null;
+  thema_klima_url: string | null;
+  thema_blatt_url: string | null;
   mastr_regions: Region | Region[];
 };
 
@@ -54,6 +63,7 @@ export default function KommunenCockpit() {
   const [hasLink, setHasLink] = useState(false);
   const [q, setQ] = useState("");
   const [sort, setSort] = useState("");
+  const [charge, setCharge] = useState("");
   const [page, setPage] = useState(0);
 
   const [rows, setRows] = useState<Lead[]>([]);
@@ -78,6 +88,7 @@ export default function KommunenCockpit() {
     if (hasLink) params.set("hasLink", "1");
     if (qDebounced) params.set("q", qDebounced);
     if (sort) params.set("sort", sort);
+    if (charge) { params.set("kampagne", "testballon"); params.set("charge", charge); }
     params.set("page", String(page));
     try {
       const res = await fetch(`/api/admin/kommunen?${params.toString()}`);
@@ -91,7 +102,7 @@ export default function KommunenCockpit() {
     } finally {
       setLoading(false);
     }
-  }, [bl, status, hasLink, qDebounced, sort, page]);
+  }, [bl, status, hasLink, qDebounced, sort, charge, page]);
 
   useEffect(() => {
     load();
@@ -100,7 +111,7 @@ export default function KommunenCockpit() {
   // Filterwechsel → zurück auf Seite 1.
   useEffect(() => {
     setPage(0);
-  }, [bl, status, hasLink, qDebounced, sort]);
+  }, [bl, status, hasLink, qDebounced, sort, charge]);
 
   const patchLead = useCallback((updated: Lead) => {
     setRows((prev) => prev.map((r) => (r.region_id === updated.region_id ? updated : r)));
@@ -139,6 +150,11 @@ export default function KommunenCockpit() {
           <input type="checkbox" checked={hasLink} onChange={(e) => setHasLink(e.target.checked)} />
           nur mit Kontaktlink
         </label>
+        <select value={charge} onChange={(e) => setCharge(e.target.value)} style={selectStyle} aria-label="Versandliste">
+          <option value="">Alle Gemeinden</option>
+          <option value="1">Testballon · Charge 1 (15)</option>
+          <option value="2">Testballon · Charge 2 (85)</option>
+        </select>
         <select value={sort} onChange={(e) => setSort(e.target.value)} style={selectStyle} aria-label="Sortierung">
           <option value="">Sortierung: Standard</option>
           <option value="gruen">Grün-affin zuerst</option>
@@ -165,7 +181,7 @@ export default function KommunenCockpit() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 720 }}>
           <thead>
             <tr>
-              {["Gemeinde", "Politik", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
+              {["Gemeinde", "Aufhänger", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
                 <th key={h} style={thStyle}>
                   {h}
                 </th>
@@ -245,22 +261,30 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
         <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
           {r?.bezeichnung ?? "Gemeinde"}
           {r?.population != null && ` · ${r.population.toLocaleString("de-DE")} Ew.`}
+          {lead.charge != null && ` · Charge ${lead.charge}`}
         </div>
       </td>
 
-      {/* Politik (BTW 2025 Zweitstimme) */}
+      {/* Aufhänger: vorhandene Themenseiten + wer laut Impressum zuständig ist */}
       <td style={tdStyle}>
-        {lead.gruene_pct != null ? (
-          <div style={{ fontSize: 12, whiteSpace: "nowrap" }}>
-            <span style={{ color: v("--color-positive"), fontWeight: 700 }}>
-              Grüne {lead.gruene_pct.toLocaleString("de-DE")}%
-            </span>
-            <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
-              Linke {lead.linke_pct?.toLocaleString("de-DE") ?? "–"}% · SPD {lead.spd_pct?.toLocaleString("de-DE") ?? "–"}%
-            </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 3 }}>
+          {lead.thema_solar_url && <Merkmal label="Solar" href={lead.thema_solar_url} stark />}
+          {lead.thema_klima_url && <Merkmal label="Klima" href={lead.thema_klima_url} />}
+          {lead.thema_blatt_url && <Merkmal label="Blatt" href={lead.thema_blatt_url} />}
+          {!lead.thema_solar_url && !lead.thema_klima_url && !lead.thema_blatt_url && (
+            <span style={{ fontSize: 11, color: v("--color-text-muted") }}>kein Aufhänger</span>
+          )}
+        </div>
+        {lead.verantwortlich_funktion && (
+          <div style={{ fontSize: 11, color: lead.verantwortlich_operativ ? v("--color-positive") : v("--color-text-muted") }}>
+            {lead.verantwortlich_operativ ? "zuständig: " : "nur Vertretung: "}
+            {lead.verantwortlich_funktion}
           </div>
-        ) : (
-          <span style={{ fontSize: 11, color: v("--color-text-muted") }}>—</span>
+        )}
+        {lead.verwaltung_domain && (
+          <div style={{ fontSize: 11, color: v("--color-negative") }} title="Gemeinsame Verwaltung laut Impressum">
+            Verbund: {lead.verwaltung_domain}
+          </div>
         )}
       </td>
 
@@ -274,9 +298,9 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           ) : (
             <span style={{ color: v("--color-text-muted"), fontSize: 12 }}>kein Kontaktlink</span>
           )}
-          {lead.email && (
-            <a href={`mailto:${lead.email}`} style={{ ...linkStyle, fontSize: 12 }}>
-              {lead.email}
+          {(lead.rollen_email || lead.email) && (
+            <a href={`mailto:${lead.rollen_email ?? lead.email}`} style={{ ...linkStyle, fontSize: 12 }}>
+              {lead.rollen_email ?? lead.email}
             </a>
           )}
           {lead.website && (
@@ -514,6 +538,28 @@ function DraftModal({
 }
 
 // ─── Kleinteile ───────────────────────────────────────────────────────────────
+
+function Merkmal({ label, href, stark }: { label: string; href: string; stark?: boolean }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={href}
+      style={{
+        fontSize: 11,
+        fontWeight: 700,
+        textDecoration: "none",
+        padding: "1px 6px",
+        borderRadius: 999,
+        color: stark ? v("--color-text-on-accent") : v("--color-accent-dark"),
+        background: stark ? v("--color-accent") : v("--color-accent-dim"),
+      }}
+    >
+      {label}
+    </a>
+  );
+}
 
 function StatusTab({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
   return (

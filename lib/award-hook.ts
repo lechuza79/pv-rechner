@@ -63,6 +63,11 @@ export type HookExample = {
   betreff: string;
   einstieg: string;
   others: string[];
+  /** Platz und Gruppengröße des gewählten Aufhängers („Platz 1 von 34"). Wird
+   *  für die Auswahl der Versandliste gebraucht: „von 34" wiegt schwerer als
+   *  „von 5", und ohne diese Größe sortiert die Liste faktisch nach Einwohnern. */
+  rank: number | null;
+  total: number | null;
   /** Belegwert des gewählten Aufhängers, fertig formatiert (z. B. „2.480 Wp/Kopf",
    *  „53,4 MWh") — damit der Mensch einen Ausreißer sieht. Null bei neutral. */
   valueStr: string | null;

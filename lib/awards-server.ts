@@ -133,6 +133,8 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
       betreff: t.betreff,
       einstieg: t.einstieg,
       others,
+      rank: hook.rank,
+      total: hook.total,
       valueStr:
         hook.value != null && hook.categoryKey
           ? formatAwardValue(hook.value, AWARD_CATEGORY_BY_KEY[hook.categoryKey].format)

@@ -36,7 +36,7 @@ const STATUSES = ["offen", "entwurf", "kontaktiert", "geantwortet", "zu", "gespe
 
 // Eine Quelle für das Zeilen-Shape (GET, PATCH, POST liefern dasselbe zurück).
 const SELECT =
-  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, gruene_pct, linke_pct, spd_pct, mastr_regions!inner(name, bezeichnung, population)";
+  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, gruene_pct, linke_pct, spd_pct, kampagne, charge, rollen_email, verantwortlich_funktion, verantwortlich_operativ, verwaltung_domain, thema_solar_url, thema_klima_url, thema_blatt_url, mastr_regions!inner(name, bezeichnung, population)";
 
 export async function GET(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -48,6 +48,8 @@ export async function GET(req: NextRequest) {
   const hasLink = sp.get("hasLink") === "1";
   const q = (sp.get("q") ?? "").trim();
   const sort = sp.get("sort") ?? "";
+  const kampagne = sp.get("kampagne") ?? "";
+  const charge = sp.get("charge") ?? "";
   const page = Math.max(0, parseInt(sp.get("page") ?? "0", 10) || 0);
 
   // Immer inner-join auf mastr_regions (jede Zeile hat per FK eine Gemeinde) —
@@ -57,6 +59,7 @@ export async function GET(req: NextRequest) {
   // Sortierung: nach Grünen-/Linke-Anteil (Outreach-Priorisierung) oder Standard.
   if (sort === "gruen") query = query.order("gruene_pct", { ascending: false, nullsFirst: false });
   else if (sort === "links") query = query.order("linke_pct", { ascending: false, nullsFirst: false });
+  else if (kampagne) query = query.order("charge").order("region_id");
   else query = query.order("region_id");
 
   query = query.range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
@@ -64,6 +67,8 @@ export async function GET(req: NextRequest) {
   if (bl) query = query.like("region_id", `${bl}%`);
   if (status) query = query.eq("outreach_status", status);
   if (hasLink) query = query.not("kontakt_url", "is", null);
+  if (kampagne) query = query.eq("kampagne", kampagne);
+  if (charge) query = query.eq("charge", parseInt(charge, 10));
   if (q) query = query.ilike("mastr_regions.name", `%${q}%`);
 
   const { data, count, error } = await query;
@@ -134,7 +139,13 @@ export async function POST(req: NextRequest) {
   // prozess-lokal memoisiert, der Lookup je Gemeinde damit billig.
   const [{ data: reg }, { data: leadRow }, path, index] = await Promise.all([
     serviceDb.from("mastr_regions").select("name").eq("region_id", region_id).single(),
-    serviceDb.from("kommunen_kontakt").select("outreach_status").eq("region_id", region_id).maybeSingle(),
+    serviceDb
+      .from("kommunen_kontakt")
+      .select(
+        "outreach_status, verantwortlich_funktion, verantwortlich_operativ, thema_solar_url, thema_klima_url, thema_blatt_url",
+      )
+      .eq("region_id", region_id)
+      .maybeSingle(),
     atlasPathForRegionId(region_id),
     buildHookIndex(DEFAULT_HOOK_SETTINGS),
   ]);
@@ -145,6 +156,15 @@ export async function POST(req: NextRequest) {
   }
 
   const hook = index.rows.find((r) => r.regionId === region_id);
+  // Themen-Anknüpfung in derselben Priorität wie im Profil: eine eigene
+  // Solarseite ist der stärkste Anknüpfungspunkt, dann Klimaschutz, dann das
+  // Mitteilungsblatt (bei kleinen Gemeinden das häufigste Merkmal).
+  const thema =
+    (leadRow?.thema_solar_url && { begriff: "Photovoltaik", url: leadRow.thema_solar_url }) ||
+    (leadRow?.thema_klima_url && { begriff: "Klimaschutz", url: leadRow.thema_klima_url }) ||
+    (leadRow?.thema_blatt_url && { begriff: "Mitteilungsblatt", url: leadRow.thema_blatt_url }) ||
+    null;
+
   const draft = renderOutreachDraft({
     name: reg.name,
     pageUrl: path ? `${SITE_URL}${path}` : null,
@@ -152,6 +172,11 @@ export async function POST(req: NextRequest) {
     einstieg:
       hook?.einstieg ??
       `Wir haben den Solarausbau in ${reg.name} aus den amtlichen Anlagendaten aufbereitet — hier der Überblick für Ihre Gemeinde.`,
+    // Nur eine OPERATIVE Stelle wird direkt adressiert. Der Bürgermeister steht
+    // zwar fast immer im Impressum, betreut die Website aber nicht — ihn
+    // anzusprechen würde die Weiterleitung eher verhindern als auslösen.
+    funktion: leadRow?.verantwortlich_operativ ? leadRow.verantwortlich_funktion : null,
+    thema,
   });
 
   const { data, error } = await serviceDb

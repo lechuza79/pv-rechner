@@ -19,6 +19,19 @@ export type DraftContext = {
   betreff: string;
   /** Einstiegssatz aus der Hook-Logik. */
   einstieg: string;
+  /**
+   * Funktion der im Impressum benannten OPERATIVEN Stelle, falls vorhanden
+   * („Referentin für Öffentlichkeitsarbeit"). Nur dann wird direkt adressiert.
+   *
+   * Gemessen am 27.07.2026: Von 21 kleinen Gemeinden nannte genau EINE jemand
+   * anderen als den Bürgermeister. Die Person, die die Website pflegt, steht
+   * dort schlicht nicht öffentlich — deshalb ist der Regelfall NICHT die
+   * namentliche Anrede, sondern ein Text, der eine Weiterleitung übersteht.
+   */
+  funktion?: string | null;
+  /** Vorhandene Themenseite der Gemeinde (Solar, Klimaschutz, Mitteilungsblatt)
+   *  als überprüfbarer Anknüpfungspunkt statt einer Behauptung. */
+  thema?: { begriff: string; url: string } | null;
 };
 
 export type OutreachDraft = { subject: string; body: string };
@@ -39,9 +52,23 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
     ? `hier die Seite Ihrer Gemeinde: ${c.pageUrl}`
     : `mit einer Übersicht des Solar-Ausbaus Ihrer Gemeinde`;
 
-  const body = `Sehr geehrte Damen und Herren,
+  // Wer die Website betreut, ist bei kleinen Gemeinden nicht ermittelbar (siehe
+  // `funktion`). Deshalb steht die Bitte um Weiterleitung GANZ OBEN und nennt
+  // die gesuchte Rolle: Das Rathaus verteilt Post ohnehin den ganzen Tag — die
+  // Nachricht muss nur erkennen lassen, wohin sie gehört. Ist eine operative
+  // Stelle benannt, entfällt der Satz.
+  const weiterleitung = c.funktion
+    ? ""
+    : `\n\nFalls Sie nicht selbst zuständig sind: Diese Nachricht richtet sich an die Kollegin oder den Kollegen, die Ihre Website betreut. Ich wäre Ihnen für eine kurze Weiterleitung dankbar.`;
 
-${c.einstieg}
+  // Anknüpfung an eine Seite, die es wirklich gibt — nachprüfbar statt behauptet.
+  const anknuepfung = c.thema
+    ? `\n\nAuf Ihrer Website führen Sie bereits eine Seite zum Thema („${c.thema.begriff}“). Genau dort würden die Solarzahlen Ihrer Gemeinde gut dazupassen.`
+    : "";
+
+  const body = `Sehr geehrte Damen und Herren,${weiterleitung}
+
+${c.einstieg}${anknuepfung}
 
 Den vollständigen Solar-Überblick für ${c.name} — monatlich aus dem amtlichen Marktstammdatenregister aufbereitet — pflege ich auf solar-check.io: ${seiteSatz}
 

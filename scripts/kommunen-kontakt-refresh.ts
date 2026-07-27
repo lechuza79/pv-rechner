@@ -215,6 +215,17 @@ async function setup(): Promise<void> {
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_blatt_url text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_presse_url text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS profil_at timestamptz;
+    -- Versandliste: die Auswahl wird FESTGESCHRIEBEN, nicht nur gefiltert. Der
+    -- Aufhaenger aendert sich mit jedem Monatslauf der Anlagendaten — ein reiner
+    -- Filter haette in Charge 2 andere Gemeinden als in Charge 1.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS kampagne text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS charge integer;
+    -- Verbund: Gemeinden, die sich eine Verwaltung teilen. Schluessel ist die im
+    -- Impressum belegte fremde Domain, sonst der eigene Website-Host. Nie zwei
+    -- aus einem Verbund in derselben Charge.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS verbund_key text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS verbund_primary boolean;
+    CREATE INDEX IF NOT EXISTS idx_kk_kampagne ON kommunen_kontakt (kampagne, charge);
     -- Filter „nach Status" schnell halten (Cockpit-Tabs).
     CREATE INDEX IF NOT EXISTS idx_kk_status ON kommunen_kontakt (outreach_status);
     ALTER TABLE kommunen_kontakt ENABLE ROW LEVEL SECURITY;

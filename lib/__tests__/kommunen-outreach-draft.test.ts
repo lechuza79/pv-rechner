@@ -58,3 +58,34 @@ describe("renderOutreachDraft", () => {
     expect(z.body).not.toContain("null");
   });
 });
+
+// Ergaenzt 27.07.2026: Der Regelfall ist NICHT die namentliche Anrede.
+describe("weiterleitungsfähig", () => {
+  const basis = {
+    name: "Musterdorf",
+    pageUrl: "https://solar-check.io/solar-atlas/bayern/kreis/musterdorf",
+    betreff: "Musterdorf ist Balkon-Pionier im Landkreis",
+    einstieg: "Musterdorf ist im Landkreis die Nummer 1.",
+  };
+
+  it("bittet um Weiterleitung, wenn keine zuständige Stelle bekannt ist", () => {
+    const d = renderOutreachDraft(basis);
+    expect(d.body).toMatch(/Weiterleitung/);
+    // Die Bitte steht oben, nicht am Ende — sonst liest sie niemand.
+    expect(d.body.indexOf("Weiterleitung")).toBeLessThan(d.body.indexOf(basis.einstieg));
+  });
+
+  it("lässt die Bitte weg, wenn eine operative Stelle benannt ist", () => {
+    const d = renderOutreachDraft({ ...basis, funktion: "Referentin für Öffentlichkeitsarbeit" });
+    expect(d.body).not.toMatch(/Weiterleitung/);
+  });
+
+  it("knüpft an eine vorhandene Themenseite an, wenn es eine gibt", () => {
+    const d = renderOutreachDraft({ ...basis, thema: { begriff: "Klimaschutz", url: "https://x.de/klima" } });
+    expect(d.body).toMatch(/Klimaschutz/);
+  });
+
+  it("behauptet nichts, wenn keine Themenseite bekannt ist", () => {
+    expect(renderOutreachDraft(basis).body).not.toMatch(/Auf Ihrer Website führen Sie bereits/);
+  });
+});
