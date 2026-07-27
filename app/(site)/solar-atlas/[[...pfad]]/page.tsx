@@ -30,9 +30,12 @@ export const revalidate = 3600;
 // Zwei Ziele:
 // 1) Ohne generateStaticParams behandelt Next die dynamische Route als voll
 //    dynamisch (no-store). Mit ihr wird sie ISR (s-maxage=3600).
-// 2) Die INDEXIERTEN Ebenen (DE + Bundesländer, siehe lib/atlas-index.ts) werden
-//    beim Build vorgerendert → statisch, KEIN Kaltrender, crawl-freundlich.
-//    Kreise/Gemeinden sind noindex + zu zahlreich → bleiben on-demand ISR.
+// 2) DE + Bundesländer werden beim Build vorgerendert → statisch, KEIN
+//    Kaltrender, crawl-freundlich. Die ~400 Kreise sind seit Welle 0b zwar
+//    ebenfalls indexiert, bleiben aber bewusst on-demand ISR: 400 Renders je
+//    Build kosten Build-Minuten, und der Aufwärm-Crawler (npm run atlas:warm,
+//    läuft nach jedem MaStR-Lauf) holt sie ohnehin in den Cache. Gemeinden
+//    sind noindex + zu zahlreich → ebenfalls ISR.
 //    Möglich seit mastr_children über den Rollup läuft (~0,1s statt >8s), sonst
 //    liefen die 17 Parallel-Renders in den DB-Timeout. Slugs aus der DB (16 Zeilen).
 export async function generateStaticParams() {

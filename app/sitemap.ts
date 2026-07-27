@@ -54,8 +54,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // Solar-Atlas: nur die freigeschalteten Wellen (lib/atlas-index). Aktuell 0a =
-  // Deutschland + Bundesländer; Landkreise/Gemeinden folgen gestaffelt.
+  // Solar-Atlas: nur die freigeschalteten Wellen (lib/atlas-index). Aktuell 0b =
+  // Deutschland + Bundesländer + Landkreise; Gemeinden folgen gestaffelt.
   const atlasPages: MetadataRoute.Sitemap = [];
   if (atlasLevelReleased("de")) {
     atlasPages.push({ url: `${BASE_URL}/solar-atlas`, lastModified: now, changeFrequency: "monthly", priority: 0.6 });
@@ -68,6 +68,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "monthly",
         priority: 0.6,
       });
+    }
+  }
+  // Kreis-Slugs kommen aus der Datenbank, nicht aus einer Liste im Code — sie
+  // sind dieselbe Quelle, aus der die Seiten selbst aufgelöst werden. Fällt die
+  // Abfrage aus, bleibt die Sitemap ohne Kreise (statt der Build zu scheitern):
+  // die Seiten sind trotzdem indexierbar und intern verlinkt.
+  if (atlasLevelReleased("landkreis")) {
+    try {
+      const { getKreisPfade } = await import("../lib/atlas");
+      for (const p of await getKreisPfade()) {
+        atlasPages.push({
+          url: `${BASE_URL}/solar-atlas/${p.bundesland}/${p.kreis}`,
+          lastModified: now,
+          changeFrequency: "monthly",
+          priority: 0.5,
+        });
+      }
+    } catch {
+      // bewusst still: siehe Kommentar oben
     }
   }
 
