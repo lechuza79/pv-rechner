@@ -95,7 +95,7 @@ export default function GasheizungWaermepumpePage() {
           description="Gasheizung vs. Wärmepumpe über 20 Jahre — auch im unsanierten Altbau."
           path="/ratgeber/gasheizung-oder-waermepumpe"
           published="2026-07-25"
-          modified="2026-07-26"
+          modified="2026-07-27"
         />
 
         {/* ── Kurzantwort: Text + Balken-Ansicht des Widgets (mobil darunter,
@@ -174,20 +174,53 @@ export default function GasheizungWaermepumpePage() {
           Institut der deutschen Wirtschaft von rund 11 Cent (2026) auf etwa 20 Cent (2040) —
           fast eine Verdopplung. Den vom IW für 2045 gerechneten Wert von rund 24 Cent trägt
           dessen Annahme einer dann vollständig klimaneutralen Versorgung. Wie stark das aufs Jahr
-          durchschlägt, hängt vom Verbrauch ab (im Chart oben der Muster-Altbau). Der CO₂-Preis
-          ist dabei nur ein kleiner Teil; den Löwenanteil macht das teure Grüngas aus.
+          durchschlägt, hängt vom Verbrauch ab (im Chart oben der Muster-Altbau).
         </div>
+        {/* Aufschlüsselung wörtlich aus dem IW-Report (docs/gmodg/), Kap. 4.1, S. 19:
+            „…Anstieg um 871 Euro auf insgesamt 1.952 Euro mit 44 Euro aus den steigenden
+            CO₂-Preisen, mit 184 Euro aus den steigenden Netzentgelten und mit 643 Euro aus
+            den Mehrkosten der Bio-Treppe. Somit entfallen 74 Prozent der gesamten Mehrkosten
+            im Jahr 2040 auf die Beschaffung von Grüngas." Bezugshaushalt ist MFH1
+            (10.000 kWh/a, Tabelle 3-1, S. 13) — deshalb hier keine Übertragung auf das
+            Muster-EFH der Grafik, sondern nur die Anteile. */}
+        <p style={S.p}>
+          Bemerkenswert ist, <strong style={S.strong}>woher</strong> dieser Anstieg kommt. Das IW
+          schlüsselt ihn für seinen Beispielhaushalt auf: Von den 871 Euro, die eine Gasheizung
+          im Jahr 2040 mehr kostet als heute, entfallen 44 Euro auf den CO₂-Preis, 184 Euro auf
+          die steigenden Netzentgelte — und 643 Euro auf das beigemischte Grüngas. Rund{" "}
+          <strong style={S.strong}>drei Viertel der Mehrkosten</strong> sind also weder Klimaabgabe
+          noch Netz, sondern schlicht der teurere Brennstoff. Wer bei der Gasheizung auf sinkende
+          CO₂-Preise hofft, hofft damit auf den kleinsten der drei Posten.
+        </p>
 
         {/* ── Altbau ── */}
         <h2 style={S.h2}>Und im unsanierten Altbau?</h2>
         <p style={S.p}>
-          „Im Altbau geht keine Wärmepumpe" ist der hartnäckigste Irrtum. Richtig ist nur: Im
+          „Im Altbau geht keine Wärmepumpe“ ist der hartnäckigste Irrtum. Richtig ist nur: Im
           unsanierten Haus arbeitet sie mit höheren Vorlauftemperaturen und damit schlechterer
-          Arbeitszahl — sie braucht mehr Strom. Genau das steckt oben im Umschalter „Unsaniert",
+          Arbeitszahl — sie braucht mehr Strom. Genau das steckt oben im Umschalter „Unsaniert“,
           ehrlich eingerechnet samt alter Heizkörper. Trotzdem bleibt sie über 20 Jahre klar
           günstiger, <strong style={S.strong}>gerade weil die Gasheizung so teuer wird</strong>.
           Größere Heizkörper oder eine schrittweise Sanierung verbessern die Arbeitszahl
           zusätzlich — nötig für den Betrieb sind sie nicht.
+        </p>
+        {/* IW-Report (docs/gmodg/), Kap. 4.1, S. 20 + Tabelle 4-1: JAZ 3,0 (teilsaniert) /
+            2,2 (unsaniert), Gas-Brennwertkessel 0,95. Wörtlich: „Diese Werte bilden bewusst
+            ungünstige Einsatzbedingungen ab und stellen nicht den Durchschnitt einer optimal
+            ausgelegten Wärmepumpe dar" und „Der Vergleich ist damit bewusst zugunsten der
+            Gasheizung ausgestaltet“. Das sind die Annahmen DES REPORTS, nicht unsere —
+            unser Rechner nutzt das ISE-JAZ-Modell (lib/heatpump.ts). Deshalb im Text klar
+            dem IW zugeschrieben. */}
+        <p style={S.p}>
+          Dafür spricht auch, wie das IW selbst gerechnet hat. Es setzt für die Wärmepumpe
+          bewusst niedrige Arbeitszahlen an — 3,0 im teilsanierten, 2,2 im unsanierten Gebäude —
+          und schreibt dazu, diese Werte bildeten „bewusst ungünstige Einsatzbedingungen“ ab und
+          seien nicht der Durchschnitt einer gut ausgelegten Anlage. Der Gasheizung wird
+          umgekehrt ein Nutzungsgrad von 95 Prozent zugestanden. Der Vergleich sei damit,
+          so der Report wörtlich,{" "}
+          <strong style={S.strong}>„bewusst zugunsten der Gasheizung ausgestaltet“</strong>.
+          Dass die Wärmepumpe trotzdem deutlich günstiger herauskommt, ist deshalb eher ein
+          vorsichtiges als ein geschöntes Ergebnis.
         </p>
 
         {/* ── Abwägung ── */}
@@ -231,7 +264,7 @@ export default function GasheizungWaermepumpePage() {
         <p style={{ ...S.small, marginTop: 24 }}>
           Preispfade nach dem{" "}
           <a href={DATA_SOURCES.iw.url} target="_blank" rel="noopener noreferrer" style={S.link}>
-            IW-Report 36/2026 „Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz"
+            IW-Report 36/2026 „Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz“
           </a>{" "}
           (Institut der deutschen Wirtschaft), einem arbeitgebernahen Institut. Beschlossen ist
           die Beimischpflicht mit ihren vier Stufen bis 2040; die Kostenhöhe und die Fortschreibung
