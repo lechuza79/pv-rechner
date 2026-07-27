@@ -38,6 +38,9 @@ interface PageMetaInput {
   ogImageSubtitle?: string;
   /** Pre-built OG image URL — overrides the generated brand card. */
   ogImage?: string;
+  /** Page-level meta keywords. Without this a page inherits the PV list from the
+   *  site layout, which is simply wrong on a heat-pump or energy-data page. */
+  keywords?: string[];
 }
 
 /**
@@ -56,6 +59,7 @@ export function pageMetadata(input: PageMetaInput): Metadata {
   return {
     title: input.title,
     description: input.description,
+    ...(input.keywords ? { keywords: input.keywords } : {}),
     alternates: { canonical: input.path },
     openGraph: {
       title: ogTitle,

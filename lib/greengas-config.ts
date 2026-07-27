@@ -2,7 +2,7 @@
 // Modelliert den künftigen Gas-Endkundenpreis unter dem Gebäudemodernisierungs-
 // gesetz (GModG): ab 2029 muss ein steigender Anteil klimafreundlicher Brennstoffe
 // beigemischt werden ("Bio-Treppe", § 43 GModG) — anrechenbar sind Biomethan,
-// Bioöl, biogenes Flüssiggas sowie Wasserstoff und daraus hergestellte Derivate.
+// Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und daraus hergestellte Derivate.
 // Wir rechnen mit Biomethan als Leitpreis (leitungsgebundenes Gas). Biomethan ist
 // rund doppelt so teuer wie Erdgas; zusätzlich steigen die Gasnetzentgelte (weniger
 // Anschlussnutzer) und der CO₂-Preis. Der resultierende Gas-Mix-Preis ist die
@@ -10,9 +10,21 @@
 // vergleichen lassen muss.
 //
 // Quelle: IW-Report 36/2026 „Wie hoch sind die Mehrkostenrisiken durch das
-// Gebäudemodernisierungsgesetz (GModG)?" (Henger/Küper/Wünsch, Köln 25.07.2026),
-// Anhang Kapitel 6 (Preisszenarien) + Tabelle 3-2. Alle Preiskomponenten sind
-// dort als linearer Verlauf 2026→2045 modelliert.
+// Gebäudemodernisierungsgesetz (GModG)?" (Henger/Küper/Wünsch, Köln 25.07.2026).
+// Volltext liegt im Repo: docs/gmodg/. Am 27.07.2026 Seite für Seite gegen die
+// Werte unten geprüft — jede Fundstelle unten wurde dabei aufgeschlagen:
+//   · Anhang Kapitel 6, S. 31–32 — alle Preisannahmen der Szenarien
+//   · Tabelle 3-2, S. 15 — Kostenaufstellung des Beispielhaushalts MFH1
+//   · Abbildung 6-1 / 6-2, S. 33 — Gas-Mix-Verlauf und Preisspanne
+//   · Tabelle 2-2 + Fußnote 3, S. 9 — Bio-Treppe, Quote und der 2045-Punkt
+// Alle Preiskomponenten sind dort als linearer Verlauf 2026→2045 modelliert
+// (S. 31), Referenzhaushalt ist MFH1: teilsanierte Altbauwohnung, 75 m²,
+// 10.000 kWh/a (Tabelle 3-1, S. 13).
+//
+// WICHTIG zur Einordnung des Basispfads — Selbstaussage des Reports (S. 31): Das
+// Basisszenario ist „nicht als wahrscheinlichste Entwicklung zu interpretieren,
+// sondern dient als analytischer Referenzpfad innerhalb eines plausiblen
+// Ergebniskorridors". Genau so ausweisen, nie als Prognose.
 //
 // WICHTIG (Ehrlichkeit): Das IW ist ein arbeitgebernahes Institut. Die Werte sind
 // ein „plausibler Korridor", keine punktgenaue Prognose (Selbstaussage des
@@ -28,6 +40,9 @@
 // klimaneutrale Brennstoffe umzustellen. Dieses Quotengesetz ist noch nicht
 // beschlossen (soll bis 01.12.2026 vorgelegt werden). Jede Zahl, die aus dem Jahr
 // 2045 stammt, ist damit IW-Annahme — nie als Gesetzesfolge beschriften.
+// Der Report sagt das selbst, Fußnote 3 auf S. 9: „Zwar wurde in § 43 GModG keine
+// 100-Prozent-Stufe ab 2045 ergänzt, dafür aber ein weiterer Paragraf § 42a GModG
+// neu aufgenommen […]" (BT-Drs. 21/7009).
 //
 // GELTUNGSBEREICH — die zweite Falle: Die Bio-Treppe erfasst nur Heizungen, die NACH
 // Inkrafttreten des GModG eingebaut werden. Die Quote nach § 42a setzt dagegen beim
@@ -75,10 +90,11 @@ export interface GreenGasConfig {
 
 export const GREEN_GAS_CONFIG: GreenGasConfig = {
   // Gesetzliche Stufen (§ 43 GModG): 2029: 10 %, 2030: 15 %, 2035: 30 %, 2040: 60 %.
-  // Die Bio-Treppe hat KEINE 2028er-Stufe. Das „bis zu 1 % ab 2028", das in
-  // Berichten kursiert, gehört zur Quote nach § 42a (Inverkehrbringer-Ebene) und
-  // ist in ihrer Höhe noch nicht gesetzlich festgelegt — hier deshalb konservativ
-  // als 0 angesetzt (wie im IW-Report, Abb. 4-3).
+  // Die Bio-Treppe hat KEINE 2028er-Stufe — Tabelle 2-2 (S. 9) führt 2028 für sie
+  // ausdrücklich als „–". Das „bis zu 1 % ab 2028" steht in derselben Tabelle in
+  // der Spalte der Quote nach § 42a (Inverkehrbringer-Ebene); für 2029–2040 ist
+  // dort „noch kein konkreter gesetzlicher Quotenpfad festgelegt". Hier deshalb
+  // konservativ als 0 angesetzt.
   // 2045: 100 % ist KEINE Gesetzesstufe, sondern die IW-Annahme aus § 42a (siehe oben).
   quoteStops: { 2026: 0, 2028: 0, 2029: 0.1, 2030: 0.15, 2035: 0.3, 2040: 0.6, 2045: 1.0 },
   erdgasCt2026: 5.2,
@@ -93,7 +109,10 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
   emissionFactorKgPerKwh: 0.1833,
   vat: 0.19,
   source:
-    "IW-Report 36/2026 (Henger/Küper/Wünsch), Anhang Kap. 6 — Preisszenarien GModG-Gas-Mix, MFH-Referenz",
+    "IW-Report 36/2026 (Henger/Küper/Wünsch), Anhang Kap. 6 (S. 31–32) und Tabelle 3-2 " +
+    "(S. 15): 1.080 € (2026) / 1.952 € (2040) / 2.366 € (2045) bei 10.000 kWh im " +
+    "Basisszenario; der 2045er-Wert unter der Annahme vollständiger Grüngas-Versorgung. " +
+    "Das Basisszenario ist laut Report ein analytischer Referenzpfad, keine Prognose",
   validFrom: "2026-07-25",
   reviewBy: "2027-07-25",
 };
@@ -122,8 +141,9 @@ export function bioTreppeStufenText(unit: "%" | "Prozent" = "%"): string {
 /** Datierter Sachstand des Gesetzgebungsverfahrens — kein rollierender Wert.
  *  Stand Juli 2026: Bundestag und Bundesrat haben das GModG am 10.07.2026
  *  beschlossen; die Verkündung im Bundesgesetzblatt stand noch aus. Die
- *  Heizungsregeln (inkl. Bio-Treppe) treten unmittelbar mit der Verkündung in
- *  Kraft. Wird die Verkündung nachgezogen, ist DAS hier die einzige Stelle.
+ *  Heizungsregeln (inkl. Bio-Treppe) treten am Tag nach der Verkündung in Kraft
+ *  (IW-Report 36/2026, Fußnote 2 auf S. 7). Wird die Verkündung nachgezogen, ist
+ *  DAS hier die einzige Stelle.
  *  Quellen: gmodg.bund.de (GEG-Infoportal, Chronologie), bundesregierung.de.
  *  Gepflegt vom täglichen `foerder-news-waechter` (Schritt 4c) nach dem Runbook
  *  scripts/gruengas-verify.md — ohne den würde `verkuendet: false` still veralten. */
@@ -140,5 +160,5 @@ export const GMODG_RECHTSSTAND = {
 export function gmodgStandSatz(): string {
   return GMODG_RECHTSSTAND.verkuendet
     ? `Das GModG wurde am ${GMODG_RECHTSSTAND.beschlossenAm} beschlossen und ist verkündet — die Bio-Treppe ist damit geltendes Recht.`
-    : `Bundestag und Bundesrat haben das GModG am ${GMODG_RECHTSSTAND.beschlossenAm} beschlossen. Die Verkündung im Bundesgesetzblatt stand im ${GMODG_RECHTSSTAND.stand} noch aus; die Heizungsregeln gelten unmittelbar ab der Verkündung.`;
+    : `Bundestag und Bundesrat haben das GModG am ${GMODG_RECHTSSTAND.beschlossenAm} beschlossen. Die Verkündung im Bundesgesetzblatt stand im ${GMODG_RECHTSSTAND.stand} noch aus; das Gesetz tritt am Tag nach der Verkündung in Kraft.`;
 }

@@ -918,6 +918,31 @@ Nicht bei UI-Texten oder reinen Code-Änderungen.
 5. **Rechner-Annahmen mitziehen.** Wenn sich eine geprüfte Zahl ändert, prüfen ob
    sie auch in Rechenlogik, Widgets oder JSON-LD steckt.
 
+6. **Bestehende Quellenangaben im Code sind unbelegt bis zum Gegenbeweis.**
+   Kommentare, `source`-Felder und Test-Titel aus früheren Sessions gelten nicht
+   als Beleg. Wer eine Fundstelle zitiert (Tabelle, Anhang, Seite, Abbildung),
+   muss sie in dieser Session selbst gesehen haben. Ansonsten: Angabe entfernen,
+   nicht weiterreichen. Konkretheit ist kein Beleg.
+
+   **Erst beschaffen, dann entfernen — Löschen ist die Rückfallebene, nicht das
+   Ziel.** Prüfe, ob die Quelle greifbar ist, bevor du eine Fundstelle streichst:
+   im Repo (`docs/`), als PDF-Download auf der Seite, die du ohnehin offen hast,
+   notfalls beim Betreiber erfragen. Beim IW-Report (Juli 2026) wurden „Tabelle
+   3-2" und „Anhang Kap. 6" als unbelegt entfernt — nach dem Öffnen des PDF war
+   **jede** davon korrekt. Der Vorbehalt war richtig, das Aufgeben zu früh: Ein
+   Web-Abruf, der mit 401 scheitert, heißt nicht, dass die Quelle unerreichbar
+   ist. Belegte Fundstellen gehören mit **Seitenzahl** in den Code, zusammen mit
+   dem Datum der Prüfung und dem Pfad zum Volltext.
+
+7. **Kommst du an eine Quelle nicht heran: den Betreiber fragen — kurz und
+   deutlich.** Ein Satz genügt: was du brauchst, wofür, und was ohne die Quelle
+   ungeprüft bleibt. Nicht auf eine schwächere Quelle ausweichen, die Aussage
+   nicht stillschweigend abschwächen und nicht nach dem ersten Fehlschlag (401,
+   Paywall, Login) aufgeben. Vorher die naheliegenden Wege abklopfen: `docs/` im
+   Repo, der Download-Link auf der Seite, die ohnehin offen ist. Beschaffte
+   Primärquellen gehören in `docs/` — dann ist die Fundstelle dauerhaft
+   nachprüfbar statt beim nächsten Mal wieder unbelegt.
+
 **Auslöser (Juli 2026):** Im GModG-Content stand in drei Texten — Ratgeber, FAQ und
 Rechner-Modal — eine „100 % ab 2045"-Stufe der Bio-Treppe, die es in § 43 GModG
 nie gab. Sie war aus der Modellannahme des IW-Reports (Fortschreibung bis zur

@@ -30,6 +30,16 @@ export async function generateMetadata(): Promise<Metadata> {
       "Das neue Heizungsgesetz erlaubt Gasheizungen wieder — aber die Grüngas-Pflicht macht sie ab 2029 zur Kostenfalle. Die ehrliche Rechnung: auch im unsanierten Altbau ist die Wärmepumpe über 20 Jahre klar günstiger. Live gerechnet, ohne Anmeldung.",
     ogImageTitle: "Gasheizung oder Wärmepumpe?",
     ogImageSubtitle: "Warum die neue Gasheizung zur Kostenfalle wird.",
+    // Ohne diese Angabe erbt die Seite die PV-Keywords aus dem Site-Layout.
+    keywords: [
+      "Gasheizung oder Wärmepumpe",
+      "Grüngas-Pflicht",
+      "Bio-Treppe GModG",
+      "Gebäudemodernisierungsgesetz Heizung",
+      "Wärmepumpe Altbau lohnt sich",
+      "Heizkosten Vergleich Gas Wärmepumpe",
+      "neues Heizungsgesetz 2026",
+    ],
   });
 }
 
@@ -131,9 +141,10 @@ export default function GasheizungWaermepumpePage() {
         <p style={S.p}>
           Die <strong style={S.strong}>Bio-Treppe</strong> gilt für Gas- und Ölheizungen, die{" "}
           <strong style={S.strong}>nach dem Inkrafttreten des Gesetzes eingebaut</strong> werden.
+          Maßgeblich ist dabei der tatsächliche Einbau, nicht das Bestell- oder Rechnungsdatum.
           Wer eine solche Heizung betreibt, muss ab 2029 einen wachsenden Anteil klimafreundlicher
           Brennstoffe beimischen. Das Gesetz nennt vier Stufen: {bioTreppeStufenText("Prozent")}.
-          Anrechenbar sind neben Biomethan auch Bioöl, biogenes Flüssiggas sowie Wasserstoff und
+          Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und
           daraus hergestellte Derivate. Beim leitungsgebundenen Gas führt das in der Praxis zu
           Biomethan, und das kostet rund doppelt so viel wie Erdgas. Dazu steigen die
           Gasnetzentgelte, weil immer weniger Haushalte am Gasnetz hängen und dessen Fixkosten

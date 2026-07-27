@@ -1,13 +1,21 @@
 import { describe, it, expect } from "vitest";
 import { gasQuoteForYear, gasMixForYear, gasMixPriceEurForYear, gasMixSeries, heatCostComparisonSeries, annualHeatingCostSeries } from "../greengas";
-import { BIO_TREPPE_STUFEN, bioTreppeStufenText } from "../greengas-config";
+import { BIO_TREPPE_STUFEN, bioTreppeStufenText, GREEN_GAS_CONFIG } from "../greengas-config";
 
-// Referenzwerte: IW-Report 36/2026, Tabelle 3-2 + Anhang Kap. 6 (Abb. 6-1/6-2).
-// Der Gas-Mix-Endkundenpreis (brutto) im Basisszenario für den MFH-Beispielhaushalt:
-//   2026: 10,9 ct/kWh  ·  2040: 19,5 ct/kWh  ·  2045: 23,7 ct/kWh
-// Bei 10.000 kWh Jahresverbrauch: 1.080 € (2026) → 1.952 € (2040) → 2.366 € (2045).
-// ACHTUNG: Alles ab 2041 beruht auf der IW-Annahme „100 % klimaneutral bis 2045".
-// Gesetzlich (§ 43 GModG) endet die Bio-Treppe bei 60 % im Jahr 2040.
+// Referenzwerte: IW-Report 36/2026 (Volltext im Repo unter docs/gmodg/), am
+// 27.07.2026 seitenweise gegengelesen. Referenzhaushalt ist MFH1 — teilsanierte
+// Altbauwohnung, 75 m², 10.000 kWh/a (Tabelle 3-1, S. 13):
+//   1.080 € (2026) → 1.952 € (2040) → 2.366 € (2045)   [Kap. 4.1, S. 18]
+// entspricht 10,8 / 19,5 / 23,7 ct je kWh brutto. Der 2045er-Wert gilt nur,
+// „sofern bis dahin eine vollständige Versorgung mit Biomethan beziehungsweise
+// klimaneutralem Gas unterstellt wird" (Zusammenfassung, S. 4) — gesetzlich
+// (§ 43 GModG) endet die Bio-Treppe bei 60 % im Jahr 2040.
+//
+// Zu den Fundstellen: Sie waren zwischenzeitlich aus dieser Datei entfernt, weil
+// niemand sie geprüft hatte. Sie sind jetzt geprüft und stehen wieder da — mit
+// Seitenzahl. Regel bleibt (CLAUDE.md, Faktenprüfung Punkt 6): Wer eine Fundstelle
+// zitiert, muss sie selbst aufgeschlagen haben. Tests ohne Report-Deckung prüfen
+// die Modell-Konsistenz — das steht jeweils am Test dran.
 
 describe("Bio-Treppe (Grüngasquote)", () => {
   it("folgt den gesetzlichen Stufen des § 43 GModG", () => {
@@ -52,10 +60,36 @@ describe("Bio-Treppe (Grüngasquote)", () => {
   });
 });
 
+describe("Config-Werte = Preisannahmen des Report-Anhangs (Kap. 6, S. 31–32)", () => {
+  // Jede Zeile hier wurde am 27.07.2026 im PDF (docs/gmodg/) nachgeschlagen. Der
+  // Anhang differenziert EFH/MFH — wir führen die MFH-Werte (Referenzhaushalt MFH1).
+  it("Erdgas, Biomethan, Netzentgelt, Steuer/Konzession", () => {
+    expect(GREEN_GAS_CONFIG.erdgasCt2026).toBe(5.2); // MFH; EFH wäre 5,5
+    expect(GREEN_GAS_CONFIG.erdgasEndFactor).toEqual({ low: 0.85, base: 1.0, high: 1.15 });
+    expect(GREEN_GAS_CONFIG.biomethanCt2026).toBe(12);
+    expect(GREEN_GAS_CONFIG.biomethanCt2045).toEqual({ low: 12, base: 15, high: 18 });
+    expect(GREEN_GAS_CONFIG.netzCt2026).toBe(2.2); // MFH; EFH wäre 2,6
+    expect(GREEN_GAS_CONFIG.netzCt2045).toEqual({ low: 2.2, base: 4.3, high: 6.4 });
+    expect(GREEN_GAS_CONFIG.steuerKonzessionCt).toBeCloseTo(0.58, 5); // 0,55 + 0,03
+  });
+
+  it("CO₂-Preispfad, Emissionsfaktor und Mehrwertsteuer", () => {
+    expect(GREEN_GAS_CONFIG.co2EurT2026).toEqual({ low: 55, base: 60, high: 65 });
+    expect(GREEN_GAS_CONFIG.co2EurT2045).toEqual({ low: 150, base: 250, high: 350 });
+    // S. 32: 0,2029 kg/kWh (heizwertbezogen, EBeV 2030) × 0,903 = 0,18322; der
+    // Report nennt daraus „rund 0,1833 kg CO₂e/kWh". Wir führen bewusst den vom
+    // Report ausgewiesenen Wert, nicht das nachgerechnete Produkt — die Differenz
+    // liegt bei 0,04 % und damit weit unter jeder sichtbaren Wirkung.
+    expect(GREEN_GAS_CONFIG.emissionFactorKgPerKwh).toBe(0.1833);
+    expect(GREEN_GAS_CONFIG.vat).toBe(0.19);
+  });
+});
+
 describe("Gas-Mix-Endkundenpreis (Basisszenario) reproduziert den IW-Report", () => {
-  it("2026: 10,8 ct/kWh brutto (= 1.080 € bei 10.000 kWh, Tabelle 3-2)", () => {
-    // Die präzise Tabellen-Basis ergibt 10,80 ct (1.080 €); die 10,9 ct in Abb. 6-2
-    // sind die gerundete Diagramm-Achse.
+  it("2026: 10,8 ct/kWh brutto (= 1.080 € bei 10.000 kWh, Tabelle 3-2 S. 15)", () => {
+    // Tabelle 3-2 rechnet netto 907,95 € × 1,19 = 1.080 € brutto, also 10,80 ct.
+    // Abbildung 6-2 (S. 33) beschriftet denselben Punkt mit 10,9 ct — das ist die
+    // gerundete Diagramm-Achse, nicht ein abweichender Wert.
     expect(gasMixForYear(2026, "base").totalCt).toBeCloseTo(10.8, 1);
   });
 
@@ -67,7 +101,7 @@ describe("Gas-Mix-Endkundenpreis (Basisszenario) reproduziert den IW-Report", ()
     expect(gasMixForYear(2045, "base").totalCt).toBeCloseTo(23.7, 1);
   });
 
-  it("liefert die Jahreskosten des MFH-Beispielhaushalts (10.000 kWh)", () => {
+  it("liefert die Jahreskosten des Beispielhaushalts MFH1 (10.000 kWh, S. 18)", () => {
     expect(gasMixPriceEurForYear(2026, "base") * 10000).toBeCloseTo(1080, -1); // ±5 €
     expect(gasMixPriceEurForYear(2040, "base") * 10000).toBeCloseTo(1952, -1);
     expect(gasMixPriceEurForYear(2045, "base") * 10000).toBeCloseTo(2366, -1);
@@ -76,7 +110,8 @@ describe("Gas-Mix-Endkundenpreis (Basisszenario) reproduziert den IW-Report", ()
 
 describe("CO₂-Komponente", () => {
   it("2026 fossil: ~1,1 ct/kWh netto (vor MwSt)", () => {
-    // Report Tabelle 3-2: CO₂-Kosten bei 1,1 ct/kWh netto (60 €/t × 0,1833 kg/kWh).
+    // Tabelle 3-2 (S. 15) weist die CO₂-Kosten mit 1,1 ct/kWh netto aus
+    // (60 €/t × 0,1833 kg/kWh; Emissionsfaktor hergeleitet auf S. 32).
     const co2Brutto = gasMixForYear(2026, "base").components.co2;
     expect(co2Brutto / 1.19).toBeCloseTo(1.1, 1);
   });
@@ -111,8 +146,9 @@ describe("Szenario-Korridor (niedrig < basis < hoch)", () => {
     expect(base2045).toBeLessThan(high2045);
   });
 
-  it("hohes Szenario erreicht ~28–30 ct/kWh 2045 (obere Preisspanne)", () => {
-    // Abb. 6-2: obere Spanne 2045 deutlich über 25 ct/kWh.
+  it("hohes Szenario erreicht 2045 die obere Preisspanne des Reports", () => {
+    // Kap. 4.1, S. 19: im Hochpreisszenario 2.973 € im Jahr 2045 bei 10.000 kWh,
+    // also rund 29,7 ct/kWh. Abbildung 6-2 (S. 33) zeigt dieselbe Spanne.
     expect(gasMixForYear(2045, "high").totalCt).toBeGreaterThan(25);
   });
 });

@@ -2,7 +2,7 @@
 // Reine Funktionen. Liefern den künftigen Gas-Endkundenpreis (ct/kWh, brutto) als
 // zeitvariablen Mix aus Erdgas, verpflichtend beigemischtem Biomethan, Netzentgelt,
 // Steuer/Konzession und dem CO₂-Preis auf den fossilen Anteil. Modell + Werte:
-// lib/greengas-config.ts (IW-Report 36/2026, Anhang Kap. 6).
+// lib/greengas-config.ts (IW-Report 36/2026, Anhang Kap. 6, S. 31–32).
 //
 // Anders als der bestehende WP-Gaspfad (fester Preis × jährliche Teuerung) wird der
 // Preis hier Jahr für Jahr NEU gemischt: mit steigender Bio-Treppe verdrängt teures
