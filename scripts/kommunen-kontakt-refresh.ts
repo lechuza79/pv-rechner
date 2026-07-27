@@ -192,6 +192,25 @@ async function setup(): Promise<void> {
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS dach_perzentil integer;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS dach_rang_kreis integer;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS kreis_gemeinden integer;
+    -- Website-Profil (Phase --profil): wer ist ansprechbar, welcher Aufhänger
+    -- passt, und wird die Gemeinde von einer anderen Stelle mitverwaltet.
+    -- verantwortlich_operativ trennt die Person, die die Website wirklich pflegt,
+    -- von der bloß gesetzlichen Vertretung (bei kleinen Gemeinden der
+    -- Bürgermeister — der steht dort, betreut die Seite aber meist nicht).
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS impressum_url text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS verantwortlich_zeile text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS verantwortlich_funktion text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS verantwortlich_operativ boolean NOT NULL DEFAULT false;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS rollen_email text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS personen_email text;
+    -- Fremde Kommunal-Domain im Impressum = BELEG für eine gemeinsame Verwaltung
+    -- (nicht geraten wie bei der Domain-Heuristik, sondern dort benannt).
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS verwaltung_domain text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_solar_url text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_klima_url text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_blatt_url text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_presse_url text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS profil_at timestamptz;
     -- Filter „nach Status" schnell halten (Cockpit-Tabs).
     CREATE INDEX IF NOT EXISTS idx_kk_status ON kommunen_kontakt (outreach_status);
     ALTER TABLE kommunen_kontakt ENABLE ROW LEVEL SECURITY;
@@ -771,6 +790,138 @@ async function stats(): Promise<void> {
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
+// ─── Profil: Verantwortliche, Rollen-Postfach, Themen-Aufhänger ──────────────
+//
+// Zwei Abrufe je Gemeinde (Startseite + Impressum). Gemessen an ~90 Gemeinden in
+// BW/BY am 27.07.2026 — die Reihenfolge der Quellen ist das Ergebnis dieser
+// Messung, nicht eine Vermutung:
+//
+//   Impressum   ist praktisch immer da (gesetzlich) und NIE per JavaScript
+//               versteckt (20/22 abrufbar). Liefert Verantwortliche mit Funktion,
+//               ein Rollen-Postfach und — der wertvollste Nebenfund — die
+//               gemeinsame Verwaltung namentlich (Witzmannsberg → vg-tittling.de).
+//   Navigation  liefert die Themen-Aufhänger. Die Kontaktseite bringt dazu NICHTS
+//               (0 % über alle Begriffe), weil die Wörter im Menü stehen und das
+//               auf jeder Unterseite gleich ist. Deshalb reicht die Startseite.
+//   Mitarbeiter-
+//   verzeichnis liefert die operative Person, ist aber JavaScript-gerendert und
+//               braucht pro Website eigene Klicks — bewusst NICHT hier drin.
+//
+// Wichtig für die Erwartung: Bei kleinen Gemeinden steht die operative Person
+// NIRGENDS öffentlich (von 21 geprüften nannte genau eine jemand anderen als den
+// Bürgermeister). Das Ergebnis ist dort „Rathaus + Bitte um Weiterleitung", und
+// das ist kein Mangel der Erhebung, sondern die Faktenlage.
+
+type ProfilRow = {
+  region_id: string;
+  impressum_url: string | null;
+  verantwortlich_zeile: string | null;
+  verantwortlich_funktion: string | null;
+  verantwortlich_operativ: boolean;
+  rollen_email: string | null;
+  personen_email: string | null;
+  verwaltung_domain: string | null;
+  thema_solar_url: string | null;
+  thema_klima_url: string | null;
+  thema_blatt_url: string | null;
+  thema_presse_url: string | null;
+  profil_at: string;
+};
+
+async function scrapeProfil(opts: FormsOpts): Promise<void> {
+  const {
+    findImpressumUrl,
+    toText,
+    domainOf,
+    extractVerantwortlich,
+    extractAdressen,
+    extractThemen,
+  } = await import("../lib/kommunen-profil.js");
+
+  const supabase = await makeClient();
+  const list = await readCandidates(supabase, { ...opts, refetch: true });
+  // Alle bekannten Gemeinde-Domains: nur damit lässt sich eine fremde Adresse im
+  // Impressum als „andere Kommune verwaltet uns mit" erkennen statt als Agentur.
+  // BUNDESWEIT laden, nicht nur den aktuellen Durchlauf — eine Verwaltungs-
+  // gemeinschaft reicht über Kreis- und Landesgrenzen, und bei einem Lauf mit
+  // --bl oder --limit wäre der Partner sonst nicht im Vergleich und der Beleg
+  // ginge still verloren.
+  const domains = new Set<string>();
+  for (const c of await readCandidates(supabase, { refetch: true, dry: true })) {
+    const d = domainOf(c.website);
+    if (d) domains.add(d);
+  }
+  log(`${list.length.toLocaleString()} Gemeinden, ${domains.size.toLocaleString()} bekannte Domains als Vergleich`);
+
+  const now = new Date().toISOString();
+  const rows: ProfilRow[] = [];
+  let done = 0;
+  let ohneImpressum = 0;
+
+  await pool(list, CONCURRENCY, async (c) => {
+    done++;
+    const start = await fetchText(c.website);
+    if (!start) return;
+    const eigene = domainOf(c.website);
+    const themen = extractThemen(start, c.website);
+    const impUrl = findImpressumUrl(start, c.website);
+
+    let verantwortlich = null as ReturnType<typeof extractVerantwortlich>;
+    let adressen = { rollenEmail: null as string | null, personenEmail: null as string | null, verwaltungDomain: null as string | null };
+    if (impUrl) {
+      const imp = await fetchText(impUrl);
+      if (imp) {
+        const text = toText(imp);
+        verantwortlich = extractVerantwortlich(text);
+        adressen = extractAdressen(text, eigene, (d) => d !== eigene && domains.has(d));
+      } else ohneImpressum++;
+    } else ohneImpressum++;
+
+    const url = (t: string) => themen.find((x) => x.thema === t)?.url ?? null;
+    rows.push({
+      region_id: c.region_id,
+      impressum_url: impUrl,
+      verantwortlich_zeile: verantwortlich?.zeile ?? null,
+      verantwortlich_funktion: verantwortlich?.funktion ?? null,
+      verantwortlich_operativ: verantwortlich?.operativ ?? false,
+      rollen_email: adressen.rollenEmail,
+      personen_email: adressen.personenEmail,
+      verwaltung_domain: adressen.verwaltungDomain,
+      thema_solar_url: url("solar"),
+      thema_klima_url: url("klima"),
+      thema_blatt_url: url("blatt"),
+      thema_presse_url: url("presse"),
+      profil_at: now,
+    });
+    if (done % 25 === 0) log(`  ${done}/${list.length} geprüft`);
+  });
+
+  const zahl = (f: (r: ProfilRow) => unknown) => rows.filter((r) => f(r)).length;
+  const q = (n: number) => (rows.length ? `${((100 * n) / rows.length).toFixed(0)} %` : "–");
+  const operativ = zahl((r) => r.verantwortlich_operativ);
+  log(
+    `Profil für ${rows.length}/${list.length} Gemeinden (${ohneImpressum} ohne erreichbares Impressum)\n` +
+      `  Verantwortliche benannt: ${zahl((r) => r.verantwortlich_zeile)} (${q(zahl((r) => r.verantwortlich_zeile))}), davon operative Stelle: ${operativ}\n` +
+      `  Rollen-Postfach: ${zahl((r) => r.rollen_email)} (${q(zahl((r) => r.rollen_email))}) · Personen-Adresse: ${zahl((r) => r.personen_email)}\n` +
+      `  Gemeinsame Verwaltung belegt: ${zahl((r) => r.verwaltung_domain)}\n` +
+      `  Aufhänger — Solar: ${zahl((r) => r.thema_solar_url)} · Klima: ${zahl((r) => r.thema_klima_url)} · Blatt: ${zahl((r) => r.thema_blatt_url)} · Presse: ${zahl((r) => r.thema_presse_url)}`,
+    "ok",
+  );
+
+  if (opts.dry) {
+    for (const r of rows.slice(0, 15)) {
+      log(`  ${r.region_id} ${r.rollen_email ?? "—"} | ${r.verantwortlich_funktion ?? "—"} | ${r.verwaltung_domain ?? ""}`);
+    }
+    log("--dry: nichts geschrieben", "ok");
+    return;
+  }
+  for (let i = 0; i < rows.length; i += 500) {
+    const { error } = await supabase.from("kommunen_kontakt").upsert(rows.slice(i, i + 500), { onConflict: "region_id" });
+    if (error) throw new Error(`Profil speichern: ${error.message}`);
+  }
+  log(`${rows.length} Profile gespeichert`, "ok");
+}
+
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const dry = argv.includes("--dry");
@@ -782,6 +933,7 @@ async function main(): Promise<void> {
   const doWahl = argv.includes("--wahl");
   const doRang = argv.includes("--rang");
   const doStats = argv.includes("--stats");
+  const doProfil = argv.includes("--profil");
 
   const blArg = argv.find((a) => a.startsWith("--bl="));
   const limitArg = argv.find((a) => a.startsWith("--limit="));
@@ -792,13 +944,14 @@ async function main(): Promise<void> {
     dry,
   };
 
-  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doRang && !doStats) {
+  if (!doSetup && !doWikidata && !doUpload && !doForms && !doProbe && !doWahl && !doRang && !doStats && !doProfil) {
     log(
-      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --rang --stats [--dry]\n" +
+      "Nichts zu tun. Flags: --setup --wikidata --upload --forms --probe --wahl --rang --profil --stats [--dry]\n" +
         "  --forms [--bl=10] [--limit=N] [--refetch]  Kontaktlink aus der Startseite\n" +
         "  --probe [--bl=10] [--limit=N]              Kontakt-Pfade direkt anklopfen (Lücken)\n" +
         "  --wahl [--dry]                             Grünen/Linke/SPD-Anteil je Gemeinde (BTW 2025)\n" +
-        "  --rang [--dry]                             Dach-pro-Kopf Perzentil + Landkreis-Rang",
+        "  --rang [--dry]                             Dach-pro-Kopf Perzentil + Landkreis-Rang\n" +
+        "  --profil [--bl=09] [--limit=N] [--dry]     Impressum + Themen: Verantwortliche, Rollen-Postfach, Aufhänger",
       "err",
     );
     process.exit(1);
@@ -811,6 +964,7 @@ async function main(): Promise<void> {
   if (doProbe) await probeForms(formsOpts);
   if (doWahl) await uploadWahl(dry);
   if (doRang) await uploadRang(dry);
+  if (doProfil) await scrapeProfil(formsOpts);
   if (doStats) await stats();
   log("Fertig", "ok");
 }

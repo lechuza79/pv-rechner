@@ -202,3 +202,47 @@ export function daysSinceDownload(s: SitemapStatus, now = Date.now()): number | 
   const t = new Date(s.lastDownloaded).getTime();
   return Number.isFinite(t) ? Math.floor((now - t) / 86_400_000) : null;
 }
+
+/**
+ * Muss die Sitemap neu eingereicht werden?
+ *
+ * Das ALTER allein ist das falsche Kriterium, und das hat sich am 27.07.2026
+ * sofort gerächt: Google hatte die Sitemap um 14:27 geholt (also „frisch"),
+ * am Abend ging Welle 0b mit ~400 Landkreisseiten live — 85 URLs bei Google
+ * gegen 486 bei uns. Die Alterssperre hätte die Neueinreichung monatelang
+ * blockiert, obwohl vier Fünftel der Seiten unbekannt waren.
+ *
+ * Deshalb zwei Gründe, jeder für sich ausreichend:
+ *   - Google hat länger nicht geschaut (`schwelleTage`), ODER
+ *   - unsere Sitemap enthält eine andere Zahl URLs, als Google gezählt hat.
+ *
+ * Der Zählvergleich ist grob (gleiche Zahl bei getauschten URLs bliebe
+ * unentdeckt), aber er ist selbstwartend und fängt genau den Fall ab, der hier
+ * wirklich vorkommt: eine neue Seitenfamilie geht live.
+ */
+export function brauchtNeueEinreichung(
+  s: SitemapStatus,
+  eigeneUrlAnzahl: number | null,
+  schwelleTage: number,
+  now = Date.now(),
+): { noetig: boolean; grund: string | null } {
+  const tage = daysSinceDownload(s, now);
+  if (tage === null) return { noetig: true, grund: "nie abgerufen" };
+  if (tage >= schwelleTage) return { noetig: true, grund: `seit ${tage} Tagen nicht abgerufen` };
+  if (eigeneUrlAnzahl !== null && eigeneUrlAnzahl !== s.submittedUrls) {
+    return { noetig: true, grund: `Google kennt ${s.submittedUrls} URLs, die Sitemap hat ${eigeneUrlAnzahl}` };
+  }
+  return { noetig: false, grund: null };
+}
+
+/** URLs in unserer eigenen Sitemap zählen. Null, wenn sie nicht abrufbar ist —
+ *  dann entscheidet allein das Alter. */
+export async function countOwnSitemapUrls(url = "https://solar-check.io/sitemap.xml"): Promise<number | null> {
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(20_000), cache: "no-store" });
+    if (!res.ok) return null;
+    return ((await res.text()).match(/<loc>/g) ?? []).length || null;
+  } catch {
+    return null;
+  }
+}
