@@ -7,13 +7,15 @@ import type { Metadata } from "next";
 
 export type AtlasLevel = "de" | "bundesland" | "landkreis" | "gemeinde";
 
-// Welle 0a: Deutschland + Bundesländer. Nächste Stufen:
-//   0b → landkreis: true
-//   1  → gemeinde: true (dann greift die Anlagen-Schwelle unten)
+// Welle 0b (frei seit 27.07.2026): Deutschland + Bundesländer + Landkreise.
+// Freigabekriterien aus dem Wellen-Monitor am 27.07.2026 erfüllt: Self-Check
+// 17/17 grün, alle 17 Seiten der Welle 0a mit Impressions, keine Regression.
+// Nächste Stufe:
+//   1 → gemeinde: true (dann greift die Anlagen-Schwelle unten)
 const RELEASED: Record<AtlasLevel, boolean> = {
   de: true,
   bundesland: true,
-  landkreis: false,
+  landkreis: true,
   gemeinde: false,
 };
 
