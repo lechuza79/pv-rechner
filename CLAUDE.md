@@ -247,13 +247,13 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 **WP 10: Wärmepumpen-Rechner ✅ (done)**
 - [x] Eigener Flow `/waermepumpe` mit Neubau/Bestand-Umschalter (5 Steps)
 - [x] Kern-Berechnung in `lib/heatpump.ts` (Pure Functions): Heizwärmebedarf, JAZ, Investition, BEG-Förderung, 20-J-TCO
-- [x] Config in `lib/heatpump-config.ts` (zentralisiert, Admin-fähig strukturiert). `validFrom` + `reviewBy`; jährlicher Wächter (scheduled-task, Januar) + Runbook `scripts/waermepumpe-verify.md` prüft die preis-/förderabhängigen Werte (BEG, BWP-Invest, §14a-Tarif, Gas) gegen offizielle Quellen; mid-year-Förderänderungen fängt der `foerder-news-waechter` ab
+- [x] Config in `lib/heatpump-config.ts` (zentralisiert, Admin-fähig strukturiert). `validFrom` + `reviewBy`; jährlicher Wächter (scheduled-task, Januar) + Runbook `scripts/waermepumpe-verify.md` prüft die preis-/förderabhängigen Werte (BEG, Investition, §14a-Tarif, Gas) gegen offizielle Quellen; mid-year-Förderänderungen fängt der `foerder-news-waechter` ab
 - [x] Heizwärmebedarf: Wohnfläche × spez. kWh/m²·a (dena-Gebäudereport, DIN V 18599) × **Haustyp-Faktor** (geteilte Wände, `HAUSTYP_WP` in constants) + 650 kWh/Person Warmwasser
 - [x] **Heizlast (Anlagengröße) getrennt vom Bedarf**: `calcHeatLoad` = Wohnfläche × spez. W/m² (`specHeatLoadBestand/Neubau`, Feldwerte) × Haustyp × `auslegungsfaktor` (0,85, reale monoenergetische Auslegung, min 4 kW). Ersetzt die alte `qGes/2000h`-Formel, die das Warmwasser mitzählte. **Editierbar** im Ergebnis (`override.heizlast`) — wer eine DIN-EN-12831-Berechnung hat, trägt sie ein
 - [x] **Haustyp-Abfrage** im Flow-Step „Größe & Typ" (freistehend / Doppelhaus / Reihenend / Reihenmitte)
 - [x] JAZ-Modell linear aus Fraunhofer ISE „WPsmart im Bestand" (LWWP/SWWP × Vorlauftemp)
 - [x] **Split-Heizen bewusst NICHT im WP-Rechner** (mehrfach durchdacht): Eine Split-Klima gegen Gas zu vergleichen passt nicht in den WP-Rechner (dort ist die Prämisse „ich hole eine Wärmepumpe"), und eine Split *zusätzlich* zur wasserführenden WP ergibt keinen Sinn (die WP heizt ohnehin alles inkl. Warmwasser). Der WP-Rechner kennt daher NUR Luft/Wasser + Sole/Wasser. Die ehrliche „Split heizt Teil der Übergangszeit günstiger als Gas"-Rechnung lebt im **Klima-Rechner** („Auch heizen?", `calcAirconHeating` in `lib/aircon.ts`, `device.scop` + `heatStandards` × `heatTransitionShare` in `aircon-config`) — dort hat man ein Kühlgerät, das nebenbei heizt. Der Heizwärmebedarf je Gebäudestandard ist dabei dieselbe Tabelle wie hier (`INSULATION_BESTAND`/`INSULATION_NEUBAU`) — beide Rechner teilen sie, damit sie nicht auseinanderdriften. Split-Heizwerte auf /datenstand (Klima-Sektion), Quartals-Geräte-Wächter prüft den SCOP.
-- [x] Investition nach Heizlast aus BWP Preisübersicht 2024. **Heizkörpertausch (+6.000 €) ist jetzt eine Maßnahme/Wahl** (bei alten Heizkörpern), nicht mehr automatisch aufgeschlagen — aktiv → Kosten UND bessere JAZ (55→45°C). Früher: Kosten ohne JAZ-Nutzen (Inkonsistenz behoben)
+- [x] Investition nach Heizlast, kalibriert an 160 echten Angeboten (Verbraucherzentrale RLP; Median 34.979 € bei 10 kW). **Heizkörpertausch (+4.000 €, ≈ 6 kritische Heizkörper à 679 €) ist eine Maßnahme/Wahl** (bei alten Heizkörpern), nicht mehr automatisch aufgeschlagen — aktiv → Kosten UND bessere JAZ (55→45°C). Früher: Kosten ohne JAZ-Nutzen (Inkonsistenz behoben)
 - [x] **Realistische Wege** (Szenario-Vergleich, dauerhaft bei Bestand): Ist / Heizkörper fit / Teilsanierung / Vollsanierung — jeder Weg mit €-Ergebnis + Amortisation + TCO-Aufschlüsselung im Tooltip. Sanierungskosten (Dämmung) NICHT in der WP-Rechnung (eigener Gebäude-Nutzen), Heizkörpertausch schon
 - [x] **Transparente BEG-Förderung** oben im Ergebnis: Grundförderung 30 % fest + Klima-Schalter (Eigennutz +16 %) + Einkommens-Auswahl (gestaffelt 40/30/10 % nach Haushaltseinkommen, +Kind-Familienzuschlag), Förderdeckel (28.000 €) sichtbar
 - [x] **Werte gegen Fachquellen geprüft (2026)**: spez. Heizlast korrigiert (Unterdimensionierungs-Bias behoben), WP-Tarif 0,24 €/kWh (Feld-Ø), Strom-CO₂ in Config (`gridCo2PerKwh`, konservativ statisch)
@@ -277,17 +277,23 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] Methodik-Seite zeigt aktuelle Preise + "Stand: Monat/Jahr"
 - [x] Admin-UI `/admin/prices` (Scrape-Trigger, manuelles Override, Historie)
 - [x] Preise aktualisiert auf Q1/2026 Marktpreise
-- [x] **WP-Grundpreis (Luft/Wasser) mitgescrapt** (Paket C): der monatliche Cron liest
-  zusätzlich die taptaphome-WP-Kostenübersicht (Gerät + Einbau je Typ) und leitet die
-  LWWP-Basis ab (`lib/heatpump-prices.ts`: typischer Gesamtpreis − fixe €/kW-Steigung
-  bei Referenz-Heizlast → Basis ~9.500 € statt der alten 18.000-Pauschale, die kleine
-  Anlagen ~8.500 € zu teuer rechnete). Live-Wert in `market_prices.wp_lwwp_base`
-  (Migration: `/api/prices/setup`), gelesen via `useHeatpumpPrices()` (WP-Rechner) +
-  `/datenstand`, Fallback = Config. Selbstheilung 1:1 wie bei PV/Speicher (Plausi-Grenzen,
-  „letzten Wert halten", Health-String kippt, Report-Zeile, Admin-Carry-forward); ein
-  WP-Scrape-Fehler blockiert **nie** die PV-Preise. NUR Luft/Wasser — Sole/Wasser bleibt
-  config-basiert (Bohrkosten sind fix, passen nicht ins Basis+kW-Schema). Grundpreis
-  damit aus dem jährlichen WP-Wächter herausgelöst (`scripts/waermepumpe-verify.md`).
+- [x] ~~WP-Grundpreis (Luft/Wasser) mitgescrapt (Paket C)~~ **am 27.07.2026 wieder
+  abgeschaltet — bewusste Rolle rückwärts.** Der Cron leitete die Luft/Wasser-Basis aus
+  einer Portal-Kostenübersicht ab (Einbau dort mit 3.000–7.500 € beziffert) und kam auf
+  ~9.500 € Basis. Für ein kleines, gut saniertes Haus (4,6 kW) rechnete der WP-Rechner
+  damit **15.020 €** — **weniger als das günstigste von 160 echten Angeboten**, die die
+  Verbraucherzentrale Rheinland-Pfalz ausgewertet hat (Minimum 20.228 €, Median 34.979 €
+  bei Median-Leistung 10 kW). Aufgefallen ist es an einem Nutzerkommentar („kein Angebot
+  unter 25.000 €"), nicht am Wächter. **Lehre:** Eine Portal-Kostenseite ist keine
+  Preisquelle für Gewerke — sie zählt den Einbau strukturell zu knapp, und ein
+  Korrekturfaktor darauf wäre geraten (dieselbe Linie wie bei den Geräte-Effizienzen:
+  „Wert wirkt zu niedrig" ist kein zulässiger Handfaktor). Investition liegt jetzt
+  vollständig in `lib/heatpump-config.ts`, kalibriert an der VZ-Angebotsauswertung
+  (Volltext in `docs/quellen/`), Regel: Basis = Summe der leistungsunabhängigen
+  Kostenkategorien, Steigung so, dass der Median-Fall den Median-Preis trifft. Gepflegt
+  vom jährlichen WP-Wächter (`scripts/waermepumpe-verify.md`), festgenagelt von den
+  Marktankern in `lib/__tests__/heatpump.test.ts`. PV-/Speicher-/Strompreis-Scraping
+  läuft unverändert weiter; die DB-Spalten `wp_lwwp_*` bleiben als toter Altbestand liegen.
 
 **WP 9: Energiedaten-Datalake (in Arbeit)**
 - [x] Datenquellen-Recherche: Energy-Charts, Eurostat, SMARD, ENTSO-E, MaStR
@@ -1076,7 +1082,7 @@ Was sich automatisch ändern sollte (Jahreszahlen, "aktuelle" Werte, "heute"-bez
 **Wann Hardcoden OK ist:**
 - **Dokument-Versionen** ("Stand: März 2026" in Datenschutz/Impressum) — soll mit Inhalt mitwachsen, NICHT autoupdaten.
 - **Config-Snapshots als Fallback** (`lib/feedin-config.ts`, `lib/prices-config.ts`, `lib/heatpump-config.ts`, `lib/co2-config.ts`) — bewusste Stichtags-Datenstände, DB hat die Live-Werte. `validFrom` dort ist eine echte Datenherkunft, kein Renderdatum. `lib/co2-config.ts` verankert die CO2-Preise zusätzlich an **absolute** Kalenderjahre (nicht an Projektions-Offsets), damit die Jahr→Preis-Zuordnung beim Jahreswechsel nicht still verrutscht; `reviewBy` + Runbook `scripts/co2-preis-verify.md` erzwingen die jährliche Prüfung gegen offizielle Prognosen.
-- **Historische Fakten** ("Kernenergie inländisch bis April 2023", "BWP Preisübersicht 2024") — passieren wirklich nur einmal.
+- **Historische Fakten** ("Kernenergie inländisch bis April 2023", "Angebotsauswertung 2025") — passieren wirklich nur einmal.
 - **Test-Fixtures** — deterministische Eingaben sind das Ziel.
 
 **Faustregel:** Bevor du irgendwo eine Jahreszahl, ein Datum oder einen "aktuell"-Wert reinschreibst, frag dich: *Was passiert damit am 1. Januar nächstes Jahr?* Wenn die Antwort "ich muss dran denken, das anzupassen" ist → falsch. Wenn die Antwort "soll genau so bleiben, weil es ein Stichtag ist" → richtig.

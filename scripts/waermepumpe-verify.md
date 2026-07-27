@@ -6,9 +6,10 @@ Investition, Förderung und die 20-Jahres-TCO im Wärmepumpen-Rechner — ein
 veralteter Fördersatz oder Investitionspreis verzerrt das Ergebnis spürbar.
 
 **Warum jährlich im Januar:** Die volatilen Größen hängen an Politik (BEG-
-Förderung, an den Bundeshaushalt gekoppelt) und an jährlichen Marktberichten
-(BWP Preisübersicht, BDEW-Strompreise). Beide aktualisieren sich typischerweise
-zum Jahreswechsel. Stichtag steht in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
+Förderung, an den Bundeshaushalt gekoppelt) und an jährlichen Marktauswertungen
+(Verbraucherzentrale-Angebotsauswertung, BDEW-Strompreise). Beide aktualisieren
+sich typischerweise zum Jahreswechsel. Stichtag steht in
+`DEFAULT_HEATPUMP_CONFIG.reviewBy`.
 
 **Mid-Year-Sicherheitsnetz:** Förderstopps/-änderungen passieren auch unterjährig
 (Topf leer, Haushaltssperre). Der wöchentliche `foerder-news-waechter` hat
@@ -19,14 +20,24 @@ zum Jahreswechsel. Stichtag steht in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
 **Prüfen (preis-/politikabhängig):**
 - `begGrundfoerderung` / `begKlimaBonus` / `begEffizienzBonus` /
   `begEinkommensBonus` / `begMaxCap` / `begMaxRate` — BAFA/KfW BEG
-- `investLwwpPerKw` / `investSwwpBase` / `investSwwpPerKw` /
-  `heizkoerperTauschKosten` — BWP Preisübersicht (jeweils aktuellstes Jahr).
-  **`investLwwpBase` NICHT mehr manuell prüfen** — die Luft/Wasser-Basis wird
-  monatlich automatisch aus der taptaphome-Kostenübersicht gescrapt
-  (`/api/prices/scrape`, Ableitung in `lib/heatpump-prices.ts`, Live-Wert in
-  `market_prices.wp_lwwp_base`, Fallback = Config). Der Monats-Preis-Report führt
-  sie als eigene Zeile; eine Scrape-Degradation kippt den HEALTH-Status. Config-
-  Wert dient nur als Fallback. Sole/Wasser bleibt manuell (Bohrkosten sind fix).
+- `investLwwpBase` / `investLwwpPerKw` / `investSwwpBase` / `investSwwpPerKw` /
+  `heizkoerperTauschKosten` — **Leitquelle: die jährliche Auswertung echter
+  Wärmepumpen-Angebote der Verbraucherzentrale Rheinland-Pfalz** (2025er Ausgabe
+  im Repo: `docs/quellen/VZ-RLP_Auswertung-160-Waermepumpen-Angebote_2025-06.pdf`,
+  Nachfolge-Auswertung als Pressemitteilung Juli 2026). Sie ist die einzige uns
+  bekannte Quelle mit echten Angebotspreisen inkl. Leistungsverteilung und
+  Kostenkategorien. Abgleich in dieser Reihenfolge:
+    1. **Median-Gesamtkosten** bei **Median-Leistung** (2025: 34.979 € bei 10 kW)
+       → muss `investLwwpBase + investLwwpPerKw × 10` treffen (±10 %).
+    2. **Summe der leistungsunabhängigen Kategorien** (Montage/Lohn, Elektro,
+       Fundament, hydraulischer Abgleich, Warmwasser, Puffer; 2025: 16.652 €)
+       → das ist `investLwwpBase`.
+    3. **Heizkörpertausch**: Ø-Preis je Heizkörper × ~6 kritische Heizkörper.
+  **Kein Scraping mehr** (2026-07 abgeschaltet): Die frühere Ableitung aus einer
+  Portal-Kostenübersicht bezifferte den Einbau mit 3.000–7.500 € und ergab für ein
+  kleines Haus 15.020 € — weniger als das **günstigste** von 160 echten Angeboten.
+  Ein Korrekturfaktor darauf wäre geraten gewesen; deshalb Config + dieser Wächter.
+  Angebotsportale/Herstellerseiten taugen als Gegenprobe, nie als Leitquelle.
 - `wpTarif` — Wärmepumpen-Stromtarif (§ 14a EnWG, BDEW)
 - **Gas-/Öl-Preis + CO2-Faktor:** liegen an EINER Stelle — `FUEL_PRICE` in
   `lib/constants.ts` (Single Source of Truth). `heatpump-config`
@@ -57,8 +68,12 @@ Dem Assistenten sagen: **„Lauf die Wärmepumpen-Prüfung."**
 > Vorgehen (WebSearch + WebFetch):
 > 1. BEG Heizungsförderung: aktuelle Sätze + Förderhöchstgrenze + ob das Programm
 >    Anträge annimmt. Primärquelle BAFA/KfW (Bundesförderung effiziente Gebäude).
-> 2. Investitionskosten Wärmepumpe: aktuellste BWP-Preisübersicht (Bundesverband
->    Wärmepumpe) bzw. Verbraucherzentrale.
+> 2. Investitionskosten Wärmepumpe: neueste Angebotsauswertung der
+>    Verbraucherzentrale (Suchbegriff „Verbraucherzentrale Auswertung Angebote
+>    Luft-Wasser-Wärmepumpe"). Gebraucht werden Median UND Mittelwert der
+>    Gesamtkosten, die Median-Leistung in kW und die Kostenkategorien-Tabelle.
+>    Melde Abweichungen nur mit diesen vier Angaben — eine Gesamtsumme ohne
+>    zugehörige Leistung ist wertlos, weil unser Modell an kW hängt.
 > 3. WP-Stromtarif (§ 14a EnWG) + Gaspreis Haushalt: BDEW, Verivox/Check24 als
 >    Sekundärquelle.
 > 4. Vergleiche mit den hinterlegten Werten.
@@ -67,9 +82,9 @@ Dem Assistenten sagen: **„Lauf die Wärmepumpen-Prüfung."**
 > ```
 > STATUS: ok | abweichung
 > BEG: <Sätze + Cap> (hinterlegt: <…>) — Programm aktiv? ja/nein
-> INVESTITION: <BWP-Werte> (hinterlegt: <…>)
+> INVESTITION: <Median/Mittelwert + Median-kW + Kategorien-Summe> (hinterlegt: <…>)
 > WP-TARIF / GAS: <Werte> (hinterlegt: <…>)
-> QUELLEN: <URLs, BAFA/KfW/BWP/BDEW zuerst>
+> QUELLEN: <URLs, BAFA/KfW/Verbraucherzentrale/BDEW zuerst>
 > ```
 
 ## Nach der Prüfung
