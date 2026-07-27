@@ -167,3 +167,38 @@ export async function listSitemaps(): Promise<SitemapStatus[]> {
     submittedUrls: (s.contents ?? []).reduce((a, c) => a + Number(c.submitted ?? 0), 0),
   }));
 }
+
+/**
+ * Sitemap erneut einreichen.
+ *
+ * Die Sitemap wird bei jedem Aufruf frisch ERZEUGT (app/sitemap.ts), aber nur
+ * EINMAL eingereicht — danach entscheidet Google allein, wann es sie wieder
+ * abholt. Bei einer kleinen, jungen Domain können das Wochen sein: am
+ * 27.07.2026 lag der letzte Abruf fünf Tage zurück, meldete 83 statt 85 URLs,
+ * und die zwei Tage zuvor umgezogenen Ratgeber-Seiten galten Google als
+ * unbekannt. Eine erneute Einreichung ist der einzige Weg, das aktiv
+ * anzustoßen (der frühere Ping-Endpunkt wurde von Google abgeschaltet).
+ */
+export async function submitSitemap(feedPath = "https://solar-check.io/sitemap.xml"): Promise<void> {
+  const creds = getServiceAccountCredentials();
+  if (!creds) throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON nicht konfiguriert");
+
+  const token = await getGoogleAccessToken(creds);
+  const siteUrl = await resolveGscSiteUrl(token);
+  const res = await fetch(
+    `${GSC_API_BASE}/sites/${encodeURIComponent(siteUrl)}/sitemaps/${encodeURIComponent(feedPath)}`,
+    { method: "PUT", headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(20_000) },
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Sitemap einreichen fehlgeschlagen: ${res.status} ${text.slice(0, 200)}`);
+  }
+}
+
+/** Tage seit dem letzten Abruf durch Google — der Frühindikator dafür, dass
+ *  neue Seiten gar nicht erst entdeckt werden. Null, wenn nie abgerufen. */
+export function daysSinceDownload(s: SitemapStatus, now = Date.now()): number | null {
+  if (!s.lastDownloaded) return null;
+  const t = new Date(s.lastDownloaded).getTime();
+  return Number.isFinite(t) ? Math.floor((now - t) / 86_400_000) : null;
+}

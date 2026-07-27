@@ -4,6 +4,7 @@ import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
 import { BUNDESLAENDER } from "../lib/mastr-regions";
+import { RATGEBER } from "../lib/ratgeber";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -54,6 +55,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  // Ratgeber aus der Registry statt ein zweites Mal getippt — ein neuer Ratgeber
+  // steht damit automatisch in der Sitemap, und das Änderungsdatum kommt aus
+  // derselben Zeile wie Titel und Teaser (lib/ratgeber.ts). Bis 27.07.2026
+  // standen die vier Pfade hier von Hand und trugen KEIN lastmod; Google kannte
+  // die (am 25.07. umgezogenen) URLs deshalb nicht.
+  const ratgeberPages: MetadataRoute.Sitemap = RATGEBER.map((r) => ({
+    url: `${BASE_URL}${r.slug}`,
+    lastModified: toDate(r.updated),
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+  const ratgeberDaten = RATGEBER.map((r) => toDate(r.updated)).filter((d): d is Date => !!d);
+  const neuesterRatgeber = ratgeberDaten.length
+    ? new Date(Math.max(...ratgeberDaten.map((d) => d.getTime())))
+    : undefined;
+
   // Solar-Atlas: nur die freigeschalteten Wellen (lib/atlas-index). Aktuell 0a =
   // Deutschland + Bundesländer; Landkreise/Gemeinden folgen gestaffelt.
   const atlasPages: MetadataRoute.Sitemap = [];
@@ -80,11 +97,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/balkonkraftwerk-rechner`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-zubau-deutschland`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE_URL}/ratgeber`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE_URL}/ratgeber/lohnt-sich-pv-mit-speicher`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/ratgeber/waermepumpe-foerderung-2026`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/ratgeber/gasheizung-oder-waermepumpe`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/ratgeber`, lastModified: neuesterRatgeber, changeFrequency: "monthly", priority: 0.7 },
+    ...ratgeberPages,
     { url: `${BASE_URL}/pv-simulation`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/strommix-deutschland`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/atomstrom-import`, lastModified: now, changeFrequency: "daily", priority: 0.7 },

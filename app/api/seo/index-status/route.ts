@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { gscConfigured, querySearchAnalyticsByDate } from "../../../../lib/gsc-search-analytics";
-import { inspectUrls, listSitemaps } from "../../../../lib/gsc-index-status";
+import { daysSinceDownload, inspectUrls, listSitemaps, submitSitemap } from "../../../../lib/gsc-index-status";
 
 // Indexierungsstatus statt nur Impressionen — die Lücke, an der die Auswertung
 // der Atlas-Freischaltung vorbeigelaufen ist. Drei Antworten in einem Aufruf:
@@ -59,6 +59,12 @@ export async function GET(req: Request) {
   const end = new Date(Date.now() - 3 * 86400_000); // GSC-Verzug 2–3 Tage
   const start = new Date(end.getTime() - days * 86400_000);
 
+  // Veraltete Sitemap ist der Frühindikator dafür, dass neue Seiten gar nicht
+  // erst entdeckt werden — sie wird nur EINMAL eingereicht, danach holt Google
+  // sie nach eigenem Rhythmus. Ab `resubmitAfterDays` neu einreichen.
+  const resubmit = url.searchParams.get("resubmit") === "1";
+  const schwelleTage = Math.max(parseInt(url.searchParams.get("resubmitAfterDays") ?? "3", 10) || 3, 1);
+
   const [sitemaps, inspected, byDate] = await Promise.all([
     listSitemaps().catch((e: unknown) => ({ error: e instanceof Error ? e.message : "Fehler" })),
     urls.length ? inspectUrls(urls) : Promise.resolve([]),
@@ -71,10 +77,33 @@ export async function GET(req: Request) {
       : Promise.resolve([]),
   ]);
 
+  // Alter je Sitemap ausweisen und bei Bedarf neu einreichen.
+  const sitemapListe = Array.isArray(sitemaps) ? sitemaps : [];
+  const veraltet = sitemapListe.filter((s) => {
+    const tage = daysSinceDownload(s);
+    return tage === null || tage >= schwelleTage;
+  });
+  let erneutEingereicht: { path: string; ok: boolean; error?: string }[] | undefined;
+  if (resubmit && veraltet.length) {
+    erneutEingereicht = [];
+    for (const s of veraltet) {
+      try {
+        await submitSitemap(s.path);
+        erneutEingereicht.push({ path: s.path, ok: true });
+      } catch (e) {
+        erneutEingereicht.push({ path: s.path, ok: false, error: e instanceof Error ? e.message : "Fehler" });
+      }
+    }
+  }
+
   return NextResponse.json({
     configured: true,
     range: { start: ymd(start), end: ymd(end), days },
-    sitemaps,
+    sitemaps: sitemapListe.length
+      ? sitemapListe.map((s) => ({ ...s, tageSeitAbruf: daysSinceDownload(s) }))
+      : sitemaps,
+    sitemapVeraltet: veraltet.map((s) => s.path),
+    ...(erneutEingereicht ? { erneutEingereicht } : {}),
     urls: inspected,
     // Sichtbar machen, was weggelassen wurde — stilles Abschneiden liest sich
     // wie „alles geprüft", obwohl es das nicht war.
