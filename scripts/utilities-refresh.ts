@@ -130,6 +130,82 @@ async function setup(): Promise<void> {
   log("Schema-Cache neu geladen", "ok");
 }
 
+// ─── Beispieldaten ────────────────────────────────────────────────────────────
+
+/** Erkennungszeichen der Beispieldatensätze — nur so sind sie wieder restlos
+ *  löschbar, ohne echte Erfassung anzufassen. */
+const DEMO_MARKE = "DEMO";
+
+/**
+ * Beispieldatensätze anlegen, damit das Cockpit von der ersten Minute an etwas
+ * zeigt (leere Rangliste = nichts zu sehen, und unter fünf Versorgern gibt es
+ * bewusst gar keine Platzierung).
+ *
+ * WICHTIG — was hier echt ist und was nicht:
+ *   ECHT sind die Zahlen. Sie kommen aus den amtlichen Anlagendaten der
+ *   jeweiligen Gemeinde, genau wie im späteren Betrieb.
+ *   PLATZHALTER ist der Versorger. „Stadtwerke <Ort>" ist aus dem Gemeindenamen
+ *   gebildet, nicht recherchiert — in Köln heißt der Versorger RheinEnergie, in
+ *   Nürnberg N-ERGIE. Deshalb tragen alle Einträge die Notiz „DEMO", keine
+ *   Website, und die Sitz-Zuordnung die Herkunft „vermutet".
+ *
+ * Vor der echten Erfassung mit --clear-demo entfernen.
+ */
+async function seedDemo(): Promise<void> {
+  const supabase = await makeClient();
+
+  const { data: regions, error } = await supabase
+    .from("mastr_regions")
+    .select("region_id, name, population")
+    .eq("level", "gemeinde")
+    .gt("population", 0)
+    .order("population", { ascending: false })
+    .limit(12);
+  if (error) throw new Error(error.message);
+
+  for (const r of regions ?? []) {
+    const name = `Stadtwerke ${r.name}`;
+    const { data: vorhanden } = await supabase.from("utilities").select("id").eq("name", name).maybeSingle();
+    if (vorhanden) {
+      log(`${name} gibt es schon — übersprungen`);
+      continue;
+    }
+    const { data: neu, error: insErr } = await supabase
+      .from("utilities")
+      .insert({
+        name,
+        typ: "stadtwerk",
+        sitz_gemeinde_id: r.region_id,
+        status: "offen",
+        notiz: `${DEMO_MARKE} – Beispieldatensatz. Name ist ein Platzhalter, die Zahlen sind echt. Entfernen mit --clear-demo.`,
+      })
+      .select("id")
+      .single();
+    if (insErr) throw new Error(insErr.message);
+
+    const { error: linkErr } = await supabase.from("utility_communes").upsert(
+      { utility_id: neu.id, commune_id: r.region_id, rolle: "sitz", zuordnung_quelle: "vermutet" },
+      { onConflict: "utility_id,commune_id" },
+    );
+    if (linkErr) throw new Error(linkErr.message);
+    log(`${name} angelegt (${(r.population as number).toLocaleString("de-DE")} Ew.)`, "ok");
+  }
+  log("Beispieldaten angelegt — Namen sind Platzhalter, Zahlen echt", "ok");
+}
+
+/** Alle Beispieldatensätze wieder entfernen (nur die mit der DEMO-Notiz). */
+async function clearDemo(): Promise<void> {
+  const supabase = await makeClient();
+  const { data, error } = await supabase
+    .from("utilities")
+    .delete()
+    .like("notiz", `${DEMO_MARKE}%`)
+    .select("id");
+  if (error) throw new Error(error.message);
+  // Zuordnungen hängen per ON DELETE CASCADE mit dran.
+  log(`${data?.length ?? 0} Beispieldatensätze entfernt`, "ok");
+}
+
 // ─── Bestand ──────────────────────────────────────────────────────────────────
 
 async function stats(): Promise<void> {
@@ -175,12 +251,23 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const doSetup = argv.includes("--setup");
   const doStats = argv.includes("--stats");
+  const doSeed = argv.includes("--seed-demo");
+  const doClear = argv.includes("--clear-demo");
 
-  if (!doSetup && !doStats) {
-    log("Nichts zu tun. Flags: --setup --stats", "err");
+  if (!doSetup && !doStats && !doSeed && !doClear) {
+    log(
+      "Nichts zu tun. Flags:\n" +
+        "  --setup       Tabellen anlegen (idempotent)\n" +
+        "  --stats       Bestand + Deckung melden\n" +
+        "  --seed-demo   12 Beispieldatensätze (Namen Platzhalter, Zahlen echt)\n" +
+        "  --clear-demo  Beispieldatensätze wieder entfernen",
+      "err",
+    );
     process.exit(1);
   }
   if (doSetup) await setup();
+  if (doClear) await clearDemo();
+  if (doSeed) await seedDemo();
   if (doStats) await stats();
   log("Fertig", "ok");
 }

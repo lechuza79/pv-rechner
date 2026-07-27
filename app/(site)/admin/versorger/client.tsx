@@ -606,7 +606,9 @@ function Erfassung({ onAnlegen }: { onAnlegen: (regionId: string, name: string) 
                   <strong>{r.name}</strong>{" "}
                   <span style={{ color: v("--color-text-muted"), fontSize: 11 }}>{r.bundesland}</span>
                 </td>
-                <td style={{ ...tdStyle, fontFamily: v("--font-mono") }}>{r.einwohner.toLocaleString("de-DE")}</td>
+                <td style={{ ...tdStyle, fontFamily: v("--font-mono") }}>
+                  {r.einwohner > 0 ? r.einwohner.toLocaleString("de-DE") : "—"}
+                </td>
                 <td style={tdStyle}>
                   {r.website ? (
                     <a href={r.website} target="_blank" rel="noopener noreferrer" style={linkStyle}>

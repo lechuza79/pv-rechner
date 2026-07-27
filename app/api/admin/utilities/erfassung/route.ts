@@ -26,10 +26,14 @@ export async function GET(req: NextRequest) {
   const limit = Math.min(MAX_LIMIT, Math.max(1, parseInt(sp.get("limit") ?? "", 10) || DEFAULT_LIMIT));
   const nurOffene = sp.get("offen") === "1";
 
+  // Ohne den Einwohner-Filter stehen die ~500 Gemeinden OHNE Einwohnerzahl ganz
+  // oben (leere Werte sortieren in Postgres absteigend zuerst) — die Liste der
+  // „größten Gemeinden" wäre dann eine Zufallsauswahl der kleinsten.
   const { data: regions, error } = await serviceDb
     .from("mastr_regions")
     .select("region_id, name, population")
     .eq("level", "gemeinde")
+    .gt("population", 0)
     .order("population", { ascending: false })
     .limit(limit);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -65,7 +69,7 @@ export async function GET(req: NextRequest) {
     return {
       regionId: id,
       name: r.name as string,
-      einwohner: r.population as number,
+      einwohner: (r.population as number) ?? 0,
       bundesland: bundeslandByAgs(id.slice(0, 2))?.short ?? "",
       website: (k?.website as string) ?? null,
       kontaktUrl: (k?.kontakt_url as string) ?? null,
