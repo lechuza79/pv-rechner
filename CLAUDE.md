@@ -734,6 +734,34 @@ Das verhindert "Cannot find module './XXX.js'" Fehler die auftreten wenn Dev-Ser
 
 **`vercel.json` verträgt keine Kommentare.** Vercel validiert die Datei strikt gegen ein Schema und bricht den Deploy bei jedem unbekannten Top-Level-Schlüssel ab — auch bei einem reinen `"//kommentar"`. Das scheitert **vor** dem Build, also ohne Build-Log und ohne sichtbaren Fehlergrund (State `ERROR`, leere Logs). Begründungen gehören daher in den Code, den die Einstellung betrifft (hier: `lib/db-timeout.ts`), nicht in die Konfigurationsdatei.
 
+### Wächter-Gate — BLOCKER für alle Wächter
+
+**`scripts/waechter-gate.md` ist die gemeinsame Prüfschwelle aller Wächter und
+hat Vorrang vor dem einzelnen Task-Prompt.** Die fachlichen Runbooks sagen, *was*
+geprüft wird; das Gate sagt, *wann ein Wächter selbst ändern darf.*
+
+**Warum (27.07.2026):** Die Wächter meldeten Befunde an einen Menschen, der sie
+nicht prüft. Ein Vorschlag, den niemand liest, ist schlechter als eine
+automatische Korrektur — er täuscht ein Sicherheitsnetz vor. Die Bremse war nie
+„der Mensch prüft besser", sondern „hier gibt es mehrere vertretbare Antworten",
+und das trifft auf die wenigsten Werte zu. Rechtlich ist die Fallhöhe gering
+(kostenloser Informationsrechner, keine individuelle Beratung, Stand-Datum +
+„ohne Gewähr"); die echte Gefahr ist Glaubwürdigkeit — ein Haftungsausschluss
+repariert keine falsche Zahl.
+
+Das Gate enthält sieben Regeln gegen „Annahme als Tatsache", jede aus einem
+echten Fehlschlag: **Zustand vor Zahl** (Entwurf/beschlossen/verkündet/in Kraft
+/Studienannahme — Auto-Fix ändert den Wert, nie den Zustand), **Quelle = wer
+gemessen hat, nicht wer publiziert hat**, **Aussagen über unseren Code am Code
+prüfen**, **Kennzahl ≠ Zustand**, **kein Handfaktor**, **Fundstelle erst
+beschaffen, dann streichen**, **jede auto-gepflegte Zahl braucht einen
+Realitäts-Anker als Test**. Dazu die fünf Gate-Bedingungen (Leitquelle
+vollständig · Council mit adversarialem Prüfer · bei Rechtsbezug zusätzlich
+**Legal-Judge** · Sprunggrenze 30 % · Tests grün), die **Selbstkontrolle im
+Folgelauf** (jeder `[auto]`-Fix wird beim nächsten Lauf gegen die Quelle
+nachgeprüft und sonst zurückgenommen), der **wöchentliche Bericht „was habe ich
+selbst geändert"** und die Befugnis-Tabelle je Wächter.
+
 ### Monitoring
 
 Zwei getrennte Ebenen — Datenwerte und Verfügbarkeit:
