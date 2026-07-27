@@ -144,5 +144,5 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   stromInflation: 0.02, // p.a. — konsistent mit PV-Rechner (SCENARIOS realistic + electricityIncrease)
   source: "Fraunhofer ISE WPsmart, Verbraucherzentrale RLP (Auswertung 160 Wärmepumpen-Angebote, 2025/2026), KfW Merkblatt 458 (BEG EM, gültig ab 21.07.2026), BDEW",
   validFrom: "2026-07-27",
-  reviewBy: "2027-01-25",   // vor der ersten Degression der Boni/Förderhöchstbeträge zum 01.02.2027
+  reviewBy: "2026-10-20",   // quartalsweiser Wächter (Jan/Apr/Jul/Okt); der Januar-Lauf 2027 fällt zusätzlich vor die Degression der Boni/Förderhöchstbeträge zum 01.02.2027
 };

@@ -1,15 +1,17 @@
-# Wärmepumpen-Werte — Runbook (jährlich, im Januar)
+# Wärmepumpen-Werte — Runbook (quartalsweise, Jan/Apr/Jul/Okt)
 
 **Zweck:** Die preis- und förderabhängigen Werte in `lib/heatpump-config.ts`
 (`DEFAULT_HEATPUMP_CONFIG`) gegen die offiziellen Quellen prüfen. Sie bestimmen
 Investition, Förderung und die 20-Jahres-TCO im Wärmepumpen-Rechner — ein
 veralteter Fördersatz oder Investitionspreis verzerrt das Ergebnis spürbar.
 
-**Warum jährlich im Januar:** Die volatilen Größen hängen an Politik (BEG-
-Förderung, an den Bundeshaushalt gekoppelt) und an jährlichen Marktauswertungen
-(Verbraucherzentrale-Angebotsauswertung, BDEW-Strompreise). Beide aktualisieren
-sich typischerweise zum Jahreswechsel. Stichtag steht in
-`DEFAULT_HEATPUMP_CONFIG.reviewBy`.
+**Warum quartalsweise (seit 27.07.2026, vorher jährlich):** Ein Jahr ist zu lang.
+Der Rechner stand ein halbes Jahr mit einer Investition live, die unter dem
+günstigsten realen Angebot lag — bei jährlichem Takt wäre das bis Januar 2027
+so geblieben. Politik (BEG) bewegt sich zum Jahreswechsel, Marktpreise laufen
+dagegen dauernd (2025 fiel der Schnitt um rund 4.000 €), und die Leitquelle
+erscheint im Sommer. Vier Termine im Jahr treffen beides. Stichtag steht
+zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
 
 **Mid-Year-Sicherheitsnetz:** Förderstopps/-änderungen passieren auch unterjährig
 (Topf leer, Haushaltssperre). Der wöchentliche `foerder-news-waechter` hat
@@ -89,12 +91,51 @@ Dem Assistenten sagen: **„Lauf die Wärmepumpen-Prüfung."**
 
 ## Nach der Prüfung
 
-- **Bei `abweichung`:** zuerst das **Council** laufen lassen
-  (`scripts/council-verify.md`). Wärmepumpe ist ein **Ermessensfall** (Förder-
-  Kleingedrucktes, „aktiv vs. ausgeschöpft", welches Investitionsfeld) → **kein
-  Auto-Fix, auch bei Konsens**. Den bestätigten Vorschlag mailen; erst nach
-  Freigabe die betroffenen Felder in `lib/heatpump-config.ts` +
-  `validFrom`/`reviewBy`/`source` anpassen, `npm run build` + `npm test` grün
-  (Invarianten-Tests in `lib/__tests__/heatpump.test.ts` beachten: Bonus-Summe >
-  Cap, SWWP-Invest > LWWP-Invest), committen.
-- **Bei `ok`:** nur `validFrom` + `reviewBy` aufs nächste Jahr setzen.
+- **Bei `abweichung`:** immer zuerst das **Council** laufen lassen
+  (`scripts/council-verify.md`, 3 unabhängige Verifizierer + 1 adversarialer).
+  Was danach passiert, hängt vom Feld ab:
+
+### Investition — Auto-Fix erlaubt (seit 27.07.2026)
+
+Betrifft `investLwwpBase`, `investLwwpPerKw`, `investSwwpBase`, `investSwwpPerKw`,
+`heizkoerperTauschKosten`. Der Fix wird selbst committet und deployt, **wenn ALLE
+fünf Bedingungen erfüllt sind**:
+
+1. **Leitquelle ist eine Auswertung echter Angebote** einer Verbraucherschutz-
+   oder Trägerorganisation (Standard: Verbraucherzentrale Rheinland-Pfalz), mit
+   **Median-Gesamtkosten**, **Median-Leistung in kW** und der
+   **Kostenkategorien-Tabelle**. Fehlt eine der drei Angaben → Vorschlag, kein
+   Fix: Eine Gesamtsumme ohne zugehörige Leistung ist für ein Modell wertlos,
+   das an der Heizlast hängt. Portale, Hersteller- und Vergleichsseiten sind
+   **nie** Leitquelle (sie haben den Fehler von Juli 2026 verursacht) — nur
+   Gegenprobe.
+2. **Council-Konsens**, adversarialer Prüfer eingeschlossen.
+3. **Rechenregel eingehalten** (nicht frei geschätzt): Basis = Summe der
+   leistungsunabhängigen Kategorien (Montage/Lohn, Elektro, Fundament,
+   hydraulischer Abgleich, Warmwasser, Puffer); Steigung so, dass
+   `Basis + Steigung × Median-kW` den Median-Preis trifft. Ein Handfaktor
+   („wirkt zu hoch/zu niedrig") ist kein zulässiger Fix.
+4. **Sprung ≤ 30 %** je Feld gegenüber dem hinterlegten Wert. Darüber nur
+   Vorschlag — ein größerer Sprung ist eher ein Lesefehler als ein Marktereignis.
+5. **`npx tsc --noEmit` und `npx vitest run` grün.** Die Marktanker in
+   `lib/__tests__/heatpump.test.ts` („Marktanker gegen echte Angebote") sind der
+   harte Filter: Median-Fall ±10 %, kleinste Anlage über dem günstigsten realen
+   Angebot, größte unter dem teuersten. **Diese Tests dürfen im selben Lauf nur
+   angepasst werden, wenn die neuen Grenzen direkt aus der neuen Auswertung
+   stammen** — nie, damit ein Wert „durchgeht".
+
+  Ablauf: Worktree → Änderung inkl. `validFrom`/`source` → Tests → Commit mit
+  Quellenangabe (Median, Median-kW, Erhebungszeitraum) → Push auf `main` → Mail
+  mit dem Diff und den neuen Beispielwerten (4 / 10 / 18 kW). Neue Auswertung als
+  PDF in `docs/quellen/` ablegen, damit die Fundstelle nachprüfbar bleibt.
+
+### Förderung, Tarife, Gaspreis — Vorschlag, kein Auto-Fix
+
+`begGrundfoerderung`, `begKlimaBonus`, `begEinkommensStaffel`, `begMaxCap`,
+`begMaxRate`, `wpTarif`, `gasPriceCtPerKwh` (letzterer liegt in `FUEL_PRICE` und
+wirkt auch im PV-Rechner). Hier hängen Rechtsfolgen und Ermessen dran
+(„Programm aktiv vs. Topf ausgeschöpft", Übergangsfristen) — bestätigten
+Vorschlag mailen, ändern nach Freigabe. Invarianten beachten (Bonus-Summe > Cap,
+SWWP-Invest > LWWP-Invest).
+
+- **Bei `ok`:** nur `validFrom` + `reviewBy` auf den nächsten Termin setzen.

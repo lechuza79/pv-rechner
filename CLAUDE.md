@@ -247,7 +247,7 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 **WP 10: Wärmepumpen-Rechner ✅ (done)**
 - [x] Eigener Flow `/waermepumpe` mit Neubau/Bestand-Umschalter (5 Steps)
 - [x] Kern-Berechnung in `lib/heatpump.ts` (Pure Functions): Heizwärmebedarf, JAZ, Investition, BEG-Förderung, 20-J-TCO
-- [x] Config in `lib/heatpump-config.ts` (zentralisiert, Admin-fähig strukturiert). `validFrom` + `reviewBy`; jährlicher Wächter (scheduled-task, Januar) + Runbook `scripts/waermepumpe-verify.md` prüft die preis-/förderabhängigen Werte (BEG, Investition, §14a-Tarif, Gas) gegen offizielle Quellen; mid-year-Förderänderungen fängt der `foerder-news-waechter` ab
+- [x] Config in `lib/heatpump-config.ts` (zentralisiert, Admin-fähig strukturiert). `validFrom` + `reviewBy`; **quartalsweiser** Wächter (scheduled-task, Jan/Apr/Jul/Okt) + Runbook `scripts/waermepumpe-verify.md` prüft die preis-/förderabhängigen Werte (BEG, Investition, §14a-Tarif, Gas) gegen offizielle Quellen. **Die Investitionswerte fixt er selbst** (Commit + Deploy), aber nur unter fünf Bedingungen: Leitquelle ist eine Auswertung echter Angebote mit Median-Preis **und** Median-Leistung **und** Kostenkategorien, Council-Konsens, die dokumentierte Rechenregel statt Handfaktor, Sprung ≤ 30 % je Feld und grüne Marktanker-Tests. Förderung, Tarife und Gaspreis bleiben Vorschlag (Rechtsfolge/Ermessen); mid-year-Förderänderungen fängt der `foerder-news-waechter` ab
 - [x] Heizwärmebedarf: Wohnfläche × spez. kWh/m²·a (dena-Gebäudereport, DIN V 18599) × **Haustyp-Faktor** (geteilte Wände, `HAUSTYP_WP` in constants) + 650 kWh/Person Warmwasser
 - [x] **Heizlast (Anlagengröße) getrennt vom Bedarf**: `calcHeatLoad` = Wohnfläche × spez. W/m² (`specHeatLoadBestand/Neubau`, Feldwerte) × Haustyp × `auslegungsfaktor` (0,85, reale monoenergetische Auslegung, min 4 kW). Ersetzt die alte `qGes/2000h`-Formel, die das Warmwasser mitzählte. **Editierbar** im Ergebnis (`override.heizlast`) — wer eine DIN-EN-12831-Berechnung hat, trägt sie ein
 - [x] **Haustyp-Abfrage** im Flow-Step „Größe & Typ" (freistehend / Doppelhaus / Reihenend / Reihenmitte)
@@ -291,8 +291,8 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
   vollständig in `lib/heatpump-config.ts`, kalibriert an der VZ-Angebotsauswertung
   (Volltext in `docs/quellen/`), Regel: Basis = Summe der leistungsunabhängigen
   Kostenkategorien, Steigung so, dass der Median-Fall den Median-Preis trifft. Gepflegt
-  vom jährlichen WP-Wächter (`scripts/waermepumpe-verify.md`), festgenagelt von den
-  Marktankern in `lib/__tests__/heatpump.test.ts`. PV-/Speicher-/Strompreis-Scraping
+  vom quartalsweisen WP-Wächter (`scripts/waermepumpe-verify.md`, fixt die Investition
+  selbst), festgenagelt von den Marktankern in `lib/__tests__/heatpump.test.ts`. PV-/Speicher-/Strompreis-Scraping
   läuft unverändert weiter; die DB-Spalten `wp_lwwp_*` bleiben als toter Altbestand liegen.
 
 **WP 9: Energiedaten-Datalake (in Arbeit)**
