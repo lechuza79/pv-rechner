@@ -40,11 +40,18 @@ export type PruefEingabe = {
   /** Gemeinde-Schlüssel der Sitz-Anschrift (aus der Postleitzahl), Kandidaten. */
   sitzKandidaten: string[];
   /** Das gemessene Gebiet: Gemeindeschlüssel → Anteil an den Anlagen (0..1). */
-  gebiet: { ags: string; name: string; anteil: number }[];
+  gebiet: { ags: string; name: string; anteil: number; anlagen?: number }[];
   /** Mittelpunkte der Gemeinden, soweit bekannt. */
   zentren: Map<string, { lat: number; lon: number }>;
   /** Namen ALLER Gemeinden — für den Ortsnamen-Test. */
   gemeindeNamen: { ags: string; name: string }[];
+  /** Ort aus der Anschrift im Register — zweiter Weg zum Sitz, wenn die
+   *  Postleitzahl nicht auflösbar ist. */
+  sitzOrt?: string | null;
+  /** Je Gemeinde der höchste Anteil, den IRGENDEIN Netzbetreiber dort hat.
+   *  Damit wird aus „hat wenig Prozent" die viel schärfere Frage: „ist er dort
+   *  der größte?" — in Gemeinden mit drei Netzbetreibern sind 40 % viel. */
+  groesstemAnteilJeGemeinde?: Map<string, number>;
 };
 
 // ─── Hilfen ───────────────────────────────────────────────────────────────────
@@ -102,6 +109,42 @@ export function ortsnamenAusFirma(
   return treffer;
 }
 
+/** Gattungswörter, hinter denen in aller Regel der Ort steht. */
+const VOR_ORT =
+  /\b(stadtwerke|stadtwerk|gemeindewerke|gemeindewerk|kreiswerke|elektrizit(?:ä|ae)tswerke?|energieversorgung|stromversorgung|versorgungsbetriebe|netzgesellschaft|netzbetrieb|stromnetz|energienetze?)\b[\s.\-]*/i;
+
+/**
+ * Der Ort direkt hinter dem Gattungswort — „Stadtwerke **Kiel**".
+ *
+ * Diese Stelle ist so verlässlich, dass hier auch kurze Namen zählen dürfen:
+ * Wer „Stadtwerke Kiel" heißt, meint Kiel. Die freie Suche über den ganzen
+ * Firmennamen darf das nicht (dort traf „Karl" die Eifel-Gemeinde) — den
+ * Unterschied macht die Position, nicht die Länge.
+ */
+export function ortNachGattungswort(
+  firma: string,
+  gemeindeNamen: { ags: string; name: string }[],
+): { ags: string; name: string }[] {
+  const m = VOR_ORT.exec(firma);
+  if (!m) return [];
+  const rest = firma
+    .slice(m.index + m[0].length)
+    .replace(/[.,()\/].*$/, " ")
+    .replace(/\b(gmbh|co|kg|ag|mbh|ohg|se|aör|kgaa|und|&)\b.*$/i, " ")
+    .trim()
+    .toLowerCase();
+  if (rest.length < 3) return [];
+
+  // Längster passender Gemeindename gewinnt („Schwäbisch Hall" vor „Hall").
+  const treffer = gemeindeNamen.filter((g) => {
+    const n = g.name.toLowerCase();
+    return n.length >= 3 && (rest === n || rest.startsWith(`${n} `) || rest.startsWith(`${n}-`));
+  });
+  if (treffer.length === 0) return [];
+  const maxLen = Math.max(...treffer.map((t) => t.name.length));
+  return treffer.filter((t) => t.name.length === maxLen);
+}
+
 // ─── Die Prüfung ──────────────────────────────────────────────────────────────
 
 /** Ab dieser Anteilshöhe gilt ein Netzbetreiber in einer Gemeinde als der
@@ -133,7 +176,20 @@ export function pruefeGebiet(e: PruefEingabe): Pruefung {
       text: `Flächennetz mit ${e.gebiet.length} Gemeinden — der Firmensitz sagt hier nichts über das Gebiet.`,
     });
   } else if (e.sitzKandidaten.length === 0) {
-    befunde.push({ test: "sitz", ergebnis: "unpruefbar", text: "Anschrift im Register nicht auf eine Gemeinde auflösbar." });
+    // Zweiter Weg: der Ortsname aus der Anschrift. Die Postleitzahl ist der
+    // genauere Schlüssel, aber sie fehlt oder ist nicht auflösbar — dann ist der
+    // Ortsname immer noch besser als gar keine Prüfung.
+    const ort = (e.sitzOrt ?? "").trim().toLowerCase();
+    const perOrt = ort.length >= 3 ? e.gemeindeNamen.filter((g) => g.name.toLowerCase() === ort) : [];
+    if (perOrt.length === 0) {
+      befunde.push({ test: "sitz", ergebnis: "unpruefbar", text: "Anschrift im Register nicht auf eine Gemeinde auflösbar." });
+    } else if (perOrt.some((g) => imGebiet.has(g.ags))) {
+      befunde.push({ test: "sitz", ergebnis: "ok", text: `Der Ort der Firmenanschrift (${perOrt[0].name}) liegt im Gebiet.` });
+    } else if (perOrt.length > 1) {
+      befunde.push({ test: "sitz", ergebnis: "unpruefbar", text: `Den Ort „${perOrt[0].name}" der Anschrift gibt es mehrfach — nicht entscheidbar.` });
+    } else {
+      befunde.push({ test: "sitz", ergebnis: "auffaellig", text: `Der Ort der Firmenanschrift (${perOrt[0].name}) liegt NICHT im Gebiet.` });
+    }
   } else if (e.sitzKandidaten.some((a) => imGebiet.has(a))) {
     befunde.push({ test: "sitz", ergebnis: "ok", text: "Die Gemeinde der Firmenanschrift liegt im Gebiet." });
   } else {
@@ -144,8 +200,10 @@ export function pruefeGebiet(e: PruefEingabe): Pruefung {
     });
   }
 
-  // 2. Ortsname im Firmennamen
-  const orte = ortsnamenAusFirma(e.name, e.gemeindeNamen);
+  // 2. Ortsname im Firmennamen — erst an der verlässlichen Stelle direkt hinter
+  //    dem Gattungswort, sonst frei über den ganzen Namen.
+  const ausPosition = ortNachGattungswort(e.name, e.gemeindeNamen);
+  const orte = ausPosition.length > 0 ? ausPosition : ortsnamenAusFirma(e.name, e.gemeindeNamen);
   const treffer = orte.find((o) => imGebiet.has(o.ags));
   if (orte.length === 0) {
     befunde.push({ test: "name", ergebnis: "unpruefbar", text: "Im Firmennamen steckt kein eindeutiger Ortsname." });
@@ -170,7 +228,16 @@ export function pruefeGebiet(e: PruefEingabe): Pruefung {
 
   // 3. Räumliche Streuung
   const punkte = e.gebiet.map((g) => e.zentren.get(g.ags)).filter((p): p is { lat: number; lon: number } => !!p);
-  if (punkte.length < 3) {
+  if (e.gebiet.length <= 2) {
+    // Ein Ortsnetz aus einer oder zwei Gemeinden ist zusammenhängend, da gibt es
+    // nichts zu streuen. Das als „unprüfbar" zu führen, hat den Test bei zwei
+    // Dritteln aller Versorger sinnlos aussehen lassen.
+    befunde.push({
+      test: "streuung",
+      ergebnis: "ok",
+      text: e.gebiet.length === 1 ? "Ortsnetz aus einer Gemeinde — zusammenhängend." : "Zwei benachbarte Gemeinden — zusammenhängend.",
+    });
+  } else if (punkte.length < 3) {
     befunde.push({ test: "streuung", ergebnis: "unpruefbar", text: "Zu wenige Gemeinden mit bekanntem Mittelpunkt." });
   } else {
     const mitte = {
@@ -196,23 +263,43 @@ export function pruefeGebiet(e: PruefEingabe): Pruefung {
   }
 
   // 4. Dominanz
-  const anteile = e.gebiet.map((g) => g.anteil).sort((a, b) => a - b);
-  if (anteile.length === 0) {
+  //
+  // Nicht „hat er viel Prozent", sondern „ist er der Größte" — in einer Gemeinde
+  // mit drei Netzbetreibern sind 40 % die Mehrheit, ein absoluter Schwellenwert
+  // hätte sie als schwach gemeldet.
+  const max = e.groesstemAnteilJeGemeinde;
+  if (e.gebiet.length === 0) {
     befunde.push({ test: "dominanz", ergebnis: "unpruefbar", text: "Keine Anteile hinterlegt." });
-  } else {
-    const med = quantil(anteile, 0.5);
-    if (med >= DOMINANZ_SCHWELLE) {
+  } else if (max) {
+    const fuehrt = (g: { ags: string; anteil: number }) => g.anteil >= (max.get(g.ags) ?? 0) - 1e-9;
+    const fuehrend = e.gebiet.filter(fuehrt).length;
+    // Die Kerngemeinde ist die mit den meisten Anlagen dieses Versorgers. Dort
+    // der Größte zu sein wiegt schwerer als der Schnitt über alle: ein Stadtwerk
+    // teilt sich die Randgemeinden oft mit dem Flächenversorger, sein eigenes
+    // Ortsnetz aber nicht.
+    const kern = [...e.gebiet].sort((a, b) => (b.anlagen ?? 0) - (a.anlagen ?? 0))[0];
+    const kernFuehrt = kern ? fuehrt(kern) : false;
+    if (kernFuehrt || fuehrend / e.gebiet.length >= 0.5) {
       befunde.push({
         test: "dominanz",
         ergebnis: "ok",
-        text: `In der Hälfte der Gemeinden hängen mindestens ${Math.round(med * 100)} % der Anlagen an diesem Netz.`,
+        text: kernFuehrt
+          ? `Größter Netzbetreiber in ${kern.name} — der Gemeinde mit den meisten seiner Anlagen (insgesamt in ${fuehrend} von ${e.gebiet.length}).`
+          : `Größter Netzbetreiber in ${fuehrend} von ${e.gebiet.length} Gemeinden des Gebiets.`,
       });
     } else {
       befunde.push({
         test: "dominanz",
         ergebnis: "auffaellig",
-        text: `Nur ${Math.round(med * 100)} % der Anlagen je Gemeinde (Median) — für ein Ortsnetz wenig.`,
+        text: `Nur in ${fuehrend} von ${e.gebiet.length} Gemeinden der größte Netzbetreiber — anderswo hat ein anderer mehr Anlagen.`,
       });
+    }
+  } else {
+    const med = quantil(e.gebiet.map((g) => g.anteil).sort((a, b) => a - b), 0.5);
+    if (med >= DOMINANZ_SCHWELLE) {
+      befunde.push({ test: "dominanz", ergebnis: "ok", text: `In der Hälfte der Gemeinden mindestens ${Math.round(med * 100)} % der Anlagen.` });
+    } else {
+      befunde.push({ test: "dominanz", ergebnis: "auffaellig", text: `Nur ${Math.round(med * 100)} % der Anlagen je Gemeinde (Median).` });
     }
   }
 

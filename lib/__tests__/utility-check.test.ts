@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { entfernungKm, ortsnamenAusFirma, pruefeGebiet, type PruefEingabe } from "../utility-check";
+import { entfernungKm, ortNachGattungswort, ortsnamenAusFirma, pruefeGebiet, type PruefEingabe } from "../utility-check";
 
 // Alle Fälle hier sind echte Befunde aus dem Lauf über die 778 gemessenen
 // Gebiete — jeder Test hält eine Fehlerklasse fest, die tatsächlich aufgetreten
@@ -135,5 +135,66 @@ describe("Gebiets-Prüfung", () => {
     for (const b of pruefeGebiet(eingabe()).befunde) {
       expect(b.text.length).toBeGreaterThan(10);
     }
+  });
+});
+
+describe("Dominanz relativ statt absolut", () => {
+  it("wertet 40 % als stark, wenn dort niemand mehr hat", () => {
+    // In einer Gemeinde mit drei Netzbetreibern ist 40 % die Mehrheit. Ein
+    // absoluter Schwellenwert hätte das als schwaches Gebiet gemeldet.
+    const p = pruefeGebiet(
+      eingabe({
+        gebiet: [{ ags: "08127055", name: "Schwäbisch Hall", anteil: 0.4, anlagen: 400 }],
+        groesstemAnteilJeGemeinde: new Map([["08127055", 0.4]]),
+      }),
+    );
+    expect(p.befunde.find((b) => b.test === "dominanz")?.ergebnis).toBe("ok");
+  });
+
+  it("schlägt an, wenn anderswo jemand mehr hat", () => {
+    const p = pruefeGebiet(
+      eingabe({
+        gebiet: [{ ags: "08127055", name: "Schwäbisch Hall", anteil: 0.2, anlagen: 100 }],
+        groesstemAnteilJeGemeinde: new Map([["08127055", 0.7]]),
+      }),
+    );
+    expect(p.befunde.find((b) => b.test === "dominanz")?.ergebnis).toBe("auffaellig");
+  });
+
+  it("lässt die Kerngemeinde schwerer wiegen als den Schnitt", () => {
+    // Ein Stadtwerk teilt sich Randgemeinden oft mit dem Flächenversorger, sein
+    // eigenes Ortsnetz aber nicht.
+    const p = pruefeGebiet(
+      eingabe({
+        gebiet: [
+          { ags: "08127055", name: "Schwäbisch Hall", anteil: 0.9, anlagen: 900 },
+          { ags: "09161000", name: "Ingolstadt", anteil: 0.1, anlagen: 10 },
+          { ags: "07316000", name: "Weidenthal", anteil: 0.1, anlagen: 10 },
+        ],
+        groesstemAnteilJeGemeinde: new Map([
+          ["08127055", 0.9],
+          ["09161000", 0.8],
+          ["07316000", 0.8],
+        ]),
+      }),
+    );
+    expect(p.befunde.find((b) => b.test === "dominanz")?.ergebnis).toBe("ok");
+  });
+});
+
+describe("Ort direkt hinter dem Gattungswort", () => {
+  it("erlaubt dort auch kurze Namen", () => {
+    // „Stadtwerke Kiel" meint Kiel — die Position macht es eindeutig, nicht die
+    // Länge. Die freie Suche über den ganzen Namen darf das nicht.
+    const orte = ortNachGattungswort("Stadtwerke Kiel AG", [{ ags: "01002000", name: "Kiel" }]);
+    expect(orte.map((o) => o.name)).toEqual(["Kiel"]);
+  });
+
+  it("nimmt den längeren Namen, wenn zwei passen", () => {
+    const orte = ortNachGattungswort("Stadtwerke Schwäbisch Hall GmbH", [
+      { ags: "08127055", name: "Schwäbisch Hall" },
+      { ags: "09999999", name: "Schwäbisch" },
+    ]);
+    expect(orte.map((o) => o.name)).toEqual(["Schwäbisch Hall"]);
   });
 });

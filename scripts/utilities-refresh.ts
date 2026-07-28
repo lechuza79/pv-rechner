@@ -547,11 +547,12 @@ async function laufPruefung(dry: boolean): Promise<void> {
     plz: string | null;
     ort: string | null;
   }[];
-  const links = (await alleZeilen(supabase, "utility_communes", "utility_id, commune_id, rolle, anteil")) as {
+  const links = (await alleZeilen(supabase, "utility_communes", "utility_id, commune_id, rolle, anteil, anlagen")) as {
     utility_id: string;
     commune_id: string;
     rolle: string;
     anteil: number | null;
+    anlagen: number | null;
   }[];
   const regionen = (await alleZeilen(supabase, "mastr_regions", "region_id, name, level")) as {
     region_id: string;
@@ -563,12 +564,21 @@ async function laufPruefung(dry: boolean): Promise<void> {
     .map((r) => ({ ags: r.region_id, name: r.name }));
   const nameByAgs = new Map(gemeindeNamen.map((g) => [g.ags, g.name]));
 
-  const jeVersorger = new Map<string, { ags: string; name: string; anteil: number }[]>();
+  const jeVersorger = new Map<string, { ags: string; name: string; anteil: number; anlagen: number }[]>();
   for (const l of links) {
     if (l.rolle === "beteiligung") continue;
     const arr = jeVersorger.get(l.utility_id) ?? [];
-    arr.push({ ags: l.commune_id, name: nameByAgs.get(l.commune_id) ?? l.commune_id, anteil: Number(l.anteil ?? 0) });
+    arr.push({ ags: l.commune_id, name: nameByAgs.get(l.commune_id) ?? l.commune_id, anteil: Number(l.anteil ?? 0), anlagen: Number(l.anlagen ?? 0) });
     jeVersorger.set(l.utility_id, arr);
+  }
+
+  // Je Gemeinde der hoechste Anteil irgendeines Netzbetreibers — Grundlage fuer
+  // die Frage „ist er dort der Groesste".
+  const maxJeGemeinde = new Map<string, number>();
+  for (const l of links) {
+    if (l.rolle === "beteiligung") continue;
+    const a = Number(l.anteil ?? 0);
+    if (a > (maxJeGemeinde.get(l.commune_id) ?? 0)) maxJeGemeinde.set(l.commune_id, a);
   }
 
   const zaehler = { gruen: 0, gelb: 0, rot: 0 };
@@ -584,6 +594,8 @@ async function laufPruefung(dry: boolean): Promise<void> {
       gebiet,
       zentren,
       gemeindeNamen,
+      sitzOrt: u.ort,
+      groesstemAnteilJeGemeinde: maxJeGemeinde,
     });
     zaehler[p.ampel]++;
     if (p.ampel === "rot") auffaellige.push(`${u.name}: ${p.befunde.filter((b) => b.ergebnis === "auffaellig").map((b) => b.text).join(" ")}`);
@@ -592,6 +604,29 @@ async function laufPruefung(dry: boolean): Promise<void> {
 
   log(`Geprüft: ${zeilen.length} Versorger mit Gebiet`, "ok");
   log(`  bestätigt ${zaehler.gruen} · teilweise prüfbar ${zaehler.gelb} · widersprüchlich ${zaehler.rot}`);
+
+  // Woran hängt es? Ohne diese Aufschlüsselung optimiert man ins Blaue.
+  const jeTest = new Map<string, { ok: number; auffaellig: number; unpruefbar: number }>();
+  const gruendeUnpruefbar = new Map<string, number>();
+  for (const z of zeilen) {
+    for (const b of z.pruefung as { test: string; ergebnis: string; text: string }[]) {
+      const e = jeTest.get(b.test) ?? { ok: 0, auffaellig: 0, unpruefbar: 0 };
+      e[b.ergebnis as "ok" | "auffaellig" | "unpruefbar"]++;
+      jeTest.set(b.test, e);
+      if (b.ergebnis === "unpruefbar") {
+        const kurz = b.text.split("—")[0].trim().slice(0, 60);
+        gruendeUnpruefbar.set(kurz, (gruendeUnpruefbar.get(kurz) ?? 0) + 1);
+      }
+    }
+  }
+  log("  Je Test:");
+  for (const [test, e] of Array.from(jeTest.entries())) {
+    log(`    ${test.padEnd(10)} bestätigt ${String(e.ok).padStart(4)} · widerspricht ${String(e.auffaellig).padStart(3)} · unprüfbar ${String(e.unpruefbar).padStart(4)}`);
+  }
+  log("  Häufigste Gründe, warum ein Test nicht entscheiden konnte:");
+  for (const [grund, n] of Array.from(gruendeUnpruefbar.entries()).sort((a, b) => b[1] - a[1]).slice(0, 6)) {
+    log(`    ${String(n).padStart(4)}× ${grund}`);
+  }
   if (auffaellige.length) {
     log(`Widersprüchliche Gebiete (erste 15):`, "err");
     for (const z of auffaellige.slice(0, 15)) log(`    ${z}`);
