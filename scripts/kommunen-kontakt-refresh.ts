@@ -182,6 +182,10 @@ async function setup(): Promise<void> {
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_subject text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_body text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_generated_at timestamptz;
+    -- Wurde der Entwurf von Hand bearbeitet? Nur dann darf er einen frisch
+    -- erzeugten ueberleben. Ohne diesen Merker zeigte das Modal wochenalte
+    -- Entwuerfe an, obwohl die Vorlage laengst korrigiert war.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_manuell boolean NOT NULL DEFAULT false;
     -- Politische Ausrichtung (Zweitstimmenanteil BTW 2025, je Gemeinde) für die
     -- Outreach-Priorisierung. Misst die Bürger-Wahl, NICHT die Rathaus-Partei.
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS gruene_pct numeric;

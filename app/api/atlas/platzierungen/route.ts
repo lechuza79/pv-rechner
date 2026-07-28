@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { loadAwardStats, loadKreisNames } from "../../../../lib/awards-server";
-import { computePlacements, LEVEL_LABEL, type HookLevel } from "../../../../lib/award-hook";
+import { computePlacements, DEFAULT_HOOK_SETTINGS, LEVEL_LABEL, type HookLevel } from "../../../../lib/award-hook";
 import { AWARD_CATEGORY_BY_KEY, formatAwardValue, rankGemeinden, scopeIdOf } from "../../../../lib/awards";
 import { bundeslandByAgs } from "../../../../lib/mastr-regions";
 
@@ -34,7 +34,19 @@ export async function GET(req: NextRequest) {
   if (!eigene) return NextResponse.json({ error: "Gemeinde nicht gefunden" }, { status: 404 });
 
   const placements = computePlacements(stats);
-  const meine = (placements.get(regionId) ?? []).filter((p) => !p.spike);
+  // Nur Vergleichsgruppen, die etwas aussagen. Ohne diese Schwelle stand auf
+  // der Seite einer kreisfreien Stadt „Platz 1 von 1 im Stuttgart" — die Stadt
+  // ist ihr eigener Landkreis, die Gruppe hat genau ein Mitglied. Dieselbe
+  // Glaubwürdigkeitsschwelle wie beim Anschreiben-Aufhänger.
+  //
+  // Und nur Platzierungen, die auch eine sind: Die Sektion heißt „Wo die
+  // Gemeinde im Vergleich vorn liegt" — dort „Platz 921 von 924" aufzulisten,
+  // widerspricht der Überschrift. Dieselben Stufen wie beim Aufhänger: Sieg,
+  // Podium oder oberstes Perzentil.
+  const meine = (placements.get(regionId) ?? []).filter((p) => {
+    if (p.spike || p.total < DEFAULT_HOOK_SETTINGS.minTotal) return false;
+    return p.rank <= 3 || p.rank / p.total <= DEFAULT_HOOK_SETTINGS.percentileCut;
+  });
 
   const woLabel = (level: HookLevel) =>
     level === "kreis"
@@ -52,6 +64,7 @@ export async function GET(req: NextRequest) {
         ? {
             kategorie: cat.key,
             thema: cat.thema,
+            themaDativ: cat.themaDativ,
             bestleistung: cat.bestleistung,
             ebene: LEVEL_LABEL[p.level],
             wo: woLabel(p.level),

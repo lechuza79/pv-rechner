@@ -23,6 +23,7 @@ type Lead = {
   draft_subject: string | null;
   draft_body: string | null;
   draft_generated_at: string | null;
+  draft_manuell: boolean | null;
   gruene_pct: number | null;
   linke_pct: number | null;
   spd_pct: number | null;
@@ -544,9 +545,16 @@ function DraftModal({
     [lead.region_id, onPatched, onClose],
   );
 
-  // Beim Öffnen ohne vorhandenen Entwurf einmal generieren — außer bei Sperre.
+  // Beim Öffnen IMMER neu erzeugen — außer der Entwurf wurde von Hand
+  // bearbeitet oder die Gemeinde ist gesperrt.
+  //
+  // Vorher wurde ein gespeicherter Entwurf einfach angezeigt. Folge: Nach jeder
+  // Textänderung an der Vorlage zeigte das Modal weiter die alte Fassung, und
+  // zwar ohne jeden Hinweis — zweimal hintereinander als „der Text doppelt sich
+  // immer noch" gemeldet, obwohl der Generator längst korrekt war. Ein
+  // erzeugter Entwurf ist ein Zwischenstand, kein Dokument.
   useEffect(() => {
-    if (open && !body && !busy && !blocked) generate();
+    if (open && !busy && !blocked && !lead.draft_manuell) generate();
     // Nur beim Öffnen — generate/body absichtlich nicht in den Deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -610,9 +618,10 @@ function DraftModal({
               )}
             </div>
 
-            {lead.draft_generated_at && (
-              <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
-                Entwurf vom {new Date(lead.draft_generated_at).toLocaleString("de-DE")} — bei Textänderungen „Neu generieren".
+            {lead.draft_manuell && lead.draft_generated_at && (
+              <div style={{ fontSize: 11, color: v("--color-negative") }}>
+                Von Hand bearbeitet am {new Date(lead.draft_generated_at).toLocaleString("de-DE")} — wird nicht automatisch
+                aktualisiert. „Neu generieren" verwirft die Änderungen.
               </div>
             )}
             <label style={fieldLabel}>Betreff</label>

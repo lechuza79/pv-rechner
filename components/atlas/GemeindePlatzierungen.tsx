@@ -14,6 +14,7 @@ import Modal from "../Modal";
 type Platzierung = {
   kategorie: string;
   thema: string;
+  themaDativ: string;
   bestleistung: string;
   ebene: string;
   wo: string;
@@ -155,7 +156,7 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
               <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14, color: v("--color-text-secondary"), lineHeight: 1.7 }}>
                 {daten.alle.slice(1, 7).map((p) => (
                   <li key={`${p.kategorie}-${p.ebene}`}>
-                    Platz {p.platz} von {p.von} {p.wo} bei {p.thema} ({p.wert})
+                    Platz {p.platz} von {p.von} {p.wo} bei {p.themaDativ} ({p.wert})
                   </li>
                 ))}
               </ul>

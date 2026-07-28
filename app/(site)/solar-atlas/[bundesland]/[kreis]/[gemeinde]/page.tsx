@@ -364,12 +364,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
         )}
 
-        {/* Platzierungen: der Beleg für das, was im Outreach-Anschreiben steht
-            („Platz 1 von 32"). Client-geladen, weil die Rangdaten ~1,7 s kosten
-            und der Server-Render der Atlas-Seiten schon einmal an der
-            8-Sekunden-Notbremse stand. */}
-        <GemeindePlatzierungen regionId={region.region_id} />
-
         <GemeindeHero
           kpi={kpi}
           cells={atlas.solar.by_segment}
@@ -379,6 +373,13 @@ export default async function GemeindePage({ params }: { params: Params }) {
           vergleichTitel={`Top ${vergleich.was}${vergleich.wo ? ` ${vergleich.wo}` : ""}`}
           basePath={basePath}
         />
+
+        {/* Platzierungen DIREKT unter dem Ranglisten-Teaser der Hero — beides
+            beantwortet dieselbe Frage („wo steht die Gemeinde?"), das gehört
+            zusammen. Client-geladen, weil die Rangdaten ~1,7 s kosten und der
+            Server-Render der Atlas-Seiten schon einmal an der 8-Sekunden-
+            Notbremse stand. */}
+        <GemeindePlatzierungen regionId={region.region_id} />
 
         {/* „Was das für Sie bedeutet": die drei Beispielrechnungen brauchen den
             Standort-Ertrag (PVGIS, extern/langsam). Er wird client-seitig

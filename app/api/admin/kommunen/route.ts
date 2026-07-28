@@ -38,7 +38,7 @@ const STATUSES = ["offen", "entwurf", "kontaktiert", "geantwortet", "zu", "gespe
 
 // Eine Quelle für das Zeilen-Shape (GET, PATCH, POST liefern dasselbe zurück).
 const SELECT =
-  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, gruene_pct, linke_pct, spd_pct, kampagne, charge, rollen_email, verantwortlich_funktion, verantwortlich_operativ, verwaltung_domain, thema_solar_url, thema_klima_url, thema_blatt_url, ask_variante, variante_manuell, versendet_variante, widget_anfrage, ref_token, ref_klicks, mastr_regions!inner(name, bezeichnung, population)";
+  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, draft_manuell, gruene_pct, linke_pct, spd_pct, kampagne, charge, rollen_email, verantwortlich_funktion, verantwortlich_operativ, verwaltung_domain, thema_solar_url, thema_klima_url, thema_blatt_url, ask_variante, variante_manuell, versendet_variante, widget_anfrage, ref_token, ref_klicks, mastr_regions!inner(name, bezeichnung, population)";
 
 export async function GET(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -158,7 +158,11 @@ export async function PATCH(req: NextRequest) {
   }
   if (body.widget_anfrage !== undefined) patch.widget_anfrage = body.widget_anfrage;
   if (body.draft_subject !== undefined) patch.draft_subject = body.draft_subject;
-  if (body.draft_body !== undefined) patch.draft_body = body.draft_body;
+  if (body.draft_body !== undefined) {
+    patch.draft_body = body.draft_body;
+    // Von Hand gespeichert → überlebt eine spätere Neuerzeugung.
+    patch.draft_manuell = true;
+  }
 
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
@@ -245,6 +249,7 @@ export async function POST(req: NextRequest) {
       draft_subject: draft.subject,
       draft_body: draft.body,
       draft_generated_at: new Date().toISOString(),
+      draft_manuell: false,
       ask_variante: variante,
       updated_at: new Date().toISOString(),
     })
