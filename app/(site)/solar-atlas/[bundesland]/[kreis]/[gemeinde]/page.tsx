@@ -11,6 +11,7 @@ import { atlasIsIndexable, atlasLevelReleased, atlasRobots } from "../../../../.
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
+import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindePotentialClient from "../../../../../../components/atlas/GemeindePotentialClient";
@@ -362,6 +363,12 @@ export default async function GemeindePage({ params }: { params: Params }) {
         {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
         )}
+
+        {/* Platzierungen: der Beleg für das, was im Outreach-Anschreiben steht
+            („Platz 1 von 32"). Client-geladen, weil die Rangdaten ~1,7 s kosten
+            und der Server-Render der Atlas-Seiten schon einmal an der
+            8-Sekunden-Notbremse stand. */}
+        <GemeindePlatzierungen regionId={region.region_id} />
 
         <GemeindeHero
           kpi={kpi}

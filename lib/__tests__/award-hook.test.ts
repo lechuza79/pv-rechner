@@ -108,12 +108,28 @@ describe("hookText", () => {
       names,
     );
 
+  it("Betreff und Meldungs-Überschrift sagen dasselbe verschieden", () => {
+    // Der Betreff nennt den RANG zuerst, die Meldungs-Überschrift die MESSGRÖSSE
+    // als Superlativ. Stünde beides gleich, läse sich der Brief wie ein
+    // Textbaustein-Unfall.
+    const s = sieger("dach-privat-abs", "Solardach-Hauptstadt");
+    expect(s.betreff).toMatch(/^Musterdorf auf Platz 1 von 34 Gemeinden/);
+    expect(s.betreff).not.toContain("die meiste"); // Superlativ gehört in die Meldung
+    expect(s.einstieg).toContain("die meiste"); // dort steht er
+  });
+
+  it("baut den Dativ korrekt (kein „bei private Solarleistung“)", () => {
+    expect(sieger("dach-privat-pk", "x").betreff).toContain("bei Solarleistung auf privaten Dächern je Einwohner");
+    expect(sieger("batterie-privat-abs", "x").betreff).toContain("bei privater Speicherkapazität");
+    expect(sieger("balkon-abs", "x").betreff).toContain("bei Balkonkraftwerken");
+  });
+
   it("nennt die Messgröße im Klartext, nicht den internen Titel", () => {
     // Vorher stand hier der Titel: „Musterdorf ist Balkon-Pionier im Landkreis".
     // Der sagt nicht, was gemessen wurde, und die Auszeichnung existiert
     // öffentlich nirgends — eine Verwaltung liest das als Marketing-Erfindung.
     const s = sieger("balkon-pk", "Balkon-Pionier");
-    expect(s.betreff).toBe("Musterdorf hat die meisten Balkonkraftwerke je 1.000 Einwohner im Landkreis Musterkreis");
+    expect(s.betreff).toBe("Musterdorf auf Platz 1 von 34 Gemeinden im Landkreis Musterkreis bei Balkonkraftwerken je 1.000 Einwohner");
     expect(s.einstieg).toContain("Platz 1 von 34");
   });
 
@@ -136,7 +152,7 @@ describe("hookText", () => {
       { kind: "podium", categoryKey: "balkon-pk", categoryLabel: "Balkon-Pionier", traeger: "buerger", level: "kreis", scopeId: "09111", rank: 3, total: 34, percentile: null, value: 40 },
       names,
     );
-    expect(p.betreff).toBe("Musterdorf: Platz 3 im Landkreis Musterkreis bei Balkonkraftwerke je 1.000 Einwohner");
+    expect(p.betreff).toBe("Musterdorf auf Platz 3 von 34 Gemeinden im Landkreis Musterkreis bei Balkonkraftwerken je 1.000 Einwohner");
     expect(p.betreff).not.toContain("die meisten");
   });
 

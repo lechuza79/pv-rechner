@@ -249,21 +249,26 @@ export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg:
   const cat = hook.categoryKey ? AWARD_CATEGORY_BY_KEY[hook.categoryKey] : null;
   const bestleistung = cat?.bestleistung ?? "den größten Solar-Ausbau";
   const thema = cat?.thema ?? "Solar-Ausbau";
+  const themaDativ = cat?.themaDativ ?? "Solar-Ausbau";
   switch (hook.kind) {
     case "sieger":
       return {
-        betreff: `${n.gemeinde} hat ${bestleistung} ${wo}`,
+        // Rang zuerst: Die Meldungs-Überschrift trägt bereits die Messgröße als
+        // Superlativ. Stünde beides gleich, läse sich der Brief wie ein
+        // Textbaustein-Unfall — Betreff und Überschrift sagen dasselbe, nur
+        // anders herum.
+        betreff: `${n.gemeinde} auf Platz 1 von ${hook.total} Gemeinden ${wo} bei ${themaDativ}`,
         einstieg: `${n.gemeinde} hat ${bestleistung} ${wo} — Platz 1 von ${hook.total} Gemeinden.`,
       };
     case "podium":
       return {
-        betreff: `${n.gemeinde}: Platz ${hook.rank} ${wo} bei ${thema}`,
+        betreff: `${n.gemeinde} auf Platz ${hook.rank} von ${hook.total} Gemeinden ${wo} bei ${themaDativ}`,
         einstieg: `${n.gemeinde} liegt bei ${thema} ${wo} auf Platz ${hook.rank} von ${hook.total} Gemeinden.`,
       };
     case "perzentil": {
       const pct = Math.max(1, Math.round((hook.percentile ?? 0.1) * 100));
       return {
-        betreff: `${n.gemeinde} gehört bei ${thema} zu den besten ${pct} %`,
+        betreff: `${n.gemeinde} unter den besten ${pct} % ${wo} bei ${themaDativ}`,
         einstieg: `${n.gemeinde} liegt bei ${thema} ${wo} unter den besten ${pct} % — Platz ${hook.rank} von ${hook.total} Gemeinden.`,
       };
     }

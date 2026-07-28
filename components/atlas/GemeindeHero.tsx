@@ -194,7 +194,7 @@ export default function GemeindeHero({
   siblings,
   siblingCells,
   regionId,
-  kreisName,
+  vergleichTitel,
   basePath,
 }: {
   kpi: Record<Owner, KpiOwnerData>;
@@ -206,7 +206,12 @@ export default function GemeindeHero({
   // einer anderen Grundgesamtheit kamen). Er lebt jetzt als eigene Kachelreihe
   // über dem Hero — siehe components/atlas/GemeindePeerTiles.tsx.
   regionId: string;
-  kreisName?: string;
+  /** Fertige Überschrift der Rangliste, z. B. „Top Kommunen im Landkreis
+   *  Würzburg" oder „Top Kreise in Baden-Württemberg". Kommt fertig von der
+   *  Seite, weil die Präposition vom Bezug abhängt: „im Landkreis X", aber „in
+   *  Baden-Württemberg" — und bei einer kreisfreien Stadt ist der Bezug ein
+   *  anderer als der Elternteil in der Hierarchie. */
+  vergleichTitel?: string;
   basePath: string;
 }) {
   const [owner, setOwner] = useState<Owner>("alle");
@@ -377,7 +382,7 @@ export default function GemeindeHero({
 
         <div style={S.right}>
           <div className="rank-head">
-            <div style={S.rankTitle}>{`Top Kommunen${kreisName ? ` im ${kreisName}` : ""}`}</div>
+            <div style={S.rankTitle}>{vergleichTitel ?? "Top Kommunen"}</div>
             <MetricPicker metric={metric} onChange={setMetric} />
           </div>
 

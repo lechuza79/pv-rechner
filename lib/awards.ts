@@ -70,6 +70,13 @@ export type AwardCategory = {
   /** Dasselbe ohne Superlativ, für Platzierungen unterhalb von Platz 1:
    *  „Balkonkraftwerke je 1.000 Einwohner". */
   thema: string;
+  /**
+   * Dieselbe Messgröße im DATIV, für den Betreff („… bei Balkonkraftwerken je
+   * 1.000 Einwohner"). Von Hand gepflegt statt aus `thema` abgeleitet: Deutsche
+   * Kasusbildung per Regel produziert zuverlässig Murks („bei private
+   * Solarleistung"), und ein Betreff ist das Erste, was ein Rathaus liest.
+   */
+  themaDativ: string;
   traeger: Traeger;
   messart: Messart;
   format: MetricFormat;
@@ -87,6 +94,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Meiste private Dach-Solarleistung je Einwohner.",
     bestleistung: "die meiste private Solarleistung auf den Dächern je Einwohner",
     thema: "private Solarleistung auf den Dächern je Einwohner",
+    themaDativ: "Solarleistung auf privaten Dächern je Einwohner",
     traeger: "buerger",
     messart: "proKopf",
     format: "wattProKopf",
@@ -98,6 +106,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Meiste Balkonkraftwerke je 1.000 Einwohner — die sauberste Bürgerzahl.",
     bestleistung: "die meisten Balkonkraftwerke je 1.000 Einwohner",
     thema: "Balkonkraftwerke je 1.000 Einwohner",
+    themaDativ: "Balkonkraftwerken je 1.000 Einwohner",
     traeger: "buerger",
     messart: "proKopf",
     format: "countPer1000",
@@ -109,6 +118,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Meiste private Batteriekapazität je Einwohner.",
     bestleistung: "die meiste private Speicherkapazität je Einwohner",
     thema: "private Speicherkapazität je Einwohner",
+    themaDativ: "privater Speicherkapazität je Einwohner",
     traeger: "buerger",
     messart: "proKopf",
     format: "whProKopf",
@@ -121,6 +131,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Meiste Balkonkraftwerke insgesamt.",
     bestleistung: "die meisten Balkonkraftwerke insgesamt",
     thema: "Balkonkraftwerke insgesamt",
+    themaDativ: "Balkonkraftwerken",
     traeger: "buerger",
     messart: "absolut",
     format: "count",
@@ -132,6 +143,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Meiste private Dach-Solarleistung insgesamt — Bürger-Solar auf den Dächern, kein Gewerbe/Park.",
     bestleistung: "die meiste private Solarleistung auf den Dächern",
     thema: "private Solarleistung auf den Dächern",
+    themaDativ: "Solarleistung auf privaten Dächern",
     traeger: "buerger",
     messart: "absolut",
     format: "pvLeistung",
@@ -143,6 +155,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Meiste private Batteriekapazität insgesamt.",
     bestleistung: "die meiste private Speicherkapazität",
     thema: "private Speicherkapazität",
+    themaDativ: "privater Speicherkapazität",
     traeger: "buerger",
     messart: "absolut",
     format: "speicherKwh",
@@ -155,6 +168,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Höchste gewerbliche + Freiflächen-Solarleistung. Misst den Standort, nicht die Bürger.",
     bestleistung: "die meiste installierte Solarleistung insgesamt",
     thema: "installierte Solarleistung insgesamt",
+    themaDativ: "installierter Solarleistung",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -166,6 +180,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Höchste Freiflächen-Solarleistung (Solarparks).",
     bestleistung: "die meiste Solarleistung auf Freiflächen",
     thema: "Solarleistung auf Freiflächen",
+    themaDativ: "Solarleistung auf Freiflächen",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -177,6 +192,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Höchste gewerbliche Batteriekapazität.",
     bestleistung: "die meiste gewerbliche Speicherkapazität",
     thema: "gewerbliche Speicherkapazität",
+    themaDativ: "gewerblicher Speicherkapazität",
     traeger: "gewerbe",
     messart: "absolut",
     format: "speicherKwh",
@@ -188,6 +204,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Höchste installierte Windleistung.",
     bestleistung: "die meiste Windleistung",
     thema: "Windleistung",
+    themaDativ: "Windleistung",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -199,6 +216,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Höchste installierte Biomasseleistung.",
     bestleistung: "die meiste Biomasseleistung",
     thema: "Biomasseleistung",
+    themaDativ: "Biomasseleistung",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -210,6 +228,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Höchste installierte Wasserkraftleistung.",
     bestleistung: "die meiste Wasserkraftleistung",
     thema: "Wasserkraftleistung",
+    themaDativ: "Wasserkraftleistung",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -222,6 +241,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Größter Solar-Zubau im letzten vollständigen Jahr.",
     bestleistung: "den größten Solar-Zubau im letzten Jahr",
     thema: "Solar-Zubau im letzten Jahr",
+    themaDativ: "Solar-Zubau im letzten Jahr",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
