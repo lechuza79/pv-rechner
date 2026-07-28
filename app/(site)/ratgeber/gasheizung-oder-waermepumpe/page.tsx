@@ -139,7 +139,8 @@ export default function GasheizungWaermepumpePage() {
         {/* ── Grüngas-Pflicht: Details ── */}
         <h2 style={S.h2}>Warum die neue Gasheizung zur Kostenfalle wird</h2>
         <p style={S.p}>
-          Die <strong style={S.strong}>Bio-Treppe</strong> gilt für Gas- und Ölheizungen, die{" "}
+          Die <strong style={S.strong}>Bio-Treppe</strong> gilt für Heizungen für Gas, Heizöl oder
+          Flüssiggas, die{" "}
           <strong style={S.strong}>nach dem Inkrafttreten des Gesetzes eingebaut</strong> werden.
           Maßgeblich ist dabei der tatsächliche Einbau, nicht das Bestell- oder Rechnungsdatum.
           Wer eine solche Heizung betreibt, muss ab 2029 einen wachsenden Anteil klimafreundlicher
@@ -149,6 +150,20 @@ export default function GasheizungWaermepumpePage() {
           Biomethan, und das kostet rund doppelt so viel wie Erdgas. Dazu steigen die
           Gasnetzentgelte, weil immer weniger Haushalte am Gasnetz hängen und dessen Fixkosten
           sich auf weniger Schultern verteilen.
+        </p>
+        <p style={S.p}>
+          <strong style={S.strong}>Und wenn ich neu baue?</strong> Dann gilt dieselbe Treppe. Der
+          Paragraf mit der Beimischpflicht steht zwar im Kapitel über bestehende Gebäude und
+          beschreibt dort den Heizungstausch — für neu errichtete Gebäude verweist das Gesetz aber
+          ausdrücklich auf dieselben Vorgaben, und die amtliche Begründung sagt es wörtlich: Diese
+          Maßgaben seien „für neu zu errichtende Gebäude nach § 10 Absatz 2 Nummer 3 einzuhalten".
+          Für den Neubau kommt sogar noch etwas dazu. Ab dem{" "}
+          {GMODG_RECHTSSTAND.neubauReferenzAb} wird der Effizienznachweis gegen ein neues
+          Vergleichsgebäude geführt, dessen Kennwert eine reine Erdgasheizung überschreitet — sie
+          müsste an anderer Stelle ausgeglichen werden. Und ab dem{" "}
+          {GMODG_RECHTSSTAND.neubauNullemissionAb} muss jeder Neubau ein Nullemissionsgebäude sein
+          und darf am Standort keine CO₂-Emissionen aus fossilen Brennstoffen mehr verursachen.
+          Eine fossile Heizung ist im Neubau damit ein Auslaufmodell mit kurzer Restlaufzeit.
         </p>
         <p style={S.p}>
           <strong style={S.strong}>Und wenn ich schon eine Gasheizung habe?</strong> Von der

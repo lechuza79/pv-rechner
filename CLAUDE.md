@@ -773,13 +773,15 @@ und das trifft auf die wenigsten Werte zu. Rechtlich ist die Fallhöhe gering
 „ohne Gewähr"); die echte Gefahr ist Glaubwürdigkeit — ein Haftungsausschluss
 repariert keine falsche Zahl.
 
-Das Gate enthält sieben Regeln gegen „Annahme als Tatsache", jede aus einem
+Das Gate enthält acht Regeln gegen „Annahme als Tatsache", jede aus einem
 echten Fehlschlag: **Zustand vor Zahl** (Entwurf/beschlossen/verkündet/in Kraft
 /Studienannahme — Auto-Fix ändert den Wert, nie den Zustand), **Quelle = wer
 gemessen hat, nicht wer publiziert hat**, **Aussagen über unseren Code am Code
 prüfen**, **Kennzahl ≠ Zustand**, **kein Handfaktor**, **Fundstelle erst
 beschaffen, dann streichen**, **jede auto-gepflegte Zahl braucht einen
-Realitäts-Anker als Test**. Dazu die fünf Gate-Bedingungen (Leitquelle
+Realitäts-Anker als Test**, **ein „gilt nicht für X" braucht eine eigene
+Fundstelle** (Verweisketten mitlesen — eine Vorschrift, die einen Fall nicht
+erwähnt, schließt ihn nicht aus). Dazu die fünf Gate-Bedingungen (Leitquelle
 vollständig · Council mit adversarialem Prüfer · bei Rechtsbezug zusätzlich
 **Legal-Judge** · Sprunggrenze 30 % · Tests grün), die **Selbstkontrolle im
 Folgelauf** (jeder `[auto]`-Fix wird beim nächsten Lauf gegen die Quelle
@@ -1108,6 +1110,21 @@ obwohl § 43 auch Heizöl und Flüssiggas erfasst, und eine Pflicht ohne die
 Ersatzwege/Härtefälle aus § 43 Abs. 3–7). Der Gesetzestext liegt als Primärquelle
 unter `docs/gmodg/`, festgenagelt von `lib/__tests__/greengas.test.ts`
 („Rechtsstand GModG — Realitäts-Anker").
+
+**Und die dritte Lehre, einen Tag später: der Wortlaut EINES Paragrafen ist nicht
+der Geltungsbereich.** Bei derselben Prüfung kam als vierte „Korrektur" die
+Einschränkung hinzu, die Beimischpflicht gelte nur für den Einbau „in ein
+bestehendes Gebäude" — sauber abgelesen aus § 43 Abs. 1 und trotzdem falsch: § 10
+Abs. 2 Nr. 3 erklärt die §§ 42 bis 45 für neu zu errichtende Gebäude
+„entsprechend" für anwendbar, und die Gesetzesbegründung sagt es wörtlich
+(BT-Drs. 21/6278, S. 96). Der Neubau lief immer schon über § 10 — vorher zeigte
+dieselbe Nummer 3 auf § 71 Abs. 1, die 65-%-Regel. Die falsche Verengung stand
+einen Tag auf fünf Oberflächen, und der Test hielt sie fest; aufgefallen ist sie
+dem Betreiber. Daraus **Gate-Regel 8** („ein ‚gilt nicht für X' braucht eine
+eigene Fundstelle"), ein umgedrehter Test, die Neubau-Zeitachse (neues
+Referenzgebäude ab 01.01.2027, Nullemissionsgebäude für alle Neubauten ab
+01.01.2030) im Ratgeber und in der FAQ sowie beide Bundestags-Drucksachen unter
+`docs/gmodg/`. Die Rechnung war nie betroffen — nur die Texte.
 
 ### Kein Overengineering
 

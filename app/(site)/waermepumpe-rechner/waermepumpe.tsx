@@ -171,11 +171,14 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // (Strompreis/Arbeitszahl wie "realistisch", Gaspreis-Mittelpfad). Reale Rechtslage.
   const gruengasResult = useMemo(() => calcHeatPump({ ...activeInputs, greenGas: true }, cfg, heatPumpScenarioAdj("realistic", cfg)), [activeInputs, cfg]);
 
-  // Meta des Gesetzes-Falls (Label/Erklärung für Auswahl + Hero).
+  // Meta des Gesetzes-Falls (Label + Farbe für Auswahl, Chart und Hero). KEIN
+  // `explain` — die Erklärung zum Grüngas-Fall steht vollständig im Modal
+  // („Mehr erfahren"), und ein zweiter Text daneben wäre eine Kopie, die
+  // auseinanderläuft. Der eingeklappte Preis-Block erklärt sein eigenes Modell
+  // aus `selPrice.explain`.
   const GRUENGAS_META = {
     id: "gruengas", label: "Neues Heizungsgesetz", color: v('--color-positive'),
     sub: "Grüngas-Pflicht ab 2029",
-    explain: `Das Gebäudemodernisierungsgesetz (in Kraft seit ${GMODG_RECHTSSTAND.inKraftSeit}) verpflichtet Heizungen für Gas, Heizöl oder Flüssiggas, die neu in ein bestehendes Gebäude eingebaut werden, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen — 10 % steigend auf 60 % (2040). Das verteuert Gas deutlich. Die Kostenhöhe folgt dem IW-Report 36/2026 (plausibler Korridor, keine exakte Prognose).`,
   };
 
   // Gewählter Fall: treibt die Ergebnis-Zahlen (TCO/Amortisation/Ersparnis/CO₂).
@@ -432,7 +435,11 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                       })}
                     </div>
                     {!greenGas && (
-                      <div style={{ fontSize: 11.5, color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 10 }}>{sel.explain}</div>
+                      // Bewusst selPrice statt sel: dieser Block erklärt IMMER das
+                      // gewählte Preis-Modell. Über sel wäre der Text im Grüngas-Fall
+                      // stumm — genau die Falle, in die eine Textkorrektur am
+                      // 29.07.2026 lief (geändert wurde ein Satz, der nie erscheint).
+                      <div style={{ fontSize: 11.5, color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 10 }}>{selPrice.explain}</div>
                     )}
                   </div>
                 )}
@@ -458,7 +465,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               {/* Erklärabschnitte */}
               <div style={{ fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'), marginTop: 22, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 16 }}>
                 {[
-                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet jede nach dem Inkrafttreten des Gesetzes neu eingebaute Gasheizung, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung.` },
+                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet jede Heizung für Gas, Heizöl oder Flüssiggas, die nach dem Inkrafttreten des Gesetzes neu eingebaut wird — beim Heizungstausch im Bestand ebenso wie im Neubau —, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung.` },
                   { h: "Beschlossen ist die Pflicht, nicht der Preis", p: `${gmodgStandSatz()} Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Ebenfalls Annahme ist der Weg nach 2040: Eine 100-%-Stufe steht nicht im Gesetz, die vollständige Klimaneutralität ab 2045 kündigt § 42a GModG nur an — als Quote für die Brennstoff-Anbieter ab 2028, die dann auch Bestandsheizungen verteuern würde. Ihre Höhe soll bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden; wir rechnen sie nicht mit. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht.` },
                   { h: "Warum wir je Kilowattstunde Wärme rechnen", p: "Gas- und Strompreis lassen sich nicht direkt vergleichen: Eine Wärmepumpe macht aus einer Kilowattstunde Strom rund drei Kilowattstunden Wärme, ein Gaskessel aus einer Kilowattstunde Gas nur knapp eine. Deshalb rechnen wir beide auf die Kosten pro gelieferter Kilowattstunde Wärme um — die Jahresarbeitszahl der Wärmepumpe und der Kesselwirkungsgrad sind darin enthalten. Grundgebühr und Wartung bleiben außen vor, sie gehören nicht in einen Preis-je-Kilowattstunde-Vergleich." },
                   { h: "Quelle", p: "IW-Report 36/2026 „Wie hoch sind die Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz?“ (Henger, Küper, Wünsch — Institut der deutschen Wirtschaft, Juli 2026). Die Preispfade stammen aus dem Anhang der Studie." },

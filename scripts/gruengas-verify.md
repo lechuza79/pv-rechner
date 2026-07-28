@@ -56,6 +56,15 @@ heutige Datum.
 >    geltenden Gesetzestext? Zähle sie vollständig auf. Gibt es eine Stufe nach
 >    2040? Sind die anrechenbaren Brennstoffe unverändert (Biomethan, Bioöl,
 >    biogenes Flüssiggas, Wasserstoff und Derivate)?
+> 2b. **Geltungsbereich (§ 43 + § 10 Absatz 2 Nummer 3):** Gilt die Bio-Treppe
+>    weiterhin für neu eingebaute Heizungen **im Bestand UND im Neubau**? Der
+>    Wortlaut von § 43 Absatz 1 nennt nur das „bestehende Gebäude" — der Neubau
+>    hängt an einer zweiten Vorschrift (§ 10 Absatz 2 Nummer 3: „die Maßgaben der
+>    §§ 42 bis 45 entsprechend"). Prüfe **beide** Stellen, und prüfe zusätzlich,
+>    ob die Neubau-Stichtage noch stimmen: neues Referenzgebäude ab 01.01.2027
+>    (Artikel 2), Nullemissionsgebäude für alle Neubauten ab 01.01.2030
+>    (Artikel 4, ersetzt § 10 vollständig — dort fällt der Verweis auf die
+>    §§ 42 bis 45 weg).
 > 3. **§ 42a / Quotengesetz:** Ist das angekündigte Gesetz zur Grüngas- und
 >    Grünheizölquote für Inverkehrbringer vorgelegt oder beschlossen? Wenn ja:
 >    welche Quoten mit welchen Jahren, und ab wann (Start war mit 2028 angekündigt)?
@@ -99,6 +108,19 @@ richtige Antwort hat:
   Gasheizungen" (§ 43 erfasst Gas, **Heizöl und Flüssiggas**) und eine Pflicht
   ohne die Ersatzwege/Härtefälle aus § 43 Abs. 3–7. Das Flag war der Anlass, die
   Fehler waren älter.
+
+  **Der Wortlaut EINES Paragrafen ist nicht der Geltungsbereich (29.07.2026).**
+  Bei derselben Prüfung wurde aus „§ 43 Absatz 1 sagt: in ein bestehendes
+  Gebäude" die Aussage „der Neubau ist nicht erfasst" — auf fünf Oberflächen,
+  einen Tag lang, und ein Test hat sie festgenagelt. Falsch: § 10 Absatz 2
+  Nummer 3 erklärt die §§ 42 bis 45 für neu zu errichtende Gebäude
+  „entsprechend" für anwendbar; die amtliche Begründung sagt es wörtlich
+  (BT-Drs. 21/6278, S. 96). Aufgefallen ist es dem Betreiber, nicht dem Wächter.
+  **Lehre: Bei jeder Geltungsbereichs-Aussage die Verweisketten mitlesen** —
+  gerade wenn ein Paragraf in einem Kapitel steht, dessen Überschrift den
+  Anwendungsfall schon einzugrenzen scheint. Und: Ein Negativ-Satz („X ist nicht
+  erfasst") braucht eine eigene Fundstelle, die das sagt. Das Fehlen einer
+  Erwähnung ist keine.
 - **Stufenwerte, anrechenbare Brennstoffe, Quotengesetz: kein Auto-Fix.** Das sind
   zitierfähige Rechtsaussagen, die in die Berechnung durchschlagen — Befund in den
   Report, Formulierung und Eintrag macht ein Mensch. Gilt ausdrücklich auch, wenn
