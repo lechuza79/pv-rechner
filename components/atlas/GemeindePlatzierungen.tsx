@@ -212,7 +212,9 @@ const S: Record<string, React.CSSProperties> = {
     gap: 2,
     width: "100%",
     textAlign: "left",
-    background: v("--color-bg-accent"),
+    // Weisse Flaeche wie die uebrigen Karten der Seite; die Auszeichnung traegt
+    // sich ueber die Insignie und den Rang, nicht ueber eine getoente Flaeche.
+    background: v("--color-bg"),
     border: `1px solid ${v("--color-border-accent")}`,
     borderRadius: v("--radius-md"),
     padding: pad("sm", "md"),
@@ -264,7 +266,7 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-secondary"),
   },
   // Ein weiterer erster Platz ist auch einer — gleiche Fläche wie der Kopf-Badge.
-  weitereZeileSieg: { background: v("--color-bg-accent"), borderColor: v("--color-border-accent") },
+  weitereZeileSieg: { borderColor: v("--color-border-accent") },
   weiterePlatz: { fontFamily: v("--font-mono"), color: v("--color-text-muted"), flex: "0 0 auto" },
   weitereText: { flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   pfeil: { color: v("--color-accent"), flex: "0 0 auto" },
