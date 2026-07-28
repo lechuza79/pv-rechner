@@ -4,7 +4,7 @@ import {
   cdhFromHourly, cdhFromDailyMinMax, calcAirconHeating, acHeatSpecKwhPerM2,
   type AcInputs,
 } from "../aircon";
-import { DEFAULT_AIRCON_CONFIG as CFG, AC_REAL_FACTOR, effectiveSeer } from "../aircon-config";
+import { DEFAULT_AIRCON_CONFIG as CFG, AC_REAL_FACTOR, effectiveSeer, effectiveScop } from "../aircon-config";
 import { FUEL, INSULATION_BESTAND, INSULATION_NEUBAU } from "../constants";
 
 const base: AcInputs = {
@@ -53,6 +53,37 @@ describe("Effizienz-Systematik", () => {
     for (const d of CFG.devices) {
       expect(d.seer, `${d.id}: Abschlag weicht vom einheitlichen Faktor ab`)
         .toBeCloseTo(d.labelValue * AC_REAL_FACTOR * d.structuralFactor, 1);
+    }
+  });
+
+  // Dieselbe Systematik auf der HEIZachse (seit 28.07.2026). Vorher stand dort
+  // ein Handwert, und innerhalb desselben Geräts war Kühlen realistisch, Heizen
+  // optimistisch gerechnet — die Ersparnis gegenüber Gas fiel dadurch rund ein
+  // Drittel zu hoch aus.
+  it("leitet auch jeden scop-Wert aus dem Typenschild ab, nie von Hand", () => {
+    for (const d of CFG.devices) {
+      if (!d.canHeat) continue;
+      expect(d.labelScop, `${d.id}: kann heizen, hat aber keinen Typenschild-Wert`).toBeGreaterThan(0);
+      expect(d.scop, `${d.id}: scop ist handgesetzt statt abgeleitet`).toBe(effectiveScop(d.labelScop!));
+    }
+  });
+
+  it("rechnet Heizen nicht optimistischer als Kühlen", () => {
+    // Der Kern der Asymmetrie: Beide Richtungen tragen denselben Abschlag vom
+    // Typenschild. Wer den Heizwert wieder näher ans Label rückt, muss dafür
+    // eine Leitquelle haben — „wirkt zu pessimistisch" reicht nicht.
+    for (const d of CFG.devices) {
+      if (!d.canHeat || !d.labelScop) continue;
+      const heizAbschlag = d.scop! / d.labelScop;
+      const kuehlAbschlag = d.seer / (d.labelValue * d.structuralFactor);
+      expect(heizAbschlag, `${d.id}: Heizen wird milder gerechnet als Kühlen`).toBeLessThanOrEqual(kuehlAbschlag + 0.02);
+    }
+  });
+
+  it("hat keine Geräte mit Heiz-Wert, die gar nicht heizen können", () => {
+    for (const d of CFG.devices) {
+      if (d.canHeat) continue;
+      expect(d.scop ?? 0, `${d.id}: heizt nicht, trägt aber einen Heiz-Wert`).toBe(0);
     }
   });
 

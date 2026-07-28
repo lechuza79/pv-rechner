@@ -71,6 +71,32 @@ export function effectiveSeer(labelValue: number, structuralFactor: number): num
   return Math.round(labelValue * AC_REAL_FACTOR * structuralFactor * 10) / 10;
 }
 
+/**
+ * Dasselbe fürs HEIZEN (SCOP): Typenschild → Realbetrieb.
+ *
+ * Der struktureller Faktor ist hier 1,0 und hat deshalb kein Argument: Was die
+ * Prüfnorm beim Heizen ausklammern könnte (Hilfsenergie, Abtauung), ist in
+ * EN 14825 Abschnitt 3.19 bereits enthalten. Der eine echte Effekt außerhalb
+ * der Normgrenze — ein Split-Gerät ist eine Punktquelle, die Norm unterstellt
+ * ideale Wärmeverteilung — ist von niemandem quantifiziert; ihn zu schätzen
+ * wäre der Ermessens-Abschlag, den die Systematik verbietet.
+ *
+ * ÜBERTRAGENER FAKTOR, BEWUSST KONSERVATIV (Entscheidung des Betreibers,
+ * 28.07.2026): `AC_REAL_FACTOR` ist am Kühlen belegt, nicht am Heizen. Die
+ * Leitquelle (Erginer & Aydoğdu) misst beide Richtungen am selben Gerät, nennt
+ * frei aber nur den gemeinsamen Wert — die Aufteilung je Metrik steht im
+ * kostenpflichtigen Volltext. Vorher stand hier ein Handwert ohne jede
+ * Herleitung, und Heizen war dadurch optimistischer gerechnet als Kühlen: die
+ * Ersparnis gegenüber Gas fiel rund ein Drittel zu hoch aus. Die Übertragung
+ * ist die konservative Wahl — sie kann die Ersparnis höchstens zu niedrig
+ * zeigen, und das ist bei einer Ersparnis-Angabe die richtige Richtung.
+ * Steht der Volltext zur Verfügung, wird der Heiz-Faktor durch den dort
+ * belegten ersetzt (Runbook scripts/klimaanlage-verify.md → 4.5).
+ */
+export function effectiveScop(labelValue: number): number {
+  return Math.round(labelValue * AC_REAL_FACTOR * 10) / 10;
+}
+
 // Gebäudestandard für das HEIZEN mit Split. Beim Kühlen fragen wir bewusst
 // Sonne/Lage statt Dämmung (solare Gewinne dominieren, siehe exposureOptions) —
 // beim Heizen ist die Dämmung dagegen der dominante Hebel, ein Wert für alle wäre
@@ -111,17 +137,28 @@ export interface AcDevice {
   // Heizen: Split-Geräte sind reversibel (Luft-Luft-Wärmepumpe). scop = Seasonal
   // Coefficient of Performance (Heizen); Heizstrom = Heizwärme / SCOP. canHeat=false
   // für Monoblocks — die heizen real kaum sinnvoll.
-  // OFFEN (bis 10/2026): `scop` ist ein HANDWERT, `seer` dagegen bereits die nach
-  // fester Formel abgeleitete effektive Jahres-Effizienz. Innerhalb eines Geräts
-  // ist Kühlen damit realistisch und Heizen optimistisch gerechnet — dieselbe
-  // Asymmetrie, die die SEER-Systematik gerade beseitigt hat, nur auf der
-  // anderen Achse.
+  // `scop` läuft seit 28.07.2026 über DIESELBE Ableitung wie `seer`
+  // (effectiveScop = labelScop × AC_REAL_FACTOR). Davor war es ein Handwert, und
+  // Kühlen war realistisch, Heizen optimistisch gerechnet — dieselbe Asymmetrie,
+  // die die SEER-Systematik zuvor auf der Kühlachse beseitigt hatte. Wirkung der
+  // Umstellung: Die Ersparnis gegenüber Gas im „Auch heizen?"-Block war rund ein
+  // Drittel zu hoch (Beispiel 40 m² teilsaniert: 106 € statt 71 € im Jahr). Die
+  // Grundaussage — Split heizt in der Übergangszeit günstiger als Gas — bleibt.
+  //
+  // Der Faktor ist am KÜHLEN belegt und aufs Heizen ÜBERTRAGEN; die Begründung
+  // steht bei effectiveScop. Das ist die bewusst konservative Wahl (Entscheidung
+  // des Betreibers, 28.07.2026) statt eines unbelegten Handwerts.
+  //
+  // OFFEN (bis 10/2026): Der am Heizen belegte Abschlag steht nur im
+  // kostenpflichtigen Volltext der Leitquelle. Kommt er, ersetzt er den
+  // übertragenen Faktor (Runbook 4.5) — dann bekommt effectiveScop einen eigenen
+  // Faktor statt AC_REAL_FACTOR.
   //
   // Recherchestand 07/2026 (zwei unabhängige Läufe, Herstellerdatenblätter):
   //  · Mobile Split: der einzige belegte Labelwert der ganzen Kategorie ist
   //    SCOP 4,0 (Midea PortaSplit; unabhängig bestätigt an Qlima QsplitFlex und
-  //    Trotec PAC-S 3510 SH, dieselbe OEM-Plattform). Für unsere 3,6 gibt es
-  //    KEINE Marktentsprechung — der Wert ist frei gesetzt.
+  //    Trotec PAC-S 3510 SH, dieselbe OEM-Plattform). Er ist seit dem 28.07.2026
+  //    als `labelScop` hinterlegt; der frühere freie Wert 3,6 ist damit weg.
   //  · Fest installiert: SCOP und SEER sind im Markt fest gekoppelt (SEER 6,1–7,0
   //    → SCOP 4,0–4,2 · SEER 8,5–8,8 → 4,6–4,8 · SEER 9,5–10,5 → 5,1–5,2, weil
   //    die Hersteller exakt auf die nächste Effizienzklasse zielen). Unser
@@ -130,27 +167,26 @@ export interface AcDevice {
   //    auf den Mittelklasse-Median 4,6 zieht, beschreibt ein Gerät, das es nicht
   //    gibt.
   //
-  // Warum trotzdem nicht umgestellt: Es fehlt die Leitquelle für den Abschlag
-  // Labor → Realbetrieb in der HEIZrichtung. Die Studie hinter AC_REAL_FACTOR
-  // (Erginer & Aydogdu, Energy and Buildings 350/2026, akkreditiertes Kalorimeter)
-  // behandelt SEER und SCOP laut Titel gemeinsam und berichtet „bis zu 50 %" für
-  // beide zusammen — die Aufteilung je Metrik steht nur im Volltext, und der ist
-  // paywalled. Damit ist derselbe Faktor für Heizen BEGRÜNDBAR, aber nicht
-  // BELEGT, und Gate-Bedingung 1 (vollständige Leitquelle) ist nicht erfüllt.
+  // Zum Stand der Leitquelle: Die Studie hinter AC_REAL_FACTOR (Erginer &
+  // Aydoğdu, Energy and Buildings 350/2026, Art. 116631, DOI
+  // 10.1016/j.enbuild.2025.116631, akkreditiertes Kalorimeter) misst SEER UND
+  // SCOP am selben Gerät, berichtet frei aber nur „bis zu 50 %" für beide
+  // zusammen. Die Aufteilung je Metrik steht im kostenpflichtigen Volltext.
   // Alle frei zugänglichen Feldzahlen zum Heizen liegen unter 0,85 × Label,
   // tragen aber je einen Confounder (Kaltklima / Passivhaus / Flüstermodus) und
-  // stützen deshalb auch keinen anderen Faktor.
-  // Ein struktureller Faktor wäre 1,0: Hilfsenergie (Standby, Kurbelwannen-
-  // heizung, E-Zusatzheizer) und Abtauung sind in EN 14825 Abschnitt 3.19 bereits
-  // enthalten. Der eine echte Effekt außerhalb der Normgrenze — die Norm
-  // unterstellt ideale Wärmeverteilung, ein Split-Gerät ist aber eine Punktquelle
-  // (Nordsyn 2019) — ist von niemandem quantifiziert. Ihn zu schätzen wäre genau
-  // der Ermessens-Abschlag, den die Systematik verbietet.
+  // stützen deshalb auch keinen anderen Faktor. Deshalb der übertragene statt
+  // eines geschätzten Werts — ein Ermessens-Abschlag wäre genau das, was die
+  // Systematik verbietet.
   //
-  // Auflösen (scripts/klimaanlage-verify.md → 4.5): Volltext beschaffen, nach
-  // docs/quellen/ legen, dann labelScop + effectiveScop analog zu effectiveSeer
-  // einführen und BEIDE Split-Typen gemeinsam umstellen.
+  // ACHTUNG BEIM AUFLÖSEN: Derselbe Volltext trägt auch den am KÜHLEN belegten
+  // Abschlag. AC_REAL_FACTOR = 0,85 ist heute aus „bis zu 50 %" gewählt, nicht
+  // daraus abgelesen — der Volltext prüft also nicht nur den Heiz-, sondern
+  // auch den Kühlwert, und der trägt die Effizienz ALLER Gerätetypen.
+  // Vorgehen: scripts/klimaanlage-verify.md → 4.5.
   canHeat: boolean;
+  /** Typenschild-SCOP (EN 14825). Basis für `scop` — nie direkt verrechnen. */
+  labelScop?: number;
+  /** EFFEKTIVE Heiz-Jahreseffizienz = effectiveScop(labelScop). Heizstrom = Heizwärme / scop. */
   scop?: number;
   // Acquisition price model. Monoblock + PortaSplit: one device per room →
   // pricePerUnit × Räume. Fest installierte Split: Sockel (Außengerät/Anfahrt) +
@@ -326,11 +362,13 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       structuralFactor: 1.0,
       seer: effectiveSeer(6.1, 1.0),   // → 5,2
       canHeat: true,
-      scop: 3.6,         // HANDWERT ohne Marktentsprechung: das Typenschild sagt
-                         // SCOP 4,0 (Midea PortaSplit, einziger belegter Labelwert
-                         // der Kategorie). 3,6 ist faktisch ein 10-%-Abschlag
-                         // darauf, nur nie als solcher hergeleitet.
-                         // Siehe "OFFEN (bis 10/2026)" oben im Interface.
+      // Typenschild SCOP 4,0 (Midea PortaSplit — einziger belegter Labelwert der
+      // ganzen Kategorie, an drei baugleichen Geräten bestätigt: Qlima QsplitFlex,
+      // Trotec PAC-S 3510 SH). Der frühere Wert 3,6 war ein Handwert ohne
+      // Marktentsprechung — faktisch ein 10-%-Abschlag auf dieses Label, nur nie
+      // als solcher hergeleitet.
+      labelScop: 4.0,
+      scop: effectiveScop(4.0),   // → 3,4
       perRoom: true,
       pricePerUnit: 800, // ~780–899 € (UVP/Amazon 2026)
       priceRange: [0.75, 1.3], // ~600–1.050 € je Gerät
@@ -349,11 +387,11 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       structuralFactor: 1.0,   // EN 14825, siehe portasplit
       seer: effectiveSeer(6.5, 1.0),   // → 5,5
       canHeat: true,
-      scop: 4.2,         // Typenschild-Wert, passend zum SEER-Label 6,5 oben:
-                         // Bosch Climate 3000i (SEER 7,0) und Daikin Sensira
-                         // (SEER 6,5) tragen beide SCOP 4,2. Konsistentes Paar —
-                         // nur gemeinsam mit dem SEER-Label bewegen.
-                         // Siehe "OFFEN (bis 10/2026)" oben im Interface.
+      // Typenschild SCOP 4,2, passend zum SEER-Label 6,5 oben: Bosch Climate
+      // 3000i (SEER 7,0) und Daikin Sensira (SEER 6,5) tragen beide SCOP 4,2.
+      // Konsistentes Paar — nur gemeinsam mit dem SEER-Label bewegen.
+      labelScop: 4.2,
+      scop: effectiveScop(4.2),   // → 3,6
       perRoom: false,
       // 1 Raum (Monosplit) ~2.600 €, je weiterer Raum ~+1.900 € → 3 Räume ~6.400 €.
       // Deckt sich mit Festpreisen 2026: Monosplit 1.800–3.500 €, Montage allein
