@@ -380,6 +380,12 @@ export default async function GemeindePage({ params }: { params: Params }) {
         </div>
 
         <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
+        {/* Einleitung und Auszeichnung nebeneinander: Der Text sagt, wie die
+            Gemeinde dasteht, das Band daneben, wofür sie vorn liegt — zwei
+            Antworten auf dieselbe Frage, die untereinander wie zwei Anläufe
+            wirkten. Auf schmalen Bildschirmen stapeln sie (CSS in globals). */}
+        <div className="gemeinde-kopf">
+          <div style={{ minWidth: 0 }}>
         <CollapsibleIntro>
           {buildGemeindeHighlight({
             name: region.name,
@@ -395,21 +401,32 @@ export default async function GemeindePage({ params }: { params: Params }) {
             lastYear,
           })}
         </CollapsibleIntro>
+          </div>
+          <GemeindePlatzierungen regionId={region.region_id} />
+        </div>
 
         {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
         )}
 
-        {/* Die Auszeichnung steht ÜBER dem Hero: Sie ist die Schlagzeile dieser
-            Gemeinde („Platz 1 von 1.101"), nicht eine Fußnote unter der Tabelle.
-            Die Rangliste selbst gibt es nur einmal — im Hero darunter. */}
-        <GemeindePlatzierungen regionId={region.region_id} />
-
         <GemeindeHero
           kpi={kpi}
           cells={atlas.solar.by_segment}
           siblings={siblings}
-          regionId={region.region_id}
+          // DIE EIGENE ZEILE IN DER RANGLISTE: Bei einer kreisfreien Stadt und
+          // bei den Stadtstaaten ist die Vergleichsgruppe eine Ebene höher
+          // (Kreise bzw. Bundesländer). Dort trägt die eigene Zeile den
+          // gekürzten Schlüssel — mit dem 8-stelligen Gemeindeschlüssel fand
+          // sie sich nie selbst, stand nicht in der Tabelle und war nicht
+          // hervorgehoben. Sichtbar auf der Stuttgart-Seite: „Platz 1" oben,
+          // darunter fünf fremde Landkreise.
+          regionId={
+            istStadtstaatRegion
+              ? region.region_id.slice(0, 2)
+              : istKreisfreiStadt
+                ? region.region_id.slice(0, 5)
+                : region.region_id
+          }
           vergleichTitel={`Top ${vergleich.was}${vergleich.wo ? ` ${vergleich.wo}` : ""}`}
           basePath={basePath}
         />

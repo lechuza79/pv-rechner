@@ -649,4 +649,21 @@ export const globalStyles = `
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
   .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
 
+  /* Gemeinde-Kopf: Einleitungstext und Auszeichnungs-Band nebeneinander. Das
+     Band hat feste Spaltenbreite, damit der Text nicht umbricht, wenn es
+     nachgeladen erscheint — es wird ja erst nach dem Seitenaufbau geholt.
+     Unter 860px gestapelt: nebeneinander blieben für den Text keine 40 Zeichen. */
+  .gemeinde-kopf{display:flex;gap:24px;align-items:flex-start;margin-bottom:24px}
+  .gemeinde-kopf > *:first-child{flex:1 1 0;min-width:0}
+  /* Gezielt die Auszeichnung, NICHT „letztes Kind": Ohne Platzierung rendert
+     sie gar nichts, und dann wäre der Einleitungstext das letzte Kind — er
+     bekäme die 320px-Spalte und stünde als schmale Säule da. */
+  .gemeinde-kopf > .gemeinde-auszeichnung{flex:0 0 296px;max-width:296px}
+  /* Der Inhalt der Seite ist 720px breit — nebeneinander bleiben dem Text
+     damit ~400px. Darunter gestapelt, sonst wird die Einleitung zur Säule. */
+  @media (max-width:760px){
+    .gemeinde-kopf{flex-direction:column;gap:16px}
+    .gemeinde-kopf > .gemeinde-auszeichnung{flex:1 1 auto;max-width:none;width:100%}
+  }
+
 `;

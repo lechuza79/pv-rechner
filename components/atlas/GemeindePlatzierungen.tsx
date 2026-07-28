@@ -67,7 +67,7 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
   const b = daten.beste;
 
   return (
-    <section style={S.wrap} aria-label={`Auszeichnung von ${daten.name}`}>
+    <section className="gemeinde-auszeichnung" style={S.wrap} aria-label={`Auszeichnung von ${daten.name}`}>
       <div style={S.band}>
         <div style={S.kopf}>
           <span aria-hidden style={S.krone}>
@@ -93,8 +93,13 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
                   „Balkonkraftwerke" untereinander — einmal im Kreis, einmal im
                   Land — und die Liste sah aus wie ein Doppeleintrag. */}
               {daten.alle.slice(1, 4).map((p) => (
-                <li key={`${p.kategorie}-${p.ebene}`}>
-                  Platz {p.platz} von {nf(p.von)} bei {p.themaDativ} {p.wo}
+                <li key={`${p.kategorie}-${p.ebene}`} style={S.weitereZeile}>
+                  {p.platz === 1 && (
+                    <span aria-hidden style={S.kroneKlein}>
+                      👑
+                    </span>
+                  )}
+                  Platz {p.platz} bei {p.themaDativ} {p.wo}
                 </li>
               ))}
             </ul>
@@ -186,7 +191,8 @@ const S: Record<string, React.CSSProperties> = {
   weitereTitel: { marginTop: space.sm, fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") },
   weitere: {
     margin: `2px 0 0`,
-    paddingLeft: 18,
+    paddingLeft: 0,
+    listStyle: "none",
     fontSize: 13,
     color: v("--color-text-secondary"),
     lineHeight: 1.6,
@@ -219,5 +225,6 @@ const S: Record<string, React.CSSProperties> = {
   zName: { minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   kroneKlein: { marginRight: 4, fontSize: 11 },
   zWert: { fontFamily: v("--font-mono"), color: v("--color-accent") },
+  weitereZeile: { display: "flex", alignItems: "baseline", gap: 4 },
   gekuerzt: { fontSize: 12, color: v("--color-text-muted"), padding: pad("sm", "sm"), margin: 0 },
 };
