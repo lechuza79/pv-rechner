@@ -97,6 +97,17 @@ describe("Anrede und Gattung", () => {
 });
 
 describe("Kein Textbaustein-Unfall", () => {
+  it("die Meldung wiederholt ihre eigene Überschrift nicht wortgleich", () => {
+    const m = renderMeldung(BASIS);
+    expect(m.split(BASIS.bestleistung).length - 1).toBe(1); // nur in der Überschrift
+    expect(m).toContain("Das ist der höchste Wert");
+  });
+
+  it("schreibt nach dem Weiterleitungs-Absatz gross, direkt nach der Anrede klein", () => {
+    expect(renderOutreachDraft(BASIS).body).toContain("Aus den amtlichen");
+    expect(renderOutreachDraft({ ...BASIS, funktion: "Pressestelle" }).body).toContain("aus den amtlichen");
+  });
+
   it("wiederholt die Aussage nicht dreimal", () => {
     // Vorher stand die Bestleistung im Betreff, im Einstiegssatz UND zweimal in
     // der Meldung — in zehn Zeilen viermal dasselbe.

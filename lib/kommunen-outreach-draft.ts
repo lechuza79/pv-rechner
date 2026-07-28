@@ -101,9 +101,12 @@ export function renderMeldung(c: DraftContext): string {
   const rangSatz = c.rang ? ` — Platz ${c.rang.platz} von ${c.rang.von} Gemeinden` : "";
   const proKopfSatz = wpProKopf != null ? `, das entspricht ${fmtWattProKopf(wpProKopf)} je Einwohnerin und Einwohner` : "";
 
+  // Der zweite Satz greift die Überschrift auf, wiederholt sie aber NICHT
+  // wortgleich — vier Zeilen mit derselben Formulierung lesen sich wie ein
+  // Textbaustein-Unfall, egal wie richtig sie sind.
   return `${c.name}: ${c.bestleistung} ${c.wo}
 
-In ${c.name} sind ${anlagen.toLocaleString("de-DE")} Solaranlagen mit zusammen ${fmtPvLeistung(leistungKwp)} in Betrieb${proKopfSatz}. Damit hat ${c.name} ${c.bestleistung} ${c.wo}${rangSatz}.
+In ${c.name} sind ${anlagen.toLocaleString("de-DE")} Solaranlagen mit zusammen ${fmtPvLeistung(leistungKwp)} in Betrieb${proKopfSatz}. Das ist der höchste Wert ${c.wo}${rangSatz}.
 
 Grundlage sind die Anlagendaten des Marktstammdatenregisters der Bundesnetzagentur (Stand: ${standLabel(stand)}). Eine laufend aktualisierte Übersicht für ${c.name} gibt es unter ${c.pageUrl ?? "solar-check.io"}.`;
 }
@@ -133,7 +136,7 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Anlass, die Aussage macht die Meldung.
   const body = `Sehr geehrte Damen und Herren,${weiterleitung}
 
-aus den amtlichen Anlagendaten des Marktstammdatenregisters ergibt sich für ${c.name} gerade eine Meldung, die Sie übernehmen können. Ich habe sie fertig formuliert:
+${weiterleitung ? "A" : "a"}us den amtlichen Anlagendaten des Marktstammdatenregisters ergibt sich für ${c.name} gerade eine Meldung, die Sie übernehmen können. Ich habe sie fertig formuliert:
 
 ────────────────────────────
 ${meldung}

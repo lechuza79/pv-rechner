@@ -149,6 +149,13 @@ export default function KommunenCockpit() {
         <p style={{ fontSize: 13, color: v("--color-text-muted") }}>
           Kontaktdaten der ~11.000 Gemeinden. Filtern, Status pflegen, Kontaktseite öffnen.
         </p>
+        <p style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: 4, maxWidth: 720, lineHeight: 1.5 }}>
+          <strong>Variante</strong> = welches der beiden Anschreiben diese Gemeinde bekommt.{" "}
+          <em>Nur Meldung</em> bietet ausschließlich den fertigen Pressetext an — ein Beteiligter, kein Technikaufwand.{" "}
+          <em>Meldung + Widget</em> hängt einen Absatz an, der zusätzlich das einbettbare Widget anbietet; nur für
+          Verwaltungen, die jemanden haben, der es umsetzen kann (ab 20.000 Einwohnern oder mit belegter Pressestelle).
+          Beide Fassungen sind sonst identisch — sonst wüssten wir hinterher nicht, woran eine Reaktion lag.
+        </p>
       </div>
 
       {/* Auswertung je Ask-Variante — beantwortet die eine Frage des Durchgangs:
@@ -234,7 +241,7 @@ export default function KommunenCockpit() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 720 }}>
           <thead>
             <tr>
-              {["Gemeinde", "Aufhänger", "Ask", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
+              {["Gemeinde", "Aufhänger", "Variante", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
                 <th key={h} style={thStyle}>
                   {h}
                 </th>
@@ -603,6 +610,11 @@ function DraftModal({
               )}
             </div>
 
+            {lead.draft_generated_at && (
+              <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
+                Entwurf vom {new Date(lead.draft_generated_at).toLocaleString("de-DE")} — bei Textänderungen „Neu generieren".
+              </div>
+            )}
             <label style={fieldLabel}>Betreff</label>
             <div style={{ display: "flex", gap: space.xs }}>
               <input value={subject} onChange={(e) => setSubject(e.target.value)} style={{ ...inputStyle, flex: 1 }} aria-label="Betreff" />
