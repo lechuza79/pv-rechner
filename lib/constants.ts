@@ -73,10 +73,13 @@ export const FUEL_PRICE: Record<"gas" | "oil", { price: number; co2PerKwh: numbe
   oil: { price: 0.10, co2PerKwh: 0.266 },  // 10 ct/kWh, 266 g CO2/kWh
 };
 
-// Gas/Öl-Referenzkosten für WP-Vergleich (Preis + CO2 aus FUEL_PRICE)
-export const FUEL: Record<string, { label: string; price: number; efficiency: number; co2PerKwh: number }> = {
-  gas: { label: "Gas", price: FUEL_PRICE.gas.price, efficiency: 0.90, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },   // 90% Kessel
-  oil: { label: "Heizöl", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh }, // 85% Kessel
+// Gas/Öl-Referenzkosten für WP-Vergleich (Preis + CO2 aus FUEL_PRICE).
+// `label` ist der Brennstoff (Umschalter), `refLabel` die Heizung — dieselbe Trennung
+// wie in WP_FUEL_OPTIONS. Ohne refLabel entstand im PV-Ergebnis „Heizölheizung", weil
+// dort „heizung" an das Brennstoff-Label geklebt wurde.
+export const FUEL: Record<string, { label: string; refLabel: string; price: number; efficiency: number; co2PerKwh: number }> = {
+  gas: { label: "Gas", refLabel: "Gasheizung", price: FUEL_PRICE.gas.price, efficiency: 0.90, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },   // 90% Kessel
+  oil: { label: "Heizöl", refLabel: "Ölheizung", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh }, // 85% Kessel
 };
 
 // ─── Optionen für den Rechner-Flow ──────────────────────────────────────────

@@ -266,7 +266,7 @@ export default function Klimaanlage() {
             {step === 2 && (
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Auf welche Temperatur kühlen?</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6, marginBottom: 20 }}>
+                <div style={{ display: "grid", gridTemplateColumns: `repeat(${CFG.targetTempOptions.length}, 1fr)`, gap: 6, marginBottom: 20 }}>
                   {CFG.targetTempOptions.map(t => (
                     <button key={t} onClick={() => setTargetTemp(t)} style={{
                       padding: "12px 4px", borderRadius: v('--radius-md'), cursor: "pointer", textAlign: "center",
@@ -313,7 +313,7 @@ export default function Klimaanlage() {
                 </form>
                 {plzConfirmed ? (
                   <div style={{ fontSize: 12, color: v('--color-text-secondary'), marginTop: 8, lineHeight: 1.5, fontWeight: 600 }}>
-                    Standort übernommen: {cdh.toLocaleString("de-DE")} Kühlgradstunden{cdhSource === "fallback" ? " (Durchschnitt)" : ""}.
+                    Standort übernommen: {cdh.toLocaleString("de-DE")} Kühlgradstunden pro Jahr{cdhSource === "fallback" ? " (Durchschnitt)" : ""}.
                     {heatwave && heatwave.hotDays > 0 && ` Aktuell bis ${heatwave.maxTemp} °C.`}
                   </div>
                 ) : (
@@ -382,7 +382,7 @@ export default function Klimaanlage() {
                 {result.runningCost.toLocaleString("de-DE")} €
               </div>
               <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, textAlign: "center" }}>
-                {result.electricityKwh.toLocaleString("de-DE")} kWh Strom/Jahr · {result.co2Kg.toLocaleString("de-DE")} kg CO₂
+                {result.electricityKwh.toLocaleString("de-DE")} kWh Strom/Jahr · {result.co2Kg.toLocaleString("de-DE")} kg CO₂/Jahr
               </div>
 
               {/* Editierbare Annahmen */}
@@ -393,7 +393,7 @@ export default function Klimaanlage() {
                   {" = "}<strong style={{ fontFamily: v('--font-mono') }}>{result.cooledArea} m²</strong>
                 </div>
                 <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
-                <div>Kühlgradstunden: <strong style={{ fontFamily: v('--font-mono') }}>{cdh.toLocaleString("de-DE")}</strong>{" "}
+                <div>Kühlgradstunden pro Jahr: <strong style={{ fontFamily: v('--font-mono') }}>{cdh.toLocaleString("de-DE")}</strong>{" "}
                   <span style={{ fontSize: 11, color: v('--color-text-faint') }}>
                     ({cdhSource === "fallback" ? (bl ? `Ø ${bl}` : "Ø Deutschland") : plz ? `PLZ ${plz}` : "Ø Deutschland"})
                   </span>
@@ -434,8 +434,8 @@ export default function Klimaanlage() {
                   <span style={{ fontSize: 13, fontWeight: 700, color: v('--color-accent') }}>{result.device.label}</span>
                 </span>
                 <span style={{ display: "flex", gap: 12, flexShrink: 0, fontFamily: v('--font-mono'), fontSize: 13, alignItems: "baseline" }}>
-                  <span style={{ color: v('--color-text-muted'), fontSize: 11 }}>{result.electricityKwh} kWh</span>
-                  <span style={{ fontWeight: 800, color: v('--color-text-primary') }}>{result.runningCost} €/J</span>
+                  <span style={{ color: v('--color-text-muted'), fontSize: 11 }}>{result.electricityKwh} kWh/Jahr</span>
+                  <span style={{ fontWeight: 800, color: v('--color-text-primary') }}>{result.runningCost} €/Jahr</span>
                 </span>
               </div>
 
@@ -455,8 +455,8 @@ export default function Klimaanlage() {
                     }}>
                       <span style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-secondary'), overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0 }}>{r.device.label}</span>
                       <span style={{ display: "flex", gap: 10, flexShrink: 0, fontFamily: v('--font-mono'), fontSize: 11, alignItems: "baseline" }}>
-                        <span style={{ color: v('--color-text-faint') }}>{dKwh > 0 ? "+" : ""}{dKwh} kWh</span>
-                        <span style={{ fontWeight: 700, color: deltaColor, width: 56, textAlign: "right" }}>{dCost > 0 ? "+" : ""}{dCost} €/J</span>
+                        <span style={{ color: v('--color-text-faint') }}>{dKwh > 0 ? "+" : ""}{dKwh} kWh/Jahr</span>
+                        <span style={{ fontWeight: 700, color: deltaColor, width: 78, textAlign: "right" }}>{dCost > 0 ? "+" : ""}{dCost} €/Jahr</span>
                       </span>
                     </button>
                   );
@@ -523,7 +523,7 @@ export default function Klimaanlage() {
                     Die Sonne übernimmt rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(result.pvCoverage * 100)} %</span> deines Kühlstroms.{" "}
                     {COVERAGE_COPY[battery ? "battery" : "noBattery"][window_]} Reststromkosten:{" "}
                     <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{result.netRunningCost.toLocaleString("de-DE")} €/Jahr</span>{" "}
-                    statt {result.runningCost.toLocaleString("de-DE")} €.
+                    statt {result.runningCost.toLocaleString("de-DE")} €/Jahr.
                     <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4 }}>
                       {battery
                         ? "Mit typischem Heimspeicher (~10 kWh) gerechnet — er puffert den Tagstrom für Abend und Nacht."
@@ -535,7 +535,7 @@ export default function Klimaanlage() {
               ) : (
                 <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${v('--color-border')}`, fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.6 }}>
                   Mit einer Solaranlage und Speicher würde die Sonne rund <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>{Math.round(potentialCoverage * 100)} %</span> deines Kühlstroms übernehmen.{" "}
-                  {COVERAGE_COPY.battery[window_]} Statt {result.runningCost.toLocaleString("de-DE")} € nur noch{" "}
+                  {COVERAGE_COPY.battery[window_]} Statt {result.runningCost.toLocaleString("de-DE")} €/Jahr nur noch{" "}
                   <span style={{ fontWeight: 700, color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{potentialNet.toLocaleString("de-DE")} €/Jahr</span>.{" "}
                   <Link href="/photovoltaik-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Details im PV-Rechner</Link>
                 </div>
@@ -586,7 +586,11 @@ export default function Klimaanlage() {
                     <div style={{ fontSize: 11, fontWeight: 700, color: v('--color-text-muted'), textTransform: "uppercase", letterSpacing: "0.04em", marginBottom: 6 }}>
                       Wie gut ist das Gebäude gedämmt?
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 12 }}>
+                    {/* Zweispaltig, aber ohne feste Spaltenzahl: flex-basis 45 % ergibt
+                        zwei je Zeile, und eine ungerade letzte Kachel füllt die Zeile
+                        selbst aus. Die Stufenliste darf dadurch wachsen, ohne dass eine
+                        Kachel halb allein stehen bleibt. */}
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
                       {CFG.heatStandards.map(std => {
                         const on = heat.standard.id === std.id;
                         return (
@@ -595,6 +599,7 @@ export default function Klimaanlage() {
                             onClick={() => { setHeatStandard(std.id); setHeatThermalOverride(null); }}
                             title={std.sub}
                             style={{
+                              flex: "1 1 45%", minWidth: 0,
                               padding: "8px 8px", borderRadius: v('--radius-sm'), cursor: "pointer", textAlign: "left",
                               background: on ? v('--color-accent-dim') : v('--color-bg-muted'),
                               border: on ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
@@ -603,7 +608,7 @@ export default function Klimaanlage() {
                           >
                             <div style={{ fontSize: 12, fontWeight: 700 }}>{std.label}</div>
                             <div style={{ fontSize: 10, color: on ? v('--color-accent') : v('--color-text-faint'), fontFamily: v('--font-mono'), marginTop: 1 }}>
-                              {acHeatSpecKwhPerM2(std.id)} kWh/m²
+                              {acHeatSpecKwhPerM2(std.id)} kWh/m²·a
                             </div>
                           </button>
                         );
@@ -612,20 +617,20 @@ export default function Klimaanlage() {
 
                     <div style={{ fontSize: 13, color: v('--color-text-secondary'), lineHeight: 1.7 }}>
                       Für die Übergangszeit deiner {result.cooledArea} m² rechnen wir{" "}
-                      <InlineEdit value={heat.heatThermalKwh} onCommit={val => setHeatThermalOverride(Math.round(val))} unit=" kWh" min={100} max={20000} step={100} width={72} /> Heizwärme:{" "}
-                      <strong style={{ fontFamily: v('--font-mono') }}>{heat.heatElectricKwh.toLocaleString("de-DE")} kWh</strong> Strom ={" "}
+                      <InlineEdit value={heat.heatThermalKwh} onCommit={val => setHeatThermalOverride(Math.round(val))} unit=" kWh/Jahr" min={100} max={20000} step={100} width={72} /> Heizwärme:{" "}
+                      <strong style={{ fontFamily: v('--font-mono') }}>{heat.heatElectricKwh.toLocaleString("de-DE")} kWh/Jahr</strong> Strom ={" "}
                       <strong style={{ fontFamily: v('--font-mono'), color: v('--color-text-primary') }}>{heat.heatCost.toLocaleString("de-DE")} €/Jahr</strong>.
                       {heat.saving > 0 ? (
-                        <> Mit Gas wären es {heat.gasCost.toLocaleString("de-DE")} € — du sparst{" "}
+                        <> Mit Gas wären es {heat.gasCost.toLocaleString("de-DE")} €/Jahr — du sparst{" "}
                           <strong style={{ color: v('--color-positive'), fontFamily: v('--font-mono') }}>~{heat.saving.toLocaleString("de-DE")} €/Jahr</strong>.</>
                       ) : (
-                        <> Mit Gas wären es {heat.gasCost.toLocaleString("de-DE")} € — hier liegt Gas beim reinen Energiepreis gleichauf oder günstiger.</>
+                        <> Mit Gas wären es {heat.gasCost.toLocaleString("de-DE")} €/Jahr — hier liegt Gas beim reinen Energiepreis gleichauf oder günstiger.</>
                       )}
                     </div>
 
                     <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.6 }}>
-                      Angesetzt sind {heat.specKwhPerM2} kWh/m² im Jahr — das sind {Math.round(CFG.heatTransitionShare * 100)} % des
-                      Jahres-Heizwärmebedarfs von {heat.standard.specKwh} kWh/m² für „{heat.standard.label}". Gerechnet ist also nur
+                      Angesetzt sind {heat.specKwhPerM2} kWh/m²·a — das sind {Math.round(CFG.heatTransitionShare * 100)} % des
+                      Jahres-Heizwärmebedarfs von {heat.standard.specKwh} kWh/m²·a für „{heat.standard.label}". Gerechnet ist also nur
                       die Übergangszeit (Frühherbst, Frühjahr, milde Tage), ohne CO₂-Aufschlag aufs Gas. Für die kalte Kernzeit und
                       das ganze Haus ist eine wassergeführte Wärmepumpe effizienter.{" "}
                       <Link href="/waermepumpe-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Wärmepumpe rechnen</Link>

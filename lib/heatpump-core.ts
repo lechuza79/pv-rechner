@@ -26,10 +26,25 @@ export function calcHeatDemand(
   return { qHeiz, qWw, qGes: qHeiz + qWw };
 }
 
-// Heizlast (kW) für die Anlagengröße — spezifische W/m² × Fläche × Haustyp-Faktor.
-// Getrennt vom Jahresbedarf: die Heizlast dimensioniert die Wärmepumpe, der Bedarf
-// die Betriebskosten. Ergebnis ist die real ausgelegte Leistung (Norm × Auslegungs-
-// faktor). Die individuelle DIN-EN-12831-Berechnung ist genauer → override.heizlast.
+// ZWEI GRÖSSEN, die man nicht verwechseln darf (BLOCKER-Lehre vom 28.07.2026):
+//
+//   Heizlast (kW)          = was das Gebäude am kältesten Tag braucht. Das ist die
+//                            Größe, die eine Berechnung nach DIN EN 12831 liefert
+//                            und die ein Fachplaner nennt.
+//   Auslegungsleistung (kW) = worauf die Wärmepumpe ausgelegt wird. Monoenergetisch
+//                            sind das rund 85 % der Heizlast; die wenigen kältesten
+//                            Stunden deckt der Heizstab. Sie bestimmt den Preis.
+//
+// Bis heute lieferte calcHeatLoad die AUSLEGUNG, hieß aber „Heizlast", und der
+// Eingabewert (override.heizlast) wurde ungefiltert als Auslegung übernommen. Wer
+// also seine echte DIN-Heizlast eintrug — genau dazu forderte der Hinweistext auf —
+// bekam eine um 18 % größere und entsprechend teurere Anlage gerechnet. Dasselbe
+// Feld bedeutete je nach Weg zwei verschiedene Dinge.
+//
+// Deshalb: calcHeatLoad liefert jetzt die NORM-Heizlast, und auslegungsleistung()
+// leitet daraus die Anlagengröße ab — für beide Wege dieselbe Funktion.
+
+/** Norm-Heizlast des Gebäudes (kW) — die Größe, die auch eine DIN-EN-12831-Berechnung liefert. */
 export function calcHeatLoad(
   situation: "bestand" | "neubau",
   wohnflaeche: number,
@@ -39,9 +54,17 @@ export function calcHeatLoad(
 ): number {
   const arr = situation === "bestand" ? cfg.specHeatLoadBestand : cfg.specHeatLoadNeubau;
   const spec = arr[Math.max(0, Math.min(insulationIdx, arr.length - 1))];
-  const normHeizlast = (wohnflaeche * spec * haustypFaktor) / 1000;  // kW (Norm)
-  // Untergrenze 4 kW: kleinere Luft-Wärmepumpen gibt es real kaum am Markt.
-  return Math.max(4, Math.round(normHeizlast * cfg.auslegungsfaktor * 10) / 10);  // reale Auslegung, 0,1 kW
+  return Math.round((wohnflaeche * spec * haustypFaktor) / 1000 * 10) / 10;  // kW, 0,1 genau
+}
+
+/**
+ * Auslegungsleistung der Wärmepumpe (kW) aus der Norm-Heizlast. EINZIGER Ort, an dem
+ * der Auslegungsfaktor angewandt wird — egal ob die Heizlast geschätzt oder vom
+ * Nutzer eingetragen wurde. Untergrenze 4 kW: kleinere Luft-Wärmepumpen gibt es real
+ * kaum am Markt.
+ */
+export function auslegungsleistung(normHeizlastKw: number, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
+  return Math.max(4, Math.round(Math.max(0, normHeizlastKw) * cfg.auslegungsfaktor * 10) / 10);
 }
 
 export function flowTempForSystem(system: "fbh" | "hk_neu" | "hk_alt", cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {

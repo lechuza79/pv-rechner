@@ -603,6 +603,8 @@ pv-rechner/
 | **Degradation / Laufzeit** | `DEGRAD`, `YEARS` (`lib/constants.ts`) | Eigene Werte |
 | **Standort-Eingabe (UI)** | `components/StandortField.tsx` (PV-Rechner + Balkon) | Zweites PLZ-Feld bauen |
 | **Marktpreise Hardware** | `market_prices` (gescrapt) → `usePrices()`, `useHeatpumpPrices()`; wo es keine Scrape-Quelle gibt: Config + Wächter-Runbook | Preise im Code verstreuen |
+| **Fossile Referenzheizung** („was kostet es, NICHT zu wechseln") | `lib/fossil-reference.ts` — Anschaffung, Grundpreis, Wartung, Brennstoffpfad **und die Regel, wann die Beimischungspflicht gilt**. Die ZAHLEN bleiben in `heatpump-config.ts` (dort belegt, dort vom Wächter gepflegt), dieses Modul ist die Regel-Schicht darüber | Die Regel im Aufrufer nachformulieren — sie stand am 28.07.2026 dreimal im Code, eine Fassung davon falsch |
+| **Heizlast vs. Anlagengröße** | `calcHeatLoad` = Norm-Heizlast des Gebäudes (DIN EN 12831), `auslegungsleistung()` = Anlage (× `auslegungsfaktor`, einzige Anwendungsstelle) | Beides „Heizlast" nennen. Dann bekommt, wer seine echte DIN-Heizlast einträgt, eine 18 % zu große Anlage gerechnet |
 
 **Wer eine geteilte Rechenfunktion ändert, prüft die BEGLEITTEXTE aller Aufrufer.** Eine Modellannahme wirkt sofort überall, wo die Funktion aufgerufen wird — die Sätze daneben wandern aber nicht mit. Beispiel (28.07.2026): Als die fossile Referenz im WP-Rechner vom Weiterbetrieb auf den Ersatz umgestellt wurde, änderte sich damit auch die Beispielzahl auf den Förder- und Gemeindeseiten (beide rufen `calcHeatPump`) — daneben stand weiter „statt weiter fürs Heizen draufzuzahlen", also die Beschreibung des alten Falls. `grep` nach den Aufrufern gehört deshalb zum Umbau, nicht zur Nachkontrolle.
 

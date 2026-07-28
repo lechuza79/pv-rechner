@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   calcHeatDemand,
   calcHeatLoad,
+  auslegungsleistung,
   flowTempForSystem,
   calcJAZ,
   calcInvestBrutto,
@@ -72,10 +73,38 @@ describe("calcHeatLoad", () => {
   });
 
   it("nicht mehr aus dem Jahresbedarf ÷ 2000 (Regression: WW zählte mit)", () => {
-    // 150 m² unsaniert freistehend: real ~15 kW, nicht 18 (alte Formel qGes/2000)
+    // 150 m² unsaniert freistehend: Norm-Heizlast ~17 kW (150 × 115 W/m²),
+    // nicht 18+ aus der alten Formel qGes/2000, die das Warmwasser mitzählte.
     const hl = calcHeatLoad("bestand", 150, 0, 1);
-    expect(hl).toBeLessThan(16);
-    expect(hl).toBeGreaterThan(12);
+    expect(hl).toBeLessThan(19);
+    expect(hl).toBeGreaterThan(15);
+  });
+
+  it("Heizlast und Auslegungsleistung sind zwei verschiedene Größen", () => {
+    // Die Norm-Heizlast beschreibt das GEBÄUDE, die Auslegung die ANLAGE (rund 85 %,
+    // den Rest deckt der Heizstab). Bis 28.07.2026 lieferte calcHeatLoad die
+    // Auslegung, hieß aber „Heizlast" — wer seine echte DIN-Heizlast eintrug, bekam
+    // dadurch eine 18 % zu große und zu teure Anlage gerechnet.
+    const norm = calcHeatLoad("bestand", 150, 0, 1);
+    const auslegung = auslegungsleistung(norm);
+    expect(auslegung).toBeLessThan(norm);
+    expect(auslegung).toBeCloseTo(norm * DEFAULT_HEATPUMP_CONFIG.auslegungsfaktor, 0);
+  });
+
+  it("egal ob geschätzt oder eingetragen — der Auslegungsfaktor wirkt gleich", () => {
+    // Der eigentliche Fix: derselbe Weg für beide Quellen der Heizlast.
+    const base = { situation: "bestand" as const, wohnflaeche: 150, insulationIdx: 0, personen: 2,
+      heizsystem: "hk_neu" as const, wpType: "lwwp" as const };
+    const geschaetzt = calcHeatPump(base);
+    const eingetragen = calcHeatPump({ ...base, override: { heizlast: geschaetzt.heizlastKw } });
+    expect(eingetragen.auslegungKw).toBe(geschaetzt.auslegungKw);
+    expect(eingetragen.investBrutto).toBe(geschaetzt.investBrutto);
+  });
+
+  it("die Anlage wird nie kleiner als 4 kW ausgelegt", () => {
+    expect(auslegungsleistung(1)).toBe(4);
+    expect(auslegungsleistung(0)).toBe(4);
+    expect(auslegungsleistung(-5)).toBe(4);   // geteilte Funktion: gegen Unsinn absichern
   });
 });
 

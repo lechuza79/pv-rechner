@@ -7,6 +7,7 @@ import {
 } from "../../../lib/constants";
 import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
+import { greenGasApplies } from "../../../lib/fossil-reference";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
 import OptionCard from "../../../components/OptionCard";
@@ -66,7 +67,11 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const [showDetails, setShowDetails] = useState(false);
   // Szenario-Auswahl (steuert TCO/Amortisation/Ersparnis/CO₂ + Chart):
   //  "gruengas"                       = beschlossenes Heizungsgesetz (GModG Bio-Treppe),
-  //                                     beschlossen 10.07.2026 → Default, hervorgehoben.
+  //                                     Gesetz vom 23.07.2026, verkündet am 28.07.2026
+  //                                     (BGBl. 2026 I Nr. 226), in Kraft seit 29.07.2026
+  //                                     → Default, hervorgehoben. (Hier stand „beschlossen
+  //                                     10.07.2026" — dieses Datum ließ sich an keiner
+  //                                     amtlichen Quelle belegen, Council 28.07.2026.)
   //  "pessimistic"/"realistic"/"optimistic" = reine Preis-Annahmen OHNE Grüngas.
   const [scenario, setScenario] = useState("gruengas");
 
@@ -95,7 +100,9 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // keinen Neueinbau — dann greift § 43 Abs. 1 für ihn nicht, und die Bio-Treppe zu
   // rechnen wäre wieder derselbe Fehler, nur nutzergesteuert. Im NEUBAU greift sie
   // dagegen sehr wohl: § 10 Abs. 2 Nr. 3 n. F. verweist auf die §§ 42–45 entsprechend.
-  const gruengasVerfuegbar = fuel.kind === "gas" && ersatzInvest > 0;
+  // Die Regel selbst steht in lib/fossil-reference.ts — sie entscheidet zugleich in der
+  // Rechnung und im PV-Rechner. Hier nur abfragen, nicht ein zweites Mal formulieren.
+  const gruengasVerfuegbar = greenGasApplies({ fuelKind: fuel.kind, fossilInvest: ersatzInvest });
   const effScenario = !gruengasVerfuegbar && scenario === "gruengas" ? "realistic" : scenario;
   const greenGas = effScenario === "gruengas";
   // "Mehr erfahren"-Modal: sammelt alle erklärenden Texte zum Grüngas-Szenario.
@@ -708,8 +715,12 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 <div>Heizwärmebedarf: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} /></div>
                 <div>
                   Heizlast: <InlineEdit value={result.heizlastKw} onCommit={v => setOHeizlast(v)} unit=" kW" min={3} max={40} step={0.5} width={60} fmt={v => (Math.round(v * 10) / 10).toString().replace(".", ",")} />
-                  <InfoTooltip title="Heizlast" ariaLabel="Was ist die Heizlast?">
-                    Die Leistung, die deine Wärmepumpe an kalten Tagen liefern muss — sie bestimmt Anlagengröße und Preis. Wir schätzen sie aus Wohnfläche, Dämmzustand und Haustyp. <strong>Hast du eine Heizlastberechnung nach DIN EN 12831 (vom Energieberater oder Heizungsbauer)? Trag den exakten Wert hier ein</strong> — dann rechnen alle Kosten damit.
+                  <span style={{ fontSize: 12, color: v('--color-text-muted') }}>
+                    {" "}· Anlage {result.auslegungKw.toLocaleString("de-DE")} kW
+                  </span>
+                  <InfoTooltip title="Heizlast und Anlagengröße" ariaLabel="Was ist die Heizlast?">
+                    Die <strong>Heizlast</strong> ist die Leistung, die dein Gebäude am kältesten Tag braucht — wir schätzen sie aus Wohnfläche, Dämmzustand und Haustyp. <strong>Hast du eine Berechnung nach DIN EN 12831 vom Energieberater oder Heizungsbauer? Trag den Wert hier ein</strong>, dann rechnen alle Kosten damit.<br /><br />
+                    Die <strong>Anlage</strong> wird bewusst kleiner ausgelegt als die Heizlast ({Math.round(DEFAULT_HEATPUMP_CONFIG.auslegungsfaktor * 100)} %): Die wenigen extrem kalten Stunden im Jahr deckt der eingebaute Heizstab günstiger ab, als wenn man die Wärmepumpe das ganze Jahr überdimensioniert betreibt. Diese Anlagengröße bestimmt den Preis.
                   </InfoTooltip>
                 </div>
                 <div>
@@ -725,7 +736,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 <div>
                   Neue {fuel.refLabel}: <InlineEdit value={oFossilInvest ?? DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest} onCommit={v => setOFossilInvest(v)} unit=" €" min={0} max={40000} step={500} width={80} />
                   <InfoTooltip title="Warum eine neue Heizung in der Rechnung steht" ariaLabel="Warum steht eine neue Heizung in der Rechnung?">
-                    Verglichen wird über {DEFAULT_HEATPUMP_CONFIG.years} Jahre. In dieser Zeit hält kaum ein Kessel durch — wer sich gegen die Wärmepumpe entscheidet, kauft also irgendwann eine neue fossile Heizung. Diese Anschaffung spart man sich mit der Wärmepumpe, deshalb steht sie auf der fossilen Seite. Sie löst zugleich die Beimischungspflicht aus, denn die gilt für neu eingebaute Heizungen. <strong>Ist deine Heizung noch jung und hält die {DEFAULT_HEATPUMP_CONFIG.years} Jahre durch? Dann trag hier 0 ein.</strong>
+                    Der Rechner vergleicht zwei Entscheidungen, die <strong>jetzt</strong> anstehen: Wärmepumpe oder neue fossile Heizung. Beide werden im ersten Jahr bezahlt, deshalb steht die Anschaffung auf der fossilen Seite — man spart sie sich mit der Wärmepumpe. Sie ist zugleich der Grund, warum die Beimischungspflicht greift: Die gilt nur für Heizungen, die neu eingebaut werden. <strong>Steht bei dir gar keine Entscheidung an, weil die Heizung noch lange läuft? Dann trag hier 0 ein</strong> — dann rechnet der Vergleich gegen den Weiterbetrieb, ohne Anschaffung und ohne Beimischungspflicht.
                   </InfoTooltip>
                 </div>
                 <div>WP-Strompreis: <InlineEdit value={Math.round((oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => setOStromPrice(v / 100)} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
@@ -792,7 +803,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   ["Heizwärme", `${result.qHeiz.toLocaleString("de-DE")} kWh`],
                   ["Warmwasser", `${result.qWw.toLocaleString("de-DE")} kWh`],
                   ["Gesamt thermisch", `${result.qGes.toLocaleString("de-DE")} kWh`],
-                  ["Heizlast", `${result.heizlastKw.toLocaleString("de-DE")} kW`],
+                  ["Heizlast Gebäude", `${result.heizlastKw.toLocaleString("de-DE")} kW`],
+                  ["Auslegung Wärmepumpe", `${result.auslegungKw.toLocaleString("de-DE")} kW`],
                   ["Vorlauftemperatur", `${result.flowTemp} °C`],
                   ["JAZ", result.jaz.toFixed(2).replace(".", ",")],
                   ["Strombedarf WP", `${result.eWp.toLocaleString("de-DE")} kWh`],
@@ -880,7 +892,10 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
             </div>
 
             <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "8px 0" }}>
-              Prognose basiert auf Durchschnittswerten. Genauigkeit ±15 %. Betrachtungszeitraum {DEFAULT_HEATPUMP_CONFIG.years} Jahre.
+              {/* „±15 %" stand zwei Zeilen unter einer selbst ausgewiesenen Spanne von
+                  Faktor 15 — zwei Genauigkeitsaussagen, die einander widersprachen.
+                  Die ehrliche ist die Spanne im Ergebnis. */}
+              Gerechnet mit Durchschnittswerten über {DEFAULT_HEATPUMP_CONFIG.years} Jahre. Wie weit das Ergebnis je nach Energiepreis-Annahme auseinandergeht, steht als Spanne unter der Einsparung.
             </div>
           </div>
         )}

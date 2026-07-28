@@ -114,14 +114,34 @@ export interface AcHeatStandard {
   specKwh: number;   // kWh/m²·a Jahres-Heizwärmebedarf (kanonisch aus constants.ts)
 }
 
+/** Stabile ids der Bestandsstufen. Sie hängen an der Stufe, NICHT an ihrer
+ *  Position — `defaultHeatStandard` und gemerkte Auswahlen bleiben gültig, auch
+ *  wenn die Tabelle wächst oder umsortiert wird. */
+const BESTAND_IDS: Record<string, string> = {
+  "Unsaniert": "unsaniert",
+  "Teilsaniert": "teilsaniert",
+  "Gut saniert": "saniert",
+  "Vollsaniert": "vollsaniert",
+};
+
+/** id für eine Stufe: gepflegter Wert, sonst aus dem Label abgeleitet. */
+function bestandId(label: string): string {
+  return BESTAND_IDS[label] ?? label.toLowerCase()
+    .replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+// Die Bestandsstufen werden AUS der geteilten Tabelle gebaut, nicht Stufe für
+// Stufe abgeschrieben: Eine neue Dämmstufe in INSULATION_BESTAND (zuletzt
+// „Vollsaniert", 28.07.2026) taucht hier sonst still gar nicht auf — der
+// Klima-Rechner böte dann weniger Stufen an als der WP-Rechner, ohne dass
+// irgendetwas rot wird. Festgenagelt von lib/__tests__/aircon.test.ts
+// („Dämmstufen-Vollständigkeit").
 export const AC_HEAT_STANDARDS: AcHeatStandard[] = [
-  { id: "unsaniert",   label: INSULATION_BESTAND[0].label, sub: INSULATION_BESTAND[0].sub, specKwh: INSULATION_BESTAND[0].specKwh },
-  { id: "teilsaniert", label: INSULATION_BESTAND[1].label, sub: INSULATION_BESTAND[1].sub, specKwh: INSULATION_BESTAND[1].specKwh },
-  { id: "saniert",     label: INSULATION_BESTAND[2].label, sub: INSULATION_BESTAND[2].sub, specKwh: INSULATION_BESTAND[2].specKwh },
-  { id: "vollsaniert", label: INSULATION_BESTAND[3].label, sub: INSULATION_BESTAND[3].sub, specKwh: INSULATION_BESTAND[3].specKwh },
+  ...INSULATION_BESTAND.map(i => ({ id: bestandId(i.label), label: i.label, sub: i.sub, specKwh: i.specKwh })),
   // Neubau: gesetzlicher Mindeststandard als Bucket. Wer KfW 55/40 hat, liegt
   // darunter und korrigiert die Heizwärme direkt im Ergebnis (InlineEdit).
-  { id: "neubau",      label: "Neubau (EnEV 2014)", sub: INSULATION_NEUBAU[0].sub, specKwh: INSULATION_NEUBAU[0].specKwh },
+  { id: "neubau", label: `Neubau (${INSULATION_NEUBAU[0].label})`, sub: INSULATION_NEUBAU[0].sub, specKwh: INSULATION_NEUBAU[0].specKwh },
 ];
 
 export interface AcDevice {
