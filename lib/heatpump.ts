@@ -80,6 +80,7 @@ export interface HeatPumpInputs {
     gasPrice?: number;           // €/kWh
     gasEfficiency?: number;      // heating efficiency
     gasCo2?: number;             // kg CO2/kWh
+    fossilErsatzInvest?: number;    // € neue fossile Heizung (0 = Altanlage läuft noch lange)
     klimaBonus?: boolean;           // BEG Klima-Geschwindigkeits-Bonus (Eigennutzer) — default true
     haushaltseinkommen?: number;    // zu versteuerndes Haushaltsjahreseinkommen (€) für den gestaffelten Einkommens-Bonus; undefined = kein Bonus
     kindImHaushalt?: boolean;       // Familienzuschlag: hebt die Einkommensgrenze (begFamilienzuschlag)
@@ -112,7 +113,7 @@ export interface HeatPumpResult {
   gasKosten: number;             // Σ Gas fuel cost
   gasFix: number;                // Σ Grundgebühr
   gasWartung: number;            // Σ Wartung
-  gasInvest: number;             // Neubau only
+  gasInvest: number;             // Anschaffung der fossilen Alternative (Neubau + Bestandsersatz)
   tcoGas: number;
   // Comparison
   tcoEinsparung: number;         // tcoGas − tcoWp
@@ -326,7 +327,14 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   gasKosten = Math.round(gasKosten);
   const gasFix = fixPerYear * cfg.years;
   const gasWartung = cfg.gasMaintenance * cfg.years;
-  const gasInvest = inputs.situation === "neubau" ? cfg.gasInvestNeubau : 0;
+  // Anschaffung der fossilen Alternative — auch im BESTAND. Wer sich gegen die
+  // Wärmepumpe entscheidet, betreibt nicht 20 Jahre lang eine alte Heizung weiter,
+  // sondern kauft in diesem Zeitraum einen neuen Kessel. Genau dieser Neueinbau
+  // löst auch die Bio-Treppe aus (§ 43 GModG gilt nur für Anlagen, die neu in ein
+  // bestehendes Gebäude eingebaut werden) — vorher rechneten wir die Pflicht, ohne
+  // die zugehörige Investition anzusetzen, also zwei Hälften verschiedener Fälle.
+  // Wer eine junge Heizung hat, setzt den Betrag im Ergebnis auf 0.
+  const gasInvest = inputs.override?.fossilErsatzInvest ?? cfg.fossilErsatzInvest;
   const tcoGas = gasKosten + gasFix + gasWartung + gasInvest;
 
   // 6. Vergleich (PV-Invest ist NICHT Teil der WP-Rechnung — eigene Entscheidung)

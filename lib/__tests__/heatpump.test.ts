@@ -232,12 +232,15 @@ describe("calcHeatPump (full TCO)", () => {
     expect(r.years.length).toBe(21);
   });
 
-  it("year 0 starts at -mehrInvest (≤0 since no PV invest)", () => {
+  it("year 0 starts at -mehrInvest (Mehrkosten gegenüber der fossilen Anschaffung)", () => {
     const r = calcHeatPump(baseInputs);
     expect(r.years[0].i).toBe(0);
     expect(r.years[0].kum).toBeLessThanOrEqual(0);
-    // Mehr-Invest ≈ investNetto (Bestand: gasInvest = 0)
-    expect(r.years[0].kum).toBe(-r.investNetto);
+    // Startpunkt ist die MEHR-Investition: Wer die Wärmepumpe kauft, spart sich die
+    // neue fossile Heizung. Seit 28.07.2026 gilt das auch im Bestand — die Alternative
+    // zur Wärmepumpe ist über 20 Jahre keine unsterbliche Altanlage, sondern ein
+    // Ersatzkessel (derselbe Neueinbau, der die Bio-Treppe auslöst).
+    expect(r.years[0].kum).toBe(-(r.investNetto - r.gasInvest));
   });
 
   it("eWp = qGes / jaz (energy balance holds)", () => {
@@ -257,11 +260,25 @@ describe("calcHeatPump (full TCO)", () => {
     expect(r.investNetto).toBe(r.investBrutto);
   });
 
-  it("Neubau adds gasInvest as fossile reference (Brennwerttherme)", () => {
+  it("die fossile Alternative kostet auch im Bestand eine Anschaffung", () => {
+    // Bis 28.07.2026 war das im Bestand 0 — zusammen mit der Grüngas-Pflicht ergab
+    // das zwei Hälften verschiedener Fälle: Wir rechneten die Beimischungspflicht
+    // (die nur für NEU eingebaute Heizungen gilt, § 43 Abs. 1 GModG), ließen aber
+    // den Neueinbau selbst kostenlos. Jetzt gehört beides zusammen.
     const bestand = calcHeatPump(baseInputs);
     const neubau = calcHeatPump({ ...baseInputs, situation: "neubau", insulationIdx: 0 });
-    expect(bestand.gasInvest).toBe(0);
+    expect(bestand.gasInvest).toBeGreaterThan(0);
     expect(neubau.gasInvest).toBeGreaterThan(0);
+  });
+
+  it("wer eine junge Heizung hat, setzt die Anschaffung auf 0", () => {
+    // Der Ersatzfall ist der Regelfall, nicht das Gesetz: Eine fünf Jahre alte
+    // Heizung hält die 20 Jahre durch — dann ist die Referenz wirklich der
+    // Weiterbetrieb, und die Wärmepumpe muss ohne diesen Vorteil auskommen.
+    const mitErsatz = calcHeatPump(baseInputs);
+    const ohneErsatz = calcHeatPump({ ...baseInputs, override: { ...baseInputs.override, fossilErsatzInvest: 0 } });
+    expect(ohneErsatz.gasInvest).toBe(0);
+    expect(ohneErsatz.tcoEinsparung).toBeLessThan(mitErsatz.tcoEinsparung);
   });
 
   it("CO2 savings positive (WP cleaner than gas over 20 years)", () => {

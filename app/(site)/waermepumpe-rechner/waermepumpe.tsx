@@ -52,6 +52,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const [oInvest, setOInvest] = useState<number | null>(null);
   const [oQges, setOQges] = useState<number | null>(null);
   const [oHeizlast, setOHeizlast] = useState<number | null>(null);
+  // Anschaffung der fossilen Alternative (0 = die vorhandene Heizung hält die 20 Jahre durch).
+  const [oFossilInvest, setOFossilInvest] = useState<number | null>(null);
   // BEG Klima-Geschwindigkeits-Bonus: braucht BEIDES — Selbstnutzung und eine
   // passende alte Heizung. Früher war das ein einziger Schalter, was Vermietern
   // fälschlich den Bonus geben konnte und das Alterskriterium verdeckte.
@@ -78,7 +80,12 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // gibt es beides nicht — das Szenario verschwindet dann aus der Auswahl, und ein
   // vorher gewähltes „Grüngas" fällt auf die mittlere Preisannahme zurück, statt
   // eine Zahl zu zeigen, für die uns die Grundlage fehlt.
-  const gruengasVerfuegbar = fuel.kind === "gas";
+  // Zweite Bedingung: Es muss überhaupt eine Heizung neu eingebaut werden. Setzt
+  // jemand die Anschaffung auf 0 („meine Heizung hält die 20 Jahre durch"), gibt es
+  // keinen Neueinbau — dann greift § 43 Abs. 1 für ihn nicht, und die Bio-Treppe zu
+  // rechnen wäre wieder derselbe Fehler, nur nutzergesteuert.
+  const ersatzInvest = oFossilInvest ?? DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest;
+  const gruengasVerfuegbar = fuel.kind === "gas" && ersatzInvest > 0;
   const effScenario = !gruengasVerfuegbar && scenario === "gruengas" ? "realistic" : scenario;
   const greenGas = effScenario === "gruengas";
   // "Mehr erfahren"-Modal: sammelt alle erklärenden Texte zum Grüngas-Szenario.
@@ -123,13 +130,14 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
       gasPrice: oGasPrice ?? fuel.price,
       gasEfficiency: fuel.efficiency,
       gasCo2: fuel.co2PerKwh,
+      fossilErsatzInvest: oFossilInvest ?? undefined,
       // Beide Boni setzen Selbstnutzung voraus (KfW 458) — als Vermieter bleibt
       // nur die Grundförderung, deshalb hier weder Klima noch Einkommen.
       klimaBonus: selbstnutzer && altheizungKlima(altheizung),
       haushaltseinkommen: selbstnutzer ? einkommenIncome(einkommen) : undefined,
       kindImHaushalt: selbstnutzer && kindImHaushalt,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, oFossilInvest, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt]);
 
   // ── Realistische Wege (Szenario-Vergleich) ───────────────────
   // Ein unsaniertes Haus bleibt selten 20 Jahre unangetastet. Statt nur den
@@ -436,7 +444,27 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                    aber unser Preispfad bildet nur den Gas-Mix ab. Statt eine Zahl zu
                    erfinden, sagen wir offen, was in der Rechnung fehlt. */
                 <div style={{ padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.55 }}>
-                  Für Heizöl rechnen wir nur mit der normalen Teuerung und dem steigenden CO₂-Preis. Das Heizungsgesetz verlangt ab 2029 auch bei Öl einen wachsenden Anteil klimafreundlicher Brennstoffe — wie stark Bioheizöl den Preis treibt, ist offen, deshalb steckt dieser Effekt hier nicht drin. Die Ölheizung dürfte also eher teurer werden als hier gezeigt.
+                  {ersatzInvest <= 0 ? (
+                    <>
+                      <strong style={{ color: v('--color-text-primary') }}>Ohne neue Heizung greift die Grüngas-Pflicht nicht.</strong>{" "}
+                      Du hast die Anschaffung einer neuen {fuel.refLabel} auf 0 € gesetzt — deine jetzige Heizung läuft also
+                      weiter. Die Beimischungspflicht des Heizungsgesetzes gilt nur für Heizungen, die neu eingebaut werden,
+                      deshalb rechnen wir sie hier nicht mit. Bleibt die normale Teuerung und der steigende CO₂-Preis.
+                      Eine Einschränkung: Ab 2028 soll zusätzlich eine Quote für alle Lieferanten kommen, die auch bestehende
+                      Heizungen verteuern würde — dieses Gesetz liegt noch nicht vor, wir rechnen es nicht.
+                    </>
+                  ) : (
+                  <>
+                  <strong style={{ color: v('--color-text-primary') }}>Beim Heizöl fehlt ein Kostenblock — bewusst.</strong>{" "}
+                  Das Heizungsgesetz nennt Heizöl gleichrangig neben Gas: Eine neu eingebaute Ölheizung muss ab 2029{" "}
+                  {bioTreppeStufenText()} ihrer Wärme aus klimafreundlichen Brennstoffen erzeugen, bei Öl also aus Bioheizöl.
+                  Dass das den Brennstoff verteuert, ist sicher — <strong>wie stark, ist es nicht.</strong> Marktangaben reichen
+                  von wenigen Prozent Aufschlag bis zu rund der Hälfte, je nachdem ob man beigemischtes Bioheizöl oder reines
+                  HVO betrachtet. Eine belastbare Preisreihe gibt es dafür bislang nicht, deshalb rechnen wir hier nur die
+                  normale Teuerung und den steigenden CO₂-Preis. <strong>Deine Ölheizung dürfte also teurer werden, als hier
+                  steht</strong> — die Wärmepumpe schneidet in Wirklichkeit eher besser ab als in dieser Rechnung.
+                  </>
+                  )}
                 </div>
               )}
 
@@ -635,7 +663,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 </span>.
               </div>
               <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 4 }}>
-                vs. {situation === "neubau" ? null : "Weiterbetrieb"}
+                vs. neue
                 {/* Beim Wechsel des Energieträgers den Preis-Override fallen lassen —
                     sonst bliebe ein von Hand gesetzter Gaspreis am Heizöl kleben und
                     die Umstellung wirkte wirkungslos. */}
@@ -669,6 +697,12 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 <div>{fuel.kind === "oil" ? "Heizölpreis" : "Gaspreis"}: {greenGas
                   ? <span style={{ fontStyle: "italic", color: v('--color-text-muted') }}>folgt dem Grüngas-Pfad (Block unten)</span>
                   : <InlineEdit value={Math.round((oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => setOGasPrice(v / 100)} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} />}</div>
+                <div>
+                  Neue {fuel.refLabel}: <InlineEdit value={oFossilInvest ?? DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest} onCommit={v => setOFossilInvest(v)} unit=" €" min={0} max={40000} step={500} width={80} />
+                  <InfoTooltip title="Warum eine neue Heizung in der Rechnung steht" ariaLabel="Warum steht eine neue Heizung in der Rechnung?">
+                    Verglichen wird über {DEFAULT_HEATPUMP_CONFIG.years} Jahre. In dieser Zeit hält kaum ein Kessel durch — wer sich gegen die Wärmepumpe entscheidet, kauft also irgendwann eine neue fossile Heizung. Diese Anschaffung spart man sich mit der Wärmepumpe, deshalb steht sie auf der fossilen Seite. Sie löst zugleich die Beimischungspflicht aus, denn die gilt für neu eingebaute Heizungen. <strong>Ist deine Heizung noch jung und hält die {DEFAULT_HEATPUMP_CONFIG.years} Jahre durch? Dann trag hier 0 ein.</strong>
+                  </InfoTooltip>
+                </div>
                 <div>WP-Strompreis: <InlineEdit value={Math.round((oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => setOStromPrice(v / 100)} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
                 <div>Investition (nach Förderung): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} />{situation === "bestand" ? <span style={{ fontSize: 12, color: v('--color-text-muted') }}> · {result.investBrutto.toLocaleString("de-DE")} € vor {Math.round(result.beg.rate * 100)} % Förderung</span> : null}</div>
               </div>
@@ -810,7 +844,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
                 PV-Rechner öffnen <IconArrowRight size={iconSizes.sm} />
               </Link>
-              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
+              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFossilInvest(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>
@@ -850,8 +884,8 @@ function TcoBreakdown({ r, situation, jahre, sanierungHinweis, refLabel }: { r: 
         <div style={{ borderTop: `1px solid ${v('--color-border')}`, marginTop: 2, paddingTop: 2 }}><Row label="Summe" val={r.tcoWp} strong /></div>
       </div>
       <div style={{ marginBottom: 8 }}>
-        <div style={{ fontWeight: 700, marginBottom: 2 }}>{situation === "neubau" ? `Neue ${refLabel} kostet` : `${refLabel} weiterbetreiben kostet`}</div>
-        {r.gasInvest > 0 && <Row label="Neue Therme" val={r.gasInvest} />}
+        <div style={{ fontWeight: 700, marginBottom: 2 }}>{situation === "neubau" ? `Neue ${refLabel} kostet` : `Stattdessen neue ${refLabel} kostet`}</div>
+        {r.gasInvest > 0 && <Row label="Anschaffung" val={r.gasInvest} />}
         <Row label="Brennstoff (inkl. steigendem CO₂-Preis)" val={r.gasKosten} />
         {/* Grundgebühr nur zeigen, wenn es sie gibt — beim Öltank hängt an keinem
             Anschluss eine laufende Gebühr, eine „0 €"-Zeile wäre nur Rauschen. */}

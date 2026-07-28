@@ -68,7 +68,13 @@ export interface HeatPumpConfig {
   // auch der Ölheizung aufgeschlagen — 3.600 € über 20 Jahre zugunsten der Wärmepumpe.
   fixCostPerYear: Record<"gas" | "oil", number>;
   gasMaintenance: number;        // €/a
-  gasInvestNeubau: number;       // € neue Gas-Brennwerttherme bei Neubau
+  // € für eine neue fossile Heizung — die Anschaffung, die man sich mit der
+  // Wärmepumpe spart. Gilt im Neubau UND im Bestand: Die Alternative zur
+  // Wärmepumpe ist nicht eine unsterbliche Altanlage, sondern ein Kessel, der im
+  // 20-Jahres-Horizont ersetzt werden muss. Genau dieser Neueinbau löst auch die
+  // Bio-Treppe nach § 43 GModG aus — beides gehört zusammen (siehe unten).
+  // Im Ergebnis editierbar: Wer eine junge Heizung hat, trägt 0 ein.
+  fossilErsatzInvest: number;
   // Horizon for TCO comparison
   years: number;
   // Annual inflation rates
@@ -152,7 +158,14 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // die Gleichsetzung ausdrücklich bestätigen (scripts/waermepumpe-verify.md).
   fixCostPerYear: { gas: 180, oil: 0 },
   gasMaintenance: 180,
-  gasInvestNeubau: 12000,
+  // Komplette neue fossile Heizung inkl. Einbau. Marktangaben streuen breit
+  // (Portale nennen 9.000–15.000 € für eine Gas-Brennwertanlage inkl. Installation,
+  // in einfachen Fällen auch darunter) — deshalb ein mittlerer Wert, der im
+  // Ergebnis editierbar ist, statt einer Scheingenauigkeit. Für Heizöl setzen wir
+  // denselben Betrag an: dass ein Ölkessel mit Tank und Abgasweg real teurer ist,
+  // ist plausibel, aber unbelegt (Portale taugen dafür nicht — siehe die
+  // Investitions-Lehre oben). OFFEN (bis 01/2027): eigener Öl-Wert oder Bestätigung.
+  fossilErsatzInvest: 12000,
   years: 20,
   gasInflation: 0.02,
   stromInflation: 0.02, // p.a. — konsistent mit PV-Rechner (SCENARIOS realistic + electricityIncrease)
