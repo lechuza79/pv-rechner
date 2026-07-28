@@ -54,6 +54,15 @@ export type GemeindeStats = {
 
 export type AwardCategory = {
   key: string;
+  /**
+   * Adresse der Ranking-Seite (`/solar-atlas/ranking/<slug>`). Nur die
+   * Kategorien, die oeffentlich ein Ranking bekommen, tragen einen — das sind
+   * die Pro-Kopf-Kategorien. Absolute Kategorien bleiben ohne: Ihr Sieger ist
+   * gemessen an mastr_gemeinde_award schlicht die einwohnerstaerkste Kommune
+   * (in BW, BY und NRW jeweils exakt), eine Rangliste daraus waere eine
+   * Einwohner-Rangliste mit anderem Titel.
+   */
+  slug?: string;
   /** Interner Kurzname (Backend-Ansichten). NICHT nach außen verwenden — siehe
    *  `bestleistung`/`thema`. */
   label: string;
@@ -93,6 +102,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   // Bürger, pro Kopf — verifiziert aussagekräftig (skaliert mit Haushalten).
   {
     key: "dach-privat-pk",
+    slug: "solarleistung-je-einwohner",
     label: "Solardach-Spitzenreiter",
     merit: "Meiste private Dach-Solarleistung je Einwohner.",
     bestleistung: "die meiste private Solarleistung auf den Dächern je Einwohner",
@@ -105,6 +115,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "balkon-pk",
+    slug: "balkonkraftwerke-je-einwohner",
     label: "Balkon-Pionier",
     merit: "Meiste Balkonkraftwerke je 1.000 Einwohner — die sauberste Bürgerzahl.",
     bestleistung: "die meisten Balkonkraftwerke je 1.000 Einwohner",
@@ -117,6 +128,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "batterie-privat-pk",
+    slug: "speicherkapazitaet-je-einwohner",
     label: "Speicher-Vorreiter",
     merit: "Meiste private Batteriekapazität je Einwohner.",
     bestleistung: "die meiste private Speicherkapazität je Einwohner",

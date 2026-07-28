@@ -34,6 +34,9 @@ type Platzierung = {
    *  Vergleichsebene. Eine gemeinsame gäbe es nicht. */
   tabelle: Zeile[];
   tabelleGekuerzt: boolean;
+  /** Die vollständige Rangliste als eigene Seite — teilbar und verlinkbar,
+   *  anders als der Dialog. */
+  rankingHref: string | null;
 };
 
 type Zeile = { platz: number; name: string; href: string | null; wert: string; selbst: boolean };
@@ -145,6 +148,11 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
                 Weitere {nf(daten.alle[offen].von - daten.alle[offen].tabelle.length)} Kommunen folgen — hier nicht
                 mehr aufgeführt.
               </p>
+            )}
+            {daten.alle[offen].rankingHref && (
+              <Link href={daten.alle[offen].rankingHref!} style={S.ganzes}>
+                Ganzes Ranking als Seite <IconArrowRight size={13} />
+              </Link>
             )}
           </div>
         )}
@@ -294,4 +302,16 @@ const S: Record<string, React.CSSProperties> = {
   kroneKlein: { marginRight: 4, fontSize: 11 },
   zWert: { fontFamily: v("--font-mono"), color: v("--color-accent") },
   gekuerzt: { fontSize: 12, color: v("--color-text-muted"), padding: pad("sm", "sm"), margin: 0 },
+  // Der Dialog ist der schnelle Blick; die Seite ist das, was man teilt.
+  ganzes: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    marginTop: space.sm,
+    padding: pad("sm", "sm"),
+    fontSize: 13,
+    fontWeight: 600,
+    color: v("--color-accent"),
+    textDecoration: "none",
+  },
 };

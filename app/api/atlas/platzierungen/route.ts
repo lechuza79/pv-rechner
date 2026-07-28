@@ -78,6 +78,16 @@ export async function GET(req: NextRequest) {
 
   const nachId = new Map(stats.map((g) => [g.regionId, g]));
 
+  /** `/solar-atlas/ranking/<kategorie>/<bundesland>/<kreis>` je Vergleichsebene. */
+  function rankingHrefVon(katSlug: string | undefined, level: HookLevel): string | null {
+    if (!katSlug) return null;
+    const bl = elternSlugs[regionId.slice(0, 2)];
+    const kreis = elternSlugs[regionId.slice(0, 5)];
+    if (level === "bund") return `/solar-atlas/ranking/${katSlug}`;
+    if (level === "land") return bl ? `/solar-atlas/ranking/${katSlug}/${bl}` : null;
+    return bl && kreis ? `/solar-atlas/ranking/${katSlug}/${bl}/${kreis}` : null;
+  }
+
   /** Die vollständige Rangliste einer Platzierung — dieselbe Gruppe, aus der ihr
    *  Rang stammt. Jede Auszeichnung hat ihre eigene; eine gemeinsame gäbe es
    *  nicht, weil sich Kategorie UND Vergleichsebene je Zeile unterscheiden. */
@@ -137,6 +147,10 @@ export async function GET(req: NextRequest) {
         // Der Formatierer bringt bei manchen Kategorien schon einen Punkt mit
         // ("38,1 je 1.000 Ew."). Im Satz stand dahinter ein zweiter.
         wert: formatAwardValue(p.value, cat.format).replace(/\.$/, ""),
+        // Adresse der vollständigen Ranking-Seite. Nur Pro-Kopf-Kategorien
+        // haben eine (siehe `slug` in lib/awards.ts) — und nur, wenn sich das
+        // Gebiet aus Slugs zusammensetzen lässt.
+        rankingHref: rankingHrefVon(cat.slug, p.level),
         tabelle,
         /** Sitzt die eigene Zeile losgelöst unter den Anführern? Dann setzt die
          *  Anzeige eine Auslassung dazwischen. */
