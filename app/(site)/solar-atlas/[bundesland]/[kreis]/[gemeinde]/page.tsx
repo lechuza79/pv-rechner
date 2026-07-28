@@ -447,7 +447,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
             repräsentative PLZ reicht; ohne Koordinate fällt der Ertrag sauber auf
             den Bundesland-Wert zurück). */}
         {region.population ? (
-          <GemeindePotentialClient plz={repPlz} lat={geoLat} lon={geoLon} texte={szenarioTexte} name={region.name} />
+          <GemeindePotentialClient plz={repPlz} lat={geoLat} lon={geoLon} texte={szenarioTexte} name={region.name} regionId={region.region_id} />
         ) : (
           // Ohne Einwohnerzahl gibt es keinen Potential-Block — der Rechner-Link
           // muss trotzdem erhalten bleiben (sonst hat die Seite keinen Weg dorthin).

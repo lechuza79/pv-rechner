@@ -7,7 +7,7 @@ import { IconArrowRight, IconTrendUp, IconTrendDown } from "../Icons";
 import { LoadingDots } from "../LoadingDots";
 import { writeLocation } from "../../lib/location";
 import type { GemeindePotential } from "../../lib/gemeinde-potential";
-import { pvErtragSatz, type SzenarioTexte } from "../../lib/gemeinde-szenario-text";
+import { pvErtragSatz, szenarioUeberschrift, type SzenarioTexte } from "../../lib/gemeinde-szenario-text";
 
 // Modellblock „Angebot trifft Nachfrage" + drei greifbare Beispiele, die mit
 // vorbefüllter PLZ in die Rechner leiten. Client-Komponente, weil der Klick die
@@ -40,6 +40,7 @@ export default function GemeindePotential({
   p,
   texte,
   name,
+  regionId,
 }: {
   plz: string | null;
   /** null = Standort-Ertrag lädt noch (Zahlen als LoadingDots, Layout steht). */
@@ -47,8 +48,10 @@ export default function GemeindePotential({
   /** Je Gemeinde verschiedene Sätze. Serverseitig gerechnet und durchgereicht —
    *  sie hängen an Bestandsdaten, die die Seite ohnehin hat, nicht am Ertrag. */
   texte?: SzenarioTexte;
-  /** Gemeindename für den Ortssatz der PV-Karte. */
+  /** Gemeindename — steht in Überschrift und allen drei Karten. */
   name?: string;
+  /** Gebietsschlüssel: waehlt die Überschrift-Variante stabil aus. */
+  regionId?: string;
 }) {
   const remember = () => {
     if (plz) writeLocation(plz);
@@ -56,10 +59,17 @@ export default function GemeindePotential({
 
   const pvHref = `/photovoltaik-rechner${plz ? `?plz=${plz}&a=2` : "?a=2"}`;
 
+  // Ortsangabe als fertiges Textstück, nicht als JSX-Einschub zwischen zwei
+  // Textknoten: Letzteres erzeugte „Einfamilienhaus in Höchberg , 140 m²" —
+  // React setzt zwischen die Knoten ein Leerzeichen, das Komma landet dahinter.
+  const imOrt = name ? ` in ${name}` : "";
+
   return (
     <>
       <div style={S.section}>
-        <h2 style={S.h2}>Was das für Sie bedeutet</h2>
+        <h2 style={S.h2}>
+          {name && regionId ? szenarioUeberschrift(name, regionId) : "Was das für Sie bedeutet"}
+        </h2>
 
         <div style={S.cards}>
           <Link href={pvHref} onClick={remember} style={S.exCard}>
@@ -68,7 +78,7 @@ export default function GemeindePotential({
               <span style={S.exVal}>{p ? nfEuro(round100(p.pvFiveYearBenefit)) : <LoadingDots />}</span>
             </div>
             <div style={S.exLabel}>
-              verschenkt ein typisches Einfamilienhaus hier in 5 Jahren ohne eigene Anlage
+              {`verschenkt ein typisches Einfamilienhaus${name ? imOrt : " hier"} in 5 Jahren ohne eigene Anlage`}
             </div>
             {/* Ortssatz erst mit dem Ertrag — er IST der Ertrag. */}
             {p && name && pvErtragSatz(name, p.yieldKwhKwp) && (
@@ -90,9 +100,9 @@ export default function GemeindePotential({
               <span style={S.exVal}>{p ? nfEuro(round100(p.wpTco20)) : <LoadingDots />}</span>
             </div>
             <div style={S.exLabel}>
-              spart eine Wärmepumpe gegenüber Gas über 20 Jahre — statt weiter fürs Heizen draufzuzahlen
+              {`spart eine Wärmepumpe${imOrt} gegenüber Gas über 20 Jahre — statt weiter fürs Heizen draufzuzahlen`}
             </div>
-            <div style={S.exSub}>Typisches Einfamilienhaus, 140 m², Luft/Wärmepumpe</div>
+            <div style={S.exSub}>{`Typisches Einfamilienhaus${imOrt}, 140 m², Luft/Wärmepumpe`}</div>
             <span style={S.exCta}>
               Wärmepumpe rechnen <IconArrowRight size={14} />
             </span>
@@ -106,7 +116,7 @@ export default function GemeindePotential({
               </span>
             </div>
             <div style={S.exLabel}>
-              bringt ein Balkonkraftwerk — auch zur Miete, ohne eigenes Dach
+              {`bringt ein Balkonkraftwerk${imOrt} — auch zur Miete, ohne eigenes Dach`}
             </div>
             {texte?.balkon && <div style={S.exOrt}>{texte.balkon}</div>}
             {p && (

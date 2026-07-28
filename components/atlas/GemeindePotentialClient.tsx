@@ -25,6 +25,7 @@ export default function GemeindePotentialClient({
   lon,
   texte,
   name,
+  regionId,
 }: {
   plz: string | null;
   lat: number | null;
@@ -33,8 +34,9 @@ export default function GemeindePotentialClient({
    *  nur durchgereicht. Sie warten NICHT auf den Ertrag: er speist die Beträge,
    *  nicht die Aussagen. */
   texte?: SzenarioTexte;
-  /** Gemeindename für den Ortssatz der PV-Karte. */
+  /** Gemeindename — steht in Überschrift und allen drei Karten. */
   name?: string;
+  regionId?: string;
 }) {
   const [potential, setPotential] = useState<GemeindePotential | null>(null);
   const [failed, setFailed] = useState(false);
@@ -74,7 +76,7 @@ export default function GemeindePotentialClient({
   }
 
   // p === null → Block rendert Layout + Links sofort, Zahlen als LoadingDots.
-  return <GemeindePotentialBlock plz={plz} p={potential} texte={texte} name={name} />;
+  return <GemeindePotentialBlock plz={plz} p={potential} texte={texte} name={name} regionId={regionId} />;
 }
 
 const S: Record<string, React.CSSProperties> = {

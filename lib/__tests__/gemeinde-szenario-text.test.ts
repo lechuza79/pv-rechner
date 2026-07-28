@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { gemeindeSzenarioTexte, pvErtragSatz } from "../gemeinde-szenario-text";
+import { gemeindeSzenarioTexte, pvErtragSatz, szenarioUeberschrift } from "../gemeinde-szenario-text";
 import { NATIONAL_AVG_YIELD } from "../constants";
 
 describe("pvErtragSatz", () => {
@@ -25,6 +25,30 @@ describe("pvErtragSatz", () => {
     expect(pvErtragSatz("Höchberg", null)).toBeNull();
     expect(pvErtragSatz("Höchberg", 0)).toBeNull();
     expect(pvErtragSatz("Höchberg", Number.NaN)).toBeNull();
+  });
+});
+
+describe("szenarioUeberschrift", () => {
+  it("nennt die Gemeinde und bleibt bei jedem Aufruf gleich", () => {
+    const a = szenarioUeberschrift("Höchberg", "09679147");
+    expect(a).toContain("Höchberg");
+    expect(szenarioUeberschrift("Höchberg", "09679147")).toBe(a);
+  });
+
+  it("variiert zwischen Gemeinden", () => {
+    const formen = new Set(
+      ["09679147", "08111000", "09679135", "05315000", "02000000"].map((id) => szenarioUeberschrift("X", id)),
+    );
+    expect(formen.size).toBeGreaterThan(1);
+  });
+
+  it("bildet keine Einwohnerbezeichnung — die folgt keiner Regel", () => {
+    // "Bremer", "Hallenser", "Kasseler": aus dem Ortsnamen nicht ableitbar.
+    for (const id of ["09679147", "08111000", "04011000"]) {
+      const t = szenarioUeberschrift("Halle", id);
+      expect(t).not.toMatch(/Hallee?r|Hallenser/);
+      expect(t).toContain("Halle");
+    }
   });
 });
 
