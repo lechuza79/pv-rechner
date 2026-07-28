@@ -196,6 +196,8 @@ const COLD_SAMPLES = 3;
  */
 const DB_PROBE_WARN_MS = 250;
 const DB_PROBE_FAIL_MS = 400;
+/** Messungen je Abfrage; gewertet wird die schnellste (siehe dbProbeVerdictRelativ). */
+const DB_PROBE_RUNS = 3;
 
 type DbProbe = { label: string; ms: number; baselineMs: number; error?: string };
 
@@ -236,8 +238,25 @@ export function dbProbeVerdict(ms: number): "gruen" | "gelb" | "rot" {
  *   - Ist die Datenbank nur beschäftigt, werden BEIDE langsamer.
  * Gewertet wird deshalb der Abstand zum Vergleichs-Read, nicht der Rohwert.
  *
- * Die Schwellen bleiben unangetastet — sie hochzusetzen wäre genau das
- * Verstecken, das CLAUDE.md verbietet. Geschärft wird nur die Frage.
+ * NACHTRAG 28.07.2026 — der Vergleichs-Read allein reicht nicht. Er fängt
+ * gleichzeitige Datenbank-Last ab, aber nicht die Streuung einer EINZELNEN
+ * Messung. Direkt nach dem Einbau meldete der Check wieder ROT: „Gemeinde-
+ * Kennzahlen 553 ms gegen Vergleichs-Read 211 ms". Vier Wiederholungen derselben
+ * Abfrage ergaben 297 / 102 / 368 / 83 ms — dieselbe Abfrage, viermal, Faktor 4
+ * dazwischen. Kein Rückfall, sondern Rauschen aus Verbindungsaufbau,
+ * Plan-Cache und Netzjitter.
+ *
+ * Deshalb wird jede Abfrage MEHRFACH gemessen und die SCHNELLSTE gewertet
+ * (`DB_PROBE_RUNS`). Das Minimum ist hier der richtige Schätzer, nicht der
+ * Mittelwert: Störungen können eine Messung nur langsamer machen, nie
+ * schneller. Bleibt selbst die schnellste Messung weit über dem Vergleichs-Read,
+ * ist es ein struktureller Befund — im Juli lagen alle Messungen konstant bei
+ * ~600 ms, der wäre damit weiterhin sicher aufgefallen.
+ *
+ * Das ist eine Messverbesserung, KEIN Aufweichen: die Schwellen bleiben, wo sie
+ * sind (das wäre das Verstecken, das CLAUDE.md verbietet). Geschärft wird nur
+ * die Frage — erst „ist die Datenbank beschäftigt?", jetzt zusätzlich „ist das
+ * überhaupt reproduzierbar?".
  */
 export function dbProbeVerdictRelativ(ms: number, baselineMs: number): "gruen" | "gelb" | "rot" {
   // Der Vergleichs-Read schwankt selbst, und unter seinen Wert kann keine
@@ -251,22 +270,33 @@ async function measureAtlasQueries(): Promise<DbProbe[]> {
   const key = process.env.SUPABASE_SERVICE_KEY;
   if (!url || !key) return [];
 
+  /** Eine Messreihe; zurück kommt die schnellste Zeit. */
+  const fastestOf = async (runs: number, once: () => Promise<number>): Promise<number> => {
+    let best = Infinity;
+    for (let i = 0; i < runs; i++) best = Math.min(best, await once());
+    return best === Infinity ? 0 : best;
+  };
+
   // Vergleichs-Read VOR den Atlas-Abfragen: dieselbe Strecke, aber ohne
   // nennenswerte Datenbankarbeit. Er trennt „Abfrage kaputt" von „Datenbank
-  // gerade beschäftigt" (siehe dbProbeVerdictRelativ).
-  const baselineStart = Date.now();
-  let baselineMs = 0;
-  try {
-    const r = await fetch(`${url}/rest/v1/mastr_meta?select=imported_at&id=eq.1`, {
-      headers: { apikey: key, Authorization: `Bearer ${key}` },
-      signal: AbortSignal.timeout(20000),
-    });
-    await r.text();
-    baselineMs = Date.now() - baselineStart;
-  } catch {
-    // Scheitert der Vergleichs-Read, bleibt baselineMs bei 0 — dann gilt wieder
-    // die harte Schwelle. Die Prüfung wird durch einen Ausfall nie milder.
-  }
+  // gerade beschäftigt" (siehe dbProbeVerdictRelativ). Auch er wird mehrfach
+  // gemessen — sonst stünde eine schnellste Abfrage gegen einen zufällig
+  // langsamen Vergleichswert.
+  const baselineMs = await fastestOf(DB_PROBE_RUNS, async () => {
+    const started = Date.now();
+    try {
+      const r = await fetch(`${url}/rest/v1/mastr_meta?select=imported_at&id=eq.1`, {
+        headers: { apikey: key, Authorization: `Bearer ${key}` },
+        signal: AbortSignal.timeout(20000),
+      });
+      await r.text();
+      return Date.now() - started;
+    } catch {
+      // Scheitert der Vergleichs-Read, bleibt baselineMs bei 0 — dann gilt wieder
+      // die harte Schwelle. Die Prüfung wird durch einen Ausfall nie milder.
+      return Infinity;
+    }
+  });
 
   // Die drei Aufrufe, die jede Gemeindeseite macht — je einer auf Gemeinde-,
   // Kreis- und Bundesebene, damit auch ein leerer Rollup auffällt.
@@ -290,24 +320,29 @@ async function measureAtlasQueries(): Promise<DbProbe[]> {
 
   const out: DbProbe[] = [];
   for (const c of calls) {
-    const started = Date.now();
-    try {
-      const res = await fetch(`${url}/rest/v1/rpc/${c.fn}`, {
-        method: "POST",
-        headers: { apikey: key, Authorization: `Bearer ${key}`, "content-type": "application/json" },
-        body: JSON.stringify(c.args),
-        signal: AbortSignal.timeout(20000),
-      });
-      const body = await res.text();
-      out.push({
-        label: c.label,
-        ms: Date.now() - started,
-        baselineMs,
-        error: res.ok ? undefined : `${res.status} ${body.slice(0, 120)}`,
-      });
-    } catch (e) {
-      out.push({ label: c.label, ms: Date.now() - started, baselineMs, error: e instanceof Error ? e.message : "Abbruch" });
-    }
+    // Ein Fehler beendet die Messreihe sofort: Ein 500er ist ein Befund für
+    // sich, und ihn dreimal auszulösen belastet nur die Datenbank
+    // (siehe [[feedback_db_schonen]]).
+    let error: string | undefined;
+    const ms = await fastestOf(DB_PROBE_RUNS, async () => {
+      if (error) return Infinity;
+      const started = Date.now();
+      try {
+        const res = await fetch(`${url}/rest/v1/rpc/${c.fn}`, {
+          method: "POST",
+          headers: { apikey: key, Authorization: `Bearer ${key}`, "content-type": "application/json" },
+          body: JSON.stringify(c.args),
+          signal: AbortSignal.timeout(20000),
+        });
+        const body = await res.text();
+        if (!res.ok) error = `${res.status} ${body.slice(0, 120)}`;
+        return Date.now() - started;
+      } catch (e) {
+        error = e instanceof Error ? e.message : "Abbruch";
+        return Date.now() - started;
+      }
+    });
+    out.push({ label: c.label, ms, baselineMs, error });
   }
   return out;
 }
@@ -548,7 +583,8 @@ async function main() {
   // niemand gleichzeitig darauf zugreift.
   if (dbProbes.length) {
     lines.push(
-      `Atlas-Datenbankabfragen: ${dbProbes.map((d) => `${d.label} ${d.ms} ms`).join(" · ")}` +
+      `Atlas-Datenbankabfragen, je schnellste aus ${DB_PROBE_RUNS} Messungen: ` +
+        `${dbProbes.map((d) => `${d.label} ${d.ms} ms`).join(" · ")}` +
         ` (Vergleichs-Read ${dbProbes[0].baselineMs} ms)`,
     );
     for (const d of dbProbes) {
@@ -556,7 +592,8 @@ async function main() {
         forClaude.push(`Die Atlas-Abfrage „${d.label}" antwortet nicht sauber: ${d.error}`);
       } else if (dbProbeVerdictRelativ(d.ms, d.baselineMs) === "rot") {
         forClaude.push(
-          `Die Atlas-Abfrage „${d.label}" braucht ${d.ms} ms bei einem Vergleichs-Read von ${d.baselineMs} ms. ` +
+          `Die Atlas-Abfrage „${d.label}" braucht ${d.ms} ms bei einem Vergleichs-Read von ${d.baselineMs} ms — ` +
+            `und zwar in ihrem SCHNELLSTEN von ${DB_PROBE_RUNS} Versuchen, es ist also kein Ausreißer. ` +
             `Die Differenz ist echte Datenbankarbeit und im gesunden Zustand nahe null. Sie heißt: die Abfrage läuft wieder über die ganze ` +
             `Rohtabelle statt über den Index — entweder ist der vorberechnete Rollup leer, oder in ` +
             `lib/mastr-region-sql.ts ist der Präfix wieder ein Parameter statt eines Literals (der Grund ` +
