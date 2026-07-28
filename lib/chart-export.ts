@@ -61,6 +61,8 @@ export interface ExportContext {
    * Rendered in a grey box above the credit line. */
   notes?: ExportNoteItem[];
   source?: string;                  // data-source credit, e.g. "Energy-Charts (Fraunhofer ISE), CC BY 4.0"
+  /** Known data vintage; without it the image carries the retrieval date. */
+  dataAsOf?: string;
 }
 
 /**
@@ -213,8 +215,12 @@ export function buildExportSvg(
   // eigenen Umbruch läuft eine lange Quelle in die Marke hinein (SVG bricht
   // Text nicht um). Deshalb: umbrechen und den Fuß mitwachsen lassen.
   const BRAND_W = 250;
+  // Datum ins Bild: Ein weitergereichtes Bild ohne Datum lässt niemanden
+  // erkennen, ob die Zahlen von heute oder von vorletztem Jahr sind. Hier ist
+  // `new Date()` unbedenklich — der Aufbau läuft erst beim Klick im Browser.
+  const abrufdatum = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const sourceLines = context.source
-    ? wrapText(`Datenquelle: ${context.source}`, innerW - BRAND_W - 16, 10)
+    ? wrapText(`Datenquelle: ${context.source} · Stand: ${context.dataAsOf ?? abrufdatum}`, innerW - BRAND_W - 16, 10)
     : [];
   const footerH = Math.max(FOOTER_H, sourceLines.length * 13 + 16);
 

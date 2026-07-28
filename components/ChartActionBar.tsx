@@ -12,7 +12,7 @@ import {
   IconCheck,
   IconMore,
   IconHelpCircle,
-} from "./Icons";
+  IconQuote,} from "./Icons";
 
 // Provider identification (§ 5 DDG): the widgets are delivered by solar-check.io
 // onto third-party pages, so a path to the Impressum must exist inside the
@@ -43,6 +43,13 @@ export interface ChartActionBarProps {
   /** For variant="menu": open the dropdown upward (use when the ⋯ sits near the
    * bottom of the widget, e.g. in a footer, so the menu doesn't clip). */
   menuUp?: boolean;
+  /**
+   * Adds a "Zitieren" entry that hands a ready-made citation (HTML + plain) to
+   * whoever wants to use the chart. Whether an editor links back or just takes
+   * a screenshot is decided in the ten seconds they spend noting the source —
+   * so the citation has to be one click away, not one page away.
+   */
+  onCite?: () => void;
 }
 
 /**
@@ -66,6 +73,7 @@ export default function ChartActionBar({
   variant = "bar",
   showDownload = true,
   menuUp = false,
+  onCite,
 }: ChartActionBarProps) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -144,6 +152,7 @@ export default function ChartActionBar({
             )}
             <MenuItem icon={IconWhatsApp} label="WhatsApp" onClick={run(onWhatsApp)} />
             <MenuItem icon={IconTwitter} label="X" onClick={run(onTwitter)} />
+            {onCite && <MenuItem icon={IconQuote} label="Zitieren" onClick={run(onCite)} />}
             {onEmbed && (
               <>
                 <div style={S.divider} />
@@ -205,6 +214,11 @@ export default function ChartActionBar({
         )}
       </div>
 
+      {onCite && (
+        <button onClick={onCite} title="Zitieren" aria-label="Zitieren" style={btn}>
+          <IconQuote size={icon} />
+        </button>
+      )}
       {onEmbed && (
         <button onClick={onEmbed} title="Einbetten" aria-label="Einbetten" style={btn}>
           <IconCode size={icon} />

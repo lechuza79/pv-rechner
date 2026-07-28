@@ -185,6 +185,15 @@ export function IconCode({ size = 16, color = "currentColor", style }: IconProps
   );
 }
 
+/** Anführungszeichen — steht für „diese Grafik zitieren". */
+export function IconQuote({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M6 4.667C4.343 4.667 3 6.01 3 7.667c0 1.472 1.06 2.696 2.458 2.95-.2 1.02-.86 1.79-1.791 2.05M13.5 4.667c-1.657 0-3 1.343-3 3 0 1.472 1.06 2.696 2.458 2.95-.2 1.02-.86 1.79-1.791 2.05" stroke={color} strokeWidth="1.33" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function IconEdit({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>

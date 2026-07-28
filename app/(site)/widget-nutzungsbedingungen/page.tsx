@@ -67,9 +67,19 @@ export default function WidgetNutzungsbedingungenPage() {
 
         <h2 style={S.h2}>1. Kostenlose Nutzung</h2>
         <p style={S.p}>
-          Die Widgets dürfen kostenlos und ohne vorherige Anmeldung in
-          redaktionelle oder informative Inhalte eingebettet werden — etwa
-          Artikel, Ratgeberseiten oder Faktenboxen zum Thema Energie.
+          Die Widgets dürfen kostenlos und ohne vorherige Anmeldung eingebettet
+          werden — auf privaten, redaktionellen und gewerblichen Seiten, etwa in
+          Artikeln, Ratgeberseiten oder Faktenboxen zum Thema Energie.
+        </p>
+        <p style={S.p}>
+          Diese Seite regelt ausschließlich den technischen Betrieb der
+          eingebetteten Widgets. Unter welcher Lizenz die dargestellten Grafiken
+          und Texte stehen und wie die Namensnennung aussieht, steht
+          ausschließlich auf der{" "}
+          <Link href="/lizenz" style={S.a}>
+            Lizenzseite
+          </Link>
+          .
         </p>
 
         <h2 style={S.h2}>2. Quellenangabe bleibt sichtbar</h2>

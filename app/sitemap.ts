@@ -90,6 +90,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/atomstrom-import`, lastModified: now, changeFrequency: "daily", priority: 0.7 },
     { url: `${BASE_URL}/atomstrom-import/methodik`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/energie-widgets`, changeFrequency: "monthly", priority: 0.6 },
+    // Zitierfähigkeit: Lizenz, Verantwortlicher und die Chart-Übersicht sind die
+    // Seiten, die Redaktionen vor einer Übernahme suchen — deshalb indexierbar
+    // und höher gewichtet als die reinen Rechtstexte.
+    { url: `${BASE_URL}/presse`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/lizenz`, changeFrequency: "yearly", priority: 0.5 },
+    { url: `${BASE_URL}/ueber`, changeFrequency: "yearly", priority: 0.5 },
     { url: `${BASE_URL}/widget-nutzungsbedingungen`, changeFrequency: "yearly", priority: 0.3 },
     ...atlasPages,
     ...bundeslandPages,

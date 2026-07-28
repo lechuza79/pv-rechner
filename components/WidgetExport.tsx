@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useId, useMemo, useS
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/chart-export";
 import { DataSourceNote, PoweredBy } from "./PoweredBy";
 import ChartActionBar from "./ChartActionBar";
+import CiteModal from "./CiteModal";
 import { sourceLabel, type DataSource } from "../lib/data-sources";
 import { brandLabel, type WidgetDef } from "../lib/widget-registry";
 import type { useChartExport } from "../lib/useChartExport";
@@ -198,6 +199,7 @@ export function WidgetFooter({
   showDownload?: boolean;
   narrow?: boolean;
 }) {
+  const [citeOpen, setCiteOpen] = useState(false);
   const copy =
     onCopyLink ??
     (() => {
@@ -251,6 +253,7 @@ export function WidgetFooter({
               onCopyLink={copy}
               onWhatsApp={chartExport.shareWhatsApp}
               onTwitter={chartExport.shareTwitter}
+              onCite={() => setCiteOpen(true)}
               onEmbed={
                 showEmbed && !onsite
                   ? () => window.open(`/energie-widgets#${widget.id}`, "_blank", "noopener")
@@ -266,6 +269,9 @@ export function WidgetFooter({
           <PoweredBy />
         </div>
       )}
+
+      {/* Bleibt gemountet, damit das Fenster sanft aus- statt wegblendet. */}
+      <CiteModal widget={widget} open={citeOpen} onClose={() => setCiteOpen(false)} />
     </div>
   );
 }
@@ -338,6 +344,7 @@ export function WidgetExportFooter({
   source,
   branding = true,
   note,
+  dataAsOf,
 }: {
   /** Registry entry — carries sources and decides the brand wording. Pass this
    * rather than `source`; it keeps image, page footer and gallery in sync. */
@@ -349,9 +356,20 @@ export function WidgetExportFooter({
   branding?: boolean;
   /** Extra line (assumptions, reference year) that only the image needs. */
   note?: string;
+  /** Datenstand, wenn er bekannt ist (z. B. „Juli 2026" beim Anlagenregister).
+   * Ohne Angabe steht das Abrufdatum im Bild — das ist die ehrlichere Aussage
+   * bei Live-Daten, die sich stündlich ändern. */
+  dataAsOf?: string;
 }) {
   const notes = useExportNotes();
   const sources = widget?.sources ?? source;
+  // Abrufdatum, erst nach dem Mounten gesetzt: Server- und Client-Render dürfen
+  // nicht auseinanderlaufen, wenn der Tag wechselt.
+  const [heute, setHeute] = useState("");
+  useEffect(() => {
+    setHeute(new Date().toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }));
+  }, []);
+  const stand = dataAsOf ?? heute;
   if (!sources) return null;
   return (
     <ExportOnly>
@@ -409,6 +427,9 @@ export function WidgetExportFooter({
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 16 }}>
           <span style={{ flex: 1, minWidth: 0 }}>
             <DataSourceNote source={sources} plain label="Datenquelle:" />
+            {/* Ohne Datum ist ein weitergereichtes Bild wertlos: Niemand kann
+                sehen, ob die Zahlen von heute oder von vorletztem Jahr sind. */}
+            {stand && <span> · Stand: {stand}</span>}
           </span>
           {branding && <PoweredBy label={brandLabel(widget?.kind ?? "chart")} />}
         </div>

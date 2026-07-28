@@ -43,6 +43,13 @@ export interface WidgetDef {
   cta?: WidgetCta;
   /** false where no chart SVG can be captured (map, single KPI). */
   exportable?: boolean;
+  /**
+   * false where the entry has no /embed/<id> route — it exists for the export
+   * footer of an on-site view, not as an iframe anyone can take. Linking such an
+   * id as an embed would hand out a 404, which is exactly the kind of dead link
+   * the register is here to prevent.
+   */
+  embeddable?: boolean;
 }
 
 const SITE = "https://solar-check.io";
@@ -179,6 +186,8 @@ export const WIDGETS = {
     shareUrl: `${SITE}/photovoltaik-rechner`,
     shareText: "PV-Amortisation – Solar Check",
     sources: [DATA_SOURCES.pvgis],
+    // Das Ergebnis-Chart des Rechners, kein Widget: es gibt kein /embed/rechner.
+    embeddable: false,
   },
 } satisfies Record<string, WidgetDef>;
 
@@ -191,6 +200,16 @@ export type WidgetId = keyof typeof WIDGETS;
  */
 export function brandLabel(kind: WidgetKind): string {
   return kind === "tool" ? "Interaktiv selbst rechnen:" : "Interaktives Chart:";
+}
+
+/** Embed path of a widget, or null where there is no iframe route for it. */
+export function embedPath(w: WidgetDef): string | null {
+  return w.embeddable === false ? null : `/embed/${w.id}`;
+}
+
+/** The share target as an internal path ("/strommix-deutschland"), for <Link>. */
+export function sharePath(w: WidgetDef): string {
+  return w.shareUrl.startsWith(SITE) ? w.shareUrl.slice(SITE.length) || "/" : w.shareUrl;
 }
 
 /** All entries as a list — for the gallery and the admin overview. */

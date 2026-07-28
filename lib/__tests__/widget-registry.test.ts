@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { allWidgets, brandLabel, WIDGETS } from "../widget-registry";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import { allWidgets, brandLabel, embedPath, sharePath, WIDGETS } from "../widget-registry";
 
 // Der Baukasten lebt davon, dass jeder Eintrag vollständig ist: fehlt eine
 // Quelle, fehlt sie im geteilten Bild (Lizenzpflicht); fehlt der Teilen-Link,
@@ -42,6 +44,23 @@ describe("Widget-Register", () => {
     expect(WIDGETS.strommix.kind).toBe("chart");
     expect(WIDGETS.pvZubau.kind).toBe("chart");
     expect(WIDGETS.gruengasHeizkosten.kind).toBe("chart");
+  });
+
+  it("jeder angebotene Einbett-Link führt auch irgendwohin", () => {
+    // Die Presseseite listet die Einbett-Fassung aus dem Register. Ein Eintrag
+    // ohne eigene Embed-Route (das Ergebnis-Chart des Rechners) würde dort als
+    // toter Link landen — genau vor dem Publikum, das wir gewinnen wollen.
+    const fehlend = allWidgets()
+      .map((w) => embedPath(w))
+      .filter((pfad): pfad is string => !!pfad)
+      .filter((pfad) => !existsSync(join(__dirname, "..", "..", "app/(embed)", pfad, "page.tsx")));
+    expect(fehlend, `Einbett-Route fehlt:\n${fehlend.join("\n")}`).toEqual([]);
+  });
+
+  it("Teilen-Ziele lassen sich als interner Pfad verlinken", () => {
+    for (const w of allWidgets()) {
+      expect(sharePath(w), `${w.id}: Pfad muss mit / beginnen`).toMatch(/^\//);
+    }
   });
 
   it("Widgets ohne Bild-Export sind als solche markiert", () => {
