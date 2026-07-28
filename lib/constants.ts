@@ -249,11 +249,19 @@ export type FuelKind = "gas" | "oil";
 // überall statt eines festen „Gas" stehen: wer Heizöl wählt und dann durchgehend
 // „Gasheizung" liest, hält das zu Recht für einen Rechenfehler (Nutzerkritik
 // 28.07.2026) — auch wenn Öl und Gas je Kilowattstunde Wärme fast gleich kosten.
+// `bestandsanlage: true` markiert einen Kessel, den man WEITERBETREIBT — kein Gerät,
+// das man heute neu einbaut. Der Unterschied ist teuer: Ein alter Kessel arbeitet mit
+// 80 % Nutzungsgrad, ein neuer mit 95 %. Wird die Referenz als NEUE Heizung gerechnet
+// (Anschaffung + Beimischungspflicht), darf der alte Kessel dort nicht auftauchen —
+// sonst trägt die fossile Seite die Kosten des Neubaus und den Verbrauch der Altanlage,
+// was den Vorteil der Wärmepumpe um rund 14.000 € aufbläht (Council-Prüfung 28.07.2026,
+// zwei unabhängige Prüfer). Die Auswahl wird deshalb im UI danach gefiltert, ob eine
+// Anschaffung angesetzt ist.
 export const WP_FUEL_OPTIONS: {
   id: string; label: string; refLabel: string; kind: FuelKind;
-  price: number; efficiency: number; co2PerKwh: number;
+  price: number; efficiency: number; co2PerKwh: number; bestandsanlage?: boolean;
 }[] = [
   { id: "gas_neu", label: "Gas-Brennwert", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.95, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
-  { id: "gas_alt", label: "Alter Gaskessel", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.80, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
   { id: "oil", label: "Heizöl", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
+  { id: "gas_alt", label: "Alter Gaskessel", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.80, co2PerKwh: FUEL_PRICE.gas.co2PerKwh, bestandsanlage: true },
 ];

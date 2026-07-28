@@ -66,7 +66,7 @@ export function calcJAZ(wpType: "lwwp" | "swwp", flowTemp: number, cfg: HeatPump
 export interface WpElectricityInputs {
   situation: "bestand" | "neubau";
   wohnflaeche: number;          // m²
-  insulationIdx: number;         // 0–2 (Index in INSULATION_BESTAND/NEUBAU)
+  insulationIdx: number;         // Index in INSULATION_BESTAND (0–3) / INSULATION_NEUBAU (0–2)
   personen: number;              // actual head count (1, 2, 3.5, 5)
   heizsystem: "fbh" | "hk_neu" | "hk_alt";
   wpType: "lwwp" | "swwp";

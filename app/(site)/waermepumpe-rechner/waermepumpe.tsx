@@ -70,10 +70,20 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   //  "pessimistic"/"realistic"/"optimistic" = reine Preis-Annahmen OHNE Grüngas.
   const [scenario, setScenario] = useState("gruengas");
 
-  // Im Neubau steht keine Ölheizung zur Wahl: Eine neu eingebaute Ölheizung müsste
-  // die 65-%-Erneuerbaren-Pflicht des GEG erfüllen, was sie praktisch ausschließt.
-  // Sie als Referenz anzubieten würde eine Rechnung zeigen, die es nicht geben darf.
-  const fuelOptions = situation === "neubau" ? WP_FUEL_OPTIONS.filter(f => f.kind === "gas") : WP_FUEL_OPTIONS;
+  // Welche Referenzheizungen zur Wahl stehen, hängt daran, ob eine Anschaffung
+  // angesetzt ist — nicht am Energieträger:
+  //  · Anschaffung > 0 → die fossile Alternative wird NEU eingebaut. Dann gehören nur
+  //    Geräte in die Liste, die man heute neu einbaut; ein alter Kessel mit 80 %
+  //    Nutzungsgrad wäre ein Widerspruch (Kosten des Neubaus, Verbrauch der Altanlage).
+  //  · Anschaffung = 0 → die vorhandene Heizung läuft weiter. Dann ist genau der alte
+  //    Kessel der richtige Vergleich, und die Neugeräte passen nicht.
+  // Heizöl steht in BEIDEN Fällen zur Wahl, auch im Neubau: Die 65-%-Erneuerbaren-
+  // Pflicht (§§ 71–73 GEG), auf die ein früherer Ausschluss gestützt war, ist mit dem
+  // GModG gestrichen worden (Art. 1 Nr. 32); für zu errichtende Gebäude verweist § 10
+  // Abs. 2 Nr. 3 n. F. auf die §§ 42–45, und § 42 Abs. 2 Nr. 1 nennt Gas, Heizöl und
+  // Flüssiggas ausdrücklich als zulässige Option.
+  const ersatzInvest = oFossilInvest ?? DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest;
+  const fuelOptions = WP_FUEL_OPTIONS.filter(f => ersatzInvest > 0 ? !f.bestandsanlage : !!f.bestandsanlage);
   const fuel = fuelOptions.find(f => f.id === oFuel) ?? fuelOptions[0];
   // Die Grüngas-Pflicht ist ein GAS-Szenario: Der Preispfad hängt an der
   // Biomethan-Beimischung und an Gas-Netzentgelten (lib/greengas.ts). Bei Heizöl
@@ -83,8 +93,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // Zweite Bedingung: Es muss überhaupt eine Heizung neu eingebaut werden. Setzt
   // jemand die Anschaffung auf 0 („meine Heizung hält die 20 Jahre durch"), gibt es
   // keinen Neueinbau — dann greift § 43 Abs. 1 für ihn nicht, und die Bio-Treppe zu
-  // rechnen wäre wieder derselbe Fehler, nur nutzergesteuert.
-  const ersatzInvest = oFossilInvest ?? DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest;
+  // rechnen wäre wieder derselbe Fehler, nur nutzergesteuert. Im NEUBAU greift sie
+  // dagegen sehr wohl: § 10 Abs. 2 Nr. 3 n. F. verweist auf die §§ 42–45 entsprechend.
   const gruengasVerfuegbar = fuel.kind === "gas" && ersatzInvest > 0;
   const effScenario = !gruengasVerfuegbar && scenario === "gruengas" ? "realistic" : scenario;
   const greenGas = effScenario === "gruengas";
@@ -187,7 +197,17 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
 
   const activeWeg = (zeigeWege ? wegeResults.find(w => w.id === wegId) : null) ?? wegeResults.find(w => w.id === "ist");
   const activeInputs = useMemo(() => ({ ...inputs, ...(activeWeg?.patch ?? {}) }), [inputs, activeWeg]);
-  const result = useMemo(() => calcHeatPump(activeInputs, cfg), [activeInputs, cfg]);
+  // MIT dem gewählten Szenario rechnen — sonst zeigen die editierbaren Kernannahmen
+  // (Arbeitszahl, Brennstoffpreis) und die Aufschlüsselung „Rechnung im Detail" einen
+  // anderen Fall als die große Zahl darüber. Bis 28.07.2026 lief `result` ohne
+  // Szenario-Justierung: Bei „Pessimistisch" belegte die Aufschlüsselung eine
+  // Einsparung von +23.917 €, während im Hero −5.268 € stand (Council-Prüfung).
+  // Beim Grüngas-Fall bleibt die Aufschlüsselung am Preis-Pfad „realistisch" —
+  // das ist derselbe Nebenannahmen-Satz, mit dem `gruengasResult` rechnet.
+  const result = useMemo(
+    () => calcHeatPump(activeInputs, cfg, heatPumpScenarioAdj(greenGas ? "realistic" : effScenario, cfg)),
+    [activeInputs, cfg, effScenario, greenGas],
+  );
   // Die drei Preis-Szenarien rechnen bewusst OHNE Grüngas-Pflicht — sie zeigen die
   // reine Energiepreis-Bandbreite ("was, wenn die Pflicht doch nicht greift").
   const scenariosPlain = useMemo(() => calcHeatPumpScenarios({ ...activeInputs, greenGas: false }, cfg), [activeInputs, cfg]);
@@ -450,14 +470,17 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                       Du hast die Anschaffung einer neuen {fuel.refLabel} auf 0 € gesetzt — deine jetzige Heizung läuft also
                       weiter. Die Beimischungspflicht des Heizungsgesetzes gilt nur für Heizungen, die neu eingebaut werden,
                       deshalb rechnen wir sie hier nicht mit. Bleibt die normale Teuerung und der steigende CO₂-Preis.
-                      Eine Einschränkung: Ab 2028 soll zusätzlich eine Quote für alle Lieferanten kommen, die auch bestehende
-                      Heizungen verteuern würde — dieses Gesetz liegt noch nicht vor, wir rechnen es nicht.
+                      Eine Einschränkung: Zusätzlich soll eine Quote für alle Brennstoff-Anbieter kommen, die auch bestehende
+                      Heizungen verteuern dürfte. Das Gesetz dazu liegt noch nicht vor — es muss bis zum {GMODG_RECHTSSTAND.quoteGesetzBis} vorgelegt
+                      werden und nennt bisher nur das Ziel, ab 2045 vollständig auf klimaneutrale Brennstoffe umzustellen. Wir rechnen es nicht mit.
                     </>
                   ) : (
                   <>
                   <strong style={{ color: v('--color-text-primary') }}>Beim Heizöl fehlt ein Kostenblock — bewusst.</strong>{" "}
                   Das Heizungsgesetz nennt Heizöl gleichrangig neben Gas: Eine neu eingebaute Ölheizung muss ab 2029{" "}
-                  {bioTreppeStufenText()} ihrer Wärme aus klimafreundlichen Brennstoffen erzeugen, bei Öl also aus Bioheizöl.
+                  {bioTreppeStufenText()} ihrer Wärme klimafreundlich erzeugen — bei Öl über Bioheizöl, wahlweise auch über
+                  Wasserstoff-Derivate oder ganz ohne Beimischung über Solarthermie, eine Lüftung mit Wärmerückgewinnung oder
+                  eine Hybridlösung mit Wärmepumpe (§ 43 Abs. 3–5 GModG).
                   Dass das den Brennstoff verteuert, ist sicher — <strong>wie stark, ist es nicht.</strong> Marktangaben reichen
                   von wenigen Prozent Aufschlag bis zu rund der Hälfte, je nachdem ob man beigemischtes Bioheizöl oder reines
                   HVO betrachtet. Eine belastbare Preisreihe gibt es dafür bislang nicht, deshalb rechnen wir hier nur die
@@ -521,8 +544,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               {/* Erklärabschnitte */}
               <div style={{ fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'), marginTop: 22, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 16 }}>
                 {[
-                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet jede nach dem Inkrafttreten des Gesetzes neu eingebaute Gasheizung, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung.` },
-                  { h: "Beschlossen ist die Pflicht, nicht der Preis", p: `${gmodgStandSatz()} Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Ebenfalls Annahme ist der Weg nach 2040: Eine 100-%-Stufe steht nicht im Gesetz, die vollständige Klimaneutralität ab 2045 kündigt § 42a GModG nur an — als Quote für die Brennstoff-Anbieter ab 2028, die dann auch Bestandsheizungen verteuern würde. Ihre Höhe soll bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden; wir rechnen sie nicht mit. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht.` },
+                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet jede Heizung für Gas, Heizöl oder Flüssiggas, die nach dem 29. Juli 2026 neu in ein bestehendes Gebäude eingebaut wird, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe einzusetzen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung. Erfüllen lässt sich die Pflicht auch ohne Beimischung: über Solarthermie, eine Lüftung mit Wärmerückgewinnung oder eine Hybridlösung mit Wärmepumpe (§ 43 Abs. 3–5); bei einem irreparablen Ausfall greifen zusätzlich Übergangsfristen (Abs. 7). Wir rechnen den teuersten Weg, die reine Beimischung.` },
+                  { h: "Beschlossen ist die Pflicht, nicht der Preis", p: `${gmodgStandSatz()} Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Ebenfalls Annahme ist der Weg nach 2040: Eine 100-%-Stufe steht nicht im Gesetz, die vollständige Klimaneutralität ab 2045 kündigt § 42a GModG nur an — als Quote für die Brennstoff-Anbieter, die dann auch Bestandsheizungen verteuern dürfte. Ihre Höhe soll bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden; wir rechnen sie nicht mit. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht.` },
                   { h: "Warum wir je Kilowattstunde Wärme rechnen", p: "Gas- und Strompreis lassen sich nicht direkt vergleichen: Eine Wärmepumpe macht aus einer Kilowattstunde Strom rund drei Kilowattstunden Wärme, ein Gaskessel aus einer Kilowattstunde Gas nur knapp eine. Deshalb rechnen wir beide auf die Kosten pro gelieferter Kilowattstunde Wärme um — die Jahresarbeitszahl der Wärmepumpe und der Kesselwirkungsgrad sind darin enthalten. Grundgebühr und Wartung bleiben außen vor, sie gehören nicht in einen Preis-je-Kilowattstunde-Vergleich." },
                   { h: "Quelle", p: "IW-Report 36/2026 „Wie hoch sind die Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz?“ (Henger, Küper, Wünsch — Institut der deutschen Wirtschaft, Juli 2026). Die Preispfade stammen aus dem Anhang der Studie." },
                 ].map((s, i) => (
@@ -663,7 +686,9 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 </span>.
               </div>
               <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 4 }}>
-                vs. neue
+                {/* „vs. neue" + Auswahlfeld ergab „vs. neue Heizöl". Der Fall steht
+                    jetzt im Satz, das Feld nennt nur noch das Gerät. */}
+                vs. {ersatzInvest > 0 ? "neue Heizung:" : "Weiterbetrieb:"}
                 {/* Beim Wechsel des Energieträgers den Preis-Override fallen lassen —
                     sonst bliebe ein von Hand gesetzter Gaspreis am Heizöl kleben und
                     die Umstellung wirkte wirkungslos. */}
@@ -775,8 +800,13 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   ["BEG-Förderung", `${(result.beg.rate * 100).toFixed(0)} % · ${result.beg.amount.toLocaleString("de-DE")} €`],
                   ["Invest netto", `${result.investNetto.toLocaleString("de-DE")} €`],
                   [`WP Strom 20 J`, `${result.stromKosten.toLocaleString("de-DE")} €`],
+                  // Wartung und die Anschaffung der fossilen Alternative fehlten hier —
+                  // dadurch ließ sich ausgerechnet die Summe darunter nicht nachrechnen.
+                  ["WP Wartung + Grundpreis 20 J", `${result.wartungWp.toLocaleString("de-DE")} €`],
+                  ...(result.gasInvest > 0 ? [[`Neue ${fuel.refLabel}`, `${result.gasInvest.toLocaleString("de-DE")} €`] as [string, string]] : []),
                   [`${fuel.label} Brennstoff 20 J`, `${result.gasKosten.toLocaleString("de-DE")} €`],
                   ...(result.gasFix > 0 ? [[`${fuel.label} Grundgebühr 20 J`, `${result.gasFix.toLocaleString("de-DE")} €`] as [string, string]] : []),
+                  [`${fuel.refLabel} Wartung 20 J`, `${result.gasWartung.toLocaleString("de-DE")} €`],
                   ["TCO Wärmepumpe", `${result.tcoWp.toLocaleString("de-DE")} €`],
                   [`TCO ${fuel.refLabel}`, `${result.tcoGas.toLocaleString("de-DE")} €`],
                 ]} />

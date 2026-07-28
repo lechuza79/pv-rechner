@@ -58,7 +58,7 @@ export default function ScenarioCards({
               deren Anschaffung und Beimischungspflicht). Text und Zahl müssen
               denselben Fall beschreiben. */}
           <div style={S.exLabel}>spart eine Wärmepumpe über 20 Jahre gegenüber einer neuen Gasheizung</div>
-          <div style={S.exSub}>Typisches Einfamilienhaus, 140 m², Luft/Wärmepumpe</div>
+          <div style={S.exSub}>Typisches Einfamilienhaus, 140 m², Luft/Wasser-Wärmepumpe</div>
           <span style={S.exCta}>Wärmepumpe rechnen <IconArrowRight size={14} /></span>
         </Link>
 

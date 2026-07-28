@@ -36,8 +36,12 @@
 // 15 % (2030), 30 % (2035), 60 % (2040). Eine 100-%-Stufe gibt es dort NICHT. Der
 // Sprung auf 100 % bis 2045 ist eine Modellannahme des IW-Reports, abgeleitet aus
 // § 42a GModG: der kündigt ein gesondertes Gesetz an, das Inverkehrbringer von Gas,
-// Öl und Flüssiggas verpflichtet, ab 2028 schrittweise und ab 2045 vollständig auf
-// klimaneutrale Brennstoffe umzustellen. Dieses Quotengesetz ist noch nicht
+// Öl und Flüssiggas verpflichtet, die Brennstoffe „ab dem Jahr 2045 vollständig auf
+// klimaneutrale Brennstoffe umzustellen". ACHTUNG (Council 28.07.2026): Ein Einstieg
+// „ab 2028" oder irgendein Zwischenpfad steht dort NICHT — der Wortlaut nennt allein
+// 2045. Das „bis zu 1 % ab 2028" ist eine Darstellung des IW-Reports (Tab. 2-2, S. 9)
+// und darf nie dem Paragrafen zugeschrieben werden; genau das stand bis heute in zwei
+// nutzersichtbaren Texten. Dieses Quotengesetz ist noch nicht
 // beschlossen (soll bis 01.12.2026 vorgelegt werden). Jede Zahl, die aus dem Jahr
 // 2045 stammt, ist damit IW-Annahme — nie als Gesetzesfolge beschriften.
 // Der Report sagt das selbst, Fußnote 3 auf S. 9: „Zwar wurde in § 43 GModG keine
@@ -47,9 +51,15 @@
 // GELTUNGSBEREICH — die zweite Falle, wörtlich aus § 43 Absatz 1 des verkündeten
 // Gesetzes: Die Bio-Treppe greift, wenn eine Gas-/Öl-/Flüssiggas-Heizung „nach dem
 // 29. Juli 2026 in ein BESTEHENDES GEBÄUDE neu eingebaut" wird. Zwei Einschränkungen,
-// die man leicht verliert: (a) nur Bestandsgebäude — ein NEUBAU fällt nicht darunter
-// (dort greifen andere Vorschriften), (b) erst Einbauten nach dem 29.07.2026.
-// „Gilt für alle neuen Gasheizungen" ist deshalb zu weit formuliert.
+// die man leicht verliert: (a) § 43 selbst erfasst nur Bestandsgebäude, (b) erst
+// Einbauten nach dem 29.07.2026. „Gilt für alle neuen Gasheizungen" ist deshalb zu
+// weit formuliert.
+// KORREKTUR (Council 28.07.2026): Hier stand, ein NEUBAU falle „nicht darunter" — das
+// ist falsch. Für zu errichtende Gebäude ersetzt Art. 1 Nr. 9 des GModG den § 10
+// Absatz 2 Nummer 3 durch „die Maßgaben der §§ 42 bis 45 entsprechend eingehalten
+// werden" — die Bio-Treppe gilt dort also entsprechend. Was im Neubau NICHT mehr gilt,
+// ist die 65-%-Erneuerbaren-Pflicht: die §§ 71 bis 73 GEG sind gestrichen (Art. 1
+// Nr. 32). Ein Fossilverbot im Neubau kommt erst über Art. 4 zum 01.01.2030.
 // Die Quote nach § 42a setzt dagegen beim
 // BRENNSTOFF an (Inverkehrbringer) und trifft damit auch Bestandsheizungen. „Wer
 // schon eine Gasheizung hat, hat Bestandsschutz" ist deshalb nur für die Bio-Treppe

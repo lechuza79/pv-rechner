@@ -283,7 +283,9 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
 
   // Kein PV-Invest im WP-Vergleich: die PV-Anschaffung ist eine eigene
   // Entscheidung (PV-Rechner), nicht Teil der Wärmepumpe-vs-Gas-Rechnung.
-  const wartungWp = cfg.wpMaintenance * cfg.years;
+  // Wartung + Grundpreis des WP-Stromzählers. Der Grundpreis fehlte bis 28.07.2026
+  // ganz, während die Gas-Seite einen trug — eine Schieflage zugunsten der WP.
+  const wartungWp = (cfg.wpMaintenance + cfg.wpFixCostPerYear) * cfg.years;
   const tcoWp = investNetto + stromKosten + wartungWp - pvBenefit;
 
   // 5. 20-Jahre Brennstoff-Referenz (Gas oder Heizöl)
@@ -350,7 +352,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   for (let i = 0; i < cfg.years; i++) {
     // WP-Seite: voller Netzstrom minus PV-Vollnutzen des Jahres (WP-Deckung +
     // Haushaltsstrom-Ersparnis + Einspeisung) — so folgt die Kurve exakt dem TCO.
-    const annualSaving = (gasPerYear[i] + fixPerYear + cfg.gasMaintenance) - (stromPerYear[i] + cfg.wpMaintenance - pvBenefitPerYear[i]);
+    const annualSaving = (gasPerYear[i] + fixPerYear + cfg.gasMaintenance) - (stromPerYear[i] + cfg.wpMaintenance + cfg.wpFixCostPerYear - pvBenefitPerYear[i]);
     kum += annualSaving;
     years.push({ i: i + 1, kum: Math.round(kum), annual: Math.round(annualSaving) });
     if (amortisationsJahre === null && kum >= 0) amortisationsJahre = i + 1;

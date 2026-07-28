@@ -622,3 +622,63 @@ describe("Dämmzustands-Skala", () => {
     expect(calcHeatLoad("bestand", 140, 3, 1)).toBeLessThan(calcHeatLoad("bestand", 140, 2, 1));
   });
 });
+
+// ─── Council-Befunde vom 28.07.2026 ────────────────────────────────────────
+// Drei unabhängige Prüfer haben die Änderungen dieses Tages adversarial geprüft.
+// Was sie gefunden haben, wird hier festgenagelt — die Fehler waren teuer und
+// alle drei gehören zur selben Familie: Ein Kostenblock stammt aus dem einen Fall,
+// ein anderer aus dem anderen.
+describe("Referenzfall bleibt in sich geschlossen", () => {
+  it("ein Kessel, den man WEITERBETREIBT, ist als solcher markiert", () => {
+    // „Alter Gaskessel" (80 % Nutzungsgrad) als NEU eingebaute Heizung zu rechnen,
+    // brachte der Wärmepumpe rund 14.000 € geschenkten Vorteil: Anschaffung und
+    // Beimischungspflicht aus dem Ersatzfall, Verbrauch aus dem Weiterbetriebsfall.
+    // Das UI filtert danach; die Markierung darf deshalb nicht verlorengehen.
+    const alt = WP_FUEL_OPTIONS.filter(f => f.bestandsanlage);
+    const neu = WP_FUEL_OPTIONS.filter(f => !f.bestandsanlage);
+    expect(alt.length).toBeGreaterThan(0);
+    expect(neu.length).toBeGreaterThan(0);
+    // Neu eingebaute Kessel sind nie schlechter als der Stand der Technik.
+    for (const f of neu) expect(f.efficiency).toBeGreaterThanOrEqual(0.85);
+    // Und ein Bestandskessel ist immer schlechter als jedes Neugerät.
+    for (const a of alt) {
+      for (const n of neu.filter(x => x.kind === a.kind)) {
+        expect(a.efficiency).toBeLessThan(n.efficiency);
+      }
+    }
+  });
+
+  it("die Wärmepumpe trägt ihren Zählergrundpreis, so wie die fossile Seite auch", () => {
+    // Fehlte bis 28.07.2026 ganz — eine kleine, aber einseitige Schieflage.
+    expect(DEFAULT_HEATPUMP_CONFIG.wpFixCostPerYear).toBeGreaterThan(0);
+    const r = calcHeatPump(baseInputs);
+    expect(r.wartungWp).toBe((DEFAULT_HEATPUMP_CONFIG.wpMaintenance + DEFAULT_HEATPUMP_CONFIG.wpFixCostPerYear) * DEFAULT_HEATPUMP_CONFIG.years);
+  });
+
+  it("die Betriebskosten stehen im belegten Verhältnis zueinander", () => {
+    // Quelle beider Werte: Verbraucherzentrale RLP, Beispielrechnung 02.06.2025
+    // (fossil 300 €/a inkl. Schornsteinfeger, Wärmepumpe 250 €/a). Wer hier etwas
+    // ändert, muss die Quelle mitändern — nicht nur die Zahl.
+    expect(DEFAULT_HEATPUMP_CONFIG.gasMaintenance).toBeGreaterThan(DEFAULT_HEATPUMP_CONFIG.wpMaintenance);
+    // Fraunhofer ISE setzt in der Bio-Treppen-Kurzstudie 500 €/a je System an —
+    // darüber wollen wir nicht liegen (sonst rechnen wir teurer als die Studie).
+    expect(DEFAULT_HEATPUMP_CONFIG.gasMaintenance).toBeLessThanOrEqual(500);
+    expect(DEFAULT_HEATPUMP_CONFIG.wpMaintenance).toBeLessThanOrEqual(500);
+  });
+
+  it("die Anschaffung der fossilen Alternative bleibt im belegten Band", () => {
+    // Fraunhofer ISE, Kurzstudie „Vergleich Wärmeversorgung" (23.06.2026, S. 14):
+    // Gaskessel Einfamilienhaus 11.400–20.400 € brutto bei 10 kW.
+    expect(DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest).toBeGreaterThanOrEqual(11400);
+    expect(DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest).toBeLessThanOrEqual(20400);
+  });
+
+  it("die Bilanz geht auf — jeder Posten steckt genau einmal in der Summe", () => {
+    const r = calcHeatPump(baseInputs);
+    expect(r.tcoGas).toBe(r.gasKosten + r.gasFix + r.gasWartung + r.gasInvest);
+    expect(r.tcoWp).toBe(r.investNetto + r.stromKosten + r.wartungWp - r.pvBenefit);
+    expect(r.tcoEinsparung).toBe(Math.round(r.tcoGas - r.tcoWp));
+    // Die Kurve muss zur Summe passen (Rundung je Jahr erlaubt ein paar Euro).
+    expect(Math.abs(r.years[r.years.length - 1].kum - r.tcoEinsparung)).toBeLessThanOrEqual(25);
+  });
+});

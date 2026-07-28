@@ -53,6 +53,7 @@ export interface HeatPumpConfig {
   // Electricity price (§14a EnWG WP tariff, BDEW 2026)
   wpTarif: number;               // €/kWh
   wpMaintenance: number;         // €/a
+  wpFixCostPerYear: number;      // €/a Grundpreis des WP-Stromzählers
   // Grid electricity CO₂ intensity (kg/kWh) for the heat pump's emissions.
   // Konservativ statisch über die Laufzeit — der reale Strommix wird sauberer,
   // d.h. die WP-Einsparung ist eher unterschätzt (kein Schönrechnen).
@@ -143,29 +144,49 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   begMaxRate: 0.70,
   begMaxRateLowIncome: 0.80,
   wpTarif: 0.24,
-  wpMaintenance: 200,
+  // Wartung der Wärmepumpe 250 €/a und Grundpreis des WP-Stromzählers 50 €/a —
+  // beides Verbraucherzentrale RLP (Beispielrechnung 02.06.2025), dieselbe Quelle
+  // wie die fossilen Betriebskosten, damit der Vergleich symmetrisch bleibt.
+  // Der WP-Grundpreis fehlte bisher ganz, während Gas einen trug — eine Schieflage
+  // zugunsten der Wärmepumpe, auch wenn sie klein war (1.000 € über 20 Jahre).
+  wpMaintenance: 250,
+  wpFixCostPerYear: 50,
   gridCo2PerKwh: 0.38,   // DE-Netzmix 2024, konservativ statisch
   gasPriceCtPerKwh: Math.round(FUEL_PRICE.gas.price * 100), // = 11, aus FUEL_PRICE (Single Source)
   gasEfficiency: 0.95,
   gasCo2PerKwh: FUEL_PRICE.gas.co2PerKwh, // = 0.20, aus FUEL_PRICE
 
-  // Gas: Grund-/Zählerpreis des Netzanschlusses. Öl: 0 — es gibt keinen Anschluss,
-  // an dem eine laufende Gebühr hängen könnte. Die WARTUNG bleibt bewusst für beide
-  // gleich (gasMaintenance): dass eine Ölheizung mit Tankprüfung und Schornsteinfeger
-  // real teurer in der Wartung ist, ist plausibel, aber wir haben dafür keine
-  // belastbare Quelle — und eine geschätzte Zahl wäre derselbe Fehler wie ein
-  // Handfaktor. OFFEN (bis 01/2027): belastbaren Öl-Wartungswert beschaffen oder
-  // die Gleichsetzung ausdrücklich bestätigen (scripts/waermepumpe-verify.md).
-  fixCostPerYear: { gas: 180, oil: 0 },
-  gasMaintenance: 180,
-  // Komplette neue fossile Heizung inkl. Einbau. Marktangaben streuen breit
-  // (Portale nennen 9.000–15.000 € für eine Gas-Brennwertanlage inkl. Installation,
-  // in einfachen Fällen auch darunter) — deshalb ein mittlerer Wert, der im
-  // Ergebnis editierbar ist, statt einer Scheingenauigkeit. Für Heizöl setzen wir
-  // denselben Betrag an: dass ein Ölkessel mit Tank und Abgasweg real teurer ist,
-  // ist plausibel, aber unbelegt (Portale taugen dafür nicht — siehe die
-  // Investitions-Lehre oben). OFFEN (bis 01/2027): eigener Öl-Wert oder Bestätigung.
-  fossilErsatzInvest: 12000,
+  // Gas: Grund-/Zählerpreis des Netzanschlusses, 165 €/a — Verbraucherzentrale RLP,
+  // „Gasheizung oder Wärmepumpe – Ein Vergleich" (Beispielrechnung Stand 02.06.2025,
+  // 150-m²-EFH; Volltext docs/quellen/). Öl: 0 — es gibt keinen Anschluss, an dem eine
+  // laufende Gebühr hängen könnte (Strukturfrage, kein Preis: der Wert bleibt 0, auch
+  // wenn der Gas-Grundpreis steigt).
+  // Die WARTUNG bleibt für Gas und Öl gleich: dass eine Ölheizung mit Tankprüfung real
+  // teurer ist, ist plausibel, aber unbelegt — beide zitierten Quellen führen Heizöl
+  // nicht getrennt. OFFEN (bis 01/2027): Öl-Wartungswert beschaffen oder die
+  // Gleichsetzung bestätigen (scripts/waermepumpe-verify.md).
+  fixCostPerYear: { gas: 165, oil: 0 },
+  // Wartung + Schornsteinfeger der fossilen Heizung, 300 €/a (VZ RLP, ebd.).
+  // Fraunhofer ISE setzt in der Kurzstudie zur Bio-Treppe (23.06.2026, S. 15, Quelle
+  // BDEW-Heizkostenvergleich) sogar 500 €/a für JEDES System an — wir folgen der
+  // differenzierten VZ-Rechnung, die Gas und Wärmepumpe unterscheidet, und liegen
+  // damit konservativ unter dem höheren Ansatz.
+  gasMaintenance: 300,
+  // Komplette neue fossile Heizung inkl. Einbau, brutto. Zwei unabhängige
+  // Trägerquellen, die denselben Fall rechnen wie wir (alte Heizung wird ersetzt):
+  //   · Fraunhofer ISE, Kurzstudie „Vergleich Wärmeversorgung / Auswirkungen der
+  //     Biotreppe in § 43" (23.06.2026, S. 14): Gaskessel EFH 11.400–20.400 €
+  //     brutto bei 10 kW (Bandbreite aus dem KWW-Technikkatalog, Q4/2025).
+  //     → Mittelwert 15.900 €.
+  //   · Verbraucherzentrale RLP, „Gasheizung oder Wärmepumpe – Ein Vergleich"
+  //     (02.06.2025): 16.000 € für die neue Gasheizung im 150-m²-EFH.
+  // Beide treffen sich bei rund 16.000 €; wir nehmen den Fraunhofer-Mittelwert.
+  // Der frühere Wert (12.000 €) stammte aus einer breiten Portal-Spanne und lag am
+  // unteren Rand — also zulasten der Wärmepumpe. Für Heizöl setzen wir denselben
+  // Betrag an: dass ein Ölkessel mit Tank und Abgasweg teurer ist, ist plausibel,
+  // aber keine der beiden Quellen weist Öl getrennt aus.
+  // Im Ergebnis editierbar (0 = die vorhandene Heizung hält die Laufzeit durch).
+  fossilErsatzInvest: 15900,
   years: 20,
   gasInflation: 0.02,
   stromInflation: 0.02, // p.a. — konsistent mit PV-Rechner (SCENARIOS realistic + electricityIncrease)

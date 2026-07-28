@@ -13,7 +13,7 @@ import { DEFAULT_AIRCON_CONFIG as AC, AC_REAL_FACTOR } from "../../../lib/aircon
 import { acHeatSpecKwhPerM2 } from "../../../lib/aircon";
 import { DEFAULT_BALKON_CONFIG as BK } from "../../../lib/balkon-config";
 import { referenceYearKwh } from "../../../lib/solar-year";
-import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS } from "../../../lib/constants";
+import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS, FUEL } from "../../../lib/constants";
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
@@ -310,17 +310,27 @@ export default async function DatenstandPage() {
           intro="Annahmen des Wärmepumpen-Rechners: Heizbedarf, Effizienz, Investition und Förderung. Alle Werte im Ergebnis editierbar."
           rows={[
             // Spanne immer über die GANZE Skala — sonst fällt eine neue Stufe still
-            // aus der öffentlichen Übersicht (die unterste ist der beste Fall).
-            { label: "Spez. Heizbedarf Bestand (unsaniert–vollsaniert)", value: `${HP.specDemandBestand[HP.specDemandBestand.length - 1]}–${HP.specDemandBestand[0]} kWh/m²·a` },
+            // aus der öffentlichen Übersicht. Reihenfolge der Beschriftung MUSS der
+            // Reihenfolge der Werte folgen (der kleinste Wert ist der beste Fall):
+            // „unsaniert–vollsaniert" über „70–220" las sich genau falsch herum.
+            { label: "Spez. Heizbedarf Bestand (vollsaniert–unsaniert)", value: `${HP.specDemandBestand[HP.specDemandBestand.length - 1]}–${HP.specDemandBestand[0]} kWh/m²·a` },
+            { label: "Spez. Heizlast Bestand (vollsaniert–unsaniert)", value: `${HP.specHeatLoadBestand[HP.specHeatLoadBestand.length - 1]}–${HP.specHeatLoadBestand[0]} W/m²` },
             { label: "Spez. Heizbedarf Neubau (KfW 40+–EnEV)", value: `${HP.specDemandNeubau[HP.specDemandNeubau.length - 1]}–${HP.specDemandNeubau[0]} kWh/m²·a` },
             { label: "Warmwasser je Person", value: `${nf(HP.wwPerPerson)} kWh/a` },
             { label: "Investition Luft/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investLwwpBase)} € + ${nf(HP.investLwwpPerKw)} €/kW` },
             { label: "Investition Sole/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },
             { label: "BEG-Förderung (Grund + Boni)", value: `${nf(HP.begGrundfoerderung * 100)}–${nf(HP.begMaxRateLowIncome * 100)} %, max. ${nf(HP.begMaxCap)} €` },
             { label: "WP-Stromtarif (§ 14a EnWG)", value: `${(HP.wpTarif * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct/kWh` },
-            { label: "Gas-Referenz", value: `${nf(HP.gasPriceCtPerKwh)} ct/kWh, ${nf(HP.gasCo2PerKwh * 1000)} g CO₂/kWh` },
+            { label: "Gas-Referenz", value: `${nf(HP.gasPriceCtPerKwh)} ct/kWh, ${nf(HP.gasCo2PerKwh * 1000)} g CO₂/kWh, ${nf(FUEL.gas.efficiency * 100)} % Kessel` },
+            // Der Öl-Fall ist seit 28.07.2026 ein eigener Rechenweg (anderer Preis,
+            // anderer Kessel-Wirkungsgrad, mehr CO₂, keine Grundgebühr) — er fehlte hier.
+            { label: "Heizöl-Referenz", value: `${nf(FUEL.oil.price * 100)} ct/kWh, ${nf(FUEL.oil.co2PerKwh * 1000)} g CO₂/kWh, ${nf(FUEL.oil.efficiency * 100)} % Kessel` },
+            { label: "Neue fossile Heizung (Anschaffung, im Ergebnis editierbar)", value: `${nf(HP.fossilErsatzInvest)} €` },
+            { label: "Grundpreis je Jahr (Gas / Heizöl / WP-Zähler)", value: `${nf(HP.fixCostPerYear.gas)} / ${nf(HP.fixCostPerYear.oil)} / ${nf(HP.wpFixCostPerYear)} €` },
+            { label: "Wartung je Jahr (fossil / Wärmepumpe)", value: `${nf(HP.gasMaintenance)} / ${nf(HP.wpMaintenance)} €` },
+            { label: "Betrachtungszeitraum · Teuerung Strom/Brennstoff", value: `${HP.years} Jahre · ${nf(HP.stromInflation * 100)} / ${nf(HP.gasInflation * 100)} % pro Jahr` },
           ]}
-          source={`${HP.source}. Investition kalibriert an der Auswertung von 160 realen Luft-Wasser-Angeboten (Verbraucherzentrale Rheinland-Pfalz): Median 34.979 €, Mittelwert 36.279 € bei einer Median-Leistung von 10 kW.`}
+          source={`${HP.source}. Investition der Wärmepumpe kalibriert an der Auswertung von 160 realen Luft-Wasser-Angeboten (Verbraucherzentrale Rheinland-Pfalz): Median 34.979 €, Mittelwert 36.279 € bei einer Median-Leistung von 10 kW. Anschaffung der fossilen Alternative: Mittelwert der Fraunhofer-ISE-Kurzstudie „Vergleich Wärmeversorgung“ vom 23.06.2026 (Gaskessel Einfamilienhaus 11.400–20.400 € brutto), bestätigt durch die Beispielrechnung der Verbraucherzentrale Rheinland-Pfalz vom 02.06.2025 (16.000 €). Grundpreise und Wartung ebenfalls aus dieser Beispielrechnung.`}
         />
 
         {/* ── Grüngas-Pfad (Gas-Referenz im WP-Rechner + Ratgeber) ── */}
