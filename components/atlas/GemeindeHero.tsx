@@ -13,6 +13,8 @@ import {
   pvLeistungTeile,
 } from "../../lib/atlas-format";
 import AtlasKpiRow, { type KpiGroup, type RefLevel } from "./AtlasKpiRow";
+import TendTag from "./TendTag";
+import Modal from "../Modal";
 
 export type HeroCell = { segment: string; count: number; kwp: number };
 
@@ -80,6 +82,12 @@ function fmtValue(v: number, m: Metric): string {
   if (m === "kwp") return fmtLeistung(v);
   if (m === "speicher") return fmtSpeicherKwh(v);
   return nf(v);
+}
+
+/** Wie weit liegt eine Zeile hinter der Spitze? Grundlage der „− x %"-Badges. */
+function abstandZurSpitze(value: number, spitze: number): number | null {
+  if (!spitze || spitze <= 0) return null;
+  return value / spitze - 1;
 }
 
 type PeerRow = {
@@ -219,6 +227,7 @@ export default function GemeindeHero({
   const [owner, setOwner] = useState<Owner>("alle");
   const [metric, setMetric] = useState<Metric>("perCapita");
   const [active, setActive] = useState<string | null>(null);
+  const [listeOffen, setListeOffen] = useState(false);
 
   const keep = (segment: string) =>
     owner === "alle" ? SEGMENT_OWNER[segment] !== null : SEGMENT_OWNER[segment] === owner;
@@ -295,6 +304,11 @@ export default function GemeindeHero({
     const vals = rows.map((r) => r.value).sort((a, b) => b - a);
     return Math.max(1, vals[1] ?? vals[0] ?? 1);
   }, [rows]);
+
+  // Bezugswert der „− x %"-Badges ist die Spitze der GANZEN Gruppe, nicht die
+  // der fünf sichtbaren Zeilen — sonst stünde neben der eigenen, abgesetzten
+  // Zeile ein anderer Prozentwert als in der vollständigen Liste.
+  const spitze = ranked[0]?.value ?? 0;
 
   return (
     <div style={S.card}>
@@ -386,6 +400,7 @@ export default function GemeindeHero({
                 row={r}
                 metric={metric}
                 scale={scale}
+                dev={abstandZurSpitze(r.value, spitze)}
                 // Five rows, always the same height. When self is beyond the top
                 // it takes the last slot and floats above the table (shadow) —
                 // its real rank makes clear the ranks in between are skipped.
@@ -393,8 +408,28 @@ export default function GemeindeHero({
               />
             ))}
           </div>
+
+          {ranked.length > rows.length && (
+            <button type="button" onClick={() => setListeOffen(true)} style={S.alleBtn}>
+              Alle {nf(ranked.length)} anzeigen
+            </button>
+          )}
         </div>
       </div>
+
+      <Modal
+        open={listeOffen}
+        onClose={() => setListeOffen(false)}
+        title={vergleichTitel ?? "Rangliste"}
+        intro={`Vollständige Rangliste nach ${METRICS.find((m) => m.key === metric)?.label ?? "Leistung"}. Die eigene Zeile ist hervorgehoben; die Prozentzahl ist der Abstand zur Spitze.`}
+        maxWidth={560}
+      >
+        <div style={S.modalListe}>
+          {ranked.map((r) => (
+            <PeerZeile key={r.region_id} row={r} metric={metric} scale={spitze || 1} dev={abstandZurSpitze(r.value, spitze)} />
+          ))}
+        </div>
+      </Modal>
     </div>
   );
 }
@@ -407,20 +442,36 @@ function PeerZeile({
   row,
   metric,
   scale,
+  dev = null,
   floating = false,
 }: {
   row: PeerRow;
   metric: Metric;
   scale: number;
+  /** Abstand zur Spitze der Gruppe. Bei Platz 1 steht dort die Krone. */
+  dev?: number | null;
   floating?: boolean;
 }) {
+  const istSpitze = row.rang === 1;
   // Dezente Hervorhebung der eigenen Zeile (kein Link hier → keine kräftige
   // Blaufüllung wie in der großen Rangliste, wo die Zeile klickbar ist).
   const cells = (
     <>
       <span style={S.peerRank}>{row.rang === null ? "" : `${row.rang}.`}</span>
       <span style={S.peerName}>
-        <span style={{ ...S.peerLink, fontWeight: row.isSelf ? 700 : 500 }}>{row.name}</span>
+        <span style={{ ...S.peerLink, fontWeight: row.isSelf ? 700 : 500 }}>
+          {istSpitze && (
+            <span aria-hidden style={S.krone}>
+              👑
+            </span>
+          )}
+          {row.name}
+        </span>
+      </span>
+      <span style={S.peerDev}>
+        {/* Platz 1 trägt die Krone statt „±0 %" — der Bezugswert braucht kein
+            Etikett für den Abstand zu sich selbst. */}
+        {!istSpitze && <TendTag dev={dev} ton="neutral" />}
       </span>
       <span style={S.peerVal}>
         <span>{fmtValue(row.value, metric)}</span>
@@ -564,7 +615,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   peerRow: {
     display: "grid",
-    gridTemplateColumns: "26px minmax(0,1fr) 88px 14px",
+    gridTemplateColumns: "26px minmax(0,1fr) auto 88px 14px",
     alignItems: "center",
     gap: 8,
     padding: "5px 6px",
@@ -600,6 +651,22 @@ const S: Record<string, React.CSSProperties> = {
     zIndex: 1,
   },
   peerRank: { fontFamily: v("--font-mono"), fontSize: 11, color: v("--color-text-muted") },
+  krone: { marginRight: 4, fontSize: 11 },
+  // Eigene Spalte fuer den Abstands-Badge: in die Wertspalte gestapelt waere die
+  // Zeile drei Zeilen hoch (Zahl, Balken, Badge) und die Tabelle doppelt so lang.
+  peerDev: { display: "flex", justifyContent: "flex-end", alignItems: "center" },
+  alleBtn: {
+    marginTop: space.sm,
+    padding: 0,
+    background: "transparent",
+    border: "none",
+    color: v("--color-accent"),
+    fontFamily: v("--font-text"),
+    fontSize: 13,
+    fontWeight: 600,
+    cursor: "pointer",
+  },
+  modalListe: { display: "flex", flexDirection: "column", gap: 2 },
   peerName: { display: "flex", flexDirection: "column", minWidth: 0 },
   peerLink: { fontSize: v("--font-size-body"), color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   peerVal: { fontFamily: v("--font-mono"), fontSize: 11, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3 },

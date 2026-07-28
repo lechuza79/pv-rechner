@@ -400,6 +400,11 @@ export default async function GemeindePage({ params }: { params: Params }) {
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
         )}
 
+        {/* Die Auszeichnung steht ÜBER dem Hero: Sie ist die Schlagzeile dieser
+            Gemeinde („Platz 1 von 1.101"), nicht eine Fußnote unter der Tabelle.
+            Die Rangliste selbst gibt es nur einmal — im Hero darunter. */}
+        <GemeindePlatzierungen regionId={region.region_id} />
+
         <GemeindeHero
           kpi={kpi}
           cells={atlas.solar.by_segment}
@@ -408,13 +413,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
           vergleichTitel={`Top ${vergleich.was}${vergleich.wo ? ` ${vergleich.wo}` : ""}`}
           basePath={basePath}
         />
-
-        {/* Platzierungen DIREKT unter dem Ranglisten-Teaser der Hero — beides
-            beantwortet dieselbe Frage („wo steht die Gemeinde?"), das gehört
-            zusammen. Client-geladen, weil die Rangdaten ~1,7 s kosten und der
-            Server-Render der Atlas-Seiten schon einmal an der 8-Sekunden-
-            Notbremse stand. */}
-        <GemeindePlatzierungen regionId={region.region_id} />
 
         {/* „Was das für Sie bedeutet": die drei Beispielrechnungen brauchen den
             Standort-Ertrag (PVGIS, extern/langsam). Er wird client-seitig

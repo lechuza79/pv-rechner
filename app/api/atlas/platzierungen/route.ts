@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { loadAwardStats, loadKreisNames } from "../../../../lib/awards-server";
+import { loadAwardStats, loadKreisNames, loadElternSlugs } from "../../../../lib/awards-server";
 import { computePlacements, DEFAULT_HOOK_SETTINGS, LEVEL_LABEL, type HookLevel } from "../../../../lib/award-hook";
 import { AWARD_CATEGORY_BY_KEY, formatAwardValue, rankGemeinden, scopeIdOf } from "../../../../lib/awards";
 import { bundeslandByAgs } from "../../../../lib/mastr-regions";
@@ -30,7 +30,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "region fehlt oder ist kein 8-stelliger Gemeindeschlüssel" }, { status: 400 });
   }
 
-  const [stats, kreisNames] = await Promise.all([loadAwardStats(), loadKreisNames()]);
+  const [stats, kreisNames, elternSlugs] = await Promise.all([
+    loadAwardStats(),
+    loadKreisNames(),
+    loadElternSlugs(),
+  ]);
+  // Voller Atlas-Pfad je Gemeinde, aus drei Slugs zusammengesetzt. Ohne einen
+  // davon bleibt die Zeile unverlinkt statt auf eine erfundene URL zu zeigen.
+  const pfadVon = (id: string, slug: string | null | undefined): string | null => {
+    const bl = elternSlugs[id.slice(0, 2)];
+    const kreis = elternSlugs[id.slice(0, 5)];
+    return bl && kreis && slug ? `/solar-atlas/${bl}/${kreis}/${slug}` : null;
+  };
   const eigene = stats.find((s) => s.regionId === regionId);
   if (!eigene) return NextResponse.json({ error: "Gemeinde nicht gefunden" }, { status: 404 });
 
@@ -81,7 +92,7 @@ export async function GET(req: NextRequest) {
   // Die Rangliste zur stärksten Platzierung — das ist die Tabelle, die der
   // Teaser anreißt und das Modal vollständig zeigt.
   const beste = alle[0] ?? null;
-  let tabelle: { platz: number; name: string; wert: string; selbst: boolean }[] = [];
+  let tabelle: { platz: number; name: string; href: string | null; wert: string; selbst: boolean }[] = [];
   if (beste) {
     const p = meine.find((x) => x.categoryKey === beste.kategorie && x.rank === beste.platz && x.total === beste.von);
     const cat = AWARD_CATEGORY_BY_KEY[beste.kategorie];
@@ -94,14 +105,19 @@ export async function GET(req: NextRequest) {
           (cat.metric(g) ?? 0) > 0 &&
           scopeIdOf(g.regionId, p.level === "kreis" ? "landkreis" : p.level === "land" ? "bundesland" : "de") === scope,
       );
+      const nachId = new Map(stats.map((s) => [s.regionId, s]));
       tabelle = rankGemeinden(gruppe, cat)
         .slice(0, MAX_TABELLE)
-        .map((r) => ({
-          platz: r.rank,
-          name: stats.find((s) => s.regionId === r.regionId)?.name ?? r.regionId,
-          wert: formatAwardValue(r.value, cat.format),
-          selbst: r.regionId === regionId,
-        }));
+        .map((r) => {
+          const g = nachId.get(r.regionId);
+          return {
+            platz: r.rank,
+            name: g?.name ?? r.regionId,
+            href: pfadVon(r.regionId, g?.slug),
+            wert: formatAwardValue(r.value, cat.format),
+            selbst: r.regionId === regionId,
+          };
+        });
     }
   }
 

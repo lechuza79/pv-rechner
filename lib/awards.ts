@@ -33,6 +33,9 @@ export type GemeindeStats = {
   regionId: string; // 8-stelliger AGS
   name: string;
   bezeichnung: string; // amtliche Bezeichnung → Rolle
+  /** Letztes Pfadstück der Atlas-Seite. Damit lässt sich jede Ranglisten-Zeile
+   *  verlinken, ohne je Zeile eine Abfrage zu fahren. */
+  slug?: string | null;
   population: number;
   privatDachKwp: number;
   gewerbeDachKwp: number;

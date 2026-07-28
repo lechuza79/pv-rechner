@@ -45,10 +45,15 @@ const DOWN = {
   fill: `color-mix(in srgb, ${v("--color-negative")} 10%, transparent)`,
 };
 
-export default function TendTag({ dev }: { dev: number | null }) {
+/**
+ * `ton="neutral"` erzwingt den grauen Badge. Gebraucht in Ranglisten: Dort ist
+ * der Abstand zur Spitze keine Bewertung — Platz 3 von 40 ist kein Missstand,
+ * und vierzig rote Badges untereinander lesen sich wie eine Mängelliste.
+ */
+export default function TendTag({ dev, ton = "auto" }: { dev: number | null; ton?: "auto" | "neutral" }) {
   if (dev === null) return null;
   const pct = Math.round(Math.abs(dev) * 100);
-  const c = pct === 0 ? NEUTRAL : dev > 0 ? UP : DOWN;
+  const c = ton === "neutral" || pct === 0 ? NEUTRAL : dev > 0 ? UP : DOWN;
   const sign = pct === 0 ? "±" : dev > 0 ? "+" : "−";
 
   return (

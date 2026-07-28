@@ -59,7 +59,7 @@ async function pageAll(table: string, select: string, refine?: (q: any) => any):
 export const loadAwardStats = memoize(async (): Promise<GemeindeStats[]> => {
   if (!supabase) return [];
   const stats = await pageAll("mastr_gemeinde_award", "*");
-  const regions = await pageAll("mastr_regions", "region_id, name, bezeichnung", (q) => q.eq("level", "gemeinde"));
+  const regions = await pageAll("mastr_regions", "region_id, name, bezeichnung, slug", (q) => q.eq("level", "gemeinde"));
   const meta = new Map(regions.map((r) => [r.region_id as string, r]));
   return stats.map((r) => {
     const m = meta.get(r.region_id as string);
@@ -67,6 +67,7 @@ export const loadAwardStats = memoize(async (): Promise<GemeindeStats[]> => {
       regionId: r.region_id as string,
       name: (m?.name as string) ?? (r.region_id as string),
       bezeichnung: (m?.bezeichnung as string) ?? "Gemeinde",
+      slug: (m?.slug as string | null) ?? null,
       population: r.population as number,
       privatDachKwp: Number(r.privat_dach_kwp),
       gewerbeDachKwp: Number(r.gewerbe_dach_kwp),
@@ -89,6 +90,18 @@ export const loadKreisNames = memoize(async (): Promise<Record<string, string>> 
   const rows = await pageAll("mastr_regions", "region_id, name", (q) => q.eq("level", "landkreis"));
   const out: Record<string, string> = {};
   for (const r of rows) out[r.region_id as string] = r.name as string;
+  return out;
+});
+
+/** Slugs der Bundesländer und Landkreise (2- und 5-stelliger AGS). Zusammen mit
+ *  dem Gemeinde-Slug ergibt das den vollen Atlas-Pfad — 420 Zeilen statt einer
+ *  Abfrage je Ranglisten-Eintrag. */
+export const loadElternSlugs = memoize(async (): Promise<Record<string, string>> => {
+  const rows = await pageAll("mastr_regions", "region_id, slug", (q) =>
+    q.in("level", ["bundesland", "landkreis"]).not("slug", "is", null),
+  );
+  const out: Record<string, string> = {};
+  for (const r of rows) out[r.region_id as string] = r.slug as string;
   return out;
 });
 
