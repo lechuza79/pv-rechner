@@ -987,8 +987,35 @@ und Merge auf `main`.
 Vercel ist Production. Ein kaputter Merge bedeutet kaputte Domain
 und/oder fehlgeschlagene Vercel-Builds, die Build-Minutes kosten.
 Type-Check und `npm run build` decken Compile-Fehler ab — aber
-**nicht** UX-Bugs, falsche Berechnungen, hässliche Layouts oder
-unintendierte Verhalten. Das fängt nur ein Mensch im Browser.
+**nicht** UX-Bugs, hässliche Layouts oder unintendiertes Verhalten.
+Das fängt nur ein Mensch im Browser.
+
+**Was der Betreiber abnimmt und was NICHT — BLOCKER (28.07.2026):**
+Er nimmt das **Aussehen und das Verhalten** ab. Er nimmt **keine Zahlen**
+ab, und das ist keine Frage der Sorgfalt, sondern der Möglichkeit —
+seine Ansage: „ich kann nichts abnehmen, weil das viel zu komplex ist als
+das ich einen fehler bemerken könnte. das musst du über prüfmechanismen
+sicherstellen." An dem Tag traten vier Rechenfehler auf, von denen keiner
+im Browser sichtbar war (ein Kessel mit 80 % statt 95 % Nutzungsgrad sieht
+man einer Zahl nicht an). **Eine Zahl zur Abnahme vorzulegen ist deshalb
+keine Absicherung, sondern eine Scheinabsicherung** — sie verlagert die
+Verantwortung an jemanden, der sie nicht tragen kann.
+
+Rechenmodelle werden stattdessen abgesichert durch:
+- `lib/__tests__/modell-kohaerenz.test.ts` (läuft im Pre-commit) — fängt die
+  **bekannten** Fehlerklassen: keine halben Fälle, eine Größe = eine
+  Bedeutung, Bilanz geht auf, Skalen wachsen mit, Beschriftung folgt der
+  Rechnung.
+- den monatlichen `solar-check-rechenmodell-council` (Runbook
+  `scripts/rechenmodell-verify.md`) — sucht das **Unbekannte** mit drei
+  unabhängigen Prüfern, die widerlegen sollen statt zu bestätigen. Ein Test
+  prüft nur, was jemand vorher als Frage formuliert hat.
+- **Pflicht bei jeder Änderung an einer geteilten Rechenfunktion:** vorher
+  die Tabelle „Geteilte Rechen-Basis" lesen, hinterher die Begleittexte
+  aller Aufrufer prüfen und einen Kohärenz-Test ergänzen.
+
+Vorgelegt wird dem Betreiber nur, was er wirklich entscheiden kann: **welchen
+Fall ein Rechner abbilden soll** (Modellprämisse), nicht ob eine Zahl stimmt.
 
 **Nach Code-Änderungen die im Browser sichtbar sind:**
 1. Dev-Server starten (`preview_start` oder `npm run dev`).
