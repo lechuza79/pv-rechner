@@ -189,7 +189,66 @@ selbst kontrollieren:
 
 ---
 
-## Teil 3 — Befugnis je Wächter
+## Teil 3 — Wie berichtet wird (BLOCKER)
+
+**Warum das hier steht (28.07.2026):** Der Betreiber bekam in drei Tagen sieben
+Mails mit dem Betreff „Handlungsbedarf", in denen für ihn kein Handlungsbedarf
+stand — die Befunde gingen an Claude oder hatten sich selbst repariert. Parallel
+lief ein Bericht über mehrere Bildschirmseiten, in dem die einzige Frage, die
+wirklich ihm gehörte (eine kostenpflichtige Studie beschaffen — ja oder nein?),
+im vierten Abschnitt stand. Seine Rückmeldung: „kp was ich damit anfangen soll.
+zu viel Text, zu viel was irrelevant ist."
+
+Ein Wächter, dessen Meldungen weggefiltert werden, ist kein Wächter mehr. Also:
+
+### Eine Mail nur bei einer Entscheidung
+
+**Kein Versand**, wenn nichts zu entscheiden ist — auch nicht bei einem
+spektakulären Lauf, auch nicht bei einem Auto-Fix, auch nicht bei Rot. Selbst
+Erledigtes steht im **Sonntags-Wochenbericht**; technische Befunde gehen an
+Claude (`audience: "claude"`), nicht ans Postfach. Erzwungen von der Schleuse in
+`/api/alert` (`lib/alert-format.ts`): ohne `decisions` wird nicht zugestellt.
+
+### Die Form: drei Felder, sonst nichts
+
+```jsonc
+{
+  "subject":  "Kurz, ohne Wächter-Namen — was ist der Fall?",
+  "decisions": ["Eine Frage, die nur er beantworten kann — mit deiner Empfehlung."],
+  "done":      ["Eine Zeile je Änderung, die du selbst gemacht hast."],
+  "details":   "Der ganze Bericht. Landet eingeklappt am Ende.",
+  "tag":       "name-des-waechters"
+}
+```
+
+- **`decisions`** — höchstens 5, je höchstens 4 Zeilen. Jede Entscheidung nennt
+  die Wahl **und deine Empfehlung** (CLAUDE.md: „eine konkrete Empfehlung
+  mitgeben"). Was Claude selbst tun kann, gehört hier nicht hinein.
+- **`done`** — eine Zeile je Änderung, Beleg im Commit. Zum Sehen, nicht zum
+  Abnicken.
+- **`details`** — hier darf alles stehen. Die Rechenschaft entfällt nicht, sie
+  hört nur auf, die Nachricht zu sein.
+- **Klartext, kein Code.** Keine Dateipfade, Feldnamen oder IDs in `subject`,
+  `decisions` oder `done` — die stehen in `details` und im Commit. „Der
+  Wirkungsgrad des Balkonspeichers" statt `storageEfficiency`.
+
+### Was in eine Entscheidung gehört — und was nicht
+
+| gehört hinein | gehört nicht hinein |
+|---|---|
+| Geld ausgeben (Studie, Abo, Dienst) | „Abfrage X ist langsam geworden" |
+| War das Absicht? (jemand hat etwas bewusst anders gesetzt) | „Ich habe Wert Y korrigiert" → `done` |
+| Produkt/Priorität/Außenwirkung | „Quelle Z ist umgezogen" → selbst nachziehen |
+| Rechtsfolge mit mehreren vertretbaren Antworten | „Test W schlägt fehl" → beheben |
+| Die Automatik kommt seit mehreren Läufen nicht weiter | ein einzelner roter Lauf |
+
+**Faustregel:** Kann Claude es selbst? Dann ist es keine Entscheidung. Kostet es
+Geld, ändert es das Produkt oder gibt es mehrere vertretbare Antworten? Dann ist
+es eine — und dann gehört sie in **einen** Satz plus Empfehlung.
+
+---
+
+## Teil 4 — Befugnis je Wächter
 
 | Wächter | Darf selbst ändern | Bleibt Vorschlag |
 |---|---|---|

@@ -373,6 +373,47 @@ function verdict(seconds: number, limits: { warn: number; fail: number }): "grue
   return "gruen";
 }
 
+/** Ab so vielen roten Läufen hintereinander kommt der Betreiber ins Spiel. */
+export const ESKALATION_AB_LAEUFEN = 3;
+
+/**
+ * Kommt die automatische Reparatur nicht weiter?
+ *
+ * Ein roter Lauf ist KEINE Nachricht an den Betreiber: der Workflow wird rot,
+ * die Autofix-Action springt an, und in aller Regel ist die Sache beim nächsten
+ * Lauf erledigt. Erst wenn dieselbe Stelle mehrere Läufe hintereinander rot
+ * bleibt, ist die Selbstheilung erkennbar gescheitert — und dann ist es eine
+ * Entscheidung („soll ich das anders angehen?"), keine technische Aufgabe.
+ *
+ * Gezählt wird über die GitHub-API statt über eine Zustandsdatei: der Check
+ * läuft in einer wegwerfbaren Umgebung, und eine Datei, die nur bei
+ * Selbstheilung committet wird, würde genau im Fehlerfall nichts festhalten.
+ *
+ * Ohne Token (lokaler Lauf) wird NICHT eskaliert — im Zweifel keine Mail.
+ */
+export function eskalationNoetig(vorherigeLaeufe: ("success" | "failure" | string)[]): boolean {
+  if (vorherigeLaeufe.length < ESKALATION_AB_LAEUFEN - 1) return false;
+  // -1, weil der laufende (rote) Durchgang selbst mitzählt.
+  return vorherigeLaeufe.slice(0, ESKALATION_AB_LAEUFEN - 1).every((c) => c === "failure");
+}
+
+async function letzteLaufErgebnisse(): Promise<string[]> {
+  const token = process.env.GITHUB_TOKEN;
+  const repo = process.env.GITHUB_REPOSITORY;
+  if (!token || !repo) return [];
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${repo}/actions/workflows/health-check.yml/runs?status=completed&per_page=5`,
+      { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(10000) },
+    );
+    if (!res.ok) return [];
+    const data = (await res.json()) as { workflow_runs?: { conclusion: string }[] };
+    return (data.workflow_runs ?? []).map((r) => r.conclusion);
+  } catch {
+    return [];
+  }
+}
+
 async function main() {
   const lines: string[] = [];
   // Die drei Kategorien entscheiden, WER etwas tut — und der Betreiber ist
@@ -380,14 +421,19 @@ async function main() {
   // einen Befund hinzuweisen, den er nicht selbst beheben kann, ist keine
   // Benachrichtigung, sondern eine Sackgasse.
   //
-  // `selfHealed` = hat sich schon repariert, reine Protokollzeile.
-  // `warnings`   = auffällig, nichts zu tun, steht im Log.
-  // `forClaude`  = braucht Analyse und einen Code-Fix → geht an Claude
-  //                (Workflow rot + der stündliche Wächter greift es auf).
-  //                NUR wenn Claude selbst nicht weiterkommt, wird daraus eine
-  //                echte Frage an den Betreiber — formuliert als Entscheidung,
-  //                nicht als Aufgabe.
+  // `selfHealed`  = hat sich schon repariert, reine Protokollzeile.
+  // `warnings`    = auffällig, nichts zu tun, steht im Log.
+  // `forClaude`   = braucht Analyse und einen Code-Fix → geht an Claude
+  //                 (Workflow rot + die Autofix-Action greift es auf).
+  //                 SCHICKT KEINE MAIL. Bis zum 28.07.2026 tat es das doch, mit
+  //                 dem Betreff „Handlungsbedarf" — sieben Mails in drei Tagen
+  //                 über Dinge, die der Betreiber weder beheben kann noch soll.
+  //                 Erst wenn die Selbstheilung mehrere Läufe hintereinander
+  //                 nicht weiterkommt, wird daraus eine Frage an ihn.
+  // `forOperator` = echte Entscheidung, die nur ihm gehört (Absicht ja/nein,
+  //                 Geld, Produkt). Genau das und nur das rechtfertigt eine Mail.
   const forClaude: string[] = [];
+  const forOperator: string[] = [];
   const selfHealed: string[] = [];
   const warnings: string[] = [];
 
@@ -423,10 +469,14 @@ async function main() {
         `nach Washington verschoben hätte. (Live läuft aktuell ${regions.join("/") || "unbekannt"}.)`,
     );
   } else if (configState === "abweichend") {
-    forClaude.push(
-      `In vercel.json steht eine andere Region als ${EXPECTED_REGION}. Das überschreibe ich nicht — wenn das ` +
-        `Absicht war, gehört der Timeout in lib/db-timeout.ts mit angehoben; wenn nicht, gehört die Zeile ` +
-        `zurück auf ["${EXPECTED_REGION}"].`,
+    // Die einzige Frage im ganzen Check, die wirklich nur der Betreiber
+    // beantworten kann: War das Absicht? Beide Antworten sind vertretbar, und
+    // eine davon eigenmächtig zu wählen wäre gefährlicher als das Problem.
+    forOperator.push(
+      `Die Server sollen laut Einstellung nicht mehr in Frankfurt laufen, sondern woanders. War das Absicht? ` +
+        `Wenn ja, ziehe ich die Zeitgrenze für Datenbank-Abfragen mit hoch (aus der Ferne dauert jeder Zugriff ` +
+        `länger). Wenn nein, setze ich Frankfurt zurück. Meine Empfehlung: zurück nach Frankfurt — dort steht ` +
+        `die Datenbank, und genau daran ist der Atlas im Juli 2026 ausgefallen.`,
     );
   } else if (configState === "nicht-lesbar") {
     forClaude.push(`vercel.json ist nicht lesbar oder kein gültiges JSON — jeder Deploy scheitert damit.`);
@@ -519,24 +569,42 @@ async function main() {
   }
 
   // ── Bericht ───────────────────────────────────────────────────────────────
-  const ampel = forClaude.length ? "ROT" : selfHealed.length ? "REPARIERT" : warnings.length ? "GELB" : "GRUEN";
+  const ampel =
+    forOperator.length || forClaude.length ? "ROT" : selfHealed.length ? "REPARIERT" : warnings.length ? "GELB" : "GRUEN";
   const report = [
     `Solar Check Gesundheitscheck: ${ampel}`,
     "",
     ...lines,
     ...(selfHealed.length ? ["", "Selbst repariert (nichts zu tun):", ...selfHealed.map((s) => `- ${s}`)] : []),
+    ...(forOperator.length ? ["", "Entscheidung des Betreibers:", ...forOperator.map((p) => `- ${p}`)] : []),
     ...(forClaude.length ? ["", "Fuer Claude zur Analyse:", ...forClaude.map((p) => `- ${p}`)] : []),
     ...(warnings.length ? ["", "Auffaellig (nichts zu tun):", ...warnings.map((w) => `- ${w}`)] : []),
   ].join("\n");
 
   console.log(report);
 
-  // BENACHRICHTIGUNG NUR, WENN DER BETREIBER SELBST ETWAS TUN MUSS.
-  // Nicht bei Gelb (auffällig, aber nichts zu tun) und ausdrücklich auch nicht
-  // bei Selbstheilung — was der Check allein repariert hat, ist keine Nachricht
-  // wert, sondern eine Protokollzeile. Wer für jede Regung eine Mail bekommt,
+  // BENACHRICHTIGUNG NUR, WENN DER BETREIBER SELBST ETWAS ENTSCHEIDEN MUSS.
+  // Nicht bei Gelb, nicht bei Selbstheilung — und ausdrücklich auch nicht bei
+  // einem roten Lauf, der an Claude geht: dafür ist der Workflow-Fehlschlag da,
+  // der die Autofix-Action startet. Wer für jede Regung eine Mail bekommt,
   // filtert den Absender weg und verpasst dann die eine, die zählt.
-  if (ALERT && forClaude.length) {
+  //
+  // Die eine Ausnahme ist der Fall, in dem die Automatik erkennbar nicht
+  // weiterkommt: bleibt es mehrere Läufe hintereinander rot, wird aus dem
+  // technischen Befund eine Frage an den Betreiber.
+  const vorlaeufe = forClaude.length ? await letzteLaufErgebnisse() : [];
+  const festgefahren = forClaude.length > 0 && eskalationNoetig(vorlaeufe);
+  const entscheidungen = [
+    ...forOperator,
+    ...(festgefahren
+      ? [
+          `Seit ${ESKALATION_AB_LAEUFEN} Prüfläufen in Folge komme ich an derselben Stelle nicht weiter: ` +
+            `${forClaude[0]} Soll ich das größer angehen (mehr Zeit dafür einplanen), oder lässt du es vorerst so?`,
+        ]
+      : []),
+  ];
+
+  if (ALERT) {
     const secret = process.env.CRON_SECRET;
     if (!secret) {
       console.error("\n--alert gesetzt, aber CRON_SECRET fehlt — keine Meldung verschickt.");
@@ -545,12 +613,24 @@ async function main() {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${secret}` },
         body: JSON.stringify({
-          subject: `Handlungsbedarf — Gesundheitscheck ${ampel}`,
-          body: report,
+          subject: entscheidungen.length ? "Gesundheitscheck: eine Entscheidung für dich" : `Gesundheitscheck ${ampel}`,
+          decisions: entscheidungen,
+          done: selfHealed,
+          details: report,
+          // Ohne Entscheidung ist der Lauf an Claude adressiert — die Schleuse in
+          // /api/alert hält ihn dann zurück, statt ihn zuzustellen.
+          audience: entscheidungen.length ? "operator" : "claude",
           tag: "health-check",
         }),
       });
-      console.log(res.ok ? "\nMeldung verschickt (Handlungsbedarf)." : `\nMeldung fehlgeschlagen: ${res.status}`);
+      const info = (await res.json().catch(() => ({}))) as { skipped?: boolean; reason?: string };
+      console.log(
+        res.ok
+          ? info.skipped
+            ? `\nKeine Mail (${info.reason}).`
+            : "\nMeldung verschickt (Entscheidung liegt beim Betreiber)."
+          : `\nMeldung fehlgeschlagen: ${res.status}`,
+      );
     }
   }
 
@@ -558,7 +638,7 @@ async function main() {
   //   2 = selbst repariert → die Action committet die Korrektur und deployt
   //   1 = braucht Analyse → Workflow rot, Claude-Autofix springt an
   //   0 = alles im Rahmen
-  if (forClaude.length) process.exit(1);
+  if (forClaude.length || forOperator.length) process.exit(1);
   if (selfHealed.length) process.exit(2);
 }
 
