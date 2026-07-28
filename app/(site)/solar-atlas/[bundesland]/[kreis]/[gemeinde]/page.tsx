@@ -84,6 +84,9 @@ type Params = { bundesland: string; kreis: string; gemeinde: string };
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
   if (!region) return { robots: atlasRobots(false) };
+  // Eine kreisfreie Stadt hat keinen übergeordneten Landkreis — der Vergleich
+  // gilt dort gegen das Bundesland.
+  const kreisfrei = params.kreis === params.gemeinde;
   // Anlagenzahl (für die Thin-Schwelle) nur laden, wenn die Gemeinde-Ebene
   // überhaupt freigeschaltet ist — sonst ist die Seite ohnehin noindex.
   const anlagen = atlasLevelReleased("gemeinde")
@@ -92,7 +95,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return {
     ...pageMetadata({
       title: `Solaranlagen in ${region.name} – Bestand & Zubau`,
-      description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum Landkreis.`,
+      description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${kreisfrei ? "Bundesland" : "Landkreis"}.`,
       path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
     }),
     robots: atlasRobots(atlasIsIndexable("gemeinde", anlagen)),
@@ -120,6 +123,13 @@ export default async function GemeindePage({ params }: { params: Params }) {
     getRegionAtlasData("de"),
     getRegionById("de"),
   ]);
+
+  // KREISFREIE STADT: Sie IST ihr eigener Landkreis. Jede Stelle, die den
+  // Elternteil als eigenständige Vergleichs- oder Zugehörigkeitsebene benutzt,
+  // sagt dort etwas Falsches („Vergleich mit Stuttgart" auf der Stuttgart-Seite,
+  // „Stuttgart liegt in Stuttgart" in den strukturierten Daten). Einmal
+  // bestimmen, überall berücksichtigen.
+  const istKreisfrei = !!kreis && kreis.region_id === region.region_id.slice(0, 5) && kreis.name === region.name;
 
   const speicher = atlas.speicher;
 
@@ -209,7 +219,11 @@ export default async function GemeindePage({ params }: { params: Params }) {
       ],
       perCap: perCapOf(atlas, region.population, owner),
       references: [
-        { key: "landkreis", name: kreis?.name ?? "Landkreis", perCap: perCapOf(kreisAtlas, kreis?.population, owner) },
+        // Bei einer kreisfreien Stadt ist der „Landkreis" die Stadt selbst —
+        // ein Vergleich mit sich hat den Wert 0 % und sagt nichts.
+        ...(istKreisfrei
+          ? []
+          : [{ key: "landkreis", name: kreis?.name ?? "Landkreis", perCap: perCapOf(kreisAtlas, kreis?.population, owner) }]),
         { key: "bundesland", name: bl?.name ?? "Bundesland", perCap: perCapOf(blAtlas, blRegion?.population, owner) },
         { key: "de", name: "Deutschland", perCap: perCapOf(deAtlas, deRegion?.population, owner) },
       ].filter((r) => Object.values(r.perCap).some((x) => x !== null)),
@@ -269,8 +283,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
   // Überschrift „Top Kommunen im Stuttgart". Eine kreisfreie Stadt steht
   // verwaltungsrechtlich auf Kreisebene; ihre Vergleichsgruppe sind deshalb die
   // Stadt- und Landkreise des Bundeslandes, nicht Gemeinden.
-  // Erkennung ohne Zusatzabfrage: der Kreis hat höchstens ein Kind (sich selbst).
-  const istKreisfrei = siblingData.regions.length <= 1;
   const vergleich = istKreisfrei
     ? { daten: await getRankingData(blRegion ?? kreis!), was: "Kreise", wo: `in ${bl?.name ?? "diesem Bundesland"}` }
     : { daten: siblingData, was: "Kommunen", wo: kreis?.name ? `im ${kreis.name}` : "" };
@@ -300,7 +312,8 @@ export default async function GemeindePage({ params }: { params: Params }) {
   const crumbs: { label: string; href?: string }[] = [
     { label: "Solar-Atlas", href: "/solar-atlas" },
     { label: bl?.name ?? blAgs, href: `/solar-atlas/${params.bundesland}` },
-    { label: kreis?.name ?? params.kreis, href: basePath },
+    // Bei kreisfreien Städten stünde hier zweimal derselbe Name.
+    ...(istKreisfrei ? [] : [{ label: kreis?.name ?? params.kreis, href: basePath }]),
     { label: region.name },
   ];
 
@@ -311,11 +324,11 @@ export default async function GemeindePage({ params }: { params: Params }) {
   );
   const datasetLd = atlasDatasetJsonLd({
     name: `Solaranlagen-Bestand ${region.name}`,
-    description: `Anlagenzahl, installierte Leistung und Zubau der Photovoltaik in ${region.name}${kreis ? ` (${kreis.name})` : ""} aus dem Marktstammdatenregister.`,
+    description: `Anlagenzahl, installierte Leistung und Zubau der Photovoltaik in ${region.name}${kreis && !istKreisfrei ? ` (${kreis.name})` : ""} aus dem Marktstammdatenregister.`,
     url: `${BASE_URL}${atlasPath}`,
     dateModified: atlas.data_as_of,
     placeName: region.name,
-    containedInPlace: kreis?.name ?? bl?.name ?? undefined,
+    containedInPlace: (istKreisfrei ? bl?.name : kreis?.name) ?? bl?.name ?? undefined,
     variables: [
       { name: "Solaranlagen in Betrieb", value: atlas.solar.total_count },
       { name: "Installierte Leistung", value: Math.round(atlas.solar.total_kwp), unitText: "kWp" },
