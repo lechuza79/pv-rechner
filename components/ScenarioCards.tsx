@@ -53,7 +53,11 @@ export default function ScenarioCards({
             <TrendBadge dir="up" />
             <span style={S.exVal}>{nfEuro(round100(s.wpTco20))}</span>
           </div>
-          <div style={S.exLabel}>spart eine Wärmepumpe gegenüber Gas über 20 Jahre — statt weiter fürs Heizen draufzuzahlen</div>
+          {/* „statt weiter draufzuzahlen" wäre der Weiterbetrieb — die Zahl misst
+              seit 28.07.2026 den Vergleich mit einer NEUEN fossilen Heizung (inkl.
+              deren Anschaffung und Beimischungspflicht). Text und Zahl müssen
+              denselben Fall beschreiben. */}
+          <div style={S.exLabel}>spart eine Wärmepumpe über 20 Jahre gegenüber einer neuen Gasheizung</div>
           <div style={S.exSub}>Typisches Einfamilienhaus, 140 m², Luft/Wärmepumpe</div>
           <span style={S.exCta}>Wärmepumpe rechnen <IconArrowRight size={14} /></span>
         </Link>
