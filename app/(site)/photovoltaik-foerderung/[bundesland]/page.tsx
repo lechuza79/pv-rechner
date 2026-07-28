@@ -298,13 +298,13 @@ export default async function BundeslandPage({ params }: { params: { bundesland:
             {anlagentypSegments.length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "stretch" }}>
                 <div style={{ flex: "1 1 320px", minWidth: 0, display: "flex" }}>
-                  <RegionAnlagentypWidget name={name} segments={anlagentypSegments} liveUrl={blLiveUrl} showSource={false} showEmbed={false} />
+                  <RegionAnlagentypWidget name={name} segments={anlagentypSegments} liveUrl={blLiveUrl} onsite showEmbed={false} />
                 </div>
                 {blAgs && BL_CENTROID[blAgs] && (
                   <div style={{ flex: "1 1 320px", minWidth: 0, display: "flex" }}>
                     {/* Auf der Seite trägt der Seitenfuß den Credit (Konvention:
                         einmal pro Seite) — Widget-Quelle aus, sichtbar nur im Embed. */}
-                    <RegionSolarLive lat={BL_CENTROID[blAgs].lat} lon={BL_CENTROID[blAgs].lon} totalKwp={solar.total_kwp} name={name} liveUrl={blLiveUrl} showSource={false} showEmbed={false} />
+                    <RegionSolarLive lat={BL_CENTROID[blAgs].lat} lon={BL_CENTROID[blAgs].lon} totalKwp={solar.total_kwp} name={name} liveUrl={blLiveUrl} onsite showEmbed={false} />
                   </div>
                 )}
               </div>

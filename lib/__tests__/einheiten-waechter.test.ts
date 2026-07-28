@@ -26,9 +26,20 @@ const VERZEICHNISSE = [
   "app/(site)/solar-atlas",
   "app/(embed)/embed/gemeinde-solar",
   "app/(embed)/embed/gemeinde-erneuerbare",
+  "app/(embed)/embed/gemeinde-solarleistung",
+  "app/(embed)/embed/region-anlagentyp",
+  "app/(embed)/embed/region-solarleistung",
   "app/(embed)/embed/kennzahl",
 ];
-const EINZELDATEIEN = ["lib/gemeinde-highlight.ts", "components/MastrHeroSection.tsx"];
+const EINZELDATEIEN = [
+  "lib/gemeinde-highlight.ts",
+  "components/MastrHeroSection.tsx",
+  // Die Landes-Karten zeigen denselben MaStR-Bestand wie die Gemeinde-Karten,
+  // lagen aber außerhalb des Suchpfads — genau dort stand „GW" über einer
+  // Photovoltaik-Nennleistung, die GWp ist.
+  "components/RegionAnlagentypWidget.tsx",
+  "components/RegionSolarLive.tsx",
+];
 
 /** `${…} kWh` — eine Zahl mit direkt angeklebter Einheit. */
 const ANGEKLEBT = /\}\s*(kWp|MWp|GWp|kWh|MWh|GWh|kW|MW|GW|Wp|W)\b/g;

@@ -404,7 +404,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
                 generators={atlas.generators}
                 speicherKwh={speicher.kwh_batterie}
                 liveUrl={`https://solar-check.io${gemeindePath}`}
-                showSource={false}
+                onsite
                 showEmbed={false}
               />
             </div>
@@ -417,7 +417,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
                   totalKwp={atlas.solar.total_kwp}
                   name={region.name}
                   liveUrl={`https://solar-check.io${gemeindePath}`}
-                  showSource={false}
+                  onsite
                   showEmbed={false}
                 />
               </div>

@@ -2,18 +2,13 @@
 
 import { useState } from "react";
 import { Kachel, formatDataAsOf } from "../../../../components/MastrHeroSection";
+import GemeindeWidgetShell from "../../../../components/atlas/GemeindeWidgetShell";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
-import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
-import { DATA_SOURCES } from "../../../../lib/data-sources";
+import { WIDGETS, widgetForPlace, WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
+import { WIDGET_SETTINGS_DEFAULTS, type WidgetSettings } from "../../../../lib/widget-settings";
 import { fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "../../../../lib/atlas-format";
 
-const BASE = "https://solar-check.io";
-
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
-
-const fmtLeistung = fmtPvLeistung;
-const fmtKwh = fmtSpeicherKwh;
 
 export type GemeindeWidgetProps = {
   name?: string;
@@ -32,102 +27,64 @@ export type GemeindeWidgetProps = {
 
 /**
  * Embeddable Gemeinde solar figures. Same numbers as the atlas page, in the
- * standard widget shell: themeable chrome, fixed semantic content, a data-source
- * credit that stays regardless of branding, and the shared share/embed menu.
+ * shared widget shell: registry identity resolved to this municipality, so the
+ * title, the shared image and the citation all name the place.
  */
 export default function GemeindeSolarWidget(props: GemeindeWidgetProps) {
-  const [showEmbed, setShowEmbed] = useState(true);
-  const [showBranding, setShowBranding] = useState(true);
+  const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
-    onSettings: (s) => {
-      if (typeof s.embed === "boolean") setShowEmbed(s.embed);
-      if (typeof s.branding === "boolean") setShowBranding(s.branding);
-    },
+    onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
-
-  const shell: React.CSSProperties = {
-    background: "var(--widget-bg)",
-    color: "var(--widget-fg)",
-    borderRadius: "var(--widget-border-radius)",
-    fontFamily: "var(--widget-font-family)",
-    padding: 16,
-    boxSizing: "border-box",
-  };
 
   if (props.error || !props.name) {
     return (
-      <div style={shell}>
-        <div style={{ fontSize: 13, color: "var(--widget-muted)" }}>{props.error ?? "Keine Daten."}</div>
+      <div
+        style={{
+          maxWidth: WIDGET_MAX_WIDTH_COMPACT,
+          margin: "0 auto",
+          padding: 16,
+          fontFamily: "var(--widget-font-family)",
+          color: "var(--widget-muted)",
+          fontSize: 13,
+        }}
+      >
+        {props.error ?? "Keine Daten."}
       </div>
     );
   }
 
-  const { name, population, count = 0, kwp = 0, kwpDach = 0, speicherKwh = 0, ags, atlasPath } = props;
+  const { name, population, count = 0, kwp = 0, kwpDach = 0, speicherKwh = 0, atlasPath } = props;
   const wPerCapitaDach = population ? Math.round((kwpDach * 1000) / population) : null;
 
-  const liveUrl = atlasPath ? `${BASE}${atlasPath}` : BASE;
-  const shareText = `Solaranlagen in ${name}: ${nf(count)} Anlagen, ${fmtLeistung(kwp)} – Solar Check`;
+  const widget = widgetForPlace(
+    WIDGETS.gemeindeSolar,
+    name,
+    atlasPath ? `https://solar-check.io${atlasPath}` : undefined,
+  );
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
   return (
-    <div style={shell}>
-      <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 2 }}>Solaranlagen in {name}</div>
-      <div style={{ fontSize: 11, color: "var(--widget-muted)", marginBottom: 12 }}>
-        {props.dataAsOf ? `Marktstammdatenregister · Stand ${formatDataAsOf(props.dataAsOf)}` : ""}
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(88px, 1fr))", gap: 8 }}>
+    <GemeindeWidgetShell
+      widget={widget}
+      subline="Anlagenbestand aus dem Marktstammdatenregister"
+      filename={`solar-check-solaranlagen-${slug}.png`}
+      dataAsOf={props.dataAsOf ? formatDataAsOf(props.dataAsOf) : undefined}
+      onsite={settings.onsite}
+      share={settings.share}
+      showEmbed={settings.embed}
+      branding={settings.branding}
+    >
+      <div style={{ width: "100%", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(88px, 1fr))", gap: 8 }}>
         <Kachel label="Anlagen" value={nf(count)} />
-        <Kachel label="Installiert" value={fmtLeistung(kwp)} />
-        {wPerCapitaDach !== null && <Kachel label="Leistung je Einwohner" value={fmtWattProKopf(wPerCapitaDach)} hint="Dach" />}
+        <Kachel label="Installiert" value={fmtPvLeistung(kwp)} />
+        {wPerCapitaDach !== null && (
+          <Kachel label="Leistung je Einwohner" value={fmtWattProKopf(wPerCapitaDach)} hint="Dach" />
+        )}
         {/* „Batteriespeicher", nicht „Speicher": der Wert zählt nur Batterien, wie
             auf der Atlas-Seite. Ein Pumpspeicherwerk im Ort steckt nicht darin —
             das Widget darf nicht mehr behaupten als die Seite. */}
-        {speicherKwh > 0 && <Kachel label="Batteriespeicher" value={fmtKwh(speicherKwh)} />}
+        {speicherKwh > 0 && <Kachel label="Batteriespeicher" value={fmtSpeicherKwh(speicherKwh)} />}
       </div>
-
-      <div style={{ marginTop: 12 }}>
-        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
-        {/* Data-source credit — always shown, independent of branding (Legal 1). */}
-        <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: 6 }}>
-          <DataSourceNote source={DATA_SOURCES.mastr} />
-        </div>
-        <div
-          style={{
-            fontSize: 10.5,
-            color: "var(--widget-muted)",
-            display: "flex",
-            justifyContent: showBranding ? "space-between" : "flex-end",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          {showBranding && <PoweredBy />}
-          <ChartActionBar
-            variant="menu"
-            menuUp
-            showDownload={false}
-            size={28}
-            onDownload={() => {}}
-            onCopyLink={() => navigator.clipboard?.writeText(`${shareText}\n${liveUrl}`).catch(() => {})}
-            onWhatsApp={() =>
-              window.open(`https://wa.me/?text=${encodeURIComponent(`${shareText}\n${liveUrl}`)}`, "_blank")
-            }
-            onTwitter={() =>
-              window.open(
-                `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(liveUrl)}`,
-                "_blank",
-              )
-            }
-            onEmbed={
-              showEmbed && ags
-                ? () => window.open(`/energie-widgets#gemeinde-solar`, "_blank", "noopener")
-                : undefined
-            }
-            isExporting={false}
-            canNativeShare={false}
-          />
-        </div>
-      </div>
-    </div>
+    </GemeindeWidgetShell>
   );
 }

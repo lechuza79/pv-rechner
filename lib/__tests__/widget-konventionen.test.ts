@@ -40,7 +40,18 @@ function widgetDateien(): { pfad: string; inhalt: string }[] {
     if (datei.endsWith(".tsx")) dateien.push(join("components/charts", datei));
   }
 
-  dateien.push("components/MastrLiveRadial.tsx", "components/SimulationPanel.tsx");
+  dateien.push(
+    "components/MastrLiveRadial.tsx",
+    "components/SimulationPanel.tsx",
+    // Die ortsbezogenen Karten (Gemeinde, Bundesland) und ihre geteilte Hülle:
+    // Die Embed-Routen sind dünne Hüllen um diese Bauteile — ohne sie prüfte der
+    // Wächter bei fünf Widgets nur die Verpackung.
+    "components/atlas/GemeindeWidgetShell.tsx",
+    "components/atlas/GemeindeErneuerbareWidget.tsx",
+    "components/atlas/GemeindeSolarLive.tsx",
+    "components/RegionAnlagentypWidget.tsx",
+    "components/RegionSolarLive.tsx",
+  );
 
   return dateien.map((pfad) => ({ pfad, inhalt: readFileSync(join(ROOT, pfad), "utf8") }));
 }
@@ -58,15 +69,9 @@ const NOCH_NICHT_UMGESTELLT = [
   "app/(embed)/embed/ee-ampel/client.tsx",
   "app/(embed)/embed/erzeugung-mini/client.tsx",
   "app/(embed)/embed/foerder-check/client.tsx",
-  "app/(embed)/embed/gemeinde-erneuerbare/client.tsx",
-  "app/(embed)/embed/gemeinde-solar/client.tsx",
-  "app/(embed)/embed/gemeinde-solarleistung/client.tsx",
   "app/(embed)/embed/karte/client.tsx",
   "app/(embed)/embed/kennzahl/client.tsx",
-  "app/(embed)/embed/region-anlagentyp/client.tsx",
-  "app/(embed)/embed/region-solarleistung/client.tsx",
   "app/(embed)/embed/simulation/client.tsx",
-  "components/atlas/GemeindeWidgetShell.tsx",
   // Eigener Embed-Modus mit eigener Fußzeile; steht als Nächstes an.
   "components/SimulationPanel.tsx",
 ];
@@ -81,6 +86,21 @@ const ERLAUBT: Record<string, { regel: string; grund: string }[]> = {
       regel: "max-breite",
       grund: "dünne Hülle; die Karte samt Breitengrenze steckt in components/charts/ZubauWidget",
     },
+  ],
+  // Die vier ortsbezogenen Embed-Routen reichen nur Daten + Einstellungen an das
+  // Bauteil weiter; Breitengrenze, Fußzeile und Bild-Fuß stecken in der geteilten
+  // Hülle components/atlas/GemeindeWidgetShell, die hier mitgeprüft wird.
+  "app/(embed)/embed/gemeinde-erneuerbare/client.tsx": [
+    { regel: "max-breite", grund: "dünne Hülle; Breitengrenze in GemeindeWidgetShell" },
+  ],
+  "app/(embed)/embed/gemeinde-solarleistung/client.tsx": [
+    { regel: "max-breite", grund: "dünne Hülle; Breitengrenze in GemeindeWidgetShell" },
+  ],
+  "app/(embed)/embed/region-anlagentyp/client.tsx": [
+    { regel: "max-breite", grund: "dünne Hülle; Breitengrenze in GemeindeWidgetShell" },
+  ],
+  "app/(embed)/embed/region-solarleistung/client.tsx": [
+    { regel: "max-breite", grund: "dünne Hülle; Breitengrenze in GemeindeWidgetShell" },
   ],
 };
 

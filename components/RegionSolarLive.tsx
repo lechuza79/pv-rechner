@@ -5,7 +5,8 @@ import { v } from "../lib/theme";
 import { calcCurrentPower } from "../lib/simulation";
 import { MastrLiveRadial } from "./MastrLiveRadial";
 import GemeindeWidgetShell from "./atlas/GemeindeWidgetShell";
-import { DATA_SOURCES } from "../lib/data-sources";
+import { WIDGETS, widgetForPlace } from "../lib/widget-registry";
+import { fmtPvLeistung } from "../lib/atlas-format";
 
 // Landes-Variante des einbettbaren Solarleistungs-Widgets (analog zur Gemeinde-
 // Version in components/atlas, gleiche Shell + chromelose MastrLiveRadial). Es
@@ -27,16 +28,21 @@ export default function RegionSolarLive({
   totalKwp,
   name,
   liveUrl,
-  showSource = true,
+  onsite = false,
+  share = true,
   showEmbed = true,
-  branding = false,
+  branding = true,
 }: {
   lat: number;
   lon: number;
   totalKwp: number;
   name: string;
   liveUrl: string;
-  showSource?: boolean;
+  /** First-party embed auf einer eigenen Seite: Quelle erst beim Überfahren,
+   *  keine Markenzeile (die Seite trägt beides). */
+  onsite?: boolean;
+  /** Aktionsleiste zeigen (Einbettende können sie über share=0 abwählen). */
+  share?: boolean;
   showEmbed?: boolean;
   branding?: boolean;
 }) {
@@ -84,19 +90,17 @@ export default function RegionSolarLive({
   const subline =
     "Simuliert aus dem heutigen Wetter — kein Messwert" + (stand ? ` · Stand ${stand}` : "");
 
-  const shareText = `Solarleistung in ${name}: was der Bestand heute liefert (simuliert) – Solar Check`;
+  const widget = widgetForPlace(WIDGETS.regionSolarleistung, name, liveUrl);
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
   return (
     <GemeindeWidgetShell
-      title={`Solarleistung heute in ${name}`}
+      widget={widget}
       subline={subline}
-      sources={[DATA_SOURCES.openMeteo, DATA_SOURCES.mastr]}
-      shareText={shareText}
-      shareUrl={liveUrl}
       filename={`solar-check-solarleistung-${slug}.png`}
-      embedHash="region-solarleistung"
-      showSource={showSource}
+      note={`Simulierter Tagesverlauf des Anlagenbestands (${fmtPvLeistung(totalKwp)}) aus dem heutigen Wetter — kein Messwert.`}
+      onsite={onsite}
+      share={share}
       // Vertikales Quellen-Label endet über der Auslastungs-Zeile des Radials,
       // statt bis zum Boden durchzulaufen.
       sourceBottomInset={44}

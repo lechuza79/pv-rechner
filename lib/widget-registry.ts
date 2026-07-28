@@ -30,11 +30,30 @@ export interface WidgetCta {
   href: string;
 }
 
+/**
+ * Wording for widgets that show ONE place per call (a municipality, a state).
+ *
+ * The registry entry holds the genus ("Solaranlagen einer Gemeinde"); the actual
+ * place only exists at runtime, in the data. Both templates carry a `{ort}`
+ * placeholder that {@link widgetForPlace} fills in — so title, share text and
+ * citation name the place, while licence, brand, sources and next step keep
+ * coming from the one entry. A chart of a town without the town's name in it is
+ * worthless the moment the image leaves the page.
+ */
+export interface WidgetPlaceTemplates {
+  /** Card + image + citation title, e.g. "Solaranlagen in {ort}". */
+  title: string;
+  /** Share text, e.g. "Solaranlagen in {ort} – Solar Check". */
+  shareText: string;
+}
+
 export interface WidgetDef {
   /** Embed slug + gallery anchor, e.g. "gruengas-heizkosten". */
   id: string;
   title: string;
   kind: WidgetKind;
+  /** Set on widgets parameterised by place — see {@link widgetForPlace}. */
+  place?: WidgetPlaceTemplates;
   /** Where "share" points: the canonical live page for this widget. */
   shareUrl: string;
   shareText: string;
@@ -159,6 +178,74 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.mastr],
     exportable: false,
   },
+  // ── Kommune und Region: eine Karte, je Aufruf ein anderer Ort ───────────────
+  // Titel und Teilen-Text tragen den Ort erst zur Laufzeit (widgetForPlace);
+  // hier steht die Gattung, damit Galerie und Übersicht etwas Sinnvolles zeigen.
+  gemeindeSolar: {
+    id: "gemeinde-solar",
+    title: "Solaranlagen einer Gemeinde",
+    kind: "chart",
+    place: {
+      title: "Solaranlagen in {ort}",
+      shareText: "Solaranlagen in {ort}: Anlagen, Leistung und Leistung je Einwohner – Solar Check",
+    },
+    shareUrl: `${SITE}/solar-atlas`,
+    shareText: "Solaranlagen einer Gemeinde – Zahlen aus dem Marktstammdatenregister",
+    sources: [DATA_SOURCES.mastr],
+    cta: { label: "Eigenes Dach durchrechnen", href: "/photovoltaik-rechner" },
+  },
+  gemeindeErneuerbare: {
+    id: "gemeinde-erneuerbare",
+    title: "Erneuerbare Leistung einer Gemeinde",
+    kind: "chart",
+    place: {
+      title: "Erneuerbare Leistung in {ort}",
+      shareText: "Erneuerbare Leistung in {ort} nach Technologie – Solar Check",
+    },
+    shareUrl: `${SITE}/solar-atlas`,
+    shareText: "Erneuerbare Leistung einer Gemeinde nach Technologie – Solar Check",
+    sources: [DATA_SOURCES.mastr],
+    cta: { label: "Eigenes Dach durchrechnen", href: "/photovoltaik-rechner" },
+  },
+  gemeindeSolarleistung: {
+    id: "gemeinde-solarleistung",
+    title: "Solarleistung einer Gemeinde (simuliert)",
+    kind: "chart",
+    place: {
+      title: "Solarleistung heute in {ort}",
+      shareText: "Solarleistung heute in {ort}: was der Anlagenbestand liefert (simuliert) – Solar Check",
+    },
+    shareUrl: `${SITE}/solar-atlas`,
+    shareText: "Solarleistung einer Gemeinde, simuliert aus dem heutigen Wetter – Solar Check",
+    sources: [DATA_SOURCES.openMeteo, DATA_SOURCES.mastr],
+    cta: { label: "Eigene Anlage simulieren", href: "/pv-simulation" },
+  },
+  regionAnlagentyp: {
+    id: "region-anlagentyp",
+    title: "Solarleistung eines Bundeslands nach Anlagentyp",
+    kind: "chart",
+    place: {
+      title: "Solarleistung in {ort} nach Anlagentyp",
+      shareText: "Solarleistung in {ort} nach Anlagentyp: Dach, Gewerbe und Freifläche – Solar Check",
+    },
+    shareUrl: `${SITE}/photovoltaik-foerderung`,
+    shareText: "Solarleistung eines Bundeslands nach Anlagentyp – Solar Check",
+    sources: [DATA_SOURCES.mastr],
+    cta: { label: "Förderung im Bundesland prüfen", href: "/photovoltaik-foerderung" },
+  },
+  regionSolarleistung: {
+    id: "region-solarleistung",
+    title: "Solarleistung eines Bundeslands (simuliert)",
+    kind: "chart",
+    place: {
+      title: "Solarleistung heute in {ort}",
+      shareText: "Solarleistung heute in {ort}: was der Anlagenbestand liefert (simuliert) – Solar Check",
+    },
+    shareUrl: `${SITE}/photovoltaik-foerderung`,
+    shareText: "Solarleistung eines Bundeslands, simuliert aus dem heutigen Wetter – Solar Check",
+    sources: [DATA_SOURCES.openMeteo, DATA_SOURCES.mastr],
+    cta: { label: "Eigene Anlage simulieren", href: "/pv-simulation" },
+  },
   // ── Werkzeuge: hier gibt man eigene Zahlen ein ──────────────────────────────
   foerderCheck: {
     id: "foerder-check",
@@ -200,6 +287,28 @@ export type WidgetId = keyof typeof WIDGETS;
  */
 export function brandLabel(kind: WidgetKind): string {
   return kind === "tool" ? "Interaktiv selbst rechnen:" : "Interaktives Chart:";
+}
+
+/**
+ * The place-specific reading of a parameterised entry: same widget, this town.
+ *
+ * Only three things change — title, share text and share target — and all three
+ * for the same reason: they are the parts that travel. A downloaded image, a
+ * citation and a shared link have to say WHICH place they show; everything else
+ * (sources, licence, brand wording, next step, kind) stays the one registry
+ * entry, so there is no second place to maintain.
+ *
+ * `liveUrl` is the canonical page of that place (atlas page, state page). Empty
+ * falls back to the genus page rather than to a dead link.
+ */
+export function widgetForPlace(widget: WidgetDef, ort: string, liveUrl?: string): WidgetDef {
+  const fill = (s: string) => s.split("{ort}").join(ort);
+  return {
+    ...widget,
+    title: widget.place ? fill(widget.place.title) : `${widget.title} — ${ort}`,
+    shareText: widget.place ? fill(widget.place.shareText) : `${widget.title} — ${ort}`,
+    shareUrl: liveUrl || widget.shareUrl,
+  };
 }
 
 /** Embed path of a widget, or null where there is no iframe route for it. */

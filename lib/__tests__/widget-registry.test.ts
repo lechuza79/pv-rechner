@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { allWidgets, brandLabel, embedPath, sharePath, WIDGETS } from "../widget-registry";
+import { allWidgets, brandLabel, embedPath, sharePath, widgetForPlace, WIDGETS } from "../widget-registry";
 
 // Der Baukasten lebt davon, dass jeder Eintrag vollständig ist: fehlt eine
 // Quelle, fehlt sie im geteilten Bild (Lizenzpflicht); fehlt der Teilen-Link,
@@ -60,6 +60,27 @@ describe("Widget-Register", () => {
   it("Teilen-Ziele lassen sich als interner Pfad verlinken", () => {
     for (const w of allWidgets()) {
       expect(sharePath(w), `${w.id}: Pfad muss mit / beginnen`).toMatch(/^\//);
+    }
+  });
+
+  it("ortsbezogene Widgets tragen den Ort in Titel und Teilen-Text", () => {
+    // Ein Gemeinde-Chart ohne Ortsnamen ist als geteiltes Bild und als Zitat
+    // wertlos: Man sieht Zahlen, aber nicht, wovon. Deshalb muss jede Vorlage
+    // den Platzhalter wirklich enthalten — und die eingesetzte Fassung den Ort,
+    // ohne dabei Quellen oder nächsten Schritt zu verlieren.
+    const ortsbezogen = allWidgets().filter((w) => w.place);
+    expect(ortsbezogen.length, "keine ortsbezogenen Einträge gefunden").toBeGreaterThan(0);
+    for (const w of ortsbezogen) {
+      expect(w.place!.title, `${w.id}: Titel-Vorlage ohne {ort}`).toContain("{ort}");
+      expect(w.place!.shareText, `${w.id}: Teilen-Vorlage ohne {ort}`).toContain("{ort}");
+      const konkret = widgetForPlace(w, "Höchberg", "https://solar-check.io/solar-atlas/b/k/hoechberg");
+      expect(konkret.title, `${w.id}: Ort fehlt im Titel`).toContain("Höchberg");
+      expect(konkret.shareText, `${w.id}: Ort fehlt im Teilen-Text`).toContain("Höchberg");
+      expect(konkret.shareUrl).toBe("https://solar-check.io/solar-atlas/b/k/hoechberg");
+      expect(konkret.sources).toEqual(w.sources);
+      expect(konkret.cta).toEqual(w.cta);
+      // Ohne Ortsseite bleibt der Gattungs-Link stehen statt eines toten Links.
+      expect(widgetForPlace(w, "Höchberg").shareUrl).toBe(w.shareUrl);
     }
   });
 

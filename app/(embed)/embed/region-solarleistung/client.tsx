@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
+import { WIDGET_SETTINGS_DEFAULTS, type WidgetSettings } from "../../../../lib/widget-settings";
 import RegionSolarLive from "../../../../components/RegionSolarLive";
 
 export type RegionSolarleistungEmbedProps = {
@@ -15,13 +16,9 @@ export type RegionSolarleistungEmbedProps = {
 
 /** Themebare Hülle für das Bundesland-Solarleistungs-Widget im Embed-Kontext. */
 export default function RegionSolarleistungEmbed(props: RegionSolarleistungEmbedProps) {
-  const [showEmbed, setShowEmbed] = useState(true);
-  const [showBranding, setShowBranding] = useState(true);
+  const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
-    onSettings: (s) => {
-      if (typeof s.embed === "boolean") setShowEmbed(s.embed);
-      if (typeof s.branding === "boolean") setShowBranding(s.branding);
-    },
+    onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
 
   if (
@@ -46,8 +43,10 @@ export default function RegionSolarleistungEmbed(props: RegionSolarleistungEmbed
       totalKwp={props.totalKwp}
       name={props.name}
       liveUrl={props.liveUrl}
-      showEmbed={showEmbed}
-      branding={showBranding}
+      onsite={settings.onsite}
+      share={settings.share}
+      showEmbed={settings.embed}
+      branding={settings.branding}
     />
   );
 }
