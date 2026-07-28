@@ -388,11 +388,12 @@ export default async function GemeindePage({ params }: { params: Params }) {
           · monatlich aktualisiert
         </div>
 
-        <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
-        {/* Einleitung und Auszeichnung nebeneinander. Auf schmalen Schirmen
-            gestapelt (CSS: .gemeinde-kopf in lib/theme.ts). */}
+        {/* Überschrift UND Einleitung links, Auszeichnung rechts: Der Badge
+            beginnt damit auf Höhe der Überschrift statt erst neben dem
+            Fließtext. Auf schmalen Schirmen gestapelt (CSS: .gemeinde-kopf). */}
         <div className="gemeinde-kopf">
           <div style={{ minWidth: 0 }}>
+            <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
             <CollapsibleIntro>
           {buildGemeindeHighlight({
             name: region.name,

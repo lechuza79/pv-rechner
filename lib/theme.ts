@@ -653,8 +653,11 @@ export const globalStyles = `
      Gezielt .gemeinde-auszeichnung, NICHT "letztes Kind": ohne Platzierung
      rendert sie gar nichts, und dann bekaeme der Text die schmale Spalte. */
   .gemeinde-kopf{display:flex;gap:24px;align-items:flex-start;margin-bottom:24px}
+  /* Die Ueberschrift traegt ihren eigenen Abstand nach unten; oben muss sie
+     buendig mit dem Badge daneben starten. */
+  .gemeinde-kopf > *:first-child > h1{margin-top:0}
   .gemeinde-kopf > *:first-child{flex:1 1 0;min-width:0}
-  .gemeinde-kopf > .gemeinde-auszeichnung{flex:0 0 296px;max-width:296px}
+  .gemeinde-kopf > .gemeinde-auszeichnung{flex:0 0 252px;max-width:252px}
   @media (max-width:760px){
     .gemeinde-kopf{flex-direction:column;gap:16px}
     .gemeinde-kopf > .gemeinde-auszeichnung{flex:1 1 auto;max-width:none;width:100%}
