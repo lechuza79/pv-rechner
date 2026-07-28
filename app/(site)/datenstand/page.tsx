@@ -4,7 +4,7 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
-import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
+import { feedInRatesFor, type FeedInRates } from "../../../lib/feedin-config";
 import { FEEDIN_HISTORY_META, FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES } from "../../../lib/feedin-history";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
@@ -116,6 +116,15 @@ const S = {
     marginTop: 8,
     lineHeight: 1.5,
   },
+  caveat: {
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-muted"),
+    background: v("--color-bg-accent"),
+    borderRadius: v("--radius-md"),
+    padding: "10px 12px",
+    marginTop: 8,
+    lineHeight: 1.6,
+  },
   note: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-muted"),
@@ -169,7 +178,7 @@ async function fetchPrices(): Promise<PriceConfig> {
 }
 
 async function fetchFeedIn(): Promise<FeedInRates> {
-  if (!supabase) return DEFAULT_FEED_IN;
+  if (!supabase) return feedInRatesFor();
   try {
     const { data } = await supabase
       .from("feed_in_rates")
@@ -178,7 +187,7 @@ async function fetchFeedIn(): Promise<FeedInRates> {
       .order("valid_from", { ascending: false })
       .limit(1)
       .single();
-    if (!data) return DEFAULT_FEED_IN;
+    if (!data) return feedInRatesFor();
     return {
       teilUnder10: Number(data.teil_under_10),
       teilOver10: Number(data.teil_over_10),
@@ -189,18 +198,20 @@ async function fetchFeedIn(): Promise<FeedInRates> {
       source: data.source,
     };
   } catch {
-    return DEFAULT_FEED_IN;
+    return feedInRatesFor();
   }
 }
 
 type Row = { label: string; value: string };
 
-function Section({ title, stand, intro, rows, source }: {
+function Section({ title, stand, intro, rows, source, caveat }: {
   title: string;
   stand: string;
   intro?: string;
   rows: Row[];
   source: string;
+  /** Herkunfts-Vorbehalt, wenn ein Wert (noch) nicht aus der amtlichen Liste stammt. */
+  caveat?: string | null;
 }) {
   return (
     <div style={S.section}>
@@ -218,6 +229,7 @@ function Section({ title, stand, intro, rows, source }: {
         ))}
       </div>
       <p style={S.source}>Quelle: {source}</p>
+      {caveat && <p style={S.caveat}>{caveat}</p>}
     </div>
   );
 }
@@ -270,6 +282,7 @@ export default async function DatenstandPage() {
             { label: `Volleinspeisung über ${nf(feedin.thresholdKwp)} kWp`, value: `${nf(feedin.vollOver10)} ct/kWh` },
           ]}
           source={feedin.source || "Bundesnetzagentur, § 48 EEG"}
+          caveat={feedin.note}
         />
 
         {/* ── Historische Einspeisevergütung (Zeitreihe für die Zubau-Story) ── */}
