@@ -470,6 +470,10 @@ export type Kennzahl = {
   /** Fertig formatiert, Einheit aus dem kanonischen Formatter. */
   anzeige: string;
   niveau: "hoch" | "mittel" | "niedrig" | null;
+  /** Relativer Abstand zum Median (0,12 = +12 %) — genau das Format, das der
+   *  bestehende Tendenz-Badge des Solar-Atlas erwartet. Null, wenn es nichts zu
+   *  vergleichen gibt. */
+  abweichung: number | null;
   /** Woran gemessen wurde — gehört immer mit angezeigt. */
   referenz: string;
 };
@@ -490,6 +494,12 @@ function einordnen(wert: number | null, med: number | null): "hoch" | "mittel" |
   if (wert >= med * HOCH_AB) return "hoch";
   if (wert <= med * NIEDRIG_BIS) return "niedrig";
   return "mittel";
+}
+
+/** Abstand zum Median als relativer Wert — die Eingangsgröße des Tendenz-Badges. */
+function abweichungVon(wert: number | null, med: number | null): number | null {
+  if (wert == null || med == null || med <= 0) return null;
+  return wert / med - 1;
 }
 
 /** Anteil der privaten Dachanlagen an der gesamten Solarleistung des Gebiets.
@@ -564,18 +574,21 @@ export function computeHighlights(area: UtilityArea, alle: UtilityArea[]): Utili
       wert: dach,
       anzeige: dach == null ? "—" : fmtWattProKopf(dach),
       niveau: einordnen(dach, medDach),
+      abweichung: abweichungVon(dach, medDach),
       referenz: medDach ? `Median ${fmtWattProKopf(medDach)}` : "kein Vergleichswert",
     },
     buergerAnteil: {
       wert: buerger,
       anzeige: pct(buerger),
       niveau: einordnen(buerger, medBuerger),
+      abweichung: abweichungVon(buerger, medBuerger),
       referenz: medBuerger ? `Median ${pct(medBuerger)} · Anteil an aller Solarleistung im Gebiet` : "kein Vergleichswert",
     },
     zubauAnteil: {
       wert: zubau,
       anzeige: pct(zubau),
       niveau: einordnen(zubau, medZubau),
+      abweichung: abweichungVon(zubau, medZubau),
       referenz: medZubau ? `Median ${pct(medZubau)} · Zubau des letzten Jahres am Bestand` : "kein Vergleichswert",
     },
   };

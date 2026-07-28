@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { isAdminSession } from "../../../../lib/admin-guard";
-import { loadUtilityBundle, hookFor } from "../../../../lib/utilities-server";
+import { loadUtilityBundle, hookFor, invalidateUtilityBundle } from "../../../../lib/utilities-server";
 import {
   UTILITY_TYP_LABEL,
   computeHighlights,
@@ -273,6 +273,7 @@ export async function POST(req: NextRequest) {
     if (linkErr) return NextResponse.json({ error: linkErr.message }, { status: 500 });
   }
 
+  invalidateUtilityBundle();
   return NextResponse.json({ id: data.id });
 }
 
@@ -306,5 +307,6 @@ export async function PATCH(req: NextRequest) {
   const { error } = await serviceDb.from("utilities").update(patch).eq("id", body.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  invalidateUtilityBundle();
   return NextResponse.json({ ok: true });
 }

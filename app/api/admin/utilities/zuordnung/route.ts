@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../../lib/supabase-server";
 import { isAdminSession } from "../../../../../lib/admin-guard";
+import { invalidateUtilityBundle } from "../../../../../lib/utilities-server";
 import { ZUORDNUNG_QUELLE_LABEL, ZUORDNUNG_ROLLE_LABEL } from "../../../../../lib/utilities";
 
 // Gemeinde ↔ Versorger zuordnen und wieder lösen.
@@ -69,6 +70,7 @@ export async function POST(req: NextRequest) {
     );
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  invalidateUtilityBundle();
   return NextResponse.json({ ok: true });
 }
 
@@ -90,5 +92,6 @@ export async function DELETE(req: NextRequest) {
     .eq("commune_id", communeId);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  invalidateUtilityBundle();
   return NextResponse.json({ ok: true });
 }

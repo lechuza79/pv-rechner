@@ -14,6 +14,8 @@ import {
   type ZuordnungRolle,
 } from "../../../../lib/utilities";
 import Modal from "../../../../components/Modal";
+import TendTag from "../../../../components/atlas/TendTag";
+import VersorgerGebietKarte from "../../../../components/admin/VersorgerGebietKarte";
 
 // Cockpit für Stadtwerke / Energieversorger.
 //
@@ -195,16 +197,7 @@ export default function VersorgerCockpit() {
 
       <div style={{ display: "flex", gap: space.xs, marginBottom: space.md, alignItems: "center" }}>
         <Tab active={tab === "liste"} label={`Versorger (${erfasstGesamt})`} onClick={() => setTab("liste")} />
-        <Tab active={tab === "erfassung"} label="Erfassung" onClick={() => setTab("erfassung")} />
-        <button
-          style={{ ...primaryBtn, marginLeft: "auto" }}
-          onClick={() => {
-            setNeuSitz(null);
-            setNeuOffen(true);
-          }}
-        >
-          + Versorger anlegen
-        </button>
+        <Tab active={tab === "erfassung"} label="Nacharbeit" onClick={() => setTab("erfassung")} />
       </div>
 
       {tab === "liste" ? (
@@ -435,15 +428,18 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
   );
 }
 
-/** Eine hervorgehobene Kennzahl. Die Farbe sagt „im Vergleich zu den anderen
- *  erfassten Versorgern" — der Bezug steht im Titel und im Detail nochmal aus-
- *  geschrieben, damit die Farbe nie allein für sich spricht. */
+/** Eine Kennzahl mit ihrer Einordnung.
+ *
+ *  Die Tendenz zeigt der BESTEHENDE Badge des Solar-Atlas (`TendTag`) — dort ist
+ *  bereits entschieden, wie eine Abweichung aussieht: Vorzeichen statt Pfeil
+ *  (der Knick der Pfeil-Icons wirkte unruhig), ein Ton je Richtung, Farben aus
+ *  den semantischen Tokens. Ein eigenes Zeichen hier wäre eine zweite Antwort
+ *  auf dieselbe Frage gewesen. */
 function KennzahlZelle({ k }: { k: Kennzahl }) {
-  const farbe = k.niveau === "hoch" ? v("--color-positive") : k.niveau === "niedrig" ? v("--color-text-muted") : v("--color-text-primary");
   return (
-    <td style={{ ...tdStyle, fontFamily: v("--font-mono"), color: farbe, fontWeight: k.niveau === "hoch" ? 700 : 400 }} title={k.referenz}>
-      {k.anzeige}
-      {k.niveau === "hoch" && <span style={{ marginLeft: 4 }} aria-label="überdurchschnittlich">▲</span>}
+    <td style={{ ...tdStyle, fontFamily: v("--font-mono") }} title={k.referenz}>
+      <div>{k.anzeige}</div>
+      {k.abweichung != null && Math.abs(k.abweichung) >= 0.25 && <TendTag dev={k.abweichung} />}
     </td>
   );
 }
@@ -644,6 +640,14 @@ function Detail({
               </li>
             ))}
           </ul>
+        )}
+      </Abschnitt>
+
+      <Abschnitt titel="Gebiet auf der Karte">
+        {laden ? (
+          <p style={{ color: v("--color-text-muted") }}>Lädt…</p>
+        ) : (
+          <VersorgerGebietKarte gemeindeIds={gemeinden.map((g) => g.regionId)} name={u.name} />
         )}
       </Abschnitt>
 

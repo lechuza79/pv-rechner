@@ -63,6 +63,28 @@ function toMembership(r: Row): UtilityMembership {
   };
 }
 
+/**
+ * Alle Zeilen einer Tabelle, seitenweise.
+ *
+ * Ein einfaches `select()` liefert nur die ersten 1.000 Zeilen. Von 11.407
+ * Zuordnungen kamen deshalb 1.000 an, und weil die auf wenige Versorger
+ * entfielen, zeigte das Cockpit 13 statt 779 Versorger mit Gebiet — ohne
+ * Fehlermeldung, nur mit einer fast leeren Tabelle. Dieselbe Falle hatte vorher
+ * schon der Bestandsbericht; hier nicht mitgeprüft zu haben, war der Fehler.
+ */
+async function alleZeilen(tabelle: string, spalten: string): Promise<Row[]> {
+  if (!supabase) return [];
+  const out: Row[] = [];
+  for (let von = 0; ; von += 1000) {
+    const { data, error } = await supabase.from(tabelle).select(spalten).range(von, von + 999);
+    if (error) throw new Error(`${tabelle} laden: ${error.message}`);
+    if (!data?.length) break;
+    out.push(...(data as unknown as Row[]));
+    if (data.length < 1000) break;
+  }
+  return out;
+}
+
 export type UtilityBundle = {
   areas: UtilityArea[];
   placements: Map<string, UtilityPlacement[]>;
@@ -71,32 +93,49 @@ export type UtilityBundle = {
   statsByRegion: Map<string, GemeindeStats>;
 };
 
+// Prozess-lokaler Halt für das fertige Bündel.
+//
+// Gemessen (27.07.2026): Ein kalter Aufbau kostet rund 4 Sekunden Datenbank —
+// 10.742 Gemeinde-Kennzahlen, 11.247 Gebietsnamen, 937 Versorger und 11.407
+// Zuordnungen. Die Gemeinde-Hälfte hielt der Award-Loader schon eine Stunde; die
+// Versorger-Hälfte wurde bei JEDEM Filterwechsel neu gelesen, und genau das hat
+// die Tabelle zäh gemacht.
+//
+// Kein Zeit-Ablauf, sondern gezieltes Verwerfen: Das Cockpit bearbeitet diese
+// Daten laufend, und ein Stand von vor 30 Sekunden wäre dort schlimmer als ein
+// langsamer Aufbau. Jede schreibende Route ruft `invalidateUtilityBundle()`.
+let bundleCache: UtilityBundle | null = null;
+
+/** Nach jedem Schreibvorgang aufrufen — sonst zeigt das Cockpit den alten Stand. */
+export function invalidateUtilityBundle(): void {
+  bundleCache = null;
+}
+
 /** Alle Versorger mit aufsummiertem Gebiet und ihren Platzierungen.
  *  Die Platzierungen brauchen die GESAMTE Menge (Rang ist relativ), deshalb wird
- *  immer alles geladen — bei einigen Dutzend Zeilen ist das die einfachste und
- *  zugleich schnellste Lösung. */
+ *  immer alles geladen und danach gehalten. */
 export async function loadUtilityBundle(): Promise<UtilityBundle> {
   if (!supabase) {
     return { areas: [], placements: new Map(), memberships: [], statsByRegion: new Map() };
   }
+  if (bundleCache) return bundleCache;
 
-  const [utilRes, linkRes, stats] = await Promise.all([
-    supabase.from("utilities").select("*").order("name"),
-    supabase.from("utility_communes").select("*"),
+  const [utilRows, linkRows, stats] = await Promise.all([
+    alleZeilen("utilities", "*"),
+    alleZeilen("utility_communes", "*"),
     loadAwardStats(),
   ]);
-  if (utilRes.error) throw new Error(`Versorger laden: ${utilRes.error.message}`);
-  if (linkRes.error) throw new Error(`Zuordnungen laden: ${linkRes.error.message}`);
 
-  const records = (utilRes.data ?? []).map(toRecord);
-  const memberships = (linkRes.data ?? []).map(toMembership);
+  const records = utilRows.map(toRecord);
+  const memberships = linkRows.map(toMembership);
   const statsByRegion = new Map(stats.map((g) => [g.regionId, g]));
   const overlaps = findOverlaps(memberships);
 
   const areas = records.map((u) => aggregateArea(u, memberships, statsByRegion, overlaps));
   const placements = computeUtilityPlacements(areas);
 
-  return { areas, placements, memberships, statsByRegion };
+  bundleCache = { areas, placements, memberships, statsByRegion };
+  return bundleCache;
 }
 
 export type UtilityHookView = UtilityHookText & { categoryKey: string | null };
