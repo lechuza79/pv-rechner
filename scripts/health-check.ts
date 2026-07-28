@@ -197,7 +197,7 @@ const COLD_SAMPLES = 3;
 const DB_PROBE_WARN_MS = 250;
 const DB_PROBE_FAIL_MS = 400;
 
-type DbProbe = { label: string; ms: number; error?: string };
+type DbProbe = { label: string; ms: number; baselineMs: number; error?: string };
 
 /**
  * Bewertung einer einzelnen Atlas-Abfrage.
@@ -218,10 +218,55 @@ export function dbProbeVerdict(ms: number): "gruen" | "gelb" | "rot" {
   return "gruen";
 }
 
+/**
+ * Struktureller Rückfall — oder ist gerade nur viel los?
+ *
+ * Beide sehen in der reinen Millisekundenzahl gleich aus, verlangen aber
+ * gegenteilige Reaktionen. Am 28.07.2026 meldete der Check 562/576 ms und damit
+ * ROT; die Funktionen in der Datenbank waren aber unverändert richtig, die Last
+ * kam von einem parallel laufenden Auswertungs-Skript. Zehn Minuten später lagen
+ * dieselben Abfragen wieder bei 62–94 ms.
+ *
+ * Die Unterscheidung liefert ein LEICHTER Vergleichs-Read (Punkt-Zugriff auf
+ * eine Mini-Tabelle) im selben Lauf:
+ *   - Gesund kostet eine Atlas-Abfrage praktisch nur Netzlaufzeit, ist also
+ *     etwa so schnell wie der Vergleichs-Read.
+ *   - Beim Rückfall auf den vollen Tabellendurchlauf kommen ~500 ms DB-Arbeit
+ *     obendrauf, während der Vergleichs-Read schnell bleibt.
+ *   - Ist die Datenbank nur beschäftigt, werden BEIDE langsamer.
+ * Gewertet wird deshalb der Abstand zum Vergleichs-Read, nicht der Rohwert.
+ *
+ * Die Schwellen bleiben unangetastet — sie hochzusetzen wäre genau das
+ * Verstecken, das CLAUDE.md verbietet. Geschärft wird nur die Frage.
+ */
+export function dbProbeVerdictRelativ(ms: number, baselineMs: number): "gruen" | "gelb" | "rot" {
+  // Der Vergleichs-Read schwankt selbst, und unter seinen Wert kann keine
+  // Abfrage fallen. Der Sockel von 60 ms verhindert, dass ein zufällig sehr
+  // schneller Vergleichs-Read die Bewertung künstlich verschärft.
+  return dbProbeVerdict(ms - Math.max(baselineMs, 60) + 60);
+}
+
 async function measureAtlasQueries(): Promise<DbProbe[]> {
   const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_KEY;
   if (!url || !key) return [];
+
+  // Vergleichs-Read VOR den Atlas-Abfragen: dieselbe Strecke, aber ohne
+  // nennenswerte Datenbankarbeit. Er trennt „Abfrage kaputt" von „Datenbank
+  // gerade beschäftigt" (siehe dbProbeVerdictRelativ).
+  const baselineStart = Date.now();
+  let baselineMs = 0;
+  try {
+    const r = await fetch(`${url}/rest/v1/mastr_meta?select=imported_at&id=eq.1`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    await r.text();
+    baselineMs = Date.now() - baselineStart;
+  } catch {
+    // Scheitert der Vergleichs-Read, bleibt baselineMs bei 0 — dann gilt wieder
+    // die harte Schwelle. Die Prüfung wird durch einen Ausfall nie milder.
+  }
 
   // Die drei Aufrufe, die jede Gemeindeseite macht — je einer auf Gemeinde-,
   // Kreis- und Bundesebene, damit auch ein leerer Rollup auffällt.
@@ -257,10 +302,11 @@ async function measureAtlasQueries(): Promise<DbProbe[]> {
       out.push({
         label: c.label,
         ms: Date.now() - started,
+        baselineMs,
         error: res.ok ? undefined : `${res.status} ${body.slice(0, 120)}`,
       });
     } catch (e) {
-      out.push({ label: c.label, ms: Date.now() - started, error: e instanceof Error ? e.message : "Abbruch" });
+      out.push({ label: c.label, ms: Date.now() - started, baselineMs, error: e instanceof Error ? e.message : "Abbruch" });
     }
   }
   return out;
@@ -452,21 +498,22 @@ async function main() {
   // niemand gleichzeitig darauf zugreift.
   if (dbProbes.length) {
     lines.push(
-      `Atlas-Datenbankabfragen: ${dbProbes.map((d) => `${d.label} ${d.ms} ms`).join(" · ")}`,
+      `Atlas-Datenbankabfragen: ${dbProbes.map((d) => `${d.label} ${d.ms} ms`).join(" · ")}` +
+        ` (Vergleichs-Read ${dbProbes[0].baselineMs} ms)`,
     );
     for (const d of dbProbes) {
       if (d.error) {
         forClaude.push(`Die Atlas-Abfrage „${d.label}" antwortet nicht sauber: ${d.error}`);
-      } else if (dbProbeVerdict(d.ms) === "rot") {
+      } else if (dbProbeVerdictRelativ(d.ms, d.baselineMs) === "rot") {
         forClaude.push(
-          `Die Atlas-Abfrage „${d.label}" braucht ${d.ms} ms statt der üblichen ~80 ms. Bei gesundem Zustand ` +
-            `ist das fast reine Netzlaufzeit. Ein Vielfaches heißt: die Abfrage läuft wieder über die ganze ` +
+          `Die Atlas-Abfrage „${d.label}" braucht ${d.ms} ms bei einem Vergleichs-Read von ${d.baselineMs} ms. ` +
+            `Die Differenz ist echte Datenbankarbeit und im gesunden Zustand nahe null. Sie heißt: die Abfrage läuft wieder über die ganze ` +
             `Rohtabelle statt über den Index — entweder ist der vorberechnete Rollup leer, oder in ` +
             `lib/mastr-region-sql.ts ist der Präfix wieder ein Parameter statt eines Literals (der Grund ` +
             `steht dort im Kopf). Die Seiten sind dann noch schnell, kippen aber unter Parallel-Last.`,
         );
-      } else if (dbProbeVerdict(d.ms) === "gelb") {
-        warnings.push(`Atlas-Abfrage „${d.label}" bei ${d.ms} ms (üblich ~80 ms).`);
+      } else if (dbProbeVerdictRelativ(d.ms, d.baselineMs) === "gelb") {
+        warnings.push(`Atlas-Abfrage „${d.label}" bei ${d.ms} ms (Vergleichs-Read ${d.baselineMs} ms).`);
       }
     }
   }

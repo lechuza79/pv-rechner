@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { dbProbeVerdict } from "../../scripts/health-check";
+import { dbProbeVerdict, dbProbeVerdictRelativ } from "../../scripts/health-check";
 
 /**
  * Der Wächter misst die teuersten Atlas-Datenbankabfragen einzeln — als
@@ -44,5 +44,43 @@ describe("Wächter: Bewertung der Atlas-Datenbankabfragen", () => {
     for (let ms = 0; ms <= 1000; ms += 1) {
       expect(["gruen", "gelb", "rot"]).toContain(dbProbeVerdict(ms));
     }
+  });
+});
+
+describe("Wächter: Last ist kein Rückfall", () => {
+  /**
+   * Am 28.07.2026 meldete der Check 562/576 ms und damit ROT, obwohl die
+   * Datenbank-Funktionen unverändert richtig waren — parallel lief ein
+   * Auswertungs-Skript gegen dieselbe Datenbank. Zehn Minuten später: 62–94 ms.
+   * Ein Wächter, der bei jedem Analyse-Lauf anschlägt, wird nach zwei Wochen
+   * weggefiltert, und dann geht auch der echte Befund unter.
+   *
+   * Die Schwellen bleiben, wo sie sind. Gewertet wird der Abstand zu einem
+   * leichten Vergleichs-Read im selben Lauf.
+   */
+  it("meldet nicht, wenn die ganze Datenbank langsam ist", () => {
+    // Beides langsam, die Abfrage kostet kaum mehr als der Vergleichs-Read:
+    // beschäftigte Datenbank, kein struktureller Fehler.
+    expect(dbProbeVerdictRelativ(562, 520)).toBe("gruen");
+    expect(dbProbeVerdictRelativ(600, 540)).toBe("gruen");
+  });
+
+  it("meldet weiterhin, wenn NUR die Atlas-Abfrage langsam ist", () => {
+    // Genau der behobene Fehler: Vergleichs-Read schnell, Abfrage ~600 ms.
+    expect(dbProbeVerdictRelativ(620, 80)).toBe("rot");
+    expect(dbProbeVerdictRelativ(562, 75)).toBe("rot");
+    // Auch aus der GitHub-Action heraus (höhere Netzlaufzeit) muss es rot sein.
+    expect(dbProbeVerdictRelativ(700, 150)).toBe("rot");
+  });
+
+  it("hält den gesunden Zustand grün — lokal wie in der Action", () => {
+    expect(dbProbeVerdictRelativ(80, 75)).toBe("gruen");
+    expect(dbProbeVerdictRelativ(150, 140)).toBe("gruen");
+  });
+
+  it("wird ohne Vergleichs-Read nicht milder", () => {
+    // Scheitert der Vergleichs-Read (0 ms), gilt wieder die harte Schwelle.
+    expect(dbProbeVerdictRelativ(620, 0)).toBe("rot");
+    expect(dbProbeVerdictRelativ(80, 0)).toBe("gruen");
   });
 });
