@@ -6,6 +6,7 @@ import { bundeslandByAgs } from "../../../../../lib/mastr-regions";
 import { AWARD_CATEGORY_BY_KEY, rankGemeinden, scopeIdOf, type AwardScopeLevel, type MetricFormat } from "../../../../../lib/awards";
 import { v, space, pad } from "../../../../../lib/theme";
 import { fmtPvLeistung, fmtWattProKopf, fmtSpeicherKwh } from "../../../../../lib/atlas-format";
+import { ortPhrase } from "../../../../../lib/atlas-orte";
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
   .split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
@@ -63,7 +64,7 @@ export default async function GruppePage({
       <header>
         <h1 style={{ fontSize: 22, fontWeight: 800, color: v("--color-text-primary"), margin: 0 }}>{cat.label}</h1>
         <p style={{ fontSize: 14, color: v("--color-text-secondary"), marginTop: space.xs }}>
-          {levelKey === "bund" ? "bundesweit" : `im ${scopeName}`} · {nf(ranked.length)} wertbare Gemeinden ·{" "}
+          {levelKey === "bund" ? "bundesweit" : ortPhrase({ name: scopeName, level: levelKey === "land" ? "bundesland" : undefined })} · {nf(ranked.length)} wertbare Gemeinden ·{" "}
           {cat.messart === "proKopf" ? "pro Kopf" : "absolut"}
         </p>
       </header>

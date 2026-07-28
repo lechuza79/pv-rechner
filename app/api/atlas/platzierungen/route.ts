@@ -3,6 +3,7 @@ import { loadAwardStats, loadKreisNames } from "../../../../lib/awards-server";
 import { computePlacements, DEFAULT_HOOK_SETTINGS, LEVEL_LABEL, type HookLevel } from "../../../../lib/award-hook";
 import { AWARD_CATEGORY_BY_KEY, formatAwardValue, rankGemeinden, scopeIdOf } from "../../../../lib/awards";
 import { bundeslandByAgs } from "../../../../lib/mastr-regions";
+import { ortPhrase } from "../../../../lib/atlas-orte";
 
 // Platzierungen einer Gemeinde + die Rangliste ihrer stärksten Kategorie.
 //
@@ -50,9 +51,9 @@ export async function GET(req: NextRequest) {
 
   const woLabel = (level: HookLevel) =>
     level === "kreis"
-      ? `im ${kreisNames[regionId.slice(0, 5)] ?? "Landkreis"}`
+      ? ortPhrase({ name: kreisNames[regionId.slice(0, 5)] ?? "Landkreis" })
       : level === "land"
-        ? `in ${bundeslandByAgs(regionId.slice(0, 2))?.name ?? "diesem Bundesland"}`
+        ? ortPhrase({ name: bundeslandByAgs(regionId.slice(0, 2))?.name ?? "diesem Bundesland", level: "bundesland" })
         : "bundesweit";
 
   // Alle Platzierungen, stärkste zuerst. „Platz 1 von 34" schlägt „Platz 1 von

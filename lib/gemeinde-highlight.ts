@@ -5,6 +5,7 @@
 // sich mit dem Monatslauf von selbst. SEO über Ort + Solar/Photovoltaik + Vergleich.
 
 import { fmtPvLeistung, fmtWattProKopf } from "./atlas-format";
+import { ortPhrase } from "./atlas-orte";
 
 type SegRow = { segment: string; count: number; kwp: number };
 type MiniAtlas = {
@@ -61,9 +62,10 @@ function characterSentence(atlas: MiniAtlas, blAtlas: MiniAtlas, blName: string)
 /** Rang nach installierter Solarleistung im Landkreis — je Gemeinde ein anderer. */
 function rankSentence(name: string, kreisName: string | null, rank: number | null, total: number | null): string | null {
   if (!kreisName || rank == null || total == null || total < 3) return null;
-  if (rank === 1) return `Damit ist ${name} die solarstärkste Gemeinde im ${kreisName} (von ${total} nach installierter Leistung).`;
-  if (rank === total) return `Nach installierter Solarleistung steht ${name} damit an letzter Stelle im ${kreisName} (Platz ${total} von ${total}) — viel Luft nach oben.`;
-  return `Nach installierter Solarleistung steht ${name} damit auf Platz ${rank} von ${total} im ${kreisName}.`;
+  const wo = ortPhrase({ name: kreisName });
+  if (rank === 1) return `Damit ist ${name} die solarstärkste Gemeinde ${wo} (von ${total} nach installierter Leistung).`;
+  if (rank === total) return `Nach installierter Solarleistung steht ${name} damit an letzter Stelle ${wo} (Platz ${total} von ${total}) — viel Luft nach oben.`;
+  return `Nach installierter Solarleistung steht ${name} damit auf Platz ${rank} von ${total} ${wo}.`;
 }
 
 /** Zubau-Dynamik: letztes volles Jahr gegen Vorjahr — je Gemeinde eigener Verlauf. */

@@ -23,6 +23,7 @@ import {
   type AtlasRegion,
 } from "../../../../lib/atlas";
 import { fmtPvLeistung as fmtLeistung, pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
+import { ortPhrase, childNoun } from "../../../../lib/atlas-orte";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 
@@ -80,19 +81,7 @@ async function resolve(pfad: string[] | undefined): Promise<AtlasRegion | null> 
 }
 
 function headline(region: AtlasRegion): string {
-  if (region.level === "de") return "Solaranlagen in Deutschland";
-  if (region.level === "bundesland") return `Solaranlagen in ${region.name}`;
-  // "im Landkreis Würzburg", but "in Würzburg" for a kreisfreie Stadt.
-  const nennt = region.bezeichnung === "Landkreis" || region.bezeichnung === "Kreis";
-  return `Solaranlagen ${nennt ? "im" : "in"} ${region.name}`;
-}
-
-/** Locative phrase for headings and copy: "in Deutschland", "in Bayern",
- *  "im Landkreis Würzburg". region.name already carries the "Landkreis" prefix. */
-function ortPhrase(region: AtlasRegion): string {
-  if (region.level === "de") return "in Deutschland";
-  const nennt = region.bezeichnung === "Landkreis" || region.bezeichnung === "Kreis";
-  return `${nennt ? "im" : "in"} ${region.name}`;
+  return `Solaranlagen ${ortPhrase(region)}`;
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
@@ -198,8 +187,16 @@ export default async function AtlasPage({ params }: { params: Params }) {
   ];
   const defaultRefKey = kpiRefs[0]?.key ?? "";
 
-  const childNoun =
-    childLevel === "bundesland" ? "Bundesländer" : childLevel === "landkreis" ? "Kreise" : "Gemeinden";
+  const kindWort = childNoun(childLevel);
+  const kindWortGezaehlt = childNoun(childLevel, children.length);
+
+  // Berlin und Hamburg zerfallen nicht in Kreise — die „Rangliste der Kreise in
+  // Berlin" hatte genau eine Zeile: Berlin. Eine Rangliste, in der die Region
+  // nur sich selbst gegenübersteht, sagt nichts und wird weggelassen; die
+  // Seite trägt sich über Kennzahlen, Karte und Zubau. Kreisfreie Städte
+  // erwischt es auf Kreisebene ebenso, die leitet die Route aber schon vorher
+  // auf ihre Gemeindeseite um.
+  const hatVergleichsgruppe = children.length > 1;
 
   const regionLabel = region.level === "de" ? "Deutschland" : region.name;
 
@@ -209,7 +206,7 @@ export default async function AtlasPage({ params }: { params: Params }) {
   );
   const datasetLd = atlasDatasetJsonLd({
     name: `Solaranlagen-Bestand ${regionLabel}`,
-    description: `Anlagenzahl und installierte Leistung der Photovoltaik ${ortPhrase(region)} aus dem Marktstammdatenregister, mit jährlichem Zubau und Rangliste der ${childNoun}.`,
+    description: `Anlagenzahl und installierte Leistung der Photovoltaik ${ortPhrase(region)} aus dem Marktstammdatenregister, mit jährlichem Zubau${hatVergleichsgruppe ? ` und Rangliste der ${kindWort}` : ""}.`,
     url: `${BASE_URL}${basePath}`,
     dateModified: atlas.data_as_of,
     placeName: regionLabel,
@@ -242,7 +239,8 @@ export default async function AtlasPage({ params }: { params: Params }) {
         <p style={S.intro}>
           <strong style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</strong> mit zusammen{" "}
           <strong style={S.strong}>{fmtLeistung(atlas.solar.total_kwp)}</strong> installierter Leistung
-          sind {ortPhrase(region)} in Betrieb, verteilt auf {nf(children.length)} {childNoun}.
+          sind {ortPhrase(region)} in Betrieb
+          {hatVergleichsgruppe ? `, verteilt auf ${nf(children.length)} ${kindWortGezaehlt}.` : "."}
           {wPerCapita !== null && (
             <> Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.</>
           )}
@@ -271,22 +269,43 @@ export default async function AtlasPage({ params }: { params: Params }) {
           </div>
         )}
 
-        <div style={S.section}>
-          <h2 style={S.h2}>
-            {region.level === "de" ? "Rangliste der Bundesländer" : `Rangliste der ${childNoun} ${ortPhrase(region)}`}
-          </h2>
-          <p style={S.sub}>
-            „Privat" zählt private Dächer, Balkonkraftwerke und Hausbatterien, „Gewerbe"
-            gewerbliche Dächer, Freiflächen-Parks und gewerbliche Speicher.
-          </p>
-          <RankingTable
-            regions={ranking.regions}
-            cells={ranking.cells}
-            basePath={basePath}
-            lastFullYear={lastYear}
-            popInMillions={childLevel === "bundesland"}
-          />
-        </div>
+        {hatVergleichsgruppe && (
+          <div style={S.section}>
+            <h2 style={S.h2}>
+              {region.level === "de" ? "Rangliste der Bundesländer" : `Rangliste der ${kindWort} ${ortPhrase(region)}`}
+            </h2>
+            <p style={S.sub}>
+              „Privat" zählt private Dächer, Balkonkraftwerke und Hausbatterien, „Gewerbe"
+              gewerbliche Dächer, Freiflächen-Parks und gewerbliche Speicher.
+            </p>
+            <RankingTable
+              regions={ranking.regions}
+              cells={ranking.cells}
+              basePath={basePath}
+              lastFullYear={lastYear}
+              popInMillions={childLevel === "bundesland"}
+            />
+          </div>
+        )}
+
+        {/* Ohne Vergleichsgruppe fiele die Seite hier ins Leere — und mit ihr
+            der Weg des Crawlers zur einzigen Unterseite. Deshalb statt der
+            Rangliste ein Verweis auf sie. */}
+        {!hatVergleichsgruppe && children[0]?.slug && (
+          <div style={S.section}>
+            <div style={S.card}>
+              <h2 style={{ ...S.h2, marginBottom: 6 }}>Alle Zahlen im Detail</h2>
+              <p style={{ ...S.sub, marginBottom: 12 }}>
+                {region.name} ist nicht in {childNoun(childLevel)} gegliedert. Die
+                ausführliche Auswertung mit Batteriespeichern, Dachpotenzial und
+                aktueller Leistung steht auf der Stadtseite.
+              </p>
+              <Link href={`${basePath}/${children[0].slug}`} style={S.link}>
+                Zur ausführlichen Auswertung für {region.name}
+              </Link>
+            </div>
+          </div>
+        )}
 
         {atlas.solar.by_year.length >= 4 && (
           <div style={S.section}>

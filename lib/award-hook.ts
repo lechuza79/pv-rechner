@@ -15,6 +15,7 @@ import {
   type GemeindeStats,
   type Traeger,
 } from "./awards";
+import { ortPhrase } from "./atlas-orte";
 
 export type HookLevel = "kreis" | "land" | "bund";
 const SCOPE_OF: Record<HookLevel, AwardScopeLevel> = { kreis: "landkreis", land: "bundesland", bund: "de" };
@@ -232,8 +233,10 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
 export type HookNames = { gemeinde: string; kreis: string; land: string };
 
 export function scopeIn(level: HookLevel, n: HookNames): string {
-  if (level === "kreis") return `im ${n.kreis}`;
-  if (level === "land") return `in ${n.land}`;
+  // Präposition aus lib/atlas-orte, nicht hier getippt: "im Region Hannover"
+  // stand sonst im Anschreiben.
+  if (level === "kreis") return ortPhrase({ name: n.kreis });
+  if (level === "land") return ortPhrase({ name: n.land, level: "bundesland" });
   return "bundesweit";
 }
 
