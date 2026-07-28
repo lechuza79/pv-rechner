@@ -14,9 +14,12 @@
  *   Jahresebene nach Energieträger ausgewiesen (existieren dort nicht) — daher
  *   fehlen sie bewusst und werden im Chart nicht interpoliert.
  *
- * WARTUNG: einmal jährlich aktualisieren, wenn AGEB/UBA die neuen Jahreswerte
- *   veröffentlichen (typisch Frühjahr für das Vorjahr). Kein Auto-Update — dies
- *   ist ein bewusster Stichtags-Datenstand, siehe `dataAsOf`.
+ * WARTUNG: einmal jährlich, wenn AGEB/UBA die neuen Jahreswerte veröffentlichen
+ *   (typisch Frühjahr für das Vorjahr). Kein Auto-Update — bewusster Stichtags-
+ *   Datenstand, siehe `dataAsOf`. Prozedur: `scripts/strommix-reihen-verify.md`
+ *   (Teil B). Erinnert vom monatlichen `co2-prognose-monitor` (Schritt 4b) —
+ *   dieser Satz allein hat die CO₂-Reihe unten NICHT davor bewahrt, ein Jahr
+ *   veraltet zu sein: ein Wartungskommentar ist kein Wecker.
  */
 
 export const STROMMIX_HISTORY_META = {
@@ -126,7 +129,7 @@ export const STROMMIX_HISTORY_SERIES: StrommixSeries[] = [
 //   (CLIMATE CHANGE 16/2026, März 2026), Tabelle 2, Spalte "CO₂-Emissions-
 //   faktor Strommix" bzw. "Kohlendioxidemissionen der Stromerzeugung".
 //   DL-DE-BY 2.0, Datenbasis AGEB/AGEE-Stat/Destatis.
-//   Volltext im Repo: docs/uba/. Am 27.07.2026 Zeile für Zeile gegen die
+//   Volltext im Repo: docs/quellen/. Am 27.07.2026 Zeile für Zeile gegen die
 //   Tabelle geprüft (Seite 14–16 des PDF).
 //
 // ACHTUNG BEI DER PFLEGE — die Reihe ist NICHT nur "hinten anhängen": Das UBA
@@ -139,6 +142,11 @@ export const STROMMIX_HISTORY_SERIES: StrommixSeries[] = [
 // Reifegrad der letzten beiden Jahre (Fußnoten der Tabelle): 2024 ist
 //   "vorläufig", 2025 "geschätzt". Beides sind die amtlichen Werte, aber sie
 //   werden sich in der nächsten Ausgabe noch bewegen.
+//
+// WARTUNG: Prozedur in `scripts/strommix-reihen-verify.md` (Teil A) — dort steht
+//   auch, WELCHE der acht Tabellenspalten die richtige ist. Neue Ausgabe meldet
+//   der monatliche `co2-prognose-monitor` (Schritt 4b); eintragen macht ein
+//   Mensch, bewusst ohne Selbstheilung (Gate Teil 3).
 // ---------------------------------------------------------------------------
 
 export const CO2_INTENSITY_META = {

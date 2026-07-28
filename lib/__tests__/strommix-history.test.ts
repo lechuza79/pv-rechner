@@ -9,7 +9,7 @@ import {
 
 // Die CO₂-Reihe stammt aus einer PDF-Tabelle, die einmal jährlich (März) neu
 // erscheint — und dabei auch alte Jahre revidiert. Beim Wechsel 13/2025 →
-// 16/2026 (geprüft 27.07.2026, Volltext docs/uba/) haben sich 14 Altwerte
+// 16/2026 (geprüft 27.07.2026, Volltext docs/quellen/) haben sich 14 Altwerte
 // geändert. Diese Tests halten fest, was beim Nachziehen zusammenpassen MUSS:
 // gleiche Länge, plausible Richtung, und die Ankerwerte, die ich in der
 // Tabelle selbst aufgeschlagen habe.
