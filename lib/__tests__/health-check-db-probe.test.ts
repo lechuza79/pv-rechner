@@ -84,3 +84,36 @@ describe("Wächter: Last ist kein Rückfall", () => {
     expect(dbProbeVerdictRelativ(80, 0)).toBe("gruen");
   });
 });
+
+/**
+ * Messtreue: eine EINZELNE Messung trägt die Aussage nicht.
+ *
+ * Am 28.07.2026, direkt nach dem Einbau des Vergleichs-Reads, meldete der Check
+ * erneut ROT („Gemeinde-Kennzahlen 553 ms gegen Vergleichs-Read 211 ms").
+ * Vier Wiederholungen derselben Abfrage ergaben 297 / 102 / 368 / 83 ms —
+ * Faktor 4 zwischen identischen Aufrufen. Der Vergleichs-Read fängt
+ * gleichzeitige Last ab, aber nicht dieses Rauschen.
+ *
+ * Deshalb wird jede Abfrage mehrfach gemessen und die SCHNELLSTE gewertet:
+ * Störungen machen eine Messung nur langsamer, nie schneller. Diese Tests
+ * halten fest, dass das den echten Rückfall NICHT verdeckt.
+ */
+describe("Messtreue: schnellste aus mehreren Messungen", () => {
+  const schnellste = (werte: number[]) => Math.min(...werte);
+
+  it("schluckt Streuung, solange die schnellste Messung gesund ist", () => {
+    // Die echte Messreihe vom 28.07.2026 gegen einen Vergleichs-Read von 100 ms.
+    expect(dbProbeVerdictRelativ(schnellste([297, 102, 368, 83]), 100)).toBe("gruen");
+  });
+
+  it("meldet weiterhin, wenn ALLE Messungen langsam sind", () => {
+    // Der echte Rückfall aus dem Juli: konstant ~600 ms, keine Ausreißer.
+    expect(dbProbeVerdictRelativ(schnellste([612, 588, 640]), 80)).toBe("rot");
+  });
+
+  it("lässt sich von einem einzigen schnellen Treffer nicht beruhigen, wenn er trotzdem hoch ist", () => {
+    // Streuung auf hohem Niveau: auch die schnellste Messung liegt weit über
+    // dem Vergleichs-Read — das ist ein Befund, kein Rauschen.
+    expect(dbProbeVerdictRelativ(schnellste([900, 780, 520]), 90)).toBe("rot");
+  });
+});
