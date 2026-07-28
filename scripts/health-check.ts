@@ -26,8 +26,24 @@
  *   CRON_SECRET            für --alert
  */
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
+
+// In der GitHub-Action kommen die Zugangsdaten aus den Repo-Secrets. Lokal
+// standen sie nicht zur Verfügung — der Check fiel dann still auf die feste
+// Gemeindeliste zurück, maß Cache-Treffer statt Kaltrender und ließ die
+// Datenbank-Messung ganz aus. Ein Wächter, der lokal etwas anderes prüft als
+// in der Action, ist keine Probe aufs Exempel.
+(function loadEnvFile() {
+  const envPath = resolve(dirname(fileURLToPath(import.meta.url)), "..", ".env.local");
+  if (!existsSync(envPath)) return;
+  for (const line of readFileSync(envPath, "utf8").split("\n")) {
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+  }
+})();
 
 const BASE_URL = (process.env.HEALTH_BASE_URL ?? "https://solar-check.io").replace(/\/$/, "");
 const ALERT = process.argv.includes("--alert");
@@ -113,11 +129,23 @@ async function randomGemeindePaths(count: number): Promise<string[]> {
     return res.ok ? ((await res.json()) as Record<string, string | null>[]) : [];
   };
 
-  // Zufälliger Ausschnitt statt Vollscan: ein Offset in die Gemeindeliste.
-  const offset = Math.floor(Math.random() * 9000);
-  const gem = await q(
-    `mastr_regions?select=slug,parent_region_id&level=eq.gemeinde&slug=not.is.null&limit=${count}&offset=${offset}`,
-  );
+  // JE STICHPROBE EIN EIGENER ZUFALLS-OFFSET, nicht ein Ausschnitt von `count`
+  // aufeinanderfolgenden Zeilen: die Gemeindeliste ist nach AGS sortiert, ein
+  // zusammenhängender Ausschnitt liegt also fast immer im GLEICHEN Landkreis.
+  // Die teuren Daten (Kreis-Rangliste, Kreis-/Land-Kennzahlen) sind aber je
+  // Kreis gecacht — nur die erste Seite eines Kreises ist wirklich kalt, die
+  // übrigen liefen auf einem warmen Cache und meldeten beruhigende Zeiten für
+  // einen Fall, den kein Erstbesucher je erlebt (gemessen 28.07.2026: gleicher
+  // Kreis 1,0–1,2 s, verteilt über die Republik dieselbe Streuung — aber eben
+  // ohne den Cache-Vorteil).
+  const gem: Record<string, string | null>[] = [];
+  for (let i = 0; i < count; i++) {
+    const offset = Math.floor(Math.random() * 10000);
+    const [row] = await q(
+      `mastr_regions?select=slug,parent_region_id&level=eq.gemeinde&slug=not.is.null&limit=1&offset=${offset}`,
+    );
+    if (row) gem.push(row);
+  }
   if (!gem.length) return [];
 
   // Zu jeder Gemeinde Kreis + Bundesland auflösen (der Pfad ist dreistufig).
@@ -149,6 +177,95 @@ async function randomGemeindePaths(count: number): Promise<string[]> {
  *  Notbremse trifft ja auch die langsamste Seite zuerst. */
 const COLD_SAMPLES = 3;
 
+/**
+ * Die teuersten Datenbank-Aufrufe des Atlas, direkt gemessen — unabhängig davon,
+ * ob gerade jemand die Seiten aufruft.
+ *
+ * WARUM ZUSÄTZLICH ZU DEN SEITENZEITEN (28.07.2026): Der Seiten-Kaltrender ist
+ * ein Spätindikator. Eine Gemeindeseite lud allein in 1,2 s — grün — während
+ * dieselbe Seite jeden Aufruf zwei vollständige Durchläufe über 591.024
+ * Datenbankzeilen kostete. Sobald mehrere Seiten gleichzeitig aufgebaut wurden
+ * (Crawler, Aufwärmlauf, Suchmaschine), stauten die sich auf und rissen die
+ * 8-s-Notbremse: 3,2–6,3 s je Seite und reihenweise Abbrüche. Der Check meldete
+ * bis dahin grün, weil er immer nur EINE Seite allein maß.
+ *
+ * Ein einzelner Aufruf dieser Funktionen dauert bei gesundem Zustand ~0 ms
+ * Datenbankarbeit (der Rest ist Netzlaufzeit von diesem Rechner aus). Zieht der
+ * Wert auf ein Vielfaches an, ist ein Index unbenutzt oder ein vorberechneter
+ * Rollup leer — beides lange bevor eine Seite auffällig wird.
+ */
+const DB_PROBE_WARN_MS = 250;
+const DB_PROBE_FAIL_MS = 400;
+
+type DbProbe = { label: string; ms: number; error?: string };
+
+/**
+ * Bewertung einer einzelnen Atlas-Abfrage.
+ *
+ * Die Schwellen sitzen bewusst weit unter dem, was auf der Seite auffällt: der
+ * kaputte Zustand lag bei ~600 ms je Aufruf und ZWEI Aufrufen pro Gemeindeseite,
+ * der gesunde bei ~80 ms (davon fast alles Netzlaufzeit). Rot bei 400 ms trifft
+ * damit den Rückfall sicher, ohne bei einem langsamen Netz anzuschlagen.
+ *
+ * Erzwungen von lib/__tests__/health-check-db-probe.test.ts — wer eine Schwelle
+ * anhebt, damit ein Befund verschwindet, lässt den Test fallen. Genau das ist
+ * die Regel aus CLAUDE.md („kein Hochsetzen der Schwellen, damit ein Befund
+ * verschwindet"): das versteckt den Rückfall, statt ihn zu beheben.
+ */
+export function dbProbeVerdict(ms: number): "gruen" | "gelb" | "rot" {
+  if (ms >= DB_PROBE_FAIL_MS) return "rot";
+  if (ms >= DB_PROBE_WARN_MS) return "gelb";
+  return "gruen";
+}
+
+async function measureAtlasQueries(): Promise<DbProbe[]> {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return [];
+
+  // Die drei Aufrufe, die jede Gemeindeseite macht — je einer auf Gemeinde-,
+  // Kreis- und Bundesebene, damit auch ein leerer Rollup auffällt.
+  const calls: { label: string; fn: string; args: Record<string, unknown> }[] = [
+    {
+      label: "Gemeinde-Kennzahlen",
+      fn: "mastr_region_series",
+      args: { p_prefix: "05558028", p_traeger: ["solar", "speicher", "wind", "biomasse", "wasser"] },
+    },
+    {
+      label: "Kreis-Rangliste",
+      fn: "mastr_children_by_year",
+      args: { p_prefix: "05558", p_child_len: 8, p_traeger: ["solar", "speicher"], p_year_min: null },
+    },
+    {
+      label: "Bundesland-Kennzahlen",
+      fn: "mastr_region_series",
+      args: { p_prefix: "05", p_traeger: ["solar", "speicher", "wind", "biomasse", "wasser"] },
+    },
+  ];
+
+  const out: DbProbe[] = [];
+  for (const c of calls) {
+    const started = Date.now();
+    try {
+      const res = await fetch(`${url}/rest/v1/rpc/${c.fn}`, {
+        method: "POST",
+        headers: { apikey: key, Authorization: `Bearer ${key}`, "content-type": "application/json" },
+        body: JSON.stringify(c.args),
+        signal: AbortSignal.timeout(20000),
+      });
+      const body = await res.text();
+      out.push({
+        label: c.label,
+        ms: Date.now() - started,
+        error: res.ok ? undefined : `${res.status} ${body.slice(0, 120)}`,
+      });
+    } catch (e) {
+      out.push({ label: c.label, ms: Date.now() - started, error: e instanceof Error ? e.message : "Abbruch" });
+    }
+  }
+  return out;
+}
+
 /** Misst echte Kaltrender. Ein Treffer im Cache misst nichts Interessantes (dann
  *  liefert das CDN eine fertige Seite aus), solche Versuche zählen nicht mit. */
 async function measureColdAtlas(): Promise<{ worst: Probe; all: Probe[] } | null> {
@@ -157,7 +274,11 @@ async function measureColdAtlas(): Promise<{ worst: Probe; all: Probe[] } | null
   for (const path of candidates) {
     if (hits.length >= COLD_SAMPLES) break;
     const p = await probe("Atlas-Gemeinde (kalt)", path);
-    if (p.cache !== "HIT") hits.push(p);
+    // NUR `MISS` ist ein echter Kaltaufbau. `HIT` und `STALE` liefern beide eine
+    // fertige Seite aus dem CDN aus (bei STALE wird nur im Hintergrund erneuert)
+    // — beides misst 0,05 s und sagt über den Aufbau nichts. Vorher zählte STALE
+    // mit und konnte einen Lauf grün melden, in dem gar nichts aufgebaut wurde.
+    if (p.cache === "MISS") hits.push(p);
   }
   if (!hits.length) return null;
   return { worst: hits.reduce((a, b) => (b.seconds > a.seconds ? b : a)), all: hits };
@@ -233,6 +354,7 @@ async function main() {
   }
   const coldResult = await measureColdAtlas();
   const cold = coldResult?.worst ?? null;
+  const dbProbes = await measureAtlasQueries();
 
   // ── Function-Region ───────────────────────────────────────────────────────
   const regions = Array.from(
@@ -322,6 +444,31 @@ async function main() {
     }
   } else {
     warnings.push("Kein echter Kaltaufbau messbar (alle geprüften Seiten lagen im Cache).");
+  }
+
+  // ── Datenbank-Aufrufe einzeln ─────────────────────────────────────────────
+  // Der Frühindikator VOR dem Seiten-Frühindikator: hier fällt eine teuer
+  // gewordene Abfrage auf, solange die Seiten noch schnell sind, weil gerade
+  // niemand gleichzeitig darauf zugreift.
+  if (dbProbes.length) {
+    lines.push(
+      `Atlas-Datenbankabfragen: ${dbProbes.map((d) => `${d.label} ${d.ms} ms`).join(" · ")}`,
+    );
+    for (const d of dbProbes) {
+      if (d.error) {
+        forClaude.push(`Die Atlas-Abfrage „${d.label}" antwortet nicht sauber: ${d.error}`);
+      } else if (dbProbeVerdict(d.ms) === "rot") {
+        forClaude.push(
+          `Die Atlas-Abfrage „${d.label}" braucht ${d.ms} ms statt der üblichen ~80 ms. Bei gesundem Zustand ` +
+            `ist das fast reine Netzlaufzeit. Ein Vielfaches heißt: die Abfrage läuft wieder über die ganze ` +
+            `Rohtabelle statt über den Index — entweder ist der vorberechnete Rollup leer, oder in ` +
+            `lib/mastr-region-sql.ts ist der Präfix wieder ein Parameter statt eines Literals (der Grund ` +
+            `steht dort im Kopf). Die Seiten sind dann noch schnell, kippen aber unter Parallel-Last.`,
+        );
+      } else if (dbProbeVerdict(d.ms) === "gelb") {
+        warnings.push(`Atlas-Abfrage „${d.label}" bei ${d.ms} ms (üblich ~80 ms).`);
+      }
+    }
   }
 
   // ── Bericht ───────────────────────────────────────────────────────────────
