@@ -72,54 +72,49 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
 
   return (
     <section className="gemeinde-auszeichnung" style={S.wrap} aria-label={`Auszeichnung von ${daten.name}`}>
-      <div style={S.band}>
-        <div style={S.kopf}>
-          <span aria-hidden style={S.krone}>
-            👑
-          </span>
-          {/* Gezählt werden Kommunen — nicht die Ebene, in der verglichen wird. */}
-          <span>
-            Platz {b.platz} von {nf(b.von)} Kommunen {b.wo}
-          </span>
-        </div>
-        <p style={S.satz}>
-          {daten.name} hat {b.bestleistung} {b.wo} — <strong style={S.wert}>{b.wert}</strong>.
-        </p>
+      {/* FLACHES BADGE: Rang über der Insignie, keine Hochglanz-Plakette.
+          Vorher stand hier ein Kasten mit Kopfzeile, ganzem Satz, eigenem
+          Knopf und einer beschrifteten Liste — in der 296px-Spalte neben der
+          Einleitung ein Block von über 200 px. Der Satz sagte dabei dasselbe
+          wie Kopfzeile und Kategorie zusammen. Jetzt: eine Zeile Rang, eine
+          Zeile Kategorie, eine Zeile Bezug — und der ganze Block ist der
+          Knopf zur Rangliste. */}
+      <button type="button" onClick={() => setOffen(0)} style={S.badge} aria-label={`Rangliste: ${b.thema}`}>
+        <span style={S.rangZeile}>
+          <Insignie platz={b.platz} gross />
+          <span style={S.rang}>Platz {b.platz}</span>
+          <span style={S.vonZahl}>/ {nf(b.von)}</span>
+        </span>
+        <span style={S.thema}>{b.thema}</span>
+        <span style={S.bezug}>
+          {b.wo} · <span style={S.wert}>{b.wert}</span>
+        </span>
+      </button>
 
-        {b.tabelle.length > 0 && (
-          <button type="button" onClick={() => setOffen(0)} style={S.btn}>
-            Rangliste ansehen
-          </button>
-        )}
-
-        {daten.alle.length > 1 && (
-          <>
-            <div style={S.weitereTitel}>Außerdem</div>
-            <ul style={S.weitere}>
-              {/* Jede Zeile öffnet IHRE Rangliste — sie hat eine eigene, weil
-                  Kategorie und Vergleichsebene sich unterscheiden. Deshalb hier
-                  nur ein Pfeil statt eines zweiten „Rangliste ansehen". */}
-              {daten.alle.slice(1, 4).map((p, i) => (
-                <li key={`${p.kategorie}-${p.ebene}`}>
-                  <button type="button" onClick={() => setOffen(i + 1)} style={S.weitereZeile}>
-                    {p.platz === 1 && (
-                      <span aria-hidden style={S.kroneKlein}>
-                        👑
-                      </span>
-                    )}
-                    <span style={S.weitereText}>
-                      Platz {p.platz} bei {p.themaDativ} {p.wo}
-                    </span>
-                    <span aria-hidden style={S.pfeil}>
-                      <IconArrowRight size={12} />
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </div>
+      {/* Weitere Auszeichnungen: je eine eigene Zeile mit Rahmen — sie sind
+          eigenständige Platzierungen mit eigener Rangliste, keine Fußnote der
+          ersten. */}
+      {daten.alle.length > 1 && (
+        <ul style={S.weitere}>
+          {daten.alle.slice(1, 4).map((p, i) => (
+            <li key={`${p.kategorie}-${p.ebene}`}>
+              <button
+                type="button"
+                onClick={() => setOffen(i + 1)}
+                style={{ ...S.weitereZeile, ...(p.platz === 1 ? S.weitereZeileSieg : null) }}
+                aria-label={`Rangliste: ${p.thema}`}
+              >
+                <Insignie platz={p.platz} />
+                <span style={S.weiterePlatz}>{p.platz}.</span>
+                <span style={S.weitereText}>{p.thema}</span>
+                <span aria-hidden style={S.pfeil}>
+                  <IconArrowRight size={11} />
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
 
       <Modal
         open={offen !== null}
@@ -154,6 +149,32 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
   );
 }
 
+/**
+ * Das Zeichen im Kreis: Krone für den Sieg, Stern für jede andere Platzierung.
+ * Der Kreis ist der Grund, warum es als Auszeichnung liest und nicht als Emoji
+ * im Fließtext — flach gehalten, keine Hochglanz-Plakette.
+ */
+function Insignie({ platz, gross = false }: { platz: number; gross?: boolean }) {
+  const sieg = platz === 1;
+  const groesse = gross ? 22 : 17;
+  return (
+    <span
+      aria-hidden
+      style={{
+        ...S.insignie,
+        width: groesse,
+        height: groesse,
+        fontSize: gross ? 11 : 9,
+        background: sieg ? v("--color-accent-dim") : "transparent",
+        borderColor: sieg ? v("--color-border-accent") : v("--color-border-muted"),
+        opacity: sieg ? 1 : 0.75,
+      }}
+    >
+      {sieg ? "👑" : "★"}
+    </span>
+  );
+}
+
 /** Eine Zeile der vollständigen Rangliste — verlinkt auf die jeweilige Kommune. */
 function RanglistenZeile({ zeile }: { zeile: Zeile }) {
   const inhalt = (
@@ -183,44 +204,70 @@ function RanglistenZeile({ zeile }: { zeile: Zeile }) {
 
 const S: Record<string, React.CSSProperties> = {
   wrap: { marginBottom: space.lg },
-  band: {
+  // Der ganze Badge ist der Knopf — ein zusätzliches „Rangliste ansehen"
+  // darunter war eine zweite Zeile für dieselbe Handlung.
+  badge: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    width: "100%",
+    textAlign: "left",
     background: v("--color-bg-accent"),
     border: `1px solid ${v("--color-border-accent")}`,
     borderRadius: v("--radius-md"),
-    padding: pad("md", "lg"),
-  },
-  kopf: {
-    display: "flex",
-    alignItems: "baseline",
-    gap: 6,
-    fontSize: 13,
-    fontWeight: 800,
-    color: v("--color-accent-dark"),
-    letterSpacing: "-0.01em",
-  },
-  krone: { fontSize: 14 },
-  satz: { margin: `${space.xs}px 0 0`, fontSize: 15, lineHeight: 1.5, color: v("--color-text-primary") },
-  wert: { fontFamily: v("--font-mono"), fontWeight: 700 },
-  weitereTitel: { marginTop: space.sm, fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") },
-  weitere: {
-    margin: `2px 0 0`,
-    paddingLeft: 0,
-    listStyle: "none",
-    fontSize: 13,
-    color: v("--color-text-secondary"),
-    lineHeight: 1.6,
-  },
-  btn: {
-    marginTop: space.sm,
-    padding: 0,
-    background: "transparent",
-    border: "none",
-    color: v("--color-accent"),
-    fontFamily: v("--font-text"),
-    fontSize: 13,
-    fontWeight: 600,
+    padding: pad("sm", "md"),
     cursor: "pointer",
+    fontFamily: v("--font-text"),
   },
+  rangZeile: { display: "flex", alignItems: "center", gap: 6 },
+  insignie: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "50%",
+    border: "1px solid",
+    flex: "0 0 auto",
+    lineHeight: 1,
+  },
+  rang: {
+    fontFamily: v("--font-mono"),
+    fontSize: 19,
+    fontWeight: 700,
+    lineHeight: 1.1,
+    color: v("--color-accent-dark"),
+  },
+  vonZahl: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-muted") },
+  thema: {
+    fontSize: v("--font-size-small"),
+    fontWeight: 600,
+    lineHeight: 1.35,
+    color: v("--color-text-primary"),
+  },
+  bezug: { fontSize: v("--font-size-caption"), color: v("--color-text-secondary"), lineHeight: 1.35 },
+  wert: { fontFamily: v("--font-mono") },
+  // Weitere Auszeichnungen: eine Zeile je Stück, ohne Überschrift.
+  weitere: { margin: 0, padding: 0, listStyle: "none" },
+  weitereZeile: {
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    width: "100%",
+    marginTop: 4,
+    padding: pad("xs", "sm"),
+    background: v("--color-bg"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: v("--radius-sm"),
+    textAlign: "left",
+    cursor: "pointer",
+    fontFamily: v("--font-text"),
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-secondary"),
+  },
+  // Ein weiterer erster Platz ist auch einer — gleiche Fläche wie der Kopf-Badge.
+  weitereZeileSieg: { background: v("--color-bg-accent"), borderColor: v("--color-border-accent") },
+  weiterePlatz: { fontFamily: v("--font-mono"), color: v("--color-text-muted"), flex: "0 0 auto" },
+  weitereText: { flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+  pfeil: { color: v("--color-accent"), flex: "0 0 auto" },
   liste: { display: "flex", flexDirection: "column" },
   zeile: {
     display: "grid",
@@ -238,20 +285,5 @@ const S: Record<string, React.CSSProperties> = {
   zName: { minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   kroneKlein: { marginRight: 4, fontSize: 11 },
   zWert: { fontFamily: v("--font-mono"), color: v("--color-accent") },
-  weitereZeile: {
-    display: "flex",
-    alignItems: "baseline",
-    gap: 4,
-    width: "100%",
-    padding: 0,
-    background: "transparent",
-    border: "none",
-    textAlign: "left",
-    cursor: "pointer",
-    color: "inherit",
-    font: "inherit",
-  },
-  weitereText: { flex: 1, minWidth: 0 },
-  pfeil: { color: v("--color-accent"), flex: "0 0 auto" },
   gekuerzt: { fontSize: 12, color: v("--color-text-muted"), padding: pad("sm", "sm"), margin: 0 },
 };
