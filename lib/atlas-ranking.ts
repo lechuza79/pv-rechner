@@ -22,6 +22,18 @@ export function rankingKategorien(): (AwardCategory & { slug: string })[] {
   return AWARD_CATEGORIES.filter((c): c is AwardCategory & { slug: string } => !!c.slug);
 }
 
+/** Buerger-Kategorien zuerst — sie sind das, wofuer eine Gemeinde etwas kann. */
+export function rankingKategorienGruppiert(): {
+  buerger: (AwardCategory & { slug: string })[];
+  standort: (AwardCategory & { slug: string })[];
+} {
+  const alle = rankingKategorien();
+  return {
+    buerger: alle.filter((k) => k.traeger === "buerger"),
+    standort: alle.filter((k) => k.traeger !== "buerger"),
+  };
+}
+
 export function kategorieBySlug(slug: string): (AwardCategory & { slug: string }) | null {
   return rankingKategorien().find((c) => c.slug === slug) ?? null;
 }
@@ -60,7 +72,11 @@ export function rankingRows(
 ): RankingZeile[] {
   const rows = stats
     .filter((g) => {
-      if (g.population < RANKING_MIN_POPULATION) return false;
+      // Die Untergrenze gilt NUR fuer Pro-Kopf-Werte: Dort kippt die Zahl an
+      // einer einzelnen Anlage. Bei absoluten Werten waere sie sogar falsch —
+      // ein 700-Einwohner-Dorf mit einem 90-MWp-Solarpark gehoert in genau
+      // diese Rangliste, nicht heraus.
+      if (kategorie.messart === "proKopf" && g.population < RANKING_MIN_POPULATION) return false;
       if (scopeId && !g.regionId.startsWith(scopeId)) return false;
       const w = kategorie.metric(g);
       return w !== null && w > 0;

@@ -55,12 +55,19 @@ export type GemeindeStats = {
 export type AwardCategory = {
   key: string;
   /**
-   * Adresse der Ranking-Seite (`/solar-atlas/ranking/<slug>`). Nur die
-   * Kategorien, die oeffentlich ein Ranking bekommen, tragen einen — das sind
-   * die Pro-Kopf-Kategorien. Absolute Kategorien bleiben ohne: Ihr Sieger ist
-   * gemessen an mastr_gemeinde_award schlicht die einwohnerstaerkste Kommune
-   * (in BW, BY und NRW jeweils exakt), eine Rangliste daraus waere eine
-   * Einwohner-Rangliste mit anderem Titel.
+   * Adresse der Ranking-Seite (`/solar-atlas/ranking/<slug>`). Nur Kategorien
+   * mit Slug bekommen eine Seite.
+   *
+   * OHNE SEITE bleiben die absoluten BUERGER-Kategorien (Balkon-, Solardach-,
+   * Speicher-"Hauptstadt"): Ihr Sieger ist gemessen an mastr_gemeinde_award
+   * schlicht die einwohnerstaerkste Kommune — in BW, BY und NRW jeweils exakt,
+   * und 6 bis 10 der ersten Zehn sind die zehn einwohnerstaerksten Orte. Eine
+   * Rangliste daraus waere eine Einwohner-Rangliste mit anderem Titel.
+   *
+   * Fuer die STANDORT-Kategorien gilt das NICHT — dieselbe Messung ergab bei
+   * Freiflaeche und Wind 0 von 10 Ueberschneidung mit den einwohnerstaerksten
+   * Gemeinden, und der Sieger ist nie die groesste. Dort gewinnen Doerfer mit
+   * einem Solarpark oder Windraedern; das ist eine echte Aussage.
    */
   slug?: string;
   /** Interner Kurzname (Backend-Ansichten). NICHT nach außen verwenden — siehe
@@ -191,6 +198,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "freiflaeche-standort",
+    slug: "freiflaechen-solar",
     label: "Freiflächen-Standort",
     merit: "Höchste Freiflächen-Solarleistung (Solarparks).",
     bestleistung: "die meiste Solarleistung auf Freiflächen",
@@ -215,6 +223,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "wind-standort",
+    slug: "windleistung",
     label: "Wind-Standort",
     merit: "Höchste installierte Windleistung.",
     bestleistung: "die meiste Windleistung",
@@ -252,6 +261,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   // Dynamik.
   {
     key: "zubau",
+    slug: "solar-zubau",
     label: "Zubau-Champion",
     merit: "Größter Solar-Zubau im letzten vollständigen Jahr.",
     bestleistung: "den größten Solar-Zubau im letzten Jahr",

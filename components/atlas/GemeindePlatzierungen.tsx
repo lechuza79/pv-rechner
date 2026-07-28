@@ -91,6 +91,9 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
           <Insignie platz={b.platz} gross />
           <span style={S.rang}>Platz {b.platz}</span>
           <span style={S.vonZahl}>/ {nf(b.von)}</span>
+          {/* Ab Platz 4 zaehlt die Auszeichnung ueber das oberste Zehntel — dann
+              sagt die Zahl allein wenig ("Platz 40"), die Stufe dagegen viel. */}
+          {b.platz > 3 && <span style={S.stufe}>Top {Math.max(1, Math.ceil((b.platz / b.von) * 100))} %</span>}
         </span>
         <span style={S.thema}>{gross(b.thema)}</span>
         <span style={S.bezug}>
@@ -151,7 +154,7 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
             )}
             {daten.alle[offen].rankingHref && (
               <Link href={daten.alle[offen].rankingHref!} style={S.ganzes}>
-                Ganzes Ranking als Seite <IconArrowRight size={13} />
+                Alle Einträge <IconArrowRight size={13} />
               </Link>
             )}
           </div>
@@ -251,6 +254,16 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-accent-dark"),
   },
   vonZahl: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-muted") },
+  stufe: {
+    fontFamily: v("--font-mono"),
+    fontSize: 10,
+    fontWeight: 700,
+    color: v("--color-accent-dark"),
+    background: v("--color-bg"),
+    border: `1px solid ${v("--color-border-accent")}`,
+    borderRadius: 4,
+    padding: "1px 5px",
+  },
   thema: {
     fontSize: v("--font-size-small"),
     fontWeight: 600,

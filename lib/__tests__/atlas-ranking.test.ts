@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   rankingKategorien,
+  rankingKategorienGruppiert,
   kategorieBySlug,
   ebeneOf,
   rankingRows,
@@ -30,10 +31,23 @@ const g = (regionId: string, name: string, population: number, balkonCount: numb
 const balkon = AWARD_CATEGORY_BY_KEY["balkon-pk"];
 
 describe("rankingKategorien", () => {
-  it("veröffentlicht nur Pro-Kopf-Kategorien", () => {
-    const kats = rankingKategorien();
-    expect(kats.length).toBeGreaterThan(0);
-    for (const k of kats) expect(k.messart).toBe("proKopf");
+  it("lässt die absoluten Bürger-Kategorien draussen", () => {
+    // Sie sind gemessen Einwohner-Ranglisten: der Sieger ist jeweils exakt die
+    // groesste Kommune (BW, BY, NRW).
+    const keys = rankingKategorien().map((k) => k.key);
+    for (const k of ["balkon-abs", "dach-privat-abs", "batterie-privat-abs"]) {
+      expect(keys).not.toContain(k);
+    }
+  });
+
+  it("veröffentlicht Pro-Kopf- und Standort-Kategorien", () => {
+    const { buerger, standort } = rankingKategorienGruppiert();
+    expect(buerger.length).toBe(3);
+    for (const k of buerger) expect(k.messart).toBe("proKopf");
+    // Standort-Kategorien sind absolut, aber KEINE Einwohner-Ranglisten:
+    // gemessen 0 von 10 Ueberschneidung mit den einwohnerstaerksten Gemeinden.
+    expect(standort.length).toBeGreaterThan(0);
+    for (const k of standort) expect(k.traeger).not.toBe("buerger");
   });
 
   it("hat eindeutige, lesbare Adressen", () => {
@@ -109,5 +123,23 @@ describe("rankingTitel", () => {
     expect(rankingTitel(AWARD_CATEGORY_BY_KEY["batterie-privat-pk"], "in Deutschland")).toBe(
       "Private Speicherkapazität je Einwohner in Deutschland",
     );
+  });
+});
+
+describe("Untergrenze der Einwohnerzahl", () => {
+  const wind = AWARD_CATEGORY_BY_KEY["wind-standort"];
+  const dorf: GemeindeStats = { ...g("09679900", "Winddorf", 700, 0), windKwp: 90000 };
+  const stadt: GemeindeStats = { ...g("09679901", "Grossstadt", 200000, 0), windKwp: 1000 };
+
+  it("gilt bei Pro-Kopf-Kategorien", () => {
+    const klein = g("09679902", "Winzig", 700, 100);
+    expect(rankingRows([klein], balkon, null)).toHaveLength(0);
+  });
+
+  it("gilt bei absoluten Standort-Kategorien NICHT", () => {
+    // Ein 700-Einwohner-Dorf mit einem Windpark gehoert in die Windrangliste —
+    // die Untergrenze wuerde genau den Sieger herauswerfen.
+    const rows = rankingRows([dorf, stadt], wind, null);
+    expect(rows.map((r) => r.name)).toEqual(["Winddorf", "Grossstadt"]);
   });
 });

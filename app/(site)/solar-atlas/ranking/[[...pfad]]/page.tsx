@@ -12,6 +12,7 @@ import { loadAwardStats, loadElternSlugs } from "../../../../../lib/awards-serve
 import { formatAwardValue } from "../../../../../lib/awards";
 import {
   rankingKategorien,
+  rankingKategorienGruppiert,
   kategorieBySlug,
   rankingRows,
   rankingTitel,
@@ -65,7 +66,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
       ...pageMetadata({
         title: "Solar-Rankings der Kommunen – wer vorn liegt",
         description:
-          "Ranglisten aller Kommunen nach Solarleistung, Balkonkraftwerken und Speicherkapazität je Einwohner — aus dem Marktstammdatenregister.",
+          "Ranglisten aller Kommunen — Solarleistung, Balkonkraftwerke und Speicher je Einwohner, dazu Freiflächen, Wind und Zubau. Aus dem Marktstammdatenregister.",
         path: BASIS,
       }),
       robots: ROBOTS,
@@ -238,6 +239,7 @@ export default async function RankingPage({ params }: { params: Params }) {
 
 /** Einstieg: welche Ranglisten es gibt. */
 function Uebersicht() {
+  const gruppen = rankingKategorienGruppiert();
   return (
     <div style={S.page}>
       <div style={S.wrap}>
@@ -247,17 +249,30 @@ function Uebersicht() {
           Wer baut am meisten — gemessen an der Einwohnerzahl, nicht an der Größe der Gemeinde. Jede Liste führt
           jede gewertete Kommune, von Deutschland über die Länder bis in den Landkreis.
         </p>
-        <div style={S.karten}>
-          {rankingKategorien().map((k) => (
-            <Link key={k.slug} href={`${BASIS}/${k.slug}`} style={S.karte}>
-              <span style={S.karteTitel}>{rankingTitel(k, "in Deutschland")}</span>
-              <span style={S.karteText}>{k.merit}</span>
-              <span style={S.karteCta}>
-                Ranking ansehen <IconArrowRight size={13} />
-              </span>
-            </Link>
-          ))}
-        </div>
+        {(
+          [
+            ["Was die Bürger gebaut haben", gruppen.buerger, "Je Einwohner gerechnet — eine kleine Gemeinde kann eine große schlagen."],
+            ["Was am Ort steht", gruppen.standort, "Absolute Leistung. Hier gewinnen Orte mit Solarpark oder Windrädern, unabhängig von ihrer Größe."],
+          ] as const
+        ).map(([titel, kats, erklaerung]) =>
+          kats.length === 0 ? null : (
+            <div key={titel} style={S.section}>
+              <h2 style={S.h2}>{titel}</h2>
+              <p style={S.gruppeText}>{erklaerung}</p>
+              <div style={S.karten}>
+                {kats.map((k) => (
+                  <Link key={k.slug} href={`${BASIS}/${k.slug}`} style={S.karte}>
+                    <span style={S.karteTitel}>{rankingTitel(k, "in Deutschland")}</span>
+                    <span style={S.karteText}>{k.merit}</span>
+                    <span style={S.karteCta}>
+                      Ranking ansehen <IconArrowRight size={13} />
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ),
+        )}
       </div>
     </div>
   );
@@ -312,6 +327,7 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-secondary"),
     textDecoration: "none",
   },
+  gruppeText: { fontSize: 14, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px`, lineHeight: 1.5 },
   karten: { display: "flex", flexDirection: "column", gap: space.md },
   karte: {
     display: "flex",
