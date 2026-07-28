@@ -55,8 +55,17 @@ export async function GET(req: NextRequest) {
   // Gemeinde im Vergleich vorn liegt" — dort „Platz 921 von 924" aufzulisten,
   // widerspricht der Überschrift. Dieselben Stufen wie beim Aufhänger: Sieg,
   // Podium oder oberstes Perzentil.
+  //
+  // NUR PRO-KOPF-KATEGORIEN. Eine absolute Auszeichnung ("die meiste private
+  // Solarleistung") kürt in der Praxis die einwohnerstärkste Kommune: In
+  // Baden-Württemberg, Bayern und Nordrhein-Westfalen ist der Sieger jeweils
+  // exakt die größte Gemeinde, und 6 bis 10 der ersten Zehn sind schlicht die
+  // zehn einwohnerstärksten Orte (bei Balkonkraftwerken in Bayern 10 von 10).
+  // Eine Krone dafür lobt Größe, keine Leistung — und stand deshalb neben
+  // lauter roten Pro-Kopf-Werten auf derselben Seite.
   const meine = (placements.get(regionId) ?? []).filter((p) => {
     if (p.spike || p.total < DEFAULT_HOOK_SETTINGS.minTotal) return false;
+    if (AWARD_CATEGORY_BY_KEY[p.categoryKey]?.messart !== "proKopf") return false;
     return p.rank <= 3 || p.rank / p.total <= DEFAULT_HOOK_SETTINGS.percentileCut;
   });
 
