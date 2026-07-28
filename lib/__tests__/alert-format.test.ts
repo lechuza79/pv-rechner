@@ -70,14 +70,25 @@ describe("Form: Handlungsbedarf steht vor dem Klicken fest", () => {
     expect(buildAlertMail({ subject: "Klima", done: ["x"], force: true }).subject).toMatch(/^Solar Check – Wächter:/);
   });
 
-  it("klappt den langen Bericht ein, statt ihn voranzustellen", () => {
-    const { html } = buildAlertMail({
-      subject: "x",
-      decisions: ["Entscheide dies."],
-      details: "Sehr langer Bericht",
-    });
+  it("verlinkt den Bericht, statt ihn mitzuschicken", () => {
+    // Eingeklappt (<details>) reichte nicht: Gmail entfernt das Element und
+    // zeigt den Inhalt ausgeklappt — die Mail wäre wieder seitenlang.
+    const { html } = buildAlertMail(
+      { subject: "x", decisions: ["Entscheide dies."], details: "Sehr langer Bericht" },
+      { reportUrl: "https://solar-check.io/admin/waechter/abc" },
+    );
+    expect(html).toContain("https://solar-check.io/admin/waechter/abc");
+    expect(html).not.toContain("Sehr langer Bericht");
+    expect(html).not.toContain("<details");
+  });
+
+  it("nimmt den Volltext nur mit, wenn die Ablage ausgefallen ist", () => {
+    // Ein verlorener Bericht ist schlimmer als eine lange Mail — aber der
+    // Ausnahmefall muss als solcher erkennbar sein.
+    const { html } = buildAlertMail({ subject: "x", decisions: ["Entscheide dies."], details: "Sehr langer Bericht" });
+    expect(html).toContain("Sehr langer Bericht");
+    expect(html).toContain("nicht abgelegt werden");
     expect(html.indexOf("Entscheide dies.")).toBeLessThan(html.indexOf("Sehr langer Bericht"));
-    expect(html).toContain("<details");
   });
 
   it("kürzt sichtbar, statt eine zu lange Entscheidung zu verschlucken", () => {

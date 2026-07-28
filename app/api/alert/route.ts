@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { buildAlertMail, decideDelivery, type AlertPayload } from "../../../lib/alert-format";
+import { storeReport } from "../../../lib/waechter-reports";
 
 // ─── Generic watcher alert (email via Resend) ────────────────────────────────
 // A single endpoint the scheduled-task watchers (CO2, EEG, Wärmepumpe, Förder)
@@ -46,15 +47,32 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: delivery.problem }, { status: 400 });
   }
 
-  const mail = buildAlertMail(payload);
   const dryRun = new URL(req.url).searchParams.get("dryRun") === "1";
+
+  // Abgelegt wird JEDER Lauf — auch der, der keine Mail auslöst. Sonst wäre die
+  // Schleuse ein Reißwolf: „selbst repariert, nichts zu entscheiden" ist genau
+  // das, was man vier Wochen später nachlesen will.
+  const reportId = dryRun ? null : await storeReport(payload, {
+    delivered: delivery.send,
+    skipReason: delivery.send ? null : delivery.reason,
+  });
+  // Im Trockenlauf wird nichts abgelegt — die Vorschau bekommt trotzdem einen
+  // Beispiel-Link, sonst zeigt sie den Notnagel-Volltext und sieht aus, als wäre
+  // die Ablage kaputt.
+  const reportUrl = reportId
+    ? `https://solar-check.io/admin/waechter/${reportId}`
+    : dryRun
+      ? "https://solar-check.io/admin/waechter/BEISPIEL"
+      : undefined;
+
+  const mail = buildAlertMail(payload, { reportUrl });
 
   // Nicht zu versenden ist der Normalfall, kein Fehler: ein Lauf ohne Entscheidung
   // für den Betreiber ist ein guter Lauf. Der Aufrufer bekommt den Grund zurück
-  // und protokolliert ihn — die Meldung landet im Wochenbericht, nicht im Postfach.
+  // und protokolliert ihn — die Meldung landet in der Ablage, nicht im Postfach.
   if (!delivery.send) {
     console.log(`[Watcher Alert] Nicht versendet (${delivery.reason}): ${mail.subject}`);
-    return NextResponse.json({ skipped: true, reason: delivery.reason, subject: mail.subject });
+    return NextResponse.json({ skipped: true, reason: delivery.reason, subject: mail.subject, reportId });
   }
 
   if (dryRun) {
@@ -82,7 +100,7 @@ export async function POST(req: Request) {
     }
 
     console.log(`[Watcher Alert] Sent "${mail.subject.slice(0, 60)}" to ${RECIPIENTS.join(", ")}`);
-    return NextResponse.json({ success: true, sentTo: RECIPIENTS, subject: mail.subject });
+    return NextResponse.json({ success: true, sentTo: RECIPIENTS, subject: mail.subject, reportId });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error(`[Watcher Alert] Exception: ${message}`);

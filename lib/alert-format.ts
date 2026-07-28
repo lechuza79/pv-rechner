@@ -14,7 +14,14 @@
 //                Mail. Leer = kein Versand, egal wie aufregend der Lauf war.
 //   done[]       Was hat der Wächter selbst geändert — eine Zeile je Änderung.
 //                Zum Sehen, nicht zum Abnicken (Gate, Teil 2).
-//   details      Der ganze Bericht. Wandert ans Ende und ist eingeklappt.
+//   details      Der ganze Bericht. Er steht NICHT in der Mail, sondern in der
+//                internen Ablage (lib/waechter-reports.ts); die Mail verlinkt
+//                ihn. Der Volltext kommt nur mit, wenn die Ablage ausgefallen
+//                ist — dann ist eine lange Mail das kleinere Übel.
+//
+// Eingeklappt (<details>) war die erste Fassung, und sie hielt genau einen Tag:
+// Gmail entfernt das Element und zeigt den Inhalt ausgeklappt — die Mail war
+// wieder mehrere Bildschirmseiten lang, nur mit einer Überschrift davor.
 //
 // Die Längenbegrenzungen sind Absicht: Wer seine Entscheidung nicht in vier
 // Zeilen sagen kann, hat sie noch nicht verstanden. Gekürzt wird sichtbar, nie
@@ -129,7 +136,12 @@ export function buildSummaryLines(p: AlertPayload): string[] {
   ];
 }
 
-export function buildAlertMail(p: AlertPayload): { subject: string; html: string } {
+export type MailOptions = {
+  /** Adresse des abgelegten Berichts. Fehlt sie, wandert der Volltext in die Mail. */
+  reportUrl?: string;
+};
+
+export function buildAlertMail(p: AlertPayload, opts: MailOptions = {}): { subject: string; html: string } {
   const decisions = asLines(p.decisions, MAX_DECISIONS, MAX_DECISION_CHARS);
   const done = asLines(p.done, MAX_DONE, MAX_DONE_CHARS);
   const details = asText(p.details).slice(0, MAX_DETAILS_CHARS) || asText(p.body).slice(0, MAX_DETAILS_CHARS);
@@ -153,12 +165,16 @@ export function buildAlertMail(p: AlertPayload): { subject: string; html: string
          </${ordered ? "ol" : "ul"}>`
       : "";
 
-  const detailsBlock = details
-    ? `<details style="margin-top:24px">
-         <summary style="cursor:pointer;font-size:13px;color:#777">Alle Einzelheiten des Laufs</summary>
-         <div style="font-size:13px;line-height:1.7;color:#777;margin-top:10px">${escapeHtml(details).replace(/\n/g, "<br>")}</div>
-       </details>`
-    : "";
+  // Regelfall: ein Link. Notfall (Ablage ausgefallen): der Volltext, sichtbar als
+  // solcher gekennzeichnet — sonst wirkt die lange Mail wie ein Rückfall.
+  const detailsBlock = opts.reportUrl
+    ? `<p style="margin-top:24px;font-size:13px">
+         <a href="${escapeHtml(opts.reportUrl)}" style="color:#1365EA">Ganzen Bericht dieses Laufs ansehen</a>
+       </p>`
+    : details
+      ? `<p style="margin-top:24px;font-size:12px;color:#949494">Der Bericht konnte nicht abgelegt werden und steht deshalb ausnahmsweise hier:</p>
+         <div style="font-size:13px;line-height:1.7;color:#777">${escapeHtml(details).replace(/\n/g, "<br>")}</div>`
+      : "";
 
   const html = `<div style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;color:#3F3F3F">
     <h2 style="margin:0 0 4px;font-size:18px">${escapeHtml(rawSubject)}</h2>
@@ -166,7 +182,7 @@ export function buildAlertMail(p: AlertPayload): { subject: string; html: string
     ${block("Deine Entscheidung", decisions, true)}
     ${block("Selbst erledigt (nichts zu tun)", done, false)}
     ${detailsBlock}
-    <p style="color:#949494;font-size:12px;margin-top:24px">Automatisch erzeugt von einem solar-check.io-Wächter. Diese Mail kommt nur, wenn eine Entscheidung bei dir liegt — alles andere steht im Sonntags-Wochenbericht.</p>
+    <p style="color:#949494;font-size:12px;margin-top:24px">Automatisch erzeugt von einem solar-check.io-Wächter. Diese Mail kommt nur, wenn eine Entscheidung bei dir liegt. Alle Läufe — auch die ohne Mail — stehen unter solar-check.io/admin/waechter.</p>
   </div>`;
 
   return { subject, html };
