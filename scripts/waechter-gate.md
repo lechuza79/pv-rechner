@@ -196,7 +196,7 @@ selbst kontrollieren:
 | Preis-Pipeline (wöchentlich) | Pipeline-Reparatur, Quellen-Umschaltung | neue Preisquelle einführen |
 | EEG-Vergütung (halbjährlich) | Vergütungssätze, Degressionsschritt, Reform-Sachstand | Wegfall/Neueinführung einer Vergütungsart |
 | CO₂-Preispfad (jährlich + monatlicher Scan) | Preispfad-Stützstellen | Wechsel des Preismechanismus |
-| Strommix-Langzeitreihen (monatlicher Scan) | — nichts | jede Wertänderung: Zahlen stammen aus einer achtspaltigen PDF-Tabelle, es gibt keine sichere Richtung |
+| Strommix-Langzeitreihen (monatlicher Scan) | CO₂-Reihen einer neuen UBA-Ausgabe — Council prüft die **Spaltenüberschrift**, nicht die Plausibilität (die Nachbarspalten sind rechnerisch nicht unterscheidbar) | Erzeugungsreihe, geänderte Tabellenstruktur, Wechsel der gelesenen Spalte |
 | Wärmepumpe (quartalsweise) | Investition (Basis, Steigung, Heizkörpertausch) | BEG-Sätze, WP-Tarif, Gaspreis |
 | Geräte-Config (quartalsweise) | Set-/Gerätepreise, Effizienzen **nach der Systematik** | neue Gerätekategorie, neue Effizienz-Systematik |
 | Förderprogramme (täglich + quartalsweise) | Programm abschalten, Sätze senken, Programm einschalten nach Träger-Beleg | neues Programm aufnehmen |

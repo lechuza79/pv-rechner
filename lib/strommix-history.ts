@@ -144,9 +144,12 @@ export const STROMMIX_HISTORY_SERIES: StrommixSeries[] = [
 //   werden sich in der nächsten Ausgabe noch bewegen.
 //
 // WARTUNG: Prozedur in `scripts/strommix-reihen-verify.md` (Teil A) — dort steht
-//   auch, WELCHE der acht Tabellenspalten die richtige ist. Neue Ausgabe meldet
-//   der monatliche `co2-prognose-monitor` (Schritt 4b); eintragen macht ein
-//   Mensch, bewusst ohne Selbstheilung (Gate Teil 3).
+//   auch, WELCHE der acht Tabellenspalten die richtige ist. Der monatliche
+//   `co2-prognose-monitor` (Schritt 4b) erkennt eine neue Ausgabe und zieht die
+//   Reihen selbst nach — aber nur über den Council (Teil C), der die wörtliche
+//   Spaltenüberschrift im PDF prüft. Grund: Die Nachbarspalten liefern
+//   rechnerisch ununterscheidbare Zahlen, der Realitäts-Anker im Test fängt nur
+//   den groben Fehlgriff. Wer hier von Hand ändert, geht denselben Weg.
 // ---------------------------------------------------------------------------
 
 export const CO2_INTENSITY_META = {

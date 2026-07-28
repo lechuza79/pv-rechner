@@ -89,16 +89,74 @@ Energieträgern" (STRERZ).
 
 ---
 
-## Befugnis: Vorschlag, keine Selbstheilung — BLOCKER
+## Teil C — Selbstheilung: Council als Prüfinstanz
 
-Der Wächter **meldet** eine neue Ausgabe und trägt **nichts** selbst ein.
+Der Wächter **darf die Reihen selbst ersetzen**, aber nur über die Prüfinstanz —
+dasselbe Verfahren wie bei EEG-Sätzen und Förderprogrammen
+(`scripts/council-verify.md`). Die Besonderheit hier ist **worauf** der Council
+angesetzt wird.
 
-Grund: Die Werte stammen aus einer achtspaltigen PDF-Tabelle über einen
-Seitenumbruch. Ein Automat, der sich in der Spalte vertut, produziert genau den
-Fehlertyp, der auf dieser Seite am teuersten ist — eine plausibel aussehende,
-falsche Zahl, die niemandem auffällt. Es gibt hier auch keine „sichere Richtung"
-wie beim Abschalten eines Förderprogramms: jede Spalte liefert Zahlen, die richtig
-wirken.
+### Warum der Council hier die Spaltenüberschrift prüft, nicht die Plausibilität
 
-Meldung enthält: neue Reihennummer, Erscheinungsmonat, Anzahl abweichender
-Altwerte, die zwei bis drei größten Abweichungen im Klartext.
+Die übliche Frage „ist die Zahl plausibel?" trägt hier **nicht**. Die Tabelle hat
+acht Spalten, und die Nachbarn der richtigen liefern Zahlen, die genauso plausibel
+aussehen. Gemessen an den 1990er-Werten, über den impliziten Stromverbrauch geprüft:
+
+| Genommene Spalte | impliziter Verbrauch | maschinell erkennbar? |
+|---|---|---|
+| **Emissionsfaktor Strommix** (richtig) | 479,7 TWh | — |
+| Emissionsfaktor Strominlandsverbrauch | 480,4 TWh | **nein** |
+| THG-Emissionsfaktor ohne Vorketten | 476,0 TWh | **nein** |
+| THG-Emissionsfaktor mit Vorketten | 425,8 TWh | ja |
+
+Der Realitäts-Anker im Test (`lib/__tests__/strommix-history.test.ts`) fängt also
+nur den groben Fehlgriff. **Die beiden gefährlichen Nachbarspalten sind rein
+rechnerisch nicht von der richtigen zu unterscheiden.** Deshalb ist die Aufgabe des
+Councils hier nicht „prüfe die Zahlen", sondern **„lies die Überschrift"**.
+
+### Ablauf
+
+1. **Vorprüfung maschinell** — ohne diese vier gibt es keinen Council-Lauf:
+   - Volltext liegt in `docs/quellen/` (nicht nur ein Link).
+   - `CO2_INTENSITY_VALUES` und `CO2_ABSOLUTE_VALUES` haben dieselbe Länge wie
+     `CO2_INTENSITY_YEARS`, Jahre lückenlos.
+   - Impliziter Stromverbrauch aller Jahre zwischen 400 und 650 TWh.
+   - Kein Einzeljahr springt gegenüber der Vorausgabe um mehr als **10 %**
+     (Gate-Grenze sind 30 %, hier enger: Revisionen liegen erfahrungsgemäß bei
+     1–3 %, ein 2023er-Sprung von 386 → 379 sind knapp 2 %. Alles über 10 % ist
+     eher Spaltenfehler als Revision).
+2. **Council, drei unabhängige Prüfer, einer adversarial.** Jeder öffnet das PDF
+   selbst. Jeder meldet — unabhängig, ohne die Antwort der anderen zu sehen:
+   - die **wörtliche Spaltenüberschrift**, aus der er die Intensitätsreihe gelesen hat,
+   - dieselbe Angabe für die Absolutreihe,
+   - den Wert des **ersten und des letzten Jahres** je Reihe,
+   - die Seitenzahl der Tabelle.
+3. **Konsens heißt: die Überschriften stimmen wörtlich überein.** Nicht „alle drei
+   halten die Zahlen für plausibel". Weicht ein Prüfer bei der Überschrift ab →
+   kein Auto-Fix, Meldung an den Menschen mit allen drei Antworten im Klartext.
+4. **Der adversariale Prüfer hat einen konkreten Auftrag**, keinen allgemeinen:
+   *„Zeige, dass hier die Spalte Strominlandsverbrauch oder eine THG-Spalte
+   erwischt wurde."* Er bekommt die Tabelle oben mit. Findet er einen Beleg →
+   Abbruch.
+5. **Reifegrad mitziehen** (welches Jahr „vorläufig", welches „geschätzt") — das
+   ist eine Aussage und wandert mit den Zahlen, nicht getrennt.
+6. `npx tsc --noEmit` + `npx vitest run` grün, Commit mit `[auto]` im Betreff,
+   Fundstelle mit Seitenzahl im Text, Ausgabennummer in `CO2_INTENSITY_META`.
+
+### Was der Wächter NICHT selbst darf
+
+- **Die Ankertests aufweichen**, damit neue Werte durchgehen (Gate Regel 7). Wenn
+  der implizite Verbrauch aus dem Korridor läuft, ist die Extraktion falsch, nicht
+  der Test.
+- **Eine neue Spalte wählen**, weil die alte in der neuen Ausgabe fehlt oder
+  umbenannt wurde. Eine geänderte Tabellenstruktur ist ein Fall für den Menschen —
+  dann stimmt womöglich auch die Definition der Reihe nicht mehr.
+- **Teil B (Erzeugungsreihe) automatisch pflegen.** Dort gibt es keine vergleichbare
+  Identität als Anker, die Reihe hat Lücken in den 1990ern und mehrere
+  Energieträger-Spalten nebeneinander. Bleibt Vorschlag.
+
+### Meldung bei Abbruch
+
+Neue Reihennummer, Erscheinungsmonat, Anzahl abweichender Altwerte, die zwei bis
+drei größten Abweichungen im Klartext — und **welche der Bedingungen oben gerissen
+ist**, damit der Mensch nicht bei null anfängt.

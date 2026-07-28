@@ -53,6 +53,43 @@ describe("CO₂-Intensität Strommix (UBA CLIMATE CHANGE 16/2026, Tabelle 2)", (
     );
   });
 
+  // REALITÄTS-ANKER für die Selbstheilung (Wächter-Gate Regel 7). Bewusst OHNE
+  // Werte aus einer bestimmten Ausgabe: Der Wächter darf die Reihen ersetzen, also
+  // wäre ein Test, der die aktuellen Zahlen wiederholt, zirkulär — er würde
+  // mitwandern und nichts mehr halten. Dieser hier gilt ausgabenunabhängig.
+  //
+  // Physik statt Zahlenvergleich: Beide Reihen stammen aus derselben Tabellenzeile
+  // und hängen über den Stromverbrauch zusammen.
+  //     absolute [Mio t] = Intensität [g/kWh] × Verbrauch [TWh] / 1000
+  // Der implizite Verbrauch muss also im realen deutschen Korridor liegen. Greift
+  // der Automat bei EINER der beiden Reihen grob daneben, verlässt er ihn.
+  //
+  // EHRLICHE GRENZE — hier nicht aufweichen, sondern kennen: Der Test fängt nur den
+  // groben Fehlgriff. Gemessen an den 1990er-Werten der Tabelle ergibt
+  //   Emissionsfaktor Strommix (richtig) 479,7 TWh
+  //   Inlandsverbrauch                   480,4 TWh   ← rutscht durch
+  //   THG ohne Vorketten                 476,0 TWh   ← rutscht durch
+  //   THG mit Vorketten                  425,8 TWh   ← wird erkannt
+  // Die beiden Nachbarspalten sind mechanisch NICHT unterscheidbar. Sie abzufangen
+  // ist ausdrücklich Aufgabe des Councils, der die Spaltenüberschrift im PDF liest
+  // (scripts/strommix-reihen-verify.md, Teil C).
+  it("Anker: impliziter Stromverbrauch bleibt im realen Korridor", () => {
+    CO2_INTENSITY_YEARS.forEach((jahr, i) => {
+      const twh = (CO2_ABSOLUTE_VALUES[i] * 1000) / CO2_INTENSITY_VALUES[i];
+      expect(twh, `${jahr}: impliziter Stromverbrauch ${twh.toFixed(0)} TWh`).toBeGreaterThan(400);
+      expect(twh, `${jahr}: impliziter Stromverbrauch ${twh.toFixed(0)} TWh`).toBeLessThan(650);
+    });
+  });
+
+  it("Anker: beide Reihen fallen gemeinsam (gleiche Tabellenzeile, gleiche Richtung)", () => {
+    // Steigt die eine Reihe über die Zeit, während die andere fällt, wurden zwei
+    // Spalten aus verschiedenen Zusammenhängen gepaart.
+    const erstesDrittel = (a: number[]) => a.slice(0, 8).reduce((x, y) => x + y, 0) / 8;
+    const letztesDrittel = (a: number[]) => a.slice(-8).reduce((x, y) => x + y, 0) / 8;
+    expect(letztesDrittel(CO2_INTENSITY_VALUES)).toBeLessThan(erstesDrittel(CO2_INTENSITY_VALUES));
+    expect(letztesDrittel(CO2_ABSOLUTE_VALUES)).toBeLessThan(erstesDrittel(CO2_ABSOLUTE_VALUES));
+  });
+
   it("Quellenangabe zeigt auf die Ausgabe, aus der die Werte stammen", () => {
     expect(CO2_INTENSITY_META.source).toContain("16/2026");
     expect(CO2_INTENSITY_META.dataAsOf).toBe("2026-03");
