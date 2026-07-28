@@ -26,6 +26,7 @@ import {
   peerBand,
   getPeerContext,
   getRankingData,
+  foldSiblings,
   atlasOwnerSlice,
   speicherHinweis,
   type AtlasOwner,
@@ -262,23 +263,24 @@ export default async function GemeindePage({ params }: { params: Params }) {
   const geoLat = Number.isFinite(geo?.lat) ? (geo?.lat ?? null) : null;
   const geoLon = Number.isFinite(geo?.lon) ? (geo?.lon ?? null) : null;
 
-  // Rang der Gemeinde nach installierter Solarleistung im Landkreis — aus den
-  // Ranking-Zellen des Kreises aggregiert (Speicher zählt nicht zur Leistung).
-  // Fürs Intro (ein je Gemeinde verschiedener, konkreter Fakt).
-  const kwpByRegion = new Map<string, number>();
-  for (const c of siblingData.cells) {
-    if (c.segment === "speicher") continue;
-    kwpByRegion.set(c.region_id, (kwpByRegion.get(c.region_id) ?? 0) + c.kwp);
-  }
-  const kreisTotal = siblingData.regions.length || null;
+  // Die Nachbargemeinden EINMAL auf das falten, was diese Seite braucht: je
+  // Gemeinde und Eigentümer-Filter drei Summen statt des vollen Zell-Korns.
+  // Das Korn war 71 % der ausgelieferten Seite und diente einer Liste mit fünf
+  // Zeilen (Begründung an foldSiblings). Umschalten von Filter und Kennzahl
+  // bleibt ohne Nachladen möglich — die Kombinationen stecken schon in den Summen.
+  const siblings = foldSiblings(siblingData.regions, siblingData.cells);
+
+  // Rang der Gemeinde nach installierter Solarleistung im Landkreis — fürs
+  // Intro (ein je Gemeinde verschiedener, konkreter Fakt). Aus DERSELBEN
+  // Faltung wie die Liste darunter: vorher rechnete das hier eigenständig und
+  // zählte dabei die Leistung der Batteriespeicher zur Solarleistung dazu.
+  const kreisTotal = siblings.length || null;
   let rankInKreis: number | null = null;
   if (kreisTotal) {
-    const ownKwp = kwpByRegion.get(region.region_id) ?? atlas.solar.total_kwp;
-    let r = 1;
-    kwpByRegion.forEach((kwp, rid) => {
-      if (rid !== region.region_id && kwp > ownKwp) r++;
-    });
-    rankInKreis = r;
+    const own = siblings.find((s) => s.region_id === region.region_id);
+    const ownKwp = own ? own.sums.alle.kwp : atlas.solar.total_kwp;
+    rankInKreis =
+      1 + siblings.filter((s) => s.region_id !== region.region_id && s.sums.alle.kwp > ownKwp).length;
   }
 
   const crumbs: { label: string; href?: string }[] = [
@@ -355,8 +357,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
         <GemeindeHero
           kpi={kpi}
           cells={atlas.solar.by_segment}
-          siblings={siblingData.regions}
-          siblingCells={siblingData.cells}
+          siblings={siblings}
           regionId={region.region_id}
           kreisName={kreis?.name ?? undefined}
           basePath={basePath}
