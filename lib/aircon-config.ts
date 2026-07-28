@@ -118,6 +118,7 @@ export const AC_HEAT_STANDARDS: AcHeatStandard[] = [
   { id: "unsaniert",   label: INSULATION_BESTAND[0].label, sub: INSULATION_BESTAND[0].sub, specKwh: INSULATION_BESTAND[0].specKwh },
   { id: "teilsaniert", label: INSULATION_BESTAND[1].label, sub: INSULATION_BESTAND[1].sub, specKwh: INSULATION_BESTAND[1].specKwh },
   { id: "saniert",     label: INSULATION_BESTAND[2].label, sub: INSULATION_BESTAND[2].sub, specKwh: INSULATION_BESTAND[2].specKwh },
+  { id: "vollsaniert", label: INSULATION_BESTAND[3].label, sub: INSULATION_BESTAND[3].sub, specKwh: INSULATION_BESTAND[3].specKwh },
   // Neubau: gesetzlicher Mindeststandard als Bucket. Wer KfW 55/40 hat, liegt
   // darunter und korrigiert die Heizwärme direkt im Ergebnis (InlineEdit).
   { id: "neubau",      label: "Neubau (EnEV 2014)", sub: INSULATION_NEUBAU[0].sub, specKwh: INSULATION_NEUBAU[0].specKwh },

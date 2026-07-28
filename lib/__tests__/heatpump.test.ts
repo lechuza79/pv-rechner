@@ -13,6 +13,7 @@ import {
   type HeatPumpInputs,
 } from "../heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../heatpump-config";
+import { INSULATION_BESTAND, INSULATION_NEUBAU, WP_FUEL_OPTIONS } from "../constants";
 
 // Canonical test case: 130 m² Bestand, halbsaniert, 2 Personen, alte Heizkörper, LWWP, no PV
 const baseInputs: HeatPumpInputs = {
@@ -40,8 +41,12 @@ describe("calcHeatDemand", () => {
   });
 
   it("clamps insulation index to valid range", () => {
+    // Bewusst an der LÄNGE der Skala festgemacht, nicht an einer festen Stufennummer:
+    // Als die vierte Stufe („vollsaniert") dazukam, hätte ein hartes `2` hier still
+    // etwas anderes geprüft als das Clamping auf die beste Stufe.
+    const lastIdx = INSULATION_BESTAND.length - 1;
     const high = calcHeatDemand("bestand", 100, 99, 1);  // out-of-range high
-    const lastValid = calcHeatDemand("bestand", 100, 2, 1); // saniert
+    const lastValid = calcHeatDemand("bestand", 100, lastIdx, 1); // beste Stufe
     expect(high.qHeiz).toBe(lastValid.qHeiz);
 
     const low = calcHeatDemand("bestand", 100, -5, 1);
@@ -488,5 +493,115 @@ describe("calcWpAnnualElectricity", () => {
     const unsaniert = calcWpAnnualElectricity({ ...common, insulationIdx: 0 });
     const saniert = calcWpAnnualElectricity({ ...common, insulationIdx: 2 });
     expect(saniert).toBeLessThan(unsaniert);
+  });
+});
+
+// ─── Referenzheizung: Gas vs. Heizöl ───────────────────────────────────────
+// Anlass: Nutzerkritik aus einem Fachforum (28.07.2026) — „bei Öl kommt auch nur
+// das Ergebnis für Gas". Der Brennstoff wirkte tatsächlich (Preis, Wirkungsgrad,
+// CO₂), aber die Grundgebühr des GASANSCHLUSSES wurde auch dem Öltank
+// aufgeschlagen. Diese Tests halten beides fest: dass der Energieträger wirkt und
+// dass er den richtigen Posten trifft.
+describe("Referenzheizung Gas vs. Heizöl", () => {
+  const oel = WP_FUEL_OPTIONS.find(f => f.kind === "oil")!;
+  const gas = WP_FUEL_OPTIONS.find(f => f.id === "gas_neu")!;
+  const mit = (f: typeof gas): HeatPumpInputs => ({
+    ...baseInputs,
+    fuelKind: f.kind,
+    override: { gasPrice: f.price, gasEfficiency: f.efficiency, gasCo2: f.co2PerKwh },
+  });
+
+  it("Heizöl trägt KEINE Grundgebühr, Gas schon", () => {
+    expect(calcHeatPump(mit(oel)).gasFix).toBe(0);
+    expect(calcHeatPump(mit(gas)).gasFix).toBeGreaterThan(0);
+  });
+
+  it("die Grundgebühr fehlt auch in der Jahreskurve, nicht nur in der Summe", () => {
+    // Sonst stimmte die Hero-Zahl, aber die Amortisationskurve liefe weiter mit
+    // der Gas-Gebühr — genau die Sorte Widerspruch, die niemandem auffällt.
+    const o = calcHeatPump(mit(oel));
+    const g = calcHeatPump(mit(gas));
+    const fix = DEFAULT_HEATPUMP_CONFIG.fixCostPerYear.gas;
+    // Erstes Jahr: Öl spart pro Jahr genau die Grundgebühr weniger als Gas,
+    // bereinigt um den unterschiedlichen Brennstoffpreis.
+    expect(g.years[1].annual - o.years[1].annual).toBeGreaterThan(fix * 0.5);
+  });
+
+  it("ohne Grundgebühr rechnet sich die Wärmepumpe gegen Öl SCHLECHTER", () => {
+    // Richtungstest: Der alte Fehler hat die WP künstlich gut aussehen lassen.
+    const o = calcHeatPump(mit(oel));
+    const fruehereRechnung = o.tcoEinsparung + DEFAULT_HEATPUMP_CONFIG.fixCostPerYear.gas * DEFAULT_HEATPUMP_CONFIG.years;
+    expect(o.tcoEinsparung).toBeLessThan(fruehereRechnung);
+  });
+
+  it("Grüngas-Pflicht greift nur bei Netzgas, nicht bei Heizöl", () => {
+    // Der GModG-Preispfad ist an Biomethan + Gas-Netzentgelten kalibriert. Auf Öl
+    // angewandt wäre er eine Zahl ohne Grundlage.
+    const oelOhne = calcHeatPump({ ...mit(oel), greenGas: false });
+    const oelMit = calcHeatPump({ ...mit(oel), greenGas: true });
+    expect(oelMit.tcoGas).toBe(oelOhne.tcoGas);
+
+    const gasOhne = calcHeatPump({ ...mit(gas), greenGas: false });
+    const gasMit = calcHeatPump({ ...mit(gas), greenGas: true });
+    expect(gasMit.tcoGas).toBeGreaterThan(gasOhne.tcoGas);
+  });
+
+  it("jede Brennstoff-Option trägt eine eigene Beschriftung für die Referenzheizung", () => {
+    // Verhindert den Rückfall auf ein festes „Gas" in der Oberfläche.
+    for (const f of WP_FUEL_OPTIONS) {
+      expect(f.refLabel.length).toBeGreaterThan(0);
+      if (f.kind === "oil") expect(f.refLabel).not.toMatch(/Gas/i);
+    }
+  });
+});
+
+// ─── Dämmzustand: eine Quelle, lückenlose Skala ────────────────────────────
+describe("Dämmzustands-Skala", () => {
+  it("UI-Auswahl und Rechen-Config sind dieselben Zahlen", () => {
+    // Sie standen bis 28.07.2026 doppelt im Code und konnten auseinanderlaufen.
+    expect(DEFAULT_HEATPUMP_CONFIG.specDemandBestand).toEqual(INSULATION_BESTAND.map(i => i.specKwh));
+    expect(DEFAULT_HEATPUMP_CONFIG.specHeatLoadBestand).toEqual(INSULATION_BESTAND.map(i => i.heatLoadW));
+    expect(DEFAULT_HEATPUMP_CONFIG.specDemandNeubau).toEqual(INSULATION_NEUBAU.map(i => i.specKwh));
+    expect(DEFAULT_HEATPUMP_CONFIG.specHeatLoadNeubau).toEqual(INSULATION_NEUBAU.map(i => i.heatLoadW));
+  });
+
+  it("Bedarf und Heizlast fallen über die Stufen monoton", () => {
+    for (const arr of [INSULATION_BESTAND, INSULATION_NEUBAU]) {
+      for (let i = 1; i < arr.length; i++) {
+        expect(arr[i].specKwh).toBeLessThan(arr[i - 1].specKwh);
+        expect(arr[i].heatLoadW).toBeLessThan(arr[i - 1].heatLoadW);
+      }
+    }
+  });
+
+  it("der beste Bestand liegt unter dem schwächsten Neubau", () => {
+    // DER Auslöser für die vierte Stufe: Vorher war die beste Bestandsstufe (100)
+    // schlechter als der Neubau-Mindeststandard (75) — ein vollsaniertes Haus war
+    // im Rechner schlicht nicht abbildbar und bekam eine zu große Wärmepumpe.
+    const besterBestand = INSULATION_BESTAND[INSULATION_BESTAND.length - 1];
+    expect(besterBestand.specKwh).toBeLessThan(INSULATION_NEUBAU[0].specKwh);
+    // Die HEIZLAST darf dagegen über dem Neubau liegen: Ein rundum gedämmter Altbau
+    // erreicht den Jahresverbrauch eines schwachen Neubaus, verliert an den kältesten
+    // Tagen aber weiterhin mehr Wärme (Wärmebrücken, Geometrie, Fensterflächen). Sie
+    // bleibt im Faustwert-Band „saniert" (30–50 W/m², Verbraucherzentrale/42watt).
+    expect(besterBestand.heatLoadW).toBeGreaterThanOrEqual(30);
+    expect(besterBestand.heatLoadW).toBeLessThanOrEqual(50);
+  });
+
+  it("Vollsanierung bleibt im belegten Band der dena-Verbrauchsstudie", () => {
+    // dena, „Auswertung von Verbrauchskennwerten energieeffizienter Wohngebäude",
+    // S. 25 / Abb. 7: sanierte Gebäude mit gut gedämmter Hülle streuen bei fossiler
+    // Beheizung zwischen 10 und 90 kWh/(m²AN·a); 90 % liegen unter rund 70.
+    // Der Wert darf nach unten wandern, aber nicht aus dem Band herausrutschen.
+    const voll = INSULATION_BESTAND[INSULATION_BESTAND.length - 1].specKwh;
+    expect(voll).toBeGreaterThanOrEqual(50);
+    expect(voll).toBeLessThanOrEqual(90);
+  });
+
+  it("Vollsanierung senkt Heizbedarf UND Anlagengröße spürbar", () => {
+    const gut = calcHeatDemand("bestand", 140, 2, 2).qGes;
+    const voll = calcHeatDemand("bestand", 140, 3, 2).qGes;
+    expect(voll).toBeLessThan(gut);
+    expect(calcHeatLoad("bestand", 140, 3, 1)).toBeLessThan(calcHeatLoad("bestand", 140, 2, 1));
   });
 });

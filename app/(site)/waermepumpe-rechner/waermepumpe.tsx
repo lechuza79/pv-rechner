@@ -67,8 +67,20 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   //                                     beschlossen 10.07.2026 → Default, hervorgehoben.
   //  "pessimistic"/"realistic"/"optimistic" = reine Preis-Annahmen OHNE Grüngas.
   const [scenario, setScenario] = useState("gruengas");
-  // Grüngas-Pflicht ist genau der Gesetzes-Fall — kein eigener Schalter mehr.
-  const greenGas = scenario === "gruengas";
+
+  // Im Neubau steht keine Ölheizung zur Wahl: Eine neu eingebaute Ölheizung müsste
+  // die 65-%-Erneuerbaren-Pflicht des GEG erfüllen, was sie praktisch ausschließt.
+  // Sie als Referenz anzubieten würde eine Rechnung zeigen, die es nicht geben darf.
+  const fuelOptions = situation === "neubau" ? WP_FUEL_OPTIONS.filter(f => f.kind === "gas") : WP_FUEL_OPTIONS;
+  const fuel = fuelOptions.find(f => f.id === oFuel) ?? fuelOptions[0];
+  // Die Grüngas-Pflicht ist ein GAS-Szenario: Der Preispfad hängt an der
+  // Biomethan-Beimischung und an Gas-Netzentgelten (lib/greengas.ts). Bei Heizöl
+  // gibt es beides nicht — das Szenario verschwindet dann aus der Auswahl, und ein
+  // vorher gewähltes „Grüngas" fällt auf die mittlere Preisannahme zurück, statt
+  // eine Zahl zu zeigen, für die uns die Grundlage fehlt.
+  const gruengasVerfuegbar = fuel.kind === "gas";
+  const effScenario = !gruengasVerfuegbar && scenario === "gruengas" ? "realistic" : scenario;
+  const greenGas = effScenario === "gruengas";
   // "Mehr erfahren"-Modal: sammelt alle erklärenden Texte zum Grüngas-Szenario.
   const [showGasInfo, setShowGasInfo] = useState(false);
   // Secondary-Block "Marktübliche Preissteigerung" (die 3 Preis-Modelle) auf-/zugeklappt.
@@ -94,12 +106,12 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const cfg = DEFAULT_HEATPUMP_CONFIG;
 
   // ── Build inputs + calculate ─────────────────────────────────
-  const fuel = WP_FUEL_OPTIONS.find(f => f.id === oFuel) ?? WP_FUEL_OPTIONS[0];
   const inputs: HeatPumpInputs = useMemo(() => ({
     situation, wohnflaeche, insulationIdx,
     personen: PERSONEN[personen].count,
     heizsystem, wpType, heizkoerperTausch,
     haustypFaktor: HAUSTYP_WP[haustypIdx].faktor,
+    fuelKind: fuel.kind,
     greenGas,
     pv: pvStatus !== "nein" ? { status: pvStatus, kwp: pvKwp, speicherKwh: pvSpeicher } : undefined,
     override: {
@@ -138,13 +150,17 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
     if (heizsystem === "hk_alt") {
       list.push({ id: "heizung", titel: "Heizkörper fit machen", kurz: "Niedertemperatur-Heizkörper statt der alten", sanierung: false, patch: { heizkoerperTausch: true } });
     }
-    if (insulationIdx === 0) {
-      list.push({ id: "teil", titel: "Schrittweise Sanierung", kurz: "Dach/Fassade dämmen + passende Heizflächen", sanierung: true, patch: { insulationIdx: 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
+    // Ein Schritt die Dämm-Leiter hinauf — von unsaniert auf teilsaniert bzw. von
+    // teilsaniert auf gut saniert.
+    if (insulationIdx <= 1) {
+      list.push({ id: "teil", titel: "Schrittweise Sanierung", kurz: "Dach/Fassade dämmen + passende Heizflächen", sanierung: true, patch: { insulationIdx: insulationIdx + 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
     }
-    if (insulationIdx < 2) {
+    if (insulationIdx < INSULATION_BESTAND.length - 1) {
+      // Zielstufe ist die oberste (vollsaniert), nicht mehr die dritte — sonst hieße
+      // der Weg „Vollsanierung" und landete doch nur bei „gut saniert".
       // Niedertemperatur-Heizkörper statt Gratis-Fußbodenheizung: deren Kosten
       // zählen (ehrlich), sonst stünde die Vollsanierung künstlich zu gut da.
-      list.push({ id: "voll", titel: "Vollsanierung", kurz: "Rundum-Dämmung + Niedertemperatur-Heizflächen", sanierung: true, patch: { insulationIdx: 2, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
+      list.push({ id: "voll", titel: "Vollsanierung", kurz: "Rundum-Dämmung + Niedertemperatur-Heizflächen", sanierung: true, patch: { insulationIdx: INSULATION_BESTAND.length - 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
     }
     return list;
   }, [situation, heizsystem, insulationIdx]);
@@ -152,7 +168,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // Wege-Vergleich (und die Ist-Konklusion) mit dem gewählten Szenario rechnen,
   // damit sie nicht dem oben gewählten Szenario widersprechen. Die editierbaren
   // Detailwerte laufen weiter über `result` (Basisfall).
-  const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }, cfg, heatPumpScenarioAdj(scenario, cfg)) })), [wege, inputs, cfg, scenario]);
+  const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }, cfg, heatPumpScenarioAdj(effScenario, cfg)) })), [wege, inputs, cfg, effScenario]);
   const istResult = wegeResults.find(w => w.id === "ist")?.r ?? calcHeatPump(inputs, cfg);
   const istNegativ = istResult.tcoEinsparung < 0;
   const istKnapp = istResult.amortisationsJahre === null || istResult.amortisationsJahre > 15 || istNegativ;
@@ -179,8 +195,18 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   };
 
   // Gewählter Fall: treibt die Ergebnis-Zahlen (TCO/Amortisation/Ersparnis/CO₂).
-  const selPrice = scenariosPlain.find(s => s.id === scenario) ?? scenariosPlain.find(s => s.id === "realistic")!;
+  const selPrice = scenariosPlain.find(s => s.id === effScenario) ?? scenariosPlain.find(s => s.id === "realistic")!;
   const sel = greenGas ? { ...GRUENGAS_META, ...gruengasResult } : selPrice;
+
+  // Bandbreite über ALLE gerechneten Annahmen (die drei Preispfade und, wo sie gilt,
+  // die Grüngas-Pflicht). Sie steht im Hero unter der großen Zahl — die Antwort auf
+  // „woher kennt ihr die Gas- und Ölpreise der Zukunft?" ist: gar nicht, hier ist die
+  // Spanne. Der aktive Fall liegt immer innerhalb dieser Spanne.
+  const spanne = useMemo(() => {
+    const werte = scenariosPlain.map(s => s.tcoEinsparung);
+    if (gruengasVerfuegbar) werte.push(gruengasResult.tcoEinsparung);
+    return { min: Math.min(...werte), max: Math.max(...werte) };
+  }, [scenariosPlain, gruengasResult, gruengasVerfuegbar]);
 
   // Amortisationskurve: beim Gesetzes-Fall die Grüngas-Kurve hervorgehoben (grün) +
   // die 3 Preis-Szenarien als graue Vergleichslinien; sonst die 3 in Ampelfarben.
@@ -393,6 +419,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               {/* Primär: das Heizungsgesetz (Grüngas-Pflicht). Klickbare Kachel; das
                   „Mehr erfahren" darin öffnet das Modal (stopPropagation, damit der
                   Kachel-Klick nicht zugleich das Szenario umstellt). */}
+              {gruengasVerfuegbar ? (
               <div role="button" tabIndex={0} aria-pressed={greenGas}
                 onClick={() => { setScenario("gruengas"); setPreisExpanded(false); }}
                 onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setScenario("gruengas"); setPreisExpanded(false); } }}
@@ -404,6 +431,14 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   <button onClick={e => { e.stopPropagation(); setShowGasInfo(true); }} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), cursor: "pointer", fontSize: 12, fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0 }}>Mehr erfahren →</button>
                 </div>
               </div>
+              ) : (
+                /* Heizöl: Die Bio-Treppe des Heizungsgesetzes gilt zwar auch für Öl,
+                   aber unser Preispfad bildet nur den Gas-Mix ab. Statt eine Zahl zu
+                   erfinden, sagen wir offen, was in der Rechnung fehlt. */
+                <div style={{ padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.55 }}>
+                  Für Heizöl rechnen wir nur mit der normalen Teuerung und dem steigenden CO₂-Preis. Das Heizungsgesetz verlangt ab 2029 auch bei Öl einen wachsenden Anteil klimafreundlicher Brennstoffe — wie stark Bioheizöl den Preis treibt, ist offen, deshalb steckt dieser Effekt hier nicht drin. Die Ölheizung dürfte also eher teurer werden als hier gezeigt.
+                </div>
+              )}
 
               {/* Secondary: die reinen Preis-Modelle, standardmäßig eingeklappt. */}
               <div style={{ marginTop: 8, borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: !greenGas ? v('--color-bg-muted') : "transparent" }}>
@@ -421,7 +456,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                     </p>
                     <div style={{ display: "flex", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: v('--color-bg') }} role="tablist" aria-label="Preis-Modell">
                       {scenariosPlain.map(s => {
-                        const on = !greenGas && s.id === scenario;
+                        const on = !greenGas && s.id === effScenario;
                         return (
                           <button key={s.id} role="tab" aria-selected={on} onClick={() => { setScenario(s.id); setPreisExpanded(true); }}
                             style={{ flex: 1, padding: "9px 6px", cursor: "pointer", textAlign: "center", background: on ? v('--color-accent-dim') : "transparent", border: "none", borderBottom: `2px solid ${on ? v('--color-accent') : "transparent"}` }}>
@@ -560,7 +595,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 </div>
                 <div style={{ display: "grid", gap: 8 }}>
                   {wegeResults.map(w => (
-                    <WegCard key={w.id} titel={w.titel} kurz={w.kurz} r={w.r} active={activeWeg?.id === w.id} onClick={() => selectWeg(w.id)} situation={situation} sanierung={w.sanierung} />
+                    <WegCard key={w.id} titel={w.titel} kurz={w.kurz} r={w.r} active={activeWeg?.id === w.id} onClick={() => selectWeg(w.id)} situation={situation} sanierung={w.sanierung} refLabel={fuel.refLabel} />
                   ))}
                 </div>
                 <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
@@ -580,19 +615,35 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
                 Einsparung über {DEFAULT_HEATPUMP_CONFIG.years} Jahre
                 <InfoTooltip title="So wird die Einsparung berechnet" ariaLabel="Wie wird die Einsparung berechnet?">
-                  <TcoBreakdown r={sel} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} />
+                  <TcoBreakdown r={sel} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} refLabel={fuel.refLabel} />
                 </InfoTooltip>
               </div>
               <div style={{ fontSize: 42, fontWeight: 800, color: sel.tcoEinsparung >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
                 {sel.tcoEinsparung >= 0 ? "+" : ""}{sel.tcoEinsparung.toLocaleString("de-DE")} €
               </div>
+              {/* Die große Zahl gilt für EINE Preisannahme. Ohne die Bandbreite daneben
+                  liest sie sich wie eine Prognose der Energiepreise der nächsten 20 Jahre
+                  — die niemand hat (Nutzerkritik 28.07.2026). Deshalb steht die Spanne
+                  aller gerechneten Annahmen direkt unter dem Wert, nicht nur im Tooltip. */}
+              <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 8, textAlign: "center", lineHeight: 1.5 }}>
+                Künftige Energiepreise kennt niemand. Je nach Annahme sind es{" "}
+                <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, whiteSpace: "nowrap" }}>
+                  {spanne.min >= 0 ? "+" : ""}{spanne.min.toLocaleString("de-DE")} €
+                </span>{" "}bis{" "}
+                <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, whiteSpace: "nowrap" }}>
+                  {spanne.max >= 0 ? "+" : ""}{spanne.max.toLocaleString("de-DE")} €
+                </span>.
+              </div>
               <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 4 }}>
                 vs. {situation === "neubau" ? null : "Weiterbetrieb"}
-                <select value={oFuel} onChange={e => setOFuel(e.target.value)} aria-label="Referenzheizung wählen" style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: 13 }}>
-                  {WP_FUEL_OPTIONS.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
+                {/* Beim Wechsel des Energieträgers den Preis-Override fallen lassen —
+                    sonst bliebe ein von Hand gesetzter Gaspreis am Heizöl kleben und
+                    die Umstellung wirkte wirkungslos. */}
+                <select value={fuel.id} onChange={e => { setOFuel(e.target.value); setOGasPrice(null); }} aria-label="Referenzheizung wählen" style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: 13 }}>
+                  {fuelOptions.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
                 </select>
                 {situation === "neubau" ? "(Neubau)" : null}
-                <InfoTooltip title="Wie sich der Brennstoffpreis entwickelt" ariaLabel="Wie sich der Gaspreis in der Rechnung entwickelt">
+                <InfoTooltip title="Wie sich der Brennstoffpreis entwickelt" ariaLabel="Wie sich der Brennstoffpreis in der Rechnung entwickelt">
                   {greenGas
                     ? <>Das Grüngas-Szenario ist aktiv: Der Gaspreis folgt dem GModG-Gas-Mix — mit der Bio-Treppe wird ab 2029 zunehmend teures Biomethan beigemischt, dazu steigen Netzentgelte und CO₂-Preis. Details und Verlauf siehst du im Grüngas-Block weiter unten. Die drei Szenarien im Diagramm rechnen mit niedrigem, mittlerem und hohem Preispfad.</>
                     : <>Der heutige Brennstoffpreis steigt in der Rechnung jedes Jahr — durch allgemeine Teuerung (realistisch rund 2 % pro Jahr) und durch den steigenden CO₂-Preis auf fossile Energie. Der CO₂-Preis liegt 2026 und 2027 bei 55–65 € pro Tonne und klettert ab 2028 mit dem EU-Emissionshandel voraussichtlich um etwa 8 € pro Tonne und Jahr. Die im heutigen Preis schon enthaltene CO₂-Abgabe wird dabei nicht doppelt gezählt. Die drei Szenarien im Diagramm rechnen mit unterschiedlich starkem Anstieg.</>}
@@ -615,7 +666,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   </select>
                 </div>
                 <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={result.jaz} onCommit={v => setOJaz(v)} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
-                <div>Gaspreis: {greenGas
+                <div>{fuel.kind === "oil" ? "Heizölpreis" : "Gaspreis"}: {greenGas
                   ? <span style={{ fontStyle: "italic", color: v('--color-text-muted') }}>folgt dem Grüngas-Pfad (Block unten)</span>
                   : <InlineEdit value={Math.round((oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => setOGasPrice(v / 100)} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} />}</div>
                 <div>WP-Strompreis: <InlineEdit value={Math.round((oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => setOStromPrice(v / 100)} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
@@ -645,7 +696,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               <HeatPumpChart
                 scenarios={chartScenarios}
                 horizon={DEFAULT_HEATPUMP_CONFIG.years}
-                highlightId={greenGas ? "gruengas" : scenario}
+                highlightId={greenGas ? "gruengas" : effScenario}
               />
               <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 16, marginTop: 10, fontSize: 11 }}>
                 {greenGas ? (
@@ -659,8 +710,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   </>
                 ) : (
                   scenariosPlain.map(s => (
-                    <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 4, color: s.id === scenario ? v('--color-text-secondary') : v('--color-text-muted'), fontWeight: s.id === scenario ? 700 : 400 }}>
-                      <span style={{ width: 10, height: 2, background: s.color, borderRadius: 1, opacity: s.id === scenario ? 1 : 0.5 }} /> {s.label}
+                    <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 4, color: s.id === effScenario ? v("--color-text-secondary") : v("--color-text-muted"), fontWeight: s.id === effScenario ? 700 : 400 }}>
+                      <span style={{ width: 10, height: 2, background: s.color, borderRadius: 1, opacity: s.id === effScenario ? 1 : 0.5 }} /> {s.label}
                     </span>
                   ))
                 )}
@@ -690,10 +741,10 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   ["BEG-Förderung", `${(result.beg.rate * 100).toFixed(0)} % · ${result.beg.amount.toLocaleString("de-DE")} €`],
                   ["Invest netto", `${result.investNetto.toLocaleString("de-DE")} €`],
                   [`WP Strom 20 J`, `${result.stromKosten.toLocaleString("de-DE")} €`],
-                  ["Gas Brennstoff 20 J", `${result.gasKosten.toLocaleString("de-DE")} €`],
-                  ["Gas Grundgebühr 20 J", `${result.gasFix.toLocaleString("de-DE")} €`],
+                  [`${fuel.label} Brennstoff 20 J`, `${result.gasKosten.toLocaleString("de-DE")} €`],
+                  ...(result.gasFix > 0 ? [[`${fuel.label} Grundgebühr 20 J`, `${result.gasFix.toLocaleString("de-DE")} €`] as [string, string]] : []),
                   ["TCO Wärmepumpe", `${result.tcoWp.toLocaleString("de-DE")} €`],
-                  ["TCO Gas-Referenz", `${result.tcoGas.toLocaleString("de-DE")} €`],
+                  [`TCO ${fuel.refLabel}`, `${result.tcoGas.toLocaleString("de-DE")} €`],
                 ]} />
 
                 {result.beg.breakdown.length > 0 && (
@@ -779,7 +830,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
 // Transparente Aufschlüsselung, wie die Einsparung zustande kommt (20-J-TCO).
 // sanierungHinweis: erklärt, warum ein Sanierungs-Weg wirtschaftlich oft
 // schwächer aussieht (weniger Heizbedarf = weniger ersetztes Gas).
-function TcoBreakdown({ r, situation, jahre, sanierungHinweis }: { r: HeatPumpResult; situation: "bestand" | "neubau"; jahre: number; sanierungHinweis?: boolean }) {
+function TcoBreakdown({ r, situation, jahre, sanierungHinweis, refLabel }: { r: HeatPumpResult; situation: "bestand" | "neubau"; jahre: number; sanierungHinweis?: boolean; refLabel: string }) {
   const euro = (n: number) => `${n.toLocaleString("de-DE")} €`;
   const Row = ({ label, val, strong, minus }: { label: string; val: number; strong?: boolean; minus?: boolean }) => (
     <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "1px 0", fontWeight: strong ? 700 : 400 }}>
@@ -799,10 +850,12 @@ function TcoBreakdown({ r, situation, jahre, sanierungHinweis }: { r: HeatPumpRe
         <div style={{ borderTop: `1px solid ${v('--color-border')}`, marginTop: 2, paddingTop: 2 }}><Row label="Summe" val={r.tcoWp} strong /></div>
       </div>
       <div style={{ marginBottom: 8 }}>
-        <div style={{ fontWeight: 700, marginBottom: 2 }}>{situation === "neubau" ? "Neue Gasheizung kostet" : "Gasheizung weiterbetreiben kostet"}</div>
+        <div style={{ fontWeight: 700, marginBottom: 2 }}>{situation === "neubau" ? `Neue ${refLabel} kostet` : `${refLabel} weiterbetreiben kostet`}</div>
         {r.gasInvest > 0 && <Row label="Neue Therme" val={r.gasInvest} />}
         <Row label="Brennstoff (inkl. steigendem CO₂-Preis)" val={r.gasKosten} />
-        <Row label="Grundgebühr" val={r.gasFix} />
+        {/* Grundgebühr nur zeigen, wenn es sie gibt — beim Öltank hängt an keinem
+            Anschluss eine laufende Gebühr, eine „0 €"-Zeile wäre nur Rauschen. */}
+        {r.gasFix > 0 && <Row label="Grundgebühr" val={r.gasFix} />}
         <Row label="Wartung" val={r.gasWartung} />
         <div style={{ borderTop: `1px solid ${v('--color-border')}`, marginTop: 2, paddingTop: 2 }}><Row label="Summe" val={r.tcoGas} strong /></div>
       </div>
@@ -865,7 +918,7 @@ function BonusToggle({ checked, onChange, label, tipTitle, children }: { checked
   );
 }
 
-function WegCard({ titel, kurz, r, active, onClick, situation, sanierung }: { titel: string; kurz: string; r: HeatPumpResult; active: boolean; onClick: () => void; situation: "bestand" | "neubau"; sanierung: boolean }) {
+function WegCard({ titel, kurz, r, active, onClick, situation, sanierung, refLabel }: { titel: string; kurz: string; r: HeatPumpResult; active: boolean; onClick: () => void; situation: "bestand" | "neubau"; sanierung: boolean; refLabel: string }) {
   const pos = r.tcoEinsparung >= 0;
   // Klickbares div statt <button>, damit das Info-Icon (selbst ein Button) kein
   // ungültiges verschachteltes Button ergibt. Tastatur-Bedienung nachgebildet.
@@ -893,7 +946,7 @@ function WegCard({ titel, kurz, r, active, onClick, situation, sanierung }: { ti
           </span>
           <span onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()} style={{ display: "inline-flex" }}>
             <InfoTooltip title={`So rechnet sich „${titel}"`} ariaLabel={`Berechnung für ${titel}`}>
-              <TcoBreakdown r={r} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={sanierung} />
+              <TcoBreakdown r={r} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={sanierung} refLabel={refLabel} />
             </InfoTooltip>
           </span>
         </div>

@@ -309,8 +309,10 @@ export default async function DatenstandPage() {
           stand={monthYear(HP.validFrom)}
           intro="Annahmen des Wärmepumpen-Rechners: Heizbedarf, Effizienz, Investition und Förderung. Alle Werte im Ergebnis editierbar."
           rows={[
-            { label: "Spez. Heizbedarf Bestand (unsaniert–saniert)", value: `${HP.specDemandBestand[2]}–${HP.specDemandBestand[0]} kWh/m²·a` },
-            { label: "Spez. Heizbedarf Neubau (KfW 40+–EnEV)", value: `${HP.specDemandNeubau[2]}–${HP.specDemandNeubau[0]} kWh/m²·a` },
+            // Spanne immer über die GANZE Skala — sonst fällt eine neue Stufe still
+            // aus der öffentlichen Übersicht (die unterste ist der beste Fall).
+            { label: "Spez. Heizbedarf Bestand (unsaniert–vollsaniert)", value: `${HP.specDemandBestand[HP.specDemandBestand.length - 1]}–${HP.specDemandBestand[0]} kWh/m²·a` },
+            { label: "Spez. Heizbedarf Neubau (KfW 40+–EnEV)", value: `${HP.specDemandNeubau[HP.specDemandNeubau.length - 1]}–${HP.specDemandNeubau[0]} kWh/m²·a` },
             { label: "Warmwasser je Person", value: `${nf(HP.wwPerPerson)} kWh/a` },
             { label: "Investition Luft/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investLwwpBase)} € + ${nf(HP.investLwwpPerKw)} €/kW` },
             { label: "Investition Sole/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },

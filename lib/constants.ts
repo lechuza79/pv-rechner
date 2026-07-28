@@ -180,16 +180,41 @@ export const HAUSTYP_WP = [
   { id: "reihenmitte", label: "Reihenmittelhaus", sub: "Zwei Wände geteilt", faktor: 0.78 },
 ] as const;
 
+// Dämmzustand — EINZIGE QUELLE für den Jahres-Heizwärmebedarf (specKwh, kWh/m²·a
+// Wohnfläche) UND die spezifische Heizlast (heatLoadW, W/m²). lib/heatpump-config.ts
+// leitet specDemandBestand/specHeatLoadBestand hieraus ab, lib/aircon-config.ts den
+// Heizwärmebedarf des Split-Heizen-Blocks — bitte nur hier pflegen. Eine zweite
+// handgetippte Kopie dieser Zahlen ist ein Fehler, kein Duplikat.
+//
+// Quellen (geprüft 28.07.2026):
+//   specKwh   — dena-Gebäudereport + DIN V 18599 (unsaniert bis gut saniert).
+//               Die Stufe „Vollsaniert" (70) ist belegt durch die dena-Studie
+//               „Auswertung von Verbrauchskennwerten energieeffizienter
+//               Wohngebäude", S. 25 / Abb. 7: gemessene Endenergieverbräuche
+//               sanierter Gebäude mit gut gedämmter Hülle (H'T ≤ 0,5 W/(m²K))
+//               streuen bei fossiler Beheizung zwischen 10 und 90 kWh/(m²AN·a);
+//               90 % aller 121 untersuchten Gebäude liegen unter rund 70. Der
+//               Wert sitzt damit bewusst am OBEREN Rand des Sanierten-Bandes.
+//   heatLoadW — Faustwerte Verbraucherzentrale / 42watt (unsaniert 100–140,
+//               teilsaniert 70–100, saniert 30–50 W/m²), im Bestand am oberen
+//               Rand angesetzt, um die Wärmepumpe nicht zu unterdimensionieren.
+//
+// WARUM es die vierte Stufe gibt (Nutzerkritik 28.07.2026, haustechnikdialog):
+// Die beste Bestandsstufe war mit 100 kWh/m²·a schlechter als die SCHLECHTESTE
+// Neubaustufe (75) und trug trotzdem das Etikett „Vollsanierung". Wer sein Haus
+// wirklich rundum saniert hat, konnte sich nicht abbilden und bekam über die zu
+// hohe Heizlast eine zu große und zu teure Wärmepumpe gerechnet.
 export const INSULATION_BESTAND = [
-  { label: "Unsaniert", sub: "Baujahr vor ~1995, keine Dämmung", specKwh: 220 },
-  { label: "Teilsaniert", sub: "Fenster/Dach oder Fassade erneuert", specKwh: 160 },
-  { label: "Gut saniert", sub: "Vollsanierung, moderner Standard", specKwh: 100 },
+  { label: "Unsaniert", sub: "Baujahr vor ~1995, keine Dämmung", specKwh: 220, heatLoadW: 115 },
+  { label: "Teilsaniert", sub: "Fenster/Dach oder Fassade erneuert", specKwh: 160, heatLoadW: 95 },
+  { label: "Gut saniert", sub: "Fenster, Dach und Fassade gedämmt", specKwh: 100, heatLoadW: 60 },
+  { label: "Vollsaniert", sub: "Rundum gedämmt, Effizienzhaus-Niveau", specKwh: 70, heatLoadW: 45 },
 ];
 
 export const INSULATION_NEUBAU = [
-  { label: "EnEV 2014", sub: "Gesetzlicher Mindeststandard", specKwh: 75 },
-  { label: "KfW 55", sub: "Effizienzhaus 55", specKwh: 50 },
-  { label: "KfW 40 oder besser", sub: "Passivhaus-Niveau", specKwh: 30 },
+  { label: "EnEV 2014", sub: "Gesetzlicher Mindeststandard", specKwh: 75, heatLoadW: 40 },
+  { label: "KfW 55", sub: "Effizienzhaus 55", specKwh: 50, heatLoadW: 30 },
+  { label: "KfW 40 oder besser", sub: "Passivhaus-Niveau", specKwh: 30, heatLoadW: 20 },
 ];
 
 export const HEIZSYSTEM = [
@@ -211,9 +236,24 @@ export const WP_TYPE = [
   { id: "swwp", label: "Sole/Wasser (Erdsonde)", sub: "Höhere JAZ, teurer" },
 ];
 
-// Preis + CO2 aus FUEL_PRICE; nur der Wirkungsgrad unterscheidet die Varianten.
-export const WP_FUEL_OPTIONS = [
-  { id: "gas_neu", label: "Gas-Brennwert", price: FUEL_PRICE.gas.price, efficiency: 0.95, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
-  { id: "gas_alt", label: "Alter Gaskessel", price: FUEL_PRICE.gas.price, efficiency: 0.80, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
-  { id: "oil", label: "Heizöl", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
+/** Energieträger der Referenzheizung — bestimmt Preis, CO₂ UND Beschriftung. */
+export type FuelKind = "gas" | "oil";
+
+// Preis + CO2 aus FUEL_PRICE; der Wirkungsgrad unterscheidet die Kessel-Varianten.
+// `kind` steuert zwei Dinge, die NICHT am Brennstoffpreis hängen:
+//   1. die Grundgebühr — ein Gasanschluss hat einen Netz-/Zählergrundpreis,
+//      ein Öltank nicht (siehe fixCostPerYear in lib/heatpump-config.ts);
+//   2. die Grüngas-Pflicht — der Preispfad des GModG-Gas-Mixes ist an Biomethan
+//      und Gas-Netzentgelten kalibriert und gilt so nicht für Heizöl.
+// `refLabel` ist die Beschriftung der Referenzheizung im Ergebnis. Sie MUSS
+// überall statt eines festen „Gas" stehen: wer Heizöl wählt und dann durchgehend
+// „Gasheizung" liest, hält das zu Recht für einen Rechenfehler (Nutzerkritik
+// 28.07.2026) — auch wenn Öl und Gas je Kilowattstunde Wärme fast gleich kosten.
+export const WP_FUEL_OPTIONS: {
+  id: string; label: string; refLabel: string; kind: FuelKind;
+  price: number; efficiency: number; co2PerKwh: number;
+}[] = [
+  { id: "gas_neu", label: "Gas-Brennwert", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.95, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
+  { id: "gas_alt", label: "Alter Gaskessel", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.80, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
+  { id: "oil", label: "Heizöl", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
 ];

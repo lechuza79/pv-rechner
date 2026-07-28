@@ -20,7 +20,7 @@ import { co2SurchargeOverToday, calcWeightedFeedIn, calcPvBenefitPerYear } from 
 import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { calcHeatDemand, calcHeatLoad, flowTempForSystem, calcJAZ } from "./heatpump-core";
-import { YEAR } from "./constants";
+import { YEAR, type FuelKind } from "./constants";
 import { gasMixPriceEurForYear } from "./greengas";
 import type { GasScenario } from "./greengas-config";
 import { v } from "./theme";
@@ -43,7 +43,12 @@ export {
 export interface HeatPumpInputs {
   situation: "bestand" | "neubau";
   wohnflaeche: number;          // m²
-  insulationIdx: number;         // 0–2 (Index in INSULATION_BESTAND/NEUBAU)
+  insulationIdx: number;         // Index in INSULATION_BESTAND (0–3) / INSULATION_NEUBAU (0–2)
+  // Energieträger der Referenzheizung. Preis/Wirkungsgrad/CO₂ kommen weiterhin
+  // über `override` aus WP_FUEL_OPTIONS; `fuelKind` entscheidet zusätzlich über
+  // das, was NICHT am Brennstoffpreis hängt: die Grundgebühr (Gasanschluss ja,
+  // Öltank nein) und ob die Grüngas-Pflicht überhaupt anwendbar ist.
+  fuelKind?: FuelKind;           // default "gas"
   personen: number;              // actual head count (1, 2, 3.5, 5)
   heizsystem: "fbh" | "hk_neu" | "hk_alt";
   wpType: "lwwp" | "swwp";
@@ -280,7 +285,9 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   const wartungWp = cfg.wpMaintenance * cfg.years;
   const tcoWp = investNetto + stromKosten + wartungWp - pvBenefit;
 
-  // 5. 20-Jahre Gas-Referenz
+  // 5. 20-Jahre Brennstoff-Referenz (Gas oder Heizöl)
+  const fuelKind: FuelKind = inputs.fuelKind ?? "gas";
+  const fixPerYear = cfg.fixCostPerYear[fuelKind];
   const gasPrice = inputs.override?.gasPrice ?? cfg.gasPriceCtPerKwh / 100;
   const gasEff = Math.max(0.5, inputs.override?.gasEfficiency ?? cfg.gasEfficiency);  // gegen /0
   const gasCo2 = inputs.override?.gasCo2 ?? cfg.gasCo2PerKwh;
@@ -290,7 +297,11 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   // das kann das simple „Preis × Teuerung"-Modell nicht abbilden. Modell +
   // Szenario-Korridor (low/base/high, gemappt auf Pessimistisch/Realistisch/
   // Optimistisch aus WP-Sicht): lib/greengas.ts.
-  const greenGas = !!inputs.greenGas;
+  // Grüngas nur bei Netzgas: Der GModG-Preispfad ist an Biomethan-Beimischung UND
+  // steigenden GAS-Netzentgelten kalibriert (lib/greengas.ts). § 43 GModG erfasst
+  // zwar auch Heizöl (Bioheizöl), aber dieser Preispfad bildet Öl nicht ab — ihn
+  // trotzdem auf eine Ölheizung anzuwenden wäre eine Zahl ohne Grundlage.
+  const greenGas = !!inputs.greenGas && fuelKind === "gas";
   const gasScenario: GasScenario = adj.gasScenario ?? "base";
   // Inline per-year gas cost (need array for chart)
   const gasPerYear: number[] = [];
@@ -313,7 +324,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
     gasPerYear.push(y);
   }
   gasKosten = Math.round(gasKosten);
-  const gasFix = cfg.gasFixCostPerYear * cfg.years;
+  const gasFix = fixPerYear * cfg.years;
   const gasWartung = cfg.gasMaintenance * cfg.years;
   const gasInvest = inputs.situation === "neubau" ? cfg.gasInvestNeubau : 0;
   const tcoGas = gasKosten + gasFix + gasWartung + gasInvest;
@@ -331,7 +342,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   for (let i = 0; i < cfg.years; i++) {
     // WP-Seite: voller Netzstrom minus PV-Vollnutzen des Jahres (WP-Deckung +
     // Haushaltsstrom-Ersparnis + Einspeisung) — so folgt die Kurve exakt dem TCO.
-    const annualSaving = (gasPerYear[i] + cfg.gasFixCostPerYear + cfg.gasMaintenance) - (stromPerYear[i] + cfg.wpMaintenance - pvBenefitPerYear[i]);
+    const annualSaving = (gasPerYear[i] + fixPerYear + cfg.gasMaintenance) - (stromPerYear[i] + cfg.wpMaintenance - pvBenefitPerYear[i]);
     kum += annualSaving;
     years.push({ i: i + 1, kum: Math.round(kum), annual: Math.round(annualSaving) });
     if (amortisationsJahre === null && kum >= 0) amortisationsJahre = i + 1;
