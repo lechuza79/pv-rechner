@@ -4,6 +4,7 @@ import { AWARD_CATEGORY_BY_KEY, dedupFreiflaeche, formatAwardValue, type Gemeind
 import { bundeslandByAgs } from "./mastr-regions";
 import {
   LEVEL_LABEL,
+  scopeIn,
   computePlacements,
   hookText,
   selectHook,
@@ -135,6 +136,8 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
       others,
       rank: hook.rank,
       total: hook.total,
+      bestleistung: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.bestleistung ?? null) : null,
+      wo: hook.level ? scopeIn(hook.level, names) : null,
       valueStr:
         hook.value != null && hook.categoryKey
           ? formatAwardValue(hook.value, AWARD_CATEGORY_BY_KEY[hook.categoryKey].format)

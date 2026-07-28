@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../../../lib/theme";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import Modal from "../../../../components/Modal";
+import { ASK_LABEL, ASK_VARIANTEN, type AskVariante, type VariantenBilanz } from "../../../../lib/kommunen-ask";
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -34,6 +35,12 @@ type Lead = {
   thema_solar_url: string | null;
   thema_klima_url: string | null;
   thema_blatt_url: string | null;
+  ask_variante: AskVariante | null;
+  variante_manuell: boolean | null;
+  versendet_variante: AskVariante | null;
+  widget_anfrage: boolean | null;
+  ref_token: string | null;
+  ref_klicks: number | null;
   mastr_regions: Region | Region[];
 };
 
@@ -119,6 +126,20 @@ export default function KommunenCockpit() {
 
   const maxPage = Math.max(0, Math.ceil(total / pageSize) - 1);
 
+  const [bilanz, setBilanz] = useState<VariantenBilanz[] | null>(null);
+  const [offen, setOffen] = useState<{ nochNichtVersendet: number } | null>(null);
+  useEffect(() => {
+    fetch("/api/admin/kommunen/bilanz")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (j) {
+          setBilanz(j.bilanz);
+          setOffen(j.offen);
+        }
+      })
+      .catch(() => undefined);
+  }, [rows]);
+
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
       <div style={{ marginBottom: space.lg }}>
@@ -128,6 +149,37 @@ export default function KommunenCockpit() {
           Kontaktdaten der ~11.000 Gemeinden. Filtern, Status pflegen, Kontaktseite öffnen.
         </p>
       </div>
+
+      {/* Auswertung je Ask-Variante — beantwortet die eine Frage des Durchgangs:
+          wird das Widget überhaupt nachgefragt? */}
+      {bilanz && bilanz.some((b) => b.versendet > 0) && (
+        <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.md }}>
+          {bilanz.map((b) => (
+            <div
+              key={b.variante}
+              style={{
+                border: `1px solid ${v("--color-border")}`,
+                borderRadius: v("--radius-md"),
+                padding: pad("sm", "md"),
+                minWidth: 200,
+                background: v("--color-bg-muted"),
+              }}
+            >
+              <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") }}>{ASK_LABEL[b.variante]}</div>
+              <div style={{ fontSize: 13, marginTop: 4, fontFamily: v("--font-mono") }}>
+                {b.versendet} versendet · {b.gemeindenMitKlick} mit Klick
+                <div style={{ color: v("--color-text-muted"), fontSize: 12 }}>
+                  {b.klicks} Klicks gesamt · {b.antworten} Antworten · {b.widgetAnfragen} Widget-Anfragen
+                </div>
+              </div>
+            </div>
+          ))}
+          <div style={{ fontSize: 11, color: v("--color-text-muted"), alignSelf: "center", maxWidth: 260, lineHeight: 1.4 }}>
+            Klicks sind eine Obergrenze — Sicherheits-Scanner in Mailservern öffnen Links automatisch.
+            {offen ? ` ${offen.nochNichtVersendet} noch nicht versendet.` : ""}
+          </div>
+        </div>
+      )}
 
       {/* Filterleiste */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
@@ -181,7 +233,7 @@ export default function KommunenCockpit() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 720 }}>
           <thead>
             <tr>
-              {["Gemeinde", "Aufhänger", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
+              {["Gemeinde", "Aufhänger", "Ask", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
                 <th key={h} style={thStyle}>
                   {h}
                 </th>
@@ -194,7 +246,7 @@ export default function KommunenCockpit() {
             ))}
             {!loading && rows.length === 0 && (
               <tr>
-                <td colSpan={6} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
+                <td colSpan={7} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
                   Keine Gemeinden für diesen Filter.
                 </td>
               </tr>
@@ -231,7 +283,13 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
   const savedNotes = useRef(lead.notes ?? "");
 
   const patch = useCallback(
-    async (body: { outreach_status?: string; notes?: string; channel?: string }) => {
+    async (body: {
+      outreach_status?: string;
+      notes?: string;
+      channel?: string;
+      ask_variante?: string;
+      widget_anfrage?: boolean;
+    }) => {
       setBusy(true);
       try {
         const res = await fetch("/api/admin/kommunen", {
@@ -286,6 +344,40 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
             Verbund: {lead.verwaltung_domain}
           </div>
         )}
+      </td>
+
+      {/* Ask-Variante + Klickzählung */}
+      <td style={tdStyle}>
+        <select
+          value={lead.ask_variante ?? ""}
+          onChange={(e) => patch({ ask_variante: e.target.value })}
+          style={{ ...selectStyle, fontSize: 12, maxWidth: 150 }}
+          aria-label="Ask-Variante"
+        >
+          <option value="" disabled>
+            —
+          </option>
+          {ASK_VARIANTEN.map((a) => (
+            <option key={a} value={a}>
+              {ASK_LABEL[a]}
+            </option>
+          ))}
+        </select>
+        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 3 }}>
+          {lead.variante_manuell ? "von Hand · " : ""}
+          {lead.ref_klicks ? `${lead.ref_klicks} Klicks` : "keine Klicks"}
+        </div>
+        {lead.versendet_variante && (
+          <div style={{ fontSize: 10, color: v("--color-text-muted") }}>versendet als {ASK_LABEL[lead.versendet_variante]}</div>
+        )}
+        <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, marginTop: 3, cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            checked={!!lead.widget_anfrage}
+            onChange={(e) => patch({ widget_anfrage: e.target.checked })}
+          />
+          Widget angefragt
+        </label>
       </td>
 
       {/* Kontakt */}

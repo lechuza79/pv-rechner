@@ -4,6 +4,8 @@ import { renderOutreachDraft } from "../../../../lib/kommunen-outreach-draft";
 import { buildHookIndex } from "../../../../lib/awards-server";
 import { DEFAULT_HOOK_SETTINGS } from "../../../../lib/award-hook";
 import { atlasPathForRegionId } from "../../../../lib/atlas";
+import { getRegionAtlasData } from "../../../../lib/mastr-data";
+import { askVariante, type AskVariante } from "../../../../lib/kommunen-ask";
 
 const SITE_URL = "https://solar-check.io";
 
@@ -36,7 +38,7 @@ const STATUSES = ["offen", "entwurf", "kontaktiert", "geantwortet", "zu", "gespe
 
 // Eine Quelle für das Zeilen-Shape (GET, PATCH, POST liefern dasselbe zurück).
 const SELECT =
-  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, gruene_pct, linke_pct, spd_pct, kampagne, charge, rollen_email, verantwortlich_funktion, verantwortlich_operativ, verwaltung_domain, thema_solar_url, thema_klima_url, thema_blatt_url, mastr_regions!inner(name, bezeichnung, population)";
+  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, gruene_pct, linke_pct, spd_pct, kampagne, charge, rollen_email, verantwortlich_funktion, verantwortlich_operativ, verwaltung_domain, thema_solar_url, thema_klima_url, thema_blatt_url, ask_variante, variante_manuell, versendet_variante, widget_anfrage, ref_token, ref_klicks, mastr_regions!inner(name, bezeichnung, population)";
 
 export async function GET(req: NextRequest) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -95,6 +97,8 @@ export async function PATCH(req: NextRequest) {
     channel?: string;
     draft_subject?: string;
     draft_body?: string;
+    ask_variante?: string;
+    widget_anfrage?: boolean;
   };
   if (!body.region_id) return NextResponse.json({ error: "region_id fehlt" }, { status: 400 });
 
@@ -106,11 +110,32 @@ export async function PATCH(req: NextRequest) {
     }
     patch.outreach_status = body.outreach_status;
     // Kontakt-/Antwortdatum an den Statuswechsel koppeln (nur setzen, nie leeren).
-    if (body.outreach_status === "kontaktiert") patch.contacted_at = new Date().toISOString();
+    if (body.outreach_status === "kontaktiert") {
+      patch.contacted_at = new Date().toISOString();
+      // Variante zum VERSANDZEITPUNKT einfrieren. Wer die Zuordnung später
+      // ändert, darf die Auswertung nicht rückwirkend kippen — sonst steht am
+      // Ende eine Bilanz, die nie verschickt wurde.
+      const { data: vorher } = await serviceDb
+        .from("kommunen_kontakt")
+        .select("ask_variante, versendet_variante")
+        .eq("region_id", body.region_id)
+        .maybeSingle();
+      if (!vorher?.versendet_variante && vorher?.ask_variante) {
+        patch.versendet_variante = vorher.ask_variante;
+      }
+    }
     if (body.outreach_status === "geantwortet") patch.responded_at = new Date().toISOString();
   }
   if (body.notes !== undefined) patch.notes = body.notes;
   if (body.channel !== undefined) patch.channel = body.channel || null;
+  if (body.ask_variante !== undefined) {
+    if (!["nur_meldung", "meldung_plus_widget"].includes(body.ask_variante)) {
+      return NextResponse.json({ error: "unbekannte Variante" }, { status: 400 });
+    }
+    patch.ask_variante = body.ask_variante;
+    patch.variante_manuell = true; // von Hand gesetzt → kein Lauf überschreibt sie
+  }
+  if (body.widget_anfrage !== undefined) patch.widget_anfrage = body.widget_anfrage;
   if (body.draft_subject !== undefined) patch.draft_subject = body.draft_subject;
   if (body.draft_body !== undefined) patch.draft_body = body.draft_body;
 
@@ -138,12 +163,10 @@ export async function POST(req: NextRequest) {
   // Quelle mit der Vorschau /admin/awards/anschreiben — kein Drift). Der Index ist
   // prozess-lokal memoisiert, der Lookup je Gemeinde damit billig.
   const [{ data: reg }, { data: leadRow }, path, index] = await Promise.all([
-    serviceDb.from("mastr_regions").select("name").eq("region_id", region_id).single(),
+    serviceDb.from("mastr_regions").select("name, bezeichnung, population, slug").eq("region_id", region_id).single(),
     serviceDb
       .from("kommunen_kontakt")
-      .select(
-        "outreach_status, verantwortlich_funktion, verantwortlich_operativ, thema_solar_url, thema_klima_url, thema_blatt_url",
-      )
+      .select("outreach_status, verantwortlich_funktion, verantwortlich_operativ, ask_variante, ref_token")
       .eq("region_id", region_id)
       .maybeSingle(),
     atlasPathForRegionId(region_id),
@@ -155,28 +178,44 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Gemeinde ist gesperrt — kein Anschreiben." }, { status: 403 });
   }
 
+  // Zahlen für die Meldung aus DERSELBEN Quelle wie die Atlas-Seite — sonst
+  // steht in der Meldung eine andere Zahl als auf der verlinkten Seite.
+  const atlas = await getRegionAtlasData(region_id);
   const hook = index.rows.find((r) => r.regionId === region_id);
-  // Themen-Anknüpfung in derselben Priorität wie im Profil: eine eigene
-  // Solarseite ist der stärkste Anknüpfungspunkt, dann Klimaschutz, dann das
-  // Mitteilungsblatt (bei kleinen Gemeinden das häufigste Merkmal).
-  const thema =
-    (leadRow?.thema_solar_url && { begriff: "Photovoltaik", url: leadRow.thema_solar_url }) ||
-    (leadRow?.thema_klima_url && { begriff: "Klimaschutz", url: leadRow.thema_klima_url }) ||
-    (leadRow?.thema_blatt_url && { begriff: "Mitteilungsblatt", url: leadRow.thema_blatt_url }) ||
-    null;
+
+  // Der Link im Anschreiben geht über die zählende Weiterleitung, wenn ein
+  // Token vergeben ist — sonst direkt auf die Seite.
+  const zielUrl = leadRow?.ref_token
+    ? `${SITE_URL}/r/${leadRow.ref_token}`
+    : path
+      ? `${SITE_URL}${path}`
+      : null;
+
+  const variante: AskVariante =
+    (leadRow?.ask_variante as AskVariante | null) ??
+    askVariante({ population: reg.population, operativeStelle: !!leadRow?.verantwortlich_operativ });
 
   const draft = renderOutreachDraft({
     name: reg.name,
-    pageUrl: path ? `${SITE_URL}${path}` : null,
+    pageUrl: zielUrl,
     betreff: hook?.betreff ?? `So steht ${reg.name} beim Solar-Ausbau da`,
     einstieg:
       hook?.einstieg ??
       `Wir haben den Solarausbau in ${reg.name} aus den amtlichen Anlagendaten aufbereitet — hier der Überblick für Ihre Gemeinde.`,
+    variante,
     // Nur eine OPERATIVE Stelle wird direkt adressiert. Der Bürgermeister steht
-    // zwar fast immer im Impressum, betreut die Website aber nicht — ihn
-    // anzusprechen würde die Weiterleitung eher verhindern als auslösen.
+    // zwar fast immer im Impressum, betreut die Website aber nicht.
     funktion: leadRow?.verantwortlich_operativ ? leadRow.verantwortlich_funktion : null,
-    thema,
+    gattung: reg.bezeichnung,
+    wo: hook?.wo ?? "in der Region",
+    bestleistung: hook?.bestleistung ?? "einen bemerkenswerten Solar-Ausbau",
+    rang: hook?.rank && hook?.total ? { platz: hook.rank, von: hook.total } : null,
+    zahlen: {
+      anlagen: atlas.solar.total_count,
+      leistungKwp: atlas.solar.total_kwp,
+      wpProKopf: reg.population ? Math.round((atlas.solar.total_kwp * 1000) / reg.population) : null,
+      stand: atlas.data_as_of,
+    },
   });
 
   const { data, error } = await serviceDb
@@ -185,6 +224,7 @@ export async function POST(req: NextRequest) {
       draft_subject: draft.subject,
       draft_body: draft.body,
       draft_generated_at: new Date().toISOString(),
+      ask_variante: variante,
       updated_at: new Date().toISOString(),
     })
     .eq("region_id", region_id)

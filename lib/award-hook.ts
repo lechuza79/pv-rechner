@@ -68,6 +68,11 @@ export type HookExample = {
    *  „von 5", und ohne diese Größe sortiert die Liste faktisch nach Einwohnern. */
   rank: number | null;
   total: number | null;
+  /** Messgröße im Klartext („die meiste private Speicherkapazität") und der
+   *  Bezug („im Landkreis Würzburg"). Fertig gebaut, damit Anschreiben und
+   *  Meldung nicht dieselbe Formulierung ein zweites Mal zusammensetzen. */
+  bestleistung: string | null;
+  wo: string | null;
   /** Belegwert des gewählten Aufhängers, fertig formatiert (z. B. „2.480 Wp/Kopf",
    *  „53,4 MWh") — damit der Mensch einen Ausreißer sieht. Null bei neutral. */
   valueStr: string | null;
@@ -226,7 +231,7 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
 
 export type HookNames = { gemeinde: string; kreis: string; land: string };
 
-function scopeIn(level: HookLevel, n: HookNames): string {
+export function scopeIn(level: HookLevel, n: HookNames): string {
   if (level === "kreis") return `im ${n.kreis}`;
   if (level === "land") return `in ${n.land}`;
   return "bundesweit";

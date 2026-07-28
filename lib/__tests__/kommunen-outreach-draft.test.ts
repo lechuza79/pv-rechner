@@ -1,91 +1,120 @@
 import { describe, it, expect } from "vitest";
-import { renderOutreachDraft, type DraftContext } from "../kommunen-outreach-draft";
+import { renderOutreachDraft, renderMeldung, gattungKurz, type DraftContext } from "../kommunen-outreach-draft";
 
-const base: DraftContext = {
-  name: "Testdorf",
-  pageUrl: "https://solar-check.io/solar-atlas/bayern/landkreis-x/testdorf",
-  betreff: "Testdorf ist Balkon-Pionier im Landkreis Musterkreis",
-  einstieg: "Testdorf ist im Landkreis Musterkreis die Nummer 1 bei „Balkon-Pionier“ — Platz 1 von 20 Gemeinden.",
+// Die Fälle stammen aus dem Gegenlesen echter Entwürfe (27./28.07.2026) — jeder
+// „nicht"-Test steht für einen Fehler, der wirklich im Brief stand.
+
+const BASIS: DraftContext = {
+  name: "Höchberg",
+  pageUrl: "https://solar-check.io/r/hoechberg",
+  betreff: "Höchberg hat die meiste private Speicherkapazität im Landkreis Würzburg",
+  einstieg: "Höchberg hat die meiste private Speicherkapazität im Landkreis Würzburg — Platz 1 von 52 Gemeinden.",
+  variante: "nur_meldung",
+  gattung: "Markt",
+  wo: "im Landkreis Würzburg",
+  bestleistung: "die meiste private Speicherkapazität",
+  rang: { platz: 1, von: 52 },
+  zahlen: { anlagen: 1234, leistungKwp: 12400, wpProKopf: 1240, stand: "2026-07-15" },
 };
 
-describe("renderOutreachDraft", () => {
-  const d = renderOutreachDraft(base);
-
-  it("übernimmt Betreff und Einstieg aus der Hook-Logik", () => {
-    expect(d.subject).toBe(base.betreff);
-    expect(d.body).toContain(base.einstieg);
+describe("Meldung", () => {
+  it("nennt Zahlen, Quelle und Stand", () => {
+    const m = renderMeldung(BASIS);
+    expect(m).toContain("1.234 Solaranlagen");
+    expect(m).toContain("Marktstammdatenregister");
+    expect(m).toContain("15. Juli 2026");
+    expect(m).toContain("Platz 1 von 52");
   });
 
-  it("nennt die Gemeinde im Text", () => {
-    expect(d.body).toContain("Testdorf");
+  it("formatiert Einheiten über die kanonischen Formatierer", () => {
+    // Einheiten werden nie handgeschrieben — sonst steht in der Meldung eine
+    // andere Zahl als auf der verlinkten Seite.
+    const m = renderMeldung(BASIS);
+    expect(m).toMatch(/12,4\s*MWp/);
+    expect(m).toMatch(/1\.240\s*Wp/);
   });
 
-  it("verlinkt die Gemeinde-Atlas-Seite, wenn vorhanden", () => {
-    expect(d.body).toContain(base.pageUrl!);
+  it("berichtet nüchtern statt zu loben", () => {
+    const m = renderMeldung(BASIS);
+    expect(m).not.toMatch(/Spitzenreiter|Vorreiter|Pionier|Hauptstadt|stolz|Glückwunsch/i);
   });
 
-  it("trägt die Pflicht-Signatur (Klarname + Impressum + Datenschutz)", () => {
-    expect(d.body).toContain("Sebastian Schäder");
-    expect(d.body).toContain("Betreiber solar-check.io");
-    expect(d.body).toContain("solar-check.io/impressum");
-    expect(d.body).toContain("solar-check.io/datenschutz");
-  });
-
-  it("hat den entschärften Design-Satz, keine harte Bedingung", () => {
-    expect(d.body).toContain("Farben und Schrift passe ich an Ihre Website an");
-    expect(d.body).not.toContain("einzige Bedingung");
-  });
-
-  it("behauptet keine falsche Aktualität (monatlich statt tagesaktuell)", () => {
-    expect(d.body).toContain("monatlich");
-    expect(d.body).not.toContain("tagesaktuell");
-  });
-
-  it("trägt den Art.-14-DSGVO-Hinweis (Herkunft/Zweck/Widerspruch)", () => {
-    expect(d.body).toContain("Art. 14 DSGVO");
-    expect(d.body).toContain("Widerspruchsrecht");
-  });
-
-  it("klebt keine nackte Leistungseinheit an eine Zahl (Zahlen-Korrektheit)", () => {
-    expect(d.body).not.toMatch(/\d\s?kW(?![ph])/);
-    expect(d.body).not.toMatch(/\d\s?MW(?!p)/);
-  });
-
-  it("fällt ohne Atlas-Link sauber zurück", () => {
-    const z = renderOutreachDraft({ ...base, pageUrl: null });
-    expect(z.body).toContain("Übersicht des Solar-Ausbaus");
-    expect(z.body).toContain("Testdorf");
-    expect(z.body).not.toContain("null");
+  it("lässt den Pro-Kopf-Satz weg, wenn die Einwohnerzahl fehlt", () => {
+    const m = renderMeldung({ ...BASIS, zahlen: { ...BASIS.zahlen, wpProKopf: null } });
+    expect(m).not.toContain("je Einwohnerin");
   });
 });
 
-// Ergaenzt 27.07.2026: Der Regelfall ist NICHT die namentliche Anrede.
-describe("weiterleitungsfähig", () => {
-  const basis = {
-    name: "Musterdorf",
-    pageUrl: "https://solar-check.io/solar-atlas/bayern/kreis/musterdorf",
-    betreff: "Musterdorf ist Balkon-Pionier im Landkreis",
-    einstieg: "Musterdorf ist im Landkreis die Nummer 1.",
-  };
+describe("Zwei Ask-Varianten", () => {
+  it("nur_meldung enthält KEIN Wort zum Widget", () => {
+    const d = renderOutreachDraft(BASIS);
+    expect(d.body).not.toMatch(/Widget|einbett|iframe/i);
+  });
+
+  it("meldung_plus_widget hängt genau einen Absatz an", () => {
+    const d = renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget" });
+    expect(d.body).toMatch(/Widget/);
+  });
+
+  it("beide Fassungen sind sonst identisch", () => {
+    // Sonst wäre nicht zu erkennen, ob eine Reaktion am Widget oder am Text lag.
+    const a = renderOutreachDraft(BASIS).body;
+    const b = renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget" }).body;
+    const ohneWidget = b.split("\n").filter((z) => !/Widget/i.test(z)).join("\n");
+    expect(ohneWidget.replace(/\n{2,}/g, "\n")).toBe(a.replace(/\n{2,}/g, "\n"));
+  });
+
+  it("die Meldung ist in beiden Fassungen dieselbe", () => {
+    expect(renderOutreachDraft(BASIS).meldung).toBe(
+      renderOutreachDraft({ ...BASIS, variante: "meldung_plus_widget" }).meldung,
+    );
+  });
+});
+
+describe("Anrede und Gattung", () => {
+  it("nennt eine Stadt nicht „Gemeinde“", () => {
+    const d = renderOutreachDraft({ ...BASIS, name: "Stuttgart", gattung: "Kreisfreie Stadt" });
+    expect(d.body).toContain("Website Ihrer Stadt");
+    expect(d.body).not.toContain("Ihrer Gemeinde");
+  });
+
+  it("gattungKurz reduziert auf ein natürliches Wort", () => {
+    expect(gattungKurz("Große Kreisstadt")).toBe("Stadt");
+    expect(gattungKurz("Markt")).toBe("Markt");
+    expect(gattungKurz(null)).toBe("Gemeinde");
+  });
 
   it("bittet um Weiterleitung, wenn keine zuständige Stelle bekannt ist", () => {
-    const d = renderOutreachDraft(basis);
+    const d = renderOutreachDraft(BASIS);
     expect(d.body).toMatch(/Weiterleitung/);
-    // Die Bitte steht oben, nicht am Ende — sonst liest sie niemand.
-    expect(d.body.indexOf("Weiterleitung")).toBeLessThan(d.body.indexOf(basis.einstieg));
+    expect(d.body.indexOf("Weiterleitung")).toBeLessThan(d.body.indexOf("Meldung"));
   });
 
   it("lässt die Bitte weg, wenn eine operative Stelle benannt ist", () => {
-    const d = renderOutreachDraft({ ...basis, funktion: "Referentin für Öffentlichkeitsarbeit" });
+    const d = renderOutreachDraft({ ...BASIS, funktion: "Referentin für Öffentlichkeitsarbeit" });
     expect(d.body).not.toMatch(/Weiterleitung/);
   });
+});
 
-  it("knüpft an eine vorhandene Themenseite an, wenn es eine gibt", () => {
-    const d = renderOutreachDraft({ ...basis, thema: { begriff: "Klimaschutz", url: "https://x.de/klima" } });
-    expect(d.body).toMatch(/Klimaschutz/);
+describe("Kein Textbaustein-Unfall", () => {
+  it("wiederholt die Aussage nicht dreimal", () => {
+    // Vorher stand die Bestleistung im Betreff, im Einstiegssatz UND zweimal in
+    // der Meldung — in zehn Zeilen viermal dasselbe.
+    const d = renderOutreachDraft(BASIS);
+    const treffer = d.body.split(BASIS.bestleistung).length - 1;
+    expect(treffer).toBeLessThanOrEqual(2); // Überschrift + Fließtext der Meldung
+  });
+});
+
+describe("Pflichtangaben", () => {
+  it("trägt Signatur, Impressum und DSGVO-Hinweis", () => {
+    const d = renderOutreachDraft(BASIS);
+    expect(d.body).toContain("Sebastian Schäder");
+    expect(d.body).toContain("solar-check.io/impressum");
+    expect(d.body).toContain("Art. 14 DSGVO");
   });
 
-  it("behauptet nichts, wenn keine Themenseite bekannt ist", () => {
-    expect(renderOutreachDraft(basis).body).not.toMatch(/Auf Ihrer Website führen Sie bereits/);
+  it("nennt den Backlink als einzige Gegenleistung", () => {
+    expect(renderOutreachDraft(BASIS).body).toMatch(/Link auf solar-check\.io stehen zu lassen/);
   });
 });

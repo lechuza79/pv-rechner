@@ -262,6 +262,17 @@ export default async function GemeindePage({ params }: { params: Params }) {
   const geoLat = Number.isFinite(geo?.lat) ? (geo?.lat ?? null) : null;
   const geoLon = Number.isFinite(geo?.lon) ? (geo?.lon ?? null) : null;
 
+  // KREISFREIE STADT: Der übergeordnete „Landkreis" IST die Stadt selbst, also
+  // verglich die Rangliste Stuttgart mit Stuttgart — ein Eintrag, dazu die
+  // Überschrift „Top Kommunen im Stuttgart". Eine kreisfreie Stadt steht
+  // verwaltungsrechtlich auf Kreisebene; ihre Vergleichsgruppe sind deshalb die
+  // Stadt- und Landkreise des Bundeslandes, nicht Gemeinden.
+  // Erkennung ohne Zusatzabfrage: der Kreis hat höchstens ein Kind (sich selbst).
+  const istKreisfrei = siblingData.regions.length <= 1;
+  const vergleich = istKreisfrei
+    ? { daten: await getRankingData(blRegion ?? kreis!), was: "Kreise", wo: `in ${bl?.name ?? "diesem Bundesland"}` }
+    : { daten: siblingData, was: "Kommunen", wo: kreis?.name ? `im ${kreis.name}` : "" };
+
   // Rang der Gemeinde nach installierter Solarleistung im Landkreis — aus den
   // Ranking-Zellen des Kreises aggregiert (Speicher zählt nicht zur Leistung).
   // Fürs Intro (ein je Gemeinde verschiedener, konkreter Fakt).
@@ -340,9 +351,9 @@ export default async function GemeindePage({ params }: { params: Params }) {
             blName: bl?.name ?? "Landes",
             perCapita,
             perCapitaVsBl,
-            kreisName: kreis?.name ?? null,
-            rankInKreis,
-            kreisTotal,
+            kreisName: istKreisfrei ? null : (kreis?.name ?? null),
+            rankInKreis: istKreisfrei ? null : rankInKreis,
+            kreisTotal: istKreisfrei ? null : kreisTotal,
             byYear: atlas.solar.by_year,
             lastYear,
           })}
@@ -355,10 +366,10 @@ export default async function GemeindePage({ params }: { params: Params }) {
         <GemeindeHero
           kpi={kpi}
           cells={atlas.solar.by_segment}
-          siblings={siblingData.regions}
-          siblingCells={siblingData.cells}
+          siblings={vergleich.daten.regions}
+          siblingCells={vergleich.daten.cells}
           regionId={region.region_id}
-          kreisName={kreis?.name ?? undefined}
+          vergleichTitel={`Top ${vergleich.was}${vergleich.wo ? ` ${vergleich.wo}` : ""}`}
           basePath={basePath}
         />
 
@@ -429,11 +440,18 @@ export default async function GemeindePage({ params }: { params: Params }) {
           <div style={S.section}>
             <h2 style={S.h2}>{region.name} auf der Karte</h2>
             <p style={S.sub}>
-              {kreis?.name ?? "Der Landkreis"} mit allen Gemeinden — tippen Sie auf ein Gebiet für die Details.
+              {istKreisfrei ? `${bl?.name ?? "Das Bundesland"} mit allen Kreisen` : `${kreis?.name ?? "Der Landkreis"} mit allen Gemeinden`} — tippen Sie auf ein Gebiet für die Details.
             </p>
             {/* showSource=false: der Quellen-Fuß der Seite trägt BKG + MaStR schon.
                 Im Embed zeigt die Karte ihre Quelle weiterhin selbst. */}
-            <MastrHeroSection initialRegion={region.parent_region_id} initialTraeger="solar" showSource={false} />
+            <MastrHeroSection
+              /* Kreisfreie Stadt: der Elternteil IST die Stadt selbst, die Karte
+                 zeigte dann Stuttgart > Stuttgart. Eine Ebene höher einsteigen,
+                 damit die Stadt zwischen ihren echten Nachbarn liegt. */
+              initialRegion={istKreisfrei ? blAgs : region.parent_region_id}
+              initialTraeger="solar"
+              showSource={false}
+            />
           </div>
         )}
 
