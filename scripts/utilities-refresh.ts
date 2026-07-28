@@ -29,7 +29,7 @@
 
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 
@@ -134,6 +134,9 @@ async function setup(): Promise<void> {
     -- Adresse auf FREMDER Domain: bei Versorgern ein Hinweis auf Konzernmutter
     -- oder Dienstleister. Kein Fehler, sondern ein Fund fuer den Menschen.
     ALTER TABLE utilities ADD COLUMN IF NOT EXISTS verbund_domain text;
+    -- Ergebnis der systematischen Gebiets-Pruefung (gruen/gelb/rot + Befunde).
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS pruefung_ampel text;
+    ALTER TABLE utilities ADD COLUMN IF NOT EXISTS pruefung jsonb;
 
     -- Belege der gemessenen Zuordnung.
     ALTER TABLE utility_communes ADD COLUMN IF NOT EXISTS anlagen int;
@@ -476,6 +479,135 @@ async function ladeGemeindeIds(supabase: SupabaseLike): Promise<Set<string>> {
   return out;
 }
 
+// ─── Systematische Gebiets-Prüfung ────────────────────────────────────────────
+
+/** Mittelpunkte aller Gemeinden aus den Kreis-Geometrien des Solar-Atlas.
+ *  Kein neuer Datensatz: dieselben Dateien, die die Karte zeichnet. */
+function ladeGemeindeZentren(): Map<string, { lat: number; lon: number }> {
+  const dir = resolve(SCRIPT_DIR, "..", "public", "geo", "gemeinden");
+  const out = new Map<string, { lat: number; lon: number }>();
+  if (!existsSync(dir)) return out;
+
+  for (const datei of readdirSync(dir)) {
+    if (!datei.endsWith(".geo.json")) continue;
+    let fc: { features?: { properties?: { id?: string }; geometry?: { coordinates?: unknown } }[] };
+    try {
+      fc = JSON.parse(readFileSync(resolve(dir, datei), "utf8"));
+    } catch {
+      continue;
+    }
+    for (const f of fc.features ?? []) {
+      const ags = f.properties?.id;
+      if (!ags) continue;
+      // Mittelpunkt aus allen Stützpunkten: für die Frage „liegt das beieinander"
+      // genügt der Schwerpunkt der Umrisslinie bei Weitem.
+      let sx = 0;
+      let sy = 0;
+      let n = 0;
+      const lauf = (c: unknown): void => {
+        if (Array.isArray(c) && typeof c[0] === "number" && typeof c[1] === "number") {
+          sx += c[0] as number;
+          sy += c[1] as number;
+          n++;
+          return;
+        }
+        if (Array.isArray(c)) for (const k of c) lauf(k);
+      };
+      lauf(f.geometry?.coordinates);
+      if (n > 0) out.set(ags, { lon: sx / n, lat: sy / n });
+    }
+  }
+  return out;
+}
+
+/** Postleitzahl → mögliche Gemeindeschlüssel (eine PLZ kann mehrere treffen). */
+function ladePlzAgs(): Map<string, string[]> {
+  const datei = resolve(SCRIPT_DIR, "..", "public", "plz-ags.json");
+  const out = new Map<string, string[]>();
+  if (!existsSync(datei)) return out;
+  const roh = JSON.parse(readFileSync(datei, "utf8")) as Record<string, { ags?: string }[]>;
+  for (const [plz, eintraege] of Object.entries(roh)) {
+    const ags = eintraege.map((e) => e.ags).filter((a): a is string => !!a);
+    if (ags.length) out.set(plz, Array.from(new Set(ags)));
+  }
+  return out;
+}
+
+async function laufPruefung(dry: boolean): Promise<void> {
+  const { pruefeGebiet } = await import("../lib/utility-check");
+  const supabase = await makeClient();
+
+  const zentren = ladeGemeindeZentren();
+  const plzAgs = ladePlzAgs();
+  log(`${zentren.size.toLocaleString("de-DE")} Gemeinde-Mittelpunkte, ${plzAgs.size.toLocaleString("de-DE")} Postleitzahlen`);
+
+  const utils = (await alleZeilen(supabase, "utilities", "id, name, plz, ort")) as {
+    id: string;
+    name: string;
+    plz: string | null;
+    ort: string | null;
+  }[];
+  const links = (await alleZeilen(supabase, "utility_communes", "utility_id, commune_id, rolle, anteil")) as {
+    utility_id: string;
+    commune_id: string;
+    rolle: string;
+    anteil: number | null;
+  }[];
+  const regionen = (await alleZeilen(supabase, "mastr_regions", "region_id, name, level")) as {
+    region_id: string;
+    name: string;
+    level: string;
+  }[];
+  const gemeindeNamen = regionen
+    .filter((r) => r.level === "gemeinde")
+    .map((r) => ({ ags: r.region_id, name: r.name }));
+  const nameByAgs = new Map(gemeindeNamen.map((g) => [g.ags, g.name]));
+
+  const jeVersorger = new Map<string, { ags: string; name: string; anteil: number }[]>();
+  for (const l of links) {
+    if (l.rolle === "beteiligung") continue;
+    const arr = jeVersorger.get(l.utility_id) ?? [];
+    arr.push({ ags: l.commune_id, name: nameByAgs.get(l.commune_id) ?? l.commune_id, anteil: Number(l.anteil ?? 0) });
+    jeVersorger.set(l.utility_id, arr);
+  }
+
+  const zaehler = { gruen: 0, gelb: 0, rot: 0 };
+  const auffaellige: string[] = [];
+  const zeilen: { id: string; name: string; pruefung_ampel: string; pruefung: unknown }[] = [];
+
+  for (const u of utils) {
+    const gebiet = jeVersorger.get(u.id) ?? [];
+    if (gebiet.length === 0) continue;
+    const p = pruefeGebiet({
+      name: u.name,
+      sitzKandidaten: u.plz ? (plzAgs.get(u.plz) ?? []) : [],
+      gebiet,
+      zentren,
+      gemeindeNamen,
+    });
+    zaehler[p.ampel]++;
+    if (p.ampel === "rot") auffaellige.push(`${u.name}: ${p.befunde.filter((b) => b.ergebnis === "auffaellig").map((b) => b.text).join(" ")}`);
+    zeilen.push({ id: u.id, name: u.name, pruefung_ampel: p.ampel, pruefung: p.befunde });
+  }
+
+  log(`Geprüft: ${zeilen.length} Versorger mit Gebiet`, "ok");
+  log(`  bestätigt ${zaehler.gruen} · teilweise prüfbar ${zaehler.gelb} · widersprüchlich ${zaehler.rot}`);
+  if (auffaellige.length) {
+    log(`Widersprüchliche Gebiete (erste 15):`, "err");
+    for (const z of auffaellige.slice(0, 15)) log(`    ${z}`);
+  }
+
+  if (dry) {
+    log("Trockenlauf — nichts geschrieben", "ok");
+    return;
+  }
+  for (let i = 0; i < zeilen.length; i += 200) {
+    const { error } = await supabase.from("utilities").upsert(zeilen.slice(i, i + 200), { onConflict: "id" });
+    if (error) throw new Error(`Prüfung schreiben: ${error.message}`);
+  }
+  log(`${zeilen.length} Prüfergebnisse geschrieben`, "ok");
+}
+
 // ─── Website-Lauf: Ansprechpartner + Themen ───────────────────────────────────
 
 /**
@@ -795,17 +927,19 @@ async function main(): Promise<void> {
   const doSetup = argv.includes("--setup");
   const doImport = argv.includes("--import");
   const doProfil = argv.includes("--profil");
+  const doPruefen = argv.includes("--pruefen");
   const doStats = argv.includes("--stats");
   const doSeed = argv.includes("--seed-demo");
   const doClear = argv.includes("--clear-demo");
   const dry = argv.includes("--dry");
 
-  if (!doSetup && !doImport && !doProfil && !doStats && !doSeed && !doClear) {
+  if (!doSetup && !doImport && !doProfil && !doPruefen && !doStats && !doSeed && !doClear) {
     log(
       "Nichts zu tun. Flags:\n" +
         "  --setup       Tabellen anlegen/erweitern (idempotent)\n" +
         "  --import      Netzbetreiber + gemessene Netzgebiete aus dem Registerexport\n" +
         "  --profil      Websites abklopfen: Ansprechpartner + Themen\n" +
+        "  --pruefen     Gebiete systematisch pruefen (Sitz, Name, Streuung, Dominanz)\n" +
         "  --stats       Bestand + Deckung melden\n" +
         "  --seed-demo   12 Beispieldatensätze (Namen Platzhalter, Zahlen echt)\n" +
         "  --clear-demo  Beispieldatensätze wieder entfernen\n" +
@@ -818,6 +952,7 @@ async function main(): Promise<void> {
   if (doSetup) await setup();
   if (doClear) await clearDemo();
   if (doImport) await importRegister(dry, argv.includes("--refetch"));
+  if (doPruefen) await laufPruefung(dry);
   if (doProfil) {
     const limitArg = argv.find((a) => a.startsWith("--limit="));
     await laufProfil({

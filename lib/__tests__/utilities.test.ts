@@ -6,6 +6,7 @@ import {
   findOverlaps,
   UTILITY_CATEGORY_BY_KEY,
   besteAdresse,
+  istAnsprechbar,
   buergerAnteil,
   computeHighlights,
   utilityCategoryLabel,
@@ -60,6 +61,8 @@ function versorger(id: string, over: Partial<UtilityRecord> = {}): UtilityRecord
     verbundDomain: null,
     themen: [],
     profilGeprueftAm: null,
+    pruefungAmpel: null,
+    pruefung: [],
     ...over,
   };
 }
@@ -355,29 +358,51 @@ describe("Hervorgehobene Kennzahlen", () => {
 
 describe("Welche Adresse angeschrieben würde", () => {
   it("nimmt das Rollen-Postfach der Website vor der Meldeadresse im Register", () => {
-    // Die Registeradresse ist die Meldeadresse gegenüber der Bundesnetzagentur —
-    // meist Verwaltung, nicht Kommunikation.
     const u = versorger("a", { rollenEmail: "presse@sw.de", kontaktEmail: "melde@sw.de" });
-    expect(besteAdresse(u)?.adresse).toBe("presse@sw.de");
+    expect(besteAdresse(u).adresse).toBe("presse@sw.de");
   });
 
   it("fällt auf die Meldeadresse zurück, wenn die Website nichts hergab", () => {
-    const u = versorger("a", { kontaktEmail: "melde@sw.de" });
-    expect(besteAdresse(u)?.adresse).toBe("melde@sw.de");
+    const u = versorger("a", { kontaktEmail: "info@sw.de" });
+    expect(besteAdresse(u).adresse).toBe("info@sw.de");
   });
 
   it("nimmt eine Personen-Adresse zuletzt", () => {
     // Datenschutz-Leitplanke des Projekts: Rollen-Postfach vor Klarname.
     const u = versorger("a", { personenEmail: "max.mustermann@sw.de" });
-    expect(besteAdresse(u)?.adresse).toBe("max.mustermann@sw.de");
+    expect(besteAdresse(u).adresse).toBe("max.mustermann@sw.de");
   });
 
-  it("liefert nichts, wenn es nichts gibt — statt etwas zu erfinden", () => {
-    expect(besteAdresse(versorger("a"))).toBeNull();
+  it("verwirft technische Fachpostfächer, statt sie als Kontakt auszugeben", () => {
+    // Echter Fall: „anmeldung-eigenerzeugung@mainfrankennetze.de" ist die
+    // Meldeadresse für Anlagenanmeldungen. Eine Kooperationsanfrage dorthin ist
+    // nicht wirkungslos, sondern verbrennt den Kontakt.
+    for (const adresse of [
+      "anmeldung-eigenerzeugung@sw.de",
+      "netzanschluss@sw.de",
+      "einspeisemanagement@sw.de",
+      "zaehlerstand@sw.de",
+      "marktkommunikation@sw.de",
+      "entstoerung@sw.de",
+    ]) {
+      expect(istAnsprechbar(adresse)).toBe(false);
+      const k = besteAdresse(versorger("a", { kontaktEmail: adresse }));
+      expect(k.brauchbar).toBe(false);
+    }
   });
 
-  it("nennt zu jeder Adresse ihre Herkunft", () => {
-    const u = versorger("a", { rollenEmail: "info@sw.de" });
-    expect(besteAdresse(u)?.art.length).toBeGreaterThan(0);
+  it("lässt normale Rollen-Postfächer durch", () => {
+    for (const adresse of ["info@sw.de", "presse@sw.de", "kontakt@sw.de", "kommunikation@sw.de"]) {
+      expect(istAnsprechbar(adresse)).toBe(true);
+    }
+  });
+
+  it("nennt den Weg auch dann, wenn es keine brauchbare Adresse gibt", () => {
+    // Kein Mangel, sondern ein Ergebnis: Der Erstkontakt ueber das
+    // Kontaktformular ist bei dieser Zielgruppe ohnehin der sichere Weg.
+    const k = besteAdresse(versorger("a"));
+    expect(k.adresse).toBeNull();
+    expect(k.brauchbar).toBe(false);
+    expect(k.art).toMatch(/Kontaktformular/);
   });
 });

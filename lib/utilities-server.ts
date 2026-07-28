@@ -16,6 +16,7 @@ import {
   type Themenfund,
 } from "./utilities";
 import { selectUtilityHook, utilityHookText, type UtilityHookText } from "./utility-hook";
+import type { PruefBefund } from "./utility-check";
 
 // Server-Loader für das Versorger-Cockpit.
 //
@@ -51,6 +52,8 @@ function toRecord(r: Row): UtilityRecord {
     verbundDomain: (r.verbund_domain as string) ?? null,
     themen: Array.isArray(r.themen) ? (r.themen as Themenfund[]) : [],
     profilGeprueftAm: (r.profil_geprueft_am as string) ?? null,
+    pruefungAmpel: (r.pruefung_ampel as string) ?? null,
+    pruefung: Array.isArray(r.pruefung) ? (r.pruefung as PruefBefund[]) : [],
   };
 }
 

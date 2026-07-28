@@ -107,17 +107,71 @@ export type UtilityRecord = {
   verbundDomain: string | null;
   themen: Themenfund[];
   profilGeprueftAm: string | null;
+  /** Ergebnis der systematischen Gebiets-Prüfung (lib/utility-check.ts). */
+  pruefungAmpel: string | null;
+  pruefung: { test: string; ergebnis: string; text: string }[];
 };
 
-/** Die Adresse, an die man tatsächlich schreiben würde.
- *  Rollen-Postfach vor Registeradresse: Das Register nennt die Meldeadresse
- *  gegenüber der Bundesnetzagentur — meist Verwaltung, nicht Kommunikation.
- *  Personen-Adressen kommen zuletzt (Datenschutz-Leitplanke des Projekts). */
-export function besteAdresse(u: UtilityRecord): { adresse: string; art: string } | null {
-  if (u.rollenEmail) return { adresse: u.rollenEmail, art: "Rollen-Postfach von der Website" };
-  if (u.kontaktEmail) return { adresse: u.kontaktEmail, art: "Meldeadresse im Register" };
-  if (u.personenEmail) return { adresse: u.personenEmail, art: "Personen-Adresse aus dem Impressum" };
-  return null;
+/**
+ * Postfächer, die es zwar gibt, an die aber niemand schreiben würde.
+ *
+ * Die Adresse im Register ist die Meldeadresse gegenüber der Bundesnetzagentur —
+ * und die ist bei Netzbetreibern regelmäßig ein Fachpostfach für den
+ * Netzanschluss-Betrieb: `anmeldung-eigenerzeugung@`, `netzanschluss@`,
+ * `einspeisung@`, `marktkommunikation@`. Dort landen Anlagenanmeldungen und
+ * Zählerdaten. Eine Kooperationsanfrage dorthin zu schicken ist nicht nur
+ * wirkungslos, sondern verbrennt den Kontakt.
+ *
+ * Deshalb gilt: lieber KEINE Adresse anzeigen als eine, die ins Leere führt.
+ */
+const TECHNISCHES_POSTFACH =
+  /^(anmeldung|anmeldungen|netzanschluss|netzanschluesse|hausanschluss|einspeis\w*|eigenerzeugung|erzeugungsanlagen|eeg|zaehler|zähler|messstelle\w*|messwesen|marktkommunikation|edi|edifact|bilanzkreis|bilanzierung|lieferantenwechsel|stoerung|störung|entstoerung|entstörung|technik|netzbetrieb|it|edv|rechnung|buchhaltung|mahnwesen)[.\-_]?/i;
+
+/** Ist diese Adresse für eine Ansprache brauchbar? */
+export function istAnsprechbar(adresse: string): boolean {
+  const lokal = adresse.split("@")[0] ?? "";
+  return !TECHNISCHES_POSTFACH.test(lokal);
+}
+
+export type Kontaktweg = {
+  adresse: string | null;
+  art: string;
+  /** Kann man dort tatsächlich anschreiben? Wenn nein, gehört der Weg über das
+   *  Kontaktformular — was rechtlich ohnehin der sichere Erstkontakt ist. */
+  brauchbar: boolean;
+};
+
+/**
+ * Der Kontaktweg, den man tatsächlich gehen würde.
+ *
+ * Reihenfolge: Rollen-Postfach von der Website (dort sitzt jemand, der
+ * antwortet) → Registeradresse, aber NUR wenn sie kein Fachpostfach ist →
+ * Personen-Adresse zuletzt (Datenschutz-Leitplanke des Projekts).
+ *
+ * Findet sich nichts Brauchbares, ist das ein Ergebnis und kein Mangel: Der
+ * Erstkontakt über das Kontaktformular ist bei dieser Zielgruppe ohnehin der
+ * rechtlich sichere Weg.
+ */
+export function besteAdresse(u: UtilityRecord): Kontaktweg {
+  if (u.rollenEmail && istAnsprechbar(u.rollenEmail)) {
+    return { adresse: u.rollenEmail, art: "Rollen-Postfach von der Website", brauchbar: true };
+  }
+  if (u.kontaktEmail && istAnsprechbar(u.kontaktEmail)) {
+    return { adresse: u.kontaktEmail, art: "Meldeadresse im Register", brauchbar: true };
+  }
+  if (u.personenEmail && istAnsprechbar(u.personenEmail)) {
+    return { adresse: u.personenEmail, art: "Personen-Adresse aus dem Impressum", brauchbar: true };
+  }
+  // Es gibt eine Adresse, aber nur ein Fachpostfach — das sagen wir auch.
+  const technisch = [u.rollenEmail, u.kontaktEmail, u.personenEmail].find(Boolean);
+  if (technisch) {
+    return {
+      adresse: technisch,
+      art: "nur ein technisches Postfach (Anlagenanmeldung o. Ä.) — dorthin nicht anschreiben",
+      brauchbar: false,
+    };
+  }
+  return { adresse: null, art: "keine Adresse gefunden — Weg über das Kontaktformular", brauchbar: false };
 }
 
 export type UtilityMembership = {

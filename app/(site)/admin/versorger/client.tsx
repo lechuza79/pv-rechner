@@ -73,9 +73,11 @@ type Versorger = {
   impressumUrl: string | null;
   verbundDomain: string | null;
   profilGeprueft: boolean;
-  kontakt: { adresse: string; art: string } | null;
+  kontakt: { adresse: string | null; art: string; brauchbar: boolean };
   verantwortlich: { zeile: string; funktion: string | null; operativ: boolean } | null;
   themen: { thema: string; url: string; begriff: string; label: string }[];
+  pruefungAmpel: string | null;
+  pruefung: { test: string; ergebnis: string; text: string }[];
 };
 
 type Zuordnung = {
@@ -128,6 +130,7 @@ export default function VersorgerCockpit() {
   const [status, setStatus] = useState("");
   const [q, setQ] = useState("");
   const [nurGebiet, setNurGebiet] = useState(true);
+  const [ampel, setAmpel] = useState("");
   const [sort, setSort] = useState("gemeinden");
   const [page, setPage] = useState(0);
 
@@ -155,6 +158,7 @@ export default function VersorgerCockpit() {
     if (status) params.set("status", status);
     if (qDebounced) params.set("q", qDebounced);
     if (nurGebiet) params.set("gebiet", "1");
+    if (ampel) params.set("ampel", ampel);
     params.set("sort", sort);
     params.set("page", String(page));
     try {
@@ -170,7 +174,7 @@ export default function VersorgerCockpit() {
     } finally {
       setLoading(false);
     }
-  }, [bl, typ, status, qDebounced, nurGebiet, sort, page]);
+  }, [bl, typ, status, qDebounced, nurGebiet, ampel, sort, page]);
 
   useEffect(() => {
     load();
@@ -178,7 +182,7 @@ export default function VersorgerCockpit() {
 
   useEffect(() => {
     setPage(0);
-  }, [bl, typ, status, qDebounced, nurGebiet, sort]);
+  }, [bl, typ, status, qDebounced, nurGebiet, ampel, sort]);
 
   const maxPage = Math.max(0, Math.ceil(total / pageSize) - 1);
 
@@ -227,6 +231,12 @@ export default function VersorgerCockpit() {
                 </option>
               ))}
             </select>
+            <select value={ampel} onChange={(e) => setAmpel(e.target.value)} style={selectStyle} aria-label="Gebiets-Prüfung">
+              <option value="">Prüfung: alle</option>
+              <option value="gruen">bestätigt</option>
+              <option value="gelb">teilweise prüfbar</option>
+              <option value="rot">widersprüchlich</option>
+            </select>
             <select value={sort} onChange={(e) => setSort(e.target.value)} style={selectStyle} aria-label="Sortierung">
               <option value="gemeinden">Größtes Gebiet zuerst</option>
               <option value="einwohner">Meiste Einwohner zuerst</option>
@@ -257,6 +267,7 @@ export default function VersorgerCockpit() {
                 <tr>
                   <th style={{ ...thStyle, width: 26 }} aria-label="Aufklappen" />
                   <th style={thStyle}>Versorger</th>
+                  <th style={thStyle}>Prüfung</th>
                   <th style={thStyle}>Gemeinden</th>
                   <th style={thStyle}>Einwohner</th>
                   <th style={thStyle}>Erzeugung</th>
@@ -274,7 +285,7 @@ export default function VersorgerCockpit() {
                 ))}
                 {!loading && rows.length === 0 && (
                   <tr>
-                    <td colSpan={11} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
+                    <td colSpan={12} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
                       Kein Versorger für diesen Filter.
                     </td>
                   </tr>
@@ -367,6 +378,11 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
             {u.mehrereBundeslaender && " · länderübergreifend"}
           </div>
         </td>
+        <td style={tdStyle}>
+          <span style={ampelBadge(u.pruefungAmpel)} title={u.pruefung.map((b) => b.text).join(" ")}>
+            {AMPEL_LABEL[u.pruefungAmpel ?? ""] ?? "ungeprüft"}
+          </span>
+        </td>
         <td style={{ ...tdStyle, fontFamily: v("--font-mono") }}>{u.gemeindeCount.toLocaleString("de-DE")}</td>
         <td style={{ ...tdStyle, fontFamily: v("--font-mono") }}>{u.einwohner.toLocaleString("de-DE")}</td>
         <td style={{ ...tdStyle, fontFamily: v("--font-mono") }}>{u.werte.erzeugung}</td>
@@ -394,12 +410,14 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
           )}
         </td>
         <td style={tdStyle}>
-          {u.kontakt ? (
+          {u.kontakt.brauchbar && u.kontakt.adresse ? (
             <a href={`mailto:${u.kontakt.adresse}`} style={linkStyle} title={u.kontakt.art}>
               {u.kontakt.adresse}
             </a>
           ) : (
-            <span style={{ color: v("--color-text-muted"), fontSize: 11 }}>—</span>
+            <span style={{ color: v("--color-text-muted"), fontSize: 11 }} title={u.kontakt.art}>
+              {u.kontakt.adresse ? "nur Fachpostfach" : "keine"}
+            </span>
           )}
         </td>
         <td style={tdStyle}>
@@ -419,7 +437,7 @@ function VersorgerZeile({ u, onChanged }: { u: Versorger; onChanged: () => void 
       </tr>
       {offen && (
         <tr style={{ background: v("--color-bg-muted") }}>
-          <td colSpan={11} style={{ padding: pad("md", "lg"), borderTop: `1px solid ${v("--color-border")}` }}>
+          <td colSpan={12} style={{ padding: pad("md", "lg"), borderTop: `1px solid ${v("--color-border")}` }}>
             <Detail u={u} onChanged={onChanged} onPatch={patch} />
           </td>
         </tr>
@@ -521,7 +539,7 @@ function Detail({
 
       <Abschnitt titel="Kontakt und Themen">
         <div style={{ display: "grid", gap: 3, fontSize: 12 }}>
-          {u.kontakt ? (
+          {u.kontakt.adresse && u.kontakt.brauchbar ? (
             <div>
               <a href={`mailto:${u.kontakt.adresse}`} style={linkStyle}>
                 {u.kontakt.adresse}
@@ -529,7 +547,15 @@ function Detail({
               <span style={{ color: v("--color-text-muted") }}>— {u.kontakt.art}</span>
             </div>
           ) : (
-            <div style={{ color: v("--color-text-muted") }}>Keine E-Mail-Adresse gefunden.</div>
+            <div style={{ color: v("--color-negative") }}>
+              {u.kontakt.adresse ? (
+                <>
+                  <span style={{ textDecoration: "line-through" }}>{u.kontakt.adresse}</span> — {u.kontakt.art}
+                </>
+              ) : (
+                u.kontakt.art
+              )}
+            </div>
           )}
           {u.telefon && <div style={{ color: v("--color-text-secondary") }}>{u.telefon}</div>}
           {u.verantwortlich && (
@@ -637,6 +663,30 @@ function Detail({
                 {p.kategorie}: Platz {p.rang} von {p.gesamt} ({p.ebene}
                 {p.groessenklasse ? `, ${p.groessenklasse}e Versorger` : ""})
                 {!p.belastbar && <span style={{ color: v("--color-text-muted") }}> — zu kleines Feld</span>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </Abschnitt>
+
+      <Abschnitt titel="Prüfung des Gebiets">
+        {u.pruefung.length === 0 ? (
+          <p style={{ color: v("--color-text-muted") }}>Noch nicht geprüft.</p>
+        ) : (
+          <ul style={{ paddingLeft: 18, margin: 0, display: "grid", gap: 2 }}>
+            {u.pruefung.map((b, i) => (
+              <li
+                key={i}
+                style={{
+                  color:
+                    b.ergebnis === "auffaellig"
+                      ? v("--color-negative")
+                      : b.ergebnis === "ok"
+                        ? v("--color-text-primary")
+                        : v("--color-text-muted"),
+                }}
+              >
+                {b.text}
               </li>
             ))}
           </ul>
@@ -1106,6 +1156,30 @@ function themaChip(thema: string): React.CSSProperties {
     color: foerder ? v("--color-text-on-accent") : v("--color-text-secondary"),
     background: foerder ? v("--color-accent") : v("--color-bg"),
     border: `1px solid ${foerder ? v("--color-accent") : v("--color-border")}`,
+  };
+}
+
+const AMPEL_LABEL: Record<string, string> = {
+  gruen: "bestätigt",
+  gelb: "teilweise",
+  rot: "widersprüchlich",
+};
+
+/** Ergebnis der systematischen Gebiets-Prüfung. Rot heißt „hier stimmt etwas
+ *  nicht" — nicht „diese Zuordnung ist falsch". Der Grund steht im Titel und
+ *  ausgeschrieben im Detail. */
+function ampelBadge(ampel: string | null): React.CSSProperties {
+  const farbe =
+    ampel === "gruen" ? v("--color-positive") : ampel === "rot" ? v("--color-negative") : v("--color-text-muted");
+  return {
+    fontSize: 10,
+    fontWeight: 700,
+    padding: "1px 6px",
+    borderRadius: 999,
+    whiteSpace: "nowrap",
+    color: farbe,
+    border: `1px solid ${farbe}`,
+    background: `color-mix(in srgb, ${farbe} 10%, transparent)`,
   };
 }
 

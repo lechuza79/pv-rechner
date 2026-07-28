@@ -95,6 +95,8 @@ function toView(
     impressumUrl: u.impressumUrl,
     verbundDomain: u.verbundDomain,
     profilGeprueft: !!u.profilGeprueftAm,
+    pruefungAmpel: u.pruefungAmpel,
+    pruefung: u.pruefung,
     kontakt: besteAdresse(u),
     verantwortlich: u.verantwortlichZeile
       ? {
@@ -184,6 +186,7 @@ export async function GET(req: NextRequest) {
 
   const typ = sp.get("typ") ?? "";
   const nurGebiet = sp.get("gebiet") === "1";
+  const ampel = sp.get("ampel") ?? "";
   const sort = sp.get("sort") ?? "";
   const seite = Math.max(0, parseInt(sp.get("page") ?? "0", 10) || 0);
 
@@ -192,6 +195,7 @@ export async function GET(req: NextRequest) {
   if (status) areas = areas.filter((a) => a.utility.status === status);
   if (typ) areas = areas.filter((a) => a.utility.typ === typ);
   if (nurGebiet) areas = areas.filter((a) => a.gemeindeCount > 0);
+  if (ampel) areas = areas.filter((a) => (a.utility.pruefungAmpel ?? "") === ampel);
   if (q) areas = areas.filter((a) => a.utility.name.toLowerCase().includes(q));
 
   // Sortierung. Standard ist „größtes Gebiet zuerst" — beim Durchgehen von
