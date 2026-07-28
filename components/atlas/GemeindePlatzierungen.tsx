@@ -40,6 +40,10 @@ type Zeile = { platz: number; name: string; href: string | null; wert: string; s
 
 const nf = (n: number) => n.toLocaleString("de-DE");
 
+/** Die Kategorienamen sind für den Fliesstext geschrieben ("private
+ *  Speicherkapazität je Einwohner"). Als eigene Zeile beginnen sie gross. */
+const gross = (t: string) => (t ? t[0].toUpperCase() + t.slice(1) : t);
+
 type Daten = {
   name: string;
   beste: Platzierung | null;
@@ -85,7 +89,7 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
           <span style={S.rang}>Platz {b.platz}</span>
           <span style={S.vonZahl}>/ {nf(b.von)}</span>
         </span>
-        <span style={S.thema}>{b.thema}</span>
+        <span style={S.thema}>{gross(b.thema)}</span>
         <span style={S.bezug}>
           {b.wo} · <span style={S.wert}>{b.wert}</span>
         </span>
@@ -106,7 +110,7 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
               >
                 <Insignie platz={p.platz} />
                 <span style={S.weiterePlatz}>{p.platz}.</span>
-                <span style={S.weitereText}>{p.thema}</span>
+                <span style={S.weitereText}>{gross(p.thema)}</span>
                 <span aria-hidden style={S.pfeil}>
                   <IconArrowRight size={11} />
                 </span>
@@ -119,7 +123,7 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
       <Modal
         open={offen !== null}
         onClose={() => setOffen(null)}
-        title={offen !== null ? `${daten.alle[offen].thema} — ${daten.alle[offen].wo}` : ""}
+        title={offen !== null ? `${gross(daten.alle[offen].thema)} — ${daten.alle[offen].wo}` : ""}
         // „Alle 300" wäre gelogen, wenn die Gruppe 1.101 Kommunen hat und die
         // Liste bei 300 endet. Der Satz sagt beides.
         intro={
@@ -165,9 +169,9 @@ function Insignie({ platz, gross = false }: { platz: number; gross?: boolean }) 
         width: groesse,
         height: groesse,
         fontSize: gross ? 11 : 9,
-        background: sieg ? v("--color-accent-dim") : "transparent",
+        background: v("--color-bg"),
         borderColor: sieg ? v("--color-border-accent") : v("--color-border-muted"),
-        opacity: sieg ? 1 : 0.75,
+        opacity: sieg ? 1 : 0.85,
       }}
     >
       {sieg ? "👑" : "★"}
@@ -212,9 +216,9 @@ const S: Record<string, React.CSSProperties> = {
     gap: 2,
     width: "100%",
     textAlign: "left",
-    // Weisse Flaeche wie die uebrigen Karten der Seite; die Auszeichnung traegt
-    // sich ueber die Insignie und den Rang, nicht ueber eine getoente Flaeche.
-    background: v("--color-bg"),
+    // Getoente Flaeche, Insignie weiss darauf — nicht umgekehrt: der Kreis soll
+    // sich vom Grund abheben, nicht mit ihm verschwimmen.
+    background: v("--color-bg-accent"),
     border: `1px solid ${v("--color-border-accent")}`,
     borderRadius: v("--radius-md"),
     padding: pad("sm", "md"),
@@ -266,8 +270,10 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-secondary"),
   },
   // Ein weiterer erster Platz ist auch einer — gleiche Fläche wie der Kopf-Badge.
-  weitereZeileSieg: { borderColor: v("--color-border-accent") },
-  weiterePlatz: { fontFamily: v("--font-mono"), color: v("--color-text-muted"), flex: "0 0 auto" },
+  weitereZeileSieg: { background: v("--color-bg-accent"), borderColor: v("--color-border-accent") },
+  // Gleiche Farbe wie „Platz 1" im Kopf-Badge: Es ist dieselbe Aussage, nur
+  // kleiner — ein graues „3." haette sie zur Fussnote gemacht.
+  weiterePlatz: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-accent-dark"), flex: "0 0 auto" },
   weitereText: { flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   pfeil: { color: v("--color-accent"), flex: "0 0 auto" },
   liste: { display: "flex", flexDirection: "column" },
