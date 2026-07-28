@@ -980,8 +980,20 @@ und Merge auf `main`.
 Vercel ist Production. Ein kaputter Merge bedeutet kaputte Domain
 und/oder fehlgeschlagene Vercel-Builds, die Build-Minutes kosten.
 Type-Check und `npm run build` decken Compile-Fehler ab — aber
-**nicht** UX-Bugs, falsche Berechnungen, hässliche Layouts oder
-unintendierte Verhalten. Das fängt nur ein Mensch im Browser.
+**nicht** UX-Bugs, hässliche Layouts oder unintendiertes Verhalten.
+Das fängt nur ein Mensch im Browser.
+
+**Woran der Betreiber NICHT abnimmt: Fakten. — BLOCKER.** Die Abnahme
+gilt Aussehen, Verständlichkeit und Produktentscheidung. Ob eine Zahl,
+eine Frist, ein Geltungsbereich oder eine Rechtsfolge stimmt, kann er
+nicht prüfen — ihn danach zu fragen, verlagert die Verantwortung an die
+falsche Stelle und erzeugt eine Freigabe, die nichts absichert. Für
+diese Klasse gilt `scripts/council-verify.md` (drei unabhängige Prüfer,
+einer adversarial, bei Rechtsbezug zusätzlich Legal-Judge), **bevor** die
+Seite ihm gezeigt wird — und zwar unabhängig davon, woher die Änderung
+kam: Wächter-Lauf, eigene Recherche oder ein Gespräch mit ihm selbst.
+Wer merkt, dass er gerade „ich bin nicht sicher, schau du mal drauf"
+schreiben will, hat den Council übersprungen.
 
 **Nach Code-Änderungen die im Browser sichtbar sind:**
 1. Dev-Server starten (`preview_start` oder `npm run dev`).
@@ -1064,7 +1076,16 @@ Nicht bei UI-Texten oder reinen Code-Änderungen.
      Freischaltung wäre halb wirkungslos live gegangen. Jede Behauptung „X
      passiert dann von selbst" vor dem Umsetzen am Code nachsehen, nicht glauben.
 
-8. **Kommst du an eine Quelle nicht heran: den Betreiber fragen — kurz und
+8. **Jede Rechts- oder Zahlenaussage läuft durchs Council — auch die aus einem
+   Gespräch.** `scripts/council-verify.md` gilt nicht nur für Wächter-Funde: Der
+   Auslöser ist die Änderung, nicht ihre Herkunft. Drei unabhängige Prüfer, einer
+   adversarial, bei Rechtsbezug zusätzlich Legal-Judge — **bevor** dem Betreiber
+   etwas zur Abnahme gezeigt wird. Er nimmt Aussehen ab, nicht Fakten. Und die
+   korrigierte Aussage bekommt einen Browser-Test an der Stelle, an der ein
+   Nutzer sie sieht: Am 29.07.2026 landete eine Textkorrektur in einem Feld, das
+   nie gerendert wird — Diff richtig, Seite falsch, Unit-Test grün.
+
+9. **Kommst du an eine Quelle nicht heran: den Betreiber fragen — kurz und
    deutlich.** Ein Satz genügt: was du brauchst, wofür, und was ohne die Quelle
    ungeprüft bleibt. Nicht auf eine schwächere Quelle ausweichen, die Aussage
    nicht stillschweigend abschwächen und nicht nach dem ersten Fehlschlag (401,
@@ -1125,6 +1146,20 @@ eigene Fundstelle"), ein umgedrehter Test, die Neubau-Zeitachse (neues
 Referenzgebäude ab 01.01.2027, Nullemissionsgebäude für alle Neubauten ab
 01.01.2030) im Ratgeber und in der FAQ sowie beide Bundestags-Drucksachen unter
 `docs/gmodg/`. Die Rechnung war nie betroffen — nur die Texte.
+
+**Die eigentliche Lehre kam einen Schritt später und betrifft nicht das Gesetz,
+sondern uns:** Die Korrektur lief zunächst ohne Council, weil sie „nur aus einem
+Gespräch" kam — und wurde dem Betreiber zur Abnahme vorgelegt, der Rechtsfragen
+gar nicht beurteilen kann. Der nachgeholte Council bestätigte 3/3, der
+adversariale Prüfer fand aber eine **fehlende Zeitgrenze**: Im Neubau greift die
+Bio-Treppe nur für Gebäude, die bis zum 31.12.2029 errichtet werden (Begründung
+zu § 5b Kohlendioxidkostenaufteilungsgesetz, BT-Drs. 21/6278, S. 125 — zugleich
+die stärkere Fundstelle für die Neubau-Geltung überhaupt). Ohne sie wäre die
+neue Aussage für Neubauten ab 2030 wieder falsch gewesen. Seither gilt:
+`scripts/council-verify.md` hängt an der **Änderung, nicht an ihrer Herkunft**,
+der Betreiber nimmt Aussehen ab und keine Fakten, und jede korrigierte
+Rechtsaussage bekommt einen Browser-Test an der Stelle, an der ein Nutzer sie
+sieht.
 
 ### Kein Overengineering
 
