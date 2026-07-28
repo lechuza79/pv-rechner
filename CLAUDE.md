@@ -129,8 +129,10 @@ Gerundet auf 500 €
 Zeitraum:            25 Jahre
 Degradation:         0,5%/Jahr
 Einspeisevergütung:  EEG-konform, 4 Sätze (Teil/Voll × ≤10/>10 kWp)
-                     Teileinspeisung: 7,78 / 6,73 ct/kWh
-                     Volleinspeisung: 12,34 / 10,35 ct/kWh
+                     ab 08/2026: Teileinspeisung 7,70 / 6,66 ct/kWh
+                                 Volleinspeisung 12,22 / 10,24 ct/kWh
+                     02–07/2026: Teileinspeisung 7,78 / 6,73 ct/kWh
+                                 Volleinspeisung 12,34 / 10,35 ct/kWh
                      Gewichteter Mischsatz bei Anlagen >10 kWp
                      3-State: Aus / Teil / Voll (auto-berechnet, manuell überschreibbar)
                      Zahlung nur 20 Jahre (FEED_IN_YEARS): EEG-Garantie endet nach
@@ -139,10 +141,26 @@ Einspeisevergütung:  EEG-konform, 4 Sätze (Teil/Voll × ≤10/>10 kWp)
                      FAQ-Eintrag zur geplanten EEG-Reform 2027 (Referentenentwurf,
                      Neuanlagen ab 2027; Bestandsschutz für ≤2026) — Notiz nur bei
                      aktiver Einspeisung; wächter-gepflegter Stichtags-Fakt
-                     Quelle = lib/feedin-config.ts (Stand 02–07/2026); die
-                     Supabase-Tabelle feed_in_rates ist NICHT angelegt, daher ist
-                     die Config die De-facto-Quelle. EEG degressiert 1%/Halbjahr
-                     (1.2. / 1.8.) — Wächter + Runbook scripts/eeg-verify.md.
+                     Quelle = lib/feedin-config.ts; die Supabase-Tabelle
+                     feed_in_rates ist NICHT angelegt, daher ist die Config die
+                     De-facto-Quelle. EEG degressiert 1%/Halbjahr (1.2. / 1.8.),
+                     fest — deshalb liegt die Config als STICHTAGS-PLAN vor
+                     (FEED_IN_SCHEDULE + feedInRatesFor()): der Wechsel passiert
+                     am Stichtag von selbst, nicht erst beim nächsten Deploy.
+                     Rechenregel: anzulegender Wert = Basiswert × 0,99^n auf 2
+                     Stellen gerundet, minus 0,4 ct (§ 53 Abs. 1). Der
+                     ungerundete Wert wird fortgeschrieben (§ 49 Abs. 1 S. 2) —
+                     wer stattdessen den gerundeten Vergütungssatz degressiert,
+                     verfehlt 11 amtliche Zellen (dort entsteht das kursierende
+                     10,25 statt 10,24). Realitäts-Anker:
+                     lib/__tests__/feedin-config.test.ts rechnet die Kette
+                     unabhängig nach und hält sie gegen jedes veröffentlichte
+                     Halbjahr. Wächter + Runbook scripts/eeg-verify.md.
+                     Sätze, die aus dem Gesetz abgeleitet sind, BEVOR die
+                     Bundesnetzagentur ihre (nur nachrichtliche) Liste
+                     veröffentlicht, tragen `note` — sichtbarer Herkunfts-
+                     Vorbehalt auf /datenstand — und nennen die Behörde NICHT
+                     als Quelle. Beides fällt weg, sobald die Liste da ist.
                      Wächter-Abweichungen werden per Council gegengeprüft
                      (scripts/council-verify.md: 3 unabhängige Verifizierer, 1
                      adversarial); bei Konsens fixen sich EEG und die
