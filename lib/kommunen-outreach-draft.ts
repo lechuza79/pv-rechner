@@ -22,9 +22,20 @@ import type { AskVariante } from "./kommunen-ask";
 
 export type DraftContext = {
   name: string;
-  /** Volle URL der Atlas-Seite (oder null, wenn kein Slug). Trägt im Versand den
-   *  Weiterleitungs-Token, damit Klicks zählbar sind. */
+  /**
+   * KANONISCHE Adresse der Gemeindeseite — die steht in der Meldung, also in
+   * dem Text, den die Gemeinde veröffentlicht.
+   *
+   * NIE eine Zähl-Weiterleitung (/r/…) an dieser Stelle: Eine Verwaltung
+   * veröffentlicht keine kryptische Umleitung, sie kann jederzeit brechen, und
+   * als Backlink ist sie schwächer als die echte Adresse — was genau das Ziel
+   * des ganzen Vorhabens untergräbt.
+   */
   pageUrl: string | null;
+  /** Optionale Zähl-Weiterleitung NUR für den Brieftext („schauen Sie selbst"):
+   *  misst, ob der Empfänger die Seite überhaupt geöffnet hat. Wird nie
+   *  veröffentlicht. */
+  vorschauUrl?: string | null;
   /** Betreff aus der Hook-Logik (Messgröße im Klartext, kein interner Titel). */
   betreff: string;
   /** Einstiegssatz aus der Hook-Logik. */
@@ -134,6 +145,9 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Einstiegssatz mit derselben Aussage las sich wie ein Textbaustein-Unfall
   // („Stuttgart hat die meiste …" dreimal in zehn Zeilen). Hier deshalb nur der
   // Anlass, die Aussage macht die Meldung.
+  // Zähl-Weiterleitung nur im Brief, nie in der Meldung (siehe `pageUrl`).
+  const vorschau = c.vorschauUrl ? `\n\nEinen kurzen Blick vorab können Sie hier werfen: ${c.vorschauUrl}` : "";
+
   const body = `Sehr geehrte Damen und Herren,${weiterleitung}
 
 ${weiterleitung ? "A" : "a"}us den amtlichen Anlagendaten des Marktstammdatenregisters ergibt sich für ${c.name} gerade eine Meldung, die Sie übernehmen können. Ich habe sie fertig formuliert:
@@ -142,7 +156,7 @@ ${weiterleitung ? "A" : "a"}us den amtlichen Anlagendaten des Marktstammdatenreg
 ${meldung}
 ────────────────────────────
 
-Sie können den Text frei verwenden, kürzen und anpassen. Ich bitte nur darum, den Link auf solar-check.io stehen zu lassen — das ist der einzige Gegenwert, den ich dafür möchte. Kein Vertrieb, keine Kosten, keine Anmeldung.
+Sie können den Text frei verwenden, kürzen und anpassen. Ich bitte nur darum, den Link auf solar-check.io stehen zu lassen — das ist der einzige Gegenwert, den ich dafür möchte. Kein Vertrieb, keine Kosten, keine Anmeldung.${vorschau}
 
 Die Zahlen bereite ich monatlich aus dem amtlichen Marktstammdatenregister auf; die verlinkte Seite ist damit immer aktuell, auch wenn die Meldung älter wird.${widgetAbsatz}
 

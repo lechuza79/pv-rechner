@@ -208,13 +208,11 @@ export async function POST(req: NextRequest) {
   const atlas = await getRegionAtlasData(region_id);
   const hook = index.rows.find((r) => r.regionId === region_id);
 
-  // Der Link im Anschreiben geht über die zählende Weiterleitung, wenn ein
-  // Token vergeben ist — sonst direkt auf die Seite.
-  const zielUrl = leadRow?.ref_token
-    ? `${SITE_URL}/r/${leadRow.ref_token}`
-    : path
-      ? `${SITE_URL}${path}`
-      : null;
+  // In der MELDUNG steht die kanonische Adresse — das ist der Link, den die
+  // Gemeinde veröffentlicht. Die zählende Weiterleitung taucht nur im Brieftext
+  // als Vorschau-Link auf.
+  const seiteUrl = path ? `${SITE_URL}${path}` : null;
+  const vorschauUrl = leadRow?.ref_token ? `${SITE_URL}/r/${leadRow.ref_token}` : null;
 
   const variante: AskVariante =
     (leadRow?.ask_variante as AskVariante | null) ??
@@ -222,7 +220,8 @@ export async function POST(req: NextRequest) {
 
   const draft = renderOutreachDraft({
     name: reg.name,
-    pageUrl: zielUrl,
+    pageUrl: seiteUrl,
+    vorschauUrl,
     betreff: hook?.betreff ?? `So steht ${reg.name} beim Solar-Ausbau da`,
     einstieg:
       hook?.einstieg ??

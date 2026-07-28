@@ -6,7 +6,8 @@ import { renderOutreachDraft, renderMeldung, gattungKurz, type DraftContext } fr
 
 const BASIS: DraftContext = {
   name: "Höchberg",
-  pageUrl: "https://solar-check.io/r/hoechberg",
+  pageUrl: "https://solar-check.io/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
+  vorschauUrl: "https://solar-check.io/r/hoechberg",
   betreff: "Höchberg hat die meiste private Speicherkapazität im Landkreis Würzburg",
   einstieg: "Höchberg hat die meiste private Speicherkapazität im Landkreis Würzburg — Platz 1 von 52 Gemeinden.",
   variante: "nur_meldung",
@@ -114,6 +115,25 @@ describe("Kein Textbaustein-Unfall", () => {
     const d = renderOutreachDraft(BASIS);
     const treffer = d.body.split(BASIS.bestleistung).length - 1;
     expect(treffer).toBeLessThanOrEqual(2); // Überschrift + Fließtext der Meldung
+  });
+});
+
+describe("Der veroeffentlichte Link ist die echte Adresse", () => {
+  it("die Meldung enthaelt NIE die Zaehl-Weiterleitung", () => {
+    // Eine Verwaltung veroeffentlicht keine kryptische Umleitung, und als
+    // Backlink ist sie schwaecher als die kanonische Adresse.
+    const d = renderOutreachDraft(BASIS);
+    expect(d.meldung).toContain("/solar-atlas/bayern/landkreis-wuerzburg/hoechberg");
+    expect(d.meldung).not.toContain("/r/");
+  });
+
+  it("die Vorschau-Weiterleitung steht nur im Brief", () => {
+    const d = renderOutreachDraft(BASIS);
+    expect(d.body).toContain("/r/hoechberg");
+  });
+
+  it("ohne Vorschau-Link fehlt der Satz ganz", () => {
+    expect(renderOutreachDraft({ ...BASIS, vorschauUrl: null }).body).not.toContain("Blick vorab");
   });
 });
 
