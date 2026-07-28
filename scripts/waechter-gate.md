@@ -24,7 +24,7 @@ richtige Zahl tut das.
 
 ---
 
-## Teil 1 — Sieben Regeln gegen „Annahme als Tatsache"
+## Teil 1 — Acht Regeln gegen „Annahme als Tatsache"
 
 Jede Regel stammt aus einem echten Fehlschlag dieses Projekts. Sie gelten für
 alles, was ein Wächter ändert, schreibt oder meldet — auch für den Bericht
@@ -115,6 +115,22 @@ die neuen Grenzen direkt aus der neuen Quelle stammen.
 günstigsten von 160 realen Angeboten. Aufgefallen ist es an einem
 Nutzerkommentar, nicht am Wächter — es fehlte schlicht der Anker gegen die
 Wirklichkeit.
+
+### 8. Ein „gilt nicht für X" braucht eine eigene Fundstelle
+
+Wer einen Geltungsbereich **einschränkt**, muss die Einschränkung belegen können
+— mit einer Stelle, die sie ausspricht. Dass ein Paragraf einen Fall nicht
+erwähnt, ist kein Beleg dafür, dass er nicht gilt: Gesetze verteilen ihren
+Anwendungsbereich regelmäßig über Verweise, und die Kapitelüberschrift, unter der
+eine Vorschrift steht, sagt nichts darüber, wer sonst noch auf sie verweist.
+**Vor jeder Negativaussage die Verweisketten mitlesen** und, wenn vorhanden, die
+amtliche Begründung — sie beantwortet Geltungsfragen oft in einem Satz.
+
+*Auslöser:* Aus dem Wortlaut „in ein bestehendes Gebäude neu eingebaut" wurde die
+Aussage, die Grüngas-Beimischpflicht gelte im Neubau nicht. Sie stand einen Tag
+lang auf fünf Oberflächen, ein Test hielt sie fest — und war falsch: eine zweite
+Vorschrift erklärt dieselben Maßgaben für Neubauten ausdrücklich für anwendbar,
+die Gesetzesbegründung sagt es wörtlich. Aufgefallen ist es dem Betreiber.
 
 ---
 

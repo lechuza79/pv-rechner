@@ -48,18 +48,85 @@
 // 100-Prozent-Stufe ab 2045 ergänzt, dafür aber ein weiterer Paragraf § 42a GModG
 // neu aufgenommen […]" (BT-Drs. 21/7009).
 //
-// GELTUNGSBEREICH — die zweite Falle, wörtlich aus § 43 Absatz 1 des verkündeten
-// Gesetzes: Die Bio-Treppe greift, wenn eine Gas-/Öl-/Flüssiggas-Heizung „nach dem
-// 29. Juli 2026 in ein BESTEHENDES GEBÄUDE neu eingebaut" wird. Zwei Einschränkungen,
-// die man leicht verliert: (a) § 43 selbst erfasst nur Bestandsgebäude, (b) erst
-// Einbauten nach dem 29.07.2026. „Gilt für alle neuen Gasheizungen" ist deshalb zu
-// weit formuliert.
-// KORREKTUR (Council 28.07.2026): Hier stand, ein NEUBAU falle „nicht darunter" — das
-// ist falsch. Für zu errichtende Gebäude ersetzt Art. 1 Nr. 9 des GModG den § 10
-// Absatz 2 Nummer 3 durch „die Maßgaben der §§ 42 bis 45 entsprechend eingehalten
-// werden" — die Bio-Treppe gilt dort also entsprechend. Was im Neubau NICHT mehr gilt,
-// ist die 65-%-Erneuerbaren-Pflicht: die §§ 71 bis 73 GEG sind gestrichen (Art. 1
-// Nr. 32). Ein Fossilverbot im Neubau kommt erst über Art. 4 zum 01.01.2030.
+// GELTUNGSBEREICH — die zweite Falle, und sie steht genau andersherum, als der
+// Wortlaut von § 43 vermuten lässt. § 43 Absatz 1 spricht wörtlich von einer
+// Heizung, die „nach dem 29. Juli 2026 in ein BESTEHENDES GEBÄUDE neu eingebaut"
+// wird; der Paragraf sitzt im Gesetzesteil „Modernisierung von bestehenden
+// Gebäuden" und beschreibt den Heizungstausch. Daraus zu schließen, der NEUBAU
+// sei nicht erfasst, ist FALSCH — genau dieser Fehlschluss stand vom 28. bis zum
+// 29.07.2026 auf fünf Oberflächen. Die Pflicht erreicht den Neubau über § 10
+// Absatz 2 Nummer 3 (Anforderungen an zu errichtende Gebäude), den Artikel 1
+// Nummer 9 Buchstabe a desselben Gesetzes neu fasst:
+//     „3. die Maßgaben der §§ 42 bis 45 entsprechend eingehalten werden."
+// § 43 liegt in dieser Spanne. Die amtliche Begründung sagt es ausdrücklich
+// (BT-Drs. 21/6278, S. 96, zu Artikel 1 Nummer 9 Buchstabe a): „Es handelt sich
+// um eine Folgeänderung zur Einfügung der §§ 42 ff. Diese Maßgaben sind für neu
+// zu errichtende Gebäude nach § 10 Absatz 2 Nummer 3 einzuhalten." Der
+// Wirtschaftsausschuss hat die Nummer unverändert übernommen (BT-Drs. 21/7009,
+// S. 26 — Beschluss-Spalte „unverändert"). Gegenprobe am alten Recht: dieselbe
+// Nummer 3 verwies vorher auf § 71 Absatz 1, die 65-%-Regel. Der Neubau lief
+// also immer schon über § 10, nie über den Heizungsparagrafen selbst; das GModG
+// hängt nur den Verweis um. Beide Drucksachen liegen im Repo unter docs/gmodg/.
+//
+// Die STÄRKSTE Fundstelle steht allerdings woanders und ist beim Council-Lauf am
+// 29.07.2026 vom adversarialen Prüfer nachgereicht worden: Artikel 5 desselben
+// Gesetzes fügt in das Kohlendioxidkostenaufteilungsgesetz einen § 5b ein, der
+// schon in der Überschrift sagt, worum es geht — „Kostenverteilung bei Einbau
+// und Betrieb einer Heizungsanlage nach § 43 des Gebäudemodernisierungsgesetzes
+// IN NEUBAUTEN". Die Begründung dazu (BT-Drs. 21/6278, S. 125): „§ 5b erstreckt
+// die Regelung des § 5a auf neu zu errichtende Gebäude, auf die § 43 Absatz 1
+// des Gebäudemodernisierungsgesetzes zur Anwendung kommt. Erfasst werden nur
+// Neubauten, die bis zum 31.12.2029 errichtet werden." Ein zweiter, völlig
+// unabhängiger Regelungsstrang sagt damit dasselbe — und nennt zugleich die
+// Zeitgrenze (siehe unten).
+//
+// Bleiben vier echte Einschränkungen:
+//   (a) erst Einbauten nach dem 29.07.2026;
+//   (b) im Neubau nur für Gebäude, die BIS ZUM 31.12.2029 errichtet werden —
+//       ab 2030 verdrängt das Nullemissionsgebäude den Verweis (siehe Zeitachse);
+//   (c) § 10 Absatz 2 Nummer 3 gilt nicht für Nichtwohngebäude-Zonen über 4 m
+//       Raumhöhe mit dezentralen Gebläse-/Strahlungsheizungen (§ 10 Abs. 5) und
+//       nicht für Verteidigungsliegenschaften (§ 10 Abs. 6);
+//   (d) ZITIERWEISE: Für den Neubau ist die Fundstelle „§ 10 Absatz 2 Nummer 3
+//       in Verbindung mit § 43 GModG" — NIE „§ 43 GModG" allein. § 43 erfasst
+//       den Neubau nie unmittelbar, sondern nur entsprechend.
+// Nicht behaupten: dass die Neubau-Pflicht bußgeldbewehrt ist. § 108 Absatz 1
+// Nummer 4 sanktioniert wörtlich nur Verstöße „entgegen § 43 Absatz 1"; ob das
+// Analogieverbot im Sanktionsrecht eine entsprechende Anwendung trägt, ist
+// mindestens zweifelhaft. Wir sagen dazu nichts.
+//
+// ZEITACHSE NEUBAU — zwei spätere Stichtage desselben Gesetzes, die den Neubau
+// härter treffen als die Bio-Treppe:
+//   · ab 01.01.2027 (Artikel 2) rechnet der Neubau gegen ein neues
+//     Referenzgebäude mit „technologieneutralem Referenzwärmeerzeuger",
+//     Gesamt-Primärenergiefaktor 0,75 (bis 31.12.2029) bzw. 0,70 (ab 2030);
+//     zugleich fällt der bisherige Abstand von 0,55 zum Referenzgebäude weg
+//     (§ 15 Absatz 1 neuer Fassung, Anlage 1 Nummer 6). Erdgas trägt den Faktor
+//     1,1 (Anlage 4), liegt also über dem Zielwert und müsste anderswo
+//     ausgeglichen werden. WIE WEIT das trägt, hängt am Rechenverfahren der
+//     DIN/TS 18599-5 und ist von uns NICHT nachgerechnet — deshalb steht dazu
+//     nirgends eine Aussage im Produkt.
+//   · ab 01.01.2030 (Artikel 4) ersetzt das Gesetz den § 10 vollständig: jeder
+//     Neubau ist Nullemissionsgebäude und darf „an seinem Standort keine
+//     Kohlenstoffdioxidemissionen aus fossilen Brennstoffen" verursachen. Der
+//     Verweis auf die §§ 42 bis 45 entfällt dort ersatzlos. DAS IST ZUGLEICH DIE
+//     ZEITGRENZE der Neubau-Geltung: Die Bio-Treppe erfasst im Neubau nur
+//     Gebäude, die bis zum 31.12.2029 errichtet werden (Begründung zu § 5b
+//     KostAufG, BT-Drs. 21/6278, S. 125, wörtlich oben). Ein Satz wie „gilt im
+//     Bestand wie im Neubau" OHNE diese Grenze ist eine falsche Aussage über
+//     Neubauten ab 2030 — der ernsteste Befund des Council-Laufs.
+//     Ob ein 2028 errichtetes Haus seine Beimischpflicht über 2030 hinaus
+//     behält, regelt Artikel 4 nicht ausdrücklich; dass § 5b die mietrechtliche
+//     Kostenteilung für genau diese Gebäude anordnet, spricht dafür — bewiesen
+//     ist es nicht. Für unsere Rechnung (Heizung wird heute eingebaut) ohne
+//     Folge, deshalb steht dazu im Produkt nichts.
+//
+//
+// WAS IM NEUBAU NICHT MEHR GILT (Council 28.07.2026, gehoert zum selben Bild):
+// die 65-%-Erneuerbaren-Pflicht. Die §§ 71 bis 73 GEG sind gestrichen (Artikel 1
+// Nummer 32). Ein Ausschluss von Heizoel im Neubau laesst sich darauf also NICHT
+// mehr stuetzen — § 42 Absatz 2 Nummer 1 nennt Gas, Heizoel und Fluessiggas
+// ausdruecklich als zulaessige Option.
 // Die Quote nach § 42a setzt dagegen beim
 // BRENNSTOFF an (Inverkehrbringer) und trifft damit auch Bestandsheizungen. „Wer
 // schon eine Gasheizung hat, hat Bestandsschutz" ist deshalb nur für die Bio-Treppe
@@ -190,6 +257,18 @@ export const GMODG_RECHTSSTAND = {
    *  diesem Datum in einem gesonderten Gesetz festgelegt werden. Stand
    *  28.07.2026: noch nicht vorgelegt. */
   quoteGesetzBis: "1. Dezember 2026",
+  /** Artikel 2: ab hier gilt im Neubau das neue Referenzgebäude mit dem
+   *  technologieneutralen Referenzwärmeerzeuger (siehe Zeitachse oben). */
+  neubauReferenzAb: "1. Januar 2027",
+  /** Bis hierhin errichtete Neubauten fallen unter die Bio-Treppe; danach
+   *  verdrängt das Nullemissionsgebäude den Verweis in § 10 Absatz 2 Nummer 3.
+   *  Beleg: Begründung zu § 5b KostAufG, BT-Drs. 21/6278, S. 125 — „Erfasst
+   *  werden nur Neubauten, die bis zum 31.12.2029 errichtet werden." OHNE diese
+   *  Grenze ist jede Neubau-Aussage zu weit. */
+  neubauBioTreppeBis: "31. Dezember 2029",
+  /** Artikel 4: ab hier ist jeder Neubau Nullemissionsgebäude — am Standort
+   *  keine CO₂-Emissionen aus fossilen Brennstoffen. */
+  neubauNullemissionAb: "1. Januar 2030",
 } as const;
 
 /** Ein Satz zum Verfahrensstand — für Ratgeber, FAQ, Rechner-Modal und
@@ -204,9 +283,25 @@ export const GMODG_RECHTSSTAND = {
  *   3. Der Stichtag im Wortlaut des Gesetzes („nach dem 29. Juli 2026"), nicht
  *      „danach" — sonst verschiebt er sich still um einen Tag gegen das
  *      Inkrafttreten am selben Datum.
- *   4. Der Hinweis auf Ersatzwege und Härtefälle (§ 43 Abs. 3–7) — ohne ihn
- *      überzeichnet der Satz die Pflicht, und zwar ausgerechnet dort, wo wir die
- *      Wärmepumpe rechnen. */
+ *   4. Der Hinweis auf die weiteren Erfüllungswege — ohne ihn überzeichnet der
+ *      Satz die Pflicht, und zwar ausgerechnet dort, wo wir die Wärmepumpe
+ *      rechnen. Genau benannt (Legal-Judge, 29.07.2026): § 43 Abs. 3 bis 5 sind
+ *      Erfüllungswege (Solarthermie, Lüftung mit Wärmerückgewinnung,
+ *      WP-Hybrid), Abs. 7 ist ein Aufschub bei irreparablem Ausfall. Abs. 6 ist
+ *      KEIN Ersatzweg (er verlagert die Pflicht auf den Betreiber), und der
+ *      echte Härtefall-Dispens steht in § 102, nicht in § 43 — die früher hier
+ *      stehende Spanne „Abs. 3–7" mit dem Etikett „Ersatzwege und Härtefälle"
+ *      war beides zu weit und falsch beschriftet.
+ *   5. Nachgetragen am 29.07.2026: Der Satz darf den Geltungsbereich NICHT auf
+ *      bestehende Gebäude verengen. Genau das tat er einen Tag lang — der
+ *      Wortlaut von § 43 legt es nahe, aber § 10 Absatz 2 Nummer 3 zieht den
+ *      Neubau ausdrücklich mit hinein (Herleitung im Kopf dieser Datei). Wer nur
+ *      den Bestand nennt, sagt jedem Bauherrn, er sei nicht gemeint.
+ *   6. „Einbau in ein bestehendes Gebäude", nicht „Heizungstausch": § 43 Abs. 1
+ *      knüpft am NEU EINGEBAUT an, nicht am Ersetzen. Wer in einen Anbau oder
+ *      ein bisher unbeheiztes Bestandsgebäude erstmals eine Gasheizung setzt,
+ *      ist erfasst — aus „Tausch" liest er sich heraus. (§ 42 Abs. 1 spricht vom
+ *      Ersetzen, § 43 Abs. 1 nicht.) */
 export function gmodgStandSatz(today: Date = new Date()): string {
   const R = GMODG_RECHTSSTAND;
   if (!R.verkuendet) {
@@ -217,5 +312,5 @@ export function gmodgStandSatz(today: Date = new Date()): string {
   if (!inKraft) {
     return `Das GModG wurde am ${R.ausgefertigtAm} ausgefertigt und am ${R.verkuendetAm} im Bundesgesetzblatt verkündet (${R.fundstelle}); es tritt am ${R.inKraftSeit} in Kraft.`;
   }
-  return `Das GModG wurde am ${R.verkuendetAm} im Bundesgesetzblatt verkündet (Gesetz vom ${R.ausgefertigtAm}, ${R.fundstelle}) und ist seit dem ${R.inKraftSeit} in Kraft. Die Beimischpflicht gilt damit für Heizungen für Gas, Heizöl oder Flüssiggas, die nach dem ${R.inKraftSeit} neu in ein bestehendes Gebäude eingebaut werden; ihre erste Stufe greift ${ersteStufe.year}, und das Gesetz lässt Ersatzwege und Härtefälle zu (§ 43 GModG).`;
+  return `Das GModG wurde am ${R.verkuendetAm} im Bundesgesetzblatt verkündet (Gesetz vom ${R.ausgefertigtAm}, ${R.fundstelle}) und ist seit dem ${R.inKraftSeit} in Kraft. Die Beimischpflicht gilt damit für Heizungen für Gas, Heizöl oder Flüssiggas, die nach dem ${R.inKraftSeit} neu eingebaut werden — beim Einbau in ein bestehendes Gebäude, typischerweise beim Heizungstausch (§ 43 GModG), ebenso wie in Neubauten, die bis zum ${R.neubauBioTreppeBis} errichtet werden (§ 10 Absatz 2 Nummer 3 in Verbindung mit § 43 GModG); ihre erste Stufe greift ${ersteStufe.year}, und neben der Beimischung lässt das Gesetz weitere Erfüllungswege sowie einen Aufschub bei irreparablem Ausfall zu (§ 43 Absatz 3 bis 5 und Absatz 7 GModG).`;
 }

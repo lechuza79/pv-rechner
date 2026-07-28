@@ -139,7 +139,8 @@ export default function GasheizungWaermepumpePage() {
         {/* ── Grüngas-Pflicht: Details ── */}
         <h2 style={S.h2}>Warum die neue Gasheizung zur Kostenfalle wird</h2>
         <p style={S.p}>
-          Die <strong style={S.strong}>Bio-Treppe</strong> gilt für Gas- und Ölheizungen, die{" "}
+          Die <strong style={S.strong}>Bio-Treppe</strong> gilt für Heizungen für Gas, Heizöl oder
+          Flüssiggas, die{" "}
           <strong style={S.strong}>nach dem Inkrafttreten des Gesetzes eingebaut</strong> werden.
           Maßgeblich ist dabei der tatsächliche Einbau, nicht das Bestell- oder Rechnungsdatum.
           Wer eine solche Heizung betreibt, muss ab 2029 einen wachsenden Anteil klimafreundlicher
@@ -151,16 +152,45 @@ export default function GasheizungWaermepumpePage() {
           sich auf weniger Schultern verteilen.
         </p>
         <p style={S.p}>
+          <strong style={S.strong}>Und wenn ich neu baue?</strong> Dann gilt dieselbe Treppe — mit
+          einer Frist. Der Paragraf mit der Beimischpflicht steht zwar im Kapitel über bestehende
+          Gebäude und beschreibt dort den Einbau in ein bestehendes Gebäude; für neu errichtete
+          Gebäude verweist das Gesetz aber ausdrücklich auf dieselben Vorgaben, und die
+          Gesetzesbegründung sagt es wörtlich: Diese Maßgaben seien „für neu zu errichtende
+          Gebäude nach § 10 Absatz 2 Nummer 3 einzuhalten" (Bundestags-Drucksache 21/6278,
+          Seite 96). Erfasst sind Gebäude, die{" "}
+          <strong style={S.strong}>bis zum {GMODG_RECHTSSTAND.neubauBioTreppeBis}</strong> errichtet
+          werden. Diese Grenze steht nicht im Gesetzestext, sondern folgt daraus, dass zum{" "}
+          {GMODG_RECHTSSTAND.neubauNullemissionAb} eine strengere Regel an ihre Stelle tritt;
+          benannt wird sie in der Gesetzesbegründung (Seite 125). Ob dabei das Datum des
+          Bauantrags oder der Fertigstellung zählt, sagt das Gesetz nicht.
+        </p>
+        <p style={S.p}>
+          Danach wird es strenger statt lockerer. Ab dem{" "}
+          {GMODG_RECHTSSTAND.neubauNullemissionAb} muss grundsätzlich jeder Neubau ein
+          Nullemissionsgebäude sein und darf am Standort keine CO₂-Emissionen aus fossilen
+          Brennstoffen mehr verursachen. Und schon ab dem {GMODG_RECHTSSTAND.neubauReferenzAb}{" "}
+          wird der Effizienznachweis gegen ein neu gefasstes Vergleichsgebäude geführt: Es rechnet
+          mit einem technologieneutralen Wärmeerzeuger, dem das Gesetz einen Primärenergiefaktor
+          von 0,75 zuweist (ab 2030: 0,70) — Erdgas trägt dagegen den Faktor 1,1. Ein Neubau mit
+          reiner Gasheizung liegt damit rechnerisch über dem Vergleichswert und muss den Abstand
+          an anderer Stelle ausgleichen, etwa über besseren Wärmeschutz oder eigene erneuerbare
+          Erzeugung. Als Wahl für einen Neubau ist die fossile Heizung damit ein Auslaufmodell:
+          Wer ab 2030 baut, darf sie nicht mehr einsetzen; wer vorher baut, nimmt die Bio-Treppe
+          mit.
+        </p>
+        <p style={S.p}>
           <strong style={S.strong}>Und wenn ich schon eine Gasheizung habe?</strong> Von der
           Bio-Treppe wird sie nicht erfasst — die trifft nur neu eingebaute Anlagen. Ganz
           verschont bleiben Bestandsheizungen aber voraussichtlich nicht: Dasselbe Gesetz kündigt
-          in § 42a eine <strong style={S.strong}>Grüngas- und Grünheizölquote</strong> an, die ab
-          2028 nicht die Heizung, sondern die Anbieter von Gas, Heizöl und Flüssiggas
-          verpflichtet, ihrem Brennstoff schrittweise klimafreundliche Anteile beizumischen. Das
-          wirkt auf alle, die diesen Brennstoff kaufen — auch auf alte Anlagen. Wie hoch die Quote
-          ausfällt, steht allerdings noch nicht fest: Die Ausgestaltung ist einem eigenen Gesetz
-          vorbehalten, das bis zum {GMODG_RECHTSSTAND.quoteGesetzBis} vorgelegt werden soll.
-          Belastbar rechnen lässt sich damit heute noch nicht.
+          in § 42a eine <strong style={S.strong}>Grüngas- und Grünheizölquote</strong> an: Ein
+          eigenes Gesetz — vorzulegen bis zum {GMODG_RECHTSSTAND.quoteGesetzBis} — soll nicht die
+          Heizung, sondern die Anbieter von Gas, Heizöl und Flüssiggas verpflichten, ihre
+          Brennstoffe bis 2045 vollständig auf klimaneutrale umzustellen. Das wirkt auf alle, die
+          diesen Brennstoff kaufen — auch auf alte Anlagen. Wie hoch die Quote zu Beginn ausfällt,
+          steht noch nicht fest: Die Gesetzesbegründung geht von einem Start im Jahr 2028 mit
+          zunächst bis zu einem Prozent aus, im Gesetzestext steht diese Zahl nicht. Belastbar
+          rechnen lässt sich damit heute noch nicht.
         </p>
         <p style={S.p}>
           Aus derselben Ankündigung stammt die Zahl für 2045. Über 2040 hinaus schreibt die

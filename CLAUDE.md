@@ -782,13 +782,15 @@ und das trifft auf die wenigsten Werte zu. Rechtlich ist die Fallhöhe gering
 „ohne Gewähr"); die echte Gefahr ist Glaubwürdigkeit — ein Haftungsausschluss
 repariert keine falsche Zahl.
 
-Das Gate enthält sieben Regeln gegen „Annahme als Tatsache", jede aus einem
+Das Gate enthält acht Regeln gegen „Annahme als Tatsache", jede aus einem
 echten Fehlschlag: **Zustand vor Zahl** (Entwurf/beschlossen/verkündet/in Kraft
 /Studienannahme — Auto-Fix ändert den Wert, nie den Zustand), **Quelle = wer
 gemessen hat, nicht wer publiziert hat**, **Aussagen über unseren Code am Code
 prüfen**, **Kennzahl ≠ Zustand**, **kein Handfaktor**, **Fundstelle erst
 beschaffen, dann streichen**, **jede auto-gepflegte Zahl braucht einen
-Realitäts-Anker als Test**. Dazu die fünf Gate-Bedingungen (Leitquelle
+Realitäts-Anker als Test**, **ein „gilt nicht für X" braucht eine eigene
+Fundstelle** (Verweisketten mitlesen — eine Vorschrift, die einen Fall nicht
+erwähnt, schließt ihn nicht aus). Dazu die fünf Gate-Bedingungen (Leitquelle
 vollständig · Council mit adversarialem Prüfer · bei Rechtsbezug zusätzlich
 **Legal-Judge** · Sprunggrenze 30 % · Tests grün), die **Selbstkontrolle im
 Folgelauf** (jeder `[auto]`-Fix wird beim nächsten Lauf gegen die Quelle
@@ -990,32 +992,38 @@ Type-Check und `npm run build` decken Compile-Fehler ab — aber
 **nicht** UX-Bugs, hässliche Layouts oder unintendiertes Verhalten.
 Das fängt nur ein Mensch im Browser.
 
-**Was der Betreiber abnimmt und was NICHT — BLOCKER (28.07.2026):**
-Er nimmt das **Aussehen und das Verhalten** ab. Er nimmt **keine Zahlen**
-ab, und das ist keine Frage der Sorgfalt, sondern der Möglichkeit —
-seine Ansage: „ich kann nichts abnehmen, weil das viel zu komplex ist als
-das ich einen fehler bemerken könnte. das musst du über prüfmechanismen
-sicherstellen." An dem Tag traten vier Rechenfehler auf, von denen keiner
-im Browser sichtbar war (ein Kessel mit 80 % statt 95 % Nutzungsgrad sieht
-man einer Zahl nicht an). **Eine Zahl zur Abnahme vorzulegen ist deshalb
-keine Absicherung, sondern eine Scheinabsicherung** — sie verlagert die
-Verantwortung an jemanden, der sie nicht tragen kann.
+**Woran der Betreiber NICHT abnimmt: Fakten. — BLOCKER.** Die Abnahme
+gilt Aussehen, Verständlichkeit und Produktentscheidung. Ob eine Zahl,
+eine Frist, ein Geltungsbereich oder eine Rechtsfolge stimmt, kann er
+nicht prüfen — ihn danach zu fragen, verlagert die Verantwortung an die
+falsche Stelle und erzeugt eine Freigabe, die nichts absichert. Seine
+eigene Ansage dazu (28.07.2026): „ich kann nichts abnehmen, weil das viel
+zu komplex ist als das ich einen fehler bemerken könnte. das musst du
+über prüfmechanismen sicherstellen." Wer merkt, dass er gerade „ich bin
+nicht sicher, schau du mal drauf" schreiben will, hat den Mechanismus
+übersprungen.
 
-Rechenmodelle werden stattdessen abgesichert durch:
-- `lib/__tests__/modell-kohaerenz.test.ts` (läuft im Pre-commit) — fängt die
-  **bekannten** Fehlerklassen: keine halben Fälle, eine Größe = eine
-  Bedeutung, Bilanz geht auf, Skalen wachsen mit, Beschriftung folgt der
-  Rechnung.
-- den monatlichen `solar-check-rechenmodell-council` (Runbook
-  `scripts/rechenmodell-verify.md`) — sucht das **Unbekannte** mit drei
-  unabhängigen Prüfern, die widerlegen sollen statt zu bestätigen. Ein Test
-  prüft nur, was jemand vorher als Frage formuliert hat.
+Für diese Klasse gilt, **bevor** die Seite ihm gezeigt wird — unabhängig
+davon, woher die Änderung kam (Wächter-Lauf, eigene Recherche oder ein
+Gespräch mit ihm selbst):
+
+- **Rechtsbezug, Fristen, Geltungsbereiche:** `scripts/council-verify.md`
+  (drei unabhängige Prüfer, einer adversarial, dazu ein Legal-Judge).
+- **Rechenmodelle:** `lib/__tests__/modell-kohaerenz.test.ts` (läuft im
+  Pre-commit) fängt die **bekannten** Fehlerklassen — keine halben Fälle,
+  eine Größe = eine Bedeutung, Bilanz geht auf, Skalen wachsen mit,
+  Beschriftung folgt der Rechnung. Das **Unbekannte** sucht der monatliche
+  `solar-check-rechenmodell-council` (Runbook `scripts/rechenmodell-verify.md`)
+  mit drei Prüfern, die widerlegen statt bestätigen sollen; ein Test prüft
+  nur, was jemand vorher als Frage formuliert hat. Am 28.07.2026 traten vier
+  Rechenfehler auf, von denen **keiner** im Browser sichtbar war — einen
+  Kessel mit 80 % statt 95 % Nutzungsgrad sieht man einer Zahl nicht an.
 - **Pflicht bei jeder Änderung an einer geteilten Rechenfunktion:** vorher
   die Tabelle „Geteilte Rechen-Basis" lesen, hinterher die Begleittexte
   aller Aufrufer prüfen und einen Kohärenz-Test ergänzen.
 
-Vorgelegt wird dem Betreiber nur, was er wirklich entscheiden kann: **welchen
-Fall ein Rechner abbilden soll** (Modellprämisse), nicht ob eine Zahl stimmt.
+Vorgelegt wird ihm nur, was er wirklich entscheiden kann: **welchen Fall ein
+Rechner abbilden soll** (Modellprämisse), nicht ob eine Zahl stimmt.
 
 **Nach Code-Änderungen die im Browser sichtbar sind:**
 1. Dev-Server starten (`preview_start` oder `npm run dev`).
@@ -1098,7 +1106,16 @@ Nicht bei UI-Texten oder reinen Code-Änderungen.
      Freischaltung wäre halb wirkungslos live gegangen. Jede Behauptung „X
      passiert dann von selbst" vor dem Umsetzen am Code nachsehen, nicht glauben.
 
-8. **Kommst du an eine Quelle nicht heran: den Betreiber fragen — kurz und
+8. **Jede Rechts- oder Zahlenaussage läuft durchs Council — auch die aus einem
+   Gespräch.** `scripts/council-verify.md` gilt nicht nur für Wächter-Funde: Der
+   Auslöser ist die Änderung, nicht ihre Herkunft. Drei unabhängige Prüfer, einer
+   adversarial, bei Rechtsbezug zusätzlich Legal-Judge — **bevor** dem Betreiber
+   etwas zur Abnahme gezeigt wird. Er nimmt Aussehen ab, nicht Fakten. Und die
+   korrigierte Aussage bekommt einen Browser-Test an der Stelle, an der ein
+   Nutzer sie sieht: Am 29.07.2026 landete eine Textkorrektur in einem Feld, das
+   nie gerendert wird — Diff richtig, Seite falsch, Unit-Test grün.
+
+9. **Kommst du an eine Quelle nicht heran: den Betreiber fragen — kurz und
    deutlich.** Ein Satz genügt: was du brauchst, wofür, und was ohne die Quelle
    ungeprüft bleibt. Nicht auf eine schwächere Quelle ausweichen, die Aussage
    nicht stillschweigend abschwächen und nicht nach dem ersten Fehlschlag (401,
@@ -1144,6 +1161,35 @@ obwohl § 43 auch Heizöl und Flüssiggas erfasst, und eine Pflicht ohne die
 Ersatzwege/Härtefälle aus § 43 Abs. 3–7). Der Gesetzestext liegt als Primärquelle
 unter `docs/gmodg/`, festgenagelt von `lib/__tests__/greengas.test.ts`
 („Rechtsstand GModG — Realitäts-Anker").
+
+**Und die dritte Lehre, einen Tag später: der Wortlaut EINES Paragrafen ist nicht
+der Geltungsbereich.** Bei derselben Prüfung kam als vierte „Korrektur" die
+Einschränkung hinzu, die Beimischpflicht gelte nur für den Einbau „in ein
+bestehendes Gebäude" — sauber abgelesen aus § 43 Abs. 1 und trotzdem falsch: § 10
+Abs. 2 Nr. 3 erklärt die §§ 42 bis 45 für neu zu errichtende Gebäude
+„entsprechend" für anwendbar, und die Gesetzesbegründung sagt es wörtlich
+(BT-Drs. 21/6278, S. 96). Der Neubau lief immer schon über § 10 — vorher zeigte
+dieselbe Nummer 3 auf § 71 Abs. 1, die 65-%-Regel. Die falsche Verengung stand
+einen Tag auf fünf Oberflächen, und der Test hielt sie fest; aufgefallen ist sie
+dem Betreiber. Daraus **Gate-Regel 8** („ein ‚gilt nicht für X' braucht eine
+eigene Fundstelle"), ein umgedrehter Test, die Neubau-Zeitachse (neues
+Referenzgebäude ab 01.01.2027, Nullemissionsgebäude für alle Neubauten ab
+01.01.2030) im Ratgeber und in der FAQ sowie beide Bundestags-Drucksachen unter
+`docs/gmodg/`. Die Rechnung war nie betroffen — nur die Texte.
+
+**Die eigentliche Lehre kam einen Schritt später und betrifft nicht das Gesetz,
+sondern uns:** Die Korrektur lief zunächst ohne Council, weil sie „nur aus einem
+Gespräch" kam — und wurde dem Betreiber zur Abnahme vorgelegt, der Rechtsfragen
+gar nicht beurteilen kann. Der nachgeholte Council bestätigte 3/3, der
+adversariale Prüfer fand aber eine **fehlende Zeitgrenze**: Im Neubau greift die
+Bio-Treppe nur für Gebäude, die bis zum 31.12.2029 errichtet werden (Begründung
+zu § 5b Kohlendioxidkostenaufteilungsgesetz, BT-Drs. 21/6278, S. 125 — zugleich
+die stärkere Fundstelle für die Neubau-Geltung überhaupt). Ohne sie wäre die
+neue Aussage für Neubauten ab 2030 wieder falsch gewesen. Seither gilt:
+`scripts/council-verify.md` hängt an der **Änderung, nicht an ihrer Herkunft**,
+der Betreiber nimmt Aussehen ab und keine Fakten, und jede korrigierte
+Rechtsaussage bekommt einen Browser-Test an der Stelle, an der ein Nutzer sie
+sieht.
 
 ### Kein Overengineering
 

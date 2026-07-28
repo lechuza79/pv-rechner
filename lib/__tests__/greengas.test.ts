@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { gasQuoteForYear, gasMixForYear, gasMixPriceEurForYear, gasMixSeries, heatCostComparisonSeries, annualHeatingCostSeries } from "../greengas";
 import { BIO_TREPPE_STUFEN, bioTreppeStufenText, GREEN_GAS_CONFIG, GMODG_RECHTSSTAND, gmodgStandSatz } from "../greengas-config";
@@ -68,6 +68,8 @@ describe("Rechtsstand GModG — Realitäts-Anker für den Wächter", () => {
   // hängt dieser Block an der abgelegten Primärquelle. Geprüft am 28.07.2026 im
   // Volltext des Bundesgesetzblatts:
   //   § 43 Abs. 1: „nach dem 29. Juli 2026 in ein bestehendes Gebäude neu eingebaut"
+  //   Art. 1 Nr. 9 a): § 10 Abs. 2 Nr. 3 neu — „die Maßgaben der §§ 42 bis 45
+  //                   entsprechend eingehalten werden" (zieht den Neubau mit hinein)
   //   Art. 9 Abs. 1: „tritt vorbehaltlich der Absätze 2 bis 4 am Tag nach der
   //                   Verkündung in Kraft"
   const VOR_INKRAFTTRETEN = new Date("2026-07-28T12:00:00");
@@ -87,6 +89,45 @@ describe("Rechtsstand GModG — Realitäts-Anker für den Wächter", () => {
     expect(existsSync(pdf)).toBe(true);
   });
 
+  it("auch die Materialien zur Neubau-Geltung liegen im Repo", () => {
+    // Die Neubau-Aussage steht NICHT im Gesetzestext selbst, sondern in der
+    // Begründung zum Verweis in § 10 Abs. 2 Nr. 3. Wer sie zitiert, muss beide
+    // Drucksachen greifbar haben — sonst ist es wieder nur eine Behauptung.
+    const docs = join(__dirname, "..", "..", "docs", "gmodg");
+    expect(existsSync(join(docs, "BT-Drs-21-6278_GModG-Regierungsentwurf-Begruendung.pdf"))).toBe(true);
+    expect(existsSync(join(docs, "BT-Drs-21-7009_GModG-Beschlussempfehlung.pdf"))).toBe(true);
+  });
+
+  it("kennt die Neubau-Stichtage als Datum, nicht als Fließtext", () => {
+    // Artikel 2 (neues Referenzgebäude) und Artikel 4 (Nullemissionsgebäude) —
+    // beide im selben Gesetz, beide mit eigenem Inkrafttreten (Art. 9 Abs. 2/4).
+    expect(GMODG_RECHTSSTAND.neubauReferenzAb).toBe("1. Januar 2027");
+    expect(GMODG_RECHTSSTAND.neubauNullemissionAb).toBe("1. Januar 2030");
+    // Die Zeitgrenze der Bio-Treppe im Neubau — ohne sie ist jede Neubau-Aussage
+    // zu weit (Begründung zu § 5b KostAufG, BT-Drs. 21/6278, S. 125).
+    expect(GMODG_RECHTSSTAND.neubauBioTreppeBis).toBe("31. Dezember 2029");
+  });
+
+  it("keine Neubau-Aussage ohne Zeitgrenze — auch nicht in FAQ und Ratgeber", () => {
+    // Zweite Ebene neben dem Standsatz: Jeder freie Text, der den Neubau in die
+    // Beimischpflicht nimmt, muss die Grenze mitführen. Der Test liest die
+    // echten Textquellen, nicht eine Kopie davon.
+    const quellen = [
+      join(__dirname, "..", "faq.ts"),
+      join(__dirname, "..", "..", "app", "(site)", "ratgeber", "gasheizung-oder-waermepumpe", "page.tsx"),
+      join(__dirname, "..", "..", "app", "(site)", "waermepumpe-rechner", "waermepumpe.tsx"),
+    ];
+    for (const datei of quellen) {
+      const text = readFileSync(datei, "utf8");
+      const nenntNeubau = /Neubau/.test(text);
+      if (!nenntNeubau) continue;
+      // Entweder über die Konstante (bevorzugt) oder wörtlich — Hauptsache, die
+      // Grenze steht da, wo die Behauptung steht.
+      const hatGrenze = text.includes("neubauBioTreppeBis") || text.includes(GMODG_RECHTSSTAND.neubauBioTreppeBis);
+      expect(hatGrenze, `${datei} nennt den Neubau ohne die Zeitgrenze bis ${GMODG_RECHTSSTAND.neubauBioTreppeBis}`).toBe(true);
+    }
+  });
+
   it("behauptet vor dem Inkrafttreten kein geltendes Recht", () => {
     const satz = gmodgStandSatz(VOR_INKRAFTTRETEN);
     expect(satz).toContain("verkündet");
@@ -99,17 +140,36 @@ describe("Rechtsstand GModG — Realitäts-Anker für den Wächter", () => {
     const satz = gmodgStandSatz(NACH_INKRAFTTRETEN);
     expect(satz).toContain("in Kraft");
     expect(satz).toContain(GMODG_RECHTSSTAND.fundstelle);
-    // § 43 Abs. 1 erfasst nur Bestandsgebäude — „alle neuen Gasheizungen" wäre
-    // zu weit. Der Satz muss die Einschränkung mitführen.
-    expect(satz).toContain("bestehendes Gebäude");
+    // Der Satz muss BEIDE Fälle nennen. Am 28.07.2026 stand hier die Verengung
+    // „neu in ein bestehendes Gebäude eingebaut" — abgeleitet aus dem Wortlaut
+    // von § 43 Abs. 1, aber falsch: § 10 Abs. 2 Nr. 3 zieht den Neubau mit
+    // hinein („die Maßgaben der §§ 42 bis 45 entsprechend"), die Begründung
+    // sagt es ausdrücklich (BT-Drs. 21/6278, S. 96). Wer nur den Bestand nennt,
+    // sagt jedem Bauherrn, er sei nicht gemeint — die Verengung darf nicht zurück.
+    expect(satz).toMatch(/bestehende[ns]? Gebäude/);
+    expect(satz).toContain("Neubau");
+    expect(satz).not.toMatch(/neu in ein bestehendes Gebäude/);
+    // Der ernsteste Befund des Council-Laufs: Ohne die Zeitgrenze ist die
+    // Neubau-Aussage falsch für Gebäude ab 2030 (dann verdrängt das
+    // Nullemissionsgebäude den Verweis). Begründung zu § 5b KostAufG,
+    // BT-Drs. 21/6278, S. 125: „Erfasst werden nur Neubauten, die bis zum
+    // 31.12.2029 errichtet werden."
+    expect(satz).toContain(GMODG_RECHTSSTAND.neubauBioTreppeBis);
+    // Zitierweise: für den Neubau ist § 43 nur ENTSPRECHEND anwendbar, die
+    // tragende Norm ist § 10 Absatz 2 Nummer 3. „§ 43" allein wäre angreifbar.
+    expect(satz).toContain("§ 10 Absatz 2 Nummer 3");
     // § 43 erfasst Gas, Heizöl UND Flüssiggas. Nur „Gas" zu nennen sagt einem
     // Ölheizungs-Besitzer, er sei nicht gemeint — die Verengung darf nicht zurück.
     expect(satz).toContain("Heizöl");
     expect(satz).toContain("Flüssiggas");
     // …und die erste Stufe kommt aus der Stufen-Liste, nicht handgetippt.
     expect(satz).toContain(String(BIO_TREPPE_STUFEN[0].year));
-    // Die Pflicht nicht überzeichnen: § 43 Abs. 3–7 kennt Ersatzwege/Härtefälle.
-    expect(satz).toMatch(/Ersatzwege|Härtefälle/);
+    // Die Pflicht nicht überzeichnen: § 43 Abs. 3 bis 5 kennt weitere
+    // Erfüllungswege, Abs. 7 einen Aufschub bei irreparablem Ausfall. Bewusst
+    // NICHT mehr „Ersatzwege und Härtefälle (Abs. 3–7)" — Abs. 6 ist kein
+    // Erfüllungsweg, und der Härtefall-Dispens steht in § 102 (Legal-Judge).
+    expect(satz).toMatch(/Erfüllungswege/);
+    expect(satz).not.toMatch(/§ 43 Absatz 3 bis 7/);
     // Der Bundesrat beschließt kein Einspruchsgesetz mit.
     expect(satz).not.toContain("Bundesrat");
   });

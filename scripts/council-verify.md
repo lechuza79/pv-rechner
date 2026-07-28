@@ -1,10 +1,44 @@
-# Council-Verifikation bei Wächter-Abweichung
+# Council-Verifikation vor jeder Rechts- oder Zahlenänderung
 
-**Zweck:** Bevor eine vom Wächter gefundene Abweichung umgesetzt oder als
-belastbar gemeldet wird, lassen wir sie von **mehreren unabhängigen Agenten**
-gegenprüfen. So schiebt kein einzelner — womöglich falsch gelesener —
-Rechercheschritt einen falschen Wert in Production. Greift bei JEDER Abweichung
-in den Verify-Wächtern (EEG, CO2, Wärmepumpe, Förderung).
+**Zweck:** Bevor eine Rechts- oder Zahlenaussage live geht, lassen wir sie von
+**mehreren unabhängigen Agenten** gegenprüfen. So schiebt kein einzelner —
+womöglich falsch gelesener — Rechercheschritt einen falschen Wert in Production.
+
+## Wann das greift — BLOCKER
+
+**Der Auslöser ist die ÄNDERUNG, nicht ihre Herkunft.** Ein Council läuft bei
+jeder Abweichung in den Verify-Wächtern (EEG, CO2, Wärmepumpe, Förderung) —
+**und genauso**, wenn dieselbe Art von Aussage auf einem anderen Weg entsteht:
+aus einem Gespräch mit dem Betreiber, aus einer eigenen Recherche, aus einem
+Review-Befund oder aus einem Nutzerhinweis. Wer eine Zahl, eine Frist, einen
+Geltungsbereich oder eine Rechtsfolge in den Code oder in einen sichtbaren Text
+schreibt, durchläuft dieses Protokoll — auch wenn er sich sicher ist.
+
+**Und: Der Betreiber ist keine Prüfinstanz für Fakten.** Er ist UX-Architekt und
+Product Owner; ob ein Verweis in einem Artikelgesetz trägt, kann er nicht
+beurteilen — ihn danach zu fragen, verlagert die Verantwortung an die falsche
+Stelle und erzeugt eine Freigabe, die nichts absichert. Seine Abnahme gilt dem
+**Aussehen und der Verständlichkeit**, nie der Richtigkeit einer Zahl oder einer
+Rechtsaussage. Die stellt dieses Protokoll sicher, bevor er die Seite überhaupt
+zu sehen bekommt.
+
+*Auslöser (29.07.2026):* Der Betreiber fand selbst, dass die Grüngas-Pflicht
+entgegen unserer Aussage auch im Neubau gilt. Die Korrektur lief ohne Council,
+weil sie „nur aus einem Gespräch" kam — und wurde ihm anschließend zur Abnahme
+vorgelegt. Der nachgeholte Council bestätigte zwar 3/3, der adversariale Prüfer
+fand aber eine fehlende Zeitgrenze, ohne die die neue Aussage für Neubauten ab
+2030 wieder falsch gewesen wäre. Genau dafür gibt es das Protokoll.
+
+## Sichtbar geprüft, nicht nur im Quelltext — BLOCKER
+
+Eine geänderte Aussage gilt erst als geändert, wenn sie **auf der Seite** steht.
+Am 29.07.2026 landete eine Textkorrektur in einem Feld, das nie gerendert wird:
+Der Diff war richtig, die Seite zeigte weiter den alten Satz, und ein Unit-Test
+auf den String hätte es nicht gefunden — der String existierte ja. Deshalb:
+Jede korrigierte Rechtsaussage bekommt einen **Browser-Test**, der die Stelle
+öffnet und liest, an der ein Nutzer sie sieht (Muster: „Grüngas-Modal nennt den
+Geltungsbereich vollständig und sichtbar" in `e2e/waermepumpe.spec.ts`). Ein
+Test auf die Konstante allein genügt nicht.
 
 ## Protokoll
 
