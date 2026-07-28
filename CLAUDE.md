@@ -604,6 +604,8 @@ pv-rechner/
 | **Standort-Eingabe (UI)** | `components/StandortField.tsx` (PV-Rechner + Balkon) | Zweites PLZ-Feld bauen |
 | **Marktpreise Hardware** | `market_prices` (gescrapt) → `usePrices()`, `useHeatpumpPrices()`; wo es keine Scrape-Quelle gibt: Config + Wächter-Runbook | Preise im Code verstreuen |
 
+**Wer eine geteilte Rechenfunktion ändert, prüft die BEGLEITTEXTE aller Aufrufer.** Eine Modellannahme wirkt sofort überall, wo die Funktion aufgerufen wird — die Sätze daneben wandern aber nicht mit. Beispiel (28.07.2026): Als die fossile Referenz im WP-Rechner vom Weiterbetrieb auf den Ersatz umgestellt wurde, änderte sich damit auch die Beispielzahl auf den Förder- und Gemeindeseiten (beide rufen `calcHeatPump`) — daneben stand weiter „statt weiter fürs Heizen draufzuzahlen", also die Beschreibung des alten Falls. `grep` nach den Aufrufern gehört deshalb zum Umbau, nicht zur Nachkontrolle.
+
 **Drei Fragen vor dem ersten Code eines Rechners/Modells:**
 1. Welche Zeile der Tabelle trifft zu? → **benutzen**, nicht nachbauen.
 2. Weiche ich bewusst ab? → **Grund als Kommentar in den Code**, nicht nur in den Kopf. (Legitim z. B.: Balkon-Eigenverbrauch ist ein anderer HTW-Datensatz als Dach-PV.)
