@@ -755,14 +755,15 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "bergstrasse-speicher": {
     id: "bergstrasse-speicher", name: "PV-Stromspeicher-Förderprogramm",
     traeger: "Kreis Bergstraße", level: "landkreis", region: "Kreis Bergstraße", bundesland: "Hessen", agsCode: "06431",
-    url: "https://www.kreis-bergstrasse.de/themen-projekte/nachhaltigkeit/foerderprogramme/2024-pv-stromspeicher/",
-    stand: "Juni 2026", status: "ausgeschoepft", capped: true, verified: true,
+    url: "https://www.kreis-bergstrasse.de/themen-projekte/nachhaltigkeit/klimaschutz/",
+    stand: "Juli 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWh Batteriespeicher (PV ab 2 kWp Voraussetzung)",
     maxFoerderung: "max. 3.000 € (max. 50 % der Kosten)",
     rates: [{ label: "Batteriespeicher (ab 3 kWh)", value: "180 €/kWh, max. 3.000 €" }],
     conditions: [
-      "2024er-Topf erschöpft; Neuauflage 2026 frühestens ab Mitte Juli in Entscheidung",
+      "Keine Antragsannahme: Der 2024er-Topf ist erschöpft, 2025 gab es kein Programm, und für 2026 ist keines aufgelegt (am 28.07.2026 an den Seiten des Kreises geprüft)",
+      "Beträge stammen aus der 2024er-Runde und gelten nur als Anhaltspunkt für eine mögliche Neuauflage",
       "PV-Anlage ab 2 kWp Voraussetzung; max. 50 % der Kosten",
     ],
     combinableWith: BUND,
