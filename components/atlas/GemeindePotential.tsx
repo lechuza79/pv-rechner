@@ -7,6 +7,7 @@ import { IconArrowRight, IconTrendUp, IconTrendDown } from "../Icons";
 import { LoadingDots } from "../LoadingDots";
 import { writeLocation } from "../../lib/location";
 import type { GemeindePotential } from "../../lib/gemeinde-potential";
+import { pvErtragSatz, type SzenarioTexte } from "../../lib/gemeinde-szenario-text";
 
 // Modellblock „Angebot trifft Nachfrage" + drei greifbare Beispiele, die mit
 // vorbefüllter PLZ in die Rechner leiten. Client-Komponente, weil der Klick die
@@ -37,10 +38,17 @@ function TrendBadge({ dir }: { dir: "up" | "down" }) {
 export default function GemeindePotential({
   plz,
   p,
+  texte,
+  name,
 }: {
   plz: string | null;
   /** null = Standort-Ertrag lädt noch (Zahlen als LoadingDots, Layout steht). */
   p: GemeindePotential | null;
+  /** Je Gemeinde verschiedene Sätze. Serverseitig gerechnet und durchgereicht —
+   *  sie hängen an Bestandsdaten, die die Seite ohnehin hat, nicht am Ertrag. */
+  texte?: SzenarioTexte;
+  /** Gemeindename für den Ortssatz der PV-Karte. */
+  name?: string;
 }) {
   const remember = () => {
     if (plz) writeLocation(plz);
@@ -62,6 +70,10 @@ export default function GemeindePotential({
             <div style={S.exLabel}>
               verschenkt ein typisches Einfamilienhaus hier in 5 Jahren ohne eigene Anlage
             </div>
+            {/* Ortssatz erst mit dem Ertrag — er IST der Ertrag. */}
+            {p && name && pvErtragSatz(name, p.yieldKwhKwp) && (
+              <div style={S.exOrt}>{pvErtragSatz(name, p.yieldKwhKwp)}</div>
+            )}
             {p && (
               <div style={S.exSub}>
                 {fmtPvLeistung(p.pvKwp)} · Ersparnis + Einspeisung · {fmtErtragProKwp(p.yieldKwhKwp)} am Standort
@@ -96,6 +108,7 @@ export default function GemeindePotential({
             <div style={S.exLabel}>
               bringt ein Balkonkraftwerk — auch zur Miete, ohne eigenes Dach
             </div>
+            {texte?.balkon && <div style={S.exOrt}>{texte.balkon}</div>}
             {p && (
               <div style={S.exSub}>
                 {Number.isFinite(p.balkonAmortYears)
@@ -151,6 +164,9 @@ const S: Record<string, React.CSSProperties> = {
     lineHeight: 1.1,
   },
   exLabel: { fontSize: 14, lineHeight: 1.5, color: v("--color-text-primary"), marginBottom: 6 },
+  // Der ortsbezogene Satz: derselbe Grad wie der Parameter-Fuß, aber in der
+  // Textfarbe der Karte — er ist Aussage, nicht Kleingedrucktes.
+  exOrt: { fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary"), marginBottom: 6 },
   exSub: { fontSize: 11, color: v("--color-text-muted"), marginBottom: 12 },
   exCta: {
     display: "inline-flex",

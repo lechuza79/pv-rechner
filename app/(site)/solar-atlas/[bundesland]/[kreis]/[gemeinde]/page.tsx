@@ -20,6 +20,7 @@ import GemeindeSolarLive from "../../../../../../components/atlas/GemeindeSolarL
 import { MastrHeroSection } from "../../../../../../components/MastrHeroSection";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
 import { buildGemeindeHighlight } from "../../../../../../lib/gemeinde-highlight";
+import { gemeindeSzenarioTexte } from "../../../../../../lib/gemeinde-szenario-text";
 import {
   resolveSlugPath,
   getRegionById,
@@ -327,6 +328,13 @@ export default async function GemeindePage({ params }: { params: Params }) {
       1 + siblings.filter((s) => s.region_id !== region.region_id && s.sums.alle.kwp > ownKwp).length;
   }
 
+  // Ortsbezogene Saetze fuer „Was das fuer Sie bedeutet". Aus Zahlen, die die
+  // Seite ohnehin geladen hat — kein zusaetzlicher Zugriff.
+  const szenarioTexte = gemeindeSzenarioTexte({
+    name: region.name,
+    balkonCount: atlas.solar.by_segment.find((c) => c.segment === "steckersolar")?.count ?? null,
+  });
+
   const crumbs: { label: string; href?: string }[] = [
     { label: "Solar-Atlas", href: "/solar-atlas" },
     // In Berlin und Hamburg stünde der Name sonst dreimal hintereinander.
@@ -439,7 +447,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
             repräsentative PLZ reicht; ohne Koordinate fällt der Ertrag sauber auf
             den Bundesland-Wert zurück). */}
         {region.population ? (
-          <GemeindePotentialClient plz={repPlz} lat={geoLat} lon={geoLon} />
+          <GemeindePotentialClient plz={repPlz} lat={geoLat} lon={geoLon} texte={szenarioTexte} name={region.name} />
         ) : (
           // Ohne Einwohnerzahl gibt es keinen Potential-Block — der Rechner-Link
           // muss trotzdem erhalten bleiben (sonst hat die Seite keinen Weg dorthin).

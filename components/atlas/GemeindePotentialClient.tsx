@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import GemeindePotentialBlock from "./GemeindePotential";
 import { computeGemeindePotential, type GemeindePotential } from "../../lib/gemeinde-potential";
+import type { SzenarioTexte } from "../../lib/gemeinde-szenario-text";
 import { IconArrowRight } from "../Icons";
 import { v, space, pad } from "../../lib/theme";
 
@@ -22,10 +23,18 @@ export default function GemeindePotentialClient({
   plz,
   lat,
   lon,
+  texte,
+  name,
 }: {
   plz: string | null;
   lat: number | null;
   lon: number | null;
+  /** Die ortsbezogenen Sätze — serverseitig aus den Bestandszahlen gerechnet und
+   *  nur durchgereicht. Sie warten NICHT auf den Ertrag: er speist die Beträge,
+   *  nicht die Aussagen. */
+  texte?: SzenarioTexte;
+  /** Gemeindename für den Ortssatz der PV-Karte. */
+  name?: string;
 }) {
   const [potential, setPotential] = useState<GemeindePotential | null>(null);
   const [failed, setFailed] = useState(false);
@@ -65,7 +74,7 @@ export default function GemeindePotentialClient({
   }
 
   // p === null → Block rendert Layout + Links sofort, Zahlen als LoadingDots.
-  return <GemeindePotentialBlock plz={plz} p={potential} />;
+  return <GemeindePotentialBlock plz={plz} p={potential} texte={texte} name={name} />;
 }
 
 const S: Record<string, React.CSSProperties> = {
