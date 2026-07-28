@@ -267,7 +267,7 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
     },
     {
       q: "Gilt die Grüngas-Pflicht auch für meine bestehende Gasheizung?",
-      a: `Die Bio-Treppe nicht — sie erfasst nur Heizungen, die nach dem Inkrafttreten des GModG eingebaut werden. Ganz verschont bleiben Bestandsanlagen aber voraussichtlich nicht: Dasselbe Gesetz kündigt in § 42a eine Grüngas- und Grünheizölquote an, die ab 2028 die Anbieter von Gas, Heizöl und Flüssiggas verpflichtet, ihrem Brennstoff schrittweise klimafreundliche Anteile beizumischen. Diese Quote setzt beim Brennstoff an, nicht bei der Heizung, und wirkt damit auch auf ältere Anlagen. Wie hoch sie ausfällt, ist noch offen: Die Ausgestaltung ist einem eigenen Gesetz vorbehalten, das bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} vorgelegt werden soll. Unsere Rechnung bildet deshalb nur die Bio-Treppe für neue Heizungen ab.`,
+      a: `Die Bio-Treppe nicht — sie erfasst nur Heizungen, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu in ein bestehendes Gebäude eingebaut werden. Ganz verschont bleiben Bestandsanlagen aber voraussichtlich nicht: Dasselbe Gesetz kündigt in § 42a eine Grüngas- und Grünheizölquote an, die ab 2028 die Anbieter von Gas, Heizöl und Flüssiggas verpflichtet, ihrem Brennstoff schrittweise klimafreundliche Anteile beizumischen. Diese Quote setzt beim Brennstoff an, nicht bei der Heizung, und wirkt damit auch auf ältere Anlagen. Wie hoch sie ausfällt, ist noch offen: Die Ausgestaltung ist einem eigenen Gesetz vorbehalten, das bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} vorgelegt werden soll. Unsere Rechnung bildet deshalb nur die Bio-Treppe für neue Heizungen ab.`,
     },
     {
       q: "Wie viel teurer wird Gas dadurch?",

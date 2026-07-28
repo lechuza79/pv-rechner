@@ -175,7 +175,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const GRUENGAS_META = {
     id: "gruengas", label: "Neues Heizungsgesetz", color: v('--color-positive'),
     sub: "Grüngas-Pflicht ab 2029",
-    explain: `Das Gebäudemodernisierungsgesetz (beschlossen ${GMODG_RECHTSSTAND.beschlossenAm}) verpflichtet neue Gasheizungen ab 2029, einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen — 10 % steigend auf 60 % (2040). Das verteuert Gas deutlich. Die Kostenhöhe folgt dem IW-Report 36/2026 (plausibler Korridor, keine exakte Prognose).`,
+    explain: `Das Gebäudemodernisierungsgesetz (in Kraft seit ${GMODG_RECHTSSTAND.inKraftSeit}) verpflichtet Heizungen für Gas, Heizöl oder Flüssiggas, die neu in ein bestehendes Gebäude eingebaut werden, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen — 10 % steigend auf 60 % (2040). Das verteuert Gas deutlich. Die Kostenhöhe folgt dem IW-Report 36/2026 (plausibler Korridor, keine exakte Prognose).`,
   };
 
   // Gewählter Fall: treibt die Ergebnis-Zahlen (TCO/Amortisation/Ersparnis/CO₂).

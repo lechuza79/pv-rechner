@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { gasQuoteForYear, gasMixForYear, gasMixPriceEurForYear, gasMixSeries, heatCostComparisonSeries, annualHeatingCostSeries } from "../greengas";
-import { BIO_TREPPE_STUFEN, bioTreppeStufenText, GREEN_GAS_CONFIG } from "../greengas-config";
+import { BIO_TREPPE_STUFEN, bioTreppeStufenText, GREEN_GAS_CONFIG, GMODG_RECHTSSTAND, gmodgStandSatz } from "../greengas-config";
 
 // Referenzwerte: IW-Report 36/2026 (Volltext im Repo unter docs/gmodg/), am
 // 27.07.2026 seitenweise gegengelesen. Referenzhaushalt ist MFH1 — teilsanierte
@@ -57,6 +59,59 @@ describe("Bio-Treppe (Grüngasquote)", () => {
   it("bleibt nach 2045 auf dem Endwert der Modellannahme (100 %)", () => {
     expect(gasQuoteForYear(2046)).toBe(1.0);
     expect(gasQuoteForYear(2050)).toBe(1.0);
+  });
+});
+
+describe("Rechtsstand GModG — Realitäts-Anker für den Wächter", () => {
+  // Der Verkündungs-Schalter ist der einzige Wert hier, den ein Wächter selbst
+  // umlegen darf (scripts/gruengas-verify.md). Damit er das nicht unbelegt tut,
+  // hängt dieser Block an der abgelegten Primärquelle. Geprüft am 28.07.2026 im
+  // Volltext des Bundesgesetzblatts:
+  //   § 43 Abs. 1: „nach dem 29. Juli 2026 in ein bestehendes Gebäude neu eingebaut"
+  //   Art. 9 Abs. 1: „tritt vorbehaltlich der Absätze 2 bis 4 am Tag nach der
+  //                   Verkündung in Kraft"
+  const VOR_INKRAFTTRETEN = new Date("2026-07-28T12:00:00");
+  const NACH_INKRAFTTRETEN = new Date("2026-07-29T00:00:00");
+
+  it("die Verkündung ist mit Fundstelle belegt, nicht nur behauptet", () => {
+    if (!GMODG_RECHTSSTAND.verkuendet) return; // vor der Verkündung nichts zu prüfen
+    expect(GMODG_RECHTSSTAND.fundstelle).toBe("BGBl. 2026 I Nr. 226");
+    expect(GMODG_RECHTSSTAND.verkuendetAm).toBe("28. Juli 2026");
+    expect(GMODG_RECHTSSTAND.inKraftSeitIso).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(Number.isNaN(new Date(GMODG_RECHTSSTAND.inKraftSeitIso).getTime())).toBe(false);
+  });
+
+  it("der Gesetzestext liegt als Primärquelle im Repo", () => {
+    // Fundstelle erst beschaffen, dann zitieren (CLAUDE.md, Faktenprüfung 6).
+    const pdf = join(__dirname, "..", "..", "docs", "gmodg", "BGBl-2026-I-Nr-226_GModG_verkuendet-2026-07-28.pdf");
+    expect(existsSync(pdf)).toBe(true);
+  });
+
+  it("behauptet vor dem Inkrafttreten kein geltendes Recht", () => {
+    const satz = gmodgStandSatz(VOR_INKRAFTTRETEN);
+    expect(satz).toContain("verkündet");
+    expect(satz).toContain(GMODG_RECHTSSTAND.fundstelle);
+    expect(satz).toMatch(/tritt am .* in Kraft/);
+    expect(satz).not.toMatch(/ist seit|geltendes Recht/);
+  });
+
+  it("sagt ab dem Inkrafttreten, dass das Gesetz gilt — mit Geltungsbereich", () => {
+    const satz = gmodgStandSatz(NACH_INKRAFTTRETEN);
+    expect(satz).toContain("in Kraft");
+    expect(satz).toContain(GMODG_RECHTSSTAND.fundstelle);
+    // § 43 Abs. 1 erfasst nur Bestandsgebäude — „alle neuen Gasheizungen" wäre
+    // zu weit. Der Satz muss die Einschränkung mitführen.
+    expect(satz).toContain("bestehendes Gebäude");
+    // § 43 erfasst Gas, Heizöl UND Flüssiggas. Nur „Gas" zu nennen sagt einem
+    // Ölheizungs-Besitzer, er sei nicht gemeint — die Verengung darf nicht zurück.
+    expect(satz).toContain("Heizöl");
+    expect(satz).toContain("Flüssiggas");
+    // …und die erste Stufe kommt aus der Stufen-Liste, nicht handgetippt.
+    expect(satz).toContain(String(BIO_TREPPE_STUFEN[0].year));
+    // Die Pflicht nicht überzeichnen: § 43 Abs. 3–7 kennt Ersatzwege/Härtefälle.
+    expect(satz).toMatch(/Ersatzwege|Härtefälle/);
+    // Der Bundesrat beschließt kein Einspruchsgesetz mit.
+    expect(satz).not.toContain("Bundesrat");
   });
 });
 
