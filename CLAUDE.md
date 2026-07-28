@@ -1094,6 +1094,21 @@ Quotengesetz nach § 42a sind **Vorschlag an den Menschen**. Wer künftig einen
 „Stand: Monat/Jahr"-Fakt in Content schreibt, hängt ihn an einen Wächter — oder
 er wird still falsch.
 
+**Der Wächter hat am 28.07.2026 ausgelöst und damit den Zweck belegt:** Das GModG
+wurde an diesem Tag verkündet (BGBl. 2026 I Nr. 226, Gesetz vom 23.07.2026) und
+trat am 29.07.2026 in Kraft; ohne den täglichen Lauf hätten vier Oberflächen
+weiter behauptet, die Verkündung stehe aus. Zwei Lehren daraus stecken jetzt im
+Code: **Verkündet ist nicht in Kraft** — dazwischen lag ein Tag, deshalb kennt
+der Rechtsstand neben dem Flag auch `inKraftSeitIso` und `gmodgStandSatz()`
+unterscheidet beide Zustände am Kalendertag. Und: **beim Umlegen eines
+Rechtsstands die Formulierung mitprüfen, nicht nur den Schalter** — der
+Legal-Judge fand dabei drei Fehler, die schon länger dort standen („Bundestag und
+Bundesrat haben beschlossen" bei einem Einspruchsgesetz, „gilt für Gasheizungen",
+obwohl § 43 auch Heizöl und Flüssiggas erfasst, und eine Pflicht ohne die
+Ersatzwege/Härtefälle aus § 43 Abs. 3–7). Der Gesetzestext liegt als Primärquelle
+unter `docs/gmodg/`, festgenagelt von `lib/__tests__/greengas.test.ts`
+(„Rechtsstand GModG — Realitäts-Anker").
+
 ### Kein Overengineering
 
 - Keine Libraries einführen ohne konkreten Grund

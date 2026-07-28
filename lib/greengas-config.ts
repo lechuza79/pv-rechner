@@ -44,8 +44,13 @@
 // 100-Prozent-Stufe ab 2045 ergänzt, dafür aber ein weiterer Paragraf § 42a GModG
 // neu aufgenommen […]" (BT-Drs. 21/7009).
 //
-// GELTUNGSBEREICH — die zweite Falle: Die Bio-Treppe erfasst nur Heizungen, die NACH
-// Inkrafttreten des GModG eingebaut werden. Die Quote nach § 42a setzt dagegen beim
+// GELTUNGSBEREICH — die zweite Falle, wörtlich aus § 43 Absatz 1 des verkündeten
+// Gesetzes: Die Bio-Treppe greift, wenn eine Gas-/Öl-/Flüssiggas-Heizung „nach dem
+// 29. Juli 2026 in ein BESTEHENDES GEBÄUDE neu eingebaut" wird. Zwei Einschränkungen,
+// die man leicht verliert: (a) nur Bestandsgebäude — ein NEUBAU fällt nicht darunter
+// (dort greifen andere Vorschriften), (b) erst Einbauten nach dem 29.07.2026.
+// „Gilt für alle neuen Gasheizungen" ist deshalb zu weit formuliert.
+// Die Quote nach § 42a setzt dagegen beim
 // BRENNSTOFF an (Inverkehrbringer) und trifft damit auch Bestandsheizungen. „Wer
 // schon eine Gasheizung hat, hat Bestandsschutz" ist deshalb nur für die Bio-Treppe
 // richtig — nicht für die Beimischung insgesamt. Wir rechnen bewusst NUR die
@@ -139,26 +144,68 @@ export function bioTreppeStufenText(unit: "%" | "Prozent" = "%"): string {
 }
 
 /** Datierter Sachstand des Gesetzgebungsverfahrens — kein rollierender Wert.
- *  Stand Juli 2026: Bundestag und Bundesrat haben das GModG am 10.07.2026
- *  beschlossen; die Verkündung im Bundesgesetzblatt stand noch aus. Die
- *  Heizungsregeln (inkl. Bio-Treppe) treten am Tag nach der Verkündung in Kraft
- *  (IW-Report 36/2026, Fußnote 2 auf S. 7). Wird die Verkündung nachgezogen, ist
- *  DAS hier die einzige Stelle.
- *  Quellen: gmodg.bund.de (GEG-Infoportal, Chronologie), bundesregierung.de.
+ *  Stand: Bundestag und Bundesrat haben das GModG am 10.07.2026 beschlossen; es
+ *  wurde am 28.07.2026 im Bundesgesetzblatt verkündet (BGBl. 2026 I Nr. 226,
+ *  Gesetz vom 23.07.2026) und tritt nach Artikel 9 Absatz 1 am Tag nach der
+ *  Verkündung in Kraft — dem 29.07.2026. § 43 (Bio-Treppe) steht in Artikel 1 und
+ *  ist von den späteren Stufen in Artikel 9 Absätze 2–4 (Art. 2 + 7 zum
+ *  01.01.2027, Art. 3 zum 01.01.2028, Art. 4 zum 01.01.2030) NICHT erfasst.
+ *  Volltext im Repo: docs/gmodg/BGBl-2026-I-Nr-226_GModG_verkuendet-2026-07-28.pdf
+ *  — am 28.07.2026 Seite für Seite gegen die Werte hier geprüft.
+ *  Ändert sich der Verfahrensstand, ist DAS hier die einzige Stelle.
+ *  Quellen: recht.bund.de (Bundesgesetzblatt), gmodg.bund.de (GEG-Infoportal).
  *  Gepflegt vom täglichen `foerder-news-waechter` (Schritt 4c) nach dem Runbook
- *  scripts/gruengas-verify.md — ohne den würde `verkuendet: false` still veralten. */
+ *  scripts/gruengas-verify.md. */
 export const GMODG_RECHTSSTAND = {
   stand: "Juli 2026",
+  /** Dritte Lesung im Bundestag. Beleg ist die amtliche Chronologie auf
+   *  gmodg.bund.de — NICHT das Bundesgesetzblatt: dort steht dieses Datum nicht.
+   *  Und es war der Bundestag; das Bundesgesetzblatt trägt die Formel „Der
+   *  Bundestag hat das folgende Gesetz beschlossen" und „Die verfassungsmäßigen
+   *  Rechte des Bundesrates sind gewahrt" (Einspruchsgesetz). „Bundestag und
+   *  Bundesrat haben beschlossen" stand hier bis zum 28.07.2026 und war falsch. */
   beschlossenAm: "10. Juli 2026",
-  verkuendet: false,
+  verkuendet: true,
+  verkuendetAm: "28. Juli 2026",
+  /** Ausfertigung durch den Bundespräsidenten — trägt die Vollzitierung. */
+  ausgefertigtAm: "23. Juli 2026",
+  /** Fundstelle der Verkündung — gehört in jede Rechtsaussage darüber. */
+  fundstelle: "BGBl. 2026 I Nr. 226",
+  inKraftSeit: "29. Juli 2026",
+  /** Echter Stichtag (kein Renderdatum): bis dahin ist das Gesetz verkündet, aber
+   *  noch nicht in Kraft — der Standsatz muss das unterscheiden, sonst behauptet
+   *  er einen Tag zu früh geltendes Recht. */
+  inKraftSeitIso: "2026-07-29",
   /** § 42a GModG: die eigentliche Grüngasquote für Inverkehrbringer soll bis zu
-   *  diesem Datum in einem gesonderten Gesetz festgelegt werden. */
+   *  diesem Datum in einem gesonderten Gesetz festgelegt werden. Stand
+   *  28.07.2026: noch nicht vorgelegt. */
   quoteGesetzBis: "1. Dezember 2026",
 } as const;
 
-/** Ein Satz zum Verfahrensstand — für Ratgeber, FAQ und Rechner-Modal. */
-export function gmodgStandSatz(): string {
-  return GMODG_RECHTSSTAND.verkuendet
-    ? `Das GModG wurde am ${GMODG_RECHTSSTAND.beschlossenAm} beschlossen und ist verkündet — die Bio-Treppe ist damit geltendes Recht.`
-    : `Bundestag und Bundesrat haben das GModG am ${GMODG_RECHTSSTAND.beschlossenAm} beschlossen. Die Verkündung im Bundesgesetzblatt stand im ${GMODG_RECHTSSTAND.stand} noch aus; das Gesetz tritt am Tag nach der Verkündung in Kraft.`;
+/** Ein Satz zum Verfahrensstand — für Ratgeber, FAQ, Rechner-Modal und
+ *  /datenstand. `today` nur für Tests; im Betrieb der echte Kalendertag.
+ *
+ *  Vier Genauigkeiten, die ein Legal-Judge am 28.07.2026 angemahnt hat und die
+ *  hier bewusst so und nicht kürzer stehen:
+ *   1. Kein „Bundestag und Bundesrat haben beschlossen" — es ist ein
+ *      Einspruchsgesetz (siehe `beschlossenAm`).
+ *   2. „Gas, Heizöl oder Flüssiggas", nicht nur „Gas" — § 43 erfasst alle drei;
+ *      wer nur Gas nennt, sagt einem Ölheizungs-Besitzer, er sei nicht gemeint.
+ *   3. Der Stichtag im Wortlaut des Gesetzes („nach dem 29. Juli 2026"), nicht
+ *      „danach" — sonst verschiebt er sich still um einen Tag gegen das
+ *      Inkrafttreten am selben Datum.
+ *   4. Der Hinweis auf Ersatzwege und Härtefälle (§ 43 Abs. 3–7) — ohne ihn
+ *      überzeichnet der Satz die Pflicht, und zwar ausgerechnet dort, wo wir die
+ *      Wärmepumpe rechnen. */
+export function gmodgStandSatz(today: Date = new Date()): string {
+  const R = GMODG_RECHTSSTAND;
+  if (!R.verkuendet) {
+    return `Der Bundestag hat das GModG am ${R.beschlossenAm} beschlossen. Die Verkündung im Bundesgesetzblatt stand im ${R.stand} noch aus; das Gesetz tritt am Tag nach der Verkündung in Kraft.`;
+  }
+  const ersteStufe = BIO_TREPPE_STUFEN[0];
+  const inKraft = today.getTime() >= new Date(`${R.inKraftSeitIso}T00:00:00`).getTime();
+  if (!inKraft) {
+    return `Das GModG wurde am ${R.ausgefertigtAm} ausgefertigt und am ${R.verkuendetAm} im Bundesgesetzblatt verkündet (${R.fundstelle}); es tritt am ${R.inKraftSeit} in Kraft.`;
+  }
+  return `Das GModG wurde am ${R.verkuendetAm} im Bundesgesetzblatt verkündet (Gesetz vom ${R.ausgefertigtAm}, ${R.fundstelle}) und ist seit dem ${R.inKraftSeit} in Kraft. Die Beimischpflicht gilt damit für Heizungen für Gas, Heizöl oder Flüssiggas, die nach dem ${R.inKraftSeit} neu in ein bestehendes Gebäude eingebaut werden; ihre erste Stufe greift ${ersteStufe.year}, und das Gesetz lässt Ersatzwege und Härtefälle zu (§ 43 GModG).`;
 }
