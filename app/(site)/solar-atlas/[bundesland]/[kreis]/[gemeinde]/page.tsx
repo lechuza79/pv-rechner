@@ -389,7 +389,11 @@ export default async function GemeindePage({ params }: { params: Params }) {
         </div>
 
         <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
-        <CollapsibleIntro>
+        {/* Einleitung und Auszeichnung nebeneinander. Auf schmalen Schirmen
+            gestapelt (CSS: .gemeinde-kopf in lib/theme.ts). */}
+        <div className="gemeinde-kopf">
+          <div style={{ minWidth: 0 }}>
+            <CollapsibleIntro>
           {buildGemeindeHighlight({
             name: region.name,
             atlas,
@@ -404,15 +408,14 @@ export default async function GemeindePage({ params }: { params: Params }) {
             byYear: atlas.solar.by_year,
             lastYear,
           })}
-        </CollapsibleIntro>
+            </CollapsibleIntro>
+          </div>
+          <GemeindePlatzierungen regionId={region.region_id} />
+        </div>
 
         {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
         )}
-
-        {/* Die Auszeichnung als Schlagzeile direkt ueber der Hero-Sektion:
-            Sie gehoert zu den Kennzahlen, nicht neben den Einleitungstext. */}
-        <GemeindePlatzierungen regionId={region.region_id} />
 
         <GemeindeHero
           kpi={kpi}
@@ -615,8 +618,16 @@ const S: Record<string, React.CSSProperties> = {
     padding: "0 16px 24px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },
-  standDate: { fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
+  // EINE Groesse, EINE Farbe: Die Zeile hatte 11px neben Mono in einem anderen
+  // Grau — drei Wechsel in sechs Woertern, das las sich zerhackt. Groesse aus
+  // der Typo-Skala (caption), Farbe aus einem Token, das Datum nur durch das
+  // Schriftgewicht hervorgehoben.
+  stand: {
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-muted"),
+    marginBottom: space.sm,
+  },
+  standDate: { fontWeight: 600, color: "inherit" },
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
   h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.xs}px` },
   sub: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` },

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { v, space, pad } from "../../lib/theme";
+import { IconArrowRight } from "../Icons";
 import Modal from "../Modal";
 
 // Die beste Platzierung der Gemeinde als EIN fokussiertes Element über dem
@@ -29,6 +30,10 @@ type Platzierung = {
   platz: number;
   von: number;
   wert: string;
+  /** Jede Auszeichnung hat ihre EIGENE Rangliste — andere Kategorie, andere
+   *  Vergleichsebene. Eine gemeinsame gäbe es nicht. */
+  tabelle: Zeile[];
+  tabelleGekuerzt: boolean;
 };
 
 type Zeile = { platz: number; name: string; href: string | null; wert: string; selbst: boolean };
@@ -39,14 +44,13 @@ type Daten = {
   name: string;
   beste: Platzierung | null;
   alle: Platzierung[];
-  tabelle: Zeile[];
-  tabelleGekuerzt: boolean;
 };
 
 export default function GemeindePlatzierungen({ regionId }: { regionId: string }) {
   const [daten, setDaten] = useState<Daten | null>(null);
   const [fehler, setFehler] = useState(false);
-  const [offen, setOffen] = useState(false);
+  /** Welche Rangliste im Dialog steht — Index in `alle`, null = zu. */
+  const [offen, setOffen] = useState<number | null>(null);
 
   useEffect(() => {
     let aktiv = true;
@@ -73,10 +77,7 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
           <span aria-hidden style={S.krone}>
             👑
           </span>
-          {/* Gezählt werden Kommunen — nicht die Ebene, in der verglichen wird.
-              „Platz 1 von 52 Landkreis im Landkreis Würzburg" stand hier, weil
-              das Etikett der Vergleichsebene an die Stelle des Gezählten
-              geriet. */}
+          {/* Gezählt werden Kommunen — nicht die Ebene, in der verglichen wird. */}
           <span>
             Platz {b.platz} von {nf(b.von)} Kommunen {b.wo}
           </span>
@@ -85,57 +86,69 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
           {daten.name} hat {b.bestleistung} {b.wo} — <strong style={S.wert}>{b.wert}</strong>.
         </p>
 
+        {b.tabelle.length > 0 && (
+          <button type="button" onClick={() => setOffen(0)} style={S.btn}>
+            Rangliste ansehen
+          </button>
+        )}
+
         {daten.alle.length > 1 && (
           <>
             <div style={S.weitereTitel}>Außerdem</div>
             <ul style={S.weitere}>
-              {/* Das WO gehört an jede Zeile: Ohne es standen hier zweimal
-                  „Balkonkraftwerke" untereinander — einmal im Kreis, einmal im
-                  Land — und die Liste sah aus wie ein Doppeleintrag. */}
-              {daten.alle.slice(1, 4).map((p) => (
-                <li key={`${p.kategorie}-${p.ebene}`} style={S.weitereZeile}>
-                  {p.platz === 1 && (
-                    <span aria-hidden style={S.kroneKlein}>
-                      👑
+              {/* Jede Zeile öffnet IHRE Rangliste — sie hat eine eigene, weil
+                  Kategorie und Vergleichsebene sich unterscheiden. Deshalb hier
+                  nur ein Pfeil statt eines zweiten „Rangliste ansehen". */}
+              {daten.alle.slice(1, 4).map((p, i) => (
+                <li key={`${p.kategorie}-${p.ebene}`}>
+                  <button type="button" onClick={() => setOffen(i + 1)} style={S.weitereZeile}>
+                    {p.platz === 1 && (
+                      <span aria-hidden style={S.kroneKlein}>
+                        👑
+                      </span>
+                    )}
+                    <span style={S.weitereText}>
+                      Platz {p.platz} bei {p.themaDativ} {p.wo}
                     </span>
-                  )}
-                  Platz {p.platz} bei {p.themaDativ} {p.wo}
+                    <span aria-hidden style={S.pfeil}>
+                      <IconArrowRight size={12} />
+                    </span>
+                  </button>
                 </li>
               ))}
             </ul>
           </>
         )}
-
-        {daten.tabelle.length > 0 && (
-          <button type="button" onClick={() => setOffen(true)} style={S.btn}>
-            Rangliste ansehen
-          </button>
-        )}
       </div>
 
       <Modal
-        open={offen}
-        onClose={() => setOffen(false)}
-        title={`${b.thema} — ${b.wo}`}
+        open={offen !== null}
+        onClose={() => setOffen(null)}
+        title={offen !== null ? `${daten.alle[offen].thema} — ${daten.alle[offen].wo}` : ""}
         // „Alle 300" wäre gelogen, wenn die Gruppe 1.101 Kommunen hat und die
         // Liste bei 300 endet. Der Satz sagt beides.
         intro={
-          daten.tabelleGekuerzt
-            ? `Die ersten ${nf(daten.tabelle.length)} von ${nf(b.von)} Kommunen der Vergleichsgruppe, gerechnet aus dem Marktstammdatenregister.`
-            : `Alle ${nf(daten.tabelle.length)} Kommunen der Vergleichsgruppe, gerechnet aus dem Marktstammdatenregister.`
+          offen === null
+            ? ""
+            : daten.alle[offen].tabelleGekuerzt
+              ? `Die ersten ${nf(daten.alle[offen].tabelle.length)} von ${nf(daten.alle[offen].von)} Kommunen der Vergleichsgruppe, gerechnet aus dem Marktstammdatenregister.`
+              : `Alle ${nf(daten.alle[offen].tabelle.length)} Kommunen der Vergleichsgruppe, gerechnet aus dem Marktstammdatenregister.`
         }
         maxWidth={560}
       >
-        <div style={S.liste}>
-          {daten.tabelle.map((r) => (
-            <RanglistenZeile key={r.platz} zeile={r} />
-          ))}
-          {daten.tabelleGekuerzt && (
-            <p style={S.gekuerzt}>
-              Weitere {nf(b.von - daten.tabelle.length)} Kommunen folgen — hier nicht mehr aufgeführt.
-            </p>
-          )}
-        </div>
+        {offen !== null && (
+          <div style={S.liste}>
+            {daten.alle[offen].tabelle.map((r) => (
+              <RanglistenZeile key={r.platz} zeile={r} />
+            ))}
+            {daten.alle[offen].tabelleGekuerzt && (
+              <p style={S.gekuerzt}>
+                Weitere {nf(daten.alle[offen].von - daten.alle[offen].tabelle.length)} Kommunen folgen — hier nicht
+                mehr aufgeführt.
+              </p>
+            )}
+          </div>
+        )}
       </Modal>
     </section>
   );
@@ -225,6 +238,20 @@ const S: Record<string, React.CSSProperties> = {
   zName: { minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
   kroneKlein: { marginRight: 4, fontSize: 11 },
   zWert: { fontFamily: v("--font-mono"), color: v("--color-accent") },
-  weitereZeile: { display: "flex", alignItems: "baseline", gap: 4 },
+  weitereZeile: {
+    display: "flex",
+    alignItems: "baseline",
+    gap: 4,
+    width: "100%",
+    padding: 0,
+    background: "transparent",
+    border: "none",
+    textAlign: "left",
+    cursor: "pointer",
+    color: "inherit",
+    font: "inherit",
+  },
+  weitereText: { flex: 1, minWidth: 0 },
+  pfeil: { color: v("--color-accent"), flex: "0 0 auto" },
   gekuerzt: { fontSize: 12, color: v("--color-text-muted"), padding: pad("sm", "sm"), margin: 0 },
 };

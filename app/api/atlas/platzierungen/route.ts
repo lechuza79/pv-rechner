@@ -76,83 +76,87 @@ export async function GET(req: NextRequest) {
         ? ortPhrase({ name: bundeslandByAgs(regionId.slice(0, 2))?.name ?? "diesem Bundesland", level: "bundesland" })
         : "bundesweit";
 
-  // Alle Platzierungen, stärkste zuerst. „Platz 1 von 34" schlägt „Platz 1 von
-  // 5" — die größere Vergleichsgruppe ist die stärkere Aussage.
-  const alle = meine
+  const nachId = new Map(stats.map((g) => [g.regionId, g]));
+
+  /** Die vollständige Rangliste einer Platzierung — dieselbe Gruppe, aus der ihr
+   *  Rang stammt. Jede Auszeichnung hat ihre eigene; eine gemeinsame gäbe es
+   *  nicht, weil sich Kategorie UND Vergleichsebene je Zeile unterscheiden. */
+  function ranglisteZu(p: Platzierung) {
+    const cat = AWARD_CATEGORY_BY_KEY[p.categoryKey];
+    if (!cat) return [];
+    const ebene = p.level === "kreis" ? "landkreis" : p.level === "land" ? "bundesland" : "de";
+    const scope = scopeIdOf(regionId, ebene);
+    const floor = cat.messart === "proKopf" ? 2000 : 0;
+    const gruppe = stats.filter(
+      (g) => g.population >= floor && (cat.metric(g) ?? 0) > 0 && scopeIdOf(g.regionId, ebene) === scope,
+    );
+    return rankGemeinden(gruppe, cat)
+      .slice(0, MAX_TABELLE)
+      .map((r) => {
+        const g = nachId.get(r.regionId);
+        return {
+          platz: r.rank,
+          name: g?.name ?? r.regionId,
+          href: pfadVon(r.regionId, g?.slug),
+          wert: formatAwardValue(r.value, cat.format),
+          selbst: r.regionId === regionId,
+        };
+      });
+  }
+
+  // EINE ZEILE JE KATEGORIE. Vorher stand dieselbe Kategorie mehrfach da, einmal
+  // je Vergleichsebene — auf der Seite las sich das als Widerspruch: "Platz 1 bei
+  // Balkonkraftwerken im Landkreis" und drei Zeilen tiefer "Platz 12 bei
+  // Balkonkraftwerken in Bayern". Beides stimmt, aber niemand liest die
+  // Ebenenangabe als Auflösung. Behalten wird je Kategorie die stärkste
+  // Platzierung; die Ebene steht weiterhin dran.
+  type Platzierung = (typeof meine)[number];
+  const besteJeKategorie = new Map<string, Platzierung>();
+  for (const p of meine) {
+    const da = besteJeKategorie.get(p.categoryKey);
+    if (!da || p.rank < da.rank || (p.rank === da.rank && p.total > da.total)) besteJeKategorie.set(p.categoryKey, p);
+  }
+
+  // Stärkste zuerst. „Platz 1 von 34" schlägt „Platz 1 von 5" — die größere
+  // Vergleichsgruppe ist die stärkere Aussage.
+  const alle = Array.from(besteJeKategorie.values())
     .map((p) => {
       const cat = AWARD_CATEGORY_BY_KEY[p.categoryKey];
-      return cat
-        ? {
-            kategorie: cat.key,
-            thema: cat.thema,
-            themaDativ: cat.themaDativ,
-            bestleistung: cat.bestleistung,
-            ebene: LEVEL_LABEL[p.level],
-            wo: woLabel(p.level),
-            platz: p.rank,
-            von: p.total,
-            wert: formatAwardValue(p.value, cat.format),
-          }
-        : null;
+      if (!cat) return null;
+      const tabelle = ranglisteZu(p);
+      const eigenerIdx = tabelle.findIndex((r) => r.selbst);
+      return {
+        kategorie: cat.key,
+        thema: cat.thema,
+        themaDativ: cat.themaDativ,
+        bestleistung: cat.bestleistung,
+        ebene: LEVEL_LABEL[p.level as HookLevel],
+        wo: woLabel(p.level),
+        platz: p.rank,
+        von: p.total,
+        // Der Formatierer bringt bei manchen Kategorien schon einen Punkt mit
+        // ("38,1 je 1.000 Ew."). Im Satz stand dahinter ein zweiter.
+        wert: formatAwardValue(p.value, cat.format).replace(/\.$/, ""),
+        tabelle,
+        /** Sitzt die eigene Zeile losgelöst unter den Anführern? Dann setzt die
+         *  Anzeige eine Auslassung dazwischen. */
+        teaserAbgesetzt: eigenerIdx >= TEASER,
+        teaser:
+          eigenerIdx >= TEASER ? [...tabelle.slice(0, TEASER - 1), tabelle[eigenerIdx]] : tabelle.slice(0, TEASER),
+        // Ehrlich dazuschreiben, was abgeschnitten wurde.
+        tabelleGekuerzt: tabelle.length >= MAX_TABELLE,
+      };
     })
     .filter((x): x is NonNullable<typeof x> => !!x)
     .sort((a, b) => a.platz - b.platz || b.von - a.von);
 
-  // Die Rangliste zur stärksten Platzierung — das ist die Tabelle, die der
-  // Teaser anreißt und das Modal vollständig zeigt.
   const beste = alle[0] ?? null;
-  let tabelle: { platz: number; name: string; href: string | null; wert: string; selbst: boolean }[] = [];
-  if (beste) {
-    const p = meine.find((x) => x.categoryKey === beste.kategorie && x.rank === beste.platz && x.total === beste.von);
-    const cat = AWARD_CATEGORY_BY_KEY[beste.kategorie];
-    if (p && cat) {
-      const scope = scopeIdOf(regionId, p.level === "kreis" ? "landkreis" : p.level === "land" ? "bundesland" : "de");
-      const floor = cat.messart === "proKopf" ? 2000 : 0;
-      const gruppe = stats.filter(
-        (g) =>
-          g.population >= floor &&
-          (cat.metric(g) ?? 0) > 0 &&
-          scopeIdOf(g.regionId, p.level === "kreis" ? "landkreis" : p.level === "land" ? "bundesland" : "de") === scope,
-      );
-      const nachId = new Map(stats.map((s) => [s.regionId, s]));
-      tabelle = rankGemeinden(gruppe, cat)
-        .slice(0, MAX_TABELLE)
-        .map((r) => {
-          const g = nachId.get(r.regionId);
-          return {
-            platz: r.rank,
-            name: g?.name ?? r.regionId,
-            href: pfadVon(r.regionId, g?.slug),
-            wert: formatAwardValue(r.value, cat.format),
-            selbst: r.regionId === regionId,
-          };
-        });
-    }
-  }
-
-  // Teaser: die Anführer UND die eigene Zeile. Eine Rangliste, in der die
-  // Gemeinde selbst nicht vorkommt, ist für sie wertlos — und genau das passiert
-  // ab Platz 6. Dasselbe Muster wie in der Kreis-Rangliste (GemeindeHero).
-  const eigenerIdx = tabelle.findIndex((r) => r.selbst);
-  const teaser =
-    eigenerIdx >= 0 && eigenerIdx >= TEASER
-      ? [...tabelle.slice(0, TEASER - 1), tabelle[eigenerIdx]]
-      : tabelle.slice(0, TEASER);
 
   return NextResponse.json(
     {
       name: eigene.name,
       beste,
       alle,
-      teaser,
-      /** Sitzt die eigene Zeile losgelöst unter den Anführern? Dann setzt die
-       *  Anzeige eine Auslassung dazwischen, statt Rang 5 und Rang 39
-       *  kommentarlos untereinander zu stellen. */
-      teaserAbgesetzt: eigenerIdx >= TEASER,
-      tabelle,
-      // Ehrlich dazuschreiben, was abgeschnitten wurde — eine Liste, die
-      // stillschweigend bei 300 endet, liest sich wie „das sind alle".
-      tabelleGekuerzt: tabelle.length >= MAX_TABELLE,
     },
     { headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" } },
   );

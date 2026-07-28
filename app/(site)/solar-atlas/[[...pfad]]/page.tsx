@@ -372,8 +372,16 @@ const S: Record<string, React.CSSProperties> = {
     padding: "0 16px 20px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },
-  standDate: { fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
+  // EINE Groesse, EINE Farbe: Die Zeile hatte 11px neben Mono in einem anderen
+  // Grau — drei Wechsel in sechs Woertern, das las sich zerhackt. Groesse aus
+  // der Typo-Skala (caption), Farbe aus einem Token, das Datum nur durch das
+  // Schriftgewicht hervorgehoben.
+  stand: {
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-muted"),
+    marginBottom: space.sm,
+  },
+  standDate: { fontWeight: 600, color: "inherit" },
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
   intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xxl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
