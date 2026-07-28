@@ -65,6 +65,18 @@ heutige Datum.
 >    der Anlage). Kommt sie, muss der Ratgeber-Abschnitt „Und wenn ich schon eine
 >    Gasheizung habe?" mit echten Zahlen nachgezogen werden — bis dahin steht dort
 >    bewusst „belastbar rechnen lässt sich das heute noch nicht".
+> 4. **Bioheizöl-Preispfad — täglich mitprüfen, hohe Dringlichkeit.** § 43 Abs. 1
+>    nennt Heizöl gleichrangig neben Gas, aber der Wärmepumpen-Rechner rechnet die
+>    Beimischung **nur für Gas**: Der IW-Report modelliert ausschließlich den
+>    Gas-Mix (Biomethan + Gasnetzentgelte), und für Bioheizöl existiert bislang
+>    keine belastbare Preisreihe. Solange das so ist, steht die Lücke sichtbar im
+>    Öl-Ergebnis. **Prüfe bei jedem Lauf:** Gibt es (a) eine gesetzliche Regelung,
+>    die den Bioheizöl-Anteil oder dessen Bepreisung konkretisiert — insbesondere
+>    das Quotengesetz nach § 42a, das bis zum **1. Dezember 2026** vorzulegen ist
+>    und Heizöl ausdrücklich einschließt („Grüngas- und **Grünheizöl**quote") —
+>    oder (b) eine Trägerquelle mit echter Preisreihe für Bioheizöl/HVO (amtliche
+>    Statistik, Branchenverband, Nachfolge-Report mit Ölpfad)? Portale mit
+>    Preisschätzungen zählen NICHT, in keine Richtung.
 >
 > Für JEDE Angabe die Fundstelle (URL + Datum) nennen. Wo du nichts Amtliches
 > findest, schreibe „nicht belegbar" — rate nicht und nimm keinen Presseartikel
@@ -103,6 +115,21 @@ richtige Antwort hat:
   zitierfähige Rechtsaussagen, die in die Berechnung durchschlagen — Befund in den
   Report, Formulierung und Eintrag macht ein Mensch. Gilt ausdrücklich auch, wenn
   der Befund eindeutig aussieht.
+- **Bioheizöl-Regelung: kein Auto-Fix, aber SOFORT melden — als Entscheidung, nicht
+  als Notiz.** Kommt eine Regelung oder eine belastbare Preisreihe für Bioheizöl
+  (Schritt 4 oben), ist das kein Wert, den der Wächter still nachträgt: Er verteuert
+  die Ölheizung spürbar und verschiebt jedes Öl-Ergebnis. Deshalb geht der Befund
+  **am selben Tag** über `/api/alert` an den Betreiber, und zwar als `decisions`-
+  Eintrag (nur der wird zugestellt, siehe `scripts/waechter-gate.md` Teil 3) — nicht
+  als „erledigt"-Zeile. Zwei Dinge stehen dann an, und beide gehören dem Menschen:
+  **(1) einrechnen** — Preispfad für Öl analog zum Gas-Mix, aber ohne Netzentgelte
+  (die es beim Öltank nicht gibt); der sichtbare Lücken-Hinweis im Öl-Ergebnis
+  (`waermepumpe.tsx`) und der Prüfpunkt in `scripts/waermepumpe-verify.md` fallen
+  im selben Zug weg. **(2) Sichtbarkeit** — eine bezifferte Aussage dazu, was die
+  Pflicht eine Ölheizung kostet, ist ein Anlass, den Rechner aktiv zu zeigen
+  (Ratgeber, Datenstand, Außenkommunikation). Formuliere die Meldung so, dass der
+  Betreiber beides entscheiden kann, ohne den Gesetzestext selbst zu lesen: was gilt
+  ab wann, wie groß der Effekt ungefähr ist, und was du vorschlägst.
 - **Schwellen aufweichen ist nie die Lösung.** Wenn der Test
   `lib/__tests__/greengas.test.ts → "die Stufen-Liste für Texte enthält genau die
   vier Gesetzesstufen"` anschlägt, ist entweder das Gesetz geändert (→ Mensch) oder

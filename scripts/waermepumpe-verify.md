@@ -53,21 +53,17 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   Strukturfrage: Der Öl-Wert bleibt 0, auch wenn der Gas-Grundpreis steigt.
   (Bis 28.07.2026 bekam die Ölheizung den Gas-Grundpreis aufgeschlagen — 3.600 €
   über 20 Jahre zugunsten der Wärmepumpe. Gefunden hat das ein Forumsnutzer.)
-- **OFFEN (bis 01/2027): Bioheizöl-Preispfad.** § 43 Abs. 1 GModG nennt Heizöl
-  gleichrangig neben Gas — eine neu eingebaute Ölheizung muss dieselbe Bio-Treppe
-  erfüllen (10/15/30/60 %). Wir rechnen den Effekt **nur für Gas**, weil der
-  IW-Report ausschließlich den Gas-Mix modelliert (Biomethan + Gasnetzentgelte);
-  für Bioheizöl gibt es keine belastbare Preisreihe. Die Marktangaben streuen um
-  ein Vielfaches (wenige Prozent Aufschlag bei Beimischung bis rund die Hälfte bei
-  reinem HVO) — allesamt Portale, also **keine** taugliche Leitquelle. **Jeden
-  Lauf prüfen:** Gibt es inzwischen eine Trägerquelle mit echter Preisreihe (z. B.
-  Mineralölwirtschafts-/Branchenverband, amtliche Statistik, oder ein Nachfolge-
-  Report des IW mit Ölpfad)? Wenn ja → **Vorschlag an den Menschen** (nie
-  selbst einbauen: Der Wert würde die Ölheizung spürbar verteuern, das ist eine
-  Richtungsentscheidung mit mehreren vertretbaren Antworten). Wenn nein → den
-  sichtbaren Hinweis im Rechner bestätigen und den Punkt weiterlaufen lassen.
-  Solange die Lücke besteht, rechnet der Rechner Öl zu GÜNSTIG, also gegen die
-  Wärmepumpe — die sichere Richtung, und im Ergebnis steht sie ausdrücklich da.
+- **Bioheizöl-Preispfad — beobachtet der TÄGLICHE Wächter, nicht dieser hier.**
+  § 43 Abs. 1 GModG nennt Heizöl gleichrangig neben Gas, aber wir rechnen die
+  Beimischung nur für Gas (kein belastbarer Bioheizöl-Preis, Begründung und
+  sichtbarer Hinweis siehe `waermepumpe.tsx`). Ein Quartalsrhythmus wäre dafür zu
+  träge: Sobald eine Regelung steht, muss sie sofort in die Rechnung und ist
+  zugleich ein Anlass, den Rechner zu zeigen. Der Punkt liegt deshalb im
+  `foerder-news-waechter` (täglich), Runbook `scripts/gruengas-verify.md`
+  Schritt 4 — dort wird ohnehin das Quotengesetz nach § 42a verfolgt, das bis zum
+  1. Dezember 2026 vorzulegen ist und Heizöl ausdrücklich einschließt. **Hier
+  nichts doppelt prüfen** — zwei Wächter auf derselben Frage erzeugen
+  widersprüchliche Befunde.
 - **OFFEN (bis 01/2027): Wartungskosten Heizöl.** `gasMaintenance` gilt aktuell
   für Gas UND Öl. Dass eine Ölheizung mit Tankprüfung und zusätzlichen
   Schornsteinfeger-Terminen real teurer in der Wartung ist, ist plausibel — uns
