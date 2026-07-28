@@ -41,6 +41,7 @@ type Lead = {
   widget_anfrage: boolean | null;
   ref_token: string | null;
   ref_klicks: number | null;
+  atlas_path: string | null;
   mastr_regions: Region | Region[];
 };
 
@@ -315,7 +316,15 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
     <tr style={{ borderTop: `1px solid ${v("--color-border")}`, opacity: busy ? 0.6 : 1 }}>
       {/* Gemeinde */}
       <td style={tdStyle}>
-        <div style={{ fontWeight: 700 }}>{r?.name ?? lead.region_id}</div>
+        <div style={{ fontWeight: 700 }}>
+          {lead.atlas_path ? (
+            <a href={lead.atlas_path} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>
+              {r?.name ?? lead.region_id} ↗
+            </a>
+          ) : (
+            (r?.name ?? lead.region_id)
+          )}
+        </div>
         <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
           {r?.bezeichnung ?? "Gemeinde"}
           {r?.population != null && ` · ${r.population.toLocaleString("de-DE")} Ew.`}
@@ -346,8 +355,15 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
         )}
       </td>
 
-      {/* Ask-Variante + Klickzählung */}
+      {/* Ask-Variante + Klickzählung — nur für Zeilen in einer Kampagne.
+          Ohne Versandliste hat die Spalte nichts zu sagen: ein leeres Auswahlfeld
+          und ein Häkchen „Widget angefragt" auf 11.000 Gemeinden sind Rauschen,
+          keine Information. */}
       <td style={tdStyle}>
+        {!lead.kampagne ? (
+          <span style={{ fontSize: 11, color: v("--color-text-muted") }}>nicht in Versandliste</span>
+        ) : (
+        <>
         <select
           value={lead.ask_variante ?? ""}
           onChange={(e) => patch({ ask_variante: e.target.value })}
@@ -378,6 +394,8 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           />
           Widget angefragt
         </label>
+        </>
+        )}
       </td>
 
       {/* Kontakt */}

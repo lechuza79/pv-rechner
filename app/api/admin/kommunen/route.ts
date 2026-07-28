@@ -76,8 +76,29 @@ export async function GET(req: NextRequest) {
   const { data, count, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  // Atlas-Pfad je Zeile: EINE Abfrage für alle benötigten Slugs statt
+  // atlasPathForRegionId je Gemeinde (das wären bis zu 100 Aufrufe pro Seite).
+  // Die Hierarchie steckt im Schlüssel: 2 Stellen Bundesland, 5 Landkreis,
+  // 8 Gemeinde.
+  const zeilen = (data ?? []) as { region_id: string }[];
+  const ids = new Set<string>();
+  for (const z of zeilen) {
+    ids.add(z.region_id.slice(0, 2));
+    ids.add(z.region_id.slice(0, 5));
+    ids.add(z.region_id);
+  }
+  const { data: slugRows } = await serviceDb
+    .from("mastr_regions")
+    .select("region_id, slug")
+    .in("region_id", Array.from(ids));
+  const slugOf = new Map((slugRows ?? []).map((r) => [r.region_id as string, r.slug as string | null]));
+  const atlasPfad = (id: string): string | null => {
+    const teile = [slugOf.get(id.slice(0, 2)), slugOf.get(id.slice(0, 5)), slugOf.get(id)];
+    return teile.every(Boolean) ? `/solar-atlas/${teile.join("/")}` : null;
+  };
+
   return NextResponse.json({
-    rows: data ?? [],
+    rows: zeilen.map((z) => ({ ...z, atlas_path: atlasPfad(z.region_id) })),
     total: count ?? 0,
     page,
     pageSize: PAGE_SIZE,
