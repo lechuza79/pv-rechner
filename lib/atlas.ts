@@ -585,6 +585,84 @@ export type ChildYearRow = {
   kwh: number;
 };
 
+/** Die drei Summen, aus denen die Nachbarschafts-Liste ihre vier Kennzahlen
+ *  bildet (je Einwohner = kwp ÷ Einwohner). */
+export type SiblingSums = { count: number; kwp: number; speicher: number };
+
+/** Eine Nachbargemeinde, fertig gerechnet für alle drei Eigentümer-Filter. */
+export type SiblingRow = {
+  region_id: string;
+  name: string;
+  slug: string | null;
+  population: number | null;
+  sums: Record<AtlasOwner, SiblingSums>;
+};
+
+/**
+ * Faltet das Zell-Korn eines Landkreises auf das zusammen, was eine
+ * GEMEINDESEITE davon wirklich braucht.
+ *
+ * WARUM (28.07.2026): Die Gemeindeseite verschickte das volle Korn — bei einem
+ * großen Kreis 4.867 Zellen, 516 KB und damit 71 % der ganzen Seite —, um damit
+ * eine Liste mit FÜNF Zeilen zu zeichnen. Das Korn war nötig, weil der Leser
+ * Eigentümer-Filter und Kennzahl umschalten kann, ohne dass nachgeladen wird.
+ * Das bleibt so; es sind aber nur 3 × 4 Kombinationen einer Fünf-Zeilen-Liste,
+ * und die lassen sich vorher ausrechnen: je Gemeinde und Eigentümer drei
+ * Summen statt ~37 Zellen. Nachladen wäre der schlechtere Weg gewesen — er
+ * kostet eine zusätzliche Anfrage, einen Ladezustand und nimmt der Liste den
+ * Platz im ausgelieferten HTML.
+ *
+ * Die JAHRES-Dimension fällt hier weg, und nur deshalb geht das: Die große
+ * Kreis-Tabelle (RankingTable) kann die Rangliste auf ein früheres Jahr
+ * zurückspulen und braucht das Korn weiterhin. Die Fünf-Zeilen-Liste auf der
+ * Gemeindeseite kennt keine Jahresauswahl.
+ *
+ * Diese Funktion ist zugleich die EINZIGE Stelle, an der „Leistung je Gemeinde"
+ * für die Gemeindeseite entsteht — Intro-Rang und Liste rechnen jetzt aus
+ * derselben Quelle. Vorher taten sie es getrennt und widersprachen sich:
+ * der Intro-Rang zählte die Wechselrichter-Leistung der Batteriespeicher zur
+ * „installierten Solarleistung" dazu (im Kreis Coesfeld 74.103 kWp auf 500.812
+ * kWp Solar, also gut 15 %), weil dort auf ein Segment „speicher" geprüft wurde,
+ * das es gar nicht gibt — die Segmente heißen `batterie_privat` und
+ * `batterie_gewerbe`. Der Kommentar daneben sagte bereits das Richtige
+ * („Speicher zählt nicht zur Leistung"), nur der Code tat es nicht.
+ */
+export function foldSiblings(regions: RankingRegion[], cells: ChildYearRow[]): SiblingRow[] {
+  const owners: AtlasOwner[] = ["alle", "privat", "gewerbe"];
+  const acc = new Map<string, Record<AtlasOwner, SiblingSums>>();
+  const empty = (): Record<AtlasOwner, SiblingSums> => ({
+    alle: { count: 0, kwp: 0, speicher: 0 },
+    privat: { count: 0, kwp: 0, speicher: 0 },
+    gewerbe: { count: 0, kwp: 0, speicher: 0 },
+  });
+
+  for (const c of cells) {
+    const bucket = acc.get(c.region_id) ?? empty();
+    for (const owner of owners) {
+      // Dieselbe Zuordnung wie in der Liste selbst: „alle" nimmt jedes Segment
+      // mit Eigentümer (`sonstige` bleibt draußen), sonst genau dessen Segmente.
+      const o = SEGMENT_OWNER[c.segment];
+      if (owner === "alle" ? o == null : o !== owner) continue;
+      // Batterien tragen ihre KAPAZITÄT (kWh) bei, nicht ihre Leistung — sie
+      // sind eine eigene Kennzahl und gehören nie in die Solarleistung.
+      if (c.segment.startsWith("batterie")) bucket[owner].speicher += c.kwh;
+      else {
+        bucket[owner].count += c.count;
+        bucket[owner].kwp += c.kwp;
+      }
+    }
+    acc.set(c.region_id, bucket);
+  }
+
+  return regions.map((r) => ({
+    region_id: r.region_id,
+    name: r.name,
+    slug: r.slug,
+    population: r.population,
+    sums: acc.get(r.region_id) ?? empty(),
+  }));
+}
+
 /** Region identity the table needs alongside the numbers. */
 export type RankingRegion = {
   region_id: string;

@@ -5,7 +5,7 @@ import Link from "next/link";
 import DonutChart from "../charts/DonutChart";
 import { IconArrowRight, IconChevronDown, IconChevronLeft, IconChevronRight } from "../Icons";
 import { v, tokens, space } from "../../lib/theme";
-import { SEGMENT_OWNER, type AtlasOwner, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
+import { SEGMENT_OWNER, type AtlasOwner, type SiblingRow } from "../../lib/atlas";
 import {
   fmtPvLeistung as fmtLeistung,
   fmtSpeicherKwh,
@@ -192,15 +192,17 @@ export default function GemeindeHero({
   kpi,
   cells,
   siblings,
-  siblingCells,
   regionId,
   vergleichTitel,
   basePath,
 }: {
   kpi: Record<Owner, KpiOwnerData>;
   cells: HeroCell[];
-  siblings: RankingRegion[];
-  siblingCells: ChildYearRow[];
+  /** Die Nachbargemeinden, je Eigentümer-Filter fertig summiert. Bewusst NICHT
+   *  das Zell-Korn: das waren 71 % der ausgelieferten Seite für eine Liste mit
+   *  fünf Zeilen (Begründung an foldSiblings in lib/atlas.ts). Umschalten von
+   *  Filter und Kennzahl bleibt ohne Nachladen möglich. */
+  siblings: SiblingRow[];
   // Der Größenklassen-Vergleich stand hier einmal als Zeile in der Rangliste und
   // hat sie kaputtgemacht (drei Mal „Platz 1" in einer Liste, weil die Zeilen aus
   // einer anderen Grundgesamtheit kamen). Er lebt jetzt als eigene Kachelreihe
@@ -238,20 +240,9 @@ export default function GemeindeHero({
   // Rank every Gemeinde in the Kreis, client-side, from the same cells the big
   // table uses — that is what lets owner and metric recombine without a refetch.
   const ranked = useMemo(() => {
-    const acc = new Map<string, { count: number; kwp: number; speicher: number }>();
-    for (const c of siblingCells) {
-      if (!keep(c.segment)) continue;
-      const a = acc.get(c.region_id) ?? { count: 0, kwp: 0, speicher: 0 };
-      if (c.segment.startsWith("batterie")) a.speicher += c.kwh;
-      else {
-        a.count += c.count;
-        a.kwp += c.kwp;
-      }
-      acc.set(c.region_id, a);
-    }
     const rows = siblings
       .map((r) => {
-        const a = acc.get(r.region_id) ?? { count: 0, kwp: 0, speicher: 0 };
+        const a = r.sums[owner];
         const value =
           metric === "perCapita"
             ? r.population
@@ -260,7 +251,7 @@ export default function GemeindeHero({
             : a[metric];
         return { region: r, value };
       })
-      .filter((x): x is { region: RankingRegion; value: number } => x.value !== null);
+      .filter((x): x is { region: SiblingRow; value: number } => x.value !== null);
     rows.sort((a, b) => b.value - a.value);
     return rows.map((x, i) => ({
       region_id: x.region.region_id,
@@ -271,7 +262,7 @@ export default function GemeindeHero({
       isSelf: x.region.region_id === regionId,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [siblingCells, siblings, owner, metric, basePath, regionId]);
+  }, [siblings, owner, metric, basePath, regionId]);
 
   /**
    * Zwei Blöcke statt einer Liste — und das ist kein Layout-Detail.

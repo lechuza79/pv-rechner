@@ -1,0 +1,110 @@
+import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+/**
+ * Wächter gegen offene Punkte ohne Wecker.
+ *
+ * Der Anlass (07/2026): In zwei wächter-gepflegten Configs stand je ein bewusst
+ * vertagter Punkt als Kommentar — der Speicher-Wirkungsgrad im Balkon-Rechner
+ * ("90 % ist eine Herstellerangabe, 85 % wäre ehrlicher") und die Heiz-Effizienz
+ * im Klima-Rechner ("scop steht noch am Typenschild, seer schon nicht mehr").
+ * Beide Male war das Vertagen richtig: die Werte verschieben Nutzer-Ergebnisse
+ * und gehören nicht im Vorbeigehen geändert. Falsch war nur, dass nichts sie
+ * wieder auf den Tisch gebracht hat. Der Quartals-Wächter meldete sie als
+ * "weiterhin offen", das Runbook trug ein "beim nächsten Lauf entscheiden" —
+ * und so hätte es beliebig lange weitergehen können.
+ *
+ * CLAUDE.md sagt dazu: kein "TODO 2027 anpassen", das ist eine tickende Bombe
+ * ohne Wecker. Dieser Test IST der Wecker. Er verbietet den offenen Punkt nicht,
+ * er verlangt nur eine Frist — und schlägt an, sobald sie verstreicht.
+ *
+ * Wer die Frist reißt, hat drei ehrliche Antworten:
+ *   1. Punkt auflösen (Wert belegen, Kommentar durch die Herleitung ersetzen).
+ *   2. Frist verlängern — sichtbar, mit Begründung, im selben Commit.
+ *   3. Punkt schließen: "so gewollt" begründen und den Marker entfernen.
+ * Was NICHT geht: den Marker still stehen lassen.
+ */
+
+const ROOT = join(__dirname, "..", "..");
+
+/** Configs, deren Werte ein Wächter turnusmäßig prüft (alle mit validFrom/reviewBy). */
+const CONFIGS = [
+  "lib/aircon-config.ts",
+  "lib/balkon-config.ts",
+  "lib/co2-config.ts",
+  "lib/feedin-config.ts",
+  "lib/greengas-config.ts",
+  "lib/heatpump-config.ts",
+  "lib/prices-config.ts",
+];
+
+/** Ein Marker, der einen unerledigten Punkt anzeigt. */
+const MARKER = /\b(OFFEN|OFFENER PUNKT|TODO|FIXME)\b/;
+
+/**
+ * Pflicht-Form der Frist: `OFFEN (bis MM/JJJJ)`.
+ * Bewusst monatsgenau statt taggenau — die Wächter laufen im Quartalsrhythmus,
+ * ein Tagesdatum würde Genauigkeit vortäuschen, die es nicht gibt.
+ */
+const FRIST = /\b(?:OFFEN|OFFENER PUNKT|TODO|FIXME)\b[^)\n]*?\(bis (\d{2})\/(\d{4})\)/;
+
+/**
+ * Rückverweise auf einen anderswo geführten Punkt. Sie tragen selbst keine Frist,
+ * weil sie keine eigene ist — die Frist steht an der Stelle, auf die sie zeigen.
+ * Erkennbar am Verweis, nicht an einer Ausnahmeliste: wer `siehe "…"` schreibt,
+ * sagt damit, wo der Punkt wirklich geführt wird.
+ */
+const RUECKVERWEIS = /siehe\s+["„»]?(?:OFFEN|TODO)/i;
+
+/** Letzter Tag des Monats — eine Frist "bis 10/2026" läuft am 31.10.2026 ab. */
+function fristEnde(monat: number, jahr: number): Date {
+  return new Date(jahr, monat, 0, 23, 59, 59);
+}
+
+describe("Wächter: offene Punkte haben eine Frist", () => {
+  it("jeder offene Punkt in einer Wächter-Config nennt eine Frist (bis MM/JJJJ)", () => {
+    const ohneFrist: string[] = [];
+
+    for (const rel of CONFIGS) {
+      readFileSync(join(ROOT, rel), "utf8").split("\n").forEach((zeile, i) => {
+        if (!MARKER.test(zeile)) return;
+        if (RUECKVERWEIS.test(zeile)) return;
+        if (FRIST.test(zeile)) return;
+        ohneFrist.push(`${rel}:${i + 1}  ${zeile.trim()}`);
+      });
+    }
+
+    // Bei einem Treffer: Frist ergänzen — `OFFEN (bis 10/2026)` — oder den Punkt
+    // auflösen. Die Regex aufweichen ist nie die Lösung; sie ist der einzige
+    // Grund, warum ein vertagter Punkt überhaupt wiederkommt.
+    expect(ohneFrist, "offener Punkt ohne Frist").toEqual([]);
+  });
+
+  it("keine Frist ist verstrichen", () => {
+    const heute = new Date();
+    const abgelaufen: string[] = [];
+
+    for (const rel of CONFIGS) {
+      readFileSync(join(ROOT, rel), "utf8").split("\n").forEach((zeile, i) => {
+        const treffer = FRIST.exec(zeile);
+        if (!treffer) return;
+        const [, mm, jjjj] = treffer;
+        const ende = fristEnde(Number(mm), Number(jjjj));
+        if (ende >= heute) return;
+        abgelaufen.push(`${rel}:${i + 1}  Frist ${mm}/${jjjj} abgelaufen — ${zeile.trim()}`);
+      });
+    }
+
+    // Jetzt entscheiden: auflösen, Frist begründet verlängern oder Punkt schließen.
+    expect(abgelaufen, "Frist eines offenen Punkts verstrichen").toEqual([]);
+  });
+
+  it("prüft die Configs wirklich (Schutz gegen einen leerlaufenden Wächter)", () => {
+    // Ein Scan-Test, der nichts findet, weil er nichts liest, meldet fälschlich
+    // "alles sauber". Deshalb: die Dateien müssen existieren und Inhalt haben.
+    for (const rel of CONFIGS) {
+      expect(readFileSync(join(ROOT, rel), "utf8").length, `${rel} nicht lesbar`).toBeGreaterThan(200);
+    }
+  });
+});

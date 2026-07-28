@@ -5,7 +5,7 @@ import ChartActionBar from "../../../../components/ChartActionBar";
 import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
-import { calcBegSubsidy } from "../../../../lib/heatpump";
+import { calcBegSubsidy, calcInvestBrutto } from "../../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../../lib/heatpump-config";
 
 // Förder-Check: a slim, embeddable calculator that answers one question —
@@ -40,8 +40,12 @@ const EINKOMMEN_OPTIONS: { key: string; label: string; sub: string; income?: num
 ];
 const incomeFor = (key: string) => EINKOMMEN_OPTIONS.find((o) => o.key === key)?.income;
 
-const INVEST_MIN = 10000;
-const INVEST_MAX = 45000;
+// Regler-Spanne + Startwert an echten Angeboten (Verbraucherzentrale RLP,
+// Auswertung von 160 Luft-Wasser-Angeboten: 20.228–63.061 €, Median 34.979 €).
+// Startwert = die Rechner-Investition für die Median-Leistung 10 kW, damit
+// Widget und Wärmepumpen-Rechner nicht auseinanderlaufen.
+const INVEST_MIN = 15000;
+const INVEST_MAX = 60000;
 
 // ── Flow-Screens ──
 // Reihenfolge fragt nur ab, was den Fördersatz wirklich bewegt. Neubau kürzt
@@ -78,7 +82,7 @@ export default function FoerderCheckWidget() {
   const [selbstnutzer, setSelbstnutzer] = useState(true);
   const [einkommen, setEinkommen] = useState("none");
   const [kind, setKind] = useState(false);
-  const [invest, setInvest] = useState(22000);
+  const [invest, setInvest] = useState(calcInvestBrutto("lwwp", 10, false));
 
   const go = (next: Screen) => {
     setHistory((h) => [...h, screen]);
@@ -648,9 +652,10 @@ function ResultView({
               </summary>
               <div style={{ fontSize: 11, color: "var(--widget-muted)", lineHeight: 1.5, marginTop: 6 }}>
                 Der Startwert ist eine typische Komplettinvestition aus Gerät und Einbau für ein
-                Einfamilienhaus: grob eine Grundpauschale plus Kosten je Kilowatt Heizleistung, abgeleitet
-                aus laufend aktualisierten Marktpreisen. Dein tatsächlicher Preis hängt von Heizlast,
-                Gebäude und Angebot ab – schieb den Regler einfach auf dein Angebot.{" "}
+                Einfamilienhaus mit 10 Kilowatt Heizleistung. Er ist an einer Auswertung von 160 echten
+                Angeboten durch die Verbraucherzentrale Rheinland-Pfalz kalibriert (Bruttopreise, Median
+                rund 35.000 Euro, Spanne 20.000 bis 63.000 Euro). Dein tatsächlicher Preis hängt von
+                Heizlast, Gebäude und Angebot ab – schieb den Regler einfach auf dein Angebot.{" "}
                 <a
                   href={CTA_URL}
                   target="_blank"

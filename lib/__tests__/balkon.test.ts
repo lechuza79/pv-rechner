@@ -185,6 +185,36 @@ describe("calcBalkon", () => {
   });
 });
 
+// Realitaets-Anker fuer den Speicher-Wirkungsgrad (Waechter-Gate, Regel 7).
+// Er ist die Stellschraube, an der die Speicher-Empfehlung haengt, und war bis
+// 07/2026 eine Herstellerangabe (0,90) — ueber dem Bestpunkt des besten je
+// gemessenen Geraets. Aufgeloest per Council (3/3, adversarialer Pruefer
+// eingeschlossen) gegen die HTW-Dokumentation; Herleitung im Kommentar in
+// balkon-config.ts, Primaerquelle in docs/quellen/.
+describe("Speicher-Wirkungsgrad: Realitaets-Anker", () => {
+  // HTW Berlin, Stecker-Solar-Simulator, Dokumentation der Berechnungsgrundlagen
+  // V3.0, Kap. 4.2 — woertlich am PDF geprueft (docs/quellen/):
+  // "ein mittlerer Umwandlungswirkungsgrad im Lade- bzw. Entladebetrieb von
+  //  91,7 % bzw. 92 % ..., der Batteriewirkungsgrad betraegt 97,8 %."
+  const HTW_LADEN = 0.917, HTW_ENTLADEN = 0.920, HTW_BATTERIE = 0.978;
+
+  it("entspricht der HTW-Wirkungsgradkette fuer diese Geraeteklasse", () => {
+    const kette = HTW_LADEN * HTW_ENTLADEN * HTW_BATTERIE; // = 0,82508
+    expect(CFG.storageRoundtrip,
+      "Wirkungsgrad weicht von der HTW-Kette ab — neue Quelle? Dann Wert, Kommentar und diesen Test gemeinsam nachziehen (scripts/balkon-verify.md)")
+      .toBeCloseTo(kette, 3);
+  });
+
+  it("bleibt unter dem besten je gemessenen Geraet (89,7 % bei Volllast)", () => {
+    // Der HTW-Wert ist bereits eine Obergrenze: Standby- und Regelungsverluste
+    // sind laut derselben Quelle ausdruecklich NICHT abgebildet. Ein Jahreswert
+    // darf deshalb nie an den Bestpunkt eines Einzelgeraets heranreichen — im
+    // Jahresbetrieb dominiert die Grundlast, dort messen dieselben Geraete
+    // 71,6–79,5 %. Schlaegt das an, wurde ein Datenblatt abgeschrieben.
+    expect(CFG.storageRoundtrip).toBeLessThan(0.897);
+  });
+});
+
 describe("calcBalkon — Speicher", () => {
   it("without storage: no added kWh, self-used equals base, no storage payback", () => {
     const r = calcBalkon(base); // storageId default "none"

@@ -186,20 +186,55 @@ Dann per Auge in `lib/aircon-config.ts`:
       Fraunhofer ISE macht nur Wärmepumpen.) Falls doch → großer Fund, Config neu
       herleiten.
 
-### 4.5 Offener Punkt: SCOP steht noch am Typenschild
+### 4.5 Offener Punkt: SCOP ist noch ein Handwert (Frist 10/2026)
 
-`seer` ist seit 07/2026 die effektive Jahres-Effizienz, `scop` dagegen noch ein
-**Typenschild-Wert**. Innerhalb desselben Geräts ist Kühlen damit realistisch und
+`seer` ist seit 07/2026 die abgeleitete effektive Jahres-Effizienz, `scop` dagegen
+noch handgesetzt. Innerhalb desselben Geräts ist Kühlen damit realistisch und
 Heizen optimistisch gerechnet — dieselbe Asymmetrie, die die SEER-Systematik
 gerade beseitigt hat, nur auf der anderen Achse.
 
-- Die Studie hinter `AC_REAL_FACTOR` misst **SEER *und* SCOP** — der Faktor wäre
-  also belegt (SCOP-Label 4,0 bzw. 4,2 → real ~3,4 bzw. ~3,6).
-- Bewusst nicht mitgezogen, weil `scop` am **Wärmepumpen-Rechner** hängt
-  (`calcAirconHeating`, „Split als Teil-Ergänzung"). Eigener Scope, eigene Abnahme.
-- [ ] **Beim nächsten Lauf entscheiden:** mitziehen oder bewusst so lassen? Wenn
-      mitziehen → `labelScop` + `effectiveSeer`-Analogon einführen, WP-Rechner
-      gegenprüfen, dem Nutzer vorlegen.
+**Stand nach dem Lauf 07/2026 — recherchiert, aber am Gate gescheitert.** Das ist
+kein „noch nicht angeschaut", sondern ein benannter fehlender Beleg:
+
+| | Befund |
+|---|---|
+| Mobile Split (3,6) | **Kein Marktwert.** Einziger belegter Labelwert der Kategorie ist SCOP 4,0 (Midea PortaSplit; dieselbe OEM-Plattform auch als Qlima QsplitFlex und Trotec PAC-S 3510 SH, alle 4,0). Die Kategorie hat faktisch nur zwei Hardware-Plattformen. |
+| Fest installiert (4,2) | **Konsistent.** SCOP und SEER sind im Markt gekoppelt, weil Hersteller exakt auf die nächste Effizienzklasse zielen: SEER 6,1–7,0 → SCOP 4,0–4,2 · 8,5–8,8 → 4,6–4,8 · 9,5–10,5 → 5,1–5,2. Unser SEER-Label 6,5 gehört zu 4,0–4,2. |
+| Realabschlag Heizen | **Nicht belegt.** Erginer & Aydogdu (Energy and Buildings 350/2026, akkreditiertes Kalorimeter, 4 Split-Inverter) behandelt SEER und SCOP gemeinsam und berichtet „bis zu 50 %" für beide — die Aufteilung je Metrik steht nur im paywalled Volltext. |
+| Struktureller Faktor | **1,0.** Hilfsenergie und Abtauung sind in EN 14825 Abschnitt 3.19 enthalten (bestätigt über EHPA-Testregulation). Der eine echte Effekt außerhalb der Normgrenze — die Norm unterstellt ideale Wärmeverteilung, ein Split ist eine Punktquelle (Nordsyn 2019) — ist nirgends quantifiziert. |
+
+**Warum kein Auto-Fix:** Gate-Bedingung 1 verlangt eine Leitquelle, die *alle*
+Angaben enthält, die das Modell braucht. Der Heiz-Abschlag ist begründbar (dieselbe
+Studie, beide Richtungen), aber nicht belegt. Zusätzlich fällt die Umstellung in
+die Spalte „neue Effizienz-Systematik" der Befugnis-Tabelle → Vorschlag.
+
+**Zwei Fallen beim Auflösen:**
+1. **Nur als Paar bewegen.** Wer den SCOP allein auf den Mittelklasse-Median 4,6
+   zieht, beschreibt ein Gerät, das es nicht gibt (SEER 6,5 mit SCOP 4,6 kommt am
+   Markt nicht vor). Entweder beide auf Einstiegsklasse (6,5 / 4,1) oder beide auf
+   Mittelklasse (8,5 / 4,6).
+2. **Klimazone.** Das EU-Label deklariert drei Zonen; dasselbe Gerät trägt für
+   „Average" 4,0 und für „Warmer" 4,9. Nur **Average** (Straßburg, 1400 h) ist
+   unsere Basis. Wer versehentlich die Warmer-Spalte zieht, überschätzt um ~20 %.
+   Erkennbar an den 1400 Volllaststunden: `SCOP = Pdesign × 1400 h / Verbrauch`.
+
+**Schritte zum Auflösen (bis 10/2026):**
+- [ ] Volltext der Studie beschaffen (ca. 30 € oder Bibliothek) → `docs/quellen/`.
+      Gate-Regel 6: erst beschaffen, dann streichen. Ein Abruf, der an der Paywall
+      scheitert, ist kein Beleg für „gibt es nicht".
+- [ ] Trägt der Volltext einen SCOP-spezifischen Wert → `labelScop` +
+      `effectiveScop` analog `effectiveSeer` einführen, **beide** Split-Typen
+      gemeinsam umstellen (mobile 4,0 · fest 4,2 als Labelwerte).
+- [ ] Trägt er keinen → bewusst so lassen und das hier als „geprüft, Beleg
+      existiert nicht" abschließen, statt die Frist stumpf zu verlängern.
+- [ ] Wärmepreis-Invariante gegenprüfen (`lib/__tests__/aircon.test.ts`): Split-Wärme
+      muss unter Gas bleiben. Bei Umstellung auf 4,0/4,2 × 0,85 → 3,4/3,6, das ergibt
+      10,0 bzw. 9,4 ct/kWh gegen Gas 12,2 ct/kWh — hält, aber der Abstand schrumpft.
+- [ ] `/datenstand`-Zeile „wie der Heiz-Wert zustande kommt" mitziehen.
+
+Die Frist selbst hängt am Marker `OFFEN (bis 10/2026)` in `lib/aircon-config.ts`
+und wird von `lib/__tests__/offene-punkte-waechter.test.ts` erzwungen — läuft sie
+ab, schlägt der Pre-commit-Hook an.
 
 ### 4.6 Plausibilität gegen die Sekundärquellen
 

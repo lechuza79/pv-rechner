@@ -30,7 +30,10 @@ export interface HeatPumpConfig {
   flowTempFbh: number;     // underfloor heating
   flowTempHkNeu: number;   // modern radiators
   flowTempHkAlt: number;   // old radiators
-  // Investment (BWP Preisübersicht 2024, scaled by heat load)
+  // Investment: Bruttopreis (inkl. MwSt.) = base + perKw × Heizlast.
+  // Quelle LWWP: Verbraucherzentrale Rheinland-Pfalz, „Luft-Wasser-Wärmepumpen:
+  // Eine Auswertung von 160 Angeboten aus Rheinland-Pfalz" (Juni 2025) — echte
+  // Angebote an Ein-/Zweifamilienhäuser im Bestand, siehe Kalibrierung unten.
   investLwwpBase: number;
   investLwwpPerKw: number;
   investSwwpBase: number;
@@ -84,18 +87,37 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   flowTempFbh: 35,
   flowTempHkNeu: 45,
   flowTempHkAlt: 55,
-  // LWWP-Basis: marktabgeleitet aus der taptaphome-Kostenübersicht (Gerät 12–20k +
-  // Einbau 3–7,5k, typischer Gesamtpreis ~21k bei ~9,7 kW Referenz-Heizlast, minus
-  // €/kW-Steigung → ~9.500 €). Ersetzt die alte 18.000-Pauschale, die kleine Anlagen
-  // deutlich zu teuer rechnete. Dies ist der FALLBACK — der Scrape-Cron
-  // (/api/prices/scrape) hält den Live-Wert in market_prices frisch. Nur die Basis
-  // ist markt-getrackt; investLwwpPerKw bleibt als stabile Steigung fix.
-  // Ableitung + Selbstheilung: lib/heatpump-prices.ts.
-  investLwwpBase: 9500,
-  investLwwpPerKw: 1200,
+  // LWWP-Investition, kalibriert an echten Angeboten statt an Portal-Kostenseiten.
+  // Quelle: Verbraucherzentrale RLP, Auswertung von 160 Luft-Wasser-Angeboten
+  // (Angebote 01.10.2024–09.05.2025, Bruttopreise inkl. MwSt.; Volltext in
+  // docs/quellen/VZ-RLP_Auswertung-160-Waermepumpen-Angebote_2025-06.pdf):
+  //   Gesamtkosten  Median 34.979 € · Mittelwert 36.279 € (Min 20.228, Max 63.061), S. 4
+  //   Leistung      4–18 kW, Median 10 kW, S. 4
+  //   Kostenkategorien (Mittelwerte, S. 9): Montage/Lohn 6.997 + Elektro 3.032 +
+  //   Fundament 1.507 + hydraulischer Abgleich 1.159 + Warmwasser 2.589 +
+  //   Puffer 1.368 = 16.652 € — allesamt NICHT leistungsabhängig.
+  // Daraus: Basis 16.500 € (der größenunabhängige Block) und Steigung 1.850 €/kW,
+  // so dass der Median-Fall (10 kW) auf den Median-Preis 35.000 € trifft. Der Rest
+  // (Aggregat, Material, Marge) skaliert mit der Leistung.
+  // Die Nachfolge-Auswertung (VZ RLP, PM vom 02.07.2026, 160 Angebote) bestätigt das
+  // Niveau: 21.099–54.168 €, Ø ~36.400 €.
+  // WARUM nicht mehr gescrapt: Die frühere Basis (9.500 €) kam aus der
+  // taptaphome-Kostenübersicht und ergab für ein kleines Haus ~15.000 € — unter dem
+  // GÜNSTIGSTEN von 160 realen Angeboten. Die Quelle beziffert den Einbau mit
+  // 3.000–7.500 €, während allein Montage/Elektro/Fundament/Abgleich real ~12.700 €
+  // kosten. Ein Korrekturfaktor darauf wäre geraten — deshalb Config + Wächter
+  // (scripts/waermepumpe-verify.md), analog zu Sole/Wasser.
+  investLwwpBase: 16500,
+  investLwwpPerKw: 1850,
+  // Sole/Wasser = LWWP-Niveau + Erschließung (Bohrung), abzüglich Außeneinheit/Fundament.
+  // Ergibt bei 10 kW 46.000 € (LWWP 35.000 + ~11.000 € Bohrung) — im Marktband für
+  // Erdwärme-EFH. Nicht scrapebar (Bohrkosten hängen an Bohrmetern, nicht an kW).
   investSwwpBase: 28000,
   investSwwpPerKw: 1800,
-  heizkoerperTauschKosten: 6000,
+  // Heizkörpertausch: VZ RLP S. 6 — Ø 679 €, Median 642 € je Heizkörper (18 Angebote).
+  // Angesetzt sind ~6 kritische Heizkörper (Ziel: Vorlauf 55 → 45 °C), nicht die
+  // komplette Heizkörper-Sanierung.
+  heizkoerperTauschKosten: 4000,
   begGrundfoerderung: 0.30,
   begKlimaBonus: 0.16,
   begEinkommensStaffel: [
@@ -120,7 +142,7 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   years: 20,
   gasInflation: 0.02,
   stromInflation: 0.02, // p.a. — konsistent mit PV-Rechner (SCENARIOS realistic + electricityIncrease)
-  source: "Fraunhofer ISE WPsmart, BWP Preisübersicht 2024, KfW Merkblatt 458 (BEG EM, gültig ab 21.07.2026), BDEW",
-  validFrom: "2026-07-21",
-  reviewBy: "2027-01-25",   // vor der ersten Degression der Boni/Förderhöchstbeträge zum 01.02.2027
+  source: "Fraunhofer ISE WPsmart, Verbraucherzentrale RLP (Auswertung 160 Wärmepumpen-Angebote, 2025/2026), KfW Merkblatt 458 (BEG EM, gültig ab 21.07.2026), BDEW",
+  validFrom: "2026-07-27",
+  reviewBy: "2026-10-20",   // quartalsweiser Wächter (Jan/Apr/Jul/Okt); der Januar-Lauf 2027 fällt zusätzlich vor die Degression der Boni/Förderhöchstbeträge zum 01.02.2027
 };

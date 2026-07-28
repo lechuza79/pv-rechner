@@ -27,6 +27,7 @@ import {
   peerBand,
   getPeerContext,
   getRankingData,
+  foldSiblings,
   atlasOwnerSlice,
   speicherHinweis,
   type AtlasOwner,
@@ -274,23 +275,26 @@ export default async function GemeindePage({ params }: { params: Params }) {
     ? { daten: await getRankingData(blRegion ?? kreis!), was: "Kreise", wo: `in ${bl?.name ?? "diesem Bundesland"}` }
     : { daten: siblingData, was: "Kommunen", wo: kreis?.name ? `im ${kreis.name}` : "" };
 
-  // Rang der Gemeinde nach installierter Solarleistung im Landkreis — aus den
-  // Ranking-Zellen des Kreises aggregiert (Speicher zählt nicht zur Leistung).
-  // Fürs Intro (ein je Gemeinde verschiedener, konkreter Fakt).
-  const kwpByRegion = new Map<string, number>();
-  for (const c of siblingData.cells) {
-    if (c.segment === "speicher") continue;
-    kwpByRegion.set(c.region_id, (kwpByRegion.get(c.region_id) ?? 0) + c.kwp);
-  }
-  const kreisTotal = siblingData.regions.length || null;
+  // Die Vergleichsgruppe EINMAL auf das falten, was diese Seite braucht: je
+  // Gebiet und Eigentümer-Filter drei Summen statt des vollen Zell-Korns.
+  // Das Korn war 71 % der ausgelieferten Seite und diente einer Liste mit fünf
+  // Zeilen (Begründung an foldSiblings). Die Faltung ist ebenengenerisch, also
+  // gilt sie für Gemeinden im Kreis genauso wie für die Kreise eines Landes.
+  const siblings = foldSiblings(vergleich.daten.regions, vergleich.daten.cells);
+
+  // Rang der Gemeinde nach installierter Solarleistung im Landkreis — fürs
+  // Intro (ein je Gemeinde verschiedener, konkreter Fakt). Aus DERSELBEN
+  // Faltung wie die Liste darunter: vorher rechnete das hier eigenständig und
+  // zählte dabei die Leistung der Batteriespeicher zur Solarleistung dazu.
+  // Bei einer kreisfreien Stadt gibt es keinen Kreis-Rang — dort ist die
+  // Vergleichsgruppe das Bundesland, und ein „Platz im Landkreis" wäre gelogen.
+  const kreisTotal = istKreisfrei ? null : siblings.length || null;
   let rankInKreis: number | null = null;
   if (kreisTotal) {
-    const ownKwp = kwpByRegion.get(region.region_id) ?? atlas.solar.total_kwp;
-    let r = 1;
-    kwpByRegion.forEach((kwp, rid) => {
-      if (rid !== region.region_id && kwp > ownKwp) r++;
-    });
-    rankInKreis = r;
+    const own = siblings.find((s) => s.region_id === region.region_id);
+    const ownKwp = own ? own.sums.alle.kwp : atlas.solar.total_kwp;
+    rankInKreis =
+      1 + siblings.filter((s) => s.region_id !== region.region_id && s.sums.alle.kwp > ownKwp).length;
   }
 
   const crumbs: { label: string; href?: string }[] = [
@@ -354,7 +358,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
             perCapitaVsBl,
             kreisName: istKreisfrei ? null : (kreis?.name ?? null),
             rankInKreis: istKreisfrei ? null : rankInKreis,
-            kreisTotal: istKreisfrei ? null : kreisTotal,
+            kreisTotal,
             byYear: atlas.solar.by_year,
             lastYear,
           })}
@@ -367,8 +371,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
         <GemeindeHero
           kpi={kpi}
           cells={atlas.solar.by_segment}
-          siblings={vergleich.daten.regions}
-          siblingCells={vergleich.daten.cells}
+          siblings={siblings}
           regionId={region.region_id}
           vergleichTitel={`Top ${vergleich.was}${vergleich.wo ? ` ${vergleich.wo}` : ""}`}
           basePath={basePath}

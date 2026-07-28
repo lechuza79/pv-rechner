@@ -247,13 +247,13 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 **WP 10: Wärmepumpen-Rechner ✅ (done)**
 - [x] Eigener Flow `/waermepumpe` mit Neubau/Bestand-Umschalter (5 Steps)
 - [x] Kern-Berechnung in `lib/heatpump.ts` (Pure Functions): Heizwärmebedarf, JAZ, Investition, BEG-Förderung, 20-J-TCO
-- [x] Config in `lib/heatpump-config.ts` (zentralisiert, Admin-fähig strukturiert). `validFrom` + `reviewBy`; jährlicher Wächter (scheduled-task, Januar) + Runbook `scripts/waermepumpe-verify.md` prüft die preis-/förderabhängigen Werte (BEG, BWP-Invest, §14a-Tarif, Gas) gegen offizielle Quellen; mid-year-Förderänderungen fängt der `foerder-news-waechter` ab
+- [x] Config in `lib/heatpump-config.ts` (zentralisiert, Admin-fähig strukturiert). `validFrom` + `reviewBy`; **quartalsweiser** Wächter (scheduled-task, Jan/Apr/Jul/Okt) + Runbook `scripts/waermepumpe-verify.md` prüft die preis-/förderabhängigen Werte (BEG, Investition, §14a-Tarif, Gas) gegen offizielle Quellen. **Die Investitionswerte fixt er selbst** (Commit + Deploy), aber nur unter fünf Bedingungen: Leitquelle ist eine Auswertung echter Angebote mit Median-Preis **und** Median-Leistung **und** Kostenkategorien, Council-Konsens, die dokumentierte Rechenregel statt Handfaktor, Sprung ≤ 30 % je Feld und grüne Marktanker-Tests. Förderung, Tarife und Gaspreis bleiben Vorschlag (Rechtsfolge/Ermessen); mid-year-Förderänderungen fängt der `foerder-news-waechter` ab
 - [x] Heizwärmebedarf: Wohnfläche × spez. kWh/m²·a (dena-Gebäudereport, DIN V 18599) × **Haustyp-Faktor** (geteilte Wände, `HAUSTYP_WP` in constants) + 650 kWh/Person Warmwasser
 - [x] **Heizlast (Anlagengröße) getrennt vom Bedarf**: `calcHeatLoad` = Wohnfläche × spez. W/m² (`specHeatLoadBestand/Neubau`, Feldwerte) × Haustyp × `auslegungsfaktor` (0,85, reale monoenergetische Auslegung, min 4 kW). Ersetzt die alte `qGes/2000h`-Formel, die das Warmwasser mitzählte. **Editierbar** im Ergebnis (`override.heizlast`) — wer eine DIN-EN-12831-Berechnung hat, trägt sie ein
 - [x] **Haustyp-Abfrage** im Flow-Step „Größe & Typ" (freistehend / Doppelhaus / Reihenend / Reihenmitte)
 - [x] JAZ-Modell linear aus Fraunhofer ISE „WPsmart im Bestand" (LWWP/SWWP × Vorlauftemp)
 - [x] **Split-Heizen bewusst NICHT im WP-Rechner** (mehrfach durchdacht): Eine Split-Klima gegen Gas zu vergleichen passt nicht in den WP-Rechner (dort ist die Prämisse „ich hole eine Wärmepumpe"), und eine Split *zusätzlich* zur wasserführenden WP ergibt keinen Sinn (die WP heizt ohnehin alles inkl. Warmwasser). Der WP-Rechner kennt daher NUR Luft/Wasser + Sole/Wasser. Die ehrliche „Split heizt Teil der Übergangszeit günstiger als Gas"-Rechnung lebt im **Klima-Rechner** („Auch heizen?", `calcAirconHeating` in `lib/aircon.ts`, `device.scop` + `heatStandards` × `heatTransitionShare` in `aircon-config`) — dort hat man ein Kühlgerät, das nebenbei heizt. Der Heizwärmebedarf je Gebäudestandard ist dabei dieselbe Tabelle wie hier (`INSULATION_BESTAND`/`INSULATION_NEUBAU`) — beide Rechner teilen sie, damit sie nicht auseinanderdriften. Split-Heizwerte auf /datenstand (Klima-Sektion), Quartals-Geräte-Wächter prüft den SCOP.
-- [x] Investition nach Heizlast aus BWP Preisübersicht 2024. **Heizkörpertausch (+6.000 €) ist jetzt eine Maßnahme/Wahl** (bei alten Heizkörpern), nicht mehr automatisch aufgeschlagen — aktiv → Kosten UND bessere JAZ (55→45°C). Früher: Kosten ohne JAZ-Nutzen (Inkonsistenz behoben)
+- [x] Investition nach Heizlast, kalibriert an 160 echten Angeboten (Verbraucherzentrale RLP; Median 34.979 € bei 10 kW). **Heizkörpertausch (+4.000 €, ≈ 6 kritische Heizkörper à 679 €) ist eine Maßnahme/Wahl** (bei alten Heizkörpern), nicht mehr automatisch aufgeschlagen — aktiv → Kosten UND bessere JAZ (55→45°C). Früher: Kosten ohne JAZ-Nutzen (Inkonsistenz behoben)
 - [x] **Realistische Wege** (Szenario-Vergleich, dauerhaft bei Bestand): Ist / Heizkörper fit / Teilsanierung / Vollsanierung — jeder Weg mit €-Ergebnis + Amortisation + TCO-Aufschlüsselung im Tooltip. Sanierungskosten (Dämmung) NICHT in der WP-Rechnung (eigener Gebäude-Nutzen), Heizkörpertausch schon
 - [x] **Transparente BEG-Förderung** oben im Ergebnis: Grundförderung 30 % fest + Klima-Schalter (Eigennutz +16 %) + Einkommens-Auswahl (gestaffelt 40/30/10 % nach Haushaltseinkommen, +Kind-Familienzuschlag), Förderdeckel (28.000 €) sichtbar
 - [x] **Werte gegen Fachquellen geprüft (2026)**: spez. Heizlast korrigiert (Unterdimensionierungs-Bias behoben), WP-Tarif 0,24 €/kWh (Feld-Ø), Strom-CO₂ in Config (`gridCo2PerKwh`, konservativ statisch)
@@ -277,17 +277,23 @@ Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 
 - [x] Methodik-Seite zeigt aktuelle Preise + "Stand: Monat/Jahr"
 - [x] Admin-UI `/admin/prices` (Scrape-Trigger, manuelles Override, Historie)
 - [x] Preise aktualisiert auf Q1/2026 Marktpreise
-- [x] **WP-Grundpreis (Luft/Wasser) mitgescrapt** (Paket C): der monatliche Cron liest
-  zusätzlich die taptaphome-WP-Kostenübersicht (Gerät + Einbau je Typ) und leitet die
-  LWWP-Basis ab (`lib/heatpump-prices.ts`: typischer Gesamtpreis − fixe €/kW-Steigung
-  bei Referenz-Heizlast → Basis ~9.500 € statt der alten 18.000-Pauschale, die kleine
-  Anlagen ~8.500 € zu teuer rechnete). Live-Wert in `market_prices.wp_lwwp_base`
-  (Migration: `/api/prices/setup`), gelesen via `useHeatpumpPrices()` (WP-Rechner) +
-  `/datenstand`, Fallback = Config. Selbstheilung 1:1 wie bei PV/Speicher (Plausi-Grenzen,
-  „letzten Wert halten", Health-String kippt, Report-Zeile, Admin-Carry-forward); ein
-  WP-Scrape-Fehler blockiert **nie** die PV-Preise. NUR Luft/Wasser — Sole/Wasser bleibt
-  config-basiert (Bohrkosten sind fix, passen nicht ins Basis+kW-Schema). Grundpreis
-  damit aus dem jährlichen WP-Wächter herausgelöst (`scripts/waermepumpe-verify.md`).
+- [x] ~~WP-Grundpreis (Luft/Wasser) mitgescrapt (Paket C)~~ **am 27.07.2026 wieder
+  abgeschaltet — bewusste Rolle rückwärts.** Der Cron leitete die Luft/Wasser-Basis aus
+  einer Portal-Kostenübersicht ab (Einbau dort mit 3.000–7.500 € beziffert) und kam auf
+  ~9.500 € Basis. Für ein kleines, gut saniertes Haus (4,6 kW) rechnete der WP-Rechner
+  damit **15.020 €** — **weniger als das günstigste von 160 echten Angeboten**, die die
+  Verbraucherzentrale Rheinland-Pfalz ausgewertet hat (Minimum 20.228 €, Median 34.979 €
+  bei Median-Leistung 10 kW). Aufgefallen ist es an einem Nutzerkommentar („kein Angebot
+  unter 25.000 €"), nicht am Wächter. **Lehre:** Eine Portal-Kostenseite ist keine
+  Preisquelle für Gewerke — sie zählt den Einbau strukturell zu knapp, und ein
+  Korrekturfaktor darauf wäre geraten (dieselbe Linie wie bei den Geräte-Effizienzen:
+  „Wert wirkt zu niedrig" ist kein zulässiger Handfaktor). Investition liegt jetzt
+  vollständig in `lib/heatpump-config.ts`, kalibriert an der VZ-Angebotsauswertung
+  (Volltext in `docs/quellen/`), Regel: Basis = Summe der leistungsunabhängigen
+  Kostenkategorien, Steigung so, dass der Median-Fall den Median-Preis trifft. Gepflegt
+  vom quartalsweisen WP-Wächter (`scripts/waermepumpe-verify.md`, fixt die Investition
+  selbst), festgenagelt von den Marktankern in `lib/__tests__/heatpump.test.ts`. PV-/Speicher-/Strompreis-Scraping
+  läuft unverändert weiter; die DB-Spalten `wp_lwwp_*` bleiben als toter Altbestand liegen.
 
 **WP 9: Energiedaten-Datalake (in Arbeit)**
 - [x] Datenquellen-Recherche: Energy-Charts, Eurostat, SMARD, ENTSO-E, MaStR
@@ -726,7 +732,41 @@ Das verhindert "Cannot find module './XXX.js'" Fehler die auftreten wenn Dev-Ser
 
 **Function-Region `fra1` — BLOCKER, nicht ohne Not ändern.** Vercels Default für neue Projekte ist `iad1` (Washington), Supabase liegt in `eu-central-1`. In dieser Kombination kostet **jeder** DB-Roundtrip ~90 ms Atlantik-Latenz — eine Atlas-Seite macht Dutzende davon. Folge (24.–26.07.2026): Kaltrender einer Gemeindeseite 6,8–8,1 s, direkt am 8-s-Fast-Fail aus `lib/db-timeout.ts` → über 2.300 Timeouts und hunderte 500er quer über den Atlas, **zwei Tage lang unbemerkt**. Nach dem Umzug nach Frankfurt: 0,4–4,0 s. Region und `DB_READ_TIMEOUT_MS` hängen zusammen — wer die Functions aus der EU zieht, muss den Timeout mit anheben. Prüfen lässt es sich am zweiten Segment von `x-vercel-id` (`fra1::fra1::…`), der tägliche Wächter tut das automatisch.
 
+**Atlas-Präfix gehört als Literal in die Abfrage — BLOCKER.** Die ganze Atlas-Hierarchie hängt am AGS-Präfix (2 = Land, 5 = Kreis, 8 = Gemeinde), und `mastr_aggregates_gem` (591.024 Zeilen) hat dafür einen Index. Der greift **nur, wenn der Präfix beim Planen der Abfrage bekannt ist**. Supabase reicht Funktionsargumente als JSON-Nutzlast über einen LATERAL-Join herein — `region_id LIKE p_prefix || '%'` fällt damit auf einen vollständigen Tabellendurchlauf zurück. Deshalb bauen die Zweige, die auf die Rohtabelle gehen, ihre Bedingung mit `format(%L)` in den Abfragetext; die vier heißen Funktionen stehen dafür an **einer** Stelle (`lib/mastr-region-sql.ts`), aus der Setup-Route und `scripts/apply-region-functions.ts` beide lesen. Messung 28.07.2026: 590–650 ms → 67–80 ms je Aufruf, bei **zwei Aufrufen pro Gemeindeseite**.
+
+**Die Falle beim Nachmessen:** `EXPLAIN ANALYZE` mit einem Literal meldet 0,8 ms und einen sauberen Index-Scan — die Bremse ist im Plan gar nicht zu sehen, weil das Literal genau den Fall herstellt, der in Produktion nie eintritt. Belegt hat es erst `pg_stat_statements`. **Wer hier misst, misst den echten Aufrufweg**, nicht die von Hand nachgebaute Abfrage.
+
+**Und die Lehre über die Ursache hinaus: eine einzelne Seitenmessung konnte das prinzipiell nicht finden.** Allein aufgerufen lud die Gemeindeseite in ~1,2 s — grün — und kostete trotzdem jedes Mal zwei volle Tabellendurchläufe. Erst wenn mehrere Seiten gleichzeitig aufgebaut wurden (Suchmaschine, Aufwärmlauf), stauten die sich und rissen die 8-s-Notbremse: 3,2–6,3 s und reihenweise Abbrüche, während der Wächter kurz zuvor noch grün gemeldet hatte. Der Gesundheitscheck misst deshalb jetzt zusätzlich **die teuersten Datenbankabfragen einzeln** (rot ab 400 ms, gesund ~80 ms, `dbProbeVerdict` + `lib/__tests__/health-check-db-probe.test.ts`) — ein Frühindikator, der ohne Last funktioniert. Zwei weitere Messfehler sind dabei mit behoben: die Zufallsgemeinden kamen aus **aufeinanderfolgenden** Zeilen und lagen damit fast immer im selben Landkreis (nur die erste Seite war wirklich kalt, der Rest lief auf warmem Cache), und `x-vercel-cache: STALE` zählte als Kaltaufbau, obwohl das CDN dabei eine fertige Seite ausliefert.
+
 **`vercel.json` verträgt keine Kommentare.** Vercel validiert die Datei strikt gegen ein Schema und bricht den Deploy bei jedem unbekannten Top-Level-Schlüssel ab — auch bei einem reinen `"//kommentar"`. Das scheitert **vor** dem Build, also ohne Build-Log und ohne sichtbaren Fehlergrund (State `ERROR`, leere Logs). Begründungen gehören daher in den Code, den die Einstellung betrifft (hier: `lib/db-timeout.ts`), nicht in die Konfigurationsdatei.
+
+### Wächter-Gate — BLOCKER für alle Wächter
+
+**`scripts/waechter-gate.md` ist die gemeinsame Prüfschwelle aller Wächter und
+hat Vorrang vor dem einzelnen Task-Prompt.** Die fachlichen Runbooks sagen, *was*
+geprüft wird; das Gate sagt, *wann ein Wächter selbst ändern darf.*
+
+**Warum (27.07.2026):** Die Wächter meldeten Befunde an einen Menschen, der sie
+nicht prüft. Ein Vorschlag, den niemand liest, ist schlechter als eine
+automatische Korrektur — er täuscht ein Sicherheitsnetz vor. Die Bremse war nie
+„der Mensch prüft besser", sondern „hier gibt es mehrere vertretbare Antworten",
+und das trifft auf die wenigsten Werte zu. Rechtlich ist die Fallhöhe gering
+(kostenloser Informationsrechner, keine individuelle Beratung, Stand-Datum +
+„ohne Gewähr"); die echte Gefahr ist Glaubwürdigkeit — ein Haftungsausschluss
+repariert keine falsche Zahl.
+
+Das Gate enthält sieben Regeln gegen „Annahme als Tatsache", jede aus einem
+echten Fehlschlag: **Zustand vor Zahl** (Entwurf/beschlossen/verkündet/in Kraft
+/Studienannahme — Auto-Fix ändert den Wert, nie den Zustand), **Quelle = wer
+gemessen hat, nicht wer publiziert hat**, **Aussagen über unseren Code am Code
+prüfen**, **Kennzahl ≠ Zustand**, **kein Handfaktor**, **Fundstelle erst
+beschaffen, dann streichen**, **jede auto-gepflegte Zahl braucht einen
+Realitäts-Anker als Test**. Dazu die fünf Gate-Bedingungen (Leitquelle
+vollständig · Council mit adversarialem Prüfer · bei Rechtsbezug zusätzlich
+**Legal-Judge** · Sprunggrenze 30 % · Tests grün), die **Selbstkontrolle im
+Folgelauf** (jeder `[auto]`-Fix wird beim nächsten Lauf gegen die Quelle
+nachgeprüft und sonst zurückgenommen), der **wöchentliche Bericht „was habe ich
+selbst geändert"** und die Befugnis-Tabelle je Wächter.
 
 ### Monitoring
 
@@ -795,9 +835,24 @@ Gesamt-Org hat vier Projekte (`pv-rechner`, `life-is-a-binge`, `growth-assistant
 1. **Build-Cache reaktiviert** — `prebuild` räumt `.next/` nur lokal auf (siehe oben). Spart ~40–60% Build-Zeit auf Vercel.
 2. **Ignored Build Step** im Vercel Dashboard (Settings → Build and Deployment):
    ```sh
-   bash -c 'if git rev-parse HEAD^ >/dev/null 2>&1; then git diff --quiet HEAD^ HEAD -- ":!*.md" ":!.claude/"; else exit 1; fi'
+   bash -c 'if [ "$VERCEL_ENV" = "preview" ]; then exit 0; fi; if git rev-parse HEAD^ >/dev/null 2>&1; then git diff --quiet HEAD^ HEAD -- ":!*.md" ":!.claude/"; else exit 1; fi'
    ```
-   Überspringt Builds für Commits, die nur `*.md`-Dateien oder `.claude/` ändern (~10% der Commits).
+   Zwei Regeln, Exit 0 = Build überspringen:
+   - **Vorschau-Deployments werden komplett übersprungen** (seit 27.07.2026). Es gibt kein
+     Staging: entwickelt wird lokal, dann direkt auf `main`. Jeder Zweig-Push baute vorher
+     eine Vorschau, die **zuverlässig scheiterte** — die Preview-Umgebung hat zwar
+     `NEXT_PUBLIC_SUPABASE_*`, aber **keinen `SUPABASE_SERVICE_KEY`**, und `/solar-atlas`
+     stirbt beim Vorrendern an „Supabase not configured". Ergebnis waren Build-Minuten für
+     nie angesehene Builds plus eine Fehlermail pro Push. Bei ~11 parallelen Worktrees ist
+     das dauerhaft. Wer Vorschauen doch braucht: Service-Key in die Preview-Umgebung legen
+     UND diese Zeile entfernen — beides, sonst scheitert es weiter.
+   - Commits, die nur `*.md` oder `.claude/` ändern, werden übersprungen (~10 % der Commits).
+
+   **Die Bedingung ist bewusst positiv formuliert** (`= "preview"`, nicht `!= "production"`):
+   Wäre `VERCEL_ENV` je leer, würde die Negativform **jeden** Build überspringen — auch
+   Production. So herum gilt im Zweifel die alte Regel und die Live-Seite deployt weiter.
+   Verifiziert am 27.07.2026 mit einem Wegwerf-Zweig: Vorschau → `CANCELED` (kein Build,
+   keine Mail), `main` im selben Zeitraum → `READY`.
 3. **Middleware-Matcher** auf `/dashboard`, `/admin`, `/api/calculations`, `/auth/callback` beschränkt — öffentliche Seiten werden statisch ausgeliefert und umgehen Edge Middleware Invocations.
 4. **CDN-Cache-Header** auf `/api/weather` (s-maxage=900) und `/api/pvgis` (s-maxage=2592000) — die meisten Requests kommen aus dem Vercel-Edge-Cache statt Functions aufzurufen.
 
@@ -1092,7 +1147,7 @@ Was sich automatisch ändern sollte (Jahreszahlen, "aktuelle" Werte, "heute"-bez
 **Wann Hardcoden OK ist:**
 - **Dokument-Versionen** ("Stand: März 2026" in Datenschutz/Impressum) — soll mit Inhalt mitwachsen, NICHT autoupdaten.
 - **Config-Snapshots als Fallback** (`lib/feedin-config.ts`, `lib/prices-config.ts`, `lib/heatpump-config.ts`, `lib/co2-config.ts`) — bewusste Stichtags-Datenstände, DB hat die Live-Werte. `validFrom` dort ist eine echte Datenherkunft, kein Renderdatum. `lib/co2-config.ts` verankert die CO2-Preise zusätzlich an **absolute** Kalenderjahre (nicht an Projektions-Offsets), damit die Jahr→Preis-Zuordnung beim Jahreswechsel nicht still verrutscht; `reviewBy` + Runbook `scripts/co2-preis-verify.md` erzwingen die jährliche Prüfung gegen offizielle Prognosen.
-- **Historische Fakten** ("Kernenergie inländisch bis April 2023", "BWP Preisübersicht 2024") — passieren wirklich nur einmal.
+- **Historische Fakten** ("Kernenergie inländisch bis April 2023", "Angebotsauswertung 2025") — passieren wirklich nur einmal.
 - **Test-Fixtures** — deterministische Eingaben sind das Ziel.
 
 **Faustregel:** Bevor du irgendwo eine Jahreszahl, ein Datum oder einen "aktuell"-Wert reinschreibst, frag dich: *Was passiert damit am 1. Januar nächstes Jahr?* Wenn die Antwort "ich muss dran denken, das anzupassen" ist → falsch. Wenn die Antwort "soll genau so bleiben, weil es ein Stichtag ist" → richtig.

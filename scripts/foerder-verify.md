@@ -29,9 +29,11 @@ Pro Agent mitgeben: `name`, `traeger`, `region`, hinterlegte `url`, hinterlegter
 >
 > Vorgehen:
 > 1. WebSearch + WebFetch. Primärquelle = offizielle Seite. Wenn durch
->    Bot-Schutz (Cloudflare/JS, 403) nicht lesbar: offizielles Richtlinien-PDF,
->    Google-Cache oder seriöse Sekundärquellen (co2online, finanztip, regionale
->    Presse, Solarenergie-Förderverein) — Sekundärquellen klar kennzeichnen.
+>    Bot-Schutz (Cloudflare/JS, 403) nicht lesbar: **Eskalationsleiter fahren,
+>    Stufe für Stufe, nicht abkürzen** (siehe „Bot-geblockte Quellen" unten).
+>    Erst wenn auch der Browser scheitert, seriöse Sekundärquellen (co2online,
+>    finanztip, regionale Presse, Solarenergie-Förderverein) — und dann klar
+>    als Sekundärquelle kennzeichnen.
 > 2. Ermittle AKTUELL: Nimmt das Programm gerade Anträge an?
 >    (aktiv / ausgeschoepft / pausiert / eingestellt) und die konkreten Beträge.
 > 3. Vergleiche mit den hinterlegten Werten.
@@ -134,17 +136,74 @@ Je mehr Regionen im Katalog (aktuell ~110 Städte + 4 Kreise), desto wichtiger,
 dass der Voll-Lauf wirklich jedes Programm abdeckt — die Reichweite skaliert nur,
 wenn der Status verlässlich bleibt.
 
+## Bot-geblockte Quellen — BLOCKER: „nicht abrufbar" ist kein Befund
+
+Manche Träger sperren automatisierte Abrufe komplett aus (frankfurt.de liefert auf
+jede Anfrage 403 — Seite **und** Richtlinien-PDF, auch mit Browser-User-Agent).
+Solche Programme fallen sonst dauerhaft durch die Prüfung: Der Wächter sieht kein
+Signal und meldet „keine Änderung", obwohl er in Wahrheit gar nicht nachgesehen
+hat. Das ist die gefährlichste Form von Grün — Schweigen, das wie Bestätigung
+aussieht.
+
+**Eskalationsleiter, in dieser Reihenfolge:**
+1. `WebFetch` auf die offizielle Seite.
+2. `curl` mit Browser-User-Agent (fängt simple Filter ab).
+3. Offizielles Richtlinien-/Merkblatt-PDF direkt (oft anderer Pfad, teils offen).
+4. **Echter Browser** — `preview_start` mit der URL, dann `get_page_text`. Das ist
+   der Handweg und die Stufe, die den 403 tatsächlich löst. Nicht überspringen,
+   nur weil Stufe 1–3 gescheitert sind: genau dafür ist sie da.
+5. Erst wenn auch 4 scheitert: Sekundärquellen — und Verdikt `UNREACHABLE` mit
+   Vermerk, welche Stufen versucht wurden.
+
+**Sekundärquellen reichen nicht, um „geprüft" zu behaupten.** Belegt am
+Frankfurt-Lauf (26.07.2026): Suche und Aggregatoren bestätigten brav „Programm
+läuft, 20 %" — die Träger-Seite selbst nannte aber einen **anderen Höchstbetrag**
+(100.000 € gesamt statt der hinterlegten 50.000 €), eine **zusätzliche Bedingung**
+(Speicher/Ladesäule nur zusammen mit einer neuen PV-Anlage) und einen
+**Gemeinschaftsbonus** (+5 Prozentpunkte), von denen keine Sekundärquelle etwas
+wusste. Wer auf Stufe 3 stehen bleibt, hält einen veralteten Eintrag für bestätigt.
+
+**Melde-Politik:** Eine geblockte Quelle ist **kein** Grund für eine Nachricht an
+den Betreiber — sie ist ein Grund, den Browser zu starten. Gemeldet wird erst,
+wenn die ganze Leiter durch ist und die Tatsache trotzdem offen bleibt.
+
 ## Council bei Abweichung
 
 Findet die Prüfung bei einem Programm eine Abweichung (Satz geändert, Topf leer,
 Status anders), zuerst das **Council** laufen lassen (`scripts/council-verify.md`)
 — drei unabhängige Verifizierer, einer mit Widerlegungs-Auftrag, prüfen genau
-diesen einen Befund gegen. Förderung ist ein **Ermessensfall** (Kleingedrucktes,
-„aktiv vs. unsicher", strukturierter Satz vs. kein Abzug) → **kein Auto-Fix, auch
-bei Konsens**. Den vom Council bestätigten Befund als Vorschlag für
+diesen einen Befund gegen. Förderung ist im Kern ein **Ermessensfall**
+(Kleingedrucktes, „aktiv vs. unsicher", strukturierter Satz vs. kein Abzug) →
+für alles, was den Abzug **erhöht** oder ein Programm **einschaltet**: kein
+Auto-Fix, auch bei Konsens. Den bestätigten Befund als Vorschlag für
 `lib/funding-programs.ts` mailen; der Nutzer gibt frei.
 
+**Auto-Fix ist dagegen Pflicht, wenn beides zutrifft** (kein Ermessen, also auch
+kein Council nötig):
+- Die Tatsache wurde **wörtlich auf der Träger-Seite selbst** gelesen (Stufe 1–4
+  der Eskalationsleiter, nicht Sekundärquelle), **und**
+- die Änderung erhöht den Abzug nicht: Status auf ausgeschöpft/pausiert/
+  eingestellt, Satz runter, Deckel runter, zusätzliche Bedingung, Klarstellung
+  von Anzeigetext.
+
+Beispiel Frankfurt (26.07.2026): Höchstbetrag, Speicher-Kombi-Bedingung und
+Gemeinschaftsbonus direkt von frankfurt.de abgelesen → selbst gefixt, gemergt,
+DB nachgezogen. Eine Nachricht an den Betreiber wäre hier reine Arbeitsverlagerung
+gewesen: Es gab nichts zu entscheiden, nur etwas abzuschreiben.
+
 ## Changelog
+
+### Juli 2026 (Handprüfung Frankfurt, News-Wächter-Lauf 26.07.)
+- **Frankfurt Klimabonus** — DISCREPANCY, per Browser direkt an der Träger-Seite
+  abgelesen (WebFetch/curl/PDF alle 403). Sätze bestätigt (PV 20 %, Solar-Gründach
+  30 %, Speicher/Ladesäule 20 %, Mini-PV seit 03.06.2025 leer). Korrigiert:
+  Höchstbetrag „50.000 € je Maßnahmenbereich" → „100.000 €" (Wortlaut der
+  Trägerseite: „Die maximale Fördersumme beträgt 100 000 Euro"; die
+  Bereichs-Aufteilung stand nur bei Aggregatoren und ist raus). Bedingung „Speicher und Ladesäulen nur mit neuer PV-Anlage" ergänzt (fehlte);
+  Gemeinschaftsbonus +5 Prozentpunkte ergänzt; „Wallbox" → „Ladesäule",
+  „Dachbegrünung" → „Solar-Gründach" (Wortlaut der Richtlinie).
+  Rechenwirkung: keine — `percentOfCost: 0.2` unverändert, der Deckel greift bei
+  PV-Kosten erst jenseits von 250.000 €.
 
 ### Juni 2026 (erster Lauf, 13 Programme)
 - **Würzburg** — DISCREPANCY: fördert doch Standard-Dach-PV (150 €/kWp, max.
