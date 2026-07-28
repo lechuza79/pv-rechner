@@ -643,6 +643,187 @@ async function laufPruefung(dry: boolean): Promise<void> {
   log(`${zeilen.length} Prüfergebnisse geschrieben`, "ok");
 }
 
+// ─── Gebiets-Beleg von der Website ────────────────────────────────────────────
+
+/**
+ * Nennt der Versorger auf seiner eigenen Website die Gemeinden, die wir gemessen
+ * haben? Dann bestätigt er die Zuordnung selbst — ein dritter Identitätsbeleg
+ * neben Anschrift und Firmenname, und der einzige, der von ihm selbst stammt.
+ *
+ * Läuft NUR über die unsicheren Fälle. Für die 654 bestätigten wäre es
+ * unnötiger Verkehr auf fremden Servern.
+ *
+ * Abgrenzung zur Erfahrung der Kommunen-Session („Links aus der Navigation zu
+ * verfolgen bringt 1 brauchbaren Treffer auf 15"): Dort wurde nach einer
+ * unbekannten Adresse gesucht, deren Richtigkeit niemand nachprüfen konnte. Hier
+ * ist die Frage geschlossen — wir suchen nach EINER bekannten Liste von
+ * Ortsnamen und können jeden Treffer belegen. Verfolgt wird zudem nur ein
+ * eindeutig benannter Link („Netzgebiet", „Versorgungsgebiet"), nicht die
+ * ganze Navigation.
+ */
+const GEBIETS_LINK = /(netzgebiet|versorgungsgebiet|liefergebiet|versorgungsregion|unser[-\s]?netz|netzgebiete)/i;
+
+/** Wie viele Gemeinden des Gebiets die Seite nennen muss, damit es als Beleg
+ *  gilt. Eine einzelne Nennung kann die Adresse im Impressum sein. */
+const WEB_MIN_TREFFER = 2;
+
+function findeGebietsLink(html: string, basis: string): string | null {
+  const treffer = Array.from(html.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]{0,120}?)<\/a>/gi));
+  for (const m of treffer) {
+    const href = m[1];
+    const text = m[2].replace(/<[^>]+>/g, " ");
+    if (!GEBIETS_LINK.test(text) && !GEBIETS_LINK.test(href)) continue;
+    try {
+      return new URL(href, basis).toString();
+    } catch {
+      continue;
+    }
+  }
+  return null;
+}
+
+/** Gemeindenamen, die in einem Text an Wortgrenzen vorkommen. */
+function genannteOrte(text: string, orte: { ags: string; name: string }[]): Set<string> {
+  const klein = text.toLowerCase();
+  const out = new Set<string>();
+  for (const o of orte) {
+    const n = o.name.toLowerCase();
+    if (n.length < 4) continue;
+    const re = new RegExp(`(^|[^a-zäöüß])${n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^a-zäöüß]|$)`);
+    if (re.test(klein)) out.add(o.ags);
+  }
+  return out;
+}
+
+async function laufWebPruefung(dry: boolean, nurAmpel: string[]): Promise<void> {
+  const { toText } = await import("../lib/kommunen-profil");
+  const supabase = await makeClient();
+
+  const utils = (await alleZeilen(supabase, "utilities", "id, name, website, pruefung_ampel, pruefung")) as {
+    id: string;
+    name: string;
+    website: string | null;
+    pruefung_ampel: string | null;
+    pruefung: { test: string; ergebnis: string; text: string }[] | null;
+  }[];
+  const links = (await alleZeilen(supabase, "utility_communes", "utility_id, commune_id, rolle")) as {
+    utility_id: string;
+    commune_id: string;
+    rolle: string;
+  }[];
+  const regionen = (await alleZeilen(supabase, "mastr_regions", "region_id, name, level")) as {
+    region_id: string;
+    name: string;
+    level: string;
+  }[];
+  const nameByAgs = new Map(regionen.filter((r) => r.level === "gemeinde").map((r) => [r.region_id, r.name]));
+
+  const jeVersorger = new Map<string, { ags: string; name: string }[]>();
+  for (const l of links) {
+    if (l.rolle === "beteiligung") continue;
+    const arr = jeVersorger.get(l.utility_id) ?? [];
+    arr.push({ ags: l.commune_id, name: nameByAgs.get(l.commune_id) ?? l.commune_id });
+    jeVersorger.set(l.utility_id, arr);
+  }
+
+  const offen = utils.filter(
+    (u) => u.website && nurAmpel.includes(u.pruefung_ampel ?? "") && (jeVersorger.get(u.id)?.length ?? 0) > 0,
+  );
+  log(`${offen.length} unsichere Versorger mit Website werden gegen ihre eigene Seite geprüft`);
+
+  const zaehler = { erreicht: 0, gebietsseite: 0, belegt: 0, widerspruch: 0 };
+  const aenderungen: { id: string; name: string; pruefung_ampel: string; pruefung: unknown }[] = [];
+  let naechster = 0;
+
+  async function arbeiter(): Promise<void> {
+    for (;;) {
+      const i = naechster++;
+      if (i >= offen.length) return;
+      const u = offen[i];
+      const gebiet = jeVersorger.get(u.id) ?? [];
+      const start = /^https?:\/\//i.test(u.website!) ? u.website! : `https://${u.website}`;
+
+      const html = await holeSeite(start);
+      if (!html) continue;
+      zaehler.erreicht++;
+
+      let text = toText(html);
+      const gebietsUrl = findeGebietsLink(html, start);
+      if (gebietsUrl) {
+        const seite = await holeSeite(gebietsUrl);
+        if (seite) {
+          zaehler.gebietsseite++;
+          text += "\n" + toText(seite);
+        }
+      }
+
+      const genannt = genannteOrte(text, gebiet);
+      const befund =
+        genannt.size >= WEB_MIN_TREFFER
+          ? {
+              test: "website" as const,
+              ergebnis: "ok" as const,
+              text: `Die eigene Website nennt ${genannt.size} der ${gebiet.length} zugeordneten Gemeinden${gebietsUrl ? " (auch auf der Gebietsseite)" : ""}.`,
+            }
+          : genannt.size === 1
+            ? {
+                test: "website" as const,
+                ergebnis: "unpruefbar" as const,
+                text: "Die eigene Website nennt nur eine der zugeordneten Gemeinden — das kann die Anschrift sein.",
+              }
+            : gebietsUrl
+              ? {
+                  // Nur wenn der Versorger sein Gebiet ueberhaupt ausweist, ist
+                  // das Fehlen unserer Gemeinden eine Aussage.
+                  test: "website" as const,
+                  ergebnis: "auffaellig" as const,
+                  text: "Der Versorger weist sein Gebiet auf der Website aus — unsere Gemeinden stehen nicht darin.",
+                }
+              : {
+                  // Die meisten Seiten zaehlen ihre Gemeinden schlicht nicht auf.
+                  // Das ist kein Widerspruch, sondern Schweigen.
+                  test: "website" as const,
+                  ergebnis: "unpruefbar" as const,
+                  text: "Die Website nennt keine Gemeinden — sie weist ihr Gebiet nicht aus.",
+                };
+      if (befund.ergebnis === "ok") zaehler.belegt++;
+      if (befund.ergebnis === "auffaellig") zaehler.widerspruch++;
+
+      // Ampel neu bilden: die bisherigen Befunde plus der Website-Beleg.
+      const befunde = [...(u.pruefung ?? []).filter((b) => b.test !== "website"), befund];
+      const identitaet = befunde.filter((b) => ["sitz", "name", "website"].includes(b.test));
+      const widerspricht = identitaet.filter((b) => b.ergebnis === "auffaellig").length;
+      const bestaetigt = identitaet.filter((b) => b.ergebnis === "ok").length;
+      const qualitaet = befunde.filter((b) => ["streuung", "dominanz"].includes(b.test) && b.ergebnis === "auffaellig").length;
+      const ampel =
+        widerspricht > 0 && bestaetigt === 0 ? "rot" : widerspricht > 0 || bestaetigt === 0 || qualitaet > 0 ? "gelb" : "gruen";
+
+      aenderungen.push({ id: u.id, name: u.name, pruefung_ampel: ampel, pruefung: befunde });
+      if ((i + 1) % 25 === 0) log(`  [${i + 1}/${offen.length}] belegt ${zaehler.belegt}`);
+    }
+  }
+
+  await Promise.all(Array.from({ length: PARALLEL }, () => arbeiter()));
+
+  const neuGruen = aenderungen.filter((a) => a.pruefung_ampel === "gruen").length;
+  log(
+    `Erreicht ${zaehler.erreicht} · eigene Gebietsseite gefunden ${zaehler.gebietsseite} · ` +
+      `Gebiet belegt ${zaehler.belegt} · Website nennt keine der Gemeinden ${zaehler.widerspruch}`,
+    "ok",
+  );
+  log(`  davon jetzt bestätigt: ${neuGruen}`);
+
+  if (dry) {
+    log("Trockenlauf — nichts geschrieben", "ok");
+    return;
+  }
+  for (let i = 0; i < aenderungen.length; i += 200) {
+    const { error } = await supabase.from("utilities").upsert(aenderungen.slice(i, i + 200), { onConflict: "id" });
+    if (error) throw new Error(`Website-Prüfung schreiben: ${error.message}`);
+  }
+  log(`${aenderungen.length} Prüfergebnisse ergänzt`, "ok");
+}
+
 // ─── Website-Lauf: Ansprechpartner + Themen ───────────────────────────────────
 
 /**
@@ -918,11 +1099,12 @@ async function alleZeilen(supabase: SupabaseLike, tabelle: string, spalten: stri
 async function stats(): Promise<void> {
   const supabase = await makeClient();
 
-  const u = (await alleZeilen(supabase, "utilities", "id, name, typ, status")) as {
+  const u = (await alleZeilen(supabase, "utilities", "id, name, typ, status, pruefung_ampel")) as {
     id: string;
     name: string;
     typ: string;
     status: string;
+    pruefung_ampel: string | null;
   }[];
   const l = (await alleZeilen(supabase, "utility_communes", "utility_id, commune_id, rolle, zuordnung_quelle")) as {
     utility_id: string;
@@ -948,6 +1130,23 @@ async function stats(): Promise<void> {
   const doppelt = Array.from(proGemeinde.values()).filter((n) => n > 1).length;
   log(`${proGemeinde.size} Gemeinden abgedeckt, davon ${doppelt} bei mehreren Versorgern`);
 
+  // Stand der Gebiets-Pruefung — die wichtigste Zahl fuer die Nacharbeit.
+  const ampeln = new Map<string, number>();
+  for (const r of u as unknown as { pruefung_ampel?: string }[]) {
+    const k = r.pruefung_ampel ?? "ungeprüft";
+    ampeln.set(k, (ampeln.get(k) ?? 0) + 1);
+  }
+  const AMPEL_WORT: Record<string, string> = {
+    gruen: "bestätigt",
+    gelb: "teilweise prüfbar",
+    rot: "widersprüchlich",
+    "ungeprüft": "ungeprüft",
+  };
+  log("Gebiets-Prüfung:");
+  for (const [k, n] of Array.from(ampeln.entries()).sort((a, b) => b[1] - a[1])) {
+    log(`  ${AMPEL_WORT[k] ?? k}: ${n}`);
+  }
+
   const ohneGebiet = u.filter((r) => !gebiet.some((g) => g.utility_id === r.id));
   if (ohneGebiet.length) {
     log(`${ohneGebiet.length} Versorger ohne zugeordnete Gemeinde:`, "err");
@@ -963,18 +1162,20 @@ async function main(): Promise<void> {
   const doImport = argv.includes("--import");
   const doProfil = argv.includes("--profil");
   const doPruefen = argv.includes("--pruefen");
+  const doWebPruefen = argv.includes("--pruefen-web");
   const doStats = argv.includes("--stats");
   const doSeed = argv.includes("--seed-demo");
   const doClear = argv.includes("--clear-demo");
   const dry = argv.includes("--dry");
 
-  if (!doSetup && !doImport && !doProfil && !doPruefen && !doStats && !doSeed && !doClear) {
+  if (!doSetup && !doImport && !doProfil && !doPruefen && !doWebPruefen && !doStats && !doSeed && !doClear) {
     log(
       "Nichts zu tun. Flags:\n" +
         "  --setup       Tabellen anlegen/erweitern (idempotent)\n" +
         "  --import      Netzbetreiber + gemessene Netzgebiete aus dem Registerexport\n" +
         "  --profil      Websites abklopfen: Ansprechpartner + Themen\n" +
         "  --pruefen     Gebiete systematisch pruefen (Sitz, Name, Streuung, Dominanz)\n" +
+        "  --pruefen-web Unsichere Gebiete gegen die eigene Website des Versorgers pruefen\n" +
         "  --stats       Bestand + Deckung melden\n" +
         "  --seed-demo   12 Beispieldatensätze (Namen Platzhalter, Zahlen echt)\n" +
         "  --clear-demo  Beispieldatensätze wieder entfernen\n" +
@@ -988,6 +1189,7 @@ async function main(): Promise<void> {
   if (doClear) await clearDemo();
   if (doImport) await importRegister(dry, argv.includes("--refetch"));
   if (doPruefen) await laufPruefung(dry);
+  if (doWebPruefen) await laufWebPruefung(dry, ["gelb", "rot"]);
   if (doProfil) {
     const limitArg = argv.find((a) => a.startsWith("--limit="));
     await laufProfil({

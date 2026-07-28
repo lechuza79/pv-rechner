@@ -25,7 +25,7 @@
 // stimmt etwas nicht", nicht „diese Zuordnung ist falsch".
 
 export type PruefBefund = {
-  test: "sitz" | "name" | "streuung" | "dominanz";
+  test: "sitz" | "name" | "streuung" | "dominanz" | "website";
   ergebnis: "ok" | "auffaellig" | "unpruefbar";
   text: string;
 };
@@ -312,7 +312,10 @@ export function pruefeGebiet(e: PruefEingabe): Pruefung {
   // Dienstleisters, versorgt aber Weidenthal — der Name hat recht, die Anschrift
   // führt in die Irre. Rot wird es deshalb erst, wenn KEIN Identitätstest
   // bestätigt und mindestens einer widerspricht.
-  const identitaet = befunde.filter((b) => b.test === "sitz" || b.test === "name");
+  // Die Website zählt als dritter Identitätsbeleg: Wenn ein Versorger auf seiner
+  // eigenen Seite die Gemeinden nennt, die wir gemessen haben, bestätigt er die
+  // Zuordnung selbst — unabhängig von Anschrift und Firmenname.
+  const identitaet = befunde.filter((b) => b.test === "sitz" || b.test === "name" || b.test === "website");
   const widerspricht = identitaet.filter((b) => b.ergebnis === "auffaellig").length;
   const bestaetigt = identitaet.filter((b) => b.ergebnis === "ok").length;
   const qualitaet = befunde.filter((b) => (b.test === "streuung" || b.test === "dominanz") && b.ergebnis === "auffaellig").length;
