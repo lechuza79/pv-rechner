@@ -44,7 +44,7 @@ keiner widerlegt ihn mit einer harten Primärquelle.
   strukturierten Satz-Felder entfernen), Regressionstest in
   `lib/__tests__/funding-data.test.ts` festschreiben → `npm run build` +
   `npx vitest run` grün → auf `main` mergen + pushen → DB nachziehen
-  (`/api/funding/setup?resync=1` + `node scripts/set-funding-verified.mjs $(date +%F)`)
+  (`/api/funding/setup?resync=1` + `node scripts/set-funding-verified.mjs $(date +%F) <geprüfte-id …>` — nur die Programme nennen, die in DIESEM Lauf an der Trägerquelle geprüft wurden; `--all` ist dem Voll-Lauf vorbehalten)
   → Worktree auflösen. Encoding-Regel: „eingestellt/ausgeschoepft" (Archiv-Seite
   bleibt) statt „unsicher" (nimmt die Stadtseite auf 404).
 - **Förderung — Ermessens-Richtung (Einschalten / Betrag rauf): NICHT selbst
