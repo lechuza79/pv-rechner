@@ -50,6 +50,11 @@ export const revalidate = 3600;
 //    Build, der nicht durchläuft, kostet dagegen ALLE Seiten. Wer den Vorrender
 //    zurückholen will, braucht vorher eine Wiederholung mit Backoff in der
 //    DB-Schicht — nicht einfach die Liste wieder füllen.
+//
+//    Das gilt erst recht seit Welle 0b (27.07.2026): Mit den ~400 Landkreisen
+//    ist die indexierte Menge viel zu groß zum Vorrendern. Sie kommen ebenfalls
+//    on-demand; warm hält sie der Aufwärm-Crawler (npm run atlas:warm) nach
+//    jedem MaStR-Lauf.
 export function generateStaticParams() {
   return [{ pfad: [] as string[] }];
 }

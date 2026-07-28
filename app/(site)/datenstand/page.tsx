@@ -132,17 +132,11 @@ const nf = (n: number) => n.toLocaleString("de-DE");
 const monthYear = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("de-DE", { month: "long", year: "numeric" });
 
-// Prices payload = PV/battery/electricity + the live Wärmepumpen-Grundpreis
-// (Luft/Wasser), both from the same market_prices row the calculator reads.
-type PricesWithWp = PriceConfig & { wpLwwpBase: number; wpLwwpPerKw: number };
-const DEFAULT_PRICES_WP: PricesWithWp = {
-  ...DEFAULT_PRICES,
-  wpLwwpBase: HP.investLwwpBase,
-  wpLwwpPerKw: HP.investLwwpPerKw,
-};
-
-async function fetchPrices(): Promise<PricesWithWp> {
-  if (!supabase) return DEFAULT_PRICES_WP;
+// Prices payload = PV/battery/electricity aus derselben market_prices-Zeile, die
+// der Rechner liest. Die Wärmepumpen-Investition steht NICHT hier: sie kommt aus
+// der Config (an echten Angeboten kalibriert, Wächter-gepflegt).
+async function fetchPrices(): Promise<PriceConfig> {
+  if (!supabase) return DEFAULT_PRICES;
   try {
     const { data } = await supabase
       .from("market_prices")
@@ -157,7 +151,7 @@ async function fetchPrices(): Promise<PricesWithWp> {
       .order("created_at", { ascending: false })
       .limit(1)
       .single();
-    if (!data) return DEFAULT_PRICES_WP;
+    if (!data) return DEFAULT_PRICES;
     return {
       pvPriceSmall: Number(data.pv_price_small),
       pvPriceLarge: Number(data.pv_price_large),
@@ -168,11 +162,9 @@ async function fetchPrices(): Promise<PricesWithWp> {
       electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : DEFAULT_PRICES.electricityIncrease,
       validFrom: data.valid_from,
       source: data.source,
-      wpLwwpBase: data.wp_lwwp_base != null ? Number(data.wp_lwwp_base) : HP.investLwwpBase,
-      wpLwwpPerKw: data.wp_lwwp_per_kw != null ? Number(data.wp_lwwp_per_kw) : HP.investLwwpPerKw,
     };
   } catch {
-    return DEFAULT_PRICES_WP;
+    return DEFAULT_PRICES;
   }
 }
 
@@ -307,13 +299,13 @@ export default async function DatenstandPage() {
             { label: "Spez. Heizbedarf Bestand (unsaniert–saniert)", value: `${HP.specDemandBestand[2]}–${HP.specDemandBestand[0]} kWh/m²·a` },
             { label: "Spez. Heizbedarf Neubau (KfW 40+–EnEV)", value: `${HP.specDemandNeubau[2]}–${HP.specDemandNeubau[0]} kWh/m²·a` },
             { label: "Warmwasser je Person", value: `${nf(HP.wwPerPerson)} kWh/a` },
-            { label: "Investition Luft/Wasser (Basis laufend aktualisiert)", value: `${nf(prices.wpLwwpBase)} € + ${nf(prices.wpLwwpPerKw)} €/kW` },
-            { label: "Investition Sole/Wasser", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },
+            { label: "Investition Luft/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investLwwpBase)} € + ${nf(HP.investLwwpPerKw)} €/kW` },
+            { label: "Investition Sole/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },
             { label: "BEG-Förderung (Grund + Boni)", value: `${nf(HP.begGrundfoerderung * 100)}–${nf(HP.begMaxRateLowIncome * 100)} %, max. ${nf(HP.begMaxCap)} €` },
             { label: "WP-Stromtarif (§ 14a EnWG)", value: `${(HP.wpTarif * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct/kWh` },
             { label: "Gas-Referenz", value: `${nf(HP.gasPriceCtPerKwh)} ct/kWh, ${nf(HP.gasCo2PerKwh * 1000)} g CO₂/kWh` },
           ]}
-          source={`${HP.source}. Luft/Wasser-Grundpreis laufend aus Marktdaten (taptaphome.com).`}
+          source={`${HP.source}. Investition kalibriert an der Auswertung von 160 realen Luft-Wasser-Angeboten (Verbraucherzentrale Rheinland-Pfalz): Median 34.979 €, Mittelwert 36.279 € bei einer Median-Leistung von 10 kW.`}
         />
 
         {/* ── Grüngas-Pfad (Gas-Referenz im WP-Rechner + Ratgeber) ── */}

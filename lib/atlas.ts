@@ -812,3 +812,33 @@ async function getPeerContextUncached(
 export const getPeerContext = unstable_cache(getPeerContextUncached, ["peer-context-v1"], {
   revalidate: 86400,
 });
+
+/** Bundesland-Slug + Kreis-Slug jedes Landkreises — für die Sitemap.
+ *
+ *  Eigene, schlanke Abfrage statt getChildren() je Bundesland: hier zählen nur
+ *  die Adressen, nicht die Kennzahlen. Eine Abfrage über ~416 Zeilen statt 16
+ *  Rollup-Aufrufe (siehe „DB schonen").
+ */
+async function getKreisPfadeUncached(): Promise<{ bundesland: string; kreis: string }[]> {
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase
+      .from("mastr_regions")
+      .select("region_id, level, slug, parent_region_id")
+      .in("level", ["bundesland", "landkreis"])
+      .not("slug", "is", null),
+    "getKreisPfade",
+  );
+  if (error) throw new Error(`getKreisPfade failed: ${error.message}`);
+  const rows = (data ?? []) as Pick<AtlasRegion, "region_id" | "level" | "slug" | "parent_region_id">[];
+  const blSlug = new Map(rows.filter((r) => r.level === "bundesland").map((r) => [r.region_id, r.slug!]));
+  return rows
+    .filter((r) => r.level === "landkreis" && r.parent_region_id && blSlug.has(r.parent_region_id))
+    .map((r) => ({ bundesland: blSlug.get(r.parent_region_id!)!, kreis: r.slug! }));
+}
+
+// Kreis-Slugs sind Gebiets-Stammdaten, keine Kennzahlen — dieselbe Haltbarkeit
+// wie Verzeichnis und Vorfahren (STAMMDATEN_TTL), nicht die Stunde der Anlagenzahlen.
+export const getKreisPfade = unstable_cache(getKreisPfadeUncached, ["kreis-pfade-v1"], {
+  revalidate: STAMMDATEN_TTL,
+});

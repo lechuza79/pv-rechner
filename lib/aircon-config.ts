@@ -293,8 +293,17 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
       seer: effectiveSeer(2.6, 0.7),   // → 1,5
       canHeat: false,    // Monoblock heizt real kaum sinnvoll (Abluftschlauch)
       perRoom: true,
-      pricePerUnit: 400, // Gerätepreis, keine Montage
-      priceRange: [0.65, 1.5], // ~250–600 € (Verbraucher-Tests 2025/26)
+      // Gerätepreis, keine Montage. 500 € = Mittelfeld, bewusst nicht die
+      // Einstiegsklasse: ein zu billiger Monoblock lässt die schlechteste
+      // Effizienz im Vergleich am besten dastehen.
+      // Belegt (geprüft 27.07.2026): Que Choisir 2026, von test.de referiert
+      // (29.05.2026): Ariston Mobis Plus 10 393 €, Bosch Cool 4000 567 €,
+      // Black+Decker BXAC9000E 693 €. ACHTUNG bei der Quellenangabe: test.de
+      // prüft seit 2021 KEINE Monoblöcke mehr selbst — das sind Zahlen der
+      // französischen Partnerorganisation. Marktbreite Spanne 300–700 €,
+      // Einstieg unter 300 € (verbraucher.online, 29.06.2026).
+      pricePerUnit: 500,
+      priceRange: [0.65, 1.5], // → ~325–750 €, deckt beide Belege ab
     },
     {
       id: "portasplit",

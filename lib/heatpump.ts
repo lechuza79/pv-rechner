@@ -6,7 +6,7 @@
 //   Heizlast = Wohnfläche × spez.Heizlast(W/m²) × Haustyp × Auslegungsfaktor
 //   JAZ      = a − b × T_Vorlauf                            (Fraunhofer ISE WPsmart)
 //   E_WP     = Q_ges / JAZ                                  (Energiebilanz)
-//   Invest   = base + perKw × Heizlast                      (BWP Preisübersicht)
+//   Invest   = base + perKw × Heizlast                      (VZ-Angebotsauswertung)
 //   BEG      = Grund 30% + Klima 16% (+Einkommen 40/30/10%, einkommensgestaffelt)  — Bestand only
 //   Gas-Ref  = fuelKwh × (price × 1.02^t + CO2_t)  + Grundgebühr + Wartung
 //   TCO_WP   = Invest_netto + Σ Strom + Σ Wartung

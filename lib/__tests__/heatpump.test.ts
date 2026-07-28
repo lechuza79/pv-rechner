@@ -117,8 +117,7 @@ describe("calcJAZ", () => {
 describe("calcInvestBrutto", () => {
   it("LWWP for 8 kW load = base + perKw × 8 (from config, not hardcoded)", () => {
     const r = calcInvestBrutto("lwwp", 8, false);
-    // Config-derived so the market-tracked base (auto-scraped, see heatpump-prices.ts)
-    // can move without breaking this test.
+    // Config-derived, damit eine gepflegte Marktanpassung den Test nicht bricht.
     expect(r).toBe(DEFAULT_HEATPUMP_CONFIG.investLwwpBase + DEFAULT_HEATPUMP_CONFIG.investLwwpPerKw * 8);
   });
 
@@ -126,10 +125,36 @@ describe("calcInvestBrutto", () => {
     expect(calcInvestBrutto("swwp", 8, false)).toBeGreaterThan(calcInvestBrutto("lwwp", 8, false));
   });
 
-  it("adds 6.000 € when the radiator swap measure is chosen", () => {
+  it("adds the radiator swap cost when the measure is chosen", () => {
     const withSwap = calcInvestBrutto("lwwp", 8, true);
     const withoutSwap = calcInvestBrutto("lwwp", 8, false);
-    expect(withSwap - withoutSwap).toBe(6000);
+    expect(withSwap - withoutSwap).toBe(DEFAULT_HEATPUMP_CONFIG.heizkoerperTauschKosten);
+  });
+
+  // ── Marktanker (BLOCKER: Zahlen-Korrektheit) ──────────────────────────────
+  // Quelle: Verbraucherzentrale Rheinland-Pfalz, Auswertung von 160 Angeboten für
+  // Luft-Wasser-Wärmepumpen (Angebote 10/2024–05/2025, Bruttopreise inkl. MwSt.;
+  // Volltext in docs/quellen/). Gesamtkosten Median 34.979 €, Mittelwert 36.279 €,
+  // Minimum 20.228 €; angebotene Leistungen 4–18 kW, Median 10 kW.
+  // Diese Tests halten das Preisniveau am Markt fest — sie schlagen an, wenn eine
+  // künftige Anpassung den Rechner wieder unter reale Angebote schiebt (2026-07:
+  // eine gescrapte Portal-Kostenseite ergab 15.020 € für ein kleines Haus, also
+  // WENIGER als das günstigste von 160 echten Angeboten).
+  describe("Marktanker gegen echte Angebote (VZ RLP, 160 Angebote)", () => {
+    it("trifft im Median-Fall (10 kW) den Median der realen Angebote (±10 %)", () => {
+      const r = calcInvestBrutto("lwwp", 10, false);
+      expect(r).toBeGreaterThan(34979 * 0.9);
+      expect(r).toBeLessThan(34979 * 1.1);
+    });
+
+    it("bleibt über dem günstigsten realen Angebot — auch bei der kleinsten Anlage", () => {
+      // 4 kW ist die untere Grenze sowohl der Auswertung als auch unserer Auslegung.
+      expect(calcInvestBrutto("lwwp", 4, false)).toBeGreaterThan(20228);
+    });
+
+    it("bleibt bei der größten Anlage (18 kW) unter dem teuersten realen Angebot", () => {
+      expect(calcInvestBrutto("lwwp", 18, false)).toBeLessThan(63061);
+    });
   });
 
   it("no swap cost by default (old radiators stay in place)", () => {
@@ -257,7 +282,7 @@ describe("calcHeatPump (full TCO)", () => {
     const ist = calcHeatPump({ ...baseInputs, heizsystem: "hk_alt", heizkoerperTausch: false });
     const mit = calcHeatPump({ ...baseInputs, heizsystem: "hk_alt", heizkoerperTausch: true });
     expect(mit.jaz).toBeGreaterThan(ist.jaz);                       // 55°C → 45°C
-    expect(mit.investBrutto).toBe(ist.investBrutto + 6000);         // Tauschkosten
+    expect(mit.investBrutto).toBe(ist.investBrutto + DEFAULT_HEATPUMP_CONFIG.heizkoerperTauschKosten);  // Tauschkosten
     expect(mit.eWp).toBeLessThan(ist.eWp);                          // weniger Strom
     expect(mit.tcoEinsparung).toBeGreaterThan(ist.tcoEinsparung);   // besseres Ergebnis
   });

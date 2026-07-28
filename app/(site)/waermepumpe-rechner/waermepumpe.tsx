@@ -9,7 +9,6 @@ import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCov
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
-import { useHeatpumpPrices } from "../../../lib/prices";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
@@ -87,15 +86,12 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // ── Resolved wohnfläche ──────────────────────────────────────
   const wohnflaeche = customFlaeche ?? WOHNFLAECHEN[flaecheIdx].m2;
 
-  // ── Live-Grundpreis (Luft/Wasser) aus den Marktdaten ─────────
-  // Nur die LWWP-Basis kommt live (gescrapt, siehe lib/heatpump-prices.ts) —
-  // der Rest der Config bleibt der geprüfte Snapshot. Für Sole/Wasser ohne Wirkung.
-  const hpPrices = useHeatpumpPrices();
-  const cfg = useMemo(() => ({
-    ...DEFAULT_HEATPUMP_CONFIG,
-    investLwwpBase: hpPrices.investLwwpBase,
-    investLwwpPerKw: hpPrices.investLwwpPerKw,
-  }), [hpPrices]);
+  // ── Rechen-Config ────────────────────────────────────────────
+  // Der geprüfte Config-Snapshot (lib/heatpump-config.ts). Die Investition kommt
+  // bewusst NICHT aus einer gescrapten Portal-Kostenseite, sondern ist an echten
+  // Angeboten kalibriert (Verbraucherzentrale RLP) und wird vom jährlichen
+  // WP-Wächter gepflegt — siehe scripts/waermepumpe-verify.md.
+  const cfg = DEFAULT_HEATPUMP_CONFIG;
 
   // ── Build inputs + calculate ─────────────────────────────────
   const fuel = WP_FUEL_OPTIONS.find(f => f.id === oFuel) ?? WP_FUEL_OPTIONS[0];
@@ -623,7 +619,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   ? <span style={{ fontStyle: "italic", color: v('--color-text-muted') }}>folgt dem Grüngas-Pfad (Block unten)</span>
                   : <InlineEdit value={Math.round((oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => setOGasPrice(v / 100)} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} />}</div>
                 <div>WP-Strompreis: <InlineEdit value={Math.round((oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => setOStromPrice(v / 100)} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
-                <div>Investition (netto): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} />{situation === "bestand" ? <span style={{ fontSize: 12, color: v('--color-text-muted') }}> · nach {Math.round(result.beg.rate * 100)} % Förderung</span> : null}</div>
+                <div>Investition (nach Förderung): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} />{situation === "bestand" ? <span style={{ fontSize: 12, color: v('--color-text-muted') }}> · {result.investBrutto.toLocaleString("de-DE")} € vor {Math.round(result.beg.rate * 100)} % Förderung</span> : null}</div>
               </div>
             </div>
 
@@ -712,7 +708,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 )}
 
                 <div style={{ fontSize: 11, color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, marginTop: 12, lineHeight: 1.6 }}>
-                  Quellen: Fraunhofer ISE „WPsmart im Bestand" (JAZ-Modell), BWP Preisübersicht 2024 (Investition), KfW Merkblatt 458 / BEG EM ab 21.07.2026 (Förderung), BDEW (Strom-/Gaspreise), dena-Gebäudereport &amp; DIN V 18599 (Heizwärmebedarf), BEHG + EU ETS2 (CO₂-Preispfad).
+                  Quellen: Fraunhofer ISE „WPsmart im Bestand" (JAZ-Modell), Verbraucherzentrale RLP, Auswertung von 160 Wärmepumpen-Angeboten (Investition), KfW Merkblatt 458 / BEG EM ab 21.07.2026 (Förderung), BDEW (Strom-/Gaspreise), dena-Gebäudereport &amp; DIN V 18599 (Heizwärmebedarf), BEHG + EU ETS2 (CO₂-Preispfad).
                 </div>
                 {inputs.situation === "bestand" && result.beg.amount > 0 && (
                   <div style={{ fontSize: 11, color: v('--color-text-muted'), paddingTop: 8, lineHeight: 1.6 }}>

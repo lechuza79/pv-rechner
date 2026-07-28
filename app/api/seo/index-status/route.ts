@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { gscConfigured, querySearchAnalyticsByDate } from "../../../../lib/gsc-search-analytics";
-import { daysSinceDownload, inspectUrls, listSitemaps, submitSitemap } from "../../../../lib/gsc-index-status";
+import {
+  brauchtNeueEinreichung,
+  countOwnSitemapUrls,
+  daysSinceDownload,
+  inspectUrls,
+  listSitemaps,
+  submitSitemap,
+} from "../../../../lib/gsc-index-status";
 
 // Indexierungsstatus statt nur Impressionen — die Lücke, an der die Auswertung
 // der Atlas-Freischaltung vorbeigelaufen ist. Drei Antworten in einem Aufruf:
@@ -77,33 +84,54 @@ export async function GET(req: Request) {
       : Promise.resolve([]),
   ]);
 
-  // Alter je Sitemap ausweisen und bei Bedarf neu einreichen.
+  // Neu einreichen, wenn Google lange nicht geschaut hat ODER unsere Sitemap
+  // inzwischen eine andere Zahl URLs führt als die, die Google gezählt hat.
+  //
+  // SELBSTHEILUNG NUR IN DER SICHEREN RICHTUNG (dieselbe Linie wie beim
+  // Förder- und Gesundheits-Wächter): Ist die Sitemap GEWACHSEN, sind neue
+  // Seiten live und Einreichen ist eindeutig richtig. Ist sie GESCHRUMPFT,
+  // sieht ein gewollter Wellen-Rückbau exakt so aus wie ein still ausgefallener
+  // Zweig in app/sitemap.ts (der Landkreis-Teil dort fängt Fehler bewusst ab).
+  // Im zweiten Fall würde automatisches Einreichen Google mitteilen, hunderte
+  // Seiten seien verschwunden — deshalb wird das nur gemeldet, nicht getan.
+  // `force=1` führt es nach menschlicher Klärung aus.
   const sitemapListe = Array.isArray(sitemaps) ? sitemaps : [];
-  const veraltet = sitemapListe.filter((s) => {
-    const tage = daysSinceDownload(s);
-    return tage === null || tage >= schwelleTage;
-  });
-  let erneutEingereicht: { path: string; ok: boolean; error?: string }[] | undefined;
-  if (resubmit && veraltet.length) {
+  const eigeneAnzahl = sitemapListe.length ? await countOwnSitemapUrls() : null;
+  const force = url.searchParams.get("force") === "1";
+  const geprueft = sitemapListe.map((s) => ({ s, pruefung: brauchtNeueEinreichung(s, eigeneAnzahl, schwelleTage) }));
+  const faellig = geprueft.filter((x) => force || x.pruefung.noetig);
+
+  let erneutEingereicht: { path: string; ok: boolean; grund: string | null; error?: string }[] | undefined;
+  let zurueckgehalten: { path: string; grund: string | null }[] | undefined;
+  if (resubmit && faellig.length) {
     erneutEingereicht = [];
-    for (const s of veraltet) {
+    for (const { s, pruefung } of faellig) {
+      if (!force && !pruefung.automatisch) {
+        (zurueckgehalten ??= []).push({ path: s.path, grund: pruefung.grund });
+        continue;
+      }
+      const grund = force && !pruefung.noetig ? "erzwungen" : pruefung.grund;
       try {
         await submitSitemap(s.path);
-        erneutEingereicht.push({ path: s.path, ok: true });
+        erneutEingereicht.push({ path: s.path, ok: true, grund });
       } catch (e) {
-        erneutEingereicht.push({ path: s.path, ok: false, error: e instanceof Error ? e.message : "Fehler" });
+        erneutEingereicht.push({ path: s.path, ok: false, grund, error: e instanceof Error ? e.message : "Fehler" });
       }
     }
+    if (!erneutEingereicht.length) erneutEingereicht = undefined;
   }
+  const veraltet = faellig.map((x) => x.s);
 
   return NextResponse.json({
     configured: true,
     range: { start: ymd(start), end: ymd(end), days },
     sitemaps: sitemapListe.length
-      ? sitemapListe.map((s) => ({ ...s, tageSeitAbruf: daysSinceDownload(s) }))
+      ? sitemapListe.map((s) => ({ ...s, tageSeitAbruf: daysSinceDownload(s), eigeneUrls: eigeneAnzahl }))
       : sitemaps,
     sitemapVeraltet: veraltet.map((s) => s.path),
+    sitemapBefund: geprueft.filter((x) => x.pruefung.noetig).map((x) => ({ path: x.s.path, grund: x.pruefung.grund })),
     ...(erneutEingereicht ? { erneutEingereicht } : {}),
+    ...(zurueckgehalten ? { zurueckgehalten } : {}),
     urls: inspected,
     // Sichtbar machen, was weggelassen wurde — stilles Abschneiden liest sich
     // wie „alles geprüft", obwohl es das nicht war.
