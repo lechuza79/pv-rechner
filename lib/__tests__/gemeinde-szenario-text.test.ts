@@ -3,10 +3,31 @@ import { gemeindeSzenarioTexte, pvErtragSatz, szenarioUeberschrift } from "../ge
 import { NATIONAL_AVG_YIELD } from "../constants";
 
 describe("pvErtragSatz", () => {
+  // Es gibt drei Formulierungen je Richtung; geprüft wird die AUSSAGE, nicht
+  // eine bestimmte Formulierung — sonst nagelt der Test die Variation fest.
+  const alleFormen = (name: string, ertrag: number) =>
+    ["09679147", "08111000", "05315000", "02000000", "04011000", "13003000"].map((id) =>
+      pvErtragSatz(name, ertrag, id),
+    );
+
   it("ordnet den Standort gegen den Bundesschnitt ein", () => {
-    expect(pvErtragSatz("Höchberg", Math.round(NATIONAL_AVG_YIELD * 1.08))).toContain("8 % über dem Bundesschnitt");
-    expect(pvErtragSatz("Flensburg", Math.round(NATIONAL_AVG_YIELD * 0.88))).toContain("12 % unter dem Bundesschnitt");
-    expect(pvErtragSatz("Kassel", NATIONAL_AVG_YIELD)).toContain("im Bundesschnitt");
+    for (const t of alleFormen("Höchberg", Math.round(NATIONAL_AVG_YIELD * 1.08))) {
+      expect(t).toMatch(/8 %/);
+      expect(t).toMatch(/über dem Bundesschnitt|ergiebiger|besser als der Durchschnitt/);
+    }
+    for (const t of alleFormen("Flensburg", Math.round(NATIONAL_AVG_YIELD * 0.88))) {
+      expect(t).toMatch(/12 %/);
+      expect(t).toMatch(/unter dem Bundesschnitt|geringer/);
+    }
+    for (const t of alleFormen("Kassel", NATIONAL_AVG_YIELD)) {
+      expect(t).toMatch(/Bundesschnitt/);
+    }
+  });
+
+  it("formuliert verschieden, aber je Gemeinde immer gleich", () => {
+    const ertrag = Math.round(NATIONAL_AVG_YIELD * 1.08);
+    expect(new Set(alleFormen("Höchberg", ertrag)).size).toBeGreaterThan(1);
+    expect(pvErtragSatz("Höchberg", ertrag, "09679147")).toBe(pvErtragSatz("Höchberg", ertrag, "09679147"));
   });
 
   it("nennt die Gemeinde beim Namen", () => {
@@ -53,14 +74,26 @@ describe("szenarioUeberschrift", () => {
 });
 
 describe("gemeindeSzenarioTexte", () => {
-  it("beugt den Numerus mit", () => {
-    expect(gemeindeSzenarioTexte({ name: "Höchberg", balkonCount: 0 }).balkon).toContain("kein einziges");
-    expect(gemeindeSzenarioTexte({ name: "Höchberg", balkonCount: 1 }).balkon).toContain("genau eines");
-    expect(gemeindeSzenarioTexte({ name: "Höchberg", balkonCount: 2 }).balkon).toContain("sind bisher 2 gemeldet");
+  it("beugt den Numerus mit — in jeder Variante", () => {
+    const ids = ["09679147", "08111000", "05315000", "02000000", "04011000", "13003000"];
+    for (const regionId of ids) {
+      expect(gemeindeSzenarioTexte({ name: "Höchberg", regionId, balkonCount: 0 }).balkon).toMatch(
+        /kein einziges|keines/,
+      );
+      expect(gemeindeSzenarioTexte({ name: "Höchberg", regionId, balkonCount: 1 }).balkon).toMatch(
+        /genau eines/,
+      );
+      const viele = gemeindeSzenarioTexte({ name: "Höchberg", regionId, balkonCount: 2 }).balkon ?? "";
+      expect(viele).toContain("2");
+      // Keine Singular-Form bei Mehrzahl.
+      expect(viele).not.toMatch(/ist bisher|genau eines/);
+    }
   });
 
   it("setzt Tausenderpunkte", () => {
-    expect(gemeindeSzenarioTexte({ name: "Stuttgart", balkonCount: 6036 }).balkon).toContain("6.036");
+    expect(gemeindeSzenarioTexte({ name: "Stuttgart", regionId: "08111000", balkonCount: 6036 }).balkon).toContain(
+      "6.036",
+    );
   });
 
   it("schweigt ohne Zahl", () => {

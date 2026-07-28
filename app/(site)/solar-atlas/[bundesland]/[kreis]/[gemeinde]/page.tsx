@@ -332,6 +332,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
   // Seite ohnehin geladen hat — kein zusaetzlicher Zugriff.
   const szenarioTexte = gemeindeSzenarioTexte({
     name: region.name,
+    regionId: region.region_id,
     balkonCount: atlas.solar.by_segment.find((c) => c.segment === "steckersolar")?.count ?? null,
   });
 
@@ -388,12 +389,6 @@ export default async function GemeindePage({ params }: { params: Params }) {
         </div>
 
         <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
-        {/* Einleitung und Auszeichnung nebeneinander: Der Text sagt, wie die
-            Gemeinde dasteht, das Band daneben, wofür sie vorn liegt — zwei
-            Antworten auf dieselbe Frage, die untereinander wie zwei Anläufe
-            wirkten. Auf schmalen Bildschirmen stapeln sie (CSS in globals). */}
-        <div className="gemeinde-kopf">
-          <div style={{ minWidth: 0 }}>
         <CollapsibleIntro>
           {buildGemeindeHighlight({
             name: region.name,
@@ -402,6 +397,7 @@ export default async function GemeindePage({ params }: { params: Params }) {
             blName: bl?.name ?? "Landes",
             perCapita,
             perCapitaVsBl,
+            bezeichnung: region.bezeichnung,
             kreisName: istKreisfreiStadt ? null : (kreis?.name ?? null),
             rankInKreis: istKreisfreiStadt ? null : rankInKreis,
             kreisTotal,
@@ -409,13 +405,14 @@ export default async function GemeindePage({ params }: { params: Params }) {
             lastYear,
           })}
         </CollapsibleIntro>
-          </div>
-          <GemeindePlatzierungen regionId={region.region_id} />
-        </div>
 
         {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
         )}
+
+        {/* Die Auszeichnung als Schlagzeile direkt ueber der Hero-Sektion:
+            Sie gehoert zu den Kennzahlen, nicht neben den Einleitungstext. */}
+        <GemeindePlatzierungen regionId={region.region_id} />
 
         <GemeindeHero
           kpi={kpi}

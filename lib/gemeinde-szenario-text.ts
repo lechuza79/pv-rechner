@@ -29,6 +29,8 @@ export type SzenarioKontext = {
   name: string;
   /** Gemeldete Balkonkraftwerke in der Gemeinde. */
   balkonCount: number | null;
+  /** Waehlt die Satzvariante — stabil je Gemeinde. */
+  regionId?: string;
 };
 
 export type SzenarioTexte = {
@@ -63,9 +65,7 @@ const UEBERSCHRIFTEN = [
  * im Browser).
  */
 export function szenarioUeberschrift(name: string, regionId: string): string {
-  let summe = 0;
-  for (let i = 0; i < regionId.length; i++) summe += regionId.charCodeAt(i);
-  return UEBERSCHRIFTEN[summe % UEBERSCHRIFTEN.length](name);
+  return UEBERSCHRIFTEN[variante(regionId, UEBERSCHRIFTEN.length)](name);
 }
 
 /**
@@ -73,22 +73,58 @@ export function szenarioUeberschrift(name: string, regionId: string): string {
  * OHNE Zahlenwert und Einheit — beides steht schon in der Parameterzeile der
  * Karte, und Einheiten werden im Projekt nie zweimal getippt.
  */
-export function pvErtragSatz(name: string, ertragKwhKwp: number | null): string | null {
+export function pvErtragSatz(name: string, ertragKwhKwp: number | null, regionId?: string): string | null {
   if (ertragKwhKwp === null || !Number.isFinite(ertragKwhKwp) || ertragKwhKwp <= 0) return null;
   const dev = ertragKwhKwp / NATIONAL_AVG_YIELD - 1;
   const pct = Math.round(Math.abs(dev) * 100);
-  if (dev >= DEUTLICH) {
-    return `Der Standort liegt ${pct} % über dem Bundesschnitt — dieselbe Anlage bringt in ${name} mehr als anderswo.`;
-  }
-  if (dev <= -DEUTLICH) {
-    return `Der Standort liegt ${pct} % unter dem Bundesschnitt — gerechnet ist das hier schon berücksichtigt.`;
-  }
-  return `Der Standort ${name} liegt im Bundesschnitt.`;
+  const formen =
+    dev >= DEUTLICH
+      ? [
+          `Der Standort liegt ${pct} % über dem Bundesschnitt — dieselbe Anlage bringt in ${name} mehr als anderswo.`,
+          `In ${name} scheint die Sonne ergiebiger als im Bundesschnitt: ${pct} % mehr Ertrag je Anlage.`,
+          `${name} liegt ${pct} % über dem Bundesschnitt — ein Dach hier arbeitet besser als der Durchschnitt.`,
+        ]
+      : dev <= -DEUTLICH
+        ? [
+            `Der Standort liegt ${pct} % unter dem Bundesschnitt — in der Rechnung ist das schon berücksichtigt.`,
+            `In ${name} fällt der Ertrag ${pct} % geringer aus als im Bundesschnitt; die Beträge oben sind entsprechend gerechnet.`,
+            `${name} liegt ${pct} % unter dem Bundesschnitt — die Zahl daneben hält das bereits aus.`,
+          ]
+        : [
+            `Der Standort ${name} liegt im Bundesschnitt.`,
+            `In ${name} entspricht der Ertrag ziemlich genau dem Bundesschnitt.`,
+            `${name} liegt beim Ertrag auf Höhe des Bundesschnitts.`,
+          ];
+  return formen[variante(regionId ?? name, formen.length)];
+}
+
+/** Stabile Variantenwahl: gleicher Ort → gleicher Satz, bei jedem Aufbau. */
+function variante(schluessel: string, anzahl: number): number {
+  let summe = 0;
+  for (let i = 0; i < schluessel.length; i++) summe += schluessel.charCodeAt(i);
+  return summe % anzahl;
 }
 
 function balkonSatz(k: SzenarioKontext): string | null {
   if (k.balkonCount === null) return null;
-  if (k.balkonCount === 0) return `In ${k.name} ist bisher kein einziges gemeldet.`;
-  if (k.balkonCount === 1) return `In ${k.name} ist bisher genau eines gemeldet.`;
-  return `In ${k.name} sind bisher ${nf(k.balkonCount)} gemeldet.`;
+  const n = k.balkonCount;
+  const formen =
+    n === 0
+      ? [
+          `In ${k.name} ist bisher kein einziges gemeldet.`,
+          `Gemeldet ist in ${k.name} bislang keines.`,
+          `${k.name} hat bisher kein einziges im Register.`,
+        ]
+      : n === 1
+        ? [
+            `In ${k.name} ist bisher genau eines gemeldet.`,
+            `Gemeldet ist in ${k.name} bislang genau eines.`,
+            `${k.name} hat bisher genau eines im Register.`,
+          ]
+        : [
+            `In ${k.name} sind bisher ${nf(n)} gemeldet.`,
+            `Gemeldet sind in ${k.name} bislang ${nf(n)}.`,
+            `${k.name} hat ${nf(n)} davon im Register.`,
+          ];
+  return formen[variante(k.regionId ?? k.name, formen.length)];
 }

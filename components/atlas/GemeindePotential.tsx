@@ -81,8 +81,8 @@ export default function GemeindePotential({
               {`verschenkt ein typisches Einfamilienhaus${name ? imOrt : " hier"} in 5 Jahren ohne eigene Anlage`}
             </div>
             {/* Ortssatz erst mit dem Ertrag — er IST der Ertrag. */}
-            {p && name && pvErtragSatz(name, p.yieldKwhKwp) && (
-              <div style={S.exOrt}>{pvErtragSatz(name, p.yieldKwhKwp)}</div>
+            {p && name && pvErtragSatz(name, p.yieldKwhKwp, regionId) && (
+              <div style={S.exOrt}>{pvErtragSatz(name, p.yieldKwhKwp, regionId)}</div>
             )}
             {p && (
               <div style={S.exSub}>
