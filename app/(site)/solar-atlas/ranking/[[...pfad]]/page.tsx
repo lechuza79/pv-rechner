@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb, { type Crumb } from "../../../../../components/Breadcrumb";
-import { IconArrowRight } from "../../../../../components/Icons";
+import { IconArrowRight, IconChevronLeft, IconChevronRight } from "../../../../../components/Icons";
 import RangDelta from "../../../../../components/atlas/RangDelta";
 import { v, space, pad } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
@@ -43,12 +43,13 @@ const ROBOTS = atlasRobots(false);
 const BASIS = "/solar-atlas/ranking";
 const nf = (n: number) => n.toLocaleString("de-DE");
 
-/** So viele Zeilen zeigt eine Seite. Deutschland hat über 10.000 Kommunen —
- *  die vollständige Liste wäre ein Megabyte Markup für eine Seite, die niemand
- *  bis Platz 8.000 liest. Was fehlt, steht ehrlich darunter. */
-const MAX_ZEILEN = 200;
+/** Zeilen je Seite. Deutschland hat über 10.000 Kommunen — alle auf einmal
+ *  wären rund sechs Megabyte Markup. Statt sie abzuschneiden wird geblättert:
+ *  Jede Kommune ist erreichbar, nur nicht alle gleichzeitig. */
+const PRO_SEITE = 200;
 
 type Params = { pfad?: string[] };
+type Suche = { seite?: string };
 
 /** Pfad → Kategorie + Gebiet. Ohne Kategorie ist es die Übersichtsseite. */
 async function deute(pfad: string[] | undefined) {
@@ -88,7 +89,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   };
 }
 
-export default async function RankingPage({ params }: { params: Params }) {
+export default async function RankingPage({ params, searchParams }: { params: Params; searchParams: Suche }) {
   const d = await deute(params.pfad);
   if (!d) notFound();
 
@@ -108,7 +109,14 @@ export default async function RankingPage({ params }: { params: Params }) {
   ]);
 
   const alle = rankingRows(stats, kategorie, scopeId);
-  const zeilen = alle.slice(0, MAX_ZEILEN);
+  // Wie viele Orte die Untergrenze aussortiert — im Gebiet, nicht bundesweit.
+  const imGebiet = stats.filter((g) => g.population > 0 && (!scopeId || g.regionId.startsWith(scopeId)));
+  const ausgeschlossen =
+    kategorie.messart === "proKopf" ? imGebiet.filter((g) => g.population < RANKING_MIN_POPULATION).length : 0;
+  const seiten = Math.max(1, Math.ceil(alle.length / PRO_SEITE));
+  // Kaputte oder erfundene Seitenzahlen landen auf Seite 1 statt im Leeren.
+  const seite = Math.min(seiten, Math.max(1, Number.parseInt(searchParams?.seite ?? "1", 10) || 1));
+  const zeilen = alle.slice((seite - 1) * PRO_SEITE, seite * PRO_SEITE);
   const slugVon = new Map(stats.map((g) => [g.regionId, g.slug ?? null]));
   const pfadVon = (id: string): string | null => {
     const bl = elternSlugs[id.slice(0, 2)];
@@ -151,6 +159,7 @@ export default async function RankingPage({ params }: { params: Params }) {
   const aktiverPunkt = navPunktVon(kategorie.slug);
   /** Kategorie wechseln, Gebiet behalten — der häufigste Sprung. */
   const mitGebiet = (slug: string) => `${BASIS}/${slug}${d.gebiet.length ? "/" + d.gebiet.join("/") : ""}`;
+  const seitenLink = (n: number) => `${mitGebiet(kategorie.slug)}${n > 1 ? `?seite=${n}` : ""}`;
   const katStil = (aktiv: boolean, klein = false): React.CSSProperties => ({
     ...S.kat,
     ...(klein ? S.katKlein : null),
@@ -217,6 +226,11 @@ export default async function RankingPage({ params }: { params: Params }) {
                   Knoten ein Leerzeichen und der Punkt rutscht ab. */}
               <strong style={S.strong}>{nf(alle.length)} Kommunen</strong>
               {` ${wo} sind gewertet, sortiert nach ${kategorie.themaDativ}. Gerechnet aus dem Marktstammdatenregister.`}
+              {/* Die Untergrenze schliesst mehr als die Haelfte aller Kommunen
+                  aus. Das gehoert in den ersten Absatz und nicht in den
+                  Quellen-Fuss — sonst fragt sich jeder, wo sein Ort bleibt. */}
+              {ausgeschlossen > 0 &&
+                ` ${nf(ausgeschlossen)} Orte unter ${nf(RANKING_MIN_POPULATION)} Einwohnern bleiben außen vor: Dort kippt die Zahl je Einwohner schon an einer einzelnen Anlage.`}
             </>
           ) : (
             <>Für diese Auswahl liegen keine wertbaren Zahlen vor.</>
@@ -296,11 +310,25 @@ export default async function RankingPage({ params }: { params: Params }) {
           </p>
         )}
 
-        {alle.length > zeilen.length && (
-          <p style={S.gekuerzt}>
-            Gezeigt sind die ersten {nf(zeilen.length)} von {nf(alle.length)} Kommunen. Für die vollständige Liste
-            eine Ebene tiefer gehen.
-          </p>
+        {seiten > 1 && (
+          <div style={S.blaettern}>
+            <span style={S.blaetternText}>
+              {`Plätze ${nf((seite - 1) * PRO_SEITE + 1)}–${nf((seite - 1) * PRO_SEITE + zeilen.length)} von ${nf(alle.length)}`}
+            </span>
+            <span style={S.blaetternKnoepfe}>
+              {seite > 1 && (
+                <Link href={seitenLink(seite - 1)} style={S.blaetternKnopf}>
+                  <IconChevronLeft size={11} /> Zurück
+                </Link>
+              )}
+              <span style={S.blaetternZahl}>{`Seite ${seite} von ${nf(seiten)}`}</span>
+              {seite < seiten && (
+                <Link href={seitenLink(seite + 1)} style={S.blaetternKnopf}>
+                  Weiter <IconChevronRight size={11} />
+                </Link>
+              )}
+            </span>
+          </div>
         )}
 
         {kinder.length > 0 && (
@@ -510,7 +538,29 @@ const S: Record<string, React.CSSProperties> = {
   wert: { fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-text-secondary") },
   go: { display: "flex", justifyContent: "flex-end", color: v("--color-accent") },
   deltaHinweis: { fontSize: 12, color: v("--color-text-muted"), margin: `${space.md}px 0 0`, lineHeight: 1.5 },
-  gekuerzt: { fontSize: 13, color: v("--color-text-muted"), margin: `${space.md}px 0 0`, lineHeight: 1.6 },
+  blaettern: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: space.md,
+    marginTop: space.lg,
+  },
+  blaetternText: { fontSize: 13, color: v("--color-text-muted") },
+  blaetternKnoepfe: { display: "flex", alignItems: "center", gap: space.md },
+  blaetternZahl: { fontSize: 12, color: v("--color-text-muted"), fontFamily: v("--font-mono") },
+  blaetternKnopf: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 4,
+    padding: pad("xs", "md"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: v("--radius-sm"),
+    fontSize: 13,
+    fontWeight: 600,
+    color: v("--color-accent"),
+    textDecoration: "none",
+  },
   section: { marginTop: space.xxxl },
   h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.md}px` },
   gebiete: { display: "flex", flexWrap: "wrap", gap: 6 },

@@ -1,4 +1,5 @@
 import { v } from "../../lib/theme";
+import { IconArrowUp, IconArrowDown } from "../Icons";
 
 /**
  * Wie viele Plätze eine Kommune seit Ende des letzten vollen Jahres gutgemacht
@@ -21,17 +22,21 @@ export default function RangDelta({ plaetze }: { plaetze: number | null }) {
     );
   }
   const hoch = plaetze > 0;
+  const farbe = hoch ? v("--color-positive-text") : v("--color-negative-text");
+  const Pfeil = hoch ? IconArrowUp : IconArrowDown;
   return (
     <span
       style={{
         ...S.tag,
-        color: hoch ? v("--color-positive-text") : v("--color-negative-text"),
+        color: farbe,
         borderColor: hoch ? v("--color-positive") : v("--color-negative"),
         background: `color-mix(in srgb, ${hoch ? v("--color-positive") : v("--color-negative")} 10%, transparent)`,
       }}
       title={`${Math.abs(plaetze)} ${Math.abs(plaetze) === 1 ? "Platz" : "Plätze"} ${hoch ? "nach vorn" : "zurück"}`}
     >
-      {hoch ? "▲" : "▼"}
+      {/* Strich-Pfeil aus der Icon-Bibliothek statt eines Dreiecks: Das Dreieck
+          las sich als Fuellzeichen, der Pfeil als Bewegung. */}
+      <Pfeil size={9} color={farbe} />
       {Math.abs(plaetze)}
     </span>
   );
@@ -39,9 +44,13 @@ export default function RangDelta({ plaetze }: { plaetze: number | null }) {
 
 const S: Record<string, React.CSSProperties> = {
   tag: {
+    // Feste Breite: Die Kaesten standen sonst je nach Inhalt ("±0" gegen "▲12")
+    // verschieden breit untereinander und die Spalte franste aus.
     display: "inline-flex",
     alignItems: "center",
-    gap: 1,
+    justifyContent: "center",
+    minWidth: 34,
+    gap: 2,
     padding: "0 4px",
     borderRadius: 4,
     border: "1px solid transparent",
