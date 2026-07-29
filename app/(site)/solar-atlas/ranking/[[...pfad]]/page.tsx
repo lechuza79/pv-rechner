@@ -9,7 +9,8 @@ import { atlasRobots } from "../../../../../lib/atlas-index";
 import { resolveSlugPath, getRegionById, getChildren, type AtlasRegion } from "../../../../../lib/atlas";
 import { ortPhrase } from "../../../../../lib/atlas-orte";
 import { loadAwardStats, loadElternSlugs } from "../../../../../lib/awards-server";
-import { formatAwardValue } from "../../../../../lib/awards";
+import { formatAwardValue, type GemeindeStats } from "../../../../../lib/awards";
+import { fmtSpeicherJeKwp } from "../../../../../lib/atlas-format";
 import {
   rankingKategorien,
   rankingKategorienGruppiert,
@@ -18,6 +19,7 @@ import {
   rankingTitel,
   RANKING_MIN_POPULATION,
 } from "../../../../../lib/atlas-ranking";
+import { befundeNachGroesse, speicherTrend } from "../../../../../lib/atlas-befunde";
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
 
 export const revalidate = 3600;
@@ -87,7 +89,7 @@ export default async function RankingPage({ params }: { params: Params }) {
   const d = await deute(params.pfad);
   if (!d) notFound();
 
-  if (d.uebersicht) return <Uebersicht />;
+  if (d.uebersicht) return <Uebersicht stats={await loadAwardStats()} />;
 
   const { kategorie, region } = d;
   const wo = region.level === "de" ? "in Deutschland" : ortPhrase(region);
@@ -237,9 +239,16 @@ export default async function RankingPage({ params }: { params: Params }) {
   );
 }
 
-/** Einstieg: welche Ranglisten es gibt. */
-function Uebersicht() {
+/** Einstieg: welche Ranglisten es gibt — plus zwei Befunde, die aus denselben
+ *  Zahlen fallen, aber KEINE Rangliste sein dürfen (Begründung an
+ *  lib/atlas-befunde.ts). Live gerechnet, damit sie mit dem Monatslauf mitgehen. */
+function Uebersicht({ stats }: { stats: GemeindeStats[] }) {
   const gruppen = rankingKategorienGruppiert();
+  const befunde = befundeNachGroesse(stats);
+  const trend = speicherTrend(befunde);
+  const kleinste = befunde[0];
+  const groesste = befunde[befunde.length - 1];
+  const pct = (x: number) => `${Math.round(x * 100)} %`;
   return (
     <div style={S.page}>
       <div style={S.wrap}>
@@ -249,6 +258,57 @@ function Uebersicht() {
           Wer baut am meisten — gemessen an der Einwohnerzahl, nicht an der Größe der Gemeinde. Jede Liste führt
           jede gewertete Kommune, von Deutschland über die Länder bis in den Landkreis.
         </p>
+        {(trend || (kleinste && groesste)) && (
+          <div style={S.section}>
+            <h2 style={S.h2}>Was in den Zahlen steckt</h2>
+            <p style={S.gruppeText}>
+              Zwei Muster, die über alle Kommunen tragen — aber bewusst keine Rangliste sind: Sie beschreiben
+              Gruppen, nicht einzelne Orte.
+            </p>
+
+            {trend && (
+              <div style={S.befund}>
+                <div style={S.befundTitel}>Auf dem Land wird gebaut, in der Stadt wird gespeichert</div>
+                <p style={S.befundText}>
+                  {/* Einheit und Dezimaltrennung kommen aus dem kanonischen
+                      Formatter — nie von Hand getippt (lib/atlas-format.ts). */}
+                  {`Je installiertem Kilowatt Dachleistung steht in Großstädten ${trend.plusProzent} % mehr Batteriekapazität als in den kleinsten Gemeinden: ${fmtSpeicherJeKwp(trend.gross)} gegenüber ${fmtSpeicherJeKwp(trend.klein)} im Median. Der Wert steigt über jede Größenstufe hinweg.`}
+                </p>
+                <div style={S.stufenLabel}>Median in kWh je kWp Dach</div>
+                <div style={S.stufen}>
+                  {befunde.map((b) =>
+                    b.speicherJeKwp === null ? null : (
+                      <span key={b.label} style={S.stufe}>
+                        <span style={S.stufeLabel}>{b.label}</span>
+                        <span style={S.stufeWert}>
+                          {b.speicherJeKwp.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
+                      </span>
+                    ),
+                  )}
+                </div>
+              </div>
+            )}
+
+            {kleinste?.mitFreiflaeche !== null && groesste?.mitFreiflaeche !== null && (
+              <div style={S.befund}>
+                <div style={S.befundTitel}>Freiflächen sind alles oder nichts</div>
+                <p style={S.befundText}>
+                  {`In den kleinsten Gemeinden hat nur ${pct(kleinste.mitFreiflaeche as number)} überhaupt eine Freiflächenanlage` +
+                    (kleinste.freiflaecheAnteil !== null
+                      ? ` — wo eine steht, macht sie aber ${pct(kleinste.freiflaecheAnteil)} der gesamten Solarleistung des Ortes aus.`
+                      : ".") +
+                    ` Ab 100.000 Einwohnern hat fast jede Stadt eine (${pct(groesste.mitFreiflaeche as number)})` +
+                    (groesste.freiflaecheAnteil !== null
+                      ? `, dort ist sie mit ${pct(groesste.freiflaecheAnteil)} aber Beiwerk.`
+                      : ".") +
+                    " Deshalb zählt keine Bürger-Rangliste Freiflächen mit: ein einziger Investorenpark würde ein Dorf an die Spitze setzen."}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
         {(
           [
             ["Was die Bürger gebaut haben", gruppen.buerger, "Je Einwohner gerechnet — eine kleine Gemeinde kann eine große schlagen."],
@@ -327,6 +387,26 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-secondary"),
     textDecoration: "none",
   },
+  befund: {
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: v("--radius-md"),
+    padding: pad("md", "lg"),
+    marginBottom: space.md,
+  },
+  befundTitel: { fontSize: 15, fontWeight: 700, marginBottom: 4 },
+  befundText: { fontSize: 14, color: v("--color-text-secondary"), lineHeight: 1.55, margin: 0 },
+  stufenLabel: { fontSize: 11, color: v("--color-text-muted"), marginTop: space.md },
+  stufen: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 },
+  stufe: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: v("--radius-sm"),
+    padding: pad("xs", "sm"),
+  },
+  stufeLabel: { fontSize: 11, color: v("--color-text-muted") },
+  stufeWert: { fontFamily: v("--font-mono"), fontSize: 14, fontWeight: 700, color: v("--color-accent-dark") },
   gruppeText: { fontSize: 14, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px`, lineHeight: 1.5 },
   karten: { display: "flex", flexDirection: "column", gap: space.md },
   karte: {
