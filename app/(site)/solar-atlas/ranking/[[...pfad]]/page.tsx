@@ -170,8 +170,8 @@ export default async function RankingPage({ params }: { params: Params }) {
             drei — als gleichrangige Knöpfe stand "Zubau" dreimal in der Reihe. */}
         {(
           [
-            ["Was die Bürger gebaut haben", nav.buerger],
-            ["Was am Ort steht", nav.standort],
+            ["Privat", nav.buerger],
+            ["Sonstiges", nav.standort],
           ] as const
         ).map(([titel, punkte]) =>
           punkte.length === 0 ? null : (
@@ -405,8 +405,8 @@ function Uebersicht({ stats }: { stats: GemeindeStats[] }) {
 
         {(
           [
-            ["Was die Bürger gebaut haben", gruppen.buerger, "Je Einwohner gerechnet — eine kleine Gemeinde kann eine große schlagen."],
-            ["Was am Ort steht", gruppen.standort, "Absolute Leistung. Hier gewinnen Orte mit Solarpark oder Windrädern, unabhängig von ihrer Größe."],
+            ["Privat", gruppen.buerger, "Was Haushalte gebaut haben, je Einwohner gerechnet — eine kleine Gemeinde kann eine große schlagen."],
+            ["Sonstiges", gruppen.standort, "Was am Ort steht, unabhängig davon, wer es gebaut hat: Gesamtleistung, Freiflächen, Wind. Hier gewinnen Kraftwerks-Standorte und große Städte."],
           ] as const
         ).map(([titel, kats, erklaerung]) =>
           kats.length === 0 ? null : (

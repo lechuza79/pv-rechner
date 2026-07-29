@@ -246,6 +246,26 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   // Gewerbe / Standort, absolut — pro Kopf hier verifiziert absurd, daher nur so.
   {
+    key: "solar-gesamt",
+    slug: "solarleistung-gesamt",
+    label: "Solar gesamt",
+    merit: "Meiste installierte Solarleistung insgesamt — Dächer, Balkone und Freiflächen zusammen.",
+    bestleistung: "die meiste installierte Solarleistung insgesamt",
+    thema: "Solarleistung insgesamt",
+    themaDativ: "installierter Solarleistung insgesamt",
+    traeger: "gewerbe",
+    messart: "absolut",
+    format: "pvLeistung",
+    // ABSOLUT und nicht je Einwohner — gemessen: Je Einwohner fuehrt Buettel mit
+    // 4.205.483 Wp je Kopf (rund 120 Einwohner neben einer Industrieanlage), eine
+    // Zahl, die niemand lesen kann. Absolut korreliert die Liste zwar mit der
+    // Ortsgroesse (+0,82), ihre Spitze ist aber trotzdem eine Aussage: die
+    // groesste Stadt und zwei Kraftwerks-Standorte. Genau deshalb steht sie unter
+    // "Sonstiges" und nicht bei den privaten Ranglisten.
+    metric: (g) => pos(g.solarKwp ?? 0),
+    metricVorjahr: (g) => pos(g.solarKwpLy ?? 0),
+  },
+  {
     key: "solar-standort",
     label: "Solar-Standort",
     merit: "Höchste gewerbliche + Freiflächen-Solarleistung. Misst den Standort, nicht die Bürger.",
