@@ -8,11 +8,12 @@ import PVRechner from "./rechner";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}): Promise<Metadata> {
+export async function generateMetadata(
+  props: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  }
+): Promise<Metadata> {
+  const searchParams = await props.searchParams;
   // Shared result links carry the calculation in query params — the OG route
   // renders a personalized preview card from them. Without params, /api/og
   // falls back to the generic brand card. This dynamic image is why the page
@@ -41,11 +42,12 @@ export async function generateMetadata({
   });
 }
 
-export default function RechnerPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+export default async function RechnerPage(
+  props: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   return (
     <ErrorBoundary>
       <PVRechner initialParams={searchParams} />

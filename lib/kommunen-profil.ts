@@ -91,6 +91,14 @@ export const KOMMUNEN_VOKABULAR: Vokabular = {
   // häufiger als eine Pressestelle — gemessen 57 % gegen 10 %), zuletzt Presse.
   themen: [
     { thema: "solar", re: /photovoltaik|solaranlage|solarkataster|solaroffensive|solarpotenzial/i },
+    // „foerderung" ist ein KANDIDAT, kein Programm. Der Fund heißt nur: auf
+    // dieser Website steht irgendwo etwas von Förderung. Ob es ein Programm
+    // gibt, wie hoch es ist und ob es noch läuft, entscheidet ausschließlich
+    // die Prüfung nach scripts/foerder-verify.md (nur Träger-Seiten gelten als
+    // Beleg, Betrag/Bedingungen/Stichtag geprüft, Änderungsdatum mitgeprüft).
+    // NIE automatisch nach funding_programs schreiben — das wäre genau die
+    // Drift, gegen die der Förder-Wächter gebaut wurde.
+    { thema: "foerderung", re: /förderprogramm|foerderprogramm|förderrichtlinie|zuschuss|förderung\s*(solar|photovoltaik|energie|klima)|(solar|photovoltaik|energie|klima)\w*förder/i },
     { thema: "klima", re: /klimaschutz|klimamanag|klimaanpassung|klimaneutral|nachhaltigkeit|energiewende|energiemanag/i },
     { thema: "blatt", re: /amtsblatt|mitteilungsblatt|gemeindeblatt|gemeindebote|stadtanzeiger/i },
     { thema: "presse", re: /pressestelle|pressearbeit|pressekontakt|öffentlichkeitsarbeit|oeffentlichkeitsarbeit/i },

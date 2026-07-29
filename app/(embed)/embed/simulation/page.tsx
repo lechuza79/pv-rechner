@@ -8,10 +8,11 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function SimulationEmbedPage({
-  searchParams,
-}: {
-  searchParams?: { plz?: string };
-}) {
+export default async function SimulationEmbedPage(
+  props: {
+    searchParams?: Promise<{ plz?: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   return <SimulationWidget plz={searchParams?.plz ?? ""} />;
 }

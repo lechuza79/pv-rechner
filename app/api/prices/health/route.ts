@@ -88,10 +88,13 @@ export async function GET() {
       source: latest.source,
       notes,
     }, { status: 200, headers: { "Cache-Control": "no-store" } });
-  } catch (err) {
+  } catch {
+    // Bewusst ohne die originale Fehlermeldung: Die Route ist öffentlich, und
+    // Datenbankfehler verraten Tabellen-/Spaltennamen. Für die Diagnose reicht
+    // dem Wächter der Zustand — der Volltext steht im Vercel-Log.
     return NextResponse.json({
       status: "failed",
-      reason: err instanceof Error ? err.message : "unknown error",
+      reason: "read error",
     }, { status: 200 });
   }
 }

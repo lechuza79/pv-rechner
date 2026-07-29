@@ -476,9 +476,28 @@ async function phaseInspect(): Promise<void> {
 
 // ─── Phase 3: Aggregate ───────────────────────────────────────────────────────
 
-function classifySolarSegment(
+/**
+ * Bis hierher kann eine Dachanlage an einem Wohnhaus haengen.
+ *
+ * WARUM ES DIESE GRENZE BRAUCHT: "privat" kam bis zum 29.07.2026 allein aus dem
+ * angekreuzten Feld `Nutzungsbereich = Haushalt` — ohne jede Groessenpruefung.
+ * Ein Landwirt mit 300-kWp-Scheunendach, der "Haushalt" ankreuzt, zaehlte damit
+ * als Privatdach. In der Pro-Kopf-Rangliste stand deshalb Dolgesheim vorn: 917
+ * Einwohner, 88 "private" Daecher mit im Schnitt 107 kWp.
+ *
+ * Die uebliche private Dachanlage liegt bei 9,8 kWp (Median ueber alle 10.725
+ * Gemeinden), 99 % der Gemeinden unter 17,8 im Schnitt. 30 laesst also jedem
+ * grossen Eigenheim Luft und faengt trotzdem die Gewerbehallen.
+ *
+ * Nichts geht verloren: Was hier herausfaellt, landet in `gewerbe_dach`. Die
+ * Gesamtleistung bleibt gleich, sie sitzt nur im richtigen Topf.
+ */
+const MAX_PRIVATDACH_KWP = 30;
+
+export function classifySolarSegment(
   row: Record<string, string>,
   actorMap: Map<string, ActorKind>,
+  kwp: number,
 ): string {
   // Primary signal: ArtDerSolaranlage (Freifläche / Gebäude / Balkonkraftwerk).
   const art = row.ArtDerSolaranlage;
@@ -491,6 +510,9 @@ function classifySolarSegment(
 
   // Gebäude-Solar: split into privat / gewerbe via Nutzungsbereich (preferred,
   // explicitly captured by the operator) and fall back to actor type.
+  // Zu gross fuer ein Wohnhaus ist gewerblich — egal, was angekreuzt wurde.
+  if (kwp > MAX_PRIVATDACH_KWP) return "gewerbe_dach";
+
   const nutzung = row.Nutzungsbereich;
   if (nutzung === NUTZUNG_HAUSHALT) return "privat_dach";
   if (nutzung && nutzung !== "") return "gewerbe_dach";
@@ -509,11 +531,30 @@ function classifySolarSegment(
  * array is a different story from a commercial one, and that is the split a
  * Gemeinde actually reads.
  */
-function classifyStorage(row: Record<string, string>, actorMap: Map<string, ActorKind>): string {
+/**
+ * Bis hierher kann eine Batterie im Keller eines Wohnhauses stehen.
+ *
+ * Dieselbe Luecke wie bei den Daechern: "privat" kam allein aus der Art des
+ * Betreibers, ohne Groessenpruefung. Gemessen ueber alle Gemeinden liegt die
+ * mittlere "private" Batterie bei 8,87 kWh — aber 66 Gemeinden kommen auf ueber
+ * 30, mit Spitzen bei 243 kWh im Schnitt. Das sind Gewerbespeicher mit
+ * Privat-Etikett. Der Fall Finsing, der bisher als handgepflegter Einzelfall im
+ * Code stand (lib/award-hook.ts), ist einer von diesen 66.
+ */
+const MAX_HAUSSPEICHER_KWH = 30;
+
+export function classifyStorage(
+  row: Record<string, string>,
+  actorMap: Map<string, ActorKind>,
+  kwh: number,
+): string {
   const t = row.Technologie;
   if (t === STORAGE_TECH_PUMPSPEICHER) return "pumpspeicher";
   // Druckluft, Schwungrad, Wasserstoff and anything new the catalogue grows.
   if (t !== STORAGE_TECH_BATTERIE) return "sonstige";
+  // Zu gross fuer einen Keller ist gewerblich. Ohne bekannte Kapazitaet (kwh = 0)
+  // bleibt es bei der Betreiber-Auskunft — nicht pruefbar heisst nicht falsch.
+  if (kwh > MAX_HAUSSPEICHER_KWH) return "batterie_gewerbe";
   const nr = row.AnlagenbetreiberMastrNummer;
   const kind = nr ? actorMap.get(nr) : undefined;
   return kind === "privat" ? "batterie_privat" : "batterie_gewerbe";
@@ -699,9 +740,9 @@ async function aggregateUnit(
 
       const segment =
         spec.et === "solar"
-          ? classifySolarSegment(row, actorMap)
+          ? classifySolarSegment(row, actorMap, kwp)
           : spec.et === "speicher"
-            ? classifyStorage(row, actorMap)
+            ? classifyStorage(row, actorMap, kwh)
             : "n/a";
       const key: AggregateKey = `${regionId}|${spec.et}|${segment}|${year}`;
       const existing = agg.get(key);
@@ -967,10 +1008,13 @@ async function main() {
   log("Done.", "ok");
 }
 
-// Nur laufen, wenn das Skript DIREKT aufgerufen wurde. Andere Skripte binden
-// die Streaming- und ZIP-Helfer von hier ein (statt sie zu kopieren) — ohne
-// diese Prüfung würde dabei jedes Mal dieser Lauf mitstarten, „keine Phase
-// gewählt" melden und den Aufrufer wortlos beenden.
+// Nur laufen, wenn das Skript DIREKT aufgerufen wurde. Zwei Wege führen sonst
+// ins Leere, beide sind real passiert:
+//   - Ein Test importiert die Einordnungs-Funktion und lädt dabei den ganzen
+//     Monatslauf, der am fehlenden Download scheitert.
+//   - Ein anderes Skript bindet die Streaming- und ZIP-Helfer von hier ein
+//     (statt sie zu kopieren); der Lauf startet mit, meldet „keine Phase
+//     gewählt" und beendet den Aufrufer wortlos.
 const direktAufgerufen = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
 if (direktAufgerufen) {
   main().catch((err) => {

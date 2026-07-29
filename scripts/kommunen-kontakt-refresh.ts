@@ -207,6 +207,10 @@ async function setup(): Promise<void> {
     -- (nicht geraten wie bei der Domain-Heuristik, sondern dort benannt).
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS verwaltung_domain text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_solar_url text;
+    -- KANDIDAT, kein Programm: hier steht irgendwo etwas von Förderung. Ob es
+    -- eines gibt, entscheidet die Pruefung nach scripts/foerder-verify.md.
+    -- Nie automatisch nach funding_programs uebernehmen.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_foerderung_url text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_klima_url text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_blatt_url text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_presse_url text;
@@ -822,6 +826,7 @@ type ProfilRow = {
   personen_email: string | null;
   verwaltung_domain: string | null;
   thema_solar_url: string | null;
+  thema_foerderung_url: string | null;
   thema_klima_url: string | null;
   thema_blatt_url: string | null;
   thema_presse_url: string | null;
@@ -888,6 +893,7 @@ async function scrapeProfil(opts: FormsOpts): Promise<void> {
       personen_email: adressen.personenEmail,
       verwaltung_domain: adressen.verwaltungDomain,
       thema_solar_url: url("solar"),
+      thema_foerderung_url: url("foerderung"),
       thema_klima_url: url("klima"),
       thema_blatt_url: url("blatt"),
       thema_presse_url: url("presse"),
@@ -904,7 +910,7 @@ async function scrapeProfil(opts: FormsOpts): Promise<void> {
       `  Verantwortliche benannt: ${zahl((r) => r.verantwortlich_zeile)} (${q(zahl((r) => r.verantwortlich_zeile))}), davon operative Stelle: ${operativ}\n` +
       `  Rollen-Postfach: ${zahl((r) => r.rollen_email)} (${q(zahl((r) => r.rollen_email))}) · Personen-Adresse: ${zahl((r) => r.personen_email)}\n` +
       `  Gemeinsame Verwaltung belegt: ${zahl((r) => r.verwaltung_domain)}\n` +
-      `  Aufhänger — Solar: ${zahl((r) => r.thema_solar_url)} · Klima: ${zahl((r) => r.thema_klima_url)} · Blatt: ${zahl((r) => r.thema_blatt_url)} · Presse: ${zahl((r) => r.thema_presse_url)}`,
+      `  Aufhänger — Solar: ${zahl((r) => r.thema_solar_url)} · Förder-Kandidat: ${zahl((r) => r.thema_foerderung_url)} · Klima: ${zahl((r) => r.thema_klima_url)} · Blatt: ${zahl((r) => r.thema_blatt_url)} · Presse: ${zahl((r) => r.thema_presse_url)}`,
     "ok",
   );
 

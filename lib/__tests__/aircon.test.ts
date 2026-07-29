@@ -4,7 +4,7 @@ import {
   cdhFromHourly, cdhFromDailyMinMax, calcAirconHeating, acHeatSpecKwhPerM2,
   type AcInputs,
 } from "../aircon";
-import { DEFAULT_AIRCON_CONFIG as CFG, AC_REAL_FACTOR, effectiveSeer } from "../aircon-config";
+import { DEFAULT_AIRCON_CONFIG as CFG, AC_REAL_FACTOR, effectiveSeer, effectiveScop } from "../aircon-config";
 import { FUEL, INSULATION_BESTAND, INSULATION_NEUBAU } from "../constants";
 
 const base: AcInputs = {
@@ -53,6 +53,37 @@ describe("Effizienz-Systematik", () => {
     for (const d of CFG.devices) {
       expect(d.seer, `${d.id}: Abschlag weicht vom einheitlichen Faktor ab`)
         .toBeCloseTo(d.labelValue * AC_REAL_FACTOR * d.structuralFactor, 1);
+    }
+  });
+
+  // Dieselbe Systematik auf der HEIZachse (seit 28.07.2026). Vorher stand dort
+  // ein Handwert, und innerhalb desselben Geräts war Kühlen realistisch, Heizen
+  // optimistisch gerechnet — die Ersparnis gegenüber Gas fiel dadurch rund ein
+  // Drittel zu hoch aus.
+  it("leitet auch jeden scop-Wert aus dem Typenschild ab, nie von Hand", () => {
+    for (const d of CFG.devices) {
+      if (!d.canHeat) continue;
+      expect(d.labelScop, `${d.id}: kann heizen, hat aber keinen Typenschild-Wert`).toBeGreaterThan(0);
+      expect(d.scop, `${d.id}: scop ist handgesetzt statt abgeleitet`).toBe(effectiveScop(d.labelScop!));
+    }
+  });
+
+  it("rechnet Heizen nicht optimistischer als Kühlen", () => {
+    // Der Kern der Asymmetrie: Beide Richtungen tragen denselben Abschlag vom
+    // Typenschild. Wer den Heizwert wieder näher ans Label rückt, muss dafür
+    // eine Leitquelle haben — „wirkt zu pessimistisch" reicht nicht.
+    for (const d of CFG.devices) {
+      if (!d.canHeat || !d.labelScop) continue;
+      const heizAbschlag = d.scop! / d.labelScop;
+      const kuehlAbschlag = d.seer / (d.labelValue * d.structuralFactor);
+      expect(heizAbschlag, `${d.id}: Heizen wird milder gerechnet als Kühlen`).toBeLessThanOrEqual(kuehlAbschlag + 0.02);
+    }
+  });
+
+  it("hat keine Geräte mit Heiz-Wert, die gar nicht heizen können", () => {
+    for (const d of CFG.devices) {
+      if (d.canHeat) continue;
+      expect(d.scop ?? 0, `${d.id}: heizt nicht, trägt aber einen Heiz-Wert`).toBe(0);
     }
   });
 
@@ -302,6 +333,42 @@ describe("calcAirconHeating", () => {
     }
     const canonical = [...INSULATION_BESTAND, ...INSULATION_NEUBAU].map(i => i.specKwh);
     for (const std of CFG.heatStandards) expect(canonical).toContain(std.specKwh);
+  });
+
+  // ─── Dämmstufen-Vollständigkeit ───────────────────────────────────────────
+  // Die Stufenliste des Klima-Rechners wurde früher Stufe für Stufe aus
+  // INSULATION_BESTAND abgeschrieben. Als am 28.07.2026 die vierte Stufe
+  // („Vollsaniert") dazukam, wäre sie hier still gefehlt: kein Typfehler, kein
+  // roter Test, nur eine Auswahl, die weniger anbietet als der WP-Rechner.
+  // Diese Tests hängen an der LÄNGE der geteilten Tabelle, nicht an einer Zahl.
+  it("offers every stage of the shared insulation table (no stage silently dropped)", () => {
+    // Bestand vollständig + genau ein Neubau-Bucket.
+    expect(CFG.heatStandards).toHaveLength(INSULATION_BESTAND.length + 1);
+    INSULATION_BESTAND.forEach((stufe, i) => {
+      const std = CFG.heatStandards[i];
+      expect(std.label).toBe(stufe.label);
+      expect(std.sub).toBe(stufe.sub);
+      expect(std.specKwh).toBe(stufe.specKwh);
+    });
+    const neubau = CFG.heatStandards[CFG.heatStandards.length - 1];
+    expect(neubau.id).toBe("neubau");
+    expect(neubau.specKwh).toBe(INSULATION_NEUBAU[0].specKwh);
+  });
+
+  it("gives every stage a unique, non-empty id and keeps the default selectable", () => {
+    const ids = CFG.heatStandards.map(s => s.id);
+    for (const id of ids) expect(id).toMatch(/^[a-z0-9-]+$/);
+    expect(new Set(ids).size).toBe(ids.length);
+    // Vorbelegung muss auf eine echte Stufe zeigen — sonst rechnet der Rechner
+    // still mit heatStandards[0] (Unsaniert) statt mit dem gemeinten Median.
+    expect(ids).toContain(CFG.defaultHeatStandard);
+  });
+
+  it("keeps the heating demand falling across the Bestand stages", () => {
+    const bestand = CFG.heatStandards.slice(0, INSULATION_BESTAND.length);
+    for (let i = 1; i < bestand.length; i++) {
+      expect(acHeatSpecKwhPerM2(bestand[i].id)).toBeLessThan(acHeatSpecKwhPerM2(bestand[i - 1].id));
+    }
   });
 
   it("falls back to the default standard for an unknown id", () => {

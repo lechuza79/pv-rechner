@@ -16,12 +16,15 @@ ein Test nagelt die Stufenliste fest, und dieses Runbook prüft sie gegen das Ge
 
 ## Die zwei Dinge, die auseinanderlaufen können
 
-1. **Der Verfahrensstand** (`GMODG_RECHTSSTAND.verkuendet`). Das ist der akute
-   Fall: Das Gesetz wurde am 10.07.2026 beschlossen, die Verkündung im
-   Bundesgesetzblatt stand danach noch aus. Sobald sie erfolgt, ist der Satz
-   „die Verkündung stand noch aus" auf jeder betroffenen Seite falsch. Deshalb
-   prüft das der **tägliche** `foerder-news-waechter` mit (Schritt 4c), nicht
-   erst der Jahres-Lauf.
+1. **Der Verfahrensstand** (`GMODG_RECHTSSTAND.verkuendet`). **Erledigt am
+   28.07.2026** — das Gesetz ist im Bundesgesetzblatt verkündet (BGBl. 2026 I
+   Nr. 226, Gesetz vom 23.07.2026) und seit dem 29.07.2026 in Kraft; der Schalter
+   steht auf `true`, der Volltext liegt unter
+   `docs/gmodg/BGBl-2026-I-Nr-226_GModG_verkuendet-2026-07-28.pdf`. **Nicht mehr
+   als offener Punkt melden.** Der nächste Verfahrensschritt, auf den zu achten
+   ist, ist das Quotengesetz nach § 42a (Punkt 2). Warum das hier stehen bleibt:
+   Ein Runbook, das einen erledigten Punkt weiter als akut führt, produziert
+   Fehlalarme, die den echten Befund verdecken.
 2. **Die Stufen selbst** (`BIO_TREPPE_STUFEN`) und die Modellannahme für 2045
    (`quoteStops[2045]`). Ändert der Gesetzgeber die Bio-Treppe oder beschließt er
    das in § 42a angekündigte Quotengesetz, ändern sich Zahlen im Rechner.
@@ -53,6 +56,15 @@ heutige Datum.
 >    geltenden Gesetzestext? Zähle sie vollständig auf. Gibt es eine Stufe nach
 >    2040? Sind die anrechenbaren Brennstoffe unverändert (Biomethan, Bioöl,
 >    biogenes Flüssiggas, Wasserstoff und Derivate)?
+> 2b. **Geltungsbereich (§ 43 + § 10 Absatz 2 Nummer 3):** Gilt die Bio-Treppe
+>    weiterhin für neu eingebaute Heizungen **im Bestand UND im Neubau**? Der
+>    Wortlaut von § 43 Absatz 1 nennt nur das „bestehende Gebäude" — der Neubau
+>    hängt an einer zweiten Vorschrift (§ 10 Absatz 2 Nummer 3: „die Maßgaben der
+>    §§ 42 bis 45 entsprechend"). Prüfe **beide** Stellen, und prüfe zusätzlich,
+>    ob die Neubau-Stichtage noch stimmen: neues Referenzgebäude ab 01.01.2027
+>    (Artikel 2), Nullemissionsgebäude für alle Neubauten ab 01.01.2030
+>    (Artikel 4, ersetzt § 10 vollständig — dort fällt der Verweis auf die
+>    §§ 42 bis 45 weg).
 > 3. **§ 42a / Quotengesetz:** Ist das angekündigte Gesetz zur Grüngas- und
 >    Grünheizölquote für Inverkehrbringer vorgelegt oder beschlossen? Wenn ja:
 >    welche Quoten mit welchen Jahren, und ab wann (Start war mit 2028 angekündigt)?
@@ -62,6 +74,18 @@ heutige Datum.
 >    der Anlage). Kommt sie, muss der Ratgeber-Abschnitt „Und wenn ich schon eine
 >    Gasheizung habe?" mit echten Zahlen nachgezogen werden — bis dahin steht dort
 >    bewusst „belastbar rechnen lässt sich das heute noch nicht".
+> 4. **Bioheizöl-Preispfad — täglich mitprüfen, hohe Dringlichkeit.** § 43 Abs. 1
+>    nennt Heizöl gleichrangig neben Gas, aber der Wärmepumpen-Rechner rechnet die
+>    Beimischung **nur für Gas**: Der IW-Report modelliert ausschließlich den
+>    Gas-Mix (Biomethan + Gasnetzentgelte), und für Bioheizöl existiert bislang
+>    keine belastbare Preisreihe. Solange das so ist, steht die Lücke sichtbar im
+>    Öl-Ergebnis. **Prüfe bei jedem Lauf:** Gibt es (a) eine gesetzliche Regelung,
+>    die den Bioheizöl-Anteil oder dessen Bepreisung konkretisiert — insbesondere
+>    das Quotengesetz nach § 42a, das bis zum **1. Dezember 2026** vorzulegen ist
+>    und Heizöl ausdrücklich einschließt („Grüngas- und **Grünheizöl**quote") —
+>    oder (b) eine Trägerquelle mit echter Preisreihe für Bioheizöl/HVO (amtliche
+>    Statistik, Branchenverband, Nachfolge-Report mit Ölpfad)? Portale mit
+>    Preisschätzungen zählen NICHT, in keine Richtung.
 >
 > Für JEDE Angabe die Fundstelle (URL + Datum) nennen. Wo du nichts Amtliches
 > findest, schreibe „nicht belegbar" — rate nicht und nimm keinen Presseartikel
@@ -76,13 +100,58 @@ richtige Antwort hat:
   `scripts/council-verify.md` (drei unabhängige Verifizierer, einer adversarial)
   und nur mit einer konkreten Bundesgesetzblatt-Fundstelle als Beleg. Dann in
   `lib/greengas-config.ts` `GMODG_RECHTSSTAND.verkuendet` auf `true` setzen und
-  `stand` auf den aktuellen Monat. Mehr nicht — der Satz selbst kommt aus
-  `gmodgStandSatz()` und zieht überall automatisch nach. `npx vitest run` +
-  `npm run build` grün, dann mergen und pushen.
+  `stand` auf den aktuellen Monat. Der Satz selbst kommt aus `gmodgStandSatz()`
+  und zieht überall automatisch nach. `npx vitest run` + `npm run build` grün,
+  dann mergen und pushen.
+
+  **Verkündet heißt nicht in Kraft — die Falle beim Umlegen (28.07.2026).** Das
+  GModG wurde am 28.07. verkündet und trat am 29.07. in Kraft. Ein Schalter, der
+  nur „verkündet ja/nein" kennt, hätte einen Tag lang „ist geltendes Recht"
+  behauptet, obwohl das Gesetz noch nicht galt. Deshalb trägt der Rechtsstand
+  jetzt auch `inKraftSeitIso`, und `gmodgStandSatz()` unterscheidet die beiden
+  Zustände am Kalendertag. Wer künftig einen Rechtsstand umlegt, prüft **beide**
+  Daten — Verkündung und Inkrafttreten stehen im Gesetz an verschiedenen Stellen
+  (Kopf des Gesetzblatts bzw. der Inkrafttretens-Artikel am Ende).
+
+  **Formulierung vom Legal-Judge prüfen lassen, nicht nur das Flag.** Beim
+  Umlegen am 28.07.2026 fand der Legal-Judge drei Fehler, die schon vorher im
+  Text standen: „Bundestag und Bundesrat haben beschlossen" (es ist ein
+  Einspruchsgesetz — das Gesetzblatt nennt nur den Bundestag), „gilt für
+  Gasheizungen" (§ 43 erfasst Gas, **Heizöl und Flüssiggas**) und eine Pflicht
+  ohne die Ersatzwege/Härtefälle aus § 43 Abs. 3–7. Das Flag war der Anlass, die
+  Fehler waren älter.
+
+  **Der Wortlaut EINES Paragrafen ist nicht der Geltungsbereich (29.07.2026).**
+  Bei derselben Prüfung wurde aus „§ 43 Absatz 1 sagt: in ein bestehendes
+  Gebäude" die Aussage „der Neubau ist nicht erfasst" — auf fünf Oberflächen,
+  einen Tag lang, und ein Test hat sie festgenagelt. Falsch: § 10 Absatz 2
+  Nummer 3 erklärt die §§ 42 bis 45 für neu zu errichtende Gebäude
+  „entsprechend" für anwendbar; die amtliche Begründung sagt es wörtlich
+  (BT-Drs. 21/6278, S. 96). Aufgefallen ist es dem Betreiber, nicht dem Wächter.
+  **Lehre: Bei jeder Geltungsbereichs-Aussage die Verweisketten mitlesen** —
+  gerade wenn ein Paragraf in einem Kapitel steht, dessen Überschrift den
+  Anwendungsfall schon einzugrenzen scheint. Und: Ein Negativ-Satz („X ist nicht
+  erfasst") braucht eine eigene Fundstelle, die das sagt. Das Fehlen einer
+  Erwähnung ist keine.
 - **Stufenwerte, anrechenbare Brennstoffe, Quotengesetz: kein Auto-Fix.** Das sind
   zitierfähige Rechtsaussagen, die in die Berechnung durchschlagen — Befund in den
   Report, Formulierung und Eintrag macht ein Mensch. Gilt ausdrücklich auch, wenn
   der Befund eindeutig aussieht.
+- **Bioheizöl-Regelung: kein Auto-Fix, aber SOFORT melden — als Entscheidung, nicht
+  als Notiz.** Kommt eine Regelung oder eine belastbare Preisreihe für Bioheizöl
+  (Schritt 4 oben), ist das kein Wert, den der Wächter still nachträgt: Er verteuert
+  die Ölheizung spürbar und verschiebt jedes Öl-Ergebnis. Deshalb geht der Befund
+  **am selben Tag** über `/api/alert` an den Betreiber, und zwar als `decisions`-
+  Eintrag (nur der wird zugestellt, siehe `scripts/waechter-gate.md` Teil 3) — nicht
+  als „erledigt"-Zeile. Zwei Dinge stehen dann an, und beide gehören dem Menschen:
+  **(1) einrechnen** — Preispfad für Öl analog zum Gas-Mix, aber ohne Netzentgelte
+  (die es beim Öltank nicht gibt); der sichtbare Lücken-Hinweis im Öl-Ergebnis
+  (`waermepumpe.tsx`) und der Prüfpunkt in `scripts/waermepumpe-verify.md` fallen
+  im selben Zug weg. **(2) Sichtbarkeit** — eine bezifferte Aussage dazu, was die
+  Pflicht eine Ölheizung kostet, ist ein Anlass, den Rechner aktiv zu zeigen
+  (Ratgeber, Datenstand, Außenkommunikation). Formuliere die Meldung so, dass der
+  Betreiber beides entscheiden kann, ohne den Gesetzestext selbst zu lesen: was gilt
+  ab wann, wie groß der Effekt ungefähr ist, und was du vorschlägst.
 - **Schwellen aufweichen ist nie die Lösung.** Wenn der Test
   `lib/__tests__/greengas.test.ts → "die Stufen-Liste für Texte enthält genau die
   vier Gesetzesstufen"` anschlägt, ist entweder das Gesetz geändert (→ Mensch) oder

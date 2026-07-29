@@ -38,6 +38,19 @@ describe("brauchtNeueEinreichung", () => {
     const r = brauchtNeueEinreichung(sitemap({ submittedUrls: 85 }), 486, 3, JETZT);
     expect(r.noetig).toBe(true);
     expect(r.grund).toMatch(/85.*486/);
+    expect(r.automatisch).toBe(true); // gewachsen = sichere Richtung
+  });
+
+  it("reicht eine GESCHRUMPFTE Sitemap NICHT von selbst ein", () => {
+    // Nach der Rücknahme von Welle 0b am 27.07.2026 abends: Google zählte 486,
+    // unsere Sitemap wieder 85. Genauso sähe es aber aus, wenn der
+    // Landkreis-Zweig in app/sitemap.ts still ausfällt (er fängt Fehler bewusst
+    // ab). Automatisch einreichen hieße dann, Google 401 Seiten abzumelden, die
+    // es noch gibt — deshalb nur melden, nicht tun.
+    const r = brauchtNeueEinreichung(sitemap({ submittedUrls: 486 }), 85, 3, JETZT);
+    expect(r.noetig).toBe(true);
+    expect(r.automatisch).toBe(false);
+    expect(r.grund).toMatch(/GESCHRUMPFT/);
   });
 
   it("schlägt an, wenn Google lange nicht geschaut hat", () => {

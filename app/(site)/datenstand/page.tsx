@@ -4,7 +4,7 @@ import Breadcrumb from "../../../components/Breadcrumb";
 import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
-import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
+import { feedInRatesFor, type FeedInRates } from "../../../lib/feedin-config";
 import { FEEDIN_HISTORY_META, FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES } from "../../../lib/feedin-history";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
@@ -13,7 +13,7 @@ import { DEFAULT_AIRCON_CONFIG as AC, AC_REAL_FACTOR } from "../../../lib/aircon
 import { acHeatSpecKwhPerM2 } from "../../../lib/aircon";
 import { DEFAULT_BALKON_CONFIG as BK } from "../../../lib/balkon-config";
 import { referenceYearKwh } from "../../../lib/solar-year";
-import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS } from "../../../lib/constants";
+import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS, FUEL } from "../../../lib/constants";
 import { WP_ANNUAL_KWH, EA_KWH_PER_KM, EA_DEFAULT_KM, KLIMA_KWH_PER_M2, KLIMA_DEFAULT_M2 } from "../../../lib/consumption";
 import { pageMetadata } from "../../../lib/seo";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
@@ -116,6 +116,15 @@ const S = {
     marginTop: 8,
     lineHeight: 1.5,
   },
+  caveat: {
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-muted"),
+    background: v("--color-bg-accent"),
+    borderRadius: v("--radius-md"),
+    padding: "10px 12px",
+    marginTop: 8,
+    lineHeight: 1.6,
+  },
   note: {
     fontSize: v("--font-size-small"),
     color: v("--color-text-muted"),
@@ -132,17 +141,11 @@ const nf = (n: number) => n.toLocaleString("de-DE");
 const monthYear = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("de-DE", { month: "long", year: "numeric" });
 
-// Prices payload = PV/battery/electricity + the live Wärmepumpen-Grundpreis
-// (Luft/Wasser), both from the same market_prices row the calculator reads.
-type PricesWithWp = PriceConfig & { wpLwwpBase: number; wpLwwpPerKw: number };
-const DEFAULT_PRICES_WP: PricesWithWp = {
-  ...DEFAULT_PRICES,
-  wpLwwpBase: HP.investLwwpBase,
-  wpLwwpPerKw: HP.investLwwpPerKw,
-};
-
-async function fetchPrices(): Promise<PricesWithWp> {
-  if (!supabase) return DEFAULT_PRICES_WP;
+// Prices payload = PV/battery/electricity aus derselben market_prices-Zeile, die
+// der Rechner liest. Die Wärmepumpen-Investition steht NICHT hier: sie kommt aus
+// der Config (an echten Angeboten kalibriert, Wächter-gepflegt).
+async function fetchPrices(): Promise<PriceConfig> {
+  if (!supabase) return DEFAULT_PRICES;
   try {
     const { data } = await supabase
       .from("market_prices")
@@ -157,7 +160,7 @@ async function fetchPrices(): Promise<PricesWithWp> {
       .order("created_at", { ascending: false })
       .limit(1)
       .single();
-    if (!data) return DEFAULT_PRICES_WP;
+    if (!data) return DEFAULT_PRICES;
     return {
       pvPriceSmall: Number(data.pv_price_small),
       pvPriceLarge: Number(data.pv_price_large),
@@ -168,16 +171,14 @@ async function fetchPrices(): Promise<PricesWithWp> {
       electricityIncrease: data.electricity_increase != null ? Number(data.electricity_increase) : DEFAULT_PRICES.electricityIncrease,
       validFrom: data.valid_from,
       source: data.source,
-      wpLwwpBase: data.wp_lwwp_base != null ? Number(data.wp_lwwp_base) : HP.investLwwpBase,
-      wpLwwpPerKw: data.wp_lwwp_per_kw != null ? Number(data.wp_lwwp_per_kw) : HP.investLwwpPerKw,
     };
   } catch {
-    return DEFAULT_PRICES_WP;
+    return DEFAULT_PRICES;
   }
 }
 
 async function fetchFeedIn(): Promise<FeedInRates> {
-  if (!supabase) return DEFAULT_FEED_IN;
+  if (!supabase) return feedInRatesFor();
   try {
     const { data } = await supabase
       .from("feed_in_rates")
@@ -186,7 +187,7 @@ async function fetchFeedIn(): Promise<FeedInRates> {
       .order("valid_from", { ascending: false })
       .limit(1)
       .single();
-    if (!data) return DEFAULT_FEED_IN;
+    if (!data) return feedInRatesFor();
     return {
       teilUnder10: Number(data.teil_under_10),
       teilOver10: Number(data.teil_over_10),
@@ -197,18 +198,20 @@ async function fetchFeedIn(): Promise<FeedInRates> {
       source: data.source,
     };
   } catch {
-    return DEFAULT_FEED_IN;
+    return feedInRatesFor();
   }
 }
 
 type Row = { label: string; value: string };
 
-function Section({ title, stand, intro, rows, source }: {
+function Section({ title, stand, intro, rows, source, caveat }: {
   title: string;
   stand: string;
   intro?: string;
   rows: Row[];
   source: string;
+  /** Herkunfts-Vorbehalt, wenn ein Wert (noch) nicht aus der amtlichen Liste stammt. */
+  caveat?: string | null;
 }) {
   return (
     <div style={S.section}>
@@ -218,14 +221,21 @@ function Section({ title, stand, intro, rows, source }: {
       </div>
       {intro && <p style={S.intro}>{intro}</p>}
       <div style={S.card}>
+        {/* Der Index gehört in den Schlüssel: Zwei Zeilen mit gleicher
+            Beschriftung sind hier fachlich möglich (Kühlen/Heizen desselben
+            Geräts), und allein der Text als Schlüssel machte daraus einen
+            Zustand, den React ausdrücklich nicht unterstützt — mit dem Risiko,
+            dass eine Zeile still verschwindet. Auf einer Seite, die belegt,
+            welche Werte gelten, fällt genau das niemandem auf. */}
         {rows.map((r, i) => (
-          <div key={r.label} style={i === 0 ? S.rowFirst : S.row}>
+          <div key={`${i}-${r.label}`} style={i === 0 ? S.rowFirst : S.row}>
             <span style={S.rowLabel}>{r.label}</span>
             <span style={S.rowValue}>{r.value}</span>
           </div>
         ))}
       </div>
       <p style={S.source}>Quelle: {source}</p>
+      {caveat && <p style={S.caveat}>{caveat}</p>}
     </div>
   );
 }
@@ -278,6 +288,7 @@ export default async function DatenstandPage() {
             { label: `Volleinspeisung über ${nf(feedin.thresholdKwp)} kWp`, value: `${nf(feedin.vollOver10)} ct/kWh` },
           ]}
           source={feedin.source || "Bundesnetzagentur, § 48 EEG"}
+          caveat={feedin.note}
         />
 
         {/* ── Historische Einspeisevergütung (Zeitreihe für die Zubau-Story) ── */}
@@ -304,16 +315,28 @@ export default async function DatenstandPage() {
           stand={monthYear(HP.validFrom)}
           intro="Annahmen des Wärmepumpen-Rechners: Heizbedarf, Effizienz, Investition und Förderung. Alle Werte im Ergebnis editierbar."
           rows={[
-            { label: "Spez. Heizbedarf Bestand (unsaniert–saniert)", value: `${HP.specDemandBestand[2]}–${HP.specDemandBestand[0]} kWh/m²·a` },
-            { label: "Spez. Heizbedarf Neubau (KfW 40+–EnEV)", value: `${HP.specDemandNeubau[2]}–${HP.specDemandNeubau[0]} kWh/m²·a` },
+            // Spanne immer über die GANZE Skala — sonst fällt eine neue Stufe still
+            // aus der öffentlichen Übersicht. Reihenfolge der Beschriftung MUSS der
+            // Reihenfolge der Werte folgen (der kleinste Wert ist der beste Fall):
+            // „unsaniert–vollsaniert" über „70–220" las sich genau falsch herum.
+            { label: "Spez. Heizbedarf Bestand (vollsaniert–unsaniert)", value: `${HP.specDemandBestand[HP.specDemandBestand.length - 1]}–${HP.specDemandBestand[0]} kWh/m²·a` },
+            { label: "Spez. Heizlast Bestand (vollsaniert–unsaniert)", value: `${HP.specHeatLoadBestand[HP.specHeatLoadBestand.length - 1]}–${HP.specHeatLoadBestand[0]} W/m²` },
+            { label: "Spez. Heizbedarf Neubau (KfW 40+–EnEV)", value: `${HP.specDemandNeubau[HP.specDemandNeubau.length - 1]}–${HP.specDemandNeubau[0]} kWh/m²·a` },
             { label: "Warmwasser je Person", value: `${nf(HP.wwPerPerson)} kWh/a` },
-            { label: "Investition Luft/Wasser (Basis laufend aktualisiert)", value: `${nf(prices.wpLwwpBase)} € + ${nf(prices.wpLwwpPerKw)} €/kW` },
-            { label: "Investition Sole/Wasser", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },
+            { label: "Investition Luft/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investLwwpBase)} € + ${nf(HP.investLwwpPerKw)} €/kW` },
+            { label: "Investition Sole/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },
             { label: "BEG-Förderung (Grund + Boni)", value: `${nf(HP.begGrundfoerderung * 100)}–${nf(HP.begMaxRateLowIncome * 100)} %, max. ${nf(HP.begMaxCap)} €` },
             { label: "WP-Stromtarif (§ 14a EnWG)", value: `${(HP.wpTarif * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct/kWh` },
-            { label: "Gas-Referenz", value: `${nf(HP.gasPriceCtPerKwh)} ct/kWh, ${nf(HP.gasCo2PerKwh * 1000)} g CO₂/kWh` },
+            { label: "Gas-Referenz", value: `${nf(HP.gasPriceCtPerKwh)} ct/kWh, ${nf(HP.gasCo2PerKwh * 1000)} g CO₂/kWh, ${nf(FUEL.gas.efficiency * 100)} % Kessel` },
+            // Der Öl-Fall ist seit 28.07.2026 ein eigener Rechenweg (anderer Preis,
+            // anderer Kessel-Wirkungsgrad, mehr CO₂, keine Grundgebühr) — er fehlte hier.
+            { label: "Heizöl-Referenz", value: `${nf(FUEL.oil.price * 100)} ct/kWh, ${nf(FUEL.oil.co2PerKwh * 1000)} g CO₂/kWh, ${nf(FUEL.oil.efficiency * 100)} % Kessel` },
+            { label: "Neue fossile Heizung (Anschaffung, im Ergebnis editierbar)", value: `${nf(HP.fossilErsatzInvest)} €` },
+            { label: "Grundpreis je Jahr (Gas / Heizöl / WP-Zähler)", value: `${nf(HP.fixCostPerYear.gas)} / ${nf(HP.fixCostPerYear.oil)} / ${nf(HP.wpFixCostPerYear)} €` },
+            { label: "Wartung je Jahr (fossil / Wärmepumpe)", value: `${nf(HP.gasMaintenance)} / ${nf(HP.wpMaintenance)} €` },
+            { label: "Betrachtungszeitraum · Teuerung Strom/Brennstoff", value: `${HP.years} Jahre · ${nf(HP.stromInflation * 100)} / ${nf(HP.gasInflation * 100)} % pro Jahr` },
           ]}
-          source={`${HP.source}. Luft/Wasser-Grundpreis laufend aus Marktdaten (taptaphome.com).`}
+          source={`${HP.source}. Investition der Wärmepumpe kalibriert an der Auswertung von 160 realen Luft-Wasser-Angeboten (Verbraucherzentrale Rheinland-Pfalz): Median 34.979 €, Mittelwert 36.279 € bei einer Median-Leistung von 10 kW. Anschaffung der fossilen Alternative: Mittelwert der Fraunhofer-ISE-Kurzstudie „Vergleich Wärmeversorgung“ vom 23.06.2026 (Gaskessel Einfamilienhaus 11.400–20.400 € brutto), bestätigt durch die Beispielrechnung der Verbraucherzentrale Rheinland-Pfalz vom 02.06.2025 (16.000 €). Grundpreise und Wartung ebenfalls aus dieser Beispielrechnung.`}
         />
 
         {/* ── Grüngas-Pfad (Gas-Referenz im WP-Rechner + Ratgeber) ── */}
@@ -339,10 +362,12 @@ export default async function DatenstandPage() {
           intro="Annahmen des Klimaanlagen-Rechners: Geräte-Effizienz, Preise, Klima- und Hitzedaten. Kern ist Kühlung; Split-Geräte können zusätzlich in der Übergangszeit heizen (günstiger als Gas). Strompreis und Kühlgradstunden im Ergebnis editierbar."
           rows={[
             { label: "Effizienz Kühlen im Realbetrieb: Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
-            { label: "…davon Typenschild (EU-Label)", value: AC.devices.map((d) => `${d.labelMetric} ${d.labelValue.toLocaleString("de-DE")}`).join(" / ") },
+            { label: "…davon Typenschild Kühlen (EU-Label)", value: AC.devices.map((d) => `${d.labelMetric} ${d.labelValue.toLocaleString("de-DE")}`).join(" / ") },
             { label: "…davon Abschlag Labor → Realbetrieb", value: `${((1 - AC_REAL_FACTOR) * 100).toLocaleString("de-DE")} % (einheitlich für alle Gerätetypen)` },
             { label: "…davon Korrektur nachströmende Warmluft (nur Monoblock)", value: `${((1 - AC.devices[0].structuralFactor) * 100).toLocaleString("de-DE")} % (Effekt liegt außerhalb der Einkanal-Prüfnorm)` },
-            { label: "Effizienz Heizen (SCOP, Typenschild): mobile Split / fest installiert", value: `${AC.devices[1].scop!.toLocaleString("de-DE")} / ${AC.devices[2].scop!.toLocaleString("de-DE")} (Monoblock heizt nicht)` },
+            { label: "Effizienz Heizen im Realbetrieb: mobile Split / fest installiert", value: `${AC.devices[1].scop!.toLocaleString("de-DE")} / ${AC.devices[2].scop!.toLocaleString("de-DE")} (Monoblock heizt nicht)` },
+            { label: "…davon Typenschild Heizen (EU-Label)", value: `SCOP ${AC.devices[1].labelScop!.toLocaleString("de-DE")} / ${AC.devices[2].labelScop!.toLocaleString("de-DE")}` },
+            { label: "…wie der Heiz-Wert zustande kommt", value: `Derselbe Abschlag Labor → Realbetrieb wie beim Kühlen (${((1 - AC_REAL_FACTOR) * 100).toLocaleString("de-DE")} %), damit Heizen und Kühlen im selben Gerät gleich streng gerechnet sind. Gemessen ist dieser Abschlag am Kühlen; für die Heizrichtung nennt die Messstudie den Wert nicht getrennt, deshalb übertragen wir ihn. Das ist bewusst die vorsichtige Wahl — die Ersparnis gegenüber Gas kann dadurch eher zu niedrig als zu hoch stehen. Wir prüfen es bis Oktober 2026 nach.` },
             { label: "Übergangszeit-Heizwärme (Split)", value: `${AC.heatStandards.map((s) => `${s.label} ${nf(acHeatSpecKwhPerM2(s.id))}`).join(" · ")} — kWh/m²·a je beheizter Fläche, also ${nf(AC.heatTransitionShare * 100)} % des Jahres-Heizwärmebedarfs je Gebäudestandard (im Ergebnis editierbar)` },
             { label: "Anschaffung Monoblock / mobile Split", value: `~${nf(AC.devices[0].pricePerUnit!)} € / ~${nf(AC.devices[1].pricePerUnit!)} € je Gerät·Raum` },
             { label: "Anschaffung fest installierte Split", value: `${nf(AC.devices[2].priceBase!)} € + ${nf(AC.devices[2].pricePerRoom!)} €/Raum (Innengerät inkl. Montage Fachbetrieb)` },
@@ -367,7 +392,8 @@ export default async function DatenstandPage() {
             { label: "Gesetzliche Grenze", value: "2.000 Wp Module / 800 VA Wechselrichter (§ 8 Abs. 5a EEG) — das ist die einzige verbindliche Grenze" },
             { label: "Schuko-Grenze der VDE-Vornorm", value: `${nf(BK.schukoMaxWp)} Wp (= 800 W + 20 %), DIN VDE V 0126-95 seit 01.12.2025 — freiwillige Vornorm, Produktnorm für Hersteller, gilt nur für Geräte ohne Speicher. Darüber: spezielle Einspeisesteckdose durch Elektrofachkraft, ~${nf(BK.energySocketCostMin)}–${nf(BK.energySocketCostMax)} €` },
             { label: "Speicher-Größen & Aufpreis", value: BK.storage.filter((s) => s.kwh > 0).map((s) => `~${nf(s.kwh)} kWh: +${nf(s.price)} €`).join(" · ") },
-            { label: "Speicher: Wirkungsgrad / Lebensdauer", value: `${nf(BK.storageRoundtrip * 100)} % Lade-/Entlade-Wirkungsgrad · ${nf(BK.storageLifeYears)} Jahre` },
+            { label: "Speicher: Wirkungsgrad / Lebensdauer", value: `${nf(BK.storageRoundtrip * 100)} % Lade-/Entlade-Wirkungsgrad im Jahresmittel · ${nf(BK.storageLifeYears)} Jahre` },
+            { label: "…woher der Wirkungsgrad kommt", value: "Kein Datenblattwert, sondern der Wert, den die HTW Berlin für Speicher dieser Größe ansetzt (Laden 91,7 % × Entladen 92 % × Batterie 97,8 %). Zur Einordnung: Gemessene Geräte erreichen bei voller Leistung 80–90 %, in der Grundlast — dem üblichen Fall — nur noch 72–80 %, weil die Elektronik dauerhaft mitläuft. Der angesetzte Wert ist eher die Ober- als die Untergrenze." },
             { label: "Speicher-Empfehlung nur bei Amortisation unter", value: `${nf(BK.storageRecommendMaxPayback)} Jahren — sonst empfehlen wir bewusst ohne` },
             { label: "Berechnung", value: "Stunden-Simulation über 12 Monate: PVGIS-Monatsertrag × Tagesverlauf, am Wechselrichter (800 W) gekappt, gegen das Haushalts-Lastprofil gerechnet, Speicher Stunde für Stunde geladen/entladen" },
             { label: "Haushalts-Lastprofil", value: "BDEW H0 / VDI 4655 — dieselbe Grundlage wie PV-Rechner und Live-Simulation" },

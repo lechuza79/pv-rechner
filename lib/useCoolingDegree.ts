@@ -11,6 +11,35 @@ export type CdhModes = { avg5: number; lastSummer: number; projection: number };
 export type CdhSource = "fallback" | "open-meteo" | "cache";
 export type HeatwaveInfo = { maxTemp: number; hotDays: number; active: boolean } | null;
 
+/** PLZ → Koordinaten aus der geteilten Tabelle. Null, wenn unbekannt. */
+export async function coordsForPlz(plz: string): Promise<[number, number] | null> {
+  try {
+    const res = await fetch("/plz.json");
+    const table: Record<string, [number, number]> = await res.json();
+    return table[plz] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Akute Hitzewelle für einen Standort. Eigene Route mit kurzer Haltbarkeit —
+ * die Klimadaten liegen 30 Tage im CDN, eine 16-Tage-Vorhersage darf das nicht
+ * erben (sonst steht ein Monat alte Hitze als "nächste 16 Tage" auf der Seite).
+ * Hier zentral, damit die beiden Aufrufer (Klimaanlagen-Rechner und
+ * Klima-Modal im PV-Rechner) nicht auseinanderlaufen.
+ */
+export async function fetchHeatwave(coords: [number, number] | null): Promise<HeatwaveInfo> {
+  if (!coords) return null;
+  try {
+    const res = await fetch(`/api/heatwave?lat=${coords[0]}&lon=${coords[1]}`);
+    const data = await res.json();
+    return data.heatwave ?? null;
+  } catch {
+    return null;
+  }
+}
+
 /** Bundesweiter Fallback-Satz aus der Config (ohne Standort). */
 export function nationalCdhSet(): CdhModes {
   return {
@@ -31,20 +60,23 @@ export function useCoolingDegree() {
     if (!/^\d{5}$/.test(plz)) return;
     setLoading(true);
     try {
-      const plzRes = await fetch("/plz.json");
-      const plzData: Record<string, [number, number]> = await plzRes.json();
-      const coords = plzData[plz];
+      const coords = await coordsForPlz(plz);
       const prefix = plz.slice(0, 2);
       const qs = coords
         ? `lat=${coords[0]}&lon=${coords[1]}&plzPrefix=${prefix}`
         : `plzPrefix=${prefix}`;
-      const res = await fetch(`/api/cooling-degree?${qs}`);
+      // Klimadaten und Vorhersage liegen auf getrennten Routen (verschiedene
+      // Haltbarkeit) — parallel holen, damit die Trennung nichts kostet.
+      const [res, hw] = await Promise.all([
+        fetch(`/api/cooling-degree?${qs}`),
+        fetchHeatwave(coords),
+      ]);
       const data = await res.json();
       if (typeof data.avg5 === "number") {
         setCdhSet({ avg5: data.avg5, lastSummer: data.lastSummer, projection: data.projection });
         setSource(data.source);
       }
-      setHeatwave(data.heatwave ?? null);
+      setHeatwave(hw);
       setConfirmed(true);
     } catch { /* Fallback-Satz bleibt bestehen */ }
     setLoading(false);

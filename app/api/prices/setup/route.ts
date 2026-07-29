@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../../lib/supabase-server";
 
-// One-time (idempotent) migration: add the Wärmepumpen-Grundpreis columns to the
-// existing market_prices table. The WP scrape (/api/prices/scrape) writes the
-// LWWP base into wp_lwwp_base; the per-kW slope is stored alongside for the
-// report/audit. Safe to re-run — ADD COLUMN IF NOT EXISTS.
+// One-time (idempotent) migration for the market_prices table. Safe to re-run —
+// ADD COLUMN IF NOT EXISTS. (Die früheren Spalten wp_lwwp_base/wp_lwwp_per_kw
+// bleiben in der Live-DB als Altbestand liegen, werden aber nicht mehr gelesen
+// oder geschrieben: die WP-Investition kommt aus lib/heatpump-config.ts.)
 //
 // Trigger: Authorization: Bearer $CRON_SECRET.
 
@@ -20,8 +20,6 @@ export async function GET(req: NextRequest) {
 
   const { error } = await supabase.rpc("exec_sql", {
     sql: `
-      ALTER TABLE market_prices ADD COLUMN IF NOT EXISTS wp_lwwp_base numeric;
-      ALTER TABLE market_prices ADD COLUMN IF NOT EXISTS wp_lwwp_per_kw numeric;
     `,
   });
 

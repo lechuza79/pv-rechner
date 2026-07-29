@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { v } from "../../../../lib/theme";
 import { YEARS, FUEL } from "../../../../lib/constants";
-import { calcFuelCost25, calcWpGridCost25 } from "../../../../lib/calc";
+import { fuelKwhForWpHeat, calcWpGridCost } from "../../../../lib/calc";
+import { calcFossilReference, wpStandingCostPerYear, HEATING_YEARS } from "../../../../lib/fossil-reference";
 import EnergyFlowModal, { type ExampleDayEntry } from "../../../../components/EnergyFlowModal";
 import type { SolarMonth } from "../../../../lib/balkon-sim";
 
@@ -106,16 +108,42 @@ export default function ResultStats({
         // WP-Strom oben) statt fixer COP 3,5; Strompreis-Anstieg folgt dem gewählten
         // Szenario (±1/3/5 %) statt fixer +3 %.
         const wpCoverage = Math.min(wpAutarky / 100, 1);
-        // Gas-Referenz mit Grüngas-Pflicht (neue Gasheizung ab 2029, GModG) —
-        // konsistent zum Wärmepumpen-Rechner; Öl bleibt flach.
-        const fuelCost = calcFuelCost25(wpKwh, fuelType, jaz, fuelType === "gas");
-        const wpGridCost = calcWpGridCost25(wpKwh, wpCoverage, oStrom, stromSteigerung);
+        // Dieser Block vergleicht LAUFENDE Kosten: Hier steht keine Kaufentscheidung
+        // an — die Wärmepumpe ist im Rechner-Flow vorhanden oder geplant, und über die
+        // fossile Heizung wird gar nichts ausgesagt. Deshalb trägt keine der beiden
+        // Seiten eine Anschaffung (fossilInvest: 0), und deshalb greift auch die
+        // Beimischungspflicht nicht: § 43 Abs. 1 GModG gilt nur für Heizungen, die neu
+        // eingebaut werden. Bis 28.07.2026 rechnete der Block den Grüngas-Aufschlag
+        // trotzdem — Pflicht ohne Neueinbau, also zwei Hälften verschiedener Fälle.
+        //
+        // Die Regel schreiben wir hier NICHT aus, sondern fragen sie: greenGas wird
+        // angefragt, calcFossilReference entscheidet über greenGasApplies(). Bekäme
+        // der Block eines Tages doch eine Anschaffung, käme der Aufschlag von selbst
+        // wieder — und der Hinweistext unten hängt am Ergebnis-Flag, nicht an einer
+        // zweiten Formulierung derselben Regel.
+        //
+        // Grundpreis und Wartung stehen auf BEIDEN Seiten (Quelle für beide:
+        // lib/fossil-reference.ts) — eine Seite damit zu belasten und die andere nicht
+        // war genau der Fehler, den der Wärmepumpen-Rechner am 28.07.2026 korrigiert hat.
+        const ref = calcFossilReference({
+          fuelKind: fuelType,
+          fuelKwh: fuelKwhForWpHeat(wpKwh, fuelType, jaz),
+          years: HEATING_YEARS,
+          pricePerKwh: FUEL[fuelType].price,
+          co2PerKwh: FUEL[fuelType].co2PerKwh,
+          inflation: 0.02,
+          fossilInvest: 0,
+          greenGas: true,
+        });
+        const fuelCost = ref.total;
+        const wpGridCost = calcWpGridCost(wpKwh, wpCoverage, oStrom, stromSteigerung, HEATING_YEARS)
+          + wpStandingCostPerYear() * HEATING_YEARS;
         const netSaving = fuelCost - wpGridCost;
         return (
           <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16, border: `1px solid ${v('--color-border')}` }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
               <span style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>
-                WP vs. {FUEL[fuelType].label}heizung · 25 Jahre
+                Heizkosten: WP vs. {FUEL[fuelType].refLabel} · {HEATING_YEARS} Jahre
               </span>
               <div style={{ display: "flex", gap: 4 }}>
                 {(["gas", "oil"] as const).map(ft => (
@@ -130,13 +158,13 @@ export default function ResultStats({
             </div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
               <div>
-                <span style={{ fontSize: 11, color: v('--color-negative') }}>{FUEL[fuelType].label}: </span>
+                <span style={{ fontSize: 11, color: v('--color-negative') }}>{FUEL[fuelType].refLabel}: </span>
                 <span style={{ fontSize: 16, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-negative'), textDecoration: "line-through", opacity: 0.7 }}>
                   {fuelCost.toLocaleString("de-DE")} €
                 </span>
               </div>
               <div>
-                <span style={{ fontSize: 11, color: v('--color-text-secondary') }}>WP Netz: </span>
+                <span style={{ fontSize: 11, color: v('--color-text-secondary') }}>Wärmepumpe: </span>
                 <span style={{ fontSize: 16, fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-text-secondary') }}>
                   {wpGridCost.toLocaleString("de-DE")} €
                 </span>
@@ -146,7 +174,16 @@ export default function ResultStats({
               Ersparnis: {netSaving.toLocaleString("de-DE")} €
             </div>
             <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 4, lineHeight: 1.5 }}>
-              {Math.round(wpKwh * jaz).toLocaleString("de-DE")} kWh Wärme/Jahr · PV-Deckung Heizstrom {Math.round(wpCoverage * 100)} % · inkl. CO₂-Abgabe
+              {Math.round(wpKwh * jaz).toLocaleString("de-DE")} kWh Wärme/Jahr · PV-Deckung Heizstrom {Math.round(wpCoverage * 100)} % · Brennstoff bzw. Strom inkl. CO₂-Abgabe, dazu Grundpreis und Wartung
+            </div>
+            {/* Was NICHT drinsteckt, gehört sichtbar an die Zahl. Der Satz zur
+                Grüngas-Pflicht hängt am Ergebnis-Flag, damit Text und Rechnung nicht
+                auseinanderlaufen können. */}
+            <div style={{ fontSize: 11, color: v('--color-text-muted'), marginTop: 6, lineHeight: 1.5 }}>
+              Verglichen sind nur die laufenden Kosten, auf beiden Seiten ohne Anschaffung.
+              {!ref.greenGasApplied && " Die Grüngas-Pflicht des Heizungsgesetzes ist deshalb nicht eingerechnet — sie gilt nur für Heizungen, die neu eingebaut werden."}
+              {" "}Was ein Heizungstausch mit Anschaffung, Förderung und Grüngas-Pflicht ergibt, rechnet der{" "}
+              <Link href="/waermepumpe-rechner" style={{ color: v('--color-accent'), fontWeight: 600 }}>Wärmepumpen-Rechner</Link>.
             </div>
           </div>
         );

@@ -7,9 +7,9 @@ import {
 } from "../../../lib/constants";
 import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
+import { greenGasApplies } from "../../../lib/fossil-reference";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
-import { useHeatpumpPrices } from "../../../lib/prices";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
@@ -53,6 +53,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const [oInvest, setOInvest] = useState<number | null>(null);
   const [oQges, setOQges] = useState<number | null>(null);
   const [oHeizlast, setOHeizlast] = useState<number | null>(null);
+  // Anschaffung der fossilen Alternative (0 = die vorhandene Heizung hält die 20 Jahre durch).
+  const [oFossilInvest, setOFossilInvest] = useState<number | null>(null);
   // BEG Klima-Geschwindigkeits-Bonus: braucht BEIDES — Selbstnutzung und eine
   // passende alte Heizung. Früher war das ein einziger Schalter, was Vermietern
   // fälschlich den Bonus geben konnte und das Alterskriterium verdeckte.
@@ -65,11 +67,44 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const [showDetails, setShowDetails] = useState(false);
   // Szenario-Auswahl (steuert TCO/Amortisation/Ersparnis/CO₂ + Chart):
   //  "gruengas"                       = beschlossenes Heizungsgesetz (GModG Bio-Treppe),
-  //                                     beschlossen 10.07.2026 → Default, hervorgehoben.
+  //                                     Gesetz vom 23.07.2026, verkündet am 28.07.2026
+  //                                     (BGBl. 2026 I Nr. 226), in Kraft seit 29.07.2026
+  //                                     → Default, hervorgehoben. (Hier stand „beschlossen
+  //                                     10.07.2026" — dieses Datum ließ sich an keiner
+  //                                     amtlichen Quelle belegen, Council 28.07.2026.)
   //  "pessimistic"/"realistic"/"optimistic" = reine Preis-Annahmen OHNE Grüngas.
   const [scenario, setScenario] = useState("gruengas");
-  // Grüngas-Pflicht ist genau der Gesetzes-Fall — kein eigener Schalter mehr.
-  const greenGas = scenario === "gruengas";
+
+  // Welche Referenzheizungen zur Wahl stehen, hängt daran, ob eine Anschaffung
+  // angesetzt ist — nicht am Energieträger:
+  //  · Anschaffung > 0 → die fossile Alternative wird NEU eingebaut. Dann gehören nur
+  //    Geräte in die Liste, die man heute neu einbaut; ein alter Kessel mit 80 %
+  //    Nutzungsgrad wäre ein Widerspruch (Kosten des Neubaus, Verbrauch der Altanlage).
+  //  · Anschaffung = 0 → die vorhandene Heizung läuft weiter. Dann ist genau der alte
+  //    Kessel der richtige Vergleich, und die Neugeräte passen nicht.
+  // Heizöl steht in BEIDEN Fällen zur Wahl, auch im Neubau: Die 65-%-Erneuerbaren-
+  // Pflicht (§§ 71–73 GEG), auf die ein früherer Ausschluss gestützt war, ist mit dem
+  // GModG gestrichen worden (Art. 1 Nr. 32); für zu errichtende Gebäude verweist § 10
+  // Abs. 2 Nr. 3 n. F. auf die §§ 42–45, und § 42 Abs. 2 Nr. 1 nennt Gas, Heizöl und
+  // Flüssiggas ausdrücklich als zulässige Option.
+  const ersatzInvest = oFossilInvest ?? DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest;
+  const fuelOptions = WP_FUEL_OPTIONS.filter(f => ersatzInvest > 0 ? !f.bestandsanlage : !!f.bestandsanlage);
+  const fuel = fuelOptions.find(f => f.id === oFuel) ?? fuelOptions[0];
+  // Die Grüngas-Pflicht ist ein GAS-Szenario: Der Preispfad hängt an der
+  // Biomethan-Beimischung und an Gas-Netzentgelten (lib/greengas.ts). Bei Heizöl
+  // gibt es beides nicht — das Szenario verschwindet dann aus der Auswahl, und ein
+  // vorher gewähltes „Grüngas" fällt auf die mittlere Preisannahme zurück, statt
+  // eine Zahl zu zeigen, für die uns die Grundlage fehlt.
+  // Zweite Bedingung: Es muss überhaupt eine Heizung neu eingebaut werden. Setzt
+  // jemand die Anschaffung auf 0 („meine Heizung hält die 20 Jahre durch"), gibt es
+  // keinen Neueinbau — dann greift § 43 Abs. 1 für ihn nicht, und die Bio-Treppe zu
+  // rechnen wäre wieder derselbe Fehler, nur nutzergesteuert. Im NEUBAU greift sie
+  // dagegen sehr wohl: § 10 Abs. 2 Nr. 3 n. F. verweist auf die §§ 42–45 entsprechend.
+  // Die Regel selbst steht in lib/fossil-reference.ts — sie entscheidet zugleich in der
+  // Rechnung und im PV-Rechner. Hier nur abfragen, nicht ein zweites Mal formulieren.
+  const gruengasVerfuegbar = greenGasApplies({ fuelKind: fuel.kind, fossilInvest: ersatzInvest });
+  const effScenario = !gruengasVerfuegbar && scenario === "gruengas" ? "realistic" : scenario;
+  const greenGas = effScenario === "gruengas";
   // "Mehr erfahren"-Modal: sammelt alle erklärenden Texte zum Grüngas-Szenario.
   const [showGasInfo, setShowGasInfo] = useState(false);
   // Secondary-Block "Marktübliche Preissteigerung" (die 3 Preis-Modelle) auf-/zugeklappt.
@@ -87,23 +122,20 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // ── Resolved wohnfläche ──────────────────────────────────────
   const wohnflaeche = customFlaeche ?? WOHNFLAECHEN[flaecheIdx].m2;
 
-  // ── Live-Grundpreis (Luft/Wasser) aus den Marktdaten ─────────
-  // Nur die LWWP-Basis kommt live (gescrapt, siehe lib/heatpump-prices.ts) —
-  // der Rest der Config bleibt der geprüfte Snapshot. Für Sole/Wasser ohne Wirkung.
-  const hpPrices = useHeatpumpPrices();
-  const cfg = useMemo(() => ({
-    ...DEFAULT_HEATPUMP_CONFIG,
-    investLwwpBase: hpPrices.investLwwpBase,
-    investLwwpPerKw: hpPrices.investLwwpPerKw,
-  }), [hpPrices]);
+  // ── Rechen-Config ────────────────────────────────────────────
+  // Der geprüfte Config-Snapshot (lib/heatpump-config.ts). Die Investition kommt
+  // bewusst NICHT aus einer gescrapten Portal-Kostenseite, sondern ist an echten
+  // Angeboten kalibriert (Verbraucherzentrale RLP) und wird vom jährlichen
+  // WP-Wächter gepflegt — siehe scripts/waermepumpe-verify.md.
+  const cfg = DEFAULT_HEATPUMP_CONFIG;
 
   // ── Build inputs + calculate ─────────────────────────────────
-  const fuel = WP_FUEL_OPTIONS.find(f => f.id === oFuel) ?? WP_FUEL_OPTIONS[0];
   const inputs: HeatPumpInputs = useMemo(() => ({
     situation, wohnflaeche, insulationIdx,
     personen: PERSONEN[personen].count,
     heizsystem, wpType, heizkoerperTausch,
     haustypFaktor: HAUSTYP_WP[haustypIdx].faktor,
+    fuelKind: fuel.kind,
     greenGas,
     pv: pvStatus !== "nein" ? { status: pvStatus, kwp: pvKwp, speicherKwh: pvSpeicher } : undefined,
     override: {
@@ -115,13 +147,14 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
       gasPrice: oGasPrice ?? fuel.price,
       gasEfficiency: fuel.efficiency,
       gasCo2: fuel.co2PerKwh,
+      fossilErsatzInvest: oFossilInvest ?? undefined,
       // Beide Boni setzen Selbstnutzung voraus (KfW 458) — als Vermieter bleibt
       // nur die Grundförderung, deshalb hier weder Klima noch Einkommen.
       klimaBonus: selbstnutzer && altheizungKlima(altheizung),
       haushaltseinkommen: selbstnutzer ? einkommenIncome(einkommen) : undefined,
       kindImHaushalt: selbstnutzer && kindImHaushalt,
     },
-  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt]);
+  }), [situation, wohnflaeche, insulationIdx, personen, heizsystem, wpType, heizkoerperTausch, haustypIdx, greenGas, pvStatus, pvKwp, pvSpeicher, oQges, oHeizlast, oJaz, oInvest, oStromPrice, oGasPrice, oFossilInvest, fuel, selbstnutzer, altheizung, einkommen, kindImHaushalt]);
 
   // ── Realistische Wege (Szenario-Vergleich) ───────────────────
   // Ein unsaniertes Haus bleibt selten 20 Jahre unangetastet. Statt nur den
@@ -142,13 +175,17 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
     if (heizsystem === "hk_alt") {
       list.push({ id: "heizung", titel: "Heizkörper fit machen", kurz: "Niedertemperatur-Heizkörper statt der alten", sanierung: false, patch: { heizkoerperTausch: true } });
     }
-    if (insulationIdx === 0) {
-      list.push({ id: "teil", titel: "Schrittweise Sanierung", kurz: "Dach/Fassade dämmen + passende Heizflächen", sanierung: true, patch: { insulationIdx: 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
+    // Ein Schritt die Dämm-Leiter hinauf — von unsaniert auf teilsaniert bzw. von
+    // teilsaniert auf gut saniert.
+    if (insulationIdx <= 1) {
+      list.push({ id: "teil", titel: "Schrittweise Sanierung", kurz: "Dach/Fassade dämmen + passende Heizflächen", sanierung: true, patch: { insulationIdx: insulationIdx + 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
     }
-    if (insulationIdx < 2) {
+    if (insulationIdx < INSULATION_BESTAND.length - 1) {
+      // Zielstufe ist die oberste (vollsaniert), nicht mehr die dritte — sonst hieße
+      // der Weg „Vollsanierung" und landete doch nur bei „gut saniert".
       // Niedertemperatur-Heizkörper statt Gratis-Fußbodenheizung: deren Kosten
       // zählen (ehrlich), sonst stünde die Vollsanierung künstlich zu gut da.
-      list.push({ id: "voll", titel: "Vollsanierung", kurz: "Rundum-Dämmung + Niedertemperatur-Heizflächen", sanierung: true, patch: { insulationIdx: 2, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
+      list.push({ id: "voll", titel: "Vollsanierung", kurz: "Rundum-Dämmung + Niedertemperatur-Heizflächen", sanierung: true, patch: { insulationIdx: INSULATION_BESTAND.length - 1, ...(heizsystem === "hk_alt" ? { heizkoerperTausch: true } : {}) } });
     }
     return list;
   }, [situation, heizsystem, insulationIdx]);
@@ -156,7 +193,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // Wege-Vergleich (und die Ist-Konklusion) mit dem gewählten Szenario rechnen,
   // damit sie nicht dem oben gewählten Szenario widersprechen. Die editierbaren
   // Detailwerte laufen weiter über `result` (Basisfall).
-  const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }, cfg, heatPumpScenarioAdj(scenario, cfg)) })), [wege, inputs, cfg, scenario]);
+  const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }, cfg, heatPumpScenarioAdj(effScenario, cfg)) })), [wege, inputs, cfg, effScenario]);
   const istResult = wegeResults.find(w => w.id === "ist")?.r ?? calcHeatPump(inputs, cfg);
   const istNegativ = istResult.tcoEinsparung < 0;
   const istKnapp = istResult.amortisationsJahre === null || istResult.amortisationsJahre > 15 || istNegativ;
@@ -167,7 +204,17 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
 
   const activeWeg = (zeigeWege ? wegeResults.find(w => w.id === wegId) : null) ?? wegeResults.find(w => w.id === "ist");
   const activeInputs = useMemo(() => ({ ...inputs, ...(activeWeg?.patch ?? {}) }), [inputs, activeWeg]);
-  const result = useMemo(() => calcHeatPump(activeInputs, cfg), [activeInputs, cfg]);
+  // MIT dem gewählten Szenario rechnen — sonst zeigen die editierbaren Kernannahmen
+  // (Arbeitszahl, Brennstoffpreis) und die Aufschlüsselung „Rechnung im Detail" einen
+  // anderen Fall als die große Zahl darüber. Bis 28.07.2026 lief `result` ohne
+  // Szenario-Justierung: Bei „Pessimistisch" belegte die Aufschlüsselung eine
+  // Einsparung von +23.917 €, während im Hero −5.268 € stand (Council-Prüfung).
+  // Beim Grüngas-Fall bleibt die Aufschlüsselung am Preis-Pfad „realistisch" —
+  // das ist derselbe Nebenannahmen-Satz, mit dem `gruengasResult` rechnet.
+  const result = useMemo(
+    () => calcHeatPump(activeInputs, cfg, heatPumpScenarioAdj(greenGas ? "realistic" : effScenario, cfg)),
+    [activeInputs, cfg, effScenario, greenGas],
+  );
   // Die drei Preis-Szenarien rechnen bewusst OHNE Grüngas-Pflicht — sie zeigen die
   // reine Energiepreis-Bandbreite ("was, wenn die Pflicht doch nicht greift").
   const scenariosPlain = useMemo(() => calcHeatPumpScenarios({ ...activeInputs, greenGas: false }, cfg), [activeInputs, cfg]);
@@ -175,16 +222,29 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // (Strompreis/Arbeitszahl wie "realistisch", Gaspreis-Mittelpfad). Reale Rechtslage.
   const gruengasResult = useMemo(() => calcHeatPump({ ...activeInputs, greenGas: true }, cfg, heatPumpScenarioAdj("realistic", cfg)), [activeInputs, cfg]);
 
-  // Meta des Gesetzes-Falls (Label/Erklärung für Auswahl + Hero).
+  // Meta des Gesetzes-Falls (Label + Farbe für Auswahl, Chart und Hero). KEIN
+  // `explain` — die Erklärung zum Grüngas-Fall steht vollständig im Modal
+  // („Mehr erfahren"), und ein zweiter Text daneben wäre eine Kopie, die
+  // auseinanderläuft. Der eingeklappte Preis-Block erklärt sein eigenes Modell
+  // aus `selPrice.explain`.
   const GRUENGAS_META = {
     id: "gruengas", label: "Neues Heizungsgesetz", color: v('--color-positive'),
     sub: "Grüngas-Pflicht ab 2029",
-    explain: `Das Gebäudemodernisierungsgesetz (beschlossen ${GMODG_RECHTSSTAND.beschlossenAm}) verpflichtet neue Gasheizungen ab 2029, einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen — 10 % steigend auf 60 % (2040). Das verteuert Gas deutlich. Die Kostenhöhe folgt dem IW-Report 36/2026 (plausibler Korridor, keine exakte Prognose).`,
   };
 
   // Gewählter Fall: treibt die Ergebnis-Zahlen (TCO/Amortisation/Ersparnis/CO₂).
-  const selPrice = scenariosPlain.find(s => s.id === scenario) ?? scenariosPlain.find(s => s.id === "realistic")!;
+  const selPrice = scenariosPlain.find(s => s.id === effScenario) ?? scenariosPlain.find(s => s.id === "realistic")!;
   const sel = greenGas ? { ...GRUENGAS_META, ...gruengasResult } : selPrice;
+
+  // Bandbreite über ALLE gerechneten Annahmen (die drei Preispfade und, wo sie gilt,
+  // die Grüngas-Pflicht). Sie steht im Hero unter der großen Zahl — die Antwort auf
+  // „woher kennt ihr die Gas- und Ölpreise der Zukunft?" ist: gar nicht, hier ist die
+  // Spanne. Der aktive Fall liegt immer innerhalb dieser Spanne.
+  const spanne = useMemo(() => {
+    const werte = scenariosPlain.map(s => s.tcoEinsparung);
+    if (gruengasVerfuegbar) werte.push(gruengasResult.tcoEinsparung);
+    return { min: Math.min(...werte), max: Math.max(...werte) };
+  }, [scenariosPlain, gruengasResult, gruengasVerfuegbar]);
 
   // Amortisationskurve: beim Gesetzes-Fall die Grüngas-Kurve hervorgehoben (grün) +
   // die 3 Preis-Szenarien als graue Vergleichslinien; sonst die 3 in Ampelfarben.
@@ -397,6 +457,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               {/* Primär: das Heizungsgesetz (Grüngas-Pflicht). Klickbare Kachel; das
                   „Mehr erfahren" darin öffnet das Modal (stopPropagation, damit der
                   Kachel-Klick nicht zugleich das Szenario umstellt). */}
+              {gruengasVerfuegbar ? (
               <div role="button" tabIndex={0} aria-pressed={greenGas}
                 onClick={() => { setScenario("gruengas"); setPreisExpanded(false); }}
                 onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setScenario("gruengas"); setPreisExpanded(false); } }}
@@ -408,6 +469,37 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   <button onClick={e => { e.stopPropagation(); setShowGasInfo(true); }} style={{ background: "none", border: "none", padding: 0, color: v('--color-accent'), cursor: "pointer", fontSize: 12, fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0 }}>Mehr erfahren →</button>
                 </div>
               </div>
+              ) : (
+                /* Heizöl: Die Bio-Treppe des Heizungsgesetzes gilt zwar auch für Öl,
+                   aber unser Preispfad bildet nur den Gas-Mix ab. Statt eine Zahl zu
+                   erfinden, sagen wir offen, was in der Rechnung fehlt. */
+                <div style={{ padding: "12px 14px", borderRadius: v('--radius-md'), background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.55 }}>
+                  {ersatzInvest <= 0 ? (
+                    <>
+                      <strong style={{ color: v('--color-text-primary') }}>Ohne neue Heizung greift die Grüngas-Pflicht nicht.</strong>{" "}
+                      Du hast die Anschaffung einer neuen {fuel.refLabel} auf 0 € gesetzt — deine jetzige Heizung läuft also
+                      weiter. Die Beimischungspflicht des Heizungsgesetzes gilt nur für Heizungen, die neu eingebaut werden,
+                      deshalb rechnen wir sie hier nicht mit. Bleibt die normale Teuerung und der steigende CO₂-Preis.
+                      Eine Einschränkung: Zusätzlich soll eine Quote für alle Brennstoff-Anbieter kommen, die auch bestehende
+                      Heizungen verteuern dürfte. Das Gesetz dazu liegt noch nicht vor — es muss bis zum {GMODG_RECHTSSTAND.quoteGesetzBis} vorgelegt
+                      werden und nennt bisher nur das Ziel, ab 2045 vollständig auf klimaneutrale Brennstoffe umzustellen. Wir rechnen es nicht mit.
+                    </>
+                  ) : (
+                  <>
+                  <strong style={{ color: v('--color-text-primary') }}>Beim Heizöl fehlt ein Kostenblock — bewusst.</strong>{" "}
+                  Das Heizungsgesetz nennt Heizöl gleichrangig neben Gas: Eine neu eingebaute Ölheizung muss ab 2029{" "}
+                  {bioTreppeStufenText()} ihrer Wärme klimafreundlich erzeugen — bei Öl über Bioheizöl, wahlweise auch über
+                  Wasserstoff-Derivate oder ganz ohne Beimischung über Solarthermie, eine Lüftung mit Wärmerückgewinnung oder
+                  eine Hybridlösung mit Wärmepumpe (§ 43 Abs. 3–5 GModG).
+                  Dass das den Brennstoff verteuert, ist sicher — <strong>wie stark, ist es nicht.</strong> Marktangaben reichen
+                  von wenigen Prozent Aufschlag bis zu rund der Hälfte, je nachdem ob man beigemischtes Bioheizöl oder reines
+                  HVO betrachtet. Eine belastbare Preisreihe gibt es dafür bislang nicht, deshalb rechnen wir hier nur die
+                  normale Teuerung und den steigenden CO₂-Preis. <strong>Deine Ölheizung dürfte also teurer werden, als hier
+                  steht</strong> — die Wärmepumpe schneidet in Wirklichkeit eher besser ab als in dieser Rechnung.
+                  </>
+                  )}
+                </div>
+              )}
 
               {/* Secondary: die reinen Preis-Modelle, standardmäßig eingeklappt. */}
               <div style={{ marginTop: 8, borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: !greenGas ? v('--color-bg-muted') : "transparent" }}>
@@ -425,7 +517,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                     </p>
                     <div style={{ display: "flex", borderRadius: v('--radius-md'), border: `1px solid ${v('--color-border')}`, overflow: "hidden", background: v('--color-bg') }} role="tablist" aria-label="Preis-Modell">
                       {scenariosPlain.map(s => {
-                        const on = !greenGas && s.id === scenario;
+                        const on = !greenGas && s.id === effScenario;
                         return (
                           <button key={s.id} role="tab" aria-selected={on} onClick={() => { setScenario(s.id); setPreisExpanded(true); }}
                             style={{ flex: 1, padding: "9px 6px", cursor: "pointer", textAlign: "center", background: on ? v('--color-accent-dim') : "transparent", border: "none", borderBottom: `2px solid ${on ? v('--color-accent') : "transparent"}` }}>
@@ -436,7 +528,11 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                       })}
                     </div>
                     {!greenGas && (
-                      <div style={{ fontSize: 11.5, color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 10 }}>{sel.explain}</div>
+                      // Bewusst selPrice statt sel: dieser Block erklärt IMMER das
+                      // gewählte Preis-Modell. Über sel wäre der Text im Grüngas-Fall
+                      // stumm — genau die Falle, in die eine Textkorrektur am
+                      // 29.07.2026 lief (geändert wurde ein Satz, der nie erscheint).
+                      <div style={{ fontSize: 11.5, color: v('--color-text-secondary'), lineHeight: 1.5, marginTop: 10 }}>{selPrice.explain}</div>
                     )}
                   </div>
                 )}
@@ -462,8 +558,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               {/* Erklärabschnitte */}
               <div style={{ fontSize: 13, lineHeight: 1.6, color: v('--color-text-secondary'), marginTop: 22, borderTop: `1px solid ${v('--color-border')}`, paddingTop: 16 }}>
                 {[
-                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet jede nach dem Inkrafttreten des Gesetzes neu eingebaute Gasheizung, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung.` },
-                  { h: "Beschlossen ist die Pflicht, nicht der Preis", p: `${gmodgStandSatz()} Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Ebenfalls Annahme ist der Weg nach 2040: Eine 100-%-Stufe steht nicht im Gesetz, die vollständige Klimaneutralität ab 2045 kündigt § 42a GModG nur an — als Quote für die Brennstoff-Anbieter ab 2028, die dann auch Bestandsheizungen verteuern würde. Ihre Höhe soll bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden; wir rechnen sie nicht mit. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht.` },
+                  { h: "Die Bio-Treppe (§ 43 GModG)", p: `Das Gebäudemodernisierungsgesetz verpflichtet eine Heizung für Gas, Heizöl oder Flüssiggas, die nach dem ${GMODG_RECHTSSTAND.inKraftSeit} neu eingebaut wird — beim Einbau in ein bestehendes Gebäude ebenso wie in Neubauten, die bis zum ${GMODG_RECHTSSTAND.neubauBioTreppeBis} errichtet werden —, ab 2029 einen wachsenden Anteil klimafreundlicher Brennstoffe beizumischen. Das Gesetz nennt vier Stufen: ${bioTreppeStufenText()}. Anrechenbar sind neben Biomethan auch Bioheizöl, biogenes Flüssiggas sowie Wasserstoff und dessen Derivate; beim Netzgas läuft es auf Biomethan hinaus, und das kostet rund doppelt so viel wie Erdgas. Zusammen mit steigenden Netzentgelten — weil immer weniger Haushalte am Gasnetz hängen — treibt das den Gaspreis deutlich stärker als die allgemeine Teuerung. Statt beizumischen lässt sich die Pflicht auch über Solarthermie, eine Lüftungsanlage mit Wärmerückgewinnung oder eine Wärmepumpen-Hybridheizung erfüllen (§ 43 Absatz 3 bis 5 GModG); fällt die alte Anlage irreparabel aus, greift sie zwölf Monate später (§ 43 Absatz 7). Wir rechnen den teuersten Weg, die reine Beimischung.` },
+                  { h: "Beschlossen ist die Pflicht, nicht der Preis", p: `${gmodgStandSatz()} Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist dagegen eine Annahme — ein plausibler Korridor, keine punktgenaue Prognose. Ebenfalls Annahme ist der Weg nach 2040: Eine 100-%-Stufe steht nicht im Gesetz, die vollständige Klimaneutralität ab 2045 kündigt § 42a GModG nur an — als Quote für die Brennstoff-Anbieter, die dann auch Bestandsheizungen verteuern würde. Sie soll bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden; die Gesetzesbegründung geht von einem Start 2028 mit bis zu einem Prozent aus, im Gesetzestext steht das nicht. Wir rechnen sie nicht mit. Die drei Preis-Szenarien zeigen den Gegenfall: reine Energiepreis-Fortschreibung ohne die Grüngas-Pflicht.` },
                   { h: "Warum wir je Kilowattstunde Wärme rechnen", p: "Gas- und Strompreis lassen sich nicht direkt vergleichen: Eine Wärmepumpe macht aus einer Kilowattstunde Strom rund drei Kilowattstunden Wärme, ein Gaskessel aus einer Kilowattstunde Gas nur knapp eine. Deshalb rechnen wir beide auf die Kosten pro gelieferter Kilowattstunde Wärme um — die Jahresarbeitszahl der Wärmepumpe und der Kesselwirkungsgrad sind darin enthalten. Grundgebühr und Wartung bleiben außen vor, sie gehören nicht in einen Preis-je-Kilowattstunde-Vergleich." },
                   { h: "Quelle", p: "IW-Report 36/2026 „Wie hoch sind die Mehrkostenrisiken durch das Gebäudemodernisierungsgesetz?“ (Henger, Küper, Wünsch — Institut der deutschen Wirtschaft, Juli 2026). Die Preispfade stammen aus dem Anhang der Studie." },
                 ].map((s, i) => (
@@ -564,7 +660,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 </div>
                 <div style={{ display: "grid", gap: 8 }}>
                   {wegeResults.map(w => (
-                    <WegCard key={w.id} titel={w.titel} kurz={w.kurz} r={w.r} active={activeWeg?.id === w.id} onClick={() => selectWeg(w.id)} situation={situation} sanierung={w.sanierung} />
+                    <WegCard key={w.id} titel={w.titel} kurz={w.kurz} r={w.r} active={activeWeg?.id === w.id} onClick={() => selectWeg(w.id)} situation={situation} sanierung={w.sanierung} refLabel={fuel.refLabel} />
                   ))}
                 </div>
                 <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.5 }}>
@@ -584,19 +680,37 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               <div style={{ fontSize: 12, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600, marginBottom: 8, textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, width: "100%" }}>
                 Einsparung über {DEFAULT_HEATPUMP_CONFIG.years} Jahre
                 <InfoTooltip title="So wird die Einsparung berechnet" ariaLabel="Wie wird die Einsparung berechnet?">
-                  <TcoBreakdown r={sel} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} />
+                  <TcoBreakdown r={sel} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={activeWeg?.sanierung ?? false} refLabel={fuel.refLabel} />
                 </InfoTooltip>
               </div>
               <div style={{ fontSize: 42, fontWeight: 800, color: sel.tcoEinsparung >= 0 ? v('--color-positive') : v('--color-negative'), fontFamily: v('--font-mono'), lineHeight: 1.1, textAlign: "center" }}>
                 {sel.tcoEinsparung >= 0 ? "+" : ""}{sel.tcoEinsparung.toLocaleString("de-DE")} €
               </div>
+              {/* Die große Zahl gilt für EINE Preisannahme. Ohne die Bandbreite daneben
+                  liest sie sich wie eine Prognose der Energiepreise der nächsten 20 Jahre
+                  — die niemand hat (Nutzerkritik 28.07.2026). Deshalb steht die Spanne
+                  aller gerechneten Annahmen direkt unter dem Wert, nicht nur im Tooltip. */}
+              <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 8, textAlign: "center", lineHeight: 1.5 }}>
+                Künftige Energiepreise kennt niemand. Je nach Annahme sind es{" "}
+                <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, whiteSpace: "nowrap" }}>
+                  {spanne.min >= 0 ? "+" : ""}{spanne.min.toLocaleString("de-DE")} €
+                </span>{" "}bis{" "}
+                <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, whiteSpace: "nowrap" }}>
+                  {spanne.max >= 0 ? "+" : ""}{spanne.max.toLocaleString("de-DE")} €
+                </span>.
+              </div>
               <div style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: 6, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 4 }}>
-                vs. {situation === "neubau" ? null : "Weiterbetrieb"}
-                <select value={oFuel} onChange={e => setOFuel(e.target.value)} aria-label="Referenzheizung wählen" style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: 13 }}>
-                  {WP_FUEL_OPTIONS.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
+                {/* „vs. neue" + Auswahlfeld ergab „vs. neue Heizöl". Der Fall steht
+                    jetzt im Satz, das Feld nennt nur noch das Gerät. */}
+                vs. {ersatzInvest > 0 ? "neue Heizung:" : "Weiterbetrieb:"}
+                {/* Beim Wechsel des Energieträgers den Preis-Override fallen lassen —
+                    sonst bliebe ein von Hand gesetzter Gaspreis am Heizöl kleben und
+                    die Umstellung wirkte wirkungslos. */}
+                <select value={fuel.id} onChange={e => { setOFuel(e.target.value); setOGasPrice(null); }} aria-label="Referenzheizung wählen" style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-accent'), background: v('--color-accent-dim'), border: `1px solid ${v('--color-accent')}`, borderRadius: v('--radius-sm'), padding: "2px 6px", fontSize: 13 }}>
+                  {fuelOptions.map(f => <option key={f.id} value={f.id}>{f.label}</option>)}
                 </select>
                 {situation === "neubau" ? "(Neubau)" : null}
-                <InfoTooltip title="Wie sich der Brennstoffpreis entwickelt" ariaLabel="Wie sich der Gaspreis in der Rechnung entwickelt">
+                <InfoTooltip title="Wie sich der Brennstoffpreis entwickelt" ariaLabel="Wie sich der Brennstoffpreis in der Rechnung entwickelt">
                   {greenGas
                     ? <>Das Grüngas-Szenario ist aktiv: Der Gaspreis folgt dem GModG-Gas-Mix — mit der Bio-Treppe wird ab 2029 zunehmend teures Biomethan beigemischt, dazu steigen Netzentgelte und CO₂-Preis. Details und Verlauf siehst du im Grüngas-Block weiter unten. Die drei Szenarien im Diagramm rechnen mit niedrigem, mittlerem und hohem Preispfad.</>
                     : <>Der heutige Brennstoffpreis steigt in der Rechnung jedes Jahr — durch allgemeine Teuerung (realistisch rund 2 % pro Jahr) und durch den steigenden CO₂-Preis auf fossile Energie. Der CO₂-Preis liegt 2026 und 2027 bei 55–65 € pro Tonne und klettert ab 2028 mit dem EU-Emissionshandel voraussichtlich um etwa 8 € pro Tonne und Jahr. Die im heutigen Preis schon enthaltene CO₂-Abgabe wird dabei nicht doppelt gezählt. Die drei Szenarien im Diagramm rechnen mit unterschiedlich starkem Anstieg.</>}
@@ -608,8 +722,12 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 <div>Heizwärmebedarf: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} /></div>
                 <div>
                   Heizlast: <InlineEdit value={result.heizlastKw} onCommit={v => setOHeizlast(v)} unit=" kW" min={3} max={40} step={0.5} width={60} fmt={v => (Math.round(v * 10) / 10).toString().replace(".", ",")} />
-                  <InfoTooltip title="Heizlast" ariaLabel="Was ist die Heizlast?">
-                    Die Leistung, die deine Wärmepumpe an kalten Tagen liefern muss — sie bestimmt Anlagengröße und Preis. Wir schätzen sie aus Wohnfläche, Dämmzustand und Haustyp. <strong>Hast du eine Heizlastberechnung nach DIN EN 12831 (vom Energieberater oder Heizungsbauer)? Trag den exakten Wert hier ein</strong> — dann rechnen alle Kosten damit.
+                  <span style={{ fontSize: 12, color: v('--color-text-muted') }}>
+                    {" "}· Anlage {result.auslegungKw.toLocaleString("de-DE")} kW
+                  </span>
+                  <InfoTooltip title="Heizlast und Anlagengröße" ariaLabel="Was ist die Heizlast?">
+                    Die <strong>Heizlast</strong> ist die Leistung, die dein Gebäude am kältesten Tag braucht — wir schätzen sie aus Wohnfläche, Dämmzustand und Haustyp. <strong>Hast du eine Berechnung nach DIN EN 12831 vom Energieberater oder Heizungsbauer? Trag den Wert hier ein</strong>, dann rechnen alle Kosten damit.<br /><br />
+                    Die <strong>Anlage</strong> wird bewusst kleiner ausgelegt als die Heizlast ({Math.round(DEFAULT_HEATPUMP_CONFIG.auslegungsfaktor * 100)} %): Die wenigen extrem kalten Stunden im Jahr deckt der eingebaute Heizstab günstiger ab, als wenn man die Wärmepumpe das ganze Jahr überdimensioniert betreibt. Diese Anlagengröße bestimmt den Preis.
                   </InfoTooltip>
                 </div>
                 <div>
@@ -619,11 +737,17 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   </select>
                 </div>
                 <div><GlossaryTerm id="jaz">JAZ (Jahresarbeitszahl)</GlossaryTerm>: <InlineEdit value={result.jaz} onCommit={v => setOJaz(v)} unit="" min={2.0} max={5.5} step={0.1} width={60} fmt={v => v.toFixed(2).replace(".", ",")} /></div>
-                <div>Gaspreis: {greenGas
+                <div>{fuel.kind === "oil" ? "Heizölpreis" : "Gaspreis"}: {greenGas
                   ? <span style={{ fontStyle: "italic", color: v('--color-text-muted') }}>folgt dem Grüngas-Pfad (Block unten)</span>
                   : <InlineEdit value={Math.round((oGasPrice ?? fuel.price) * 100 * 100) / 100} onCommit={v => setOGasPrice(v / 100)} unit=" ct/kWh" min={3} max={40} step={0.5} width={70} />}</div>
+                <div>
+                  Neue {fuel.refLabel}: <InlineEdit value={oFossilInvest ?? DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest} onCommit={v => setOFossilInvest(v)} unit=" €" min={0} max={40000} step={500} width={80} />
+                  <InfoTooltip title="Warum eine neue Heizung in der Rechnung steht" ariaLabel="Warum steht eine neue Heizung in der Rechnung?">
+                    Der Rechner vergleicht zwei Entscheidungen, die <strong>jetzt</strong> anstehen: Wärmepumpe oder neue fossile Heizung. Beide werden im ersten Jahr bezahlt, deshalb steht die Anschaffung auf der fossilen Seite — man spart sie sich mit der Wärmepumpe. Sie ist zugleich der Grund, warum die Beimischungspflicht greift: Die gilt nur für Heizungen, die neu eingebaut werden. <strong>Steht bei dir gar keine Entscheidung an, weil die Heizung noch lange läuft? Dann trag hier 0 ein</strong> — dann rechnet der Vergleich gegen den Weiterbetrieb, ohne Anschaffung und ohne Beimischungspflicht.
+                  </InfoTooltip>
+                </div>
                 <div>WP-Strompreis: <InlineEdit value={Math.round((oStromPrice ?? DEFAULT_HEATPUMP_CONFIG.wpTarif) * 100 * 100) / 100} onCommit={v => setOStromPrice(v / 100)} unit=" ct/kWh" min={10} max={60} step={0.5} width={70} /></div>
-                <div>Investition (netto): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} />{situation === "bestand" ? <span style={{ fontSize: 12, color: v('--color-text-muted') }}> · nach {Math.round(result.beg.rate * 100)} % Förderung</span> : null}</div>
+                <div>Investition (nach Förderung): <InlineEdit value={result.investNetto} onCommit={v => setOInvest(v)} unit=" €" min={5000} max={80000} step={500} width={90} />{situation === "bestand" ? <span style={{ fontSize: 12, color: v('--color-text-muted') }}> · {result.investBrutto.toLocaleString("de-DE")} € vor {Math.round(result.beg.rate * 100)} % Förderung</span> : null}</div>
               </div>
             </div>
 
@@ -649,7 +773,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               <HeatPumpChart
                 scenarios={chartScenarios}
                 horizon={DEFAULT_HEATPUMP_CONFIG.years}
-                highlightId={greenGas ? "gruengas" : scenario}
+                highlightId={greenGas ? "gruengas" : effScenario}
               />
               <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 16, marginTop: 10, fontSize: 11 }}>
                 {greenGas ? (
@@ -663,8 +787,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   </>
                 ) : (
                   scenariosPlain.map(s => (
-                    <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 4, color: s.id === scenario ? v('--color-text-secondary') : v('--color-text-muted'), fontWeight: s.id === scenario ? 700 : 400 }}>
-                      <span style={{ width: 10, height: 2, background: s.color, borderRadius: 1, opacity: s.id === scenario ? 1 : 0.5 }} /> {s.label}
+                    <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 4, color: s.id === effScenario ? v("--color-text-secondary") : v("--color-text-muted"), fontWeight: s.id === effScenario ? 700 : 400 }}>
+                      <span style={{ width: 10, height: 2, background: s.color, borderRadius: 1, opacity: s.id === effScenario ? 1 : 0.5 }} /> {s.label}
                     </span>
                   ))
                 )}
@@ -686,7 +810,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   ["Heizwärme", `${result.qHeiz.toLocaleString("de-DE")} kWh`],
                   ["Warmwasser", `${result.qWw.toLocaleString("de-DE")} kWh`],
                   ["Gesamt thermisch", `${result.qGes.toLocaleString("de-DE")} kWh`],
-                  ["Heizlast", `${result.heizlastKw.toLocaleString("de-DE")} kW`],
+                  ["Heizlast Gebäude", `${result.heizlastKw.toLocaleString("de-DE")} kW`],
+                  ["Auslegung Wärmepumpe", `${result.auslegungKw.toLocaleString("de-DE")} kW`],
                   ["Vorlauftemperatur", `${result.flowTemp} °C`],
                   ["JAZ", result.jaz.toFixed(2).replace(".", ",")],
                   ["Strombedarf WP", `${result.eWp.toLocaleString("de-DE")} kWh`],
@@ -694,10 +819,15 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                   ["BEG-Förderung", `${(result.beg.rate * 100).toFixed(0)} % · ${result.beg.amount.toLocaleString("de-DE")} €`],
                   ["Invest netto", `${result.investNetto.toLocaleString("de-DE")} €`],
                   [`WP Strom 20 J`, `${result.stromKosten.toLocaleString("de-DE")} €`],
-                  ["Gas Brennstoff 20 J", `${result.gasKosten.toLocaleString("de-DE")} €`],
-                  ["Gas Grundgebühr 20 J", `${result.gasFix.toLocaleString("de-DE")} €`],
+                  // Wartung und die Anschaffung der fossilen Alternative fehlten hier —
+                  // dadurch ließ sich ausgerechnet die Summe darunter nicht nachrechnen.
+                  ["WP Wartung + Grundpreis 20 J", `${result.wartungWp.toLocaleString("de-DE")} €`],
+                  ...(result.gasInvest > 0 ? [[`Neue ${fuel.refLabel}`, `${result.gasInvest.toLocaleString("de-DE")} €`] as [string, string]] : []),
+                  [`${fuel.label} Brennstoff 20 J`, `${result.gasKosten.toLocaleString("de-DE")} €`],
+                  ...(result.gasFix > 0 ? [[`${fuel.label} Grundgebühr 20 J`, `${result.gasFix.toLocaleString("de-DE")} €`] as [string, string]] : []),
+                  [`${fuel.refLabel} Wartung 20 J`, `${result.gasWartung.toLocaleString("de-DE")} €`],
                   ["TCO Wärmepumpe", `${result.tcoWp.toLocaleString("de-DE")} €`],
-                  ["TCO Gas-Referenz", `${result.tcoGas.toLocaleString("de-DE")} €`],
+                  [`TCO ${fuel.refLabel}`, `${result.tcoGas.toLocaleString("de-DE")} €`],
                 ]} />
 
                 {result.beg.breakdown.length > 0 && (
@@ -712,7 +842,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                 )}
 
                 <div style={{ fontSize: 11, color: v('--color-text-muted'), borderTop: `1px solid ${v('--color-border')}`, paddingTop: 10, marginTop: 12, lineHeight: 1.6 }}>
-                  Quellen: Fraunhofer ISE „WPsmart im Bestand" (JAZ-Modell), BWP Preisübersicht 2024 (Investition), KfW Merkblatt 458 / BEG EM ab 21.07.2026 (Förderung), BDEW (Strom-/Gaspreise), dena-Gebäudereport &amp; DIN V 18599 (Heizwärmebedarf), BEHG + EU ETS2 (CO₂-Preispfad).
+                  Quellen: Fraunhofer ISE „WPsmart im Bestand" (JAZ-Modell), Verbraucherzentrale RLP, Auswertung von 160 Wärmepumpen-Angeboten (Investition), KfW Merkblatt 458 / BEG EM ab 21.07.2026 (Förderung), BDEW (Strom-/Gaspreise), dena-Gebäudereport &amp; DIN V 18599 (Heizwärmebedarf), BEHG + EU ETS2 (CO₂-Preispfad).
                 </div>
                 {inputs.situation === "bestand" && result.beg.amount > 0 && (
                   <div style={{ fontSize: 11, color: v('--color-text-muted'), paddingTop: 8, lineHeight: 1.6 }}>
@@ -763,13 +893,16 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
               <Link href={`/photovoltaik-rechner${pvStatus !== "nein" ? `?a=${pvKwp <= 5 ? 0 : pvKwp <= 8 ? 1 : pvKwp <= 10 ? 2 : pvKwp <= 15 ? 3 : 4}${pvKwp > 15 ? `&ck=${pvKwp}` : ""}&s=${pvSpeicher === 0 ? 0 : pvSpeicher <= 5 ? 1 : pvSpeicher <= 10 ? 2 : 3}&wp=ja` : ""}`} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer", textDecoration: "none", textAlign: "center" }}>
                 PV-Rechner öffnen <IconArrowRight size={iconSizes.sm} />
               </Link>
-              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
+              <button onClick={() => { setHeizkoerperTausch(false); setWegId("ist"); setSelbstnutzer(true); setAltheizung("gas_alt"); setEinkommen("none"); setKindImHaushalt(false); setOHeizlast(null); setOQges(null); setOJaz(null); setOInvest(null); setOGasPrice(null); setOStromPrice(null); setOFossilInvest(null); setOFuel("gas_neu"); setHaustypIdx(0); setStep(0); }} style={{ flex: 1, padding: "12px", borderRadius: v('--radius-md'), fontSize: 13, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6, justifyContent: "center" }}><IconRefresh size={iconSizes.sm} /> Neu berechnen</span>
               </button>
             </div>
 
             <div style={{ textAlign: "center", fontSize: 11, color: v('--color-text-faint'), padding: "8px 0" }}>
-              Prognose basiert auf Durchschnittswerten. Genauigkeit ±15 %. Betrachtungszeitraum {DEFAULT_HEATPUMP_CONFIG.years} Jahre.
+              {/* „±15 %" stand zwei Zeilen unter einer selbst ausgewiesenen Spanne von
+                  Faktor 15 — zwei Genauigkeitsaussagen, die einander widersprachen.
+                  Die ehrliche ist die Spanne im Ergebnis. */}
+              Gerechnet mit Durchschnittswerten über {DEFAULT_HEATPUMP_CONFIG.years} Jahre. Wie weit das Ergebnis je nach Energiepreis-Annahme auseinandergeht, steht als Spanne unter der Einsparung.
             </div>
           </div>
         )}
@@ -783,7 +916,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
 // Transparente Aufschlüsselung, wie die Einsparung zustande kommt (20-J-TCO).
 // sanierungHinweis: erklärt, warum ein Sanierungs-Weg wirtschaftlich oft
 // schwächer aussieht (weniger Heizbedarf = weniger ersetztes Gas).
-function TcoBreakdown({ r, situation, jahre, sanierungHinweis }: { r: HeatPumpResult; situation: "bestand" | "neubau"; jahre: number; sanierungHinweis?: boolean }) {
+function TcoBreakdown({ r, situation, jahre, sanierungHinweis, refLabel }: { r: HeatPumpResult; situation: "bestand" | "neubau"; jahre: number; sanierungHinweis?: boolean; refLabel: string }) {
   const euro = (n: number) => `${n.toLocaleString("de-DE")} €`;
   const Row = ({ label, val, strong, minus }: { label: string; val: number; strong?: boolean; minus?: boolean }) => (
     <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "1px 0", fontWeight: strong ? 700 : 400 }}>
@@ -803,10 +936,12 @@ function TcoBreakdown({ r, situation, jahre, sanierungHinweis }: { r: HeatPumpRe
         <div style={{ borderTop: `1px solid ${v('--color-border')}`, marginTop: 2, paddingTop: 2 }}><Row label="Summe" val={r.tcoWp} strong /></div>
       </div>
       <div style={{ marginBottom: 8 }}>
-        <div style={{ fontWeight: 700, marginBottom: 2 }}>{situation === "neubau" ? "Neue Gasheizung kostet" : "Gasheizung weiterbetreiben kostet"}</div>
-        {r.gasInvest > 0 && <Row label="Neue Therme" val={r.gasInvest} />}
+        <div style={{ fontWeight: 700, marginBottom: 2 }}>{situation === "neubau" ? `Neue ${refLabel} kostet` : `Stattdessen neue ${refLabel} kostet`}</div>
+        {r.gasInvest > 0 && <Row label="Anschaffung" val={r.gasInvest} />}
         <Row label="Brennstoff (inkl. steigendem CO₂-Preis)" val={r.gasKosten} />
-        <Row label="Grundgebühr" val={r.gasFix} />
+        {/* Grundgebühr nur zeigen, wenn es sie gibt — beim Öltank hängt an keinem
+            Anschluss eine laufende Gebühr, eine „0 €"-Zeile wäre nur Rauschen. */}
+        {r.gasFix > 0 && <Row label="Grundgebühr" val={r.gasFix} />}
         <Row label="Wartung" val={r.gasWartung} />
         <div style={{ borderTop: `1px solid ${v('--color-border')}`, marginTop: 2, paddingTop: 2 }}><Row label="Summe" val={r.tcoGas} strong /></div>
       </div>
@@ -869,7 +1004,7 @@ function BonusToggle({ checked, onChange, label, tipTitle, children }: { checked
   );
 }
 
-function WegCard({ titel, kurz, r, active, onClick, situation, sanierung }: { titel: string; kurz: string; r: HeatPumpResult; active: boolean; onClick: () => void; situation: "bestand" | "neubau"; sanierung: boolean }) {
+function WegCard({ titel, kurz, r, active, onClick, situation, sanierung, refLabel }: { titel: string; kurz: string; r: HeatPumpResult; active: boolean; onClick: () => void; situation: "bestand" | "neubau"; sanierung: boolean; refLabel: string }) {
   const pos = r.tcoEinsparung >= 0;
   // Klickbares div statt <button>, damit das Info-Icon (selbst ein Button) kein
   // ungültiges verschachteltes Button ergibt. Tastatur-Bedienung nachgebildet.
@@ -897,7 +1032,7 @@ function WegCard({ titel, kurz, r, active, onClick, situation, sanierung }: { ti
           </span>
           <span onClick={e => e.stopPropagation()} onKeyDown={e => e.stopPropagation()} style={{ display: "inline-flex" }}>
             <InfoTooltip title={`So rechnet sich „${titel}"`} ariaLabel={`Berechnung für ${titel}`}>
-              <TcoBreakdown r={r} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={sanierung} />
+              <TcoBreakdown r={r} situation={situation} jahre={DEFAULT_HEATPUMP_CONFIG.years} sanierungHinweis={sanierung} refLabel={refLabel} />
             </InfoTooltip>
           </span>
         </div>

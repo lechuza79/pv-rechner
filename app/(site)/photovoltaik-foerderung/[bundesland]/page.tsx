@@ -101,7 +101,8 @@ function blName(slug: string): string | undefined {
   return allBundeslaender().find((bl) => bl.slug === slug)?.name;
 }
 
-export async function generateMetadata({ params }: { params: { bundesland: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ bundesland: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const name = blName(params.bundesland);
   if (!name) return {};
   const year = new Date().getFullYear();
@@ -155,7 +156,8 @@ function LandProgramBox({ p }: { p: FundingProgram }) {
   );
 }
 
-export default async function BundeslandPage({ params }: { params: { bundesland: string } }) {
+export default async function BundeslandPage(props: { params: Promise<{ bundesland: string }> }) {
+  const params = await props.params;
   const name = blName(params.bundesland);
   if (!name) notFound();
 

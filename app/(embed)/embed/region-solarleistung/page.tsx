@@ -17,11 +17,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function RegionSolarleistungEmbedPage({
-  searchParams,
-}: {
-  searchParams?: { bl?: string };
-}) {
+export default async function RegionSolarleistungEmbedPage(
+  props: {
+    searchParams?: Promise<{ bl?: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const ags = (searchParams?.bl ?? "").replace(/\D/g, "").slice(0, 2);
   const bl = ags.length === 2 ? bundeslandByAgs(ags) : undefined;
   const centroid = BL_CENTROID[ags];

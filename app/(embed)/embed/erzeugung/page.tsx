@@ -8,11 +8,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function ErzeugungEmbedPage({
-  searchParams,
-}: {
-  searchParams?: { auto?: string };
-}) {
+export default async function ErzeugungEmbedPage(
+  props: {
+    searchParams?: Promise<{ auto?: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   return <ErzeugungWidget autoswitchMs={parseAuto(searchParams?.auto)} />;
 }
 

@@ -36,6 +36,8 @@ on:
 # nur gemeldet, nie automatisch geändert.
 permissions:
   contents: write
+  # Lesen der eigenen Lauf-Historie (siehe GITHUB_TOKEN unten).
+  actions: read
 
 concurrency:
   group: health-check
@@ -49,6 +51,12 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      # Damit der Check die eigene Lauf-Historie lesen kann: Ein roter Lauf geht
+      # an die Autofix-Action, nicht an den Betreiber — erst wenn mehrere Läufe
+      # hintereinander an derselben Stelle rot bleiben, wird daraus eine Frage
+      # an ihn. Ohne Token wird nie eskaliert (im Zweifel keine Mail).
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
     steps:
       - uses: actions/checkout@v4
 

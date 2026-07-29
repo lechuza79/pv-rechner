@@ -117,15 +117,44 @@ export interface BalkonConfig {
   // (PVGIS-Monatswerte + calcHourlyConsumption), damit ergeben sich Clipping,
   // Eigenverbrauch und Speicher-Nutzen als Ergebnis statt als Annahme.
 
-  // Lade-/Entlade-Wirkungsgrad (0–1), Physik. OFFENER PUNKT aus der HTW-Validierung
-  // (07/2026): Die HTW misst 82,5 % (Laden 91,7 % × Entladen 92 % × Batterie 97,8 %,
-  // PerMod-Modell) — unsere 90 % sind optimistischer. Die HTW rechnet allerdings
-  // AC-gekoppelt (zwei volle Wandlungen), waehrend die realen Balkonspeicher
-  // DC-gekoppelt sind und eine davon sparen; 90 % ist dort Herstellerangabe, also
-  // eher Obergrenze. Ein Wert um 85 % waere vermutlich ehrlicher — das senkt den
-  // Speicher-Zugewinn um rund 6 % und damit die Speicher-Empfehlung. Bewusst NICHT
-  // im Vorbeigehen geaendert: Der Wert steht auf /datenstand und veraendert
-  // Nutzer-Ergebnisse.
+  // Lade-/Entlade-Wirkungsgrad über den Umlauf (0–1). Greift in balkon-sim.ts
+  // EINMAL, beim Entladen — das Laden ist dort verlustfrei, der Wert ist also der
+  // vollständige Round-Trip und kein Einzelpfad-Wirkungsgrad.
+  //
+  // RECHENREGEL: Wir übernehmen den Wert, den die HTW Berlin für genau diese
+  // Geräteklasse (≤ 3 kWh) in ihrem Stecker-Solar-Simulator ansetzt —
+  // 0,917 Laden × 0,920 Entladen × 0,978 Batterie = 82,5 % (Dokumentation der
+  // Berechnungsgrundlagen V3.0, Kap. 4.2). Das ist die einzige institutionelle
+  // Zahl für diese Klasse, und sie passt topologisch: Die HTW modelliert
+  // AC-gekoppelt, unsere Simulation ebenso (siehe Kommentar in balkon-sim.ts).
+  //
+  // Zwei bekannte Korrekturen wirken gegenläufig und heben sich näherungsweise auf,
+  // deshalb bleibt es beim HTW-Wert statt bei einem gerundeten Kompromiss:
+  //  + DC-Kopplung. Reale Balkonspeicher laden direkt am Modul-Gleichstrom und
+  //    sparen eine Wandlung. Gemessen ist der Vorteil aber klein: dasselbe
+  //    Anker-Gerät DC 83,5 % vs. AC 82,1 %, derselbe KOSTAL-Wechselrichter als
+  //    Hybrid vs. AC-Batteriewechselrichter 7,3 % vs. 8,1 % Gesamtverluste
+  //    (Stromspeicher-Inspektion 2026, Tab. 4) — also 0,4–1,4 Prozentpunkte,
+  //    nicht die 5–8, die kursierende Pauschalen ("DC 90–95 %") unterstellen.
+  //  − Standby. Die HTW schließt Standby- und Regelungsverluste ausdrücklich AUS,
+  //    die 82,5 % sind damit eine Obergrenze. Real läuft die Elektronik mit
+  //    (Anker 9,5 W, Zendure Hyper 2000 1,5–2 W); über ein Jahr mit vielen
+  //    Leerlaufstunden kostet das mehrere Prozentpunkte. Unquantifiziert.
+  //
+  // Gegenprobe an Messungen (EnergieMagazin, 13 Geräte, DC rein → AC raus):
+  // bei 800 W Volllast 80–89,7 %, bei 150 W Teillast 71,6–79,5 %. KEIN Gerät
+  // erreicht 90 %, auch nicht im Bestpunkt. Und Teillast ist beim Entladen der
+  // Normalfall, nicht die Ausnahme: 72 % der nächtlichen Leistungsflüsse liegen
+  // unter 300 W, 96 % unter 750 W (HTW / Verbraucherzentrale RLP, Faktencheck 5,
+  // 09/2024). Der frühere Wert 0,90 war eine Herstellerangabe und lag über dem
+  // Bestpunkt des besten Geräts.
+  //
+  // Council 07/2026: 3/3 gegen 0,90, adversarialer Prüfer eingeschlossen (konnte
+  // den Wert nicht verteidigen). Sein Einwand "vielleicht wird der Verlust doppelt
+  // abgezogen" ist am Code geprüft und ausgeräumt — siehe oben, greift einmal.
+  //
+  // Der Wert steht auf /datenstand und verschiebt Nutzer-Ergebnisse (weniger
+  // Speicher-Zugewinn → seltener eine Speicher-Empfehlung). Das ist beabsichtigt.
   storageRoundtrip: number;
   storageLifeYears: number;        // realistische Speicher-Lebensdauer (Jahre) — der
                                    // Speicher-Zusatznutzen zählt nur bis hierhin, danach
@@ -192,7 +221,7 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   energySocketCostMin: 100,
   energySocketCostMax: 300,
 
-  storageRoundtrip: 0.9,
+  storageRoundtrip: 0.825, // HTW-Wert für diese Geräteklasse, siehe Herleitung oben
   storageLifeYears: 12,
   storageRecommendMaxPayback: 8,
 
