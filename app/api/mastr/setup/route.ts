@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { MASTR_AWARD_SQL } from "../../../../lib/mastr-award-sql";
 import { supabase } from "../../../../lib/supabase-server";
 import { MASTR_REGION_FUNCTIONS_SQL } from "../../../../lib/mastr-region-sql";
 
@@ -374,79 +375,10 @@ export async function GET(req: NextRequest) {
   //        DB am 2026-07-21 lahmgelegt). Segmente bewusst als eigene Spalten, damit
   //        die Rangrechnung sie einzeln ranken kann (Dach privat vs. gewerblich,
   //        Balkon, Batterie privat vs. gewerblich, Freifläche, Wind/Biomasse/Wasser).
-  const { error: e2d3 } = await supabase.rpc("exec_sql", {
-    sql: `
-      CREATE TABLE IF NOT EXISTS mastr_gemeinde_award (
-        region_id text PRIMARY KEY,
-        population int NOT NULL,
-        privat_dach_kwp numeric NOT NULL DEFAULT 0,
-        gewerbe_dach_kwp numeric NOT NULL DEFAULT 0,
-        freiflaeche_kwp numeric NOT NULL DEFAULT 0,
-        balkon_count int NOT NULL DEFAULT 0,
-        balkon_kwp numeric NOT NULL DEFAULT 0,
-        batterie_privat_kwh numeric NOT NULL DEFAULT 0,
-        batterie_privat_count int NOT NULL DEFAULT 0,
-        batterie_gewerbe_kwh numeric NOT NULL DEFAULT 0,
-        batterie_gewerbe_count int NOT NULL DEFAULT 0,
-        wind_kwp numeric NOT NULL DEFAULT 0,
-        biomasse_kwp numeric NOT NULL DEFAULT 0,
-        wasser_kwp numeric NOT NULL DEFAULT 0,
-        solar_zubau_kwp numeric NOT NULL DEFAULT 0,
-        zubau_year int
-      );
-      CREATE INDEX IF NOT EXISTS idx_mga_population ON mastr_gemeinde_award (population);
-      ALTER TABLE mastr_gemeinde_award ENABLE ROW LEVEL SECURITY;
-      DO $$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_gemeinde_award_anon_read') THEN
-          CREATE POLICY mastr_gemeinde_award_anon_read ON mastr_gemeinde_award FOR SELECT TO anon USING (true);
-        END IF;
-        IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'mastr_gemeinde_award_service_write') THEN
-          CREATE POLICY mastr_gemeinde_award_service_write ON mastr_gemeinde_award FOR ALL TO service_role USING (true);
-        END IF;
-      END $$;
-
-      -- Zubau = installierte Solarleistung des letzten VOLLSTÄNDIGEN Jahres. Jahr
-      -- zur Laufzeit, nicht hart verdrahtet (rollover-sicher).
-      CREATE OR REPLACE FUNCTION mastr_refresh_gemeinde_award()
-      RETURNS void LANGUAGE plpgsql AS $fn$
-      DECLARE ly int := EXTRACT(YEAR FROM CURRENT_DATE)::int - 1;
-      BEGIN
-        SET LOCAL statement_timeout = 0;
-        TRUNCATE mastr_gemeinde_award;
-        INSERT INTO mastr_gemeinde_award (
-          region_id, population,
-          privat_dach_kwp, gewerbe_dach_kwp, freiflaeche_kwp,
-          balkon_count, balkon_kwp,
-          batterie_privat_kwh, batterie_privat_count,
-          batterie_gewerbe_kwh, batterie_gewerbe_count,
-          wind_kwp, biomasse_kwp, wasser_kwp,
-          solar_zubau_kwp, zubau_year
-        )
-        SELECT a.region_id, r.population,
-          coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='solar'    AND a.segment='privat_dach'),0),
-          coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='solar'    AND a.segment='gewerbe_dach'),0),
-          coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='solar'    AND a.segment='freiflaeche'),0),
-          coalesce(sum(a.count) FILTER (WHERE a.energietraeger='solar'    AND a.segment='steckersolar'),0),
-          coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='solar'    AND a.segment='steckersolar'),0),
-          coalesce(sum(a.kwh)   FILTER (WHERE a.energietraeger='speicher' AND a.segment='batterie_privat'),0),
-          coalesce(sum(a.count) FILTER (WHERE a.energietraeger='speicher' AND a.segment='batterie_privat'),0),
-          coalesce(sum(a.kwh)   FILTER (WHERE a.energietraeger='speicher' AND a.segment='batterie_gewerbe'),0),
-          coalesce(sum(a.count) FILTER (WHERE a.energietraeger='speicher' AND a.segment='batterie_gewerbe'),0),
-          coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='wind'),0),
-          coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='biomasse'),0),
-          coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='wasser'),0),
-          coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='solar'    AND a.year = ly),0),
-          ly
-        FROM mastr_aggregates_gem a
-        JOIN mastr_regions r ON r.region_id = a.region_id
-        WHERE r.level = 'gemeinde' AND r.population > 0 AND r.slug IS NOT NULL
-        GROUP BY a.region_id, r.population;
-      END;
-      $fn$;
-      REVOKE ALL ON FUNCTION mastr_refresh_gemeinde_award() FROM PUBLIC;
-      GRANT EXECUTE ON FUNCTION mastr_refresh_gemeinde_award() TO service_role;
-    `,
-  });
+  // DDL + Neuaufbau-Funktion kommen aus lib/mastr-award-sql.ts — dieselbe
+  // Quelle, aus der scripts/apply-award-sql.ts liest. Zwei Kopien haetten sich
+  // gegenseitig ueberschrieben (siehe Kommentar dort).
+  const { error: e2d3 } = await supabase.rpc("exec_sql", { sql: MASTR_AWARD_SQL });
   results.push({ step: "mastr_gemeinde_award", status: e2d3 ? "error" : "ok", error: e2d3?.message });
 
   const { error: e2d3b } = await supabase.rpc("exec_sql", {
