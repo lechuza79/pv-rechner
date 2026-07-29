@@ -60,7 +60,8 @@ An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wä
 
 **Weitere Rechner und Seiten:**
 - **`/waermepumpe-rechner`** — Neubau/Bestand, 5 Steps. `lib/heatpump.ts` + `lib/heatpump-config.ts`. Modellprämissen siehe unten.
-- **`/klimaanlage-stromkosten`** — Kühlkosten + Gerätevergleich (Monoblock / mobile Split / fest installiert), CO₂, PV-Deckung. Kühlbedarf weather-driven aus **Kühlgradstunden** (`/api/cooling-degree`), im Ergebnis umschaltbar zwischen Ø letzte 5 Sommer (Default), letztem Sommer und Projektion ~20 J (Open-Meteo Climate/CMIP6 via `cdhFromDailyMinMax`). Cache `klima_cache` + Bundesland-Fallback. `lib/aircon.ts` + `lib/aircon-config.ts`, Runbook `scripts/klimaanlage-verify.md`.
+- **`/klimaanlage-stromkosten`** — Kühlkosten + Gerätevergleich (Monoblock / mobile Split / fest installiert), CO₂, PV-Deckung. Kühlbedarf weather-driven aus **Kühlgradstunden** (`/api/cooling-degree`), im Ergebnis umschaltbar zwischen Ø letzte 5 Sommer (Default), letztem Sommer und Projektion ~20 J (Open-Meteo Climate/CMIP6 via `cdhFromDailyMinMax`). Cache `klima_cache` (Tabelle über `/api/klima/setup`) + Bundesland-Fallback. `lib/aircon.ts` + `lib/aircon-config.ts`, Runbook `scripts/klimaanlage-verify.md`.
+  **Die Hitzewellen-Vorhersage hat eine eigene Route (`/api/heatwave`) — BLOCKER-Muster:** Sie lag bis 29.07.2026 in derselben Antwort wie die Kühlgradstunden und erbte deren 30-Tage-CDN-Haltbarkeit; der erste Abruf einer PLZ fror „in den nächsten 16 Tagen bis X °C" für einen Monat ein. **Verallgemeinert: In einer Antwort dürfen keine zwei Werte mit verschiedener Haltbarkeit stehen.** Die kurzlebige bestimmt sonst nichts, sie erbt nur — und wird still falsch. Getrennte Haltbarkeit = getrennte Route, die Aufrufer holen parallel.
 - **`/balkonkraftwerk-rechner`** — Haushalt/PLZ → Ausrichtung → Set-Größe; der letzte Schritt **empfiehlt** das wirtschaftlich beste Set (`recommendBalkonSet`), bietet aber alle drei an. Ertrag = Modul-kWp × PVGIS-Ertrag × Ausrichtung, **gedeckelt am 800-W-Wechselrichter** (Drosselung sichtbar). Default **keine Einspeisevergütung**, Fixpreis-Sets statt €/kWp. Miete/Eigentum als Hinweis (privilegierte Maßnahme seit 2024), nicht als Rechenweg. `lib/balkon.ts` + `lib/balkon-config.ts`, Runbook `scripts/balkon-verify.md`.
 - **`/photovoltaik-foerderung`** + `/[bundesland]` + `/[bundesland]/[stadt]` — Förderdaten in Supabase (`funding_programs`, `funding_checks`) über `lib/funding-data.ts` mit Code-Seed als Fallback; ISR 3600, Rechner via `/api/funding`, Sync `/api/funding/setup?resync=1`. Runbook `scripts/foerder-verify.md`.
 - **Solar-Atlas** (Gemeinde-/Kreis-/Landesseiten aus MaStR) und **Ratgeber** (`lib/ratgeber.ts`) — Details in `docs/` und den Memory-Einträgen.
@@ -409,7 +410,9 @@ Der Nutzer muss nichts davon manuell triggern.
 
 ### Local-First-Merge: Kein Merge ohne Nutzer-Abnahme — BLOCKER
 
-**Reihenfolge:** Code im Worktree-Branch → lokal Dev-Server → Nutzer testet im Browser → Nutzer gibt OK → **erst dann** Push auf Branch und Merge auf `main`.
+**Gilt für NEUE oder GEÄNDERTE Funktionalität — nicht für Fehlerbehebungen.** Klarstellung des Betreibers am 29.07.2026: „du brauchst kein Go um Fehler zu beheben." Ein Bugfix stellt den Zustand her, den er ohnehin erwartet hat; ihn abnehmen zu lassen verzögert nur und legt ihm eine Entscheidung vor, die keine ist. Fehler werden also erkannt, behoben, verifiziert, gemergt und **danach** berichtet. Vorgelegt wird, was er wirklich entscheidet: neue Features, geänderte UX, neues Aussehen, Produktumfang.
+
+**Reihenfolge (bei neuer Funktionalität):** Code im Worktree-Branch → lokal Dev-Server → Nutzer testet im Browser → Nutzer gibt OK → **erst dann** Push auf Branch und Merge auf `main`.
 
 Vercel ist Production. Ein kaputter Merge bedeutet kaputte Domain und/oder fehlgeschlagene Builds. Type-Check und `npm run build` decken Compile-Fehler ab — aber **nicht** UX-Bugs, hässliche Layouts oder unintendiertes Verhalten. Das fängt nur ein Mensch im Browser.
 
