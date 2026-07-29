@@ -35,11 +35,12 @@ const IGNORIEREN = [
   // Ladezustand zeigen und genau das prüfen die Flow-Tests.
   /energy-charts|open-meteo|pvgis|re\.jrc\.ec\.europa\.eu/i,
   /Failed to load resource: the server responded with a status of (429|5\d\d)/i,
-  // Supabase ist im CI mit Platzhalter-Zugangsdaten konfiguriert (siehe ci.yml).
-  /supabase|example\.supabase\.co/i,
   // Vercel Analytics meldet im Entwicklungsmodus, dass es nichts sendet.
   /Vercel Web Analytics/i,
 ];
+// Bewusst NICHT ignoriert: Supabase-Fehler. Die Werkbank hat echte
+// Zugangsdaten (ci.yml), also ist ein Datenbankfehler hier ein echter Befund —
+// ihn wegzufiltern hätte genau die Klasse verdeckt, für die es den Rundgang gibt.
 
 function istEchterFehler(msg: ConsoleMessage): boolean {
   if (msg.type() !== "error") return false;
@@ -73,6 +74,52 @@ async function zeigtFehlergrenze(page: Page): Promise<boolean> {
   return (await treffer.count()) > 0;
 }
 
+// ─── Datenbank verfügbar? ────────────────────────────────────────────────────
+//
+// Fast jede Seite mit Zahlen liest Supabase — nicht nur die offensichtlichen
+// (Atlas, Förderseiten), sondern auch Ratgeber, Datenstand, Zubau und die
+// Erzeugungs-Widgets. Der erste Versuch, das je Seite zu markieren, lag prompt
+// daneben. Deshalb gilt die Frage für den GANZEN Rundgang: ohne Datenbank hat
+// er keine Aussagekraft und wird geschlossen übersprungen, statt ein Dutzend
+// irreführender Fehlschläge zu erzeugen.
+//
+// Die Werkbank bekommt dieselben Zugangsdaten, die der Gesundheitscheck dort
+// längst benutzt (ci.yml) — der Rundgang läuft also bei jedem Push vollständig.
+// Der Übersprung ist reines Sicherheitsnetz für den Fall, dass die Geheimnisse
+// fehlen; er meldet sich dann laut, weil ein grüner Lauf, der nichts geprüft
+// hat, schlimmer ist als ein roter.
+//
+// Bewusst zur Laufzeit gefragt statt über eine Umgebungsvariable: Der
+// Testprozess sieht .env.local gar nicht, eine Env-Prüfung würde also auch
+// lokal überspringen und wäre damit wertlos.
+let datenbankDa: boolean | null = null;
+
+async function datenbankVerfuegbar(page: Page): Promise<boolean> {
+  if (datenbankDa !== null) return datenbankDa;
+  // Mehrere Versuche, bevor „keine Datenbank" feststeht: Der Entwicklungsserver
+  // übersetzt die Route beim ersten Aufruf und antwortet dann noch nicht. Ein
+  // einzelner Fehlversuch würde stillschweigend ALLE datenbankgestützten Seiten
+  // überspringen — ein grüner Lauf, der nichts geprüft hat, ist schlimmer als
+  // ein roter.
+  for (let versuch = 0; versuch < 3; versuch++) {
+    try {
+      const res = await page.request.get("/api/atlas/gemeinde?plz=97204", { timeout: 30_000 });
+      const json = (await res.json()) as { hits?: unknown[] };
+      if (res.ok() && Array.isArray(json.hits) && json.hits.length > 0) {
+        datenbankDa = true;
+        return true;
+      }
+    } catch {
+      // nächster Versuch
+    }
+    await page.waitForTimeout(2000);
+  }
+  datenbankDa = false;
+  // Sichtbar machen: ein Überspringen darf nicht unbemerkt zur Gewohnheit werden.
+  console.log("[Rundgang] Keine Datenbank erreichbar — datenbankgestützte Seiten werden übersprungen.");
+  return false;
+}
+
 const SEITEN: { pfad: string; erwartet: RegExp }[] = [
   // Rechner, die kein Flow-Test abdeckt
   { pfad: "/klimaanlage-stromkosten", erwartet: /klima|kühl/i },
@@ -99,29 +146,30 @@ const SEITEN: { pfad: string; erwartet: RegExp }[] = [
 
 // Die Embed-Widgets sind das Produkt, das wir an Kommunen verteilen — sie
 // laufen fremd eingebettet, wo wir keine Fehlermeldung mehr sehen.
-const EMBEDS: string[] = [
-  "/embed/strommix-anteil",
-  "/embed/erzeugung",
-  "/embed/erzeugung-mini",
-  "/embed/kennzahl?metric=leistung",
-  "/embed/gemeinde-solar?ags=09679147",
-  "/embed/gemeinde-erneuerbare?ags=09679147",
-  "/embed/gemeinde-solarleistung?ags=09679147",
-  "/embed/region-anlagentyp?bl=13",
-  "/embed/region-solarleistung?bl=13",
-  "/embed/simulation?plz=10115",
-  "/embed/pv-zubau-deutschland",
-  "/embed/ee-ampel",
-  "/embed/karte",
-  "/embed/foerder-check",
-  "/embed/gruengas-heizkosten",
-  "/embed/zubau-erneuerbare-atom",
-  "/embed/strommix",
+const EMBEDS: { pfad: string }[] = [
+  { pfad: "/embed/strommix-anteil" },
+  { pfad: "/embed/erzeugung" },
+  { pfad: "/embed/erzeugung-mini" },
+  { pfad: "/embed/kennzahl?metric=leistung" },
+  { pfad: "/embed/gemeinde-solar?ags=09679147" },
+  { pfad: "/embed/gemeinde-erneuerbare?ags=09679147" },
+  { pfad: "/embed/gemeinde-solarleistung?ags=09679147" },
+  { pfad: "/embed/region-anlagentyp?bl=13" },
+  { pfad: "/embed/region-solarleistung?bl=13" },
+  { pfad: "/embed/simulation?plz=10115" },
+  { pfad: "/embed/pv-zubau-deutschland" },
+  { pfad: "/embed/ee-ampel" },
+  { pfad: "/embed/karte" },
+  { pfad: "/embed/foerder-check" },
+  { pfad: "/embed/gruengas-heizkosten" },
+  { pfad: "/embed/zubau-erneuerbare-atom" },
+  { pfad: "/embed/strommix" },
 ];
 
 test.describe("Rundgang: Seiten laufen ohne Laufzeitfehler an", () => {
   for (const { pfad, erwartet } of SEITEN) {
     test(`Seite ${pfad}`, async ({ page }) => {
+      test.skip(!(await datenbankVerfuegbar(page)), "Ohne Datenbank hat der Rundgang keine Aussagekraft.");
       const fehler = await rundgang(page, pfad);
       expect(await zeigtFehlergrenze(page), `${pfad} zeigt die Fehlergrenze statt Inhalt`).toBe(false);
       await expect(page.locator("body")).toContainText(erwartet);
@@ -131,8 +179,9 @@ test.describe("Rundgang: Seiten laufen ohne Laufzeitfehler an", () => {
 });
 
 test.describe("Rundgang: Embed-Widgets laufen ohne Laufzeitfehler an", () => {
-  for (const pfad of EMBEDS) {
+  for (const { pfad } of EMBEDS) {
     test(`Widget ${pfad}`, async ({ page }) => {
+      test.skip(!(await datenbankVerfuegbar(page)), "Ohne Datenbank hat der Rundgang keine Aussagekraft.");
       const fehler = await rundgang(page, pfad);
       expect(await zeigtFehlergrenze(page), `${pfad} zeigt die Fehlergrenze statt Inhalt`).toBe(false);
       // Widgets haben keine gemeinsame Überschrift — geprüft wird, dass
