@@ -58,5 +58,8 @@
       "Bash(chmod:*)",
       "Bash(chown:*)"
     ]
+  },
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true
   }
 }
