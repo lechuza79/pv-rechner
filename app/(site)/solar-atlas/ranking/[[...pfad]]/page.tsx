@@ -9,12 +9,14 @@ import { pageMetadata } from "../../../../../lib/seo";
 import { atlasRobots } from "../../../../../lib/atlas-index";
 import { resolveSlugPath, getRegionById, getChildren, type AtlasRegion } from "../../../../../lib/atlas";
 import { ortPhrase } from "../../../../../lib/atlas-orte";
-import { loadAwardStats, loadElternSlugs } from "../../../../../lib/awards-server";
+import { loadAwardStats, loadElternSlugs, loadKreisNames } from "../../../../../lib/awards-server";
+import { bundeslandByAgs } from "../../../../../lib/mastr-regions";
 import { formatAwardValue, type GemeindeStats } from "../../../../../lib/awards";
 import { fmtSpeicherJeKwp } from "../../../../../lib/atlas-format";
 import {
-  rankingKategorien,
   rankingKategorienGruppiert,
+  rankingNav,
+  navPunktVon,
   kategorieBySlug,
   rankingRows,
   rankingTitel,
@@ -96,9 +98,10 @@ export default async function RankingPage({ params }: { params: Params }) {
   const wo = region.level === "de" ? "in Deutschland" : ortPhrase(region);
   const scopeId = region.level === "de" ? null : region.region_id;
 
-  const [stats, elternSlugs, kinder] = await Promise.all([
+  const [stats, elternSlugs, kreisNamen, kinder] = await Promise.all([
     loadAwardStats(),
     loadElternSlugs(),
+    loadKreisNames(),
     // Eine Ebene tiefer weiterblättern — von Deutschland in die Länder, vom
     // Land in die Kreise. Auf Kreisebene sind die Kommunen schon die Zeilen.
     region.level === "landkreis" ? Promise.resolve([]) : getChildren(region),
@@ -114,6 +117,27 @@ export default async function RankingPage({ params }: { params: Params }) {
     return bl && kreis && gem ? `/solar-atlas/${bl}/${kreis}/${gem}` : null;
   };
 
+  // Woher die Kommune kommt — aber nur, wo es die Zeile unterscheidet: Auf einer
+  // Kreis-Rangliste steht bei allen dasselbe, das waere Rauschen.
+  const zeigtHerkunft = region.level !== "landkreis";
+  const herkunft = (id: string) => {
+    const blSlug = elternSlugs[id.slice(0, 2)];
+    const kreisSlug = elternSlugs[id.slice(0, 5)];
+    const teile: { name: string; href: string | null }[] = [];
+    if (region.level === "de") {
+      const bl = bundeslandByAgs(id.slice(0, 2));
+      if (bl) teile.push({ name: bl.name, href: blSlug ? `${BASIS}/${kategorie.slug}/${blSlug}` : null });
+    }
+    const kreisName = kreisNamen[id.slice(0, 5)];
+    if (kreisName) {
+      teile.push({
+        name: kreisName,
+        href: blSlug && kreisSlug ? `${BASIS}/${kategorie.slug}/${blSlug}/${kreisSlug}` : null,
+      });
+    }
+    return teile;
+  };
+
   const crumbs: Crumb[] = [
     { label: "Solar-Atlas", href: "/solar-atlas" },
     { label: "Rankings", href: BASIS },
@@ -123,11 +147,61 @@ export default async function RankingPage({ params }: { params: Params }) {
 
   const kindWort = region.level === "de" ? "Bundesland" : "Landkreis";
   const zeigtVeraenderung = zeilen.some((r) => r.veraenderung !== null);
+  const nav = rankingNav();
+  const aktiverPunkt = navPunktVon(kategorie.slug);
+  /** Kategorie wechseln, Gebiet behalten — der häufigste Sprung. */
+  const mitGebiet = (slug: string) => `${BASIS}/${slug}${d.gebiet.length ? "/" + d.gebiet.join("/") : ""}`;
+  const katStil = (aktiv: boolean, klein = false): React.CSSProperties => ({
+    ...S.kat,
+    ...(klein ? S.katKlein : null),
+    background: aktiv ? v("--color-accent") : "transparent",
+    color: aktiv ? v("--color-text-on-accent") : v("--color-text-secondary"),
+    borderColor: aktiv ? v("--color-accent") : v("--color-border"),
+  });
 
   return (
     <div style={S.page}>
       <div style={S.wrap}>
         <Breadcrumb items={crumbs} />
+
+        {/* Menü ÜBER der Überschrift: Es sagt, welches Thema man ansieht;
+            Überschrift und Einleitung darunter sagen, was genau gemessen wird.
+            Zweistufig, weil die drei Zubau-Zeiträume ein Thema sind und keine
+            drei — als gleichrangige Knöpfe stand "Zubau" dreimal in der Reihe. */}
+        {(
+          [
+            ["Was die Bürger gebaut haben", nav.buerger],
+            ["Was am Ort steht", nav.standort],
+          ] as const
+        ).map(([titel, punkte]) =>
+          punkte.length === 0 ? null : (
+            <div key={titel} style={S.navGruppe}>
+              <div style={S.navTitel}>{titel}</div>
+              <div style={S.kats}>
+                {punkte.map((punkt) => {
+                  const aktiv = aktiverPunkt?.slug === punkt.slug;
+                  return (
+                    <Link key={punkt.slug} href={mitGebiet(punkt.slug)} style={katStil(aktiv)}>
+                      {punkt.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ),
+        )}
+
+        {/* Zweite Ebene: nur für das gewählte Thema. */}
+        {aktiverPunkt?.zeitraeume && (
+          <div style={S.zeitraeume}>
+            <span style={S.zeitraumLabel}>Zeitraum</span>
+            {aktiverPunkt.zeitraeume.map((z) => (
+              <Link key={z.slug} href={mitGebiet(z.slug)} style={katStil(z.slug === kategorie.slug, true)}>
+                {z.label}
+              </Link>
+            ))}
+          </div>
+        )}
 
         <h1 style={S.h1}>{rankingTitel(kategorie, wo)}</h1>
         <p style={S.intro}>
@@ -144,31 +218,16 @@ export default async function RankingPage({ params }: { params: Params }) {
           )}
         </p>
 
-        {/* Kategorie wechseln, Gebiet behalten — der häufigste Sprung. */}
-        <div style={S.kats}>
-          {rankingKategorien().map((k) => {
-            const aktiv = k.slug === kategorie.slug;
-            return (
-              <Link
-                key={k.slug}
-                href={`${BASIS}/${k.slug}${d.gebiet.length ? "/" + d.gebiet.join("/") : ""}`}
-                style={{
-                  ...S.kat,
-                  background: aktiv ? v("--color-accent") : "transparent",
-                  color: aktiv ? v("--color-text-on-accent") : v("--color-text-secondary"),
-                  borderColor: aktiv ? v("--color-accent") : v("--color-border"),
-                }}
-              >
-                {k.thema}
-              </Link>
-            );
-          })}
-        </div>
-
-        {zeilen.length > 0 && zeigtVeraenderung && (
-          <p style={S.deltaHinweis}>
-            {`▲▼ = Plätze seit Ende ${new Date().getFullYear() - 1}. Bewusst nicht „zum Vorjahr": Der Zeitraum reicht vom Jahresende bis heute.`}
-          </p>
+        {zeilen.length > 0 && (
+          <div style={{ ...S.zeile, ...S.kopfzeile }}>
+            <span>Platz</span>
+            <span>Kommune</span>
+            <span style={S.kopfRechts}>
+              {zeigtVeraenderung ? `seit Ende ${new Date().getFullYear() - 1}` : ""}
+            </span>
+            <span style={S.kopfRechts}>{kategorie.messart === "proKopf" ? "je Einwohner" : "gesamt"}</span>
+            <span />
+          </div>
         )}
 
         {zeilen.length > 0 && (
@@ -178,13 +237,31 @@ export default async function RankingPage({ params }: { params: Params }) {
               const inhalt = (
                 <>
                   <span style={S.platz}>{r.platz}.</span>
-                  <span style={S.name}>
-                    {r.platz === 1 && (
-                      <span aria-hidden style={S.krone}>
-                        👑
+                  <span style={S.nameSpalte}>
+                    <span style={S.name}>
+                      {r.platz === 1 && (
+                        <span aria-hidden style={S.krone}>
+                          👑
+                        </span>
+                      )}
+                      {r.name}
+                    </span>
+                    {zeigtHerkunft && (
+                      <span style={S.herkunft}>
+                        {herkunft(r.regionId).map((t, i) => (
+                          <span key={t.name}>
+                            {i > 0 && " · "}
+                            {t.href ? (
+                              <Link href={t.href} style={S.herkunftLink}>
+                                {t.name}
+                              </Link>
+                            ) : (
+                              t.name
+                            )}
+                          </span>
+                        ))}
                       </span>
                     )}
-                    {r.name}
                   </span>
                   <span style={S.delta}>
                     <RangDelta plaetze={r.veraenderung} />
@@ -211,6 +288,12 @@ export default async function RankingPage({ params }: { params: Params }) {
               );
             })}
           </ol>
+        )}
+
+        {zeigtVeraenderung && (
+          <p style={S.deltaHinweis}>
+            {`▲ und ▼ zeigen, wie viele Plätze eine Kommune seit Ende ${new Date().getFullYear() - 1} gutgemacht oder verloren hat. Bewusst nicht „gegenüber dem Vorjahr": Der Zeitraum reicht vom Jahresende bis heute.`}
+          </p>
         )}
 
         {alle.length > zeilen.length && (
@@ -358,10 +441,22 @@ const S: Record<string, React.CSSProperties> = {
     padding: "0 16px 20px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
+  h1: { marginTop: space.lg, fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
   intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
-  kats: { display: "flex", flexWrap: "wrap", gap: 6, marginBottom: space.xl },
+  navGruppe: { marginBottom: space.md },
+  navTitel: {
+    fontSize: 11,
+    textTransform: "uppercase",
+    letterSpacing: "0.05em",
+    color: v("--color-text-muted"),
+    fontWeight: 700,
+    marginBottom: 4,
+  },
+  kats: { display: "flex", flexWrap: "wrap", gap: 6 },
+  katKlein: { fontSize: 11, padding: "2px 10px" },
+  zeitraeume: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6, marginBottom: space.lg },
+  zeitraumLabel: { fontSize: 11, color: v("--color-text-muted"), marginRight: 2 },
   kat: {
     padding: pad("xs", "md"),
     border: "1px solid",
@@ -383,11 +478,29 @@ const S: Record<string, React.CSSProperties> = {
   zeileLink: { textDecoration: "none", color: "inherit" },
   platz: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-accent-dark"), fontSize: 13 },
   krone: { marginRight: 5 },
+  nameSpalte: { display: "flex", flexDirection: "column", minWidth: 0, gap: 1 },
   name: { minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+  herkunft: {
+    fontSize: 11,
+    color: v("--color-text-muted"),
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+  herkunftLink: { color: "inherit", textDecoration: "none", borderBottom: `1px dotted ${v("--color-border-muted")}` },
+  kopfzeile: {
+    fontSize: 11,
+    textTransform: "uppercase",
+    letterSpacing: "0.04em",
+    color: v("--color-text-muted"),
+    fontWeight: 700,
+    borderBottom: `1px solid ${v("--color-border-muted")}`,
+  },
+  kopfRechts: { textAlign: "right" },
   delta: { display: "flex", justifyContent: "flex-end" },
   wert: { fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-text-secondary") },
   go: { display: "flex", justifyContent: "flex-end", color: v("--color-accent") },
-  deltaHinweis: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.sm}px`, lineHeight: 1.5 },
+  deltaHinweis: { fontSize: 12, color: v("--color-text-muted"), margin: `${space.md}px 0 0`, lineHeight: 1.5 },
   gekuerzt: { fontSize: 13, color: v("--color-text-muted"), margin: `${space.md}px 0 0`, lineHeight: 1.6 },
   section: { marginTop: space.xxxl },
   h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.md}px` },

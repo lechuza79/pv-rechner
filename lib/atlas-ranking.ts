@@ -139,3 +139,67 @@ export function rankingTitel(kategorie: AwardCategory, wo: string): string {
   const t = kategorie.thema;
   return `${t[0].toUpperCase()}${t.slice(1)} ${wo}`;
 }
+
+
+// ─── Navigation ──────────────────────────────────────────────────────────────
+
+/**
+ * Die Kategorien als MENÜ, nicht als flache Liste.
+ *
+ * Warum: Die drei Zubau-Zeiträume sind nicht drei Themen, sondern eines mit drei
+ * Einstellungen. Als gleichrangige Knöpfe nebeneinander machten sie die Reihe
+ * doppelt so lang und ließen "Zubau" dreimal auftauchen. Sie stehen jetzt unter
+ * EINEM Punkt, die Zeiträume erscheinen erst darunter, wenn er gewählt ist.
+ *
+ * Die Kurzlabels tragen nur das Thema — was genau gemessen wird (je Einwohner,
+ * welcher Zeitraum), sagt die Überschrift der Seite darunter.
+ */
+export type RankingNavPunkt = {
+  /** Kurz fürs Menü. */
+  label: string;
+  /** Die Kategorie, auf die der Punkt führt (bei Zubau: der Standard-Zeitraum). */
+  slug: string;
+  /** Weitere Einstellungen desselben Themas, als zweite Ebene. */
+  zeitraeume?: { label: string; slug: string }[];
+};
+
+const KURZ: Record<string, string> = {
+  "solarleistung-je-einwohner": "Solarleistung",
+  "balkonkraftwerke-je-einwohner": "Balkonkraftwerke",
+  "speicherkapazitaet-je-einwohner": "Speicher",
+  "freiflaechen-solar": "Freifläche",
+  windleistung: "Wind",
+  "solar-zubau": "Zubau gesamt",
+};
+
+const ZUBAU_ZEITRAEUME = [
+  { label: "1 Jahr", slug: "zubau-1-jahr-je-einwohner" },
+  { label: "3 Jahre", slug: "zubau-3-jahre-je-einwohner" },
+  { label: "5 Jahre", slug: "zubau-5-jahre-je-einwohner" },
+];
+
+export function rankingNav(): { buerger: RankingNavPunkt[]; standort: RankingNavPunkt[] } {
+  const { buerger, standort } = rankingKategorienGruppiert();
+  const zubauSlugs = new Set(ZUBAU_ZEITRAEUME.map((z) => z.slug));
+  const einzeln = (k: AwardCategory & { slug: string }): RankingNavPunkt => ({
+    label: KURZ[k.slug] ?? k.thema,
+    slug: k.slug,
+  });
+  return {
+    buerger: [
+      ...buerger.filter((k) => !zubauSlugs.has(k.slug)).map(einzeln),
+      ...(buerger.some((k) => zubauSlugs.has(k.slug))
+        ? [{ label: "Zubau", slug: ZUBAU_ZEITRAEUME[1].slug, zeitraeume: ZUBAU_ZEITRAEUME }]
+        : []),
+    ],
+    standort: standort.map(einzeln),
+  };
+}
+
+/** Zu welchem Menüpunkt gehört eine Kategorie? Für die aktive Markierung. */
+export function navPunktVon(slug: string): RankingNavPunkt | null {
+  const { buerger, standort } = rankingNav();
+  return (
+    [...buerger, ...standort].find((p) => p.slug === slug || p.zeitraeume?.some((z) => z.slug === slug)) ?? null
+  );
+}
