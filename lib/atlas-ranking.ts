@@ -58,6 +58,12 @@ export type RankingZeile = {
   name: string;
   platz: number;
   wert: number;
+  /** Platz zum Stand Ende des letzten vollen Jahres, wenn die Kategorie einen
+   *  Stichtagswert hat. */
+  platzVorjahr: number | null;
+  /** Positiv = nach vorn gerueckt. Der Wert IST die Zahl der Plaetze, nicht
+   *  ihre Richtung: +3 heisst drei Plaetze besser als Ende letzten Jahres. */
+  veraenderung: number | null;
 };
 
 /**
@@ -88,6 +94,36 @@ export function rankingRows(
 
   // Gleiche Werte bekommen denselben Platz; der nächste Platz überspringt die
   // Gleichstände (Sportrang). Alles andere wäre eine erfundene Reihenfolge.
+  const platziert = vergebePlaetze(rows);
+
+  // RANGVERAENDERUNG: derselbe Lauf noch einmal mit den Werten von Ende des
+  // letzten vollen Jahres. Bewusst NICHT "Veränderung zum Vorjahr" genannt —
+  // der Zeitraum reicht vom Jahresende bis heute, im Juli also sieben Monate.
+  // Dieselbe Ehrlichkeit wie in der Ranglisten-Tabelle des Atlas.
+  if (!kategorie.metricVorjahr) {
+    return platziert.map((r) => ({ ...r, platzVorjahr: null, veraenderung: null }));
+  }
+  const vorjahr = stats
+    .filter((g) => {
+      if (kategorie.messart === "proKopf" && g.population < RANKING_MIN_POPULATION) return false;
+      if (scopeId && !g.regionId.startsWith(scopeId)) return false;
+      const w = kategorie.metricVorjahr!(g);
+      return w !== null && w > 0;
+    })
+    .map((g) => ({ regionId: g.regionId, name: g.name, wert: kategorie.metricVorjahr!(g) as number }))
+    .sort((a, b) => b.wert - a.wert || a.name.localeCompare(b.name, "de"));
+  const platzVon = new Map(vergebePlaetze(vorjahr).map((r) => [r.regionId, r.platz]));
+
+  return platziert.map((r) => {
+    const alt = platzVon.get(r.regionId) ?? null;
+    // Wer damals nicht gewertet war, ist nicht "aufgestiegen" — dann steht dort
+    // nichts. Eine Null wäre eine Aussage, die wir nicht haben.
+    return { ...r, platzVorjahr: alt, veraenderung: alt === null ? null : alt - r.platz };
+  });
+}
+
+/** Sportrang: Gleichstände teilen sich den Platz, der nächste überspringt. */
+function vergebePlaetze<T extends { wert: number }>(rows: T[]): (T & { platz: number })[] {
   let letzterWert: number | null = null;
   let letzterPlatz = 0;
   return rows.map((r, i) => {

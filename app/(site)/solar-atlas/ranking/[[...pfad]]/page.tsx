@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb, { type Crumb } from "../../../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../../../components/Icons";
+import RangDelta from "../../../../../components/atlas/RangDelta";
 import { v, space, pad } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { atlasRobots } from "../../../../../lib/atlas-index";
@@ -121,6 +122,7 @@ export default async function RankingPage({ params }: { params: Params }) {
   ];
 
   const kindWort = region.level === "de" ? "Bundesland" : "Landkreis";
+  const zeigtVeraenderung = zeilen.some((r) => r.veraenderung !== null);
 
   return (
     <div style={S.page}>
@@ -163,6 +165,12 @@ export default async function RankingPage({ params }: { params: Params }) {
           })}
         </div>
 
+        {zeilen.length > 0 && zeigtVeraenderung && (
+          <p style={S.deltaHinweis}>
+            {`▲▼ = Plätze seit Ende ${new Date().getFullYear() - 1}. Bewusst nicht „zum Vorjahr": Der Zeitraum reicht vom Jahresende bis heute.`}
+          </p>
+        )}
+
         {zeilen.length > 0 && (
           <ol style={S.liste}>
             {zeilen.map((r) => {
@@ -177,6 +185,9 @@ export default async function RankingPage({ params }: { params: Params }) {
                       </span>
                     )}
                     {r.name}
+                  </span>
+                  <span style={S.delta}>
+                    <RangDelta plaetze={r.veraenderung} />
                   </span>
                   <span style={S.wert}>{formatAwardValue(r.wert, kategorie.format)}</span>
                 </>
@@ -362,7 +373,7 @@ const S: Record<string, React.CSSProperties> = {
   liste: { listStyle: "none", margin: 0, padding: 0 },
   zeile: {
     display: "grid",
-    gridTemplateColumns: "48px minmax(0,1fr) auto 14px",
+    gridTemplateColumns: "48px minmax(0,1fr) auto auto 14px",
     gap: space.md,
     alignItems: "baseline",
     padding: pad("sm", "sm"),
@@ -373,8 +384,10 @@ const S: Record<string, React.CSSProperties> = {
   platz: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-accent-dark"), fontSize: 13 },
   krone: { marginRight: 5 },
   name: { minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+  delta: { display: "flex", justifyContent: "flex-end" },
   wert: { fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-text-secondary") },
   go: { display: "flex", justifyContent: "flex-end", color: v("--color-accent") },
+  deltaHinweis: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.sm}px`, lineHeight: 1.5 },
   gekuerzt: { fontSize: 13, color: v("--color-text-muted"), margin: `${space.md}px 0 0`, lineHeight: 1.6 },
   section: { marginTop: space.xxxl },
   h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.md}px` },

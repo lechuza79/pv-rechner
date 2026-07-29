@@ -53,6 +53,13 @@ export const MASTR_AWARD_SQL = `
       ALTER TABLE mastr_gemeinde_award ADD COLUMN IF NOT EXISTS solar_kwp_l3 numeric NOT NULL DEFAULT 0;
       ALTER TABLE mastr_gemeinde_award ADD COLUMN IF NOT EXISTS solar_kwp_l5 numeric NOT NULL DEFAULT 0;
       ALTER TABLE mastr_gemeinde_award ADD COLUMN IF NOT EXISTS privat_dach_kwp_ly numeric NOT NULL DEFAULT 0;
+      -- Private Daecher auch drei und fuenf Jahre zurueck. Das Zubau-Tempo einer
+      -- BUERGER-Kategorie darf nicht die Gesamt-Solarleistung nehmen: Ein
+      -- Investoren-Solarpark haette sonst ein Dorf an die Spitze gesetzt
+      -- (gemessen: Theilheim mit 7.975 Wp je Kopf, waehrend der Bestands-Erste
+      -- des Kreises bei 1.623 liegt).
+      ALTER TABLE mastr_gemeinde_award ADD COLUMN IF NOT EXISTS privat_dach_kwp_l3 numeric NOT NULL DEFAULT 0;
+      ALTER TABLE mastr_gemeinde_award ADD COLUMN IF NOT EXISTS privat_dach_kwp_l5 numeric NOT NULL DEFAULT 0;
       ALTER TABLE mastr_gemeinde_award ADD COLUMN IF NOT EXISTS balkon_count_ly int NOT NULL DEFAULT 0;
       ALTER TABLE mastr_gemeinde_award ADD COLUMN IF NOT EXISTS batterie_privat_kwh_ly numeric NOT NULL DEFAULT 0;
       ALTER TABLE mastr_gemeinde_award ADD COLUMN IF NOT EXISTS freiflaeche_kwp_ly numeric NOT NULL DEFAULT 0;
@@ -85,7 +92,8 @@ export const MASTR_AWARD_SQL = `
           wind_kwp, biomasse_kwp, wasser_kwp,
           solar_zubau_kwp, zubau_year,
           solar_kwp, solar_kwp_ly, solar_kwp_l3, solar_kwp_l5,
-          privat_dach_kwp_ly, balkon_count_ly, batterie_privat_kwh_ly,
+          privat_dach_kwp_ly, privat_dach_kwp_l3, privat_dach_kwp_l5,
+          balkon_count_ly, batterie_privat_kwh_ly,
           freiflaeche_kwp_ly, wind_kwp_ly
         )
         SELECT a.region_id, r.population,
@@ -109,6 +117,8 @@ export const MASTR_AWARD_SQL = `
           coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='solar'    AND a.year <= ly - 2),0),
           coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='solar'    AND a.year <= ly - 4),0),
           coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='solar'    AND a.segment='privat_dach'  AND a.year <= ly),0),
+          coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='solar'    AND a.segment='privat_dach'  AND a.year <= ly - 2),0),
+          coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='solar'    AND a.segment='privat_dach'  AND a.year <= ly - 4),0),
           coalesce(sum(a.count) FILTER (WHERE a.energietraeger='solar'    AND a.segment='steckersolar' AND a.year <= ly),0),
           coalesce(sum(a.kwh)   FILTER (WHERE a.energietraeger='speicher' AND a.segment='batterie_privat' AND a.year <= ly),0),
           coalesce(sum(a.kwp)   FILTER (WHERE a.energietraeger='solar'    AND a.segment='freiflaeche'  AND a.year <= ly),0),

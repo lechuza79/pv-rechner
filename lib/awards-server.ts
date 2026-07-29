@@ -81,6 +81,17 @@ export const loadAwardStats = memoize(async (): Promise<GemeindeStats[]> => {
       biomasseKwp: Number(r.biomasse_kwp),
       wasserKwp: Number(r.wasser_kwp),
       solarZubauKwp: Number(r.solar_zubau_kwp),
+      solarKwp: Number(r.solar_kwp ?? 0),
+      solarKwpLy: Number(r.solar_kwp_ly ?? 0),
+      solarKwpL3: Number(r.solar_kwp_l3 ?? 0),
+      solarKwpL5: Number(r.solar_kwp_l5 ?? 0),
+      privatDachKwpLy: Number(r.privat_dach_kwp_ly ?? 0),
+      privatDachKwpL3: Number(r.privat_dach_kwp_l3 ?? 0),
+      privatDachKwpL5: Number(r.privat_dach_kwp_l5 ?? 0),
+      balkonCountLy: Number(r.balkon_count_ly ?? 0),
+      batteriePrivatKwhLy: Number(r.batterie_privat_kwh_ly ?? 0),
+      freiflaecheKwpLy: Number(r.freiflaeche_kwp_ly ?? 0),
+      windKwpLy: Number(r.wind_kwp_ly ?? 0),
     };
   });
 });

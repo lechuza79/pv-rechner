@@ -48,6 +48,19 @@ export type GemeindeStats = {
   biomasseKwp: number;
   wasserKwp: number;
   solarZubauKwp: number;
+  /** Bestaende zu Stichtagen (siehe lib/mastr-award-sql.ts). Optional, weil
+   *  aeltere Aufrufer sie nicht setzen — wer sie braucht, prueft auf undefined. */
+  solarKwp?: number;
+  solarKwpLy?: number;
+  solarKwpL3?: number;
+  solarKwpL5?: number;
+  privatDachKwpLy?: number;
+  privatDachKwpL3?: number;
+  privatDachKwpL5?: number;
+  balkonCountLy?: number;
+  batteriePrivatKwhLy?: number;
+  freiflaecheKwpLy?: number;
+  windKwpLy?: number;
 };
 
 // ─── Kategorien ────────────────────────────────────────────────────────────────
@@ -100,6 +113,9 @@ export type AwardCategory = {
   messart: Messart;
   format: MetricFormat;
   metric: (g: GemeindeStats) => number | null;
+  /** Dieselbe Messgroesse zum Stand Ende des letzten vollen Jahres. Nur wo ein
+   *  Stichtagswert vorliegt — daraus faellt die Rangveraenderung. */
+  metricVorjahr?: (g: GemeindeStats) => number | null;
 };
 
 const perCapita = (val: number, pop: number): number | null => (pop > 0 ? (val * 1000) / pop : null);
@@ -119,6 +135,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "proKopf",
     format: "wattProKopf",
     metric: (g) => perCapita(g.privatDachKwp, g.population),
+    metricVorjahr: (g) => perCapita(g.privatDachKwpLy ?? 0, g.population),
   },
   {
     key: "balkon-pk",
@@ -132,6 +149,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "proKopf",
     format: "countPer1000",
     metric: (g) => perCapita(g.balkonCount, g.population),
+    metricVorjahr: (g) => perCapita(g.balkonCountLy ?? 0, g.population),
   },
   {
     key: "batterie-privat-pk",
@@ -145,6 +163,49 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "proKopf",
     format: "whProKopf",
     metric: (g) => perCapita(g.batteriePrivatKwh, g.population),
+    metricVorjahr: (g) => perCapita(g.batteriePrivatKwhLy ?? 0, g.population),
+  },
+  // Zubau-Tempo je Einwohner ueber mehrere Zeitraeume. Absolut waere es wieder
+  // eine Einwohner-Rangliste; RELATIV ("+300 %") gewinnt, wer bei fast null
+  // angefangen hat. Je Einwohner zugebaute Leistung ist beides nicht.
+  {
+    key: "tempo-1j",
+    slug: "zubau-1-jahr-je-einwohner",
+    label: "Tempo 1 Jahr",
+    merit: "Meiste je Einwohner zugebaute Solarleistung im letzten vollen Jahr.",
+    bestleistung: "den größten Zubau auf privaten Dächern je Einwohner im letzten Jahr",
+    thema: "Zubau auf privaten Dächern je Einwohner, letztes Jahr",
+    themaDativ: "Solar-Zubau je Einwohner im letzten Jahr",
+    traeger: "buerger",
+    messart: "proKopf",
+    format: "wattProKopf",
+    metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpLy ?? 0)), g.population),
+  },
+  {
+    key: "tempo-3j",
+    slug: "zubau-3-jahre-je-einwohner",
+    label: "Tempo 3 Jahre",
+    merit: "Meiste je Einwohner zugebaute Solarleistung in den letzten drei Jahren.",
+    bestleistung: "den größten Zubau auf privaten Dächern je Einwohner in drei Jahren",
+    thema: "Zubau auf privaten Dächern je Einwohner, drei Jahre",
+    themaDativ: "Solar-Zubau je Einwohner in drei Jahren",
+    traeger: "buerger",
+    messart: "proKopf",
+    format: "wattProKopf",
+    metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpL3 ?? 0)), g.population),
+  },
+  {
+    key: "tempo-5j",
+    slug: "zubau-5-jahre-je-einwohner",
+    label: "Tempo 5 Jahre",
+    merit: "Meiste je Einwohner zugebaute Solarleistung in den letzten fünf Jahren.",
+    bestleistung: "den größten Zubau auf privaten Dächern je Einwohner in fünf Jahren",
+    thema: "Zubau auf privaten Dächern je Einwohner, fünf Jahre",
+    themaDativ: "Solar-Zubau je Einwohner in fünf Jahren",
+    traeger: "buerger",
+    messart: "proKopf",
+    format: "wattProKopf",
+    metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpL5 ?? 0)), g.population),
   },
   // Bürger, absolut — belohnt die großen Städte-Bürgerschaften.
   {
@@ -208,6 +269,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "absolut",
     format: "pvLeistung",
     metric: (g) => pos(g.freiflaecheKwp),
+    metricVorjahr: (g) => pos(g.freiflaecheKwpLy ?? 0),
   },
   {
     key: "gewerbespeicher-abs",
@@ -233,6 +295,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "absolut",
     format: "pvLeistung",
     metric: (g) => pos(g.windKwp),
+    metricVorjahr: (g) => pos(g.windKwpLy ?? 0),
   },
   {
     key: "biomasse-standort",
