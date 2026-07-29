@@ -1,10 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
-import { DATA_SOURCES } from "../../../../lib/data-sources";
+import {
+  WidgetFooter,
+  WidgetSourceEdge,
+  useShareOnlyActions,
+} from "../../../../components/WidgetExport";
+import { WIDGETS } from "../../../../lib/widget-registry";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
+import {
+  WIDGET_SETTINGS_DEFAULTS,
+  type WidgetSettings,
+} from "../../../../lib/widget-settings";
 import { calcBegSubsidy } from "../../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../../lib/heatpump-config";
 
@@ -19,9 +26,10 @@ import { DEFAULT_HEATPUMP_CONFIG } from "../../../../lib/heatpump-config";
 // so a future BEG change updates the widget automatically.
 
 const cfg = DEFAULT_HEATPUMP_CONFIG;
-const CTA_URL = "/waermepumpe-rechner";
-const SHARE_URL = "https://solar-check.io/waermepumpe-rechner";
-const SHARE_TEXT = "Wärmepumpen-Förderung berechnen – Solar Check";
+// Identität (Titel, Teilen-Ziel, Quelle, nächster Schritt) kommt aus dem
+// Register — ein Eintrag speist Fußzeile, Quellen-Kante und Zitat.
+const WIDGET = WIDGETS.foerderCheck;
+const CTA_URL = WIDGET.cta!.href;
 
 const nf = (n: number) => n.toLocaleString("de-DE");
 
@@ -50,19 +58,17 @@ const INVEST_MAX = 45000;
 type Screen = "gebaeude" | "heizung" | "alter" | "nutzung" | "einkommen" | "kind" | "result";
 
 export default function FoerderCheckWidget() {
-  const [showEmbed, setShowEmbed] = useState(true);
-  const [showBranding, setShowBranding] = useState(true);
   // First-party embed (onsite=1): our own page carries CTAs' context, source and
-  // impressum — so we show the actions as a direct bar and drop "Powered by" +
-  // the in-widget source note (page footer credits it). See widget convention.
-  const [onsite, setOnsite] = useState(false);
+  // impressum — so we drop "Powered by" + the in-widget source note (the page
+  // footer credits it). See widget convention.
+  const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
-    onSettings: (s) => {
-      if (typeof s.embed === "boolean") setShowEmbed(s.embed);
-      if (typeof s.branding === "boolean") setShowBranding(s.branding);
-      if (typeof s.onsite === "boolean") setOnsite(s.onsite);
-    },
+    onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
+
+  // Kein Bild-Export: ein Frage-Ablauf ist kein Chart (`exportable: false` im
+  // Register). Teilen-Text und -Ziel kommen trotzdem aus dem Register.
+  const actions = useShareOnlyActions(WIDGET);
 
   // Flow-State
   const [screen, setScreen] = useState<Screen>("gebaeude");
@@ -121,16 +127,21 @@ export default function FoerderCheckWidget() {
   return (
     <div
       style={{
+        position: "relative",
         background: "var(--widget-bg)",
         color: "var(--widget-fg)",
         borderRadius: "var(--widget-border-radius)",
         fontFamily: "var(--widget-font-family)",
         padding: 16,
+        paddingRight: 22,
         boxSizing: "border-box",
         maxWidth: 380,
         margin: "0 auto",
       }}
     >
+      {/* Quelle vertikal an der rechten Kante (geteilter Baustein), nie als
+          horizontaler Block. Auf einer eigenen Seite kreditiert die Seite. */}
+      <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
       {/* ── Kopf: Titel als Überschrift + Trennlinie darunter ── */}
       <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: 0.1, lineHeight: 1.2 }}>
         Wärmepumpen-Förderung berechnen
@@ -170,9 +181,7 @@ export default function FoerderCheckWidget() {
         />
       )}
 
-      {/* ── Footer: Zurück (unten) + Quelle + Marke + Aktionen ── */}
-      {/* onsite = First-Party-Embed: direkte Aktionsleiste, kein "Powered by",
-          keine Widget-eigene Quelle (die einbettende Seite/der Footer trägt sie). */}
+      {/* ── Footer: Zurück (unten) + geteilte Fußzeile ── */}
       <div style={{ marginTop: 14 }}>
         {history.length > 0 && (
           <button
@@ -195,44 +204,21 @@ export default function FoerderCheckWidget() {
             ← Zurück
           </button>
         )}
-        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
-        {!onsite && (
-          <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: 6 }}>
-            <DataSourceNote source={DATA_SOURCES.beg} />
-          </div>
-        )}
-        <div
-          style={{
-            fontSize: 10.5,
-            color: "var(--widget-muted)",
-            display: "flex",
-            justifyContent: showBranding && !onsite ? "space-between" : "flex-end",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          {showBranding && !onsite && <PoweredBy />}
-          <ChartActionBar
-            variant={onsite ? "bar" : "menu"}
-            menuUp={!onsite}
-            showDownload={false}
-            size={28}
-            onDownload={() => {}}
-            onCopyLink={() => navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {})}
-            onWhatsApp={() =>
-              window.open(`https://wa.me/?text=${encodeURIComponent(`${SHARE_TEXT}\n${SHARE_URL}`)}`, "_blank")
-            }
-            onTwitter={() =>
-              window.open(
-                `https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SHARE_URL)}`,
-                "_blank",
-              )
-            }
-            onEmbed={showEmbed ? () => window.open("/energie-widgets#foerder-check", "_blank", "noopener") : undefined}
-            isExporting={false}
-            canNativeShare={false}
-          />
-        </div>
+        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2 }} />
+        {/* Fußzeile aus dem geteilten Baustein: Aktionen (inkl. „Zitieren")
+            und Marke. Der nächste Schritt steht hier bewusst NICHT als Knopf:
+            das Ergebnis trägt ihn schon, größer und mit dem konkreten Versprechen
+            („Komplett durchrechnen") — ein zweiter, kleinerer Knopf mit demselben
+            Ziel wenige Zeilen darunter ist Lärm, kein Schritt. */}
+        <WidgetFooter
+          widget={WIDGET}
+          chartExport={actions}
+          share={settings.share}
+          branding={settings.branding}
+          showEmbed={settings.embed}
+          onsite={settings.onsite}
+          showCta={false}
+        />
       </div>
     </div>
   );

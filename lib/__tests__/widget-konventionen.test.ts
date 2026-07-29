@@ -57,8 +57,12 @@ function widgetDateien(): { pfad: string; inhalt: string }[] {
 }
 
 /**
- * Regeln, die für eine Datei (noch) nicht gelten — Umstellungs-Reste UND
- * begründete Dauerausnahmen, beide hier, beide REGELGENAU.
+ * Regeln, die für eine Datei nicht gelten — begründete Ausnahmen, REGELGENAU.
+ *
+ * Stand 29.07.2026 stehen hier nur noch Dauerausnahmen: dünne Embed-Hüllen, die
+ * ihre Karte aus einem geteilten Bauteil beziehen, und ein Chart-Bauteil ohne
+ * eigene Fußzeile. Die Umstellungs-Reste (ee-ampel, foerder-check, karte,
+ * kennzahl) sind abgearbeitet.
  *
  * Regelgenau ist der Punkt: Früher stand daneben eine pauschale Restliste, die
  * für die genannten Dateien JEDE Regel abschaltete — auch „bild-fuss", also
@@ -71,23 +75,6 @@ function widgetDateien(): { pfad: string; inhalt: string }[] {
  * scharf, und das ist der Punkt: neue Charts können gar nicht erst danebenlaufen.
  */
 const ERLAUBT: Record<string, { regel: string; grund: string }[]> = {
-  // ── Umstellungs-Reste (Stand 27.07.2026): bauen ihre Fußzeile noch selbst ──
-  "app/(embed)/embed/ee-ampel/client.tsx": [
-    { regel: "share-url", grund: "noch nicht auf das Register umgestellt" },
-    { regel: "max-breite", grund: "noch nicht auf das Register umgestellt" },
-  ],
-  "app/(embed)/embed/foerder-check/client.tsx": [
-    { regel: "share-url", grund: "noch nicht auf das Register umgestellt" },
-  ],
-  "app/(embed)/embed/karte/client.tsx": [
-    { regel: "share-url", grund: "noch nicht auf das Register umgestellt" },
-    { regel: "max-breite", grund: "noch nicht auf das Register umgestellt" },
-  ],
-  "app/(embed)/embed/kennzahl/client.tsx": [
-    { regel: "share-url", grund: "noch nicht auf das Register umgestellt" },
-    { regel: "max-breite", grund: "noch nicht auf das Register umgestellt" },
-  ],
-
   // ── Dauerausnahmen ────────────────────────────────────────────────────────
   "components/charts/ZubauTimelineChart.tsx": [
     { regel: "quelle-getippt", grund: "reines Chart-Bauteil ohne Fußzeile; enthält kein Credit" },

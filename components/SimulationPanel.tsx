@@ -6,8 +6,9 @@ import { useChartExport } from "../lib/useChartExport";
 import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
 import { useSharedPlz } from "../lib/location";
 import ChartExportBar from "./ChartExportBar";
-import ChartActionBar from "./ChartActionBar";
-import { PoweredBy, DataSourceNote } from "./PoweredBy";
+import { WidgetFooter } from "./WidgetExport";
+import { DataSourceNote } from "./PoweredBy";
+import { WIDGETS } from "../lib/widget-registry";
 import { DATA_SOURCES, sourceLabel } from "../lib/data-sources";
 import { v, tokens, iconSizes } from "../lib/theme";
 import { PERSONEN, NUTZUNG } from "../lib/constants";
@@ -38,6 +39,8 @@ export default function SimulationPanel({
   showCta = true,
   embedButton = true,
   branding = false,
+  share = true,
+  onsite = false,
 }: {
   embed?: boolean;
   initialPlz?: string;
@@ -47,6 +50,11 @@ export default function SimulationPanel({
   embedButton?: boolean;
   /** Embed only: show the "Powered by solar-check.io" footer. */
   branding?: boolean;
+  /** Embed only: the embedder opted out of the share actions (share=0). */
+  share?: boolean;
+  /** Embed only: first-party embed on one of our own pages (onsite=1) — the page
+   * carries brand and source, so the widget stays quiet. */
+  onsite?: boolean;
 }) {
   const [plz, setPlz] = useState(initialPlz);
   const [coords, setCoords] = useState<[number, number] | null>(null);
@@ -431,42 +439,37 @@ export default function SimulationPanel({
         </div>
       )}
 
-      {/* Disclaimer */}
+      {/* Disclaimer. Im Embed trägt die Quellen-Kante der Hülle den Credit —
+          hier stünde er sonst ein zweites Mal, und zwar als Block. */}
       {weather && !error && (
         <div style={{ fontSize: 11, color: v('--color-text-faint'), textAlign: "center", lineHeight: 1.5, marginBottom: embed ? 14 : 24 }}>
           Geschätzte Leistung für ein südausgerichtetes Dach ohne Verschattung.<br />
-          <DataSourceNote source={DATA_SOURCES.openMeteo} /> · Aktualisierung alle 15 Min.
+          {!embed && (
+            <>
+              <DataSourceNote source={DATA_SOURCES.openMeteo} /> ·{" "}
+            </>
+          )}
+          Aktualisierung alle 15 Min.
         </div>
       )}
 
-      {/* Embed action bar + branding footer (share the current view / PLZ). */}
+      {/* Embed: Fußzeile aus dem geteilten Baustein (Aktionen inkl. „Zitieren",
+          Marke). Der nächste Schritt steht hier bewusst NICHT als zweiter Knopf:
+          die Karte trägt ihn schon darüber, größer und mit der gewählten
+          Anlagengröße und PLZ im Link. */}
       {embed && weather && !error && (
         <div>
-          <div style={{ height: 1, background: v('--color-border'), marginBottom: 10 }} />
-          <div
-            style={{
-              fontSize: 10.5,
-              color: v('--color-text-muted'),
-              display: "flex",
-              justifyContent: branding ? "space-between" : "flex-start",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <ChartActionBar
-              variant="bar"
-              size={30}
-              onDownload={simChartExport.downloadPng}
-              onCopyLink={() => navigator.clipboard?.writeText(`${shareText}\n${shareUrl}`).catch(() => {})}
-              onWhatsApp={simChartExport.shareWhatsApp}
-              onTwitter={simChartExport.shareTwitter}
-              onShareImage={simChartExport.sharePng}
-              onEmbed={embedButton ? () => window.open("/energie-widgets#simulation", "_blank", "noopener") : undefined}
-              isExporting={simChartExport.isExporting}
-              canNativeShare={simChartExport.canNativeShare}
-            />
-            {branding && <PoweredBy />}
-          </div>
+          <div style={{ height: 1, background: v('--color-border') }} />
+          <WidgetFooter
+            widget={WIDGETS.simulation}
+            chartExport={simChartExport}
+            onCopyLink={() => navigator.clipboard?.writeText(`${shareText}\n${shareUrl}`).catch(() => {})}
+            share={share}
+            branding={branding}
+            showEmbed={embedButton}
+            onsite={onsite}
+            showCta={false}
+          />
         </div>
       )}
     </>

@@ -171,9 +171,12 @@ export default function LizenzPage() {
         <h2 style={S.h2}>Nutzung ohne Namensnennung</h2>
         <p style={S.p}>
           Die gewerbliche Nutzung ist bereits kostenlos erlaubt, dafür ist keine Sonderlizenz nötig.
+          Farben, Schrift und Ecken der Widgets lassen sich ebenfalls kostenlos an dein Design
+          anpassen — das stellst du dir in der{" "}
+          <Link href="/energie-widgets" style={S.a}>Widget-Galerie</Link> selbst ein.
           Kostenpflichtig ist nur, was über die Lizenz hinausgeht: die Befreiung von der
-          Namensnennung (White-Label), die Anpassung eines Widgets an ein eigenes Corporate Design
-          und die Nutzung ohne Referenzlink. Wenn du das brauchst, schreib uns an{" "}
+          Namensnennung (White-Label) und die Nutzung ohne Referenzlink. Wenn du das brauchst,
+          schreib uns an{" "}
           <ObfuscatedEmail user="hey" domain="solar-check.io" style={S.a} /> — wir nennen dir die
           Konditionen.
         </p>

@@ -1,14 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Kachel, formatDataAsOf } from "../../../../components/MastrHeroSection";
 import { LoadingDots } from "../../../../components/LoadingDots";
 import { useCachedFetch } from "../../../../lib/use-cached-fetch";
 import type { Energietraeger, RegionSummary } from "../../../../lib/mastr-data";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
-import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
-import { DATA_SOURCES } from "../../../../lib/data-sources";
+import {
+  WidgetFooter,
+  WidgetSourceEdge,
+  useShareOnlyActions,
+} from "../../../../components/WidgetExport";
+import { WIDGETS, WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
+import {
+  WIDGET_SETTINGS_DEFAULTS,
+  type WidgetSettings,
+} from "../../../../lib/widget-settings";
 
 // Single KPI tile from the Marktstammdatenregister — either installed power or
 // plant count — reusing the same <Kachel> the homepage/karte composite renders,
@@ -17,7 +24,11 @@ import { DATA_SOURCES } from "../../../../lib/data-sources";
 
 export type Metric = "leistung" | "anlagen";
 
-const SHARE_URL = "https://solar-check.io/";
+// Identität (Teilen-Ziel, Quelle, nächster Schritt) kommt aus dem Register;
+// Titel und Teilen-Text tragen zusätzlich die gewählte Kennzahl — ein Zitat
+// „Kennzahl" wäre wertlos, man sähe nicht, wovon.
+const WIDGET = WIDGETS.kennzahl;
+
 const TRAEGER_LABEL: Record<string, string> = {
   gesamt: "Erneuerbare",
   solar: "Solar",
@@ -34,13 +45,9 @@ export default function KennzahlWidget({
   metric?: Metric;
   traeger?: Energietraeger;
 }) {
-  const [showEmbed, setShowEmbed] = useState(true);
-  const [showBranding, setShowBranding] = useState(true);
+  const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
-    onSettings: (s) => {
-      if (typeof s.embed === "boolean") setShowEmbed(s.embed);
-      if (typeof s.branding === "boolean") setShowBranding(s.branding);
-    },
+    onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
 
   const { data: summary } = useCachedFetch<RegionSummary | null>(
@@ -73,64 +80,56 @@ export default function KennzahlWidget({
     : avgKwp !== null
       ? `⌀ ${avgKwp.toFixed(0)} kW${peak}`
       : `⌀ — kW${peak}`;
-  const shareText = isLeistung
-    ? `Installierte ${traegerLabel}-Leistung in Deutschland – Solar Check`
-    : `Anzahl ${traegerLabel}-Anlagen in Deutschland – Solar Check`;
+  const titel = isLeistung
+    ? `Installierte ${traegerLabel}-Leistung in Deutschland`
+    : `Anzahl ${traegerLabel}-Anlagen in Deutschland`;
+  const shareText = `${titel} – Solar Check`;
+
+  // Ein Register-Eintrag, auf die gewählte Kennzahl gelesen: Titel und
+  // Teilen-Text nennen sie, alles andere (Quelle, Lizenz, nächster Schritt,
+  // Teilen-Ziel) bleibt der eine Eintrag.
+  const widget = useMemo(() => ({ ...WIDGET, title: titel, shareText }), [titel, shareText]);
+
+  // Kein Bild-Export: eine einzelne Kachel ist kein aufnehmbares SVG
+  // (`exportable: false` im Register).
+  const actions = useShareOnlyActions(widget, shareText);
 
   return (
     <div
       style={{
+        position: "relative",
         background: "var(--widget-bg)",
         color: "var(--widget-fg)",
         borderRadius: "var(--widget-border-radius)",
         fontFamily: "var(--widget-font-family)",
         padding: 16,
+        paddingRight: 22,
+        maxWidth: WIDGET_MAX_WIDTH_COMPACT,
+        margin: "0 auto",
         boxSizing: "border-box",
       }}
     >
+      {/* Quelle vertikal an der rechten Kante (geteilter Baustein), nie als
+          horizontaler Block. Auf einer eigenen Seite kreditiert die Seite. */}
+      <WidgetSourceEdge widget={widget} visible={!settings.onsite} />
       <Kachel label={label} value={value} hint={hint} />
       <div style={{ fontSize: 11, color: "var(--color-text-muted)", paddingTop: 8 }}>
         {summary ? "Stand " + formatDataAsOf(summary.data_as_of) : ""}
       </div>
 
       <div style={{ marginTop: 12 }}>
-        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
-        {/* Data-source credit — always shown. */}
-        <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: 6 }}>
-          <DataSourceNote source={DATA_SOURCES.mastr} />
-        </div>
-        <div
-          style={{
-            fontSize: 10.5,
-            color: "var(--widget-muted)",
-            display: "flex",
-            justifyContent: showBranding ? "space-between" : "flex-end",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          {showBranding && <PoweredBy />}
-          <ChartActionBar
-            variant="menu"
-            menuUp
-            showDownload={false}
-            size={28}
-            onDownload={() => {}}
-            onCopyLink={() => navigator.clipboard?.writeText(`${shareText}\n${SHARE_URL}`).catch(() => {})}
-            onWhatsApp={() =>
-              window.open(`https://wa.me/?text=${encodeURIComponent(`${shareText}\n${SHARE_URL}`)}`, "_blank")
-            }
-            onTwitter={() =>
-              window.open(
-                `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(SHARE_URL)}`,
-                "_blank",
-              )
-            }
-            onEmbed={showEmbed ? () => window.open("/energie-widgets#kennzahl", "_blank", "noopener") : undefined}
-            isExporting={false}
-            canNativeShare={false}
-          />
-        </div>
+        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2 }} />
+        {/* Fußzeile aus dem geteilten Baustein: nächster Schritt, Aktionen
+            (inkl. „Zitieren"), Marke. Sehr klein → ⋯-Menü statt Knopfreihe. */}
+        <WidgetFooter
+          widget={widget}
+          chartExport={actions}
+          share={settings.share}
+          branding={settings.branding}
+          showEmbed={settings.embed}
+          onsite={settings.onsite}
+          compact
+        />
       </div>
     </div>
   );

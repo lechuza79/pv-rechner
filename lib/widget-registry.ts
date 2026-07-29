@@ -183,7 +183,11 @@ export const WIDGETS = {
     kind: "chart",
     shareUrl: `${SITE}/`,
     shareText: "PV-Anlagen in Deutschland – Solar Check",
-    sources: [DATA_SOURCES.mastr, DATA_SOURCES.bkg],
+    // Energy-Charts steht hier, weil die Karte den Live-Ring mitzeigt (aktuelle
+    // Erzeugung), solange keine Region gewählt ist — eine Quelle, die im Widget
+    // sichtbar wird, gehört in den Credit, auch wenn sie nicht in jedem Zustand
+    // gebraucht wird.
+    sources: [DATA_SOURCES.mastr, DATA_SOURCES.bkg, DATA_SOURCES.energyCharts],
     cta: { label: "Solar-Atlas öffnen", href: "/" },
     exportable: false,
   },
@@ -194,6 +198,7 @@ export const WIDGETS = {
     shareUrl: `${SITE}/`,
     shareText: "Solar-Kennzahlen für Deutschland – Solar Check",
     sources: [DATA_SOURCES.mastr],
+    cta: { label: "Zahlen für deinen Ort", href: "/solar-atlas" },
     exportable: false,
   },
   // ── Kommune und Region: eine Karte, je Aufruf ein anderer Ort ───────────────

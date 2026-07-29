@@ -170,6 +170,23 @@ function GruengasCard({
     </InfoTooltip>
   );
 
+  // Y-Skala des Linien-Charts — EIN Block, zwei Sichtbarkeiten (nie beides,
+  // sonst stünde die Zahl im Bild doppelt):
+  //   • breit  → nur im Bild (online liest man die Werte per Überfahren ab),
+  //   • schmal → dauerhaft sichtbar; auf dem Telefon gibt es kein Überfahren,
+  //     und Tippen zeigt nur einen Jahrespunkt — ohne Skala stünden drei Kurven
+  //     ganz ohne Größenordnung da.
+  // Nur jede zweite Stufe beschriften: vier Zahlen übereinander kollidieren mit
+  // den Kurven, zwei reichen für die Größenordnung. Sie sitzen links oben, wo
+  // alle drei Kurven noch flach unter ihnen verlaufen — nichts wird verdeckt.
+  const scaleLabels = yTicks
+    .filter((val, i) => val > 0 && i % 2 === 0)
+    .map(val => (
+      <text key={val} x={P.l + 2} y={yL(val) + 10} textAnchor="start" fontSize={9} fill="var(--color-text-secondary)" fontFamily="var(--font-mono)">
+        {eur(val)}
+      </text>
+    ));
+
   // Gedrehte (vertikale) Betrags-Summe für die Balken (Desktop volle Zahl).
   const barValueTspans = (val: number, full: boolean) => (
     <>
@@ -333,17 +350,8 @@ function GruengasCard({
             {/* Achsen-Label statt Zahlen (Hover zeigt exakte Werte) — gleiche
                 Label-Typo wie „Gesamtkosten"/„Ersparnis": Caption, 700, Versalien. */}
             <text x={P.l} y={13} textAnchor="start" style={{ fontSize: v("--font-size-caption"), letterSpacing: "0.5px" }} fontWeight={700} fill="var(--color-text-muted)">HEIZKOSTEN PRO JAHR</text>
-            {/* Skala nur im Bild: online liest man die Werte per Überfahren ab,
-                im PNG gäbe es sonst keine Größenordnung. */}
-            <ExportOnlyG>
-              {/* Nur jede zweite Stufe beschriften: vier Zahlen übereinander
-                  kollidieren mit den Kurven, zwei reichen für die Größenordnung. */}
-              {yTicks.filter((val, i) => val > 0 && i % 2 === 0).map(val => (
-                <text key={val} x={P.l + 2} y={yL(val) + 10} textAnchor="start" fontSize={9} fill="var(--color-text-secondary)" fontFamily="var(--font-mono)">
-                  {eur(val)}
-                </text>
-              ))}
-            </ExportOnlyG>
+            {/* Skala: schmal dauerhaft, breit nur im Bild (siehe scaleLabels). */}
+            {narrow ? <g>{scaleLabels}</g> : <ExportOnlyG>{scaleLabels}</ExportOnlyG>}
             {/* Rand-Jahre linksbündig/rechtsbündig, damit „2026" nicht abschneidet */}
             {xYears.map((yr, i) => {
               const last = i === xYears.length - 1;

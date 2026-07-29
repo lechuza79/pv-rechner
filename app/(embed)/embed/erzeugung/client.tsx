@@ -1,17 +1,25 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MastrLiveRadial } from "../../../../components/MastrLiveRadial";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
-import ChartActionBar from "../../../../components/ChartActionBar";
-import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
+import { DATA_SOURCES } from "../../../../lib/data-sources";
 import { WIDGETS, WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
-import { ExportNotesProvider, WidgetExportFooter } from "../../../../components/WidgetExport";
+import {
+  ExportNotesProvider,
+  WidgetExportFooter,
+  WidgetFooter,
+  WidgetSourceEdge,
+} from "../../../../components/WidgetExport";
 import { useChartExport } from "../../../../lib/useChartExport";
+import {
+  WIDGET_SETTINGS_DEFAULTS,
+  type WidgetSettings,
+} from "../../../../lib/widget-settings";
 import { v } from "../../../../lib/theme";
 
 // Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
-// Register — ein Eintrag speist Teilen-Aktion und Bild-Fuß.
+// Register — ein Eintrag speist Fußzeile, Quellen-Kante und Bild-Fuß.
 const WIDGET = WIDGETS.erzeugung;
 
 type Traeger = "gesamt" | "solar" | "wind" | "biomasse" | "wasser";
@@ -49,9 +57,16 @@ export default function ErzeugungWidget({
   const [installedKwp, setInstalledKwp] = useState<number | null>(null);
   const [showHelp, setShowHelp] = useState(false);
   const [gw, setGw] = useState<number | null>(null);
-  const [showEmbed, setShowEmbed] = useState(true);
-  const [showBranding, setShowBranding] = useState(true);
+  const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   const helpRef = useRef<HTMLDivElement | null>(null);
+
+  // Die kompakte Fassung zeigt die Auslastungs-Zeile nicht — und nur die
+  // braucht die installierte Leistung aus dem Anlagenregister. Deshalb nennt
+  // sie auch nur die Quelle, die dort wirklich zu sehen ist.
+  const widget = useMemo(
+    () => (compact ? { ...WIDGET, sources: [DATA_SOURCES.energyCharts] } : WIDGET),
+    [compact],
+  );
 
   const gwLabel =
     gw != null
@@ -59,35 +74,14 @@ export default function ErzeugungWidget({
       : "";
   const chartExport = useChartExport({
     context: {
-      title: "Stromerzeugung Deutschland",
+      title: WIDGET.title,
       subtitle: `${TRAEGER_LABEL[traeger]}${gwLabel}`,
-      source: `${sourceLabel(DATA_SOURCES.energyCharts)} · ${sourceLabel(DATA_SOURCES.mastr)}`,
     },
     filename: `solar-check-erzeugung-${traeger}.png`,
     shareText: WIDGET.shareText,
     shareUrl: WIDGET.shareUrl,
     mode: "node",
   });
-
-  const actionBar = (
-    <span data-sc-export-ignore="" style={{ display: "contents" }}>
-    <ChartActionBar
-      variant={compact ? "menu" : "bar"}
-      menuUp={compact}
-      size={compact ? 26 : 28}
-      onDownload={chartExport.downloadPng}
-      onCopyLink={() =>
-        navigator.clipboard?.writeText(`${WIDGET.shareText}\n${WIDGET.shareUrl}`).catch(() => {})
-      }
-      onWhatsApp={chartExport.shareWhatsApp}
-      onTwitter={chartExport.shareTwitter}
-      onShareImage={chartExport.sharePng}
-      onEmbed={showEmbed ? () => window.open("/energie-widgets#erzeugung", "_blank", "noopener") : undefined}
-      isExporting={chartExport.isExporting}
-      canNativeShare={chartExport.canNativeShare}
-    />
-    </span>
-  );
 
   // Autoswitch: wechselt periodisch durch die Energieträger. Pausiert
   // a) solange der Cursor über dem Widget hovert (Desktop)
@@ -104,13 +98,10 @@ export default function ErzeugungWidget({
     return () => clearInterval(id);
   }, [autoswitchMs]);
 
-  // Theme via URL params + same-origin postMessage (shared hook). Also picks up
-  // the embed flag (embed=0 on the gallery hides the "Einbetten" action).
+  // Theme + funktionale Schalter (share, branding, embed, onsite) über den
+  // geteilten Haken — URL-Parameter und postMessage wirken damit gleich.
   useWidgetTheme({
-    onSettings: (s) => {
-      if (typeof s.embed === "boolean") setShowEmbed(s.embed);
-      if (typeof s.branding === "boolean") setShowBranding(s.branding);
-    },
+    onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
 
   // Fetch installed capacity for the selected traeger
@@ -224,8 +215,8 @@ export default function ErzeugungWidget({
   // nicht auseinanderzuhalten.
   const exportFooter = (
     <WidgetExportFooter
-      widget={WIDGET}
-      branding={showBranding}
+      widget={widget}
+      branding={settings.branding}
       legend={[
         { color: v("--color-accent"), label: "Erzeugung je Stunde", shape: "line" },
         { color: v("--color-highlight"), label: "Jüngster gemeldeter Wert", shape: "line" },
@@ -240,8 +231,18 @@ export default function ErzeugungWidget({
     <div
       ref={chartExport.chartRef}
       // Der Ring wird durch mehr Breite nicht größer — ohne Grenze steht er
-      // im Bild verloren in einer leeren Fläche.
-      style={{ maxWidth: WIDGET_MAX_WIDTH_COMPACT, margin: "0 auto" }}
+      // im Bild verloren in einer leeren Fläche. Die kompakte Fassung umschließt
+      // ihre Karte, damit die Quellen-Kante direkt daneben sitzt statt weit
+      // rechts im Leeren.
+      // Kein eigenes rechtes Padding: die Quellen-Kante legt sich damit auf das
+      // rechte Innenpolster der Karte und steht INNERHALB des weißen Kastens,
+      // nicht daneben auf der Fläche des Einbettenden.
+      style={{
+        position: "relative",
+        maxWidth: WIDGET_MAX_WIDTH_COMPACT,
+        width: compact ? "fit-content" : undefined,
+        margin: "0 auto",
+      }}
       // Unsichtbarer Pointer-Event-Wrapper für Autoswitch-Pause bei Hover/Tap.
       onPointerEnter={(e) => {
         if (e.pointerType === "mouse") hoveringRef.current = true;
@@ -257,11 +258,19 @@ export default function ErzeugungWidget({
         energietraeger={traeger}
         installedKwp={installedKwp}
         size={compact ? "compact" : "default"}
-        branding={showBranding}
-        // Live generation (Energy-Charts) + the "share of installed capacity"
-        // percentage, whose denominator comes from the MaStR.
-        dataSource={[DATA_SOURCES.energyCharts, DATA_SOURCES.mastr]}
-        actions={actionBar}
+        // Fußzeile INNERHALB der Karte, damit sie auf dem Kartenhintergrund sitzt.
+        footer={
+          <WidgetFooter
+            widget={widget}
+            chartExport={chartExport}
+            share={settings.share}
+            branding={settings.branding}
+            showEmbed={settings.embed}
+            onsite={settings.onsite}
+            compact={compact}
+            narrow={compact}
+          />
+        }
         exportFooter={exportFooter}
         onValue={setGw}
         helpOverlay={showHelp ? helpPanel : null}
@@ -279,6 +288,12 @@ export default function ErzeugungWidget({
           after: helpButton,
         }}
       />
+      {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Auf einer
+          eigenen Seite (onsite) kreditiert die Seite zentral.
+          Steht NACH der Karte: die Karte bringt für ihre Umklapp-Animation eine
+          Transformation mit und damit einen eigenen Malkontext — davor gesetzt
+          verschwände die Kante lautlos hinter dem weißen Kasten. */}
+      <WidgetSourceEdge widget={widget} visible={!settings.onsite} />
     </div>
     </ExportNotesProvider>
   );

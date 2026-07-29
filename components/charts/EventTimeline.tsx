@@ -8,8 +8,8 @@
  * bleibt für Suchmaschinen vollständig lesbar.
  */
 
-import { useRef } from "react";
-import { v } from "../../lib/theme";
+import { useEffect, useRef, useState } from "react";
+import { space, v } from "../../lib/theme";
 import { PLOT_MARGIN } from "./ZubauTimelineChart";
 
 export interface TimelineEvent {
@@ -36,6 +36,16 @@ interface Props {
 
 export default function EventTimeline({ events, active, onChange, startYear, endYear }: Props) {
   const touchX = useRef<number | null>(null);
+  // Auf schmalen Displays wandern die Blätter-Pfeile unter den Text: neben dem
+  // Text quetschen sie die Spalte auf wenige Wörter je Zeile.
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width:560px)");
+    const on = () => setNarrow(mq.matches);
+    on();
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
   const domainStart = startYear - 0.5;
   const domainEnd = endYear + 0.5;
   const pos = (year: number) => ((year - domainStart) / (domainEnd - domainStart)) * 100;
@@ -70,6 +80,25 @@ export default function EventTimeline({ events, active, onChange, startYear, end
     alignItems: "center",
     justifyContent: "center",
   });
+
+  // Dieselben Knöpfe in beiden Layouts (breit: links/rechts vom Text,
+  // schmal: als Reihe darunter) — die Bedienung bleibt identisch.
+  const prevBtn = (
+    <button data-sc-export-ignore="" onClick={() => go(-1)} disabled={active === 0} aria-label="Vorheriges Ereignis" style={navBtn(active === 0)}>
+      ‹
+    </button>
+  );
+  const nextBtn = (
+    <button
+      data-sc-export-ignore=""
+      onClick={() => go(1)}
+      disabled={active === events.length - 1}
+      aria-label="Nächstes Ereignis"
+      style={navBtn(active === events.length - 1)}
+    >
+      ›
+    </button>
+  );
 
   return (
     <div>
@@ -181,17 +210,17 @@ export default function EventTimeline({ events, active, onChange, startYear, end
           }
         }}
         style={{
-          marginTop: 12,
+          marginTop: space.lg,
           outline: "none",
-          paddingLeft: PLOT_MARGIN.left,
-          paddingRight: PLOT_MARGIN.right,
+          // Schmal: die Erläuterung nutzt die volle Breite. Die Ausrichtung auf
+          // die Plot-Ränder gilt nur der Punkte-Leiste darüber, nicht dem Text.
+          paddingLeft: narrow ? 0 : PLOT_MARGIN.left,
+          paddingRight: narrow ? 0 : PLOT_MARGIN.right,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button data-sc-export-ignore="" onClick={() => go(-1)} disabled={active === 0} aria-label="Vorheriges Ereignis" style={navBtn(active === 0)}>
-            ‹
-          </button>
-          <div style={{ flex: 1, minHeight: 92 }}>
+        <div style={{ display: "flex", flexDirection: narrow ? "column" : "row", alignItems: narrow ? "stretch" : "center", gap: space.lg }}>
+          {!narrow && prevBtn}
+          <div style={{ flex: narrow ? undefined : 1, minWidth: 0, minHeight: 92 }}>
             {events.map((e, i) => (
               <div key={e.year} id={`ev-panel-${i}`} role="tabpanel" aria-labelledby={`ev-tab-${i}`} hidden={i !== active}>
                 <div style={{ fontSize: 15, fontWeight: 800, color: v("--color-text-primary"), marginBottom: 3 }}>
@@ -208,15 +237,15 @@ export default function EventTimeline({ events, active, onChange, startYear, end
               </div>
             ))}
           </div>
-          <button
-            data-sc-export-ignore=""
-            onClick={() => go(1)}
-            disabled={active === events.length - 1}
-            aria-label="Nächstes Ereignis"
-            style={navBtn(active === events.length - 1)}
-          >
-            ›
-          </button>
+          {!narrow && nextBtn}
+          {/* Schmal: beide Pfeile als eigene Reihe unter dem Text. Die ganze
+              Reihe fliegt aus dem Bild — im Bild wären es tote Knöpfe. */}
+          {narrow && (
+            <div data-sc-export-ignore="" style={{ display: "flex", gap: space.md }}>
+              {prevBtn}
+              {nextBtn}
+            </div>
+          )}
         </div>
       </div>
     </div>

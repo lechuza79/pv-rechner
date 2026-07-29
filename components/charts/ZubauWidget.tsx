@@ -144,6 +144,8 @@ export default function ZubauWidget({
   variant = "page",
   showEmbed = true,
   branding = false,
+  share = true,
+  onsite,
 }: {
   series: NationalSolarSeries;
   variant?: "page" | "embed";
@@ -151,10 +153,21 @@ export default function ZubauWidget({
   showEmbed?: boolean;
   /** „Powered by" zeigen (Embed: an, eigene Seite: aus). */
   branding?: boolean;
+  /** Teilen-Aktionen zeigen (Einbettende können sie per share=0 abwählen). */
+  share?: boolean;
+  /**
+   * First-Party-Embed: die umgebende Seite trägt Marke und Quelle. Ohne Angabe
+   * folgt es der Darstellungsart — im Artikel (variant="page") ist es immer der
+   * Fall. Als eigener Schalter, damit der URL-Parameter `onsite=1` auch im
+   * iframe wirkt; vorher hing das allein an der Darstellungsart und der
+   * Parameter lief ins Leere.
+   */
+  onsite?: boolean;
 }) {
   const [active, setActive] = useState(0);
   const { years, additionsGw, partial, future, feedIn, price } = prepareZubauData(series);
   const isEmbed = variant === "embed";
+  const isOnsite = onsite ?? !isEmbed;
 
   const chartExport = useChartExport({
     context: {
@@ -190,7 +203,7 @@ export default function ZubauWidget({
         <div style={{ position: "relative", ...(isEmbed ? { paddingRight: 16 } : null) }}>
           {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Im Artikel
               trägt der Seitenfuß die Quelle — dort bleibt das Widget ruhig. */}
-          <WidgetSourceEdge widget={WIDGET} visible={isEmbed} />
+          <WidgetSourceEdge widget={WIDGET} visible={isEmbed && !isOnsite} />
           <ExportBox>
             <ZubauTimelineChart
               years={years}
@@ -224,9 +237,10 @@ export default function ZubauWidget({
           <WidgetFooter
             widget={WIDGET}
             chartExport={chartExport}
-            onsite={!isEmbed}
+            onsite={isOnsite}
             branding={branding}
-            showCta={isEmbed}
+            share={share}
+            showCta={isEmbed && !isOnsite}
             showEmbed={showEmbed}
           />
 

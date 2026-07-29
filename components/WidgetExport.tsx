@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/export-markers";
 import { useExportNotes } from "./export-notes";
 import { DataSourceNote, PoweredBy } from "./PoweredBy";
@@ -98,6 +98,42 @@ export {
 // ─── 3. The footer on the PAGE ───────────────────────────────────────────────
 
 /**
+ * Teilen-Aktionen für Karten OHNE Bild-Export (`exportable: false` im Register):
+ * Karte, Einzel-Kennzahl, EE-Ampel, Förder-Check. Sie tragen dieselbe Fußzeile
+ * wie jedes Chart — nur gibt es bei ihnen nichts aufzunehmen.
+ *
+ * Warum nicht einfach `useChartExport`: der würde eine Aufnahme-Art behaupten
+ * (`mode: "node"` = „diese Karte wird 1:1 fotografiert") und damit einen
+ * Bild-Fuß verlangen, den es hier gar nicht geben kann. Teilen-Text und -Ziel
+ * kommen auch hier aus dem Register, nie getippt.
+ */
+export function useShareOnlyActions(
+  widget: WidgetDef,
+  shareText: string = widget.shareText,
+): Pick<
+  ReturnType<typeof useChartExport>,
+  "downloadPng" | "sharePng" | "shareWhatsApp" | "shareTwitter" | "isExporting" | "canNativeShare"
+> {
+  const url = widget.shareUrl;
+  return useMemo(
+    () => ({
+      downloadPng: async () => {},
+      sharePng: async () => {},
+      shareWhatsApp: () =>
+        window.open(`https://wa.me/?text=${encodeURIComponent(`${shareText}\n${url}`)}`, "_blank"),
+      shareTwitter: () =>
+        window.open(
+          `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`,
+          "_blank",
+        ),
+      isExporting: false,
+      canNativeShare: false,
+    }),
+    [shareText, url],
+  );
+}
+
+/**
  * The visible footer every widget shares: one next step on the left, the action
  * bar on the right, the brand below (external only). Built from the registry
  * entry, so a widget cannot quietly grow its own arrangement — which is exactly
@@ -117,6 +153,7 @@ export function WidgetFooter({
   showCta = true,
   showEmbed = false,
   narrow = false,
+  compact = false,
 }: {
   widget: WidgetDef;
   chartExport: Pick<
@@ -135,6 +172,12 @@ export function WidgetFooter({
   showCta?: boolean;
   showEmbed?: boolean;
   narrow?: boolean;
+  /**
+   * Ganz kleine Karten (Einzel-Kennzahl, Ampel, Mini-Ring): dort sprengt eine
+   * sichtbare Knopfreihe die Höhe der Karte, deshalb ein ⋯-Menü, das nach oben
+   * aufklappt. Alles darüber bleibt die Knopfreihe (Widget-Konvention).
+   */
+  compact?: boolean;
 }) {
   const [citeOpen, setCiteOpen] = useState(false);
   const copy =
@@ -180,11 +223,18 @@ export function WidgetFooter({
         {share && (
           <div style={{ display: "flex", justifyContent: narrow ? "center" : "flex-end" }}>
             <ChartActionBar
-              variant="bar"
-              size={28}
+              variant={compact ? "menu" : "bar"}
+              menuUp={compact}
+              size={compact ? 26 : 28}
               showDownload={widget.exportable !== false}
               onDownload={chartExport.downloadPng}
-              onShareImage={chartExport.canNativeShare ? chartExport.sharePng : undefined}
+              // Kein Bild, kein Bild-Teilen: Wo nichts aufzunehmen ist, wäre
+              // „Als Bild teilen" ein Knopf, der nichts tut.
+              onShareImage={
+                widget.exportable !== false && chartExport.canNativeShare
+                  ? chartExport.sharePng
+                  : undefined
+              }
               isExporting={chartExport.isExporting}
               canNativeShare={chartExport.canNativeShare}
               onCopyLink={copy}

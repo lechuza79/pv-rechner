@@ -3,9 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { v, iconSizes } from "../lib/theme";
 import InfoTooltip from "./InfoTooltip";
-import { PoweredBy, DataSourceNote } from "./PoweredBy";
-import { type DataSource } from "../lib/data-sources";
-import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
 
 type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
 
@@ -145,10 +142,8 @@ export function MastrLiveRadial({
   installedKwp,
   traegerNav,
   size = "default",
-  branding = false,
-  dataSource = null,
   helpOverlay = null,
-  actions = null,
+  footer = null,
   onValue,
   unit = "GW",
   injected = null,
@@ -179,16 +174,14 @@ export function MastrLiveRadial({
    * kind-dependent invitation (see WidgetExportFooter).
    */
   exportFooter?: React.ReactNode;
-  /** Renders the small brand footer (PoweredBy) — for embeds. */
-  branding?: boolean;
-  /** Licence-required data-source credit(s) — always shown when set, not gated
-   * by `branding`. Pass an array when the view combines sources (e.g. live
-   * generation from Energy-Charts + installed capacity from the MaStR). */
-  dataSource?: DataSource | DataSource[] | null;
-  /** Optional action controls rendered in the branding footer (share/download/
-   * embed). Standard size: on the left, the brand line on the right. Compact:
-   * grouped on the right next to the help button. */
-  actions?: React.ReactNode;
+  /**
+   * Sichtbare Fußzeile der Karte — der geteilte Baustein `WidgetFooter`
+   * (nächster Schritt · Aktionen · Marke). Sie steht INNERHALB der Karte, damit
+   * sie auf dem Kartenhintergrund sitzt statt daneben auf der Fläche des
+   * Einbettenden. Quelle und Marke kommen aus dem Register, nicht von hier —
+   * deshalb hat das Radial dafür keine eigenen Schalter mehr.
+   */
+  footer?: React.ReactNode;
   /** Reports the current value in GW (settled, not animated) — used by the
    * embed widget to bake the value into the exported image. */
   onValue?: (gw: number | null) => void;
@@ -442,9 +435,6 @@ export function MastrLiveRadial({
         // bleibt block-Level (volle Container-Breite).
         display: isCompact ? "inline-block" : "block",
       };
-
-  // The image gets its own footer, so the on-screen one is dropped from it.
-  const webFooterOnly = exportFooter ? { [EXPORT_IGNORE_ATTR]: "" } : {};
 
   return (
     <div
@@ -837,10 +827,8 @@ export function MastrLiveRadial({
         </div>
       </div>
 
-      {/* Compact: Help-Slot unten rechts (kein Auslastung-Footer in Compact).
-          Bei branding wandert der ?-Slot in den Branding-Footer (gleiche Zeile
-          wie die Markenzeile, damit nichts doppelt unten steht). */}
-      {isCompact && traegerNav?.after && !branding && (
+      {/* Compact: Help-Slot unten rechts (kein Auslastung-Footer in Compact). */}
+      {isCompact && traegerNav?.after && (
         <div
           data-sc-export-ignore=""
           style={{
@@ -885,54 +873,7 @@ export function MastrLiveRadial({
         </div>
       )}
 
-      {!bare && dataSource && (
-        <div
-          {...webFooterOnly}
-          style={{
-            marginTop: 10,
-            fontSize: 10,
-            color: v("--color-text-muted"),
-            letterSpacing: 0.2,
-            lineHeight: 1.4,
-          }}
-        >
-          <DataSourceNote source={dataSource} />
-        </div>
-      )}
-
-      {!bare && (branding || actions || (isCompact && traegerNav?.after)) && (
-        <div
-          {...webFooterOnly}
-          style={{
-            marginTop: dataSource ? 6 : 10,
-            fontSize: 10,
-            color: v("--color-text-muted"),
-            letterSpacing: 0.2,
-            display: "flex",
-            // branding gates only the brand line; actions/help stay.
-            justifyContent: isCompact
-              ? branding
-                ? "space-between"
-                : "flex-end"
-              : actions
-                ? branding
-                  ? "space-between"
-                  : "flex-start"
-                : "center",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          {actions && !isCompact && <span style={{ display: "flex" }}>{actions}</span>}
-          {branding && <PoweredBy />}
-          {isCompact && (traegerNav?.after || actions) && (
-            <span data-sc-export-ignore="" style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              {traegerNav?.after}
-              {actions}
-            </span>
-          )}
-        </div>
-      )}
+      {!bare && footer}
 
       {exportFooter}
           </div>

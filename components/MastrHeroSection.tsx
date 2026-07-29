@@ -55,10 +55,11 @@ export type MastrHeroSectionProps = {
   /** Called whenever the selected region changes (for URL sync, analytics, etc.) */
   onRegionChange?: (regionAgs: string | undefined) => void;
   /**
-   * Sichtbaren Quell-Credit zeigen. Default true. Auf `false` NUR dort, wo eine
-   * umgebende Seite die Quelle bereits im Fuß trägt (einmal pro Seite reicht,
-   * dl-de/by-2-0). Der Credit bleibt trotzdem sichtbar, sobald das Widget
-   * eingebettet ist (Standalone-Kontext) — dann ersetzt kein Seitenfuß ihn.
+   * Sichtbaren Quell-Credit zeigen. Default true. Auf `false` NUR dort, wo die
+   * umgebende Fläche die Quelle bereits trägt: eine Seite mit Quellenfuß (einmal
+   * pro Seite reicht, dl-de/by-2-0) oder die Widget-Hülle des Karten-Embeds, die
+   * sie als vertikale Kante zeigt. Ohne einen dieser beiden Träger muss der
+   * Credit hier stehen bleiben.
    */
   showSource?: boolean;
 };
@@ -282,12 +283,13 @@ export function MastrHeroSection({
           )}
         </aside>
       </div>
-      {/* Quell-Credit: sichtbar, AUSSER eine umgebende Seite trägt ihn schon
-          (showSource=false) UND wir sind nicht im Embed. Im Embed steht kein
-          Seitenfuß dahinter, deshalb zeigt das Widget die Quelle dort immer —
-          das ist der nachhaltige Teil (dl-de/by-2-0 verlangt Namensnennung pro
-          verteiltem Werk). */}
-      {(showSource || isEmbed) && (
+      {/* Quell-Credit: sichtbar, AUSSER die umgebende Fläche trägt ihn schon
+          (showSource=false). Das gilt für unsere Seiten mit zentralem Quellenfuß
+          UND für das Karten-Widget, dessen Hülle die Quelle als schlanke
+          vertikale Kante zeigt (Widget-Konvention). Namensnennung pro verteiltem
+          Werk (dl-de/by-2-0) bleibt in beiden Fällen erfüllt — sie steht nur
+          nicht zweimal. */}
+      {showSource && (
         <div
           style={{
             fontSize: 10,
