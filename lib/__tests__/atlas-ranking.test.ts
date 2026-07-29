@@ -9,6 +9,7 @@ import {
   RANKING_MIN_POPULATION,
 } from "../atlas-ranking";
 import { AWARD_CATEGORY_BY_KEY, type GemeindeStats } from "../awards";
+import { GROESSENKLASSE_BY_SLUG } from "../gemeindegroesse";
 
 const g = (regionId: string, name: string, population: number, balkonCount: number): GemeindeStats => ({
   regionId,
@@ -307,5 +308,44 @@ describe("Grundmenge hinter einer Pro-Kopf-Zahl", () => {
     const wind = AWARD_CATEGORY_BY_KEY["wind-standort"];
     const rows = rankingRows([{ ...g("01051003", "Windort", 500, 0), windKwp: 9000 }], wind, null);
     expect(rows[0].basis).toBeNull();
+  });
+});
+
+describe("Rangliste innerhalb einer Größenklasse", () => {
+  // Der Grund für die Klassen: Pro Kopf gewinnt sonst immer der kleinste Ort.
+  // Gemessen lagen in JEDER Bürger-Kategorie ~alle 100 Spitzenplätze unter
+  // 5.000 Einwohnern, beim Zubau die komplette Top 100 unter 1.000.
+  const dorf = { ...g("09999001", "Dorf", 100, 20), privatDachKwp: 400, privatDachCount: 40 };
+  const stadt = { ...g("09999002", "Stadt", 200_000, 4_000), privatDachKwp: 100_000, privatDachCount: 10_000 };
+  const dach = AWARD_CATEGORY_BY_KEY["dach-privat-pk"];
+
+  it("wertet nur Orte der gewählten Klasse", () => {
+    const klein = rankingRows([dorf, stadt], dach, null, GROESSENKLASSE_BY_SLUG["unter-5000"]);
+    expect(klein.map((r) => r.name)).toEqual(["Dorf"]);
+    const gross = rankingRows([dorf, stadt], dach, null, GROESSENKLASSE_BY_SLUG["ab-100000"]);
+    expect(gross.map((r) => r.name)).toEqual(["Stadt"]);
+  });
+
+  it("gibt jeder Klasse einen eigenen Platz 1", () => {
+    for (const slug of ["unter-5000", "ab-100000"]) {
+      const rows = rankingRows([dorf, stadt], dach, null, GROESSENKLASSE_BY_SLUG[slug]);
+      expect(rows[0].platz).toBe(1);
+    }
+  });
+
+  it("rankt ohne Klasse weiter über alle — sonst wäre die Gesamtliste weg", () => {
+    const alle = rankingRows([dorf, stadt], dach, null);
+    expect(alle.map((r) => r.name)).toEqual(["Dorf", "Stadt"]);
+  });
+
+  it("rechnet die Rangveränderung gegen dasselbe Teilnehmerfeld", () => {
+    // Sonst sähe jeder Ort wie gesprungen aus: Vorjahr bundesweit, heute in der
+    // Klasse — das wäre ein Sprung ohne jede Veränderung am Ort.
+    const a = { ...g("09999003", "Aufsteiger", 300, 0), privatDachKwp: 600, privatDachCount: 60, privatDachKwpLy: 300 };
+    const b = { ...g("09999004", "Halter", 300, 0), privatDachKwp: 300, privatDachCount: 30, privatDachKwpLy: 290 };
+    const rows = rankingRows([a, b, stadt], dach, null, GROESSENKLASSE_BY_SLUG["unter-5000"]);
+    expect(rows.map((r) => r.name)).toEqual(["Aufsteiger", "Halter"]);
+    // Beide waren auch letztes Jahr schon 1 und 2 in ihrer Klasse.
+    expect(rows.every((r) => r.veraenderung === 0)).toBe(true);
   });
 });

@@ -13,6 +13,7 @@ import { loadAwardStats, loadElternSlugs, loadKreisNames } from "../../../../../
 import { bundeslandByAgs } from "../../../../../lib/mastr-regions";
 import { formatAwardValue } from "../../../../../lib/awards";
 import { regionDisplayName } from "../../../../../lib/atlas-format";
+import { GROESSENKLASSEN, GROESSENKLASSE_BY_SLUG, type Groessenklasse } from "../../../../../lib/gemeindegroesse";
 import {
   rankingKategorienGruppiert,
   rankingNav,
@@ -47,7 +48,7 @@ const nf = (n: number) => n.toLocaleString("de-DE");
 const PRO_SEITE = 200;
 
 type Params = { pfad?: string[] };
-type Suche = { seite?: string };
+type Suche = { seite?: string; groesse?: string };
 
 /** Pfad → Kategorie + Gebiet. Ohne Kategorie ist es die Übersichtsseite. */
 async function deute(pfad: string[] | undefined) {
@@ -108,7 +109,22 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
     region.level === "landkreis" ? Promise.resolve([]) : getChildren(region),
   ]);
 
-  const alle = rankingRows(stats, kategorie, scopeId);
+  // GROESSENKLASSEN nur bei den Pro-Kopf-Listen. Dort belohnt der kleine Nenner
+  // sonst die kleinste Gemeinde (gemessen: in jeder Kategorie lagen ~alle 100
+  // Spitzenplaetze unter 5.000 Einwohnern). Bei den Standort-Kategorien gewinnt
+  // ohnehin, wo ein Kraftwerk steht — da erklaert die Ortsgroesse nichts.
+  const nachGroesse = kategorie.messart === "proKopf";
+  const klasse: Groessenklasse | null = nachGroesse
+    ? (GROESSENKLASSE_BY_SLUG[searchParams?.groesse ?? ""] ?? null)
+    : null;
+  // Ohne gewaehlte Klasse zeigt die Seite die vier Spitzenreiter statt einer
+  // Bundesliste — die gaebe es sonst durch die Hintertuer wieder.
+  const zeigtSpitzenreiter = nachGroesse && !klasse;
+  const spitzenreiter = zeigtSpitzenreiter
+    ? GROESSENKLASSEN.map((k) => ({ klasse: k, zeilen: rankingRows(stats, kategorie, scopeId, k) }))
+    : [];
+
+  const alle = rankingRows(stats, kategorie, scopeId, klasse);
   // Wie viele Orte die Untergrenze aussortiert — im Gebiet, nicht bundesweit.
   const imGebiet = stats.filter((g) => g.population > 0 && (!scopeId || g.regionId.startsWith(scopeId)));
   const ausgeschlossen = kategorie.plausibel
@@ -162,7 +178,12 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
   const aktiverPunkt = navPunktVon(kategorie.slug);
   /** Kategorie wechseln, Gebiet behalten — der häufigste Sprung. */
   const mitGebiet = (slug: string) => `${BASIS}/${slug}${d.gebiet.length ? "/" + d.gebiet.join("/") : ""}`;
-  const seitenLink = (n: number) => `${mitGebiet(kategorie.slug)}${n > 1 ? `?seite=${n}` : ""}`;
+  /** Kategorie + Gebiet + Groessenklasse + Seite in einer Adresse. */
+  const listenLink = (katSlug: string, klasseSlug: string | null, n = 1) => {
+    const q = [klasseSlug ? `groesse=${klasseSlug}` : null, n > 1 ? `seite=${n}` : null].filter(Boolean).join("&");
+    return `${mitGebiet(katSlug)}${q ? `?${q}` : ""}`;
+  };
+  const seitenLink = (n: number) => listenLink(kategorie.slug, klasse?.slug ?? null, n);
   const katStil = (aktiv: boolean, klein = false): React.CSSProperties => ({
     ...S.kat,
     ...(klein ? S.katKlein : null),
@@ -197,7 +218,7 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
                   {punkte.map((punkt) => {
                     const aktiv = aktiverPunkt?.slug === punkt.slug;
                     return (
-                      <Link key={punkt.slug} href={mitGebiet(punkt.slug)} style={katStil(aktiv)}>
+                      <Link key={punkt.slug} href={listenLink(punkt.slug, klasse?.slug ?? null)} style={katStil(aktiv)}>
                         {punkt.label}
                       </Link>
                     );
@@ -213,16 +234,38 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
           <div style={S.zeitraeume}>
             <span style={S.zeitraumLabel}>Zeitraum</span>
             {aktiverPunkt.zeitraeume.map((z) => (
-              <Link key={z.slug} href={mitGebiet(z.slug)} style={katStil(z.slug === kategorie.slug, true)}>
+              <Link key={z.slug} href={listenLink(z.slug, klasse?.slug ?? null)} style={katStil(z.slug === kategorie.slug, true)}>
                 {z.label}
               </Link>
             ))}
           </div>
         )}
 
-        <h1 style={S.h1}>{rankingTitel(kategorie, wo)}</h1>
+        {/* Dritte Ebene: gegen wen verglichen wird. Ohne sie gewinnt jede
+            Pro-Kopf-Liste das kleinste Dorf — drei Daecher in einem
+            150-Seelen-Ort schlagen jede Stadt. */}
+        {nachGroesse && (
+          <div style={S.zeitraeume}>
+            <span style={S.zeitraumLabel}>Größe</span>
+            <Link href={listenLink(kategorie.slug, null)} style={katStil(!klasse, true)}>
+              Alle Klassen
+            </Link>
+            {GROESSENKLASSEN.map((k) => (
+              <Link key={k.slug} href={listenLink(kategorie.slug, k.slug)} style={katStil(k.slug === klasse?.slug, true)}>
+                {k.label}
+              </Link>
+            ))}
+          </div>
+        )}
+
+        <h1 style={S.h1}>
+          {rankingTitel(kategorie, wo)}
+          {klasse && <span style={S.h1Zusatz}>{` — ${klasse.langform}`}</span>}
+        </h1>
         <p style={S.intro}>
-          {alle.length > 0 ? (
+          {zeigtSpitzenreiter ? (
+            `Verglichen wird innerhalb der Größenklasse: Eine Pro-Kopf-Zahl fällt in einem Dorf mit 150 Einwohnern schon durch drei neue Anlagen aus, in einer Großstadt braucht es tausende. Jede Klasse hat deshalb ihre eigene Liste. Gerechnet aus dem Marktstammdatenregister.`
+          ) : alle.length > 0 ? (
             <>
               {/* „sortiert nach" verlangt den Dativ — dafür gibt es themaDativ.
                   Der Rest als ein Textstück, sonst setzt React zwischen die
@@ -240,7 +283,46 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
           )}
         </p>
 
-        {zeilen.length > 0 && (
+        {zeigtSpitzenreiter &&
+          spitzenreiter.map(({ klasse: k, zeilen: z }) => {
+            const sieger = z[0];
+            return (
+              <div key={k.slug} style={S.klassenKarte}>
+                <div style={S.klassenKopf}>
+                  <span style={S.klassenLabel}>{`${k.label} Einwohner`}</span>
+                  <Link href={listenLink(kategorie.slug, k.slug)} style={S.klassenLink}>
+                    {`Ganze Liste (${nf(z.length)}) `}
+                    <IconArrowRight size={12} />
+                  </Link>
+                </div>
+                {sieger ? (
+                  <div style={S.klassenSieger}>
+                    <span style={S.klassenName}>
+                      <span aria-hidden style={S.krone}>
+                        👑
+                      </span>
+                      {pfadVon(sieger.regionId) ? (
+                        <Link href={pfadVon(sieger.regionId) as string} style={S.klassenNameLink}>
+                          {sieger.name}
+                        </Link>
+                      ) : (
+                        sieger.name
+                      )}
+                      <span style={S.klassenBasis}>
+                        {`${nf(sieger.population)} Einwohner`}
+                        {sieger.basis && ` · ${sieger.basis}`}
+                      </span>
+                    </span>
+                    <span style={S.wert}>{formatAwardValue(sieger.wert, kategorie.format)}</span>
+                  </div>
+                ) : (
+                  <div style={S.klassenLeer}>Keine wertbaren Zahlen in dieser Klasse.</div>
+                )}
+              </div>
+            );
+          })}
+
+        {!zeigtSpitzenreiter && zeilen.length > 0 && (
           <div style={{ ...S.zeile, ...S.kopfzeile }}>
             <span>Platz</span>
             <span>Kommune</span>
@@ -252,7 +334,7 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
           </div>
         )}
 
-        {zeilen.length > 0 && (
+        {!zeigtSpitzenreiter && zeilen.length > 0 && (
           <ol style={S.liste}>
             {zeilen.map((r) => {
               const href = pfadVon(r.regionId);
@@ -459,6 +541,21 @@ const S: Record<string, React.CSSProperties> = {
     position: "relative",
   },
   platz: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-accent-dark"), fontSize: 13 },
+  h1Zusatz: { fontWeight: 500, color: v("--color-text-secondary") },
+  klassenKarte: {
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: 14,
+    padding: pad("lg", "xl"),
+    marginBottom: space.lg,
+  },
+  klassenKopf: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: space.sm },
+  klassenLabel: { fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: v("--color-text-muted") },
+  klassenLink: { fontSize: 13, color: v("--color-accent"), textDecoration: "none", whiteSpace: "nowrap" },
+  klassenSieger: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: space.sm, marginTop: space.sm },
+  klassenName: { fontSize: 16, fontWeight: 700 },
+  klassenNameLink: { color: v("--color-text-primary"), textDecoration: "none" },
+  klassenBasis: { display: "block", fontSize: 13, fontWeight: 400, color: v("--color-text-secondary"), marginTop: 2 },
+  klassenLeer: { fontSize: 13, color: v("--color-text-muted"), marginTop: space.xs },
   krone: { marginRight: 5 },
   nameSpalte: { display: "flex", flexDirection: "column", minWidth: 0, gap: 1 },
   name: {

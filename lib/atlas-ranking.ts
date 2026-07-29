@@ -16,6 +16,7 @@
 // Eine absolute Rangliste ist der Sache nach eine Einwohner-Rangliste.
 
 import { AWARD_CATEGORIES, type AwardCategory, type GemeindeStats } from "./awards";
+import { klasseVon, type Groessenklasse } from "./gemeindegroesse";
 
 /** Kategorien mit öffentlicher Ranking-Seite, in Anzeigereihenfolge. */
 export function rankingKategorien(): (AwardCategory & { slug: string })[] {
@@ -94,10 +95,15 @@ export function rankingRows(
   stats: GemeindeStats[],
   kategorie: AwardCategory,
   scopeId: string | null,
+  /** Nur Orte dieser Groessenklasse. Ohne sie liefert die Funktion alle —
+   *  gebraucht fuer die Standort-Kategorien, wo die Ortsgroesse nichts erklaert. */
+  klasse?: Groessenklasse | null,
 ): RankingZeile[] {
+  const imFeld = (g: GemeindeStats) => !klasse || klasseVon(g.population)?.slug === klasse.slug;
   const rows = stats
     .filter((g) => {
       if (scopeId && !g.regionId.startsWith(scopeId)) return false;
+      if (!imFeld(g)) return false;
       // Sieht die Anlage nach dem aus, was die Kategorie behauptet? Ersetzt die
       // frühere Einwohner-Untergrenze (Begründung an RANKING_MIN_POPULATION).
       if (kategorie.plausibel && !kategorie.plausibel(g)) return false;
@@ -129,6 +135,9 @@ export function rankingRows(
   const vorjahr = stats
     .filter((g) => {
       if (scopeId && !g.regionId.startsWith(scopeId)) return false;
+      // Dieselbe Klasse wie oben — sonst waere die Rangveraenderung gegen ein
+      // anderes Teilnehmerfeld gerechnet und jeder Ort schiene gesprungen.
+      if (!imFeld(g)) return false;
       if (kategorie.plausibel && !kategorie.plausibel(g)) return false;
       const w = kategorie.metricVorjahr!(g);
       return w !== null && w > 0;
