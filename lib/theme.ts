@@ -663,6 +663,18 @@ export const globalStyles = `
     .gemeinde-kopf > .gemeinde-auszeichnung{flex:1 1 auto;max-width:none;width:100%}
   }
 
+  /* Ranking-Zeile: Der Kommunen-Link deckt die ganze Zeile ab (Overlay), damit
+     man ueberall klicken kann — OHNE Anker im Anker. Die Herkunfts-Links (Land,
+     Kreis) liegen darueber und fangen ihren eigenen Klick ab.
+     Faehrt man ueber sie, verschwindet die Zeilen-Hervorhebung: Sonst sagt die
+     Zeile "hier geht es zur Kommune", waehrend der Klick woanders hinfuehrt. */
+  .atlas-rank-row .atlas-rank-ziel::after{content:"";position:absolute;inset:0}
+  .atlas-rank-row .atlas-rank-neben{position:relative;z-index:1}
+  .atlas-rank-row:hover{background:var(--color-bg-muted)}
+  .atlas-rank-row:has(.atlas-rank-neben:hover){background:transparent}
+  .atlas-rank-row:has(.atlas-rank-neben:hover) .atlas-go{opacity:0}
+  .atlas-rank-row .atlas-rank-neben:hover{text-decoration:underline}
+
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
   .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
 

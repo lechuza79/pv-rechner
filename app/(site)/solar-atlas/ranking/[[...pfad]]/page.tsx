@@ -239,25 +239,34 @@ export default async function RankingPage({ params }: { params: Params }) {
           <ol style={S.liste}>
             {zeilen.map((r) => {
               const href = pfadVon(r.regionId);
-              const inhalt = (
-                <>
+              const orte = zeigtHerkunft ? herkunft(r.regionId) : [];
+              // KEIN Link um die ganze Zeile: Sie enthaelt selbst Links (Land,
+              // Kreis), und ein Anker im Anker ist ungueltiges HTML — Browser
+              // reissen ihn auseinander. Stattdessen deckt der Kommunen-Link die
+              // Zeile per Overlay ab; die Herkunfts-Links liegen darueber.
+              return (
+                <li key={r.regionId} className="atlas-rank-row" style={S.zeile}>
                   <span style={S.platz}>{r.platz}.</span>
                   <span style={S.nameSpalte}>
-                    <span style={S.name}>
-                      {r.platz === 1 && (
-                        <span aria-hidden style={S.krone}>
-                          👑
-                        </span>
-                      )}
-                      {r.name}
-                    </span>
-                    {zeigtHerkunft && (
+                    {href ? (
+                      <Link href={href} className="atlas-rank-ziel" style={S.name}>
+                        {r.platz === 1 && (
+                          <span aria-hidden style={S.krone}>
+                            👑
+                          </span>
+                        )}
+                        {r.name}
+                      </Link>
+                    ) : (
+                      <span style={S.name}>{r.name}</span>
+                    )}
+                    {orte.length > 0 && (
                       <span style={S.herkunft}>
-                        {herkunft(r.regionId).map((t, i) => (
+                        {orte.map((t, i) => (
                           <span key={t.name}>
                             {i > 0 && " · "}
                             {t.href ? (
-                              <Link href={t.href} style={S.herkunftLink}>
+                              <Link href={t.href} className="atlas-rank-neben" style={S.herkunftLink}>
                                 {t.name}
                               </Link>
                             ) : (
@@ -272,23 +281,9 @@ export default async function RankingPage({ params }: { params: Params }) {
                     <RangDelta plaetze={r.veraenderung} />
                   </span>
                   <span style={S.wert}>{formatAwardValue(r.wert, kategorie.format)}</span>
-                </>
-              );
-              return (
-                <li key={r.regionId}>
-                  {href ? (
-                    <Link href={href} className="atlas-rank-row" style={{ ...S.zeile, ...S.zeileLink }}>
-                      {inhalt}
-                      <span className="atlas-go" style={S.go} aria-hidden>
-                        <IconArrowRight size={12} />
-                      </span>
-                    </Link>
-                  ) : (
-                    <div style={S.zeile}>
-                      {inhalt}
-                      <span aria-hidden />
-                    </div>
-                  )}
+                  <span className="atlas-go" style={S.go} aria-hidden>
+                    {href ? <IconArrowRight size={12} /> : null}
+                  </span>
                 </li>
               );
             })}
@@ -480,12 +475,19 @@ const S: Record<string, React.CSSProperties> = {
     padding: pad("sm", "sm"),
     borderBottom: `1px solid ${v("--color-border")}`,
     fontSize: 15,
+    position: "relative",
   },
-  zeileLink: { textDecoration: "none", color: "inherit" },
   platz: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-accent-dark"), fontSize: 13 },
   krone: { marginRight: 5 },
   nameSpalte: { display: "flex", flexDirection: "column", minWidth: 0, gap: 1 },
-  name: { minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+  name: {
+    minWidth: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    color: "inherit",
+    textDecoration: "none",
+  },
   herkunft: {
     fontSize: 11,
     color: v("--color-text-muted"),
@@ -493,7 +495,8 @@ const S: Record<string, React.CSSProperties> = {
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
   },
-  herkunftLink: { color: "inherit", textDecoration: "none", borderBottom: `1px dotted ${v("--color-border-muted")}` },
+  // Blau, weil es ein Link ist — vorher sah es aus wie Beschriftung.
+  herkunftLink: { color: v("--color-accent-light"), textDecoration: "none" },
   kopfzeile: {
     fontSize: 11,
     textTransform: "uppercase",
