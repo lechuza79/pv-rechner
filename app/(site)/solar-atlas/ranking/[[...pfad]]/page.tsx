@@ -168,28 +168,33 @@ export default async function RankingPage({ params }: { params: Params }) {
             Überschrift und Einleitung darunter sagen, was genau gemessen wird.
             Zweistufig, weil die drei Zubau-Zeiträume ein Thema sind und keine
             drei — als gleichrangige Knöpfe stand "Zubau" dreimal in der Reihe. */}
-        {(
-          [
-            ["Privat", nav.buerger],
-            ["Sonstiges", nav.standort],
-          ] as const
-        ).map(([titel, punkte]) =>
-          punkte.length === 0 ? null : (
-            <div key={titel} style={S.navGruppe}>
-              <div style={S.navTitel}>{titel}</div>
-              <div style={S.kats}>
-                {punkte.map((punkt) => {
-                  const aktiv = aktiverPunkt?.slug === punkt.slug;
-                  return (
-                    <Link key={punkt.slug} href={mitGebiet(punkt.slug)} style={katStil(aktiv)}>
-                      {punkt.label}
-                    </Link>
-                  );
-                })}
+        {/* Die beiden Gruppen nebeneinander. Ueber flex-basis statt Media Query:
+            Unterschreitet die Spalte 240px, rutscht die zweite von selbst
+            darunter — Inline-Styles kennen keine Media Queries. */}
+        <div style={S.navReihe}>
+          {(
+            [
+              ["Privat", nav.buerger],
+              ["Sonstiges", nav.standort],
+            ] as const
+          ).map(([titel, punkte]) =>
+            punkte.length === 0 ? null : (
+              <div key={titel} style={S.navGruppe}>
+                <div style={S.navTitel}>{titel}</div>
+                <div style={S.kats}>
+                  {punkte.map((punkt) => {
+                    const aktiv = aktiverPunkt?.slug === punkt.slug;
+                    return (
+                      <Link key={punkt.slug} href={mitGebiet(punkt.slug)} style={katStil(aktiv)}>
+                        {punkt.label}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ),
-        )}
+            ),
+          )}
+        </div>
 
         {/* Zweite Ebene: nur für das gewählte Thema. */}
         {aktiverPunkt?.zeitraeume && (
@@ -444,7 +449,8 @@ const S: Record<string, React.CSSProperties> = {
   h1: { marginTop: space.lg, fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
   intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },
-  navGruppe: { marginBottom: space.md },
+  navReihe: { display: "flex", flexWrap: "wrap", gap: space.xl, marginBottom: space.md },
+  navGruppe: { flex: "1 1 240px", minWidth: 0 },
   navTitel: {
     fontSize: 11,
     textTransform: "uppercase",
