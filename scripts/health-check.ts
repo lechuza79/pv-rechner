@@ -457,6 +457,9 @@ export function cacheBefundAusZustaenden(label: string, erster: string, zweiter:
   };
 }
 
+/** Wie oft nachgefasst wird, bevor „nicht gecacht" feststeht. */
+const CACHE_VERSUCHE = 3;
+
 async function pruefeCacheWirksamkeit(): Promise<CacheBefund[]> {
   const befunde: CacheBefund[] = [];
   for (const { label, path } of CACHE_PFLICHT) {
@@ -467,8 +470,26 @@ async function pruefeCacheWirksamkeit(): Promise<CacheBefund[]> {
       befunde.push(cacheBefundAusZustaenden(label, erster.cache, "kein 200"));
       continue;
     }
-    const zweiter = await probe(label, path);
-    befunde.push(cacheBefundAusZustaenden(label, erster.cache, zweiter.cache));
+
+    // Mehrfach nachfassen, bevor der Befund steht. Ein einzelner Fehlschlag
+    // beweist nichts: Aufeinanderfolgende Abrufe landen nicht zwingend auf
+    // demselben CDN-Knoten, und ein Eintrag kann zwischendurch verdrängt
+    // werden. Beim ersten scharfen Lauf (29.07.2026) meldete genau das die
+    // Kühlgradstunden als ungecacht — eine Minute später kamen sie sauber als
+    // Treffer zurück. Ein Wächter, der so etwas rot meldet, startet den Autofix
+    // ohne Grund und wird nach zwei Wochen weggefiltert; dann geht auch der
+    // echte Befund unter.
+    //
+    // Die Unterscheidung trägt trotzdem: Eine wirklich ungecachte Route
+    // verfehlt JEDEN Versuch (nachgestellt an /api/prices/health, bewusst
+    // no-store), eine gesunde trifft spätestens beim zweiten.
+    let letzter = erster.cache;
+    for (let versuch = 0; versuch < CACHE_VERSUCHE; versuch++) {
+      const weiterer = await probe(label, path);
+      letzter = weiterer.cache;
+      if (cacheBefundAusZustaenden(label, erster.cache, letzter).gecacht) break;
+    }
+    befunde.push(cacheBefundAusZustaenden(label, erster.cache, letzter));
   }
   return befunde;
 }
