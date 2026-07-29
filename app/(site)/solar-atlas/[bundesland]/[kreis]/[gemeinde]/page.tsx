@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import AtlasSkeleton from "../../../../../../components/atlas/AtlasSkeleton";
 import Breadcrumb from "../../../../../../components/Breadcrumb";
 import RegionSearch from "../../../../../../components/atlas/RegionSearch";
 import { IconArrowRight } from "../../../../../../components/Icons";
@@ -30,6 +32,7 @@ import {
   atlasOwnerSlice,
   speicherHinweis,
   type AtlasOwner,
+  type AtlasRegion,
   type PeerRow,
 } from "../../../../../../lib/atlas";
 import {
@@ -99,11 +102,25 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
   };
 }
 
+/**
+ * Routing-Entscheidung — und NUR sie. Sie läuft in der HTML-Hülle, also bevor die
+ * Antwort rausgeht; nur deshalb kann `notFound()` den Statuscode noch auf 404
+ * setzen. Der teure Teil steckt hinter dem `<Suspense>` und streamt nach.
+ * Hintergrund und Fallstrick: `components/atlas/AtlasSkeleton.tsx`.
+ */
 export default async function GemeindePage(props: { params: Promise<Params> }) {
   const params = await props.params;
   const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
   if (!region || region.level !== "gemeinde") notFound();
 
+  return (
+    <Suspense fallback={<AtlasSkeleton />}>
+      <GemeindeBody region={region} params={params} />
+    </Suspense>
+  );
+}
+
+async function GemeindeBody({ region, params }: { region: AtlasRegion; params: Params }) {
   const blAgs = region.region_id.slice(0, 2);
   const bl = bundeslandByAgs(blAgs);
   const kreisAgs = region.region_id.slice(0, 5);
