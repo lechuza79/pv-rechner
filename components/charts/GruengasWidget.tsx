@@ -13,7 +13,7 @@ import {
   type ExportLegendEntry,
 } from "../WidgetExport";
 import { useChartExport } from "../../lib/useChartExport";
-import { EXPORT_IGNORE_ATTR } from "../../lib/chart-export";
+import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
 import { WIDGETS } from "../../lib/widget-registry";
 import { v } from "../../lib/theme";
 import type { MusterVariant } from "../../lib/greengas-muster";

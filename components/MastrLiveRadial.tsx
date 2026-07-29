@@ -5,7 +5,7 @@ import { v, iconSizes } from "../lib/theme";
 import InfoTooltip from "./InfoTooltip";
 import { PoweredBy, DataSourceNote } from "./PoweredBy";
 import { type DataSource } from "../lib/data-sources";
-import { EXPORT_IGNORE_ATTR } from "../lib/chart-export";
+import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
 
 type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
 

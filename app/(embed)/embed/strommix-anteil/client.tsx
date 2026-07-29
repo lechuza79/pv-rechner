@@ -4,6 +4,7 @@ import { useState } from "react";
 import DonutChart from "../../../../components/charts/DonutChart";
 import {
   ExportBox,
+  ExportNotesProvider,
   WidgetExportFooter,
   WidgetFooter,
   WidgetSourceEdge,
@@ -92,93 +93,99 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
   }));
 
   return (
-    <div style={root} ref={chartExport.chartRef}>
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
-          Deutscher Strommix {ytd.year}
+    // Provider um die ganze Karte: Der Bild-Fuß darunter zeigt die Hilfetexte
+    // der „?"-Knöpfe. Ohne ihn verschwände der erste hier eingebaute Tooltip
+    // lautlos aus dem Bild — deshalb erzwingt der Wächter ihn neben jedem
+    // WidgetExportFooter (lib/__tests__/widget-konventionen.test.ts).
+    <ExportNotesProvider>
+      <div style={root} ref={chartExport.chartRef}>
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
+            Deutscher Strommix {ytd.year}
+          </div>
+          <div style={{ fontSize: 12, color: "var(--widget-muted)", marginTop: 2 }}>
+            inkl. importiertem Atomstrom
+          </div>
         </div>
-        <div style={{ fontSize: 12, color: "var(--widget-muted)", marginTop: 2 }}>
-          inkl. importiertem Atomstrom
-        </div>
-      </div>
 
-      <div style={{ position: "relative", paddingRight: 18 }}>
-        {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Auf einer
-            eigenen Seite (onsite) kreditiert die Seite zentral. */}
-        <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
-        <ExportBox
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 24,
-            // Der Kasten umschließt Ring + Legende, statt sich auf die volle
-            // Kartenbreite zu ziehen: sonst rahmt er vor allem Leere.
-            width: "fit-content",
-            margin: "0 auto",
-          }}
-        >
-          <DonutChart segments={donutSegments} size={170}>
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 32,
-                fontWeight: 800,
-                lineHeight: 1,
-                letterSpacing: "-0.02em",
-                color: "var(--widget-fg)",
-              }}
-            >
-              {fmtPct(ytd.nuclearShare).replace(" %", "")}
-            </div>
-            <div style={{ fontSize: 12, color: "var(--widget-muted)", marginTop: 4 }}>
-              % Kernenergie
-            </div>
-          </DonutChart>
-
-          <div style={{ minWidth: 190 }}>
-            {ytd.segments.map((s) => (
+        <div style={{ position: "relative", paddingRight: 18 }}>
+          {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Auf einer
+              eigenen Seite (onsite) kreditiert die Seite zentral. */}
+          <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
+          <ExportBox
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 24,
+              // Der Kasten umschließt Ring + Legende, statt sich auf die volle
+              // Kartenbreite zu ziehen: sonst rahmt er vor allem Leere.
+              width: "fit-content",
+              margin: "0 auto",
+            }}
+          >
+            <DonutChart segments={donutSegments} size={170}>
               <div
-                key={s.key}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "3px 0",
-                  fontSize: 13,
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 32,
+                  fontWeight: 800,
+                  lineHeight: 1,
+                  letterSpacing: "-0.02em",
+                  color: "var(--widget-fg)",
                 }}
               >
-                <span style={{ width: 10, height: 10, borderRadius: 2, background: s.color, flexShrink: 0 }} />
-                <span style={{ flex: 1, color: "var(--widget-fg)" }}>{s.label}</span>
-                <span style={{ fontFamily: "var(--font-mono)", fontWeight: 700 }}>
-                  {fmtPct(s.share)}
-                </span>
+                {fmtPct(ytd.nuclearShare).replace(" %", "")}
               </div>
-            ))}
+              <div style={{ fontSize: 12, color: "var(--widget-muted)", marginTop: 4 }}>
+                % Kernenergie
+              </div>
+            </DonutChart>
+
+            <div style={{ minWidth: 190 }}>
+              {ytd.segments.map((s) => (
+                <div
+                  key={s.key}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "3px 0",
+                    fontSize: 13,
+                  }}
+                >
+                  <span style={{ width: 10, height: 10, borderRadius: 2, background: s.color, flexShrink: 0 }} />
+                  <span style={{ flex: 1, color: "var(--widget-fg)" }}>{s.label}</span>
+                  <span style={{ fontFamily: "var(--font-mono)", fontWeight: 700 }}>
+                    {fmtPct(s.share)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </ExportBox>
+
+          <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--widget-muted)", textAlign: "center", marginTop: 16 }}>
+            Jahr bis dato ({ytd.weeks} Wochen): {twh(ytd.nuclearGwh)} TWh importierter
+            Atomstrom von {twh(ytd.totalGwh)} TWh gesamt. Rechnerischer Wert
+            (Grenzflüsse × Kernanteil der Nachbarn); heimische Kernkraft läuft seit
+            April 2023 nicht mehr.
           </div>
-        </ExportBox>
-
-        <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--widget-muted)", textAlign: "center", marginTop: 16 }}>
-          Jahr bis dato ({ytd.weeks} Wochen): {twh(ytd.nuclearGwh)} TWh importierter
-          Atomstrom von {twh(ytd.totalGwh)} TWh gesamt. Rechnerischer Wert
-          (Grenzflüsse × Kernanteil der Nachbarn); heimische Kernkraft läuft seit
-          April 2023 nicht mehr.
         </div>
-      </div>
 
-      {/* Sichtbare Fußzeile (nächster Schritt · Aktionen · Marke) und Bild-Fuß
-          (Datenquelle · Marke) — beide aus dem geteilten Baustein. */}
-      <WidgetFooter
-        widget={WIDGET}
-        chartExport={chartExport}
-        onCopyLink={copyLink}
-        share={settings.share}
-        branding={settings.branding}
-        showEmbed={settings.embed}
-        onsite={settings.onsite}
-      />
-      <WidgetExportFooter widget={WIDGET} branding={settings.branding} />
-    </div>
+        {/* Sichtbare Fußzeile (nächster Schritt · Aktionen · Marke) und Bild-Fuß
+            (Datenquelle · Marke) — beide aus dem geteilten Baustein. */}
+        <WidgetFooter
+          widget={WIDGET}
+          chartExport={chartExport}
+          onCopyLink={copyLink}
+          share={settings.share}
+          branding={settings.branding}
+          showEmbed={settings.embed}
+          onsite={settings.onsite}
+        />
+        <WidgetExportFooter widget={WIDGET} branding={settings.branding} />
+      </div>
+    </ExportNotesProvider>
   );
 }

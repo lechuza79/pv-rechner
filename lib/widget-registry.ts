@@ -54,6 +54,15 @@ export interface WidgetDef {
   kind: WidgetKind;
   /** Set on widgets parameterised by place — see {@link widgetForPlace}. */
   place?: WidgetPlaceTemplates;
+  /**
+   * Beispiel-Ort für Übersichtsseiten, die den Einbett-Link nur auflisten.
+   *
+   * Ein ortsbezogenes Widget ohne Parameter zeigt „Keine gültige Gemeinde
+   * angegeben." — auf der Presseseite also genau vor dem Publikum, das wir
+   * gewinnen wollen, ein Link ins Leere. Pflicht für jeden Eintrag mit
+   * {@link place}, ausgewertet von {@link embedExamplePath}.
+   */
+  exampleParams?: Record<string, string>;
   /** Where "share" points: the canonical live page for this widget. */
   shareUrl: string;
   shareText: string;
@@ -92,6 +101,15 @@ export const WIDGET_MAX_WIDTH = 900;
  * Karten umschließen ihren Inhalt, statt jede angebotene Breite zu füllen.
  */
 export const WIDGET_MAX_WIDTH_COMPACT = 560;
+
+/**
+ * Der Beispiel-Ort für Übersichts- und Presselinks: Höchberg (Gemeindeschlüssel
+ * 09679147) und Mecklenburg-Vorpommern (Länderschlüssel 13). Beides echte Orte
+ * mit echten Zahlen — dieselben, die die Widget-Galerie in ihrer Vorschau
+ * zeigt, damit ein Leser zweimal dasselbe Beispiel sieht.
+ */
+const BEISPIEL_GEMEINDE = "09679147";
+const BEISPIEL_BUNDESLAND = "13";
 
 export const WIDGETS = {
   gruengasHeizkosten: {
@@ -185,6 +203,7 @@ export const WIDGETS = {
     id: "gemeinde-solar",
     title: "Solaranlagen einer Gemeinde",
     kind: "chart",
+    exampleParams: { ags: BEISPIEL_GEMEINDE },
     place: {
       title: "Solaranlagen in {ort}",
       shareText: "Solaranlagen in {ort}: Anlagen, Leistung und Leistung je Einwohner – Solar Check",
@@ -198,6 +217,7 @@ export const WIDGETS = {
     id: "gemeinde-erneuerbare",
     title: "Erneuerbare Leistung einer Gemeinde",
     kind: "chart",
+    exampleParams: { ags: BEISPIEL_GEMEINDE },
     place: {
       title: "Erneuerbare Leistung in {ort}",
       shareText: "Erneuerbare Leistung in {ort} nach Technologie – Solar Check",
@@ -211,6 +231,7 @@ export const WIDGETS = {
     id: "gemeinde-solarleistung",
     title: "Solarleistung einer Gemeinde (simuliert)",
     kind: "chart",
+    exampleParams: { ags: BEISPIEL_GEMEINDE },
     place: {
       title: "Solarleistung heute in {ort}",
       shareText: "Solarleistung heute in {ort}: was der Anlagenbestand liefert (simuliert) – Solar Check",
@@ -224,6 +245,7 @@ export const WIDGETS = {
     id: "region-anlagentyp",
     title: "Solarleistung eines Bundeslands nach Anlagentyp",
     kind: "chart",
+    exampleParams: { bl: BEISPIEL_BUNDESLAND },
     place: {
       title: "Solarleistung in {ort} nach Anlagentyp",
       shareText: "Solarleistung in {ort} nach Anlagentyp: Dach, Gewerbe und Freifläche – Solar Check",
@@ -237,6 +259,7 @@ export const WIDGETS = {
     id: "region-solarleistung",
     title: "Solarleistung eines Bundeslands (simuliert)",
     kind: "chart",
+    exampleParams: { bl: BEISPIEL_BUNDESLAND },
     place: {
       title: "Solarleistung heute in {ort}",
       shareText: "Solarleistung heute in {ort}: was der Anlagenbestand liefert (simuliert) – Solar Check",
@@ -314,6 +337,18 @@ export function widgetForPlace(widget: WidgetDef, ort: string, liveUrl?: string)
 /** Embed path of a widget, or null where there is no iframe route for it. */
 export function embedPath(w: WidgetDef): string | null {
   return w.embeddable === false ? null : `/embed/${w.id}`;
+}
+
+/**
+ * Einbett-Pfad MIT Beispiel-Ort, für Listen, die nur verlinken statt zu
+ * konfigurieren. Ohne die Parameter zeigt ein ortsbezogenes Widget bloß seine
+ * Fehlermeldung; {@link embedPath} bleibt bewusst parameterfrei, weil daran die
+ * Prüfung hängt, ob es die Route überhaupt gibt.
+ */
+export function embedExamplePath(w: WidgetDef): string | null {
+  const basis = embedPath(w);
+  if (!basis || !w.exampleParams) return basis;
+  return `${basis}?${new URLSearchParams(w.exampleParams).toString()}`;
 }
 
 /** The share target as an internal path ("/strommix-deutschland"), for <Link>. */

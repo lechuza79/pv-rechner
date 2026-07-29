@@ -3,8 +3,12 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { v } from "../lib/theme";
 import { IconHelpCircle } from "./Icons";
-import { EXPORT_IGNORE_ATTR } from "../lib/chart-export";
-import { nodeToText, useRegisterExportNote } from "./WidgetExport";
+// Bewusst aus den schlanken Modulen, NICHT aus lib/chart-export bzw.
+// components/WidgetExport: an denen hängen modern-screenshot, CiteModal und
+// ChartActionBar. Ein InfoTooltip steht auf der Startseite und in jedem Rechner
+// — er darf die Bild-Maschinerie nicht mit ins Bundle ziehen.
+import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
+import { nodeToText, useRegisterExportNote } from "./export-notes";
 
 // A small help-icon trigger that shows an explanatory tooltip on hover (desktop)
 // or tap (mobile). Unlike the native `title` attribute — which never fires on

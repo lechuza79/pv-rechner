@@ -17,7 +17,13 @@
  * Requirements:
  *   - Env (unless --dry): SUPABASE_URL, SUPABASE_SERVICE_KEY
  *
- * Source: Statistisches Bundesamt, Gemeindeverzeichnis GV100AD, dl-de/by-2-0.
+ * Source: Statistisches Bundesamt (Destatis), Gemeindeverzeichnis GV100AD.
+ * NICHT dl-de/by-2-0 — die Datenlizenz gilt laut Destatis-Impressum nur für
+ * GENESIS-Online. Für die zum Download bereitgestellten Produkte wie dieses
+ * gilt: "Vervielfältigung und Verbreitung, auch auszugsweise, mit
+ * Quellennachweis gestattet" (geprüft 07/2026). Der sichtbare Quellenvermerk
+ * kommt aus lib/data-sources.ts → DATA_SOURCES.destatis; hier steht er nur zur
+ * Erinnerung, nicht als zweite Quelle.
  * Runs quarterly (Destatis publishes 31.03. / 30.06. / 30.09. / 31.12.).
  */
 

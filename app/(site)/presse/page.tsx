@@ -6,7 +6,7 @@ import { DataSourceNote } from "../../../components/PoweredBy";
 import { v, space } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { OWN_WORK_LICENSE } from "../../../lib/license";
-import { allWidgets, embedPath, sharePath } from "../../../lib/widget-registry";
+import { allWidgets, embedExamplePath, sharePath, type WidgetDef } from "../../../lib/widget-registry";
 
 export const metadata: Metadata = pageMetadata({
   path: "/presse",
@@ -81,8 +81,40 @@ const S: Record<string, React.CSSProperties> = {
   },
 };
 
+/**
+ * Eine Karte je Eintrag — dieselbe Darstellung für Charts und Werkzeuge, weil
+ * sich nur die Überschrift darüber unterscheidet.
+ */
+function Eintrag({ w }: { w: WidgetDef }) {
+  // Bewusst der Beispiel-Pfad: Ortsbezogene Widgets brauchen einen Ort, sonst
+  // begrüßt die Presseseite ihre Leser mit „Keine gültige Gemeinde angegeben."
+  const embed = embedExamplePath(w);
+  return (
+    <div style={S.karte}>
+      <div style={S.karteTitel}>{w.title}</div>
+      <div style={S.karteLinks}>
+        <Link href={sharePath(w)} style={S.a}>
+          Live-Seite ansehen
+        </Link>
+        {embed && (
+          <Link href={embed} style={S.a}>
+            {w.exampleParams ? "Einbettbare Fassung (Beispielort)" : "Einbettbare Fassung"}
+          </Link>
+        )}
+      </div>
+      <div style={S.karteQuelle}>
+        <DataSourceNote source={w.sources} label="Datenquelle:" />
+      </div>
+    </div>
+  );
+}
+
 export default function PressePage() {
-  const widgets = allWidgets();
+  // Das Register unterscheidet Chart und Werkzeug bereits — die Seite hat es
+  // bloß nicht gezeigt und alles „Charts" genannt. Ein Förder-Check ist aber
+  // kein Chart, das man in einen Artikel legt, sondern etwas zum Ausprobieren.
+  const charts = allWidgets().filter((w) => w.kind === "chart");
+  const werkzeuge = allWidgets().filter((w) => w.kind === "tool");
 
   return (
     <div style={S.page}>
@@ -92,10 +124,10 @@ export default function PressePage() {
         <h1 style={S.h1}>Presse und Redaktionen</h1>
 
         <p style={S.lead}>
-          Alle Charts dieser Seite dürfen in Artikel, Sendungen, Präsentationen und Studien
-          übernommen werden — redaktionell wie gewerblich, ohne vorherige Anfrage. Bedingung ist die
-          Namensnennung „{OWN_WORK_LICENSE.attributionName}“ mit einem Link auf die Seite, von der
-          die Grafik stammt.
+          Alle Charts und Werkzeuge dieser Seite dürfen in Artikel, Sendungen, Präsentationen und
+          Studien übernommen werden — redaktionell wie gewerblich, ohne vorherige Anfrage. Bedingung
+          ist die Namensnennung „{OWN_WORK_LICENSE.attributionName}“ mit einem Link auf die Seite,
+          von der die Grafik stammt.
         </p>
 
         <h2 style={S.h2}>Charts im Überblick</h2>
@@ -103,31 +135,27 @@ export default function PressePage() {
           Jeder Eintrag führt zur Live-Seite mit der aktuellen Fassung des Charts. Wo es einen
           Einbettungscode gibt, lässt sich das Chart als iframe übernehmen und bleibt dann von
           selbst aktuell. Die Datenquelle steht jeweils dabei und muss bei einer Übernahme genannt
-          werden.
+          werden. Charts, die immer einen Ort zeigen, sind hier mit einem Beispielort verlinkt — im
+          Einbettungscode steht dann die eigene Gemeinde oder das eigene Bundesland.
         </p>
         <div style={S.karten}>
-          {widgets.map((w) => {
-            const embed = embedPath(w);
-            return (
-              <div key={w.id} style={S.karte}>
-                <div style={S.karteTitel}>{w.title}</div>
-                <div style={S.karteLinks}>
-                  <Link href={sharePath(w)} style={S.a}>
-                    Live-Seite ansehen
-                  </Link>
-                  {embed && (
-                    <Link href={embed} style={S.a}>
-                      Einbettbare Fassung
-                    </Link>
-                  )}
-                </div>
-                <div style={S.karteQuelle}>
-                  <DataSourceNote source={w.sources} label="Datenquelle:" />
-                </div>
-              </div>
-            );
-          })}
+          {charts.map((w) => (
+            <Eintrag key={w.id} w={w} />
+          ))}
         </div>
+
+        <h2 style={S.h2}>Interaktive Werkzeuge</h2>
+        <p style={S.p}>
+          Diese Einträge zeigen keine Daten, sondern rechnen mit den Zahlen, die eine Leserin selbst
+          eingibt. Sie eignen sich als Service neben einem Artikel, nicht als Abbildung darin.
+          Lizenz und Namensnennung gelten für sie genauso.
+        </p>
+        <div style={S.karten}>
+          {werkzeuge.map((w) => (
+            <Eintrag key={w.id} w={w} />
+          ))}
+        </div>
+
         <p style={S.p}>
           Den fertigen Einbettungscode zum Kopieren, dazu Vorschau, Größen und Einstellungen, gibt
           es in der{" "}
@@ -140,9 +168,9 @@ export default function PressePage() {
         <h2 style={S.h2}>Charts als Bild</h2>
         <p style={S.p}>
           Wo ein Chart einen Herunterladen-Knopf hat, lässt es sich als Bilddatei speichern. Titel,
-          Beschriftung und Quellenangabe sind in dieses Bild fest eingebacken — die Attribution geht
-          also auch dann nicht verloren, wenn die Grafik ohne den umgebenden Text weitergereicht
-          wird. Für Print in höherer Auflösung oder in einem anderen Format melde dich einfach.
+          Beschriftung, Datenquelle, Datenstand und der Lizenzcode {OWN_WORK_LICENSE.code} sind in
+          dieses Bild fest eingebacken — die Attribution geht also auch dann nicht verloren, wenn
+          die Grafik ohne den umgebenden Text weitergereicht wird. Für Print in höherer Auflösung oder in einem anderen Format melde dich einfach.
         </p>
 
         <h2 style={S.h2}>Lizenz</h2>

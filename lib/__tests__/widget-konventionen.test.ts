@@ -57,27 +57,38 @@ function widgetDateien(): { pfad: string; inhalt: string }[] {
 }
 
 /**
- * Noch nicht umgestellt — die Restliste der Umstellung auf die geteilten
- * Bausteine (Stand 27.07.2026). Diese Widgets bauen ihre Fußzeile noch selbst.
+ * Regeln, die für eine Datei (noch) nicht gelten — Umstellungs-Reste UND
+ * begründete Dauerausnahmen, beide hier, beide REGELGENAU.
+ *
+ * Regelgenau ist der Punkt: Früher stand daneben eine pauschale Restliste, die
+ * für die genannten Dateien JEDE Regel abschaltete — auch „bild-fuss", also
+ * ausgerechnet die mit dem Lizenzrisiko. Eine Ausnahme darf immer nur das
+ * abschalten, was tatsächlich offen ist.
  *
  * Die Liste ist bewusst sichtbar und soll schrumpfen: Wer eines dieser Widgets
- * anfasst, stellt es um und streicht es hier. Sie ist KEIN Ort, um einen neuen
- * Verstoß abzulegen — für alles, was hier nicht steht, ist der Test scharf, und
- * das ist der Punkt: neue Charts können gar nicht erst danebenlaufen.
+ * anfasst, stellt es um und streicht seinen Eintrag. Sie ist KEIN Ort, um einen
+ * neuen Verstoß abzulegen — für alles, was hier nicht steht, ist der Test
+ * scharf, und das ist der Punkt: neue Charts können gar nicht erst danebenlaufen.
  */
-const NOCH_NICHT_UMGESTELLT = [
-  "app/(embed)/embed/ee-ampel/client.tsx",
-  "app/(embed)/embed/erzeugung-mini/client.tsx",
-  "app/(embed)/embed/foerder-check/client.tsx",
-  "app/(embed)/embed/karte/client.tsx",
-  "app/(embed)/embed/kennzahl/client.tsx",
-  "app/(embed)/embed/simulation/client.tsx",
-  // Eigener Embed-Modus mit eigener Fußzeile; steht als Nächstes an.
-  "components/SimulationPanel.tsx",
-];
-
-/** Einzelne begründete Dauerausnahmen (keine Umstellungs-Reste). */
 const ERLAUBT: Record<string, { regel: string; grund: string }[]> = {
+  // ── Umstellungs-Reste (Stand 27.07.2026): bauen ihre Fußzeile noch selbst ──
+  "app/(embed)/embed/ee-ampel/client.tsx": [
+    { regel: "share-url", grund: "noch nicht auf das Register umgestellt" },
+    { regel: "max-breite", grund: "noch nicht auf das Register umgestellt" },
+  ],
+  "app/(embed)/embed/foerder-check/client.tsx": [
+    { regel: "share-url", grund: "noch nicht auf das Register umgestellt" },
+  ],
+  "app/(embed)/embed/karte/client.tsx": [
+    { regel: "share-url", grund: "noch nicht auf das Register umgestellt" },
+    { regel: "max-breite", grund: "noch nicht auf das Register umgestellt" },
+  ],
+  "app/(embed)/embed/kennzahl/client.tsx": [
+    { regel: "share-url", grund: "noch nicht auf das Register umgestellt" },
+    { regel: "max-breite", grund: "noch nicht auf das Register umgestellt" },
+  ],
+
+  // ── Dauerausnahmen ────────────────────────────────────────────────────────
   "components/charts/ZubauTimelineChart.tsx": [
     { regel: "quelle-getippt", grund: "reines Chart-Bauteil ohne Fußzeile; enthält kein Credit" },
   ],
@@ -104,8 +115,43 @@ const ERLAUBT: Record<string, { regel: string; grund: string }[]> = {
   ],
 };
 
+/**
+ * Regeln, die NIE ausgenommen werden dürfen — egal, was in ERLAUBT steht.
+ * „bild-fuss" ist die Attributions-Regel: Ein Bild ohne Quelle geht in die Welt
+ * und lässt sich nicht zurückholen. Eine Ausnahme davon wäre kein Rest, sondern
+ * ein Lizenzverstoß mit Ansage.
+ */
+const UNVERHANDELBAR = ["bild-fuss"];
+
+/**
+ * Zerlegt eine Datei in ihre CODE-Zeilen — Kommentare fliegen raus.
+ *
+ * Eine Konvention wird im Code beschrieben („kein ‚Powered by' im
+ * First-Party-Embed", „Quelle: kommt aus DataSourceNote"). Würde der Wächter
+ * diese Sätze anschlagen, bestünde der billigste Weg zu Grün darin, die
+ * Begründung zu löschen. Deshalb genau eine Stelle, die Kommentare erkennt —
+ * eine zweite Kopie wäre wieder eine Fehlerquelle.
+ */
+function codeZeilen(inhalt: string): { zeile: string; nr: number }[] {
+  const raus: { zeile: string; nr: number }[] = [];
+  let imBlock = false;
+  inhalt.split("\n").forEach((roh, i) => {
+    const startet = /\{?\/\*/.test(roh);
+    const endet = /\*\/\}?/.test(roh);
+    const warImBlock = imBlock;
+    if (startet && !endet) imBlock = true;
+    else if (endet && imBlock) imBlock = false;
+    if (warImBlock || startet) return;
+    if (/^\s*\*/.test(roh)) return; // JSDoc-Fortsetzung
+    const ohneZeilenkommentar = roh.replace(/\/\/.*$/, "");
+    if (!ohneZeilenkommentar.trim()) return;
+    raus.push({ zeile: ohneZeilenkommentar, nr: i + 1 });
+  });
+  return raus;
+}
+
 function istErlaubt(pfad: string, regel: string): boolean {
-  if (NOCH_NICHT_UMGESTELLT.includes(pfad)) return true;
+  if (UNVERHANDELBAR.includes(regel)) return false;
   return (ERLAUBT[pfad] ?? []).some((a) => a.regel === regel);
 }
 
@@ -124,20 +170,9 @@ describe("Widget-Konvention", () => {
     for (const { pfad, inhalt } of dateien) {
       if (istErlaubt(pfad, "quelle-getippt")) continue;
       // ">Quelle:" oder "Quelle: {" im JSX-Text — nicht in Kommentaren.
-      // Kommentare zählen nicht — auch nicht mehrzeilige JSX-Kommentare, in
-      // denen die Konvention ja gerade beschrieben wird.
-      let imKommentar = false;
-      inhalt.split("\n").forEach((zeile, i) => {
-        const startet = /\{?\/\*/.test(zeile);
-        const endet = /\*\/\}?/.test(zeile);
-        const warImKommentar = imKommentar;
-        if (startet && !endet) imKommentar = true;
-        else if (endet && imKommentar) imKommentar = false;
-        if (warImKommentar || startet) return;
-        const ohneZeilenkommentar = zeile.replace(/\/\/.*$/, "");
-        if (/^\s*\*/.test(zeile)) return;
-        if (/(>|\s)Quelle:\s*(\{|[A-Za-zÄÖÜ])/.test(ohneZeilenkommentar) && !/label=/.test(ohneZeilenkommentar)) {
-          treffer.push(`${pfad}:${i + 1}  ${zeile.trim().slice(0, 90)}`);
+      codeZeilen(inhalt).forEach(({ zeile, nr }) => {
+        if (/(>|\s)Quelle:\s*(\{|[A-Za-zÄÖÜ])/.test(zeile) && !/label=/.test(zeile)) {
+          treffer.push(`${pfad}:${nr}  ${zeile.trim().slice(0, 90)}`);
         }
       });
     }
@@ -148,10 +183,15 @@ describe("Widget-Konvention", () => {
     // Die Markenzeile kommt aus PoweredBy; im Bild trägt sie je nach Art des
     // Widgets einen anderen Text (brandLabel). Ein getippter String friert die
     // falsche Variante ein.
+    // Kommentare zählen nicht — genau wie bei der „Quelle:"-Regel. Ein Hinweis
+    // wie „onsite: kein ‚Powered by'" beschreibt die Konvention, er bricht sie
+    // nicht; ihn rot zu färben würde nur dazu führen, dass er gelöscht wird.
     const treffer: string[] = [];
     for (const { pfad, inhalt } of dateien) {
       if (istErlaubt(pfad, "powered-by")) continue;
-      if (/["'>]Powered by/.test(inhalt)) treffer.push(pfad);
+      codeZeilen(inhalt).forEach(({ zeile, nr }) => {
+        if (/["'>]Powered by/.test(zeile)) treffer.push(`${pfad}:${nr}`);
+      });
     }
     expect(treffer, `„Powered by" gehört in components/PoweredBy.tsx:\n${treffer.join("\n")}`).toEqual([]);
   });
@@ -185,6 +225,29 @@ describe("Widget-Konvention", () => {
       if (!/WidgetExportFooter/.test(inhalt)) treffer.push(pfad);
     }
     expect(treffer, `Karte fotografiert sich selbst, hat aber keinen Bild-Fuß:\n${treffer.join("\n")}`).toEqual([]);
+  });
+
+  it("wo ein Bild-Fuß steht, steht auch der Sammler für die Hilfetexte", () => {
+    // Der Bild-Fuß zeigt die Texte hinter den „?"-Knöpfen — aber nur, wenn ein
+    // ExportNotesProvider sie eingesammelt hat. Fehlt er, passiert nichts
+    // Sichtbares: Der erste Tooltip, den jemand später in die Karte baut,
+    // verschwindet lautlos aus dem Bild.
+    //
+    // Warum diese Regel und nicht „Provider ins Layout": Auf einer Seite können
+    // zwei Widgets mit eigenem Bild-Fuß stehen; ein gemeinsamer Provider weiter
+    // oben würde beiden ALLE Notizen ins Bild schreiben. Der Sammler gehört
+    // deshalb um die einzelne Karte — und weil man das vergessen kann, prüft es
+    // der Wächter statt eines Kommentars.
+    const treffer: string[] = [];
+    for (const { pfad, inhalt } of dateien) {
+      if (istErlaubt(pfad, "notizen-sammler")) continue;
+      if (!/<WidgetExportFooter/.test(inhalt)) continue;
+      if (!/<ExportNotesProvider/.test(inhalt)) treffer.push(pfad);
+    }
+    expect(
+      treffer,
+      `Bild-Fuß ohne <ExportNotesProvider> um die Karte:\n${treffer.join("\n")}`
+    ).toEqual([]);
   });
 
   it("Embed-Karten begrenzen ihre Breite", () => {

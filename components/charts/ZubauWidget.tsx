@@ -22,7 +22,7 @@ import { v, tokens } from "../../lib/theme";
 import { sourceLabel, type DataSource } from "../../lib/data-sources";
 import { WIDGETS } from "../../lib/widget-registry";
 import { useChartExport } from "../../lib/useChartExport";
-import { ExportBox, WidgetExportFooter, WidgetFooter, WidgetSourceEdge } from "../WidgetExport";
+import { ExportBox, ExportNotesProvider, WidgetExportFooter, WidgetFooter, WidgetSourceEdge } from "../WidgetExport";
 import ZubauTimelineChart from "./ZubauTimelineChart";
 import EventTimeline, { TimelineEvent } from "./EventTimeline";
 import type { NationalSolarSeries } from "../../lib/mastr-data";
@@ -169,77 +169,83 @@ export default function ZubauWidget({
   });
 
   return (
-    <div ref={chartExport.chartRef} style={S.frame}>
-      {/* Titel/Label — im Embed sichtbar, auf der Seite nur im Bild-Export. */}
-      <div
-        data-sc-export-only={isEmbed ? undefined : "block"}
-        style={{ ...S.header, ...(isEmbed ? null : { display: "none" }) }}
-      >
-        <div style={S.title}>{WIDGET_TITLE}</div>
-        <div style={S.sub}>{WIDGET_SUBLINE}</div>
-      </div>
+    // Provider um die ganze Karte: Der Bild-Fuß darunter zeigt die Hilfetexte
+    // der „?"-Knöpfe. Ohne ihn verschwände der erste hier eingebaute Tooltip
+    // lautlos aus dem Bild — deshalb erzwingt der Wächter ihn neben jedem
+    // WidgetExportFooter (lib/__tests__/widget-konventionen.test.ts).
+    <ExportNotesProvider>
+      <div ref={chartExport.chartRef} style={S.frame}>
+        {/* Titel/Label — im Embed sichtbar, auf der Seite nur im Bild-Export. */}
+        <div
+          data-sc-export-only={isEmbed ? undefined : "block"}
+          style={{ ...S.header, ...(isEmbed ? null : { display: "none" }) }}
+        >
+          <div style={S.title}>{WIDGET_TITLE}</div>
+          <div style={S.sub}>{WIDGET_SUBLINE}</div>
+        </div>
 
-      {/* Chart + Timeline; im Embed steht die Quelle vertikal schlank an der
-          rechten Kante (Konvention — nie als horizontaler Block). Aus dem
-          Bild-Export ausgenommen; der Export-Fuß trägt die volle Quelle. */}
-      <div style={{ position: "relative", ...(isEmbed ? { paddingRight: 16 } : null) }}>
-        {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Im Artikel
-            trägt der Seitenfuß die Quelle — dort bleibt das Widget ruhig. */}
-        <WidgetSourceEdge widget={WIDGET} visible={isEmbed} />
-        <ExportBox>
-          <ZubauTimelineChart
-            years={years}
-            additionsGw={additionsGw}
-            partial={partial}
-            future={future}
-            feedIn={feedIn}
-            price={price}
-            milestoneYears={ZUBAU_MILESTONE_YEARS}
-            height={420}
+        {/* Chart + Timeline; im Embed steht die Quelle vertikal schlank an der
+            rechten Kante (Konvention — nie als horizontaler Block). Aus dem
+            Bild-Export ausgenommen; der Export-Fuß trägt die volle Quelle. */}
+        <div style={{ position: "relative", ...(isEmbed ? { paddingRight: 16 } : null) }}>
+          {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Im Artikel
+              trägt der Seitenfuß die Quelle — dort bleibt das Widget ruhig. */}
+          <WidgetSourceEdge widget={WIDGET} visible={isEmbed} />
+          <ExportBox>
+            <ZubauTimelineChart
+              years={years}
+              additionsGw={additionsGw}
+              partial={partial}
+              future={future}
+              feedIn={feedIn}
+              price={price}
+              milestoneYears={ZUBAU_MILESTONE_YEARS}
+              height={420}
+            />
+          </ExportBox>
+          {/* Die Zeitleiste ist reine Bedienung — im Bild wären die Punkte und
+              Blätter-Pfeile tote Knöpfe. Der Text des aktiven Ereignisses bleibt
+              über die eigene Export-Markierung in EventTimeline erhalten. */}
+          <div style={{ marginTop: 6 }}>
+            <EventTimeline
+              events={ZUBAU_EVENTS}
+              active={active}
+              onChange={setActive}
+              startYear={years[0]}
+              endYear={years[years.length - 1]}
+            />
+          </div>
+        </div>
+
+        <div>
+          {/* Sichtbare Fußzeile aus dem geteilten Baustein. Im Artikel (variant
+              "page") entfällt der nächste Schritt: er führte auf genau die Seite,
+              auf der das Widget schon steht. */}
+          <WidgetFooter
+            widget={WIDGET}
+            chartExport={chartExport}
+            onsite={!isEmbed}
+            branding={branding}
+            showCta={isEmbed}
+            showEmbed={showEmbed}
           />
-        </ExportBox>
-        {/* Die Zeitleiste ist reine Bedienung — im Bild wären die Punkte und
-            Blätter-Pfeile tote Knöpfe. Der Text des aktiven Ereignisses bleibt
-            über die eigene Export-Markierung in EventTimeline erhalten. */}
-        <div style={{ marginTop: 6 }}>
-          <EventTimeline
-            events={ZUBAU_EVENTS}
-            active={active}
-            onChange={setActive}
-            startYear={years[0]}
-            endYear={years[years.length - 1]}
+
+          {/* Nur im Bild: Legende (drei Reihen auf zwei Achsen — ohne sie ist das
+              Bild nicht lesbar), Erläuterung, Datenquelle + Marke. */}
+          <WidgetExportFooter
+            widget={WIDGET}
+            legend={[
+              { color: tokens["--color-accent"], label: "Zubau pro Jahr (GWp, linke Achse)", shape: "box" },
+              { color: tokens["--color-positive"], label: "Einspeisevergütung (ct/kWh, rechte Achse)" },
+              { color: tokens["--color-text-secondary"], label: "Haushaltsstrompreis (ct/kWh, rechte Achse)" },
+            ]}
+            // Die Zeitleiste zeigt im Bild nur EIN Ereignis — ohne diese Zeile
+            // bleiben die Punkte davor und danach unerklärt.
+            note={`Ereignis ${active + 1} von ${ZUBAU_EVENTS.length} der Zeitleiste (${ZUBAU_EVENTS[active].year} · ${ZUBAU_EVENTS[active].label}); die übrigen Wendepunkte stehen interaktiv auf solar-check.io. Der hell eingefärbte letzte Balken ist das laufende Jahr und damit noch unvollständig.`}
           />
         </div>
       </div>
-
-      <div>
-        {/* Sichtbare Fußzeile aus dem geteilten Baustein. Im Artikel (variant
-            "page") entfällt der nächste Schritt: er führte auf genau die Seite,
-            auf der das Widget schon steht. */}
-        <WidgetFooter
-          widget={WIDGET}
-          chartExport={chartExport}
-          onsite={!isEmbed}
-          branding={branding}
-          showCta={isEmbed}
-          showEmbed={showEmbed}
-        />
-
-        {/* Nur im Bild: Legende (drei Reihen auf zwei Achsen — ohne sie ist das
-            Bild nicht lesbar), Erläuterung, Datenquelle + Marke. */}
-        <WidgetExportFooter
-          widget={WIDGET}
-          legend={[
-            { color: tokens["--color-accent"], label: "Zubau pro Jahr (GW, linke Achse)", shape: "box" },
-            { color: tokens["--color-positive"], label: "Einspeisevergütung (ct/kWh, rechte Achse)" },
-            { color: tokens["--color-text-secondary"], label: "Haushaltsstrompreis (ct/kWh, rechte Achse)" },
-          ]}
-          // Die Zeitleiste zeigt im Bild nur EIN Ereignis — ohne diese Zeile
-          // bleiben die Punkte davor und danach unerklärt.
-          note={`Ereignis ${active + 1} von ${ZUBAU_EVENTS.length} der Zeitleiste (${ZUBAU_EVENTS[active].year} · ${ZUBAU_EVENTS[active].label}); die übrigen Wendepunkte stehen interaktiv auf solar-check.io. Der hell eingefärbte letzte Balken ist das laufende Jahr und damit noch unvollständig.`}
-        />
-      </div>
-    </div>
+    </ExportNotesProvider>
   );
 }
 

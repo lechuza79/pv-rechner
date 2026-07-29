@@ -1,11 +1,13 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useId, useMemo, useState } from "react";
-import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/chart-export";
+import { useEffect, useState } from "react";
+import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/export-markers";
+import { useExportNotes } from "./export-notes";
 import { DataSourceNote, PoweredBy } from "./PoweredBy";
 import ChartActionBar from "./ChartActionBar";
 import CiteModal from "./CiteModal";
-import { sourceLabel, type DataSource } from "../lib/data-sources";
+import { sourceLabel } from "../lib/data-sources";
+import { OWN_WORK_LICENSE } from "../lib/license";
 import { brandLabel, type WidgetDef } from "../lib/widget-registry";
 import type { useChartExport } from "../lib/useChartExport";
 import { v } from "../lib/theme";
@@ -82,78 +84,16 @@ export function ExportIgnore({
 
 // ─── 2. Self-registering help texts ──────────────────────────────────────────
 
-export interface ExportNote {
-  id: string;
-  title?: string;
-  text: string;
-}
-
-type RegisterFn = (note: ExportNote) => () => void;
-
-const ExportNotesCtx = createContext<RegisterFn | null>(null);
-const ExportNotesReadCtx = createContext<ExportNote[]>([]);
-
-/**
- * Collects the help texts rendered inside it. Wrap a widget card in this and
- * every InfoTooltip below reports its content, in mount order, to
- * {@link WidgetExportFooter}.
- */
-export function ExportNotesProvider({ children }: { children: React.ReactNode }) {
-  const [notes, setNotes] = useState<ExportNote[]>([]);
-
-  const register = useCallback<RegisterFn>((note) => {
-    setNotes((prev) => (prev.some((n) => n.id === note.id) ? prev : [...prev, note]));
-    return () => setNotes((prev) => prev.filter((n) => n.id !== note.id));
-  }, []);
-
-  // Same text shown twice (a tooltip rendered in both the wide and the narrow
-  // layout) is one note in the image.
-  const deduped = useMemo(() => {
-    const seen = new Set<string>();
-    return notes.filter((n) => {
-      const key = `${n.title ?? ""}|${n.text}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  }, [notes]);
-
-  return (
-    <ExportNotesCtx.Provider value={register}>
-      <ExportNotesReadCtx.Provider value={deduped}>{children}</ExportNotesReadCtx.Provider>
-    </ExportNotesCtx.Provider>
-  );
-}
-
-export function useExportNotes(): ExportNote[] {
-  return useContext(ExportNotesReadCtx);
-}
-
-/** Registers one help text for the image footer. No-op outside a provider, so
- * InfoTooltip stays usable on plain pages. */
-export function useRegisterExportNote(title: string | undefined, text: string, enabled = true) {
-  const register = useContext(ExportNotesCtx);
-  const id = useId();
-  useEffect(() => {
-    if (!register || !enabled || !text) return;
-    return register({ id, title, text });
-  }, [register, enabled, id, title, text]);
-}
-
-/** Flattens a tooltip's children into plain text for the image footer. Handles
- * strings, numbers, arrays and elements whose children are themselves text —
- * which covers every tooltip in this codebase (text with interpolated values). */
-export function nodeToText(node: React.ReactNode): string {
-  if (node === null || node === undefined || typeof node === "boolean") return "";
-  if (typeof node === "string") return node;
-  if (typeof node === "number") return String(node);
-  if (Array.isArray(node)) return node.map(nodeToText).join("");
-  if (typeof node === "object" && "props" in (node as { props?: unknown })) {
-    const el = node as { props?: { children?: React.ReactNode } };
-    return nodeToText(el.props?.children);
-  }
-  return "";
-}
+// Liegen in components/export-notes.tsx (abhängigkeitsfrei), damit ein
+// InfoTooltip nicht CiteModal, ChartActionBar und die Bild-Maschinerie in jede
+// Seite zieht, auf der irgendwo ein „?" steht. Hier nur weitergereicht.
+export {
+  ExportNotesProvider,
+  useExportNotes,
+  useRegisterExportNote,
+  nodeToText,
+  type ExportNote,
+} from "./export-notes";
 
 // ─── 3. The footer on the PAGE ───────────────────────────────────────────────
 
@@ -176,7 +116,6 @@ export function WidgetFooter({
   share = true,
   showCta = true,
   showEmbed = false,
-  showDownload = true,
   narrow = false,
 }: {
   widget: WidgetDef;
@@ -195,8 +134,6 @@ export function WidgetFooter({
    * button pointing at the page you are already reading is noise, not a step. */
   showCta?: boolean;
   showEmbed?: boolean;
-  /** false where nothing capturable exists (map, single KPI). */
-  showDownload?: boolean;
   narrow?: boolean;
 }) {
   const [citeOpen, setCiteOpen] = useState(false);
@@ -245,7 +182,7 @@ export function WidgetFooter({
             <ChartActionBar
               variant="bar"
               size={28}
-              showDownload={showDownload && widget.exportable !== false}
+              showDownload={widget.exportable !== false}
               onDownload={chartExport.downloadPng}
               onShareImage={chartExport.canNativeShare ? chartExport.sharePng : undefined}
               isExporting={chartExport.isExporting}
@@ -292,8 +229,10 @@ export function WidgetSourceEdge({
   // die Lizenz verlangt (dl-de/by-2-0, CC BY 4.0), und darf deshalb nicht in den
   // Tooltip wandern. Klammer-Zusätze („(Fraunhofer ISE)") fliegen raus, sonst
   // wird die schmale Kante mehrspaltig; der volle Text steht im title.
+  // `shortName` schlägt die automatische Kurzform, wo diese etwas wegwerfen
+  // würde, das der Quellenvermerk verlangt (BKG: Bezugsjahr in Klammern).
   const label = widget.sources
-    .map((s) => `${s.name.replace(/\s*\([^)]*\)/g, "")}${s.license ? `, ${s.license}` : ""}`)
+    .map((s) => `${s.shortName ?? s.name.replace(/\s*\([^)]*\)/g, "")}${s.license ? `, ${s.license}` : ""}`)
     .join(" · ");
   const full = widget.sources.map(sourceLabel).join(" · ");
   return (
@@ -341,17 +280,14 @@ export interface ExportLegendEntry {
 export function WidgetExportFooter({
   widget,
   legend,
-  source,
   branding = true,
   note,
   dataAsOf,
 }: {
-  /** Registry entry — carries sources and decides the brand wording. Pass this
-   * rather than `source`; it keeps image, page footer and gallery in sync. */
+  /** Registry entry — carries sources and decides the brand wording. It keeps
+   * image, page footer and gallery in sync. */
   widget?: WidgetDef;
   legend?: ExportLegendEntry[];
-  /** Only for charts without a registry entry (page-level one-offs). */
-  source?: DataSource | DataSource[];
   /** Off only where the brand is already in the frame. */
   branding?: boolean;
   /** Extra line (assumptions, reference year) that only the image needs. */
@@ -362,7 +298,7 @@ export function WidgetExportFooter({
   dataAsOf?: string;
 }) {
   const notes = useExportNotes();
-  const sources = widget?.sources ?? source;
+  const sources = widget?.sources;
   // Abrufdatum, erst nach dem Mounten gesetzt: Server- und Client-Render dürfen
   // nicht auseinanderlaufen, wenn der Tag wechselt.
   const [heute, setHeute] = useState("");
@@ -431,7 +367,23 @@ export function WidgetExportFooter({
                 sehen, ob die Zahlen von heute oder von vorletztem Jahr sind. */}
             {stand && <span> · Stand: {stand}</span>}
           </span>
-          {branding && <PoweredBy label={brandLabel(widget?.kind ?? "chart")} />}
+          {/* Unsere eigene Lizenz gehört ins Bild, nicht nur auf die Seite:
+              /lizenz macht den Lizenzcode zum Pflichtbestandteil der
+              Namensnennung, und ein weitergereichtes PNG hat sonst nichts
+              dabei. Er hängt deshalb NICHT am branding-Flag — fehlt die
+              Markenzeile, trägt er den Namen selbst. */}
+          <span style={{ flexShrink: 0, whiteSpace: "nowrap", textAlign: "right" }}>
+            {branding ? (
+              <>
+                <PoweredBy label={brandLabel(widget?.kind ?? "chart")} />
+                <span> · {OWN_WORK_LICENSE.code}</span>
+              </>
+            ) : (
+              <span>
+                {OWN_WORK_LICENSE.attributionName}, {OWN_WORK_LICENSE.code}
+              </span>
+            )}
+          </span>
         </div>
       </div>
     </ExportOnly>

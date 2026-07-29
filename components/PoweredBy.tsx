@@ -30,7 +30,11 @@ export function DataSourceNote({
     ? { color: "inherit", textDecoration: "none" }
     : { color: "inherit", textDecoration: "underline", textUnderlineOffset: 2 };
   return (
-    <span>
+    // Ein Quellenvermerk kann eine Adresse enthalten, die eine Lizenz
+    // vorschreibt (BKG verlangt die Datenquellen-Liste als URL). Ein solcher
+    // Link ist ein einziges unteilbares Wort und schießt sonst in einem
+    // schmalen Embed seitlich aus der Karte heraus — sichtbar abgeschnitten.
+    <span style={{ overflowWrap: "anywhere" }}>
       {label}{" "}
       {sources.map((s, i) => (
         <span key={s.name}>

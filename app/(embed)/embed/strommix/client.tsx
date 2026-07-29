@@ -10,6 +10,7 @@ import {
 } from "../../../../components/Icons";
 import {
   ExportBox,
+  ExportNotesProvider,
   ExportOnly,
   WidgetExportFooter,
   WidgetFooter,
@@ -124,33 +125,39 @@ export default function StrommixWidget() {
   });
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        background: "var(--widget-bg)",
-        color: "var(--widget-fg)",
-        borderRadius: "var(--widget-border-radius)",
-        fontFamily: "var(--widget-font-family)",
-        padding: 20,
-        maxWidth: WIDGET_MAX_WIDTH,
-        margin: "0 auto",
-        boxSizing: "border-box",
-        overflow: "hidden",
-      }}
-      ref={chartExport.chartRef}
-    >
-      <TopBar tab={tab} onTab={setTab} switchable={settings.switchable} />
-      <div style={{ position: "relative", paddingRight: 18 }}>
-        {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Auf einer
-            eigenen Seite (onsite) kreditiert die Seite zentral. */}
-        <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
-        <ExportBox>
-          <ChartArea tab={tab} />
-        </ExportBox>
+    // Provider um die ganze Karte: Der Bild-Fuß darunter zeigt die Hilfetexte
+    // der „?"-Knöpfe. Ohne ihn verschwände der erste hier eingebaute Tooltip
+    // lautlos aus dem Bild — deshalb erzwingt der Wächter ihn neben jedem
+    // WidgetExportFooter (lib/__tests__/widget-konventionen.test.ts).
+    <ExportNotesProvider>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          background: "var(--widget-bg)",
+          color: "var(--widget-fg)",
+          borderRadius: "var(--widget-border-radius)",
+          fontFamily: "var(--widget-font-family)",
+          padding: 20,
+          maxWidth: WIDGET_MAX_WIDTH,
+          margin: "0 auto",
+          boxSizing: "border-box",
+          overflow: "hidden",
+        }}
+        ref={chartExport.chartRef}
+      >
+        <TopBar tab={tab} onTab={setTab} switchable={settings.switchable} />
+        <div style={{ position: "relative", paddingRight: 18 }}>
+          {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Auf einer
+              eigenen Seite (onsite) kreditiert die Seite zentral. */}
+          <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
+          <ExportBox>
+            <ChartArea tab={tab} />
+          </ExportBox>
+        </div>
+        <Footer settings={settings} chartExport={chartExport} />
       </div>
-      <Footer settings={settings} chartExport={chartExport} />
-    </div>
+    </ExportNotesProvider>
   );
 }
 

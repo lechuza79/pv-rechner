@@ -15,18 +15,14 @@
 //    dropped from the snapshot.
 
 import { domToBlob } from 'modern-screenshot';
+import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from './export-markers';
 import { tokens, TokenName } from './theme';
 import { brandLabel, type WidgetKind } from './widget-registry';
 
-/** Marker attribute: elements carrying it are excluded from a node snapshot. */
-export const EXPORT_IGNORE_ATTR = 'data-sc-export-ignore';
-/** Marker attribute: elements hidden on the page but revealed in the snapshot;
- * the attribute value is the `display` to apply (e.g. "flex"). */
-export const EXPORT_ONLY_ATTR = 'data-sc-export-only';
-/** Marker attribute: extra CSS applied to the element in the snapshot only —
- * for framing that helps a still image but would double up on the page
- * (e.g. a box around the chart area). Value is plain CSS text. */
-export const EXPORT_CSS_ATTR = 'data-sc-export-css';
+// Die Marker-Konstanten leben in lib/export-markers.ts (ohne Abhängigkeiten) und
+// werden hier nur weitergereicht: Wer nur einen Marker braucht, soll nicht
+// modern-screenshot mitladen müssen.
+export { EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR, EXPORT_CSS_ATTR };
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 

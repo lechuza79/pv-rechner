@@ -4,8 +4,11 @@
  * Werte in Terawattstunden (TWh), Bruttostromerzeugung inkl. Pumpspeicher.
  *
  * Quelle / Zitat: Umweltbundesamt (UBA), "Erneuerbare und konventionelle
- *   Stromerzeugung", Datenlizenz Deutschland – Namensnennung 2.0 (DL-DE-BY-2.0,
- *   www.govdata.de/dl-de/by-2-0). Datenbasis: AG Energiebilanzen (AGEB / AGEE-Stat).
+ *   Stromerzeugung". Nutzung der Daten nach § 12a EGovG (kommerziell und nicht
+ *   kommerziell, Bearbeitung erlaubt, Quellenvermerk Pflicht) — NICHT
+ *   dl-de/by-2-0, diesen Namen führt das UBA nirgends. Verbindlich ist der
+ *   Eintrag in lib/data-sources.ts, aus dem die sichtbaren Angaben hier kommen.
+ *   Datenbasis: AG Energiebilanzen (AGEB / AGEE-Stat).
  * Gegengeprüft gegen die AGEB-Publikation "Bruttostromerzeugung in Deutschland
  *   nach Energieträgern" (STRERZ, Stand 18.06.2026) — Werte identisch.
  *
@@ -19,14 +22,16 @@
  *   ist ein bewusster Stichtags-Datenstand, siehe `dataAsOf`.
  */
 
+import { DATA_SOURCES, sourceLabel } from "./data-sources";
+
 export const STROMMIX_HISTORY_META = {
   unit: "TWh",
   metric: "Bruttostromerzeugung inkl. Pumpspeicher",
-  source: "Umweltbundesamt (DL-DE-BY 2.0), Datenbasis: AG Energiebilanzen",
+  source: sourceLabel(DATA_SOURCES.uba),
   sourceUrl:
     "https://www.umweltbundesamt.de/daten/umweltzustand-trends/energie/erneuerbare-konventionelle-stromerzeugung",
-  license: "Datenlizenz Deutschland – Namensnennung 2.0",
-  licenseUrl: "https://www.govdata.de/dl-de/by-2-0",
+  license: DATA_SOURCES.uba.license,
+  licenseUrl: DATA_SOURCES.uba.licenseUrl,
   dataAsOf: "2026-06-18",
 } as const;
 
@@ -124,17 +129,17 @@ export const STROMMIX_HISTORY_SERIES: StrommixSeries[] = [
 // Quelle: Umweltbundesamt, "Entwicklung der spezifischen Treibhausgas-
 //   Emissionen des deutschen Strommix 1990–2024" (CLIMATE CHANGE 13/2025),
 //   Tabelle 2. Werte 2023/2024 sind UBA-Schätzungen aus derselben Publikation.
-//   DL-DE-BY 2.0, Datenbasis AGEB/AGEE-Stat/Destatis.
+//   Nutzungsrecht wie oben (§ 12a EGovG), Datenbasis AGEB/AGEE-Stat/Destatis.
 // ---------------------------------------------------------------------------
 
 export const CO2_INTENSITY_META = {
   unit: "g CO₂/kWh",
   metric: "Direkter CO₂-Emissionsfaktor des Strommix",
-  source: "Umweltbundesamt (DL-DE-BY 2.0), CLIMATE CHANGE 13/2025",
+  source: `${sourceLabel(DATA_SOURCES.uba)}, CLIMATE CHANGE 13/2025`,
   sourceUrl:
     "https://www.umweltbundesamt.de/publikationen/entwicklung-der-spezifischen-treibhausgas-11",
-  license: "Datenlizenz Deutschland – Namensnennung 2.0",
-  licenseUrl: "https://www.govdata.de/dl-de/by-2-0",
+  license: DATA_SOURCES.uba.license,
+  licenseUrl: DATA_SOURCES.uba.licenseUrl,
   dataAsOf: "2025-04",
 } as const;
 
@@ -168,7 +173,10 @@ export const CO2_ABSOLUTE_VALUES: number[] = [
 // Halbjahreswerten. Haushalt = mittlere Verbrauchsklasse 2500–4999 kWh, inkl.
 // aller Steuern/Abgaben. Industrie = Klasse 2–20 GWh, ohne MwSt. (erstattbar).
 // Erst ab 2007, weil vor der Marktliberalisierung keine vergleichbare Reihe
-// existiert. Quelle: Eurostat (nrg_pc_204 / nrg_pc_205), CC BY 4.0.
+// existiert. Quelle: Eurostat (nrg_pc_204 / nrg_pc_205). Für Statistikdaten
+// gilt nicht die CC-Lizenz der Eurostat-Website, sondern die
+// Weiterverwendungspolitik nach Beschluss 2011/833/EU — Lizenzangabe deshalb
+// aus lib/data-sources.ts, nicht hier getippt.
 //
 // WARTUNG: Diese Reihe speist auch die Zubau-Datenstory (Strompreislinie). Der
 // Juli-Lauf des Wächters `eeg-verguetung-verify-halbjaehrlich` hängt das zuletzt
@@ -181,8 +189,8 @@ export const PRICE_META = {
   metric: "Strompreis (Jahresmittel)",
   source: "Eurostat (nrg_pc_204 / nrg_pc_205)",
   sourceUrl: "https://ec.europa.eu/eurostat/databrowser/product/view/nrg_pc_204",
-  license: "CC BY 4.0",
-  licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+  license: DATA_SOURCES.eurostat.license,
+  licenseUrl: DATA_SOURCES.eurostat.licenseUrl,
   dataAsOf: "2025",
 } as const;
 

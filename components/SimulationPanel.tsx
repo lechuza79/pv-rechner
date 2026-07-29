@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { IconArrowRight, IconCheck } from "./Icons";
 import { useChartExport } from "../lib/useChartExport";
-import { EXPORT_IGNORE_ATTR } from "../lib/chart-export";
+import { EXPORT_IGNORE_ATTR } from "../lib/export-markers";
 import { useSharedPlz } from "../lib/location";
 import ChartExportBar from "./ChartExportBar";
 import ChartActionBar from "./ChartActionBar";

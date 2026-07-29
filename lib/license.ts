@@ -18,8 +18,17 @@ export const OWN_WORK_LICENSE = {
   code: "CC BY 4.0",
   /** Full name, for the one place that spells it out. */
   name: "Creative Commons Namensnennung 4.0 International",
-  /** German deed — the human-readable licence text. */
-  url: "https://creativecommons.org/licenses/by/4.0/deed.de",
+  /**
+   * Die Lizenz-URL, wie CC BY 4.0 Sec. 3(a)(1)(C) sie für die Namensnennung
+   * verlangt.
+   *
+   * Bewusst die sprachneutrale kanonische Form, NICHT die deutsche
+   * Deed-Variante (…/deed.de): Dieselbe Lizenz stand bei uns an zwei Stellen
+   * mit zwei URLs — hier deutsch, im Quellenregister international. Wer eine
+   * Angabe zweimal verschieden schreibt, hat sie einmal falsch. Die
+   * sprachneutrale Form leitet ohnehin auf die Sprachfassung des Lesers weiter.
+   */
+  url: "https://creativecommons.org/licenses/by/4.0/",
   /** The name a re-user has to credit. */
   attributionName: "solar-check.io",
   /** The page that states the terms. Everything else links here. */

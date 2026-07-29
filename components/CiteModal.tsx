@@ -39,10 +39,14 @@ export function citeHtml(widget: WidgetDef, datum: string): string {
   );
 }
 
+// Die Lizenz-URL steht auch im Klartext-Zitat: CC BY 4.0 Sec. 3(a)(1)(C)
+// verlangt zur Namensnennung Text, URI oder Hyperlink der Lizenz. In der
+// HTML-Fassung erfüllt das der gesetzte Link — im Klartext (Print, PDF, Folie)
+// gibt es keinen, also muss die Adresse ausgeschrieben dastehen.
 export function citePlain(widget: WidgetDef, datum: string): string {
   const quellen = widget.sources.map(sourceLabel).join(" · ");
   return (
-    `${widget.title}. ${SITE}, ${LIZENZ}. ` +
+    `${widget.title}. ${SITE}, ${LIZENZ} (${LIZENZ_URL}). ` +
     `Datenquelle: ${quellen}. Abgerufen am ${datum}. ${widget.shareUrl}`
   );
 }
