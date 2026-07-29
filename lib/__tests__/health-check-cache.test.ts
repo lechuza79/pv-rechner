@@ -51,6 +51,16 @@ describe("Cache-Wirksamkeit: Bewertung des zweiten Abrufs", () => {
     expect(cacheBefundAusZustaenden("x", "BYPASS", "BYPASS").gecacht).toBe(false);
   });
 
+  it("bewertet den LETZTEN Versuch, nicht den ersten Fehlschlag", () => {
+    // Der Prüfer fasst mehrfach nach und übergibt den letzten Zustand. Beim
+    // ersten scharfen Lauf (29.07.2026) meldete ein einzelner Abruf die
+    // Kühlgradstunden als ungecacht, obwohl sie es waren — zwei aufeinander-
+    // folgende Abrufe landen nicht zwingend auf demselben CDN-Knoten. Ein
+    // Treffer im Nachfassen muss den Befund also auflösen, sonst startet der
+    // Wächter den Autofix ohne Grund.
+    expect(cacheBefundAusZustaenden("Kühlgradstunden", "MISS", "HIT").gecacht).toBe(true);
+  });
+
   it("meldet einen fehlgeschlagenen ersten Abruf, statt ihn als gecacht zu werten", () => {
     // Ein 500er ist ein anderer Befund (wird oben gemeldet) — er darf hier auf
     // keinen Fall als "gecacht" durchgehen und den Cache-Rueckfall verdecken.
