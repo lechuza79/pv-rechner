@@ -192,6 +192,53 @@ async function main() {
     }
   }
 
+  // 3. Steht in der Award-Tabelle ueberhaupt der aktuelle Lauf?
+  //
+  // WARUM: Am 29.07.2026 schrieb der Lauf frische Segmente in die Rohtabelle,
+  // baute die Award-Tabelle aber nicht neu — die Ranglisten zeigten den Stand des
+  // vorletzten Laufs. Nichts daran war unplausibel, nur veraltet. Die Regeln
+  // oben haetten das nie gefunden; sie pruefen Werte, nicht Aktualitaet.
+  // Gegenprobe an der Quelle, an einer Stichprobe statt an 591.000 Zeilen.
+  console.log("");
+  const stichprobe = zeilen.filter((_, i) => i % Math.ceil(zeilen.length / 40) === 0).slice(0, 40);
+  const ids = stichprobe.map((r) => String(r.region_id));
+  const { data: rohDaten, error: rohFehler } = await db
+    .from("mastr_aggregates_gem")
+    .select("region_id, kwp")
+    .eq("segment", "privat_dach")
+    .in("region_id", ids);
+  if (rohFehler) {
+    befunde.push(`Gegenprobe an der Rohtabelle nicht moeglich: ${rohFehler.message}`);
+    console.log(`  FEHL Gegenprobe Rohtabelle          ${rohFehler.message}`);
+  } else {
+    const rohSumme = new Map<string, number>();
+    for (const r of (rohDaten ?? []) as { region_id: string; kwp: unknown }[]) {
+      rohSumme.set(r.region_id, (rohSumme.get(r.region_id) ?? 0) + num(r.kwp));
+    }
+    // Beide Seiten summieren dieselben gerundeten Zeilen — mehr als ein Euro
+    // Abstand je Gemeinde ist keine Rundung mehr, sondern ein anderer Stand.
+    const abweichend = stichprobe.filter((r) => {
+      const roh = rohSumme.get(String(r.region_id)) ?? 0;
+      return Math.abs(roh - num(r.privat_dach_kwp)) > 1;
+    });
+    const ok = abweichend.length === 0;
+    console.log(
+      `  ${ok ? "ok  " : "FEHL"} Award-Tabelle am Datenstand     ${abweichend.length} von ${stichprobe.length} Stichproben weichen ab`,
+    );
+    if (!ok) {
+      for (const r of abweichend.slice(0, 5)) {
+        const id = String(r.region_id);
+        console.log(
+          `         ${namen.get(id) ?? id}: Rohdaten ${(rohSumme.get(id) ?? 0).toFixed(1)} kWp, Award-Tabelle ${num(r.privat_dach_kwp).toFixed(1)} kWp`,
+        );
+      }
+      befunde.push(
+        `Award-Tabelle passt nicht zur Rohtabelle (${abweichend.length} von ${stichprobe.length} Stichproben). ` +
+          `Wahrscheinlich fehlt mastr_refresh_gemeinde_award() nach dem Lauf — die Ranglisten zeigen dann einen alten Stand.`,
+      );
+    }
+  }
+
   if (befunde.length > 0) {
     console.log(`\n${befunde.length} Befund(e):\n`);
     for (const b of befunde) console.log(`  - ${b}\n`);

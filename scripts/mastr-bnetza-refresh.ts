@@ -920,6 +920,16 @@ async function phaseUpload(): Promise<void> {
   if (gemErr) throw new Error(`mastr_refresh_gemeinde_solar failed: ${gemErr.message}`);
   log(`Gemeinde solar totals rebuilt`, "ok");
 
+  // Und die Award-Tabelle, aus der die oeffentlichen Ranglisten lesen. Sie fehlte
+  // hier bis zum 29.07.2026: Der Lauf schrieb frische Segmente in die Rohtabelle,
+  // die Ranglisten zeigten aber weiter den Stand des vorletzten Laufs — und zwar
+  // ohne jedes Zeichen, weil die Seite normal rendert und die Zahlen plausibel
+  // aussehen. Aufgefallen ist es nur, weil eine erwartete Korrektur ausblieb.
+  log(`Rebuilding Gemeinde award table...`);
+  const { error: awardErr } = await supabase.rpc("mastr_refresh_gemeinde_award");
+  if (awardErr) throw new Error(`mastr_refresh_gemeinde_award failed: ${awardErr.message}`);
+  log(`Gemeinde award table rebuilt`, "ok");
+
   const totalUnits = aggregates.reduce((s, a) => s + a.count, 0);
   const { error: metaErr } = await supabase
     .from("mastr_meta")
