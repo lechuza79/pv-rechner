@@ -8,14 +8,21 @@ import { v, space } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { OWN_WORK_LICENSE } from "../../../lib/license";
 
-export const metadata: Metadata = pageMetadata({
-  path: "/ueber",
-  title: "Über Solar Check – wer dahintersteht und wie gerechnet wird",
-  description:
-    "Wer Solar Check betreibt, wie die Rechner rechnen, welche Datenquellen dahinterstehen und wie du uns erreichst.",
-  ogImageTitle: "Über Solar Check",
-  ogImageSubtitle: "Wer dahintersteht und wie gerechnet wird.",
-});
+// Geparkt: Die Seite funktioniert unter ihrer Adresse weiter, wird aber nicht
+// beworben (kein Footer-Eintrag, nicht in der Sitemap, noindex), bis der
+// Betreiber sie freigibt. Zum Entparken: robots-Zeile entfernen, Footer-Eintrag
+// und Sitemap-Eintrag zurückholen, Verweise auf /lizenz wieder aufnehmen.
+export const metadata: Metadata = {
+  ...pageMetadata({
+    path: "/ueber",
+    title: "Über Solar Check – wer dahintersteht und wie gerechnet wird",
+    description:
+      "Wer Solar Check betreibt, wie die Rechner rechnen, welche Datenquellen dahinterstehen und wie du uns erreichst.",
+    ogImageTitle: "Über Solar Check",
+    ogImageSubtitle: "Wer dahintersteht und wie gerechnet wird.",
+  }),
+  robots: { index: false, follow: false },
+};
 
 const S: Record<string, React.CSSProperties> = {
   page: {

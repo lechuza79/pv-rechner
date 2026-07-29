@@ -193,10 +193,6 @@ export default function LizenzPage() {
           <Link href="/energie-widgets" style={S.a}>
             Widget-Galerie
           </Link>
-          , alle Charts gesammelt auf der Seite für{" "}
-          <Link href="/presse" style={S.a}>
-            Presse und Redaktionen
-          </Link>
           .
         </p>
 
@@ -207,9 +203,9 @@ export default function LizenzPage() {
           <Link href="/kontakt" style={S.a}>
             Kontaktformular
           </Link>
-          . Wer hinter der Seite steht, steht auf der Seite{" "}
-          <Link href="/ueber" style={S.a}>
-            Über Solar Check
+          . Wer hinter der Seite steht, steht im{" "}
+          <Link href="/impressum" style={S.a}>
+            Impressum
           </Link>
           .
         </p>

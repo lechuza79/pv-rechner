@@ -8,14 +8,21 @@ import { pageMetadata } from "../../../lib/seo";
 import { OWN_WORK_LICENSE } from "../../../lib/license";
 import { allWidgets, embedExamplePath, sharePath, type WidgetDef } from "../../../lib/widget-registry";
 
-export const metadata: Metadata = pageMetadata({
-  path: "/presse",
-  title: "Presse und Redaktionen – Charts von Solar Check nutzen",
-  description:
-    "Alle Charts zu Strommix, Solarzubau und Wärmekosten gesammelt: Live-Seite, Einbettungscode, Datenquelle. Frei nutzbar unter CC BY 4.0 mit Namensnennung.",
-  ogImageTitle: "Presse und Redaktionen",
-  ogImageSubtitle: "Alle Charts, frei nutzbar mit Namensnennung.",
-});
+// Geparkt: Die Seite funktioniert unter ihrer Adresse weiter, wird aber nicht
+// beworben (kein Footer-Eintrag, nicht in der Sitemap, noindex), bis der
+// Betreiber sie freigibt. Zum Entparken: robots-Zeile entfernen, Footer-Eintrag
+// und Sitemap-Eintrag zurückholen, Verweise auf /lizenz wieder aufnehmen.
+export const metadata: Metadata = {
+  ...pageMetadata({
+    path: "/presse",
+    title: "Presse und Redaktionen – Charts von Solar Check nutzen",
+    description:
+      "Alle Charts zu Strommix, Solarzubau und Wärmekosten gesammelt: Live-Seite, Einbettungscode, Datenquelle. Frei nutzbar unter CC BY 4.0 mit Namensnennung.",
+    ogImageTitle: "Presse und Redaktionen",
+    ogImageSubtitle: "Alle Charts, frei nutzbar mit Namensnennung.",
+  }),
+  robots: { index: false, follow: false },
+};
 
 const S: Record<string, React.CSSProperties> = {
   page: {
