@@ -63,7 +63,8 @@ async function deute(pfad: string[] | undefined) {
   return { uebersicht: false as const, kategorie, region, gebiet };
 }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
+  const params = await props.params;
   const d = await deute(params.pfad);
   if (!d) return { robots: ROBOTS };
   if (d.uebersicht) {
@@ -88,7 +89,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   };
 }
 
-export default async function RankingPage({ params, searchParams }: { params: Params; searchParams: Suche }) {
+export default async function RankingPage(props: { params: Promise<Params>; searchParams: Promise<Suche> }) {
+  const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
   const d = await deute(params.pfad);
   if (!d) notFound();
 

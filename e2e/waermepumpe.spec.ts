@@ -37,3 +37,38 @@ test("Wärmepumpe flow lands on a result with TCO and amortization", async ({ pa
   expect(bodyText).toMatch(/\d.*€/);
   expect(bodyText).toMatch(/\d.*(Jahre|Jahr)/);
 });
+
+// Rechtsaussagen müssen SICHTBAR geprüft werden, nicht nur im Quelltext.
+// Auslöser (29.07.2026): Eine Textkorrektur zum Geltungsbereich der Grüngas-
+// Pflicht landete in einem Feld, das nie gerendert wird — der Diff sah richtig
+// aus, die Seite zeigte weiter den alten Satz. Ein Unit-Test auf den String
+// hätte das nicht gefunden, weil der String ja existierte. Dieser Test öffnet
+// deshalb das echte Modal im echten Ergebnis und liest, was dort steht.
+test("Grüngas-Modal nennt den Geltungsbereich vollständig und sichtbar", async ({ page }) => {
+  await page.goto("/waermepumpe-rechner");
+
+  await page.getByText("Neubau", { exact: false }).first().click();
+  for (let i = 0; i < 8; i++) {
+    const weiter = page.getByRole("button", { name: /^weiter$/i });
+    if (!(await weiter.count())) break;
+    await weiter.click();
+  }
+  await page.getByRole("button", { name: /berechnen|ergebnis|fertig/i }).click();
+
+  await page.getByRole("button", { name: "Mehr erfahren →", exact: true }).click();
+  const modal = page.getByRole("dialog");
+  await expect(modal).toBeVisible({ timeout: 10_000 });
+  const text = await modal.innerText();
+
+  // § 43 erfasst alle drei Brennstoffe — „Gasheizung" allein sagt einem
+  // Ölheizungs-Besitzer, er sei nicht gemeint.
+  expect(text).toContain("Heizöl");
+  expect(text).toContain("Flüssiggas");
+  // Der Geltungsbereich umfasst Bestand UND Neubau (§ 10 Abs. 2 Nr. 3 GModG)…
+  expect(text).toMatch(/Bestand/);
+  expect(text).toMatch(/Neubau/);
+  // …aber im Neubau nur bis Ende 2029. Ohne die Grenze wäre die Aussage falsch.
+  expect(text).toContain("31. Dezember 2029");
+  // Die Verengung, die am 28.07.2026 live war, darf nicht zurückkommen.
+  expect(text).not.toMatch(/nur .{0,40}bestehende[ns]? Gebäude/);
+});

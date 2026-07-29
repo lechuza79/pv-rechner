@@ -45,11 +45,40 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   `lib/constants.ts` (Single Source of Truth). `heatpump-config`
   (`gasPriceCtPerKwh`/`gasCo2PerKwh`), `FUEL` und `WP_FUEL_OPTIONS` leiten daraus
   ab. **Preis-/CO2-Änderung nur in `FUEL_PRICE`** pflegen → wirkt überall.
-- `gasFixCostPerYear` / `gasInvestNeubau` — WP-spezifisch, bleiben in
+- `fixCostPerYear` / `gasInvestNeubau` — WP-spezifisch, bleiben in
   `heatpump-config` (BDEW); der Kessel-Wirkungsgrad ebenfalls (pro Variante).
+  **`fixCostPerYear` ist je Energieträger getrennt:** Gas trägt den Grund-/
+  Zählerpreis des Netzanschlusses, Heizöl trägt **0** — beim Öltank hängt an
+  keinem Anschluss eine laufende Gebühr. Das ist keine Preisfrage, sondern eine
+  Strukturfrage: Der Öl-Wert bleibt 0, auch wenn der Gas-Grundpreis steigt.
+  (Bis 28.07.2026 bekam die Ölheizung den Gas-Grundpreis aufgeschlagen — 3.600 €
+  über 20 Jahre zugunsten der Wärmepumpe. Gefunden hat das ein Forumsnutzer.)
+- **Bioheizöl-Preispfad — beobachtet der TÄGLICHE Wächter, nicht dieser hier.**
+  § 43 Abs. 1 GModG nennt Heizöl gleichrangig neben Gas, aber wir rechnen die
+  Beimischung nur für Gas (kein belastbarer Bioheizöl-Preis, Begründung und
+  sichtbarer Hinweis siehe `waermepumpe.tsx`). Ein Quartalsrhythmus wäre dafür zu
+  träge: Sobald eine Regelung steht, muss sie sofort in die Rechnung und ist
+  zugleich ein Anlass, den Rechner zu zeigen. Der Punkt liegt deshalb im
+  `foerder-news-waechter` (täglich), Runbook `scripts/gruengas-verify.md`
+  Schritt 4 — dort wird ohnehin das Quotengesetz nach § 42a verfolgt, das bis zum
+  1. Dezember 2026 vorzulegen ist und Heizöl ausdrücklich einschließt. **Hier
+  nichts doppelt prüfen** — zwei Wächter auf derselben Frage erzeugen
+  widersprüchliche Befunde.
+- **OFFEN (bis 01/2027): Wartungskosten Heizöl.** `gasMaintenance` gilt aktuell
+  für Gas UND Öl. Dass eine Ölheizung mit Tankprüfung und zusätzlichen
+  Schornsteinfeger-Terminen real teurer in der Wartung ist, ist plausibel — uns
+  fehlt dafür aber eine belastbare Quelle (Kostenportale zählen nicht, siehe die
+  Investitions-Lehre oben). Beim nächsten Lauf: Träger-/Verbraucherzentralen-
+  Quelle mit echten Wartungsverträgen suchen. Findet sich keine, bleibt die
+  Gleichsetzung — dann diesen Punkt mit dem Befund „keine Quelle gefunden"
+  bestätigen, statt eine Zahl zu schätzen.
 
 **Nicht prüfen (Modell-/Bauphysik-Konstanten, ändern sich nicht jährlich):**
-- `specDemandBestand` / `specDemandNeubau` (dena Gebäudereport, DIN V 18599)
+- `specDemandBestand` / `specDemandNeubau` (dena Gebäudereport, DIN V 18599;
+  die Stufe „vollsaniert" zusätzlich aus der dena-Verbrauchsstudie). Sie werden
+  **aus `INSULATION_BESTAND`/`INSULATION_NEUBAU` in `lib/constants.ts`
+  abgeleitet** — falls hier doch einmal etwas zu ändern ist, dort ändern, nie in
+  der Config (sonst driften UI-Auswahl und Rechnung auseinander).
 - `jazLwwp` / `jazSwwp` / Vorlauftemperaturen (Fraunhofer ISE WPsmart)
 - `gasCo2PerKwh` (physikalischer Emissionsfaktor), Inflationsannahmen (Konvention)
 

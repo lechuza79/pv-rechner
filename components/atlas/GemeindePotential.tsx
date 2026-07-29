@@ -99,10 +99,12 @@ export default function GemeindePotential({
               <TrendBadge dir="up" />
               <span style={S.exVal}>{p ? nfEuro(round100(p.wpTco20)) : <LoadingDots />}</span>
             </div>
+            {/* Siehe ScenarioCards: Die Zahl vergleicht mit einer NEUEN fossilen
+                Heizung, nicht mit dem Weiterbetrieb der alten. */}
             <div style={S.exLabel}>
-              {`spart eine Wärmepumpe${imOrt} gegenüber Gas über 20 Jahre — statt weiter fürs Heizen draufzuzahlen`}
+              {`spart eine Wärmepumpe${imOrt} über 20 Jahre gegenüber einer neuen Gasheizung`}
             </div>
-            <div style={S.exSub}>{`Typisches Einfamilienhaus${imOrt}, 140 m², Luft/Wärmepumpe`}</div>
+            <div style={S.exSub}>{`Typisches Einfamilienhaus${imOrt}, 140 m², Luft/Wasser-Wärmepumpe`}</div>
             <span style={S.exCta}>
               Wärmepumpe rechnen <IconArrowRight size={14} />
             </span>

@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   calcHeatDemand,
   calcHeatLoad,
+  auslegungsleistung,
   flowTempForSystem,
   calcJAZ,
   calcInvestBrutto,
@@ -13,6 +14,7 @@ import {
   type HeatPumpInputs,
 } from "../heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../heatpump-config";
+import { INSULATION_BESTAND, INSULATION_NEUBAU, WP_FUEL_OPTIONS } from "../constants";
 
 // Canonical test case: 130 m² Bestand, halbsaniert, 2 Personen, alte Heizkörper, LWWP, no PV
 const baseInputs: HeatPumpInputs = {
@@ -40,8 +42,12 @@ describe("calcHeatDemand", () => {
   });
 
   it("clamps insulation index to valid range", () => {
+    // Bewusst an der LÄNGE der Skala festgemacht, nicht an einer festen Stufennummer:
+    // Als die vierte Stufe („vollsaniert") dazukam, hätte ein hartes `2` hier still
+    // etwas anderes geprüft als das Clamping auf die beste Stufe.
+    const lastIdx = INSULATION_BESTAND.length - 1;
     const high = calcHeatDemand("bestand", 100, 99, 1);  // out-of-range high
-    const lastValid = calcHeatDemand("bestand", 100, 2, 1); // saniert
+    const lastValid = calcHeatDemand("bestand", 100, lastIdx, 1); // beste Stufe
     expect(high.qHeiz).toBe(lastValid.qHeiz);
 
     const low = calcHeatDemand("bestand", 100, -5, 1);
@@ -67,10 +73,38 @@ describe("calcHeatLoad", () => {
   });
 
   it("nicht mehr aus dem Jahresbedarf ÷ 2000 (Regression: WW zählte mit)", () => {
-    // 150 m² unsaniert freistehend: real ~15 kW, nicht 18 (alte Formel qGes/2000)
+    // 150 m² unsaniert freistehend: Norm-Heizlast ~17 kW (150 × 115 W/m²),
+    // nicht 18+ aus der alten Formel qGes/2000, die das Warmwasser mitzählte.
     const hl = calcHeatLoad("bestand", 150, 0, 1);
-    expect(hl).toBeLessThan(16);
-    expect(hl).toBeGreaterThan(12);
+    expect(hl).toBeLessThan(19);
+    expect(hl).toBeGreaterThan(15);
+  });
+
+  it("Heizlast und Auslegungsleistung sind zwei verschiedene Größen", () => {
+    // Die Norm-Heizlast beschreibt das GEBÄUDE, die Auslegung die ANLAGE (rund 85 %,
+    // den Rest deckt der Heizstab). Bis 28.07.2026 lieferte calcHeatLoad die
+    // Auslegung, hieß aber „Heizlast" — wer seine echte DIN-Heizlast eintrug, bekam
+    // dadurch eine 18 % zu große und zu teure Anlage gerechnet.
+    const norm = calcHeatLoad("bestand", 150, 0, 1);
+    const auslegung = auslegungsleistung(norm);
+    expect(auslegung).toBeLessThan(norm);
+    expect(auslegung).toBeCloseTo(norm * DEFAULT_HEATPUMP_CONFIG.auslegungsfaktor, 0);
+  });
+
+  it("egal ob geschätzt oder eingetragen — der Auslegungsfaktor wirkt gleich", () => {
+    // Der eigentliche Fix: derselbe Weg für beide Quellen der Heizlast.
+    const base = { situation: "bestand" as const, wohnflaeche: 150, insulationIdx: 0, personen: 2,
+      heizsystem: "hk_neu" as const, wpType: "lwwp" as const };
+    const geschaetzt = calcHeatPump(base);
+    const eingetragen = calcHeatPump({ ...base, override: { heizlast: geschaetzt.heizlastKw } });
+    expect(eingetragen.auslegungKw).toBe(geschaetzt.auslegungKw);
+    expect(eingetragen.investBrutto).toBe(geschaetzt.investBrutto);
+  });
+
+  it("die Anlage wird nie kleiner als 4 kW ausgelegt", () => {
+    expect(auslegungsleistung(1)).toBe(4);
+    expect(auslegungsleistung(0)).toBe(4);
+    expect(auslegungsleistung(-5)).toBe(4);   // geteilte Funktion: gegen Unsinn absichern
   });
 });
 
@@ -227,12 +261,15 @@ describe("calcHeatPump (full TCO)", () => {
     expect(r.years.length).toBe(21);
   });
 
-  it("year 0 starts at -mehrInvest (≤0 since no PV invest)", () => {
+  it("year 0 starts at -mehrInvest (Mehrkosten gegenüber der fossilen Anschaffung)", () => {
     const r = calcHeatPump(baseInputs);
     expect(r.years[0].i).toBe(0);
     expect(r.years[0].kum).toBeLessThanOrEqual(0);
-    // Mehr-Invest ≈ investNetto (Bestand: gasInvest = 0)
-    expect(r.years[0].kum).toBe(-r.investNetto);
+    // Startpunkt ist die MEHR-Investition: Wer die Wärmepumpe kauft, spart sich die
+    // neue fossile Heizung. Seit 28.07.2026 gilt das auch im Bestand — die Alternative
+    // zur Wärmepumpe ist über 20 Jahre keine unsterbliche Altanlage, sondern ein
+    // Ersatzkessel (derselbe Neueinbau, der die Bio-Treppe auslöst).
+    expect(r.years[0].kum).toBe(-(r.investNetto - r.gasInvest));
   });
 
   it("eWp = qGes / jaz (energy balance holds)", () => {
@@ -252,11 +289,25 @@ describe("calcHeatPump (full TCO)", () => {
     expect(r.investNetto).toBe(r.investBrutto);
   });
 
-  it("Neubau adds gasInvest as fossile reference (Brennwerttherme)", () => {
+  it("die fossile Alternative kostet auch im Bestand eine Anschaffung", () => {
+    // Bis 28.07.2026 war das im Bestand 0 — zusammen mit der Grüngas-Pflicht ergab
+    // das zwei Hälften verschiedener Fälle: Wir rechneten die Beimischungspflicht
+    // (die nur für NEU eingebaute Heizungen gilt, § 43 Abs. 1 GModG), ließen aber
+    // den Neueinbau selbst kostenlos. Jetzt gehört beides zusammen.
     const bestand = calcHeatPump(baseInputs);
     const neubau = calcHeatPump({ ...baseInputs, situation: "neubau", insulationIdx: 0 });
-    expect(bestand.gasInvest).toBe(0);
+    expect(bestand.gasInvest).toBeGreaterThan(0);
     expect(neubau.gasInvest).toBeGreaterThan(0);
+  });
+
+  it("wer eine junge Heizung hat, setzt die Anschaffung auf 0", () => {
+    // Der Ersatzfall ist der Regelfall, nicht das Gesetz: Eine fünf Jahre alte
+    // Heizung hält die 20 Jahre durch — dann ist die Referenz wirklich der
+    // Weiterbetrieb, und die Wärmepumpe muss ohne diesen Vorteil auskommen.
+    const mitErsatz = calcHeatPump(baseInputs);
+    const ohneErsatz = calcHeatPump({ ...baseInputs, override: { ...baseInputs.override, fossilErsatzInvest: 0 } });
+    expect(ohneErsatz.gasInvest).toBe(0);
+    expect(ohneErsatz.tcoEinsparung).toBeLessThan(mitErsatz.tcoEinsparung);
   });
 
   it("CO2 savings positive (WP cleaner than gas over 20 years)", () => {
@@ -488,5 +539,175 @@ describe("calcWpAnnualElectricity", () => {
     const unsaniert = calcWpAnnualElectricity({ ...common, insulationIdx: 0 });
     const saniert = calcWpAnnualElectricity({ ...common, insulationIdx: 2 });
     expect(saniert).toBeLessThan(unsaniert);
+  });
+});
+
+// ─── Referenzheizung: Gas vs. Heizöl ───────────────────────────────────────
+// Anlass: Nutzerkritik aus einem Fachforum (28.07.2026) — „bei Öl kommt auch nur
+// das Ergebnis für Gas". Der Brennstoff wirkte tatsächlich (Preis, Wirkungsgrad,
+// CO₂), aber die Grundgebühr des GASANSCHLUSSES wurde auch dem Öltank
+// aufgeschlagen. Diese Tests halten beides fest: dass der Energieträger wirkt und
+// dass er den richtigen Posten trifft.
+describe("Referenzheizung Gas vs. Heizöl", () => {
+  const oel = WP_FUEL_OPTIONS.find(f => f.kind === "oil")!;
+  const gas = WP_FUEL_OPTIONS.find(f => f.id === "gas_neu")!;
+  const mit = (f: typeof gas): HeatPumpInputs => ({
+    ...baseInputs,
+    fuelKind: f.kind,
+    override: { gasPrice: f.price, gasEfficiency: f.efficiency, gasCo2: f.co2PerKwh },
+  });
+
+  it("Heizöl trägt KEINE Grundgebühr, Gas schon", () => {
+    expect(calcHeatPump(mit(oel)).gasFix).toBe(0);
+    expect(calcHeatPump(mit(gas)).gasFix).toBeGreaterThan(0);
+  });
+
+  it("die Grundgebühr fehlt auch in der Jahreskurve, nicht nur in der Summe", () => {
+    // Sonst stimmte die Hero-Zahl, aber die Amortisationskurve liefe weiter mit
+    // der Gas-Gebühr — genau die Sorte Widerspruch, die niemandem auffällt.
+    const o = calcHeatPump(mit(oel));
+    const g = calcHeatPump(mit(gas));
+    const fix = DEFAULT_HEATPUMP_CONFIG.fixCostPerYear.gas;
+    // Erstes Jahr: Öl spart pro Jahr genau die Grundgebühr weniger als Gas,
+    // bereinigt um den unterschiedlichen Brennstoffpreis.
+    expect(g.years[1].annual - o.years[1].annual).toBeGreaterThan(fix * 0.5);
+  });
+
+  it("ohne Grundgebühr rechnet sich die Wärmepumpe gegen Öl SCHLECHTER", () => {
+    // Richtungstest: Der alte Fehler hat die WP künstlich gut aussehen lassen.
+    const o = calcHeatPump(mit(oel));
+    const fruehereRechnung = o.tcoEinsparung + DEFAULT_HEATPUMP_CONFIG.fixCostPerYear.gas * DEFAULT_HEATPUMP_CONFIG.years;
+    expect(o.tcoEinsparung).toBeLessThan(fruehereRechnung);
+  });
+
+  it("Grüngas-Pflicht greift nur bei Netzgas, nicht bei Heizöl", () => {
+    // Der GModG-Preispfad ist an Biomethan + Gas-Netzentgelten kalibriert. Auf Öl
+    // angewandt wäre er eine Zahl ohne Grundlage.
+    const oelOhne = calcHeatPump({ ...mit(oel), greenGas: false });
+    const oelMit = calcHeatPump({ ...mit(oel), greenGas: true });
+    expect(oelMit.tcoGas).toBe(oelOhne.tcoGas);
+
+    const gasOhne = calcHeatPump({ ...mit(gas), greenGas: false });
+    const gasMit = calcHeatPump({ ...mit(gas), greenGas: true });
+    expect(gasMit.tcoGas).toBeGreaterThan(gasOhne.tcoGas);
+  });
+
+  it("jede Brennstoff-Option trägt eine eigene Beschriftung für die Referenzheizung", () => {
+    // Verhindert den Rückfall auf ein festes „Gas" in der Oberfläche.
+    for (const f of WP_FUEL_OPTIONS) {
+      expect(f.refLabel.length).toBeGreaterThan(0);
+      if (f.kind === "oil") expect(f.refLabel).not.toMatch(/Gas/i);
+    }
+  });
+});
+
+// ─── Dämmzustand: eine Quelle, lückenlose Skala ────────────────────────────
+describe("Dämmzustands-Skala", () => {
+  it("UI-Auswahl und Rechen-Config sind dieselben Zahlen", () => {
+    // Sie standen bis 28.07.2026 doppelt im Code und konnten auseinanderlaufen.
+    expect(DEFAULT_HEATPUMP_CONFIG.specDemandBestand).toEqual(INSULATION_BESTAND.map(i => i.specKwh));
+    expect(DEFAULT_HEATPUMP_CONFIG.specHeatLoadBestand).toEqual(INSULATION_BESTAND.map(i => i.heatLoadW));
+    expect(DEFAULT_HEATPUMP_CONFIG.specDemandNeubau).toEqual(INSULATION_NEUBAU.map(i => i.specKwh));
+    expect(DEFAULT_HEATPUMP_CONFIG.specHeatLoadNeubau).toEqual(INSULATION_NEUBAU.map(i => i.heatLoadW));
+  });
+
+  it("Bedarf und Heizlast fallen über die Stufen monoton", () => {
+    for (const arr of [INSULATION_BESTAND, INSULATION_NEUBAU]) {
+      for (let i = 1; i < arr.length; i++) {
+        expect(arr[i].specKwh).toBeLessThan(arr[i - 1].specKwh);
+        expect(arr[i].heatLoadW).toBeLessThan(arr[i - 1].heatLoadW);
+      }
+    }
+  });
+
+  it("der beste Bestand liegt unter dem schwächsten Neubau", () => {
+    // DER Auslöser für die vierte Stufe: Vorher war die beste Bestandsstufe (100)
+    // schlechter als der Neubau-Mindeststandard (75) — ein vollsaniertes Haus war
+    // im Rechner schlicht nicht abbildbar und bekam eine zu große Wärmepumpe.
+    const besterBestand = INSULATION_BESTAND[INSULATION_BESTAND.length - 1];
+    expect(besterBestand.specKwh).toBeLessThan(INSULATION_NEUBAU[0].specKwh);
+    // Die HEIZLAST darf dagegen über dem Neubau liegen: Ein rundum gedämmter Altbau
+    // erreicht den Jahresverbrauch eines schwachen Neubaus, verliert an den kältesten
+    // Tagen aber weiterhin mehr Wärme (Wärmebrücken, Geometrie, Fensterflächen). Sie
+    // bleibt im Faustwert-Band „saniert" (30–50 W/m², Verbraucherzentrale/42watt).
+    expect(besterBestand.heatLoadW).toBeGreaterThanOrEqual(30);
+    expect(besterBestand.heatLoadW).toBeLessThanOrEqual(50);
+  });
+
+  it("Vollsanierung bleibt im belegten Band der dena-Verbrauchsstudie", () => {
+    // dena, „Auswertung von Verbrauchskennwerten energieeffizienter Wohngebäude",
+    // S. 25 / Abb. 7: sanierte Gebäude mit gut gedämmter Hülle streuen bei fossiler
+    // Beheizung zwischen 10 und 90 kWh/(m²AN·a); 90 % liegen unter rund 70.
+    // Der Wert darf nach unten wandern, aber nicht aus dem Band herausrutschen.
+    const voll = INSULATION_BESTAND[INSULATION_BESTAND.length - 1].specKwh;
+    expect(voll).toBeGreaterThanOrEqual(50);
+    expect(voll).toBeLessThanOrEqual(90);
+  });
+
+  it("Vollsanierung senkt Heizbedarf UND Anlagengröße spürbar", () => {
+    const gut = calcHeatDemand("bestand", 140, 2, 2).qGes;
+    const voll = calcHeatDemand("bestand", 140, 3, 2).qGes;
+    expect(voll).toBeLessThan(gut);
+    expect(calcHeatLoad("bestand", 140, 3, 1)).toBeLessThan(calcHeatLoad("bestand", 140, 2, 1));
+  });
+});
+
+// ─── Council-Befunde vom 28.07.2026 ────────────────────────────────────────
+// Drei unabhängige Prüfer haben die Änderungen dieses Tages adversarial geprüft.
+// Was sie gefunden haben, wird hier festgenagelt — die Fehler waren teuer und
+// alle drei gehören zur selben Familie: Ein Kostenblock stammt aus dem einen Fall,
+// ein anderer aus dem anderen.
+describe("Referenzfall bleibt in sich geschlossen", () => {
+  it("ein Kessel, den man WEITERBETREIBT, ist als solcher markiert", () => {
+    // „Alter Gaskessel" (80 % Nutzungsgrad) als NEU eingebaute Heizung zu rechnen,
+    // brachte der Wärmepumpe rund 14.000 € geschenkten Vorteil: Anschaffung und
+    // Beimischungspflicht aus dem Ersatzfall, Verbrauch aus dem Weiterbetriebsfall.
+    // Das UI filtert danach; die Markierung darf deshalb nicht verlorengehen.
+    const alt = WP_FUEL_OPTIONS.filter(f => f.bestandsanlage);
+    const neu = WP_FUEL_OPTIONS.filter(f => !f.bestandsanlage);
+    expect(alt.length).toBeGreaterThan(0);
+    expect(neu.length).toBeGreaterThan(0);
+    // Neu eingebaute Kessel sind nie schlechter als der Stand der Technik.
+    for (const f of neu) expect(f.efficiency).toBeGreaterThanOrEqual(0.85);
+    // Und ein Bestandskessel ist immer schlechter als jedes Neugerät.
+    for (const a of alt) {
+      for (const n of neu.filter(x => x.kind === a.kind)) {
+        expect(a.efficiency).toBeLessThan(n.efficiency);
+      }
+    }
+  });
+
+  it("die Wärmepumpe trägt ihren Zählergrundpreis, so wie die fossile Seite auch", () => {
+    // Fehlte bis 28.07.2026 ganz — eine kleine, aber einseitige Schieflage.
+    expect(DEFAULT_HEATPUMP_CONFIG.wpFixCostPerYear).toBeGreaterThan(0);
+    const r = calcHeatPump(baseInputs);
+    expect(r.wartungWp).toBe((DEFAULT_HEATPUMP_CONFIG.wpMaintenance + DEFAULT_HEATPUMP_CONFIG.wpFixCostPerYear) * DEFAULT_HEATPUMP_CONFIG.years);
+  });
+
+  it("die Betriebskosten stehen im belegten Verhältnis zueinander", () => {
+    // Quelle beider Werte: Verbraucherzentrale RLP, Beispielrechnung 02.06.2025
+    // (fossil 300 €/a inkl. Schornsteinfeger, Wärmepumpe 250 €/a). Wer hier etwas
+    // ändert, muss die Quelle mitändern — nicht nur die Zahl.
+    expect(DEFAULT_HEATPUMP_CONFIG.gasMaintenance).toBeGreaterThan(DEFAULT_HEATPUMP_CONFIG.wpMaintenance);
+    // Fraunhofer ISE setzt in der Bio-Treppen-Kurzstudie 500 €/a je System an —
+    // darüber wollen wir nicht liegen (sonst rechnen wir teurer als die Studie).
+    expect(DEFAULT_HEATPUMP_CONFIG.gasMaintenance).toBeLessThanOrEqual(500);
+    expect(DEFAULT_HEATPUMP_CONFIG.wpMaintenance).toBeLessThanOrEqual(500);
+  });
+
+  it("die Anschaffung der fossilen Alternative bleibt im belegten Band", () => {
+    // Fraunhofer ISE, Kurzstudie „Vergleich Wärmeversorgung" (23.06.2026, S. 14):
+    // Gaskessel Einfamilienhaus 11.400–20.400 € brutto bei 10 kW.
+    expect(DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest).toBeGreaterThanOrEqual(11400);
+    expect(DEFAULT_HEATPUMP_CONFIG.fossilErsatzInvest).toBeLessThanOrEqual(20400);
+  });
+
+  it("die Bilanz geht auf — jeder Posten steckt genau einmal in der Summe", () => {
+    const r = calcHeatPump(baseInputs);
+    expect(r.tcoGas).toBe(r.gasKosten + r.gasFix + r.gasWartung + r.gasInvest);
+    expect(r.tcoWp).toBe(r.investNetto + r.stromKosten + r.wartungWp - r.pvBenefit);
+    expect(r.tcoEinsparung).toBe(Math.round(r.tcoGas - r.tcoWp));
+    // Die Kurve muss zur Summe passen (Rundung je Jahr erlaubt ein paar Euro).
+    expect(Math.abs(r.years[r.years.length - 1].kum - r.tcoEinsparung)).toBeLessThanOrEqual(25);
   });
 });

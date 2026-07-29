@@ -12,6 +12,13 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
+  // Alle Adressen einmal nacheinander aufrufen, bevor der erste Test startet.
+  // Der Dev-Server übersetzt jede Route erst beim ersten Aufruf; lösen mehrere
+  // Arbeiter das gleichzeitig aus, scheitert das serverseitige Rendern
+  // ("__webpack_modules__[moduleId] is not a function"). Sichtbar wurde das,
+  // als der Rundgang die Zahl der Adressen von 6 auf 33 hob — danach flatterten
+  // auch die alten Flow-Tests. Details im Setup selbst.
+  globalSetup: "./e2e/global-setup.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,

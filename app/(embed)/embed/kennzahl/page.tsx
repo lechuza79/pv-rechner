@@ -12,11 +12,12 @@ export const metadata: Metadata = {
 const METRICS: Metric[] = ["leistung", "anlagen"];
 const TRAEGER: Energietraeger[] = ["gesamt", "solar", "wind", "biomasse", "wasser", "speicher"];
 
-export default function KennzahlEmbedPage({
-  searchParams,
-}: {
-  searchParams?: { metric?: string; traeger?: string };
-}) {
+export default async function KennzahlEmbedPage(
+  props: {
+    searchParams?: Promise<{ metric?: string; traeger?: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const metric = (METRICS as string[]).includes(searchParams?.metric ?? "")
     ? (searchParams!.metric as Metric)
     : "leistung";

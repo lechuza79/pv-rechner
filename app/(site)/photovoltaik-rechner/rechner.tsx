@@ -803,7 +803,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                         </div>
                       </AccordionField>
                       <AccordionField label="Dämmzustand" open={openKey === "wp-daemmung"} answered={gvAnswered.has("wp-daemmung")} summary={INSULATION_BESTAND[wpInsulation].label} onEdit={() => setGvEditing("wp-daemmung")}>
-                        <ChoiceButtons options={INSULATION_BESTAND} columns={3} selected={gvAnswered.has("wp-daemmung") ? wpInsulation : null}
+                        <ChoiceButtons options={INSULATION_BESTAND} columns={2} selected={gvAnswered.has("wp-daemmung") ? wpInsulation : null}
                           onSelect={i => { setWpInsulation(i); setOEv(null); markGvAnswered("wp-daemmung"); }} render={ins => ins.label} />
                       </AccordionField>
                       <AccordionField label="Heizsystem" open={openKey === "wp-heizsystem"} answered={gvAnswered.has("wp-heizsystem")} summary={HEIZSYSTEM.find(h => h.id === wpHeizsystem)?.label} onEdit={() => setGvEditing("wp-heizsystem")}>

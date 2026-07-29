@@ -3,10 +3,11 @@
 //
 // Methodik (Quellen in heatpump-config.ts):
 //   Q_ges    = Wohnfläche × spez. Bedarf × Haustyp + Personen × 650  (dena, DIN V 18599)
-//   Heizlast = Wohnfläche × spez.Heizlast(W/m²) × Haustyp × Auslegungsfaktor
+//   Heizlast = Wohnfläche × spez.Heizlast(W/m²) × Haustyp          (Norm, DIN EN 12831)
+//   Auslegung = Heizlast × Auslegungsfaktor                        (Anlagengröße, bestimmt den Preis)
 //   JAZ      = a − b × T_Vorlauf                            (Fraunhofer ISE WPsmart)
 //   E_WP     = Q_ges / JAZ                                  (Energiebilanz)
-//   Invest   = base + perKw × Heizlast                      (VZ-Angebotsauswertung)
+//   Invest   = base + perKw × Auslegung                     (VZ-Angebotsauswertung)
 //   BEG      = Grund 30% + Klima 16% (+Einkommen 40/30/10%, einkommensgestaffelt)  — Bestand only
 //   Gas-Ref  = fuelKwh × (price × 1.02^t + CO2_t)  + Grundgebühr + Wartung
 //   TCO_WP   = Invest_netto + Σ Strom + Σ Wartung
@@ -16,12 +17,12 @@
 // indem E_WP als Teil des Gesamtverbrauchs übergeben wird.
 
 import { DEFAULT_HEATPUMP_CONFIG, type HeatPumpConfig } from "./heatpump-config";
-import { co2SurchargeOverToday, calcWeightedFeedIn, calcPvBenefitPerYear } from "./calc";
+import { calcWeightedFeedIn, calcPvBenefitPerYear } from "./calc";
+import { calcFossilReference, wpStandingCostPerYear } from "./fossil-reference";
 import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
-import { calcHeatDemand, calcHeatLoad, flowTempForSystem, calcJAZ } from "./heatpump-core";
-import { YEAR } from "./constants";
-import { gasMixPriceEurForYear } from "./greengas";
+import { calcHeatDemand, calcHeatLoad, auslegungsleistung, flowTempForSystem, calcJAZ } from "./heatpump-core";
+import { type FuelKind } from "./constants";
 import type { GasScenario } from "./greengas-config";
 import { v } from "./theme";
 
@@ -31,6 +32,7 @@ import { v } from "./theme";
 export {
   calcHeatDemand,
   calcHeatLoad,
+  auslegungsleistung,
   flowTempForSystem,
   calcJAZ,
   calcWpAnnualElectricity,
@@ -43,7 +45,12 @@ export {
 export interface HeatPumpInputs {
   situation: "bestand" | "neubau";
   wohnflaeche: number;          // m²
-  insulationIdx: number;         // 0–2 (Index in INSULATION_BESTAND/NEUBAU)
+  insulationIdx: number;         // Index in INSULATION_BESTAND (0–3) / INSULATION_NEUBAU (0–2)
+  // Energieträger der Referenzheizung. Preis/Wirkungsgrad/CO₂ kommen weiterhin
+  // über `override` aus WP_FUEL_OPTIONS; `fuelKind` entscheidet zusätzlich über
+  // das, was NICHT am Brennstoffpreis hängt: die Grundgebühr (Gasanschluss ja,
+  // Öltank nein) und ob die Grüngas-Pflicht überhaupt anwendbar ist.
+  fuelKind?: FuelKind;           // default "gas"
   personen: number;              // actual head count (1, 2, 3.5, 5)
   heizsystem: "fbh" | "hk_neu" | "hk_alt";
   wpType: "lwwp" | "swwp";
@@ -75,6 +82,7 @@ export interface HeatPumpInputs {
     gasPrice?: number;           // €/kWh
     gasEfficiency?: number;      // heating efficiency
     gasCo2?: number;             // kg CO2/kWh
+    fossilErsatzInvest?: number;    // € neue fossile Heizung (0 = Altanlage läuft noch lange)
     klimaBonus?: boolean;           // BEG Klima-Geschwindigkeits-Bonus (Eigennutzer) — default true
     haushaltseinkommen?: number;    // zu versteuerndes Haushaltsjahreseinkommen (€) für den gestaffelten Einkommens-Bonus; undefined = kein Bonus
     kindImHaushalt?: boolean;       // Familienzuschlag: hebt die Einkommensgrenze (begFamilienzuschlag)
@@ -86,7 +94,8 @@ export interface HeatPumpResult {
   qHeiz: number;
   qWw: number;
   qGes: number;
-  heizlastKw: number;
+  heizlastKw: number;              // Norm-Heizlast des Gebäudes (DIN EN 12831)
+  auslegungKw: number;             // Auslegungsleistung der Wärmepumpe (Norm × Auslegungsfaktor)
   // Heat pump performance
   flowTemp: number;
   jaz: number;
@@ -107,7 +116,7 @@ export interface HeatPumpResult {
   gasKosten: number;             // Σ Gas fuel cost
   gasFix: number;                // Σ Grundgebühr
   gasWartung: number;            // Σ Wartung
-  gasInvest: number;             // Neubau only
+  gasInvest: number;             // Anschaffung der fossilen Alternative (Neubau + Bestandsersatz)
   tcoGas: number;
   // Comparison
   tcoEinsparung: number;         // tcoGas − tcoWp
@@ -133,10 +142,10 @@ export interface HeatPumpScenarioResult extends HeatPumpResult {
 // calcHeatDemand / calcHeatLoad / flowTempForSystem / calcJAZ leben jetzt in
 // heatpump-core.ts (siehe Re-Export oben) und werden hier importiert genutzt.
 
-export function calcInvestBrutto(wpType: "lwwp" | "swwp", heizlastKw: number, doHeizkoerperTausch: boolean, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
+export function calcInvestBrutto(wpType: "lwwp" | "swwp", auslegungKw: number, doHeizkoerperTausch: boolean, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
   const base = wpType === "swwp" ? cfg.investSwwpBase : cfg.investLwwpBase;
   const perKw = wpType === "swwp" ? cfg.investSwwpPerKw : cfg.investLwwpPerKw;
-  const heatpumpCost = base + perKw * heizlastKw;
+  const heatpumpCost = base + perKw * auslegungKw;
   // Tauschkosten nur wenn die Maßnahme aktiv gewählt ist — nicht mehr automatisch
   // an "alte Heizkörper" gekoppelt (sonst zahlt man den Tausch ohne JAZ-Nutzen).
   const hkTausch = doHeizkoerperTausch ? cfg.heizkoerperTauschKosten : 0;
@@ -206,8 +215,12 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   // Heizlast aus spez. W/m² × Fläche × Haustyp (nicht mehr aus Jahresbedarf ÷ 2000 h —
   // das hatte das Warmwasser mitgezählt und die Anlage zu groß gemacht). Individuelle
   // DIN-Heizlastberechnung schlägt die Schätzung: override.heizlast.
+  // Norm-Heizlast (Gebäude) und Auslegungsleistung (Anlage) sind zwei Größen — der
+  // Auslegungsfaktor wird an genau einer Stelle angewandt (auslegungsleistung), damit
+  // eine eingetragene DIN-Heizlast denselben Weg nimmt wie die Schätzung.
   const heizlastKw = inputs.override?.heizlast
     ?? calcHeatLoad(inputs.situation, inputs.wohnflaeche, inputs.insulationIdx, inputs.haustypFaktor ?? 1, cfg);
+  const auslegungKw = auslegungsleistung(heizlastKw, cfg);
   // Heizkörpertausch senkt den Vorlauf von alten Heizkörpern (55°C) auf
   // Niedertemperatur-Niveau (45°C, wie moderne Heizkörper) → bessere JAZ.
   const doHkTausch = inputs.heizsystem === "hk_alt" && !!inputs.heizkoerperTausch;
@@ -219,7 +232,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   const eWp = Math.round(qGes / jaz);
 
   // 3. Investition & Förderung
-  const investBrutto = calcInvestBrutto(inputs.wpType, heizlastKw, doHkTausch, cfg);
+  const investBrutto = calcInvestBrutto(inputs.wpType, auslegungKw, doHkTausch, cfg);
   const beg = calcBegSubsidy(inputs.situation, inputs.wpType, investBrutto, {
     klimaBonus: inputs.override?.klimaBonus ?? true,
     haushaltseinkommen: inputs.override?.haushaltseinkommen,
@@ -277,46 +290,52 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
 
   // Kein PV-Invest im WP-Vergleich: die PV-Anschaffung ist eine eigene
   // Entscheidung (PV-Rechner), nicht Teil der Wärmepumpe-vs-Gas-Rechnung.
-  const wartungWp = cfg.wpMaintenance * cfg.years;
+  // Wartung + Grundpreis des WP-Stromzählers. Der Grundpreis fehlte bis 28.07.2026
+  // ganz, während die Gas-Seite einen trug — eine Schieflage zugunsten der WP.
+  const wartungWp = (cfg.wpMaintenance + cfg.wpFixCostPerYear) * cfg.years;
   const tcoWp = investNetto + stromKosten + wartungWp - pvBenefit;
 
-  // 5. 20-Jahre Gas-Referenz
+  // 5. 20-Jahre Brennstoff-Referenz (Gas oder Heizöl)
+  // Die Annahmen der fossilen Seite — Anschaffung, Grundpreis, Wartung und die Frage,
+  // ob die Bio-Treppe überhaupt greift — liegen in lib/fossil-reference.ts, damit der
+  // PV-Rechner exakt dieselbe Grundlage benutzt (er hatte vorher eine eigene, die
+  // auseinandergelaufen war). Zahlen weiterhin aus heatpump-config.ts.
+  const fuelKind: FuelKind = inputs.fuelKind ?? "gas";
   const gasPrice = inputs.override?.gasPrice ?? cfg.gasPriceCtPerKwh / 100;
   const gasEff = Math.max(0.5, inputs.override?.gasEfficiency ?? cfg.gasEfficiency);  // gegen /0
   const gasCo2 = inputs.override?.gasCo2 ?? cfg.gasCo2PerKwh;
   const fuelKwh = qGes / gasEff;
+  // Anschaffung der fossilen Alternative — auch im BESTAND. Wer sich gegen die
+  // Wärmepumpe entscheidet, betreibt nicht 20 Jahre lang eine alte Heizung weiter,
+  // sondern kauft in diesem Zeitraum einen neuen Kessel. Genau dieser Neueinbau
+  // löst auch die Bio-Treppe aus (§ 43 GModG gilt nur für Anlagen, die neu in ein
+  // bestehendes Gebäude eingebaut werden) — vorher rechneten wir die Pflicht, ohne
+  // die zugehörige Investition anzusetzen, also zwei Hälften verschiedener Fälle.
+  // Wer eine junge Heizung hat, setzt den Betrag im Ergebnis auf 0 — dann fällt über
+  // greenGasApplies() auch die Beimischungspflicht weg (die Regel steht nur dort).
+  const gasInvest = inputs.override?.fossilErsatzInvest ?? cfg.fossilErsatzInvest;
   // Grüngas-Modus (GModG Bio-Treppe): der Gaspreis wird Jahr für Jahr neu gemischt
   // (teures Biomethan verdrängt Erdgas, Netzentgelt + CO₂ steigen eigenständig) —
   // das kann das simple „Preis × Teuerung"-Modell nicht abbilden. Modell +
   // Szenario-Korridor (low/base/high, gemappt auf Pessimistisch/Realistisch/
   // Optimistisch aus WP-Sicht): lib/greengas.ts.
-  const greenGas = !!inputs.greenGas;
-  const gasScenario: GasScenario = adj.gasScenario ?? "base";
-  // Inline per-year gas cost (need array for chart)
-  const gasPerYear: number[] = [];
-  let gasKosten = 0;
-  for (let i = 0; i < cfg.years; i++) {
-    let y: number;
-    if (greenGas) {
-      // Zeitvariabler GModG-Gas-Mix-Endkundenpreis (€/kWh, brutto, CO₂ inklusive).
-      y = fuelKwh * gasMixPriceEurForYear(YEAR + i, gasScenario);
-    } else {
-      // Gaspreis (11 ct) ist ein heutiger All-in-Preis und enthält die CO2-Abgabe
-      // 2026 bereits. Daher nur den ANSTIEG des CO2-Preises über das heutige Niveau
-      // aufschlagen (co2SurchargeOverToday), sonst wird die 2026-Komponente doppelt
-      // gezählt. Kalenderjahr-verankert (rollover-sicher) via lib/co2-config.ts.
-      const co2Surcharge = gasCo2 * co2SurchargeOverToday(i) / 1000;
-      const basePrice = gasPrice * Math.pow(1 + adj.gasInflation, i);
-      y = fuelKwh * (basePrice + co2Surcharge);
-    }
-    gasKosten += y;
-    gasPerYear.push(y);
-  }
-  gasKosten = Math.round(gasKosten);
-  const gasFix = cfg.gasFixCostPerYear * cfg.years;
-  const gasWartung = cfg.gasMaintenance * cfg.years;
-  const gasInvest = inputs.situation === "neubau" ? cfg.gasInvestNeubau : 0;
-  const tcoGas = gasKosten + gasFix + gasWartung + gasInvest;
+  const ref = calcFossilReference({
+    fuelKind,
+    fuelKwh,
+    years: cfg.years,
+    pricePerKwh: gasPrice,
+    co2PerKwh: gasCo2,
+    inflation: adj.gasInflation,
+    fossilInvest: gasInvest,
+    greenGas: !!inputs.greenGas,
+    gasScenario: adj.gasScenario ?? "base",
+  }, cfg);
+  const fixPerYear = ref.fixPerYear;
+  const gasPerYear = ref.fuelPerYear;
+  const gasKosten = ref.fuel;
+  const gasFix = ref.fix;
+  const gasWartung = ref.wartung;
+  const tcoGas = ref.total;
 
   // 6. Vergleich (PV-Invest ist NICHT Teil der WP-Rechnung — eigene Entscheidung)
   const mehrInvest = investNetto - gasInvest;
@@ -327,11 +346,14 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
   const years: { i: number; kum: number; annual: number }[] = [];
   let kum = -mehrInvest;
   years.push({ i: 0, kum: Math.round(kum), annual: 0 });
-  let amortisationsJahre: number | null = null;
+  // Wenn die fossile Anschaffung teurer ist als die geförderte Wärmepumpe, steht die
+  // Kurve schon im ersten Jahr im Plus — das ist dann Amortisation 0, nicht 1. Die
+  // Schleife allein hätte hier „1 Jahr" gemeldet.
+  let amortisationsJahre: number | null = kum >= 0 ? 0 : null;
   for (let i = 0; i < cfg.years; i++) {
     // WP-Seite: voller Netzstrom minus PV-Vollnutzen des Jahres (WP-Deckung +
     // Haushaltsstrom-Ersparnis + Einspeisung) — so folgt die Kurve exakt dem TCO.
-    const annualSaving = (gasPerYear[i] + cfg.gasFixCostPerYear + cfg.gasMaintenance) - (stromPerYear[i] + cfg.wpMaintenance - pvBenefitPerYear[i]);
+    const annualSaving = (gasPerYear[i] + fixPerYear + ref.wartungPerYear) - (stromPerYear[i] + wpStandingCostPerYear(cfg) - pvBenefitPerYear[i]);
     kum += annualSaving;
     years.push({ i: i + 1, kum: Math.round(kum), annual: Math.round(annualSaving) });
     if (amortisationsJahre === null && kum >= 0) amortisationsJahre = i + 1;
@@ -352,7 +374,7 @@ export function calcHeatPump(inputs: HeatPumpInputs, cfg: HeatPumpConfig = DEFAU
 
   return {
     qHeiz: demand.qHeiz, qWw: demand.qWw, qGes,
-    heizlastKw, flowTemp, jaz: Math.round(jaz * 100) / 100, eWp,
+    heizlastKw, auslegungKw, flowTemp, jaz: Math.round(jaz * 100) / 100, eWp,
     investBrutto, beg, investNetto,
     stromKosten, wartungWp, tcoWp,
     pvCoverage: Math.round(pvCoverage * 1000) / 1000,

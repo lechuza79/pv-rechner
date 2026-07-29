@@ -7,8 +7,8 @@ import {
   calcAutarkie,
   buildMonthlyEv,
   calcFuelCost,
-  calcFuelCost25,
-  calcWpGridCost25,
+  fuelKwhForWpHeat,
+  calcWpGridCost,
   calc,
   paramInt,
   paramFloat,
@@ -469,36 +469,39 @@ describe("calcFuelCost", () => {
   });
 });
 
-describe("calcFuelCost25 (legacy PV-Rechner wrapper)", () => {
-  it("returns a positive value for typical WP-equivalent input", () => {
-    // 3000 kWh electric WP × JAZ 3.5 = 10500 kWh thermal → ~10500 / efficiency m³ gas
-    const result = calcFuelCost25(3000, "gas");
-    expect(result).toBeGreaterThan(0);
-    expect(result).toBeLessThan(100000); // sanity bound
+describe("fuelKwhForWpHeat", () => {
+  it("converts WP electricity to the fuel a boiler would need for the same heat", () => {
+    // 3000 kWh Strom × JAZ 3,5 = 10.500 kWh Wärme; Gaskessel 90 % → 11.667 kWh Gas
+    expect(fuelKwhForWpHeat(3000, "gas", 3.5)).toBeCloseTo(10500 / 0.90, 0);
   });
 
-  it("defaults to JAZ 3.5 for backward compatibility", () => {
-    expect(calcFuelCost25(3000, "gas", 3.5)).toBe(calcFuelCost25(3000, "gas"));
+  it("defaults to JAZ 3.5", () => {
+    expect(fuelKwhForWpHeat(3000, "gas", 3.5)).toBe(fuelKwhForWpHeat(3000, "gas"));
   });
 
-  it("scales delivered heat (and thus fuel cost) with the JAZ", () => {
-    // Higher JAZ → same electricity delivers more heat → gas equivalent costs more.
-    const low = calcFuelCost25(3000, "gas", 3.0);
-    const high = calcFuelCost25(3000, "gas", 4.0);
-    expect(high).toBeGreaterThan(low);
-    expect(high / low).toBeCloseTo(4.0 / 3.0, 2);
+  it("scales delivered heat (and thus fuel demand) with the JAZ", () => {
+    // Höhere JAZ → dieselbe Strommenge liefert mehr Wärme → mehr Gas-Äquivalent.
+    const low = fuelKwhForWpHeat(3000, "gas", 3.0);
+    const high = fuelKwhForWpHeat(3000, "gas", 4.0);
+    expect(high / low).toBeCloseTo(4.0 / 3.0, 5);
   });
 });
 
-describe("calcWpGridCost25", () => {
+describe("calcWpGridCost", () => {
   it("returns 0 if autarky is 100%", () => {
-    expect(calcWpGridCost25(3000, 1.0, 0.30, 0.03)).toBe(0);
+    expect(calcWpGridCost(3000, 1.0, 0.30, 0.03)).toBe(0);
   });
 
   it("scales with grid fraction (1 - autarky)", () => {
-    const noAutarky = calcWpGridCost25(3000, 0, 0.30, 0.03);
-    const halfAutarky = calcWpGridCost25(3000, 0.5, 0.30, 0.03);
+    const noAutarky = calcWpGridCost(3000, 0, 0.30, 0.03);
+    const halfAutarky = calcWpGridCost(3000, 0.5, 0.30, 0.03);
     expect(halfAutarky).toBeCloseTo(noAutarky / 2, -1);
+  });
+
+  it("rechnet über den übergebenen Horizont, nicht über eine feste Laufzeit", () => {
+    const zwanzig = calcWpGridCost(3000, 0, 0.30, 0, 20);
+    const fuenfundzwanzig = calcWpGridCost(3000, 0, 0.30, 0, 25);
+    expect(fuenfundzwanzig / zwanzig).toBeCloseTo(25 / 20, 3);
   });
 });
 

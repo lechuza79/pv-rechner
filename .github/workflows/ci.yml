@@ -55,11 +55,21 @@ jobs:
       - name: E2E smoke tests (Playwright)
         run: npm run test:e2e
         env:
-          # Smoke tests don't need real Supabase — these placeholders just
-          # let supabase-js initialize without crashing. If we later add tests
-          # that hit auth or DB, swap to GitHub Secrets here.
+          # Der Browser-seitige Client braucht nur irgendeine gültige Form —
+          # er wird in den Tests nicht benutzt (kein Login, keine Schreibpfade).
           NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: anon-placeholder-not-used-in-smoke-tests
+          # Serverseitig braucht es echte Leserechte: Fast jede Seite mit Zahlen
+          # liest Supabase — Atlas, Förderseiten, Ratgeber, Datenstand, Zubau und
+          # die Erzeugungs-Widgets. Mit Platzhaltern prüft der Rundgang genau die
+          # Seiten nicht, für die es ihn gibt.
+          #
+          # Dieselben Geheimnisse benutzt der Gesundheitscheck hier längst, und
+          # zwar ebenfalls bei jedem Push — es ist also keine neue Zugriffsart,
+          # sondern dieselbe. Der Rundgang liest ausschliesslich; die
+          # Setup-Routen sind davon unabhängig über CRON_SECRET geschützt.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
 
       # Upload the Playwright HTML report when something failed — easier
       # than re-running locally to see what the browser saw.
