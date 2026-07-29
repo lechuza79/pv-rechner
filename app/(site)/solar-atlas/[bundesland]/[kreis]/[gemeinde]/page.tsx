@@ -80,7 +80,8 @@ const MIN_BATTERIEN_FUER_MITTEL = 5;
 
 type Params = { bundesland: string; kreis: string; gemeinde: string };
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
+  const params = await props.params;
   const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
   if (!region) return { robots: atlasRobots(false) };
   // Anlagenzahl (für die Thin-Schwelle) nur laden, wenn die Gemeinde-Ebene
@@ -98,7 +99,8 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   };
 }
 
-export default async function GemeindePage({ params }: { params: Params }) {
+export default async function GemeindePage(props: { params: Promise<Params> }) {
+  const params = await props.params;
   const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
   if (!region || region.level !== "gemeinde") notFound();
 
