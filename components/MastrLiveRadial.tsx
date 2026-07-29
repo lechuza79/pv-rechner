@@ -601,11 +601,14 @@ export function MastrLiveRadial({
       ))}
 
       <div style={{ position: "relative", width: SIZE, maxWidth: "100%", margin: "0 auto" }}>
+        {/* Breite/Höhe als CSS, nicht als SVG-Attribut: `height="auto"` ist als
+            Attribut ungültig (dort sind nur Längen erlaubt) und wurde vom
+            Browser als Fehler verworfen. Über `style` skaliert das Bild
+            seitenverhältnistreu mit der viewBox — so wie an allen anderen
+            Stellen im Projekt auch. */}
         <svg
           viewBox={`0 0 ${SIZE} ${SIZE}`}
-          width="100%"
-          height="auto"
-          style={{ display: "block" }}
+          style={{ width: "100%", height: "auto", display: "block" }}
           role="img"
           aria-label="24-Stunden-Verlauf"
         >

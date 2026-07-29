@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import AtlasSkeleton from "../../../../components/atlas/AtlasSkeleton";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import RegionSearch from "../../../../components/atlas/RegionSearch";
 import { v, space, pad } from "../../../../lib/theme";
@@ -30,27 +32,33 @@ export const revalidate = 3600;
 // Zwei Ziele:
 // 1) Ohne generateStaticParams behandelt Next die dynamische Route als voll
 //    dynamisch (no-store). Mit ihr wird sie ISR (s-maxage=3600).
-// 2) Die INDEXIERTEN Ebenen (DE + Bundesländer, siehe lib/atlas-index.ts) werden
-//    beim Build vorgerendert → statisch, KEIN Kaltrender, crawl-freundlich.
-//    Kreise/Gemeinden sind noindex + zu zahlreich → bleiben on-demand ISR.
-//    Möglich seit mastr_children über den Rollup läuft (~0,1s statt >8s), sonst
-//    liefen die 17 Parallel-Renders in den DB-Timeout. Slugs aus der DB (16 Zeilen).
-export async function generateStaticParams() {
-  try {
-    const { supabase } = await import("../../../../lib/supabase-server");
-    if (!supabase) return [{ pfad: [] as string[] }];
-    const { data } = await supabase
-      .from("mastr_regions")
-      .select("slug")
-      .eq("level", "bundesland")
-      .not("slug", "is", null);
-    return [
-      { pfad: [] as string[] },
-      ...((data ?? []) as { slug: string }[]).map((r) => ({ pfad: [r.slug] })),
-    ];
-  } catch {
-    return [{ pfad: [] as string[] }];
-  }
+// 2) NUR die Deutschland-Übersicht wird beim Build vorgerendert. Die 16
+//    Bundesland-Seiten kommen on-demand (ISR, s-maxage=3600) — wie Kreise und
+//    Gemeinden.
+//
+//    Vorher standen sie hier mit drin, damit die indexierten Ebenen statisch und
+//    ohne Kaltrender ausgeliefert werden. Das hat am 27.07.2026 die Produktion
+//    lahmgelegt: Next rendert die Einträge dieser Liste PARALLEL, also liefen 17
+//    Seiten × mehrere DB-Abfragen gleichzeitig aus dem Build-Container. Der
+//    Egress kippte reproduzierbar mit „fetch failed" auf 11–13 der 16 Seiten
+//    (dieselbe Build-Phase meldete zeitgleich HTTP 429 von api.energy-charts.info,
+//    also nicht nur die Datenbank). Drei Deploys in Folge scheiterten, ein
+//    sauberer Rebuild desselben Stands ebenfalls — kein Ausreißer, sondern die
+//    Last selbst. Die Datenbank war dabei durchgehend gesund (REST-Abfrage von
+//    außen 0,13 s), es ist also die Gleichzeitigkeit, nicht die Quelle.
+//
+//    Der Preis ist ein Kaltrender je Bundesland-Seite beim ersten Aufruf nach
+//    einem Deploy (gemessen 0,4–4,0 s in fra1); danach liegt sie im CDN. Ein
+//    Build, der nicht durchläuft, kostet dagegen ALLE Seiten. Wer den Vorrender
+//    zurückholen will, braucht vorher eine Wiederholung mit Backoff in der
+//    DB-Schicht — nicht einfach die Liste wieder füllen.
+//
+//    Das gilt erst recht seit Welle 0b (27.07.2026): Mit den ~400 Landkreisen
+//    ist die indexierte Menge viel zu groß zum Vorrendern. Sie kommen ebenfalls
+//    on-demand; warm hält sie der Aufwärm-Crawler (npm run atlas:warm) nach
+//    jedem MaStR-Lauf.
+export function generateStaticParams() {
+  return [{ pfad: [] as string[] }];
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
@@ -89,7 +97,8 @@ function ortPhrase(region: AtlasRegion): string {
   return `${nennt ? "im" : "in"} ${region.name}`;
 }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
+  const params = await props.params;
   const region = await resolve(params.pfad);
   if (!region) return { robots: atlasRobots(false) };
   const title = headline(region);
@@ -106,7 +115,19 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   };
 }
 
-export default async function AtlasPage({ params }: { params: Params }) {
+/**
+ * Routing-Entscheidung — und NUR sie. Alles hier Stehende läuft in der
+ * HTML-Hülle, also bevor die Antwort rausgeht; deshalb können `notFound()` und
+ * `redirect()` den Statuscode noch setzen. Der teure Teil steckt hinter dem
+ * `<Suspense>` und streamt nach.
+ *
+ * Nichts Zusätzliches vor das `<Suspense>` ziehen: jeder weitere `await` hier
+ * verzögert die erste Antwortbyte für ALLE Atlas-Seiten. Beide Reads unten sind
+ * `unstable_cache`-gedeckt und werden im Body ohnehin gebraucht — sie kosten also
+ * keinen zusätzlichen Datenbank-Zugriff.
+ */
+export default async function AtlasPage(props: { params: Promise<Params> }) {
+  const params = await props.params;
   const region = await resolve(params.pfad);
   if (!region) notFound();
 
@@ -123,6 +144,23 @@ export default async function AtlasPage({ params }: { params: Params }) {
   }
   if (!childLevel) notFound();
 
+  return (
+    <Suspense fallback={<AtlasSkeleton />}>
+      <AtlasBody region={region} childLevel={childLevel} pfad={params.pfad} />
+    </Suspense>
+  );
+}
+
+async function AtlasBody({
+  region,
+  childLevel,
+  pfad,
+}: {
+  region: AtlasRegion;
+  childLevel: Exclude<ReturnType<typeof childLevelOf>, null>;
+  pfad: string[] | undefined;
+}) {
+  const params: Params = { pfad };
   const [atlas, children, ancestors, ranking] = await Promise.all([
     getRegionAtlasData(region.region_id),
     getChildren(region),

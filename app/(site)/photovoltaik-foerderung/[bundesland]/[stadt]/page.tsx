@@ -26,7 +26,8 @@ export function generateStaticParams() {
   return publishedCities().map((c) => ({ bundesland: slugify(c.bundesland), stadt: c.slug }));
 }
 
-export async function generateMetadata({ params }: { params: { bundesland: string; stadt: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ bundesland: string; stadt: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const city = cityBySlug(params.stadt);
   if (!city || slugify(city.bundesland) !== params.bundesland) return {};
   const f = city.fundingId ? await getFundingProgramById(city.fundingId) : undefined;
@@ -113,7 +114,8 @@ const S = {
   card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "16px 18px" } as React.CSSProperties,
 };
 
-export default async function StadtPage({ params }: { params: { bundesland: string; stadt: string } }) {
+export default async function StadtPage(props: { params: Promise<{ bundesland: string; stadt: string }> }) {
+  const params = await props.params;
   const city = cityBySlug(params.stadt);
   // Guard the hierarchy: the Bundesland segment must match the city, otherwise
   // a wrong-Bundesland URL would render a valid page under a bogus parent.

@@ -8,11 +8,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function ErzeugungMiniPage({
-  searchParams,
-}: {
-  searchParams?: { auto?: string };
-}) {
+export default async function ErzeugungMiniPage(
+  props: {
+    searchParams?: Promise<{ auto?: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   return <ErzeugungWidget compact autoswitchMs={parseAuto(searchParams?.auto)} />;
 }
 

@@ -117,6 +117,25 @@ function asRegion(row: unknown): AtlasRegion {
   return { ...r, name: regionDisplayName(r.name) };
 }
 
+/**
+ * Haltbarkeit der Gebiets-STAMMDATEN (Name, Slug, Zugehörigkeit, Einwohner) —
+ * bewusst getrennt von den MaStR-Anlagenzahlen, die bei 1 h bleiben.
+ *
+ * Warum getrennt: Beide lagen bei 1 h, obwohl es zwei völlig verschiedene Dinge
+ * sind. Anlagenzahlen wechseln mit dem monatlichen Datenlauf; das Verzeichnis
+ * wechselt bei Gebietsreformen (zum 1. Januar) und Einwohner-Fortschreibungen.
+ * Stündlich neu zu laden brachte nichts und kostete auf jeder Atlas-Seite
+ * mehrere serielle Datenbank-Roundtrips — bei nebenläufigen Kaltrendern genau
+ * die Reads, die in den 8-s-Fast-Fail liefen (0,7 % 500er, 24.–27.07.2026).
+ *
+ * Warum 7 Tage und nicht 30: Die Einwohnerzahl ist der Nenner der Pro-Kopf-Werte.
+ * Wird sie mit dem Datenlauf fortgeschrieben, sollen neue Anlagen nicht länger
+ * als nötig auf einen alten Nenner treffen — 7 Tage liegt sicher unter dem
+ * monatlichen Datenlauf-Abstand und ist trotzdem 168× seltener als vorher.
+ * Ein Deploy leert den Cache ohnehin.
+ */
+const STAMMDATEN_TTL = 60 * 60 * 24 * 7;
+
 async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | null> {
   const supabase = await db();
   const { data, error } = await withDbTimeout(
@@ -129,8 +148,15 @@ async function getRegionByIdUncached(regionId: string): Promise<AtlasRegion | nu
 
 // Regions-Identität (Name, Einwohner, Slug) ist stabil — cachen spart die
 // wiederholten Lookups (Kreis-, Land-, Deutschland-Region auf jeder Seite).
+//
+// Bewusst deutlich länger als die Anlagenzahlen (STAMMDATEN_TTL statt 1 h): das
+// hier ist das Gebietsverzeichnis (wer heißt wie, gehört wohin, wie viele
+// Einwohner), kein MaStR-Messwert. Es ändert sich bei Gebietsreformen, also
+// praktisch nie, wurde aber stündlich neu geholt — und weil sich 11k Gemeinden
+// nur ~400 Kreise und 16 Bundesländer teilen, ist genau dieser Cache der Hebel:
+// greift er, kostet eine Gemeindeseite die Vorfahren-Lookups gar nicht mehr.
 export const getRegionById = unstable_cache(getRegionByIdUncached, ["region-by-id-v1"], {
-  revalidate: 3600,
+  revalidate: STAMMDATEN_TTL,
 });
 
 /** Ein Suchtreffer für die Karten-Suche: `label` ist die anzuzeigende Gattung
@@ -219,8 +245,11 @@ async function resolveSlugPathUncached(slugs: string[]): Promise<AtlasRegion | n
 
 // Slug→Region ist stabil und wird pro Seite doppelt aufgelöst (generateMetadata
 // + Render) — cachen dedupt das und spart die N seriellen Segment-Lookups.
+// Stammdaten-Haltbarkeit (siehe STAMMDATEN_TTL): eine Gemeindeseite löst drei
+// Segmente einzeln und nacheinander auf (Bundesland → Kreis → Gemeinde); das war
+// der häufigste Verursacher der Atlas-Timeouts.
 export const resolveSlugPath = unstable_cache(resolveSlugPathUncached, ["resolve-slug-v1"], {
-  revalidate: 3600,
+  revalidate: STAMMDATEN_TTL,
 });
 
 /** Ancestors from Deutschland down to (but excluding) the region — for breadcrumbs. */
@@ -556,6 +585,84 @@ export type ChildYearRow = {
   kwh: number;
 };
 
+/** Die drei Summen, aus denen die Nachbarschafts-Liste ihre vier Kennzahlen
+ *  bildet (je Einwohner = kwp ÷ Einwohner). */
+export type SiblingSums = { count: number; kwp: number; speicher: number };
+
+/** Eine Nachbargemeinde, fertig gerechnet für alle drei Eigentümer-Filter. */
+export type SiblingRow = {
+  region_id: string;
+  name: string;
+  slug: string | null;
+  population: number | null;
+  sums: Record<AtlasOwner, SiblingSums>;
+};
+
+/**
+ * Faltet das Zell-Korn eines Landkreises auf das zusammen, was eine
+ * GEMEINDESEITE davon wirklich braucht.
+ *
+ * WARUM (28.07.2026): Die Gemeindeseite verschickte das volle Korn — bei einem
+ * großen Kreis 4.867 Zellen, 516 KB und damit 71 % der ganzen Seite —, um damit
+ * eine Liste mit FÜNF Zeilen zu zeichnen. Das Korn war nötig, weil der Leser
+ * Eigentümer-Filter und Kennzahl umschalten kann, ohne dass nachgeladen wird.
+ * Das bleibt so; es sind aber nur 3 × 4 Kombinationen einer Fünf-Zeilen-Liste,
+ * und die lassen sich vorher ausrechnen: je Gemeinde und Eigentümer drei
+ * Summen statt ~37 Zellen. Nachladen wäre der schlechtere Weg gewesen — er
+ * kostet eine zusätzliche Anfrage, einen Ladezustand und nimmt der Liste den
+ * Platz im ausgelieferten HTML.
+ *
+ * Die JAHRES-Dimension fällt hier weg, und nur deshalb geht das: Die große
+ * Kreis-Tabelle (RankingTable) kann die Rangliste auf ein früheres Jahr
+ * zurückspulen und braucht das Korn weiterhin. Die Fünf-Zeilen-Liste auf der
+ * Gemeindeseite kennt keine Jahresauswahl.
+ *
+ * Diese Funktion ist zugleich die EINZIGE Stelle, an der „Leistung je Gemeinde"
+ * für die Gemeindeseite entsteht — Intro-Rang und Liste rechnen jetzt aus
+ * derselben Quelle. Vorher taten sie es getrennt und widersprachen sich:
+ * der Intro-Rang zählte die Wechselrichter-Leistung der Batteriespeicher zur
+ * „installierten Solarleistung" dazu (im Kreis Coesfeld 74.103 kWp auf 500.812
+ * kWp Solar, also gut 15 %), weil dort auf ein Segment „speicher" geprüft wurde,
+ * das es gar nicht gibt — die Segmente heißen `batterie_privat` und
+ * `batterie_gewerbe`. Der Kommentar daneben sagte bereits das Richtige
+ * („Speicher zählt nicht zur Leistung"), nur der Code tat es nicht.
+ */
+export function foldSiblings(regions: RankingRegion[], cells: ChildYearRow[]): SiblingRow[] {
+  const owners: AtlasOwner[] = ["alle", "privat", "gewerbe"];
+  const acc = new Map<string, Record<AtlasOwner, SiblingSums>>();
+  const empty = (): Record<AtlasOwner, SiblingSums> => ({
+    alle: { count: 0, kwp: 0, speicher: 0 },
+    privat: { count: 0, kwp: 0, speicher: 0 },
+    gewerbe: { count: 0, kwp: 0, speicher: 0 },
+  });
+
+  for (const c of cells) {
+    const bucket = acc.get(c.region_id) ?? empty();
+    for (const owner of owners) {
+      // Dieselbe Zuordnung wie in der Liste selbst: „alle" nimmt jedes Segment
+      // mit Eigentümer (`sonstige` bleibt draußen), sonst genau dessen Segmente.
+      const o = SEGMENT_OWNER[c.segment];
+      if (owner === "alle" ? o == null : o !== owner) continue;
+      // Batterien tragen ihre KAPAZITÄT (kWh) bei, nicht ihre Leistung — sie
+      // sind eine eigene Kennzahl und gehören nie in die Solarleistung.
+      if (c.segment.startsWith("batterie")) bucket[owner].speicher += c.kwh;
+      else {
+        bucket[owner].count += c.count;
+        bucket[owner].kwp += c.kwp;
+      }
+    }
+    acc.set(c.region_id, bucket);
+  }
+
+  return regions.map((r) => ({
+    region_id: r.region_id,
+    name: r.name,
+    slug: r.slug,
+    population: r.population,
+    sums: acc.get(r.region_id) ?? empty(),
+  }));
+}
+
 /** Region identity the table needs alongside the numbers. */
 export type RankingRegion = {
   region_id: string;
@@ -782,4 +889,34 @@ async function getPeerContextUncached(
 
 export const getPeerContext = unstable_cache(getPeerContextUncached, ["peer-context-v1"], {
   revalidate: 86400,
+});
+
+/** Bundesland-Slug + Kreis-Slug jedes Landkreises — für die Sitemap.
+ *
+ *  Eigene, schlanke Abfrage statt getChildren() je Bundesland: hier zählen nur
+ *  die Adressen, nicht die Kennzahlen. Eine Abfrage über ~416 Zeilen statt 16
+ *  Rollup-Aufrufe (siehe „DB schonen").
+ */
+async function getKreisPfadeUncached(): Promise<{ bundesland: string; kreis: string }[]> {
+  const supabase = await db();
+  const { data, error } = await withDbTimeout(
+    supabase
+      .from("mastr_regions")
+      .select("region_id, level, slug, parent_region_id")
+      .in("level", ["bundesland", "landkreis"])
+      .not("slug", "is", null),
+    "getKreisPfade",
+  );
+  if (error) throw new Error(`getKreisPfade failed: ${error.message}`);
+  const rows = (data ?? []) as Pick<AtlasRegion, "region_id" | "level" | "slug" | "parent_region_id">[];
+  const blSlug = new Map(rows.filter((r) => r.level === "bundesland").map((r) => [r.region_id, r.slug!]));
+  return rows
+    .filter((r) => r.level === "landkreis" && r.parent_region_id && blSlug.has(r.parent_region_id))
+    .map((r) => ({ bundesland: blSlug.get(r.parent_region_id!)!, kreis: r.slug! }));
+}
+
+// Kreis-Slugs sind Gebiets-Stammdaten, keine Kennzahlen — dieselbe Haltbarkeit
+// wie Verzeichnis und Vorfahren (STAMMDATEN_TTL), nicht die Stunde der Anlagenzahlen.
+export const getKreisPfade = unstable_cache(getKreisPfadeUncached, ["kreis-pfade-v1"], {
+  revalidate: STAMMDATEN_TTL,
 });

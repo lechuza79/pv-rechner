@@ -52,6 +52,7 @@ export default function InternalShell({
         { href: "/admin/theme", label: "Signalfarben-Theming" },
         { href: "/admin/prices", label: "Marktpreise" },
         { href: "/admin/charts", label: "Chart-Baukasten" },
+        { href: "/admin/waechter", label: "Wächter-Berichte" },
       ],
     });
   }

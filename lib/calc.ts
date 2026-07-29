@@ -2,7 +2,6 @@ import { YEAR, YEARS, FEED_IN_YEARS, DEGRAD, CONSUMPTION_MONTHLY, FUEL, PERSONEN
 import { calcExtraConsumption, KLIMA_DEFAULT_M2, WP_ANNUAL_KWH } from "./consumption";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
 import { co2PriceForCalendarYear } from "./co2-config";
-import { gasMixPriceEurForYear } from "./greengas";
 
 // ─── Fuel comparison (WP vs. Gas/Öl) ────────────────────────────────────────
 // CO2-Preis pro Projektions-Offset i. Dünner Adapter: i mappt auf das absolute
@@ -57,31 +56,25 @@ export function calcFuelCostPerYear({ fuelKwh, pricePerKwh, co2PerKwh, years = Y
   return out;
 }
 
-// Legacy wrapper — used by PV-Rechner (25 years). Converts the WP's electricity to
-// delivered heat via the JAZ, then to boiler fuel: same heat, gas/oil equivalent.
+// Brennstoffbedarf einer Referenzheizung, die dieselbe Wärme liefert wie die
+// Wärmepumpe: Strom × JAZ = Wärme, Wärme / Kesselwirkungsgrad = Brennstoff.
 // jaz defaults to 3,5, wird aber vom PV-Rechner mit der gebäudebasierten JAZ
 // überschrieben — dieselbe Arbeitszahl, mit der wpKwhElectric hergeleitet wurde,
 // sonst driften Wärmemenge und Vergleich auseinander.
-export function calcFuelCost25(wpKwhElectric: number, fuel: "gas" | "oil", jaz = 3.5, greenGas = false): number {
-  const f = FUEL[fuel];
-  const thermalKwh = wpKwhElectric * jaz;
-  const fuelKwh = thermalKwh / f.efficiency;
-  // Grüngas-Modus (nur Gas): eine NEUE Gasheizung fällt unter die GModG-Bio-Treppe
-  // ab 2029 — der Gaspreis folgt dem Grüngas-Pfad (kalenderjahr-verankert) statt
-  // flacher Teuerung. Der Mix-Preis enthält die CO₂-Abgabe bereits, daher hier
-  // KEIN separater CO₂-Aufschlag (sonst Doppelzählung). Konsistent zum WP-Rechner.
-  if (greenGas && fuel === "gas") {
-    let total = 0;
-    for (let i = 0; i < YEARS; i++) total += fuelKwh * gasMixPriceEurForYear(YEAR + i);
-    return Math.round(total);
-  }
-  return calcFuelCost({ fuelKwh, pricePerKwh: f.price, co2PerKwh: f.co2PerKwh, years: YEARS, inflation: 0.02 });
+// Der Kessel-Wirkungsgrad bleibt bewusst kontextabhängig (FUEL in constants.ts):
+// Der PV-Rechner rechnet gegen die VORHANDENE Heizung (90 % Gas / 85 % Öl), der
+// WP-Rechner lässt den Kessel wählen (neu 95 %, alt 80 %).
+export function fuelKwhForWpHeat(wpKwhElectric: number, fuel: "gas" | "oil", jaz = 3.5): number {
+  return (wpKwhElectric * jaz) / FUEL[fuel].efficiency;
 }
 
-export function calcWpGridCost25(wpKwh: number, autarky: number, strompreis: number, stromSteigerung: number): number {
+// Netzstrom-Kosten der Wärmepumpe über einen Horizont — der Teil, den die PV nicht
+// deckt. `years` ist ein Parameter, weil der Heizungsvergleich über die Lebensdauer
+// der HEIZUNG läuft (HEATING_YEARS), nicht über die 25 Jahre der PV-Module.
+export function calcWpGridCost(wpKwh: number, autarky: number, strompreis: number, stromSteigerung: number, years = YEARS): number {
   let total = 0;
   const gridFraction = 1 - autarky;
-  for (let i = 0; i < YEARS; i++) {
+  for (let i = 0; i < years; i++) {
     const sp = strompreis * Math.pow(1 + stromSteigerung, i);
     total += wpKwh * gridFraction * sp;
   }

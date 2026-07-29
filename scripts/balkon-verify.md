@@ -45,9 +45,26 @@ Stichtag steht in `DEFAULT_BALKON_CONFIG.reviewBy`.
 
 **Nicht prüfen (Modell-/Physik-Konstanten):**
 - `specificYield` — PVGIS-Fallback, greift nur ohne PLZ
-- `storageRoundtrip` / `storageLifeYears` / `storageRecommendMaxPayback` —
-  Speicher-Physik und Empfehl-Schwelle. **Offener Punkt:** die HTW misst 82,5 %
-  Wirkungsgrad, wir rechnen mit 90 % (Details im Kommentar in `balkon-config.ts`).
+- `storageLifeYears` / `storageRecommendMaxPayback` — Lebensdauer und
+  Empfehl-Schwelle (Konvention).
+- `storageRoundtrip` (0,825) — **seit 07/2026 belegt, hier nicht mehr offen.**
+  Quelle im Repo: `docs/quellen/HTW-Stecker-Solar-Simulator-Dokumentation-V3.pdf`,
+  Kap. 4.2 (Laden 91,7 % × Entladen 92 % × Batterie 97,8 % = 82,5 %; Geltungs-
+  bereich laut Tabelle 1: Speicher 0–3000 Wh, also genau unsere Klasse).
+  Herleitung im Kommentar in `balkon-config.ts`, festgenagelt vom Realitäts-Anker
+  `lib/__tests__/balkon.test.ts` → „Speicher-Wirkungsgrad: Realitäts-Anker".
+  Nur anfassen, wenn eine **neue Messreihe** erscheint (nicht wegen eines
+  Datenblatts): dann Wert + Kommentar + Anker-Test gemeinsam nachziehen.
+  Zwei Fallen, die beim Auflösen aufgefallen sind und beim nächsten Mal wieder
+  drohen:
+  1. **Datenblatt ≠ Round-Trip.** Herstellerangaben („bis zu 96 %") meinen den
+     günstigsten Einzelpfad, nicht den Umlauf. Die HTW warnt davor ausdrücklich
+     (Stromspeicher-Inspektion 2026, Kap. 1.3).
+  2. **Falsche Zuschreibung an die Stiftung Warentest.** Die im Netz kursierenden
+     Messwerte (82,1 % / 71,6 % / 9,5 W Standby) stammen aus **eigenen Messungen
+     des EnergieMagazins**, werden aber von Sekundärseiten der Stiftung Warentest
+     zugeschrieben. Der Warentest-Test 4/2026 liegt hinter einer Paywall — seine
+     Zahlen sind bislang **nicht** belegt. Nicht ungeprüft weiterreichen.
 - `lifetimeYears` / `degradation` / `gridCo2PerKwh` (Konvention/Physik; CO2-Faktor
   identisch zum WP-/Klima-Rechner)
 

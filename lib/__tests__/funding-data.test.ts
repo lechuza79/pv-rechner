@@ -252,6 +252,24 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(p.status).toBe("aktiv"); // roof PV keeps running
     expect(p.percentOfCost).toBe(0.2);
   });
+
+  // Kreis Bergstraße: die hinterlegte Programmseite ist beim Umbau der Kreis-Site
+  // verschwunden (404, am 28.07.2026 im Browser geprüft — auch die übergeordnete
+  // Förderprogramm-Rubrik gibt es nicht mehr). Ein 404 als Quelle unter einem
+  // Förderbetrag ist schlimmer als keine Quelle: Die Beträge stammen aus der
+  // 2024er-Runde, 2025 gab es kein Programm, 2026 ist keines aufgelegt.
+  it("Bergstraße: tote Quelle ersetzt, Speicher-Satz zieht weiterhin nicht ab", () => {
+    const p = getFundingProgram("bergstrasse-speicher")!;
+    expect(p.status).toBe("ausgeschoepft");
+    expect(p.url).not.toMatch(/foerderprogramme\/2024-pv-stromspeicher/);
+    expect(p.url).toMatch(/^https:\/\/www\.kreis-bergstrasse\.de\//);
+    // Die Rate bleibt dokumentiert, wird aber nicht angerechnet.
+    expect(fundingAmount(p, 10, 10, 25000).total).toBe(1800);
+    expect(fundingAmount(p, 10, 10, 25000).active).toBe(false);
+    expect(stackFunding(fundingForAgs("06431000"), 10, 10, 25000).total).toBe(0);
+    // Keine abgelaufene Terminzusage mehr im Fließtext ("ab Mitte Juli").
+    expect(p.conditions.join(" ")).not.toMatch(/Mitte Juli/);
+  });
 });
 
 describe("atlas-cities registry", () => {

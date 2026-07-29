@@ -26,8 +26,24 @@
  *   CRON_SECRET            für --alert
  */
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { DB_READ_TIMEOUT_MS } from "../lib/db-timeout";
+
+// In der GitHub-Action kommen die Zugangsdaten aus den Repo-Secrets. Lokal
+// standen sie nicht zur Verfügung — der Check fiel dann still auf die feste
+// Gemeindeliste zurück, maß Cache-Treffer statt Kaltrender und ließ die
+// Datenbank-Messung ganz aus. Ein Wächter, der lokal etwas anderes prüft als
+// in der Action, ist keine Probe aufs Exempel.
+(function loadEnvFile() {
+  const envPath = resolve(dirname(fileURLToPath(import.meta.url)), "..", ".env.local");
+  if (!existsSync(envPath)) return;
+  for (const line of readFileSync(envPath, "utf8").split("\n")) {
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+  }
+})();
 
 const BASE_URL = (process.env.HEALTH_BASE_URL ?? "https://solar-check.io").replace(/\/$/, "");
 const ALERT = process.argv.includes("--alert");
@@ -58,6 +74,10 @@ const PAGES = [
   "/strommix-deutschland",
   "/solar-atlas",
 ];
+
+/** Adresse, die es garantiert nie geben wird — sie muss 404 antworten, nicht 200.
+ *  Drei Segmente, damit sie die Gemeinde-Route trifft (die tiefste und teuerste). */
+const SOFT_404_PFAD = "/solar-atlas/kein-land/kein-kreis/keine-gemeinde";
 
 /** Notnagel, falls die DB gerade nicht erreichbar ist — echte, dauerhaft
  *  existierende Gemeinden. Bewusst klein: der Regelweg ist die Zufallsauswahl. */
@@ -113,11 +133,23 @@ async function randomGemeindePaths(count: number): Promise<string[]> {
     return res.ok ? ((await res.json()) as Record<string, string | null>[]) : [];
   };
 
-  // Zufälliger Ausschnitt statt Vollscan: ein Offset in die Gemeindeliste.
-  const offset = Math.floor(Math.random() * 9000);
-  const gem = await q(
-    `mastr_regions?select=slug,parent_region_id&level=eq.gemeinde&slug=not.is.null&limit=${count}&offset=${offset}`,
-  );
+  // JE STICHPROBE EIN EIGENER ZUFALLS-OFFSET, nicht ein Ausschnitt von `count`
+  // aufeinanderfolgenden Zeilen: die Gemeindeliste ist nach AGS sortiert, ein
+  // zusammenhängender Ausschnitt liegt also fast immer im GLEICHEN Landkreis.
+  // Die teuren Daten (Kreis-Rangliste, Kreis-/Land-Kennzahlen) sind aber je
+  // Kreis gecacht — nur die erste Seite eines Kreises ist wirklich kalt, die
+  // übrigen liefen auf einem warmen Cache und meldeten beruhigende Zeiten für
+  // einen Fall, den kein Erstbesucher je erlebt (gemessen 28.07.2026: gleicher
+  // Kreis 1,0–1,2 s, verteilt über die Republik dieselbe Streuung — aber eben
+  // ohne den Cache-Vorteil).
+  const gem: Record<string, string | null>[] = [];
+  for (let i = 0; i < count; i++) {
+    const offset = Math.floor(Math.random() * 10000);
+    const [row] = await q(
+      `mastr_regions?select=slug,parent_region_id&level=eq.gemeinde&slug=not.is.null&limit=1&offset=${offset}`,
+    );
+    if (row) gem.push(row);
+  }
   if (!gem.length) return [];
 
   // Zu jeder Gemeinde Kreis + Bundesland auflösen (der Pfad ist dreistufig).
@@ -149,6 +181,176 @@ async function randomGemeindePaths(count: number): Promise<string[]> {
  *  Notbremse trifft ja auch die langsamste Seite zuerst. */
 const COLD_SAMPLES = 3;
 
+/**
+ * Die teuersten Datenbank-Aufrufe des Atlas, direkt gemessen — unabhängig davon,
+ * ob gerade jemand die Seiten aufruft.
+ *
+ * WARUM ZUSÄTZLICH ZU DEN SEITENZEITEN (28.07.2026): Der Seiten-Kaltrender ist
+ * ein Spätindikator. Eine Gemeindeseite lud allein in 1,2 s — grün — während
+ * dieselbe Seite jeden Aufruf zwei vollständige Durchläufe über 591.024
+ * Datenbankzeilen kostete. Sobald mehrere Seiten gleichzeitig aufgebaut wurden
+ * (Crawler, Aufwärmlauf, Suchmaschine), stauten die sich auf und rissen die
+ * 8-s-Notbremse: 3,2–6,3 s je Seite und reihenweise Abbrüche. Der Check meldete
+ * bis dahin grün, weil er immer nur EINE Seite allein maß.
+ *
+ * Ein einzelner Aufruf dieser Funktionen dauert bei gesundem Zustand ~0 ms
+ * Datenbankarbeit (der Rest ist Netzlaufzeit von diesem Rechner aus). Zieht der
+ * Wert auf ein Vielfaches an, ist ein Index unbenutzt oder ein vorberechneter
+ * Rollup leer — beides lange bevor eine Seite auffällig wird.
+ */
+const DB_PROBE_WARN_MS = 250;
+const DB_PROBE_FAIL_MS = 400;
+/** Messungen je Abfrage; gewertet wird die schnellste (siehe dbProbeVerdictRelativ). */
+const DB_PROBE_RUNS = 3;
+
+type DbProbe = { label: string; ms: number; baselineMs: number; error?: string };
+
+/**
+ * Bewertung einer einzelnen Atlas-Abfrage.
+ *
+ * Die Schwellen sitzen bewusst weit unter dem, was auf der Seite auffällt: der
+ * kaputte Zustand lag bei ~600 ms je Aufruf und ZWEI Aufrufen pro Gemeindeseite,
+ * der gesunde bei ~80 ms (davon fast alles Netzlaufzeit). Rot bei 400 ms trifft
+ * damit den Rückfall sicher, ohne bei einem langsamen Netz anzuschlagen.
+ *
+ * Erzwungen von lib/__tests__/health-check-db-probe.test.ts — wer eine Schwelle
+ * anhebt, damit ein Befund verschwindet, lässt den Test fallen. Genau das ist
+ * die Regel aus CLAUDE.md („kein Hochsetzen der Schwellen, damit ein Befund
+ * verschwindet"): das versteckt den Rückfall, statt ihn zu beheben.
+ */
+export function dbProbeVerdict(ms: number): "gruen" | "gelb" | "rot" {
+  if (ms >= DB_PROBE_FAIL_MS) return "rot";
+  if (ms >= DB_PROBE_WARN_MS) return "gelb";
+  return "gruen";
+}
+
+/**
+ * Struktureller Rückfall — oder ist gerade nur viel los?
+ *
+ * Beide sehen in der reinen Millisekundenzahl gleich aus, verlangen aber
+ * gegenteilige Reaktionen. Am 28.07.2026 meldete der Check 562/576 ms und damit
+ * ROT; die Funktionen in der Datenbank waren aber unverändert richtig, die Last
+ * kam von einem parallel laufenden Auswertungs-Skript. Zehn Minuten später lagen
+ * dieselben Abfragen wieder bei 62–94 ms.
+ *
+ * Die Unterscheidung liefert ein LEICHTER Vergleichs-Read (Punkt-Zugriff auf
+ * eine Mini-Tabelle) im selben Lauf:
+ *   - Gesund kostet eine Atlas-Abfrage praktisch nur Netzlaufzeit, ist also
+ *     etwa so schnell wie der Vergleichs-Read.
+ *   - Beim Rückfall auf den vollen Tabellendurchlauf kommen ~500 ms DB-Arbeit
+ *     obendrauf, während der Vergleichs-Read schnell bleibt.
+ *   - Ist die Datenbank nur beschäftigt, werden BEIDE langsamer.
+ * Gewertet wird deshalb der Abstand zum Vergleichs-Read, nicht der Rohwert.
+ *
+ * NACHTRAG 28.07.2026 — der Vergleichs-Read allein reicht nicht. Er fängt
+ * gleichzeitige Datenbank-Last ab, aber nicht die Streuung einer EINZELNEN
+ * Messung. Direkt nach dem Einbau meldete der Check wieder ROT: „Gemeinde-
+ * Kennzahlen 553 ms gegen Vergleichs-Read 211 ms". Vier Wiederholungen derselben
+ * Abfrage ergaben 297 / 102 / 368 / 83 ms — dieselbe Abfrage, viermal, Faktor 4
+ * dazwischen. Kein Rückfall, sondern Rauschen aus Verbindungsaufbau,
+ * Plan-Cache und Netzjitter.
+ *
+ * Deshalb wird jede Abfrage MEHRFACH gemessen und die SCHNELLSTE gewertet
+ * (`DB_PROBE_RUNS`). Das Minimum ist hier der richtige Schätzer, nicht der
+ * Mittelwert: Störungen können eine Messung nur langsamer machen, nie
+ * schneller. Bleibt selbst die schnellste Messung weit über dem Vergleichs-Read,
+ * ist es ein struktureller Befund — im Juli lagen alle Messungen konstant bei
+ * ~600 ms, der wäre damit weiterhin sicher aufgefallen.
+ *
+ * Das ist eine Messverbesserung, KEIN Aufweichen: die Schwellen bleiben, wo sie
+ * sind (das wäre das Verstecken, das CLAUDE.md verbietet). Geschärft wird nur
+ * die Frage — erst „ist die Datenbank beschäftigt?", jetzt zusätzlich „ist das
+ * überhaupt reproduzierbar?".
+ */
+export function dbProbeVerdictRelativ(ms: number, baselineMs: number): "gruen" | "gelb" | "rot" {
+  // Der Vergleichs-Read schwankt selbst, und unter seinen Wert kann keine
+  // Abfrage fallen. Der Sockel von 60 ms verhindert, dass ein zufällig sehr
+  // schneller Vergleichs-Read die Bewertung künstlich verschärft.
+  return dbProbeVerdict(ms - Math.max(baselineMs, 60) + 60);
+}
+
+async function measureAtlasQueries(): Promise<DbProbe[]> {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+  if (!url || !key) return [];
+
+  /** Eine Messreihe; zurück kommt die schnellste Zeit. */
+  const fastestOf = async (runs: number, once: () => Promise<number>): Promise<number> => {
+    let best = Infinity;
+    for (let i = 0; i < runs; i++) best = Math.min(best, await once());
+    return best === Infinity ? 0 : best;
+  };
+
+  // Vergleichs-Read VOR den Atlas-Abfragen: dieselbe Strecke, aber ohne
+  // nennenswerte Datenbankarbeit. Er trennt „Abfrage kaputt" von „Datenbank
+  // gerade beschäftigt" (siehe dbProbeVerdictRelativ). Auch er wird mehrfach
+  // gemessen — sonst stünde eine schnellste Abfrage gegen einen zufällig
+  // langsamen Vergleichswert.
+  const baselineMs = await fastestOf(DB_PROBE_RUNS, async () => {
+    const started = Date.now();
+    try {
+      const r = await fetch(`${url}/rest/v1/mastr_meta?select=imported_at&id=eq.1`, {
+        headers: { apikey: key, Authorization: `Bearer ${key}` },
+        signal: AbortSignal.timeout(20000),
+      });
+      await r.text();
+      return Date.now() - started;
+    } catch {
+      // Scheitert der Vergleichs-Read, bleibt baselineMs bei 0 — dann gilt wieder
+      // die harte Schwelle. Die Prüfung wird durch einen Ausfall nie milder.
+      return Infinity;
+    }
+  });
+
+  // Die drei Aufrufe, die jede Gemeindeseite macht — je einer auf Gemeinde-,
+  // Kreis- und Bundesebene, damit auch ein leerer Rollup auffällt.
+  const calls: { label: string; fn: string; args: Record<string, unknown> }[] = [
+    {
+      label: "Gemeinde-Kennzahlen",
+      fn: "mastr_region_series",
+      args: { p_prefix: "05558028", p_traeger: ["solar", "speicher", "wind", "biomasse", "wasser"] },
+    },
+    {
+      label: "Kreis-Rangliste",
+      fn: "mastr_children_by_year",
+      args: { p_prefix: "05558", p_child_len: 8, p_traeger: ["solar", "speicher"], p_year_min: null },
+    },
+    {
+      label: "Bundesland-Kennzahlen",
+      fn: "mastr_region_series",
+      args: { p_prefix: "05", p_traeger: ["solar", "speicher", "wind", "biomasse", "wasser"] },
+    },
+  ];
+
+  const out: DbProbe[] = [];
+  for (const c of calls) {
+    // Ein Fehler beendet die Messreihe sofort: Ein 500er ist ein Befund für
+    // sich, und ihn dreimal auszulösen belastet nur die Datenbank
+    // (siehe [[feedback_db_schonen]]).
+    let error: string | undefined;
+    const ms = await fastestOf(DB_PROBE_RUNS, async () => {
+      if (error) return Infinity;
+      const started = Date.now();
+      try {
+        const res = await fetch(`${url}/rest/v1/rpc/${c.fn}`, {
+          method: "POST",
+          headers: { apikey: key, Authorization: `Bearer ${key}`, "content-type": "application/json" },
+          body: JSON.stringify(c.args),
+          signal: AbortSignal.timeout(20000),
+        });
+        const body = await res.text();
+        if (!res.ok) error = `${res.status} ${body.slice(0, 120)}`;
+        return Date.now() - started;
+      } catch (e) {
+        error = e instanceof Error ? e.message : "Abbruch";
+        return Date.now() - started;
+      }
+    });
+    out.push({ label: c.label, ms, baselineMs, error });
+  }
+  return out;
+}
+
 /** Misst echte Kaltrender. Ein Treffer im Cache misst nichts Interessantes (dann
  *  liefert das CDN eine fertige Seite aus), solche Versuche zählen nicht mit. */
 async function measureColdAtlas(): Promise<{ worst: Probe; all: Probe[] } | null> {
@@ -157,7 +359,11 @@ async function measureColdAtlas(): Promise<{ worst: Probe; all: Probe[] } | null
   for (const path of candidates) {
     if (hits.length >= COLD_SAMPLES) break;
     const p = await probe("Atlas-Gemeinde (kalt)", path);
-    if (p.cache !== "HIT") hits.push(p);
+    // NUR `MISS` ist ein echter Kaltaufbau. `HIT` und `STALE` liefern beide eine
+    // fertige Seite aus dem CDN aus (bei STALE wird nur im Hintergrund erneuert)
+    // — beides misst 0,05 s und sagt über den Aufbau nichts. Vorher zählte STALE
+    // mit und konnte einen Lauf grün melden, in dem gar nichts aufgebaut wurde.
+    if (p.cache === "MISS") hits.push(p);
   }
   if (!hits.length) return null;
   return { worst: hits.reduce((a, b) => (b.seconds > a.seconds ? b : a)), all: hits };
@@ -206,6 +412,133 @@ function verdict(seconds: number, limits: { warn: number; fail: number }): "grue
   return "gruen";
 }
 
+// ─── Cache-Wirksamkeit ───────────────────────────────────────────────────────
+//
+// Antwortzeit und Statuscode sagen NICHT, ob eine Seite noch vom CDN
+// ausgeliefert wird. Genau daran ist der Juli-Ausfall vorbeigelaufen: Die
+// Atlas-Seiten wurden live ungecacht ausgeliefert, obwohl im Code `revalidate`
+// stand (fehlendes generateStaticParams + ungecachte Fetches). Sichtbar war das
+// nur an `x-vercel-cache` — gemessen hat es niemand, und einzeln aufgerufen war
+// die Seite schnell genug, um nicht aufzufallen. Erst die Summe riss die
+// Notbremse.
+//
+// Die Probe stellt die Frage, die der Statuscode nicht beantwortet: Kommt
+// dieselbe URL beim ZWEITEN Abruf aus dem Cache? Ein dauerhaftes MISS heißt,
+// dass jeder Besucher den vollen Aufbau bezahlt.
+//
+// Bewusst NICHT über den Cache-Control-Header geprüft: Vercel ersetzt den
+// Origin-Header, bevor er den Client erreicht (ISR-Seiten kommen als
+// `max-age=0, must-revalidate` an, API-Routen als nacktes `public`). Wer dort
+// nach `s-maxage` sucht, misst eine Zahl, die es im Netz gar nicht gibt.
+const CACHE_PFLICHT = [
+  { label: "Startseite", path: "/" },
+  { label: "Atlas-Einstieg", path: "/solar-atlas" },
+  { label: "Förder-Bundeslandseite", path: "/photovoltaik-foerderung/bayern" },
+  { label: "Ratgeber", path: "/ratgeber/gasheizung-oder-waermepumpe" },
+  { label: "Standort-Ertrag (30 Tage haltbar)", path: "/api/pvgis?lat=52.52&lon=13.405&plzPrefix=10" },
+  { label: "Kühlgradstunden (30 Tage haltbar)", path: "/api/cooling-degree?lat=52.52&lon=13.405&plzPrefix=10" },
+];
+
+/** Zustände, die belegen, dass die Antwort aus dem CDN kam. */
+const CACHE_TREFFER = new Set(["HIT", "STALE", "PRERENDER", "REVALIDATED"]);
+
+export type CacheBefund = { label: string; ersterAbruf: string; zweiterAbruf: string; gecacht: boolean };
+
+/**
+ * Zwei Abrufe derselben URL. Der erste darf MISS sein (er füllt den Cache),
+ * der zweite muss aus dem Cache kommen.
+ *
+ * `bypass` wird gesondert behandelt: dann greift eine bewusste Ausnahme
+ * (Middleware-Matcher, no-store im Code) und die Seite gehört nicht in diese
+ * Liste — das ist ein Befund über die LISTE, nicht über die Seite.
+ */
+export function cacheBefundAusZustaenden(label: string, erster: string, zweiter: string): CacheBefund {
+  return {
+    label,
+    ersterAbruf: erster || "—",
+    zweiterAbruf: zweiter || "—",
+    gecacht: CACHE_TREFFER.has(zweiter.toUpperCase()),
+  };
+}
+
+/** Wie oft nachgefasst wird, bevor „nicht gecacht" feststeht. */
+const CACHE_VERSUCHE = 3;
+
+async function pruefeCacheWirksamkeit(): Promise<CacheBefund[]> {
+  const befunde: CacheBefund[] = [];
+  for (const { label, path } of CACHE_PFLICHT) {
+    const erster = await probe(label, path);
+    // Nur bei erfolgreicher erster Antwort ist die Cache-Frage überhaupt
+    // sinnvoll — ein 500er ist ein anderer Befund und wird oben schon gemeldet.
+    if (erster.status !== 200) {
+      befunde.push(cacheBefundAusZustaenden(label, erster.cache, "kein 200"));
+      continue;
+    }
+
+    // Mehrfach nachfassen, bevor der Befund steht. Ein einzelner Fehlschlag
+    // beweist nichts: Aufeinanderfolgende Abrufe landen nicht zwingend auf
+    // demselben CDN-Knoten, und ein Eintrag kann zwischendurch verdrängt
+    // werden. Beim ersten scharfen Lauf (29.07.2026) meldete genau das die
+    // Kühlgradstunden als ungecacht — eine Minute später kamen sie sauber als
+    // Treffer zurück. Ein Wächter, der so etwas rot meldet, startet den Autofix
+    // ohne Grund und wird nach zwei Wochen weggefiltert; dann geht auch der
+    // echte Befund unter.
+    //
+    // Die Unterscheidung trägt trotzdem: Eine wirklich ungecachte Route
+    // verfehlt JEDEN Versuch (nachgestellt an /api/prices/health, bewusst
+    // no-store), eine gesunde trifft spätestens beim zweiten.
+    let letzter = erster.cache;
+    for (let versuch = 0; versuch < CACHE_VERSUCHE; versuch++) {
+      const weiterer = await probe(label, path);
+      letzter = weiterer.cache;
+      if (cacheBefundAusZustaenden(label, erster.cache, letzter).gecacht) break;
+    }
+    befunde.push(cacheBefundAusZustaenden(label, erster.cache, letzter));
+  }
+  return befunde;
+}
+
+/** Ab so vielen roten Läufen hintereinander kommt der Betreiber ins Spiel. */
+export const ESKALATION_AB_LAEUFEN = 3;
+
+/**
+ * Kommt die automatische Reparatur nicht weiter?
+ *
+ * Ein roter Lauf ist KEINE Nachricht an den Betreiber: der Workflow wird rot,
+ * die Autofix-Action springt an, und in aller Regel ist die Sache beim nächsten
+ * Lauf erledigt. Erst wenn dieselbe Stelle mehrere Läufe hintereinander rot
+ * bleibt, ist die Selbstheilung erkennbar gescheitert — und dann ist es eine
+ * Entscheidung („soll ich das anders angehen?"), keine technische Aufgabe.
+ *
+ * Gezählt wird über die GitHub-API statt über eine Zustandsdatei: der Check
+ * läuft in einer wegwerfbaren Umgebung, und eine Datei, die nur bei
+ * Selbstheilung committet wird, würde genau im Fehlerfall nichts festhalten.
+ *
+ * Ohne Token (lokaler Lauf) wird NICHT eskaliert — im Zweifel keine Mail.
+ */
+export function eskalationNoetig(vorherigeLaeufe: ("success" | "failure" | string)[]): boolean {
+  if (vorherigeLaeufe.length < ESKALATION_AB_LAEUFEN - 1) return false;
+  // -1, weil der laufende (rote) Durchgang selbst mitzählt.
+  return vorherigeLaeufe.slice(0, ESKALATION_AB_LAEUFEN - 1).every((c) => c === "failure");
+}
+
+async function letzteLaufErgebnisse(): Promise<string[]> {
+  const token = process.env.GITHUB_TOKEN;
+  const repo = process.env.GITHUB_REPOSITORY;
+  if (!token || !repo) return [];
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${repo}/actions/workflows/health-check.yml/runs?status=completed&per_page=5`,
+      { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }, signal: AbortSignal.timeout(10000) },
+    );
+    if (!res.ok) return [];
+    const data = (await res.json()) as { workflow_runs?: { conclusion: string }[] };
+    return (data.workflow_runs ?? []).map((r) => r.conclusion);
+  } catch {
+    return [];
+  }
+}
+
 async function main() {
   const lines: string[] = [];
   // Die drei Kategorien entscheiden, WER etwas tut — und der Betreiber ist
@@ -213,14 +546,19 @@ async function main() {
   // einen Befund hinzuweisen, den er nicht selbst beheben kann, ist keine
   // Benachrichtigung, sondern eine Sackgasse.
   //
-  // `selfHealed` = hat sich schon repariert, reine Protokollzeile.
-  // `warnings`   = auffällig, nichts zu tun, steht im Log.
-  // `forClaude`  = braucht Analyse und einen Code-Fix → geht an Claude
-  //                (Workflow rot + der stündliche Wächter greift es auf).
-  //                NUR wenn Claude selbst nicht weiterkommt, wird daraus eine
-  //                echte Frage an den Betreiber — formuliert als Entscheidung,
-  //                nicht als Aufgabe.
+  // `selfHealed`  = hat sich schon repariert, reine Protokollzeile.
+  // `warnings`    = auffällig, nichts zu tun, steht im Log.
+  // `forClaude`   = braucht Analyse und einen Code-Fix → geht an Claude
+  //                 (Workflow rot + die Autofix-Action greift es auf).
+  //                 SCHICKT KEINE MAIL. Bis zum 28.07.2026 tat es das doch, mit
+  //                 dem Betreff „Handlungsbedarf" — sieben Mails in drei Tagen
+  //                 über Dinge, die der Betreiber weder beheben kann noch soll.
+  //                 Erst wenn die Selbstheilung mehrere Läufe hintereinander
+  //                 nicht weiterkommt, wird daraus eine Frage an ihn.
+  // `forOperator` = echte Entscheidung, die nur ihm gehört (Absicht ja/nein,
+  //                 Geld, Produkt). Genau das und nur das rechtfertigt eine Mail.
   const forClaude: string[] = [];
+  const forOperator: string[] = [];
   const selfHealed: string[] = [];
   const warnings: string[] = [];
 
@@ -233,6 +571,7 @@ async function main() {
   }
   const coldResult = await measureColdAtlas();
   const cold = coldResult?.worst ?? null;
+  const dbProbes = await measureAtlasQueries();
 
   // ── Function-Region ───────────────────────────────────────────────────────
   const regions = Array.from(
@@ -255,10 +594,14 @@ async function main() {
         `nach Washington verschoben hätte. (Live läuft aktuell ${regions.join("/") || "unbekannt"}.)`,
     );
   } else if (configState === "abweichend") {
-    forClaude.push(
-      `In vercel.json steht eine andere Region als ${EXPECTED_REGION}. Das überschreibe ich nicht — wenn das ` +
-        `Absicht war, gehört der Timeout in lib/db-timeout.ts mit angehoben; wenn nicht, gehört die Zeile ` +
-        `zurück auf ["${EXPECTED_REGION}"].`,
+    // Die einzige Frage im ganzen Check, die wirklich nur der Betreiber
+    // beantworten kann: War das Absicht? Beide Antworten sind vertretbar, und
+    // eine davon eigenmächtig zu wählen wäre gefährlicher als das Problem.
+    forOperator.push(
+      `Die Server sollen laut Einstellung nicht mehr in Frankfurt laufen, sondern woanders. War das Absicht? ` +
+        `Wenn ja, ziehe ich die Zeitgrenze für Datenbank-Abfragen mit hoch (aus der Ferne dauert jeder Zugriff ` +
+        `länger). Wenn nein, setze ich Frankfurt zurück. Meine Empfehlung: zurück nach Frankfurt — dort steht ` +
+        `die Datenbank, und genau daran ist der Atlas im Juli 2026 ausgefallen.`,
     );
   } else if (configState === "nicht-lesbar") {
     forClaude.push(`vercel.json ist nicht lesbar oder kein gültiges JSON — jeder Deploy scheitert damit.`);
@@ -290,6 +633,30 @@ async function main() {
   }
   if (cold && cold.status !== 200) {
     forClaude.push(`Atlas-Gemeindeseite antwortet mit ${cold.status || "keiner Antwort"} — ${cold.url}`);
+  }
+
+  // ── Soft-404 im Atlas ─────────────────────────────────────────────────────
+  //
+  // Erfundene Atlas-Adressen antworteten bis 29.07.2026 mit HTTP 200 und der
+  // 404-Seite im Body. Ursache war ein `loading.tsx`, das eine Suspense-Grenze um
+  // die ganze Route legte: Die Hülle ging sofort raus, der Statuscode stand fest,
+  // bevor die Seite wusste, ob es die Region gibt.
+  //
+  // Warum das hier gemessen wird und nicht nur im Test: Der Test
+  // (lib/__tests__/atlas-soft-404.test.ts) nagelt die Code-STRUKTUR fest, aber ob
+  // daraus am Ende wirklich ein 404 wird, entscheidet das Framework — genau das
+  // hat sich schon einmal geändert. Ein Soft-404 ist von außen sonst unsichtbar:
+  // Die Seite ist schnell, grün und liefert 200. Nur ein Aufruf, der ein 404
+  // ERWARTET, findet ihn. Für Google zählt der Statuscode, nicht der Text.
+  const soft404 = await probe("Atlas-Fantasieadresse", SOFT_404_PFAD);
+  lines.push(`Erfundene Atlas-Adresse: HTTP ${soft404.status || "keine Antwort"} (erwartet 404)`);
+  if (soft404.status !== 404) {
+    forClaude.push(
+      `Soft-404: ${SOFT_404_PFAD} antwortet mit ${soft404.status || "keiner Antwort"} statt 404. ` +
+        `Google behandelt damit erfundene Adressen als gültige Seiten. Zuerst prüfen, ob wieder ein ` +
+        `loading.tsx unter app/(site)/solar-atlas/ liegt oder die Routing-Entscheidung hinter das ` +
+        `<Suspense> gerutscht ist.`,
+    );
   }
 
   // ── Zeiten ────────────────────────────────────────────────────────────────
@@ -324,25 +691,94 @@ async function main() {
     warnings.push("Kein echter Kaltaufbau messbar (alle geprüften Seiten lagen im Cache).");
   }
 
+  // ── Datenbank-Aufrufe einzeln ─────────────────────────────────────────────
+  // Der Frühindikator VOR dem Seiten-Frühindikator: hier fällt eine teuer
+  // gewordene Abfrage auf, solange die Seiten noch schnell sind, weil gerade
+  // niemand gleichzeitig darauf zugreift.
+  if (dbProbes.length) {
+    lines.push(
+      `Atlas-Datenbankabfragen, je schnellste aus ${DB_PROBE_RUNS} Messungen: ` +
+        `${dbProbes.map((d) => `${d.label} ${d.ms} ms`).join(" · ")}` +
+        ` (Vergleichs-Read ${dbProbes[0].baselineMs} ms)`,
+    );
+    for (const d of dbProbes) {
+      if (d.error) {
+        forClaude.push(`Die Atlas-Abfrage „${d.label}" antwortet nicht sauber: ${d.error}`);
+      } else if (dbProbeVerdictRelativ(d.ms, d.baselineMs) === "rot") {
+        forClaude.push(
+          `Die Atlas-Abfrage „${d.label}" braucht ${d.ms} ms bei einem Vergleichs-Read von ${d.baselineMs} ms — ` +
+            `und zwar in ihrem SCHNELLSTEN von ${DB_PROBE_RUNS} Versuchen, es ist also kein Ausreißer. ` +
+            `Die Differenz ist echte Datenbankarbeit und im gesunden Zustand nahe null. Sie heißt: die Abfrage läuft wieder über die ganze ` +
+            `Rohtabelle statt über den Index — entweder ist der vorberechnete Rollup leer, oder in ` +
+            `lib/mastr-region-sql.ts ist der Präfix wieder ein Parameter statt eines Literals (der Grund ` +
+            `steht dort im Kopf). Die Seiten sind dann noch schnell, kippen aber unter Parallel-Last.`,
+        );
+      } else if (dbProbeVerdictRelativ(d.ms, d.baselineMs) === "gelb") {
+        warnings.push(`Atlas-Abfrage „${d.label}" bei ${d.ms} ms (Vergleichs-Read ${d.baselineMs} ms).`);
+      }
+    }
+  }
+
+  // ── Cache-Wirksamkeit ─────────────────────────────────────────────────────
+  // Kein Zeitmaß, sondern eine Ja/Nein-Frage: Kommt die Seite beim zweiten
+  // Abruf aus dem CDN? Läuft NACH den Zeitmessungen, damit die zusätzlichen
+  // Abrufe die Kaltrender-Stichproben nicht vorwärmen.
+  const cacheBefunde = await pruefeCacheWirksamkeit();
+  const ungecacht = cacheBefunde.filter((c) => !c.gecacht);
+  lines.push(
+    `Cache-Wirksamkeit (zweiter Abruf derselben Adresse): ` +
+      `${cacheBefunde.length - ungecacht.length}/${cacheBefunde.length} aus dem CDN` +
+      (ungecacht.length ? ` — daneben: ${ungecacht.map((c) => `${c.label} (${c.zweiterAbruf})`).join(", ")}` : ""),
+  );
+  for (const c of ungecacht) {
+    forClaude.push(
+      `„${c.label}" wird nicht mehr aus dem CDN ausgeliefert: der zweite Abruf derselben Adresse kam als ` +
+        `${c.zweiterAbruf} zurück (erster: ${c.ersterAbruf}), müsste aber ein Cache-Treffer sein. ` +
+        `Das heißt, JEDER Besucher zahlt den vollen Aufbau — die Seite ist dann noch schnell genug, kippt aber ` +
+        `unter Parallel-Last, und genau so ist der Juli-Ausfall entstanden. Übliche Ursachen: bei einer Seite ein ` +
+        `fehlendes generateStaticParams oder ein Aufruf, der sie dynamisch macht (Cookies, Header, searchParams); ` +
+        `bei einer API-Route ein fehlender oder überschriebener Cache-Control-Header. ` +
+        `Ist die Ausnahme gewollt, gehört der Eintrag aus CACHE_PFLICHT heraus — mit Begründung.`,
+    );
+  }
+
   // ── Bericht ───────────────────────────────────────────────────────────────
-  const ampel = forClaude.length ? "ROT" : selfHealed.length ? "REPARIERT" : warnings.length ? "GELB" : "GRUEN";
+  const ampel =
+    forOperator.length || forClaude.length ? "ROT" : selfHealed.length ? "REPARIERT" : warnings.length ? "GELB" : "GRUEN";
   const report = [
     `Solar Check Gesundheitscheck: ${ampel}`,
     "",
     ...lines,
     ...(selfHealed.length ? ["", "Selbst repariert (nichts zu tun):", ...selfHealed.map((s) => `- ${s}`)] : []),
+    ...(forOperator.length ? ["", "Entscheidung des Betreibers:", ...forOperator.map((p) => `- ${p}`)] : []),
     ...(forClaude.length ? ["", "Fuer Claude zur Analyse:", ...forClaude.map((p) => `- ${p}`)] : []),
     ...(warnings.length ? ["", "Auffaellig (nichts zu tun):", ...warnings.map((w) => `- ${w}`)] : []),
   ].join("\n");
 
   console.log(report);
 
-  // BENACHRICHTIGUNG NUR, WENN DER BETREIBER SELBST ETWAS TUN MUSS.
-  // Nicht bei Gelb (auffällig, aber nichts zu tun) und ausdrücklich auch nicht
-  // bei Selbstheilung — was der Check allein repariert hat, ist keine Nachricht
-  // wert, sondern eine Protokollzeile. Wer für jede Regung eine Mail bekommt,
+  // BENACHRICHTIGUNG NUR, WENN DER BETREIBER SELBST ETWAS ENTSCHEIDEN MUSS.
+  // Nicht bei Gelb, nicht bei Selbstheilung — und ausdrücklich auch nicht bei
+  // einem roten Lauf, der an Claude geht: dafür ist der Workflow-Fehlschlag da,
+  // der die Autofix-Action startet. Wer für jede Regung eine Mail bekommt,
   // filtert den Absender weg und verpasst dann die eine, die zählt.
-  if (ALERT && forClaude.length) {
+  //
+  // Die eine Ausnahme ist der Fall, in dem die Automatik erkennbar nicht
+  // weiterkommt: bleibt es mehrere Läufe hintereinander rot, wird aus dem
+  // technischen Befund eine Frage an den Betreiber.
+  const vorlaeufe = forClaude.length ? await letzteLaufErgebnisse() : [];
+  const festgefahren = forClaude.length > 0 && eskalationNoetig(vorlaeufe);
+  const entscheidungen = [
+    ...forOperator,
+    ...(festgefahren
+      ? [
+          `Seit ${ESKALATION_AB_LAEUFEN} Prüfläufen in Folge komme ich an derselben Stelle nicht weiter: ` +
+            `${forClaude[0]} Soll ich das größer angehen (mehr Zeit dafür einplanen), oder lässt du es vorerst so?`,
+        ]
+      : []),
+  ];
+
+  if (ALERT) {
     const secret = process.env.CRON_SECRET;
     if (!secret) {
       console.error("\n--alert gesetzt, aber CRON_SECRET fehlt — keine Meldung verschickt.");
@@ -351,12 +787,24 @@ async function main() {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${secret}` },
         body: JSON.stringify({
-          subject: `Handlungsbedarf — Gesundheitscheck ${ampel}`,
-          body: report,
+          subject: entscheidungen.length ? "Gesundheitscheck: eine Entscheidung für dich" : `Gesundheitscheck ${ampel}`,
+          decisions: entscheidungen,
+          done: selfHealed,
+          details: report,
+          // Ohne Entscheidung ist der Lauf an Claude adressiert — die Schleuse in
+          // /api/alert hält ihn dann zurück, statt ihn zuzustellen.
+          audience: entscheidungen.length ? "operator" : "claude",
           tag: "health-check",
         }),
       });
-      console.log(res.ok ? "\nMeldung verschickt (Handlungsbedarf)." : `\nMeldung fehlgeschlagen: ${res.status}`);
+      const info = (await res.json().catch(() => ({}))) as { skipped?: boolean; reason?: string };
+      console.log(
+        res.ok
+          ? info.skipped
+            ? `\nKeine Mail (${info.reason}).`
+            : "\nMeldung verschickt (Entscheidung liegt beim Betreiber)."
+          : `\nMeldung fehlgeschlagen: ${res.status}`,
+      );
     }
   }
 
@@ -364,7 +812,7 @@ async function main() {
   //   2 = selbst repariert → die Action committet die Korrektur und deployt
   //   1 = braucht Analyse → Workflow rot, Claude-Autofix springt an
   //   0 = alles im Rahmen
-  if (forClaude.length) process.exit(1);
+  if (forClaude.length || forOperator.length) process.exit(1);
   if (selfHealed.length) process.exit(2);
 }
 

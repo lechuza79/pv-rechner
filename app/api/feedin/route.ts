@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabase-server";
-import { DEFAULT_FEED_IN, type FeedInRates } from "../../../lib/feedin-config";
+import { feedInRatesFor, type FeedInRates } from "../../../lib/feedin-config";
 
 let cached: { data: FeedInRates; ts: number } | null = null;
 const TTL = 60 * 60 * 1000; // 1 hour
@@ -21,8 +21,12 @@ export async function GET() {
     });
   }
 
+  // Evaluated per request, not at module load: the rates change on a fixed
+  // calendar date (Feb 1 / Aug 1), and this route is what the calculator reads.
+  // A module-level constant would keep serving the previous half-year until the
+  // lambda happens to restart.
   if (!supabase) {
-    return NextResponse.json(DEFAULT_FEED_IN);
+    return NextResponse.json(feedInRatesFor());
   }
 
   try {
@@ -35,7 +39,7 @@ export async function GET() {
       .single();
 
     if (error || !data) {
-      return NextResponse.json(DEFAULT_FEED_IN);
+      return NextResponse.json(feedInRatesFor());
     }
 
     const rates: FeedInRates = {
@@ -54,7 +58,7 @@ export async function GET() {
       headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" },
     });
   } catch {
-    return NextResponse.json(DEFAULT_FEED_IN);
+    return NextResponse.json(feedInRatesFor());
   }
 }
 

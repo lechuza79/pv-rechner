@@ -17,9 +17,12 @@
  *   Jahresebene nach Energieträger ausgewiesen (existieren dort nicht) — daher
  *   fehlen sie bewusst und werden im Chart nicht interpoliert.
  *
- * WARTUNG: einmal jährlich aktualisieren, wenn AGEB/UBA die neuen Jahreswerte
- *   veröffentlichen (typisch Frühjahr für das Vorjahr). Kein Auto-Update — dies
- *   ist ein bewusster Stichtags-Datenstand, siehe `dataAsOf`.
+ * WARTUNG: einmal jährlich, wenn AGEB/UBA die neuen Jahreswerte veröffentlichen
+ *   (typisch Frühjahr für das Vorjahr). Kein Auto-Update — bewusster Stichtags-
+ *   Datenstand, siehe `dataAsOf`. Prozedur: `scripts/strommix-reihen-verify.md`
+ *   (Teil B). Erinnert vom monatlichen `co2-prognose-monitor` (Schritt 4b) —
+ *   dieser Satz allein hat die CO₂-Reihe unten NICHT davor bewahrt, ein Jahr
+ *   veraltet zu sein: ein Wartungskommentar ist kein Wecker.
  */
 
 import { DATA_SOURCES, sourceLabel } from "./data-sources";
@@ -124,48 +127,72 @@ export const STROMMIX_HISTORY_SERIES: StrommixSeries[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// CO₂-Intensität des deutschen Strommix (g CO₂/kWh), 1990–2024.
+// CO₂-Intensität des deutschen Strommix (g CO₂/kWh), 1990–2025.
 // Direkter CO₂-Emissionsfaktor des Strommix (ohne Vorketten).
 // Quelle: Umweltbundesamt, "Entwicklung der spezifischen Treibhausgas-
-//   Emissionen des deutschen Strommix 1990–2024" (CLIMATE CHANGE 13/2025),
-//   Tabelle 2. Werte 2023/2024 sind UBA-Schätzungen aus derselben Publikation.
-//   Nutzungsrecht wie oben (§ 12a EGovG), Datenbasis AGEB/AGEE-Stat/Destatis.
+//   Emissionen des deutschen Strommix in den Jahren 1990–2025"
+//   (CLIMATE CHANGE 16/2026, März 2026), Tabelle 2, Spalte "CO₂-Emissions-
+//   faktor Strommix" bzw. "Kohlendioxidemissionen der Stromerzeugung".
+//   Nutzungsrecht: § 12a EGovG (siehe DATA_SOURCES.uba in lib/data-sources.ts —
+//   das UBA führt den Namen "dl-de/by-2-0" für seine Daten nirgends, die
+//   Bedingungen sind inhaltsgleich). Datenbasis AGEB/AGEE-Stat/Destatis.
+//   Volltext im Repo: docs/quellen/. Am 27.07.2026 Zeile für Zeile gegen die
+//   Tabelle geprüft (Seite 14–16 des PDF).
+//
+// ACHTUNG BEI DER PFLEGE — die Reihe ist NICHT nur "hinten anhängen": Das UBA
+//   revidiert bei jeder Ausgabe auch zurückliegende Jahre. Beim Wechsel von
+//   13/2025 auf 16/2026 haben sich 14 der 35 Altwerte geändert, die frühen
+//   1990er um 1–2 g/kWh, 2023 und 2024 deutlich (386→379 bzw. 363→353), weil
+//   damalige Schätzungen durch belastbare Daten ersetzt wurden. Wer nur ein
+//   Jahr anhängt, lässt den Rest der Kurve still veralten.
+//
+// Reifegrad der letzten beiden Jahre (Fußnoten der Tabelle): 2024 ist
+//   "vorläufig", 2025 "geschätzt". Beides sind die amtlichen Werte, aber sie
+//   werden sich in der nächsten Ausgabe noch bewegen.
+//
+// WARTUNG: Prozedur in `scripts/strommix-reihen-verify.md` (Teil A) — dort steht
+//   auch, WELCHE der acht Tabellenspalten die richtige ist. Der monatliche
+//   `co2-prognose-monitor` (Schritt 4b) erkennt eine neue Ausgabe und zieht die
+//   Reihen selbst nach — aber nur über den Council (Teil C), der die wörtliche
+//   Spaltenüberschrift im PDF prüft. Grund: Die Nachbarspalten liefern
+//   rechnerisch ununterscheidbare Zahlen, der Realitäts-Anker im Test fängt nur
+//   den groben Fehlgriff. Wer hier von Hand ändert, geht denselben Weg.
 // ---------------------------------------------------------------------------
 
 export const CO2_INTENSITY_META = {
   unit: "g CO₂/kWh",
   metric: "Direkter CO₂-Emissionsfaktor des Strommix",
-  source: `${sourceLabel(DATA_SOURCES.uba)}, CLIMATE CHANGE 13/2025`,
+  source: `${sourceLabel(DATA_SOURCES.uba)}, CLIMATE CHANGE 16/2026`,
   sourceUrl:
-    "https://www.umweltbundesamt.de/publikationen/entwicklung-der-spezifischen-treibhausgas-11",
+    "https://www.umweltbundesamt.de/publikationen/entwicklung-der-spezifischen-treibhausgas-0",
   license: DATA_SOURCES.uba.license,
   licenseUrl: DATA_SOURCES.uba.licenseUrl,
-  dataAsOf: "2025-04",
+  dataAsOf: "2026-03",
 } as const;
 
 export const CO2_INTENSITY_YEARS: number[] = [
   1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002,
   2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015,
-  2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024,
+  2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025,
 ];
 
 /** g CO₂/kWh, index-gleich zu CO2_INTENSITY_YEARS. */
 export const CO2_INTENSITY_VALUES: number[] = [
-  764, 764, 730, 726, 722, 714, 687, 671, 673, 649, 646, 661, 656, 639, 619,
-  614, 608, 627, 583, 571, 559, 570, 572, 573, 559, 530, 524, 490, 474, 409,
-  365, 406, 433, 386, 363,
+  765, 765, 732, 727, 723, 714, 687, 671, 673, 649, 646, 661, 656, 638, 618,
+  614, 608, 626, 582, 571, 559, 570, 572, 572, 559, 529, 524, 490, 473, 409,
+  365, 406, 433, 379, 353, 344,
 ];
 
 /**
  * Absolute CO₂-Emissionen der Stromerzeugung in Mio. t, index-gleich zu
- * CO2_INTENSITY_YEARS (1990–2024). Werte 2023/2024 sind UBA-Schätzungen.
- * Quelle: siehe CO2_INTENSITY_META (CLIMATE CHANGE 13/2025, Tabelle 2, Spalte
+ * CO2_INTENSITY_YEARS (1990–2025). 2024 vorläufig, 2025 geschätzt.
+ * Quelle: siehe CO2_INTENSITY_META (CLIMATE CHANGE 16/2026, Tabelle 2, Spalte
  * "Kohlendioxidemissionen der Stromerzeugung").
  */
 export const CO2_ABSOLUTE_VALUES: number[] = [
-  366, 361, 345, 335, 335, 336, 337, 326, 330, 319, 328, 337, 339, 341, 334,
-  334, 341, 352, 328, 301, 314, 310, 320, 326, 312, 305, 304, 286, 272, 222,
-  187, 215, 223, 175, 160,
+  367, 362, 346, 336, 336, 336, 337, 326, 330, 319, 328, 337, 339, 341, 334,
+  334, 341, 352, 328, 300, 314, 310, 320, 326, 312, 305, 304, 286, 272, 222,
+  187, 215, 223, 172, 158, 154,
 ];
 
 // ---------------------------------------------------------------------------

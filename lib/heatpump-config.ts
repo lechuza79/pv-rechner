@@ -2,20 +2,20 @@
 // All constants for the heat pump calculator, centralized for future admin UI.
 // Sources documented in-line so every number is defensible.
 
-import { FUEL_PRICE } from "./constants";
+import { FUEL_PRICE, INSULATION_BESTAND, INSULATION_NEUBAU } from "./constants";
 
 export interface HeatPumpConfig {
-  // Specific heating demand (kWh/m²·a) by insulation standard
-  // Source: dena Gebäudereport, DIN V 18599, Verbraucherzentrale
-  specDemandBestand: [number, number, number];  // unsaniert / teilsaniert / saniert
-  specDemandNeubau: [number, number, number];   // EnEV 2014 / KfW 55 / KfW 40+
+  // Specific heating demand (kWh/m²·a) by insulation standard.
+  // ABGELEITET aus INSULATION_BESTAND/NEUBAU (lib/constants.ts) — dort pflegen,
+  // nicht hier. Quelle: dena Gebäudereport, DIN V 18599, dena-Verbrauchsstudie.
+  specDemandBestand: number[];   // unsaniert / teilsaniert / gut saniert / vollsaniert
+  specDemandNeubau: number[];    // EnEV 2014 / KfW 55 / KfW 40+
   // Specific HEAT LOAD (W/m²) by insulation standard — for sizing the heat pump.
   // Getrennt vom Jahresbedarf (kWh/m²·a): die Heizlast (kW) bestimmt die
-  // Anlagengröße, der Bedarf die Betriebskosten. Quelle: Verbraucherzentrale,
-  // 42watt, deutsche-sanierungsberatung (Faustwerte unsaniert 100–140,
-  // teilsaniert 70–100, saniert 30–50 W/m²).
-  specHeatLoadBestand: [number, number, number];  // unsaniert / teilsaniert / saniert
-  specHeatLoadNeubau: [number, number, number];   // EnEV / KfW 55 / KfW 40+
+  // Anlagengröße, der Bedarf die Betriebskosten. Ebenfalls abgeleitet aus
+  // INSULATION_BESTAND/NEUBAU (Feld heatLoadW).
+  specHeatLoadBestand: number[];  // unsaniert / teilsaniert / gut saniert / vollsaniert
+  specHeatLoadNeubau: number[];   // EnEV / KfW 55 / KfW 40+
   // Reale Auslegung: Wärmepumpen werden monoenergetisch meist auf ~85 % der
   // Norm-Heizlast ausgelegt (E-Heizstab deckt die wenigen kältesten Tage).
   auslegungsfaktor: number;
@@ -30,7 +30,10 @@ export interface HeatPumpConfig {
   flowTempFbh: number;     // underfloor heating
   flowTempHkNeu: number;   // modern radiators
   flowTempHkAlt: number;   // old radiators
-  // Investment (BWP Preisübersicht 2024, scaled by heat load)
+  // Investment: Bruttopreis (inkl. MwSt.) = base + perKw × Heizlast.
+  // Quelle LWWP: Verbraucherzentrale Rheinland-Pfalz, „Luft-Wasser-Wärmepumpen:
+  // Eine Auswertung von 160 Angeboten aus Rheinland-Pfalz" (Juni 2025) — echte
+  // Angebote an Ein-/Zweifamilienhäuser im Bestand, siehe Kalibrierung unten.
   investLwwpBase: number;
   investLwwpPerKw: number;
   investSwwpBase: number;
@@ -50,6 +53,7 @@ export interface HeatPumpConfig {
   // Electricity price (§14a EnWG WP tariff, BDEW 2026)
   wpTarif: number;               // €/kWh
   wpMaintenance: number;         // €/a
+  wpFixCostPerYear: number;      // €/a Grundpreis des WP-Stromzählers
   // Grid electricity CO₂ intensity (kg/kWh) for the heat pump's emissions.
   // Konservativ statisch über die Laufzeit — der reale Strommix wird sauberer,
   // d.h. die WP-Einsparung ist eher unterschätzt (kein Schönrechnen).
@@ -58,9 +62,20 @@ export interface HeatPumpConfig {
   gasPriceCtPerKwh: number;      // ct/kWh
   gasEfficiency: number;          // Brennwert default
   gasCo2PerKwh: number;          // kg CO₂/kWh
-  gasFixCostPerYear: number;     // €/a (Grundgebühr, entfällt bei WP)
+  // Grundgebühr der Referenzheizung, €/a — brennstoffabhängig, weil es hier NICHT
+  // um einen Preis geht, sondern um einen Posten, den es bei Heizöl gar nicht gibt:
+  // Gas kommt über einen Netzanschluss mit Zähler- und Netzgrundpreis, Heizöl aus
+  // einem Tank ohne laufende Anschlussgebühr. Bis 28.07.2026 wurde der Gas-Grundpreis
+  // auch der Ölheizung aufgeschlagen — 3.600 € über 20 Jahre zugunsten der Wärmepumpe.
+  fixCostPerYear: Record<"gas" | "oil", number>;
   gasMaintenance: number;        // €/a
-  gasInvestNeubau: number;       // € neue Gas-Brennwerttherme bei Neubau
+  // € für eine neue fossile Heizung — die Anschaffung, die man sich mit der
+  // Wärmepumpe spart. Gilt im Neubau UND im Bestand: Die Alternative zur
+  // Wärmepumpe ist nicht eine unsterbliche Altanlage, sondern ein Kessel, der im
+  // 20-Jahres-Horizont ersetzt werden muss. Genau dieser Neueinbau löst auch die
+  // Bio-Treppe nach § 43 GModG aus — beides gehört zusammen (siehe unten).
+  // Im Ergebnis editierbar: Wer eine junge Heizung hat, trägt 0 ein.
+  fossilErsatzInvest: number;
   // Horizon for TCO comparison
   years: number;
   // Annual inflation rates
@@ -73,10 +88,12 @@ export interface HeatPumpConfig {
 }
 
 export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
-  specDemandBestand: [220, 160, 100],
-  specDemandNeubau: [75, 50, 30],
-  specHeatLoadBestand: [115, 95, 60],   // W/m² — unsaniert/teil/saniert (Feldwerte, nicht unterdimensionieren)
-  specHeatLoadNeubau: [40, 30, 20],     // W/m²
+  // Aus der Dämmzustands-Tabelle abgeleitet (lib/constants.ts) — eine Quelle für
+  // UI-Auswahl und Rechnung, damit Beschriftung und Rechenwert nicht driften können.
+  specDemandBestand: INSULATION_BESTAND.map(i => i.specKwh),
+  specDemandNeubau: INSULATION_NEUBAU.map(i => i.specKwh),
+  specHeatLoadBestand: INSULATION_BESTAND.map(i => i.heatLoadW),
+  specHeatLoadNeubau: INSULATION_NEUBAU.map(i => i.heatLoadW),
   auslegungsfaktor: 0.85,
   wwPerPerson: 650,
   jazLwwp: { a: 5.5, b: 0.05 },
@@ -84,18 +101,37 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   flowTempFbh: 35,
   flowTempHkNeu: 45,
   flowTempHkAlt: 55,
-  // LWWP-Basis: marktabgeleitet aus der taptaphome-Kostenübersicht (Gerät 12–20k +
-  // Einbau 3–7,5k, typischer Gesamtpreis ~21k bei ~9,7 kW Referenz-Heizlast, minus
-  // €/kW-Steigung → ~9.500 €). Ersetzt die alte 18.000-Pauschale, die kleine Anlagen
-  // deutlich zu teuer rechnete. Dies ist der FALLBACK — der Scrape-Cron
-  // (/api/prices/scrape) hält den Live-Wert in market_prices frisch. Nur die Basis
-  // ist markt-getrackt; investLwwpPerKw bleibt als stabile Steigung fix.
-  // Ableitung + Selbstheilung: lib/heatpump-prices.ts.
-  investLwwpBase: 9500,
-  investLwwpPerKw: 1200,
+  // LWWP-Investition, kalibriert an echten Angeboten statt an Portal-Kostenseiten.
+  // Quelle: Verbraucherzentrale RLP, Auswertung von 160 Luft-Wasser-Angeboten
+  // (Angebote 01.10.2024–09.05.2025, Bruttopreise inkl. MwSt.; Volltext in
+  // docs/quellen/VZ-RLP_Auswertung-160-Waermepumpen-Angebote_2025-06.pdf):
+  //   Gesamtkosten  Median 34.979 € · Mittelwert 36.279 € (Min 20.228, Max 63.061), S. 4
+  //   Leistung      4–18 kW, Median 10 kW, S. 4
+  //   Kostenkategorien (Mittelwerte, S. 9): Montage/Lohn 6.997 + Elektro 3.032 +
+  //   Fundament 1.507 + hydraulischer Abgleich 1.159 + Warmwasser 2.589 +
+  //   Puffer 1.368 = 16.652 € — allesamt NICHT leistungsabhängig.
+  // Daraus: Basis 16.500 € (der größenunabhängige Block) und Steigung 1.850 €/kW,
+  // so dass der Median-Fall (10 kW) auf den Median-Preis 35.000 € trifft. Der Rest
+  // (Aggregat, Material, Marge) skaliert mit der Leistung.
+  // Die Nachfolge-Auswertung (VZ RLP, PM vom 02.07.2026, 160 Angebote) bestätigt das
+  // Niveau: 21.099–54.168 €, Ø ~36.400 €.
+  // WARUM nicht mehr gescrapt: Die frühere Basis (9.500 €) kam aus der
+  // taptaphome-Kostenübersicht und ergab für ein kleines Haus ~15.000 € — unter dem
+  // GÜNSTIGSTEN von 160 realen Angeboten. Die Quelle beziffert den Einbau mit
+  // 3.000–7.500 €, während allein Montage/Elektro/Fundament/Abgleich real ~12.700 €
+  // kosten. Ein Korrekturfaktor darauf wäre geraten — deshalb Config + Wächter
+  // (scripts/waermepumpe-verify.md), analog zu Sole/Wasser.
+  investLwwpBase: 16500,
+  investLwwpPerKw: 1850,
+  // Sole/Wasser = LWWP-Niveau + Erschließung (Bohrung), abzüglich Außeneinheit/Fundament.
+  // Ergibt bei 10 kW 46.000 € (LWWP 35.000 + ~11.000 € Bohrung) — im Marktband für
+  // Erdwärme-EFH. Nicht scrapebar (Bohrkosten hängen an Bohrmetern, nicht an kW).
   investSwwpBase: 28000,
   investSwwpPerKw: 1800,
-  heizkoerperTauschKosten: 6000,
+  // Heizkörpertausch: VZ RLP S. 6 — Ø 679 €, Median 642 € je Heizkörper (18 Angebote).
+  // Angesetzt sind ~6 kritische Heizkörper (Ziel: Vorlauf 55 → 45 °C), nicht die
+  // komplette Heizkörper-Sanierung.
+  heizkoerperTauschKosten: 4000,
   begGrundfoerderung: 0.30,
   begKlimaBonus: 0.16,
   begEinkommensStaffel: [
@@ -108,19 +144,53 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   begMaxRate: 0.70,
   begMaxRateLowIncome: 0.80,
   wpTarif: 0.24,
-  wpMaintenance: 200,
+  // Wartung der Wärmepumpe 250 €/a und Grundpreis des WP-Stromzählers 50 €/a —
+  // beides Verbraucherzentrale RLP (Beispielrechnung 02.06.2025), dieselbe Quelle
+  // wie die fossilen Betriebskosten, damit der Vergleich symmetrisch bleibt.
+  // Der WP-Grundpreis fehlte bisher ganz, während Gas einen trug — eine Schieflage
+  // zugunsten der Wärmepumpe, auch wenn sie klein war (1.000 € über 20 Jahre).
+  wpMaintenance: 250,
+  wpFixCostPerYear: 50,
   gridCo2PerKwh: 0.38,   // DE-Netzmix 2024, konservativ statisch
   gasPriceCtPerKwh: Math.round(FUEL_PRICE.gas.price * 100), // = 11, aus FUEL_PRICE (Single Source)
   gasEfficiency: 0.95,
   gasCo2PerKwh: FUEL_PRICE.gas.co2PerKwh, // = 0.20, aus FUEL_PRICE
 
-  gasFixCostPerYear: 180,
-  gasMaintenance: 180,
-  gasInvestNeubau: 12000,
+  // Gas: Grund-/Zählerpreis des Netzanschlusses, 165 €/a — Verbraucherzentrale RLP,
+  // „Gasheizung oder Wärmepumpe – Ein Vergleich" (Beispielrechnung Stand 02.06.2025,
+  // 150-m²-EFH; Volltext docs/quellen/). Öl: 0 — es gibt keinen Anschluss, an dem eine
+  // laufende Gebühr hängen könnte (Strukturfrage, kein Preis: der Wert bleibt 0, auch
+  // wenn der Gas-Grundpreis steigt).
+  // Die WARTUNG bleibt für Gas und Öl gleich: dass eine Ölheizung mit Tankprüfung real
+  // teurer ist, ist plausibel, aber unbelegt — beide zitierten Quellen führen Heizöl
+  // nicht getrennt. OFFEN (bis 01/2027): Öl-Wartungswert beschaffen oder die
+  // Gleichsetzung bestätigen (scripts/waermepumpe-verify.md).
+  fixCostPerYear: { gas: 165, oil: 0 },
+  // Wartung + Schornsteinfeger der fossilen Heizung, 300 €/a (VZ RLP, ebd.).
+  // Fraunhofer ISE setzt in der Kurzstudie zur Bio-Treppe (23.06.2026, S. 15, Quelle
+  // BDEW-Heizkostenvergleich) sogar 500 €/a für JEDES System an — wir folgen der
+  // differenzierten VZ-Rechnung, die Gas und Wärmepumpe unterscheidet, und liegen
+  // damit konservativ unter dem höheren Ansatz.
+  gasMaintenance: 300,
+  // Komplette neue fossile Heizung inkl. Einbau, brutto. Zwei unabhängige
+  // Trägerquellen, die denselben Fall rechnen wie wir (alte Heizung wird ersetzt):
+  //   · Fraunhofer ISE, Kurzstudie „Vergleich Wärmeversorgung / Auswirkungen der
+  //     Biotreppe in § 43" (23.06.2026, S. 14): Gaskessel EFH 11.400–20.400 €
+  //     brutto bei 10 kW (Bandbreite aus dem KWW-Technikkatalog, Q4/2025).
+  //     → Mittelwert 15.900 €.
+  //   · Verbraucherzentrale RLP, „Gasheizung oder Wärmepumpe – Ein Vergleich"
+  //     (02.06.2025): 16.000 € für die neue Gasheizung im 150-m²-EFH.
+  // Beide treffen sich bei rund 16.000 €; wir nehmen den Fraunhofer-Mittelwert.
+  // Der frühere Wert (12.000 €) stammte aus einer breiten Portal-Spanne und lag am
+  // unteren Rand — also zulasten der Wärmepumpe. Für Heizöl setzen wir denselben
+  // Betrag an: dass ein Ölkessel mit Tank und Abgasweg teurer ist, ist plausibel,
+  // aber keine der beiden Quellen weist Öl getrennt aus.
+  // Im Ergebnis editierbar (0 = die vorhandene Heizung hält die Laufzeit durch).
+  fossilErsatzInvest: 15900,
   years: 20,
   gasInflation: 0.02,
   stromInflation: 0.02, // p.a. — konsistent mit PV-Rechner (SCENARIOS realistic + electricityIncrease)
-  source: "Fraunhofer ISE WPsmart, BWP Preisübersicht 2024, KfW Merkblatt 458 (BEG EM, gültig ab 21.07.2026), BDEW",
-  validFrom: "2026-07-21",
-  reviewBy: "2027-01-25",   // vor der ersten Degression der Boni/Förderhöchstbeträge zum 01.02.2027
+  source: "Fraunhofer ISE WPsmart, Verbraucherzentrale RLP (Auswertung 160 Wärmepumpen-Angebote, 2025/2026), KfW Merkblatt 458 (BEG EM, gültig ab 21.07.2026), BDEW, dena-Gebäudereport + dena-Studie „Auswertung von Verbrauchskennwerten energieeffizienter Wohngebäude“ (Heizwärmebedarf nach Sanierung)",
+  validFrom: "2026-07-27",
+  reviewBy: "2026-10-20",   // quartalsweiser Wächter (Jan/Apr/Jul/Okt); der Januar-Lauf 2027 fällt zusätzlich vor die Degression der Boni/Förderhöchstbeträge zum 01.02.2027
 };
