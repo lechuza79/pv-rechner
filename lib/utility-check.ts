@@ -48,6 +48,11 @@ export type PruefEingabe = {
   /** Ort aus der Anschrift im Register — zweiter Weg zum Sitz, wenn die
    *  Postleitzahl nicht auflösbar ist. */
   sitzOrt?: string | null;
+  /** Gemeinden, in denen ein ANDERER Netzbetreiber der bestimmende ist. Wenn der
+   *  Firmensitz dort liegt, ist „Sitz nicht im Gebiet" erklärt: Die Zentrale
+   *  steht in einer Stadt, die ein anderer versorgt — bei Regionalversorgern der
+   *  Normalfall (energis in Saarbrücken, GELSENWASSER in Gelsenkirchen). */
+  fremdVersorgteGemeinden?: Set<string>;
   /** Je Gemeinde der höchste Anteil, den IRGENDEIN Netzbetreiber dort hat.
    *  Damit wird aus „hat wenig Prozent" die viel schärfere Frage: „ist er dort
    *  der größte?" — in Gemeinden mit drei Netzbetreibern sind 40 % viel. */
@@ -127,18 +132,40 @@ export function ortNachGattungswort(
 ): { ags: string; name: string }[] {
   const m = VOR_ORT.exec(firma);
   if (!m) return [];
+
+  // Der Ort kann auch DAVOR stehen: „Saerbecker Netzgesellschaft mbH",
+  // „Feuchter Gemeindewerke". Beide Seiten prüfen, hinten zuerst.
+  const davor = firma
+    .slice(0, m.index)
+    .replace(/[.,()\/]/g, " ")
+    .trim()
+    .split(/\s+/)
+    .slice(-2)
+    .join(" ")
+    .toLowerCase();
+
   const rest = firma
     .slice(m.index + m[0].length)
     .replace(/[.,()\/].*$/, " ")
     .replace(/\b(gmbh|co|kg|ag|mbh|ohg|se|aör|kgaa|und|&)\b.*$/i, " ")
     .trim()
     .toLowerCase();
-  if (rest.length < 3) return [];
-
   // Längster passender Gemeindename gewinnt („Schwäbisch Hall" vor „Hall").
+  // Deutsche Ableitungen mitnehmen: „Saerbecker Netzgesellschaft" meint Saerbeck,
+  // „Stromnetz Erdinger Land" meint Erding. Ohne das scheiterte der Test an einem
+  // angehängten Buchstaben — bei mehreren der 22 auffälligen Fälle genau so.
+  const passt = (text: string, n: string): boolean => {
+    if (text.length < 3) return false;
+    if (text === n || text.startsWith(`${n} `) || text.startsWith(`${n}-`) || text.endsWith(` ${n}`)) return true;
+    // Deutsche Ableitung: „Saerbecker" → Saerbeck, „Erdinger" → Erding.
+    const abgeleitet = `${n}er`;
+    return text === abgeleitet || text.startsWith(`${abgeleitet} `) || text.endsWith(` ${abgeleitet}`);
+  };
+
   const treffer = gemeindeNamen.filter((g) => {
     const n = g.name.toLowerCase();
-    return n.length >= 3 && (rest === n || rest.startsWith(`${n} `) || rest.startsWith(`${n}-`));
+    if (n.length < 3) return false;
+    return (rest.length >= 3 && passt(rest, n)) || (davor.length >= 3 && passt(davor, n));
   });
   if (treffer.length === 0) return [];
   const maxLen = Math.max(...treffer.map((t) => t.name.length));
@@ -162,6 +189,12 @@ const SITZ_TEST_MAX_GEMEINDEN = 50;
 export function pruefeGebiet(e: PruefEingabe): Pruefung {
   const befunde: PruefBefund[] = [];
   const imGebiet = new Set(e.gebiet.map((g) => g.ags));
+  // Heißt die Firma nach ihrer Sitzgemeinde? Dann wiegt „versorgt sie nicht"
+  // schwer, egal wer dort sonst das Netz hat.
+  const ausPositionVorab = ortNachGattungswort(e.name, e.gemeindeNamen);
+  const heisstNachOrt = new Set(
+    (ausPositionVorab.length > 0 ? ausPositionVorab : ortsnamenAusFirma(e.name, e.gemeindeNamen)).map((o) => o.ags),
+  );
 
   // 1. Sitz
   //
@@ -192,6 +225,21 @@ export function pruefeGebiet(e: PruefEingabe): Pruefung {
     }
   } else if (e.sitzKandidaten.some((a) => imGebiet.has(a))) {
     befunde.push({ test: "sitz", ergebnis: "ok", text: "Die Gemeinde der Firmenanschrift liegt im Gebiet." });
+  } else if (
+    e.sitzKandidaten.some((a) => e.fremdVersorgteGemeinden?.has(a)) &&
+    !e.sitzKandidaten.some((a) => heisstNachOrt.has(a))
+  ) {
+    // Die Zentrale steht in einer Stadt, die ein anderer versorgt. Das ist bei
+    // Regionalversorgern der Normalfall (energis in Saarbrücken, GELSENWASSER
+    // in Gelsenkirchen) — ABER nur, wenn die Firma nicht nach dieser Stadt heißt.
+    // „Stadtwerke X", das X nicht versorgt, bleibt ein Widerspruch; sonst hätte
+    // die Entschärfung dem Test die Zähne gezogen (Sitz widersprach danach in
+    // 0 von 778 Fällen — verdächtig wenig).
+    befunde.push({
+      test: "sitz",
+      ergebnis: "unpruefbar",
+      text: "Die Firmenanschrift liegt in einer Gemeinde, die ein anderer Netzbetreiber versorgt — bei Zentralen in größeren Städten der Normalfall.",
+    });
   } else {
     befunde.push({
       test: "sitz",

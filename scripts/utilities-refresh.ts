@@ -581,6 +581,16 @@ async function laufPruefung(dry: boolean): Promise<void> {
     if (a > (maxJeGemeinde.get(l.commune_id) ?? 0)) maxJeGemeinde.set(l.commune_id, a);
   }
 
+  // Wer ist wo der bestimmende Netzbetreiber? Daraus folgt, welche Gemeinden
+  // einem ANDEREN gehoeren — und damit, ob ein Firmensitz ausserhalb des eigenen
+  // Gebiets erklaert ist.
+  const bestimmenderJeGemeinde = new Map<string, string>();
+  for (const l of links) {
+    if (l.rolle === "beteiligung") continue;
+    const a = Number(l.anteil ?? 0);
+    if (a >= (maxJeGemeinde.get(l.commune_id) ?? 0)) bestimmenderJeGemeinde.set(l.commune_id, l.utility_id);
+  }
+
   const zaehler = { gruen: 0, gelb: 0, rot: 0 };
   const auffaellige: string[] = [];
   const zeilen: { id: string; name: string; pruefung_ampel: string; pruefung: unknown }[] = [];
@@ -595,6 +605,11 @@ async function laufPruefung(dry: boolean): Promise<void> {
       zentren,
       gemeindeNamen,
       sitzOrt: u.ort,
+      fremdVersorgteGemeinden: new Set(
+        Array.from(bestimmenderJeGemeinde.entries())
+          .filter(([, uid]) => uid !== u.id)
+          .map(([ags]) => ags),
+      ),
       groesstemAnteilJeGemeinde: maxJeGemeinde,
     });
     zaehler[p.ampel]++;

@@ -198,3 +198,50 @@ describe("Ort direkt hinter dem Gattungswort", () => {
     expect(orte.map((o) => o.name)).toEqual(["Schwäbisch Hall"]);
   });
 });
+
+describe("Firmensitz ausserhalb des eigenen Gebiets", () => {
+  const fremd = new Set(["07312000"]); // Kaiserslautern gehoert einem anderen
+
+  it("entschuldigt die Zentrale in einer Stadt, die ein anderer versorgt", () => {
+    // energis sitzt in Saarbruecken, GELSENWASSER in Gelsenkirchen — beide
+    // versorgen ihre Sitzstadt nicht. Bei Regionalversorgern der Normalfall.
+    const p = pruefeGebiet(
+      eingabe({
+        name: "Regionalnetz GmbH",
+        sitzKandidaten: ["07312000"],
+        gebiet: [{ ags: "07316000", name: "Weidenthal", anteil: 0.9, anlagen: 900 }],
+        fremdVersorgteGemeinden: fremd,
+      }),
+    );
+    expect(p.befunde.find((b) => b.test === "sitz")?.ergebnis).toBe("unpruefbar");
+  });
+
+  it("entschuldigt sie NICHT, wenn die Firma nach dieser Stadt heisst", () => {
+    // „Stadtwerke Kaiserslautern", das Kaiserslautern nicht versorgt, bleibt ein
+    // Widerspruch. Ohne diese Ausnahme widersprach der Sitz-Test in 0 von 778
+    // Faellen — eine Pruefung, die nie anschlaegt, prueft nichts.
+    const p = pruefeGebiet(
+      eingabe({
+        name: "Stadtwerke Kaiserslautern GmbH",
+        sitzKandidaten: ["07312000"],
+        gebiet: [{ ags: "07316000", name: "Weidenthal", anteil: 0.9, anlagen: 900 }],
+        fremdVersorgteGemeinden: fremd,
+      }),
+    );
+    expect(p.befunde.find((b) => b.test === "sitz")?.ergebnis).toBe("auffaellig");
+  });
+});
+
+describe("Deutsche Ableitungen im Firmennamen", () => {
+  it("erkennt Saerbecker als Saerbeck", () => {
+    // Echter Fall: „Saerbecker Ver- und Entsorgungsnetzgesellschaft mbH"
+    // versorgt Saerbeck — der Test scheiterte an einem angehaengten Buchstaben.
+    const orte = ortNachGattungswort("Saerbecker Netzgesellschaft mbH", [{ ags: "05566052", name: "Saerbeck" }]);
+    expect(orte.map((o) => o.name)).toEqual(["Saerbeck"]);
+  });
+
+  it("erkennt Erdinger als Erding", () => {
+    const orte = ortNachGattungswort("Stromnetz Erdinger Land GmbH", [{ ags: "09177000", name: "Erding" }]);
+    expect(orte.map((o) => o.name)).toEqual(["Erding"]);
+  });
+});
