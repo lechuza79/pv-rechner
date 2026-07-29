@@ -75,6 +75,10 @@ const PAGES = [
   "/solar-atlas",
 ];
 
+/** Adresse, die es garantiert nie geben wird — sie muss 404 antworten, nicht 200.
+ *  Drei Segmente, damit sie die Gemeinde-Route trifft (die tiefste und teuerste). */
+const SOFT_404_PFAD = "/solar-atlas/kein-land/kein-kreis/keine-gemeinde";
+
 /** Notnagel, falls die DB gerade nicht erreichbar ist — echte, dauerhaft
  *  existierende Gemeinden. Bewusst klein: der Regelweg ist die Zufallsauswahl. */
 const FALLBACK_GEMEINDEN = [
@@ -629,6 +633,30 @@ async function main() {
   }
   if (cold && cold.status !== 200) {
     forClaude.push(`Atlas-Gemeindeseite antwortet mit ${cold.status || "keiner Antwort"} — ${cold.url}`);
+  }
+
+  // ── Soft-404 im Atlas ─────────────────────────────────────────────────────
+  //
+  // Erfundene Atlas-Adressen antworteten bis 29.07.2026 mit HTTP 200 und der
+  // 404-Seite im Body. Ursache war ein `loading.tsx`, das eine Suspense-Grenze um
+  // die ganze Route legte: Die Hülle ging sofort raus, der Statuscode stand fest,
+  // bevor die Seite wusste, ob es die Region gibt.
+  //
+  // Warum das hier gemessen wird und nicht nur im Test: Der Test
+  // (lib/__tests__/atlas-soft-404.test.ts) nagelt die Code-STRUKTUR fest, aber ob
+  // daraus am Ende wirklich ein 404 wird, entscheidet das Framework — genau das
+  // hat sich schon einmal geändert. Ein Soft-404 ist von außen sonst unsichtbar:
+  // Die Seite ist schnell, grün und liefert 200. Nur ein Aufruf, der ein 404
+  // ERWARTET, findet ihn. Für Google zählt der Statuscode, nicht der Text.
+  const soft404 = await probe("Atlas-Fantasieadresse", SOFT_404_PFAD);
+  lines.push(`Erfundene Atlas-Adresse: HTTP ${soft404.status || "keine Antwort"} (erwartet 404)`);
+  if (soft404.status !== 404) {
+    forClaude.push(
+      `Soft-404: ${SOFT_404_PFAD} antwortet mit ${soft404.status || "keiner Antwort"} statt 404. ` +
+        `Google behandelt damit erfundene Adressen als gültige Seiten. Zuerst prüfen, ob wieder ein ` +
+        `loading.tsx unter app/(site)/solar-atlas/ liegt oder die Routing-Entscheidung hinter das ` +
+        `<Suspense> gerutscht ist.`,
+    );
   }
 
   // ── Zeiten ────────────────────────────────────────────────────────────────

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import AtlasSkeleton from "../../../../components/atlas/AtlasSkeleton";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import RegionSearch from "../../../../components/atlas/RegionSearch";
 import { v, space, pad } from "../../../../lib/theme";
@@ -113,6 +115,17 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
   };
 }
 
+/**
+ * Routing-Entscheidung — und NUR sie. Alles hier Stehende läuft in der
+ * HTML-Hülle, also bevor die Antwort rausgeht; deshalb können `notFound()` und
+ * `redirect()` den Statuscode noch setzen. Der teure Teil steckt hinter dem
+ * `<Suspense>` und streamt nach.
+ *
+ * Nichts Zusätzliches vor das `<Suspense>` ziehen: jeder weitere `await` hier
+ * verzögert die erste Antwortbyte für ALLE Atlas-Seiten. Beide Reads unten sind
+ * `unstable_cache`-gedeckt und werden im Body ohnehin gebraucht — sie kosten also
+ * keinen zusätzlichen Datenbank-Zugriff.
+ */
 export default async function AtlasPage(props: { params: Promise<Params> }) {
   const params = await props.params;
   const region = await resolve(params.pfad);
@@ -131,6 +144,23 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
   }
   if (!childLevel) notFound();
 
+  return (
+    <Suspense fallback={<AtlasSkeleton />}>
+      <AtlasBody region={region} childLevel={childLevel} pfad={params.pfad} />
+    </Suspense>
+  );
+}
+
+async function AtlasBody({
+  region,
+  childLevel,
+  pfad,
+}: {
+  region: AtlasRegion;
+  childLevel: Exclude<ReturnType<typeof childLevelOf>, null>;
+  pfad: string[] | undefined;
+}) {
+  const params: Params = { pfad };
   const [atlas, children, ancestors, ranking] = await Promise.all([
     getRegionAtlasData(region.region_id),
     getChildren(region),
