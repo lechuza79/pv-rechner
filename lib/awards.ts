@@ -38,11 +38,15 @@ export type GemeindeStats = {
   slug?: string | null;
   population: number;
   privatDachKwp: number;
+  /** Zahl der privaten Dachanlagen — fuer die Groessenpruefung. */
+  privatDachCount?: number;
   gewerbeDachKwp: number;
   freiflaecheKwp: number;
   balkonCount: number;
   balkonKwp: number;
   batteriePrivatKwh: number;
+  /** Zahl der privaten Batterien — fuer die Groessenpruefung. */
+  batteriePrivatCount?: number;
   batterieGewerbeKwh: number;
   windKwp: number;
   biomasseKwp: number;
@@ -116,10 +120,37 @@ export type AwardCategory = {
   /** Dieselbe Messgroesse zum Stand Ende des letzten vollen Jahres. Nur wo ein
    *  Stichtagswert vorliegt — daraus faellt die Rangveraenderung. */
   metricVorjahr?: (g: GemeindeStats) => number | null;
+  /**
+   * Sieht die Anlage ueberhaupt nach dem aus, was die Kategorie behauptet?
+   *
+   * WARUM DAS NOETIG IST: "privat" kommt im Register aus einem angekreuzten Feld
+   * (Nutzungsbereich = Haushalt), OHNE Groessenpruefung. Ein Landwirt mit
+   * 300-kWp-Scheunendach, der "Haushalt" ankreuzt, zaehlte als Privatdach.
+   * Dolgesheim fuehrte damit die Pro-Kopf-Liste an: 88 Anlagen mit im Schnitt
+   * 107 kWp, waehrend die uebliche private Dachanlage bei 9,8 kWp liegt (Median
+   * ueber alle 10.725 Gemeinden, 99 % unter 17,8).
+   *
+   * Das ersetzt die frueher pauschale Einwohner-Untergrenze von 2.000, die 5.627
+   * Gemeinden ausschloss, um ein paar falsch etikettierte Anlagen zu neutralisieren.
+   */
+  plausibel?: (g: GemeindeStats) => boolean;
 };
 
 const perCapita = (val: number, pop: number): number | null => (pop > 0 ? (val * 1000) / pop : null);
 const pos = (n: number): number | null => (n > 0 ? n : null);
+
+/** Mittlere Groesse einer Anlage. Ohne Anzahl keine Aussage → 0 (unauffaellig). */
+const mittlereGroesse = (summe: number, anzahl?: number): number => (anzahl && anzahl > 0 ? summe / anzahl : 0);
+
+/**
+ * Bis hierher kann ein Dach an einem Wohnhaus haengen. Gemessen ueber alle
+ * 10.725 Gemeinden: Median 9,8 kWp, 99. Perzentil 17,8 — 30 laesst also jedem
+ * grossen Eigenheim Luft und faengt trotzdem die Gewerbehallen. Betroffen sind
+ * 17 Gemeinden.
+ */
+const MAX_PRIVATDACH_KWP = 30;
+/** Hausspeicher liegen bei rund 10 kWh; darueber ist es Gewerbe. */
+const MAX_HAUSSPEICHER_KWH = 30;
 
 export const AWARD_CATEGORIES: AwardCategory[] = [
   // Bürger, pro Kopf — verifiziert aussagekräftig (skaliert mit Haushalten).
@@ -135,6 +166,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "proKopf",
     format: "wattProKopf",
     metric: (g) => perCapita(g.privatDachKwp, g.population),
+    plausibel: (g) => mittlereGroesse(g.privatDachKwp, g.privatDachCount) <= MAX_PRIVATDACH_KWP,
     metricVorjahr: (g) => perCapita(g.privatDachKwpLy ?? 0, g.population),
   },
   {
@@ -163,6 +195,9 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "proKopf",
     format: "whProKopf",
     metric: (g) => perCapita(g.batteriePrivatKwh, g.population),
+    // Finsing: eine Gewerbe-Batterie als privat gemeldet, seit jeher als
+    // Einzelfall im Code gefuehrt. Die Groessenpruefung faengt die ganze Klasse.
+    plausibel: (g) => mittlereGroesse(g.batteriePrivatKwh, g.batteriePrivatCount) <= MAX_HAUSSPEICHER_KWH,
     metricVorjahr: (g) => perCapita(g.batteriePrivatKwhLy ?? 0, g.population),
   },
   // Zubau-Tempo je Einwohner ueber mehrere Zeitraeume. Absolut waere es wieder

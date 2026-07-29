@@ -78,35 +78,66 @@ describe("rankingRows", () => {
     g("09679147", "Höchberg", 10000, 100), // 10,0
     g("09679143", "Hausen", 4000, 152), // 38,0
     g("09679179", "Riedenheim", 3000, 30), // 10,0 — Gleichstand mit Höchberg
-    g("09679001", "Winzig", 500, 50), // unter der Mindestgröße
+    g("09679001", "Winzig", 500, 50), // klein, aber gewertet — 100,0
     g("09679002", "Ohne", 5000, 0), // kein Wert
     g("08111000", "Stuttgart", 600000, 6000), // anderes Bundesland
   ];
 
   it("sortiert absteigend und vergibt Plätze", () => {
     const rows = rankingRows(stats, balkon, "09679");
-    expect(rows.map((r) => r.name)).toEqual(["Hausen", "Höchberg", "Riedenheim"]);
+    // Winzig ist mit 500 Einwohnern dabei — es gibt keine Einwohner-Untergrenze
+    // mehr, die Zahl je Einwohner ist dort genauso wahr wie anderswo.
+    expect(rows.map((r) => r.name)).toEqual(["Winzig", "Hausen", "Höchberg", "Riedenheim"]);
     expect(rows[0].platz).toBe(1);
+  });
+
+  it("nennt die Einwohnerzahl in jeder Zeile", () => {
+    // Ohne Untergrenze ist sie der Kontext, der „48 Einwohner" einordnet.
+    const rows = rankingRows(stats, balkon, "09679");
+    expect(rows.find((r) => r.name === "Winzig")?.population).toBe(500);
+    expect(rows.find((r) => r.name === "Höchberg")?.population).toBe(10000);
   });
 
   it("gibt Gleichständen denselben Platz und überspringt danach", () => {
     const rows = rankingRows(stats, balkon, "09679");
-    expect(rows[1].wert).toBeCloseTo(rows[2].wert, 6);
-    expect(rows[1].platz).toBe(2);
-    expect(rows[2].platz).toBe(2);
+    const hoechberg = rows.findIndex((r) => r.name === "Höchberg");
+    expect(rows[hoechberg].wert).toBeCloseTo(rows[hoechberg + 1].wert, 6);
+    expect(rows[hoechberg].platz).toBe(rows[hoechberg + 1].platz);
+    expect(rows[hoechberg].platz).toBe(3);
   });
 
-  it("lässt zu kleine Kommunen und Nullwerte weg", () => {
+  it("lässt Nullwerte weg — aber keine Kommune wegen ihrer Größe", () => {
     const namen = rankingRows(stats, balkon, "09679").map((r) => r.name);
-    expect(namen).not.toContain("Winzig");
     expect(namen).not.toContain("Ohne");
-    expect(RANKING_MIN_POPULATION).toBe(2000);
+    expect(namen).toContain("Winzig");
+    // Die Untergrenze lag bei 2.000 und schloss 5.627 von 10.742 Gemeinden aus,
+    // um ein paar falsch etikettierte Anlagen zu neutralisieren. Dafuer gibt es
+    // jetzt die Groessenpruefung an der Kategorie.
+    expect(RANKING_MIN_POPULATION).toBe(0);
+  });
+
+  it("wirft Kommunen raus, deren „private“ Anlagen Wohnhausgröße sprengen", () => {
+    // Der echte Fall: Dolgesheim, 917 Einwohner, 88 „private" Daecher mit im
+    // Schnitt 107 kWp — Gewerbehallen. Die uebliche private Dachanlage liegt bei
+    // 9,8 kWp (Median ueber alle 10.725 Gemeinden).
+    const dach = AWARD_CATEGORY_BY_KEY["dach-privat-pk"];
+    const echt: GemeindeStats = { ...g("09679010", "Echt", 1_000, 0), privatDachKwp: 1_000, privatDachCount: 100 };
+    const halle: GemeindeStats = { ...g("09679011", "Halle", 1_000, 0), privatDachKwp: 9_400, privatDachCount: 88 };
+    const rows = rankingRows([echt, halle], dach, null);
+    expect(rows.map((r) => r.name)).toEqual(["Echt"]);
+  });
+
+  it("prüft die Größe nur, wo die Kategorie es verlangt", () => {
+    // Freiflaechen DUERFEN gross sein — dort waere die Pruefung Unsinn.
+    const ff = AWARD_CATEGORY_BY_KEY["freiflaeche-standort"];
+    const park: GemeindeStats = { ...g("09679012", "Park", 700, 0), freiflaecheKwp: 90_000 };
+    expect(rankingRows([park], ff, null)).toHaveLength(1);
   });
 
   it("beschränkt auf das Gebiet — und ohne Gebiet auf alle", () => {
     expect(rankingRows(stats, balkon, "09679").some((r) => r.name === "Stuttgart")).toBe(false);
     expect(rankingRows(stats, balkon, "08").map((r) => r.name)).toEqual(["Stuttgart"]);
-    expect(rankingRows(stats, balkon, null).length).toBe(4);
+    expect(rankingRows(stats, balkon, null).length).toBe(5);
   });
 
   it("ist bei gleichen Werten reproduzierbar sortiert", () => {
@@ -127,24 +158,45 @@ describe("rankingTitel", () => {
   });
 });
 
-describe("Untergrenze der Einwohnerzahl", () => {
+describe("Groessenpruefung statt Einwohner-Untergrenze", () => {
   const wind = AWARD_CATEGORY_BY_KEY["wind-standort"];
-  const dorf: GemeindeStats = { ...g("09679900", "Winddorf", 700, 0), windKwp: 90000 };
-  const stadt: GemeindeStats = { ...g("09679901", "Grossstadt", 200000, 0), windKwp: 1000 };
+  const dach = AWARD_CATEGORY_BY_KEY["dach-privat-pk"];
 
-  it("gilt bei Pro-Kopf-Kategorien", () => {
-    const klein = g("09679902", "Winzig", 700, 100);
-    expect(rankingRows([klein], balkon, null)).toHaveLength(0);
+  it("laesst kleine Orte zu — sie werden nicht mehr wegen ihrer Groesse aussortiert", () => {
+    const klein: GemeindeStats = { ...g("09679902", "Winzig", 700, 100), privatDachKwp: 700, privatDachCount: 70 };
+    expect(rankingRows([klein], dach, null)).toHaveLength(1);
   });
 
-  it("gilt bei absoluten Standort-Kategorien NICHT", () => {
-    // Ein 700-Einwohner-Dorf mit einem Windpark gehoert in die Windrangliste —
-    // die Untergrenze wuerde genau den Sieger herauswerfen.
-    const rows = rankingRows([dorf, stadt], wind, null);
-    expect(rows.map((r) => r.name)).toEqual(["Winddorf", "Grossstadt"]);
+  it("laesst ein Dorf mit Windpark in der Windrangliste", () => {
+    const dorf: GemeindeStats = { ...g("09679900", "Winddorf", 700, 0), windKwp: 90_000 };
+    const stadt: GemeindeStats = { ...g("09679901", "Grossstadt", 200_000, 0), windKwp: 1_000 };
+    expect(rankingRows([dorf, stadt], wind, null).map((r) => r.name)).toEqual(["Winddorf", "Grossstadt"]);
+  });
+
+  it("faengt eine Gewerbe-Batterie, die als privat gemeldet ist", () => {
+    // Der Fall Finsing, bisher als Einzelfall im Code gefuehrt: Ein Hausspeicher
+    // liegt bei rund 10 kWh, hier waeren es 200.
+    const speicher = AWARD_CATEGORY_BY_KEY["batterie-privat-pk"];
+    const echt: GemeindeStats = {
+      ...g("09679920", "Echt", 2_000, 0),
+      batteriePrivatKwh: 1_000,
+      batteriePrivatCount: 100,
+    };
+    const gewerbe: GemeindeStats = {
+      ...g("09679921", "Gewerbe", 2_000, 0),
+      batteriePrivatKwh: 2_000,
+      batteriePrivatCount: 10,
+    };
+    expect(rankingRows([echt, gewerbe], speicher, null).map((r) => r.name)).toEqual(["Echt"]);
+  });
+
+  it("prueft nichts, wo keine Anzahl vorliegt — statt alles auszusortieren", () => {
+    // Aeltere Aufrufer setzen die Anzahl nicht. Dann gilt die Zeile als
+    // unauffaellig; ein stiller Totalausfall der Rangliste waere schlimmer.
+    const ohneAnzahl: GemeindeStats = { ...g("09679930", "Ohne Anzahl", 2_000, 0), privatDachKwp: 500 };
+    expect(rankingRows([ohneAnzahl], dach, null)).toHaveLength(1);
   });
 });
-
 
 describe("Rangveraenderung", () => {
   const dach = AWARD_CATEGORY_BY_KEY["dach-privat-pk"];
@@ -221,7 +273,12 @@ describe("Zubau-Tempo", () => {
   });
 
   it("wird nie negativ, wenn Nachmeldungen den alten Stand anheben", () => {
-    const seltsam: GemeindeStats = { ...g("09679902", "Nachmeldung", 5_000, 0), privatDachKwp: 100, privatDachKwpL3: 150 };
+    const seltsam: GemeindeStats = {
+      ...g("09679902", "Nachmeldung", 5_000, 0),
+      privatDachKwp: 100,
+      privatDachCount: 10,
+      privatDachKwpL3: 150,
+    };
     const rows = rankingRows([seltsam], AWARD_CATEGORY_BY_KEY["tempo-3j"], null);
     // metric klemmt auf 0 → faellt aus der Wertung, statt einen Minuswert zu zeigen.
     expect(rows).toHaveLength(0);

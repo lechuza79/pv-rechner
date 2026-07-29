@@ -20,7 +20,6 @@ import {
   kategorieBySlug,
   rankingRows,
   rankingTitel,
-  RANKING_MIN_POPULATION,
 } from "../../../../../lib/atlas-ranking";
 import { befundeNachGroesse, speicherTrend } from "../../../../../lib/atlas-befunde";
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
@@ -111,8 +110,9 @@ export default async function RankingPage({ params, searchParams }: { params: Pa
   const alle = rankingRows(stats, kategorie, scopeId);
   // Wie viele Orte die Untergrenze aussortiert — im Gebiet, nicht bundesweit.
   const imGebiet = stats.filter((g) => g.population > 0 && (!scopeId || g.regionId.startsWith(scopeId)));
-  const ausgeschlossen =
-    kategorie.messart === "proKopf" ? imGebiet.filter((g) => g.population < RANKING_MIN_POPULATION).length : 0;
+  const ausgeschlossen = kategorie.plausibel
+    ? imGebiet.filter((g) => (kategorie.metric(g) ?? 0) > 0 && !kategorie.plausibel!(g)).length
+    : 0;
   const seiten = Math.max(1, Math.ceil(alle.length / PRO_SEITE));
   // Kaputte oder erfundene Seitenzahlen landen auf Seite 1 statt im Leeren.
   const seite = Math.min(seiten, Math.max(1, Number.parseInt(searchParams?.seite ?? "1", 10) || 1));
@@ -230,7 +230,7 @@ export default async function RankingPage({ params, searchParams }: { params: Pa
                   aus. Das gehoert in den ersten Absatz und nicht in den
                   Quellen-Fuss — sonst fragt sich jeder, wo sein Ort bleibt. */}
               {ausgeschlossen > 0 &&
-                ` ${nf(ausgeschlossen)} Orte unter ${nf(RANKING_MIN_POPULATION)} Einwohnern bleiben außen vor: Dort kippt die Zahl je Einwohner schon an einer einzelnen Anlage.`}
+                ` ${nf(ausgeschlossen)} ${ausgeschlossen === 1 ? "Ort bleibt" : "Orte bleiben"} außen vor: Dort sind Anlagen als privat gemeldet, die für ein Wohnhaus zu groß sind.`}
             </>
           ) : (
             <>Für diese Auswahl liegen keine wertbaren Zahlen vor.</>
@@ -274,9 +274,10 @@ export default async function RankingPage({ params, searchParams }: { params: Pa
                     ) : (
                       <span style={S.name}>{r.name}</span>
                     )}
-                    {orte.length > 0 && (
-                      <span style={S.herkunft}>
-                        {orte.map((t, i) => (
+                    <span style={S.herkunft}>
+                      {`${nf(r.population)} Einwohner`}
+                      {orte.length > 0 && " · "}
+                      {orte.map((t, i) => (
                           <span key={t.name}>
                             {i > 0 && " · "}
                             {t.href ? (
@@ -286,10 +287,9 @@ export default async function RankingPage({ params, searchParams }: { params: Pa
                             ) : (
                               t.name
                             )}
-                          </span>
-                        ))}
-                      </span>
-                    )}
+                        </span>
+                      ))}
+                    </span>
                   </span>
                   <span style={S.delta}>
                     <RangDelta plaetze={r.veraenderung} />
@@ -351,8 +351,10 @@ export default async function RankingPage({ params, searchParams }: { params: Pa
         )}
 
         <div style={S.disclaimer}>
-          Gewertet werden Kommunen ab {nf(RANKING_MIN_POPULATION)} Einwohnern — darunter kippt jede Pro-Kopf-Zahl
-          schon an einer einzelnen Anlage. Bestandsdaten: {DATA_SOURCES.mastr.name}, Datenlizenz dl-de/by-2-0 (Daten
+          Als privat gewertet werden nur Dachanlagen in Wohnhausgröße: Das Register führt „privat" aus einem
+          angekreuzten Feld, ohne Größenprüfung — ein Scheunendach mit 100 kWp stand damit in der Bürger-Wertung.
+          Eine Einwohner-Untergrenze gibt es bewusst nicht; die Einwohnerzahl steht stattdessen in jeder Zeile.
+          Bestandsdaten: {DATA_SOURCES.mastr.name}, Datenlizenz dl-de/by-2-0 (Daten
           aggregiert). Einwohnerzahlen: {DATA_SOURCES.destatis.name}, Gemeindeverzeichnis, Datenlizenz dl-de/by-2-0.
           Alle Angaben sind Näherungswerte ohne Anspruch auf Richtigkeit, Aktualität oder Vollständigkeit.
         </div>

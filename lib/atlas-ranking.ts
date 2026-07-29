@@ -47,15 +47,31 @@ export function ebeneOf(regionId: string | null): RankingEbene {
 }
 
 /**
- * Untergrenze der Einwohnerzahl. Dieselbe Schwelle wie beim Aufhänger im
- * Anschreiben (HOOK_MIN_POPULATION): Unter 2.000 Einwohnern kippt jede
- * Pro-Kopf-Zahl schon an einer einzelnen Anlage.
+ * KEINE Einwohner-Untergrenze mehr.
+ *
+ * Sie lag bei 2.000 und schloss 5.627 von 10.742 Gemeinden aus — mehr als die
+ * Hälfte, damit ein paar Ausreißer nicht oben stehen. Beim Nachmessen war der
+ * Grund für diese Ausreißer aber ein anderer: Nicht der kleine Nenner, sondern
+ * falsch etikettierte Anlagen. Die zehn Spitzenreiter der ungefilterten Liste
+ * hatten „private" Dächer mit im Schnitt 107, 58 und 55 kWp — Gewerbehallen.
+ * Dagegen hilft `plausibel` an der Kategorie (Größenprüfung), und die trifft
+ * 17 Gemeinden statt 5.627.
+ *
+ * Und ohne Untergrenze wird die Liste NICHT zur Liste der kleinsten Orte:
+ * Von den ersten hundert liegen 41 % zwischen 500 und 2.000 Einwohnern, die
+ * Median-Einwohnerzahl ist 991, und der Zusammenhang zwischen Wert und
+ * Ortsgröße bleibt bei −0,23. Es sind echte Spitzenreiter.
+ *
+ * Was die Zahl braucht, ist Kontext statt Ausschluss: Die Einwohnerzahl steht
+ * in jeder Zeile, dann ordnet der Leser „48 Einwohner" selbst ein.
  */
-export const RANKING_MIN_POPULATION = 2000;
+export const RANKING_MIN_POPULATION = 0;
 
 export type RankingZeile = {
   regionId: string;
   name: string;
+  /** Steht in der Zeile: Ohne Untergrenze ordnet erst sie „48 Einwohner" ein. */
+  population: number;
   platz: number;
   wert: number;
   /** Platz zum Stand Ende des letzten vollen Jahres, wenn die Kategorie einen
@@ -78,16 +94,14 @@ export function rankingRows(
 ): RankingZeile[] {
   const rows = stats
     .filter((g) => {
-      // Die Untergrenze gilt NUR fuer Pro-Kopf-Werte: Dort kippt die Zahl an
-      // einer einzelnen Anlage. Bei absoluten Werten waere sie sogar falsch —
-      // ein 700-Einwohner-Dorf mit einem 90-MWp-Solarpark gehoert in genau
-      // diese Rangliste, nicht heraus.
-      if (kategorie.messart === "proKopf" && g.population < RANKING_MIN_POPULATION) return false;
       if (scopeId && !g.regionId.startsWith(scopeId)) return false;
+      // Sieht die Anlage nach dem aus, was die Kategorie behauptet? Ersetzt die
+      // frühere Einwohner-Untergrenze (Begründung an RANKING_MIN_POPULATION).
+      if (kategorie.plausibel && !kategorie.plausibel(g)) return false;
       const w = kategorie.metric(g);
       return w !== null && w > 0;
     })
-    .map((g) => ({ regionId: g.regionId, name: g.name, wert: kategorie.metric(g) as number }))
+    .map((g) => ({ regionId: g.regionId, name: g.name, population: g.population, wert: kategorie.metric(g) as number }))
     // Bei Gleichstand entscheidet der Name, damit die Reihenfolge zwischen zwei
     // Aufbauten dieselbe bleibt (sonst tauschen Zeilen ohne Datenänderung).
     .sort((a, b) => b.wert - a.wert || a.name.localeCompare(b.name, "de"));
@@ -105,12 +119,12 @@ export function rankingRows(
   }
   const vorjahr = stats
     .filter((g) => {
-      if (kategorie.messart === "proKopf" && g.population < RANKING_MIN_POPULATION) return false;
       if (scopeId && !g.regionId.startsWith(scopeId)) return false;
+      if (kategorie.plausibel && !kategorie.plausibel(g)) return false;
       const w = kategorie.metricVorjahr!(g);
       return w !== null && w > 0;
     })
-    .map((g) => ({ regionId: g.regionId, name: g.name, wert: kategorie.metricVorjahr!(g) as number }))
+    .map((g) => ({ regionId: g.regionId, name: g.name, population: g.population, wert: kategorie.metricVorjahr!(g) as number }))
     .sort((a, b) => b.wert - a.wert || a.name.localeCompare(b.name, "de"));
   const platzVon = new Map(vergebePlaetze(vorjahr).map((r) => [r.regionId, r.platz]));
 
