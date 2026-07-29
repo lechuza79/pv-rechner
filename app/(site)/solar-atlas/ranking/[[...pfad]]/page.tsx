@@ -11,8 +11,8 @@ import { resolveSlugPath, getRegionById, getChildren, type AtlasRegion } from ".
 import { ortPhrase } from "../../../../../lib/atlas-orte";
 import { loadAwardStats, loadElternSlugs, loadKreisNames } from "../../../../../lib/awards-server";
 import { bundeslandByAgs } from "../../../../../lib/mastr-regions";
-import { formatAwardValue, type GemeindeStats } from "../../../../../lib/awards";
-import { fmtSpeicherJeKwp, regionDisplayName } from "../../../../../lib/atlas-format";
+import { formatAwardValue } from "../../../../../lib/awards";
+import { regionDisplayName } from "../../../../../lib/atlas-format";
 import {
   rankingKategorienGruppiert,
   rankingNav,
@@ -21,7 +21,6 @@ import {
   rankingRows,
   rankingTitel,
 } from "../../../../../lib/atlas-ranking";
-import { befundeNachGroesse, speicherTrend } from "../../../../../lib/atlas-befunde";
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
 
 export const revalidate = 3600;
@@ -94,7 +93,7 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
   const d = await deute(params.pfad);
   if (!d) notFound();
 
-  if (d.uebersicht) return <Uebersicht stats={await loadAwardStats()} />;
+  if (d.uebersicht) return <Uebersicht />;
 
   const { kategorie, region } = d;
   const wo = region.level === "de" ? "in Deutschland" : ortPhrase(region);
@@ -374,13 +373,8 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
 /** Einstieg: welche Ranglisten es gibt — plus zwei Befunde, die aus denselben
  *  Zahlen fallen, aber KEINE Rangliste sein dürfen (Begründung an
  *  lib/atlas-befunde.ts). Live gerechnet, damit sie mit dem Monatslauf mitgehen. */
-function Uebersicht({ stats }: { stats: GemeindeStats[] }) {
+function Uebersicht() {
   const gruppen = rankingKategorienGruppiert();
-  const befunde = befundeNachGroesse(stats);
-  const trend = speicherTrend(befunde);
-  const kleinste = befunde[0];
-  const groesste = befunde[befunde.length - 1];
-  const pct = (x: number) => `${Math.round(x * 100)} %`;
   return (
     <div style={S.page}>
       <div style={S.wrap}>
@@ -390,61 +384,10 @@ function Uebersicht({ stats }: { stats: GemeindeStats[] }) {
           Wer baut am meisten — gemessen an der Einwohnerzahl, nicht an der Größe der Gemeinde. Jede Liste führt
           jede gewertete Kommune, von Deutschland über die Länder bis in den Landkreis.
         </p>
-        {(trend || (kleinste && groesste)) && (
-          <div style={S.section}>
-            <h2 style={S.h2}>Was in den Zahlen steckt</h2>
-            <p style={S.gruppeText}>
-              Zwei Muster, die über alle Kommunen tragen — aber bewusst keine Rangliste sind: Sie beschreiben
-              Gruppen, nicht einzelne Orte.
-            </p>
-
-            {trend && (
-              <div style={S.befund}>
-                <div style={S.befundTitel}>Auf dem Land wird gebaut, in der Stadt wird gespeichert</div>
-                <p style={S.befundText}>
-                  {/* Einheit und Dezimaltrennung kommen aus dem kanonischen
-                      Formatter — nie von Hand getippt (lib/atlas-format.ts). */}
-                  {`Je installiertem Kilowatt Dachleistung steht in Großstädten ${trend.plusProzent} % mehr Batteriekapazität als in den kleinsten Gemeinden: ${fmtSpeicherJeKwp(trend.gross)} gegenüber ${fmtSpeicherJeKwp(trend.klein)} im Median. Der Wert steigt über jede Größenstufe hinweg.`}
-                </p>
-                <div style={S.stufenLabel}>Median in kWh je kWp Dach</div>
-                <div style={S.stufen}>
-                  {befunde.map((b) =>
-                    b.speicherJeKwp === null ? null : (
-                      <span key={b.label} style={S.stufe}>
-                        <span style={S.stufeLabel}>{b.label}</span>
-                        <span style={S.stufeWert}>
-                          {b.speicherJeKwp.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </span>
-                      </span>
-                    ),
-                  )}
-                </div>
-              </div>
-            )}
-
-            {kleinste?.mitFreiflaeche !== null && groesste?.mitFreiflaeche !== null && (
-              <div style={S.befund}>
-                <div style={S.befundTitel}>Freiflächen sind alles oder nichts</div>
-                <p style={S.befundText}>
-                  {`In den kleinsten Gemeinden hat nur ${pct(kleinste.mitFreiflaeche as number)} überhaupt eine Freiflächenanlage` +
-                    (kleinste.freiflaecheAnteil !== null
-                      ? ` — wo eine steht, macht sie aber ${pct(kleinste.freiflaecheAnteil)} der gesamten Solarleistung des Ortes aus.`
-                      : ".") +
-                    ` Ab 100.000 Einwohnern hat fast jede Stadt eine (${pct(groesste.mitFreiflaeche as number)})` +
-                    (groesste.freiflaecheAnteil !== null
-                      ? `, dort ist sie mit ${pct(groesste.freiflaecheAnteil)} aber Beiwerk.`
-                      : ".") +
-                    " Deshalb zählt keine Bürger-Rangliste Freiflächen mit: ein einziger Investorenpark würde ein Dorf an die Spitze setzen."}
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-
         {(
           [
             ["Privat", gruppen.buerger, "Was Haushalte gebaut haben, je Einwohner gerechnet — eine kleine Gemeinde kann eine große schlagen."],
-            ["Sonstiges", gruppen.standort, "Was am Ort steht, unabhängig davon, wer es gebaut hat: Gesamtleistung, Freiflächen, Wind. Hier gewinnen Kraftwerks-Standorte und große Städte."],
+            ["Sonstiges", gruppen.standort, "Was am Ort steht, unabhängig davon, wer es gebaut hat: Gesamtleistung, Freiflächen, Wind. Hier gewinnen Kraftwerks-Standorte und große Städte. Diese Anlagen bleiben aus den Listen oben heraus, weil ein einziger Investorenpark ein Dorf an die Spitze setzen würde."],
           ] as const
         ).map(([titel, kats, erklaerung]) =>
           kats.length === 0 ? null : (
