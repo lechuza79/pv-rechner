@@ -408,6 +408,71 @@ function verdict(seconds: number, limits: { warn: number; fail: number }): "grue
   return "gruen";
 }
 
+// ─── Cache-Wirksamkeit ───────────────────────────────────────────────────────
+//
+// Antwortzeit und Statuscode sagen NICHT, ob eine Seite noch vom CDN
+// ausgeliefert wird. Genau daran ist der Juli-Ausfall vorbeigelaufen: Die
+// Atlas-Seiten wurden live ungecacht ausgeliefert, obwohl im Code `revalidate`
+// stand (fehlendes generateStaticParams + ungecachte Fetches). Sichtbar war das
+// nur an `x-vercel-cache` — gemessen hat es niemand, und einzeln aufgerufen war
+// die Seite schnell genug, um nicht aufzufallen. Erst die Summe riss die
+// Notbremse.
+//
+// Die Probe stellt die Frage, die der Statuscode nicht beantwortet: Kommt
+// dieselbe URL beim ZWEITEN Abruf aus dem Cache? Ein dauerhaftes MISS heißt,
+// dass jeder Besucher den vollen Aufbau bezahlt.
+//
+// Bewusst NICHT über den Cache-Control-Header geprüft: Vercel ersetzt den
+// Origin-Header, bevor er den Client erreicht (ISR-Seiten kommen als
+// `max-age=0, must-revalidate` an, API-Routen als nacktes `public`). Wer dort
+// nach `s-maxage` sucht, misst eine Zahl, die es im Netz gar nicht gibt.
+const CACHE_PFLICHT = [
+  { label: "Startseite", path: "/" },
+  { label: "Atlas-Einstieg", path: "/solar-atlas" },
+  { label: "Förder-Bundeslandseite", path: "/photovoltaik-foerderung/bayern" },
+  { label: "Ratgeber", path: "/ratgeber/gasheizung-oder-waermepumpe" },
+  { label: "Standort-Ertrag (30 Tage haltbar)", path: "/api/pvgis?lat=52.52&lon=13.405&plzPrefix=10" },
+  { label: "Kühlgradstunden (30 Tage haltbar)", path: "/api/cooling-degree?lat=52.52&lon=13.405&plzPrefix=10" },
+];
+
+/** Zustände, die belegen, dass die Antwort aus dem CDN kam. */
+const CACHE_TREFFER = new Set(["HIT", "STALE", "PRERENDER", "REVALIDATED"]);
+
+export type CacheBefund = { label: string; ersterAbruf: string; zweiterAbruf: string; gecacht: boolean };
+
+/**
+ * Zwei Abrufe derselben URL. Der erste darf MISS sein (er füllt den Cache),
+ * der zweite muss aus dem Cache kommen.
+ *
+ * `bypass` wird gesondert behandelt: dann greift eine bewusste Ausnahme
+ * (Middleware-Matcher, no-store im Code) und die Seite gehört nicht in diese
+ * Liste — das ist ein Befund über die LISTE, nicht über die Seite.
+ */
+export function cacheBefundAusZustaenden(label: string, erster: string, zweiter: string): CacheBefund {
+  return {
+    label,
+    ersterAbruf: erster || "—",
+    zweiterAbruf: zweiter || "—",
+    gecacht: CACHE_TREFFER.has(zweiter.toUpperCase()),
+  };
+}
+
+async function pruefeCacheWirksamkeit(): Promise<CacheBefund[]> {
+  const befunde: CacheBefund[] = [];
+  for (const { label, path } of CACHE_PFLICHT) {
+    const erster = await probe(label, path);
+    // Nur bei erfolgreicher erster Antwort ist die Cache-Frage überhaupt
+    // sinnvoll — ein 500er ist ein anderer Befund und wird oben schon gemeldet.
+    if (erster.status !== 200) {
+      befunde.push(cacheBefundAusZustaenden(label, erster.cache, "kein 200"));
+      continue;
+    }
+    const zweiter = await probe(label, path);
+    befunde.push(cacheBefundAusZustaenden(label, erster.cache, zweiter.cache));
+  }
+  return befunde;
+}
+
 /** Ab so vielen roten Läufen hintereinander kommt der Betreiber ins Spiel. */
 export const ESKALATION_AB_LAEUFEN = 3;
 
@@ -603,6 +668,29 @@ async function main() {
         warnings.push(`Atlas-Abfrage „${d.label}" bei ${d.ms} ms (Vergleichs-Read ${d.baselineMs} ms).`);
       }
     }
+  }
+
+  // ── Cache-Wirksamkeit ─────────────────────────────────────────────────────
+  // Kein Zeitmaß, sondern eine Ja/Nein-Frage: Kommt die Seite beim zweiten
+  // Abruf aus dem CDN? Läuft NACH den Zeitmessungen, damit die zusätzlichen
+  // Abrufe die Kaltrender-Stichproben nicht vorwärmen.
+  const cacheBefunde = await pruefeCacheWirksamkeit();
+  const ungecacht = cacheBefunde.filter((c) => !c.gecacht);
+  lines.push(
+    `Cache-Wirksamkeit (zweiter Abruf derselben Adresse): ` +
+      `${cacheBefunde.length - ungecacht.length}/${cacheBefunde.length} aus dem CDN` +
+      (ungecacht.length ? ` — daneben: ${ungecacht.map((c) => `${c.label} (${c.zweiterAbruf})`).join(", ")}` : ""),
+  );
+  for (const c of ungecacht) {
+    forClaude.push(
+      `„${c.label}" wird nicht mehr aus dem CDN ausgeliefert: der zweite Abruf derselben Adresse kam als ` +
+        `${c.zweiterAbruf} zurück (erster: ${c.ersterAbruf}), müsste aber ein Cache-Treffer sein. ` +
+        `Das heißt, JEDER Besucher zahlt den vollen Aufbau — die Seite ist dann noch schnell genug, kippt aber ` +
+        `unter Parallel-Last, und genau so ist der Juli-Ausfall entstanden. Übliche Ursachen: bei einer Seite ein ` +
+        `fehlendes generateStaticParams oder ein Aufruf, der sie dynamisch macht (Cookies, Header, searchParams); ` +
+        `bei einer API-Route ein fehlender oder überschriebener Cache-Control-Header. ` +
+        `Ist die Ausnahme gewollt, gehört der Eintrag aus CACHE_PFLICHT heraus — mit Begründung.`,
+    );
   }
 
   // ── Bericht ───────────────────────────────────────────────────────────────

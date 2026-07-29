@@ -221,8 +221,14 @@ function Section({ title, stand, intro, rows, source, caveat }: {
       </div>
       {intro && <p style={S.intro}>{intro}</p>}
       <div style={S.card}>
+        {/* Der Index gehört in den Schlüssel: Zwei Zeilen mit gleicher
+            Beschriftung sind hier fachlich möglich (Kühlen/Heizen desselben
+            Geräts), und allein der Text als Schlüssel machte daraus einen
+            Zustand, den React ausdrücklich nicht unterstützt — mit dem Risiko,
+            dass eine Zeile still verschwindet. Auf einer Seite, die belegt,
+            welche Werte gelten, fällt genau das niemandem auf. */}
         {rows.map((r, i) => (
-          <div key={r.label} style={i === 0 ? S.rowFirst : S.row}>
+          <div key={`${i}-${r.label}`} style={i === 0 ? S.rowFirst : S.row}>
             <span style={S.rowLabel}>{r.label}</span>
             <span style={S.rowValue}>{r.value}</span>
           </div>
@@ -356,11 +362,11 @@ export default async function DatenstandPage() {
           intro="Annahmen des Klimaanlagen-Rechners: Geräte-Effizienz, Preise, Klima- und Hitzedaten. Kern ist Kühlung; Split-Geräte können zusätzlich in der Übergangszeit heizen (günstiger als Gas). Strompreis und Kühlgradstunden im Ergebnis editierbar."
           rows={[
             { label: "Effizienz Kühlen im Realbetrieb: Monoblock / mobile Split / fest installiert", value: AC.devices.map((d) => d.seer.toLocaleString("de-DE")).join(" / ") },
-            { label: "…davon Typenschild (EU-Label)", value: AC.devices.map((d) => `${d.labelMetric} ${d.labelValue.toLocaleString("de-DE")}`).join(" / ") },
+            { label: "…davon Typenschild Kühlen (EU-Label)", value: AC.devices.map((d) => `${d.labelMetric} ${d.labelValue.toLocaleString("de-DE")}`).join(" / ") },
             { label: "…davon Abschlag Labor → Realbetrieb", value: `${((1 - AC_REAL_FACTOR) * 100).toLocaleString("de-DE")} % (einheitlich für alle Gerätetypen)` },
             { label: "…davon Korrektur nachströmende Warmluft (nur Monoblock)", value: `${((1 - AC.devices[0].structuralFactor) * 100).toLocaleString("de-DE")} % (Effekt liegt außerhalb der Einkanal-Prüfnorm)` },
             { label: "Effizienz Heizen im Realbetrieb: mobile Split / fest installiert", value: `${AC.devices[1].scop!.toLocaleString("de-DE")} / ${AC.devices[2].scop!.toLocaleString("de-DE")} (Monoblock heizt nicht)` },
-            { label: "…davon Typenschild (EU-Label)", value: `SCOP ${AC.devices[1].labelScop!.toLocaleString("de-DE")} / ${AC.devices[2].labelScop!.toLocaleString("de-DE")}` },
+            { label: "…davon Typenschild Heizen (EU-Label)", value: `SCOP ${AC.devices[1].labelScop!.toLocaleString("de-DE")} / ${AC.devices[2].labelScop!.toLocaleString("de-DE")}` },
             { label: "…wie der Heiz-Wert zustande kommt", value: `Derselbe Abschlag Labor → Realbetrieb wie beim Kühlen (${((1 - AC_REAL_FACTOR) * 100).toLocaleString("de-DE")} %), damit Heizen und Kühlen im selben Gerät gleich streng gerechnet sind. Gemessen ist dieser Abschlag am Kühlen; für die Heizrichtung nennt die Messstudie den Wert nicht getrennt, deshalb übertragen wir ihn. Das ist bewusst die vorsichtige Wahl — die Ersparnis gegenüber Gas kann dadurch eher zu niedrig als zu hoch stehen. Wir prüfen es bis Oktober 2026 nach.` },
             { label: "Übergangszeit-Heizwärme (Split)", value: `${AC.heatStandards.map((s) => `${s.label} ${nf(acHeatSpecKwhPerM2(s.id))}`).join(" · ")} — kWh/m²·a je beheizter Fläche, also ${nf(AC.heatTransitionShare * 100)} % des Jahres-Heizwärmebedarfs je Gebäudestandard (im Ergebnis editierbar)` },
             { label: "Anschaffung Monoblock / mobile Split", value: `~${nf(AC.devices[0].pricePerUnit!)} € / ~${nf(AC.devices[1].pricePerUnit!)} € je Gerät·Raum` },
