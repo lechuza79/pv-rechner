@@ -284,3 +284,28 @@ describe("Zubau-Tempo", () => {
     expect(rows).toHaveLength(0);
   });
 });
+
+describe("Grundmenge hinter einer Pro-Kopf-Zahl", () => {
+  // Wiedenborstel: 10 Einwohner, EIN Balkonkraftwerk — bundesweit Platz 4 mit
+  // "100,0 je 1.000 Einwohner". Die Zahl stimmt, die Wirkung nicht. Deshalb
+  // steht die Stueckzahl in der Zeile, statt kleine Orte auszuschliessen.
+  it("nennt die Stueckzahl, und zwar im richtigen Numerus", () => {
+    const rows = rankingRows([g("01051001", "Wiedenborstel", 10, 1), g("01051002", "Ölsen", 80, 6)], balkon, null);
+    expect(rows[0].name).toBe("Wiedenborstel");
+    expect(rows[0].basis).toBe("1 Balkonkraftwerk");
+    expect(rows[1].basis).toBe("6 Balkonkraftwerke");
+  });
+
+  it("nennt bei privaten Daechern die Zahl der Anlagen, nicht die Leistung", () => {
+    const dach = AWARD_CATEGORY_BY_KEY["dach-privat-pk"];
+    const ort = { ...g("07339013", "Testdorf", 100, 0), privatDachKwp: 360, privatDachCount: 36 };
+    const rows = rankingRows([ort], dach, null);
+    expect(rows[0].basis).toBe("36 private Dachanlagen");
+  });
+
+  it("laesst die Grundmenge weg, wo die Kategorie keine kennt", () => {
+    const wind = AWARD_CATEGORY_BY_KEY["wind-standort"];
+    const rows = rankingRows([{ ...g("01051003", "Windort", 500, 0), windKwp: 9000 }], wind, null);
+    expect(rows[0].basis).toBeNull();
+  });
+});

@@ -3,10 +3,10 @@
   "configurations": [
     {
       "name": "dev",
+      "cwd": "/Users/eule/projects/pv-rechner/.claude/worktrees/gsc-index-status",
       "runtimeExecutable": "/opt/homebrew/bin/node",
       "runtimeArgs": [
-        "/opt/homebrew/bin/npx",
-        "next",
+        "/Users/eule/projects/pv-rechner/.claude/worktrees/gsc-index-status/node_modules/next/dist/bin/next",
         "dev",
         "-p",
         "3048"

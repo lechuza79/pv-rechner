@@ -72,6 +72,9 @@ export type RankingZeile = {
   name: string;
   /** Steht in der Zeile: Ohne Untergrenze ordnet erst sie „48 Einwohner" ein. */
   population: number;
+  /** Die absolute Menge hinter der Zahl („1 Balkonkraftwerk"), wo die Kategorie
+   *  eine kennt. Ohne sie liest sich eine Rate groesser, als sie ist. */
+  basis: string | null;
   platz: number;
   wert: number;
   /** Platz zum Stand Ende des letzten vollen Jahres, wenn die Kategorie einen
@@ -101,7 +104,13 @@ export function rankingRows(
       const w = kategorie.metric(g);
       return w !== null && w > 0;
     })
-    .map((g) => ({ regionId: g.regionId, name: g.name, population: g.population, wert: kategorie.metric(g) as number }))
+    .map((g) => ({
+      regionId: g.regionId,
+      name: g.name,
+      population: g.population,
+      basis: kategorie.basis ? kategorie.basis(g) : null,
+      wert: kategorie.metric(g) as number,
+    }))
     // Bei Gleichstand entscheidet der Name, damit die Reihenfolge zwischen zwei
     // Aufbauten dieselbe bleibt (sonst tauschen Zeilen ohne Datenänderung).
     .sort((a, b) => b.wert - a.wert || a.name.localeCompare(b.name, "de"));
@@ -124,7 +133,8 @@ export function rankingRows(
       const w = kategorie.metricVorjahr!(g);
       return w !== null && w > 0;
     })
-    .map((g) => ({ regionId: g.regionId, name: g.name, population: g.population, wert: kategorie.metricVorjahr!(g) as number }))
+    // Nur das, was der Vorjahres-Lauf braucht: Platz und Gleichstands-Entscheid.
+    .map((g) => ({ regionId: g.regionId, name: g.name, wert: kategorie.metricVorjahr!(g) as number }))
     .sort((a, b) => b.wert - a.wert || a.name.localeCompare(b.name, "de"));
   const platzVon = new Map(vergebePlaetze(vorjahr).map((r) => [r.regionId, r.platz]));
 

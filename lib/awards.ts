@@ -134,6 +134,29 @@ export type AwardCategory = {
    * Gemeinden ausschloss, um ein paar falsch etikettierte Anlagen zu neutralisieren.
    */
   plausibel?: (g: GemeindeStats) => boolean;
+  /**
+   * Die absolute Menge hinter einer Pro-Kopf-Zahl, fertig formuliert
+   * ("1 Balkonkraftwerk", "36 Dachanlagen") — null, wo es nichts zu zaehlen gibt.
+   *
+   * WARUM: Eine Rate ohne ihre Grundmenge kann jede Groesse vortaeuschen.
+   * Wiedenborstel hat 10 Einwohner und EIN Balkonkraftwerk und stand damit auf
+   * Platz 4 der Bundesliste — mit "100,0 je 1.000 Einwohner", was nach sehr viel
+   * aussieht. Die Zahl ist richtig, die Wirkung falsch. Statt kleine Orte
+   * auszuschliessen (dieselbe Diskussion wie bei der Einwohner-Untergrenze)
+   * steht die Stueckzahl daneben, dann rechnet niemand mehr falsch.
+   * CLAUDE.md, "Zahlen und Einheiten", Punkt 3.
+   */
+  basis?: (g: GemeindeStats) => string | null;
+};
+
+/** Die zugebaute Leistung hinter einer Tempo-Zahl. Einheit aus dem kanonischen
+ *  Formatter, nie handgeschrieben. */
+const zubauBasis = (kwp: number): string | null => (kwp > 0 ? `${fmtPvLeistung(kwp)} dazugebaut` : null);
+
+/** "1 Anlage" / "7 Anlagen" — Singular und Plural sind Teil der Richtigkeit. */
+const stueck = (anzahl: number | undefined, einzahl: string, mehrzahl: string): string | null => {
+  if (!anzahl || anzahl <= 0) return null;
+  return `${anzahl.toLocaleString("de-DE")} ${anzahl === 1 ? einzahl : mehrzahl}`;
 };
 
 const perCapita = (val: number, pop: number): number | null => (pop > 0 ? (val * 1000) / pop : null);
@@ -166,6 +189,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "proKopf",
     format: "wattProKopf",
     metric: (g) => perCapita(g.privatDachKwp, g.population),
+    basis: (g) => stueck(g.privatDachCount, "private Dachanlage", "private Dachanlagen"),
     plausibel: (g) => mittlereGroesse(g.privatDachKwp, g.privatDachCount) <= MAX_PRIVATDACH_KWP,
     metricVorjahr: (g) => perCapita(g.privatDachKwpLy ?? 0, g.population),
   },
@@ -181,6 +205,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "proKopf",
     format: "countPer1000",
     metric: (g) => perCapita(g.balkonCount, g.population),
+    basis: (g) => stueck(g.balkonCount, "Balkonkraftwerk", "Balkonkraftwerke"),
     metricVorjahr: (g) => perCapita(g.balkonCountLy ?? 0, g.population),
   },
   {
@@ -195,6 +220,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "proKopf",
     format: "whProKopf",
     metric: (g) => perCapita(g.batteriePrivatKwh, g.population),
+    basis: (g) => stueck(g.batteriePrivatCount, "Hausspeicher", "Hausspeicher"),
     // Finsing: eine Gewerbe-Batterie als privat gemeldet, seit jeher als
     // Einzelfall im Code gefuehrt. Die Groessenpruefung faengt die ganze Klasse.
     plausibel: (g) => mittlereGroesse(g.batteriePrivatKwh, g.batteriePrivatCount) <= MAX_HAUSSPEICHER_KWH,
@@ -215,6 +241,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "proKopf",
     format: "wattProKopf",
     metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpLy ?? 0)), g.population),
+    basis: (g) => zubauBasis(g.privatDachKwp - (g.privatDachKwpLy ?? 0)),
   },
   {
     key: "tempo-3j",
@@ -228,6 +255,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "proKopf",
     format: "wattProKopf",
     metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpL3 ?? 0)), g.population),
+    basis: (g) => zubauBasis(g.privatDachKwp - (g.privatDachKwpL3 ?? 0)),
   },
   {
     key: "tempo-5j",
@@ -241,6 +269,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     messart: "proKopf",
     format: "wattProKopf",
     metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpL5 ?? 0)), g.population),
+    basis: (g) => zubauBasis(g.privatDachKwp - (g.privatDachKwpL5 ?? 0)),
   },
   // Bürger, absolut — belohnt die großen Städte-Bürgerschaften.
   {
@@ -437,7 +466,9 @@ export function formatAwardValue(value: number, format: MetricFormat): string {
     case "count":
       return `${Math.round(value).toLocaleString("de-DE")} Anlagen`;
     case "countPer1000":
-      return `${value.toLocaleString("de-DE", { maximumFractionDigits: 1 })} je 1.000 Ew.`;
+      // Feste Nachkommastelle: In einer Spalte untereinander las sich sonst
+      // "125,9" ueber "125" wie ein Sprung, wo nur die Null fehlte.
+      return `${value.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} je 1.000 Ew.`;
     case "whProKopf":
       return `${Math.round(value).toLocaleString("de-DE")} Wh/Kopf`;
   }

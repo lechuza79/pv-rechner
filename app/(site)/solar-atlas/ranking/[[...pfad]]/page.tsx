@@ -12,7 +12,7 @@ import { ortPhrase } from "../../../../../lib/atlas-orte";
 import { loadAwardStats, loadElternSlugs, loadKreisNames } from "../../../../../lib/awards-server";
 import { bundeslandByAgs } from "../../../../../lib/mastr-regions";
 import { formatAwardValue, type GemeindeStats } from "../../../../../lib/awards";
-import { fmtSpeicherJeKwp } from "../../../../../lib/atlas-format";
+import { fmtSpeicherJeKwp, regionDisplayName } from "../../../../../lib/atlas-format";
 import {
   rankingKategorienGruppiert,
   rankingNav,
@@ -141,7 +141,9 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
     const kreisName = kreisNamen[id.slice(0, 5)];
     if (kreisName) {
       teile.push({
-        name: kreisName,
+        // "Landkreis Westerwaldkreis" — die Gattung steckt bei 47 Kreisen schon
+        // im amtlichen Namen. Der Anzeigename nimmt das Doppelte heraus.
+        name: regionDisplayName(kreisName),
         href: blSlug && kreisSlug ? `${BASIS}/${kategorie.slug}/${blSlug}/${kreisSlug}` : null,
       });
     }
@@ -278,6 +280,10 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
                     )}
                     <span style={S.herkunft}>
                       {`${nf(r.population)} Einwohner`}
+                      {/* Die Menge hinter der Rate: "100 je 1.000 Einwohner"
+                          liest sich sonst gross, auch wenn EIN Geraet dahinter
+                          steht (Wiedenborstel, 10 Einwohner). */}
+                      {r.basis && ` · ${r.basis}`}
                       {orte.length > 0 && " · "}
                       {orte.map((t, i) => (
                           <span key={t.name}>
