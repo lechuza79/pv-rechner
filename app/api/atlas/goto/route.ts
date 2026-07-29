@@ -24,5 +24,10 @@ export async function GET(req: NextRequest) {
     path = null;
   }
 
-  return NextResponse.redirect(new URL(path ?? "/solar-atlas", req.url));
+  // Der Slug-Pfad kommt zwar aus unserer eigenen Tabelle, aber eine
+  // Weiterleitung ist der falsche Ort für Vertrauen: Fienge ein Slug je mit
+  // "//" an, würde daraus eine Weiterleitung auf eine fremde Domain. Ein
+  // Präfix-Check kostet nichts und macht den Fall unmöglich.
+  const safe = path && path.startsWith("/solar-atlas/") ? path : "/solar-atlas";
+  return NextResponse.redirect(new URL(safe, req.url));
 }

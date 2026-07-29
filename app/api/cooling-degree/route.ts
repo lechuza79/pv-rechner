@@ -23,6 +23,11 @@ export async function GET(req: NextRequest) {
   const limited = rateLimit(req, "cooling-degree");
   if (limited) return limited;
 
+  // Die akute Hitzewellen-Vorhersage hat eine eigene Route (/api/heatwave).
+  // Grund: Sie darf nicht dieselbe 30-Tage-Haltbarkeit erben wie die
+  // Klimatologie hier — sonst steht eine einen Monat alte Vorhersage als
+  // "nächste 16 Tage" auf der Seite. Ausführlich dort im Kopfkommentar.
+
   const lat = parseFloat(req.nextUrl.searchParams.get("lat") || "");
   const lon = parseFloat(req.nextUrl.searchParams.get("lon") || "");
   const plzPrefix = req.nextUrl.searchParams.get("plzPrefix") || "";
@@ -37,16 +42,13 @@ export async function GET(req: NextRequest) {
   // Sofort-Fallback ohne gültige Koordinaten
   if (isNaN(lat) || isNaN(lon) || lat < 47 || lat > 55 || lon < 5 || lon > 16) {
     return NextResponse.json(
-      { ...fallback, source: "fallback", heatwave: null },
+      { ...fallback, source: "fallback" },
       { headers: { "Cache-Control": CDN_CACHE_FALLBACK } },
     );
   }
 
   const rLat = Math.round(lat * 100) / 100;
   const rLon = Math.round(lon * 100) / 100;
-
-  // Akuter Hitzewellen-Blick (16-Tage-Vorhersage) — inherent live, separat geholt.
-  const heatwave = await fetchHeatwave(rLat, rLon);
 
   // Cache prüfen (alle drei Modi). Fehlt die Tabelle/Spalten → still recompute.
   if (supabase) {
@@ -58,11 +60,23 @@ export async function GET(req: NextRequest) {
       .maybeSingle();
     if (cached?.cdh_avg5) {
       return NextResponse.json(
-        { avg5: cached.cdh_avg5, lastSummer: cached.cdh_last_summer, projection: cached.cdh_projection, source: "cache", heatwave },
+        { avg5: cached.cdh_avg5, lastSummer: cached.cdh_last_summer, projection: cached.cdh_projection, source: "cache" },
         { headers: { "Cache-Control": CDN_CACHE_LONG } },
       );
     }
   }
+
+  // Ab hier wird wirklich gerechnet: 5 Archivjahre + 1 Klimaprojektion, also
+  // SECHS externe Aufrufe pro Koordinatenpaar. Das Raster (0,01°) lässt rund
+  // 880.000 Paare über Deutschland zu — ein Skript könnte damit das kostenlose
+  // Open-Meteo-Kontingent in Minuten leerräumen, und die Folge wäre kein
+  // sichtbarer Fehler, sondern still schlechtere Zahlen auf allen
+  // Wetter-Features. Deshalb ein zweites, hartes Fenster, das NUR die teuren
+  // Misses zählt: Echte Nutzer fragen eine Handvoll PLZ ab und laufen fast
+  // immer in den Cache oben, Aufzählung dagegen erzeugt per Definition nur
+  // Misses und läuft nach fünf Versuchen pro Minute gegen die Wand.
+  const computeLimited = rateLimit(req, "cooling-degree-compute", 5, 60_000);
+  if (computeLimited) return computeLimited;
 
   try {
     const thisYear = new Date().getFullYear();
@@ -89,18 +103,18 @@ export async function GET(req: NextRequest) {
 
     if (supabase) {
       await supabase.from("klima_cache").upsert(
-        { lat: rLat, lon: rLon, cdh_avg5: avg5, cdh_last_summer: lastSummer, cdh_projection: projection },
+        { lat: rLat, lon: rLon, cdh_avg5: avg5, cdh_last_summer: lastSummer, cdh_projection: projection, updated_at: new Date().toISOString() },
         { onConflict: "lat,lon" },
       ).then(() => {});
     }
 
     return NextResponse.json(
-      { avg5, lastSummer, projection, source: "open-meteo", heatwave },
+      { avg5, lastSummer, projection, source: "open-meteo" },
       { headers: { "Cache-Control": CDN_CACHE_LONG } },
     );
   } catch {
     return NextResponse.json(
-      { ...fallback, source: "fallback", heatwave },
+      { ...fallback, source: "fallback" },
       { headers: { "Cache-Control": CDN_CACHE_FALLBACK } },
     );
   }
@@ -143,28 +157,4 @@ async function fetchProjectionCdh(lat: number, lon: number, startYear: number, e
   if (!tmax.length || !tmin.length) return null;
   const years = endYear - startYear + 1;
   return cdhFromDailyMinMax(tmax, tmin, BASE) / years;
-}
-
-// Akute Hitzewelle aus der 16-Tage-Vorhersage.
-async function fetchHeatwave(lat: number, lon: number): Promise<{ maxTemp: number; hotDays: number; active: boolean } | null> {
-  try {
-    const url = new URL("https://api.open-meteo.com/v1/forecast");
-    url.searchParams.set("latitude", String(lat));
-    url.searchParams.set("longitude", String(lon));
-    url.searchParams.set("daily", "temperature_2m_max");
-    url.searchParams.set("forecast_days", "16");
-    url.searchParams.set("timezone", "Europe/Berlin");
-    const res = await fetch(url.toString(), { signal: AbortSignal.timeout(5000) });
-    if (!res.ok) return null;
-    const json = await res.json();
-    const maxima: number[] = json?.daily?.temperature_2m_max ?? [];
-    if (!maxima.length) return null;
-    const maxTemp = Math.round(Math.max(...maxima));
-    const hotDays = maxima.filter(t => t >= CFG.heatwaveThreshold).length;
-    let streak = 0, best = 0;
-    for (const t of maxima) { streak = t >= CFG.heatwaveThreshold ? streak + 1 : 0; best = Math.max(best, streak); }
-    return { maxTemp, hotDays, active: best >= CFG.heatwaveMinDays };
-  } catch {
-    return null;
-  }
 }

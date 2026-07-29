@@ -6,8 +6,11 @@ out/
 .DS_Store
 *.tsbuildinfo
 next-env.d.ts
-.env.local
-.env*.local
+# Alle Umgebungsdateien, nicht nur die *.local-Varianten — ein blankes .env
+# oder .env.production war vorher nicht ignoriert. Der Pre-commit-Hook fängt
+# das zwar ab, aber das ist die zweite Reihe, nicht die erste.
+.env
+.env.*
 .vercel
 
 # Playwright artifacts

@@ -11,6 +11,7 @@ import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { calcAircon, compareDevices, acquisitionRange, calcAirconHeating, acHeatSpecKwhPerM2, type CoolingWindow, type AcInputs } from "../../../lib/aircon";
 import { trackEvent } from "../../../lib/analytics";
 import { useSharedPlz } from "../../../lib/location";
+import { coordsForPlz, fetchHeatwave } from "../../../lib/useCoolingDegree";
 import { bundeslandFromPlz } from "../../../lib/plz-bundesland";
 import { DataSourceNote } from "../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../lib/data-sources";
@@ -108,20 +109,23 @@ export default function Klimaanlage() {
     if (!/^\d{5}$/.test(inputPlz)) return;
     setPlzLoading(true);
     try {
-      const plzRes = await fetch("/plz.json");
-      const plzData: Record<string, [number, number]> = await plzRes.json();
-      const coords = plzData[inputPlz];
+      const coords = await coordsForPlz(inputPlz);
       const prefix = inputPlz.slice(0, 2);
       const qs = coords
         ? `lat=${coords[0]}&lon=${coords[1]}&plzPrefix=${prefix}`
         : `plzPrefix=${prefix}`;
-      const res = await fetch(`/api/cooling-degree?${qs}`);
+      // Klimadaten (30 Tage haltbar) und Hitzewellen-Vorhersage (1 Stunde)
+      // liegen auf getrennten Routen — parallel holen.
+      const [res, hw] = await Promise.all([
+        fetch(`/api/cooling-degree?${qs}`),
+        fetchHeatwave(coords),
+      ]);
       const data = await res.json();
       if (typeof data.avg5 === "number") {
         setCdhSet({ avg5: data.avg5, lastSummer: data.lastSummer, projection: data.projection });
         setCdhSource(data.source);
       }
-      setHeatwave(data.heatwave ?? null);
+      setHeatwave(hw);
       setPlzConfirmed(true);
     } catch { /* Fallback bleibt */ }
     setPlzLoading(false);
