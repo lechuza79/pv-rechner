@@ -103,7 +103,406 @@ tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 - **Herkunfts-Vorbehalt:** Sätze, die aus dem Gesetz abgeleitet sind, BEVOR die Bundesnetzagentur ihre (nur nachrichtliche) Liste veröffentlicht, tragen `note` — sichtbar auf `/datenstand` — und nennen die Behörde NICHT als Quelle. Beides fällt weg, sobald die Liste da ist.
 - Ergebnis-Notiz + FAQ-Eintrag zur geplanten EEG-Reform 2027 (Referentenentwurf, Neuanlagen ab 2027, Bestandsschutz für ≤2026) — Notiz nur bei aktiver Einspeisung, wächter-gepflegter Stichtags-Fakt. Wächter + Runbook `scripts/eeg-verify.md`; Abweichungen laufen durchs Council, bei Konsens fixt sich der EEG-Wert selbst.
 
+<<<<<<< HEAD
+Click-to-Edit-Pattern. Wert wird als Text mit gestrichelter Unterstreichung angezeigt (Affordance), Klick öffnet Input, Enter/Blur committed, Escape bricht ab. **Kein `type="number"`** (Bug-anfällig bei Dezimalwerten), sondern Text-Input mit manueller Validierung. **Deutsche Zahlenformatierung:** Display nutzt `toLocaleString("de-DE")` (Komma als Dezimaltrenner, Punkt als Tausendertrenner). Eingabe akzeptiert Komma und Punkt — Tausenderpunkte werden entfernt, Dezimalkomma zu Punkt konvertiert.
+
+## Aktueller Fokus
+
+Live unter solar-check.io. Phase 0–3 + WP 1–3, 5, 8, 10 abgeschlossen. WP 9 (Energiedaten-Datalake) und Phase 4 (Content/Reichweite) sind die offenen Posten.
+
+### Phase 0 ✅ MVP (done)
+- [x] 4-Step-Flow (Anlage → Speicher → Haushalt → Großverbraucher)
+- [x] Ergebnis mit 3-Szenarien-Chart (SVG)
+- [x] Editierbare Annahmen im Hero (InlineEdit)
+- [x] Einspeisevergütung An/Aus-Toggle
+- [x] Auto-Kostenberechnung aus kWp + Speicher
+- [x] Auto-Eigenverbrauchsberechnung aus Haushaltsdaten
+- [x] Next.js Projekt mit SEO-Meta + OpenGraph
+
+### Phase 1 ✅ Live & SEO-Basics (done bis auf Favicon)
+- [x] Domain solar-check.io + Vercel Deployment
+- [x] Strukturierte Daten (JSON-LD: FAQPage, WebApplication) — Jahres-Frage rotiert dynamisch
+- [x] sitemap.xml + robots.txt (inkl. /impressum, /datenschutz)
+- [x] Share-Funktion: Ergebnis als URL teilbar (Query-Parameter, Clipboard, Native Share, WhatsApp)
+- [x] Google Search Console einrichten
+- [x] TypeScript strict + noUnusedLocals/noUnusedParameters/noImplicitReturns
+- [x] Input-Validierung für Share-URL-Parameter (NaN/Infinity/Bounds)
+- [x] Error Boundary für fehlerhafte Share-URLs (Fallback-UI statt Whitescreen)
+- [x] Globale Error-Page (`app/(site)/error.tsx`) für Routen unter dem Site-Layout
+- [x] Open-Redirect-Validierung im Auth-Callback (next-Param)
+- [x] Impressum + Datenschutz Seiten mit Footer-Links
+- [x] Test-Infrastruktur: Vitest, ~150 Tests (calc, heatpump, recommend, consumption, chart-utils, energy-api), läuft im Pre-commit-Hook
+- [ ] Favicon / OG-Image
+
+### Phase 2 ✅ Berechnungsgenauigkeit + Standort (done)
+- [x] EV-Modell kalibriert an HTW Berlin Simulationsdaten
+- [x] Standort-basierter Ertrag (PLZ → PVGIS API → kWh/kWp)
+- [x] Monatliche Amortisation + Monatsertrag-Chart
+- [x] Saisonaler Verbrauchsfaktor (BDEW H0 Lastprofil)
+- [x] Gas/Öl-Referenzkosten bei WP (inkl. CO₂-Abgabe, EU ETS2)
+- [x] Supabase Infrastruktur (PVGIS-Cache, Schema für Berechnungen)
+- [x] Quick Settings (WP, E-Auto, Speicher)
+- [x] E-Auto Laufleistung
+- [x] Custom kWp Eingabe
+- [x] Methodik-Seite mit transparenter Berechnungserklärung
+
+### Phase 3: Accounts & Empfehlungs-Flow
+
+**WP 1: Accounts & Rollen ✅ (done)**
+- [x] Supabase Auth (Magic Link, passwordless)
+- [x] 3 Rollen in DB (Interessent/PV-Besitzer/Solateur), aktiv ab WP 3/4
+- [x] Berechnung speichern + wieder laden
+- [x] Dashboard "Meine Berechnungen" (`/dashboard`)
+- [x] Inline Login (Header + Sticky Bottom Bar im Ergebnis)
+- [x] Auto-Save nach Magic Link Redirect (localStorage pending → Dashboard)
+- [x] Login leitet zum Dashboard weiter (nicht zurück zum Rechner)
+- [x] "Neue Berechnung" Button im Dashboard
+- [x] Name + Beschreibung für gespeicherte Berechnungen (Inline-Edit im Dashboard)
+- [x] Doppeltes Login-Formular auf Ergebnis-Seite behoben
+
+**WP 2: Empfehlungs-Flow ✅ (done, geparkt — nicht auf Startseite verlinkt)**
+- [x] Hub-Startseite (/) mit 2 Flow-Optionen
+- [x] Empfehlungs-Flow (/empfehlung): Haus+Dach → Haushalt → WP/E-Auto → Empfehlung
+- [x] Empfehlungs-Algorithmus (lib/recommend.ts): EV-optimierte kWp + Speicher-Empfehlung
+- [x] Zwischenseite mit Empfehlung, Warum-Erklärung, Alternativen
+- [x] Ergebnis-Erweiterung: aufklappbare "Warum diese Anlage?" Sektion
+- [x] Code-Extraction: lib/calc.ts, lib/constants.ts, components/ (aus rechner.tsx)
+- [x] URL-Routing: /, /rechner, /empfehlung + Redirect für alte Share-URLs
+- [x] DB-Schema erweitert: flow_type, haustyp, dachart, budget_limit
+- [x] Share-URLs + Dashboard für beide Flows
+
+**WP 3: Design-System & Theming ✅ (done)**
+- [x] CSS Custom Properties: alle Design-Tokens zentral in `lib/theme.ts`
+- [x] Migration aller Inline-Styles auf `var()` Referenzen (10+ Dateien)
+- [x] Admin Theme-Seite (`/admin/theme`): Farben, Fonts, Spacing, Komponenten
+- [x] Admin-Zugang via `ADMIN_EMAILS` Env-Variable
+- [x] Grundlage für Whitelabeling (WP 4: anderes Token-Set pro Tenant)
+- [x] Light Theme mit blauem Akzent (Figma-basiert)
+- [x] Semantisches Farbsystem: Grün=positiv, Blau=interaktiv, Rot=negativ, Grau=neutral
+- [x] Neue Tokens: `--color-positive`, `--color-text-on-accent`, `--color-accent-dark/light/bg`
+- [x] OG-Image auf Light Theme + Solar Check Branding
+
+**WP 5: Live Simulation (Phase 1) ✅ (done)**
+- [x] Open-Meteo Wetter-API-Route (`/api/weather`) mit In-Memory-Cache (5 Min TTL)
+- [x] PV-Momentanleistung: NOCT-Temperaturmodell + Temperaturkoeffizient
+- [x] Seite `/simulation`: PLZ → Wetter-Card → Anlagen-Grid (5/8/10/15 kWp) → Tagesverlauf-Chart (SVG)
+- [x] Auto-Refresh alle 15 Min, Nacht-Modus, PLZ via URL-Parameter
+- [x] Hub-Startseite: "Weitere Tools" Sektion mit Link zu Live Simulation
+- [x] Phase 2: Verbrauchsprofil-Overlay (WP + E-Auto + Haushalt → Live-Eigenverbrauch)
+- [x] Zentrales Verbrauchsmodell (`lib/consumption.ts`): WP/E-Auto/Haushalt Konstanten + Stundenprofile
+- [x] PLZ-Submit-Button statt Auto-Fetch (Simulation + Rechner)
+- [ ] Phase 3: Mehrtägige Simulation (Open-Meteo Forecast bis 16 Tage)
+
+**WP 10: Wärmepumpen-Rechner ✅ (done)**
+- [x] Eigener Flow `/waermepumpe` mit Neubau/Bestand-Umschalter (5 Steps)
+- [x] Kern-Berechnung in `lib/heatpump.ts` (Pure Functions): Heizwärmebedarf, JAZ, Investition, BEG-Förderung, 20-J-TCO
+- [x] Config in `lib/heatpump-config.ts` (zentralisiert, Admin-fähig strukturiert). `validFrom` + `reviewBy`; jährlicher Wächter (scheduled-task, Januar) + Runbook `scripts/waermepumpe-verify.md` prüft die preis-/förderabhängigen Werte (BEG, BWP-Invest, §14a-Tarif, Gas) gegen offizielle Quellen; mid-year-Förderänderungen fängt der `foerder-news-waechter` ab
+- [x] Heizwärmebedarf: Wohnfläche × spez. kWh/m²·a (dena-Gebäudereport, DIN V 18599) × **Haustyp-Faktor** (geteilte Wände, `HAUSTYP_WP` in constants) + 650 kWh/Person Warmwasser
+- [x] **Heizlast (Anlagengröße) getrennt vom Bedarf**: `calcHeatLoad` = Wohnfläche × spez. W/m² (`specHeatLoadBestand/Neubau`, Feldwerte) × Haustyp × `auslegungsfaktor` (0,85, reale monoenergetische Auslegung, min 4 kW). Ersetzt die alte `qGes/2000h`-Formel, die das Warmwasser mitzählte. **Editierbar** im Ergebnis (`override.heizlast`) — wer eine DIN-EN-12831-Berechnung hat, trägt sie ein
+- [x] **Haustyp-Abfrage** im Flow-Step „Größe & Typ" (freistehend / Doppelhaus / Reihenend / Reihenmitte)
+- [x] JAZ-Modell linear aus Fraunhofer ISE „WPsmart im Bestand" (LWWP/SWWP × Vorlauftemp)
+- [x] **Split-Heizen bewusst NICHT im WP-Rechner** (mehrfach durchdacht): Eine Split-Klima gegen Gas zu vergleichen passt nicht in den WP-Rechner (dort ist die Prämisse „ich hole eine Wärmepumpe"), und eine Split *zusätzlich* zur wasserführenden WP ergibt keinen Sinn (die WP heizt ohnehin alles inkl. Warmwasser). Der WP-Rechner kennt daher NUR Luft/Wasser + Sole/Wasser. Die ehrliche „Split heizt Teil der Übergangszeit günstiger als Gas"-Rechnung lebt im **Klima-Rechner** („Auch heizen?", `calcAirconHeating` in `lib/aircon.ts`, `device.scop` + `heatStandards` × `heatTransitionShare` in `aircon-config`) — dort hat man ein Kühlgerät, das nebenbei heizt. Der Heizwärmebedarf je Gebäudestandard ist dabei dieselbe Tabelle wie hier (`INSULATION_BESTAND`/`INSULATION_NEUBAU`) — beide Rechner teilen sie, damit sie nicht auseinanderdriften. Split-Heizwerte auf /datenstand (Klima-Sektion), Quartals-Geräte-Wächter prüft den SCOP.
+- [x] Investition nach Heizlast aus BWP Preisübersicht 2024. **Heizkörpertausch (+6.000 €) ist jetzt eine Maßnahme/Wahl** (bei alten Heizkörpern), nicht mehr automatisch aufgeschlagen — aktiv → Kosten UND bessere JAZ (55→45°C). Früher: Kosten ohne JAZ-Nutzen (Inkonsistenz behoben)
+- [x] **Realistische Wege** (Szenario-Vergleich, dauerhaft bei Bestand): Ist / Heizkörper fit / Teilsanierung / Vollsanierung — jeder Weg mit €-Ergebnis + Amortisation + TCO-Aufschlüsselung im Tooltip. Sanierungskosten (Dämmung) NICHT in der WP-Rechnung (eigener Gebäude-Nutzen), Heizkörpertausch schon
+- [x] **Transparente BEG-Förderung** oben im Ergebnis: Grundförderung 30 % fest + Klima-Schalter (Eigennutz +16 %) + Einkommens-Auswahl (gestaffelt 40/30/10 % nach Haushaltseinkommen, +Kind-Familienzuschlag), Förderdeckel (28.000 €) sichtbar
+- [x] **Werte gegen Fachquellen geprüft (2026)**: spez. Heizlast korrigiert (Unterdimensionierungs-Bias behoben), WP-Tarif 0,24 €/kWh (Feld-Ø), Strom-CO₂ in Config (`gridCo2PerKwh`, konservativ statisch)
+- [x] BEG-Förderung KfW Merkblatt 458 (gültig ab 21.07.2026 / GmodG): 30 % Grund + 16 % Klima-Geschwindigkeit + Einkommens-Bonus gestaffelt 40/30/10 % (≤30k/≤40k/≤50k zvE, Familienzuschlag +10.000 € je Kind-Haushalt), Cap 70 % (Regel) bzw. 80 % (unterste Stufe) / 28.000 €. Der frühere Effizienz-Bonus (5 % nat. Kältemittel) ist mit der Reform entfallen. `validFrom` 2026-07-21, `reviewBy` 2027-01-25 (vor der Halbjahres-Degression 01.02.2027). Werte gegen das amtliche KfW-Merkblatt geprüft (nicht Presse). `calcBegSubsidy` nimmt jetzt `haushaltseinkommen` + `kindImHaushalt` statt der alten Bonus-Booleans.
+- [x] Gas-Referenz über generalisierten `calcFuelCost` (mit CO₂-Preispfad BEHG/EU ETS2). Preispfad in `lib/co2-config.ts` an absolute Kalenderjahre verankert (rollover-sicher), jährlicher Wächter + Runbook `scripts/co2-preis-verify.md`
+- [x] Hero: 20-Jahre-TCO-Differenz als Zahl, Amortisation + ⌀ Ersparnis + CO₂ als Kacheln
+- [x] Editierbare Werte (InlineEdit): Q_ges, JAZ, Referenzheizung (3 Varianten), Gas-/Strompreis, Invest, Einkommens-Bonus
+- [x] 3-Szenarien-Chart (Pessimistisch/Realistisch/Optimistisch) mit Amortisations-Markern
+- [x] `calcFuelCost` verallgemeinert aus `calcFuelCost25` (abwärtskompatibler Wrapper für PV-Rechner)
+- [x] Startseite: 4. Widget-Card "Wärmepumpe rechnen"
+- [x] Sitemap + SEO-Metadata für `/waermepumpe`
+- [ ] PV-Synergie als Toggle im Ergebnis (aktuell nur Link "PV dazu rechnen" zum PV-Rechner)
+- [ ] Share-URL + Dashboard-Save für WP-Berechnungen
+
+**WP 8: Automatische Marktpreise ✅ (done)**
+- [x] Supabase-Tabelle `market_prices` (Preishistorie, RLS)
+- [x] Monatlicher Vercel Cron: Scraping von solaranlagen-portal.com (`/api/prices/scrape`)
+- [x] Plausibilitätsprüfung (Grenzen + max. 30% Abweichung)
+- [x] `estimateCost()` mit dynamischem `PriceConfig`-Parameter
+- [x] `usePrices()` Client-Hook (sessionStorage-Cache)
+- [x] Methodik-Seite zeigt aktuelle Preise + "Stand: Monat/Jahr"
+- [x] Admin-UI `/admin/prices` (Scrape-Trigger, manuelles Override, Historie)
+- [x] Preise aktualisiert auf Q1/2026 Marktpreise
+- [x] **WP-Grundpreis (Luft/Wasser) mitgescrapt** (Paket C): der monatliche Cron liest
+  zusätzlich die taptaphome-WP-Kostenübersicht (Gerät + Einbau je Typ) und leitet die
+  LWWP-Basis ab (`lib/heatpump-prices.ts`: typischer Gesamtpreis − fixe €/kW-Steigung
+  bei Referenz-Heizlast → Basis ~9.500 € statt der alten 18.000-Pauschale, die kleine
+  Anlagen ~8.500 € zu teuer rechnete). Live-Wert in `market_prices.wp_lwwp_base`
+  (Migration: `/api/prices/setup`), gelesen via `useHeatpumpPrices()` (WP-Rechner) +
+  `/datenstand`, Fallback = Config. Selbstheilung 1:1 wie bei PV/Speicher (Plausi-Grenzen,
+  „letzten Wert halten", Health-String kippt, Report-Zeile, Admin-Carry-forward); ein
+  WP-Scrape-Fehler blockiert **nie** die PV-Preise. NUR Luft/Wasser — Sole/Wasser bleibt
+  config-basiert (Bohrkosten sind fix, passen nicht ins Basis+kW-Schema). Grundpreis
+  damit aus dem jährlichen WP-Wächter herausgelöst (`scripts/waermepumpe-verify.md`).
+
+**WP 9: Energiedaten-Datalake (in Arbeit)**
+- [x] Datenquellen-Recherche: Energy-Charts, Eurostat, SMARD, ENTSO-E, MaStR
+- [x] `lib/energy-api.ts`: Shared Fetch-Wrapper, Timestamp-Normalisierung, Cache-Factory, Energy-Charts + Eurostat Fetch-Funktionen
+- [x] `lib/chart-utils.ts`: Energietyp-Farbpalette (grün=EE, braun=fossil), Formatter, Aggregation (calcPeriodStats)
+- [x] `lib/energy.ts`: Client-Hooks (useGenerationMix, useNuclearImport) mit Stale-While-Revalidate, Auto-Retry (2×), localStorage für historische Daten
+- [x] Energie-Farbtokens in `lib/theme.ts` (10 Tokens, semantisch: grün-Shades für EE, braun für fossil)
+- [x] `/api/energy/generation`: Energy-Charts public_power Proxy mit In-Memory-Cache + Downsampling (15min→1h→3h→6h)
+- [x] Visx als Chart-Library (@visx/shape, scale, axis, grid, responsive, tooltip, gradient)
+- [x] `components/charts/StackedAreaChart.tsx`: Visx Stacked Area mit smooth curves (curveMonotoneX), custom Tooltip, responsive
+- [x] `components/charts/StackedBarChart.tsx`: Visx Stacked Bar mit täglicher/wöchentlicher Aggregation, 52-Wochen-Grid für YTD
+- [x] `/energie` Seite: 5 Summary-Widgets horizontal (EE-%, Erzeugt, davon EE, Netto Import/Export, Kernimport), 5 Zeiträume (24h/7d/30d/YTD/12M) + Max (seit 2015)
+- [x] `/api/energy/nuclear-import`: Rechnerischer Kernimport aus 6 Nachbarländern (FR, CZ, CH, SE, BE, NL) via Grenzflüsse × Kernanteil, parallelisiert via Promise.allSettled
+- [x] Kernimport-Overlay auf Stacked Area + Bar Chart (Magenta-Linie + weiße Outline, SVG-Fade-in, Toggle)
+- [x] Inländische Kernenergie als unterster Bar im Strommix (pink #EF85F8, bis April 2023)
+- [x] `useNuclearImport()` Client-Hook mit Stale-While-Revalidate + localStorage für historische Daten
+- [x] Kernimport in Supabase `energy_weekly` gespeichert (`nuclear_import` Spalte) — Max-View zeigt Kernimport aus DB
+- [x] Backfill-Route berechnet Kernimport pro Woche (CBPF × Kernanteil, sequentiell mit 45s Timeout pro Land)
+- [x] Kernenergie-Widget zeigt erzeugt + importiert (aufgeschlüsselt mit Farbpunkten)
+- [x] Chart-Export: PNG-Download + Share (Native, WhatsApp, Twitter) via `lib/chart-export.ts` + `useChartExport`
+- [x] Ergebnis-Refactoring: HeroCard, Stats, QuickSettings, ResultActions als eigene Komponenten
+- [x] API-Resilienz: Stale Cache Fallback (server-seitig), 24h-Cache für historische Zeiträume, Client Auto-Retry + Retry-Button
+- [x] Graceful Degradation: Nuclear-Fehler blockiert nicht Generation-Chart, "Nicht verfügbar" statt 502-Fehler
+- [x] Supabase `energy_weekly`-Tabelle: Voraggregierte wöchentliche GWh (597 Zeilen, 2015–heute)
+- [x] `/api/energy/backfill`: Befüllt energy_weekly aus Energy-Charts (jahresweise, CRON_SECRET-geschützt)
+- [x] Max-Ansicht (2015–heute): Monatliche Balken aus Supabase-Daten, Jahreslabels auf X-Achse
+- [x] Permanentes Caching: localStorage (Infinity TTL) für historische Daten, 30d CDN-Cache für vergangene Zeiträume
+- [x] Zeitraum-UI: "Letzte" (24h–12M) + "Andere Zeiträume" (aktuelles Jahr, Jahres-Dropdown mit Pfeilnav, Max)
+- [x] Custom Dropdown statt natives Select (gestyltes Flyout, gleiche Höhe, outside-click-close)
+- [x] SVG-Chevron-Icons (ChevronLeft, ChevronRight) in Icons.tsx ergänzt
+- [x] Kernenergie-Tooltip: "Kernenergie X%" Header + "erzeugt in DE" / "importiert" Zeilen
+- [x] Kernenergie-Legende: "Kernenergie [pink] erzeugt [magenta] importiert" als eine Zeile
+- [x] Langzeit-Daten (Prototyp-Seiten, noindex): `lib/strommix-history.ts` (AGEB/UBA Bruttostromerzeugung nach Energieträgern 1990–2025 + CO₂-Intensität/-absolut + Eurostat-Strompreise, alle gegen Quelle geprüft, DL-DE-BY/CC BY 4.0), `lib/country-comparison.ts` (Ember-Ländervergleich: Anteil/CO₂-Intensität/Pro-Kopf/Zubau EE vs. Atom). Seiten: `/langzeit-strommix` (DE-Stack Mix+CO₂+Preise gleiche Achse) und `/laendervergleich` (Sonderweg-Einordnung).
+- [x] Neue Chart-Komponenten: `components/charts/LineChart.tsx` (Mehrserien-Jahres-Linienchart mit End-Labels + Highlight + fester xDomain), `components/charts/DonutChart.tsx` (Visx-Pie, 1px-Lücken, HTML-Center-Overlay). Chart-Farben als Hex (Energie-Palette), damit sie auch im Embed ohne `--color-energy-*`-Vars färben.
+- [x] Zwei echte Embed-Widgets (nach [[feedback_widget_convention]]): `/embed/strommix-anteil` (Kernenergie-Anteil am Verbrauchsmix inkl. Import, Donut; server-berechnet via `lib/strommix-ytd.ts` aus `energy_weekly`, 4 Kategorien SSOT) und `/embed/zubau-erneuerbare-atom` (Zubau EE vs. Atomkraft, Länder-Multitool wie Jahreswähler + DE↔China-Vergleich, KPI-Summen). Beide in `/energie-widgets`-Galerie + als iframe auf `/atomstrom-import`.
+- [x] `/atomstrom-import`: Fakten-Check-FAQ (Pro-Atom/Contra-EE-Argumente, neutral, quellenbasiert) als `<details>`-Akkordeon (Kurzantwort fett + Erläuterung mit Glossar-Links), Inhalte in `faq-data.ts`, Rendering `FaqAccordion.tsx`; ein gemeinsames FAQPage-JSON-LD. Methodik-Block (Formel + zitierfähiger Baustein) ausgelagert auf `/atomstrom-import/methodik` (geteilte Live-Zahl/Formatter in `figure.ts`, beide ISR 3600). Glossar um 10 Energie-Begriffe erweitert (ARENH, Blackout, Dunkelflaute, Grenzkosten, Grundlastfähig, Kapazitätsmechanismus, Merit-Order, Redispatch, Residuallast, SAIDI).
+- [x] Auto-Height für ALLE Embed-Widgets: `components/WidgetAutoHeight.tsx` (im `(embed)/layout.tsx`, meldet Content-Höhe per postMessage) + `lib/useIframeAutoHeight.ts` + `components/AutoHeightIframe.tsx` (Host passt iframe-Höhe an) → kein Leerraum unten mehr. Energie-Farbtokens `--color-energy-*` ins Embed-Layout ergänzt.
+- [ ] Supabase-Tabellen anlegen (energy_timeseries, energy_monthly, data_source_meta) — SQL vorbereitet in /api/energy/setup
+- [ ] Cron-Routes (live 15min, daily, monthly) + vercel.json
+- [ ] Eurostat-Integration (Haushaltsstrompreise EU)
+- [ ] Spotpreis-Chart (Energy-Charts /price)
+- [ ] Grenzflüsse-Chart (Energy-Charts /cbpf)
+- [x] EE-Ampel als Embed-Widget (`/embed/ee-ampel` + Galerie-Sektion): Ampel grün/gelb/rot nach aktuellem EE-Anteil am Erzeugungsmix (letzter vollständiger Datenpunkt via `trimIncompleteTail`, Ø 24 h via `calcPeriodStats` — dieselbe Datenbasis wie /strommix-deutschland, keine neue Quelle). Schwellen (≥65 % grün, <40 % rot) am typischen EE-Jahresmittel verankert, Ampelfarben fest semantisch. Einbindung auf Startseite/Simulation weiterhin offen
+- [ ] /energie/frankreich (Strommix FR inkl. Kernenergie)
+- [ ] Navigation-Updates (Hub + Header → /energie)
+- [ ] SEO-Metadata für /energie
+
+**MaStR-Datenpipeline (Anlagenstammdaten für Choropleth)**
+- [x] Quellwechsel von open-MaStR (Zenodo, jährlich) auf BNetzA Gesamtdatenexport (monatlich)
+- [x] `scripts/mastr-bnetza-refresh.ts` mit vier Phasen: `--download`, `--inspect`, `--aggregate`, `--upload`
+- [x] XML-Streaming via `sax` + `iconv-lite` (UTF-16 → UTF-8), 3 GB ZIP wird nicht entpackt
+- [x] URL-Resolver mit Datums-Fallback (heute → -7 Tage), Schema-Version via `BNETZA_SCHEMA_VERSION` env
+- [x] Aggregation analog zur Zenodo-Pipeline: `(region_id × energietraeger × segment × jahr) → (count, kwp)`
+- [x] GitHub Actions Workflow `mastr-refresh.yml`: monatlich am 5. um 04:00 UTC + manueller Trigger. Vercel-Cron geht nicht (Function-Timeout 10 s, 3 GB sprengt Edge)
+- [x] Alte Zenodo-Pipeline (`scripts/mastr-refresh.ts`) bleibt als Fallback im Repo, ohne Auto-Trigger
+- [x] Daten landen in `mastr_aggregates`/`mastr_regions`/`mastr_meta` (Schema unverändert), `data_as_of` aus dem ZIP-Stichtag
+
+**Kommunen-Outreach (interner Bereich, für Widget-Distribution an Gemeinden)**
+- Ziel: die ~11.000 Gemeinden anschreiben, damit sie das Solar-Widget einbetten (Backlinks/Reichweite). Rechtsrahmen kalibriert (Legal-Checkliste #6): maßvolle, schubweise Outreach ist eine bewusste Entscheidung, Kontaktformular/Permission-first ist risikofrei.
+- **Tabelle `kommunen_kontakt`** (Supabase, RLS **nur service_role** — interne Daten, kein anon-Read; bewusste Abweichung vom Atlas-Muster): `region_id` = 8-stelliger AGS (FK auf `mastr_regions`). Spalten: `website`/`email`/`kontakt_url`, Workflow (`outreach_status`, `channel`, `contacted_at`, `responded_at`, `notes`, `draft_subject/body`), Politik (`gruene_pct/linke_pct/spd_pct`, BTW 2025 Zweitstimme), Rang (`dach_perzentil`, `dach_rang_kreis`, `kreis_gemeinden` — Dach-Leistung pro Kopf, park-immun).
+- **Befüllung: `scripts/kommunen-kontakt-refresh.ts`** (Phasen kombinierbar): `--setup` (Tabelle/Spalten), `--wikidata` (Website je Gemeinde aus P856), `--forms`/`--probe` (Kontakt-/Formularlink: Startseiten-Scan + Pfad-Anklopfen), `--wahl` (Grünen/Linke/SPD-Anteil aus den Bundeswahlleiterin-Wahlbezirks-Ergebnissen, je Gemeinde aggregiert), `--rang` (Dach-pro-Kopf-Perzentil + Landkreis-Rang aus Rollup `mastr_gemeinde_solar`), `--stats`. DB-schonend (500er-Upserts, keine Voll-Aggregation der großen Tabelle).
+- **Cockpit `/admin/kommunen`** (Admin-Guard + `InternalShell`, als Kachel in `/admin` + Sidebar): filtern (Bundesland/Status/hat-Link) + Namenssuche + Sortierung „Grün-/Links-affin"; Status pflegen; **Anschreiben-Generator** (`lib/kommunen-outreach-draft.ts`, reine Funktion, **Template statt LLM**): rang-abhängiger Catcher-Betreff (park-immun), Link auf die Gemeinde-Atlas-Seite, Pflicht-Signatur, Einheiten nur aus `atlas-format`. API `/api/admin/kommunen` (GET/PATCH/POST). Kein Auto-Versand — der Absende-Klick bleibt beim Menschen.
+- **Award-Konzept** (evaluiert, geparkt) als stärkerer Embed-Aufhänger: gehört zusammen mit der Thin-Content-/Atlas-Arbeit in **eine** fokussierte Session (gleiche Gemeinde-Seiten) — Briefing in `docs/kommunen-award-konsolidierung.md`.
+
+**Stadtwerke / Energieversorger (interner Bereich, für spätere B2B-Ansprache mit gebrandeten Widgets)**
+- **Zwei Tabellen, `n:m`:** `utilities` (Name, `typ` stadtwerk/regionalversorger/genossenschaft, Kontakt, `sitz_gemeinde_id`, `status`, `notiz`, dazu Registerfelder `mastr_nummer`/`telefon`/`plz`/`ort` und die Website-Lauf-Felder `impressum_url`/`rollen_email`/`verantwortlich_*`/`themen`) + `utility_communes` (`utility_id` × `commune_id`, `rolle` sitz/versorgungsgebiet/beteiligung, `zuordnung_quelle` **gemessen**/verlinkt/recherchiert/vermutet, plus `anlagen`/`anteil` als Beleg). RLS **nur service_role** wie `kommunen_kontakt`. Anlegen: `scripts/utilities-refresh.ts --setup` (danach `NOTIFY pgrst` im Script — sonst „table not found in schema cache"), Bestand: `--stats`. **n:m von Anfang an**, weil ein Stadtwerk typisch 5–20 Gemeinden versorgt und deckungsgleiche Gebiete die Ausnahme sind.
+- **Die Erfassung ist NICHT Handarbeit — sie kommt aus dem Register** (`--import`, Korrektur im Cockpit). Zwei Funde am Gesamtdatenexport, den der Solar-Atlas ohnehin monatlich lädt:
+  1. **Wer:** `Marktakteure` mit `Marktfunktion = 1` sind die Stromnetzbetreiber — **939**, davon 937 in Deutschland, 910 mit Website, 933 mit E-Mail, 926 mit Telefon, alle mit Anschrift. Die MaStR-Nummer ist der Import-Schlüssel (der Firmenname ändert sich, sie nicht).
+  2. **Wo:** `Netzanschlusspunkte` verbinden Standort → `NetzbetreiberMaStRNummer`, die Anlagen tragen Standort + Gemeindeschlüssel. Damit ist das Netzgebiet eine **Auszählung** („diese Anlagen hängen an diesem Netz"), keine Schätzung: 5,4 Mio. Anlagen zugeordnet, 85 % Quote, 848 Versorger mit Gebiet. Gegenprobe stimmt oben wie unten (Westnetz 1.368 Gemeinden, Bayernwerk 1.186 · Stadtwerke Ulm/Neu-Ulm 8, Schwäbisch Hall 7).
+  - **Korrektur einer Annahme:** Ein Stadtwerk versorgt 5–20 Gemeinden, betreibt das **Netz** aber meist nur in der eigenen Stadt — 525 der 779 haben genau eine Gemeinde. Die 5–20 gelten für den Vertrieb, und der steht in keinem Register.
+  - Schwelle für „gehört zum Gebiet": **≥ 3 Anlagen UND ≥ 5 %** der Gemeinde. In 2.583 von 11.016 Gemeinden gibt es mehr als einen Netzbetreiber — deshalb trägt jede Zuordnung ihren `anteil`.
+  - Der Import **überschreibt nur `gemessen`**; von Hand gepflegte Zuordnungen gehören dem Menschen und bleiben stehen.
+  - Zwei Fallen, beide behoben und dokumentiert: `streamXmlRecords` **brach bei einem einzigen kaputten Zeichen den ganzen Lauf ab** (der Kommentar behauptete das Gegenteil) → läuft jetzt weiter und meldet die Zahl; und das MaStR-Skript startete beim Import seiner Helfer **sein eigenes Hauptprogramm** → Direktaufruf-Prüfung am Ende.
+- **Ein Versorgungsgebiet ist rechnerisch eine große Gemeinde.** `lib/utilities.ts → aggregateArea` summiert die `GemeindeStats` seiner Gemeinden (Rolle `sitz`/`versorgungsgebiet`; **`beteiligung` zählt NICHT**, das ist ein Eigentumsverhältnis) — heraus kommt derselbe Datensatz, auf dem der Kommunen-Award rechnet. Damit laufen `rankGemeinden`, `populationTertiles`/`sizeBandOf` und die Einheiten-Formatter unverändert weiter: **keine zweite Rangquelle**. Neun Kategorien kommen 1:1 aus `AWARD_CATEGORIES`, nur „Erzeugung gesamt" + „Solar gesamt" sind gebietseigen. Die Award-Titel („Solardach-Spitzenreiter") sind Wettbewerbsnamen und taugen nicht für B2B → `UTILITY_LABEL` gibt sachliche Bezeichnungen (gleiche Rechnung, andere Wortwahl).
+- **Ranking** (`computeUtilityPlacements`): Kategorie × (bundesweit | Bundesland des Sitzes) × (alle | Größenklasse). Größengrenzen = Terzile der **erfassten** Versorger, wachsen also mit dem Bestand.
+- **Aufhänger** (`lib/utility-hook.ts`): stärkste glaubwürdige Platzierung, **erst ab `UTILITY_MIN_TOTAL` (5) Verglichenen** — „Platz 3 von 4" ist keine Auszeichnung, sondern eine Blamage, sobald der Angesprochene nachfragt. Darunter nur die nackte Kennzahl. Kein Anschreiben-Generator (bewusst: erst wenn der Kommunen-Test Zahlen liefert).
+- **Näherung ist Pflicht, nicht Kür:** Versorgungsgebiete sind nicht öffentlich dokumentiert, Netzbetreiber ≠ Grundversorger ≠ Vertrieb, Gebiete überlappen. Jedes Aggregat trägt `naeherungsHinweis()` (zugeordnete Gemeinden, davon vermutet, Überschneidungen mit anderen Versorgern, Gemeinden ohne Anlagendaten, Landesgrenzen-Überschreitung). Ohne Angabe ist die Herkunft `vermutet`, nicht „recherchiert" — lieber ehrlich unsicher als falsche Sicherheit.
+- **Zubau = letztes vollständiges Kalenderjahr, kein rollierendes 12-Monats-Fenster.** Die MaStR-Daten kennen nur das Inbetriebnahme-**Jahr**, und der Monatslauf überschreibt den Bestand (keine Snapshot-Historie). Ein rollierendes Fenster bräuchte Monatsauflösung im Import (Schlüsseländerung am 3-GB-Monatslauf) — offene Entscheidung, nicht nebenbei mitnehmen.
+- **Cockpit `/admin/versorger`** (Kachel in `/admin` + Sidebar): **Tabelle**, nicht Karten — bei ~900 Versorgern ist Vergleichen die Hauptarbeit, und dafür müssen gleiche Zahlen untereinander stehen. Details in der **aufklappbaren Zeile** darunter (Aufhänger, Kennzahlen-Kacheln, Platzierungen, zugeordnete Gemeinden mit Atlas- und Website-Link, Notiz, Zuordnen). Filter Bundesland/Typ/Status/Name, Sortierung, Seitenblättern (50). Tab **Erfassung** = Nacharbeit dort, wo die Messung nichts fand.
+- **Hervorhebungen zeigen NIE eine Zahl allein als „gut", sondern ihr Verhältnis zum Median der erfassten Versorger — und der Bezug steht sichtbar dabei** (`computeHighlights`, Schwellen ±25 %; ±10 % wäre Rauschen). Drei Kennzahlen: Dach-Solar je Einwohner, **Bürger-Anteil** (privates Dach an ALLER Solarleistung im Gebiet) und Zubau-Anteil am Bestand. **Bewusst NICHT dabei: ein „Anteil Erneuerbare am Strommix"** — dafür bräuchte es Verbrauch und konventionelle Erzeugung im Gebiet, beides steht in den Anlagendaten nicht. Eine geschätzte Zahl neben gemessenen sähe aus wie eine gemessene.
+- **Ob ein Gebiet stimmt, ist keine Darstellungsfrage** (`lib/utility-check.ts`, `--pruefen`). Fünf Tests je Versorger aus voneinander unabhängigen Quellen: **Sitz** (Anschrift im Register über PLZ→AGS, ersatzweise Ortsname), **Name** (Ortsname in der Firma — zuerst an der verlässlichen Stelle direkt hinter dem Gattungswort, dort zählen auch kurze Namen), **Streuung** (Ausreißer gegen die Gemeinde-Mittelpunkte aus den Atlas-Geometrien), **Dominanz** (nicht „hat viel Prozent", sondern „ist er dort der Größte" — die Kerngemeinde wiegt schwerer als der Schnitt) und **Website** (`--pruefen-web`, nur für Unsichere: nennt der Versorger die gemessenen Gemeinden selbst?). Stand: **663 bestätigt · 93 teilweise prüfbar · 22 widersprüchlich**; Ampel + Filter im Cockpit, jeder Befund als Satz.
+  - **Rot heißt „hier stimmt etwas nicht", nicht „falsch"** — ein bestätigender Identitätstest entkräftet einen widersprechenden anderen („Gemeindewerke Weidenthal c/o Stadtwerke Kaiserslautern": Anschrift beim Dienstleister, Name hat recht).
+  - **Vier Fehlalarm-Klassen sind als Regel UND als Test festgehalten** (`lib/__tests__/utility-check.test.ts`), weil sie beim Nachschärfen sofort zurückkämen: „Karl" (Vorname) traf die Eifel-Gemeinde → freie Ortssuche erst ab 5 Zeichen; „Reichenbach" gibt es mehrfach → mehrdeutig ist unprüfbar, nicht falsch; Bayernwerk sitzt in Regensburg → bei Flächennetzen (>50 Gemeinden) wird der Sitz gar nicht geprüft; und **Schweigen ist kein Widerspruch** — „Website nennt keine unserer Gemeinden" zählt nur, wenn sie ihr Gebiet überhaupt ausweist (26 vermeintliche Widersprüche → 4 echte).
+  - **Erst messen, dann optimieren:** Der Lauf schlüsselt je Test auf, wie oft er bestätigt/widerspricht/nicht entscheiden kann. Genau das führte zu +33 bestätigten Gebieten — u. a. weil „Streuung" bei 605 von 778 als unprüfbar galt, obwohl ein Ortsnetz aus einer Gemeinde per Definition zusammenhängend ist.
+- **Kontaktadressen: technische Fachpostfächer werden verworfen** (`istAnsprechbar`/`besteAdresse`). Die Registeradresse ist die Meldeadresse gegenüber der Bundesnetzagentur und bei Netzbetreibern regelmäßig `anmeldung-eigenerzeugung@`, `netzanschluss@`, `einspeisung@`, `marktkommunikation@`. Eine Kooperationsanfrage dorthin ist nicht wirkungslos, sondern **verbrennt den Kontakt**. Rangfolge: Rollen-Postfach von der Website → Registeradresse (nur wenn kein Fachpostfach) → Personen-Adresse zuletzt; findet sich nichts, ist das ein Ergebnis (Weg über das Kontaktformular, ohnehin der rechtlich sichere Erstkontakt) und kein Mangel.
+- **Website-Lauf** (`--profil`, `lib/kommunen-profil.ts` mit `VERSORGER_VOKABULAR` — KEINE zweite Kontaktsuche): 811 Profile, 762 Impressum, 415 Rollen-Postfach, 397 Verantwortliche (davon 41 operativ), 431 mit Themen — darunter **116 mit einer Förder-Fundstelle** (Kandidat, nie ein geprüftes Programm; die Prüfung entscheidet `scripts/foerder-verify.md`). Bewusst NICHT: Links aus der Navigation verfolgen und die Kontaktseite zusätzlich durchsuchen — beides von der Kommunen-Session gemessen und verworfen.
+- **Teure Läufe legen ihr Ergebnis ab, BEVOR sie schreiben** (`scripts/.cache/utilities/*.json`). Beide Läufe sind an der letzten Zeile gescheitert, nachdem der teure Teil sauber lief: 22 GB Lesen (20 Min.) und 910 fremde Websites gingen dabei verloren. `--refetch` liest bewusst neu.
+- **Ein `select()` liefert 1.000 Zeilen** — diese Falle hat hier zweimal zugeschlagen (Bestandsbericht meldete 1.000 statt 11.407 Zuordnungen; das Cockpit zeigte 13 statt 779 Versorger, ohne Fehlermeldung). Alles, was über 1.000 Zeilen gehen kann, liest seitenweise.
+- APIs: `/api/admin/utilities` (GET Liste/Detail, POST, PATCH), `…/zuordnung` (GET Gemeinde-Suche, POST, DELETE), `…/erfassung` (Arbeitsliste). Das fertige Bündel wird prozess-lokal gehalten (4 s DB je Aufbau) und nach jedem Schreibvorgang gezielt verworfen — kein Zeitablauf, weil ein alter Stand in einem Cockpit schlimmer wäre als ein langsamer Aufbau.
+- Geteilt gezogen statt kopiert: `lib/outreach-status.ts` (Status-Katalog, vorher zweimal im Kommunen-Cockpit) und `lib/admin-guard.ts` (`isAdminSession`, vorher je Route eine Kopie).
+
+### Phase 4: Content & Reichweite
+- [x] Flaggschiff-Ratgeber **`/lohnt-sich-pv-mit-speicher`**: Server Component (ISR 3600), rechnet die Beispieltabelle (10 kWp × 0/5/10 kWh: Investition, EV, Autarkie aus der Stundensimulation, Amortisation, 25-J-Gewinn) live mit den geteilten Funktionen (`calcEigenverbrauch`, `calc`, `estimateCost`, `simulatePvYear`) und Live-Marktpreisen — driftet nie vom Rechner. FAQ via `pvSpeicherFaq(prices)` in `lib/faq.ts` (bekommt die Live-Preise durchgereicht, damit FAQ und Tabelle auf derselben Seite identische Beträge zeigen) + `<Faq>` (FAQPage-JSON-LD). In Sitemap (0.8); Rechner-FAQ verlinkt hin.
+  - Zwei **Beispiel-Teaser** (ohne / mit 10 kWh Speicher): recyceln die Rechner-`Chart`-Komponente (3-Szenarien-Amortisationskurve) + ResultStats-Kacheln (Amortisation / Rendite 25 J / ⌀ Ersparnis), gerechnet aus derselben `computeExample`-Quelle wie die Tabelle. Jeder Teaser hat einen Deep-Link `/photovoltaik-rechner?a=2&s=…&p=2&n=1&st=…&er=…`, der den Rechner exakt auf die Teaser-Zahlen vorbelegt (`st`/`er` explizit, weil der Rechner-Default-Strompreis 0,34 € vom kanonischen prices-config-Wert abweicht).
+- [x] Ratgeber **`/lohnt-sich-pv-ohne-einspeiseverguetung`** (EEG-Reform 2027): gleiches Muster wie der Speicher-Ratgeber (ISR, live gerechnet, `pvOhneEinspeisungFaq` in `lib/faq.ts`, Teaser mit Deep-Link `eia=0` = Einspeise-3-State „Aus"). Reform-Aussagen als datierter Sachstand (`REFORM_STAND`, Entwurf ≠ beschlossen) — EEG-Wächter pflegt sie zusammen mit der Rechner-Notiz. Preis-Fetch der Guide-Seiten geteilt in `lib/prices-server.ts` (Speicher-Seite umgestellt).
+- [x] Daten-Story **`/photovoltaik-zubau-deutschland`** („Wie Förderung den Solarausbau geformt hat", in Hauptnav unter PV-Förderung + Sitemap): nationaler PV-Zubau pro Jahr (Balken) mit überlagerter Einspeisevergütung (grün) + Haushaltsstrompreis (grau, beide ct/kWh, geteilte rechte Achse) und interaktiver **Ereignis-Timeline** (ARIA-Tabs, tippen/wischen/←→, alle Panels im DOM). Erzählt den Vergütungs-getriebenen Boom bis 2012 und den Eigenverbrauchs-getriebenen ab 2022. **Artikel = Fließtext über dem Widget; das Chart+Timeline ist ein eigenständiges, einbettbares Widget** (`components/charts/ZubauWidget.tsx`, geteilt): eigene Route `/embed/pv-zubau-deutschland` (ISR, noindex, `useWidgetTheme`, `embed=`/`branding=`-Flags, eigenes Label für Fremd-Embeds), Galerie-Sektion `pv-zubau-deutschland`, Quelle/`PoweredBy`/Export nach Widget-Konvention. Bausteine: `components/charts/ZubauTimelineChart.tsx` (Balken + 2 Halo-Linien) + `EventTimeline.tsx`.
+  - **Datenpflege (Runbook `scripts/zubau-story-verify.md`):** Balken = MaStR (`getNationalSolarByYear`, live/ISR, laufendes Jahr auto als unvollständig — **selbstwartend**). Vergütungsreihe `lib/feedin-history.ts` (2000–heute, gegen BNetzA-/SFV-Monatstabellen geprüft) + Strompreisreihe `lib/strommix-history.ts` = jährliche Ein-Wert-Anhänge, **automatisiert am `eeg-verguetung-verify-halbjaehrlich`-Wächter** (Januar: Vergütung, Juli: Eurostat-Preis). Neue **Politik-Marken** (`ZUBAU_EVENTS`) schlägt der `foerder-news-waechter` nur **vor** (Kandidat im Report) — Formulierung + Eintrag macht ein Mensch (zitierfähige Seite). Neue Quelle `eurostat` in `lib/data-sources.ts`; Reihe auf `/datenstand`.
+- [ ] Weitere Long-Tail-Landingpages (z.B. `/pv-kaufen-vs-enpal-mieten`)
+- [ ] "Vergleich: PV kaufen vs. Enpal mieten" als Killer-Content
+- [ ] Blog/Ratgeber-Sektion
+
+### Phase 5: Plattform (Horizont)
+
+**WP 3: PV-Besitzer Tracking**
+- [ ] "Meine Anlage" Profil (kWp, Speicher, Inbetriebnahme)
+- [ ] Ist vs. Soll Vergleich (echte Erträge vs. PVGIS-Prognose)
+
+**WP 4: Solateur-Widget**
+- [ ] Embeddable Rechner (iframe/Web Component, White-Label)
+- [ ] Lead-Funktion → geht an Solateur
+- [ ] Solateur-Dashboard
+
+**WP 6: Weitere Features**
+- [ ] PDF-Export
+- [ ] Finanzierungsrechner (Kredit vs. Eigenkapital)
+- [ ] Community-Features
+
+**WP 7: Mehrfamilienhaus-Rechner**
+- [ ] MFH als Haustyp im Empfehlungs-Flow
+- [ ] Abfrage Wohneinheiten
+- [ ] Angepasstes Verbrauchsmodell (nicht "Personen im Haushalt")
+- [ ] Mieterstrom-Thematik (Vergütung, Abrechnung)
+- [ ] Andere Kostenstruktur (größere Anlagen)
+
+Aktuelle Priorität: WP 9 (Energiedaten-Datalake) + Phase 4 (Content & Reichweite)
+
+## Tech-Stack
+
+| Komponente | Technologie | Warum |
+|---|---|---|
+| Framework | **Next.js 14 (App Router)** | SEO-fähig, Vercel-Integration, erweiterbar für Content-Seiten |
+| UI | **React 18 (Client Components)** | Interaktiver Rechner braucht Client-State |
+| Styling | **Inline Styles + CSS Custom Properties** | Tokens in `lib/theme.ts`, injiziert als `:root` CSS-Variablen, referenziert via `v()` Helper |
+| Fonts | **DM Sans + JetBrains Mono** | Google Fonts, geladen in layout.tsx |
+| Deployment | **Vercel** | Zero-Config für Next.js, Preview Deployments |
+| Backend | **Supabase** | Auth (Magic Link), PVGIS-Cache, Berechnungen speichern |
+| PV-Ertrag | **PVGIS API** (EU JRC) | Standortspezifisch via Next.js API-Route, Supabase-Cache |
+| Charts | **Visx** (@visx/*) | Low-level SVG-Primitives von Airbnb, volle Kontrolle über Look & Feel |
+| Energiedaten | **Energy-Charts API** (Fraunhofer ISE) | Strommix, Preise, Kapazität — kein Auth, JSON, CC BY 4.0 |
+| Package Manager | **npm** | Standard reicht bei dieser Projektgröße |
+
+**Im Stack ergänzt (Audit Mai 2026):** **Vitest** als Test-Runner — Pure-Function-Coverage für die Berechnungs-Module. Component-Testing-Library bewusst noch nicht — kommt erst wenn die großen Client-Komponenten zerlegt werden.
+
+**Bewusst nicht im Stack:** Tailwind, shadcn/ui, State Management Libraries, CSS-in-JS, Recharts/Nivo (zu wenig Kontrolle). Erst einführen wenn es einen konkreten Grund gibt.
+
+## Projektstruktur
+
+```
+pv-rechner/
+├── CLAUDE.md              # Dieses Dokument (Projekt-Kontext für Claude)
+├── README.md              # Setup-Anleitung
+├── package.json
+├── next.config.js         # Env + Redirects (alte Share-URLs / → /rechner)
+├── middleware.ts           # Supabase Auth Session-Refresh
+├── .env.local             # SUPABASE_URL, SUPABASE_SERVICE_KEY, NEXT_PUBLIC_* (nicht in git)
+├── .gitignore
+├── public/
+│   └── plz.json           # PLZ → [lat, lon] Lookup (8.298 Einträge, WZB plz_geocoord, Apache 2.0)
+├── lib/
+│   ├── constants.ts                # Alle Konstanten (ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, etc.)
+│   ├── prices-config.ts            # PriceConfig Interface + DEFAULT_PRICES (shared server/client)
+│   ├── feedin-config.ts            # FeedInRates Interface + DEFAULT_FEED_IN (EEG-Vergütungssätze)
+│   ├── co2-config.ts               # Co2PriceConfig + CO2_PRICE: CO2-Preispfad an absolute Kalenderjahre verankert (BEHG → ETS2), rollover-sicher
+│   ├── heatpump-config.ts          # WP-Berechnungs-Config (Heizlast, JAZ, Invest, BEG-Förderung)
+│   ├── feedin.ts                   # useFeedInRates() Client-Hook (fetcht /api/feedin, sessionStorage-Cache)
+│   ├── prices.ts                   # usePrices() Client-Hook (fetcht /api/prices, sessionStorage-Cache)
+│   ├── calc.ts                     # Pure Berechnungsfunktionen (EV, Amortisation, Kosten, URL-Helpers)
+│   ├── consumption.ts              # Zentrales Verbrauchsmodell: WP/E-Auto/Klimaanlage Konstanten, Stundenprofile (BDEW/VDI 4655)
+│   ├── simulation.ts               # Live-Simulation: PV-Momentanleistung aus Wetterdaten (NOCT-Modell)
+│   ├── balkon-sim.ts               # GETEILTE Stunden-Jahressimulation (simulateSolarYear): Erzeugung/Verbrauch/Speicher Stunde für Stunde. Balkon UND Dach-PV nutzen sie
+│   ├── balkon.ts + balkon-config.ts # Balkonkraftwerk-Rechner: Ertrag (Wechselrichter-Deckel) + Eigenverbrauch + Amortisation
+│   ├── pv-sim.ts                   # Dach-PV: Autarkie + Jahresverlauf + Beispieltage aus der Stundensimulation (nicht aus dem Eigenverbrauch zurückgerechnet). Geld bleibt am Power-Law
+│   ├── recommend.ts                # Empfehlungs-Algorithmus (optimale kWp + Speicher aus Haushalt + Dach)
+│   ├── glossary.ts                 # Fachbegriff-Datensatz (15 Begriffe: short/long/aliases) + Slug-Lookup
+│   ├── types.ts                    # CalcParams, CalculationRow, Konvertierung
+│   ├── supabase-server.ts          # Supabase Server-Client mit Service Key
+│   ├── supabase-browser.ts         # Supabase Browser-Client (@supabase/ssr)
+│   ├── supabase-server-component.ts # Supabase Client für Server Components
+│   ├── auth.ts                     # useUser() Hook, signIn/signOut Helpers
+│   ├── theme.ts                    # Design-Tokens, CSS-Variablen-Generator, v() Helper
+│   ├── energy-api.ts               # Datalake: Fetch-Wrapper, Timestamp-Normalisierung, Supabase-Upsert, Energy-Charts/Eurostat
+│   ├── energy.ts                   # Client-Hooks: useGenerationMix(), useNuclearImport() (sessionStorage-Cache)
+│   ├── chart-utils.ts              # Chart-Utilities: Energietyp-Farben, Formatter, Aggregation (calcPeriodStats)
+│   ├── chart-export.ts             # PNG-Export: SVG→Canvas Rendering mit Branding, Stats, Legende
+│   └── useChartExport.ts           # React-Hook für Chart-Export (Download, Share, WhatsApp, Twitter)
+├── components/
+│   ├── Header.tsx                 # Shared Header-Navigation (Logo links, Nav rechts)
+│   ├── Logo.tsx                   # SVG-Logo + Text (solar-check.io)
+│   ├── Icons.tsx                  # SVG-Icon-Bibliothek (16 Icons, stroke-basiert)
+│   ├── OptionCard.tsx              # Auswahl-Karte (2×2 Grids, SVG-Icon-Mapping)
+│   ├── TriToggle.tsx               # Dreier-Toggle (Nein/Geplant/Vorhanden, optionales Icon)
+│   ├── InlineEdit.tsx              # Click-to-Edit Zahlenwert
+│   ├── GlossaryTerm.tsx            # Fachbegriff-Tooltip (Portal) + GlossaryProvider (erste Erwähnung pro Seite)
+│   ├── Chart.tsx                   # SVG-Amortisationskurve
+│   ├── ChartExportBar.tsx          # Share/Download-Leiste unter Charts
+│   ├── QuickSettings.tsx           # WP/E-Auto/Speicher Quick-Toggles (Ergebnis)
+│   ├── ResultHeroCard.tsx          # Ergebnis Hero-Card mit editierbaren Werten
+│   ├── ResultStats.tsx             # Rendite/Ersparnis Stats unter Hero
+│   ├── ResultActions.tsx           # Methodik/Share/Save Buttons (Ergebnis)
+│   ├── ErrorBoundary.tsx          # Error Boundary für fehlerhafte Share-URLs
+│   └── charts/
+│       ├── StackedAreaChart.tsx     # Visx Stacked Area (Strommix 24h/7d, smooth curves, Tooltip)
+│       └── StackedBarChart.tsx      # Visx Stacked Bar (30d/YTD/12M/Max, wöchentlich aggregiert)
+└── app/
+    ├── layout.tsx                 # Root Layout: HTML, Fonts, SEO-Meta, CSS-Variablen
+    ├── page.tsx                   # Tool-Hub: 3 Widget-Cards (Simulation / Rechner / Energie)
+    ├── rechner/
+    │   ├── page.tsx               # Error Boundary + <PVRechner />
+    │   └── rechner.tsx            # "use client" — Rechner-Flow + Ergebnisseite
+    ├── empfehlung/
+    │   ├── page.tsx               # Metadata + <Empfehlung />
+    │   └── empfehlung.tsx         # "use client" — Empfehlungs-Flow (3 Steps + Zwischenseite)
+    ├── auth/callback/route.ts     # Magic Link Callback Handler
+    ├── api/feedin/route.ts        # GET (aktuelle Vergütungssätze, cached) + POST (Admin-Update)
+    ├── api/prices/route.ts        # GET (aktuelle Preise, cached) + POST (Admin-Update)
+    ├── api/prices/scrape/route.ts # Vercel Cron: Scraping + Plausibilitätsprüfung
+    ├── api/alert/route.ts         # POST (CRON_SECRET): generischer Wächter-Alert → Resend-Mail an ADMIN_EMAILS. Die scheduled-task-Wächter (CO2/EEG/WP/Förder) rufen ihn am Lauf-Ende; Report landet im Postfach statt nur in der App. dryRun=1 rendert ohne Senden.
+    ├── api/pvgis/route.ts         # PVGIS API-Proxy mit Supabase-Cache
+    ├── api/weather/route.ts       # Open-Meteo Proxy mit In-Memory-Cache (Live Simulation)
+    ├── api/calculations/route.ts  # GET (Liste), POST (Speichern)
+    ├── api/calculations/[id]/route.ts # GET, PUT, DELETE einzelne Berechnung
+    ├── api/energy/generation/route.ts # Energy-Charts public_power Proxy + In-Memory-Cache + Downsampling + Supabase-Fallback für Max
+    ├── api/energy/nuclear-import/route.ts # Kernimport-Berechnung: CBPF × Kernanteil der 6 Nachbarländer
+    ├── api/energy/backfill/route.ts # Befüllt energy_weekly aus Energy-Charts (jahresweise, CRON_SECRET)
+    ├── api/energy/setup/route.ts  # Einmalig: Supabase-Tabellen anlegen (energy_weekly etc.)
+    ├── energie/
+    │   ├── page.tsx               # Metadata + <EnergieClient />
+    │   └── client.tsx             # Energiedaten-Dashboard: Widgets + Chart + Zeitraum-Toggle
+    ├── dashboard/
+    │   ├── page.tsx               # Server Component: Auth-Check + Daten laden
+    │   └── client.tsx             # Client Component: Dashboard UI
+    ├── admin/prices/
+    │   ├── page.tsx               # Server Component: Admin-Guard + Preishistorie laden
+    │   └── client.tsx             # Client Component: Scrape-Trigger, Manual-Form, Historie
+    ├── admin/theme/
+    │   ├── page.tsx               # Server Component: Admin-Email-Check + Redirect
+    │   └── client.tsx             # Client Component: Design System Showcase
+    ├── simulation/
+    │   ├── page.tsx               # Metadata + Suspense + <LiveSimulation />
+    │   └── simulation.tsx         # "use client" — Live PV Simulation (Wetter + Grid + Chart)
+    ├── glossar/page.tsx           # Fachbegriff-Glossar (statisch, alle Begriffe + Langtexte, SEO)
+    ├── methodik/page.tsx          # Berechnungsmethodik (statisch)
+    ├── datenstand/page.tsx        # Öffentliche Werte-Übersicht: alle Annahmen mit Stand + Quelle, liest live aus denselben Quellen wie der Rechner (Supabase market_prices/feed_in_rates + Config-Module co2-config/heatpump-config/constants), ISR 3600 — driftet nie
+    ├── impressum/page.tsx         # Impressum (statisch)
+    └── datenschutz/page.tsx       # Datenschutzerklärung (statisch)
+```
+
+**Architektur:** Berechnungslogik, Konstanten und UI-Komponenten sind aus rechner.tsx extrahiert in lib/ und components/. Beide Flows (Rechner + Empfehlung) teilen sich dieselben Komponenten und Berechnungsfunktionen.
+
+### Komponenten
+
+| Komponente | Datei | Funktion |
+|---|---|---|
+| `Header` | `components/Header.tsx` | Shared Navigation (Logo links, Rechner + Auth rechts) |
+| `Logo` | `components/Logo.tsx` | SVG-Icon + Text-Logo mit unique IDs |
+| `Icons` | `components/Icons.tsx` | 16 SVG-Icons (stroke-basiert, `IconProps`-Interface) |
+| `ErrorBoundary` | `app/rechner/page.tsx` | Fängt Render-Crashes ab, zeigt Fallback-UI |
+| `PVRechner` | `app/rechner/rechner.tsx` | Rechner-Flow + Ergebnisseite |
+| `Empfehlung` | `app/empfehlung/empfehlung.tsx` | Empfehlungs-Flow (3 Steps + Zwischenseite) |
+| `OptionCard` | `components/OptionCard.tsx` | Auswahl-Karte für Steps (Icon-String → SVG-Mapping) |
+| `TriToggle` | `components/TriToggle.tsx` | Dreier-Toggle mit optionalem SVG-Icon |
+| `InlineEdit` | `components/InlineEdit.tsx` | Click-to-Edit Zahlenwert im Ergebnis |
+| `Chart` | `components/Chart.tsx` | SVG-Amortisationskurve (3 Szenarien, kein D3) |
+=======
 **InlineEdit:** Click-to-Edit, Wert als Text mit gestrichelter Unterstreichung (Affordance), Klick öffnet Input, Enter/Blur committed, Escape bricht ab. **Kein `type="number"`** (Bug-anfällig bei Dezimalwerten), sondern Text-Input mit manueller Validierung. **Deutsche Zahlenformatierung:** Display via `toLocaleString("de-DE")`; Eingabe akzeptiert Komma und Punkt, Tausenderpunkte werden entfernt.
+>>>>>>> main
 
 ## Zahlen und Einheiten — BLOCKER (schwerster Fehler im Projekt)
 

@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { v, space, pad } from "../../../../lib/theme";
-import { fmtPvLeistung, fmtWattProKopf, fmtSpeicherKwh } from "../../../../lib/atlas-format";
+import { formatAwardValue } from "../../../../lib/awards";
 import type { MetricFormat, Messart, Traeger } from "../../../../lib/awards";
 
 export type WinnerRow = {
@@ -28,23 +28,6 @@ export type AwardsPayload = {
 };
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
-
-function formatValue(value: number, format: MetricFormat): string {
-  switch (format) {
-    case "wattProKopf":
-      return fmtWattProKopf(value);
-    case "pvLeistung":
-      return fmtPvLeistung(value);
-    case "speicherKwh":
-      return fmtSpeicherKwh(value);
-    case "count":
-      return `${nf(value)} Anlagen`;
-    case "countPer1000":
-      return `${value.toLocaleString("de-DE", { maximumFractionDigits: 1 })} je 1.000 Ew.`;
-    case "whProKopf":
-      return `${nf(value)} Wh/Kopf`;
-  }
-}
 
 export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
   const { categories, bundeslaender, selection, activeCategory, tertiles, totalGemeinden, rows } = payload;
@@ -196,7 +179,7 @@ export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
                 {r.winnerName} <span style={{ color: v("--color-text-muted"), fontWeight: 400, fontSize: 12 }}>({r.winnerBl})</span>
               </span>
               <span style={{ textAlign: "right", fontFamily: v("--font-mono"), color: v("--color-accent") }}>
-                {formatValue(r.value, activeCategory.format)}
+                {formatAwardValue(r.value, activeCategory.format)}
               </span>
               <span style={{ textAlign: "right", fontFamily: v("--font-mono"), color: v("--color-text-muted") }}>{nf(r.population)}</span>
               <span style={{ textAlign: "right", fontFamily: v("--font-mono"), color: v("--color-text-muted") }}>{nf(r.total)}</span>

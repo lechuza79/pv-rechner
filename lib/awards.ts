@@ -14,7 +14,7 @@
 // Ausnahme vom „kein Import": die kanonischen Einheiten-Formatter (rein, ohne
 // DB/Next) — Einheiten werden nie handgeschrieben (Zahlen-Korrektheit-BLOCKER).
 
-import { fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "./atlas-format";
+import { fmtMixLeistung, fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "./atlas-format";
 
 export type AwardScopeLevel = "de" | "bundesland" | "landkreis";
 export type Traeger = "buerger" | "gewerbe";
@@ -24,7 +24,14 @@ export type Role = "gemeinde" | "stadt" | "grosse-kreisstadt" | "kreisfrei" | "h
 
 /** Wie die Zahl angezeigt wird — die Einheit schreibt die Anzeige über den
  *  kanonischen Formatter, nie das Modul (lib/atlas-format.ts). */
-export type MetricFormat = "wattProKopf" | "pvLeistung" | "count" | "countPer1000" | "whProKopf" | "speicherKwh";
+export type MetricFormat =
+  | "wattProKopf"
+  | "pvLeistung"
+  | "mixLeistung"
+  | "count"
+  | "countPer1000"
+  | "whProKopf"
+  | "speicherKwh";
 
 /** Solar-/Speicher-/EE-Kennzahlen einer bewohnten Gemeinde, je Träger getrennt.
  *  Kommt aus dem Rollup `mastr_gemeinde_award` (ein DB-seitiger Lauf), Name +
@@ -147,13 +154,17 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     format: "speicherKwh",
     metric: (g) => pos(g.batterieGewerbeKwh),
   },
+  // Wind, Biomasse, Wasser: kW/MW/GW ohne „p". „Peak" ist die Nennleistung von
+  // Solarmodulen unter Testbedingungen — ein Windrad oder ein Biomasse-Block hat
+  // keine. Diese drei standen bis 07/2026 auf der Solar-Einheit und zeigten damit
+  // „MWp" über einer Windleistung; gefunden beim Aufbau der Versorger-Aggregate.
   {
     key: "wind-standort",
     label: "Wind-Standort",
     merit: "Höchste installierte Windleistung.",
     traeger: "gewerbe",
     messart: "absolut",
-    format: "pvLeistung",
+    format: "mixLeistung",
     metric: (g) => pos(g.windKwp),
   },
   {
@@ -162,7 +173,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Höchste installierte Biomasseleistung.",
     traeger: "gewerbe",
     messart: "absolut",
-    format: "pvLeistung",
+    format: "mixLeistung",
     metric: (g) => pos(g.biomasseKwp),
   },
   {
@@ -171,7 +182,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     merit: "Höchste installierte Wasserkraftleistung.",
     traeger: "gewerbe",
     messart: "absolut",
-    format: "pvLeistung",
+    format: "mixLeistung",
     metric: (g) => pos(g.wasserKwp),
   },
   // Dynamik.
@@ -226,6 +237,8 @@ export function formatAwardValue(value: number, format: MetricFormat): string {
       return fmtWattProKopf(value);
     case "pvLeistung":
       return fmtPvLeistung(value);
+    case "mixLeistung":
+      return fmtMixLeistung(value);
     case "speicherKwh":
       return fmtSpeicherKwh(value);
     case "count":

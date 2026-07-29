@@ -4,6 +4,8 @@ import { renderOutreachDraft } from "../../../../lib/kommunen-outreach-draft";
 import { buildHookIndex } from "../../../../lib/awards-server";
 import { DEFAULT_HOOK_SETTINGS } from "../../../../lib/award-hook";
 import { atlasPathForRegionId } from "../../../../lib/atlas";
+import { isOutreachStatus } from "../../../../lib/outreach-status";
+import { isAdminSession } from "../../../../lib/admin-guard";
 
 const SITE_URL = "https://solar-check.io";
 
@@ -14,32 +16,15 @@ const SITE_URL = "https://solar-check.io";
 
 export const dynamic = "force-dynamic";
 
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
-  .split(",")
-  .map((e) => e.trim().toLowerCase())
-  .filter(Boolean);
-
-async function isAdmin(): Promise<boolean> {
-  const { createClient } = await import("../../../../lib/supabase-server-component");
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return !!user && ADMIN_EMAILS.includes(user.email?.toLowerCase() || "");
-}
 
 const PAGE_SIZE = 50;
-// „gesperrt" ist ein harter Sperr-Status: keine Entwurf-Erzeugung mehr (nach
-// Widerspruch/Unterlassung). Bewusst als Status, damit ein Admin ihn bei Irrtum
-// wieder ändern kann — der Schutz sitzt in der Draft-Erzeugung (POST unten).
-const STATUSES = ["offen", "entwurf", "kontaktiert", "geantwortet", "zu", "gesperrt"];
 
 // Eine Quelle für das Zeilen-Shape (GET, PATCH, POST liefern dasselbe zurück).
 const SELECT =
   "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, gruene_pct, linke_pct, spd_pct, mastr_regions!inner(name, bezeichnung, population)";
 
 export async function GET(req: NextRequest) {
-  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await isAdminSession())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!serviceDb) return NextResponse.json({ error: "DB not configured" }, { status: 500 });
 
   const sp = req.nextUrl.searchParams;
@@ -80,7 +65,7 @@ export async function GET(req: NextRequest) {
 // Einzelne Gemeinde aktualisieren (Status/Notiz/Kanal). Zeitstempel werden aus
 // dem Statuswechsel abgeleitet, nicht vom Client diktiert.
 export async function PATCH(req: NextRequest) {
-  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await isAdminSession())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!serviceDb) return NextResponse.json({ error: "DB not configured" }, { status: 500 });
 
   const body = (await req.json()) as {
@@ -96,7 +81,7 @@ export async function PATCH(req: NextRequest) {
   const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
 
   if (body.outreach_status !== undefined) {
-    if (!STATUSES.includes(body.outreach_status)) {
+    if (!isOutreachStatus(body.outreach_status)) {
       return NextResponse.json({ error: "unbekannter Status" }, { status: 400 });
     }
     patch.outreach_status = body.outreach_status;
@@ -123,7 +108,7 @@ export async function PATCH(req: NextRequest) {
 // Anschreiben aus dem Template + echten Solar-Zahlen der Gemeinde generieren und
 // als Entwurf speichern. Kein LLM — deterministisch, sofort.
 export async function POST(req: NextRequest) {
-  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!(await isAdminSession())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   if (!serviceDb) return NextResponse.json({ error: "DB not configured" }, { status: 500 });
 
   const { region_id } = (await req.json()) as { region_id?: string };
