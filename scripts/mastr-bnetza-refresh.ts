@@ -504,11 +504,30 @@ export function classifySolarSegment(
  * array is a different story from a commercial one, and that is the split a
  * Gemeinde actually reads.
  */
-function classifyStorage(row: Record<string, string>, actorMap: Map<string, ActorKind>): string {
+/**
+ * Bis hierher kann eine Batterie im Keller eines Wohnhauses stehen.
+ *
+ * Dieselbe Luecke wie bei den Daechern: "privat" kam allein aus der Art des
+ * Betreibers, ohne Groessenpruefung. Gemessen ueber alle Gemeinden liegt die
+ * mittlere "private" Batterie bei 8,87 kWh — aber 66 Gemeinden kommen auf ueber
+ * 30, mit Spitzen bei 243 kWh im Schnitt. Das sind Gewerbespeicher mit
+ * Privat-Etikett. Der Fall Finsing, der bisher als handgepflegter Einzelfall im
+ * Code stand (lib/award-hook.ts), ist einer von diesen 66.
+ */
+const MAX_HAUSSPEICHER_KWH = 30;
+
+export function classifyStorage(
+  row: Record<string, string>,
+  actorMap: Map<string, ActorKind>,
+  kwh: number,
+): string {
   const t = row.Technologie;
   if (t === STORAGE_TECH_PUMPSPEICHER) return "pumpspeicher";
   // Druckluft, Schwungrad, Wasserstoff and anything new the catalogue grows.
   if (t !== STORAGE_TECH_BATTERIE) return "sonstige";
+  // Zu gross fuer einen Keller ist gewerblich. Ohne bekannte Kapazitaet (kwh = 0)
+  // bleibt es bei der Betreiber-Auskunft — nicht pruefbar heisst nicht falsch.
+  if (kwh > MAX_HAUSSPEICHER_KWH) return "batterie_gewerbe";
   const nr = row.AnlagenbetreiberMastrNummer;
   const kind = nr ? actorMap.get(nr) : undefined;
   return kind === "privat" ? "batterie_privat" : "batterie_gewerbe";
@@ -696,7 +715,7 @@ async function aggregateUnit(
         spec.et === "solar"
           ? classifySolarSegment(row, actorMap, kwp)
           : spec.et === "speicher"
-            ? classifyStorage(row, actorMap)
+            ? classifyStorage(row, actorMap, kwh)
             : "n/a";
       const key: AggregateKey = `${regionId}|${spec.et}|${segment}|${year}`;
       const existing = agg.get(key);
