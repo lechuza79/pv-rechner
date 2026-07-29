@@ -1,4 +1,5 @@
 import { test, expect, type ConsoleMessage, type Page } from "@playwright/test";
+import { SEITEN, EMBEDS } from "./routen";
 
 // Breiter Rundgang: jede Seite einmal aufrufen und auf Laufzeitfehler prüfen.
 //
@@ -120,51 +121,6 @@ async function datenbankVerfuegbar(page: Page): Promise<boolean> {
   return false;
 }
 
-const SEITEN: { pfad: string; erwartet: RegExp }[] = [
-  // Rechner, die kein Flow-Test abdeckt
-  { pfad: "/klimaanlage-stromkosten", erwartet: /klima|kühl/i },
-  { pfad: "/balkonkraftwerk-rechner", erwartet: /balkon/i },
-  // Atlas — beide Routen, inkl. einer echten Gemeindeseite
-  { pfad: "/solar-atlas", erwartet: /atlas|solaranlagen/i },
-  { pfad: "/solar-atlas/bayern", erwartet: /bayern/i },
-  { pfad: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg", erwartet: /höchberg/i },
-  // Förderseiten, beide Ebenen
-  { pfad: "/photovoltaik-foerderung", erwartet: /förder/i },
-  { pfad: "/photovoltaik-foerderung/bayern", erwartet: /bayern/i },
-  { pfad: "/photovoltaik-foerderung/bayern/wuerzburg", erwartet: /würzburg/i },
-  // Ratgeber — die Seiten, die live gerechnete Beispiele enthalten
-  { pfad: "/ratgeber", erwartet: /ratgeber/i },
-  { pfad: "/ratgeber/lohnt-sich-pv-mit-speicher", erwartet: /speicher/i },
-  { pfad: "/ratgeber/gasheizung-oder-waermepumpe", erwartet: /wärmepumpe|gasheizung/i },
-  { pfad: "/ratgeber/waermepumpe-foerderung-2026", erwartet: /wärmepumpe/i },
-  // Datenseiten
-  { pfad: "/photovoltaik-zubau-deutschland", erwartet: /zubau/i },
-  { pfad: "/atomstrom-import", erwartet: /atomstrom|kernstrom/i },
-  { pfad: "/langzeit-strommix", erwartet: /strommix/i },
-  { pfad: "/datenstand", erwartet: /stand|daten/i },
-];
-
-// Die Embed-Widgets sind das Produkt, das wir an Kommunen verteilen — sie
-// laufen fremd eingebettet, wo wir keine Fehlermeldung mehr sehen.
-const EMBEDS: { pfad: string }[] = [
-  { pfad: "/embed/strommix-anteil" },
-  { pfad: "/embed/erzeugung" },
-  { pfad: "/embed/erzeugung-mini" },
-  { pfad: "/embed/kennzahl?metric=leistung" },
-  { pfad: "/embed/gemeinde-solar?ags=09679147" },
-  { pfad: "/embed/gemeinde-erneuerbare?ags=09679147" },
-  { pfad: "/embed/gemeinde-solarleistung?ags=09679147" },
-  { pfad: "/embed/region-anlagentyp?bl=13" },
-  { pfad: "/embed/region-solarleistung?bl=13" },
-  { pfad: "/embed/simulation?plz=10115" },
-  { pfad: "/embed/pv-zubau-deutschland" },
-  { pfad: "/embed/ee-ampel" },
-  { pfad: "/embed/karte" },
-  { pfad: "/embed/foerder-check" },
-  { pfad: "/embed/gruengas-heizkosten" },
-  { pfad: "/embed/zubau-erneuerbare-atom" },
-  { pfad: "/embed/strommix" },
-];
 
 test.describe("Rundgang: Seiten laufen ohne Laufzeitfehler an", () => {
   for (const { pfad, erwartet } of SEITEN) {
@@ -179,7 +135,7 @@ test.describe("Rundgang: Seiten laufen ohne Laufzeitfehler an", () => {
 });
 
 test.describe("Rundgang: Embed-Widgets laufen ohne Laufzeitfehler an", () => {
-  for (const { pfad } of EMBEDS) {
+  for (const pfad of EMBEDS) {
     test(`Widget ${pfad}`, async ({ page }) => {
       test.skip(!(await datenbankVerfuegbar(page)), "Ohne Datenbank hat der Rundgang keine Aussagekraft.");
       const fehler = await rundgang(page, pfad);
