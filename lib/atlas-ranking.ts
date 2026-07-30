@@ -16,7 +16,7 @@
 // Eine absolute Rangliste ist der Sache nach eine Einwohner-Rangliste.
 
 import { AWARD_CATEGORIES, type AwardCategory, type GemeindeStats } from "./awards";
-import { klasseVon, type Groessenklasse } from "./gemeindegroesse";
+import type { RankingFeld } from "./ranking-felder";
 
 /** Kategorien mit öffentlicher Ranking-Seite, in Anzeigereihenfolge. */
 export function rankingKategorien(): (AwardCategory & { slug: string })[] {
@@ -29,8 +29,12 @@ export function rankingKategorienGruppiert(): {
   standort: (AwardCategory & { slug: string })[];
 } {
   const alle = rankingKategorien();
+  // Zubau zuerst — dieselbe Reihenfolge wie in der Navigation, damit Uebersicht
+  // und Umschalter nicht widersprechen. Begruendung an rankingNav().
+  const zubauZuerst = (a: AwardCategory & { slug: string }, b: AwardCategory & { slug: string }) =>
+    Number(!a.slug.startsWith("zubau-")) - Number(!b.slug.startsWith("zubau-"));
   return {
-    buerger: alle.filter((k) => k.traeger === "buerger"),
+    buerger: alle.filter((k) => k.traeger === "buerger").sort(zubauZuerst),
     standort: alle.filter((k) => k.traeger !== "buerger"),
   };
 }
@@ -95,11 +99,12 @@ export function rankingRows(
   stats: GemeindeStats[],
   kategorie: AwardCategory,
   scopeId: string | null,
-  /** Nur Orte dieser Groessenklasse. Ohne sie liefert die Funktion alle —
-   *  gebraucht fuer die Standort-Kategorien, wo die Ortsgroesse nichts erklaert. */
-  klasse?: Groessenklasse | null,
+  /** Gegen wen verglichen wird (Groessenklasse oder Rolle). Ohne Feld liefert die
+   *  Funktion alle — gebraucht fuer die Standort-Kategorien, wo die Ortsgroesse
+   *  nichts erklaert. */
+  feld?: RankingFeld | null,
 ): RankingZeile[] {
-  const imFeld = (g: GemeindeStats) => !klasse || klasseVon(g.population)?.slug === klasse.slug;
+  const imFeld = (g: GemeindeStats) => !feld || feld.gilt(g);
   const rows = stats
     .filter((g) => {
       if (scopeId && !g.regionId.startsWith(scopeId)) return false;
@@ -219,12 +224,17 @@ export function rankingNav(): { buerger: RankingNavPunkt[]; standort: RankingNav
     label: KURZ[k.slug] ?? k.thema,
     slug: k.slug,
   });
+  // ZUBAU ZUERST. Der Bestand belohnt, wer frueh angefangen hat; der Zubau
+  // belohnt, wer JETZT baut — und nur das kann eine Gemeinde noch entscheiden.
+  // Dieselbe Begruendung wie beim Wattbewerb, dem bundesweiten Staedte-Wettbewerb
+  // auf denselben Registerdaten: "Der Spielstand haengt jedoch nie vom Startwert
+  // ab, sondern immer und grundsaetzlich nur vom Zubau."
   return {
     buerger: [
-      ...buerger.filter((k) => !zubauSlugs.has(k.slug)).map(einzeln),
       ...(buerger.some((k) => zubauSlugs.has(k.slug))
         ? [{ label: "Zubau", slug: ZUBAU_ZEITRAEUME[1].slug, zeitraeume: ZUBAU_ZEITRAEUME }]
         : []),
+      ...buerger.filter((k) => !zubauSlugs.has(k.slug)).map(einzeln),
     ],
     standort: standort.map(einzeln),
   };

@@ -13,7 +13,7 @@ import { loadAwardStats, loadElternSlugs, loadKreisNames } from "../../../../../
 import { bundeslandByAgs } from "../../../../../lib/mastr-regions";
 import { formatAwardValue } from "../../../../../lib/awards";
 import { regionDisplayName } from "../../../../../lib/atlas-format";
-import { GROESSENKLASSEN, GROESSENKLASSE_BY_SLUG, type Groessenklasse } from "../../../../../lib/gemeindegroesse";
+import { FELD_BY_SLUG, felderNachArt, type RankingFeld } from "../../../../../lib/ranking-felder";
 import {
   rankingKategorienGruppiert,
   rankingNav,
@@ -114,14 +114,12 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
   // Spitzenplaetze unter 5.000 Einwohnern). Bei den Standort-Kategorien gewinnt
   // ohnehin, wo ein Kraftwerk steht — da erklaert die Ortsgroesse nichts.
   const nachGroesse = kategorie.messart === "proKopf";
-  const klasse: Groessenklasse | null = nachGroesse
-    ? (GROESSENKLASSE_BY_SLUG[searchParams?.groesse ?? ""] ?? null)
-    : null;
-  // Ohne gewaehlte Klasse zeigt die Seite die vier Spitzenreiter statt einer
-  // Bundesliste — die gaebe es sonst durch die Hintertuer wieder.
+  const klasse: RankingFeld | null = nachGroesse ? (FELD_BY_SLUG[searchParams?.groesse ?? ""] ?? null) : null;
+  // Ohne gewaehltes Feld zeigt die Seite die Spitzenreiter aller Groessenklassen
+  // statt einer Bundesliste — die gaebe es sonst durch die Hintertuer wieder.
   const zeigtSpitzenreiter = nachGroesse && !klasse;
   const spitzenreiter = zeigtSpitzenreiter
-    ? GROESSENKLASSEN.map((k) => ({ klasse: k, zeilen: rankingRows(stats, kategorie, scopeId, k) }))
+    ? felderNachArt("groesse").map((k) => ({ klasse: k, zeilen: rankingRows(stats, kategorie, scopeId, k) }))
     : [];
 
   const alle = rankingRows(stats, kategorie, scopeId, klasse);
@@ -250,12 +248,31 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
             150-Seelen-Ort schlagen jede Stadt. */}
         {nachGroesse && (
           <div style={S.zeitraeume}>
-            <span style={S.zeitraumLabel}>Größe</span>
+            <span style={S.zeitraumLabel}>Vergleich</span>
             <Link href={listenLink(kategorie.slug, null)} style={katStil(!klasse, true)}>
-              Alle Klassen
+              Spitze je Größe
             </Link>
-            {GROESSENKLASSEN.map((k) => (
-              <Link key={k.slug} href={listenLink(kategorie.slug, k.slug)} style={katStil(k.slug === klasse?.slug, true)}>
+            {felderNachArt("groesse").map((k) => (
+              <Link
+                key={k.slug}
+                href={listenLink(kategorie.slug, k.slug)}
+                title={k.langform}
+                style={katStil(k.slug === klasse?.slug, true)}
+              >
+                {k.label}
+              </Link>
+            ))}
+            {/* Rollen stehen NEBEN den Groessen, nicht darunter: Wer sich mit den
+                Landeshauptstaedten vergleicht, vergleicht sich nicht zusaetzlich
+                nach Groesse — es ist ein anderes Feld, keine Verfeinerung. */}
+            <span style={S.zeitraumTrenner} aria-hidden />
+            {felderNachArt("rolle").map((k) => (
+              <Link
+                key={k.slug}
+                href={listenLink(kategorie.slug, k.slug)}
+                title={k.langform}
+                style={katStil(k.slug === klasse?.slug, true)}
+              >
                 {k.label}
               </Link>
             ))}
@@ -277,7 +294,7 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
               {/* Sammelbegriff aus der Groessenklasse: "80 Grossstaedte" sagt
                   mehr als "80 Kommunen" und stimmt trotzdem ausnahmslos
                   (Begruendung an Groessenklasse.kollektiv). */}
-              <strong style={S.strong}>{`${nf(alle.length)} ${klasse ? klasse.kollektiv : "Städte und Gemeinden"}`}</strong>
+              <strong style={S.strong}>{`${nf(alle.length)} ${klasse ? klasse.label : "Städte und Gemeinden"}`}</strong>
               {` ${wo} sind gewertet, sortiert nach ${kategorie.themaDativ}. Gerechnet aus dem Marktstammdatenregister.`}
               {/* Die Untergrenze schliesst mehr als die Haelfte aller Kommunen
                   aus. Das gehoert in den ersten Absatz und nicht in den
@@ -296,7 +313,7 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
             return (
               <div key={k.slug} style={S.klassenKarte}>
                 <div style={S.klassenKopf}>
-                  <span style={S.klassenLabel}>{`${k.kollektiv}, ${k.label} Einwohner`}</span>
+                  <span style={S.klassenLabel}>{k.langform}</span>
                   <Link href={listenLink(kategorie.slug, k.slug)} style={S.klassenLink}>
                     {`Ganze Liste (${nf(z.length)}) `}
                     <IconArrowRight size={12} />
@@ -400,13 +417,15 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
           </ol>
         )}
 
-        {zeigtVeraenderung && (
+        {!zeigtSpitzenreiter && zeigtVeraenderung && (
           <p style={S.deltaHinweis}>
             {`▲ und ▼ zeigen, wie viele Plätze eine Kommune seit Ende ${new Date().getFullYear() - 1} gutgemacht oder verloren hat. Bewusst nicht „gegenüber dem Vorjahr": Der Zeitraum reicht vom Jahresende bis heute.`}
           </p>
         )}
 
-        {seiten > 1 && (
+        {/* Keine Blaetterleiste in der Spitzenreiter-Ansicht — dort steht keine
+            Liste, durch die man blaettern koennte. */}
+        {!zeigtSpitzenreiter && seiten > 1 && (
           <div style={S.blaettern}>
             <span style={S.blaetternText}>
               {`Plätze ${nf((seite - 1) * PRO_SEITE + 1)}–${nf((seite - 1) * PRO_SEITE + zeilen.length)} von ${nf(alle.length)}`}
@@ -471,12 +490,13 @@ function Uebersicht() {
         <h1 style={S.h1}>Rankings der Städte und Gemeinden</h1>
         <p style={S.intro}>
           Wer baut am meisten — gemessen an der Einwohnerzahl. Verglichen wird innerhalb der Größenklasse, damit
-          Großstädte gegen Großstädte antreten und nicht gegen Dörfer. Jede Liste reicht von Deutschland über
-          die Länder bis in den Landkreis.
+          Großstädte gegen Großstädte antreten und nicht gegen Dörfer. Vorn steht der Zubau: Was ein Ort früher
+          gebaut hat, kann er nicht mehr ändern. Jede Liste reicht von Deutschland über die Länder bis in den
+          Landkreis.
         </p>
         {(
           [
-            ["Privat", gruppen.buerger, "Was Haushalte gebaut haben, je Einwohner gerechnet — getrennt nach Größenklasse, von der Landgemeinde bis zur Großstadt."],
+            ["Privat", gruppen.buerger, "Was Haushalte gebaut haben, je Einwohner gerechnet — getrennt nach Größenklasse, von der Kleingemeinde bis zur Großstadt. Dazu Landeshauptstädte und kreisfreie Städte je für sich."],
             ["Sonstiges", gruppen.standort, "Was am Ort steht, unabhängig davon, wer es gebaut hat: Gesamtleistung, Freiflächen, Wind. Hier gewinnen Kraftwerks-Standorte und große Städte. Diese Anlagen bleiben aus den Listen oben heraus, weil ein einziger Investorenpark ein Dorf an die Spitze setzen würde."],
           ] as const
         ).map(([titel, kats, erklaerung]) =>
@@ -549,6 +569,7 @@ const S: Record<string, React.CSSProperties> = {
     position: "relative",
   },
   platz: { fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-accent-dark"), fontSize: 13 },
+  zeitraumTrenner: { width: 1, alignSelf: "stretch", background: v("--color-border"), margin: `0 ${space.xs}px` },
   h1Zusatz: { fontWeight: 500, color: v("--color-text-secondary") },
   klassenKarte: {
     border: `1px solid ${v("--color-border")}`,

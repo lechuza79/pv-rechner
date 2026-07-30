@@ -5,99 +5,74 @@
 // echten Daten lagen in JEDER Bürger-Kategorie praktisch alle 100 Spitzenplätze
 // unter 5.000 Einwohnern, beim Zubau die komplette Top 100 sogar unter 1.000
 // (Median 180 Einwohner). In einem 150-Seelen-Dorf reichen drei neue Dächer für
-// den Bundessieg, in Freiburg bräuchte es zweitausend — die Liste beantwortete
-// damit nicht "wer baut am meisten", sondern "wo wohnen die wenigsten".
+// den Bundessieg, in Freiburg bräuchte es zweitausend.
 //
-// Die Award-Logik (lib/awards.ts, für die Kommunen-Anschreiben) trennt seit
-// jeher nach Größe; sie tut das über Terzile INNERHALB des Vergleichsgebiets.
-// Für öffentliche Seiten taugt das nicht: Ein Terzil ist niemandem erklärbar und
-// verschiebt sich je Landkreis. Hier stehen deshalb absolute Schwellen. Zwei
-// Systeme mit Absicht — die Anschreiben vergleichen innerhalb eines Kreises, die
-// Ranglisten bundesweit.
+// SCHNITT UND BENENNUNG FOLGEN DER SOLARBUNDESLIGA (solarbundesliga.de, 2001
+// bis 2017 bundesweit; Kategorien geprüft am 30.07.2026 über
+// de.wikipedia.org/wiki/Solarbundesliga): "Großstädte mit über 100.000",
+// "Mittelstädte (20.000–99.999 Einwohner)", "Kleinstädte (5.000–19.999)",
+// "Gemeinden von 1.000–4.999", "Kleingemeinden mit unter 999 Einwohnern". Deren
+// Begründung ist dieselbe wie unsere: für große Städte sind hohe Pro-Kopf-Werte
+// schwerer zu erreichen.
 //
-// HERKUNFT DER SCHWELLEN: 5.000 / 20.000 / 100.000 sind die Einwohner-Schwellen
-// des BBSR-Stadt- und Gemeindetyps (bbsr.bund.de, Raumabgrenzungen → Gemeinden →
-// Stadt- und Gemeindetyp, geprüft 29.07.2026).
+// Der zusätzliche Schnitt bei 1.000 ist der wichtige Teil. Er trennt den
+// 91-Einwohner-Weiler vom 3.000-Einwohner-Dorf — genau dort saß der Effekt, der
+// die Listen unbrauchbar machte. Die oberen drei Schwellen (5.000 / 20.000 /
+// 100.000) sind identisch mit denen des BBSR-Stadt- und Gemeindetyps.
 //
-// WARUM TROTZDEM NICHT "Kleinstadt"/"Mittelstadt": Beim BBSR entscheidet neben
-// der Einwohnerzahl auch die zentralörtliche Funktion ("Gemeinden mit
-// oberzentraler Funktion werden bereits ab 9.000 Einwohnern als Mittelstadt
-// eingeordnet"). Diese Funktion liegt uns nicht vor. Eine Gemeinde als
-// "Kleinstadt" zu bezeichnen wäre also eine Behauptung, die wir nicht prüfen
-// können — die Klassen heißen deshalb nach ihrer Einwohnerspanne, was sie
-// wirklich sind.
+// ZUR BENENNUNG: Entscheidung des Betreibers (30.07.2026) — natürliche Sprache
+// vor amtlicher Bezeichnung. "Kleinstadt" ist deshalb hier eine Größenklasse,
+// keine Aussage über den Rechtsstatus eines Ortes: Unter 5.000 Einwohnern tragen
+// 390 Orte amtlich "Stadt" (die kleinste ist Arnis mit 251), und zwischen 20.000
+// und 100.000 gibt es 37 echte Gemeinden (Seevetal hat 44.158). Wer die amtliche
+// Bezeichnung eines einzelnen Ortes braucht, nimmt `bezeichnung` aus
+// mastr_regions — nicht diese Klasse.
 
-export type GroessenklasseSlug = "unter-5000" | "5000-20000" | "20000-100000" | "ab-100000";
+export type GroessenklasseSlug =
+  | "kleingemeinden"
+  | "gemeinden"
+  | "kleinstaedte"
+  | "mittelstaedte"
+  | "grossstaedte";
 
 export type Groessenklasse = {
   slug: GroessenklasseSlug;
-  /** Kurz, für Umschalter und Kacheln. */
+  /** Sammelbegriff im Plural — trägt Umschalter, Kacheln und Fließtext. */
   label: string;
-  /** Ausgeschrieben, für Überschriften und Fließtext. */
-  langform: string;
-  /**
-   * Sammelbegriff für die Orte dieser Klasse — im Plural und im Singular.
-   *
-   * Gemessen an den echten Bezeichnungen (29.07.2026): Unter 5.000 Einwohnern
-   * tragen 390 Orte amtlich "Stadt" (die kleinste ist Arnis mit 251), zwischen
-   * 5.000 und 20.000 sind es 45 %, und zwischen 20.000 und 100.000 gibt es
-   * immer noch 37 echte Gemeinden (Seevetal hat 44.158 Einwohner). Ein
-   * größenbasiertes "Dörfer" oder "Städte" wäre also für hunderte Orte falsch.
-   *
-   * Zulässig ist genau, was ausnahmslos stimmt: "Gemeinde" gilt immer (eine
-   * Stadt IST rechtlich eine Gemeinde mit der Bezeichnung Stadt), "Städte und
-   * Gemeinden" in den gemischten Klassen, und "Großstadt" ab 100.000 — dort
-   * sind alle 80 Orte Städte, und die Schwelle ist dieselbe wie beim BBSR.
-   */
-  kollektiv: string;
+  /** Einzahl, für Spaltenköpfe ("Kleinstadt"). */
   einzahl: string;
+  /** Die Einwohnerspanne als Text, immer sichtbar neben dem Namen — der Name
+   *  allein sagt nicht, wo die Grenze liegt. */
+  spanne: string;
   min: number;
   /** Obergrenze exklusiv; null = nach oben offen. */
   max: number | null;
 };
 
 export const GROESSENKLASSEN: Groessenklasse[] = [
+  { slug: "kleingemeinden", label: "Kleingemeinden", einzahl: "Kleingemeinde", spanne: "unter 1.000", min: 0, max: 1_000 },
+  { slug: "gemeinden", label: "Gemeinden", einzahl: "Gemeinde", spanne: "1.000–5.000", min: 1_000, max: 5_000 },
+  { slug: "kleinstaedte", label: "Kleinstädte", einzahl: "Kleinstadt", spanne: "5.000–20.000", min: 5_000, max: 20_000 },
   {
-    slug: "unter-5000",
-    label: "unter 5.000",
-    langform: "Gemeinden unter 5.000 Einwohnern",
-    kollektiv: "Gemeinden",
-    einzahl: "Gemeinde",
-    min: 0,
-    max: 5_000,
-  },
-  {
-    slug: "5000-20000",
-    label: "5.000–20.000",
-    langform: "Städte und Gemeinden mit 5.000 bis 20.000 Einwohnern",
-    kollektiv: "Städte und Gemeinden",
-    einzahl: "Stadt oder Gemeinde",
-    min: 5_000,
-    max: 20_000,
-  },
-  {
-    slug: "20000-100000",
-    label: "20.000–100.000",
-    langform: "Städte und Gemeinden mit 20.000 bis 100.000 Einwohnern",
-    kollektiv: "Städte und Gemeinden",
-    einzahl: "Stadt oder Gemeinde",
+    slug: "mittelstaedte",
+    label: "Mittelstädte",
+    einzahl: "Mittelstadt",
+    spanne: "20.000–100.000",
     min: 20_000,
     max: 100_000,
   },
-  {
-    slug: "ab-100000",
-    label: "ab 100.000",
-    langform: "Großstädte ab 100.000 Einwohnern",
-    kollektiv: "Großstädte",
-    einzahl: "Großstadt",
-    min: 100_000,
-    max: null,
-  },
+  { slug: "grossstaedte", label: "Großstädte", einzahl: "Großstadt", spanne: "ab 100.000", min: 100_000, max: null },
 ];
 
 export const GROESSENKLASSE_BY_SLUG: Record<string, Groessenklasse> = Object.fromEntries(
   GROESSENKLASSEN.map((k) => [k.slug, k]),
 );
+
+/** "Kleinstädte (5.000–20.000 Einwohner)" — Name UND Spanne, weil der Name
+ *  allein die Grenze nicht verrät. */
+export function klasseLangform(k: Groessenklasse): string {
+  return `${k.label} (${k.spanne} Einwohner)`;
+}
 
 /** In welche Klasse ein Ort fällt. Null nur bei fehlender Einwohnerzahl — die
  *  gehört in keine Rangliste, weil sich ohne sie nichts pro Kopf rechnen lässt. */
