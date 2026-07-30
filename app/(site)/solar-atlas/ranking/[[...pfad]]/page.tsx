@@ -70,9 +70,9 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
   if (d.uebersicht) {
     return {
       ...pageMetadata({
-        title: "Solar-Rankings der Kommunen – wer vorn liegt",
+        title: "Solar-Rankings der Städte und Gemeinden – wer vorn liegt",
         description:
-          "Ranglisten aller Kommunen — Solarleistung, Balkonkraftwerke und Speicher je Einwohner, dazu Freiflächen, Wind und Zubau. Aus dem Marktstammdatenregister.",
+          "Ranglisten nach Größenklasse — Solarleistung, Balkonkraftwerke und Speicher je Einwohner, dazu Freiflächen, Wind und Zubau. Aus dem Marktstammdatenregister.",
         path: BASIS,
       }),
       robots: ROBOTS,
@@ -82,7 +82,7 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
   return {
     ...pageMetadata({
       title: `Ranking: ${rankingTitel(d.kategorie, wo)}`,
-      description: `Welche Kommunen ${wo} bei ${d.kategorie.themaDativ} vorn liegen — gerechnet aus dem Marktstammdatenregister.`,
+      description: `Welche Städte und Gemeinden ${wo} bei ${d.kategorie.themaDativ} vorn liegen — je Größenklasse gerechnet, aus dem Marktstammdatenregister.`,
       path: `${BASIS}/${(params.pfad ?? []).join("/")}`,
     }),
     robots: ROBOTS,
@@ -154,7 +154,11 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
       if (bl) teile.push({ name: bl.name, href: blSlug ? `${BASIS}/${kategorie.slug}/${blSlug}` : null });
     }
     const kreisName = kreisNamen[id.slice(0, 5)];
-    if (kreisName) {
+    // STADTSTAATEN: In Bremen, Hamburg und Berlin heisst der Kreis wie das
+    // Bundesland. Zweimal derselbe Name waere nicht nur redundant ("Bremen ·
+    // Bremen"), sondern auch ein doppelter React-Schluessel — der Browser
+    // meldete das als Fehler und der Seiten-Rundgang waere in CI rot geworden.
+    if (kreisName && !teile.some((t) => t.name === regionDisplayName(kreisName))) {
       teile.push({
         // "Landkreis Westerwaldkreis" — die Gattung steckt bei 47 Kreisen schon
         // im amtlichen Namen. Der Anzeigename nimmt das Doppelte heraus.
@@ -270,7 +274,10 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
               {/* „sortiert nach" verlangt den Dativ — dafür gibt es themaDativ.
                   Der Rest als ein Textstück, sonst setzt React zwischen die
                   Knoten ein Leerzeichen und der Punkt rutscht ab. */}
-              <strong style={S.strong}>{nf(alle.length)} Kommunen</strong>
+              {/* Sammelbegriff aus der Groessenklasse: "80 Grossstaedte" sagt
+                  mehr als "80 Kommunen" und stimmt trotzdem ausnahmslos
+                  (Begruendung an Groessenklasse.kollektiv). */}
+              <strong style={S.strong}>{`${nf(alle.length)} ${klasse ? klasse.kollektiv : "Städte und Gemeinden"}`}</strong>
               {` ${wo} sind gewertet, sortiert nach ${kategorie.themaDativ}. Gerechnet aus dem Marktstammdatenregister.`}
               {/* Die Untergrenze schliesst mehr als die Haelfte aller Kommunen
                   aus. Das gehoert in den ersten Absatz und nicht in den
@@ -289,7 +296,7 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
             return (
               <div key={k.slug} style={S.klassenKarte}>
                 <div style={S.klassenKopf}>
-                  <span style={S.klassenLabel}>{`${k.label} Einwohner`}</span>
+                  <span style={S.klassenLabel}>{`${k.kollektiv}, ${k.label} Einwohner`}</span>
                   <Link href={listenLink(kategorie.slug, k.slug)} style={S.klassenLink}>
                     {`Ganze Liste (${nf(z.length)}) `}
                     <IconArrowRight size={12} />
@@ -325,7 +332,7 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
         {!zeigtSpitzenreiter && zeilen.length > 0 && (
           <div style={{ ...S.zeile, ...S.kopfzeile }}>
             <span>Platz</span>
-            <span>Kommune</span>
+            <span>{klasse ? klasse.einzahl : "Ort"}</span>
             <span style={S.kopfRechts}>
               {zeigtVeraenderung ? `seit Ende ${new Date().getFullYear() - 1}` : ""}
             </span>
@@ -367,7 +374,7 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
                       {r.basis && ` · ${r.basis}`}
                       {orte.length > 0 && " · "}
                       {orte.map((t, i) => (
-                          <span key={t.name}>
+                          <span key={`${i}-${t.name}`}>
                             {i > 0 && " · "}
                             {t.href ? (
                               <Link href={t.href} className="atlas-rank-neben" style={S.herkunftLink}>
@@ -461,14 +468,15 @@ function Uebersicht() {
     <div style={S.page}>
       <div style={S.wrap}>
         <Breadcrumb items={[{ label: "Solar-Atlas", href: "/solar-atlas" }, { label: "Rankings" }]} />
-        <h1 style={S.h1}>Rankings der Kommunen</h1>
+        <h1 style={S.h1}>Rankings der Städte und Gemeinden</h1>
         <p style={S.intro}>
-          Wer baut am meisten — gemessen an der Einwohnerzahl, nicht an der Größe der Gemeinde. Jede Liste führt
-          jede gewertete Kommune, von Deutschland über die Länder bis in den Landkreis.
+          Wer baut am meisten — gemessen an der Einwohnerzahl. Verglichen wird innerhalb der Größenklasse, damit
+          Großstädte gegen Großstädte antreten und nicht gegen Dörfer. Jede Liste reicht von Deutschland über
+          die Länder bis in den Landkreis.
         </p>
         {(
           [
-            ["Privat", gruppen.buerger, "Was Haushalte gebaut haben, je Einwohner gerechnet — eine kleine Gemeinde kann eine große schlagen."],
+            ["Privat", gruppen.buerger, "Was Haushalte gebaut haben, je Einwohner gerechnet — getrennt nach Größenklasse, von der Landgemeinde bis zur Großstadt."],
             ["Sonstiges", gruppen.standort, "Was am Ort steht, unabhängig davon, wer es gebaut hat: Gesamtleistung, Freiflächen, Wind. Hier gewinnen Kraftwerks-Standorte und große Städte. Diese Anlagen bleiben aus den Listen oben heraus, weil ein einziger Investorenpark ein Dorf an die Spitze setzen würde."],
           ] as const
         ).map(([titel, kats, erklaerung]) =>

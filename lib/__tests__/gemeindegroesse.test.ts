@@ -25,14 +25,34 @@ describe("Größenklassen", () => {
     }
   });
 
-  it("trägt keine BBSR-Typnamen — die hängen an der zentralörtlichen Funktion", () => {
-    // Eine 6.000-Einwohner-Gemeinde IST nicht automatisch eine "Kleinstadt";
-    // das entscheidet beim BBSR zusätzlich die zentralörtliche Funktion, die uns
-    // nicht vorliegt. Die Klassen heissen deshalb nach ihrer Einwohnerspanne.
-    const text = GROESSENKLASSEN.map((k) => `${k.label} ${k.langform}`).join(" ");
-    for (const wort of ["Kleinstadt", "Mittelstadt", "Großstadt", "Landgemeinde"]) {
+  it("nennt keine Klasse Kleinstadt, Mittelstadt oder Landgemeinde", () => {
+    // Diese BBSR-Typen haengen zusaetzlich an der zentralörtlichen Funktion
+    // ("Gemeinden mit oberzentraler Funktion werden bereits ab 9.000 Einwohnern
+    // als Mittelstadt eingeordnet"). Die liegt uns nicht vor — eine
+    // 6.000-Einwohner-Gemeinde IST also nicht automatisch eine Kleinstadt.
+    const text = GROESSENKLASSEN.map((k) => `${k.langform} ${k.kollektiv} ${k.einzahl}`).join(" ");
+    for (const wort of ["Kleinstadt", "Mittelstadt", "Landgemeinde"]) {
       expect(text).not.toContain(wort);
     }
+  });
+
+  it("sagt „Großstadt“ nur ab 100.000 — dort deckt es sich ausnahmslos", () => {
+    // Die zentralörtliche Funktion kann Orte nur NACH OBEN schieben, nie nach
+    // unten. Ab 100.000 ist Großstadt daher immer richtig; gemessen tragen alle
+    // 80 dieser Orte auch amtlich eine Stadt-Bezeichnung.
+    const gross = GROESSENKLASSE_BY_SLUG["ab-100000"];
+    expect(gross.kollektiv).toBe("Großstädte");
+    for (const k of GROESSENKLASSEN.filter((x) => x.slug !== "ab-100000")) {
+      expect(`${k.kollektiv} ${k.einzahl}`).not.toContain("Großstadt");
+    }
+  });
+
+  it("nennt kein „Dorf“ — 390 Orte unter 5.000 Einwohnern sind amtlich Städte", () => {
+    // Die kleinste ist Arnis mit 251 Einwohnern. „Gemeinden“ stimmt dagegen
+    // immer: Eine Stadt ist rechtlich eine Gemeinde mit der Bezeichnung Stadt.
+    const text = GROESSENKLASSEN.map((k) => `${k.langform} ${k.kollektiv} ${k.einzahl}`).join(" ");
+    expect(text).not.toMatch(/Dorf|Dörfer/);
+    expect(GROESSENKLASSE_BY_SLUG["unter-5000"].kollektiv).toBe("Gemeinden");
   });
 
   it("findet jede Klasse über ihren Slug", () => {

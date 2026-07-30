@@ -35,22 +35,64 @@ export type Groessenklasse = {
   label: string;
   /** Ausgeschrieben, für Überschriften und Fließtext. */
   langform: string;
+  /**
+   * Sammelbegriff für die Orte dieser Klasse — im Plural und im Singular.
+   *
+   * Gemessen an den echten Bezeichnungen (29.07.2026): Unter 5.000 Einwohnern
+   * tragen 390 Orte amtlich "Stadt" (die kleinste ist Arnis mit 251), zwischen
+   * 5.000 und 20.000 sind es 45 %, und zwischen 20.000 und 100.000 gibt es
+   * immer noch 37 echte Gemeinden (Seevetal hat 44.158 Einwohner). Ein
+   * größenbasiertes "Dörfer" oder "Städte" wäre also für hunderte Orte falsch.
+   *
+   * Zulässig ist genau, was ausnahmslos stimmt: "Gemeinde" gilt immer (eine
+   * Stadt IST rechtlich eine Gemeinde mit der Bezeichnung Stadt), "Städte und
+   * Gemeinden" in den gemischten Klassen, und "Großstadt" ab 100.000 — dort
+   * sind alle 80 Orte Städte, und die Schwelle ist dieselbe wie beim BBSR.
+   */
+  kollektiv: string;
+  einzahl: string;
   min: number;
   /** Obergrenze exklusiv; null = nach oben offen. */
   max: number | null;
 };
 
 export const GROESSENKLASSEN: Groessenklasse[] = [
-  { slug: "unter-5000", label: "unter 5.000", langform: "Kommunen unter 5.000 Einwohnern", min: 0, max: 5_000 },
-  { slug: "5000-20000", label: "5.000–20.000", langform: "Kommunen mit 5.000 bis 20.000 Einwohnern", min: 5_000, max: 20_000 },
+  {
+    slug: "unter-5000",
+    label: "unter 5.000",
+    langform: "Gemeinden unter 5.000 Einwohnern",
+    kollektiv: "Gemeinden",
+    einzahl: "Gemeinde",
+    min: 0,
+    max: 5_000,
+  },
+  {
+    slug: "5000-20000",
+    label: "5.000–20.000",
+    langform: "Städte und Gemeinden mit 5.000 bis 20.000 Einwohnern",
+    kollektiv: "Städte und Gemeinden",
+    einzahl: "Stadt oder Gemeinde",
+    min: 5_000,
+    max: 20_000,
+  },
   {
     slug: "20000-100000",
     label: "20.000–100.000",
-    langform: "Kommunen mit 20.000 bis 100.000 Einwohnern",
+    langform: "Städte und Gemeinden mit 20.000 bis 100.000 Einwohnern",
+    kollektiv: "Städte und Gemeinden",
+    einzahl: "Stadt oder Gemeinde",
     min: 20_000,
     max: 100_000,
   },
-  { slug: "ab-100000", label: "ab 100.000", langform: "Kommunen ab 100.000 Einwohnern", min: 100_000, max: null },
+  {
+    slug: "ab-100000",
+    label: "ab 100.000",
+    langform: "Großstädte ab 100.000 Einwohnern",
+    kollektiv: "Großstädte",
+    einzahl: "Großstadt",
+    min: 100_000,
+    max: null,
+  },
 ];
 
 export const GROESSENKLASSE_BY_SLUG: Record<string, Groessenklasse> = Object.fromEntries(
