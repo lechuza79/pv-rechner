@@ -28,6 +28,7 @@ import EventTimeline, { TimelineEvent } from "./EventTimeline";
 import type { NationalSolarSeries } from "../../lib/mastr-data";
 import { FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES } from "../../lib/feedin-history";
 import { PRICE_YEARS, PRICE_HOUSEHOLD } from "../../lib/strommix-history";
+import { EEG_REFORM_STAND, eegDatum } from "../../lib/eeg-reform-config";
 
 // Kuratierte politische Weichenstellungen (historische Fakten). Reihenfolge =
 // Nummerierung in der Timeline. 2027 ist Ausblick (außerhalb der Datenachse) und
@@ -81,9 +82,9 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
   {
     year: 2027,
     label: "EEG-Reform (geplant)",
-    text: "Ein Referentenentwurf sieht vor, die feste Einspeisevergütung für Neuanlagen ab 2027 durch marktnähere Modelle (verpflichtende Direktvermarktung) zu ersetzen. Noch nicht beschlossen. Für heute installierte Anlagen gilt Bestandsschutz — die 20-jährige Vergütungsgarantie bleibt.",
+    text: `Die feste Einspeisevergütung soll für Neuanlagen ab 2027 durch marktnähere Modelle (verpflichtende Direktvermarktung) ersetzt werden. Das Kabinett hat den Gesetzentwurf am ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} beschlossen — Gesetz ist er noch nicht, der Bundestag muss noch entscheiden und der Bundesrat ist am Verfahren beteiligt. Für heute installierte Anlagen gilt Bestandsschutz: die 20-jährige Vergütungsgarantie bleibt.`,
     planned: true,
-    government: "Schwarz-rote Koalition (CDU/CSU/SPD), Kanzler Merz — Referentenentwurf aus dem Wirtschaftsministerium (Katharina Reiche, CDU), abgestimmt mit Umweltminister Carsten Schneider (SPD).",
+    government: "Schwarz-rote Koalition (CDU/CSU/SPD), Kanzler Merz — Gesetzentwurf aus dem Wirtschaftsministerium (Katharina Reiche, CDU), abgestimmt mit Umweltminister Carsten Schneider (SPD).",
   },
 ];
 
