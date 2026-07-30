@@ -8,7 +8,7 @@ import {
   rankingTitel,
   RANKING_MIN_POPULATION,
 } from "../atlas-ranking";
-import { AWARD_CATEGORY_BY_KEY, type GemeindeStats } from "../awards";
+import { AWARD_CATEGORY_BY_KEY, formatAwardValue, type GemeindeStats } from "../awards";
 import { FELD_BY_SLUG } from "../ranking-felder";
 
 const g = (regionId: string, name: string, population: number, balkonCount: number): GemeindeStats => ({
@@ -43,9 +43,12 @@ describe("rankingKategorien", () => {
 
   it("veröffentlicht Pro-Kopf- und Standort-Kategorien", () => {
     const { buerger, standort } = rankingKategorienGruppiert();
-    // Drei Bestands-Kategorien je Einwohner plus drei Zubau-Tempo-Zeitraeume.
-    expect(buerger.length).toBe(6);
-    for (const k of buerger) expect(k.messart).toBe("proKopf");
+    // Drei Bestands-Kategorien je Einwohner, drei Zubau-Zeitraeume und die
+    // Speicher-Quote (Batterien je 100 Dachanlagen).
+    expect(buerger.length).toBe(7);
+    // Keine Buerger-Kategorie ist absolut: Die waere gemessen eine
+    // Einwohner-Rangliste. Erlaubt sind Pro-Kopf-Werte und Verhaeltniszahlen.
+    for (const k of buerger) expect(["proKopf", "quote"]).toContain(k.messart);
     // Standort-Kategorien sind absolut, aber KEINE Einwohner-Ranglisten:
     // gemessen 0 von 10 Ueberschneidung mit den einwohnerstaerksten Gemeinden.
     expect(standort.length).toBeGreaterThan(0);
@@ -347,5 +350,51 @@ describe("Rangliste innerhalb einer Größenklasse", () => {
     expect(rows.map((r) => r.name)).toEqual(["Aufsteiger", "Halter"]);
     // Beide waren auch letztes Jahr schon 1 und 2 in ihrer Klasse.
     expect(rows.every((r) => r.veraenderung === 0)).toBe(true);
+  });
+});
+
+describe("Speicher-Quote", () => {
+  const quote = AWARD_CATEGORY_BY_KEY["speicherquote"];
+  const mitDaechern = (daecher: number, batterien: number) => ({
+    ...g("09999010", "Testort", 1_200, 0),
+    privatDachKwp: daecher * 10,
+    privatDachCount: daecher,
+    batteriePrivatKwh: batterien * 9,
+    batteriePrivatCount: batterien,
+  });
+
+  it("rechnet Batterien je 100 Dachanlagen", () => {
+    expect(quote.metric(mitDaechern(100, 64))).toBe(64);
+    expect(quote.metric(mitDaechern(50, 25))).toBe(50);
+  });
+
+  it("erlaubt Werte über 100 und nennt sie nie in Prozent", () => {
+    // Osterwald: 113 Batterien auf 71 Dachanlagen. Nachgerüstete Speicher und
+    // Batterien an Anlagen, die nicht als privates Dach zählen. „113 %" wäre
+    // schlicht falsch — die Beschriftung muss die Bezugsmenge nennen.
+    const w = quote.metric(mitDaechern(71, 80)) as number;
+    expect(w).toBeGreaterThan(100);
+    const text = formatAwardValue(w, quote.format);
+    expect(text).toContain("je 100 Dächer");
+    expect(text).not.toContain("%");
+  });
+
+  it("wertet erst ab 25 Dachanlagen — darunter ist die Quote Zufall", () => {
+    // Hergeleitet, nicht gesetzt: Unter 25 Anlagen liegt die Streuung der Quote
+    // bei 74 Punkten und 7 % der Orte über 100; ab 25 sind es 55 Punkte und 2 %.
+    expect(quote.plausibel!(mitDaechern(24, 12))).toBe(false);
+    expect(quote.plausibel!(mitDaechern(25, 12))).toBe(true);
+  });
+
+  it("erklärt den Ausschluss mit der Stückzahl, nicht mit der Anlagengröße", () => {
+    // Der Standardsatz („Anlagen zu groß für ein Wohnhaus") wäre hier falsch.
+    expect(quote.plausibelGrund).toBeTruthy();
+    expect(quote.plausibelGrund).toContain("Dachanlagen");
+    expect(quote.plausibelGrund).not.toContain("zu groß");
+  });
+
+  it("trägt keine Rangveränderung — die Zähler gibt es nur zum heutigen Stand", () => {
+    // Eine Veränderung aus zwei verschieden alten Zählern wäre erfunden.
+    expect(quote.metricVorjahr).toBeUndefined();
   });
 });

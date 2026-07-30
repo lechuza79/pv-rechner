@@ -18,13 +18,25 @@ import { fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "./atlas-format";
 
 export type AwardScopeLevel = "de" | "bundesland" | "landkreis";
 export type Traeger = "buerger" | "gewerbe";
-export type Messart = "proKopf" | "absolut";
+/**
+ * "quote" ist ein Verhaeltnis zweier eigener Zahlen (Batterien je 100 Daecher),
+ * nicht je Einwohner und nicht absolut. Eigene Messart, weil beides anders
+ * beschriftet wird und die Untergrenze eine andere Begruendung braucht.
+ */
+export type Messart = "proKopf" | "absolut" | "quote";
 export type SizeBand = "klein" | "mittel" | "gross";
 export type Role = "gemeinde" | "stadt" | "grosse-kreisstadt" | "kreisfrei" | "hauptstadt";
 
 /** Wie die Zahl angezeigt wird — die Einheit schreibt die Anzeige über den
  *  kanonischen Formatter, nie das Modul (lib/atlas-format.ts). */
-export type MetricFormat = "wattProKopf" | "pvLeistung" | "count" | "countPer1000" | "whProKopf" | "speicherKwh";
+export type MetricFormat =
+  | "wattProKopf"
+  | "pvLeistung"
+  | "count"
+  | "countPer1000"
+  | "whProKopf"
+  | "speicherKwh"
+  | "je100Dach";
 
 /** Solar-/Speicher-/EE-Kennzahlen einer bewohnten Gemeinde, je Träger getrennt.
  *  Kommt aus dem Rollup `mastr_gemeinde_award` (ein DB-seitiger Lauf), Name +
@@ -134,6 +146,10 @@ export type AwardCategory = {
    * Gemeinden ausschloss, um ein paar falsch etikettierte Anlagen zu neutralisieren.
    */
   plausibel?: (g: GemeindeStats) => boolean;
+  /** Satz fuer die ausgeschlossenen Orte. Ohne ihn steht der Standardsatz zur
+   *  Groessenpruefung — der passt nur dort, wo `plausibel` die Anlagengroesse
+   *  prueft, nicht bei einer Mindest-Stueckzahl. */
+  plausibelGrund?: string;
   /**
    * Die absolute Menge hinter einer Pro-Kopf-Zahl, fertig formuliert
    * ("1 Balkonkraftwerk", "36 Dachanlagen") — null, wo es nichts zu zaehlen gibt.
@@ -175,6 +191,41 @@ const MAX_PRIVATDACH_KWP = 30;
 /** Hausspeicher liegen bei rund 10 kWh; darueber ist es Gewerbe. */
 const MAX_HAUSSPEICHER_KWH = 30;
 
+/**
+ * Batterien je 100 private Dachanlagen — der einzige gemessen groessenneutrale
+ * Buerger-Wert: Median je Groessenklasse 64 · 63 · 66 · 72 · 79 (Faktor 1,2 vom
+ * Weiler zur Grossstadt, gegenueber Faktor 4 bei "je Einwohner" und Faktor 8 bei
+ * "je km²"). Er misst ein Verhalten, nicht eine Ortsgroesse.
+ *
+ * ER GEHT UEBER 100, und das ist kein Fehler: Speicher werden nachgeruestet und
+ * auch an Anlagen gemeldet, die nicht als privates Dach gezaehlt werden.
+ * Osterwald kommt so auf 113 Batterien bei 71 Dachanlagen. Deshalb NIE als
+ * Prozentzahl anzeigen (siehe formatAwardValue, "je100Dach").
+ */
+const speicherQuote = (g: GemeindeStats): number | null => {
+  const daecher = g.privatDachCount ?? 0;
+  if (daecher <= 0) return null;
+  return ((g.batteriePrivatCount ?? 0) / daecher) * 100;
+};
+
+/**
+ * Ab so vielen Dachanlagen traegt die Quote — HERGELEITET, nicht gesetzt.
+ *
+ * Gemessen am 30.07.2026, Streuung der Quote (5. bis 95. Perzentil) nach Zahl
+ * der Dachanlagen im Ort:
+ *   1–4 Anlagen: 200 Punkte breit, 21 % der Orte ueber 100
+ *   5–9:         100 Punkte, 9 %
+ *   10–24:        74 Punkte, 7 %
+ *   25–49:        55 Punkte, 2 %
+ *   50–99:        45 Punkte, 1 %
+ *   100+:         44 bzw. 39 Punkte, 0 %
+ * Der Median liegt ab 5 Anlagen stabil bei 63–67; was zusammenbricht, ist die
+ * Streuung. Der grosse Sprung ist bis 25 passiert (200 → 55); danach flacht die
+ * Kurve ab. 50 waere sauberer, wuerde aber 73 % der Kleingemeinden aussperren
+ * (bei 25 bleiben 63 % drin, alle anderen Klassen bleiben vollstaendig).
+ */
+const MIN_DACH_FUER_QUOTE = 25;
+
 export const AWARD_CATEGORIES: AwardCategory[] = [
   // Bürger, pro Kopf — verifiziert aussagekräftig (skaliert mit Haushalten).
   {
@@ -207,6 +258,25 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     metric: (g) => perCapita(g.balkonCount, g.population),
     basis: (g) => stueck(g.balkonCount, "Balkonkraftwerk", "Balkonkraftwerke"),
     metricVorjahr: (g) => perCapita(g.balkonCountLy ?? 0, g.population),
+  },
+  {
+    key: "speicherquote",
+    slug: "speicher-je-dachanlage",
+    label: "Speicher-Quote",
+    merit: "Meiste Batteriespeicher je 100 private Dachanlagen.",
+    bestleistung: "die meisten Batteriespeicher je 100 privaten Dachanlagen",
+    thema: "Batteriespeicher je 100 private Dachanlagen",
+    themaDativ: "Batteriespeichern je 100 privaten Dachanlagen",
+    traeger: "buerger",
+    messart: "quote",
+    format: "je100Dach",
+    metric: (g) => speicherQuote(g),
+    // Kein Stichtagswert: Die Award-Tabelle fuehrt privat_dach_count und
+    // batterie_privat_count nur zum HEUTIGEN Stand, nicht zum Jahresende. Ohne
+    // beide Zaehler zum selben Stichtag gaebe es keine ehrliche Rangveraenderung.
+    plausibel: (g) => (g.privatDachCount ?? 0) >= MIN_DACH_FUER_QUOTE,
+    plausibelGrund: `Dort stehen unter ${MIN_DACH_FUER_QUOTE} private Dachanlagen — darunter ist die Quote ein Zufallswert.`,
+    basis: (g) => stueck(g.privatDachCount, "private Dachanlage", "private Dachanlagen"),
   },
   {
     key: "batterie-privat-pk",
@@ -471,6 +541,11 @@ export function formatAwardValue(value: number, format: MetricFormat): string {
       return `${value.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} je 1.000 Ew.`;
     case "whProKopf":
       return `${Math.round(value).toLocaleString("de-DE")} Wh/Kopf`;
+    case "je100Dach":
+      // NIE als Prozentzahl: Orte kommen auf ueber 100 (Osterwald: 113 Batterien
+      // auf 71 Dachanlagen), weil Speicher nachgeruestet und auch an
+      // Nicht-Dach-Anlagen gemeldet werden. "113 %" waere schlicht falsch.
+      return `${Math.round(value).toLocaleString("de-DE")} je 100 Dächer`;
   }
 }
 

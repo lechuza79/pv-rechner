@@ -113,7 +113,11 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
   // sonst die kleinste Gemeinde (gemessen: in jeder Kategorie lagen ~alle 100
   // Spitzenplaetze unter 5.000 Einwohnern). Bei den Standort-Kategorien gewinnt
   // ohnehin, wo ein Kraftwerk steht — da erklaert die Ortsgroesse nichts.
-  const nachGroesse = kategorie.messart === "proKopf";
+  // Groessenklassen ueberall, wo eine Verhaeltniszahl gerankt wird — bei den
+  // absoluten Standort-Kategorien gewinnt ohnehin, wo ein Kraftwerk steht.
+  const nachGroesse = kategorie.messart !== "absolut";
+  const spaltenKopf =
+    kategorie.messart === "proKopf" ? "je Einwohner" : kategorie.messart === "quote" ? "je 100 Dächer" : "gesamt";
   const klasse: RankingFeld | null = nachGroesse ? (FELD_BY_SLUG[searchParams?.groesse ?? ""] ?? null) : null;
   // Ohne gewaehltes Feld zeigt die Seite die Spitzenreiter aller Groessenklassen
   // statt einer Bundesliste — die gaebe es sonst durch die Hintertuer wieder.
@@ -300,7 +304,10 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
                   aus. Das gehoert in den ersten Absatz und nicht in den
                   Quellen-Fuss — sonst fragt sich jeder, wo sein Ort bleibt. */}
               {ausgeschlossen > 0 &&
-                ` ${nf(ausgeschlossen)} ${ausgeschlossen === 1 ? "Ort bleibt" : "Orte bleiben"} außen vor: Dort sind Anlagen als privat gemeldet, die für ein Wohnhaus zu groß sind.`}
+                ` ${nf(ausgeschlossen)} ${ausgeschlossen === 1 ? "Ort bleibt" : "Orte bleiben"} außen vor: ${
+                  kategorie.plausibelGrund ??
+                  "Dort sind Anlagen als privat gemeldet, die für ein Wohnhaus zu groß sind."
+                }`}
             </>
           ) : (
             <>Für diese Auswahl liegen keine wertbaren Zahlen vor.</>
@@ -349,11 +356,9 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
         {!zeigtSpitzenreiter && zeilen.length > 0 && (
           <div style={{ ...S.zeile, ...S.kopfzeile }}>
             <span>Platz</span>
+            <span>{zeigtVeraenderung ? `seit ${new Date().getFullYear() - 1}` : ""}</span>
             <span>{klasse ? klasse.einzahl : "Ort"}</span>
-            <span style={S.kopfRechts}>
-              {zeigtVeraenderung ? `seit Ende ${new Date().getFullYear() - 1}` : ""}
-            </span>
-            <span style={S.kopfRechts}>{kategorie.messart === "proKopf" ? "je Einwohner" : "gesamt"}</span>
+            <span style={S.kopfRechts}>{spaltenKopf}</span>
             <span />
           </div>
         )}
@@ -370,6 +375,9 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
               return (
                 <li key={r.regionId} className="atlas-rank-row" style={S.zeile}>
                   <span style={S.platz}>{r.platz}.</span>
+                  <span style={S.delta}>
+                    <RangDelta plaetze={r.veraenderung} />
+                  </span>
                   <span style={S.nameSpalte}>
                     {href ? (
                       <Link href={href} className="atlas-rank-ziel" style={S.name}>
@@ -403,9 +411,6 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
                         </span>
                       ))}
                     </span>
-                  </span>
-                  <span style={S.delta}>
-                    <RangDelta plaetze={r.veraenderung} />
                   </span>
                   <span style={S.wert}>{formatAwardValue(r.wert, kategorie.format)}</span>
                   <span className="atlas-go" style={S.go} aria-hidden>
@@ -560,7 +565,10 @@ const S: Record<string, React.CSSProperties> = {
   liste: { listStyle: "none", margin: 0, padding: 0 },
   zeile: {
     display: "grid",
-    gridTemplateColumns: "48px minmax(0,1fr) auto auto 14px",
+    // Rangveraenderung direkt hinter dem Platz: Nach dem Namen ist sie die
+    // interessanteste Spalte. Ganz rechts stand sie zwischen Wert und Pfeil und
+    // wurde uebersehen. Muster von solarzubau.de, wo sie an Position zwei sitzt.
+    gridTemplateColumns: "48px 44px minmax(0,1fr) auto 14px",
     gap: space.md,
     alignItems: "baseline",
     padding: pad("sm", "sm"),
@@ -613,7 +621,7 @@ const S: Record<string, React.CSSProperties> = {
     borderBottom: `1px solid ${v("--color-border-muted")}`,
   },
   kopfRechts: { textAlign: "right" },
-  delta: { display: "flex", justifyContent: "flex-end" },
+  delta: { display: "flex", justifyContent: "flex-start" },
   wert: { fontFamily: v("--font-mono"), fontSize: 13, color: v("--color-text-secondary") },
   go: { display: "flex", justifyContent: "flex-end", color: v("--color-accent") },
   deltaHinweis: { fontSize: 12, color: v("--color-text-muted"), margin: `${space.md}px 0 0`, lineHeight: 1.5 },

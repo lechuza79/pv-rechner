@@ -205,6 +205,7 @@ const KURZ: Record<string, string> = {
   "solarleistung-je-einwohner": "Solarleistung",
   "balkonkraftwerke-je-einwohner": "Balkonkraftwerke",
   "speicherkapazitaet-je-einwohner": "Speicher",
+  "speicher-je-dachanlage": "Speicher-Quote",
   "solarleistung-gesamt": "Solar gesamt",
   "freiflaechen-solar": "Freifläche",
   windleistung: "Wind",
