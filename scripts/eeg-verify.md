@@ -113,22 +113,69 @@ spawnt einen Recherche-Agenten.
 - **Bei REFORM-HINWEIS:** nicht blind Zahlen tauschen, **kein** Auto-Fix — erst
   dem Nutzer melden, weil eine Reform die Berechnungslogik selbst betreffen kann.
 
-## Zusätzlich prüfen: Reform-Sachstand der Ratgeberseiten (kein Auto-Fix)
+## Zusätzlich prüfen: Reform-Sachstand — EINE Quelle, kein Text-Tippen
 
-Die datierten EEG-2027-Reform-Aussagen leben an drei Stellen und müssen bei
-Verfahrensfortschritt (Kabinett → Bundestag → Bundesrat → Inkrafttreten)
-nachgezogen werden — **nie automatisch**, immer als Vorschlag an den Nutzer,
-weil eine Reform die Berechnungslogik selbst betrifft:
+**Seit 30.07.2026 steht der Sachstand in `lib/eeg-reform-config.ts`** und wird
+von allen Oberflächen daraus gezogen: den beiden FAQ-Sätzen in `lib/faq.ts`, dem
+Sachstands-Block im Ratgeber (`app/(site)/ratgeber/lohnt-sich-pv-ohne-einspeise
+verguetung/page.tsx`, dessen `REFORM_STAND` jetzt aus dem Modul kommt), der
+Ergebnis-Notiz im PV-Rechner und der 2027-Marke in
+`components/charts/ZubauWidget.tsx`.
 
-- `app/(site)/lohnt-sich-pv-ohne-einspeiseverguetung/page.tsx` — Konstante
-  `REFORM_STAND` (Stand-Datum) + der „Verfahrensstand"-Absatz. Der Text ist
-  bewusst beschluss-fest formuliert („Zum Stand … war die Reform noch nicht
-  final beschlossen …"), trägt also einen einzelnen Zwischenschritt; bei
-  echtem Inkrafttreten oder finaler Beschlussfassung muss er trotzdem neu.
-- `lib/faq.ts → pvOhneEinspeisungFaq` — die Reform-FAQ-Antworten.
-- Die Reform-Notiz im PV-Rechner + `lib/feedin-config.ts` (bestehende Notiz).
+**Warum:** Der Verfahrenssatz stand vorher sechsmal handgetippt da. Am
+29.07.2026 hat das Kabinett den Entwurf beschlossen — damit war „der Weg durch
+Kabinett, Bundestag und Bundesrat stand noch aus" auf allen sechs Oberflächen
+gleichzeitig falsch. Derselbe Satz wird am Tag des Bundestagsbeschlusses wieder
+falsch. Also: **Sachstand ändern heißt Modul ändern, nicht Texte suchen.**
 
-**Prüfpunkt (jeder Halbjahres-Lauf):** Ist der auf diesen Seiten beschriebene
-Verfahrensstand noch korrekt (aktueller Stand von Kabinettsbeschluss/
-Bundestag/Bundesrat/EU-Beihilfegenehmigung)? Bei Änderung → `REFORM_STAND`
-hochsetzen und die Texte angleichen, dem Nutzer als Diff vorschlagen.
+**Aktueller Zustand (30.07.2026):** Regierungsentwurf, im Kabinett beschlossen am
+29.07.2026 — kein Gesetz. Als Nächstes Bundesrat und Bundestag, dazu die
+beihilferechtliche Genehmigung der EU-Kommission (§ 102 des Entwurfs). Primärquelle
+liegt im Repo: `docs/quellen/EEG-2027_Referentenentwurf_BMWE_2026-07-18.pdf`.
+
+**Vorgehen bei Verfahrensfortschritt:**
+1. `EEG_REFORM_STAND.zustand` weiterdrehen. `eegVerfahrenSatz()` **wirft** dann
+   absichtlich eine Ausnahme — der Satz für den neuen Zustand muss bewusst
+   formuliert werden, statt einen zu erben, der den neuen Stand falsch beschreibt.
+2. `geprueftIso` auf das Prüfdatum setzen (trägt das sichtbare „Stand:").
+3. `lib/__tests__/eeg-reform-stand.test.ts` + `e2e/eeg-reform-sachstand.spec.ts`
+   angleichen. Der Browser-Test liest die Sätze dort, wo ein Nutzer sie sieht —
+   ohne ihn landet eine Korrektur womöglich in einem Feld, das nie rendert.
+4. Bei Rechtsbezug: Council **und** Legal-Judge (`scripts/council-verify.md`).
+
+**Sachstand ändern ist Auto-Fix-fähig** (Gate-Zeile „Reform-Sachstand"), der
+**Wegfall/die Neueinführung einer Vergütungsart bleibt Vorschlag** — die betrifft
+die Berechnungslogik selbst.
+
+### Vier Formulierungsfallen, die der Legal-Judge am 30.07.2026 gefunden hat
+
+Alle vier sind als Test festgenagelt, weil sie beim Nachschärfen sofort
+zurückkämen:
+
+1. **EEG-Novellen sind Einspruchsgesetze.** Nie „Bundestag und Bundesrat müssen
+   zustimmen" — eine Zustimmungsbedürftigkeit stand nirgends. Richtig: „der
+   Bundestag muss noch entscheiden, der Bundesrat ist am Verfahren beteiligt".
+   Und der Regierungsentwurf geht nach Art. 76 Abs. 2 GG **zuerst** an den
+   Bundesrat. (Derselbe Fehler wurde zwei Tage vorher beim GModG korrigiert.)
+2. **Kein Beratungstermin.** „ab September" stand nur in der Fachpresse.
+3. **Die 50-%-Grenze gilt nur für Neuanlagen** (§ 9 Abs. 2b, Begründung S. 190
+   wörtlich) und ist ein Anteil der **installierten Leistung**. Ohne beides liest
+   ein PV-Besitzer, seine laufende Anlage werde gekappt bzw. verliere die Hälfte
+   des Ertrags. Ihre **Leistungsschwelle steht im Entwurf noch in eckigen
+   Klammern** („[weniger als 25/weniger als 100 Kilowatt]") — dort darf keine
+   Zahl ergänzt werden, auch nicht später „zur Präzisierung".
+4. **Zwei Belegebenen nicht vermischen.** Kabinettsebene ist amtlich belegt
+   (Ende der festen Vergütung, keine dauerhafte Förderung unter 25 kW,
+   vierjähriger Direktvermarktungsbonus, 50 %, Bestandsschutz). Die 36 Monate,
+   der 1-ct-Abschlag und die Staffel 50/25/7 kW stehen **nur im Entwurf** vom
+   18.07. — der Wortlaut der beschlossenen Fassung war am 30.07. nicht
+   veröffentlicht. Detailwerte immer als Entwurfswerte kennzeichnen.
+
+Dazu drei Dinge, die bewusst **nicht** behauptet werden (Begründung im Modul):
+die Abfolge der beiden Zahlungen, ein Beratungstermin, und dass die bestehende
+EU-Beihilfegenehmigung Ende 2026 ausläuft (in der Kommissionsentscheidung vom
+21.12.2022 selbst nicht abrufbar).
+
+**Einheiten:** Der Entwurf sagt durchgehend „Kilowatt installierter Leistung".
+Auf einer Seite, die Anlagengrößen sonst in kWp angibt, wird die Einheit bei der
+ersten Nennung ausgeschrieben — `eegStaffelSatz()` tut das.

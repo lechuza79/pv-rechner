@@ -10,6 +10,7 @@ import { v } from "../../../../lib/theme";
 import { fetchMarketPrices, formatPriceDate } from "../../../../lib/prices-server";
 import { type PriceConfig } from "../../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
+import { EEG_REFORM_STAND, eegDatum, eegReformStandLabel, eegStaffelSatz } from "../../../../lib/eeg-reform-config";
 import {
   calc,
   calcEigenverbrauch,
@@ -28,11 +29,12 @@ import DayProfileChart, { DAY_C_SUN, DAY_C_DIRECT, DAY_C_BATTERY, DAY_C_GRID, DA
 // fresh without a rebuild — same pattern as /lohnt-sich-pv-mit-speicher.
 export const revalidate = 3600;
 
-// Dated statement of a PENDING legislative process (EEG reform draft), not a
-// rolling "current year" value — deliberately hardcoded (see CLAUDE.md rule).
-// The EEG guardian updates it together with the reform notes in rechner.tsx
-// and lib/faq.ts when the legal situation changes.
-const REFORM_STAND = "Juli 2026";
+// Dated statement of a PENDING legislative process (EEG reform bill), not a
+// rolling "current year" value. Single source: lib/eeg-reform-config.ts — the
+// same module feeds lib/faq.ts, the result note in rechner.tsx and the 2027
+// marker in ZubauWidget.tsx, so the procedural state cannot drift between
+// surfaces (it went stale on all of them at once on 29.07.2026).
+const REFORM_STAND = eegReformStandLabel();
 
 export async function generateMetadata(): Promise<Metadata> {
   const year = new Date().getFullYear();
@@ -444,26 +446,43 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         {/* ── EEG-Reform: Sachstand ── */}
         <h2 style={S.h2}>Was gerade geplant ist — und was nicht</h2>
         <p style={S.p}>
-          Auslöser der Debatte ist ein <strong style={S.strong}>Referentenentwurf des
-          Bundeswirtschaftsministeriums</strong> zur EEG-Reform 2027. Wichtig vorweg: Das
-          ist ein laufendes Gesetzgebungsverfahren — <em>geplant</em>, nicht beschlossen.
+          Die Bundesregierung hat <strong style={S.strong}>den Entwurf</strong> der
+          EEG-Reform 2027 am{" "}
+          <strong style={S.strong}>
+            {eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} im Kabinett beschlossen
+          </strong>
+          . Wichtig vorweg, weil das leicht zu verwechseln ist: Beschlossen ist damit ein{" "}
+          <em>Gesetzentwurf</em>, nicht das Gesetz. Geltendes Recht ist nichts davon.
           Der Sachstand (Stand: {REFORM_STAND}):
         </p>
         <div style={S.card}>
-          <span style={S.accent}>Neuanlagen ab 2027:</span> Die dauerhaft garantierte
-          Einspeisevergütung für neue PV-Anlagen bis 25 kWp soll entfallen. Die
-          überarbeitete Entwurfsfassung sieht eine Übergangsphase vor: zunächst 36 Monate
-          reduzierte Vergütung, danach ein befristeter Bonus für die Direktvermarktung.
+          <span style={S.accent}>Neuanlagen ab 2027:</span> Die feste Einspeisevergütung
+          soll für neue Anlagen enden. Für Anlagen unter 25 Kilowatt installierter
+          Leistung ist keine dauerhafte Förderung mehr vorgesehen, sondern eine Starthilfe
+          in Form eines vierjährigen Bonus für die Direktvermarktung. Zusätzlich soll die
+          Einspeiseleistung kleiner und mittlerer <em>neuer</em> Dachanlagen dauerhaft auf
+          50 Prozent ihrer installierten Leistung begrenzt werden — begründet damit,
+          Mittagsspitzen zu vermeiden und den Zubau von Speichern anzureizen.
           <br />
           <span style={S.accent}>Bestandsschutz:</span> Anlagen, die bis Ende 2026 in
           Betrieb gehen, behalten ihre zugesagte Vergütung für die vollen{" "}
-          {FEED_IN_YEARS} Jahre. Die Reform beträfe nach dem Entwurf ausschließlich
-          Neuanlagen.
+          {FEED_IN_YEARS} Jahre. Der Entwurf ordnet dafür ausdrücklich an, dass für diese
+          Anlagen das bisherige Recht weiter gilt; die neue Regel betrifft allein
+          Neuanlagen. Auch die 50-Prozent-Grenze trifft laufende Anlagen nicht.
           <br />
-          <span style={S.accent}>Verfahrensstand:</span> Zum Stand {REFORM_STAND} war die
-          Reform noch nicht final beschlossen — der Weg durch Kabinett, Bundestag und
-          Bundesrat stand noch aus. Hintergrund ist die EU-Beihilfegenehmigung des EEG,
-          die Ende 2026 ausläuft.
+          <span style={S.accent}>Details, die nur im Entwurf stehen:</span> Der Entwurf vom{" "}
+          {eegDatum(EEG_REFORM_STAND.entwurfIso)}, auf dem der Beschluss beruht, nennt eine
+          auf 36 Monate befristete Übergangszahlung 1 ct/kWh unter dem anzulegenden Wert
+          und staffelt die Leistungsgrenze dafür — {eegStaffelSatz()}; ab 2030 soll sie
+          entfallen, die Bundesnetzagentur soll sie aber verlängern können, wenn die
+          Direktvermarktung für kleine Anlagen bis dahin nicht praxistauglich ist. Der
+          Wortlaut der beschlossenen Fassung war zum Stand {REFORM_STAND} noch nicht
+          veröffentlicht; diese Zahlen können sich im Verfahren noch ändern.
+          <br />
+          <span style={S.accent}>Verfahrensstand:</span> Das Kabinett ist passiert. Als
+          Nächstes befassen sich Bundesrat und Bundestag mit dem Entwurf. Die Förderregeln
+          brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission; der
+          Entwurf stellt sie ausdrücklich unter diesen Vorbehalt.
           <br />
           <span style={S.muted}>
             Ohne Gewähr — verbindlich ist allein die offizielle Gesetzeslage. Die aktuell
