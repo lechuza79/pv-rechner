@@ -3,9 +3,16 @@ import Link from "next/link";
 import { createClient } from "../../../../../lib/supabase-server-component";
 import { loadAwardStats, loadKreisNames } from "../../../../../lib/awards-server";
 import { bundeslandByAgs } from "../../../../../lib/mastr-regions";
-import { AWARD_CATEGORY_BY_KEY, formatAwardValue, rankGemeinden, scopeIdOf, type AwardScopeLevel } from "../../../../../lib/awards";
+// Anzeigewerte aus der EINEN Formatier-Funktion — nie eine Kopie hier.
+import {
+  AWARD_CATEGORY_BY_KEY,
+  formatAwardValue,
+  rankGemeinden,
+  scopeIdOf,
+  type AwardScopeLevel,
+} from "../../../../../lib/awards";
 import { v, space, pad } from "../../../../../lib/theme";
-
+import { ortPhrase } from "../../../../../lib/atlas-orte";
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
   .split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
@@ -15,6 +22,7 @@ export const metadata = { title: "Award-Gruppe – Solar Check Admin", robots: {
 const SCOPE_OF: Record<string, AwardScopeLevel> = { kreis: "landkreis", land: "bundesland", bund: "de" };
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 const MAX_ROWS = 120;
+
 
 export default async function GruppePage({
   searchParams,
@@ -52,7 +60,7 @@ export default async function GruppePage({
       <header>
         <h1 style={{ fontSize: 22, fontWeight: 800, color: v("--color-text-primary"), margin: 0 }}>{cat.label}</h1>
         <p style={{ fontSize: 14, color: v("--color-text-secondary"), marginTop: space.xs }}>
-          {levelKey === "bund" ? "bundesweit" : `im ${scopeName}`} · {nf(ranked.length)} wertbare Gemeinden ·{" "}
+          {levelKey === "bund" ? "bundesweit" : ortPhrase({ name: scopeName, level: levelKey === "land" ? "bundesland" : undefined })} · {nf(ranked.length)} wertbare Gemeinden ·{" "}
           {cat.messart === "proKopf" ? "pro Kopf" : "absolut"}
         </p>
       </header>

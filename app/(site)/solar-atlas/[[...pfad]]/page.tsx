@@ -5,6 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import AtlasSkeleton from "../../../../components/atlas/AtlasSkeleton";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import RegionSearch from "../../../../components/atlas/RegionSearch";
+import { IconArrowRight } from "../../../../components/Icons";
 import { v, space, pad } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../lib/json-ld";
@@ -25,10 +26,12 @@ import {
   type AtlasRegion,
 } from "../../../../lib/atlas";
 import { fmtPvLeistung as fmtLeistung, pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
+import { ortPhrase, childNoun } from "../../../../lib/atlas-orte";
+import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 // Zwei Ziele:
 // 1) Ohne generateStaticParams behandelt Next die dynamische Route als voll
 //    dynamisch (no-store). Mit ihr wird sie ISR (s-maxage=3600).
@@ -82,19 +85,7 @@ async function resolve(pfad: string[] | undefined): Promise<AtlasRegion | null> 
 }
 
 function headline(region: AtlasRegion): string {
-  if (region.level === "de") return "Solaranlagen in Deutschland";
-  if (region.level === "bundesland") return `Solaranlagen in ${region.name}`;
-  // "im Landkreis Würzburg", but "in Würzburg" for a kreisfreie Stadt.
-  const nennt = region.bezeichnung === "Landkreis" || region.bezeichnung === "Kreis";
-  return `Solaranlagen ${nennt ? "im" : "in"} ${region.name}`;
-}
-
-/** Locative phrase for headings and copy: "in Deutschland", "in Bayern",
- *  "im Landkreis Würzburg". region.name already carries the "Landkreis" prefix. */
-function ortPhrase(region: AtlasRegion): string {
-  if (region.level === "de") return "in Deutschland";
-  const nennt = region.bezeichnung === "Landkreis" || region.bezeichnung === "Kreis";
-  return `${nennt ? "im" : "in"} ${region.name}`;
+  return `Solaranlagen ${ortPhrase(region)}`;
 }
 
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
@@ -180,6 +171,8 @@ async function AtlasBody({
   ];
 
   const basePath = `/solar-atlas${params.pfad?.length ? "/" + params.pfad.join("/") : ""}`;
+  // Gebiet fuer die Ranglisten-Adressen: dieselbe Slug-Kette wie im Atlas.
+  const gebietPfad = params.pfad?.length ? "/" + params.pfad.join("/") : "";
   const lastYear = lastFullYear();
   const thisYear = currentYear();
   const lastYearRow = atlas.solar.by_year.find((y) => y.year === lastYear);
@@ -230,8 +223,16 @@ async function AtlasBody({
   ];
   const defaultRefKey = kpiRefs[0]?.key ?? "";
 
-  const childNoun =
-    childLevel === "bundesland" ? "Bundesländer" : childLevel === "landkreis" ? "Kreise" : "Gemeinden";
+  const kindWort = childNoun(childLevel);
+  const kindWortGezaehlt = childNoun(childLevel, children.length);
+
+  // Berlin und Hamburg zerfallen nicht in Kreise — die „Rangliste der Kreise in
+  // Berlin" hatte genau eine Zeile: Berlin. Eine Rangliste, in der die Region
+  // nur sich selbst gegenübersteht, sagt nichts und wird weggelassen; die
+  // Seite trägt sich über Kennzahlen, Karte und Zubau. Kreisfreie Städte
+  // erwischt es auf Kreisebene ebenso, die leitet die Route aber schon vorher
+  // auf ihre Gemeindeseite um.
+  const hatVergleichsgruppe = children.length > 1;
 
   const regionLabel = region.level === "de" ? "Deutschland" : region.name;
 
@@ -241,7 +242,7 @@ async function AtlasBody({
   );
   const datasetLd = atlasDatasetJsonLd({
     name: `Solaranlagen-Bestand ${regionLabel}`,
-    description: `Anlagenzahl und installierte Leistung der Photovoltaik ${ortPhrase(region)} aus dem Marktstammdatenregister, mit jährlichem Zubau und Rangliste der ${childNoun}.`,
+    description: `Anlagenzahl und installierte Leistung der Photovoltaik ${ortPhrase(region)} aus dem Marktstammdatenregister, mit jährlichem Zubau${hatVergleichsgruppe ? ` und Rangliste der ${kindWort}` : ""}.`,
     url: `${BASE_URL}${basePath}`,
     dateModified: atlas.data_as_of,
     placeName: regionLabel,
@@ -274,7 +275,8 @@ async function AtlasBody({
         <p style={S.intro}>
           <strong style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</strong> mit zusammen{" "}
           <strong style={S.strong}>{fmtLeistung(atlas.solar.total_kwp)}</strong> installierter Leistung
-          sind {ortPhrase(region)} in Betrieb, verteilt auf {nf(children.length)} {childNoun}.
+          sind {ortPhrase(region)} in Betrieb
+          {hatVergleichsgruppe ? `, verteilt auf ${nf(children.length)} ${kindWortGezaehlt}.` : "."}
           {wPerCapita !== null && (
             <> Das sind {nf(wPerCapita)} Watt Peak-Leistung je Einwohner.</>
           )}
@@ -303,22 +305,80 @@ async function AtlasBody({
           </div>
         )}
 
-        <div style={S.section}>
-          <h2 style={S.h2}>
-            {region.level === "de" ? "Rangliste der Bundesländer" : `Rangliste der ${childNoun} ${ortPhrase(region)}`}
-          </h2>
-          <p style={S.sub}>
-            „Privat" zählt private Dächer, Balkonkraftwerke und Hausbatterien, „Gewerbe"
-            gewerbliche Dächer, Freiflächen-Parks und gewerbliche Speicher.
-          </p>
-          <RankingTable
-            regions={ranking.regions}
-            cells={ranking.cells}
-            basePath={basePath}
-            lastFullYear={lastYear}
-            popInMillions={childLevel === "bundesland"}
-          />
-        </div>
+        {hatVergleichsgruppe && (
+          <div style={S.section}>
+            <h2 style={S.h2}>
+              {region.level === "de" ? "Rangliste der Bundesländer" : `Rangliste der ${kindWort} ${ortPhrase(region)}`}
+            </h2>
+            <p style={S.sub}>
+              „Privat" zählt private Dächer, Balkonkraftwerke und Hausbatterien, „Gewerbe"
+              gewerbliche Dächer, Freiflächen-Parks und gewerbliche Speicher.
+            </p>
+            <RankingTable
+              regions={ranking.regions}
+              cells={ranking.cells}
+              basePath={basePath}
+              lastFullYear={lastYear}
+              popInMillions={childLevel === "bundesland"}
+            />
+          </div>
+        )}
+
+        {/* DIE RANGLISTEN GEHOEREN HIERHER, nicht hinter einen eigenen
+            Menuepunkt: Sie sind dieselben Daten wie oben, nur anders sortiert.
+            Vorher standen Atlas und Ranglisten als zwei gleichrangige
+            Menuepunkte, waehrend die Kruemelspur die Listen unter den Atlas
+            haengte — das widersprach sich. Jetzt ist der Atlas die eine Tuer und
+            die Listen sind von hier aus zu finden. */}
+        {region.level !== "gemeinde" && (
+          <div style={S.section}>
+            {/* NICHT "Ranglisten …": Direkt darueber steht schon die "Rangliste der
+                Kreise …" — zwei Ueberschriften mit demselben Wort lesen sich als
+                Dopplung. Diese hier beantwortet eine andere Frage. */}
+            {/* NICHT "Wer je Einwohner vorn liegt": Eine der Kacheln misst
+                Batteriespeicher je 100 Dachanlagen, nicht je Einwohner — die
+                Ueberschrift haette fuer sie etwas Falsches behauptet. */}
+            <h2 style={S.h2}>{`Wer vorn liegt${region.level === "de" ? "" : ` — ${ortPhrase(region)}`}`}</h2>
+            <p style={S.sub}>
+              Ranglisten aus denselben Zahlen, gemessen an der Einwohnerzahl statt an der Größe der Kommune.
+              Verglichen wird innerhalb der Größenklasse, damit Großstädte gegen Großstädte antreten und nicht
+              gegen Dörfer.
+            </p>
+            <div style={S.rangKacheln}>
+              {rankingKategorienGruppiert().buerger.map((k) => (
+                <Link
+                  key={k.slug}
+                  href={`/solar-atlas/ranking/${k.slug}${gebietPfad}`}
+                  style={S.rangKachel}
+                >
+                  <span style={S.rangKachelTitel}>{k.thema}</span>
+                  <span style={S.rangKachelCta}>
+                    Rangliste ansehen <IconArrowRight size={12} />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Ohne Vergleichsgruppe fiele die Seite hier ins Leere — und mit ihr
+            der Weg des Crawlers zur einzigen Unterseite. Deshalb statt der
+            Rangliste ein Verweis auf sie. */}
+        {!hatVergleichsgruppe && children[0]?.slug && (
+          <div style={S.section}>
+            <div style={S.card}>
+              <h2 style={{ ...S.h2, marginBottom: 6 }}>Alle Zahlen im Detail</h2>
+              <p style={{ ...S.sub, marginBottom: 12 }}>
+                {region.name} ist nicht in {childNoun(childLevel)} gegliedert. Die
+                ausführliche Auswertung mit Batteriespeichern, Dachpotenzial und
+                aktueller Leistung steht auf der Stadtseite.
+              </p>
+              <Link href={`${basePath}/${children[0].slug}`} style={S.link}>
+                Zur ausführlichen Auswertung für {region.name}
+              </Link>
+            </div>
+          </div>
+        )}
 
         {atlas.solar.by_year.length >= 4 && (
           <div style={S.section}>
@@ -375,6 +435,19 @@ async function AtlasBody({
 }
 
 const S: Record<string, React.CSSProperties> = {
+  rangKacheln: { display: "grid", gap: space.sm },
+  rangKachel: {
+    display: "flex",
+    flexDirection: "column",
+    gap: space.xs,
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: 14,
+    padding: pad("lg", "xl"),
+    textDecoration: "none",
+    color: v("--color-text-primary"),
+  },
+  rangKachelTitel: { fontSize: 15, fontWeight: 700, textTransform: "capitalize" },
+  rangKachelCta: { display: "flex", alignItems: "center", gap: 5, fontSize: 13, color: v("--color-accent") },
   page: {
     background: v("--color-bg"),
     fontFamily: v("--font-text"),
@@ -385,8 +458,16 @@ const S: Record<string, React.CSSProperties> = {
     padding: "0 16px 20px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },
-  standDate: { fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
+  // EINE Groesse, EINE Farbe: Die Zeile hatte 11px neben Mono in einem anderen
+  // Grau — drei Wechsel in sechs Woertern, das las sich zerhackt. Groesse aus
+  // der Typo-Skala (caption), Farbe aus einem Token, das Datum nur durch das
+  // Schriftgewicht hervorgehoben.
+  stand: {
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-muted"),
+    marginBottom: space.sm,
+  },
+  standDate: { fontWeight: 600, color: "inherit" },
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
   intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.xxl}px` },
   strong: { color: v("--color-text-primary"), fontWeight: 600 },

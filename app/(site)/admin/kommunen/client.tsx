@@ -5,6 +5,7 @@ import { v, space, pad } from "../../../../lib/theme";
 import { BUNDESLAENDER } from "../../../../lib/mastr-regions";
 import { OUTREACH_STATUS, OUTREACH_STATUS_LABEL } from "../../../../lib/outreach-status";
 import Modal from "../../../../components/Modal";
+import { ASK_LABEL, ASK_VARIANTEN, type AskVariante, type VariantenBilanz } from "../../../../lib/kommunen-ask";
 
 // ─── Typen ──────────────────────────────────────────────────────────────────
 
@@ -23,9 +24,26 @@ type Lead = {
   draft_subject: string | null;
   draft_body: string | null;
   draft_generated_at: string | null;
+  draft_manuell: boolean | null;
   gruene_pct: number | null;
   linke_pct: number | null;
   spd_pct: number | null;
+  kampagne: string | null;
+  charge: number | null;
+  rollen_email: string | null;
+  verantwortlich_funktion: string | null;
+  verantwortlich_operativ: boolean | null;
+  verwaltung_domain: string | null;
+  thema_solar_url: string | null;
+  thema_klima_url: string | null;
+  thema_blatt_url: string | null;
+  ask_variante: AskVariante | null;
+  variante_manuell: boolean | null;
+  versendet_variante: AskVariante | null;
+  widget_anfrage: boolean | null;
+  ref_token: string | null;
+  ref_klicks: number | null;
+  atlas_path: string | null;
   mastr_regions: Region | Region[];
 };
 
@@ -47,6 +65,7 @@ export default function KommunenCockpit() {
   const [hasLink, setHasLink] = useState(false);
   const [q, setQ] = useState("");
   const [sort, setSort] = useState("");
+  const [charge, setCharge] = useState("");
   const [page, setPage] = useState(0);
 
   const [rows, setRows] = useState<Lead[]>([]);
@@ -71,6 +90,7 @@ export default function KommunenCockpit() {
     if (hasLink) params.set("hasLink", "1");
     if (qDebounced) params.set("q", qDebounced);
     if (sort) params.set("sort", sort);
+    if (charge) { params.set("kampagne", "testballon"); params.set("charge", charge); }
     params.set("page", String(page));
     try {
       const res = await fetch(`/api/admin/kommunen?${params.toString()}`);
@@ -84,7 +104,7 @@ export default function KommunenCockpit() {
     } finally {
       setLoading(false);
     }
-  }, [bl, status, hasLink, qDebounced, sort, page]);
+  }, [bl, status, hasLink, qDebounced, sort, charge, page]);
 
   useEffect(() => {
     load();
@@ -93,13 +113,27 @@ export default function KommunenCockpit() {
   // Filterwechsel → zurück auf Seite 1.
   useEffect(() => {
     setPage(0);
-  }, [bl, status, hasLink, qDebounced, sort]);
+  }, [bl, status, hasLink, qDebounced, sort, charge]);
 
   const patchLead = useCallback((updated: Lead) => {
     setRows((prev) => prev.map((r) => (r.region_id === updated.region_id ? updated : r)));
   }, []);
 
   const maxPage = Math.max(0, Math.ceil(total / pageSize) - 1);
+
+  const [bilanz, setBilanz] = useState<VariantenBilanz[] | null>(null);
+  const [offen, setOffen] = useState<{ nochNichtVersendet: number } | null>(null);
+  useEffect(() => {
+    fetch("/api/admin/kommunen/bilanz")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        if (j) {
+          setBilanz(j.bilanz);
+          setOffen(j.offen);
+        }
+      })
+      .catch(() => undefined);
+  }, [rows]);
 
   return (
     <div style={{ fontFamily: v("--font-text"), color: v("--color-text-primary") }}>
@@ -109,7 +143,45 @@ export default function KommunenCockpit() {
         <p style={{ fontSize: 13, color: v("--color-text-muted") }}>
           Kontaktdaten der ~11.000 Gemeinden. Filtern, Status pflegen, Kontaktseite öffnen.
         </p>
+        <p style={{ fontSize: 13, color: v("--color-text-muted"), marginTop: 4, maxWidth: 720, lineHeight: 1.5 }}>
+          <strong>Variante</strong> = welches der beiden Anschreiben diese Gemeinde bekommt.{" "}
+          <em>Nur Meldung</em> bietet ausschließlich den fertigen Pressetext an — ein Beteiligter, kein Technikaufwand.{" "}
+          <em>Meldung + Widget</em> hängt einen Absatz an, der zusätzlich das einbettbare Widget anbietet; nur für
+          Verwaltungen, die jemanden haben, der es umsetzen kann (ab 20.000 Einwohnern oder mit belegter Pressestelle).
+          Beide Fassungen sind sonst identisch — sonst wüssten wir hinterher nicht, woran eine Reaktion lag.
+        </p>
       </div>
+
+      {/* Auswertung je Ask-Variante — beantwortet die eine Frage des Durchgangs:
+          wird das Widget überhaupt nachgefragt? */}
+      {bilanz && bilanz.some((b) => b.versendet > 0) && (
+        <div style={{ display: "flex", gap: space.md, flexWrap: "wrap", marginBottom: space.md }}>
+          {bilanz.map((b) => (
+            <div
+              key={b.variante}
+              style={{
+                border: `1px solid ${v("--color-border")}`,
+                borderRadius: v("--radius-md"),
+                padding: pad("sm", "md"),
+                minWidth: 200,
+                background: v("--color-bg-muted"),
+              }}
+            >
+              <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary") }}>{ASK_LABEL[b.variante]}</div>
+              <div style={{ fontSize: 13, marginTop: 4, fontFamily: v("--font-mono") }}>
+                {b.versendet} versendet · {b.gemeindenMitKlick} mit Klick
+                <div style={{ color: v("--color-text-muted"), fontSize: 12 }}>
+                  {b.klicks} Klicks gesamt · {b.antworten} Antworten · {b.widgetAnfragen} Widget-Anfragen
+                </div>
+              </div>
+            </div>
+          ))}
+          <div style={{ fontSize: 11, color: v("--color-text-muted"), alignSelf: "center", maxWidth: 260, lineHeight: 1.4 }}>
+            Klicks sind eine Obergrenze — Sicherheits-Scanner in Mailservern öffnen Links automatisch.
+            {offen ? ` ${offen.nochNichtVersendet} noch nicht versendet.` : ""}
+          </div>
+        </div>
+      )}
 
       {/* Filterleiste */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, alignItems: "center", marginBottom: space.md }}>
@@ -132,6 +204,11 @@ export default function KommunenCockpit() {
           <input type="checkbox" checked={hasLink} onChange={(e) => setHasLink(e.target.checked)} />
           nur mit Kontaktlink
         </label>
+        <select value={charge} onChange={(e) => setCharge(e.target.value)} style={selectStyle} aria-label="Versandliste">
+          <option value="">Alle Gemeinden</option>
+          <option value="1">Testballon · Charge 1 (50)</option>
+          <option value="2">Testballon · Charge 2 (50)</option>
+        </select>
         <select value={sort} onChange={(e) => setSort(e.target.value)} style={selectStyle} aria-label="Sortierung">
           <option value="">Sortierung: Standard</option>
           <option value="gruen">Grün-affin zuerst</option>
@@ -158,7 +235,7 @@ export default function KommunenCockpit() {
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 720 }}>
           <thead>
             <tr>
-              {["Gemeinde", "Politik", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
+              {["Gemeinde", "Aufhänger", "Variante", "Kontakt", "Status", "Anschreiben", "Notiz"].map((h) => (
                 <th key={h} style={thStyle}>
                   {h}
                 </th>
@@ -171,7 +248,7 @@ export default function KommunenCockpit() {
             ))}
             {!loading && rows.length === 0 && (
               <tr>
-                <td colSpan={6} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
+                <td colSpan={7} style={{ ...tdStyle, textAlign: "center", color: v("--color-text-muted"), padding: space.xl }}>
                   Keine Gemeinden für diesen Filter.
                 </td>
               </tr>
@@ -208,7 +285,13 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
   const savedNotes = useRef(lead.notes ?? "");
 
   const patch = useCallback(
-    async (body: { outreach_status?: string; notes?: string; channel?: string }) => {
+    async (body: {
+      outreach_status?: string;
+      notes?: string;
+      channel?: string;
+      ask_variante?: string;
+      widget_anfrage?: boolean;
+    }) => {
       setBusy(true);
       try {
         const res = await fetch("/api/admin/kommunen", {
@@ -234,26 +317,85 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
     <tr style={{ borderTop: `1px solid ${v("--color-border")}`, opacity: busy ? 0.6 : 1 }}>
       {/* Gemeinde */}
       <td style={tdStyle}>
-        <div style={{ fontWeight: 700 }}>{r?.name ?? lead.region_id}</div>
+        <div style={{ fontWeight: 700 }}>
+          {lead.atlas_path ? (
+            <a href={lead.atlas_path} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>
+              {r?.name ?? lead.region_id} ↗
+            </a>
+          ) : (
+            (r?.name ?? lead.region_id)
+          )}
+        </div>
         <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
           {r?.bezeichnung ?? "Gemeinde"}
           {r?.population != null && ` · ${r.population.toLocaleString("de-DE")} Ew.`}
+          {lead.charge != null && ` · Charge ${lead.charge}`}
         </div>
       </td>
 
-      {/* Politik (BTW 2025 Zweitstimme) */}
+      {/* Aufhänger: vorhandene Themenseiten + wer laut Impressum zuständig ist */}
       <td style={tdStyle}>
-        {lead.gruene_pct != null ? (
-          <div style={{ fontSize: 12, whiteSpace: "nowrap" }}>
-            <span style={{ color: v("--color-positive"), fontWeight: 700 }}>
-              Grüne {lead.gruene_pct.toLocaleString("de-DE")}%
-            </span>
-            <div style={{ fontSize: 11, color: v("--color-text-muted") }}>
-              Linke {lead.linke_pct?.toLocaleString("de-DE") ?? "–"}% · SPD {lead.spd_pct?.toLocaleString("de-DE") ?? "–"}%
-            </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 3 }}>
+          {lead.thema_solar_url && <Merkmal label="Solar" href={lead.thema_solar_url} stark />}
+          {lead.thema_klima_url && <Merkmal label="Klima" href={lead.thema_klima_url} />}
+          {lead.thema_blatt_url && <Merkmal label="Blatt" href={lead.thema_blatt_url} />}
+          {!lead.thema_solar_url && !lead.thema_klima_url && !lead.thema_blatt_url && (
+            <span style={{ fontSize: 11, color: v("--color-text-muted") }}>kein Aufhänger</span>
+          )}
+        </div>
+        {lead.verantwortlich_funktion && (
+          <div style={{ fontSize: 11, color: lead.verantwortlich_operativ ? v("--color-positive") : v("--color-text-muted") }}>
+            {lead.verantwortlich_operativ ? "zuständig: " : "nur Vertretung: "}
+            {lead.verantwortlich_funktion}
           </div>
+        )}
+        {lead.verwaltung_domain && (
+          <div style={{ fontSize: 11, color: v("--color-negative") }} title="Gemeinsame Verwaltung laut Impressum">
+            Verbund: {lead.verwaltung_domain}
+          </div>
+        )}
+      </td>
+
+      {/* Ask-Variante + Klickzählung — nur für Zeilen in einer Kampagne.
+          Ohne Versandliste hat die Spalte nichts zu sagen: ein leeres Auswahlfeld
+          und ein Häkchen „Widget angefragt" auf 11.000 Gemeinden sind Rauschen,
+          keine Information. */}
+      <td style={tdStyle}>
+        {!lead.kampagne ? (
+          <span style={{ fontSize: 11, color: v("--color-text-muted") }}>nicht in Versandliste</span>
         ) : (
-          <span style={{ fontSize: 11, color: v("--color-text-muted") }}>—</span>
+        <>
+        <select
+          value={lead.ask_variante ?? ""}
+          onChange={(e) => patch({ ask_variante: e.target.value })}
+          style={{ ...selectStyle, fontSize: 12, maxWidth: 150 }}
+          aria-label="Ask-Variante"
+        >
+          <option value="" disabled>
+            —
+          </option>
+          {ASK_VARIANTEN.map((a) => (
+            <option key={a} value={a}>
+              {ASK_LABEL[a]}
+            </option>
+          ))}
+        </select>
+        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 3 }}>
+          {lead.variante_manuell ? "von Hand · " : ""}
+          {lead.ref_klicks ? `${lead.ref_klicks} Klicks` : "keine Klicks"}
+        </div>
+        {lead.versendet_variante && (
+          <div style={{ fontSize: 10, color: v("--color-text-muted") }}>versendet als {ASK_LABEL[lead.versendet_variante]}</div>
+        )}
+        <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, marginTop: 3, cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            checked={!!lead.widget_anfrage}
+            onChange={(e) => patch({ widget_anfrage: e.target.checked })}
+          />
+          Widget angefragt
+        </label>
+        </>
         )}
       </td>
 
@@ -267,9 +409,9 @@ function LeadRow({ lead, onPatched }: { lead: Lead; onPatched: (l: Lead) => void
           ) : (
             <span style={{ color: v("--color-text-muted"), fontSize: 12 }}>kein Kontaktlink</span>
           )}
-          {lead.email && (
-            <a href={`mailto:${lead.email}`} style={{ ...linkStyle, fontSize: 12 }}>
-              {lead.email}
+          {(lead.rollen_email || lead.email) && (
+            <a href={`mailto:${lead.rollen_email ?? lead.email}`} style={{ ...linkStyle, fontSize: 12 }}>
+              {lead.rollen_email ?? lead.email}
             </a>
           )}
           {lead.website && (
@@ -396,9 +538,16 @@ function DraftModal({
     [lead.region_id, onPatched, onClose],
   );
 
-  // Beim Öffnen ohne vorhandenen Entwurf einmal generieren — außer bei Sperre.
+  // Beim Öffnen IMMER neu erzeugen — außer der Entwurf wurde von Hand
+  // bearbeitet oder die Gemeinde ist gesperrt.
+  //
+  // Vorher wurde ein gespeicherter Entwurf einfach angezeigt. Folge: Nach jeder
+  // Textänderung an der Vorlage zeigte das Modal weiter die alte Fassung, und
+  // zwar ohne jeden Hinweis — zweimal hintereinander als „der Text doppelt sich
+  // immer noch" gemeldet, obwohl der Generator längst korrekt war. Ein
+  // erzeugter Entwurf ist ein Zwischenstand, kein Dokument.
   useEffect(() => {
-    if (open && !body && !busy && !blocked) generate();
+    if (open && !busy && !blocked && !lead.draft_manuell) generate();
     // Nur beim Öffnen — generate/body absichtlich nicht in den Deps.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -462,6 +611,12 @@ function DraftModal({
               )}
             </div>
 
+            {lead.draft_manuell && lead.draft_generated_at && (
+              <div style={{ fontSize: 11, color: v("--color-negative") }}>
+                Von Hand bearbeitet am {new Date(lead.draft_generated_at).toLocaleString("de-DE")} — wird nicht automatisch
+                aktualisiert. „Neu generieren" verwirft die Änderungen.
+              </div>
+            )}
             <label style={fieldLabel}>Betreff</label>
             <div style={{ display: "flex", gap: space.xs }}>
               <input value={subject} onChange={(e) => setSubject(e.target.value)} style={{ ...inputStyle, flex: 1 }} aria-label="Betreff" />
@@ -507,6 +662,28 @@ function DraftModal({
 }
 
 // ─── Kleinteile ───────────────────────────────────────────────────────────────
+
+function Merkmal({ label, href, stark }: { label: string; href: string; stark?: boolean }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={href}
+      style={{
+        fontSize: 11,
+        fontWeight: 700,
+        textDecoration: "none",
+        padding: "1px 6px",
+        borderRadius: 999,
+        color: stark ? v("--color-text-on-accent") : v("--color-accent-dark"),
+        background: stark ? v("--color-accent") : v("--color-accent-dim"),
+      }}
+    >
+      {label}
+    </a>
+  );
+}
 
 function StatusTab({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
   return (

@@ -298,7 +298,97 @@ const RULES: { icon: typeof IconBolt; title: string; body: React.ReactNode }[] =
 
 const PRIVACY_SNIPPET = `Auf dieser Seite ist ein Energiedaten-Widget von solar-check.io (Sebastian Schäder, Höchberg) eingebunden. Beim Laden des Widgets werden technisch bedingt Ihre IP-Adresse, die aufgerufene Seite (Referrer) und Ihr User-Agent an solar-check.io übermittelt (Hosting: Vercel Inc., USA; Übermittlung auf Grundlage des EU-US Data Privacy Framework). Das Widget setzt keine Cookies, speichert keine Daten in Ihrem Browser und führt kein Tracking durch. Rechtsgrundlage ist unser berechtigtes Interesse an der Darstellung aktueller Energiedaten (Art. 6 Abs. 1 lit. f DSGVO). Details: https://solar-check.io/datenschutz`;
 
+
+/** Kennung der Beispiel-Gemeinde in den Vorschauen (Höchberg). */
+const BEISPIEL_AGS = "09679147";
+const BEISPIEL_NAME = "Höchberg";
+
+/**
+ * Setzt in den Gemeinde-Widgets die Gemeinde ein, mit der die Galerie aufgerufen
+ * wurde.
+ *
+ * WARUM (31.07.2026): Die Einbett-Box auf jeder Gemeindeseite verlinkt hierher
+ * MIT der Kennung des Ortes (`/energie-widgets?ags=…&name=…`) — die Galerie hat
+ * sie aber ignoriert. Ein Bürgermeister aus Hahn klickte "mehr Widgets" und sah
+ * sechsmal Höchberg. Genau dieser Weg ist der Kern des Kommunen-Outreachs.
+ *
+ * Ohne Parameter bleibt Höchberg als ausgewiesenes Beispiel stehen.
+ */
+/**
+ * Ortsname aus der Adresszeile — GESAEUBERT, nicht roh uebernommen.
+ *
+ * WARUM (31.07.2026): Der Name landet nicht nur im sichtbaren Text, sondern auch
+ * im Kopier-Code, den eine Verwaltung in ihre eigene Website einfuegt. Wer einer
+ * Kommune einen praeparierten Link schickt, hat sonst fremden Code auf der
+ * Rathaus-Website — mit uns als sichtbarem Absender. Auf unserer Seite passiert
+ * nichts; der Schaden entsteht beim Einfuegen.
+ *
+ * Erlaubt ist, was in deutschen Ortsnamen vorkommt: Buchstaben inkl. Umlaute,
+ * Ziffern, Leerzeichen, Punkt, Bindestrich, Schraegstrich, Klammern, Apostroph.
+ * Alles andere faellt weg. Laenge gedeckelt — der laengste Gemeindename hat 44
+ * Zeichen ("Hellschen-Heringsand-Unterschaar").
+ */
+function sauberterName(roh: string | null): string {
+  const geputzt = (roh ?? "").replace(/[^\p{L}\p{N} .\-/()'’]/gu, "").trim();
+  return geputzt.slice(0, 60) || "Ihre Gemeinde";
+}
+
+/** Atlas-Pfad aus der Adresszeile — nur die exakte Form, sonst verworfen. */
+function saubererPfad(roh: string | null): string | null {
+  return roh && /^\/solar-atlas\/[a-z0-9-]{2,60}\/[a-z0-9-]{2,60}\/[a-z0-9-]{2,60}$/.test(roh) ? roh : null;
+}
+
+function mitGemeinde(
+  sections: WidgetSection[],
+  ags: string | null,
+  name: string | null,
+  pfad: string | null,
+): WidgetSection[] {
+  if (!ags || !/^\d{8}$/.test(ags)) return sections;
+  const anzeige = sauberterName(name);
+  const zielPfad = saubererPfad(pfad);
+  const ersetze = (t: string) => t.split(BEISPIEL_NAME).join(anzeige);
+  return sections.map((s) => {
+    if (!s.variants.some((v) => v.params?.ags === BEISPIEL_AGS)) return s;
+    return {
+      ...s,
+      // "Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde …" —
+      // der Satz stimmt nicht mehr, wenn die eigene Gemeinde drinsteht.
+      intro: ersetze(s.intro).replace(
+        / Hier als Beispiel [^.;]+; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas\./,
+        ` Hier mit den Zahlen von ${anzeige}.`,
+      ),
+      // AUCH DER LINK, nicht nur der Text: Sonst verlinkt eine Kommune unter
+      // ihrem eigenen Namen die Gemeindeseite von Höchberg — und genau dieser
+      // Link ist der Rückverweis, um den es beim ganzen Vorhaben geht.
+      attribution: s.attribution
+        ? { path: zielPfad ?? s.attribution.path, text: ersetze(s.attribution.text) }
+        : s.attribution,
+      variants: s.variants.map((v) =>
+        v.params?.ags === BEISPIEL_AGS ? { ...v, label: anzeige, params: { ...v.params, ags } } : v,
+      ),
+    };
+  });
+}
+
 export default function WidgetsClient() {
+  // Die Gemeinde kommt aus der Adresse, wird aber ERST NACH DEM LADEN gelesen —
+  // bewusst nicht ueber useSearchParams. Das haette eine Suspense-Grenze
+  // erzwungen, und deren Fallback leert das vorgerenderte HTML: gemessen null
+  // statt voller Galerie. Fuer eine Seite, die Einbettende ueberzeugen soll, ist
+  // ein leeres HTML der schlechtere Tausch als ein kurzer Wechsel nach dem
+  // Laden. Vorgerendert steht Hoechberg als ausgewiesenes Beispiel; wer mit
+  // ?ags=… kommt, sieht einen Sekundenbruchteil spaeter seine eigene Gemeinde.
+  const [gemeinde, setGemeinde] = useState<{ ags: string | null; name: string | null; pfad: string | null }>({
+    ags: null,
+    name: null,
+    pfad: null,
+  });
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    setGemeinde({ ags: q.get("ags"), name: q.get("name"), pfad: q.get("pfad") });
+  }, []);
+  const sections = mitGemeinde(SECTIONS, gemeinde.ags, gemeinde.name, gemeinde.pfad);
   const [theme, setTheme] = useState<WidgetThemeSelection>(WIDGET_THEME_DEFAULTS);
   const update = (patch: Partial<WidgetThemeSelection>) => setTheme((t) => ({ ...t, ...patch }));
   const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
@@ -355,7 +445,7 @@ export default function WidgetsClient() {
           <PrivacySnippet />
         </section>
 
-        {SECTIONS.map((s, i) => (
+        {sections.map((s, i) => (
           <Fragment key={s.id}>
             <SectionPreview
               section={s}
@@ -713,17 +803,21 @@ function EmbedSnippet({
 
   // The <a> below the iframe lives in the HOST page's HTML — that anchor, not
   // the iframe src, is what search engines count as a backlink to solar-check.io.
+  // Zweite Verteidigungslinie: Auch wenn oben schon gesaeubert wird, gehoert in
+  // ein HTML-Attribut nichts Unmaskiertes. Der Code wird kopiert und auf einer
+  // FREMDEN Website eingefuegt — dort haften wir mit unserem Namen darunter.
+  const attr = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const code = [
     `<iframe`,
     `  src="${url}"`,
     `  width="${width}"`,
     `  height="${variant.height}"`,
     `  style="border:0;display:block;width:100%;max-width:${width}px"`,
-    `  title="${variant.label} — Solar Check"`,
+    `  title="${attr(variant.label)} — Solar Check"`,
     `  loading="lazy"`,
     `></iframe>`,
     `<p style="margin:6px 0 0;font:13px/1.4 system-ui,sans-serif">`,
-    `  <a href="${SITE_URL}${attribution.path}" target="_blank" rel="noopener">${attribution.text}</a>`,
+    `  <a href="${SITE_URL}${attr(attribution.path)}" target="_blank" rel="noopener">${attr(attribution.text)}</a>`,
     `</p>`,
   ].join("\n");
 

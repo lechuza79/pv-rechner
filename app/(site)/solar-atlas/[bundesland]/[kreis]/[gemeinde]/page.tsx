@@ -13,6 +13,7 @@ import { atlasIsIndexable, atlasLevelReleased, atlasRobots } from "../../../../.
 import ZubauChart from "../../../../../../components/atlas/ZubauChart";
 import GemeindeHero, { type KpiOwnerData } from "../../../../../../components/atlas/GemeindeHero";
 import GemeindePeerTiles from "../../../../../../components/atlas/GemeindePeerTiles";
+import GemeindePlatzierungen from "../../../../../../components/atlas/GemeindePlatzierungen";
 import CollapsibleIntro from "../../../../../../components/atlas/CollapsibleIntro";
 import GemeindeEmbedBox from "../../../../../../components/atlas/GemeindeEmbedBox";
 import GemeindePotentialClient from "../../../../../../components/atlas/GemeindePotentialClient";
@@ -21,6 +22,7 @@ import GemeindeSolarLive from "../../../../../../components/atlas/GemeindeSolarL
 import { MastrHeroSection } from "../../../../../../components/MastrHeroSection";
 import { gemeindeGeo } from "../../../../../../lib/atlas-geo";
 import { buildGemeindeHighlight } from "../../../../../../lib/gemeinde-highlight";
+import { gemeindeSzenarioTexte } from "../../../../../../lib/gemeinde-szenario-text";
 import {
   resolveSlugPath,
   getRegionById,
@@ -42,13 +44,14 @@ import {
   speicherKwhTeile,
   wattProKopfTeile,
 } from "../../../../../../lib/atlas-format";
+import { ortPhrase, istKreisfrei, istStadtstaat } from "../../../../../../lib/atlas-orte";
 import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
 import { landProgramBundeslaender } from "../../../../../../lib/funding-programs";
 import { DATA_SOURCES } from "../../../../../../lib/data-sources";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 // Ohne generateStaticParams wäre die Route voll dynamisch (no-store). Leeres
 // Array = keine Vorab-Renders (zu viele Gemeinden), aber ISR: jede Gemeinde-Seite
 // rendert einmal on-demand und liegt dann s-maxage=3600 im CDN.
@@ -87,6 +90,15 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
   const params = await props.params;
   const region = await resolveSlugPath([params.bundesland, params.kreis, params.gemeinde]);
   if (!region) return { robots: atlasRobots(false) };
+  // Eine kreisfreie Stadt hat keinen übergeordneten Landkreis — der Vergleich
+  // gilt dort gegen das Bundesland. In Berlin und Hamburg ist auch das
+  // Bundesland die Stadt selbst, dort bleibt nur Deutschland.
+  const kreisfrei = params.kreis === params.gemeinde;
+  const bezugsebene = istStadtstaat(region.region_id)
+    ? "Bundesgebiet"
+    : kreisfrei
+      ? "Bundesland"
+      : "Landkreis";
   // Anlagenzahl (für die Thin-Schwelle) nur laden, wenn die Gemeinde-Ebene
   // überhaupt freigeschaltet ist — sonst ist die Seite ohnehin noindex.
   const anlagen = atlasLevelReleased("gemeinde")
@@ -95,7 +107,7 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
   return {
     ...pageMetadata({
       title: `Solaranlagen in ${region.name} – Bestand & Zubau`,
-      description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum Landkreis.`,
+      description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
       path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
     }),
     robots: atlasRobots(atlasIsIndexable("gemeinde", anlagen)),
@@ -138,6 +150,19 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
     getRegionAtlasData("de"),
     getRegionById("de"),
   ]);
+
+  // KREISFREIE STADT: Sie IST ihr eigener Landkreis. Jede Stelle, die den
+  // Elternteil als eigenständige Vergleichs- oder Zugehörigkeitsebene benutzt,
+  // sagt dort etwas Falsches („Vergleich mit Stuttgart" auf der Stuttgart-Seite,
+  // „Stuttgart liegt in Stuttgart" in den strukturierten Daten). Einmal
+  // bestimmen, überall berücksichtigen.
+  const istKreisfreiStadt = istKreisfrei(region.region_id, kreis, region.name);
+  // BERLIN UND HAMBURG: Dort ist zusätzlich das Bundesland die Stadt selbst.
+  // Nur den Kreis zu überspringen reicht nicht — dann steht auf der Seite
+  // „Tendenz gegenüber dem Durchschnitt in Berlin" und die Vergleichsgruppe ist
+  // wieder eine Liste mit einer Zeile. Hier ist Deutschland die erste echte
+  // Bezugsgröße, und die Vergleichsgruppe sind die Bundesländer.
+  const istStadtstaatRegion = istStadtstaat(region.region_id);
 
   const speicher = atlas.speicher;
 
@@ -227,8 +252,15 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
       ],
       perCap: perCapOf(atlas, region.population, owner),
       references: [
-        { key: "landkreis", name: kreis?.name ?? "Landkreis", perCap: perCapOf(kreisAtlas, kreis?.population, owner) },
-        { key: "bundesland", name: bl?.name ?? "Bundesland", perCap: perCapOf(blAtlas, blRegion?.population, owner) },
+        // Bei einer kreisfreien Stadt ist der „Landkreis" die Stadt selbst —
+        // ein Vergleich mit sich hat den Wert 0 % und sagt nichts. In Berlin und
+        // Hamburg gilt dasselbe zusätzlich für das Bundesland.
+        ...(istKreisfreiStadt
+          ? []
+          : [{ key: "landkreis", name: kreis?.name ?? "Landkreis", perCap: perCapOf(kreisAtlas, kreis?.population, owner) }]),
+        ...(istStadtstaatRegion
+          ? []
+          : [{ key: "bundesland", name: bl?.name ?? "Bundesland", perCap: perCapOf(blAtlas, blRegion?.population, owner) }]),
         { key: "de", name: "Deutschland", perCap: perCapOf(deAtlas, deRegion?.population, owner) },
       ].filter((r) => Object.values(r.perCap).some((x) => x !== null)),
     };
@@ -282,18 +314,31 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
   const geoLat = Number.isFinite(geo?.lat) ? (geo?.lat ?? null) : null;
   const geoLon = Number.isFinite(geo?.lon) ? (geo?.lon ?? null) : null;
 
-  // Die Nachbargemeinden EINMAL auf das falten, was diese Seite braucht: je
-  // Gemeinde und Eigentümer-Filter drei Summen statt des vollen Zell-Korns.
+  // KREISFREIE STADT: Der übergeordnete „Landkreis" IST die Stadt selbst, also
+  // verglich die Rangliste Stuttgart mit Stuttgart — ein Eintrag, dazu die
+  // Überschrift „Top Kommunen im Stuttgart". Eine kreisfreie Stadt steht
+  // verwaltungsrechtlich auf Kreisebene; ihre Vergleichsgruppe sind deshalb die
+  // Stadt- und Landkreise des Bundeslandes, nicht Gemeinden.
+  const vergleich = istStadtstaatRegion
+    ? { daten: await getRankingData(deRegion ?? blRegion ?? kreis!), was: "Bundesländer", wo: "in Deutschland" }
+    : istKreisfreiStadt
+      ? { daten: await getRankingData(blRegion ?? kreis!), was: "Kreise", wo: bl ? ortPhrase(bl) : "" }
+      : { daten: siblingData, was: "Kommunen", wo: kreis ? ortPhrase(kreis) : "" };
+
+  // Die Vergleichsgruppe EINMAL auf das falten, was diese Seite braucht: je
+  // Gebiet und Eigentümer-Filter drei Summen statt des vollen Zell-Korns.
   // Das Korn war 71 % der ausgelieferten Seite und diente einer Liste mit fünf
-  // Zeilen (Begründung an foldSiblings). Umschalten von Filter und Kennzahl
-  // bleibt ohne Nachladen möglich — die Kombinationen stecken schon in den Summen.
-  const siblings = foldSiblings(siblingData.regions, siblingData.cells);
+  // Zeilen (Begründung an foldSiblings). Die Faltung ist ebenengenerisch, also
+  // gilt sie für Gemeinden im Kreis genauso wie für die Kreise eines Landes.
+  const siblings = foldSiblings(vergleich.daten.regions, vergleich.daten.cells);
 
   // Rang der Gemeinde nach installierter Solarleistung im Landkreis — fürs
   // Intro (ein je Gemeinde verschiedener, konkreter Fakt). Aus DERSELBEN
   // Faltung wie die Liste darunter: vorher rechnete das hier eigenständig und
   // zählte dabei die Leistung der Batteriespeicher zur Solarleistung dazu.
-  const kreisTotal = siblings.length || null;
+  // Bei einer kreisfreien Stadt gibt es keinen Kreis-Rang — dort ist die
+  // Vergleichsgruppe das Bundesland, und ein „Platz im Landkreis" wäre gelogen.
+  const kreisTotal = istKreisfreiStadt ? null : siblings.length || null;
   let rankInKreis: number | null = null;
   if (kreisTotal) {
     const own = siblings.find((s) => s.region_id === region.region_id);
@@ -302,10 +347,20 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
       1 + siblings.filter((s) => s.region_id !== region.region_id && s.sums.alle.kwp > ownKwp).length;
   }
 
+  // Ortsbezogene Saetze fuer „Was das fuer Sie bedeutet". Aus Zahlen, die die
+  // Seite ohnehin geladen hat — kein zusaetzlicher Zugriff.
+  const szenarioTexte = gemeindeSzenarioTexte({
+    name: region.name,
+    regionId: region.region_id,
+    balkonCount: atlas.solar.by_segment.find((c) => c.segment === "steckersolar")?.count ?? null,
+  });
+
   const crumbs: { label: string; href?: string }[] = [
     { label: "Solar-Atlas", href: "/solar-atlas" },
-    { label: bl?.name ?? blAgs, href: `/solar-atlas/${params.bundesland}` },
-    { label: kreis?.name ?? params.kreis, href: basePath },
+    // In Berlin und Hamburg stünde der Name sonst dreimal hintereinander.
+    ...(istStadtstaatRegion ? [] : [{ label: bl?.name ?? blAgs, href: `/solar-atlas/${params.bundesland}` }]),
+    // Bei kreisfreien Städten stünde hier zweimal derselbe Name.
+    ...(istKreisfreiStadt ? [] : [{ label: kreis?.name ?? params.kreis, href: basePath }]),
     { label: region.name },
   ];
 
@@ -316,11 +371,11 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
   );
   const datasetLd = atlasDatasetJsonLd({
     name: `Solaranlagen-Bestand ${region.name}`,
-    description: `Anlagenzahl, installierte Leistung und Zubau der Photovoltaik in ${region.name}${kreis ? ` (${kreis.name})` : ""} aus dem Marktstammdatenregister.`,
+    description: `Anlagenzahl, installierte Leistung und Zubau der Photovoltaik in ${region.name}${kreis && !istKreisfreiStadt ? ` (${kreis.name})` : ""} aus dem Marktstammdatenregister.`,
     url: `${BASE_URL}${atlasPath}`,
     dateModified: atlas.data_as_of,
     placeName: region.name,
-    containedInPlace: kreis?.name ?? bl?.name ?? undefined,
+    containedInPlace: (istStadtstaatRegion ? "Deutschland" : istKreisfreiStadt ? bl?.name : kreis?.name) ?? bl?.name ?? undefined,
     variables: [
       { name: "Solaranlagen in Betrieb", value: atlas.solar.total_count },
       { name: "Installierte Leistung", value: Math.round(atlas.solar.total_kwp), unitText: "kWp" },
@@ -352,8 +407,13 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           · monatlich aktualisiert
         </div>
 
-        <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
-        <CollapsibleIntro>
+        {/* Überschrift UND Einleitung links, Auszeichnung rechts: Der Badge
+            beginnt damit auf Höhe der Überschrift statt erst neben dem
+            Fließtext. Auf schmalen Schirmen gestapelt (CSS: .gemeinde-kopf). */}
+        <div className="gemeinde-kopf">
+          <div style={{ minWidth: 0 }}>
+            <h1 style={S.h1}>Solaranlagen in {region.name}</h1>
+            <CollapsibleIntro>
           {buildGemeindeHighlight({
             name: region.name,
             atlas,
@@ -361,13 +421,17 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
             blName: bl?.name ?? "Landes",
             perCapita,
             perCapitaVsBl,
-            kreisName: kreis?.name ?? null,
-            rankInKreis,
+            bezeichnung: region.bezeichnung,
+            kreisName: istKreisfreiStadt ? null : (kreis?.name ?? null),
+            rankInKreis: istKreisfreiStadt ? null : rankInKreis,
             kreisTotal,
             byYear: atlas.solar.by_year,
             lastYear,
           })}
-        </CollapsibleIntro>
+            </CollapsibleIntro>
+          </div>
+          <GemeindePlatzierungen regionId={region.region_id} />
+        </div>
 
         {SHOW_PEER_TILES && !!region.population && (
           <GemeindePeerTiles rows={peerRows} blName={bl?.name ?? "diesem Land"} band={band} />
@@ -377,8 +441,21 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           kpi={kpi}
           cells={atlas.solar.by_segment}
           siblings={siblings}
-          regionId={region.region_id}
-          kreisName={kreis?.name ?? undefined}
+          // DIE EIGENE ZEILE IN DER RANGLISTE: Bei einer kreisfreien Stadt und
+          // bei den Stadtstaaten ist die Vergleichsgruppe eine Ebene höher
+          // (Kreise bzw. Bundesländer). Dort trägt die eigene Zeile den
+          // gekürzten Schlüssel — mit dem 8-stelligen Gemeindeschlüssel fand
+          // sie sich nie selbst, stand nicht in der Tabelle und war nicht
+          // hervorgehoben. Sichtbar auf der Stuttgart-Seite: „Platz 1" oben,
+          // darunter fünf fremde Landkreise.
+          regionId={
+            istStadtstaatRegion
+              ? region.region_id.slice(0, 2)
+              : istKreisfreiStadt
+                ? region.region_id.slice(0, 5)
+                : region.region_id
+          }
+          vergleichTitel={`Top ${vergleich.was}${vergleich.wo ? ` ${vergleich.wo}` : ""}`}
           basePath={basePath}
         />
 
@@ -390,7 +467,7 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
             repräsentative PLZ reicht; ohne Koordinate fällt der Ertrag sauber auf
             den Bundesland-Wert zurück). */}
         {region.population ? (
-          <GemeindePotentialClient plz={repPlz} lat={geoLat} lon={geoLon} />
+          <GemeindePotentialClient plz={repPlz} lat={geoLat} lon={geoLon} texte={szenarioTexte} name={region.name} regionId={region.region_id} />
         ) : (
           // Ohne Einwohnerzahl gibt es keinen Potential-Block — der Rechner-Link
           // muss trotzdem erhalten bleiben (sonst hat die Seite keinen Weg dorthin).
@@ -449,11 +526,23 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
           <div style={S.section}>
             <h2 style={S.h2}>{region.name} auf der Karte</h2>
             <p style={S.sub}>
-              {kreis?.name ?? "Der Landkreis"} mit allen Gemeinden — tippen Sie auf ein Gebiet für die Details.
+              {istStadtstaatRegion
+                ? "Deutschland mit allen Bundesländern"
+                : istKreisfreiStadt
+                  ? `${bl?.name ?? "Das Bundesland"} mit allen Kreisen`
+                  : `${kreis?.name ?? "Der Landkreis"} mit allen Gemeinden`}{" "}
+              — tippen Sie auf ein Gebiet für die Details.
             </p>
             {/* showSource=false: der Quellen-Fuß der Seite trägt BKG + MaStR schon.
                 Im Embed zeigt die Karte ihre Quelle weiterhin selbst. */}
-            <MastrHeroSection initialRegion={region.parent_region_id} initialTraeger="solar" showSource={false} />
+            <MastrHeroSection
+              /* Kreisfreie Stadt: der Elternteil IST die Stadt selbst, die Karte
+                 zeigte dann Stuttgart > Stuttgart. Eine Ebene höher einsteigen,
+                 damit die Stadt zwischen ihren echten Nachbarn liegt. */
+              initialRegion={istStadtstaatRegion ? "de" : istKreisfreiStadt ? blAgs : region.parent_region_id}
+              initialTraeger="solar"
+              showSource={false}
+            />
           </div>
         )}
 
@@ -482,7 +571,11 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
         )}
 
         <div style={S.section}>
-          <GemeindeEmbedBox name={region.name} ags={region.region_id} />
+          <GemeindeEmbedBox
+            name={region.name}
+            ags={region.region_id}
+            pfad={`/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`}
+          />
         </div>
 
         <div style={S.disclaimer}>
@@ -549,8 +642,16 @@ const S: Record<string, React.CSSProperties> = {
     padding: "0 16px 24px",
   },
   wrap: { maxWidth: 720, margin: "0 auto" },
-  stand: { fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm },
-  standDate: { fontFamily: v("--font-mono"), color: v("--color-text-secondary") },
+  // EINE Groesse, EINE Farbe: Die Zeile hatte 11px neben Mono in einem anderen
+  // Grau — drei Wechsel in sechs Woertern, das las sich zerhackt. Groesse aus
+  // der Typo-Skala (caption), Farbe aus einem Token, das Datum nur durch das
+  // Schriftgewicht hervorgehoben.
+  stand: {
+    fontSize: v("--font-size-caption"),
+    color: v("--color-text-muted"),
+    marginBottom: space.sm,
+  },
+  standDate: { fontWeight: 600, color: "inherit" },
   h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: `0 0 ${space.md}px` },
   h2: { fontSize: 16, fontWeight: 700, margin: `0 0 ${space.xs}px` },
   sub: { fontSize: 12, color: v("--color-text-muted"), margin: `0 0 ${space.lg}px` },

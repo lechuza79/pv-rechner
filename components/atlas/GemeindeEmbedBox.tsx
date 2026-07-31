@@ -15,8 +15,12 @@ import GemeindeKontaktButton from "./GemeindeKontaktButton";
  * Der SEO-Backlink zur Atlas-Seite entsteht weiterhin, sobald die Kommune ein
  * Widget einbettet; der Code dafür liegt in der Galerie statt hier.
  */
-export default function GemeindeEmbedBox({ name, ags }: { name: string; ags: string }) {
-  const galleryHref = `/energie-widgets?ags=${ags}&name=${encodeURIComponent(name)}#gemeinde-solar`;
+export default function GemeindeEmbedBox({ name, ags, pfad }: { name: string; ags: string; pfad?: string | null }) {
+  // Der Atlas-Pfad geht mit, damit der Einbett-Code die EIGENE Gemeindeseite
+  // verlinkt und nicht die des Beispiels. Die Galerie prueft ihn dort.
+  const galleryHref = `/energie-widgets?ags=${ags}&name=${encodeURIComponent(name)}${
+    pfad ? `&pfad=${encodeURIComponent(pfad)}` : ""
+  }#gemeinde-solar`;
 
   return (
     <div style={S.card}>

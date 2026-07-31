@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { v, space, pad } from "../../lib/theme";
 import { IconChevronDown, IconHelpCircle, IconClose } from "../Icons";
 import TendTag from "./TendTag";
+import { ortPraeposition } from "../../lib/atlas-orte";
 
 /**
  * KPI-Reihe mit umschaltbarer Vergleichs-Referenz. Die „Tendenz je Einwohner"
@@ -71,7 +72,10 @@ export default function AtlasKpiRow({
           Pfeile IN den Kacheln bedeuten — das gehört davor, nicht dahinter. */}
       {ref && (
         <div style={S.caption}>
-          Tendenz: je Einwohner gegenüber dem Durchschnitt in{" "}
+          {/* Präposition folgt dem gewählten Bezug: „im Landkreis Würzburg",
+              „in der Region Hannover", „im Saarland". Sie ändert sich mit der
+              Auswahl, deshalb aus dem Namen abgeleitet statt fest getippt. */}
+          Tendenz: je Einwohner gegenüber dem Durchschnitt {ortPraeposition(ref.name)}{" "}
           {references.length > 1 ? (
             <RefPicker refs={references} value={ref.key} onChange={setRefKey} />
           ) : (

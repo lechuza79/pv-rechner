@@ -654,7 +654,37 @@ export const globalStyles = `
     .rank-picker{align-self:flex-start;max-width:none}
   }
 
+  /* Gemeinde-Kopf: Einleitungstext und Auszeichnungs-Band nebeneinander. Das
+     Band hat feste Spaltenbreite, damit der Text nicht umbricht, wenn es
+     nachgeladen erscheint. Der Inhalt ist 720px breit — darunter bliebe fuer den
+     Text zu wenig, deshalb ab 760px Fensterbreite gestapelt.
+     Gezielt .gemeinde-auszeichnung, NICHT "letztes Kind": ohne Platzierung
+     rendert sie gar nichts, und dann bekaeme der Text die schmale Spalte. */
+  .gemeinde-kopf{display:flex;gap:24px;align-items:flex-start;margin-bottom:24px}
+  /* Die Ueberschrift traegt ihren eigenen Abstand nach unten; oben muss sie
+     buendig mit dem Badge daneben starten. */
+  .gemeinde-kopf > *:first-child > h1{margin-top:0}
+  .gemeinde-kopf > *:first-child{flex:1 1 0;min-width:0}
+  .gemeinde-kopf > .gemeinde-auszeichnung{flex:0 0 252px;max-width:252px}
+  @media (max-width:760px){
+    .gemeinde-kopf{flex-direction:column;gap:16px}
+    .gemeinde-kopf > .gemeinde-auszeichnung{flex:1 1 auto;max-width:none;width:100%}
+  }
+
+  /* Ranking-Zeile: Der Kommunen-Link deckt die ganze Zeile ab (Overlay), damit
+     man ueberall klicken kann — OHNE Anker im Anker. Die Herkunfts-Links (Land,
+     Kreis) liegen darueber und fangen ihren eigenen Klick ab.
+     Faehrt man ueber sie, verschwindet die Zeilen-Hervorhebung: Sonst sagt die
+     Zeile "hier geht es zur Kommune", waehrend der Klick woanders hinfuehrt. */
+  .atlas-rank-row .atlas-rank-ziel::after{content:"";position:absolute;inset:0}
+  .atlas-rank-row .atlas-rank-neben{position:relative;z-index:1}
+  .atlas-rank-row:hover{background:var(--color-bg-muted)}
+  .atlas-rank-row:has(.atlas-rank-neben:hover){background:transparent}
+  .atlas-rank-row:has(.atlas-rank-neben:hover) .atlas-go{opacity:0}
+  .atlas-rank-row .atlas-rank-neben:hover{text-decoration:underline}
+
   .atlas-rank-row .atlas-go{opacity:0;transform:translateX(-4px);transition:opacity 0.16s ease,transform 0.16s ease}
   .atlas-rank-row:hover .atlas-go{opacity:1;transform:translateX(0)}
+
 
 `;

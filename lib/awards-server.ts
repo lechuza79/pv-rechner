@@ -4,6 +4,7 @@ import { AWARD_CATEGORY_BY_KEY, dedupFreiflaeche, formatAwardValue, type Gemeind
 import { bundeslandByAgs } from "./mastr-regions";
 import {
   LEVEL_LABEL,
+  scopeIn,
   computePlacements,
   hookText,
   selectHook,
@@ -58,7 +59,7 @@ async function pageAll(table: string, select: string, refine?: (q: any) => any):
 export const loadAwardStats = memoize(async (): Promise<GemeindeStats[]> => {
   if (!supabase) return [];
   const stats = await pageAll("mastr_gemeinde_award", "*");
-  const regions = await pageAll("mastr_regions", "region_id, name, bezeichnung", (q) => q.eq("level", "gemeinde"));
+  const regions = await pageAll("mastr_regions", "region_id, name, bezeichnung, slug", (q) => q.eq("level", "gemeinde"));
   const meta = new Map(regions.map((r) => [r.region_id as string, r]));
   return stats.map((r) => {
     const m = meta.get(r.region_id as string);
@@ -66,19 +67,33 @@ export const loadAwardStats = memoize(async (): Promise<GemeindeStats[]> => {
       regionId: r.region_id as string,
       name: (m?.name as string) ?? (r.region_id as string),
       bezeichnung: (m?.bezeichnung as string) ?? "Gemeinde",
+      slug: (m?.slug as string | null) ?? null,
       population: r.population as number,
       privatDachKwp: Number(r.privat_dach_kwp),
+      privatDachCount: Number(r.privat_dach_count ?? 0),
       gewerbeDachKwp: Number(r.gewerbe_dach_kwp),
       // Bekannte Doppelzählungen abziehen, bevor Solar-Standort/Freifläche ranken.
       freiflaecheKwp: dedupFreiflaeche(r.region_id as string, Number(r.freiflaeche_kwp)),
       balkonCount: Number(r.balkon_count),
       balkonKwp: Number(r.balkon_kwp),
       batteriePrivatKwh: Number(r.batterie_privat_kwh),
+      batteriePrivatCount: Number(r.batterie_privat_count ?? 0),
       batterieGewerbeKwh: Number(r.batterie_gewerbe_kwh),
       windKwp: Number(r.wind_kwp),
       biomasseKwp: Number(r.biomasse_kwp),
       wasserKwp: Number(r.wasser_kwp),
       solarZubauKwp: Number(r.solar_zubau_kwp),
+      solarKwp: Number(r.solar_kwp ?? 0),
+      solarKwpLy: Number(r.solar_kwp_ly ?? 0),
+      solarKwpL3: Number(r.solar_kwp_l3 ?? 0),
+      solarKwpL5: Number(r.solar_kwp_l5 ?? 0),
+      privatDachKwpLy: Number(r.privat_dach_kwp_ly ?? 0),
+      privatDachKwpL3: Number(r.privat_dach_kwp_l3 ?? 0),
+      privatDachKwpL5: Number(r.privat_dach_kwp_l5 ?? 0),
+      balkonCountLy: Number(r.balkon_count_ly ?? 0),
+      batteriePrivatKwhLy: Number(r.batterie_privat_kwh_ly ?? 0),
+      freiflaecheKwpLy: Number(r.freiflaeche_kwp_ly ?? 0),
+      windKwpLy: Number(r.wind_kwp_ly ?? 0),
     };
   });
 });
@@ -88,6 +103,18 @@ export const loadKreisNames = memoize(async (): Promise<Record<string, string>> 
   const rows = await pageAll("mastr_regions", "region_id, name", (q) => q.eq("level", "landkreis"));
   const out: Record<string, string> = {};
   for (const r of rows) out[r.region_id as string] = r.name as string;
+  return out;
+});
+
+/** Slugs der Bundesländer und Landkreise (2- und 5-stelliger AGS). Zusammen mit
+ *  dem Gemeinde-Slug ergibt das den vollen Atlas-Pfad — 420 Zeilen statt einer
+ *  Abfrage je Ranglisten-Eintrag. */
+export const loadElternSlugs = memoize(async (): Promise<Record<string, string>> => {
+  const rows = await pageAll("mastr_regions", "region_id, slug", (q) =>
+    q.in("level", ["bundesland", "landkreis"]).not("slug", "is", null),
+  );
+  const out: Record<string, string> = {};
+  for (const r of rows) out[r.region_id as string] = r.slug as string;
   return out;
 });
 
@@ -121,6 +148,23 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
       .sort((a, b) => a.rank - b.rank || b.total - a.total)
       .slice(0, 4)
       .map((p) => `${AWARD_CATEGORY_BY_KEY[p.categoryKey]?.label} · ${LEVEL_LABEL[p.level]} · Platz ${p.rank}/${p.total}`);
+    // Weitere Spitzenplaetze — dieselbe Gemeinde, andere Kategorie oder Ebene.
+    // Der gewaehlte Aufhaenger faellt raus, sonst stuende er zweimal im Brief.
+    const weitere = (placements.get(g.regionId) ?? [])
+      .filter(
+        (p) =>
+          p.total >= settings.minTotal &&
+          p.rank <= 3 &&
+          !(p.categoryKey === hook.categoryKey && p.level === hook.level),
+      )
+      .sort((a, b) => a.rank - b.rank || b.total - a.total)
+      .slice(0, 3)
+      .map((p) => ({
+        phrase: AWARD_CATEGORY_BY_KEY[p.categoryKey]?.betreffPhrase ?? `bei ${AWARD_CATEGORY_BY_KEY[p.categoryKey]?.themaDativ}`,
+        gruppe: `${p.klasseLabel} ${scopeIn(p.level, names)}`,
+        platz: p.rank,
+        von: p.total,
+      }));
     return {
       regionId: g.regionId,
       name: g.name,
@@ -133,6 +177,20 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
       betreff: t.betreff,
       einstieg: t.einstieg,
       others,
+      weitere,
+      rank: hook.rank,
+      total: hook.total,
+      bestleistung: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.bestleistung ?? null) : null,
+      themaDativ: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.themaDativ ?? null) : null,
+      phrase: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.betreffPhrase ?? null) : null,
+      klasseSlug:
+        (placements.get(g.regionId) ?? []).find(
+          (p) => p.categoryKey === hook.categoryKey && p.level === hook.level,
+        )?.klasseSlug ?? null,
+      wo: hook.level ? scopeIn(hook.level, names) : null,
+      // Klasse UND Gebiet — der Rang gilt nur innerhalb der Groessenklasse.
+      gruppe:
+        hook.level && hook.klasseLabel ? `${hook.klasseLabel} ${scopeIn(hook.level, names)}` : null,
       valueStr:
         hook.value != null && hook.categoryKey
           ? formatAwardValue(hook.value, AWARD_CATEGORY_BY_KEY[hook.categoryKey].format)

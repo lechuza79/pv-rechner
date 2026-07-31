@@ -40,6 +40,46 @@ Sieger je **Landkreis (400) + Bundesland + Deutschland**, exklusiv Platz 1.
 **Balkonkraftwerke** (Segment `steckersolar`, 1,42 Mio in 10.667 Gemeinden) = überzeugendste
 Kategorie, credible absolut UND pro Kopf.
 
+## Die Regel: Wer darf gewinnen? (festgelegt 28.07.2026)
+
+**Eine Frage entscheidet alles: Kann eine Kommune diese Rangliste gewinnen, ohne
+etwas dafür getan zu haben?** Daraus folgen Krone und Ranglisten-Seite getrennt.
+
+| Kategorie-Art | Beispiel | Gewinnt, wer … | Krone | Ranking-Seite |
+|---|---|---|---|---|
+| **Bürger, je Einwohner** | Solardach, Balkon, Speicher je Ew. | viele Bürger gebaut haben | **ja** | **ja** |
+| **Bürger, absolut** | „Solardach-Hauptstadt" | die meisten Einwohner hat | nein | nein |
+| **Standort, absolut** | Freifläche, Wind, Zubau | einen Investor im Ort hat | nein | **ja** |
+
+**Warum die absoluten Bürger-Kategorien ganz rausfliegen** — gemessen an
+`mastr_gemeinde_award` (BW, BY, NRW): Der Sieger ist jeweils **exakt die größte
+Gemeinde**, und 6 bis 10 der ersten Zehn sind schlicht die zehn
+einwohnerstärksten Orte (Balkon in Bayern: 10 von 10). Das ist eine
+Einwohner-Rangliste mit anderem Titel.
+
+**Warum die Standort-Kategorien NICHT darunterfallen** — dieselbe Messung:
+Freifläche und Wind haben **0 von 10** Überschneidung mit den
+einwohnerstärksten Gemeinden, und der Sieger ist nie die größte. Ein
+Windpark-Dorf ist eine echte Aussage. Aber es ist keine Leistung der Bürger,
+deshalb **Rangliste ja, Krone nein**.
+
+**Zwei Folgen, die man leicht falsch baut:**
+- Die Einwohner-Untergrenze (2.000) gilt **nur bei Pro-Kopf-Werten**. Bei
+  absoluten Werten würde sie genau den Sieger herauswerfen — das
+  700-Einwohner-Dorf mit dem 90-MWp-Park.
+- Der Freiflächen-Anteil gehört **nicht** in die Pro-Kopf-Wertung der Bürger:
+  Sonst führt ein Investorenpark die Bürger-Rangliste an (Riedenheim, 746
+  Einwohner, 126.865 Wp/Kopf gegen 5.178 ohne Park).
+
+**Drei Auszeichnungs-Stufen** (`DEFAULT_HOOK_SETTINGS`): Platz 1 · Podium (2–3) ·
+oberstes Zehntel. Ab Platz 4 zeigt der Badge die Stufe („Top 4 %"), weil „Platz
+40 von 1.101" allein nichts sagt. Mindestens 5 Vergleichspartner, Ausreißer
+gegen den Median fliegen raus.
+
+Umgesetzt in `lib/awards.ts` (`slug` = hat eine Seite), `lib/atlas-ranking.ts`
+(Rechenkern), `app/api/atlas/platzierungen/route.ts` (Krone nur `proKopf`).
+Festgenagelt in `lib/__tests__/atlas-ranking.test.ts`.
+
 ## Wie der Award Thin-Content löst
 
 Die Gemeinde-Atlas-Seite bekommt einen **Ranking-/Award-Block**: „Solardach-Spitzenreiter im

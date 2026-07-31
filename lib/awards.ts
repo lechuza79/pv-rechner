@@ -18,7 +18,12 @@ import { fmtMixLeistung, fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from ".
 
 export type AwardScopeLevel = "de" | "bundesland" | "landkreis";
 export type Traeger = "buerger" | "gewerbe";
-export type Messart = "proKopf" | "absolut";
+/**
+ * "quote" ist ein Verhaeltnis zweier eigener Zahlen (Batterien je 100 Daecher),
+ * nicht je Einwohner und nicht absolut. Eigene Messart, weil beides anders
+ * beschriftet wird und die Untergrenze eine andere Begruendung braucht.
+ */
+export type Messart = "proKopf" | "absolut" | "quote";
 export type SizeBand = "klein" | "mittel" | "gross";
 export type Role = "gemeinde" | "stadt" | "grosse-kreisstadt" | "kreisfrei" | "hauptstadt";
 
@@ -31,7 +36,8 @@ export type MetricFormat =
   | "count"
   | "countPer1000"
   | "whProKopf"
-  | "speicherKwh";
+  | "speicherKwh"
+  | "je100Dach";
 
 /** Solar-/Speicher-/EE-Kennzahlen einer bewohnten Gemeinde, je Träger getrennt.
  *  Kommt aus dem Rollup `mastr_gemeinde_award` (ein DB-seitiger Lauf), Name +
@@ -40,69 +46,356 @@ export type GemeindeStats = {
   regionId: string; // 8-stelliger AGS
   name: string;
   bezeichnung: string; // amtliche Bezeichnung → Rolle
+  /** Letztes Pfadstück der Atlas-Seite. Damit lässt sich jede Ranglisten-Zeile
+   *  verlinken, ohne je Zeile eine Abfrage zu fahren. */
+  slug?: string | null;
   population: number;
   privatDachKwp: number;
+  /** Zahl der privaten Dachanlagen — fuer die Groessenpruefung. */
+  privatDachCount?: number;
   gewerbeDachKwp: number;
   freiflaecheKwp: number;
   balkonCount: number;
   balkonKwp: number;
   batteriePrivatKwh: number;
+  /** Zahl der privaten Batterien — fuer die Groessenpruefung. */
+  batteriePrivatCount?: number;
   batterieGewerbeKwh: number;
   windKwp: number;
   biomasseKwp: number;
   wasserKwp: number;
   solarZubauKwp: number;
+  /** Bestaende zu Stichtagen (siehe lib/mastr-award-sql.ts). Optional, weil
+   *  aeltere Aufrufer sie nicht setzen — wer sie braucht, prueft auf undefined. */
+  solarKwp?: number;
+  solarKwpLy?: number;
+  solarKwpL3?: number;
+  solarKwpL5?: number;
+  privatDachKwpLy?: number;
+  privatDachKwpL3?: number;
+  privatDachKwpL5?: number;
+  balkonCountLy?: number;
+  batteriePrivatKwhLy?: number;
+  freiflaecheKwpLy?: number;
+  windKwpLy?: number;
 };
 
 // ─── Kategorien ────────────────────────────────────────────────────────────────
 
 export type AwardCategory = {
   key: string;
+  /**
+   * Adresse der Ranking-Seite (`/solar-atlas/ranking/<slug>`). Nur Kategorien
+   * mit Slug bekommen eine Seite.
+   *
+   * OHNE SEITE bleiben die absoluten BUERGER-Kategorien (Balkon-, Solardach-,
+   * Speicher-"Hauptstadt"): Ihr Sieger ist gemessen an mastr_gemeinde_award
+   * schlicht die einwohnerstaerkste Kommune — in BW, BY und NRW jeweils exakt,
+   * und 6 bis 10 der ersten Zehn sind die zehn einwohnerstaerksten Orte. Eine
+   * Rangliste daraus waere eine Einwohner-Rangliste mit anderem Titel.
+   *
+   * Fuer die STANDORT-Kategorien gilt das NICHT — dieselbe Messung ergab bei
+   * Freiflaeche und Wind 0 von 10 Ueberschneidung mit den einwohnerstaerksten
+   * Gemeinden, und der Sieger ist nie die groesste. Dort gewinnen Doerfer mit
+   * einem Solarpark oder Windraedern; das ist eine echte Aussage.
+   */
+  slug?: string;
+  /** Interner Kurzname (Backend-Ansichten). NICHT nach außen verwenden — siehe
+   *  `bestleistung`/`thema`. */
   label: string;
   merit: string;
+  /**
+   * Klartext für die Außenkommunikation, als Nominalphrase: „die meisten
+   * Balkonkraftwerke je 1.000 Einwohner".
+   *
+   * WARUM ES DAS GIBT (27.07.2026): Im Anschreiben stand vorher der interne
+   * Titel — „Erlenbach a.Main ist Speicher-Hauptstadt im Landkreis Miltenberg".
+   * Der sagt nicht, was gemessen wurde, klingt bei 9.717 Einwohnern nach
+   * Marketing-Erfindung, und die Auszeichnung existiert öffentlich nirgends.
+   * Eine Verwaltung liest so etwas als Werbung. Die nackte Messgröße ist
+   * belegbar und wirkt stärker als jedes Kunstwort.
+   */
+  bestleistung: string;
+  /** Dasselbe ohne Superlativ, für Platzierungen unterhalb von Platz 1:
+   *  „Balkonkraftwerke je 1.000 Einwohner". */
+  thema: string;
+  /**
+   * Dieselbe Messgröße im DATIV, für den Betreff („… bei Balkonkraftwerken je
+   * 1.000 Einwohner"). Von Hand gepflegt statt aus `thema` abgeleitet: Deutsche
+   * Kasusbildung per Regel produziert zuverlässig Murks („bei private
+   * Solarleistung"), und ein Betreff ist das Erste, was ein Rathaus liest.
+   */
+  themaDativ: string;
+  /**
+   * KURZFORM FUER DEN BETREFF, als vollstaendige Praepositionalphrase:
+   * "bei Balkonkraftwerken", "beim Solar-Zubau in drei Jahren".
+   *
+   * FACHBEGRIFF, NICHT UMGANGSSPRACHE: "bei Speichern je Dach" und "bei
+   * Hausspeichern" lasen sich salopp — ein Rathaus liest den Betreff als
+   * Visitenkarte. Die Kurzform darf kuerzen, aber nicht abrutschen.
+   *
+   * MIT der Praeposition, nicht nur das Substantiv: "bei" und "beim" haengen am
+   * Wort dahinter, und deutsche Kasusbildung per Regel produziert zuverlaessig
+   * Murks (dieselbe Begruendung wie bei `themaDativ`). Wer nur das Substantiv
+   * speichert, baut sich die Falle wieder ein.
+   *
+   * WARUM KURZ: Der Betreff hatte 123 Zeichen ("… auf Platz 3 von 34 unter den
+   * Kleinen Gemeinden im Landkreis Musterkreis bei Balkonkraftwerken je 1.000
+   * Einwohner") — in jedem Postfach abgeschnitten. Die Einzelheiten (Klasse,
+   * Gruppengroesse, Wert) stehen im Einstiegssatz, wo Platz dafuer ist.
+   */
+  betreffPhrase?: string;
   traeger: Traeger;
   messart: Messart;
   format: MetricFormat;
   metric: (g: GemeindeStats) => number | null;
+  /** Dieselbe Messgroesse zum Stand Ende des letzten vollen Jahres. Nur wo ein
+   *  Stichtagswert vorliegt — daraus faellt die Rangveraenderung. */
+  metricVorjahr?: (g: GemeindeStats) => number | null;
+  /**
+   * Sieht die Anlage ueberhaupt nach dem aus, was die Kategorie behauptet?
+   *
+   * WARUM DAS NOETIG IST: "privat" kommt im Register aus einem angekreuzten Feld
+   * (Nutzungsbereich = Haushalt), OHNE Groessenpruefung. Ein Landwirt mit
+   * 300-kWp-Scheunendach, der "Haushalt" ankreuzt, zaehlte als Privatdach.
+   * Dolgesheim fuehrte damit die Pro-Kopf-Liste an: 88 Anlagen mit im Schnitt
+   * 107 kWp, waehrend die uebliche private Dachanlage bei 9,8 kWp liegt (Median
+   * ueber alle 10.725 Gemeinden, 99 % unter 17,8).
+   *
+   * Das ersetzt die frueher pauschale Einwohner-Untergrenze von 2.000, die 5.627
+   * Gemeinden ausschloss, um ein paar falsch etikettierte Anlagen zu neutralisieren.
+   */
+  plausibel?: (g: GemeindeStats) => boolean;
+  /** Satz fuer die ausgeschlossenen Orte. Ohne ihn steht der Standardsatz zur
+   *  Groessenpruefung — der passt nur dort, wo `plausibel` die Anlagengroesse
+   *  prueft, nicht bei einer Mindest-Stueckzahl. */
+  plausibelGrund?: string;
+  /**
+   * Die absolute Menge hinter einer Pro-Kopf-Zahl, fertig formuliert
+   * ("1 Balkonkraftwerk", "36 Dachanlagen") — null, wo es nichts zu zaehlen gibt.
+   *
+   * WARUM: Eine Rate ohne ihre Grundmenge kann jede Groesse vortaeuschen.
+   * Wiedenborstel hat 10 Einwohner und EIN Balkonkraftwerk und stand damit auf
+   * Platz 4 der Bundesliste — mit "100,0 je 1.000 Einwohner", was nach sehr viel
+   * aussieht. Die Zahl ist richtig, die Wirkung falsch. Statt kleine Orte
+   * auszuschliessen (dieselbe Diskussion wie bei der Einwohner-Untergrenze)
+   * steht die Stueckzahl daneben, dann rechnet niemand mehr falsch.
+   * CLAUDE.md, "Zahlen und Einheiten", Punkt 3.
+   */
+  basis?: (g: GemeindeStats) => string | null;
+};
+
+/** Die zugebaute Leistung hinter einer Tempo-Zahl. Einheit aus dem kanonischen
+ *  Formatter, nie handgeschrieben. */
+const zubauBasis = (kwp: number): string | null => (kwp > 0 ? `${fmtPvLeistung(kwp)} dazugebaut` : null);
+
+/** "1 Anlage" / "7 Anlagen" — Singular und Plural sind Teil der Richtigkeit. */
+const stueck = (anzahl: number | undefined, einzahl: string, mehrzahl: string): string | null => {
+  if (!anzahl || anzahl <= 0) return null;
+  return `${anzahl.toLocaleString("de-DE")} ${anzahl === 1 ? einzahl : mehrzahl}`;
 };
 
 const perCapita = (val: number, pop: number): number | null => (pop > 0 ? (val * 1000) / pop : null);
 const pos = (n: number): number | null => (n > 0 ? n : null);
 
+/** Mittlere Groesse einer Anlage. Ohne Anzahl keine Aussage → 0 (unauffaellig). */
+const mittlereGroesse = (summe: number, anzahl?: number): number => (anzahl && anzahl > 0 ? summe / anzahl : 0);
+
+/**
+ * Bis hierher kann ein Dach an einem Wohnhaus haengen. Gemessen ueber alle
+ * 10.725 Gemeinden: Median 9,8 kWp, 99. Perzentil 17,8 — 30 laesst also jedem
+ * grossen Eigenheim Luft und faengt trotzdem die Gewerbehallen. Betroffen sind
+ * 17 Gemeinden.
+ */
+const MAX_PRIVATDACH_KWP = 30;
+/** Hausspeicher liegen bei rund 10 kWh; darueber ist es Gewerbe. */
+const MAX_HAUSSPEICHER_KWH = 30;
+
+/**
+ * Batterien je 100 private Dachanlagen — der einzige gemessen groessenneutrale
+ * Buerger-Wert: Median je Groessenklasse 64 · 63 · 66 · 72 · 79 (Faktor 1,2 vom
+ * Weiler zur Grossstadt, gegenueber Faktor 4 bei "je Einwohner" und Faktor 8 bei
+ * "je km²"). Er misst ein Verhalten, nicht eine Ortsgroesse.
+ *
+ * ER GEHT UEBER 100, und das ist kein Fehler: Speicher werden nachgeruestet und
+ * auch an Anlagen gemeldet, die nicht als privates Dach gezaehlt werden.
+ * Osterwald kommt so auf 113 Batterien bei 71 Dachanlagen. Deshalb NIE als
+ * Prozentzahl anzeigen (siehe formatAwardValue, "je100Dach").
+ */
+const speicherQuote = (g: GemeindeStats): number | null => {
+  const daecher = g.privatDachCount ?? 0;
+  if (daecher <= 0) return null;
+  return ((g.batteriePrivatCount ?? 0) / daecher) * 100;
+};
+
+/**
+ * Ab so vielen Dachanlagen traegt die Quote — HERGELEITET, nicht gesetzt.
+ *
+ * Gemessen am 30.07.2026, Streuung der Quote (5. bis 95. Perzentil) nach Zahl
+ * der Dachanlagen im Ort:
+ *   1–4 Anlagen: 200 Punkte breit, 21 % der Orte ueber 100
+ *   5–9:         100 Punkte, 9 %
+ *   10–24:        74 Punkte, 7 %
+ *   25–49:        55 Punkte, 2 %
+ *   50–99:        45 Punkte, 1 %
+ *   100+:         44 bzw. 39 Punkte, 0 %
+ * Der Median liegt ab 5 Anlagen stabil bei 63–67; was zusammenbricht, ist die
+ * Streuung. Der grosse Sprung ist bis 25 passiert (200 → 55); danach flacht die
+ * Kurve ab. 50 waere sauberer, wuerde aber 73 % der Kleingemeinden aussperren
+ * (bei 25 bleiben 63 % drin, alle anderen Klassen bleiben vollstaendig).
+ */
+const MIN_DACH_FUER_QUOTE = 25;
+
+/**
+ * Der Zubau-Zeitraum, EHRLICH benannt.
+ *
+ * WAS GEMESSEN WIRD: heutiger Bestand minus Bestand am Ende eines Stichjahres.
+ * "letztes Jahr" hiess damit in Wahrheit "seit Ende 2025" — heute also Januar
+ * bis heute, sieben Monate. Am 1. Januar waeren es null Tage und die Liste
+ * kroente einen zufaelligen Ort.
+ *
+ * WARUM NICHT DIE RECHNUNG AENDERN: Ein echtes volles Jahr braeuchte den
+ * Bestand zum Ende des VORLETZTEN Jahres; den fuehrt die Aggregation nicht.
+ * Die Zahl ist richtig — nur ihr Name war es nicht. Dieselbe Ehrlichkeit wie
+ * bei der Rangveraenderung, die aus demselben Grund "seit Ende <Jahr>" heisst
+ * und nicht "gegenueber dem Vorjahr".
+ *
+ * KEINE JAHRESZAHL IM CODE: Das Stichjahr wird zur Laufzeit gebildet, sonst
+ * wird die Beschriftung am 1. Januar still falsch.
+ */
+const seitEnde = (jahreZurueck: number): number => new Date().getFullYear() - jahreZurueck;
+
 export const AWARD_CATEGORIES: AwardCategory[] = [
   // Bürger, pro Kopf — verifiziert aussagekräftig (skaliert mit Haushalten).
   {
     key: "dach-privat-pk",
+    betreffPhrase: "bei privater Solarleistung",
+    slug: "solarleistung-je-einwohner",
     label: "Solardach-Spitzenreiter",
     merit: "Meiste private Dach-Solarleistung je Einwohner.",
+    bestleistung: "die meiste private Solarleistung auf den Dächern je Einwohner",
+    thema: "private Solarleistung auf den Dächern je Einwohner",
+    themaDativ: "Solarleistung auf privaten Dächern je Einwohner",
     traeger: "buerger",
     messart: "proKopf",
     format: "wattProKopf",
     metric: (g) => perCapita(g.privatDachKwp, g.population),
+    basis: (g) => stueck(g.privatDachCount, "private Dachanlage", "private Dachanlagen"),
+    plausibel: (g) => mittlereGroesse(g.privatDachKwp, g.privatDachCount) <= MAX_PRIVATDACH_KWP,
+    metricVorjahr: (g) => perCapita(g.privatDachKwpLy ?? 0, g.population),
   },
   {
     key: "balkon-pk",
+    betreffPhrase: "bei Balkonkraftwerken",
+    slug: "balkonkraftwerke-je-einwohner",
     label: "Balkon-Pionier",
     merit: "Meiste Balkonkraftwerke je 1.000 Einwohner — die sauberste Bürgerzahl.",
+    bestleistung: "die meisten Balkonkraftwerke je 1.000 Einwohner",
+    thema: "Balkonkraftwerke je 1.000 Einwohner",
+    themaDativ: "Balkonkraftwerken je 1.000 Einwohner",
     traeger: "buerger",
     messart: "proKopf",
     format: "countPer1000",
     metric: (g) => perCapita(g.balkonCount, g.population),
+    basis: (g) => stueck(g.balkonCount, "Balkonkraftwerk", "Balkonkraftwerke"),
+    metricVorjahr: (g) => perCapita(g.balkonCountLy ?? 0, g.population),
+  },
+  {
+    key: "speicherquote",
+    betreffPhrase: "bei Batteriespeichern je Dachanlage",
+    slug: "speicher-je-dachanlage",
+    label: "Speicher-Quote",
+    merit: "Meiste Batteriespeicher je 100 private Dachanlagen.",
+    bestleistung: "die meisten Batteriespeicher je 100 privaten Dachanlagen",
+    thema: "Batteriespeicher je 100 private Dachanlagen",
+    themaDativ: "Batteriespeichern je 100 privaten Dachanlagen",
+    traeger: "buerger",
+    messart: "quote",
+    format: "je100Dach",
+    metric: (g) => speicherQuote(g),
+    // Kein Stichtagswert: Die Award-Tabelle fuehrt privat_dach_count und
+    // batterie_privat_count nur zum HEUTIGEN Stand, nicht zum Jahresende. Ohne
+    // beide Zaehler zum selben Stichtag gaebe es keine ehrliche Rangveraenderung.
+    plausibel: (g) => (g.privatDachCount ?? 0) >= MIN_DACH_FUER_QUOTE,
+    plausibelGrund: `Dort stehen unter ${MIN_DACH_FUER_QUOTE} private Dachanlagen — darunter ist die Quote ein Zufallswert.`,
+    basis: (g) => stueck(g.privatDachCount, "private Dachanlage", "private Dachanlagen"),
   },
   {
     key: "batterie-privat-pk",
+    betreffPhrase: "bei der privaten Speicherkapazität",
+    slug: "speicherkapazitaet-je-einwohner",
     label: "Speicher-Vorreiter",
     merit: "Meiste private Batteriekapazität je Einwohner.",
+    bestleistung: "die meiste private Speicherkapazität je Einwohner",
+    thema: "private Speicherkapazität je Einwohner",
+    themaDativ: "privater Speicherkapazität je Einwohner",
     traeger: "buerger",
     messart: "proKopf",
     format: "whProKopf",
     metric: (g) => perCapita(g.batteriePrivatKwh, g.population),
+    basis: (g) => stueck(g.batteriePrivatCount, "Hausspeicher", "Hausspeicher"),
+    // Finsing: eine Gewerbe-Batterie als privat gemeldet, seit jeher als
+    // Einzelfall im Code gefuehrt. Die Groessenpruefung faengt die ganze Klasse.
+    plausibel: (g) => mittlereGroesse(g.batteriePrivatKwh, g.batteriePrivatCount) <= MAX_HAUSSPEICHER_KWH,
+    metricVorjahr: (g) => perCapita(g.batteriePrivatKwhLy ?? 0, g.population),
+  },
+  // Zubau-Tempo je Einwohner ueber mehrere Zeitraeume. Absolut waere es wieder
+  // eine Einwohner-Rangliste; RELATIV ("+300 %") gewinnt, wer bei fast null
+  // angefangen hat. Je Einwohner zugebaute Leistung ist beides nicht.
+  {
+    key: "tempo-1j",
+    betreffPhrase: `beim Solar-Zubau seit Ende ${seitEnde(1)}`,
+    slug: "zubau-1-jahr-je-einwohner",
+    label: "Tempo 1 Jahr",
+    merit: `Meiste je Einwohner zugebaute Solarleistung seit Ende ${seitEnde(1)}.`,
+    bestleistung: `den größten Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(1)}`,
+    thema: `Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(1)}`,
+    themaDativ: `Solar-Zubau je Einwohner seit Ende ${seitEnde(1)}`,
+    traeger: "buerger",
+    messart: "proKopf",
+    format: "wattProKopf",
+    metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpLy ?? 0)), g.population),
+    basis: (g) => zubauBasis(g.privatDachKwp - (g.privatDachKwpLy ?? 0)),
+  },
+  {
+    key: "tempo-3j",
+    betreffPhrase: `beim Solar-Zubau seit Ende ${seitEnde(3)}`,
+    slug: "zubau-3-jahre-je-einwohner",
+    label: "Tempo 3 Jahre",
+    merit: `Meiste je Einwohner zugebaute Solarleistung seit Ende ${seitEnde(3)}.`,
+    bestleistung: `den größten Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(3)}`,
+    thema: `Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(3)}`,
+    themaDativ: `Solar-Zubau je Einwohner seit Ende ${seitEnde(3)}`,
+    traeger: "buerger",
+    messart: "proKopf",
+    format: "wattProKopf",
+    metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpL3 ?? 0)), g.population),
+    basis: (g) => zubauBasis(g.privatDachKwp - (g.privatDachKwpL3 ?? 0)),
+  },
+  {
+    key: "tempo-5j",
+    betreffPhrase: `beim Solar-Zubau seit Ende ${seitEnde(5)}`,
+    slug: "zubau-5-jahre-je-einwohner",
+    label: "Tempo 5 Jahre",
+    merit: `Meiste je Einwohner zugebaute Solarleistung seit Ende ${seitEnde(5)}.`,
+    bestleistung: `den größten Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(5)}`,
+    thema: `Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(5)}`,
+    themaDativ: `Solar-Zubau je Einwohner seit Ende ${seitEnde(5)}`,
+    traeger: "buerger",
+    messart: "proKopf",
+    format: "wattProKopf",
+    metric: (g) => perCapita(Math.max(0, g.privatDachKwp - (g.privatDachKwpL5 ?? 0)), g.population),
+    basis: (g) => zubauBasis(g.privatDachKwp - (g.privatDachKwpL5 ?? 0)),
   },
   // Bürger, absolut — belohnt die großen Städte-Bürgerschaften.
   {
     key: "balkon-abs",
+    betreffPhrase: "bei Balkonkraftwerken",
     label: "Balkon-Hauptstadt",
     merit: "Meiste Balkonkraftwerke insgesamt.",
+    bestleistung: "die meisten Balkonkraftwerke insgesamt",
+    thema: "Balkonkraftwerke insgesamt",
+    themaDativ: "Balkonkraftwerken",
     traeger: "buerger",
     messart: "absolut",
     format: "count",
@@ -110,8 +403,12 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "dach-privat-abs",
+    betreffPhrase: "bei privater Solarleistung",
     label: "Solardach-Hauptstadt",
     merit: "Meiste private Dach-Solarleistung insgesamt — Bürger-Solar auf den Dächern, kein Gewerbe/Park.",
+    bestleistung: "die meiste private Solarleistung auf den Dächern",
+    thema: "private Solarleistung auf den Dächern",
+    themaDativ: "Solarleistung auf privaten Dächern",
     traeger: "buerger",
     messart: "absolut",
     format: "pvLeistung",
@@ -119,8 +416,12 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "batterie-privat-abs",
+    betreffPhrase: "bei der privaten Speicherkapazität",
     label: "Speicher-Hauptstadt",
     merit: "Meiste private Batteriekapazität insgesamt.",
+    bestleistung: "die meiste private Speicherkapazität",
+    thema: "private Speicherkapazität",
+    themaDativ: "privater Speicherkapazität",
     traeger: "buerger",
     messart: "absolut",
     format: "speicherKwh",
@@ -128,9 +429,32 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   // Gewerbe / Standort, absolut — pro Kopf hier verifiziert absurd, daher nur so.
   {
+    key: "solar-gesamt",
+    slug: "solarleistung-gesamt",
+    label: "Solar gesamt",
+    merit: "Meiste installierte Solarleistung insgesamt — Dächer, Balkone und Freiflächen zusammen.",
+    bestleistung: "die meiste installierte Solarleistung insgesamt",
+    thema: "Solarleistung insgesamt",
+    themaDativ: "installierter Solarleistung insgesamt",
+    traeger: "gewerbe",
+    messart: "absolut",
+    format: "pvLeistung",
+    // ABSOLUT und nicht je Einwohner — gemessen: Je Einwohner fuehrt Buettel mit
+    // 4.205.483 Wp je Kopf (rund 120 Einwohner neben einer Industrieanlage), eine
+    // Zahl, die niemand lesen kann. Absolut korreliert die Liste zwar mit der
+    // Ortsgroesse (+0,82), ihre Spitze ist aber trotzdem eine Aussage: die
+    // groesste Stadt und zwei Kraftwerks-Standorte. Genau deshalb steht sie unter
+    // "Sonstiges" und nicht bei den privaten Ranglisten.
+    metric: (g) => pos(g.solarKwp ?? 0),
+    metricVorjahr: (g) => pos(g.solarKwpLy ?? 0),
+  },
+  {
     key: "solar-standort",
     label: "Solar-Standort",
     merit: "Höchste gewerbliche + Freiflächen-Solarleistung. Misst den Standort, nicht die Bürger.",
+    bestleistung: "die meiste installierte Solarleistung insgesamt",
+    thema: "installierte Solarleistung insgesamt",
+    themaDativ: "installierter Solarleistung",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -138,17 +462,25 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "freiflaeche-standort",
+    slug: "freiflaechen-solar",
     label: "Freiflächen-Standort",
     merit: "Höchste Freiflächen-Solarleistung (Solarparks).",
+    bestleistung: "die meiste Solarleistung auf Freiflächen",
+    thema: "Solarleistung auf Freiflächen",
+    themaDativ: "Solarleistung auf Freiflächen",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
     metric: (g) => pos(g.freiflaecheKwp),
+    metricVorjahr: (g) => pos(g.freiflaecheKwpLy ?? 0),
   },
   {
     key: "gewerbespeicher-abs",
     label: "Gewerbespeicher-Standort",
     merit: "Höchste gewerbliche Batteriekapazität.",
+    bestleistung: "die meiste gewerbliche Speicherkapazität",
+    thema: "gewerbliche Speicherkapazität",
+    themaDativ: "gewerblicher Speicherkapazität",
     traeger: "gewerbe",
     messart: "absolut",
     format: "speicherKwh",
@@ -160,17 +492,25 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   // „MWp" über einer Windleistung; gefunden beim Aufbau der Versorger-Aggregate.
   {
     key: "wind-standort",
+    slug: "windleistung",
     label: "Wind-Standort",
     merit: "Höchste installierte Windleistung.",
+    bestleistung: "die meiste Windleistung",
+    thema: "Windleistung",
+    themaDativ: "Windleistung",
     traeger: "gewerbe",
     messart: "absolut",
     format: "mixLeistung",
     metric: (g) => pos(g.windKwp),
+    metricVorjahr: (g) => pos(g.windKwpLy ?? 0),
   },
   {
     key: "biomasse-standort",
     label: "Biomasse-Standort",
     merit: "Höchste installierte Biomasseleistung.",
+    bestleistung: "die meiste Biomasseleistung",
+    thema: "Biomasseleistung",
+    themaDativ: "Biomasseleistung",
     traeger: "gewerbe",
     messart: "absolut",
     format: "mixLeistung",
@@ -180,6 +520,9 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     key: "wasser-standort",
     label: "Wasserkraft-Standort",
     merit: "Höchste installierte Wasserkraftleistung.",
+    bestleistung: "die meiste Wasserkraftleistung",
+    thema: "Wasserkraftleistung",
+    themaDativ: "Wasserkraftleistung",
     traeger: "gewerbe",
     messart: "absolut",
     format: "mixLeistung",
@@ -188,8 +531,12 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   // Dynamik.
   {
     key: "zubau",
+    slug: "solar-zubau",
     label: "Zubau-Champion",
     merit: "Größter Solar-Zubau im letzten vollständigen Jahr.",
+    bestleistung: "den größten Solar-Zubau im letzten Jahr",
+    thema: "Solar-Zubau im letzten Jahr",
+    themaDativ: "Solar-Zubau im letzten Jahr",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",
@@ -244,9 +591,16 @@ export function formatAwardValue(value: number, format: MetricFormat): string {
     case "count":
       return `${Math.round(value).toLocaleString("de-DE")} Anlagen`;
     case "countPer1000":
-      return `${value.toLocaleString("de-DE", { maximumFractionDigits: 1 })} je 1.000 Ew.`;
+      // Feste Nachkommastelle: In einer Spalte untereinander las sich sonst
+      // "125,9" ueber "125" wie ein Sprung, wo nur die Null fehlte.
+      return `${value.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} je 1.000 Ew.`;
     case "whProKopf":
       return `${Math.round(value).toLocaleString("de-DE")} Wh/Kopf`;
+    case "je100Dach":
+      // NIE als Prozentzahl: Orte kommen auf ueber 100 (Osterwald: 113 Batterien
+      // auf 71 Dachanlagen), weil Speicher nachgeruestet und auch an
+      // Nicht-Dach-Anlagen gemeldet werden. "113 %" waere schlicht falsch.
+      return `${Math.round(value).toLocaleString("de-DE")} je 100 Dächer`;
   }
 }
 
@@ -331,14 +685,21 @@ export function rankGemeinden(gemeinden: GemeindeStats[], cat: AwardCategory): R
   const scored = gemeinden
     .map((g) => ({ g, value: cat.metric(g) }))
     .filter((e): e is { g: GemeindeStats; value: number } => e.value != null && e.value > 0);
-  scored.sort((a, b) => b.value - a.value || a.g.regionId.localeCompare(b.g.regionId));
-  return scored.map((e, i) => ({
-    regionId: e.g.regionId,
-    name: e.g.name,
-    rank: i + 1,
-    value: e.value,
-    population: e.g.population,
-  }));
+  // GLEICHSTAND EXAKT WIE IN DER OEFFENTLICHEN RANGLISTE (lib/atlas-ranking.ts):
+  // Name als Entscheider, Sportrang. Vorher entschied hier der Gemeindeschluessel
+  // und die Plaetze liefen fortlaufend durch — der Orden sagte damit "Platz 4",
+  // die verlinkte Liste "Platz 3", und die gleichstehenden Orte standen auch noch
+  // in anderer Reihenfolge. Zwei Zahlen fuer dieselbe Sache auf zwei Seiten, die
+  // aufeinander zeigen.
+  scored.sort((a, b) => b.value - a.value || a.g.name.localeCompare(b.g.name, "de"));
+  let letzterWert: number | null = null;
+  let letzterRang = 0;
+  return scored.map((e, i) => {
+    const rank = letzterWert !== null && e.value === letzterWert ? letzterRang : i + 1;
+    letzterWert = e.value;
+    letzterRang = rank;
+    return { regionId: e.g.regionId, name: e.g.name, rank, value: e.value, population: e.g.population };
+  });
 }
 
 export type ViewOptions = {

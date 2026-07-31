@@ -2,6 +2,9 @@
 
 import { useRef } from "react";
 import { v, space, pad } from "../../../../lib/theme";
+// Anzeigewerte kommen aus der EINEN Formatier-Funktion in lib/awards.ts. Die
+// frueheren Kopien hier und in awards/gruppe kannten das Format "je100Dach"
+// nicht — eine zweite Kopie eines Formatters ist ein Fehler, kein Duplikat.
 import { formatAwardValue } from "../../../../lib/awards";
 import type { MetricFormat, Messart, Traeger } from "../../../../lib/awards";
 
@@ -28,6 +31,7 @@ export type AwardsPayload = {
 };
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
+
 
 export default function AwardsClient({ payload }: { payload: AwardsPayload }) {
   const { categories, bundeslaender, selection, activeCategory, tertiles, totalGemeinden, rows } = payload;

@@ -51,6 +51,13 @@ jobs:
       - name: Run MaStR refresh (BNetzA, full pipeline)
         run: npm run mastr:refresh-bnetza -- --download --aggregate --upload
 
+      # Prueft die frisch hochgeladenen Zahlen gegen physikalische und
+      # rechtliche Grenzen. Faellt sie durch, wird der Lauf rot — besser eine
+      # rote Action als stillschweigend falsche Zahlen auf 11.000 Seiten.
+      # Hintergrund im Skript selbst (der Fall Dolgesheim, 29.07.2026).
+      - name: Plausibilitaet der aggregierten Daten
+        run: npx tsx scripts/mastr-plausibilitaet.ts
+
       - name: Disk space after run
         if: always()
         run: df -h .

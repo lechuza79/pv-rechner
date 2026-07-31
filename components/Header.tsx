@@ -46,7 +46,11 @@ const FOERDERUNG_ITEMS: NavItem[] = [
 const ENERGIE_ITEMS: NavItem[] = [
   { href: "/strommix-deutschland", label: "Strommix Deutschland", desc: "Live-Stromerzeugung, Verlauf und Kernenergie", page: "energie" },
   { href: "/atomstrom-import", label: "Atomstrom-Import", desc: "Wie viel Kernstrom Deutschland aus dem Ausland bezieht", page: "atomstrom" },
-  { href: "/solar-atlas", label: "Solar-Atlas", desc: "Solar-Bestand je Region — Deutschland, Länder, Kreise", page: "atlas" },
+  // EIN Punkt, nicht zwei: Die Ranglisten sind dieselben Daten wie der Atlas,
+  // nur anders sortiert — es gibt keinen dritten Inhalt, der einen zweiten
+  // Menuepunkt traegt. Vorher standen beide gleichrangig hier, waehrend die
+  // Kruemelspur die Listen unter den Atlas haengte; das widersprach sich.
+  { href: "/solar-atlas", label: "Solar-Atlas", desc: "Solar-Bestand je Region und die Ranglisten der Städte und Gemeinden", page: "atlas" },
   { href: "/energie-widgets", label: "Charts einbetten", desc: "Kostenlose Energie-Widgets für die eigene Website", page: "widgets" },
 ];
 

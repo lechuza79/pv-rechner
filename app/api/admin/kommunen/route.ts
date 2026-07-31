@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { renderOutreachDraft } from "../../../../lib/kommunen-outreach-draft";
-import { buildHookIndex } from "../../../../lib/awards-server";
+import { buildHookIndex, loadElternSlugs } from "../../../../lib/awards-server";
+import { AWARD_CATEGORY_BY_KEY } from "../../../../lib/awards";
+import { ranglisteUrl } from "../../../../lib/atlas-ranking";
 import { DEFAULT_HOOK_SETTINGS } from "../../../../lib/award-hook";
 import { atlasPathForRegionId } from "../../../../lib/atlas";
+import { getRegionAtlasData } from "../../../../lib/mastr-data";
+import { askVariante, type AskVariante } from "../../../../lib/kommunen-ask";
 import { isOutreachStatus } from "../../../../lib/outreach-status";
 import { isAdminSession } from "../../../../lib/admin-guard";
 
@@ -21,7 +25,7 @@ const PAGE_SIZE = 50;
 
 // Eine Quelle für das Zeilen-Shape (GET, PATCH, POST liefern dasselbe zurück).
 const SELECT =
-  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, gruene_pct, linke_pct, spd_pct, mastr_regions!inner(name, bezeichnung, population)";
+  "region_id, website, email, kontakt_url, outreach_status, channel, contacted_at, responded_at, notes, draft_subject, draft_body, draft_generated_at, draft_manuell, gruene_pct, linke_pct, spd_pct, kampagne, charge, rollen_email, verantwortlich_funktion, verantwortlich_operativ, verwaltung_domain, thema_solar_url, thema_klima_url, thema_blatt_url, ask_variante, variante_manuell, versendet_variante, widget_anfrage, ref_token, ref_klicks, mastr_regions!inner(name, bezeichnung, population)";
 
 export async function GET(req: NextRequest) {
   if (!(await isAdminSession())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -33,6 +37,8 @@ export async function GET(req: NextRequest) {
   const hasLink = sp.get("hasLink") === "1";
   const q = (sp.get("q") ?? "").trim();
   const sort = sp.get("sort") ?? "";
+  const kampagne = sp.get("kampagne") ?? "";
+  const charge = sp.get("charge") ?? "";
   const page = Math.max(0, parseInt(sp.get("page") ?? "0", 10) || 0);
 
   // Immer inner-join auf mastr_regions (jede Zeile hat per FK eine Gemeinde) —
@@ -42,6 +48,7 @@ export async function GET(req: NextRequest) {
   // Sortierung: nach Grünen-/Linke-Anteil (Outreach-Priorisierung) oder Standard.
   if (sort === "gruen") query = query.order("gruene_pct", { ascending: false, nullsFirst: false });
   else if (sort === "links") query = query.order("linke_pct", { ascending: false, nullsFirst: false });
+  else if (kampagne) query = query.order("charge").order("region_id");
   else query = query.order("region_id");
 
   query = query.range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
@@ -49,13 +56,36 @@ export async function GET(req: NextRequest) {
   if (bl) query = query.like("region_id", `${bl}%`);
   if (status) query = query.eq("outreach_status", status);
   if (hasLink) query = query.not("kontakt_url", "is", null);
+  if (kampagne) query = query.eq("kampagne", kampagne);
+  if (charge) query = query.eq("charge", parseInt(charge, 10));
   if (q) query = query.ilike("mastr_regions.name", `%${q}%`);
 
   const { data, count, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
+  // Atlas-Pfad je Zeile: EINE Abfrage für alle benötigten Slugs statt
+  // atlasPathForRegionId je Gemeinde (das wären bis zu 100 Aufrufe pro Seite).
+  // Die Hierarchie steckt im Schlüssel: 2 Stellen Bundesland, 5 Landkreis,
+  // 8 Gemeinde.
+  const zeilen = (data ?? []) as { region_id: string }[];
+  const ids = new Set<string>();
+  for (const z of zeilen) {
+    ids.add(z.region_id.slice(0, 2));
+    ids.add(z.region_id.slice(0, 5));
+    ids.add(z.region_id);
+  }
+  const { data: slugRows } = await serviceDb
+    .from("mastr_regions")
+    .select("region_id, slug")
+    .in("region_id", Array.from(ids));
+  const slugOf = new Map((slugRows ?? []).map((r) => [r.region_id as string, r.slug as string | null]));
+  const atlasPfad = (id: string): string | null => {
+    const teile = [slugOf.get(id.slice(0, 2)), slugOf.get(id.slice(0, 5)), slugOf.get(id)];
+    return teile.every(Boolean) ? `/solar-atlas/${teile.join("/")}` : null;
+  };
+
   return NextResponse.json({
-    rows: data ?? [],
+    rows: zeilen.map((z) => ({ ...z, atlas_path: atlasPfad(z.region_id) })),
     total: count ?? 0,
     page,
     pageSize: PAGE_SIZE,
@@ -75,6 +105,8 @@ export async function PATCH(req: NextRequest) {
     channel?: string;
     draft_subject?: string;
     draft_body?: string;
+    ask_variante?: string;
+    widget_anfrage?: boolean;
   };
   if (!body.region_id) return NextResponse.json({ error: "region_id fehlt" }, { status: 400 });
 
@@ -86,13 +118,38 @@ export async function PATCH(req: NextRequest) {
     }
     patch.outreach_status = body.outreach_status;
     // Kontakt-/Antwortdatum an den Statuswechsel koppeln (nur setzen, nie leeren).
-    if (body.outreach_status === "kontaktiert") patch.contacted_at = new Date().toISOString();
+    if (body.outreach_status === "kontaktiert") {
+      patch.contacted_at = new Date().toISOString();
+      // Variante zum VERSANDZEITPUNKT einfrieren. Wer die Zuordnung später
+      // ändert, darf die Auswertung nicht rückwirkend kippen — sonst steht am
+      // Ende eine Bilanz, die nie verschickt wurde.
+      const { data: vorher } = await serviceDb
+        .from("kommunen_kontakt")
+        .select("ask_variante, versendet_variante")
+        .eq("region_id", body.region_id)
+        .maybeSingle();
+      if (!vorher?.versendet_variante && vorher?.ask_variante) {
+        patch.versendet_variante = vorher.ask_variante;
+      }
+    }
     if (body.outreach_status === "geantwortet") patch.responded_at = new Date().toISOString();
   }
   if (body.notes !== undefined) patch.notes = body.notes;
   if (body.channel !== undefined) patch.channel = body.channel || null;
+  if (body.ask_variante !== undefined) {
+    if (!["nur_meldung", "meldung_plus_widget"].includes(body.ask_variante)) {
+      return NextResponse.json({ error: "unbekannte Variante" }, { status: 400 });
+    }
+    patch.ask_variante = body.ask_variante;
+    patch.variante_manuell = true; // von Hand gesetzt → kein Lauf überschreibt sie
+  }
+  if (body.widget_anfrage !== undefined) patch.widget_anfrage = body.widget_anfrage;
   if (body.draft_subject !== undefined) patch.draft_subject = body.draft_subject;
-  if (body.draft_body !== undefined) patch.draft_body = body.draft_body;
+  if (body.draft_body !== undefined) {
+    patch.draft_body = body.draft_body;
+    // Von Hand gespeichert → überlebt eine spätere Neuerzeugung.
+    patch.draft_manuell = true;
+  }
 
   const { data, error } = await serviceDb
     .from("kommunen_kontakt")
@@ -117,11 +174,16 @@ export async function POST(req: NextRequest) {
   // Name + Atlas-Pfad + der Anschreiben-Aufhänger aus der Award-Hook-Logik (eine
   // Quelle mit der Vorschau /admin/awards/anschreiben — kein Drift). Der Index ist
   // prozess-lokal memoisiert, der Lookup je Gemeinde damit billig.
-  const [{ data: reg }, { data: leadRow }, path, index] = await Promise.all([
-    serviceDb.from("mastr_regions").select("name").eq("region_id", region_id).single(),
-    serviceDb.from("kommunen_kontakt").select("outreach_status").eq("region_id", region_id).maybeSingle(),
+  const [{ data: reg }, { data: leadRow }, path, index, elternSlugsMap] = await Promise.all([
+    serviceDb.from("mastr_regions").select("name, bezeichnung, population, slug").eq("region_id", region_id).single(),
+    serviceDb
+      .from("kommunen_kontakt")
+      .select("outreach_status, verantwortlich_funktion, verantwortlich_operativ, ask_variante, ref_token")
+      .eq("region_id", region_id)
+      .maybeSingle(),
     atlasPathForRegionId(region_id),
     buildHookIndex(DEFAULT_HOOK_SETTINGS),
+    loadElternSlugs(),
   ]);
   if (!reg) return NextResponse.json({ error: "Gemeinde nicht gefunden" }, { status: 404 });
   // Harte Sperre: für gesperrte Gemeinden nie ein Anschreiben erzeugen.
@@ -129,14 +191,62 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Gemeinde ist gesperrt — kein Anschreiben." }, { status: 403 });
   }
 
+  // Zahlen für die Meldung aus DERSELBEN Quelle wie die Atlas-Seite — sonst
+  // steht in der Meldung eine andere Zahl als auf der verlinkten Seite.
+  const atlas = await getRegionAtlasData(region_id);
   const hook = index.rows.find((r) => r.regionId === region_id);
+
+  // In der MELDUNG steht die kanonische Adresse — das ist der Link, den die
+  // Gemeinde veröffentlicht. Die zählende Weiterleitung taucht nur im Brieftext
+  // als Vorschau-Link auf.
+  const seiteUrl = path ? `${SITE_URL}${path}` : null;
+  const vorschauUrl = leadRow?.ref_token ? `${SITE_URL}/r/${leadRow.ref_token}` : null;
+
+  const variante: AskVariante =
+    (leadRow?.ask_variante as AskVariante | null) ??
+    askVariante({ population: reg.population, operativeStelle: !!leadRow?.verantwortlich_operativ });
+
   const draft = renderOutreachDraft({
     name: reg.name,
-    pageUrl: path ? `${SITE_URL}${path}` : null,
+    pageUrl: seiteUrl,
+    vorschauUrl,
     betreff: hook?.betreff ?? `So steht ${reg.name} beim Solar-Ausbau da`,
     einstieg:
       hook?.einstieg ??
       `Wir haben den Solarausbau in ${reg.name} aus den amtlichen Anlagendaten aufbereitet — hier der Überblick für Ihre Gemeinde.`,
+    variante,
+    // Nur eine OPERATIVE Stelle wird direkt adressiert. Der Bürgermeister steht
+    // zwar fast immer im Impressum, betreut die Website aber nicht.
+    funktion: leadRow?.verantwortlich_operativ ? leadRow.verantwortlich_funktion : null,
+    
+    wo: hook?.wo ?? "in der Region",
+    bestleistung: hook?.bestleistung ?? "einen bemerkenswerten Solar-Ausbau",
+    themaDativ: hook?.themaDativ ?? "Solar-Ausbau",
+    phrase: hook?.phrase ?? "beim Solar-Ausbau",
+    // Ohne Vergleichsgruppe keine Rang-Aussage — dann bleibt die Meldung beim
+    // reinen Bestandsbericht (siehe renderMeldung).
+    gruppe: hook?.gruppe ?? hook?.wo ?? "in der Region",
+    rangWert: hook?.valueStr ?? null,
+    rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
+    weitere: hook?.weitere ?? [],
+    // Zeigt auf genau die Liste, in der der Platz gilt — Klasse und Gebiet drin.
+    ranglisteUrl: (() => {
+      const kat = hook?.categoryKey ? AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.slug : undefined;
+      const bl = elternSlugsMap[region_id.slice(0, 2)];
+      const kreis = elternSlugsMap[region_id.slice(0, 5)];
+      const gebiet = hook?.level === "bund" ? [] : hook?.level === "land" ? [bl] : [bl, kreis];
+      const pfad = ranglisteUrl(kat, hook?.klasseSlug ?? null, gebiet);
+      return pfad ? `${SITE_URL}${pfad}` : null;
+    })(),
+    zahlen: {
+      anlagen: atlas.solar.total_count,
+      leistungKwp: atlas.solar.total_kwp,
+      // Anteil privater Daecher — sonst eroeffnet die Meldung mit der Leistung
+      // eines Solarparks und behauptet danach etwas ueber die Buerger.
+      privatDachKwp: atlas.solar.by_segment.find((x) => x.segment === "privat_dach")?.kwp ?? null,
+      wpProKopf: reg.population ? Math.round((atlas.solar.total_kwp * 1000) / reg.population) : null,
+      stand: atlas.data_as_of,
+    },
   });
 
   const { data, error } = await serviceDb
@@ -145,6 +255,8 @@ export async function POST(req: NextRequest) {
       draft_subject: draft.subject,
       draft_body: draft.body,
       draft_generated_at: new Date().toISOString(),
+      draft_manuell: false,
+      ask_variante: variante,
       updated_at: new Date().toISOString(),
     })
     .eq("region_id", region_id)

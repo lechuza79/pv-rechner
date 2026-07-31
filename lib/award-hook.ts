@@ -6,6 +6,7 @@
 //
 // Reine Funktionen auf dem Award-Rechenkern — eine Rangquelle, keine zweite.
 
+import { GROESSENKLASSE_BY_SLUG, klasseVon } from "./gemeindegroesse";
 import {
   AWARD_CATEGORIES,
   AWARD_CATEGORY_BY_KEY,
@@ -15,6 +16,7 @@ import {
   type GemeindeStats,
   type Traeger,
 } from "./awards";
+import { ortPhrase } from "./atlas-orte";
 
 export type HookLevel = "kreis" | "land" | "bund";
 const SCOPE_OF: Record<HookLevel, AwardScopeLevel> = { kreis: "landkreis", land: "bundesland", bund: "de" };
@@ -32,16 +34,33 @@ const HOOK_TRAEGER: Traeger = "buerger";
 /** Einwohner-Untergrenze für Pro-Kopf-Aufhänger (wie der öffentliche Atlas,
  *  `p_min_pop`): sonst führt ein 30-Einwohner-Koog jede Pro-Kopf-Liste an — der
  *  Wert ist dann ein Nenner-Artefakt, kein Ausbau. Nur Pro-Kopf-Kategorien. */
+/**
+ * NICHT MEHR IN GEBRAUCH — bleibt nur, weil aeltere Aufrufer und Tests sie
+ * kennen. Der Aufhaenger rankt seit dem 31.07.2026 INNERHALB der Groessenklasse
+ * statt oberhalb einer Einwohner-Untergrenze.
+ *
+ * WARUM: Der Orden auf der Gemeindeseite rechnete mit dieser Grenze und ohne
+ * Klassen, die verlinkte Rangliste ohne Grenze und mit. Der Brief sagte
+ * "Platz 3", die Seite dahinter etwas anderes — zwei Zahlen fuer dieselbe Sache
+ * auf zwei Oberflaechen, die aufeinander zeigen.
+ */
 export const HOOK_MIN_POPULATION = 2000;
 
-/** Bekannte Register-Fehler → nie ein Aufhänger, nur neutral. Aktuell nur
- *  Finsing (09177118): eine Gewerbe-Batterie ist dort als privat gemeldet und
- *  würde sonst „Speicher-Vorreiter/-Hauptstadt Nr. 1".
- *  Das Waldshut-Trio ist NICHT hier: die Dedup-Session hat gemessen, dass das ein
- *  Pumpspeicher-Fehler (kWh) ist — er fasst keine Solar-Award-Kategorie an. Die 10
- *  echten Solar-Doppelzählungen treffen nur „Solar-Standort" (kein Aufhänger,
- *  Bürger-only) und bekommen eine eigene Leitplanke in der Rangliste. */
-export const HOOK_QUARANTINE = new Set(["09177118"]);
+/**
+ * ENTFERNT AM 31.07.2026 — die Liste ist leer und bleibt es hoffentlich.
+ *
+ * Sie enthielt Finsing (09177118): eine 51-MWh-Gewerbebatterie war dort als
+ * privat gemeldet und haette den Ort zum "Speicher-Vorreiter Nr. 1" gemacht.
+ * Seit der Groessenpruefung beim Einlesen sitzt sie im gewerblichen Topf; die
+ * privaten Batterien liegen bei 9,9 kWh im Schnitt, also voellig normal.
+ *
+ * WARUM DIE AUSNAHME SELBST EIN FEHLER WAR: Sie wirkte nur auf den Aufhaenger,
+ * nicht auf die Rangliste und nicht auf die Tabelle darunter. Auf rund zehn
+ * Gemeindeseiten stand deshalb "Platz 1 von 18" ueber einer Tabelle mit 19
+ * Zeilen. Eine Handkorrektur, die nur die halbe Strecke geht, erzeugt einen
+ * neuen Widerspruch statt einen alten zu beheben — der richtige Ort fuer solche
+ * Faelle ist die Quelle, nicht die Anzeige.
+ */
 
 /** Spike-Wächter: liegt ein Pro-Kopf-Wert extrem über dem Gruppen-Median, ist das
  *  eher ein Datenfehler als ein echter Vorreiter → nicht krönen (fällt auf
@@ -63,6 +82,35 @@ export type HookExample = {
   betreff: string;
   einstieg: string;
   others: string[];
+  /**
+   * Weitere Spitzenplaetze derselben Gemeinde, fertig formuliert — fuer den
+   * Brief, nicht fuer die Meldung. Die Meldung traegt EINE Aussage; der Brief
+   * darf zeigen, dass es nicht bei einer bleibt.
+   *
+   * NICHT `others`: Das ist die interne Cockpit-Zeile mit den Kunstwoertern
+   * ("Balkon-Pionier · Landkreis · Platz 3/34") und darf nie nach aussen.
+   */
+  weitere: { phrase: string; gruppe: string; platz: number; von: number }[];
+  /** Platz und Gruppengröße des gewählten Aufhängers („Platz 1 von 34"). Wird
+   *  für die Auswahl der Versandliste gebraucht: „von 34" wiegt schwerer als
+   *  „von 5", und ohne diese Größe sortiert die Liste faktisch nach Einwohnern. */
+  rank: number | null;
+  total: number | null;
+  /** Messgröße im Klartext („die meiste private Speicherkapazität") und der
+   *  Bezug („im Landkreis Würzburg"). Fertig gebaut, damit Anschreiben und
+   *  Meldung nicht dieselbe Formulierung ein zweites Mal zusammensetzen. */
+  bestleistung: string | null;
+  /** Dieselbe Messgröße im DATIV — sie steht ausnahmslos hinter „bei". */
+  themaDativ: string | null;
+  /** Kurzform als Präpositionalphrase („bei Hausspeichern") — trägt Betreff und
+   *  Meldungs-Überschrift. */
+  phrase: string | null;
+  /** Größenklasse des Aufhängers als Kürzel — für die Adresse der Rangliste. */
+  klasseSlug: string | null;
+  wo: string | null;
+  /** Vergleichsgruppe im Dativ („Kleinen Gemeinden im Landkreis Würzburg").
+   *  Ohne sie behauptet die Meldung einen kreisweiten Bestwert. */
+  gruppe: string | null;
   /** Belegwert des gewählten Aufhängers, fertig formatiert (z. B. „2.480 Wp/Kopf",
    *  „53,4 MWh") — damit der Mensch einen Ausreißer sieht. Null bei neutral. */
   valueStr: string | null;
@@ -72,6 +120,10 @@ export type Placement = {
   categoryKey: string;
   level: HookLevel;
   scopeId: string;
+  /** Groessenklasse, INNERHALB derer der Rang gilt. Ohne sie stuenden Brief und
+   *  verlinkte Rangliste auf zwei verschiedenen Rechnungen. */
+  klasseSlug: string;
+  klasseLabel: string;
   rank: number;
   total: number;
   value: number;
@@ -85,6 +137,10 @@ export type Hook = {
   kind: HookKind;
   categoryKey: string | null;
   categoryLabel: string | null;
+  /** Groessenklasse des Vergleichs ("Kleine Gemeinden"). Gehoert in JEDEN Satz,
+   *  der einen Rang nennt — sonst behauptet der Brief einen anderen Vergleich
+   *  als die Rangliste, auf die er verlinkt. */
+  klasseLabel: string | null;
   traeger: Traeger | null;
   level: HookLevel | null;
   scopeId: string | null;
@@ -124,32 +180,60 @@ export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Place
     else out.set(id, [p]);
   };
   // Bekannte Fehl-Gemeinden ganz aus der Aufhänger-Bildung nehmen (nur neutral).
-  const pool = gemeinden.filter((g) => !HOOK_QUARANTINE.has(g.regionId));
+  const pool = gemeinden;
   const levels: HookLevel[] = ["kreis", "land", "bund"];
   for (const cat of AWARD_CATEGORIES) {
     if (cat.traeger !== HOOK_TRAEGER) continue; // nur Bürger-Leistung wird zum Aufhänger
-    const floor = cat.messart === "proKopf" ? HOOK_MIN_POPULATION : 0;
-    const isProKopf = cat.messart === "proKopf";
+    // KEINE ABSOLUTEN KATEGORIEN (31.07.2026). "Die meisten Balkonkraftwerke im
+    // Landkreis" kürt gemessen die einwohnerstärkste Kommune: In BW, BY und NRW
+    // ist der Sieger jeweils exakt die größte Gemeinde, und 6 bis 10 der ersten
+    // Zehn sind schlicht die zehn einwohnerstärksten Orte. Ein Brief mit diesem
+    // Aufhänger lobt Größe, nicht Leistung — und aus den öffentlichen
+    // Ranglisten haben wir sie aus demselben Grund längst herausgenommen.
+    // Verhältniszahlen (pro Kopf, je Dach) bleiben.
+    if (cat.messart === "absolut") continue;
     for (const level of levels) {
+      // Gruppiert wird nach Gebiet UND Groessenklasse — exakt wie in der
+      // Rangliste, auf die der Orden und der Brief verlinken.
       const groups = new Map<string, GemeindeStats[]>();
       for (const g of pool) {
-        if (g.population < floor) continue; // Pro-Kopf: Nenner-Artefakt kleiner Gemeinden vermeiden
+        // Dieselbe Groessenpruefung wie in der Liste: Wo "private" Anlagen
+        // Wohnhausgroesse sprengen, zaehlt der Ort dort nicht mit.
+        if (cat.plausibel && !cat.plausibel(g)) continue;
+        const klasse = klasseVon(g.population);
+        if (!klasse) continue;
         const m = cat.metric(g);
         if (m == null || m <= 0) continue;
         const sid = scopeIdOf(g.regionId, SCOPE_OF[level]);
-        const arr = groups.get(sid);
+        const key = `${sid}|${klasse.slug}`;
+        const arr = groups.get(key);
         if (arr) arr.push(g);
-        else groups.set(sid, [g]);
+        else groups.set(key, [g]);
       }
-      for (const [sid, list] of Array.from(groups.entries())) {
+      for (const [key, list] of Array.from(groups.entries())) {
+        const [sid, klasseSlug] = key.split("|");
+        const klasse = GROESSENKLASSE_BY_SLUG[klasseSlug];
         const ranked = rankGemeinden(list, cat);
         const total = ranked.length;
         // Median der Gruppe für den Spike-Wächter (nur Pro-Kopf sinnvoll — bei
         // absoluten Kategorien liegt der Sieger naturgemäß weit über dem Median).
         const median = total ? ranked[Math.floor(total / 2)].value : 0;
         for (const r of ranked) {
-          const spike = isProKopf && median > 0 && r.value > SPIKE_FACTOR * median;
-          push(r.regionId, { categoryKey: cat.key, level, scopeId: sid, rank: r.rank, total, value: r.value, spike });
+          // Der Spike-Waechter greift jetzt fuer ALLE verbliebenen Kategorien —
+          // es sind ausnahmslos Verhaeltniszahlen, und genau dort ist ein Wert
+          // weit ueber dem Gruppen-Median eher ein Datenfehler als ein Vorreiter.
+          const spike = median > 0 && r.value > SPIKE_FACTOR * median;
+          push(r.regionId, {
+            categoryKey: cat.key,
+            level,
+            scopeId: sid,
+            klasseSlug,
+            klasseLabel: klasse?.labelDativ ?? klasseSlug,
+            rank: r.rank,
+            total,
+            value: r.value,
+            spike,
+          });
         }
       }
     }
@@ -161,6 +245,7 @@ const NEUTRAL: Hook = {
   kind: "neutral",
   categoryKey: null,
   categoryLabel: null,
+  klasseLabel: null,
   traeger: null,
   level: null,
   scopeId: null,
@@ -204,6 +289,7 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
         kind,
         categoryKey: cat.key,
         categoryLabel: cat.label,
+        klasseLabel: p.klasseLabel,
         traeger: cat.traeger,
         level: p.level,
         scopeId: p.scopeId,
@@ -221,9 +307,23 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
 
 export type HookNames = { gemeinde: string; kreis: string; land: string };
 
-function scopeIn(level: HookLevel, n: HookNames): string {
-  if (level === "kreis") return `im ${n.kreis}`;
-  if (level === "land") return `in ${n.land}`;
+/**
+ * Kurzform des Gebiets fuer den BETREFF: "im Landkreis" statt "im Landkreis
+ * Musterkreis". Der Empfaenger sitzt in diesem Kreis — der Name kostet dort nur
+ * Zeichen, die im Postfach abgeschnitten werden. Das Bundesland bleibt benannt,
+ * weil "im Bundesland" nichts sagt.
+ */
+export function scopeKurz(level: HookLevel, n: HookNames): string {
+  if (level === "kreis") return "im Landkreis";
+  if (level === "land") return ortPhrase({ name: n.land, level: "bundesland" });
+  return "bundesweit";
+}
+
+export function scopeIn(level: HookLevel, n: HookNames): string {
+  // Präposition aus lib/atlas-orte, nicht hier getippt: "im Region Hannover"
+  // stand sonst im Anschreiben.
+  if (level === "kreis") return ortPhrase({ name: n.kreis });
+  if (level === "land") return ortPhrase({ name: n.land, level: "bundesland" });
   return "bundesweit";
 }
 
@@ -231,23 +331,55 @@ function scopeIn(level: HookLevel, n: HookNames): string {
  *  keine Freitext-Interpolation von außen (Allowlist-Muster). */
 export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg: string } {
   const wo = hook.level ? scopeIn(hook.level, n) : "";
-  const titel = hook.categoryLabel ?? "";
+  const woKurz = hook.level ? scopeKurz(hook.level, n) : "";
+  // KEIN interner Titel nach außen (siehe `bestleistung` in lib/awards.ts):
+  // „Erlenbach a.Main ist Speicher-Hauptstadt" sagt nicht, was gemessen wurde,
+  // klingt bei 9.717 Einwohnern erfunden, und die Auszeichnung gibt es
+  // öffentlich nirgends. Stattdessen die Messgröße im Klartext — jeder Satzteil
+  // belegbar und ohne Erklärung verständlich.
+  const cat = hook.categoryKey ? AWARD_CATEGORY_BY_KEY[hook.categoryKey] : null;
+  const bestleistung = cat?.bestleistung ?? "den größten Solar-Ausbau";
+  const themaDativ = cat?.themaDativ ?? "Solar-Ausbau";
+  // Praepositionalphrase am Stueck — nie aus "bei" + Substantiv zusammengesetzt.
+  const phrase = cat?.betreffPhrase ?? `bei ${themaDativ}`;
+  // "unter den Kleinen Gemeinden im Landkreis Miltenberg" — der Vergleich
+  // gehoert in den Satz. Ohne ihn steht im Brief "Platz 3 von 34" und auf der
+  // verlinkten Rangliste eine andere Zahl, weil die innerhalb der Groessenklasse
+  // rechnet. Zwei Zahlen fuer dieselbe Sache sind der schwerste Fehler, den
+  // dieses Projekt machen kann.
+  const gruppe = hook.klasseLabel ? `unter den ${hook.klasseLabel} ${wo}` : wo;
   switch (hook.kind) {
     case "sieger":
       return {
-        betreff: `${n.gemeinde} ist ${titel} ${wo}`,
-        einstieg: `${n.gemeinde} ist ${wo} die Nummer 1 bei „${titel}“ — Platz 1 von ${hook.total} Gemeinden.`,
+        // Rang zuerst: Die Meldungs-Überschrift trägt bereits die Messgröße als
+        // Superlativ. Stünde beides gleich, läse sich der Brief wie ein
+        // Textbaustein-Unfall — Betreff und Überschrift sagen dasselbe, nur
+        // anders herum.
+        // KURZ. Die Einzelheiten — Groessenklasse, Gruppengroesse, Wert —
+        // stehen im Einstieg, wo Platz dafuer ist.
+        betreff: `${n.gemeinde} ${phrase} auf Platz 1 ${woKurz}`,
+        einstieg: `${n.gemeinde} hat ${bestleistung} ${gruppe} — Platz 1 von ${hook.total}.`,
       };
     case "podium":
       return {
-        betreff: `${n.gemeinde}: Platz ${hook.rank} ${wo} bei „${titel}“`,
-        einstieg: `${n.gemeinde} gehört ${wo} zur Spitze: Platz ${hook.rank} von ${hook.total} bei „${titel}“.`,
+        betreff: `${n.gemeinde} ${phrase} auf Platz ${hook.rank} ${woKurz}`,
+        // NACH "bei" DER DATIV, nicht `thema`: Der Einstieg sagte "liegt bei
+        // private Solarleistung" und "bei Balkonkraftwerke je 1.000 Einwohner" —
+        // genau der Fehler, vor dem `themaDativ` in lib/awards.ts warnt. Der
+        // bestehende Test prueft nur den Betreff, deshalb lief es lange mit.
+        einstieg: `${n.gemeinde} liegt bei ${themaDativ} ${gruppe} auf Platz ${hook.rank} von ${hook.total}.`,
       };
     case "perzentil": {
-      const pct = Math.max(1, Math.round((hook.percentile ?? 0.1) * 100));
+      // Gedeckelt: "unter den besten 118 %" ist keine Auszeichnung, sondern ein
+      // Rechenfehler auf dem Papier. Kann bei sauberen Daten nicht auftreten —
+      // die Klammer kostet nichts und faengt es trotzdem ab.
+      const pct = Math.min(99, Math.max(1, Math.round((hook.percentile ?? 0.1) * 100)));
       return {
-        betreff: `${n.gemeinde} gehört bei „${titel}“ zu den besten ${pct} %`,
-        einstieg: `${n.gemeinde} liegt bei „${titel}“ ${wo} unter den besten ${pct} % (Platz ${hook.rank} von ${hook.total}).`,
+        betreff: `${n.gemeinde} ${phrase} unter den besten ${pct} % ${woKurz}`,
+        // "gehoert … zu den besten", nicht "liegt … unter den besten": Die
+        // Vergleichsgruppe beginnt schon mit "unter den Kleinen Gemeinden" —
+        // zweimal dieselbe Wendung im selben Satz stolpert beim Lesen.
+        einstieg: `${n.gemeinde} gehört bei ${themaDativ} ${gruppe} zu den besten ${pct} % — Platz ${hook.rank} von ${hook.total}.`,
       };
     }
     default:

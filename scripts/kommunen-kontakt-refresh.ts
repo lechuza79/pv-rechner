@@ -182,6 +182,10 @@ async function setup(): Promise<void> {
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_subject text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_body text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_generated_at timestamptz;
+    -- Wurde der Entwurf von Hand bearbeitet? Nur dann darf er einen frisch
+    -- erzeugten ueberleben. Ohne diesen Merker zeigte das Modal wochenalte
+    -- Entwuerfe an, obwohl die Vorlage laengst korrigiert war.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS draft_manuell boolean NOT NULL DEFAULT false;
     -- Politische Ausrichtung (Zweitstimmenanteil BTW 2025, je Gemeinde) für die
     -- Outreach-Priorisierung. Misst die Bürger-Wahl, NICHT die Rathaus-Partei.
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS gruene_pct numeric;
@@ -215,6 +219,42 @@ async function setup(): Promise<void> {
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_blatt_url text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS thema_presse_url text;
     ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS profil_at timestamptz;
+    -- Versandliste: die Auswahl wird FESTGESCHRIEBEN, nicht nur gefiltert. Der
+    -- Aufhaenger aendert sich mit jedem Monatslauf der Anlagendaten — ein reiner
+    -- Filter haette in Charge 2 andere Gemeinden als in Charge 1.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS kampagne text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS charge integer;
+    -- Verbund: Gemeinden, die sich eine Verwaltung teilen. Schluessel ist die im
+    -- Impressum belegte fremde Domain, sonst der eigene Website-Host. Nie zwei
+    -- aus einem Verbund in derselben Charge.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS verbund_key text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS verbund_primary boolean;
+    CREATE INDEX IF NOT EXISTS idx_kk_kampagne ON kommunen_kontakt (kampagne, charge);
+    -- Ask-Variante: nur_meldung (fertige Meldung) oder meldung_plus_widget.
+    -- variante_manuell schuetzt eine Aenderung im Admin vor dem naechsten Lauf.
+    -- versendet_variante friert die Variante zum Versandzeitpunkt ein — wer
+    -- spaeter umsortiert, darf die Auswertung nicht rueckwirkend kippen.
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS ask_variante text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS variante_manuell boolean NOT NULL DEFAULT false;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS versendet_variante text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS widget_anfrage boolean NOT NULL DEFAULT false;
+    -- Klickzaehlung: kurzer Weiterleitungs-Token je Gemeinde. Kein Personenbezug,
+    -- keine IP, kein Cookie — nur „wie oft wurde dieser Link geoeffnet".
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS ref_token text;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS ref_klicks integer NOT NULL DEFAULT 0;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS ref_erst_at timestamptz;
+    ALTER TABLE kommunen_kontakt ADD COLUMN IF NOT EXISTS ref_letzt_at timestamptz;
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_kk_ref_token ON kommunen_kontakt (ref_token) WHERE ref_token IS NOT NULL;
+    -- Atomar zaehlen: zwei gleichzeitige Klicks duerfen sich nicht ueberschreiben.
+    CREATE OR REPLACE FUNCTION kommunen_ref_hit(p_token text)
+      RETURNS TABLE(region_id text) LANGUAGE sql AS $fn$
+      UPDATE kommunen_kontakt
+         SET ref_klicks = ref_klicks + 1,
+             ref_erst_at = COALESCE(ref_erst_at, now()),
+             ref_letzt_at = now()
+       WHERE ref_token = p_token
+      RETURNING kommunen_kontakt.region_id;
+    $fn$;
     -- Filter „nach Status" schnell halten (Cockpit-Tabs).
     CREATE INDEX IF NOT EXISTS idx_kk_status ON kommunen_kontakt (outreach_status);
     ALTER TABLE kommunen_kontakt ENABLE ROW LEVEL SECURITY;

@@ -353,6 +353,12 @@ const GEBIETS_KATEGORIEN: AwardCategory[] = [
     key: "erzeugung-gesamt",
     label: "Erzeugungsleistung im Gebiet",
     merit: "Installierte Leistung aller Erzeugerarten im Versorgungsgebiet.",
+    // Aussentexte: Diese Kategorie wird nie zum Anschreiben-Aufhaenger (kein
+    // Buerger-Traeger), aber sie erscheint in Gebiets-Ranglisten — und dort
+    // gelten dieselben Regeln wie ueberall: Messgroesse im Klartext.
+    bestleistung: "die meiste installierte Erzeugungsleistung im Gebiet",
+    thema: "Erzeugungsleistung im Gebiet",
+    themaDativ: "Erzeugungsleistung im Gebiet",
     traeger: "gewerbe",
     messart: "absolut",
     // Technologie-Mix → kW/MW/GW, kein Peak.
@@ -365,6 +371,9 @@ const GEBIETS_KATEGORIEN: AwardCategory[] = [
     key: "solar-gesamt",
     label: "Solarleistung im Gebiet",
     merit: "Installierte Photovoltaik im Versorgungsgebiet, alle Segmente.",
+    bestleistung: "die meiste installierte Solarleistung im Gebiet",
+    thema: "Solarleistung im Gebiet",
+    themaDativ: "Solarleistung im Gebiet",
     traeger: "gewerbe",
     messart: "absolut",
     format: "pvLeistung",

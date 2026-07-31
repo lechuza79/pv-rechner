@@ -7,6 +7,7 @@ import { IconArrowRight, IconTrendUp, IconTrendDown } from "../Icons";
 import { LoadingDots } from "../LoadingDots";
 import { writeLocation } from "../../lib/location";
 import type { GemeindePotential } from "../../lib/gemeinde-potential";
+import { pvErtragSatz, szenarioUeberschrift, type SzenarioTexte } from "../../lib/gemeinde-szenario-text";
 
 // Modellblock „Angebot trifft Nachfrage" + drei greifbare Beispiele, die mit
 // vorbefüllter PLZ in die Rechner leiten. Client-Komponente, weil der Klick die
@@ -37,10 +38,20 @@ function TrendBadge({ dir }: { dir: "up" | "down" }) {
 export default function GemeindePotential({
   plz,
   p,
+  texte,
+  name,
+  regionId,
 }: {
   plz: string | null;
   /** null = Standort-Ertrag lädt noch (Zahlen als LoadingDots, Layout steht). */
   p: GemeindePotential | null;
+  /** Je Gemeinde verschiedene Sätze. Serverseitig gerechnet und durchgereicht —
+   *  sie hängen an Bestandsdaten, die die Seite ohnehin hat, nicht am Ertrag. */
+  texte?: SzenarioTexte;
+  /** Gemeindename — steht in Überschrift und allen drei Karten. */
+  name?: string;
+  /** Gebietsschlüssel: waehlt die Überschrift-Variante stabil aus. */
+  regionId?: string;
 }) {
   const remember = () => {
     if (plz) writeLocation(plz);
@@ -48,10 +59,17 @@ export default function GemeindePotential({
 
   const pvHref = `/photovoltaik-rechner${plz ? `?plz=${plz}&a=2` : "?a=2"}`;
 
+  // Ortsangabe als fertiges Textstück, nicht als JSX-Einschub zwischen zwei
+  // Textknoten: Letzteres erzeugte „Einfamilienhaus in Höchberg , 140 m²" —
+  // React setzt zwischen die Knoten ein Leerzeichen, das Komma landet dahinter.
+  const imOrt = name ? ` in ${name}` : "";
+
   return (
     <>
       <div style={S.section}>
-        <h2 style={S.h2}>Was das für Sie bedeutet</h2>
+        <h2 style={S.h2}>
+          {name && regionId ? szenarioUeberschrift(name, regionId) : "Was das für Sie bedeutet"}
+        </h2>
 
         <div style={S.cards}>
           <Link href={pvHref} onClick={remember} style={S.exCard}>
@@ -60,8 +78,12 @@ export default function GemeindePotential({
               <span style={S.exVal}>{p ? nfEuro(round100(p.pvFiveYearBenefit)) : <LoadingDots />}</span>
             </div>
             <div style={S.exLabel}>
-              verschenkt ein typisches Einfamilienhaus hier in 5 Jahren ohne eigene Anlage
+              {`verschenkt ein typisches Einfamilienhaus${name ? imOrt : " hier"} in 5 Jahren ohne eigene Anlage`}
             </div>
+            {/* Ortssatz erst mit dem Ertrag — er IST der Ertrag. */}
+            {p && name && pvErtragSatz(name, p.yieldKwhKwp, regionId) && (
+              <div style={S.exOrt}>{pvErtragSatz(name, p.yieldKwhKwp, regionId)}</div>
+            )}
             {p && (
               <div style={S.exSub}>
                 {fmtPvLeistung(p.pvKwp)} · Ersparnis + Einspeisung · {fmtErtragProKwp(p.yieldKwhKwp)} am Standort
@@ -80,9 +102,9 @@ export default function GemeindePotential({
             {/* Siehe ScenarioCards: Die Zahl vergleicht mit einer NEUEN fossilen
                 Heizung, nicht mit dem Weiterbetrieb der alten. */}
             <div style={S.exLabel}>
-              spart eine Wärmepumpe über 20 Jahre gegenüber einer neuen Gasheizung
+              {`spart eine Wärmepumpe${imOrt} über 20 Jahre gegenüber einer neuen Gasheizung`}
             </div>
-            <div style={S.exSub}>Typisches Einfamilienhaus, 140 m², Luft/Wasser-Wärmepumpe</div>
+            <div style={S.exSub}>{`Typisches Einfamilienhaus${imOrt}, 140 m², Luft/Wasser-Wärmepumpe`}</div>
             <span style={S.exCta}>
               Wärmepumpe rechnen <IconArrowRight size={14} />
             </span>
@@ -96,8 +118,9 @@ export default function GemeindePotential({
               </span>
             </div>
             <div style={S.exLabel}>
-              bringt ein Balkonkraftwerk — auch zur Miete, ohne eigenes Dach
+              {`bringt ein Balkonkraftwerk${imOrt} — auch zur Miete, ohne eigenes Dach`}
             </div>
+            {texte?.balkon && <div style={S.exOrt}>{texte.balkon}</div>}
             {p && (
               <div style={S.exSub}>
                 {Number.isFinite(p.balkonAmortYears)
@@ -153,6 +176,9 @@ const S: Record<string, React.CSSProperties> = {
     lineHeight: 1.1,
   },
   exLabel: { fontSize: 14, lineHeight: 1.5, color: v("--color-text-primary"), marginBottom: 6 },
+  // Der ortsbezogene Satz: derselbe Grad wie der Parameter-Fuß, aber in der
+  // Textfarbe der Karte — er ist Aussage, nicht Kleingedrucktes.
+  exOrt: { fontSize: 12, lineHeight: 1.5, color: v("--color-text-secondary"), marginBottom: 6 },
   exSub: { fontSize: 11, color: v("--color-text-muted"), marginBottom: 12 },
   exCta: {
     display: "inline-flex",
