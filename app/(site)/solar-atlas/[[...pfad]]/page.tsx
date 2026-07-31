@@ -31,7 +31,7 @@ import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 // Zwei Ziele:
 // 1) Ohne generateStaticParams behandelt Next die dynamische Route als voll
 //    dynamisch (no-store). Mit ihr wird sie ISR (s-maxage=3600).

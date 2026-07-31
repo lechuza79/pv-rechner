@@ -51,7 +51,7 @@ import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
 import { landProgramBundeslaender } from "../../../../../../lib/funding-programs";
 import { DATA_SOURCES } from "../../../../../../lib/data-sources";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 // Ohne generateStaticParams wäre die Route voll dynamisch (no-store). Leeres
 // Array = keine Vorab-Renders (zu viele Gemeinden), aber ISR: jede Gemeinde-Seite
 // rendert einmal on-demand und liegt dann s-maxage=3600 im CDN.

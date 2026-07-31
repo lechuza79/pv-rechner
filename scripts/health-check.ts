@@ -433,6 +433,11 @@ function verdict(seconds: number, limits: { warn: number; fail: number }): "grue
 const CACHE_PFLICHT = [
   { label: "Startseite", path: "/" },
   { label: "Atlas-Einstieg", path: "/solar-atlas" },
+  // Der teuerste Seitentyp im Atlas: Der erste Aufbau der Klassen-Uebersicht lag
+  // bei 4,9 s, aus dem Zwischenspeicher bei 0,3 s. Faellt der Speicher aus,
+  // zahlt jeder Besucher die 4,9 s — und der Googlebot kommt ueber 119 Verweise
+  // von den indexierten Atlas-Seiten.
+  { label: "Ranglisten-Uebersicht", path: "/solar-atlas/ranking/zubau-3-jahre-je-einwohner" },
   { label: "Förder-Bundeslandseite", path: "/photovoltaik-foerderung/bayern" },
   { label: "Ratgeber", path: "/ratgeber/gasheizung-oder-waermepumpe" },
   { label: "Standort-Ertrag (30 Tage haltbar)", path: "/api/pvgis?lat=52.52&lon=13.405&plzPrefix=10" },

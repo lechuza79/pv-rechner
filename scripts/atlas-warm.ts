@@ -25,6 +25,8 @@
  *   ATLAS_WARM_LIMIT      optionale Obergrenze (Test/Teillauf)
  */
 
+import { rankingKategorienGruppiert } from "../lib/atlas-ranking";
+
 type RegionRow = { region_id: string; level: string; slug: string | null };
 
 const BASE_URL = (process.env.ATLAS_WARM_BASE_URL ?? "https://solar-check.io").replace(/\/$/, "");
@@ -71,6 +73,10 @@ async function loadRegions(): Promise<Map<string, RegionRow>> {
   return byId;
 }
 
+/** Die Ranking-Kategorien, die von aussen verlinkt sind. Aus derselben Quelle
+ *  wie die Seiten selbst — eine handgetippte Zweitliste liefe auseinander. */
+const RANKING_KATEGORIEN = rankingKategorienGruppiert().buerger.map((k) => k.slug);
+
 /** URL-Pfade aus den Slugs bauen. Kreis = bl/kreis, Gemeinde = bl/kreis/gemeinde.
  *  Der Eltern-Slug kommt aus dem AGS-Präfix (kein Parent-Walk nötig). Fehlt ein
  *  Eltern-Slug (Region noch nicht in der Registry), wird der Pfad übersprungen. */
@@ -90,6 +96,26 @@ function buildPaths(byId: Map<string, RegionRow>): string[] {
     }
   }
   if (skipped > 0) console.log(`(${skipped} Regionen übersprungen — Eltern-Slug fehlt)`);
+
+  // RANGLISTEN MITWAERMEN. Sie sind der teuerste Seitentyp im Atlas: Der erste
+  // Aufbau der Klassen-Uebersicht lag auf Produktion bei 4,9 s (danach 0,3 s aus
+  // dem Zwischenspeicher). Ohne Vorwaermen zahlt das ein Besucher — oder der
+  // Googlebot, der von den 119 Verweisen der indexierten Atlas-Seiten kommt.
+  //
+  // Gewaermt wird genau das, was von aussen verlinkt ist: je Kategorie die
+  // Klassen-Uebersicht, auf Bundes- und Landesebene. Die einzelnen Klassenlisten
+  // teilen sich denselben Datenzugriff und sind danach billig.
+  const bundeslandSlugs = Array.from(byId.values())
+    .filter((r) => r.level === "bundesland" && r.slug)
+    .map((r) => r.slug as string);
+  const rangPfade: string[] = ["/solar-atlas/ranking"];
+  for (const kat of RANKING_KATEGORIEN) {
+    rangPfade.push(`/solar-atlas/ranking/${kat}`);
+    for (const bl of bundeslandSlugs) rangPfade.push(`/solar-atlas/ranking/${kat}/${bl}`);
+  }
+  paths.push(...rangPfade);
+  console.log(`(${rangPfade.length} Ranglisten-Adressen mit aufgewärmt)`);
+
   // Kreise zuerst (füllen den unstable_cache der Eltern-Schnitte, die die
   // Gemeinde-Renders danach mitnutzen), dann Gemeinden.
   paths.sort((a, b) => a.split("/").length - b.split("/").length || a.localeCompare(b));

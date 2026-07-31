@@ -24,7 +24,21 @@ import {
 } from "../../../../../lib/atlas-ranking";
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
 
-export const revalidate = 3600;
+/**
+ * EINEN TAG, nicht eine Stunde.
+ *
+ * Die Zahlen dieser Seiten kommen aus EINEM Lauf im Monat (Marktstammdaten-
+ * register, jeweils am 5.). Eine Stunde Haltbarkeit hiess: jede Adresse baut
+ * sich 24-mal am Tag neu auf und liest dafuer jedes Mal denselben Datenstand —
+ * 720 Neuaufbauten im Monat fuer eine einzige Datenaenderung.
+ *
+ * Warum trotzdem nicht ein Monat: Nach jedem Deploy ist der Zwischenspeicher
+ * ohnehin leer, und ein Tag begrenzt den Schaden, falls eine Seite mal mit
+ * halben Daten in den Speicher geraet. Der Aufwaerm-Crawler (npm run atlas:warm)
+ * laeuft nach jedem Datenlauf und fuellt den Speicher, damit kein Besucher den
+ * ersten Aufbau bezahlt.
+ */
+export const revalidate = 86400;
 
 // Kein Vorab-Rendern: Drei Kategorien × 417 Gebiete sind über 1.200 Seiten, und
 // Next rendert die Einträge dieser Liste PARALLEL — genau das hat am 27.07.2026
