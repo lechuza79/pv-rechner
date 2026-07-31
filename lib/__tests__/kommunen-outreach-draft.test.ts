@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { renderOutreachDraft, renderMeldung, gattungKurz, type DraftContext } from "../kommunen-outreach-draft";
+import { AWARD_CATEGORIES } from "../awards";
 
 // Die Fälle stammen aus dem Gegenlesen echter Entwürfe (27./28.07.2026) — jeder
 // „nicht"-Test steht für einen Fehler, der wirklich im Brief stand.
@@ -14,6 +15,9 @@ const BASIS: DraftContext = {
   gattung: "Markt",
   wo: "im Landkreis Würzburg",
   bestleistung: "die meiste private Speicherkapazität",
+  themaDativ: "privater Speicherkapazität je Einwohner",
+  gruppe: "Kleinen Gemeinden im Landkreis Würzburg",
+  rangWert: "53,4 kWh/Kopf",
   rang: { platz: 1, von: 52 },
   zahlen: { anlagen: 1234, leistungKwp: 12400, wpProKopf: 1240, stand: "2026-07-15" },
 };
@@ -101,7 +105,9 @@ describe("Kein Textbaustein-Unfall", () => {
   it("die Meldung wiederholt ihre eigene Überschrift nicht wortgleich", () => {
     const m = renderMeldung(BASIS);
     expect(m.split(BASIS.bestleistung).length - 1).toBe(1); // nur in der Überschrift
-    expect(m).toContain("Das ist der höchste Wert");
+    // Der Belegsatz greift die Aussage auf, ohne sie wortgleich zu wiederholen —
+    // und nennt dabei die gerankte Messgrösse statt der Gesamtzahlen.
+    expect(m).toContain("Bei privater Speicherkapazität je Einwohner liegt Höchberg damit auf Platz 1");
   });
 
   it("schreibt nach dem Weiterleitungs-Absatz gross, direkt nach der Anrede klein", () => {
@@ -147,5 +153,120 @@ describe("Pflichtangaben", () => {
 
   it("nennt den Backlink als einzige Gegenleistung", () => {
     expect(renderOutreachDraft(BASIS).body).toMatch(/Link auf solar-check\.io stehen zu lassen/);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DIE MELDUNG IST DER TEXT, DEN EINE VERWALTUNG WÖRTLICH VERÖFFENTLICHT.
+// Sie behauptete bedingungslos „Das ist der höchste Wert" — auch auf Platz 3,
+// auch ohne Platzierung, und belegte den Superlativ mit den GESAMT-Solarzahlen,
+// während die Überschrift eine ganz andere Messgröße nannte. Damit war der Satz
+// selbst beim echten Sieger falsch: Ein Nachbarort mit Solarpark hat mehr
+// Gesamtleistung — nachlesbar auf unserer eigenen Seite, die darunter verlinkt ist.
+// ─────────────────────────────────────────────────────────────────────────────
+describe("Meldung behauptet nur, was stimmt", () => {
+  it("nennt den Superlativ ausschliesslich auf Platz 1", () => {
+    expect(renderMeldung(BASIS)).toContain(BASIS.bestleistung);
+    for (const platz of [2, 3, 8, 40]) {
+      const m = renderMeldung({ ...BASIS, rang: { platz, von: 52 } });
+      expect(m, `Platz ${platz}`).not.toContain(BASIS.bestleistung);
+      expect(m, `Platz ${platz}`).not.toContain("höchste");
+    }
+  });
+
+  it("behauptet ohne Platzierung gar keinen Rang", () => {
+    const m = renderMeldung({ ...BASIS, rang: null });
+    expect(m).not.toContain("Platz");
+    expect(m).not.toContain("höchste");
+    expect(m).toContain("Solaranlagen"); // der Bestandsbericht bleibt
+  });
+
+  it("belegt den Rang mit der GERANKTEN Grösse, nicht mit den Gesamtzahlen", () => {
+    const m = renderMeldung(BASIS);
+    expect(m).toContain("privater Speicherkapazität je Einwohner");
+    expect(m).toContain("53,4 kWh/Kopf");
+  });
+
+  it("nennt die Vergleichsgruppe, in der der Rang gilt", () => {
+    // „Platz 1 von 52" ohne Gruppe liest sich als kreisweiter Bestwert — der
+    // Rang gilt aber innerhalb der Grössenklasse.
+    for (const platz of [1, 3, 20]) {
+      const m = renderMeldung({ ...BASIS, rang: { platz, von: 52 } });
+      expect(m, `Platz ${platz}`).toContain("Kleinen Gemeinden im Landkreis Würzburg");
+    }
+  });
+
+  it("trägt den Lizenzvermerk und die Herkunft der Einwohnerzahlen", () => {
+    // Wir geben den Text zur Weiterverbreitung heraus — unsere eigenen Seiten
+    // tragen den Vermerk, dieser muss es auch.
+    const m = renderMeldung(BASIS);
+    expect(m).toContain("dl-de/by-2-0");
+    expect(m).toMatch(/Statistischen? Bundesamt/);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ALLE VARIANTEN DER MELDUNG — nicht drei Stichproben.
+// Der Kasus-Fehler nach „bei" ist in dieser Sitzung DREIMAL aufgetreten: im
+// Betreff, im Einstiegssatz und hier. Jedes Mal an einer Stelle, die niemand
+// gerade ansah. Deshalb läuft hier jede Kategorie durch jede Platzierungsart.
+// ─────────────────────────────────────────────────────────────────────────────
+describe("Meldung über alle Varianten", () => {
+  const hookKategorien = AWARD_CATEGORIES.filter((c) => c.traeger === "buerger" && c.messart !== "absolut");
+  const GRUPPEN = ["Dörfern im Landkreis Musterkreis", "Großstädten in Bayern", "Landeshauptstädten bundesweit"];
+  const PLAETZE: (number | null)[] = [1, 2, 3, 12, 40, null];
+
+  const varianten = hookKategorien.flatMap((cat) =>
+    GRUPPEN.flatMap((gruppe) =>
+      PLAETZE.map((platz) => ({
+        was: `${cat.key} · ${gruppe} · ${platz ?? "ohne Platz"}`,
+        ctx: {
+          ...BASIS,
+          bestleistung: cat.bestleistung,
+          themaDativ: cat.themaDativ,
+          gruppe,
+          rang: platz != null ? { platz, von: 52 } : null,
+        } as DraftContext,
+      })),
+    ),
+  );
+
+  it("prüft eine nennenswerte Zahl von Kombinationen", () => {
+    expect(varianten.length).toBeGreaterThan(50);
+  });
+
+  it("bildet nach „bei“ nie den Nominativ", () => {
+    for (const v of varianten) {
+      const m = renderMeldung(v.ctx);
+      for (const f of ["bei private ", "bei Balkonkraftwerke ", "bei Zubau ", "bei Batteriespeicher "]) {
+        expect(m, `${v.was}: „${f.trim()}“`).not.toContain(f);
+      }
+    }
+  });
+
+  it("baut saubere Sätze — keine Lücken, keine Platzhalter", () => {
+    for (const v of varianten) {
+      const m = renderMeldung(v.ctx);
+      expect(m, v.was).not.toMatch(/[ \t]{2,}/);
+      expect(m, v.was).not.toMatch(/undefined|null|NaN|\[object/);
+      expect(m, v.was).not.toMatch(/\s\.|\.\./);
+    }
+  });
+
+  it("verspricht den Superlativ nur auf Platz 1", () => {
+    for (const v of varianten) {
+      const m = renderMeldung(v.ctx);
+      const platz = v.ctx.rang?.platz ?? null;
+      if (platz === 1) expect(m, v.was).toContain(v.ctx.bestleistung);
+      else expect(m, v.was).not.toContain(v.ctx.bestleistung);
+    }
+  });
+
+  it("nennt bei jedem Rang die Vergleichsgruppe und trägt immer die Lizenz", () => {
+    for (const v of varianten) {
+      const m = renderMeldung(v.ctx);
+      if (v.ctx.rang) expect(m, v.was).toContain(v.ctx.gruppe);
+      expect(m, v.was).toContain("dl-de/by-2-0");
+    }
   });
 });

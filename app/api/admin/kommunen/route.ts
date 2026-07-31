@@ -233,7 +233,12 @@ export async function POST(req: NextRequest) {
     gattung: reg.bezeichnung,
     wo: hook?.wo ?? "in der Region",
     bestleistung: hook?.bestleistung ?? "einen bemerkenswerten Solar-Ausbau",
-    rang: hook?.rank && hook?.total ? { platz: hook.rank, von: hook.total } : null,
+    themaDativ: hook?.themaDativ ?? "Solar-Ausbau",
+    // Ohne Vergleichsgruppe keine Rang-Aussage — dann bleibt die Meldung beim
+    // reinen Bestandsbericht (siehe renderMeldung).
+    gruppe: hook?.gruppe ?? hook?.wo ?? "in der Region",
+    rangWert: hook?.valueStr ?? null,
+    rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
     zahlen: {
       anlagen: atlas.solar.total_count,
       leistungKwp: atlas.solar.total_kwp,

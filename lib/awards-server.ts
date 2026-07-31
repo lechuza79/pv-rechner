@@ -163,7 +163,11 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
       rank: hook.rank,
       total: hook.total,
       bestleistung: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.bestleistung ?? null) : null,
+      themaDativ: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.themaDativ ?? null) : null,
       wo: hook.level ? scopeIn(hook.level, names) : null,
+      // Klasse UND Gebiet — der Rang gilt nur innerhalb der Groessenklasse.
+      gruppe:
+        hook.level && hook.klasseLabel ? `${hook.klasseLabel} ${scopeIn(hook.level, names)}` : null,
       valueStr:
         hook.value != null && hook.categoryKey
           ? formatAwardValue(hook.value, AWARD_CATEGORY_BY_KEY[hook.categoryKey].format)

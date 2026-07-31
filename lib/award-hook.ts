@@ -84,7 +84,12 @@ export type HookExample = {
    *  Bezug („im Landkreis Würzburg"). Fertig gebaut, damit Anschreiben und
    *  Meldung nicht dieselbe Formulierung ein zweites Mal zusammensetzen. */
   bestleistung: string | null;
+  /** Dieselbe Messgröße im DATIV — sie steht ausnahmslos hinter „bei". */
+  themaDativ: string | null;
   wo: string | null;
+  /** Vergleichsgruppe im Dativ („Kleinen Gemeinden im Landkreis Würzburg").
+   *  Ohne sie behauptet die Meldung einen kreisweiten Bestwert. */
+  gruppe: string | null;
   /** Belegwert des gewählten Aufhängers, fertig formatiert (z. B. „2.480 Wp/Kopf",
    *  „53,4 MWh") — damit der Mensch einen Ausreißer sieht. Null bei neutral. */
   valueStr: string | null;

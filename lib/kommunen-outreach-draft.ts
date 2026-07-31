@@ -68,8 +68,35 @@ export type DraftContext = {
   };
   /** Wo die Bestleistung gilt: „im Landkreis Würzburg", „in Bayern". */
   wo: string;
-  /** Die Messgröße im Klartext: „die meiste private Speicherkapazität". */
+  /** Die Messgröße als Superlativ: „die meiste private Speicherkapazität".
+   *  NUR bei Platz 1 verwendbar. */
   bestleistung: string;
+  /**
+   * Dieselbe Messgröße im DATIV: „privater Speicherkapazität je Einwohner".
+   *
+   * IM DATIV, weil sie ausnahmslos hinter „bei" steht. Deutsche Kasusbildung
+   * per Regel produziert zuverlässig Murks — „bei private Speicherkapazität"
+   * stand genau so im Entwurf. Dieselbe Falle wie im Anschreiben, dort schon
+   * zweimal getreten.
+   */
+  themaDativ: string;
+  /**
+   * Die Vergleichsgruppe, in der der Rang gilt: „Kleinen Gemeinden im Landkreis
+   * Würzburg". Ohne sie behauptet die Meldung einen kreisweiten Bestwert und
+   * belegt ihn mit einer klassen-internen Zahl.
+   */
+  gruppe: string;
+  /**
+   * Der Wert der GERANKTEN Messgröße, fertig formatiert („38 je 1.000 Ew.").
+   *
+   * WARUM ER SEIN MUSS: Die Meldung belegte den Superlativ vorher mit den
+   * Gesamt-Solarzahlen — Anlagen, Leistung, Watt je Kopf. Die Überschrift nannte
+   * aber etwas ganz anderes, etwa Balkonkraftwerke je 1.000 Einwohner. Damit war
+   * der Satz auch beim echten Sieger falsch: Ein Nachbarort mit Solarpark hat
+   * mehr Gesamtleistung und widerlegt ihn auf unserer eigenen Atlas-Seite, die
+   * in derselben Meldung verlinkt ist.
+   */
+  rangWert?: string | null;
   /** Platz und Gruppengröße für den Beleg. */
   rang?: { platz: number; von: number } | null;
 };
@@ -109,17 +136,35 @@ function standLabel(iso: string): string {
  */
 export function renderMeldung(c: DraftContext): string {
   const { anlagen, leistungKwp, wpProKopf, stand } = c.zahlen;
-  const rangSatz = c.rang ? ` — Platz ${c.rang.platz} von ${c.rang.von} Gemeinden` : "";
   const proKopfSatz = wpProKopf != null ? `, das entspricht ${fmtWattProKopf(wpProKopf)} je Einwohnerin und Einwohner` : "";
+  const platz = c.rang?.platz ?? null;
 
-  // Der zweite Satz greift die Überschrift auf, wiederholt sie aber NICHT
-  // wortgleich — vier Zeilen mit derselben Formulierung lesen sich wie ein
-  // Textbaustein-Unfall, egal wie richtig sie sind.
-  return `${c.name}: ${c.bestleistung} ${c.wo}
+  // DIE UEBERSCHRIFT BEHAUPTET NUR, WAS STIMMT.
+  // Vorher stand dort bedingungslos der Superlativ — auch auf Platz 3 und auch
+  // dann, wenn es gar keine Platzierung gab.
+  const unterDen = `unter den ${c.gruppe}`;
+  const ueberschrift =
+    platz === 1
+      ? `${c.name}: ${c.bestleistung} ${unterDen}`
+      : platz != null && platz <= 3
+        ? `${c.name} bei ${c.themaDativ} auf Platz ${platz} ${unterDen}`
+        : platz != null
+          ? `${c.name} bei ${c.themaDativ} auf Platz ${platz} ${unterDen}`
+          : `Solarausbau in ${c.name}: der aktuelle Stand`;
 
-In ${c.name} sind ${anlagen.toLocaleString("de-DE")} Solaranlagen mit zusammen ${fmtPvLeistung(leistungKwp)} in Betrieb${proKopfSatz}. Das ist der höchste Wert ${c.wo}${rangSatz}.
+  // DER BELEGSATZ NENNT DIE GERANKTE GROESSE, nicht die Gesamtzahlen.
+  // Die Gesamtzahlen bleiben als Einordnung stehen — sie belegen den Rang aber
+  // nicht, weil sie etwas anderes messen (Solarparks und Gewerbe zaehlen mit).
+  const belegSatz =
+    platz != null
+      ? ` Bei ${c.themaDativ} liegt ${c.name} damit auf Platz ${platz} von ${c.rang?.von} ${c.gruppe}${c.rangWert ? ` (${c.rangWert})` : ""}.`
+      : "";
 
-Grundlage sind die Anlagendaten des Marktstammdatenregisters der Bundesnetzagentur (Stand: ${standLabel(stand)}). Eine laufend aktualisierte Übersicht für ${c.name} gibt es unter ${c.pageUrl ?? "solar-check.io"}.`;
+  return `${ueberschrift}
+
+In ${c.name} sind ${anlagen.toLocaleString("de-DE")} Solaranlagen mit zusammen ${fmtPvLeistung(leistungKwp)} in Betrieb${proKopfSatz}.${belegSatz}
+
+Grundlage sind die Anlagendaten des Marktstammdatenregisters der Bundesnetzagentur (Stand: ${standLabel(stand)}), Datenlizenz dl-de/by-2-0; Einwohnerzahlen vom Statistischen Bundesamt. Eine laufend aktualisierte Übersicht für ${c.name} gibt es unter ${c.pageUrl ?? "solar-check.io"}.`;
 }
 
 export function renderOutreachDraft(c: DraftContext): OutreachDraft {
