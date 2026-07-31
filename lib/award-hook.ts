@@ -93,6 +93,9 @@ export type HookExample = {
   bestleistung: string | null;
   /** Dieselbe Messgröße im DATIV — sie steht ausnahmslos hinter „bei". */
   themaDativ: string | null;
+  /** Kurzform als Präpositionalphrase („bei Hausspeichern") — trägt Betreff und
+   *  Meldungs-Überschrift. */
+  phrase: string | null;
   wo: string | null;
   /** Vergleichsgruppe im Dativ („Kleinen Gemeinden im Landkreis Würzburg").
    *  Ohne sie behauptet die Meldung einen kreisweiten Bestwert. */

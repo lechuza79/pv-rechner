@@ -234,6 +234,7 @@ export async function POST(req: NextRequest) {
     wo: hook?.wo ?? "in der Region",
     bestleistung: hook?.bestleistung ?? "einen bemerkenswerten Solar-Ausbau",
     themaDativ: hook?.themaDativ ?? "Solar-Ausbau",
+    phrase: hook?.phrase ?? "beim Solar-Ausbau",
     // Ohne Vergleichsgruppe keine Rang-Aussage — dann bleibt die Meldung beim
     // reinen Bestandsbericht (siehe renderMeldung).
     gruppe: hook?.gruppe ?? hook?.wo ?? "in der Region",

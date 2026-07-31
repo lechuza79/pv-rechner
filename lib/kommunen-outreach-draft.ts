@@ -69,8 +69,11 @@ export type DraftContext = {
   /** Wo die Bestleistung gilt: „im Landkreis Würzburg", „in Bayern". */
   wo: string;
   /** Die Messgröße als Superlativ: „die meiste private Speicherkapazität".
-   *  NUR bei Platz 1 verwendbar. */
+   *  NUR bei Platz 1 verwendbar — und nur im Fliesstext, nicht in der Überschrift. */
   bestleistung: string;
+  /** Kurzform als Präpositionalphrase: „bei Hausspeichern", „beim Solar-Zubau
+   *  seit Ende 2023". Trägt die Überschrift der Meldung. */
+  phrase: string;
   /**
    * Dieselbe Messgröße im DATIV: „privater Speicherkapazität je Einwohner".
    *
@@ -143,22 +146,32 @@ export function renderMeldung(c: DraftContext): string {
   // Vorher stand dort bedingungslos der Superlativ — auch auf Platz 3 und auch
   // dann, wenn es gar keine Platzierung gab.
   const unterDen = `unter den ${c.gruppe}`;
+
+  // DIE UEBERSCHRIFT IST KURZ UND BEHAUPTET KEINEN GELTUNGSBEREICH.
+  //
+  // Vorher stand dort die volle Aussage mit Messgroesse, Superlativ und
+  // Vergleichsgruppe — 95 Zeichen, und als Schlagzeile unbrauchbar. Eine
+  // Pressestelle kuerzt so etwas selbst, und dabei faellt zuverlaessig genau der
+  // Teil weg, der die Aussage wahr macht (die Groessenklasse).
+  //
+  // Deshalb: Die Ueberschrift nennt Ort, Platz und Thema — mehr nicht. Sie
+  // behauptet keinen Geltungsbereich und kann damit nicht falsch werden. Der
+  // vollstaendige, praezise Satz steht im Fliesstext darunter, wo Platz dafuer
+  // ist. Dieselbe Aufteilung wie bei Betreff und Einstieg des Anschreibens.
   const ueberschrift =
-    platz === 1
-      ? `${c.name}: ${c.bestleistung} ${unterDen}`
-      : platz != null && platz <= 3
-        ? `${c.name} bei ${c.themaDativ} auf Platz ${platz} ${unterDen}`
-        : platz != null
-          ? `${c.name} bei ${c.themaDativ} auf Platz ${platz} ${unterDen}`
-          : `Solarausbau in ${c.name}: der aktuelle Stand`;
+    platz != null
+      ? `${c.name}: Platz ${platz} ${c.phrase}`
+      : `Solarausbau in ${c.name}: der aktuelle Stand`;
 
   // DER BELEGSATZ NENNT DIE GERANKTE GROESSE, nicht die Gesamtzahlen.
   // Die Gesamtzahlen bleiben als Einordnung stehen — sie belegen den Rang aber
   // nicht, weil sie etwas anderes messen (Solarparks und Gewerbe zaehlen mit).
   const belegSatz =
-    platz != null
-      ? ` Bei ${c.themaDativ} liegt ${c.name} damit auf Platz ${platz} von ${c.rang?.von} ${c.gruppe}${c.rangWert ? ` (${c.rangWert})` : ""}.`
-      : "";
+    platz === 1
+      ? ` Damit hat ${c.name} ${c.bestleistung} ${unterDen} — Platz 1 von ${c.rang?.von}${c.rangWert ? ` (${c.rangWert})` : ""}.`
+      : platz != null
+        ? ` Bei ${c.themaDativ} liegt ${c.name} damit auf Platz ${platz} von ${c.rang?.von} ${unterDen}${c.rangWert ? ` (${c.rangWert})` : ""}.`
+        : "";
 
   return `${ueberschrift}
 

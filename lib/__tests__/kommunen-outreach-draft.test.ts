@@ -16,6 +16,7 @@ const BASIS: DraftContext = {
   wo: "im Landkreis Würzburg",
   bestleistung: "die meiste private Speicherkapazität",
   themaDativ: "privater Speicherkapazität je Einwohner",
+  phrase: "bei Hausspeichern",
   gruppe: "Kleinen Gemeinden im Landkreis Würzburg",
   rangWert: "53,4 kWh/Kopf",
   rang: { platz: 1, von: 52 },
@@ -107,7 +108,7 @@ describe("Kein Textbaustein-Unfall", () => {
     expect(m.split(BASIS.bestleistung).length - 1).toBe(1); // nur in der Überschrift
     // Der Belegsatz greift die Aussage auf, ohne sie wortgleich zu wiederholen —
     // und nennt dabei die gerankte Messgrösse statt der Gesamtzahlen.
-    expect(m).toContain("Bei privater Speicherkapazität je Einwohner liegt Höchberg damit auf Platz 1");
+    expect(m).toContain("Damit hat Höchberg die meiste private Speicherkapazität unter den Kleinen Gemeinden");
   });
 
   it("schreibt nach dem Weiterleitungs-Absatz gross, direkt nach der Anrede klein", () => {
@@ -182,9 +183,13 @@ describe("Meldung behauptet nur, was stimmt", () => {
   });
 
   it("belegt den Rang mit der GERANKTEN Grösse, nicht mit den Gesamtzahlen", () => {
-    const m = renderMeldung(BASIS);
-    expect(m).toContain("privater Speicherkapazität je Einwohner");
-    expect(m).toContain("53,4 kWh/Kopf");
+    // Platz 1: Superlativ im Fliesstext, mit Wert. Ab Platz 2: Messgroesse im Dativ.
+    const eins = renderMeldung(BASIS);
+    expect(eins).toContain("die meiste private Speicherkapazität");
+    expect(eins).toContain("53,4 kWh/Kopf");
+    const drei = renderMeldung({ ...BASIS, rang: { platz: 3, von: 52 } });
+    expect(drei).toContain("Bei privater Speicherkapazität je Einwohner");
+    expect(drei).toContain("53,4 kWh/Kopf");
   });
 
   it("nennt die Vergleichsgruppe, in der der Rang gilt", () => {
@@ -224,6 +229,7 @@ describe("Meldung über alle Varianten", () => {
           ...BASIS,
           bestleistung: cat.bestleistung,
           themaDativ: cat.themaDativ,
+          phrase: cat.betreffPhrase ?? `bei ${cat.themaDativ}`,
           gruppe,
           rang: platz != null ? { platz, von: 52 } : null,
         } as DraftContext,
@@ -267,6 +273,41 @@ describe("Meldung über alle Varianten", () => {
       const m = renderMeldung(v.ctx);
       if (v.ctx.rang) expect(m, v.was).toContain(v.ctx.gruppe);
       expect(m, v.was).toContain("dl-de/by-2-0");
+    }
+  });
+});
+
+describe("Kurz oben, genau unten", () => {
+  // Dieselbe Aufteilung wie bei Betreff und Einstieg des Anschreibens: Die
+  // Überschrift trägt Ort, Platz und Thema — mehr nicht. Sie behauptet keinen
+  // Geltungsbereich und kann damit nicht falsch werden. Der präzise Satz mit
+  // Größenklasse, Gruppengröße und Wert steht im Fliesstext.
+  const titel = (c: DraftContext) => renderMeldung(c).split("\n")[0];
+
+  it("hält die Überschrift kurz", () => {
+    for (const platz of [1, 3, 40]) {
+      const t = titel({ ...BASIS, rang: { platz, von: 52 } });
+      expect(t.length, `Platz ${platz}: „${t}“ (${t.length} Zeichen)`).toBeLessThanOrEqual(60);
+    }
+  });
+
+  it("behauptet in der Überschrift keinen Geltungsbereich", () => {
+    // Eine Pressestelle kürzt lange Schlagzeilen selbst — und dabei fällt
+    // zuverlässig genau der Teil weg, der die Aussage wahr macht.
+    for (const platz of [1, 3, 40]) {
+      const t = titel({ ...BASIS, rang: { platz, von: 52 } });
+      expect(t, `Platz ${platz}`).not.toContain("Landkreis");
+      expect(t, `Platz ${platz}`).not.toContain(BASIS.gruppe);
+      expect(t, `Platz ${platz}`).not.toContain("höchste");
+    }
+  });
+
+  it("nennt Größenklasse, Gruppengröße und Wert im Fliesstext", () => {
+    for (const platz of [1, 3]) {
+      const m = renderMeldung({ ...BASIS, rang: { platz, von: 52 } });
+      expect(m, `Platz ${platz}`).toContain(BASIS.gruppe);
+      expect(m, `Platz ${platz}`).toContain("von 52");
+      expect(m, `Platz ${platz}`).toContain("53,4 kWh/Kopf");
     }
   });
 });
