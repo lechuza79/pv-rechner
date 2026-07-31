@@ -391,3 +391,20 @@ describe("Keine handgepflegten Ausnahmen mehr", () => {
     expect(quelle).not.toMatch(/^export const HOOK_QUARANTINE/m);
   });
 });
+
+describe("Kurzformen bleiben fachlich", () => {
+  it("rutscht in keiner Kategorie in Umgangssprache", () => {
+    // „bei Speichern je Dach" und „bei Hausspeichern" lasen sich salopp. Ein
+    // Rathaus liest den Betreff als Visitenkarte — die Kurzform darf kürzen,
+    // aber nicht abrutschen.
+    const salopp = [/\bSpeichern je Dach\b/, /\bHausspeicher/, /\bStrom vom Dach\b/, /\bSonnenstrom\b/];
+    for (const c of AWARD_CATEGORIES) {
+      if (!c.betreffPhrase) continue;
+      for (const r of salopp) {
+        expect(c.betreffPhrase, `${c.key}: „${c.betreffPhrase}“`).not.toMatch(r);
+      }
+      // Immer eine vollständige Präpositionalphrase, nie ein nacktes Substantiv.
+      expect(c.betreffPhrase, c.key).toMatch(/^(bei|beim|bei der) /);
+    }
+  });
+});

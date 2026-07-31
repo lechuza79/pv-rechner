@@ -15,7 +15,7 @@ const BASIS: DraftContext = {
   wo: "im Landkreis Würzburg",
   bestleistung: "die meiste private Speicherkapazität",
   themaDativ: "privater Speicherkapazität je Einwohner",
-  phrase: "bei Hausspeichern",
+  phrase: "bei der privaten Speicherkapazität",
   gruppe: "Kleinen Gemeinden im Landkreis Würzburg",
   rangWert: "53,4 kWh/Kopf",
   rang: { platz: 1, von: 52 },

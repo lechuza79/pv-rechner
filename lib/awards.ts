@@ -129,6 +129,10 @@ export type AwardCategory = {
    * KURZFORM FUER DEN BETREFF, als vollstaendige Praepositionalphrase:
    * "bei Balkonkraftwerken", "beim Solar-Zubau in drei Jahren".
    *
+   * FACHBEGRIFF, NICHT UMGANGSSPRACHE: "bei Speichern je Dach" und "bei
+   * Hausspeichern" lasen sich salopp — ein Rathaus liest den Betreff als
+   * Visitenkarte. Die Kurzform darf kuerzen, aber nicht abrutschen.
+   *
    * MIT der Praeposition, nicht nur das Substantiv: "bei" und "beim" haengen am
    * Wort dahinter, und deutsche Kasusbildung per Regel produziert zuverlaessig
    * Murks (dieselbe Begruendung wie bei `themaDativ`). Wer nur das Substantiv
@@ -297,7 +301,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "speicherquote",
-    betreffPhrase: "bei Speichern je Dach",
+    betreffPhrase: "bei Batteriespeichern je Dachanlage",
     slug: "speicher-je-dachanlage",
     label: "Speicher-Quote",
     merit: "Meiste Batteriespeicher je 100 private Dachanlagen.",
@@ -317,7 +321,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "batterie-privat-pk",
-    betreffPhrase: "bei Hausspeichern",
+    betreffPhrase: "bei der privaten Speicherkapazität",
     slug: "speicherkapazitaet-je-einwohner",
     label: "Speicher-Vorreiter",
     merit: "Meiste private Batteriekapazität je Einwohner.",
@@ -411,7 +415,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "batterie-privat-abs",
-    betreffPhrase: "bei Hausspeichern",
+    betreffPhrase: "bei der privaten Speicherkapazität",
     label: "Speicher-Hauptstadt",
     merit: "Meiste private Batteriekapazität insgesamt.",
     bestleistung: "die meiste private Speicherkapazität",
