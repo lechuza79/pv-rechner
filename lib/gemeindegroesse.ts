@@ -55,8 +55,11 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
   { slug: "kleinstaedte", label: "Kleinstädte", einzahl: "Kleinstadt", spanne: "5.000–20.000", min: 5_000, max: 20_000 },
   {
     slug: "mittelstaedte",
-    label: "Mittelstädte",
-    einzahl: "Mittelstadt",
+    // NICHT "Mittelstädte": fachlich korrekt (so heisst die Klasse beim BBSR und
+    // in der Solarbundesliga), aber im Alltag sagt das niemand — "Kleinstadt"
+    // und "Grossstadt" schon, "Mittelstadt" ist Planer-Sprache.
+    label: "Mittlere Städte",
+    einzahl: "Mittlere Stadt",
     spanne: "20.000–100.000",
     min: 20_000,
     max: 100_000,
