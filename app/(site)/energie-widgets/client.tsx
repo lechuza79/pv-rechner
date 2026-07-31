@@ -298,7 +298,58 @@ const RULES: { icon: typeof IconBolt; title: string; body: React.ReactNode }[] =
 
 const PRIVACY_SNIPPET = `Auf dieser Seite ist ein Energiedaten-Widget von solar-check.io (Sebastian Schäder, Höchberg) eingebunden. Beim Laden des Widgets werden technisch bedingt Ihre IP-Adresse, die aufgerufene Seite (Referrer) und Ihr User-Agent an solar-check.io übermittelt (Hosting: Vercel Inc., USA; Übermittlung auf Grundlage des EU-US Data Privacy Framework). Das Widget setzt keine Cookies, speichert keine Daten in Ihrem Browser und führt kein Tracking durch. Rechtsgrundlage ist unser berechtigtes Interesse an der Darstellung aktueller Energiedaten (Art. 6 Abs. 1 lit. f DSGVO). Details: https://solar-check.io/datenschutz`;
 
+
+/** Kennung der Beispiel-Gemeinde in den Vorschauen (Höchberg). */
+const BEISPIEL_AGS = "09679147";
+const BEISPIEL_NAME = "Höchberg";
+
+/**
+ * Setzt in den Gemeinde-Widgets die Gemeinde ein, mit der die Galerie aufgerufen
+ * wurde.
+ *
+ * WARUM (31.07.2026): Die Einbett-Box auf jeder Gemeindeseite verlinkt hierher
+ * MIT der Kennung des Ortes (`/energie-widgets?ags=…&name=…`) — die Galerie hat
+ * sie aber ignoriert. Ein Bürgermeister aus Hahn klickte "mehr Widgets" und sah
+ * sechsmal Höchberg. Genau dieser Weg ist der Kern des Kommunen-Outreachs.
+ *
+ * Ohne Parameter bleibt Höchberg als ausgewiesenes Beispiel stehen.
+ */
+function mitGemeinde(sections: WidgetSection[], ags: string | null, name: string | null): WidgetSection[] {
+  if (!ags || !/^\d{8}$/.test(ags)) return sections;
+  const anzeige = name?.trim() || "Ihre Gemeinde";
+  const ersetze = (t: string) => t.split(BEISPIEL_NAME).join(anzeige);
+  return sections.map((s) => {
+    if (!s.variants.some((v) => v.params?.ags === BEISPIEL_AGS)) return s;
+    return {
+      ...s,
+      // "Hier als Beispiel Höchberg; den fertigen Code für Ihre Gemeinde …" —
+      // der Satz stimmt nicht mehr, wenn die eigene Gemeinde drinsteht.
+      intro: ersetze(s.intro).replace(
+        / Hier als Beispiel [^.;]+; den fertigen Code für Ihre Gemeinde finden Sie auf deren Seite im Solar-Atlas\./,
+        ` Hier mit den Zahlen von ${anzeige}.`,
+      ),
+      attribution: s.attribution ? { ...s.attribution, text: ersetze(s.attribution.text) } : s.attribution,
+      variants: s.variants.map((v) =>
+        v.params?.ags === BEISPIEL_AGS ? { ...v, label: anzeige, params: { ...v.params, ags } } : v,
+      ),
+    };
+  });
+}
+
 export default function WidgetsClient() {
+  // Die Gemeinde kommt aus der Adresse, wird aber ERST NACH DEM LADEN gelesen —
+  // bewusst nicht ueber useSearchParams. Das haette eine Suspense-Grenze
+  // erzwungen, und deren Fallback leert das vorgerenderte HTML: gemessen null
+  // statt voller Galerie. Fuer eine Seite, die Einbettende ueberzeugen soll, ist
+  // ein leeres HTML der schlechtere Tausch als ein kurzer Wechsel nach dem
+  // Laden. Vorgerendert steht Hoechberg als ausgewiesenes Beispiel; wer mit
+  // ?ags=… kommt, sieht einen Sekundenbruchteil spaeter seine eigene Gemeinde.
+  const [gemeinde, setGemeinde] = useState<{ ags: string | null; name: string | null }>({ ags: null, name: null });
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    setGemeinde({ ags: q.get("ags"), name: q.get("name") });
+  }, []);
+  const sections = mitGemeinde(SECTIONS, gemeinde.ags, gemeinde.name);
   const [theme, setTheme] = useState<WidgetThemeSelection>(WIDGET_THEME_DEFAULTS);
   const update = (patch: Partial<WidgetThemeSelection>) => setTheme((t) => ({ ...t, ...patch }));
   const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
@@ -355,7 +406,7 @@ export default function WidgetsClient() {
           <PrivacySnippet />
         </section>
 
-        {SECTIONS.map((s, i) => (
+        {sections.map((s, i) => (
           <Fragment key={s.id}>
             <SectionPreview
               section={s}
