@@ -50,16 +50,37 @@ export type Groessenklasse = {
 };
 
 export const GROESSENKLASSEN: Groessenklasse[] = [
-  { slug: "kleingemeinden", label: "Kleingemeinden", einzahl: "Kleingemeinde", spanne: "unter 1.000", min: 0, max: 1_000 },
+  {
+    // "Dörfer" statt "Kleingemeinden": Unter 1.000 Einwohnern sind nur 14 von
+    // 3.798 Orten amtlich Städte (die kleinste ist Arnis mit 251). Entscheidung
+    // des Betreibers am 31.07.2026: Alltagssprache vor amtlicher Bezeichnung.
+    slug: "kleingemeinden",
+    label: "Dörfer",
+    einzahl: "Dorf",
+    spanne: "unter 1.000",
+    min: 0,
+    max: 1_000,
+  },
   { slug: "gemeinden", label: "Gemeinden", einzahl: "Gemeinde", spanne: "1.000–5.000", min: 1_000, max: 5_000 },
-  { slug: "kleinstaedte", label: "Kleinstädte", einzahl: "Kleinstadt", spanne: "5.000–20.000", min: 5_000, max: 20_000 },
+  {
+    slug: "kleinstaedte",
+    // NICHT nur "Kleinstädte": In dieser Spanne sind gemessen 45 % der Orte
+    // amtlich Städte und 55 % Gemeinden. "Kleinstadt" wuerde also fuer die
+    // Mehrheit etwas behaupten, was nicht stimmt — und ein 5.000-Einwohner-Ort
+    // liest sich als "Kleinstadt" schlicht falsch.
+    label: "Gemeinden und Kleinstädte",
+    einzahl: "Gemeinde oder Kleinstadt",
+    spanne: "5.000–20.000",
+    min: 5_000,
+    max: 20_000,
+  },
   {
     slug: "mittelstaedte",
     // NICHT "Mittelstädte": fachlich korrekt (so heisst die Klasse beim BBSR und
     // in der Solarbundesliga), aber im Alltag sagt das niemand — "Kleinstadt"
     // und "Grossstadt" schon, "Mittelstadt" ist Planer-Sprache.
-    label: "Mittlere Städte",
-    einzahl: "Mittlere Stadt",
+    label: "Mittelgroße Städte",
+    einzahl: "Mittelgroße Stadt",
     spanne: "20.000–100.000",
     min: 20_000,
     max: 100_000,
