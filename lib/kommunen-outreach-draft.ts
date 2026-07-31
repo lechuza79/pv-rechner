@@ -139,7 +139,11 @@ function standLabel(iso: string): string {
  */
 export function renderMeldung(c: DraftContext): string {
   const { anlagen, leistungKwp, wpProKopf, stand } = c.zahlen;
-  const proKopfSatz = wpProKopf != null ? `, das entspricht ${fmtWattProKopf(wpProKopf)} je Einwohnerin und Einwohner` : "";
+  // "pro Person" statt "je Einwohnerin und Einwohner": Die Doppelform macht den
+  // Satz schwerfaellig, ohne ihn genauer zu machen. Entscheidung des Betreibers
+  // (31.07.2026). Die Einheit selbst kommt weiter aus dem kanonischen
+  // Formatierer — nur die Bezugsgroesse ist umformuliert.
+  const proKopfSatz = wpProKopf != null ? `, das entspricht ${fmtWattProKopf(wpProKopf)} pro Person` : "";
   const platz = c.rang?.platz ?? null;
 
   // DIE UEBERSCHRIFT BEHAUPTET NUR, WAS STIMMT.
