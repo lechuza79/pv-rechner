@@ -29,6 +29,50 @@ const baseInputs: HeatPumpInputs = {
 };
 
 // ─── Heat demand (Wohnfläche × spezifischer Bedarf + Warmwasser) ────────────
+// ─── Was „Amortisation" hier bedeutet ───────────────────────────────────────
+// Diese Zahl beantwortet NICHT „wann hat sich die Anlage bezahlt gemacht", sondern
+// „wann ist der MEHRPREIS gegenüber der fossilen Alternative wieder eingespielt".
+// Der Unterschied ist groß genug, um Nutzer zu täuschen: Bei einem gut sanierten
+// 140-m²-Haus kostet die geförderte Wärmepumpe rund 16.800 € und eine neue
+// Gasheizung 15.900 € — die Kennzahl steht dann auf „1 Jahr", obwohl 16.800 €
+// bezahlt werden müssen. In 33 von 84 durchgerechneten Kombinationen lag sie bei
+// höchstens zwei Jahren (Befund 31.07.2026). Der Rechner beschriftet sie deshalb
+// als Mehrkosten; diese Tests halten die Bedeutung fest.
+describe("Amortisation misst die Mehrkosten, nicht die Investition", () => {
+  const gutSaniert = {
+    situation: "bestand" as const, wohnflaeche: 140, insulationIdx: 2, personen: 3.5,
+    heizsystem: "fbh" as const, wpType: "lwwp" as const,
+  };
+
+  it("bezieht sich auf die Differenz zur fossilen Anschaffung", () => {
+    const r = calcHeatPump(gutSaniert);
+    const mehrkosten = r.investNetto - r.gasInvest;
+    // Die Kennzahl ist klein, WEIL die Differenz klein ist — nicht weil die Anlage
+    // billig wäre. Beides muss gleichzeitig gelten, sonst misst sie etwas anderes.
+    expect(mehrkosten).toBeLessThan(r.investNetto / 5);
+    expect(r.amortisationsJahre).not.toBeNull();
+    expect(r.amortisationsJahre!).toBeLessThanOrEqual(3);
+    expect(r.investNetto).toBeGreaterThan(10000);   // die Anlage kostet trotzdem richtig Geld
+  });
+
+  it("meldet 0 Jahre, wenn die geförderte Wärmepumpe billiger ist als der neue Kessel", () => {
+    // Kleines Haus: Förderung drückt die Anlage unter den Preis einer neuen
+    // Gasheizung. „0 Jahre" ist rechnerisch richtig und als Wort sinnlos — das UI
+    // schreibt hier „keine Mehrkosten" statt einer Jahreszahl.
+    const r = calcHeatPump({ ...gutSaniert, wohnflaeche: 80 });
+    expect(r.investNetto).toBeLessThan(r.gasInvest);
+    expect(r.amortisationsJahre).toBe(0);
+  });
+
+  it("rechnet gegen die volle Investition, sobald keine fossile Anschaffung ansteht", () => {
+    // Wer seine Heizung behält, trägt den Betrag auf 0 ein. Dann ist die Kennzahl
+    // wieder das, was die meisten unter Amortisation verstehen — und deutlich länger.
+    const mitKessel = calcHeatPump(gutSaniert);
+    const ohneKessel = calcHeatPump({ ...gutSaniert, override: { fossilErsatzInvest: 0 } });
+    expect(ohneKessel.amortisationsJahre).toBeGreaterThan(mitKessel.amortisationsJahre!);
+  });
+});
+
 describe("calcHeatDemand", () => {
   it("rechnet den Bestand mit dem VERBRAUCH, nicht mit dem Norm-Bedarf", () => {
     // 130 m², teilsaniert. Der Norm-Bedarf der Stufe ist 160 kWh/m²·a; für die

@@ -220,6 +220,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // Detailwerte laufen weiter über `result` (Basisfall).
   const wegeResults = useMemo(() => wege.map(w => ({ ...w, r: calcHeatPump({ ...inputs, ...w.patch }, cfg, heatPumpScenarioAdj(effScenario, cfg)) })), [wege, inputs, cfg, effScenario]);
   const istResult = wegeResults.find(w => w.id === "ist")?.r ?? calcHeatPump(inputs, cfg);
+  /** Mehrpreis der Wärmepumpe gegenüber der fossilen Alternative im Ist-Zustand. */
+  const istMehrkosten = istResult.investNetto - istResult.gasInvest;
   const istNegativ = istResult.tcoEinsparung < 0;
   const istKnapp = istResult.amortisationsJahre === null || istResult.amortisationsJahre > 15 || istNegativ;
   // Wege dauerhaft zeigen (nicht an die knappe istKnapp-Schwelle koppeln — sonst
@@ -260,6 +262,12 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   // Gewählter Fall: treibt die Ergebnis-Zahlen (TCO/Amortisation/Ersparnis/CO₂).
   const selPrice = scenariosPlain.find(s => s.id === effScenario) ?? scenariosPlain.find(s => s.id === "realistic")!;
   const sel = greenGas ? { ...GRUENGAS_META, ...gruengasResult } : selPrice;
+
+  // Was die Wärmepumpe gegenüber der fossilen Alternative WIRKLICH mehr kostet.
+  // Genau diese Größe amortisiert sich — nicht die Investition. Kann null oder
+  // negativ werden, wenn die Förderung die Anlage unter den Preis einer neuen
+  // fossilen Heizung drückt; dann ist „Amortisation" als Wort sinnlos.
+  const mehrkosten = sel.investNetto - sel.gasInvest;
 
   // Bandbreite über ALLE gerechneten Annahmen (die drei Preispfade und, wo sie gilt,
   // die Grüngas-Pflicht). Sie steht im Hero unter der großen Zahl — die Antwort auf
@@ -669,7 +677,9 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                     ? <>ist eine Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre <span style={{ fontWeight: 700, color: v('--color-negative') }}>unwirtschaftlich</span> ({istResult.tcoEinsparung.toLocaleString("de-DE")} €).</>
                     : istKnapp
                       ? <>spielt eine Wärmepumpe über {DEFAULT_HEATPUMP_CONFIG.years} Jahre nur <span style={{ fontWeight: 700, fontFamily: v('--font-mono') }}>+{istResult.tcoEinsparung.toLocaleString("de-DE")} €</span> ein — sie lohnt sich <span style={{ fontWeight: 700 }}>ohne weitere Maßnahmen kaum</span>.</>
-                      : <>rechnet sich eine Wärmepumpe schon: <span style={{ fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>+{istResult.tcoEinsparung.toLocaleString("de-DE")} €</span>{istResult.amortisationsJahre !== null ? `, Amortisation in ${istResult.amortisationsJahre} Jahren` : ""}.</>}
+                      : <>rechnet sich eine Wärmepumpe schon: <span style={{ fontWeight: 700, fontFamily: v('--font-mono'), color: v('--color-positive') }}>+{istResult.tcoEinsparung.toLocaleString("de-DE")} €</span>{istMehrkosten <= 0
+                        ? ", und sie kostet nach Förderung nicht mehr als eine neue Heizung"
+                        : istResult.amortisationsJahre !== null ? `, die Mehrkosten sind nach ${istResult.amortisationsJahre} ${istResult.amortisationsJahre === 1 ? "Jahr" : "Jahren"} wieder drin` : ""}.</>}
                   {" "}So wirken sich weitere Schritte auf die Wirtschaftlichkeit aus:
                 </div>
               </div>
@@ -848,7 +858,23 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
 
             {/* Sekundäre Stats */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
-              <StatCard label="Amortisation" value={sel.amortisationsJahre !== null ? `${sel.amortisationsJahre} J` : "> 20 J"} positive={sel.amortisationsJahre !== null && sel.amortisationsJahre <= 15} />
+              {/* „Amortisation" war hier eine Lüge in einem Wort (31.07.2026): Amortisiert
+                  wird NICHT die Investition, sondern der Mehrpreis gegenüber der fossilen
+                  Alternative. Bei kleinen Häusern liegt der nahe null oder darunter — dann
+                  stand dort „1 J" oder „0 J", und wer das las, verstand „die Anlage hat
+                  sich nach einem Jahr bezahlt". In 33 von 84 durchgerechneten Fällen. */}
+              <StatCard
+                label={mehrkosten > 0 ? "Mehrkosten drin nach" : "Mehrkosten"}
+                value={mehrkosten <= 0
+                  ? "keine"
+                  : sel.amortisationsJahre !== null ? `${sel.amortisationsJahre} J` : "> 20 J"}
+                positive={mehrkosten <= 0 || (sel.amortisationsJahre !== null && sel.amortisationsJahre <= 15)}
+                helpTitle="Worauf sich diese Zahl bezieht"
+                helpAriaLabel="Worauf bezieht sich die Amortisation?"
+                help={mehrkosten <= 0
+                  ? `Die Wärmepumpe kostet dich nach Förderung ${sel.investNetto.toLocaleString("de-DE")} € — das ist ${Math.abs(mehrkosten).toLocaleString("de-DE")} € WENIGER als die ${sel.gasInvest.toLocaleString("de-DE")} € für eine neue ${fuel.refLabel}. Es gibt also keine Mehrkosten, die sich erst rechnen müssten; die Ersparnis beim Heizen kommt oben drauf. Achtung: Das heißt nicht, dass die Anlage nichts kostet — du zahlst die ${sel.investNetto.toLocaleString("de-DE")} € trotzdem.`
+                  : `Nicht die ganze Investition, sondern nur der Unterschied zur Alternative. Die Wärmepumpe kostet dich nach Förderung ${sel.investNetto.toLocaleString("de-DE")} €, eine neue ${fuel.refLabel} ${sel.gasInvest.toLocaleString("de-DE")} € — bleiben ${mehrkosten.toLocaleString("de-DE")} € Mehrkosten. Die sind nach dieser Zeit durch die niedrigeren Heizkosten wieder eingespielt. Steht bei dir gar kein Heizungstausch an, setz die neue ${fuel.refLabel} oben auf 0; dann rechnet sich die volle Investition gegen den Weiterbetrieb.`}
+              />
               <StatCard label="⌀ Ersparnis/Jahr" value={`${sel.einsparungProJahr.toLocaleString("de-DE")} €`} positive={sel.einsparungProJahr > 0} />
               <StatCard
                 label="CO₂ 20 J"
@@ -1132,7 +1158,9 @@ function WegCard({ titel, kurz, r, active, onClick, situation, sanierung, refLab
           </span>
         </div>
         <div style={{ fontSize: 11, color: v('--color-text-muted') }}>
-          {r.amortisationsJahre !== null ? `Amortisation ${r.amortisationsJahre} J` : `Amortisation > ${DEFAULT_HEATPUMP_CONFIG.years} J`}
+          {r.investNetto - r.gasInvest <= 0
+            ? "keine Mehrkosten"
+            : r.amortisationsJahre !== null ? `Mehrkosten drin nach ${r.amortisationsJahre} J` : `Mehrkosten > ${DEFAULT_HEATPUMP_CONFIG.years} J nicht drin`}
         </div>
       </div>
     </div>
