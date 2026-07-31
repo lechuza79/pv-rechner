@@ -323,3 +323,28 @@ describe("Anschreiben über alle Varianten", () => {
     }
   });
 });
+
+describe("Absolute Kategorien werden kein Aufhänger", () => {
+  it("erzeugt für sie gar keine Platzierung", () => {
+    // "Die meisten Balkonkraftwerke im Landkreis" kürt gemessen die
+    // einwohnerstärkste Kommune — ein Brief damit lobt Größe, nicht Leistung.
+    // Aus den öffentlichen Ranglisten sind sie aus demselben Grund längst raus.
+    const gross = g("09111001", { population: 50_000, balkonCount: 900, privatDachKwp: 20_000 });
+    const klein = g("09111002", { population: 800, balkonCount: 90, privatDachKwp: 900 });
+    const alle = [gross, klein, ...Array.from({ length: 8 }, (_, i) =>
+      g(`0911100${i + 3}`.slice(0, 8), { population: 900 + i, balkonCount: 20 + i, privatDachKwp: 500 + i }))];
+    const pl = computePlacements(alle);
+    const keys = new Set([...pl.values()].flat().map((p) => p.categoryKey));
+    for (const abs of ["balkon-abs", "dach-privat-abs", "batterie-privat-abs"]) {
+      expect(keys.has(abs), `${abs} darf kein Aufhänger sein`).toBe(false);
+    }
+  });
+
+  it("lässt Verhältniszahlen zu — pro Kopf und je Dach", () => {
+    const orte = Array.from({ length: 10 }, (_, i) =>
+      g(`0911100${i}`.slice(0, 8), { population: 1000 + i * 10, balkonCount: 50 - i, privatDachKwp: 900 + i }));
+    const keys = new Set([...computePlacements(orte).values()].flat().map((p) => p.categoryKey));
+    expect(keys.has("balkon-pk")).toBe(true);
+    expect(keys.has("dach-privat-pk")).toBe(true);
+  });
+});

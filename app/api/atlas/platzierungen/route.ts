@@ -66,7 +66,9 @@ export async function GET(req: NextRequest) {
   // lauter roten Pro-Kopf-Werten auf derselben Seite.
   const meine = (placements.get(regionId) ?? []).filter((p) => {
     if (p.spike || p.total < DEFAULT_HOOK_SETTINGS.minTotal) return false;
-    if (AWARD_CATEGORY_BY_KEY[p.categoryKey]?.messart !== "proKopf") return false;
+    // Absolute Kategorien entstehen gar nicht mehr als Platzierung (siehe
+    // computePlacements); Verhaeltniszahlen — pro Kopf UND je Dach — zaehlen.
+    if (AWARD_CATEGORY_BY_KEY[p.categoryKey]?.messart === "absolut") return false;
     return p.rank <= 3 || p.rank / p.total <= DEFAULT_HOOK_SETTINGS.percentileCut;
   });
 

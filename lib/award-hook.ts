@@ -158,7 +158,14 @@ export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Place
   const levels: HookLevel[] = ["kreis", "land", "bund"];
   for (const cat of AWARD_CATEGORIES) {
     if (cat.traeger !== HOOK_TRAEGER) continue; // nur Bürger-Leistung wird zum Aufhänger
-    const isProKopf = cat.messart !== "absolut";
+    // KEINE ABSOLUTEN KATEGORIEN (31.07.2026). "Die meisten Balkonkraftwerke im
+    // Landkreis" kürt gemessen die einwohnerstärkste Kommune: In BW, BY und NRW
+    // ist der Sieger jeweils exakt die größte Gemeinde, und 6 bis 10 der ersten
+    // Zehn sind schlicht die zehn einwohnerstärksten Orte. Ein Brief mit diesem
+    // Aufhänger lobt Größe, nicht Leistung — und aus den öffentlichen
+    // Ranglisten haben wir sie aus demselben Grund längst herausgenommen.
+    // Verhältniszahlen (pro Kopf, je Dach) bleiben.
+    if (cat.messart === "absolut") continue;
     for (const level of levels) {
       // Gruppiert wird nach Gebiet UND Groessenklasse — exakt wie in der
       // Rangliste, auf die der Orden und der Brief verlinken.
@@ -186,7 +193,10 @@ export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Place
         // absoluten Kategorien liegt der Sieger naturgemäß weit über dem Median).
         const median = total ? ranked[Math.floor(total / 2)].value : 0;
         for (const r of ranked) {
-          const spike = isProKopf && median > 0 && r.value > SPIKE_FACTOR * median;
+          // Der Spike-Waechter greift jetzt fuer ALLE verbliebenen Kategorien —
+          // es sind ausnahmslos Verhaeltniszahlen, und genau dort ist ein Wert
+          // weit ueber dem Gruppen-Median eher ein Datenfehler als ein Vorreiter.
+          const spike = median > 0 && r.value > SPIKE_FACTOR * median;
           push(r.regionId, {
             categoryKey: cat.key,
             level,
