@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderOutreachDraft, renderMeldung, gattungKurz, type DraftContext } from "../kommunen-outreach-draft";
+import { renderOutreachDraft, renderMeldung, type DraftContext } from "../kommunen-outreach-draft";
 import { AWARD_CATEGORIES } from "../awards";
 
 // Die Fälle stammen aus dem Gegenlesen echter Entwürfe (27./28.07.2026) — jeder
@@ -12,7 +12,6 @@ const BASIS: DraftContext = {
   betreff: "Höchberg hat die meiste private Speicherkapazität im Landkreis Würzburg",
   einstieg: "Höchberg hat die meiste private Speicherkapazität im Landkreis Würzburg — Platz 1 von 52 Gemeinden.",
   variante: "nur_meldung",
-  gattung: "Markt",
   wo: "im Landkreis Würzburg",
   bestleistung: "die meiste private Speicherkapazität",
   themaDativ: "privater Speicherkapazität je Einwohner",
@@ -77,18 +76,7 @@ describe("Zwei Ask-Varianten", () => {
   });
 });
 
-describe("Anrede und Gattung", () => {
-  it("nennt eine Stadt nicht „Gemeinde“", () => {
-    const d = renderOutreachDraft({ ...BASIS, name: "Stuttgart", gattung: "Kreisfreie Stadt" });
-    expect(d.body).toContain("Website Ihrer Stadt");
-    expect(d.body).not.toContain("Ihrer Gemeinde");
-  });
-
-  it("gattungKurz reduziert auf ein natürliches Wort", () => {
-    expect(gattungKurz("Große Kreisstadt")).toBe("Stadt");
-    expect(gattungKurz("Markt")).toBe("Markt");
-    expect(gattungKurz(null)).toBe("Gemeinde");
-  });
+describe("Anrede", () => {
 
   it("bittet um Weiterleitung, wenn keine zuständige Stelle bekannt ist", () => {
     const d = renderOutreachDraft(BASIS);
@@ -352,22 +340,22 @@ describe("Weitere Platzierungen im Brief", () => {
 });
 
 describe("Datenschutz-Hinweis", () => {
-  it("beugt die Gattung richtig", () => {
-    // „Website Ihrer Markt" stand so im Brief — Markt ist männlich.
-    for (const [bez, erwartet] of [
-      ["Markt", "Website Ihres Marktes"],
-      ["Kreisfreie Stadt", "Website Ihrer Stadt"],
-      ["Gemeinde", "Website Ihrer Gemeinde"],
-    ] as const) {
-      expect(renderOutreachDraft({ ...BASIS, gattung: bez }).body).toContain(erwartet);
+  it("nennt den Ort beim Namen statt bei der Gattung", () => {
+    // „Website Ihrer Markt" stand so im Brief — Markt ist männlich. Der Name hat
+    // kein Geschlecht und ist konkreter; jede Beugungstabelle wäre eine Falle.
+    for (const name of ["Höchberg", "Stuttgart", "Markt Schwaben"]) {
+      const b = renderOutreachDraft({ ...BASIS, name }).body;
+      expect(b, name).toContain(`Website von ${name}`);
+      expect(b, name).not.toMatch(/Website Ihre[rs]? (Markt|Stadt|Gemeinde)/);
     }
   });
 
-  it("nennt den Zähl-Link, statt „einmalig“ zu versprechen", () => {
-    // Der Vorschau-Link zählt Aufrufe mit — „nutze ich einmalig" las sich
-    // daneben schöner, als es ist.
+  it("verspricht nicht mehr „einmalig“", () => {
+    // Der Vorschau-Link zählt Aufrufe mit; „einmalig" las sich daneben schöner,
+    // als es ist. Die Einzelheiten stehen in der Datenschutzerklärung, nicht im
+    // Brief — dort wäre ein Absatz darüber eine Affäre aus einer Nebensache.
     const b = renderOutreachDraft(BASIS).body;
-    expect(b).toContain("wird gezählt");
-    expect(b).not.toContain("nutze ich einmalig");
+    expect(b).not.toContain("einmalig");
+    expect(b).toContain("Speicherdauer");
   });
 });

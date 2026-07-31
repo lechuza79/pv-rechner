@@ -233,7 +233,7 @@ export async function POST(req: NextRequest) {
     // Nur eine OPERATIVE Stelle wird direkt adressiert. Der Bürgermeister steht
     // zwar fast immer im Impressum, betreut die Website aber nicht.
     funktion: leadRow?.verantwortlich_operativ ? leadRow.verantwortlich_funktion : null,
-    gattung: reg.bezeichnung,
+    
     wo: hook?.wo ?? "in der Region",
     bestleistung: hook?.bestleistung ?? "einen bemerkenswerten Solar-Ausbau",
     themaDativ: hook?.themaDativ ?? "Solar-Ausbau",

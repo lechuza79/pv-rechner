@@ -53,11 +53,6 @@ export type DraftContext = {
    * namentliche Anrede, sondern ein Text, der eine Weiterleitung übersteht.
    */
   funktion?: string | null;
-  /**
-   * Amtliche Gattung: „Stadt", „Markt", „Gemeinde". Eine Landeshauptstadt als
-   * „Ihre Gemeinde" anzuschreiben wirkt ahnungslos.
-   */
-  gattung?: string | null;
   /** Zahlen für die Meldung — aus derselben Quelle wie die Atlas-Seite. */
   zahlen: {
     anlagen: number;
@@ -122,28 +117,25 @@ Betreiber solar-check.io
 Impressum: https://solar-check.io/impressum · Datenschutz: https://solar-check.io/datenschutz`;
 
 /**
- * "Website Ihrer Markt" stand so im Brief — „Markt" und „Stadt" haben
- * verschiedene Geschlechter, ein festes „Ihrer" passt nur zu einem davon.
- * Deshalb steht die ganze Fügung in der Tabelle, nicht nur das Substantiv
- * (dieselbe Regel wie bei den Dativformen der Größenklassen).
+ * Der ORTSNAME statt der Gattung: "Website Ihrer Markt" stand so im Brief, weil
+ * "Markt" maennlich ist und "Ihrer" nur zu Stadt und Gemeinde passt. Der Name
+ * hat kein Geschlecht und ist ausserdem konkreter — jede Beugungstabelle waere
+ * eine Falle, die irgendwann wieder zuschnappt.
+ *
+ * Der Klickzaehler des Vorschau-Links steht NICHT hier, sondern in der
+ * Datenschutzerklaerung. Ein Absatz darueber mitten im Anschreiben macht aus
+ * einer Nebensache eine Affaere; die Pflichtangabe nach Art. 14 ist der Hinweis
+ * auf Herkunft, Zweck und Widerspruchsrecht, und den traegt der Link.
  */
-const GATTUNG_GENITIV: Record<string, string> = {
-  Stadt: "Ihrer Stadt",
-  Markt: "Ihres Marktes",
-  Gemeinde: "Ihrer Gemeinde",
-};
+const dsgvoHinweis = (ortsname: string) =>
+  `Datenschutz-Hinweis (Art. 14 DSGVO): Ihre öffentlich verfügbaren Kontaktdaten (Website von ${ortsname}) nutze ich für dieses Angebot. Herkunft, Zweck, Speicherdauer und Ihr Widerspruchsrecht: https://solar-check.io/datenschutz`;
 
-const dsgvoHinweis = (gattung: string) =>
-  `Datenschutz-Hinweis (Art. 14 DSGVO): Ihre öffentlich verfügbaren Kontaktdaten (Website ${GATTUNG_GENITIV[gattung] ?? "Ihrer Gemeinde"}) nutze ich für dieses Angebot; ob Sie den Vorschau-Link öffnen, wird gezählt. Herkunft, Zweck, Speicherdauer und Ihr Widerspruchsrecht: https://solar-check.io/datenschutz`;
-
-/** „Kreisfreie Stadt", „Große Kreisstadt", „Markt" … auf das Wort reduzieren,
- *  das in einem Anschreiben natürlich klingt. */
-export function gattungKurz(bezeichnung: string | null | undefined): string {
-  if (!bezeichnung) return "Gemeinde";
-  if (/stadt/i.test(bezeichnung)) return "Stadt";
-  if (/markt/i.test(bezeichnung)) return "Markt";
-  return "Gemeinde";
-}
+/**
+ * ENTFERNT AM 31.07.2026: Der Brief sprach die Gattung nirgends mehr an, seit
+ * der Datenschutz-Hinweis den Ortsnamen nennt. Eine Funktion, die "Große
+ * Kreisstadt" auf "Stadt" reduziert, braucht nur, wer daraus einen gebeugten
+ * Satz baut — und genau das war die Falle ("Website Ihrer Markt").
+ */
 
 /** "2026-07-15" → "15. Juli 2026". */
 function standLabel(iso: string): string {
@@ -208,7 +200,6 @@ Grundlage sind die Anlagendaten des Marktstammdatenregisters der Bundesnetzagent
 }
 
 export function renderOutreachDraft(c: DraftContext): OutreachDraft {
-  const gattung = gattungKurz(c.gattung);
   const meldung = renderMeldung(c);
 
   // Wer die Website betreut, ist bei kleinen Gemeinden nicht ermittelbar (siehe
@@ -269,7 +260,7 @@ Mit freundlichen Grüßen
 ${SIGNATURE}
 
 —
-${dsgvoHinweis(gattung)}`;
+${dsgvoHinweis(c.name)}`;
 
   return { subject: c.betreff, body, meldung };
 }
