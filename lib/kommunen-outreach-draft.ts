@@ -57,6 +57,16 @@ export type DraftContext = {
   zahlen: {
     anlagen: number;
     leistungKwp: number;
+    /**
+     * Davon auf privaten Daechern. MUSS mit, weil die Gesamtleistung in kleinen
+     * Orten von einem einzigen Solarpark beherrscht wird.
+     *
+     * DER FALL (31.07.2026): Gluesing, 110 Einwohner, 2,1 MWp — der Brief
+     * eroeffnete mit "18.894 Wp pro Person" und behauptete zwei Zeilen spaeter
+     * etwas ueber private Daecher. Die Zahl stimmt und erzaehlt trotzdem die
+     * falsche Geschichte: Sie gehoert einem Investor, nicht den Buergern.
+     */
+    privatDachKwp: number | null;
     wpProKopf: number | null;
     /** Datenstand des Marktstammdatenregisters, ISO (YYYY-MM-DD). */
     stand: string;
@@ -158,7 +168,21 @@ export function renderMeldung(c: DraftContext): string {
   // Satz schwerfaellig, ohne ihn genauer zu machen. Entscheidung des Betreibers
   // (31.07.2026). Die Einheit selbst kommt weiter aus dem kanonischen
   // Formatierer — nur die Bezugsgroesse ist umformuliert.
-  const proKopfSatz = wpProKopf != null ? `, das entspricht ${fmtWattProKopf(wpProKopf)} pro Person` : "";
+  // Der Anteil privater Daecher gehoert in denselben Satz. Ohne ihn eroeffnet
+  // die Meldung mit einer Zahl, die einem Solarpark gehoert, und behauptet
+  // danach etwas ueber die Buerger.
+  const { privatDachKwp } = c.zahlen;
+  const privatAnteil = leistungKwp > 0 && privatDachKwp != null ? privatDachKwp / leistungKwp : null;
+  const privatSatz =
+    privatDachKwp != null && privatAnteil != null
+      ? `, davon ${fmtPvLeistung(privatDachKwp)} auf privaten Dächern`
+      : "";
+  // Die Pro-Kopf-Zahl NUR, wenn sie die Buerger meint. Wo Freiflaeche und
+  // Gewerbe dominieren, sagt sie ueber den Ort nichts aus.
+  const proKopfSatz =
+    wpProKopf != null && (privatAnteil == null || privatAnteil >= 0.5)
+      ? `, das entspricht ${fmtWattProKopf(wpProKopf)} pro Person`
+      : "";
   const platz = c.rang?.platz ?? null;
 
   // DIE UEBERSCHRIFT BEHAUPTET NUR, WAS STIMMT.
@@ -194,7 +218,7 @@ export function renderMeldung(c: DraftContext): string {
 
   return `${ueberschrift}
 
-In ${c.name} sind ${anlagen.toLocaleString("de-DE")} Solaranlagen mit zusammen ${fmtPvLeistung(leistungKwp)} in Betrieb${proKopfSatz}.${belegSatz}
+In ${c.name} sind ${anlagen.toLocaleString("de-DE")} Solaranlagen mit zusammen ${fmtPvLeistung(leistungKwp)} in Betrieb${privatSatz}${proKopfSatz}.${belegSatz}
 
 Grundlage sind die Anlagendaten des Marktstammdatenregisters der Bundesnetzagentur (Stand: ${standLabel(stand)}), Datenlizenz dl-de/by-2-0; Einwohnerzahlen vom Statistischen Bundesamt. Eine laufend aktualisierte Übersicht für ${c.name} gibt es unter ${c.pageUrl ?? "solar-check.io"}.`;
 }

@@ -256,6 +256,9 @@ export async function POST(req: NextRequest) {
     zahlen: {
       anlagen: atlas.solar.total_count,
       leistungKwp: atlas.solar.total_kwp,
+      // Anteil privater Daecher — sonst eroeffnet die Meldung mit der Leistung
+      // eines Solarparks und behauptet danach etwas ueber die Buerger.
+      privatDachKwp: atlas.solar.by_segment.find((x) => x.segment === "privat_dach")?.kwp ?? null,
       wpProKopf: reg.population ? Math.round((atlas.solar.total_kwp * 1000) / reg.population) : null,
       stand: atlas.data_as_of,
     },

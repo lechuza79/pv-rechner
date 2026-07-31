@@ -19,7 +19,7 @@ const BASIS: DraftContext = {
   gruppe: "Kleinen Gemeinden im Landkreis Würzburg",
   rangWert: "53,4 kWh/Kopf",
   rang: { platz: 1, von: 52 },
-  zahlen: { anlagen: 1234, leistungKwp: 12400, wpProKopf: 1240, stand: "2026-07-15" },
+  zahlen: { anlagen: 1234, leistungKwp: 12400, privatDachKwp: 9000, wpProKopf: 1240, stand: "2026-07-15" },
 };
 
 describe("Meldung", () => {
@@ -357,5 +357,31 @@ describe("Datenschutz-Hinweis", () => {
     const b = renderOutreachDraft(BASIS).body;
     expect(b).not.toContain("einmalig");
     expect(b).toContain("Speicherdauer");
+  });
+});
+
+describe("Eröffnungszahl erzählt dieselbe Geschichte wie der Rang", () => {
+  // DER FALL: Glüsing, 110 Einwohner, 2,1 MWp — ein Solarpark. Die Meldung
+  // eröffnete mit „18.894 Wp pro Person" und behauptete zwei Zeilen später
+  // etwas über private Dächer. Die Zahl stimmt und erzählt trotzdem die falsche
+  // Geschichte: Sie gehört einem Investor, nicht den Bürgern.
+  const parkDorf: DraftContext = {
+    ...BASIS,
+    name: "Glüsing",
+    zahlen: { anlagen: 15, leistungKwp: 2100, privatDachKwp: 260, wpProKopf: 18_894, stand: "2026-07-15" },
+  };
+
+  it("nennt den Anteil privater Dächer neben der Gesamtleistung", () => {
+    expect(renderMeldung(parkDorf)).toContain("davon 260 kWp auf privaten Dächern");
+  });
+
+  it("lässt die Pro-Kopf-Zahl weg, wo Freifläche und Gewerbe dominieren", () => {
+    expect(renderMeldung(parkDorf)).not.toContain("18.894");
+    expect(renderMeldung(parkDorf)).not.toContain("pro Person");
+  });
+
+  it("nennt sie weiterhin, wo die Bürger die Mehrheit stellen", () => {
+    // Höchberg: 9.000 von 12.400 kWp privat.
+    expect(renderMeldung(BASIS)).toContain("pro Person");
   });
 });
