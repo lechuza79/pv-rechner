@@ -6,6 +6,7 @@
 
 import { DEFAULT_AIRCON_CONFIG, type AcConfig, type AcDevice, type AcDeviceId, type AcHeatStandard } from "./aircon-config";
 import { FUEL } from "./constants";
+import { verbrauchAusBedarf } from "./heat-consumption";
 
 export type CoolingWindow = "allday" | "day" | "night";
 
@@ -144,6 +145,11 @@ export interface AcHeatResult {
   canHeat: boolean;
   scop: number;
   standard: AcHeatStandard;     // angesetzter Gebäudestandard
+  /** Erwarteter realer Jahres-Heizwärmeverbrauch je m² des Standards — der
+   *  Zwischenschritt zwischen Norm-Bedarf (standard.specKwh) und Übergangszeit.
+   *  Steht im Ergebnis, damit der erklärende Satz die tatsächliche Rechenkette
+   *  nennen kann und nicht eine, die nicht mehr aufgeht. */
+  standardVerbrauchKwhPerM2: number;
   specKwhPerM2: number;         // daraus abgeleitete Übergangszeit-Heizwärme je m²
   heatThermalKwh: number;       // thermische Heizwärme
   heatElectricKwh: number;      // Heizstrom
@@ -163,7 +169,13 @@ export function acHeatStandard(standardId: string | undefined, cfg: AcConfig = D
 }
 
 export function acHeatSpecKwhPerM2(standardId: string | undefined, cfg: AcConfig = DEFAULT_AIRCON_CONFIG): number {
-  return Math.round(acHeatStandard(standardId, cfg).specKwh * cfg.heatTransitionShare);
+  // Erst Norm-Bedarf → erwarteter Verbrauch (Prebound, lib/heat-consumption.ts),
+  // dann der Übergangszeit-Anteil. Dieselbe Korrektur wie im Wärmepumpen-Rechner —
+  // beide rechnen Betriebskosten, beide müssen von derselben Menge ausgehen,
+  // sonst driften sie an genau der Stelle auseinander, an der sie sich die
+  // Dämmtabelle teilen.
+  const std = acHeatStandard(standardId, cfg);
+  return Math.round(verbrauchAusBedarf(std.specKwh, std.art) * cfg.heatTransitionShare);
 }
 
 /** Heizen mit dem gewählten Gerät. heatStandardId wählt den Gebäudestandard (die
@@ -181,6 +193,7 @@ export function calcAirconHeating(
 ): AcHeatResult {
   const scop = device.scop ?? 0;
   const standard = acHeatStandard(heatStandardId, cfg);
+  const standardVerbrauchKwhPerM2 = Math.round(verbrauchAusBedarf(standard.specKwh, standard.art));
   const specKwhPerM2 = acHeatSpecKwhPerM2(heatStandardId, cfg);
   const heatThermalKwh = Math.round(heatThermalOverride ?? cooledArea * specKwhPerM2);
   const heatElectricKwh = scop > 0 ? Math.round(heatThermalKwh / scop) : 0;
@@ -193,7 +206,7 @@ export function calcAirconHeating(
   const costPerKwhHeatGasCt = Math.round((gas.price / gas.efficiency) * 1000) / 10;
 
   return {
-    canHeat: device.canHeat, scop, standard, specKwhPerM2, heatThermalKwh, heatElectricKwh,
+    canHeat: device.canHeat, scop, standard, standardVerbrauchKwhPerM2, specKwhPerM2, heatThermalKwh, heatElectricKwh,
     heatCost, gasCost, saving, costPerKwhHeatSplitCt, costPerKwhHeatGasCt,
   };
 }

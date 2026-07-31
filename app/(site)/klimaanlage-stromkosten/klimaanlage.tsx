@@ -634,7 +634,8 @@ export default function Klimaanlage() {
 
                     <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 8, lineHeight: 1.6 }}>
                       Angesetzt sind {heat.specKwhPerM2} kWh/m²·a — das sind {Math.round(CFG.heatTransitionShare * 100)} % des
-                      Jahres-Heizwärmebedarfs von {heat.standard.specKwh} kWh/m²·a für „{heat.standard.label}". Gerechnet ist also nur
+                      Jahres-Heizwärmeverbrauchs von {heat.standardVerbrauchKwhPerM2} kWh/m²·a, den wir für „{heat.standard.label}" erwarten
+                      (die Norm-Rechnung nennt {heat.standard.specKwh} kWh/m²·a; real wird weniger geheizt). Gerechnet ist also nur
                       die Übergangszeit (Frühherbst, Frühjahr, milde Tage), ohne CO₂-Aufschlag aufs Gas. Für die kalte Kernzeit und
                       das ganze Haus ist eine wassergeführte Wärmepumpe effizienter.{" "}
                       <Link href="/waermepumpe-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Wärmepumpe rechnen</Link>

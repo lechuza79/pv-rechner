@@ -15,6 +15,8 @@ import {
 } from "../heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../heatpump-config";
 import { INSULATION_BESTAND, INSULATION_NEUBAU, WP_FUEL_OPTIONS } from "../constants";
+import { verbrauchAusBedarf } from "../heat-consumption";
+import { verbrauchSpecKwh } from "../heatpump-core";
 
 // Canonical test case: 130 m² Bestand, halbsaniert, 2 Personen, alte Heizkörper, LWWP, no PV
 const baseInputs: HeatPumpInputs = {
@@ -28,17 +30,35 @@ const baseInputs: HeatPumpInputs = {
 
 // ─── Heat demand (Wohnfläche × spezifischer Bedarf + Warmwasser) ────────────
 describe("calcHeatDemand", () => {
-  it("calculates Bestand teilsaniert correctly: 130 m² × 160 + 3.5 × 650", () => {
+  it("rechnet den Bestand mit dem VERBRAUCH, nicht mit dem Norm-Bedarf", () => {
+    // 130 m², teilsaniert. Der Norm-Bedarf der Stufe ist 160 kWh/m²·a; für die
+    // Betriebskosten zählt der erwartete reale Verbrauch (Prebound, siehe
+    // lib/heat-consumption.ts) — hier ~130 kWh/m²·a.
     const r = calcHeatDemand("bestand", 130, 1, 3.5);
-    expect(r.qHeiz).toBe(20800);   // 130 × 160
-    expect(r.qWw).toBe(2275);      // 3.5 × 650
-    expect(r.qGes).toBe(23075);
+    const spec = verbrauchSpecKwh("bestand", 1);
+    expect(spec).toBeLessThan(INSULATION_BESTAND[1].specKwh);   // korrigiert
+    expect(r.qHeiz).toBe(Math.round(130 * verbrauchAusBedarf(160)));
+    expect(r.qWw).toBe(2275);      // 3.5 × 650 — Warmwasser bleibt unkorrigiert
+    expect(r.qGes).toBe(r.qHeiz + 2275);
+  });
+
+  it("lässt eine bereits GEMESSENE Stufe unangetastet (keine Doppelkorrektur)", () => {
+    // „Vollsaniert" trägt einen gemessenen Verbrauchswert, keinen Normbedarf.
+    // Ein zweites Mal zu korrigieren würde ihn unter jedes reale Gebäude drücken.
+    const voll = INSULATION_BESTAND.length - 1;
+    expect(INSULATION_BESTAND[voll].art).toBe("verbrauch");
+    expect(verbrauchSpecKwh("bestand", voll)).toBe(INSULATION_BESTAND[voll].specKwh);
   });
 
   it("uses Neubau coefficients when situation is neubau", () => {
+    // Neubau nimmt die Neubau-Stufen — und dieselbe Bedarf→Verbrauch-Korrektur wie
+    // der Bestand. Bei so kleinen Kennwerten fällt sie kaum ins Gewicht (~8 %),
+    // aber sie gilt: Andernfalls stünde in derselben Auswahl ein Verbrauchswert
+    // neben einem Bedarfswert (siehe lib/heat-consumption.ts).
     const r = calcHeatDemand("neubau", 150, 0, 4); // EnEV 2014
-    expect(r.qHeiz).toBe(150 * 75);
-    expect(r.qGes).toBe(150 * 75 + 4 * 650);
+    expect(r.qHeiz).toBe(Math.round(150 * verbrauchAusBedarf(75)));
+    expect(r.qHeiz).toBeLessThan(150 * 75);
+    expect(r.qGes).toBe(r.qHeiz + 4 * 650);
   });
 
   it("clamps insulation index to valid range", () => {
@@ -517,14 +537,21 @@ describe("calcWpAnnualElectricity", () => {
     expect(shared).toBe(eng.eWp);
   });
 
-  it("unsaniertes EFH liegt realistisch bei ~11.000 kWh (nicht 3500)", () => {
-    // 140 m², unsaniert (220 kWh/m²), 2 Personen, alte Heizkörper (55°C) → LWWP
+  it("unsaniertes EFH liegt im realen Feldband (nicht bei der alten 3500-Pauschale)", () => {
+    // 140 m², unsaniert, 2 Personen, alte Heizkörper (55 °C) → LWWP.
+    // Band aus Feldmessungen an Luft/Wasser-Wärmepumpen im Bestand (Fraunhofer ISE,
+    // „WPsmart im Bestand"): ein schlecht gedämmtes EFH mit Hochtemperatur-Heizkörpern
+    // liegt bei rund 6.000–10.000 kWh Strom im Jahr. Die frühere Untergrenze von
+    // 9.000 kWh kodierte den überhöhten Norm-Bedarf und wurde am 31.07.2026 mit der
+    // Bedarf→Verbrauch-Korrektur nach unten gezogen — NICHT, damit ein Test grün wird,
+    // sondern weil die Menge vorher zu hoch war (Nutzerkritik Reddit, siehe
+    // lib/heat-consumption.ts).
     const kwh = calcWpAnnualElectricity({
       situation: "bestand", wohnflaeche: 140, insulationIdx: 0,
       personen: 2, heizsystem: "hk_alt", wpType: "lwwp",
     });
-    expect(kwh).toBeGreaterThan(9000);
-    expect(kwh).toBeLessThan(13000);
+    expect(kwh).toBeGreaterThan(6000);
+    expect(kwh).toBeLessThan(10000);
   });
 
   it("Fußbodenheizung braucht weniger Strom als alte Heizkörper (bessere JAZ)", () => {

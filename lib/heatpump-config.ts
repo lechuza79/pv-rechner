@@ -2,7 +2,7 @@
 // All constants for the heat pump calculator, centralized for future admin UI.
 // Sources documented in-line so every number is defensible.
 
-import { FUEL_PRICE, INSULATION_BESTAND, INSULATION_NEUBAU } from "./constants";
+import { FUEL_PRICE, INSULATION_BESTAND, INSULATION_NEUBAU, type KennwertArt } from "./constants";
 
 export interface HeatPumpConfig {
   // Specific heating demand (kWh/m²·a) by insulation standard.
@@ -10,6 +10,11 @@ export interface HeatPumpConfig {
   // nicht hier. Quelle: dena Gebäudereport, DIN V 18599, dena-Verbrauchsstudie.
   specDemandBestand: number[];   // unsaniert / teilsaniert / gut saniert / vollsaniert
   specDemandNeubau: number[];    // EnEV 2014 / KfW 55 / KfW 40+
+  // Was die Kennwerte oben SIND — Norm-Bedarf oder gemessener Verbrauch. Steuert,
+  // ob die Bedarf→Verbrauch-Korrektur greift (lib/heat-consumption.ts). Gleiche
+  // Reihenfolge wie specDemand*; Quelle ist INSULATION_BESTAND/NEUBAU.
+  specDemandArtBestand: KennwertArt[];
+  specDemandArtNeubau: KennwertArt[];
   // Specific HEAT LOAD (W/m²) by insulation standard — for sizing the heat pump.
   // Getrennt vom Jahresbedarf (kWh/m²·a): die Heizlast (kW) bestimmt die
   // Anlagengröße, der Bedarf die Betriebskosten. Ebenfalls abgeleitet aus
@@ -92,6 +97,8 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // UI-Auswahl und Rechnung, damit Beschriftung und Rechenwert nicht driften können.
   specDemandBestand: INSULATION_BESTAND.map(i => i.specKwh),
   specDemandNeubau: INSULATION_NEUBAU.map(i => i.specKwh),
+  specDemandArtBestand: INSULATION_BESTAND.map(i => i.art),
+  specDemandArtNeubau: INSULATION_NEUBAU.map(i => i.art),
   specHeatLoadBestand: INSULATION_BESTAND.map(i => i.heatLoadW),
   specHeatLoadNeubau: INSULATION_NEUBAU.map(i => i.heatLoadW),
   auslegungsfaktor: 0.85,

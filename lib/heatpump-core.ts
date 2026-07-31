@@ -6,8 +6,27 @@
 // hier Definierte — bestehende Importe `from "./heatpump"` bleiben gültig.
 
 import { DEFAULT_HEATPUMP_CONFIG, type HeatPumpConfig } from "./heatpump-config";
+import { verbrauchAusBedarf } from "./heat-consumption";
+import type { KennwertArt } from "./constants";
 
 // ─── Bedarf, Heizlast, Arbeitszahl ─────────────────────────────────────────
+
+/** Tabellen-Kennwert der gewählten Dämmstufe (kWh/m²·a) samt der Angabe, WAS er
+ *  ist — Norm-Bedarf oder gemessener Verbrauch (siehe INSULATION_BESTAND). */
+export function bedarfSpecKwh(situation: "bestand" | "neubau", insulationIdx: number, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): { spec: number; art: KennwertArt } {
+  const specArr = situation === "bestand" ? cfg.specDemandBestand : cfg.specDemandNeubau;
+  const artArr = situation === "bestand" ? cfg.specDemandArtBestand : cfg.specDemandArtNeubau;
+  const i = Math.max(0, Math.min(insulationIdx, specArr.length - 1));
+  return { spec: specArr[i], art: artArr[i] ?? "bedarf" };
+}
+
+/** Erwarteter realer Verbrauchskennwert der Dämmstufe (kWh/m²·a) — die Zahl, die
+ *  ein Bewohner auf seiner Jahresabrechnung wiederfindet. Für alles, was Geld
+ *  kostet, ist DAS die richtige Größe (Herleitung: lib/heat-consumption.ts). */
+export function verbrauchSpecKwh(situation: "bestand" | "neubau", insulationIdx: number, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
+  const { spec, art } = bedarfSpecKwh(situation, insulationIdx, cfg);
+  return Math.round(verbrauchAusBedarf(spec, art));
+}
 
 export function calcHeatDemand(
   situation: "bestand" | "neubau",
@@ -17,10 +36,18 @@ export function calcHeatDemand(
   cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG,
   haustypFaktor = 1,
 ): { qHeiz: number; qWw: number; qGes: number } {
-  const specArr = situation === "bestand" ? cfg.specDemandBestand : cfg.specDemandNeubau;
-  const spec = specArr[Math.max(0, Math.min(insulationIdx, specArr.length - 1))];
+  // Gerechnet wird mit dem erwarteten VERBRAUCH, nicht mit dem Norm-Bedarf: Diese
+  // Zahl trägt die Betriebskosten beider Seiten (Brennstoff wie Wärmepumpen-Strom),
+  // und dafür zählt, was ein Haushalt real heizt — nicht, was ein vollständig auf
+  // Solltemperatur gehaltenes Gebäude bräuchte. Bis 31.07.2026 stand hier der
+  // Norm-Bedarf; das unterstellte einem unsanierten Altbau rund 250 statt 160
+  // kWh/m²·a Gasverbrauch und ließ die Wärmepumpe systematisch besser aussehen.
+  const tab = bedarfSpecKwh(situation, insulationIdx, cfg);
+  const spec = verbrauchAusBedarf(tab.spec, tab.art);
   // Haustyp-Faktor auch auf den Jahresbedarf: geteilte Wände senken den Verlust
-  // übers Jahr, nicht nur die Spitzenlast. Warmwasser bleibt personenabhängig.
+  // übers Jahr, nicht nur die Spitzenlast. Warmwasser bleibt personenabhängig —
+  // es hängt an den Bewohnern, nicht am Gebäude, und wird deshalb auch nicht
+  // prebound-korrigiert.
   const qHeiz = Math.round(wohnflaeche * spec * haustypFaktor);
   const qWw = Math.round(personen * cfg.wwPerPerson);
   return { qHeiz, qWw, qGes: qHeiz + qWw };

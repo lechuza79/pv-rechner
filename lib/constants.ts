@@ -189,7 +189,19 @@ export const HAUSTYP_WP = [
 // Heizwärmebedarf des Split-Heizen-Blocks — bitte nur hier pflegen. Eine zweite
 // handgetippte Kopie dieser Zahlen ist ein Fehler, kein Duplikat.
 //
-// Quellen (geprüft 28.07.2026):
+// `art` SAGT, WAS DIE ZAHL IST — und das ist keine Formalie (BLOCKER-Lehre
+// 31.07.2026). Diese Tabelle mischt zwei Größen, die gleich aussehen:
+//   "bedarf"    = Norm-Rechenwert (DIN V 18599 / Energieausweis): vollständig auf
+//                 Solltemperatur beheiztes Gebäude bei Norm-Klima.
+//   "verbrauch" = gemessener Endenergieverbrauch echter Gebäude.
+// Der Norm-Bedarf liegt im Bestand systematisch ÜBER dem realen Verbrauch
+// (Prebound, siehe lib/heat-consumption.ts). Für Betriebskosten zählt der
+// Verbrauch — deshalb rechnet der Rechner die Bedarfsstufen um. Eine bereits
+// gemessene Stufe darf dabei NICHT ein zweites Mal korrigiert werden; genau das
+// wäre bei „Vollsaniert" passiert, dessen 70 aus gemessenen Verbräuchen stammt
+// und nicht aus einer Normrechnung.
+//
+// Quellen (geprüft 28.07.2026, `art` ergänzt 31.07.2026):
 //   specKwh   — dena-Gebäudereport + DIN V 18599 (unsaniert bis gut saniert).
 //               Die Stufe „Vollsaniert" (70) ist belegt durch die dena-Studie
 //               „Auswertung von Verbrauchskennwerten energieeffizienter
@@ -207,17 +219,21 @@ export const HAUSTYP_WP = [
 // Neubaustufe (75) und trug trotzdem das Etikett „Vollsanierung". Wer sein Haus
 // wirklich rundum saniert hat, konnte sich nicht abbilden und bekam über die zu
 // hohe Heizlast eine zu große und zu teure Wärmepumpe gerechnet.
-export const INSULATION_BESTAND = [
-  { label: "Unsaniert", sub: "Baujahr vor ~1995, keine Dämmung", specKwh: 220, heatLoadW: 115 },
-  { label: "Teilsaniert", sub: "Fenster/Dach oder Fassade erneuert", specKwh: 160, heatLoadW: 95 },
-  { label: "Gut saniert", sub: "Fenster, Dach und Fassade gedämmt", specKwh: 100, heatLoadW: 60 },
-  { label: "Vollsaniert", sub: "Rundum gedämmt, Effizienzhaus-Niveau", specKwh: 70, heatLoadW: 45 },
+export type KennwertArt = "bedarf" | "verbrauch";
+
+export const INSULATION_BESTAND: { label: string; sub: string; specKwh: number; heatLoadW: number; art: KennwertArt }[] = [
+  { label: "Unsaniert", sub: "Baujahr vor ~1995, keine Dämmung", specKwh: 220, heatLoadW: 115, art: "bedarf" },
+  { label: "Teilsaniert", sub: "Fenster/Dach oder Fassade erneuert", specKwh: 160, heatLoadW: 95, art: "bedarf" },
+  { label: "Gut saniert", sub: "Fenster, Dach und Fassade gedämmt", specKwh: 100, heatLoadW: 60, art: "bedarf" },
+  // Gemessene Endenergieverbräuche (dena-Verbrauchskennwerte-Studie, S. 25/Abb. 7)
+  // — bereits die reale Größe, deshalb `verbrauch` und keine weitere Korrektur.
+  { label: "Vollsaniert", sub: "Rundum gedämmt, Effizienzhaus-Niveau", specKwh: 70, heatLoadW: 45, art: "verbrauch" },
 ];
 
-export const INSULATION_NEUBAU = [
-  { label: "EnEV 2014", sub: "Gesetzlicher Mindeststandard", specKwh: 75, heatLoadW: 40 },
-  { label: "KfW 55", sub: "Effizienzhaus 55", specKwh: 50, heatLoadW: 30 },
-  { label: "KfW 40 oder besser", sub: "Passivhaus-Niveau", specKwh: 30, heatLoadW: 20 },
+export const INSULATION_NEUBAU: { label: string; sub: string; specKwh: number; heatLoadW: number; art: KennwertArt }[] = [
+  { label: "EnEV 2014", sub: "Gesetzlicher Mindeststandard", specKwh: 75, heatLoadW: 40, art: "bedarf" },
+  { label: "KfW 55", sub: "Effizienzhaus 55", specKwh: 50, heatLoadW: 30, art: "bedarf" },
+  { label: "KfW 40 oder besser", sub: "Passivhaus-Niveau", specKwh: 30, heatLoadW: 20, art: "bedarf" },
 ];
 
 export const HEIZSYSTEM = [

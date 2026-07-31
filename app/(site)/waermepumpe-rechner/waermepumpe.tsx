@@ -3,8 +3,10 @@ import { useState, useMemo, type ReactNode } from "react";
 import Link from "next/link";
 import {
   SITUATION, WOHNFLAECHEN, INSULATION_BESTAND, INSULATION_NEUBAU,
-  PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP, YEAR,
+  PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP, YEAR, FUEL,
 } from "../../../lib/constants";
+import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../../../lib/heat-consumption";
+import { verbrauchSpecKwh } from "../../../lib/heatpump-core";
 import { calcHeatPump, calcHeatPumpScenarios, heatPumpScenarioAdj, estimatePvCoverageOfWp, type HeatPumpInputs, type HeatPumpResult } from "../../../lib/heatpump";
 import { DEFAULT_HEATPUMP_CONFIG } from "../../../lib/heatpump-config";
 import { greenGasApplies } from "../../../lib/fossil-reference";
@@ -21,6 +23,9 @@ import InfoTooltip from "../../../components/InfoTooltip";
 import { IconArrowRight, IconRefresh, IconChevronDown, IconSun, IconSparkle, IconCheck } from "../../../components/Icons";
 import { v, iconSizes } from "../../../lib/theme";
 import { trackEvent } from "../../../lib/analytics";
+
+/** Einheit, in der ein Nutzer seinen Jahresverbrauch von der Abrechnung abliest. */
+type VerbrauchEinheit = "gas" | "oel";
 
 const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizsystem"];
 
@@ -52,6 +57,12 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const [oJaz, setOJaz] = useState<number | null>(null);
   const [oInvest, setOInvest] = useState<number | null>(null);
   const [oQges, setOQges] = useState<number | null>(null);
+  // Gemessener Jahresverbrauch statt Schätzung aus Fläche × Kennwert. Er schreibt
+  // auf denselben Override wie das Eingabefeld im Ergebnis (oQges) — eine Größe,
+  // ein Wert. `verbrauchKwh` hält die daraus abgeleitete Wärmemenge für die Anzeige.
+  const [verbrauchDraft, setVerbrauchDraft] = useState<string>("");
+  const [verbrauchEinheit, setVerbrauchEinheit] = useState<VerbrauchEinheit>("gas");
+  const [verbrauchKwh, setVerbrauchKwh] = useState<number | null>(null);
   const [oHeizlast, setOHeizlast] = useState<number | null>(null);
   // Anschaffung der fossilen Alternative (0 = die vorhandene Heizung hält die 20 Jahre durch).
   const [oFossilInvest, setOFossilInvest] = useState<number | null>(null);
@@ -121,6 +132,20 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
 
   // ── Resolved wohnfläche ──────────────────────────────────────
   const wohnflaeche = customFlaeche ?? WOHNFLAECHEN[flaecheIdx].m2;
+
+  // Abgelesener Brennstoffverbrauch → Heizwärme. Was der Zähler zählt, ist
+  // Endenergie; was das Gebäude braucht, ist das abzüglich der Kesselverluste
+  // (lib/heat-consumption.ts). Heizöl kommt in Litern von der Rechnung.
+  const applyVerbrauch = (raw: string, einheit: VerbrauchEinheit) => {
+    const n = parseInt(raw);
+    if (raw === "" || isNaN(n) || n <= 0) { setVerbrauchKwh(null); setOQges(null); return; }
+    const endenergie = einheit === "oel" ? n * OEL_KWH_PRO_LITER : n;
+    // Unplausibles gar nicht erst übernehmen (Tippfehler, Monats- statt Jahreswert).
+    if (endenergie < 2000 || endenergie > 120000) { setVerbrauchKwh(null); setOQges(null); return; }
+    const waerme = Math.round(waermeAusEndenergie(endenergie, einheit === "oel" ? FUEL.oil.efficiency : FUEL.gas.efficiency));
+    setVerbrauchKwh(waerme);
+    setOQges(waerme);
+  };
 
   // ── Rechen-Config ────────────────────────────────────────────
   // Der geprüfte Config-Snapshot (lib/heatpump-config.ts). Die Investition kommt
@@ -388,10 +413,73 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
 
             {/* 2: Dämmstandard */}
             {step === 2 && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
-                {insulationOptions.map((opt, i) => (
-                  <OptionCard key={i} selected={insulationIdx === i} onClick={() => setInsulationIdx(i)} label={opt.label} sub={`${opt.sub} · ~${opt.specKwh} kWh/m²·a`} />
-                ))}
+              <div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
+                  {insulationOptions.map((opt, i) => (
+                    // Angezeigt wird der erwartete VERBRAUCH, nicht der Norm-Bedarf:
+                    // Diese Zahl kann ein Bewohner mit seiner Abrechnung vergleichen,
+                    // die Normzahl nicht (siehe lib/heat-consumption.ts).
+                    <OptionCard key={i} selected={insulationIdx === i} onClick={() => setInsulationIdx(i)} label={opt.label} sub={`${opt.sub} · ~${verbrauchSpecKwh(situation, i, cfg)} kWh/m²·a`} />
+                  ))}
+                </div>
+
+                {/* Wer seine Abrechnung kennt, muss nicht schätzen. Der gemessene
+                    Verbrauch schlägt jeden Kennwert — er ersetzt den Jahresbedarf,
+                    NICHT die Heizlast (die Anlagengröße bleibt am Dämmstandard). */}
+                {situation === "bestand" && (
+                  <div style={{ marginTop: 20, padding: "14px 16px", borderRadius: v('--radius-md'), background: verbrauchKwh !== null ? v('--color-accent-dim') : v('--color-bg-muted'), border: `2px solid ${verbrauchKwh !== null ? v('--color-accent') : v('--color-border')}` }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 4 }}>
+                      Du kennst deinen Verbrauch? Dann rechnen wir damit.
+                    </div>
+                    <div style={{ fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.5, marginBottom: 10 }}>
+                      Der Wert von deiner letzten Jahresabrechnung ist genauer als jede Schätzung aus Fläche und Baujahr. Warmwasser ist mit drin, wenn deine Heizung es macht.
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <input
+                        type="text" inputMode="numeric"
+                        placeholder={verbrauchEinheit === "oel" ? "z. B. 2000" : "z. B. 18000"}
+                        value={verbrauchDraft}
+                        onChange={e => {
+                          const raw = e.target.value.replace(/\D/g, "");
+                          setVerbrauchDraft(raw);
+                          applyVerbrauch(raw, verbrauchEinheit);
+                        }}
+                        aria-label={verbrauchEinheit === "oel" ? "Heizölverbrauch pro Jahr in Litern" : "Gasverbrauch pro Jahr in Kilowattstunden"}
+                        style={{ width: 110, textAlign: "right", fontSize: 14, fontWeight: 700, fontFamily: v('--font-mono'), background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, borderRadius: v('--radius-sm'), padding: "8px 10px", outline: "none" }}
+                      />
+                      <select
+                        value={verbrauchEinheit}
+                        onChange={e => {
+                          const next = e.target.value as VerbrauchEinheit;
+                          setVerbrauchEinheit(next);
+                          applyVerbrauch(verbrauchDraft, next);
+                        }}
+                        aria-label="Einheit des Verbrauchs"
+                        style={{ fontSize: 13, fontWeight: 600, background: v('--color-bg'), border: `1px solid ${v('--color-border')}`, borderRadius: v('--radius-sm'), padding: "8px 8px", outline: "none" }}
+                      >
+                        <option value="gas">kWh Gas pro Jahr</option>
+                        <option value="oel">Liter Heizöl pro Jahr</option>
+                      </select>
+                      {verbrauchKwh !== null && (
+                        <button
+                          onClick={() => { setVerbrauchDraft(""); setVerbrauchKwh(null); setOQges(null); }}
+                          style={{ fontSize: 12, fontWeight: 600, color: v('--color-text-muted'), background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}
+                        >
+                          Wieder schätzen
+                        </button>
+                      )}
+                    </div>
+                    {verbrauchKwh !== null && (
+                      <div style={{ fontSize: 12, color: v('--color-text-secondary'), marginTop: 10, lineHeight: 1.5 }}>
+                        Gerechnet wird mit <strong>{Math.round(verbrauchKwh).toLocaleString("de-DE")} kWh</strong> Wärme im Jahr
+                        {" "}(<span style={{ fontFamily: v('--font-mono') }}>{Math.round(verbrauchKwh / Math.max(1, wohnflaeche))}</span> kWh je m²).
+                        {" "}Das ist weniger als dein Zählerstand, weil ein Teil als Abgasverlust verloren geht — bei deiner Heizung rund{" "}
+                        {Math.round((1 - (verbrauchEinheit === "oel" ? FUEL.oil.efficiency : FUEL.gas.efficiency)) * 100)} %.
+                        {" "}Den Dämmstandard brauchen wir trotzdem — er bestimmt die Größe der Wärmepumpe, nicht die Kosten.
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -719,7 +807,13 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
 
               {/* Editierbare Kernannahmen */}
               <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
-                <div>Heizwärmebedarf: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} /></div>
+                <div>
+                  Heizwärme pro Jahr: <InlineEdit value={result.qGes} onCommit={v => setOQges(v)} unit=" kWh" min={1000} max={80000} step={500} width={90} />
+                  <InfoTooltip title="Woher diese Menge kommt" ariaLabel="Woher kommt der Jahres-Heizwärmebedarf?">
+                    Geschätzt aus Wohnfläche, Dämmzustand und Personenzahl — und zwar als <strong>erwarteter Verbrauch</strong>, nicht als Norm-Bedarf. Der Unterschied ist groß: Die Norm rechnet ein Gebäude durch, in dem alle Räume auf Solltemperatur stehen. Real wird weniger geheizt (Räume bleiben kühl, nachts wird abgesenkt), im Altbau rund 30 % weniger.<br /><br />
+                    <strong>Du kennst deinen Gas- oder Ölverbrauch? Trag ihn im Schritt „Dämmstandard" ein</strong> — oder rechne hier direkt: Jahresverbrauch in kWh × {Math.round(fuel.efficiency * 100)} % (Kesselverlust). Ein gemessener Wert schlägt jede Schätzung.
+                  </InfoTooltip>
+                </div>
                 <div>
                   Heizlast: <InlineEdit value={result.heizlastKw} onCommit={v => setOHeizlast(v)} unit=" kW" min={3} max={40} step={0.5} width={60} fmt={v => (Math.round(v * 10) / 10).toString().replace(".", ",")} />
                   <span style={{ fontSize: 12, color: v('--color-text-muted') }}>

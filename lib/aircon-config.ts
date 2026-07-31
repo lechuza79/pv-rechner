@@ -11,7 +11,7 @@
 // Wärmepumpen-Rechner die bessere Adresse. Split-Heizen gibt es NUR hier
 // (calcAirconHeating hat genau einen Aufrufer: den Klimaanlagen-Rechner).
 
-import { INSULATION_BESTAND, INSULATION_NEUBAU } from "./constants";
+import { INSULATION_BESTAND, INSULATION_NEUBAU, type KennwertArt } from "./constants";
 import { DEFAULT_PRICES } from "./prices-config";
 
 export type AcDeviceId = "monoblock" | "portasplit" | "split";
@@ -111,7 +111,12 @@ export interface AcHeatStandard {
   id: string;
   label: string;
   sub: string;
-  specKwh: number;   // kWh/m²·a Jahres-Heizwärmebedarf (kanonisch aus constants.ts)
+  specKwh: number;   // kWh/m²·a Jahres-Heizwärme-NORMBEDARF (kanonisch aus constants.ts)
+  /** Norm-Bedarf oder bereits gemessener Verbrauch (siehe INSULATION_BESTAND).
+   *  Entscheidet, ob die Bedarf→Verbrauch-Korrektur greift (lib/heat-consumption.ts)
+   *  — als Feld und nicht über die id erkannt, damit kein Aufrufer den Sonderfall
+   *  an einem Zeichenketten-Vergleich nachbaut. */
+  art: KennwertArt;
 }
 
 /** Stabile ids der Bestandsstufen. Sie hängen an der Stufe, NICHT an ihrer
@@ -138,10 +143,10 @@ function bestandId(label: string): string {
 // irgendetwas rot wird. Festgenagelt von lib/__tests__/aircon.test.ts
 // („Dämmstufen-Vollständigkeit").
 export const AC_HEAT_STANDARDS: AcHeatStandard[] = [
-  ...INSULATION_BESTAND.map(i => ({ id: bestandId(i.label), label: i.label, sub: i.sub, specKwh: i.specKwh })),
+  ...INSULATION_BESTAND.map(i => ({ id: bestandId(i.label), label: i.label, sub: i.sub, specKwh: i.specKwh, art: i.art })),
   // Neubau: gesetzlicher Mindeststandard als Bucket. Wer KfW 55/40 hat, liegt
   // darunter und korrigiert die Heizwärme direkt im Ergebnis (InlineEdit).
-  { id: "neubau", label: `Neubau (${INSULATION_NEUBAU[0].label})`, sub: INSULATION_NEUBAU[0].sub, specKwh: INSULATION_NEUBAU[0].specKwh },
+  { id: "neubau", label: `Neubau (${INSULATION_NEUBAU[0].label})`, sub: INSULATION_NEUBAU[0].sub, specKwh: INSULATION_NEUBAU[0].specKwh, art: INSULATION_NEUBAU[0].art },
 ];
 
 export interface AcDevice {

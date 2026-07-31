@@ -11,6 +11,8 @@ import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
 import { GREEN_GAS_CONFIG as GG, bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
 import { DEFAULT_AIRCON_CONFIG as AC, AC_REAL_FACTOR } from "../../../lib/aircon-config";
 import { acHeatSpecKwhPerM2 } from "../../../lib/aircon";
+import { verbrauchSpecKwh } from "../../../lib/heatpump-core";
+import { preboundAnteil } from "../../../lib/heat-consumption";
 import { DEFAULT_BALKON_CONFIG as BK } from "../../../lib/balkon-config";
 import { referenceYearKwh } from "../../../lib/solar-year";
 import { YEAR, YEARS, DEGRAD, PERSONEN, NUTZUNG, CONSUMPTION_MONTHLY, SCENARIOS, FUEL } from "../../../lib/constants";
@@ -319,9 +321,10 @@ export default async function DatenstandPage() {
             // aus der öffentlichen Übersicht. Reihenfolge der Beschriftung MUSS der
             // Reihenfolge der Werte folgen (der kleinste Wert ist der beste Fall):
             // „unsaniert–vollsaniert" über „70–220" las sich genau falsch herum.
-            { label: "Spez. Heizbedarf Bestand (vollsaniert–unsaniert)", value: `${HP.specDemandBestand[HP.specDemandBestand.length - 1]}–${HP.specDemandBestand[0]} kWh/m²·a` },
+            { label: "Spez. Heizbedarf Bestand (vollsaniert–unsaniert)", value: `${HP.specDemandBestand[HP.specDemandBestand.length - 1]}–${HP.specDemandBestand[0]} kWh/m²·a Norm-Bedarf; gerechnet wird mit dem erwarteten Verbrauch ${verbrauchSpecKwh("bestand", HP.specDemandBestand.length - 1)}–${verbrauchSpecKwh("bestand", 0)} kWh/m²·a` },
             { label: "Spez. Heizlast Bestand (vollsaniert–unsaniert)", value: `${HP.specHeatLoadBestand[HP.specHeatLoadBestand.length - 1]}–${HP.specHeatLoadBestand[0]} W/m²` },
-            { label: "Spez. Heizbedarf Neubau (KfW 40+–EnEV)", value: `${HP.specDemandNeubau[HP.specDemandNeubau.length - 1]}–${HP.specDemandNeubau[0]} kWh/m²·a` },
+            { label: "Spez. Heizbedarf Neubau (KfW 40+–EnEV)", value: `${HP.specDemandNeubau[HP.specDemandNeubau.length - 1]}–${HP.specDemandNeubau[0]} kWh/m²·a Norm-Bedarf; gerechnet wird mit ${verbrauchSpecKwh("neubau", HP.specDemandNeubau.length - 1)}–${verbrauchSpecKwh("neubau", 0)} kWh/m²·a` },
+            { label: "Bedarf → Verbrauch (Prebound)", value: `Norm-Bedarf wird auf den erwarteten realen Verbrauch umgerechnet: bei ${HP.specDemandBestand[0]} kWh/m²·a rund ${Math.round(preboundAnteil(HP.specDemandBestand[0]) * 100)} % Abschlag, bei ${HP.specDemandNeubau[0]} kWh/m²·a rund ${Math.round(preboundAnteil(HP.specDemandNeubau[0]) * 100)} %. Quelle: Sunikka-Blank/Galvin (2012), Building Research & Information 40(3), 3.400 deutsche Wohnungen. Heizlast und Warmwasser bleiben unkorrigiert` },
             { label: "Warmwasser je Person", value: `${nf(HP.wwPerPerson)} kWh/a` },
             { label: "Investition Luft/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investLwwpBase)} € + ${nf(HP.investLwwpPerKw)} €/kW` },
             { label: "Investition Sole/Wasser (brutto, inkl. MwSt.)", value: `${nf(HP.investSwwpBase)} € + ${nf(HP.investSwwpPerKw)} €/kW` },
@@ -368,7 +371,7 @@ export default async function DatenstandPage() {
             { label: "Effizienz Heizen im Realbetrieb: mobile Split / fest installiert", value: `${AC.devices[1].scop!.toLocaleString("de-DE")} / ${AC.devices[2].scop!.toLocaleString("de-DE")} (Monoblock heizt nicht)` },
             { label: "…davon Typenschild Heizen (EU-Label)", value: `SCOP ${AC.devices[1].labelScop!.toLocaleString("de-DE")} / ${AC.devices[2].labelScop!.toLocaleString("de-DE")}` },
             { label: "…wie der Heiz-Wert zustande kommt", value: `Derselbe Abschlag Labor → Realbetrieb wie beim Kühlen (${((1 - AC_REAL_FACTOR) * 100).toLocaleString("de-DE")} %), damit Heizen und Kühlen im selben Gerät gleich streng gerechnet sind. Gemessen ist dieser Abschlag am Kühlen; für die Heizrichtung nennt die Messstudie den Wert nicht getrennt, deshalb übertragen wir ihn. Das ist bewusst die vorsichtige Wahl — die Ersparnis gegenüber Gas kann dadurch eher zu niedrig als zu hoch stehen. Wir prüfen es bis Oktober 2026 nach.` },
-            { label: "Übergangszeit-Heizwärme (Split)", value: `${AC.heatStandards.map((s) => `${s.label} ${nf(acHeatSpecKwhPerM2(s.id))}`).join(" · ")} — kWh/m²·a je beheizter Fläche, also ${nf(AC.heatTransitionShare * 100)} % des Jahres-Heizwärmebedarfs je Gebäudestandard (im Ergebnis editierbar)` },
+            { label: "Übergangszeit-Heizwärme (Split)", value: `${AC.heatStandards.map((s) => `${s.label} ${nf(acHeatSpecKwhPerM2(s.id))}`).join(" · ")} — kWh/m²·a je beheizter Fläche, also ${nf(AC.heatTransitionShare * 100)} % des erwarteten Jahres-Heizwärmeverbrauchs je Gebäudestandard (im Ergebnis editierbar)` },
             { label: "Anschaffung Monoblock / mobile Split", value: `~${nf(AC.devices[0].pricePerUnit!)} € / ~${nf(AC.devices[1].pricePerUnit!)} € je Gerät·Raum` },
             { label: "Anschaffung fest installierte Split", value: `${nf(AC.devices[2].priceBase!)} € + ${nf(AC.devices[2].pricePerRoom!)} €/Raum (Innengerät inkl. Montage Fachbetrieb)` },
             { label: "Kühlgradstunden Ø Deutschland", value: `${nf(AC.cdhNational)} K·h/a (Schwelle ${nf(AC.coolBaseTemp)} °C)` },

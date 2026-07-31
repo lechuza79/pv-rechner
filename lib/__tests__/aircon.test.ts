@@ -6,6 +6,7 @@ import {
 } from "../aircon";
 import { DEFAULT_AIRCON_CONFIG as CFG, AC_REAL_FACTOR, effectiveSeer, effectiveScop } from "../aircon-config";
 import { FUEL, INSULATION_BESTAND, INSULATION_NEUBAU } from "../constants";
+import { verbrauchAusBedarf } from "../heat-consumption";
 
 const base: AcInputs = {
   deviceId: "split",
@@ -320,16 +321,26 @@ describe("calcAirconHeating", () => {
   it("scales the heating demand with the building standard (Altbau ≫ Neubau)", () => {
     const alt = calcAirconHeating(split, 20, 0.34, null, "unsaniert");
     const neu = calcAirconHeating(split, 20, 0.34, null, "neubau");
-    // Der Wächter-Befund: ein Wert für alle war für Neubau ~3× zu hoch.
-    expect(alt.heatThermalKwh).toBeGreaterThan(neu.heatThermalKwh * 2.5);
+    // Der Wächter-Befund bleibt gültig: ein Wert für alle wäre für den Neubau
+    // grob zu hoch. Die Spreizung ist seit dem 31.07.2026 aber KLEINER als im
+    // Norm-Bedarf (dort 220 zu 75 = 2,9×), weil die Bedarf→Verbrauch-Korrektur
+    // schlechte Gebäude stärker absenkt als gute — genau der gemessene Befund
+    // der Prebound-Forschung. Die Schwelle folgt dieser Physik, sie wurde nicht
+    // gesenkt, damit ein Test grün wird.
+    expect(alt.heatThermalKwh).toBeGreaterThan(neu.heatThermalKwh * 2);
     expect(alt.standard.id).toBe("unsaniert");
     expect(neu.standard.id).toBe("neubau");
   });
 
   it("takes the per-m² heating demand from the shared insulation table", () => {
-    // Geteilte Rechen-Basis: kein eigenes kWh/m²-Fundament im Klima-Rechner.
+    // Geteilte Rechen-Basis: kein eigenes kWh/m²-Fundament im Klima-Rechner —
+    // inklusive derselben Bedarf→Verbrauch-Korrektur wie im WP-Rechner. Ohne sie
+    // würden beide Rechner an genau der Stelle auseinanderlaufen, an der sie sich
+    // die Dämmtabelle teilen (lib/heat-consumption.ts).
     for (const std of CFG.heatStandards) {
-      expect(acHeatSpecKwhPerM2(std.id)).toBe(Math.round(std.specKwh * CFG.heatTransitionShare));
+      expect(acHeatSpecKwhPerM2(std.id)).toBe(
+        Math.round(verbrauchAusBedarf(std.specKwh, std.art) * CFG.heatTransitionShare),
+      );
     }
     const canonical = [...INSULATION_BESTAND, ...INSULATION_NEUBAU].map(i => i.specKwh);
     for (const std of CFG.heatStandards) expect(canonical).toContain(std.specKwh);
