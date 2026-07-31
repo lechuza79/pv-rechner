@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import { computePlacements, hookText, selectHook, type Hook, type Placement } from "../award-hook";
-import { AWARD_CATEGORIES, type GemeindeStats } from "../awards";
+import { AWARD_CATEGORIES, AWARD_CATEGORY_BY_KEY, rankGemeinden, type GemeindeStats } from "../awards";
 
 function g(regionId: string, over: Partial<GemeindeStats> = {}): GemeindeStats {
   return {
@@ -346,5 +347,47 @@ describe("Absolute Kategorien werden kein Aufhänger", () => {
     const keys = new Set([...computePlacements(orte).values()].flat().map((p) => p.categoryKey));
     expect(keys.has("balkon-pk")).toBe(true);
     expect(keys.has("dach-privat-pk")).toBe(true);
+  });
+});
+
+describe("Gleichstand — Orden und Rangliste zählen gleich", () => {
+  // DER FEHLER: Der Orden zählte fortlaufend (1,2,3,4) und entschied Gleichstände
+  // über den Gemeindeschlüssel; die verlinkte öffentliche Rangliste vergab
+  // Sportränge (1,2,2,4) und entschied über den Namen. Der Brief sagte „Platz 4",
+  // die Seite zum Nachprüfen „Platz 3" — und listete die gleichstehenden Orte
+  // auch noch in anderer Reihenfolge.
+  const benannt = ["Zeta", "Alpha", "Mitte"].map((name, i) => ({
+    ...g(`0911100${i}`, { population: 1000, balkonCount: 50 }),
+    name,
+  }));
+
+  it("vergibt Sportränge, nicht fortlaufende Plätze", () => {
+    const r = rankGemeinden(benannt, AWARD_CATEGORY_BY_KEY["balkon-pk"]);
+    expect(r.map((x) => x.rank)).toEqual([1, 1, 1]);
+  });
+
+  it("entscheidet Gleichstände über den Namen — wie die Rangliste", () => {
+    const r = rankGemeinden(benannt, AWARD_CATEGORY_BY_KEY["balkon-pk"]);
+    expect(r.map((x) => x.name)).toEqual(["Alpha", "Mitte", "Zeta"]);
+  });
+
+  it("zählt danach weiter, ohne den übersprungenen Platz zu vergeben", () => {
+    const gemischt = [
+      { ...g("09111001", { population: 1000, balkonCount: 50 }), name: "Alpha" },
+      { ...g("09111002", { population: 1000, balkonCount: 50 }), name: "Beta" },
+      { ...g("09111003", { population: 1000, balkonCount: 10 }), name: "Gamma" },
+    ];
+    const r = rankGemeinden(gemischt, AWARD_CATEGORY_BY_KEY["balkon-pk"]);
+    expect(r.map((x) => x.rank)).toEqual([1, 1, 3]);
+  });
+});
+
+describe("Keine handgepflegten Ausnahmen mehr", () => {
+  it("führt keine Gemeinde-Sperrliste", () => {
+    // Sie wirkte nur auf den Aufhänger, nicht auf die Rangliste darunter — und
+    // erzeugte damit „Platz 1 von 18" über einer Tabelle mit 19 Zeilen. Solche
+    // Fälle gehören an die Quelle, nicht in die Anzeige.
+    const quelle = readFileSync(new URL("../award-hook.ts", import.meta.url), "utf8");
+    expect(quelle).not.toMatch(/^export const HOOK_QUARANTINE/m);
   });
 });

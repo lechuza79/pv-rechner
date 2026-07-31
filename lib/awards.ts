@@ -674,14 +674,21 @@ export function rankGemeinden(gemeinden: GemeindeStats[], cat: AwardCategory): R
   const scored = gemeinden
     .map((g) => ({ g, value: cat.metric(g) }))
     .filter((e): e is { g: GemeindeStats; value: number } => e.value != null && e.value > 0);
-  scored.sort((a, b) => b.value - a.value || a.g.regionId.localeCompare(b.g.regionId));
-  return scored.map((e, i) => ({
-    regionId: e.g.regionId,
-    name: e.g.name,
-    rank: i + 1,
-    value: e.value,
-    population: e.g.population,
-  }));
+  // GLEICHSTAND EXAKT WIE IN DER OEFFENTLICHEN RANGLISTE (lib/atlas-ranking.ts):
+  // Name als Entscheider, Sportrang. Vorher entschied hier der Gemeindeschluessel
+  // und die Plaetze liefen fortlaufend durch — der Orden sagte damit "Platz 4",
+  // die verlinkte Liste "Platz 3", und die gleichstehenden Orte standen auch noch
+  // in anderer Reihenfolge. Zwei Zahlen fuer dieselbe Sache auf zwei Seiten, die
+  // aufeinander zeigen.
+  scored.sort((a, b) => b.value - a.value || a.g.name.localeCompare(b.g.name, "de"));
+  let letzterWert: number | null = null;
+  let letzterRang = 0;
+  return scored.map((e, i) => {
+    const rank = letzterWert !== null && e.value === letzterWert ? letzterRang : i + 1;
+    letzterWert = e.value;
+    letzterRang = rank;
+    return { regionId: e.g.regionId, name: e.g.name, rank, value: e.value, population: e.g.population };
+  });
 }
 
 export type ViewOptions = {

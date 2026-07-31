@@ -46,14 +46,21 @@ const HOOK_TRAEGER: Traeger = "buerger";
  */
 export const HOOK_MIN_POPULATION = 2000;
 
-/** Bekannte Register-Fehler → nie ein Aufhänger, nur neutral. Aktuell nur
- *  Finsing (09177118): eine Gewerbe-Batterie ist dort als privat gemeldet und
- *  würde sonst „Speicher-Vorreiter/-Hauptstadt Nr. 1".
- *  Das Waldshut-Trio ist NICHT hier: die Dedup-Session hat gemessen, dass das ein
- *  Pumpspeicher-Fehler (kWh) ist — er fasst keine Solar-Award-Kategorie an. Die 10
- *  echten Solar-Doppelzählungen treffen nur „Solar-Standort" (kein Aufhänger,
- *  Bürger-only) und bekommen eine eigene Leitplanke in der Rangliste. */
-export const HOOK_QUARANTINE = new Set(["09177118"]);
+/**
+ * ENTFERNT AM 31.07.2026 — die Liste ist leer und bleibt es hoffentlich.
+ *
+ * Sie enthielt Finsing (09177118): eine 51-MWh-Gewerbebatterie war dort als
+ * privat gemeldet und haette den Ort zum "Speicher-Vorreiter Nr. 1" gemacht.
+ * Seit der Groessenpruefung beim Einlesen sitzt sie im gewerblichen Topf; die
+ * privaten Batterien liegen bei 9,9 kWh im Schnitt, also voellig normal.
+ *
+ * WARUM DIE AUSNAHME SELBST EIN FEHLER WAR: Sie wirkte nur auf den Aufhaenger,
+ * nicht auf die Rangliste und nicht auf die Tabelle darunter. Auf rund zehn
+ * Gemeindeseiten stand deshalb "Platz 1 von 18" ueber einer Tabelle mit 19
+ * Zeilen. Eine Handkorrektur, die nur die halbe Strecke geht, erzeugt einen
+ * neuen Widerspruch statt einen alten zu beheben — der richtige Ort fuer solche
+ * Faelle ist die Quelle, nicht die Anzeige.
+ */
 
 /** Spike-Wächter: liegt ein Pro-Kopf-Wert extrem über dem Gruppen-Median, ist das
  *  eher ein Datenfehler als ein echter Vorreiter → nicht krönen (fällt auf
@@ -159,7 +166,7 @@ export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Place
     else out.set(id, [p]);
   };
   // Bekannte Fehl-Gemeinden ganz aus der Aufhänger-Bildung nehmen (nur neutral).
-  const pool = gemeinden.filter((g) => !HOOK_QUARANTINE.has(g.regionId));
+  const pool = gemeinden;
   const levels: HookLevel[] = ["kreis", "land", "bund"];
   for (const cat of AWARD_CATEGORIES) {
     if (cat.traeger !== HOOK_TRAEGER) continue; // nur Bürger-Leistung wird zum Aufhänger
