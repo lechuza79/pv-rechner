@@ -52,8 +52,8 @@ describe("Aufhänger-Guardrails (Gegenprüfung 2026-07-25)", () => {
     const pl = computePlacements([winzling, stadt]);
     const klasseVon = (id: string) =>
       (pl.get(id) ?? []).find((p) => p.categoryKey === "dach-privat-pk")?.klasseSlug;
-    expect(klasseVon("09111001")).toBe("kleingemeinden");
-    expect(klasseVon("09111002")).toBe("kleinstaedte");
+    expect(klasseVon("09111001")).toBe("doerfer");
+    expect(klasseVon("09111002")).toBe("gemeinden-und-kleinstaedte");
     expect(klasseVon("09111001")).not.toBe(klasseVon("09111002"));
   });
 
@@ -68,7 +68,7 @@ describe("Aufhänger-Guardrails (Gegenprüfung 2026-07-25)", () => {
 
 describe("selectHook", () => {
   const P = (over: Partial<Placement>): Placement => ({
-    categoryKey: "dach-privat-pk", level: "kreis", scopeId: "09111", klasseSlug: "gemeinden", klasseLabel: "Kleinen Gemeinden", rank: 1, total: 20, value: 100, spike: false, ...over,
+    categoryKey: "dach-privat-pk", level: "kreis", scopeId: "09111", klasseSlug: "kleine-gemeinden", klasseLabel: "Kleinen Gemeinden", rank: 1, total: 20, value: 100, spike: false, ...over,
   });
 
   it("überspringt Spike-Platzierungen (Datenfehler-Verdacht)", () => {

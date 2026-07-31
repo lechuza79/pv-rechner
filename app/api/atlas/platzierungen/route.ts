@@ -84,14 +84,15 @@ export async function GET(req: NextRequest) {
   /** `/solar-atlas/ranking/<kategorie>/<bundesland>/<kreis>` je Vergleichsebene. */
   function rankingHrefVon(katSlug: string | undefined, level: HookLevel, klasseSlug: string): string | null {
     if (!katSlug) return null;
-    // MIT DER GROESSENKLASSE: Ohne sie zeigt die Zielseite die Spitze ALLER
-    // Klassen — der Leser sucht dort vergeblich seinen "Platz 1 von 119".
-    const q = `?groesse=${klasseSlug}`;
+    // MIT DER GROESSENKLASSE, und zwar IM PFAD: Ohne sie zeigt die Zielseite die
+    // Spitze ALLER Klassen — der Leser sucht dort vergeblich seinen "Platz 1 von
+    // 119". Als `?groesse=` ging es nicht: Die Zielseite ist vorgerendert und
+    // antwortet dann mit Fehler 500 (siehe Kommentar dort).
     const bl = elternSlugs[regionId.slice(0, 2)];
     const kreis = elternSlugs[regionId.slice(0, 5)];
-    if (level === "bund") return `/solar-atlas/ranking/${katSlug}${q}`;
-    if (level === "land") return bl ? `/solar-atlas/ranking/${katSlug}/${bl}${q}` : null;
-    return bl && kreis ? `/solar-atlas/ranking/${katSlug}/${bl}/${kreis}${q}` : null;
+    if (level === "bund") return `/solar-atlas/ranking/${katSlug}/${klasseSlug}`;
+    if (level === "land") return bl ? `/solar-atlas/ranking/${katSlug}/${klasseSlug}/${bl}` : null;
+    return bl && kreis ? `/solar-atlas/ranking/${katSlug}/${klasseSlug}/${bl}/${kreis}` : null;
   }
 
   /** Die vollständige Rangliste einer Platzierung — dieselbe Gruppe, aus der ihr

@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { LANDESHAUPTSTAEDTE, RANKING_FELDER, FELD_BY_SLUG, felderNachArt } from "../ranking-felder";
 import type { GemeindeStats } from "../awards";
+import { BUNDESLAENDER } from "../mastr-regions";
+import { slugify } from "../atlas-cities";
 
 const ort = (regionId: string, name: string, population: number, bezeichnung = "Gemeinde"): GemeindeStats => ({
   regionId,
@@ -83,5 +85,22 @@ describe("Felder insgesamt", () => {
       expect(f.einzahl.length).toBeGreaterThan(0);
       expect(f.langform.length).toBeGreaterThan(0);
     }
+  });
+});
+
+describe("Adress-Kürzel", () => {
+  it("kollidiert mit keinem Bundesland-Kürzel", () => {
+    // Die Ranking-Adresse ist <kategorie>[/<feld>][/<bundesland>[/<kreis>]].
+    // Wäre ein Feld-Kürzel zugleich ein Bundesland-Kürzel, liesse sich die
+    // Adresse nicht mehr eindeutig lesen.
+    const laender = BUNDESLAENDER.map((b) => slugify(b.name));
+    for (const f of RANKING_FELDER) {
+      expect(laender, `Feld „${f.slug}“ kollidiert mit einem Bundesland`).not.toContain(f.slug);
+    }
+  });
+
+  it("sieht keinem Seitenzahl-Stück ähnlich", () => {
+    // "seite-3" wird als Seitenzahl gelesen, bevor das Feld drankommt.
+    for (const f of RANKING_FELDER) expect(f.slug).not.toMatch(/^seite-\d/);
   });
 });

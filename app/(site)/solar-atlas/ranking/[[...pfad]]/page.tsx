@@ -48,19 +48,55 @@ const nf = (n: number) => n.toLocaleString("de-DE");
 const PRO_SEITE = 200;
 
 type Params = { pfad?: string[] };
-type Suche = { seite?: string; groesse?: string };
 
-/** Pfad → Kategorie + Gebiet. Ohne Kategorie ist es die Übersichtsseite. */
+/**
+ * ALLES STEHT IM PFAD, NICHTS IN DER ADRESSZEILE — das ist keine Kosmetik.
+ *
+ * Diese Seite ist als vorgerendert und eine Stunde zwischengespeichert
+ * deklariert (`revalidate`). Eine solche Seite DARF keine Werte aus der
+ * Adresszeile lesen: Next bricht den Aufbau dann mit DYNAMIC_SERVER_USAGE ab.
+ *
+ * WAS DAS ANGERICHTET HAT (31.07.2026): Vergleichsfeld und Seitenzahl standen
+ * als `?groesse=` und `?seite=` in der Adresse. Im Entwicklungs-Server lief
+ * alles; der Build meldete Erfolg, weil diese Seiten beim Bauen gar nicht
+ * erzeugt werden. In der GEBAUTEN Fassung antwortete danach JEDE der rund 4.500
+ * Ranking-Adressen mit Fehler 500 — gemessen an einem frischen Build. Drei
+ * Prüfungen (Browser, Build, Seiten-Rundgang) waren dafür blind, weil alle drei
+ * die Entwicklungsfassung ansehen.
+ *
+ * Aufbau: <kategorie>[/<vergleichsfeld>][/<bundesland>[/<kreis>]][/seite-<n>]
+ * Feld-Kürzel und Gebiets-Kürzel können sich nicht überschneiden — die Felder
+ * heissen "doerfer", "grossstaedte", "landeshauptstaedte" und dergleichen, die
+ * Gebiete tragen Bundesland- und Kreisnamen. Ein Test hält das fest.
+ */
 async function deute(pfad: string[] | undefined) {
-  const [katSlug, ...gebiet] = pfad ?? [];
+  const [katSlug, ...rest] = pfad ?? [];
   if (!katSlug) return { uebersicht: true as const };
   const kategorie = kategorieBySlug(katSlug);
-  if (!kategorie || gebiet.length > 2) return null;
+  if (!kategorie) return null;
+
+  // Seitenzahl hinten: "seite-3". Fehlt sie, ist es Seite 1.
+  let seite = 1;
+  const letztes = rest[rest.length - 1] ?? "";
+  const seitenTreffer = /^seite-(\d{1,4})$/.exec(letztes);
+  if (seitenTreffer) {
+    seite = Math.max(1, Number.parseInt(seitenTreffer[1], 10) || 1);
+    rest.pop();
+  }
+
+  // Vergleichsfeld vorn, direkt hinter der Kategorie.
+  const feld = rest[0] && FELD_BY_SLUG[rest[0]] ? (rest.shift() as string) : null;
+
+  const gebiet = rest;
+  if (gebiet.length > 2) return null;
   const region: AtlasRegion | null = gebiet.length ? await resolveSlugPath(gebiet) : await getRegionById("de");
   if (!region) return null;
   // Gemeinden sind die Zeilen dieser Listen, keine eigenen Ranking-Gebiete.
   if (region.level === "gemeinde") return null;
-  return { uebersicht: false as const, kategorie, region, gebiet };
+  // Eine kreisfreie Stadt ist ihr eigener Landkreis — eine Rangliste ihrer
+  // "Gemeinden" hätte genau eine Zeile, gekrönt und im Plural beschriftet.
+  if (region.level === "landkreis" && (await getChildren(region)).length <= 1) return null;
+  return { uebersicht: false as const, kategorie, region, gebiet, feldSlug: feld, seite };
 }
 
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
@@ -89,8 +125,9 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
   };
 }
 
-export default async function RankingPage(props: { params: Promise<Params>; searchParams: Promise<Suche> }) {
-  const [params, searchParams] = await Promise.all([props.params, props.searchParams]);
+// KEIN searchParams — siehe deute(). Die Seite bleibt dadurch vorgerendert.
+export default async function RankingPage(props: { params: Promise<Params> }) {
+  const params = await props.params;
   const d = await deute(params.pfad);
   if (!d) notFound();
 
@@ -118,7 +155,7 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
   const nachGroesse = kategorie.messart !== "absolut";
   const spaltenKopf =
     kategorie.messart === "proKopf" ? "je Einwohner" : kategorie.messart === "quote" ? "je 100 Dächer" : "gesamt";
-  const klasse: RankingFeld | null = nachGroesse ? (FELD_BY_SLUG[searchParams?.groesse ?? ""] ?? null) : null;
+  const klasse: RankingFeld | null = nachGroesse ? (FELD_BY_SLUG[d.feldSlug ?? ""] ?? null) : null;
   // Ohne gewaehltes Feld zeigt die Seite die Spitzenreiter aller Groessenklassen
   // statt einer Bundesliste — die gaebe es sonst durch die Hintertuer wieder.
   const zeigtSpitzenreiter = nachGroesse && !klasse;
@@ -140,7 +177,8 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
     : 0;
   const seiten = Math.max(1, Math.ceil(alle.length / PRO_SEITE));
   // Kaputte oder erfundene Seitenzahlen landen auf Seite 1 statt im Leeren.
-  const seite = Math.min(seiten, Math.max(1, Number.parseInt(searchParams?.seite ?? "1", 10) || 1));
+  // Aus dem Pfad geholt und hier nur noch gedeckelt.
+  const seite = Math.min(seiten, d.seite);
   const zeilen = alle.slice((seite - 1) * PRO_SEITE, seite * PRO_SEITE);
   const slugVon = new Map(stats.map((g) => [g.regionId, g.slug ?? null]));
   const pfadVon = (id: string): string | null => {
@@ -194,12 +232,16 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
   const zeigtVeraenderung = zeilen.some((r) => r.veraenderung !== null);
   const nav = rankingNav();
   const aktiverPunkt = navPunktVon(kategorie.slug);
-  /** Kategorie wechseln, Gebiet behalten — der häufigste Sprung. */
-  const mitGebiet = (slug: string) => `${BASIS}/${slug}${d.gebiet.length ? "/" + d.gebiet.join("/") : ""}`;
   /** Kategorie + Gebiet + Groessenklasse + Seite in einer Adresse. */
   const listenLink = (katSlug: string, klasseSlug: string | null, n = 1) => {
-    const q = [klasseSlug ? `groesse=${klasseSlug}` : null, n > 1 ? `seite=${n}` : null].filter(Boolean).join("&");
-    return `${mitGebiet(katSlug)}${q ? `?${q}` : ""}`;
+    const teile = [
+      BASIS,
+      katSlug,
+      ...(klasseSlug ? [klasseSlug] : []),
+      ...d.gebiet,
+      ...(n > 1 ? [`seite-${n}`] : []),
+    ];
+    return teile.join("/");
   };
   const seitenLink = (n: number) => listenLink(kategorie.slug, klasse?.slug ?? null, n);
   const katStil = (aktiv: boolean, klein = false): React.CSSProperties => ({

@@ -5,14 +5,14 @@ describe("Größenklassen", () => {
   it("trennt an den Schwellen der Solarbundesliga: 1.000 / 5.000 / 20.000 / 100.000", () => {
     // Die Schwelle gehört jeweils zur OBEREN Klasse ("Gemeinden von 1.000–4.999",
     // "Kleinstädte (5.000–19.999)", "Mittelstädte (20.000–99.999)").
-    expect(klasseVon(1)?.slug).toBe("kleingemeinden");
-    expect(klasseVon(999)?.slug).toBe("kleingemeinden");
-    expect(klasseVon(1_000)?.slug).toBe("gemeinden");
-    expect(klasseVon(4_999)?.slug).toBe("gemeinden");
-    expect(klasseVon(5_000)?.slug).toBe("kleinstaedte");
-    expect(klasseVon(19_999)?.slug).toBe("kleinstaedte");
-    expect(klasseVon(20_000)?.slug).toBe("mittelstaedte");
-    expect(klasseVon(99_999)?.slug).toBe("mittelstaedte");
+    expect(klasseVon(1)?.slug).toBe("doerfer");
+    expect(klasseVon(999)?.slug).toBe("doerfer");
+    expect(klasseVon(1_000)?.slug).toBe("kleine-gemeinden");
+    expect(klasseVon(4_999)?.slug).toBe("kleine-gemeinden");
+    expect(klasseVon(5_000)?.slug).toBe("gemeinden-und-kleinstaedte");
+    expect(klasseVon(19_999)?.slug).toBe("gemeinden-und-kleinstaedte");
+    expect(klasseVon(20_000)?.slug).toBe("mittelgrosse-staedte");
+    expect(klasseVon(99_999)?.slug).toBe("mittelgrosse-staedte");
     expect(klasseVon(100_000)?.slug).toBe("grossstaedte");
     expect(klasseVon(3_685_265)?.slug).toBe("grossstaedte");
   });

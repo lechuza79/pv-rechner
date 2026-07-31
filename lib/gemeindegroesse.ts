@@ -28,11 +28,14 @@
 // Bezeichnung eines einzelnen Ortes braucht, nimmt `bezeichnung` aus
 // mastr_regions — nicht diese Klasse.
 
+// Die Kuerzel stehen in der ADRESSE und muessen zum angezeigten Namen passen.
+// Sonst liest jemand "Doerfer" auf der Seite und "kleingemeinden" in der Zeile
+// darueber — genau die Drift, die spaeter niemand mehr zuordnen kann.
 export type GroessenklasseSlug =
-  | "kleingemeinden"
-  | "gemeinden"
-  | "kleinstaedte"
-  | "mittelstaedte"
+  | "doerfer"
+  | "kleine-gemeinden"
+  | "gemeinden-und-kleinstaedte"
+  | "mittelgrosse-staedte"
   | "grossstaedte";
 
 export type Groessenklasse = {
@@ -62,7 +65,7 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     // "Dörfer" statt "Kleingemeinden": Unter 1.000 Einwohnern sind nur 14 von
     // 3.798 Orten amtlich Städte (die kleinste ist Arnis mit 251). Entscheidung
     // des Betreibers am 31.07.2026: Alltagssprache vor amtlicher Bezeichnung.
-    slug: "kleingemeinden",
+    slug: "doerfer",
     label: "Dörfer",
     labelDativ: "Dörfern",
     einzahl: "Dorf",
@@ -73,7 +76,7 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
   {
     // "Kleine Gemeinden", damit "Gemeinden" nicht zweimal untereinander steht —
     // die naechste Stufe heisst "Gemeinden und Kleinstaedte".
-    slug: "gemeinden",
+    slug: "kleine-gemeinden",
     label: "Kleine Gemeinden",
     labelDativ: "Kleinen Gemeinden",
     einzahl: "Kleine Gemeinde",
@@ -82,7 +85,7 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     max: 5_000,
   },
   {
-    slug: "kleinstaedte",
+    slug: "gemeinden-und-kleinstaedte",
     // NICHT nur "Kleinstädte": In dieser Spanne sind gemessen 45 % der Orte
     // amtlich Städte und 55 % Gemeinden. "Kleinstadt" wuerde also fuer die
     // Mehrheit etwas behaupten, was nicht stimmt — und ein 5.000-Einwohner-Ort
@@ -95,7 +98,7 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     max: 20_000,
   },
   {
-    slug: "mittelstaedte",
+    slug: "mittelgrosse-staedte",
     // NICHT "Mittelstädte": fachlich korrekt (so heisst die Klasse beim BBSR und
     // in der Solarbundesliga), aber im Alltag sagt das niemand — "Kleinstadt"
     // und "Grossstadt" schon, "Mittelstadt" ist Planer-Sprache.

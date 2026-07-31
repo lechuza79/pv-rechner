@@ -323,14 +323,14 @@ describe("Rangliste innerhalb einer Größenklasse", () => {
   const dach = AWARD_CATEGORY_BY_KEY["dach-privat-pk"];
 
   it("wertet nur Orte der gewählten Klasse", () => {
-    const klein = rankingRows([dorf, stadt], dach, null, FELD_BY_SLUG["kleingemeinden"]);
+    const klein = rankingRows([dorf, stadt], dach, null, FELD_BY_SLUG["doerfer"]);
     expect(klein.map((r) => r.name)).toEqual(["Dorf"]);
     const gross = rankingRows([dorf, stadt], dach, null, FELD_BY_SLUG["grossstaedte"]);
     expect(gross.map((r) => r.name)).toEqual(["Stadt"]);
   });
 
   it("gibt jeder Klasse einen eigenen Platz 1", () => {
-    for (const slug of ["kleingemeinden", "grossstaedte"]) {
+    for (const slug of ["doerfer", "grossstaedte"]) {
       const rows = rankingRows([dorf, stadt], dach, null, FELD_BY_SLUG[slug]);
       expect(rows[0].platz).toBe(1);
     }
@@ -346,7 +346,7 @@ describe("Rangliste innerhalb einer Größenklasse", () => {
     // Klasse — das wäre ein Sprung ohne jede Veränderung am Ort.
     const a = { ...g("09999003", "Aufsteiger", 300, 0), privatDachKwp: 600, privatDachCount: 60, privatDachKwpLy: 300 };
     const b = { ...g("09999004", "Halter", 300, 0), privatDachKwp: 300, privatDachCount: 30, privatDachKwpLy: 290 };
-    const rows = rankingRows([a, b, stadt], dach, null, FELD_BY_SLUG["kleingemeinden"]);
+    const rows = rankingRows([a, b, stadt], dach, null, FELD_BY_SLUG["doerfer"]);
     expect(rows.map((r) => r.name)).toEqual(["Aufsteiger", "Halter"]);
     // Beide waren auch letztes Jahr schon 1 und 2 in ihrer Klasse.
     expect(rows.every((r) => r.veraenderung === 0)).toBe(true);
