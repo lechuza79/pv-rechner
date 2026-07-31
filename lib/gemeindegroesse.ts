@@ -61,7 +61,16 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     min: 0,
     max: 1_000,
   },
-  { slug: "gemeinden", label: "Gemeinden", einzahl: "Gemeinde", spanne: "1.000–5.000", min: 1_000, max: 5_000 },
+  {
+    // "Kleine Gemeinden", damit "Gemeinden" nicht zweimal untereinander steht —
+    // die naechste Stufe heisst "Gemeinden und Kleinstaedte".
+    slug: "gemeinden",
+    label: "Kleine Gemeinden",
+    einzahl: "Kleine Gemeinde",
+    spanne: "1.000–5.000",
+    min: 1_000,
+    max: 5_000,
+  },
   {
     slug: "kleinstaedte",
     // NICHT nur "Kleinstädte": In dieser Spanne sind gemessen 45 % der Orte
