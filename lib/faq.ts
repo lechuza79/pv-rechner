@@ -13,6 +13,9 @@
 import { estimateCost, BATTERY_LIFETIME_YEARS } from "./calc";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "./greengas-config";
+import {
+  EEG_REFORM_STAND, eegDatum, eegReformStandLabel, eegStaffelSatz, eegVerfahrenSatz,
+} from "./eeg-reform-config";
 import type { PriceConfig } from "./prices-config";
 import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
 
@@ -100,9 +103,11 @@ export function pvRechnerFaq(): FaqEntry[] {
     // Sachstand zu einem geplanten Gesetz (kein rollierender "aktuelles Jahr"-Wert).
     // Der EEG-Wächter aktualisiert diesen Text bei einer Rechtsänderung mit —
     // bei Beschluss/Verwerfung Antwort + Stand-Datum anpassen.
+    // ZUSTAND (Wächter-Gate Regel 1): Regierungsentwurf, im Kabinett beschlossen
+    // am 29.07.2026 — kein Gesetz. Nicht zu "beschlossen" verkürzen.
     {
       q: "Fällt die Einspeisevergütung 2027 weg?",
-      a: "Geplant, aber noch nicht beschlossen: Ein Referentenentwurf des Bundeswirtschaftsministeriums sieht vor, die Einspeisevergütung für neue PV-Anlagen bis 25 kWp ab 2027 zu streichen (Stand: Juli 2026). Wichtig: Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung 20 Jahre garantiert (Bestandsschutz) — sie sind von der geplanten Änderung nicht betroffen. Ob und in welcher Form die Reform kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage.",
+      a: `Die Bundesregierung hat dazu am ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} einen Gesetzentwurf beschlossen — ein Gesetz ist er damit noch nicht: Der Bundestag muss noch entscheiden, der Bundesrat ist am Verfahren beteiligt, und die Förderregeln brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission. Vorgesehen ist, die feste Einspeisevergütung für Neuanlagen ab 2027 zu beenden; für Anlagen unter 25 Kilowatt installierter Leistung soll es keine dauerhafte Förderung mehr geben, sondern eine befristete Starthilfe für die Direktvermarktung. Wichtig: Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung 20 Jahre garantiert (Bestandsschutz) — an ihrem Vergütungsanspruch ändert der Entwurf nichts. In welcher Form die Reform am Ende kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage. (Stand: ${eegReformStandLabel()})`,
       links: [{ phrase: "Einspeisevergütung", href: "/datenstand" }],
       cta: { label: "Ratgeber: Lohnt sich PV ohne Einspeisevergütung?", href: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" },
     },
@@ -157,11 +162,27 @@ export function pvSpeicherFaq(prices?: PriceConfig): FaqEntry[] {
 /** FAQ for the "Lohnt sich PV ohne Einspeisevergütung?" guide page.
  *
  *  Ausnahme zur "keine hardcoded Jahre"-Regel: die EEG-Reform-Antworten sind
- *  datierte Sachstände zu einem LAUFENDEN Gesetzgebungsverfahren (Stand: Juli
- *  2026, Referentenentwurf — nicht beschlossen). Der EEG-Wächter aktualisiert
- *  diese Texte bei einer Rechtsänderung mit; bei Beschluss/Verwerfung Antworten
- *  + Stand-Datum anpassen. Konsistent halten mit der Reform-Notiz im Rechner
- *  (rechner.tsx) und pvRechnerFaq oben. */
+ *  datierte Sachstände zu einem LAUFENDEN Gesetzgebungsverfahren (Stand: 30.
+ *  Juli 2026 — Regierungsentwurf, am 29.07.2026 im Kabinett beschlossen, aber
+ *  kein Gesetz). Der EEG-Wächter aktualisiert diese Texte bei einer
+ *  Rechtsänderung mit; bei Beschluss/Verwerfung Antworten + Stand-Datum
+ *  anpassen. Konsistent halten mit der Reform-Notiz im Rechner (rechner.tsx),
+ *  pvRechnerFaq oben, dem Sachstands-Block im Ratgeber und der 2027-Marke in
+ *  ZubauWidget.tsx.
+ *
+ *  ZWEI BELEGEBENEN, nicht vermischen (Wächter-Gate Regel 1 + 2):
+ *   · Kabinettsebene, amtlich belegt (BMWE-Pressemitteilung + bundesregierung.de
+ *     vom 29.07.2026): Ende der festen Einspeisevergütung für Neuanlagen, keine
+ *     dauerhafte Förderung unter 25 kW, vierjähriger Direktvermarktungsbonus als
+ *     Starthilfe, 50-%-Grenze für die Einspeiseleistung, Bestandsschutz.
+ *   · Nur Referentenentwurf vom 18.07.2026 (Volltext, Grundlage des Beschlusses;
+ *     der Wortlaut der Kabinettsfassung war am 30.07. nicht veröffentlicht):
+ *     Übergangszahlung 36 Monate mit 1 ct Abschlag (§ 25 Abs. 1a, § 53 Abs. 1),
+ *     Staffelung 2027/2028/2029 auf 50/25/7 kW (§ 21 Abs. 1 S. 1 Nr. 1),
+ *     Bonushöhe 1,5 ct/kWh für längstens 48 Monate (§ 50c).
+ *   Detailwerte deshalb immer als Entwurfswerte kennzeichnen, nie als Beschluss.
+ *   NICHT belegt und daher nirgends behauptet: dass der Direktvermarktungsbonus
+ *   der Übergangszahlung zeitlich NACHfolgt — die Fristen können überlappen. */
 export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
   const feedInCt = DEFAULT_FEED_IN.teilUnder10.toLocaleString("de-DE");
   const strompreisCt = Math.round((prices?.electricityPrice ?? 0.31) * 100);
@@ -173,12 +194,12 @@ export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
     },
     {
       q: "Fällt die Einspeisevergütung 2027 weg?",
-      a: "Geplant, aber noch nicht beschlossen: Ein Referentenentwurf des Bundeswirtschaftsministeriums sieht vor, die dauerhaft garantierte Einspeisevergütung für neue PV-Anlagen bis 25 kWp ab 2027 zu streichen. Die überarbeitete Entwurfsfassung sieht eine Übergangsphase vor: Neuanlagen sollen zunächst 36 Monate eine reduzierte Vergütung erhalten, danach ist ein zeitlich befristeter Bonus für die Direktvermarktung vorgesehen (Stand: Juli 2026). Zu diesem Stand war die Reform noch nicht final beschlossen — der Weg durch Kabinett, Bundestag und Bundesrat stand noch aus. Ob und in welcher Form die Reform kommt, ist offen — verbindlich ist allein die offizielle Gesetzeslage.",
+      a: `Beschlossen ist bislang ein Gesetzentwurf, nicht das Gesetz. ${eegVerfahrenSatz()} Inhaltlich soll die feste Einspeisevergütung für Neuanlagen enden: Für Anlagen unter 25 Kilowatt installierter Leistung ist keine dauerhafte Förderung mehr vorgesehen, sondern eine Starthilfe in Form eines vierjährigen Bonus für die Direktvermarktung. Zusätzlich soll die Einspeiseleistung kleiner und mittlerer neuer Dachanlagen dauerhaft auf 50 Prozent ihrer installierten Leistung begrenzt werden; begründet wird das damit, Mittagsspitzen zu vermeiden und den Zubau von Speichern anzureizen. Für Anlagen, die bereits in Betrieb sind, gilt das nicht. Der zugrunde liegende Entwurf vom ${eegDatum(EEG_REFORM_STAND.entwurfIso)} nennt außerdem eine auf 36 Monate befristete Übergangszahlung, die 1 ct/kWh unter dem anzulegenden Wert liegt, und staffelt die Leistungsgrenze dafür: ${eegStaffelSatz()}. Diese Detailwerte stammen aus dem Entwurf — der Wortlaut der beschlossenen Fassung war noch nicht veröffentlicht. Ob und in welcher Form die Reform kommt, ist offen — verbindlich ist allein die offizielle Gesetzeslage. (Stand: ${eegReformStandLabel()})`,
       cta: { label: "Aktuelle Vergütung ansehen", href: "/datenstand" },
     },
     {
       q: "Bin ich betroffen, wenn meine Anlage schon läuft?",
-      a: "Nein. Für Anlagen, die bis Ende 2026 in Betrieb gehen, gilt Bestandsschutz: Die bei Inbetriebnahme zugesagte Einspeisevergütung bleibt für die vollen 20 Jahre garantiert. Die geplante Reform betrifft nach dem aktuellen Entwurf ausschließlich Neuanlagen ab 2027 (Stand: Juli 2026).",
+      a: `Nein. Für Anlagen, die bis Ende 2026 in Betrieb gehen, gilt Bestandsschutz: Die bei Inbetriebnahme zugesagte Einspeisevergütung bleibt für die vollen 20 Jahre garantiert. Der Entwurf vom ${eegDatum(EEG_REFORM_STAND.entwurfIso)}, auf dem der Kabinettsbeschluss vom ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} beruht, ordnet dafür ausdrücklich an, dass für Anlagen mit Inbetriebnahme vor 2027 das bisherige Recht weiter gilt; die neue Regel betrifft allein Neuanlagen (Stand: ${eegReformStandLabel()}).`,
       cta: { label: "Meine Anlage nachrechnen", href: "/photovoltaik-rechner" },
     },
     {

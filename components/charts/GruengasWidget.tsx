@@ -2,10 +2,19 @@
 
 import { useEffect, useState } from "react";
 import InfoTooltip from "../InfoTooltip";
-import ChartActionBar from "../ChartActionBar";
-import { PoweredBy } from "../PoweredBy";
+import {
+  ExportBox,
+  ExportNotesProvider,
+  WidgetFooter,
+  WidgetSourceEdge,
+  ExportOnly,
+  ExportOnlyG,
+  WidgetExportFooter,
+  type ExportLegendEntry,
+} from "../WidgetExport";
 import { useChartExport } from "../../lib/useChartExport";
-import { DATA_SOURCES } from "../../lib/data-sources";
+import { EXPORT_IGNORE_ATTR } from "../../lib/export-markers";
+import { WIDGETS } from "../../lib/widget-registry";
 import { v } from "../../lib/theme";
 import type { MusterVariant } from "../../lib/greengas-muster";
 
@@ -15,8 +24,15 @@ import type { MusterVariant } from "../../lib/greengas-muster";
 // `view` wählt, welche Teile gezeigt werden: "full" (alles), "bars" (nur die
 // Gesamtkosten-Balken, für die Kurzantwort) oder "lines" (nur der Verlauf).
 // `onsite` = First-Party-Embed auf unseren Seiten: kein Powered-by, keine
-// In-Widget-Quelle (die Seite kreditiert zentral), Aktionen bleiben. Theming über
-// --color-* (im Embed auf --widget-* gemappt).
+// dauerhafte In-Widget-Quelle (die Seite kreditiert zentral), Aktionen bleiben.
+// Theming über --color-* (im Embed auf --widget-* gemappt).
+//
+// Drei Zustände, EIN Bauteil — die Fußzeile ist in allen gleich aufgebaut:
+//   • Seite (onsite): Quelle + Marke erscheinen beim Überfahren, sonst ruhig.
+//   • Embed: Quelle + Marke dauerhaft sichtbar (Attributionspflicht).
+//   • Bild (Download/Teilen): alles Interaktive fliegt raus, dafür kommen
+//     Skala, Legende, die Texte hinter den „?" sowie Quelle + Marke fest hinein
+//     (Mechanik: components/WidgetExport.tsx).
 
 export type GruengasView = "full" | "bars" | "lines";
 
@@ -44,27 +60,38 @@ function niceMax(max: number): number {
   return Math.ceil(max / s) * s;
 }
 
-const SHARE_URL = "https://solar-check.io/ratgeber/gasheizung-oder-waermepumpe";
-const SHARE_TEXT = "Wärmepumpe vs. neue Gasheizung mit Grüngas-Pflicht – Solar Check";
-
-export default function GruengasWidget({
-  variants,
-  pvCoveragePct,
-  view = "full",
-  onsite = false,
-  branding = true,
-  showEmbed = false,
-}: {
+interface Props {
   variants: MusterVariant[];
   pvCoveragePct: number;
   view?: GruengasView;
   onsite?: boolean;
   branding?: boolean;
   showEmbed?: boolean;
-}) {
+}
+
+export default function GruengasWidget(props: Props) {
+  // Der Sammler für die „?"-Texte muss die ganze Karte umschließen — inklusive
+  // des Bild-Fußes, der sie ausgibt.
+  return (
+    <ExportNotesProvider>
+      <GruengasCard {...props} />
+    </ExportNotesProvider>
+  );
+}
+
+function GruengasCard({
+  variants,
+  pvCoveragePct,
+  view = "full",
+  onsite = false,
+  branding = true,
+  showEmbed = false,
+}: Props) {
   const [active, setActive] = useState(0);
   const [hoverLine, setHoverLine] = useState<number | null>(null);
   const [narrow, setNarrow] = useState(false);
+  // Quelle + Marke auf der eigenen Seite: erscheinen beim Überfahren/Fokus.
+  const [showCredit, setShowCredit] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(max-width:560px)");
     const on = () => setNarrow(mq.matches);
@@ -81,16 +108,16 @@ export default function GruengasWidget({
   const showBilanzOverlay = view === "full" && !narrow;
   const linesFullWidth = narrow || view === "lines";
 
-  // Kein Bild-Export (Download/Bild-Teilen) — bewusst raus: ein PNG ohne
-  // Quellenangabe ist ein Attributions-Risiko. Geteilt wird nur der Link auf die
-  // Seite (dort steht die Quelle). shareWhatsApp/shareTwitter öffnen Share-URLs.
-  const { shareWhatsApp, shareTwitter } = useChartExport({
-    context: { title: `Gasheizung vs. Wärmepumpe — ${m.label}` },
-    filename: "waermepumpe-vs-gasheizung-gruengas",
-    shareText: SHARE_TEXT,
-    shareUrl: SHARE_URL,
-    mode: "node",
-  });
+  // Bild-Export: 1:1-Aufnahme der Karte. Alles Interaktive trägt
+  // data-sc-export-ignore, alles Nur-im-Bild steckt in <ExportOnly>.
+  const { chartRef, downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare } =
+    useChartExport({
+      context: { title: `Gasheizung vs. Wärmepumpe — ${m.label}` },
+      filename: "waermepumpe-vs-gasheizung-gruengas",
+      shareText: WIDGETS.gruengasHeizkosten.shareText,
+      shareUrl: WIDGETS.gruengasHeizkosten.shareUrl,
+      mode: "node",
+    });
 
   // ── Linien-SVG-Maße (viewBox nah an der Pixelbreite) ──
   const W = narrow ? 320 : 640, H = narrow ? 200 : 280, P = { t: 24, r: 14, b: 28, l: 12 };
@@ -130,21 +157,35 @@ export default function GruengasWidget({
   const plusBadge = (
     <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: 18, height: 18, padding: "0 4px", borderRadius: 6, border: `1px solid ${v("--color-positive")}`, background: `color-mix(in srgb, ${v("--color-positive")} 12%, transparent)`, color: v("--color-positive-text"), fontFamily: v("--font-mono"), fontSize: 14, fontWeight: 800, lineHeight: 1 }}>+</span>
   );
-  // Interaktive „?"-Trigger vom PNG-Export ausnehmen (funktionieren im Bild nicht).
+  // Die „?"-Trigger nehmen sich selbst aus dem Bild und melden ihren Text an den
+  // Bild-Fuß (components/WidgetExport.tsx) — nichts geht im PNG verloren.
   const ersparnisTip = (
-    <span data-sc-export-ignore style={{ display: "inline-flex" }}>
-      <InfoTooltip title="Ersparnis über 20 Jahre" ariaLabel="Was bedeutet die Ersparnis?">
-        Summe aller Heizkosten der Gasheizung minus der Wärmepumpe mit PV über 20 Jahre — inklusive Grüngas-Pflicht, steigender Strompreise und CO₂-Preis.
-      </InfoTooltip>
-    </span>
+    <InfoTooltip title="Ersparnis über 20 Jahre" ariaLabel="Was bedeutet die Ersparnis?">
+      Summe aller Heizkosten der Gasheizung minus der Wärmepumpe mit PV über 20 Jahre — inklusive Grüngas-Pflicht, steigender Strompreise und CO₂-Preis.
+    </InfoTooltip>
   );
   const gesamtkostenTip = (
-    <span data-sc-export-ignore style={{ display: "inline-flex" }}>
-      <InfoTooltip title="Gesamtkosten über 20 Jahre" ariaLabel="Was bedeuten die Gesamtkosten?">
-        Aufsummierte Heizkosten über 20 Jahre je Variante: Gasheizung, Wärmepumpe mit Netzstrom und Wärmepumpe mit rund {pvCoveragePct} % Solarstrom.
-      </InfoTooltip>
-    </span>
+    <InfoTooltip title="Gesamtkosten über 20 Jahre" ariaLabel="Was bedeuten die Gesamtkosten?">
+      Aufsummierte Heizkosten über 20 Jahre je Variante: Gasheizung, Wärmepumpe mit Netzstrom und Wärmepumpe mit rund {pvCoveragePct} % Solarstrom.
+    </InfoTooltip>
   );
+
+  // Y-Skala des Linien-Charts — EIN Block, zwei Sichtbarkeiten (nie beides,
+  // sonst stünde die Zahl im Bild doppelt):
+  //   • breit  → nur im Bild (online liest man die Werte per Überfahren ab),
+  //   • schmal → dauerhaft sichtbar; auf dem Telefon gibt es kein Überfahren,
+  //     und Tippen zeigt nur einen Jahrespunkt — ohne Skala stünden drei Kurven
+  //     ganz ohne Größenordnung da.
+  // Nur jede zweite Stufe beschriften: vier Zahlen übereinander kollidieren mit
+  // den Kurven, zwei reichen für die Größenordnung. Sie sitzen links oben, wo
+  // alle drei Kurven noch flach unter ihnen verlaufen — nichts wird verdeckt.
+  const scaleLabels = yTicks
+    .filter((val, i) => val > 0 && i % 2 === 0)
+    .map(val => (
+      <text key={val} x={P.l + 2} y={yL(val) + 10} textAnchor="start" fontSize={9} fill="var(--color-text-secondary)" fontFamily="var(--font-mono)">
+        {eur(val)}
+      </text>
+    ));
 
   // Gedrehte (vertikale) Betrags-Summe für die Balken (Desktop volle Zahl).
   const barValueTspans = (val: number, full: boolean) => (
@@ -229,20 +270,31 @@ export default function GruengasWidget({
     </div>
   );
 
-  const SOURCE_SHORT = DATA_SOURCES.iw.name;
+  // Legende: online überflüssig (Überfahren/Tippen benennt jede Linie, die
+  // Balken tragen Kürzel) — im Bild unverzichtbar, dort gibt es kein Hover.
+  const legend: ExportLegendEntry[] = SERIES.map(s => ({
+    color: s.color,
+    label: s.label,
+    shape: showLines ? "line" : "box",
+  }));
 
   return (
-    <div style={{
-      position: "relative",
-      // Solider Hintergrund überall AUSSER der reinen Balken-Ansicht onsite
-      // (Kurzantwort, blendet in die Box). Solide = der Download-PNG hat einen
-      // Hintergrund (transparenter Export ist ein Fehler).
-      background: onsite && isBars ? "transparent" : v("--color-bg"),
-      border: onsite && isBars ? "none" : `1px solid ${v("--color-border")}`,
-      borderRadius: onsite && isBars ? 0 : v("--radius-lg"),
-      padding: isBars ? 0 : "16px 24px 14px 16px",
-      boxSizing: "border-box",
-    }}>
+    <div
+      ref={chartRef}
+      onMouseEnter={() => setShowCredit(true)}
+      onMouseLeave={() => setShowCredit(false)}
+      onFocusCapture={() => setShowCredit(true)}
+      style={{
+        position: "relative",
+        // Solider Hintergrund überall AUSSER der reinen Balken-Ansicht onsite
+        // (Kurzantwort, blendet in die Box). Solide = der Download-PNG hat einen
+        // Hintergrund (transparenter Export ist ein Fehler).
+        background: onsite && isBars ? "transparent" : v("--color-bg"),
+        border: onsite && isBars ? "none" : `1px solid ${v("--color-border")}`,
+        borderRadius: onsite && isBars ? 0 : v("--radius-lg"),
+        padding: isBars ? 0 : "16px 24px 14px 16px",
+        boxSizing: "border-box",
+      }}>
       {/* Kopf (nicht in der reinen Balken-Ansicht) */}
       {!isBars && (
         <>
@@ -251,14 +303,14 @@ export default function GruengasWidget({
             So entwickeln sich die jährlichen Heizkosten für ein typisches{" "}
             <span style={{ whiteSpace: "nowrap" }}>
               Einfamilienhaus{" "}
-              <span data-sc-export-ignore style={{ verticalAlign: "middle" }}>
+              <span style={{ verticalAlign: "middle" }}>
                 <InfoTooltip title="Das Muster-Haus" ariaLabel="Angaben zum Muster-Haus">{m.sub}</InfoTooltip>
               </span>
             </span>
           </div>
 
           {/* Umschalter */}
-          <div data-sc-export-ignore style={{ display: "flex", borderRadius: v("--radius-md"), border: `1px solid ${v("--color-border")}`, overflow: "hidden", marginBottom: 8 }} role="tablist" aria-label="Gebäudestand">
+          <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ display: "flex", borderRadius: v("--radius-md"), border: `1px solid ${v("--color-border")}`, overflow: "hidden", marginBottom: 8 }} role="tablist" aria-label="Gebäudestand">
             {variants.map((vr, i) => {
               const on = i === active;
               return (
@@ -269,6 +321,13 @@ export default function GruengasWidget({
               );
             })}
           </div>
+          {/* Im Bild ersetzt eine Zwischenüberschrift den Umschalter — sonst
+              bliebe offen, welcher Gebäudestand abgebildet ist. */}
+          <ExportOnly style={{ marginBottom: 8 }}>
+            <span style={{ fontSize: 13.5, fontWeight: 700, color: v("--color-text-primary") }}>
+              Gebäude: {m.label}
+            </span>
+          </ExportOnly>
           <div style={{ fontSize: 11.5, color: v("--color-text-secondary"), lineHeight: 1.5, marginBottom: 8, padding: "0 2px" }}>
             {m.explain}
           </div>
@@ -276,11 +335,12 @@ export default function GruengasWidget({
       )}
 
       {/* Nur Balken (Kurzantwort) */}
-      {isBars && barsOnlyWidget}
+      {isBars && <ExportBox>{barsOnlyWidget}</ExportBox>}
 
-      {/* Linien-Chart (full + lines) */}
+      {/* Linien-Chart (full + lines) — im Bild in einer eigenen hellen Box,
+          damit Chart und Fußnoten sichtbar getrennt sind. */}
       {showLines && (
-        <div style={{ position: "relative" }}>
+        <ExportBox style={{ position: "relative" }}>
           <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img"
             aria-label={`Jährliche Heizkosten ${m.label}: Gasheizung steigt, Wärmepumpe bleibt günstig`}
             onMouseLeave={() => setHoverLine(null)}>
@@ -290,6 +350,8 @@ export default function GruengasWidget({
             {/* Achsen-Label statt Zahlen (Hover zeigt exakte Werte) — gleiche
                 Label-Typo wie „Gesamtkosten"/„Ersparnis": Caption, 700, Versalien. */}
             <text x={P.l} y={13} textAnchor="start" style={{ fontSize: v("--font-size-caption"), letterSpacing: "0.5px" }} fontWeight={700} fill="var(--color-text-muted)">HEIZKOSTEN PRO JAHR</text>
+            {/* Skala: schmal dauerhaft, breit nur im Bild (siehe scaleLabels). */}
+            {narrow ? <g>{scaleLabels}</g> : <ExportOnlyG>{scaleLabels}</ExportOnlyG>}
             {/* Rand-Jahre linksbündig/rechtsbündig, damit „2026" nicht abschneidet */}
             {xYears.map((yr, i) => {
               const last = i === xYears.length - 1;
@@ -353,7 +415,7 @@ export default function GruengasWidget({
           )}
 
           {hoverLine !== null && (
-            <div style={{ position: "absolute", left: `${(xL(hoverLine) / W) * 100}%`, top: 0, transform: `translateX(${hoverLine > n / 2 ? "-105%" : "5%"})`, background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: "7px 9px", pointerEvents: "none", boxShadow: "0 2px 10px rgba(0,0,0,0.12)", zIndex: 2, minWidth: 138 }}>
+            <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ position: "absolute", left: `${(xL(hoverLine) / W) * 100}%`, top: 0, transform: `translateX(${hoverLine > n / 2 ? "-105%" : "5%"})`, background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: "7px 9px", pointerEvents: "none", boxShadow: "0 2px 10px rgba(0,0,0,0.12)", zIndex: 2, minWidth: 138 }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4, fontFamily: v("--font-mono") }}>{pts[hoverLine].year}</div>
               {SERIES.map(s => (
                 <div key={s.key} style={{ display: "flex", justifyContent: "space-between", gap: 10, fontSize: 11, marginTop: 2 }}>
@@ -365,7 +427,7 @@ export default function GruengasWidget({
               ))}
             </div>
           )}
-        </div>
+        </ExportBox>
       )}
 
       {/* view=full, schmal: horizontale Balken unter dem Chart */}
@@ -375,49 +437,30 @@ export default function GruengasWidget({
         </div>
       )}
 
-      {/* Legende neben dem CTA (nur wenn Linien sichtbar) */}
-      {showLines && (
-        <div style={{ display: "flex", flexDirection: narrow ? "column" : "row", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: narrow ? 10 : 12, marginTop: 14 }}>
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", columnGap: 12, rowGap: 3, fontSize: 11.5 }}>
-            {SERIES.map(s => (
-              <span key={s.key} style={{ display: "inline-flex", alignItems: "center", gap: 5, color: v("--color-text-secondary") }}>
-                <span style={{ width: 11, height: 3, borderRadius: 2, background: s.color }} /> {narrow ? s.short : s.label}
-              </span>
-            ))}
-          </div>
-          <a data-sc-export-ignore href="/waermepumpe-rechner" style={{ flexShrink: 0, alignSelf: narrow ? "stretch" : "auto", textAlign: "center", padding: "9px 16px", borderRadius: v("--radius-md"), background: v("--color-accent"), color: v("--color-text-on-accent"), fontSize: 13, fontWeight: 700, textDecoration: "none" }}>
-            Für dein Haus durchrechnen →
-          </a>
-        </div>
-      )}
-
-      {/* Teilen-Leiste (Link-basiert; kein Bild-Export). Powered-by nur extern.
-          Reine Balken-Ansicht onsite: keine. */}
+      {/* Fußzeile + Quelle: geteilte Bausteine (components/WidgetExport).
+          Ausnahme mit Grund: der reine Balken-Ausschnitt auf unserer eigenen
+          Seite bleibt nackt — dort führt der Artikel. */}
       {!(onsite && isBars) && (
-        <div style={{ display: "flex", justifyContent: branding && !onsite ? "space-between" : "flex-end", alignItems: "center", gap: 8, marginTop: 10 }}>
-          {branding && !onsite && <PoweredBy />}
-          <ChartActionBar
-            variant="bar"
-            showDownload={false}
-            size={28}
-            onDownload={() => {}}
-            isExporting={false}
-            canNativeShare={false}
-            onCopyLink={() => navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {})}
-            onWhatsApp={shareWhatsApp}
-            onTwitter={shareTwitter}
-            onEmbed={showEmbed && !onsite ? () => window.open("/energie-widgets#gruengas-heizkosten", "_blank", "noopener") : undefined}
-          />
-        </div>
+        <WidgetFooter
+          widget={WIDGETS.gruengasHeizkosten}
+          chartExport={{ downloadPng, sharePng, shareWhatsApp, shareTwitter, isExporting, canNativeShare }}
+          onsite={onsite}
+          branding={branding}
+          showEmbed={showEmbed}
+          narrow={narrow}
+        />
       )}
 
-      {/* Quelle: vertikal an der rechten Kante — nur extern (onsite kreditiert die
-          Seite zentral). Der Export bäckt sie zusätzlich fest ins PNG. */}
-      {!onsite && (
-        <div title={`Quelle: ${DATA_SOURCES.iw.name}`} style={{ position: "absolute", top: 0, bottom: 0, right: 4, display: "flex", alignItems: "center", justifyContent: "center", writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 9, lineHeight: 1.4, letterSpacing: 0.2, color: v("--color-text-faint"), pointerEvents: "none" }}>
-          {SOURCE_SHORT}
-        </div>
+      {!(onsite && isBars) && (
+        <WidgetSourceEdge widget={WIDGETS.gruengasHeizkosten} visible={!onsite || showCredit} />
       )}
+
+      {/* Nur im Bild: Legende, die Texte hinter den „?", Quelle + Marke. */}
+      <WidgetExportFooter
+        widget={WIDGETS.gruengasHeizkosten}
+        legend={legend}
+        note={`Muster-Einfamilienhaus, ${m.label.toLowerCase()} · Näherungswerte, ohne Gewähr`}
+      />
     </div>
   );
 }

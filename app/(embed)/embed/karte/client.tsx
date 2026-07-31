@@ -3,91 +3,68 @@
 import { useState } from "react";
 import { MastrHeroSection } from "../../../../components/MastrHeroSection";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
-import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy } from "../../../../components/PoweredBy";
+import {
+  WidgetFooter,
+  WidgetSourceEdge,
+  useShareOnlyActions,
+} from "../../../../components/WidgetExport";
+import { WIDGETS, WIDGET_MAX_WIDTH } from "../../../../lib/widget-registry";
+import {
+  WIDGET_SETTINGS_DEFAULTS,
+  type WidgetSettings,
+} from "../../../../lib/widget-settings";
 
-// Where the share buttons point — the canonical live page for this widget.
-const SHARE_URL = "https://solar-check.io/";
-const SHARE_TEXT = "PV-Anlagen in Deutschland – Solar Check";
+// Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
+// Register — ein Eintrag speist Fußzeile, Quellen-Kante und Zitat.
+const WIDGET = WIDGETS.karte;
 
 export default function KarteWidget() {
-  const [showEmbed, setShowEmbed] = useState(true);
-  const [showBranding, setShowBranding] = useState(true);
+  const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
 
-  // Theme via URL params + same-origin postMessage (shared hook). Also picks up
-  // the embed flag (embed=0 on the gallery hides the "Einbetten" action) and the
-  // branding flag (branding=0 hides the "Powered by" mark).
+  // Theme + funktionale Schalter (share, branding, embed, onsite) über den
+  // geteilten Haken — URL-Parameter und postMessage wirken damit gleich.
   useWidgetTheme({
-    onSettings: (s) => {
-      if (typeof s.embed === "boolean") setShowEmbed(s.embed);
-      if (typeof s.branding === "boolean") setShowBranding(s.branding);
-    },
+    onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
+
+  // Kein Bild-Export: die Karte ist kein aufnehmbares SVG (`exportable: false`
+  // im Register). Teilen-Text und -Ziel kommen trotzdem aus dem Register.
+  const actions = useShareOnlyActions(WIDGET);
 
   return (
     <div
       style={{
+        position: "relative",
         background: "var(--widget-bg)",
         color: "var(--widget-fg)",
         borderRadius: "var(--widget-border-radius)",
         fontFamily: "var(--widget-font-family)",
         padding: 16,
+        paddingRight: 22,
+        maxWidth: WIDGET_MAX_WIDTH,
+        margin: "0 auto",
         boxSizing: "border-box",
         overflow: "hidden",
       }}
     >
-      <MastrHeroSection />
+      {/* Quelle vertikal an der rechten Kante (geteilter Baustein), nie als
+          horizontaler Block. Die Karte selbst zeigt deshalb keinen eigenen
+          Credit mehr (showSource={false}) — sonst stünde er zweimal. */}
+      <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
+      <MastrHeroSection showSource={false} />
       <div style={{ marginTop: 12 }}>
-        <div
-          style={{
-            height: 1,
-            background: "var(--widget-muted)",
-            opacity: 0.2,
-            marginBottom: 8,
-          }}
+        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2 }} />
+        {/* Fußzeile aus dem geteilten Baustein: nächster Schritt, Aktionen
+            (inkl. „Zitieren"), Marke. */}
+        <WidgetFooter
+          widget={WIDGET}
+          chartExport={actions}
+          share={settings.share}
+          branding={settings.branding}
+          showEmbed={settings.embed}
+          onsite={settings.onsite}
         />
-        <div
-          style={{
-            fontSize: 10.5,
-            color: "var(--widget-muted)",
-            display: "flex",
-            justifyContent: showBranding ? "space-between" : "flex-start",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <ChartActionBar
-            variant="bar"
-            showDownload={false}
-            onDownload={() => {}}
-            onCopyLink={() =>
-              navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {})
-            }
-            onWhatsApp={() =>
-              window.open(
-                `https://wa.me/?text=${encodeURIComponent(`${SHARE_TEXT}\n${SHARE_URL}`)}`,
-                "_blank",
-              )
-            }
-            onTwitter={() =>
-              window.open(
-                `https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SHARE_URL)}`,
-                "_blank",
-              )
-            }
-            onEmbed={
-              showEmbed
-                ? () => window.open("/energie-widgets#karte", "_blank", "noopener")
-                : undefined
-            }
-            isExporting={false}
-            canNativeShare={false}
-            size={30}
-          />
-          {showBranding && <PoweredBy />}
-        </div>
       </div>
     </div>
   );
 }
-

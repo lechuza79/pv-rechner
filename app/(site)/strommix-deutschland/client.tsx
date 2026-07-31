@@ -250,6 +250,7 @@ export default function EnergieClient() {
   const energyChartExport = useChartExport({
     context: {
       title: "Stromerzeugung nach Energieträger in Deutschland",
+      kind: "chart",
       subtitle: rangeLabel,
       stats: stats ? (() => {
         const u = energyUnit(stats.totalGenerationGWh);
@@ -267,6 +268,17 @@ export default function EnergieClient() {
         { color: CATEGORY_COLORS.other, label: "Sonstige" },
         ...(hasDomesticNuclear ? [{ color: CATEGORY_COLORS.nuclear, label: "Kernenergie (erzeugt)" }] : []),
         ...(showNuclear && nuclearImportGWh > 0 ? [{ color: CATEGORY_COLORS.nuclearImport, label: "Kernenergie (importiert)" }] : []),
+      ],
+      heading: rangeLabel,
+      notes: [
+        {
+          title: "Gelesen wird",
+          text: "die Stromerzeugung in Deutschland, gestapelt nach Energieträgern. Die Höhe der Fläche ist die Leistung zum jeweiligen Zeitpunkt; die Farbabstufungen innerhalb Grün sind die einzelnen erneuerbaren Träger (Wind, Solar, Wasser, Biomasse).",
+        },
+        ...(showNuclear && nuclearImportGWh > 0 ? [{
+          title: "Kernenergie (importiert)",
+          text: "Rechnerischer Wert: Stromflüsse über die Grenze multipliziert mit dem Kernenergie-Anteil des Nachbarlands. Heimische Kernkraft läuft seit April 2023 nicht mehr.",
+        }] : []),
       ],
       source: sourceLabel(DATA_SOURCES.energyCharts),
     },

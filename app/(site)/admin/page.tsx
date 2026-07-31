@@ -17,7 +17,9 @@ const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
 const TOOLS: { href: string; title: string; desc: string }[] = [
   { href: "/admin/theme", title: "Signalfarben-Theming", desc: "Grün, Rot und Energie-Farben pro Helligkeitsstufe anpassen — live vorschaubar." },
   { href: "/admin/prices", title: "Marktpreise", desc: "PV-/Speicher-Preise scrapen, manuell überschreiben, Historie ansehen." },
+  { href: "/admin/charts", title: "Chart-Baukasten", desc: "Alle Charts und Werkzeuge mit Art, Quelle und nächstem Schritt — plus die Reihenfolge für ein neues Chart." },
   { href: "/admin/kommunen", title: "Kommunen-Outreach", desc: "Kontaktdaten der ~11.000 Gemeinden: filtern, Status pflegen, Kontaktseite öffnen." },
+  { href: "/admin/versorger", title: "Stadtwerke & Energieversorger", desc: "Versorger erfassen, Gemeinden zuordnen, Kennzahlen im Versorgungsgebiet ansehen." },
   { href: "/admin/waechter", title: "Wächter-Berichte", desc: "Ablage aller Wächter-Läufe — auch der stummen, die keine Mail ausgelöst haben." },
 ];
 

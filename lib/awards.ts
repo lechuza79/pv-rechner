@@ -14,7 +14,7 @@
 // Ausnahme vom „kein Import": die kanonischen Einheiten-Formatter (rein, ohne
 // DB/Next) — Einheiten werden nie handgeschrieben (Zahlen-Korrektheit-BLOCKER).
 
-import { fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "./atlas-format";
+import { fmtMixLeistung, fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "./atlas-format";
 
 export type AwardScopeLevel = "de" | "bundesland" | "landkreis";
 export type Traeger = "buerger" | "gewerbe";
@@ -32,6 +32,7 @@ export type Role = "gemeinde" | "stadt" | "grosse-kreisstadt" | "kreisfrei" | "h
 export type MetricFormat =
   | "wattProKopf"
   | "pvLeistung"
+  | "mixLeistung"
   | "count"
   | "countPer1000"
   | "whProKopf"
@@ -485,6 +486,10 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     format: "speicherKwh",
     metric: (g) => pos(g.batterieGewerbeKwh),
   },
+  // Wind, Biomasse, Wasser: kW/MW/GW ohne „p". „Peak" ist die Nennleistung von
+  // Solarmodulen unter Testbedingungen — ein Windrad oder ein Biomasse-Block hat
+  // keine. Diese drei standen bis 07/2026 auf der Solar-Einheit und zeigten damit
+  // „MWp" über einer Windleistung; gefunden beim Aufbau der Versorger-Aggregate.
   {
     key: "wind-standort",
     slug: "windleistung",
@@ -495,7 +500,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     themaDativ: "Windleistung",
     traeger: "gewerbe",
     messart: "absolut",
-    format: "pvLeistung",
+    format: "mixLeistung",
     metric: (g) => pos(g.windKwp),
     metricVorjahr: (g) => pos(g.windKwpLy ?? 0),
   },
@@ -508,7 +513,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     themaDativ: "Biomasseleistung",
     traeger: "gewerbe",
     messart: "absolut",
-    format: "pvLeistung",
+    format: "mixLeistung",
     metric: (g) => pos(g.biomasseKwp),
   },
   {
@@ -520,7 +525,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     themaDativ: "Wasserkraftleistung",
     traeger: "gewerbe",
     messart: "absolut",
-    format: "pvLeistung",
+    format: "mixLeistung",
     metric: (g) => pos(g.wasserKwp),
   },
   // Dynamik.
@@ -579,6 +584,8 @@ export function formatAwardValue(value: number, format: MetricFormat): string {
       return fmtWattProKopf(value);
     case "pvLeistung":
       return fmtPvLeistung(value);
+    case "mixLeistung":
+      return fmtMixLeistung(value);
     case "speicherKwh":
       return fmtSpeicherKwh(value);
     case "count":

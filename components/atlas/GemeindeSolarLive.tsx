@@ -5,7 +5,8 @@ import { v } from "../../lib/theme";
 import { calcCurrentPower } from "../../lib/simulation";
 import { MastrLiveRadial } from "../MastrLiveRadial";
 import GemeindeWidgetShell from "./GemeindeWidgetShell";
-import { DATA_SOURCES } from "../../lib/data-sources";
+import { WIDGETS, widgetForPlace } from "../../lib/widget-registry";
+import { fmtPvLeistung } from "../../lib/atlas-format";
 
 // Einbettbares Widget: standortgenaue Simulation der Solarleistung des Gemeinde-
 // Bestands, gerendert im echten Live-Radial (MastrLiveRadial, chromeless in der
@@ -29,17 +30,21 @@ export default function GemeindeSolarLive({
   totalKwp,
   name,
   liveUrl,
-  showSource = true,
+  onsite = false,
+  share = true,
   showEmbed = true,
-  branding = false,
+  branding = true,
 }: {
   lat: number;
   lon: number;
   totalKwp: number;
   name: string;
   liveUrl: string;
-  /** Web-Quellenzeile zeigen. Embed: an. Atlas-Seite: aus (globaler Seitenfuß). */
-  showSource?: boolean;
+  /** First-party embed auf einer eigenen Seite: Quelle erst beim Überfahren,
+   *  keine Markenzeile (die Seite trägt beides). */
+  onsite?: boolean;
+  /** Aktionsleiste zeigen (Einbettende können sie über share=0 abwählen). */
+  share?: boolean;
   showEmbed?: boolean;
   branding?: boolean;
 }) {
@@ -96,19 +101,19 @@ export default function GemeindeSolarLive({
   const subline =
     "Simuliert aus dem heutigen Wetter am Standort — kein Messwert" + (stand ? ` · Stand ${stand}` : "");
 
-  const shareText = `Solarleistung in ${name}: was der Bestand heute liefert (simuliert) – Solar Check`;
+  const widget = widgetForPlace(WIDGETS.gemeindeSolarleistung, name, liveUrl);
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
   return (
     <GemeindeWidgetShell
-      title={`Solarleistung heute in ${name}`}
+      widget={widget}
       subline={subline}
-      sources={[DATA_SOURCES.openMeteo, DATA_SOURCES.mastr]}
-      shareText={shareText}
-      shareUrl={liveUrl}
       filename={`solar-check-solarleistung-${slug}.png`}
-      embedHash="gemeinde-solarleistung"
-      showSource={showSource}
+      // Das Bild zeigt eine Momentaufnahme — ohne diesen Satz wüsste niemand,
+      // dass die Kurve gerechnet und nicht gemessen ist.
+      note={`Simulierter Tagesverlauf des Anlagenbestands (${fmtPvLeistung(totalKwp)}) aus dem heutigen Wetter am Standort — kein Messwert.`}
+      onsite={onsite}
+      share={share}
       showEmbed={showEmbed}
       branding={branding}
     >

@@ -1,12 +1,19 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
 import { LoadingDots } from "../../../../components/LoadingDots";
-import { DATA_SOURCES } from "../../../../lib/data-sources";
+import {
+  WidgetFooter,
+  WidgetSourceEdge,
+  useShareOnlyActions,
+} from "../../../../components/WidgetExport";
+import { WIDGETS, WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
 import { useGenerationMix } from "../../../../lib/energy";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
+import {
+  WIDGET_SETTINGS_DEFAULTS,
+  type WidgetSettings,
+} from "../../../../lib/widget-settings";
 import {
   GENERATION_STACK_KEYS,
   RENEWABLE_KEYS,
@@ -25,8 +32,9 @@ import {
 // Energy-Charts points can miss solar/wind), the 24h mean comes from the
 // shared calcPeriodStats. No own data source, no own aggregation.
 
-const SHARE_URL = "https://solar-check.io/strommix-deutschland?range=24h";
-const SHARE_TEXT = "EE-Ampel: Wie grün ist der deutsche Strom gerade? – Solar Check";
+// Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
+// Register — ein Eintrag speist Fußzeile, Quellen-Kante und Zitat.
+const WIDGET = WIDGETS.eeAmpel;
 
 // Traffic-light semantics. Fixed semantic colours (green/amber/red) — per
 // widget convention these must NEVER follow the host theme.
@@ -63,14 +71,14 @@ function levelForShare(pct: number): Level {
 const REFRESH_MS = 15 * 60 * 1000; // match the live-simulation refresh cadence
 
 export default function EeAmpelWidget() {
-  const [showEmbed, setShowEmbed] = useState(true);
-  const [showBranding, setShowBranding] = useState(true);
+  const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
-    onSettings: (s) => {
-      if (typeof s.embed === "boolean") setShowEmbed(s.embed);
-      if (typeof s.branding === "boolean") setShowBranding(s.branding);
-    },
+    onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
+
+  // Kein Bild-Export: die Ampel hat kein aufnehmbares Chart (`exportable: false`
+  // im Register). Teilen-Text und -Ziel kommen trotzdem aus dem Register.
+  const actions = useShareOnlyActions(WIDGET);
 
   const { data: genData, error, refetch } = useGenerationMix("de", 24);
 
@@ -110,14 +118,21 @@ export default function EeAmpelWidget() {
   return (
     <div
       style={{
+        position: "relative",
         background: "var(--widget-bg)",
         color: "var(--widget-fg)",
         borderRadius: "var(--widget-border-radius)",
         fontFamily: "var(--widget-font-family)",
         padding: 16,
+        paddingRight: 22,
+        maxWidth: WIDGET_MAX_WIDTH_COMPACT,
+        margin: "0 auto",
         boxSizing: "border-box",
       }}
     >
+      {/* Quelle vertikal an der rechten Kante (geteilter Baustein), nie als
+          horizontaler Block. Auf einer eigenen Seite kreditiert die Seite. */}
+      <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
       <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2, marginBottom: 12 }}>
         EE-Ampel · Strommix Deutschland
       </div>
@@ -156,43 +171,18 @@ export default function EeAmpelWidget() {
       </div>
 
       <div style={{ marginTop: 12 }}>
-        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
-        {/* Data-source credit — always shown, independent of the branding flag. */}
-        <div style={{ fontSize: 10.5, color: "var(--widget-muted)", marginBottom: 6 }}>
-          <DataSourceNote source={DATA_SOURCES.energyCharts} />
-        </div>
-        <div
-          style={{
-            fontSize: 10.5,
-            color: "var(--widget-muted)",
-            display: "flex",
-            justifyContent: showBranding ? "space-between" : "flex-end",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          {showBranding && <PoweredBy />}
-          <ChartActionBar
-            variant="menu"
-            menuUp
-            showDownload={false}
-            size={28}
-            onDownload={() => {}}
-            onCopyLink={() => navigator.clipboard?.writeText(`${SHARE_TEXT}\n${SHARE_URL}`).catch(() => {})}
-            onWhatsApp={() =>
-              window.open(`https://wa.me/?text=${encodeURIComponent(`${SHARE_TEXT}\n${SHARE_URL}`)}`, "_blank")
-            }
-            onTwitter={() =>
-              window.open(
-                `https://twitter.com/intent/tweet?text=${encodeURIComponent(SHARE_TEXT)}&url=${encodeURIComponent(SHARE_URL)}`,
-                "_blank",
-              )
-            }
-            onEmbed={showEmbed ? () => window.open("/energie-widgets#ee-ampel", "_blank", "noopener") : undefined}
-            isExporting={false}
-            canNativeShare={false}
-          />
-        </div>
+        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2 }} />
+        {/* Fußzeile aus dem geteilten Baustein: nächster Schritt, Aktionen
+            (inkl. „Zitieren"), Marke. Klein → ⋯-Menü statt Knopfreihe. */}
+        <WidgetFooter
+          widget={WIDGET}
+          chartExport={actions}
+          share={settings.share}
+          branding={settings.branding}
+          showEmbed={settings.embed}
+          onsite={settings.onsite}
+          compact
+        />
       </div>
     </div>
   );

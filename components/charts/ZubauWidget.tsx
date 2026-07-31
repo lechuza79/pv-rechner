@@ -18,16 +18,17 @@
  */
 
 import { useState } from "react";
-import { v } from "../../lib/theme";
-import { PoweredBy, DataSourceNote } from "../PoweredBy";
-import ChartActionBar from "../ChartActionBar";
-import { DATA_SOURCES, sourceLabel, type DataSource } from "../../lib/data-sources";
+import { v, tokens } from "../../lib/theme";
+import { sourceLabel, type DataSource } from "../../lib/data-sources";
+import { WIDGETS } from "../../lib/widget-registry";
 import { useChartExport } from "../../lib/useChartExport";
+import { ExportBox, ExportNotesProvider, WidgetExportFooter, WidgetFooter, WidgetSourceEdge } from "../WidgetExport";
 import ZubauTimelineChart from "./ZubauTimelineChart";
 import EventTimeline, { TimelineEvent } from "./EventTimeline";
 import type { NationalSolarSeries } from "../../lib/mastr-data";
 import { FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES } from "../../lib/feedin-history";
 import { PRICE_YEARS, PRICE_HOUSEHOLD } from "../../lib/strommix-history";
+import { EEG_REFORM_STAND, eegDatum } from "../../lib/eeg-reform-config";
 
 // Kuratierte politische Weichenstellungen (historische Fakten). Reihenfolge =
 // Nummerierung in der Timeline. 2027 ist Ausblick (außerhalb der Datenachse) und
@@ -81,23 +82,25 @@ export const ZUBAU_EVENTS: TimelineEvent[] = [
   {
     year: 2027,
     label: "EEG-Reform (geplant)",
-    text: "Ein Referentenentwurf sieht vor, die feste Einspeisevergütung für Neuanlagen ab 2027 durch marktnähere Modelle (verpflichtende Direktvermarktung) zu ersetzen. Noch nicht beschlossen. Für heute installierte Anlagen gilt Bestandsschutz — die 20-jährige Vergütungsgarantie bleibt.",
+    text: `Die feste Einspeisevergütung soll für Neuanlagen ab 2027 durch marktnähere Modelle (verpflichtende Direktvermarktung) ersetzt werden. Das Kabinett hat den Gesetzentwurf am ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} beschlossen — Gesetz ist er noch nicht, der Bundestag muss noch entscheiden und der Bundesrat ist am Verfahren beteiligt. Für heute installierte Anlagen gilt Bestandsschutz: die 20-jährige Vergütungsgarantie bleibt.`,
     planned: true,
-    government: "Schwarz-rote Koalition (CDU/CSU/SPD), Kanzler Merz — Referentenentwurf aus dem Wirtschaftsministerium (Katharina Reiche, CDU), abgestimmt mit Umweltminister Carsten Schneider (SPD).",
+    government: "Schwarz-rote Koalition (CDU/CSU/SPD), Kanzler Merz — Gesetzentwurf aus dem Wirtschaftsministerium (Katharina Reiche, CDU), abgestimmt mit Umweltminister Carsten Schneider (SPD).",
   },
 ];
 
 /** Jahre der einschneidenden Wendepunkte — im Chart als gepunktete Vertikale. */
 export const ZUBAU_MILESTONE_YEARS: number[] = ZUBAU_EVENTS.filter((e) => e.major).map((e) => e.year);
 
-export const ZUBAU_WIDGET_SOURCES: DataSource[] = [DATA_SOURCES.mastr, DATA_SOURCES.eegVerguetung, DATA_SOURCES.eurostat];
-export const ZUBAU_EMBED_HASH = "pv-zubau-deutschland";
+// Quellen NICHT zweitgelistet: der Artikel-Fuß zitiert dieselben Einträge wie
+// das Widget, sonst driften Seite und Bild auseinander.
+export const ZUBAU_WIDGET_SOURCES: DataSource[] = WIDGETS.pvZubau.sources;
+export const ZUBAU_EMBED_HASH = WIDGETS.pvZubau.id;
 
-const WIDGET_TITLE = "Photovoltaik-Zubau in Deutschland";
+// Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
+// Register — ein Eintrag speist Fußzeile, Quellen-Kante und Bild-Fuß.
+const WIDGET = WIDGETS.pvZubau;
+const WIDGET_TITLE = WIDGET.title;
 const WIDGET_SUBLINE = "Zubau pro Jahr, Einspeisevergütung & Strompreis seit 2000";
-const LIVE_URL = "https://solar-check.io/photovoltaik-zubau-deutschland";
-const SHARE_TEXT =
-  "Wie Förderung den Solarausbau in Deutschland geformt hat – Zubau, Einspeisevergütung & Strompreis seit 2000";
 
 /** Werte einer Jahresreihe auf die Zielachse legen (null wo keine Zahl). */
 function alignToYears(targetYears: number[], srcYears: number[], srcValues: number[]): (number | null)[] {
@@ -142,6 +145,8 @@ export default function ZubauWidget({
   variant = "page",
   showEmbed = true,
   branding = false,
+  share = true,
+  onsite,
 }: {
   series: NationalSolarSeries;
   variant?: "page" | "embed";
@@ -149,10 +154,21 @@ export default function ZubauWidget({
   showEmbed?: boolean;
   /** „Powered by" zeigen (Embed: an, eigene Seite: aus). */
   branding?: boolean;
+  /** Teilen-Aktionen zeigen (Einbettende können sie per share=0 abwählen). */
+  share?: boolean;
+  /**
+   * First-Party-Embed: die umgebende Seite trägt Marke und Quelle. Ohne Angabe
+   * folgt es der Darstellungsart — im Artikel (variant="page") ist es immer der
+   * Fall. Als eigener Schalter, damit der URL-Parameter `onsite=1` auch im
+   * iframe wirkt; vorher hing das allein an der Darstellungsart und der
+   * Parameter lief ins Leere.
+   */
+  onsite?: boolean;
 }) {
   const [active, setActive] = useState(0);
   const { years, additionsGw, partial, future, feedIn, price } = prepareZubauData(series);
   const isEmbed = variant === "embed";
+  const isOnsite = onsite ?? !isEmbed;
 
   const chartExport = useChartExport({
     context: {
@@ -161,94 +177,90 @@ export default function ZubauWidget({
       source: ZUBAU_WIDGET_SOURCES.map(sourceLabel).join(" · "),
     },
     filename: "solar-check-pv-zubau-deutschland",
-    shareText: SHARE_TEXT,
-    shareUrl: LIVE_URL,
+    shareText: WIDGET.shareText,
+    shareUrl: WIDGET.shareUrl,
     mode: "node",
   });
 
-  const copyLink = () =>
-    navigator.clipboard?.writeText(`${SHARE_TEXT}\n${LIVE_URL}`).catch(() => {});
-
-  // Volle Quelle für den title-Tooltip + Bild-Export; kompakte Kurzform (ohne
-  // Klammer-Zusätze) für das schlanke vertikale Label an der rechten Kante.
-  const fullSource = ZUBAU_WIDGET_SOURCES.map(sourceLabel).join(" · ");
-  const compactSource = ZUBAU_WIDGET_SOURCES.map(
-    (s) => `${s.name.replace(/\s*\([^)]*\)/g, "")}${s.license ? `, ${s.license}` : ""}`,
-  ).join(" · ");
-
   return (
-    <div ref={chartExport.chartRef} style={S.frame}>
-      {/* Titel/Label — im Embed sichtbar, auf der Seite nur im Bild-Export. */}
-      <div
-        data-sc-export-only={isEmbed ? undefined : "block"}
-        style={{ ...S.header, ...(isEmbed ? null : { display: "none" }) }}
-      >
-        <div style={S.title}>{WIDGET_TITLE}</div>
-        <div style={S.sub}>{WIDGET_SUBLINE}</div>
-      </div>
-
-      {/* Chart + Timeline; im Embed steht die Quelle vertikal schlank an der
-          rechten Kante (Konvention — nie als horizontaler Block). Aus dem
-          Bild-Export ausgenommen; der Export-Fuß trägt die volle Quelle. */}
-      <div style={{ position: "relative", ...(isEmbed ? { paddingRight: 16 } : null) }}>
-        {isEmbed && (
-          <div data-sc-export-ignore="" title={`Quelle: ${fullSource}`} style={S.vsource}>
-            Quelle: {compactSource}
-          </div>
-        )}
-        <ZubauTimelineChart
-          years={years}
-          additionsGw={additionsGw}
-          partial={partial}
-          future={future}
-          feedIn={feedIn}
-          price={price}
-          milestoneYears={ZUBAU_MILESTONE_YEARS}
-          height={420}
-        />
-        <div style={{ marginTop: 6 }}>
-          <EventTimeline
-            events={ZUBAU_EVENTS}
-            active={active}
-            onChange={setActive}
-            startYear={years[0]}
-            endYear={years[years.length - 1]}
-          />
-        </div>
-      </div>
-
-      <div style={S.footer}>
-        <div style={S.rule} />
+    // Provider um die ganze Karte: Der Bild-Fuß darunter zeigt die Hilfetexte
+    // der „?"-Knöpfe. Ohne ihn verschwände der erste hier eingebaute Tooltip
+    // lautlos aus dem Bild — deshalb erzwingt der Wächter ihn neben jedem
+    // WidgetExportFooter (lib/__tests__/widget-konventionen.test.ts).
+    <ExportNotesProvider>
+      <div ref={chartExport.chartRef} style={S.frame}>
+        {/* Titel/Label — im Embed sichtbar, auf der Seite nur im Bild-Export. */}
         <div
-          data-sc-export-ignore=""
-          style={{ ...S.actions, justifyContent: isEmbed && branding ? "space-between" : "flex-end" }}
+          data-sc-export-only={isEmbed ? undefined : "block"}
+          style={{ ...S.header, ...(isEmbed ? null : { display: "none" }) }}
         >
-          {isEmbed && branding && <PoweredBy />}
-          <ChartActionBar
-            variant="bar"
-            size={30}
-            onDownload={chartExport.downloadPng}
-            onCopyLink={copyLink}
-            onWhatsApp={chartExport.shareWhatsApp}
-            onTwitter={chartExport.shareTwitter}
-            onShareImage={chartExport.sharePng}
-            onEmbed={
-              showEmbed
-                ? () => window.open(`/energie-widgets#${ZUBAU_EMBED_HASH}`, "_blank", "noopener")
-                : undefined
-            }
-            isExporting={chartExport.isExporting}
-            canNativeShare={chartExport.canNativeShare}
-          />
+          <div style={S.title}>{WIDGET_TITLE}</div>
+          <div style={S.sub}>{WIDGET_SUBLINE}</div>
         </div>
 
-        {/* Nur im Bild-Export sichtbar: volle Quelle (+ Marke) fest ins PNG. */}
-        <div data-sc-export-only="flex" style={S.exportFoot}>
-          <DataSourceNote source={ZUBAU_WIDGET_SOURCES} plain />
-          <PoweredBy />
+        {/* Chart + Timeline; im Embed steht die Quelle vertikal schlank an der
+            rechten Kante (Konvention — nie als horizontaler Block). Aus dem
+            Bild-Export ausgenommen; der Export-Fuß trägt die volle Quelle. */}
+        <div style={{ position: "relative", ...(isEmbed ? { paddingRight: 16 } : null) }}>
+          {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Im Artikel
+              trägt der Seitenfuß die Quelle — dort bleibt das Widget ruhig. */}
+          <WidgetSourceEdge widget={WIDGET} visible={isEmbed && !isOnsite} />
+          <ExportBox>
+            <ZubauTimelineChart
+              years={years}
+              additionsGw={additionsGw}
+              partial={partial}
+              future={future}
+              feedIn={feedIn}
+              price={price}
+              milestoneYears={ZUBAU_MILESTONE_YEARS}
+              height={420}
+            />
+          </ExportBox>
+          {/* Die Zeitleiste ist reine Bedienung — im Bild wären die Punkte und
+              Blätter-Pfeile tote Knöpfe. Der Text des aktiven Ereignisses bleibt
+              über die eigene Export-Markierung in EventTimeline erhalten. */}
+          <div style={{ marginTop: 6 }}>
+            <EventTimeline
+              events={ZUBAU_EVENTS}
+              active={active}
+              onChange={setActive}
+              startYear={years[0]}
+              endYear={years[years.length - 1]}
+            />
+          </div>
+        </div>
+
+        <div>
+          {/* Sichtbare Fußzeile aus dem geteilten Baustein. Im Artikel (variant
+              "page") entfällt der nächste Schritt: er führte auf genau die Seite,
+              auf der das Widget schon steht. */}
+          <WidgetFooter
+            widget={WIDGET}
+            chartExport={chartExport}
+            onsite={isOnsite}
+            branding={branding}
+            share={share}
+            showCta={isEmbed && !isOnsite}
+            showEmbed={showEmbed}
+          />
+
+          {/* Nur im Bild: Legende (drei Reihen auf zwei Achsen — ohne sie ist das
+              Bild nicht lesbar), Erläuterung, Datenquelle + Marke. */}
+          <WidgetExportFooter
+            widget={WIDGET}
+            legend={[
+              { color: tokens["--color-accent"], label: "Zubau pro Jahr (GWp, linke Achse)", shape: "box" },
+              { color: tokens["--color-positive"], label: "Einspeisevergütung (ct/kWh, rechte Achse)" },
+              { color: tokens["--color-text-secondary"], label: "Haushaltsstrompreis (ct/kWh, rechte Achse)" },
+            ]}
+            // Die Zeitleiste zeigt im Bild nur EIN Ereignis — ohne diese Zeile
+            // bleiben die Punkte davor und danach unerklärt.
+            note={`Ereignis ${active + 1} von ${ZUBAU_EVENTS.length} der Zeitleiste (${ZUBAU_EVENTS[active].year} · ${ZUBAU_EVENTS[active].label}); die übrigen Wendepunkte stehen interaktiv auf solar-check.io. Der hell eingefärbte letzte Balken ist das laufende Jahr und damit noch unvollständig.`}
+          />
         </div>
       </div>
-    </div>
+    </ExportNotesProvider>
   );
 }
 
@@ -267,37 +279,4 @@ const S: Record<string, React.CSSProperties> = {
   header: { marginBottom: 10 },
   title: { fontSize: 17, fontWeight: 800, letterSpacing: "-0.01em", margin: "0 0 3px", lineHeight: 1.25, color: v("--color-text-primary") },
   sub: { fontSize: 12.5, color: v("--color-text-muted"), margin: 0, lineHeight: 1.4 },
-  // Quelle vertikal an der rechten Kante — schlank, mit vollem Text im title-
-  // Tooltip; Umbruch erlaubt (mehrere Spalten bei mehreren Quellen).
-  vsource: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    right: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    writingMode: "vertical-rl",
-    transform: "rotate(180deg)",
-    maxHeight: "100%",
-    fontSize: 9,
-    lineHeight: 1.4,
-    letterSpacing: 0.2,
-    color: v("--color-text-faint"),
-    textAlign: "center",
-    pointerEvents: "none",
-  },
-  footer: { marginTop: 12 },
-  rule: { height: 1, background: v("--color-border"), opacity: 0.6, marginBottom: 8 },
-  actions: { display: "flex", alignItems: "center", gap: 8, fontSize: 10.5, color: v("--color-text-muted") },
-  exportFoot: {
-    display: "none",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 24,
-    marginTop: 8,
-    fontSize: 10.5,
-    color: v("--color-text-muted"),
-    lineHeight: 1.4,
-  },
 };

@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 import DonutChart from "../../../../components/charts/DonutChart";
-import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
+import {
+  ExportBox,
+  ExportNotesProvider,
+  WidgetExportFooter,
+  WidgetFooter,
+  WidgetSourceEdge,
+} from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
+import { WIDGETS, WIDGET_MAX_WIDTH_COMPACT } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
 import {
   WIDGET_SETTINGS_DEFAULTS,
@@ -13,7 +19,9 @@ import {
 } from "../../../../lib/widget-settings";
 import type { StrommixYtd } from "../../../../lib/strommix-ytd";
 
-const SHARE_URL = "https://solar-check.io/atomstrom-import";
+// Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
+// Register — ein Eintrag speist Fußzeile, Quellen-Kante und Bild-Fuß.
+const WIDGET = WIDGETS.strommixAnteil;
 
 // Prozent-Formatierung nach Chart-Konvention: ab 10 % runden, sonst 1 Stelle,
 // unter 0,1 % zwei Stellen.
@@ -33,22 +41,26 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
     onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
 
+  // Abgeleitet, nicht doppelt gepflegt: der Register-Text plus die Live-Zahl.
+  // Ohne Daten bleibt es exakt der Register-Text.
+  const shareText = ytd
+    ? `${fmtPct(ytd.nuclearShare)} Kernenergie im deutschen Strommix ${ytd.year} (inkl. importiertem Atomstrom)`
+    : WIDGET.shareText;
+
   const chartExport = useChartExport({
     context: {
-      title: "Kernenergie im deutschen Strommix",
+      title: WIDGET.title,
       subtitle: ytd ? `${ytd.year} · inkl. importiertem Atomstrom` : undefined,
       source: sourceLabel(DATA_SOURCES.energyCharts),
     },
     filename: "solar-check-strommix-kernenergie.png",
-    shareText: ytd
-      ? `${fmtPct(ytd.nuclearShare)} Kernenergie im deutschen Strommix ${ytd.year} (inkl. importiertem Atomstrom)`
-      : "Kernenergie im deutschen Strommix",
-    shareUrl: SHARE_URL,
+    shareText,
+    shareUrl: WIDGET.shareUrl,
     mode: "node",
   });
 
   const copyLink = () => {
-    navigator.clipboard?.writeText(SHARE_URL).catch(() => {});
+    navigator.clipboard?.writeText(`${shareText}\n${WIDGET.shareUrl}`).catch(() => {});
   };
 
   const root: React.CSSProperties = {
@@ -59,6 +71,8 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
     borderRadius: "var(--widget-border-radius)",
     fontFamily: "var(--widget-font-family)",
     padding: 18,
+    maxWidth: WIDGET_MAX_WIDTH_COMPACT,
+    margin: "0 auto",
     boxSizing: "border-box",
     overflow: "hidden",
   };
@@ -79,152 +93,99 @@ export default function StrommixAnteilWidget({ ytd }: { ytd: StrommixYtd | null 
   }));
 
   return (
-    <div style={root} ref={chartExport.chartRef}>
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
-          Deutscher Strommix {ytd.year}
-        </div>
-        <div style={{ fontSize: 12, color: "var(--widget-muted)", marginTop: 2 }}>
-          inkl. importiertem Atomstrom
-        </div>
-      </div>
-
-      <div style={{ position: "relative", paddingRight: 18 }}>
-        {/* Source credit — web only, vertical along the right edge of the chart
-            area. Dropped from the export (it uses the horizontal print footer). */}
-        <div
-          data-sc-export-ignore=""
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            right: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            writingMode: "vertical-rl",
-            transform: "rotate(180deg)",
-            fontSize: 9,
-            lineHeight: 1,
-            letterSpacing: 0.2,
-            color: "var(--color-text-faint)",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-          }}
-        >
-          <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 24,
-          }}
-        >
-          <DonutChart segments={donutSegments} size={170}>
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 32,
-                fontWeight: 800,
-                lineHeight: 1,
-                letterSpacing: "-0.02em",
-                color: "var(--widget-fg)",
-              }}
-            >
-              {fmtPct(ytd.nuclearShare).replace(" %", "")}
-            </div>
-            <div style={{ fontSize: 12, color: "var(--widget-muted)", marginTop: 4 }}>
-              % Kernenergie
-            </div>
-          </DonutChart>
-
-          <div style={{ minWidth: 190 }}>
-            {ytd.segments.map((s) => (
-              <div
-                key={s.key}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "3px 0",
-                  fontSize: 13,
-                }}
-              >
-                <span style={{ width: 10, height: 10, borderRadius: 2, background: s.color, flexShrink: 0 }} />
-                <span style={{ flex: 1, color: "var(--widget-fg)" }}>{s.label}</span>
-                <span style={{ fontFamily: "var(--font-mono)", fontWeight: 700 }}>
-                  {fmtPct(s.share)}
-                </span>
-              </div>
-            ))}
+    // Provider um die ganze Karte: Der Bild-Fuß darunter zeigt die Hilfetexte
+    // der „?"-Knöpfe. Ohne ihn verschwände der erste hier eingebaute Tooltip
+    // lautlos aus dem Bild — deshalb erzwingt der Wächter ihn neben jedem
+    // WidgetExportFooter (lib/__tests__/widget-konventionen.test.ts).
+    <ExportNotesProvider>
+      <div style={root} ref={chartExport.chartRef}>
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
+            Deutscher Strommix {ytd.year}
+          </div>
+          <div style={{ fontSize: 12, color: "var(--widget-muted)", marginTop: 2 }}>
+            inkl. importiertem Atomstrom
           </div>
         </div>
 
-        <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--widget-muted)", textAlign: "center", marginTop: 16 }}>
-          Jahr bis dato ({ytd.weeks} Wochen): {twh(ytd.nuclearGwh)} TWh importierter
-          Atomstrom von {twh(ytd.totalGwh)} TWh gesamt. Rechnerischer Wert
-          (Grenzflüsse × Kernanteil der Nachbarn); heimische Kernkraft läuft seit
-          April 2023 nicht mehr.
-        </div>
-      </div>
+        <div style={{ position: "relative", paddingRight: 18 }}>
+          {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Auf einer
+              eigenen Seite (onsite) kreditiert die Seite zentral. */}
+          <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
+          <ExportBox
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 24,
+              // Der Kasten umschließt Ring + Legende, statt sich auf die volle
+              // Kartenbreite zu ziehen: sonst rahmt er vor allem Leere.
+              width: "fit-content",
+              margin: "0 auto",
+            }}
+          >
+            <DonutChart segments={donutSegments} size={170}>
+              <div
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: 32,
+                  fontWeight: 800,
+                  lineHeight: 1,
+                  letterSpacing: "-0.02em",
+                  color: "var(--widget-fg)",
+                }}
+              >
+                {fmtPct(ytd.nuclearShare).replace(" %", "")}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--widget-muted)", marginTop: 4 }}>
+                % Kernenergie
+              </div>
+            </DonutChart>
 
-      {/* Footer: divider (both) + web footer (page) + print footer (image). */}
-      <div style={{ marginTop: 12 }}>
-        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
-
-        {/* Web footer — dropped from the export image. Source is shown vertically
-            in the chart area (above); here only action bar + Powered-by. */}
-        <div data-sc-export-ignore="">
-          {(settings.branding || settings.share) && (
-            <div
-              style={{
-                fontSize: 10.5,
-                color: "var(--widget-muted)",
-                display: "flex",
-                justifyContent: settings.share ? "space-between" : "flex-end",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              {settings.share && (
-                <ChartActionBar
-                  onDownload={chartExport.downloadPng}
-                  onCopyLink={copyLink}
-                  onWhatsApp={chartExport.shareWhatsApp}
-                  onTwitter={chartExport.shareTwitter}
-                  onShareImage={chartExport.sharePng}
-                  onEmbed={
-                    settings.embed
-                      ? () => window.open("/energie-widgets#strommix-anteil", "_blank", "noopener")
-                      : undefined
-                  }
-                  isExporting={chartExport.isExporting}
-                  canNativeShare={chartExport.canNativeShare}
-                  size={30}
-                />
-              )}
-              {settings.branding && (
-                <span style={{ marginLeft: "auto", display: "inline-flex" }}>
-                  <PoweredBy />
-                </span>
-              )}
+            <div style={{ minWidth: 190 }}>
+              {ytd.segments.map((s) => (
+                <div
+                  key={s.key}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "3px 0",
+                    fontSize: 13,
+                  }}
+                >
+                  <span style={{ width: 10, height: 10, borderRadius: 2, background: s.color, flexShrink: 0 }} />
+                  <span style={{ flex: 1, color: "var(--widget-fg)" }}>{s.label}</span>
+                  <span style={{ fontFamily: "var(--font-mono)", fontWeight: 700 }}>
+                    {fmtPct(s.share)}
+                  </span>
+                </div>
+              ))}
             </div>
-          )}
+          </ExportBox>
+
+          <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--widget-muted)", textAlign: "center", marginTop: 16 }}>
+            Jahr bis dato ({ytd.weeks} Wochen): {twh(ytd.nuclearGwh)} TWh importierter
+            Atomstrom von {twh(ytd.totalGwh)} TWh gesamt. Rechnerischer Wert
+            (Grenzflüsse × Kernanteil der Nachbarn); heimische Kernkraft läuft seit
+            April 2023 nicht mehr.
+          </div>
         </div>
 
-        {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
-        <div
-          data-sc-export-only="flex"
-          style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", alignItems: "center", justifyContent: "space-between", gap: 32 }}
-        >
-          <DataSourceNote source={DATA_SOURCES.energyCharts} plain />
-          {settings.branding && <PoweredBy />}
-        </div>
+        {/* Sichtbare Fußzeile (nächster Schritt · Aktionen · Marke) und Bild-Fuß
+            (Datenquelle · Marke) — beide aus dem geteilten Baustein. */}
+        <WidgetFooter
+          widget={WIDGET}
+          chartExport={chartExport}
+          onCopyLink={copyLink}
+          share={settings.share}
+          branding={settings.branding}
+          showEmbed={settings.embed}
+          onsite={settings.onsite}
+        />
+        <WidgetExportFooter widget={WIDGET} branding={settings.branding} />
       </div>
-    </div>
+    </ExportNotesProvider>
   );
 }

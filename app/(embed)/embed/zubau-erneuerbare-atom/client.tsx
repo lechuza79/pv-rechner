@@ -2,8 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import LineChart, { type LineSeries } from "../../../../components/charts/LineChart";
-import ChartActionBar from "../../../../components/ChartActionBar";
-import { PoweredBy, DataSourceNote } from "../../../../components/PoweredBy";
+import {
+  ExportBox,
+  ExportNotesProvider,
+  ExportOnly,
+  WidgetExportFooter,
+  WidgetFooter,
+  WidgetSourceEdge,
+} from "../../../../components/WidgetExport";
 import { DATA_SOURCES, sourceLabel } from "../../../../lib/data-sources";
 import {
   IconChevronDown,
@@ -11,6 +17,7 @@ import {
   IconChevronRight,
 } from "../../../../components/Icons";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
+import { WIDGETS, WIDGET_MAX_WIDTH } from "../../../../lib/widget-registry";
 import { useChartExport } from "../../../../lib/useChartExport";
 import { iconSizes } from "../../../../lib/theme";
 import {
@@ -22,7 +29,9 @@ import {
   YEARS_2010_2024,
 } from "../../../../lib/country-comparison";
 
-const SHARE_URL = "https://solar-check.io/laendervergleich";
+// Identität (Titel, Teilen-Ziel, Quellen, nächster Schritt) kommt aus dem
+// Register — ein Eintrag speist Fußzeile, Quellen-Kante und Bild-Fuß.
+const WIDGET = WIDGETS.zubauErneuerbareAtom;
 
 const byLabel = (label: string) =>
   ZUBAU_BY_COUNTRY.find((c) => c.label === label)!;
@@ -79,166 +88,120 @@ export default function ZubauWidget() {
   const view = VIEWS[idx];
   const { series, sub } = useMemo(() => seriesFor(view), [view]);
 
+  // Abgeleitet, nicht doppelt gepflegt: der Register-Titel plus das gewählte
+  // Land — ohne es teilt man ein Bild, dessen Bezug niemand kennt.
+  const shareText =
+    view.kind === "compare"
+      ? "Zubau Wind + Solar: Deutschland vs. China"
+      : `${WIDGET.title} — ${view.label}`;
+
   const chartExport = useChartExport({
     context: {
-      title: "Zubau: Erneuerbare vs. Atomkraft",
+      title: WIDGET.title,
       subtitle: view.kind === "compare" ? "Deutschland ↔ China" : `${view.flag} ${view.label}`,
       source: sourceLabel(DATA_SOURCES.ember),
     },
     filename: "solar-check-zubau-erneuerbare-atom.png",
-    shareText:
-      view.kind === "compare"
-        ? "Zubau Wind + Solar: Deutschland vs. China"
-        : `Zubau Erneuerbare vs. Atomkraft — ${view.label}`,
-    shareUrl: SHARE_URL,
+    shareText,
+    shareUrl: WIDGET.shareUrl,
     mode: "node",
   });
 
   const copyLink = () => {
-    navigator.clipboard?.writeText(SHARE_URL).catch(() => {});
+    navigator.clipboard?.writeText(`${shareText}\n${WIDGET.shareUrl}`).catch(() => {});
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        background: "var(--widget-bg)",
-        color: "var(--widget-fg)",
-        borderRadius: "var(--widget-border-radius)",
-        fontFamily: "var(--widget-font-family)",
-        padding: 18,
-        boxSizing: "border-box",
-        overflow: "hidden",
-      }}
-      ref={chartExport.chartRef}
-    >
-      {/* TopBar: Titel + Länder-Multitool */}
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 2 }}>
-        <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
-          Zubau: Erneuerbare vs. Atomkraft
-        </div>
-        <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
-          <CountryMultitool idx={idx} onChange={setIdx} />
-        </span>
-      </div>
-      <div style={{ fontSize: 12, color: "var(--widget-muted)", marginBottom: 12 }}>{sub}</div>
-
-      {/* KPIs: Zubau-Summe 2010–2024 — Kreis = Farbcode, Zahl neutral, geboxt */}
-      <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--widget-muted)", marginBottom: 6 }}>
-        Zubau gesamt 2010–2024
-      </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
-        {series.map((s) => (
-          <div
-            key={s.key}
-            style={{
-              border: "1px solid var(--color-border)",
-              borderRadius: "var(--radius-sm)",
-              padding: "8px 12px",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: `var(${s.colorToken})`, flexShrink: 0 }} />
-              <span style={{ fontSize: 11, color: "var(--widget-muted)" }}>
-                {(s.flag ? s.flag + " " : "") + s.label}
-              </span>
-            </div>
-            <div style={{ fontFamily: "var(--font-mono)", fontSize: 18, fontWeight: 800, lineHeight: 1, color: "var(--widget-fg)" }}>
-              {fmtGw(sum(s.values))}
-            </div>
+    // Provider um die ganze Karte: Der Bild-Fuß darunter zeigt die Hilfetexte
+    // der „?"-Knöpfe. Ohne ihn verschwände der erste hier eingebaute Tooltip
+    // lautlos aus dem Bild — deshalb erzwingt der Wächter ihn neben jedem
+    // WidgetExportFooter (lib/__tests__/widget-konventionen.test.ts).
+    <ExportNotesProvider>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          background: "var(--widget-bg)",
+          color: "var(--widget-fg)",
+          borderRadius: "var(--widget-border-radius)",
+          fontFamily: "var(--widget-font-family)",
+          padding: 18,
+          maxWidth: WIDGET_MAX_WIDTH,
+          margin: "0 auto",
+          boxSizing: "border-box",
+          overflow: "hidden",
+        }}
+        ref={chartExport.chartRef}
+      >
+        {/* TopBar: Titel + Länder-Multitool */}
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 2 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, letterSpacing: 0.2 }}>
+            Zubau: Erneuerbare vs. Atomkraft
           </div>
-        ))}
-      </div>
-
-      <div style={{ position: "relative", paddingRight: 18 }}>
-        {/* Source credit — web only, vertical along the right edge of the chart
-            area. Dropped from the export (it uses the horizontal print footer). */}
-        <div
-          data-sc-export-ignore=""
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            right: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            writingMode: "vertical-rl",
-            transform: "rotate(180deg)",
-            fontSize: 9,
-            lineHeight: 1,
-            letterSpacing: 0.2,
-            color: "var(--color-text-faint)",
-            whiteSpace: "nowrap",
-            pointerEvents: "none",
-          }}
-        >
-          <DataSourceNote source={DATA_SOURCES.ember} plain />
+          <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
+            <CountryMultitool idx={idx} onChange={setIdx} />
+          </span>
         </div>
-        <div key={view.id} style={{ animation: "sc-fade 0.35s ease" }}>
-          <LineChart years={YEARS_2010_2024} series={series} unit="GW" xDomain={[2010, 2024]} height={300} />
-        </div>
-        <div style={{ fontSize: 11, color: "var(--widget-muted)", marginTop: 2, paddingLeft: 48 }}>
-          Neu ans Netz gebrachte Leistung pro Jahr (GW, netto inkl. Rückbau). Negativ = mehr abgebaut als zugebaut.
-        </div>
-      </div>
+        {/* Im Bild ersetzt der Ländername den Wähler — ohne ihn zeigt das Bild
+            Zahlen, von denen niemand weiß, für welches Land sie gelten. */}
+        <ExportOnly style={{ fontSize: 13.5, fontWeight: 700, color: "var(--widget-fg)", marginTop: 2 }}>
+          {view.kind === "compare" ? "Deutschland ↔ China" : `${view.flag} ${view.label}`}
+        </ExportOnly>
+        <div style={{ fontSize: 12, color: "var(--widget-muted)", marginBottom: 12 }}>{sub}</div>
 
-      {/* Footer: divider (both) + web footer (page) + print footer (image). */}
-      <div style={{ marginTop: 12 }}>
-        <div style={{ height: 1, background: "var(--widget-muted)", opacity: 0.2, marginBottom: 8 }} />
-
-        {/* Web footer — dropped from the export image. Source is shown vertically
-            in the chart area (above); here only action bar + Powered-by. */}
-        <div data-sc-export-ignore="">
-          {(settings.branding || settings.share) && (
+        {/* KPIs: Zubau-Summe 2010–2024 — Kreis = Farbcode, Zahl neutral, geboxt */}
+        <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--widget-muted)", marginBottom: 6 }}>
+          Zubau gesamt 2010–2024
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
+          {series.map((s) => (
             <div
+              key={s.key}
               style={{
-                fontSize: 10.5,
-                color: "var(--widget-muted)",
-                display: "flex",
-                justifyContent: settings.share ? "space-between" : "flex-end",
-                alignItems: "center",
-                gap: 8,
+                border: "1px solid var(--color-border)",
+                borderRadius: "var(--radius-sm)",
+                padding: "8px 12px",
               }}
             >
-              {settings.share && (
-                <ChartActionBar
-                  onDownload={chartExport.downloadPng}
-                  onCopyLink={copyLink}
-                  onWhatsApp={chartExport.shareWhatsApp}
-                  onTwitter={chartExport.shareTwitter}
-                  onShareImage={chartExport.sharePng}
-                  onEmbed={
-                    settings.embed
-                      ? () => window.open("/energie-widgets#zubau-erneuerbare-atom", "_blank", "noopener")
-                      : undefined
-                  }
-                  isExporting={chartExport.isExporting}
-                  canNativeShare={chartExport.canNativeShare}
-                  size={30}
-                />
-              )}
-              {settings.branding && (
-                <span style={{ marginLeft: "auto", display: "inline-flex" }}>
-                  <PoweredBy />
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: `var(${s.colorToken})`, flexShrink: 0 }} />
+                <span style={{ fontSize: 11, color: "var(--widget-muted)" }}>
+                  {(s.flag ? s.flag + " " : "") + s.label}
                 </span>
-              )}
+              </div>
+              <div style={{ fontFamily: "var(--font-mono)", fontSize: 18, fontWeight: 800, lineHeight: 1, color: "var(--widget-fg)" }}>
+                {fmtGw(sum(s.values))}
+              </div>
             </div>
-          )}
+          ))}
         </div>
 
-        {/* Print-only footer — one row: source left (no underline) + Powered-by right. */}
-        <div
-          data-sc-export-only="flex"
-          style={{ display: "none", fontSize: 10.5, color: "var(--widget-muted)", alignItems: "center", justifyContent: "space-between", gap: 32 }}
-        >
-          <DataSourceNote source={DATA_SOURCES.ember} plain />
-          {settings.branding && <PoweredBy />}
+        <div style={{ position: "relative", paddingRight: 18 }}>
+          {/* Quelle vertikal an der rechten Kante (geteilter Baustein). Auf einer
+              eigenen Seite (onsite) kreditiert die Seite zentral. */}
+          <WidgetSourceEdge widget={WIDGET} visible={!settings.onsite} />
+          <ExportBox key={view.id} style={{ animation: "sc-fade 0.35s ease" }}>
+            <LineChart years={YEARS_2010_2024} series={series} unit="GW" xDomain={[2010, 2024]} height={300} />
+          </ExportBox>
+          <div style={{ fontSize: 11, color: "var(--widget-muted)", marginTop: 2, paddingLeft: 48 }}>
+            Neu ans Netz gebrachte Leistung pro Jahr (GW, netto inkl. Rückbau). Negativ = mehr abgebaut als zugebaut.
+          </div>
         </div>
+
+        {/* Sichtbare Fußzeile (nächster Schritt · Aktionen · Marke) und Bild-Fuß
+            (Datenquelle · Marke) — beide aus dem geteilten Baustein. */}
+        <WidgetFooter
+          widget={WIDGET}
+          chartExport={chartExport}
+          onCopyLink={copyLink}
+          share={settings.share}
+          branding={settings.branding}
+          showEmbed={settings.embed}
+          onsite={settings.onsite}
+        />
+        <WidgetExportFooter widget={WIDGET} branding={settings.branding} />
       </div>
-    </div>
+    </ExportNotesProvider>
   );
 }
 

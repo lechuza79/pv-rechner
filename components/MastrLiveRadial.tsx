@@ -3,8 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { v, iconSizes } from "../lib/theme";
 import InfoTooltip from "./InfoTooltip";
-import { PoweredBy, DataSourceNote } from "./PoweredBy";
-import { type DataSource } from "../lib/data-sources";
 
 type Energietraeger = "solar" | "wind" | "biomasse" | "wasser" | "speicher" | "gesamt";
 
@@ -144,15 +142,14 @@ export function MastrLiveRadial({
   installedKwp,
   traegerNav,
   size = "default",
-  branding = false,
-  dataSource = null,
   helpOverlay = null,
-  actions = null,
+  footer = null,
   onValue,
   unit = "GW",
   injected = null,
   highlightTs,
   bare = false,
+  exportFooter = null,
 }: {
   energietraeger: Energietraeger;
   installedKwp: number | null;
@@ -168,16 +165,23 @@ export function MastrLiveRadial({
   /** Chromeless: kein eigener Rahmen/Kopf/Branding-Footer — für die Einbettung
    *  in eine geteilte Widget-Hülle (Gemeinde-Seite), die den Rahmen zeichnet. */
   bare?: boolean;
-  /** Renders a small "Powered by Solar-Check.io" footer (for embeds). */
-  branding?: boolean;
-  /** Licence-required data-source credit(s) — always shown when set, not gated
-   * by `branding`. Pass an array when the view combines sources (e.g. live
-   * generation from Energy-Charts + installed capacity from the MaStR). */
-  dataSource?: DataSource | DataSource[] | null;
-  /** Optional action controls rendered in the branding footer (share/download/
-   * embed). Standard size: on the left, "Powered by" on the right. Compact:
-   * grouped on the right next to the help button. */
-  actions?: React.ReactNode;
+  /**
+   * Image-only footer (legend, help texts, source, brand). Belongs INSIDE the
+   * card so it sits on the card background — a footer added around the radial by
+   * the caller would land on the transparent area outside it. Passing one also
+   * drops the card's own web footer from the image: that one carries the
+   * on-screen wording, while an image needs the export wording and the
+   * kind-dependent invitation (see WidgetExportFooter).
+   */
+  exportFooter?: React.ReactNode;
+  /**
+   * Sichtbare Fußzeile der Karte — der geteilte Baustein `WidgetFooter`
+   * (nächster Schritt · Aktionen · Marke). Sie steht INNERHALB der Karte, damit
+   * sie auf dem Kartenhintergrund sitzt statt daneben auf der Fläche des
+   * Einbettenden. Quelle und Marke kommen aus dem Register, nicht von hier —
+   * deshalb hat das Radial dafür keine eigenen Schalter mehr.
+   */
+  footer?: React.ReactNode;
   /** Reports the current value in GW (settled, not animated) — used by the
    * embed widget to bake the value into the exported image. */
   onValue?: (gw: number | null) => void;
@@ -826,10 +830,8 @@ export function MastrLiveRadial({
         </div>
       </div>
 
-      {/* Compact: Help-Slot unten rechts (kein Auslastung-Footer in Compact).
-          Bei branding wandert der ?-Slot in den Branding-Footer (gleiche Zeile
-          wie "Powered by", damit nichts doppelt unten steht). */}
-      {isCompact && traegerNav?.after && !branding && (
+      {/* Compact: Help-Slot unten rechts (kein Auslastung-Footer in Compact). */}
+      {isCompact && traegerNav?.after && (
         <div
           data-sc-export-ignore=""
           style={{
@@ -860,7 +862,9 @@ export function MastrLiveRadial({
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
             Auslastung
             <span data-sc-export-ignore="" style={{ display: "inline-flex" }}>
-              <InfoTooltip ariaLabel="Was bedeutet Auslastung?" size={iconSizes.md}>
+              {/* Named, because this text is reprinted in the exported image,
+                  where it stands on its own without the row it explains. */}
+              <InfoTooltip title="Auslastung" ariaLabel="Was bedeutet Auslastung?" size={iconSizes.md}>
                 Anteil der gerade produzierten Leistung an der gesamten installierten
                 Leistung. Bei Solar tagsüber typisch 20–50 %, nachts 0 %.
               </InfoTooltip>
@@ -872,52 +876,9 @@ export function MastrLiveRadial({
         </div>
       )}
 
-      {!bare && dataSource && (
-        <div
-          style={{
-            marginTop: 10,
-            fontSize: 10,
-            color: v("--color-text-muted"),
-            letterSpacing: 0.2,
-            lineHeight: 1.4,
-          }}
-        >
-          <DataSourceNote source={dataSource} />
-        </div>
-      )}
+      {!bare && footer}
 
-      {!bare && (branding || actions || (isCompact && traegerNav?.after)) && (
-        <div
-          style={{
-            marginTop: dataSource ? 6 : 10,
-            fontSize: 10,
-            color: v("--color-text-muted"),
-            letterSpacing: 0.2,
-            display: "flex",
-            // branding gates only the "Powered by" line; actions/help stay.
-            justifyContent: isCompact
-              ? branding
-                ? "space-between"
-                : "flex-end"
-              : actions
-                ? branding
-                  ? "space-between"
-                  : "flex-start"
-                : "center",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          {actions && !isCompact && <span style={{ display: "flex" }}>{actions}</span>}
-          {branding && <PoweredBy />}
-          {isCompact && (traegerNav?.after || actions) && (
-            <span data-sc-export-ignore="" style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              {traegerNav?.after}
-              {actions}
-            </span>
-          )}
-        </div>
-      )}
+      {exportFooter}
           </div>
         </div>
 

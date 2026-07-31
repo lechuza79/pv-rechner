@@ -10,6 +10,12 @@ import { defineConfig, devices } from "@playwright/test";
 // behavior across browsers is dominated by the JS engine and we don't use any
 // vendor-prefixed features. Adding Firefox/WebKit triples runtime for marginal value.
 
+// Port is overridable (E2E_PORT): a second checkout — worktree, parallel
+// session — otherwise silently REUSES the dev server already listening on the
+// default port and tests someone else's code. That failure is invisible: the
+// run is green, just not about your changes.
+const E2E_PORT = process.env.E2E_PORT || "3045";
+
 export default defineConfig({
   testDir: "./e2e",
   // Alle Adressen einmal nacheinander aufrufen, bevor der erste Test startet.
@@ -26,7 +32,7 @@ export default defineConfig({
   reporter: process.env.CI ? "github" : "list",
 
   use: {
-    baseURL: "http://localhost:3045",
+    baseURL: `http://localhost:${E2E_PORT}`,
     trace: "on-first-retry",
     // Use a deterministic locale so toLocaleString() output matches assertions
     locale: "de-DE",
@@ -39,8 +45,8 @@ export default defineConfig({
 
   webServer: {
     // Dedicated port (3045) so this doesn't fight a manual dev server on 3000/3041
-    command: "next dev -p 3045",
-    url: "http://localhost:3045",
+    command: `next dev -p ${E2E_PORT}`,
+    url: `http://localhost:${E2E_PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

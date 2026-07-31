@@ -194,7 +194,7 @@ export default async function AtomstromImportPage() {
         </p>
 
         <AutoHeightIframe
-          src="/embed/strommix-anteil"
+          src="/embed/strommix-anteil?onsite=1"
           title="Kernenergie im deutschen Strommix"
           fallbackHeight={400}
         />
@@ -205,7 +205,7 @@ export default async function AtomstromImportPage() {
 
         <div style={S.section}>
           <AutoHeightIframe
-            src="/embed/zubau-erneuerbare-atom"
+            src="/embed/zubau-erneuerbare-atom?onsite=1"
             title="Zubau: Erneuerbare vs. Atomkraft"
             fallbackHeight={420}
           />
@@ -242,9 +242,14 @@ export default async function AtomstromImportPage() {
           Live-Verlauf im Strommix-Dashboard <IconArrowRight size={iconSizes.md} />
         </Link>
 
+        {/* Die eingebetteten Widgets laufen mit onsite=1 und schalten damit ihre
+            eigene Quellen-Kante ab — unter der Zusage, dass DIESE Zeile
+            kreditiert. Wer hier ein Widget ergänzt, ergänzt auch die Quelle:
+            Ember steht unter CC BY 4.0, die Namensnennung ist Bedingung. */}
         <p style={S.source}>
           Datenquelle: {sourceLabel(DATA_SOURCES.energyCharts)} — Grenzflüsse und nationale
-          Strommixe. Berechnung und Darstellung: Solar Check. Der Wert aktualisiert sich stündlich
+          Strommixe. {sourceLabel(DATA_SOURCES.ember)} — Zubau im Ländervergleich.
+          Berechnung und Darstellung: Solar Check. Der Wert aktualisiert sich stündlich
           und ist eine rechnerische Näherung, kein gemessener Importwert.
         </p>
       </div>

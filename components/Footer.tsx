@@ -53,6 +53,9 @@ const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
       { href: "/datenstand", label: "Datenstand" },
       { href: "/glossar", label: "Glossar" },
       { href: "/energie-widgets", label: "Widgets" },
+      // "Über uns" und "Presse" sind geparkt — die Seiten funktionieren weiter,
+      // werden aber nicht beworben, bis der Betreiber sie freigibt.
+      { href: "/lizenz", label: "Lizenz" },
       { href: "/kontakt", label: "Kontakt" },
       { href: "/impressum", label: "Impressum" },
       { href: "/datenschutz", label: "Datenschutz" },

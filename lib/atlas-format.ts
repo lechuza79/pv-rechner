@@ -43,6 +43,23 @@ export function pvLeistungTeile(kwp: number): Messwert {
 export const fmtPvLeistung = (kwp: number): string => zusammen(pvLeistungTeile(kwp));
 
 /**
+ * Installierte Leistung eines TECHNOLOGIE-MIX (Solar + Wind + Biomasse + Wasser).
+ *
+ * Bewusst kW/MW/GW ohne „p": „Peak" ist die Nennleistung von Solarmodulen unter
+ * Standard-Testbedingungen. Ein Windrad oder ein Biomasse-Block hat keine
+ * Peak-Leistung, deshalb wäre „MWp" über einer gemischten Summe eine stille
+ * Falschaussage — dieselbe Fehlerklasse wie kW statt kWp, nur andersherum.
+ *
+ * NICHT für reine Solar-Summen nehmen (dort pvLeistungTeile).
+ */
+export function mixLeistungTeile(kw: number): Messwert {
+  if (kw >= 1_000_000) return { value: dez(kw / 1_000_000, 1), unit: "GW" };
+  if (kw >= 1000) return { value: dez(kw / 1000, 1), unit: "MW" };
+  return { value: nf(kw), unit: "kW" };
+}
+export const fmtMixLeistung = (kw: number): string => zusammen(mixLeistungTeile(kw));
+
+/**
  * Installierte Photovoltaik je Einwohner.
  *
  * Auch das ist Peak-Leistung, nur geteilt durch die Einwohnerzahl — also Wp,

@@ -3,7 +3,8 @@
 import { v } from "../lib/theme";
 import DonutChart from "./charts/DonutChart";
 import GemeindeWidgetShell from "./atlas/GemeindeWidgetShell";
-import { DATA_SOURCES } from "../lib/data-sources";
+import { WIDGETS, widgetForPlace } from "../lib/widget-registry";
+import { pvLeistungTeile } from "../lib/atlas-format";
 import type { AnlagentypSegment } from "../lib/anlagentyp";
 
 export type { AnlagentypSegment } from "../lib/anlagentyp";
@@ -15,7 +16,6 @@ export type { AnlagentypSegment } from "../lib/anlagentyp";
 // relevante Differenzierung. Gleiche Shell + Donut wie das Gemeinde-Widget,
 // damit Land und Kommune visuell einheitlich sind.
 
-const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 // Anteil in Prozent (Chart-Konvention: ab 10 % runden, darunter 1 Stelle).
 function fmtPct(share: number): string {
   const s =
@@ -29,47 +29,46 @@ export default function RegionAnlagentypWidget({
   name,
   segments,
   liveUrl,
-  showSource = true,
+  onsite = false,
+  share = true,
   showEmbed = true,
-  branding = false,
+  branding = true,
 }: {
   name: string;
   segments: AnlagentypSegment[];
   liveUrl: string;
-  showSource?: boolean;
+  /** First-party embed auf einer eigenen Seite: Quelle erst beim Überfahren,
+   *  keine Markenzeile (die Seite trägt beides). */
+  onsite?: boolean;
+  /** Aktionsleiste zeigen (Einbettende können sie über share=0 abwählen). */
+  share?: boolean;
   showEmbed?: boolean;
   branding?: boolean;
 }) {
   const rows = segments.filter((t) => t.kwp > 0).sort((a, b) => b.kwp - a.kwp);
   const total = rows.reduce((s, t) => s + t.kwp, 0);
-  const totalMW = total >= 1000;
-  const totalGW = total >= 1_000_000;
-  const totalValue = totalGW
-    ? (total / 1_000_000).toLocaleString("de-DE", { maximumFractionDigits: 1 })
-    : totalMW
-      ? (total / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })
-      : nf(total);
-  const unit = totalGW ? "GW" : totalMW ? "MW" : "kW";
+  // Reine Photovoltaik-Nennleistung — also kWp/MWp/GWp aus der einen Quelle,
+  // nicht kW: die Zahl ist Peak-Leistung, keine Momentanleistung. Zahl und
+  // Einheit getrennt, weil der Wert hier groß in der Donut-Mitte steht.
+  const { value: totalValue, unit } = pvLeistungTeile(total);
 
-  const shareText = `Solarleistung in ${name} nach Anlagentyp: ${totalValue} ${unit} installiert – Solar Check`;
+  const widget = widgetForPlace(WIDGETS.regionAnlagentyp, name, liveUrl);
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
   return (
     <GemeindeWidgetShell
-      title={`Installierte Leistung nach Anlagentyp`}
-      subline={`Solaranlagen in ${name} — private Dächer, Gewerbe und Freifläche`}
-      sources={DATA_SOURCES.mastr}
-      shareText={shareText}
-      shareUrl={liveUrl}
+      widget={widget}
+      subline="Installierte Leistung nach Anlagentyp — private Dächer, Gewerbe und Freifläche"
       filename={`solar-check-anlagentyp-${slug}.png`}
-      embedHash="region-anlagentyp"
-      showSource={showSource}
+      onsite={onsite}
+      share={share}
       showEmbed={showEmbed}
       branding={branding}
     >
       {rows.length === 0 ? (
         <p style={S.empty}>Für {name} ist kein Anlagenbestand erfasst.</p>
       ) : (
+        <>
         <div style={S.split}>
           <DonutChart
             segments={rows.map((t) => ({ key: t.key, label: t.label, color: t.color, value: t.kwp }))}
@@ -91,6 +90,16 @@ export default function RegionAnlagentypWidget({
             ))}
           </div>
         </div>
+        {/* Der Wert in der Mitte ist die Summe DIESER drei Typen — nicht der
+            gesamte Solarbestand. Balkonkraftwerke und Anlagen ohne Typ-Zuordnung
+            fehlen darin (deshalb liegt die Zahl leicht unter der Landes-Leistung
+            weiter unten auf der Seite). Weggelassenes gehört sichtbar an die
+            Zahl, nicht in einen Code-Kommentar. */}
+        <p style={S.note}>
+          Summe dieser drei Anlagentypen. Balkonkraftwerke und Anlagen ohne Typ-Zuordnung
+          sind nicht mitgezählt.
+        </p>
+        </>
       )}
     </GemeindeWidgetShell>
   );
@@ -107,4 +116,5 @@ const S: Record<string, React.CSSProperties> = {
   dot: { width: 10, height: 10, borderRadius: 3, flex: "0 0 auto" },
   legLabel: { color: v("--color-text-primary") },
   legVal: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-secondary") },
+  note: { fontSize: 11.5, color: v("--color-text-muted"), lineHeight: 1.5, margin: "14px 0 0", textAlign: "center" },
 };

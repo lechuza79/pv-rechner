@@ -104,7 +104,7 @@ export default function LaendervergleichClient() {
 
         <div style={{ marginTop: 26 }}>
           <AutoHeightIframe
-            src="/embed/zubau-erneuerbare-atom"
+            src="/embed/zubau-erneuerbare-atom?onsite=1"
             title="Zubau: Erneuerbare vs. Atomkraft"
             fallbackHeight={420}
           />

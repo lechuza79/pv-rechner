@@ -508,7 +508,10 @@ export const globalStyles = `
      überläuft (die Suche rutscht dann in die nächste Zeile). */
   .mastr-mapbar{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;margin-top:12px;min-width:0;flex-wrap:wrap}
   .mastr-hero-grid{display:grid;grid-template-columns:minmax(0,430px) 300px;gap:48px;align-items:start;justify-content:center}
-  .mastr-hero-aside{display:grid;gap:12px}
+  /* minmax(0,1fr): sonst wird die Spur so breit wie ihr breitestes Kind, und das
+     Live-Radial (Mindestbreite 280px) drückt die Spalte über ihren Platz hinaus.
+     Mit Null-Untergrenze schrumpft stattdessen der Ring. */
+  .mastr-hero-aside{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
   .mastr-kpis{display:grid;gap:10px}
   /* Desktop: full-height map in its column. */
   .mastr-map-box{width:100%;height:640px}
@@ -526,6 +529,11 @@ export const globalStyles = `
     .mastr-hero-grid.has-breadcrumb .mastr-map-box{height:376px}
     .mastr-hero-grid.has-filter.has-breadcrumb .mastr-map-box{height:328px}
     .mastr-hero-aside .mastr-summary{order:-1}
+    /* Gestapelt bekommt das Live-Radial die volle Seitenbreite — der Ring wird
+       davon aber nicht größer, die Karte rahmt dann nur Leere. Also umschließt
+       sie hier ihren Inhalt und steht mittig. Im zweispaltigen Layout bleibt sie
+       spaltenbreit, damit sie mit den Kacheln darunter bündig ist. */
+    .mastr-live{width:fit-content;margin-inline:auto}
     .mastr-kpis{grid-template-columns:repeat(3,1fr);gap:8px}
     .mastr-kpis .kachel-tile{padding:10px}
     .mastr-kpis .kachel-value{font-size:15px !important;letter-spacing:-0.4px}

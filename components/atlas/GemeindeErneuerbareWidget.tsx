@@ -3,7 +3,7 @@
 import { v } from "../../lib/theme";
 import DonutChart from "../charts/DonutChart";
 import GemeindeWidgetShell from "./GemeindeWidgetShell";
-import { DATA_SOURCES } from "../../lib/data-sources";
+import { WIDGETS, widgetForPlace } from "../../lib/widget-registry";
 import { fmtSpeicherKwh } from "../../lib/atlas-format";
 
 // Einbettbares Widget: installierte erneuerbare Leistung nach Technologie je
@@ -38,17 +38,21 @@ export default function GemeindeErneuerbareWidget({
   generators,
   speicherKwh,
   liveUrl,
-  showSource = true,
+  onsite = false,
+  share = true,
   showEmbed = true,
-  branding = false,
+  branding = true,
 }: {
   name: string;
   solarKwp: number;
   generators: { wind: Gen; biomasse: Gen; wasser: Gen };
   speicherKwh: number;
   liveUrl: string;
-  /** Web-Quellenzeile zeigen. Embed: an. Atlas-Seite: aus (globaler Seitenfuß). */
-  showSource?: boolean;
+  /** First-party embed auf einer eigenen Seite: Quelle erst beim Überfahren,
+   *  keine Markenzeile (die Seite trägt beides). */
+  onsite?: boolean;
+  /** Aktionsleiste zeigen (Einbettende können sie über share=0 abwählen). */
+  share?: boolean;
   showEmbed?: boolean;
   branding?: boolean;
 }) {
@@ -70,19 +74,18 @@ export default function GemeindeErneuerbareWidget({
   const totalValue = totalMW ? (total / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 }) : nf(total);
   const unit = totalMW ? "MW" : "kW";
 
-  const shareText = `Erneuerbare Leistung in ${name}: ${totalValue} ${unit} installiert – Solar Check`;
+  // Ortsbezogene Fassung des Register-Eintrags: Titel, Teilen-Text und
+  // Teilen-Ziel tragen die Gemeinde, alles andere bleibt das Register.
+  const widget = widgetForPlace(WIDGETS.gemeindeErneuerbare, name, liveUrl);
   const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
   return (
     <GemeindeWidgetShell
-      title={`Erneuerbare Leistung in ${name}`}
+      widget={widget}
       subline="Installierte Leistung nach Technologie"
-      sources={DATA_SOURCES.mastr}
-      shareText={shareText}
-      shareUrl={liveUrl}
       filename={`solar-check-erneuerbare-${slug}.png`}
-      embedHash="gemeinde-erneuerbare"
-      showSource={showSource}
+      onsite={onsite}
+      share={share}
       showEmbed={showEmbed}
       branding={branding}
     >

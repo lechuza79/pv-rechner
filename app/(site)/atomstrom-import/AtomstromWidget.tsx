@@ -8,7 +8,7 @@ import AutoHeightIframe from "../../../components/AutoHeightIframe";
 export default function AtomstromWidget() {
   return (
     <AutoHeightIframe
-      src="/embed/strommix"
+      src="/embed/strommix?onsite=1"
       title="Strommix Deutschland mit Atomstrom-Import"
       fallbackHeight={460}
     />

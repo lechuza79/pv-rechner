@@ -67,22 +67,32 @@ export default function WidgetNutzungsbedingungenPage() {
 
         <h2 style={S.h2}>1. Kostenlose Nutzung</h2>
         <p style={S.p}>
-          Die Widgets dürfen kostenlos und ohne vorherige Anmeldung in
-          redaktionelle oder informative Inhalte eingebettet werden — etwa
-          Artikel, Ratgeberseiten oder Faktenboxen zum Thema Energie.
+          Die Widgets dürfen kostenlos und ohne vorherige Anmeldung eingebettet
+          werden — auf privaten, redaktionellen und gewerblichen Seiten, etwa in
+          Artikeln, Ratgeberseiten oder Faktenboxen zum Thema Energie.
+        </p>
+        <p style={S.p}>
+          Diese Seite regelt ausschließlich den technischen Betrieb der
+          eingebetteten Widgets. Unter welcher Lizenz die dargestellten Grafiken
+          und Texte stehen und wie die Namensnennung aussieht, steht
+          ausschließlich auf der{" "}
+          <Link href="/lizenz" style={S.a}>
+            Lizenzseite
+          </Link>
+          .
         </p>
 
         <h2 style={S.h2}>2. Quellenangabe bleibt sichtbar</h2>
         <p style={S.p}>
           Der im Widget-Code enthaltene Quellen-Link sowie der Hinweis
-          „Powered by solar-check.io" dürfen nicht entfernt, verdeckt oder
+          „Powered by solar-check.io“ dürfen nicht entfernt, verdeckt oder
           unkenntlich gemacht werden. Beides ist Teil des bereitgestellten
           Codes und muss unverändert sichtbar bleiben.
         </p>
 
         <h2 style={S.h2}>3. Keine Gewähr für die Daten</h2>
         <p style={S.p}>
-          Die im Widget dargestellten Daten werden „wie besehen" bereitgestellt
+          Die im Widget dargestellten Daten werden „wie besehen“ bereitgestellt
           — ohne Gewähr für Richtigkeit, Vollständigkeit, Aktualität oder
           ständige Verfügbarkeit. Eine Haftung ist ausgeschlossen, außer bei
           Vorsatz oder grober Fahrlässigkeit.
@@ -118,7 +128,7 @@ export default function WidgetNutzungsbedingungenPage() {
           <Link href="/energie-widgets" style={S.a}>
             Widget-Seite
           </Link>{" "}
-          im Abschnitt „Datenschutz beim Einbetten" — inklusive eines fertigen
+          im Abschnitt „Datenschutz beim Einbetten“ — inklusive eines fertigen
           Textbausteins zum Kopieren.
         </p>
       </div>

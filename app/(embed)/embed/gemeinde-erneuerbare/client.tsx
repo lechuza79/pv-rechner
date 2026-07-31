@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
 import GemeindeErneuerbareWidget from "../../../../components/atlas/GemeindeErneuerbareWidget";
+import { WIDGET_SETTINGS_DEFAULTS, type WidgetSettings } from "../../../../lib/widget-settings";
 
 type Gen = { count: number; kwp: number };
 
@@ -17,13 +18,9 @@ export type ErneuerbareEmbedProps = {
 
 /** Themebare Hülle für das Erneuerbaren-Mix-Widget im Embed-Kontext. */
 export default function GemeindeErneuerbareEmbed(props: ErneuerbareEmbedProps) {
-  const [showEmbed, setShowEmbed] = useState(true);
-  const [showBranding, setShowBranding] = useState(true);
+  const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
-    onSettings: (s) => {
-      if (typeof s.embed === "boolean") setShowEmbed(s.embed);
-      if (typeof s.branding === "boolean") setShowBranding(s.branding);
-    },
+    onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
 
   if (props.error || !props.name || !props.generators || !props.liveUrl) {
@@ -41,8 +38,10 @@ export default function GemeindeErneuerbareEmbed(props: ErneuerbareEmbedProps) {
       generators={props.generators}
       speicherKwh={props.speicherKwh ?? 0}
       liveUrl={props.liveUrl}
-      showEmbed={showEmbed}
-      branding={showBranding}
+      onsite={settings.onsite}
+      share={settings.share}
+      showEmbed={settings.embed}
+      branding={settings.branding}
     />
   );
 }

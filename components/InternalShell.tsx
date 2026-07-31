@@ -46,11 +46,16 @@ export default function InternalShell({
       ],
     });
     sections.push({
+      title: "Versorger",
+      links: [{ href: "/admin/versorger", label: "Stadtwerke" }],
+    });
+    sections.push({
       title: "System",
       links: [
         { href: "/admin", label: "Übersicht", exact: true },
         { href: "/admin/theme", label: "Signalfarben-Theming" },
         { href: "/admin/prices", label: "Marktpreise" },
+        { href: "/admin/charts", label: "Chart-Baukasten" },
         { href: "/admin/waechter", label: "Wächter-Berichte" },
       ],
     });

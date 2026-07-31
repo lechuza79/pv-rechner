@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { Pie } from "@visx/shape";
 import { Group } from "@visx/group";
+import { roundSvgPath } from "../../lib/svg-path";
 
 export interface DonutSegment {
   key: string;
@@ -48,13 +49,22 @@ export default function DonutChart({ segments, size = 200, children }: DonutChar
             pieSortValues={null}
           >
             {(pie) =>
-              pie.arcs.map((arc) => (
-                <path
-                  key={arc.data.key}
-                  d={pie.path(arc) || undefined}
-                  fill={arc.data.color}
-                />
-              ))
+              pie.arcs.map((arc) => {
+                // Gerundet, weil dieses Diagramm seine Daten als Props vom
+                // Server bekommt und damit serverseitig UND beim Hydrieren
+                // gerechnet wird. Die Bogen-Trigonometrie darf sich zwischen
+                // den beiden Engines im letzten Bit unterscheiden — ungerundet
+                // wird daraus ein Hydration-Mismatch. Begründung in
+                // lib/svg-path.ts.
+                const d = pie.path(arc);
+                return (
+                  <path
+                    key={arc.data.key}
+                    d={d ? roundSvgPath(d) : undefined}
+                    fill={arc.data.color}
+                  />
+                );
+              })
             }
           </Pie>
         </Group>

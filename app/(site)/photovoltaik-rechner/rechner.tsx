@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { useSharedPlz, readLocation } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
+import { eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, NO_PLZ_DEFAULT_YIELD, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
@@ -14,6 +15,7 @@ import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
 import GlossaryTerm from "../../../components/GlossaryTerm";
 import { calcExtraConsumption, calcEaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "../../../lib/consumption";
+import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 import { calcAircon } from "../../../lib/aircon";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
 import { useCoolingDegree } from "../../../lib/useCoolingDegree";
@@ -499,6 +501,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const chartExport = useChartExport({
     context: {
       title: "Amortisation",
+      kind: "tool",
       subtitle: `${kwp} kWp${spKwh > 0 ? ` · ${spKwh} kWh Speicher` : ""}`,
       stats: isResult ? [
         { label: "Amortisation", value: be ? `${be.i}` : ">25", unit: "Jahre" },
@@ -507,6 +510,19 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         { label: "Strompreis", value: oStrom.toLocaleString("de-DE"), unit: "€/kWh" },
       ] : undefined,
       legend: SCENARIOS.map(s => ({ color: s.color, label: s.label })),
+      // Was im Bild sonst fehlt: die Annahmen hinter der Kurve. Auf der Seite
+      // stehen sie editierbar im Hero, im PNG gäbe es sie sonst nirgends.
+      notes: isResult ? [
+        {
+          title: "Annahmen",
+          text: `${kwp} kWp${spKwh > 0 ? ` mit ${spKwh} kWh Speicher` : " ohne Speicher"} · Eigenverbrauch ${Math.round(effEv)} % · Strompreis ${oStrom.toLocaleString("de-DE")} €/kWh · ${YEARS} Jahre Laufzeit, 0,5 % Leistungsverlust pro Jahr.`,
+        },
+        {
+          title: "Szenarien",
+          text: "Die drei Kurven unterscheiden sich im angenommenen Strompreisanstieg (1 %, 3 % und 5 % pro Jahr) und im Eigenverbrauch (±5 Prozentpunkte).",
+        },
+      ] : undefined,
+      source: `${sourceLabel(DATA_SOURCES.pvgis)} (Standort-Ertrag) · Marktpreise taptaphome.com`,
     },
     filename: "solar-check-amortisation.png",
     shareText: `PV-Amortisation: ${kwp} kWp${spKwh > 0 ? ` + ${spKwh} kWh Speicher` : ""} – ${be ? `${be.i} Jahre` : ">25 Jahre"}`,
@@ -1162,7 +1178,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "10px 14px", marginBottom: 16,
                 border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.6,
               }}>
-                <strong style={{ fontWeight: 700 }}>Einspeisevergütung:</strong> für Inbetriebnahme bis Ende 2026 volle 20 Jahre garantiert (Bestandsschutz). Für Neuanlagen ab 2027 ist ein Wegfall geplant — beschlossen ist er noch nicht.{" "}
+                <strong style={{ fontWeight: 700 }}>Einspeisevergütung:</strong> für Inbetriebnahme bis Ende 2026 volle 20 Jahre garantiert (Bestandsschutz). Für Neuanlagen ab 2027 soll die feste Vergütung entfallen — {eegVerfahrenSatz({ kurz: true })}.{" "}
                 <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Was das für die Rechnung bedeutet →</Link>
               </div>
             )}

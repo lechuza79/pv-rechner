@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useWidgetTheme } from "../../../../lib/useWidgetTheme";
+import { WIDGET_SETTINGS_DEFAULTS, type WidgetSettings } from "../../../../lib/widget-settings";
 import RegionAnlagentypWidget, { type AnlagentypSegment } from "../../../../components/RegionAnlagentypWidget";
 
 export type RegionAnlagentypEmbedProps = {
@@ -13,13 +14,9 @@ export type RegionAnlagentypEmbedProps = {
 
 /** Themebare Hülle für das Bundesland-Anlagentyp-Widget im Embed-Kontext. */
 export default function RegionAnlagentypEmbed(props: RegionAnlagentypEmbedProps) {
-  const [showEmbed, setShowEmbed] = useState(true);
-  const [showBranding, setShowBranding] = useState(true);
+  const [settings, setSettings] = useState<WidgetSettings>(WIDGET_SETTINGS_DEFAULTS);
   useWidgetTheme({
-    onSettings: (s) => {
-      if (typeof s.embed === "boolean") setShowEmbed(s.embed);
-      if (typeof s.branding === "boolean") setShowBranding(s.branding);
-    },
+    onSettings: (partial) => setSettings((prev) => ({ ...prev, ...partial })),
   });
 
   if (props.error || !props.name || !props.liveUrl || !props.segments || props.segments.length === 0) {
@@ -35,8 +32,10 @@ export default function RegionAnlagentypEmbed(props: RegionAnlagentypEmbedProps)
       name={props.name}
       segments={props.segments}
       liveUrl={props.liveUrl}
-      showEmbed={showEmbed}
-      branding={showBranding}
+      onsite={settings.onsite}
+      share={settings.share}
+      showEmbed={settings.embed}
+      branding={settings.branding}
     />
   );
 }

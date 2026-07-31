@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Zubau-Zeitleiste: der jährliche PV-Zubau (Balken, GW/Jahr) mit zwei
+ * Zubau-Zeitleiste: der jährliche PV-Zubau (Balken, GWp/Jahr) mit zwei
  * überlagerten Markt-/Politik-Linien (Einspeisevergütung + Haushaltsstrompreis,
  * beide in ct/kWh auf einer geteilten rechten Achse). Die Ereignis-Marken leben
  * in der interaktiven EventTimeline direkt darunter (gleiche Plot-Ränder + Jahres-
@@ -20,7 +20,7 @@ import { curveMonotoneX } from "d3-shape";
 export interface ZubauTimelineProps {
   /** Jahre, lückenlos aufsteigend (Balken-Stützstellen). */
   years: number[];
-  /** Zubau je Jahr in GW, index-gleich zu years. */
+  /** Zubau je Jahr in GWp (Nennleistung, deshalb Peak), index-gleich zu years. */
   additionsGw: number[];
   /** true = laufendes/unvollständiges Jahr (wird ausgegraut dargestellt). */
   partial: boolean[];
@@ -408,7 +408,7 @@ function Tooltip({
         {year}
         {future ? " (geplant)" : partial ? " (läuft noch)" : ""}
       </div>
-      {row("Zubau", COLOR_BARS, future ? "noch kein Zubau" : `${gw.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GW`)}
+      {row("Zubau", COLOR_BARS, future ? "noch kein Zubau" : `${gw.toLocaleString("de-DE", { maximumFractionDigits: 1 })} GWp`)}
       {feedIn != null &&
         row("Vergütung", COLOR_FEEDIN, `${feedIn.toLocaleString("de-DE", { maximumFractionDigits: 1 })} ct`)}
       {price != null &&

@@ -5,7 +5,8 @@ import { v, space, pad } from "../../../../lib/theme";
 // Anzeigewerte kommen aus der EINEN Formatier-Funktion in lib/awards.ts. Die
 // frueheren Kopien hier und in awards/gruppe kannten das Format "je100Dach"
 // nicht — eine zweite Kopie eines Formatters ist ein Fehler, kein Duplikat.
-import { formatAwardValue, type MetricFormat, type Messart, type Traeger } from "../../../../lib/awards";
+import { formatAwardValue } from "../../../../lib/awards";
+import type { MetricFormat, Messart, Traeger } from "../../../../lib/awards";
 
 export type WinnerRow = {
   scopeId: string;
