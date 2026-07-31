@@ -57,10 +57,17 @@ describe("Realitäts-Anker: rechnet der Rechner einen Verbrauch, den es wirklich
   // Bänder für den END-ENERGIE-Verbrauch (das, was der Gaszähler zählt) in
   // kWh/m²·a, inklusive Warmwasser — also genau die Kennzahl, die ein Hausbesitzer
   // aus Jahresrechnung ÷ Wohnfläche selbst ausrechnen kann.
-  // Quellen: Sunikka-Blank/Galvin 2012 (gemessener Bestandsschnitt ~150 kWh/m²a bei
-  // 225 berechnet); Verbrauchsstatistik Einfamilienhaus: Bundesschnitt ~140–160
-  // inkl. Warmwasser, ungedämmte Altbauten der 50er/60er 160–200, moderne gut
-  // gedämmte Neubauten 60–100 kWh/m²·a.
+  // LEITQUELLE ist eine MESSUNG, keine Modellrechnung — und bewusst eine, die von
+  // der Prebound-Studie unabhängig ist: Techem Energiekennwerte-Studie 2019,
+  // ausgewertete Heizkostenabrechnungen aus rund 1,5 Mio. Wohnungen in knapp
+  // 120.000 Mehrfamilienhäusern. Witterungsbereinigter Raumwärmeverbrauch im
+  // Bestandsschnitt: 142 kWh/m²·a (Erdgas) bzw. 143,5 (Heizöl).
+  // Einordnung für Einfamilienhäuser: Sie liegen SPEZIFISCH HÖHER als der
+  // MFH-Schnitt (mehr Außenfläche je m² Wohnfläche), ein unsaniertes EFH also
+  // oberhalb von 142 — die Bänder unten tragen dem Rechnung.
+  // Gegenprobe aus der zweiten Richtung: Sunikka-Blank/Galvin 2012 messen im
+  // Mittel ~150 kWh/m²·a gemessen bei 225 kWh/m²·a berechnet.
+  // Die Bänder enthalten zusätzlich das Warmwasser (siehe qGes unten).
   const BAENDER: Record<string, [number, number]> = {
     "Unsaniert":   [140, 200],
     "Teilsaniert": [110, 170],
@@ -90,6 +97,22 @@ describe("Realitäts-Anker: rechnet der Rechner einen Verbrauch, den es wirklich
     const gasKwh = endenergieAusWaerme(qGes, CFG.gasEfficiency);
     expect(gasKwh).toBeLessThan(26000);
     expect(gasKwh).toBeGreaterThan(15000);  // und auch nicht unrealistisch niedrig
+  });
+
+  it("die mittleren Stufen umschließen den gemessenen Bestandsschnitt (142 kWh/m²·a)", () => {
+    // Techem 2019, 1,5 Mio. Wohnungen: 142 kWh/m²·a Raumwärme im Bestandsschnitt.
+    // Ein Rechner, dessen sämtliche Bestandsstufen ÜBER dem gemessenen Schnitt
+    // liegen, rechnet zu viel — genau das war der Zustand bis 31.07.2026
+    // (220/160/100 Norm-Bedarf, nur die beste Stufe darunter).
+    const raumwaerme = (i: number) =>
+      calcHeatDemand("bestand", WOHNFLAECHE, i, PERSONEN).qHeiz / WOHNFLAECHE;
+    const unsaniert = raumwaerme(0);
+    const teilsaniert = raumwaerme(1);
+    expect(unsaniert).toBeGreaterThan(142);      // schlechter als der Schnitt
+    expect(teilsaniert).toBeLessThan(142);        // besser als der Schnitt
+    // und der Abstand nach oben bleibt maßvoll: kein Altbau verbraucht doppelt so
+    // viel wie der Durchschnitt aller vermessenen Wohnungen.
+    expect(unsaniert).toBeLessThan(142 * 1.5);
   });
 
   it("bleibt über alle Stufen monoton fallend", () => {
