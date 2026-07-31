@@ -554,7 +554,11 @@ export default async function GemeindePage(props: { params: Promise<Params> }) {
         )}
 
         <div style={S.section}>
-          <GemeindeEmbedBox name={region.name} ags={region.region_id} />
+          <GemeindeEmbedBox
+            name={region.name}
+            ags={region.region_id}
+            pfad={`/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`}
+          />
         </div>
 
         <div style={S.disclaimer}>
