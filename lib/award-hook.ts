@@ -271,6 +271,18 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
 
 export type HookNames = { gemeinde: string; kreis: string; land: string };
 
+/**
+ * Kurzform des Gebiets fuer den BETREFF: "im Landkreis" statt "im Landkreis
+ * Musterkreis". Der Empfaenger sitzt in diesem Kreis — der Name kostet dort nur
+ * Zeichen, die im Postfach abgeschnitten werden. Das Bundesland bleibt benannt,
+ * weil "im Bundesland" nichts sagt.
+ */
+export function scopeKurz(level: HookLevel, n: HookNames): string {
+  if (level === "kreis") return "im Landkreis";
+  if (level === "land") return ortPhrase({ name: n.land, level: "bundesland" });
+  return "bundesweit";
+}
+
 export function scopeIn(level: HookLevel, n: HookNames): string {
   // Präposition aus lib/atlas-orte, nicht hier getippt: "im Region Hannover"
   // stand sonst im Anschreiben.
@@ -283,6 +295,7 @@ export function scopeIn(level: HookLevel, n: HookNames): string {
  *  keine Freitext-Interpolation von außen (Allowlist-Muster). */
 export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg: string } {
   const wo = hook.level ? scopeIn(hook.level, n) : "";
+  const woKurz = hook.level ? scopeKurz(hook.level, n) : "";
   // KEIN interner Titel nach außen (siehe `bestleistung` in lib/awards.ts):
   // „Erlenbach a.Main ist Speicher-Hauptstadt" sagt nicht, was gemessen wurde,
   // klingt bei 9.717 Einwohnern erfunden, und die Auszeichnung gibt es
@@ -290,8 +303,9 @@ export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg:
   // belegbar und ohne Erklärung verständlich.
   const cat = hook.categoryKey ? AWARD_CATEGORY_BY_KEY[hook.categoryKey] : null;
   const bestleistung = cat?.bestleistung ?? "den größten Solar-Ausbau";
-  const thema = cat?.thema ?? "Solar-Ausbau";
   const themaDativ = cat?.themaDativ ?? "Solar-Ausbau";
+  // Praepositionalphrase am Stueck — nie aus "bei" + Substantiv zusammengesetzt.
+  const phrase = cat?.betreffPhrase ?? `bei ${themaDativ}`;
   // "unter den Kleinen Gemeinden im Landkreis Miltenberg" — der Vergleich
   // gehoert in den Satz. Ohne ihn steht im Brief "Platz 3 von 34" und auf der
   // verlinkten Rangliste eine andere Zahl, weil die innerhalb der Groessenklasse
@@ -305,19 +319,31 @@ export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg:
         // Superlativ. Stünde beides gleich, läse sich der Brief wie ein
         // Textbaustein-Unfall — Betreff und Überschrift sagen dasselbe, nur
         // anders herum.
-        betreff: `${n.gemeinde} auf Platz 1 von ${hook.total} ${gruppe} bei ${themaDativ}`,
+        // KURZ. Die Einzelheiten — Groessenklasse, Gruppengroesse, Wert —
+        // stehen im Einstieg, wo Platz dafuer ist.
+        betreff: `${n.gemeinde} ${phrase} auf Platz 1 ${woKurz}`,
         einstieg: `${n.gemeinde} hat ${bestleistung} ${gruppe} — Platz 1 von ${hook.total}.`,
       };
     case "podium":
       return {
-        betreff: `${n.gemeinde} auf Platz ${hook.rank} von ${hook.total} ${gruppe} bei ${themaDativ}`,
-        einstieg: `${n.gemeinde} liegt bei ${thema} ${gruppe} auf Platz ${hook.rank} von ${hook.total}.`,
+        betreff: `${n.gemeinde} ${phrase} auf Platz ${hook.rank} ${woKurz}`,
+        // NACH "bei" DER DATIV, nicht `thema`: Der Einstieg sagte "liegt bei
+        // private Solarleistung" und "bei Balkonkraftwerke je 1.000 Einwohner" —
+        // genau der Fehler, vor dem `themaDativ` in lib/awards.ts warnt. Der
+        // bestehende Test prueft nur den Betreff, deshalb lief es lange mit.
+        einstieg: `${n.gemeinde} liegt bei ${themaDativ} ${gruppe} auf Platz ${hook.rank} von ${hook.total}.`,
       };
     case "perzentil": {
-      const pct = Math.max(1, Math.round((hook.percentile ?? 0.1) * 100));
+      // Gedeckelt: "unter den besten 118 %" ist keine Auszeichnung, sondern ein
+      // Rechenfehler auf dem Papier. Kann bei sauberen Daten nicht auftreten —
+      // die Klammer kostet nichts und faengt es trotzdem ab.
+      const pct = Math.min(99, Math.max(1, Math.round((hook.percentile ?? 0.1) * 100)));
       return {
-        betreff: `${n.gemeinde} unter den besten ${pct} % ${wo} bei ${themaDativ}`,
-        einstieg: `${n.gemeinde} liegt bei ${thema} ${wo} unter den besten ${pct} % — Platz ${hook.rank} von ${hook.total} Gemeinden.`,
+        betreff: `${n.gemeinde} ${phrase} unter den besten ${pct} % ${woKurz}`,
+        // "gehoert … zu den besten", nicht "liegt … unter den besten": Die
+        // Vergleichsgruppe beginnt schon mit "unter den Kleinen Gemeinden" —
+        // zweimal dieselbe Wendung im selben Satz stolpert beim Lesen.
+        einstieg: `${n.gemeinde} gehört bei ${themaDativ} ${gruppe} zu den besten ${pct} % — Platz ${hook.rank} von ${hook.total}.`,
       };
     }
     default:

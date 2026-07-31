@@ -125,6 +125,21 @@ export type AwardCategory = {
    * Solarleistung"), und ein Betreff ist das Erste, was ein Rathaus liest.
    */
   themaDativ: string;
+  /**
+   * KURZFORM FUER DEN BETREFF, als vollstaendige Praepositionalphrase:
+   * "bei Balkonkraftwerken", "beim Solar-Zubau in drei Jahren".
+   *
+   * MIT der Praeposition, nicht nur das Substantiv: "bei" und "beim" haengen am
+   * Wort dahinter, und deutsche Kasusbildung per Regel produziert zuverlaessig
+   * Murks (dieselbe Begruendung wie bei `themaDativ`). Wer nur das Substantiv
+   * speichert, baut sich die Falle wieder ein.
+   *
+   * WARUM KURZ: Der Betreff hatte 123 Zeichen ("… auf Platz 3 von 34 unter den
+   * Kleinen Gemeinden im Landkreis Musterkreis bei Balkonkraftwerken je 1.000
+   * Einwohner") — in jedem Postfach abgeschnitten. Die Einzelheiten (Klasse,
+   * Gruppengroesse, Wert) stehen im Einstiegssatz, wo Platz dafuer ist.
+   */
+  betreffPhrase?: string;
   traeger: Traeger;
   messart: Messart;
   format: MetricFormat;
@@ -230,6 +245,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   // Bürger, pro Kopf — verifiziert aussagekräftig (skaliert mit Haushalten).
   {
     key: "dach-privat-pk",
+    betreffPhrase: "bei privater Solarleistung",
     slug: "solarleistung-je-einwohner",
     label: "Solardach-Spitzenreiter",
     merit: "Meiste private Dach-Solarleistung je Einwohner.",
@@ -246,6 +262,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "balkon-pk",
+    betreffPhrase: "bei Balkonkraftwerken",
     slug: "balkonkraftwerke-je-einwohner",
     label: "Balkon-Pionier",
     merit: "Meiste Balkonkraftwerke je 1.000 Einwohner — die sauberste Bürgerzahl.",
@@ -261,6 +278,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "speicherquote",
+    betreffPhrase: "bei Speichern je Dach",
     slug: "speicher-je-dachanlage",
     label: "Speicher-Quote",
     merit: "Meiste Batteriespeicher je 100 private Dachanlagen.",
@@ -280,6 +298,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "batterie-privat-pk",
+    betreffPhrase: "bei Hausspeichern",
     slug: "speicherkapazitaet-je-einwohner",
     label: "Speicher-Vorreiter",
     merit: "Meiste private Batteriekapazität je Einwohner.",
@@ -301,6 +320,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   // angefangen hat. Je Einwohner zugebaute Leistung ist beides nicht.
   {
     key: "tempo-1j",
+    betreffPhrase: "beim Solar-Zubau im letzten Jahr",
     slug: "zubau-1-jahr-je-einwohner",
     label: "Tempo 1 Jahr",
     merit: "Meiste je Einwohner zugebaute Solarleistung im letzten vollen Jahr.",
@@ -315,6 +335,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "tempo-3j",
+    betreffPhrase: "beim Solar-Zubau in drei Jahren",
     slug: "zubau-3-jahre-je-einwohner",
     label: "Tempo 3 Jahre",
     merit: "Meiste je Einwohner zugebaute Solarleistung in den letzten drei Jahren.",
@@ -329,6 +350,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "tempo-5j",
+    betreffPhrase: "beim Solar-Zubau in fünf Jahren",
     slug: "zubau-5-jahre-je-einwohner",
     label: "Tempo 5 Jahre",
     merit: "Meiste je Einwohner zugebaute Solarleistung in den letzten fünf Jahren.",
@@ -344,6 +366,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   // Bürger, absolut — belohnt die großen Städte-Bürgerschaften.
   {
     key: "balkon-abs",
+    betreffPhrase: "bei Balkonkraftwerken",
     label: "Balkon-Hauptstadt",
     merit: "Meiste Balkonkraftwerke insgesamt.",
     bestleistung: "die meisten Balkonkraftwerke insgesamt",
@@ -356,6 +379,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "dach-privat-abs",
+    betreffPhrase: "bei privater Solarleistung",
     label: "Solardach-Hauptstadt",
     merit: "Meiste private Dach-Solarleistung insgesamt — Bürger-Solar auf den Dächern, kein Gewerbe/Park.",
     bestleistung: "die meiste private Solarleistung auf den Dächern",
@@ -368,6 +392,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "batterie-privat-abs",
+    betreffPhrase: "bei Hausspeichern",
     label: "Speicher-Hauptstadt",
     merit: "Meiste private Batteriekapazität insgesamt.",
     bestleistung: "die meiste private Speicherkapazität",
