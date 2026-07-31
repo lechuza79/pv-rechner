@@ -422,3 +422,30 @@ describe("Rangveränderung ist abschaltbar", () => {
     expect(ohne.every((r) => r.veraenderung === null && r.platzVorjahr === null)).toBe(true);
   });
 });
+
+describe("Zubau-Zeitraum heisst, was er misst", () => {
+  // DER FEHLER: "Zubau im letzten vollen Jahr" verglich den heutigen Bestand mit
+  // dem Stand Ende des Vorjahres — heute also Januar bis heute, sieben Monate.
+  // Am 1. Januar wären es null Tage und die Liste kürte einen zufälligen Ort.
+  // Die Zahl war richtig, ihr Name nicht.
+  const jetzt = new Date().getFullYear();
+
+  it("nennt das Stichjahr statt einer Zeitspanne", () => {
+    for (const [key, zurueck] of [["tempo-1j", 1], ["tempo-3j", 3], ["tempo-5j", 5]] as const) {
+      const cat = AWARD_CATEGORY_BY_KEY[key];
+      const texte = `${cat.thema} ${cat.themaDativ} ${cat.bestleistung} ${cat.merit} ${cat.betreffPhrase}`;
+      expect(texte, `${key} nennt das Stichjahr nicht`).toContain(String(jetzt - zurueck));
+      // Keine Spanne mehr behaupten, die nicht gemessen wird.
+      expect(texte, `${key} behauptet weiter eine Zeitspanne`).not.toMatch(
+        /letzten? (vollen? )?Jahr|drei Jahren?|fünf Jahren?|in \d+ Jahren/,
+      );
+    }
+  });
+
+  it("wächst mit dem Kalender mit — keine Jahreszahl im Code", () => {
+    // Sonst steht am 1. Januar überall die falsche Zahl.
+    const cat = AWARD_CATEGORY_BY_KEY["tempo-3j"];
+    expect(cat.thema).toContain(String(jetzt - 3));
+    expect(cat.thema).not.toContain(String(jetzt - 4));
+  });
+});

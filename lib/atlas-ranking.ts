@@ -220,10 +220,12 @@ const KURZ: Record<string, string> = {
   "solar-zubau": "Zubau gesamt",
 };
 
+// Beschriftung zur Laufzeit: Gemessen wird ab dem Ende eines Stichjahres, nicht
+// ueber "ein Jahr" — siehe seitEnde() in lib/awards.ts.
 const ZUBAU_ZEITRAEUME = [
-  { label: "1 Jahr", slug: "zubau-1-jahr-je-einwohner" },
-  { label: "3 Jahre", slug: "zubau-3-jahre-je-einwohner" },
-  { label: "5 Jahre", slug: "zubau-5-jahre-je-einwohner" },
+  { label: `seit ${new Date().getFullYear() - 1}`, slug: "zubau-1-jahr-je-einwohner" },
+  { label: `seit ${new Date().getFullYear() - 3}`, slug: "zubau-3-jahre-je-einwohner" },
+  { label: `seit ${new Date().getFullYear() - 5}`, slug: "zubau-5-jahre-je-einwohner" },
 ];
 
 export function rankingNav(): { buerger: RankingNavPunkt[]; standort: RankingNavPunkt[] } {

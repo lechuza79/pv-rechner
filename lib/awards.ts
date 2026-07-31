@@ -241,6 +241,25 @@ const speicherQuote = (g: GemeindeStats): number | null => {
  */
 const MIN_DACH_FUER_QUOTE = 25;
 
+/**
+ * Der Zubau-Zeitraum, EHRLICH benannt.
+ *
+ * WAS GEMESSEN WIRD: heutiger Bestand minus Bestand am Ende eines Stichjahres.
+ * "letztes Jahr" hiess damit in Wahrheit "seit Ende 2025" — heute also Januar
+ * bis heute, sieben Monate. Am 1. Januar waeren es null Tage und die Liste
+ * kroente einen zufaelligen Ort.
+ *
+ * WARUM NICHT DIE RECHNUNG AENDERN: Ein echtes volles Jahr braeuchte den
+ * Bestand zum Ende des VORLETZTEN Jahres; den fuehrt die Aggregation nicht.
+ * Die Zahl ist richtig — nur ihr Name war es nicht. Dieselbe Ehrlichkeit wie
+ * bei der Rangveraenderung, die aus demselben Grund "seit Ende <Jahr>" heisst
+ * und nicht "gegenueber dem Vorjahr".
+ *
+ * KEINE JAHRESZAHL IM CODE: Das Stichjahr wird zur Laufzeit gebildet, sonst
+ * wird die Beschriftung am 1. Januar still falsch.
+ */
+const seitEnde = (jahreZurueck: number): number => new Date().getFullYear() - jahreZurueck;
+
 export const AWARD_CATEGORIES: AwardCategory[] = [
   // Bürger, pro Kopf — verifiziert aussagekräftig (skaliert mit Haushalten).
   {
@@ -320,13 +339,13 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   // angefangen hat. Je Einwohner zugebaute Leistung ist beides nicht.
   {
     key: "tempo-1j",
-    betreffPhrase: "beim Solar-Zubau im letzten Jahr",
+    betreffPhrase: `beim Solar-Zubau seit Ende ${seitEnde(1)}`,
     slug: "zubau-1-jahr-je-einwohner",
     label: "Tempo 1 Jahr",
-    merit: "Meiste je Einwohner zugebaute Solarleistung im letzten vollen Jahr.",
-    bestleistung: "den größten Zubau auf privaten Dächern je Einwohner im letzten Jahr",
-    thema: "Zubau auf privaten Dächern je Einwohner, letztes Jahr",
-    themaDativ: "Solar-Zubau je Einwohner im letzten Jahr",
+    merit: `Meiste je Einwohner zugebaute Solarleistung seit Ende ${seitEnde(1)}.`,
+    bestleistung: `den größten Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(1)}`,
+    thema: `Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(1)}`,
+    themaDativ: `Solar-Zubau je Einwohner seit Ende ${seitEnde(1)}`,
     traeger: "buerger",
     messart: "proKopf",
     format: "wattProKopf",
@@ -335,13 +354,13 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "tempo-3j",
-    betreffPhrase: "beim Solar-Zubau in drei Jahren",
+    betreffPhrase: `beim Solar-Zubau seit Ende ${seitEnde(3)}`,
     slug: "zubau-3-jahre-je-einwohner",
     label: "Tempo 3 Jahre",
-    merit: "Meiste je Einwohner zugebaute Solarleistung in den letzten drei Jahren.",
-    bestleistung: "den größten Zubau auf privaten Dächern je Einwohner in drei Jahren",
-    thema: "Zubau auf privaten Dächern je Einwohner, drei Jahre",
-    themaDativ: "Solar-Zubau je Einwohner in drei Jahren",
+    merit: `Meiste je Einwohner zugebaute Solarleistung seit Ende ${seitEnde(3)}.`,
+    bestleistung: `den größten Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(3)}`,
+    thema: `Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(3)}`,
+    themaDativ: `Solar-Zubau je Einwohner seit Ende ${seitEnde(3)}`,
     traeger: "buerger",
     messart: "proKopf",
     format: "wattProKopf",
@@ -350,13 +369,13 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
   },
   {
     key: "tempo-5j",
-    betreffPhrase: "beim Solar-Zubau in fünf Jahren",
+    betreffPhrase: `beim Solar-Zubau seit Ende ${seitEnde(5)}`,
     slug: "zubau-5-jahre-je-einwohner",
     label: "Tempo 5 Jahre",
-    merit: "Meiste je Einwohner zugebaute Solarleistung in den letzten fünf Jahren.",
-    bestleistung: "den größten Zubau auf privaten Dächern je Einwohner in fünf Jahren",
-    thema: "Zubau auf privaten Dächern je Einwohner, fünf Jahre",
-    themaDativ: "Solar-Zubau je Einwohner in fünf Jahren",
+    merit: `Meiste je Einwohner zugebaute Solarleistung seit Ende ${seitEnde(5)}.`,
+    bestleistung: `den größten Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(5)}`,
+    thema: `Zubau auf privaten Dächern je Einwohner seit Ende ${seitEnde(5)}`,
+    themaDativ: `Solar-Zubau je Einwohner seit Ende ${seitEnde(5)}`,
     traeger: "buerger",
     messart: "proKopf",
     format: "wattProKopf",
