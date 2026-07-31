@@ -25,7 +25,7 @@ export function bedarfSpecKwh(situation: "bestand" | "neubau", insulationIdx: nu
  *  kostet, ist DAS die richtige Größe (Herleitung: lib/heat-consumption.ts). */
 export function verbrauchSpecKwh(situation: "bestand" | "neubau", insulationIdx: number, cfg: HeatPumpConfig = DEFAULT_HEATPUMP_CONFIG): number {
   const { spec, art } = bedarfSpecKwh(situation, insulationIdx, cfg);
-  return Math.round(verbrauchAusBedarf(spec, art));
+  return Math.round(verbrauchAusBedarf(spec, art, situation));
 }
 
 export function calcHeatDemand(
@@ -43,7 +43,7 @@ export function calcHeatDemand(
   // Norm-Bedarf; das unterstellte einem unsanierten Altbau rund 250 statt 160
   // kWh/m²·a Gasverbrauch und ließ die Wärmepumpe systematisch besser aussehen.
   const tab = bedarfSpecKwh(situation, insulationIdx, cfg);
-  const spec = verbrauchAusBedarf(tab.spec, tab.art);
+  const spec = verbrauchAusBedarf(tab.spec, tab.art, situation);
   // Haustyp-Faktor auch auf den Jahresbedarf: geteilte Wände senken den Verlust
   // übers Jahr, nicht nur die Spitzenlast. Warmwasser bleibt personenabhängig —
   // es hängt an den Bewohnern, nicht am Gebäude, und wird deshalb auch nicht

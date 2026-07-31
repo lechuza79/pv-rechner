@@ -34,6 +34,24 @@
 //   Ergänzend derselbe Zusammenhang bei rund 500 kWh/m²a: ~60 % (Building Research &
 //   Information, ebd.).
 //
+// UNABHÄNGIGE GEGENPRÜFUNG (31.07.2026, Volltext im Repo:
+// docs/quellen/FHNW_PRO380_SIA380-1-Bestandsgebaeude_Schlussbericht.pdf, S. 17):
+// Der FHNW-Schlussbericht „PRO380" trägt die gemessenen Abweichungen aus einem
+// Dutzend Studien zusammen. ACHTUNG BEZUGSGRÖSSE — dort steht (Bedarf − Verbrauch)
+// / VERBRAUCH, hier rechnen wir mit / BEDARF; die Zahlen sehen deshalb größer aus,
+// als sie sind. Umgerechnet (x/(1+x)):
+//   Neubert 36 % → 26,5 % · dena-Feldversuch 25–41 % → 20,0–29,1 %
+//   Sunikka-Blank 50 % → 33,3 % · Loga 18–105 % → 15,3–51,2 %
+// Unsere 29,1 % bei 220 kWh/m²·a liegen mitten in diesem Feld. Wer die Kurve
+// ändert, prüft gegen DIESE Spanne — nicht gegen eine einzelne Studie.
+//
+// NICHT VERWENDET: die in Suchmaschinen kursierende Regressionsform
+// P = 1,2 − 1,3/(1 + Kennwert/500). Sie liefert für unsere Stufen fast dasselbe
+// (Abweichung im Bestand < 3,4 %), aber ihre Herkunft ließ sich nicht belegen —
+// das Tagungspapier, dem sie zugeschrieben wird (Hoffmann/Geissler, BGT 2022),
+// enthält sie nicht. Eine Zahl, die belegt aussieht und es nicht ist, ist genau
+// das, was hier nicht stehen darf.
+//
 // WARUM EINE SCHICHT UND NICHT EINFACH KLEINERE KENNWERTE:
 // Die Werte in INSULATION_BESTAND sind als Norm-Bedarf belegt (dena, DIN V 18599) und
 // werden auch so beschriftet. Sie stillschweigend abzusenken hieße, eine belegte Zahl
@@ -50,16 +68,27 @@
 //   · Stufen, deren Kennwert schon ein GEMESSENER Verbrauch ist (INSULATION_BESTAND
 //     trägt das je Stufe als `art`). Sie ein zweites Mal zu korrigieren würde sie
 //     unter jedes reale Gebäude drücken.
+//   · NEUBAUTEN. Dort kehrt sich der Effekt um: „Betrachtet man energieeffiziente
+//     Neubauten, so ist hier die Tendenz festzustellen, dass der berechnete
+//     Energiebedarf im Vergleich zum gemessenen Verbrauch unterschätzt wird, die
+//     Gebäude also mehr verbrauchen als gedacht" (FHNW PRO380, S. 17, mit drei
+//     Belegstellen). Eine Korrektur NACH UNTEN wäre dort nachweislich falsch
+//     herum. Wir lassen den Norm-Bedarf stehen, statt einen Aufschlag zu erfinden,
+//     für den es keine belastbare Höhe gibt — die Richtung dieser Auslassung ist
+//     bekannt und läuft nicht zugunsten der Wärmepumpe (siehe unten).
+//     ZWISCHENSTAND, DER FALSCH WAR: Bis zur Gegenprüfung am 31.07.2026 lief die
+//     Kurve auch über den Neubau. Der Anlass war ein Test, der zu Recht bemängelte,
+//     dass sonst ein VERBRAUCHS-Altbau gegen einen BEDARFS-Neubau verglichen wird —
+//     die Konsequenz daraus war aber die falsche. Richtig ist: Im Neubau liegt der
+//     Norm-Bedarf ohnehin nahe am Verbrauch (eher darunter), beide Zahlen sind also
+//     die jeweils beste Schätzung des realen Verbrauchs. Das ist der Vergleich, den
+//     die Auswahl braucht.
 //
 // UNTERHALB VON 150 kWh/m²·a WIRD EXTRAPOLIERT — und das steht hier, statt es zu
 // verschweigen: Die Studie belegt Stützstellen ab 150 aufwärts. Darunter setzen wir
-// die Kurve stetig gegen null fort (bei 75 kWh/m²·a sind es noch ~8 %). Zwei
-// Alternativen wurden verworfen: die Korrektur unterhalb der Stützstellen hart
-// abzuschneiden, erzeugte einen Sprung mitten in der Skala; sie im Neubau ganz
-// wegzulassen (erster Entwurf am 31.07.2026) ließ den Klima-Rechner einen
-// VERBRAUCHS-Altbau gegen einen BEDARFS-Neubau stellen — zwei verschiedene Größen
-// in derselben Auswahl, genau der Fehler, den dieses Modul beheben soll. Aufgefallen
-// ist es einem Test, nicht beim Nachdenken.
+// die Kurve stetig gegen null fort (bei 100 kWh/m²·a sind es noch ~11 %). Die
+// Alternative, unterhalb der Stützstellen hart abzuschneiden, erzeugte einen Sprung
+// mitten in der Skala.
 //
 // RICHTUNG DER WIRKUNG — bewusst zu unseren Ungunsten: Ein kleinerer Wärmebedarf
 // senkt die fossilen Kosten UND den Wärmepumpen-Strom. Die ausgewiesene Ersparnis
@@ -109,8 +138,15 @@ export function preboundAnteil(bedarfSpecKwh: number): number {
  * @param art `verbrauch` = die Stufe ist bereits ein gemessener Wert und wird
  *            NICHT ein zweites Mal korrigiert (siehe INSULATION_BESTAND).
  */
-export function verbrauchAusBedarf(specKwh: number, art: KennwertArt = "bedarf"): number {
+export function verbrauchAusBedarf(
+  specKwh: number,
+  art: KennwertArt = "bedarf",
+  situation: "bestand" | "neubau" = "bestand",
+): number {
   if (art === "verbrauch") return specKwh;
+  // Neubau: keine Korrektur — dort verbrauchen Gebäude eher MEHR als berechnet
+  // (FHNW PRO380, S. 17). Nach unten zu korrigieren wäre die falsche Richtung.
+  if (situation === "neubau") return specKwh;
   return specKwh * (1 - preboundAnteil(specKwh));
 }
 

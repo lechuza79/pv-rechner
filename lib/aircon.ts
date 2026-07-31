@@ -175,7 +175,7 @@ export function acHeatSpecKwhPerM2(standardId: string | undefined, cfg: AcConfig
   // sonst driften sie an genau der Stelle auseinander, an der sie sich die
   // Dämmtabelle teilen.
   const std = acHeatStandard(standardId, cfg);
-  return Math.round(verbrauchAusBedarf(std.specKwh, std.art) * cfg.heatTransitionShare);
+  return Math.round(verbrauchAusBedarf(std.specKwh, std.art, std.situation) * cfg.heatTransitionShare);
 }
 
 /** Heizen mit dem gewählten Gerät. heatStandardId wählt den Gebäudestandard (die
@@ -193,7 +193,7 @@ export function calcAirconHeating(
 ): AcHeatResult {
   const scop = device.scop ?? 0;
   const standard = acHeatStandard(heatStandardId, cfg);
-  const standardVerbrauchKwhPerM2 = Math.round(verbrauchAusBedarf(standard.specKwh, standard.art));
+  const standardVerbrauchKwhPerM2 = Math.round(verbrauchAusBedarf(standard.specKwh, standard.art, standard.situation));
   const specKwhPerM2 = acHeatSpecKwhPerM2(heatStandardId, cfg);
   const heatThermalKwh = Math.round(heatThermalOverride ?? cooledArea * specKwhPerM2);
   const heatElectricKwh = scop > 0 ? Math.round(heatThermalKwh / scop) : 0;

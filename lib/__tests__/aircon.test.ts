@@ -322,11 +322,11 @@ describe("calcAirconHeating", () => {
     const alt = calcAirconHeating(split, 20, 0.34, null, "unsaniert");
     const neu = calcAirconHeating(split, 20, 0.34, null, "neubau");
     // Der Wächter-Befund bleibt gültig: ein Wert für alle wäre für den Neubau
-    // grob zu hoch. Die Spreizung ist seit dem 31.07.2026 aber KLEINER als im
-    // Norm-Bedarf (dort 220 zu 75 = 2,9×), weil die Bedarf→Verbrauch-Korrektur
-    // schlechte Gebäude stärker absenkt als gute — genau der gemessene Befund
-    // der Prebound-Forschung. Die Schwelle folgt dieser Physik, sie wurde nicht
-    // gesenkt, damit ein Test grün wird.
+    // grob zu hoch. Die Spreizung ist seit dem 31.07.2026 etwas kleiner als im
+    // reinen Norm-Bedarf (dort 220 zu 75 = 2,9×), weil der Altbau auf seinen
+    // erwarteten Verbrauch korrigiert wird und der Neubau nicht — genau der
+    // gemessene Befund der Prebound-Forschung. Die Schwelle folgt dieser Physik,
+    // sie wurde nicht gesenkt, damit ein Test grün wird.
     expect(alt.heatThermalKwh).toBeGreaterThan(neu.heatThermalKwh * 2);
     expect(alt.standard.id).toBe("unsaniert");
     expect(neu.standard.id).toBe("neubau");
@@ -339,7 +339,7 @@ describe("calcAirconHeating", () => {
     // die Dämmtabelle teilen (lib/heat-consumption.ts).
     for (const std of CFG.heatStandards) {
       expect(acHeatSpecKwhPerM2(std.id)).toBe(
-        Math.round(verbrauchAusBedarf(std.specKwh, std.art) * CFG.heatTransitionShare),
+        Math.round(verbrauchAusBedarf(std.specKwh, std.art, std.situation) * CFG.heatTransitionShare),
       );
     }
     const canonical = [...INSULATION_BESTAND, ...INSULATION_NEUBAU].map(i => i.specKwh);

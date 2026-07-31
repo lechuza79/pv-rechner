@@ -51,14 +51,12 @@ describe("calcHeatDemand", () => {
   });
 
   it("uses Neubau coefficients when situation is neubau", () => {
-    // Neubau nimmt die Neubau-Stufen — und dieselbe Bedarf→Verbrauch-Korrektur wie
-    // der Bestand. Bei so kleinen Kennwerten fällt sie kaum ins Gewicht (~8 %),
-    // aber sie gilt: Andernfalls stünde in derselben Auswahl ein Verbrauchswert
-    // neben einem Bedarfswert (siehe lib/heat-consumption.ts).
+    // Neubau: KEINE Bedarf→Verbrauch-Korrektur. Dort verbrauchen Gebäude eher mehr
+    // als berechnet, nach unten zu korrigieren wäre die falsche Richtung
+    // (FHNW PRO380 S. 17, Volltext in docs/quellen/).
     const r = calcHeatDemand("neubau", 150, 0, 4); // EnEV 2014
-    expect(r.qHeiz).toBe(Math.round(150 * verbrauchAusBedarf(75)));
-    expect(r.qHeiz).toBeLessThan(150 * 75);
-    expect(r.qGes).toBe(r.qHeiz + 4 * 650);
+    expect(r.qHeiz).toBe(150 * 75);
+    expect(r.qGes).toBe(150 * 75 + 4 * 650);
   });
 
   it("clamps insulation index to valid range", () => {

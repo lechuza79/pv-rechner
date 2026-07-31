@@ -113,10 +113,13 @@ export interface AcHeatStandard {
   sub: string;
   specKwh: number;   // kWh/m²·a Jahres-Heizwärme-NORMBEDARF (kanonisch aus constants.ts)
   /** Norm-Bedarf oder bereits gemessener Verbrauch (siehe INSULATION_BESTAND).
-   *  Entscheidet, ob die Bedarf→Verbrauch-Korrektur greift (lib/heat-consumption.ts)
-   *  — als Feld und nicht über die id erkannt, damit kein Aufrufer den Sonderfall
-   *  an einem Zeichenketten-Vergleich nachbaut. */
+   *  Entscheidet zusammen mit `situation`, ob die Bedarf→Verbrauch-Korrektur greift
+   *  (lib/heat-consumption.ts) — beides als Feld und nicht über die id erkannt,
+   *  damit kein Aufrufer den Sonderfall an einem Zeichenketten-Vergleich nachbaut. */
   art: KennwertArt;
+  /** Bestand oder Neubau — im Neubau wird NICHT nach unten korrigiert (dort liegt
+   *  der gemessene Verbrauch eher über dem Bedarf, FHNW PRO380 S. 17). */
+  situation: "bestand" | "neubau";
 }
 
 /** Stabile ids der Bestandsstufen. Sie hängen an der Stufe, NICHT an ihrer
@@ -143,10 +146,10 @@ function bestandId(label: string): string {
 // irgendetwas rot wird. Festgenagelt von lib/__tests__/aircon.test.ts
 // („Dämmstufen-Vollständigkeit").
 export const AC_HEAT_STANDARDS: AcHeatStandard[] = [
-  ...INSULATION_BESTAND.map(i => ({ id: bestandId(i.label), label: i.label, sub: i.sub, specKwh: i.specKwh, art: i.art })),
+  ...INSULATION_BESTAND.map(i => ({ id: bestandId(i.label), label: i.label, sub: i.sub, specKwh: i.specKwh, art: i.art, situation: "bestand" as const })),
   // Neubau: gesetzlicher Mindeststandard als Bucket. Wer KfW 55/40 hat, liegt
   // darunter und korrigiert die Heizwärme direkt im Ergebnis (InlineEdit).
-  { id: "neubau", label: `Neubau (${INSULATION_NEUBAU[0].label})`, sub: INSULATION_NEUBAU[0].sub, specKwh: INSULATION_NEUBAU[0].specKwh, art: INSULATION_NEUBAU[0].art },
+  { id: "neubau", label: `Neubau (${INSULATION_NEUBAU[0].label})`, sub: INSULATION_NEUBAU[0].sub, specKwh: INSULATION_NEUBAU[0].specKwh, art: INSULATION_NEUBAU[0].art, situation: "neubau" as const },
 ];
 
 export interface AcDevice {
