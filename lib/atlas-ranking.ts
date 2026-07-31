@@ -103,6 +103,12 @@ export function rankingRows(
    *  Funktion alle — gebraucht fuer die Standort-Kategorien, wo die Ortsgroesse
    *  nichts erklaert. */
   feld?: RankingFeld | null,
+  /**
+   * Rangveraenderung mitrechnen? Sie kostet einen ZWEITEN vollstaendigen
+   * Durchlauf ueber alle ~10.700 Gemeinden. Die Spitzenreiter-Uebersicht zeigt
+   * sie gar nicht an und rechnete sie fuenfmal umsonst — einmal je Klasse.
+   */
+  mitVeraenderung = true,
 ): RankingZeile[] {
   const imFeld = (g: GemeindeStats) => !feld || feld.gilt(g);
   const rows = stats
@@ -134,7 +140,7 @@ export function rankingRows(
   // letzten vollen Jahres. Bewusst NICHT "Veränderung zum Vorjahr" genannt —
   // der Zeitraum reicht vom Jahresende bis heute, im Juli also sieben Monate.
   // Dieselbe Ehrlichkeit wie in der Ranglisten-Tabelle des Atlas.
-  if (!kategorie.metricVorjahr) {
+  if (!kategorie.metricVorjahr || !mitVeraenderung) {
     return platziert.map((r) => ({ ...r, platzVorjahr: null, veraenderung: null }));
   }
   const vorjahr = stats

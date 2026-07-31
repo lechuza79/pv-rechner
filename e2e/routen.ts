@@ -16,6 +16,13 @@ export const SEITEN: Seite[] = [
   { pfad: "/solar-atlas", erwartet: /atlas|solaranlagen/i },
   { pfad: "/solar-atlas/bayern", erwartet: /bayern/i },
   { pfad: "/solar-atlas/bayern/landkreis-wuerzburg/hoechberg", erwartet: /höchberg/i },
+  // Ranglisten — jede der vier Darstellungsformen einmal, weil sie sich im
+  // Aufbau unterscheiden: Uebersicht, Spitze je Groessenklasse, eine einzelne
+  // Liste, und eine Liste mit Gebiet UND Klasse in der Adresse.
+  { pfad: "/solar-atlas/ranking", erwartet: /rankings der städte und gemeinden/i },
+  { pfad: "/solar-atlas/ranking/zubau-3-jahre-je-einwohner", erwartet: /dörfer|großstädte/i },
+  { pfad: "/solar-atlas/ranking/solarleistung-je-einwohner?groesse=grossstaedte", erwartet: /großstädte/i },
+  { pfad: "/solar-atlas/ranking/speicher-je-dachanlage/bayern/landkreis-muenchen", erwartet: /je 100 dächer/i },
   // Förderseiten, beide Ebenen
   { pfad: "/photovoltaik-foerderung", erwartet: /förder/i },
   { pfad: "/photovoltaik-foerderung/bayern", erwartet: /bayern/i },

@@ -127,7 +127,8 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
   // Liste (0)" reines Rauschen. Bundesweit sind ohnehin alle fuenf besetzt.
   const spitzenreiter = zeigtSpitzenreiter
     ? felderNachArt("groesse")
-        .map((k) => ({ klasse: k, zeilen: rankingRows(stats, kategorie, scopeId, k) }))
+        // Ohne Rangveraenderung: Die Kacheln zeigen nur den Sieger, kein Delta.
+        .map((k) => ({ klasse: k, zeilen: rankingRows(stats, kategorie, scopeId, k, false) }))
         .filter((x) => x.zeilen.length > 0)
     : [];
 

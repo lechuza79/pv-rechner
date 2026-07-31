@@ -398,3 +398,27 @@ describe("Speicher-Quote", () => {
     expect(quote.metricVorjahr).toBeUndefined();
   });
 });
+
+describe("Rangveränderung ist abschaltbar", () => {
+  // Sie kostet einen ZWEITEN vollständigen Durchlauf über alle Gemeinden. Die
+  // Spitzenreiter-Übersicht zeigt sie nicht an und rechnete sie trotzdem —
+  // fünfmal je Aufruf, einmal je Größenklasse.
+  const dach = AWARD_CATEGORY_BY_KEY["dach-privat-pk"];
+  const orte = [
+    { ...g("09999020", "Alt", 500, 0), privatDachKwp: 600, privatDachCount: 60, privatDachKwpLy: 300 },
+    { ...g("09999021", "Neu", 500, 0), privatDachKwp: 300, privatDachCount: 30, privatDachKwpLy: 290 },
+  ];
+
+  it("rechnet sie standardmäßig mit", () => {
+    const rows = rankingRows(orte, dach, null);
+    expect(rows.some((r) => r.veraenderung !== null)).toBe(true);
+  });
+
+  it("lässt sie weg, wenn sie nicht gebraucht wird — bei gleicher Reihenfolge", () => {
+    const mit = rankingRows(orte, dach, null);
+    const ohne = rankingRows(orte, dach, null, null, false);
+    expect(ohne.map((r) => r.name)).toEqual(mit.map((r) => r.name));
+    expect(ohne.map((r) => r.platz)).toEqual(mit.map((r) => r.platz));
+    expect(ohne.every((r) => r.veraenderung === null && r.platzVorjahr === null)).toBe(true);
+  });
+});
