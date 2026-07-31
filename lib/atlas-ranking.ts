@@ -204,10 +204,12 @@ export type RankingNavPunkt = {
 const KURZ: Record<string, string> = {
   "solarleistung-je-einwohner": "Solarleistung",
   "balkonkraftwerke-je-einwohner": "Balkonkraftwerke",
-  "speicherkapazitaet-je-einwohner": "Speicher",
-  "speicher-je-dachanlage": "Speicher-Quote",
+  // "Speicher" und "Speicher-Quote" nebeneinander liess niemanden erraten,
+  // welches was ist — beide tragen jetzt ihren Nenner im Namen.
+  "speicherkapazitaet-je-einwohner": "Speicher je Einwohner",
+  "speicher-je-dachanlage": "Speicher je Dach",
   "solarleistung-gesamt": "Solar gesamt",
-  "freiflaechen-solar": "Freifläche",
+  "freiflaechen-solar": "Solarparks",
   windleistung: "Wind",
   "solar-zubau": "Zubau gesamt",
 };

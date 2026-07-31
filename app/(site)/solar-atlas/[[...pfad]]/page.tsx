@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import Breadcrumb, { type Crumb } from "../../../../components/Breadcrumb";
 import RegionSearch from "../../../../components/atlas/RegionSearch";
+import { IconArrowRight } from "../../../../components/Icons";
 import { v, space, pad } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { jsonLdHtml, breadcrumbJsonLd, atlasDatasetJsonLd } from "../../../../lib/json-ld";
@@ -24,6 +25,7 @@ import {
 } from "../../../../lib/atlas";
 import { fmtPvLeistung as fmtLeistung, pvLeistungTeile, wattProKopfTeile } from "../../../../lib/atlas-format";
 import { ortPhrase, childNoun } from "../../../../lib/atlas-orte";
+import { rankingKategorienGruppiert } from "../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
 
@@ -139,6 +141,8 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
   ];
 
   const basePath = `/solar-atlas${params.pfad?.length ? "/" + params.pfad.join("/") : ""}`;
+  // Gebiet fuer die Ranglisten-Adressen: dieselbe Slug-Kette wie im Atlas.
+  const gebietPfad = params.pfad?.length ? "/" + params.pfad.join("/") : "";
   const lastYear = lastFullYear();
   const thisYear = currentYear();
   const lastYearRow = atlas.solar.by_year.find((y) => y.year === lastYear);
@@ -290,6 +294,39 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
           </div>
         )}
 
+        {/* DIE RANGLISTEN GEHOEREN HIERHER, nicht hinter einen eigenen
+            Menuepunkt: Sie sind dieselben Daten wie oben, nur anders sortiert.
+            Vorher standen Atlas und Ranglisten als zwei gleichrangige
+            Menuepunkte, waehrend die Kruemelspur die Listen unter den Atlas
+            haengte — das widersprach sich. Jetzt ist der Atlas die eine Tuer und
+            die Listen sind von hier aus zu finden. */}
+        {region.level !== "gemeinde" && (
+          <div style={S.section}>
+            {/* NICHT "Ranglisten …": Direkt darueber steht schon die "Rangliste der
+                Kreise …" — zwei Ueberschriften mit demselben Wort lesen sich als
+                Dopplung. Diese hier beantwortet eine andere Frage. */}
+            <h2 style={S.h2}>{`Wer je Einwohner vorn liegt${region.level === "de" ? "" : ` — ${ortPhrase(region)}`}`}</h2>
+            <p style={S.sub}>
+              Wer je Einwohner am meisten gebaut hat — verglichen innerhalb der Größenklasse, damit Großstädte
+              gegen Großstädte antreten und nicht gegen Dörfer.
+            </p>
+            <div style={S.rangKacheln}>
+              {rankingKategorienGruppiert().buerger.map((k) => (
+                <Link
+                  key={k.slug}
+                  href={`/solar-atlas/ranking/${k.slug}${gebietPfad}`}
+                  style={S.rangKachel}
+                >
+                  <span style={S.rangKachelTitel}>{k.thema}</span>
+                  <span style={S.rangKachelCta}>
+                    Rangliste ansehen <IconArrowRight size={12} />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Ohne Vergleichsgruppe fiele die Seite hier ins Leere — und mit ihr
             der Weg des Crawlers zur einzigen Unterseite. Deshalb statt der
             Rangliste ein Verweis auf sie. */}
@@ -364,6 +401,19 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
 }
 
 const S: Record<string, React.CSSProperties> = {
+  rangKacheln: { display: "grid", gap: space.sm },
+  rangKachel: {
+    display: "flex",
+    flexDirection: "column",
+    gap: space.xs,
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: 14,
+    padding: pad("lg", "xl"),
+    textDecoration: "none",
+    color: v("--color-text-primary"),
+  },
+  rangKachelTitel: { fontSize: 15, fontWeight: 700, textTransform: "capitalize" },
+  rangKachelCta: { display: "flex", alignItems: "center", gap: 5, fontSize: 13, color: v("--color-accent") },
   page: {
     background: v("--color-bg"),
     fontFamily: v("--font-text"),

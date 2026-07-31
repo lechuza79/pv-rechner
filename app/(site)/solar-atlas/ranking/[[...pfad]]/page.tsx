@@ -122,8 +122,13 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
   // Ohne gewaehltes Feld zeigt die Seite die Spitzenreiter aller Groessenklassen
   // statt einer Bundesliste — die gaebe es sonst durch die Hintertuer wieder.
   const zeigtSpitzenreiter = nachGroesse && !klasse;
+  // Leere Klassen fliegen raus: In einem Landkreis ohne Ort unter 1.000
+  // Einwohnern ist eine Kachel "Doerfer — keine wertbaren Zahlen" plus "Ganze
+  // Liste (0)" reines Rauschen. Bundesweit sind ohnehin alle fuenf besetzt.
   const spitzenreiter = zeigtSpitzenreiter
-    ? felderNachArt("groesse").map((k) => ({ klasse: k, zeilen: rankingRows(stats, kategorie, scopeId, k) }))
+    ? felderNachArt("groesse")
+        .map((k) => ({ klasse: k, zeilen: rankingRows(stats, kategorie, scopeId, k) }))
+        .filter((x) => x.zeilen.length > 0)
     : [];
 
   const alle = rankingRows(stats, kategorie, scopeId, klasse);
@@ -171,11 +176,17 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
     return teile;
   };
 
+  // KRUEMELSPUR UEBER DAS GEBIET, nicht ueber die Kategorie: Eine Rangliste ist
+  // eine Ansicht auf ein Gebiet ("Zubau im Landkreis München"), keine eigene
+  // Ebene neben dem Atlas. Vorher lief sie ueber "Solar-Atlas > Rankings > …"
+  // und widersprach damit dem Menue, in dem beide gleichrangig standen.
   const crumbs: Crumb[] = [
     { label: "Solar-Atlas", href: "/solar-atlas" },
-    { label: "Rankings", href: BASIS },
-    { label: kategorie.thema, href: `${BASIS}/${kategorie.slug}` },
-    ...(region.level === "de" ? [] : [{ label: region.name }]),
+    ...d.gebiet.map((_, i) => ({
+      label: i === 0 ? bundeslandByAgs(region.region_id.slice(0, 2))?.name ?? d.gebiet[0] : region.name,
+      href: `/solar-atlas/${d.gebiet.slice(0, i + 1).join("/")}`,
+    })),
+    { label: `Ranking: ${kategorie.thema}` },
   ];
 
   const kindWort = region.level === "de" ? "Bundesland" : "Landkreis";
@@ -214,7 +225,7 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
           {(
             [
               ["Privat", nav.buerger],
-              ["Sonstiges", nav.standort],
+              ["Gewerbe & Freiflächen", nav.standort],
             ] as const
           ).map(([titel, punkte]) =>
             punkte.length === 0 ? null : (
@@ -346,9 +357,7 @@ export default async function RankingPage(props: { params: Promise<Params>; sear
                     </span>
                     <span style={S.wert}>{formatAwardValue(sieger.wert, kategorie.format)}</span>
                   </div>
-                ) : (
-                  <div style={S.klassenLeer}>Keine wertbaren Zahlen in dieser Klasse.</div>
-                )}
+                ) : null}
               </div>
             );
           })}
@@ -502,7 +511,7 @@ function Uebersicht() {
         {(
           [
             ["Privat", gruppen.buerger, "Was Haushalte gebaut haben, je Einwohner gerechnet — getrennt nach Größenklasse, von der Kleingemeinde bis zur Großstadt. Dazu Landeshauptstädte und kreisfreie Städte je für sich."],
-            ["Sonstiges", gruppen.standort, "Was am Ort steht, unabhängig davon, wer es gebaut hat: Gesamtleistung, Freiflächen, Wind. Hier gewinnen Kraftwerks-Standorte und große Städte. Diese Anlagen bleiben aus den Listen oben heraus, weil ein einziger Investorenpark ein Dorf an die Spitze setzen würde."],
+            ["Gewerbe & Freiflächen", gruppen.standort, "Was am Ort steht, unabhängig davon, wer es gebaut hat: Gesamtleistung, Freiflächen, Wind. Hier gewinnen Kraftwerks-Standorte und große Städte. Diese Anlagen bleiben aus den Listen oben heraus, weil ein einziger Investorenpark ein Dorf an die Spitze setzen würde."],
           ] as const
         ).map(([titel, kats, erklaerung]) =>
           kats.length === 0 ? null : (
