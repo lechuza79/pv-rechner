@@ -102,6 +102,17 @@ export type DraftContext = {
   rangWert?: string | null;
   /** Platz und Gruppengröße für den Beleg. */
   rang?: { platz: number; von: number } | null;
+  /**
+   * Weitere Spitzenplätze — im BRIEF, nicht in der Meldung.
+   *
+   * Die Meldung trägt EINE Aussage, sonst kann eine Pressestelle sie nicht
+   * übernehmen. Der Brief darf zeigen, dass es nicht bei einer bleibt: Das ist
+   * das stärkste Argument dafür, dass die Zahlen kein Zufallstreffer sind.
+   */
+  weitere?: { phrase: string; gruppe: string; platz: number; von: number }[];
+  /** Die vollständige Rangliste zum Nachprüfen — der Rang im Brief ist eine
+   *  Behauptung, bis man sie ansehen kann. */
+  ranglisteUrl?: string | null;
 };
 
 export type OutreachDraft = { subject: string; body: string; meldung: string };
@@ -110,8 +121,20 @@ const SIGNATURE = `Sebastian Schäder
 Betreiber solar-check.io
 Impressum: https://solar-check.io/impressum · Datenschutz: https://solar-check.io/datenschutz`;
 
+/**
+ * "Website Ihrer Markt" stand so im Brief — „Markt" und „Stadt" haben
+ * verschiedene Geschlechter, ein festes „Ihrer" passt nur zu einem davon.
+ * Deshalb steht die ganze Fügung in der Tabelle, nicht nur das Substantiv
+ * (dieselbe Regel wie bei den Dativformen der Größenklassen).
+ */
+const GATTUNG_GENITIV: Record<string, string> = {
+  Stadt: "Ihrer Stadt",
+  Markt: "Ihres Marktes",
+  Gemeinde: "Ihrer Gemeinde",
+};
+
 const dsgvoHinweis = (gattung: string) =>
-  `Datenschutz-Hinweis (Art. 14 DSGVO): Ihre öffentlich verfügbaren Kontaktdaten (Website Ihrer ${gattung}) nutze ich einmalig für dieses Angebot. Herkunft, Zweck und Ihr Widerspruchsrecht: https://solar-check.io/datenschutz`;
+  `Datenschutz-Hinweis (Art. 14 DSGVO): Ihre öffentlich verfügbaren Kontaktdaten (Website ${GATTUNG_GENITIV[gattung] ?? "Ihrer Gemeinde"}) nutze ich für dieses Angebot; ob Sie den Vorschau-Link öffnen, wird gezählt. Herkunft, Zweck, Speicherdauer und Ihr Widerspruchsrecht: https://solar-check.io/datenschutz`;
 
 /** „Kreisfreie Stadt", „Große Kreisstadt", „Markt" … auf das Wort reduzieren,
  *  das in einem Anschreiben natürlich klingt. */
@@ -172,9 +195,9 @@ export function renderMeldung(c: DraftContext): string {
   // nicht, weil sie etwas anderes messen (Solarparks und Gewerbe zaehlen mit).
   const belegSatz =
     platz === 1
-      ? ` Damit hat ${c.name} ${c.bestleistung} ${unterDen} — Platz 1 von ${c.rang?.von}${c.rangWert ? ` (${c.rangWert})` : ""}.`
+      ? ` Damit hat ${c.name} ${c.bestleistung} ${unterDen} — Platz 1 von ${c.rang?.von.toLocaleString("de-DE")}${c.rangWert ? ` (${c.rangWert})` : ""}.`
       : platz != null
-        ? ` Bei ${c.themaDativ} liegt ${c.name} damit auf Platz ${platz} von ${c.rang?.von} ${unterDen}${c.rangWert ? ` (${c.rangWert})` : ""}.`
+        ? ` Bei ${c.themaDativ} liegt ${c.name} damit auf Platz ${platz} von ${c.rang?.von.toLocaleString("de-DE")} ${unterDen}${c.rangWert ? ` (${c.rangWert})` : ""}.`
         : "";
 
   return `${ueberschrift}
@@ -210,6 +233,24 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   // Zähl-Weiterleitung nur im Brief, nie in der Meldung (siehe `pageUrl`).
   const vorschau = c.vorschauUrl ? `\n\nEinen kurzen Blick vorab können Sie hier werfen: ${c.vorschauUrl}` : "";
 
+  // WEITERE PLATZIERUNGEN — nur im Brief. Sie belegen, dass die Zahl kein
+  // Zufallstreffer ist, und geben der Pressestelle einen Grund, genauer
+  // hinzusehen. In der Meldung haetten sie nichts zu suchen: Ein Text, den eine
+  // Verwaltung veroeffentlichen soll, traegt EINE Aussage.
+  const weitereListe = (c.weitere ?? []).filter((w) => w.platz && w.von);
+  const weitereAbsatz = weitereListe.length
+    ? `\n\n${c.name} steht noch bei weiteren Messgrößen vorn:\n${weitereListe
+        .map((w) => `· Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase} unter den ${w.gruppe}`)
+        .join("\n")}`
+    : "";
+
+  // Der Rang ist eine Behauptung, bis man die Liste sehen kann. Die Adresse
+  // zeigt auf genau die Rangliste, in der der Platz gilt — Groessenklasse und
+  // Gebiet inklusive.
+  const nachpruefen = c.ranglisteUrl
+    ? `\n\nDie vollständige Rangliste mit allen gewerteten Kommunen: ${c.ranglisteUrl}`
+    : "";
+
   const body = `Sehr geehrte Damen und Herren,${weiterleitung}
 
 ${weiterleitung ? "A" : "a"}us den amtlichen Anlagendaten des Marktstammdatenregisters ergibt sich für ${c.name} gerade eine Meldung, die Sie übernehmen können. Ich habe sie fertig formuliert:
@@ -218,7 +259,7 @@ ${weiterleitung ? "A" : "a"}us den amtlichen Anlagendaten des Marktstammdatenreg
 ${meldung}
 ────────────────────────────
 
-Sie können den Text frei verwenden, kürzen und anpassen. Ich bitte nur darum, den Link auf solar-check.io stehen zu lassen — das ist der einzige Gegenwert, den ich dafür möchte. Kein Vertrieb, keine Kosten, keine Anmeldung.${vorschau}
+Sie können den Text frei verwenden, kürzen und anpassen. Ich bitte nur darum, den Link auf solar-check.io stehen zu lassen — das ist der einzige Gegenwert, den ich dafür möchte. Kein Vertrieb, keine Kosten, keine Anmeldung.${weitereAbsatz}${nachpruefen}${vorschau}
 
 Die Zahlen bereite ich monatlich aus dem amtlichen Marktstammdatenregister auf; die verlinkte Seite ist damit immer aktuell, auch wenn die Meldung älter wird.${widgetAbsatz}
 

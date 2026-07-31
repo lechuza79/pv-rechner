@@ -258,3 +258,22 @@ export function navPunktVon(slug: string): RankingNavPunkt | null {
     [...buerger, ...standort].find((p) => p.slug === slug || p.zeitraeume?.some((z) => z.slug === slug)) ?? null
   );
 }
+
+
+/**
+ * Adresse der Rangliste, in der ein Platz gilt — Kategorie, Groessenklasse und
+ * Gebiet. EINE Quelle: Sowohl der Orden auf der Gemeindeseite als auch das
+ * Anschreiben verlinken hierher, und beide muessen dieselbe Liste treffen.
+ *
+ * Ohne Groessenklasse landet der Leser auf der Uebersicht aller Klassen und
+ * sucht dort vergeblich seinen "Platz 1 von 119".
+ */
+export function ranglisteUrl(
+  katSlug: string | undefined,
+  klasseSlug: string | null,
+  gebiet: (string | null | undefined)[],
+): string | null {
+  if (!katSlug) return null;
+  const teile = gebiet.filter((x): x is string => !!x);
+  return ["/solar-atlas/ranking", katSlug, ...(klasseSlug ? [klasseSlug] : []), ...teile].join("/");
+}

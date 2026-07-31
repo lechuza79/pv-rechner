@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase as serviceDb } from "../../../../lib/supabase-server";
 import { renderOutreachDraft } from "../../../../lib/kommunen-outreach-draft";
-import { buildHookIndex } from "../../../../lib/awards-server";
+import { buildHookIndex, loadElternSlugs } from "../../../../lib/awards-server";
+import { AWARD_CATEGORY_BY_KEY } from "../../../../lib/awards";
+import { ranglisteUrl } from "../../../../lib/atlas-ranking";
 import { DEFAULT_HOOK_SETTINGS } from "../../../../lib/award-hook";
 import { atlasPathForRegionId } from "../../../../lib/atlas";
 import { getRegionAtlasData } from "../../../../lib/mastr-data";
@@ -187,7 +189,7 @@ export async function POST(req: NextRequest) {
   // Name + Atlas-Pfad + der Anschreiben-Aufhänger aus der Award-Hook-Logik (eine
   // Quelle mit der Vorschau /admin/awards/anschreiben — kein Drift). Der Index ist
   // prozess-lokal memoisiert, der Lookup je Gemeinde damit billig.
-  const [{ data: reg }, { data: leadRow }, path, index] = await Promise.all([
+  const [{ data: reg }, { data: leadRow }, path, index, elternSlugsMap] = await Promise.all([
     serviceDb.from("mastr_regions").select("name, bezeichnung, population, slug").eq("region_id", region_id).single(),
     serviceDb
       .from("kommunen_kontakt")
@@ -196,6 +198,7 @@ export async function POST(req: NextRequest) {
       .maybeSingle(),
     atlasPathForRegionId(region_id),
     buildHookIndex(DEFAULT_HOOK_SETTINGS),
+    loadElternSlugs(),
   ]);
   if (!reg) return NextResponse.json({ error: "Gemeinde nicht gefunden" }, { status: 404 });
   // Harte Sperre: für gesperrte Gemeinden nie ein Anschreiben erzeugen.
@@ -240,6 +243,16 @@ export async function POST(req: NextRequest) {
     gruppe: hook?.gruppe ?? hook?.wo ?? "in der Region",
     rangWert: hook?.valueStr ?? null,
     rang: hook?.rank && hook?.total && hook?.gruppe ? { platz: hook.rank, von: hook.total } : null,
+    weitere: hook?.weitere ?? [],
+    // Zeigt auf genau die Liste, in der der Platz gilt — Klasse und Gebiet drin.
+    ranglisteUrl: (() => {
+      const kat = hook?.categoryKey ? AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.slug : undefined;
+      const bl = elternSlugsMap[region_id.slice(0, 2)];
+      const kreis = elternSlugsMap[region_id.slice(0, 5)];
+      const gebiet = hook?.level === "bund" ? [] : hook?.level === "land" ? [bl] : [bl, kreis];
+      const pfad = ranglisteUrl(kat, hook?.klasseSlug ?? null, gebiet);
+      return pfad ? `${SITE_URL}${pfad}` : null;
+    })(),
     zahlen: {
       anlagen: atlas.solar.total_count,
       leistungKwp: atlas.solar.total_kwp,

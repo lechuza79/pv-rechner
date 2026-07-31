@@ -311,3 +311,63 @@ describe("Kurz oben, genau unten", () => {
     }
   });
 });
+
+describe("Weitere Platzierungen im Brief", () => {
+  // Der Brief darf zeigen, dass die Zahl kein Zufallstreffer ist — die MELDUNG
+  // nicht: Ein Text, den eine Verwaltung veröffentlichen soll, trägt eine Aussage.
+  const MIT: DraftContext = {
+    ...BASIS,
+    weitere: [
+      { phrase: "bei Balkonkraftwerken", gruppe: "Kleinen Gemeinden im Landkreis Würzburg", platz: 2, von: 52 },
+      { phrase: "beim Solar-Zubau seit Ende 2023", gruppe: "Kleinen Gemeinden in Bayern", platz: 3, von: 1840 },
+    ],
+    ranglisteUrl: "https://solar-check.io/solar-atlas/ranking/x/kleine-gemeinden/bayern",
+  };
+
+  it("nennt jede weitere Platzierung mit Platz, Gruppengrösse und Vergleichsgruppe", () => {
+    const b = renderOutreachDraft(MIT).body;
+    expect(b).toContain("Platz 2 von 52 bei Balkonkraftwerken unter den Kleinen Gemeinden im Landkreis Würzburg");
+    expect(b).toContain("Platz 3 von 1.840 beim Solar-Zubau seit Ende 2023 unter den Kleinen Gemeinden in Bayern");
+  });
+
+  it("schreibt Tausender mit Punkt", () => {
+    expect(renderOutreachDraft(MIT).body).not.toMatch(/von 1840/);
+  });
+
+  it("verlinkt die Rangliste zum Nachprüfen", () => {
+    expect(renderOutreachDraft(MIT).body).toContain(MIT.ranglisteUrl as string);
+  });
+
+  it("lässt die weiteren Platzierungen aus der Meldung heraus", () => {
+    const m = renderMeldung(MIT);
+    expect(m).not.toContain("Balkonkraftwerken");
+    expect(m).not.toContain("weiteren Messgrößen");
+  });
+
+  it("schweigt, wenn es keine weiteren gibt", () => {
+    const b = renderOutreachDraft({ ...BASIS, weitere: [], ranglisteUrl: null }).body;
+    expect(b).not.toContain("weiteren Messgrößen");
+    expect(b).not.toContain("vollständige Rangliste");
+  });
+});
+
+describe("Datenschutz-Hinweis", () => {
+  it("beugt die Gattung richtig", () => {
+    // „Website Ihrer Markt" stand so im Brief — Markt ist männlich.
+    for (const [bez, erwartet] of [
+      ["Markt", "Website Ihres Marktes"],
+      ["Kreisfreie Stadt", "Website Ihrer Stadt"],
+      ["Gemeinde", "Website Ihrer Gemeinde"],
+    ] as const) {
+      expect(renderOutreachDraft({ ...BASIS, gattung: bez }).body).toContain(erwartet);
+    }
+  });
+
+  it("nennt den Zähl-Link, statt „einmalig“ zu versprechen", () => {
+    // Der Vorschau-Link zählt Aufrufe mit — „nutze ich einmalig" las sich
+    // daneben schöner, als es ist.
+    const b = renderOutreachDraft(BASIS).body;
+    expect(b).toContain("wird gezählt");
+    expect(b).not.toContain("nutze ich einmalig");
+  });
+});

@@ -82,6 +82,15 @@ export type HookExample = {
   betreff: string;
   einstieg: string;
   others: string[];
+  /**
+   * Weitere Spitzenplaetze derselben Gemeinde, fertig formuliert — fuer den
+   * Brief, nicht fuer die Meldung. Die Meldung traegt EINE Aussage; der Brief
+   * darf zeigen, dass es nicht bei einer bleibt.
+   *
+   * NICHT `others`: Das ist die interne Cockpit-Zeile mit den Kunstwoertern
+   * ("Balkon-Pionier · Landkreis · Platz 3/34") und darf nie nach aussen.
+   */
+  weitere: { phrase: string; gruppe: string; platz: number; von: number }[];
   /** Platz und Gruppengröße des gewählten Aufhängers („Platz 1 von 34"). Wird
    *  für die Auswahl der Versandliste gebraucht: „von 34" wiegt schwerer als
    *  „von 5", und ohne diese Größe sortiert die Liste faktisch nach Einwohnern. */
@@ -96,6 +105,8 @@ export type HookExample = {
   /** Kurzform als Präpositionalphrase („bei Hausspeichern") — trägt Betreff und
    *  Meldungs-Überschrift. */
   phrase: string | null;
+  /** Größenklasse des Aufhängers als Kürzel — für die Adresse der Rangliste. */
+  klasseSlug: string | null;
   wo: string | null;
   /** Vergleichsgruppe im Dativ („Kleinen Gemeinden im Landkreis Würzburg").
    *  Ohne sie behauptet die Meldung einen kreisweiten Bestwert. */

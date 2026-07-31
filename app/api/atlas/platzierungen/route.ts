@@ -5,6 +5,7 @@ import { AWARD_CATEGORY_BY_KEY, formatAwardValue, rankGemeinden, scopeIdOf } fro
 import { bundeslandByAgs } from "../../../../lib/mastr-regions";
 import { ortPhrase } from "../../../../lib/atlas-orte";
 import { GROESSENKLASSE_BY_SLUG, klasseVon } from "../../../../lib/gemeindegroesse";
+import { ranglisteUrl } from "../../../../lib/atlas-ranking";
 
 // Platzierungen einer Gemeinde + die Rangliste ihrer stärksten Kategorie.
 //
@@ -83,16 +84,11 @@ export async function GET(req: NextRequest) {
 
   /** `/solar-atlas/ranking/<kategorie>/<bundesland>/<kreis>` je Vergleichsebene. */
   function rankingHrefVon(katSlug: string | undefined, level: HookLevel, klasseSlug: string): string | null {
-    if (!katSlug) return null;
-    // MIT DER GROESSENKLASSE, und zwar IM PFAD: Ohne sie zeigt die Zielseite die
-    // Spitze ALLER Klassen — der Leser sucht dort vergeblich seinen "Platz 1 von
-    // 119". Als `?groesse=` ging es nicht: Die Zielseite ist vorgerendert und
-    // antwortet dann mit Fehler 500 (siehe Kommentar dort).
     const bl = elternSlugs[regionId.slice(0, 2)];
     const kreis = elternSlugs[regionId.slice(0, 5)];
-    if (level === "bund") return `/solar-atlas/ranking/${katSlug}/${klasseSlug}`;
-    if (level === "land") return bl ? `/solar-atlas/ranking/${katSlug}/${klasseSlug}/${bl}` : null;
-    return bl && kreis ? `/solar-atlas/ranking/${katSlug}/${klasseSlug}/${bl}/${kreis}` : null;
+    const gebiet = level === "bund" ? [] : level === "land" ? [bl] : [bl, kreis];
+    if (level !== "bund" && gebiet.some((x) => !x)) return null;
+    return ranglisteUrl(katSlug, klasseSlug, gebiet);
   }
 
   /** Die vollständige Rangliste einer Platzierung — dieselbe Gruppe, aus der ihr

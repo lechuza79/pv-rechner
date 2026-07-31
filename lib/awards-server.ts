@@ -148,6 +148,23 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
       .sort((a, b) => a.rank - b.rank || b.total - a.total)
       .slice(0, 4)
       .map((p) => `${AWARD_CATEGORY_BY_KEY[p.categoryKey]?.label} · ${LEVEL_LABEL[p.level]} · Platz ${p.rank}/${p.total}`);
+    // Weitere Spitzenplaetze — dieselbe Gemeinde, andere Kategorie oder Ebene.
+    // Der gewaehlte Aufhaenger faellt raus, sonst stuende er zweimal im Brief.
+    const weitere = (placements.get(g.regionId) ?? [])
+      .filter(
+        (p) =>
+          p.total >= settings.minTotal &&
+          p.rank <= 3 &&
+          !(p.categoryKey === hook.categoryKey && p.level === hook.level),
+      )
+      .sort((a, b) => a.rank - b.rank || b.total - a.total)
+      .slice(0, 3)
+      .map((p) => ({
+        phrase: AWARD_CATEGORY_BY_KEY[p.categoryKey]?.betreffPhrase ?? `bei ${AWARD_CATEGORY_BY_KEY[p.categoryKey]?.themaDativ}`,
+        gruppe: `${p.klasseLabel} ${scopeIn(p.level, names)}`,
+        platz: p.rank,
+        von: p.total,
+      }));
     return {
       regionId: g.regionId,
       name: g.name,
@@ -160,11 +177,16 @@ export async function buildHookIndex(settings: HookSettings): Promise<HookIndex>
       betreff: t.betreff,
       einstieg: t.einstieg,
       others,
+      weitere,
       rank: hook.rank,
       total: hook.total,
       bestleistung: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.bestleistung ?? null) : null,
       themaDativ: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.themaDativ ?? null) : null,
       phrase: hook.categoryKey ? (AWARD_CATEGORY_BY_KEY[hook.categoryKey]?.betreffPhrase ?? null) : null,
+      klasseSlug:
+        (placements.get(g.regionId) ?? []).find(
+          (p) => p.categoryKey === hook.categoryKey && p.level === hook.level,
+        )?.klasseSlug ?? null,
       wo: hook.level ? scopeIn(hook.level, names) : null,
       // Klasse UND Gebiet — der Rang gilt nur innerhalb der Groessenklasse.
       gruppe:
