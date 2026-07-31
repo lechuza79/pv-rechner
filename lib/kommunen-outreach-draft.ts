@@ -226,59 +226,51 @@ Grundlage sind die Anlagendaten des Marktstammdatenregisters der Bundesnetzagent
 export function renderOutreachDraft(c: DraftContext): OutreachDraft {
   const meldung = renderMeldung(c);
 
+  // KURZ. Der Brief hatte 2.400 Zeichen und las sich wie ein Aufsatz — in einem
+  // Rathaus liest das niemand zu Ende. Was bleibt, ist der Anlass, die fertige
+  // Meldung, die eine Bitte und die Unterschrift. Jeder Satz, der nur hoeflich
+  // war, ist raus.
+  //
   // Wer die Website betreut, ist bei kleinen Gemeinden nicht ermittelbar (siehe
-  // `funktion`). Deshalb steht die Bitte um Weiterleitung GANZ OBEN und nennt
-  // die gesuchte Rolle: Das Rathaus verteilt Post ohnehin den ganzen Tag — die
-  // Nachricht muss nur erkennen lassen, wohin sie gehört.
+  // `funktion`). Die Bitte um Weiterleitung steht deshalb GANZ OBEN und nennt
+  // die gesuchte Rolle — jetzt aber in einer Zeile statt in einem Absatz.
   const weiterleitung = c.funktion
     ? ""
-    : `\n\nFalls Sie nicht selbst zuständig sind: Diese Nachricht richtet sich an die Kollegin oder den Kollegen, die Ihre Website und Öffentlichkeitsarbeit betreut. Ich wäre Ihnen für eine kurze Weiterleitung dankbar.`;
+    : `\n\nFalls Sie nicht zuständig sind: bitte an die Website- oder Pressestelle weiterleiten.`;
 
   // Der Widget-Absatz ist der EINZIGE Unterschied zwischen den Varianten —
-  // sonst wäre nicht zu erkennen, ob eine Reaktion am Widget oder am Text lag.
+  // sonst waere nicht zu erkennen, ob eine Reaktion am Widget oder am Text lag.
   const widgetAbsatz =
     c.variante === "meldung_plus_widget"
-      ? `\n\nWenn Sie die Zahlen dauerhaft auf Ihrer Website zeigen möchten, statt sie einmalig zu melden: Es gibt dieselbe Übersicht auch als einbettbares Widget — cookielos, ohne Anmeldung, monatlich automatisch aktuell, Farben und Schrift passe ich an Ihren Auftritt an. Sagen Sie einfach Bescheid, dann schicke ich den Einbettungscode und einen Vorschau-Link.`
+      ? `\n\nDieselbe Übersicht gibt es auch als Widget für Ihre Website — cookielos, monatlich aktuell, im Design anpassbar. Sagen Sie Bescheid, dann schicke ich den Code.`
       : "";
 
-  // Der Aufhänger steht im BETREFF und in der Meldungs-Überschrift. Ein dritter
-  // Einstiegssatz mit derselben Aussage las sich wie ein Textbaustein-Unfall
-  // („Stuttgart hat die meiste …" dreimal in zehn Zeilen). Hier deshalb nur der
-  // Anlass, die Aussage macht die Meldung.
-  // Zähl-Weiterleitung nur im Brief, nie in der Meldung (siehe `pageUrl`).
-  const vorschau = c.vorschauUrl ? `\n\nEinen kurzen Blick vorab können Sie hier werfen: ${c.vorschauUrl}` : "";
-
-  // WEITERE PLATZIERUNGEN — nur im Brief. Sie belegen, dass die Zahl kein
-  // Zufallstreffer ist, und geben der Pressestelle einen Grund, genauer
-  // hinzusehen. In der Meldung haetten sie nichts zu suchen: Ein Text, den eine
-  // Verwaltung veroeffentlichen soll, traegt EINE Aussage.
+  // Weitere Spitzenplaetze — nur im Brief, nie in der Meldung. Sie belegen, dass
+  // die Zahl kein Zufallstreffer ist.
   const weitereListe = (c.weitere ?? []).filter((w) => w.platz && w.von);
   const weitereAbsatz = weitereListe.length
-    ? `\n\n${c.name} steht noch bei weiteren Messgrößen vorn:\n${weitereListe
+    ? `\n\n${c.name} liegt auch hier vorn:\n${weitereListe
         .map((w) => `· Platz ${w.platz} von ${w.von.toLocaleString("de-DE")} ${w.phrase} unter den ${w.gruppe}`)
         .join("\n")}`
     : "";
 
-  // Der Rang ist eine Behauptung, bis man die Liste sehen kann. Die Adresse
-  // zeigt auf genau die Rangliste, in der der Platz gilt — Groessenklasse und
-  // Gebiet inklusive.
-  const nachpruefen = c.ranglisteUrl
-    ? `\n\nDie vollständige Rangliste mit allen gewerteten Kommunen: ${c.ranglisteUrl}`
-    : "";
+  // Beide Links in EINER Zeile: Der Rang ist eine Behauptung, bis man ihn
+  // nachsehen kann — aber das braucht keinen eigenen Absatz.
+  const links = [
+    c.vorschauUrl ? `Vorab ansehen: ${c.vorschauUrl}` : null,
+    c.ranglisteUrl ? `Vollständige Rangliste: ${c.ranglisteUrl}` : null,
+  ].filter(Boolean);
+  const linkZeile = links.length ? `\n\n${links.join("  ·  ")}` : "";
 
   const body = `Sehr geehrte Damen und Herren,${weiterleitung}
 
-${weiterleitung ? "A" : "a"}us den amtlichen Anlagendaten des Marktstammdatenregisters ergibt sich für ${c.name} gerade eine Meldung, die Sie übernehmen können. Ich habe sie fertig formuliert:
+aus dem amtlichen Marktstammdatenregister ergibt sich für ${c.name} gerade eine Meldung — fertig formuliert zum Übernehmen:
 
 ────────────────────────────
 ${meldung}
 ────────────────────────────
 
-Sie können den Text frei verwenden, kürzen und anpassen. Ich bitte nur darum, den Link auf solar-check.io stehen zu lassen — das ist der einzige Gegenwert, den ich dafür möchte. Kein Vertrieb, keine Kosten, keine Anmeldung.${weitereAbsatz}${nachpruefen}${vorschau}
-
-Die Zahlen bereite ich monatlich aus dem amtlichen Marktstammdatenregister auf; die verlinkte Seite ist damit immer aktuell, auch wenn die Meldung älter wird.${widgetAbsatz}
-
-Für Rückfragen oder andere Zuschnitte der Zahlen bin ich jederzeit erreichbar.
+Frei verwendbar, gern gekürzt — ich bitte nur darum, den Link stehen zu lassen. Kein Vertrieb, keine Kosten, keine Anmeldung; die Zahlen aktualisiere ich monatlich.${weitereAbsatz}${linkZeile}${widgetAbsatz}
 
 Mit freundlichen Grüßen
 ${SIGNATURE}

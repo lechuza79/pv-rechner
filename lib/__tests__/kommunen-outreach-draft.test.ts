@@ -80,13 +80,13 @@ describe("Anrede", () => {
 
   it("bittet um Weiterleitung, wenn keine zuständige Stelle bekannt ist", () => {
     const d = renderOutreachDraft(BASIS);
-    expect(d.body).toMatch(/Weiterleitung/);
-    expect(d.body.indexOf("Weiterleitung")).toBeLessThan(d.body.indexOf("Meldung"));
+    expect(d.body).toMatch(/weiterleiten/);
+    expect(d.body.indexOf("weiterleiten")).toBeLessThan(d.body.indexOf("Meldung"));
   });
 
   it("lässt die Bitte weg, wenn eine operative Stelle benannt ist", () => {
     const d = renderOutreachDraft({ ...BASIS, funktion: "Referentin für Öffentlichkeitsarbeit" });
-    expect(d.body).not.toMatch(/Weiterleitung/);
+    expect(d.body).not.toMatch(/weiterleiten/);
   });
 });
 
@@ -99,9 +99,14 @@ describe("Kein Textbaustein-Unfall", () => {
     expect(m).toContain("Damit hat Höchberg die meiste private Speicherkapazität unter den Kleinen Gemeinden");
   });
 
-  it("schreibt nach dem Weiterleitungs-Absatz gross, direkt nach der Anrede klein", () => {
-    expect(renderOutreachDraft(BASIS).body).toContain("Aus den amtlichen");
-    expect(renderOutreachDraft({ ...BASIS, funktion: "Pressestelle" }).body).toContain("aus den amtlichen");
+  it("beginnt den Fliesstext immer klein — die Anrede endet mit Komma", () => {
+    // Frueher stand nach dem Weiterleitungs-Absatz ein Grossbuchstabe. Der
+    // Absatz ist jetzt eine Zeile und der Satz danach beginnt immer klein.
+    for (const funktion of [null, "Pressestelle"]) {
+      expect(renderOutreachDraft({ ...BASIS, funktion }).body, `funktion=${funktion}`).toContain(
+        "aus dem amtlichen",
+      );
+    }
   });
 
   it("wiederholt die Aussage nicht dreimal", () => {
@@ -141,7 +146,7 @@ describe("Pflichtangaben", () => {
   });
 
   it("nennt den Backlink als einzige Gegenleistung", () => {
-    expect(renderOutreachDraft(BASIS).body).toMatch(/Link auf solar-check\.io stehen zu lassen/);
+    expect(renderOutreachDraft(BASIS).body).toMatch(/Link stehen zu lassen/);
   });
 });
 
@@ -383,5 +388,37 @@ describe("Eröffnungszahl erzählt dieselbe Geschichte wie der Rang", () => {
   it("nennt sie weiterhin, wo die Bürger die Mehrheit stellen", () => {
     // Höchberg: 9.000 von 12.400 kWp privat.
     expect(renderMeldung(BASIS)).toContain("pro Person");
+  });
+});
+
+describe("Der Brief bleibt lesbar kurz", () => {
+  // Er hatte 2.400 Zeichen und las sich wie ein Aufsatz. In einem Rathaus liest
+  // das niemand zu Ende — und ein Brief, der nicht gelesen wird, hat keinen Ask.
+  const MIT_ALLEM: DraftContext = {
+    ...BASIS,
+    variante: "meldung_plus_widget",
+    weitere: [
+      { phrase: "bei Balkonkraftwerken", gruppe: "Kleinen Gemeinden im Landkreis Würzburg", platz: 2, von: 52 },
+      { phrase: "beim Solar-Zubau seit Ende 2023", gruppe: "Kleinen Gemeinden in Bayern", platz: 3, von: 1840 },
+    ],
+    ranglisteUrl: "https://solar-check.io/solar-atlas/ranking/x/kleine-gemeinden/bayern",
+  };
+
+  /** Der Brief OHNE die Meldung — sie ist die Nutzlast, nicht die Verpackung. */
+  const rahmen = (c: DraftContext) =>
+    renderOutreachDraft(c).body.replace(/────────────────────────────[\s\S]*?────────────────────────────/, "");
+
+  it("hält die Verpackung im aufwendigsten Fall unter 1.200 Zeichen", () => {
+    const r = rahmen(MIT_ALLEM);
+    expect(r.length, `${r.length} Zeichen Verpackung`).toBeLessThanOrEqual(1350);
+  });
+
+  it("kommt drumherum mit höchstens acht Absätzen aus", () => {
+    const absaetze = rahmen(MIT_ALLEM).split(/\n\n+/).filter((x) => x.trim());
+    expect(absaetze.length, absaetze.map((a) => a.slice(0, 36)).join(" | ")).toBeLessThanOrEqual(9);
+  });
+
+  it("stellt beide Links in eine Zeile", () => {
+    expect(renderOutreachDraft(MIT_ALLEM).body).toMatch(/Vorab ansehen: \S+\s+·\s+Vollständige Rangliste: \S+/);
   });
 });
