@@ -305,10 +305,14 @@ export default async function AtlasPage(props: { params: Promise<Params> }) {
             {/* NICHT "Ranglisten …": Direkt darueber steht schon die "Rangliste der
                 Kreise …" — zwei Ueberschriften mit demselben Wort lesen sich als
                 Dopplung. Diese hier beantwortet eine andere Frage. */}
-            <h2 style={S.h2}>{`Wer je Einwohner vorn liegt${region.level === "de" ? "" : ` — ${ortPhrase(region)}`}`}</h2>
+            {/* NICHT "Wer je Einwohner vorn liegt": Eine der Kacheln misst
+                Batteriespeicher je 100 Dachanlagen, nicht je Einwohner — die
+                Ueberschrift haette fuer sie etwas Falsches behauptet. */}
+            <h2 style={S.h2}>{`Wer vorn liegt${region.level === "de" ? "" : ` — ${ortPhrase(region)}`}`}</h2>
             <p style={S.sub}>
-              Wer je Einwohner am meisten gebaut hat — verglichen innerhalb der Größenklasse, damit Großstädte
-              gegen Großstädte antreten und nicht gegen Dörfer.
+              Ranglisten aus denselben Zahlen, gemessen an der Einwohnerzahl statt an der Größe der Kommune.
+              Verglichen wird innerhalb der Größenklasse, damit Großstädte gegen Großstädte antreten und nicht
+              gegen Dörfer.
             </p>
             <div style={S.rangKacheln}>
               {rankingKategorienGruppiert().buerger.map((k) => (
