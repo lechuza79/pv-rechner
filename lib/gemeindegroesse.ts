@@ -41,6 +41,14 @@ export type Groessenklasse = {
   label: string;
   /** Einzahl, für Spaltenköpfe ("Kleinstadt"). */
   einzahl: string;
+  /**
+   * Dativ Plural, für "unter den …" im Anschreiben und auf der Gemeindeseite.
+   * VON HAND gepflegt, nicht abgeleitet: Deutsche Kasusbildung per Regel
+   * produziert zuverlässig Murks — Dörfer→Dörfern, Städte→Städten,
+   * Gemeinden→Gemeinden, und das Adjektiv beugt sich mit ("Kleine Gemeinden" →
+   * "den Kleinen Gemeinden"). Dieselbe Entscheidung wie bei `themaDativ`.
+   */
+  labelDativ: string;
   /** Die Einwohnerspanne als Text, immer sichtbar neben dem Namen — der Name
    *  allein sagt nicht, wo die Grenze liegt. */
   spanne: string;
@@ -56,6 +64,7 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     // des Betreibers am 31.07.2026: Alltagssprache vor amtlicher Bezeichnung.
     slug: "kleingemeinden",
     label: "Dörfer",
+    labelDativ: "Dörfern",
     einzahl: "Dorf",
     spanne: "unter 1.000",
     min: 0,
@@ -66,6 +75,7 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     // die naechste Stufe heisst "Gemeinden und Kleinstaedte".
     slug: "gemeinden",
     label: "Kleine Gemeinden",
+    labelDativ: "Kleinen Gemeinden",
     einzahl: "Kleine Gemeinde",
     spanne: "1.000–5.000",
     min: 1_000,
@@ -78,6 +88,7 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     // Mehrheit etwas behaupten, was nicht stimmt — und ein 5.000-Einwohner-Ort
     // liest sich als "Kleinstadt" schlicht falsch.
     label: "Gemeinden und Kleinstädte",
+    labelDativ: "Gemeinden und Kleinstädten",
     einzahl: "Gemeinde oder Kleinstadt",
     spanne: "5.000–20.000",
     min: 5_000,
@@ -89,12 +100,21 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     // in der Solarbundesliga), aber im Alltag sagt das niemand — "Kleinstadt"
     // und "Grossstadt" schon, "Mittelstadt" ist Planer-Sprache.
     label: "Mittelgroße Städte",
+    labelDativ: "Mittelgroßen Städten",
     einzahl: "Mittelgroße Stadt",
     spanne: "20.000–100.000",
     min: 20_000,
     max: 100_000,
   },
-  { slug: "grossstaedte", label: "Großstädte", einzahl: "Großstadt", spanne: "ab 100.000", min: 100_000, max: null },
+  {
+    slug: "grossstaedte",
+    label: "Großstädte",
+    einzahl: "Großstadt",
+    labelDativ: "Großstädten",
+    spanne: "ab 100.000",
+    min: 100_000,
+    max: null,
+  },
 ];
 
 export const GROESSENKLASSE_BY_SLUG: Record<string, Groessenklasse> = Object.fromEntries(

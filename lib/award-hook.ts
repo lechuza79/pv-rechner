@@ -6,6 +6,7 @@
 //
 // Reine Funktionen auf dem Award-Rechenkern — eine Rangquelle, keine zweite.
 
+import { GROESSENKLASSE_BY_SLUG, klasseVon } from "./gemeindegroesse";
 import {
   AWARD_CATEGORIES,
   AWARD_CATEGORY_BY_KEY,
@@ -33,6 +34,16 @@ const HOOK_TRAEGER: Traeger = "buerger";
 /** Einwohner-Untergrenze für Pro-Kopf-Aufhänger (wie der öffentliche Atlas,
  *  `p_min_pop`): sonst führt ein 30-Einwohner-Koog jede Pro-Kopf-Liste an — der
  *  Wert ist dann ein Nenner-Artefakt, kein Ausbau. Nur Pro-Kopf-Kategorien. */
+/**
+ * NICHT MEHR IN GEBRAUCH — bleibt nur, weil aeltere Aufrufer und Tests sie
+ * kennen. Der Aufhaenger rankt seit dem 31.07.2026 INNERHALB der Groessenklasse
+ * statt oberhalb einer Einwohner-Untergrenze.
+ *
+ * WARUM: Der Orden auf der Gemeindeseite rechnete mit dieser Grenze und ohne
+ * Klassen, die verlinkte Rangliste ohne Grenze und mit. Der Brief sagte
+ * "Platz 3", die Seite dahinter etwas anderes — zwei Zahlen fuer dieselbe Sache
+ * auf zwei Oberflaechen, die aufeinander zeigen.
+ */
 export const HOOK_MIN_POPULATION = 2000;
 
 /** Bekannte Register-Fehler → nie ein Aufhänger, nur neutral. Aktuell nur
@@ -83,6 +94,10 @@ export type Placement = {
   categoryKey: string;
   level: HookLevel;
   scopeId: string;
+  /** Groessenklasse, INNERHALB derer der Rang gilt. Ohne sie stuenden Brief und
+   *  verlinkte Rangliste auf zwei verschiedenen Rechnungen. */
+  klasseSlug: string;
+  klasseLabel: string;
   rank: number;
   total: number;
   value: number;
@@ -96,6 +111,10 @@ export type Hook = {
   kind: HookKind;
   categoryKey: string | null;
   categoryLabel: string | null;
+  /** Groessenklasse des Vergleichs ("Kleine Gemeinden"). Gehoert in JEDEN Satz,
+   *  der einen Rang nennt — sonst behauptet der Brief einen anderen Vergleich
+   *  als die Rangliste, auf die er verlinkt. */
+  klasseLabel: string | null;
   traeger: Traeger | null;
   level: HookLevel | null;
   scopeId: string | null;
@@ -139,20 +158,28 @@ export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Place
   const levels: HookLevel[] = ["kreis", "land", "bund"];
   for (const cat of AWARD_CATEGORIES) {
     if (cat.traeger !== HOOK_TRAEGER) continue; // nur Bürger-Leistung wird zum Aufhänger
-    const floor = cat.messart === "proKopf" ? HOOK_MIN_POPULATION : 0;
-    const isProKopf = cat.messart === "proKopf";
+    const isProKopf = cat.messart !== "absolut";
     for (const level of levels) {
+      // Gruppiert wird nach Gebiet UND Groessenklasse — exakt wie in der
+      // Rangliste, auf die der Orden und der Brief verlinken.
       const groups = new Map<string, GemeindeStats[]>();
       for (const g of pool) {
-        if (g.population < floor) continue; // Pro-Kopf: Nenner-Artefakt kleiner Gemeinden vermeiden
+        // Dieselbe Groessenpruefung wie in der Liste: Wo "private" Anlagen
+        // Wohnhausgroesse sprengen, zaehlt der Ort dort nicht mit.
+        if (cat.plausibel && !cat.plausibel(g)) continue;
+        const klasse = klasseVon(g.population);
+        if (!klasse) continue;
         const m = cat.metric(g);
         if (m == null || m <= 0) continue;
         const sid = scopeIdOf(g.regionId, SCOPE_OF[level]);
-        const arr = groups.get(sid);
+        const key = `${sid}|${klasse.slug}`;
+        const arr = groups.get(key);
         if (arr) arr.push(g);
-        else groups.set(sid, [g]);
+        else groups.set(key, [g]);
       }
-      for (const [sid, list] of Array.from(groups.entries())) {
+      for (const [key, list] of Array.from(groups.entries())) {
+        const [sid, klasseSlug] = key.split("|");
+        const klasse = GROESSENKLASSE_BY_SLUG[klasseSlug];
         const ranked = rankGemeinden(list, cat);
         const total = ranked.length;
         // Median der Gruppe für den Spike-Wächter (nur Pro-Kopf sinnvoll — bei
@@ -160,7 +187,17 @@ export function computePlacements(gemeinden: GemeindeStats[]): Map<string, Place
         const median = total ? ranked[Math.floor(total / 2)].value : 0;
         for (const r of ranked) {
           const spike = isProKopf && median > 0 && r.value > SPIKE_FACTOR * median;
-          push(r.regionId, { categoryKey: cat.key, level, scopeId: sid, rank: r.rank, total, value: r.value, spike });
+          push(r.regionId, {
+            categoryKey: cat.key,
+            level,
+            scopeId: sid,
+            klasseSlug,
+            klasseLabel: klasse?.labelDativ ?? klasseSlug,
+            rank: r.rank,
+            total,
+            value: r.value,
+            spike,
+          });
         }
       }
     }
@@ -172,6 +209,7 @@ const NEUTRAL: Hook = {
   kind: "neutral",
   categoryKey: null,
   categoryLabel: null,
+  klasseLabel: null,
   traeger: null,
   level: null,
   scopeId: null,
@@ -215,6 +253,7 @@ export function selectHook(placements: Placement[] | undefined, settings: HookSe
         kind,
         categoryKey: cat.key,
         categoryLabel: cat.label,
+        klasseLabel: p.klasseLabel,
         traeger: cat.traeger,
         level: p.level,
         scopeId: p.scopeId,
@@ -253,6 +292,12 @@ export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg:
   const bestleistung = cat?.bestleistung ?? "den größten Solar-Ausbau";
   const thema = cat?.thema ?? "Solar-Ausbau";
   const themaDativ = cat?.themaDativ ?? "Solar-Ausbau";
+  // "unter den Kleinen Gemeinden im Landkreis Miltenberg" — der Vergleich
+  // gehoert in den Satz. Ohne ihn steht im Brief "Platz 3 von 34" und auf der
+  // verlinkten Rangliste eine andere Zahl, weil die innerhalb der Groessenklasse
+  // rechnet. Zwei Zahlen fuer dieselbe Sache sind der schwerste Fehler, den
+  // dieses Projekt machen kann.
+  const gruppe = hook.klasseLabel ? `unter den ${hook.klasseLabel} ${wo}` : wo;
   switch (hook.kind) {
     case "sieger":
       return {
@@ -260,13 +305,13 @@ export function hookText(hook: Hook, n: HookNames): { betreff: string; einstieg:
         // Superlativ. Stünde beides gleich, läse sich der Brief wie ein
         // Textbaustein-Unfall — Betreff und Überschrift sagen dasselbe, nur
         // anders herum.
-        betreff: `${n.gemeinde} auf Platz 1 von ${hook.total} Gemeinden ${wo} bei ${themaDativ}`,
-        einstieg: `${n.gemeinde} hat ${bestleistung} ${wo} — Platz 1 von ${hook.total} Gemeinden.`,
+        betreff: `${n.gemeinde} auf Platz 1 von ${hook.total} ${gruppe} bei ${themaDativ}`,
+        einstieg: `${n.gemeinde} hat ${bestleistung} ${gruppe} — Platz 1 von ${hook.total}.`,
       };
     case "podium":
       return {
-        betreff: `${n.gemeinde} auf Platz ${hook.rank} von ${hook.total} Gemeinden ${wo} bei ${themaDativ}`,
-        einstieg: `${n.gemeinde} liegt bei ${thema} ${wo} auf Platz ${hook.rank} von ${hook.total} Gemeinden.`,
+        betreff: `${n.gemeinde} auf Platz ${hook.rank} von ${hook.total} ${gruppe} bei ${themaDativ}`,
+        einstieg: `${n.gemeinde} liegt bei ${thema} ${gruppe} auf Platz ${hook.rank} von ${hook.total}.`,
       };
     case "perzentil": {
       const pct = Math.max(1, Math.round((hook.percentile ?? 0.1) * 100));

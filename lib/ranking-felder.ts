@@ -65,6 +65,8 @@ export type RankingFeld = {
   label: string;
   /** Einzahl, für den Spaltenkopf. */
   einzahl: string;
+  /** Dativ Plural für "unter den …" — von Hand gepflegt, siehe gemeindegroesse.ts. */
+  labelDativ: string;
   /** Ausgeschrieben für die Überschrift, mit Einwohnerspanne wo es eine gibt. */
   langform: string;
   art: FeldArt;
@@ -75,6 +77,7 @@ const groessenFelder: RankingFeld[] = GROESSENKLASSEN.map((k) => ({
   slug: k.slug,
   label: k.label,
   einzahl: k.einzahl,
+  labelDativ: k.labelDativ,
   langform: klasseLangform(k),
   art: "groesse" as const,
   gilt: (g: GemeindeStats) => klasseVon(g.population)?.slug === k.slug,
@@ -85,6 +88,7 @@ const rollenFelder: RankingFeld[] = [
     slug: "landeshauptstaedte",
     label: "Landeshauptstädte",
     einzahl: "Landeshauptstadt",
+    labelDativ: "Landeshauptstädten",
     langform: "die 16 Landeshauptstädte",
     art: "rolle",
     gilt: (g) => g.regionId in LANDESHAUPTSTAEDTE,
@@ -93,6 +97,7 @@ const rollenFelder: RankingFeld[] = [
     slug: "kreisfreie-staedte",
     label: "Kreisfreie Städte",
     einzahl: "Kreisfreie Stadt",
+    labelDativ: "kreisfreien Städten",
     langform: "kreisfreie Städte und Stadtkreise",
     art: "rolle",
     gilt: (g) => KREISFREI.has(g.bezeichnung),

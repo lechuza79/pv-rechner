@@ -4,6 +4,7 @@ import { computePlacements, DEFAULT_HOOK_SETTINGS, LEVEL_LABEL, type HookLevel }
 import { AWARD_CATEGORY_BY_KEY, formatAwardValue, rankGemeinden, scopeIdOf } from "../../../../lib/awards";
 import { bundeslandByAgs } from "../../../../lib/mastr-regions";
 import { ortPhrase } from "../../../../lib/atlas-orte";
+import { GROESSENKLASSE_BY_SLUG, klasseVon } from "../../../../lib/gemeindegroesse";
 
 // Platzierungen einer Gemeinde + die Rangliste ihrer stärksten Kategorie.
 //
@@ -79,13 +80,16 @@ export async function GET(req: NextRequest) {
   const nachId = new Map(stats.map((g) => [g.regionId, g]));
 
   /** `/solar-atlas/ranking/<kategorie>/<bundesland>/<kreis>` je Vergleichsebene. */
-  function rankingHrefVon(katSlug: string | undefined, level: HookLevel): string | null {
+  function rankingHrefVon(katSlug: string | undefined, level: HookLevel, klasseSlug: string): string | null {
     if (!katSlug) return null;
+    // MIT DER GROESSENKLASSE: Ohne sie zeigt die Zielseite die Spitze ALLER
+    // Klassen — der Leser sucht dort vergeblich seinen "Platz 1 von 119".
+    const q = `?groesse=${klasseSlug}`;
     const bl = elternSlugs[regionId.slice(0, 2)];
     const kreis = elternSlugs[regionId.slice(0, 5)];
-    if (level === "bund") return `/solar-atlas/ranking/${katSlug}`;
-    if (level === "land") return bl ? `/solar-atlas/ranking/${katSlug}/${bl}` : null;
-    return bl && kreis ? `/solar-atlas/ranking/${katSlug}/${bl}/${kreis}` : null;
+    if (level === "bund") return `/solar-atlas/ranking/${katSlug}${q}`;
+    if (level === "land") return bl ? `/solar-atlas/ranking/${katSlug}/${bl}${q}` : null;
+    return bl && kreis ? `/solar-atlas/ranking/${katSlug}/${bl}/${kreis}${q}` : null;
   }
 
   /** Die vollständige Rangliste einer Platzierung — dieselbe Gruppe, aus der ihr
@@ -96,9 +100,16 @@ export async function GET(req: NextRequest) {
     if (!cat) return [];
     const ebene = p.level === "kreis" ? "landkreis" : p.level === "land" ? "bundesland" : "de";
     const scope = scopeIdOf(regionId, ebene);
-    const floor = cat.messart === "proKopf" ? 2000 : 0;
+    // DIESELBE GRUPPE WIE IN DER RANGLISTE: Gebiet UND Groessenklasse, plus die
+    // Groessenpruefung der Kategorie. Vorher stand hier eine 2.000-Einwohner-
+    // Grenze ohne Klassen — der Orden zeigte damit einen anderen Platz als die
+    // Seite, auf die er verlinkt.
     const gruppe = stats.filter(
-      (g) => g.population >= floor && (cat.metric(g) ?? 0) > 0 && scopeIdOf(g.regionId, ebene) === scope,
+      (g) =>
+        scopeIdOf(g.regionId, ebene) === scope &&
+        klasseVon(g.population)?.slug === p.klasseSlug &&
+        (!cat.plausibel || cat.plausibel(g)) &&
+        (cat.metric(g) ?? 0) > 0,
     );
     return rankGemeinden(gruppe, cat)
       .slice(0, MAX_TABELLE)
@@ -142,6 +153,11 @@ export async function GET(req: NextRequest) {
         bestleistung: cat.bestleistung,
         ebene: LEVEL_LABEL[p.level as HookLevel],
         wo: woLabel(p.level),
+        // Der Vergleich, in dem der Platz gilt. Muss mitgehen, sonst liest sich
+        // "Platz 3 im Landkreis" als Vergleich mit ALLEN Orten des Kreises —
+        // gerankt wird aber innerhalb der Groessenklasse.
+        klasse: GROESSENKLASSE_BY_SLUG[p.klasseSlug]?.label ?? p.klasseLabel,
+        gruppe: `${GROESSENKLASSE_BY_SLUG[p.klasseSlug]?.label ?? p.klasseLabel} ${woLabel(p.level)}`,
         platz: p.rank,
         von: p.total,
         // Der Formatierer bringt bei manchen Kategorien schon einen Punkt mit
@@ -150,7 +166,7 @@ export async function GET(req: NextRequest) {
         // Adresse der vollständigen Ranking-Seite. Nur Pro-Kopf-Kategorien
         // haben eine (siehe `slug` in lib/awards.ts) — und nur, wenn sich das
         // Gebiet aus Slugs zusammensetzen lässt.
-        rankingHref: rankingHrefVon(cat.slug, p.level),
+        rankingHref: rankingHrefVon(cat.slug, p.level, p.klasseSlug),
         tabelle,
         /** Sitzt die eigene Zeile losgelöst unter den Anführern? Dann setzt die
          *  Anzeige eine Auslassung dazwischen. */

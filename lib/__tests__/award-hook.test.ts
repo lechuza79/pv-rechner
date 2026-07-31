@@ -41,18 +41,34 @@ describe("Aufhänger-Guardrails (Gegenprüfung 2026-07-25)", () => {
     }
   });
 
-  it("schließt Pro-Kopf-Aufhänger für Gemeinden unter der Einwohner-Schwelle aus", () => {
-    const winzling = g("09111001", { population: 300, privatDachKwp: 9000 }); // absurde Pro-Kopf-Zahl
+  it("vergleicht nur innerhalb der Größenklasse — ein Weiler schlägt keine Stadt", () => {
+    // ERSETZT DIE FRUEHERE EINWOHNER-UNTERGRENZE (2.000). Die schloss kleine
+    // Orte ganz aus; jetzt treten sie gegeneinander an. Entscheidend ist, dass
+    // ihre absurde Pro-Kopf-Zahl nicht mehr in derselben Liste steht wie die
+    // Stadt — sonst zeigte der Orden einen anderen Platz als die Rangliste, auf
+    // die er verlinkt.
+    const winzling = g("09111001", { population: 300, privatDachKwp: 9000 });
     const stadt = g("09111002", { population: 5000, privatDachKwp: 3000 });
     const pl = computePlacements([winzling, stadt]);
-    expect((pl.get("09111001") ?? []).some((p) => p.categoryKey === "dach-privat-pk")).toBe(false);
-    expect((pl.get("09111002") ?? []).some((p) => p.categoryKey === "dach-privat-pk")).toBe(true);
+    const klasseVon = (id: string) =>
+      (pl.get(id) ?? []).find((p) => p.categoryKey === "dach-privat-pk")?.klasseSlug;
+    expect(klasseVon("09111001")).toBe("kleingemeinden");
+    expect(klasseVon("09111002")).toBe("kleinstaedte");
+    expect(klasseVon("09111001")).not.toBe(klasseVon("09111002"));
+  });
+
+  it("macht aus einer Ein-Ort-Gruppe keinen Aufhänger", () => {
+    // Die Klassen-Trennung erzeugt kleine Gruppen. "Platz 1 von 1" ist keine
+    // Auszeichnung — davor schuetzt die Mindest-Gruppengroesse.
+    const allein = g("09111001", { population: 300, privatDachKwp: 9000 });
+    const hook = selectHook(computePlacements([allein]).get("09111001"));
+    expect(hook.kind).toBe("neutral");
   });
 });
 
 describe("selectHook", () => {
   const P = (over: Partial<Placement>): Placement => ({
-    categoryKey: "dach-privat-pk", level: "kreis", scopeId: "09111", rank: 1, total: 20, value: 100, spike: false, ...over,
+    categoryKey: "dach-privat-pk", level: "kreis", scopeId: "09111", klasseSlug: "gemeinden", klasseLabel: "Kleinen Gemeinden", rank: 1, total: 20, value: 100, spike: false, ...over,
   });
 
   it("überspringt Spike-Platzierungen (Datenfehler-Verdacht)", () => {
@@ -104,7 +120,7 @@ describe("selectHook", () => {
 describe("hookText", () => {
   const sieger = (key: string, label: string) =>
     hookText(
-      { kind: "sieger", categoryKey: key, categoryLabel: label, traeger: "buerger", level: "kreis", scopeId: "09111", rank: 1, total: 34, percentile: null, value: 65 },
+      { kind: "sieger", categoryKey: key, categoryLabel: label, klasseLabel: "Kleinen Gemeinden", traeger: "buerger", level: "kreis", scopeId: "09111", rank: 1, total: 34, percentile: null, value: 65 },
       names,
     );
 
@@ -113,7 +129,7 @@ describe("hookText", () => {
     // als Superlativ. Stünde beides gleich, läse sich der Brief wie ein
     // Textbaustein-Unfall.
     const s = sieger("dach-privat-abs", "Solardach-Hauptstadt");
-    expect(s.betreff).toMatch(/^Musterdorf auf Platz 1 von 34 Gemeinden/);
+    expect(s.betreff).toMatch(/^Musterdorf auf Platz 1 von 34 unter den Kleinen Gemeinden/);
     expect(s.betreff).not.toContain("die meiste"); // Superlativ gehört in die Meldung
     expect(s.einstieg).toContain("die meiste"); // dort steht er
   });
@@ -129,7 +145,12 @@ describe("hookText", () => {
     // Der sagt nicht, was gemessen wurde, und die Auszeichnung existiert
     // öffentlich nirgends — eine Verwaltung liest das als Marketing-Erfindung.
     const s = sieger("balkon-pk", "Balkon-Pionier");
-    expect(s.betreff).toBe("Musterdorf auf Platz 1 von 34 Gemeinden im Landkreis Musterkreis bei Balkonkraftwerken je 1.000 Einwohner");
+    // Die Groessenklasse steht im Satz — ohne sie behauptete der Brief einen
+    // Vergleich mit ALLEN Orten des Kreises, waehrend die verlinkte Rangliste
+    // innerhalb der Klasse rechnet.
+    expect(s.betreff).toBe(
+      "Musterdorf auf Platz 1 von 34 unter den Kleinen Gemeinden im Landkreis Musterkreis bei Balkonkraftwerken je 1.000 Einwohner",
+    );
     expect(s.einstieg).toContain("Platz 1 von 34");
   });
 
@@ -149,15 +170,17 @@ describe("hookText", () => {
 
   it("formuliert Platzierungen unterhalb von Platz 1 ohne Superlativ", () => {
     const p = hookText(
-      { kind: "podium", categoryKey: "balkon-pk", categoryLabel: "Balkon-Pionier", traeger: "buerger", level: "kreis", scopeId: "09111", rank: 3, total: 34, percentile: null, value: 40 },
+      { kind: "podium", categoryKey: "balkon-pk", categoryLabel: "Balkon-Pionier", klasseLabel: "Kleinen Gemeinden", traeger: "buerger", level: "kreis", scopeId: "09111", rank: 3, total: 34, percentile: null, value: 40 },
       names,
     );
-    expect(p.betreff).toBe("Musterdorf auf Platz 3 von 34 Gemeinden im Landkreis Musterkreis bei Balkonkraftwerken je 1.000 Einwohner");
+    expect(p.betreff).toBe(
+      "Musterdorf auf Platz 3 von 34 unter den Kleinen Gemeinden im Landkreis Musterkreis bei Balkonkraftwerken je 1.000 Einwohner",
+    );
     expect(p.betreff).not.toContain("die meisten");
   });
 
   it("fällt ohne Aufhänger auf einen neutralen Satz zurück", () => {
-    const neutral = hookText({ kind: "neutral", categoryKey: null, categoryLabel: null, traeger: null, level: null, scopeId: null, rank: null, total: null, percentile: null, value: null }, names);
+    const neutral = hookText({ kind: "neutral", categoryKey: null, categoryLabel: null, klasseLabel: null, traeger: null, level: null, scopeId: null, rank: null, total: null, percentile: null, value: null }, names);
     expect(neutral.betreff).toContain("So steht Musterdorf beim Solarausbau da");
   });
 });

@@ -27,6 +27,12 @@ type Platzierung = {
   bestleistung: string;
   ebene: string;
   wo: string;
+  /** Groessenklasse des Vergleichs ("Kleine Gemeinden"). */
+  klasse: string;
+  /** Klasse und Gebiet zusammen ("Kleine Gemeinden im Landkreis Miltenberg") —
+   *  ohne die Klasse liest sich "Platz 3 im Landkreis" als Vergleich mit ALLEN
+   *  Orten des Kreises, gerankt wird aber innerhalb der Groesse. */
+  gruppe: string;
   platz: number;
   von: number;
   wert: string;
@@ -97,7 +103,7 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
         </span>
         <span style={S.thema}>{gross(b.thema)}</span>
         <span style={S.bezug}>
-          {b.wo} · <span style={S.wert}>{b.wert}</span>
+          {b.gruppe} · <span style={S.wert}>{b.wert}</span>
         </span>
       </button>
 
@@ -136,8 +142,8 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
           offen === null
             ? ""
             : daten.alle[offen].tabelleGekuerzt
-              ? `Die ersten ${nf(daten.alle[offen].tabelle.length)} von ${nf(daten.alle[offen].von)} Kommunen der Vergleichsgruppe, gerechnet aus dem Marktstammdatenregister.`
-              : `Alle ${nf(daten.alle[offen].tabelle.length)} Kommunen der Vergleichsgruppe, gerechnet aus dem Marktstammdatenregister.`
+              ? `Die ersten ${nf(daten.alle[offen].tabelle.length)} von ${nf(daten.alle[offen].von)} — ${daten.alle[offen].gruppe}, gerechnet aus dem Marktstammdatenregister.`
+              : `Alle ${nf(daten.alle[offen].tabelle.length)} — ${daten.alle[offen].gruppe}, gerechnet aus dem Marktstammdatenregister.`
         }
         maxWidth={560}
       >
