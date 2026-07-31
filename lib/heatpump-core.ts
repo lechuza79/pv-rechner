@@ -111,7 +111,7 @@ export function calcJAZ(wpType: "lwwp" | "swwp", flowTemp: number, cfg: HeatPump
 // Schlanke gemeinsame Quelle für PV- und WP-Rechner: dieselbe Physik wie die
 // große TCO-Rechnung (Heizwärmebedarf ÷ Jahresarbeitszahl), aber ohne
 // Investitions-/Förder-/Gas-Overhead. So liefert dasselbe Haus überall denselben
-// WP-Stromverbrauch, statt einmal pauschal 3500 kWh und einmal ~11.000 kWh.
+// WP-Stromverbrauch, statt einmal pauschal 3500 kWh und einmal ~9.000 kWh.
 // Modelliert den Ist-Zustand (kein Heizkörpertausch).
 export interface WpElectricityInputs {
   situation: "bestand" | "neubau";
@@ -149,6 +149,8 @@ export function defaultWpAnnualKwh(personenCount = 2): number {
 }
 
 // Person-agnostischer Default (2 Personen) für Anzeige/Fallbacks, wo die
-// Personenzahl unbekannt ist. ~7.300 kWh — die ehrliche Größenordnung einer
-// realen Wärmepumpe (die alte 3.500-Pauschale unterschätzte massiv).
+// Personenzahl unbekannt ist. Rund 6.000 kWh — die ehrliche Größenordnung einer
+// realen Wärmepumpe (die alte 3.500-Pauschale unterschätzte massiv). Der Wert sank
+// am 31.07.2026 von ~7.300, weil die Heizwärme seither aus dem erwarteten Verbrauch
+// statt aus dem Norm-Bedarf kommt (lib/heat-consumption.ts).
 export const DEFAULT_WP_ANNUAL_KWH = defaultWpAnnualKwh(2);

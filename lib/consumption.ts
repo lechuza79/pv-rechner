@@ -8,7 +8,7 @@ import { DEFAULT_WP_ANNUAL_KWH } from "./heatpump-core";
 // ─── Constants ──────────────────────────────────────────────────────────────
 
 // WP-Jahresstrom-Default: das Standard-Gebäude durch die exakte Methode
-// (Heizwärmebedarf ÷ Arbeitszahl) — ~7.300 kWh, nicht mehr die alte 3.500-
+// (Heizwärme ÷ Arbeitszahl) — rund 6.000 kWh, nicht mehr die alte 3.500-
 // Pauschale. Greift überall, wo keine echten Gebäudedaten vorliegen. Der PV-
 // und WP-Rechner überschreiben ihn mit den tatsächlichen Eingaben.
 export const WP_ANNUAL_KWH = DEFAULT_WP_ANNUAL_KWH;
