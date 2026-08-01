@@ -55,16 +55,25 @@ Moderation, Website und Reden. Eine hauptamtliche Stelle kostet 35.000 bis 70.00
 Jahr — der genannte Rat an kleinere Kommunen lautet folgerichtig: externe Berater statt
 eigener Stelle.
 
-**Fertige Texte an Kommunen zu schicken ist gängige Praxis, nicht anmaßend.**
+**Fertiger Text FÜR Kommunen ist ein normales Format — aber niemand schickt ihn ungefragt.**
 Die hessische Landesenergieagentur liefert Kommunen in ihrer Solarkampagne ausdrücklich
 „Textbausteine für Pressemitteilungen und Informationsschreiben", dazu Postkarten, Flyer,
-Plakatvorlagen und Social-Media-Inhalte. Die Begründung steht offen dabei: damit Kommunen
-die Kampagne „mit geringem Aufwand" durchführen können. Der bundesweite Photovoltaik-
-Wettbewerb *Wattbewerb* stellt teilnehmenden Kommunen ebenfalls Grafik- und Textvorlagen
-bereit. **Wichtige Einschränkung:** Das sind Landesagenturen und Kampagnen — Absender, die
-eine Verwaltung als legitim einordnet. Ein privater Website-Betreiber, der einen Link
-möchte, ist etwas anderes. Der Beleg trägt also die Form („fertiger Text ist üblich"), nicht
-automatisch unseren Fall.
+Plakatvorlagen und Social-Media-Inhalte, mit der offen genannten Begründung, die Kampagne
+solle „mit geringem Aufwand" durchführbar sein. Der bundesweite Photovoltaik-Wettbewerb
+*Wattbewerb* stellt teilnehmenden Kommunen ebenfalls Vorlagen und Texte zum Download bereit.
+
+**Das ist aber kein Beleg für unseren Fall, und das muss man sich eingestehen** (nachgeprüft
+am 01.08.2026 an beiden Angeboten): In beiden Fällen **holt sich die Kommune das Material
+selbst ab**. Hessen verlangt ein ausgefülltes Bestellformular, danach kommt ein Download-Link;
+beim Wattbewerb meldet sich die Kommune selbst an — ausdrücklich „Die Registrierung zur
+Teilnahme erfolgt durch eineN MitarbeiterIn der Stadt". Niemand wird angeschrieben. Dazu
+kommt, dass beide Absender Landesagentur bzw. Kampagne sind, also Institutionen, die eine
+Verwaltung ohne Nachdenken als legitim einordnet.
+
+Belegt ist damit nur: **Ein fertiger Absatz ist gegenüber einer Verwaltung kein Affront** —
+das Format ist eingeführt und wird von seriösen Absendern benutzt. **Nicht belegt** ist, wie
+eine Verwaltung reagiert, wenn derselbe fertige Absatz unaufgefordert von einem privaten
+Absender kommt. Genau das ist unser Fall, und dazu habe ich nichts gefunden.
 
 **Große Städte brauchen unseren Text am wenigsten.** 44 der 50 größten Städte haben von
 Januar bis November 2025 rund 54.500 Meldungen und Einladungen verschickt, Berlin allein
@@ -82,6 +91,10 @@ Fertigtext für eine große Stadt kein Geschenk, sondern Rauschen.
 **Meine Zeitknappheits-Begründung.** Sie beschreibt den falschen Akteur. Bei der Mehrheit
 der Gemeinden gibt es niemanden, dessen Zeit knapp wäre — es gibt die Rolle nicht. Und wo
 es sie gibt, ist Schreiben genau das, was diese Leute den ganzen Tag tun.
+
+Damit steht die Entscheidung auf einem Bein weniger, als es zuerst aussah: Der Vergleich mit
+Hessen und Wattbewerb trägt nur die Form, nicht den unaufgeforderten Versand. Was bleibt, ist
+das folgende Argument — das aber hält.
 
 Der eigentliche Grund für eine fertige Meldung ist ein anderer und hält der Prüfung stand:
 **Nicht die Schreibzeit fehlt, sondern der Anlass und die Zuständigkeit.** Niemandes Aufgabe
@@ -167,7 +180,9 @@ Für uns heißt das dreierlei:
   Kostenangaben geschlossen, nicht gemessen.
 - **Zur Reaktion von Verwaltungen auf unaufgeforderte fertige Texte von privaten Absendern
   habe ich nichts gefunden** — keine Studie, keine Praktikeraussage, keinen Leitfaden. Weder
-  Beleg noch Gegenbeleg. Diese Frage beantwortet nur der eigene Versand.
+  Beleg noch Gegenbeleg. Das ist die zentrale offene Frage, und sie beantwortet nur der eigene
+  Versand. Auch die beiden Vergleichsfälle beantworten sie nicht: Dort holt die Kommune das
+  Material selbst ab.
 - **Eine Studie zur kommunalen Öffentlichkeitsarbeit (andersneu, 2021/22, vom Städte- und
   Gemeindebund unterstützt, über 2.000 eingeladene Kommunen) existiert, ist aber nicht mehr
   beschaffbar** — der Volltext lag hinter einer Registrierung, und die Website des Anbieters
@@ -249,8 +264,8 @@ Go ändere ich am Anschreiben nichts.
 |---|---|
 | 60 % ehrenamtliche Bürgermeister, 10.788 insgesamt, ⌀ 20 Std./Woche, ⌀ Gemeinde 1.230 Ew., 45 % Hauptberuf reduziert | ZEFIR/Ruhr-Universität Bochum, „Der ehrenamtliche Bürgermeister, das unbekannte Wesen" (2024; ~1.500 Befragte + 11 Interviews, gefördert vom Bundeslandwirtschaftsministerium) — [Pressemitteilung RUB](https://news.rub.de/presseinformationen/wissenschaft/2024-04-15-studie-der-ehrenamtliche-buergermeister-das-unbekannte-wesen), übernommen vom [Deutschen Städte- und Gemeindebund, 29.04.2024](https://www.dstgb.de/themen/lokale-demokratie/aktuelles/kommunalpolitik-im-ehrenamt/) |
 | Pressesprecherin ab ~8.000 Ew. als Einzelfall; „hochflexible Universalkraft"; 35.000–70.000 € für eine hauptamtliche Stelle; Rat an kleine Kommunen: externe Berater | [KOM – Magazin für Kommunikation, „Die Pflicht zu informieren"](https://www.kom.de/pressearbeit-in-kommunen-und-kleinstaedten/) |
-| Fertige „Textbausteine für Pressemitteilungen und Informationsschreiben" an Kommunen, Begründung „mit geringem Aufwand" | [Kommunale Solarkampagne, Fachstelle Klima-Kommunen / LEA Hessen](https://www.klima-kommunen-hessen.de/solarkampagne) |
-| Grafik- und Textvorlagen für teilnehmende Kommunen | [Wattbewerb](https://wattbewerb.de/) |
+| Fertige „Textbausteine für Pressemitteilungen und Informationsschreiben" an Kommunen, Begründung „mit geringem Aufwand"; Bezug über Bestellformular, kein Anschreiben | [Kommunale Solarkampagne, Fachstelle Klima-Kommunen / LEA Hessen](https://www.klima-kommunen-hessen.de/solarkampagne) |
+| Vorlagen und Texte zum Download für teilnehmende Kommunen; Kommunen melden sich selbst an („Die Registrierung zur Teilnahme erfolgt durch eineN MitarbeiterIn der Stadt"), werden nicht angeschrieben | [Wattbewerb, Fragen und Antworten](https://wattbewerb.de/info/fragen-und-antworten) |
 | 54.500 Meldungen von 44 der 50 größten Städte (Jan.–Nov. 2025), ⌀ 1.237 pro Stadt, Berlin 6.316; Lokalzeitungs-Umfrage (19 von 20, 75 %, zwei Drittel) | [BDZV, „Kommunen als Medienakteure setzen Lokaljournalismus unter Druck" (2026)](https://www.bdzv.de/service/presse/branchennachrichten/2026/kommunen-als-medienakteure-setzen-lokaljournalismus-unter-druck) |
 | Neutralitäts- und Sachlichkeitsgebot, Staatsferne der Presse, BGH 2018 zu presseähnlichen Amtsblättern, BGH zum Dortmunder Stadtportal | [KOMMUNAL, Christian Erhardt-Maciejewski, 30.01.2026](https://kommunal.de/kommunale-oeffentlichkeitsarbeit-was-erlaubt-ist-und-was-nicht) |
 | Bewerbung einzelner privater Unternehmen verstößt gegen das Neutralitätsgebot; Hinweise auf private Betriebe nur „betont sachlich" | [KPMG Law, „Kommunale Internetportale und Presseverlage"](https://kpmg-law.de/kommunale-internetportale-und-presseverlage-wannendet-der-dauerstreit/) |
