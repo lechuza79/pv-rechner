@@ -140,6 +140,15 @@ const S = {
 };
 
 const nf = (n: number) => n.toLocaleString("de-DE");
+/**
+ * Gesetzlich festgelegte Vergütungssätze in ct/kWh. Immer zwei Nachkommastellen:
+ * die Bundesnetzagentur veröffentlicht "7,70", und nf() würde daraus "7,7"
+ * machen — dieselbe Zahl, aber nicht mehr die amtliche Schreibweise, und in
+ * einer Spalte, in der die Nachbarzeilen zwei Stellen tragen, liest sich das
+ * wie ein anderer Grad an Genauigkeit.
+ */
+const ctSatz = (n: number) =>
+  n.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const monthYear = (iso: string) =>
   new Date(iso + "T00:00:00").toLocaleDateString("de-DE", { month: "long", year: "numeric" });
 
@@ -284,10 +293,10 @@ export default async function DatenstandPage() {
           stand={monthYear(feedin.validFrom)}
           intro="Gesetzliche EEG-Sätze für neu in Betrieb genommene Anlagen, gestaffelt nach Anlagengröße und Einspeiseart."
           rows={[
-            { label: `Teileinspeisung bis ${nf(feedin.thresholdKwp)} kWp`, value: `${nf(feedin.teilUnder10)} ct/kWh` },
-            { label: `Teileinspeisung über ${nf(feedin.thresholdKwp)} kWp`, value: `${nf(feedin.teilOver10)} ct/kWh` },
-            { label: `Volleinspeisung bis ${nf(feedin.thresholdKwp)} kWp`, value: `${nf(feedin.vollUnder10)} ct/kWh` },
-            { label: `Volleinspeisung über ${nf(feedin.thresholdKwp)} kWp`, value: `${nf(feedin.vollOver10)} ct/kWh` },
+            { label: `Teileinspeisung bis ${nf(feedin.thresholdKwp)} kWp`, value: `${ctSatz(feedin.teilUnder10)} ct/kWh` },
+            { label: `Teileinspeisung über ${nf(feedin.thresholdKwp)} kWp`, value: `${ctSatz(feedin.teilOver10)} ct/kWh` },
+            { label: `Volleinspeisung bis ${nf(feedin.thresholdKwp)} kWp`, value: `${ctSatz(feedin.vollUnder10)} ct/kWh` },
+            { label: `Volleinspeisung über ${nf(feedin.thresholdKwp)} kWp`, value: `${ctSatz(feedin.vollOver10)} ct/kWh` },
           ]}
           source={feedin.source || "Bundesnetzagentur, § 48 EEG"}
           caveat={feedin.note}
@@ -298,7 +307,7 @@ export default async function DatenstandPage() {
           title="Einspeisevergütung – historische Reihe"
           stand={FEEDIN_HISTORY_META.dataAsOf}
           intro="Jahresanfangs-Sätze für kleine Dachanlagen bei Inbetriebnahme, 2000 bis heute. Grundlage der Datenstory zum Solar-Zubau (photovoltaik-zubau-deutschland). Ab April 2012 sank die Vergütung unterjährig — die Jahreswerte sind Jahresanfangs-Repräsentanten."
-          rows={FEEDIN_HISTORY_YEARS.map((y, i) => ({ label: `${y}`, value: `${nf(FEEDIN_HISTORY_VALUES[i])} ct/kWh` }))}
+          rows={FEEDIN_HISTORY_YEARS.map((y, i) => ({ label: `${y}`, value: `${ctSatz(FEEDIN_HISTORY_VALUES[i])} ct/kWh` }))}
           source={FEEDIN_HISTORY_META.source}
         />
 

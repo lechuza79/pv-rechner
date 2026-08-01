@@ -60,10 +60,19 @@ abgeleitete Wert ist damit belastbar, aber er ist **unsere** Rechnung:
 - Der Geltungszeitraum wird als „ab TT.MM.JJJJ" angegeben, **nicht** bis zum
   Ende des Halbjahres — das Halbjahresende zu behaupten unterstellt, dass das
   Gesetz bis dahin unverändert bleibt.
-- **Nachlauf-Prüfung** (scheduled task `eeg-bnetza-veroeffentlichung-nachlauf`):
-  läuft bis zur Veröffentlichung und gleicht dann ab. Stimmen die Werte überein
-  → `source` auf die amtliche Zuschreibung zurückstellen, `note` entfernen.
+- **Nachlauf-Prüfung:** ein täglicher scheduled task, der bis zur
+  Veröffentlichung läuft und dann abgleicht. Er wird bei jedem Vorausrechnen
+  **neu angelegt** und löscht sich nach dem Abgleich selbst — wer ihn sucht,
+  findet ihn zwischen zwei Halbjahren nicht. Stimmen die Werte überein →
+  `source` auf die amtliche Zuschreibung zurückstellen, `note` entfernen.
   **Weichen sie ab → melden statt überschreiben.**
+
+**Der Fall ist einmal durchlaufen und hat gehalten** (Halbjahr 08/2026): Am
+28.07.2026 vorausgerechnet, am 01.08.2026 gegen die erschienene Liste geprüft —
+alle vier Sätze stimmten auf den Cent (7,70 · 6,66 · 12,22 · 10,24). Die
+Gesetzeskette ist damit nicht nur rückwirkend an veröffentlichten Halbjahren
+geprüft, sondern einmal echt vorhergesagt. Vorausrechnen ist die richtige
+Antwort auf eine fehlende Liste — Hauptsache, die Herkunft steht dran.
 
 ## So wird die Routine ausgelöst
 
