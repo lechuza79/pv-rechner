@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { DEFAULT_FEED_IN, feedInRatesFor } from "../feedin-config";
+import { DEFAULT_FEED_IN, FEED_IN_SCHEDULE, feedInRatesFor } from "../feedin-config";
 
 /**
  * Realitäts-Anker für die EEG-Einspeisevergütung (Wächter-Gate, Regel 7).
@@ -49,8 +49,11 @@ const satzFuer = (n: number) => ({
 /**
  * Amtlich veröffentlichte Einspeisevergütung, Gebäude, je Inbetriebnahme-
  * Halbjahr — abgeschrieben aus den Tabellen der Bundesnetzagentur
- * ("Anzulegende Werte für Solaranlagen", Archiv), geprüft am 28.07.2026.
+ * ("Anzulegende Werte für Solaranlagen", Archiv), geprüft am 01.08.2026.
  * n = Zahl der Degressionsschritte seit dem 01.02.2024.
+ *
+ * Volltext des zuletzt erschienenen Halbjahres liegt im Repo:
+ * docs/quellen/bnetza-verguetungssaetze-aug2026-jan2027.xlsx
  */
 const AMTLICH: Array<{ n: number; zeitraum: string; teilUnder10: number; teilOver10: number; vollUnder10: number; vollOver10: number }> = [
   { n: 1, zeitraum: "02–07/2024",    teilUnder10: 8.11, teilOver10: 7.03, vollUnder10: 12.87, vollOver10: 10.79 },
@@ -58,6 +61,7 @@ const AMTLICH: Array<{ n: number; zeitraum: string; teilUnder10: number; teilOve
   { n: 3, zeitraum: "02–07/2025",    teilUnder10: 7.94, teilOver10: 6.88, vollUnder10: 12.60, vollOver10: 10.56 },
   { n: 4, zeitraum: "08/2025–01/26", teilUnder10: 7.86, teilOver10: 6.80, vollUnder10: 12.47, vollOver10: 10.45 },
   { n: 5, zeitraum: "02–07/2026",    teilUnder10: 7.78, teilOver10: 6.73, vollUnder10: 12.34, vollOver10: 10.35 },
+  { n: 6, zeitraum: "08/2026–01/27", teilUnder10: 7.70, teilOver10: 6.66, vollUnder10: 12.22, vollOver10: 10.24 },
 ];
 
 describe("EEG-Vergütung – Realitäts-Anker", () => {
@@ -115,13 +119,24 @@ describe("EEG-Vergütung – Realitäts-Anker", () => {
     }
   });
 
-  it("kennzeichnet selbst gerechnete Sätze und schreibt sie nicht der Behörde zu", () => {
-    // Solange ein Satz aus dem Gesetz abgeleitet und noch nicht in der Liste der
-    // Bundesnetzagentur steht, darf die Quellenangabe sie nicht als Urheberin
-    // nennen — und der Vorbehalt muss sichtbar mitgeliefert werden.
+  it("nennt die Behörde erst, seit ihre Liste erschienen ist — und trägt dann keinen Vorbehalt mehr", () => {
+    // Bis zum 31.07.2026 waren diese Sätze aus dem Gesetz abgeleitet, also mit
+    // sichtbarem Herkunfts-Vorbehalt und OHNE die Behörde als Urheberin. Seit
+    // die Bundesnetzagentur ihre Tabelle veröffentlicht hat (abgerufen am
+    // 01.08.2026, Volltext in docs/quellen/), gilt das Gegenteil: Zuschreibung
+    // an die Behörde, kein Vorbehalt. Beide Fehlrichtungen sind hier zu.
     const august = feedInRatesFor(new Date("2026-08-01T12:00:00Z"));
-    expect(august.note).toBeTruthy();
-    expect(august.source).not.toMatch(/Bundesnetzagentur/);
-    expect(august.source).toMatch(/Eigene Berechnung/);
+    expect(august.note ?? null).toBeNull();
+    expect(august.source).toMatch(/Bundesnetzagentur/);
+    expect(august.source).not.toMatch(/Eigene Berechnung/);
+  });
+
+  it("ein Satz mit Herkunfts-Vorbehalt schreibt sich nie der Behörde zu", () => {
+    // Die Regel selbst, unabhängig vom aktuellen Halbjahr: Der Vorbehalt und
+    // die amtliche Zuschreibung schließen einander aus. Greift beim nächsten
+    // Mal, wenn wir einem Halbjahr vorausrechnen (Stichtag 01.02.2027).
+    for (const satz of FEED_IN_SCHEDULE) {
+      if (satz.note) expect(satz.source ?? "").not.toMatch(/Bundesnetzagentur/);
+    }
   });
 });

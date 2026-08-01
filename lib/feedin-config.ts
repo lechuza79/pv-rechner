@@ -44,7 +44,7 @@ export interface FeedInRates {
  * chain gives 10,24. lib/__tests__/feedin-config.test.ts pins this down against
  * every published half-year.
  */
-const FEED_IN_SCHEDULE: FeedInRates[] = [
+export const FEED_IN_SCHEDULE: FeedInRates[] = [
   {
     teilUnder10: 7.78,
     teilOver10: 6.73,
@@ -61,14 +61,7 @@ const FEED_IN_SCHEDULE: FeedInRates[] = [
     vollOver10: 10.24,
     thresholdKwp: 10,
     validFrom: "2026-08-01",
-    source: "Eigene Berechnung nach §§ 48, 49 Abs. 1, 53 Abs. 1 EEG 2023; Inbetriebnahme ab 01.08.2026",
-    note:
-      "Diese Sätze gelten kraft Gesetzes für Anlagen, die ab dem 1. August 2026 in Betrieb gehen: " +
-      "§ 49 EEG senkt die anzulegenden Werte zum 1. Februar und 1. August automatisch um 1 Prozent. " +
-      "Wir haben sie selbst aus dem Gesetz gerechnet (Ausgangswerte § 48, Degression § 49 Abs. 1, " +
-      "Abzug von 0,4 ct nach § 53 Abs. 1). Die Bundesnetzagentur führt die Sätze nur nachrichtlich in " +
-      "einer Liste — die war am 28. Juli 2026 noch nicht erschienen. Dieselbe Rechnung trifft alle " +
-      "bisher veröffentlichten Halbjahre exakt; sobald die Liste vorliegt, gleichen wir ab.",
+    source: "Bundesnetzagentur, §§ 48/49 EEG (gültig 08/2026–01/2027)",
   },
 ];
 
