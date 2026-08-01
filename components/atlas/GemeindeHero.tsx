@@ -391,6 +391,17 @@ export default function GemeindeHero({
             <MetricPicker metric={metric} onChange={setMetric} />
           </div>
 
+          {/* WAS DIE PROZENTZAHL MISST, STEHT DANEBEN.
+              Wenige Zeilen darüber trägt die Kachelreihe einen optisch fast
+              gleichen Badge — dort ist es die Tendenz gegenüber dem
+              Kreisdurchschnitt. Hier ist es der Abstand zur Spitze dieser
+              Liste. Zwei Bedeutungen, ein Aussehen, und nur eine davon war
+              beschriftet: Der Erklärsatz stand nur im Fenster „Alle anzeigen",
+              also genau dort nicht, wo die meisten den Badge sehen.
+              Dieselbe Stelle und dieselbe Rolle wie die Tendenz-Zeile über den
+              Kacheln (AtlasKpiRow) — Erklärung vor den Werten, nicht danach. */}
+          <div style={S.rankHinweis}>Prozentzahl: Abstand zur Spitze dieser Liste.</div>
+
           {/* Re-keyed on filter+metric so the whole set fades in on a switch —
               softens the reorder that a per-row width transition can't cover. */}
           <div key={`${owner}-${metric}`} style={S.rowsFade}>
@@ -561,6 +572,7 @@ const S: Record<string, React.CSSProperties> = {
     lineHeight: 1.25,
     color: v("--color-text-primary"),
   },
+  rankHinweis: { fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.4, margin: "2px 0 6px" },
   pickerArrow: {
     border: `1px solid ${v("--color-border")}`,
     background: v("--color-bg"),

@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { ortPhrase, childNoun, istKreisfrei, istStadtstaat } from "../atlas-orte";
+import { ortPhrase, gattungPhrase, childNoun, istKreisfrei, istStadtstaat } from "../atlas-orte";
+import { regionDisplayName } from "../atlas-format";
 
 describe("ortPhrase", () => {
   it("setzt die Präposition nach dem Namen, nicht nach der Bezeichnung", () => {
@@ -33,6 +34,62 @@ describe("ortPhrase", () => {
     for (const stadt of ["Stuttgart", "München", "Berlin", "Hamburg", "Amberg", "Baden-Baden", "Eisenach"]) {
       expect(ortPhrase({ name: stadt })).toBe(`in ${stadt}`);
     }
+  });
+});
+
+describe("gattungPhrase", () => {
+  it("nennt die Gattung, die der Name trägt — nicht immer „Landkreis“", () => {
+    // NRW und Schleswig-Holstein kennen keine Landkreise, sondern Kreise.
+    expect(gattungPhrase("Landkreis Würzburg")).toBe("im Landkreis");
+    expect(gattungPhrase("Kreis Borken")).toBe("im Kreis");
+    expect(gattungPhrase("Kreis Segeberg")).toBe("im Kreis");
+  });
+
+  it("trifft die drei Kreise mit eigener Gattung und eigenem Geschlecht", () => {
+    expect(gattungPhrase("Region Hannover")).toBe("in der Region");
+    expect(gattungPhrase("Städteregion Aachen")).toBe("in der Städteregion");
+    expect(gattungPhrase("Regionalverband Saarbrücken")).toBe("im Regionalverband");
+  });
+
+  it("lässt den vollen Namen stehen, wo keine Gattung vorangestellt ist", () => {
+    // Da gibt es nichts zu kürzen — und eine Gattung zu erfinden wäre falsch.
+    expect(gattungPhrase("Saalekreis")).toBe("im Saalekreis");
+    expect(gattungPhrase("Ostalbkreis")).toBe("im Ostalbkreis");
+    expect(gattungPhrase("Stuttgart")).toBe("in Stuttgart");
+  });
+
+  it("greift auch bei doppelter Gattung im amtlichen Namen", () => {
+    // Das Verzeichnis stellt „Landkreis" auch vor die ~47 Kreise, deren Name
+    // die Gattung schon enthält.
+    expect(gattungPhrase("Landkreis Burgenlandkreis")).toBe("im Landkreis");
+    expect(gattungPhrase("Kreis Ennepe-Ruhr-Kreis")).toBe("im Kreis");
+  });
+
+  it("baut nie eine Ortsangabe ohne Präposition oder mit Platzhalter", () => {
+    for (const name of [
+      "Landkreis Würzburg", "Kreis Borken", "Region Hannover", "Städteregion Aachen",
+      "Regionalverband Saarbrücken", "Verbandsgemeinde Rhein-Nahe", "Saalekreis", "Stuttgart",
+    ]) {
+      const p = gattungPhrase(name);
+      expect(p, name).toMatch(/^(in|im|in der) \S/);
+      expect(p, name).not.toMatch(/undefined|null|\s{2,}/);
+    }
+  });
+});
+
+// Die Liste der vorangestellten Gattungswörter ist EINE Quelle (atlas-orte),
+// benutzt von der Ortsangabe hier und vom Anzeigenamen in atlas-format. Eine
+// zweite Kopie wäre ein Fehler, kein Duplikat: Käme ein Wort nur dort dazu,
+// kürzte der Anzeigename es weg, während die Ortsangabe daneben weiter das
+// Doppelte nennt.
+describe("Gattung: Anzeigename und Ortsangabe ziehen an derselben Liste", () => {
+  it("kürzt dieselben Namen — hier die Gattung heraus, dort den Ortsnamen", () => {
+    expect(regionDisplayName("Landkreis Burgenlandkreis")).toBe("Burgenlandkreis");
+    expect(gattungPhrase("Landkreis Burgenlandkreis")).toBe("im Landkreis");
+    // „Landkreis Rostock" trägt die Gattung nur im Präfix: der Anzeigename
+    // behält sie, die Kurzform nimmt genau sie.
+    expect(regionDisplayName("Landkreis Rostock")).toBe("Landkreis Rostock");
+    expect(gattungPhrase("Landkreis Rostock")).toBe("im Landkreis");
   });
 });
 

@@ -5,6 +5,8 @@
 // war der Grund für die Drift: sechs Dateien hatten je eine eigene Kopie des
 // Leistungs-Formatters, fünf davon mit der falschen Einheit.
 
+import { VORANGESTELLTE_GATTUNG } from "./atlas-orte";
+
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 const dez = (n: number, stellen: number) => n.toLocaleString("de-DE", { maximumFractionDigits: stellen });
 
@@ -106,8 +108,11 @@ export function fmtErtragProKwp(kwhProKwp: number): string {
 
 // ─── Regionsnamen ─────────────────────────────────────────────────────────────
 
-/** Wörter, die im amtlichen Verzeichnis vor den Kernnamen gesetzt werden. */
-const VORANGESTELLT = ["Landkreis", "Kreis", "Region", "Städteregion", "Regionalverband", "Verbandsgemeinde"];
+// Die Liste der vorangestellten Gattungswörter steht in lib/atlas-orte.ts —
+// dort hängt auch die Präposition dran. Zwei Kopien wären ein Fehler, kein
+// Duplikat: Käme ein Gattungswort nur hier dazu, kürzte der Anzeigename es weg,
+// während die Ortsangabe daneben weiter das Doppelte nennt.
+const VORANGESTELLT: readonly string[] = VORANGESTELLTE_GATTUNG;
 
 /**
  * Trägt der Name die Gattung schon selbst? Deckt beide Bauarten ab: als eigenes

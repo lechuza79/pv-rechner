@@ -11,7 +11,7 @@ import { resolveSlugPath, getRegionById, getChildren, type AtlasRegion } from ".
 import { ortPhrase } from "../../../../../lib/atlas-orte";
 import { loadAwardStats, loadElternSlugs, loadKreisNames } from "../../../../../lib/awards-server";
 import { bundeslandByAgs } from "../../../../../lib/mastr-regions";
-import { formatAwardValue } from "../../../../../lib/awards";
+import { formatAwardValue, spaltenKopfVon } from "../../../../../lib/awards";
 import { regionDisplayName } from "../../../../../lib/atlas-format";
 import { FELD_BY_SLUG, felderNachArt, type RankingFeld } from "../../../../../lib/ranking-felder";
 import {
@@ -167,8 +167,11 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
   // Groessenklassen ueberall, wo eine Verhaeltniszahl gerankt wird — bei den
   // absoluten Standort-Kategorien gewinnt ohnehin, wo ein Kraftwerk steht.
   const nachGroesse = kategorie.messart !== "absolut";
-  const spaltenKopf =
-    kategorie.messart === "proKopf" ? "je Einwohner" : kategorie.messart === "quote" ? "je 100 Dächer" : "gesamt";
+  // Der Spaltenkopf kommt aus DEMSELBEN Ort wie der Wert darunter (siehe
+  // spaltenKopfVon in lib/awards.ts). Er hing vorher an der Messart, und die
+  // kennt den Nenner nicht: Ueber "38,1 je 1.000 Ew." stand "je Einwohner" —
+  // eine Beschriftung, die den Wert um den Faktor tausend verfehlt.
+  const spaltenKopf = spaltenKopfVon(kategorie.format);
   const klasse: RankingFeld | null = nachGroesse ? (FELD_BY_SLUG[d.feldSlug ?? ""] ?? null) : null;
   // Ohne gewaehltes Feld zeigt die Seite die Spitzenreiter aller Groessenklassen
   // statt einer Bundesliste — die gaebe es sonst durch die Hintertuer wieder.
@@ -184,10 +187,19 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
     : [];
 
   const alle = rankingRows(stats, kategorie, scopeId, klasse);
-  // Wie viele Orte die Untergrenze aussortiert — im Gebiet, nicht bundesweit.
-  const imGebiet = stats.filter((g) => g.population > 0 && (!scopeId || g.regionId.startsWith(scopeId)));
+  // Wie viele Orte die Groessenpruefung aussortiert — IN DERSELBEN GRUPPE, die
+  // daneben gewertet wird: gleiches Gebiet UND gleiches Vergleichsfeld.
+  //
+  // DER FEHLER (bis 31.07.2026): Gezaehlt wurde ueber das ganze Gebiet, gezeigt
+  // wurde die Zahl neben einer nach Groesse gefilterten Liste. Auf der
+  // Grossstadt-Liste stand damit "80 Grossstaedte sind gewertet … 1.398 Orte
+  // bleiben aussen vor" — die 1.398 sind fast ausnahmslos Doerfer und haben mit
+  // der Liste daneben nichts zu tun.
+  const inDerGruppe = stats.filter(
+    (g) => g.population > 0 && (!scopeId || g.regionId.startsWith(scopeId)) && (!klasse || klasse.gilt(g)),
+  );
   const ausgeschlossen = kategorie.plausibel
-    ? imGebiet.filter((g) => (kategorie.metric(g) ?? 0) > 0 && !kategorie.plausibel!(g)).length
+    ? inDerGruppe.filter((g) => (kategorie.metric(g) ?? 0) > 0 && !kategorie.plausibel!(g)).length
     : 0;
   const seiten = Math.max(1, Math.ceil(alle.length / PRO_SEITE));
   // Kaputte oder erfundene Seitenzahlen landen auf Seite 1 statt im Leeren.
@@ -365,9 +377,18 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
                   Knoten ein Leerzeichen und der Punkt rutscht ab. */}
               {/* Sammelbegriff aus der Groessenklasse: "80 Grossstaedte" sagt
                   mehr als "80 Kommunen" und stimmt trotzdem ausnahmslos
-                  (Begruendung an Groessenklasse.kollektiv). */}
-              <strong style={S.strong}>{`${nf(alle.length)} ${klasse ? klasse.label : "Städte und Gemeinden"}`}</strong>
-              {` ${wo} sind gewertet, sortiert nach ${kategorie.themaDativ}. Gerechnet aus dem Marktstammdatenregister.`}
+                  (Begruendung an Groessenklasse.kollektiv).
+                  NUMERUS MITBAUEN: "1 Landeshauptstädte … sind gewertet" stand
+                  so auf jeder Bundesland-Liste mit genau einem Treffer.
+                  Grammatik ist Teil der Richtigkeit. */}
+              <strong style={S.strong}>
+                {`${nf(alle.length)} ${
+                  alle.length === 1
+                    ? (klasse ? klasse.einzahl : "Ort")
+                    : (klasse ? klasse.label : "Städte und Gemeinden")
+                }`}
+              </strong>
+              {` ${wo} ${alle.length === 1 ? "ist" : "sind"} gewertet, sortiert nach ${kategorie.themaDativ}. Gerechnet aus dem Marktstammdatenregister.`}
               {/* Die Untergrenze schliesst mehr als die Haelfte aller Kommunen
                   aus. Das gehoert in den ersten Absatz und nicht in den
                   Quellen-Fuss — sonst fragt sich jeder, wo sein Ort bleibt. */}
@@ -567,7 +588,7 @@ function Uebersicht() {
         </p>
         {(
           [
-            ["Privat", gruppen.buerger, "Was Haushalte gebaut haben, je Einwohner gerechnet — getrennt nach Größenklasse, von der Kleingemeinde bis zur Großstadt. Dazu Landeshauptstädte und kreisfreie Städte je für sich."],
+            ["Privat", gruppen.buerger, "Was Haushalte gebaut haben, je Einwohner gerechnet — getrennt nach Größenklasse, von der Kleingemeinde bis zur Großstadt. Dazu die Regierungssitze der Länder und die kreisfreien Städte je für sich."],
             ["Gewerbe & Freiflächen", gruppen.standort, "Was am Ort steht, unabhängig davon, wer es gebaut hat: Gesamtleistung, Freiflächen, Wind. Hier gewinnen Kraftwerks-Standorte und große Städte. Diese Anlagen bleiben aus den Listen oben heraus, weil ein einziger Investorenpark ein Dorf an die Spitze setzen würde."],
           ] as const
         ).map(([titel, kats, erklaerung]) =>

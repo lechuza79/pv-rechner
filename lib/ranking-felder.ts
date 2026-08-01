@@ -8,8 +8,9 @@
 // nicht). Deshalb: eine Auswahl, sieben Felder, jedes für sich sinnvoll.
 //
 // WARUM DIESE ROLLEN UND KEINE ANDEREN (gemessen am 30.07.2026):
-//  - Landeshauptstädte (16): schneiden quer zur Größe — 15 sind Großstädte,
-//    Schwerin liegt mit 98.308 Einwohnern darunter. Jeder Name ist bekannt.
+//  - Regierungssitze der Länder (16): schneiden quer zur Größe — 15 sind
+//    Großstädte, Schwerin liegt mit 98.308 Einwohnern darunter. Jeder Name ist
+//    bekannt.
 //  - Kreisfreie Städte (106): echte Verwaltungsklasse, die ihre Energieplanung
 //    selbst verantwortet. Verteilt auf Mittel- und Großstädte.
 //  - Große Kreisstädte (125): BEWUSST NICHT. Das ist Landesrecht und existiert
@@ -26,13 +27,14 @@ import type { GemeindeStats } from "./awards";
 import { GROESSENKLASSEN, klasseLangform, klasseVon } from "./gemeindegroesse";
 
 /**
- * Die 16 Landeshauptstädte über ihren Gemeindeschlüssel, NICHT über den Namen.
+ * Die 16 Regierungssitze der Länder über ihren Gemeindeschlüssel, NICHT über
+ * den Namen.
  *
- * Der Name reicht nicht: Neben der Landeshauptstadt Schwerin (13004000, 98.308
- * Einwohner) gibt es eine Gemeinde Schwerin in Brandenburg (12061448, 965
- * Einwohner). Eine Namensliste fing die mit — sichtbar wurde das erst, als die
- * 965-Einwohner-Gemeinde mit 587 Wp je Kopf die Landeshauptstadt-Rangliste
- * anführte. Der Schlüssel ist eindeutig, der Name ist es nicht.
+ * Der Name reicht nicht: Neben Schwerin (13004000, 98.308 Einwohner) gibt es
+ * eine Gemeinde Schwerin in Brandenburg (12061448, 965 Einwohner). Eine
+ * Namensliste fing die mit — sichtbar wurde das erst, als die
+ * 965-Einwohner-Gemeinde mit 587 Wp je Kopf die Rangliste anführte. Der
+ * Schlüssel ist eindeutig, der Name ist es nicht.
  */
 export const LANDESHAUPTSTAEDTE: Record<string, string> = {
   "01002000": "Kiel",
@@ -52,6 +54,35 @@ export const LANDESHAUPTSTAEDTE: Record<string, string> = {
   "15003000": "Magdeburg",
   "16051000": "Erfurt",
 };
+
+/**
+ * DREI DER SECHZEHN SIND KEINE LANDESHAUPTSTADT.
+ *
+ * „Landeshauptstadt" ist keine Beschreibung, sondern eine kommunalrechtliche
+ * Bezeichnung, die einer STADT verliehen wird. Berlin, Hamburg und Bremen sind
+ * Stadtstaaten: Dort ist das Land die Stadt, es gibt also keine Stadt im Land,
+ * der man den Titel verleihen könnte. Dreizehn Städte führen ihn (Dresden,
+ * Düsseldorf, Erfurt, Hannover, Kiel, Magdeburg, Mainz, München, Potsdam,
+ * Saarbrücken, Schwerin, Stuttgart, Wiesbaden), diese drei nicht.
+ *
+ * Geprüft am 01.08.2026: Die Landesverfassung der Freien Hansestadt Bremen
+ * (Fassung vom 12.08.2019, Transparenzportal Bremen) kennt die Wörter
+ * „Hauptstadt" und „Landeshauptstadt" überhaupt nicht; Art. 143 macht Bremen
+ * und Bremerhaven zu zwei Gemeinden des Landes, ohne eine davon zur Hauptstadt
+ * zu erklären.
+ *
+ * WARUM DAS HIER STEHT UND NICHT NUR IM TEXT: Die Überschrift behauptete „die
+ * 16 Landeshauptstädte" — eine handgetippte Zahl neben einer handgetippten
+ * Bezeichnung, beide falsch. Die Zahlen unten werden aus dieser Liste
+ * gerechnet; wer einen Eintrag ändert, ändert die Beschriftung mit.
+ *
+ * Die AUSWAHL bleibt bei allen sechzehn: Verglichen werden soll, wo die
+ * Landesregierung sitzt — das trifft auf die Stadtstaaten genauso zu.
+ */
+export const STADTSTAATEN = new Set(["02000000", "04011000", "11000000"]);
+
+const ANZAHL_STADTSTAATEN = Object.keys(LANDESHAUPTSTAEDTE).filter((ags) => STADTSTAATEN.has(ags)).length;
+const ANZAHL_LANDESHAUPTSTAEDTE = Object.keys(LANDESHAUPTSTAEDTE).length - ANZAHL_STADTSTAATEN;
 
 /** Amtliche Bezeichnungen, die eine kreisfreie Stadt ausmachen. „Stadtkreis" ist
  *  dasselbe in Baden-Württemberg. */
@@ -85,11 +116,12 @@ const groessenFelder: RankingFeld[] = GROESSENKLASSEN.map((k) => ({
 
 const rollenFelder: RankingFeld[] = [
   {
+    // Das Kürzel steht in der Adresse und bleibt, damit geteilte Links halten.
     slug: "landeshauptstaedte",
-    label: "Landeshauptstädte",
-    einzahl: "Landeshauptstadt",
-    labelDativ: "Landeshauptstädten",
-    langform: "die 16 Landeshauptstädte",
+    label: "Landeshauptstädte und Stadtstaaten",
+    einzahl: "Landeshauptstadt oder Stadtstaat",
+    labelDativ: "Landeshauptstädten und Stadtstaaten",
+    langform: `die ${ANZAHL_LANDESHAUPTSTAEDTE} Landeshauptstädte und ${ANZAHL_STADTSTAATEN} Stadtstaaten`,
     art: "rolle",
     gilt: (g) => g.regionId in LANDESHAUPTSTAEDTE,
   },

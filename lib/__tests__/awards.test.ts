@@ -4,11 +4,13 @@ import {
   AWARD_CATEGORY_BY_KEY,
   computeWinners,
   dedupFreiflaeche,
+  formatAwardValue,
   populationTertiles,
   rankGemeinden,
   roleOf,
   scopeIdOf,
   sizeBandOf,
+  spaltenKopfVon,
   type GemeindeStats,
 } from "../awards";
 
@@ -163,5 +165,65 @@ describe("Katalog", () => {
     const keys = AWARD_CATEGORIES.map((c) => c.key);
     expect(new Set(keys).size).toBe(keys.length);
     for (const c of AWARD_CATEGORIES) expect(c.label.length).toBeGreaterThan(0);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DER SPALTENKOPF MUSS DEN NENNER TREFFEN, DER IN DER SPALTE STEHT.
+//
+// Er wurde bis zum 31.07.2026 aus der `messart` abgeleitet und lautete bei allem
+// Pro-Kopf-Artigen „je Einwohner". Über der Balkon-Spalte standen darunter aber
+// Werte wie „38,1 je 1.000 Ew." — die Beschriftung verfehlte den Wert um den
+// Faktor tausend. Die `messart` sagt, DASS eine Verhältniszahl gerankt wird;
+// welchen Nenner sie hat, weiß nur das Format.
+// ─────────────────────────────────────────────────────────────────────────────
+describe("Spaltenkopf und Wert sagen dasselbe", () => {
+  /** Der Nenner, den ein Wert oder ein Kopf nennt — auf eine Form gebracht. */
+  const nenner = (text: string): string | null => {
+    if (/je 1\.000|\/ ?1\.000/.test(text)) return "je1000";
+    if (/je 100 Dächer/.test(text)) return "je100dach";
+    if (/\/Kopf|je Einwohner/.test(text)) return "jeEinwohner";
+    return null;
+  };
+
+  it("widerspricht nie dem Nenner, den der Wert darunter selbst nennt", () => {
+    // Nicht jeder Wert trägt seinen Nenner: „1.240 Wp" sagt nichts darüber,
+    // wodurch geteilt wurde — dafür ist der Spaltenkopf da. Aber WO der Wert ihn
+    // nennt („38,1 je 1.000 Ew.", „113 je 100 Dächer"), muss der Kopf denselben
+    // nennen. Genau das war der Fehler: „je Einwohner" über „je 1.000 Ew.".
+    for (const c of AWARD_CATEGORIES) {
+      const kopf = spaltenKopfVon(c.format);
+      // Mehrere Größenordnungen, damit kein Sonderfall der Formatierung
+      // (Auf-/Abrunden, MWp statt kWp) das Ergebnis trägt.
+      for (const wert of [0.4, 7, 38.1, 1_234, 987_654]) {
+        const gezeigt = formatAwardValue(wert, c.format);
+        const imWert = nenner(gezeigt);
+        if (imWert === null) continue;
+        expect(nenner(kopf), `${c.key}: Kopf „${kopf}“ über Wert „${gezeigt}“`).toBe(imWert);
+      }
+    }
+  });
+
+  it("beschriftet absolute Kategorien nicht als Verhältniszahl", () => {
+    // Gegenrichtung: Über „12,4 MWp gesamt" darf kein „je Einwohner" stehen.
+    for (const c of AWARD_CATEGORIES.filter((k) => k.messart === "absolut")) {
+      expect(spaltenKopfVon(c.format), c.key).toBe("gesamt");
+    }
+  });
+
+  it("beschriftet die Balkon-Kategorie „je 1.000 Ew.“, nicht „je Einwohner“", () => {
+    // Der konkrete Fall aus dem Audit.
+    const balkon = AWARD_CATEGORIES.find((c) => c.format === "countPer1000");
+    expect(balkon, "keine Kategorie mit countPer1000 mehr — Test anpassen").toBeTruthy();
+    expect(spaltenKopfVon(balkon!.format)).toBe("je 1.000 Ew.");
+    expect(spaltenKopfVon(balkon!.format)).not.toBe("je Einwohner");
+  });
+
+  it("gibt für jedes Format einen Kopf zurück", () => {
+    for (const c of AWARD_CATEGORIES) {
+      const kopf = spaltenKopfVon(c.format);
+      expect(kopf, c.key).toBeTruthy();
+      expect(kopf, c.key).not.toMatch(/undefined/);
+    }
   });
 });

@@ -6,6 +6,8 @@ import { bundeslandByAgs } from "../../../../lib/mastr-regions";
 import { ortPhrase } from "../../../../lib/atlas-orte";
 import { GROESSENKLASSE_BY_SLUG, klasseVon } from "../../../../lib/gemeindegroesse";
 import { ranglisteUrl } from "../../../../lib/atlas-ranking";
+import { getRegionById } from "../../../../lib/atlas";
+import { rateLimit } from "../../../../lib/rate-limit";
 
 // Platzierungen einer Gemeinde + die Rangliste ihrer stärksten Kategorie.
 //
@@ -27,9 +29,26 @@ const TEASER = 5;
 const MAX_TABELLE = 300;
 
 export async function GET(req: NextRequest) {
+  // AUFRUFLIMIT WIE BEI JEDER ANDEREN OEFFENTLICHEN ATLAS-ROUTE. Diese hier war
+  // die einzige ohne — und zugleich die teuerste: ein Aufruf zieht den ganzen
+  // Gemeinde-Datensatz und rechnet saemtliche Platzierungen. Das prozess-lokale
+  // Memo daempft das nur, solange die Instanz warm ist.
+  const limited = rateLimit(req, "atlas-platzierungen", 60);
+  if (limited) return limited;
+
   const regionId = (req.nextUrl.searchParams.get("region") ?? "").trim();
   if (!/^\d{8}$/.test(regionId)) {
     return NextResponse.json({ error: "region fehlt oder ist kein 8-stelliger Gemeindeschlüssel" }, { status: 400 });
+  }
+
+  // ERST PRUEFEN, OB ES DEN ORT GIBT — DANN DIE ~11.000 ZEILEN LADEN.
+  // Vorher lag der Existenz-Check hinter dem Laden: Eine erfundene, formal
+  // gueltige Nummer kostete denselben vollen Datensatz wie ein echter Aufruf,
+  // nur um am Ende 404 zu sagen. Ein einzelner Regions-Lookup beantwortet die
+  // Frage vorher und trifft einen Index.
+  const region = await getRegionById(regionId);
+  if (!region || region.level !== "gemeinde") {
+    return NextResponse.json({ error: "Gemeinde nicht gefunden" }, { status: 404 });
   }
 
   const [stats, kreisNames, elternSlugs] = await Promise.all([

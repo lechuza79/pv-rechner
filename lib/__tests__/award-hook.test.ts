@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { computePlacements, hookText, selectHook, type Hook, type Placement } from "../award-hook";
+import { gattungPhrase } from "../atlas-orte";
 import { AWARD_CATEGORIES, AWARD_CATEGORY_BY_KEY, rankGemeinden, type GemeindeStats } from "../awards";
 
 function g(regionId: string, over: Partial<GemeindeStats> = {}): GemeindeStats {
@@ -321,6 +322,77 @@ describe("Anschreiben über alle Varianten", () => {
       const t = hookText(v.hook, namen);
       const label = v.hook.categoryLabel as string;
       expect(`${t.betreff} ${t.einstieg}`, `${v.was}: „${label}“`).not.toContain(label);
+    }
+  });
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // DIE VERWALTUNGSEBENE MUSS ES IM BUNDESLAND DES EMPFAENGERS GEBEN.
+  //
+  // Der Betreff sagte bis zum 31.07.2026 ausnahmslos „im Landkreis" — auch nach
+  // Nordrhein-Westfalen und Schleswig-Holstein, die keine Landkreise kennen,
+  // sondern Kreise, und auch an die Region Hannover, die Staedteregion Aachen
+  // und den Regionalverband Saarbruecken. Rund 1.500 Gemeinden betroffen.
+  // Der Einstieg eine Zeile darunter nannte ueber `scopeIn` die richtige Ebene:
+  // ein Brief, der sich in sich selbst widerspricht.
+  //
+  // Geprueft ueber ALLE Kombinationen, nicht an einer Stichprobe — genau daran
+  // ist derselbe Fehlertyp in dieser Sitzung schon dreimal vorbeigekommen.
+  // ───────────────────────────────────────────────────────────────────────────
+  const KREISE = [
+    { name: "Landkreis Würzburg", erwartet: "im Landkreis" },
+    { name: "Kreis Borken", erwartet: "im Kreis" },
+    { name: "Kreis Segeberg", erwartet: "im Kreis" },
+    { name: "Region Hannover", erwartet: "in der Region" },
+    { name: "Städteregion Aachen", erwartet: "in der Städteregion" },
+    { name: "Regionalverband Saarbrücken", erwartet: "im Regionalverband" },
+    // Das amtliche Verzeichnis stellt „Landkreis" auch vor die Kreise, die die
+    // Gattung schon im Namen tragen — die Kurzform muss auch dort greifen.
+    { name: "Landkreis Burgenlandkreis", erwartet: "im Landkreis" },
+    // Und wo gar kein Gattungswort vorangestellt ist, bleibt der volle Name
+    // stehen, statt eine Ebene zu erfinden.
+    { name: "Saalekreis", erwartet: "im Saalekreis" },
+  ];
+
+  it("nennt im Betreff die Gattung, die es im Bundesland des Empfängers gibt", () => {
+    for (const kreis of KREISE) {
+      for (const v of varianten.filter((x) => x.hook.level === "kreis")) {
+        const t = hookText(v.hook, { ...namen, kreis: kreis.name });
+        expect(t.betreff, `${v.was} · ${kreis.name}: „${t.betreff}“`).toContain(kreis.erwartet);
+      }
+    }
+  });
+
+  it("schreibt keinem Kreis-Empfänger eine fremde Verwaltungsebene zu", () => {
+    for (const kreis of KREISE.filter((k) => !k.erwartet.includes("Landkreis"))) {
+      for (const v of varianten.filter((x) => x.hook.level === "kreis")) {
+        const t = hookText(v.hook, { ...namen, kreis: kreis.name });
+        expect(t.betreff, `${v.was} · ${kreis.name}: „${t.betreff}“`).not.toContain("im Landkreis");
+      }
+    }
+  });
+
+  it("hängt den Ortsnamen des Kreises nicht an — dafür ist es die Kurzform", () => {
+    // „im Landkreis Würzburg" im Betreff war der Grund für die Kurzform: Der
+    // Empfänger sitzt dort, der Name kostet nur Zeichen, die das Postfach
+    // abschneidet. Die Laenge ist oben schon gedeckelt, hier geht es darum,
+    // dass die Kuerzung ueberhaupt noch stattfindet.
+    for (const v of varianten.filter((x) => x.hook.level === "kreis")) {
+      const t = hookText(v.hook, { ...namen, kreis: "Landkreis Würzburg" });
+      expect(t.betreff, v.was).not.toContain("Würzburg");
+      // Der Einstieg dagegen nennt den Kreis beim Namen — dort ist Platz.
+      expect(t.einstieg, v.was).toContain("Landkreis Würzburg");
+    }
+  });
+
+  it("bleibt eine KURZFORM — die Gattung allein, nie ein ganzer Kreisname", () => {
+    // Der Betreff hat ein enges Zeichenbudget (siehe Test oben). Diese Kurzform
+    // ist der Grund dafür, dass er es einhält; sie darf nicht unbemerkt wieder
+    // zur vollen Ortsangabe anwachsen. „in der Städteregion" ist die längste
+    // korrekte Form, die es in Deutschland gibt.
+    for (const kreis of KREISE) {
+      const kurz = gattungPhrase(kreis.name);
+      expect(kurz.length, `${kreis.name} → „${kurz}“`).toBeLessThanOrEqual("in der Städteregion".length);
+      expect(kurz, kreis.name).not.toContain("Würzburg");
     }
   });
 });

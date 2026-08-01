@@ -576,6 +576,33 @@ export function dedupFreiflaeche(regionId: string, freiflaecheKwp: number): numb
   return Math.max(0, freiflaecheKwp - abzug);
 }
 
+/**
+ * Der Spaltenkopf über den Werten — DIREKT NEBEN dem Formatierer, der die Werte
+ * erzeugt, damit beide dasselbe sagen.
+ *
+ * DER FEHLER (bis 31.07.2026): Der Kopf wurde aus der `messart` abgeleitet und
+ * lautete bei allem Pro-Kopf-Artigen „je Einwohner". Über der
+ * Balkon-Kategorie standen darunter aber Werte wie „38,1 je 1.000 Ew." — die
+ * Beschriftung verfehlte den Wert um den Faktor tausend. Die `messart` sagt, ob
+ * eine Verhältniszahl gerankt wird; welchen NENNER sie hat, weiß nur das Format.
+ */
+export function spaltenKopfVon(format: MetricFormat): string {
+  switch (format) {
+    case "wattProKopf":
+    case "whProKopf":
+      return "je Einwohner";
+    case "countPer1000":
+      return "je 1.000 Ew.";
+    case "je100Dach":
+      return "je 100 Dächer";
+    case "count":
+    case "pvLeistung":
+    case "mixLeistung":
+    case "speicherKwh":
+      return "gesamt";
+  }
+}
+
 /** Belegwert einer Kategorie anzeigefertig — Einheit aus dem kanonischen Atlas-
  *  Formatter (nie handgeschrieben, außer den dimensionslosen Zähl-/Pro-Kopf-Fällen). */
 export function formatAwardValue(value: number, format: MetricFormat): string {
@@ -606,9 +633,11 @@ export function formatAwardValue(value: number, format: MetricFormat): string {
 
 // ─── Rolle (Vergleichsgruppe) ───────────────────────────────────────────────────
 
-/** Die 16 Landeshauptstädte — fixe, bekannte Liste (ändert sich nicht). Als
- *  Rolle ein Querschnitt: eine Hauptstadt ist meist auch kreisfrei, wird aber
- *  ihrer Hauptstadt-Gruppe zugeordnet (Hauptstadt gegen Hauptstadt). */
+/** Die 16 Regierungssitze der Länder — fixe, bekannte Liste (ändert sich nicht).
+ *  Als Rolle ein Querschnitt: ein Regierungssitz ist meist auch kreisfrei, wird
+ *  aber seiner eigenen Gruppe zugeordnet (Hauptstadt gegen Hauptstadt).
+ *  Drei davon (Berlin, Hamburg, Bremen) sind Stadtstaaten und führen die
+ *  Bezeichnung „Landeshauptstadt" nicht — Begründung in lib/ranking-felder.ts. */
 const HAUPTSTAEDTE = new Set([
   "Stuttgart", "München", "Berlin", "Potsdam", "Bremen", "Hamburg", "Wiesbaden",
   "Schwerin", "Hannover", "Düsseldorf", "Mainz", "Saarbrücken", "Dresden",
@@ -620,7 +649,7 @@ export const ROLE_LABELS: Record<Role, string> = {
   stadt: "Städte & Märkte",
   "grosse-kreisstadt": "Große Kreisstädte",
   kreisfrei: "Kreisfreie Städte",
-  hauptstadt: "Landeshauptstädte",
+  hauptstadt: "Landeshauptstädte und Stadtstaaten",
 };
 
 /** Amtliche Rolle einer Gemeinde. Aus der Bezeichnung (mastr_regions), plus die
