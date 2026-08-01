@@ -16,7 +16,7 @@ import {
   type GemeindeStats,
   type Traeger,
 } from "./awards";
-import { ortPhrase } from "./atlas-orte";
+import { gattungPhrase, ortPhrase } from "./atlas-orte";
 
 export type HookLevel = "kreis" | "land" | "bund";
 const SCOPE_OF: Record<HookLevel, AwardScopeLevel> = { kreis: "landkreis", land: "bundesland", bund: "de" };
@@ -312,9 +312,16 @@ export type HookNames = { gemeinde: string; kreis: string; land: string };
  * Musterkreis". Der Empfaenger sitzt in diesem Kreis — der Name kostet dort nur
  * Zeichen, die im Postfach abgeschnitten werden. Das Bundesland bleibt benannt,
  * weil "im Bundesland" nichts sagt.
+ *
+ * DIE GATTUNG KOMMT AUS DEM NAMEN, sie ist nicht "Landkreis" (Fehler bis
+ * 31.07.2026): In Nordrhein-Westfalen und Schleswig-Holstein heisst die Ebene
+ * "Kreis", dazu kommen Region Hannover, Staedteregion Aachen und
+ * Regionalverband Saarbruecken. Rund 1.500 Gemeinden lasen im Betreff eine
+ * Verwaltungsebene, die es in ihrem Bundesland nicht gibt — und der Einstieg
+ * eine Zeile darunter nannte ueber `scopeIn` die richtige.
  */
 export function scopeKurz(level: HookLevel, n: HookNames): string {
-  if (level === "kreis") return "im Landkreis";
+  if (level === "kreis") return gattungPhrase(n.kreis);
   if (level === "land") return ortPhrase({ name: n.land, level: "bundesland" });
   return "bundesweit";
 }

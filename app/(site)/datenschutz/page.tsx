@@ -359,26 +359,26 @@ export default function DatenschutzPage() {
           an der Ansprache der zuständigen Stelle); die Herkunftsangabe erfolgt
           nach Art. 14 DSGVO im Anschreiben selbst.
         </p>
+        {/* Hier stand bis zum 31.07.2026 ein Absatz über einen zählenden
+            Vorschau-Link im Anschreiben. Der Link ist aus dem Anschreiben
+            entfernt worden; der Absatz beschreibt jetzt den Zustand, der
+            tatsächlich gilt. Der Rest des Abschnitts bleibt — er trägt Herkunft
+            und Zweck der Kontaktdaten, auf die das Anschreiben verweist. */}
         <p style={S.p}>
-          Das Anschreiben enthält einen <strong>Vorschau-Link</strong> in der
-          Form <code>solar-check.io/r/…</code>. Wird er geöffnet, zählen wir,
-          <strong> wie oft</strong> das geschieht und <strong>wann zum ersten und
-          letzten Mal</strong> — mehr nicht. Es werden dabei keine IP-Adresse
-          gespeichert, keine Cookies gesetzt, nichts im Browser abgelegt und
-          keine Verknüpfung mit einer Person hergestellt: Die Zählung gehört zur
-          angeschriebenen Kommune, nicht zu einem Menschen. Sie dient
-          ausschließlich der Frage, ob solche Anschreiben überhaupt gelesen
-          werden. Wer das nicht möchte, ruft stattdessen die im Text genannte
-          Adresse der Gemeindeseite direkt auf — sie zählt nicht mit.
+          Die Links im Anschreiben führen unmittelbar auf die genannten Seiten
+          von solar-check.io. Sie enthalten <strong>keine Kennung des
+          Empfängers</strong>; ein Aufruf lässt sich damit keiner
+          angeschriebenen Kommune und keiner Person zuordnen. Es werden dabei
+          keine Cookies gesetzt und nichts im Browser abgelegt.
         </p>
         <p style={S.p}>
-          Die Kontaktdaten und der Zählstand werden gelöscht, sobald das
-          Vorhaben abgeschlossen ist oder du widersprichst. Ein
-          <strong> Widerspruch</strong> genügt formlos an die in Abschnitt 1
-          genannte Adresse; danach erfolgt keine weitere Ansprache.
+          Die Kontaktdaten werden gelöscht, sobald das Vorhaben abgeschlossen
+          ist oder du widersprichst. Ein <strong>Widerspruch</strong> genügt
+          formlos an die in Abschnitt 1 genannte Adresse; danach erfolgt keine
+          weitere Ansprache.
         </p>
 
-        <p style={S.muted}>Stand: Juli 2026</p>
+        <p style={S.muted}>Stand: August 2026</p>
       </div>
     </div>
   );

@@ -202,17 +202,40 @@ async function main() {
   console.log("");
   const stichprobe = zeilen.filter((_, i) => i % Math.ceil(zeilen.length / 40) === 0).slice(0, 40);
   const ids = stichprobe.map((r) => String(r.region_id));
-  const { data: rohDaten, error: rohFehler } = await db
-    .from("mastr_aggregates_gem")
-    .select("region_id, kwp")
-    .eq("segment", "privat_dach")
-    .in("region_id", ids);
+  // GEBLAETTERT, auch wenn 40 Gemeinden heute weit unter der Grenze liegen.
+  //
+  // Ein select() liefert stumm hoechstens 1.000 Zeilen — kein Fehler, keine
+  // Warnung, nur ein zu kleines Ergebnis. Im Projekt hat diese Falle schon
+  // zweimal zugeschlagen (der Bestandsbericht meldete 1.000 statt 11.407
+  // Gemeinden, das Cockpit zeigte 13 statt 779 Kontakte). Hier waere sie noch
+  // teurer: Fehlende Rohzeilen sehen aus wie eine Abweichung, die Gegenprobe
+  // meldete also eine veraltete Award-Tabelle, die in Wahrheit stimmt. Je
+  // Gemeinde koennen mehrere Rohzeilen stehen, die Grenze ist also naeher als
+  // die 40 Schluessel vermuten lassen.
+  const rohDaten: { region_id: string; kwp: unknown }[] = [];
+  let rohFehler: { message: string } | null = null;
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await db
+      .from("mastr_aggregates_gem")
+      .select("region_id, kwp")
+      .eq("segment", "privat_dach")
+      .in("region_id", ids)
+      .order("region_id")
+      .range(from, from + 999);
+    if (error) {
+      rohFehler = error;
+      break;
+    }
+    if (!data?.length) break;
+    rohDaten.push(...(data as { region_id: string; kwp: unknown }[]));
+    if (data.length < 1000) break;
+  }
   if (rohFehler) {
     befunde.push(`Gegenprobe an der Rohtabelle nicht moeglich: ${rohFehler.message}`);
     console.log(`  FEHL Gegenprobe Rohtabelle          ${rohFehler.message}`);
   } else {
     const rohSumme = new Map<string, number>();
-    for (const r of (rohDaten ?? []) as { region_id: string; kwp: unknown }[]) {
+    for (const r of rohDaten) {
       rohSumme.set(r.region_id, (rohSumme.get(r.region_id) ?? 0) + num(r.kwp));
     }
     // Beide Seiten summieren dieselben gerundeten Zeilen — mehr als ein Euro

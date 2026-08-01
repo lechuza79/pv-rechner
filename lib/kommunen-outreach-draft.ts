@@ -32,10 +32,19 @@ export type DraftContext = {
    * des ganzen Vorhabens untergräbt.
    */
   pageUrl: string | null;
-  /** Optionale Zähl-Weiterleitung NUR für den Brieftext („schauen Sie selbst"):
-   *  misst, ob der Empfänger die Seite überhaupt geöffnet hat. Wird nie
-   *  veröffentlicht. */
-  vorschauUrl?: string | null;
+  /**
+   * KEIN ZÄHL-LINK IM BRIEF (Entscheidung des Betreibers, 31.07.2026).
+   *
+   * Der Brief trug bis dahin zusätzlich eine Weiterleitung `solar-check.io/r/…`,
+   * die Öffnungen zählte. Eine kryptische Adresse in einer Nachricht ans Rathaus
+   * kostet Vertrauen, und der Erkenntnisgewinn ist gering: Gezählt wird, dass
+   * irgendjemand geklickt hat — nicht, ob die Meldung erscheint, und das ist die
+   * einzige Frage, auf die es ankommt.
+   *
+   * Die Weiterleitung selbst (`/r/[token]`) und die Zählfelder bleiben bestehen;
+   * nur der Brief benutzt sie nicht mehr. Der einzige Link auf uns ist damit die
+   * kanonische Adresse der Gemeindeseite (`pageUrl`) plus die Rangliste.
+   */
   /** Betreff aus der Hook-Logik (Messgröße im Klartext, kein interner Titel). */
   betreff: string;
   /** Einstiegssatz aus der Hook-Logik. */
@@ -132,10 +141,8 @@ Impressum: https://solar-check.io/impressum · Datenschutz: https://solar-check.
  * hat kein Geschlecht und ist ausserdem konkreter — jede Beugungstabelle waere
  * eine Falle, die irgendwann wieder zuschnappt.
  *
- * Der Klickzaehler des Vorschau-Links steht NICHT hier, sondern in der
- * Datenschutzerklaerung. Ein Absatz darueber mitten im Anschreiben macht aus
- * einer Nebensache eine Affaere; die Pflichtangabe nach Art. 14 ist der Hinweis
- * auf Herkunft, Zweck und Widerspruchsrecht, und den traegt der Link.
+ * Die Pflichtangabe nach Art. 14 ist der Hinweis auf Herkunft, Zweck und
+ * Widerspruchsrecht; den traegt der Link auf die Datenschutzerklaerung.
  */
 const dsgvoHinweis = (ortsname: string) =>
   `Datenschutz-Hinweis (Art. 14 DSGVO): Ihre öffentlich verfügbaren Kontaktdaten (Website von ${ortsname}) nutze ich für dieses Angebot. Herkunft, Zweck, Speicherdauer und Ihr Widerspruchsrecht: https://solar-check.io/datenschutz`;
@@ -254,13 +261,10 @@ export function renderOutreachDraft(c: DraftContext): OutreachDraft {
         .join("\n")}`
     : "";
 
-  // Beide Links in EINER Zeile: Der Rang ist eine Behauptung, bis man ihn
-  // nachsehen kann — aber das braucht keinen eigenen Absatz.
-  const links = [
-    c.vorschauUrl ? `Vorab ansehen: ${c.vorschauUrl}` : null,
-    c.ranglisteUrl ? `Vollständige Rangliste: ${c.ranglisteUrl}` : null,
-  ].filter(Boolean);
-  const linkZeile = links.length ? `\n\n${links.join("  ·  ")}` : "";
+  // Der Rang ist eine Behauptung, bis man ihn nachsehen kann — aber das braucht
+  // keinen eigenen Absatz. Und keinen zweiten Link daneben: der Zähl-Link ist
+  // raus (siehe DraftContext), die Rangliste ist der einzige Beleg-Link.
+  const linkZeile = c.ranglisteUrl ? `\n\nVollständige Rangliste: ${c.ranglisteUrl}` : "";
 
   const body = `Sehr geehrte Damen und Herren,${weiterleitung}
 

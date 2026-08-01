@@ -52,13 +52,30 @@ export type Groessenklasse = {
    * "den Kleinen Gemeinden"). Dieselbe Entscheidung wie bei `themaDativ`.
    */
   labelDativ: string;
-  /** Die Einwohnerspanne als Text, immer sichtbar neben dem Namen — der Name
-   *  allein sagt nicht, wo die Grenze liegt. */
-  spanne: string;
   min: number;
   /** Obergrenze exklusiv; null = nach oben offen. */
   max: number | null;
 };
+
+/**
+ * Die Einwohnerspanne als Text — ABGELEITET, nicht getippt.
+ *
+ * DER FEHLER (bis 31.07.2026): Die Spannen standen von Hand daneben und lasen
+ * sich „1.000–5.000" und „5.000–20.000". An jeder Klassengrenze behaupteten
+ * damit zwei Klassen denselben Ort für sich, und keine der beiden Angaben sagte,
+ * welche gewinnt. Gerechnet wird die Obergrenze exklusiv (`klasseVon`) — ein Ort
+ * mit genau 5.000 Einwohnern gehört zur oberen Klasse. Also muss dort auch
+ * „1.000–4.999" stehen.
+ *
+ * Aus `min`/`max` abgeleitet, damit die Beschriftung nicht wieder von der
+ * Rechnung abkommen kann: Wer eine Schwelle verschiebt, verschiebt den Text mit.
+ */
+export function spanneVon(k: Pick<Groessenklasse, "min" | "max">): string {
+  const nf = (n: number) => n.toLocaleString("de-DE");
+  if (k.max === null) return `ab ${nf(k.min)}`;
+  if (k.min <= 0) return `unter ${nf(k.max)}`;
+  return `${nf(k.min)}–${nf(k.max - 1)}`;
+}
 
 export const GROESSENKLASSEN: Groessenklasse[] = [
   {
@@ -69,7 +86,6 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     label: "Dörfer",
     labelDativ: "Dörfern",
     einzahl: "Dorf",
-    spanne: "unter 1.000",
     min: 0,
     max: 1_000,
   },
@@ -80,7 +96,6 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     label: "Kleine Gemeinden",
     labelDativ: "Kleinen Gemeinden",
     einzahl: "Kleine Gemeinde",
-    spanne: "1.000–5.000",
     min: 1_000,
     max: 5_000,
   },
@@ -93,7 +108,6 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     label: "Gemeinden und Kleinstädte",
     labelDativ: "Gemeinden und Kleinstädten",
     einzahl: "Gemeinde oder Kleinstadt",
-    spanne: "5.000–20.000",
     min: 5_000,
     max: 20_000,
   },
@@ -105,7 +119,6 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     label: "Mittelgroße Städte",
     labelDativ: "Mittelgroßen Städten",
     einzahl: "Mittelgroße Stadt",
-    spanne: "20.000–100.000",
     min: 20_000,
     max: 100_000,
   },
@@ -114,7 +127,6 @@ export const GROESSENKLASSEN: Groessenklasse[] = [
     label: "Großstädte",
     einzahl: "Großstadt",
     labelDativ: "Großstädten",
-    spanne: "ab 100.000",
     min: 100_000,
     max: null,
   },
@@ -124,10 +136,10 @@ export const GROESSENKLASSE_BY_SLUG: Record<string, Groessenklasse> = Object.fro
   GROESSENKLASSEN.map((k) => [k.slug, k]),
 );
 
-/** "Kleinstädte (5.000–20.000 Einwohner)" — Name UND Spanne, weil der Name
- *  allein die Grenze nicht verrät. */
+/** "Gemeinden und Kleinstädte (5.000–19.999 Einwohner)" — Name UND Spanne, weil
+ *  der Name allein die Grenze nicht verrät. */
 export function klasseLangform(k: Groessenklasse): string {
-  return `${k.label} (${k.spanne} Einwohner)`;
+  return `${k.label} (${spanneVon(k)} Einwohner)`;
 }
 
 /** In welche Klasse ein Ort fällt. Null nur bei fehlender Einwohnerzahl — die

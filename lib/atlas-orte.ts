@@ -20,7 +20,8 @@ export type OrtRegion = {
 // tragen die Bezeichnung "Landkreis"/"Kreis") sowie "in Regionalverband
 // Saarbrücken" (Bezeichnung "Regionalverband").
 const MASKULIN = /^(Landkreis|Kreis|Regionalverband|Saalekreis|Ostalbkreis)\b/;
-const FEMININ = /^(Region|Städteregion)\b/; // "Regionalverband" trifft das nicht: kein Wortende nach "Region"
+// "Regionalverband" trifft das nicht: kein Wortende nach "Region".
+const FEMININ = /^(Region|Städteregion|Verbandsgemeinde)\b/;
 // Genau ein Bundesland trägt einen Artikel: das Saarland → "im Saarland".
 // Alle übrigen fünfzehn stehen artikellos ("in Bayern", "in Sachsen-Anhalt").
 const MIT_ARTIKEL = /^Saarland$/;
@@ -43,6 +44,47 @@ export function ortPraeposition(name: string): "in" | "im" | "in der" {
 export function ortPhrase(region: OrtRegion): string {
   if (region.level === "de") return "in Deutschland";
   return `${ortPraeposition(region.name)} ${region.name}`;
+}
+
+/**
+ * Gattungswörter, die das amtliche Verzeichnis VOR den Kernnamen stellt.
+ *
+ * Eine Quelle für zwei Fragen, die sonst auseinanderlaufen: Welches Wort darf
+ * beim Anzeigenamen wegfallen, wenn der Rest die Gattung schon trägt
+ * (`regionDisplayName` in lib/atlas-format.ts) — und welches Wort bleibt übrig,
+ * wenn man den Ortsnamen weglässt (`gattungPhrase` hier).
+ */
+export const VORANGESTELLTE_GATTUNG = [
+  "Landkreis",
+  "Kreis",
+  "Region",
+  "Städteregion",
+  "Regionalverband",
+  "Verbandsgemeinde",
+] as const;
+
+/**
+ * Nur die GATTUNG mit ihrer Präposition: "im Landkreis", "im Kreis",
+ * "in der Region", "in der Städteregion", "im Regionalverband".
+ *
+ * Für Stellen, an denen der Ortsname nichts beiträgt, weil der Leser ohnehin
+ * dort sitzt — im Betreff des Kommunen-Anschreibens etwa kostet "Landkreis
+ * Würzburg" nur Zeichen, die das Postfach abschneidet.
+ *
+ * WARUM NICHT FEST "im Landkreis" (der Fehler bis 31.07.2026): Nordrhein-
+ * Westfalen und Schleswig-Holstein kennen keine Landkreise, sondern Kreise;
+ * dazu kommen Region Hannover, Städteregion Aachen und Regionalverband
+ * Saarbrücken. Rund 1.500 Gemeinden bekamen damit im Betreff eine
+ * Verwaltungsebene genannt, die es in ihrem Bundesland nicht gibt.
+ *
+ * Trägt der Name kein vorangestelltes Gattungswort ("Saalekreis", eine
+ * kreisfreie Stadt), gibt es nichts zu kürzen — dann steht der volle Name da.
+ */
+export function gattungPhrase(name: string): string {
+  const idx = name.indexOf(" ");
+  const erstes = idx > 0 ? name.slice(0, idx) : "";
+  if (!(VORANGESTELLTE_GATTUNG as readonly string[]).includes(erstes)) return ortPhrase({ name });
+  return `${ortPraeposition(erstes)} ${erstes}`;
 }
 
 /** Gattungswort der untergeordneten Ebene, mit korrektem Numerus. */

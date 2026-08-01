@@ -8,7 +8,6 @@ import { AWARD_CATEGORIES } from "../awards";
 const BASIS: DraftContext = {
   name: "Höchberg",
   pageUrl: "https://solar-check.io/solar-atlas/bayern/landkreis-wuerzburg/hoechberg",
-  vorschauUrl: "https://solar-check.io/r/hoechberg",
   betreff: "Höchberg hat die meiste private Speicherkapazität im Landkreis Würzburg",
   einstieg: "Höchberg hat die meiste private Speicherkapazität im Landkreis Würzburg — Platz 1 von 52 Gemeinden.",
   variante: "nur_meldung",
@@ -118,7 +117,13 @@ describe("Kein Textbaustein-Unfall", () => {
   });
 });
 
-describe("Der veroeffentlichte Link ist die echte Adresse", () => {
+// ─────────────────────────────────────────────────────────────────────────────
+// KEIN ZAEHL-LINK IM ANSCHREIBEN (Entscheidung des Betreibers, 31.07.2026).
+// Der Brief trug bis dahin eine Weiterleitung `solar-check.io/r/…`, die
+// Oeffnungen zaehlte. Umgedrehter Test: Frueher wurde geprueft, DASS sie im
+// Brief steht — jetzt, dass sie NIRGENDS mehr steht.
+// ─────────────────────────────────────────────────────────────────────────────
+describe("Jeder Link im Anschreiben ist die echte Adresse", () => {
   it("die Meldung enthaelt NIE die Zaehl-Weiterleitung", () => {
     // Eine Verwaltung veroeffentlicht keine kryptische Umleitung, und als
     // Backlink ist sie schwaecher als die kanonische Adresse.
@@ -127,13 +132,29 @@ describe("Der veroeffentlichte Link ist die echte Adresse", () => {
     expect(d.meldung).not.toContain("/r/");
   });
 
-  it("die Vorschau-Weiterleitung steht nur im Brief", () => {
+  it("auch der BRIEF traegt keine Zaehl-Weiterleitung mehr", () => {
     const d = renderOutreachDraft(BASIS);
-    expect(d.body).toContain("/r/hoechberg");
+    expect(d.body).not.toContain("solar-check.io/r/");
+    expect(d.body).not.toMatch(/Vorab ansehen|Blick vorab/);
   });
 
-  it("ohne Vorschau-Link fehlt der Satz ganz", () => {
-    expect(renderOutreachDraft({ ...BASIS, vorschauUrl: null }).body).not.toContain("Blick vorab");
+  it("nennt keine Zaehlung und kein Nachverfolgen", () => {
+    const d = renderOutreachDraft(BASIS);
+    expect(`${d.subject} ${d.body} ${d.meldung}`).not.toMatch(/zähl|Zähl|Klick|tracking/i);
+  });
+
+  it("die Rangliste bleibt als einziger Beleg-Link im Brief", () => {
+    const mit = renderOutreachDraft({ ...BASIS, ranglisteUrl: "https://solar-check.io/solar-atlas/ranking/x" });
+    expect(mit.body).toContain("Vollständige Rangliste: https://solar-check.io/solar-atlas/ranking/x");
+    // Ohne Rangliste faellt die Zeile ganz weg statt leer dazustehen.
+    expect(renderOutreachDraft({ ...BASIS, ranglisteUrl: null }).body).not.toContain("Vollständige Rangliste");
+  });
+
+  it("alle Links im Brief zeigen auf solar-check.io-Seiten, nicht auf Weiterleitungen", () => {
+    const d = renderOutreachDraft({ ...BASIS, ranglisteUrl: "https://solar-check.io/solar-atlas/ranking/x" });
+    const urls = d.body.match(/https?:\/\/\S+/g) ?? [];
+    expect(urls.length).toBeGreaterThan(0);
+    for (const u of urls) expect(u, u).not.toMatch(/solar-check\.io\/r\//);
   });
 });
 
@@ -418,7 +439,12 @@ describe("Der Brief bleibt lesbar kurz", () => {
     expect(absaetze.length, absaetze.map((a) => a.slice(0, 36)).join(" | ")).toBeLessThanOrEqual(9);
   });
 
-  it("stellt beide Links in eine Zeile", () => {
-    expect(renderOutreachDraft(MIT_ALLEM).body).toMatch(/Vorab ansehen: \S+\s+·\s+Vollständige Rangliste: \S+/);
+  it("trägt genau EINEN Beleg-Link — die Rangliste, in einer eigenen Zeile", () => {
+    // Hier standen zwei Links nebeneinander („Vorab ansehen · Vollständige
+    // Rangliste"). Der Zähl-Link ist raus (31.07.2026), damit bleibt einer —
+    // und die Trennung mit „·" hat dann nichts mehr zu trennen.
+    const body = renderOutreachDraft(MIT_ALLEM).body;
+    expect(body).toMatch(/\n\nVollständige Rangliste: \S+\n/);
+    expect(body).not.toMatch(/·\s+Vollständige Rangliste/);
   });
 });
