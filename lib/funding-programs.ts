@@ -272,7 +272,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "koeln-pv": {
     id: "koeln-pv", name: "Klimafreundliches Wohnen & Arbeiten",
     traeger: "Stadt Köln", level: "kommune", region: "Köln", bundesland: "Nordrhein-Westfalen", agsCode: "05315",
-    url: "https://www.stadt-koeln.de", stand: "Juni 2026",
+    url: "https://www.stadt-koeln.de/klimafreundliches-wohnen-und-arbeiten", stand: "August 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Staffel-Pauschalen, max. 60 % der Kosten",
