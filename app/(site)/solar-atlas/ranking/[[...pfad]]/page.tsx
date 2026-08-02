@@ -21,6 +21,7 @@ import {
   kategorieBySlug,
   rankingRows,
   rankingTitel,
+  traegtRangliste,
 } from "../../../../../lib/atlas-ranking";
 import { DATA_SOURCES } from "../../../../../lib/data-sources";
 
@@ -108,8 +109,9 @@ async function deute(pfad: string[] | undefined) {
   // Gemeinden sind die Zeilen dieser Listen, keine eigenen Ranking-Gebiete.
   if (region.level === "gemeinde") return null;
   // Eine kreisfreie Stadt ist ihr eigener Landkreis — eine Rangliste ihrer
-  // "Gemeinden" hätte genau eine Zeile, gekrönt und im Plural beschriftet.
-  if (region.level === "landkreis" && (await getChildren(region)).length <= 1) return null;
+  // "Gemeinden" hätte genau eine Zeile. Die Schwelle steht in traegtRangliste();
+  // dieselbe Regel entscheidet unten, welche Gebiete überhaupt verlinkt werden.
+  if (region.level === "landkreis" && !traegtRangliste((await getChildren(region)).length)) return null;
   return { uebersicht: false as const, kategorie, region, gebiet, feldSlug: feld, seite };
 }
 
@@ -207,6 +209,33 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
   const seite = Math.min(seiten, d.seite);
   const zeilen = alle.slice((seite - 1) * PRO_SEITE, seite * PRO_SEITE);
   const slugVon = new Map(stats.map((g) => [g.regionId, g.slug ?? null]));
+
+  // Wie viele Kommunen in einem Kreis liegen — aus den ohnehin geladenen
+  // Kennzahlen, ohne einen einzigen zusätzlichen Datenbank-Zugriff (ein
+  // getChildren() je Kreis wären ~40 Reads pro Landes-Rangliste, siehe „DB
+  // schonen"). Die ersten fünf Stellen eines Gemeindeschlüssels sind ihr Kreis.
+  const kommunenJeKreis = new Map<string, number>();
+  for (const g of stats) {
+    const kreisId = g.regionId.slice(0, 5);
+    kommunenJeKreis.set(kreisId, (kommunenJeKreis.get(kreisId) ?? 0) + 1);
+  }
+
+  // NUR Gebiete, die selbst eine Rangliste tragen. Eine kreisfreie Stadt steht
+  // auf Kreisebene, hat aber nur sich selbst als Kommune — die Ranking-Seite
+  // lehnt sie mit 404 ab. Bis 02.08.2026 verlinkte diese Liste sie trotzdem.
+  // Verloren geht dabei nichts: Als Kommune steht die Stadt weiterhin als Zeile
+  // in der Liste, nur eben nicht als Untergebiet zum Weiterblättern.
+  //
+  // Die Regel gilt NUR auf Kreisebene, also genau dort, wo die Seite ablehnt.
+  // Ein Stadtstaat hat ebenfalls nur eine Kommune, ist als BUNDESLAND aber ein
+  // gültiges Ranking-Gebiet — ohne diese Unterscheidung wären Berlin und Hamburg
+  // aus der bundesweiten Liste verschwunden (gemessen, bevor es live ging).
+  const verlinkbareKinder = kinder.filter((k) => {
+    if (!k.slug) return false;
+    if (region.level !== "bundesland") return true;
+    return traegtRangliste(kommunenJeKreis.get(k.region_id) ?? 0);
+  });
+
   const pfadVon = (id: string): string | null => {
     const bl = elternSlugs[id.slice(0, 2)];
     const kreis = elternSlugs[id.slice(0, 5)];
@@ -538,21 +567,19 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
           </div>
         )}
 
-        {kinder.length > 0 && (
+        {verlinkbareKinder.length > 0 && (
           <div style={S.section}>
             <h2 style={S.h2}>Nach {kindWort}</h2>
             <div style={S.gebiete}>
-              {kinder
-                .filter((k) => k.slug)
-                .map((k) => (
-                  <Link
-                    key={k.region_id}
-                    href={`${BASIS}/${kategorie.slug}/${[...d.gebiet, k.slug].join("/")}`}
-                    style={S.gebiet}
-                  >
-                    {k.name}
-                  </Link>
-                ))}
+              {verlinkbareKinder.map((k) => (
+                <Link
+                  key={k.region_id}
+                  href={`${BASIS}/${kategorie.slug}/${[...d.gebiet, k.slug].join("/")}`}
+                  style={S.gebiet}
+                >
+                  {k.name}
+                </Link>
+              ))}
             </div>
           </div>
         )}

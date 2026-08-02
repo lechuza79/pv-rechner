@@ -261,6 +261,32 @@ export function navPunktVon(slug: string): RankingNavPunkt | null {
 
 
 /**
+ * Traegt ein KREIS eine eigene Rangliste? Nur, wenn mehr als eine Kommune darin
+ * liegt: Eine kreisfreie Stadt ist ihr eigener Landkreis, ihre "Rangliste" haette
+ * genau eine Zeile — gekroent und im Plural beschriftet.
+ *
+ * Bewusst nur die Kreisebene. Ein Stadtstaat hat ebenfalls nur eine Kommune,
+ * ist als BUNDESLAND aber ein gueltiges Ranking-Gebiet — wer die Regel eine
+ * Ebene hoeher anwendet, wirft Berlin und Hamburg aus der bundesweiten Liste.
+ *
+ * EINE Quelle fuer beide Seiten derselben Regel. Die Ranking-Seite lehnt solche
+ * Gebiete ab (404), und die Gebiets-Links duerfen sie deshalb gar nicht erst
+ * anbieten. Vorher stand die Schwelle nur in der Ablehnung: Die Uebersicht
+ * verlinkte weiterhin jede kreisfreie Stadt — gemessen am 01.08.2026 allein in
+ * Rheinland-Pfalz 20 solcher Fehlaufrufe binnen 24 Stunden, alle auf Adressen,
+ * die wir selbst verlinkt haben.
+ *
+ * Die ZAEHLQUELLE unterscheidet sich bewusst je Aufrufer (die Seite zaehlt die
+ * Kinder, die sie ohnehin geladen hat; die Uebersicht zaehlt aus den geladenen
+ * Kennzahlen — siehe "DB schonen"). Die SCHWELLE steht nur hier.
+ */
+export const RANGLISTE_MIN_KOMMUNEN = 2;
+
+export function traegtRangliste(kommunenImGebiet: number): boolean {
+  return kommunenImGebiet >= RANGLISTE_MIN_KOMMUNEN;
+}
+
+/**
  * Adresse der Rangliste, in der ein Platz gilt — Kategorie, Groessenklasse und
  * Gebiet. EINE Quelle: Sowohl der Orden auf der Gemeindeseite als auch das
  * Anschreiben verlinken hierher, und beide muessen dieselbe Liste treffen.
