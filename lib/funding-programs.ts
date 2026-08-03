@@ -174,22 +174,34 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "regensburg-effizient": {
     id: "regensburg-effizient", name: "Regensburg effizient",
     traeger: "Stadt Regensburg", level: "kommune", region: "Regensburg", bundesland: "Bayern", agsCode: "09362",
-    url: "https://www.greendeal-regensburg.de", stand: "Juni 2026",
+    // Richtlinie der Stadt Regensburg zum Förderprogramm `Regensburg effizient´ —
+    // Förderung der Photovoltaik, vom 1. Januar 2026 (PDF, am 03.08.2026 gelesen,
+    // Volltext in docs/quellen/). Tabelle 1 kennt GENAU ZWEI Positionen:
+    // PV-Anlage 100 €/kWp (max. 1.500 €) und 200 € Zuschuss bei Denkmal oder
+    // Fassade. Die Wörter Speicher, Batterie und kWh kommen im gesamten
+    // Richtlinientext nicht vor — der frühere Speicher-Satz (150 €/kWh, max.
+    // 1.500 €) hat Regensburger Nutzern bis zu 1.500 € zu viel versprochen.
+    // Nur die Nullsteuer bleibt als kombinierbar stehen: Punkt 2 e) schließt die
+    // Kombination mit anderen INVESTIVEN Förderprogrammen des Bundes und des
+    // Freistaats aus (KfW 270 ist eines), während die Umsatzsteuer ein
+    // Steuersatz ist und kein Förderprogramm.
+    url: "https://www.regensburg.de/greendeal/mitmachen/staedtische-foerderungen-zum-klimaschutz",
+    stand: "August 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp + je kWh Speicher",
+    coveredCosts: "Zuschuss je kWp — Batteriespeicher fördert die Stadt nicht",
     rates: [
       { label: "PV-Anlage", value: "100 €/kWp, max. 1.500 €" },
-      { label: "Gründach / Fassade / Denkmal", value: "+200 € pauschal" },
-      { label: "Batteriespeicher (ab 4 kWh)", value: "150 €/kWh, max. 1.500 €" },
+      { label: "Denkmalgeschütztes Gebäude oder Fassade", value: "+200 € pauschal" },
     ],
     conditions: [
       "Antrag muss vor Kauf/Baubeginn bewilligt sein",
-      "Speicher nur mit PV (ab 1,25 kWp), min. 4 kWh nutzbar",
+      "Pro Gebäude wird eine Maßnahme gefördert; die Anlage muss mindestens fünf Jahre im Stadtgebiet betrieben werden",
+      "Reine Freiflächenanlagen und Balkonkraftwerke sind nicht förderfähig",
+      "Keine Doppelförderung mit anderen investiven Programmen des Bundes oder des Freistaats Bayern; Einnahmen aus dem EEG bleiben unberührt",
     ],
-    combinableWith: BUND,
+    combinableWith: ["bund-nullsteuer"],
     pvPerKwp: 100, pvCap: 1500,
-    speicherPerKwh: 150, speicherCap: 1500, speicherMin: 4,
   },
   "wuerzburg-klimastadt": {
     id: "wuerzburg-klimastadt", name: "Klimastadt Würzburg",
@@ -239,7 +251,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "darmstadt-pv": {
     id: "darmstadt-pv", name: "Förderprogramm Photovoltaik",
     traeger: "Wissenschaftsstadt Darmstadt", level: "kommune", region: "Darmstadt", bundesland: "Hessen", agsCode: "06411",
-    url: "https://www.darmstadt.de", stand: "Juni 2026",
+    // Am 03.08.2026 an der Trägerseite geprüft: Sätze unverändert, Programm läuft,
+    // kein Hinweis auf ausgeschöpfte Mittel. Geändert wurde nur der Link — er zeigte
+    // auf die Stadt-Startseite und führte damit nirgendwohin.
+    url: "https://www.darmstadt.de/leben/umwelt/foerderprogramme",
+    stand: "August 2026",
     status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "Zuschuss je kWp (Anschaffung + Installation)",
@@ -247,7 +263,11 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "PV-Anlage (Dach/Fassade)", value: "200 €/kWp, max. 6.000 €" },
       { label: "Balkonkraftwerk", value: "200 – 400 € (max. 50 %)" },
     ],
-    conditions: ["Freiwillige Leistung, kein Rechtsanspruch"],
+    conditions: [
+      "Freiwillige Leistung, kein Rechtsanspruch",
+      "Hier wird der Antrag erst NACH Inbetriebnahme und Registrierung im Marktstammdatenregister gestellt — anders als bei den meisten anderen Programmen",
+      "Die Anlage muss im eigenen Eigentum stehen; Rechnungsdatum der Module nach dem 28.06.2022",
+    ],
     combinableWith: BUND,
     pvPerKwp: 200, pvCap: 6000,
   },
@@ -612,15 +632,21 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "memmingen-ee": {
     id: "memmingen-ee", name: "Förderprogramm Erneuerbare Energien",
     traeger: "Stadt Memmingen", level: "kommune", region: "Memmingen", bundesland: "Bayern", agsCode: "09764",
-    url: "https://www.memmingen.de", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: false,
+    // Die Förderseite der Stadt trägt am 03.08.2026 wörtlich: „Fördertopf für 2026
+    // für das Förderprogramm Klimaschutz ist ausgeschöpft. Bitte stellen Sie keine
+    // Anträge mehr." Der Jahrestopf umfasste 12.000 € für alle Maßnahmen zusammen
+    // (Richtlinie Klimaschutz 2026, in Kraft seit 10.06.2026, Anträge ab 15.06.2026).
+    url: "https://www.memmingen.de/hier-leben/umwelt-klimaschutz/foerderung.html",
+    stand: "August 2026",
+    status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss für Batteriespeicher, Balkonsolar und Wallbox — nicht die Dach-PV selbst",
+    coveredCosts: "Zuschuss für Batteriespeicher, Balkonsolar und Wallbox — nicht die Dach-PV selbst (Topf 2026 leer)",
     rates: [
       { label: "Batteriespeicher", value: "20 %, max. 750 €" },
       { label: "Balkonsolar", value: "50 %, max. 100 €" },
     ],
     conditions: [
+      "Der Fördertopf 2026 ist ausgeschöpft; die Stadt bittet ausdrücklich darum, keine Anträge mehr zu stellen",
       "Reine Dach-PV wird nicht bezuschusst — nur Speicher, Balkonsolar, Wallbox",
       "Installation durch Fachbetrieb; Antrag online (Windhundverfahren)",
     ],

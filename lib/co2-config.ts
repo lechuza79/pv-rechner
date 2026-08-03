@@ -5,10 +5,22 @@
 // rolls over. A projection that starts in 2027 must still price the year 2028 at
 // the 2028 rate — not at "second projection year" leftovers from a 2026 start.
 //
-// Legal basis (Stand Juni 2026):
-//  - BEHG (nationaler Brennstoffemissionshandel): gesetzlicher Preiskorridor
-//    55–65 €/t gilt für 2026 UND 2027 (Koalitionsausschuss 12.05.2026,
-//    "CO2-Preis soll 2027 nicht steigen").
+// Legal basis (Stand August 2026) — der Erkenntniszustand ist je Jahr ein anderer
+// und darf nicht verschmelzen (Wächter-Gate, Regel 1):
+//  - 2026: geltendes Recht. Das BEHG schreibt den Preiskorridor 55–65 €/t fest.
+//  - 2027: NOCH NICHT GELTENDES RECHT. Der Koalitionsausschuss hat am 12.05.2026
+//    beschlossen, den Korridor auch 2027 bei 55–65 €/t einzufrieren; umgesetzt
+//    werden soll das durch das Dritte BEHG-Änderungsgesetz. Das lag am 03.08.2026
+//    als REFERENTENENTWURF des BMUKN vor (veröffentlicht 03.07.2026, Länder- und
+//    Verbändeanhörung bis 15.07.2026) — ohne Kabinettsbeschluss, ohne Bundestag.
+//    Das GELTENDE BEHG knüpft den nationalen Preis für 2027 dagegen an den Preis
+//    im europäischen Emissionshandel (EU-ETS 1) an, der derzeit über dem Korridor
+//    liegt. Unsere 65 €/t sind damit auch bei einem Scheitern des Entwurfs die
+//    vorsichtige Richtung: Sie unterschätzen die fossilen Kosten eher, als sie zu
+//    überzeichnen. Wird der Entwurf verabschiedet, ändert sich hier nur der
+//    Zustand, nicht der Wert.
+//    Beleg: BMUKN, "Referentenentwurf eines Dritten Gesetzes zur Änderung des
+//    Brennstoffemissionshandelsgesetzes" (bundesumweltministerium.de).
 //  - EU ETS2 (freier Markt) startet 2028 — verschoben von 2027 (EU-Umweltrat
 //    05.11.2025). Hat einen Preisstabilitätsmechanismus (Soft-Cap ~45 €/t in
 //    2020-Preisen, setzt zusätzliche Zertifikate frei bei Überschreitung) — hier
@@ -36,12 +48,12 @@ export interface Co2PriceConfig {
 export const CO2_PRICE: Co2PriceConfig = {
   anchors: {
     2026: 55, // BEHG-Korridor-Boden (konservativ; gesetzliche Spanne 55–65)
-    2027: 65, // BEHG-Korridor-Decke (für 2027 eingefroren, Koalitionsausschuss 05/2026)
+    2027: 65, // Korridor-Decke; das Einfrieren für 2027 ist erst ein Gesetzentwurf (siehe oben)
   },
   annualIncrease: 8,
-  validFrom: "2026-06-20",
+  validFrom: "2026-08-03",
   reviewBy: "2027-01-31",
-  source: "BEHG (Koalitionsausschuss 05/2026) + EU ETS2 ab 2028 (EU-Umweltrat 11/2025), konservative Forecast-Kurve",
+  source: "BEHG für 2026; für 2027 der Gesetzentwurf zum Einfrieren des Korridors (Referentenentwurf 07/2026, noch nicht beschlossen); ab 2028 EU-Emissionshandel (Start 2028, EU-Umweltrat 11/2025) als konservative Forecast-Kurve",
 };
 
 /** CO2-Preis in €/t für ein absolutes Kalenderjahr (rollover-sicher). */
