@@ -71,8 +71,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ? new Date(Math.max(...ratgeberDaten.map((d) => d.getTime())))
     : undefined;
 
-  // Solar-Atlas: nur die freigeschalteten Wellen (lib/atlas-index). Aktuell 0b =
-  // Deutschland + Bundesländer + Landkreise; Gemeinden folgen gestaffelt.
+  // Solar-Atlas: nur die freigeschalteten Wellen (lib/atlas-index). Aktuell 0a =
+  // Deutschland + Bundesländer; Landkreise (0b) waren am 27.07.2026 zwei Stunden
+  // frei und sind zurückgenommen, Gemeinden folgen gestaffelt. Der Kreis-Zweig
+  // unten bleibt trotzdem stehen: Er hing beim ersten Anlauf an der Freischaltung
+  // hinterher, deshalb steht er jetzt VOR ihr bereit und schaltet sich mit.
   const atlasPages: MetadataRoute.Sitemap = [];
   if (atlasLevelReleased("de")) {
     atlasPages.push({ url: `${BASE_URL}/solar-atlas`, lastModified: now, changeFrequency: "monthly", priority: 0.6 });

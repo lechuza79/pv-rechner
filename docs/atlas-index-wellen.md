@@ -78,12 +78,18 @@ Thin-Fix der Masse (größte Anlage + Nachbarvergleich auf **jeder** Seite).
 ## Die Wellen
 - **Welle 0a — Fundament (17 Seiten):** Deutschland + 16 Bundesländer freischalten.
   Trivial safe, höchster Wert, etabliert die Sektion. In die Sitemap. ~1 Woche beobachten.
-- **Welle 0b — Landkreise (~400): FREIGESCHALTET am 27.07.2026.** Gate erfüllt
-  (Wellen-Monitor: Self-Check 17/17 grün, 17 von 17 Seiten mit Impressions,
-  139 Impressions / 1 Klick, keine manuelle Maßnahme). Aggregierte, einzigartige
-  Datenseiten, geringes Risiko. Kreis-URLs kommen über `getKreisPfade()` aus der
-  Datenbank in die Sitemap — die füllt sich **nicht** von allein, der Zweig in
-  `app/sitemap.ts` musste dafür ergänzt werden.
+- **Welle 0b — Landkreise (~400): am 27.07.2026 freigeschaltet und am selben Abend
+  ZURÜCKGENOMMEN.** Nicht der Inhalt der Kreisseiten war das Problem, sondern das
+  `follow` darauf: 400 indexierte Kreisseiten verlinken ~11.000 noindex-Gemeinden,
+  die Googlebot alle einmal abrufen muss — genau die gleichzeitigen Kaltrender, die
+  am selben Tag 0,7 % Serverfehler verursachten. Die Freigabekriterien dieses
+  Monitors waren erfüllt (Self-Check 17/17, alle 17 Seiten mit Impressions) und
+  haben den Ausfall trotzdem nicht verhindert; die Auflagen für einen zweiten
+  Anlauf stehen in `lib/atlas-index.ts`.
+  Aggregierte, einzigartige Datenseiten, inhaltlich geringes Risiko. Kreis-URLs
+  kommen über `getKreisPfade()` aus der Datenbank in die Sitemap — die füllt sich
+  **nicht** von allein, der Zweig in `app/sitemap.ts` musste dafür ergänzt werden;
+  er steht seitdem bereit und schaltet mit der Welle mit.
 - **Welle 1 — Gemeinde-Pilot (~500–1.000):** begrenzte, starke Teilmenge — größte
   Gemeinden **oder** ein Bundesland komplett, nur oberhalb der Thin-Schwelle.
   Sitemap-Batch, 2–4 Wochen beobachten.

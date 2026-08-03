@@ -56,10 +56,11 @@ export const revalidate = 86400;
 //    zurückholen will, braucht vorher eine Wiederholung mit Backoff in der
 //    DB-Schicht — nicht einfach die Liste wieder füllen.
 //
-//    Das gilt erst recht seit Welle 0b (27.07.2026): Mit den ~400 Landkreisen
-//    ist die indexierte Menge viel zu groß zum Vorrendern. Sie kommen ebenfalls
+//    Das gilt erst recht, sobald Welle 0b wiederkommt: Mit den ~400 Landkreisen
+//    wäre die indexierte Menge viel zu groß zum Vorrendern. Sie kommen ebenfalls
 //    on-demand; warm hält sie der Aufwärm-Crawler (npm run atlas:warm) nach
-//    jedem MaStR-Lauf.
+//    jedem MaStR-Lauf. (0b war am 27.07.2026 zwei Stunden frei und ist
+//    zurückgenommen — Stand und Auflagen stehen in lib/atlas-index.ts.)
 export function generateStaticParams() {
   return [{ pfad: [] as string[] }];
 }
