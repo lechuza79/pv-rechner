@@ -270,6 +270,54 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     // Keine abgelaufene Terminzusage mehr im Fließtext ("ab Mitte Juli").
     expect(p.conditions.join(" ")).not.toMatch(/Mitte Juli/);
   });
+
+  // Regensburg hat NIE Batteriespeicher gefördert. Die hinterlegten 150 €/kWh
+  // waren eine Vermischung: Die amtliche Richtlinie vom 01.01.2026 (PDF in
+  // docs/quellen/, am 03.08.2026 gelesen) kennt in Tabelle 1 genau zwei
+  // Positionen — 100 €/kWp bis 1.500 € und 200 € für Denkmal oder Fassade.
+  // "Speicher", "Batterie" und "kWh" kommen im ganzen Richtlinientext nicht vor.
+  // Der Rechner hat Regensburgern damit bis zu 1.500 € zu viel versprochen;
+  // dieser Test hält die Null fest.
+  it("Regensburg: kein Speicher-Zuschuss, PV-Satz unverändert", () => {
+    const p = getFundingProgram("regensburg-effizient")!;
+    expect(p.speicherPerKwh).toBeUndefined();
+    expect(p.speicherCap).toBeUndefined();
+    expect(p.speicherMin).toBeUndefined();
+    expect(p.rates.map((r) => r.label).join(" ")).not.toMatch(/Speicher|Batterie/i);
+    // "Gründach" stand nur in unserem Eintrag, nicht in der Richtlinie.
+    expect(p.rates.map((r) => r.label).join(" ")).not.toMatch(/Gründach/);
+    // Die tote Domain greendeal-regensburg.de löst nicht mehr auf.
+    expect(p.url).not.toMatch(/greendeal-regensburg\.de/);
+    // Ein 10-kWp-Fall bekommt den PV-Zuschuss, aber nichts für 10 kWh Speicher.
+    expect(fundingAmount(p, 10, 10, 25000).total).toBe(1000);
+    expect(fundingAmount(p, 30, 10, 60000).total).toBe(1500); // Deckel greift
+  });
+
+  // Memmingen: Die Trägerseite bittet am 03.08.2026 wörtlich darum, keine Anträge
+  // mehr zu stellen ("Fördertopf für 2026 ... ist ausgeschöpft"). Der Jahrestopf
+  // umfasste 12.000 € für alle Maßnahmen zusammen. Die Lokalpresse meldete Mitte
+  // Juli noch die Fortführung des Programms — deshalb hält dieser Test fest, dass
+  // die Trägerseite zählt und nicht die Presse.
+  it("Memmingen: Fördertopf 2026 leer, Programm zieht nicht mehr ab", () => {
+    const p = getFundingProgram("memmingen-ee")!;
+    expect(p.status).toBe("ausgeschoepft");
+    // Die Startseite als Quellenangabe war kein Beleg — es muss die Förderseite sein.
+    expect(p.url).toMatch(/memmingen\.de\/.+foerderung/);
+    expect(stackFunding(fundingForAgs("09764000"), 10, 10, 25000).total).toBe(0);
+    // Dach-PV war hier nie förderfähig — das darf beim Statuswechsel nicht kippen.
+    expect(p.pvPerKwp).toBeUndefined();
+  });
+
+  // Eine Startseiten-URL ist als Quellenangabe unter einem Förderbetrag wertlos:
+  // Sie sieht aus wie ein Beleg, führt aber nirgendwo hin. Aufgefallen bei
+  // Bergstraße und Memmingen, danach für alle aktiven Programme festgehalten.
+  it("aktive Programme belegen ihren Satz mit einer Programmseite, nicht der Startseite", () => {
+    for (const p of Object.values(FUNDING_PROGRAMS)) {
+      if (p.status !== "aktiv" || p.level === "bund") continue;
+      const pfad = p.url.replace(/^https?:\/\/[^/]+/, "").replace(/\/$/, "");
+      expect(pfad, `${p.id} verweist nur auf die Startseite: ${p.url}`).not.toBe("");
+    }
+  });
 });
 
 describe("atlas-cities registry", () => {
