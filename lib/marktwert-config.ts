@@ -37,8 +37,9 @@
 // Nebenbefund aus derselben Rechnung, der in die Modellierung eingeht:
 // 2025 fielen 24,2 % der deutschen Solarerzeugung in Stunden mit NEGATIVEM
 // Börsenpreis (2024: 18,6 %). Im April/Mai/Juni 2025 war es rund jede zweite
-// Kilowattstunde. Das ist kein Ausreißer, sondern die Struktur, in die eine
-// Anlage ab 2027 hineinverkauft.
+// Kilowattstunde. Das ist kein Ausreißer, sondern die heutige Marktstruktur —
+// und die Struktur, in die eine Neuanlage hineinverkaufen müsste, falls der
+// Entwurf zum EEG 2027 Gesetz wird.
 
 /** Ein amtlich veröffentlichter Jahresmarktwert Solar. */
 export interface MarktwertJahr {
@@ -69,10 +70,11 @@ export const MARKTWERT_SOLAR_HISTORIE: ReadonlyArray<MarktwertJahr> = [
  * Marktvariante etwas besser — deshalb steht sie hier ausdrücklich und ist im
  * Ergebnis editierbar.
  *
- * Der Entwurf verschärft das übrigens noch: § 51 EEG 2027 setzt den
+ * Der Entwurf würde das noch verschärfen: § 51 EEG 2027 setzt den
  * Zahlungsanspruch bei negativen Preisen auf null, und § 50c Abs. 6 erklärt das
- * auch für den Direktvermarktungsbonus für anwendbar. Die Kappung ist also
- * nicht nur Vertragspraxis, sondern künftig Gesetz.
+ * auch für den Direktvermarktungsbonus für anwendbar. Die Kappung wäre damit
+ * nicht mehr nur Vertragspraxis — vorausgesetzt, der Entwurf wird Gesetz. Heute
+ * ist sie ausschließlich Vertragspraxis.
  */
 export const MARKTWERT_NIVEAU_CT = 4.93;
 

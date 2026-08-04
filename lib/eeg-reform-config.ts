@@ -198,7 +198,12 @@ export function eegStaffelSatz(): string {
 //    würden "demnach abgeschafft". Das betrifft ausdrücklich AUCH den Aufschlag
 //    für Volleinspeisung (§ 48 Abs. 2a EEG 2023) — die Unterscheidung
 //    Teil-/Volleinspeisung, die unser Rechner heute kennt, gäbe es für
-//    Neuanlagen nicht mehr.
+//    Neuanlagen nicht mehr. Die ausführliche Passage dazu steht auf S. 250;
+//    beide Seiten sind zitierbar.
+//    ACHTUNG bei Formulierungen nach außen: "einheitlicher Wert bis 100 kW" ist
+//    FALSCH. Der gesetzlich bestimmte Wert reicht bis zur Ausschreibungsschwelle
+//    des zweiten Segments (über 750 kW); bei 100 kW greifen lediglich die
+//    Direktvermarktungspflicht und die Zahlungspflicht nach § 21d.
 //  · § 53 Abs. 1: Die befristete Übergangszahlung "berechnet sich aus den
 //    anzulegenden Werten, wobei von den anzulegenden Werten 1 Cent pro
 //    Kilowattstunde abzuziehen sind" → 6,2 − 1,0 = 5,2 ct/kWh.
@@ -214,17 +219,26 @@ export function eegStaffelSatz(): string {
 //    steht im Entwurf in eckigen Klammern und ist damit OFFEN — hier wird keine
 //    Zahl ergänzt, auch nicht "zur Präzisierung".
 //
-// ÜBERGANGSZAHLUNG UND BONUS SCHLIESSEN EINANDER AUS. Das ist keine Auslegung,
-// sondern steht so im Entwurf: Die Übergangszahlung ist eine Variante der
-// Netzbetreiberabnahme (Legaldefinition in § 3 Nr. 5a), der Bonus besteht nach
-// § 50c Abs. 2 dagegen "nur für Kalendermonate, in denen der in ein Netz
-// eingespeiste Strom nach § 21a auf sonstige Weise direkt vermarktet wird".
-// Beides gleichzeitig geht also nicht. Weil die 48-Monats-Frist des Bonus erst
-// mit der erstmaligen Zuordnung zu einer DIREKTVERMARKTUNG zu laufen beginnt,
-// verfällt sie während der Übergangszahlung auch nicht — sie startet danach.
-// (Die frühere Notiz "eine zeitliche Abfolge ist nicht belegt" bezog sich auf
-// eine Presseaussage; belegt ist jetzt das Ausschlussverhältnis aus dem
-// Wortlaut, nicht ein Ablaufplan.)
+// ÜBERGANGSZAHLUNG UND BONUS SCHLIESSEN EINANDER AUS — aber die tragende
+// Fundstelle ist nicht die naheliegende. § 50c Abs. 2 gewährt den Bonus "nur für
+// Kalendermonate, in denen der in ein Netz eingespeiste Strom nach § 21a auf
+// sonstige Weise direkt vermarktet wird", und die Übergangszahlung ist eine
+// Variante der Netzbetreiberabnahme (Legaldefinition § 3 Nr. 5a). Das allein
+// trägt den Ausschluss aber NICHT: § 21b Abs. 2 Satz 1 erlaubt grundsätzlich,
+// eine Anlage prozentual auf mehrere Veräußerungsformen aufzuteilen — dann wären
+// beide gleichzeitig denkbar. Tragend ist der geänderte § 21b Abs. 2 Satz 3, der
+// die prozentuale Aufteilung bei Zuordnung zur Übergangszahlung ausschließt
+// (Begründung S. 199). Erst damit ist es ein echtes Entweder-oder.
+// (Fundstelle ergänzt nach dem Council vom 04.08.2026 — § 50c Abs. 2 wurde
+// vorher als alleiniger Beleg geführt.)
+//
+// Folge für das Modell: Die 48-Monats-Frist des Bonus beginnt erst mit der
+// erstmaligen Zuordnung zu einer DIREKTVERMARKTUNG, verfällt während der
+// Übergangszahlung also nicht, sondern startet danach. Die Reihenfolge
+// Übergangszahlung → Bonus ist möglich; ein Zurück in die Netzbetreiberabnahme
+// beendet den Bonus dagegen endgültig (§ 50c Abs. 5: "bis zu einem Wechsel von
+// der sonstigen Direktvermarktung in die Netzbetreiberabnahme"), ein
+// Bonus → Übergangszahlung → Bonus gibt es nicht.
 export const EEG_ENTWURF_WERTE = {
   /** Einheitlicher anzulegender Wert, ct/kWh (§ 48 Abs. 1 Satz 1). */
   anzulegenderWertCt: 6.2,
@@ -252,10 +266,17 @@ export function eegUebergangszahlungCt(w = EEG_ENTWURF_WERTE): number {
 /** Darf eine Anlage dieser Größe im Inbetriebnahmejahr die Übergangszahlung
  *  nutzen? Der Entwurf sagt "weniger als", nicht "bis" — die Fachpresse
  *  schreibt regelmäßig "bis 50 kWp", das ist falsch und würde eine Anlage mit
- *  genau 50 kW fälschlich einschließen. Ab 2030 steht das Instrument nicht mehr
- *  zur Verfügung (§ 85 Abs. 2 Nr. 2a); die Bundesnetzagentur kann für Anlagen
- *  unter 25 kW bis 31.12.2032 verlängern — deshalb nie "ab 2030 endgültig
- *  vorbei" schreiben. */
+ *  genau 50 kW fälschlich einschließen.
+ *
+ *  Dass ab Inbetriebnahmejahr 2030 gar nichts mehr geht, folgt aus der Staffel
+ *  selbst (§ 21 Abs. 1 S. 1 Nr. 1 a–c nennt nur 2028/2029/2030 als Endtermine)
+ *  und der Begründung S. 196 f. — NICHT aus § 85 Abs. 2 Nr. 2a. Der regelt
+ *  ausschließlich die Befugnis der Bundesnetzagentur, und zwar in zwei
+ *  Buchstaben: Buchst. a verlängert die DAUER des Anspruchs, Buchst. b
+ *  erweitert seine ANWENDBARKEIT; beide nur für Anlagen unter 25 kW und beide
+ *  gedeckelt auf den 31.12.2032. Deshalb nie "ab 2030 endgültig vorbei"
+ *  schreiben — aber auch nicht § 85 als Grund für das Ende zitieren.
+ *  (Fundstelle präzisiert nach dem Council vom 04.08.2026.) */
 export function eegUebergangBerechtigt(kwp: number, inbetriebnahmeJahr: number): boolean {
   const stufe = EEG_UEBERGANG_STAFFEL.find((s) => s.jahr === inbetriebnahmeJahr);
   if (!stufe) return false;
