@@ -22,6 +22,7 @@ import {
   FEEDIN_HISTORY_YEARS,
 } from "../../../lib/feedin-history";
 import { eegDatum, eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
+import { MARKTWERT_QUELLE, MARKTWERT_SOLAR_HISTORIE } from "../../../lib/marktwert-config";
 import { fetchMarketPrices } from "../../../lib/prices-server";
 
 // Jede Zahl auf dieser Seite kommt live aus den geprüften Modulen
@@ -263,6 +264,9 @@ export default async function EinspeiseverguetungTabellePage() {
   const maxJahr = FEEDIN_HISTORY_YEARS[FEEDIN_HISTORY_VALUES.indexOf(maxWert)];
   const wert2012 = FEEDIN_HISTORY_VALUES[FEEDIN_HISTORY_YEARS.indexOf(2012)];
 
+  // Jüngster amtlicher Jahresmarktwert Solar (ÜNB) aus der geteilten Quelle.
+  const marktwert = MARKTWERT_SOLAR_HISTORIE[MARKTWERT_SOLAR_HISTORIE.length - 1];
+
   // § 25 EEG live gerechnet: welcher Jahrgang läuft gerade aus?
   const jahrgangEnde = year - 20; // Vergütung endet am 31.12. dieses Jahres
   const endeDatum = dd(feedInEndIso(`${jahrgangEnde}-01-01`));
@@ -459,6 +463,35 @@ export default async function EinspeiseverguetungTabellePage() {
           weiter — unser <Link href="/photovoltaik-rechner" style={S.link}>PV-Rechner</Link>{" "}
           kalkuliert genau so: Vergütung nur {FEED_IN_YEARS} Jahre, danach null, die
           Eigenverbrauchs-Ersparnis über die gesamte Laufzeit.
+        </p>
+
+        {/* ── Nach der festen Vergütung: Marktwert Solar ──────────────────────
+             Bewusst kurz (3–4 Sätze): die Rechnung dazu lebt im interaktiven
+             Block des Reform-Ratgebers — dieselbe Frage zweimal zu beantworten
+             wäre Thin Content gegen uns selbst. Zahl + Quelle kommen aus
+             lib/marktwert-config.ts (eine Quelle, Realitäts-Anker im Repo);
+             Entwurfs-Geldwerte stehen hier KEINE (Council-Vorbehalt). ── */}
+        <h2 style={S.h2}>Was kommt nach der festen Vergütung: der Marktwert Solar</h2>
+        <p style={S.p}>
+          Wo keine feste Einspeisevergütung fließt — nach den {FEED_IN_YEARS} Jahren, oder
+          falls die geplante Reform die feste Vergütung für Neuanlagen beendet —, bleibt
+          für den Überschuss die Direktvermarktung: Ein Dienstleister verkauft den Strom
+          an der Börse, du erhältst den Marktpreis abzüglich einer Gebühr. Maßstab dafür
+          ist der <strong style={S.strong}>Marktwert Solar</strong>, den die
+          Übertragungsnetzbetreiber veröffentlichen: {marktwert.jahr} lag er bei{" "}
+          <strong style={S.strong}>{ct(marktwert.ctKwh)} ct/kWh</strong> — gegenüber{" "}
+          {ct(rates.teilUnder10)} ct fester Vergütung und rund {strompreisCt} ct
+          Haushaltsstrompreis. Er liegt strukturell unter dem mittleren Börsenpreis, weil
+          Solarstrom überall zur selben Zeit anfällt und das große Mittagsangebot den
+          Preis genau dann drückt. Wie sich das auf Amortisation und Rendite auswirkt,
+          rechnet der Ratgeber{" "}
+          <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" style={S.link}>
+            „Lohnt sich PV ohne Einspeisevergütung?"
+          </Link>{" "}
+          durch.
+        </p>
+        <p style={{ ...S.small, marginBottom: 16 }}>
+          Quelle Marktwert: {MARKTWERT_QUELLE}.
         </p>
 
         {/* ── CTA ── */}
