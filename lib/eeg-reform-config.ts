@@ -39,37 +39,55 @@
 //     Eigenverantwortung der Anlagenbetreiber zu stärken und den Zubau von
 //     Speichern anzureizen."
 //
-// ── Belegebene 2: nur Referentenentwurf vom 18.07.2026 ─────────────────────
-// Der Wortlaut der beschlossenen Kabinettsfassung war am 30.07.2026 NICHT
-// veröffentlicht. Grundlage des Beschlusses ist der Referentenentwurf vom
-// 18.07.2026; Volltext liegt im Repo: docs/quellen/
-// EEG-2027_Referentenentwurf_BMWE_2026-07-18.pdf. Am 30.07.2026 Fundstelle für
-// Fundstelle selbst aufgeschlagen (nicht aus einem Report übernommen):
+// ── Belegebene 2: die Kabinettsfassung selbst ──────────────────────────────
+// SEIT 04.08.2026 GILT HIER EINE ANDERE LAGE als in den ersten Tagen nach dem
+// Beschluss. Der amtliche Volltext der beschlossenen Fassung IST veröffentlicht
+// ("Gesetzentwurf der Bundesregierung", 320 Seiten,
+// bundeswirtschaftsministerium.de); er liegt im Repo unter docs/quellen/
+// EEG-2027_Regierungsentwurf_BMWE_2026-07-29.pdf. Alle Detailwerte sind damit
+// auf Kabinettsebene belegt und nicht mehr nur "Referentenentwurf".
+//
+// DER ABRUF HAT EINE FALLE: Ohne den Parameter ?__blob=publicationFile liefert
+// der Server nur HTML. Genau daran ist eine parallele Prüfung gescheitert, die
+// daraufhin "Kabinettsfassung weiter unveröffentlicht" meldete — ein Fehlschlag
+// beim Abruf ist kein Beleg dafür, dass es die Quelle nicht gibt.
+//
+// UND DIE FASSUNGEN UNTERSCHEIDEN SICH. Wer Werte aus dem Referentenentwurf
+// weiterträgt, trägt an zwei Stellen einen überholten Stand weiter — deshalb
+// ist der Referentenentwurf hier nur noch Historie:
+//   · Die 7-kW-Stufe endet "vor dem 1. Januar 2031" (Referentenentwurf: 2030).
+//   · Die Leistungsschwelle der 50-%-Grenze ist entschieden: unter 100 kW,
+//     zweites Segment (Referentenentwurf: eckige Klammern).
+//   · Die 36-Monats-Regel steht in § 25 Abs. 2 (Referentenentwurf: Abs. 1a).
+//
+// Am 04.08.2026 Fundstelle für Fundstelle in der Kabinettsfassung selbst
+// aufgeschlagen (nicht aus einem Report übernommen):
 //   · § 21 Abs. 1 S. 1 Nr. 1 a–c — Leistungsstaffel der Übergangszahlung:
 //     "weniger als 50 Kilowatt, die vor dem 1. Januar 2028 in Betrieb genommen
 //     worden sind" / "weniger als 25 Kilowatt … vor dem 1. Januar 2029" /
-//     "weniger als 7 Kilowatt … vor dem 1. Januar 2030". Es heißt WENIGER ALS,
+//     "weniger als 7 Kilowatt … vor dem 1. Januar 2031". Es heißt WENIGER ALS,
 //     nicht "bis" — die Fachpresse schreibt regelmäßig "bis 50 kWp", das ist
 //     falsch. Steckersolargeräte sind nach Satz 2 ausgenommen.
-//   · § 25 Abs. 1a — Dauer: "bis zum Ende des 36. auf die Inbetriebnahme der
-//     Anlage folgenden Kalendermonats".
+//   · § 25 Abs. 2 — Dauer: "bis zum 36. auf die Inbetriebnahme der Anlage
+//     folgenden Kalendermonat". Kalendermonats-Mechanik, nicht Datum plus 36.
 //   · § 53 Abs. 1 — Höhe: "wobei von den anzulegenden Werten 1 Cent pro
 //     Kilowattstunde abzuziehen sind".
-//   · § 85 Abs. 2 Nr. 2a + Begründung — ab Inbetriebnahmejahr 2030 steht die
-//     Übergangszahlung "nicht mehr zur Verfügung"; die Bundesnetzagentur ist
-//     aber befugt, sie "bis maximal zum 31. Dezember 2032" zu verlängern, wenn
-//     die Direktvermarktung für kleine Anlagen noch nicht praxistauglich ist.
-//     Deshalb nie "ab 2030 endgültig vorbei" schreiben.
-//   · § 9 Abs. 2b — 50-%-Grenze: "die Wirkleistungseinspeisung dauerhaft und
-//     unabhängig vom Einbau eines intelligenten Messsystems und der
-//     Veräußerungsform auf maximal 50 Prozent der installierten Leistung …
-//     begrenzen". Die Leistungsschwelle steht dort noch in eckigen Klammern:
-//     "[weniger als 25/weniger als 100 Kilowatt]" — also OFFEN. Deshalb bleibt
-//     es bei der vagen amtlichen Formulierung "kleine und mittlere Dachanlagen";
-//     hier darf keine Zahl ergänzt werden, auch nicht "zur Präzisierung".
-//     Begründung S. 190 wörtlich: "§ 9 Absatz 2b EEG 2027 findet nur auf
-//     Neuanlagen Anwendung." Ohne dieses "nur auf Neuanlagen" liest ein
-//     PV-Besitzer, seine laufende Anlage werde gekappt.
+//   · Begründung S. 197 — "ab dem Inbetriebnahmejahr 2031 steht das
+//     Übergangsinstrument der befristeten Übergangszahlung nicht mehr zur
+//     Verfügung". § 85 Abs. 2 Nr. 2a gibt der Bundesnetzagentur daneben die
+//     Befugnis, die Übergangsphase zu verlängern (Buchst. a Dauer, Buchst. b
+//     Anwendbarkeit), beides nur unter 25 kW und höchstens bis 31.12.2032.
+//     Diese Kann-Bestimmung nie einrechnen und nur konditional formulieren;
+//     deshalb auch nie "ab 2031 endgültig vorbei" schreiben.
+//   · § 9 Abs. 2b — 50-%-Grenze: "Betreiber von Solaranlagen des zweiten
+//     Segments mit einer installierten Leistung von weniger als 100 Kilowatt"
+//     müssen "die Wirkleistungseinspeisung dauerhaft und unabhängig vom Einbau
+//     eines intelligentem Messsystems und der Veräußerungsform auf maximal 50
+//     Prozent der installierten Leistung … begrenzen"; Steckersolargeräte bis
+//     2 kW und 800 VA sind nach Satz 2 ausgenommen. Begründung S. 190 wörtlich:
+//     "§ 9 Absatz 2b EEG 2027 findet nur auf Neuanlagen Anwendung." Ohne dieses
+//     "nur auf Neuanlagen" liest ein PV-Besitzer, seine laufende Anlage werde
+//     gekappt.
 //   · § 100 Abs. 1 — Bestandsschutz: für Strom aus Anlagen, "die vor dem 1.
 //     Januar 2027 in Betrieb genommen worden sind", gilt das EEG "in der am 31.
 //     Dezember 2026 geltenden Fassung".
@@ -78,10 +96,6 @@
 //     nach Maßgabe dieser Genehmigung angewandt werden."
 //
 // BEWUSST NICHT BEHAUPTET (jeweils mangels tragfähiger Fundstelle):
-//   · dass der Direktvermarktungsbonus der Übergangszahlung zeitlich NACHfolgt
-//     — der Bonus läuft "vier Jahre nach erstmaligem Eintritt in die
-//     Direktvermarktung", die Fristen können also überlappen. Die
-//     Abfolge-Behauptung stammt aus Presse.
 //   · ein Termin für die Bundestagsberatung ("ab September") — nur Fachpresse,
 //     keine amtliche Stelle hat einen Termin genannt.
 //   · dass die bestehende EU-Beihilfegenehmigung des EEG Ende 2026 ausläuft —
@@ -117,10 +131,12 @@ export interface EegReformStand {
 export const EEG_REFORM_STAND: EegReformStand = {
   zustand: "regierungsentwurf",
   kabinettBeschlussIso: "2026-07-29",
-  entwurfIso: "2026-07-18",
-  kabinettsfassungVeroeffentlicht: false,
-  geprueftIso: "2026-07-30",
-  primaerquelle: "docs/quellen/EEG-2027_Referentenentwurf_BMWE_2026-07-18.pdf",
+  // Geprüfte Fassung ist jetzt die Kabinettsfassung selbst, nicht mehr der
+  // Referentenentwurf, auf dem sie beruht.
+  entwurfIso: "2026-07-29",
+  kabinettsfassungVeroeffentlicht: true,
+  geprueftIso: "2026-08-04",
+  primaerquelle: "docs/quellen/EEG-2027_Regierungsentwurf_BMWE_2026-07-29.pdf",
 };
 
 const MONATE = [
@@ -165,19 +181,45 @@ export function eegVerfahrenSatz(
   return `Die Bundesregierung hat den Entwurf am ${tag} im Kabinett beschlossen — ein Gesetz ist er damit noch nicht. Als Nächstes befassen sich Bundesrat und Bundestag mit dem Entwurf; die Förderregeln brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission, der Entwurf stellt sie ausdrücklich unter diesen Vorbehalt.`;
 }
 
-/** Die Leistungsstaffel der befristeten Übergangszahlung als Klartext.
- *  Entwurfswert (§ 21 Abs. 1 S. 1 Nr. 1 a–c) — immer als solcher kennzeichnen. */
+/**
+ * Die Leistungsstaffel der befristeten Übergangszahlung.
+ * Entwurfswert (§ 21 Abs. 1 S. 1 Nr. 1 a–c) — immer als solcher kennzeichnen.
+ *
+ * ACHTUNG, hier hat sich die Kabinettsfassung vom Referentenentwurf UNTERSCHIEDEN
+ * (geprüft am 04.08.2026): Buchstabe c lautete im Referentenentwurf "vor dem
+ * 1. Januar 2030", in der beschlossenen Fassung "vor dem 1. Januar 2031". Die
+ * 7-kW-Stufe deckt damit die Inbetriebnahmejahre 2029 UND 2030 ab, und die
+ * Übergangszahlung entfällt erst ab Inbetriebnahmejahr 2031. Die Begründung
+ * (S. 197) sagt es wörtlich: "im Laufe der Jahre 2029 und 2030" und "ab dem
+ * Inbetriebnahmejahr 2031 steht das Übergangsinstrument der befristeten
+ * Übergangszahlung nicht mehr zur Verfügung."
+ *
+ * Genau deshalb steht die Staffel als Liste im Code und nicht als Satz: Ein
+ * handgetippter "bis 2029"-Satz hätte diese Änderung stumm überlebt.
+ */
 export const EEG_UEBERGANG_STAFFEL: ReadonlyArray<{ jahr: number; unterKw: number }> = [
   { jahr: 2027, unterKw: 50 },
   { jahr: 2028, unterKw: 25 },
   { jahr: 2029, unterKw: 7 },
+  { jahr: 2030, unterKw: 7 },
 ];
 
-/** "2027 unter 50, 2028 unter 25 und 2029 unter 7 Kilowatt installierter
- *  Leistung" — Einheit ausgeschrieben, weil die Seite sonst kWp verwendet und
- *  der Entwurf durchgehend "Kilowatt installierter Leistung" sagt. */
+/** "2027 unter 50, 2028 unter 25 und 2029 bis 2030 unter 7 Kilowatt
+ *  installierter Leistung" — Einheit ausgeschrieben, weil die Seite sonst kWp
+ *  verwendet und der Entwurf durchgehend "Kilowatt installierter Leistung"
+ *  sagt. Jahre mit derselben Schwelle werden zusammengefasst, sonst liest sich
+ *  die Aufzählung wie zwei verschiedene Stufen. */
 export function eegStaffelSatz(): string {
-  const teile = EEG_UEBERGANG_STAFFEL.map((s) => `${s.jahr} unter ${s.unterKw}`);
+  const gruppen: { jahre: number[]; unterKw: number }[] = [];
+  for (const stufe of EEG_UEBERGANG_STAFFEL) {
+    const letzte = gruppen[gruppen.length - 1];
+    if (letzte && letzte.unterKw === stufe.unterKw) letzte.jahre.push(stufe.jahr);
+    else gruppen.push({ jahre: [stufe.jahr], unterKw: stufe.unterKw });
+  }
+  const teile = gruppen.map((g) => {
+    const jahre = g.jahre.length > 1 ? `${g.jahre[0]} bis ${g.jahre[g.jahre.length - 1]}` : `${g.jahre[0]}`;
+    return `${jahre} unter ${g.unterKw}`;
+  });
   const letzte = teile.pop() as string;
   return `${teile.join(", ")} und ${letzte} Kilowatt installierter Leistung`;
 }
@@ -204,20 +246,36 @@ export function eegStaffelSatz(): string {
 //    FALSCH. Der gesetzlich bestimmte Wert reicht bis zur Ausschreibungsschwelle
 //    des zweiten Segments (über 750 kW); bei 100 kW greifen lediglich die
 //    Direktvermarktungspflicht und die Zahlungspflicht nach § 21d.
+//    Ebenfalls zu stark wäre "einheitlich für alle Solaranlagen": Die Begründung
+//    sagt "nominell einheitlich", und § 48 Abs. 1b gibt besonderen Solaranlagen
+//    (Agri- und Moor-PV) 0,5 ct mehr. Für Gebäudeanlagen ohne Belang, aber der
+//    Satz muss "nicht ausgeschriebene Solaranlagen" sagen, nicht "alle".
 //  · § 53 Abs. 1: Die befristete Übergangszahlung "berechnet sich aus den
 //    anzulegenden Werten, wobei von den anzulegenden Werten 1 Cent pro
 //    Kilowattstunde abzuziehen sind" → 6,2 − 1,0 = 5,2 ct/kWh.
-//  · § 25 Abs. 1a: gezahlt "bis zum Ende des 36. auf die Inbetriebnahme der
-//    Anlage folgenden Kalendermonats".
-//  · § 50c Abs. 4 und 5: Bonus 1,5 ct/kWh, "längstens bis zum Ende des 48. auf
-//    die erstmalige Zuordnung zur Veräußerungsform einer Direktvermarktung
-//    folgenden Kalendermonats", nur für Anlagen unter 25 Kilowatt.
+//  · § 25 Abs. 2: gezahlt "bis zum 36. auf die Inbetriebnahme der Anlage
+//    folgenden Kalendermonat". (Im Referentenentwurf war das noch Abs. 1a —
+//    Fundstellen driften zwischen den Fassungen, Absatznummern also nie aus
+//    einer älteren Fassung übernehmen.)
+//  · § 50c Abs. 4 und 5: Bonus "1,5 Cent pro eingespeiste Kilowattstunde",
+//    "bis zu einem Wechsel von der sonstigen Direktvermarktung in die
+//    Netzbetreiberabnahme, längstens bis zum Ende des 48. auf die erstmalige
+//    Zuordnung zur Veräußerungsform einer Direktvermarktung folgenden
+//    Kalendermonats", nur für Anlagen unter 25 Kilowatt. Das "längstens" nie
+//    weglassen: Ein Rückwechsel in die Netzbetreiberabnahme beendet den Bonus
+//    ENDGÜLTIG, die Frist pausiert nicht.
 //  · § 49 Satz 1: Der anzulegende Wert sinkt "ab dem 1. August 2027 und sodann
 //    jeweils alle sechs Monate ... um 1 Prozent".
-//  · § 9 Abs. 2b: Einspeiseleistung auf 50 % der installierten Leistung
-//    begrenzt, nur für Neuanlagen (Begründung S. 190). Die Leistungsschwelle
-//    steht im Entwurf in eckigen Klammern und ist damit OFFEN — hier wird keine
-//    Zahl ergänzt, auch nicht "zur Präzisierung".
+//  · § 9 Abs. 2b: "Betreiber von Solaranlagen des zweiten Segments mit einer
+//    installierten Leistung von weniger als 100 Kilowatt" müssen die
+//    Wirkleistungseinspeisung "dauerhaft und unabhängig vom Einbau eines
+//    intelligentem Messsystems und der Veräußerungsform auf maximal 50 Prozent
+//    der installierten Leistung" begrenzen; Steckersolargeräte bis 2 kW und
+//    800 VA sind nach Satz 2 ausgenommen. Nur für Neuanlagen (§ 100 Abs. 1).
+//    Die Schwelle stand im Referentenentwurf noch in eckigen Klammern
+//    ("[weniger als 25/weniger als 100 Kilowatt]") — in der Kabinettsfassung
+//    ist sie ENTSCHIEDEN. Wer den alten Kommentar "keine Zahl ergänzen" liest,
+//    liest einen überholten Stand.
 //
 // ÜBERGANGSZAHLUNG UND BONUS SCHLIESSEN EINANDER AUS — aber die tragende
 // Fundstelle ist nicht die naheliegende. § 50c Abs. 2 gewährt den Bonus "nur für
@@ -256,7 +314,25 @@ export const EEG_ENTWURF_WERTE = {
   degressionProHalbjahr: 0.01,
   /** Deckel der Einspeiseleistung als Anteil der installierten Leistung (§ 9 Abs. 2b). */
   einspeiseGrenzeAnteil: 0.5,
+  /** Leistungsschwelle des Deckels, kW (§ 9 Abs. 2b S. 1: "weniger als"). */
+  einspeiseGrenzeUnterKw: 100,
+  /** Steckersolar ist vom Deckel ausgenommen, kW (§ 9 Abs. 2b S. 2). */
+  einspeiseGrenzeSteckerBisKw: 2,
 } as const;
+
+/**
+ * ALLE Geldwerte oben stehen unter EU-Beihilfevorbehalt. § 102 des Entwurfs:
+ * Die Bestimmungen des Teils 3 "dürfen erst nach der beihilferechtlichen
+ * Genehmigung durch die Europäische Kommission und nur nach Maßgabe dieser
+ * Genehmigung angewandt werden." Wo eine Geldzahl nach außen steht, gehört
+ * dieser Vorbehalt als eigener Satz dazu.
+ *
+ * NICHT dagegen bei der 50-%-Einspeisegrenze: Die steht in Teil 2 (§ 9) und ist
+ * von § 102 nicht erfasst. Den Vorbehalt pauschal über alles zu legen wäre
+ * bequem und falsch. (Auflage des Legal-Judge, 04.08.2026.)
+ */
+export const EEG_BEIHILFEVORBEHALT =
+  "Die Fördersätze stehen unter dem Vorbehalt der beihilferechtlichen Genehmigung durch die EU-Kommission; der Entwurf ordnet das ausdrücklich an.";
 
 /** Höhe der befristeten Übergangszahlung in ct/kWh (§ 53 Abs. 1). */
 export function eegUebergangszahlungCt(w = EEG_ENTWURF_WERTE): number {
@@ -268,15 +344,16 @@ export function eegUebergangszahlungCt(w = EEG_ENTWURF_WERTE): number {
  *  schreibt regelmäßig "bis 50 kWp", das ist falsch und würde eine Anlage mit
  *  genau 50 kW fälschlich einschließen.
  *
- *  Dass ab Inbetriebnahmejahr 2030 gar nichts mehr geht, folgt aus der Staffel
- *  selbst (§ 21 Abs. 1 S. 1 Nr. 1 a–c nennt nur 2028/2029/2030 als Endtermine)
- *  und der Begründung S. 196 f. — NICHT aus § 85 Abs. 2 Nr. 2a. Der regelt
+ *  Dass ab Inbetriebnahmejahr 2031 gar nichts mehr geht, folgt aus der Staffel
+ *  selbst (§ 21 Abs. 1 S. 1 Nr. 1 a–c nennt nur 2028/2029/2031 als Endtermine)
+ *  und der Begründung S. 197 — NICHT aus § 85 Abs. 2 Nr. 2a. Der regelt
  *  ausschließlich die Befugnis der Bundesnetzagentur, und zwar in zwei
  *  Buchstaben: Buchst. a verlängert die DAUER des Anspruchs, Buchst. b
  *  erweitert seine ANWENDBARKEIT; beide nur für Anlagen unter 25 kW und beide
- *  gedeckelt auf den 31.12.2032. Deshalb nie "ab 2030 endgültig vorbei"
- *  schreiben — aber auch nicht § 85 als Grund für das Ende zitieren.
- *  (Fundstelle präzisiert nach dem Council vom 04.08.2026.) */
+ *  gedeckelt auf den 31.12.2032. Diese Kann-Bestimmung wird NIE eingerechnet
+ *  und nur konditional formuliert. Deshalb weder "ab 2031 endgültig vorbei"
+ *  schreiben noch § 85 als Grund für das Ende zitieren.
+ *  (Fundstellen präzisiert nach den Councils vom 04.08.2026.) */
 export function eegUebergangBerechtigt(kwp: number, inbetriebnahmeJahr: number): boolean {
   const stufe = EEG_UEBERGANG_STAFFEL.find((s) => s.jahr === inbetriebnahmeJahr);
   if (!stufe) return false;

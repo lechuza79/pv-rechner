@@ -190,9 +190,21 @@ export function mittlererSatzCt(verlauf: RegimeJahr[]): number {
   return Math.round(s * 100) / 100;
 }
 
-/** Der Einspeisedeckel des Entwurfs als Leistung in kW (§ 9 Abs. 2b). */
+/**
+ * Der Einspeisedeckel des Entwurfs als Leistung in kW (§ 9 Abs. 2b), oder
+ * `undefined`, wenn er auf diese Anlage nicht anzuwenden ist.
+ *
+ * Er greift nur für Solaranlagen des zweiten Segments (Gebäude) mit weniger als
+ * 100 Kilowatt und nicht für Steckersolargeräte bis 2 kW. Beide Schwellen
+ * standen im Referentenentwurf noch in eckigen Klammern und sind erst in der
+ * Kabinettsfassung entschieden — wer sie aus der älteren Fassung übernimmt,
+ * deckelt Anlagen, die der Entwurf gar nicht meint.
+ */
 export function einspeiseDeckelKw(kwp: number, regime: EinspeiseRegime): number | undefined {
-  return regime === "reform2027" ? kwp * EEG_ENTWURF_WERTE.einspeiseGrenzeAnteil : undefined;
+  if (regime !== "reform2027") return undefined;
+  if (kwp >= EEG_ENTWURF_WERTE.einspeiseGrenzeUnterKw) return undefined;
+  if (kwp <= EEG_ENTWURF_WERTE.einspeiseGrenzeSteckerBisKw) return undefined;
+  return kwp * EEG_ENTWURF_WERTE.einspeiseGrenzeAnteil;
 }
 
 /**
