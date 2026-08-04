@@ -189,15 +189,46 @@ describe("fetchWithTimeout retry logic", () => {
     expect(fetch).toHaveBeenCalledTimes(3);
   }, 20000); // real 1s+2s backoff — generous headroom so CPU load can't trip the 5s default
 
-  it("throws immediately on non-429 errors", async () => {
+  // Energy-Charts answers 503 intermittently — on 03.08.2026 roughly once every
+  // ten minutes over thirteen hours, while tens of thousands of other requests
+  // to the same host succeeded. That is a busy server, not an outage, so a 503
+  // gets the same second chance the rate limit has always had. Before this,
+  // 503 was fatal on the first attempt and produced ~130 gateway errors a day
+  // on the generation endpoint plus a stream of failed page revalidations.
+  it("retries on 503 and succeeds", async () => {
     const { fetchWithTimeout } = await import("../energy-api");
-    const mockFail = { ok: false, status: 500 } as Response;
+    const mockFail = { ok: false, status: 503 } as Response;
+    const mockOk = { ok: true, status: 200 } as Response;
 
-    vi.mocked(fetch).mockResolvedValueOnce(mockFail);
+    vi.mocked(fetch)
+      .mockResolvedValueOnce(mockFail)
+      .mockResolvedValueOnce(mockOk);
+
+    const result = await fetchWithTimeout("https://example.com/test", 5000, 3);
+    expect(result).toBe(mockOk);
+    expect(fetch).toHaveBeenCalledTimes(2);
+  }, 20000); // real 1s backoff between attempts
+
+  it("gives up on 503 once the retries are used up", async () => {
+    const { fetchWithTimeout } = await import("../energy-api");
+    vi.mocked(fetch).mockResolvedValue({ ok: false, status: 503 } as Response);
+
+    await expect(
+      fetchWithTimeout("https://example.com/test", 5000, 2)
+    ).rejects.toThrow("HTTP 503");
+    expect(fetch).toHaveBeenCalledTimes(3); // 1 initial + 2 retries
+  }, 20000); // real 1s+2s backoff
+
+  // The other half of the rule, and the one that keeps the retry honest: a
+  // client error means the request itself is wrong. Repeating it would just
+  // repeat our own mistake and spend the upstream's budget doing it.
+  it.each([400, 403, 404, 422])("throws immediately on %i", async (status) => {
+    const { fetchWithTimeout } = await import("../energy-api");
+    vi.mocked(fetch).mockResolvedValueOnce({ ok: false, status } as Response);
 
     await expect(
       fetchWithTimeout("https://example.com/test", 5000, 3)
-    ).rejects.toThrow("HTTP 500");
+    ).rejects.toThrow(`HTTP ${status}`);
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 

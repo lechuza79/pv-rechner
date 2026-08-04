@@ -54,6 +54,18 @@ export function mmyyyyToPeriod(s: string): string {
 
 // ─── Fetch with Timeout + Retry ─────────────────────────────────────────────
 
+/**
+ * Transient upstream failures — worth asking again. 429 is the rate limit
+ * (Energy-Charts throttles bursts), 5xx is the server having a bad moment.
+ *
+ * The distinction that matters: a transient status says "not now", a 4xx says
+ * "not like this". Retrying the second kind only repeats our own mistake, so
+ * everything below 500 except 429 stays fatal on the first attempt.
+ */
+function istVoruebergehend(status: number): boolean {
+  return status === 429 || status >= 500;
+}
+
 export async function fetchWithTimeout(
   url: string, timeoutMs = 10000, retries = 3
 ): Promise<Response> {
@@ -61,8 +73,8 @@ export async function fetchWithTimeout(
     const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
     if (res.ok) return res;
 
-    // Retry on 429 (rate limit) with exponential backoff
-    if (res.status === 429 && attempt < retries) {
+    // Retry transient failures with exponential backoff.
+    if (istVoruebergehend(res.status) && attempt < retries) {
       const delay = Math.min(1000 * Math.pow(2, attempt), 8000); // 1s, 2s, 4s, max 8s
       await new Promise(r => setTimeout(r, delay));
       continue;

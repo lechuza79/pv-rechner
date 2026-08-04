@@ -202,7 +202,12 @@ export async function GET(req: NextRequest) {
       // Supabase empty → fallback to Energy-Charts (yearly chunks)
     }
 
-    const rows = await fetchPublicPower(country, startStr, endStr);
+    // Exactly one retry, deliberately fewer than the crons get: somebody is
+    // waiting for this response. Energy-Charts' 503s come in isolation between
+    // successful requests, so a single second attempt catches them — while a
+    // real outage still ends after two tries instead of making a visitor wait
+    // out the full backoff chain before the stale fallback below takes over.
+    const rows = await fetchPublicPower(country, startStr, endStr, 15000, 1);
 
     if (rows.length === 0) {
       const stale = store.getStale(cacheKey);
