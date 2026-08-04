@@ -135,6 +135,58 @@ export function feedInRatesForCommissioning(dateIso: string): FeedInRates | null
   };
 }
 
+// ─── Halbjahres-Perioden seit dem 30.07.2022 (Nachschlage-Tabelle) ───────────
+
+export interface FeedInPeriod {
+  /** Erster Tag der Periode (Inbetriebnahme ab …). */
+  fromIso: string;
+  /** Letzter Tag der Periode — null für die laufende Periode. */
+  toIso: string | null;
+  rates: FeedInRates;
+}
+
+/**
+ * Alle Vergütungs-Perioden der EEG-2023-Kette vom 30.07.2022 bis heute, für
+ * die Nachschlage-Tabelle im Einspeisevergütungs-Ratgeber. Die Sätze kommen
+ * unverändert aus feedInRatesForCommissioning (Anker-Test: feedin-config.test
+ * prüft die Kette gegen die amtlich veröffentlichten Zellen); diese Funktion
+ * liefert nur die Periodengrenzen dazu. Benachbarte Perioden mit identischen
+ * Sätzen werden zusammengefasst — bis zum 31.01.2024 setzte die Degression aus
+ * (siehe feedInDegressionSteps), die Basiswerte galten durchgehend.
+ * Zukünftige Stichtage erscheinen bewusst NICHT (kein Blick über heute hinaus).
+ */
+export function feedInPeriodsSince2022(now: Date = new Date()): FeedInPeriod[] {
+  const today = now.toISOString().slice(0, 10);
+  const starts: string[] = [FEED_IN_BASIS.validFromIso];
+  outer: for (let y = 2023; ; y++) {
+    for (const md of ["02-01", "08-01"]) {
+      const d = `${y}-${md}`;
+      if (d > today) break outer;
+      starts.push(d);
+    }
+  }
+  const dayBefore = (iso: string): string => {
+    const d = new Date(`${iso}T00:00:00Z`);
+    d.setUTCDate(d.getUTCDate() - 1);
+    return d.toISOString().slice(0, 10);
+  };
+  const merged: FeedInPeriod[] = [];
+  for (let i = 0; i < starts.length; i++) {
+    const rates = feedInRatesForCommissioning(starts[i]) as FeedInRates;
+    const toIso = i + 1 < starts.length ? dayBefore(starts[i + 1]) : null;
+    const prev = merged[merged.length - 1];
+    const same =
+      prev &&
+      prev.rates.teilUnder10 === rates.teilUnder10 &&
+      prev.rates.teilOver10 === rates.teilOver10 &&
+      prev.rates.vollUnder10 === rates.vollUnder10 &&
+      prev.rates.vollOver10 === rates.vollOver10;
+    if (same) prev.toIso = toIso;
+    else merged.push({ fromIso: starts[i], toIso, rates });
+  }
+  return merged;
+}
+
 /**
  * Letzter Vergütungstag nach § 25 EEG 2023: Die Zahlung läuft 20 Jahre ab
  * Inbetriebnahme UND verlängert sich bei Anlagen, deren anzulegender Wert

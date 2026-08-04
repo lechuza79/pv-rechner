@@ -124,6 +124,36 @@ function eegReform2027FaqEntry(): FaqEntry {
   };
 }
 
+// Geteilte Einspeisevergütungs-Einträge (EINE Quelle, Systematik wie
+// eegReform2027FaqEntry): dieselbe geprüfte Antwort erscheint im FAQ des
+// Einspeisevergütungs-Rechners UND im Tabellen-Ratgeber — nie zweimal tippen.
+
+/** Garantiedauer nach § 25 EEG (Wortlaut am 04.08.2026 geprüft, s. feedin-config). */
+function feedInGarantieFaqEntry(): FaqEntry {
+  return {
+    q: "Wie lange ist die Einspeisevergütung garantiert?",
+    a: `${FEED_IN_YEARS} Jahre ab Inbetriebnahme — bei der festen Einspeisevergütung verlängert sich die Zahlung sogar bis zum 31. Dezember des zwanzigsten Jahres (§ 25 EEG). Der Satz, mit dem eine Anlage in Betrieb geht, bleibt über die gesamte Laufzeit fest; die halbjährliche Absenkung betrifft nur Anlagen, die danach neu in Betrieb gehen. Nach dem Ende der Vergütung läuft die Ersparnis durch Eigenverbrauch weiter.`,
+  };
+}
+
+/** Halbjährliche Degression nach § 49 EEG (fester Fahrplan, kein Einzelbeschluss). */
+function feedInDegressionFaqEntry(): FaqEntry {
+  return {
+    q: "Warum sinkt die Einspeisevergütung alle sechs Monate?",
+    a: `Das EEG senkt die Sätze für neu in Betrieb genommene Anlagen planmäßig um 1 % je Halbjahr, jeweils zum 1. Februar und zum 1. August (§ 49 EEG). Das ist ein fester Fahrplan, kein politischer Einzelbeschluss. Wer früher in Betrieb nimmt, sichert sich den höheren Satz für ${FEED_IN_YEARS} Jahre.`,
+  };
+}
+
+/** Auslaufen nach 20 Jahren — geteilt zwischen dem Reform-Ratgeber und dem
+ *  Tabellen-Ratgeber (Ü20-Suchintention „einspeisevergütung nach 20 jahren"). */
+function feedInNach20JahrenFaqEntry(): FaqEntry {
+  return {
+    q: "Was passiert nach den 20 Jahren EEG-Vergütung?",
+    a: "Die EEG-Vergütung endet nach 20 Jahren — das ist schon heute so und hat mit der geplanten Reform nichts zu tun. Danach fließt für eingespeisten Strom ohne neue Vermarktung nichts mehr, die Ersparnis durch Eigenverbrauch läuft aber unverändert weiter. Unser Rechner kalkuliert genau so: Vergütung nur 20 Jahre, Eigenverbrauch über die gesamte Laufzeit. Eine Anlage, die sich vor allem über Eigenverbrauch trägt, ist von diesem Auslaufen kaum abhängig.",
+    cta: { label: "Methodik im Detail", href: "/methodik" },
+  };
+}
+
 /** FAQ for the live PV simulation page. Every statement mirrors what the
  *  simulation actually does (weather-driven estimate, no real-plant metering) —
  *  verified against the SimulationPanel implementation, not assumed. */
@@ -242,11 +272,7 @@ export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
       a: `Nein. Für Anlagen, die bis Ende 2026 in Betrieb gehen, gilt Bestandsschutz: Die bei Inbetriebnahme zugesagte Einspeisevergütung bleibt für die vollen 20 Jahre garantiert. Der Entwurf vom ${eegDatum(EEG_REFORM_STAND.entwurfIso)}, auf dem der Kabinettsbeschluss vom ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} beruht, ordnet dafür ausdrücklich an, dass für Anlagen mit Inbetriebnahme vor 2027 das bisherige Recht weiter gilt; die neue Regel betrifft allein Neuanlagen (Stand: ${eegReformStandLabel()}).`,
       cta: { label: "Meine Anlage nachrechnen", href: "/photovoltaik-rechner" },
     },
-    {
-      q: "Was passiert nach den 20 Jahren EEG-Vergütung?",
-      a: "Die EEG-Vergütung endet nach 20 Jahren — das ist schon heute so und hat mit der geplanten Reform nichts zu tun. Danach fließt für eingespeisten Strom ohne neue Vermarktung nichts mehr, die Ersparnis durch Eigenverbrauch läuft aber unverändert weiter. Unser Rechner kalkuliert genau so: Vergütung nur 20 Jahre, Eigenverbrauch über die gesamte Laufzeit. Eine Anlage, die sich vor allem über Eigenverbrauch trägt, ist von diesem Auslaufen kaum abhängig.",
-      cta: { label: "Methodik im Detail", href: "/methodik" },
-    },
+    feedInNach20JahrenFaqEntry(),
     {
       q: "Was ist Direktvermarktung — und geht das für kleine Anlagen?",
       a: "Bei der Direktvermarktung verkauft ein Dienstleister deinen Überschussstrom an der Strombörse; du erhältst den Marktpreis abzüglich einer Gebühr. Bisher ist das erst für größere Anlagen Pflicht und für kleine Hausanlagen wegen der Fixkosten selten attraktiv. Sollte die geplante Reform kommen, dürfte sich dieser Markt für Kleinanlagen entwickeln — seriös beziffern lassen sich die künftigen Erlöse heute aber nicht. Unsere Beispielrechnung setzt sie deshalb konservativ mit null an.",
@@ -371,20 +397,33 @@ export function einspeiseverguetungFaq(rates: FeedInRates = DEFAULT_FEED_IN): Fa
       a: `Für neue Anlagen bis ${rates.thresholdKwp} kWp gibt es aktuell ${ct(rates.teilUnder10)} ct/kWh bei Teileinspeisung (Überschusseinspeisung) und ${ct(rates.vollUnder10)} ct/kWh bei Volleinspeisung. Für den Anlagenteil über ${rates.thresholdKwp} kWp sind es ${ct(rates.teilOver10)} bzw. ${ct(rates.vollOver10)} ct/kWh — bei größeren Anlagen ergibt sich daraus ein gewichteter Mischsatz, den der Rechner oben ausweist. Alle aktuellen Werte mit Stand-Datum stehen auf der Datenstand-Seite.`,
       links: [{ phrase: "Datenstand-Seite", href: "/datenstand" }],
     },
-    {
-      q: "Wie lange ist die Einspeisevergütung garantiert?",
-      a: `${FEED_IN_YEARS} Jahre ab Inbetriebnahme — bei der festen Einspeisevergütung verlängert sich die Zahlung sogar bis zum 31. Dezember des zwanzigsten Jahres (§ 25 EEG). Der Satz, mit dem eine Anlage in Betrieb geht, bleibt über die gesamte Laufzeit fest; die halbjährliche Absenkung betrifft nur Anlagen, die danach neu in Betrieb gehen. Nach dem Ende der Vergütung läuft die Ersparnis durch Eigenverbrauch weiter.`,
-    },
-    {
-      q: "Warum sinkt die Einspeisevergütung alle sechs Monate?",
-      a: `Das EEG senkt die Sätze für neu in Betrieb genommene Anlagen planmäßig um 1 % je Halbjahr, jeweils zum 1. Februar und zum 1. August (§ 49 EEG). Das ist ein fester Fahrplan, kein politischer Einzelbeschluss. Wer früher in Betrieb nimmt, sichert sich den höheren Satz für ${FEED_IN_YEARS} Jahre.`,
-    },
+    feedInGarantieFaqEntry(),
+    feedInDegressionFaqEntry(),
     {
       q: "Teileinspeisung oder Volleinspeisung — was lohnt sich?",
       a: `Für die meisten Haushalte die Teileinspeisung: Jede selbst verbrauchte Kilowattstunde spart den vollen Haushaltsstrompreis von rund ${strompreisCt} ct — deutlich mehr, als die Einspeisung einbringt. Die Volleinspeisung hat zwar den höheren Satz, verzichtet aber komplett auf diese Ersparnis; sie rechnet sich vor allem, wenn am Standort praktisch kein Strom verbraucht wird, etwa auf einer Scheune. Was bei deinen Zahlen herauskommt, zeigt der Photovoltaik-Rechner mit Amortisation und Rendite.`,
       links: [{ phrase: "Photovoltaik-Rechner", href: "/photovoltaik-rechner" }],
       cta: { label: "Komplette Rechnung mit Eigenverbrauch", href: "/photovoltaik-rechner" },
     },
+    eegReform2027FaqEntry(),
+  ];
+}
+
+/** FAQ für den Tabellen-Ratgeber (/einspeiseverguetung-tabelle). Historische
+ *  Aussagen beschreiben die Datenmodule (feedin-archiv/-history), Rechtssätze
+ *  sind ausschließlich die geteilten, geprüften Einträge — hier steht kein
+ *  neuer Rechtssatz (Council-Regel, s. CLAUDE.md Faktenprüfung). */
+export function einspeiseverguetungTabelleFaq(): FaqEntry[] {
+  return [
+    {
+      q: "Wie hoch war die Einspeisevergütung für meine Anlage?",
+      a: `Maßgeblich ist der Monat der Inbetriebnahme: Der damals gültige Satz bleibt ${FEED_IN_YEARS} Jahre fest — spätere Absenkungen betreffen nur Anlagen, die danach neu in Betrieb gingen. Für Inbetriebnahmen von April 2012 bis Juli 2022 steht der Satz in der Monatstabelle auf dieser Seite (amtliche Werte der Bundesnetzagentur), ab dem 30. Juli 2022 in der Halbjahres-Tabelle darüber. Wie viel deine Anlage damit über die Laufzeit einnimmt, rechnet der Einspeisevergütungs-Rechner aus. Für Anlagen von vor April 2012 galt eine andere Vergütungslogik mit mehreren Modellen — dort ist der Bescheid bzw. die Abrechnung des Netzbetreibers die verlässliche Quelle, ein pauschaler Tabellenwert wäre Scheingenauigkeit.`,
+      links: [{ phrase: "Einspeisevergütungs-Rechner", href: "/einspeiseverguetung-rechner" }],
+      cta: { label: "Vergütung für meine Anlage berechnen", href: "/einspeiseverguetung-rechner" },
+    },
+    feedInGarantieFaqEntry(),
+    feedInDegressionFaqEntry(),
+    feedInNach20JahrenFaqEntry(),
     eegReform2027FaqEntry(),
   ];
 }

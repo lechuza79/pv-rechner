@@ -668,6 +668,7 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           links={[
             { href: "/ratgeber/lohnt-sich-pv-mit-speicher", label: "Lohnt sich PV mit Speicher?", desc: "Die ehrliche Rechnung mit aktuellen Marktpreisen — und wann sich ein Speicher wirklich rechnet." },
             { href: "/einspeiseverguetung-rechner", label: "Einspeisevergütung-Rechner", desc: "Aktueller EEG-Satz und Jahresvergütung für deine Anlage — sofort berechnet." },
+            { href: "/einspeiseverguetung-tabelle", label: "Einspeisevergütung: Tabelle aller Sätze seit 2000", desc: "Zum Nachschlagen: aktuelle Sätze, amtliche Monatswerte 2012–2022 für Bestandsanlagen und die Jahreswerte seit 2000." },
             { href: "/pv-simulation", label: "PV-Simulation: Was produziert ein Dach gerade?", desc: "Live-Leistung einer PV-Anlage an deinem Standort, gerechnet aus aktuellen Wetterdaten." },
             { href: "/photovoltaik-foerderung", label: "PV-Förderung vor Ort", desc: "Welche Zuschüsse es in deinem Bundesland und deiner Stadt gerade gibt." },
             { href: "/methodik", label: "So rechnen wir" },

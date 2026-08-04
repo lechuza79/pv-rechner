@@ -13,6 +13,7 @@ export const SEITEN: Seite[] = [
   { pfad: "/klimaanlage-stromkosten", erwartet: /klima|kühl/i },
   { pfad: "/balkonkraftwerk-rechner", erwartet: /balkon/i },
   { pfad: "/einspeiseverguetung-rechner", erwartet: /einspeisevergütung/i },
+  { pfad: "/einspeiseverguetung-tabelle", erwartet: /einspeisevergütung/i },
   { pfad: "/photovoltaik-neigungswinkel", erwartet: /neigungswinkel/i },
   // Atlas — beide Routen, inkl. einer echten Gemeindeseite
   { pfad: "/solar-atlas", erwartet: /atlas|solaranlagen/i },
