@@ -41,13 +41,24 @@ test.describe("EEG-Reform: Sachstand auf den Seiten, an denen ein Nutzer ihn lie
     expect(text).toMatch(/neuer<?\/?e?m?>? ?Dachanlagen|neuer Dachanlagen/);
     expect(text).toMatch(/laufende Anlagen nicht|bereits in Betrieb/);
 
-    // Entwurfs-Detailwerte sind als solche gekennzeichnet.
-    expect(text).toMatch(/nur im Entwurf stehen|stammen aus dem Entwurf|Detailwerte/);
-    expect(text).toContain("18. Juli 2026");
+    // Entwurfswerte sind als solche gekennzeichnet — beschlossen ist ein
+    // Gesetzentwurf, kein Gesetz.
+    expect(text).toMatch(/Zahlen des Entwurfs|stammen aus dem Entwurf|Entwurf/);
+    // Belegt wird an der beschlossenen Fassung. Bis zum 04.08.2026 stand hier
+    // der Referentenentwurf vom 18.07., weil der Wortlaut der Kabinettsfassung
+    // nicht abrufbar war; das ältere Datum darf nicht zurückkommen, es
+    // beschreibt eine Fassung, die an zwei Stellen inhaltlich abweicht.
+    expect(text).toContain("29. Juli 2026");
+    expect(text).not.toContain("18. Juli 2026");
+    expect(text).not.toMatch(/noch nicht veröffentlicht/);
     // Die Staffel mit ausgeschriebener Einheit (die Seite nutzt sonst kWp).
-    expect(text).toMatch(/2027 unter 50, 2028 unter 25 und 2029 unter 7 Kilowatt installierter Leistung/);
-    // Nach 2030 ist nicht endgültig Schluss (§ 85 Abs. 2 Nr. 2a).
+    // "2029 bis 2030", weil § 21 Abs. 1 S. 1 Nr. 1 c der Kabinettsfassung
+    // "vor dem 1. Januar 2031" sagt.
+    expect(text).toMatch(/2027 unter 50, 2028 unter 25 und 2029 bis 2030 unter 7 Kilowatt installierter Leistung/);
+    // Nach 2031 ist nicht endgültig Schluss (§ 85 Abs. 2 Nr. 2a).
     expect(text).toMatch(/verlängern/);
+    // Die Leistungsschwelle der 50-%-Grenze ist entschieden und wird beziffert.
+    expect(text).toMatch(/100 Kilowatt/);
   });
 
   test("Rechner-Ergebnis nennt den Sachstand, sobald eingespeist wird", async ({ page }) => {
