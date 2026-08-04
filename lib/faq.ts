@@ -11,7 +11,10 @@
 // the year is evaluated at render time — nothing here goes stale on rollover.
 // Never hardcode a year or a euro figure below.
 import { estimateCost, BATTERY_LIFETIME_YEARS } from "./calc";
-import { DEFAULT_FEED_IN } from "./feedin-config";
+import { FEED_IN_YEARS } from "./constants";
+import { DEFAULT_FEED_IN, type FeedInRates } from "./feedin-config";
+import { DEFAULT_PRICES } from "./prices-config";
+import { TILT_OPTIMUM, tiltPct } from "./tilt-config";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "./greengas-config";
 import {
   EEG_REFORM_STAND, eegDatum, eegReformStandLabel, eegStaffelSatz, eegVerfahrenSatz,
@@ -99,19 +102,26 @@ export function pvRechnerFaq(): FaqEntry[] {
       links: [{ phrase: "die Förder-Übersicht", href: "/photovoltaik-foerderung" }],
       cta: { label: "Förderung vor Ort finden", href: "/photovoltaik-foerderung" },
     },
-    // Ausnahme zur "keine hardcoded Jahre"-Regel: das ist ein konkreter, datierter
-    // Sachstand zu einem geplanten Gesetz (kein rollierender "aktuelles Jahr"-Wert).
-    // Der EEG-Wächter aktualisiert diesen Text bei einer Rechtsänderung mit —
-    // bei Beschluss/Verwerfung Antwort + Stand-Datum anpassen.
-    // ZUSTAND (Wächter-Gate Regel 1): Regierungsentwurf, im Kabinett beschlossen
-    // am 29.07.2026 — kein Gesetz. Nicht zu "beschlossen" verkürzen.
-    {
-      q: "Fällt die Einspeisevergütung 2027 weg?",
-      a: `Die Bundesregierung hat dazu am ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} einen Gesetzentwurf beschlossen — ein Gesetz ist er damit noch nicht: Der Bundestag muss noch entscheiden, der Bundesrat ist am Verfahren beteiligt, und die Förderregeln brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission. Vorgesehen ist, die feste Einspeisevergütung für Neuanlagen ab 2027 zu beenden; für Anlagen unter 25 Kilowatt installierter Leistung soll es keine dauerhafte Förderung mehr geben, sondern eine befristete Starthilfe für die Direktvermarktung. Wichtig: Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung 20 Jahre garantiert (Bestandsschutz) — an ihrem Vergütungsanspruch ändert der Entwurf nichts. In welcher Form die Reform am Ende kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage. (Stand: ${eegReformStandLabel()})`,
-      links: [{ phrase: "Einspeisevergütung", href: "/datenstand" }],
-      cta: { label: "Ratgeber: Lohnt sich PV ohne Einspeisevergütung?", href: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" },
-    },
+    eegReform2027FaqEntry(),
   ];
+}
+
+// Ausnahme zur "keine hardcoded Jahre"-Regel: das ist ein konkreter, datierter
+// Sachstand zu einem geplanten Gesetz (kein rollierender "aktuelles Jahr"-Wert).
+// Der EEG-Wächter aktualisiert diesen Text bei einer Rechtsänderung mit —
+// bei Beschluss/Verwerfung Antwort + Stand-Datum anpassen.
+// ZUSTAND (Wächter-Gate Regel 1): Regierungsentwurf, im Kabinett beschlossen
+// am 29.07.2026 — kein Gesetz. Nicht zu "beschlossen" verkürzen.
+// EINE Quelle: dieselbe Antwort erscheint im PV-Rechner-FAQ und im FAQ des
+// Einspeisevergütungs-Rechners — deshalb hier als geteilter Eintrag, nicht
+// zweimal getippt (Systematik wie eegVerfahrenSatz()).
+function eegReform2027FaqEntry(): FaqEntry {
+  return {
+    q: "Fällt die Einspeisevergütung 2027 weg?",
+    a: `Die Bundesregierung hat dazu am ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} einen Gesetzentwurf beschlossen — ein Gesetz ist er damit noch nicht: Der Bundestag muss noch entscheiden, der Bundesrat ist am Verfahren beteiligt, und die Förderregeln brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission. Vorgesehen ist, die feste Einspeisevergütung für Neuanlagen ab 2027 zu beenden; für Anlagen unter 25 Kilowatt installierter Leistung soll es keine dauerhafte Förderung mehr geben, sondern eine befristete Starthilfe für die Direktvermarktung. Wichtig: Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung 20 Jahre garantiert (Bestandsschutz) — an ihrem Vergütungsanspruch ändert der Entwurf nichts. In welcher Form die Reform am Ende kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage. (Stand: ${eegReformStandLabel()})`,
+    links: [{ phrase: "Einspeisevergütung", href: "/datenstand" }],
+    cta: { label: "Ratgeber: Lohnt sich PV ohne Einspeisevergütung?", href: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" },
+  };
 }
 
 /** FAQ for the live PV simulation page. Every statement mirrors what the
@@ -342,6 +352,64 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
     {
       q: "Ist die Grüngas-Pflicht schon beschlossen?",
       a: `Die Beimischpflicht (Bio-Treppe) steht als § 43 im GModG. ${gmodgStandSatz()} Beschlossen ist damit die Pflicht — nicht der Preis: Wie teuer Biomethan und Netzentgelte tatsächlich werden, ist eine Annahme des IW-Reports, ein plausibler Korridor und keine exakte Vorhersage. Noch offen ist außerdem die Quote für die Brennstoff-Anbieter, die das Gesetz nur ankündigt (§ 42a GModG) und die bis zum ${GMODG_RECHTSSTAND.quoteGesetzBis} in einem eigenen Gesetz geregelt werden soll.`,
+    },
+  ];
+}
+
+/** FAQ for the feed-in tariff calculator. Rates always come from the passed
+ *  (live) config or DEFAULT_FEED_IN — never typed into the text. Legal
+ *  statements mirror the vetted formulations from lib/feedin-config.ts and
+ *  /datenstand; the EEG-2027 entry is the same shared entry the PV calculator
+ *  shows (one source, see eegReform2027FaqEntry). */
+export function einspeiseverguetungFaq(rates: FeedInRates = DEFAULT_FEED_IN): FaqEntry[] {
+  const year = new Date().getFullYear();
+  const strompreisCt = Math.round(DEFAULT_PRICES.electricityPrice * 100);
+  const ct = (n: number) => n.toLocaleString("de-DE", { minimumFractionDigits: 2 });
+  return [
+    {
+      q: `Wie hoch ist die Einspeisevergütung ${year}?`,
+      a: `Für neue Anlagen bis ${rates.thresholdKwp} kWp gibt es aktuell ${ct(rates.teilUnder10)} ct/kWh bei Teileinspeisung (Überschusseinspeisung) und ${ct(rates.vollUnder10)} ct/kWh bei Volleinspeisung. Für den Anlagenteil über ${rates.thresholdKwp} kWp sind es ${ct(rates.teilOver10)} bzw. ${ct(rates.vollOver10)} ct/kWh — bei größeren Anlagen ergibt sich daraus ein gewichteter Mischsatz, den der Rechner oben ausweist. Alle aktuellen Werte mit Stand-Datum stehen auf der Datenstand-Seite.`,
+      links: [{ phrase: "Datenstand-Seite", href: "/datenstand" }],
+    },
+    {
+      q: "Wie lange ist die Einspeisevergütung garantiert?",
+      a: `${FEED_IN_YEARS} Jahre ab Inbetriebnahme — bei der festen Einspeisevergütung verlängert sich die Zahlung sogar bis zum 31. Dezember des zwanzigsten Jahres (§ 25 EEG). Der Satz, mit dem eine Anlage in Betrieb geht, bleibt über die gesamte Laufzeit fest; die halbjährliche Absenkung betrifft nur Anlagen, die danach neu in Betrieb gehen. Nach dem Ende der Vergütung läuft die Ersparnis durch Eigenverbrauch weiter.`,
+    },
+    {
+      q: "Warum sinkt die Einspeisevergütung alle sechs Monate?",
+      a: `Das EEG senkt die Sätze für neu in Betrieb genommene Anlagen planmäßig um 1 % je Halbjahr, jeweils zum 1. Februar und zum 1. August (§ 49 EEG). Das ist ein fester Fahrplan, kein politischer Einzelbeschluss. Wer früher in Betrieb nimmt, sichert sich den höheren Satz für ${FEED_IN_YEARS} Jahre.`,
+    },
+    {
+      q: "Teileinspeisung oder Volleinspeisung — was lohnt sich?",
+      a: `Für die meisten Haushalte die Teileinspeisung: Jede selbst verbrauchte Kilowattstunde spart den vollen Haushaltsstrompreis von rund ${strompreisCt} ct — deutlich mehr, als die Einspeisung einbringt. Die Volleinspeisung hat zwar den höheren Satz, verzichtet aber komplett auf diese Ersparnis; sie rechnet sich vor allem, wenn am Standort praktisch kein Strom verbraucht wird, etwa auf einer Scheune. Was bei deinen Zahlen herauskommt, zeigt der Photovoltaik-Rechner mit Amortisation und Rendite.`,
+      links: [{ phrase: "Photovoltaik-Rechner", href: "/photovoltaik-rechner" }],
+      cta: { label: "Komplette Rechnung mit Eigenverbrauch", href: "/photovoltaik-rechner" },
+    },
+    eegReform2027FaqEntry(),
+  ];
+}
+
+/** FAQ for the tilt/orientation page. Every figure is computed from
+ *  lib/tilt-config.ts (documented PVGIS reference data) — never typed. */
+export function neigungswinkelFaq(): FaqEntry[] {
+  const randVerlust = Math.max(100 - tiltPct("sued", 25), 100 - tiltPct("sued", 50));
+  return [
+    {
+      q: "Welcher Neigungswinkel ist optimal für Photovoltaik?",
+      a: `In Deutschland liefert ein nach Süden ausgerichtetes Dach mit ${TILT_OPTIMUM.minAngle} bis ${TILT_OPTIMUM.maxAngle} Grad Neigung den höchsten Jahresertrag. Der Bereich um das Optimum ist aber breit: Zwischen 25 und 50 Grad verliert ein Süddach höchstens ${randVerlust} Prozent — die allermeisten Satteldächer liegen also von selbst nahe am Optimum. Ein „falscher" Winkel ist fast nie ein Grund, auf Photovoltaik zu verzichten.`,
+      cta: { label: "Ertrag für dein Dach simulieren", href: "/pv-simulation" },
+    },
+    {
+      q: "Wie viel Ertrag bringt ein Ost-West-Dach?",
+      a: `Bei 30 Grad Neigung etwa ${tiltPct("ostwest", 30)} Prozent des optimalen Südertrags — je Dachseite. Dafür lassen sich meist beide Dachhälften belegen, also fast doppelt so viele Module. Und die Erzeugung verteilt sich auf Morgen- und Abendstunden, in denen im Haushalt mehr Strom gebraucht wird als mittags.`,
+    },
+    {
+      q: "Lohnt sich Photovoltaik auf dem Flachdach?",
+      a: `Ja. Flach liegende Module erreichen etwa ${tiltPct("sued", 0)} Prozent des Optimums — unabhängig von der Ausrichtung. In der Praxis werden Flachdach-Module aufgeständert, typisch mit 10 bis 15 Grad; nach Süden geneigt steigt der Ertrag damit auf rund ${tiltPct("sued", 15)} Prozent, eine Ost-West-Aufständerung nutzt die Fläche dichter aus. Bei der Planung zählt vor allem, dass sich die Modulreihen nicht gegenseitig verschatten.`,
+    },
+    {
+      q: "Lohnt sich ein Norddach für Photovoltaik?",
+      a: `Meist nur bei flacher Neigung: Bei 10 Grad erreicht ein Norddach noch ${tiltPct("nord", 10)} Prozent des Optimums, bei 45 Grad nur noch ${tiltPct("nord", 45)} Prozent. Als Faustregel gilt: erst die anderen Dachflächen belegen; ein steiles Norddach rechnet sich in der Regel nicht.`,
     },
   ];
 }

@@ -31,6 +31,7 @@ export default function Page() {
           links={[
             { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Amortisation, Rendite und Eigenverbrauch für deine Anlage — alle Annahmen transparent und anpassbar." },
             { href: "/pv-bedarf-berechnen", label: "Welche Anlage passt zu mir?", desc: "In wenigen Fragen zur passenden Anlagengröße — mit Empfehlung und Begründung." },
+            { href: "/photovoltaik-neigungswinkel", label: "Neigungswinkel & Ausrichtung", desc: "Die Ertrags-Tabelle für jede Dachneigung — und warum ein vermeintlich falsches Dach fast nie ein Ausschlusskriterium ist." },
             { href: "/ratgeber/lohnt-sich-pv-mit-speicher", label: "Lohnt sich PV mit Speicher?", desc: "Die ehrliche Rechnung mit aktuellen Marktpreisen — und wann sich ein Speicher wirklich rechnet." },
             { href: "/strommix-deutschland", label: "Strommix Deutschland live", desc: "Wie viel Solar, Wind und Kohle gerade im deutschen Netz stecken." },
           ]}

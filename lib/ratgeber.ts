@@ -51,6 +51,15 @@ export const RATGEBER: RatgeberEntry[] = [
     updated: "2026-07-26",
   },
   {
+    // Deliberately a top-level slug (keyword URL), not /ratgeber/… — the
+    // registry accepts any path and still feeds overview, breadcrumb, sitemap.
+    slug: "/photovoltaik-neigungswinkel",
+    title: "Neigungswinkel & Ausrichtung: Was dein Dach wirklich bringt",
+    teaser:
+      "Die Ertrags-Tabelle für jede Kombination aus Dachneigung und Ausrichtung — aus PVGIS-Daten der EU-Kommission, mit Schnell-Check für dein Dach. Und warum ein vermeintlich falsches Dach fast nie ein Ausschlusskriterium ist.",
+    updated: "2026-08-04",
+  },
+  {
     slug: "/ratgeber/gasheizung-oder-waermepumpe",
     title: "Gasheizung oder Wärmepumpe: Was rechnet sich noch?",
     teaser:

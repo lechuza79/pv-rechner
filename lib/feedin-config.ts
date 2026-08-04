@@ -81,3 +81,67 @@ export function feedInRatesFor(now: Date = new Date()): FeedInRates {
 }
 
 export const DEFAULT_FEED_IN: FeedInRates = feedInRatesFor();
+
+// ─── Sätze nach Inbetriebnahme-Halbjahr (für Bestandsanlagen) ────────────────
+//
+// Dieselbe gesetzliche Kette wie oben, aber rückwärts bis zum Beginn der
+// EEG-2023-Basiswerte (30.07.2022). Davor gelten andere Basiswerte und
+// Degressionsregeln (monatlich, EEG 2021 und älter) — die modellieren wir
+// bewusst NICHT: Wer eine ältere Anlage hat, trägt den Satz aus seinem
+// Bescheid selbst ein (der Rechner bietet das Feld an).
+// Realitäts-Anker: lib/__tests__/feedin-config.test.ts prüft die abgeleiteten
+// Halbjahre gegen die von der Bundesnetzagentur veröffentlichten Zellen.
+
+/** § 48 Abs. 2 / Abs. 2a EEG 2023 (Gebäude), gültig ab 30.07.2022. */
+export const FEED_IN_BASIS = {
+  teilUnder10: 8.6,
+  teilOver10: 7.5,
+  vollUnder10: 13.4,
+  vollOver10: 11.3,
+  validFromIso: "2022-07-30",
+} as const;
+
+/** Kaufmännisch auf zwei Stellen; toFixed fängt die Binärdarstellung ab
+ *  (7,5 × 0,99 liegt knapp UNTER 7,425 — nacktes Math.round ergäbe 7,42
+ *  statt der amtlichen 7,43). Gleiche Implementierung wie im Anker-Test. */
+const round2 = (x: number) => Math.round(Number((x * 100).toFixed(6))) / 100;
+
+/** Degressionsschritte seit dem 01.02.2024 für ein Inbetriebnahme-Datum
+ *  (§ 49 Abs. 1 EEG: 1 % je Halbjahr, Stichtage 1.2. und 1.8.). */
+export function feedInDegressionSteps(dateIso: string): number {
+  if (dateIso < "2024-02-01") return 0;
+  const [y, m] = dateIso.split("-").map(Number);
+  if (m >= 2 && m <= 7) return (y - 2024) * 2 + 1;
+  if (m >= 8) return (y - 2024) * 2 + 2;
+  return (y - 2024) * 2; // Januar zählt noch zum August-Halbjahr des Vorjahres
+}
+
+/** Einspeisevergütung für eine Anlage nach Inbetriebnahme-Datum — oder null
+ *  für Inbetriebnahmen vor dem 30.07.2022 (dort gilt die Kette nicht). */
+export function feedInRatesForCommissioning(dateIso: string): FeedInRates | null {
+  if (dateIso < FEED_IN_BASIS.validFromIso) return null;
+  const n = feedInDegressionSteps(dateIso);
+  const satz = (basis: number) => round2(round2(basis * Math.pow(0.99, n)) - 0.4);
+  return {
+    teilUnder10: satz(FEED_IN_BASIS.teilUnder10),
+    teilOver10: satz(FEED_IN_BASIS.teilOver10),
+    vollUnder10: satz(FEED_IN_BASIS.vollUnder10),
+    vollOver10: satz(FEED_IN_BASIS.vollOver10),
+    thresholdKwp: 10,
+    validFrom: dateIso,
+    source: "§§ 48/49/53 EEG (Kette ab Basiswerten 2022)",
+  };
+}
+
+/**
+ * Letzter Vergütungstag nach § 25 EEG 2023: Die Zahlung läuft 20 Jahre ab
+ * Inbetriebnahme UND verlängert sich bei Anlagen, deren anzulegender Wert
+ * gesetzlich bestimmt wird (= die feste Einspeisevergütung nach § 48, also
+ * genau der Fall dieses Rechners — nicht: Ausschreibungsanlagen), bis zum
+ * 31. Dezember des zwanzigsten Jahres. Ergebnis: 31.12.(Inbetriebnahmejahr+20).
+ * Wortlaut geprüft am 04.08.2026, gesetze-im-internet.de/eeg_2014/__25.html.
+ */
+export function feedInEndIso(commissioningIso: string): string {
+  return `${Number(commissioningIso.slice(0, 4)) + 20}-12-31`;
+}
+

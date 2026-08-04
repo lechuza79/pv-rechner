@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { DEFAULT_FEED_IN, FEED_IN_SCHEDULE, feedInRatesFor } from "../feedin-config";
+import {
+  DEFAULT_FEED_IN,
+  FEED_IN_SCHEDULE,
+  feedInDegressionSteps,
+  feedInEndIso,
+  feedInRatesFor,
+  feedInRatesForCommissioning,
+} from "../feedin-config";
 
 /**
  * Realitäts-Anker für die EEG-Einspeisevergütung (Wächter-Gate, Regel 7).
@@ -138,5 +145,74 @@ describe("EEG-Vergütung – Realitäts-Anker", () => {
     for (const satz of FEED_IN_SCHEDULE) {
       if (satz.note) expect(satz.source ?? "").not.toMatch(/Bundesnetzagentur/);
     }
+  });
+});
+
+describe("Sätze nach Inbetriebnahme (Bestandsanlagen-Ableitung)", () => {
+  // Ein Datum mitten in jedem amtlich veröffentlichten Halbjahr — die
+  // Ableitung aus der Config muss jede BNetzA-Zelle treffen (gleiche Quelle
+  // wie AMTLICH oben, docs/quellen/).
+  const DATUM_JE_N: Record<number, string> = {
+    1: "2024-03-15",
+    2: "2024-09-01",
+    3: "2025-02-01",
+    4: "2025-08-15",
+    5: "2026-02-15",
+    6: "2026-08-04",
+  };
+
+  it.each(AMTLICH)(
+    "Inbetriebnahme im Zeitraum $zeitraum bekommt die veröffentlichten Sätze",
+    ({ n, teilUnder10, teilOver10, vollUnder10, vollOver10 }) => {
+      const r = feedInRatesForCommissioning(DATUM_JE_N[n]);
+      expect(r).not.toBeNull();
+      expect({
+        teilUnder10: r!.teilUnder10, teilOver10: r!.teilOver10,
+        vollUnder10: r!.vollUnder10, vollOver10: r!.vollOver10,
+      }).toEqual({ teilUnder10, teilOver10, vollUnder10, vollOver10 });
+    },
+  );
+
+  it("das eingefrorene Halbjahr 30.07.2022–31.01.2024 bekommt die Basiswerte minus 0,4 ct", () => {
+    // Amtlich veröffentlichte Vergütung dieser Periode (BNetzA-Archiv):
+    // 8,20 / 7,10 (Teileinspeisung) bzw. 13,00 / 10,90 (Volleinspeisung).
+    const r = feedInRatesForCommissioning("2023-06-15");
+    expect(r).not.toBeNull();
+    expect(r!.teilUnder10).toBe(8.2);
+    expect(r!.teilOver10).toBe(7.1);
+    expect(r!.vollUnder10).toBe(13.0);
+    expect(r!.vollOver10).toBe(10.9);
+  });
+
+  it("Januar zählt zum August-Halbjahr des Vorjahres", () => {
+    expect(feedInDegressionSteps("2025-01-15")).toBe(2);
+    expect(feedInDegressionSteps("2025-02-01")).toBe(3);
+    expect(feedInRatesForCommissioning("2025-01-15")!.teilUnder10).toBe(8.03);
+  });
+
+  it("vor dem 30.07.2022 gibt es bewusst KEINEN abgeleiteten Satz", () => {
+    // Ältere Anlagen folgen anderen Basiswerten und Degressionsregeln —
+    // ein erfundener Wert wäre schlimmer als keiner (Zahlen-Korrektheit).
+    expect(feedInRatesForCommissioning("2022-07-29")).toBeNull();
+    expect(feedInRatesForCommissioning("2015-01-01")).toBeNull();
+  });
+
+  it("die Ableitung und der Stichtags-Plan liefern für heute dieselben Zahlen", () => {
+    const heute = new Date("2026-08-04T12:00:00Z");
+    const plan = feedInRatesFor(heute);
+    const kette = feedInRatesForCommissioning("2026-08-04")!;
+    expect(kette.teilUnder10).toBe(plan.teilUnder10);
+    expect(kette.teilOver10).toBe(plan.teilOver10);
+    expect(kette.vollUnder10).toBe(plan.vollUnder10);
+    expect(kette.vollOver10).toBe(plan.vollOver10);
+  });
+
+  it("die Vergütung endet am 31.12. des zwanzigsten Jahres (§ 25 EEG)", () => {
+    // Gesetzlich bestimmter anzulegender Wert (feste Vergütung) → der
+    // 20-Jahres-Zeitraum verlängert sich bis zum Jahresende. Wortlaut geprüft
+    // am 04.08.2026 (gesetze-im-internet.de/eeg_2014/__25.html).
+    expect(feedInEndIso("2023-03-15")).toBe("2043-12-31");
+    expect(feedInEndIso("2010-01-01")).toBe("2030-12-31");
+    expect(feedInEndIso("2026-08-04")).toBe("2046-12-31");
   });
 });

@@ -117,6 +117,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/waermepumpe-rechner`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/klimaanlage-stromkosten`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/balkonkraftwerk-rechner`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/einspeiseverguetung-rechner`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-zubau-deutschland`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/ratgeber`, lastModified: neuesterRatgeber, changeFrequency: "monthly", priority: 0.7 },
