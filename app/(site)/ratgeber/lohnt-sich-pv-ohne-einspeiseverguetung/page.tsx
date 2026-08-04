@@ -11,7 +11,7 @@ import { v } from "../../../../lib/theme";
 import { fetchMarketPrices, formatPriceDate } from "../../../../lib/prices-server";
 import { type PriceConfig } from "../../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
-import { EEG_REFORM_STAND, eegDatum, eegReformStandLabel, eegStaffelSatz } from "../../../../lib/eeg-reform-config";
+import { EEG_REFORM_STAND, EEG_ENTWURF_WERTE, eegDatum, eegReformStandLabel, eegStaffelSatz } from "../../../../lib/eeg-reform-config";
 import {
   calc,
   calcEigenverbrauch,
@@ -461,9 +461,11 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           soll für neue Anlagen enden. Für Anlagen unter 25 Kilowatt installierter
           Leistung ist keine dauerhafte Förderung mehr vorgesehen, sondern eine Starthilfe
           in Form eines vierjährigen Bonus für die Direktvermarktung. Zusätzlich soll die
-          Einspeiseleistung kleiner und mittlerer <em>neuer</em> Dachanlagen dauerhaft auf
-          50 Prozent ihrer installierten Leistung begrenzt werden — begründet damit,
-          Mittagsspitzen zu vermeiden und den Zubau von Speichern anzureizen.
+          Einspeiseleistung <em>neuer</em> Dachanlagen unter{" "}
+          {EEG_ENTWURF_WERTE.einspeiseGrenzeUnterKw} Kilowatt dauerhaft auf 50 Prozent
+          ihrer installierten Leistung begrenzt werden — begründet damit, Mittagsspitzen zu
+          vermeiden und den Zubau von Speichern anzureizen. Steckersolargeräte sind davon
+          ausgenommen.
           <br />
           <span style={S.accent}>Bestandsschutz:</span> Anlagen, die bis Ende 2026 in
           Betrieb gehen, behalten ihre zugesagte Vergütung für die vollen{" "}
@@ -471,14 +473,17 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           Anlagen das bisherige Recht weiter gilt; die neue Regel betrifft allein
           Neuanlagen. Auch die 50-Prozent-Grenze trifft laufende Anlagen nicht.
           <br />
-          <span style={S.accent}>Details, die nur im Entwurf stehen:</span> Der Entwurf vom{" "}
-          {eegDatum(EEG_REFORM_STAND.entwurfIso)}, auf dem der Beschluss beruht, nennt eine
-          auf 36 Monate befristete Übergangszahlung 1 ct/kWh unter dem anzulegenden Wert
-          und staffelt die Leistungsgrenze dafür — {eegStaffelSatz()}; ab 2030 soll sie
-          entfallen, die Bundesnetzagentur soll sie aber verlängern können, wenn die
-          Direktvermarktung für kleine Anlagen bis dahin nicht praxistauglich ist. Der
-          Wortlaut der beschlossenen Fassung war zum Stand {REFORM_STAND} noch nicht
-          veröffentlicht; diese Zahlen können sich im Verfahren noch ändern.
+          <span style={S.accent}>Die Zahlen des Entwurfs:</span> Der beschlossene Entwurf
+          vom {eegDatum(EEG_REFORM_STAND.entwurfIso)} setzt für nicht ausgeschriebene
+          Solaranlagen einen einheitlichen anzulegenden Wert von{" "}
+          {EEG_ENTWURF_WERTE.anzulegenderWertCt.toLocaleString("de-DE", { minimumFractionDigits: 1 })}{" "}
+          ct/kWh fest — womit auch der Aufschlag für Volleinspeisung entfiele. Die
+          befristete Übergangszahlung liegt 1 ct darunter, läuft{" "}
+          {EEG_ENTWURF_WERTE.uebergangMonate} Monate und ist nach Leistung gestaffelt —{" "}
+          {eegStaffelSatz()}. Ab Inbetriebnahmejahr 2031 soll sie entfallen; die
+          Bundesnetzagentur könnte sie für Anlagen unter 25 Kilowatt aber bis Ende 2032
+          verlängern, wenn die Direktvermarktung für kleine Anlagen bis dahin nicht
+          praxistauglich ist. Diese Zahlen können sich im Verfahren noch ändern.
           <br />
           <span style={S.accent}>Verfahrensstand:</span> Das Kabinett ist passiert. Als
           Nächstes befassen sich Bundesrat und Bundestag mit dem Entwurf. Die Förderregeln
