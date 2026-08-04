@@ -211,9 +211,10 @@ export default function ResultRegime({
         {reform ? (
           <>
             <strong style={{ fontWeight: 700, color: v("--color-text-secondary") }}>Entwurfswerte, kein geltendes Recht.</strong>{" "}
-            {eegVerfahrenSatz({ kurz: true })}. Die Beträge stammen aus dem Entwurf vom{" "}
-            {eegDatum(EEG_REFORM_STAND.entwurfIso)}; der Wortlaut der beschlossenen Fassung war noch
-            nicht veröffentlicht. Ob und wie die Reform kommt, ist offen. (Stand: {eegReformStandLabel()})
+            {eegVerfahrenSatz({ kurz: true })}. Die Beträge stehen im Gesetzentwurf vom{" "}
+            {eegDatum(EEG_REFORM_STAND.entwurfIso)} und können sich im Verfahren noch ändern; die
+            Fördersätze brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission.
+            (Stand: {eegReformStandLabel()})
           </>
         ) : (
           <>Für Inbetriebnahme bis Ende 2026 gilt Bestandsschutz: die volle Vergütung über 20 Jahre.</>
