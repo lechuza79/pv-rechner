@@ -137,10 +137,24 @@ Kabinett, Bundestag und Bundesrat stand noch aus" auf allen sechs Oberflächen
 gleichzeitig falsch. Derselbe Satz wird am Tag des Bundestagsbeschlusses wieder
 falsch. Also: **Sachstand ändern heißt Modul ändern, nicht Texte suchen.**
 
-**Aktueller Zustand (30.07.2026):** Regierungsentwurf, im Kabinett beschlossen am
+**Aktueller Zustand (04.08.2026):** Regierungsentwurf, im Kabinett beschlossen am
 29.07.2026 — kein Gesetz. Als Nächstes Bundesrat und Bundestag, dazu die
-beihilferechtliche Genehmigung der EU-Kommission (§ 102 des Entwurfs). Primärquelle
-liegt im Repo: `docs/quellen/EEG-2027_Referentenentwurf_BMWE_2026-07-18.pdf`.
+beihilferechtliche Genehmigung der EU-Kommission (§ 102 des Entwurfs). Die
+**Kabinettsfassung ist amtlich veröffentlicht** und die maßgebliche Primärquelle:
+`docs/quellen/EEG-2027_Regierungsentwurf_BMWE_2026-07-29.pdf` (der ältere
+Referentenentwurf vom 18.07. bleibt daneben liegen — nur noch historisch).
+**Download-Falle bei BMWE-PDFs:** Die URL braucht `?__blob=publicationFile`,
+sonst liefert der Server eine HTML-Hülle; ein so gescheiterter Abruf ist KEIN
+Beleg für „unveröffentlicht" (genau dieser Fehlschluss stand am 04.08.2026 in
+einem Council-Urteil).
+
+**Offener Prüfauftrag (Council-Auflage vom 04.08.2026):** Sobald der Entwurf als
+Bundesrats- oder Bundestags-Drucksache erscheint (bundesrat.de /
+dserver.bundestag.de), ALLE Werte in `EEG_ENTWURF_WERTE` + `EEG_UEBERGANG_STAFFEL`
+gegen die Drucksache nachprüfen — zwischen Referentenentwurf und Kabinettsfassung
+haben sich zwei Werte geändert (7-kW-Stufe bis Inbetriebnahme 2030 statt 2029;
+50-%-Grenze-Schwelle von „offen" auf „weniger als 100 Kilowatt" entschieden),
+dieselbe Drift kann im Parlament wieder passieren.
 
 **Vorgehen bei Verfahrensfortschritt:**
 1. `EEG_REFORM_STAND.zustand` weiterdrehen. `eegVerfahrenSatz()` **wirft** dann
@@ -167,18 +181,22 @@ zurückkämen:
    Und der Regierungsentwurf geht nach Art. 76 Abs. 2 GG **zuerst** an den
    Bundesrat. (Derselbe Fehler wurde zwei Tage vorher beim GModG korrigiert.)
 2. **Kein Beratungstermin.** „ab September" stand nur in der Fachpresse.
-3. **Die 50-%-Grenze gilt nur für Neuanlagen** (§ 9 Abs. 2b, Begründung S. 190
-   wörtlich) und ist ein Anteil der **installierten Leistung**. Ohne beides liest
-   ein PV-Besitzer, seine laufende Anlage werde gekappt bzw. verliere die Hälfte
-   des Ertrags. Ihre **Leistungsschwelle steht im Entwurf noch in eckigen
-   Klammern** („[weniger als 25/weniger als 100 Kilowatt]") — dort darf keine
-   Zahl ergänzt werden, auch nicht später „zur Präzisierung".
-4. **Zwei Belegebenen nicht vermischen.** Kabinettsebene ist amtlich belegt
-   (Ende der festen Vergütung, keine dauerhafte Förderung unter 25 kW,
-   vierjähriger Direktvermarktungsbonus, 50 %, Bestandsschutz). Die 36 Monate,
-   der 1-ct-Abschlag und die Staffel 50/25/7 kW stehen **nur im Entwurf** vom
-   18.07. — der Wortlaut der beschlossenen Fassung war am 30.07. nicht
-   veröffentlicht. Detailwerte immer als Entwurfswerte kennzeichnen.
+3. **Die 50-%-Grenze gilt nur für Neuanlagen** (§ 9 Abs. 2b, eigene Fundstelle
+   in der Begründung) und ist ein Anteil der **installierten Leistung**. Ohne
+   beides liest ein PV-Besitzer, seine laufende Anlage werde gekappt bzw.
+   verliere die Hälfte des Ertrags. *(Historie: Im Referentenentwurf stand die
+   Leistungsschwelle in eckigen Klammern und durfte nicht beziffert werden; die
+   Kabinettsfassung vom 29.07.2026 hat sie auf „Solaranlagen des zweiten
+   Segments mit weniger als 100 Kilowatt" entschieden, Steckersolar bis
+   2 kW/800 VA ausgenommen — seither DARF die Zahl als Entwurfswert genannt
+   werden.)*
+4. **Zwei Belegebenen nicht vermischen — seit 04.08.2026 vereinfacht:** Die
+   Kabinettsfassung ist amtlich veröffentlicht, damit sind auch die Detailwerte
+   (36 Monate, 1-ct-Abschlag, Staffel — jetzt 50/25/7 kW mit der 7-kW-Stufe für
+   Inbetriebnahme 2029 **und** 2030) auf Kabinettsebene belegt. Sie bleiben
+   trotzdem **Entwurfswerte** (kein Gesetz) und werden immer so gekennzeichnet;
+   „der Wortlaut der beschlossenen Fassung ist nicht veröffentlicht" darf
+   nirgends mehr stehen (Test nagelt das fest).
 
 Dazu drei Dinge, die bewusst **nicht** behauptet werden (Begründung im Modul):
 die Abfolge der beiden Zahlungen, ein Beratungstermin, und dass die bestehende
