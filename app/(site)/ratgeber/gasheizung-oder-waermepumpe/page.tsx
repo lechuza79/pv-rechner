@@ -3,6 +3,7 @@ import Link from "next/link";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import ProConLists from "../../../../components/ProConLists";
 import Faq from "../../../../components/Faq";
+import RelatedLinks from "../../../../components/RelatedLinks";
 import { gasheizungWaermepumpeFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
@@ -289,6 +290,17 @@ export default function GasheizungWaermepumpePage() {
           items={faqItems}
           title="Häufige Fragen: Gasheizung oder Wärmepumpe"
           currentPath="/ratgeber/gasheizung-oder-waermepumpe"
+        />
+
+        <RelatedLinks
+          currentPath="/ratgeber/gasheizung-oder-waermepumpe"
+          links={[
+            { href: "/ratgeber/waermepumpe-foerderung-2026", label: "Wärmepumpen-Förderung 2026", desc: "Grundförderung, Klima-Bonus, Einkommens-Bonus: wie viel Zuschuss es wirklich gibt." },
+            { href: "/klimaanlage-stromkosten", label: "Klimaanlagen-Rechner", desc: "Kühl- und Heizkosten einer Klimaanlage — inklusive Heizen in der Übergangszeit." },
+            { href: "/ratgeber/lohnt-sich-pv-mit-speicher", label: "Lohnt sich PV mit Speicher?", desc: "Eigener Solarstrom macht die Wärmepumpe noch günstiger — die ehrliche Rechnung." },
+            { href: "/datenstand", label: "Aktuelle Werte & Annahmen" },
+            { href: "/glossar", label: "Glossar" },
+          ]}
         />
 
         <p style={{ ...S.small, marginTop: 24 }}>

@@ -55,9 +55,15 @@ export function pageMetadata(input: PageMetaInput): Metadata {
   const image =
     input.ogImage ??
     brandOgImage(input.ogImageTitle ?? ogTitle, input.ogImageSubtitle ?? "");
+  // Brand suffix on every page title: brand searches ("solar check",
+  // "solarcheck") rank the pages that carry the name. Pages that already
+  // mention the brand keep their hand-tuned title untouched.
+  const title = input.title.includes("Solar Check")
+    ? input.title
+    : `${input.title} | Solar Check`;
 
   return {
-    title: input.title,
+    title,
     description: input.description,
     ...(input.keywords ? { keywords: input.keywords } : {}),
     alternates: { canonical: input.path },

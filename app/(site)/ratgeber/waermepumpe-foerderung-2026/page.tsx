@@ -3,6 +3,7 @@ import Link from "next/link";
 import Breadcrumb from "../../../../components/Breadcrumb";
 import ProConLists from "../../../../components/ProConLists";
 import Faq from "../../../../components/Faq";
+import RelatedLinks from "../../../../components/RelatedLinks";
 import ArticleMeta from "../../../../components/ArticleMeta";
 import AutoHeightIframe from "../../../../components/AutoHeightIframe";
 import { DataSourceNote } from "../../../../components/PoweredBy";
@@ -474,13 +475,17 @@ export default function WaermepumpeFoerderungPage() {
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
         <Faq items={faqItems} title="Häufige Fragen zur Wärmepumpen-Förderung" currentPath="/ratgeber/waermepumpe-foerderung-2026" />
 
-        <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
-          Verwandte Seiten: <Link href="/waermepumpe-rechner" style={S.link}>Wärmepumpen-Rechner</Link> ·{" "}
-          <Link href="/ratgeber/lohnt-sich-pv-mit-speicher" style={S.link}>Lohnt sich PV mit Speicher?</Link> ·{" "}
-          <Link href="/photovoltaik-foerderung" style={S.link}>PV-Förderung vor Ort</Link> ·{" "}
-          <Link href="/datenstand" style={S.link}>Aktuelle Werte &amp; Annahmen</Link> ·{" "}
-          <Link href="/glossar" style={S.link}>Glossar</Link>
-        </p>
+        <RelatedLinks
+          currentPath="/ratgeber/waermepumpe-foerderung-2026"
+          links={[
+            { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Stromverbrauch, Kosten und Ersparnis gegenüber Gas oder Öl — mit eingerechneter Förderung." },
+            { href: "/ratgeber/gasheizung-oder-waermepumpe", label: "Gasheizung oder Wärmepumpe?", desc: "Was sich nach dem Gebäudemodernisierungsgesetz noch rechnet — mit Grüngas-Kostenpfad." },
+            { href: "/ratgeber/lohnt-sich-pv-mit-speicher", label: "Lohnt sich PV mit Speicher?", desc: "Die ehrliche Rechnung mit aktuellen Marktpreisen — PV und Wärmepumpe verstärken sich gegenseitig." },
+            { href: "/photovoltaik-foerderung", label: "PV-Förderung vor Ort", desc: "Welche Zuschüsse es in deinem Bundesland und deiner Stadt gerade gibt." },
+            { href: "/datenstand", label: "Aktuelle Werte & Annahmen" },
+            { href: "/glossar", label: "Glossar" },
+          ]}
+        />
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
           Grundlage: KfW-Zuschuss 458 (BEG Einzelmaßnahme), Stand {standDatum}. Die
           Fördersätze auf dieser Seite werden direkt aus den geprüften Werten berechnet und

@@ -4,6 +4,7 @@ import Breadcrumb from "../../../../components/Breadcrumb";
 import ProConLists from "../../../../components/ProConLists";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
 import Faq from "../../../../components/Faq";
+import RelatedLinks from "../../../../components/RelatedLinks";
 import ArticleMeta from "../../../../components/ArticleMeta";
 import { pvOhneEinspeisungFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
@@ -662,13 +663,17 @@ export default async function LohntSichPvOhneEinspeisungPage() {
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
         <Faq items={faqItems} title="Häufige Fragen zu PV ohne Einspeisevergütung" currentPath="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" />
 
-        <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
-          Verwandte Seiten: <Link href="/ratgeber/lohnt-sich-pv-mit-speicher" style={S.link}>Lohnt sich PV mit Speicher?</Link> ·{" "}
-          <Link href="/methodik" style={S.link}>So rechnen wir</Link> ·{" "}
-          <Link href="/datenstand" style={S.link}>Aktuelle Preise &amp; Annahmen</Link> ·{" "}
-          <Link href="/photovoltaik-foerderung" style={S.link}>PV-Förderung vor Ort</Link> ·{" "}
-          <Link href="/glossar" style={S.link}>Glossar</Link>
-        </p>
+        <RelatedLinks
+          currentPath="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung"
+          links={[
+            { href: "/ratgeber/lohnt-sich-pv-mit-speicher", label: "Lohnt sich PV mit Speicher?", desc: "Die ehrliche Rechnung mit aktuellen Marktpreisen — und wann sich ein Speicher wirklich rechnet." },
+            { href: "/pv-simulation", label: "PV-Simulation: Was produziert ein Dach gerade?", desc: "Live-Leistung einer PV-Anlage an deinem Standort, gerechnet aus aktuellen Wetterdaten." },
+            { href: "/photovoltaik-foerderung", label: "PV-Förderung vor Ort", desc: "Welche Zuschüsse es in deinem Bundesland und deiner Stadt gerade gibt." },
+            { href: "/methodik", label: "So rechnen wir" },
+            { href: "/datenstand", label: "Aktuelle Preise & Annahmen" },
+            { href: "/glossar", label: "Glossar" },
+          ]}
+        />
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
           Zuletzt aktualisiert: {new Date().toLocaleDateString("de-DE", { month: "long", year: "numeric" })} —
           die Zahlen auf dieser Seite werden automatisch aus den aktuellen Marktpreisen

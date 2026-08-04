@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "../../../../../components/Breadcrumb";
 import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons";
+import RelatedLinks from "../../../../../components/RelatedLinks";
 import { v, iconSizes } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
@@ -318,6 +319,17 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             )}
           </div>
         )}
+
+        {/* ── Weiterlesen: verbindet die Förderseiten mit Ratgebern + Tools ── */}
+        <RelatedLinks
+          links={[
+            { href: "/ratgeber/lohnt-sich-pv-mit-speicher", label: "Lohnt sich PV mit Speicher?", desc: "Die ehrliche Rechnung mit aktuellen Marktpreisen — und wann sich ein Speicher wirklich rechnet." },
+            { href: "/pv-bedarf-berechnen", label: "Welche Anlage passt zu mir?", desc: "In wenigen Fragen zur passenden Anlagengröße — mit Empfehlung und Begründung." },
+            { href: "/pv-simulation", label: "PV-Simulation: Was produziert ein Dach gerade?", desc: "Live-Leistung einer PV-Anlage an deinem Standort, gerechnet aus aktuellen Wetterdaten." },
+            { href: "/balkonkraftwerk-rechner", label: "Balkonkraftwerk-Rechner", desc: "Für Miete oder ohne eigenes Dach: was Steckersolar bringt und wann es sich amortisiert." },
+            { href: "/ratgeber/waermepumpe-foerderung-2026", label: "Wärmepumpen-Förderung 2026", desc: "Wie viel Zuschuss es für den Heizungstausch gibt — und wer welchen Bonus bekommt." },
+          ]}
+        />
 
         {/* ── Disclaimer ── */}
         <div style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6, borderTop: `1px solid ${v("--color-border")}`, paddingTop: 12, marginBottom: 32 }}>

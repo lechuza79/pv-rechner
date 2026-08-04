@@ -90,6 +90,9 @@ const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Solar Check",
+  // Spellings people actually search for ("solarcheck" as one word) — helps
+  // Google connect brand queries to this site.
+  alternateName: ["Solarcheck", "solar-check.io"],
   url: BASE_URL,
   logo: `${BASE_URL}/logo.png`,
   description:

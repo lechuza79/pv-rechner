@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "../../../../components/Breadcrumb";
+import RelatedLinks from "../../../../components/RelatedLinks";
 import { IconArrowRight } from "../../../../components/Icons";
 import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
@@ -325,6 +326,17 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
         <Link href="/photovoltaik-foerderung" style={{ display: "inline-flex", alignItems: "center", gap: 4, marginTop: 24, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
           Alle Förderprogramme im Überblick <IconArrowRight size={iconSizes.xs} />
         </Link>
+
+        {/* ── Weiterlesen: verbindet die Förderseiten mit Ratgebern + Tools ── */}
+        <RelatedLinks
+          links={[
+            { href: "/ratgeber/lohnt-sich-pv-mit-speicher", label: "Lohnt sich PV mit Speicher?", desc: "Die ehrliche Rechnung mit aktuellen Marktpreisen — und wann sich ein Speicher wirklich rechnet." },
+            { href: "/pv-bedarf-berechnen", label: "Welche Anlage passt zu mir?", desc: "In wenigen Fragen zur passenden Anlagengröße — mit Empfehlung und Begründung." },
+            { href: "/pv-simulation", label: "PV-Simulation: Was produziert ein Dach gerade?", desc: "Live-Leistung einer PV-Anlage an deinem Standort, gerechnet aus aktuellen Wetterdaten." },
+            { href: "/balkonkraftwerk-rechner", label: "Balkonkraftwerk-Rechner", desc: "Für Miete oder ohne eigenes Dach: was Steckersolar bringt und wann es sich amortisiert." },
+            { href: "/ratgeber/waermepumpe-foerderung-2026", label: "Wärmepumpen-Förderung 2026", desc: "Wie viel Zuschuss es für den Heizungstausch gibt — und wer welchen Bonus bekommt." },
+          ]}
+        />
 
         <p style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6, marginTop: 24 }}>
           Auswahl der wichtigsten Programme — Förderung ist dezentral und ändert sich laufend. Alle Angaben

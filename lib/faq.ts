@@ -114,6 +114,36 @@ export function pvRechnerFaq(): FaqEntry[] {
   ];
 }
 
+/** FAQ for the live PV simulation page. Every statement mirrors what the
+ *  simulation actually does (weather-driven estimate, no real-plant metering) —
+ *  verified against the SimulationPanel implementation, not assumed. */
+export function pvSimulationFaq(): FaqEntry[] {
+  return [
+    {
+      q: "Was zeigt die PV-Simulation?",
+      a: "Die Simulation rechnet aus der aktuellen Wettervorhersage — Sonneneinstrahlung, Bewölkung und Temperatur an deinem Standort — aus, welche Leistung eine Photovoltaikanlage dort gerade liefern würde, und zeichnet den erwarteten Tagesverlauf. Die Anlagengröße kannst du umschalten und ein Haushaltsprofil danebenlegen, um Erzeugung und Verbrauch zu vergleichen.",
+      cta: { label: "Rentabilität komplett durchrechnen", href: "/photovoltaik-rechner" },
+    },
+    {
+      q: "Ist das eine Messung echter Anlagen?",
+      a: "Nein — es ist eine Schätzung aus Wetterdaten (Open-Meteo, basierend auf DWD- und NOAA-Modellen), keine Messung einer realen Anlage. Ausrichtung, Neigung, Verschattung und Verschmutzung eines echten Dachs verschieben das Ergebnis. Die Simulation zeigt die Größenordnung und das Tagesprofil, nicht den Zählerstand.",
+    },
+    {
+      q: "Warum schwankt die angezeigte Leistung so stark?",
+      a: "Die Bewölkung dominiert: Schon ein dichtes Wolkenfeld drückt die Leistung einer PV-Anlage auf einen Bruchteil des wolkenlosen Werts. Dazu kommt der Sonnenstand — morgens und abends steht weniger Einstrahlung zur Verfügung als mittags, im Winter weniger als im Sommer.",
+    },
+    {
+      q: "Was sagt die Simulation über die Rentabilität aus?",
+      a: "Wenig — sie zeigt die Momentleistung, nicht die Wirtschaftlichkeit. Ob sich eine Anlage lohnt, hängt von Jahresertrag, Eigenverbrauch, Kosten und Strompreis ab. Dafür gibt es den Photovoltaik-Rechner mit Amortisation, Rendite und Szenarien, und die Empfehlung, wenn du noch keine Anlagengröße im Kopf hast.",
+      links: [
+        { phrase: "Photovoltaik-Rechner", href: "/photovoltaik-rechner" },
+        { phrase: "die Empfehlung", href: "/pv-bedarf-berechnen" },
+      ],
+      cta: { label: "Lohnt sich PV für mich?", href: "/photovoltaik-rechner" },
+    },
+  ];
+}
+
 /** FAQ for the "Lohnt sich PV mit Speicher?" guide page. Figures derive from
  *  the same models the calculator uses (estimateCost, battery lifetime) so the
  *  answers can never drift from what the tool computes. Pass the live PriceConfig

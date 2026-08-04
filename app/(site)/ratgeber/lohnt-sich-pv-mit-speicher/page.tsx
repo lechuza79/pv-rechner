@@ -5,6 +5,7 @@ import GlossaryTerm from "../../../../components/GlossaryTerm";
 import ProConLists from "../../../../components/ProConLists";
 import { IconArrowUp } from "../../../../components/Icons";
 import Faq from "../../../../components/Faq";
+import RelatedLinks from "../../../../components/RelatedLinks";
 import ArticleMeta from "../../../../components/ArticleMeta";
 import { pvSpeicherFaq } from "../../../../lib/faq";
 import { v } from "../../../../lib/theme";
@@ -640,14 +641,18 @@ export default async function LohntSichPvMitSpeicherPage() {
         {/* ── FAQ (visible accordion + FAQPage JSON-LD from the same data) ── */}
         <Faq items={faqItems} title="Häufige Fragen zu PV mit Speicher" currentPath="/ratgeber/lohnt-sich-pv-mit-speicher" />
 
-        <p style={{ ...S.p, fontSize: v("--font-size-small") }}>
-          Verwandte Seiten: <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" style={S.link}>Lohnt sich PV ohne Einspeisevergütung?</Link> ·{" "}
-          <Link href="/methodik" style={S.link}>So rechnen wir</Link> ·{" "}
-          <Link href="/datenstand" style={S.link}>Aktuelle Preise &amp; Annahmen</Link> ·{" "}
-          <Link href="/photovoltaik-foerderung" style={S.link}>PV-Förderung vor Ort</Link> ·{" "}
-          <Link href="/balkonkraftwerk-rechner" style={S.link}>Balkonkraftwerk-Rechner</Link> ·{" "}
-          <Link href="/glossar" style={S.link}>Glossar</Link>
-        </p>
+        <RelatedLinks
+          currentPath="/ratgeber/lohnt-sich-pv-mit-speicher"
+          links={[
+            { href: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung", label: "Lohnt sich PV ohne Einspeisevergütung?", desc: "Was die geplante EEG-Reform für neue Anlagen bedeutet — und warum Eigenverbrauch die Rechnung trägt." },
+            { href: "/pv-simulation", label: "PV-Simulation: Was produziert ein Dach gerade?", desc: "Live-Leistung einer PV-Anlage an deinem Standort, gerechnet aus aktuellen Wetterdaten." },
+            { href: "/photovoltaik-foerderung", label: "PV-Förderung vor Ort", desc: "Welche Zuschüsse es in deinem Bundesland und deiner Stadt gerade gibt." },
+            { href: "/balkonkraftwerk-rechner", label: "Balkonkraftwerk-Rechner", desc: "Für Miete oder ohne eigenes Dach: was Steckersolar bringt und wann es sich amortisiert." },
+            { href: "/methodik", label: "So rechnen wir" },
+            { href: "/datenstand", label: "Aktuelle Preise & Annahmen" },
+            { href: "/glossar", label: "Glossar" },
+          ]}
+        />
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
           Zuletzt aktualisiert: {new Date().toLocaleDateString("de-DE", { month: "long", year: "numeric" })} —
           die Zahlen auf dieser Seite werden automatisch aus den aktuellen Marktpreisen
