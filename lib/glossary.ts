@@ -71,6 +71,14 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     long:
       "Die Einspeisevergütung ist der nach dem Erneuerbare-Energien-Gesetz (EEG) garantierte Betrag, den du für jede ins Netz eingespeiste Kilowattstunde Solarstrom erhältst. Sie ist ab Inbetriebnahme 20 Jahre lang fest und sinkt für Neuanlagen halbjährlich leicht (Degression). Die Höhe hängt von der Anlagengröße und davon ab, ob du teil- oder volleinspeist. Aktuell liegt sie bei rund 8 ct/kWh (Teileinspeisung) bzw. rund 12 ct/kWh (Volleinspeisung) für kleine Anlagen — deutlich unter dem Strompreis, weshalb hoher Eigenverbrauch sich mehr lohnt als Einspeisen.",
   },
+  "marktwert-solar": {
+    term: "Marktwert Solar",
+    aliases: ["Marktwert", "Solarmarktwert", "Jahresmarktwert Solar"],
+    short:
+      "Der Durchschnittspreis, den eine Kilowattstunde Solarstrom an der Strombörse tatsächlich erzielt — deutlich weniger als der mittlere Börsenpreis.",
+    long:
+      "Der Marktwert Solar ist der erzeugungsgewichtete Börsenpreis für Solarstrom: Er zählt jede Kilowattstunde mit dem Preis der Stunde, in der sie anfällt. Genau darin liegt der Unterschied zum mittleren Börsenpreis — Solarstrom entsteht immer dann, wenn viel Solarstrom entsteht, und drückt den Preis in genau diesen Stunden. Die Übertragungsnetzbetreiber veröffentlichen den Wert monatlich und jährlich. Er ist von rund 8 ct/kWh (2023) auf 4,5 ct/kWh (2025) gefallen, und 2025 fiel fast ein Viertel der deutschen Solarerzeugung in Stunden mit negativem Preis. Für die Direktvermarktung ist er die entscheidende Größe: Sie bringt den Marktwert, nicht den Strompreis, den man selbst zahlt.",
+  },
   teileinspeisung: {
     term: "Teileinspeisung",
     aliases: ["Überschusseinspeisung"],

@@ -4,8 +4,11 @@ import Link from "next/link";
 import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { useSharedPlz, readLocation } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
-import { eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
-import { YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, NO_PLZ_DEFAULT_YIELD, type Heizsystem } from "../../../lib/constants";
+import { einspeiseVerlauf, einspeiseDeckelKw, profilFaktorAus, type EinspeiseRegime } from "../../../lib/einspeise-regime";
+import { PREISFORM_MONAT_STUNDE, MARKTWERT_NIVEAU_CT, DIREKTVERMARKTUNG } from "../../../lib/marktwert-config";
+import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
+import ResultRegime from "./_components/ResultRegime";
+import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, NO_PLZ_DEFAULT_YIELD, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
 import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
@@ -121,6 +124,20 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
   );
   const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", NO_PLZ_DEFAULT_YIELD, 700, 1200) : NO_PLZ_DEFAULT_YIELD);
+  // Vergütungsregime: heutige Konditionen (Default — sie gelten für jede Anlage,
+  // die bis Ende 2026 ans Netz geht) oder der Entwurf für Neuanlagen ab 2027.
+  // Der Börsenerlös nach der Förderphase ist bewusst separat schaltbar und
+  // standardmäßig AUS, damit die Grundrechnung ohne eine Annahme über künftige
+  // Börsenpreise auskommt.
+  const [regime, setRegime] = useState<EinspeiseRegime>(
+    hasShare && initialParams?.rg === "2027" ? "reform2027" : "heute",
+  );
+  const [marktErloes, setMarktErloes] = useState(hasShare ? initialParams?.mk === "1" : false);
+  const [oMarktwert, setOMarktwert] = useState<number | null>(
+    hasShare && initialParams?.mw
+      ? (() => { const n = Number(initialParams.mw); return isFinite(n) && n >= 0 && n <= 30 ? n : null; })()
+      : null,
+  );
   // Gewähltes Szenario (Strompreis-Anstieg). Steuert ALLE Ergebniszahlen —
   // Amortisation, Rendite, ⌀ Ersparnis, Chart-Hervorhebung — nicht nur die
   // Amortisations-Kachel. Default „realistic" (3 %/a). Über die Kacheln wählbar.
@@ -384,6 +401,52 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     : calcWeightedFeedIn(kwp, feedInRates.teilUnder10, feedInRates.teilOver10, feedInRates.thresholdKwp);
   const effEinsp = oEinsp ?? autoEinsp;
 
+  // ── Konditionen ab 2027 (Entwurf) ──────────────────────────────────────────
+  // Zweite Stunden-Jahressimulation, diesmal mit der Preisform und dem geplanten
+  // Einspeisedeckel. Sie liefert zwei Größen, die nicht geschätzt werden dürfen:
+  // wie viel vom Überschuss am Deckel überhaupt durchkommt, und was die
+  // verbleibende Kilowattstunde im Vergleich zum vollen Ertrag wert ist. Beides
+  // hängt am Speicher und am Verbrauchsprofil dieses Haushalts, also fällt es aus
+  // derselben Simulation an wie die Autarkie — statt aus einer zweiten Annahme.
+  const marktSim = useMemo(() => {
+    const monthly = monthlyProfile ?? monthlyFromAnnual(oErtrag);
+    const summe = monthly.reduce((a, b) => a + b, 0);
+    const skaliert = summe > 0 ? monthly.map((m) => (m * oErtrag) / summe) : monthly;
+    const gemeinsam = {
+      moduleKwp: kwp, inverterKw: kwp, monthlyYieldPerKwp: skaliert,
+      orientation: "sued_flach", household, batteryKwh: spKwh, roundtrip: 0.9,
+      priceShape: PREISFORM_MONAT_STUNDE,
+    };
+    const ohneDeckel = simulateSolarYear(gemeinsam);
+    const mitDeckel = simulateSolarYear({ ...gemeinsam, exportCapKw: einspeiseDeckelKw(kwp, "reform2027") });
+    return {
+      profilFaktor: profilFaktorAus(mitDeckel),
+      einspeiseAnteil: ohneDeckel.feedInKwh > 0 ? mitDeckel.feedInKwh / ohneDeckel.feedInKwh : 1,
+    };
+  }, [kwp, spKwh, monthlyProfile, oErtrag, household]);
+
+  const einspeiseVerlaufJahre = useMemo(() => einspeiseVerlauf({
+    regime,
+    kwp,
+    // Der Entwurf gilt für Neuanlagen ab 2027. Wer heute rechnet und die
+    // Reform-Konditionen wählt, plant frühestens für 2027 — deshalb ist das
+    // das früheste zulässige Inbetriebnahmejahr, nicht das laufende.
+    inbetriebnahmeJahr: Math.max(2027, YEAR),
+    heuteSatzCt: effEinspeisungModus === "aus" ? 0 : effEinsp,
+    marktErloes,
+    profilFaktor: marktSim.profilFaktor,
+    niveauCt: oMarktwert ?? MARKTWERT_NIVEAU_CT,
+  }), [regime, kwp, effEinsp, effEinspeisungModus, marktErloes, marktSim.profilFaktor, oMarktwert]);
+
+  const einspeiseModell = useMemo(() => {
+    if (regime === "heute") return undefined;
+    return {
+      satzCtImJahr: (i: number) => einspeiseVerlaufJahre[i - 1]?.satzCt ?? 0,
+      fixkostenProJahr: DIREKTVERMARKTUNG.grundgebuehrProJahr,
+      einspeiseAnteil: marktSim.einspeiseAnteil,
+    };
+  }, [regime, einspeiseVerlaufJahre, marktSim.einspeiseAnteil]);
+
   const scenarioData = useMemo(() =>
     SCENARIOS.map(s => ({
       ...s,
@@ -399,8 +462,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         einspeisung: effEinspeisungModus === "aus" ? 0 : effEinsp,
         stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
         batteryReplace: batteryReplaceCost(spKwh, prices),
+        einspeiseModell: effEinspeisungModus === "aus" ? undefined : einspeiseModell,
       }),
-    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag]);
+    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, einspeiseModell]);
 
   // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
   // „realistic", falls der State (z. B. aus einer alten Share-URL) nicht passt.
@@ -481,6 +545,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     p.set("st", String(oStrom));
     if (oEinsp !== null) p.set("ei", String(oEinsp));
     p.set("eia", effEinspeisungModus === "voll" ? "2" : effEinspeisungModus === "aus" ? "0" : "1");
+    // Das Vergütungsregime gehört in den Link: Wer eine Reform-Rechnung teilt,
+    // teilt sonst eine Zahl, die beim Empfänger anders herauskommt.
+    if (regime === "reform2027") p.set("rg", "2027");
+    if (marktErloes) p.set("mk", "1");
+    if (oMarktwert !== null) p.set("mw", String(oMarktwert));
     p.set("er", String(oErtrag));
     if (scenario !== "realistic") p.set("sc", scenario);
     if (plz) p.set("plz", plz);
@@ -1171,16 +1240,19 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
             </div>
 
-            {/* Hinweis auf die geplante EEG-Reform — nur relevant, wenn überhaupt
-                eingespeist wird (Teil/Voll). Datierter Sachstand, siehe FAQ. */}
+            {/* Vergütungsregime: heute oder Entwurf ab 2027, mit abschaltbarer
+                Marktrechnung. Nur sinnvoll, wenn überhaupt eingespeist wird —
+                bei „Einspeisung aus" ändert das Regime an der Rechnung nichts. */}
             {effEinspeisungModus !== "aus" && (
-              <div style={{
-                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "10px 14px", marginBottom: 16,
-                border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-secondary'), lineHeight: 1.6,
-              }}>
-                <strong style={{ fontWeight: 700 }}>Einspeisevergütung:</strong> für Inbetriebnahme bis Ende 2026 volle 20 Jahre garantiert (Bestandsschutz). Für Neuanlagen ab 2027 soll die feste Vergütung entfallen — {eegVerfahrenSatz({ kurz: true })}.{" "}
-                <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Was das für die Rechnung bedeutet →</Link>
-              </div>
+              <ResultRegime
+                regime={regime} setRegime={setRegime}
+                marktErloes={marktErloes} setMarktErloes={setMarktErloes}
+                niveauCt={oMarktwert ?? MARKTWERT_NIVEAU_CT} setNiveauCt={setOMarktwert}
+                profilFaktor={marktSim.profilFaktor}
+                einspeiseAnteil={marktSim.einspeiseAnteil}
+                verlauf={einspeiseVerlaufJahre}
+                heuteSatzCt={effEinsp}
+              />
             )}
 
             <ResultActions
