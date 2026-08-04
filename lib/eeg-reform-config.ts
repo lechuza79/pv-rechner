@@ -181,3 +181,83 @@ export function eegStaffelSatz(): string {
   const letzte = teile.pop() as string;
   return `${teile.join(", ")} und ${letzte} Kilowatt installierter Leistung`;
 }
+
+// ─── Die Geldwerte des Entwurfs ─────────────────────────────────────────────
+//
+// ALLE WERTE HIER SIND ENTWURFSWERTE (Referentenentwurf vom 18.07.2026, Grundlage
+// des Kabinettsbeschlusses vom 29.07.2026). Sie sind KEIN geltendes Recht und
+// werden auf jeder Oberfläche als Entwurfswerte gekennzeichnet. Am 01.08.2026
+// Paragraf für Paragraf im Volltext selbst aufgeschlagen (Pfad in
+// EEG_REFORM_STAND.primaerquelle), nicht aus einem Bericht übernommen:
+//
+//  · § 48 Abs. 1 Satz 1 (Änderungsbefehl Nr. 78 Buchst. a): "In der Angabe vor
+//    Nummer 1 wird die Angabe '7 Cent' durch die Angabe '6,2 Cent' ersetzt."
+//    Die Begründung (S. 248) sagt dazu ausdrücklich, der anzulegende Wert werde
+//    "nominell einheitlich auf 6,2 Cent pro Kilowattstunde festgelegt" und die
+//    höheren Werte für Gebäudeanlagen nach § 48 Abs. 2, 2a und 3 EEG 2023
+//    würden "demnach abgeschafft". Das betrifft ausdrücklich AUCH den Aufschlag
+//    für Volleinspeisung (§ 48 Abs. 2a EEG 2023) — die Unterscheidung
+//    Teil-/Volleinspeisung, die unser Rechner heute kennt, gäbe es für
+//    Neuanlagen nicht mehr.
+//  · § 53 Abs. 1: Die befristete Übergangszahlung "berechnet sich aus den
+//    anzulegenden Werten, wobei von den anzulegenden Werten 1 Cent pro
+//    Kilowattstunde abzuziehen sind" → 6,2 − 1,0 = 5,2 ct/kWh.
+//  · § 25 Abs. 1a: gezahlt "bis zum Ende des 36. auf die Inbetriebnahme der
+//    Anlage folgenden Kalendermonats".
+//  · § 50c Abs. 4 und 5: Bonus 1,5 ct/kWh, "längstens bis zum Ende des 48. auf
+//    die erstmalige Zuordnung zur Veräußerungsform einer Direktvermarktung
+//    folgenden Kalendermonats", nur für Anlagen unter 25 Kilowatt.
+//  · § 49 Satz 1: Der anzulegende Wert sinkt "ab dem 1. August 2027 und sodann
+//    jeweils alle sechs Monate ... um 1 Prozent".
+//  · § 9 Abs. 2b: Einspeiseleistung auf 50 % der installierten Leistung
+//    begrenzt, nur für Neuanlagen (Begründung S. 190). Die Leistungsschwelle
+//    steht im Entwurf in eckigen Klammern und ist damit OFFEN — hier wird keine
+//    Zahl ergänzt, auch nicht "zur Präzisierung".
+//
+// ÜBERGANGSZAHLUNG UND BONUS SCHLIESSEN EINANDER AUS. Das ist keine Auslegung,
+// sondern steht so im Entwurf: Die Übergangszahlung ist eine Variante der
+// Netzbetreiberabnahme (Legaldefinition in § 3 Nr. 5a), der Bonus besteht nach
+// § 50c Abs. 2 dagegen "nur für Kalendermonate, in denen der in ein Netz
+// eingespeiste Strom nach § 21a auf sonstige Weise direkt vermarktet wird".
+// Beides gleichzeitig geht also nicht. Weil die 48-Monats-Frist des Bonus erst
+// mit der erstmaligen Zuordnung zu einer DIREKTVERMARKTUNG zu laufen beginnt,
+// verfällt sie während der Übergangszahlung auch nicht — sie startet danach.
+// (Die frühere Notiz "eine zeitliche Abfolge ist nicht belegt" bezog sich auf
+// eine Presseaussage; belegt ist jetzt das Ausschlussverhältnis aus dem
+// Wortlaut, nicht ein Ablaufplan.)
+export const EEG_ENTWURF_WERTE = {
+  /** Einheitlicher anzulegender Wert, ct/kWh (§ 48 Abs. 1 Satz 1). */
+  anzulegenderWertCt: 6.2,
+  /** Abschlag auf den anzulegenden Wert für die Übergangszahlung (§ 53 Abs. 1). */
+  uebergangAbschlagCt: 1.0,
+  /** Dauer der Übergangszahlung in Monaten (§ 25 Abs. 1a). */
+  uebergangMonate: 36,
+  /** Direktvermarktungsbonus, ct/kWh (§ 50c Abs. 4). */
+  bonusCt: 1.5,
+  /** Höchstdauer des Bonus in Monaten (§ 50c Abs. 5). */
+  bonusMonate: 48,
+  /** Leistungsgrenze für den Bonus, kW (§ 50c Abs. 1: "weniger als"). */
+  bonusUnterKw: 25,
+  /** Halbjährliche Degression des anzulegenden Werts ab 01.08.2027 (§ 49 S. 1). */
+  degressionProHalbjahr: 0.01,
+  /** Deckel der Einspeiseleistung als Anteil der installierten Leistung (§ 9 Abs. 2b). */
+  einspeiseGrenzeAnteil: 0.5,
+} as const;
+
+/** Höhe der befristeten Übergangszahlung in ct/kWh (§ 53 Abs. 1). */
+export function eegUebergangszahlungCt(w = EEG_ENTWURF_WERTE): number {
+  return Math.round((w.anzulegenderWertCt - w.uebergangAbschlagCt) * 100) / 100;
+}
+
+/** Darf eine Anlage dieser Größe im Inbetriebnahmejahr die Übergangszahlung
+ *  nutzen? Der Entwurf sagt "weniger als", nicht "bis" — die Fachpresse
+ *  schreibt regelmäßig "bis 50 kWp", das ist falsch und würde eine Anlage mit
+ *  genau 50 kW fälschlich einschließen. Ab 2030 steht das Instrument nicht mehr
+ *  zur Verfügung (§ 85 Abs. 2 Nr. 2a); die Bundesnetzagentur kann für Anlagen
+ *  unter 25 kW bis 31.12.2032 verlängern — deshalb nie "ab 2030 endgültig
+ *  vorbei" schreiben. */
+export function eegUebergangBerechtigt(kwp: number, inbetriebnahmeJahr: number): boolean {
+  const stufe = EEG_UEBERGANG_STAFFEL.find((s) => s.jahr === inbetriebnahmeJahr);
+  if (!stufe) return false;
+  return kwp < stufe.unterKw;
+}

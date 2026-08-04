@@ -328,7 +328,29 @@ export function buildMonthlyEv(evFrac: number, fracs: number[]): number[] {
   return mEv;
 }
 
-export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly, batteryReplace = 0 }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null; batteryReplace?: number }) {
+/**
+ * Wie die Einspeisung über die Laufzeit vergütet wird.
+ *
+ * Ohne dieses Feld rechnet calc() wie immer: fester Satz, 20 Jahre, danach null.
+ * Mit ihm lässt sich jede andere Rechtslage abbilden, ohne die Amortisations-
+ * rechnung zu duplizieren — gebaut für den Entwurf zum EEG 2027, in dem der
+ * Erlös je Jahr ein anderer ist (lib/einspeise-regime.ts).
+ */
+export interface EinspeiseModell {
+  /** Erlös je eingespeister kWh im Jahr i (1-basiert), ct/kWh. */
+  satzCtImJahr: (i: number) => number;
+  /** Feste Kosten je Betriebsjahr in Euro (z. B. Grundgebühr Direktvermarktung). */
+  fixkostenProJahr?: number;
+  /**
+   * Anteil des Überschusses, der überhaupt eingespeist werden darf (0–1). Bildet
+   * die geplante 50-%-Einspeisegrenze ab. Der Rest ist verloren: Er kann weder
+   * verkauft noch verbraucht werden — Verbrauch und Speicher sind in der
+   * Stundensimulation schon bedient, aus der dieser Anteil stammt.
+   */
+  einspeiseAnteil?: number;
+}
+
+export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, stromSteigerung, ertragKwp, monthly, batteryReplace = 0, einspeiseModell }: { kwp: number; kosten: number; strompreis: number; eigenverbrauch: number; einspeisung: number; stromSteigerung: number; ertragKwp: number; monthly: number[] | null; batteryReplace?: number; einspeiseModell?: EinspeiseModell }) {
   const years: { year: number; i: number; kum: number; j: number }[] = [];
   let kum = -kosten;
   // Monatliche Berechnung wenn PVGIS-Profil vorhanden
@@ -342,20 +364,28 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
       const sp = strompreis * Math.pow(1 + stromSteigerung, i);
       // EEG-Einspeisevergütung nur die ersten 20 Jahre; danach fällt die Anlage
       // aus dem EEG (Marktwert konservativ nicht angesetzt). Der Eigenverbrauch
-      // spart den Strompreis auch danach weiter.
-      const feedIn = i <= FEED_IN_YEARS ? einspeisung : 0;
+      // spart den Strompreis auch danach weiter. Liegt ein Einspeisemodell vor,
+      // bestimmt es den Satz stattdessen Jahr für Jahr.
+      const feedIn = einspeiseModell
+        ? einspeiseModell.satzCtImJahr(i)
+        : i <= FEED_IN_YEARS ? einspeisung : 0;
+      const anteil = einspeiseModell?.einspeiseAnteil ?? 1;
       if (fracs && monthlyEv) {
         // Monatlich: EV% variiert saisonal (Winter höher, Sommer niedriger),
         // bleibt aber jahresgewichtet auf dem eingegebenen Eigenverbrauch.
         for (let m = 0; m < 12; m++) {
           const mProd = kwp * ertragKwp * fracs[m] * deg;
           const mEv = monthlyEv[m];
-          j += mProd * mEv * sp + mProd * (1 - mEv) * (feedIn / 100);
+          j += mProd * mEv * sp + mProd * (1 - mEv) * anteil * (feedIn / 100);
         }
       } else {
         // Jährlich (Fallback ohne Monatsprofil)
         const ertrag = kwp * ertragKwp * deg;
-        j = ertrag * (eigenverbrauch / 100) * sp + ertrag * (1 - eigenverbrauch / 100) * (feedIn / 100);
+        j = ertrag * (eigenverbrauch / 100) * sp + ertrag * (1 - eigenverbrauch / 100) * anteil * (feedIn / 100);
+      }
+      if (einspeiseModell?.fixkostenProJahr && feedIn > 0) {
+        // Die Grundgebühr fällt nur an, solange überhaupt vermarktet wird.
+        j -= einspeiseModell.fixkostenProJahr;
       }
     }
     // Akku-Tausch nach Ablauf der Speicher-Lebensdauer (einmalig im Horizont)
