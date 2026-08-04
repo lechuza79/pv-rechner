@@ -27,7 +27,12 @@
  *   Vorgänger) — öffentliche Fakten. Die Januar-Werte 2013–2022 wurden zusätzlich
  *   gegen die Monatstabellen von solarbranche.de und solarcheck-deutschland.de
  *   (beide BNetzA-basiert) abgeglichen (u. a. 2017 = 12,30; 2019 = 11,47
- *   korrigiert). 2022 = 6,83 ist bewusst der Januar-Wert vor der EEG-2023-Reform;
+ *   korrigiert). Am 04.08.2026 zusätzlich Zelle für Zelle gegen die
+ *   BNetzA-ORIGINALDATEIEN geprüft (docs/quellen/bnetza-archiv/, Monatstabelle
+ *   in lib/feedin-archiv.ts): dabei 2014 = 13,68 (vorher fälschlich 13,15) und
+ *   2015 = 12,56 (vorher 12,41) korrigiert. Der Kohärenz-Test in
+ *   lib/__tests__/feedin-archiv.test.ts hält diese Reihe seither zellgenau an
+ *   den amtlichen Januar-Werten fest. 2022 = 6,83 ist bewusst der Januar-Wert vor der EEG-2023-Reform;
  *   die Anhebung auf 8,20 (Teileinspeisung) galt erst ab 30.07.2022 und steht
  *   daher in der Reihe bei 2023.
  *
@@ -58,6 +63,6 @@ export const FEEDIN_HISTORY_YEARS: number[] = [
 /** ct/kWh, index-gleich zu FEEDIN_HISTORY_YEARS. */
 export const FEEDIN_HISTORY_VALUES: number[] = [
   50.62, 50.62, 48.1, 45.7, 57.4, 54.53, 51.8, 49.21, 46.75, 43.01, 39.14,
-  28.74, 24.43, 17.02, 13.15, 12.41, 12.31, 12.3, 12.2, 11.47, 9.87, 8.16, 6.83,
+  28.74, 24.43, 17.02, 13.68, 12.56, 12.31, 12.3, 12.2, 11.47, 9.87, 8.16, 6.83,
   8.2, 8.11, 7.94, 7.78,
 ];

@@ -1,4 +1,5 @@
 // ─── Feed-In Tariff Configuration (shared between server + client) ───────────
+import { feedInArchivRates } from "./feedin-archiv";
 
 export interface FeedInRates {
   teilUnder10: number;   // ct/kWh, Teileinspeisung ≤10 kWp
@@ -116,10 +117,11 @@ export function feedInDegressionSteps(dateIso: string): number {
   return (y - 2024) * 2; // Januar zählt noch zum August-Halbjahr des Vorjahres
 }
 
-/** Einspeisevergütung für eine Anlage nach Inbetriebnahme-Datum — oder null
- *  für Inbetriebnahmen vor dem 30.07.2022 (dort gilt die Kette nicht). */
+/** Einspeisevergütung für eine Anlage nach Inbetriebnahme-Datum. Vor dem
+ *  30.07.2022 übernimmt die historische Monatstabelle (04/2012–07/2022,
+ *  lib/feedin-archiv.ts); davor gibt es bewusst keinen Wert (null). */
 export function feedInRatesForCommissioning(dateIso: string): FeedInRates | null {
-  if (dateIso < FEED_IN_BASIS.validFromIso) return null;
+  if (dateIso < FEED_IN_BASIS.validFromIso) return feedInArchivRates(dateIso);
   const n = feedInDegressionSteps(dateIso);
   const satz = (basis: number) => round2(round2(basis * Math.pow(0.99, n)) - 0.4);
   return {

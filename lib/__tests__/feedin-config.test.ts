@@ -190,11 +190,14 @@ describe("Sätze nach Inbetriebnahme (Bestandsanlagen-Ableitung)", () => {
     expect(feedInRatesForCommissioning("2025-01-15")!.teilUnder10).toBe(8.03);
   });
 
-  it("vor dem 30.07.2022 gibt es bewusst KEINEN abgeleiteten Satz", () => {
-    // Ältere Anlagen folgen anderen Basiswerten und Degressionsregeln —
-    // ein erfundener Wert wäre schlimmer als keiner (Zahlen-Korrektheit).
-    expect(feedInRatesForCommissioning("2022-07-29")).toBeNull();
-    expect(feedInRatesForCommissioning("2015-01-01")).toBeNull();
+  it("vor dem 30.07.2022 übernimmt das BNetzA-Monatsarchiv, vor 04/2012 gibt es bewusst nichts", () => {
+    // Die Kette gilt erst ab den EEG-2023-Basiswerten; davor liefert die
+    // amtliche Monatstabelle (lib/feedin-archiv.ts), und vor April 2012 wäre
+    // ein erfundener Wert schlimmer als keiner (Zahlen-Korrektheit).
+    expect(feedInRatesForCommissioning("2022-07-29")!.teilUnder10).toBe(6.24);
+    expect(feedInRatesForCommissioning("2015-01-01")!.teilUnder10).toBe(12.56);
+    expect(feedInRatesForCommissioning("2012-03-31")).toBeNull();
+    expect(feedInRatesForCommissioning("2005-06-01")).toBeNull();
   });
 
   it("die Ableitung und der Stichtags-Plan liefern für heute dieselben Zahlen", () => {

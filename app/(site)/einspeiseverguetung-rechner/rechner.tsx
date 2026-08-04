@@ -59,16 +59,21 @@ export default function EinspeiseRechner() {
 
   const rates: FeedInRates | null =
     anlage === "neu" || inZukunft ? liveRates : feedInRatesForCommissioning(ibIso);
+  // Commissioning before the EEG-2023 base values (30.07.2022): back then there
+  // was ONE rate per size class — no separate Volleinspeisung tariff. The
+  // toggle disappears and everything computes as Teileinspeisung.
+  const historisch = anlage === "bestand" && !inZukunft && ibIso < FEED_IN_BASIS.validFromIso && rates !== null;
+  const effMode = historisch ? "teil" : mode;
 
   const computedSatz = useMemo(() => {
     if (!rates) return null;
     return calcWeightedFeedIn(
       kwp,
-      mode === "teil" ? rates.teilUnder10 : rates.vollUnder10,
-      mode === "teil" ? rates.teilOver10 : rates.vollOver10,
+      effMode === "teil" ? rates.teilUnder10 : rates.vollUnder10,
+      effMode === "teil" ? rates.teilOver10 : rates.vollOver10,
       rates.thresholdKwp,
     );
-  }, [kwp, mode, rates]);
+  }, [kwp, effMode, rates]);
 
   const satz = satzOverride ?? computedSatz ?? 0;
 
@@ -89,7 +94,7 @@ export default function EinspeiseRechner() {
       }),
     [personenIdx, speicherKwh, kwp],
   );
-  const einspeisungKwh = mode === "voll" ? jahresertrag : Math.round(jahresertrag * (1 - evPct / 100));
+  const einspeisungKwh = effMode === "voll" ? jahresertrag : Math.round(jahresertrag * (1 - evPct / 100));
   const jahresverguetung = (einspeisungKwh * satz) / 100;
 
   // Fixed tariff over FEED_IN_YEARS plant years, production degrading by DEGRAD
@@ -189,6 +194,12 @@ export default function EinspeiseRechner() {
                 ))}
               </select>
             </div>
+            {ibJahr === 2022 && ibMonat === 7 && (
+              <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.md}px` }}>
+                Grenzmonat: Anlagen, die am 30. oder 31. Juli 2022 in Betrieb gingen, bekommen
+                bereits die höheren EEG-2023-Sätze — wähle dann August 2022.
+              </p>
+            )}
             {inZukunft && (
               <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.md}px` }}>
                 Das Datum liegt in der Zukunft — gerechnet wird mit den aktuellen Sätzen für Neuanlagen.
@@ -216,18 +227,27 @@ export default function EinspeiseRechner() {
           />
         </div>
 
-        <div style={label}>Einspeise-Art</div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginBottom: space.md }}>
-          <button type="button" style={chip(mode === "teil")} onClick={() => { setMode("teil"); setSatzOverride(null); }}>Teileinspeisung (Überschuss)</button>
-          <button type="button" style={chip(mode === "voll")} onClick={() => { setMode("voll"); setSatzOverride(null); }}>Volleinspeisung</button>
-        </div>
-        <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${mode === "teil" ? space.md : 0}px` }}>
-          {mode === "teil"
-            ? "Teileinspeisung ist der Normalfall: Du verbrauchst selbst, was gerade gebraucht wird, und speist nur den Überschuss ein."
-            : "Bei der Volleinspeisung geht der gesamte Strom ins Netz — der Satz ist höher, dafür entfällt die Ersparnis durch Eigenverbrauch komplett."}
-        </p>
+        {historisch ? (
+          <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${space.md}px` }}>
+            Für diesen Jahrgang gab es einen einheitlichen Vergütungssatz — die Wahl zwischen
+            Teil- und Volleinspeisung mit eigenen Sätzen kam erst mit dem EEG 2023.
+          </p>
+        ) : (
+          <>
+            <div style={label}>Einspeise-Art</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginBottom: space.md }}>
+              <button type="button" style={chip(mode === "teil")} onClick={() => { setMode("teil"); setSatzOverride(null); }}>Teileinspeisung (Überschuss)</button>
+              <button type="button" style={chip(mode === "voll")} onClick={() => { setMode("voll"); setSatzOverride(null); }}>Volleinspeisung</button>
+            </div>
+            <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-muted"), margin: `0 0 ${mode === "teil" ? space.md : 0}px` }}>
+              {mode === "teil"
+                ? "Teileinspeisung ist der Normalfall: Du verbrauchst selbst, was gerade gebraucht wird, und speist nur den Überschuss ein."
+                : "Bei der Volleinspeisung geht der gesamte Strom ins Netz — der Satz ist höher, dafür entfällt die Ersparnis durch Eigenverbrauch komplett."}
+            </p>
+          </>
+        )}
 
-        {mode === "teil" && (
+        {effMode === "teil" && (
           <>
             <div style={label}>Personen im Haushalt</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginBottom: space.md }}>
@@ -269,9 +289,10 @@ export default function EinspeiseRechner() {
         </div>
         {manuellNoetig && satzOverride === null && (
           <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px` }}>
-            Für Inbetriebnahmen vor dem {FEED_IN_BASIS.validFromIso.split("-").reverse().join(".")} gelten
-            ältere Vergütungsregeln — klick auf den Wert und trag den Satz aus deinem Bescheid
-            oder deiner Abrechnung ein.
+            Für Inbetriebnahmen vor April 2012 gelten ältere Vergütungsmodelle (zeitweise
+            wurde sogar der selbst verbrauchte Strom vergütet) — ein automatischer Wert wäre
+            hier oft falsch. Klick auf den Wert und trag den Satz aus deinem Bescheid oder
+            deiner Abrechnung ein.
           </p>
         )}
         {satzOverride !== null && computedSatz !== null && (
@@ -288,9 +309,9 @@ export default function EinspeiseRechner() {
         {satzOverride === null && rates && kwp > rates.thresholdKwp && (
           <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `0 0 ${space.md}px` }}>
             Gewichteter Mischsatz: Die ersten {rates.thresholdKwp} kWp bekommen{" "}
-            {ctFmt(mode === "teil" ? rates.teilUnder10 : rates.vollUnder10)} ct/kWh, die weiteren{" "}
+            {ctFmt(effMode === "teil" ? rates.teilUnder10 : rates.vollUnder10)} ct/kWh, die weiteren{" "}
             {(kwp - rates.thresholdKwp).toLocaleString("de-DE")} kWp{" "}
-            {ctFmt(mode === "teil" ? rates.teilOver10 : rates.vollOver10)} ct/kWh.
+            {ctFmt(effMode === "teil" ? rates.teilOver10 : rates.vollOver10)} ct/kWh.
           </p>
         )}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.lg, marginTop: space.md }}>
@@ -312,7 +333,7 @@ export default function EinspeiseRechner() {
               {geld(summeGesamt)} <span style={{ fontSize: 12, fontWeight: 400 }}>€</span>
             </div>
           </div>
-          {mode === "teil" && (
+          {effMode === "teil" && (
             <div>
               <div style={{ fontSize: 12, color: v("--color-text-muted") }}>Eigenverbrauch (geschätzt)</div>
               <div style={{ fontFamily: v("--font-mono"), fontSize: 18, fontWeight: 700, color: v("--color-text-primary") }}>
@@ -379,7 +400,9 @@ export default function EinspeiseRechner() {
 
       <p style={{ fontSize: 11, lineHeight: 1.6, color: v("--color-text-muted") }}>
         Sätze seit Februar 2024: Bundesnetzagentur (§§ 48/49/53 EEG); Juli 2022 bis Januar
-        2024: eingefrorene Basiswerte des EEG 2023; Laufzeit nach § 25 EEG. Alle Angaben ohne
+        2024: eingefrorene Basiswerte des EEG 2023; April 2012 bis Juli 2022: Archivtabellen
+        der Bundesnetzagentur (feste Einspeisevergütung für Dachanlagen); Laufzeit nach
+        § 25 EEG. Alle Angaben ohne
         Gewähr — verbindlich sind Gesetz, Bundesnetzagentur und dein Vergütungsbescheid. Alle
         aktuellen Werte mit Stand-Datum: <Link href="/datenstand" style={{ color: "inherit", textDecoration: "underline" }}>Datenstand</Link>.
       </p>
