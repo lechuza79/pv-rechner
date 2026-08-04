@@ -71,6 +71,25 @@ export interface BalkonSimInput {
   batteryKwh: number;
   /** Lade-/Entlade-Wirkungsgrad (0–1). */
   roundtrip: number;
+  /**
+   * Deckel der EINSPEISELEISTUNG in kW (nicht der Erzeugung). Was darüber
+   * anfällt und weder verbraucht noch gespeichert werden kann, geht verloren.
+   * Bildet § 9 Abs. 2b des EEG-2027-Entwurfs ab (50 % der installierten
+   * Leistung für Neuanlagen). Undefiniert = kein Deckel, das ist die heutige
+   * Rechtslage und der Default für alle bestehenden Aufrufer.
+   *
+   * Die Reihenfolge Verbrauch → Speicher → Einspeisung → Abregelung ist die
+   * physikalisch richtige und macht den Effekt sichtbar, den der Entwurf
+   * ausdrücklich bezweckt: Ein Speicher fängt genau die Spitze auf, die sonst
+   * am Deckel verloren ginge.
+   */
+  exportCapKw?: number;
+  /**
+   * Normierte Preisform über [Monat][Stunde] (PREISFORM_MONAT_STUNDE). Wird sie
+   * übergeben, summiert die Simulation zusätzlich die MIT DEM PREIS GEWICHTETE
+   * Einspeisung auf. Ohne sie bleibt alles wie bisher.
+   */
+  priceShape?: ReadonlyArray<ReadonlyArray<number>>;
 }
 
 export interface BalkonSimResult {
@@ -86,6 +105,31 @@ export interface BalkonSimResult {
   directUsedKwh: number;
   /** Unvergüteter Überschuss ins Netz (kWh/a). */
   feedInKwh: number;
+  /**
+   * Am Einspeisedeckel verlorene Energie (kWh/a) — 0 ohne exportCapKw. Nicht
+   * mit clippedKwh verwechseln: clippedKwh ist der Wechselrichter (technisch,
+   * gibt es immer), curtailedKwh ist die gesetzliche Einspeisegrenze.
+   */
+  curtailedKwh: number;
+  /** Mit der Preisform gewichtete Einspeisung (kWh/a) — 0 ohne priceShape. */
+  feedInWeightedKwh: number;
+  /**
+   * Mit derselben Preisform gewichtete ERZEUGUNG (kWh/a) — 0 ohne priceShape.
+   *
+   * Der Bezugspunkt für den Profilfaktor, und zwar bewusst die eigene Erzeugung
+   * und nicht das nationale Solarprofil: Unser Referenzjahr (SOLAR_YEAR_DE) und
+   * die tatsächliche deutsche Einspeisung 2024/25 unterscheiden sich in der
+   * Monatsverteilung um mehrere Prozent — ein Vergleich dagegen hätte dem
+   * Haushalt einen Aufschlag von rund 8 % gutgeschrieben, der nichts mit seinem
+   * Verhalten zu tun hat, sondern nur mit zwei verschiedenen Wetterjahren.
+   *
+   * Gegen die eigene Erzeugung gerechnet misst der Faktor genau das, was er
+   * messen soll: Was macht der EIGENVERBRAUCH (und der Speicher) mit dem Wert
+   * der übrig bleibenden Kilowattstunde? Eine Anlage, die alles einspeist, hat
+   * per Konstruktion den Faktor 1,0 — und für genau die gilt der amtliche
+   * Marktwert Solar, mit dem das Niveau gesetzt wird.
+   */
+  productionWeightedKwh: number;
 }
 
 /** Ein Monat der Jahressimulation — alles in kWh. Basis für den Jahresverlauf.
@@ -122,6 +166,7 @@ export interface SolarYearResult extends BalkonSimResult {
 export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
   let annualYield = 0, rawYield = 0, clippedKwh = 0;
   let selfUsedKwh = 0, directUsedKwh = 0, feedInKwh = 0, consumptionKwh = 0;
+  let curtailedKwh = 0, feedInWeightedKwh = 0, productionWeightedKwh = 0;
   // WP-spezifische Deckung: Wie viel der (winterlastigen) Wärmepumpen-Last aus
   // PV/Speicher gedeckt wird. Pro-rata der WP an der Stundenlast — nur belastet,
   // wenn der Haushalt eine WP hat (Balkon: immer 0, kein Overhead).
@@ -196,6 +241,18 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
           selfUsedKwh += dischargeCovered;
           mSelf += dischargeCovered;
         }
+        // Gesetzliche Einspeisegrenze: Was der Deckel in dieser Stunde nicht
+        // durchlässt, ist verloren — Verbrauch und Speicher hatten oben schon
+        // ihre Chance. Ohne Deckel bleibt surplus unverändert.
+        if (input.exportCapKw !== undefined && surplus > input.exportCapKw) {
+          curtailedKwh += surplus - input.exportCapKw;
+          surplus = input.exportCapKw;
+        }
+        if (input.priceShape) {
+          const preis = input.priceShape[m]?.[h] ?? 1;
+          feedInWeightedKwh += surplus * preis;
+          productionWeightedKwh += acKwh * preis;
+        }
         feedInKwh += surplus;
         mFeed += surplus;
 
@@ -232,6 +289,12 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
     selfUsedKwh: Math.round(selfUsedKwh),
     directUsedKwh: Math.round(directUsedKwh),
     feedInKwh: Math.round(feedInKwh),
+    curtailedKwh: Math.round(curtailedKwh),
+    // Bewusst NICHT gerundet: Der Wert wird durch feedInKwh geteilt, um den
+    // Profilfaktor zu bilden — auf ganze kWh gerundet wackelt der in der
+    // zweiten Nachkommastelle.
+    feedInWeightedKwh,
+    productionWeightedKwh,
     consumptionKwh: Math.round(consumptionKwh),
     monthly,
     wpLoadKwh: Math.round(wpLoadKwh),
@@ -241,8 +304,10 @@ export function simulateSolarYear(input: BalkonSimInput): SolarYearResult {
 
 /** Balkon-Wrapper: identische Berechnung wie bisher, nur die Balkon-Felder. */
 export function simulateBalkonYear(input: BalkonSimInput): BalkonSimResult {
-  const { annualYield, rawYield, clippedKwh, selfUsedKwh, directUsedKwh, feedInKwh } = simulateSolarYear(input);
-  return { annualYield, rawYield, clippedKwh, selfUsedKwh, directUsedKwh, feedInKwh };
+  const { annualYield, rawYield, clippedKwh, selfUsedKwh, directUsedKwh, feedInKwh, curtailedKwh,
+    feedInWeightedKwh, productionWeightedKwh } = simulateSolarYear(input);
+  return { annualYield, rawYield, clippedKwh, selfUsedKwh, directUsedKwh, feedInKwh, curtailedKwh,
+    feedInWeightedKwh, productionWeightedKwh };
 }
 
 /** Fallback-Monatsprofil, wenn keine PLZ gesetzt ist.
