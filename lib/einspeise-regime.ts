@@ -47,7 +47,8 @@ export interface RegimeJahr {
 export interface RegimeInput {
   regime: EinspeiseRegime;
   kwp: number;
-  /** Erstes volle Betriebsjahr. Für die Reform maßgeblich: sie gilt ab 2027. */
+  /** Inbetriebnahmejahr. Maßgeblich für die Reform-Rechnung: Der Entwurf sieht
+   *  die Geltung für Neuanlagen ab 2027 vor — geltendes Recht ist das nicht. */
   inbetriebnahmeJahr: number;
   /** Heutiger (ggf. gemischter) EEG-Satz in ct/kWh — der Status-quo-Fall. */
   heuteSatzCt: number;
@@ -82,9 +83,21 @@ export interface RegimeInput {
  * Der anzulegende Wert für eine Anlage, die im gegebenen Jahr in Betrieb geht.
  *
  * § 49 Satz 1 des Entwurfs: Der Wert sinkt ab dem 1. August 2027 und danach
- * jeweils alle sechs Monate um 1 Prozent. Weil der Rechner keinen
- * Inbetriebnahme-MONAT kennt, wird der Stand zum 1. Januar des jeweiligen Jahres
- * genommen — die zurückhaltende Wahl, sie unterschätzt den Wert nie.
+ * jeweils alle sechs Monate um 1 Prozent.
+ *
+ * Weil der Rechner keinen Inbetriebnahme-MONAT kennt, wird der Stand zum
+ * 1. Januar des jeweiligen Jahres genommen. **Das ist die OBERE Kante des
+ * Jahres, nicht die zurückhaltende Wahl** — die Degression senkt den Wert nur,
+ * wer im Dezember in Betrieb geht, bekommt bis zu zwei Halbjahresschritte
+ * weniger. Für die Übergangszahlung überschätzt die Rechnung eine späte
+ * Inbetriebnahme damit um bis zu rund 2 %.
+ *
+ * Bewusst so belassen und nicht auf das Jahresende umgestellt: Beide Enden sind
+ * für die jeweils andere Jahreshälfte falsch, und eine Verschiebung um einen
+ * Halbjahresschritt bewegt das 25-Jahres-Ergebnis im Cent-Bereich. Wer es genau
+ * braucht, müsste den Monat abfragen — dann gehört hier eine Datums-Signatur
+ * hin, keine Jahreszahl. (Auflage aus dem Council vom 04.08.2026: Der frühere
+ * Kommentar behauptete das Gegenteil.)
  */
 export function anzulegenderWertCt(inbetriebnahmeJahr: number, w = EEG_ENTWURF_WERTE): number {
   // Stichtage: 01.08.2027, dann 01.02. und 01.08. jedes Folgejahres.
@@ -177,9 +190,21 @@ export function mittlererSatzCt(verlauf: RegimeJahr[]): number {
   return Math.round(s * 100) / 100;
 }
 
-/** Der Einspeisedeckel des Entwurfs als Leistung in kW (§ 9 Abs. 2b). */
+/**
+ * Der Einspeisedeckel des Entwurfs als Leistung in kW (§ 9 Abs. 2b), oder
+ * `undefined`, wenn er auf diese Anlage nicht anzuwenden ist.
+ *
+ * Er greift nur für Solaranlagen des zweiten Segments (Gebäude) mit weniger als
+ * 100 Kilowatt und nicht für Steckersolargeräte bis 2 kW. Beide Schwellen
+ * standen im Referentenentwurf noch in eckigen Klammern und sind erst in der
+ * Kabinettsfassung entschieden — wer sie aus der älteren Fassung übernimmt,
+ * deckelt Anlagen, die der Entwurf gar nicht meint.
+ */
 export function einspeiseDeckelKw(kwp: number, regime: EinspeiseRegime): number | undefined {
-  return regime === "reform2027" ? kwp * EEG_ENTWURF_WERTE.einspeiseGrenzeAnteil : undefined;
+  if (regime !== "reform2027") return undefined;
+  if (kwp >= EEG_ENTWURF_WERTE.einspeiseGrenzeUnterKw) return undefined;
+  if (kwp <= EEG_ENTWURF_WERTE.einspeiseGrenzeSteckerBisKw) return undefined;
+  return kwp * EEG_ENTWURF_WERTE.einspeiseGrenzeAnteil;
 }
 
 /**

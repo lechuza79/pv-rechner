@@ -7,7 +7,7 @@ import {
   profilFaktorAus,
   type RegimeInput,
 } from "../einspeise-regime";
-import { EEG_ENTWURF_WERTE } from "../eeg-reform-config";
+import { EEG_ENTWURF_WERTE, eegStaffelSatz } from "../eeg-reform-config";
 import {
   MARKTWERT_NIVEAU_CT,
   PREISFORM_MONAT_STUNDE,
@@ -112,15 +112,29 @@ describe("Die Größenstaffel liest 'weniger als', nicht 'bis'", () => {
     [2028, 25, false],
     [2029, 6.9, true],
     [2029, 7, false],
+    // Die 7-kW-Stufe deckt 2029 UND 2030 ab: § 21 Abs. 1 S. 1 Nr. 1 c der
+    // Kabinettsfassung sagt "vor dem 1. Januar 2031". Der Referentenentwurf
+    // sagte 2030 — wer die ältere Fassung weiterträgt, streicht einem
+    // 2030er-Bauherren die Übergangszahlung, die ihm zusteht.
+    [2030, 6.9, true],
+    [2030, 7, false],
   ])("Inbetriebnahme %i mit %s kWp → Übergangszahlung: %s", (jahr, kwp, erwartet) => {
     const v = einspeiseVerlauf(basis({ kwp, inbetriebnahmeJahr: jahr }));
     expect(v[0].art === "uebergang").toBe(erwartet);
   });
 
-  it("kennt ab 2030 keine Übergangszahlung mehr", () => {
-    const v = einspeiseVerlauf(basis({ kwp: 5, inbetriebnahmeJahr: 2030 }));
+  it("kennt ab Inbetriebnahmejahr 2031 keine Übergangszahlung mehr", () => {
+    const v = einspeiseVerlauf(basis({ kwp: 5, inbetriebnahmeJahr: 2031 }));
     expect(v.some((j) => j.art === "uebergang")).toBe(false);
     expect(v[0].art).toBe("markt-bonus");
+  });
+
+  it("nennt die Staffel als Satz mit zusammengefassten Jahren", () => {
+    // Der Satz steht auf mehreren Oberflächen. Zwei getrennte 7-kW-Zeilen
+    // hintereinander würden sich wie zwei verschiedene Stufen lesen.
+    expect(eegStaffelSatz()).toBe(
+      "2027 unter 50, 2028 unter 25 und 2029 bis 2030 unter 7 Kilowatt installierter Leistung",
+    );
   });
 });
 
@@ -172,6 +186,15 @@ describe("Einspeisegrenze (§ 9 Abs. 2b)", () => {
   it("deckelt nur im Reform-Regime und dort auf die Hälfte", () => {
     expect(einspeiseDeckelKw(10, "heute")).toBeUndefined();
     expect(einspeiseDeckelKw(10, "reform2027")).toBe(5);
+  });
+
+  it("gilt nur unter 100 Kilowatt und nicht für Steckersolar", () => {
+    // Beide Schwellen standen im Referentenentwurf noch in eckigen Klammern und
+    // sind erst in der Kabinettsfassung entschieden (§ 9 Abs. 2b S. 1 und 2).
+    expect(einspeiseDeckelKw(99.9, "reform2027")).toBeCloseTo(49.95, 2);
+    expect(einspeiseDeckelKw(100, "reform2027")).toBeUndefined();
+    expect(einspeiseDeckelKw(2, "reform2027")).toBeUndefined();
+    expect(einspeiseDeckelKw(2.1, "reform2027")).toBeCloseTo(1.05, 2);
   });
 
   it("kostet Einspeisung — und der Speicher fängt einen Teil davon auf", () => {

@@ -29,7 +29,8 @@ describe("EEG-Reform 2027 — Sachstand", () => {
     // Wer hier weiterdreht, muss die Sätze bewusst neu formulieren.
     expect(EEG_REFORM_STAND.zustand).toBe("regierungsentwurf");
     expect(EEG_REFORM_STAND.kabinettBeschlussIso).toBe("2026-07-29");
-    expect(EEG_REFORM_STAND.entwurfIso).toBe("2026-07-18");
+    // Geprüfte Fassung ist seit dem 04.08.2026 die Kabinettsfassung selbst.
+    expect(EEG_REFORM_STAND.entwurfIso).toBe("2026-07-29");
   });
 
   it("der Entwurf liegt als Primärquelle im Repo", () => {
@@ -37,26 +38,31 @@ describe("EEG-Reform 2027 — Sachstand", () => {
     expect(existsSync(join(__dirname, "..", "..", EEG_REFORM_STAND.primaerquelle))).toBe(true);
   });
 
-  it("solange die Kabinettsfassung unveröffentlicht ist, bleiben Detailwerte Entwurfswerte", () => {
-    // Die 36 Monate, der 1-ct-Abschlag und die Leistungsstaffel stehen NUR im
-    // Entwurf vom 18.07. Sie dürfen nie als Beschluss beschriftet werden.
-    expect(EEG_REFORM_STAND.kabinettsfassungVeroeffentlicht).toBe(false);
+  it("die geprüfte Fassung ist die beschlossene, bleibt aber ein Entwurf", () => {
+    // Der Volltext der Kabinettsfassung ist seit dem 04.08.2026 veröffentlicht;
+    // die Detailwerte hängen also nicht mehr am Referentenentwurf. Das ändert
+    // NICHTS am Zustand: beschlossen ist ein Gesetzentwurf, kein Gesetz.
+    expect(EEG_REFORM_STAND.kabinettsfassungVeroeffentlicht).toBe(true);
+    expect(EEG_REFORM_STAND.zustand).toBe("regierungsentwurf");
   });
 
   it("die Leistungsstaffel trägt die Werte aus § 21 Abs. 1 S. 1 Nr. 1 a–c", () => {
+    // Buchstabe c sagt "vor dem 1. Januar 2031" — die 7-kW-Stufe deckt also die
+    // Inbetriebnahmejahre 2029 UND 2030 ab. Der Referentenentwurf sagte hier
+    // noch 2030; genau diese Zeile ist zwischen den Fassungen gewandert.
     expect(EEG_UEBERGANG_STAFFEL.map((s) => [s.jahr, s.unterKw])).toEqual([
-      [2027, 50], [2028, 25], [2029, 7],
+      [2027, 50], [2028, 25], [2029, 7], [2030, 7],
     ]);
     // "weniger als", nicht "bis" — die Fachpresse schreibt regelmäßig "bis 50 kWp".
     // Und die Einheit steht ausgeschrieben, weil die Seite sonst kWp verwendet.
     expect(eegStaffelSatz()).toBe(
-      "2027 unter 50, 2028 unter 25 und 2029 unter 7 Kilowatt installierter Leistung",
+      "2027 unter 50, 2028 unter 25 und 2029 bis 2030 unter 7 Kilowatt installierter Leistung",
     );
   });
 
   it("Datum und Stand-Label werden aus dem ISO-Datum erzeugt, nicht getippt", () => {
     expect(eegDatum("2026-07-29")).toBe("29. Juli 2026");
-    expect(eegReformStandLabel()).toBe("30. Juli 2026");
+    expect(eegReformStandLabel()).toBe("4. August 2026");
   });
 
   it("ein Zustandswechsel erbt keinen Satz, sondern erzwingt eine neue Formulierung", () => {
@@ -120,19 +126,33 @@ describe("EEG-Reform 2027 — Formulierungsfehler, die nicht zurückkommen dürf
     expect(texte).not.toMatch(/50 Prozent[^.]{0,80}(unter|bis) (25|100) Kilowatt/);
   });
 
-  it("behauptet keine Abfolge der beiden Zahlungen, die nicht belegt ist", () => {
-    // Der Direktvermarktungsbonus läuft "vier Jahre nach erstmaligem Eintritt in
-    // die Direktvermarktung" — die Fristen können überlappen. Die Abfolge
-    // ("danach") stammt aus Presse.
-    expect(texte).not.toMatch(/36 Monate[^.]{0,60}danach/);
+  it("beruft sich für den Bestandsschutz auf die beschlossene Fassung", () => {
+    // Bis zum 04.08.2026 war der Wortlaut der Kabinettsfassung nicht abrufbar,
+    // deshalb stand hier der Referentenentwurf vom 18.07. als Beleg. Seit der
+    // Volltext vorliegt, ist das Datum des Beschlusses die richtige Fundstelle —
+    // und das ältere Datum darf nicht zurückkommen, es beschreibt eine Fassung,
+    // die an zwei Stellen inhaltlich abweicht.
+    const lang = pvOhneEinspeisungFaq().map((e) => e.a).join("\n");
+    expect(lang).toMatch(/29\. Juli 2026/);
+    expect(lang).not.toMatch(/18\. Juli 2026/);
   });
 
-  it("erklärt den Bestandsschutz aus dem Entwurf, nicht aus einem unveröffentlichten Text", () => {
+  it("behauptet nicht mehr, der Wortlaut der beschlossenen Fassung fehle", () => {
+    // Der Satz war bis zum 04.08.2026 richtig und ist es seitdem nicht mehr.
+    // Er stand auf drei Oberflächen gleichzeitig — genau der Fall, für den der
+    // Sachstand aus EINER Quelle kommt.
+    expect(texte).not.toMatch(/noch nicht veröffentlicht/);
+    expect(texte).not.toMatch(/nicht veröffentlicht/);
+  });
+
+  it("nennt die 50-%-Grenze mit ihrer entschiedenen Leistungsschwelle", () => {
+    // Im Referentenentwurf stand die Schwelle in eckigen Klammern, deshalb hieß
+    // es "kleine und mittlere Dachanlagen". Die Kabinettsfassung entscheidet sie
+    // (unter 100 kW, zweites Segment) — die vage Formulierung wäre jetzt eine
+    // unnötige Unschärfe.
     const lang = pvOhneEinspeisungFaq().map((e) => e.a).join("\n");
-    expect(lang).toMatch(/18\. Juli 2026/);
-    // Der Wortlaut der Fassung vom 29.07. lag nicht vor — sich darauf zu
-    // berufen wäre ein Beleg auf einen Text, den niemand lesen kann.
-    expect(lang).not.toMatch(/Gesetzentwurf vom 29\. Juli 2026 ausdrücklich/);
+    expect(lang).toMatch(/100 Kilowatt/);
+    expect(lang).not.toMatch(/kleiner und mittlerer/);
   });
 
   it("erklärt den Bestandsschutz eng genug — Vergütungsanspruch, nicht 'nicht betroffen'", () => {
