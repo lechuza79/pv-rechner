@@ -149,7 +149,9 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
         Börsenerlös nach der Förderphase mitrechnen (aus: die Einspeisung bringt dann nichts mehr)
       </label>
 
-      <Chart scenarios={scenarios} kosten={p.kosten} highlightId="reform" />
+      {/* Alle Kurven gleich stark: Hier ist der Vergleich der Inhalt, nicht eine
+          hervorgehobene Auswahl. */}
+      <Chart scenarios={scenarios} kosten={p.kosten} dimOthers={false} />
 
       <div style={{
         display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center",

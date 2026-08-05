@@ -129,7 +129,8 @@ export default function ResultRegime({
             )}
             {verlustProzent > 0 && (
               <>
-                {" "}Zusätzlich ist die Einspeiseleistung neuer Dachanlagen auf die Hälfte der
+                {" "}Zusätzlich ist die Einspeiseleistung neuer Dachanlagen unter{" "}
+                {EEG_ENTWURF_WERTE.einspeiseGrenzeUnterKw} Kilowatt auf die Hälfte der
                 installierten Leistung begrenzt; bei dieser Anlage gehen dadurch{" "}
                 <strong style={{ color: v("--color-text-primary") }}>{verlustProzent} %</strong> des
                 Überschusses verloren{einspeiseAnteil < 1 ? " — ein größerer Speicher fängt davon einen Teil auf" : ""}.
@@ -193,7 +194,12 @@ export default function ResultRegime({
               <div style={{ marginTop: 8, fontSize: 11, lineHeight: 1.6 }}>
                 Solarstrom fällt an, wenn viel Solarstrom anfällt — also wenn der Börsenpreis am
                 niedrigsten ist. Deshalb zählt nicht der mittlere Börsenpreis, sondern der Marktwert
-                Solar: {letzterMarktwert.ctKwh.toLocaleString("de-DE", { minimumFractionDigits: 2 })} ct/kWh
+                Solar:{" "}
+                {/* Zwei Nachkommastellen wie überall sonst bei Sätzen in ct/kWh. Der
+                    amtliche Wert hat drei (4,508) — die stünden hier direkt neben
+                    dem Niveau mit zweien und läsen sich wie ein anderer Grad an
+                    Genauigkeit. Die volle Stelle steht auf /datenstand. */}
+                {letzterMarktwert.ctKwh.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ct/kWh
                 im Jahr {letzterMarktwert.jahr}. Weil dein Eigenverbrauch die gut bezahlten Morgen-
                 und Abendstunden wegnimmt und die Mittagsspitze übrig lässt, bekommst du davon noch
                 einmal etwas weniger. Abgezogen sind die Gebühren des Dienstleisters; der Erlös
