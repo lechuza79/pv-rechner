@@ -22,7 +22,7 @@ import {
   FEEDIN_HISTORY_YEARS,
 } from "../../../lib/feedin-history";
 import { eegDatum, eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
-import { MARKTWERT_QUELLE, MARKTWERT_SOLAR_HISTORIE } from "../../../lib/marktwert-config";
+import { MARKTWERT_SOLAR_HISTORIE } from "../../../lib/marktwert-config";
 import { fetchMarketPrices } from "../../../lib/prices-server";
 
 // Jede Zahl auf dieser Seite kommt live aus den geprüften Modulen
@@ -477,21 +477,22 @@ export default async function EinspeiseverguetungTabellePage() {
           falls die geplante Reform die feste Vergütung für Neuanlagen beendet —, bleibt
           für den Überschuss die Direktvermarktung: Ein Dienstleister verkauft den Strom
           an der Börse, du erhältst den Marktpreis abzüglich einer Gebühr. Maßstab dafür
-          ist der <strong style={S.strong}>Marktwert Solar</strong>, den die
-          Übertragungsnetzbetreiber veröffentlichen: {marktwert.jahr} lag er bei{" "}
+          ist der <GlossaryTerm id="marktwert-solar">Marktwert Solar</GlossaryTerm>, den
+          die Übertragungsnetzbetreiber veröffentlichen: {marktwert.jahr} lag er bei{" "}
           <strong style={S.strong}>{ct(marktwert.ctKwh)} ct/kWh</strong> — gegenüber{" "}
           {ct(rates.teilUnder10)} ct fester Vergütung und rund {strompreisCt} ct
           Haushaltsstrompreis. Er liegt strukturell unter dem mittleren Börsenpreis, weil
           Solarstrom überall zur selben Zeit anfällt und das große Mittagsangebot den
           Preis genau dann drückt. Wie sich das auf Amortisation und Rendite auswirkt,
-          rechnet der Ratgeber{" "}
+          zeigt der interaktive Renditevergleich im Ratgeber{" "}
           <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" style={S.link}>
             „Lohnt sich PV ohne Einspeisevergütung?"
-          </Link>{" "}
-          durch.
+          </Link>
+          .
         </p>
         <p style={{ ...S.small, marginBottom: 16 }}>
-          Quelle Marktwert: {MARKTWERT_QUELLE}.
+          <DataSourceNote source={DATA_SOURCES.marktwertSolar} /> Jahresmarktwert{" "}
+          {marktwert.jahr}, Stand siehe <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
         </p>
 
         {/* ── CTA ── */}
