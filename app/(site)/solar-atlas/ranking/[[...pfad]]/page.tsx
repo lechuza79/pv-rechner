@@ -254,7 +254,8 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
       const bl = bundeslandByAgs(id.slice(0, 2));
       if (bl) teile.push({ name: bl.name, href: blSlug ? `${BASIS}/${kategorie.slug}/${blSlug}` : null });
     }
-    const kreisName = kreisNamen[id.slice(0, 5)];
+    const kreisId = id.slice(0, 5);
+    const kreisName = kreisNamen[kreisId];
     // STADTSTAATEN: In Bremen, Hamburg und Berlin heisst der Kreis wie das
     // Bundesland. Zweimal derselbe Name waere nicht nur redundant ("Bremen ·
     // Bremen"), sondern auch ein doppelter React-Schluessel — der Browser
@@ -264,7 +265,17 @@ export default async function RankingPage(props: { params: Promise<Params> }) {
         // "Landkreis Westerwaldkreis" — die Gattung steckt bei 47 Kreisen schon
         // im amtlichen Namen. Der Anzeigename nimmt das Doppelte heraus.
         name: regionDisplayName(kreisName),
-        href: blSlug && kreisSlug ? `${BASIS}/${kategorie.slug}/${blSlug}/${kreisSlug}` : null,
+        // DIESELBE REGEL WIE BEI verlinkbareKinder — sie stand bis 05.08.2026
+        // nur dort. Die Herkunft neben einer Zeile ist der zweite Ort, an dem
+        // diese Seite ein Kreis-Gebiet verlinkt, und er verlinkte auch die
+        // kreisfreien Städte, deren Rangliste es gar nicht gibt. Gemessen in
+        // den Fehlerprotokollen als 404 auf Flensburg, Schwerin, Düsseldorf,
+        // Kassel, Braunschweig, Chemnitz und Neustadt an der Weinstraße.
+        // Der Name bleibt stehen, nur ohne Link — die Zeile verliert nichts.
+        href:
+          blSlug && kreisSlug && traegtRangliste(kommunenJeKreis.get(kreisId) ?? 0)
+            ? `${BASIS}/${kategorie.slug}/${blSlug}/${kreisSlug}`
+            : null,
       });
     }
     return teile;

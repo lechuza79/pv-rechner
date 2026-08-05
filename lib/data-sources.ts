@@ -110,6 +110,19 @@ export const DATA_SOURCES = {
     url: "https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/ErneuerbareEnergien/EEG_Foerderung/start.html",
     note: "gesetzliche EEG-Vergütungssätze",
   },
+  /**
+   * Marktwert Solar — the generation-weighted exchange price for solar, the
+   * reference value for the direct-marketing case of the EEG 2027 draft. The
+   * transmission system operators publish it monthly and annually; the overview
+   * itself sits behind a login, so the figures we carry are additionally
+   * recomputed from the two public series that define them (see energyCharts
+   * and lib/marktwert-config.ts).
+   */
+  marktwertSolar: {
+    name: "Übertragungsnetzbetreiber (netztransparenz.de)",
+    url: "https://www.netztransparenz.de/de-de/Erneuerbare-Energien-und-Umlagen/EEG/Transparenzanforderungen/Markt-und-Flexibilitaetspraemie/Marktwerte",
+    note: "Monats- und Jahresmarktwerte Solar",
+  },
   /** BEG heat-pump funding rates (Grundförderung + Boni, cap, income tiers). */
   beg: {
     name: "KfW / BMWE (BEG Heizungsförderung, Merkblatt 458)",

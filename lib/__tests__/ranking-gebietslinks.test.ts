@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { traegtRangliste, RANGLISTE_MIN_KOMMUNEN } from "../atlas-ranking";
+import { traegtRangliste, RANGLISTE_MIN_KOMMUNEN, vergleichsBasisPfad } from "../atlas-ranking";
 
 // Warum es diesen Test gibt:
 //
@@ -78,6 +78,76 @@ describe("Rangliste: nur Gebiete verlinken, die es auch gibt", () => {
     const quelle = readFileSync(RANKING_PAGE, "utf8");
     expect(quelle, "die Ebenen-Bedingung fehlt — Stadtstaaten fliegen aus der Liste").toMatch(
       /if \(region\.level !== "bundesland"\) return true;/,
+    );
+  });
+
+  // DER ZWEITE LINKBAU, den der Fix vom 02.08.2026 nicht erfasst hat: Neben
+  // jeder Zeile steht ihre Herkunft ("Kreis Nordfriesland"), und die ist auf
+  // einer Landes- oder Bundesliste ebenfalls ein Link auf eine Kreis-Rangliste.
+  // Er wendete die Regel nicht an. Gemessen am 05.08.2026 in den
+  // Fehlerprotokollen: 404 auf die Herkunfts-Links der kreisfreien Städte
+  // Flensburg, Schwerin, Düsseldorf, Kassel, Braunschweig, Chemnitz und
+  // Neustadt an der Weinstraße — dieselbe Fehlerklasse, nur ein Feld weiter.
+  it("auch der Herkunfts-Link neben einer Zeile wendet die Regel an", () => {
+    const quelle = readFileSync(RANKING_PAGE, "utf8");
+    expect(quelle, "der Herkunfts-Link verlinkt wieder ungeprüft jeden Kreis").toMatch(
+      /href:\s*\n?\s*blSlug && kreisSlug && traegtRangliste\(kommunenJeKreis\.get\(kreisId\) \?\? 0\)/,
+    );
+  });
+});
+
+// Warum es diesen zweiten Block gibt:
+//
+// Die Vergleichstabelle auf einer Gemeindeseite ("Top Kommunen im Landkreis X")
+// hängt den Slug jeder Zeile an einen festen Adress-Stamm. Bei einer
+// kreisfreien Stadt und bei den Stadtstaaten steht die Vergleichsgruppe aber
+// eine Ebene höher — die Zeilen sind dann Kreise bzw. Bundesländer. Der Stamm
+// blieb trotzdem der Gemeinde-Stamm.
+//
+// Gemessen am 05.08.2026 in den Fehlerprotokollen von Produktion:
+// "/solar-atlas/rheinland-pfalz/pirmasens/landkreis-cochem-zell" (und sieben
+// weitere Kreise unter derselben Stadt), "/solar-atlas/sachsen/dresden/
+// landkreis-leipzig", "/solar-atlas/berlin/berlin/bayern". Auf diesen Seiten
+// war NICHT eine Zeile kaputt, sondern jede.
+//
+// Anders als die Ranglisten-Regel oben ist das keine Schwelle, sondern eine
+// Ebenen-Zuordnung: Der Stamm ist immer der Pfad der Eltern-Ebene der Zeilen.
+describe("Gemeindeseite: die Vergleichstabelle verlinkt die richtige Ebene", () => {
+  it("normale Gemeinde — Zeilen sind Gemeinden des Kreises", () => {
+    expect(vergleichsBasisPfad("gemeinde", "bayern", "landkreis-cham")).toBe(
+      "/solar-atlas/bayern/landkreis-cham",
+    );
+  });
+
+  it("kreisfreie Stadt — Zeilen sind die Kreise des Landes", () => {
+    // Vorher: "/solar-atlas/rheinland-pfalz/pirmasens" + "/landkreis-cochem-zell" = 404.
+    expect(vergleichsBasisPfad("landkreis", "rheinland-pfalz", "pirmasens")).toBe(
+      "/solar-atlas/rheinland-pfalz",
+    );
+  });
+
+  it("Stadtstaat — Zeilen sind die Bundesländer", () => {
+    // Vorher: "/solar-atlas/berlin/berlin" + "/bayern" = 404.
+    expect(vergleichsBasisPfad("bundesland", "berlin", "berlin")).toBe("/solar-atlas");
+  });
+
+  // Die eigentliche Zusicherung, unabhängig von den drei Beispielen: Der Stamm
+  // plus ein Slug muss so viele Segmente haben, wie die Ebene der Zeile tief
+  // liegt. Genau diese Rechnung stimmte vorher in zwei von drei Fällen nicht.
+  it("Stamm plus Slug ergibt immer die Adresstiefe der Zeilen-Ebene", () => {
+    const tiefe = (p: string) => p.split("/").filter(Boolean).length;
+    expect(tiefe(vergleichsBasisPfad("bundesland", "berlin", "berlin")) + 1).toBe(2);
+    expect(tiefe(vergleichsBasisPfad("landkreis", "rheinland-pfalz", "pirmasens")) + 1).toBe(3);
+    expect(tiefe(vergleichsBasisPfad("gemeinde", "bayern", "landkreis-cham")) + 1).toBe(4);
+  });
+
+  it("die Seite baut den Stamm nicht wieder selbst zusammen", () => {
+    const quelle = readFileSync(
+      join(__dirname, "../../app/(site)/solar-atlas/[bundesland]/[kreis]/[gemeinde]/page.tsx"),
+      "utf8",
+    );
+    expect(quelle, "die Vergleichstabelle bekommt den Stamm nicht mehr aus der Regel").toMatch(
+      /basePath=\{vergleichsBasisPfad\(/,
     );
   });
 });

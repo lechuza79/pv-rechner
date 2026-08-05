@@ -287,6 +287,39 @@ export function traegtRangliste(kommunenImGebiet: number): boolean {
 }
 
 /**
+ * Der Adress-Stamm, vor den die Vergleichstabelle einer Gemeindeseite den Slug
+ * ihrer Zeilen haengt.
+ *
+ * Die Tabelle vergleicht normalerweise Gemeinden eines Landkreises. Bei zwei
+ * Sonderformen steht die Vergleichsgruppe eine Ebene hoeher, weil die Region
+ * selbst schon dort steht: Eine kreisfreie Stadt IST ihr Landkreis, ihre
+ * Nachbarn sind also die Kreise des Landes; ein Stadtstaat IST sein Bundesland,
+ * seine Nachbarn sind die Laender. Die Zeilen sind dann Kreise bzw. Laender und
+ * brauchen deren Adresse, nicht die einer Gemeinde.
+ *
+ * DER FEHLER, den das schliesst (gemessen am 05.08.2026 in den
+ * Fehlerprotokollen der Produktion): Der Stamm war fest der Gemeinde-Stamm
+ * "<land>/<kreis>". Auf jeder Seite einer kreisfreien Stadt und jedes
+ * Stadtstaats zeigte damit JEDE Zeile der Tabelle auf eine Adresse, die es
+ * nicht gibt — "/solar-atlas/rheinland-pfalz/pirmasens/landkreis-cochem-zell",
+ * "/solar-atlas/berlin/berlin/bayern". Die Zuordnung der eigenen Zeile war
+ * schon einmal aus genau diesem Grund korrigiert worden; die Zieladresse der
+ * Zeilen blieb dabei stehen.
+ *
+ * Der Stamm ist immer der Pfad der ELTERN-Ebene der Zeilen — deshalb steht die
+ * Regel hier und nicht als Bedingung an der Tabelle.
+ */
+export function vergleichsBasisPfad(
+  zeilenEbene: "bundesland" | "landkreis" | "gemeinde",
+  bundeslandSlug: string,
+  kreisSlug: string,
+): string {
+  if (zeilenEbene === "bundesland") return "/solar-atlas";
+  if (zeilenEbene === "landkreis") return `/solar-atlas/${bundeslandSlug}`;
+  return `/solar-atlas/${bundeslandSlug}/${kreisSlug}`;
+}
+
+/**
  * Adresse der Rangliste, in der ein Platz gilt — Kategorie, Groessenklasse und
  * Gebiet. EINE Quelle: Sowohl der Orden auf der Gemeindeseite als auch das
  * Anschreiben verlinken hierher, und beide muessen dieselbe Liste treffen.

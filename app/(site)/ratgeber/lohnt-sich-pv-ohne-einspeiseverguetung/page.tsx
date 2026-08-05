@@ -12,6 +12,10 @@ import { fetchMarketPrices, formatPriceDate } from "../../../../lib/prices-serve
 import { type PriceConfig } from "../../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../../lib/feedin-config";
 import { EEG_REFORM_STAND, EEG_ENTWURF_WERTE, eegDatum, eegReformStandLabel, eegStaffelSatz } from "../../../../lib/eeg-reform-config";
+import { einspeiseDeckelKw, profilFaktorAus } from "../../../../lib/einspeise-regime";
+import { PREISFORM_MONAT_STUNDE } from "../../../../lib/marktwert-config";
+import { simulateSolarYear, monthlyFromAnnual } from "../../../../lib/balkon-sim";
+import RenditeVergleich from "./_components/RenditeVergleich";
 import {
   calc,
   calcEigenverbrauch,
@@ -375,6 +379,44 @@ export default async function LohntSichPvOhneEinspeisungPage() {
   const ohneRealGewinn = ohneReal?.total ?? 0;
   const mitRealGewinn = mitReal?.total ?? 0;
 
+  // ── Grundlage des Reform-Vergleichs ────────────────────────────────────────
+  // Profilfaktor und Einspeiseanteil kommen aus derselben Stundensimulation wie
+  // alles andere auf dieser Seite, nur zusätzlich mit der Börsen-Preisform und
+  // dem geplanten 50-%-Einspeisedeckel. Beides SERVERSEITIG, damit die
+  // Client-Komponente nur noch die Kurven rechnet und nicht die Simulation.
+  const marktHaushalt = {
+    baseKwh: PERSONEN[EX.personenIdx].verbrauch,
+    tagQuote: NUTZUNG[EX.nutzungIdx].tagQuote,
+    wpActive: false,
+    eaActive: false,
+  };
+  const marktSimBasis = {
+    moduleKwp: EX.kwp,
+    inverterKw: EX.kwp,
+    monthlyYieldPerKwp: monthlyFromAnnual(EX.ertragKwp),
+    orientation: "sued_flach",
+    household: marktHaushalt,
+    batteryKwh: 10,
+    roundtrip: 0.9,
+    priceShape: PREISFORM_MONAT_STUNDE,
+  };
+  const simOhneDeckel = simulateSolarYear(marktSimBasis);
+  const simMitDeckel = simulateSolarYear({
+    ...marktSimBasis,
+    exportCapKw: einspeiseDeckelKw(EX.kwp, "reform2027"),
+  });
+  const marktProfil = {
+    profilFaktor: profilFaktorAus(simMitDeckel),
+    einspeiseAnteil: simOhneDeckel.feedInKwh > 0 ? simMitDeckel.feedInKwh / simOhneDeckel.feedInKwh : 1,
+  };
+  // Die Vergleichsbasis ist die Anlage MIT Speicher — sie ist der Regelfall bei
+  // Neuanlagen und der Fall, in dem die Reform am wenigsten wehtut.
+  const mitSpeicher = computeExample(10, true, prices);
+  const heuteSatzCt = calcWeightedFeedIn(
+    EX.kwp, DEFAULT_FEED_IN.teilUnder10, DEFAULT_FEED_IN.teilOver10,
+  );
+  const reformHref = `${mitSpeicher.href}&rg=2027&mk=1`;
+
   // Tagesverlauf-Vergleich (geteilte Stundensimulation): derselbe sonnige
   // Beispieltag, nur Speicher 0 vs. 10 kWh. Zeigt, wie der Mittagsüberschuss mit
   // Speicher in den Abend wandert → die selbst genutzte (grüne) Fläche wächst.
@@ -475,15 +517,23 @@ export default async function LohntSichPvOhneEinspeisungPage() {
           <br />
           <span style={S.accent}>Die Zahlen des Entwurfs:</span> Der beschlossene Entwurf
           vom {eegDatum(EEG_REFORM_STAND.entwurfIso)} setzt für nicht ausgeschriebene
-          Solaranlagen einen einheitlichen anzulegenden Wert von{" "}
-          {EEG_ENTWURF_WERTE.anzulegenderWertCt.toLocaleString("de-DE", { minimumFractionDigits: 1 })}{" "}
-          ct/kWh fest — womit auch der Aufschlag für Volleinspeisung entfiele. Die
-          befristete Übergangszahlung liegt 1 ct darunter, läuft{" "}
+          Solaranlagen einen{" "}
+          <strong style={S.strong}>
+            einheitlichen anzulegenden Wert von{" "}
+            {EEG_ENTWURF_WERTE.anzulegenderWertCt.toLocaleString("de-DE", { minimumFractionDigits: 1 })}{" "}
+            ct/kWh
+          </strong>{" "}
+          fest. Damit fallen die heutigen Staffeln nach Anlagengröße weg —{" "}
+          <em>und auch der Aufschlag für Volleinspeisung</em>, den es für Neuanlagen dann
+          nicht mehr gäbe. Die befristete Übergangszahlung liegt 1 ct darunter, läuft{" "}
           {EEG_ENTWURF_WERTE.uebergangMonate} Monate und ist nach Leistung gestaffelt —{" "}
           {eegStaffelSatz()}. Ab Inbetriebnahmejahr 2031 soll sie entfallen; die
           Bundesnetzagentur könnte sie für Anlagen unter 25 Kilowatt aber bis Ende 2032
           verlängern, wenn die Direktvermarktung für kleine Anlagen bis dahin nicht
-          praxistauglich ist. Diese Zahlen können sich im Verfahren noch ändern.
+          praxistauglich ist. Der Direktvermarktungsbonus beträgt{" "}
+          {EEG_ENTWURF_WERTE.bonusCt.toLocaleString("de-DE", { minimumFractionDigits: 1 })} ct/kWh
+          für höchstens {EEG_ENTWURF_WERTE.bonusMonate} Monate und nur, solange der Strom
+          direkt vermarktet wird. Diese Zahlen können sich im Verfahren noch ändern.
           <br />
           <span style={S.accent}>Verfahrensstand:</span> Das Kabinett ist passiert. Als
           Nächstes befassen sich Bundesrat und Bundestag mit dem Entwurf. Die Förderregeln
@@ -496,6 +546,24 @@ export default async function LohntSichPvOhneEinspeisungPage() {
             <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
           </span>
         </div>
+
+        {/* Der Vergleich der Renditeentwicklung — interaktiv, weil die einzige
+            ehrliche Antwort auf "was wird dann aus meiner Rendite" die ist, die
+            Annahme selbst verstellen zu können. Rechnet mit denselben Funktionen
+            wie der Rechner. */}
+        <RenditeVergleich
+          kwp={EX.kwp}
+          kosten={mitSpeicher.kosten}
+          ev={mitSpeicher.ev}
+          strompreis={prices.electricityPrice}
+          stromSteigerung={prices.electricityIncrease}
+          ertragKwp={EX.ertragKwp}
+          batteryReplace={batteryReplaceCost(10, prices)}
+          heuteSatzCt={heuteSatzCt}
+          profilFaktor={marktProfil.profilFaktor}
+          einspeiseAnteil={marktProfil.einspeiseAnteil}
+          rechnerHref={reformHref}
+        />
 
         {/* ── Mechanismus ── */}
         <h2 style={S.h2}>Warum die Vergütung die Rechnung längst nicht mehr trägt</h2>

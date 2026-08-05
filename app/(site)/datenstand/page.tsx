@@ -6,6 +6,10 @@ import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { feedInRatesFor, type FeedInRates } from "../../../lib/feedin-config";
 import { FEEDIN_HISTORY_META, FEEDIN_HISTORY_YEARS, FEEDIN_HISTORY_VALUES } from "../../../lib/feedin-history";
+import {
+  MARKTWERT_SOLAR_HISTORIE, MARKTWERT_NIVEAU_CT, MARKTWERT_VALID_FROM,
+  MARKTWERT_REVIEW_BY, MARKTWERT_QUELLE, DIREKTVERMARKTUNG,
+} from "../../../lib/marktwert-config";
 import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_HEATPUMP_CONFIG as HP } from "../../../lib/heatpump-config";
 import { GREEN_GAS_CONFIG as GG, bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
@@ -300,6 +304,23 @@ export default async function DatenstandPage() {
           ]}
           source={feedin.source || "Bundesnetzagentur, § 48 EEG"}
           caveat={feedin.note}
+        />
+
+        {/* ── Marktwert Solar (Direktvermarktung, Reform-Rechnung) ── */}
+        <Section
+          title="Marktwert Solar"
+          stand={monthYear(MARKTWERT_VALID_FROM)}
+          intro="Der erzeugungsgewichtete Börsenpreis für Solarstrom — die Bezugsgröße, wenn der Rechner die geplanten Konditionen ab 2027 abbildet und der Strom direkt vermarktet würde. Nicht zu verwechseln mit dem mittleren Börsenpreis: Solarstrom fällt an, wenn er am wenigsten wert ist."
+          rows={[
+            ...MARKTWERT_SOLAR_HISTORIE.map((j) => ({
+              label: `Jahresmarktwert ${j.jahr}`,
+              value: `${ctSatz(j.ctKwh)} ct/kWh`,
+            })),
+            { label: "Gerechnet wird mit (ohne negative Stunden)", value: `${ctSatz(MARKTWERT_NIVEAU_CT)} ct/kWh` },
+            { label: "Gebühr Direktvermarktung", value: `${ctSatz(DIREKTVERMARKTUNG.gebuehrCtKwh)} ct/kWh + ${nf(DIREKTVERMARKTUNG.grundgebuehrProJahr)} €/Jahr` },
+          ]}
+          source={`${MARKTWERT_QUELLE}. Nächste Prüfung bis ${monthYear(MARKTWERT_REVIEW_BY)}.`}
+          caveat="Die amtlichen Jahreswerte sind zusätzlich unabhängig aus Solarerzeugung und Börsenpreis nachgerechnet (Abweichung unter 3 %). Der Erlöspfad über die Laufzeit ist eine ausgewiesene Annahme, keine Prognose."
         />
 
         {/* ── Historische Einspeisevergütung (Zeitreihe für die Zubau-Story) ── */}

@@ -45,6 +45,7 @@ import {
   wattProKopfTeile,
 } from "../../../../../../lib/atlas-format";
 import { ortPhrase, istKreisfrei, istStadtstaat } from "../../../../../../lib/atlas-orte";
+import { vergleichsBasisPfad } from "../../../../../../lib/atlas-ranking";
 import { getRegionAtlasData } from "../../../../../../lib/mastr-data";
 import { bundeslandByAgs } from "../../../../../../lib/mastr-regions";
 import { publishedCities, cityPath } from "../../../../../../lib/atlas-cities";
@@ -456,7 +457,16 @@ async function GemeindeBody({ region, params }: { region: AtlasRegion; params: P
                 : region.region_id
           }
           vergleichTitel={`Top ${vergleich.was}${vergleich.wo ? ` ${vergleich.wo}` : ""}`}
-          basePath={basePath}
+          // DIE ZIELADRESSE DER ZEILEN — dieselbe Ebenen-Unterscheidung wie beim
+          // regionId darüber, und aus demselben Grund: Steht die Vergleichsgruppe
+          // eine Ebene höher, sind ihre Zeilen Kreise bzw. Bundesländer und
+          // brauchen deren Adresse. Die Regel selbst steht in atlas-ranking.ts,
+          // zusammen mit dem Befund, der sie ausgelöst hat.
+          basePath={vergleichsBasisPfad(
+            istStadtstaatRegion ? "bundesland" : istKreisfreiStadt ? "landkreis" : "gemeinde",
+            params.bundesland,
+            params.kreis,
+          )}
         />
 
         {/* „Was das für Sie bedeutet": die drei Beispielrechnungen brauchen den

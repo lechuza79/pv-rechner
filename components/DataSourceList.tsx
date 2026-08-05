@@ -18,6 +18,7 @@ const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
   pvgis: "Standortabhängiger Solarertrag je Kilowatt-Peak",
   eurostat: "Haushaltsstrompreise im europäischen Vergleich",
   eegVerguetung: "Gesetzliche Einspeisevergütung seit dem Jahr 2000",
+  marktwertSolar: "Börsenerlös für Solarstrom, wenn direkt vermarktet wird",
   beg: "Fördersätze der Bundesförderung für effiziente Gebäude",
   iw: "Preisszenarien zum Gebäudemodernisierungsgesetz",
   bkg: "Verwaltungsgrenzen der Karten",
