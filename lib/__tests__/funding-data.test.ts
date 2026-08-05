@@ -318,6 +318,69 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
       expect(pfad, `${p.id} verweist nur auf die Startseite: ${p.url}`).not.toBe("");
     }
   });
+
+  // Würzburg fördert seit dem Umbau zu "KlimaStadt Würzburg" NUR vier Sonderfälle:
+  // Gebäudeversorgung im Mehrfamilienhaus, Fassade, PVT und PV über einer
+  // Dachbegrünung. Eine gewöhnliche Dachanlage bekommt nichts. Wir haben trotzdem
+  // "Dach-PV (Vollbelegung) 150 €/kWp" und einen Denkmalschutz-Baustein angezeigt —
+  // beides steht weder auf der Förderseite noch in der Übersicht (beide wuerzburg.de,
+  // am 05.08.2026 gelesen). Derselbe Fehlertyp wie bei Regensburgs Speicher.
+  it("Würzburg: verspricht keine gewöhnliche Dach-PV und keinen Denkmal-Baustein", () => {
+    const p = getFundingProgram("wuerzburg-klimastadt")!;
+    const labels = p.rates.map((r) => r.label).join(" ");
+    expect(labels).not.toMatch(/Denkmal/i);
+    // "Dach" darf nur im Zusammenhang mit der Dachbegrünung vorkommen.
+    for (const r of p.rates) {
+      if (/Dach/i.test(r.label)) expect(r.label, r.label).toMatch(/begrünung/i);
+    }
+    expect(p.rates).toHaveLength(4);
+    // Kein automatischer Abzug — die vier Bausteine treffen den Standardfall nicht.
+    expect(p.pvPerKwp).toBeUndefined();
+    expect(stackFunding(fundingForAgs("09663000"), 10, 10, 25000).total).toBe(0);
+  });
+
+  // Stuttgart: Sätze und Deckel aus der Förderrichtlinie vom 1. Mai 2026 (PDF in
+  // docs/quellen/). Vorher standen zwei Ungewissheiten als Anzeigetext da
+  // ("Satz 2026 neu justiert", "ggf. eingestellt"); die Richtlinie beantwortet beide.
+  it("Stuttgart: Speichersatz und Deckel stehen beziffert da", () => {
+    const p = getFundingProgram("stuttgart-solaroffensive")!;
+    const werte = p.rates.map((r) => r.value).join(" | ");
+    expect(werte).toMatch(/100 €\/kWh/);
+    expect(werte).toMatch(/15\.000 €/); // Speicher-Deckel je Antrag
+    expect(werte).toMatch(/30\.000 €/); // PV-Deckel je Antrag
+    // Die Module selbst bleiben ausgeschlossen — das ist der Kern dieses Programms.
+    expect(p.conditions.join(" ")).toMatch(/Module.*nicht förderfähig/);
+    // Weiterhin kein pauschaler Abzug: gefördert werden nur Begleitkosten.
+    expect(p.pvPerKwp).toBeUndefined();
+  });
+
+  // Potsdam: die abgezogenen Werte stehen zellgleich in der Klimaschutzförder-
+  // richtlinie vom 26.03.2026 (PDF in docs/quellen/). Dieser Test hält sie fest und
+  // dazu die Steckersolar-Grenze, die wir mit 0,6 kWp zu eng angegeben hatten.
+  it("Potsdam: Sätze aus der Richtlinie, Steckersolar-Grenze korrekt", () => {
+    const p = getFundingProgram("potsdam-klimaschutz")!;
+    expect(p.pvPerKwp).toBe(200);
+    expect(p.pvCap).toBe(1200);
+    expect(fundingAmount(p, 10, 10, 25000).total).toBe(2200); // 1.200 PV + 1.000 Speicher
+    expect(fundingAmount(p, 10, 4, 25000).total).toBe(1200); // unter 5 kWh kein Speichergeld
+    const stecker = p.rates.find((r) => /steckersolar/i.test(r.label))!;
+    expect(stecker.label).not.toMatch(/0,6/);
+    expect(stecker.label).toMatch(/0,8 kW/);
+  });
+
+  // Ein Anzeigetext, der selbst zugibt, dass er unsicher ist, ist kein Fördersatz —
+  // er sieht nur aus wie einer. Aufgefallen bei Stuttgart ("Satz 2026 neu justiert",
+  // "Förderung 2026 ggf. eingestellt"): Beides ließ sich in derselben Minute an der
+  // Richtlinie klären. Wer eine Zahl nicht belegen kann, lässt die Zeile weg.
+  it("aktive Programme zeigen keine Ungewissheit als Fördersatz an", () => {
+    const floskel = /\bggf\.|vermutlich|unbestätigt|vor Antrag .*prüfen|neu justiert|unklar/i;
+    for (const p of Object.values(FUNDING_PROGRAMS)) {
+      if (p.status !== "aktiv") continue;
+      for (const r of p.rates) {
+        expect(r.value, `${p.id} → "${r.label}": ${r.value}`).not.toMatch(floskel);
+      }
+    }
+  });
 });
 
 describe("atlas-cities registry", () => {

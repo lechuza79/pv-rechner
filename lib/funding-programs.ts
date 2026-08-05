@@ -134,21 +134,29 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "stuttgart-solaroffensive": {
     id: "stuttgart-solaroffensive", name: "Stuttgarter Solaroffensive",
     traeger: "Landeshauptstadt Stuttgart", level: "kommune", region: "Stuttgart", bundesland: "Baden-Württemberg", agsCode: "08111",
-    url: "https://www.stuttgart.de/solaroffensive", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: false,
+    // Am 05.08.2026 aus der Förderrichtlinie selbst abgeschrieben (Fassung vom
+    // 1. Mai 2026, Anlage 1 zu 229/2026 BV; Volltext in docs/quellen/). Vorher
+    // standen hier zwei Ungewissheiten als Anzeigetext ("Satz 2026 neu justiert",
+    // "ggf. eingestellt") — die Richtlinie beantwortet beide.
+    url: "https://www.stuttgart.de/solaroffensive", stand: "August 2026",
+    status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
     coveredCosts: "nur Begleitmaßnahmen (Elektrik, Gerüst, Statik…) + Speicher — NICHT die Module",
     rates: [
-      { label: "Begleitmaßnahmen Dach-PV", value: "max. 300 €/kWp (50 % der Kosten)" },
-      { label: "Begleitmaßnahmen Fassade/Gründach", value: "max. 400 €/kWp" },
-      { label: "Batteriespeicher", value: "gefördert (Satz 2026 neu justiert)" },
-      { label: "Balkonkraftwerk", value: "Förderung 2026 ggf. eingestellt" },
+      { label: "Begleitmaßnahmen Dach-PV", value: "max. 300 €/kWp" },
+      { label: "Begleitmaßnahmen Fassade / über Dachbegrünung", value: "max. 400 €/kWp" },
+      { label: "PV gesamt", value: "50 % der förderfähigen Kosten, max. 30.000 € je Antrag" },
+      { label: "Batteriespeicher", value: "100 €/kWh nutzbarer Kapazität, max. 15.000 € je Antrag" },
     ],
     conditions: [
-      "PV-Zuschuss nur für Begleitmaßnahmen (Elektrik, Zählerplatz, Gerüst, Statik) — Module/Wechselrichter selbst nicht förderfähig",
-      "Antrag zwingend vor Beauftragung; Ausführung durch Fachfirma",
-      "Förderregeln zum Mai 2026 überarbeitet — Speichersatz vor Antrag offiziell prüfen",
+      "PV-Zuschuss nur für Begleitmaßnahmen (Ertüchtigung der Elektrik und des Zählerplatzes, Gerüst, Statik, Verlegung von Bauteilen, Dachhaut, Blitzschutz) — Module, Montagesysteme und Wechselrichter selbst sind nicht förderfähig",
+      "Speicher nur zusammen mit einer neu errichteten PV-Anlage; gefördert wird höchstens 1,0 kWh je kWp (bei 10 kWp also max. 10 kWh)",
+      "Der erhöhte Satz von 400 €/kWp gilt nur, wenn die Anlage in die Gründachfläche integriert ist — getrennte Bereiche für PV und Begrünung reichen nicht",
+      "Antrag zwingend vor Beauftragung; Eigenleistung ist nicht förderfähig, nur Ausführung durch eine Fachfirma",
+      "Anlagen, die aufgrund bestehender Vorschriften errichtet werden müssen (z. B. die PV-Pflicht des Landes), sind nicht förderfähig",
       "Mit BAFA/KfW/L-Bank kombinierbar (deren Mittel werden abgezogen)",
+      "Mit gültiger Stuttgarter FamilienCard oder Wohngeldbezug erhöht sich die Gesamtförderung auf Nachweis pauschal um 10 %",
+      "Steckersolar-Geräte sind nicht Teil dieser Richtlinie",
     ],
     combinableWith: BUND,
   },
@@ -207,19 +215,27 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "wuerzburg-klimastadt", name: "Klimastadt Würzburg",
     traeger: "Stadt Würzburg", level: "kommune", region: "Würzburg", bundesland: "Bayern", agsCode: "09663",
     url: "https://www.wuerzburg.de/themen/umwelt-klima/foerderungen-und-beratungen/photovoltaik",
-    stand: "Juli 2026", status: "aktiv", capped: true, verified: false,
+    // Am 05.08.2026 an der Trägerseite abgeschrieben (Förderseite Photovoltaik und
+    // Übersicht „Förderung Klimaschutz und Klimaanpassung", beide wuerzburg.de).
+    // Beide Seiten nennen ÜBEREINSTIMMEND genau vier PV-Bausteine — und darunter ist
+    // KEINE gewöhnliche Dach-PV: Wer in Würzburg ein Einfamilienhausdach belegt, bekommt
+    // von der Stadt nichts. Wir haben hier bis heute „Dach-PV (Vollbelegung) 150 €/kWp"
+    // und einen Denkmalschutz-Baustein versprochen; beides gibt es nicht (mehr).
+    // Zielgruppe ist bei allen vier Bausteinen Eigentümer/WEG/Mehrfamilienhaus.
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp für Dach-PV (Vollbelegung) + Bausteine (Fassade, Gründach, Mieterstrom, Denkmal)",
+    coveredCosts: "Zuschuss je kWp für vier Sonderfälle (Gebäudeversorgung im MFH, Fassade, PVT, PV auf Gründach) — gewöhnliche Dach-PV wird nicht gefördert",
     rates: [
-      { label: "Dach-PV (Vollbelegung)", value: "150 €/kWp, max. 1.500 €" },
-      { label: "Fassaden-PV / Gründach", value: "150 €/kWp, max. 1.500 €" },
-      { label: "Mieterstrom", value: "2.000 € + 150 €/kWp, max. 4.000 €" },
-      { label: "Denkmalschutz-PV", value: "200 €/kWp, max. 2.000 €" },
+      { label: "Gemeinschaftliche Gebäudeversorgung (MFH)", value: "2.000 € + 150 €/kWp, max. 5.000 €" },
+      { label: "PV an Fassade", value: "250 €/kWp, max. 5.000 €" },
+      { label: "PVT-Kollektoren (Strom + Wärme)", value: "250 €/kWp, max. 5.000 €" },
+      { label: "PV mit Dachbegrünung", value: "150 €/kWp, max. 3.000 €" },
     ],
     conditions: [
-      "Dach-PV ab Mindestgröße 0,04 kWp je m² Wohnfläche; Vollbelegungs-Bonus +50 €/kWp (max. +500 €)",
+      "Eine gewöhnliche Dachanlage ohne Gründach ist nicht förderfähig — die vier Bausteine decken nur Gebäudeversorgung im Mehrfamilienhaus, Fassade, PVT und PV über einer Dachbegrünung",
+      "Zielgruppe aller vier Bausteine: Gebäudeeigentümer, Wohnungseigentümergemeinschaften und Mehrfamilienhäuser",
       "Antrag + Bescheid vor Maßnahmenbeginn; kein Speicher gefördert",
-      "Programm zum 25.04.2026 zu „KlimaStadt Würzburg“ umgebaut — Satz 150 €/kWp bestätigt, aber ob der Dach-PV-Baustein aktuell Anträge annimmt, ist unbestätigt; darum kein automatischer Abzug, vor Antrag bei der Stadt prüfen",
+      "Programm zum 25.04.2026 zu „KlimaStadt Würzburg“ umgebaut; die Dachbegrünung selbst ist ein eigener Baustein und mit dem PV-Baustein kombinierbar",
       "Bund/Land kumulierbar, max. 90 % der Kosten",
     ],
     combinableWith: BUND,
@@ -437,7 +453,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "mannheim-solarbonus": {
     id: "mannheim-solarbonus", name: "SolarBonus Mannheim",
     traeger: "Stadt Mannheim / Klimaschutzagentur", level: "kommune", region: "Mannheim", bundesland: "Baden-Württemberg", agsCode: "08222",
-    url: "https://www.klima-ma.de/eigentuemer-mieter/foerderprogramme.html", stand: "Juli 2026",
+    // Der bisherige Link antwortete am 05.08.2026 mit einem Serverfehler; die Stadt
+    // verweist in ihrer eigenen Mitteilung zum Neustart auf klima-ma.de/foerderprogramme.
+    // Die Einschränkung auf Mehrfamilienhäuser, Gründach und Denkmal ist dort wörtlich
+    // bestätigt ("Auf Ein- und Zweifamilienhäusern werden nur noch Photovoltaikanlagen
+    // gefördert, wenn das Dach begrünt ist oder das Gebäude unter Denkmalschutz steht");
+    // die Sätze je kWp nennt die Mitteilung nicht, deshalb bleibt verified: false.
+    url: "https://www.klima-ma.de/foerderprogramme", stand: "August 2026",
     status: "aktiv", capped: true, verified: false,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp — seit Neustart 03/2026 nur Mehrfamilienhäuser, Gründach oder Denkmal (nicht Standard-Einfamilienhaus-Dach)",
@@ -538,18 +560,28 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     id: "potsdam-klimaschutz", name: "Klimaschutzförderprogramm Potsdam",
     traeger: "Landeshauptstadt Potsdam", level: "kommune", region: "Potsdam", bundesland: "Brandenburg", agsCode: "12054",
     url: "https://www.potsdam.de/de/beantragung-einer-zuwendung-aus-dem-klimaschutzfoerderprogramm-der-landeshauptstadt-potsdam",
-    stand: "Juni 2026", status: "aktiv", capped: true, verified: false,
+    // Am 05.08.2026 gegen die „Potsdamer Klimaschutzförderrichtlinie" vom 26.03.2026
+    // geprüft (Schlussfassung als PDF auf potsdam.de, Volltext in docs/quellen/).
+    // Die abgezogenen Werte (200 €/kWp, Deckel 1.200 €, 1.000 € Speicher ab 5 kWh)
+    // stehen dort zellgleich. Korrigiert wurden drei Anzeigedetails: die
+    // Steckersolar-Grenze (die Richtlinie kennt 0,8 kW Wechselrichter und 2,0 kW
+    // Modulleistung, nicht 0,6 kWp), das unbelegte „ab 6 kWp" und die fehlende
+    // neue Pauschale für Speicher an Steckersolar-Geräten.
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWp für Dach-PV + Pauschale für Batteriespeicher",
+    coveredCosts: "Zuschuss je kWp für Dach-/Fassaden-PV + Pauschale für Batteriespeicher",
     rates: [
-      { label: "Dach-PV", value: "200 €/kWp, max. 1.200 € (ab 6 kWp)" },
-      { label: "Batteriespeicher (ab 5 kWh)", value: "1.000 € pauschal" },
-      { label: "Steckersolar (bis 0,6 kWp)", value: "250 € pauschal" },
+      { label: "PV (Dach oder Fassade)", value: "200 €/kWp, max. 1.200 € je Objekt" },
+      { label: "Batteriespeicher (ab 5 kWh nutzbar)", value: "1.000 € pauschal je Objekt" },
+      { label: "Steckersolar (Wechselrichter bis 0,8 kW, Module bis 2,0 kW)", value: "250 € pauschal" },
+      { label: "Speicher für Steckersolar (ab 3 kWh)", value: "500 € pauschal" },
     ],
     conditions: [
-      "Energieberatung (z. B. Verbraucherzentrale) vor der Antragstellung erforderlich",
+      "Energieberatung eines zertifizierten Energieberaters vor Antragstellung und Umsetzung erforderlich",
       "Antrag vor Maßnahmenbeginn; zertifizierter Ökostrom-Tarif als Voraussetzung",
       "nur für Privatpersonen mit Wohnsitz/Immobilie in Potsdam",
+      "Nicht förderfähig an Passivhäusern Plus/Premium und KfW-Effizienzhäusern 40plus",
+      "Je Haushalt und Jahr wird dieselbe Maßnahme nur einmal gefördert",
     ],
     combinableWith: BUND,
     pvPerKwp: 200, pvCap: 1200,
