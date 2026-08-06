@@ -27,8 +27,17 @@ const Y_MAX = 60; // ct/kWh — über dem Spitzenwert 57,40 (2004)
 const START_YEAR = ZUBAU_EVENTS[0].year; // 2000
 const END_YEAR = ZUBAU_EVENTS[ZUBAU_EVENTS.length - 1].year; // 2027 (geplant)
 
+interface HoverInfo {
+  /** Beschriftung „Apr 2012" bzw. „2004 (Jahresbeginn)". */
+  label: string;
+  wert: number;
+  /** Spaltenmitte in SVG-/CSS-Pixeln (SVG rendert 1:1 in Containerbreite). */
+  cx: number;
+}
+
 export default function VerlaufMitMeilensteinen({ jahre }: { jahre: VerlaufJahr[] }) {
   const [active, setActive] = useState(0);
+  const [hover, setHover] = useState<HoverInfo | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(608);
   useEffect(() => {
@@ -54,7 +63,34 @@ export default function VerlaufMitMeilensteinen({ jahre }: { jahre: VerlaufJahr[
   const gridSteps = [0, 10, 20, 30, 40, 50, 60];
 
   return (
-    <div ref={wrapRef}>
+    <div ref={wrapRef} style={{ position: "relative" }}>
+      {/* Sofortiger, gestylter Hover-Tooltip (die nativen <title>-Tooltips
+          erscheinen erst nach Sekunden und wirkten wie „kein Hover"). */}
+      {hover && (
+        <div
+          style={{
+            position: "absolute",
+            left: Math.min(Math.max(hover.cx, 70), width - 70),
+            top: 0,
+            transform: "translateX(-50%)",
+            background: v("--color-bg"),
+            border: `1px solid ${v("--color-border")}`,
+            borderRadius: v("--radius-md"),
+            padding: "5px 10px",
+            fontSize: v("--font-size-caption"),
+            color: v("--color-text-secondary"),
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+            zIndex: 2,
+          }}
+        >
+          {hover.label} ·{" "}
+          <strong style={{ fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
+            {ct(hover.wert)} ct/kWh
+          </strong>
+        </div>
+      )}
       <svg
         viewBox={`0 0 ${width} ${height}`}
         width={width}
@@ -62,6 +98,7 @@ export default function VerlaufMitMeilensteinen({ jahre }: { jahre: VerlaufJahr[
         role="img"
         aria-label="Einspeisevergütung für kleine Dachanlagen seit 2000 in Cent pro Kilowattstunde, als Balken je Inbetriebnahme-Monat"
         style={{ display: "block", fontFamily: v("--font-text") }}
+        onMouseLeave={() => setHover(null)}
       >
         {gridSteps.map((g) => (
           <g key={g}>
@@ -131,8 +168,23 @@ export default function VerlaufMitMeilensteinen({ jahre }: { jahre: VerlaufJahr[
             </g>
           );
         })()}
-        {/* Unsichtbare Hover-Flächen über die volle Spaltenhöhe — exakte Werte
-            je Jahr bzw. Monat als Browser-Tooltip, für Balken UND Linie. */}
+        {/* Aktive Spalte: Führungslinie + Markierungspunkt am Wert. */}
+        {hover && (
+          <g pointerEvents="none">
+            <line
+              x1={hover.cx}
+              x2={hover.cx}
+              y1={margin.top}
+              y2={margin.top + PLOT_H}
+              stroke={v("--color-accent")}
+              strokeWidth={1}
+              opacity={0.45}
+            />
+            <circle cx={hover.cx} cy={y(hover.wert)} r={3.5} fill={v("--color-accent")} stroke={v("--color-bg")} strokeWidth={1.5} />
+          </g>
+        )}
+        {/* Unsichtbare Hover-/Tipp-Flächen über die volle Spaltenhöhe —
+            exakte Werte je Jahr bzw. Monat, für Balken UND Linie. */}
         {jahre.map((j) => {
           const isYearBar = j.bars.length === 1;
           const x0 = x(j.year - 0.5);
@@ -141,13 +193,20 @@ export default function VerlaufMitMeilensteinen({ jahre }: { jahre: VerlaufJahr[
             <g key={`hit-${j.year}`}>
               {j.bars.map((val, mi) => {
                 if (val == null) return null;
-                const label = isYearBar
-                  ? `${j.year} (Jahresbeginn): ${ct(val)} ct/kWh`
-                  : `${MONAT_KURZ[mi]} ${j.year}: ${ct(val)} ct/kWh`;
+                const label = isYearBar ? `${j.year} (Jahresbeginn)` : `${MONAT_KURZ[mi]} ${j.year}`;
+                const bx = x0 + (isYearBar ? 0 : mi * slotW);
+                const info: HoverInfo = { label, wert: val, cx: bx + slotW / 2 };
                 return (
-                  <rect key={mi} x={x0 + (isYearBar ? 0 : mi * slotW)} y={margin.top} width={slotW} height={PLOT_H} fill="transparent">
-                    <title>{label}</title>
-                  </rect>
+                  <rect
+                    key={mi}
+                    x={bx}
+                    y={margin.top}
+                    width={slotW}
+                    height={PLOT_H}
+                    fill="transparent"
+                    onMouseEnter={() => setHover(info)}
+                    onClick={() => setHover(info)}
+                  />
                 );
               })}
               {j.year % labelStep === 0 && (
