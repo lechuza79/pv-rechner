@@ -24,6 +24,7 @@ import {
 import { eegDatum, eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import { MARKTWERT_SOLAR_HISTORIE } from "../../../lib/marktwert-config";
 import { fetchMarketPrices } from "../../../lib/prices-server";
+import VerlaufsChart, { MONAT_KURZ, verlaufJahre } from "./VerlaufsChart";
 
 // Jede Zahl auf dieser Seite kommt live aus den geprüften Modulen
 // (feedin-config-Kette, BNetzA-Monatsarchiv, SFV-Jahresreihe) — nichts ist
@@ -197,47 +198,68 @@ function naechsteAbsenkungIso(todayIso: string): string {
   return `${y + 1}-02-01`;
 }
 
-// ─── Monats-Matrix aus dem BNetzA-Archiv (Zeile = Jahr, Spalte = Monat) ──────
-const MONAT_KURZ = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+// ─── Aufklapp-Jahreszeilen aus dem BNetzA-Archiv (2012–2022) ─────────────────
+// Native <details> wie im FAQ-Baustein: null Client-JS, alle Werte stehen im
+// DOM (SEO), sichtbar erst beim Aufklappen — der Chart darüber liefert den
+// Überblick, die Zeile liefert den exakten Monatswert.
+interface ArchivJahr {
+  year: number;
+  rows: { monat: string; u10: number; u40: number }[];
+}
 
-function archivMatrix(field: "u10" | "u40"): { year: number; months: (number | null)[] }[] {
-  const byYear = new Map<number, (number | null)[]>();
+function archivJahre(): ArchivJahr[] {
+  const byYear = new Map<number, ArchivJahr>();
   for (const row of FEED_IN_ARCHIV) {
     const y = Number(row.ym.slice(0, 4));
     const m = Number(row.ym.slice(5, 7));
-    if (!byYear.has(y)) byYear.set(y, Array(12).fill(null));
-    byYear.get(y)![m - 1] = row[field];
+    if (!byYear.has(y)) byYear.set(y, { year: y, rows: [] });
+    byYear.get(y)!.rows.push({ monat: MONAT_KURZ[m - 1], u10: row.u10, u40: row.u40 });
   }
-  return [...byYear.entries()].sort((a, b) => a[0] - b[0]).map(([year, months]) => ({ year, months }));
+  return [...byYear.values()].sort((a, b) => a.year - b.year);
 }
 
-function ArchivTabelle({ field }: { field: "u10" | "u40" }) {
-  const rows = archivMatrix(field);
+const jahrCss = `
+.evt-jahr{border-bottom:1px solid var(--color-border)}
+.evt-summary{cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:10px;padding:11px 2px;font-size:var(--font-size-body)}
+.evt-summary::-webkit-details-marker{display:none}
+.evt-summary::after{content:"";flex:none;align-self:center;width:8px;height:8px;border-right:2px solid var(--color-text-muted);border-bottom:2px solid var(--color-text-muted);transform:rotate(45deg);transition:transform 0.2s ease;margin-left:auto}
+.evt-jahr[open] .evt-summary::after{transform:rotate(225deg)}
+.evt-hint{font-size:var(--font-size-caption);color:var(--color-text-muted)}
+`;
+
+function ArchivJahrZeile({ jahr }: { jahr: ArchivJahr }) {
+  const first = jahr.rows[0];
+  const last = jahr.rows[jahr.rows.length - 1];
   return (
-    <div style={{ overflowX: "auto", marginBottom: 10 }}>
-      <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 640 }}>
-        <thead>
-          <tr>
-            <th style={S.thLeft}>Jahr</th>
-            {MONAT_KURZ.map((m) => (
-              <th key={m} style={S.th}>{m}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <tr key={r.year}>
-              <td style={{ ...S.td, fontWeight: 700, color: v("--color-text-primary") }}>{r.year}</td>
-              {r.months.map((val, i) => (
-                <td key={i} style={{ ...S.tdNum, color: val == null ? v("--color-text-muted") : v("--color-text-primary") }}>
-                  {val == null ? "—" : ct(val)}
-                </td>
-              ))}
+    <details className="evt-jahr">
+      <summary className="evt-summary">
+        <strong style={{ fontWeight: 700, color: v("--color-text-primary") }}>{jahr.year}</strong>
+        <span style={{ fontFamily: v("--font-mono"), fontSize: v("--font-size-small"), color: v("--color-text-muted") }}>
+          {first.monat} {ct(first.u10)} → {last.monat} {ct(last.u10)} ct/kWh
+        </span>
+        <span className="evt-hint">alle Monatswerte</span>
+      </summary>
+      <div style={{ padding: "2px 2px 12px" }}>
+        <table style={{ borderCollapse: "collapse", width: "100%" }}>
+          <thead>
+            <tr>
+              <th style={S.thLeft}>Monat</th>
+              <th style={S.th}>bis 10 kWp</th>
+              <th style={S.th}>über 10 bis 40 kWp</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {jahr.rows.map((r) => (
+              <tr key={r.monat}>
+                <td style={S.td}>{r.monat}</td>
+                <td style={S.tdNum}>{ct(r.u10)}</td>
+                <td style={S.tdNum}>{ct(r.u40)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </details>
   );
 }
 
@@ -266,6 +288,10 @@ export default async function EinspeiseverguetungTabellePage() {
 
   // Jüngster amtlicher Jahresmarktwert Solar (ÜNB) aus der geteilten Quelle.
   const marktwert = MARKTWERT_SOLAR_HISTORIE[MARKTWERT_SOLAR_HISTORIE.length - 1];
+
+  // Chart-Sektionen (2000–heute) + Aufklapp-Jahre (Archiv 2012–2022).
+  const chartJahre = verlaufJahre(now);
+  const archiv = archivJahre();
 
   // § 25 EEG live gerechnet: welcher Jahrgang läuft gerade aus?
   const jahrgangEnde = year - 20; // Vergütung endet am 31.12. dieses Jahres
@@ -332,6 +358,26 @@ export default async function EinspeiseverguetungTabellePage() {
           <span style={S.muted}>(Stand: {REFORM_STAND})</span>
         </div>
 
+        {/* ── Verlaufs-Chart 2000–heute (Balken je Monat, Jahres-Sektionen) ──
+             Der Chart beantwortet „wie ist der Verlauf?", die Tabellen darunter
+             „was gilt für mich?" — bewusst beides sichtbar, nichts versteckt.
+             Exakte Werte je Balken per Hover (<title>); mobil über die
+             Aufklapp-Zeilen bzw. Tabellen mit denselben Daten. ── */}
+        <h2 style={S.h2}>Der Verlauf seit 2000 auf einen Blick</h2>
+        <p style={S.p}>
+          Von {ct(maxWert)} ct/kWh in der Spitze ({maxJahr}) auf {ct(rates.teilUnder10)} ct
+          heute — jeder Balken ist ein Inbetriebnahme-Monat (bis 2011: ein Jahr), die
+          Höhe der Satz, der dann {FEED_IN_YEARS} Jahre fest gilt. Mit der Maus über
+          einem Balken erscheint der exakte Wert; zum Nachschlagen dienen die Tabellen
+          darunter.
+        </p>
+        <VerlaufsChart jahre={chartJahre} />
+        <p style={{ ...S.small, marginBottom: 16 }}>
+          Kleinste Dachanlagen-Klasse (bis 2008: bis 30 kW, ab 2009: bis 10 kWp), ab dem
+          30.07.2022 Teileinspeisung; 2000–2011 Jahresanfangswerte. Der sichtbare Sprung
+          Ende Juli 2022 ist die EEG-2023-Anhebung — real, kein Datenfehler.
+        </p>
+
         {/* ── Halbjahres-Tabelle seit 30.07.2022 (neueste zuerst — die erste
              Zeile SIND die aktuellen Sätze; die eigene Aktuell-Tabelle entfiel
              bewusst, weil /einspeiseverguetung-rechner diesen Block trägt) ── */}
@@ -394,16 +440,18 @@ export default async function EinspeiseverguetungTabellePage() {
         <p style={S.p}>
           Zwischen April 2012 und Juli 2022 sank die Vergütung für neue Anlagen meist von
           Monat zu Monat — zeitweise stand sie auch still. Für Bestandsanlagen aus dieser
-          Zeit zählt deshalb der <strong style={S.strong}>Inbetriebnahme-Monat</strong>.
-          Die Tabelle zeigt die feste Einspeisevergütung für Dachanlagen auf Wohngebäuden
-          aus den Archivtabellen der Bundesnetzagentur; eine getrennte (höhere)
-          Volleinspeisungs-Vergütung gab es in dieser Ära noch nicht — es galt ein Satz
-          je Größenklasse.
+          Zeit zählt deshalb der <strong style={S.strong}>Inbetriebnahme-Monat</strong>:
+          Jahr aufklappen, Monat ablesen. Die Werte sind die feste Einspeisevergütung für
+          Dachanlagen auf Wohngebäuden aus den Archivtabellen der Bundesnetzagentur, je
+          Jahr für beide Größenklassen; eine getrennte (höhere) Volleinspeisungs-Vergütung
+          gab es in dieser Ära noch nicht — es galt ein Satz je Größenklasse.
         </p>
-        <h3 style={S.h3}>Anlagen bis 10 kWp</h3>
-        <ArchivTabelle field="u10" />
-        <h3 style={S.h3}>Anlagenteil über 10 bis 40 kWp</h3>
-        <ArchivTabelle field="u40" />
+        <style dangerouslySetInnerHTML={{ __html: jahrCss }} />
+        <div style={{ borderTop: `1px solid ${v("--color-border")}`, marginBottom: 10 }}>
+          {archiv.map((jahr) => (
+            <ArchivJahrZeile key={jahr.year} jahr={jahr} />
+          ))}
+        </div>
         <p style={{ ...S.small, marginBottom: 16 }}>
           Alle Werte in ct/kWh. Januar bis März 2012 gehören noch zur älteren
           Vergütungslogik (Jahresbeginn 2012: {ct(wert2012)} ct/kWh, siehe Jahrestabelle
