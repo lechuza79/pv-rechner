@@ -2,7 +2,8 @@
 // geprägt hat. Wird unter dem Chart gezeigt, wenn ein einzelnes Jahr oder die
 // Max-Ansicht gewählt ist — als Einordnung neben den nackten Kurven.
 //
-// ZWEI Prüf-Ebenen, beide am 06.08.2026 durchlaufen:
+// DREI Prüf-Ebenen, alle am 06.08.2026 durchlaufen (2 Rechercheure + 1
+// adversarialer Prüfer, der gezielt widerlegen sollte — Council-Muster):
 // 1. Primärquellen (Fraunhofer-ISE-Jahresauswertungen auf energy-charts.info
 //    bzw. ISE-Presseinformationen; Atomausstieg zusätzlich BASE):
 //      2020: Stromerzeugung_2020_1.pdf („erstmals über 50%"; ISE nennt keinen
@@ -38,7 +39,7 @@ export const STROMMIX_MILESTONES: StrommixMilestone[] = [
   {
     year: 2020,
     title: "Erneuerbare erstmals vorn",
-    text: "Ein windstarkes Jahr hob den Erneuerbaren-Anteil auf den bis dahin höchsten Stand — in der Jahresbilanz des Fraunhofer ISE lieferten Wind, Solar, Wasser und Biomasse erstmals mehr als die Hälfte der öffentlichen Nettostromerzeugung.",
+    text: "Ein windstarkes Jahr und der pandemiebedingt gesunkene Stromverbrauch hoben den Erneuerbaren-Anteil auf den bis dahin höchsten Stand — in der Jahresbilanz des Fraunhofer ISE lieferten Wind, Solar, Wasser und Biomasse erstmals mehr als die Hälfte der öffentlichen Nettostromerzeugung.",
   },
   {
     year: 2021,
@@ -58,7 +59,7 @@ export const STROMMIX_MILESTONES: StrommixMilestone[] = [
   {
     year: 2023,
     title: "Kohle auf historischem Tief",
-    text: "Die Braunkohleverstromung sank um gut ein Viertel, Steinkohle um mehr als ein Drittel — laut Fraunhofer ISE zurück auf das Niveau der frühen 1960er- bzw. 1950er-Jahre. Der Erneuerbaren-Anteil sprang auf einen neuen Höchststand.",
+    text: "Die Braunkohleverstromung sank um gut ein Viertel, Steinkohle um mehr als ein Drittel — laut Fraunhofer ISE zurück auf das Niveau von 1963 beziehungsweise 1955. Der Erneuerbaren-Anteil sprang auf einen neuen Höchststand.",
   },
   {
     year: 2024,
