@@ -287,6 +287,10 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Sim
 
 **Die Fokus-Falle beim Nachbauen:** Der Mechanik-Effekt darf NICHT am `onClose`-Callback hängen (die Aufrufer übergeben eine frische Inline-Funktion pro Render) — sonst läuft sein Aufräumen mitten im Tippen und reißt den Fokus aus dem Eingabefeld. Deshalb `onCloseRef` + Effekt nur an `open`. Genau solche Details sind der Grund für den geteilten Baustein: es gab drei handgebaute Overlays, die sich in Fokus-Rückgabe, Tab-Falle, Scroll-Sperre und Mobil-Verhalten unterschieden. **Ausgenommen ist bewusst das Burger-Menü im Header** (`components/Header.tsx`): ein Navigations-Flyout, kein Dialog — es darf weder den Fokus fangen noch als Sheet einfahren.
 
+## Flow-Schritte — Interaktions-Konvention
+
+**`components/FlowNav.tsx` ist der Standard für jeden Schritt-Flow** (Betreiber-Vorgabe 05.08.2026): Kein Schritt startet mit einer Vorauswahl · ein Klick auf eine Option **wählt nur aus**, er springt nicht weiter · der Weiter-Button ist ausgegraut, bis eine gültige Auswahl existiert · **Zurück sitzt immer links, Weiter immer rechts** — auch im ersten Schritt ohne Zurück bleibt Weiter rechts. Die Auto-Advance-Variante (Klick auf Option springt direkt) existiert als zentraler Schalter `FLOW_ADVANCE_ON_SELECT` im Baustein — sie wird nie pro Seite gebaut, sondern nur dort umgelegt. Umgesetzt im Einspeisevergütungs-Rechner; die älteren Flows (PV, WP, Klima, Balkon, Bedarf) migrieren schrittweise auf den Baustein (sichtbare Änderung → je Abnahme).
+
 ## Design-System
 
 | Element | Wert |

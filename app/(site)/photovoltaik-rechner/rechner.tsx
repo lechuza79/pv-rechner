@@ -1252,6 +1252,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 einspeiseAnteil={marktSim.einspeiseAnteil}
                 verlauf={einspeiseVerlaufJahre}
                 heuteSatzCt={effEinsp}
+                vollGewaehlt={effEinspeisungModus === "voll"}
               />
             )}
 

@@ -493,6 +493,9 @@ export const globalStyles = `
   @keyframes sc-bar-grow{from{opacity:0}to{opacity:1}}
   @keyframes sc-plz-pulse{0%{box-shadow:0 0 0 0 rgba(19,101,234,.4)}70%{box-shadow:0 0 0 6px rgba(19,101,234,0)}100%{box-shadow:0 0 0 0 rgba(19,101,234,0)}}
   .sc-plz-pulse{animation:sc-plz-pulse 2s ease-out infinite}
+  /* Einmaliger Aufmerksamkeits-Puls: Klick auf einen inaktiven Weiter-Button
+     (FlowNav) — dieselbe Keyframe wie der PLZ-Puls, aber one-shot. */
+  .sc-flow-nudge{animation:sc-plz-pulse .7s ease-out 1}
   .fu{animation:fu .3s ease-out}
   /* Akkordeon-Felder (Großverbraucher): Übergang zwischen Auswahl- und
      Fertig-Zustand in beide Richtungen. React tauscht dabei das Element
