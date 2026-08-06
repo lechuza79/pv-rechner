@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
-import { gscConfigured, querySearchAnalyticsByPage } from "../../../../lib/gsc-search-analytics";
+import { gscConfigured, querySearchAnalyticsByPage, querySearchAnalyticsByQuery } from "../../../../lib/gsc-search-analytics";
 
-// Search-Console-Kennzahlen (Impressions/Klicks je Seite) für den Solar-Atlas —
-// vom Wellen-Monitor (scheduled-task) genutzt, um die Wirkung der Index-
-// Freischaltung zu messen. Auth: Bearer $CRON_SECRET (wie /api/alert). Der
-// Service-Account-Key (GOOGLE_SERVICE_ACCOUNT_JSON) lebt nur auf Vercel.
+// Search-Console-Kennzahlen für Wellen-Monitor und SEO-Wächter.
+// Auth: Bearer $CRON_SECRET (wie /api/alert). Der Service-Account-Key
+// (GOOGLE_SERVICE_ACCOUNT_JSON) lebt nur auf Vercel.
 //
 // GET /api/seo/gsc?prefix=/solar-atlas&days=28
 //   { configured, siteHint, range, totals, pages: [{url, impressions, clicks, position}] }
+// GET /api/seo/gsc?dim=query&days=90[&page=/strommix-deutschland]
+//   { configured, range, queries: [{query, page, impressions, clicks, position}] }
+//   — je Suchanfrage (mit rankender Seite), optional auf EINE Seite gefiltert.
 // Ist GOOGLE_SERVICE_ACCOUNT_JSON nicht gesetzt → { configured:false } (kein Fehler).
 
 export const runtime = "nodejs";
@@ -37,6 +39,34 @@ export async function GET(req: Request) {
   // GSC hat 2–3 Tage Lag: Ende = heute − 3, Start = Ende − days.
   const end = new Date(Date.now() - 3 * 86400_000);
   const start = new Date(end.getTime() - days * 86400_000);
+
+  if (url.searchParams.get("dim") === "query") {
+    const pagePath = url.searchParams.get("page");
+    try {
+      const rows = await querySearchAnalyticsByQuery({
+        startDate: ymd(start),
+        endDate: ymd(end),
+        pageUrl: pagePath ? `${BASE}${pagePath}` : undefined,
+      });
+      return NextResponse.json({
+        configured: true,
+        range: { start: ymd(start), end: ymd(end), days },
+        page: pagePath ?? null,
+        queries: rows
+          .sort((a, b) => b.impressions - a.impressions)
+          .map((r) => ({
+            query: r.query,
+            page: r.page,
+            impressions: r.impressions,
+            clicks: r.clicks,
+            position: Math.round(r.position * 10) / 10,
+          })),
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      return NextResponse.json({ configured: true, error: message }, { status: 502 });
+    }
+  }
 
   try {
     const rows = await querySearchAnalyticsByPage({
