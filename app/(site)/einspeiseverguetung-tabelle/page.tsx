@@ -16,7 +16,6 @@ import {
   feedInPeriodsSince2022,
   feedInRatesFor,
 } from "../../../lib/feedin-config";
-import { FEED_IN_ARCHIV } from "../../../lib/feedin-archiv";
 import {
   FEEDIN_HISTORY_VALUES,
   FEEDIN_HISTORY_YEARS,
@@ -24,8 +23,9 @@ import {
 import { eegDatum, eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import { MARKTWERT_SOLAR_HISTORIE } from "../../../lib/marktwert-config";
 import { fetchMarketPrices } from "../../../lib/prices-server";
-import { MONAT_KURZ, verlaufJahre } from "./VerlaufsChart";
+import { verlaufJahre } from "./VerlaufsChart";
 import VerlaufMitMeilensteinen from "./VerlaufMitMeilensteinen";
+import ArchivTabelle from "./ArchivTabellen";
 
 // Jede Zahl auf dieser Seite kommt live aus den geprüften Modulen
 // (feedin-config-Kette, BNetzA-Monatsarchiv, SFV-Jahresreihe) — nichts ist
@@ -199,86 +199,6 @@ function naechsteAbsenkungIso(todayIso: string): string {
   return `${y + 1}-02-01`;
 }
 
-// ─── Monats-Matrix aus dem BNetzA-Archiv (Zeile = Jahr, Spalte = Monat) ──────
-function archivMatrix(field: "u10" | "u40"): { year: number; months: (number | null)[] }[] {
-  const byYear = new Map<number, (number | null)[]>();
-  for (const row of FEED_IN_ARCHIV) {
-    const y = Number(row.ym.slice(0, 4));
-    const m = Number(row.ym.slice(5, 7));
-    if (!byYear.has(y)) byYear.set(y, Array(12).fill(null));
-    byYear.get(y)![m - 1] = row[field];
-  }
-  return [...byYear.entries()].sort((a, b) => a[0] - b[0]).map(([year, months]) => ({ year, months }));
-}
-
-// Gemeinsame Balken-Skala über beide Größenklassen (größter Archivwert),
-// damit die Mini-Charts der Jahresspalten untereinander vergleichbar sind.
-const ARCHIV_MAX = Math.max(...FEED_IN_ARCHIV.map((r) => r.u10));
-
-/** Mini-Balkenchart einer Jahresspalte: 12 Monatsbalken, gemeinsame Skala. */
-function JahresBalken({ months }: { months: (number | null)[] }) {
-  const W = 46;
-  const H = 34;
-  const slot = W / 12;
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} aria-hidden="true" style={{ display: "block", margin: "4px auto 0" }}>
-      {months.map((val, i) => {
-        if (val == null) return null;
-        const h = Math.max((val / ARCHIV_MAX) * (H - 2), 1);
-        return (
-          <rect
-            key={i}
-            x={i * slot + 0.4}
-            y={H - h}
-            width={slot - 0.8}
-            height={h}
-            fill={v("--color-accent")}
-          />
-        );
-      })}
-    </svg>
-  );
-}
-
-// Transponierte Nachschlage-Tabelle: Jahre als Spalten, Monate als Zeilen.
-// Über jeder Jahresspalte sitzen die 12 Monatsbalken als Mini-Chart — Balken
-// und Werte derselben Spalte zeigen dieselben Daten (Chart und Tabelle
-// „gesynced", Entwurf des Betreibers vom 04.08.2026).
-function ArchivTabelle({ field }: { field: "u10" | "u40" }) {
-  const jahre = archivMatrix(field);
-  return (
-    <div style={{ overflowX: "auto", marginBottom: 10 }}>
-      <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 680 }}>
-        <thead>
-          <tr>
-            <th style={{ ...S.thLeft, verticalAlign: "bottom" }}>Monat</th>
-            {jahre.map((j) => (
-              <th key={j.year} style={{ ...S.th, textAlign: "center" as const }}>
-                {j.year}
-                <JahresBalken months={j.months} />
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {MONAT_KURZ.map((monat, mi) => (
-            <tr key={monat}>
-              <td style={S.td}>{monat}</td>
-              {jahre.map((j) => {
-                const val = j.months[mi];
-                return (
-                  <td key={j.year} style={{ ...S.tdNum, textAlign: "center" as const, color: val == null ? v("--color-text-muted") : v("--color-text-primary") }}>
-                    {val == null ? "—" : ct(val)}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 export default async function EinspeiseverguetungTabellePage() {
   const now = new Date();

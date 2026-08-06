@@ -14,7 +14,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import EventTimeline from "../../../components/charts/EventTimeline";
-import { PLOT_MARGIN } from "../../../components/charts/ZubauTimelineChart";
+import { PLOT_MARGIN, topRoundedRect } from "../../../components/charts/ZubauTimelineChart";
 import { ZUBAU_EVENTS, ZUBAU_MILESTONE_YEARS } from "../../../components/charts/ZubauWidget";
 import { v } from "../../../lib/theme";
 import { MONAT_KURZ, type VerlaufJahr } from "./VerlaufsChart";
@@ -97,33 +97,57 @@ export default function VerlaufMitMeilensteinen({ jahre }: { jahre: VerlaufJahr[
             opacity={0.6}
           />
         ))}
+        {/* Jahres-Ära (2000–2011): Balken im Haus-Stil (oben abgerundet, wie
+            der Zubau-Chart). Ab 2012 wird die Reihe monatlich — dort läuft sie
+            als LINIE weiter, weil 170+ Einzelbalken keine Balken mehr sind. */}
+        {jahre.filter((j) => j.bars.length === 1).map((j) => {
+          const val = j.bars[0] as number;
+          const bx = x(j.year - 0.5) + 2;
+          const bw = yearW - 4;
+          return (
+            <path
+              key={j.year}
+              d={topRoundedRect(bx, y(val), bw, margin.top + PLOT_H - y(val), 2.5)}
+              fill={v("--color-accent")}
+              opacity={0.85}
+            />
+          );
+        })}
+        {(() => {
+          // Monats-Ära als Linie mit weißem Halo (Haus-Stil der Chart-Linien).
+          const pts: { x: number; y: number }[] = [];
+          for (const j of jahre) {
+            if (j.bars.length === 1) continue;
+            j.bars.forEach((val, mi) => {
+              if (val == null) return;
+              pts.push({ x: x(j.year - 0.5 + (mi + 0.5) / 12), y: y(val) });
+            });
+          }
+          const d = pts.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ");
+          return (
+            <g>
+              <path d={d} fill="none" stroke={v("--color-bg")} strokeWidth={4} strokeLinejoin="round" />
+              <path d={d} fill="none" stroke={v("--color-accent")} strokeWidth={2} strokeLinejoin="round" />
+            </g>
+          );
+        })()}
+        {/* Unsichtbare Hover-Flächen über die volle Spaltenhöhe — exakte Werte
+            je Jahr bzw. Monat als Browser-Tooltip, für Balken UND Linie. */}
         {jahre.map((j) => {
           const isYearBar = j.bars.length === 1;
           const x0 = x(j.year - 0.5);
-          const slotW = isYearBar ? yearW - 4 : yearW / 12;
+          const slotW = isYearBar ? yearW : yearW / 12;
           return (
-            <g key={j.year}>
+            <g key={`hit-${j.year}`}>
               {j.bars.map((val, mi) => {
                 if (val == null) return null;
-                const bx = isYearBar ? x0 + 2 : x0 + mi * slotW;
                 const label = isYearBar
                   ? `${j.year} (Jahresbeginn): ${ct(val)} ct/kWh`
                   : `${MONAT_KURZ[mi]} ${j.year}: ${ct(val)} ct/kWh`;
                 return (
-                  <g key={mi}>
-                    <rect
-                      x={bx}
-                      y={y(val)}
-                      width={Math.max(slotW - 0.35, 0.7)}
-                      height={margin.top + PLOT_H - y(val)}
-                      fill={v("--color-accent")}
-                    />
-                    {/* Unsichtbare Hover-Fläche über die volle Spaltenhöhe —
-                        so ist der Browser-Tooltip auch bei ~1px-Balken treffbar. */}
-                    <rect x={bx} y={margin.top} width={slotW} height={PLOT_H} fill="transparent">
-                      <title>{label}</title>
-                    </rect>
-                  </g>
+                  <rect key={mi} x={x0 + (isYearBar ? 0 : mi * slotW)} y={margin.top} width={slotW} height={PLOT_H} fill="transparent">
+                    <title>{label}</title>
+                  </rect>
                 );
               })}
               {j.year % labelStep === 0 && (
