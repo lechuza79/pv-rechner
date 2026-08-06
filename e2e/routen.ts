@@ -40,6 +40,9 @@ export const SEITEN: Seite[] = [
   { pfad: "/atomstrom-import", erwartet: /atomstrom|kernstrom/i },
   { pfad: "/langzeit-strommix", erwartet: /strommix/i },
   { pfad: "/datenstand", erwartet: /stand|daten/i },
+  // Methodik trägt seit dem Kontakt-Teaser ein Client-Bauteil — ohne Rundgang
+  // wäre ein Fehler darin unsichtbar (Seite liefert weiter HTTP 200).
+  { pfad: "/methodik", erwartet: /so rechnen wir/i },
 ];
 
 /** Die Embed-Widgets sind das Produkt, das wir an Kommunen verteilen — sie
