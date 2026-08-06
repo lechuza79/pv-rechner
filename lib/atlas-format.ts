@@ -106,6 +106,45 @@ export function fmtErtragProKwp(kwhProKwp: number): string {
   return `${Math.round(kwhProKwp).toLocaleString("de-DE")} kWh/kWp`;
 }
 
+/**
+ * Rechnerisch vermiedenes CO₂ in Tonnen pro Jahr.
+ *
+ * Staffelung t → Tsd. t → Mio. t: eine Gemeinde liegt bei Hunderten Tonnen,
+ * ein Bundesland bei Millionen — ohne Staffelung wäre eine der beiden Zahlen
+ * unlesbar. „CO₂" steht bewusst NICHT in der Einheit: die Spalte bzw. der
+ * Satz daneben benennt die Größe, die Einheit bleibt die Masse.
+ */
+export function co2TonnenTeile(tonnen: number): Messwert {
+  if (tonnen >= 1_000_000) return { value: dez(tonnen / 1_000_000, 1), unit: "Mio. t" };
+  if (tonnen >= 1000) return { value: dez(tonnen / 1000, 1), unit: "Tsd. t" };
+  return { value: nf(tonnen), unit: "t" };
+}
+export const fmtCo2Tonnen = (tonnen: number): string => zusammen(co2TonnenTeile(tonnen));
+
+/**
+ * CO₂-Faktor als Fließtext („0,38 kg CO₂ je Kilowattstunde"). Eigene Funktion,
+ * damit der Faktor in Fußnoten nicht als handgeklebte Einheit landet.
+ */
+export const fmtCo2FaktorKg = (kgProKwh: number): string =>
+  `${dez(kgProKwh, 2)} kg CO₂ je Kilowattstunde`;
+
+/** Geldbeträge (rechnerischer Stromwert): € → Tsd. € → Mio. € → Mrd. €. */
+export function euroTeile(euro: number): Messwert {
+  if (euro >= 1_000_000_000) return { value: dez(euro / 1_000_000_000, 1), unit: "Mrd. €" };
+  if (euro >= 1_000_000) return { value: dez(euro / 1_000_000, 1), unit: "Mio. €" };
+  if (euro >= 1000) return { value: dez(euro / 1000, 1), unit: "Tsd. €" };
+  return { value: nf(euro), unit: "€" };
+}
+export const fmtEuro = (euro: number): string => zusammen(euroTeile(euro));
+
+/**
+ * Voller Euro-Betrag ohne Größenstaffelung — für Haushalts-Beispiele in
+ * Rechner-Größenordnung, wo „12.400 €" lesbarer ist als „12,4 Tsd. €".
+ * NICHT für Regions-Summen (dort euroTeile/fmtEuro, sonst wird ein
+ * Bundesland zu einer zehnstelligen Zahl).
+ */
+export const fmtEuroVoll = (euro: number): string => `${nf(euro)} €`;
+
 // ─── Regionsnamen ─────────────────────────────────────────────────────────────
 
 // Die Liste der vorangestellten Gattungswörter steht in lib/atlas-orte.ts —

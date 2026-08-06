@@ -6,10 +6,19 @@ import { v } from "../../lib/theme";
 import { IconArrowUp, IconArrowDown, IconChevronDown, IconArrowRight } from "../Icons";
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
 import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
-import { fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "../../lib/atlas-format";
+import { fmtCo2FaktorKg, fmtCo2Tonnen, fmtEuro, fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "../../lib/atlas-format";
+import {
+  ATLAS_GRID_CO2,
+  EIGENVERBRAUCH_ANTEIL_ANNAHME,
+  co2Tonnen,
+  defaultStromwertCt,
+  erzeugungKwh,
+  stromwertEuro,
+} from "../../lib/atlas-impact";
+import InlineEdit from "../InlineEdit";
 
 type Owner = "alle" | "privat" | "gewerbe";
-type Metric = "count" | "kwp" | "perCapita" | "speicher";
+type Metric = "count" | "kwp" | "perCapita" | "co2" | "wert" | "speicher";
 /** Sort key: a numeric metric column (descending), the name column (A–Z), or
  *  population (descending). Name and population share the name-column dropdown. */
 type Sort = Metric | "name" | "population";
@@ -25,6 +34,10 @@ type Row = {
   kwp: number;
   speicher: number;
   perCapita: number | null;
+  /** Rechnerische Jahres-Erzeugung (kWp × Bundesland-Ertrag), Basis für CO₂ und Stromwert. */
+  erzeugung: number;
+  /** Rechnerisch vermiedenes CO₂ in t/Jahr. */
+  co2: number;
 };
 
 const COLUMNS: { key: Metric; label: string; hint: string }[] = [
@@ -42,6 +55,16 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
     key: "perCapita",
     label: "Pro Kopf",
     hint: "Installierte Leistung geteilt durch die Einwohnerzahl. Macht große und kleine Gemeinden vergleichbar — Gemeinden mit viel Freifläche liegen hier zwangsläufig vorn.",
+  },
+  {
+    key: "co2",
+    label: "CO₂-Ersparnis",
+    hint: "Rechnerisch vermiedenes CO₂ pro Jahr: erzeugter Solarstrom (Leistung mal typischer Ertrag auf Bundesland-Niveau, kalibriert am realen deutschen Anlagenbestand) mal CO₂-Faktor. Ein Modellwert, kein Messwert — die Annahmen stehen unter der Tabelle.",
+  },
+  {
+    key: "wert",
+    label: "Stromwert",
+    hint: "Rechnerischer Wert des erzeugten Solarstroms pro Jahr. Jede Kilowattstunde wird mit dem Preis bewertet, der unter der Tabelle steht — dort lässt er sich anpassen.",
   },
   {
     key: "speicher",
@@ -72,10 +95,12 @@ function setUrlPlz(plz: string | null): void {
 const fmtLeistung = fmtPvLeistung;
 const fmtSpeicher = fmtSpeicherKwh;
 
-function fmtCell(row: Row, m: Metric): string {
+function fmtCell(row: Row, m: Metric, stromwertCt: number): string {
   if (m === "kwp") return fmtLeistung(row.kwp);
   if (m === "speicher") return fmtSpeicher(row.speicher);
   if (m === "perCapita") return row.perCapita === null ? "—" : fmtWattProKopf(row.perCapita);
+  if (m === "co2") return fmtCo2Tonnen(row.co2);
+  if (m === "wert") return fmtEuro(stromwertEuro(row.erzeugung, stromwertCt));
   return nf(row[m] as number);
 }
 
@@ -90,6 +115,9 @@ function valueOf(row: Row, m: Sort): number | null {
   if (m === "name") return null;
   if (m === "perCapita") return row.perCapita;
   if (m === "population") return row.population;
+  // Der Stromwert ist Erzeugung × ein für alle Zeilen gleicher ct-Satz — für
+  // Sortierung und Balken reicht die Erzeugung, der Satz kürzt sich raus.
+  if (m === "wert") return row.erzeugung;
   return row[m] as number;
 }
 
@@ -138,6 +166,9 @@ export default function RankingTable({
   const [owner, setOwner] = useState<Owner>("alle");
   const [sort, setSort] = useState<Sort>("perCapita");
   const [rankMode, setRankMode] = useState<RankMode>("platz");
+  // Preis-Annahme für die Stromwert-Spalte — offen kommuniziert und unter der
+  // Tabelle direkt editierbar. Default abgeleitet aus Strompreis + EEG-Satz.
+  const [stromwertCt, setStromwertCt] = useState<number>(defaultStromwertCt);
   const { home, setHome, ready } = useHomeGemeinde();
   // A shared link can mark a Gemeinde via ?plz=. Resolved on the client (like the
   // saved-home marker already is) so the page itself stays ISR-cached — reading
@@ -197,6 +228,7 @@ export default function RankingTable({
       }
       return regions.map((r) => {
         const a = acc.get(r.region_id) ?? { count: 0, kwp: 0, speicher: 0 };
+        const erzeugung = erzeugungKwh(a.kwp, r.region_id);
         return {
           region_id: r.region_id,
           name: r.name,
@@ -206,6 +238,8 @@ export default function RankingTable({
           kwp: a.kwp,
           speicher: a.speicher,
           perCapita: r.population ? Math.round((a.kwp * 1000) / r.population) : null,
+          erzeugung,
+          co2: co2Tonnen(erzeugung),
         };
       });
     };
@@ -377,7 +411,7 @@ export default function RankingTable({
       </span>
       {COLUMNS.map((c) => (
         <span key={c.key} style={{ ...cellStyle(c.key), ...(onAccent ? { color: ON_ACCENT } : null) }}>
-          <span>{fmtCell(r, c.key)}</span>
+          <span>{fmtCell(r, c.key, stromwertCt)}</span>
           {c.key === sort && (
             <span aria-hidden style={{ ...S.track, ...(onAccent ? { background: "rgba(255,255,255,0.28)" } : null) }}>
               <span style={{ ...S.fill, width: `${barPct(valueOf(r, sort))}%`, background: onAccent ? ON_ACCENT : v("--color-accent-light") }} />
@@ -533,6 +567,26 @@ export default function RankingTable({
           </button>
         </p>
       )}
+
+      {/* Annahmen der beiden Modell-Spalten — offen an der Tabelle, nicht in
+          einem Tooltip versteckt: Wer die Zahl zitiert, muss sehen können, wie
+          sie entsteht. Der ct-Satz ist die eine ehrlich strittige Größe und
+          deshalb direkt hier editierbar. */}
+      <p style={S.note}>
+        CO₂-Ersparnis und Stromwert sind rechnerische Jahreswerte, keine Messwerte: installierte
+        Leistung mal typischer Ertrag im jeweiligen Bundesland (PVGIS), kalibriert an der von
+        Fraunhofer ISE bilanzierten Solarstrom-Erzeugung des Jahres 2025. Das CO₂ ist bewusst
+        konservativ mit {fmtCo2FaktorKg(ATLAS_GRID_CO2)} gerechnet — der amtliche
+        UBA-Vermeidungsfaktor für Photovoltaik liegt höher. Der Stromwert bewertet jede erzeugte
+        Kilowattstunde mit{" "}
+        <InlineEdit value={stromwertCt} onCommit={setStromwertCt} unit="ct" min={0} max={100} width={44} />{" "}
+        (Mischwert: {Math.round(EIGENVERBRAUCH_ANTEIL_ANNAHME * 100)} % Eigenverbrauch zum
+        Haushaltsstrompreis, {Math.round((1 - EIGENVERBRAUCH_ANTEIL_ANNAHME) * 100)} %
+        Einspeisevergütung — klicken und anpassen).{" "}
+        <Link href="/photovoltaik-rechner" style={S.link}>
+          Was heißt das für dein Dach? Individuell berechnen
+        </Link>
+      </p>
     </div>
   );
 }
@@ -710,7 +764,7 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  * floating row exists to be compared against the list, so its columns have to land
  * on the same pixels.
  */
-const GRID = "58px minmax(120px,1fr) repeat(4, minmax(66px, 86px)) 14px";
+const GRID = "58px minmax(120px,1fr) repeat(6, minmax(66px, 86px)) 14px";
 
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
@@ -726,7 +780,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   // Eight columns do not fit a phone. Scroll the table, never the page.
   scroller: { overflowX: "auto", margin: "0 -8px", padding: "0 8px" },
-  table: { minWidth: 500 },
+  table: { minWidth: 660 },
   row: {
     display: "grid",
     gridTemplateColumns: GRID,

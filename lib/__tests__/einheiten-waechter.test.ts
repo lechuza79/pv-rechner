@@ -41,8 +41,12 @@ const EINZELDATEIEN = [
   "components/RegionSolarLive.tsx",
 ];
 
-/** `${…} kWh` — eine Zahl mit direkt angeklebter Einheit. */
-const ANGEKLEBT = /\}\s*(kWp|MWp|GWp|kWh|MWh|GWh|kW|MW|GW|Wp|W)\b/g;
+/**
+ * `${…} kWh` — eine Zahl mit direkt angeklebter Einheit. Seit den
+ * Wirkungs-Spalten der Ranking-Tabelle gehören auch Tonnen, Euro, Cent und
+ * Kilogramm dazu — ihre Formatter leben ebenfalls in lib/atlas-format.ts.
+ */
+const ANGEKLEBT = /\}\s*((kWp|MWp|GWp|kWh|MWh|GWh|kW|MW|GW|Wp|W|kg|t|ct)\b|€)/g;
 
 /**
  * Begründete Ausnahmen. Jede Zeile hier ist eine bewusste Entscheidung:

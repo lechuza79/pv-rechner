@@ -6,6 +6,8 @@ import {
   fmtBatterieMittel,
   fmtSpeicherJeKwp,
   fmtErtragProKwp,
+  fmtCo2Tonnen,
+  fmtEuro,
   regionDisplayName,
 } from "../atlas-format";
 
@@ -88,5 +90,30 @@ describe("Regionsname ohne doppelte Gattung", () => {
     expect(regionDisplayName("Nordrhein-Westfalen")).toBe("Nordrhein-Westfalen");
     // „Kreisfreie Stadt" ist keine vorangestellte Gattung in diesem Feld.
     expect(regionDisplayName("Goldisthal")).toBe("Goldisthal");
+  });
+});
+
+/**
+ * Die Wirkungs-Spalten der Ranking-Tabelle decken vier Größenordnungen ab: eine
+ * kleine Gemeinde liegt bei Hunderten Tonnen, ein Bundesland bei Millionen.
+ * Ohne Staffelung wäre eine der beiden Zahlen unlesbar — und die Schwellen
+ * müssen festgenagelt sein, sonst rutscht die Zuordnung still.
+ */
+describe("Staffelung der Wirkungs-Formatter (CO₂ und Euro)", () => {
+  it("staffelt Tonnen bei 1.000 und 1 Million", () => {
+    expect(fmtCo2Tonnen(812)).toBe("812 t");
+    expect(fmtCo2Tonnen(999)).toBe("999 t");
+    expect(fmtCo2Tonnen(1000)).toBe("1 Tsd. t");
+    expect(fmtCo2Tonnen(43_100)).toBe("43,1 Tsd. t");
+    expect(fmtCo2Tonnen(1_000_000)).toBe("1 Mio. t");
+    expect(fmtCo2Tonnen(9_800_000)).toBe("9,8 Mio. t");
+  });
+
+  it("staffelt Euro bis in die Milliarden", () => {
+    expect(fmtEuro(950)).toBe("950 €");
+    expect(fmtEuro(1000)).toBe("1 Tsd. €");
+    expect(fmtEuro(315_000)).toBe("315 Tsd. €");
+    expect(fmtEuro(12_500_000)).toBe("12,5 Mio. €");
+    expect(fmtEuro(3_900_000_000)).toBe("3,9 Mrd. €");
   });
 });
