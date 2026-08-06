@@ -112,6 +112,7 @@ export default function EinspeiseverguetungPage() {
         <RelatedLinks
           currentPath="/einspeiseverguetung-rechner"
           links={[
+            { href: "/einspeiseverguetung-tabelle", label: "Einspeisevergütung-Tabelle", desc: "Zum Nachschlagen: aktuelle Sätze und die amtlichen Monatswerte 2012–2022 im Überblick." },
             { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Amortisation, Rendite und Eigenverbrauch für deine Anlage — alle Annahmen transparent und anpassbar." },
             { href: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung", label: "Lohnt sich PV ohne Einspeisevergütung?", desc: "Was die geplante EEG-Reform für neue Anlagen bedeutet — und warum Eigenverbrauch die Rechnung trägt." },
             { href: "/ratgeber/lohnt-sich-pv-mit-speicher", label: "Lohnt sich PV mit Speicher?", desc: "Die ehrliche Rechnung mit aktuellen Marktpreisen — und wann sich ein Speicher wirklich rechnet." },
