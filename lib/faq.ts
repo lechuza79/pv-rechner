@@ -471,3 +471,34 @@ export function neigungswinkelFaq(): FaqEntry[] {
     },
   ];
 }
+
+/** FAQ for the live electricity-mix page (/strommix-deutschland). Deliberately
+ *  evergreen: no volatile share figures beyond what has held for years — the
+ *  live chart above the FAQ is the current number. The nuclear phase-out date
+ *  is a historical fact (allowed hardcode). */
+export function strommixFaq(): FaqEntry[] {
+  return [
+    {
+      q: "Wie setzt sich der deutsche Strommix aktuell zusammen?",
+      a: "Übers Jahr gerechnet liefern erneuerbare Energien — Wind, Solar, Wasserkraft und Biomasse — mehr als die Hälfte des öffentlich erzeugten Stroms in Deutschland; der Rest kommt überwiegend aus Kohle- und Gaskraftwerken. Der Mix schwankt aber stark mit Wetter und Tageszeit: An sonnigen, windigen Tagen decken Erneuerbare zeitweise fast die gesamte Erzeugung, in windstillen Winternächten übernehmen die steuerbaren Kraftwerke. Die Live-Ansicht oben zeigt den Stand von jetzt gerade.",
+    },
+    {
+      q: "Wann ist der Strom in Deutschland am saubersten?",
+      a: "Typischerweise mittags, wenn die Solaranlagen ihre Tagesspitze erreichen — und generell an windigen Tagen. Wer flexible Verbraucher hat, etwa ein E-Auto oder einen Heimspeicher, lädt am klimafreundlichsten in den Mittagsstunden. Nachts ist der Strom im Schnitt am fossilsten, weil die Solarerzeugung komplett wegfällt.",
+      links: [{ phrase: "Heimspeicher", href: "/photovoltaik-rechner" }],
+    },
+    {
+      q: "Warum laufen nachts mehr Kohle- und Gaskraftwerke?",
+      a: "Nachts liefert Solar nichts, und Wind weht nicht immer. Die Lücke zwischen erneuerbarer Erzeugung und Verbrauch füllen steuerbare Kraftwerke — vor allem Kohle und Gas —, dazu Stromimporte und zunehmend Batteriespeicher. Deshalb wechselt die Grafik nachts sichtbar von Grün zu Grau.",
+    },
+    {
+      q: "Erzeugt Deutschland noch Atomstrom?",
+      a: "Nein. Am 15. April 2023 gingen die letzten drei deutschen Kernkraftwerke vom Netz. Im Strommix taucht Kernenergie seitdem nur noch als rechnerischer Import auf: Ein Teil des importierten Stroms stammt aus Nachbarländern mit Kernkraftwerken, allen voran Frankreich. Wie groß dieser Anteil ist, zeigt unsere Auswertung zum Atomstrom-Import.",
+      links: [{ phrase: "Atomstrom-Import", href: "/atomstrom-import" }],
+    },
+    {
+      q: "Woher kommen die Daten zum Strommix?",
+      a: "Von Energy-Charts, der Datenplattform des Fraunhofer-Instituts für Solare Energiesysteme (ISE). Gezeigt wird die öffentliche Nettostromerzeugung — also der Strom, der ins öffentliche Netz eingespeist wird — in 15-Minuten-Schritten. Die Daten stehen unter der offenen Lizenz CC BY 4.0.",
+    },
+  ];
+}

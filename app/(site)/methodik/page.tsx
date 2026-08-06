@@ -2,12 +2,15 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../components/Breadcrumb";
 import GlossaryTerm from "../../../components/GlossaryTerm";
+import KontaktTeaser from "../../../components/KontaktTeaser";
 import { v } from "../../../lib/theme";
 import { supabase } from "../../../lib/supabase-server";
 import { DEFAULT_PRICES, type PriceConfig } from "../../../lib/prices-config";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
-import { co2PriceForCalendarYear } from "../../../lib/co2-config";
+import { CO2_PRICE, co2PriceForCalendarYear } from "../../../lib/co2-config";
 import { DEFAULT_AIRCON_CONFIG } from "../../../lib/aircon-config";
+import { FUEL } from "../../../lib/constants";
+import { eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import { pageMetadata } from "../../../lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -88,19 +91,7 @@ const S = {
   accent: { color: v('--color-accent'), fontWeight: 600 },
   muted: { color: v('--color-text-muted') },
   link: { color: v('--color-accent'), textDecoration: "none" },
-  footer: {
-    marginTop: 48,
-    paddingTop: 20,
-    borderTop: `1px solid ${v('--color-border')}`,
-    display: "flex",
-    justifyContent: "center",
-    gap: 20,
-    fontSize: v('--font-size-small'),
-  },
-  footerLink: {
-    color: v('--color-text-muted'),
-    textDecoration: "none",
-  },
+  strong: { fontWeight: 700, color: v('--color-text-primary') },
 };
 
 async function fetchPrices(): Promise<PriceConfig> {
@@ -135,10 +126,19 @@ function formatPriceDate(isoDate: string): string {
   return d.toLocaleDateString("de-DE", { month: "long", year: "numeric" });
 }
 
+/** Effektive Jahres-Effizienz eines Klimageräte-Typs aus der Config —
+ *  dieselbe Quelle wie Rechner und Datenstand-Seite, nie handgetippt. */
+function acSeer(id: "monoblock" | "portasplit" | "split"): string {
+  const device = DEFAULT_AIRCON_CONFIG.devices.find((d) => d.id === id);
+  return (device?.seer ?? 0).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+}
+
 export default async function MethodikPage() {
   const prices = await fetchPrices();
-  // CO2 path derived live from co2-config so it never drifts a year off.
-  const co2Y0 = new Date().getFullYear();
+  // CO2 path rendered from the config anchors (absolute calendar years), so the
+  // ETS2 start year never drifts with the render year.
+  const co2Years = Object.keys(CO2_PRICE.anchors).map(Number).sort((a, b) => a - b);
+  const ets2Start = co2Years[co2Years.length - 1] + 1;
   return (
     <div style={S.page}>
       <div style={S.wrap}>
@@ -165,21 +165,21 @@ export default async function MethodikPage() {
           überschüssiger Strom ins Netz fließt.
         </p>
         <p style={S.p}>
-          Wichtig: Der Eigenverbrauchsanteil ist eine <strong style={{ fontWeight: 700, color: v('--color-text-primary') }}>Jahresgröße</strong>.
+          Wichtig: Der Eigenverbrauchsanteil ist eine <strong style={S.strong}>Jahresgröße</strong>.
           Er stammt aus Ganzjahres-Simulationen der HTW Berlin (25.000 Konfigurationen im
           Minutentakt) und bildet damit bereits ab, dass im Sommer Überschüsse eingespeist
           werden und im Winter zugekauft wird. Genau dieser eine Jahreswert fließt in die
           Wirtschaftlichkeitsrechnung — er wird nicht zusätzlich saisonal „verkleinert".
         </p>
         <p style={S.p}>
-          Nicht verwechseln mit dem <strong style={{ fontWeight: 700, color: v('--color-text-primary') }}>Autarkiegrad</strong>: Der
+          Nicht verwechseln mit dem <strong style={S.strong}>Autarkiegrad</strong>: Der
           Eigenverbrauchsanteil sagt, wie viel deines <em>erzeugten</em> Solarstroms du selbst
           nutzt. Der Autarkiegrad sagt, wie viel deines <em>Verbrauchs</em> du aus eigener Sonne
           deckst. Die oft genannten „70–80 %" beziehen sich meist auf den Autarkiegrad, nicht
           auf den Eigenverbrauch.
         </p>
         <p style={S.p}>
-          Den Autarkiegrad rechnen wir mit einer <strong style={{ fontWeight: 700, color: v('--color-text-primary') }}>Stunden-Simulation
+          Den Autarkiegrad rechnen wir mit einer <strong style={S.strong}>Stunden-Simulation
           über ein ganzes Jahr</strong> — nicht aus dem Eigenverbrauch zurückgerechnet.
           Das ist wichtig: Eine reine Jahresbilanz würde bei sehr großen Anlagen fälschlich
           100 % anzeigen, weil sie den Sommerüberschuss gegen das Winterdefizit aufrechnet.
@@ -237,7 +237,7 @@ export default async function MethodikPage() {
           In Deutschland wird meist nur teilweise gekühlt (Wohn- und Schlafräume), und der
           Wert ist im Ergebnis frei anpassbar. Wichtig: Wir rechnen ausschließlich das
           Kühlen im Sommer — Klimageräte können auch heizen, das deckt aber unser{" "}
-          <a href="/waermepumpe-rechner" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Wärmepumpen-Rechner</a> ab.
+          <Link href="/waermepumpe-rechner" style={{ ...S.link, fontWeight: 600 }}>Wärmepumpen-Rechner</Link> ab.
           Kühlen passt besonders gut zur Solaranlage, weil der Bedarf genau dann am höchsten
           ist, wenn die Sonne am stärksten scheint — fast jede gekühlte Kilowattstunde kommt
           direkt vom eigenen Dach.
@@ -259,110 +259,33 @@ export default async function MethodikPage() {
           Nutzen bringt, als die reine Verbrauchsmenge vermuten lässt.
         </p>
 
-        {/* ── Klimaanlagen-Rechner ── */}
-        <h2 style={S.h2}>Klimaanlagen-Rechner: Kühlkosten</h2>
-        <p style={S.p}>
-          Der eigene <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Klimaanlagen-Rechner</Link> beantwortet
-          nicht „lohnt sich das" (eine Klimaanlage spart kein Geld, sie kostet welches), sondern: Was kostet sie
-          im Betrieb — und wie viel davon übernimmt die Sonne?
-        </p>
-        <p style={S.p}>
-          Den Kühlbedarf leiten wir aus echten <strong>Kühlgradstunden</strong> ab: Wir zählen für deinen Standort,
-          wie viele Stunden es im Sommer wie weit über der Kühlschwelle lag (Open-Meteo-Wetterhistorie, ohne PLZ
-          ein deutscher Durchschnitt). Wunschtemperatur und Zeitfenster (ganzer Tag / nur tagsüber / nur nachts)
-          skalieren diesen Wert. Mal Fläche und einem gebäudetypischen Kühl-Kennwert ergibt sich die jährliche
-          Kühlenergie.
-        </p>
-        <p style={S.p}>
-          <strong>Sonne statt Dämmung:</strong> Beim Kühlen kommt der größte Wärmeeintrag durch die Fenster — Sonne,
-          Ausrichtung, Verschattung, vor allem ein Dachgeschoss. Wärmedämmung ist dagegen ein schwacher, teils
-          kontraproduktiver Hebel (sie hält Wärme auch im Haus). Deshalb fragen wir nach der <em>Lage zur Sonne</em>,
-          nicht nach dem Dämmstandard, und skalieren den Bedarf damit (sehr sonnig ×1,5 bis schattig ×0,6). Eine
-          aufs Zimmer genaue Rechnung ersetzt das nicht — dafür bräuchte es Fenstergrößen, -richtung und Verschattung
-          aus einer Vollsimulation.
-        </p>
-        <p style={S.p}>
-          <strong>Warum die Zahl oft niedriger wirkt als erwartet:</strong> Der Wert ist ein <em>Jahres</em>betrag,
-          nicht pro Monat. Die deutsche Kühlsaison ist kurz — nur an wirklich heißen Tagen läuft das Gerät, und
-          nachts (kühlere Außenluft, wenige Stunden) ist es deutlich günstiger als ganztags. Wichtig ist auch die
-          Unterscheidung: <em>Wie schnell</em> ein Raum von z. B. 32 °C auf eine angenehme Temperatur runtergeht,
-          ist eine Frage der Geräte-Leistung (kW), nicht der Jahresenergie. Die <em>Energie</em> ist der laufende
-          Wärmeeintrag über die Saison — das einmalige Runterkühlen am Abend fällt dagegen kaum ins Gewicht. Eine
-          akute Hitzewelle bildet der Rechner ab, sobald du PLZ und „letzter Sommer" wählst — dann rechnet er mit
-          den echten heißen Tagen deines Orts statt mit dem milden Durchschnitt.
-        </p>
-        <p style={S.p}>
-          Wie viel <strong>Strom</strong> das kostet, hängt am Gerätetyp: Ein Monoblock mit Abluftschlauch zieht
-          für dieselbe Kühlung rund das Vierfache einer fest installierten Split-Anlage.
-        </p>
-        <p style={S.p}>
-          Dahinter steckt eine bewusste Entscheidung, denn die Zahlen auf den <strong>Typenschildern</strong> darf
-          man nicht direkt vergleichen. Bei Split-Geräten steht dort ein Saisonwert, der Teillast und echte
-          Außentemperaturen berücksichtigt. Bei Monoblöcken steht ein Volllast-Wert, gemessen in einer Prüfkammer
-          ohne Außenwelt — dort kann keine warme Luft nachströmen, während genau das im Wohnzimmer passiert, sobald
-          der Schlauch die Raumluft nach draußen bläst. Die EU-Norm schließt Monoblöcke von der Saison-Messung
-          ausdrücklich aus, sie können diese Zahl also gar nicht haben. Ein „A" auf dem Monoblock entspricht
-          rechnerisch einem „F" beim Split — einer Klasse, die seit 2013 nicht mehr verkauft werden darf.
-        </p>
-        <p style={S.p}>
-          Wir rechnen deshalb nicht mit Typenschild-Werten, sondern stellen alle drei Gerätetypen auf dieselbe
-          Grundlage: die Effizienz im echten Betrieb über eine ganze Saison. Dafür ziehen wir von jedem
-          Typenschild-Wert denselben Realitäts-Abschlag von 15 % ab. Beim Monoblock kommt der Verlust durch die
-          nachströmende Warmluft hinzu — kein Sicherheitsaufschlag, sondern das Nachtragen eines Effekts, den sein
-          Messverfahren strukturell nicht enthalten kann. Ergebnis: Monoblock 1,5, mobile Split-Anlage 5,2, fest
-          installierte Split-Anlage 5,5. Alle Werte samt Typenschild-Angabe stehen auf der{" "}
-          <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Datenstand-Seite</Link>.
-        </p>
-        <p style={S.p}>
-          Für den Standort kannst du zwischen drei <strong>Klimadaten-Modi</strong> umschalten: dem{" "}
-          <strong>Durchschnitt der letzten {DEFAULT_AIRCON_CONFIG.avgYears} Sommer</strong> (der ausgewogene Standardwert), dem{" "}
-          <strong>letzten Sommer</strong> (oft heißer als der Schnitt) und einer <strong>Projektion in ~20 Jahre</strong>.
-          Die Projektion nutzt ein heruntergerechnetes Klimamodell (CMIP6, Open-Meteo Climate API) für deinen Ort —
-          eine Modellrechnung, kein exakter Wert, aber sie zeigt die Richtung: Die Zahl der heißen Tage in Deutschland
-          hat sich laut DWD seit den 1950ern bereits verdreifacht. Den akuten Blick auf die nächsten Tage liefert
-          zusätzlich die 16-Tage-Vorhersage. Eine verlässliche saisonale Hitzewellen-Prognose gibt es dagegen nicht.
-          Alle Werte stehen auf der{" "}
-          <Link href="/datenstand" style={{ color: v('--color-accent'), textDecoration: "none", fontWeight: 600 }}>Datenstand-Seite</Link>.
-        </p>
-        <p style={S.p}>
-          <strong>PV passt besonders gut zum Kühlen:</strong> Der Bedarf ist am höchsten, wenn die Sonne am
-          stärksten scheint. Ohne Speicher deckt die PV das Kühlen am Tag fast komplett, nachts dagegen kaum —
-          deshalb hängt die Deckung am Zeitfenster. Mit einem Batteriespeicher (Default in der Rechnung) wird der
-          Mittagsüberschuss in Abend und Nacht verschoben; dann ist auch Nachtkühlung größtenteils gedeckt. Beides
-          ist im Ergebnis umschaltbar.
-        </p>
-
         {/* ── Gas/Öl-Vergleich ── */}
         <h2 style={S.h2}>Vergleich: Gas- & Ölheizung</h2>
         <p style={S.p}>
           Bei aktiver Wärmepumpe zeigen wir zum Vergleich, was eine Gas- oder
-          Ölheizung über 25 Jahre kosten würde — für die gleiche Wärmemenge.
+          Ölheizung über 25 Jahre kosten würde — für die gleiche Wärmemenge:
+          Was die Wärmepumpe an Wärme liefert, rechnen wir über den
+          Kesselwirkungsgrad in Brennstoff um und bepreisen ihn samt CO₂-Abgabe.
         </p>
         <div style={S.card}>
-          <span style={S.label}>Berechnung</span>
-          <span style={S.accent}>Wärmebedarf (Beispiel Standard-Haus):</span> ~7.000 kWh Strom × COP 3,5 = 24.500 kWh Wärme/Jahr
+          <span style={S.label}>Annahmen</span>
+          <span style={S.accent}>Kesselwirkungsgrad:</span> Gas {Math.round(FUEL.gas.efficiency * 100)} % · Heizöl {Math.round(FUEL.oil.efficiency * 100)} %
           <br />
-          <span style={S.accent}>Gaskessel:</span> 24.500 kWh ÷ 0,90 Wirkungsgrad = 27.222 kWh Gas
+          <span style={S.accent}>Brennstoffpreis:</span> Gas {Math.round(FUEL.gas.price * 100)} ct/kWh · Heizöl {Math.round(FUEL.oil.price * 100)} ct/kWh
           <br />
-          <span style={S.accent}>Ölkessel:</span> 24.500 kWh ÷ 0,85 Wirkungsgrad = 28.824 kWh Öl
-          <br />
-          <br />
-          <span style={S.label}>Preise</span>
-          <span style={S.accent}>Gas:</span> 11 ct/kWh · <span style={S.accent}>Heizöl:</span> 10 ct/kWh
-          <br />
-          Grundpreissteigerung: 2 %/Jahr
+          Preissteigerung: 2 %/Jahr
           <br />
           <br />
           <span style={S.label}>CO₂-Abgabe</span>
-          {co2Y0}: {co2PriceForCalendarYear(co2Y0)} €/t · {co2Y0 + 1}: {co2PriceForCalendarYear(co2Y0 + 1)} €/t · ab {co2Y0 + 2}: EU ETS2 (marktbasiert)
+          {co2Years.map((y) => `${y}: ${co2PriceForCalendarYear(y)} €/t`).join(" · ")} · ab {ets2Start}: EU ETS2 (marktbasiert)
           <br />
-          Ab {co2Y0 + 2} rechnen wir konservativ mit +8 €/t pro Jahr.
+          Ab {ets2Start} rechnen wir konservativ mit +{CO2_PRICE.annualIncrease} €/t pro Jahr.
           <br />
-          Gas: 200 g CO₂/kWh · Heizöl: 266 g CO₂/kWh
+          Gas: {Math.round(FUEL.gas.co2PerKwh * 1000)} g CO₂/kWh · Heizöl: {Math.round(FUEL.oil.co2PerKwh * 1000)} g CO₂/kWh
           <br />
           <br />
           <span style={S.muted}>
-            Die CO₂-Bepreisung für Gebäude wird ab 2027/28 durch den EU-weiten
+            Die CO₂-Bepreisung für Gebäude wird ab {ets2Start} durch den EU-weiten
             Emissionshandel (ETS2) ersetzt. Die tatsächlichen Zertifikatspreise
             könnten deutlich über unserer konservativen Schätzung liegen.
           </span>
@@ -412,7 +335,10 @@ export default async function MethodikPage() {
           </a>{" "}
           ab — dem Solarrechner der Europäischen Kommission. PVGIS simuliert den
           Ertrag basierend auf langjährigen Wetterdaten, optimaler Dachneigung
-          und 14 % Systemverlusten.
+          und 14 % Systemverlusten. Wie stark andere Dachneigungen und
+          Ausrichtungen den Ertrag verändern, zeigt unsere{" "}
+          <Link href="/photovoltaik-neigungswinkel" style={{ ...S.link, fontWeight: 600 }}>Neigungswinkel-Übersicht</Link> —
+          ebenfalls aus PVGIS-Daten.
         </p>
         <div style={S.card}>
           <span style={S.label}>Beispielwerte</span>
@@ -474,6 +400,99 @@ export default async function MethodikPage() {
             Alle Werte im Ergebnis manuell anpassbar.
           </span>
         </div>
+        <p style={S.p}>
+          <strong style={S.strong}>Einspeisung ab 2027:</strong> Für Anlagen, die ab 2027 in
+          Betrieb gehen, sollen andere Konditionen gelten — {eegVerfahrenSatz({ kurz: true })}.
+          Das Ergebnis hat dafür einen Umschalter „Heute / Ab 2027": Statt des festen
+          EEG-Satzes rechnet er mit den Regeln des Entwurfs, und den Erlös an der Strombörse
+          lassen wir standardmäßig weg — was Solarstrom in 15 Jahren dort erlöst, weiß
+          niemand. Die Hintergründe erklärt unser{" "}
+          <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" style={{ ...S.link, fontWeight: 600 }}>Ratgeber zur EEG-Reform</Link>.
+        </p>
+
+        {/* ── Wärmepumpen-Rechner ── */}
+        <h2 style={S.h2}>Wärmepumpen-Rechner</h2>
+        <p style={S.p}>
+          Der eigene <Link href="/waermepumpe-rechner" style={{ ...S.link, fontWeight: 600 }}>Wärmepumpen-Rechner</Link> geht
+          deutlich tiefer als der Zuschlag im PV-Rechner: Aus dem Gebäude (Wohnfläche,
+          Dämmstandard, Haustyp, Heizsystem) leiten wir Heizlast und Wärmebedarf ab und
+          vergleichen die Wärmepumpe mit einer neuen Gas- oder Ölheizung — inklusive
+          Anschaffung, CO₂-Abgabe und Förderung.
+        </p>
+        <p style={S.p}>
+          Zwei Entscheidungen unterscheiden ihn von vielen anderen Rechnern: Die
+          Betriebskosten rechnen wir mit dem <strong style={S.strong}>erwarteten realen
+          Verbrauch</strong>, nicht mit dem theoretischen Norm-Bedarf des Gebäudes — real
+          wird weniger geheizt, als die Norm annimmt, im Altbau um rund ein Drittel. Das
+          geht bewusst zu unseren Ungunsten: kleinere Ersparnis, längere Amortisation.
+          Und die Investitionskosten sind an rund 160 realen Handwerker-Angeboten
+          kalibriert (Datensatz der Verbraucherzentrale Rheinland-Pfalz), nicht an
+          Portal-Preisen. Alle Annahmen stehen im Ergebnis und auf der{" "}
+          <Link href="/datenstand" style={{ ...S.link, fontWeight: 600 }}>Datenstand-Seite</Link>.
+        </p>
+
+        {/* ── Klimaanlagen-Rechner ── */}
+        <h2 style={S.h2}>Klimaanlagen-Rechner: Kühlkosten</h2>
+        <p style={S.p}>
+          Der eigene <Link href="/klimaanlage-stromkosten" style={{ ...S.link, fontWeight: 600 }}>Klimaanlagen-Rechner</Link> beantwortet
+          nicht „lohnt sich das" (eine Klimaanlage spart kein Geld, sie kostet welches), sondern: Was kostet sie
+          im Betrieb — und wie viel davon übernimmt die Sonne?
+        </p>
+        <p style={S.p}>
+          Den Kühlbedarf leiten wir aus echten <strong>Kühlgradstunden</strong> ab: Wir zählen für deinen Standort,
+          wie viele Stunden es im Sommer wie weit über der Kühlschwelle lag (Open-Meteo-Wetterhistorie, ohne PLZ
+          ein deutscher Durchschnitt). Wunschtemperatur, Zeitfenster und die Lage zur Sonne skalieren diesen Wert —
+          beim Kühlen kommt der größte Wärmeeintrag durch die Fenster, deshalb fragen wir nach Sonne und Dachgeschoss,
+          nicht nach dem Dämmstandard. Umschaltbar sind drei <strong>Klimadaten-Modi</strong>: der Durchschnitt der
+          letzten {DEFAULT_AIRCON_CONFIG.avgYears} Sommer (Standard), der letzte Sommer (oft heißer) und eine
+          Projektion in ~20 Jahre auf Basis eines Klimamodells (CMIP6) — eine Modellrechnung, kein exakter Wert.
+        </p>
+        <p style={S.p}>
+          <strong>Warum die Zahl oft niedriger wirkt als erwartet:</strong> Der Wert ist ein <em>Jahres</em>betrag,
+          nicht pro Monat. Die deutsche Kühlsaison ist kurz — nur an wirklich heißen Tagen läuft das Gerät. Und:
+          <em> wie schnell</em> ein Raum kühl wird, ist eine Frage der Geräte-Leistung (kW), nicht der Jahresenergie —
+          das einmalige Runterkühlen am Abend fällt gegenüber dem laufenden Wärmeeintrag kaum ins Gewicht.
+        </p>
+        <p style={S.p}>
+          Beim <strong>Gerätevergleich</strong> rechnen wir bewusst nicht mit den Typenschild-Werten: Split-Geräte
+          tragen einen Saisonwert (Teillast, echte Außentemperaturen), Monoblöcke nur einen Volllast-Wert aus der
+          Prüfkammer — die EU-Norm schließt sie von der Saison-Messung ausdrücklich aus. In der Kammer kann keine
+          warme Luft nachströmen; im Wohnzimmer passiert genau das, sobald der Abluftschlauch Raumluft nach draußen
+          bläst. Wir stellen deshalb alle drei Gerätetypen auf dieselbe Grundlage — die Effizienz im echten Betrieb
+          über eine ganze Saison: Monoblock {acSeer("monoblock")}, mobile Split-Anlage {acSeer("portasplit")}, fest
+          installierte Split-Anlage {acSeer("split")}. Ein Monoblock zieht damit für dieselbe Kühlung rund das
+          Vierfache einer festen Split-Anlage. Die Werte samt Typenschild-Angabe stehen auf der{" "}
+          <Link href="/datenstand" style={{ ...S.link, fontWeight: 600 }}>Datenstand-Seite</Link>.
+        </p>
+        <p style={S.p}>
+          <strong>PV passt besonders gut zum Kühlen:</strong> Der Bedarf ist am höchsten, wenn die Sonne am
+          stärksten scheint. Ohne Speicher deckt die PV das Kühlen am Tag fast komplett, nachts dagegen kaum;
+          mit Batteriespeicher (Default in der Rechnung) ist auch Nachtkühlung größtenteils gedeckt. Beides
+          ist im Ergebnis umschaltbar.
+        </p>
+
+        {/* ── Balkonkraftwerk-Rechner ── */}
+        <h2 style={S.h2}>Balkonkraftwerk-Rechner</h2>
+        <p style={S.p}>
+          Der <Link href="/balkonkraftwerk-rechner" style={{ ...S.link, fontWeight: 600 }}>Balkonkraftwerk-Rechner</Link> nutzt
+          dieselbe Basis wie der große PV-Rechner: Standort-Ertrag von PVGIS und eine Stunden-Simulation aus
+          Sonnenverlauf und Haushaltsprofil. Zwei Besonderheiten: Der Ertrag wird am{" "}
+          <strong style={S.strong}>800-Watt-Wechselrichter gedeckelt</strong> — bei großen Modul-Sets zeigt der
+          Rechner sichtbar, wie viel durch die Drosselung verloren geht — und gerechnet wird ohne
+          Einspeisevergütung, weil das bei Balkonkraftwerken der Normalfall ist. Der letzte Schritt empfiehlt
+          das wirtschaftlich beste Set, zeigt aber alle Größen zum Vergleich.
+        </p>
+
+        {/* ── Einspeisevergütungs-Rechner ── */}
+        <h2 style={S.h2}>Einspeisevergütungs-Rechner</h2>
+        <p style={S.p}>
+          Der <Link href="/einspeiseverguetung-rechner" style={{ ...S.link, fontWeight: 600 }}>Einspeisevergütungs-Rechner</Link>{" "}
+          bestimmt deinen EEG-Satz nach dem Inbetriebnahme-Monat: für Anlagen ab August 2022 aus der im Gesetz
+          festgelegten Degressions-Kette, davor aus dem Monatsarchiv der Bundesnetzagentur (April 2012 bis
+          Juli 2022). Für noch ältere Anlagen fragen wir bewusst den Satz aus deinem Bescheid ab, statt einen
+          zu raten. Die Vergütung endet am 31. Dezember des zwanzigsten Jahres — der Rechner zeigt, was du
+          schon erhalten hast und was noch aussteht.
+        </p>
 
         {/* ── Quellen & Grenzen ── */}
         <h2 style={S.h2}>Datengrundlage & Grenzen</h2>
@@ -494,17 +513,15 @@ export default async function MethodikPage() {
 
         <div style={S.card}>
           <span style={S.label}>Was wir nicht berücksichtigen</span>
-          <span style={S.accent}>Standort</span> — kein regionaler Ertrag
-          (Süddeutschland ≠ Norddeutschland)
+          <span style={S.accent}>Dachausrichtung</span> — wir rechnen mit optimal
+          ausgerichteten Modulen; wie stark andere Neigungen und Richtungen abweichen,
+          zeigt die <Link href="/photovoltaik-neigungswinkel" style={S.link}>Neigungswinkel-Übersicht</Link>
           <br />
-          <span style={S.accent}>Dachausrichtung</span> — Süd, Ost-West etc.
-          beeinflussen den Ertrag
+          <span style={S.accent}>Verschattung</span> — Bäume, Nachbargebäude oder
+          Gauben kann nur ein Fachbetrieb vor Ort bewerten
           <br />
-          <span style={S.accent}>Saisonale Schwankungen</span> — Eigenverbrauch
-          im Winter deutlich höher als im Sommer
-          <br />
-          <span style={S.accent}>Förderung</span> — regionale Förderprogramme
-          nicht einberechnet
+          <span style={S.accent}>Förderung</span> — regionale Zuschüsse fließen nicht
+          in die Amortisation ein; passende Programme zeigen wir im Ergebnis an
           <br />
           <br />
           <span style={S.muted}>
@@ -518,6 +535,17 @@ export default async function MethodikPage() {
           Wärmepumpen-Annahmen — mit Stand und Quelle findest du auf der{" "}
           <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
         </p>
+
+        {/* Kontakt-Weg für alle, die die Methodik über das hier Gezeigte hinaus
+            nutzen wollen — bewusst am Ende, nach den Grenzen. */}
+        <div style={{ marginTop: 24 }}>
+          <KontaktTeaser
+            lead="Du möchtest die Methodik im Detail nutzen — für ein eigenes Tool, ein Widget oder eine Veröffentlichung? Schreib uns, wir helfen gern weiter."
+            modalTitle="Methodik im Detail nutzen"
+            topic="Methodik & Datengrundlage"
+            initialMessage={"Ich interessiere mich für die Berechnungsgrundlagen von solar-check.io.\n\n"}
+          />
+        </div>
       </div>
     </div>
   );

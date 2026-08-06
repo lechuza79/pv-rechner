@@ -64,6 +64,63 @@ export async function querySearchAnalyticsByPage(opts: {
     .filter((r) => !prefixes?.length || prefixes.some((p) => r.url.startsWith(p)));
 }
 
+export type QueryRow = {
+  query: string;
+  page: string;
+  impressions: number;
+  clicks: number;
+  ctr: number;
+  position: number;
+};
+
+/** Impressions/Klicks je Suchanfrage (mit der jeweils rankenden Seite), optional
+ *  auf eine einzelne Seite gefiltert. Position ist der impressions-gewichtete
+ *  Durchschnitt, den GSC selbst liefert. */
+export async function querySearchAnalyticsByQuery(opts: {
+  startDate: string;
+  endDate: string;
+  /** Exakte Seiten-URL (voll qualifiziert) — filtert serverseitig via GSC-Filter. */
+  pageUrl?: string;
+  rowLimit?: number;
+}): Promise<QueryRow[]> {
+  const creds = getServiceAccountCredentials();
+  if (!creds) throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON nicht konfiguriert");
+
+  const token = await getGoogleAccessToken(creds);
+  const siteUrl = await resolveGscSiteUrl(token);
+  const res = await fetch(`${GSC_API_BASE}/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      startDate: opts.startDate,
+      endDate: opts.endDate,
+      dimensions: ["query", "page"],
+      ...(opts.pageUrl
+        ? { dimensionFilterGroups: [{ filters: [{ dimension: "page", operator: "equals", expression: opts.pageUrl }] }] }
+        : {}),
+      rowLimit: Math.min(opts.rowLimit ?? MAX_ROWS, MAX_ROWS),
+      dataState: "final",
+    }),
+    signal: AbortSignal.timeout(30_000),
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`GSC-Query (nach Suchanfrage) fehlgeschlagen: ${res.status} ${text.slice(0, 300)}`);
+  }
+
+  const data = (await res.json()) as { rows?: GscRow[] };
+  return (data.rows ?? []).map(
+    (r): QueryRow => ({
+      query: r.keys[0],
+      page: r.keys[1],
+      impressions: r.impressions,
+      clicks: r.clicks,
+      ctr: r.ctr,
+      position: r.position,
+    }),
+  );
+}
+
 export type DayRow = { date: string; impressions: number; clicks: number };
 
 /** Impressionen je TAG (optional auf URL-Präfixe gefiltert). Ohne diese Sicht

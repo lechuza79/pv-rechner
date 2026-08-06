@@ -2,14 +2,15 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import { useGenerationMix, useNuclearImport } from "../../../lib/energy";
+import { useGenerationMix, useNuclearImport, type GenerationDataPoint } from "../../../lib/energy";
 import StackedAreaChart from "../../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../../components/charts/StackedBarChart";
 import {
   formatGWhIn, energyUnit, calcPeriodStats, CATEGORY_COLORS,
 } from "../../../lib/chart-utils";
-import { v, iconSizes } from "../../../lib/theme";
+import { v, iconSizes, space, pad } from "../../../lib/theme";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
+import { STROMMIX_MILESTONES, milestonesForYear } from "../../../lib/strommix-milestones";
 import { useChartExport } from "../../../lib/useChartExport";
 import ChartExportBar from "../../../components/ChartExportBar";
 import { IconChevronLeft, IconChevronRight, IconChevronDown } from "../../../components/Icons";
@@ -83,6 +84,138 @@ function rangeButtonStyle(active: boolean) {
     cursor: "pointer" as const,
     fontFamily: v("--font-text"),
   };
+}
+
+// ─── Solar-Trend: letzter abgeschlossener Monat vs. Vorjahresmonat ──────────
+
+// 1.–3. eines Monats: der Vormonat kann in den Quelldaten noch einen
+// unvollständigen Schwanz haben — dann einen Monat weiter zurückgehen.
+function lastCompletedMonth(): { year: number; month: number } {
+  const now = new Date();
+  const d = now.getDate() <= 3
+    ? new Date(now.getFullYear(), now.getMonth() - 2, 1)
+    : new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  return { year: d.getFullYear(), month: d.getMonth() };
+}
+
+function monthDateRange(year: number, month: number): { start: string; end: string } {
+  const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  const mm = String(month + 1).padStart(2, "0");
+  return { start: `${year}-${mm}-01`, end: `${year}-${mm}-${String(lastDay).padStart(2, "0")}` };
+}
+
+/** Summe eines Erzeugungs-Schlüssels über eine Roh-Zeitreihe (MW) → GWh. */
+function sumKeyGWh(data: GenerationDataPoint[], key: string): number {
+  if (data.length < 2) return 0;
+  const t0 = new Date(data[0].ts).getTime();
+  const t1 = new Date(data[1].ts).getTime();
+  const intervalHours = (t1 - t0) / 3600000;
+  if (!(intervalHours > 0)) return 0;
+  let mwh = 0;
+  for (const d of data) {
+    const val = d[key];
+    if (typeof val === "number" && val > 0) mwh += val * intervalHours;
+  }
+  return mwh / 1000;
+}
+
+/** Kompakte Karte: Solarerzeugung des letzten abgeschlossenen Monats gegen
+ *  denselben Monat des Vorjahres — aus denselben Daten wie der Chart. Bei
+ *  fehlenden/unvollständigen Daten rendert die Karte nichts. */
+function SolarTrendCard() {
+  const { year, month } = useMemo(() => lastCompletedMonth(), []);
+  const thisRange = useMemo(() => monthDateRange(year, month), [year, month]);
+  const prevRange = useMemo(() => monthDateRange(year - 1, month), [year, month]);
+  const cur = useGenerationMix("de", 720, thisRange);
+  const prev = useGenerationMix("de", 720, prevRange);
+
+  const monthLabel = new Date(year, month, 1).toLocaleString("de-DE", { month: "long" });
+  const curGWh = useMemo(() => sumKeyGWh(cur.data.data, "solar"), [cur.data.data]);
+  const prevGWh = useMemo(() => sumKeyGWh(prev.data.data, "solar"), [prev.data.data]);
+
+  if (cur.loading || prev.loading || curGWh <= 0 || prevGWh <= 0) return null;
+
+  const deltaPct = Math.round((curGWh / prevGWh - 1) * 100);
+  const unit = energyUnit(Math.max(curGWh, prevGWh));
+  const mehr = deltaPct >= 0;
+
+  return (
+    <div
+      style={{
+        background: v("--color-bg-muted"),
+        border: `1px solid ${v("--color-border")}`,
+        borderRadius: v("--radius-md"),
+        padding: pad("md", "lg"),
+        marginBottom: 20,
+        fontSize: 13,
+        lineHeight: 1.65,
+        color: v("--color-text-secondary"),
+      }}
+    >
+      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
+        Solar-Trend: {monthLabel} {year} gegen {monthLabel} {year - 1}
+      </div>
+      Im {monthLabel} {year} lieferten Deutschlands Solaranlagen{" "}
+      <strong style={{ color: v("--color-text-primary"), fontFamily: v("--font-mono") }}>{formatGWhIn(curGWh, unit)}</strong>{" "}
+      Strom — {mehr ? "" : "das sind "}
+      <strong style={{ color: mehr ? v("--color-positive") : v("--color-text-primary"), fontFamily: v("--font-mono") }}>
+        {Math.abs(deltaPct)} %
+      </strong>{" "}
+      {mehr ? "mehr" : "weniger"} als im {monthLabel} {year - 1} ({formatGWhIn(prevGWh, unit)}).{" "}
+      {mehr
+        ? "Ein Treiber neben dem Wetter: Es sind schlicht mehr Module am Netz."
+        : "Kurzfristig schlägt das Wetter den Zubau — übers Jahr wächst die Solarerzeugung trotzdem."}{" "}
+      <a href="/photovoltaik-zubau-deutschland" style={{ color: v("--color-accent"), fontWeight: 600, textDecoration: "none" }}>
+        Zum PV-Zubau in Deutschland
+      </a>
+    </div>
+  );
+}
+
+// ─── Jahres-Marken ──────────────────────────────────────────────────────────
+
+/** Ereignis-Einordnung unter dem Chart: für ein gewähltes Jahr dessen Marken,
+ *  in der Max-Ansicht die ganze Reihe. */
+function MilestoneBlock({ selected, isMax }: { selected: string; isMax: boolean }) {
+  const items = isMax ? STROMMIX_MILESTONES : milestonesForYear(Number(selected));
+  if (items.length === 0) return null;
+  return (
+    <div
+      style={{
+        background: v("--color-bg-muted"),
+        border: `1px solid ${v("--color-border")}`,
+        borderRadius: v("--radius-md"),
+        padding: pad("md", "lg"),
+        marginBottom: 20,
+      }}
+    >
+      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-primary"), marginBottom: space.sm }}>
+        {isMax ? "Was die Jahre geprägt hat" : `Was ${selected} geprägt hat`}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
+        {items.map((m) => (
+          <div key={`${m.year}-${m.title}`} style={{ display: "flex", gap: space.md, alignItems: "baseline" }}>
+            {isMax && (
+              <span
+                style={{
+                  flexShrink: 0,
+                  fontFamily: v("--font-mono"),
+                  fontWeight: 700,
+                  fontSize: 12,
+                  color: v("--color-accent"),
+                }}
+              >
+                {m.year}
+              </span>
+            )}
+            <div style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary") }}>
+              <strong style={{ color: v("--color-text-primary") }}>{m.title}.</strong> {m.text}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // ─── Loading Spinner ────────────────────────────────────────────────────────
@@ -291,8 +424,11 @@ export default function EnergieClient() {
       {/* Hero */}
       <div style={{ textAlign: "center", marginBottom: 28 }}>
         <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
-          Deutschlands Energiedaten
+          Strommix Deutschland – live
         </h1>
+        <p style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: 6, lineHeight: 1.5 }}>
+          Welche Energieträger gerade Strom liefern — aktuell, im Monats- und im Jahresvergleich.
+        </p>
       </div>
 
       {/* Time Range Toggle — two groups */}
@@ -648,6 +784,12 @@ export default function EnergieClient() {
           )}
         </div>
       </div>
+
+      {/* Jahres-Einordnung (nur Jahres-/Max-Ansicht) */}
+      {(isYear || isMax) && <MilestoneBlock selected={selected} isMax={isMax} />}
+
+      {/* Solar-Trend: Monatsvergleich zum Vorjahr */}
+      <SolarTrendCard />
 
       {/* Methodology note */}
       {showNuclear && !nuclearLoading && nuclearImportGWh > 0 && (
