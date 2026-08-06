@@ -73,17 +73,32 @@ test.describe("EEG-Reform: Sachstand auf den Seiten, an denen ein Nutzer ihn lie
     const rechnen = page.getByRole("button", { name: /berechnen|ergebnis|fertig/i });
     if (await rechnen.count()) await rechnen.first().click();
 
-    // [\s\S] statt dem s-Flag: das Test-Target ist ES2017.
-    const notiz = page.getByText(/Einspeisevergütung:[\s\S]*Bestandsschutz/).first();
-    await expect(notiz).toBeVisible({ timeout: 15_000 });
-    const text = await notiz.innerText();
+    // Der Sachstand steht seit dem 04.08.2026 nicht mehr in einer festen
+    // Hinweiszeile, sondern im Block, mit dem sich die Konditionen umschalten
+    // lassen. Deshalb wird hier auch der Umschalter selbst mitgeprüft — ohne ihn
+    // gäbe es die Reform-Sätze auf dieser Seite gar nicht mehr.
+    const block = page
+      .getByText("Nach welchen Konditionen soll gerechnet werden?")
+      .locator("xpath=..");
+    await expect(block).toBeVisible({ timeout: 15_000 });
+
+    // Voreinstellung ist die heutige Rechtslage — sie gilt für jede Anlage, die
+    // bis Ende 2026 ans Netz geht, und darf nicht stillschweigend auf einen
+    // Entwurf umgestellt sein.
+    expect(await block.innerText()).toMatch(/Bestandsschutz/);
+
+    await page.getByRole("button", { name: /Ab 2027/ }).first().click();
+    const text = await block.innerText();
 
     expect(text).toContain("29. Juli 2026");
     expect(text).toMatch(/Gesetzentwurf beschlossen/);
     expect(text).toMatch(/Bundestag muss noch entscheiden/);
+    // Entwurfswerte müssen als solche gekennzeichnet bleiben.
+    expect(text).toMatch(/kein geltendes Recht/);
     // Die alte Formulierung behauptete implizit, das Kabinett stehe noch aus.
     expect(text).not.toMatch(/beschlossen ist er noch nicht/i);
     expect(text).not.toMatch(/Bundesrat (müssen|muss) zustimmen/);
+    expect(text).not.toMatch(/noch nicht veröffentlicht/);
   });
 
   test("Zubau-Datenstory: die 2027-Marke nennt den Kabinettsbeschluss", async ({ page }) => {
