@@ -16,16 +16,15 @@ import { useEffect, useRef, useState } from "react";
 import EventTimeline from "../../../components/charts/EventTimeline";
 import { PLOT_MARGIN, topRoundedRect } from "../../../components/charts/ZubauTimelineChart";
 import { ZUBAU_EVENTS, ZUBAU_MILESTONE_YEARS } from "../../../components/charts/ZubauWidget";
+import { fmtCt } from "../../../lib/feedin-config";
 import { v } from "../../../lib/theme";
 import { MONAT_KURZ, type VerlaufJahr } from "./VerlaufsChart";
 
-const ct = (n: number) => n.toLocaleString("de-DE", { minimumFractionDigits: 2 });
+const ct = fmtCt;
 
 const PLOT_H = 170;
-const Y_MAX = 60; // ct/kWh — über dem Spitzenwert 57,40 (2004)
 
 const START_YEAR = ZUBAU_EVENTS[0].year; // 2000
-const END_YEAR = ZUBAU_EVENTS[ZUBAU_EVENTS.length - 1].year; // 2027 (geplant)
 
 interface HoverInfo {
   /** Beschriftung „Apr 2012" bzw. „2004 (Jahresbeginn)". */
@@ -51,16 +50,23 @@ export default function VerlaufMitMeilensteinen({ jahre }: { jahre: VerlaufJahr[
     return () => ro.disconnect();
   }, []);
 
+  // Domänen-Ende: letztes kuratiertes Ereignis ODER das laufende Datenjahr —
+  // sonst liefe die Linie ab dem Jahr nach dem letzten Ereignis still aus dem
+  // Plot (Rollover-Falle, Konventions-Check 06.08.2026).
+  const endYear = Math.max(ZUBAU_EVENTS[ZUBAU_EVENTS.length - 1].year, jahre[jahre.length - 1].year);
+  // y-Skala aus den Daten (auf volle 10er aufgerundet) statt handgetippt.
+  const maxVal = Math.max(...jahre.flatMap((j) => j.bars.filter((b): b is number => b != null)));
+  const yMax = Math.ceil(maxVal / 10) * 10;
   const margin = PLOT_MARGIN;
   const height = margin.top + PLOT_H + margin.bottom;
   const plotW = Math.max(width - margin.left - margin.right, 100);
   const domainStart = START_YEAR - 0.5;
-  const span = END_YEAR + 0.5 - domainStart;
+  const span = endYear + 0.5 - domainStart;
   const x = (yearFloat: number) => margin.left + ((yearFloat - domainStart) / span) * plotW;
-  const y = (val: number) => margin.top + PLOT_H - (val / Y_MAX) * PLOT_H;
+  const y = (val: number) => margin.top + PLOT_H - (val / yMax) * PLOT_H;
   const yearW = plotW / span;
   const labelStep = yearW >= 19 ? 2 : 4;
-  const gridSteps = [0, 10, 20, 30, 40, 50, 60];
+  const gridSteps = Array.from({ length: yMax / 10 + 1 }, (_, i) => i * 10);
 
   return (
     <div ref={wrapRef} style={{ position: "relative" }}>
@@ -96,7 +102,7 @@ export default function VerlaufMitMeilensteinen({ jahre }: { jahre: VerlaufJahr[
         width={width}
         height={height}
         role="img"
-        aria-label="Einspeisevergütung für kleine Dachanlagen seit 2000 in Cent pro Kilowattstunde, als Balken je Inbetriebnahme-Monat"
+        aria-label="Einspeisevergütung für kleine Dachanlagen seit 2000 in Cent pro Kilowattstunde — Jahresbalken bis 2011, Monatslinie ab April 2012"
         style={{ display: "block", fontFamily: v("--font-text") }}
         onMouseLeave={() => setHover(null)}
       >
@@ -229,7 +235,7 @@ export default function VerlaufMitMeilensteinen({ jahre }: { jahre: VerlaufJahr[
         active={active}
         onChange={setActive}
         startYear={START_YEAR}
-        endYear={END_YEAR}
+        endYear={endYear}
       />
     </div>
   );

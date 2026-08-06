@@ -12,7 +12,7 @@
 // Never hardcode a year or a euro figure below.
 import { estimateCost, BATTERY_LIFETIME_YEARS } from "./calc";
 import { FEED_IN_YEARS } from "./constants";
-import { DEFAULT_FEED_IN, type FeedInRates } from "./feedin-config";
+import { DEFAULT_FEED_IN, fmtCt, type FeedInRates } from "./feedin-config";
 import { DEFAULT_PRICES } from "./prices-config";
 import { TILT_OPTIMUM, tiltPct } from "./tilt-config";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "./greengas-config";
@@ -115,10 +115,20 @@ export function pvRechnerFaq(): FaqEntry[] {
 // EINE Quelle: dieselbe Antwort erscheint im PV-Rechner-FAQ und im FAQ des
 // Einspeisevergütungs-Rechners — deshalb hier als geteilter Eintrag, nicht
 // zweimal getippt (Systematik wie eegVerfahrenSatz()).
+// Geteilte Kern-Sätze der Reform-Aussage — Oberflächen (FAQ-Eintrag unten,
+// Reform-Karte im Tabellen-Ratgeber) KOMPONIEREN daraus, statt die Sätze
+// abzutippen. Der Fakten-Check am 06.08.2026 fand genau solche handgetippten
+// Zweitkopien; als Kopie überlebt ein Satz jede künftige Korrektur stumm.
+export const EEG_REFORM_VORHABEN_SATZ =
+  "Vorgesehen ist, die feste Einspeisevergütung für Neuanlagen ab 2027 zu beenden";
+export function eegBestandsschutzSatz(): string {
+  return `Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung ${FEED_IN_YEARS} Jahre garantiert (Bestandsschutz)`;
+}
+
 function eegReform2027FaqEntry(): FaqEntry {
   return {
     q: "Fällt die Einspeisevergütung 2027 weg?",
-    a: `Die Bundesregierung hat dazu am ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} einen Gesetzentwurf beschlossen — ein Gesetz ist er damit noch nicht: Der Bundestag muss noch entscheiden, der Bundesrat ist am Verfahren beteiligt, und die Förderregeln brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission. Vorgesehen ist, die feste Einspeisevergütung für Neuanlagen ab 2027 zu beenden; für Anlagen unter 25 Kilowatt installierter Leistung soll es keine dauerhafte Förderung mehr geben, sondern eine befristete Starthilfe für die Direktvermarktung. Wichtig: Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung 20 Jahre garantiert (Bestandsschutz) — an ihrem Vergütungsanspruch ändert der Entwurf nichts. In welcher Form die Reform am Ende kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage. (Stand: ${eegReformStandLabel()})`,
+    a: `Die Bundesregierung hat dazu am ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} einen Gesetzentwurf beschlossen — ein Gesetz ist er damit noch nicht: Der Bundestag muss noch entscheiden, der Bundesrat ist am Verfahren beteiligt, und die Förderregeln brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission. ${EEG_REFORM_VORHABEN_SATZ}; für Anlagen unter 25 Kilowatt installierter Leistung soll es keine dauerhafte Förderung mehr geben, sondern eine befristete Starthilfe für die Direktvermarktung. Wichtig: ${eegBestandsschutzSatz()} — an ihrem Vergütungsanspruch ändert der Entwurf nichts. In welcher Form die Reform am Ende kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage. (Stand: ${eegReformStandLabel()})`,
     links: [{ phrase: "Einspeisevergütung", href: "/datenstand" }],
     cta: { label: "Ratgeber: Lohnt sich PV ohne Einspeisevergütung?", href: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" },
   };
@@ -128,11 +138,21 @@ function eegReform2027FaqEntry(): FaqEntry {
 // eegReform2027FaqEntry): dieselbe geprüfte Antwort erscheint im FAQ des
 // Einspeisevergütungs-Rechners UND im Tabellen-Ratgeber — nie zweimal tippen.
 
+/** Kern-Satz zur Garantiedauer (§ 25 EEG, Wortlaut am 04.08.2026 geprüft,
+ *  s. feedin-config) — geteilt zwischen FAQ und Ratgeber-Prosa. */
+export function feedInGarantieSatz(): string {
+  return `${FEED_IN_YEARS} Jahre ab Inbetriebnahme — bei der festen Einspeisevergütung verlängert sich die Zahlung sogar bis zum 31. Dezember des zwanzigsten Jahres (§ 25 EEG).`;
+}
+
+/** Kern-Satz zur halbjährlichen Degression (§ 49 EEG) — geteilt wie oben. */
+export const FEEDIN_DEGRESSION_SATZ =
+  "Das EEG senkt die Sätze für neu in Betrieb genommene Anlagen planmäßig um 1 % je Halbjahr, jeweils zum 1. Februar und zum 1. August (§ 49 EEG).";
+
 /** Garantiedauer nach § 25 EEG (Wortlaut am 04.08.2026 geprüft, s. feedin-config). */
 function feedInGarantieFaqEntry(): FaqEntry {
   return {
     q: "Wie lange ist die Einspeisevergütung garantiert?",
-    a: `${FEED_IN_YEARS} Jahre ab Inbetriebnahme — bei der festen Einspeisevergütung verlängert sich die Zahlung sogar bis zum 31. Dezember des zwanzigsten Jahres (§ 25 EEG). Der Satz, mit dem eine Anlage in Betrieb geht, bleibt über die gesamte Laufzeit fest; die halbjährliche Absenkung betrifft nur Anlagen, die danach neu in Betrieb gehen. Nach dem Ende der Vergütung läuft die Ersparnis durch Eigenverbrauch weiter.`,
+    a: `${feedInGarantieSatz()} Der Satz, mit dem eine Anlage in Betrieb geht, bleibt über die gesamte Laufzeit fest; die halbjährliche Absenkung betrifft nur Anlagen, die danach neu in Betrieb gehen. Nach dem Ende der Vergütung läuft die Ersparnis durch Eigenverbrauch weiter.`,
   };
 }
 
@@ -140,7 +160,7 @@ function feedInGarantieFaqEntry(): FaqEntry {
 function feedInDegressionFaqEntry(): FaqEntry {
   return {
     q: "Warum sinkt die Einspeisevergütung alle sechs Monate?",
-    a: `Das EEG senkt die Sätze für neu in Betrieb genommene Anlagen planmäßig um 1 % je Halbjahr, jeweils zum 1. Februar und zum 1. August (§ 49 EEG). Das ist ein fester Fahrplan, kein politischer Einzelbeschluss. Wer früher in Betrieb nimmt, sichert sich den höheren Satz für ${FEED_IN_YEARS} Jahre.`,
+    a: `${FEEDIN_DEGRESSION_SATZ} Das ist ein fester Fahrplan, kein politischer Einzelbeschluss. Wer früher in Betrieb nimmt, sichert sich den höheren Satz für ${FEED_IN_YEARS} Jahre.`,
   };
 }
 
@@ -389,7 +409,7 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
 export function einspeiseverguetungFaq(rates: FeedInRates = DEFAULT_FEED_IN): FaqEntry[] {
   const year = new Date().getFullYear();
   const strompreisCt = Math.round(DEFAULT_PRICES.electricityPrice * 100);
-  const ct = (n: number) => n.toLocaleString("de-DE", { minimumFractionDigits: 2 });
+  const ct = fmtCt;
   return [
     {
       q: `Wie hoch ist die Einspeisevergütung ${year}?`,

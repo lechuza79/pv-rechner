@@ -7,7 +7,13 @@ import GlossaryTerm from "../../../components/GlossaryTerm";
 import { DataSourceNote } from "../../../components/PoweredBy";
 import RelatedLinks from "../../../components/RelatedLinks";
 import { DATA_SOURCES } from "../../../lib/data-sources";
-import { einspeiseverguetungTabelleFaq } from "../../../lib/faq";
+import {
+  EEG_REFORM_VORHABEN_SATZ,
+  eegBestandsschutzSatz,
+  einspeiseverguetungTabelleFaq,
+  FEEDIN_DEGRESSION_SATZ,
+  feedInGarantieSatz,
+} from "../../../lib/faq";
 import { pageMetadata } from "../../../lib/seo";
 import { v } from "../../../lib/theme";
 import { FEED_IN_YEARS } from "../../../lib/constants";
@@ -15,6 +21,9 @@ import {
   feedInEndIso,
   feedInPeriodsSince2022,
   feedInRatesFor,
+  feedInRatesForCommissioning,
+  fmtCt,
+  naechsteDegressionIso,
 } from "../../../lib/feedin-config";
 import {
   FEEDIN_HISTORY_VALUES,
@@ -187,29 +196,28 @@ const S = {
 };
 
 // ─── Formatierung (deutsche Zahlen, Datumsangaben) ───────────────────────────
-const ct = (n: number) => n.toLocaleString("de-DE", { minimumFractionDigits: 2 });
+const ct = fmtCt;
 const dd = (iso: string) => iso.split("-").reverse().join(".");
-
-/** Nächster Degressions-Stichtag nach § 49 EEG (1.2. / 1.8.) nach heute. */
-function naechsteAbsenkungIso(todayIso: string): string {
-  const y = Number(todayIso.slice(0, 4));
-  for (const c of [`${y}-02-01`, `${y}-08-01`, `${y + 1}-02-01`]) {
-    if (c > todayIso) return c;
-  }
-  return `${y + 1}-02-01`;
-}
-
 
 export default async function EinspeiseverguetungTabellePage() {
   const now = new Date();
   const todayIso = now.toISOString().slice(0, 10);
   const year = now.getFullYear();
-  const rates = feedInRatesFor(now);
+  // Aktuelle Sätze aus der GERECHNETEN Kette — derselben Quelle wie die
+  // Perioden-Tabelle darunter. Der Stichtags-Plan (feedInRatesFor) bleibt
+  // Fallback; mit zwei Quellen widersprächen sich Kurzantwort und erste
+  // Tabellenzeile am ersten Stichtag nach dem letzten Schedule-Eintrag
+  // (Fakten-Check 06.08.2026, Befund 4).
+  const rates = feedInRatesForCommissioning(todayIso) ?? feedInRatesFor(now);
   const prices = await fetchMarketPrices();
   const strompreisCt = (prices.electricityPrice * 100).toLocaleString("de-DE", { maximumFractionDigits: 1 });
   const priceRatio = Math.round((prices.electricityPrice * 100) / rates.teilUnder10);
-  const naechsteAbsenkung = eegDatum(naechsteAbsenkungIso(todayIso));
+  const naechsteAbsenkung = eegDatum(naechsteDegressionIso(todayIso));
   const REFORM_STAND = eegReformStandLabel();
+  // Intra-Monats-Bruch Juli 2022: bis 29.07. galt der Archivwert, ab dem
+  // 30.07. die EEG-2023-Anhebung — beide live aus derselben Kette.
+  const juliAlt = feedInRatesForCommissioning("2022-07-29")!.teilUnder10;
+  const eeg2023Start = feedInRatesForCommissioning("2022-07-30")!.teilUnder10;
 
   // Halbjahres-Perioden seit dem 30.07.2022 — Grenzen und Sätze aus der
   // geprüften Kette (feedInPeriodsSince2022, Anker-Test in feedin-config.test).
@@ -232,7 +240,7 @@ export default async function EinspeiseverguetungTabellePage() {
   const chartJahre = verlaufJahre(now);
 
   // § 25 EEG live gerechnet: welcher Jahrgang läuft gerade aus?
-  const jahrgangEnde = year - 20; // Vergütung endet am 31.12. dieses Jahres
+  const jahrgangEnde = year - FEED_IN_YEARS; // Vergütung endet am 31.12. dieses Jahres
   const endeDatum = dd(feedInEndIso(`${jahrgangEnde}-01-01`));
 
   const faqItems = einspeiseverguetungTabelleFaq();
@@ -260,7 +268,7 @@ export default async function EinspeiseverguetungTabellePage() {
           description="Aktuelle EEG-Vergütungssätze plus die komplette historische Tabelle — Monatswerte 2012–2022, Halbjahres-Sätze seit 2022, Jahreswerte seit 2000."
           path="/einspeiseverguetung-tabelle"
           published="2026-08-04"
-          modified="2026-08-04"
+          modified="2026-08-06"
         />
 
         {/* ── Kurzantwort ── */}
@@ -272,8 +280,8 @@ export default async function EinspeiseverguetungTabellePage() {
           <strong style={S.strong}>{ct(rates.vollUnder10)} ct/kWh</strong> bei
           Volleinspeisung. Der Satz, mit dem eine Anlage in Betrieb geht, bleibt{" "}
           {FEED_IN_YEARS} Jahre fest — deshalb steht in den Tabellen unten für jeden
-          Inbetriebnahme-Zeitraum ein eigener Wert, in der Spitze über{" "}
-          {Math.round(maxWert)} ct/kWh ({maxJahr}). Selbst verbrauchter Strom spart mit
+          Inbetriebnahme-Zeitraum ein eigener Wert, in der Spitze{" "}
+          {ct(maxWert)} ct/kWh ({maxJahr}). Selbst verbrauchter Strom spart mit
           rund {strompreisCt} ct/kWh heute etwa das {priceRatio}-Fache der Vergütung.
         </div>
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginBottom: 0 }}>
@@ -285,11 +293,9 @@ export default async function EinspeiseverguetungTabellePage() {
         {/* ── EEG-Reform: Sachstand (geteilte Quelle, kein eigener Rechtssatz) ── */}
         <div style={S.card}>
           <span style={S.label}>Geplante EEG-Reform 2027</span>
-          Vorgesehen ist, die feste Einspeisevergütung für Neuanlagen ab 2027 zu beenden.{" "}
-          {eegVerfahrenSatz()} Für Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die
-          Vergütung {FEED_IN_YEARS} Jahre garantiert (Bestandsschutz) — an den Tabellen
-          auf dieser Seite ändert der Entwurf nichts. Was die Reform für neue Anlagen
-          bedeutet, steht im Ratgeber{" "}
+          {EEG_REFORM_VORHABEN_SATZ}. {eegVerfahrenSatz()} {eegBestandsschutzSatz()} — an
+          den Tabellen auf dieser Seite ändert der Entwurf nichts. Was die Reform für
+          neue Anlagen bedeutet, steht im Ratgeber{" "}
           <Link href="/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" style={S.link}>
             „Lohnt sich PV ohne Einspeisevergütung?"
           </Link>{" "}
@@ -303,17 +309,19 @@ export default async function EinspeiseverguetungTabellePage() {
         <h2 style={S.h2}>Der Verlauf seit 2000 — und seine Weichenstellungen</h2>
         <p style={S.p}>
           Von {ct(maxWert)} ct/kWh in der Spitze ({maxJahr}) auf {ct(rates.teilUnder10)} ct
-          heute — jeder Balken ist ein Inbetriebnahme-Monat (bis 2011: ein Jahr), die
-          Höhe der Satz, der dann {FEED_IN_YEARS} Jahre fest gilt. Mit der Maus über
-          einem Balken erscheint der exakte Wert; die nummerierten Punkte darunter sind
-          die politischen Weichenstellungen — antippen zeigt, was damals entschieden
-          wurde.
+          heute: Bis 2011 zeigt der Chart Jahresbalken, ab April 2012 läuft die dann
+          monatlich sinkende Reihe als Linie weiter — jeder Wert ist der Satz, der für
+          Anlagen dieses Inbetriebnahme-Zeitraums {FEED_IN_YEARS} Jahre fest gilt. Beim
+          Überfahren oder Antippen erscheint der exakte Wert; die Punkte darunter
+          markieren die politischen Weichenstellungen (dieselben, die auch unsere
+          Zubau-Datenstory erzählt) — antippen zeigt, was damals entschieden wurde.
         </p>
         <VerlaufMitMeilensteinen jahre={chartJahre} />
         <p style={{ ...S.small, marginBottom: 16, marginTop: 12 }}>
           Kleinste Dachanlagen-Klasse (bis 2008: bis 30 kW, ab 2009: bis 10 kWp), ab dem
           30.07.2022 Teileinspeisung; 2000–2011 Jahresanfangswerte. Der sichtbare Sprung
-          Ende Juli 2022 ist die EEG-2023-Anhebung — real, kein Datenfehler.
+          im Juli 2022 ist die EEG-2023-Anhebung zum Stichtag 30.07.2022 — real, kein
+          Datenfehler; die Linie zeigt für Juli 2022 den bis zum 29.07. gültigen Satz.
         </p>
 
         {/* ── Halbjahres-Tabelle seit 30.07.2022 (neueste zuerst — die erste
@@ -379,23 +387,23 @@ export default async function EinspeiseverguetungTabellePage() {
           Anlagenteil über {rates.thresholdKwp} kWp (Klasse bis 40 kWp); bei größeren
           Anlagen ergibt sich daraus ein gewichteter Mischsatz, den der{" "}
           <Link href="/einspeiseverguetung-rechner" style={S.link}>Einspeisevergütungs-Rechner</Link>{" "}
-          für deine Anlagengröße ausweist. Das EEG senkt die Sätze für neu in Betrieb
-          genommene Anlagen <GlossaryTerm id="degression">planmäßig</GlossaryTerm> um 1 %
-          je Halbjahr, jeweils zum 1. Februar und zum 1. August (§ 49 EEG) — nach
-          geltendem Recht folgt die nächste Absenkung zum {naechsteAbsenkung}. Vom
-          30.07.2022 bis zum 31.01.2024 setzte die Absenkung gesetzlich aus, deshalb gilt
-          für diesen Zeitraum eine gemeinsame Zeile. Alle aktuellen Werte mit Stand-Datum
-          stehen auf der <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
+          für deine Anlagengröße ausweist. {FEEDIN_DEGRESSION_SATZ} Nach geltendem Recht
+          folgt die nächste <GlossaryTerm id="degression">Absenkung</GlossaryTerm> zum{" "}
+          {naechsteAbsenkung}. Vom 30.07.2022 bis zum 31.01.2024 setzte die Absenkung
+          gesetzlich aus, deshalb gilt für diesen Zeitraum eine gemeinsame Zeile. Alle
+          aktuellen Werte mit Stand-Datum stehen auf der{" "}
+          <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
         </p>
 
         {/* ── Monatstabelle 04/2012–07/2022 (BNetzA-Archiv) ── */}
         <h2 style={S.h2}>Tabelle für Bestandsanlagen: Monatswerte April 2012 bis Juli 2022</h2>
         <p style={S.p}>
-          Zwischen April 2012 und Juli 2022 sank die Vergütung für neue Anlagen meist von
-          Monat zu Monat — zeitweise stand sie auch still. Für Bestandsanlagen aus dieser
-          Zeit zählt deshalb der <strong style={S.strong}>Inbetriebnahme-Monat</strong>.
-          Die Tabelle zeigt die feste Einspeisevergütung für Dachanlagen auf Wohngebäuden
-          aus den Archivtabellen der Bundesnetzagentur; eine getrennte (höhere)
+          Zwischen April 2012 und Juli 2022 änderte sich die Vergütung für neue Anlagen
+          meist von Monat zu Monat — überwiegend nach unten, zeitweise stand sie still.
+          Für Bestandsanlagen aus dieser Zeit zählt deshalb der{" "}
+          <strong style={S.strong}>Inbetriebnahme-Monat</strong>. Die Tabelle zeigt die
+          feste Einspeisevergütung für Dachanlagen auf Wohngebäuden aus den
+          Archivtabellen der Bundesnetzagentur; eine getrennte (höhere)
           Volleinspeisungs-Vergütung gab es in dieser Ära noch nicht — es galt ein Satz
           je Größenklasse.
         </p>
@@ -405,10 +413,13 @@ export default async function EinspeiseverguetungTabellePage() {
         <ArchivTabelle field="u40" />
         <p style={{ ...S.small, marginBottom: 16 }}>
           Alle Werte in ct/kWh. Januar bis März 2012 gehören noch zur älteren
-          Vergütungslogik (Jahresbeginn 2012: {ct(wert2012)} ct/kWh, siehe Jahrestabelle
-          unten); ab dem 30.07.2022 gilt die Halbjahres-Tabelle oben. Wie viel eine
-          Bestandsanlage mit ihrem Satz übers Jahr und über die Laufzeit einnimmt, rechnet
-          der <Link href="/einspeiseverguetung-rechner" style={S.link}>Einspeisevergütungs-Rechner</Link> aus.
+          Vergütungslogik (zu Jahresbeginn 2012: {ct(wert2012)} ct/kWh). Der
+          Juli-2022-Wert gilt nur für Inbetriebnahmen bis zum 29.07. — zum Stichtag
+          30.07.2022 hob das EEG 2023 den Satz auf {ct(eeg2023Start)} ct/kWh an (statt{" "}
+          {ct(juliAlt)}, Klasse bis 10 kWp); ab da gilt die Halbjahres-Tabelle oben. Wie
+          viel eine Bestandsanlage mit ihrem Satz übers Jahr und über die Laufzeit
+          einnimmt, rechnet der{" "}
+          <Link href="/einspeiseverguetung-rechner" style={S.link}>Einspeisevergütungs-Rechner</Link> aus.
         </p>
 
         {/* ── Jahreswerte 2000–2011 ── */}
@@ -450,9 +461,7 @@ export default async function EinspeiseverguetungTabellePage() {
         {/* ── Wie lange wird gezahlt ── */}
         <h2 style={S.h2}>Wie lange wird die Einspeisevergütung gezahlt?</h2>
         <p style={S.p}>
-          {FEED_IN_YEARS} Jahre ab Inbetriebnahme — bei der festen Einspeisevergütung
-          verlängert sich die Zahlung sogar bis zum 31. Dezember des zwanzigsten Jahres
-          (§ 25 EEG). Konkret heißt das gerade: Eine Anlage, die {jahrgangEnde} in Betrieb
+          {feedInGarantieSatz()} Konkret: Eine Anlage, die {jahrgangEnde} in Betrieb
           ging, wird noch bis zum {endeDatum} vergütet; Anlagen mit Inbetriebnahme bis
           Ende {jahrgangEnde - 1} sind bereits aus der Vergütung gelaufen.
         </p>
@@ -527,8 +536,7 @@ export default async function EinspeiseverguetungTabellePage() {
           ]}
         />
         <p style={{ ...S.p, fontSize: v("--font-size-small"), marginTop: 16 }}>
-          Zuletzt aktualisiert: {now.toLocaleDateString("de-DE", { month: "long", year: "numeric" })} —
-          die aktuellen Sätze folgen automatisch den gesetzlichen Stichtagen, die
+          Die aktuellen Sätze folgen automatisch den gesetzlichen Stichtagen, die
           historischen Tabellen sind amtliche Archivstände. Ohne Gewähr; verbindlich sind
           Gesetz und Bescheid.
         </p>

@@ -7,6 +7,7 @@ import {
   feedInPeriodsSince2022,
   feedInRatesFor,
   feedInRatesForCommissioning,
+  naechsteDegressionIso,
 } from "../feedin-config";
 
 /**
@@ -243,6 +244,15 @@ describe("Sätze nach Inbetriebnahme (Bestandsanlagen-Ableitung)", () => {
     // Vor einem Stichtag taucht die künftige Periode nicht auf.
     const vorStichtag = feedInPeriodsSince2022(new Date("2026-07-31T12:00:00Z"));
     expect(vorStichtag[vorStichtag.length - 1].fromIso).toBe("2026-02-01");
+  });
+
+  it("der nächste Degressions-Stichtag folgt der 1.2./1.8.-Regel (auch an den Kanten)", () => {
+    expect(naechsteDegressionIso("2026-08-06")).toBe("2027-02-01");
+    expect(naechsteDegressionIso("2026-08-01")).toBe("2027-02-01"); // am Stichtag selbst: der nächste
+    expect(naechsteDegressionIso("2026-07-31")).toBe("2026-08-01");
+    expect(naechsteDegressionIso("2027-01-31")).toBe("2027-02-01");
+    expect(naechsteDegressionIso("2026-12-31")).toBe("2027-02-01"); // Jahreswechsel
+    expect(naechsteDegressionIso("2026-02-01")).toBe("2026-08-01");
   });
 
   it("die Vergütung endet am 31.12. des zwanzigsten Jahres (§ 25 EEG)", () => {

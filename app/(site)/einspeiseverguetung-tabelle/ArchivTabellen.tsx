@@ -10,10 +10,11 @@
 import { useState } from "react";
 import { topRoundedRect } from "../../../components/charts/ZubauTimelineChart";
 import { FEED_IN_ARCHIV } from "../../../lib/feedin-archiv";
+import { fmtCt } from "../../../lib/feedin-config";
 import { v } from "../../../lib/theme";
 import { MONAT_KURZ } from "./VerlaufsChart";
 
-const ct = (n: number) => n.toLocaleString("de-DE", { minimumFractionDigits: 2 });
+const ct = fmtCt;
 
 /** Teaser-Zeilen (Jan–Apr): jede Jahresspalte zeigt mindestens einen echten
  *  Wert (das Archiv beginnt im April 2012). */
@@ -21,7 +22,7 @@ const TEASER_MONATE = 4;
 
 // Gemeinsame Balken-Skala über beide Größenklassen (größter Archivwert),
 // damit die Mini-Charts der Jahresspalten untereinander vergleichbar sind.
-const ARCHIV_MAX = Math.max(...FEED_IN_ARCHIV.map((r) => r.u10));
+const ARCHIV_MAX = Math.max(...FEED_IN_ARCHIV.flatMap((r) => [r.u10, r.u40]));
 
 function archivMatrix(field: "u10" | "u40"): { year: number; months: (number | null)[] }[] {
   const byYear = new Map<number, (number | null)[]>();
@@ -103,7 +104,7 @@ export default function ArchivTabelle({ field }: { field: "u10" | "u40" }) {
   const jahre = archivMatrix(field);
   return (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ overflowX: "auto" }}>
+      <div id={`archiv-tabelle-${field}`} style={{ overflowX: "auto" }}>
         <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 680 }}>
           <thead>
             <tr>
@@ -136,6 +137,7 @@ export default function ArchivTabelle({ field }: { field: "u10" | "u40" }) {
       <button
         onClick={() => setOffen((o) => !o)}
         aria-expanded={offen}
+        aria-controls={`archiv-tabelle-${field}`}
         style={{
           marginTop: 6,
           padding: "7px 14px",

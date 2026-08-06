@@ -107,6 +107,17 @@ export const FEED_IN_BASIS = {
  *  statt der amtlichen 7,43). Gleiche Implementierung wie im Anker-Test. */
 const round2 = (x: number) => Math.round(Number((x * 100).toFixed(6))) / 100;
 
+/** Nächster Degressions-Stichtag nach § 49 EEG (1.2. / 1.8.) NACH dem
+ *  übergebenen Tag — dieselbe Stichtags-Regel wie feedInDegressionSteps, an
+ *  einer Stelle kodiert (der Ratgeber zeigt „nächste planmäßige Absenkung"). */
+export function naechsteDegressionIso(todayIso: string): string {
+  const y = Number(todayIso.slice(0, 4));
+  for (const c of [`${y}-02-01`, `${y}-08-01`, `${y + 1}-02-01`]) {
+    if (c > todayIso) return c;
+  }
+  return `${y + 1}-02-01`;
+}
+
 /** Degressionsschritte seit dem 01.02.2024 für ein Inbetriebnahme-Datum
  *  (§ 49 Abs. 1 EEG: 1 % je Halbjahr, Stichtage 1.2. und 1.8.). */
 export function feedInDegressionSteps(dateIso: string): number {
@@ -134,6 +145,15 @@ export function feedInRatesForCommissioning(dateIso: string): FeedInRates | null
     source: "§§ 48/49/53 EEG (Kette ab Basiswerten 2022)",
   };
 }
+
+/**
+ * DER ct/kWh-Formatter der Einspeise-Oberflächen (deutsche Schreibweise,
+ * mindestens zwei Nachkommastellen; amtliche Werte mit mehr Stellen — etwa der
+ * Jahresmarktwert Solar 4,508 — behalten ihre Präzision). Eine Quelle statt
+ * der vier Inline-Kopien, die der Konventions-Check am 06.08.2026 fand.
+ */
+export const fmtCt = (n: number) =>
+  n.toLocaleString("de-DE", { minimumFractionDigits: 2 });
 
 // ─── Halbjahres-Perioden seit dem 30.07.2022 (Nachschlage-Tabelle) ───────────
 
