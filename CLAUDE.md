@@ -199,7 +199,7 @@ Diese Entscheidungen sind bewusst so gefallen und dürfen nicht „aufgeräumt" 
 
 ## Embed-Widgets (Energie-Widgets)
 
-Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Simulation, Kennzahl, EE-Ampel, PV-Zubau, **Förder-Check**). Galerie mit Live-Vorschau + Copy-Paste-Code: `app/(site)/energie-widgets`. **Alle Widgets sind auf einem Stand — beim Bauen eines neuen dieselbe Konvention einhalten:**
+Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Simulation, Kennzahl, EE-Ampel, PV-Zubau, Einspeisevergütungs-Verlauf, **Förder-Check**). Galerie mit Live-Vorschau + Copy-Paste-Code: `app/(site)/energie-widgets`. **Alle Widgets sind auf einem Stand — beim Bauen eines neuen dieselbe Konvention einhalten:**
 
 **Geteilte Bausteine (nicht neu erfinden, keine Inline-Kopien):**
 - `lib/useWidgetTheme.ts` — **einziger** Theming-Weg (`useWidgetTheme({ onSettings })`): wendet das Theme aus URL-Param + same-origin postMessage auf `--widget-*` an; `onSettings` liefert die funktionalen Flags.
