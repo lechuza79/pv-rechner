@@ -10,6 +10,9 @@ import { AccordionField, ChoiceButtons } from "../../../components/AccordionFiel
 import { trackEvent } from "../../../lib/analytics";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
 import OptionCard from "../../../components/OptionCard";
+import DachField from "../../../components/DachField";
+import { dachErtragHinweis, dachErtragKwp } from "../../../lib/dach-ertrag";
+import { type TiltOrientation } from "../../../lib/tilt-config";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
@@ -92,6 +95,10 @@ export default function Empfehlung() {
   const wpHeizsystem  = parseStrParam(searchParams, "wh", DEFAULT_WP_BUILDING.heizsystem, ["fbh", "hk_neu", "hk_alt"]) as Heizsystem;
   const plz        = parsePlzParam(searchParams);
   const ertragKwp  = parseOptionalIntParam(searchParams, "ertrag", 700, 1400);
+  // Ausrichtung der Module — ohne sie rechnet jedes Dach als optimales Süddach
+  // (der PVGIS-Ertrag ist auf genau diesen Bestfall bezogen, siehe
+  // lib/dach-ertrag.ts). Kein Default: „nicht angegeben" ist eine eigene Lage.
+  const ausrichtung = (parseStrParam(searchParams, "az", "", ["sued", "suedostwest", "ostwest", "nord"]) || null) as TiltOrientation | null;
   const isRecommendation = searchParams.get("view") === "ergebnis";
 
   // Wizard-Step bleibt lokal — niemand teilt eine Halb-Eingabe-URL.
@@ -184,6 +191,7 @@ export default function Empfehlung() {
 
   const setHaustyp     = (v: number) => updateUrl({ haus: slugOrNull(v, HAUS_SLUGS, HAUS_DEFAULT), flaeche: null });
   const setDachart     = (v: number) => updateUrl({ dach: slugOrNull(v, DACH_SLUGS, DACH_DEFAULT), flaeche: null });
+  const setAusrichtung = (v: TiltOrientation | null) => updateUrl({ az: v });
   const setCustomRoofM2 = (v: number | null) => updateUrl({ flaeche: v });
   const setPersonen    = (v: number) => updateUrl({ personen: slugOrNull(v, PERSONEN_SLUGS, PERS_DEFAULT) });
   const setNutzung     = (v: number) => updateUrl({ nutzung: slugOrNull(v, NUTZUNG_SLUGS, NUTZ_DEFAULT) });
@@ -255,11 +263,16 @@ export default function Empfehlung() {
     personen: PERSONEN[personen].count, heizsystem: wpHeizsystem, wpType: "lwwp",
   });
 
+  // Der Ertrag, mit dem gerechnet wird: Standort-Optimum × Dach. Ohne diesen
+  // Schritt bekäme ein Ost/West-Dach die Empfehlung eines Süddachs — und damit
+  // eine zu große Anlage bei zu kurzer Amortisation.
+  const effErtragKwp = ertragKwp !== null ? dachErtragKwp(ertragKwp, dachart, ausrichtung) : null;
+
   // Empfehlung berechnen (mit PLZ-spezifischem Ertrag und ggf. eigener Dachfläche)
   const recInput = {
     personen, nutzung, wp, ea, eaKm, klima,
     haustyp, dachart, budgetLimit: null,
-    ertragKwp: ertragKwp ?? undefined,
+    ertragKwp: effErtragKwp ?? undefined,
     monthlyYieldPerKwp: monthlyProfile,
     customRoofM2: customRoofM2 ?? undefined,
     wpWohnflaeche, wpInsulation, wpHeizsystem,
@@ -272,7 +285,7 @@ export default function Empfehlung() {
     ? SCENARIOS.map(s => ({ ...s, eco: economicsForScenario(recInput, rec.kwp, rec.speicherKwh, { strom: s.strom, evDelta: s.evDelta }, prices, feedIn) }))
     : []),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [rec?.kwp, rec?.speicherKwh, personen, nutzung, wp, ea, eaKm, klima, haustyp, dachart, ertragKwp, customRoofM2, wpWohnflaeche, wpInsulation, wpHeizsystem, prices, feedIn]);
+    [rec?.kwp, rec?.speicherKwh, personen, nutzung, wp, ea, eaKm, klima, haustyp, dachart, effErtragKwp, customRoofM2, wpWohnflaeche, wpInsulation, wpHeizsystem, prices, feedIn]);
   const selRec = recScenarios.find(s => s.id === scenario) ?? recScenarios.find(s => s.id === "realistic");
   // Alternativen ebenfalls im gewählten Szenario, sonst widerspräche der
   // Vergleich der oben gewählten Annahme (gleiche Falle wie im WP-Rechner).
@@ -281,7 +294,7 @@ export default function Empfehlung() {
     ? rec.alternatives.map(alt => economicsForScenario(recInput, alt.kwp, alt.speicherKwh, { strom: selScenarioDef.strom, evDelta: selScenarioDef.evDelta }, prices, feedIn))
     : []),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [rec?.kwp, rec?.speicherKwh, scenario, personen, nutzung, wp, ea, eaKm, klima, haustyp, dachart, ertragKwp, customRoofM2, wpWohnflaeche, wpInsulation, wpHeizsystem, prices, feedIn]);
+    [rec?.kwp, rec?.speicherKwh, scenario, personen, nutzung, wp, ea, eaKm, klima, haustyp, dachart, effErtragKwp, customRoofM2, wpWohnflaeche, wpInsulation, wpHeizsystem, prices, feedIn]);
 
   // Förderung für die empfohlene Anlage (gleiche Mathe wie Stadt-Seite + Rechner).
   // Nur aktive, pauschal berechenbare Programme tragen bei. Das zuletzt (am
@@ -309,6 +322,9 @@ export default function Empfehlung() {
     p.set("flow", "emp");
     p.set("ht", String(haustyp));
     p.set("da", String(dachart));
+    // Ausrichtung muss mit: ohne sie rechnet die Ergebnisseite das Dach wieder
+    // als optimales Süddach — und zeigt eine andere Zahl als die Empfehlung.
+    if (ausrichtung) p.set("az", ausrichtung);
     if (plz) p.set("plz", plz);
     if (ertragKwp) p.set("er", String(ertragKwp));
     // Lokale Förderung scharf ans Ergebnis durchreichen, damit die Amortisation
@@ -370,11 +386,14 @@ export default function Empfehlung() {
                     <OptionCard key={i} selected={haustyp === i} onClick={() => setHaustyp(i)} label={h.label} sub={h.sub} />
                   ))}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Dachart</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
-                  {DACHARTEN.map((d, i) => (
-                    <OptionCard key={i} selected={dachart === i} onClick={() => setDachart(i)} label={d.label} sub={d.sub} />
-                  ))}
+                <div style={{ marginBottom: 16 }}>
+                  <DachField
+                    dachartIdx={dachart}
+                    setDachartIdx={setDachart}
+                    ausrichtung={ausrichtung}
+                    setAusrichtung={setAusrichtung}
+                    hinweis={effErtragKwp !== null ? dachErtragHinweis(effErtragKwp, dachart, ausrichtung, true) : undefined}
+                  />
                 </div>
 
                 {/* Berechnete Dachfläche + Override */}

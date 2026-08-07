@@ -7,8 +7,10 @@ import FlowNav, { flowSelect } from "../../../components/FlowNav";
 import OptionCard from "../../../components/OptionCard";
 import SelectField from "../../../components/SelectField";
 import StandortField from "../../../components/StandortField";
+import DachField from "../../../components/DachField";
 import { calcEigenverbrauch, calcWeightedFeedIn } from "../../../lib/calc";
-import { DACHARTEN, DEGRAD, FEED_IN_YEARS, NO_PLZ_DEFAULT_YIELD, PERSONEN } from "../../../lib/constants";
+import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor } from "../../../lib/dach-ertrag";
+import { DEGRAD, FEED_IN_YEARS, NO_PLZ_DEFAULT_YIELD, PERSONEN } from "../../../lib/constants";
 import { eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import {
   FEED_IN_BASIS,
@@ -18,7 +20,7 @@ import {
 } from "../../../lib/feedin-config";
 import { useFeedInRates } from "../../../lib/feedin";
 import { useSharedPlz } from "../../../lib/location";
-import { TILT_ORIENTATIONS, tiltPct, type TiltOrientation } from "../../../lib/tilt-config";
+import { type TiltOrientation } from "../../../lib/tilt-config";
 import { iconSizes, space, v } from "../../../lib/theme";
 
 const KWP_PRESETS = [
@@ -92,16 +94,10 @@ export default function EinspeiseRechner() {
   useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); });
   const onPlzChange = (raw: string) => { setPlz(raw); setPlzConfirmed(false); };
 
-  // PVGIS liefert den Ertrag bei OPTIMALER Neigung (siehe lib/balkon-sim.ts);
-  // die Neigungs-Matrix (lib/tilt-config.ts) ist auf dasselbe Optimum normiert —
-  // der Faktor darf deshalb multipliziert werden. Die Neigung kommt aus der
-  // Dachart (typNeigung in DACHARTEN) — Grad fragt niemand ab. Ohne Angabe:
-  // Faktor 1 (Optimum-Annahme, wie im konservativen Bundesschnitt enthalten).
-  const neigungsFaktor =
-    ausrichtung !== null && dachartIdx !== null
-      ? tiltPct(ausrichtung, DACHARTEN[dachartIdx].typNeigung) / 100
-      : 1;
-  const ertragKwp = Math.round((standortYield ?? NO_PLZ_DEFAULT_YIELD) * neigungsFaktor);
+  // Ertrag = Standort-Optimum × Dach. Die Regel steht in lib/dach-ertrag.ts und
+  // gilt für alle Rechner gleich — hier wird sie nur aufgerufen.
+  const neigungsFaktor = dachNeigungsFaktor(dachartIdx, ausrichtung);
+  const ertragKwp = dachErtragKwp(standortYield ?? NO_PLZ_DEFAULT_YIELD, dachartIdx, ausrichtung);
 
   const jahre = useMemo(() => {
     const list: number[] = [];
@@ -620,48 +616,13 @@ export default function EinspeiseRechner() {
                 <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
               </div>
               <div style={{ borderTop: `1px solid ${v("--color-border")}`, margin: `0 0 ${space.lg}px` }} />
-              {/* Fragen wie in den Flows: Options-Karten, abhängige Optionen.
-                  Ausrichtung erscheint erst nach der Dachart — und ein Flachdach
-                  bietet kein Nord an (niemand ständert Module nach Norden auf). */}
-              <div style={label}>Dachart</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.md, marginBottom: space.lg }}>
-                {DACHARTEN.map((d, i) => (
-                  <OptionCard
-                    key={d.label}
-                    selected={dachartIdx === i}
-                    onClick={() => {
-                      setDachartIdx(i);
-                      // Flachdach: aufgeständert gibt es kein Nord — ungültige Wahl zurücksetzen.
-                      if (i === 1 && ausrichtung === "nord") setAusrichtung(null);
-                    }}
-                    label={d.label}
-                    sub={d.sub}
-                  />
-                ))}
-              </div>
-              {dachartIdx !== null && (
-                <div className="sc-acc">
-                  <div style={label}>Ausrichtung der Module</div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.md }}>
-                    {TILT_ORIENTATIONS.filter((o) => !(dachartIdx === 1 && o.key === "nord")).map((o) => (
-                      <OptionCard
-                        key={o.key}
-                        selected={ausrichtung === o.key}
-                        onClick={() => setAusrichtung(o.key)}
-                        label={o.label}
-                        sub={o.key === "sued" ? "Voller Ertrag" : o.key === "suedostwest" ? "Fast voller Ertrag" : o.key === "ostwest" ? "Morgen- und Abendsonne" : "Nur bei flacher Neigung sinnvoll"}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-              {(standortYield !== null || neigungsFaktor < 1) && (
-                <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `${space.lg}px 0 0` }}>
-                  Gerechnet wird jetzt mit {nf(ertragKwp)} kWh je kWp
-                  {standortYield !== null ? " für deinen Standort" : ""}
-                  {dachartIdx !== null && ausrichtung !== null ? ` (${DACHARTEN[dachartIdx].label}, typisch ${DACHARTEN[dachartIdx].typNeigung}° Neigung)` : ""}.
-                </p>
-              )}
+              <DachField
+                dachartIdx={dachartIdx}
+                setDachartIdx={setDachartIdx}
+                ausrichtung={ausrichtung}
+                setAusrichtung={setAusrichtung}
+                hinweis={dachErtragHinweis(ertragKwp, dachartIdx, ausrichtung, standortYield !== null)}
+              />
             </div>
           )}
 

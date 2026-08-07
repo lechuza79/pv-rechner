@@ -13,6 +13,9 @@ import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryRepl
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
 import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
+import DachField from "../../../components/DachField";
+import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor } from "../../../lib/dach-ertrag";
+import { TILT_ORIENTATIONS, type TiltOrientation } from "../../../lib/tilt-config";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
@@ -59,7 +62,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const RESULT_KEYS = SHARE_KEYS.filter(k => k !== "er" && k !== "plz" && k !== "foe");
   const hasShare = !!initialParams && RESULT_KEYS.some(k => k in initialParams);
 
-  const [step, setStep] = useState(hasShare ? 4 : 0);
+  const [step, setStep] = useState(hasShare ? 5 : 0);
   const [anlage, setAnlage] = useState(hasShare ? paramInt(initialParams, "a", 2, 0, 4) : 2);
   const [customKwp, setCustomKwp] = useState(hasShare ? paramInt(initialParams, "ck", 12, 1, 50) : 12);
   const [speicher, setSpeicher] = useState(hasShare ? paramInt(initialParams, "s", 0, 0, SPEICHER.length - 1) : 0);
@@ -170,7 +173,23 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Empfehlungs-Flow Kontext
   const flowType = hasShare && initialParams?.flow === "emp" ? "empfehlung" : "manual";
   const htIdx = hasShare ? paramInt(initialParams, "ht", -1, 0, 3) : -1;
-  const daIdx = hasShare ? paramInt(initialParams, "da", -1, 0, 3) : -1;
+
+  // ── Dach: Form + Ausrichtung ────────────────────────────────────────────
+  // Die Dachform kommt aus dem Empfehlungs-Flow bereits mit (`da`) — dort wird
+  // sie für die Dachfläche gebraucht. Sie ist hier ECHTER State, nicht nur ein
+  // gelesener Parameter: der Nutzer soll sie auch im manuellen Flow angeben und
+  // im Ergebnis ändern können.
+  const [dachartIdx, setDachartIdx] = useState<number | null>(() => {
+    if (!hasShare) return null;
+    const i = paramInt(initialParams, "da", -1, 0, DACHARTEN.length - 1);
+    return i >= 0 ? i : null;
+  });
+  const [ausrichtung, setAusrichtung] = useState<TiltOrientation | null>(
+    hasShare
+      ? (paramStr(initialParams, "az", "", ["sued", "suedostwest", "ostwest", "nord"]) as TiltOrientation) || null
+      : null,
+  );
+  const daIdx = dachartIdx ?? -1;
 
   // PLZ → zutreffende Förderprogramme (Kandidaten serverseitig auflösen)
   const fetchFunding = async (inputPlz: string) => {
@@ -295,7 +314,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       // Pending save: speichere Berechnung in localStorage für Auto-Save nach Login
       if (isResult) {
         const row = paramsToRow(
-          { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
+          { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag: effErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
           { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
         );
         const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
@@ -356,12 +375,27 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   );
   const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm, klima, KLIMA_DEFAULT_M2, effKlimaKwh, wpKwh);
   const gesamtVerbrauch = grundverbrauch + extraVerbrauch;
-  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: oErtrag, baseKwh: oVerbrauch });
+
+  // ── Der Ertrag, mit dem tatsächlich gerechnet wird ──────────────────────
+  // `oErtrag` ist das Standort-OPTIMUM (PVGIS liefert mit optimaler Neigung
+  // nach Süden). Erst das Dach macht daraus den Ertrag dieser Anlage. Ab hier
+  // gilt ausschließlich `effErtrag` — Geldrechnung UND Stundensimulation, sonst
+  // laufen Ersparnis und Autarkie auseinander (siehe lib/dach-ertrag.ts).
+  const effErtrag = dachErtragKwp(oErtrag, dachartIdx, ausrichtung);
+
+  // Das Ertrags-Feld im Ergebnis zeigt und nimmt den Ertrag DIESER Anlage. Wer
+  // ihn von Hand setzt, meint „mein Dach bringt X" — also auf das Standort-
+  // Optimum zurückrechnen, damit ein späterer Dachwechsel wieder sauber davon
+  // skaliert (sonst wäre die Handeingabe nach dem nächsten Klick wieder weg).
+  const setErtragVonHand = (val: number) =>
+    setOErtrag(Math.round(val / dachNeigungsFaktor(dachartIdx, ausrichtung)));
+
+  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: effErtrag, baseKwh: oVerbrauch });
   const effEv = oEv !== null ? oEv : autoEv;
   // Volleinspeisung is incompatible with WP/E-Auto (they require self-consumption)
   const vollDisabled = wp !== "nein" || ea !== "nein";
   const effEinspeisungModus = vollDisabled && einspeisungModus === "voll" ? "teil" : einspeisungModus;
-  const jahresertrag = kwp * oErtrag;
+  const jahresertrag = kwp * effErtrag;
   // Lastprofil für die Stundensimulation — dieselben Verbrauchswerte wie oben,
   // nur als Stundenkurve (BDEW H0 + WP-Winterprofil + E-Auto + Klima).
   const household = useMemo<HouseholdProfile>(() => ({
@@ -382,17 +416,17 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Monatsdaten fürs Modal sowie die WP-spezifische PV-Deckung (pvSim.wpAutarky) für
   // die WP-Kachel. Gegen das HTW-Kennfeld validiert (±3 pp bei gleichem Tagverbrauch).
   const pvSim = useMemo(
-    () => simulatePvYear({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: oErtrag, household }),
-    [kwp, spKwh, monthlyProfile, oErtrag, household],
+    () => simulatePvYear({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: effErtrag, household }),
+    [kwp, spKwh, monthlyProfile, effErtrag, household],
   );
   const autarkie = pvSim.autarky;
   // Beispieltage (24-h-Detail) für das Modal — sonniger/trüber Wintertag + Sommertag.
   const exampleDays = useMemo(
     () => EXAMPLE_DAYS.map(d => ({
       key: d.key, label: d.label,
-      day: simulateExampleDay({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: oErtrag, household }, d.month, d.dayType),
+      day: simulateExampleDay({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: effErtrag, household }, d.month, d.dayType),
     })),
-    [kwp, spKwh, monthlyProfile, oErtrag, household],
+    [kwp, spKwh, monthlyProfile, effErtrag, household],
   );
 
   // Feed-in: weighted EEG rate based on system size + effective mode
@@ -409,9 +443,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // hängt am Speicher und am Verbrauchsprofil dieses Haushalts, also fällt es aus
   // derselben Simulation an wie die Autarkie — statt aus einer zweiten Annahme.
   const marktSim = useMemo(() => {
-    const monthly = monthlyProfile ?? monthlyFromAnnual(oErtrag);
+    const monthly = monthlyProfile ?? monthlyFromAnnual(effErtrag);
     const summe = monthly.reduce((a, b) => a + b, 0);
-    const skaliert = summe > 0 ? monthly.map((m) => (m * oErtrag) / summe) : monthly;
+    const skaliert = summe > 0 ? monthly.map((m) => (m * effErtrag) / summe) : monthly;
     const gemeinsam = {
       moduleKwp: kwp, inverterKw: kwp, monthlyYieldPerKwp: skaliert,
       orientation: "sued_flach", household, batteryKwh: spKwh, roundtrip: 0.9,
@@ -423,7 +457,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       profilFaktor: profilFaktorAus(mitDeckel),
       einspeiseAnteil: ohneDeckel.feedInKwh > 0 ? mitDeckel.feedInKwh / ohneDeckel.feedInKwh : 1,
     };
-  }, [kwp, spKwh, monthlyProfile, oErtrag, household]);
+  }, [kwp, spKwh, monthlyProfile, effErtrag, household]);
 
   const einspeiseVerlaufJahre = useMemo(() => einspeiseVerlauf({
     regime,
@@ -460,18 +494,18 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
           ? 0
           : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
         einspeisung: effEinspeisungModus === "aus" ? 0 : effEinsp,
-        stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
+        stromSteigerung: s.strom, ertragKwp: effErtrag, monthly: monthlyProfile,
         batteryReplace: batteryReplaceCost(spKwh, prices),
         einspeiseModell: effEinspeisungModus === "aus" ? undefined : einspeiseModell,
       }),
-    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, einspeiseModell]);
+    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, effErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, einspeiseModell]);
 
   // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
   // „realistic", falls der State (z. B. aus einer alten Share-URL) nicht passt.
   const sel = scenarioData.find(s => s.id === scenario) ?? scenarioData.find(s => s.id === "realistic")!;
   const be = sel.data.be;
 
-  const STEPS = ["Wie groß soll die Anlage werden?", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
+  const STEPS = ["Wie groß soll die Anlage werden?", "Dein Dach", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
   const isResult = step >= STEPS.length;
   const fundingActive = fundingPrograms.some((p) => p.level !== "bund");
 
@@ -523,7 +557,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     setStep(target);
   };
   const back = () => step > 0 && setStep(step - 1);
-  const restart = () => { setStep(0); setOKosten(null); setOEv(null); setOVerbrauch(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
+  const restart = () => { setStep(0); setOKosten(null); setOEv(null); setOVerbrauch(null); setDachartIdx(null); setAusrichtung(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
 
   const buildShareUrl = () => {
     const p = new URLSearchParams();
@@ -550,7 +584,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (regime === "reform2027") p.set("rg", "2027");
     if (marktErloes) p.set("mk", "1");
     if (oMarktwert !== null) p.set("mw", String(oMarktwert));
+    // `er` ist das Standort-OPTIMUM, `da`/`az` machen daraus wieder den Ertrag
+    // dieser Anlage. Beides muss mit — sonst rechnet der Empfänger ein anderes
+    // Dach als der Absender (dieselbe Regel wie bei Regime und Marktwert).
     p.set("er", String(oErtrag));
+    if (dachartIdx !== null) p.set("da", String(dachartIdx));
+    if (ausrichtung !== null) p.set("az", ausrichtung);
     if (scenario !== "realistic") p.set("sc", scenario);
     if (plz) p.set("plz", plz);
     // Förderung: das wirksamste angerechnete Programm mitgeben, damit der Link
@@ -559,7 +598,6 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (flowType === "empfehlung") {
       p.set("flow", "emp");
       if (htIdx >= 0) p.set("ht", String(htIdx));
-      if (daIdx >= 0) p.set("da", String(daIdx));
     }
     return `${window.location.origin}${window.location.pathname}?${p.toString()}`;
   };
@@ -622,7 +660,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     setSaving(true);
     try {
       const row = paramsToRow(
-        { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
+        { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag: effErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
         { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
       );
       const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
@@ -640,7 +678,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       }
     } catch { /* silent */ }
     setSaving(false);
-  }, [authState, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, kwp, spKwh, be, sel, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [authState, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, effErtrag, plz, fuelType, kwp, spKwh, be, sel, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Empfehlungs-Kontext für "Warum diese Anlage?"
   const empfehlungKontext = flowType === "empfehlung" && htIdx >= 0 && daIdx >= 0 ? (() => {
@@ -765,6 +803,22 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             {step === 1 && (
               <div>
                 <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
+                  Dachform und Ausrichtung entscheiden mit darüber, wie viel Strom die Anlage bringt —
+                  zwischen einem Süddach und einem Norddach liegen über 40 Prozent.
+                </p>
+                <DachField
+                  dachartIdx={dachartIdx}
+                  setDachartIdx={setDachartIdx}
+                  ausrichtung={ausrichtung}
+                  setAusrichtung={setAusrichtung}
+                  hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource)}
+                />
+              </div>
+            )}
+
+            {step === 2 && (
+              <div>
+                <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
                   Die <GlossaryTerm id="speicherkapazitaet">Speicherkapazität</GlossaryTerm> wird in <GlossaryTerm id="kwh">kWh</GlossaryTerm> gemessen.
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -777,7 +831,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               </div>
             )}
 
-            {step === 2 && (
+            {step === 3 && (
               <div>
                 {/* Umschalter: Personen schätzen vs. Jahresverbrauch direkt eingeben */}
                 <div style={{ display: "flex", gap: 4, marginBottom: 16, background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
@@ -840,7 +894,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               </div>
             )}
 
-            {step === 3 && (
+            {step === 4 && (
               <div>
                 {/* Warum diese Verbraucher zählen — Kontext als Infobox */}
                 <div style={{
@@ -1021,12 +1075,40 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             />
             <ResultHeroCard
               be={be} kosten={bruttoKosten} setOKosten={setOKosten}
-              oStrom={oStrom} setOStrom={setOStrom} oErtrag={oErtrag} setOErtrag={setOErtrag}
+              oStrom={oStrom} setOStrom={setOStrom}
+              oErtrag={effErtrag} setOErtrag={setErtragVonHand}
               kwp={kwp} spKwh={spKwh} effEv={effEv} setOEv={setOEv}
               effEinspeisungModus={effEinspeisungModus} setEinspeisungModus={setEinspeisungModus}
               vollDisabled={vollDisabled} effEinsp={effEinsp} setOEinsp={setOEinsp}
               plz={plz} setPlz={setPlz} plzLoading={plzLoading} plzSource={plzSource} fetchPvgis={fetchPvgis}
             />
+
+            {/* Dach — dieselbe Abfrage wie im Flow, hier zum Nachjustieren.
+                Eine Angabe, die eine Zahl im Ergebnis bewegt, muss im Ergebnis
+                auch erreichbar sein; sonst steht dort ein Wert, den niemand mehr
+                korrigieren kann. */}
+            <details style={{
+              background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16,
+              border: `1px solid ${v('--color-border')}`,
+            }}>
+              <summary style={{ cursor: "pointer", fontSize: 13, fontWeight: 600, color: v('--color-text-secondary'), display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                <span>Dach und Ausrichtung</span>
+                <span style={{ fontSize: 12, fontWeight: 500, color: v('--color-text-muted') }}>
+                  {dachartIdx !== null && ausrichtung !== null
+                    ? `${DACHARTEN[dachartIdx].label} · ${TILT_ORIENTATIONS.find(o => o.key === ausrichtung)?.label}`
+                    : "nicht angegeben"}
+                </span>
+              </summary>
+              <div style={{ marginTop: 14 }}>
+                <DachField
+                  dachartIdx={dachartIdx}
+                  setDachartIdx={setDachartIdx}
+                  ausrichtung={ausrichtung}
+                  setAusrichtung={setAusrichtung}
+                  hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource)}
+                />
+              </div>
+            </details>
 
             {/* Stromverbrauch — editierbar, mit Aufschlüsselung wenn WP/E-Auto aktiv */}
             <div style={{

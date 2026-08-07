@@ -7,7 +7,7 @@ import { test, expect } from "@playwright/test";
 // check the flow plumbing (button clicks, state passing, result rendering).
 
 test.describe("Rechner flow", () => {
-  test("clicks through 4 steps and lands on a result with payback info", async ({ page }) => {
+  test("clicks through 5 steps and lands on a result with payback info", async ({ page }) => {
     await page.goto("/photovoltaik-rechner");
 
     // Step 0: Anlagengröße — pick the standard 10 kWp option
@@ -15,17 +15,22 @@ test.describe("Rechner flow", () => {
     await page.getByText("10 kWp", { exact: false }).first().click();
     await page.getByRole("button", { name: /weiter/i }).click();
 
-    // Step 1: Speicher — pick 10 kWh
+    // Step 1: Dach — roof shape, then orientation (it only appears after the shape)
+    await page.getByText("Satteldach", { exact: false }).first().click();
+    await page.getByText("Ost / West", { exact: false }).first().click();
+    await page.getByRole("button", { name: /weiter/i }).click();
+
+    // Step 2: Speicher — pick 10 kWh
     await page.getByText("10 kWh", { exact: false }).first().click();
     await page.getByRole("button", { name: /weiter/i }).click();
 
-    // Step 2: Haushalt — pick 3-4 persons + a usage profile
+    // Step 3: Haushalt — pick 3-4 persons + a usage profile
     await page.getByText("3–4", { exact: false }).first().click();
     // Pick "Teils zuhause" as usage pattern
     await page.getByText("Teils zuhause", { exact: false }).first().click();
     await page.getByRole("button", { name: /weiter/i }).click();
 
-    // Step 3: Großverbraucher — leave defaults (no WP, no EA)
+    // Step 4: Großverbraucher — leave defaults (no WP, no EA)
     await page.getByRole("button", { name: /berechnen|ergebnis|fertig/i }).click();
 
     // Result page: amortization figure + 25-year return must be visible
@@ -49,5 +54,28 @@ test.describe("Rechner flow", () => {
     // No "Weiter" button should be present (we're past the flow, on the result)
     const weiterBtn = page.getByRole("button", { name: /^weiter$/i });
     await expect(weiterBtn).toHaveCount(0);
+  });
+
+  // The orientation must actually move the number the user reads. A unit test
+  // proves the formula; only the browser proves the formula reaches the page.
+  // Without the roof factor an east/west roof was shown as a due-south one.
+  test("orientation changes the yield shown on the result", async ({ page }) => {
+    const ertrag = async () => {
+      const body = await page.locator("body").innerText();
+      const m = body.match(/([\d.]+)\s*kWh\/kWp/);
+      return m ? parseInt(m[1].replace(/\./g, "")) : null;
+    };
+
+    // Same configuration twice, once due south, once east/west (da=0 = Satteldach).
+    await page.goto("/photovoltaik-rechner?a=2&s=2&p=2&n=1&wp=nein&ea=nein&er=1000&da=0&az=sued");
+    await expect(page.getByText(/Amortisation/i).first()).toBeVisible({ timeout: 10_000 });
+    const sued = await ertrag();
+
+    await page.goto("/photovoltaik-rechner?a=2&s=2&p=2&n=1&wp=nein&ea=nein&er=1000&da=0&az=ostwest");
+    await expect(page.getByText(/Amortisation/i).first()).toBeVisible({ timeout: 10_000 });
+    const ostwest = await ertrag();
+
+    expect(sued).toBe(1000);
+    expect(ostwest).toBe(800);
   });
 });

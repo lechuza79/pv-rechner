@@ -139,7 +139,7 @@ export const SCENARIOS = [
     explain: "Günstige Entwicklung: Steigt der Strompreis kräftig (+5 %/Jahr), lohnt sich jede selbst genutzte Kilowattstunde stärker." },
 ];
 
-export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "bl", "foe", "vb", "kl", "km2", "klr", "klwh", "wf", "wi", "wh", "wht", "sc", "rg", "mk", "mw"];
+export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "az", "bl", "foe", "vb", "kl", "km2", "klr", "klwh", "wf", "wi", "wh", "wht", "sc", "rg", "mk", "mw"];
 
 // ─── Empfehlungs-Flow ───────────────────────────────────────────────────────
 // footprint = nutzbare Dachfläche (Empfehlung); wpFaktor = Heizlast-Faktor durch
@@ -158,12 +158,17 @@ export const HAUSTYPEN = [
 // /photovoltaik-neigungswinkel). Wird mit lib/tilt-config.ts → tiltPct() zur
 // Ertrags-Verfeinerung kombiniert — Grad-Abfrage beim Nutzer wäre Schein-
 // genauigkeit, die Dachform kennt jeder.
+// `id` statt Positionswissen: Ob eine Dachform nach Norden ausgerichtet werden
+// kann, hängt an der Form selbst (aufgeständert = die Ausrichtung wählt der
+// Monteur), nicht an ihrer Stelle in dieser Liste. Vorher stand dafür ein
+// `dachartIdx === 1` im Rechner — das bricht still, sobald jemand die Liste
+// umsortiert oder eine Dachform ergänzt.
 export const DACHARTEN = [
-  { label: "Satteldach", sub: "Klassisch, eine Dachseite", factor: 0.40, typNeigung: 35 },
-  { label: "Flachdach", sub: "Aufständerung möglich", factor: 0.65, typNeigung: 10 },
-  { label: "Walmdach", sub: "4 Seiten, weniger Fläche", factor: 0.30, typNeigung: 30 },
-  { label: "Pultdach", sub: "Einseitig geneigt, sehr gut", factor: 0.55, typNeigung: 15 },
-];
+  { id: "sattel", label: "Satteldach", sub: "Klassisch, eine Dachseite", factor: 0.40, typNeigung: 35, aufgestaendert: false },
+  { id: "flach", label: "Flachdach", sub: "Aufständerung möglich", factor: 0.65, typNeigung: 10, aufgestaendert: true },
+  { id: "walm", label: "Walmdach", sub: "4 Seiten, weniger Fläche", factor: 0.30, typNeigung: 30, aufgestaendert: false },
+  { id: "pult", label: "Pultdach", sub: "Einseitig geneigt, sehr gut", factor: 0.55, typNeigung: 15, aufgestaendert: false },
+] as const;
 
 // ─── Wärmepumpen-Flow ───────────────────────────────────────────────────────
 
