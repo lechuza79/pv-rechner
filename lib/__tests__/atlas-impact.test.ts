@@ -3,10 +3,11 @@ import {
   ATLAS_GRID_CO2,
   PRAXIS_FAKTOR,
   co2Tonnen,
-  defaultStromwertCt,
   ertragForRegionId,
   erzeugungKwh,
+  segmentWertEuro,
   stromwertEuro,
+  stromwertSaetze,
 } from "../atlas-impact";
 import { BL_ERTRAG } from "../bundesland-ertrag";
 import { NATIONAL_AVG_YIELD } from "../constants";
@@ -79,16 +80,45 @@ describe("CO₂-Ersparnis (Realitäts-Anker)", () => {
   });
 });
 
-describe("Stromwert (Realitäts-Anker)", () => {
-  it("liegt mit dem Default zwischen Einspeisevergütung und Haushaltsstrompreis", () => {
+describe("Stromwert je Anlagenart (Realitäts-Anker)", () => {
+  it("bewertet ein privates Dach zwischen Einspeisevergütung und Haushaltsstrompreis", () => {
     // Der Mischwert kann logisch nur zwischen seinen beiden Bestandteilen
     // liegen — sonst ist die Gewichtung kaputt.
-    const ct = defaultStromwertCt();
+    const ct = stromwertSaetze().privat_dach.ct;
     expect(ct).toBeGreaterThan(DEFAULT_FEED_IN.teilUnder10);
     expect(ct).toBeLessThan(DEFAULT_PRICES.electricityPrice * 100);
   });
 
+  it("hält die Rangfolge der Anlagenarten ein", () => {
+    // Der Grund für die ganze Aufteilung: Eine selbst genutzte Kilowattstunde
+    // ersetzt teuren Netzbezug, eine verkaufte bringt nur den Börsenwert.
+    // Kippt diese Reihenfolge, rechnet die Tabelle etwas anderes, als sie sagt.
+    const s = stromwertSaetze();
+    expect(s.privat_dach.ct).toBeGreaterThan(s.steckersolar.ct);
+    expect(s.steckersolar.ct).toBeGreaterThan(s.gewerbe_dach.ct);
+    expect(s.gewerbe_dach.ct).toBeGreaterThan(s.freiflaeche.ct);
+  });
+
+  it("bleibt für jede Anlagenart im plausiblen Erlösband", () => {
+    // Keine Anlagenart erlöst mehr als den Haushaltsstrompreis (mehr als den
+    // teuersten vermiedenen Bezug kann eine kWh nicht wert sein) und keine
+    // weniger als null.
+    for (const satz of Object.values(stromwertSaetze())) {
+      expect(satz.ct).toBeGreaterThan(0);
+      expect(satz.ct).toBeLessThanOrEqual(DEFAULT_PRICES.electricityPrice * 100);
+      expect(satz.herkunft.length).toBeGreaterThan(10);
+    }
+  });
+
   it("bewertet 1.000 kWh zu 15 ct mit 150 €", () => {
     expect(stromwertEuro(1000, 15)).toBe(150);
+  });
+
+  it("bewertet dieselbe Leistung je nach Anlagenart verschieden", () => {
+    // Genau das konnte der frühere Einheitssatz nicht: Ein Freiflächen-Park
+    // und ein privates Dach gleicher Größe standen mit demselben Betrag da.
+    const dach = segmentWertEuro(1000, "09162000", "privat_dach");
+    const frei = segmentWertEuro(1000, "09162000", "freiflaeche");
+    expect(dach).toBeGreaterThan(frei * 2);
   });
 });

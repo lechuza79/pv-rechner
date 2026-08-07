@@ -136,6 +136,15 @@ export const fmtCo2Tonnen = (tonnen: number): string => zusammen(co2TonnenTeile(
 export const fmtCo2FaktorKg = (kgProKwh: number): string =>
   `${dez(kgProKwh, 2)} kg CO₂ je Kilowattstunde`;
 
+/**
+ * Erlös- bzw. Preissatz je Kilowattstunde („14,8 ct"). Eigene Funktion aus
+ * demselben Grund wie oben: Der Satz steht in Hilfetexten neben anderen
+ * Zahlen, und eine handgeklebte Einheit ist genau die Bauweise, die der
+ * Einheiten-Wächter verbietet.
+ */
+export const ctProKwhTeile = (ct: number): Messwert => ({ value: dez(ct, 1), unit: "ct" });
+export const fmtCtProKwh = (ct: number): string => zusammen(ctProKwhTeile(ct));
+
 /** Geldbeträge (rechnerischer Stromwert): € → Tsd. € → Mio. € → Mrd. €. */
 export function euroTeile(euro: number): Messwert {
   if (euro >= 1_000_000_000) return { value: kompakt(euro / 1_000_000_000), unit: "Mrd. €" };

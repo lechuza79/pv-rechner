@@ -10,20 +10,14 @@ import {
   co2TonnenTeile,
   euroTeile,
   fmtCo2FaktorKg,
+  fmtCtProKwh,
   pvLeistungTeile,
   speicherKwhTeile,
   wattProKopfTeile,
   type Messwert,
 } from "../../lib/atlas-format";
-import {
-  ATLAS_GRID_CO2,
-  EIGENVERBRAUCH_ANTEIL_ANNAHME,
-  co2Tonnen,
-  defaultStromwertCt,
-  erzeugungKwh,
-  stromwertEuro,
-} from "../../lib/atlas-impact";
-import InlineEdit from "../InlineEdit";
+import { ATLAS_GRID_CO2, co2Tonnen, erzeugungKwh, segmentWertEuro, stromwertSaetze } from "../../lib/atlas-impact";
+import InfoTooltip from "../InfoTooltip";
 
 type Owner = "alle" | "privat" | "gewerbe";
 type Metric = "count" | "kwp" | "perCapita" | "co2" | "wert" | "speicher";
@@ -42,10 +36,12 @@ type Row = {
   kwp: number;
   speicher: number;
   perCapita: number | null;
-  /** Rechnerische Jahres-Erzeugung (kWp × Bundesland-Ertrag), Basis für CO₂ und Stromwert. */
+  /** Rechnerische Jahres-Erzeugung (kWp × Bundesland-Ertrag), Basis fürs CO₂. */
   erzeugung: number;
   /** Rechnerisch vermiedenes CO₂ in t/Jahr. */
   co2: number;
+  /** Wert des erzeugten Stroms in €/Jahr, je Anlagenart einzeln bewertet. */
+  wertEuro: number;
 };
 
 const COLUMNS: { key: Metric; label: string; hint: string }[] = [
@@ -67,12 +63,14 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
   {
     key: "co2",
     label: "CO₂ gespart",
-    hint: "Rechnerisch vermiedenes CO₂ pro Jahr: erzeugter Solarstrom (Leistung mal typischer Ertrag auf Bundesland-Niveau, kalibriert am realen deutschen Anlagenbestand) mal CO₂-Faktor. Ein Modellwert, kein Messwert — die Annahmen stehen unter der Tabelle.",
+    hint: `Rechnerisch vermiedenes CO₂ pro Jahr — ein Modellwert, kein Messwert: erzeugter Solarstrom (installierte Leistung mal typischer Ertrag im jeweiligen Bundesland, kalibriert an der von Fraunhofer ISE bilanzierten Erzeugung 2025) mal ${fmtCo2FaktorKg(ATLAS_GRID_CO2)}. Der Faktor ist bewusst konservativ gewählt: Der amtliche UBA-Vermeidungsfaktor für Photovoltaik liegt höher.`,
   },
   {
     key: "wert",
     label: "Stromwert",
-    hint: "Rechnerischer Wert des erzeugten Solarstroms pro Jahr. Jede Kilowattstunde wird mit dem Preis bewertet, der unter der Tabelle steht — dort lässt er sich anpassen.",
+    // Der Text steht als eigene Komponente weiter unten — er zählt die Sätze
+    // je Anlagenart auf und ist deshalb kein einzelner Satz.
+    hint: "",
   },
   {
     key: "speicher",
@@ -111,14 +109,14 @@ function setUrlPlz(plz: string | null): void {
  * „Anlagen" hat bewusst keine Einheit: eine Anlage ist eine Anzahl, und
  * „Anlagen" steht schon im Spaltenkopf.
  */
-function cellTeile(row: Row, m: Metric, stromwertCt: number): Messwert {
+function cellTeile(row: Row, m: Metric): Messwert {
   if (m === "kwp") return pvLeistungTeile(row.kwp);
   if (m === "speicher") return speicherKwhTeile(row.speicher);
   if (m === "perCapita") {
     return row.perCapita === null ? { value: "—", unit: "" } : wattProKopfTeile(row.perCapita);
   }
   if (m === "co2") return co2TonnenTeile(row.co2);
-  if (m === "wert") return euroTeile(stromwertEuro(row.erzeugung, stromwertCt));
+  if (m === "wert") return euroTeile(row.wertEuro);
   return { value: nf(row[m] as number), unit: "" };
 }
 
@@ -133,9 +131,7 @@ function valueOf(row: Row, m: Sort): number | null {
   if (m === "name") return null;
   if (m === "perCapita") return row.perCapita;
   if (m === "population") return row.population;
-  // Der Stromwert ist Erzeugung × ein für alle Zeilen gleicher ct-Satz — für
-  // Sortierung und Balken reicht die Erzeugung, der Satz kürzt sich raus.
-  if (m === "wert") return row.erzeugung;
+  if (m === "wert") return row.wertEuro;
   return row[m] as number;
 }
 
@@ -184,9 +180,6 @@ export default function RankingTable({
   const [owner, setOwner] = useState<Owner>("alle");
   const [sort, setSort] = useState<Sort>("perCapita");
   const [rankMode, setRankMode] = useState<RankMode>("platz");
-  // Preis-Annahme für die Stromwert-Spalte — offen kommuniziert und unter der
-  // Tabelle direkt editierbar. Default abgeleitet aus Strompreis + EEG-Satz.
-  const [stromwertCt, setStromwertCt] = useState<number>(defaultStromwertCt);
   const { home, setHome, ready } = useHomeGemeinde();
   // A shared link can mark a Gemeinde via ?plz=. Resolved on the client (like the
   // saved-home marker already is) so the page itself stays ISR-cached — reading
@@ -231,21 +224,26 @@ export default function RankingTable({
     const keep = (segment: string) =>
       owner === "alle" ? SEGMENT_OWNER[segment] !== null : SEGMENT_OWNER[segment] === owner;
     return (yearMax: number | null): Row[] => {
-      const acc = new Map<string, { count: number; kwp: number; speicher: number }>();
+      const acc = new Map<string, { count: number; kwp: number; speicher: number; wertEuro: number }>();
       for (const c of cells) {
         if (!keep(c.segment)) continue;
         if (yearMax !== null && c.year > yearMax) continue;
-        const a = acc.get(c.region_id) ?? { count: 0, kwp: 0, speicher: 0 };
+        const a = acc.get(c.region_id) ?? { count: 0, kwp: 0, speicher: 0, wertEuro: 0 };
         if (c.segment.startsWith("batterie")) {
           a.speicher += c.kwh;
         } else {
           a.count += c.count;
           a.kwp += c.kwp;
+          // Der Geldwert entsteht HIER, je Segment — nicht später aus der
+          // Summe: Ein Freiflächen-Park erlöst gut ein Drittel dessen, was ein
+          // privates Dach erspart. Über beide zu mitteln wäre keine Näherung,
+          // sondern eine andere Zahl.
+          a.wertEuro += segmentWertEuro(c.kwp, c.region_id, c.segment);
         }
         acc.set(c.region_id, a);
       }
       return regions.map((r) => {
-        const a = acc.get(r.region_id) ?? { count: 0, kwp: 0, speicher: 0 };
+        const a = acc.get(r.region_id) ?? { count: 0, kwp: 0, speicher: 0, wertEuro: 0 };
         const erzeugung = erzeugungKwh(a.kwp, r.region_id);
         return {
           region_id: r.region_id,
@@ -258,6 +256,7 @@ export default function RankingTable({
           perCapita: r.population ? Math.round((a.kwp * 1000) / r.population) : null,
           erzeugung,
           co2: co2Tonnen(erzeugung),
+          wertEuro: a.wertEuro,
         };
       });
     };
@@ -438,7 +437,7 @@ export default function RankingTable({
         <span aria-hidden style={{ ...S.track, visibility: "hidden" }} />
       </span>
       {COLUMNS.map((c) => {
-        const teil = cellTeile(r, c.key, stromwertCt);
+        const teil = cellTeile(r, c.key);
         return (
           <span key={c.key} style={S.val}>
             <span style={{ ...cellNumStyle(c.key), ...(onAccent ? { color: ON_ACCENT } : null) }}>{teil.value}</span>
@@ -530,19 +529,25 @@ export default function RankingTable({
             <RankHeader mode={rankMode} onChange={setRankMode} sinceYear={lastFullYear} />
             <NameHeader sort={sort} onChange={setSort} />
             {COLUMNS.map((c) => (
-              <button
-                key={c.key}
-                type="button"
-                onClick={() => setSort(c.key)}
-                title={c.hint}
-                style={{
-                  ...S.headBtn,
-                  color: sort === c.key ? v("--color-accent") : v("--color-text-muted"),
-                  fontWeight: sort === c.key ? 700 : 600,
-                }}
-              >
-                {c.label}
-              </button>
+              <span key={c.key} style={S.headCell}>
+                <button
+                  type="button"
+                  onClick={() => setSort(c.key)}
+                  style={{
+                    ...S.headBtn,
+                    color: sort === c.key ? v("--color-accent") : v("--color-text-muted"),
+                    fontWeight: sort === c.key ? 700 : 600,
+                  }}
+                >
+                  {c.label}
+                </button>
+                {/* Die Erklärung sitzt am Spaltenkopf, wo die Frage entsteht —
+                    nicht als Fließtext unter der Tabelle, den man erst nach dem
+                    Lesen aller Zahlen findet. */}
+                <InfoTooltip title={c.label} size={11} ariaLabel={`${c.label}: Erklärung`}>
+                  {c.key === "wert" ? <StromwertHilfe /> : c.hint}
+                </InfoTooltip>
+              </span>
             ))}
           </div>
 
@@ -623,26 +628,41 @@ export default function RankingTable({
         </p>
       )}
 
-      {/* Annahmen der beiden Modell-Spalten — offen an der Tabelle, nicht in
-          einem Tooltip versteckt: Wer die Zahl zitiert, muss sehen können, wie
-          sie entsteht. Der ct-Satz ist die eine ehrlich strittige Größe und
-          deshalb direkt hier editierbar. */}
-      <p style={S.note}>
-        „CO₂ gespart" und „Stromwert" sind rechnerische Jahreswerte, keine Messwerte: installierte
-        Leistung mal typischer Ertrag im jeweiligen Bundesland (PVGIS), kalibriert an der von
-        Fraunhofer ISE bilanzierten Solarstrom-Erzeugung des Jahres 2025. Das CO₂ ist bewusst
-        konservativ mit {fmtCo2FaktorKg(ATLAS_GRID_CO2)} gerechnet — der amtliche
-        UBA-Vermeidungsfaktor für Photovoltaik liegt höher. Der Stromwert bewertet jede erzeugte
-        Kilowattstunde mit{" "}
-        <InlineEdit value={stromwertCt} onCommit={setStromwertCt} unit="ct" min={0} max={100} width={44} />{" "}
-        (Mischwert: {Math.round(EIGENVERBRAUCH_ANTEIL_ANNAHME * 100)} % Eigenverbrauch zum
-        Haushaltsstrompreis, {Math.round((1 - EIGENVERBRAUCH_ANTEIL_ANNAHME) * 100)} %
-        Einspeisevergütung — klicken und anpassen).{" "}
-        <Link href="/photovoltaik-rechner" style={S.link}>
-          Was heißt das für dein Dach? Individuell berechnen
-        </Link>
-      </p>
     </div>
+  );
+}
+
+/**
+ * Hilfetext der Stromwert-Spalte. Nennt die Sätze je Anlagenart einzeln —
+ * genau das ist der Punkt der Spalte, und eine Zahl, die aus vier verschiedenen
+ * Sätzen entsteht, ist ohne diese Aufstellung nicht nachvollziehbar.
+ */
+function StromwertHilfe() {
+  const saetze = stromwertSaetze();
+  const zeilen: [string, string][] = [
+    ["Private Dächer", "privat_dach"],
+    ["Balkonkraftwerke", "steckersolar"],
+    ["Gewerbliche Dächer", "gewerbe_dach"],
+    ["Freiflächen-Parks", "freiflaeche"],
+  ];
+  return (
+    <>
+      Rechnerischer Wert des erzeugten Solarstroms pro Jahr — ein Modellwert, kein Messwert. Jede
+      Anlagenart wird mit ihrem eigenen Satz bewertet, weil eine Kilowattstunde vom privaten Dach
+      teuren Netzbezug ersetzt, während ein Freiflächen-Park zum Börsenwert verkauft:
+      <span style={S.tipListe}>
+        {zeilen.map(([label, key]) => (
+          <span key={key} style={S.tipZeile}>
+            <strong>
+              {label}: {fmtCtProKwh(saetze[key].ct)}
+            </strong>{" "}
+            — {saetze[key].herkunft}
+          </span>
+        ))}
+      </span>
+      Die Strommenge dahinter ist die installierte Leistung mal dem typischen Ertrag im jeweiligen
+      Bundesland, kalibriert an der von Fraunhofer ISE bilanzierten Solarstrom-Erzeugung 2025.
+    </>
   );
 }
 
@@ -834,15 +854,15 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  * dem Namen.
  *
  * Seit Zahl und Einheit übereinander stehen, braucht eine Wertspalte nur noch
- * die Breite ihrer ZAHL (die Einheit ist kurz und steht darunter) — deshalb
- * sind die meisten schmal. Zwei Ausnahmen, jede aus einem konkreten Inhalt:
- * „Anlagen" (74) trägt die einzige ungestaffelte Zahl der Tabelle, bis zu
- * siebenstellig ("1.399.105"); „CO₂ gespart" (66) und „Stromwert" (62) sind so
- * breit wie ihre Überschrift, damit die einzeilig bleibt — eine umbrechende
- * Spaltenüberschrift zieht die ganze Kopfzeile auf und sieht wie ein Versehen
- * aus.
+ * die Breite ihrer ZAHL — die Einheit ist kurz und steht darunter. Die
+ * Spaltenbreite bestimmt deshalb nicht mehr der Wert, sondern die ÜBERSCHRIFT
+ * samt „?"-Knopf daneben; sie muss einzeilig bleiben, sonst zieht sie die
+ * ganze Kopfzeile auf und stößt an die Nachbarspalte. Die Werte hier sind
+ * gemessene Kopfbreiten, nicht geschätzt. Einzige Ausnahme ist „Anlagen"
+ * (74): Dort ist die Zahl breiter als der Kopf, weil sie als einzige der
+ * Tabelle ungestaffelt bis zu siebenstellig wird ("1.399.105").
  */
-const GRID = "44px minmax(180px,1fr) 74px 58px 58px 66px 62px 58px 14px";
+const GRID = "44px minmax(180px,1fr) 74px 60px 60px 78px 70px 62px 14px";
 
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
@@ -858,10 +878,10 @@ const S: Record<string, React.CSSProperties> = {
   },
   // Eight columns do not fit a phone. Scroll the table, never the page.
   scroller: { overflowX: "auto", margin: "0 -8px", padding: "0 8px" },
-  // Summe des Rasters: 44 + 180 (Name-Minimum) + 74 + 5×58 + 14 + 8×7 Abstände.
+  // Summe des Rasters: 44 + 180 (Name-Minimum) + 404 (Wertspalten) + 14 + 56.
   // Enger scrollt die Tabelle lieber waagerecht, als Ortsnamen abzuschneiden —
   // ein halber Ortsname ist in einer Rangliste wertlos.
-  table: { minWidth: 658 },
+  table: { minWidth: 698 },
   row: {
     display: "grid",
     gridTemplateColumns: GRID,
@@ -887,7 +907,22 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     gap: 3,
   },
-  headBtn: { background: "none", border: "none", padding: 0, fontFamily: "inherit", fontSize: 11, textAlign: "left", cursor: "pointer" },
+  // Titel + „?" nebeneinander. Der Titel darf nicht umbrechen — sonst zieht er
+  // die ganze Kopfzeile auf; die Spaltenbreiten sind darauf ausgelegt.
+  headCell: { display: "flex", alignItems: "center", gap: 3, minWidth: 0 },
+  headBtn: {
+    background: "none",
+    border: "none",
+    padding: 0,
+    fontFamily: "inherit",
+    fontSize: 11,
+    textAlign: "left",
+    whiteSpace: "nowrap",
+    cursor: "pointer",
+  },
+  // Aufzählung der Sätze im Hilfetext der Stromwert-Spalte.
+  tipListe: { display: "flex", flexDirection: "column", gap: 4, margin: "8px 0" },
+  tipZeile: { display: "block" },
   headBtnLeft: {
     background: "none",
     border: "none",

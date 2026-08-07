@@ -17,6 +17,7 @@ import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { ertragForRegionId } from "./bundesland-ertrag";
 import { NATIONAL_AVG_YIELD } from "./constants";
+import { DIREKTVERMARKTUNG, MARKTWERT_NIVEAU_CT } from "./marktwert-config";
 
 export { ertragForRegionId };
 
@@ -63,15 +64,62 @@ export const ATLAS_GRID_CO2 = DEFAULT_HEATPUMP_CONFIG.gridCo2PerKwh;
 export const EIGENVERBRAUCH_ANTEIL_ANNAHME = 0.3;
 
 /**
- * Default-Wert einer erzeugten Kilowattstunde Solarstrom in ct: gewichteter
- * Mischwert aus vermiedenem Netzbezug (Eigenverbrauch × Haushaltsstrompreis)
- * und Einspeisevergütung für den Rest. Abgeleitet, nicht handgetippt — ändert
- * sich der Strompreis oder der EEG-Satz, wandert der Default mit.
+ * Was eine erzeugte Kilowattstunde wert ist — JE ANLAGENART, nicht als ein
+ * Mischsatz über alles.
+ *
+ * Ein einziger Satz über den ganzen Bestand ist falsch, und zwar nicht ein
+ * bisschen: Ein privates Dach spart Netzbezug zum Haushaltspreis (gut 31 ct),
+ * ein Freiflächen-Park verkauft alles an der Börse (knapp 5 ct). Das ist der
+ * Faktor sechs. Da die Anlagenart je Region bekannt ist, gibt es keinen Grund,
+ * darüber zu mitteln — jede Art bekommt ihren eigenen Satz, und die Summe der
+ * Region ergibt sich daraus.
+ *
+ * Jeder Satz kommt aus einer im Projekt gepflegten Quelle. Wo eine Größe nicht
+ * belegt ist (der Eigenverbrauchsanteil von Gewerbedächern), wird sie NICHT
+ * geschätzt, sondern weggelassen — der Satz ist dann eine Untergrenze, und die
+ * Abweichung geht zu unseren Ungunsten statt zu unseren Gunsten.
  */
-export function defaultStromwertCt(): number {
+export type SegmentSatz = { ct: number; herkunft: string };
+
+export function stromwertSaetze(): Record<string, SegmentSatz> {
+  const haushaltCt = DEFAULT_PRICES.electricityPrice * 100;
   const ev = EIGENVERBRAUCH_ANTEIL_ANNAHME;
-  const ct = ev * DEFAULT_PRICES.electricityPrice * 100 + (1 - ev) * DEFAULT_FEED_IN.teilUnder10;
-  return Math.round(ct);
+  return {
+    // Privates Dach: der selbst genutzte Teil ersetzt teuren Netzbezug, der
+    // Rest bringt die EEG-Vergütung für Teileinspeisung ≤ 10 kWp.
+    privat_dach: {
+      ct: ev * haushaltCt + (1 - ev) * DEFAULT_FEED_IN.teilUnder10,
+      herkunft: `${Math.round(ev * 100)} % Eigenverbrauch zum Haushaltsstrompreis, Rest zur Einspeisevergütung`,
+    },
+    // Steckersolar wird per Voreinstellung NICHT vergütet (Projektkonvention,
+    // siehe Balkon-Rechner): Nur der selbst genutzte Teil ist Geld wert, der
+    // Überschuss geht unentgeltlich ins Netz. Mit dem Dach-Eigenverbrauchsanteil
+    // gerechnet ist das eine Untergrenze — ein Balkongerät ist klein gegenüber
+    // der Grundlast und deckt real mehr davon selbst.
+    steckersolar: {
+      ct: ev * haushaltCt,
+      herkunft: "nur der selbst genutzte Teil; der Überschuss wird nicht vergütet",
+    },
+    // Gewerbedach: Der Eigenverbrauchsanteil von Gewerbebetrieben ist im
+    // Projekt nirgends belegt, deshalb steht hier nur die gesicherte
+    // Untergrenze — die EEG-Vergütung für Teileinspeisung > 10 kWp. Wer
+    // tagsüber selbst verbraucht, liegt darüber.
+    gewerbe_dach: {
+      ct: DEFAULT_FEED_IN.teilOver10,
+      herkunft: "Einspeisevergütung über 10 kWp — selbst verbrauchter Strom ist mehr wert, sein Anteil ist uns nicht belegt",
+    },
+    // Freifläche verkauft praktisch alles. Maßstab ist der amtliche Marktwert
+    // Solar abzüglich der mengenabhängigen Direktvermarktungsgebühr.
+    freiflaeche: {
+      ct: Math.max(0, MARKTWERT_NIVEAU_CT - DIREKTVERMARKTUNG.gebuehrCtKwh),
+      herkunft: "Marktwert Solar abzüglich Direktvermarktungsgebühr",
+    },
+  };
+}
+
+/** Satz für ein Segment; unbekannte Segmente tragen keinen Erlös. */
+export function stromwertCtFuerSegment(segment: string): number {
+  return stromwertSaetze()[segment]?.ct ?? 0;
 }
 
 /**
@@ -90,4 +138,13 @@ export function co2Tonnen(kwhProJahr: number): number {
 /** Rechnerischer Wert des erzeugten Stroms in € pro Jahr, zum gegebenen ct-Satz. */
 export function stromwertEuro(kwhProJahr: number, ctProKwh: number): number {
   return (kwhProJahr * ctProKwh) / 100;
+}
+
+/**
+ * Wert der Jahreserzeugung EINES Segments in € — Erzeugung × Satz dieser
+ * Anlagenart. Die Region summiert über ihre Segmente; ein Mischsatz kommt
+ * nirgends mehr vor.
+ */
+export function segmentWertEuro(kwp: number, regionId: string, segment: string): number {
+  return stromwertEuro(erzeugungKwh(kwp, regionId), stromwertCtFuerSegment(segment));
 }
