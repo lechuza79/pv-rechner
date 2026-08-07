@@ -6,7 +6,15 @@ import { v } from "../../lib/theme";
 import { IconArrowUp, IconArrowDown, IconChevronDown, IconArrowRight } from "../Icons";
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
 import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
-import { fmtCo2FaktorKg, fmtCo2Tonnen, fmtEuro, fmtPvLeistung, fmtSpeicherKwh, fmtWattProKopf } from "../../lib/atlas-format";
+import {
+  co2TonnenTeile,
+  euroTeile,
+  fmtCo2FaktorKg,
+  pvLeistungTeile,
+  speicherKwhTeile,
+  wattProKopfTeile,
+  type Messwert,
+} from "../../lib/atlas-format";
 import {
   ATLAS_GRID_CO2,
   EIGENVERBRAUCH_ANTEIL_ANNAHME,
@@ -92,16 +100,26 @@ function setUrlPlz(plz: string | null): void {
 }
 
 
-const fmtLeistung = fmtPvLeistung;
-const fmtSpeicher = fmtSpeicherKwh;
-
-function fmtCell(row: Row, m: Metric, stromwertCt: number): string {
-  if (m === "kwp") return fmtLeistung(row.kwp);
-  if (m === "speicher") return fmtSpeicher(row.speicher);
-  if (m === "perCapita") return row.perCapita === null ? "—" : fmtWattProKopf(row.perCapita);
-  if (m === "co2") return fmtCo2Tonnen(row.co2);
-  if (m === "wert") return fmtEuro(stromwertEuro(row.erzeugung, stromwertCt));
-  return nf(row[m] as number);
+/**
+ * Zellinhalt als Zahl UND Einheit getrennt.
+ *
+ * Genau dafür gibt es die `…Teile()`-Funktionen in lib/atlas-format.ts: Die
+ * Zahl trägt die Zelle, die Einheit steht kleiner darunter. Der fertige String
+ * (`fmt…()`) taugt hier nicht — er verschmilzt beides und nimmt die
+ * Größenstaffelung wieder weg.
+ *
+ * „Anlagen" hat bewusst keine Einheit: eine Anlage ist eine Anzahl, und
+ * „Anlagen" steht schon im Spaltenkopf.
+ */
+function cellTeile(row: Row, m: Metric, stromwertCt: number): Messwert {
+  if (m === "kwp") return pvLeistungTeile(row.kwp);
+  if (m === "speicher") return speicherKwhTeile(row.speicher);
+  if (m === "perCapita") {
+    return row.perCapita === null ? { value: "—", unit: "" } : wattProKopfTeile(row.perCapita);
+  }
+  if (m === "co2") return co2TonnenTeile(row.co2);
+  if (m === "wert") return euroTeile(stromwertEuro(row.erzeugung, stromwertCt));
+  return { value: nf(row[m] as number), unit: "" };
 }
 
 /** Small inhabitant count shown behind the name. Bundesländer carry millions —
@@ -386,10 +404,11 @@ export default function RankingTable({
   const barPct = (val: number | null) =>
     val === null ? 0 : Math.min(100, Math.max(1, Math.round((val / scale) * 100)));
 
-  const cellStyle = (key: Metric): React.CSSProperties => ({
-    ...S.val,
-    color: sort === key ? v("--color-text-primary") : v("--color-text-muted"),
-    fontWeight: sort === key ? 600 : 400,
+  /** Der Zahlenwert selbst — die sortierte Spalte tritt hervor, der Rest tritt zurück. */
+  const cellNumStyle = (key: Metric): React.CSSProperties => ({
+    ...S.valNum,
+    color: sort === key ? v("--color-text-primary") : v("--color-text-secondary"),
+    fontWeight: sort === key ? 700 : 500,
   });
 
   // Zellen einer Zeile. `onAccent` = die Zeile ist blau gefüllt (aktive Kommune):
@@ -408,17 +427,48 @@ export default function RankingTable({
         <span style={{ ...S.hint, ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}>
           {r.population === null ? "unbewohnt" : fmtPop(r.population, popInMillions)}
         </span>
+        {/* Platzhalter für die Balkenschiene der Wertzellen: gleicher Aufbau,
+            gleiche Höhe — sonst zentriert die Zeile den kürzeren Namensblock
+            und Name und Zahlenreihe stehen nicht auf einer Linie. */}
+        <span aria-hidden style={{ ...S.track, visibility: "hidden" }} />
       </span>
-      {COLUMNS.map((c) => (
-        <span key={c.key} style={{ ...cellStyle(c.key), ...(onAccent ? { color: ON_ACCENT } : null) }}>
-          <span>{fmtCell(r, c.key, stromwertCt)}</span>
-          {c.key === sort && (
-            <span aria-hidden style={{ ...S.track, ...(onAccent ? { background: "rgba(255,255,255,0.28)" } : null) }}>
-              <span style={{ ...S.fill, width: `${barPct(valueOf(r, sort))}%`, background: onAccent ? ON_ACCENT : v("--color-accent-light") }} />
+      {COLUMNS.map((c) => {
+        const teil = cellTeile(r, c.key, stromwertCt);
+        return (
+          <span key={c.key} style={S.val}>
+            <span style={{ ...cellNumStyle(c.key), ...(onAccent ? { color: ON_ACCENT } : null) }}>{teil.value}</span>
+            {/* Die Einheit steht IMMER als eigene Zeile, auch wenn sie leer ist:
+                sonst rutschen Zellen ohne Einheit („Anlagen") in der Zeile hoch
+                und die Zahlenreihe verliert ihre gemeinsame Grundlinie. */}
+            <span style={{ ...S.valUnit, ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}>
+              {teil.unit || " "}
             </span>
-          )}
-        </span>
-      ))}
+            {/* Die Balkenschiene läuft in JEDER Zelle mit, sichtbar nur in der
+                sortierten. Nur dort zu rendern machte genau diese eine Zelle
+                höher — und damit stand ihre Zahl als einzige der Zeile nicht
+                mehr auf der gemeinsamen Linie. */}
+            <span
+              aria-hidden
+              style={{
+                ...S.track,
+                ...(c.key === sort
+                  ? onAccent
+                    ? { background: "rgba(255,255,255,0.28)" }
+                    : null
+                  : { visibility: "hidden" }),
+              }}
+            >
+              <span
+                style={{
+                  ...S.fill,
+                  width: `${barPct(valueOf(r, sort))}%`,
+                  background: onAccent ? ON_ACCENT : v("--color-accent-light"),
+                }}
+              />
+            </span>
+          </span>
+        );
+      })}
     </>
   );
 
@@ -776,10 +826,16 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  *
  * Deshalb: Wertspalten FEST und gleich breit (sie sind eine Messreihe, sie
  * müssen als Spalten lesbar sein und untereinander fluchten), der Rest gehört
- * dem Namen. 66 px ist der breiteste vorkommende Wert ("1,2 Mrd. €"); jedes
- * Pixel darüber fehlt dem Namen, und dort fehlte es zuletzt an genau sechs.
+ * dem Namen.
+ *
+ * Seit Zahl und Einheit übereinander stehen, braucht eine Wertspalte nur noch
+ * die Breite ihrer ZAHL (die Einheit ist kurz und steht darunter) — deshalb
+ * sind fünf davon schmal. „Anlagen" ist die Ausnahme: Dort steht die einzige
+ * ungestaffelte Zahl der Tabelle, bis zu siebenstellig ("1.399.105"), und eine
+ * einheitliche Spaltenbreite müsste sich an ihr ausrichten und den Rest
+ * verschwenden.
  */
-const GRID = "44px minmax(195px,1fr) repeat(6, 66px) 14px";
+const GRID = "44px minmax(180px,1fr) 74px repeat(5, 58px) 14px";
 
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
@@ -795,11 +851,10 @@ const S: Record<string, React.CSSProperties> = {
   },
   // Eight columns do not fit a phone. Scroll the table, never the page.
   scroller: { overflowX: "auto", margin: "0 -8px", padding: "0 8px" },
-  // Summe des Rasters: 44 + 195 (Name-Minimum) + 6×66 + 14 + 8×7 Abstände.
-  // Das Namens-Minimum trägt den Gemeinde-Fall („Buchen (Odenwald)" plus volle
-  // Einwohnerzahl); enger scrollt die Tabelle lieber waagerecht, als Ortsnamen
-  // abzuschneiden — ein halber Ortsname ist in einer Rangliste wertlos.
-  table: { minWidth: 705 },
+  // Summe des Rasters: 44 + 180 (Name-Minimum) + 74 + 5×58 + 14 + 8×7 Abstände.
+  // Enger scrollt die Tabelle lieber waagerecht, als Ortsnamen abzuschneiden —
+  // ein halber Ortsname ist in einer Rangliste wertlos.
+  table: { minWidth: 658 },
   row: {
     display: "grid",
     gridTemplateColumns: GRID,
@@ -810,7 +865,9 @@ const S: Record<string, React.CSSProperties> = {
     borderBottom: `1px solid ${v("--color-border-muted")}`,
     fontSize: 13,
   },
-  header: { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 6, marginBottom: 2 },
+  // Kopfzeile oben ausgerichtet: „CO₂ gespart" bricht auf zwei Zeilen um, und
+  // mittig zentriert rutschten die einzeiligen Titel daneben nach unten.
+  header: { alignItems: "end", borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 6, marginBottom: 2 },
   headNameBtn: {
     background: "none",
     border: "none",
@@ -823,7 +880,7 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     gap: 3,
   },
-  headBtn: { background: "none", border: "none", padding: 0, fontFamily: "inherit", fontSize: 11, textAlign: "right", cursor: "pointer" },
+  headBtn: { background: "none", border: "none", padding: 0, fontFamily: "inherit", fontSize: 11, textAlign: "left", cursor: "pointer" },
   headBtnLeft: {
     background: "none",
     border: "none",
@@ -839,24 +896,55 @@ const S: Record<string, React.CSSProperties> = {
   },
   // Aktive Kommune voll in unserem Blau (weiße Schrift via rowCells onAccent).
   rowHome: { background: v("--color-accent"), borderRadius: v("--radius-md") },
-  rank: { fontFamily: v("--font-mono"), fontSize: 12, color: v("--color-text-muted"), display: "flex", alignItems: "center", gap: 4 },
+  // Die Platzziffer gehört auf die Namenslinie, nicht in die Mitte zwischen
+  // Name und Einwohnerzahl: sie benennt den Ort, nicht die Zeile als Ganzes.
+  rank: {
+    fontFamily: v("--font-mono"),
+    fontSize: 12,
+    lineHeight: 1.25,
+    color: v("--color-text-muted"),
+    display: "flex",
+    alignItems: "baseline",
+    alignSelf: "start",
+    gap: 4,
+  },
   delta: { fontFamily: v("--font-mono"), fontSize: 12, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 1 },
-  nameCell: { display: "flex", alignItems: "baseline", gap: 6, minWidth: 0 },
-  name: { color: v("--color-text-primary"), textDecoration: "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
-  hint: { fontSize: 10, color: v("--color-text-muted") },
+  // Name und Einwohnerzahl gestapelt — dieselbe Bauart wie die Wertzellen
+  // (Hauptangabe oben, kleine Zusatzangabe darunter). Dadurch fluchten alle
+  // acht Spalten in zwei Textebenen statt in einer gemischten Zeile.
+  nameCell: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 1, minWidth: 0 },
+  // Zeilenhöhen gleich denen der Wertzelle (valNum/valUnit): sonst sitzen Name
+  // und Einwohnerzahl ein paar Pixel tiefer als die Zahlenreihe daneben.
+  name: {
+    fontSize: 13,
+    lineHeight: 1.25,
+    color: v("--color-text-primary"),
+    textDecoration: "none",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    maxWidth: "100%",
+  },
+  hint: { fontSize: 10, lineHeight: 1.2, color: v("--color-text-muted"), whiteSpace: "nowrap" },
   // The bar sits under the number in the sorted column, not in a column of its
   // own: a header names a measure, and "the bar" is not one — it is that measure,
   // drawn.
+  // Wertzelle: Zahl oben, Einheit darunter, linksbündig. Linksbündig, weil die
+  // Einheit sonst unter einer rechtsbündigen Zahl mit wechselnder Stellenzahl
+  // wandert — die Einheiten stünden in derselben Spalte auf verschiedenen
+  // Startpunkten.
   val: {
-    fontFamily: v("--font-mono"),
-    fontSize: 11,
-    whiteSpace: "nowrap",
     display: "flex",
     flexDirection: "column",
-    alignItems: "flex-end",
-    gap: 3,
+    alignItems: "flex-start",
+    gap: 1,
+    minWidth: 0,
   },
-  track: { display: "block", width: "100%", height: 4, background: v("--color-border"), borderRadius: 2 },
+  valNum: { fontFamily: v("--font-mono"), fontSize: 13, whiteSpace: "nowrap", lineHeight: 1.25 },
+  // Gleiche Größe und Farbe wie die Einwohnerzahl unter dem Namen: beide sind
+  // die kleine Zusatzangabe ihrer Zelle.
+  valUnit: { fontSize: 10, color: v("--color-text-muted"), whiteSpace: "nowrap", lineHeight: 1.2 },
+  track: { display: "block", width: "100%", height: 4, marginTop: 2, background: v("--color-border"), borderRadius: 2 },
   // Links verankert → der Balken wächst nach rechts (kein marginLeft:auto mehr).
   fill: { display: "block", height: "100%", borderRadius: 2 },
   // Mirrors S.scroller's box exactly (same negative margin, same padding), so the
