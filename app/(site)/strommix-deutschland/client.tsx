@@ -170,15 +170,68 @@ function TrendVergleich({
   );
 }
 
-/** Kompakte Karte: Solarerzeugung des letzten abgeschlossenen Monats gegen
- *  denselben Monat des Vorjahres — aus denselben Daten wie der Chart. Der
- *  Mehr-/Minderertrag wird rechnerisch zerlegt in Zubau (installierte Leistung
- *  aus der Energy-Charts-Monatsreihe) und Wetter (Ertrag je kWp); beide
- *  Faktoren multiplizieren sich zum Gesamteffekt. Fehlt die Leistungsreihe,
- *  fällt die Karte auf den einfachen Vergleichssatz zurück; bei fehlenden
- *  Erzeugungsdaten rendert sie nichts. */
+// Vergleichsmonate sind ab 2016 wählbar: der Vorjahresmonat muss existieren,
+// und die Energy-Charts-Reihe beginnt 2015.
+const TREND_MIN = 2016 * 12;
+
+function parseTrendParam(raw: string | null, latest: { year: number; month: number }): { year: number; month: number } | null {
+  if (!raw) return null;
+  const m = /^(\d{4})-(\d{2})$/.exec(raw);
+  if (!m) return null;
+  const year = Number(m[1]);
+  const month = Number(m[2]) - 1;
+  if (month < 0 || month > 11) return null;
+  const val = year * 12 + month;
+  if (val < TREND_MIN || val > latest.year * 12 + latest.month) return null;
+  return { year, month };
+}
+
+/** Kompakte Karte: Solarerzeugung eines Monats gegen denselben Monat des
+ *  Vorjahres — aus denselben Daten wie der Chart, per Pfeilen durch alle
+ *  Monate seit 2016 blätterbar (kein Archiv nötig: jeder Monat wird aus den
+ *  Quelldaten frisch gerechnet; der gewählte Monat steht als ?trend= im
+ *  Teilen-Link). Der Mehr-/Minderertrag wird rechnerisch zerlegt in Zubau
+ *  (installierte Leistung aus der Energy-Charts-Monatsreihe) und Wetter
+ *  (Ertrag je kWp); beide Faktoren multiplizieren sich zum Gesamteffekt.
+ *  Fehlt die Leistungsreihe, fällt die Karte auf den einfachen
+ *  Vergleichssatz zurück; bei fehlenden Erzeugungsdaten beim ersten Laden
+ *  rendert sie nichts (kein leerer Kasten), nach einer Navigation bleibt
+ *  der Kasten stehen und meldet den Datenstand. */
 function SolarTrendCard() {
-  const { year, month } = useMemo(() => lastCompletedMonth(), []);
+  const searchParams = useSearchParams();
+  const latest = useMemo(() => lastCompletedMonth(), []);
+  // searchParams nur für den Startwert — danach führt die Karte den Zustand
+  // selbst und spiegelt ihn per replaceState (Muster wie selectRange).
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const [sel, setSel] = useState(() => parseTrendParam(searchParams.get("trend"), latest) ?? latest);
+  // Ein geteilter Monats-Link zählt wie eine Navigation: Der Kasten bleibt
+  // sichtbar und zeigt Laden/Fehler, statt kommentarlos zu fehlen.
+  const [hasNavigated, setHasNavigated] = useState(
+    () => parseTrendParam(searchParams.get("trend"), latest) !== null,
+  );
+
+  const navigate = useCallback((delta: number) => {
+    setSel((s) => {
+      const maxVal = latest.year * 12 + latest.month;
+      const clamped = Math.min(Math.max(s.year * 12 + s.month + delta, TREND_MIN), maxVal);
+      const next = { year: Math.floor(clamped / 12), month: clamped % 12 };
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        if (clamped === maxVal) params.delete("trend");
+        else params.set("trend", `${next.year}-${String(next.month + 1).padStart(2, "0")}`);
+        const query = params.toString();
+        window.history.replaceState(
+          window.history.state,
+          "",
+          `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`,
+        );
+      }
+      return next;
+    });
+    setHasNavigated(true);
+  }, [latest]);
+
+  const { year, month } = sel;
   const thisRange = useMemo(() => monthDateRange(year, month), [year, month]);
   const prevRange = useMemo(() => monthDateRange(year - 1, month), [year, month]);
   const cur = useGenerationMix("de", 720, thisRange);
@@ -189,11 +242,25 @@ function SolarTrendCard() {
   const curGWh = useMemo(() => sumKeyGWh(cur.data.data, "solar"), [cur.data.data]);
   const prevGWh = useMemo(() => sumKeyGWh(prev.data.data, "solar"), [prev.data.data]);
 
-  if (cur.loading || prev.loading || curGWh <= 0 || prevGWh <= 0) return null;
+  const loading = cur.loading || prev.loading;
+  const dataOk = curGWh > 0 && prevGWh > 0;
+  // Beim allerersten Laden ohne Daten: gar nichts zeigen statt leerem Kasten.
+  if ((loading || !dataOk) && !hasNavigated) return null;
 
-  const totalPct = Math.round((curGWh / prevGWh - 1) * 100);
+  const totalPct = dataOk ? Math.round((curGWh / prevGWh - 1) * 100) : 0;
   const unit = energyUnit(Math.max(curGWh, prevGWh));
   const mehr = totalPct >= 0;
+
+  const canPrev = year * 12 + month > TREND_MIN;
+  const canNext = year * 12 + month < latest.year * 12 + latest.month;
+  const arrowStyle = (enabled: boolean) => ({
+    ...rangeButtonStyle(false),
+    padding: "2px 6px",
+    display: "flex" as const,
+    alignItems: "center" as const,
+    opacity: enabled ? 1 : 0.35,
+    cursor: enabled ? ("pointer" as const) : ("default" as const),
+  });
 
   // Zerlegung: Erzeugung = installierte Leistung × Ertrag je kWp. GWh/GWp
   // kürzt sich zu kWh/kWp. Ohne Leistungsdaten bleibt die Karte beim
@@ -229,10 +296,40 @@ function SolarTrendCard() {
         color: v("--color-text-secondary"),
       }}
     >
-      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-primary"), marginBottom: space.sm }}>
-        Solar-Trend: {monthLabel} {year} gegen {monthLabel} {year - 1}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: space.md, marginBottom: space.sm }}>
+        <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-primary") }}>
+          Solar-Trend: {monthLabel} {year} gegen {monthLabel} {year - 1}
+        </div>
+        <div style={{ display: "flex", gap: space.xs, flexShrink: 0 }}>
+          <button onClick={() => canPrev && navigate(-1)} disabled={!canPrev} style={arrowStyle(canPrev)} title="Voriger Monat">
+            <IconChevronLeft size={iconSizes.xs} />
+          </button>
+          <button onClick={() => canNext && navigate(1)} disabled={!canNext} style={arrowStyle(canNext)} title="Nächster Monat">
+            <IconChevronRight size={iconSizes.xs} />
+          </button>
+        </div>
       </div>
 
+      {loading ? (
+        <div style={{ minHeight: 72, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <BouncingDots />
+        </div>
+      ) : !dataOk ? (
+        <div style={{ minHeight: 72, display: "flex", flexDirection: "column", gap: space.sm, alignItems: "center", justifyContent: "center", color: v("--color-text-muted") }}>
+          <span>Die Daten für diesen Monat konnten gerade nicht geladen werden.</span>
+          <button
+            onClick={() => { cur.refetch(); prev.refetch(); }}
+            style={{
+              background: "none", border: "none", cursor: "pointer",
+              color: v("--color-accent"), fontSize: 12, fontWeight: 600,
+              fontFamily: v("--font-text"), padding: 0, textDecoration: "underline",
+            }}
+          >
+            Erneut versuchen
+          </button>
+        </div>
+      ) : (
+      <>
       {zerlegung && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: pad("md", "lg"), marginBottom: space.md }}>
           <TrendVergleich
@@ -279,6 +376,8 @@ function SolarTrendCard() {
           </>
         )}
       </div>
+      </>
+      )}
     </div>
   );
 }
