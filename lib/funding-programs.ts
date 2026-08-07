@@ -453,25 +453,38 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "mannheim-solarbonus": {
     id: "mannheim-solarbonus", name: "SolarBonus Mannheim",
     traeger: "Stadt Mannheim / Klimaschutzagentur", level: "kommune", region: "Mannheim", bundesland: "Baden-Württemberg", agsCode: "08222",
-    // Der bisherige Link antwortete am 05.08.2026 mit einem Serverfehler; die Stadt
-    // verweist in ihrer eigenen Mitteilung zum Neustart auf klima-ma.de/foerderprogramme.
-    // Die Einschränkung auf Mehrfamilienhäuser, Gründach und Denkmal ist dort wörtlich
-    // bestätigt ("Auf Ein- und Zweifamilienhäusern werden nur noch Photovoltaikanlagen
-    // gefördert, wenn das Dach begrünt ist oder das Gebäude unter Denkmalschutz steht");
-    // die Sätze je kWp nennt die Mitteilung nicht, deshalb bleibt verified: false.
+    // Am 07.08.2026 aus der Förderrichtlinie selbst abgeschrieben — bis dahin stand hier
+    // nur, was die Presse-Mitteilung der Stadt hergab (verified: false). Volltext im Repo:
+    // docs/quellen/Mannheim_SolarBonus_Foerderrichtlinie_2026-03-11.pdf (Beschluss des
+    // Gemeinderats vom 11.03.2026, ersetzt die Fassung vom 01.04.2025).
+    // Die Programmseite selbst ist eine JS-Anwendung ohne Text im Quelltext; die Sätze
+    // stehen zusätzlich in ihrer Datenschnittstelle (api.klima-ma.de/api/subsidies,
+    // Eintrag "SolarBonus 2026 der Stadt Mannheim"). Achtung: die .html-Variante des
+    // Pfades antwortet mit einem Serverfehler — die hier hinterlegte Adresse trägt.
+    // WIDERSPRUCH zwischen zwei Trägerquellen bei der Fassade: Die Seitenübersicht nennt
+    // max. 3.750 €, die Richtlinie unter 3.4 max. 3.000 €. Wir folgen der Richtlinie —
+    // sie ist der Gemeinderatsbeschluss, die Übersicht nur seine Zusammenfassung.
     url: "https://www.klima-ma.de/foerderprogramme", stand: "August 2026",
-    status: "aktiv", capped: true, verified: false,
+    status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWp — seit Neustart 03/2026 nur Mehrfamilienhäuser, Gründach oder Denkmal (nicht Standard-Einfamilienhaus-Dach)",
+    coveredCosts: "Zuschuss je kWp — nur Bestandswohngebäude (Bauantrag vor dem 01.05.2022) und nur in Sonderfällen: Mehrfamilienhaus mit Mieterstrom, Gründach, Denkmal, Fassade oder gemeinnütziger Verein. Ein gewöhnliches Ein-/Zweifamilienhaus-Dach wird nicht gefördert",
     rates: [
-      { label: "Aufdach (nur Mehrfamilienhaus, ab 20 kWp / Vollbelegung)", value: "120 €/kWp, max. 2.400 €" },
-      { label: "auf Dachbegrünung", value: "260 €/kWp, max. 4.000 €" },
-      { label: "Fassade / Denkmal", value: "250–300 €/kWp" },
+      { label: "Mehrfamilienhaus ab 3 Wohneinheiten (Vollbelegung oder ab 20 kWp), nur mit Mieterstrom oder gemeinschaftlicher Gebäudeversorgung", value: "120 €/kWp, max. 2.400 €" },
+      { label: "PV auf Dachbegrünung", value: "260 €/kWp, max. 4.000 €" },
+      { label: "PV auf denkmalgeschütztem Gebäude", value: "300 €/kWp, max. 4.500 €" },
+      { label: "Fassaden-PV und Solarzäune (ab 1,5 kWp)", value: "250 €/kWp, max. 3.000 €" },
+      { label: "PV auf Gebäuden gemeinnütziger Vereine (Vollbelegung oder ab 30 kWp)", value: "140 €/kWp, max. 4.200 €" },
+      { label: "Umsetzung des Mieterstrom-/Betriebskonzepts (MFH, WEG)", value: "50 % der Kosten, max. 3.000 €" },
     ],
     conditions: [
-      "Programm zum 11.03.2026 neu gestartet (neue Förderrichtlinie)",
-      "Ein-/Zweifamilienhäuser aufdach nur noch bei Dachbegrünung oder Denkmalschutz förderfähig",
-      "Standard-Aufdach nur Mehrfamilienhäuser (3+ Wohneinheiten) oder ab 20 kWp; Antrag vor Beauftragung",
+      "Nur für Gebäude, für die der Bauantrag vor dem 01.05.2022 gestellt wurde — Neubauten sind ausgeschlossen (Nr. 1.1 der Richtlinie)",
+      "Ein-/Zweifamilienhäuser nur bei begrüntem Dach oder Denkmalschutz förderfähig; ein gewöhnliches Dach bekommt nichts",
+      "Beim Mehrfamilienhaus ist ein gleichzeitig umgesetztes Mieterstrommodell oder eine gemeinschaftliche Gebäudeversorgung zwingende Voraussetzung, nicht nur ein Zusatzbaustein",
+      "Antragsberechtigt sind private Wohngebäudeeigentümer samt Eigentümergemeinschaften sowie eingetragene gemeinnützige Vereine",
+      "Antrag vor der Beauftragung; nach der vorläufigen Zusage bleiben 12 Monate für Installation und Verwendungsnachweis",
+      "Nur Anlagen von Fachbetrieben; selbst beschaffte Anlagenteile und über Mietmodelle finanzierte Anlagen sind ausgeschlossen",
+      "Einmalig je PV-Anlage und Objekt; nicht mit dem Balkon-SolarBonus der Stadt kombinierbar",
+      "Mittel werden erst bei vollständigem Antrag reserviert und nur im Rahmen des Haushalts vergeben",
     ],
     combinableWith: BUND,
   },

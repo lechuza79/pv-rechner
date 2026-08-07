@@ -234,6 +234,34 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(fundingAmount(p, 10, 5, 20000).computable).toBe(false);
     expect(stackFunding(fundingForAgs("08222000"), 10, 5, 20000).total).toBe(0);
   });
+  // Am 07.08.2026 aus der Förderrichtlinie selbst abgeschrieben (Gemeinderatsbeschluss
+  // vom 11.03.2026, docs/quellen/Mannheim_SolarBonus_Foerderrichtlinie_2026-03-11.pdf).
+  // Vorher stand hier eine Spanne "250–300 €/kWp" ganz OHNE Höchstbetrag für zwei
+  // Bausteine, die in der Richtlinie getrennt und je gedeckelt sind — und zwei
+  // Bausteine fehlten. Eine Spanne ohne Deckel ist genau die Sorte Angabe, die einen
+  // Antragsteller mit einer zu hohen Erwartung losschickt.
+  it("Mannheim: jeder Baustein nennt seinen Höchstbetrag, keine Spanne ohne Deckel", () => {
+    const p = getFundingProgram("mannheim-solarbonus")!;
+    for (const r of p.rates) {
+      expect(r.value, `${r.label} ohne Höchstbetrag`).toMatch(/max\./);
+      expect(r.value, `${r.label} nennt eine Spanne statt eines Satzes`).not.toMatch(/–\s*\d/);
+    }
+    // Die vier €/kWp-Sätze der Richtlinie, zellgleich (Nr. 3.3.1–3.3.3, 3.4, 3.5):
+    const wert = (teil: string) => p.rates.find((r) => r.label.includes(teil))!.value;
+    expect(wert("Mehrfamilienhaus ab 3")).toBe("120 €/kWp, max. 2.400 €");
+    expect(wert("Dachbegrünung")).toBe("260 €/kWp, max. 4.000 €");
+    expect(wert("denkmalgeschütztem")).toBe("300 €/kWp, max. 4.500 €");
+    expect(wert("Fassaden-PV")).toBe("250 €/kWp, max. 3.000 €");
+    expect(wert("gemeinnütziger Vereine")).toBe("140 €/kWp, max. 4.200 €");
+  });
+  // Nr. 1.1 der Richtlinie schließt Neubauten komplett aus (Bauantrag vor dem
+  // 01.05.2022). Das ist die Bedingung, an der die meisten Interessenten scheitern —
+  // sie stand bei uns nirgends, während wir das Programm als aktiv angezeigt haben.
+  it("Mannheim: die Stichtags-Bedingung für Bestandsgebäude steht sichtbar dabei", () => {
+    const p = getFundingProgram("mannheim-solarbonus")!;
+    expect(p.conditions.join(" ")).toMatch(/01\.05\.2022/);
+    expect(p.coveredCosts).toMatch(/01\.05\.2022/);
+  });
   it("Wolfsburg (pausiert) and Bottrop (ausgeschoepft) are not auto-applied", () => {
     expect(getFundingProgram("wolfsburg-pv")!.status).toBe("pausiert");
     expect(stackFunding(fundingForAgs("03103000"), 10, 5, 20000).total).toBe(0);
