@@ -182,6 +182,22 @@ export function formatGWhIn(gwh: number, unit: "TWh" | "GWh"): string {
   return "< 0,01 GWh";
 }
 
+/**
+ * Wie formatGWhIn, aber mit FESTER Nachkommastelle — für Vergleichs-Zahlen,
+ * neben denen eine Veränderung in Prozent steht.
+ *
+ * Warum eine eigene Variante: formatGWhIn lässt ab 10 die Nachkommastelle weg
+ * (gut für Kacheln, wo Kürze zählt). In einer Vergleichszeile wird daraus ein
+ * sichtbarer Widerspruch — „11 TWh gegen 10 TWh, +11 %" lädt zum Nachrechnen
+ * ein und liefert 10 %. Mit der Nachkommastelle (11,2 gegen 10,0) geht die
+ * Rechnung für den Leser auf.
+ */
+export function formatGWhCompare(gwh: number, unit: "TWh" | "GWh"): string {
+  const val = unit === "TWh" ? gwh / 1000 : gwh;
+  if (val > 0 && val < 0.05) return `< 0,1 ${unit}`;
+  return `${dezDe(val, 1)} ${unit}`;
+}
+
 export function formatEurMWh(eur: number): string {
   return `${dezDe(eur / 10, 1)} ct/kWh`;
 }

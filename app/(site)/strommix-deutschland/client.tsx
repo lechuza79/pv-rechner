@@ -2,15 +2,16 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import {
-  useGenerationMix, useNuclearImport, useInstalledSolarPower, installedSolarForMonth,
-  type GenerationDataPoint,
-} from "../../../lib/energy";
+import { useGenerationMix, useNuclearImport } from "../../../lib/energy";
 import { fmtPvLeistung, fmtErtragProKwp } from "../../../lib/atlas-format";
+import {
+  latestComparableMonth, earliestComparableMonth, solarTrendVergleich, monatsName,
+  type SolarMonat,
+} from "../../../lib/solar-trend";
 import StackedAreaChart from "../../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../../components/charts/StackedBarChart";
 import {
-  formatGWhIn, energyUnit, calcPeriodStats, CATEGORY_COLORS,
+  formatGWhIn, formatGWhCompare, energyUnit, calcPeriodStats, CATEGORY_COLORS,
 } from "../../../lib/chart-utils";
 import { v, iconSizes, space, pad } from "../../../lib/theme";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
@@ -90,38 +91,7 @@ function rangeButtonStyle(active: boolean) {
   };
 }
 
-// ─── Solar-Trend: letzter abgeschlossener Monat vs. Vorjahresmonat ──────────
-
-// 1.–3. eines Monats: der Vormonat kann in den Quelldaten noch einen
-// unvollständigen Schwanz haben — dann einen Monat weiter zurückgehen.
-function lastCompletedMonth(): { year: number; month: number } {
-  const now = new Date();
-  const d = now.getDate() <= 3
-    ? new Date(now.getFullYear(), now.getMonth() - 2, 1)
-    : new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  return { year: d.getFullYear(), month: d.getMonth() };
-}
-
-function monthDateRange(year: number, month: number): { start: string; end: string } {
-  const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-  const mm = String(month + 1).padStart(2, "0");
-  return { start: `${year}-${mm}-01`, end: `${year}-${mm}-${String(lastDay).padStart(2, "0")}` };
-}
-
-/** Summe eines Erzeugungs-Schlüssels über eine Roh-Zeitreihe (MW) → GWh. */
-function sumKeyGWh(data: GenerationDataPoint[], key: string): number {
-  if (data.length < 2) return 0;
-  const t0 = new Date(data[0].ts).getTime();
-  const t1 = new Date(data[1].ts).getTime();
-  const intervalHours = (t1 - t0) / 3600000;
-  if (!(intervalHours > 0)) return 0;
-  let mwh = 0;
-  for (const d of data) {
-    const val = d[key];
-    if (typeof val === "number" && val > 0) mwh += val * intervalHours;
-  }
-  return mwh / 1000;
-}
+// ─── Solar-Trend: Monat vs. Vorjahresmonat (Daten kommen vom Server) ────────
 
 /** Zwei-Balken-Vergleich (Vorjahr grau, aktuell farbig) für eine Größe der
  *  Trend-Karte. Werte kommen fertig formatiert herein — Einheiten haben ihre
@@ -170,55 +140,52 @@ function TrendVergleich({
   );
 }
 
-// Vergleichsmonate sind ab 2016 wählbar: der Vorjahresmonat muss existieren,
-// und die Energy-Charts-Reihe beginnt 2015.
-const TREND_MIN = 2016 * 12;
-
-function parseTrendParam(raw: string | null, latest: { year: number; month: number }): { year: number; month: number } | null {
+// Der gewählte Monat steht als ?trend=YYYY-MM im Teilen-Link. Gültig ist,
+// was die Server-Reihe vergleichen kann.
+function parseTrendParam(
+  raw: string | null,
+  earliest: { year: number; month0: number },
+  latest: { year: number; month0: number },
+): { year: number; month0: number } | null {
   if (!raw) return null;
   const m = /^(\d{4})-(\d{2})$/.exec(raw);
   if (!m) return null;
   const year = Number(m[1]);
-  const month = Number(m[2]) - 1;
-  if (month < 0 || month > 11) return null;
-  const val = year * 12 + month;
-  if (val < TREND_MIN || val > latest.year * 12 + latest.month) return null;
-  return { year, month };
+  const month0 = Number(m[2]) - 1;
+  if (month0 < 0 || month0 > 11) return null;
+  const val = year * 12 + month0;
+  if (val < earliest.year * 12 + earliest.month0 || val > latest.year * 12 + latest.month0) return null;
+  return { year, month0 };
 }
 
 /** Kompakte Karte: Solarerzeugung eines Monats gegen denselben Monat des
- *  Vorjahres — aus denselben Daten wie der Chart, per Pfeilen durch alle
- *  Monate seit 2016 blätterbar (kein Archiv nötig: jeder Monat wird aus den
- *  Quelldaten frisch gerechnet; der gewählte Monat steht als ?trend= im
- *  Teilen-Link). Der Mehr-/Minderertrag wird rechnerisch zerlegt in Zubau
- *  (installierte Leistung aus der Energy-Charts-Monatsreihe) und Wetter
- *  (Ertrag je kWp); beide Faktoren multiplizieren sich zum Gesamteffekt.
- *  Fehlt die Leistungsreihe, fällt die Karte auf den einfachen
- *  Vergleichssatz zurück; bei fehlenden Erzeugungsdaten beim ersten Laden
- *  rendert sie nichts (kein leerer Kasten), nach einer Navigation bleibt
- *  der Kasten stehen und meldet den Datenstand. */
-function SolarTrendCard() {
+ *  Vorjahres, per Pfeilen durch alle Monate der Server-Reihe blätterbar.
+ *  Die Zahlen kommen fertig gerechnet aus lib/solar-trend — derselben
+ *  Quelle, aus der die Server-Tabelle darunter rendert. Keine Client-Fetches:
+ *  Blättern ist sofort, und Karte und Tabelle können sich nicht widersprechen.
+ *  Der gewählte Monat wandert als ?trend= in den Teilen-Link. */
+function SolarTrendCard({ series }: { series: SolarMonat[] }) {
   const searchParams = useSearchParams();
-  const latest = useMemo(() => lastCompletedMonth(), []);
+  const latest = useMemo(() => latestComparableMonth(series), [series]);
+  const earliest = useMemo(() => earliestComparableMonth(series), [series]);
   // searchParams nur für den Startwert — danach führt die Karte den Zustand
   // selbst und spiegelt ihn per replaceState (Muster wie selectRange).
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const [sel, setSel] = useState(() => parseTrendParam(searchParams.get("trend"), latest) ?? latest);
-  // Ein geteilter Monats-Link zählt wie eine Navigation: Der Kasten bleibt
-  // sichtbar und zeigt Laden/Fehler, statt kommentarlos zu fehlen.
-  const [hasNavigated, setHasNavigated] = useState(
-    () => parseTrendParam(searchParams.get("trend"), latest) !== null,
+  const [sel, setSel] = useState(() =>
+    latest && earliest ? parseTrendParam(searchParams.get("trend"), earliest, latest) ?? latest : null,
   );
 
   const navigate = useCallback((delta: number) => {
+    if (!latest || !earliest) return;
     setSel((s) => {
-      const maxVal = latest.year * 12 + latest.month;
-      const clamped = Math.min(Math.max(s.year * 12 + s.month + delta, TREND_MIN), maxVal);
-      const next = { year: Math.floor(clamped / 12), month: clamped % 12 };
+      if (!s) return s;
+      const maxVal = latest.year * 12 + latest.month0;
+      const minVal = earliest.year * 12 + earliest.month0;
+      const clamped = Math.min(Math.max(s.year * 12 + s.month0 + delta, minVal), maxVal);
+      const next = { year: Math.floor(clamped / 12), month0: clamped % 12 };
       if (typeof window !== "undefined") {
         const params = new URLSearchParams(window.location.search);
         if (clamped === maxVal) params.delete("trend");
-        else params.set("trend", `${next.year}-${String(next.month + 1).padStart(2, "0")}`);
+        else params.set("trend", `${next.year}-${String(next.month0 + 1).padStart(2, "0")}`);
         const query = params.toString();
         window.history.replaceState(
           window.history.state,
@@ -228,31 +195,15 @@ function SolarTrendCard() {
       }
       return next;
     });
-    setHasNavigated(true);
-  }, [latest]);
+  }, [latest, earliest]);
 
-  const { year, month } = sel;
-  const thisRange = useMemo(() => monthDateRange(year, month), [year, month]);
-  const prevRange = useMemo(() => monthDateRange(year - 1, month), [year, month]);
-  const cur = useGenerationMix("de", 720, thisRange);
-  const prev = useGenerationMix("de", 720, prevRange);
-  const installed = useInstalledSolarPower();
+  if (!latest || !earliest || !sel) return null;
+  const { year, month0 } = sel;
+  const werte = solarTrendVergleich(series, year, month0);
+  const monthLabel = monatsName(month0);
 
-  const monthLabel = new Date(year, month, 1).toLocaleString("de-DE", { month: "long" });
-  const curGWh = useMemo(() => sumKeyGWh(cur.data.data, "solar"), [cur.data.data]);
-  const prevGWh = useMemo(() => sumKeyGWh(prev.data.data, "solar"), [prev.data.data]);
-
-  const loading = cur.loading || prev.loading;
-  const dataOk = curGWh > 0 && prevGWh > 0;
-  // Beim allerersten Laden ohne Daten: gar nichts zeigen statt leerem Kasten.
-  if ((loading || !dataOk) && !hasNavigated) return null;
-
-  const totalPct = dataOk ? Math.round((curGWh / prevGWh - 1) * 100) : 0;
-  const unit = energyUnit(Math.max(curGWh, prevGWh));
-  const mehr = totalPct >= 0;
-
-  const canPrev = year * 12 + month > TREND_MIN;
-  const canNext = year * 12 + month < latest.year * 12 + latest.month;
+  const canPrev = year * 12 + month0 > earliest.year * 12 + earliest.month0;
+  const canNext = year * 12 + month0 < latest.year * 12 + latest.month0;
   const arrowStyle = (enabled: boolean) => ({
     ...rangeButtonStyle(false),
     padding: "2px 6px",
@@ -262,21 +213,9 @@ function SolarTrendCard() {
     cursor: enabled ? ("pointer" as const) : ("default" as const),
   });
 
-  // Zerlegung: Erzeugung = installierte Leistung × Ertrag je kWp. GWh/GWp
-  // kürzt sich zu kWh/kWp. Ohne Leistungsdaten bleibt die Karte beim
-  // einfachen Satz (kein geratener Zubau-Wert).
-  const curGw = installed.loading ? null : installedSolarForMonth(installed.data, year, month);
-  const prevGw = installed.loading ? null : installedSolarForMonth(installed.data, year - 1, month);
-  const zerlegung = curGw && prevGw
-    ? {
-        zubauPct: Math.round((curGw / prevGw - 1) * 100),
-        wetterPct: Math.round(((curGWh / curGw) / (prevGWh / prevGw) - 1) * 100),
-        curYield: curGWh / curGw,
-        prevYield: prevGWh / prevGw,
-        curGw,
-        prevGw,
-      }
-    : null;
+  const unit = werte ? energyUnit(Math.max(werte.curGWh, werte.prevGWh)) : "TWh";
+  const mehr = (werte?.totalPct ?? 0) >= 0;
+  const zerlegung = werte?.zerlegung ?? null;
 
   const linkStyle = { color: v("--color-accent"), fontWeight: 600, textDecoration: "none" } as const;
   const num = (s: string | number, positive?: boolean) => (
@@ -310,23 +249,9 @@ function SolarTrendCard() {
         </div>
       </div>
 
-      {loading ? (
-        <div style={{ minHeight: 72, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <BouncingDots />
-        </div>
-      ) : !dataOk ? (
-        <div style={{ minHeight: 72, display: "flex", flexDirection: "column", gap: space.sm, alignItems: "center", justifyContent: "center", color: v("--color-text-muted") }}>
-          <span>Die Daten für diesen Monat konnten gerade nicht geladen werden.</span>
-          <button
-            onClick={() => { cur.refetch(); prev.refetch(); }}
-            style={{
-              background: "none", border: "none", cursor: "pointer",
-              color: v("--color-accent"), fontSize: 12, fontWeight: 600,
-              fontFamily: v("--font-text"), padding: 0, textDecoration: "underline",
-            }}
-          >
-            Erneut versuchen
-          </button>
+      {!werte ? (
+        <div style={{ minHeight: 72, display: "flex", alignItems: "center", justifyContent: "center", color: v("--color-text-muted") }}>
+          Für diesen Monat liegen keine vollständigen Daten vor.
         </div>
       ) : (
       <>
@@ -335,8 +260,8 @@ function SolarTrendCard() {
           <TrendVergleich
             label="Solarstrom"
             prevLabel={String(year - 1)} curLabel={String(year)}
-            prevValue={prevGWh} curValue={curGWh}
-            prevText={formatGWhIn(prevGWh, unit)} curText={formatGWhIn(curGWh, unit)}
+            prevValue={werte.prevGWh} curValue={werte.curGWh}
+            prevText={formatGWhCompare(werte.prevGWh, unit)} curText={formatGWhCompare(werte.curGWh, unit)}
             barColor={v("--color-energy-solar")}
           />
           <TrendVergleich
@@ -357,8 +282,8 @@ function SolarTrendCard() {
       )}
 
       <div>
-        Im {monthLabel} {year} lieferten Deutschlands Solaranlagen {num(formatGWhIn(curGWh, unit))} Strom —{" "}
-        {num(`${Math.abs(totalPct)} %`, mehr)} {mehr ? "mehr" : "weniger"} als im {monthLabel} {year - 1}.{" "}
+        Im {monthLabel} {year} lieferten Deutschlands Solaranlagen {num(formatGWhCompare(werte.curGWh, unit))} Strom —{" "}
+        {num(`${Math.abs(werte.totalPct)} %`, mehr)} {mehr ? "mehr" : "weniger"} als im {monthLabel} {year - 1}.{" "}
         {zerlegung ? (
           <>
             Zerlegt: {num(`${zerlegung.zubauPct >= 0 ? "+" : "−"}${Math.abs(zerlegung.zubauPct)} %`)}{" "}
@@ -459,7 +384,7 @@ function LoadingSpinner() {
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
-export default function EnergieClient() {
+export default function EnergieClient({ solarSeries = [] }: { solarSeries?: SolarMonat[] }) {
   const searchParams = useSearchParams();
   const [selected, setSelected] = useState(() => parseRangeParam(searchParams.get("range")) ?? "24h");
   const [showNuclear, setShowNuclear] = useState(true);
@@ -999,7 +924,7 @@ export default function EnergieClient() {
       {(isYear || isMax) && <MilestoneBlock selected={selected} isMax={isMax} />}
 
       {/* Solar-Trend: Monatsvergleich zum Vorjahr */}
-      <SolarTrendCard />
+      {solarSeries.length > 0 && <SolarTrendCard series={solarSeries} />}
 
       {/* Methodology note */}
       {showNuclear && !nuclearLoading && nuclearImportGWh > 0 && (
