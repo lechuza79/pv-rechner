@@ -104,7 +104,6 @@ describe("Staffelung der Wirkungs-Formatter (CO₂ und Euro)", () => {
     expect(fmtCo2Tonnen(812)).toBe("812 t");
     expect(fmtCo2Tonnen(999)).toBe("999 t");
     expect(fmtCo2Tonnen(1000)).toBe("1 Tsd. t");
-    expect(fmtCo2Tonnen(43_100)).toBe("43,1 Tsd. t");
     expect(fmtCo2Tonnen(1_000_000)).toBe("1 Mio. t");
     expect(fmtCo2Tonnen(9_800_000)).toBe("9,8 Mio. t");
   });
@@ -113,7 +112,15 @@ describe("Staffelung der Wirkungs-Formatter (CO₂ und Euro)", () => {
     expect(fmtEuro(950)).toBe("950 €");
     expect(fmtEuro(1000)).toBe("1 Tsd. €");
     expect(fmtEuro(315_000)).toBe("315 Tsd. €");
-    expect(fmtEuro(12_500_000)).toBe("12,5 Mio. €");
     expect(fmtEuro(3_900_000_000)).toBe("3,9 Mrd. €");
+  });
+
+  it("zeigt Nachkommastellen nur, wo sie tragen (Modellwerte, keine Scheingenauigkeit)", () => {
+    // Unter 10 trägt die Stelle die Größenordnung (9,8 vs. 10) — darüber ist
+    // „404,2 Tsd. t" bei einem Modellwert Scheingenauigkeit und frisst Platz.
+    expect(fmtCo2Tonnen(43_100)).toBe("43 Tsd. t");
+    expect(fmtCo2Tonnen(404_200)).toBe("404 Tsd. t");
+    expect(fmtEuro(12_500_000)).toBe("13 Mio. €");
+    expect(fmtEuro(1_200_000_000)).toBe("1,2 Mrd. €");
   });
 });

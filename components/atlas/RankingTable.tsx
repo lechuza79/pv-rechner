@@ -58,7 +58,7 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
   },
   {
     key: "co2",
-    label: "CO₂-Ersparnis",
+    label: "CO₂ gespart",
     hint: "Rechnerisch vermiedenes CO₂ pro Jahr: erzeugter Solarstrom (Leistung mal typischer Ertrag auf Bundesland-Niveau, kalibriert am realen deutschen Anlagenbestand) mal CO₂-Faktor. Ein Modellwert, kein Messwert — die Annahmen stehen unter der Tabelle.",
   },
   {
@@ -68,7 +68,7 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
   },
   {
     key: "speicher",
-    label: "Batteriespeicher",
+    label: "Speicher",
     hint: "Nutzbare Kapazität der Batteriespeicher, nicht ihre Leistung. Eine Hausbatterie hält typisch 5 bis 15 kWh. Pumpspeicherwerke sind nicht enthalten.",
   },
 ];
@@ -573,7 +573,7 @@ export default function RankingTable({
           sie entsteht. Der ct-Satz ist die eine ehrlich strittige Größe und
           deshalb direkt hier editierbar. */}
       <p style={S.note}>
-        CO₂-Ersparnis und Stromwert sind rechnerische Jahreswerte, keine Messwerte: installierte
+        „CO₂ gespart" und „Stromwert" sind rechnerische Jahreswerte, keine Messwerte: installierte
         Leistung mal typischer Ertrag im jeweiligen Bundesland (PVGIS), kalibriert an der von
         Fraunhofer ISE bilanzierten Solarstrom-Erzeugung des Jahres 2025. Das CO₂ ist bewusst
         konservativ mit {fmtCo2FaktorKg(ATLAS_GRID_CO2)} gerechnet — der amtliche
@@ -764,7 +764,13 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  * floating row exists to be compared against the list, so its columns have to land
  * on the same pixels.
  */
-const GRID = "58px minmax(120px,1fr) repeat(6, minmax(66px, 86px)) 14px";
+// Sechs Wertspalten sind das Limit: Platz und Werte so schmal wie möglich,
+// aller gewonnene Platz gehört der Namensspalte. Die Wertspalten enden bei
+// max-content statt bei einer festen Obergrenze — mit fester Obergrenze bläht
+// die Grid-Verteilung erst alle Wertspalten auf ihr Maximum auf, bevor die
+// fr-Namensspalte etwas bekommt („Mecklenburg-Vorpommern" → „Mecklenburg-…",
+// während die Zahlen in Luft schwimmen).
+const GRID = "48px minmax(160px,1fr) repeat(6, minmax(52px, max-content)) 14px";
 
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
@@ -780,12 +786,12 @@ const S: Record<string, React.CSSProperties> = {
   },
   // Eight columns do not fit a phone. Scroll the table, never the page.
   scroller: { overflowX: "auto", margin: "0 -8px", padding: "0 8px" },
-  table: { minWidth: 660 },
+  table: { minWidth: 620 },
   row: {
     display: "grid",
     gridTemplateColumns: GRID,
     alignItems: "center",
-    gap: 8,
+    gap: 6,
     padding: "7px 8px",
     margin: "0 -8px",
     borderBottom: `1px solid ${v("--color-border-muted")}`,

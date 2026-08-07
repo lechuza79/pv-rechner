@@ -114,9 +114,17 @@ export function fmtErtragProKwp(kwhProKwp: number): string {
  * unlesbar. „CO₂" steht bewusst NICHT in der Einheit: die Spalte bzw. der
  * Satz daneben benennt die Größe, die Einheit bleibt die Masse.
  */
+/**
+ * Gestaffelte Werte kompakt: unter 10 eine Nachkommastelle (9,8), darüber
+ * ganze Zahlen (404 statt 404,2). Die Wirkungs-Spalten sind Modellwerte —
+ * mehr als zwei, drei signifikante Stellen wären Scheingenauigkeit, und die
+ * Tabelle braucht jeden Pixel für die Namensspalte.
+ */
+const kompakt = (n: number) => dez(n, n < 10 ? 1 : 0);
+
 export function co2TonnenTeile(tonnen: number): Messwert {
-  if (tonnen >= 1_000_000) return { value: dez(tonnen / 1_000_000, 1), unit: "Mio. t" };
-  if (tonnen >= 1000) return { value: dez(tonnen / 1000, 1), unit: "Tsd. t" };
+  if (tonnen >= 1_000_000) return { value: kompakt(tonnen / 1_000_000), unit: "Mio. t" };
+  if (tonnen >= 1000) return { value: kompakt(tonnen / 1000), unit: "Tsd. t" };
   return { value: nf(tonnen), unit: "t" };
 }
 export const fmtCo2Tonnen = (tonnen: number): string => zusammen(co2TonnenTeile(tonnen));
@@ -130,9 +138,9 @@ export const fmtCo2FaktorKg = (kgProKwh: number): string =>
 
 /** Geldbeträge (rechnerischer Stromwert): € → Tsd. € → Mio. € → Mrd. €. */
 export function euroTeile(euro: number): Messwert {
-  if (euro >= 1_000_000_000) return { value: dez(euro / 1_000_000_000, 1), unit: "Mrd. €" };
-  if (euro >= 1_000_000) return { value: dez(euro / 1_000_000, 1), unit: "Mio. €" };
-  if (euro >= 1000) return { value: dez(euro / 1000, 1), unit: "Tsd. €" };
+  if (euro >= 1_000_000_000) return { value: kompakt(euro / 1_000_000_000), unit: "Mrd. €" };
+  if (euro >= 1_000_000) return { value: kompakt(euro / 1_000_000), unit: "Mio. €" };
+  if (euro >= 1000) return { value: kompakt(euro / 1000), unit: "Tsd. €" };
   return { value: nf(euro), unit: "€" };
 }
 export const fmtEuro = (euro: number): string => zusammen(euroTeile(euro));
