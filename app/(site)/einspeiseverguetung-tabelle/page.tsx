@@ -222,8 +222,6 @@ export default async function EinspeiseverguetungTabellePage() {
   // Halbjahres-Perioden seit dem 30.07.2022 — Grenzen und Sätze aus der
   // geprüften Kette (feedInPeriodsSince2022, Anker-Test in feedin-config.test).
   const perioden = feedInPeriodsSince2022(now);
-  // Skala der Perioden-Daten-Balken (größter Teileinspeisungs-Satz der Ära).
-  const maxTeilSeit2022 = Math.max(...perioden.map((p) => p.rates.teilUnder10));
 
   // Jahreswerte vor 2012 (SFV-Reihe) + Spitzenwert für den Einstieg.
   const vor2012 = FEEDIN_HISTORY_YEARS
@@ -352,25 +350,14 @@ export default async function EinspeiseverguetungTabellePage() {
             <tbody>
               {[...perioden].reverse().map((p) => {
                 const aktuell = p.toIso === null;
-                // Daten-Balken je Periode (Teileinspeisung ≤10 kWp, gemeinsame
-                // Skala): die Zeitleiste von heute (oben) zurück zum EEG-2023-
-                // Start wird als wachsende Balkenlänge sichtbar.
-                const balkenAnteil = p.rates.teilUnder10 / maxTeilSeit2022;
+                // Bewusst KEINE Daten-Balken je Zeile: Die Sätze dieser Ära
+                // liegen nur ~6 % auseinander — null-basierte Balken wären
+                // ununterscheidbar (reine Deko), nicht-null-basierte würden
+                // die Unterschiede dramatisieren (Betreiber-Review 07.08.2026).
                 return (
                   <tr key={p.fromIso}>
                     <td style={{ ...S.td, color: aktuell ? v("--color-text-primary") : S.td.color, fontWeight: aktuell ? 700 : 400 }}>
                       {aktuell ? `seit ${dd(p.fromIso)} (aktuell)` : `${dd(p.fromIso)} – ${dd(p.toIso as string)}`}
-                      <div
-                        aria-hidden="true"
-                        style={{
-                          marginTop: 4,
-                          height: 5,
-                          width: `${Math.round(balkenAnteil * 88)}px`,
-                          background: v("--color-accent"),
-                          borderRadius: 3,
-                          opacity: aktuell ? 1 : 0.55,
-                        }}
-                      />
                     </td>
                     <td style={{ ...S.tdNum, fontWeight: aktuell ? 700 : 400 }}>{ct(p.rates.teilUnder10)}</td>
                     <td style={{ ...S.tdNum, fontWeight: aktuell ? 700 : 400 }}>{ct(p.rates.teilOver10)}</td>

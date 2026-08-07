@@ -60,6 +60,7 @@ export const EMBEDS: string[] = [
   "/embed/region-solarleistung?bl=13",
   "/embed/simulation?plz=10115",
   "/embed/pv-zubau-deutschland",
+  "/embed/einspeiseverguetung-verlauf",
   "/embed/ee-ampel",
   "/embed/karte",
   "/embed/foerder-check",
