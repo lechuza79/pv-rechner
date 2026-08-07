@@ -404,10 +404,15 @@ export default function RankingTable({
   const barPct = (val: number | null) =>
     val === null ? 0 : Math.min(100, Math.max(1, Math.round((val / scale) * 100)));
 
-  /** Der Zahlenwert selbst — die sortierte Spalte tritt hervor, der Rest tritt zurück. */
+  /**
+   * Der Zahlenwert selbst. Alle Werte tragen dieselbe Textfarbe wie der
+   * Ortsname — sie sind gleichrangige Messwerte, und ein abgedunkelter Wert
+   * sähe aus, als sei er weniger belastbar. Die sortierte Spalte hebt sich
+   * über das Gewicht ab (dazu der blaue Kopf und der Balken darunter), nicht
+   * über die Farbe.
+   */
   const cellNumStyle = (key: Metric): React.CSSProperties => ({
     ...S.valNum,
-    color: sort === key ? v("--color-text-primary") : v("--color-text-secondary"),
     fontWeight: sort === key ? 700 : 500,
   });
 
@@ -830,12 +835,14 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  *
  * Seit Zahl und Einheit übereinander stehen, braucht eine Wertspalte nur noch
  * die Breite ihrer ZAHL (die Einheit ist kurz und steht darunter) — deshalb
- * sind fünf davon schmal. „Anlagen" ist die Ausnahme: Dort steht die einzige
- * ungestaffelte Zahl der Tabelle, bis zu siebenstellig ("1.399.105"), und eine
- * einheitliche Spaltenbreite müsste sich an ihr ausrichten und den Rest
- * verschwenden.
+ * sind die meisten schmal. Zwei Ausnahmen, jede aus einem konkreten Inhalt:
+ * „Anlagen" (74) trägt die einzige ungestaffelte Zahl der Tabelle, bis zu
+ * siebenstellig ("1.399.105"); „CO₂ gespart" (66) und „Stromwert" (62) sind so
+ * breit wie ihre Überschrift, damit die einzeilig bleibt — eine umbrechende
+ * Spaltenüberschrift zieht die ganze Kopfzeile auf und sieht wie ein Versehen
+ * aus.
  */
-const GRID = "44px minmax(180px,1fr) 74px repeat(5, 58px) 14px";
+const GRID = "44px minmax(180px,1fr) 74px 58px 58px 66px 62px 58px 14px";
 
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
@@ -925,7 +932,7 @@ const S: Record<string, React.CSSProperties> = {
     whiteSpace: "nowrap",
     maxWidth: "100%",
   },
-  hint: { fontSize: 10, lineHeight: 1.2, color: v("--color-text-muted"), whiteSpace: "nowrap" },
+  hint: { fontSize: 10, lineHeight: 1.2, color: v("--color-text-faint"), whiteSpace: "nowrap" },
   // The bar sits under the number in the sorted column, not in a column of its
   // own: a header names a measure, and "the bar" is not one — it is that measure,
   // drawn.
@@ -940,10 +947,23 @@ const S: Record<string, React.CSSProperties> = {
     gap: 1,
     minWidth: 0,
   },
-  valNum: { fontFamily: v("--font-mono"), fontSize: 13, whiteSpace: "nowrap", lineHeight: 1.25 },
+  valNum: {
+    fontFamily: v("--font-mono"),
+    fontSize: 13,
+    lineHeight: 1.25,
+    whiteSpace: "nowrap",
+    color: v("--color-text-primary"),
+  },
   // Gleiche Größe und Farbe wie die Einwohnerzahl unter dem Namen: beide sind
   // die kleine Zusatzangabe ihrer Zelle.
-  valUnit: { fontSize: 10, color: v("--color-text-muted"), whiteSpace: "nowrap", lineHeight: 1.2 },
+  //
+  // ACHTUNG, bewusste Entscheidung des Betreibers (07.08.2026): `faint` ist
+  // laut Kontrast-Audit (docs/audit-backlog-2026-07-19.md §4) für Platzhalter
+  // reserviert, nicht für tragenden Text — gemessen 3,47:1 gegen den
+  // Zeilenhintergrund, WCAG AA verlangt 4,5:1. Gewollt war der größere Abstand
+  // zur Zahl darüber. Wer das zurückdreht, nimmt `--color-text-muted` (4,8:1);
+  // der Größenunterschied allein trägt die Staffelung auch dann noch.
+  valUnit: { fontSize: 10, color: v("--color-text-faint"), whiteSpace: "nowrap", lineHeight: 1.2 },
   track: { display: "block", width: "100%", height: 4, marginTop: 2, background: v("--color-border"), borderRadius: 2 },
   // Links verankert → der Balken wächst nach rechts (kein marginLeft:auto mehr).
   fill: { display: "block", height: "100%", borderRadius: 2 },
