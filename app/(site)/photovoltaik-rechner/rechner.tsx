@@ -7,7 +7,7 @@ import { paramsToRow } from "../../../lib/types";
 import { einspeiseVerlauf, einspeiseDeckelKw, profilFaktorAus, type EinspeiseRegime } from "../../../lib/einspeise-regime";
 import { PREISFORM_MONAT_STUNDE, MARKTWERT_NIVEAU_CT, DIREKTVERMARKTUNG } from "../../../lib/marktwert-config";
 import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
-import ResultRegime from "./_components/ResultRegime";
+import ResultVerguetung from "./_components/ResultVerguetung";
 import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, NO_PLZ_DEFAULT_YIELD, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
@@ -465,6 +465,43 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         einspeiseModell: effEinspeisungModus === "aus" ? undefined : einspeiseModell,
       }),
     })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, einspeiseModell]);
+
+  // Was der Börsenerlös über die Laufzeit ausmacht: dasselbe Szenario einmal mit
+  // und einmal ohne Marktbewertung. Die Zahl steht am Schalter selbst — sonst
+  // klickt man ihn und sieht nichts, weil die Wirkung erst nach der
+  // Übergangszahlung einsetzt und die Amortisation in ganzen Jahren meist nicht
+  // bewegt.
+  const marktWirkungEuro = useMemo(() => {
+    if (regime !== "reform2027" || effEinspeisungModus === "aus") return undefined;
+    const s = SCENARIOS.find(x => x.id === scenario) ?? SCENARIOS[1];
+    const gemeinsam = {
+      kwp, kosten, strompreis: oStrom,
+      eigenverbrauch: effEinspeisungModus === "voll"
+        ? 0
+        : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
+      einspeisung: effEinsp,
+      stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
+      batteryReplace: batteryReplaceCost(spKwh, prices),
+    };
+    const total = (mk: boolean) => {
+      const verlauf = einspeiseVerlauf({
+        regime, kwp, inbetriebnahmeJahr: Math.max(2027, YEAR),
+        heuteSatzCt: effEinsp, marktErloes: mk,
+        profilFaktor: marktSim.profilFaktor,
+        niveauCt: oMarktwert ?? MARKTWERT_NIVEAU_CT,
+      });
+      return calc({
+        ...gemeinsam,
+        einspeiseModell: {
+          satzCtImJahr: (i: number) => verlauf[i - 1]?.satzCt ?? 0,
+          fixkostenProJahr: DIREKTVERMARKTUNG.grundgebuehrProJahr,
+          einspeiseAnteil: marktSim.einspeiseAnteil,
+        },
+      }).total;
+    };
+    return Math.max(0, total(true) - total(false));
+  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEv, effEinsp, oErtrag,
+      monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, marktSim, oMarktwert]);
 
   // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
   // „realistic", falls der State (z. B. aus einer alten Share-URL) nicht passt.
@@ -1023,9 +1060,26 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               be={be} kosten={bruttoKosten} setOKosten={setOKosten}
               oStrom={oStrom} setOStrom={setOStrom} oErtrag={oErtrag} setOErtrag={setOErtrag}
               kwp={kwp} spKwh={spKwh} effEv={effEv} setOEv={setOEv}
-              effEinspeisungModus={effEinspeisungModus} setEinspeisungModus={setEinspeisungModus}
-              vollDisabled={vollDisabled} effEinsp={effEinsp} setOEinsp={setOEinsp}
+              effEinspeisungModus={effEinspeisungModus}
               plz={plz} setPlz={setPlz} plzLoading={plzLoading} plzSource={plzSource} fetchPvgis={fetchPvgis}
+            />
+
+            {/* Einspeisung und Vergütung: aus der Karte oben herausgezogen und mit
+                den Konditionen (heute / Entwurf ab 2027) in EINEN aufklappbaren
+                Abschnitt zusammengelegt. Zugeklappt steht der gewählte Zustand
+                in der Kopfzeile. */}
+            <ResultVerguetung
+              modus={effEinspeisungModus} setModus={setEinspeisungModus}
+              vollDisabled={vollDisabled} effEinsp={effEinsp} setOEinsp={setOEinsp}
+              regime={regime} setRegime={setRegime}
+              marktErloes={marktErloes} setMarktErloes={setMarktErloes}
+              niveauCt={oMarktwert ?? MARKTWERT_NIVEAU_CT} setNiveauCt={setOMarktwert}
+              profilFaktor={marktSim.profilFaktor}
+              einspeiseAnteil={marktSim.einspeiseAnteil}
+              verlauf={einspeiseVerlaufJahre}
+              heuteSatzCt={effEinsp}
+              vollGewaehlt={effEinspeisungModus === "voll"}
+              marktWirkungEuro={marktWirkungEuro}
             />
 
             {/* Stromverbrauch — editierbar, mit Aufschlüsselung wenn WP/E-Auto aktiv */}
@@ -1237,24 +1291,17 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6,
             }}>
               <Link href="/methodik" onClick={() => trackEvent("pv_methodik")} style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
-              <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
+              {/* Der Nachsatz muss dem gewählten Regime folgen: „fix 20 J." ist
+                  im Entwurfs-Modus schlicht falsch — dort gibt es genau das
+                  nicht mehr. */}
+              <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · {
+                effEinspeisungModus === "aus"
+                  ? "ohne Einspeisevergütung gerechnet"
+                  : regime === "reform2027"
+                    ? "Einspeisung nach dem Entwurf ab 2027"
+                    : "Einspeisevergütung fix 20 J."
+              }</span>
             </div>
-
-            {/* Vergütungsregime: heute oder Entwurf ab 2027, mit abschaltbarer
-                Marktrechnung. Nur sinnvoll, wenn überhaupt eingespeist wird —
-                bei „Einspeisung aus" ändert das Regime an der Rechnung nichts. */}
-            {effEinspeisungModus !== "aus" && (
-              <ResultRegime
-                regime={regime} setRegime={setRegime}
-                marktErloes={marktErloes} setMarktErloes={setMarktErloes}
-                niveauCt={oMarktwert ?? MARKTWERT_NIVEAU_CT} setNiveauCt={setOMarktwert}
-                profilFaktor={marktSim.profilFaktor}
-                einspeiseAnteil={marktSim.einspeiseAnteil}
-                verlauf={einspeiseVerlaufJahre}
-                heuteSatzCt={effEinsp}
-                vollGewaehlt={effEinspeisungModus === "voll"}
-              />
-            )}
 
             <ResultActions
               copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}

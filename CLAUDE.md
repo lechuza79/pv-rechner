@@ -287,6 +287,18 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Sim
 
 **Die Fokus-Falle beim Nachbauen:** Der Mechanik-Effekt darf NICHT am `onClose`-Callback hängen (die Aufrufer übergeben eine frische Inline-Funktion pro Render) — sonst läuft sein Aufräumen mitten im Tippen und reißt den Fokus aus dem Eingabefeld. Deshalb `onCloseRef` + Effekt nur an `open`. Genau solche Details sind der Grund für den geteilten Baustein: es gab drei handgebaute Overlays, die sich in Fokus-Rückgabe, Tab-Falle, Scroll-Sperre und Mobil-Verhalten unterschieden. **Ausgenommen ist bewusst das Burger-Menü im Header** (`components/Header.tsx`): ein Navigations-Flyout, kein Dialog — es darf weder den Fokus fangen noch als Sheet einfahren.
 
+## Ergebnis-Abschnitte — BLOCKER
+
+**`components/ResultSection.tsx` ist DER aufklappbare Abschnitt im Ergebnis. Er wird nicht pro Stelle als `<details>` nachgebaut.** Die Ergebnis-Karte oben trägt das Ergebnis und die wenigen Kernzahlen; alles, was mehr als eine Zahl ist — eine Rechtslage, ein Preispfad, eine Aufschlüsselung, eine Verfeinerung der Eingaben —, steht darunter in solchen Abschnitten, in jedem Rechner gleich.
+
+- **Zugeklappt trägt die Kopfzeile den gewählten Zustand** (`summary`), nicht das Wort „Details". Ein eingeklappter Block, dem man nicht ansieht, wonach gerade gerechnet wird, versteckt eine Annahme — das ist schlimmer als eine überladene Karte. Beispiele: „Teileinspeisung · 7,70 ct · 20 Jahre", „Satteldach · Ost / West".
+- **Verhalten kommt aus dem Baustein:** Kopfzeile ist der Schalter (`aria-expanded`, `aria-controls`), Inhalt ist eine `region`, der Chevron dreht, das Einblenden läuft über `.sc-acc` und schaltet sich bei `prefers-reduced-motion` ab. Zu als Voreinstellung (`defaultOpen` nur, wo der Abschnitt die Hauptaussage der Seite trägt).
+- **Was NICHT in die Ergebnis-Karte gehört:** eine Entscheidung mit Konditionen daran. Die Einspeisung stand bis 07.08.2026 als Dreifach-Schalter im Kennzahlen-Grid, ihre Konditionen (heute / Entwurf ab 2027, Börsenerlös, Marktwert) als eigene Karte am Seitenende — zwei Orte für eine Sache, und der zweite so weit weg, dass niemand mehr sah, was er bewirkt. Jetzt: `_components/ResultVerguetung.tsx`.
+- **Ein Schalter, dessen Wirkung erst Jahre später einsetzt, nennt seine Wirkung selbst.** Der Börsenerlös-Haken zeigt den Unterschied zwischen an und aus in Euro über die Laufzeit. Ohne diese Zeile klickt man ihn und sieht nichts: Die Amortisation in ganzen Jahren bewegt sich davon meist nicht.
+- **Ein Wert, den das gewählte Modell gar nicht verwendet, wird nicht zum Editieren angeboten.** Der Vergütungssatz ist nur im heutigen Recht eine Zahl; im Entwurf ist er ein Verlauf, dort verschwindet das Eingabefeld.
+
+Migrationsstand: PV-Rechner (Einspeisung und Vergütung). Wärmepumpe, Klima und Balkon ziehen nach — jede Umstellung ist eine sichtbare Änderung und braucht ihre Abnahme.
+
 ## Flow-Schritte — Interaktions-Konvention
 
 **`components/FlowNav.tsx` ist der Standard für jeden Schritt-Flow** (Betreiber-Vorgabe 05.08.2026): Kein Schritt startet mit einer Vorauswahl · ein Klick auf eine Option **wählt nur aus**, er springt nicht weiter · der Weiter-Button ist ausgegraut, bis eine gültige Auswahl existiert · **Zurück sitzt immer links, Weiter immer rechts** — auch im ersten Schritt ohne Zurück bleibt Weiter rechts. Die Auto-Advance-Variante (Klick auf Option springt direkt) existiert als zentraler Schalter `FLOW_ADVANCE_ON_SELECT` im Baustein — sie wird nie pro Seite gebaut, sondern nur dort umgelegt. Umgesetzt im Einspeisevergütungs-Rechner; die älteren Flows (PV, WP, Klima, Balkon, Bedarf) migrieren schrittweise auf den Baustein (sichtbare Änderung → je Abnahme).

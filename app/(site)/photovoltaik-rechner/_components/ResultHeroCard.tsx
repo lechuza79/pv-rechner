@@ -16,11 +16,10 @@ interface ResultHeroCardProps {
   spKwh: number;
   effEv: number;
   setOEv: (v: number) => void;
+  /** Nur noch zum Anzeigen: Bei Volleinspeisung gibt es keinen Eigenverbrauch.
+   *  Eingestellt wird die Einspeisung im Abschnitt darunter (ResultVerguetung) —
+   *  sie ist keine Zahl, sondern eine Entscheidung mit Konditionen daran. */
   effEinspeisungModus: "aus" | "teil" | "voll";
-  setEinspeisungModus: (m: "aus" | "teil" | "voll") => void;
-  vollDisabled: boolean;
-  effEinsp: number;
-  setOEinsp: (v: number | null) => void;
   plz: string;
   setPlz: (v: string) => void;
   plzLoading: boolean;
@@ -30,8 +29,8 @@ interface ResultHeroCardProps {
 
 export default function ResultHeroCard({
   be, kosten, setOKosten, oStrom, setOStrom, oErtrag, setOErtrag,
-  kwp, spKwh, effEv, setOEv, effEinspeisungModus, setEinspeisungModus,
-  vollDisabled, effEinsp, setOEinsp, plz, setPlz, plzLoading, plzSource, fetchPvgis,
+  kwp, spKwh, effEv, setOEv, effEinspeisungModus,
+  plz, setPlz, plzLoading, plzSource, fetchPvgis,
 }: ResultHeroCardProps) {
   return (
     <div style={{
@@ -80,36 +79,6 @@ export default function ResultHeroCard({
               <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-faint'), fontSize: 13 }}>0%</span>
             ) : (
               <InlineEdit value={effEv} onCommit={v => setOEv(v)} unit="%" step={1} min={10} max={90} width={40} />
-            )}
-          </div>
-          <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", rowGap: 4, marginBottom: effEinspeisungModus !== "aus" ? 6 : 0 }}>
-              <span style={{ color: v('--color-text-secondary') }}><GlossaryTerm id="einspeiseverguetung">Einspeisung</GlossaryTerm></span>
-              <div style={{ display: "flex", gap: 2, background: v('--color-bg'), borderRadius: 8, padding: 2, flexShrink: 0 }}>
-                {(["aus", "teil", "voll"] as const).map(m => {
-                  const isActive = effEinspeisungModus === m;
-                  const isDisabled = m === "voll" && vollDisabled;
-                  return (
-                    <button key={m} onClick={() => { if (!isDisabled) { setEinspeisungModus(m); setOEinsp(null); } }} style={{
-                      padding: "3px 8px", borderRadius: 6, fontSize: 11, fontWeight: 600,
-                      cursor: isDisabled ? "not-allowed" : "pointer",
-                      background: isActive ? v('--color-accent') : "transparent",
-                      border: "none",
-                      color: isDisabled ? v('--color-text-faint') : isActive ? v('--color-text-on-accent') : v('--color-text-muted'),
-                      opacity: isDisabled ? 0.4 : 1,
-                      transition: "all 0.15s",
-                    }}>
-                      {m === "aus" ? "Aus" : m === "teil" ? "Teil" : "Voll"}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            {effEinspeisungModus !== "aus" && (
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 11, color: v('--color-text-faint') }}>Vergütung</span>
-                <InlineEdit value={effEinsp} onCommit={v => setOEinsp(v)} unit=" ct" step={0.01} min={4} max={16} width={48} />
-              </div>
             )}
           </div>
           <StandortField

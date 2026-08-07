@@ -77,6 +77,15 @@ test.describe("EEG-Reform: Sachstand auf den Seiten, an denen ein Nutzer ihn lie
     // Hinweiszeile, sondern im Block, mit dem sich die Konditionen umschalten
     // lassen. Deshalb wird hier auch der Umschalter selbst mitgeprüft — ohne ihn
     // gäbe es die Reform-Sätze auf dieser Seite gar nicht mehr.
+    //
+    // Seit dem 07.08.2026 liegt dieser Block im aufklappbaren Abschnitt
+    // „Einspeisung und Vergütung" (zu als Voreinstellung). Der Test klappt ihn
+    // deshalb erst auf — und prüft damit nebenbei, dass der Abschnitt den Weg
+    // zum Sachstand überhaupt noch öffnet.
+    const abschnitt = page.getByRole("button", { name: /Einspeisung und Vergütung/ }).first();
+    await expect(abschnitt).toBeVisible({ timeout: 15_000 });
+    await abschnitt.click();
+
     const block = page
       .getByText("Nach welchen Konditionen soll gerechnet werden?")
       .locator("xpath=..");

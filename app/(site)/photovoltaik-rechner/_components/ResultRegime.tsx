@@ -2,12 +2,15 @@
 // Umschalter zwischen heutiger Vergütung und den geplanten Konditionen ab 2027,
 // plus der abschaltbaren Marktrechnung für die Zeit nach der Förderphase.
 //
-// Warum das ein eigener Block ist und nicht eine weitere Zeile im Ergebnis-Grid:
-// Hier wird nicht ein Wert editiert, sondern die RECHTSLAGE gewechselt, unter der
-// alles darüber gerechnet wird. Das braucht einen sichtbaren Rahmen, den
-// Entwurfsvorbehalt daneben und eine Erklärung, was der Wechsel konkret tut —
-// sonst steht im Ergebnis eine andere Amortisation, ohne dass erkennbar ist,
-// warum.
+// Warum das nicht als weitere Zeile ins Ergebnis-Grid gehört: Hier wird nicht
+// ein Wert editiert, sondern die RECHTSLAGE gewechselt, unter der alles darüber
+// gerechnet wird. Das braucht den Entwurfsvorbehalt daneben und eine Erklärung,
+// was der Wechsel konkret tut — sonst steht im Ergebnis eine andere
+// Amortisation, ohne dass erkennbar ist, warum.
+//
+// Der Rahmen kommt NICHT mehr von hier: Dieser Block ist der Inhalt des
+// aufklappbaren Abschnitts „Einspeisung und Vergütung" (ResultVerguetung), der
+// zugeklappt den gewählten Zustand in einer Zeile trägt.
 import Link from "next/link";
 import InlineEdit from "../../../../components/InlineEdit";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
@@ -46,15 +49,15 @@ export interface ResultRegimeProps {
    *  (Betreiber-Entscheidung 05.08.2026), aber der Reform-Zweig erklärt,
    *  dass sich Volleinspeisen dann nicht mehr lohnt. */
   vollGewaehlt: boolean;
+  /**
+   * Was der Börsenerlös über die Laufzeit ausmacht, in Euro — der Unterschied
+   * zwischen Haken an und Haken aus im gewählten Szenario. Ohne diese Zahl
+   * klickt man den Haken und sieht an der Stelle nichts: Die Wirkung setzt erst
+   * nach der Übergangszahlung ein, ist klein und bewegt die Amortisation in
+   * ganzen Jahren meist gar nicht.
+   */
+  marktWirkungEuro?: number;
 }
-
-const card = {
-  background: v("--color-bg"),
-  borderRadius: v("--radius-md"),
-  padding: "14px 16px",
-  marginBottom: 16,
-  border: `1px solid ${v("--color-border")}`,
-};
 
 function Schalter({ aktiv, onClick, children }: { aktiv: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -81,7 +84,7 @@ function Schalter({ aktiv, onClick, children }: { aktiv: boolean; onClick: () =>
 
 export default function ResultRegime({
   regime, setRegime, marktErloes, setMarktErloes, niveauCt, setNiveauCt,
-  profilFaktor, einspeiseAnteil, verlauf, heuteSatzCt, vollGewaehlt,
+  profilFaktor, einspeiseAnteil, verlauf, heuteSatzCt, vollGewaehlt, marktWirkungEuro,
 }: ResultRegimeProps) {
   const reform = regime === "reform2027";
   const uebergang = verlauf.find((j) => j.art === "uebergang");
@@ -89,7 +92,7 @@ export default function ResultRegime({
   const verlustProzent = Math.round((1 - einspeiseAnteil) * 100);
 
   return (
-    <div style={card}>
+    <div>
       <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
         Nach welchen Konditionen soll gerechnet werden?
       </div>
@@ -167,6 +170,17 @@ export default function ResultRegime({
                 Aus: Nach der Übergangszahlung bringt die Einspeisung null — die zurückhaltende
                 Annahme. An: Der Überschuss wird zum Marktwert bewertet.
               </span>
+              {/* Die Wirkung an den Schalter schreiben. Sie steht sonst nur in
+                  Zahlen weit oberhalb, und die Amortisation in ganzen Jahren
+                  springt dadurch meist nicht — der Haken wirkte wirkungslos. */}
+              {marktWirkungEuro !== undefined && marktWirkungEuro > 0 && (
+                <span style={{ display: "block", fontSize: 12, color: v("--color-text-secondary"), marginTop: 4 }}>
+                  Der Unterschied zwischen an und aus beträgt über 25 Jahre{" "}
+                  <strong style={{ fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
+                    {Math.round(marktWirkungEuro).toLocaleString("de-DE")} €
+                  </strong>.
+                </span>
+              )}
             </span>
           </label>
 
