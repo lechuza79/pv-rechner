@@ -764,13 +764,22 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  * floating row exists to be compared against the list, so its columns have to land
  * on the same pixels.
  */
-// Sechs Wertspalten sind das Limit: Platz und Werte so schmal wie möglich,
-// aller gewonnene Platz gehört der Namensspalte. Die Wertspalten enden bei
-// max-content statt bei einer festen Obergrenze — mit fester Obergrenze bläht
-// die Grid-Verteilung erst alle Wertspalten auf ihr Maximum auf, bevor die
-// fr-Namensspalte etwas bekommt („Mecklenburg-Vorpommern" → „Mecklenburg-…",
-// während die Zahlen in Luft schwimmen).
-const GRID = "48px minmax(160px,1fr) repeat(6, minmax(52px, max-content)) 14px";
+/**
+ * Acht Spalten in 736 px. Der Platz reicht — er muss nur richtig verteilt sein,
+ * und beide Fehlerrichtungen sind schon passiert:
+ *
+ * - Wertspalten als `minmax(…, max-content)`: sie fallen auf ihre Inhaltsbreite
+ *   zusammen, die fr-Namensspalte frisst den Rest (282 statt nötiger 200 px),
+ *   und die Zahlen kleben rechts als ein Block ohne erkennbare Spalten.
+ * - Wertspalten mit fester Obergrenze plus fr-Name: umgekehrt bläht das Grid
+ *   erst alle Wertspalten auf ihr Maximum auf, und lange Namen brechen ab.
+ *
+ * Deshalb: Wertspalten FEST und gleich breit (sie sind eine Messreihe, sie
+ * müssen als Spalten lesbar sein und untereinander fluchten), der Rest gehört
+ * dem Namen. 66 px ist der breiteste vorkommende Wert ("1,2 Mrd. €"); jedes
+ * Pixel darüber fehlt dem Namen, und dort fehlte es zuletzt an genau sechs.
+ */
+const GRID = "44px minmax(195px,1fr) repeat(6, 66px) 14px";
 
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
@@ -786,12 +795,16 @@ const S: Record<string, React.CSSProperties> = {
   },
   // Eight columns do not fit a phone. Scroll the table, never the page.
   scroller: { overflowX: "auto", margin: "0 -8px", padding: "0 8px" },
-  table: { minWidth: 620 },
+  // Summe des Rasters: 44 + 195 (Name-Minimum) + 6×66 + 14 + 8×7 Abstände.
+  // Das Namens-Minimum trägt den Gemeinde-Fall („Buchen (Odenwald)" plus volle
+  // Einwohnerzahl); enger scrollt die Tabelle lieber waagerecht, als Ortsnamen
+  // abzuschneiden — ein halber Ortsname ist in einer Rangliste wertlos.
+  table: { minWidth: 705 },
   row: {
     display: "grid",
     gridTemplateColumns: GRID,
     alignItems: "center",
-    gap: 6,
+    gap: 7,
     padding: "7px 8px",
     margin: "0 -8px",
     borderBottom: `1px solid ${v("--color-border-muted")}`,
