@@ -147,6 +147,37 @@ export function useGenerationMix(country = "de", hours = 24, dateRange?: { start
   return useCachedFetch<GenerationData>(endpoint, key, { data: [], source: "", license: "", country }, isPastPeriod(dateRange));
 }
 
+// ─── Installed Solar Power ──────────────────────────────────────────────────
+
+export interface InstalledPowerData {
+  /** Monats-Schlüssel "MM.YYYY" (Energy-Charts-Format). */
+  time: string[];
+  /** Installierte Solarleistung (DC, GWp) je Monat, gleiche Reihenfolge. */
+  solarDcGw: (number | null)[];
+  source: string;
+  license: string;
+}
+
+/** Monthly installed solar capacity (DC) for Germany — basis for splitting a
+ *  year-over-year solar gain into capacity growth vs. weather. */
+export function useInstalledSolarPower() {
+  return useCachedFetch<InstalledPowerData>(
+    "/api/energy/installed-power",
+    "installed-solar-de",
+    { time: [], solarDcGw: [], source: "", license: "" },
+    false,
+  );
+}
+
+/** Installed solar DC capacity (GWp) for one month, or null if unknown. */
+export function installedSolarForMonth(data: InstalledPowerData, year: number, month0: number): number | null {
+  const key = `${String(month0 + 1).padStart(2, "0")}.${year}`;
+  const idx = data.time.indexOf(key);
+  if (idx === -1) return null;
+  const val = data.solarDcGw[idx];
+  return typeof val === "number" && val > 0 ? val : null;
+}
+
 // ─── Nuclear Import ─────────────────────────────────────────────────────────
 
 export interface NuclearImportDataPoint {

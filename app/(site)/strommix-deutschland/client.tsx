@@ -2,7 +2,11 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import { useGenerationMix, useNuclearImport, type GenerationDataPoint } from "../../../lib/energy";
+import {
+  useGenerationMix, useNuclearImport, useInstalledSolarPower, installedSolarForMonth,
+  type GenerationDataPoint,
+} from "../../../lib/energy";
+import { fmtPvLeistung, fmtErtragProKwp } from "../../../lib/atlas-format";
 import StackedAreaChart from "../../../components/charts/StackedAreaChart";
 import StackedBarChart from "../../../components/charts/StackedBarChart";
 import {
@@ -119,15 +123,67 @@ function sumKeyGWh(data: GenerationDataPoint[], key: string): number {
   return mwh / 1000;
 }
 
+/** Zwei-Balken-Vergleich (Vorjahr grau, aktuell farbig) für eine Größe der
+ *  Trend-Karte. Werte kommen fertig formatiert herein — Einheiten haben ihre
+ *  eine Quelle beim Aufrufer. */
+function TrendVergleich({
+  label, prevLabel, curLabel, prevValue, curValue, prevText, curText, barColor,
+}: {
+  label: string;
+  prevLabel: string;
+  curLabel: string;
+  prevValue: number;
+  curValue: number;
+  prevText: string;
+  curText: string;
+  barColor: string;
+}) {
+  const max = Math.max(prevValue, curValue);
+  if (!(max > 0)) return null;
+  const row = (yearLabel: string, value: number, text: string, color: string, bold: boolean) => (
+    <div style={{ display: "flex", alignItems: "center", gap: space.sm }}>
+      <span style={{ flexShrink: 0, width: 34, fontSize: 10, fontFamily: v("--font-mono"), color: v("--color-text-muted") }}>
+        {yearLabel}
+      </span>
+      <div style={{ flex: 1, height: 10, borderRadius: 3, background: v("--color-bg"), overflow: "hidden" }}>
+        <div style={{ width: `${Math.max((value / max) * 100, 2)}%`, height: "100%", borderRadius: 3, background: color }} />
+      </div>
+      <span
+        style={{
+          flexShrink: 0, minWidth: 74, textAlign: "right", fontSize: 11,
+          fontFamily: v("--font-mono"), fontWeight: bold ? 700 : 400,
+          color: bold ? v("--color-text-primary") : v("--color-text-muted"),
+        }}
+      >
+        {text}
+      </span>
+    </div>
+  );
+  return (
+    <div style={{ flex: "1 1 180px", minWidth: 170 }}>
+      <div style={{ fontSize: 11, fontWeight: 600, color: v("--color-text-secondary"), marginBottom: space.xs }}>{label}</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: space.xs }}>
+        {row(prevLabel, prevValue, prevText, v("--color-border"), false)}
+        {row(curLabel, curValue, curText, barColor, true)}
+      </div>
+    </div>
+  );
+}
+
 /** Kompakte Karte: Solarerzeugung des letzten abgeschlossenen Monats gegen
- *  denselben Monat des Vorjahres — aus denselben Daten wie der Chart. Bei
- *  fehlenden/unvollständigen Daten rendert die Karte nichts. */
+ *  denselben Monat des Vorjahres — aus denselben Daten wie der Chart. Der
+ *  Mehr-/Minderertrag wird rechnerisch zerlegt in Zubau (installierte Leistung
+ *  aus der Energy-Charts-Monatsreihe) und Wetter (Ertrag je kWp); beide
+ *  Faktoren multiplizieren sich zum Gesamteffekt. Fehlt die Leistungsreihe,
+ *  fällt die Karte auf den einfachen Vergleichssatz zurück; bei fehlenden
+ *  Erzeugungsdaten rendert sie nichts. */
 function SolarTrendCard() {
   const { year, month } = useMemo(() => lastCompletedMonth(), []);
   const thisRange = useMemo(() => monthDateRange(year, month), [year, month]);
   const prevRange = useMemo(() => monthDateRange(year - 1, month), [year, month]);
   const cur = useGenerationMix("de", 720, thisRange);
   const prev = useGenerationMix("de", 720, prevRange);
+  const installed = useInstalledSolarPower();
 
   const monthLabel = new Date(year, month, 1).toLocaleString("de-DE", { month: "long" });
   const curGWh = useMemo(() => sumKeyGWh(cur.data.data, "solar"), [cur.data.data]);
@@ -135,9 +191,30 @@ function SolarTrendCard() {
 
   if (cur.loading || prev.loading || curGWh <= 0 || prevGWh <= 0) return null;
 
-  const deltaPct = Math.round((curGWh / prevGWh - 1) * 100);
+  const totalPct = Math.round((curGWh / prevGWh - 1) * 100);
   const unit = energyUnit(Math.max(curGWh, prevGWh));
-  const mehr = deltaPct >= 0;
+  const mehr = totalPct >= 0;
+
+  // Zerlegung: Erzeugung = installierte Leistung × Ertrag je kWp. GWh/GWp
+  // kürzt sich zu kWh/kWp. Ohne Leistungsdaten bleibt die Karte beim
+  // einfachen Satz (kein geratener Zubau-Wert).
+  const curGw = installed.loading ? null : installedSolarForMonth(installed.data, year, month);
+  const prevGw = installed.loading ? null : installedSolarForMonth(installed.data, year - 1, month);
+  const zerlegung = curGw && prevGw
+    ? {
+        zubauPct: Math.round((curGw / prevGw - 1) * 100),
+        wetterPct: Math.round(((curGWh / curGw) / (prevGWh / prevGw) - 1) * 100),
+        curYield: curGWh / curGw,
+        prevYield: prevGWh / prevGw,
+        curGw,
+        prevGw,
+      }
+    : null;
+
+  const linkStyle = { color: v("--color-accent"), fontWeight: 600, textDecoration: "none" } as const;
+  const num = (s: string | number, positive?: boolean) => (
+    <strong style={{ color: positive ? v("--color-positive") : v("--color-text-primary"), fontFamily: v("--font-mono") }}>{s}</strong>
+  );
 
   return (
     <div
@@ -152,22 +229,56 @@ function SolarTrendCard() {
         color: v("--color-text-secondary"),
       }}
     >
-      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-primary"), marginBottom: space.sm }}>
         Solar-Trend: {monthLabel} {year} gegen {monthLabel} {year - 1}
       </div>
-      Im {monthLabel} {year} lieferten Deutschlands Solaranlagen{" "}
-      <strong style={{ color: v("--color-text-primary"), fontFamily: v("--font-mono") }}>{formatGWhIn(curGWh, unit)}</strong>{" "}
-      Strom — {mehr ? "" : "das sind "}
-      <strong style={{ color: mehr ? v("--color-positive") : v("--color-text-primary"), fontFamily: v("--font-mono") }}>
-        {Math.abs(deltaPct)} %
-      </strong>{" "}
-      {mehr ? "mehr" : "weniger"} als im {monthLabel} {year - 1} ({formatGWhIn(prevGWh, unit)}).{" "}
-      {mehr
-        ? "Ein Treiber neben dem Wetter: Es sind schlicht mehr Module am Netz."
-        : "Kurzfristig schlägt das Wetter den Zubau — übers Jahr wächst die Solarerzeugung trotzdem."}{" "}
-      <a href="/photovoltaik-zubau-deutschland" style={{ color: v("--color-accent"), fontWeight: 600, textDecoration: "none" }}>
-        Zum PV-Zubau in Deutschland
-      </a>
+
+      {zerlegung && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: pad("md", "lg"), marginBottom: space.md }}>
+          <TrendVergleich
+            label="Solarstrom"
+            prevLabel={String(year - 1)} curLabel={String(year)}
+            prevValue={prevGWh} curValue={curGWh}
+            prevText={formatGWhIn(prevGWh, unit)} curText={formatGWhIn(curGWh, unit)}
+            barColor={v("--color-energy-solar")}
+          />
+          <TrendVergleich
+            label="Anlagen am Netz"
+            prevLabel={String(year - 1)} curLabel={String(year)}
+            prevValue={zerlegung.prevGw} curValue={zerlegung.curGw}
+            prevText={fmtPvLeistung(zerlegung.prevGw * 1_000_000)} curText={fmtPvLeistung(zerlegung.curGw * 1_000_000)}
+            barColor={v("--color-accent")}
+          />
+          <TrendVergleich
+            label="Sonnenausbeute je kWp"
+            prevLabel={String(year - 1)} curLabel={String(year)}
+            prevValue={zerlegung.prevYield} curValue={zerlegung.curYield}
+            prevText={fmtErtragProKwp(zerlegung.prevYield)} curText={fmtErtragProKwp(zerlegung.curYield)}
+            barColor={v("--color-energy-solar")}
+          />
+        </div>
+      )}
+
+      <div>
+        Im {monthLabel} {year} lieferten Deutschlands Solaranlagen {num(formatGWhIn(curGWh, unit))} Strom —{" "}
+        {num(`${Math.abs(totalPct)} %`, mehr)} {mehr ? "mehr" : "weniger"} als im {monthLabel} {year - 1}.{" "}
+        {zerlegung ? (
+          <>
+            Zerlegt: {num(`${zerlegung.zubauPct >= 0 ? "+" : "−"}${Math.abs(zerlegung.zubauPct)} %`)}{" "}
+            <a href="/photovoltaik-zubau-deutschland" style={linkStyle}>durch neu gebaute Anlagen</a>
+            {" und "}
+            {num(`${zerlegung.wetterPct >= 0 ? "+" : "−"}${Math.abs(zerlegung.wetterPct)} %`)} durchs Wetter, also{" "}
+            {zerlegung.wetterPct >= 0 ? "mehr" : "weniger"} Sonnenstrom je installiertem kWp. Beide Effekte zusammen ergeben den Gesamtunterschied.
+          </>
+        ) : (
+          <>
+            {mehr
+              ? "Ein Treiber neben dem Wetter: Es sind schlicht mehr Module am Netz."
+              : "Kurzfristig schlägt das Wetter den Zubau — übers Jahr wächst die Solarerzeugung trotzdem."}{" "}
+            <a href="/photovoltaik-zubau-deutschland" style={linkStyle}>Zum PV-Zubau in Deutschland</a>
+          </>
+        )}
+      </div>
     </div>
   );
 }
