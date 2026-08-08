@@ -16,6 +16,10 @@ import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
 import { DEFAULT_PRICES } from "./prices-config";
 import { DEFAULT_FEED_IN } from "./feedin-config";
 import { ertragForRegionId } from "./bundesland-ertrag";
+import { simulateSolarYear } from "./balkon-sim";
+import { referenceMonthKwh } from "./solar-year";
+import { DEFAULT_BALKON_CONFIG } from "./balkon-config";
+import { NUTZUNG, PERSONEN } from "./constants";
 import { NATIONAL_AVG_YIELD } from "./constants";
 import { DIREKTVERMARKTUNG, MARKTWERT_NIVEAU_CT } from "./marktwert-config";
 
@@ -64,6 +68,44 @@ export const ATLAS_GRID_CO2 = DEFAULT_HEATPUMP_CONFIG.gridCo2PerKwh;
 export const EIGENVERBRAUCH_ANTEIL_ANNAHME = 0.3;
 
 /**
+ * Eigenverbrauchsanteil eines typischen Balkonkraftwerks — NICHT der vom Dach
+ * geliehene Wert.
+ *
+ * Ein Steckersolargerät verhält sich anders als eine Dachanlage: 800 W gegen
+ * die Grundlast eines Haushalts werden zum großen Teil direkt verbraucht,
+ * während eine 10-kWp-Anlage ihre Mittagsspitze gar nicht unterbringen kann.
+ * Den Dach-Anteil hier einzusetzen wäre kein konservativer Ansatz, sondern
+ * schlicht der falsche Fall.
+ *
+ * Gerechnet mit der Stundensimulation, die Balkon- und Dach-Rechner ohnehin
+ * teilen (geteilte Rechen-Basis), an der Standard-Konfiguration des
+ * Balkon-Rechners: gängigstes Set am Geländer, Zwei-Personen-Haushalt mit dem
+ * mittleren Nutzungsprofil, ohne Speicher. Einmal beim Laden berechnet und
+ * gemerkt; der Test in atlas-impact.test.ts hält den Wert im plausiblen Band.
+ */
+let balkonAnteilCache: number | null = null;
+export function balkonEigenverbrauchAnteil(): number {
+  if (balkonAnteilCache !== null) return balkonAnteilCache;
+  const set = DEFAULT_BALKON_CONFIG.sets.find((s) => s.id === "duo") ?? DEFAULT_BALKON_CONFIG.sets[0];
+  const sim = simulateSolarYear({
+    moduleKwp: set.moduleWp / 1000,
+    inverterKw: set.inverterW / 1000,
+    monthlyYieldPerKwp: Array.from({ length: 12 }, (_, m) => referenceMonthKwh("sued_flach", m)),
+    orientation: "sued_gelaender",
+    household: {
+      baseKwh: PERSONEN[1].verbrauch,
+      tagQuote: NUTZUNG[1].tagQuote,
+      wpActive: false,
+      eaActive: false,
+    },
+    batteryKwh: 0,
+    roundtrip: 1,
+  });
+  balkonAnteilCache = sim.annualYield > 0 ? sim.selfUsedKwh / sim.annualYield : EIGENVERBRAUCH_ANTEIL_ANNAHME;
+  return balkonAnteilCache;
+}
+
+/**
  * Was eine erzeugte Kilowattstunde wert ist — JE ANLAGENART, nicht als ein
  * Mischsatz über alles.
  *
@@ -93,12 +135,12 @@ export function stromwertSaetze(): Record<string, SegmentSatz> {
     },
     // Steckersolar wird per Voreinstellung NICHT vergütet (Projektkonvention,
     // siehe Balkon-Rechner): Nur der selbst genutzte Teil ist Geld wert, der
-    // Überschuss geht unentgeltlich ins Netz. Mit dem Dach-Eigenverbrauchsanteil
-    // gerechnet ist das eine Untergrenze — ein Balkongerät ist klein gegenüber
-    // der Grundlast und deckt real mehr davon selbst.
+    // Überschuss geht unentgeltlich ins Netz. Dafür liegt der Eigenverbrauchs-
+    // anteil weit über dem einer Dachanlage — er kommt aus der Stundensimulation,
+    // nicht vom Dach geliehen.
     steckersolar: {
-      ct: ev * haushaltCt,
-      herkunft: "nur der selbst genutzte Teil; der Überschuss wird nicht vergütet",
+      ct: balkonEigenverbrauchAnteil() * haushaltCt,
+      herkunft: `${Math.round(balkonEigenverbrauchAnteil() * 100)} % Eigenverbrauch zum Haushaltsstrompreis; der Überschuss wird nicht vergütet`,
     },
     // Gewerbedach: Der Eigenverbrauchsanteil von Gewerbebetrieben ist im
     // Projekt nirgends belegt, deshalb steht hier nur die gesicherte

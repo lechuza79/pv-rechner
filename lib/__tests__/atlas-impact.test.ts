@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
 import {
   ATLAS_GRID_CO2,
+  EIGENVERBRAUCH_ANTEIL_ANNAHME,
   PRAXIS_FAKTOR,
+  balkonEigenverbrauchAnteil,
   co2Tonnen,
   ertragForRegionId,
   erzeugungKwh,
@@ -93,10 +95,28 @@ describe("Stromwert je Anlagenart (Realitäts-Anker)", () => {
     // Der Grund für die ganze Aufteilung: Eine selbst genutzte Kilowattstunde
     // ersetzt teuren Netzbezug, eine verkaufte bringt nur den Börsenwert.
     // Kippt diese Reihenfolge, rechnet die Tabelle etwas anderes, als sie sagt.
+    //
+    // Das Balkongerät steht bewusst GANZ OBEN, auch wenn es keinen Cent
+    // Vergütung bekommt: Es ist so klein, dass der Haushalt fast zwei Drittel
+    // seines Ertrags direkt verbraucht, und jede dieser Kilowattstunden ist den
+    // vollen Haushaltsstrompreis wert. Die Dachanlage speist dagegen zwei
+    // Drittel für rund ein Viertel dieses Preises ein. Eine frühere Fassung
+    // hatte die beiden andersherum erwartet, weil sie dem Balkon den
+    // Eigenverbrauchsanteil einer Dachanlage unterschob.
     const s = stromwertSaetze();
-    expect(s.privat_dach.ct).toBeGreaterThan(s.steckersolar.ct);
-    expect(s.steckersolar.ct).toBeGreaterThan(s.gewerbe_dach.ct);
+    expect(s.steckersolar.ct).toBeGreaterThan(s.privat_dach.ct);
+    expect(s.privat_dach.ct).toBeGreaterThan(s.gewerbe_dach.ct);
     expect(s.gewerbe_dach.ct).toBeGreaterThan(s.freiflaeche.ct);
+  });
+
+  it("leitet den Balkon-Eigenverbrauch aus der Simulation ab, nicht vom Dach", () => {
+    // Ein Steckersolargerät gegen die Grundlast eines Haushalts deckt einen
+    // weit größeren Teil selbst als eine Dachanlage — bekanntes Band grob
+    // 50–80 %. Läge der Wert beim Dach-Anteil, wäre die Simulation umgangen.
+    const anteil = balkonEigenverbrauchAnteil();
+    expect(anteil).toBeGreaterThan(0.5);
+    expect(anteil).toBeLessThan(0.8);
+    expect(anteil).toBeGreaterThan(EIGENVERBRAUCH_ANTEIL_ANNAHME * 1.5);
   });
 
   it("bleibt für jede Anlagenart im plausiblen Erlösband", () => {
