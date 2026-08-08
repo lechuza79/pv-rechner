@@ -15,6 +15,7 @@
 // Module aufgeständert sind — eine Entscheidung, die man kennt, und nach Süden
 // 9 Punkte wert. Die Stufen kommen aus lib/dach-ertrag.ts, nicht von hier.
 import { AccordionField, ChoiceButtons } from "./AccordionField";
+import PresetNumberInput from "./PresetNumberInput";
 import { v, space } from "../lib/theme";
 import { DACHARTEN } from "../lib/constants";
 import { dachErlaubtNord, neigungsStufen, neigungLohntNachfrage } from "../lib/dach-ertrag";
@@ -159,20 +160,54 @@ export default function DachField({
           summary={neigungSummary()}
           onEdit={() => setBearbeitet(F_NEIGUNG)}
         >
-          <ChoiceButtons
-            options={stufen}
-            columns={stufen.length}
-            selected={hat(F_NEIGUNG) ? stufen.findIndex(s => s.grad === neigungGrad) : null}
-            onSelect={i => {
-              setNeigungGrad(stufen[i].grad);
-              markiereBeantwortet(F_NEIGUNG);
-            }}
-            render={s => s.label}
-          />
+          <div style={{ display: "flex", gap: space.sm, alignItems: "center", flexWrap: "wrap" }}>
+            {stufen.map(s => {
+              const aktiv = hat(F_NEIGUNG) && neigungGrad === s.grad;
+              return (
+                <button
+                  key={s.grad}
+                  onClick={() => { setNeigungGrad(s.grad); markiereBeantwortet(F_NEIGUNG); }}
+                  title={s.sub}
+                  style={{
+                    padding: "7px 12px", borderRadius: v("--radius-sm"), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                    background: aktiv ? v("--color-accent-dim") : v("--color-bg-muted"),
+                    border: aktiv ? `1.5px solid ${v("--color-accent")}` : `1.5px solid ${v("--color-border")}`,
+                    color: aktiv ? v("--color-accent") : v("--color-text-muted"),
+                  }}
+                >
+                  {s.label}
+                </button>
+              );
+            })}
+            {/* Freie Gradzahl neben den Schnellwahlen. Die Stufen sind Übliches,
+                keine Grenze: wer seine Neigung kennt (10° statt 15° bei einer
+                Aufständerung, 38° statt 35° beim Satteldach), trägt sie ein.
+                Die Matrix rundet auf ihre nächste Zeile — bewusst keine
+                Interpolation, das wäre Scheingenauigkeit. */}
+            <PresetNumberInput
+              value={neigungGrad ?? dach?.typNeigung ?? 35}
+              presets={stufen.map(s => s.grad)}
+              min={0}
+              max={90}
+              unit="°"
+              onCommit={n => { setNeigungGrad(n); markiereBeantwortet(F_NEIGUNG); }}
+              onFocus={() => setBearbeitet(F_NEIGUNG)}
+              onBlur={() => setBearbeitet(null)}
+            />
+          </div>
           <div style={{ fontSize: 11, color: v("--color-text-faint"), marginTop: space.sm, lineHeight: 1.5 }}>
-            {neigungLohntNachfrage(ausrichtung)
-              ? "Nach Norden entscheidet die Neigung am meisten: flach bringt deutlich mehr als steil."
-              : `Ohne Angabe rechnen wir mit ${dach?.typNeigung}° — bei dieser Ausrichtung macht die Neigung kaum einen Unterschied.`}
+            {hat(F_NEIGUNG)
+              /* Sobald etwas angegeben ist, wäre „ohne Angabe rechnen wir mit …"
+                 schlicht falsch — der Satz beschriebe einen Zustand, der nicht
+                 mehr gilt. Dann zählt nur noch, was die Zahl bewirkt. */
+              ? "Die Matrix rundet auf die nächste dokumentierte Neigung — ein Grad mehr oder weniger ändert nichts."
+              : neigungLohntNachfrage(ausrichtung)
+                ? "Nach Norden entscheidet die Neigung am meisten: flach bringt deutlich mehr als steil."
+                : dach?.aufgestaendert
+                  /* Beim Flachdach ist die Annahme eine Aufständerung, keine
+                     Gradzahl — sie muss auch so beschrieben werden. */
+                  ? "Ohne Angabe rechnen wir mit einer üblichen Aufständerung. Eigene Gradzahl geht auch."
+                  : `Ohne Angabe rechnen wir mit ${dach?.typNeigung}° — bei dieser Ausrichtung macht die Neigung kaum einen Unterschied.`}
           </div>
         </AccordionField>
       )}
