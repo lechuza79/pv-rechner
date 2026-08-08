@@ -16,7 +16,7 @@ import {
   wattProKopfTeile,
   type Messwert,
 } from "../../lib/atlas-format";
-import { ATLAS_GRID_CO2, co2Tonnen, erzeugungKwh, segmentWertEuro, stromwertSaetze } from "../../lib/atlas-impact";
+import { ATLAS_GRID_CO2, co2Tonnen, erzeugungKwh, segmentWertEuro, stromwertBestandteile } from "../../lib/atlas-impact";
 import InfoTooltip from "../InfoTooltip";
 
 type Owner = "alle" | "privat" | "gewerbe";
@@ -638,30 +638,29 @@ export default function RankingTable({
  * Sätzen entsteht, ist ohne diese Aufstellung nicht nachvollziehbar.
  */
 function StromwertHilfe() {
-  const saetze = stromwertSaetze();
-  const zeilen: [string, string][] = [
-    ["Private Dächer", "privat_dach"],
-    ["Balkonkraftwerke", "steckersolar"],
-    ["Gewerbliche Dächer", "gewerbe_dach"],
-    ["Freiflächen-Parks", "freiflaeche"],
-  ];
+  const { eigenverbrauchCt, einspeisung } = stromwertBestandteile();
   return (
     <>
-      Rechnerischer Wert des erzeugten Solarstroms pro Jahr — ein Modellwert, kein Messwert. Jede
-      Anlagenart wird mit ihrem eigenen Satz bewertet, weil eine Kilowattstunde vom privaten Dach
-      teuren Netzbezug ersetzt, während ein Freiflächen-Park zum Börsenwert verkauft:
+      Rechnerischer Wert des Solarstroms, der hier im Jahr erzeugt wird — ein Modellwert, kein
+      Messwert. Jede Kilowattstunde zählt so viel, wie sie ersetzt oder einbringt:
       <span style={S.tipListe}>
-        {zeilen.map(([label, key]) => (
-          <span key={key} style={S.tipZeile}>
-            <strong>
-              {label}: {fmtCtProKwh(saetze[key].ct)}
-            </strong>{" "}
-            — {saetze[key].herkunft}
-          </span>
-        ))}
+        <span style={S.tipZeile}>
+          <strong>Im Haus verbraucht: {fmtCtProKwh(eigenverbrauchCt)}</strong> — so viel kostet
+          Strom, der sonst zugekauft werden müsste. Das gilt für jede Anlagenart gleich.
+        </span>
+        <span style={S.tipZeile}>
+          <strong>Ins Netz eingespeist:</strong> je nach Anlagenart{" "}
+          {einspeisung
+            .map((e) => `${e.label} ${e.ct === null ? e.hinweis : fmtCtProKwh(e.ct)}`)
+            .join(", ")}
+          .
+        </span>
       </span>
-      Die Strommenge dahinter ist die installierte Leistung mal dem typischen Ertrag im jeweiligen
-      Bundesland, kalibriert an der von Fraunhofer ISE bilanzierten Solarstrom-Erzeugung 2025.
+      Wie viel eine Anlage im Haus behält und wie viel sie abgibt, ist von Art zu Art verschieden.
+      Deshalb wird jede Art einzeln gerechnet — ein gemeinsamer Durchschnitt über Hausdächer und
+      Solarparks wäre für beide falsch. Die Strommenge dahinter ist die installierte Leistung mal
+      dem typischen Ertrag im jeweiligen Bundesland, kalibriert an der von Fraunhofer ISE
+      bilanzierten Solarstrom-Erzeugung 2025.
     </>
   );
 }

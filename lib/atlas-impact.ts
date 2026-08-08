@@ -165,6 +165,39 @@ export function stromwertCtFuerSegment(segment: string): number {
 }
 
 /**
+ * Dieselbe Rechnung, aber so zerlegt, wie man sie einem Menschen erklärt.
+ *
+ * Die zusammengefassten Sätze aus `stromwertSaetze()` sind Durchschnitte JE
+ * ERZEUGTER Kilowattstunde. Sie taugen zum Rechnen, aber NICHT zum Erklären:
+ * Nebeneinander gestellt liest sich „Balkon 20 ct, Dach 14,8 ct" als Wertung —
+ * als wäre eine Balkon-Kilowattstunde mehr wert als eine vom Dach. Das ist sie
+ * nicht: Selbst verbrauchter Strom ist überall gleich viel wert. Verschieden
+ * ist nur, wie viel eine Anlagenart überhaupt im Haus behält, und dieser
+ * Umweg über Anteile führt beim Lesen zuverlässig in die Irre.
+ *
+ * Deshalb zeigt die Oberfläche die beiden Preise, die wirklich gelten — was
+ * selbst verbrauchter Strom ersetzt und was eingespeister einbringt — statt
+ * der Mischsätze dahinter.
+ */
+export function stromwertBestandteile() {
+  return {
+    /** Was eine selbst verbrauchte Kilowattstunde ersetzt — für alle gleich. */
+    eigenverbrauchCt: DEFAULT_PRICES.electricityPrice * 100,
+    /** Was eine eingespeiste Kilowattstunde einbringt — das hängt an der Anlagenart. */
+    einspeisung: [
+      { label: "privates Dach", ct: DEFAULT_FEED_IN.teilUnder10, hinweis: "Einspeisevergütung" },
+      { label: "gewerbliches Dach", ct: DEFAULT_FEED_IN.teilOver10, hinweis: "Einspeisevergütung" },
+      {
+        label: "Freiflächen-Park",
+        ct: Math.max(0, MARKTWERT_NIVEAU_CT - DIREKTVERMARKTUNG.gebuehrCtKwh),
+        hinweis: "Börsenwert",
+      },
+      { label: "Balkonkraftwerk", ct: null, hinweis: "wird nicht vergütet" },
+    ] as ReadonlyArray<{ label: string; ct: number | null; hinweis: string }>,
+  };
+}
+
+/**
  * Rechnerische Jahres-Erzeugung des Anlagenbestands einer Region:
  * kWp × Bundesland-Ertrag (Nord-Süd-Gradient) × Praxis-Faktor der Flotte.
  */
