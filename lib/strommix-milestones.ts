@@ -52,14 +52,13 @@ export const STROMMIX_MILESTONES: StrommixMilestone[] = [
     text: "Der russische Angriff auf die Ukraine führte zu extremen Energiepreisen, zugleich stand etwa die Hälfte des französischen Atomkraftwerk-Parks still. Deutschland exportierte in diesem Jahr per Saldo rund 15 Terawattstunden Strom nach Frankreich.",
   },
   {
+    // Bewusst EIN Eintrag statt zweier: Auf einer Jahresachse lägen zwei Marken
+    // von 2023 exakt übereinander. Inhaltlich gehören sie ohnehin zusammen —
+    // die Pointe des Jahres ist, dass der Atomausstieg gerade NICHT zu mehr
+    // Kohle führte, sondern mit dem stärksten Kohle-Rückgang zusammenfiel.
     year: 2023,
-    title: "Atomausstieg",
-    text: "Am 15. April 2023 gingen die letzten drei deutschen Kernkraftwerke (Isar 2, Emsland, Neckarwestheim 2) endgültig vom Netz. Seitdem taucht Kernenergie im Chart nur noch als rechnerischer Import auf.",
-  },
-  {
-    year: 2023,
-    title: "Kohle auf historischem Tief",
-    text: "Die Braunkohleverstromung sank um gut ein Viertel, Steinkohle um mehr als ein Drittel — laut Fraunhofer ISE zurück auf das Niveau von 1963 beziehungsweise 1955. Der Erneuerbaren-Anteil sprang auf einen neuen Höchststand.",
+    title: "Atomausstieg — und Kohle auf historischem Tief",
+    text: "Am 15. April 2023 gingen die letzten drei deutschen Kernkraftwerke (Isar 2, Emsland, Neckarwestheim 2) endgültig vom Netz; Kernenergie taucht seitdem nur noch als rechnerischer Import auf. Entgegen der Erwartung sprang die Kohle nicht ein: Die Braunkohleverstromung sank um gut ein Viertel, Steinkohle um mehr als ein Drittel — laut Fraunhofer ISE zurück auf das Niveau von 1963 beziehungsweise 1955. Der Erneuerbaren-Anteil erreichte einen neuen Höchststand.",
   },
   {
     year: 2024,
@@ -76,4 +75,11 @@ export const STROMMIX_MILESTONES: StrommixMilestone[] = [
 /** Marken für ein einzelnes Jahr (Jahres-Ansicht). */
 export function milestonesForYear(year: number): StrommixMilestone[] {
   return STROMMIX_MILESTONES.filter((m) => m.year === year);
+}
+
+/** Die Marken als Ereignisse für die geteilte Zeitleiste (components/charts/
+ *  EventTimeline). Eine Umwandlung, keine zweite Liste — die Texte bleiben
+ *  oben ihre einzige Quelle. */
+export function strommixTimelineEvents(): { year: number; label: string; text: string }[] {
+  return STROMMIX_MILESTONES.map((m) => ({ year: m.year, label: m.title, text: m.text }));
 }
