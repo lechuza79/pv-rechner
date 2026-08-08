@@ -959,6 +959,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                       setWerte={setGebaeudeWerte}
                       beantwortet={gvAnswered}
                       markiereBeantwortet={markGvAnswered}
+                      bearbeitet={gvEditing}
+                      setBearbeitet={setGvEditing}
                       hinweis={wpAlleBeantwortet && wpKwh != null
                         ? `Daraus ergeben sich rund ${wpKwh.toLocaleString("de-DE")} kWh Heizstrom pro Jahr.`
                         : undefined}
@@ -1148,6 +1150,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                        müsste man sich durchklicken, um eine einzelne zu ändern. */
                     beantwortet={new Set(WP_FIELDS)}
                     markiereBeantwortet={markGvAnswered}
+                    bearbeitet={gvEditing}
+                    setBearbeitet={setGvEditing}
                     hinweis={wpKwh != null
                       ? `Daraus ergeben sich rund ${wpKwh.toLocaleString("de-DE")} kWh Heizstrom pro Jahr.`
                       : undefined}

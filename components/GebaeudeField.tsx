@@ -3,19 +3,23 @@
 // Dämmzustand und Heizsystem. Aus diesen vier Angaben kommt der Heizstrom, und
 // der ist in fast jeder Rechnung der größte Verbrauchsposten.
 //
-// Gleiches Muster wie components/DachField.tsx: jede Frage erscheint, sobald
-// die vorige beantwortet ist, beantwortete bleiben sichtbar und änderbar, und
-// überspringen ist erlaubt — solange die Annahme danach sichtbar wird.
+// Bedienmuster ist die progressive Disclosure aus components/AccordionField:
+// offen steht immer nur die erste unbeantwortete Frage, beantwortete klappen zu
+// einer schmalen Zeile mit Wert und Stift ein. Vier Fragen gleichzeitig als
+// volle Kartenraster aufzublättern ist die Fragen-Wand, die am 15.07.2026
+// bewusst abgeschafft wurde — sie schiebt den Weiter-Knopf aus dem Bild und
+// lässt einen aktiv gewählten Wert wie eine Vorauswahl aussehen.
 //
 // Derselbe Baustein im Frage-Flow UND in der Verfeinerung des Ergebnisses. Eine
 // Angabe, die eine Zahl im Ergebnis bewegt, muss vom Ergebnis aus erreichbar
 // sein; vorher war die Wärmepumpe dort nur ein Häkchen ohne jede Detailfrage.
-import OptionCard from "./OptionCard";
+import { AccordionField, ChoiceButtons } from "./AccordionField";
 import PresetNumberInput from "./PresetNumberInput";
 import { v, space } from "../lib/theme";
 import {
   HAUSTYP_WP,
   HEIZSYSTEM,
+  HEIZSYSTEM_SHORT,
   INSULATION_BESTAND,
   WP_M2_PRESETS,
   type Heizsystem,
@@ -39,6 +43,11 @@ export default function GebaeudeField({
   setWerte,
   beantwortet,
   markiereBeantwortet,
+  /** Welche Frage der Nutzer zum Nachbearbeiten aufgeklappt hat (null = keine).
+   *  Ohne diesen Zustand liesse sich eine bereits beantwortete Frage nicht mehr
+   *  öffnen — der Stift wäre Dekoration. */
+  bearbeitet,
+  setBearbeitet,
   hinweis,
   onWeissNicht,
 }: {
@@ -49,118 +58,126 @@ export default function GebaeudeField({
    *  würde sofort mit erscheinen und die Vorauswahl sähe aus wie eine Antwort. */
   beantwortet: ReadonlySet<string>;
   markiereBeantwortet: (key: string) => void;
+  bearbeitet: string | null;
+  setBearbeitet: (key: string | null) => void;
   hinweis?: string;
   /** Gesetzt → „Weiß ich nicht" erscheint. Im Ergebnis weglassen: dort gibt es
    *  nichts zu überspringen, dort wird nachjustiert. */
   onWeissNicht?: () => void;
 }) {
-  const labelStyle: React.CSSProperties = {
-    fontSize: 13,
-    fontWeight: 700,
-    color: v("--color-text-secondary"),
-    marginBottom: space.md,
-  };
-
   const hat = (k: string) => beantwortet.has(k);
   const waehle = (k: string, patch: Partial<GebaeudeWerte>) => {
     setWerte(patch);
     markiereBeantwortet(k);
   };
 
+  // Offen ist die zum Bearbeiten angeklickte Frage, sonst die erste offene.
+  // Sind alle beantwortet und nichts angeklickt, ist nichts offen — dann steht
+  // hier nur die Zusammenfassung samt Ergebniszeile.
+  const offen = bearbeitet && (GEBAEUDE_FIELDS as readonly string[]).includes(bearbeitet)
+    ? bearbeitet
+    : GEBAEUDE_FIELDS.find(k => !beantwortet.has(k)) ?? null;
+
   return (
     <div>
-      <div style={labelStyle}>Haustyp</div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.md, marginBottom: space.lg }}>
-        {HAUSTYP_WP.map((h, i) => (
-          <OptionCard
-            key={h.id}
-            selected={hat(F_HAUSTYP) && werte.haustypIdx === i}
-            onClick={() => waehle(F_HAUSTYP, { haustypIdx: i })}
-            label={h.label}
-            sub={h.sub}
+      <AccordionField
+        label="Haustyp"
+        open={offen === F_HAUSTYP}
+        answered={hat(F_HAUSTYP)}
+        summary={HAUSTYP_WP[werte.haustypIdx].label}
+        onEdit={() => setBearbeitet(F_HAUSTYP)}
+      >
+        <ChoiceButtons
+          options={HAUSTYP_WP}
+          columns={2}
+          selected={hat(F_HAUSTYP) ? werte.haustypIdx : null}
+          onSelect={i => waehle(F_HAUSTYP, { haustypIdx: i })}
+          render={h => h.label}
+        />
+      </AccordionField>
+
+      <AccordionField
+        label="Wohnfläche"
+        open={offen === F_FLAECHE}
+        answered={hat(F_FLAECHE)}
+        summary={`${werte.wohnflaeche} m²`}
+        onEdit={() => setBearbeitet(F_FLAECHE)}
+      >
+        <div style={{ display: "flex", gap: space.sm, alignItems: "center", flexWrap: "wrap" }}>
+          {WP_M2_PRESETS.map(m2 => {
+            const aktiv = hat(F_FLAECHE) && werte.wohnflaeche === m2;
+            return (
+              <button
+                key={m2}
+                onClick={() => waehle(F_FLAECHE, { wohnflaeche: m2 })}
+                style={{
+                  padding: "7px 10px", borderRadius: v("--radius-sm"), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  background: aktiv ? v("--color-accent-dim") : v("--color-bg-muted"),
+                  border: aktiv ? `1.5px solid ${v("--color-accent")}` : `1.5px solid ${v("--color-border")}`,
+                  color: aktiv ? v("--color-accent") : v("--color-text-muted"),
+                }}
+              >
+                {m2} m²
+              </button>
+            );
+          })}
+          <PresetNumberInput
+            value={werte.wohnflaeche}
+            presets={WP_M2_PRESETS}
+            min={20}
+            max={1000}
+            unit="m²"
+            onCommit={n => waehle(F_FLAECHE, { wohnflaeche: n })}
+            onFocus={() => setBearbeitet(F_FLAECHE)}
+            onBlur={() => setBearbeitet(null)}
           />
-        ))}
-      </div>
-
-      {hat(F_HAUSTYP) && (
-        <div className="sc-acc">
-          <div style={labelStyle}>Wohnfläche</div>
-          <div style={{ display: "flex", gap: space.md, alignItems: "center", flexWrap: "wrap", marginBottom: space.lg }}>
-            {WP_M2_PRESETS.map(m2 => {
-              const aktiv = hat(F_FLAECHE) && werte.wohnflaeche === m2;
-              return (
-                <button
-                  key={m2}
-                  onClick={() => waehle(F_FLAECHE, { wohnflaeche: m2 })}
-                  style={{
-                    padding: "8px 12px", borderRadius: v("--radius-sm"), fontSize: 13, fontWeight: 600, cursor: "pointer",
-                    background: aktiv ? v("--color-accent-dim") : v("--color-bg-muted"),
-                    border: aktiv ? `1.5px solid ${v("--color-accent")}` : `1.5px solid ${v("--color-border")}`,
-                    color: aktiv ? v("--color-accent") : v("--color-text-muted"),
-                  }}
-                >
-                  {m2} m²
-                </button>
-              );
-            })}
-            <PresetNumberInput
-              value={werte.wohnflaeche}
-              presets={WP_M2_PRESETS}
-              min={20}
-              max={1000}
-              unit="m²"
-              onCommit={n => waehle(F_FLAECHE, { wohnflaeche: n })}
-            />
-          </div>
         </div>
-      )}
+      </AccordionField>
 
-      {hat(F_FLAECHE) && (
-        <div className="sc-acc">
-          <div style={labelStyle}>Dämmzustand</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.md, marginBottom: space.lg }}>
-            {INSULATION_BESTAND.map((ins, i) => (
-              <OptionCard
-                key={ins.label}
-                selected={hat(F_DAEMMUNG) && werte.insulationIdx === i}
-                onClick={() => waehle(F_DAEMMUNG, { insulationIdx: i })}
-                label={ins.label}
-                sub={ins.sub}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      <AccordionField
+        label="Dämmzustand"
+        open={offen === F_DAEMMUNG}
+        answered={hat(F_DAEMMUNG)}
+        summary={INSULATION_BESTAND[werte.insulationIdx].label}
+        onEdit={() => setBearbeitet(F_DAEMMUNG)}
+      >
+        <ChoiceButtons
+          options={INSULATION_BESTAND}
+          columns={2}
+          selected={hat(F_DAEMMUNG) ? werte.insulationIdx : null}
+          onSelect={i => waehle(F_DAEMMUNG, { insulationIdx: i })}
+          render={ins => ins.label}
+        />
+      </AccordionField>
 
-      {hat(F_DAEMMUNG) && (
-        <div className="sc-acc">
-          <div style={labelStyle}>Heizsystem</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.md }}>
-            {HEIZSYSTEM.map(h => (
-              <OptionCard
-                key={h.id}
-                selected={hat(F_HEIZSYSTEM) && werte.heizsystem === h.id}
-                onClick={() => waehle(F_HEIZSYSTEM, { heizsystem: h.id as Heizsystem })}
-                label={h.label}
-                sub={h.sub}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      <AccordionField
+        label="Heizsystem"
+        open={offen === F_HEIZSYSTEM}
+        answered={hat(F_HEIZSYSTEM)}
+        summary={HEIZSYSTEM.find(h => h.id === werte.heizsystem)?.label}
+        onEdit={() => setBearbeitet(F_HEIZSYSTEM)}
+      >
+        <ChoiceButtons
+          options={HEIZSYSTEM}
+          columns={3}
+          selected={hat(F_HEIZSYSTEM) ? HEIZSYSTEM.findIndex(h => h.id === werte.heizsystem) : null}
+          onSelect={i => waehle(F_HEIZSYSTEM, { heizsystem: HEIZSYSTEM[i].id as Heizsystem })}
+          render={h => HEIZSYSTEM_SHORT[h.id]}
+        />
+      </AccordionField>
 
-      {hinweis && (
-        <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `${space.lg}px 0 0` }}>
+      {hinweis && offen === null && (
+        <div className="sc-acc" style={{ fontSize: 11, color: v("--color-text-faint"), marginTop: space.xs, lineHeight: 1.5 }}>
           {hinweis}
-        </p>
+        </div>
       )}
 
-      {onWeissNicht && (
+      {onWeissNicht && offen !== null && (
         <button
           onClick={onWeissNicht}
           style={{
-            marginTop: space.lg, padding: 0, border: "none", background: "transparent",
-            color: v("--color-text-muted"), fontSize: 13, fontWeight: 600, cursor: "pointer",
+            marginTop: space.md, padding: 0, border: "none", background: "transparent",
+            color: v("--color-text-muted"), fontSize: 12, fontWeight: 600, cursor: "pointer",
             textDecoration: "underline", textUnderlineOffset: 3,
           }}
         >

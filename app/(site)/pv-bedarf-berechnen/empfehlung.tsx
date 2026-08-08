@@ -509,6 +509,8 @@ export default function Empfehlung() {
                       setWerte={setGebaeudeWerte}
                       beantwortet={gvAnswered}
                       markiereBeantwortet={markGvAnswered}
+                      bearbeitet={gvEditing}
+                      setBearbeitet={setGvEditing}
                       hinweis={WP_FIELDS.every(k => gvAnswered.has(k))
                         ? `Daraus ergeben sich rund ${wpKwh.toLocaleString("de-DE")} kWh Heizstrom pro Jahr.`
                         : undefined}
