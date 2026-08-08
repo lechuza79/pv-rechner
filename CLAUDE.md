@@ -159,6 +159,7 @@ tagQuote 0.30 ≈ HTW Standard-Profil, andere Werte skaliert nach Nutzungsprofil
 | **Eigenverbrauch fürs GELD** | `calcEigenverbrauch` (HTW-Power-Law, `lib/calc.ts`) — bewusst NICHT die Simulation | Simulation hat bei Stundenauflösung leichten Optimismus-Bias → würde die Ersparnis schönen |
 | **Tag/Nacht-Verhalten** | `tagQuote` (`NUTZUNG` in `lib/constants.ts`) | Eine eigene „Anwesenheits"-Größe erfinden |
 | **Jahresverbrauch je Haushalt** | `PERSONEN` (`lib/constants.ts`) | Eigene kWh-Tabelle |
+| **Gebäude der Wärmepumpe** (Haustyp, Fläche, Dämmung, Heizsystem) | UI immer `components/GebaeudeField.tsx`, Feldliste `GEBAEUDE_FIELDS` | Den **Haustyp** weglassen. Der Empfehlungs-Flow tat das bis 07.08.2026 und rechnete jedes Haus als freistehend — beim Reihenmittelhaus 22 % zu viel Heizwärme. Der Haustyp der Dach-Frage (`HAUSTYPEN`, Ein-/Mehrfamilienhaus für die Dachfläche) ist eine ANDERE Größe als `HAUSTYP_WP` (geteilte Wände) und taugt nicht als Ersatz |
 | **Dämmzustand / Heizwärmebedarf** | `INSULATION_BESTAND` / `INSULATION_NEUBAU` (`lib/constants.ts`) — einzige Quelle für den Jahres-**Norm-Bedarf** (`specKwh`, mit `art`) **und** die spezifische Heizlast (`heatLoadW`); WP- und Klima-Config leiten daraus ab (Klima zusätzlich × `heatTransitionShare`) | Zahlen doppelt pflegen (stand bis 28.07.2026 so im Code) — deshalb werden diese Werte im **Klima-Runbook bewusst nicht gepflegt** |
 | **Heizenergie fürs GELD** | `verbrauchAusBedarf` (`lib/heat-consumption.ts`) — der Norm-Bedarf wird in den **erwarteten realen Verbrauch** umgerechnet, bevor irgendetwas Geld kostet | Den Norm-Bedarf direkt in eine Kostenrechnung stecken. Genau das tat der WP-Rechner bis 31.07.2026: ~250 statt 160 kWh/m²·a Gas für einen unsanierten Altbau |
 | **Strompreis + Anstieg** | `usePrices()` / `DEFAULT_PRICES` → `electricityPrice`, `electricityIncrease` (3 %/a) | Eigenen Preispfad annehmen oder „konstant" rechnen |
@@ -291,6 +292,16 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Sim
 ## Flow-Schritte — Interaktions-Konvention
 
 **`components/FlowNav.tsx` ist der Standard für jeden Schritt-Flow** (Betreiber-Vorgabe 05.08.2026): Kein Schritt startet mit einer Vorauswahl · ein Klick auf eine Option **wählt nur aus**, er springt nicht weiter · der Weiter-Button ist ausgegraut, bis eine gültige Auswahl existiert · **Zurück sitzt immer links, Weiter immer rechts** — auch im ersten Schritt ohne Zurück bleibt Weiter rechts. Die Auto-Advance-Variante (Klick auf Option springt direkt) existiert als zentraler Schalter `FLOW_ADVANCE_ON_SELECT` im Baustein — sie wird nie pro Seite gebaut, sondern nur dort umgelegt. Umgesetzt im Einspeisevergütungs-Rechner; die älteren Flows (PV, WP, Klima, Balkon, Bedarf) migrieren schrittweise auf den Baustein (sichtbare Änderung → je Abnahme).
+
+### Eine Frage, zwei Orte — und überspringbar (Betreiber-Vorgabe 07.08.2026)
+
+**Jede Angabe, die eine Zahl im Ergebnis bewegt, wird an genau einer Stelle im Code gebaut und an ZWEI Stellen gezeigt: im Frage-Flow und in der Verfeinerung des Ergebnisses.** Wer eine Frage nur in den Flow baut, sperrt sie hinter „Neu berechnen" weg — genau so war die Wärmepumpe im PV-Ergebnis bis zum 07.08.2026 nur ein Häkchen, während ihr Heizstrom der größte Verbrauchsposten war.
+
+Umgesetzt als geteilte Feld-Bausteine: **`components/DachField.tsx`** (Dachform + Ausrichtung) und **`components/GebaeudeField.tsx`** (Haustyp, Wohnfläche, Dämmzustand, Heizsystem). Beide haben dasselbe Verhalten — die nächste Frage erscheint, sobald die vorige beantwortet ist, beantwortete bleiben sichtbar und änderbar. Im Ergebnis stehen sie in einem aufklappbaren Block, dessen Kopfzeile den gewählten Zustand trägt („Satteldach · Ost / West"), damit man ihn ohne Aufklappen sieht.
+
+**Überspringen ist erlaubt — aber nur gegen einen ausgesprochenen Satz.** Jede dieser Fragen bietet „Weiß ich nicht — überspringen" (Prop `onWeissNicht`, im Ergebnis weggelassen: dort gibt es nichts zu überspringen). Der Aufrufer meldet daraufhin über **`components/Toast.tsx`**, was stattdessen gilt — Annahme **und Richtung des Fehlers**, nie nur „Standardwerte werden verwendet". Die Texte kommen aus dem Rechenkern, nicht aus der Oberfläche: `dachUebersprungenFolge()` (`lib/dach-ertrag.ts`) und `wpGebaeudeUebersprungenFolge()` (`lib/heatpump-core.ts`). **Ein stiller Default ist der eigentliche Fehler — nicht die übersprungene Frage.**
+
+`components/Toast.tsx` ist DER Toast: `tone="accent"` für eine Handlungsaufforderung (PLZ-Nudge), `tone="neutral"` + `autoHideMs` für eine reine Auskunft. Der Auto-Hide-Effekt hängt an `open`, nicht am `onClose`-Callback — sonst startet der Timer bei jedem Elternrender neu (dieselbe Falle wie in `Modal.tsx`).
 
 ## Design-System
 

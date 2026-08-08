@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { DACHARTEN } from "../constants";
+import { calcWpAnnualElectricity, wpGebaeudeUebersprungenFolge } from "../heatpump";
+import { DACHARTEN, HAUSTYP_WP } from "../constants";
 import { TILT_TABLE, tiltPct } from "../tilt-config";
 import {
   dachErlaubtNord,
@@ -84,5 +85,42 @@ describe("Dach → Ertrag", () => {
   it("unterscheidet Standort-Ertrag und Bundesmittel im Text", () => {
     expect(dachErtragHinweis(950, null, null, false)).toContain("im Bundesmittel");
     expect(dachErtragHinweis(950, null, null, true)).toContain("für deinen Standort");
+  });
+});
+
+// ─── Die zweite Fehlerklasse desselben Musters ──────────────────────────────
+// Beide Rechner-Flows fragen dasselbe Gebäude, also müssen sie dieselben vier
+// Angaben verwenden. Der Empfehlungs-Flow ließ den Haustyp weg und rechnete
+// deshalb jedes Haus als freistehend.
+describe("Gebäude der Wärmepumpe", () => {
+  it("der Haustyp senkt den Heizstrom messbar", () => {
+    const basis = {
+      situation: "bestand" as const,
+      wohnflaeche: 140,
+      insulationIdx: 1,
+      personen: 3,
+      heizsystem: "hk_neu" as const,
+      wpType: "lwwp" as const,
+    };
+    const frei = calcWpAnnualElectricity({ ...basis, haustypFaktor: HAUSTYP_WP[0].faktor });
+    const mitte = calcWpAnnualElectricity({
+      ...basis,
+      haustypFaktor: HAUSTYP_WP[HAUSTYP_WP.length - 1].faktor,
+    });
+    expect(HAUSTYP_WP[0].id).toBe("frei");
+    expect(mitte).toBeLessThan(frei);
+    // Reihenmittelhaus: 0,78 auf die Heizwärme. Das Warmwasser hängt an den
+    // Personen und wandert nicht mit, deshalb liegt der Gesamteffekt darunter —
+    // aber deutlich über der Rundung.
+    expect(1 - mitte / frei).toBeGreaterThan(0.15);
+  });
+
+  it("die Folge des Überspringens nennt Annahme UND Richtung", () => {
+    const satz = wpGebaeudeUebersprungenFolge(6301);
+    expect(satz).toContain("freistehend");
+    expect(satz).toContain("140 m²");
+    expect(satz).toContain("6.301");
+    // Ohne die Richtung wäre es eine Zahl ohne Warnung.
+    expect(satz).toMatch(/weniger/);
   });
 });

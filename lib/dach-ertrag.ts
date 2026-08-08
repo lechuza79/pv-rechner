@@ -65,6 +65,13 @@ export function dachErtragKwp(
   return Math.round(standortErtrag * dachNeigungsFaktor(dachartIdx, ausrichtung));
 }
 
+/** Was passiert, wenn jemand die Dach-Frage überspringt. Der Satz ist die
+ *  Gegenleistung fürs Überspringen: die Annahme wird sichtbar, statt still zu
+ *  gelten — und sie nennt die RICHTUNG des Fehlers, nicht nur seine Existenz. */
+export function dachUebersprungenFolge(): string {
+  return "Wir rechnen weiter mit optimaler Neigung nach Süden — dem Bestfall. Zeigt dein Dach woanders hin, fällt der Ertrag niedriger aus.";
+}
+
 /** Ein Satz, der sagt, WORAUF die Ertragszahl beruht — inklusive des Falls
  *  „noch nichts angegeben". Die Bestfall-Annahme darf nicht unsichtbar sein. */
 export function dachErtragHinweis(

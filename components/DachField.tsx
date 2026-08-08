@@ -28,6 +28,7 @@ export default function DachField({
   ausrichtung,
   setAusrichtung,
   hinweis,
+  onWeissNicht,
 }: {
   dachartIdx: number | null;
   setDachartIdx: (i: number) => void;
@@ -35,6 +36,11 @@ export default function DachField({
   setAusrichtung: (o: TiltOrientation | null) => void;
   /** Optionaler Satz unter der Abfrage (z. B. der gerechnete Ertrag). */
   hinweis?: string;
+  /** Gesetzt → „Weiß ich nicht" erscheint und überspringt die Frage. Der
+   *  Aufrufer meldet die Folge zurück (Toast), damit die Annahme sichtbar
+   *  wird. Ohne diesen Prop (z. B. in der Ergebnis-Verfeinerung, wo nichts zu
+   *  überspringen ist) bleibt die Option weg. */
+  onWeissNicht?: () => void;
 }) {
   const labelStyle: React.CSSProperties = {
     fontSize: 13,
@@ -84,6 +90,26 @@ export default function DachField({
         <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `${space.lg}px 0 0` }}>
           {hinweis}
         </p>
+      )}
+
+      {onWeissNicht && (
+        <button
+          onClick={onWeissNicht}
+          style={{
+            marginTop: space.lg,
+            padding: 0,
+            border: "none",
+            background: "transparent",
+            color: v("--color-text-muted"),
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: "pointer",
+            textDecoration: "underline",
+            textUnderlineOffset: 3,
+          }}
+        >
+          Weiß ich nicht — überspringen
+        </button>
       )}
     </div>
   );

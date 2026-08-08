@@ -8,13 +8,15 @@ import { einspeiseVerlauf, einspeiseDeckelKw, profilFaktorAus, type EinspeiseReg
 import { PREISFORM_MONAT_STUNDE, MARKTWERT_NIVEAU_CT, DIREKTVERMARKTUNG } from "../../../lib/marktwert-config";
 import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
 import ResultRegime from "./_components/ResultRegime";
-import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, NO_PLZ_DEFAULT_YIELD, type Heizsystem } from "../../../lib/constants";
+import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NO_PLZ_DEFAULT_YIELD, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
-import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
+import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
 import DachField from "../../../components/DachField";
-import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor } from "../../../lib/dach-ertrag";
+import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
+import Toast from "../../../components/Toast";
+import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor, dachUebersprungenFolge } from "../../../lib/dach-ertrag";
 import { TILT_ORIENTATIONS, type TiltOrientation } from "../../../lib/tilt-config";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
@@ -46,7 +48,9 @@ import { stackFunding, type FundingProgram } from "../../../lib/funding-programs
 
 // Großverbraucher-Detailfragen in ihrer Akkordeon-Reihenfolge. Pro aktivem
 // Verbraucher wird immer nur die erste noch offene Frage aufgeklappt.
-const WP_FIELDS = ["wp-haustyp", "wp-flaeche", "wp-daemmung", "wp-heizsystem"] as const;
+// Die vier Gebäudefragen kommen aus dem Baustein — eine Quelle, kein zweites
+// Tippen der Schlüssel.
+const WP_FIELDS = GEBAEUDE_FIELDS;
 const EA_FIELDS = ["ea-km"] as const;
 const KLIMA_FIELDS = ["klima-rooms"] as const;
 const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS, ...KLIMA_FIELDS];
@@ -92,6 +96,26 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Haustyp (geteilte Wände) für den WP-Strom — 0 = freistehend (Default).
   const [wpHaustyp, setWpHaustyp] = useState(hasShare ? paramInt(initialParams, "wht", 0, 0, HAUSTYP_WP.length - 1) : 0);
 
+  // Brücke zum geteilten Gebäude-Baustein. Die vier Werte bleiben einzelne
+  // States (sie hängen an je einem Share-Parameter), nach außen sind sie ein
+  // Objekt — so sieht die Abfrage im Flow und im Ergebnis identisch aus, ohne
+  // dass die URL-Kopplung dafür umgebaut werden muss.
+  const gebaeudeWerte: GebaeudeWerte = {
+    haustypIdx: wpHaustyp,
+    wohnflaeche: wpWohnflaeche,
+    insulationIdx: wpInsulation,
+    heizsystem: wpHeizsystem,
+  };
+  const setGebaeudeWerte = (patch: Partial<GebaeudeWerte>) => {
+    if (patch.haustypIdx !== undefined) setWpHaustyp(patch.haustypIdx);
+    if (patch.wohnflaeche !== undefined) setWpWohnflaeche(patch.wohnflaeche);
+    if (patch.insulationIdx !== undefined) setWpInsulation(patch.insulationIdx);
+    if (patch.heizsystem !== undefined) setWpHeizsystem(patch.heizsystem);
+    setOEv(null); // Eigenverbrauch neu herleiten — der Heizstrom hat sich geändert.
+  };
+  const gebaeudeZusammenfassung = () =>
+    `${HAUSTYP_WP[wpHaustyp].label} · ${wpWohnflaeche} m² · ${INSULATION_BESTAND[wpInsulation].label}`;
+
   // Progressive Disclosure im Großverbraucher-Step: welche Detail-Fragen der
   // Nutzer schon aktiv beantwortet hat (kein Preset vorausgewählt) + welche zum
   // Nachbearbeiten wieder aufgeklappt ist. Bei geteilter URL gelten alle als
@@ -108,6 +132,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (gvEditing && keys.includes(gvEditing)) return gvEditing;
     return keys.find(k => !gvAnswered.has(k)) ?? null;
   };
+  const wpAlleBeantwortet = WP_FIELDS.every(k => gvAnswered.has(k));
 
   // Editable overrides (null = use auto-calculated)
   const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 500 && n <= 200000 ? n : null; })() : null);
@@ -190,6 +215,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       : null,
   );
   const daIdx = dachartIdx ?? -1;
+
+  // Überspringbare Fragen melden ihre Folge als Toast. Der Text ist die
+  // Gegenleistung fürs Überspringen — die Annahme wird ausgesprochen, statt
+  // still zu gelten. Ein String statt eines Flags, damit dieselbe Mechanik für
+  // Dach und Gebäude reicht.
+  const [folgeToast, setFolgeToast] = useState<string | null>(null);
 
   // PLZ → zutreffende Förderprogramme (Kandidaten serverseitig auflösen)
   const fetchFunding = async (inputPlz: string) => {
@@ -812,6 +843,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   ausrichtung={ausrichtung}
                   setAusrichtung={setAusrichtung}
                   hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource)}
+                  onWeissNicht={() => {
+                    setDachartIdx(null);
+                    setAusrichtung(null);
+                    setFolgeToast(dachUebersprungenFolge());
+                    next();
+                  }}
                 />
               </div>
             )}
@@ -912,52 +949,29 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
                 {/* ── Wärmepumpe ── */}
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
-                {wp !== "nein" && (() => {
-                  const openKey = openGvField(WP_FIELDS);
-                  return (
-                    <div style={{ marginBottom: 28, marginTop: -4 }}>
-                      <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
-                        Wie viel Heizstrom deine Wärmepumpe braucht, berechnen wir aus den Angaben zu deinem Gebäude.
-                      </div>
-                      <AccordionField label="Haustyp" open={openKey === "wp-haustyp"} answered={gvAnswered.has("wp-haustyp")} summary={HAUSTYP_WP[wpHaustyp].label} onEdit={() => setGvEditing("wp-haustyp")}>
-                        <ChoiceButtons options={HAUSTYP_WP} columns={2} selected={gvAnswered.has("wp-haustyp") ? wpHaustyp : null}
-                          onSelect={i => { setWpHaustyp(i); setOEv(null); markGvAnswered("wp-haustyp"); }} render={h => h.label} />
-                      </AccordionField>
-                      <AccordionField label="Wohnfläche" open={openKey === "wp-flaeche"} answered={gvAnswered.has("wp-flaeche")} summary={`${wpWohnflaeche} m²`} onEdit={() => setGvEditing("wp-flaeche")}>
-                        <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-                          {WP_M2_PRESETS.map(m2 => {
-                            const active = gvAnswered.has("wp-flaeche") && wpWohnflaeche === m2;
-                            return (
-                              <button key={m2} onClick={() => { setWpWohnflaeche(m2); setOEv(null); markGvAnswered("wp-flaeche"); }} style={{
-                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                                background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
-                                border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                                color: active ? v('--color-accent') : v('--color-text-muted'),
-                              }}>{m2} m²</button>
-                            );
-                          })}
-                          <PresetNumberInput value={wpWohnflaeche} presets={WP_M2_PRESETS} min={20} max={1000} unit="m²"
-                            onCommit={n => { setWpWohnflaeche(n); setOEv(null); markGvAnswered("wp-flaeche"); }}
-                            onFocus={() => setGvEditing("wp-flaeche")} onBlur={() => setGvEditing(null)} />
-                        </div>
-                      </AccordionField>
-                      <AccordionField label="Dämmzustand" open={openKey === "wp-daemmung"} answered={gvAnswered.has("wp-daemmung")} summary={INSULATION_BESTAND[wpInsulation].label} onEdit={() => setGvEditing("wp-daemmung")}>
-                        <ChoiceButtons options={INSULATION_BESTAND} columns={2} selected={gvAnswered.has("wp-daemmung") ? wpInsulation : null}
-                          onSelect={i => { setWpInsulation(i); setOEv(null); markGvAnswered("wp-daemmung"); }} render={ins => ins.label} />
-                      </AccordionField>
-                      <AccordionField label="Heizsystem" open={openKey === "wp-heizsystem"} answered={gvAnswered.has("wp-heizsystem")} summary={HEIZSYSTEM.find(h => h.id === wpHeizsystem)?.label} onEdit={() => setGvEditing("wp-heizsystem")}>
-                        <ChoiceButtons options={HEIZSYSTEM} columns={3} selected={gvAnswered.has("wp-heizsystem") ? HEIZSYSTEM.findIndex(h => h.id === wpHeizsystem) : null}
-                          onSelect={i => { setWpHeizsystem(HEIZSYSTEM[i].id as Heizsystem); setOEv(null); markGvAnswered("wp-heizsystem"); }}
-                          render={h => HEIZSYSTEM_SHORT[h.id]} />
-                      </AccordionField>
-                      {openKey === null && wpKwh != null && (
-                        <div className="sc-acc" style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.5 }}>
-                          Daraus ergeben sich rund <strong style={{ color: v('--color-text-primary') }}>{wpKwh.toLocaleString("de-DE")} kWh</strong> Heizstrom pro Jahr.
-                        </div>
-                      )}
+                {wp !== "nein" && (
+                  <div style={{ marginBottom: 28, marginTop: -4 }}>
+                    <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
+                      Wie viel Heizstrom deine Wärmepumpe braucht, berechnen wir aus den Angaben zu deinem Gebäude.
                     </div>
-                  );
-                })()}
+                    <GebaeudeField
+                      werte={gebaeudeWerte}
+                      setWerte={setGebaeudeWerte}
+                      beantwortet={gvAnswered}
+                      markiereBeantwortet={markGvAnswered}
+                      hinweis={wpAlleBeantwortet && wpKwh != null
+                        ? `Daraus ergeben sich rund ${wpKwh.toLocaleString("de-DE")} kWh Heizstrom pro Jahr.`
+                        : undefined}
+                      onWeissNicht={() => {
+                        // Defaults gelten ohnehin — hier wird nur ausgesprochen,
+                        // WAS gilt, und die Kette als beantwortet markiert, damit
+                        // die Folgefragen nicht weiter nachrücken.
+                        WP_FIELDS.forEach(markGvAnswered);
+                        setFolgeToast(wpGebaeudeUebersprungenFolge(wpKwh ?? 0));
+                      }}
+                    />
+                  </div>
+                )}
 
                 {/* ── Elektroauto ── */}
                 <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
@@ -1038,31 +1052,31 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         )}
 
         {/* ── RESULT ── */}
-        {plzToast && (
-          <div
-            className="fu"
-            onClick={() => {
-              const el = document.querySelector<HTMLInputElement>('input[placeholder="PLZ"]');
-              if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus(); }
-              setPlzToast(false);
-            }}
-            style={{
-              position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
-              zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)", cursor: "pointer",
-              background: v('--color-accent'), color: v('--color-text-on-accent'),
-              borderRadius: v('--radius-md'), padding: "12px 16px",
-              boxShadow: "0 6px 24px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 10,
-              fontSize: 13, fontWeight: 600, lineHeight: 1.4,
-            }}
-          >
-            <span style={{ flex: 1 }}>
-              {fundingActive
-                ? "PLZ eingeben für einen standortgenauen Ertrag"
-                : "PLZ eingeben für genauere Ergebnisse und mögliche Förderprogramme"}
-            </span>
-            <button onClick={e => { e.stopPropagation(); setPlzToast(false); }} aria-label="Schließen" style={{ border: "none", background: "transparent", color: v('--color-text-on-accent'), fontSize: 18, lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85 }}>×</button>
-          </div>
-        )}
+        <Toast
+          open={plzToast}
+          onClose={() => setPlzToast(false)}
+          onClick={() => {
+            const el = document.querySelector<HTMLInputElement>('input[placeholder="PLZ"]');
+            if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus(); }
+            setPlzToast(false);
+          }}
+        >
+          {fundingActive
+            ? "PLZ eingeben für einen standortgenauen Ertrag"
+            : "PLZ eingeben für genauere Ergebnisse und mögliche Förderprogramme"}
+        </Toast>
+
+        {/* Folge einer übersprungenen Frage. Neutral statt blau: das ist eine
+            Auskunft, keine Handlungsaufforderung — und sie verschwindet von
+            selbst, weil sie nichts erwartet. */}
+        <Toast
+          open={folgeToast !== null}
+          onClose={() => setFolgeToast(null)}
+          tone="neutral"
+          autoHideMs={9000}
+        >
+          {folgeToast}
+        </Toast>
 
         {isResult && (
           <div className="fu">
@@ -1109,6 +1123,38 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 />
               </div>
             </details>
+
+            {/* Gebäude der Wärmepumpe — derselbe Baustein wie im Flow.
+                Bis 07.08.2026 war die Wärmepumpe im Ergebnis nur ein Häkchen:
+                der größte Verbrauchsposten rechnete mit Standardannahmen, die
+                von hier aus niemand korrigieren konnte. */}
+            {wp !== "nein" && (
+              <details style={{
+                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16,
+                border: `1px solid ${v('--color-border')}`,
+              }}>
+                <summary style={{ cursor: "pointer", fontSize: 13, fontWeight: 600, color: v('--color-text-secondary'), display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+                  <span>Gebäude der Wärmepumpe</span>
+                  <span style={{ fontSize: 12, fontWeight: 500, color: v('--color-text-muted') }}>
+                    {gebaeudeZusammenfassung()}
+                  </span>
+                </summary>
+                <div style={{ marginTop: 14 }}>
+                  <GebaeudeField
+                    werte={gebaeudeWerte}
+                    setWerte={setGebaeudeWerte}
+                    /* Im Ergebnis steht bereits eine Zahl — dort sind alle vier
+                       Fragen offen, statt nacheinander aufzutauchen. Sonst
+                       müsste man sich durchklicken, um eine einzelne zu ändern. */
+                    beantwortet={new Set(WP_FIELDS)}
+                    markiereBeantwortet={markGvAnswered}
+                    hinweis={wpKwh != null
+                      ? `Daraus ergeben sich rund ${wpKwh.toLocaleString("de-DE")} kWh Heizstrom pro Jahr.`
+                      : undefined}
+                  />
+                </div>
+              </details>
+            )}
 
             {/* Stromverbrauch — editierbar, mit Aufschlüsselung wenn WP/E-Auto aktiv */}
             <div style={{
