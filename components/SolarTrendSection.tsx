@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { v, space } from "../lib/theme";
 import { formatGWhCompare, energyUnit } from "../lib/chart-utils";
 import { monatsName, type SolarTrendVergleich } from "../lib/solar-trend";
@@ -63,7 +64,14 @@ export default function SolarTrendSection({
   return (
     <section>
       <h2 style={S.h2}>Solarstrom im Monatsvergleich</h2>
-      {series.length > 0 && <SolarTrendCard series={series} />}
+      {/* Die Karte liest den gewählten Monat aus der Adresse. Ohne diese
+          Grenze müsste JEDE einbettende Seite daran denken — mit ihr kann der
+          Baustein überall stehen. Der Platzhalter hält die Höhe frei. */}
+      {series.length > 0 && (
+        <Suspense fallback={<div style={{ minHeight: 132, marginBottom: 20 }} />}>
+          <SolarTrendCard series={series} />
+        </Suspense>
+      )}
       <p style={S.p}>
         Im {monatsName(neuester.month0)} {neuester.year} lieferten Deutschlands Solaranlagen{" "}
         {formatGWhCompare(neuester.curGWh, unit)} Strom — {signPct(neuester.totalPct).replace("+", "")}{" "}
