@@ -11,7 +11,6 @@
 // Zugeklappt trägt der Abschnitt den gewählten Zustand in einer Zeile. Das ist
 // Pflicht, kein Schmuck — eine Annahme, die man nicht sieht, ist eine, die
 // niemand prüft.
-import InlineEdit from "../../../../components/InlineEdit";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
 import ResultSection from "../../../../components/ResultSection";
 import ResultRegime, { type ResultRegimeProps } from "./ResultRegime";
@@ -42,6 +41,7 @@ function ctText(ct: number): string {
 export default function ResultVerguetung(props: ResultVerguetungProps) {
   const { modus, setModus, vollDisabled, effEinsp, setOEinsp, ...regime } = props;
   const reform = regime.regime === "reform2027";
+  const eigen = !reform && regime.eigenerSatz;
   const uebergang = regime.verlauf.find((j) => j.art === "uebergang");
   const ersterSatz = uebergang ?? regime.verlauf[0];
 
@@ -50,7 +50,7 @@ export default function ResultVerguetung(props: ResultVerguetungProps) {
     ? MODUS_LABEL.aus
     : reform
       ? `${MODUS_LABEL[modus]} · Entwurf ab 2027 · ${ctText(ersterSatz?.satzCt ?? 0)}, danach ${regime.marktErloes ? "Börse" : "nichts"}`
-      : `${MODUS_LABEL[modus]} · ${ctText(effEinsp)} · 20 Jahre`;
+      : `${MODUS_LABEL[modus]} · ${eigen ? "eigener Satz " : ""}${ctText(effEinsp)} · 20 Jahre`;
 
   return (
     <ResultSection title="Einspeisung und Vergütung" summary={summary}>
@@ -84,19 +84,6 @@ export default function ResultVerguetung(props: ResultVerguetungProps) {
           })}
         </div>
       </div>
-
-      {/* Der Satz ist nur im heutigen Recht eine Zahl, die man setzen kann. Im
-          Entwurf ist er ein Verlauf — dort wäre ein editierbarer Satz eine
-          Eingabe, die nichts bewirkt. */}
-      {modus !== "aus" && !reform && (
-        <div style={{
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-          marginBottom: space.lg, fontSize: 13, color: v("--color-text-secondary"),
-        }}>
-          <span>Vergütungssatz</span>
-          <InlineEdit value={effEinsp} onCommit={(val) => setOEinsp(val)} unit=" ct" step={0.01} min={4} max={16} width={56} />
-        </div>
-      )}
 
       {modus !== "aus" && (
         <div style={{ borderTop: `1px dashed ${v("--color-border")}`, paddingTop: space.lg }}>

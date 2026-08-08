@@ -2,6 +2,7 @@
 import InlineEdit from "../../../../components/InlineEdit";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
 import StandortField from "../../../../components/StandortField";
+import InfoTooltip from "../../../../components/InfoTooltip";
 import { v } from "../../../../lib/theme";
 
 interface ResultHeroCardProps {
@@ -13,7 +14,17 @@ interface ResultHeroCardProps {
   oErtrag: number;
   setOErtrag: (v: number) => void;
   kwp: number;
+  /** Anlagengröße direkt setzen (schaltet auf die eigene Größe um). */
+  setKwp: (v: number) => void;
   spKwh: number;
+  /** Speichergröße direkt setzen — freie kWh, nicht an die Vorgaben gebunden. */
+  setSpKwh: (v: number) => void;
+  /** Grundverbrauch des Haushalts ohne Großverbraucher, in kWh/Jahr. */
+  grundverbrauch: number;
+  setGrundverbrauch: (v: number) => void;
+  /** True, sobald Wärmepumpe, E-Auto oder Klimaanlage dazukommen — dann ist der
+   *  Wert oben nur der Haushaltsanteil, die Summe steht im Abschnitt darunter. */
+  hatGrossverbraucher: boolean;
   effEv: number;
   setOEv: (v: number) => void;
   /** Nur noch zum Anzeigen: Bei Volleinspeisung gibt es keinen Eigenverbrauch.
@@ -29,7 +40,8 @@ interface ResultHeroCardProps {
 
 export default function ResultHeroCard({
   be, kosten, setOKosten, oStrom, setOStrom, oErtrag, setOErtrag,
-  kwp, spKwh, effEv, setOEv, effEinspeisungModus,
+  kwp, setKwp, spKwh, setSpKwh, grundverbrauch, setGrundverbrauch, hatGrossverbraucher,
+  effEv, setOEv, effEinspeisungModus,
   plz, setPlz, plzLoading, plzSource, fetchPvgis,
 }: ResultHeroCardProps) {
   return (
@@ -66,9 +78,8 @@ export default function ResultHeroCard({
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ color: v('--color-text-secondary') }}>Anlage</span>
-            <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary'), fontSize: 15 }}>
-              {kwp} <span style={{ fontFamily: v('--font-mono'), fontWeight: 500, color: v('--color-text-secondary'), fontSize: 13 }}>kWp</span>
-            </span>
+            <InlineEdit value={kwp} onCommit={setKwp} unit=" kWp" step={0.5} min={1} max={50} width={56}
+              fmt={x => (Math.round(x * 10) / 10).toLocaleString("de-DE")} />
           </div>
         </div>
         {/* Right column */}
@@ -81,6 +92,27 @@ export default function ResultHeroCard({
               <InlineEdit value={effEv} onCommit={v => setOEv(v)} unit="%" step={1} min={10} max={90} width={40} />
             )}
           </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 4 }}>
+            {/* Ohne Großverbraucher IST der Haushalt der ganze Verbrauch; mit
+                ihnen ist er nur ein Teil, und die Summe steht im Abschnitt
+                „Stromverbrauch" darunter. Deshalb wechselt die Beschriftung —
+                sonst stünde hier eine Zahl, die etwas anderes misst, als sie sagt. */}
+            <span style={{ color: v('--color-text-secondary'), display: "inline-flex", alignItems: "center", gap: 2, minWidth: 0 }}>
+              {hatGrossverbraucher ? "Haushalt" : "Verbrauch"}
+              <InfoTooltip
+                title={hatGrossverbraucher ? "Was zählt zum Haushalt?" : "Welcher Verbrauch ist gemeint?"}
+                ariaLabel="Was zählt zum Haushaltsverbrauch?"
+              >
+                Der Jahresstrom für Licht, Küche, Waschen, Elektronik — alles außer den
+                Großverbrauchern.{" "}
+                {hatGrossverbraucher
+                  ? <>Wärmepumpe, E-Auto und Klimaanlage kommen im Abschnitt „Stromverbrauch" darunter dazu; dort steht auch die Summe.</>
+                  : <>Kommen Wärmepumpe, E-Auto oder Klimaanlage dazu, werden sie im Abschnitt „Stromverbrauch" darunter aufgeschlagen.</>}
+                {" "}Am genauesten ist der Wert von deiner letzten Stromrechnung.
+              </InfoTooltip>
+            </span>
+            <InlineEdit value={grundverbrauch} onCommit={setGrundverbrauch} unit=" kWh" step={100} min={500} max={30000} width={64} />
+          </div>
           <StandortField
             plz={plz}
             onPlzChange={setPlz}
@@ -91,15 +123,13 @@ export default function ResultHeroCard({
           />
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ color: v('--color-text-secondary') }}>Speicher</span>
-            <span style={{ fontFamily: v('--font-mono'), fontWeight: 700, color: v('--color-text-primary'), fontSize: 15 }}>
-              {spKwh > 0 ? <>{spKwh} <span style={{ fontFamily: v('--font-mono'), fontWeight: 500, color: v('--color-text-secondary'), fontSize: 13 }}>kWh</span></> : <span style={{ color: v('--color-text-faint') }}>—</span>}
-            </span>
+            {/* 0 kWh bedeutet „kein Speicher" — als Zahl editierbar, damit man
+                ihn von hier aus dazunehmen oder weglassen kann, ohne zurück in
+                den Flow zu gehen. */}
+            <InlineEdit value={spKwh} onCommit={setSpKwh} unit=" kWh" step={0.5} min={0} max={30} width={56}
+              fmt={x => (x > 0 ? (Math.round(x * 10) / 10).toLocaleString("de-DE") : "0")} />
           </div>
         </div>
-      </div>
-
-      <div style={{ fontSize: 11, color: v('--color-accent'), marginTop: 10 }}>
-        Werte anklicken zum Anpassen
       </div>
     </div>
   );
