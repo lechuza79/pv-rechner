@@ -38,18 +38,72 @@ export function dachErlaubtNord(dachartIdx: number | null): boolean {
   return !DACHARTEN[dachartIdx]?.aufgestaendert;
 }
 
-/** Anteil vom optimalen Ertrag (0–1) für eine Dachform + Ausrichtung.
+/** Neigungsstufen, die zu einer Dachform gehören — mit Klartext statt nackter
+ *  Grad, weil kaum jemand seine Dachneigung in Zahlen kennt. Die Grade selbst
+ *  sind Zeilen der Matrix (tilt-config), nicht interpoliert.
+ *
+ *  Beim Flachdach ist die Frage eine ANDERE: nicht „wie steil", sondern ob die
+ *  Module aufgeständert sind. Das ist eine Entscheidung, die man kennt (und
+ *  bezahlt hat) — und sie ist nach Süden 9 Punkte wert, mehr als die Neigung
+ *  eines Satteldachs in jeder Richtung außer Nord. */
+export function neigungsStufen(dachartIdx: number | null): { grad: number; label: string; sub: string }[] {
+  const dach = dachartIdx !== null ? DACHARTEN[dachartIdx] : null;
+  if (!dach) return [];
+  if (dach.aufgestaendert) {
+    return [
+      { grad: 0, label: "Flach aufgelegt", sub: "Module liegen auf dem Dach" },
+      { grad: 15, label: "Aufgeständert", sub: "Auf Gestellen angeschrägt" },
+    ];
+  }
+  switch (dach.id) {
+    case "pult":
+      return [
+        { grad: 5, label: "5°", sub: "Fast flach" },
+        { grad: 15, label: "15°", sub: "Übliche Neigung" },
+        { grad: 25, label: "25°", sub: "Deutlich geneigt" },
+      ];
+    case "walm":
+      return [
+        { grad: 20, label: "20°", sub: "Flach" },
+        { grad: 30, label: "30°", sub: "Übliche Neigung" },
+        { grad: 35, label: "35°", sub: "Steil" },
+      ];
+    default: // Satteldach
+      return [
+        { grad: 25, label: "25°", sub: "Flach" },
+        { grad: 35, label: "35°", sub: "Übliche Neigung" },
+        { grad: 45, label: "45°", sub: "Steil" },
+      ];
+  }
+}
+
+/** Lohnt sich die Neigungs-Frage bei dieser Ausrichtung überhaupt?
+ *
+ *  Gemessen an der Matrix, über den realen Neigungsbereich je Dachform: nach
+ *  Süden liegen zwischen 30° und 50° ganze 1 Prozentpunkt, nach Norden bis zu
+ *  27 (Pultdach, 5° gegen 30°). Die Neigung ist also keine allgemein wichtige
+ *  Angabe, sondern fast ausschließlich bei Nordlage eine — dort wird die Frage
+ *  von selbst aufgeklappt, sonst bleibt sie eine Verfeinerung für die, die es
+ *  genau wissen wollen. */
+export function neigungLohntNachfrage(ausrichtung: TiltOrientation | null): boolean {
+  return ausrichtung === "nord";
+}
+
+/** Anteil vom optimalen Ertrag (0–1) für Dachform + Ausrichtung + Neigung.
+ *  Ohne Neigungsangabe gilt die typische Neigung der Dachform (DACHARTEN) —
+ *  in drei von vier Ausrichtungen auf wenige Punkte genau.
  *  Ohne vollständige Angabe: 1,0 — dann rechnet der Aufrufer weiter mit dem
  *  Standort-Optimum, und das muss er dem Nutzer auch so hinschreiben
  *  (siehe dachErtragHinweis). */
 export function dachNeigungsFaktor(
   dachartIdx: number | null,
   ausrichtung: TiltOrientation | null,
+  neigungGrad?: number | null,
 ): number {
   if (dachartIdx === null || ausrichtung === null) return 1;
   const dach = DACHARTEN[dachartIdx];
   if (!dach) return 1;
-  return tiltPct(ausrichtung, dach.typNeigung) / 100;
+  return tiltPct(ausrichtung, neigungGrad ?? dach.typNeigung) / 100;
 }
 
 /** Der Ertrag, mit dem tatsächlich gerechnet wird: Standort-Optimum × Dach.
@@ -61,8 +115,9 @@ export function dachErtragKwp(
   standortErtrag: number,
   dachartIdx: number | null,
   ausrichtung: TiltOrientation | null,
+  neigungGrad?: number | null,
 ): number {
-  return Math.round(standortErtrag * dachNeigungsFaktor(dachartIdx, ausrichtung));
+  return Math.round(standortErtrag * dachNeigungsFaktor(dachartIdx, ausrichtung, neigungGrad));
 }
 
 /** Was passiert, wenn jemand die Dach-Frage überspringt. Der Satz ist die
@@ -79,13 +134,21 @@ export function dachErtragHinweis(
   dachartIdx: number | null,
   ausrichtung: TiltOrientation | null,
   hatStandort: boolean,
+  neigungGrad?: number | null,
 ): string {
   const wo = hatStandort ? "für deinen Standort" : "im Bundesmittel";
   if (dachartIdx === null || ausrichtung === null) {
     return `Gerechnet wird mit ${ertragKwp.toLocaleString("de-DE")} kWh je kWp ${wo} — bei optimaler Neigung nach Süden. Gib dein Dach an, dann rechnen wir mit deiner Ausrichtung.`;
   }
   const dach = DACHARTEN[dachartIdx];
-  const pct = Math.round(dachNeigungsFaktor(dachartIdx, ausrichtung) * 100);
+  const pct = Math.round(dachNeigungsFaktor(dachartIdx, ausrichtung, neigungGrad) * 100);
   const zusatz = pct >= 100 ? "" : ` — das sind ${pct} % des Optimums`;
-  return `Gerechnet wird mit ${ertragKwp.toLocaleString("de-DE")} kWh je kWp ${wo} (${dach.label}, typisch ${dach.typNeigung}° Neigung)${zusatz}.`;
+  // „typisch" nur schreiben, solange es wirklich die Annahme ist. Wer die
+  // Neigung angegeben hat, darf sie nicht als Schätzung dargestellt bekommen.
+  const wieSteil = neigungGrad != null
+    ? (dach.aufgestaendert
+        ? (neigungGrad > 0 ? "aufgeständert" : "flach aufgelegt")
+        : `${neigungGrad}° Neigung`)
+    : `typisch ${dach.typNeigung}° Neigung`;
+  return `Gerechnet wird mit ${ertragKwp.toLocaleString("de-DE")} kWh je kWp ${wo} (${dach.label}, ${wieSteil})${zusatz}.`;
 }

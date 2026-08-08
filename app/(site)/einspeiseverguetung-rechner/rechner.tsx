@@ -73,6 +73,14 @@ export default function EinspeiseRechner() {
   const [standortYield, setStandortYield] = useState<number | null>(null);
   const [ausrichtung, setAusrichtung] = useState<TiltOrientation | null>(null);
   const [dachartIdx, setDachartIdx] = useState<number | null>(null);
+  // Neigung: null = nicht angegeben → typische Neigung der Dachform.
+  const [neigungGrad, setNeigungGrad] = useState<number | null>(null);
+  const [dachAnswered, setDachAnswered] = useState<Set<string>>(new Set());
+  const [dachEditing, setDachEditing] = useState<string | null>(null);
+  const markDachAnswered = (key: string) => {
+    setDachAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
+    setDachEditing(null);
+  };
   const [verfeinernOffen, setVerfeinernOffen] = useState(false);
 
   const fetchPvgis = useCallback(async (inputPlz: string) => {
@@ -96,8 +104,8 @@ export default function EinspeiseRechner() {
 
   // Ertrag = Standort-Optimum × Dach. Die Regel steht in lib/dach-ertrag.ts und
   // gilt für alle Rechner gleich — hier wird sie nur aufgerufen.
-  const neigungsFaktor = dachNeigungsFaktor(dachartIdx, ausrichtung);
-  const ertragKwp = dachErtragKwp(standortYield ?? NO_PLZ_DEFAULT_YIELD, dachartIdx, ausrichtung);
+  const neigungsFaktor = dachNeigungsFaktor(dachartIdx, ausrichtung, neigungGrad);
+  const ertragKwp = dachErtragKwp(standortYield ?? NO_PLZ_DEFAULT_YIELD, dachartIdx, ausrichtung, neigungGrad);
 
   const jahre = useMemo(() => {
     const list: number[] = [];
@@ -621,7 +629,13 @@ export default function EinspeiseRechner() {
                 setDachartIdx={setDachartIdx}
                 ausrichtung={ausrichtung}
                 setAusrichtung={setAusrichtung}
-                hinweis={dachErtragHinweis(ertragKwp, dachartIdx, ausrichtung, standortYield !== null)}
+                neigungGrad={neigungGrad}
+                setNeigungGrad={setNeigungGrad}
+                beantwortet={dachAnswered}
+                markiereBeantwortet={markDachAnswered}
+                bearbeitet={dachEditing}
+                setBearbeitet={setDachEditing}
+                hinweis={dachErtragHinweis(ertragKwp, dachartIdx, ausrichtung, standortYield !== null, neigungGrad)}
               />
             </div>
           )}

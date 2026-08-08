@@ -13,7 +13,7 @@ import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryRepl
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
 import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
-import DachField from "../../../components/DachField";
+import DachField, { DACH_FIELDS } from "../../../components/DachField";
 import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
 import Toast from "../../../components/Toast";
 import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor, dachUebersprungenFolge } from "../../../lib/dach-ertrag";
@@ -214,6 +214,14 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       ? (paramStr(initialParams, "az", "", ["sued", "suedostwest", "ostwest", "nord"]) as TiltOrientation) || null
       : null,
   );
+  // Neigung in Grad. null = nicht angegeben → es gilt die typische Neigung der
+  // Dachform. Bewusst keine Pflichtangabe: nach Süden liegen zwischen 30° und
+  // 50° ganze 1 Prozentpunkt, nach Norden bis zu 27 (siehe lib/dach-ertrag.ts).
+  const [neigungGrad, setNeigungGrad] = useState<number | null>(() => {
+    if (!hasShare) return null;
+    const g = paramInt(initialParams, "ng", -1, 0, 90);
+    return g >= 0 ? g : null;
+  });
   const daIdx = dachartIdx ?? -1;
 
   // Überspringbare Fragen melden ihre Folge als Toast. Der Text ist die
@@ -412,14 +420,14 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // nach Süden). Erst das Dach macht daraus den Ertrag dieser Anlage. Ab hier
   // gilt ausschließlich `effErtrag` — Geldrechnung UND Stundensimulation, sonst
   // laufen Ersparnis und Autarkie auseinander (siehe lib/dach-ertrag.ts).
-  const effErtrag = dachErtragKwp(oErtrag, dachartIdx, ausrichtung);
+  const effErtrag = dachErtragKwp(oErtrag, dachartIdx, ausrichtung, neigungGrad);
 
   // Das Ertrags-Feld im Ergebnis zeigt und nimmt den Ertrag DIESER Anlage. Wer
   // ihn von Hand setzt, meint „mein Dach bringt X" — also auf das Standort-
   // Optimum zurückrechnen, damit ein späterer Dachwechsel wieder sauber davon
   // skaliert (sonst wäre die Handeingabe nach dem nächsten Klick wieder weg).
   const setErtragVonHand = (val: number) =>
-    setOErtrag(Math.round(val / dachNeigungsFaktor(dachartIdx, ausrichtung)));
+    setOErtrag(Math.round(val / dachNeigungsFaktor(dachartIdx, ausrichtung, neigungGrad)));
 
   const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: effErtrag, baseKwh: oVerbrauch });
   const effEv = oEv !== null ? oEv : autoEv;
@@ -621,6 +629,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     p.set("er", String(oErtrag));
     if (dachartIdx !== null) p.set("da", String(dachartIdx));
     if (ausrichtung !== null) p.set("az", ausrichtung);
+    if (neigungGrad !== null) p.set("ng", String(neigungGrad));
     if (scenario !== "realistic") p.set("sc", scenario);
     if (plz) p.set("plz", plz);
     // Förderung: das wirksamste angerechnete Programm mitgeben, damit der Link
@@ -842,10 +851,17 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   setDachartIdx={setDachartIdx}
                   ausrichtung={ausrichtung}
                   setAusrichtung={setAusrichtung}
-                  hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource)}
+                  neigungGrad={neigungGrad}
+                  setNeigungGrad={setNeigungGrad}
+                  beantwortet={gvAnswered}
+                  markiereBeantwortet={markGvAnswered}
+                  bearbeitet={gvEditing}
+                  setBearbeitet={setGvEditing}
+                  hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource, neigungGrad)}
                   onWeissNicht={() => {
                     setDachartIdx(null);
                     setAusrichtung(null);
+                    setNeigungGrad(null);
                     setFolgeToast(dachUebersprungenFolge());
                     next();
                   }}
@@ -1121,7 +1137,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   setDachartIdx={setDachartIdx}
                   ausrichtung={ausrichtung}
                   setAusrichtung={setAusrichtung}
-                  hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource)}
+                  neigungGrad={neigungGrad}
+                  setNeigungGrad={setNeigungGrad}
+                  beantwortet={new Set(DACH_FIELDS)}
+                  markiereBeantwortet={markGvAnswered}
+                  bearbeitet={gvEditing}
+                  setBearbeitet={setGvEditing}
+                  hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource, neigungGrad)}
                 />
               </div>
             </details>

@@ -7,7 +7,13 @@ import {
   dachErtragHinweis,
   dachErtragKwp,
   dachNeigungsFaktor,
+  neigungsStufen,
+  neigungLohntNachfrage,
 } from "../dach-ertrag";
+
+// Dachform-Index über die id, nicht über die Position — die Liste darf sich
+// umsortieren, ohne dass die Tests still etwas anderes prüfen.
+const idx = (id: string) => DACHARTEN.findIndex(d => d.id === id);
 
 // Realitäts-Anker für die Regel „Standort-Optimum × Dach". Die Prozente selbst
 // sind in tilt-config.test.ts gegen den PVGIS-Referenzabruf verankert; hier wird
@@ -15,8 +21,6 @@ import {
 // nicht unsichtbar wird.
 
 describe("Dach → Ertrag", () => {
-  const idx = (id: string) => DACHARTEN.findIndex(d => d.id === id);
-
   it("ohne vollständige Angabe bleibt der Standort-Ertrag unangetastet", () => {
     expect(dachNeigungsFaktor(null, null)).toBe(1);
     expect(dachNeigungsFaktor(idx("sattel"), null)).toBe(1);
@@ -122,5 +126,48 @@ describe("Gebäude der Wärmepumpe", () => {
     expect(satz).toContain("6.301");
     // Ohne die Richtung wäre es eine Zahl ohne Warnung.
     expect(satz).toMatch(/weniger/);
+  });
+});
+
+// ─── Neigung: eine Verfeinerung, keine Pflichtfrage ─────────────────────────
+describe("Dachneigung", () => {
+  const sattel = idx("sattel");
+  const flach = idx("flach");
+
+  it("ohne Angabe gilt die typische Neigung der Dachform", () => {
+    expect(dachErtragKwp(1000, sattel, "sued", null)).toBe(dachErtragKwp(1000, sattel, "sued"));
+  });
+
+  it("eine angegebene Neigung schlägt die Annahme", () => {
+    // Nach Norden ist die Neigung der dominante Faktor: flach schlägt steil.
+    const flachGeneigt = dachErtragKwp(1000, sattel, "nord", 25);
+    const steil = dachErtragKwp(1000, sattel, "nord", 45);
+    expect(flachGeneigt).toBeGreaterThan(steil);
+  });
+
+  it("nach Süden bewegt die Neigung fast nichts — deshalb keine Pflichtfrage", () => {
+    const a = dachErtragKwp(1000, sattel, "sued", 25);
+    const b = dachErtragKwp(1000, sattel, "sued", 45);
+    expect(Math.abs(a - b) / a).toBeLessThan(0.03);
+  });
+
+  it("nachgefragt wird nur, wo es etwas ändert", () => {
+    expect(neigungLohntNachfrage("nord")).toBe(true);
+    expect(neigungLohntNachfrage("sued")).toBe(false);
+    expect(neigungLohntNachfrage(null)).toBe(false);
+  });
+
+  it("das Flachdach wird nach der Montage gefragt, nicht nach Grad", () => {
+    const stufen = neigungsStufen(flach);
+    expect(stufen.map(s => s.label)).toEqual(["Flach aufgelegt", "Aufgeständert"]);
+    // Aufständern lohnt nach Süden sichtbar — das ist der Grund für die Frage.
+    expect(dachErtragKwp(1000, flach, "sued", 15)).toBeGreaterThan(dachErtragKwp(1000, flach, "sued", 0));
+  });
+
+  it("der Hinweis nennt die Neigung als Angabe, nicht als Schätzung", () => {
+    expect(dachErtragHinweis(800, sattel, "nord", true, 45)).toContain("45° Neigung");
+    expect(dachErtragHinweis(800, sattel, "nord", true, 45)).not.toContain("typisch");
+    expect(dachErtragHinweis(800, sattel, "nord", true)).toContain("typisch");
+    expect(dachErtragHinweis(900, flach, "sued", true, 15)).toContain("aufgeständert");
   });
 });

@@ -12,7 +12,7 @@ import { stackFunding, type FundingProgram } from "../../../lib/funding-programs
 import OptionCard from "../../../components/OptionCard";
 import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
 import Toast from "../../../components/Toast";
-import DachField from "../../../components/DachField";
+import DachField, { DACH_FIELDS } from "../../../components/DachField";
 import { dachErtragHinweis, dachErtragKwp } from "../../../lib/dach-ertrag";
 import { type TiltOrientation } from "../../../lib/tilt-config";
 import TriToggle from "../../../components/TriToggle";
@@ -104,6 +104,8 @@ export default function Empfehlung() {
   // (der PVGIS-Ertrag ist auf genau diesen Bestfall bezogen, siehe
   // lib/dach-ertrag.ts). Kein Default: „nicht angegeben" ist eine eigene Lage.
   const ausrichtung = (parseStrParam(searchParams, "az", "", ["sued", "suedostwest", "ostwest", "nord"]) || null) as TiltOrientation | null;
+  // Neigung: null = nicht angegeben, dann gilt die typische Neigung der Dachform.
+  const neigungGrad = parseOptionalIntParam(searchParams, "ng", 0, 90);
   const isRecommendation = searchParams.get("view") === "ergebnis";
 
   // Wizard-Step bleibt lokal — niemand teilt eine Halb-Eingabe-URL.
@@ -123,6 +125,16 @@ export default function Empfehlung() {
     searchParams.get("view") === "ergebnis" ? new Set(GV_FIELDS) : new Set()
   );
   const [gvEditing, setGvEditing] = useState<string | null>(null);
+  // Dach-Fragen: eigener Answered-Zustand, aus derselben Not wie bei den
+  // Großverbrauchern — die Dachform hat in der URL einen Default, aus dem sich
+  // eine echte Wahl nicht ablesen lässt.
+  const [dachAnswered, setDachAnswered] = useState<Set<string>>(() =>
+    searchParams.get("view") === "ergebnis" ? new Set(DACH_FIELDS) : new Set()
+  );
+  const markDachAnswered = (key: string) => {
+    setDachAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
+    setGvEditing(null);
+  };
   // Folge einer übersprungenen Frage — sichtbar statt still (siehe components/Toast).
   const [folgeToast, setFolgeToast] = useState<string | null>(null);
   const markGvAnswered = (key: string) => {
@@ -211,6 +223,7 @@ export default function Empfehlung() {
   const setWpInsulation  = (val: number) => updateUrl({ wi: val === DEFAULT_WP_BUILDING.insulationIdx ? null : val });
   const setWpHeizsystem  = (val: Heizsystem) => updateUrl({ wh: val === DEFAULT_WP_BUILDING.heizsystem ? null : val });
   const setWpHaustyp     = (val: number) => updateUrl({ wht: val === 0 ? null : val });
+  const setNeigungGrad   = (val: number | null) => updateUrl({ ng: val });
   const setPlz         = (v: string) => updateUrl({ plz: v || null, ertrag: v ? ertragKwp : null });
 
   // Brücke zum geteilten Gebäude-Baustein: vier URL-Werte nach außen als ein
@@ -295,7 +308,7 @@ export default function Empfehlung() {
   // Der Ertrag, mit dem gerechnet wird: Standort-Optimum × Dach. Ohne diesen
   // Schritt bekäme ein Ost/West-Dach die Empfehlung eines Süddachs — und damit
   // eine zu große Anlage bei zu kurzer Amortisation.
-  const effErtragKwp = ertragKwp !== null ? dachErtragKwp(ertragKwp, dachart, ausrichtung) : null;
+  const effErtragKwp = ertragKwp !== null ? dachErtragKwp(ertragKwp, dachart, ausrichtung, neigungGrad) : null;
 
   // Empfehlung berechnen (mit PLZ-spezifischem Ertrag und ggf. eigener Dachfläche)
   const recInput = {
@@ -362,6 +375,7 @@ export default function Empfehlung() {
     // Ausrichtung muss mit: ohne sie rechnet die Ergebnisseite das Dach wieder
     // als optimales Süddach — und zeigt eine andere Zahl als die Empfehlung.
     if (ausrichtung) p.set("az", ausrichtung);
+    if (neigungGrad !== null) p.set("ng", String(neigungGrad));
     if (plz) p.set("plz", plz);
     if (ertragKwp) p.set("er", String(ertragKwp));
     // Lokale Förderung scharf ans Ergebnis durchreichen, damit die Amortisation
@@ -434,7 +448,13 @@ export default function Empfehlung() {
                     setDachartIdx={setDachart}
                     ausrichtung={ausrichtung}
                     setAusrichtung={setAusrichtung}
-                    hinweis={effErtragKwp !== null ? dachErtragHinweis(effErtragKwp, dachart, ausrichtung, true) : undefined}
+                    neigungGrad={neigungGrad}
+                    setNeigungGrad={setNeigungGrad}
+                    beantwortet={dachAnswered}
+                    markiereBeantwortet={markDachAnswered}
+                    bearbeitet={gvEditing}
+                    setBearbeitet={setGvEditing}
+                    hinweis={effErtragKwp !== null ? dachErtragHinweis(effErtragKwp, dachart, ausrichtung, true, neigungGrad) : undefined}
                   />
                 </div>
 
