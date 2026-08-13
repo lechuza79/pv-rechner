@@ -48,22 +48,22 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
   {
     key: "count",
     label: "Anlagen",
-    hint: "Zahl der Solaranlagen in Betrieb. Ein Balkonkraftwerk zählt wie eine Dachanlage — die Zahl sagt, wie viele mitmachen, nicht wie viel Leistung steht.",
+    hint: "Solaranlagen in Betrieb. Ein Balkonkraftwerk zählt wie eine Dachanlage — die Zahl sagt, wie viele mitmachen, nicht wie viel Leistung steht.",
   },
   {
     key: "kwp",
     label: "Leistung",
-    hint: "Installierte Spitzenleistung aller Solaranlagen zusammen. Ein Einfamilienhaus liegt typisch bei 10 kWp, ein Freiflächen-Park bei mehreren Tausend.",
+    hint: "Installierte Spitzenleistung zusammen. Ein Einfamilienhaus liegt typisch bei 10 kWp, ein Freiflächen-Park bei mehreren Tausend.",
   },
   {
     key: "perCapita",
     label: "Pro Kopf",
-    hint: "Installierte Leistung geteilt durch die Einwohnerzahl. Macht große und kleine Gemeinden vergleichbar — Gemeinden mit viel Freifläche liegen hier zwangsläufig vorn.",
+    hint: "Installierte Leistung je Einwohner. Macht große und kleine Gemeinden vergleichbar — Gemeinden mit viel Freifläche liegen hier zwangsläufig vorn.",
   },
   {
     key: "co2",
     label: "CO₂ gespart",
-    hint: `Rechnerisch vermiedenes CO₂ pro Jahr — ein Modellwert, kein Messwert: erzeugter Solarstrom (installierte Leistung mal typischer Ertrag im jeweiligen Bundesland, kalibriert an der von Fraunhofer ISE bilanzierten Erzeugung 2025) mal ${fmtCo2FaktorKg(ATLAS_GRID_CO2)}. Der Faktor ist bewusst konservativ gewählt: Der amtliche UBA-Vermeidungsfaktor für Photovoltaik liegt höher.`,
+    hint: `Vermiedenes CO₂ pro Jahr, rechnerisch: erzeugter Solarstrom mal ${fmtCo2FaktorKg(ATLAS_GRID_CO2)}. Bewusst konservativ — der amtliche UBA-Vermeidungsfaktor für Photovoltaik liegt höher.`,
   },
   {
     key: "wert",
@@ -75,7 +75,7 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
   {
     key: "speicher",
     label: "Speicher",
-    hint: "Nutzbare Kapazität der Batteriespeicher, nicht ihre Leistung. Eine Hausbatterie hält typisch 5 bis 15 kWh. Pumpspeicherwerke sind nicht enthalten.",
+    hint: "Nutzbare Kapazität der Batteriespeicher, nicht ihre Leistung. Eine Hausbatterie hält typisch 5 bis 15 kWh. Pumpspeicher sind nicht enthalten.",
   },
 ];
 
@@ -641,26 +641,24 @@ function StromwertHilfe() {
   const { eigenverbrauchCt, einspeisung } = stromwertBestandteile();
   return (
     <>
-      Rechnerischer Wert des Solarstroms, der hier im Jahr erzeugt wird — ein Modellwert, kein
-      Messwert. Jede Kilowattstunde zählt so viel, wie sie ersetzt oder einbringt:
+      Wert des erzeugten Solarstroms pro Jahr, rechnerisch. Jede Kilowattstunde zählt, was sie
+      ersetzt oder einbringt:
       <span style={S.tipListe}>
         <span style={S.tipZeile}>
-          <strong>Im Haus verbraucht: {fmtCtProKwh(eigenverbrauchCt)}</strong> — so viel kostet
-          Strom, der sonst zugekauft werden müsste. Das gilt für jede Anlagenart gleich.
+          <strong>Im Haus verbraucht: {fmtCtProKwh(eigenverbrauchCt)}</strong> — ersetzt
+          zugekauften Strom, für jede Anlagenart gleich.
         </span>
         <span style={S.tipZeile}>
-          <strong>Ins Netz eingespeist:</strong> je nach Anlagenart{" "}
+          <strong>Eingespeist:</strong>{" "}
           {einspeisung
             .map((e) => `${e.label} ${e.ct === null ? e.hinweis : fmtCtProKwh(e.ct)}`)
             .join(", ")}
           .
         </span>
       </span>
-      Wie viel eine Anlage im Haus behält und wie viel sie abgibt, ist von Art zu Art verschieden.
-      Deshalb wird jede Art einzeln gerechnet — ein gemeinsamer Durchschnitt über Hausdächer und
-      Solarparks wäre für beide falsch. Die Strommenge dahinter ist die installierte Leistung mal
-      dem typischen Ertrag im jeweiligen Bundesland, kalibriert an der von Fraunhofer ISE
-      bilanzierten Solarstrom-Erzeugung 2025.
+      Wie sich eine Anlagenart auf beides verteilt, ist verschieden — deshalb wird jede einzeln
+      gerechnet. Strommenge: installierte Leistung mal typischer Ertrag im Bundesland, kalibriert
+      an der Erzeugung 2025 (Fraunhofer ISE).
     </>
   );
 }
@@ -861,7 +859,7 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  * (74): Dort ist die Zahl breiter als der Kopf, weil sie als einzige der
  * Tabelle ungestaffelt bis zu siebenstellig wird ("1.399.105").
  */
-const GRID = "44px minmax(180px,1fr) 74px 60px 60px 78px 70px 62px 14px";
+const GRID = "40px minmax(175px,1fr) 74px 60px 60px 78px 70px 62px 12px";
 
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
@@ -877,15 +875,15 @@ const S: Record<string, React.CSSProperties> = {
   },
   // Eight columns do not fit a phone. Scroll the table, never the page.
   scroller: { overflowX: "auto", margin: "0 -8px", padding: "0 8px" },
-  // Summe des Rasters: 44 + 180 (Name-Minimum) + 404 (Wertspalten) + 14 + 56.
+  // Summe des Rasters: 40 + 175 (Name-Minimum) + 404 (Wertspalten) + 12 + 88.
   // Enger scrollt die Tabelle lieber waagerecht, als Ortsnamen abzuschneiden —
   // ein halber Ortsname ist in einer Rangliste wertlos.
-  table: { minWidth: 698 },
+  table: { minWidth: 719 },
   row: {
     display: "grid",
     gridTemplateColumns: GRID,
     alignItems: "center",
-    gap: 7,
+    gap: 11,
     padding: "7px 8px",
     margin: "0 -8px",
     borderBottom: `1px solid ${v("--color-border-muted")}`,
