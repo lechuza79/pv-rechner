@@ -625,6 +625,7 @@ Was sich automatisch ändern sollte (Jahreszahlen, "aktuelle" Werte, "heute"-bez
 - Commit-Messages und UI-Texte auf Deutsch; Code und Variablennamen auf Englisch, außer Domänen-Begriffe (Eigenverbrauch, Einspeisevergütung, Strompreis etc.)
 - **Chart-Entwicklung:** Vor jeder Chart-Änderung das Chart-Regelwerk in Memory lesen (`feedback_chart_conventions.md`): Charttyp pro Zeitraum, Einheiten, Tooltip-Struktur, Achsenbeschriftung, Export/Sharing, Caching, Farb-Zuordnung.
 - **Antworten an den Nutzer = Klartext, keine Code-Sprache.** Keine Dateipfade, keine Variablennamen, keine API-Namen im Erklärtext — übersetzen in das, was sie tun. Stichpunkte statt Textwand. Am Ende eine konkrete Frage. Diese Regel steht ausführlich in der globalen CLAUDE.md unter „Klartext bei technischen Entscheidungen" und gilt hier 1:1.
+- **Konzepte und Docs sind DEIN Arbeitsmaterial, nicht seine Lektüre.** Alles unter `docs/` schreibst du für dich und für künftige Sessions. Der Betreiber liest es nicht und soll es nicht lesen müssen (seine Ansage, 13.08.2026: „die docs sind für dich, wir klären hier"). Steht eine Entscheidung an, erklärst du sie **vollständig im Gespräch** — auch die Zusammenfassung-plus-Link ist falsch, weil der Link signalisiert, das Eigentliche stehe woanders. Das Dokument wird höchstens beiläufig erwähnt („ist festgehalten"), nie als Leseauftrag. Eine Entscheidung, für die er erst ein Papier lesen müsste, hast du ihm abgenommen statt vorgelegt.
 
 ## Roadmap: offene Punkte
 
