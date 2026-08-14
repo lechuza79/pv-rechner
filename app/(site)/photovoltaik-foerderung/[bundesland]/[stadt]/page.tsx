@@ -11,6 +11,7 @@ import { cityBySlug, slugify, isCityPublished, publishedCities } from "../../../
 import { fundingStandLabel, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
 import { FundingRates, FundingConditions, FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
+import FoerderFlow from "../../../../../components/FoerderFlow";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
@@ -216,6 +217,21 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             <Link href="/photovoltaik-foerderung" style={{ display: "inline-block", marginTop: 10, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Alle Förderprogramme im Überblick <IconArrowRight size={iconSizes.xs} /></span>
             </Link>
+          </div>
+        )}
+
+        {/* ── Förder-Check: bin ich berechtigt, und was ist wann zu tun? ──
+            Die Schritte kommen aus den erfassten Bedingungen der Programme
+            dieses Ortes (lib/funding-flow.ts) — der Block blendet sich von
+            selbst aus, solange dort nichts Prüfbares hinterlegt ist. */}
+        {f && (
+          <div style={S.section}>
+            <h2 style={S.h2}>Bekommst du die Förderung?</h2>
+            <p style={S.sub}>
+              Vier Fragen, danach steht da, was für dich gilt — und in welcher Reihenfolge du
+              vorgehen musst.
+            </p>
+            <FoerderFlow programme={[f, ...combinable]} ortName={city.name} />
           </div>
         )}
 
