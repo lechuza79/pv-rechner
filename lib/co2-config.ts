@@ -10,17 +10,41 @@
 //  - 2026: geltendes Recht. Das BEHG schreibt den Preiskorridor 55–65 €/t fest.
 //  - 2027: NOCH NICHT GELTENDES RECHT. Der Koalitionsausschuss hat am 12.05.2026
 //    beschlossen, den Korridor auch 2027 bei 55–65 €/t einzufrieren; umgesetzt
-//    werden soll das durch das Dritte BEHG-Änderungsgesetz. Das lag am 03.08.2026
-//    als REFERENTENENTWURF des BMUKN vor (veröffentlicht 03.07.2026, Länder- und
-//    Verbändeanhörung bis 15.07.2026) — ohne Kabinettsbeschluss, ohne Bundestag.
+//    werden soll das durch das Dritte BEHG-Änderungsgesetz. Stand 14.08.2026 ist
+//    das ein REGIERUNGSENTWURF: Das Bundeskabinett hat ihn am 12.08.2026
+//    beschlossen ("Gesetzentwurf der Bundesregierung (Kabinettbeschluss am
+//    12. August 2026)", BMUKN-Gesetzesseite; Volltext in docs/quellen/
+//    BEHG-3-AendG_Regierungsentwurf_Kabinett_2026-08-12.pdf), am 14.08.2026 ging
+//    er als besonders eilbedürftige Vorlage nach Art. 76 Abs. 2 S. 4 GG an den
+//    Bundesrat (BR-Drs. 462/26, Fristablauf 25.09.2026). Im Bundestag ist er
+//    weder eingebracht noch beschlossen, nicht verkündet, nicht in Kraft.
+//    Bis zum 12.08.2026 stand hier "Referentenentwurf, ohne Kabinettsbeschluss" —
+//    das ist seit dem Beschluss falsch (Wächter-Gate Regel 1: der Zustand ist eine
+//    eigene Änderung mit eigener Fundstelle; Council 3/3 + Legal-Judge 14.08.2026).
+//    Wortlaut des Entwurfs, Art. 1 Nr. 4 Buchst. a (§ 10 Abs. 2 S. 4 BEHG-E):
+//    "Für die Jahre 2026 und 2027 wird ein Preiskorridor mit einem Mindestpreis
+//    von 55 Euro pro Emissionszertifikat und einem Höchstpreis von 65 Euro pro
+//    Emissionszertifikat festgelegt."
+//    NIE "Bundestag und Bundesrat müssen zustimmen" schreiben: Das BEHG-ÄndG ist
+//    ein EINSPRUCHSGESETZ (der Bundesrat führt das 2. BEHG-ÄndG selbst unter
+//    "Gesetzeskategorie: Einspruchsgesetz"; der Entwurf enthält keinen
+//    Zustimmungstatbestand). Dieselbe Verschärfung ohne Fundstelle wurde beim
+//    GModG und beim EEG schon zweimal korrigiert.
 //    Das GELTENDE BEHG knüpft den nationalen Preis für 2027 dagegen an den Preis
 //    im europäischen Emissionshandel (EU-ETS 1) an, der derzeit über dem Korridor
 //    liegt. Unsere 65 €/t sind damit auch bei einem Scheitern des Entwurfs die
 //    vorsichtige Richtung: Sie unterschätzen die fossilen Kosten eher, als sie zu
-//    überzeichnen. Wird der Entwurf verabschiedet, ändert sich hier nur der
-//    Zustand, nicht der Wert.
-//    Beleg: BMUKN, "Referentenentwurf eines Dritten Gesetzes zur Änderung des
-//    Brennstoffemissionshandelsgesetzes" (bundesumweltministerium.de).
+//    überzeichnen. Der Kabinettsbeschluss ändert deshalb den Zustand, nicht den
+//    Wert — die Stützstellen sind unverändert.
+//
+//    OFFEN (bis 11/2026): 2026 und 2027 haben nach dem Entwurf DENSELBEN Korridor
+//    (55–65), wir setzen aber 2026 auf den Boden und 2027 auf die Decke. Beide
+//    Enden sind je für sich begründet (2026 gegen die eigene Wärmepumpe gerechnet,
+//    2027 gegen das Scheitern des Entwurfs) — zusammen gelesen ist es eine
+//    Asymmetrie, die niemand aus den Zahlen ablesen kann. Beim nächsten Lauf nach
+//    scripts/co2-preis-verify.md entweder auflösen (ein Ende für beide Jahre) oder
+//    die Asymmetrie im Methodik-Text ausschreiben. Frist bewusst VOR dem erwarteten
+//    Bundestagsbeschluss (Herbst 2026), nicht danach.
 //  - EU ETS2 (freier Markt) startet 2028 — verschoben von 2027 (EU-Umweltrat
 //    05.11.2025). Hat einen Preisstabilitätsmechanismus (Soft-Cap ~45 €/t in
 //    2020-Preisen, setzt zusätzliche Zertifikate frei bei Überschreitung) — hier
@@ -51,9 +75,11 @@ export const CO2_PRICE: Co2PriceConfig = {
     2027: 65, // Korridor-Decke; das Einfrieren für 2027 ist erst ein Gesetzentwurf (siehe oben)
   },
   annualIncrease: 8,
-  validFrom: "2026-08-03",
-  reviewBy: "2027-01-31",
-  source: "BEHG für 2026; für 2027 der Gesetzentwurf zum Einfrieren des Korridors (Referentenentwurf 07/2026, noch nicht beschlossen); ab 2028 EU-Emissionshandel (Start 2028, EU-Umweltrat 11/2025) als konservative Forecast-Kurve",
+  validFrom: "2026-08-14",
+  // Bewusst VOR dem erwarteten Bundestagsbeschluss (Herbst 2026): Ein Satz, der
+  // "Bundestag steht aus" sagt, wird am Tag des Beschlusses von selbst falsch.
+  reviewBy: "2026-11-30",
+  source: "BEHG für 2026 (Korridor-Boden 55 €/t); für 2027 die Korridor-Decke von 65 €/t aus dem Gesetzentwurf zum Einfrieren des Korridors 55–65 €/t — Regierungsentwurf, vom Bundeskabinett am 12.08.2026 beschlossen, seit 14.08.2026 im Bundesrat (BR-Drs. 462/26), Bundestagsbeschluss und Verkündung stehen aus; ab 2028 EU-Emissionshandel (Start 2028, EU-Umweltrat 11/2025) als konservative Forecast-Kurve",
 };
 
 /** CO2-Preis in €/t für ein absolutes Kalenderjahr (rollover-sicher). */

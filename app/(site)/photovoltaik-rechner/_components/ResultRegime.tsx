@@ -2,21 +2,22 @@
 // Umschalter zwischen heutiger Vergütung und den geplanten Konditionen ab 2027,
 // plus der abschaltbaren Marktrechnung für die Zeit nach der Förderphase.
 //
-// Warum das ein eigener Block ist und nicht eine weitere Zeile im Ergebnis-Grid:
-// Hier wird nicht ein Wert editiert, sondern die RECHTSLAGE gewechselt, unter der
-// alles darüber gerechnet wird. Das braucht einen sichtbaren Rahmen, den
-// Entwurfsvorbehalt daneben und eine Erklärung, was der Wechsel konkret tut —
-// sonst steht im Ergebnis eine andere Amortisation, ohne dass erkennbar ist,
-// warum.
+// Warum das nicht als weitere Zeile ins Ergebnis-Grid gehört: Hier wird nicht
+// ein Wert editiert, sondern die RECHTSLAGE gewechselt, unter der alles darüber
+// gerechnet wird. Das braucht den Entwurfsvorbehalt daneben und eine Erklärung,
+// was der Wechsel konkret tut — sonst steht im Ergebnis eine andere
+// Amortisation, ohne dass erkennbar ist, warum.
+//
+// Der Rahmen kommt NICHT mehr von hier: Dieser Block ist der Inhalt des
+// aufklappbaren Abschnitts „Einspeisung und Vergütung" (ResultVerguetung), der
+// zugeklappt den gewählten Zustand in einer Zeile trägt.
 import Link from "next/link";
 import InlineEdit from "../../../../components/InlineEdit";
 import GlossaryTerm from "../../../../components/GlossaryTerm";
 import { v } from "../../../../lib/theme";
 import {
   eegVerfahrenSatz,
-  eegDatum,
   eegReformStandLabel,
-  EEG_REFORM_STAND,
   EEG_ENTWURF_WERTE,
 } from "../../../../lib/eeg-reform-config";
 import { MARKTWERT_SOLAR_HISTORIE } from "../../../../lib/marktwert-config";
@@ -46,15 +47,20 @@ export interface ResultRegimeProps {
    *  (Betreiber-Entscheidung 05.08.2026), aber der Reform-Zweig erklärt,
    *  dass sich Volleinspeisen dann nicht mehr lohnt. */
   vollGewaehlt: boolean;
+  /**
+   * Was der Börsenerlös über die Laufzeit ausmacht, in Euro — der Unterschied
+   * zwischen Haken an und Haken aus im gewählten Szenario. Ohne diese Zahl
+   * klickt man den Haken und sieht an der Stelle nichts: Die Wirkung setzt erst
+   * nach der Übergangszahlung ein, ist klein und bewegt die Amortisation in
+   * ganzen Jahren meist gar nicht.
+   */
+  marktWirkungEuro?: number;
+  /** Rechnet der Nutzer mit einem selbst gesetzten Satz? (dritter Reiter) */
+  eigenerSatz: boolean;
+  setEigenerSatz: (b: boolean) => void;
+  /** Setzt den Satz von Hand — damit ist er automatisch der eigene. */
+  setHeuteSatzCt: (v: number) => void;
 }
-
-const card = {
-  background: v("--color-bg"),
-  borderRadius: v("--radius-md"),
-  padding: "14px 16px",
-  marginBottom: 16,
-  border: `1px solid ${v("--color-border")}`,
-};
 
 function Schalter({ aktiv, onClick, children }: { aktiv: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
@@ -81,7 +87,8 @@ function Schalter({ aktiv, onClick, children }: { aktiv: boolean; onClick: () =>
 
 export default function ResultRegime({
   regime, setRegime, marktErloes, setMarktErloes, niveauCt, setNiveauCt,
-  profilFaktor, einspeiseAnteil, verlauf, heuteSatzCt, vollGewaehlt,
+  profilFaktor, einspeiseAnteil, verlauf, heuteSatzCt, vollGewaehlt, marktWirkungEuro,
+  eigenerSatz, setEigenerSatz, setHeuteSatzCt,
 }: ResultRegimeProps) {
   const reform = regime === "reform2027";
   const uebergang = verlauf.find((j) => j.art === "uebergang");
@@ -89,7 +96,7 @@ export default function ResultRegime({
   const verlustProzent = Math.round((1 - einspeiseAnteil) * 100);
 
   return (
-    <div style={card}>
+    <div>
       <div style={{ fontSize: 13, fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 }}>
         Nach welchen Konditionen soll gerechnet werden?
       </div>
@@ -98,18 +105,45 @@ export default function ResultRegime({
         Neuanlagen ab 2027 soll sie entfallen.
       </div>
 
-      <div style={{ display: "flex", gap: 8, marginBottom: reform ? 12 : 0 }}>
-        <Schalter aktiv={!reform} onClick={() => setRegime("heute")}>
+      <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        <Schalter aktiv={!reform && !eigenerSatz} onClick={() => { setRegime("heute"); setEigenerSatz(false); }}>
           Heute
           <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>
-            {heuteSatzCt.toLocaleString("de-DE", { minimumFractionDigits: 2 })} ct, 20 Jahre
+            {heuteSatzCt.toLocaleString("de-DE", { minimumFractionDigits: 2 })} ct, 20 J.
           </div>
         </Schalter>
         <Schalter aktiv={reform} onClick={() => setRegime("reform2027")}>
           Ab 2027
-          <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>Entwurf, kein Gesetz</div>
+          <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>Entwurf</div>
+        </Schalter>
+        {/* Rückfallebene für alles, was der Rechner nicht kennt: eine
+            Bestandsanlage mit ihrem alten Satz, ein Bescheid mit einer
+            abweichenden Zahl. Gerechnet wird sie wie die heutige Lage —
+            fester Satz über 20 Jahre. */}
+        <Schalter aktiv={!reform && eigenerSatz} onClick={() => { setRegime("heute"); setEigenerSatz(true); }}>
+          Eigener Satz
+          <div style={{ fontSize: 11, fontWeight: 400, opacity: 0.8 }}>z. B. Bestandsanlage</div>
         </Schalter>
       </div>
+
+      {/* Der Satz gehört unter die Reiter, weil er zu ihnen gehört: „Heute" ist
+          der amtliche Wert (nur lesbar), „Eigener Satz" der selbst gesetzte. Im
+          Entwurfs-Modus gibt es ihn nicht — dort ist der Erlös ein Verlauf. */}
+      {!reform && (
+        <div style={{
+          display: "flex", justifyContent: "space-between", alignItems: "center",
+          marginBottom: 12, fontSize: 13, color: v("--color-text-secondary"),
+        }}>
+          <span>Vergütungssatz</span>
+          {eigenerSatz ? (
+            <InlineEdit value={heuteSatzCt} onCommit={setHeuteSatzCt} unit=" ct" step={0.01} min={0} max={60} width={56} />
+          ) : (
+            <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, color: v("--color-text-primary") }}>
+              {heuteSatzCt.toLocaleString("de-DE", { minimumFractionDigits: 2 })} ct/kWh
+            </span>
+          )}
+        </div>
+      )}
 
       {reform && (
         <>
@@ -135,18 +169,16 @@ export default function ResultRegime({
             )}
             {vollGewaehlt && (
               <>
-                {" "}Den Aufschlag fürs Volleinspeisen gäbe es nach dem Entwurf nicht mehr —
-                eingespeister Strom bringt dann denselben Satz, egal ob du zusätzlich selbst
-                verbrauchst. Damit lohnt sich Volleinspeisen nicht mehr.
+                {" "}Den Aufschlag fürs Volleinspeisen streicht der Entwurf — damit lohnt es
+                sich nicht mehr.
               </>
             )}
             {verlustProzent > 0 && (
               <>
-                {" "}Zusätzlich ist die Einspeiseleistung neuer Dachanlagen unter{" "}
-                {EEG_ENTWURF_WERTE.einspeiseGrenzeUnterKw} Kilowatt auf die Hälfte der
-                installierten Leistung begrenzt; bei dieser Anlage gehen dadurch{" "}
+                {" "}Neue Dachanlagen unter {EEG_ENTWURF_WERTE.einspeiseGrenzeUnterKw} Kilowatt
+                dürfen zudem nur die Hälfte ihrer Leistung einspeisen; hier gehen dadurch{" "}
                 <strong style={{ color: v("--color-text-primary") }}>{verlustProzent} %</strong> des
-                Überschusses verloren{einspeiseAnteil < 1 ? " — ein größerer Speicher fängt davon einen Teil auf" : ""}.
+                Überschusses verloren{einspeiseAnteil < 1 ? " — ein größerer Speicher fängt einen Teil auf" : ""}.
               </>
             )}
           </div>
@@ -164,9 +196,20 @@ export default function ResultRegime({
             <span>
               <strong style={{ fontWeight: 700 }}>Börsenerlös mitrechnen</strong>
               <span style={{ display: "block", fontSize: 12, color: v("--color-text-muted"), marginTop: 2 }}>
-                Aus: Nach der Übergangszahlung bringt die Einspeisung null — die zurückhaltende
-                Annahme. An: Der Überschuss wird zum Marktwert bewertet.
+                Aus: Nach der Übergangszahlung bringt die Einspeisung null. An: Der Überschuss
+                wird zum Marktwert bewertet.
               </span>
+              {/* Die Wirkung an den Schalter schreiben. Sie steht sonst nur in
+                  Zahlen weit oberhalb, und die Amortisation in ganzen Jahren
+                  springt dadurch meist nicht — der Haken wirkte wirkungslos. */}
+              {marktWirkungEuro !== undefined && marktWirkungEuro > 0 && (
+                <span style={{ display: "block", fontSize: 12, color: v("--color-text-secondary"), marginTop: 4 }}>
+                  Der Unterschied zwischen an und aus beträgt über 25 Jahre{" "}
+                  <strong style={{ fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
+                    {Math.round(marktWirkungEuro).toLocaleString("de-DE")} €
+                  </strong>.
+                </span>
+              )}
             </span>
           </label>
 
@@ -205,18 +248,17 @@ export default function ResultRegime({
                 </div>
               )}
               <div style={{ marginTop: 8, fontSize: 11, lineHeight: 1.6 }}>
-                Solarstrom fällt an, wenn viel Solarstrom anfällt — also wenn der Börsenpreis am
-                niedrigsten ist. Deshalb zählt nicht der mittlere Börsenpreis, sondern der Marktwert
-                Solar:{" "}
+                Solarstrom bringt am wenigsten, wenn viel davon anfällt — deshalb zählt der
+                Marktwert Solar (
                 {/* Zwei Nachkommastellen wie überall sonst bei Sätzen in ct/kWh. Der
                     amtliche Wert hat drei (4,508) — die stünden hier direkt neben
                     dem Niveau mit zweien und läsen sich wie ein anderer Grad an
                     Genauigkeit. Die volle Stelle steht auf /datenstand. */}
                 {letzterMarktwert.ctKwh.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ct/kWh
-                im Jahr {letzterMarktwert.jahr}. Weil dein Eigenverbrauch die gut bezahlten Morgen-
-                und Abendstunden wegnimmt und die Mittagsspitze übrig lässt, bekommst du davon noch
-                einmal etwas weniger. Abgezogen sind die Gebühren des Dienstleisters; der Erlös
-                wächst in dieser Rechnung nicht mit dem Strompreis mit.
+                im Jahr {letzterMarktwert.jahr}), nicht der mittlere Börsenpreis. Dein
+                Eigenverbrauch nimmt die gut bezahlten Morgen- und Abendstunden weg, also kommt
+                davon noch etwas weniger an. Gebühren sind abgezogen; der Erlös wächst hier nicht
+                mit dem Strompreis mit.
               </div>
             </div>
           )}
@@ -229,10 +271,15 @@ export default function ResultRegime({
       }}>
         {reform ? (
           <>
+            {/* Die vier Aussagen, die hier stehen MÜSSEN (festgenagelt von
+                e2e/eeg-reform-sachstand.spec.ts): Entwurfswerte statt geltendem
+                Recht, der Verfahrensstand samt Datum (steckt im Satz aus der
+                einen Quelle), der Änderungsvorbehalt und der EU-Beihilfevorbehalt.
+                Gekürzt wurde nur, was doppelt dastand — das Entwurfsdatum nennt
+                eegVerfahrenSatz() bereits. */}
             <strong style={{ fontWeight: 700, color: v("--color-text-secondary") }}>Entwurfswerte, kein geltendes Recht.</strong>{" "}
-            {eegVerfahrenSatz({ kurz: true })}. Die Beträge stehen im Gesetzentwurf vom{" "}
-            {eegDatum(EEG_REFORM_STAND.entwurfIso)} und können sich im Verfahren noch ändern; die
-            Fördersätze brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission.
+            {eegVerfahrenSatz({ kurz: true })}. Die Beträge können sich im Verfahren noch ändern
+            und brauchen die beihilferechtliche Genehmigung der EU-Kommission.
             (Stand: {eegReformStandLabel()})
           </>
         ) : (

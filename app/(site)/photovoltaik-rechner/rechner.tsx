@@ -7,7 +7,12 @@ import { paramsToRow } from "../../../lib/types";
 import { einspeiseVerlauf, einspeiseDeckelKw, profilFaktorAus, type EinspeiseRegime } from "../../../lib/einspeise-regime";
 import { PREISFORM_MONAT_STUNDE, MARKTWERT_NIVEAU_CT, DIREKTVERMARKTUNG } from "../../../lib/marktwert-config";
 import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
-import ResultRegime from "./_components/ResultRegime";
+// ResultVerguetung umschließt ResultRegime — deshalb hier nur der äußere Import.
+import ResultVerguetung from "./_components/ResultVerguetung";
+import ResultSection from "../../../components/ResultSection";
+// HEIZSYSTEM/HEIZSYSTEM_SHORT/WP_M2_PRESETS brauchte der entfallene
+// Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
+// components/GebaeudeField.
 import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NO_PLZ_DEFAULT_YIELD, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
@@ -40,7 +45,8 @@ import { useChartExport } from "../../../lib/useChartExport";
 import { trackEvent } from "../../../lib/analytics";
 import ChartExportBar from "../../../components/ChartExportBar";
 import ResultHeroCard from "./_components/ResultHeroCard";
-import ResultSection from "../../../components/ResultSection";
+// ResultSection steht schon oben; ResultVerbrauch ist entfallen (die
+// Verbraucher haben je einen eigenen Abschnitt).
 import ResultStats from "./_components/ResultStats";
 import ResultActions from "./_components/ResultActions";
 import ResultFunding from "./_components/ResultFunding";
@@ -70,6 +76,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [anlage, setAnlage] = useState(hasShare ? paramInt(initialParams, "a", 2, 0, 4) : 2);
   const [customKwp, setCustomKwp] = useState(hasShare ? paramInt(initialParams, "ck", 12, 1, 50) : 12);
   const [speicher, setSpeicher] = useState(hasShare ? paramInt(initialParams, "s", 0, 0, SPEICHER.length - 1) : 0);
+  // Freie Speichergröße aus dem Ergebnis heraus (Vorgaben sind Indizes, hier
+  // steht die kWh-Zahl selbst). Null = es gilt die im Flow gewählte Vorgabe.
+  const [oSpKwh, setOSpKwh] = useState<number | null>(hasShare ? paramFloat(initialParams, "sk", 0, 0, 30) || null : null);
   const [personen, setPersonen] = useState(hasShare ? paramInt(initialParams, "p", 1, 0, 3) : 1);
   const [nutzung, setNutzung] = useState(hasShare ? paramInt(initialParams, "n", 1, 0, 3) : 1);
   const [wp, setWp] = useState(hasShare ? paramStr(initialParams, "wp", "nein", ["nein", "geplant", "ja"]) : "nein");
@@ -375,7 +384,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   useEffect(() => { setCanShare(typeof navigator !== "undefined" && !!navigator.share); }, []);
 
   const kwp = anlage <= 3 ? ANLAGEN[anlage].kwp : customKwp;
-  const spKwh = SPEICHER[speicher].kwh;
+  const spKwh = oSpKwh ?? SPEICHER[speicher].kwh;
   // Brutto = vom Nutzer editierte oder geschätzte Investition. Förderung (falls
   // aktiviert) reduziert sie zur effektiven Investition, mit der gerechnet wird.
   const bruttoKosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh, prices);
@@ -544,6 +553,47 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       }),
     })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, effErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, einspeiseModell]);
 
+  // (Die Liste der aktiven Großverbraucher ist entfallen: sie war die Kopfzeile
+  // des gemeinsamen Verbrauchs-Abschnitts. Jeder Verbraucher hat jetzt seinen
+  // eigenen Abschnitt und trägt seinen Zustand selbst.)
+
+  // Was der Börsenerlös über die Laufzeit ausmacht: dasselbe Szenario einmal mit
+  // und einmal ohne Marktbewertung. Die Zahl steht am Schalter selbst — sonst
+  // klickt man ihn und sieht nichts, weil die Wirkung erst nach der
+  // Übergangszahlung einsetzt und die Amortisation in ganzen Jahren meist nicht
+  // bewegt.
+  const marktWirkungEuro = useMemo(() => {
+    if (regime !== "reform2027" || effEinspeisungModus === "aus") return undefined;
+    const s = SCENARIOS.find(x => x.id === scenario) ?? SCENARIOS[1];
+    const gemeinsam = {
+      kwp, kosten, strompreis: oStrom,
+      eigenverbrauch: effEinspeisungModus === "voll"
+        ? 0
+        : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
+      einspeisung: effEinsp,
+      stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
+      batteryReplace: batteryReplaceCost(spKwh, prices),
+    };
+    const total = (mk: boolean) => {
+      const verlauf = einspeiseVerlauf({
+        regime, kwp, inbetriebnahmeJahr: Math.max(2027, YEAR),
+        heuteSatzCt: effEinsp, marktErloes: mk,
+        profilFaktor: marktSim.profilFaktor,
+        niveauCt: oMarktwert ?? MARKTWERT_NIVEAU_CT,
+      });
+      return calc({
+        ...gemeinsam,
+        einspeiseModell: {
+          satzCtImJahr: (i: number) => verlauf[i - 1]?.satzCt ?? 0,
+          fixkostenProJahr: DIREKTVERMARKTUNG.grundgebuehrProJahr,
+          einspeiseAnteil: marktSim.einspeiseAnteil,
+        },
+      }).total;
+    };
+    return Math.max(0, total(true) - total(false));
+  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEv, effEinsp, oErtrag,
+      monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, marktSim, oMarktwert]);
+
   // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
   // „realistic", falls der State (z. B. aus einer alten Share-URL) nicht passt.
   const sel = scenarioData.find(s => s.id === scenario) ?? scenarioData.find(s => s.id === "realistic")!;
@@ -607,6 +657,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     const p = new URLSearchParams();
     p.set("a", String(anlage));
     p.set("s", String(speicher));
+    if (oSpKwh !== null) p.set("sk", String(oSpKwh));
     p.set("p", String(personen));
     p.set("n", String(nutzung));
     p.set("wp", wp);
@@ -883,7 +934,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 {[...SPEICHER.map((s, idx) => ({ ...s, idx }))]
                   .sort((a, b) => a.kwh - b.kwh)
                   .map(s => (
-                    <OptionCard key={s.idx} selected={speicher === s.idx} onClick={() => { setSpeicher(s.idx); setOKosten(null); }} label={s.label} sub={s.sub} icon={s.icon} />
+                    <OptionCard key={s.idx} selected={oSpKwh === null && speicher === s.idx} onClick={() => { setSpeicher(s.idx); setOSpKwh(null); setOKosten(null); }} label={s.label} sub={s.sub} icon={s.icon} />
                   ))}
                 </div>
               </div>
@@ -1112,12 +1163,44 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             />
             <ResultHeroCard
               be={be} kosten={bruttoKosten} setOKosten={setOKosten}
-              oStrom={oStrom} setOStrom={setOStrom}
-              oErtrag={effErtrag} setOErtrag={setErtragVonHand}
-              kwp={kwp} spKwh={spKwh} effEv={effEv} setOEv={setOEv}
-              effEinspeisungModus={effEinspeisungModus} setEinspeisungModus={setEinspeisungModus}
-              vollDisabled={vollDisabled} effEinsp={effEinsp} setOEinsp={setOEinsp}
+              oStrom={oStrom} setOStrom={setOStrom} oErtrag={effErtrag} setOErtrag={setErtragVonHand}
+              kwp={kwp}
+              // Größe von Hand = eigene Größe (Index 4). Kostenschätzung und
+              // Eigenverbrauch hängen daran und werden auf Auto zurückgesetzt,
+              // sonst bliebe der Preis der alten Anlage am neuen kWp kleben.
+              setKwp={val => { setCustomKwp(Math.round(val * 10) / 10); setAnlage(4); setOKosten(null); setOEv(null); }}
+              spKwh={spKwh}
+              setSpKwh={val => { setOSpKwh(Math.round(val * 10) / 10); setOKosten(null); setOEv(null); }}
+              grundverbrauch={grundverbrauch}
+              setGrundverbrauch={val => { setOVerbrauch(Math.round(val)); setOEv(null); }}
+              hatGrossverbraucher={extraVerbrauch > 0}
+              effEv={effEv} setOEv={setOEv}
+              effEinspeisungModus={effEinspeisungModus}
               plz={plz} setPlz={setPlz} plzLoading={plzLoading} plzSource={plzSource} fetchPvgis={fetchPvgis}
+            />
+
+            {/* Einspeisung und Vergütung: aus der Karte oben herausgezogen und mit
+                den Konditionen (heute / Entwurf ab 2027) in EINEN aufklappbaren
+                Abschnitt zusammengelegt. Zugeklappt steht der gewählte Zustand
+                in der Kopfzeile. */}
+            <ResultVerguetung
+              modus={effEinspeisungModus} setModus={setEinspeisungModus}
+              vollDisabled={vollDisabled} effEinsp={effEinsp} setOEinsp={setOEinsp}
+              regime={regime} setRegime={setRegime}
+              marktErloes={marktErloes} setMarktErloes={setMarktErloes}
+              niveauCt={oMarktwert ?? MARKTWERT_NIVEAU_CT} setNiveauCt={setOMarktwert}
+              profilFaktor={marktSim.profilFaktor}
+              einspeiseAnteil={marktSim.einspeiseAnteil}
+              verlauf={einspeiseVerlaufJahre}
+              heuteSatzCt={effEinsp}
+              vollGewaehlt={effEinspeisungModus === "voll"}
+              marktWirkungEuro={marktWirkungEuro}
+              // „Eigener Satz" ist kein zusätzlicher Zustand, sondern genau der
+              // Fall „Satz von Hand gesetzt" (oEinsp). Zwei Quellen für dieselbe
+              // Aussage wären genau die Drift, die dieses Projekt teuer bezahlt.
+              eigenerSatz={oEinsp !== null}
+              setEigenerSatz={b => setOEinsp(b ? effEinsp : null)}
+              setHeuteSatzCt={val => setOEinsp(val)}
             />
 
             {/* ── Die Stellschrauben des Ergebnisses ──────────────────────────
@@ -1211,70 +1294,59 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               }}>Genauer berechnen</button>
             </ResultSection>
 
-            <ResultSection
-              title="Batteriespeicher"
-              summary={`${spKwh} kWh`}
-              aktiv={speicher > 0}
-              setAktiv={an => { setSpeicher(an ? 2 : 0); setOEv(null); }}
-              aktivLabel="Batteriespeicher mitrechnen"
-            >
-              <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-secondary'), marginBottom: 8 }}>Kapazität</div>
-              <ChoiceButtons
-                options={SPEICHER.filter(s => s.kwh > 0)}
-                selected={SPEICHER.filter(s => s.kwh > 0).findIndex(s => s.kwh === spKwh)}
-                onSelect={i => {
-                  const gewaehlt = SPEICHER.filter(s => s.kwh > 0)[i];
-                  setSpeicher(SPEICHER.findIndex(s => s.kwh === gewaehlt.kwh));
-                  setOEv(null);
-                }}
-                render={s => s.label}
-              />
-              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
-                Der Speicher hebt Eigenverbrauch und Autarkie — und kostet extra. Die Investition oben passt sich nicht automatisch an; trag sie an, wenn du einen konkreten Preis hast.
-              </div>
-            </ResultSection>
+            {/* Woraus sich der Jahresverbrauch zusammensetzt — reine ANZEIGE.
+                Die Eingabe des Haushaltsverbrauchs sitzt in der Karte oben; zwei
+                Eingabefelder für dieselbe Zahl wären genau die Doppelung, gegen
+                die das Inflow-Register gebaut ist.
 
-            {/* Stromverbrauch — editierbar, mit Aufschlüsselung wenn WP/E-Auto aktiv */}
-            <div style={{
-              background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16,
-              border: `1px solid ${v('--color-border')}`,
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-secondary') }}>Stromverbrauch Haushalt</span>
-                <InlineEdit value={grundverbrauch} onCommit={val => { setOVerbrauch(Math.round(val)); setOEv(null); }} unit=" kWh" step={100} min={500} max={30000} width={72} />
-              </div>
-              {extraVerbrauch > 0 && (
-                <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px dashed ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.8 }}>
-                  {wp !== "nein" && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span>+ Wärmepumpe</span>
-                      <span style={{ fontFamily: v('--font-mono') }}>{(wpKwh ?? 0).toLocaleString("de-DE")} kWh</span>
-                    </div>
-                  )}
-                  {ea !== "nein" && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span>+ E-Auto</span>
-                      <span style={{ fontFamily: v('--font-mono') }}>{calcExtraConsumption("nein", ea, eaKm).toLocaleString("de-DE")} kWh</span>
-                    </div>
-                  )}
-                  {klima !== "nein" && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span>+ Klimaanlage{klimaKwh !== null ? " *" : ""}</span>
-                      <span style={{ fontFamily: v('--font-mono') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh</span>
-                    </div>
-                  )}
-                  <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, color: v('--color-text-primary'), marginTop: 2 }}>
-                    <span>Gesamt</span>
-                    <span style={{ fontFamily: v('--font-mono') }}>{gesamtVerbrauch.toLocaleString("de-DE")} kWh</span>
-                  </div>
-                  {klimaKwh !== null && (
-                    <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.4 }}>
-                      * Kühlstrom aus den Details bzw. dem <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none" }}>Klimaanlagen-Rechner</Link> übernommen. Räume ändern für die Schnellschätzung.
-                    </div>
-                  )}
+                Dieser Block ist die einzige Stelle, die den Gesamtverbrauch
+                nennt — und der ist die Grundlage für Eigenverbrauch und
+                Autarkie. Beim Zusammenführen der beiden Zweige war er kurzzeitig
+                ganz verschwunden: die Karte zeigte 3.800 kWh Haushalt, die
+                Autarkie bezog sich auf 13.029, und diese Zahl stand nirgends. */}
+            {extraVerbrauch > 0 && (
+              <div style={{
+                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16,
+                border: `1px solid ${v('--color-border')}`,
+                fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.8,
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span>Haushalt</span>
+                  <span style={{ fontFamily: v('--font-mono') }}>{grundverbrauch.toLocaleString("de-DE")} kWh</span>
                 </div>
-              )}
-            </div>
+                {wp !== "nein" && (
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>+ Wärmepumpe</span>
+                    <span style={{ fontFamily: v('--font-mono') }}>{(wpKwh ?? 0).toLocaleString("de-DE")} kWh</span>
+                  </div>
+                )}
+                {ea !== "nein" && (
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>+ E-Auto</span>
+                    <span style={{ fontFamily: v('--font-mono') }}>{calcExtraConsumption("nein", ea, eaKm).toLocaleString("de-DE")} kWh</span>
+                  </div>
+                )}
+                {klima !== "nein" && (
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>+ Klimaanlage{klimaKwh !== null ? " *" : ""}</span>
+                    <span style={{ fontFamily: v('--font-mono') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh</span>
+                  </div>
+                )}
+                <div style={{
+                  display: "flex", justifyContent: "space-between", fontWeight: 700,
+                  color: v('--color-text-primary'), marginTop: 4, paddingTop: 6,
+                  borderTop: `1px dashed ${v('--color-border')}`,
+                }}>
+                  <span>Verbrauch gesamt</span>
+                  <span style={{ fontFamily: v('--font-mono') }}>{gesamtVerbrauch.toLocaleString("de-DE")} kWh</span>
+                </div>
+                {klimaKwh !== null && (
+                  <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.4 }}>
+                    * Kühlstrom aus den Details bzw. dem <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none" }}>Klimaanlagen-Rechner</Link> übernommen. Räume ändern für die Schnellschätzung.
+                  </div>
+                )}
+              </div>
+            )}
 
             <ResultFunding
               loading={fundingLoading}
@@ -1439,24 +1511,17 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6,
             }}>
               <Link href="/methodik" onClick={() => trackEvent("pv_methodik")} style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
-              <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
+              {/* Der Nachsatz muss dem gewählten Regime folgen: „fix 20 J." ist
+                  im Entwurfs-Modus schlicht falsch — dort gibt es genau das
+                  nicht mehr. */}
+              <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · {
+                effEinspeisungModus === "aus"
+                  ? "ohne Einspeisevergütung gerechnet"
+                  : regime === "reform2027"
+                    ? "Einspeisung nach dem Entwurf ab 2027"
+                    : "Einspeisevergütung fix 20 J."
+              }</span>
             </div>
-
-            {/* Vergütungsregime: heute oder Entwurf ab 2027, mit abschaltbarer
-                Marktrechnung. Nur sinnvoll, wenn überhaupt eingespeist wird —
-                bei „Einspeisung aus" ändert das Regime an der Rechnung nichts. */}
-            {effEinspeisungModus !== "aus" && (
-              <ResultRegime
-                regime={regime} setRegime={setRegime}
-                marktErloes={marktErloes} setMarktErloes={setMarktErloes}
-                niveauCt={oMarktwert ?? MARKTWERT_NIVEAU_CT} setNiveauCt={setOMarktwert}
-                profilFaktor={marktSim.profilFaktor}
-                einspeiseAnteil={marktSim.einspeiseAnteil}
-                verlauf={einspeiseVerlaufJahre}
-                heuteSatzCt={effEinsp}
-                vollGewaehlt={effEinspeisungModus === "voll"}
-              />
-            )}
 
             <ResultActions
               copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}

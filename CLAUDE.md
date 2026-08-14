@@ -201,7 +201,7 @@ Diese Entscheidungen sind bewusst so gefallen und dürfen nicht „aufgeräumt" 
 
 ## Embed-Widgets (Energie-Widgets)
 
-Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Simulation, Kennzahl, EE-Ampel, PV-Zubau, **Förder-Check**). Galerie mit Live-Vorschau + Copy-Paste-Code: `app/(site)/energie-widgets`. **Alle Widgets sind auf einem Stand — beim Bauen eines neuen dieselbe Konvention einhalten:**
+Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Simulation, Kennzahl, EE-Ampel, PV-Zubau, Einspeisevergütungs-Verlauf, **Förder-Check**). Galerie mit Live-Vorschau + Copy-Paste-Code: `app/(site)/energie-widgets`. **Alle Widgets sind auf einem Stand — beim Bauen eines neuen dieselbe Konvention einhalten:**
 
 **Geteilte Bausteine (nicht neu erfinden, keine Inline-Kopien):**
 - `lib/useWidgetTheme.ts` — **einziger** Theming-Weg (`useWidgetTheme({ onSettings })`): wendet das Theme aus URL-Param + same-origin postMessage auf `--widget-*` an; `onSettings` liefert die funktionalen Flags.
@@ -288,6 +288,19 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Sim
 - **Schließen** per Escape, Klick daneben und ×. **Fokus** wandert beim Öffnen in den Dialog, bleibt per Tab-Falle darin und springt beim Schließen auf das auslösende Element zurück. Die Seite dahinter scrollt nicht mit. Gerendert per Portal an `document.body`.
 
 **Die Fokus-Falle beim Nachbauen:** Der Mechanik-Effekt darf NICHT am `onClose`-Callback hängen (die Aufrufer übergeben eine frische Inline-Funktion pro Render) — sonst läuft sein Aufräumen mitten im Tippen und reißt den Fokus aus dem Eingabefeld. Deshalb `onCloseRef` + Effekt nur an `open`. Genau solche Details sind der Grund für den geteilten Baustein: es gab drei handgebaute Overlays, die sich in Fokus-Rückgabe, Tab-Falle, Scroll-Sperre und Mobil-Verhalten unterschieden. **Ausgenommen ist bewusst das Burger-Menü im Header** (`components/Header.tsx`): ein Navigations-Flyout, kein Dialog — es darf weder den Fokus fangen noch als Sheet einfahren.
+
+## Ergebnis-Abschnitte — BLOCKER
+
+**`components/ResultSection.tsx` ist DER aufklappbare Abschnitt im Ergebnis. Er wird nicht pro Stelle als `<details>` nachgebaut.** Die Ergebnis-Karte oben trägt das Ergebnis und die wenigen Kernzahlen; alles, was mehr als eine Zahl ist — eine Rechtslage, ein Preispfad, eine Aufschlüsselung, eine Verfeinerung der Eingaben —, steht darunter in solchen Abschnitten, in jedem Rechner gleich.
+
+- **Zugeklappt trägt die Kopfzeile den gewählten Zustand** (`summary`), nicht das Wort „Details". Ein eingeklappter Block, dem man nicht ansieht, wonach gerade gerechnet wird, versteckt eine Annahme — das ist schlimmer als eine überladene Karte. Beispiele: „Teileinspeisung · 7,70 ct · 20 Jahre", „Satteldach · Ost / West".
+- **Verhalten kommt aus dem Baustein:** Kopfzeile ist der Schalter (`aria-expanded`, `aria-controls`), Inhalt ist eine `region`, der Chevron dreht, das Einblenden läuft über `.sc-acc` und schaltet sich bei `prefers-reduced-motion` ab. Zu als Voreinstellung (`defaultOpen` nur, wo der Abschnitt die Hauptaussage der Seite trägt).
+- **Was NICHT in die Ergebnis-Karte gehört:** eine Entscheidung mit Konditionen daran. Die Einspeisung stand bis 07.08.2026 als Dreifach-Schalter im Kennzahlen-Grid, ihre Konditionen (heute / Entwurf ab 2027, Börsenerlös, Marktwert) als eigene Karte am Seitenende — zwei Orte für eine Sache, und der zweite so weit weg, dass niemand mehr sah, was er bewirkt. Jetzt: `_components/ResultVerguetung.tsx`.
+- **Ein Schalter, dessen Wirkung erst Jahre später einsetzt, nennt seine Wirkung selbst.** Der Börsenerlös-Haken zeigt den Unterschied zwischen an und aus in Euro über die Laufzeit. Ohne diese Zeile klickt man ihn und sieht nichts: Die Amortisation in ganzen Jahren bewegt sich davon meist nicht.
+- **Ein Wert, den das gewählte Modell gar nicht verwendet, wird nicht zum Editieren angeboten.** Der Vergütungssatz ist nur im heutigen Recht eine Zahl; im Entwurf ist er ein Verlauf, dort verschwindet das Eingabefeld. Für alles, was der Rechner nicht kennt (Bestandsanlage, abweichender Bescheid), gibt es den Reiter „Eigener Satz" als Rückfallebene — er ist kein eigener Zustand im Code, sondern genau der Fall „Satz von Hand gesetzt".
+- **Ein Schalter trägt seine Detailfrage selbst.** Im Abschnitt „Stromverbrauch" hat jeder Großverbraucher eine Zeile mit Schalter, seinem Anteil in kWh und seiner Detailangabe direkt darunter (`_components/ResultVerbrauch.tsx`). Vorher standen alle Details gesammelt unter der Schalterreihe — die Laufleistung des Autos hing dadurch unter dem Speicher-Schalter. Und der Speicher gehört gar nicht in diese Reihe: Er verbraucht nichts, er ist Teil der Anlage und steht in der Ergebnis-Karte.
+
+Migrationsstand: PV-Rechner (Einspeisung und Vergütung · Stromverbrauch). Wärmepumpe, Klima und Balkon ziehen nach — jede Umstellung ist eine sichtbare Änderung und braucht ihre Abnahme.
 
 ## Flow-Schritte — Interaktions-Konvention
 

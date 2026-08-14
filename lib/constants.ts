@@ -139,7 +139,10 @@ export const SCENARIOS = [
     explain: "Günstige Entwicklung: Steigt der Strompreis kräftig (+5 %/Jahr), lohnt sich jede selbst genutzte Kilowattstunde stärker." },
 ];
 
-export const SHARE_KEYS = ["a", "s", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "az", "ng", "bl", "foe", "vb", "kl", "km2", "klr", "klwh", "wf", "wi", "wh", "wht", "sc", "rg", "mk", "mw"];
+// Vereinigung beider Zweige: `az`/`ng` (Ausrichtung, Neigung) und `sk` (freie
+// Speichergröße) sind unabhängig voneinander entstanden. Fehlt einer, rechnet
+// der Empfänger eines geteilten Links etwas anderes als der Absender.
+export const SHARE_KEYS = ["a", "s", "sk", "p", "n", "wp", "ea", "k", "ev", "st", "ei", "eia", "er", "ck", "km", "plz", "flow", "ht", "da", "az", "ng", "bl", "foe", "vb", "kl", "km2", "klr", "klwh", "wf", "wi", "wh", "wht", "sc", "rg", "mk", "mw"];
 
 // ─── Empfehlungs-Flow ───────────────────────────────────────────────────────
 // footprint = nutzbare Dachfläche (Empfehlung); wpFaktor = Heizlast-Faktor durch

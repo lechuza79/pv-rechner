@@ -21,7 +21,15 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
 
 **Prüfen (preis-/politikabhängig):**
 - `begGrundfoerderung` / `begKlimaBonus` / `begEffizienzBonus` /
-  `begEinkommensBonus` / `begMaxCap` / `begMaxRate` — BAFA/KfW BEG
+  `begEinkommensBonus` / `begMaxCap` / `begMaxRate` — BAFA/KfW BEG.
+  **Zwei davon sinken am 01.02.2027 planmäßig, danach halbjährlich zum 01.02. und
+  01.08.:** `begMaxCap` um 750 € je Schritt, `begKlimaBonus` um 4 Prozentpunkte je
+  Schritt (ab Antragstellung 01.08.2028 entfällt er ganz). Termin und Schrittweite
+  stehen bereits im Merkblatt 458 — das ist keine Prognose, sondern ein Fahrplan.
+  Der Marker `OFFEN (bis 01/2027)` in `lib/heatpump-config.ts` lässt den Frist-Test
+  rechtzeitig anschlagen; beim Nachziehen die Frist **mitschieben, nicht streichen**,
+  weil der nächste Schritt schon feststeht. Die neuen Werte trotzdem am Merkblatt
+  ablesen statt fortzurechnen — die Schrittweite kann der Gesetzgeber ändern.
 - `investLwwpBase` / `investLwwpPerKw` / `investSwwpBase` / `investSwwpPerKw` /
   `heizkoerperTauschKosten` — **Leitquelle: die jährliche Auswertung echter
   Wärmepumpen-Angebote der Verbraucherzentrale Rheinland-Pfalz** (2025er Ausgabe

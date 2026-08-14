@@ -42,6 +42,35 @@ test.describe("Rechner flow", () => {
     expect(bodyText).toMatch(/\d.*(€|Jahre|Jahr)/);
   });
 
+  // Der Abschnitt „Einspeisung und Vergütung" trägt seinen Zustand in der
+  // Kopfzeile — zugeklappt ist das die einzige Stelle, an der ein Nutzer sieht,
+  // mit welchem Satz gerechnet wird. Genau das wird hier geprüft, samt der
+  // Rückfallebene „Eigener Satz" für Bestandsanlagen.
+  test("Vergütungs-Abschnitt zeigt seinen Zustand und nimmt einen eigenen Satz an", async ({ page }) => {
+    await page.goto("/photovoltaik-rechner?a=2&s=2&p=2&n=1&wp=nein&ea=nein");
+
+    const kopf = page.getByRole("button", { name: /Einspeisung und Vergütung/ }).first();
+    await expect(kopf).toBeVisible({ timeout: 10_000 });
+    // Zugeklappt: Modus, Satz und Laufzeit stehen in der Kopfzeile.
+    await expect(kopf).toContainText("Teileinspeisung");
+    await expect(kopf).toContainText("ct");
+    await expect(kopf).toHaveAttribute("aria-expanded", "false");
+
+    await kopf.click();
+    await expect(kopf).toHaveAttribute("aria-expanded", "true");
+
+    // Dritter Reiter: eigener Satz statt des amtlichen Werts.
+    await page.getByRole("button", { name: /Eigener Satz/ }).first().click();
+    // InlineEdit: der Wert ist ein role="button" mit Aria-Label „… bearbeiten",
+    // der Klick tauscht ihn gegen ein fokussiertes Eingabefeld (ohne type-Attribut).
+    await page.getByRole("button", { name: /ct bearbeiten/ }).first().click();
+    const input = page.locator("input:focus");
+    await input.fill("12,3");
+    await input.press("Enter");
+
+    await expect(kopf).toContainText("eigener Satz 12,30 ct");
+  });
+
   test("share URL with params loads straight to the result page", async ({ page }) => {
     // Standard config: 10 kWp, 10 kWh storage, 3-4 persons, teils zuhause, no WP/EA.
     // Param shape from lib/calc.ts:paramInt → 'a' (anlage idx 2 = 10 kWp), 's' (speicher idx 2 = 10 kWh),
