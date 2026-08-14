@@ -22,7 +22,7 @@ import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
 import GlossaryTerm from "../../../components/GlossaryTerm";
-import { calcExtraConsumption, calcEaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "../../../lib/consumption";
+import { calcExtraConsumption, calcEaAnnual, KLIMA_DEFAULT_M2, EA_KWH_PER_KM, type HouseholdProfile } from "../../../lib/consumption";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 import { calcAircon } from "../../../lib/aircon";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
@@ -40,7 +40,7 @@ import { useChartExport } from "../../../lib/useChartExport";
 import { trackEvent } from "../../../lib/analytics";
 import ChartExportBar from "../../../components/ChartExportBar";
 import ResultHeroCard from "./_components/ResultHeroCard";
-import QuickSettings from "./_components/QuickSettings";
+import ResultSection from "../../../components/ResultSection";
 import ResultStats from "./_components/ResultStats";
 import ResultActions from "./_components/ResultActions";
 import ResultFunding from "./_components/ResultFunding";
@@ -115,6 +115,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   };
   const gebaeudeZusammenfassung = () =>
     `${HAUSTYP_WP[wpHaustyp].label} · ${wpWohnflaeche} m² · ${INSULATION_BESTAND[wpInsulation].label}`;
+  const dachZusammenfassung = () =>
+    dachartIdx !== null && ausrichtung !== null
+      ? `${DACHARTEN[dachartIdx].label} · ${TILT_ORIENTATIONS.find(o => o.key === ausrichtung)?.label}`
+        + (neigungGrad !== null ? ` · ${neigungGrad}°` : "")
+      : "nicht angegeben";
 
   // Progressive Disclosure im Großverbraucher-Step: welche Detail-Fragen der
   // Nutzer schon aktiv beantwortet hat (kein Preset vorausgewählt) + welche zum
@@ -1115,72 +1120,119 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               plz={plz} setPlz={setPlz} plzLoading={plzLoading} plzSource={plzSource} fetchPvgis={fetchPvgis}
             />
 
-            {/* Dach — dieselbe Abfrage wie im Flow, hier zum Nachjustieren.
-                Eine Angabe, die eine Zahl im Ergebnis bewegt, muss im Ergebnis
-                auch erreichbar sein; sonst steht dort ein Wert, den niemand mehr
-                korrigieren kann. */}
-            <details style={{
-              background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16,
-              border: `1px solid ${v('--color-border')}`,
-            }}>
-              <summary style={{ cursor: "pointer", fontSize: 13, fontWeight: 600, color: v('--color-text-secondary'), display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                <span>Dach und Ausrichtung</span>
-                <span style={{ fontSize: 12, fontWeight: 500, color: v('--color-text-muted') }}>
-                  {dachartIdx !== null && ausrichtung !== null
-                    ? `${DACHARTEN[dachartIdx].label} · ${TILT_ORIENTATIONS.find(o => o.key === ausrichtung)?.label}`
-                    : "nicht angegeben"}
-                </span>
-              </summary>
-              <div style={{ marginTop: 14 }}>
-                <DachField
-                  dachartIdx={dachartIdx}
-                  setDachartIdx={setDachartIdx}
-                  ausrichtung={ausrichtung}
-                  setAusrichtung={setAusrichtung}
-                  neigungGrad={neigungGrad}
-                  setNeigungGrad={setNeigungGrad}
-                  beantwortet={new Set(DACH_FIELDS)}
-                  markiereBeantwortet={markGvAnswered}
-                  bearbeitet={gvEditing}
-                  setBearbeitet={setGvEditing}
-                  hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource, neigungGrad)}
-                />
-              </div>
-            </details>
+            {/* ── Die Stellschrauben des Ergebnisses ──────────────────────────
+                Jeder Posten ein Abschnitt: Kopfzeile trägt den Zustand, Schalter
+                nimmt ihn aus der Rechnung (Eingaben bleiben erhalten), Aufklappen
+                zeigt die Details. Ein Muster für alle — vorher standen hier zwei
+                handgebaute Aufklapper und daneben eine Reihe nackter Häkchen, die
+                zwar an- und ausschalten konnte, aber nichts einstellen. */}
 
-            {/* Gebäude der Wärmepumpe — derselbe Baustein wie im Flow.
-                Bis 07.08.2026 war die Wärmepumpe im Ergebnis nur ein Häkchen:
-                der größte Verbrauchsposten rechnete mit Standardannahmen, die
-                von hier aus niemand korrigieren konnte. */}
-            {wp !== "nein" && (
-              <details style={{
-                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "12px 16px", marginBottom: 16,
-                border: `1px solid ${v('--color-border')}`,
-              }}>
-                <summary style={{ cursor: "pointer", fontSize: 13, fontWeight: 600, color: v('--color-text-secondary'), display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                  <span>Gebäude der Wärmepumpe</span>
-                  <span style={{ fontSize: 12, fontWeight: 500, color: v('--color-text-muted') }}>
-                    {gebaeudeZusammenfassung()}
-                  </span>
-                </summary>
-                <div style={{ marginTop: 14 }}>
-                  <GebaeudeField
-                    werte={gebaeudeWerte}
-                    setWerte={setGebaeudeWerte}
-                    /* Im Ergebnis steht bereits eine Zahl — dort sind alle vier
-                       Fragen offen, statt nacheinander aufzutauchen. Sonst
-                       müsste man sich durchklicken, um eine einzelne zu ändern. */
-                    beantwortet={new Set(WP_FIELDS)}
-                    markiereBeantwortet={markGvAnswered}
-                    bearbeitet={gvEditing}
-                    setBearbeitet={setGvEditing}
-                    hinweis={wpKwh != null
-                      ? `Daraus ergeben sich rund ${wpKwh.toLocaleString("de-DE")} kWh Heizstrom pro Jahr.`
-                      : undefined}
-                  />
-                </div>
-              </details>
-            )}
+            {/* Das Dach lässt sich nicht abschalten — es hat keinen Schalter. */}
+            <ResultSection
+              title="Dach und Ausrichtung"
+              summary={dachZusammenfassung()}
+            >
+              <DachField
+                dachartIdx={dachartIdx}
+                setDachartIdx={setDachartIdx}
+                ausrichtung={ausrichtung}
+                setAusrichtung={setAusrichtung}
+                neigungGrad={neigungGrad}
+                setNeigungGrad={setNeigungGrad}
+                beantwortet={new Set(DACH_FIELDS)}
+                markiereBeantwortet={markGvAnswered}
+                bearbeitet={gvEditing}
+                setBearbeitet={setGvEditing}
+                hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource, neigungGrad)}
+              />
+            </ResultSection>
+
+            <ResultSection
+              title="Wärmepumpe"
+              summary={`${gebaeudeZusammenfassung()} · ${(wpKwh ?? 0).toLocaleString("de-DE")} kWh`}
+              aktiv={wp !== "nein"}
+              setAktiv={an => { setWp(an ? "ja" : "nein"); setOEv(null); }}
+              aktivLabel="Wärmepumpe mitrechnen"
+            >
+              <GebaeudeField
+                werte={gebaeudeWerte}
+                setWerte={setGebaeudeWerte}
+                beantwortet={new Set(WP_FIELDS)}
+                markiereBeantwortet={markGvAnswered}
+                bearbeitet={gvEditing}
+                setBearbeitet={setGvEditing}
+                hinweis={wpKwh != null
+                  ? `Daraus ergeben sich rund ${wpKwh.toLocaleString("de-DE")} kWh Heizstrom pro Jahr.`
+                  : undefined}
+              />
+            </ResultSection>
+
+            <ResultSection
+              title="E-Auto"
+              summary={`${eaKm.toLocaleString("de-DE")} km · ${calcExtraConsumption("nein", "ja", eaKm).toLocaleString("de-DE")} kWh`}
+              aktiv={ea !== "nein"}
+              setAktiv={an => { setEa(an ? "ja" : "nein"); setOEv(null); }}
+              aktivLabel="E-Auto mitrechnen"
+            >
+              <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-secondary'), marginBottom: 8 }}>Laufleistung im Jahr</div>
+              <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                {EA_KM_PRESETS.map(km => (
+                  <button key={km} onClick={() => { setEaKm(km); setOEv(null); }} style={{
+                    padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                    background: eaKm === km ? v('--color-accent-dim') : v('--color-bg-muted'),
+                    border: eaKm === km ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                    color: eaKm === km ? v('--color-accent') : v('--color-text-muted'),
+                  }}>{km.toLocaleString("de-DE")} km</button>
+                ))}
+                <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km"
+                  onCommit={n => { setEaKm(n); setOEv(null); }} />
+              </div>
+              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
+                Gerechnet mit {Math.round(EA_KWH_PER_KM * 100)} kWh je 100 km. Geladen wird zum Teil tagsüber — das hebt den Eigenverbrauch.
+              </div>
+            </ResultSection>
+
+            <ResultSection
+              title="Klimaanlage"
+              summary={`${klimaRooms} ${klimaRooms === 1 ? "Raum" : "Räume"} · ${klimaKwhEff.toLocaleString("de-DE")} kWh`}
+              aktiv={klima !== "nein"}
+              setAktiv={an => { setKlima(an ? "ja" : "nein"); setOEv(null); }}
+              aktivLabel="Klimaanlage mitrechnen"
+            >
+              <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-secondary'), marginBottom: 8 }}>Gekühlte Räume</div>
+              <ChoiceButtons options={[1, 2, 3, 4, 5]} selected={klimaRooms - 1}
+                onSelect={i => { setKlimaRoomsManual(i + 1); setOEv(null); }} render={n => n} />
+              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
+                Schnellschätzung aus Räumen und Standort. Kühlen fällt mittags an, wenn die Sonne scheint — das hebt den Eigenverbrauch am stärksten.
+              </div>
+              <button onClick={() => setKlimaDetailOpen(true)} style={{
+                marginTop: 10, padding: "7px 12px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700,
+                background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-accent'), cursor: "pointer",
+              }}>Genauer berechnen</button>
+            </ResultSection>
+
+            <ResultSection
+              title="Batteriespeicher"
+              summary={`${spKwh} kWh`}
+              aktiv={speicher > 0}
+              setAktiv={an => { setSpeicher(an ? 2 : 0); setOEv(null); }}
+              aktivLabel="Batteriespeicher mitrechnen"
+            >
+              <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-secondary'), marginBottom: 8 }}>Kapazität</div>
+              <ChoiceButtons
+                options={SPEICHER.filter(s => s.kwh > 0)}
+                selected={SPEICHER.filter(s => s.kwh > 0).findIndex(s => s.kwh === spKwh)}
+                onSelect={i => {
+                  const gewaehlt = SPEICHER.filter(s => s.kwh > 0)[i];
+                  setSpeicher(SPEICHER.findIndex(s => s.kwh === gewaehlt.kwh));
+                  setOEv(null);
+                }}
+                render={s => s.label}
+              />
+              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
+                Der Speicher hebt Eigenverbrauch und Autarkie — und kostet extra. Die Investition oben passt sich nicht automatisch an; trag sie an, wenn du einen konkreten Preis hast.
+              </div>
+            </ResultSection>
 
             {/* Stromverbrauch — editierbar, mit Aufschlüsselung wenn WP/E-Auto aktiv */}
             <div style={{
@@ -1285,15 +1337,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               </details>
             )}
 
-            <QuickSettings
-              wp={wp} setWp={setWp} ea={ea} setEa={setEa} eaKm={eaKm} setEaKm={setEaKm}
-              klima={klima} setKlima={setKlima} klimaRooms={klimaRooms} setKlimaRooms={setKlimaRoomsManual}
-              onKlimaDetails={() => setKlimaDetailOpen(true)}
-              speicher={speicher} setSpeicher={setSpeicher} spKwh={spKwh}
-              oKosten={oKosten} setOKosten={setOKosten} setOEv={() => setOEv(null)}
-            />
+            {/* Die Reihe „Starke Einflussfaktoren" ist entfallen: Sie konnte
+                jeden Posten an- und ausschalten, aber keinen einstellen — die
+                Einstellungen lagen in getrennten Blöcken darüber. Beides sitzt
+                jetzt in einem Abschnitt je Posten (siehe oben). */}
 
-            
             <ResultStats
               total={sel.data.total} kosten={kosten}
               wp={wp} wpKwh={wpKwh ?? 0} jaz={wpJaz} effEv={effEv} autarkie={autarkie} wpAutarky={pvSim.wpAutarky}
