@@ -145,6 +145,19 @@ export const fmtCo2FaktorKg = (kgProKwh: number): string =>
 export const ctProKwhTeile = (ct: number): Messwert => ({ value: dez(ct, 1), unit: "ct" });
 export const fmtCtProKwh = (ct: number): string => zusammen(ctProKwhTeile(ct));
 
+/**
+ * Hängt den Zeitbezug an eine Einheit: aus „Tsd. t" wird „Tsd. t/Jahr".
+ *
+ * Nur für FLUSSGRÖSSEN. In der Ranking-Tabelle stehen Jahreswerte neben
+ * Bestandsgrößen (Anlagen, Leistung, Speicher) — ohne den Zusatz liest sich
+ * „404 Tsd. t" als „so viel hat die Gemeinde bisher gespart". Der Zeitbezug
+ * gehört deshalb an die Zahl, nicht in den Hilfetext hinter dem „?".
+ *
+ * Bewusst „/Jahr" und nicht „p. a.": Die Abkürzung ist korrekt, setzt aber
+ * Vorwissen voraus, und die Seite schreibt Klartext.
+ */
+export const proJahr = (m: Messwert): Messwert => ({ value: m.value, unit: `${m.unit}/Jahr` });
+
 /** Geldbeträge (rechnerischer Stromwert): € → Tsd. € → Mio. € → Mrd. €. */
 export function euroTeile(euro: number): Messwert {
   if (euro >= 1_000_000_000) return { value: kompakt(euro / 1_000_000_000), unit: "Mrd. €" };

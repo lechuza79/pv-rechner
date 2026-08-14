@@ -11,6 +11,7 @@ import {
   euroTeile,
   fmtCo2FaktorKg,
   fmtCtProKwh,
+  proJahr,
   pvLeistungTeile,
   speicherKwhTeile,
   wattProKopfTeile,
@@ -115,8 +116,10 @@ function cellTeile(row: Row, m: Metric): Messwert {
   if (m === "perCapita") {
     return row.perCapita === null ? { value: "—", unit: "" } : wattProKopfTeile(row.perCapita);
   }
-  if (m === "co2") return co2TonnenTeile(row.co2);
-  if (m === "wert") return euroTeile(row.wertEuro);
+  // Die beiden Wirkungs-Spalten sind Jahreswerte und stehen neben vier
+  // Bestandsgrößen — der Zeitbezug muss an der Zahl stehen, nicht im Tooltip.
+  if (m === "co2") return proJahr(co2TonnenTeile(row.co2));
+  if (m === "wert") return proJahr(euroTeile(row.wertEuro));
   return { value: nf(row[m] as number), unit: "" };
 }
 
@@ -964,7 +967,7 @@ const S: Record<string, React.CSSProperties> = {
     whiteSpace: "nowrap",
     maxWidth: "100%",
   },
-  hint: { fontSize: 10, lineHeight: 1.2, color: v("--color-text-faint"), whiteSpace: "nowrap" },
+  hint: { fontSize: 10, lineHeight: 1.2, color: v("--color-text-muted"), whiteSpace: "nowrap" },
   // The bar sits under the number in the sorted column, not in a column of its
   // own: a header names a measure, and "the bar" is not one — it is that measure,
   // drawn.
@@ -989,13 +992,14 @@ const S: Record<string, React.CSSProperties> = {
   // Gleiche Größe und Farbe wie die Einwohnerzahl unter dem Namen: beide sind
   // die kleine Zusatzangabe ihrer Zelle.
   //
-  // ACHTUNG, bewusste Entscheidung des Betreibers (07.08.2026): `faint` ist
-  // laut Kontrast-Audit (docs/audit-backlog-2026-07-19.md §4) für Platzhalter
-  // reserviert, nicht für tragenden Text — gemessen 3,47:1 gegen den
-  // Zeilenhintergrund, WCAG AA verlangt 4,5:1. Gewollt war der größere Abstand
-  // zur Zahl darüber. Wer das zurückdreht, nimmt `--color-text-muted` (4,8:1);
-  // der Größenunterschied allein trägt die Staffelung auch dann noch.
-  valUnit: { fontSize: 10, color: v("--color-text-faint"), whiteSpace: "nowrap", lineHeight: 1.2 },
+  // `muted` ist die hellste Stufe, die als tragender Text zulässig ist (4,8:1
+  // gegen den Zeilenhintergrund; WCAG AA verlangt 4,5:1). Kurzzeitig stand hier
+  // `faint` — heller, aber laut Kontrast-Audit (docs/audit-backlog-2026-07-19.md
+  // §4) für Platzhalter reserviert und mit 3,47:1 unter der Schwelle. Das ist
+  // ausgerechnet für die Einheit die falsche Sparsamkeit: Sie ist es, die aus
+  // „5.028" ein „5.028 Wp" macht. Die Staffelung zur Zahl darüber trägt der
+  // Größen- und Gewichtsunterschied (13 px/700 gegen 10 px/normal).
+  valUnit: { fontSize: 10, color: v("--color-text-muted"), whiteSpace: "nowrap", lineHeight: 1.2 },
   track: { display: "block", width: "100%", height: 4, marginTop: 2, background: v("--color-border"), borderRadius: 2 },
   // Links verankert → der Balken wächst nach rechts (kein marginLeft:auto mehr).
   fill: { display: "block", height: "100%", borderRadius: 2 },
