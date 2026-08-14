@@ -31,7 +31,10 @@ export { ertragForRegionId };
  * Die Bundesland-Erträge (BL_ERTRAG) gelten für OPTIMALE Ausrichtung — der
  * echte Bestand (gemischte Ausrichtungen, Ost-West-Dächer, Verschattung,
  * Degradation) erzeugt deutlich weniger. Ohne diese Korrektur behauptete die
- * Tabelle für Deutschland fast das Doppelte der tatsächlichen Erzeugung.
+ * Tabelle für Deutschland rund ein Drittel mehr als die tatsächliche Erzeugung
+ * (114 statt 87 TWh). Hier stand einmal „fast das Doppelte" — falsch, und in
+ * der bequemen Richtung: Der Fehler ließ die Korrektur wichtiger aussehen,
+ * als sie ist.
  *
  * Anker (Fraunhofer ISE, Jahresbilanz Stromerzeugung 2025, geprüft am
  * 06.08.2026 im Original-Pressetext): Ende 2025 waren 116,8 GW installiert,
@@ -57,13 +60,25 @@ export const PRAXIS_FAKTOR =
 export const ATLAS_GRID_CO2 = DEFAULT_HEATPUMP_CONFIG.gridCo2PerKwh;
 
 /**
- * Annahme: Anteil des Solarstroms, der selbst verbraucht wird (Rest wird
- * eingespeist). ~30 % ist der typische Wert einer Dachanlage ohne Speicher
- * (HTW Berlin, Unabhängigkeitsrechner — dieselbe Datenbasis wie das
- * Eigenverbrauchs-Power-Law in lib/calc.ts). Für den Anlagen-MIX einer Region
- * (inkl. Speicher-Haushalte und Freiflächen) ist das eine bewusst grobe, offen
- * kommunizierte Annahme — sie steckt nur im DEFAULT des Strompreis-Werts, den
- * die Oberfläche editierbar macht.
+ * Annahme: Anteil des Solarstroms eines privaten Dachs, der selbst verbraucht
+ * wird (Rest wird eingespeist).
+ *
+ * OFFEN (bis 12/2026): Diese Zahl ist die schwächste Stelle der Geld-Spalte.
+ * Hier stand als Begründung, 30 % sei „der typische Wert einer Dachanlage ohne
+ * Speicher, dieselbe Datenbasis wie lib/calc.ts". Beides war falsch:
+ * `calcEigenverbrauch` (das projekteigene HTW-Power-Law) liefert für die
+ * mittlere deutsche Dachanlage (9,8 kWp) beim hier gerechneten Ertrag nur
+ * 13–20 % OHNE Speicher — die 30 % erreicht es erst MIT rund 8 kWh Speicher.
+ * Der Satz stand also am optimistischen Rand, gestützt auf eine Quelle, die
+ * ihn nicht trägt.
+ *
+ * Warum er trotzdem vorerst bleibt: Wie groß der Speicheranteil im REALEN
+ * Bestand einer Region ist, weiß die Tabelle zwar (Segment `batterie_privat`
+ * liegt in derselben Zelle), aber ihn korrekt auf die Dachanlagen umzulegen
+ * ist eine eigene Rechnung — und ein Wechsel auf 15 % ohne diese Umlage wäre
+ * nur ein anderer ungeankerter Wert. Der saubere Weg ist `calcEigenverbrauch`
+ * mit den Größen der Region (mittlere Anlagengröße = kwp/count, Speicher je
+ * Dachanlage aus der Batterie-Zelle).
  */
 export const EIGENVERBRAUCH_ANTEIL_ANNAHME = 0.3;
 

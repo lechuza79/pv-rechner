@@ -51,7 +51,11 @@ describe("Flotten-Kalibrierung (Realitäts-Anker)", () => {
   it("trifft die gemessene Erzeugung des deutschen Bestands 2025", () => {
     // Fraunhofer ISE, Jahresbilanz 2025: im Jahresmittel ~108,7 GW installierte
     // Leistung erzeugten ~87 TWh (Netz + Eigenverbrauch). Ein Modell, das den
-    // Bestand mit Optimal-Erträgen rechnet, läge bei ~137 TWh — der Test
+    // Bestand mit Optimal-Erträgen rechnet (108,7 GW × ~1.050 kWh/kWp
+    // Bundesschnitt), läge bei ~114 TWh statt 87 — rund ein Drittel zu hoch.
+    // Eine frühere Fassung dieses Kommentars behauptete hier 137 TWh; die Zahl
+    // war falsch und wäre beim nächsten Nachrechnen als Beleg weitergereicht
+    // worden. Der Test
     // schlägt an, wenn diese Fehlerklasse zurückkommt.
     const twh = erzeugungKwh(108_700_000, "") / 1_000_000_000;
     expect(twh).toBeGreaterThan(82);

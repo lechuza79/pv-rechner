@@ -75,7 +75,11 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
   },
   {
     key: "speicher",
-    label: "Speicher",
+    // NICHT „Speicher": Gezählt werden nur Batterien. Die Schwesterkomponenten
+    // (GemeindeHero, gemeinde-solar) schreiben deshalb „Batteriespeicher" und
+    // begründen es mit „wie auf der Atlas-Seite" — die Kürzung aus Platzgründen
+    // hatte diese Begründung stillschweigend falsch gemacht.
+    label: "Batterien",
     hint: "Nutzbare Kapazität der Batteriespeicher, nicht ihre Leistung. Eine Hausbatterie hält typisch 5 bis 15 kWh. Pumpspeicher sind nicht enthalten.",
   },
 ];
