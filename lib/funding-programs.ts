@@ -431,47 +431,76 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     pvPerKwp: 150, pvCap: 1500,
   },
+  // Der Status stand bis zum 14.08.2026 auf „unsicher", weil zwei städtische
+  // Seiten sich zu widersprechen schienen. Sie tun es nicht: Die Übersichtsseite
+  // trägt oben einen Kasten „Förderstopp — einige Förderprogramme sind derzeit
+  // ausgesetzt", der drei ANDERE Programme meint (Energieeffizienz in
+  // Unternehmen/Vereinen, Wassermanagement, Mobilität); direkt darunter steht
+  // beim PV-Programm „Antragstellung ab 1. Juli 2026 wieder möglich". Der
+  // Widerspruch war ein falsch zugeordneter Seitenkopf — Council 3/3 am
+  // 14.08.2026, adversarialer Prüfer eingeschlossen.
+  //
+  // BEWUSST OHNE automatischen Abzug (kein pvPerKwp): Der Zuschuss hängt am
+  // Anlagenteil ÜBER der PV-Pflicht BW, und der Topf ist mit dem
+  // Starkregen-Programm geteilt (250.000 € im Nachtragshaushalt 2026, kein
+  // Rechtsanspruch). Ein automatisch abgezogener Betrag wäre ein Geldversprechen,
+  // das die Richtlinie in dieser Form nicht gibt.
   "heidelberg-rev": {
     id: "heidelberg-rev", name: "Rationelle Energieverwendung – Photovoltaik",
     traeger: "Stadt Heidelberg", level: "kommune", region: "Heidelberg", bundesland: "Baden-Württemberg", agsCode: "08221",
-    url: "https://www.heidelberg.de/hd/HD/Leben/foerderbaustein+_photovoltaikanlagen_.html", stand: "Juni 2026",
-    status: "unsicher", capped: true, verified: false,
+    url: "https://www.heidelberg.de/hd/HD/Leben/foerderbaustein+_photovoltaikanlagen_.html", stand: "August 2026",
+    status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp (Dach + Fassade); kein Speicher",
+    coveredCosts: "Zuschuss je kWp (Dach + Fassade), max. 10.000 € je Objekt; kein Speicher",
     rates: [
-      { label: "Dach-PV", value: "100 €/kWp" },
-      { label: "Fassade / aufgeständert auf Gründach", value: "200 €/kWp" },
-      { label: "Mieterstrom", value: "50 %, max. 2.500 €" },
+      { label: "Dach-PV (bis 100 kWp)", value: "100 €/kWp, max. 10.000 €" },
+      { label: "Fassade / aufgeständert auf Gründach oder über Parkplatz (bis 50 kWp)", value: "200 €/kWp, max. 10.000 €" },
+      { label: "Mieterstrom / gemeinschaftliche Gebäudeversorgung", value: "50 % der investiven Kosten, max. 2.500 €" },
     ],
     conditions: [
-      "Stand unsicher: zwei städtische Seiten widersprechen sich (pausiert vs. aktiv) — vor Antrag direkt prüfen",
-      "kein Batteriespeicher und keine Wallbox gefördert",
-      "Antrag vor Kauf/Installation",
+      "Gefördert nur der Anlagenteil über der PV-Pflicht Baden-Württemberg (Pauschalnachweis 0,06 kWp je m² überbauter Grundstücksfläche); Anlagen außerhalb der PV-Pflicht werden vollständig gefördert",
+      "kein Batteriespeicher, keine Wallbox und keine steckerfertigen Anlagen gefördert",
+      "Antrag vor Kauf/Installation: bis zur Bewilligung darf kein Liefer- oder Leistungsvertrag geschlossen sein",
+      "Anlage muss mindestens 15 Jahre in Heidelberg betrieben werden; Zuschüsse unter 150 € werden nicht bewilligt",
+      "Mittel begrenzt und mit dem Programm Starkregen- und Hochwasserschutz geteilt (250.000 € im Nachtragshaushalt 2026); kein Rechtsanspruch",
     ],
     combinableWith: BUND,
   },
   "mannheim-solarbonus": {
     id: "mannheim-solarbonus", name: "SolarBonus Mannheim",
     traeger: "Stadt Mannheim / Klimaschutzagentur", level: "kommune", region: "Mannheim", bundesland: "Baden-Württemberg", agsCode: "08222",
-    // Der bisherige Link antwortete am 05.08.2026 mit einem Serverfehler; die Stadt
-    // verweist in ihrer eigenen Mitteilung zum Neustart auf klima-ma.de/foerderprogramme.
-    // Die Einschränkung auf Mehrfamilienhäuser, Gründach und Denkmal ist dort wörtlich
-    // bestätigt ("Auf Ein- und Zweifamilienhäusern werden nur noch Photovoltaikanlagen
-    // gefördert, wenn das Dach begrünt ist oder das Gebäude unter Denkmalschutz steht");
-    // die Sätze je kWp nennt die Mitteilung nicht, deshalb bleibt verified: false.
+    // Am 07.08.2026 aus der Förderrichtlinie selbst abgeschrieben — bis dahin stand hier
+    // nur, was die Presse-Mitteilung der Stadt hergab (verified: false). Volltext im Repo:
+    // docs/quellen/Mannheim_SolarBonus_Foerderrichtlinie_2026-03-11.pdf (Beschluss des
+    // Gemeinderats vom 11.03.2026, ersetzt die Fassung vom 01.04.2025).
+    // Die Programmseite selbst ist eine JS-Anwendung ohne Text im Quelltext; die Sätze
+    // stehen zusätzlich in ihrer Datenschnittstelle (api.klima-ma.de/api/subsidies,
+    // Eintrag "SolarBonus 2026 der Stadt Mannheim"). Achtung: die .html-Variante des
+    // Pfades antwortet mit einem Serverfehler — die hier hinterlegte Adresse trägt.
+    // WIDERSPRUCH zwischen zwei Trägerquellen bei der Fassade: Die Seitenübersicht nennt
+    // max. 3.750 €, die Richtlinie unter 3.4 max. 3.000 €. Wir folgen der Richtlinie —
+    // sie ist der Gemeinderatsbeschluss, die Übersicht nur seine Zusammenfassung.
     url: "https://www.klima-ma.de/foerderprogramme", stand: "August 2026",
-    status: "aktiv", capped: true, verified: false,
+    status: "aktiv", capped: true, verified: true,
     eligibility: ["privat"],
-    coveredCosts: "Zuschuss je kWp — seit Neustart 03/2026 nur Mehrfamilienhäuser, Gründach oder Denkmal (nicht Standard-Einfamilienhaus-Dach)",
+    coveredCosts: "Zuschuss je kWp — nur Bestandswohngebäude (Bauantrag vor dem 01.05.2022) und nur in Sonderfällen: Mehrfamilienhaus mit Mieterstrom, Gründach, Denkmal, Fassade oder gemeinnütziger Verein. Ein gewöhnliches Ein-/Zweifamilienhaus-Dach wird nicht gefördert",
     rates: [
-      { label: "Aufdach (nur Mehrfamilienhaus, ab 20 kWp / Vollbelegung)", value: "120 €/kWp, max. 2.400 €" },
-      { label: "auf Dachbegrünung", value: "260 €/kWp, max. 4.000 €" },
-      { label: "Fassade / Denkmal", value: "250–300 €/kWp" },
+      { label: "Mehrfamilienhaus ab 3 Wohneinheiten (Vollbelegung oder ab 20 kWp), nur mit Mieterstrom oder gemeinschaftlicher Gebäudeversorgung", value: "120 €/kWp, max. 2.400 €" },
+      { label: "PV auf Dachbegrünung", value: "260 €/kWp, max. 4.000 €" },
+      { label: "PV auf denkmalgeschütztem Gebäude", value: "300 €/kWp, max. 4.500 €" },
+      { label: "Fassaden-PV und Solarzäune (ab 1,5 kWp)", value: "250 €/kWp, max. 3.000 €" },
+      { label: "PV auf Gebäuden gemeinnütziger Vereine (Vollbelegung oder ab 30 kWp)", value: "140 €/kWp, max. 4.200 €" },
+      { label: "Umsetzung des Mieterstrom-/Betriebskonzepts (MFH, WEG)", value: "50 % der Kosten, max. 3.000 €" },
     ],
     conditions: [
-      "Programm zum 11.03.2026 neu gestartet (neue Förderrichtlinie)",
-      "Ein-/Zweifamilienhäuser aufdach nur noch bei Dachbegrünung oder Denkmalschutz förderfähig",
-      "Standard-Aufdach nur Mehrfamilienhäuser (3+ Wohneinheiten) oder ab 20 kWp; Antrag vor Beauftragung",
+      "Nur für Gebäude, für die der Bauantrag vor dem 01.05.2022 gestellt wurde — Neubauten sind ausgeschlossen (Nr. 1.1 der Richtlinie)",
+      "Ein-/Zweifamilienhäuser nur bei begrüntem Dach oder Denkmalschutz förderfähig; ein gewöhnliches Dach bekommt nichts",
+      "Beim Mehrfamilienhaus ist ein gleichzeitig umgesetztes Mieterstrommodell oder eine gemeinschaftliche Gebäudeversorgung zwingende Voraussetzung, nicht nur ein Zusatzbaustein",
+      "Antragsberechtigt sind private Wohngebäudeeigentümer samt Eigentümergemeinschaften sowie eingetragene gemeinnützige Vereine",
+      "Antrag vor der Beauftragung; nach der vorläufigen Zusage bleiben 12 Monate für Installation und Verwendungsnachweis",
+      "Nur Anlagen von Fachbetrieben; selbst beschaffte Anlagenteile und über Mietmodelle finanzierte Anlagen sind ausgeschlossen",
+      "Einmalig je PV-Anlage und Objekt; nicht mit dem Balkon-SolarBonus der Stadt kombinierbar",
+      "Mittel werden erst bei vollständigem Antrag reserviert und nur im Rahmen des Haushalts vergeben",
     ],
     combinableWith: BUND,
   },

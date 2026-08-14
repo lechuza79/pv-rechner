@@ -46,6 +46,22 @@ export interface HeatPumpConfig {
   // Radiator replacement cost (triggered when old radiators selected)
   heizkoerperTauschKosten: number;
   // BEG funding rates — KfW Merkblatt Nr. 458 (BEG EM), gültig ab 21.07.2026 (GmodG)
+  //
+  // OFFEN (bis 01/2027): Zwei dieser Werte sinken am 01.02.2027 planmäßig — der
+  // Termin und die Schrittweite stehen bereits im Merkblatt, nicht erst in einer
+  // künftigen Ankündigung. Ohne diese Frist stünden ab dem 01.02.2027 zwei zu
+  // hohe Förderwerte im Rechner, bis der Quartals-Wächter zufällig darüber läuft;
+  // der Frist-Test (lib/__tests__/offene-punkte-waechter.test.ts) schlägt jetzt
+  // vorher an. Beide Schritte wiederholen sich danach halbjährlich zum 01.02. und
+  // 01.08. — beim Nachziehen also die Frist mitschieben, nicht streichen:
+  //   begMaxCap      −750 € je Schritt (28.000 → 27.250 am 01.02.2027)
+  //   begKlimaBonus  −4 Prozentpunkte je Schritt (16 % → 12 % am 01.02.2027);
+  //                  ab Antragstellung 01.08.2028 entfällt er ganz
+  // Maßgeblich ist der Zeitpunkt der Antragstellung. Beleg: KfW-Merkblatt 458,
+  // Abschnitte „Klimageschwindigkeitsbonus" und „Obergrenze des Fördersatzes und
+  // Höchstbetrag der förderfähigen Gesamtkosten" (am 08.08.2026 im Volltext
+  // geprüft). Die Werte selbst bleiben Vorschlag an den Menschen, nicht Auto-Fix
+  // (Wächter-Gate, Teil 4: „BEG-Sätze bleiben Vorschlag").
   begGrundfoerderung: number;    // 30% — jeder Heizungstausch im Bestand
   begKlimaBonus: number;         // 16% — Bestand, Austausch funktionsfähige fossile Heizung (Eigennutzer); sinkt ab 01.02.2027
   // Einkommens-Bonus: gestaffelt nach zu versteuerndem Haushaltsjahreseinkommen.

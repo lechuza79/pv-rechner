@@ -29,9 +29,11 @@ import { YEAR } from "../constants";
 
 // ─── CO2 price path (BEHG → EU ETS2), anchored to absolute calendar years ────
 describe("co2PriceForCalendarYear", () => {
-  it("uses the legislated BEHG corridor for 2026 and 2027", () => {
+  // 2026 is law; 2027 is the corridor from a bill the cabinet passed on
+  // 2026-08-12 — NOT law yet. The old title said "legislated" for both.
+  it("uses the BEHG corridor floor for 2026 and the (draft) ceiling for 2027", () => {
     expect(co2PriceForCalendarYear(2026)).toBe(55); // corridor floor (conservative)
-    expect(co2PriceForCalendarYear(2027)).toBe(65); // corridor ceiling (frozen 2027)
+    expect(co2PriceForCalendarYear(2027)).toBe(65); // corridor ceiling (draft freeze)
   });
 
   it("extrapolates +8 €/t per year for the ETS2 free market from 2028", () => {

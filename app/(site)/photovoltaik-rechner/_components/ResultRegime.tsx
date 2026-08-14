@@ -40,6 +40,12 @@ export interface ResultRegimeProps {
   verlauf: RegimeJahr[];
   /** Heutiger Satz in ct/kWh, für den Vergleich. */
   heuteSatzCt: number;
+  /** Ist im Ergebnis Volleinspeisung gewählt? Der Entwurf streicht den
+   *  Volleinspeisungs-Aufschlag für Neuanlagen (§ 48 Abs. 2a EEG 2023 entfällt,
+   *  Begründung S. 248/250) — der Schalter bleibt bewusst bedienbar
+   *  (Betreiber-Entscheidung 05.08.2026), aber der Reform-Zweig erklärt,
+   *  dass sich Volleinspeisen dann nicht mehr lohnt. */
+  vollGewaehlt: boolean;
 }
 
 const card = {
@@ -75,7 +81,7 @@ function Schalter({ aktiv, onClick, children }: { aktiv: boolean; onClick: () =>
 
 export default function ResultRegime({
   regime, setRegime, marktErloes, setMarktErloes, niveauCt, setNiveauCt,
-  profilFaktor, einspeiseAnteil, verlauf, heuteSatzCt,
+  profilFaktor, einspeiseAnteil, verlauf, heuteSatzCt, vollGewaehlt,
 }: ResultRegimeProps) {
   const reform = regime === "reform2027";
   const uebergang = verlauf.find((j) => j.art === "uebergang");
@@ -125,6 +131,13 @@ export default function ResultRegime({
                 Für diese Anlagengröße sieht der Entwurf im gewählten Inbetriebnahmejahr keine
                 Übergangszahlung vor — der Strom müsste von Anfang an über einen Dienstleister an
                 der Börse verkauft werden.
+              </>
+            )}
+            {vollGewaehlt && (
+              <>
+                {" "}Den Aufschlag fürs Volleinspeisen gäbe es nach dem Entwurf nicht mehr —
+                eingespeister Strom bringt dann denselben Satz, egal ob du zusätzlich selbst
+                verbrauchst. Damit lohnt sich Volleinspeisen nicht mehr.
               </>
             )}
             {verlustProzent > 0 && (

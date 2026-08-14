@@ -10,6 +10,10 @@ export const CONTACT_TOPICS = [
   // vorbelegt, damit der Mail-Betreff aus dieser Allowlist bleibt.
   "Widget für eine Kommune",
   "Neues Widget anfragen",
+  // Eigener Punkt für den Teaser auf /methodik: Wer die Berechnungsgrundlagen
+  // im Detail nutzen will (eigenes Tool, Veröffentlichung), soll im Postfach
+  // ohne Lesen der Nachricht erkennbar sein.
+  "Methodik & Datengrundlage",
   "Kooperation / Partnerschaft",
   "Feature vorschlagen",
   "Fehler melden",

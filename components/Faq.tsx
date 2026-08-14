@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import { FaqEntry, FaqLink } from "../lib/faq";
 import { IconChevronDown } from "./Icons";
-import { v, iconSizes } from "../lib/theme";
+import { iconSizes, space, v } from "../lib/theme";
 import { jsonLdHtml } from "../lib/json-ld";
 
 // Visible FAQ accordion + matching FAQPage JSON-LD, both rendered from the same
@@ -86,7 +86,10 @@ export default function Faq({
   };
 
   return (
-    <section style={{ marginTop: 32, marginBottom: 24 }}>
+    // Deutlicher Abstand zum Inhalt darüber (Betreiber-Vorgabe ~100px, 2×huge
+    // aus der Abstands-Skala) — zentral hier, damit er auf jeder Seite mit
+    // FAQ-Block identisch ist.
+    <section style={{ marginTop: space.huge * 2, marginBottom: 24 }}>
       <style dangerouslySetInnerHTML={{ __html: faqCss }} />
       <script
         type="application/ld+json"

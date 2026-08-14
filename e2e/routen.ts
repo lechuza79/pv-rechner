@@ -13,6 +13,7 @@ export const SEITEN: Seite[] = [
   { pfad: "/klimaanlage-stromkosten", erwartet: /klima|kühl/i },
   { pfad: "/balkonkraftwerk-rechner", erwartet: /balkon/i },
   { pfad: "/einspeiseverguetung-rechner", erwartet: /einspeisevergütung/i },
+  { pfad: "/einspeiseverguetung-tabelle", erwartet: /einspeisevergütung/i },
   { pfad: "/photovoltaik-neigungswinkel", erwartet: /neigungswinkel/i },
   // Atlas — beide Routen, inkl. einer echten Gemeindeseite
   { pfad: "/solar-atlas", erwartet: /atlas|solaranlagen/i },
@@ -40,6 +41,9 @@ export const SEITEN: Seite[] = [
   { pfad: "/atomstrom-import", erwartet: /atomstrom|kernstrom/i },
   { pfad: "/langzeit-strommix", erwartet: /strommix/i },
   { pfad: "/datenstand", erwartet: /stand|daten/i },
+  // Methodik trägt seit dem Kontakt-Teaser ein Client-Bauteil — ohne Rundgang
+  // wäre ein Fehler darin unsichtbar (Seite liefert weiter HTTP 200).
+  { pfad: "/methodik", erwartet: /so rechnen wir/i },
 ];
 
 /** Die Embed-Widgets sind das Produkt, das wir an Kommunen verteilen — sie
@@ -56,6 +60,7 @@ export const EMBEDS: string[] = [
   "/embed/region-solarleistung?bl=13",
   "/embed/simulation?plz=10115",
   "/embed/pv-zubau-deutschland",
+  "/embed/einspeiseverguetung-verlauf",
   "/embed/ee-ampel",
   "/embed/karte",
   "/embed/foerder-check",

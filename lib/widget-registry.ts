@@ -148,6 +148,16 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.ember],
     cta: { label: "Ländervergleich ansehen", href: "/laendervergleich" },
   },
+  einspeiseVerlauf: {
+    id: "einspeiseverguetung-verlauf",
+    title: "Einspeisevergütung seit 2000",
+    kind: "chart",
+    shareUrl: `${SITE}/einspeiseverguetung-tabelle`,
+    shareText:
+      "Einspeisevergütung für kleine Dachanlagen seit 2000 – vom Spitzenwert 2004 bis heute, mit den politischen Weichenstellungen",
+    sources: [DATA_SOURCES.eegVerguetung],
+    cta: { label: "Alle Sätze nachschlagen", href: "/einspeiseverguetung-tabelle" },
+  },
   pvZubau: {
     id: "pv-zubau-deutschland",
     title: "Photovoltaik-Zubau in Deutschland",

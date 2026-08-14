@@ -60,6 +60,16 @@ export const RATGEBER: RatgeberEntry[] = [
     updated: "2026-08-04",
   },
   {
+    // Top-Level-Keyword-Slug wie /photovoltaik-neigungswinkel: die historische
+    // Tabelle ist das Alleinstellungsmerkmal, „einspeisevergütung tabelle" das
+    // erreichbare Keyword (DataForSEO 08/2026: 1.600/Monat, geringe Konkurrenz).
+    slug: "/einspeiseverguetung-tabelle",
+    title: "Einspeisevergütung: aktuelle Sätze & Tabelle seit 2000",
+    teaser:
+      "Alle Vergütungssätze zum Nachschlagen: aktuelle Werte, Halbjahres-Sätze seit 2022, die amtliche Monatstabelle 2012–2022 für Bestandsanlagen und die Jahreswerte zurück bis 2000 — mit dem Verlaufs-Chart und seinen Weichenstellungen.",
+    updated: "2026-08-06",
+  },
+  {
     slug: "/ratgeber/gasheizung-oder-waermepumpe",
     title: "Gasheizung oder Wärmepumpe: Was rechnet sich noch?",
     teaser:

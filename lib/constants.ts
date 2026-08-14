@@ -152,11 +152,17 @@ export const HAUSTYPEN = [
   { label: "Großes EFH", sub: "Freistehend, große Dachfläche", footprint: 150, wpFaktor: 1.0 },
 ];
 
+// typNeigung = typische Modulneigung je Dachform (Modellannahme, Grad):
+// Satteldach 30–45° → 35, Walmdach 25–35° → 30, Pultdach 10–20° → 15,
+// Flachdach aufgeständert 10–15° → 10 (deckt sich mit dem Hinweis auf
+// /photovoltaik-neigungswinkel). Wird mit lib/tilt-config.ts → tiltPct() zur
+// Ertrags-Verfeinerung kombiniert — Grad-Abfrage beim Nutzer wäre Schein-
+// genauigkeit, die Dachform kennt jeder.
 export const DACHARTEN = [
-  { label: "Satteldach", sub: "Klassisch, eine Dachseite", factor: 0.40 },
-  { label: "Flachdach", sub: "Aufständerung möglich", factor: 0.65 },
-  { label: "Walmdach", sub: "4 Seiten, weniger Fläche", factor: 0.30 },
-  { label: "Pultdach", sub: "Einseitig geneigt, sehr gut", factor: 0.55 },
+  { label: "Satteldach", sub: "Klassisch, eine Dachseite", factor: 0.40, typNeigung: 35 },
+  { label: "Flachdach", sub: "Aufständerung möglich", factor: 0.65, typNeigung: 10 },
+  { label: "Walmdach", sub: "4 Seiten, weniger Fläche", factor: 0.30, typNeigung: 30 },
+  { label: "Pultdach", sub: "Einseitig geneigt, sehr gut", factor: 0.55, typNeigung: 15 },
 ];
 
 // ─── Wärmepumpen-Flow ───────────────────────────────────────────────────────

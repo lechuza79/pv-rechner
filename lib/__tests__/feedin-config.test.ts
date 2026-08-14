@@ -4,8 +4,10 @@ import {
   FEED_IN_SCHEDULE,
   feedInDegressionSteps,
   feedInEndIso,
+  feedInPeriodsSince2022,
   feedInRatesFor,
   feedInRatesForCommissioning,
+  naechsteDegressionIso,
 } from "../feedin-config";
 
 /**
@@ -208,6 +210,49 @@ describe("Sätze nach Inbetriebnahme (Bestandsanlagen-Ableitung)", () => {
     expect(kette.teilOver10).toBe(plan.teilOver10);
     expect(kette.vollUnder10).toBe(plan.vollUnder10);
     expect(kette.vollOver10).toBe(plan.vollOver10);
+  });
+
+  it("die Perioden-Tabelle deckt lückenlos 30.07.2022 bis heute ab und erfindet keine Zukunft", () => {
+    // Die Ratgeber-Tabelle zeigt genau diese Perioden. Grenzen falsch = ein
+    // Nutzer liest für seinen Inbetriebnahme-Monat den falschen Satz ab.
+    const heute = new Date("2026-08-04T12:00:00Z");
+    const perioden = feedInPeriodsSince2022(heute);
+    // Bis 31.01.2024 setzte die Degression aus → eine zusammengefasste Periode.
+    expect(perioden[0].fromIso).toBe("2022-07-30");
+    expect(perioden[0].toIso).toBe("2024-01-31");
+    expect(perioden[0].rates.teilUnder10).toBe(8.2);
+    expect(perioden[0].rates.vollUnder10).toBe(13.0);
+    // Danach halbjährlich: 02/2024, 08/2024, 02/2025, 08/2025, 02/2026, 08/2026.
+    expect(perioden.map((p) => p.fromIso)).toEqual([
+      "2022-07-30", "2024-02-01", "2024-08-01",
+      "2025-02-01", "2025-08-01", "2026-02-01", "2026-08-01",
+    ]);
+    // Lückenlos: jede Periode endet am Vortag der nächsten.
+    for (let i = 0; i + 1 < perioden.length; i++) {
+      const next = new Date(`${perioden[i].toIso}T00:00:00Z`);
+      next.setUTCDate(next.getUTCDate() + 1);
+      expect(next.toISOString().slice(0, 10)).toBe(perioden[i + 1].fromIso);
+    }
+    // Laufende Periode: offen und identisch mit dem Stichtags-Plan.
+    const letzte = perioden[perioden.length - 1];
+    expect(letzte.toIso).toBeNull();
+    expect(letzte.rates.teilUnder10).toBe(feedInRatesFor(heute).teilUnder10);
+    // Sätze kommen 1:1 aus der geprüften Kette (keine zweite Rechenquelle).
+    for (const p of perioden) {
+      expect(p.rates).toEqual(feedInRatesForCommissioning(p.fromIso));
+    }
+    // Vor einem Stichtag taucht die künftige Periode nicht auf.
+    const vorStichtag = feedInPeriodsSince2022(new Date("2026-07-31T12:00:00Z"));
+    expect(vorStichtag[vorStichtag.length - 1].fromIso).toBe("2026-02-01");
+  });
+
+  it("der nächste Degressions-Stichtag folgt der 1.2./1.8.-Regel (auch an den Kanten)", () => {
+    expect(naechsteDegressionIso("2026-08-06")).toBe("2027-02-01");
+    expect(naechsteDegressionIso("2026-08-01")).toBe("2027-02-01"); // am Stichtag selbst: der nächste
+    expect(naechsteDegressionIso("2026-07-31")).toBe("2026-08-01");
+    expect(naechsteDegressionIso("2027-01-31")).toBe("2027-02-01");
+    expect(naechsteDegressionIso("2026-12-31")).toBe("2027-02-01"); // Jahreswechsel
+    expect(naechsteDegressionIso("2026-02-01")).toBe("2026-08-01");
   });
 
   it("die Vergütung endet am 31.12. des zwanzigsten Jahres (§ 25 EEG)", () => {
