@@ -431,22 +431,38 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     combinableWith: BUND,
     pvPerKwp: 150, pvCap: 1500,
   },
+  // Der Status stand bis zum 14.08.2026 auf „unsicher", weil zwei städtische
+  // Seiten sich zu widersprechen schienen. Sie tun es nicht: Die Übersichtsseite
+  // trägt oben einen Kasten „Förderstopp — einige Förderprogramme sind derzeit
+  // ausgesetzt", der drei ANDERE Programme meint (Energieeffizienz in
+  // Unternehmen/Vereinen, Wassermanagement, Mobilität); direkt darunter steht
+  // beim PV-Programm „Antragstellung ab 1. Juli 2026 wieder möglich". Der
+  // Widerspruch war ein falsch zugeordneter Seitenkopf — Council 3/3 am
+  // 14.08.2026, adversarialer Prüfer eingeschlossen.
+  //
+  // BEWUSST OHNE automatischen Abzug (kein pvPerKwp): Der Zuschuss hängt am
+  // Anlagenteil ÜBER der PV-Pflicht BW, und der Topf ist mit dem
+  // Starkregen-Programm geteilt (250.000 € im Nachtragshaushalt 2026, kein
+  // Rechtsanspruch). Ein automatisch abgezogener Betrag wäre ein Geldversprechen,
+  // das die Richtlinie in dieser Form nicht gibt.
   "heidelberg-rev": {
     id: "heidelberg-rev", name: "Rationelle Energieverwendung – Photovoltaik",
     traeger: "Stadt Heidelberg", level: "kommune", region: "Heidelberg", bundesland: "Baden-Württemberg", agsCode: "08221",
-    url: "https://www.heidelberg.de/hd/HD/Leben/foerderbaustein+_photovoltaikanlagen_.html", stand: "Juni 2026",
-    status: "unsicher", capped: true, verified: false,
+    url: "https://www.heidelberg.de/hd/HD/Leben/foerderbaustein+_photovoltaikanlagen_.html", stand: "August 2026",
+    status: "aktiv", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp (Dach + Fassade); kein Speicher",
+    coveredCosts: "Zuschuss je kWp (Dach + Fassade), max. 10.000 € je Objekt; kein Speicher",
     rates: [
-      { label: "Dach-PV", value: "100 €/kWp" },
-      { label: "Fassade / aufgeständert auf Gründach", value: "200 €/kWp" },
-      { label: "Mieterstrom", value: "50 %, max. 2.500 €" },
+      { label: "Dach-PV (bis 100 kWp)", value: "100 €/kWp, max. 10.000 €" },
+      { label: "Fassade / aufgeständert auf Gründach oder über Parkplatz (bis 50 kWp)", value: "200 €/kWp, max. 10.000 €" },
+      { label: "Mieterstrom / gemeinschaftliche Gebäudeversorgung", value: "50 % der investiven Kosten, max. 2.500 €" },
     ],
     conditions: [
-      "Stand unsicher: zwei städtische Seiten widersprechen sich (pausiert vs. aktiv) — vor Antrag direkt prüfen",
-      "kein Batteriespeicher und keine Wallbox gefördert",
-      "Antrag vor Kauf/Installation",
+      "Gefördert nur der Anlagenteil über der PV-Pflicht Baden-Württemberg (Pauschalnachweis 0,06 kWp je m² überbauter Grundstücksfläche); Anlagen außerhalb der PV-Pflicht werden vollständig gefördert",
+      "kein Batteriespeicher, keine Wallbox und keine steckerfertigen Anlagen gefördert",
+      "Antrag vor Kauf/Installation: bis zur Bewilligung darf kein Liefer- oder Leistungsvertrag geschlossen sein",
+      "Anlage muss mindestens 15 Jahre in Heidelberg betrieben werden; Zuschüsse unter 150 € werden nicht bewilligt",
+      "Mittel begrenzt und mit dem Programm Starkregen- und Hochwasserschutz geteilt (250.000 € im Nachtragshaushalt 2026); kein Rechtsanspruch",
     ],
     combinableWith: BUND,
   },
