@@ -75,3 +75,30 @@ Mitgeben: den aktuellen Inhalt von `lib/co2-config.ts` (`anchors`,
 - **Anker müssen lückenlos sein** (Jahr für Jahr ab dem ersten Anker bis zum
   letzten) — `co2PriceForCalendarYear` extrapoliert erst ab dem Jahr NACH dem
   letzten Anker.
+
+## Der Zustand ist eine eigene Prüfung, nicht Teil des Werts
+
+Der Wert für 2027 (65 €/t) steht seit Mai 2026 fest; sein **Rechtsstand** hat
+sich seitdem dreimal geändert — Koalitionsbeschluss, Referentenentwurf,
+Kabinettsbeschluss (12.08.2026), Zuleitung an den Bundesrat (14.08.2026,
+BR-Drs. 462/26, eilbedürftig, Fristablauf 25.09.2026). Der nächste Schritt ist
+der Bundestagsbeschluss, voraussichtlich Herbst 2026. Jeder dieser Schritte macht
+den Satz auf `/datenstand` falsch, ohne dass sich eine Zahl bewegt.
+
+- Der Zustand steht an **einer** Stelle: `CO2_PRICE.source` (+ Kommentarblock),
+  festgenagelt von `lib/__tests__/co2-rechtsstand.test.ts`.
+- **Zustand ändern ist Auto-Fix-fähig**, wenn eine amtliche Fundstelle vorliegt
+  (Ministerium, Bundesrats-/Bundestags-Drucksache, Bundesgesetzblatt) und der
+  **Wert unverändert** bleibt. Bewegt sich der Wert, gilt weiter: Ermessensfall,
+  kein Auto-Fix.
+- **Nie „Bundestag und Bundesrat müssen zustimmen"** — das BEHG-Änderungsgesetz
+  ist ein Einspruchsgesetz. Derselbe Fehler wurde beim GModG und beim EEG je
+  einmal korrigiert; der Test verbietet ihn jetzt.
+- **`reviewBy` gehört vor den erwarteten nächsten Schritt**, nicht hinter ihn.
+  Stand 14.08.2026 deshalb 30.11.2026 statt Januar 2027.
+
+**Offener Punkt (Frist 11/2026, Marker in `lib/co2-config.ts`):** 2026 und 2027
+haben denselben Korridor (55–65), wir nehmen für 2026 den Boden und für 2027 die
+Decke. Beide Enden sind je für sich begründet, zusammen sind sie eine Asymmetrie,
+die aus den Zahlen niemand ablesen kann — beim nächsten Lauf auflösen oder im
+Methodik-Text ausschreiben.

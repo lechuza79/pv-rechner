@@ -299,6 +299,39 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(p.conditions.join(" ")).not.toMatch(/Mitte Juli/);
   });
 
+  // Heidelberg: Der Eintrag stand als "unsicher" da, weil zwei städtische Seiten
+  // sich zu widersprechen schienen. Der Widerspruch war ein Förderstopp-Kasten,
+  // der drei ANDERE Programme meint. Die Richtlinie 2026 (gültig für Anträge nach
+  // dem 30.06.2026, docs/quellen/Heidelberg_Rationelle-Energieverwendung_
+  // Richtlinie_ab-2026-07-01.pdf, am 14.08.2026 im Volltext gelesen) trägt die
+  // Werte wörtlich. Der 10.000-€-Deckel je Objekt fehlte bei uns komplett —
+  // ein Satz je kWp ohne Deckel schickt Interessenten mit zu hoher Erwartung los.
+  it("Heidelberg: aktiv nach Richtlinie 2026, jeder Satz mit Deckel, kein Abzug", () => {
+    const p = getFundingProgram("heidelberg-rev")!;
+    expect(p.status).toBe("aktiv");
+    expect(p.verified).toBe(true);
+    // Kein automatischer Abzug: der Zuschuss hängt am Anteil über der PV-Pflicht
+    // und der Topf ist geteilt — ein gerechneter Betrag wäre ein Geldversprechen.
+    expect(p.pvPerKwp).toBeUndefined();
+    expect(fundingAmount(p, 10, 5, 20000).computable).toBe(false);
+    expect(stackFunding(fundingForAgs("08221000"), 10, 5, 20000).total).toBe(0);
+    // Beide €/kWp-Sätze nennen ihren Höchstbetrag, zellgleich zur Richtlinie.
+    const wert = (teil: string) => p.rates.find((r) => r.label.includes(teil))!.value;
+    expect(wert("Dach-PV")).toBe("100 €/kWp, max. 10.000 €");
+    expect(wert("Fassade")).toBe("200 €/kWp, max. 10.000 €");
+    expect(wert("Mieterstrom")).toBe("50 % der investiven Kosten, max. 2.500 €");
+    for (const r of p.rates) expect(r.value, `${r.label} ohne Höchstbetrag`).toMatch(/max\./);
+    // Die zwei Bedingungen, an denen es real scheitert: PV-Pflicht-Abzug und Topf.
+    const bed = p.conditions.join(" ");
+    expect(bed).toMatch(/PV-Pflicht Baden-Württemberg/);
+    expect(bed).toMatch(/kein Rechtsanspruch/);
+    // Speicher und Balkonkraftwerk sind ausdrücklich ausgeschlossen.
+    expect(bed).toMatch(/steckerfertige/);
+    expect(p.speicherPerKwh).toBeUndefined();
+    // Der alte Unsicherheits-Hinweis ist weg, nicht bloß umformuliert.
+    expect(bed).not.toMatch(/Stand unsicher/);
+  });
+
   // Regensburg hat NIE Batteriespeicher gefördert. Die hinterlegten 150 €/kWh
   // waren eine Vermischung: Die amtliche Richtlinie vom 01.01.2026 (PDF in
   // docs/quellen/, am 03.08.2026 gelesen) kennt in Tabelle 1 genau zwei

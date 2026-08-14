@@ -43,8 +43,12 @@ describe("archived cities (inactive but published programs)", () => {
     expect(slugs).toContain("karlsruhe"); // ausgeschoepft
     expect(slugs).toContain("duesseldorf"); // pausiert
     expect(slugs).not.toContain("wuerzburg"); // aktiv
-    expect(slugs).not.toContain("heidelberg"); // unsicher → bewusst NICHT veröffentlicht
     expect(slugs).not.toContain("dresden"); // kein Programm
+    // Heidelberg stand hier als Beispiel für "unsicher → bewusst nicht
+    // veröffentlicht". Seit dem 14.08.2026 ist der Status an der Förderrichtlinie
+    // 2026 geklärt (Council 3/3), das Programm läuft — die Stadt ist damit live,
+    // nicht archiviert. Die Regel selbst prüft der Test darunter, ohne Namen.
+    expect(slugs).not.toContain("heidelberg"); // aktiv → live, nicht Archiv
   });
   it("live and archived are disjoint; published is their union", () => {
     const live = new Set(liveCities().map((c) => c.slug));
@@ -54,12 +58,25 @@ describe("archived cities (inactive but published programs)", () => {
     expect(published.size).toBe(live.size + archived.length);
     for (const c of publishedCities()) expect(isCityPublished(c)).toBe(true);
   });
-  it("an 'unsicher' city is neither live nor archived (stays 404)", () => {
+  // Die Regel ohne Namen: Solange wir einem Programm nicht trauen, bekommt seine
+  // Stadt keine Seite — weder live noch als Archiv. Vorher hing dieser Test an
+  // Heidelberg; als dessen Status geklärt war, prüfte er nichts mehr.
+  it("no city with an 'unsicher' program is published (stays 404)", () => {
+    const unsicher = ATLAS_CITIES.filter(
+      (c) => c.fundingId && getFundingProgram(c.fundingId)?.status === "unsicher",
+    );
+    for (const c of unsicher) {
+      expect(isCityLive(c), `${c.slug} live trotz unsicherem Programm`).toBe(false);
+      expect(isCityArchived(c), `${c.slug} archiviert trotz unsicherem Programm`).toBe(false);
+      expect(isCityPublished(c), `${c.slug} veröffentlicht trotz unsicherem Programm`).toBe(false);
+    }
+  });
+
+  it("Heidelberg ist live, seit die Richtlinie 2026 den Status geklärt hat", () => {
     const heidelberg = ATLAS_CITIES.find((c) => c.slug === "heidelberg")!;
-    expect(getFundingProgram(heidelberg.fundingId!)?.status).toBe("unsicher");
-    expect(isCityLive(heidelberg)).toBe(false);
+    expect(getFundingProgram(heidelberg.fundingId!)?.status).toBe("aktiv");
+    expect(isCityLive(heidelberg)).toBe(true);
     expect(isCityArchived(heidelberg)).toBe(false);
-    expect(isCityPublished(heidelberg)).toBe(false);
   });
   it("publishedBundeslaender covers Rheinland-Pfalz (only archived cities there)", () => {
     // Mainz + Mayen-Koblenz sind ausgeschöpft → RLP hat ohne Archiv keine Seite.

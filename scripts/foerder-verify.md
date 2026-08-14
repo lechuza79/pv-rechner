@@ -174,9 +174,19 @@ Status anders), zuerst das **Council** laufen lassen (`scripts/council-verify.md
 — drei unabhängige Verifizierer, einer mit Widerlegungs-Auftrag, prüfen genau
 diesen einen Befund gegen. Förderung ist im Kern ein **Ermessensfall**
 (Kleingedrucktes, „aktiv vs. unsicher", strukturierter Satz vs. kein Abzug) →
-für alles, was den Abzug **erhöht** oder ein Programm **einschaltet**: kein
-Auto-Fix, auch bei Konsens. Den bestätigten Befund als Vorschlag für
-`lib/funding-programs.ts` mailen; der Nutzer gibt frei.
+für alles, was den **Abzug erhöht** (Satz rauf, Deckel rauf, neuer
+strukturierter Satz): kein Auto-Fix, auch bei Konsens. Den bestätigten Befund als
+Vorschlag für `lib/funding-programs.ts` mailen; der Nutzer gibt frei.
+
+**Ein Programm EINSCHALTEN ist davon zu trennen** (Wächter-Gate, Teil 4:
+„Programm einschalten nach Träger-Beleg" steht in der Selbst-Ändern-Spalte, und
+das Gate geht dem Runbook vor). Zulässig, wenn die Richtlinie oder die
+Trägerseite selbst gelesen wurde **und** das Council 3/3 bestätigt. Beim
+Statuswechsel auf `aktiv` immer mitprüfen: Zieht damit auch ein Betrag ab
+(`pvPerKwp` & Co.)? Wenn ja, ist das der Teil, der Vorschlag bleibt — Status und
+Abzug sind zwei Entscheidungen, nicht eine. Und: `status: "aktiv"` **veröffentlicht
+die Stadtseite** (`isCityLive` in `lib/atlas-cities.ts`); das gehört in den
+Bericht, weil damit eine neue indexierbare Seite live geht.
 
 **Auto-Fix ist dagegen Pflicht, wenn beides zutrifft** (kein Ermessen, also auch
 kein Council nötig):
@@ -192,6 +202,32 @@ DB nachgezogen. Eine Nachricht an den Betreiber wäre hier reine Arbeitsverlager
 gewesen: Es gab nichts zu entscheiden, nur etwas abzuschreiben.
 
 ## Changelog
+
+### August 2026 (News-Wächter-Lauf 14.08.)
+- **Heidelberg** — der Eintrag stand seit Juni auf `unsicher` („zwei städtische
+  Seiten widersprechen sich"). Der Widerspruch war keiner: Die Übersichtsseite
+  trägt oben einen Förderstopp-Kasten, der drei **andere** Programme meint
+  (Energieeffizienz Unternehmen/Vereine, Wassermanagement, Mobilität), direkt
+  darunter steht „Antragstellung ab 1. Juli 2026 wieder möglich". Richtlinie 2026
+  beschafft (`docs/quellen/Heidelberg_Rationelle-Energieverwendung_Richtlinie_
+  ab-2026-07-01.pdf`, gilt für Anträge nach dem 30.06.2026, Gemeinderatsbeschluss
+  11.06.2026). Council 3/3 inkl. adversarialem Prüfer. → `unsicher` → `aktiv`,
+  fehlender **Höchstbetrag 10.000 € je Objekt** ergänzt (der stand bei uns
+  nirgends), Leistungsgrenzen (Dach bis 100 kWp, Fassade bis 50 kWp), PV-Pflicht-
+  Abzug, 15-Jahre-Betriebsbindung, Bagatellgrenze 150 € und der Haushaltsvorbehalt
+  ergänzt. **Bewusst weiter ohne `pvPerKwp`**: Der Zuschuss hängt am Anlagenteil
+  über der PV-Pflicht BW, und der Topf (250.000 € Nachtragshaushalt 2026) ist mit
+  dem Starkregen-Programm geteilt, kein Rechtsanspruch — ein automatisch
+  abgezogener Betrag wäre ein Geldversprechen, das die Richtlinie so nicht gibt.
+  Nebenwirkung, gewollt: Die Stadtseite Heidelberg geht damit live.
+- **Bad Homburg** — bleibt `unsicher`. Die Trägerseite nennt die Richtlinie vom
+  17.08.2022 weiter als „aktuell gültig" und bittet um Anträge; die Sätze
+  (300 €/kWp, max. 6.000 €; Speicher 300 €/kWh, max. 3.000 €) sind an der
+  Richtlinie zellgleich bestätigt. **Offen bleibt allein die Haushaltsfrage** —
+  ob die Mittel 2026 noch reichen, sagt keine öffentliche Quelle. Nächster Lauf:
+  bei der Energieberatung (energieberatung@bad-homburg.de, Telefon im Impressum)
+  nachfassen oder eine Haushaltsvorlage der Stadt suchen; nicht auf Aggregatoren
+  stützen, deren „ausgeschöpft" stammt aus 2023.
 
 ### Juli 2026 (Handprüfung Frankfurt, News-Wächter-Lauf 26.07.)
 - **Frankfurt Klimabonus** — DISCREPANCY, per Browser direkt an der Träger-Seite
