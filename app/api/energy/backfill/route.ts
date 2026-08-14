@@ -99,6 +99,95 @@ function aggregateToWeeks(
   return Array.from(buckets.values()).sort((a, b) => a.week_key.localeCompare(b.week_key));
 }
 
+// ─── Aggregate raw data to monthly GWh (energy_monthly) ────────────────────
+
+// Monatssummen für die Solar-Trend-Auswertung (Zubau vs. Wetter). Dieselben
+// Rohdaten wie die Wochen-Aggregation — kein zusätzlicher Upstream-Abruf.
+// Nur VOLLSTÄNDIGE Monate werden geschrieben: ein angebrochener Monat stünde
+// sonst als stille Untertreibung in jeder Vorjahres-Rechnung.
+function aggregateToMonths(
+  data: { ts: string; data: Record<string, string | number | null> }[],
+  country: string,
+): { source: string; metric: string; country: string; period: string; data: Record<string, number> }[] {
+  if (data.length < 2) return [];
+  const t0 = new Date(data[0].ts).getTime();
+  const t1 = new Date(data[1].ts).getTime();
+  const intervalHours = (t1 - t0) / (1000 * 60 * 60);
+  if (!(intervalHours > 0)) return [];
+
+  const buckets = new Map<string, { sums: Record<string, number>; points: number }>();
+  for (const d of data) {
+    // Monatszuordnung in fester +01:00-Konvention — dieselbe, mit der die
+    // Abruf-Zeiträume dieser Route gebildet werden.
+    const period = new Date(new Date(d.ts).getTime() + 3600_000).toISOString().slice(0, 7);
+    let bucket = buckets.get(period);
+    if (!bucket) {
+      bucket = { sums: {}, points: 0 };
+      for (const key of GENERATION_STACK_KEYS) bucket.sums[key] = 0;
+      bucket.sums.load = 0;
+      buckets.set(period, bucket);
+    }
+    bucket.points++;
+    for (const key of GENERATION_STACK_KEYS) {
+      const val = d.data[key];
+      if (typeof val === "number" && val > 0) bucket.sums[key] += (val * intervalHours) / 1000;
+    }
+    const load = d.data.load;
+    if (typeof load === "number" && load > 0) bucket.sums.load += (load * intervalHours) / 1000;
+  }
+
+  const currentPeriod = new Date(Date.now() + 3600_000).toISOString().slice(0, 7);
+  const rows: { source: string; metric: string; country: string; period: string; data: Record<string, number> }[] = [];
+  for (const [period, bucket] of buckets) {
+    if (period >= currentPeriod) continue; // laufender Monat: unvollständig
+    const [y, m] = period.split("-").map(Number);
+    const daysInMonth = new Date(Date.UTC(y, m, 0)).getUTCDate();
+    const expected = (daysInMonth * 24) / intervalHours;
+    if (bucket.points < expected * 0.97) continue; // Datenlücke: lieber gar nicht
+    const rounded: Record<string, number> = {};
+    for (const [k, v] of Object.entries(bucket.sums)) rounded[k] = Math.round(v * 10) / 10;
+    rows.push({ source: "energy-charts", metric: "generation_monthly", country, period, data: rounded });
+  }
+  return rows.sort((a, b) => a.period.localeCompare(b.period));
+}
+
+// Installierte PV-Leistung (Solar DC, GWp) je Monat — Grundlage der
+// Zubau-Komponente. Ein Abruf deckt die komplette Reihe seit 2002 ab;
+// gespeichert wird ab 2015 (Beginn unserer Erzeugungsdaten).
+async function backfillInstalledSolar(country: string): Promise<{ months: number; error?: string }> {
+  if (!supabase) return { months: 0, error: "No database" };
+  try {
+    const res = await fetch(
+      `https://api.energy-charts.info/installed_power?country=${country}&time_step=monthly&installation_decommission=false`,
+      { signal: AbortSignal.timeout(60_000) },
+    );
+    if (!res.ok) return { months: 0, error: `HTTP ${res.status} from api.energy-charts.info` };
+    const json = (await res.json()) as { time: string[]; production_types: { name: string; data: (number | null)[] }[] };
+    const solar = json.production_types.find((p) => p.name === "Solar DC");
+    if (!solar) return { months: 0, error: "Solar DC series missing" };
+
+    const currentPeriod = new Date(Date.now() + 3600_000).toISOString().slice(0, 7);
+    const rows: { source: string; metric: string; country: string; period: string; data: Record<string, number> }[] = [];
+    for (let i = 0; i < json.time.length; i++) {
+      const m = /^(\d{2})\.(\d{4})$/.exec(json.time[i]);
+      const val = solar.data[i];
+      if (!m || typeof val !== "number" || val <= 0) continue;
+      const period = `${m[2]}-${m[1]}`;
+      // Der laufende Monat ist bei Energy-Charts bereits gefüllt (Stand des
+      // Registers), aber unsere Erzeugungs-Monate enden beim Vormonat — mehr
+      // Leistungs-Monate schaden nicht, sie warten auf ihre Erzeugung.
+      if (period < "2015-01" || period > currentPeriod) continue;
+      rows.push({ source: "energy-charts", metric: "installed_solar_monthly", country, period, data: { solar_dc_gw: val } });
+    }
+    if (rows.length === 0) return { months: 0, error: "No rows parsed" };
+    const { error } = await supabase.from("energy_monthly").upsert(rows, { onConflict: "source,metric,country,period" });
+    if (error) return { months: rows.length, error: error.message };
+    return { months: rows.length };
+  } catch (e) {
+    return { months: 0, error: (e as Error).message };
+  }
+}
+
 // ─── Fetch + store one year ────────────────────────────────────────────────
 
 async function calcNuclearImport(
@@ -193,9 +282,45 @@ async function backfillYear(year: number, country: string): Promise<{ year: numb
       .upsert(weeks, { onConflict: "week_key,country" });
 
     if (error) return { year, weeks: weeks.length, error: error.message };
+
+    // Monatssummen aus denselben Rohdaten — Fehler hier sind nicht fatal für
+    // den Wochen-Pfad, tauchen aber im Ergebnis auf.
+    const months = aggregateToMonths(rows, country);
+    if (months.length > 0) {
+      const { error: em } = await supabase
+        .from("energy_monthly")
+        .upsert(months, { onConflict: "source,metric,country,period" });
+      if (em) return { year, weeks: weeks.length, error: `monthly: ${em.message}` };
+    }
     return { year, weeks: weeks.length };
   } catch (e) {
     return { year, weeks: 0, error: (e as Error).message };
+  }
+}
+
+// Nur die Monats-Aggregation eines Jahres (ohne Wochen, ohne Kernimport) —
+// für den einmaligen Rückfüll-Lauf der Trend-Historie deutlich billiger als
+// der volle Jahres-Backfill.
+async function backfillYearMonthlyOnly(year: number, country: string): Promise<{ year: number; months: number; error?: string }> {
+  if (!supabase) return { year, months: 0, error: "No database" };
+  const currentYear = new Date().getFullYear();
+  const startStr = `${year}-01-01T00:00:00+01:00`;
+  const endStr = year === currentYear
+    ? new Date().toISOString().slice(0, 19) + "+01:00"
+    : `${year}-12-31T23:59:59+01:00`;
+  try {
+    // Ein volles Jahr 15-Minuten-Werte ist ein großer Abruf — der 15-s-Default
+    // reicht dafür nicht zuverlässig (die Hälfte der Jahre lief im ersten
+    // Rückfüll-Lauf in die Zeitüberschreitung).
+    const rows = await fetchPublicPower(country, startStr, endStr, 90_000, 3);
+    if (rows.length === 0) return { year, months: 0, error: "No data from Energy-Charts" };
+    const months = aggregateToMonths(rows, country);
+    if (months.length === 0) return { year, months: 0 };
+    const { error } = await supabase.from("energy_monthly").upsert(months, { onConflict: "source,metric,country,period" });
+    if (error) return { year, months: months.length, error: error.message };
+    return { year, months: months.length };
+  } catch (e) {
+    return { year, months: 0, error: (e as Error).message };
   }
 }
 
@@ -216,6 +341,36 @@ export async function GET(req: NextRequest) {
   const yearParam = req.nextUrl.searchParams.get("year");
   const all = req.nextUrl.searchParams.get("all") === "true";
 
+  // Rückfüll-Lauf der Monats-Historie (Trend-Auswertung): nur Monatssummen +
+  // installierte Leistung, ohne den teuren Kernimport-Teil.
+  // GET /api/energy/backfill?monthly=all      → 2015 bis heute
+  // GET /api/energy/backfill?monthly=2021,2025 → gezielt einzelne Jahre
+  //   (Nachfassen, wenn ein Jahr in die Zeitüberschreitung gelaufen ist)
+  const monthlyParam = req.nextUrl.searchParams.get("monthly");
+  if (monthlyParam) {
+    const currentYear = new Date().getFullYear();
+    const years = monthlyParam === "all"
+      ? Array.from({ length: currentYear - 2015 + 1 }, (_, i) => 2015 + i)
+      : monthlyParam.split(",").map((y) => parseInt(y.trim(), 10))
+          .filter((y) => Number.isInteger(y) && y >= 2015 && y <= currentYear);
+    if (years.length === 0) {
+      return NextResponse.json({ error: "monthly must be 'all' or years 2015–now" }, { status: 400 });
+    }
+    const results: { year: number; months: number; error?: string }[] = [];
+    for (const y of years) {
+      results.push(await backfillYearMonthlyOnly(y, country));
+      if (y !== years[years.length - 1]) await new Promise((r) => setTimeout(r, 2000));
+    }
+    const installed = await backfillInstalledSolar(country);
+    const errors = results.filter((r) => r.error);
+    return NextResponse.json({
+      success: errors.length === 0 && !installed.error,
+      totalMonths: results.reduce((s, r) => s + r.months, 0),
+      installed,
+      results,
+    });
+  }
+
   // Default: current year (so the weekly cron can call this URL without
   // any params and never needs maintenance at year-rollover).
   if (!all) {
@@ -225,7 +380,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Year must be 2015–now" }, { status: 400 });
     }
     const result = await backfillYear(year, country);
-    return NextResponse.json(result, { status: result.error ? 500 : 200 });
+    // Die Leistungs-Reihe wandert im Wochen-Cron gleich mit — ein kleiner
+    // Abruf, und der Trend bleibt ohne eigenen Cron-Eintrag aktuell.
+    const installed = await backfillInstalledSolar(country);
+    return NextResponse.json({ ...result, installed }, { status: result.error ? 500 : 200 });
   }
 
   // Backfill all years sequentially (to not overwhelm Energy-Charts)

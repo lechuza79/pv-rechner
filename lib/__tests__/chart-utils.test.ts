@@ -24,18 +24,18 @@ describe("formatMW", () => {
   });
 
   it("formats GW at and above 1000", () => {
-    expect(formatMW(1000)).toBe("1.0 GW");
-    expect(formatMW(1500)).toBe("1.5 GW");
-    expect(formatMW(45000)).toBe("45.0 GW");
+    expect(formatMW(1000)).toBe("1,0 GW");
+    expect(formatMW(1500)).toBe("1,5 GW");
+    expect(formatMW(45000)).toBe("45,0 GW");
   });
 });
 
 describe("formatGWh", () => {
   it("formats small values", () => {
-    expect(formatGWh(5.3)).toBe("5.3 GWh");
+    expect(formatGWh(5.3)).toBe("5,3 GWh");
     // Sub-1 values get 2 decimals for precision (so 0.05 doesn't collapse to 0.1)
-    expect(formatGWh(0.1)).toBe("0.10 GWh");
-    expect(formatGWh(0.05)).toBe("0.05 GWh");
+    expect(formatGWh(0.1)).toBe("0,10 GWh");
+    expect(formatGWh(0.05)).toBe("0,05 GWh");
   });
 
   it("formats medium values without decimals", () => {
@@ -44,7 +44,7 @@ describe("formatGWh", () => {
   });
 
   it("formats TWh", () => {
-    expect(formatGWh(1500)).toBe("1.5 TWh");
+    expect(formatGWh(1500)).toBe("1,5 TWh");
     expect(formatGWh(10000)).toBe("10 TWh");
     expect(formatGWh(25000)).toBe("25 TWh");
   });
