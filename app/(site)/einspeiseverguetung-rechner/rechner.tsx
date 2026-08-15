@@ -1,16 +1,17 @@
 "use client";
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { IconArrowRight, IconChevronDown } from "../../../components/Icons";
+import { IconArrowRight } from "../../../components/Icons";
 import InlineEdit from "../../../components/InlineEdit";
 import FlowNav, { flowSelect } from "../../../components/FlowNav";
 import OptionCard from "../../../components/OptionCard";
 import SelectField from "../../../components/SelectField";
 import StandortField from "../../../components/StandortField";
 import DachField from "../../../components/DachField";
+import ResultSection from "../../../components/ResultSection";
 import { calcEigenverbrauch, calcWeightedFeedIn } from "../../../lib/calc";
 import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor } from "../../../lib/dach-ertrag";
-import { DEGRAD, FEED_IN_YEARS, NO_PLZ_DEFAULT_YIELD, PERSONEN } from "../../../lib/constants";
+import { DACHARTEN, DEGRAD, FEED_IN_YEARS, NO_PLZ_DEFAULT_YIELD, PERSONEN } from "../../../lib/constants";
 import { eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import {
   FEED_IN_BASIS,
@@ -20,7 +21,7 @@ import {
 } from "../../../lib/feedin-config";
 import { useFeedInRates } from "../../../lib/feedin";
 import { useSharedPlz } from "../../../lib/location";
-import { type TiltOrientation } from "../../../lib/tilt-config";
+import { TILT_ORIENTATIONS, type TiltOrientation } from "../../../lib/tilt-config";
 import { iconSizes, space, v } from "../../../lib/theme";
 
 const KWP_PRESETS = [
@@ -81,7 +82,13 @@ export default function EinspeiseRechner() {
     setDachAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
     setDachEditing(null);
   };
-  const [verfeinernOffen, setVerfeinernOffen] = useState(false);
+  // Der gewählte Zustand als Kopfzeile des Abschnitts — zugeklappt ist das die
+  // einzige Stelle, an der man sieht, worauf der gerechnete Ertrag beruht.
+  const dachZusammenfassung = () =>
+    dachartIdx !== null && ausrichtung !== null
+      ? `${DACHARTEN[dachartIdx].label} · ${TILT_ORIENTATIONS.find(o => o.key === ausrichtung)?.label}`
+        + (neigungGrad !== null ? ` · ${neigungGrad}°` : "")
+      : "noch nicht angegeben";
 
   const fetchPvgis = useCallback(async (inputPlz: string) => {
     if (!/^\d{5}$/.test(inputPlz)) return;
@@ -587,58 +594,32 @@ export default function EinspeiseRechner() {
             Den größeren Teil des Nutzens bringt der Eigenverbrauch. Beides zusammen, mit deinem
             Standort und aktuellen Marktpreisen, rechnet der Photovoltaik-Rechner.
           </p>
-          {/* ── Ergebnis verfeinern: eingeklappter CTA mit Chevron (pulst einmal
-               beim ersten Anblick des Ergebnisses), direkt über der Haupt-CTA.
-               Aufgeklappt: Standort · Trennlinie · Dachart · Ausrichtung —
-               alles geteilte Bausteine, die Neigung folgt aus der Dachart. ── */}
-          {!verfeinernOffen ? (
-            <button
-              type="button"
-              onClick={() => setVerfeinernOffen(true)}
-              className="sc-flow-nudge"
-              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: space.md, width: "100%", textAlign: "left", padding: "14px 16px", marginBottom: space.lg, borderRadius: v("--radius-lg"), border: `1px solid ${v("--color-border")}`, background: v("--color-bg"), cursor: "pointer" }}
-            >
-              <span>
-                <span style={{ fontSize: 14, fontWeight: 700, color: v("--color-accent") }}>Ergebnis verfeinern</span>
-                <span style={{ display: "block", marginTop: 2, fontSize: 13, lineHeight: 1.5, color: v("--color-text-secondary") }}>
-                  Standort und Dach angeben — aus dem Bundesschnitt wird dein Ertrag.
-                </span>
-              </span>
-              <span style={{ color: v("--color-text-secondary"), display: "inline-flex", flexShrink: 0 }}>
-                <IconChevronDown size={iconSizes.lg} />
-              </span>
-            </button>
-          ) : (
-            <div className="sc-acc" style={{ border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: space.xl, marginBottom: space.lg }}>
-              <button
-                type="button"
-                onClick={() => setVerfeinernOffen(false)}
-                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: space.md, width: "100%", textAlign: "left", padding: 0, border: "none", background: "none", cursor: "pointer", marginBottom: space.lg }}
-              >
-                <span style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary") }}>Ergebnis verfeinern</span>
-                <span style={{ color: v("--color-text-secondary"), display: "inline-flex", transform: "rotate(180deg)" }}>
-                  <IconChevronDown size={iconSizes.lg} />
-                </span>
-              </button>
-              <div style={{ fontSize: 13, marginBottom: space.lg }}>
-                <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
-              </div>
-              <div style={{ borderTop: `1px solid ${v("--color-border")}`, margin: `0 0 ${space.lg}px` }} />
-              <DachField
-                dachartIdx={dachartIdx}
-                setDachartIdx={setDachartIdx}
-                ausrichtung={ausrichtung}
-                setAusrichtung={setAusrichtung}
-                neigungGrad={neigungGrad}
-                setNeigungGrad={setNeigungGrad}
-                beantwortet={dachAnswered}
-                markiereBeantwortet={markDachAnswered}
-                bearbeitet={dachEditing}
-                setBearbeitet={setDachEditing}
-                hinweis={dachErtragHinweis(ertragKwp, dachartIdx, ausrichtung, standortYield !== null, neigungGrad)}
-              />
+          {/* Standort und Dach — im geteilten Ergebnis-Abschnitt, wie in jedem
+               anderen Rechner. Vorher war das ein handgebauter Aufklapper mit
+               eigenem Chevron und eigenem Öffnen-Zustand; drei Fassungen
+               desselben Musters waren der Grund für ResultSection. */}
+          <ResultSection
+            title="Standort und Dach"
+            summary={dachZusammenfassung()}
+          >
+            <div style={{ fontSize: 13, marginBottom: space.lg }}>
+              <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
             </div>
-          )}
+            <div style={{ borderTop: `1px solid ${v("--color-border")}`, margin: `0 0 ${space.lg}px` }} />
+            <DachField
+              dachartIdx={dachartIdx}
+              setDachartIdx={setDachartIdx}
+              ausrichtung={ausrichtung}
+              setAusrichtung={setAusrichtung}
+              neigungGrad={neigungGrad}
+              setNeigungGrad={setNeigungGrad}
+              beantwortet={dachAnswered}
+              markiereBeantwortet={markDachAnswered}
+              bearbeitet={dachEditing}
+              setBearbeitet={setDachEditing}
+              hinweis={dachErtragHinweis(ertragKwp, dachartIdx, ausrichtung, standortYield !== null, neigungGrad)}
+            />
+          </ResultSection>
 
           {anlage === "neu" && (
             <Link
