@@ -126,6 +126,20 @@ export const INFLOWS: Inflow[] = [
         orte: ["flow"],
         begruendung: "Wie beim Dach: das Ergebnis ist die Seite des PV-Rechners.",
       },
+      {
+        datei: WP_RECHNER,
+        orte: ["ergebnis"],
+        begruendung:
+          "Die Frage wird hier sehr wohl im Flow gestellt — nur nicht mit diesem " +
+          "Baustein: Das Gebäude IST das Thema dieses Rechners und steht über " +
+          "fünf eigene Schritte da (Neubau/Bestand, eigene Dämmstufen, " +
+          "Warmwasser, Sanierungswege). Es in den Baustein zu zwängen würde den " +
+          "Flow ärmer machen, nicht konsistenter. Im Ergebnis steht er als " +
+          "Abschnitt „Dein Gebäude“; die abgeleiteten Größen (Heizwärme, " +
+          "Heizlast) bleiben daneben editierbar — die eine Stelle im Projekt, an " +
+          "der zwei Wege zur selben Zahl richtig sind: schätzen über das " +
+          "Gebäude, messen über die eigene Gasrechnung.",
+      },
     ],
     ausgenommen: [
       {
@@ -147,15 +161,6 @@ export const INFLOWS: Inflow[] = [
           "Der Heizblock fragt den Gebäudestandard eigens ab (Dämmung wirkt beim " +
           "Heizen anders als beim Kühlen, siehe CLAUDE.md → Modellprämissen). " +
           "Kein WP-Gebäude im Sinne dieses Bausteins.",
-      },
-      {
-        datei: WP_RECHNER,
-        grund:
-          "OFFEN (bis 12/2026): Hier IST das Gebäude das Hauptthema und über fünf " +
-          "eigene Schritte abgefragt — Neubau/Bestand, andere Dämmstufen, " +
-          "Warmwasser. Im Ergebnis sind bisher nur die ABGELEITETEN Größen " +
-          "editierbar (Heizwärme, Heizlast), nicht die Eingaben. Der Umbau ist " +
-          "eigener Umfang und braucht die Abnahme des Betreibers.",
       },
     ],
   },

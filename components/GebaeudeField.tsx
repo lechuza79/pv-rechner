@@ -48,6 +48,7 @@ export default function GebaeudeField({
    *  öffnen — der Stift wäre Dekoration. */
   bearbeitet,
   setBearbeitet,
+  daemmstufen,
   hinweis,
   onWeissNicht,
 }: {
@@ -60,11 +61,17 @@ export default function GebaeudeField({
   markiereBeantwortet: (key: string) => void;
   bearbeitet: string | null;
   setBearbeitet: (key: string | null) => void;
+  /** Dämmstufen — Bestand oder Neubau. Der Wärmepumpen-Rechner kennt beide
+   *  Fälle (INSULATION_NEUBAU hat andere Stufen), die PV-Rechner nur Bestand.
+   *  Ohne diesen Parameter würde ein Neubau die Bestandsstufen angeboten
+   *  bekommen und der Heizwärmebedarf käme um ein Vielfaches zu hoch heraus. */
+  daemmstufen?: ReadonlyArray<{ label: string; sub: string }>;
   hinweis?: string;
   /** Gesetzt → „Weiß ich nicht" erscheint. Im Ergebnis weglassen: dort gibt es
    *  nichts zu überspringen, dort wird nachjustiert. */
   onWeissNicht?: () => void;
 }) {
+  const stufen = daemmstufen ?? INSULATION_BESTAND;
   const hat = (k: string) => beantwortet.has(k);
   const waehle = (k: string, patch: Partial<GebaeudeWerte>) => {
     setWerte(patch);
@@ -138,11 +145,11 @@ export default function GebaeudeField({
         label="Dämmzustand"
         open={offen === F_DAEMMUNG}
         answered={hat(F_DAEMMUNG)}
-        summary={INSULATION_BESTAND[werte.insulationIdx].label}
+        summary={stufen[werte.insulationIdx]?.label}
         onEdit={() => setBearbeitet(F_DAEMMUNG)}
       >
         <ChoiceButtons
-          options={INSULATION_BESTAND}
+          options={stufen}
           columns={2}
           selected={hat(F_DAEMMUNG) ? werte.insulationIdx : null}
           onSelect={i => waehle(F_DAEMMUNG, { insulationIdx: i })}

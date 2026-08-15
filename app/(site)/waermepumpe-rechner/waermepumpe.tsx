@@ -13,6 +13,8 @@ import { greenGasApplies } from "../../../lib/fossil-reference";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
 import OptionCard from "../../../components/OptionCard";
+import ResultSection from "../../../components/ResultSection";
+import GebaeudeField, { GEBAEUDE_FIELDS } from "../../../components/GebaeudeField";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
 import GasPriceStackChart from "../../../components/charts/GasPriceStackChart";
@@ -43,6 +45,8 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   const [insulationIdx, setInsulationIdx] = useState(1);   // teilsaniert / KfW 55
   const [personen, setPersonen] = useState(2);             // 3–4
   const [heizsystem, setHeizsystem] = useState<"fbh" | "hk_neu" | "hk_alt">("fbh");
+  // Welche Gebäudefrage im Ergebnis gerade aufgeklappt ist.
+  const [gebaeudeEditing, setGebaeudeEditing] = useState<string | null>(null);
   const [wpType, setWpType] = useState<"lwwp" | "swwp">("lwwp");
 
   // PV-Integration (Ergebnis-Overlay)
@@ -320,6 +324,9 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
   };
 
   const insulationOptions = situation === "bestand" ? INSULATION_BESTAND : INSULATION_NEUBAU;
+  // Der Gebäudezustand als Kopfzeile des Ergebnis-Abschnitts.
+  const gebaeudeZusammenfassung = () =>
+    `${HAUSTYP_WP[haustypIdx].label} · ${wohnflaeche} m² · ${insulationOptions[insulationIdx]?.label}`;
 
   // ── Render ───────────────────────────────────────────────────
   return (
@@ -813,6 +820,40 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                     ? <>Das Grüngas-Szenario ist aktiv: Der Gaspreis folgt dem GModG-Gas-Mix — mit der Bio-Treppe wird ab 2029 zunehmend teures Biomethan beigemischt, dazu steigen Netzentgelte und CO₂-Preis. Details und Verlauf siehst du im Grüngas-Block weiter unten. Die drei Szenarien im Diagramm rechnen mit niedrigem, mittlerem und hohem Preispfad.</>
                     : <>Der heutige Brennstoffpreis steigt in der Rechnung jedes Jahr — durch allgemeine Teuerung (realistisch rund 2 % pro Jahr) und durch den steigenden CO₂-Preis auf fossile Energie. Der CO₂-Preis liegt 2026 und 2027 bei 55–65 € pro Tonne und klettert ab 2028 mit dem EU-Emissionshandel voraussichtlich um etwa 8 € pro Tonne und Jahr. Die im heutigen Preis schon enthaltene CO₂-Abgabe wird dabei nicht doppelt gezählt. Die drei Szenarien im Diagramm rechnen mit unterschiedlich starkem Anstieg.</>}
                 </InfoTooltip>
+              </div>
+
+              {/* Das Gebäude — dieselbe Abfrage wie im Flow, hier zum
+                  Nachjustieren. Bis 08.08.2026 waren im Ergebnis nur die
+                  ABGELEITETEN Größen editierbar (Heizwärme, Heizlast): Wer
+                  merkte, dass er die Wohnfläche falsch angegeben hat, musste
+                  den ganzen Flow neu durchlaufen.
+
+                  Die abgeleiteten Werte bleiben darunter trotzdem stehen — das
+                  ist die eine Stelle im Projekt, wo zwei Wege zur selben Zahl
+                  richtig sind: Das Gebäude ist der Weg für alle, die schätzen;
+                  die Heizwärme der für die, die ihre Gasrechnung danebenlegen.
+                  Ein gemessener Wert schlägt jede Schätzung. */}
+              <div style={{ marginTop: 18 }}>
+                <ResultSection title="Dein Gebäude" summary={gebaeudeZusammenfassung()}>
+                  <GebaeudeField
+                    werte={{ haustypIdx, wohnflaeche, insulationIdx, heizsystem }}
+                    setWerte={patch => {
+                      if (patch.haustypIdx !== undefined) setHaustypIdx(patch.haustypIdx);
+                      if (patch.wohnflaeche !== undefined) setCustomFlaeche(patch.wohnflaeche);
+                      if (patch.insulationIdx !== undefined) setInsulationIdx(patch.insulationIdx);
+                      if (patch.heizsystem !== undefined) setHeizsystem(patch.heizsystem);
+                      // Von Hand gesetzte Ableitungen zurücknehmen: Sie beschreiben
+                      // das ALTE Gebäude und würden die neue Angabe stumm schalten.
+                      setOQges(null);
+                      setOHeizlast(null);
+                    }}
+                    beantwortet={new Set(GEBAEUDE_FIELDS)}
+                    markiereBeantwortet={() => {}}
+                    bearbeitet={gebaeudeEditing}
+                    setBearbeitet={setGebaeudeEditing}
+                    daemmstufen={insulationOptions}
+                  />
+                </ResultSection>
               </div>
 
               {/* Editierbare Kernannahmen */}
