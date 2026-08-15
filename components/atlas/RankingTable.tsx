@@ -653,7 +653,9 @@ function StromwertHilfe() {
       <span style={S.tipListe}>
         <span style={S.tipZeile}>
           <strong>Im Haus verbraucht: {fmtCtProKwh(eigenverbrauchCt)}</strong> — ersetzt
-          zugekauften Strom, für jede Anlagenart gleich.
+          zugekauften Strom. Beim gewerblichen Dach ist dieser Anteil nicht angesetzt, weil uns
+          nicht belegt ist, wie viel Betriebe selbst verbrauchen; die Zahl ist dort eine
+          Untergrenze. Bei Freiflächen-Parks gibt es ihn nicht.
         </span>
         <span style={S.tipZeile}>
           <strong>Eingespeist:</strong>{" "}

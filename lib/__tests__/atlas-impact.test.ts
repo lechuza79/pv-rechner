@@ -8,6 +8,7 @@ import {
   ertragForRegionId,
   erzeugungKwh,
   segmentWertEuro,
+  stromwertBestandteile,
   stromwertEuro,
   stromwertSaetze,
 } from "../atlas-impact";
@@ -53,10 +54,9 @@ describe("Flotten-Kalibrierung (Realitäts-Anker)", () => {
     // Leistung erzeugten ~87 TWh (Netz + Eigenverbrauch). Ein Modell, das den
     // Bestand mit Optimal-Erträgen rechnet (108,7 GW × ~1.050 kWh/kWp
     // Bundesschnitt), läge bei ~114 TWh statt 87 — rund ein Drittel zu hoch.
-    // Eine frühere Fassung dieses Kommentars behauptete hier 137 TWh; die Zahl
-    // war falsch und wäre beim nächsten Nachrechnen als Beleg weitergereicht
-    // worden. Der Test
-    // schlägt an, wenn diese Fehlerklasse zurückkommt.
+    // Der Test schlägt an, wenn diese Fehlerklasse zurückkommt. (Hier stand
+    // einmal 137 TWh — falsch, und wäre beim nächsten Nachrechnen als Beleg
+    // weitergereicht worden.)
     const twh = erzeugungKwh(108_700_000, "") / 1_000_000_000;
     expect(twh).toBeGreaterThan(82);
     expect(twh).toBeLessThan(92);
@@ -144,5 +144,43 @@ describe("Stromwert je Anlagenart (Realitäts-Anker)", () => {
     const dach = segmentWertEuro(1000, "09162000", "privat_dach");
     const frei = segmentWertEuro(1000, "09162000", "freiflaeche");
     expect(dach).toBeGreaterThan(frei * 2);
+  });
+});
+
+/**
+ * Der Tooltip zeigt NICHT die Mischsätze, sondern ihre Bestandteile — bewusst,
+ * weil nebeneinandergestellte Mischsätze sich als Wertung lesen. Der Preis
+ * dafür: Erklärung und Rechnung sind zwei Ableitungen derselben Größen und
+ * können auseinanderlaufen, ohne dass irgendetwas rot wird. Genau das nagelt
+ * dieser Test fest.
+ */
+describe("Hilfetext und Rechnung bleiben dieselbe Quelle", () => {
+  it("nennt für jede Anlagenart denselben Einspeisesatz, mit dem gerechnet wird", () => {
+    const saetze = stromwertSaetze();
+    const { eigenverbrauchCt, einspeisung } = stromwertBestandteile();
+    const finde = (label: string) => einspeisung.find((e) => e.label === label);
+
+    // Gewerbedach: kein Eigenverbrauch angesetzt → der Mischsatz IST der
+    // Einspeisesatz. Läuft das auseinander, behauptet der Tooltip eine Zahl,
+    // die in der Spalte nicht steckt.
+    expect(finde("gewerbliches Dach")?.ct).toBeCloseTo(saetze.gewerbe_dach.ct, 6);
+
+    // Freifläche: ebenfalls kein Eigenverbrauch.
+    expect(finde("Freiflächen-Park")?.ct).toBeCloseTo(saetze.freiflaeche.ct, 6);
+
+    // Balkon: unvergütet — der Tooltip darf dort keinen Satz nennen.
+    expect(finde("Balkonkraftwerk")?.ct).toBeNull();
+
+    // Privates Dach: Mischsatz aus beiden Bestandteilen. Der Tooltip nennt die
+    // Bestandteile; die Rechnung muss sich aus genau ihnen ergeben.
+    const dachEinspeisung = finde("privates Dach")?.ct as number;
+    const nachgerechnet =
+      EIGENVERBRAUCH_ANTEIL_ANNAHME * eigenverbrauchCt +
+      (1 - EIGENVERBRAUCH_ANTEIL_ANNAHME) * dachEinspeisung;
+    expect(nachgerechnet).toBeCloseTo(saetze.privat_dach.ct, 6);
+
+    // Und der Balkon-Satz muss sich aus dem Eigenverbrauchspreis ergeben,
+    // den der Tooltip nennt.
+    expect(balkonEigenverbrauchAnteil() * eigenverbrauchCt).toBeCloseTo(saetze.steckersolar.ct, 6);
   });
 });
