@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import { ATLAS_CITIES } from "../atlas-cities";
-import { FUNDING_PROGRAMS, allFundingPrograms, getFundingProgram, fundingForAgs, fundingAmount, stackFunding } from "../funding-programs";
+import { FUNDING_PROGRAMS, allFundingPrograms, getFundingProgram, fundingForAgs, fundingAmount, stackFunding, fundingStandLabel } from "../funding-programs";
 
 // Integrity checks for the regional funding dataset. These are cheap insurance:
 // as cities/programs are added by hand, a typo in a fundingId or combinableWith
@@ -491,5 +492,36 @@ describe("atlas-cities registry", () => {
       expect(c.yieldKwhKwp).toBeGreaterThanOrEqual(900);
       expect(c.yieldKwhKwp).toBeLessThanOrEqual(1200);
     }
+  });
+});
+
+// ─── „Zuletzt geprüft" darf nur eine echte Prüfung behaupten ─────────────────
+//
+// Bis 16.08.2026 setzte lib/funding-data.ts `lastVerified` auf
+// `last_verified ?? updated_at`. `updated_at` ist aber die letzte SCHREIBUNG der
+// Zeile — ein Resync, bei dem niemand etwas geprüft hat. 19 der 38 Programme
+// hatten nie ein echtes Prüfdatum und trugen trotzdem "Zuletzt geprüft: …" auf
+// ihrer Regionsseite, mit einem Datum, das jeder Resync auffrischte. Das Datum
+// ist das Vertrauenssignal, auf dem die Förderseiten aufbauen; ein falsches ist
+// die schwerste Fehlerklasse dieses Projekts (CLAUDE.md, "Zahlen und Einheiten").
+describe("Herkunft des Prüfdatums", () => {
+  it("ohne echtes Prüfdatum steht der redaktionelle Stand da, keine behauptete Prüfung", () => {
+    const p = { ...FUNDING_PROGRAMS["bund-nullsteuer"], stand: "Juni 2026", verified: true, lastVerified: undefined };
+    expect(fundingStandLabel(p)).toBe("Stand: Juni 2026");
+    expect(fundingStandLabel(p)).not.toContain("geprüft");
+  });
+
+  it("mit echtem Prüfdatum steht die Prüfung da", () => {
+    const p = { ...FUNDING_PROGRAMS["bund-nullsteuer"], verified: true, lastVerified: "2026-08-16" };
+    expect(fundingStandLabel(p)).toBe("Zuletzt geprüft: 16.08.2026");
+  });
+
+  it("der Lader zieht updated_at nicht als Ersatz heran", () => {
+    const quelle = readFileSync(new URL("../funding-data.ts", import.meta.url), "utf8");
+    const code = quelle
+      .split("\n")
+      .filter((l) => !l.trim().startsWith("//") && !l.trim().startsWith("*"))
+      .join("\n");
+    expect(code).not.toMatch(/updated_at/);
   });
 });
