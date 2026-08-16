@@ -45,7 +45,16 @@ export default defineConfig({
 
   webServer: {
     // Dedicated port (3045) so this doesn't fight a manual dev server on 3000/3041
-    command: `next dev -p ${E2E_PORT}`,
+    //
+    // E2E_BUILD=1 prüft gegen einen fertigen Build statt gegen den Dev-Server.
+    // Nötig für den Flow-Automatismus (e2e/flows.spec.ts): Der ruft je Weg die
+    // Seite neu auf, also hunderte Male. Der Dev-Server übersetzt jede Route
+    // beim ersten Aufruf neu und ging dabei nach ~15 Minuten in die Knie — der
+    // Lauf brach dann mit „nicht erreichbar" ab, was wie ein Testfehler aussah,
+    // aber keiner war. Gegen den Build entfällt das Übersetzen komplett.
+    command: process.env.E2E_BUILD
+      ? `next build && next start -p ${E2E_PORT}`
+      : `next dev -p ${E2E_PORT}`,
     url: `http://localhost:${E2E_PORT}`,
     reuseExistingServer: !process.env.CI,
     // 4 Minuten statt 2: In einer Worktree liegen die Abhängigkeiten im

@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { FLOWS, NOCH_OHNE_FLOWNAV, MAX_WEGE_JE_FLOW } from "./flows";
+import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, MAX_WEGE_JE_FLOW } from "./flows";
 
 /**
  * Der Flow-Läufer: klickt JEDEN Weg durch jeden Flow und stellt sicher, dass
@@ -22,6 +22,10 @@ import { FLOWS, NOCH_OHNE_FLOWNAV, MAX_WEGE_JE_FLOW } from "./flows";
  * ausschloss. Beide waren nur durch Durchklicken zu finden, und niemand kann
  * jeden Weg jedes Flows von Hand gehen.
  */
+
+/** Platzhalter im Pfad für einen Schritt, der keine Auswahl hat (Eingabefeld
+ *  mit Vorbelegung) — beim Nachstellen wird dort nur Weiter geklickt. */
+const VORBELEGT = "(Vorbelegung übernommen)";
 
 interface LaufErgebnis {
   wege: number;
@@ -120,10 +124,22 @@ async function gehe(
   }
 
   if (wahlen.length === 0) {
-    // Ein Schritt ohne wählbare Optionen (z. B. reine Eingabe) — der Läufer
-    // kann ihn nicht bedienen. Das ist ein Befund, kein stiller Durchlauf.
-    erg.fehler.push(`[${pfad.join(" → ")}] Schritt ohne wählbare Option — vom Läufer nicht bedienbar`);
-    erg.wege++;
+    // Schritte ohne Auswahlkarten gibt es wirklich — etwa eine Datums- oder
+    // Größenangabe mit sinnvoller Vorbelegung. Sie sind gültig, solange der
+    // Weiter-Knopf offen ist: Genau so geht ein Besucher hindurch, der die
+    // Vorbelegung übernimmt. Bleibt er gesperrt, kommt hier niemand weiter —
+    // das ist dann ein echter Befund und keine Lücke des Automatismus.
+    const weiterHier = page.locator("[data-flow-next]:visible").first();
+    if ((await weiterHier.getAttribute("aria-disabled")) === "true") {
+      erg.fehler.push(
+        `[${pfad.join(" → ")}] Schritt ohne Auswahl UND mit gesperrtem Weiter — hier kommt niemand durch`,
+      );
+      erg.wege++;
+      return;
+    }
+    await weiterHier.click();
+    await page.waitForTimeout(120);
+    await gehe(page, flowName, flowPfad, ergebnisEnthaelt, [...pfad, VORBELEGT], erg);
     return;
   }
 
@@ -151,7 +167,7 @@ async function gehe(
     // Zuständen weiterläuft, prüft etwas, das kein Nutzer je sieht.
     await page.goto(flowPfad, { waitUntil: "domcontentloaded" });
     for (const vorher of pfad) {
-      await waehle(page, vorher);
+      if (vorher !== VORBELEGT) await waehle(page, vorher);
       await page.locator("[data-flow-next]:visible").first().click();
       await page.waitForTimeout(60);
     }
@@ -181,7 +197,19 @@ for (const flow of FLOWS) {
     test.setTimeout(300_000);
     const konsolenFehler: string[] = [];
     page.on("console", (m) => {
-      if (m.type() === "error") konsolenFehler.push(m.text());
+      if (m.type() !== "error") return;
+      // Eng gefasste Ausnahme: Next lädt verlinkte Seiten im Voraus. Im
+      // Testbuild antwortet die Login-Route darauf nicht, was je Seitenaufruf
+      // eine Fehlermeldung erzeugt — bei 72 Wegen über 200 Stück, alle über
+      // dieselbe Route und ohne Bezug zum Flow. Die Liste bewusst nicht
+      // weiter aufmachen: Ein großzügiger Filter macht die Prüfung wertlos,
+      // ohne dass es auffällt.
+      if (m.text().includes("Failed to fetch RSC payload")) return;
+      // Ebenso das Besucherzähl-Skript: Es wird erst auf Vercel ausgeliefert,
+      // lokal antwortet die Adresse mit 404. Betrifft keine Seitenfunktion.
+      if (m.text().includes("_vercel/insights")) return;
+      if (m.text().includes("Failed to load resource") && m.location().url.includes("_vercel/")) return;
+      konsolenFehler.push(m.text());
     });
     page.on("pageerror", (e) => konsolenFehler.push(`Ausnahme: ${e.message}`));
 
@@ -207,6 +235,13 @@ for (const flow of FLOWS) {
     expect(konsolenFehler, `Konsolenfehler in „${flow.name}"`).toEqual([]);
   });
 }
+
+test("noch nicht bedienbare Flows sind benannt, nicht verschwiegen", async () => {
+  for (const f of NOCH_NICHT_BEDIENBAR) {
+    console.warn(`⚠ ${f.name} wird NICHT geprüft: ${f.grund}`);
+    expect(f.grund.length, `${f.name}: ohne Begründung ausgetragen`).toBeGreaterThan(40);
+  }
+});
 
 test("ungeprüfte Flows stehen als ungeprüft da", async ({ page }) => {
   // Sobald ein alter Flow auf den gemeinsamen Navigations-Baustein migriert

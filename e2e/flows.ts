@@ -25,10 +25,24 @@ export const FLOWS: FlowUnterTest[] = [
     pfad: "/photovoltaik-foerderung/hessen/frankfurt",
     ergebnisEnthaelt: "Das gilt für dich",
   },
+];
+
+/**
+ * Flows, die der Automatismus zwar erkennt, aber noch nicht zu Ende bedienen
+ * kann — mit dem Grund und dem, was dafür fehlt.
+ *
+ * Bewusst hier statt stillschweigend ausgelassen: Ein Flow, der nicht geprüft
+ * wird, soll als ungeprüft dastehen.
+ */
+export const NOCH_NICHT_BEDIENBAR: { name: string; pfad: string; grund: string }[] = [
   {
     name: "Einspeisevergütungs-Rechner",
     pfad: "/einspeiseverguetung-rechner",
-    ergebnisEnthaelt: "ct/kWh",
+    grund:
+      "Nach „Läuft schon“ folgt ein Schritt mit Pflichteingabe (Inbetriebnahme-Datum) " +
+      "und ohne Vorbelegung — dort kommt der Automatismus nicht weiter, weil er nur " +
+      "Auswahlkarten bedienen kann. Nötig: Eingabefelder erkennen und mit einem " +
+      "gültigen Wert füllen.",
   },
 ];
 
