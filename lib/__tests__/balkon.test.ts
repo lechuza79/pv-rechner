@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { calcBalkon, recommendBalkon } from "../balkon";
 import { simulateSolarYear, monthlyFromAnnual } from "../balkon-sim";
-import { DEFAULT_BALKON_CONFIG as CFG } from "../balkon-config";
+import { DEFAULT_BALKON_CONFIG as CFG, BALKON_RECHT } from "../balkon-config";
+import { balkonFaq } from "../faq";
 import { SOLAR_YEAR_DE, referenceYearKwh } from "../solar-year";
 import { DAYS_IN_MONTH, type HouseholdProfile } from "../consumption";
 
@@ -451,5 +452,71 @@ describe("simulateSolarYear — Energieerhaltung", () => {
     expect(r.wpLoadKwh).toBeLessThanOrEqual(r.consumptionKwh + 1);
     expect(r.wpSelfCoveredKwh).toBeGreaterThan(0);
     expect(r.wpSelfCoveredKwh).toBeLessThanOrEqual(r.selfUsedKwh + 1);
+  });
+});
+
+// ─── Rechtssätze: EINE Quelle für Tool und FAQ ──────────────────────────────
+// Die Aussagen zu Anmeldung, Miete und fehlender Vergütung erscheinen an drei
+// Stellen (Rechner-Ergebnis, Textabschnitte der Seite, FAQ + FAQPage-JSON-LD).
+// Sie stehen deshalb in BALKON_RECHT. Dieser Test schlägt an, sobald eine
+// Oberfläche wieder eine handgetippte Zweitkopie bekommt — die Fehlerklasse aus
+// CLAUDE.md, Faktenprüfung Regel 11.
+describe("Rechtssätze", () => {
+  it("das FAQ zitiert die geteilten Sätze wörtlich, statt sie zu wiederholen", () => {
+    const faq = balkonFaq();
+    const antworten = faq.map(e => e.a).join("\n");
+    expect(antworten).toContain(BALKON_RECHT.anmeldung);
+    expect(antworten).toContain(BALKON_RECHT.mieteEigentum);
+    expect(antworten).toContain(BALKON_RECHT.keineVerguetung);
+  });
+
+  it("der Unterschied Gesetz / freiwillige Vornorm bleibt im Modul-Satz stehen", () => {
+    // Die 2.000-Wp-Grenze ist Gesetz, die Schuko-Grenze der VDE-Vornorm nicht.
+    // Wer den Satz kürzt, macht aus einer freiwilligen Produktnorm eine Pflicht.
+    const modulFrage = balkonFaq().find(e => e.q.includes("Module darf"))!;
+    expect(modulFrage.a).toContain("freiwillig");
+    expect(modulFrage.a).toContain("kein Gesetz");
+  });
+
+  it("keine getippten Euro-Beträge im FAQ — alle Zahlen kommen aus dem Modell", () => {
+    // Realitäts-Anker: Die Beispielzahlen müssen mit dem übereinstimmen, was der
+    // Rechner für denselben Fall ausgibt. Driftet die Config, driftet das FAQ mit.
+    const referenz = calcBalkon({
+      setId: "duo", orientationId: "sued_gelaender", presenceId: "teils",
+      storageId: "none", haushaltKwh: 2800, specificYield: CFG.specificYield,
+      monthlyYield: null, stromPrice: CFG.stromPrice,
+    });
+    const lohntSich = balkonFaq().find(e => e.q === "Lohnt sich ein Balkonkraftwerk?")!;
+    expect(lohntSich.a).toContain(referenz.savingPerYear.toLocaleString("de-DE"));
+    expect(lohntSich.a).toContain(CFG.sets.find(s => s.id === "duo")!.price.toLocaleString("de-DE"));
+  });
+});
+
+// Die beiden geprüften Rechtsaussagen tragen je einen Vorbehalt, der sie erst
+// richtig macht. Beide Vorbehalte sind schon einmal beim Kürzen verlorengegangen
+// bzw. standen kurz davor — deshalb hier festgenagelt.
+describe("Geprüfte Rechtsaussagen: die Vorbehalte", () => {
+  it("Nullsteuersatz: die Speicher-Ausnahme unter 5 kWh bleibt stehen", () => {
+    // UStAE 12.18 Abs. 7 S. 10 — die Vereinfachung greift erst ab 5 kWh, unsere
+    // Balkonspeicher liegen darunter. Ohne diesen Halbsatz verspricht der Satz
+    // Steuerfreiheit für etwas, das sie nicht automatisch hat.
+    expect(BALKON_RECHT.nullsteuer).toContain("5 kWh");
+    expect(BALKON_RECHT.nullsteuer).toMatch(/nicht automatisch/);
+    // Und er darf nicht pauschal "Set und Speicher" freistellen.
+    expect(BALKON_RECHT.nullsteuer).toContain("Auf das Set selbst");
+    // Alle Balkonspeicher liegen unter der Vereinfachungsgrenze — fiele das je
+    // weg, wäre der Vorbehalt gegenstandslos und der Satz müsste neu gefasst werden.
+    expect(CFG.storage.every(s => s.kwh < 5)).toBe(true);
+  });
+
+  it("Anmeldung: Frist ja, aber kein 50.000-Euro-Drohsatz", () => {
+    // § 5 Abs. 1 MaStRV: ein Monat. § 21 Nr. 1 MaStRV verweist auf § 95 Abs. 1
+    // Nr. 5 Buchst. e EnWG zurück — deshalb "Ordnungswidrigkeit" belegbar.
+    expect(BALKON_RECHT.anmeldeFrist).toContain("ein Monat");
+    expect(BALKON_RECHT.anmeldeFrist).toContain("Ordnungswidrigkeit");
+    // Der gesetzliche Höchstrahmen gilt für alle Verstöße dieser Nummer und ist
+    // als Drohung gegenüber einem Balkon-Betreiber irreführend (§ 17 OWiG).
+    const antworten = balkonFaq().map(e => e.a).join(" ");
+    expect(antworten).not.toMatch(/50\.?000/);
   });
 });
