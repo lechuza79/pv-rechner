@@ -5,6 +5,7 @@ import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
 import { BUNDESLAENDER } from "../lib/mastr-regions";
 import { RATGEBER } from "../lib/ratgeber";
+import { BALKON_RECHT } from "../lib/balkon-config";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -116,7 +117,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/pv-bedarf-berechnen`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/waermepumpe-rechner`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/klimaanlage-stromkosten`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/balkonkraftwerk-rechner`, changeFrequency: "monthly", priority: 0.8 },
+    // Einziger Rechner mit `lastModified`, weil er als einziger ein ehrliches
+    // Datum hat: den Tag, an dem die Rechtsangaben der Seite zuletzt gegen die
+    // Primärquellen gelesen wurden. Die anderen Rechner lassen es bewusst weg —
+    // ein Build-Datum wäre bei jedem Deploy „jetzt" und wird von Google ignoriert.
+    { url: `${BASE_URL}/balkonkraftwerk-rechner`, lastModified: toDate(BALKON_RECHT.geprueftIso), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/einspeiseverguetung-rechner`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-zubau-deutschland`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
