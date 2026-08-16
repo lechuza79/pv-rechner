@@ -5,8 +5,10 @@ import {
   PRAXIS_FAKTOR,
   balkonEigenverbrauchAnteil,
   co2Tonnen,
+  einspeiseCt,
   ertragForRegionId,
   erzeugungKwh,
+  marktErloesCt,
   segmentWertEuro,
   stromwertBestandteile,
   stromwertEuro,
@@ -15,7 +17,20 @@ import {
 import { BL_ERTRAG } from "../bundesland-ertrag";
 import { NATIONAL_AVG_YIELD } from "../constants";
 import { DEFAULT_PRICES } from "../prices-config";
-import { DEFAULT_FEED_IN } from "../feedin-config";
+import { feedInRatesForCommissioning } from "../feedin-config";
+import { FREIFLAECHE_AW_CT } from "../freiflaeche-config";
+
+/**
+ * Der Jahrgang, für den die Sätze "heute" gelten. Die Tests, die die Systematik
+ * der Anlagenarten prüfen (Rangfolge, Bänder), beziehen sich seit der
+ * Jahrgangs-Rechnung ausdrücklich auf eine NEU gebaute Anlage — für eine von
+ * 2010 gelten andere Größenordnungen, und zwar zu Recht.
+ */
+const HEUTE = new Date().getFullYear();
+
+/** Einspeisesatz eines heute gebauten privaten Dachs — aus derselben
+ *  Gesetzeskette wie der Rechner, nicht aus der Atlas-Rechnung gespiegelt. */
+const HEUTE_DACH_CT = feedInRatesForCommissioning(`${HEUTE}-07-01`)?.teilUnder10 as number;
 
 /**
  * Die Wirkungs-Werte des Atlas (CO₂-Ersparnis, Stromwert) sind Modellwerte aus
@@ -90,12 +105,12 @@ describe("Stromwert je Anlagenart (Realitäts-Anker)", () => {
   it("bewertet ein privates Dach zwischen Einspeisevergütung und Haushaltsstrompreis", () => {
     // Der Mischwert kann logisch nur zwischen seinen beiden Bestandteilen
     // liegen — sonst ist die Gewichtung kaputt.
-    const ct = stromwertSaetze().privat_dach.ct;
-    expect(ct).toBeGreaterThan(DEFAULT_FEED_IN.teilUnder10);
+    const ct = stromwertSaetze(HEUTE).privat_dach.ct;
+    expect(ct).toBeGreaterThan(HEUTE_DACH_CT);
     expect(ct).toBeLessThan(DEFAULT_PRICES.electricityPrice * 100);
   });
 
-  it("hält die Rangfolge der Anlagenarten ein", () => {
+  it("hält die Rangfolge der Anlagenarten für eine heute gebaute Anlage ein", () => {
     // Der Grund für die ganze Aufteilung: Eine selbst genutzte Kilowattstunde
     // ersetzt teuren Netzbezug, eine verkaufte bringt nur den Börsenwert.
     // Kippt diese Reihenfolge, rechnet die Tabelle etwas anderes, als sie sagt.
@@ -107,7 +122,12 @@ describe("Stromwert je Anlagenart (Realitäts-Anker)", () => {
     // Drittel für rund ein Viertel dieses Preises ein. Eine frühere Fassung
     // hatte die beiden andersherum erwartet, weil sie dem Balkon den
     // Eigenverbrauchsanteil einer Dachanlage unterschob.
-    const s = stromwertSaetze();
+    //
+    // Ausdrücklich für den HEUTIGEN Jahrgang: Bei einem Dach von 2010 steht das
+    // private Dach oben, weil seine Vergütung damals über dem heutigen
+    // Haushaltsstrompreis lag. Das ist kein Fehler, sondern der Grund, warum die
+    // Tabelle überhaupt nach Baujahr rechnet.
+    const s = stromwertSaetze(HEUTE);
     expect(s.steckersolar.ct).toBeGreaterThan(s.privat_dach.ct);
     expect(s.privat_dach.ct).toBeGreaterThan(s.gewerbe_dach.ct);
     expect(s.gewerbe_dach.ct).toBeGreaterThan(s.freiflaeche.ct);
@@ -123,11 +143,12 @@ describe("Stromwert je Anlagenart (Realitäts-Anker)", () => {
     expect(anteil).toBeGreaterThan(EIGENVERBRAUCH_ANTEIL_ANNAHME * 1.5);
   });
 
-  it("bleibt für jede Anlagenart im plausiblen Erlösband", () => {
+  it("bleibt für jede heute gebaute Anlagenart im plausiblen Erlösband", () => {
     // Keine Anlagenart erlöst mehr als den Haushaltsstrompreis (mehr als den
     // teuersten vermiedenen Bezug kann eine kWh nicht wert sein) und keine
-    // weniger als null.
-    for (const satz of Object.values(stromwertSaetze())) {
+    // weniger als null. Gilt für NEUE Anlagen — Altjahrgänge liegen zu Recht
+    // darüber, ihre Vergütung war höher als der heutige Strompreis.
+    for (const satz of Object.values(stromwertSaetze(HEUTE))) {
       expect(satz.ct).toBeGreaterThan(0);
       expect(satz.ct).toBeLessThanOrEqual(DEFAULT_PRICES.electricityPrice * 100);
       expect(satz.herkunft.length).toBeGreaterThan(10);
@@ -141,9 +162,76 @@ describe("Stromwert je Anlagenart (Realitäts-Anker)", () => {
   it("bewertet dieselbe Leistung je nach Anlagenart verschieden", () => {
     // Genau das konnte der frühere Einheitssatz nicht: Ein Freiflächen-Park
     // und ein privates Dach gleicher Größe standen mit demselben Betrag da.
-    const dach = segmentWertEuro(1000, "09162000", "privat_dach");
-    const frei = segmentWertEuro(1000, "09162000", "freiflaeche");
+    // Gleicher Jahrgang auf beiden Seiten — sonst mischt der Test zwei Effekte.
+    const dach = segmentWertEuro(1000, "09162000", "privat_dach", HEUTE);
+    const frei = segmentWertEuro(1000, "09162000", "freiflaeche", HEUTE);
     expect(dach).toBeGreaterThan(frei * 2);
+  });
+});
+
+/**
+ * Der Jahrgang ist die zweite große Spreizung neben der Anlagenart — und die
+ * einzige, die man einer fertigen Zahl nicht ansieht. Diese Anker prüfen sie
+ * gegen unabhängig bekannte Größen (die amtlichen Sätze der jeweiligen Jahre),
+ * nicht gegen die eigene Rechnung.
+ */
+describe("Stromwert nach Baujahr (Realitäts-Anker)", () => {
+  it("vergütet ein privates Dach von 2010 um ein Vielfaches höher als eines von 2024", () => {
+    // Amtlich: 34,05 ct ab 01.07.2010 (EEG 2009 § 20 Abs. 4 i. d. F. v.
+    // 11.08.2010) gegen 8,11 ct für die Jahresmitte 2024 (§§ 48/49/53 EEG 2023).
+    // Das ist der Faktor vier auf der Einspeiseseite — wer den Bestand ohne
+    // Baujahr rechnet, unterschlägt genau ihn.
+    expect(einspeiseCt("privat_dach", 2010)).toBeGreaterThan(einspeiseCt("privat_dach", 2024) * 3);
+
+    // Auf dem Mischsatz bleibt davon weniger übrig, weil der Eigenverbrauch bei
+    // beiden gleich zählt — aber deutlich mehr als ein Rundungsunterschied.
+    const alt = stromwertSaetze(2010).privat_dach.ct;
+    const neu = stromwertSaetze(2024).privat_dach.ct;
+    expect(alt).toBeGreaterThan(neu * 1.8);
+  });
+
+  it("nimmt einen Jahrgang jenseits der 20-Jahres-Frist aus der Vergütung", () => {
+    // § 25 EEG: Die Zahlung endet am 31.12. des zwanzigsten Jahres. Danach läuft
+    // die Anlage weiter und verkauft am Markt — die Spalte darf sie also nicht
+    // stillschweigend weiter zum Satz ihres Baujahrs führen.
+    const abgelaufen = new Date().getFullYear() - 21;
+    expect(einspeiseCt("privat_dach", abgelaufen)).toBeCloseTo(marktErloesCt(), 6);
+    expect(einspeiseCt("gewerbe_dach", abgelaufen)).toBeCloseTo(marktErloesCt(), 6);
+    expect(einspeiseCt("freiflaeche", abgelaufen)).toBeCloseTo(marktErloesCt(), 6);
+
+    // Und der abgelaufene Jahrgang muss unter dem liegen, der gerade noch drin
+    // ist — sonst greift die Frist nicht, sondern es rundet nur.
+    expect(stromwertSaetze(abgelaufen).gewerbe_dach.ct).toBeLessThan(
+      stromwertSaetze(new Date().getFullYear() - 19).gewerbe_dach.ct,
+    );
+  });
+
+  it("rechnet den Jahrgang 2012 mit den neuen, niedrigeren Sätzen", () => {
+    // 2012 ist der einzige geteilte Jahrgang: bis 31.03. galten 24,43 ct
+    // (BNetzA-Blatt ab 01.01.2012), ab 01.04. die EEG-2012-Monatstabelle. Die
+    // Jahresmitte fällt hinter den Stichtag, und das ist zugleich die
+    // vorsichtigere Wahl. Amtlich für 07/2012: 18,92 ct.
+    expect(einspeiseCt("privat_dach", 2012)).toBeCloseTo(18.92, 6);
+    expect(einspeiseCt("privat_dach", 2012)).toBeLessThan(einspeiseCt("privat_dach", 2011));
+  });
+
+  it("bewertet Freiflächen mit dem anzulegenden Wert, nicht mit dem Börsenpreis", () => {
+    // Ein Park in der Direktvermarktung bekommt die Marktprämie auf den
+    // anzulegenden Wert — sein Erlös hängt am Zuschlagswert der Ausschreibung
+    // (BNetzA, 4,66–5,00 ct in den letzten vier Runden), nicht am Marktwert.
+    expect(FREIFLAECHE_AW_CT).toBeGreaterThan(4.5);
+    expect(FREIFLAECHE_AW_CT).toBeLessThan(5.1);
+    expect(einspeiseCt("freiflaeche", HEUTE)).toBeCloseTo(FREIFLAECHE_AW_CT - 0.3, 6);
+
+    // Alte Parks lagen um ein Vielfaches darüber (2010: 25,02 ct Freifläche).
+    expect(einspeiseCt("freiflaeche", 2010)).toBeGreaterThan(einspeiseCt("freiflaeche", HEUTE) * 4);
+  });
+
+  it("lässt ein Steckersolargerät in jedem Jahrgang unvergütet", () => {
+    // Projektkonvention (Balkon-Rechner) — und für die alten Jahrgänge der
+    // richtige Fall: Steckersolargeräte gab es damals praktisch nicht.
+    expect(einspeiseCt("steckersolar", 2010)).toBe(0);
+    expect(einspeiseCt("steckersolar", HEUTE)).toBe(0);
   });
 });
 
@@ -156,9 +244,14 @@ describe("Stromwert je Anlagenart (Realitäts-Anker)", () => {
  */
 describe("Hilfetext und Rechnung bleiben dieselbe Quelle", () => {
   it("nennt für jede Anlagenart denselben Einspeisesatz, mit dem gerechnet wird", () => {
-    const saetze = stromwertSaetze();
-    const { eigenverbrauchCt, einspeisung } = stromwertBestandteile();
+    // Der Tooltip zeigt den HEUTIGEN Jahrgang — er muss also gegen genau diesen
+    // geprüft werden. Dass er seinen Jahrgang selbst mitliefert, ist der Grund,
+    // warum hier kein zweites Mal ein Jahr getippt wird.
+    const { eigenverbrauchCt, einspeisung, jahrgang } = stromwertBestandteile();
+    const saetze = stromwertSaetze(jahrgang);
     const finde = (label: string) => einspeisung.find((e) => e.label === label);
+
+    expect(jahrgang).toBe(HEUTE);
 
     // Gewerbedach: kein Eigenverbrauch angesetzt → der Mischsatz IST der
     // Einspeisesatz. Läuft das auseinander, behauptet der Tooltip eine Zahl,

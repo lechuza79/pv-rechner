@@ -241,11 +241,13 @@ export default function RankingTable({
         } else {
           a.count += c.count;
           a.kwp += c.kwp;
-          // Der Geldwert entsteht HIER, je Segment — nicht später aus der
-          // Summe: Ein Freiflächen-Park erlöst gut ein Drittel dessen, was ein
-          // privates Dach erspart. Über beide zu mitteln wäre keine Näherung,
-          // sondern eine andere Zahl.
-          a.wertEuro += segmentWertEuro(c.kwp, c.region_id, c.segment);
+          // Der Geldwert entsteht HIER, je Segment UND Jahrgang — nicht später
+          // aus der Summe: Ein Freiflächen-Park erlöst gut ein Drittel dessen,
+          // was ein privates Dach erspart, und ein Dach von 2010 das Vierfache
+          // eines heutigen. Über beides zu mitteln wäre keine Näherung, sondern
+          // eine andere Zahl. Der Jahrgang liegt ohnehin in der Zelle, weil die
+          // Tabelle für den Rang-Rücklauf nach Jahren filtert.
+          a.wertEuro += segmentWertEuro(c.kwp, c.region_id, c.segment, c.year);
         }
         acc.set(c.region_id, a);
       }
@@ -645,11 +647,11 @@ export default function RankingTable({
  * Sätzen entsteht, ist ohne diese Aufstellung nicht nachvollziehbar.
  */
 function StromwertHilfe() {
-  const { eigenverbrauchCt, einspeisung } = stromwertBestandteile();
+  const { eigenverbrauchCt, einspeisung, jahrgang } = stromwertBestandteile();
   return (
     <>
       Wert des erzeugten Solarstroms pro Jahr, rechnerisch. Jede Kilowattstunde zählt, was sie
-      ersetzt oder einbringt:
+      ersetzt oder einbringt — hier für eine Anlage, die {jahrgang} gebaut wird:
       <span style={S.tipListe}>
         <span style={S.tipZeile}>
           <strong>Im Haus verbraucht: {fmtCtProKwh(eigenverbrauchCt)}</strong> — ersetzt
@@ -666,8 +668,12 @@ function StromwertHilfe() {
         </span>
       </span>
       Wie sich eine Anlagenart auf beides verteilt, ist verschieden — deshalb wird jede einzeln
-      gerechnet. Strommenge: installierte Leistung mal typischer Ertrag im Bundesland, kalibriert
-      an der Erzeugung 2025 (Fraunhofer ISE).
+      gerechnet. Ältere Anlagen bekommen deutlich mehr: Jede Anlage zählt mit dem Satz ihres
+      Baujahrs, ein privates Dach von 2010 rund das Vierfache eines heutigen. Nach 20 Jahren
+      endet die Vergütung, dann zählt nur noch der Börsenwert. Die zusätzliche
+      Eigenverbrauchsvergütung der Baujahre 2009 bis 2012 ist nicht enthalten — diese Jahrgänge
+      sind eher zu niedrig angesetzt. Strommenge: installierte Leistung mal typischer Ertrag im
+      Bundesland, kalibriert an der Erzeugung 2025 (Fraunhofer ISE).
     </>
   );
 }
