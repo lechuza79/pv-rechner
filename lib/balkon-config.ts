@@ -278,18 +278,40 @@ export const BALKON_RECHT = {
   //   UStAE 12.18 Abs. 7 S. 3 — bis 800 VA entfällt sogar die Nachweispflicht,
   //     die Betreibereigenschaft wird unterstellt (bis 2024: 600 W; geändert durch
   //     BMF-Schreiben v. 15.08.2024, III C 2 - S 7220/22/10002 :017).
-  // DER VORBEHALT IST DER PUNKT, NICHT BEIWERK: Die Vereinfachung für Speicher
-  // greift nach Abs. 7 S. 10 erst ab 5 kWh nutzbarer Kapazität — unsere
-  // Balkonspeicher (1,6 / 2,7 kWh) liegen darunter. Nach S. 9 können sie
-  // begünstigt sein, automatisch sind sie es nicht. Deshalb steht hier „das Set",
-  // nicht „Set und Speicher". Wer den Satz kürzt, macht daraus eine falsche Zusage.
+  // DER SPEICHER-SATZ IST IN BEIDE RICHTUNGEN HEIKEL — Council 16.08.2026, 2/3
+  // bestätigt, der adversariale Prüfer hat ihn ENTSCHÄRFT statt verschärft:
+  // Die 5 kWh aus Abs. 7 S. 10 sind eine VERMUTUNGSREGEL, kein Tatbestandsmerkmal.
+  // Materiell entscheidet S. 9 die Zweckbestimmung. Ein 1,6-kWh-Balkonspeicher
+  // fällt also nur aus der Vermutung, nicht aus der Begünstigung — er ist
+  // steuerfrei, sobald erkennbar ist, dass er Strom aus dem begünstigten Gerät
+  // speichert, und das ist beim Kauf zum Set praktisch immer erkennbar.
+  //   ZU STRENG wäre: „unter 5 kWh nicht steuerfrei" / „dann 19 %" — schlicht falsch.
+  //   ZU LASCH wäre: „Set und Speicher sind steuerfrei" — unterschlägt die Bedingung.
+  // Der Satz muss beide Fehler vermeiden; deshalb nennt er die Schwelle UND sagt,
+  // was darunter gilt. Festgenagelt von lib/__tests__/balkon.test.ts.
+  // Vom Council zusätzlich gefunden, hier bewusst NICHT im Satz (gehört in den
+  // geplanten Ratgeber, nicht in die Kurzantwort): Beim GEBRAUCHTKAUF vom
+  // Wiederverkäufer greift die Differenzbesteuerung (§ 25a Abs. 5 S. 1 UStG,
+  // 19 % auf die Marge), und Miete/Leasing sowie Wartungsverträge bleiben bei 19 %.
+  // Zwei weitere Council-Funde stecken im Wortlaut:
+  //   „STEUERFREI" IST DER FALSCHE BEGRIFF. Es ist ein Steuersatz von 0 %, keine
+  //   Steuerbefreiung — im Ergebnis dasselbe für den Käufer, aber ein anderer
+  //   Rechtsbegriff. Deshalb durchgehend „keine Mehrwertsteuer" / „Nullsteuersatz".
+  //   DIE HÄNDLERPRAXIS GEHÖRT DAZU. Beim SEPARAT gekauften Speicher fehlt die
+  //   Klammer des einheitlichen Kaufs (Sachgesamtheit, UStAE 3.1 Abs. 1 S. 4);
+  //   viele Händler rechnen dort trotzdem 19 % ab. Ohne diesen Halbsatz weckt
+  //   der Satz eine Erwartung, die an der Kasse platzt — rechtlich richtig,
+  //   praktisch irreführend.
   nullsteuer:
-    "Auf das Set selbst fällt keine Mehrwertsteuer an: Für Solarmodule an einer Wohnung gilt der Nullsteuersatz, und bis 800 Voltampere verlangt das Finanzamt dafür nicht einmal einen Nachweis. Bei Speichern unter 5 kWh greift diese Vereinfachung nicht automatisch — hier lohnt der Blick auf die Rechnung des Händlers.",
+    "Auf das Set fällt keine Mehrwertsteuer an: Für Solarmodule an einer Wohnung gilt der Nullsteuersatz, und bis 800 Voltampere verlangt das Finanzamt dafür nicht einmal einen Nachweis. Beim separat gekauften Speicher unterstellt das Finanzamt den Solarbezug erst ab 5 kWh von sich aus; kleinere Balkonspeicher sind davon nicht ausgeschlossen, in der Praxis rechnen viele Händler dort aber die vollen 19 Prozent ab.",
 
   // Geprüft am 16.08.2026 über die vollständige Verweiskette (nicht aus § 95 EnWG
   // allein ableitbar — eine Verordnung löst nur bei ausdrücklicher Rückverweisung
   // ein Bußgeld aus, und genau die gibt es hier):
-  //   § 5 Abs. 1 MaStRV — Registrierung binnen eines Monats nach Inbetriebnahme.
+  //   § 5 Abs. 1 S. 1 MaStRV — Registrierungspflicht des Betreibers.
+  //   § 5 Abs. 5 S. 1 MaStRV — die Monatsfrist. Steht NICHT in Absatz 1; die
+  //     Verwechslung ist naheliegend, weil § 21 Nr. 1 nur auf Abs. 1 verweist —
+  //     die Fristüberschreitung wird dort über „nicht rechtzeitig" erfasst.
   //   § 21 Nr. 1 MaStRV — „Ordnungswidrig im Sinn des § 95 Absatz 1 Nummer 5
   //     Buchstabe e des Energiewirtschaftsgesetzes handelt, wer vorsätzlich oder
   //     fahrlässig entgegen … § 5 Absatz 1 … eine Registrierung nicht, nicht
@@ -301,6 +323,19 @@ export const BALKON_RECHT = {
   // (§ 17 OWiG bemisst nach Bedeutung und Vorwurf). Die Zahl als Drohung zu setzen
   // wäre formal belegbar und trotzdem irreführend — genau die Sorte Halbwahrheit,
   // mit der die Wettbewerber-Seiten zu diesem Keyword arbeiten.
+  // Council 16.08.2026: 3/3 bestätigt, der adversariale Prüfer kam über fünf
+  // Angriffe nicht durch. Drei seiner Formulierungs-Einwände stecken im Satz:
+  //   1. „ordnungswidrig" nicht als Automatik — § 21 MaStRV verlangt Vorsatz
+  //      oder Fahrlässigkeit. Deshalb „grundsätzlich", wörtlich wie die
+  //      Bundesnetzagentur selbst in ihrer MaStR-Webhilfe formuliert.
+  //   2. Inbetriebnahme = erster Tag der Stromerzeugung, nicht Kauf oder
+  //      Lieferung. Das ist die Frage, an der die Frist real scheitert.
+  //   3. Pflichtig ist der BETREIBER — bei „Vermieter kauft, Mieter betreibt"
+  //      trifft es nicht den, den ein „wer eins hat" nahelegt. Deshalb „du"
+  //      im Sinn des Betreibers und kein Eigentums-Vokabular.
+  // Bewusst NICHT im Satz: die Verfolgungspraxis. Weder „wird nie verfolgt"
+  // noch „nachträglich sanktionsfrei" ließ sich auf die Behörde oder eine
+  // Statistik zurückführen — beides sind unbelegte Blog-Behauptungen.
   anmeldeFrist:
-    "Zeit ist dafür ein Monat ab Inbetriebnahme. Wer die Registrierung versäumt, begeht formal eine Ordnungswidrigkeit — die Anmeldung selbst ist kostenlos und in wenigen Minuten erledigt.",
+    "Dafür hast du einen Monat ab Inbetriebnahme — gerechnet ab dem Tag, an dem die Module das erste Mal Strom liefern, nicht ab Kauf oder Lieferung. Wer die Frist verstreichen lässt, handelt grundsätzlich ordnungswidrig; die Anmeldung selbst ist kostenlos und in wenigen Minuten erledigt.",
 } as const;
