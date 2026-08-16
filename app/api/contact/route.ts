@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { DEFAULT_CONTACT_TOPIC, isContactTopic } from "../../../lib/contact-topics";
 
 // ─── Contact form submission (email via Resend) ──────────────────────────────
-// Public-facing counterpart to /api/alert: same Resend send pattern (from
-// address, ADMIN_EMAILS recipients), but reachable by anyone via the /kontakt
-// form instead of authenticated watchers. Satisfies the §5 DDG requirement for
+// Public-facing counterpart to /api/alert: same Resend send pattern, but
+// reachable by anyone via the /kontakt form instead of authenticated watchers,
+// and delivering to the domain mailbox rather than the admin list (see
+// RECIPIENTS below). Satisfies the §5 DDG requirement for
 // a second, fast contact channel alongside the email address in the Impressum.
 //
 // Body: { name?: string, email: string, topic?: string, message: string, website?: string }
@@ -17,7 +18,27 @@ import { DEFAULT_CONTACT_TOPIC, isContactTopic } from "../../../lib/contact-topi
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const RESEND_FROM = process.env.RESEND_FROM ?? "Solar Check <onboarding@resend.dev>";
-const RECIPIENTS = Array.from(new Set((process.env.ADMIN_EMAILS || "").split(",").map(e => e.trim().toLowerCase()).filter(Boolean)));
+// Wohin die Nachrichten gehen — bewusst NICHT ADMIN_EMAILS. Das ist die
+// Admin-Liste (Zugang zum internen Bereich, Wächter-Mails) und zeigt auf ein
+// privates Gmail-Konto; damit wäre Google ein zweiter Empfänger der
+// Nutzernachrichten in einem Drittland, für den sich bei einem privaten Konto
+// kein Auftragsverarbeitungsvertrag abschließen lässt. Das Postfach der eigenen
+// Domain liegt beim deutschen Anbieter, mit dem ohnehin ein Vertrag besteht.
+// Entscheidung des Betreibers am 16.08.2026; die Datenschutzerklärung
+// (Abschnitt 10) beschreibt genau diesen Weg.
+//
+// WICHTIG: Eine automatische Weiterleitung dieses Postfachs an ein
+// Drittland-Postfach hebelt die Entscheidung wieder aus — dann müsste der
+// Anbieter dort in Abschnitt 10 genannt werden.
+const CONTACT_FALLBACK = "hey@solar-check.io";
+const RECIPIENTS = Array.from(
+  new Set(
+    (process.env.CONTACT_RECIPIENTS || CONTACT_FALLBACK)
+      .split(",")
+      .map(e => e.trim().toLowerCase())
+      .filter(Boolean),
+  ),
+);
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MESSAGE_MIN = 10;
@@ -101,7 +122,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Der Versand ist aktuell nicht verfügbar. Schreib uns bitte direkt per E-Mail." }, { status: 500 });
   }
   if (RECIPIENTS.length === 0) {
-    console.error("[Contact] No recipients (ADMIN_EMAILS not set)");
+    console.error("[Contact] No recipients (CONTACT_RECIPIENTS set to an empty value)");
     return NextResponse.json({ error: "Der Versand ist aktuell nicht verfügbar. Schreib uns bitte direkt per E-Mail." }, { status: 500 });
   }
 

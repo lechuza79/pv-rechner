@@ -114,11 +114,13 @@ export default function DatenschutzPage() {
           werden. Es gibt keine Verkaufsanrufe, kein Werbe-Tracking durch
           Drittanbieter und keine Werbung — du bekommst dein Ergebnis sofort,
           ohne Registrierung. Die eigentliche Berechnung läuft in deinem Browser.
-          In zwei Fällen werden dennoch Daten übermittelt: für die
+          In drei Fällen werden dennoch Daten übermittelt: für die
           standortgenaue Ertragsprognose wird deine Postleitzahl an einen
-          Berechnungsdienst gesendet (Abschnitt 8), und wenn du dich freiwillig
+          Berechnungsdienst gesendet (Abschnitt 8), wenn du dich freiwillig
           anmeldest, um Berechnungen zu speichern, legen wir ein Nutzerkonto an
-          (Abschnitt 9). Beides ist unten transparent beschrieben.
+          (Abschnitt 9), und wenn du uns über das Kontaktformular schreibst,
+          geht deine Nachricht per E-Mail an uns (Abschnitt 10). Alle drei Fälle
+          sind unten transparent beschrieben.
         </p>
 
         <h2 style={S.h2}>3. Hosting</h2>
@@ -199,7 +201,7 @@ export default function DatenschutzPage() {
           für die Verarbeitung ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
           Interesse an einer datensparsamen Reichweitenmessung zur Verbesserung
           unseres Angebots). Der Erhebung kannst du jederzeit widersprechen
-          (Abschnitt 11). Weitere Informationen:{" "}
+          (Abschnitt 12). Weitere Informationen:{" "}
           <a
             href="https://vercel.com/docs/analytics/privacy-policy"
             target="_blank"
@@ -287,17 +289,87 @@ export default function DatenschutzPage() {
           </a>
         </p>
 
-        <h2 style={S.h2}>10. Kontakt per E-Mail</h2>
+        {/* Das Kontaktformular kam in dieser Erklärung bis zum 15.08.2026 gar
+            nicht vor: Abschnitt „Kontakt per E-Mail" beschrieb nur die direkte
+            Mail, und der Versanddienstleister (Drittland) war nirgends genannt.
+            Art. 13 DSGVO verlangt Empfänger bzw. Empfängerkategorien und den
+            Drittlandbezug — deshalb ein eigener Abschnitt vor der E-Mail. */}
+        <h2 style={S.h2}>10. Kontaktformular</h2>
         <p style={S.p}>
-          Wenn du uns per E-Mail kontaktierst, werden die von dir mitgeteilten
-          Daten (E-Mail-Adresse, Inhalt der Nachricht) zum Zweck der Bearbeitung
-          deiner Anfrage gespeichert. Diese Daten werden nicht ohne deine
-          Einwilligung weitergegeben. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b
-          DSGVO (vorvertragliche Maßnahmen) bzw. lit. f (berechtigtes Interesse
-          an der Beantwortung von Anfragen).
+          Auf der Kontaktseite und in den Kontakt-Fenstern einzelner Seiten
+          kannst du uns über ein Formular schreiben. Übermittelt werden dabei
+          deine <strong>E-Mail-Adresse</strong>, das gewählte{" "}
+          <strong>Thema</strong>, deine <strong>Nachricht</strong> und — wenn du
+          ihn angibst — dein <strong>Name</strong>. E-Mail-Adresse und Nachricht
+          brauchen wir zwingend, sonst lässt sich das Formular nicht absenden;
+          der Name ist freiwillig. Wir verarbeiten diese Angaben, um deine
+          Anfrage zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an der Beantwortung von Anfragen), bei Anfragen
+          zu einem Vertrag oder dessen Anbahnung Art. 6 Abs. 1 lit. b DSGVO.
+          Beiden Verarbeitungen, die wir auf das berechtigte Interesse stützen —
+          der Beantwortung und der unten beschriebenen Abwehr automatisierter
+          Einsendungen —, kannst du jederzeit widersprechen (Abschnitt 12).
+        </p>
+        <p style={S.p}>
+          Für den Versand nutzen wir den E-Mail-Dienst <strong>Resend</strong>{" "}
+          (Plus Five Five, Inc., 2261 Market Street #5039, San Francisco, CA
+          94114, USA) als Auftragsverarbeiter nach Art. 28 DSGVO. Deine Angaben
+          werden dabei in die USA übermittelt und dort technisch bedingt im
+          Versandprotokoll verarbeitet. Grundlage der Übermittlung ist der
+          Angemessenheitsbeschluss der EU-Kommission vom 10. Juli 2023 zum EU-US
+          Data Privacy Framework; Resend ist dort als Teilnehmer gelistet.
+          Zusätzlich sind in den Auftragsverarbeitungsvertrag die
+          Standardvertragsklauseln der EU-Kommission einbezogen — sie tragen die
+          Übermittlung auch dann, wenn die Zertifizierung entfallen sollte.
+          Weitere Informationen:{" "}
+          <a
+            href="https://resend.com/legal/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={S.a}
+          >
+            resend.com/legal/privacy-policy
+          </a>
+        </p>
+        <p style={S.p}>
+          In unserer Datenbank wird <strong>nichts davon gespeichert</strong>:
+          Deine Nachricht landet als E-Mail im Postfach des in Abschnitt 1
+          genannten Verantwortlichen und wird dort gelöscht, sobald die Anfrage
+          erledigt ist und keine gesetzlichen Aufbewahrungspflichten
+          entgegenstehen.
+        </p>
+        <p style={S.p}>
+          Um automatisierte Masseneinsendungen abzuwehren, hält unser Server die
+          IP-Adresse der absendenden Verbindung im Arbeitsspeicher fest und
+          wertet sie ausschließlich innerhalb eines Ein-Stunden-Zeitfensters aus
+          (bis zu fünf Nachrichten je Stunde und Serverinstanz). Sie wird nicht
+          dauerhaft gespeichert, nicht in die E-Mail an uns übernommen und
+          spätestens mit dem Neustart der Serverinstanz verworfen.
+          Rechtsgrundlage hierfür ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
+          Interesse an einem funktionsfähigen, vor automatisierten Einsendungen
+          geschützten Formular).
         </p>
 
-        <h2 style={S.h2}>11. Deine Rechte</h2>
+        {/* Dieser Abschnitt stand vor dem Kontaktformular hier und beschrieb
+            dieselbe Sache mit anderen Worten: „gespeichert" ohne Löschkriterium
+            und mit umgekehrter Reihenfolge der Rechtsgrundlagen. Zwei
+            Begründungen für denselben Vorgang sind kein Stil-, sondern ein
+            Transparenzproblem — deshalb an Abschnitt 10 angeglichen. */}
+        <h2 style={S.h2}>11. Kontakt per E-Mail</h2>
+        <p style={S.p}>
+          Schreibst du uns direkt eine E-Mail, statt das Formular zu nutzen,
+          verarbeiten wir deine E-Mail-Adresse und den Inhalt deiner Nachricht
+          ausschließlich, um deine Anfrage zu beantworten. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung
+          von Anfragen), bei Anfragen zu einem Vertrag oder dessen Anbahnung
+          Art. 6 Abs. 1 lit. b DSGVO; auch hier kannst du der Verarbeitung
+          jederzeit widersprechen (Abschnitt 12). Deine Nachricht wird gelöscht,
+          sobald die Anfrage erledigt ist und keine gesetzlichen
+          Aufbewahrungspflichten entgegenstehen. Eine Weitergabe an Dritte
+          erfolgt nicht, außer wir sind gesetzlich dazu verpflichtet.
+        </p>
+
+        <h2 style={S.h2}>12. Deine Rechte</h2>
         <p style={S.p}>Du hast jederzeit das Recht auf:</p>
         <ul style={S.ul}>
           <li style={S.li}>
@@ -323,14 +395,14 @@ export default function DatenschutzPage() {
           Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO).
         </p>
 
-        <h2 style={S.h2}>12. Änderungen</h2>
+        <h2 style={S.h2}>13. Änderungen</h2>
         <p style={S.p}>
           Diese Datenschutzerklärung kann gelegentlich aktualisiert werden, um
           Änderungen an der Website oder rechtlichen Anforderungen zu
           entsprechen.
         </p>
 
-        <h2 style={S.h2}>13. Eingebettete Widgets auf anderen Websites</h2>
+        <h2 style={S.h2}>14. Eingebettete Widgets auf anderen Websites</h2>
         <p style={S.p}>
           Wenn du eine fremde Website besuchst, die ein solar-check.io-Widget
           einbindet (etwa eine Strommix- oder Erzeugungs-Grafik), verarbeitet
@@ -346,7 +418,7 @@ export default function DatenschutzPage() {
         {/* Der Kommunen-Outreach kam in dieser Erklärung überhaupt nicht vor,
             während das Anschreiben für „Herkunft, Zweck und Ihr
             Widerspruchsrecht" hierher verwies — der Verweis ging ins Leere. */}
-        <h2 style={S.h2}>14. Anschreiben an Städte und Gemeinden</h2>
+        <h2 style={S.h2}>15. Anschreiben an Städte und Gemeinden</h2>
         <p style={S.p}>
           Wir schreiben Kommunen an, um ihnen die Solar-Zahlen ihres Ortes als
           fertige Meldung und als einbettbare Übersicht anzubieten. Verarbeitet
