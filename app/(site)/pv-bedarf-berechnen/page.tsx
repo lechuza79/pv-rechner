@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
+import StandNote from "../../../components/StandNote";
 import { pageMetadata } from "../../../lib/seo";
+import { v } from "../../../lib/theme";
 import Empfehlung from "./empfehlung";
 
 export const metadata: Metadata = pageMetadata({
@@ -16,6 +18,9 @@ export default function EmpfehlungPage() {
   return (
     <Suspense fallback={null}>
       <Empfehlung />
+      <div style={{ maxWidth: v("--page-max-width"), margin: "0 auto", padding: "0 16px 32px" }}>
+        <StandNote pfad="/pv-bedarf-berechnen" />
+      </div>
     </Suspense>
   );
 }

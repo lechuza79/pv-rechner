@@ -24,7 +24,7 @@ richtige Zahl tut das.
 
 ---
 
-## Teil 1 — Acht Regeln gegen „Annahme als Tatsache"
+## Teil 1 — Neun Regeln gegen „Annahme als Tatsache"
 
 Jede Regel stammt aus einem echten Fehlschlag dieses Projekts. Sie gelten für
 alles, was ein Wächter ändert, schreibt oder meldet — auch für den Bericht
@@ -131,6 +131,41 @@ Aussage, die Grüngas-Beimischpflicht gelte im Neubau nicht. Sie stand einen Tag
 lang auf fünf Oberflächen, ein Test hielt sie fest — und war falsch: eine zweite
 Vorschrift erklärt dieselben Maßgaben für Neubauten ausdrücklich für anwendbar,
 die Gesetzesbegründung sagt es wörtlich. Aufgefallen ist es dem Betreiber.
+
+### 9. Das Prüfdatum wandert mit jedem erreichten Lauf — und nur mit ihm
+
+Jede wächter-gepflegte Config trägt **zwei** Daten, und sie beantworten
+verschiedene Fragen:
+
+| Feld | Antwortet auf | Wandert |
+|---|---|---|
+| `validFrom` | Von wann sind die **Werte**? | nur, wenn sich ein Wert ändert |
+| `geprueftIso` | Wann hat zuletzt jemand **nachgesehen**? | bei **jedem** Lauf, der die Quellen erreicht hat |
+
+**„Geprüft und unverändert" ist das Normalergebnis — und genau die Auskunft, die
+das Prüfdatum gibt.** Ein Lauf, der die Leitquellen aufgeschlagen und alles
+bestätigt hat, setzt `geprueftIso` auf den Tag des Laufs; `validFrom` bleibt
+stehen, weil sich kein Wert bewegt hat. Wer nur bei Änderungen stempelt, lässt
+das Datum einfrieren, sobald es einmal jemand gesetzt hat — und dann altert eine
+geprüfte Zahl vor den Augen des Lesers wie eine ungeprüfte.
+
+**Umgekehrt gilt genauso hart: Ein Datum darf nur eine Prüfung stempeln, die
+stattgefunden hat.** Paywall, 404, Bot-Prüfung, abgebrochener Lauf, nur eine
+Sekundärquelle erreicht → das Datum **bleibt stehen**, der Fehlschlag geht in den
+Bericht. Ein Prüfdatum ohne Prüfung ist dieselbe Lüge wie `updated_at` als
+Ersatz-Prüfdatum: Darüber trugen 25 von 38 Förderprogrammen ein Datum für eine
+Prüfung, die nie stattfand. Kein Prüfdatum kommt je aus `new Date()` oder aus der
+Build-Zeit.
+
+**Das Datum ist öffentlich.** `lib/stand.ts` speist daraus die „Stand:"-Zeile
+unter den Rechnern **und** das `lastmod` der Sitemap. Ein hochgesetztes Datum ohne
+Prüfung behauptet also nicht nur gegenüber dem Leser eine Aktualisierung, sondern
+meldet sie auch an Google — und Google entwertet ein `lastmod`, das sich ohne
+echte Änderung bewegt, für die ganze Domain.
+
+*Auslöser:* Bis zum 16.08.2026 fror jedes Prüfdatum ein, sobald es einmal gesetzt
+war. Die Wächter liefen weiter, bestätigten die Werte — und keiner der
+bestätigten Läufe war der Seite anzusehen.
 
 ---
 

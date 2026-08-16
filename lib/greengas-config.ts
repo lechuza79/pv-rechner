@@ -166,7 +166,16 @@ export interface GreenGasConfig {
   /** Mehrwertsteuer auf alle Komponenten. */
   vat: number;
   source: string;
+  /** Stand der Werte selbst — nur hochsetzen, wenn sich einer ändert. */
   validFrom: string;
+  /**
+   * Tag, an dem ein Wächter-Lauf Gesetzestext und Report zuletzt wirklich
+   * aufgeschlagen hat. Wandert auch bei „geprüft und unverändert" mit, bleibt
+   * bei einem gescheiterten Abruf stehen (scripts/waechter-gate.md → „Das
+   * Prüfdatum wandert mit jedem erreichten Lauf"). Sichtbar auf
+   * /waermepumpe-rechner über lib/stand.ts.
+   */
+  geprueftIso: string;
   reviewBy: string;
 }
 
@@ -196,6 +205,9 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
     "Basisszenario; der 2045er-Wert unter der Annahme vollständiger Grüngas-Versorgung. " +
     "Das Basisszenario ist laut Report ein analytischer Referenzpfad, keine Prognose",
   validFrom: "2026-07-25",
+  // Startwert = `validFrom`: der Tag, für den die Prüfung gegen IW-Report und
+  // Gesetzestext im Repo belegt ist.
+  geprueftIso: "2026-07-25",
   reviewBy: "2027-07-25",
 };
 

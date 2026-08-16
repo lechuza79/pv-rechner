@@ -175,4 +175,13 @@ wirkt auch im PV-Rechner). Hier hängen Rechtsfolgen und Ermessen dran
 Vorschlag mailen, ändern nach Freigabe. Invarianten beachten (Bonus-Summe > Cap,
 SWWP-Invest > LWWP-Invest).
 
-- **Bei `ok`:** nur `validFrom` + `reviewBy` auf den nächsten Termin setzen.
+- **Bei `ok`:** `geprueftIso` + `reviewBy` auf den nächsten Termin setzen,
+  `validFrom` unverändert lassen.
+- **`geprueftIso` in jedem Fall nachziehen** (Gate-Regel 9):
+  `DEFAULT_HEATPUMP_CONFIG.geprueftIso` trägt den Tag dieses Laufs, sobald die
+  Leitquellen (Angebotsauswertung, KfW-Merkblatt, BDEW-Tarife) tatsächlich
+  gelesen wurden — auch bei „alles bestätigt, nichts geändert". Genau das steht
+  unter dem Rechner: „Anschaffung, Tarife und BEG-Förderung geprüft am …"
+  (`lib/stand.ts`), und dasselbe Datum ist das `lastmod` der Seite in der
+  Sitemap. Ein Lauf, der an einer Quelle gescheitert ist, lässt es stehen.
+  `validFrom` bewegt sich nur, wenn sich ein Wert ändert.

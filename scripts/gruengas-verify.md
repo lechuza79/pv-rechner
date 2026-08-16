@@ -96,6 +96,14 @@ heutige Datum.
 Dieselbe Linie wie bei den anderen Wächtern — automatisch nur, was genau **eine**
 richtige Antwort hat:
 
+- **`GREEN_GAS_CONFIG.geprueftIso` in jedem Fall nachziehen** (Gate-Regel 9):
+  Sobald dieser Lauf Gesetzestext und IW-Report wirklich aufgeschlagen hat, trägt
+  das Feld seinen Tag — auch wenn Stufen, Preise und Rechtsstand unverändert
+  bleiben. Genau das steht unter dem Wärmepumpen-Rechner: „Grüngas-Pflicht und
+  Gaspreis-Bestandteile geprüft am …" (`lib/stand.ts`). `validFrom` bewegt sich
+  nur mit einem Wert, und ein Lauf, der an einer Quelle gescheitert ist, lässt
+  beide stehen.
+
 - **Verkündungs-Flag: Auto-Fix erlaubt**, aber erst nach Council gemäß
   `scripts/council-verify.md` (drei unabhängige Verifizierer, einer adversarial)
   und nur mit einer konkreten Bundesgesetzblatt-Fundstelle als Beleg. Dann in

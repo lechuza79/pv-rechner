@@ -1,5 +1,7 @@
 import { Metadata } from "next";
+import StandNote from "../../../components/StandNote";
 import { pageMetadata } from "../../../lib/seo";
+import { v } from "../../../lib/theme";
 import Klimaanlage from "./klimaanlage";
 
 export const metadata: Metadata = pageMetadata({
@@ -12,5 +14,12 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function KlimaanlagePage() {
-  return <Klimaanlage />;
+  return (
+    <>
+      <Klimaanlage />
+      <div style={{ maxWidth: v("--page-max-width"), margin: "0 auto", padding: "0 16px 32px" }}>
+        <StandNote pfad="/klimaanlage-stromkosten" />
+      </div>
+    </>
+  );
 }

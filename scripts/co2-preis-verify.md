@@ -63,8 +63,14 @@ Mitgeben: den aktuellen Inhalt von `lib/co2-config.ts` (`anchors`,
 
 ## Nach der Prüfung
 
-- **Bei `ok`:** nur `validFrom` und `reviewBy` in `lib/co2-config.ts` auf das
-  nächste Jahr hochsetzen (bestätigt, dass der Pfad noch stimmt).
+- **Bei `ok`:** `geprueftIso` und `reviewBy` in `lib/co2-config.ts` hochsetzen
+  (bestätigt, dass der Pfad noch stimmt) — `validFrom` bleibt stehen, es sagt,
+  von wann die Stützstellen sind, nicht wann jemand nachgesehen hat.
+- **`geprueftIso` in jedem Fall nachziehen** (Gate-Regel 9): Der Tag dieses
+  Laufs, sobald BEHG-Text bzw. Drucksache und die ETS2-Prognose wirklich gelesen
+  wurden — auch bei „unverändert". Sichtbar unter dem Wärmepumpen-Rechner als
+  „CO₂-Preispfad geprüft am …" (`lib/stand.ts`). Nicht erreichte Quelle →
+  Datum bleibt, Fehlschlag in den Bericht.
 - **Bei `abweichung`:** zuerst das **Council** laufen lassen
   (`scripts/council-verify.md`). CO2 ist ein **Ermessensfall** (welcher Anker,
   Korridor-Boden vs. -Decke, ETS2-Encoding) → **kein Auto-Fix, auch bei Konsens**.
