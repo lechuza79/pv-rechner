@@ -369,6 +369,27 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(p.pvPerKwp).toBeUndefined();
   });
 
+  // Freiburg: Die Stadt hat den Jahrestopf 2026 am 14.07.2026 für leer erklärt
+  // ("Neue Anträge können ab sofort nicht mehr gestellt werden", Pressemitteilung
+  // freiburg.de/pb/2626054.html; die Programmseite nennt Baustein 3 ausdrücklich).
+  // Wir zogen bis zum 16.08.2026 weiter 150 €/kWp ab. Zwei Fallen hält dieser Test
+  // fest: Die Einzelseiten im Service-A-Z tragen den Stopp bis heute nicht (Stand
+  // 2023) — wer dort nachsieht, hält das Programm für offen. Und das Balkonmodul
+  // ist Ziffer 3.5 DESSELBEN Bausteins, also mitgestoppt, nicht ein eigener Topf.
+  it("Freiburg: Jahrestopf 2026 leer, kein Abzug mehr — Programm bleibt bestehen", () => {
+    const p = getFundingProgram("freiburg-stromerzeugung")!;
+    expect(p.status).toBe("ausgeschoepft");
+    expect(p.pvPerKwp).toBeUndefined();
+    expect(p.pvCap).toBeUndefined();
+    expect(stackFunding(fundingForAgs("08311000"), 10, 10, 25000).total).toBe(0);
+    // Die Sätze bleiben stehen: gestoppt ist das Geld, nicht die Richtlinie.
+    expect(p.rates.length).toBeGreaterThanOrEqual(3);
+    // Der Grund samt Stichtag steht sichtbar dabei, sonst wirkt die leere Kachel
+    // wie ein Datenfehler statt wie eine Tatsache.
+    expect(p.conditions.join(" ")).toMatch(/14\.07\.2026/);
+    expect(p.conditions.join(" ")).toMatch(/Balkonmodul/i);
+  });
+
   // Eine Startseiten-URL ist als Quellenangabe unter einem Förderbetrag wertlos:
   // Sie sieht aus wie ein Beleg, führt aber nirgendwo hin. Aufgefallen bei
   // Bergstraße und Memmingen, danach für alle aktiven Programme festgehalten.

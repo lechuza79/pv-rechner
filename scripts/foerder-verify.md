@@ -203,6 +203,27 @@ gewesen: Es gab nichts zu entscheiden, nur etwas abzuschreiben.
 
 ## Changelog
 
+### August 2026 (News-Wächter-Lauf 16.08.)
+- **Freiburg im Breisgau** — Jahrestopf leer, wir zogen weiter ab. Die Stadt hat
+  das Programm „Klimafreundlich Wohnen" am **14.07.2026** per Pressemitteilung
+  gestoppt („Neue Anträge können ab sofort nicht mehr gestellt werden",
+  freiburg.de/pb/2626054.html); die Programmseite nennt Baustein 3
+  (Stromerzeugung) ausdrücklich mit. Council 3/3 inkl. adversarialem Prüfer.
+  → `aktiv` → `ausgeschoepft`, `pvPerKwp`/`pvCap` entfernt (150 €/kWp, max.
+  1.500 € wurden einen Monat lang zu Unrecht abgezogen), Grund + Stichtag als
+  sichtbare Bedingung. Sätze und Richtlinie bleiben stehen: gestoppt ist das
+  Geld, nicht das Programm. Die Stadtseite bleibt online — `ausgeschoepft` zählt
+  als Archiv-Status, die Seite rechnet das Beispiel ohne den Zuschuss.
+  - **Falle für den nächsten Lauf:** Die Einzelseiten im Service-A-Z („3.3
+    Photovoltaik Dachvollbelegung", „3.5 Balkonmodul") tragen den Stopp bis
+    heute **nicht** — Freigabestand 2023, Antragslink wirkt weiter aktiv. Wer
+    dort nachsieht statt auf der Programmseite, hält das Programm für offen.
+    Maßgeblich ist die Programmseite (jüngere Richtlinienfassung, Stopp-Kasten).
+  - **Nicht automatisch wieder einschalten:** Der 01.01.2027 steht nur auf der
+    Programmseite, nicht in der Pressemitteilung, und die Richtlinie schließt
+    einen Rechtsanspruch aus. Vor dem Wiedereinschalten an der Trägerseite
+    nachprüfen.
+
 ### August 2026 (News-Wächter-Lauf 14.08.)
 - **Heidelberg** — der Eintrag stand seit Juni auf `unsicher` („zwei städtische
   Seiten widersprechen sich"). Der Widerspruch war keiner: Die Übersichtsseite

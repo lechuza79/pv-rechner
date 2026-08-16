@@ -410,26 +410,49 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
 
   // ── Batch Juni 2026 (je 1 Recherche-Agent → offizielle Quelle) ──────────────
+  //
+  // Der Jahrestopf 2026 ist leer: Die Stadt hat das Programm am 14.07.2026 per
+  // Pressemitteilung gestoppt („Die Mittel für das städtische Förderprogramm
+  // ‚Klimafreundlich Wohnen‘ sind für dieses Jahr vollständig ausgeschöpft […]
+  // Neue Anträge können ab sofort nicht mehr gestellt werden."
+  // freiburg.de/pb/2626054.html), die Programmseite nennt zusätzlich Baustein 3
+  // ausdrücklich: „Zu den Bausteinen 2 […] und 3 (Stromerzeugung erneuerbar)
+  // können keine Anträge mehr gestellt werden." (freiburg.de/pb/232441.html,
+  // abgerufen 16.08.2026). Council 3/3 am 16.08.2026, adversarialer Prüfer
+  // eingeschlossen. Deshalb kein `pvPerKwp`/`pvCap` mehr — der Rechner darf
+  // kein Geld abziehen, das derzeit niemand bekommt.
+  //
+  // NICHT abgeschafft, nur geschlossen: Die Förderrichtlinie (Fassung 06.2025)
+  // gilt unverändert fort, gestoppt ist allein die Mittelbereitstellung
+  // („Die Stadt Freiburg fördert Projekte, solange Fördermittel im Haushalt zur
+  // Verfügung stehen. Ein Rechtsanspruch auf Bewilligung besteht nicht.",
+  // Ziffer 7). Sätze und Bedingungen bleiben deshalb stehen.
+  //
+  // Die Wiedereröffnung zum 01.01.2027 steht auf der Programmseite, NICHT in der
+  // Pressemitteilung — sie ist eine Ankündigung der Stadt, keine Zusage, und
+  // wird von keiner Automatik ausgewertet. Wer den Eintrag im Januar wieder
+  // scharf schaltet, prüft das vorher an der Trägerseite nach.
   "freiburg-stromerzeugung": {
     id: "freiburg-stromerzeugung", name: "Klimafreundlich Wohnen – Stromerzeugung",
     traeger: "Stadt Freiburg im Breisgau", level: "kommune", region: "Freiburg im Breisgau", bundesland: "Baden-Württemberg", agsCode: "08311",
-    url: "https://www.freiburg.de/pb/232441.html", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: true,
+    url: "https://www.freiburg.de/pb/232441.html", stand: "August 2026",
+    status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp für Dach-PV (nur Anteil über der Solarpflicht-Mindestgröße)",
+    coveredCosts: "Zuschuss je kWp für Dach-PV (nur Anteil über der Solarpflicht-Mindestgröße) — Jahrestopf 2026 leer",
     rates: [
       { label: "Dach-PV (Vollbelegung)", value: "150 €/kWp, max. 1.500 €" },
       { label: "Bonus Gründach/Fassade/Denkmal", value: "+150 €/kWp, max. 1.500 €" },
       { label: "Balkonmodul (Mieter)", value: "150 € (mit Freiburg-Pass 300 €)" },
     ],
     conditions: [
+      "Mittel für 2026 vollständig ausgeschöpft: seit dem 14.07.2026 keine neuen Anträge — auch nicht für Balkonmodule; nach Angaben der Stadt wieder ab 1. Januar 2027",
+      "Bereits eingegangene Anträge werden weiter bearbeitet",
       "Gefördert nur der Anlagenteil über der gesetzlichen Solarpflicht-Mindestgröße",
       "Antrag bis 6 Monate nach Inbetriebnahme; Ausführung durch Fachbetrieb",
-      "Batteriespeicher seit Juni 2025 nicht mehr gefördert",
+      "Batteriespeicher seit Juni 2025 dauerhaft nicht mehr gefördert (Gemeinderatsbeschluss, unabhängig vom Mittelstopp)",
       "Mit BEG kumulierbar, max. 60 % der Kosten",
     ],
     combinableWith: BUND,
-    pvPerKwp: 150, pvCap: 1500,
   },
   // Der Status stand bis zum 14.08.2026 auf „unsicher", weil zwei städtische
   // Seiten sich zu widersprechen schienen. Sie tun es nicht: Die Übersichtsseite
