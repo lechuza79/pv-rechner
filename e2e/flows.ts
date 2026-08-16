@@ -39,10 +39,12 @@ export const NOCH_NICHT_BEDIENBAR: { name: string; pfad: string; grund: string }
     name: "Einspeisevergütungs-Rechner",
     pfad: "/einspeiseverguetung-rechner",
     grund:
-      "Nach „Läuft schon“ folgt ein Schritt mit Pflichteingabe (Inbetriebnahme-Datum) " +
-      "und ohne Vorbelegung — dort kommt der Automatismus nicht weiter, weil er nur " +
-      "Auswahlkarten bedienen kann. Nötig: Eingabefelder erkennen und mit einem " +
-      "gültigen Wert füllen.",
+      "Die Auswahlfelder (Monat/Jahr der Inbetriebnahme) bedient der Automatismus " +
+      "inzwischen. Es hängt am Schritt „Wer verbraucht den Strom?“: Der Verbrauch " +
+      "steht dort als Klick-zum-Ändern-Wert und die Freigabe des Weiter-Knopfes " +
+      "hängt an Bedienelementen, die weder Auswahlkarte noch Auswahlfeld sind. " +
+      "Nötig: Diesen Schritt auf die geteilten Bausteine umstellen — dieselbe " +
+      "Migration, die für PV, Wärmepumpe, Klima und Balkon ohnehin ansteht.",
   },
 ];
 

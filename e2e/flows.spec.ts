@@ -88,6 +88,28 @@ async function waehle(page: Page, label: string) {
   }).toPass({ timeout: 20_000 });
 }
 
+/**
+ * Auswahlfelder eines Schritts belegen (z. B. Monat und Jahr der
+ * Inbetriebnahme).
+ *
+ * Bewusste Grenze: EINE gültige Belegung, nicht jede Kombination. 12 Monate ×
+ * 25 Jahre wären 300 Wege je Schritt, die am Verhalten des Flows nichts
+ * unterscheiden — was die Werte inhaltlich ergeben, prüfen die Rechen-Tests.
+ */
+async function fuelleFelder(page: Page): Promise<number> {
+  const felder = page.locator("select:visible");
+  const anzahl = await felder.count();
+  for (let i = 0; i < anzahl; i++) {
+    const feld = felder.nth(i);
+    const werte = await feld
+      .locator("option:not([disabled])")
+      .evaluateAll((os) => os.map((o) => (o as HTMLOptionElement).value).filter((x) => x !== ""));
+    if (werte.length > 0) await feld.selectOption(werte[werte.length - 1]);
+  }
+  if (anzahl > 0) await page.waitForTimeout(120);
+  return anzahl;
+}
+
 async function imFlow(page: Page): Promise<boolean> {
   return (await page.locator("[data-flow-nav]:visible").count()) > 0;
 }
@@ -129,6 +151,7 @@ async function gehe(
     // Weiter-Knopf offen ist: Genau so geht ein Besucher hindurch, der die
     // Vorbelegung übernimmt. Bleibt er gesperrt, kommt hier niemand weiter —
     // das ist dann ein echter Befund und keine Lücke des Automatismus.
+    await fuelleFelder(page);
     const weiterHier = page.locator("[data-flow-next]:visible").first();
     if ((await weiterHier.getAttribute("aria-disabled")) === "true") {
       erg.fehler.push(
@@ -167,7 +190,8 @@ async function gehe(
     // Zuständen weiterläuft, prüft etwas, das kein Nutzer je sieht.
     await page.goto(flowPfad, { waitUntil: "domcontentloaded" });
     for (const vorher of pfad) {
-      if (vorher !== VORBELEGT) await waehle(page, vorher);
+      if (vorher === VORBELEGT) await fuelleFelder(page);
+      else await waehle(page, vorher);
       await page.locator("[data-flow-next]:visible").first().click();
       await page.waitForTimeout(60);
     }
