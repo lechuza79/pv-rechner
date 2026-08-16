@@ -496,24 +496,33 @@ describe("Rechtssätze", () => {
 // richtig macht. Beide Vorbehalte sind schon einmal beim Kürzen verlorengegangen
 // bzw. standen kurz davor — deshalb hier festgenagelt.
 describe("Geprüfte Rechtsaussagen: die Vorbehalte", () => {
-  it("Nullsteuersatz: die Speicher-Ausnahme unter 5 kWh bleibt stehen", () => {
-    // UStAE 12.18 Abs. 7 S. 10 — die Vereinfachung greift erst ab 5 kWh, unsere
-    // Balkonspeicher liegen darunter. Ohne diesen Halbsatz verspricht der Satz
-    // Steuerfreiheit für etwas, das sie nicht automatisch hat.
+  it("Nullsteuersatz: die 5-kWh-Schwelle steht drin, aber nicht als Ausschluss", () => {
+    // Der Satz kann in ZWEI Richtungen falsch werden, deshalb zwei Prüfungen.
+    // Zu lasch: die Schwelle fällt weg, dann liest sich der Speicher als
+    // bedingungslos steuerfrei.
     expect(BALKON_RECHT.nullsteuer).toContain("5 kWh");
-    expect(BALKON_RECHT.nullsteuer).toMatch(/nicht automatisch/);
-    // Und er darf nicht pauschal "Set und Speicher" freistellen.
-    expect(BALKON_RECHT.nullsteuer).toContain("Auf das Set selbst");
-    // Alle Balkonspeicher liegen unter der Vereinfachungsgrenze — fiele das je
-    // weg, wäre der Vorbehalt gegenstandslos und der Satz müsste neu gefasst werden.
+    // Zu streng: aus der Vermutungsregel wird ein Ausschluss. UStAE 12.18
+    // Abs. 7 S. 9 begünstigt auch kleinere Speicher, sobald die Zweckbestimmung
+    // feststeht. Die 19 % dürfen deshalb nur als HÄNDLERPRAXIS auftauchen,
+    // nie als Rechtsfolge — die Reihenfolge im Satz trägt genau das.
+    expect(BALKON_RECHT.nullsteuer).toMatch(/nicht ausgeschlossen/);
+    expect(BALKON_RECHT.nullsteuer).toMatch(/in der Praxis/);
+    // „Steuerfrei" ist der falsche Rechtsbegriff — es ist ein Nullsteuersatz.
+    expect(BALKON_RECHT.nullsteuer).not.toMatch(/steuerfrei|steuerbefreit/);
+    // Alle Balkonspeicher liegen unter der Vermutungsgrenze — fiele das je weg,
+    // wäre der Halbsatz gegenstandslos und der Satz müsste neu gefasst werden.
     expect(CFG.storage.every(s => s.kwh < 5)).toBe(true);
   });
 
   it("Anmeldung: Frist ja, aber kein 50.000-Euro-Drohsatz", () => {
     // § 5 Abs. 1 MaStRV: ein Monat. § 21 Nr. 1 MaStRV verweist auf § 95 Abs. 1
     // Nr. 5 Buchst. e EnWG zurück — deshalb "Ordnungswidrigkeit" belegbar.
-    expect(BALKON_RECHT.anmeldeFrist).toContain("ein Monat");
-    expect(BALKON_RECHT.anmeldeFrist).toContain("Ordnungswidrigkeit");
+    expect(BALKON_RECHT.anmeldeFrist).toMatch(/eine[nm]? Monat/);
+    // "grundsätzlich ordnungswidrig" statt einer Automatik — § 21 MaStRV
+    // verlangt Vorsatz oder Fahrlässigkeit (Council-Einwand 16.08.2026).
+    expect(BALKON_RECHT.anmeldeFrist).toMatch(/grundsätzlich ordnungswidrig/);
+    // Inbetriebnahme ist der erste Tag der Stromerzeugung, nicht der Kauf.
+    expect(BALKON_RECHT.anmeldeFrist).toMatch(/nicht ab Kauf/);
     // Der gesetzliche Höchstrahmen gilt für alle Verstöße dieser Nummer und ist
     // als Drohung gegenüber einem Balkon-Betreiber irreführend (§ 17 OWiG).
     const antworten = balkonFaq().map(e => e.a).join(" ");
