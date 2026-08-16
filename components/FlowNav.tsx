@@ -61,7 +61,12 @@ export default function FlowNav({
   // Hover auf dem inaktiven Button und nach einem Klickversuch (kurz).
   const [hintSichtbar, setHintSichtbar] = useState(false);
   return (
-    <div style={{ display: "flex", gap: 8, marginTop: 4, width: "100%", justifyContent: "space-between" }}>
+    // data-flow-nav / data-flow-next: Erkennungsmerkmale für den Flow-Läufer
+    // (e2e/flows.spec.ts). Er klickt darüber jeden Weg durch jeden Flow, der
+    // diesen Baustein nutzt — ohne dass der Flow selbst etwas dafür tun muss.
+    // Ein Flow ohne diesen Baustein wird vom Läufer NICHT geprüft und muss
+    // deshalb in e2e/flows.ts als ungeprüft ausgewiesen sein.
+    <div data-flow-nav style={{ display: "flex", gap: 8, marginTop: 4, width: "100%", justifyContent: "space-between" }}>
       {zurueckSichtbar && onZurueck && (
         <button
           type="button"
@@ -120,6 +125,7 @@ export default function FlowNav({
         }}
         onMouseEnter={() => { if (!weiterAktiv) setHintSichtbar(true); }}
         onMouseLeave={() => setHintSichtbar(false)}
+        data-flow-next
         aria-disabled={!weiterAktiv}
         aria-label={weiterAktiv ? undefined : `${weiterLabel} — ${inaktivHinweis}`}
         style={{

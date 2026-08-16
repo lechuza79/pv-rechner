@@ -48,6 +48,10 @@ export default defineConfig({
     command: `next dev -p ${E2E_PORT}`,
     url: `http://localhost:${E2E_PORT}`,
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    // 4 Minuten statt 2: In einer Worktree liegen die Abhängigkeiten im
+    // Hauptverzeichnis, und der erste Start übersetzt alles neu — die zwei
+    // Minuten liefen dort zuverlässig ab, bevor der Server bereit war, und der
+    // ganze Lauf brach mit einer Meldung ab, die nach einem Testfehler aussieht.
+    timeout: 240_000,
   },
 });
