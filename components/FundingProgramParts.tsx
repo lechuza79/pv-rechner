@@ -33,8 +33,24 @@ export function fundingStatusColor(status: FundingStatus): string {
 
 export function FundingStatusBadge({ status }: { status: FundingStatus }) {
   const c = fundingStatusColor(status);
+  // „aktiv" ist eine positive Aussage und wird auch so gesetzt: gefüllt in der
+  // Positiv-Farbe des Systems statt als blasser Umriss. Die übrigen Zustände
+  // (ausgeschöpft, pausiert, eingestellt) behalten den Umriss — sie sind
+  // Einschränkungen und sollen nicht wie eine Auszeichnung wirken.
+  const positiv = status === "aktiv";
   return (
-    <span style={{ fontSize: 11, fontWeight: 700, color: c, border: `1px solid ${c}`, borderRadius: 999, padding: "2px 9px", whiteSpace: "nowrap" }}>
+    <span
+      style={{
+        fontSize: 11,
+        fontWeight: 700,
+        color: positiv ? v("--color-positive-text") : c,
+        background: positiv ? v("--color-chart-positive-bg") : "transparent",
+        border: `1px solid ${positiv ? "transparent" : c}`,
+        borderRadius: 999,
+        padding: "3px 10px",
+        whiteSpace: "nowrap",
+      }}
+    >
       {FUNDING_STATUS_LABEL[status]}
     </span>
   );
@@ -42,9 +58,27 @@ export function FundingStatusBadge({ status }: { status: FundingStatus }) {
 
 /** The "label … value" rate rows. `bordered` adds the divider used in detail
  *  views (modal, city page); list views (overview, Bundesland) leave it off. */
-export function FundingRates({ rates, bordered = false }: { rates: FundingProgram["rates"]; bordered?: boolean }) {
+export function FundingRates({
+  rates,
+  bordered = false,
+  columns = 1,
+}: {
+  rates: FundingProgram["rates"];
+  bordered?: boolean;
+  /** Zweispaltig auf breiten Bildschirmen — die Sätze sind kurze
+   *  Beschriftung-Wert-Paare und lassen als einspaltige Liste viel Weißraum
+   *  neben sich stehen. Unter 420 px bleibt es einspaltig, sonst bricht der
+   *  Wert von seiner Beschriftung weg. */
+  columns?: 1 | 2;
+}) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: bordered ? 8 : 4 }}>
+    <div
+      style={
+        columns === 2
+          ? { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: bordered ? 8 : 4, columnGap: 20 }
+          : { display: "flex", flexDirection: "column", gap: bordered ? 8 : 4 }
+      }
+    >
       {rates.map((r) => (
         <div
           key={r.label}

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Breadcrumb from "../../../../../components/Breadcrumb";
 import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons";
 import RelatedLinks from "../../../../../components/RelatedLinks";
-import { v, iconSizes } from "../../../../../lib/theme";
+import { v, iconSizes, space, pad } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
 import { cityBySlug, slugify, isCityPublished, publishedCities } from "../../../../../lib/atlas-cities";
@@ -114,6 +114,20 @@ const S = {
   sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px" } as React.CSSProperties,
   section: { marginBottom: 28 } as React.CSSProperties,
   card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "16px 18px" } as React.CSSProperties,
+  // Die beiden Wege am Fuß der Förderkarte: selbst nachrechnen (links) oder
+  // die eigene Berechtigung klären (rechts).
+  aktionsBox: {
+    background: v("--color-bg"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: v("--radius-md"),
+    padding: pad("md", "md"),
+    display: "flex",
+    flexDirection: "column",
+    gap: space.xs,
+  } as React.CSSProperties,
+  aktionsTitel: { fontSize: 14, fontWeight: 700, color: v("--color-text-primary") } as React.CSSProperties,
+  aktionsText: { fontSize: 13, lineHeight: 1.5, color: v("--color-text-secondary"), margin: 0, flex: 1 } as React.CSSProperties,
+  aktionsLink: { fontSize: 13, fontWeight: 600, color: v("--color-accent"), textDecoration: "none", marginTop: space.xs } as React.CSSProperties,
 };
 
 export default async function StadtPage(props: { params: Promise<{ bundesland: string; stadt: string }> }) {
@@ -142,6 +156,10 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
   const combinable = (f?.combinableWith ?? [])
     .map((id) => byId.get(id))
     .filter((p): p is FundingProgram => Boolean(p));
+  // Der mittlere Fall (10 kWp mit kleinem Speicher) steht für das Einfamilienhaus
+  // — dieselbe Rechnung wie in den Beispielkarten weiter unten, damit die Karte
+  // oben und die Tabelle darunter nicht zwei verschiedene Zahlen zeigen.
+  const typischesBeispiel = examples[1] ?? examples[0];
   const currentYear = new Date().getFullYear();
   const lastFullYear = atlas?.solar.by_year.filter((y) => y.year < currentYear).slice(-1)[0];
   // FAQ aus den Förderdaten generiert (kein separater Datensatz).
@@ -165,7 +183,14 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             { label: city.name },
           ]}
         />
-        <h1 style={S.h1}>Photovoltaik in {city.name}</h1>
+        {/* Das Suchwort gehört in die H1: Die Seite rankt für „photovoltaik
+            förderung <ort>", trug aber nur „Photovoltaik in <ort>" — das
+            Hauptwort fehlte genau dort, wo Google es am stärksten gewichtet.
+            Ohne Förderprogramm bleibt es beim Bestandstitel, sonst verspräche
+            die Überschrift etwas, das die Seite nicht hat. */}
+        <h1 style={S.h1}>
+          {f ? <>Photovoltaik-Förderung in {city.name}</> : <>Photovoltaik in {city.name}</>}
+        </h1>
         <p style={S.intro}>
           {!f
             ? <>Anlagenbestand und Beispielrechnungen für Photovoltaik in {city.name}.</>
@@ -177,41 +202,101 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         {/* ── Förderung (oben) ── */}
         {f && (
           <div style={S.section}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-              <h2 style={S.h2}>Förderung in {city.name}</h2>
-              <FundingStatusBadge status={f.status} />
-            </div>
-            <p style={S.sub}>{f.name} · {f.traeger}</p>
-            <div style={{ ...S.card, borderColor: f.status === "aktiv" ? v("--color-positive") : v("--color-border"), background: v("--color-bg-muted") }}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
-                {f.eligibility.map((e) => (
-                  <span key={e} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-positive"), background: v("--color-bg"), border: `1px solid ${v("--color-positive")}`, borderRadius: 999, padding: "3px 10px" }}>
-                    {e === "privat" ? "Privat" : "Gewerblich"}
-                  </span>
-                ))}
+            <div style={{ ...S.card, background: v("--color-bg-muted"), padding: 0, overflow: "hidden" }}>
+              {/* Kopf: Programm + Träger + Status, darunter die Herkunftszeile.
+                  Der Rahmen bleibt neutral — eine grüne Umrandung um die ganze
+                  Karte las sich wie eine Bewertung des Programms, obwohl sie nur
+                  den Status wiederholte, der als Abzeichen daneben steht. */}
+              <div style={{ padding: pad("md", "lg"), borderBottom: `1px solid ${v("--color-border")}`, background: v("--color-bg") }}>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: space.sm }}>
+                  <div>
+                    <h2 style={{ ...S.h2, fontSize: 17 }}>{f.name}</h2>
+                    <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: 2 }}>{f.traeger}</div>
+                  </div>
+                  <FundingStatusBadge status={f.status} />
+                </div>
+                <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.sm, lineHeight: 1.6 }}>
+                  {fundingStandLabel(f)}
+                  {f.capped && (
+                    <>
+                      {" · "}
+                      <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>
+                        Mittel begrenzt: vor Antrag prüfen
+                      </a>
+                    </>
+                  )}
+                  {" · "}
+                  <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>Zum Programm</a>
+                </div>
               </div>
-              <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: 14 }}>
-                Förderfähig: <span style={{ color: v("--color-text-primary"), fontWeight: 600 }}>{f.coveredCosts}</span>
-                {f.maxFoerderung ? ` · ${f.maxFoerderung}` : ""}
-              </div>
-              <div style={{ marginBottom: 14 }}>
-                <FundingRates rates={f.rates} bordered />
-              </div>
-              <FundingConditions conditions={f.conditions} />
-              {combinable.length > 0 && (
-                <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: 12 }}>
-                  Kombinierbar mit:{" "}
-                  {combinable.map((p, i) => (
-                    <span key={p.id}>
-                      <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>{p.name}</a>
-                      {i < combinable.length - 1 ? ", " : ""}
+
+              <div style={{ padding: pad("md", "lg") }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: space.md }}>
+                  {f.eligibility.map((e) => (
+                    <span key={e} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-secondary"), background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: 999, padding: "3px 10px" }}>
+                      {e === "privat" ? "Privat" : "Gewerblich"}
                     </span>
                   ))}
                 </div>
-              )}
-              <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 12 }}>
-                {fundingStandLabel(f)}{f.capped ? " · Topf gedeckelt, vor Antrag prüfen" : ""} ·{" "}
-                <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>Zum Programm</a>
+                <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: space.md }}>
+                  Förderfähig: <span style={S.strong}>{f.coveredCosts}</span>
+                  {f.maxFoerderung ? ` · ${f.maxFoerderung}` : ""}
+                </div>
+
+                {/* Bedingungen vor die Sätze: Ob jemand überhaupt in Frage kommt,
+                    entscheidet sich hier — die Beträge nützen nichts, wenn eine
+                    Bedingung dazwischensteht. */}
+                <FundingConditions conditions={f.conditions} />
+
+                <div style={{ marginTop: space.md }}>
+                  <FundingRates rates={f.rates} bordered columns={2} />
+                </div>
+
+                {combinable.length > 0 && (
+                  <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: space.md }}>
+                    Kombinierbar mit:{" "}
+                    {combinable.map((p, i) => (
+                      <span key={p.id}>
+                        <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>{p.name}</a>
+                        {i < combinable.length - 1 ? ", " : ""}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Das Wichtigste unten: die beiden Wege, die es von hier aus
+                    gibt — selbst nachrechnen oder die Berechtigung klären. */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: space.sm, marginTop: space.lg }}>
+                  <div style={S.aktionsBox}>
+                    <div style={S.aktionsTitel}>Was springt dabei heraus?</div>
+                    <p style={S.aktionsText}>
+                      Eine typische {typischesBeispiel.kwp}-kWp-Anlage auf einem Einfamilienhaus in {city.name}{" "}
+                      kostet rund {nf(typischesBeispiel.brutto)} €
+                      {typischesBeispiel.foerderung > 0 ? (
+                        <> — davon übernimmt die Förderung etwa <span style={S.strong}>{nf(typischesBeispiel.foerderung)} €</span>.</>
+                      ) : (
+                        <>.</>
+                      )}
+                    </p>
+                    <Link href="/pv-bedarf-berechnen" style={S.aktionsLink}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        Deinen Bedarf berechnen <IconArrowRight size={iconSizes.xs} />
+                      </span>
+                    </Link>
+                  </div>
+                  <div style={S.aktionsBox}>
+                    <div style={S.aktionsTitel}>Bekommst du die Förderung?</div>
+                    <p style={S.aktionsText}>
+                      Vier Fragen zu Vorhaben und Gebäude — danach steht da, was für dich gilt und in
+                      welcher Reihenfolge du vorgehen musst. Dauert eine Minute.
+                    </p>
+                    <a href="#foerder-check" style={S.aktionsLink}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        Förder-Check starten <IconArrowRight size={iconSizes.xs} />
+                      </span>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
             <Link href="/photovoltaik-foerderung" style={{ display: "inline-block", marginTop: 10, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
@@ -225,12 +310,10 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             dieses Ortes (lib/funding-flow.ts) — der Block blendet sich von
             selbst aus, solange dort nichts Prüfbares hinterlegt ist. */}
         {f && (
-          <div style={S.section}>
+          <div style={S.section} id="foerder-check">
             <h2 style={S.h2}>Bekommst du die Förderung?</h2>
-            <p style={S.sub}>
-              Vier Fragen, danach steht da, was für dich gilt — und in welcher Reihenfolge du
-              vorgehen musst.
-            </p>
+            {/* Kein zweiter Erklärtext: Der Einstieg oben in der Karte sagt
+                bereits, was hier passiert, und springt hierher. */}
             <FoerderFlow programme={[f, ...combinable]} ortName={city.name} />
           </div>
         )}
