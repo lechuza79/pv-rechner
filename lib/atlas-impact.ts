@@ -7,6 +7,8 @@
 //   Ertrag      → lib/bundesland-ertrag.ts (PVGIS-Bundesland-Durchschnitt)
 //   CO₂-Faktor  → gridCo2PerKwh (identisch in WP-/Klima-/Balkon-Config)
 //   Strompreis  → DEFAULT_PRICES.electricityPrice (BNetzA)
+//   Eigenverbrauch → calcEigenverbrauch (HTW-Power-Law, lib/calc.ts) mit den
+//                 Anlagen- und Speicherzahlen der jeweiligen Region
 //   Vergütung   → je Jahrgang aus feedin-archiv-alt (2006–03/2012),
 //                 feedin-archiv (ab 04/2012) und feedin-config (ab 08/2022),
 //                 anteilig gestaffelt über effectiveFeedInCtPerKwh/blendRoofRate;
@@ -33,7 +35,8 @@ import { fmtCtProKwh } from "./atlas-format";
 import { simulateSolarYear } from "./balkon-sim";
 import { referenceMonthKwh } from "./solar-year";
 import { DEFAULT_BALKON_CONFIG } from "./balkon-config";
-import { NUTZUNG, PERSONEN } from "./constants";
+import { ANLAGEN, NUTZUNG, PERSONEN } from "./constants";
+import { calcEigenverbrauch } from "./calc";
 import { NATIONAL_AVG_YIELD } from "./constants";
 import { DIREKTVERMARKTUNG, MARKTWERT_NIVEAU_CT } from "./marktwert-config";
 
@@ -74,27 +77,128 @@ export const PRAXIS_FAKTOR =
 export const ATLAS_GRID_CO2 = DEFAULT_HEATPUMP_CONFIG.gridCo2PerKwh;
 
 /**
- * Annahme: Anteil des Solarstroms eines privaten Dachs, der selbst verbraucht
- * wird (Rest wird eingespeist).
+ * Der Haushalt, gegen den der Eigenverbrauch gerechnet wird.
  *
- * OFFEN (bis 12/2026): Diese Zahl ist die schwächste Stelle der Geld-Spalte.
- * Hier stand als Begründung, 30 % sei „der typische Wert einer Dachanlage ohne
- * Speicher, dieselbe Datenbasis wie lib/calc.ts". Beides war falsch:
- * `calcEigenverbrauch` (das projekteigene HTW-Power-Law) liefert für die
- * mittlere deutsche Dachanlage (9,8 kWp) beim hier gerechneten Ertrag nur
- * 13–20 % OHNE Speicher — die 30 % erreicht es erst MIT rund 8 kWh Speicher.
- * Der Satz stand also am optimistischen Rand, gestützt auf eine Quelle, die
- * ihn nicht trägt.
+ * Regional verschieden sind die Anlagen (mittlere Größe, Speicherbestand) und
+ * der Ertrag — der Haushalt DAHINTER ist es nicht: Wie viele Personen in den
+ * Häusern einer Gemeinde wohnen und wann sie zuhause sind, steht im
+ * Anlagenregister nicht. Statt das zu raten, steht hier ein benannter
+ * Bezugsfall: die Voreinstellung des PV-Rechners (Zwei-Personen-Haushalt,
+ * Nutzungsprofil „teils zuhause"). Dessen Tagquote von 30 % ist zugleich das
+ * HTW-Standardprofil, an dem das Power-Law kalibriert ist — also kein zweites,
+ * eigenes Fundament.
  *
- * Warum er trotzdem vorerst bleibt: Wie groß der Speicheranteil im REALEN
- * Bestand einer Region ist, weiß die Tabelle zwar (Segment `batterie_privat`
- * liegt in derselben Zelle), aber ihn korrekt auf die Dachanlagen umzulegen
- * ist eine eigene Rechnung — und ein Wechsel auf 15 % ohne diese Umlage wäre
- * nur ein anderer ungeankerter Wert. Der saubere Weg ist `calcEigenverbrauch`
- * mit den Größen der Region (mittlere Anlagengröße = kwp/count, Speicher je
- * Dachanlage aus der Batterie-Zelle).
+ * Die Richtung der Unschärfe ist bekannt und geht zu unseren Ungunsten: Wer ein
+ * eigenes Dach hat, wohnt eher in einem größeren Haushalt als zu zweit, und ein
+ * größerer Haushalt verbraucht mehr selbst. Die Spalte rechnet den Wert privater
+ * Dächer damit eher zu niedrig als zu hoch.
  */
-export const EIGENVERBRAUCH_ANTEIL_ANNAHME = 0.3;
+const EV_BEZUGSHAUSHALT = { personenIdx: 1, nutzungIdx: 1 } as const;
+
+/**
+ * Eigenverbrauchsanteil EINER Dachanlage — dieselbe Funktion, mit der der
+ * PV-Rechner das Geld rechnet (geteilte Rechen-Basis: „Eigenverbrauch fürs
+ * GELD" = `calcEigenverbrauch`, bewusst nicht die Stundensimulation).
+ *
+ * `ertragKwp` ist der PRAXIS-Ertrag der Region, nicht der Optimal-Ertrag: Der
+ * Anteil bezieht sich auf genau die Kilowattstunden, die die Spalte bewertet,
+ * und die kommen aus `erzeugungKwh` (Bundesland-Ertrag × Praxis-Faktor).
+ */
+function evAnteilAnlage(kwp: number, speicherKwh: number, ertragKwp: number): number {
+  return (
+    calcEigenverbrauch({
+      ...EV_BEZUGSHAUSHALT,
+      speicherKwh,
+      wp: "nein",
+      ea: "nein",
+      eaKm: 0,
+      kwp,
+      ertragKwp,
+    }) / 100
+  );
+}
+
+/**
+ * Rückfall, wenn eine Region keine private Dachanlage führt (kein Nenner) —
+ * KEINE gesetzte Zahl mehr, sondern dieselbe Rechnung an einem benannten
+ * Bezugsfall: die Voreinstellung des PV-Rechners (10 kWp, kein Speicher) am
+ * Bundesschnitt-Ertrag, gerechnet in Praxis-Erträgen.
+ *
+ * Hier stand bis 08/2026 eine feste 0,3 für ALLE Regionen, begründet mit „der
+ * typische Wert einer Dachanlage ohne Speicher, dieselbe Datenbasis wie
+ * lib/calc.ts". Beides war falsch: Dieselbe Funktion liefert für eine
+ * Dachanlage ohne Speicher rund 12–13 %; die 30 % erreicht sie erst mit etwa
+ * 8 kWh Speicher. Die Zahl stand also am optimistischen Rand, gestützt auf eine
+ * Quelle, die sie nicht trug.
+ *
+ * Auf das GELD wirkt dieser Rückfall praktisch nie: Wo keine private Dachanlage
+ * gezählt ist, steht auch keine private Dachleistung, die bewertet würde. Die
+ * Spalte zeigt in dem Fall „—" statt einer erfundenen Quote.
+ */
+export const EIGENVERBRAUCH_ANTEIL_RUECKFALL = evAnteilAnlage(
+  ANLAGEN[2].kwp,
+  0,
+  NATIONAL_AVG_YIELD * PRAXIS_FAKTOR,
+);
+
+/** Was eine Region an privaten Dächern und Hausbatterien führt — genau die vier
+ *  Zahlen, die für den Eigenverbrauch gebraucht werden. Sie stehen ohnehin in
+ *  den Zellen der Ranking-Tabelle (Segmente `privat_dach` und `batterie_privat`). */
+export type PrivatBestand = {
+  /** Anzahl privater Dachanlagen. */
+  dachCount: number;
+  /** Ihre installierte Leistung zusammen, in kWp. */
+  dachKwp: number;
+  /** Anzahl privater Batteriespeicher. */
+  batterieCount: number;
+  /** Ihre nutzbare Kapazität zusammen, in kWh. */
+  batterieKwh: number;
+};
+
+/**
+ * Eigenverbrauchsanteil der privaten Dächer EINER Region — aus ihren eigenen
+ * Zahlen, nicht aus einer Annahme.
+ *
+ * Drei regionale Größen gehen ein, alle drei liegen ohnehin vor:
+ *   · mittlere Anlagengröße = Leistung ÷ Anzahl der privaten Dächer
+ *   · Speicherbestand = Anzahl und Kapazität der privaten Batterien
+ *   · Standort-Ertrag = Bundesland-Ertrag × Praxis-Faktor
+ *
+ * Gerechnet wird als MISCHUNG aus zwei Fällen, nicht mit einer über alle Dächer
+ * gemittelten Speichergröße: Ein Anteil der Dächer hat eine Batterie üblicher
+ * Größe, der Rest hat keine. Der Speicher-Term des Power-Laws sättigt (jede
+ * weitere Kilowattstunde bringt weniger), und wer eine gemittelte Speichergröße
+ * einsetzt, rechnet deshalb systematisch zu HOCH — er behandelt jedes Dach so,
+ * als hätte es ein Drittel Batterie. Die Mischung vermeidet genau das.
+ *
+ * Gibt `null` zurück, wenn die Region keine private Dachanlage führt. Dann gibt
+ * es nichts zu mitteln, und die Oberfläche zeigt „—" statt einer Zahl.
+ */
+export function eigenverbrauchAnteilRegion(b: PrivatBestand, regionId: string): number | null {
+  const kwpMittel = b.dachCount > 0 ? b.dachKwp / b.dachCount : 0;
+  if (!Number.isFinite(kwpMittel) || kwpMittel <= 0) return null;
+
+  const ertragKwp = erzeugungKwh(1, regionId);
+  const ohneSpeicher = evAnteilAnlage(kwpMittel, 0, ertragKwp);
+
+  // Anteil der Dächer mit Batterie, gedeckelt bei 1: Speicher werden auch
+  // nachgerüstet und tauchen im Register als eigene Einheit auf — in einer
+  // kleinen Gemeinde kann die Batteriezahl die Dachzahl rechnerisch übersteigen.
+  //
+  // Bekannte Unschärfe, benannt statt versteckt: `batterie_privat` ist jede
+  // Batterie eines privaten Betreibers bis 30 kWh (MAX_HAUSSPEICHER_KWH in der
+  // MaStR-Pipeline). Darunter fällt auch der Speicher an einem
+  // Steckersolargerät, das gar kein Dach ist. Die Quote der Dächer mit Batterie
+  // ist deshalb eher eine Obergrenze — bundesweit gemessen (08/2026) liegt die
+  // mittlere private Batterie bei 8,6 kWh, das Register führt also ganz
+  // überwiegend echte Hausspeicher.
+  const batterieMittelKwh = b.batterieCount > 0 ? b.batterieKwh / b.batterieCount : 0;
+  if (!Number.isFinite(batterieMittelKwh) || batterieMittelKwh <= 0) return ohneSpeicher;
+  const mitAnteil = Math.min(1, Math.max(0, b.batterieCount / b.dachCount));
+
+  const mitSpeicher = evAnteilAnlage(kwpMittel, batterieMittelKwh, ertragKwp);
+  return mitAnteil * mitSpeicher + (1 - mitAnteil) * ohneSpeicher;
+}
 
 /**
  * Eigenverbrauchsanteil eines typischen Balkonkraftwerks — NICHT der vom Dach
@@ -130,7 +234,7 @@ export function balkonEigenverbrauchAnteil(): number {
     batteryKwh: 0,
     roundtrip: 1,
   });
-  balkonAnteilCache = sim.annualYield > 0 ? sim.selfUsedKwh / sim.annualYield : EIGENVERBRAUCH_ANTEIL_ANNAHME;
+  balkonAnteilCache = sim.annualYield > 0 ? sim.selfUsedKwh / sim.annualYield : EIGENVERBRAUCH_ANTEIL_RUECKFALL;
   return balkonAnteilCache;
 }
 
@@ -343,19 +447,30 @@ function freiflaecheSatz(jahrgang: number, alt: AltFeedInRow | null): { ct: numb
  */
 const saetzeCache = new Map<string, Record<string, SegmentSatz>>();
 
-export function stromwertSaetze(jahrgang: number, kwpMittel?: number | null): Record<string, SegmentSatz> {
-  if (kwpMittel != null) return baueSaetze(jahrgang, kwpMittel);
+export function stromwertSaetze(
+  jahrgang: number,
+  kwpMittel?: number | null,
+  evAnteil?: number | null,
+): Record<string, SegmentSatz> {
+  if (kwpMittel != null || evAnteil != null) return baueSaetze(jahrgang, kwpMittel ?? null, evAnteil ?? null);
   const key = `${jahrgang}@${new Date().getFullYear()}`;
   const cached = saetzeCache.get(key);
   if (cached) return cached;
-  const gebaut = baueSaetze(jahrgang, null);
+  const gebaut = baueSaetze(jahrgang, null, null);
   saetzeCache.set(key, gebaut);
   return gebaut;
 }
 
-function baueSaetze(jahrgang: number, kwpMittel: number | null): Record<string, SegmentSatz> {
+function baueSaetze(
+  jahrgang: number,
+  kwpMittel: number | null,
+  evAnteil: number | null,
+): Record<string, SegmentSatz> {
   const haushaltCt = DEFAULT_PRICES.electricityPrice * 100;
-  const ev = EIGENVERBRAUCH_ANTEIL_ANNAHME;
+  // Der Eigenverbrauchsanteil kommt aus der Region (Anlagengröße + Speicher-
+  // bestand). Fehlt er, greift der Rückfall — dann steht in der Region aber auch
+  // keine private Dachleistung, die er bewerten könnte.
+  const ev = evAnteil != null && Number.isFinite(evAnteil) ? evAnteil : EIGENVERBRAUCH_ANTEIL_RUECKFALL;
   const dach = einspeiseSatz("privat_dach", jahrgang, kwpMittel);
   const gewerbe = einspeiseSatz("gewerbe_dach", jahrgang, kwpMittel);
   const frei = einspeiseSatz("freiflaeche", jahrgang, kwpMittel);
@@ -400,8 +515,13 @@ function baueSaetze(jahrgang: number, kwpMittel: number | null): Record<string, 
  * Erlös. `kwpMittel` ist die mittlere Anlagengröße der Zelle (Leistung ÷ Anzahl)
  * für die anteilige EEG-Staffel — fehlt sie, wird ohne Staffel gerechnet.
  */
-export function stromwertCtFuerSegment(segment: string, jahrgang: number, kwpMittel?: number | null): number {
-  return stromwertSaetze(jahrgang, kwpMittel)[segment]?.ct ?? 0;
+export function stromwertCtFuerSegment(
+  segment: string,
+  jahrgang: number,
+  kwpMittel?: number | null,
+  evAnteil?: number | null,
+): number {
+  return stromwertSaetze(jahrgang, kwpMittel, evAnteil)[segment]?.ct ?? 0;
 }
 
 /**
@@ -436,7 +556,10 @@ export function stromwertCtFuerSegment(segment: string, jahrgang: number, kwpMit
  * Schwelle (gewerblich). Die Spalte selbst rechnet je Zelle mit der mittleren
  * Anlagengröße und liegt beim gewerblichen Dach deshalb etwas höher.
  */
-export function stromwertBestandteile(jahrgang: number = new Date().getFullYear()) {
+export function stromwertBestandteile(
+  jahrgang: number = new Date().getFullYear(),
+  dachEigenverbrauchAnteil: number = EIGENVERBRAUCH_ANTEIL_RUECKFALL,
+) {
   const eintrag = (label: string, segment: string) => ({
     label,
     ...einspeiseSatz(segment, jahrgang),
@@ -446,8 +569,9 @@ export function stromwertBestandteile(jahrgang: number = new Date().getFullYear(
     jahrgang,
     /** Was eine selbst verbrauchte Kilowattstunde ersetzt — für alle gleich. */
     eigenverbrauchCt: DEFAULT_PRICES.electricityPrice * 100,
-    /** Anteil einer Dachanlage, der im Haus bleibt (Rest wird eingespeist). */
-    dachEigenverbrauchAnteil: EIGENVERBRAUCH_ANTEIL_ANNAHME,
+    /** Anteil einer Dachanlage, der im Haus bleibt (Rest wird eingespeist).
+     *  Je Region verschieden — wer nichts hereinreicht, bekommt den Rückfall. */
+    dachEigenverbrauchAnteil,
     /** Derselbe Anteil für ein Steckersolargerät — aus der Stundensimulation. */
     balkonEigenverbrauchAnteil: balkonEigenverbrauchAnteil(),
     /** Was eine eingespeiste Kilowattstunde einbringt — das hängt an der Anlagenart. */
@@ -506,6 +630,11 @@ export function stromwertEuro(kwhProJahr: number, ctProKwh: number): number {
  * `kwpMittel` ist die mittlere Anlagengröße der Zelle (Leistung ÷ Anzahl) für
  * die anteilige EEG-Staffel. Zellen ohne Anzahl reichen null herein — dann wird
  * ohne Staffel gerechnet, nicht mit einer Division durch null.
+ *
+ * `evAnteil` ist der Eigenverbrauchsanteil der privaten Dächer DIESER Region
+ * (`eigenverbrauchAnteilRegion`). Er gilt für alle Jahrgänge der Region
+ * gleichermaßen — der Bestand an Anlagen und Batterien ist eine Momentaufnahme,
+ * keine Größe je Baujahr.
  */
 export function segmentWertEuro(
   kwp: number,
@@ -513,6 +642,7 @@ export function segmentWertEuro(
   segment: string,
   jahrgang: number,
   kwpMittel?: number | null,
+  evAnteil?: number | null,
 ): number {
-  return stromwertEuro(erzeugungKwh(kwp, regionId), stromwertCtFuerSegment(segment, jahrgang, kwpMittel));
+  return stromwertEuro(erzeugungKwh(kwp, regionId), stromwertCtFuerSegment(segment, jahrgang, kwpMittel, evAnteil));
 }

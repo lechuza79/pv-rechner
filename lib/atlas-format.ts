@@ -146,6 +146,23 @@ export const ctProKwhTeile = (ct: number): Messwert => ({ value: dez(ct, 1), uni
 export const fmtCtProKwh = (ct: number): string => zusammen(ctProKwhTeile(ct));
 
 /**
+ * Ein Anteil als Prozentangabe („27 %").
+ *
+ * Nimmt den ANTEIL (0…1), nicht die bereits mit 100 multiplizierte Zahl — genau
+ * diese Verwechslung ist der Fehler, den eine gemeinsame Funktion verhindert:
+ * mit 0,27 aufgerufen käme sonst „0 %" heraus, mit 27 ein „2.700 %".
+ *
+ * Ganze Prozent ohne Nachkommastelle: Die Anteile im Atlas sind Modellwerte
+ * (Eigenverbrauch aus Anlagengröße und Speicherbestand). Eine Nachkommastelle
+ * wäre Scheingenauigkeit.
+ */
+export const anteilProzentTeile = (anteil: number): Messwert => ({
+  value: dez(anteil * 100, 0),
+  unit: "%",
+});
+export const fmtAnteilProzent = (anteil: number): string => zusammen(anteilProzentTeile(anteil));
+
+/**
  * Hängt den Zeitbezug an eine Einheit: aus „Tsd. t" wird „Tsd. t/Jahr".
  *
  * Nur für FLUSSGRÖSSEN. In der Ranking-Tabelle stehen Jahreswerte neben

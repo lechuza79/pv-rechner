@@ -8,6 +8,8 @@ import {
   fmtErtragProKwp,
   fmtCo2Tonnen,
   fmtEuro,
+  fmtAnteilProzent,
+  anteilProzentTeile,
   regionDisplayName,
 } from "../atlas-format";
 
@@ -28,6 +30,16 @@ describe("Einheit der installierten PV-Leistung", () => {
     expect(fmtPvLeistung(1000)).toBe("1 MWp");
     expect(fmtPvLeistung(999_999)).toBe("1.000 MWp");
     expect(fmtPvLeistung(1_000_000)).toBe("1 GWp");
+  });
+
+  it("schreibt Anteile als Prozent — aus dem Anteil, nicht aus der Prozentzahl", () => {
+    // Die Verwechslung ist der Grund für die Funktion: Mit 0,27 gerufen käme aus
+    // einer naiven Formatierung „0 %", mit 27 ein „2.700 %".
+    expect(fmtAnteilProzent(0.27)).toBe("27 %");
+    expect(fmtAnteilProzent(0.135)).toBe("14 %");
+    expect(fmtAnteilProzent(1)).toBe("100 %");
+    // Zahl und Einheit bleiben getrennt abrufbar (Kachel/Tabellenzelle).
+    expect(anteilProzentTeile(0.13)).toEqual({ value: "13", unit: "%" });
   });
 
   it("hält Speicher davon getrennt (Energie, nicht Leistung)", () => {

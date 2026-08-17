@@ -7,8 +7,10 @@ import { IconArrowUp, IconArrowDown, IconChevronDown, IconArrowRight } from "../
 import { useHomeGemeinde, lookupPlz, type GemeindeHit } from "../../lib/home-gemeinde";
 import { SEGMENT_OWNER, type ChildYearRow, type RankingRegion } from "../../lib/atlas";
 import {
+  anteilProzentTeile,
   co2TonnenTeile,
   euroTeile,
+  fmtAnteilProzent,
   fmtCo2FaktorKg,
   fmtCtProKwh,
   proJahr,
@@ -20,15 +22,17 @@ import {
 import {
   ATLAS_GRID_CO2,
   co2Tonnen,
+  eigenverbrauchAnteilRegion,
   einspeiseZeilen,
   erzeugungKwh,
   segmentWertEuro,
   stromwertBestandteile,
+  type PrivatBestand,
 } from "../../lib/atlas-impact";
 import InfoTooltip from "../InfoTooltip";
 
 type Owner = "alle" | "privat" | "gewerbe";
-type Metric = "count" | "kwp" | "perCapita" | "co2" | "wert" | "speicher";
+type Metric = "count" | "kwp" | "perCapita" | "co2" | "wert" | "eigenverbrauch" | "speicher";
 /** Sort key: a numeric metric column (descending), the name column (A–Z), or
  *  population (descending). Name and population share the name-column dropdown. */
 type Sort = Metric | "name" | "population";
@@ -50,6 +54,10 @@ type Row = {
   co2: number;
   /** Wert des erzeugten Stroms in €/Jahr, je Anlagenart einzeln bewertet. */
   wertEuro: number;
+  /** Anteil des Solarstroms privater Dächer, der im Haus bleibt (0…1) —
+   *  gerechnet aus der mittleren Anlagengröße und dem Speicherbestand der
+   *  Region. `null`, wenn sie keine private Dachanlage führt. */
+  evAnteil: number | null;
 };
 
 const COLUMNS: { key: Metric; label: string; hint: string }[] = [
@@ -78,6 +86,13 @@ const COLUMNS: { key: Metric; label: string; hint: string }[] = [
     label: "Stromwert",
     // Der Text steht als eigene Komponente weiter unten — er zählt die Sätze
     // je Anlagenart auf und ist deshalb kein einzelner Satz.
+    hint: "",
+  },
+  {
+    key: "eigenverbrauch",
+    label: "Eigenverbrauch",
+    // Der Text steht als eigene Komponente weiter unten — er muss sagen, dass
+    // die Zahl gerechnet und nicht gemessen ist, und woraus sie entsteht.
     hint: "",
   },
   {
@@ -131,6 +146,11 @@ function cellTeile(row: Row, m: Metric): Messwert {
   // Bestandsgrößen — der Zeitbezug muss an der Zahl stehen, nicht im Tooltip.
   if (m === "co2") return proJahr(co2TonnenTeile(row.co2));
   if (m === "wert") return proJahr(euroTeile(row.wertEuro));
+  // Der Eigenverbrauchsanteil ist KEIN Jahreswert, sondern eine Eigenschaft des
+  // Bestands — hier gehört deshalb kein „/Jahr" an die Einheit.
+  if (m === "eigenverbrauch") {
+    return row.evAnteil === null ? { value: "—", unit: "" } : anteilProzentTeile(row.evAnteil);
+  }
   return { value: nf(row[m] as number), unit: "" };
 }
 
@@ -146,6 +166,7 @@ function valueOf(row: Row, m: Sort): number | null {
   if (m === "perCapita") return row.perCapita;
   if (m === "population") return row.population;
   if (m === "wert") return row.wertEuro;
+  if (m === "eigenverbrauch") return row.evAnteil;
   return row[m] as number;
 }
 
@@ -237,37 +258,81 @@ export default function RankingTable({
   const build = useMemo(() => {
     const keep = (segment: string) =>
       owner === "alle" ? SEGMENT_OWNER[segment] !== null : SEGMENT_OWNER[segment] === owner;
+    type Acc = { count: number; kwp: number; speicher: number; wertEuro: number; privat: PrivatBestand };
+    const leer = (): Acc => ({
+      count: 0,
+      kwp: 0,
+      speicher: 0,
+      wertEuro: 0,
+      privat: { dachCount: 0, dachKwp: 0, batterieCount: 0, batterieKwh: 0 },
+    });
     return (yearMax: number | null): Row[] => {
-      const acc = new Map<string, { count: number; kwp: number; speicher: number; wertEuro: number }>();
+      const acc = new Map<string, Acc>();
+
+      // Erster Durchgang: der Bestand. Der Eigenverbrauchsanteil einer Region
+      // hängt an ihren privaten Dächern UND Batterien insgesamt — er lässt sich
+      // deshalb erst rechnen, wenn alle Zellen gezählt sind, und der Geldwert
+      // erst danach.
       for (const c of cells) {
-        if (!keep(c.segment)) continue;
         if (yearMax !== null && c.year > yearMax) continue;
-        const a = acc.get(c.region_id) ?? { count: 0, kwp: 0, speicher: 0, wertEuro: 0 };
-        if (c.segment.startsWith("batterie")) {
-          a.speicher += c.kwh;
-        } else {
+        const a = acc.get(c.region_id) ?? leer();
+        acc.set(c.region_id, a);
+
+        // Der private Bestand wird IMMER mitgezählt, auch unter „Gewerbe":
+        // Wie viel ein privates Dach im Haus behält, hängt an den Häusern der
+        // Region, nicht daran, welchen Filter der Betrachter gerade sieht. Ohne
+        // diese Trennung bekäme dieselbe Gemeinde je nach Filter einen anderen
+        // Eigenverbrauch — und der Filter würde eine Größe verändern, über die
+        // er gar nichts aussagt.
+        if (c.segment === "privat_dach") {
+          a.privat.dachCount += c.count;
+          a.privat.dachKwp += c.kwp;
+        } else if (c.segment === "batterie_privat") {
+          a.privat.batterieCount += c.count;
+          a.privat.batterieKwh += c.kwh;
+        }
+
+        if (!keep(c.segment)) continue;
+        if (c.segment.startsWith("batterie")) a.speicher += c.kwh;
+        else {
           a.count += c.count;
           a.kwp += c.kwp;
-          // Der Geldwert entsteht HIER, je Segment UND Jahrgang — nicht später
-          // aus der Summe: Ein Freiflächen-Park erlöst gut ein Drittel dessen,
-          // was ein privates Dach erspart, und die Vergütung eines Dachs von
-          // 2010 ist rund das Vierfache der heutigen. Über beides zu mitteln
-          // wäre keine Näherung, sondern eine andere Zahl. Der Jahrgang liegt
-          // ohnehin in der Zelle, weil die Tabelle für den Rang-Rücklauf nach
-          // Jahren filtert.
-          //
-          // Mitgereicht wird die mittlere Anlagengröße der Zelle: Die
-          // EEG-Staffel ist ein ANTEILIGER Tarif (die ersten 10 kWp bringen den
-          // kleinen Satz, jedes weitere Kilowatt den großen). Ohne sie bekäme
-          // ein 35-kWp-Gewerbedach den Grenzsatz für alles und stünde rund 4 %
-          // zu niedrig da. Zellen ohne Anzahl reichen null herein.
-          const kwpMittel = c.count > 0 ? c.kwp / c.count : null;
-          a.wertEuro += segmentWertEuro(c.kwp, c.region_id, c.segment, c.year, kwpMittel);
         }
-        acc.set(c.region_id, a);
       }
+
+      const evAnteile = new Map<string, number | null>();
+      for (const [id, a] of acc) evAnteile.set(id, eigenverbrauchAnteilRegion(a.privat, id));
+
+      // Zweiter Durchgang: das Geld. Es entsteht je Segment UND Jahrgang — nicht
+      // später aus der Summe: Ein Freiflächen-Park erlöst gut ein Drittel
+      // dessen, was ein privates Dach erspart, und die Vergütung eines Dachs von
+      // 2010 ist rund das Vierfache der heutigen. Über beides zu mitteln wäre
+      // keine Näherung, sondern eine andere Zahl. Der Jahrgang liegt ohnehin in
+      // der Zelle, weil die Tabelle für den Rang-Rücklauf nach Jahren filtert.
+      for (const c of cells) {
+        if (!keep(c.segment)) continue;
+        if (c.segment.startsWith("batterie")) continue;
+        if (yearMax !== null && c.year > yearMax) continue;
+        const a = acc.get(c.region_id);
+        if (!a) continue;
+        // Mitgereicht wird die mittlere Anlagengröße der Zelle: Die EEG-Staffel
+        // ist ein ANTEILIGER Tarif (die ersten 10 kWp bringen den kleinen Satz,
+        // jedes weitere Kilowatt den großen). Ohne sie bekäme ein
+        // 35-kWp-Gewerbedach den Grenzsatz für alles und stünde rund 4 % zu
+        // niedrig da. Zellen ohne Anzahl reichen null herein.
+        const kwpMittel = c.count > 0 ? c.kwp / c.count : null;
+        a.wertEuro += segmentWertEuro(
+          c.kwp,
+          c.region_id,
+          c.segment,
+          c.year,
+          kwpMittel,
+          evAnteile.get(c.region_id) ?? null,
+        );
+      }
+
       return regions.map((r) => {
-        const a = acc.get(r.region_id) ?? { count: 0, kwp: 0, speicher: 0, wertEuro: 0 };
+        const a = acc.get(r.region_id) ?? leer();
         const erzeugung = erzeugungKwh(a.kwp, r.region_id);
         return {
           region_id: r.region_id,
@@ -281,12 +346,26 @@ export default function RankingTable({
           erzeugung,
           co2: co2Tonnen(erzeugung),
           wertEuro: a.wertEuro,
+          evAnteil: evAnteile.get(r.region_id) ?? null,
         };
       });
     };
   }, [cells, regions, basePath, owner]);
 
   const rows = useMemo(() => build(null), [build]);
+
+  // Spannweite der Eigenverbrauchs-Anteile in dieser Liste. Der Hilfetext der
+  // Stromwert-Spalte nannte früher EINEN Anteil — seit er je Region aus deren
+  // Anlagen und Batterien entsteht, wäre eine einzelne Zahl dort falsch.
+  const evSpanne = useMemo(() => {
+    const werte = rows.map((r) => r.evAnteil).filter((x): x is number => x !== null);
+    if (werte.length === 0) return null;
+    return {
+      min: Math.min(...werte),
+      max: Math.max(...werte),
+      mittel: werte.reduce((s, x) => s + x, 0) / werte.length,
+    };
+  }, [rows]);
 
   // Current rank against the rank at the end of the last complete year. Naming
   // this "Veränderung zum Vorjahr" would be a lie: it spans that year-end to
@@ -569,7 +648,13 @@ export default function RankingTable({
                     nicht als Fließtext unter der Tabelle, den man erst nach dem
                     Lesen aller Zahlen findet. */}
                 <InfoTooltip title={c.label} size={11} ariaLabel={`${c.label}: Erklärung`}>
-                  {c.key === "wert" ? <StromwertHilfe /> : c.hint}
+                  {c.key === "wert" ? (
+                    <StromwertHilfe spanne={evSpanne} />
+                  ) : c.key === "eigenverbrauch" ? (
+                    <EigenverbrauchHilfe />
+                  ) : (
+                    c.hint
+                  )}
                 </InfoTooltip>
               </span>
             ))}
@@ -661,10 +746,9 @@ export default function RankingTable({
  * genau das ist der Punkt der Spalte, und eine Zahl, die aus vier verschiedenen
  * Sätzen entsteht, ist ohne diese Aufstellung nicht nachvollziehbar.
  */
-function StromwertHilfe() {
+function StromwertHilfe({ spanne }: { spanne: { min: number; max: number; mittel: number } | null }) {
   const { eigenverbrauchCt, jahrgang, dachEigenverbrauchAnteil, balkonEigenverbrauchAnteil } =
-    stromwertBestandteile();
-  const prozent = (anteil: number) => `${Math.round(anteil * 100)} %`;
+    stromwertBestandteile(undefined, spanne?.mittel);
   return (
     <>
       Wert des erzeugten Solarstroms pro Jahr, rechnerisch. Jede Kilowattstunde zählt, was sie
@@ -673,10 +757,15 @@ function StromwertHilfe() {
         <span style={S.tipZeile}>
           <strong>Im Haus verbraucht: {fmtCtProKwh(eigenverbrauchCt)}</strong> — ersetzt
           zugekauften Strom. Wie viel eine Anlagenart im Haus behält, ist verschieden: beim
-          privaten Dach rechnen wir mit {prozent(dachEigenverbrauchAnteil)}, beim Balkonkraftwerk
-          mit {prozent(balkonEigenverbrauchAnteil)}. Beim gewerblichen Dach ist dieser Anteil gar
-          nicht angesetzt, weil uns nicht belegt ist, wie viel Betriebe selbst verbrauchen; die
-          Zahl ist dort eine Untergrenze. Bei Freiflächen-Parks gibt es ihn nicht.
+          Balkonkraftwerk sind es {fmtAnteilProzent(balkonEigenverbrauchAnteil)}. Beim privaten
+          Dach hängt der Anteil an den Anlagen und Batterien vor Ort — er steht in der Spalte
+          Eigenverbrauch und liegt in dieser Liste{" "}
+          {spanne
+            ? `zwischen ${fmtAnteilProzent(spanne.min)} und ${fmtAnteilProzent(spanne.max)}`
+            : `bei ${fmtAnteilProzent(dachEigenverbrauchAnteil)}`}
+          . Beim gewerblichen Dach ist dieser Anteil gar nicht angesetzt, weil uns nicht belegt
+          ist, wie viel Betriebe selbst verbrauchen; die Zahl ist dort eine Untergrenze. Bei
+          Freiflächen-Parks gibt es ihn nicht.
         </span>
         <span style={S.tipZeile}>
           {/* Der Hinweis steht IMMER dabei, nicht nur wo ein Satz fehlt: Ohne ihn
@@ -691,13 +780,46 @@ function StromwertHilfe() {
       Wie sich eine Anlagenart auf beides verteilt, ist verschieden — deshalb wird jede einzeln
       gerechnet. Ältere Anlagen bekommen deutlich mehr: Jede Anlage zählt mit dem Satz ihres
       Baujahrs. Die Vergütung eines privaten Dachs von 2010 ist rund das Vierfache der heutigen;
-      in dieser Spalte bleibt davon gut das Doppelte übrig, weil der selbst verbrauchte Strom bei
-      beiden gleich viel wert ist. Nach 20 Jahren endet die Vergütung, dann zählt nur noch der
+      in dieser Spalte bleibt davon mehr als das Doppelte übrig, weil der selbst verbrauchte Strom
+      bei beiden gleich viel wert ist. Nach 20 Jahren endet die Vergütung, dann zählt nur noch der
       Börsenwert. Zwei Lücken kennen wir: Die zusätzliche Eigenverbrauchsvergütung der Baujahre
       2009 bis 2012 fehlt, und für Freiflächen-Parks der Baujahre 2015 bis 2024 fehlt uns der
       Zuschlagswert ihrer Ausschreibung — sie rechnen mit dem heutigen. Beide Lücken setzen die
       Zahl eher zu niedrig an. Strommenge: installierte Leistung mal typischer Ertrag im
       Bundesland, kalibriert an der Erzeugung 2025 (Fraunhofer ISE).
+    </>
+  );
+}
+
+/**
+ * Hilfetext der Eigenverbrauchs-Spalte.
+ *
+ * Der wichtigste Satz steht zuerst: Die Zahl ist GERECHNET, nicht gemessen. Das
+ * Anlagenregister kennt Anlagen und Batterien, aber keine Zählerstände — wer die
+ * Spalte für eine Messung hält, liest sie als etwas, das sie nicht ist.
+ */
+function EigenverbrauchHilfe() {
+  return (
+    <>
+      Anteil des Solarstroms von <strong>privaten Dächern</strong>, der im Haus bleibt, statt ins
+      Netz zu gehen. Der Wert ist gerechnet, nicht gemessen: Das Anlagenregister sagt, wie viele
+      Dächer und Hausbatterien es gibt — wie viel Strom durch den Zähler ging, sagt es nicht.
+      <span style={S.tipListe}>
+        <span style={S.tipZeile}>
+          Gerechnet wird mit derselben Formel wie im Photovoltaik-Rechner, aus drei Zahlen der
+          Region: der mittleren Anlagengröße (Leistung durch Anzahl der privaten Dächer), dem
+          Anteil der Dächer mit Hausbatterie samt deren mittlerer Größe, und dem üblichen Ertrag
+          am Standort.
+        </span>
+        <span style={S.tipZeile}>
+          Der Haushalt dahinter ist überall derselbe Bezugsfall — zwei Personen, teils zuhause —,
+          denn wer in diesen Häusern wohnt, steht im Register nicht. Kleinere Anlagen und mehr
+          Batterien heben den Anteil, große Dächer senken ihn.
+        </span>
+      </span>
+      Gewerbliche Dächer und Freiflächen-Parks sind nicht enthalten. Der Anteil bestimmt mit, was
+      in der Spalte Stromwert steht: Selbst verbrauchter Strom ersetzt teuren Netzbezug,
+      eingespeister bringt nur die Vergütung.
     </>
   );
 }
@@ -897,8 +1019,13 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  * gemessene Kopfbreiten, nicht geschätzt. Einzige Ausnahme ist „Anlagen"
  * (74): Dort ist die Zahl breiter als der Kopf, weil sie als einzige der
  * Tabelle ungestaffelt bis zu siebenstellig wird ("1.399.105").
+ *
+ * „Eigenverbrauch" ist mit 83 px der längste Kopf der Reihe (im Browser
+ * gemessen, 11 px halbfett) — mit dem „?" daneben also 96. Die Spalte ist
+ * dadurch breiter als ihre zweistellige Prozentzahl braucht; das ist der Preis
+ * dafür, dass der Titel einzeilig bleibt.
  */
-const GRID = "40px minmax(175px,1fr) 74px 60px 60px 78px 70px 62px 12px";
+const GRID = "40px minmax(175px,1fr) 74px 60px 60px 78px 70px 96px 62px 12px";
 
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
@@ -914,10 +1041,10 @@ const S: Record<string, React.CSSProperties> = {
   },
   // Eight columns do not fit a phone. Scroll the table, never the page.
   scroller: { overflowX: "auto", margin: "0 -8px", padding: "0 8px" },
-  // Summe des Rasters: 40 + 175 (Name-Minimum) + 404 (Wertspalten) + 12 + 88.
-  // Enger scrollt die Tabelle lieber waagerecht, als Ortsnamen abzuschneiden —
-  // ein halber Ortsname ist in einer Rangliste wertlos.
-  table: { minWidth: 719 },
+  // Summe des Rasters: 40 + 175 (Name-Minimum) + 500 (Wertspalten) + 12 + 99
+  // (neun Lücken à 11). Enger scrollt die Tabelle lieber waagerecht, als
+  // Ortsnamen abzuschneiden — ein halber Ortsname ist in einer Rangliste wertlos.
+  table: { minWidth: 826 },
   row: {
     display: "grid",
     gridTemplateColumns: GRID,

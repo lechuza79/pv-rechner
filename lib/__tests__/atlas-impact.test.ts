@@ -1,10 +1,11 @@
 import { describe, it, expect } from "vitest";
 import {
   ATLAS_GRID_CO2,
-  EIGENVERBRAUCH_ANTEIL_ANNAHME,
+  EIGENVERBRAUCH_ANTEIL_RUECKFALL,
   PRAXIS_FAKTOR,
   balkonEigenverbrauchAnteil,
   co2Tonnen,
+  eigenverbrauchAnteilRegion,
   einspeiseCt,
   einspeiseSatz,
   einspeiseZeilen,
@@ -104,6 +105,109 @@ describe("CO₂-Ersparnis (Realitäts-Anker)", () => {
   });
 });
 
+/**
+ * Der Eigenverbrauchsanteil war bis 08/2026 eine feste 0,3 für jede Region —
+ * gesetzt, nicht gerechnet, und am optimistischen Rand. Jetzt kommt er aus den
+ * Zahlen der Region selbst. Diese Anker prüfen die RICHTUNGEN und BÄNDER, die
+ * unabhängig von der Formel gelten müssen; wer sie gegen die Formel selbst
+ * prüfte, prüfte gar nichts.
+ */
+describe("Eigenverbrauch je Region (Realitäts-Anker)", () => {
+  /** 1.000 private Dächer mit je 9,8 kWp — die Größenordnung der mittleren
+   *  deutschen Dachanlage. Batterien werden je Fall dazugegeben. */
+  const bestand = (batterieCount: number, batterieKwh: number) => ({
+    dachCount: 1000,
+    dachKwp: 9800,
+    batterieCount,
+    batterieKwh,
+  });
+  const BY = "09162000";
+
+  it("hebt den Anteil, je mehr Speicher auf den Dächern der Region steht", () => {
+    // Die Aussage der ganzen Änderung: Eine Region mit vielen Hausbatterien
+    // behält mehr Strom im Haus als eine ohne. Vorher standen beide bei 30 %.
+    const ohne = eigenverbrauchAnteilRegion(bestand(0, 0), BY) as number;
+    const wenig = eigenverbrauchAnteilRegion(bestand(200, 200 * 10), BY) as number;
+    const viel = eigenverbrauchAnteilRegion(bestand(600, 600 * 10), BY) as number;
+    expect(wenig).toBeGreaterThan(ohne);
+    expect(viel).toBeGreaterThan(wenig);
+  });
+
+  it("senkt den Anteil, je größer die Anlagen im Verhältnis zum Haushalt sind", () => {
+    // Physik, nicht Formel: Ein größeres Dach erzeugt zur selben Zeit mehr, als
+    // dasselbe Haus verbrauchen kann — der Anteil MUSS fallen.
+    const klein = eigenverbrauchAnteilRegion({ ...bestand(0, 0), dachKwp: 6000 }, BY) as number;
+    const mittel = eigenverbrauchAnteilRegion(bestand(0, 0), BY) as number;
+    const gross = eigenverbrauchAnteilRegion({ ...bestand(0, 0), dachKwp: 20000 }, BY) as number;
+    expect(klein).toBeGreaterThan(mittel);
+    expect(mittel).toBeGreaterThan(gross);
+  });
+
+  it("bleibt für realistische Bestände im Band 10 bis 60 Prozent", () => {
+    // Bekanntes Band aus der PV-Literatur: eine Dachanlage ohne Speicher behält
+    // grob 10–25 %, mit Speicher 40–60 %. Darüber kommt ein Haushalt ohne
+    // Wärmepumpe oder E-Auto nicht — und darunter läge nur ein Rechenfehler.
+    for (const b of [bestand(0, 0), bestand(300, 3000), bestand(1000, 10_000), bestand(1000, 15_000)]) {
+      const anteil = eigenverbrauchAnteilRegion(b, BY) as number;
+      expect(Number.isFinite(anteil)).toBe(true);
+      expect(anteil).toBeGreaterThanOrEqual(0.1);
+      expect(anteil).toBeLessThanOrEqual(0.6);
+    }
+  });
+
+  it("rechnet Speicher als Mischung, nicht als über alle Dächer gemittelte Batterie", () => {
+    // Der Speicher-Term sättigt: Die zehnte Kilowattstunde bringt weniger als
+    // die erste. Wer den Speicherbestand über ALLE Dächer mittelt (hier 3 kWh je
+    // Dach), behandelt jedes Dach so, als hätte es ein Drittel Batterie — und
+    // rechnet damit systematisch zu hoch. Die Mischung „30 % der Dächer haben
+    // 10 kWh" muss deshalb darunter liegen.
+    const mischung = eigenverbrauchAnteilRegion(bestand(300, 3000), BY) as number;
+    const gemittelt = eigenverbrauchAnteilRegion(bestand(1000, 3000), BY) as number;
+    expect(mischung).toBeLessThan(gemittelt);
+  });
+
+  it("liefert für Regionen ohne private Dächer kein NaN, sondern gar keine Zahl", () => {
+    // Kein Nenner, keine Quote: Die Spalte zeigt dann „—". Eine 0 oder ein NaN
+    // wären beide falsch — das eine behauptet etwas, das andere bricht die
+    // Sortierung.
+    expect(eigenverbrauchAnteilRegion({ dachCount: 0, dachKwp: 0, batterieCount: 0, batterieKwh: 0 }, BY)).toBeNull();
+    expect(eigenverbrauchAnteilRegion({ dachCount: 0, dachKwp: 120, batterieCount: 5, batterieKwh: 50 }, BY)).toBeNull();
+  });
+
+  it("verkraftet mehr Batterien als Dächer, ohne über den Vollausbau zu gehen", () => {
+    // Speicher werden nachgerüstet und stehen als eigene Einheit im Register —
+    // in einer kleinen Gemeinde kann ihre Zahl die der Dächer übersteigen. Der
+    // Anteil darf davon nicht über den Fall hinauslaufen, in dem JEDES Dach eine
+    // Batterie hat.
+    const alle = eigenverbrauchAnteilRegion(bestand(1000, 10_000), BY) as number;
+    const uebervoll = eigenverbrauchAnteilRegion(bestand(1500, 15_000), BY) as number;
+    expect(uebervoll).toBeCloseTo(alle, 6);
+  });
+
+  it("hält den Rückfall dort, wo eine Dachanlage ohne Speicher wirklich liegt", () => {
+    // Er ist keine gesetzte Zahl mehr, sondern dieselbe Rechnung an der
+    // Voreinstellung des Rechners. Die früheren 30 % waren der Wert einer Anlage
+    // MIT rund 8 kWh Speicher — das Band einer Anlage ohne liegt bei 10–20 %.
+    expect(EIGENVERBRAUCH_ANTEIL_RUECKFALL).toBeGreaterThanOrEqual(0.1);
+    expect(EIGENVERBRAUCH_ANTEIL_RUECKFALL).toBeLessThan(0.2);
+  });
+
+  it("schlägt bis in den Stromwert durch", () => {
+    // Sonst wäre die Spalte eine Anzeige ohne Wirkung: Eine Region mit viel
+    // Speicher behält mehr Strom im Haus, und der ist mehr wert als eingespeister.
+    const wenig = eigenverbrauchAnteilRegion(bestand(0, 0), BY) as number;
+    const viel = eigenverbrauchAnteilRegion(bestand(600, 6000), BY) as number;
+    const wertWenig = segmentWertEuro(1000, BY, "privat_dach", HEUTE, 9.8, wenig);
+    const wertViel = segmentWertEuro(1000, BY, "privat_dach", HEUTE, 9.8, viel);
+    expect(wertViel).toBeGreaterThan(wertWenig);
+
+    // Und die alte Pauschale von 30 % lag über beiden — der Stromwert privater
+    // Dächer sinkt durch die Umstellung, und das ist der Punkt.
+    const wertPauschal = segmentWertEuro(1000, BY, "privat_dach", HEUTE, 9.8, 0.3);
+    expect(wertPauschal).toBeGreaterThan(wertViel);
+  });
+});
+
 describe("Stromwert je Anlagenart (Realitäts-Anker)", () => {
   it("bewertet ein privates Dach zwischen Einspeisevergütung und Haushaltsstrompreis", () => {
     // Der Mischwert kann logisch nur zwischen seinen beiden Bestandteilen
@@ -143,7 +247,9 @@ describe("Stromwert je Anlagenart (Realitäts-Anker)", () => {
     const anteil = balkonEigenverbrauchAnteil();
     expect(anteil).toBeGreaterThan(0.5);
     expect(anteil).toBeLessThan(0.8);
-    expect(anteil).toBeGreaterThan(EIGENVERBRAUCH_ANTEIL_ANNAHME * 1.5);
+    // Und weit über dem, was ein Dach behält — sonst hätte jemand den
+    // Dach-Anteil untergeschoben.
+    expect(anteil).toBeGreaterThan(EIGENVERBRAUCH_ANTEIL_RUECKFALL * 2);
   });
 
   it("bleibt für jede heute gebaute Anlagenart im plausiblen Erlösband", () => {
@@ -196,15 +302,24 @@ describe("Stromwert nach Baujahr (Realitäts-Anker)", () => {
   it("hält die beiden Faktoren ein, die der Hilfetext behauptet", () => {
     // Der Hilfetext sagt zwei Dinge über ein privates Dach von 2010: seine
     // VERGÜTUNG sei rund das Vierfache der heutigen, in der SPALTE bleibe davon
-    // gut das Doppelte übrig. Beides sind überprüfbare Aussagen — vorher stand
-    // dort einmal "das Vierfache" für die Spalte, wo es 2,2-fach ist.
+    // mehr als das Doppelte übrig. Beides sind überprüfbare Aussagen — vorher
+    // stand dort einmal "das Vierfache" für die Spalte, wo es 2,2-fach ist.
     const verguetung = einspeiseCt("privat_dach", 2010) / einspeiseCt("privat_dach", HEUTE);
     expect(verguetung).toBeGreaterThan(3.5);
     expect(verguetung).toBeLessThan(4.5);
 
-    const spalte = stromwertSaetze(2010).privat_dach.ct / stromwertSaetze(HEUTE).privat_dach.ct;
-    expect(spalte).toBeGreaterThan(2);
-    expect(spalte).toBeLessThan(2.6);
+    // Der Spalten-Faktor hängt am Eigenverbrauchsanteil, und der ist seit 08/2026
+    // je Region ein anderer. Geprüft wird deshalb das ganze Band, das im Atlas
+    // vorkommt (Dächer ohne Speicher bis Regionen mit viel Batterie) — nicht ein
+    // einzelner Wert, der zufällig gerade gilt.
+    for (const ev of [0.1, 0.15, 0.2, 0.25, 0.3, 0.35]) {
+      const spalte =
+        stromwertSaetze(2010, null, ev).privat_dach.ct / stromwertSaetze(HEUTE, null, ev).privat_dach.ct;
+      expect(spalte).toBeGreaterThan(2);
+      // Und immer unter dem Vergütungs-Faktor: Der selbst verbrauchte Strom ist
+      // bei beiden Jahrgängen gleich viel wert und dämpft den Abstand.
+      expect(spalte).toBeLessThan(verguetung);
+    }
   });
 
   it("lässt den Grenzjahrgang (Frist läuft dieses Jahr aus) noch voll vergütet", () => {
@@ -383,8 +498,8 @@ describe("Hilfetext und Rechnung bleiben dieselbe Quelle", () => {
     // Bestandteile; die Rechnung muss sich aus genau ihnen ergeben.
     const dachEinspeisung = finde("privates Dach")?.ct as number;
     const nachgerechnet =
-      EIGENVERBRAUCH_ANTEIL_ANNAHME * eigenverbrauchCt +
-      (1 - EIGENVERBRAUCH_ANTEIL_ANNAHME) * dachEinspeisung;
+      EIGENVERBRAUCH_ANTEIL_RUECKFALL * eigenverbrauchCt +
+      (1 - EIGENVERBRAUCH_ANTEIL_RUECKFALL) * dachEinspeisung;
     expect(nachgerechnet).toBeCloseTo(saetze.privat_dach.ct, 6);
 
     // Und der Balkon-Satz muss sich aus dem Eigenverbrauchspreis ergeben,
@@ -397,8 +512,14 @@ describe("Hilfetext und Rechnung bleiben dieselbe Quelle", () => {
     // zusammenrechnen — der Tooltip nannte zwei Preise und verschwieg die
     // Gewichte, mit denen sie gemischt werden.
     const t = stromwertBestandteile();
-    expect(t.dachEigenverbrauchAnteil).toBe(EIGENVERBRAUCH_ANTEIL_ANNAHME);
+    expect(t.dachEigenverbrauchAnteil).toBe(EIGENVERBRAUCH_ANTEIL_RUECKFALL);
     expect(t.balkonEigenverbrauchAnteil).toBe(balkonEigenverbrauchAnteil());
+
+    // Und wer den Anteil der Region hereinreicht, bekommt genau ihn zurück: Der
+    // Hilfetext der Tabelle nennt die Spannweite ihrer Liste, nicht den
+    // Rückfall — sonst behauptete er einen Anteil, mit dem nirgends gerechnet
+    // wird.
+    expect(stromwertBestandteile(undefined, 0.22).dachEigenverbrauchAnteil).toBe(0.22);
   });
 
   it("schreibt zu JEDER Anlagenart dazu, was die Zahl ist", () => {
