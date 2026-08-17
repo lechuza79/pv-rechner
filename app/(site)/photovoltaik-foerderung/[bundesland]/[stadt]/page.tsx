@@ -249,9 +249,24 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                         am Fuß der Karte identisch. */}
                     <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: 2, lineHeight: 1.6 }}>
                       {f.traeger} — {fundingStandLabel(f)}
-                      {/* Kein Link: Das ist eine Eigenschaft des Programms wie
-                          Träger und Stand daneben, kein Weg woandershin. */}
-                      {f.capped && <> · Mittel begrenzt – vor Antrag prüfen</>}
+                      {/* Der Text bleibt Text — er beschreibt das Programm wie
+                          Träger und Stand daneben. Hinaus führt allein das
+                          Symbol, wie bei „Kombinierbar mit". */}
+                      {f.capped && (
+                        <>
+                          {" · "}
+                          Mittel begrenzt – vor Antrag prüfen{" "}
+                          <a
+                            href={f.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${f.name} — Programmseite öffnen`}
+                            style={{ display: "inline-flex", verticalAlign: "middle", color: v("--color-accent") }}
+                          >
+                            <IconExternal size={iconSizes.sm} />
+                          </a>
+                        </>
+                      )}
                     </div>
                     {/* Warnung nur bei echtem Andrang: Steht das laufende Jahr
                         schon bei mindestens drei Vierteln des Vorjahres, ist
