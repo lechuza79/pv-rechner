@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 import { pageMetadata } from "../../../lib/seo";
+import { standSeite } from "../../../lib/stand";
 import Empfehlung from "./empfehlung";
 
 export const metadata: Metadata = pageMetadata({
@@ -13,12 +14,14 @@ export const metadata: Metadata = pageMetadata({
 
 // Die „Stand:"-Zeile sitzt im Flow selbst (siehe empfehlung.tsx), nicht hier:
 // Der Rahmen ist mindestens bildschirmhoch, ein Absatz dahinter stünde hinter
-// einer leeren Fläche.
+// einer leeren Fläche. Nachgeschlagen wird sie trotzdem HIER, auf dem Server —
+// `lib/stand.ts` hängt an sieben Config-Modulen, die im Browser nichts zu
+// suchen haben.
 export default function EmpfehlungPage() {
   // useSearchParams in the client component requires a Suspense boundary.
   return (
     <Suspense fallback={null}>
-      <Empfehlung />
+      <Empfehlung stand={standSeite("/pv-bedarf-berechnen")} />
     </Suspense>
   );
 }

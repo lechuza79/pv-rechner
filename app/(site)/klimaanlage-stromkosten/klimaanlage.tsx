@@ -2,7 +2,8 @@
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
-import StandNote from "../../../components/StandNote";
+import StandNoteView from "../../../components/StandNoteView";
+import { type StandSeite } from "../../../lib/stand-format";
 import InlineEdit from "../../../components/InlineEdit";
 import ResultSection from "../../../components/ResultSection";
 import InfoTooltip from "../../../components/InfoTooltip";
@@ -61,7 +62,11 @@ const PROJ_YEAR = (() => {
 })();
 
 
-export default function Klimaanlage() {
+// `stand` kommt fertig aufgelöst von der Server-Seite (page.tsx). Der Rechner
+// liest ihn NICHT selbst aus `lib/stand.ts`: Das Modul zieht sieben Configs
+// nach sich, von denen hier nur die Klima-Config gebraucht wird — im Browser
+// lägen sonst sechs fremde Datentabellen.
+export default function Klimaanlage({ stand }: { stand?: StandSeite }) {
   const [step, setStep] = useState(0);
   const [deviceId, setDeviceId] = useState<AcInputs["deviceId"]>("portasplit");
   const [rooms, setRooms] = useState(CFG.defaultRooms);
@@ -702,7 +707,7 @@ export default function Klimaanlage() {
         {/* Innerhalb der Rechner-Spalte, nicht dahinter: Der Rahmen ist
             mindestens bildschirmhoch — ein Absatz darunter stünde hinter einer
             leeren Fläche und würde nie gelesen. */}
-        <StandNote pfad="/klimaanlage-stromkosten" />
+        <StandNoteView seite={stand} />
       </div>
     </div>
   );
