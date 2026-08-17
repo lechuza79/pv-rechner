@@ -20,12 +20,38 @@ import { v } from "../lib/theme";
  * eigenes Verhalten bekommt. Schritte rufen dafür nach dem Setzen der Auswahl
  * flowSelect(next) auf.
  */
-export const FLOW_ADVANCE_ON_SELECT = false;
+/**
+ * Wann ein Klick auf eine Option direkt weiterspringt.
+ *
+ *   "nie"    — Standard: auswählen und Weiter drücken (Betreiber-Vorgabe 05.08.2026)
+ *   "immer"  — jeder Klick springt
+ *   "mobil"  — nur auf schmalen Bildschirmen (< 768 px, dieselbe Grenze wie das
+ *              Burger-Menü im Header)
+ *
+ * Als Regel statt als Ja/Nein angelegt, damit sich das Verhalten nach einer
+ * Messung umlegen lässt, ohne dass irgendein Flow angefasst werden muss: Auf
+ * dem Telefon kostet jeder zusätzliche Druck mehr als am Schreibtisch, und ob
+ * das den Abbruch senkt oder Fehlauswahlen erhöht, weiß man erst mit Zahlen.
+ * Es bleibt EIN Schalter — nie pro Seite entscheiden.
+ */
+export type FlowAdvanceMode = "nie" | "immer" | "mobil";
+export const FLOW_ADVANCE_ON_SELECT: FlowAdvanceMode = "nie";
 
-/** Nach dem Setzen einer Auswahl aufrufen — springt nur in der
- *  Auto-Advance-Variante weiter. */
+/** Breite, ab der ein Bildschirm als „schmal" gilt — wie im Header. */
+const MOBIL_BIS = 767;
+
+/** Gilt Auto-Weiter im aktuellen Kontext? Wird bei jedem Klick neu gefragt,
+ *  damit ein Drehen des Geräts sofort wirkt. */
+export function flowAdvanceAktiv(): boolean {
+  if (FLOW_ADVANCE_ON_SELECT === "immer") return true;
+  if (FLOW_ADVANCE_ON_SELECT === "nie") return false;
+  // "mobil": window fehlt beim Rendern auf dem Server — dann nicht springen.
+  return typeof window !== "undefined" && window.matchMedia(`(max-width: ${MOBIL_BIS}px)`).matches;
+}
+
+/** Nach dem Setzen einer Auswahl aufrufen — springt nur, wenn die Regel es sagt. */
 export function flowSelect(next: () => void) {
-  if (FLOW_ADVANCE_ON_SELECT) next();
+  if (flowAdvanceAktiv()) next();
 }
 
 /**
