@@ -109,15 +109,21 @@ async function main(): Promise<void> {
     if (!html) {
       unerreichbar.push(`${p.name} (${p.region}) — HTTP ${status || "keine Antwort"}`);
       if (!dry) {
-        // Als Prüfversuch protokollieren: Das ist derselbe Kanal, aus dem der
-        // Arbeitsvorrat gespeist wird. So zählt auch ein Abrufversuch der
-        // Maschine als Fehlversuch — sonst wäre eine dauerhaft gesperrte Seite
-        // in der Buchführung unsichtbar, bis zufällig ein Modell-Lauf hinsieht.
+        // WICHTIG: eigene Kennung, NICHT "pruefseite"/"gesperrt" — BLOCKER.
+        // Ein gescheiterter Abruf dieses Crawlers ist KEIN Fehlversuch im Sinne
+        // der Eskalation. Gemessen am ersten Cloud-Lauf (17.08.2026): vom Rechner
+        // des Betreibers waren 2 Seiten unerreichbar, aus GitHubs Rechenzentrum
+        // 5 — dieselben Seiten, andere IP-Reputation. Würden diese Abbrüche als
+        // Fehlversuche zählen, hätte der Crawler nach drei Tagen Programme auf
+        // "unsicher" gesetzt, die von einem echten Browser problemlos erreichbar
+        // sind. Ein Fehlversuch entsteht erst, wenn die volle Eskalationsleiter
+        // inklusive echtem Browser gescheitert ist — das kann nur ein
+        // Wächter-Lauf feststellen, nicht ein Abruf.
         await sb.from("funding_checks").insert({
           program_id: z.id,
           verdict: "UNREACHABLE",
-          source: status === 403 || status === 429 ? "pruefseite" : "gesperrt",
-          note: `Seiten-Wächter: HTTP ${status || "keine Antwort"}`,
+          source: "seite-unerreichbar",
+          note: `Seiten-Wächter: HTTP ${status || "keine Antwort"} (Abruf aus dem Rechenzentrum — sagt nichts über einen echten Browser)`,
         });
       }
       continue;

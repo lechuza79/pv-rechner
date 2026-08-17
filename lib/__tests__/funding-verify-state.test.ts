@@ -214,3 +214,29 @@ describe("Eskalation in die sichere Richtung", () => {
     expect(text).toMatch(/nicht.*heute noch läuft/);
   });
 });
+
+// ─── Ein gescheiterter Maschinen-Abruf ist kein Fehlversuch ──────────────────
+//
+// Gemessen am ersten Cloud-Lauf (17.08.2026): Vom Rechner des Betreibers waren
+// 2 Amtsseiten unerreichbar, aus GitHubs Rechenzentrum 5 — dieselben Seiten,
+// andere IP-Reputation. Der Crawler fährt die Eskalationsleiter nicht (kein
+// echter Browser, kein Archiv); seine Abbrüche dürfen deshalb nie in die
+// Eskalation zählen, sonst schaltet er binnen drei Tagen Programme ab, die ein
+// Browser problemlos liest.
+describe("Crawler-Abbrüche eskalieren nicht", () => {
+  it("machen fällig, zählen aber nicht als Fehlversuch", () => {
+    const stand = pruefstandFuer(
+      { id: "frankfurt", lastVerified: "2026-08-01" },
+      [],
+      HEUTE,
+      [
+        { programId: "frankfurt", changedAt: "2026-08-15" },
+        { programId: "frankfurt", changedAt: "2026-08-16" },
+        { programId: "frankfurt", changedAt: "2026-08-17" },
+      ],
+    );
+    expect(stand.faellig).toBe(true);
+    expect(stand.fehlversuche).toBe(0);
+    expect(eskalationsVorschlag(frankfurt, stand)).toBeNull();
+  });
+});

@@ -102,12 +102,21 @@ async function ladeVersuche(): Promise<PruefVersuch[]> {
     .map((r) => ({ programId: r.program_id, checkedAt: r.checked_at, erreichbarkeit: r.source }));
 }
 
-/** Meldungen des Seiten-Wächters: welche Amtsseite hat sich wann bewegt. */
+/**
+ * Meldungen des Seiten-Wächters: welche Amtsseite hat sich bewegt oder war für
+ * den maschinellen Abruf zu.
+ *
+ * Beide machen fällig, aber KEINES zählt als Fehlversuch — der Crawler fährt die
+ * Eskalationsleiter nicht (kein echter Browser, kein Archiv). Aus dem
+ * Rechenzentrum sperren mehr Städte als von einem Wohnanschluss; würde das als
+ * Fehlversuch zählen, schaltete der Crawler binnen drei Tagen Programme ab, die
+ * ein Browser problemlos liest.
+ */
 async function ladeAenderungen(): Promise<SeitenAenderung[]> {
   const { data, error } = await sb
     .from("funding_checks")
     .select("program_id, checked_at, source")
-    .eq("source", "seite-geaendert")
+    .in("source", ["seite-geaendert", "seite-unerreichbar"])
     .order("checked_at", { ascending: true });
   if (error) throw new Error(`Änderungsmeldungen nicht lesbar: ${error.message}`);
   return (data ?? []).map((r) => ({ programId: r.program_id, changedAt: r.checked_at }));
