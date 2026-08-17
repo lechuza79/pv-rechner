@@ -88,18 +88,36 @@ export function FundingRates({
           : { display: "flex", flexDirection: "column", gap: bordered ? 14 : 8 }
       }
     >
-      {rates.map((r) => (
-        <div
-          key={r.label}
-          style={{
-            display: "flex", justifyContent: "space-between", gap: 12, fontSize: "var(--font-size-body)",
-            ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 14 } : {}),
-          }}
-        >
-          <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
-          <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, textAlign: "right" }}>{r.value}</span>
-        </div>
-      ))}
+      {rates.map((r) => {
+        // Wert und Zusatz trennen: „20 % (30 % als Solar-Gründach)" ist ein
+        // Betrag mit einer Bedingung daran. Zusammen in einer Zeile wuchs der
+        // Zusatz dem Wert davon und brach über zwei Zeilen um. Wie bei den
+        // Kacheln im Atlas: Der Wert trägt die Zeile, das Beiwerk steht kleiner
+        // und ruhiger darunter.
+        const auf = r.value.indexOf(" (");
+        const wert = auf > 0 ? r.value.slice(0, auf) : r.value;
+        const zusatz = auf > 0 ? r.value.slice(auf + 2).replace(/\)$/, "") : null;
+        return (
+          <div
+            key={r.label}
+            style={{
+              display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16,
+              fontSize: "var(--font-size-body)",
+              ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 14 } : {}),
+            }}
+          >
+            <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
+            <span style={{ textAlign: "right", flexShrink: 0 }}>
+              <span style={{ display: "block", fontFamily: v("--font-mono"), fontWeight: 700, whiteSpace: "nowrap" }}>{wert}</span>
+              {zusatz && (
+                <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
+                  {zusatz}
+                </span>
+              )}
+            </span>
+          </div>
+        );
+      })}
     </div>
     </div>
   );

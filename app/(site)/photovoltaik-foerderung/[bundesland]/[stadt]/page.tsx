@@ -249,19 +249,9 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                         am Fuß der Karte identisch. */}
                     <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: 2, lineHeight: 1.6 }}>
                       {f.traeger} — {fundingStandLabel(f)}
-                      {f.capped && (
-                        <>
-                          {" · "}
-                          <a
-                            href={f.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ display: "inline-flex", alignItems: "center", gap: 4, color: v("--color-accent") }}
-                          >
-                            Mittel begrenzt – vor Antrag prüfen <IconExternal size={iconSizes.xs} />
-                          </a>
-                        </>
-                      )}
+                      {/* Kein Link: Das ist eine Eigenschaft des Programms wie
+                          Träger und Stand daneben, kein Weg woandershin. */}
+                      {f.capped && <> · Mittel begrenzt – vor Antrag prüfen</>}
                     </div>
                     {/* Warnung nur bei echtem Andrang: Steht das laufende Jahr
                         schon bei mindestens drei Vierteln des Vorjahres, ist
@@ -293,8 +283,8 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                     über allem, wo es zu nichts gehörte.
                     Auf schmalen Bildschirmen stapeln sie von selbst; die Linie
                     verschwindet dann, weil sie danebenläge. */}
-                <div className="foerder-spalten" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: space.xl, alignItems: "stretch" }}>
-                  <div style={{ paddingRight: space.lg, borderRight: `1px solid ${v("--color-border")}` }} className="foerder-spalte-links">
+                <div className="foerder-spalten" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 48, alignItems: "stretch" }}>
+                  <div style={{ paddingRight: 40, borderRight: `1px solid ${v("--color-border")}` }} className="foerder-spalte-links">
                     <FundingConditions conditions={f.conditions} eligibility={f.eligibility} />
                   </div>
                   <div>
