@@ -75,6 +75,28 @@ function tageZwischen(vonIso: string, bisIso: string): number {
   return Math.round((bis - von) / 86_400_000);
 }
 
+/**
+ * Eine vom Seiten-Wächter festgestellte Änderung der Amtsseite.
+ *
+ * Der Wächter (`scripts/funding-watch.ts`, läuft täglich in der Cloud) versteht
+ * NICHT, was sich geändert hat — er vergleicht nur einen Fingerabdruck des
+ * sichtbaren Texts. Das reicht als Auslöser: Eine Seite, die sich seit der
+ * letzten Prüfung bewegt hat, muss neu gelesen werden, egal ob sich ein Betrag,
+ * eine Frist oder nur ein Datum geändert hat.
+ */
+export type SeitenAenderung = {
+  programId: string;
+  changedAt: string;
+  /**
+   * Was der Crawler festgestellt hat. Beides macht fällig, beides eskaliert
+   * nicht — aber es darf NIE dasselbe Etikett tragen: „geändert" behauptet, wir
+   * hätten eine Bewegung auf der Seite gesehen; „unerreichbar" heißt, wir haben
+   * die Seite gar nicht zu Gesicht bekommen. Das zu vermischen ist dieselbe
+   * Fehlerklasse wie eine falsche Einheit an einer Zahl.
+   */
+  art: "geaendert" | "unerreichbar";
+};
+
 export type Pruefstand = {
   programId: string;
   /** ISO-Datum des letzten Blicks auf die Amtsquelle; null = noch nie. */
@@ -85,6 +107,10 @@ export type Pruefstand = {
   fehlversuche: number;
   /** Liegt ein Archiv-Beleg vor, seit die Amtsquelle nicht mehr erreichbar ist? */
   archivBeleg: boolean;
+  /** Die Amtsseite hat sich seit unserer letzten Prüfung nachweislich verändert. */
+  seiteGeaendert: boolean;
+  /** Der maschinelle Abruf kam seit unserer letzten Prüfung nicht an die Seite. */
+  seiteUnerreichbar: boolean;
   /** Überfällig — gehört in den Arbeitsvorrat. */
   faellig: boolean;
   /** Genug Fehlversuche für den Fall in die sichere Richtung. */
@@ -102,6 +128,7 @@ export function pruefstandFuer(
   program: Pick<FundingProgram, "id" | "lastVerified">,
   versuche: PruefVersuch[],
   heuteIso: string,
+  aenderungen: SeitenAenderung[] = [],
 ): Pruefstand {
   const eigene = versuche
     .filter((v) => v.programId === program.id)
@@ -122,13 +149,27 @@ export function pruefstandFuer(
     ? tageZwischen(letzteQuellenpruefung, heuteIso)
     : Number.POSITIVE_INFINITY;
 
+  // Eine Änderung zählt nur, wenn sie NACH unserer letzten Prüfung passiert ist.
+  // Ohne diese Bedingung stünde ein Programm nach jeder Prüfung sofort wieder im
+  // Vorrat, weil die alte Änderungsmeldung liegen bleibt.
+  const neuerAls = (a: SeitenAenderung) =>
+    a.programId === program.id &&
+    (!letzteQuellenpruefung || a.changedAt.slice(0, 10) > letzteQuellenpruefung);
+  const seiteGeaendert = aenderungen.some((a) => neuerAls(a) && a.art === "geaendert");
+  const seiteUnerreichbar = aenderungen.some((a) => neuerAls(a) && a.art === "unerreichbar");
+
   return {
     programId: program.id,
     letzteQuellenpruefung,
     tageSeitQuellenpruefung,
     fehlversuche,
     archivBeleg,
-    faellig: tageSeitQuellenpruefung >= PRUEF_INTERVALL_TAGE,
+    seiteGeaendert,
+    seiteUnerreichbar,
+    // Eine bewegte Amtsseite macht sofort fällig — unabhängig vom Alter. Das ist
+    // der einzige Weg, eine Kürzung mitten im Quartal zu bemerken, ohne dass ein
+    // Mensch oder ein Modell etwas ahnt.
+    faellig: seiteGeaendert || seiteUnerreichbar || tageSeitQuellenpruefung >= PRUEF_INTERVALL_TAGE,
     eskalation: fehlversuche >= ESKALATION_AB_FEHLVERSUCHEN,
   };
 }
@@ -147,13 +188,19 @@ export function arbeitsvorrat(
   programs: Pick<FundingProgram, "id" | "level" | "lastVerified">[],
   versuche: PruefVersuch[],
   heuteIso: string,
+  aenderungen: SeitenAenderung[] = [],
 ): Pruefstand[] {
   return programs
     .filter((p) => p.level !== "bund")
-    .map((p) => pruefstandFuer(p, versuche, heuteIso))
+    .map((p) => pruefstandFuer(p, versuche, heuteIso, aenderungen))
     .filter((s) => s.faellig || s.fehlversuche > 0)
     .sort(
       (a, b) =>
+        // Eine bewegte Amtsseite ist das schärfste Signal, das wir haben: Dort
+        // hat sich nachweislich etwas geändert, während Alter nur heißt, dass
+        // wir lange nicht hingesehen haben.
+        Number(b.seiteGeaendert) - Number(a.seiteGeaendert) ||
+        Number(b.seiteUnerreichbar) - Number(a.seiteUnerreichbar) ||
         b.fehlversuche - a.fehlversuche ||
         b.tageSeitQuellenpruefung - a.tageSeitQuellenpruefung ||
         a.programId.localeCompare(b.programId),

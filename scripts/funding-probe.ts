@@ -33,6 +33,7 @@ import {
   zaehltAlsGeprueft,
   type Erreichbarkeit,
   type PruefVersuch,
+  type SeitenAenderung,
 } from "../lib/funding-verify-state";
 import type { FundingProgram } from "../lib/funding-programs";
 
@@ -101,9 +102,37 @@ async function ladeVersuche(): Promise<PruefVersuch[]> {
     .map((r) => ({ programId: r.program_id, checkedAt: r.checked_at, erreichbarkeit: r.source }));
 }
 
+/**
+ * Meldungen des Seiten-Wächters: welche Amtsseite hat sich bewegt oder war für
+ * den maschinellen Abruf zu.
+ *
+ * Beide machen fällig, aber KEINES zählt als Fehlversuch — der Crawler fährt die
+ * Eskalationsleiter nicht (kein echter Browser, kein Archiv). Aus dem
+ * Rechenzentrum sperren mehr Städte als von einem Wohnanschluss; würde das als
+ * Fehlversuch zählen, schaltete der Crawler binnen drei Tagen Programme ab, die
+ * ein Browser problemlos liest.
+ */
+async function ladeAenderungen(): Promise<SeitenAenderung[]> {
+  const { data, error } = await sb
+    .from("funding_checks")
+    .select("program_id, checked_at, source")
+    .in("source", ["seite-geaendert", "seite-unerreichbar"])
+    .order("checked_at", { ascending: true });
+  if (error) throw new Error(`Änderungsmeldungen nicht lesbar: ${error.message}`);
+  return (data ?? []).map((r) => ({
+    programId: r.program_id,
+    changedAt: r.checked_at,
+    art: r.source === "seite-geaendert" ? ("geaendert" as const) : ("unerreichbar" as const),
+  }));
+}
+
 async function zeigeVorrat(): Promise<void> {
-  const [programme, versuche] = await Promise.all([ladeProgramme(), ladeVersuche()]);
-  const vorrat = arbeitsvorrat(programme, versuche, heute);
+  const [programme, versuche, aenderungen] = await Promise.all([
+    ladeProgramme(),
+    ladeVersuche(),
+    ladeAenderungen(),
+  ]);
+  const vorrat = arbeitsvorrat(programme, versuche, heute, aenderungen);
   const nachId = new Map(programme.map((p) => [p.id, p]));
 
   if (!vorrat.length) {
@@ -116,7 +145,12 @@ async function zeigeVorrat(): Promise<void> {
     const p = nachId.get(s.programId);
     const alter = Number.isFinite(s.tageSeitQuellenpruefung) ? `${s.tageSeitQuellenpruefung} Tage` : "nie geprüft";
     const haengt = s.fehlversuche ? `, ${s.fehlversuche}× nicht rangekommen` : "";
-    console.log(`  ${p?.name ?? s.programId} (${p?.region ?? "?"}) — ${alter}${haengt}`);
+    const bewegt = s.seiteGeaendert
+      ? "  ⟵ AMTSSEITE HAT SICH GEÄNDERT"
+      : s.seiteUnerreichbar
+        ? "  ⟵ Abruf kam nicht durch (Browser nötig)"
+        : "";
+    console.log(`  ${p?.name ?? s.programId} (${p?.region ?? "?"}) — ${alter}${haengt}${bewegt}`);
     if (p) {
       const e = eskalationsVorschlag(p, s);
       if (e) console.log(`    → ESKALATION: Status auf "${e.statusNeu}" setzen. ${e.entscheidung}`);

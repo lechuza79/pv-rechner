@@ -36,6 +36,11 @@ export async function GET(req: NextRequest) {
         updated_by text
       );
       CREATE INDEX IF NOT EXISTS idx_fp_archived ON funding_programs (archived);
+      -- Seiten-Wächter (scripts/funding-watch.ts): Fingerabdruck des sichtbaren
+      -- Texts der Amtsseite plus Zeitpunkt des letzten Abrufs. Damit erkennt ein
+      -- reiner Abruf ohne Modell, dass sich eine Seite bewegt hat.
+      ALTER TABLE funding_programs ADD COLUMN IF NOT EXISTS page_fingerprint text;
+      ALTER TABLE funding_programs ADD COLUMN IF NOT EXISTS page_seen_at timestamptz;
     `,
   });
   results.push({ step: "funding_programs", status: e1 ? "error" : "ok", error: e1?.message });
