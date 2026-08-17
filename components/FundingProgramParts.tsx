@@ -97,6 +97,19 @@ export function FundingRates({
         const auf = r.value.indexOf(" (");
         const wert = auf > 0 ? r.value.slice(0, auf) : r.value;
         const zusatz = auf > 0 ? r.value.slice(auf + 2).replace(/\)$/, "") : null;
+        // Zahl und Einheit trennen — dieselbe Staffelung wie bei den Kacheln im
+        // Atlas: Der Zahlenwert trägt die Zeile, die Einheit steht kleiner
+        // daneben. „20 %" war bis dahin EIN Stück in Zahlengröße, das Prozent-
+        // zeichen also so laut wie die Zahl.
+        //
+        // Bewusst nur ABGETRENNT, nicht neu formatiert: Diese Werte sind
+        // redaktioneller Text aus der Förderdatenbank, keine gerechneten Größen.
+        // Sie durch einen Formatierer zu schicken hieße, eine Einheit zu
+        // erfinden, die so nicht erfasst wurde. Passt das Muster nicht, bleibt
+        // der Wert unangetastet in einem Stück stehen.
+        const einheitTreffer = wert.match(/^(.*\d[\d.,]*)\s*(%|€(?:\s*\/\s*\w+)?|ct(?:\s*\/\s*\w+)?|kWp|kWh)$/);
+        const wertZahl = einheitTreffer ? einheitTreffer[1] : wert;
+        const wertEinheit = einheitTreffer ? einheitTreffer[2] : null;
         return (
           <div
             key={r.label}
@@ -108,7 +121,14 @@ export function FundingRates({
           >
             <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
             <span style={{ textAlign: "right", flexShrink: 0 }}>
-              <span style={{ display: "block", fontFamily: v("--font-mono"), fontWeight: 700, whiteSpace: "nowrap" }}>{wert}</span>
+              <span style={{ display: "block", fontFamily: v("--font-mono"), fontWeight: 700, whiteSpace: "nowrap" }}>
+                {wertZahl}
+                {wertEinheit && (
+                  <span style={{ fontSize: "var(--font-size-caption)", fontWeight: 600, color: v("--color-text-secondary"), marginLeft: 3 }}>
+                    {wertEinheit}
+                  </span>
+                )}
+              </span>
               {zusatz && (
                 <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
                   {zusatz}
