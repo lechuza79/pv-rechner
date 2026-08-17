@@ -63,6 +63,19 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
     beleg: "lib/data-sources.ts (mastr, energyCharts, pvgis) + /datenstand",
   },
   {
+    titel: "Jeder Wert mit Quelle",
+    text: "Alle Annahmen, mit denen wir rechnen, stehen offen — jede mit ihrem eigenen Stand und ihrer Quelle.",
+    href: "/datenstand",
+    icon: "refresh",
+    // KEIN gemeinsames Prüfdatum an dieser Stelle (Entscheidung des Betreibers,
+    // 17.08.2026): Die Werte werden in ganz verschiedenen Takten geprüft — Preise
+    // monatlich, Rechtsstände täglich, der CO₂-Preis jährlich. Ein einzelnes
+    // Datum über allen hätte den jüngsten Takt für alle behauptet; das ist
+    // dieselbe Fehlerklasse wie eine Kennzahl, die als Zustand gelesen wird.
+    // Die Stände stehen je Größe auf /datenstand, und dorthin führt der Punkt.
+    beleg: "/datenstand listet jede Größe mit validFrom/Stand und Quelle",
+  },
+  {
     titel: "Ohne Anmeldung",
     text: "Das Ergebnis erscheint sofort, die Berechnung läuft in deinem Browser — kein Konto, kein Verkaufskontakt.",
     href: "/datenschutz",
@@ -76,54 +89,17 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
   },
 ] as const;
 
-/**
- * Datum als TT.MM.JJJJ — bewusst aus den ISO-Bestandteilen gebaut statt über
- * toLocaleDateString: Server und Browser stehen in verschiedenen Zeitzonen, und
- * ein um einen Tag verschobenes Prüfdatum wäre genau die Sorte stiller Fehler,
- * gegen die dieser Punkt existiert.
- */
-export function formatPruefdatum(iso: string): string | null {
-  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
-  return m ? `${m[3]}.${m[2]}.${m[1]}` : null;
-}
-
-/**
- * Der Prüf-Punkt. Er wird IMMER gezeigt, sobald ein Prüfdatum vorliegt — auch
- * ein altes (Vorgabe des Betreibers, 17.08.2026).
- *
- * WARUM DAS TRAGFÄHIG IST: Die frühere Fassung ließ den Punkt nach 14 Tagen
- * verfallen, weil der Titel "Laufend nachgeprüft" eine Regelmäßigkeit behauptete,
- * die niemand garantieren kann — die Wächter laufen nur, wenn der Rechner des
- * Betreibers an ist (09.–13.08.2026 lief fünf Tage keiner). Die Behauptung steckte
- * aber im Wort "laufend", nicht im Datum: Ein Stand-Datum ist bei JEDEM Alter
- * wahr, und ein sichtbar altes sagt mehr über den Zustand als ein verschwundener
- * Punkt. Deshalb heißt der Punkt jetzt "Zuletzt geprüft" und nennt nur noch den
- * Stand. Wer will, sieht sofort, wenn er alt ist.
- *
- * `null` bleibt nur für den Fall ohne jedes Prüfdatum (Datenbank nicht erreichbar).
- * Dort ein Datum zu erfinden wäre die eine Sache, die nicht passieren darf.
- */
-export function pruefSignal(letzteIso: string | null): TrustSignal | null {
-  if (!letzteIso) return null;
-  const datum = formatPruefdatum(letzteIso);
-  if (!datum) return null;
-
-  return {
-    titel: "Zuletzt geprüft",
-    text: `Preise, Fördersätze und Rechtsstände werden gegen die Originalquellen geprüft — zuletzt am ${datum}.`,
-    href: "/datenstand",
-    icon: "refresh",
-    // Das Datum ist der Zeitpunkt des jüngsten abgelegten Wächter-Laufs
-    // (waechter_reports.created_at, gelesen in lib/trust-pruefstand.ts). Ein
-    // solcher Lauf IST eine Prüfung gegen die Primärquelle — anders als ein
-    // updated_at, das nur die letzte Schreibung markiert (siehe die
-    // Förderdaten-Lehre in CLAUDE.md).
-    beleg: "waechter_reports.created_at via lib/trust-pruefstand.ts",
-  };
-}
-
-/** Die vollständige Leiste: dauerhafte Punkte plus der Prüf-Punkt, wenn ein Stand vorliegt. */
-export function trustSignals(letzteIso: string | null): TrustSignal[] {
-  const pruef = pruefSignal(letzteIso);
-  return pruef ? [...TRUST_SIGNALS, pruef] : [...TRUST_SIGNALS];
-}
+// KEIN gemeinsames Prüfdatum in der Leiste — bewusst entfernt am 17.08.2026.
+//
+// Die erste Fassung zog den jüngsten Wächter-Lauf aus `waechter_reports` und
+// schrieb ihn als "zuletzt geprüft am TT.MM." unter alle vier Punkte. Das war
+// falsch, und zwar unabhängig davon, ob das Datum stimmte: Wir prüfen in ganz
+// verschiedenen Takten — Rechtsstände täglich, Marktpreise monatlich, den
+// CO₂-Preis jährlich. Ein einzelnes Datum über allen behauptet den schnellsten
+// Takt für den langsamsten Wert. Dieselbe Fehlerklasse wie eine Kennzahl, die
+// als Zustand gelesen wird (siehe Gate-Regel "Kennzahl ≠ Zustand").
+//
+// Die Stände gehören dorthin, wo sie einzeln stehen: auf /datenstand, je Größe
+// mit eigenem validFrom und eigener Quelle. Der vierte Punkt führt dorthin,
+// statt eine Zahl vorwegzunehmen. Damit braucht die Leiste auch keinen
+// Datenbank-Read mehr und bleibt vollständig statisch.

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { TRUST_SIGNALS, pruefSignal, trustSignals, formatPruefdatum } from "../trust-signals";
+import { TRUST_SIGNALS } from "../trust-signals";
 import { DATA_SOURCES } from "../data-sources";
 
 // Die Vertrauens-Leiste steht unter JEDER Seite. Jede Aussage darin ist damit
@@ -10,7 +10,6 @@ import { DATA_SOURCES } from "../data-sources";
 // nicht abnehmen kann. Deshalb hier der Mechanismus statt der Rückfrage.
 
 const REPO = join(__dirname, "..", "..");
-const JETZT = new Date("2026-08-17T12:00:00Z");
 
 describe("Vertrauens-Leiste", () => {
   describe("Belegpflicht", () => {
@@ -57,60 +56,43 @@ describe("Vertrauens-Leiste", () => {
   });
 
   // Der Punkt wird IMMER gezeigt, sobald ein Stand vorliegt — auch ein alter
-  // (Vorgabe des Betreibers, 17.08.2026). Tragfähig ist das, weil die
-  // Regelmäßigkeits-Behauptung aus dem Titel raus ist: Ein Stand-Datum ist bei
-  // jedem Alter wahr, "laufend geprüft" wäre es nicht. Genau diese Trennung
-  // hält der folgende Block fest.
-  describe("Prüf-Punkt zeigt jeden Stand", () => {
-    const vorTagen = (n: number) =>
-      new Date(JETZT.getTime() - n * 86_400_000).toISOString();
+  // Die Leiste trug zwischenzeitlich EIN Prüfdatum für alles, gezogen aus dem
+  // jüngsten Wächter-Lauf. Das ist raus: Wir prüfen in verschiedenen Takten
+  // (Rechtsstände täglich, Marktpreise monatlich, CO₂-Preis jährlich), und ein
+  // gemeinsames Datum behauptet den schnellsten Takt für den langsamsten Wert.
+  // Der Test hält das fest, weil ein Datum an dieser Stelle jederzeit wieder
+  // verlockend aussieht — es wirkt konkret und ist trotzdem falsch.
+  describe("Kein gemeinsames Prüfdatum", () => {
+    const alleTexte = TRUST_SIGNALS.map((s) => `${s.titel} ${s.text}`).join(" ");
 
-    it("zeigt eine frische Prüfung", () => {
-      const s = pruefSignal(vorTagen(1));
-      expect(s).not.toBeNull();
-      expect(s!.text).toContain("16.08.2026");
+    it("nennt kein Datum", () => {
+      expect(alleTexte).not.toMatch(/\d{1,2}\.\d{1,2}\.\d{4}/);
+      expect(alleTexte).not.toMatch(/\d{4}-\d{2}-\d{2}/);
     });
 
-    it.each([14, 30, 200])("zeigt auch einen %s Tage alten Stand", (tage) => {
-      const s = pruefSignal(vorTagen(tage));
-      expect(s, `Stand nach ${tage} Tagen darf nicht verschwinden`).not.toBeNull();
-    });
+    it.each(["zuletzt am", "stand vom", "geprüft am"])(
+      "kündigt mit '%s' keines an",
+      (wendung) => {
+        expect(alleTexte.toLowerCase()).not.toContain(wendung);
+      },
+    );
 
-    // Ohne diesen Test käme "laufend" bei der nächsten Textänderung zurück und
-    // würde eine Regelmäßigkeit behaupten, die niemand garantieren kann: Die
-    // Wächter laufen nur, wenn der Rechner des Betreibers an ist (09.–13.08.2026
-    // lief fünf Tage keiner). Das Datum darf altern, der Satz darüber nicht lügen.
+    // Dieselbe Begründung von der anderen Seite: Ohne Datum darf erst recht kein
+    // Takt behauptet werden. Die Wächter laufen nur, wenn der Rechner des
+    // Betreibers an ist — vom 09. bis 13.08.2026 lief fünf Tage keiner.
     it("behauptet keine Regelmäßigkeit", () => {
-      const s = pruefSignal(vorTagen(200))!;
-      const satz = `${s.titel} ${s.text}`.toLowerCase();
       for (const wort of ["laufend", "täglich", "regelmäßig", "fortlaufend", "ständig"]) {
-        expect(satz, `"${wort}" behauptet einen Takt, den es nicht gibt`).not.toContain(wort);
+        expect(
+          alleTexte.toLowerCase(),
+          `"${wort}" behauptet einen Takt, den niemand garantieren kann`,
+        ).not.toContain(wort);
       }
     });
 
-    it("erfindet ohne Protokoll kein Datum", () => {
-      expect(pruefSignal(null)).toBeNull();
-      expect(pruefSignal("")).toBeNull();
-      expect(pruefSignal("keine-zeit")).toBeNull();
-    });
-
-    it("hängt sich an die dauerhaften Punkte an", () => {
-      expect(trustSignals(vorTagen(1))).toHaveLength(TRUST_SIGNALS.length + 1);
-      expect(trustSignals(null)).toHaveLength(TRUST_SIGNALS.length);
-    });
-  });
-
-  // Ein um einen Tag verschobenes Prüfdatum wäre genau der stille Fehler, gegen
-  // den dieser Punkt existiert: Server (UTC) und Browser (Europe/Berlin) dürfen
-  // nicht zwei verschiedene Daten anzeigen.
-  describe("Datum ist zeitzonenfest", () => {
-    it("nimmt den Kalendertag aus dem ISO-String", () => {
-      expect(formatPruefdatum("2026-08-17T23:30:00Z")).toBe("17.08.2026");
-      expect(formatPruefdatum("2026-01-01T00:15:00+02:00")).toBe("01.01.2026");
-    });
-
-    it("gibt bei Unbrauchbarem null zurück", () => {
-      expect(formatPruefdatum("17.08.2026")).toBeNull();
+    // Der vierte Punkt verweist statt dessen auf die Seite, die je Größe einen
+    // eigenen Stand führt. Fällt dieser Verweis weg, ist die Aussage heimatlos.
+    it("verweist auf die Seite mit den einzelnen Ständen", () => {
+      expect(TRUST_SIGNALS.some((s) => s.href === "/datenstand")).toBe(true);
     });
   });
 
