@@ -5,7 +5,7 @@ import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
 import { BUNDESLAENDER } from "../lib/mastr-regions";
 import { RATGEBER } from "../lib/ratgeber";
-import { standGeprueftIso } from "../lib/stand";
+import { standLastModIso } from "../lib/stand";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -111,22 +111,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // Rechner-Seiten: `lastModified` ist das jüngste ECHTE Prüfdatum der Seite
+  // Rechner-Seiten: `lastModified` ist der jüngste Stand der WERTE einer Seite
   // (lib/stand.ts — dieselbe Quelle, aus der die sichtbare „Stand:"-Zeile unter
-  // dem Rechner kommt). Es wandert, wenn ein Wächter-Lauf die Quellen erreicht
-  // hat, und ist damit das Recrawl-Signal für die Aktualisierung. Eine Seite
-  // ohne ehrliches Datum — die Live-Simulation hat keinen Stichtag — steht
-  // weiterhin OHNE `lastmod` da: ein Build-Datum wäre bei jedem Deploy „jetzt"
-  // und wird von Google ohnehin ignoriert.
+  // dem Rechner kommt). Bewusst NICHT der jüngste Prüftag: Zwei Prüfdaten werden
+  // täglich nachgezogen (Rechtsstand der Grüngas-Pflicht, Sachstand der
+  // EEG-Reform). Hinge `lastmod` daran, meldete die Sitemap jeden Tag
+  // „geändert", während sich auf der Seite nur eine Datumszeile in der Fußnote
+  // bewegt. Eine Seite ohne Wertstand — die Live-Simulation hat keinen Stichtag
+  // — steht weiterhin OHNE `lastmod` da: ein Build-Datum wäre bei jedem Deploy
+  // „jetzt" und wird von Google ohnehin ignoriert.
   //
   // Google nutzt `lastmod` nur, solange es „consistently and verifiably
-  // accurate" ist, und nennt als Gegenbeispiel ausdrücklich das automatisch
-  // mitlaufende Copyright-Datum. Genau das ist der Unterschied hier: Das Datum
-  // bewegt sich nur, wenn ein Wächter-Lauf die Quellen wirklich erreicht hat —
-  // und dann ändert sich mit ihm auch der sichtbare Satz unter dem Rechner.
-  // Wer es ohne Prüfung hochsetzt, verspielt die Verlässlichkeit des Signals
-  // für die ganze Domain (scripts/waechter-gate.md, Regel 9).
-  const rechnerStand = (pfad: string) => toDate(standGeprueftIso(pfad));
+  // accurate" ist, und verlangt dafür eine Änderung am eigentlichen Inhalt —
+  // ein mitlaufendes Copyright-Datum nennt es ausdrücklich als Gegenbeispiel.
+  // Deshalb hängt das Datum hier an den Zahlen, mit denen der Rechner rechnet:
+  // Ändert sich eine, ändert sich die Seite; wird eine nur bestätigt, bewegt
+  // sich das Prüfdatum in der Fußnote — und sonst nichts.
+  const rechnerStand = (pfad: string) => toDate(standLastModIso(pfad));
 
   return [
     { url: BASE_URL, changeFrequency: "monthly", priority: 1 },

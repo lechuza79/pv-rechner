@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { STAND, standGeprueftIso, monatJahr, tagMonatJahr } from "../stand";
+import { STAND, standGeprueftIso, standLastModIso, monatJahr, tagMonatJahr } from "../stand";
 import { DEFAULT_BALKON_CONFIG, BALKON_RECHT } from "../balkon-config";
 import { DEFAULT_AIRCON_CONFIG } from "../aircon-config";
 import { DEFAULT_HEATPUMP_CONFIG } from "../heatpump-config";
@@ -60,11 +60,27 @@ describe("Stand-Zeile: nur stempeln, was geprüft wurde", () => {
   });
 
   it("kein Prüfdatum kommt aus der Build-Zeit", () => {
-    const quelle = ohneKommentare(readFileSync(join(ROOT, "lib", "stand.ts"), "utf8"));
-    // `new Date(iso)` in den Formatierern ist erlaubt — verboten ist nur das
-    // argumentlose „jetzt", aus dem ein Datum ohne Prüfung entstünde.
-    expect(quelle).not.toMatch(/new Date\(\s*\)/);
-    expect(quelle).not.toMatch(/Date\.now\(/);
+    // Das Verbot gilt für lib/stand.ts UND für jede Config, aus der ein
+    // Prüfdatum kommt. Nur stand.ts zu prüfen war eine Lücke (Prüfagent,
+    // 17.08.2026): `geprueftIso: new Date().toISOString().slice(0,10)` in einer
+    // Config wäre an allen Tests vorbeigelaufen — kein Zukunftsdatum, Frist
+    // später, Prüftag nach Wertstand — und hätte trotzdem genau das getan, was
+    // dieses Feature verbietet: eine Prüfung behaupten, die nie stattfand.
+    // `new Date(iso)` bleibt erlaubt; verboten ist das argumentlose „jetzt".
+    const dateien = [
+      "lib/stand.ts", "lib/pruefstand.ts",
+      "lib/aircon-config.ts", "lib/balkon-config.ts", "lib/co2-config.ts",
+      "lib/feedin-config.ts", "lib/greengas-config.ts", "lib/heatpump-config.ts",
+      "lib/eeg-reform-config.ts",
+    ];
+    for (const datei of dateien) {
+      const quelle = ohneKommentare(readFileSync(join(ROOT, datei), "utf8"));
+      // Zeilen mit einem Prüf-/Standdatum: dort ist „jetzt" nie zulässig.
+      for (const zeile of quelle.split("\n")) {
+        if (!/(geprueft\w*Iso|validFrom|GEPRUEFT_ISO)\s*[:=]/.test(zeile)) continue;
+        expect(zeile, `${datei}: Prüfdatum aus der Laufzeit`).not.toMatch(/new Date\(\s*\)|Date\.now\(/);
+      }
+    }
   });
 
   it("das Datum passt zu seiner Genauigkeit", () => {
@@ -148,25 +164,49 @@ describe("Stand-Zeile: getrennte Daten für getrennte Sachen", () => {
 describe("Stand-Zeile: dasselbe Datum steht in der Sitemap", () => {
   const sitemap = readFileSync(join(ROOT, "app", "sitemap.ts"), "utf8");
 
-  it("das jüngste taggenaue Datum trägt das lastmod", () => {
-    expect(standGeprueftIso("/waermepumpe-rechner")).toBe(
-      [DEFAULT_HEATPUMP_CONFIG.geprueftIso, GREEN_GAS_CONFIG.geprueftIso, CO2_PRICE.geprueftIso].sort().reverse()[0]
-    );
-    expect(standGeprueftIso("/balkonkraftwerk-rechner")).toBe(BALKON_RECHT.geprueftIso);
+  it("das lastmod folgt den WERTEN, nicht dem Prüftag", () => {
+    // Der Unterschied ist die ganze Regel: Zwei Prüfdaten werden täglich
+    // nachgezogen. Hinge das lastmod daran, meldete die Sitemap jeden Tag eine
+    // Änderung, die keine ist — und Google entwertet das Signal domainweit.
+    for (const [pfad, seite] of Object.entries(STAND)) {
+      const werte = seite.eintraege
+        .map(e => e.wertIso)
+        .filter((iso): iso is string => !!iso)
+        .map(iso => (iso.length === 7 ? `${iso}-01` : iso))
+        .sort();
+      expect(standLastModIso(pfad), `${pfad}: lastmod weicht vom jüngsten Wertstand ab`).toBe(
+        werte.length ? werte[werte.length - 1] : undefined
+      );
+    }
   });
 
-  it("eine Seite ohne taggenaues Datum bekommt kein lastmod", () => {
-    // Die Live-Simulation hat keinen Stichtag. Aus „Juli 2026" einen Tag zu
-    // machen wäre erfunden — dann lieber kein lastmod (Google ignoriert ein
-    // Datum, das sich ohne echte Änderung bewegt, für die ganze Domain).
-    expect(standGeprueftIso("/pv-simulation")).toBeUndefined();
-    expect(standGeprueftIso("/gibt-es-nicht")).toBeUndefined();
+  it("ein täglich nachgezogenes Prüfdatum bewegt das lastmod nicht", () => {
+    // Nachgestellt: Der tägliche Wächter stempelt den Rechtsstand auf morgen.
+    // Der Prüftag der Seite wandert mit, das lastmod darf es nicht.
+    const vorher = standLastModIso("/waermepumpe-rechner");
+    const seite = STAND["/waermepumpe-rechner"];
+    const recht = seite.eintraege.find(e => e.was === "Grüngas-Pflicht")!;
+    const alt = recht.iso;
+    try {
+      recht.iso = "2099-01-01";
+      expect(standGeprueftIso("/waermepumpe-rechner")).toBe("2099-01-01");
+      expect(standLastModIso("/waermepumpe-rechner")).toBe(vorher);
+    } finally {
+      recht.iso = alt;
+    }
+  });
+
+  it("eine Seite ohne Wertstand bekommt kein lastmod", () => {
+    // Die Live-Simulation hat keinen Stichtag. Einen zu erfinden wäre schlimmer
+    // als keinen zu haben.
+    expect(standLastModIso("/pv-simulation")).toBeUndefined();
+    expect(standLastModIso("/gibt-es-nicht")).toBeUndefined();
   });
 
   it("jede Seite mit Stand-Zeile steht mit ihrem Datum in der Sitemap", () => {
     for (const pfad of Object.keys(STAND)) {
-      if (!standGeprueftIso(pfad)) continue;
-      expect(sitemap, `${pfad} trägt ein Prüfdatum, aber die Sitemap holt es nicht`).toMatch(
+      if (!standLastModIso(pfad)) continue;
+      expect(sitemap, `${pfad} trägt einen Wertstand, aber die Sitemap holt ihn nicht`).toMatch(
         new RegExp(`\\$\\{BASE_URL\\}${pfad}\`,\\s*lastModified: rechnerStand\\("${pfad}"\\)`)
       );
     }

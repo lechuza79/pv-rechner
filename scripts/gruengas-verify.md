@@ -96,13 +96,21 @@ heutige Datum.
 Dieselbe Linie wie bei den anderen Wächtern — automatisch nur, was genau **eine**
 richtige Antwort hat:
 
-- **`GREEN_GAS_CONFIG.geprueftIso` in jedem Fall nachziehen** (Gate-Regel 9):
-  Sobald dieser Lauf Gesetzestext und IW-Report wirklich aufgeschlagen hat, trägt
-  das Feld seinen Tag — auch wenn Stufen, Preise und Rechtsstand unverändert
-  bleiben. Genau das steht unter dem Wärmepumpen-Rechner: „Grüngas-Pflicht und
-  Gaspreis-Bestandteile geprüft am …" (`lib/stand.ts`). `validFrom` bewegt sich
-  nur mit einem Wert, und ein Lauf, der an einer Quelle gescheitert ist, lässt
-  beide stehen.
+- **Die zwei Prüfdaten in jedem Fall nachziehen** (Gate-Regel 9) — je nachdem,
+  welche Quelle dieser Lauf wirklich aufgeschlagen hat:
+  - **`GREEN_GAS_CONFIG.geprueftRechtIso`** ← Rechtsstand nachgelesen
+    (Bundesgesetzblatt/recht.bund.de/gmodg.bund.de: Verkündung, Inkrafttreten,
+    Stufen der Bio-Treppe). **Das ist der Normalfall des täglichen Laufs** — auch
+    wenn sich nichts geändert hat, und gerade dann. Der Prüfstand erwartet hier
+    Bewegung binnen 14 Tagen (`lib/pruefstand.ts`) und meldet sonst „läuft der
+    Wächter noch?".
+  - **`GREEN_GAS_CONFIG.geprueftIso`** ← IW-Report bzw. sein Nachfolger gelesen
+    (Preisbestandteile: Biomethan, Netzentgelte, CO₂). Jährlicher Takt.
+
+  Sichtbar unter dem Wärmepumpen-Rechner als zwei getrennte Zeilen,
+  „Grüngas-Pflicht" und „Gaspreis-Bestandteile" (`lib/stand.ts`). `validFrom`
+  bewegt sich nur mit einem Wert; ein Lauf, der an einer Quelle gescheitert ist,
+  lässt ihr Datum stehen und meldet den Fehlschlag.
 
 - **Verkündungs-Flag: Auto-Fix erlaubt**, aber erst nach Council gemäß
   `scripts/council-verify.md` (drei unabhängige Verifizierer, einer adversarial)

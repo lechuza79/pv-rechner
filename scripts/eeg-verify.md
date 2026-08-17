@@ -180,6 +180,15 @@ dieselbe Drift kann im Parlament wieder passieren.
    ohne ihn landet eine Korrektur womöglich in einem Feld, das nie rendert.
 4. Bei Rechtsbezug: Council **und** Legal-Judge (`scripts/council-verify.md`).
 
+**`EEG_REFORM_STAND.geprueftIso` wandert auch OHNE Verfahrensfortschritt.** Der
+tägliche News-Wächter sieht nach, ob sich am Sachstand etwas getan hat; hat er
+die amtlichen Quellen erreicht und nichts gefunden, trägt das Feld trotzdem den
+Tag dieses Laufs (Gate-Regel 9 — „geprüft und unverändert" ist das
+Normalergebnis). Der Prüfstand erwartet hier Bewegung binnen 30 Tagen
+(`lib/pruefstand.ts`) und meldet sonst nicht etwa einen alten Sachstand, sondern
+den Verdacht, dass der Lauf ausgefallen ist. Nicht stempeln, wenn die Quelle
+nicht erreichbar war.
+
 **Sachstand ändern ist Auto-Fix-fähig** (Gate-Zeile „Reform-Sachstand"), der
 **Wegfall/die Neueinführung einer Vergütungsart bleibt Vorschlag** — die betrifft
 die Berechnungslogik selbst.

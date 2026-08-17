@@ -216,12 +216,17 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
     "Basisszenario; der 2045er-Wert unter der Annahme vollständiger Grüngas-Versorgung. " +
     "Das Basisszenario ist laut Report ein analytischer Referenzpfad, keine Prognose",
   validFrom: "2026-07-25",
-  // Preisbestandteile: Stand des IW-Reports, am 25.07.2026 im Volltext gelesen.
-  geprueftIso: "2026-07-25",
-  // Rechtsstand: Council mit Legal-Judge am 29.07.2026 — Gesetzestext und
+  // Preisbestandteile: IW-Report am 27.07.2026 im Volltext gelesen (Commit
+  // „IW-Report im Volltext geprueft"). NICHT der 25.07. — das ist der Stand der
+  // Werte selbst, also `validFrom`.
+  geprueftIso: "2026-07-27",
+  // Rechtsstand: Council mit Legal-Judge am 28.07.2026 — Gesetzestext und
   // Gesetzesbegründung (BT-Drs. 21/6278) im Volltext, Geltungsbereich
-  // korrigiert. Der tägliche News-Wächter zieht dieses Datum ab jetzt nach.
-  geprueftRechtIso: "2026-07-29",
+  // korrigiert (drei Commits an diesem Tag). Der 29.07.2026 wäre falsch: Das
+  // ist der Tag, an dem das Gesetz IN KRAFT trat (`inKraftSeitIso`) — „gilt
+  // seit" ist kein „geprüft am". Der tägliche News-Wächter zieht dieses Datum
+  // ab jetzt nach.
+  geprueftRechtIso: "2026-07-28",
   reviewBy: "2027-07-25",
 };
 

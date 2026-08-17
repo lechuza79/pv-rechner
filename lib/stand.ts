@@ -6,7 +6,8 @@
 // den Einheiten und den Rechtssätzen: Eine Korrektur erreicht dann still nur
 // eine Oberfläche. Deshalb steht hier, WAS eine Seite trägt und WOHER das
 // Datum kommt; die Formulierung macht <StandNote>, das Recrawl-Signal die
-// Sitemap (app/sitemap.ts liest `standGeprueftIso`).
+// Sitemap (app/sitemap.ts liest `standLastModIso` — den Stand der WERTE, nicht
+// den Prüftag; die Begründung steht dort).
 //
 // ZWEI REGELN, beide aus echten Fehlschlägen:
 //
@@ -30,7 +31,14 @@ import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
 import { GREEN_GAS_CONFIG } from "./greengas-config";
 import { CO2_PRICE } from "./co2-config";
 import { FEED_IN_GEPRUEFT_ISO, feedInRatesFor } from "./feedin-config";
+
 import { EEG_REFORM_STAND } from "./eeg-reform-config";
+
+/** Die Periode, die AM PRÜFTAG galt — nicht die von heute. `feedInRatesFor()`
+ *  ohne Argument fragt die Uhr; damit käme das sichtbare „Werte von …" aus der
+ *  Laufzeit, und am 01.02.2027 stünde ein Wertstand da, der jünger ist als sein
+ *  eigenes Prüfdatum. */
+const FEED_IN_WERTSTAND = feedInRatesFor(new Date(`${FEED_IN_GEPRUEFT_ISO}T00:00:00`)).validFrom;
 
 /** `tag` = YYYY-MM-DD (eine Prüfung an einem Tag), `monat` = YYYY-MM (ein
  *  Datenstand, den taggenau anzugeben Genauigkeit vortäuschen würde). */
@@ -43,11 +51,15 @@ export interface StandEintrag {
   iso: string;
   praezision: StandPraezision;
   /**
-   * Stand der Werte selbst (`validFrom`), falls die Seite ihn getrennt nennen
-   * soll. <StandNote> zeigt ihn NUR, wenn er spürbar älter ist als die Prüfung
-   * — dann sagt die Zeile „Werte von Juli, im Oktober bestätigt", und genau das
-   * ist die interessante Auskunft. Solange beide zusammenfallen, wäre die
-   * zweite Zahl nur Lärm.
+   * Stand der Werte selbst (`validFrom`). <StandNote> zeigt ihn IMMER neben dem
+   * Prüfdatum — beide Zahlen beantworten verschiedene Fragen, und wer die zweite
+   * nur bei Abweichung sieht, lernt nie, dass es sie gibt.
+   *
+   * Fehlt hier, wo es keinen Wertstand GIBT: Eine Rechtsaussage ist geltendes
+   * Recht oder nicht; ein Datum dafür müsste man erfinden.
+   *
+   * Dies — nicht das Prüfdatum — ist die Grundlage des `lastmod` der Sitemap
+   * (siehe `standLastModIso`).
    */
   wertIso?: string;
 }
@@ -65,7 +77,7 @@ export const STAND: Record<string, StandSeite> = {
   // Stichtagsdatum, sondern stehen bei den Live-Werten.
   "/photovoltaik-rechner": {
     eintraege: [
-      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: feedInRatesFor().validFrom },
+      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: FEED_IN_WERTSTAND },
       { was: "Sachstand der EEG-Reform 2027", iso: EEG_REFORM_STAND.geprueftIso, praezision: "tag", wertIso: EEG_REFORM_STAND.kabinettBeschlussIso },
     ],
     live: ["Anlagen- und Speicherpreise (monatlich neu erhoben)", "Strompreis", "Standort-Ertrag"],
@@ -76,7 +88,7 @@ export const STAND: Record<string, StandSeite> = {
   // Eintrag weniger statt derselben Zeile.
   "/pv-bedarf-berechnen": {
     eintraege: [
-      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: feedInRatesFor().validFrom },
+      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: FEED_IN_WERTSTAND },
     ],
     live: ["Anlagen- und Speicherpreise (monatlich neu erhoben)", "Strompreis"],
   },
@@ -94,7 +106,10 @@ export const STAND: Record<string, StandSeite> = {
       // auf die Förderung zu übertragen — und damit eine Prüfung zu
       // verschweigen, die stattgefunden hat.
       { was: "BEG-Förderung", iso: DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso, praezision: "tag", wertIso: DEFAULT_HEATPUMP_CONFIG.validFrom },
-      { was: "Grüngas-Pflicht", iso: GREEN_GAS_CONFIG.geprueftRechtIso, praezision: "tag", wertIso: GREEN_GAS_CONFIG.validFrom },
+      // Kein Wertstand: „Grüngas-Pflicht" ist eine Rechtsaussage. `validFrom`
+      // wäre hier der Stand der IW-Report-PREISE — ein fremdes Datum an einer
+      // Rechtszeile (dieselbe Begründung wie beim Balkon-Rechner unten).
+      { was: "Grüngas-Pflicht", iso: GREEN_GAS_CONFIG.geprueftRechtIso, praezision: "tag" },
       { was: "Gaspreis-Bestandteile", iso: GREEN_GAS_CONFIG.geprueftIso, praezision: "tag", wertIso: GREEN_GAS_CONFIG.validFrom },
       { was: "CO₂-Preispfad", iso: CO2_PRICE.geprueftIso, praezision: "tag", wertIso: CO2_PRICE.validFrom },
     ],
@@ -110,7 +125,7 @@ export const STAND: Record<string, StandSeite> = {
 
   "/einspeiseverguetung-rechner": {
     eintraege: [
-      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: feedInRatesFor().validFrom },
+      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: FEED_IN_WERTSTAND },
       { was: "Sachstand der EEG-Reform 2027", iso: EEG_REFORM_STAND.geprueftIso, praezision: "tag", wertIso: EEG_REFORM_STAND.kabinettBeschlussIso },
     ],
     live: ["Standort-Ertrag"],
@@ -147,18 +162,44 @@ export const tagMonatJahr = (iso: string) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
 
 /**
- * Das jüngste taggenaue Prüfdatum einer Seite — die Zeile, die sich zuletzt
- * wirklich geändert hat, und damit das `lastmod` der Sitemap.
+ * Das jüngste taggenaue Prüfdatum einer Seite — „wann hat zuletzt jemand
+ * nachgesehen". Für Anzeigen gedacht (auch für die Vertrauens-Leiste), NICHT
+ * für das `lastmod` der Sitemap: siehe `standLastModIso`.
  *
- * Monatsgenaue Stände zählen hier bewusst NICHT: `lastmod` ist ein Tagesdatum,
- * und aus „Juli 2026" den 1. Juli zu machen hieße, einen Tag zu behaupten, an
- * dem niemand etwas geprüft hat. Eine Seite ohne taggenauen Eintrag bekommt
- * `undefined` und steht ohne `lastmod` in der Sitemap — das ist die ehrliche
- * Antwort, nicht die schwächere.
+ * Monatsgenaue Stände zählen bewusst nicht mit — aus „Juli 2026" den 1. Juli zu
+ * machen hieße, einen Tag zu behaupten, an dem niemand etwas geprüft hat.
  */
 export function standGeprueftIso(pfad: string): string | undefined {
   const seite = STAND[pfad];
   if (!seite) return undefined;
   const tage = seite.eintraege.filter(e => e.praezision === "tag").map(e => e.iso).sort();
   return tage.length ? tage[tage.length - 1] : undefined;
+}
+
+/**
+ * Das `lastmod` der Sitemap: der jüngste Stand der WERTE — nicht der jüngste
+ * Prüftag.
+ *
+ * Der Unterschied ist der ganze Punkt (Befund des Prüfagenten, 17.08.2026).
+ * Zwei der Prüfdaten werden täglich nachgezogen (Rechtsstand der Grüngas-Pflicht,
+ * Sachstand der EEG-Reform). Hinge `lastmod` daran, meldete die Sitemap jeden
+ * Tag „geändert", während sich am Rechner nur eine Datumszeile in der Fußnote
+ * bewegt — exakt das automatisch mitlaufende Datum, das Google als Gegenbeispiel
+ * nennt und mit dem man die Verlässlichkeit des Signals für die ganze Domain
+ * verspielt. Inhalt der Seite sind die Werte; eine Bestätigung ist keine
+ * Änderung.
+ *
+ * Monatsgenaue Wertstände zählen ab dem Monatsersten: die vorsichtige Richtung
+ * (behauptet eher zu alt als zu jung). Eine Seite ohne Wertstand bekommt kein
+ * `lastmod`.
+ */
+export function standLastModIso(pfad: string): string | undefined {
+  const seite = STAND[pfad];
+  if (!seite) return undefined;
+  const werte = seite.eintraege
+    .map(e => e.wertIso)
+    .filter((iso): iso is string => !!iso)
+    .map(iso => (iso.length === 7 ? `${iso}-01` : iso))
+    .sort();
+  return werte.length ? werte[werte.length - 1] : undefined;
 }

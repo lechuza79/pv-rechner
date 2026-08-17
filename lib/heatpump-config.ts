@@ -237,8 +237,10 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   // Wächter-Lauf vom 17.08.2026 (der erste überhaupt — der Auftrag war seit
   // seiner Einrichtung nie gefeuert): Die Folge-Auswertung der
   // Verbraucherzentrale RLP vom 02.07.2026 im Volltext gelesen und gegen das
-  // Modell gerechnet. Median 34.898 € bei der häufigsten Klasse 10–12 kW gegen
-  // unsere 35.000 € im 10-kW-Fall — 0,3 % Abweichung, deshalb kein Wert
+  // Modell gerechnet. Median über alle 160 Angebote 34.898 € (Tabelle 1, S. 5;
+  // einen Median je Leistungsklasse weist der Bericht nicht aus, die häufigste
+  // Klasse 10–12 kW steht separat auf S. 8) gegen unsere 35.000 € im
+  // 10-kW-Fall — 0,3 % Abweichung, deshalb kein Wert
   // geändert und `validFrom` unverändert. Genau dafür gibt es dieses Datum.
   geprueftIso: "2026-08-17",
   // Förderung am selben Tag am KfW-Merkblatt 458 (Stand 07/2026) nachgelesen:

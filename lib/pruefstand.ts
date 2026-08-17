@@ -180,6 +180,11 @@ export const PRUEFSTAND: PruefEintrag[] = [
  * älteste ist die einzige Zahl, die für JEDEN Wert gilt — und damit die einzige,
  * die man ohne Fußnote hinschreiben kann.
  *
+ * Aufrufer ist die Vertrauens-Leiste über dem Footer (Worktree `trust-element`,
+ * eigene Session) — deshalb steht die Funktion hier, obwohl sie in diesem Zweig
+ * noch niemand benutzt. Kommt die Leiste nicht, gehört sie gestrichen statt
+ * stehengelassen.
+ *
  * Bewusst NICHT geeignet als Quelle dafür: `waechter_reports` in der Datenbank.
  * Dort steht, wann ein Lauf einen Bericht abgelegt hat — auch der Lauf, der an
  * einer Paywall gescheitert ist, legt einen ab. Das ist dieselbe Verwechslung

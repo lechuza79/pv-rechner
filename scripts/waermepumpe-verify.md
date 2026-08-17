@@ -14,7 +14,7 @@ erscheint im Sommer. Vier Termine im Jahr treffen beides. Stichtag steht
 zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
 
 **Mid-Year-Sicherheitsnetz:** Förderstopps/-änderungen passieren auch unterjährig
-(Topf leer, Haushaltssperre). Der wöchentliche `foerder-news-waechter` hat
+(Topf leer, Haushaltssperre). Der tägliche `foerder-news-waechter` hat
 „Wärmepumpe BEG" als Stichwort und fängt solche Ad-hoc-Fälle mit ab.
 
 ## Was prüfen (volatil) vs. was nicht (Modell)

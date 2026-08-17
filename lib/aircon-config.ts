@@ -497,10 +497,11 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
 
   source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), EU-Verordnung 626/2011 + EN 14825/14511 (Effizienz-Skalen), Topten.eu + Hersteller-Datenblätter (Labelwerte), Energy and Buildings 2025 + test.de 2025/26 (Realbetrieb), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), dena Gebäudereport/DIN V 18599 (Heizwärmebedarf je Gebäudestandard, geteilt mit dem Wärmepumpen-Rechner), BDEW (Strom/Gas), UBA (Strommix-CO₂)",
   validFrom: "2026-07-15",
-  // Startwert = `validFrom`: der jüngste Tag, für den eine Prüfung gegen die
-  // Leitquellen im Repo belegt ist. Bewusst nicht der spätere Commit vom
-  // 31.07.2026 — der betraf die Heizseite, nicht die Kühl-Werte.
-  geprueftIso: "2026-07-15",
+  // Jüngster Tag, für den eine Prüfung der KÜHL-Werte im Repo belegt ist: der
+  // Monoblock-Preis wurde am 27.07.2026 gegen Que Choisir (via test.de) neu
+  // belegt. Bewusst NICHT der spätere Commit vom 31.07.2026 — der betraf die
+  // Heizseite. `validFrom` bleibt beim 15.07., dem Stand der Werte.
+  geprueftIso: "2026-07-27",
   // Von den beiden zusammengefuehrten Staenden gewinnt das FRUEHERE Pruefdatum:
   // Der Quartals-Waechter laeuft ohnehin, und das spaetere Datum wuerde die
   // Kuehl-Effizienzen laenger ungeprueft altern lassen.

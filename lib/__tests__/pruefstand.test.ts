@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { PRUEFSTAND, aeltestePruefung, faelligkeiten, tageZwischen, type PruefEintrag } from "../pruefstand";
 import { STAND } from "../stand";
+const ROOT = join(__dirname, "..", "..");
 
 /**
  * Der Totmann-Schalter für die Prüfdaten.
@@ -24,17 +27,30 @@ const eintrag = (o: Partial<PruefEintrag> = {}): PruefEintrag => ({
 });
 
 describe("Prüfstand: jede sichtbare Zahl steht unter Beobachtung", () => {
-  it("jedes Datum, das ein Nutzer sieht, hat einen Eintrag im Prüfstand", () => {
-    // Sonst entsteht wieder der Zustand, den es zu vermeiden gilt: Eine Seite
-    // nennt ein Prüfdatum, aber niemand merkt, wenn es stehen bleibt.
-    const beobachtet = new Set(PRUEFSTAND.map(e => e.geprueftIso));
-    for (const [pfad, seite] of Object.entries(STAND)) {
-      for (const e of seite.eintraege) {
-        expect(
-          beobachtet.has(e.iso),
-          `${pfad}: „${e.was}" (${e.iso}) steht auf keiner Seite des Prüfstands`
-        ).toBe(true);
-      }
+  it("jedes Feld, aus dem eine Seite ein Prüfdatum zieht, steht im Prüfstand", () => {
+    // Über den DATUMSWERT zu prüfen war zu schwach (Prüfagent, 17.08.2026):
+    // Zwei Felder tragen oft denselben Tag, also blieb der Test grün, wenn ein
+    // Eintrag aus dem Prüfstand verschwand — das Datum stand weiter auf der
+    // Seite, beobachtet hat es niemand mehr. Deshalb über die FELD-IDENTITÄT,
+    // gelesen aus dem Quelltext von lib/stand.ts.
+    const quelle = readFileSync(join(ROOT, "lib", "stand.ts"), "utf8");
+    const tabelle = quelle.slice(quelle.indexOf("export const STAND"), quelle.indexOf("export const monatJahr"));
+    const benutzt = new Set<string>();
+    for (const m of tabelle.matchAll(/iso:\s*([A-Z][A-Za-z0-9_]*\.[A-Za-z]+|[A-Z][A-Z0-9_]*)/g)) {
+      benutzt.add(m[1]);
+    }
+    expect(benutzt.size, "keine Felder erkannt — Regex passt nicht mehr zur Tabelle").toBeGreaterThan(4);
+    expect(Object.keys(STAND).length, "STAND ist leer — dann prüft dieser Test nichts").toBeGreaterThan(4);
+
+    const beobachtet = new Set(PRUEFSTAND.map(e => e.feld));
+    for (const feld of benutzt) {
+      // FEED_IN_WERTSTAND ist ein Wertstand, kein Prüfdatum — der gehört nicht
+      // unter Beobachtung, sein Prüftag (FEED_IN_GEPRUEFT_ISO) schon.
+      if (feld === "FEED_IN_WERTSTAND") continue;
+      expect(
+        beobachtet.has(feld),
+        `${feld} liefert ein sichtbares Prüfdatum, steht aber nicht im PRUEFSTAND`
+      ).toBe(true);
     }
   });
 
@@ -69,9 +85,15 @@ describe("Prüfstand: ein Datum für die ganze Seite", () => {
     ).toBe("2026-07-15");
   });
 
-  it("liegt nie nach dem jüngsten Prüfdatum des echten Prüfstands", () => {
-    const alle = PRUEFSTAND.map(e => e.geprueftIso).sort();
-    expect(aeltestePruefung()).toBe(alle[0]);
+  it("ist für JEDEN Eintrag des echten Prüfstands wahr", () => {
+    // Zusicherung statt Nachrechnen mit derselben Zeile: Das Ergebnis muss
+    // kleiner-gleich jedem einzelnen Prüfdatum sein — nur dann ist der Satz
+    // „alle Angaben seit … geprüft" wahr.
+    const aeltest = aeltestePruefung();
+    for (const e of PRUEFSTAND) {
+      expect(aeltest <= e.geprueftIso, `${e.was} (${e.geprueftIso}) ist älter als ${aeltest}`).toBe(true);
+    }
+    expect(PRUEFSTAND.some(e => e.geprueftIso === aeltest), "das Ergebnis ist kein echtes Prüfdatum").toBe(true);
   });
 });
 
