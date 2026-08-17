@@ -103,7 +103,7 @@ function ZubauChart({ years }: { years: { year: number; count: number }[] }) {
 const S = {
   // Basis-Schriftgröße für die ganze Seite aus dem Token: Alles darunter erbt
   // sie, statt dass jede Stelle ihre eigene Größe mitbringt.
-  page: { background: v("--color-bg"), fontFamily: v("--font-text"), fontSize: "var(--font-size-body)", color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
+  page: { background: v("--color-bg"), fontFamily: v("--font-text"), fontSize: "var(--font-size-body)", color: v("--color-text-primary"), minHeight: "100vh", padding: "0 20px 20px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
   breadcrumb: { fontSize: "var(--font-size-caption)", color: v("--color-text-secondary"), marginBottom: 6 } as React.CSSProperties,
   h1: { fontSize: "var(--font-size-h1)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,

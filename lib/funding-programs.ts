@@ -31,6 +31,30 @@ export interface FundingProgram {
   /** Confirmed against the official source (vs. only aggregator portals). */
   verified: boolean;
   eligibility: Eligibility[];
+  /**
+   * Bedingungen als LESBARE Sätze — eine Bedingung je Eintrag.
+   *
+   * Regeln (aus der Überarbeitung der Frankfurter Karte, 16.08.2026; gelten für
+   * ALLE Programme, nicht nur für neue):
+   *
+   * 1. **Eine Aussage je Eintrag.** Kein Semikolon-Anhängsel, das eine zweite
+   *    Sache behauptet. „… keine Mittel mehr; die übrigen Bausteine sind davon
+   *    nicht betroffen" ist zwei Bedingungen in einer Zeile — die zweite ist
+   *    Beruhigung, die niemand gesucht hat, und sie treibt die Zeile über drei
+   *    Zeilen Umbruch.
+   * 2. **Aktiv und kurz.** „Balkonkraftwerke werden nicht mehr gefördert" statt
+   *    „Für Balkonkraftwerke stehen keine Mittel mehr zur Verfügung".
+   * 3. **Was NICHT gilt, gehört nicht in die Liste**, außer es ist der Kern der
+   *    Bedingung. Wer eine Ausnahme erklärt, erklärt meist die Regel schlecht.
+   * 4. **Keine Herleitung.** Aktenzeichen, Richtliniennummern und „laut Nr. 1.1"
+   *    gehören in den Beleg beim Prüfdatum, nicht vor die Augen des Lesers.
+   * 5. **Der Antragszeitpunkt steht immer drin** — er ist die einzige Bedingung,
+   *    deren Verletzung die ganze Förderung kostet.
+   *
+   * Wer den Wortlaut ändert, ändert ihn auch in `lib/funding-conditions.ts`
+   * (dort steht er zeichengleich als Beleg) — der Test schlägt sonst an, und
+   * genau dafür ist er da.
+   */
   /** Which costs the funding applies to — varies per program. */
   coveredCosts: string;
   /** Optional overall cap, e.g. "max. 50.000 €". */
@@ -259,7 +283,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Online-Antrag mit Registrierung",
       "Grundstück im Stadtgebiet Frankfurt",
       "Batteriespeicher und Ladesäulen nur in Kombination mit einer neuen PV-Anlage",
-      "Für Balkonkraftwerke (Mini-PV) stehen seit dem 03.06.2025 keine Mittel mehr zur Verfügung; die übrigen Bausteine sind davon nicht betroffen",
+      "Balkonkraftwerke werden seit dem 03.06.2025 nicht mehr gefördert",
     ],
     combinableWith: BUND,
     percentOfCost: 0.2,

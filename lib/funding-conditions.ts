@@ -156,7 +156,7 @@ export const FUNDING_CHECKS: Record<string, FundingChecks> = {
       },
       {
         ausBedingung:
-          "Für Balkonkraftwerke (Mini-PV) stehen seit dem 03.06.2025 keine Mittel mehr zur Verfügung; die übrigen Bausteine sind davon nicht betroffen",
+          "Balkonkraftwerke werden seit dem 03.06.2025 nicht mehr gefördert",
         pruefung: { art: "anlage-balkon", regel: "ausgeschlossen" },
       },
     ],
