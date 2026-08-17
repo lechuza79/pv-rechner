@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { PRUEFSTAND, faelligkeiten, tageZwischen, type PruefEintrag } from "../pruefstand";
+import { PRUEFSTAND, aeltestePruefung, faelligkeiten, tageZwischen, type PruefEintrag } from "../pruefstand";
 import { STAND } from "../stand";
 
 /**
@@ -52,6 +52,26 @@ describe("Prüfstand: jede sichtbare Zahl steht unter Beobachtung", () => {
   it("keine zwei Einträge zeigen auf dasselbe Feld", () => {
     const felder = PRUEFSTAND.map(e => e.feld);
     expect(new Set(felder).size).toBe(felder.length);
+  });
+});
+
+describe("Prüfstand: ein Datum für die ganze Seite", () => {
+  it("nennt das älteste Prüfdatum, nicht das jüngste", () => {
+    // Eine Vertrauens-Aussage über die ganze Site darf nur so frisch sein wie
+    // ihr ältester Wert — das jüngste Datum stammt von genau einem Eintrag und
+    // würde dessen Frische allen anderen zuschreiben.
+    expect(
+      aeltestePruefung([
+        eintrag({ feld: "a", geprueftIso: "2026-08-14" }),
+        eintrag({ feld: "b", geprueftIso: "2026-07-15" }),
+        eintrag({ feld: "c", geprueftIso: "2026-08-01" }),
+      ])
+    ).toBe("2026-07-15");
+  });
+
+  it("liegt nie nach dem jüngsten Prüfdatum des echten Prüfstands", () => {
+    const alle = PRUEFSTAND.map(e => e.geprueftIso).sort();
+    expect(aeltestePruefung()).toBe(alle[0]);
   });
 });
 

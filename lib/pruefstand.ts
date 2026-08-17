@@ -171,6 +171,25 @@ export const PRUEFSTAND: PruefEintrag[] = [
   },
 ];
 
+/**
+ * Ein Datum für die ganze Seite — das ÄLTESTE, nicht das jüngste.
+ *
+ * Für eine Vertrauens-Aussage über die gesamte Site („jede Angabe ist seit … an
+ * der Originalquelle geprüft") ist das jüngste Prüfdatum die falsche Zahl: Es
+ * stammt von genau einem Wert und behauptet Frische für alle anderen mit. Das
+ * älteste ist die einzige Zahl, die für JEDEN Wert gilt — und damit die einzige,
+ * die man ohne Fußnote hinschreiben kann.
+ *
+ * Bewusst NICHT geeignet als Quelle dafür: `waechter_reports` in der Datenbank.
+ * Dort steht, wann ein Lauf einen Bericht abgelegt hat — auch der Lauf, der an
+ * einer Paywall gescheitert ist, legt einen ab. Das ist dieselbe Verwechslung
+ * wie `updated_at` als Förder-Prüfdatum (siehe scripts/waechter-gate.md,
+ * Regel 9): Schreibzeitpunkt ist kein Prüfzeitpunkt.
+ */
+export function aeltestePruefung(stand: PruefEintrag[] = PRUEFSTAND): string {
+  return stand.map(e => e.geprueftIso).sort()[0];
+}
+
 export interface Faelligkeit extends PruefEintrag {
   /** Tage seit der letzten Prüfung. */
   alterTage: number;
