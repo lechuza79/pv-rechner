@@ -21,7 +21,8 @@
     "atlas:warm": "tsx scripts/atlas-warm.ts",
     "health-check": "tsx scripts/health-check.ts",
     "foerder:probe": "tsx scripts/funding-probe.ts",
-    "foerder:watch": "tsx scripts/funding-watch.ts"
+    "foerder:watch": "tsx scripts/funding-watch.ts",
+    "foerder:abdeckung": "tsx scripts/funding-coverage.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.9.0",
