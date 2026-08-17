@@ -231,6 +231,16 @@ export function pad(y: keyof typeof space, x?: keyof typeof space): string {
  */
 export const headerContentGap = space.huge; // 48
 
+/**
+ * Abstand zwischen dem Seiteninhalt und einem FAQ-Block (Betreiber-Vorgabe
+ * ~100 px). Der FAQ ist ein Themenwechsel — er beantwortet Fragen zum Vorigen,
+ * setzt es aber nicht fort; ohne Luft davor liest er sich wie ein weiterer
+ * Absatz. Als Token, weil es ZWEI FAQ-Bausteine gibt: den geteilten `Faq` und
+ * das eigene Akkordeon der Atomstrom-Seite. Ohne gemeinsame Quelle bekommt nur
+ * einer von beiden den Abstand — genau so stand es hier.
+ */
+export const faqContentGap = space.huge * 2; // 96
+
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
 export const v = (name: TokenName): string => `var(${name})`;
 

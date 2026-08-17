@@ -189,7 +189,12 @@ export default function DatenschutzPage() {
           aufgerufen werden und über welche Kanäle Besucher zu uns kommen —
           setzen wir Vercel Web Analytics ein, einen Dienst der Vercel Inc. Die
           Erfassung erfolgt bewusst cookiefrei: Es werden keine Cookies gesetzt
-          und keine Informationen auf deinem Gerät gespeichert oder ausgelesen.
+          und nichts auf deinem Gerät gespeichert. Ausgelesen wird allein ein
+          technisches Merkmal, an dem das Messskript automatisierte Zugriffe
+          erkennt, um die Messung dann zu unterlassen; dieser Wert wird nicht
+          übertragen. Angaben wie Gerätetyp oder ungefähre Herkunftsregion
+          leitet der Dienst aus dem ab, was dein Browser bei jedem Seitenaufruf
+          ohnehin mitsendet — nicht aus einer Abfrage deines Geräts.
           Erhoben werden ausschließlich anonyme, aggregierte Daten wie die
           aufgerufene Seite, die ungefähre Herkunftsregion, der Gerätetyp und die
           Verweis-Quelle. Zusätzlich zählen wir anonyme Nutzungsereignisse — etwa

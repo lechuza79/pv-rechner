@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import { EXPORT_CSS_ATTR, EXPORT_IGNORE_ATTR, EXPORT_ONLY_ATTR } from "../lib/export-markers";
 import { useExportNotes } from "./export-notes";
 import { DataSourceNote, PoweredBy } from "./PoweredBy";
@@ -185,7 +186,13 @@ export function WidgetFooter({
     (() => {
       navigator.clipboard?.writeText(`${widget.shareText}\n${widget.shareUrl}`).catch(() => {});
     });
-  const cta = showCta ? widget.cta : undefined;
+  // Ein nächster Schritt, der auf die Seite zeigt, die man gerade liest, ist
+  // Lärm. Das galt schon als Regel (showCta), musste aber von Hand gesetzt
+  // werden — und wurde beim Einbetten des Erzeugungs-Widgets in die
+  // Strommix-Seite prompt vergessen. Jetzt merkt es der Baustein selbst.
+  const pathname = usePathname();
+  const zeigtHierhin = !!pathname && pathname === widget.cta?.href;
+  const cta = showCta && !zeigtHierhin ? widget.cta : undefined;
 
   return (
     <div {...{ [EXPORT_IGNORE_ATTR]: "" }} style={{ marginTop: 14 }}>

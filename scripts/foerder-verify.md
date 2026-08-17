@@ -163,6 +163,9 @@ Regeln, die jeder Voll-Lauf erzwingt:
    Schreibung. Damit trugen 19 der 38 Programme ein „Zuletzt geprüft"-Datum für
    eine Prüfung, die nie stattgefunden hat — und jeder Resync frischte es auf.
    Ohne echtes Prüfdatum steht jetzt der redaktionelle `stand` da.
+   Das ist die Förder-Ausprägung von **Gate-Regel 9**: Bestätigung ohne Änderung
+   ist der Normalfall und setzt das Datum trotzdem — ein gescheiterter Abruf
+   nie.
 3. **Konservativ im Zweifel:** Quelle nicht erreichbar / widersprüchlich / Topf-Stand
    unklar → NICHT „aktiv", sondern `unsicher` (kein Abzug). Lieber eine echte
    Förderung als „unsicher" zeigen als eine tote als „aktiv".

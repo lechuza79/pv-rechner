@@ -64,8 +64,10 @@ const DIM = {
     centerLabel: 11,
     chevron: 24,
     chevronFont: 18,
-    titleFont: 13,
-    beforeFont: 12,
+    // Typo-Tokens statt Zahlen: Der Widget-Kopf muss zur Überschrift der Karte
+    // daneben passen — mit freien Zahlen driften die beiden auseinander.
+    titleFont: "var(--font-size-small)",
+    beforeFont: "var(--font-size-caption)",
   },
   compact: {
     size: 160,
@@ -80,8 +82,8 @@ const DIM = {
     centerLabel: 9,
     chevron: 20,
     chevronFont: 15,
-    titleFont: 12,
-    beforeFont: 11,
+    titleFont: "var(--font-size-small)",
+    beforeFont: "var(--font-size-caption)",
   },
 } as const;
 
@@ -149,6 +151,7 @@ export function MastrLiveRadial({
   injected = null,
   highlightTs,
   bare = false,
+  fuelltBreite = false,
   exportFooter = null,
 }: {
   energietraeger: Energietraeger;
@@ -165,6 +168,16 @@ export function MastrLiveRadial({
   /** Chromeless: kein eigener Rahmen/Kopf/Branding-Footer — für die Einbettung
    *  in eine geteilte Widget-Hülle (Gemeinde-Seite), die den Rahmen zeichnet. */
   bare?: boolean;
+  /**
+   * Die Karte füllt die Breite ihres Containers, statt sich im Kompakt-Modus
+   * auf ihren Inhalt zu schrumpfen. Im iframe ist das Schrumpfen richtig — dort
+   * hat die Karte keinen Container, dem sie folgen könnte. Steht sie dagegen in
+   * einer Spalte neben einer zweiten Karte, macht `inline-block` sie schmaler
+   * als ihre Nachbarin: sichtbar 226 statt 316 px, obwohl beide Spalten exakt
+   * gleich breit sind. Genau daran ging der Größen-Abgleich mehrfach vorbei,
+   * weil die Spalten stimmten und nur der Kasten darin nicht.
+   */
+  fuelltBreite?: boolean;
   /**
    * Image-only footer (legend, help texts, source, brand). Belongs INSIDE the
    * card so it sits on the card background — a footer added around the radial by
@@ -303,8 +316,12 @@ export function MastrLiveRadial({
   // reveal "ohne Solar" when hovered. Single carriers use their newest bar.
   const latest: Bar | null = (() => {
     if (!bars.length) return null;
-    // Injizierte Daten: „jetzt" = die per highlightTs markierte Stunde.
-    if (injected) return bars.find((b) => b.ts === highlightTs) ?? bars[bars.length - 1];
+    // Eine gesetzte Marke gewinnt immer — auch beim bundesweiten Feed. Sie hieß
+    // „welcher Balken ist jetzt", wirkte aber nur bei injizierten Daten; damit
+    // konnte ein Aufrufer, der Radial und Donut auf denselben Moment stellen
+    // will, es nicht. Wer sie nicht setzt, bekommt unverändert die Logik unten.
+    if (highlightTs) return bars.find((b) => b.ts === highlightTs) ?? bars[bars.length - 1];
+    if (injected) return bars[bars.length - 1];
     if (energietraeger === "gesamt") {
       for (let i = bars.length - 1; i >= 0; i--) {
         if (!bars[i].solarMissing) return bars[i];
@@ -351,7 +368,51 @@ export function MastrLiveRadial({
     onValue?.(latestMw != null ? latestMw / 1000 : null);
   }, [latestMw, onValue]);
 
-  if (loading || !latest) return null;
+  const cardStyle: React.CSSProperties = bare
+    ? { background: "transparent", border: "none", borderRadius: 0, padding: 0, display: "block" }
+    : {
+        background: v("--color-bg"),
+        border: `1px solid ${v("--color-border")}`,
+        // Embed widgets theme the corner radius via --widget-border-radius; on the
+        // main site that token is undefined, so it falls back to the original 12px.
+        borderRadius: "var(--widget-border-radius, 12px)",
+        padding: isCompact ? "12px 20px 14px" : "16px 20px 24px",
+        // Compact = Box passt sich dem Inhalt an (hug content); Default
+        // bleibt block-Level (volle Container-Breite). `fuelltBreite` hebt das
+        // Schrumpfen auf, wenn die Karte in einer Spalte steht.
+        display: isCompact && !fuelltBreite ? "inline-block" : "block",
+        ...(fuelltBreite ? { width: "100%", boxSizing: "border-box" as const } : {}),
+      };
+
+  // Kein `return null` mehr: Beim Ausfall der Datenquelle verschwand das
+  // Widget spurlos und hinterließ eine Lücke, die aussieht wie ein Bug — der
+  // Betreiber hat genau das gemeldet, als api.energy-charts.info kurz nicht
+  // auflösbar war. Ein Platzhalter in derselben Größe sagt stattdessen, was
+  // los ist, und hält das Layout ruhig.
+  if (loading || !latest) {
+    // Der Platzhalter steht INNERHALB der Karte, nicht an ihrer Stelle: Sonst
+    // fehlt im Ladezustand der Rahmen, die Karte wirkt abwesend und das Layout
+    // springt, sobald die Daten eintreffen. Genau darüber ist der
+    // Größen-Test gestolpert — er fand rechts keinen Kasten zum Messen.
+    return (
+      <div style={{ ...cardStyle, boxSizing: "border-box" }}>
+        <div
+          style={{
+            width: "100%",
+            minHeight: DIM[size].size,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: v("--font-size-caption"),
+            color: v("--color-text-muted"),
+            textAlign: "center",
+          }}
+        >
+          {loading ? "Lade Daten…" : "Die Erzeugungsdaten sind gerade nicht erreichbar."}
+        </div>
+      </div>
+    );
+  }
 
   // Skala identisch über alle Tabs: höchster Gesamt-Wert der letzten 24h.
   // Gesamt füllt den ganzen Bar-Bereich, Solar/Wind/Bio/Wasser entsprechend
@@ -422,25 +483,13 @@ export function MastrLiveRadial({
   // Bare = chromeless: no own border/padding/title/branding-footer. Used when the
   // radial is dropped INTO a shared widget shell (Gemeinde-Seite), so the shell —
   // not the radial — draws the single frame + title + source/branding footer.
-  const cardStyle: React.CSSProperties = bare
-    ? { background: "transparent", border: "none", borderRadius: 0, padding: 0, display: "block" }
-    : {
-        background: v("--color-bg"),
-        border: `1px solid ${v("--color-border")}`,
-        // Embed widgets theme the corner radius via --widget-border-radius; on the
-        // main site that token is undefined, so it falls back to the original 12px.
-        borderRadius: "var(--widget-border-radius, 12px)",
-        padding: isCompact ? "12px 20px 14px" : "16px 20px 24px",
-        // Compact = Box passt sich dem Inhalt an (hug content); Default
-        // bleibt block-Level (volle Container-Breite).
-        display: isCompact ? "inline-block" : "block",
-      };
 
   return (
     <div
       style={{
         perspective: "1200px",
-        display: isCompact ? "inline-block" : "block",
+        display: isCompact && !fuelltBreite ? "inline-block" : "block",
+        ...(fuelltBreite ? { width: "100%" } : {}),
       }}
     >
       <div

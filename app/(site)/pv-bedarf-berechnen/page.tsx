@@ -11,6 +11,9 @@ export const metadata: Metadata = pageMetadata({
   ogImageSubtitle: "Haushalt + Dach beschreiben — wir empfehlen Anlage & Speicher.",
 });
 
+// Die „Stand:"-Zeile sitzt im Flow selbst (siehe empfehlung.tsx), nicht hier:
+// Der Rahmen ist mindestens bildschirmhoch, ein Absatz dahinter stünde hinter
+// einer leeren Fläche.
 export default function EmpfehlungPage() {
   // useSearchParams in the client component requires a Suspense boundary.
   return (
