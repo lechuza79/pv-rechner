@@ -82,24 +82,35 @@ describe("Nutzungsvorbehalt", () => {
     );
   });
 
-  // Ohne die maschinenlesbare Erklärung ist die Sperre in robots.txt allein ein
-  // schwächerer Beleg für einen erklärten Vorbehalt.
-  describe("Maschinenlesbare Erklärung", () => {
+  // Der Vorbehalt ist nach Ort GESTAFFELT, und das ist der Kern.
+  //
+  // Die erste Fassung stellte einen einzigen Eintrag "/" auf 1 — ein pauschales
+  // Nein für die ganze Domain. Das war selbstschädigend: Charts, Widgets und
+  // Texte stehen unter CC BY, dort gibt es nichts vorzubehalten (wer eine Lizenz
+  // hat, braucht die Schranke nicht). Ein Agent hätte nur das Nein gelesen und
+  // wäre gegangen, ohne je zu erfahren, dass das meiste frei ist — Reichweite
+  // verloren, nichts geschützt. Das TDM-Protokoll wählt den spezifischsten
+  // Treffer, also: Wurzel frei, Datenpfade vorbehalten.
+  describe("Maschinenlesbarer Vorbehalt, nach Ort gestaffelt", () => {
     const roh = readFileSync(join(REPO, "public", ".well-known", "tdmrep.json"), "utf8");
     const eintraege = JSON.parse(roh) as { location: string; "tdm-reservation": number; "tdm-policy"?: string }[];
+    const bei = (ort: string) => eintraege.find((e) => e.location === ort);
 
-    it("erklärt den Vorbehalt für die ganze Seite", () => {
-      const wurzel = eintraege.find((e) => e.location === "/");
-      expect(wurzel).toBeDefined();
-      expect(wurzel!["tdm-reservation"]).toBe(1);
+    it("gibt die Seite selbst frei", () => {
+      expect(bei("/")).toBeDefined();
+      expect(
+        bei("/")!["tdm-reservation"],
+        "Ein pauschales Nein über CC-BY-Material schreckt ab, ohne zu schützen",
+      ).toBe(0);
     });
 
-    // Der Vorbehalt gilt pauschal, die Lizenzseite nimmt Darstellungen davon
-    // wieder aus. Ohne diesen Verweis stünde ein pauschales Nein neben einem
-    // CC-BY-Angebot — zwei Aussagen, die einander widersprechen.
-    it("verweist auf die Seite mit den Bedingungen", () => {
-      const wurzel = eintraege.find((e) => e.location === "/")!;
-      expect(wurzel["tdm-policy"]).toContain("/lizenz");
+    it("behält die Datenpfade vor", () => {
+      expect(bei("/api/")).toBeDefined();
+      expect(bei("/api/")!["tdm-reservation"]).toBe(1);
+    });
+
+    it("nennt für den Vorbehalt die Seite mit den Bedingungen", () => {
+      expect(bei("/api/")!["tdm-policy"]).toContain("/lizenz");
     });
   });
 });

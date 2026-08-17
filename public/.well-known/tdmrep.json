@@ -1,6 +1,10 @@
 [
   {
     "location": "/",
+    "tdm-reservation": 0
+  },
+  {
+    "location": "/api/",
     "tdm-reservation": 1,
     "tdm-policy": "https://solar-check.io/lizenz"
   }
