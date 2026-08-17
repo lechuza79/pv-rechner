@@ -153,4 +153,26 @@ Dem Assistenten sagen: **„Lauf die Balkonkraftwerk-Prüfung."**
      Verbraucher nicht.)
   Und: **Markennamen nicht als Anforderung übernehmen** — die Norm sagt
   technologieoffen „spezielle Energiesteckvorrichtung", nicht „Wieland".
-- **Bei `ok`:** nur `validFrom` + `reviewBy` aufs nächste Jahr setzen.
+## Das Prüfdatum in jedem Fall nachziehen
+
+Gilt für jeden Ausgang, `ok` wie `abweichung` (Gate-Regel 9):
+
+- **`DEFAULT_BALKON_CONFIG.geprueftIso`** ← Tag dieses Laufs, sobald die
+  Preisquellen erreicht wurden, auch wenn kein Preis sich geändert hat.
+- **`DEFAULT_BALKON_CONFIG.validFrom`** ← nur, wenn sich wirklich ein Preis
+  bewegt hat (Monat des Laufs). Bleibt er stehen, sagt die Seite „Set- und
+  Speicherpreise von Juli 2026, geprüft am 15. Oktober 2026" — und das ist die
+  richtige Auskunft: dieselben Preise, frisch bestätigt.
+- **`BALKON_RECHT.geprueftIso`** ← nur, wenn in diesem Lauf die **Rechtsquellen**
+  selbst aufgeschlagen wurden (EEG, MaStRV, UStAE-Auszug in `docs/quellen/`).
+  Ein Lauf, der nur Preise geprüft hat, lässt es stehen: Die Zeile unter dem
+  Rechner sagt „rechtliche Angaben geprüft am …", und das muss stimmen.
+- **Nicht setzen**, wenn eine Quelle nicht erreichbar war (Paywall, 404,
+  Bot-Prüfung) — Fehlschlag in den Bericht, Datum bleibt.
+
+Beide Daten stehen über `lib/stand.ts` sichtbar unter dem Rechner und speisen das
+`lastmod` der Sitemap.
+
+- **Bei `ok`:** `geprueftIso` auf heute und `reviewBy` aufs nächste Quartal
+  setzen, `validFrom` unverändert lassen; `BALKON_RECHT.geprueftIso` nur, wenn
+  auch die Rechtsquellen aufgeschlagen wurden.

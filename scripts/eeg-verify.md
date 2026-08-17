@@ -118,7 +118,20 @@ spawnt einen Recherche-Agenten.
   Berechnungslogik-Sätze mitziehen, `npm run build` + `npm test` grün, auf `main`
   mergen + pushen, dann Diff + „Council-Konsens" per Mail. **Kein Konsens:** nicht
   ändern, nur als unsicheren Vorschlag mailen.
-- **Bei `ok`:** nichts ändern (Sätze noch im laufenden Halbjahr gültig).
+- **Bei `ok`:** an den Sätzen nichts ändern (noch im laufenden Halbjahr gültig)
+  — aber das Prüfdatum nachziehen, siehe nächster Punkt.
+- **`FEED_IN_GEPRUEFT_ISO` in jedem Fall nachziehen** (Gate-Regel 9): Sobald
+  dieser Lauf die Liste der Bundesnetzagentur wirklich gelesen hat, trägt die
+  Konstante in `lib/feedin-config.ts` seinen Tag — auch bei „bestätigt,
+  unverändert". Sie ist **nicht** der Stichtag, ab dem ein Satz gilt (der steht
+  je Periode in `validFrom` und wandert von selbst mit dem Gesetz), sondern der
+  Tag, an dem jemand nachgesehen hat. Sichtbar unter dem PV- und dem
+  Einspeisevergütungs-Rechner als „EEG-Vergütungssätze geprüft am …"
+  (`lib/stand.ts`), und dasselbe Datum ist das `lastmod` beider Seiten in der
+  Sitemap. War die BNetzA-Seite nicht erreichbar oder trug sie die Werte nicht,
+  bleibt das Datum stehen und der Fehlschlag geht in den Bericht — ein
+  gescheiterter Abruf ist kein Beleg (siehe die `?__blob=publicationFile`-Falle
+  weiter unten).
 - **Bei REFORM-HINWEIS:** nicht blind Zahlen tauschen, **kein** Auto-Fix — erst
   dem Nutzer melden, weil eine Reform die Berechnungslogik selbst betreffen kann.
 
@@ -160,11 +173,21 @@ dieselbe Drift kann im Parlament wieder passieren.
 1. `EEG_REFORM_STAND.zustand` weiterdrehen. `eegVerfahrenSatz()` **wirft** dann
    absichtlich eine Ausnahme — der Satz für den neuen Zustand muss bewusst
    formuliert werden, statt einen zu erben, der den neuen Stand falsch beschreibt.
-2. `geprueftIso` auf das Prüfdatum setzen (trägt das sichtbare „Stand:").
+2. `EEG_REFORM_STAND.geprueftIso` auf das Prüfdatum setzen (trägt das sichtbare
+   „Stand:").
 3. `lib/__tests__/eeg-reform-stand.test.ts` + `e2e/eeg-reform-sachstand.spec.ts`
    angleichen. Der Browser-Test liest die Sätze dort, wo ein Nutzer sie sieht —
    ohne ihn landet eine Korrektur womöglich in einem Feld, das nie rendert.
 4. Bei Rechtsbezug: Council **und** Legal-Judge (`scripts/council-verify.md`).
+
+**`EEG_REFORM_STAND.geprueftIso` wandert auch OHNE Verfahrensfortschritt.** Der
+tägliche News-Wächter sieht nach, ob sich am Sachstand etwas getan hat; hat er
+die amtlichen Quellen erreicht und nichts gefunden, trägt das Feld trotzdem den
+Tag dieses Laufs (Gate-Regel 9 — „geprüft und unverändert" ist das
+Normalergebnis). Der Prüfstand erwartet hier Bewegung binnen 30 Tagen
+(`lib/pruefstand.ts`) und meldet sonst nicht etwa einen alten Sachstand, sondern
+den Verdacht, dass der Lauf ausgefallen ist. Nicht stempeln, wenn die Quelle
+nicht erreichbar war.
 
 **Sachstand ändern ist Auto-Fix-fähig** (Gate-Zeile „Reform-Sachstand"), der
 **Wegfall/die Neueinführung einer Vergütungsart bleibt Vorschlag** — die betrifft

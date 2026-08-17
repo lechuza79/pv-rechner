@@ -15,6 +15,7 @@ import Toast from "../../../components/Toast";
 import DachField, { DACH_FIELDS } from "../../../components/DachField";
 import { dachErtragHinweis, dachErtragKwp } from "../../../lib/dach-ertrag";
 import { type TiltOrientation } from "../../../lib/tilt-config";
+import StandNote from "../../../components/StandNote";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
@@ -847,6 +848,10 @@ export default function Empfehlung() {
             </div>
           </div>
         )}
+
+        {/* Innerhalb der Spalte, nicht dahinter — der Rahmen ist mindestens
+            bildschirmhoch, und was dahinter steht, sieht niemand. */}
+        <StandNote pfad="/pv-bedarf-berechnen" />
       </div>
     </div>
   );

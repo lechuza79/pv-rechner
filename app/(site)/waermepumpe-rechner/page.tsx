@@ -11,6 +11,9 @@ export const metadata: Metadata = pageMetadata({
   ogImageSubtitle: "Kosten, Einsparung & Förderung vs. Gas und Öl — transparent gerechnet.",
 });
 
+// Die „Stand:"-Zeile sitzt im Rechner selbst (siehe waermepumpe.tsx), nicht
+// hier: Der Rechner-Rahmen ist mindestens bildschirmhoch, ein Absatz dahinter
+// stünde hinter einer leeren Fläche.
 export default function WaermepumpePage() {
   return <Waermepumpe />;
 }

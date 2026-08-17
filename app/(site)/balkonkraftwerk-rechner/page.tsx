@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ErrorBoundary } from "../../../components/ErrorBoundary";
 import Faq from "../../../components/Faq";
 import RelatedLinks from "../../../components/RelatedLinks";
+import StandNote from "../../../components/StandNote";
 import { balkonFaq } from "../../../lib/faq";
 import { pageMetadata } from "../../../lib/seo";
 import { v } from "../../../lib/theme";
@@ -37,13 +38,6 @@ const S = {
   strong: { fontWeight: 700, color: v("--color-text-primary") },
   link: { color: v("--color-accent"), textDecoration: "none", fontWeight: 600 },
 };
-
-// `validFrom` ist monatsgenau ("2026-07"), `geprueftIso` taggenau — deshalb zwei
-// Formatierer statt einem, der raten müsste.
-const monatJahr = (ym: string) =>
-  new Date(`${ym}-01T00:00:00`).toLocaleDateString("de-DE", { month: "long", year: "numeric" });
-const tagMonatJahr = (iso: string) =>
-  new Date(`${iso}T00:00:00`).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
 
 export default function BalkonPage() {
   const standard = CFG.sets.find(s => s.id === "duo")!;
@@ -110,14 +104,10 @@ export default function BalkonPage() {
         {/* Aktualisierungsstand. Zwei Daten, weil es zwei Sachen sind: die
             Marktpreise stammen aus der Config-Prüfung, die Rechtsangaben aus dem
             Tag, an dem Gesetz und Erlass zuletzt aufgeschlagen wurden. Ein
-            gemeinsames Datum wäre für eines von beiden gelogen. */}
-        <p style={{ ...S.p, marginTop: 28, fontSize: v("--font-size-small") }}>
-          <span style={S.strong}>Stand:</span> Set- und Speicherpreise{" "}
-          {monatJahr(CFG.validFrom)}, rechtliche Angaben geprüft am{" "}
-          {tagMonatJahr(BALKON_RECHT.geprueftIso)}. Strompreis und Standort-Ertrag
-          kommen bei jedem Aufruf live dazu. Alle Werte, mit denen wir rechnen, stehen
-          offen auf der <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
-        </p>
+            gemeinsames Datum wäre für eines von beiden gelogen. Welche Stände
+            diese Seite trägt, steht in lib/stand.ts — dieselbe Quelle, aus der
+            die Sitemap ihr `lastmod` nimmt. */}
+        <StandNote pfad="/balkonkraftwerk-rechner" />
 
         <RelatedLinks
           currentPath="/balkonkraftwerk-rechner"

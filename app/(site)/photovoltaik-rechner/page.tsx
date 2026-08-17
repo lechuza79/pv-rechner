@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { ErrorBoundary } from "../../../components/ErrorBoundary";
 import Faq from "../../../components/Faq";
+import StandNote from "../../../components/StandNote";
 import { pvRechnerFaq } from "../../../lib/faq";
 import { pageMetadata } from "../../../lib/seo";
 import { v } from "../../../lib/theme";
@@ -53,6 +54,7 @@ export default async function RechnerPage(
       <PVRechner initialParams={searchParams} />
       <div style={{ maxWidth: v("--page-max-width"), margin: "0 auto", padding: "0 16px 32px" }}>
         <Faq items={pvRechnerFaq()} currentPath="/photovoltaik-rechner" />
+        <StandNote pfad="/photovoltaik-rechner" />
       </div>
     </ErrorBoundary>
   );

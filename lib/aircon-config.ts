@@ -321,7 +321,16 @@ export interface AcConfig {
   gridCo2PerKwh: number;       // kg CO₂/kWh (deutscher Strommix)
 
   source: string;
-  validFrom: string;           // ISO — Stand der Werte
+  validFrom: string;           // ISO — Stand der Werte selbst (nur hochsetzen, wenn sich ein Wert ändert)
+  /**
+   * ISO — Tag, an dem ein Wächter-Lauf die Quellen zuletzt wirklich erreicht
+   * und die Werte nachgelesen hat. Getrennt von `validFrom`, weil „geprüft und
+   * unverändert" das Normalergebnis ist: Es ändert keinen Wert, ist aber genau
+   * die Auskunft, die dieses Datum gibt. Wandert bei jedem erreichten Lauf mit,
+   * bleibt bei einem gescheiterten stehen (scripts/waechter-gate.md).
+   * Sichtbar auf /klimaanlage-stromkosten über lib/stand.ts.
+   */
+  geprueftIso: string;
   reviewBy: string;            // ISO — bis dahin gegen Quellen prüfen (scripts/klimaanlage-verify.md)
 }
 
@@ -488,6 +497,11 @@ export const DEFAULT_AIRCON_CONFIG: AcConfig = {
 
   source: "Open-Meteo Wetterarchiv + Climate API (CMIP6, Kühlgradstunden), DWD/UBA (Hitzetage-Trend), EU-Verordnung 626/2011 + EN 14825/14511 (Effizienz-Skalen), Topten.eu + Hersteller-Datenblätter (Labelwerte), Energy and Buildings 2025 + test.de 2025/26 (Realbetrieb), ADAC/daibau/reduco Festpreise 2026 (Anschaffung/Montage), dena Gebäudereport/DIN V 18599 (Heizwärmebedarf je Gebäudestandard, geteilt mit dem Wärmepumpen-Rechner), BDEW (Strom/Gas), UBA (Strommix-CO₂)",
   validFrom: "2026-07-15",
+  // Jüngster Tag, für den eine Prüfung der KÜHL-Werte im Repo belegt ist: der
+  // Monoblock-Preis wurde am 27.07.2026 gegen Que Choisir (via test.de) neu
+  // belegt. Bewusst NICHT der spätere Commit vom 31.07.2026 — der betraf die
+  // Heizseite. `validFrom` bleibt beim 15.07., dem Stand der Werte.
+  geprueftIso: "2026-07-27",
   // Von den beiden zusammengefuehrten Staenden gewinnt das FRUEHERE Pruefdatum:
   // Der Quartals-Waechter laeuft ohnehin, und das spaetere Datum wuerde die
   // Kuehl-Effizienzen laenger ungeprueft altern lassen.
