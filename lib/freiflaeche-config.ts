@@ -37,9 +37,10 @@
 //    Klasse entfällt, ist uns nicht belegt — deshalb wird nichts gemischt. Die
 //    Auslassung geht zu unseren Ungunsten: Der gesetzliche Wert liegt über dem
 //    Ausschreibungsmittel, der hier gepflegte Satz ist also eine Untergrenze.
-//  · Es ist ein Satz für NEUE Anlagen. Eine historische Reihe der
-//    Ausschreibungs-/Freiflächensätze 2012–2024 pflegt das Projekt nicht; wie
-//    lib/atlas-impact.ts damit umgeht, steht dort.
+//  · Es ist ein Satz für NEUE Anlagen. Für ältere Jahrgänge gibt es weiter
+//    unten FREIFLAECHE_HISTORIE (2012–2014) und, noch davor, die Alt-Tabelle
+//    lib/feedin-archiv-alt.ts (2006–03/2012). Die Jahrgänge 2015–2024 bleiben
+//    eine offene Lücke — Begründung dort, Umgang in lib/atlas-impact.ts.
 //  · Keine Abzüge für negative Preise (§ 51 EEG setzt den Zahlungsanspruch dort
 //    auf null). Das hebt den Satz gegenüber der Wirklichkeit leicht an; die
 //    Gegenrichtung (fehlende Kleinanlagen) ist größer.
@@ -104,3 +105,66 @@ export const FREIFLAECHE_REVIEW_BY = "2026-10-01";
 
 export const FREIFLAECHE_QUELLE =
   "Bundesnetzagentur, Ausschreibungen für Solaranlagen des ersten Segments (beendete Ausschreibungen / Statistiken)";
+
+// ─── Was ältere Freiflächen-Jahrgänge bekommen ──────────────────────────────
+//
+// WOFÜR: Der Solar-Atlas bewertet jeden Jahrgang mit dem Satz, den er wirklich
+// bekommt. Für Dachanlagen gibt es dafür zwei Jahrgangs-Tabellen im Projekt
+// (feedin-archiv-alt, feedin-archiv); für Freiflächen fehlte die Mitte, und
+// jeder Park von 2012 bis heute wurde deshalb mit dem HEUTIGEN Zuschlagsniveau
+// bewertet — ein Park von 2012 bekam damit rund ein Drittel dessen zugerechnet,
+// was er tatsächlich erlöst.
+//
+// DATENHERKUNFT: Bundesnetzagentur, "PV-Vergütungssätze mit Degression April
+// 2012 bis Juli 2014" (Originaldatei im Repo unter docs/quellen/bnetza-archiv/,
+// am 17.08.2026 ausgelesen), Spalte "Anlagen nach § 32 Abs. 1 EEG" — das ist
+// die Freiflächen-/Sonstige-Anlagen-Klasse des EEG 2012. Abgelesen ist der zum
+// 1. Juli des Jahres geltende Wert, kaufmännisch auf zwei Stellen gerundet
+// (die Amtsdatei führt die Kette ungerundet, wie bei den Dachsätzen auch).
+// Quer-validiert: die Dach-Spalten derselben Datei stimmen für dieselben drei
+// Monate zellgleich mit lib/feedin-archiv.ts überein (18,92 · 15,07 · 12,88).
+//
+// WARUM DER 1. JULI: Der Atlas kennt je Anlage nur das Baujahr, die Sätze fielen
+// aber monatlich. Die Jahresmitte ist dieselbe Wahl wie in lib/atlas-impact.ts
+// (jahrgangStichtag) — begründet ist sie dort.
+//
+// KEINE FEHLENDE ZEILE, SONDERN EINE ECHTE LÜCKE: Ab dem Gebotstermin
+// 15.04.2015 wurden Freiflächen ausgeschrieben (Freiflächenausschreibungs-
+// verordnung, später § 22 EEG); ihr anzulegender Wert ist seither der
+// individuelle Zuschlagswert, nicht mehr ein Satz aus dem Gesetz. Eine belegte
+// Reihe der Zuschlagswerte 2015–2024 pflegt das Projekt nicht — sie wird hier
+// NICHT geraten. Wie der Atlas mit diesen Jahrgängen umgeht und in welche
+// Richtung er dabei irrt, steht in lib/atlas-impact.ts und im Hilfetext der
+// Spalte.
+
+/** Freiflächensatz eines Jahrgangs (ct/kWh, Stand 1. Juli des Jahres). */
+export interface FreiflaecheJahrgang {
+  jahr: number;
+  /** Vergütungssatz nach § 32 Abs. 1 EEG 2012 — was der Park je kWh bekommt. */
+  ct: number;
+}
+
+/**
+ * Freiflächen-Jahrgänge, für die ein GESETZLICHER Satz galt und belegt ist.
+ *
+ * Bewusst ohne Abzug einer Vermarktungsgebühr: Das ist der Vergütungssatz, den
+ * der Netzbetreiber zahlte. Wer stattdessen in die Marktprämie ging, bekam
+ * denselben Wert als anzulegenden Wert plus Managementprämie — die Gebühr
+ * abzuziehen würde diesen Jahrgängen etwas wegnehmen, das sie hatten.
+ */
+export const FREIFLAECHE_HISTORIE: ReadonlyArray<FreiflaecheJahrgang> = [
+  { jahr: 2012, ct: 13.1 },
+  { jahr: 2013, ct: 10.44 },
+  { jahr: 2014, ct: 8.92 },
+];
+
+/** Erster Jahrgang, für den das Projekt KEINEN belegten Freiflächensatz hat. */
+export const FREIFLAECHE_LUECKE_AB = 2015;
+
+/** Letzter Jahrgang der Lücke — ab da rechnet das heutige Ausschreibungsniveau. */
+export const FREIFLAECHE_LUECKE_BIS = 2024;
+
+/** Belegter Satz eines Freiflächen-Jahrgangs, sonst null (kein geratener Wert). */
+export function freiflaecheHistorieCt(jahrgang: number): number | null {
+  return FREIFLAECHE_HISTORIE.find((r) => r.jahr === jahrgang)?.ct ?? null;
+}

@@ -4,7 +4,7 @@ import { simulatePvYear } from "./pv-sim";
 import { calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "./consumption";
 import { calcWpAnnualElectricity, DEFAULT_WP_BUILDING } from "./heatpump";
 import { DEFAULT_PRICES, type PriceConfig } from "./prices-config";
-import { DEFAULT_FEED_IN, type FeedInRates } from "./feedin-config";
+import { DEFAULT_FEED_IN, effectiveFeedInCtPerKwh, type FeedInRates } from "./feedin-config";
 
 // ─── Tunables ───────────────────────────────────────────────────────────────
 const KWP_STEP = 0.5;
@@ -80,12 +80,11 @@ export interface Recommendation {
 }
 
 // Gewichteter Einspeise-Mischsatz für Anlagen über der 10-kWp-Schwelle.
-// Exported for testing only: the shared-base invariant test pins this against
-// calcWeightedFeedIn (calc.ts) — same EEG formula, must never drift apart.
-export function effectiveFeedInCtPerKwh(kwp: number, feedIn: FeedInRates): number {
-  if (kwp <= 10) return feedIn.teilUnder10;
-  return (10 * feedIn.teilUnder10 + (kwp - 10) * feedIn.teilOver10) / kwp;
-}
+// Wohnt seit 17.08.2026 in feedin-config.ts (Leaf-Modul), damit auch der
+// Solar-Atlas ihn benutzen kann, ohne den halben Rechner in sein Client-Bundle
+// zu ziehen. Hier re-exportiert, weil der Invarianz-Test ihn gegen
+// calcWeightedFeedIn (calc.ts) nagelt — dieselbe EEG-Formel, kein Drift.
+export { effectiveFeedInCtPerKwh };
 
 function findSpeicherIdx(kwh: number): number {
   const idx = SPEICHER.findIndex(s => s.kwh === kwh);

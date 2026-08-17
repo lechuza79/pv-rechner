@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
+  EEG2004_BASIS,
+  EEG2004_DEGRESSION,
   FEED_IN_ALT_END,
   FEED_IN_ALT_START,
   FEED_IN_ARCHIV_ALT,
@@ -59,6 +61,29 @@ describe("Feed-in-Archiv vor 04/2012 — Realitäts-Anker", () => {
     }
   });
 
+  it("2006 bis 2008 folgen zellgleich der Degressionskette des EEG 2004", () => {
+    // Unabhängige Größe: die BASISWERTE des Gesetzes (§ 11 Abs. 1 und Abs. 2
+    // Satz 1 EEG 2004, BGBl. I 2004 Nr. 40 S. 1922 f.) und die Prozentsätze aus
+    // Abs. 5 — nicht die Tabelle gegen sich selbst. Gerundet wird nach Abs. 5
+    // in JEDEM Jahr, und der gerundete Wert trägt ins nächste ("des für die im
+    // Vorjahr … maßgeblichen Wertes").
+    let dach30: number = EEG2004_BASIS.roofUpTo30;
+    let dach100: number = EEG2004_BASIS.roofUpTo100;
+    let frei: number = EEG2004_BASIS.groundMounted;
+    for (let jahr = 2005; jahr <= 2008; jahr++) {
+      dach30 = round2(dach30 * (1 - EEG2004_DEGRESSION.dach));
+      dach100 = round2(dach100 * (1 - EEG2004_DEGRESSION.dach));
+      frei = round2(
+        frei * (1 - (jahr >= 2006 ? EEG2004_DEGRESSION.freiflaecheAb2006 : EEG2004_DEGRESSION.freiflaecheAb2005)),
+      );
+      if (jahr === 2005) continue; // 2005 ist ausgelaufen und steht deshalb nicht in der Tabelle
+      const row = altFeedInRatesFor(`${jahr}-07-01`)!;
+      expect(row.roofUpTo30).toBe(dach30);
+      expect(row.roofUpTo100).toBe(dach100);
+      expect(row.groundMounted).toBe(frei);
+    }
+  });
+
   it("2011 gab es unterjährig KEINE Kürzung — genau ein Stichtag im Jahr 2011", () => {
     // BNetzA-Blatt "ab dem 1. Juli 2011 bzw. 1. September 2011": Degression 0 %.
     const stichtage2011 = FEED_IN_ARCHIV_ALT.filter((r) => r.from.startsWith("2011"));
@@ -113,8 +138,8 @@ describe("Anschluss an die Monatstabelle ab 04/2012", () => {
 });
 
 describe("altFeedInRatesFor — Grenzen", () => {
-  it("liefert vor 2007 null", () => {
-    expect(altFeedInRatesFor("2006-12-31")).toBeNull();
+  it("liefert vor 2006 null", () => {
+    expect(altFeedInRatesFor("2005-12-31")).toBeNull();
     expect(altFeedInRatesFor("2004-07-31")).toBeNull();
     expect(altFeedInRatesFor("1999-01-01")).toBeNull();
   });

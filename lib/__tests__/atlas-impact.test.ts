@@ -6,6 +6,8 @@ import {
   balkonEigenverbrauchAnteil,
   co2Tonnen,
   einspeiseCt,
+  einspeiseSatz,
+  einspeiseZeilen,
   ertragForRegionId,
   erzeugungKwh,
   marktErloesCt,
@@ -18,7 +20,8 @@ import { BL_ERTRAG } from "../bundesland-ertrag";
 import { NATIONAL_AVG_YIELD } from "../constants";
 import { DEFAULT_PRICES } from "../prices-config";
 import { feedInRatesForCommissioning } from "../feedin-config";
-import { FREIFLAECHE_AW_CT } from "../freiflaeche-config";
+import { altFeedInRatesFor } from "../feedin-archiv-alt";
+import { FREIFLAECHE_AW_CT, FREIFLAECHE_LUECKE_AB, FREIFLAECHE_LUECKE_BIS } from "../freiflaeche-config";
 
 /**
  * Der Jahrgang, für den die Sätze "heute" gelten. Die Tests, die die Systematik
@@ -190,6 +193,51 @@ describe("Stromwert nach Baujahr (Realitäts-Anker)", () => {
     expect(alt).toBeGreaterThan(neu * 1.8);
   });
 
+  it("hält die beiden Faktoren ein, die der Hilfetext behauptet", () => {
+    // Der Hilfetext sagt zwei Dinge über ein privates Dach von 2010: seine
+    // VERGÜTUNG sei rund das Vierfache der heutigen, in der SPALTE bleibe davon
+    // gut das Doppelte übrig. Beides sind überprüfbare Aussagen — vorher stand
+    // dort einmal "das Vierfache" für die Spalte, wo es 2,2-fach ist.
+    const verguetung = einspeiseCt("privat_dach", 2010) / einspeiseCt("privat_dach", HEUTE);
+    expect(verguetung).toBeGreaterThan(3.5);
+    expect(verguetung).toBeLessThan(4.5);
+
+    const spalte = stromwertSaetze(2010).privat_dach.ct / stromwertSaetze(HEUTE).privat_dach.ct;
+    expect(spalte).toBeGreaterThan(2);
+    expect(spalte).toBeLessThan(2.6);
+  });
+
+  it("lässt den Grenzjahrgang (Frist läuft dieses Jahr aus) noch voll vergütet", () => {
+    // DER Fall, an dem sich die Frist entscheidet: Ein Jahrgang, dessen 20 Jahre
+    // am 31.12. DIESES Jahres enden, bekommt bis dahin seine volle Vergütung
+    // (§ 25 EEG). Genau hier lag der Fehler: Jahrgang 2006 fiel auf den
+    // Börsenwert, weil die Tabelle erst ab 2007 Sätze führte — 12,60 statt
+    // 43,81 ct, Faktor 3,5 zu niedrig. Und der Fehler wandert jedes Jahr weiter.
+    const grenze = new Date().getFullYear() - 20;
+
+    for (const segment of ["privat_dach", "gewerbe_dach"]) {
+      // Unabhängige Prüfung, ohne die Sätze zu spiegeln: Der Grenzjahrgang muss
+      // (1) etwas anderes als den Börsenwert bekommen und (2) mehr als eine
+      // heute gebaute Anlage — die Vergütung ist seit damals monoton gefallen.
+      const ct = einspeiseCt(segment, grenze);
+      expect(ct).toBeGreaterThan(marktErloesCt() * 2);
+      expect(ct).toBeGreaterThan(einspeiseCt(segment, HEUTE));
+    }
+
+    // Freifläche genauso — außer der Grenzjahrgang liegt in der DOKUMENTIERTEN
+    // Lücke (2015–2024, Zuschlagswerte der Ausschreibungen sind uns nicht
+    // belegt). Dann steht dort bewusst das heutige Niveau; liegt er außerhalb
+    // und ist trotzdem nichts belegt, schlägt der Test an.
+    if (grenze < FREIFLAECHE_LUECKE_AB) {
+      expect(einspeiseCt("freiflaeche", grenze)).toBeGreaterThan(einspeiseCt("freiflaeche", HEUTE) * 2);
+    } else {
+      expect(grenze).toBeLessThanOrEqual(FREIFLAECHE_LUECKE_BIS);
+    }
+
+    // Und der Jahrgang direkt davor ist zum Jahreswechsel ausgelaufen.
+    expect(einspeiseCt("privat_dach", grenze - 1)).toBeCloseTo(marktErloesCt(), 6);
+  });
+
   it("nimmt einen Jahrgang jenseits der 20-Jahres-Frist aus der Vergütung", () => {
     // § 25 EEG: Die Zahlung endet am 31.12. des zwanzigsten Jahres. Danach läuft
     // die Anlage weiter und verkauft am Markt — die Spalte darf sie also nicht
@@ -213,6 +261,71 @@ describe("Stromwert nach Baujahr (Realitäts-Anker)", () => {
     // vorsichtigere Wahl. Amtlich für 07/2012: 18,92 ct.
     expect(einspeiseCt("privat_dach", 2012)).toBeCloseTo(18.92, 6);
     expect(einspeiseCt("privat_dach", 2012)).toBeLessThan(einspeiseCt("privat_dach", 2011));
+  });
+
+  it("bewertet Freiflächen nach dem Satz ihres Baujahrs, nicht alle gleich", () => {
+    // Vorher bekam JEDER Freiflächen-Jahrgang von 2012 bis heute denselben Wert
+    // (das aktuelle Ausschreibungsniveau), während der Hilfetext daneben
+    // versprach, jede Anlage zähle mit dem Satz ihres Baujahrs.
+    //
+    // Unabhängige Größe: die amtlichen Sätze nach § 32 Abs. 1 EEG 2012
+    // (BNetzA-Tabelle "PV-Vergütungssätze April 2012 bis Juli 2014", Stand
+    // jeweils 1. Juli): 13,10 · 10,44 · 8,92 ct.
+    expect(einspeiseCt("freiflaeche", 2012)).toBeCloseTo(13.1, 6);
+    expect(einspeiseCt("freiflaeche", 2013)).toBeCloseTo(10.44, 6);
+    expect(einspeiseCt("freiflaeche", 2014)).toBeCloseTo(8.92, 6);
+
+    // Die Reihe fällt und liegt durchweg über dem heutigen Niveau.
+    expect(einspeiseCt("freiflaeche", 2012)).toBeGreaterThan(einspeiseCt("freiflaeche", 2013));
+    expect(einspeiseCt("freiflaeche", 2014)).toBeGreaterThan(einspeiseCt("freiflaeche", HEUTE) * 1.5);
+
+    // Und die Lücke bleibt sichtbar benannt statt geraten: Für 2015–2024 gibt es
+    // keinen belegten Zuschlagswert, dort steht das heutige Niveau — der Hinweis
+    // sagt genau das.
+    expect(einspeiseSatz("freiflaeche", 2018).ct).toBeCloseTo(einspeiseCt("freiflaeche", HEUTE), 6);
+    expect(einspeiseSatz("freiflaeche", 2018).hinweis).toMatch(/nicht belegt/);
+  });
+
+  it("rechnet die EEG-Staffel anteilig, nicht als Sprungtarif", () => {
+    // § 12 Abs. 2 Satz 1 EEG 2004 / § 18 Abs. 1 EEG 2009 / heute § 48 EEG: Die
+    // Vergütung bestimmt sich "anteilig nach der Leistung der Anlage im
+    // Verhältnis zu dem jeweils anzuwendenden Schwellenwert". Vorher nahm die
+    // Spalte die Klassensätze roh — für die ganze Klasse zwischen Schwelle und
+    // Obergrenze also zu wenig.
+    //
+    // Nachgerechnet wird hier aus den KLASSENSÄTZEN der jeweiligen Ära, nicht
+    // aus der Atlas-Rechnung: sonst prüft der Test seine eigene Formel.
+    const heuteRates = feedInRatesForCommissioning(`${HEUTE}-07-01`)!;
+    const erwartet35 = (10 * heuteRates.teilUnder10 + 25 * heuteRates.teilOver10) / 35;
+    expect(einspeiseCt("gewerbe_dach", HEUTE, 35)).toBeCloseTo(erwartet35, 6);
+    // Der Unterschied zum rohen Klassensatz ist die eigentliche Aussage.
+    expect(erwartet35).toBeGreaterThan(heuteRates.teilOver10);
+
+    // Alte Ära: dieselbe Vorschrift, andere Schwelle (30 statt 10 kW).
+    const alt = altFeedInRatesFor("2010-07-01")!;
+    const erwartet50 = (30 * alt.roofUpTo30 + 20 * alt.roofUpTo100) / 50;
+    expect(einspeiseCt("gewerbe_dach", 2010, 50)).toBeCloseTo(erwartet50, 6);
+    expect(erwartet50).toBeGreaterThan(alt.roofUpTo100);
+
+    // Ein privates Dach liegt per Definition unter der 30-kW-Grenze — dort ist
+    // der anteilige Satz schlicht der kleine Klassensatz.
+    expect(einspeiseCt("privat_dach", 2010, 9.8)).toBeCloseTo(alt.roofUpTo30, 6);
+
+    // Zellen ohne Anzahl (Größe unbekannt oder null) dürfen NIE NaN liefern,
+    // sondern fallen auf den Klassensatz zurück.
+    for (const groesse of [null, undefined, 0, Number.NaN]) {
+      for (const jahrgang of [2010, HEUTE]) {
+        const ct = einspeiseCt("gewerbe_dach", jahrgang, groesse);
+        expect(Number.isFinite(ct)).toBe(true);
+        expect(ct).toBeCloseTo(einspeiseCt("gewerbe_dach", jahrgang), 6);
+      }
+    }
+
+    // Und die Staffel muss bis in die Geld-Spalte durchschlagen: dieselbe
+    // Leistung, einmal als 35 große Anlagen und einmal ohne Größenangabe.
+    const mitStaffel = segmentWertEuro(1000, "09162000", "gewerbe_dach", HEUTE, 35);
+    const ohne = segmentWertEuro(1000, "09162000", "gewerbe_dach", HEUTE);
+    expect(mitStaffel).toBeGreaterThan(ohne);
   });
 
   it("bewertet Freiflächen mit dem anzulegenden Wert, nicht mit dem Börsenpreis", () => {
@@ -255,7 +368,9 @@ describe("Hilfetext und Rechnung bleiben dieselbe Quelle", () => {
 
     // Gewerbedach: kein Eigenverbrauch angesetzt → der Mischsatz IST der
     // Einspeisesatz. Läuft das auseinander, behauptet der Tooltip eine Zahl,
-    // die in der Spalte nicht steckt.
+    // die in der Spalte nicht steckt. Beide ohne Anlagengröße — die Spalte
+    // rechnet je Zelle mit der mittleren Größe und liegt deshalb höher, was der
+    // Hilfetext auch sagt.
     expect(finde("gewerbliches Dach")?.ct).toBeCloseTo(saetze.gewerbe_dach.ct, 6);
 
     // Freifläche: ebenfalls kein Eigenverbrauch.
@@ -275,5 +390,33 @@ describe("Hilfetext und Rechnung bleiben dieselbe Quelle", () => {
     // Und der Balkon-Satz muss sich aus dem Eigenverbrauchspreis ergeben,
     // den der Tooltip nennt.
     expect(balkonEigenverbrauchAnteil() * eigenverbrauchCt).toBeCloseTo(saetze.steckersolar.ct, 6);
+  });
+
+  it("nennt die Eigenverbrauchs-Anteile, mit denen gerechnet wird", () => {
+    // Ohne sie lassen sich die genannten Bestandteile nicht zur Spaltenzahl
+    // zusammenrechnen — der Tooltip nannte zwei Preise und verschwieg die
+    // Gewichte, mit denen sie gemischt werden.
+    const t = stromwertBestandteile();
+    expect(t.dachEigenverbrauchAnteil).toBe(EIGENVERBRAUCH_ANTEIL_ANNAHME);
+    expect(t.balkonEigenverbrauchAnteil).toBe(balkonEigenverbrauchAnteil());
+  });
+
+  it("schreibt zu JEDER Anlagenart dazu, was die Zahl ist", () => {
+    // Vorher wurde der Hinweis nur gerendert, wenn gar kein Satz da war — also
+    // ausschließlich beim Balkonkraftwerk. Der Freiflächenwert stand damit ohne
+    // Etikett neben zwei Einspeisevergütungen und las sich als eine.
+    const zeilen = einspeiseZeilen();
+    expect(zeilen).toHaveLength(stromwertBestandteile().einspeisung.length);
+    for (const e of stromwertBestandteile().einspeisung) {
+      const zeile = zeilen.find((z) => z.startsWith(e.label)) as string;
+      expect(zeile).toBeDefined();
+      expect(zeile).toContain(e.hinweis);
+      expect(e.hinweis.length).toBeGreaterThan(10);
+    }
+
+    // Das Etikett beschreibt den AUSGEGEBENEN Wert: Ausgegeben wird der
+    // Zuschlagswert abzüglich Vermarktungsgebühr, nicht der Zuschlagswert.
+    const frei = zeilen.find((z) => z.startsWith("Freiflächen-Park")) as string;
+    expect(frei).toMatch(/Vermarktungsgebühr/);
   });
 });

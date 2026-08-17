@@ -17,7 +17,14 @@ import {
   wattProKopfTeile,
   type Messwert,
 } from "../../lib/atlas-format";
-import { ATLAS_GRID_CO2, co2Tonnen, erzeugungKwh, segmentWertEuro, stromwertBestandteile } from "../../lib/atlas-impact";
+import {
+  ATLAS_GRID_CO2,
+  co2Tonnen,
+  einspeiseZeilen,
+  erzeugungKwh,
+  segmentWertEuro,
+  stromwertBestandteile,
+} from "../../lib/atlas-impact";
 import InfoTooltip from "../InfoTooltip";
 
 type Owner = "alle" | "privat" | "gewerbe";
@@ -243,11 +250,19 @@ export default function RankingTable({
           a.kwp += c.kwp;
           // Der Geldwert entsteht HIER, je Segment UND Jahrgang — nicht später
           // aus der Summe: Ein Freiflächen-Park erlöst gut ein Drittel dessen,
-          // was ein privates Dach erspart, und ein Dach von 2010 das Vierfache
-          // eines heutigen. Über beides zu mitteln wäre keine Näherung, sondern
-          // eine andere Zahl. Der Jahrgang liegt ohnehin in der Zelle, weil die
-          // Tabelle für den Rang-Rücklauf nach Jahren filtert.
-          a.wertEuro += segmentWertEuro(c.kwp, c.region_id, c.segment, c.year);
+          // was ein privates Dach erspart, und die Vergütung eines Dachs von
+          // 2010 ist rund das Vierfache der heutigen. Über beides zu mitteln
+          // wäre keine Näherung, sondern eine andere Zahl. Der Jahrgang liegt
+          // ohnehin in der Zelle, weil die Tabelle für den Rang-Rücklauf nach
+          // Jahren filtert.
+          //
+          // Mitgereicht wird die mittlere Anlagengröße der Zelle: Die
+          // EEG-Staffel ist ein ANTEILIGER Tarif (die ersten 10 kWp bringen den
+          // kleinen Satz, jedes weitere Kilowatt den großen). Ohne sie bekäme
+          // ein 35-kWp-Gewerbedach den Grenzsatz für alles und stünde rund 4 %
+          // zu niedrig da. Zellen ohne Anzahl reichen null herein.
+          const kwpMittel = c.count > 0 ? c.kwp / c.count : null;
+          a.wertEuro += segmentWertEuro(c.kwp, c.region_id, c.segment, c.year, kwpMittel);
         }
         acc.set(c.region_id, a);
       }
@@ -647,7 +662,9 @@ export default function RankingTable({
  * Sätzen entsteht, ist ohne diese Aufstellung nicht nachvollziehbar.
  */
 function StromwertHilfe() {
-  const { eigenverbrauchCt, einspeisung, jahrgang } = stromwertBestandteile();
+  const { eigenverbrauchCt, jahrgang, dachEigenverbrauchAnteil, balkonEigenverbrauchAnteil } =
+    stromwertBestandteile();
+  const prozent = (anteil: number) => `${Math.round(anteil * 100)} %`;
   return (
     <>
       Wert des erzeugten Solarstroms pro Jahr, rechnerisch. Jede Kilowattstunde zählt, was sie
@@ -655,24 +672,31 @@ function StromwertHilfe() {
       <span style={S.tipListe}>
         <span style={S.tipZeile}>
           <strong>Im Haus verbraucht: {fmtCtProKwh(eigenverbrauchCt)}</strong> — ersetzt
-          zugekauften Strom. Beim gewerblichen Dach ist dieser Anteil nicht angesetzt, weil uns
-          nicht belegt ist, wie viel Betriebe selbst verbrauchen; die Zahl ist dort eine
-          Untergrenze. Bei Freiflächen-Parks gibt es ihn nicht.
+          zugekauften Strom. Wie viel eine Anlagenart im Haus behält, ist verschieden: beim
+          privaten Dach rechnen wir mit {prozent(dachEigenverbrauchAnteil)}, beim Balkonkraftwerk
+          mit {prozent(balkonEigenverbrauchAnteil)}. Beim gewerblichen Dach ist dieser Anteil gar
+          nicht angesetzt, weil uns nicht belegt ist, wie viel Betriebe selbst verbrauchen; die
+          Zahl ist dort eine Untergrenze. Bei Freiflächen-Parks gibt es ihn nicht.
         </span>
         <span style={S.tipZeile}>
-          <strong>Eingespeist:</strong>{" "}
-          {einspeisung
-            .map((e) => `${e.label} ${e.ct === null ? e.hinweis : fmtCtProKwh(e.ct)}`)
-            .join(", ")}
-          .
+          {/* Der Hinweis steht IMMER dabei, nicht nur wo ein Satz fehlt: Ohne ihn
+              liest sich der Freiflächenwert als Einspeisevergütung, obwohl er ein
+              Ausschreibungswert abzüglich Vermarktungsgebühr ist. Gebaut wird die
+              Zeile in atlas-impact, damit ein Test genau das prüfen kann. */}
+          <strong>Eingespeist:</strong> {einspeiseZeilen(jahrgang).join(", ")}. Über 10 kWp ist die Vergütung gestaffelt: Die ersten 10 kWp bringen den höheren Satz,
+          jedes weitere Kilowatt den niedrigeren — gerechnet wird mit der mittleren Anlagengröße
+          der jeweiligen Gemeinde.
         </span>
       </span>
       Wie sich eine Anlagenart auf beides verteilt, ist verschieden — deshalb wird jede einzeln
       gerechnet. Ältere Anlagen bekommen deutlich mehr: Jede Anlage zählt mit dem Satz ihres
-      Baujahrs, ein privates Dach von 2010 rund das Vierfache eines heutigen. Nach 20 Jahren
-      endet die Vergütung, dann zählt nur noch der Börsenwert. Die zusätzliche
-      Eigenverbrauchsvergütung der Baujahre 2009 bis 2012 ist nicht enthalten — diese Jahrgänge
-      sind eher zu niedrig angesetzt. Strommenge: installierte Leistung mal typischer Ertrag im
+      Baujahrs. Die Vergütung eines privaten Dachs von 2010 ist rund das Vierfache der heutigen;
+      in dieser Spalte bleibt davon gut das Doppelte übrig, weil der selbst verbrauchte Strom bei
+      beiden gleich viel wert ist. Nach 20 Jahren endet die Vergütung, dann zählt nur noch der
+      Börsenwert. Zwei Lücken kennen wir: Die zusätzliche Eigenverbrauchsvergütung der Baujahre
+      2009 bis 2012 fehlt, und für Freiflächen-Parks der Baujahre 2015 bis 2024 fehlt uns der
+      Zuschlagswert ihrer Ausschreibung — sie rechnen mit dem heutigen. Beide Lücken setzen die
+      Zahl eher zu niedrig an. Strommenge: installierte Leistung mal typischer Ertrag im
       Bundesland, kalibriert an der Erzeugung 2025 (Fraunhofer ISE).
     </>
   );

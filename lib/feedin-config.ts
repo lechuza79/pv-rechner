@@ -147,3 +147,22 @@ export function feedInEndIso(commissioningIso: string): string {
   return `${Number(commissioningIso.slice(0, 4)) + 20}-12-31`;
 }
 
+/**
+ * Durchschnittlicher Einspeisesatz einer Anlage über die 10-kWp-Schwelle.
+ *
+ * Die EEG-Staffel ist ein ANTEILIGER Tarif, kein Sprungtarif: Die ersten
+ * 10 kWp werden mit dem kleinen Satz vergütet, jedes weitere Kilowatt mit dem
+ * großen. Wer für eine 50-kWp-Anlage schlicht `teilOver10` nimmt, rechnet sie
+ * um mehrere Prozent zu schlecht — der Fehler wächst, je näher die Anlage an
+ * der Schwelle liegt.
+ *
+ * Steht hier und nicht im Empfehlungs-Rechner, damit auch der Solar-Atlas die
+ * Formel benutzen kann, ohne dessen Abhängigkeiten zu erben. Der
+ * Invarianz-Test in recommend.test.ts nagelt sie gegen `calcWeightedFeedIn`
+ * (lib/calc.ts) — beide bilden dieselbe Vorschrift ab.
+ */
+export function effectiveFeedInCtPerKwh(kwp: number, feedIn: FeedInRates): number {
+  if (kwp <= 10) return feedIn.teilUnder10;
+  return (10 * feedIn.teilUnder10 + (kwp - 10) * feedIn.teilOver10) / kwp;
+}
+

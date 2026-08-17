@@ -1,16 +1,33 @@
-// ─── Feste Einspeisevergütung für Photovoltaik, Inbetriebnahme 2007 – 03/2012 ───
+// ─── Feste Einspeisevergütung für Photovoltaik, Inbetriebnahme 2006 – 03/2012 ───
 //
 // Ergänzt lib/feedin-archiv.ts nach hinten: dort beginnt die Monatstabelle erst
 // am 01.04.2012 (EEG 2012), weil davor eine andere Vergütungslogik galt. Dieses
 // Modul bildet die Jahres- bzw. Stichtags-Sätze der Ära davor ab.
 //
 // DATENHERKUNFT (jede Zeile am 15.08.2026 im Primärdokument nachgesehen):
-//   · 2007 + 2008 — Degressionskette des EEG 2004 (§ 11 Abs. 2 Satz 1: 57,40 /
-//     54,60 ct ab Inbetriebnahme 2004, § 11 Abs. 1: 45,70 ct Freifläche).
-//     Abgelesen in der amtlichen BMU-Übersicht "Vergütungssätze nach dem EEG
-//     2004", Abschnitt "7. Zu § 11 EEG: Mindestvergütungen für Strom aus solarer
-//     Strahlungsenergie (Neuanlagen)" — Dachtabelle (Zeilen 2007/2008) und
-//     Freiflächentabelle (Zeilen 2007/2008).
+//   · 2006 bis 2008 — Degressionskette des EEG 2004, am 17.08.2026 im
+//     GESETZESTEXT selbst nachgelesen (Bundesgesetzblatt Jahrgang 2004 Teil I
+//     Nr. 40, ausgegeben am 31.07.2004, S. 1918 ff.; § 11 auf S. 1922 f. —
+//     Volltext liegt als docs/quellen/EEG-2004_BGBl-I-2004-Nr40-S1918.pdf im
+//     Repo). Die Kette steht als EEG2004_BASIS/EEG2004_DEGRESSION unten im
+//     Code, damit der Test sie unabhängig nachrechnen kann:
+//       § 11 Abs. 1: 45,70 ct Freifläche.
+//       § 11 Abs. 2 Satz 1: 57,40 ct bis 30 kW · 54,60 ct ab 30 kW ·
+//         54,00 ct ab 100 kW (die 100-kW-Klasse bildet dieses Modul NICHT ab).
+//       § 11 Abs. 5: ab 01.01.2005 jährlich −5 % "des für die im Vorjahr neu in
+//         Betrieb genommenen Anlagen maßgeblichen Wertes … und auf zwei Stellen
+//         hinter dem Komma gerundet" — es wird also JEDES JAHR gerundet und der
+//         gerundete Wert fortgeschrieben. Ab 01.01.2006 gilt für Anlagen nach
+//         Absatz 1 (Freifläche) stattdessen −6,5 %; das Dach bleibt bei −5 %.
+//     Die 2007er und 2008er Zeilen waren zuvor aus der amtlichen BMU-Übersicht
+//     "Vergütungssätze nach dem EEG 2004" (Abschnitt 7) abgelesen. Beide Wege
+//     liefern zellgleich dieselben vier Werte — das ist die Quer-Validierung,
+//     mit der die 2006er Zeile hier steht.
+//   · Warum die Kette bei 2006 ANFÄNGT und nicht bei 2004: Dieses Modul dient
+//     der Bestandsbewertung im Solar-Atlas, und dort zählt ein Jahrgang nur,
+//     solange seine 20 Jahre laufen (§ 25 EEG). Jahrgang 2005 ist Ende 2025
+//     ausgelaufen, 2006 läuft noch bis Ende 2026. Eine 2005er Zeile wäre also
+//     Datenpflege für einen Fall, den es nicht mehr gibt.
 //   · 2009 — EEG 2009 (BGBl. I 2008 S. 2074) im Wortlaut: § 33 Abs. 1 Nr. 1
 //     (43,01 ct), Nr. 2 (40,91 ct), § 32 Abs. 1 (31,94 ct).
 //   · 01.01.2010 — Bundesnetzagentur, "Degressions- und Vergütungssätze für
@@ -36,12 +53,13 @@
 //
 // BEWUSSTE GRENZEN DES MODELLS:
 //   · Die Leistungsstaffel wirkt ANTEILIG, nicht als Sprungtarif — EEG 2004
-//     § 12 Abs. 2 Satz 1 und EEG 2009 § 18 Abs. 1: die Vergütung bestimmt sich
-//     "jeweils anteilig nach der Leistung der Anlage im Verhältnis zu dem
-//     jeweils anzuwendenden Schwellenwert". Eine 40-kW-Dachanlage bekommt also
-//     NICHT den 100-kW-Satz, sondern eine Mischung aus beiden Sätzen. Wer einen
-//     Satz für eine Anlage über 30 kW will, muss selbst anteilig mischen
-//     (siehe blendRoofRate).
+//     § 12 Abs. 2 Satz 1 (Wortlaut am 17.08.2026 im BGBl-Volltext geprüft) und
+//     EEG 2009 § 18 Abs. 1: die Vergütung bestimmt sich "jeweils anteilig nach
+//     der Leistung der Anlage im Verhältnis zu dem jeweils anzuwendenden
+//     Schwellenwert". Eine 40-kW-Dachanlage bekommt also NICHT den 100-kW-Satz,
+//     sondern eine Mischung aus beiden Sätzen. Wer einen Satz für eine Anlage
+//     über 30 kW will, muss deshalb `blendRoofRate` benutzen — die Klassensätze
+//     roh zu nehmen rechnet jede Anlage über 30 kW zu niedrig.
 //   · Die Klassengrenzen sind ANDERE als ab 04/2012: hier ≤ 30 kW und ≤ 100 kW,
 //     dort ≤ 10 kW und ≤ 40 kW. Die beiden Tabellen sind deshalb nicht
 //     spaltenweise vergleichbar.
@@ -77,7 +95,22 @@ export interface AltFeedInRow {
 }
 
 /** Erster Inbetriebnahme-Tag, für den dieses Modul Sätze kennt. */
-export const FEED_IN_ALT_START = "2007-01-01";
+export const FEED_IN_ALT_START = "2006-01-01";
+
+/**
+ * Ausgangswerte der Degressionskette — § 11 Abs. 1 und Abs. 2 Satz 1 EEG 2004
+ * (BGBl. I 2004 Nr. 40 S. 1922 f.), maßgeblich für Inbetriebnahmen 2004.
+ * Stehen hier NICHT, um die Tabelle zu erzeugen, sondern damit der Test die
+ * Tabelle gegen das Gesetz nachrechnen kann statt gegen sich selbst.
+ */
+export const EEG2004_BASIS = { roofUpTo30: 57.4, roofUpTo100: 54.6, groundMounted: 45.7 } as const;
+
+/**
+ * § 11 Abs. 5 EEG 2004: ab 2005 jährlich −5 %, ab 2006 für Freiflächen −6,5 %.
+ * Gerundet wird in JEDEM Jahr auf zwei Stellen, und der gerundete Wert ist die
+ * Grundlage des Folgejahres ("des für die im Vorjahr … maßgeblichen Wertes").
+ */
+export const EEG2004_DEGRESSION = { dach: 0.05, freiflaecheAb2005: 0.05, freiflaecheAb2006: 0.065 } as const;
 
 /**
  * Erster Tag, der NICHT mehr hierher gehört — ab da gilt lib/feedin-archiv.ts
@@ -86,6 +119,16 @@ export const FEED_IN_ALT_START = "2007-01-01";
 export const FEED_IN_ALT_END = "2012-04-01";
 
 export const FEED_IN_ARCHIV_ALT: ReadonlyArray<AltFeedInRow> = [
+  {
+    // Zwei Degressionsschritte auf die Basiswerte von 2004, je Jahr gerundet:
+    // Dach 57,40 → 54,53 → 51,80 bzw. 54,60 → 51,87 → 49,28 (−5 %/Jahr);
+    // Freifläche 45,70 → 43,42 (−5 % für 2005) → 40,60 (−6,5 % ab 2006).
+    from: "2006-01-01",
+    roofUpTo30: 51.8,
+    roofUpTo100: 49.28,
+    groundMounted: 40.6,
+    source: "EEG 2004 § 11 Abs. 1, 2 und 5 (BGBl. I 2004 Nr. 40 S. 1922 f.), Degressionskette ab 2005",
+  },
   {
     from: "2007-01-01",
     roofUpTo30: 49.21,
@@ -150,9 +193,10 @@ export const FEED_IN_ARCHIV_ALT: ReadonlyArray<AltFeedInRow> = [
 
 /**
  * Sätze für ein Inbetriebnahme-Datum (ISO "YYYY-MM-DD" oder "YYYY-MM").
- * Liefert null außerhalb des Bereichs 01.01.2007 – 31.03.2012 — für spätere
+ * Liefert null außerhalb des Bereichs 01.01.2006 – 31.03.2012 — für spätere
  * Inbetriebnahmen ist lib/feedin-archiv.ts zuständig, für frühere gibt es
- * bewusst keinen automatischen Satz.
+ * bewusst keinen automatischen Satz (siehe Kopfkommentar: ihre 20 Jahre sind
+ * vorbei).
  */
 export function altFeedInRatesFor(iso: string): AltFeedInRow | null {
   const day = iso.length === 7 ? `${iso}-01` : iso;
