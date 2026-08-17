@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { v, iconSizes, space, pad } from "../lib/theme";
 import { IconCheck, IconClose } from "./Icons";
+import { ModalSticky } from "./Modal";
 import { CONTACT_TOPICS, DEFAULT_CONTACT_TOPIC, type ContactTopic } from "../lib/contact-topics";
 
 const S = {
@@ -218,13 +219,19 @@ export default function ContactForm({
         </div>
       )}
 
-      <button
-        type="submit"
-        style={{ ...S.button, ...(status === "sending" ? S.buttonDisabled : {}) }}
-        disabled={status === "sending"}
-      >
-        {status === "sending" ? "Wird gesendet …" : "Nachricht senden"}
-      </button>
+      {/* Im Fenster klebt der Absende-Knopf am unteren Rand, statt bei langer
+          Nachricht oder eingeblendeter Tastatur unter die Falz zu rutschen.
+          Auf der Kontaktseite (kein Fenster) reicht ModalSticky ihn unverändert
+          durch — dieselbe Komponente, beide Orte. */}
+      <ModalSticky>
+        <button
+          type="submit"
+          style={{ ...S.button, ...(status === "sending" ? S.buttonDisabled : {}) }}
+          disabled={status === "sending"}
+        >
+          {status === "sending" ? "Wird gesendet …" : "Nachricht senden"}
+        </button>
+      </ModalSticky>
     </form>
   );
 }
