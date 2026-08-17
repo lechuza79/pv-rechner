@@ -11,7 +11,9 @@
 // the year is evaluated at render time — nothing here goes stale on rollover.
 // Never hardcode a year or a euro figure below.
 import { estimateCost, BATTERY_LIFETIME_YEARS } from "./calc";
-import { FEED_IN_YEARS } from "./constants";
+import { calcBalkon, type BalkonInputs } from "./balkon";
+import { BALKON_RECHT, DEFAULT_BALKON_CONFIG, type BalkonSetId } from "./balkon-config";
+import { FEED_IN_YEARS, PERSONEN } from "./constants";
 import { DEFAULT_FEED_IN, fmtCt, type FeedInRates } from "./feedin-config";
 import { DEFAULT_PRICES } from "./prices-config";
 import { TILT_OPTIMUM, tiltPct } from "./tilt-config";
@@ -468,6 +470,90 @@ export function neigungswinkelFaq(): FaqEntry[] {
     {
       q: "Lohnt sich ein Norddach für Photovoltaik?",
       a: `Meist nur bei flacher Neigung: Bei 10 Grad erreicht ein Norddach noch ${tiltPct("nord", 10)} Prozent des Optimums, bei 45 Grad nur noch ${tiltPct("nord", 45)} Prozent. Als Faustregel gilt: erst die anderen Dachflächen belegen; ein steiles Norddach rechnet sich in der Regel nicht.`,
+    },
+  ];
+}
+
+/** FAQ for the balcony-solar calculator (/balkonkraftwerk-rechner).
+ *
+ *  Every figure is computed here from the SAME model the calculator runs — no
+ *  typed euro amounts, so the FAQ can never drift from the tool above it. The
+ *  reference case is documented in BALKON_FAQ_REFERENZ and named in the answers
+ *  themselves, because a saving figure without its household is meaningless.
+ *
+ *  Legal statements come from BALKON_RECHT (lib/balkon-config.ts) — the same
+ *  source the calculator result renders, never a second hand-typed copy. */
+const BALKON_FAQ_REFERENZ = {
+  /** 2-Personen-Haushalt — die häufigste Konstellation für Steckersolar. */
+  personenIndex: 1,
+  orientationId: "sued_gelaender" as const, // klassischer Balkon, senkrecht
+  presenceId: "teils" as const,             // Homeoffice-Tage
+} as const;
+
+export function balkonFaq(): FaqEntry[] {
+  const cfg = DEFAULT_BALKON_CONFIG;
+  const haushaltKwh = PERSONEN[BALKON_FAQ_REFERENZ.personenIndex].verbrauch;
+  const base = {
+    presenceId: BALKON_FAQ_REFERENZ.presenceId,
+    orientationId: BALKON_FAQ_REFERENZ.orientationId,
+    haushaltKwh,
+    specificYield: cfg.specificYield,
+    monthlyYield: null,
+    stromPrice: cfg.stromPrice,
+  };
+  const setById = (id: BalkonSetId) => cfg.sets.find(s => s.id === id)!;
+  const standard = setById("duo");
+  const maxSet = setById("max");
+  const kleinstes = setById("single");
+
+  // Ertrag derselben Standard-Größe in drei Ausrichtungen — der größte Hebel.
+  const ertrag = (orientationId: BalkonInputs["orientationId"]) =>
+    calcBalkon({ ...base, orientationId, setId: "duo", storageId: "none" }).annualYield;
+  const ertragGelaender = ertrag("sued_gelaender");
+  const ertragFlach = ertrag("sued_flach");
+  const ertragOstWest = ertrag("ost_west");
+
+  const standardResult = calcBalkon({ ...base, setId: "duo", storageId: "none" });
+  const amort = standardResult.amortYears.toFixed(1).replace(".", ",");
+  const speicherKlein = cfg.storage.find(s => s.id === "small")!;
+  const speicherGross = cfg.storage.find(s => s.id === "large")!;
+  const eur = (n: number) => n.toLocaleString("de-DE");
+
+  return [
+    {
+      q: "Lohnt sich ein Balkonkraftwerk?",
+      a: `In den meisten Fällen ja — Steckersolar amortisiert sich deutlich schneller als eine Dachanlage, weil die Anschaffung klein ist. Beispiel: Ein Zwei-Personen-Haushalt mit ${eur(haushaltKwh)} kWh Jahresverbrauch und einem Standard-Set senkrecht am Südbalkon spart rund ${eur(standardResult.savingPerYear)} € im Jahr; bei ${eur(standard.price)} € Anschaffung ist das nach etwa ${amort} Jahren wieder drin. Entscheidend sind zwei Dinge: wie die Module hängen und wie viel Strom tagsüber im Haushalt gebraucht wird.`,
+      cta: { label: "Für deinen Haushalt rechnen", href: "/balkonkraftwerk-rechner" },
+    },
+    {
+      q: "Wie viel Strom bringt ein Balkonkraftwerk mit 800 Watt im Jahr?",
+      a: `Das hängt vor allem am Winkel. Dasselbe Standard-Set mit ${eur(standard.moduleWp)} Wp Modulen liefert im deutschen Mittel rund ${eur(ertragGelaender)} kWh, wenn die Module senkrecht am Südgeländer hängen — flach nach Süden aufgeständert sind es etwa ${eur(ertragFlach)} kWh, nach Osten oder Westen senkrecht nur noch rund ${eur(ertragOstWest)} kWh. Der Ertrag am eigenen Standort weicht davon ab; der Rechner holt ihn über die Postleitzahl aus den Sonnendaten der EU-Kommission.`,
+      links: [{ phrase: "am Winkel", href: "/photovoltaik-neigungswinkel" }],
+    },
+    {
+      q: "Was kostet ein Balkonkraftwerk?",
+      a: `Ein einzelnes Modul mit kleinem Wechselrichter liegt bei etwa ${eur(kleinstes.price)} €, das gängige Set mit zwei Modulen bei rund ${eur(standard.price)} €, vier Module am selben 800-W-Wechselrichter bei etwa ${eur(maxSet.price)} € — jeweils inklusive Halterung. Ein Nachrüst-Speicher kostet zusätzlich rund ${eur(speicherKlein.price)} € (${speicherKlein.kwh.toLocaleString("de-DE")} kWh) bis ${eur(speicherGross.price)} € (${speicherGross.kwh.toLocaleString("de-DE")} kWh). ${BALKON_RECHT.nullsteuer}`,
+    },
+    {
+      q: "Lohnt sich ein Speicher am Balkonkraftwerk?",
+      a: `Oft nicht. Ein Speicher hebt den Eigenverbrauch, kostet aber mehr als das Set selbst und hält realistisch rund ${cfg.storageLifeYears} Jahre — er muss sich also in dieser Zeit rechnen, nicht erst über die Lebensdauer der Module. Unser Rechner empfiehlt einen Speicher deshalb nur, wenn er sich innerhalb von ${cfg.storageRecommendMaxPayback} Jahren selbst trägt, und schreibt sonst ausdrücklich hin, dass er sich nicht lohnt. Das ist vor allem bei hohem Verbrauch und viel ungenutztem Mittagsstrom der Fall.`,
+      cta: { label: "Mit und ohne Speicher vergleichen", href: "/balkonkraftwerk-rechner" },
+    },
+    {
+      q: "Wie viele Module darf ein Balkonkraftwerk haben?",
+      a: `Der Wechselrichter darf höchstens ${standard.inverterW} Watt ins Netz speisen, die Module dürfen zusammen bis ${eur(maxSet.moduleWp)} Wp leisten — also deutlich mehr, als der Wechselrichter durchlässt. Das ist erlaubt und sinnvoll: Die Mittagsspitze wird gekappt, dafür kommt morgens und abends mehr an. Davon zu unterscheiden ist die VDE-Vornorm seit Dezember 2025: Sie sieht den normalen Schuko-Stecker nur bis ${eur(cfg.schukoMaxWp)} Wp vor, darüber eine spezielle Einspeisesteckdose. Diese Vornorm ist freiwillig und richtet sich an Hersteller, sie ist kein Gesetz.`,
+    },
+    {
+      q: "Muss ich ein Balkonkraftwerk anmelden?",
+      a: `${BALKON_RECHT.anmeldung} ${BALKON_RECHT.anmeldeFrist}`,
+    },
+    {
+      q: "Darf ich als Mieter ein Balkonkraftwerk anbringen?",
+      a: BALKON_RECHT.mieteEigentum,
+    },
+    {
+      q: "Bekomme ich Geld für den eingespeisten Strom?",
+      a: BALKON_RECHT.keineVerguetung + " Genau deshalb lohnt sich ein Balkonkraftwerk am meisten dort, wo tagsüber jemand zu Hause ist — und deshalb ist ein zu großes Set selten die beste Wahl.",
     },
   ];
 }

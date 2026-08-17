@@ -1,0 +1,323 @@
+Umsatzsteuer-Anwendungserlass (UStAE), Abschnitt 12.18
+"Nullsteuersatz fuer bestimmte Photovoltaikanlagen"
+
+Quelle: Bundesministerium der Finanzen, konsolidierte Fassung des UStAE.
+https://www.bundesfinanzministerium.de/Content/DE/Downloads/BMF_Schreiben/Steuerarten/Umsatzsteuer/Umsatzsteuer-Anwendungserlass/Umsatzsteuer-Anwendungserlass-aktuell.pdf?__blob=publicationFile
+Abgerufen und im Volltext geprueft: 2026-08-16 (PDF ab Seite 480).
+
+Rechtsgrundlage: § 12 Abs. 3 UStG (Nullsteuersatz, Anlage auf oder in der Naehe
+von Wohnungen, installierte Bruttoleistung laut MaStR hoechstens 30 kW (peak)).
+
+Fuer Steckersolar tragend:
+  Abs. 2 Satz 6  — nennt Steckersolargeraete, sog. Balkonkraftwerke, ausdruecklich;
+                   die TATSAECHLICHE MaStR-Registrierung ist fuer die
+                   Betreibereigenschaft nicht massgeblich.
+  Abs. 7 Satz 2  — Module ab 300 Watt gelten als netzgekoppelt eingesetzt.
+  Abs. 7 Satz 3  — bis 800 Voltampere entfaellt die besondere Nachweispflicht
+                   nach Abs. 6, die Betreibereigenschaft wird unterstellt.
+                   (Diese Grenze stand bis 2024 bei 600 Watt.)
+  Abs. 7 Satz 9  — Speicher sind beguenstigt, wenn sie im konkreten Fall dazu
+                   bestimmt sind, Strom aus beguenstigten Modulen zu speichern.
+  Abs. 7 Satz 10 — Die VEREINFACHUNG greift erst ab 5 kWh nutzbarer Kapazitaet.
+                   ACHTUNG: Balkonspeicher (bei uns 1,6 und 2,7 kWh) liegen
+                   DARUNTER. Sie koennen nach Satz 9 beguenstigt sein, aber
+                   nicht automatisch. Deshalb im FAQ nur das Set als
+                   steuerfrei benannt, nicht der Speicher pauschal.
+
+Aenderung 600 W -> 800 VA: BMF-Schreiben vom 15.08.2024,
+Az. III C 2 - S 7220/22/10002 :017 (aendert UStAE 12.18 Abs. 7 Satz 3),
+Anlass: Solarpaket I vom 08.05.2024, BGBl. I Nr. 151, mit Wirkung zum 16.05.2024.
+
+--------------------------- WORTLAUT (Auszug) ---------------------------
+Seite 480                              12.18. Nullsteuersatz für bestimmte Photovoltaikanlagen
+            Lieferung einer Photovoltaikanlage
+              (1) 1Die Verschaffung der Verfügungsmacht an einer Photovoltaikanlage begründet eine Lieferung im Sinne
+            des § 3 Abs. 1 UStG und unterliegt dem Nullsteuersatz. 2Zur Bestimmung des Zeitpunkts der Lieferung einer
+            Photovoltaikanlage vgl. Abschnitt 13.1. 3Lieferungen und sonstige Leistungen, die für den Leistungsempfänger
+            keinen eigenen Zweck, sondern das Mittel darstellen, um die Lieferung der Photovoltaikanlage unter optimalen
+            Bedingungen in Anspruch zu nehmen, teilen das Schicksal der Lieferung der Photovoltaikanlage und sind als
+            Nebenleistungen zur Hauptleistung dementsprechend einheitlich mit dem Nullsteuersatz zu besteuern (vgl.
+            Abschnitt 3.10). 4Zu den Nebenleistungen der Lieferung der Photovoltaikanlage zählen u. a. die Übernahme der
+            Anmeldung in das MaStR, die Bereitstellung von Software zur Steuerung und Überwachung der Anlage, die
+            Montage der Solarmodule, die Kabelinstallationen, die Lieferung und der Anschluss des Wechselrichters oder des
+            Zweirichtungszählers, die Lieferung von Schrauben und Stromkabeln, die Herstellung des AC-Anschlusses, die
+            Bereitstellung von Gerüsten oder auch die Lieferung von Befestigungsmaterial, die Erneuerung oder Ertüchtigung
+            eines Zählerschranks, die Erneuerung oder Ertüchtigung der Unterkonstruktion einer Photovoltaikanlage (z. B.
+            durch eine Verbreiterung oder Aufdopplung von Sparren) oder auch die Lieferung eines Taubenschutzes. 5Nicht
+            zu den Nebenleistungen der Lieferung der Photovoltaikanlage zählen u. a. die zwingend vorgeschriebenen
+            Maßnahmen (z. B. Demontage und Neumontage von Platten) bei einem Aufbringen der Photovoltaikanlage auf
+            Dächern mit asbesthaltigen Deckwerkstoffen oder auch die Anpassung einer Blitzschutzanlage. 6Dem
+            Nullsteuersatz unterliegen grundsätzlich auch die Lieferungen von Photovoltaikanlagen durch Bauträger. 7Dies
+            gilt auch, wenn der Bauträger neben der Photovoltaikanlage auch das Gebäude liefert, da die Lieferung der
+            Photovoltaikanlage hierzu eine eigenständige Leistung und keine unselbstständige Nebenleistung darstellt. 8Die
+            Vermietung von Photovoltaikanlagen stellt keine Lieferung von Photovoltaikanlagen dar und unterliegt daher dem
+            Regelsteuersatz. 9Dagegen können Leasing- oder Mietkaufverträge je nach konkreter Ausgestaltung
+            umsatzsteuerrechtlich als Lieferung oder als sonstige Leistung einzustufen sein. 10Maßgeblich für die Abgrenzung
+            sind die vertraglichen Vereinbarungen zwischen den Vertragsparteien gemäß den Grundsätzen des Abschnittes 3.5
+            Abs. 5. 11Dabei sind Laufzeit, Zahlungsbedingungen und mögliche Kombinationen mit anderen
+            Leistungselementen u. Ä. zu berücksichtigen. 12Der Nullsteuersatz findet keine Anwendung auf den Teil des
+            Entgelts, der auf eigenständige Serviceleistungen entfällt wie z. B. Wartungsarbeiten, die Einholung von
+            behördlichen Genehmigungen oder die Versicherung der Photovoltaikanlage mit einer Haftpflicht- und
+            Vermögensschadens-Versicherung. 13Ein einheitlicher Mietbetrag ist nach der einfachsten möglichen Methode
+            aufzuteilen.
+
+            Beispiel:
+                 1
+                   Unternehmer U vermietet an Kunden K eine Photovoltaikanlage. 2Der Zeitraum der Vermietung beträgt
+                 20 Jahre. 3Die jährliche Miete beträgt 1.625 €. 4Von dem Mietbetrag entfallen 1.300 € auf die Überlassung der
+                 Photovoltaikanlage einschließlich der damit verbundenen Finanzierungskosten, während der restliche Betrag
+                 von 325 € auf die einhergehenden Serviceleistungen (Versicherung usw.) gezahlt wird. 5U räumt K die Option
+                 ein, zum Ende der Mietzeit die Photovoltaikanlage zum Preis von 1 € zu erwerben. 6Sofern K von der Option
+                 Gebrauch macht, tritt U die Herstellergarantie, deren weitere Laufzeit sich zum Zeitpunkt der
+                 Optionsausübung noch auf 5 Jahre beläuft, an K ab. 7Sollte K von der Option keinen Gebrauch machen, ist er
+                 auf Grund des Mietvertrages verpflichtet, die Photovoltaikanlage zum Ende der Mietzeit auf eigene Kosten
+                 abzubauen und dem U auszuhändigen. 8Der Verkehrswert der Photovoltaikanlage beträgt zu Beginn der
+                 Vertragslaufzeit 22.000 € und am Ende der Vertragslaufzeit 4.400 €.
+                 9
+                  Es liegt eine Lieferung der Photovoltaikanlage des U an K vor. 10Die Summe der vertraglichen Raten beträgt
+                 26.000 € und entspricht damit dem Verkehrswert des Gegenstands einschließlich der Finanzierungskosten.
+                 11
+                    K muss bei der Ausübung der Option lediglich 1 € bezahlen und muss daher zusätzlich keine erhebliche
+                 Summe entrichten. 12Unter Einbeziehung der Abtretung der Herstellergarantie in die Gesamtbetrachtung
+                 erscheint die Optionsausübung zum Vertragsende als einzig wirtschaftlich rationale Möglichkeit für den K.
+                 13
+                    Bezüglich des Entgelts, das K für die Überlassung der Photovoltaikanlage an U zu entrichten hat, findet der
+                 Nullsteuersatz Anwendung. 14Die Serviceleistungen sind mit dem Regelsteuersatz zu besteuern, so dass U für
+                 den jährlichen Betrag in Höhe von 325 € für die Serviceleistungen Umsatzsteuer in Höhe von 51,89 €
+                 abzuführen hat.
+            14
+              Für Mietkauf und Leasingverträge, die als Lieferung einzustufen sind und die keine Aufteilung des Entgelts
+            gemäß Satz 12 vorsehen, ist eine Aufteilung anhand der internen Kalkulation vorzunehmen, wenn die
+            Photovoltaikanlage nach dem 31.12.2022 geliefert worden ist. 15Es wird nicht beanstandet, wenn der Unternehmer
+            pauschalierend ein Verhältnis von 90 % für die Überlassung der Photovoltaikanlage und 10 % für die
+            eigenständigen Serviceleistungen ansetzt. 16Im Übrigen gelten die Grundsätze des Abschnittes 3.5 Abs. 7.
+            Betreiber einer Photovoltaikanlage
+              (2) 1Der Nullsteuersatz erfasst nur die Lieferung an den Betreiber einer Photovoltaikanlage. 2Die in der
+            Lieferkette vorausgehenden Lieferungen (z. B. an Zwischenhändler, Leasinggeber, Mietverkäufer) unterliegen
+Seite 481   hingegen dem Regelsteuersatz. 3Betreiber der Photovoltaikanlage sind die natürlichen Personen, juristischen
+            Personen oder Personenzusammenschlüsse, die dem Grunde nach zum Leistungszeitpunkt als Betreiber der
+            jeweiligen Anlage im MaStR registrierungspflichtig sind oder voraussichtlich registrierungspflichtig werden.
+            4
+              Hierfür genügt es, wenn die Anlage unmittelbar an das Stromnetz angeschlossen werden soll; auf eine tatsächliche
+            Einspeisung oder Förderung nach dem EEG kommt es nicht an. 5Auch wird für die Anwendung des
+            Nullsteuersatzes nicht die Unternehmereigenschaft des Betreibers vorausgesetzt. 6Die tatsächliche Registrierung
+            im MaStR (z. B. im Falle von Steckersolargeräten, sog. Balkonkraftwerken) ist für die Betreibereigenschaft nicht
+            maßgeblich. 7Nachträgliche Änderungen der Person des Betreibers sind unerheblich. 8Besteht keine
+            Registrierungspflicht (beispielsweise bei sog. Inselanlagen), kann gleichwohl der Nullsteuersatz zur Anwendung
+            kommen (vgl. Absatz 7). 9In diesem Fall ist aus Vereinfachungsgründen davon auszugehen, dass der
+            Leistungsempfänger Betreiber der Photovoltaikanlage ist. 10Hinsichtlich der Nachweispflichten vgl. Absatz 6.
+            Belegenheitsvoraussetzungen
+              (3) 1Die Anwendung des Nullsteuersatzes setzt eine Installation der Solarmodule/Speicher/wesentlichen
+            Komponenten auf oder in der Nähe von Privatwohnungen, Wohnungen oder öffentlichen und anderen Gebäuden,
+            die für dem Gemeinwohl dienende Tätigkeiten genutzt werden, voraus. 2Wohnung/Privatwohnung ist jeder
+            umschlossene Raum, der zum Wohnen oder Schlafen benutzt wird. 3Als Wohnung im Sinne dieser Vorschrift
+            gelten daher auch Gebäude auf Freizeitgrundstücken und Gartenlauben in Kleingartensiedlungen. 4Wohnwagen
+            und Wohnschiffe sind nur dann als Wohnungen anzusehen, wenn sie nicht oder nur gelegentlich fortbewegt
+            werden. 5Öffentliche und andere Gebäude, die für dem Gemeinwohl dienende Tätigkeiten genutzt werden, liegen
+            vor, wenn das jeweilige Gebäude für Umsätze nach § 4 Nr. 11b, 14 bis 18, 20 bis 25, 27 und 29 oder § 12 Abs. 2
+            Nr. 8 UStG oder für hoheitliche oder ideelle Tätigkeiten verwendet wird. 6Container können ebenfalls den für die
+            Anwendung des Nullsteuersatzes erforderlichen Gebäudebegriff erfüllen, soweit die übrigen Voraussetzungen
+            vorliegen (z. B. Schulcontainer, die für hoheitliche Tätigkeiten etwa zur Auslagerung von Schulklassen wegen
+            Sanierungsarbeiten genutzt werden). 7In der Nähe der genannten Wohnungen/Gebäude befindet sich eine
+            Photovoltaikanlage insbesondere, wenn sie auf dem Grundstück installiert ist, auf dem sich auch die betreffende
+            Wohnung bzw. das betreffende begünstigte Gebäude befindet (z. B. Garage, Gartenschuppen, Zaun). 8Von einer
+            Nähe ist daher auch auszugehen, wenn zwischen dem Grundstück und der Photovoltaikanlage ein räumlicher oder
+            funktionaler Nutzungszusammenhang besteht (z. B. einheitlicher Gebäudekomplex oder einheitliches Areal). 9Die
+            Vereinfachungsregelung des § 12 Abs. 3 Nr. 1 Satz 2 UStG bleibt davon unberührt.
+              (4) 1Wird ein Gebäude sowohl für begünstigte als auch nicht begünstigte Zwecke verwendet (z. B. teilweise zu
+            Wohnzwecken und teilweise zu gewerblichen Zwecken), ist grundsätzlich von einem begünstigten Gebäude
+            auszugehen. 2Dies gilt nur dann nicht, wenn die unschädliche Nutzung so sehr hinter der schädlichen Nutzung
+            zurücktritt, dass eine Anwendung der Begünstigung nicht sachgerecht wäre. 3Hiervon ist auszugehen, wenn die
+            unschädliche Nutzung in so engem Zusammenhang mit der schädlichen Nutzung steht, dass ihr kein eigener Zweck
+            zukommt (beispielsweise Hausmeisterwohnung in einem Gewerbekomplex) oder wenn die auf die unschädliche
+            Nutzung entfallenden Nutzflächenanteile weniger als 10 % der Gesamtgebäudenutzfläche ausmachen. 4Tritt die
+            unschädliche Nutzung hinter der schädlichen Nutzung zurück, unterliegt die Lieferung insgesamt dem
+            Regelsteuersatz.
+            Vereinfachungsregelung in § 12 Abs. 3 Nr. 1 Satz 2 UStG
+              (5) 1Die Voraussetzungen des § 12 Abs. 3 Nr. 1 Satz 1 UStG gelten als erfüllt, wenn die installierte
+            Bruttoleistung der Photovoltaikanlage (Einheit) laut MaStR nicht mehr als 30 kW (peak) beträgt oder betragen
+            wird. 2Die Regelung stellt eine Vereinfachung für die Prüfung der Gebäudeart dar. 3Die Vereinfachungsregelung
+            gilt nicht für die Betreibereigenschaft. 4Besteht keine Registrierungspflicht im MaStR, ist die
+            Vereinfachungsregelung nicht anwendbar (vgl. aber die Vereinfachungsregelung in Absatz 6). 5Nach § 16 Abs. 3
+            Nr. 7 MaStRV eröffnet die Bundesnetzagentur den Finanzbehörden des Bundes und der Länder auf Anforderung
+            einen Zugang zu Daten, die nach § 15 Abs. 1 MaStRV nicht veröffentlicht werden, einschließlich
+            personenbezogener Daten, soweit die Finanzbehörden diese Daten zur Erfüllung ihrer gesetzlichen Aufgaben
+            benötigen. 6Die 30 kW-Grenze ist einheitenbezogen zu prüfen. 7Bei der nachträglichen Erweiterung einer
+            Photovoltaikanlage ist die Leistung der bestehenden Einheit mit der der Erweiterung zu addieren. 8Wird die
+            30 kW-Grenze durch die Erweiterung überschritten, ist die Vereinfachungsregelung auf den nachträglich
+            ergänzten Teil nicht anwendbar. 9Für den bereits bestehenden Teil führt dies jedoch nicht zur nachträglichen
+            Nichtanwendbarkeit der Vereinfachungsregelung.
+            Nachweis über das Vorliegen der Voraussetzungen
+              (6) 1Der leistende Unternehmer hat nachzuweisen, dass die Tatbestandsvoraussetzungen zur Anwendung des
+            Nullsteuersatzes erfüllt sind. 2Ausreichend für den Nachweis ist es, wenn der Erwerber erklärt, dass er Betreiber
+            der Photovoltaikanlage ist und es sich entweder um ein begünstigtes Gebäude handelt oder die installierte
+            Bruttoleistung der Photovoltaikanlage laut MaStR nicht mehr als 30 kW (peak) beträgt oder betragen wird. 3Eine
+            Erklärung des Erwerbers im Sinne des Satzes 2 kann auch im Rahmen der vertraglichen Vereinbarung (z. B. AGB)
+            erfolgen. 4Dasselbe gilt für nachträgliche Lieferungen von Speichern, wesentlichen Komponenten und
+            Ersatzteilen.
+Seite 482   Solarmodule und Speicher
+               (7) 1Netzgebundene Anlagen und nicht-netzgebundene stationäre Anlagen (sog. Inselanlagen) unterliegen dem
+            Nullsteuersatz. 2Aus Vereinfachungsgründen ist davon auszugehen, dass Solarmodule mit einer Leistung von
+            300 Watt und mehr für netzgekoppelte Anlagen oder stationäre Inselanlagen eingesetzt werden. 3Beträgt die
+            Leistung der Photovoltaikanlagen nicht mehr als 800 Voltampere, entfällt die besondere Nachweispflicht nach
+            Absatz 6, auch die Betreibereigenschaft des Leistungsempfängers wird unterstellt. 4Dies gilt nicht für Lieferungen
+            durch Hersteller von Photovoltaikanlagen und Lieferungen im Großhandel. 5Stationäre Solarmodule, die neben
+            der Stromerzeugung weitere unbedeutende Nebenzwecke erfüllen, sind ebenfalls begünstigt (z. B. Solartische).
+            6
+              Ebenso begünstigt sind sogenannte Hybridmodule, die sowohl Strom als auch Wärme produzieren. 7Bei sog.
+            Solar-Carports oder Solar-Terrassenüberdachungen ist nicht mehr von einem nur unbedeutenden Nebenzweck im
+            Sinne des Satzes 5 auszugehen. 8In diesen Fällen stellt allerdings die Photovoltaikanlage ein eigenständiges
+            Wirtschaftsgut dar; bei Erfüllung der Voraussetzungen des § 12 Abs. 3 Nr. 1 UStG unterliegen daher die
+            Solarpaneele (mit Halterung), die wesentlichen Komponenten sowie die hierfür erforderlichen Nebenleistungen
+            zur Lieferung der Photovoltaikanlage nach den allgemeinen Grundsätzen des Absatzes 1 dem Nullsteuersatz; nicht
+            hingegen die primäre Unterkonstruktion, die den Zweck der Terrassenüberdachung oder des Carports selbst erfüllt.
+            9
+              Batterien und Speicher unterliegen dem Nullsteuersatz, wenn diese im konkreten Anwendungsfall dazu bestimmt
+            sind, Strom aus begünstigten Solarmodulen im Sinne der Sätze 1 bis 6 zu speichern. 10Aus Vereinfachungsgründen
+            ist davon auszugehen, dass Speicher mit einer nutzbaren Kapazität von mindestens 5 kWh bestimmt sind, Strom
+            aus begünstigten Solarmodulen im Sinne der Sätze 1 bis 6 zu speichern. 11Die Lieferung sowie die Installation
+            eines Energiespeichersystems, das den mit einer Photovoltaikanlage im Sinne des § 12 Abs. 3 Nr. 1 UStG
+            erzeugten überschüssigen Strom vollständig oder teilweise chemisch in Wasserstoff speichert, unterliegt dem
+            Nullsteuersatz des § 12 Abs. 3 UStG, wenn keine anderweitige Verwendung des Wasserstoffs außer der
+            Rückumwandlung der im Wasserstoff gespeicherten chemischen Energie in elektrischen Strom zum Verbrauch
+            möglich ist. 12Das im Rückumwandlungsprozess zwangsläufige Entstehen von nutzbarer Wärme ist hierbei
+            unerheblich. 13Nachträgliche Änderungen der Nutzung von Batterien und Speicher sind unerheblich.
+            Wesentliche Komponenten
+              (8) 1Neben den Solarmodulen und dem Batteriespeicher (auch nachträglich eingebaute Speicher) unterliegen
+            „wesentliche Komponenten“ dem Nullsteuersatz. 2Wesentliche Komponenten sind die Gegenstände, deren
+            Verwendungszweck speziell im Betrieb oder der Installation von Photovoltaikanlagen liegt oder die zur Erfüllung
+            technischer Normen notwendig sind. 3Zu den wesentlichen Komponenten gehören jene, die geliefert und installiert
+            werden, um Photovoltaikanlagen zu errichten und zu betreiben, insbesondere die photovoltaikanlagenspezifischen
+            Komponenten wie z. B.:
+            -   Wechselrichter,
+            -   Dachhalterung,
+            -   Energiemanagement-System,
+            -   Solarkabel,
+            -   Einspeisesteckdose (sog. Wieland-Steckdose),
+            -   Funk-Rundsteuerungsempfänger
+            -   Backup Box und der Notstromversorgung dienende Einrichtungen.
+            4
+             Auch die (nachträgliche) Lieferung einzelner wesentlicher Komponenten und deren Ersatzteile, sowie deren
+            Installation unterliegen dem Nullsteuersatz, wenn diese Teil einer Anlage sind, die die Voraussetzungen des § 12
+            Abs. 3 Nr. 1 UStG erfüllt. 5Ebenso unterliegt die isolierte Erweiterung bzw. Erneuerung eines Zählerschranks im
+            Zusammenhang mit der Installation einer Photovoltaikanlage, die die Voraussetzungen des
+            § 12 Abs. 3 Nr. 1 UStG erfüllt, dem Nullsteuersatz.
+              (9) 1Keine wesentlichen Komponenten sind Zubehör, wie z. B. Schrauben, Nägel und Kabel, auch wenn diese
+            für die Installation der Anlage notwendig sind. ²Ebenso wenig gehören Stromverbraucher für den neu erzeugten
+            Strom (z. B. Ladeinfrastruktur, Wärmepumpe, Wasserstoffspeicher mit nicht ausschließlicher Bestimmung zur
+            Stromerzeugung durch Rückumwandlung des Wasserstoffs in Strom) zu den wesentlichen Komponenten einer
+            Photovoltaikanlage (vgl. aber zur Einheitlichkeit der Leistung Absatz 1).
+            Beispiel 1:
+                1
+                  Unternehmer U erwirbt im Baumarkt u. a. Schrauben und Kabel, um eine Photovoltaikanlage in Eigenleistung
+                auf seinem Privathaus zu errichten.
+                2
+                 Die Lieferung der Schrauben und Kabel unterliegt dem Regelsteuersatz in Höhe von 19 %, da es sich nicht
+                um wesentliche Komponenten im Sinne des § 12 Abs. 3 UStG handelt.
+Seite 483   Beispiel 2:
+                1
+                 Unternehmer U beauftragt das Solarunternehmen S im Rahmen einer sog. „Paketlösung“ eine
+                Photovoltaikanlage auf seinem Privathaus zu installieren. 2In den Materialkosten, die S gegenüber U in
+                Rechnung stellt, sind auch Kabel und Schrauben enthalten.
+                3
+                 Die Lieferung der nicht wesentlichen Komponenten (Kabel und Schrauben) erfolgt im Rahmen einer
+                einheitlichen Leistung (Lieferung einer Photovoltaikanlage) und unterliegt unter den übrigen Voraussetzungen
+                des § 12 Abs. 3 UStG dem Nullsteuersatz.
+            Installation einer Photovoltaikanlage
+              (10) 1Gemäß § 12 Abs. 3 Nr. 4 UStG unterliegt auch die Installation von Photovoltaikanlagen der
+            Begünstigung, wenn die Lieferung der installierten Komponenten die Voraussetzungen der § 12 Abs. 3 Nr. 1 UStG
+            erfüllt. 2Zu den begünstigten Leistungen gehören die photovoltaikanlagenspezifischen Arbeiten, die ausschließlich
+            dazu dienen, eine Photovoltaikanlage sicher für das Gebäude und für die sich darin befindlichen Menschen zu
+            betreiben (z. B. photovoltaikanlagenspezifische Elektroinstallation). 3Die Installationsarbeiten müssen direkt
+            gegenüber dem Anlagenbetreiber erbracht werden, um unter die Steuersatzermäßigung zu fallen. 4(Vor-)Arbeiten,
+            die auch anderen Stromverbrauchern oder Stromerzeugern oder anderen Zwecken zugutekommen, unterliegen
+            nicht dem Nullsteuersatz (vgl. aber zur Einheitlichkeit der Leistung Absatz 1).
+            Beispiel 1:
+                1
+                 Unternehmer U errichtet in Eigenleistung eine Photovoltaikanlage auf seinem Privathaus. 2Für die
+                erforderlichen Bodenarbeiten beauftragt U eine Baufirma B und für die Erweiterung seines Zählerschranks
+                das Elektrounternehmen E. 3Des Weiteren ist eine Verstärkung der Dachsparren erforderlich. 4U beauftragt
+                hierfür das Dachdeckerunternehmen D.
+                5
+                 Die Bodenarbeiten unterliegen ebenso dem Regelsteuersatz in Höhe von 19 % wie die Dacharbeiten. 6Die
+                Erweiterung des Zählerschranks unterliegt dem Nullsteuersatz.
+            Beispiel 2:
+                1
+                  Unternehmer U errichtet in Eigenleistung eine Photovoltaikanlage auf seinem Privathaus. 2Das Gebäude des
+                U wird gleichzeitig und unabhängig von der Errichtung der Photovoltaikanlage grundlegend renoviert. 3So
+                werden umfassende Elektroarbeiten durchgeführt, bei denen auch eine Erneuerung des Zählerschranks
+                erforderlich ist. 4In diesem Zusammenhang wird die Photovoltaikanlage berücksichtigt und angeschlossen.
+                5
+                 Die am Privathaus des U durchgeführten Elektroarbeiten unterliegen insgesamt dem Regelsteuersatz in Höhe
+                von 19 %, da die Erneuerung des Zählerschranks nicht durch die Installation der Photovoltaikanlage bedingt
+                ist und sie somit nicht in ursächlichem Zusammenhang mit der Installation der Photovoltaikanlage steht.
+            Beispiel 3:
+                1
+                 Sachverhalt wie in Beispiel 1, jedoch beauftragt U das Solarunternehmen S im Rahmen einer sog.
+                „Paketlösung“ eine Photovoltaikanlage mit 25 kw (peak) auf seinem Gebäude zu installieren.
+                Alle von S im Rahmen einer einheitlichen Leistung (Dacharbeiten, Lieferung einer Photovoltaikanlage,
+                2
+
+                Bodenarbeiten, Erweiterung Zählerschrank) erbrachten Arbeiten unterliegen unter den übrigen
+                Voraussetzungen des § 12 Abs. 3 UStG dem Nullsteuersatz.
+Seite 484                 13.1. Entstehung der Steuer bei der Versteuerung nach vereinbarten Entgelten
+              (1) Bei der Versteuerung nach vereinbarten Entgelten (Sollversteuerung) entsteht die Steuer grundsätzlich mit
+                  1
+
+            Ablauf des Voranmeldungszeitraums, in dem die Lieferung oder sonstige Leistung ausgeführt worden ist. 2Das
+            gilt auch für unentgeltliche Wertabgaben im Sinne des § 3 Abs. 1b und 9a UStG. 3Die Steuerentstehung ist nicht
+            auf bereits fällige Entgeltansprüche beschränkt (vgl. BFH-Urteil vom 01.02.2022 – V R 37/21 (V R 16/19),
+            BStBl II S. 860). 4Die Steuer entsteht in der gesetzlichen Höhe unabhängig davon, ob die am Leistungsaustausch
+            beteiligten Unternehmer von den ihnen vom Gesetz gebotenen Möglichkeiten der Rechnungserteilung mit
+            gesondertem Steuerausweis und des Vorsteuerabzugs Gebrauch machen oder nicht. 5Für Umsätze, die ein
+            Unternehmer in seinen Voranmeldungen nicht angibt (auch bei Rechtsirrtum über deren Steuerbarkeit), entsteht
+            die Umsatzsteuer ebenso wie bei ordnungsgemäß erklärten Umsätzen (vgl. BFH-Urteil vom 20.01.1997 –
+            V R 28/95, BStBl II S. 716). 6Der Zeitpunkt der Leistung ist entscheidend, für welchen Voranmeldungszeitraum
+            ein Umsatz zu berücksichtigen ist (vgl. BFH-Urteil vom 13.10.1960 – V 294/58 U, BStBl III S. 478). 7Dies gilt
+            nicht für die Istversteuerung von Anzahlungen im Sinne des § 13 Abs. 1 Nr. 1 Buchstabe a Satz 4 UStG (vgl.
+            Abschnitt 13.5).
+               (2) 1Lieferungen – einschließlich Werklieferungen – sind grundsätzlich dann ausgeführt, wenn der
+            Leistungsempfänger die Verfügungsmacht über den zu liefernden Gegenstand erlangt. 2Lieferungen, bei denen der
+            Lieferort nach § 3 Abs. 6 UStG bestimmt wird, werden im Zeitpunkt des Beginns der Beförderung oder
+            Versendung des Gegenstands ausgeführt (vgl. BFH-Urteil vom 06.12.2007 – V R 24/05, BStBl II 2009 S. 490).
+            3
+              Bei Sukzessivlieferungsverträgen ist der Zeitpunkt jeder einzelnen Lieferung maßgebend. 4Lieferungen von
+            Elektrizität, Gas, Wärme, Kälte und Wasser sind jedoch erst mit Ablauf des jeweiligen Ablesezeitraums als
+            ausgeführt zu behandeln. 5Die während des Ablesezeitraums geleisteten Abschlagszahlungen der Tarifabnehmer
+            sind nicht als Entgelt für Teilleistungen (vgl. Abschnitt 13.4) anzusehen; sie führen jedoch bereits mit Ablauf des
+            Voranmeldungszeitraums ihrer Vereinnahmung nach § 13 Abs. 1 Nr. 1 Buchstabe a Satz 4 UStG zur Entstehung
+            der Steuer (vgl. Abschnitt 13.5).
+              (3) 1Sonstige Leistungen, insbesondere Werkleistungen, sind grundsätzlich im Zeitpunkt ihrer Vollendung
+            ausgeführt. 2Bei zeitlich begrenzten Dauerleistungen, z. B. Duldungs- oder Unterlassungsleistungen (vgl.
+            Abschnitt 3.1 Abs. 4) ist die Leistung mit Beendigung des entsprechenden Rechtsverhältnisses ausgeführt, es sei
+            denn, die Beteiligten haben Teilleistungen (vgl. Abschnitt 13.4) vereinbart. 3Anzahlungen sind stets im Zeitpunkt
+            ihrer Vereinnahmung zu versteuern (vgl. Abschnitt 13.5).
+               (4) 1Eine Leasinggesellschaft, die ihrem Kunden (Mieter) eine Sache gegen Entrichtung monatlicher
+            Leasingraten überlässt, erbringt eine Dauerleistung, die entsprechend der Vereinbarung über die monatlich zu
+            zahlenden Leasingraten in Form von Teilleistungen (vgl. Abschnitt 13.4) bewirkt wird. 2Die Steuer entsteht jeweils
+            mit Ablauf des monatlichen Voranmeldungszeitraums, für den die Leasingrate zu entrichten ist. 3Tritt die
+            Leasinggesellschaft ihre Forderung gegen den Mieter auf Zahlung der Leasingraten an eine Bank ab, die das Risiko
+            des Ausfalls der erworbenen Forderung übernimmt, führt die Vereinnahmung des Abtretungsentgelts nicht zur
+            sofortigen Entstehung der Steuer für die Vermietung nach § 13 Abs. 1 Nr. 1 Buchstabe a Satz 4 UStG, weil das
+            Abtretungsentgelt nicht zugleich Entgelt für die der Forderung zu Grunde liegende Vermietungsleistung ist. 4Die
+            Bank zahlt das Abtretungsentgelt für den Erwerb der Forderung, nicht aber als Dritter für die Leistung der
+            Leasinggesellschaft an den Mieter. 5Die Leasinggesellschaft vereinnahmt das Entgelt für ihre Vermietungsleistung
+            vielmehr jeweils mit der Zahlung der Leasingraten durch den Mieter an die Bank, weil sie insoweit gleichzeitig
+            von ihrer Gewährleistungspflicht für den rechtlichen Bestand der Forderung gegenüber der Bank befreit wird.
+            6
+              Dieser Vereinnahmungszeitpunkt wird in der Regel mit dem Zeitpunkt der Ausführung der einzelnen Teilleistung
+            übereinstimmen.
+              (5) Nach den Grundsätzen des Absatzes 4 ist auch in anderen Fällen zu verfahren, in denen Forderungen für
+            noch zu erbringende Leistungen oder Teilleistungen verkauft werden.
+              (6) 1Bei einem Kauf auf Probe (§ 454 BGB) im Versandhandel kommt der Kaufvertrag noch nicht mit der
+            Zusendung der Ware, sondern erst nach Ablauf der vom Verkäufer eingeräumten Billigungsfrist oder durch
+            Überweisung des Kaufpreises zu Stande. 2Erst zu diesem Zeitpunkt ist umsatzsteuerrechtlich die Lieferung
+            ausgeführt (vgl. BFH-Urteil vom 06.12.2007 – V R 24/05, BStBl II 2009 S. 490). 3Dagegen ist bei einem Kauf
+            mit Rückgaberecht bereits mit der Zusendung der Ware der Kaufvertrag zu Stande gekommen und die Lieferung
+            ausgeführt.
+              (7) 1Eine Abmahnleistung im Sinne des Abschnitts 1.3 Abs. 16a ist mit dem Zugang der Abmahnung beim
+            Abgemahnten ausgeführt. 2Aus Vereinfachungsgründen wird es nicht beanstandet, wenn der Steuerpflichtige die
+            Versteuerung für die Abmahnleistung in demjenigen Voranmeldungszeitraum vornimmt, in dem die Abmahnung
+            an den Abgemahnten abgesendet wurde (vgl. BMF-Schreiben vom 01.10.2021, BStBl I S. 1859).
+Seite 485
+

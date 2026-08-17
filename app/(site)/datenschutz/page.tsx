@@ -114,11 +114,18 @@ export default function DatenschutzPage() {
           werden. Es gibt keine Verkaufsanrufe, kein Werbe-Tracking durch
           Drittanbieter und keine Werbung — du bekommst dein Ergebnis sofort,
           ohne Registrierung. Die eigentliche Berechnung läuft in deinem Browser.
-          In zwei Fällen werden dennoch Daten übermittelt: für die
+          {/* Bewusst NICHT "in drei Fällen … alle drei": Hosting-Logfiles
+              (Abschnitt 3) und Reichweitenmessung (Abschnitt 5) sind ebenfalls
+              Übermittlungen. Eine abgezählte Aufzählung, die nicht alles
+              abzählt, ist genau die absolute Zusage, die diese Erklärung schon
+              zweimal falsch gemacht hat. */}
+          In einigen Fällen werden dennoch Daten übermittelt: für die
           standortgenaue Ertragsprognose wird deine Postleitzahl an einen
-          Berechnungsdienst gesendet (Abschnitt 8), und wenn du dich freiwillig
+          Berechnungsdienst gesendet (Abschnitt 8), wenn du dich freiwillig
           anmeldest, um Berechnungen zu speichern, legen wir ein Nutzerkonto an
-          (Abschnitt 9). Beides ist unten transparent beschrieben.
+          (Abschnitt 9), und wenn du uns über das Kontaktformular schreibst,
+          geht deine Nachricht per E-Mail an uns (Abschnitt 10). Die wichtigsten
+          Fälle sind unten einzeln beschrieben.
         </p>
 
         <h2 style={S.h2}>3. Hosting</h2>
@@ -129,15 +136,19 @@ export default function DatenschutzPage() {
           Server-Logfiles):
         </p>
         <ul style={S.ul}>
-          <li style={S.li}>IP-Adresse (anonymisiert)</li>
+          <li style={S.li}>IP-Adresse</li>
           <li style={S.li}>Datum und Uhrzeit des Zugriffs</li>
           <li style={S.li}>Aufgerufene Seite</li>
           <li style={S.li}>Browser-Typ und -Version</li>
           <li style={S.li}>Betriebssystem</li>
         </ul>
         <p style={S.p}>
-          Diese Daten werden zur Sicherstellung des Betriebs erhoben und nach
-          kurzer Zeit automatisch gelöscht. Rechtsgrundlage ist Art. 6 Abs. 1
+          Diese Daten werden zur Sicherstellung des Betriebs erhoben. Sie
+          entstehen beim Hosting-Anbieter und werden dort nach einer vom
+          gebuchten Tarif abhängigen Frist automatisch gelöscht — je nach Tarif
+          zwischen einer Stunde und längstens 30 Tagen. Wir werten diese
+          Logfiles nicht aus und führen sie nicht mit anderen Daten zusammen.
+          Rechtsgrundlage ist Art. 6 Abs. 1
           lit. f DSGVO (berechtigtes Interesse an einem sicheren und stabilen
           Betrieb der Website).
         </p>
@@ -199,7 +210,7 @@ export default function DatenschutzPage() {
           für die Verarbeitung ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
           Interesse an einer datensparsamen Reichweitenmessung zur Verbesserung
           unseres Angebots). Der Erhebung kannst du jederzeit widersprechen
-          (Abschnitt 11). Weitere Informationen:{" "}
+          (Abschnitt 12). Weitere Informationen:{" "}
           <a
             href="https://vercel.com/docs/analytics/privacy-policy"
             target="_blank"
@@ -230,11 +241,20 @@ export default function DatenschutzPage() {
         </p>
 
         <p style={S.p}>
-          Zusätzlich nutzt die Website den lokalen Browser-Speicher (localStorage/sessionStorage), um öffentliche Energie- und Preisdaten zwischenzuspeichern und — wenn du auf „Speichern" klickst — deine Berechnung bis zum Login vorzuhalten. Diese Einträge enthalten keine Identifier und dienen keinem Tracking; die Speicherung ist für die gewünschte Funktion erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Du kannst sie jederzeit über die Einstellungen deines Browsers löschen.
+          Zusätzlich nutzt die Website den Browser-Speicher. Öffentliche Energie- und Preisdaten werden dort nur für die Dauer deines Besuchs zwischengespeichert, damit dieselben Zahlen nicht mehrfach geladen werden müssen; schließt du den Browser-Tab, sind sie weg. Klickst du auf „Speichern", wird deine Berechnung bis zum Login vorgehalten. Diese Einträge dienen keinem Tracking und enthalten keine Kennung, mit der sich ein Gerät wiedererkennen ließe. Du kannst sie jederzeit über die Einstellungen deines Browsers löschen.
         </p>
 
         <p style={S.p}>
-          Ebenfalls im lokalen Browser-Speicher merken wir uns zwei Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong> und dein gewähltes <strong>Farbschema</strong> (hell, dunkel oder automatisch). Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst — sie bleibt auch bei einem späteren Besuch erhalten. Beide Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird ausschließlich für die Abfrage von Wetter- und Ertragsdaten für diesen Ort verwendet (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige jederzeit wieder entfernen oder den Browser-Speicher löschen. Rechtsgrundlage ist deine gewünschte Funktion (§ 25 Abs. 2 Nr. 2 TDDDG).
+          Bist du angemeldet, merkt sich der Browser zusätzlich für die Dauer der
+          Sitzung, ob dein Konto Verwaltungsrechte hat; dabei wird deine
+          Konto-Kennung mitgespeichert. Dieser Eintrag entsteht nur nach einer
+          Anmeldung, verschwindet beim Schließen des Browser-Tabs und dient
+          allein dazu, die Verwaltungsansicht nicht bei jedem Seitenaufruf neu
+          abfragen zu müssen.
+        </p>
+
+        <p style={S.p}>
+          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher nur Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong>, dein gewähltes <strong>Farbschema</strong> (hell, dunkel oder automatisch) und, falls du im Solar-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird ausschließlich für die Abfrage von Wetter- und Ertragsdaten für diesen Ort verwendet (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Solar-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
         </p>
 
         <h2 style={S.h2}>8. Standortgenaue Ertragsprognose</h2>
@@ -243,9 +263,10 @@ export default function DatenschutzPage() {
           standortabhängigen Solarertrag. Dazu wird die von dir eingegebene
           Postleitzahl bzw. die daraus abgeleiteten Koordinaten an unseren Server
           und von dort an den Photovoltaik-Ertragsdienst PVGIS der Europäischen
-          Kommission (Joint Research Centre) übermittelt. In der Live-Simulation
-          werden die Koordinaten zusätzlich an den Wetterdienst Open-Meteo
-          gesendet. Dabei wird technisch bedingt die IP-Adresse unseres Servers,
+          Kommission (Joint Research Centre) übermittelt. Für die
+          Live-Simulation, die Sonnenanzeige, den Klimaanlagen-Rechner und die
+          Hitzewellen-Vorschau werden die Koordinaten zusätzlich an den
+          Wetterdienst Open-Meteo gesendet. Dabei wird technisch bedingt die IP-Adresse unseres Servers,
           nicht deine eigene, an diese Dienste übertragen. Es werden keine
           Berechnungs-Eingaben darüber hinaus weitergegeben. Rechtsgrundlage ist
           Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer
@@ -264,10 +285,23 @@ export default function DatenschutzPage() {
           und die von dir bewusst gespeicherten Berechnungen.
         </p>
         <p style={S.p}>
-          Für Anmeldung und Speicherung nutzen wir den Dienst Supabase (betrieben
-          von Supabase Inc.) als Auftragsverarbeiter im Sinne von Art. 28 DSGVO.
-          Die Daten werden auf einem Server innerhalb der EU (Stockholm,
-          Schweden) gespeichert. Sie werden ausschließlich zur Bereitstellung
+          Für Anmeldung und Speicherung nutzen wir den Dienst Supabase als
+          Auftragsverarbeiter im Sinne von Art. 28 DSGVO. Vertragspartner ist die
+          Supabase Pte. Ltd. mit Sitz in Singapur; die Server stehen in der EU
+          (Stockholm, Schweden). Für Zugriffe aus Singapur gelten die
+          Standardvertragsklauseln der EU-Kommission (Modul 2,
+          Durchführungsbeschluss (EU) 2021/914; Art. 46 Abs. 2 lit. c DSGVO).
+          Eine Kopie dieser Garantien erhältst du im
+          Auftragsverarbeitungsvertrag von Supabase{" "}
+          <a
+            href="https://supabase.com/legal/customer-resources/data-processing-addendum"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={S.a}
+          >
+            (supabase.com/legal)
+          </a>{" "}
+          oder auf Anfrage bei uns. Die Daten werden ausschließlich zur Bereitstellung
           deines Kontos und deiner gespeicherten Berechnungen verarbeitet und
           nicht zu Werbezwecken genutzt oder an Dritte verkauft. Rechtsgrundlage ist Art. 6 Abs. 1 lit.
           b DSGVO (Erfüllung des von dir gewünschten Dienstes). Du kannst dein
@@ -287,17 +321,100 @@ export default function DatenschutzPage() {
           </a>
         </p>
 
-        <h2 style={S.h2}>10. Kontakt per E-Mail</h2>
+        {/* Das Kontaktformular kam in dieser Erklärung bis zum 15.08.2026 gar
+            nicht vor: Abschnitt „Kontakt per E-Mail" beschrieb nur die direkte
+            Mail, und der Versanddienstleister (Drittland) war nirgends genannt.
+            Art. 13 DSGVO verlangt Empfänger bzw. Empfängerkategorien und den
+            Drittlandbezug — deshalb ein eigener Abschnitt vor der E-Mail.
+
+            DPF-Status am 16.08.2026 direkt im amtlichen Register geprüft
+            (dataprivacyframework.gov/list, Teilnehmersuche):
+              · Vercel Inc. — EU-U.S. DPF "Active" (auch Swiss + UK Extension)
+              · Resend      — EU-U.S. DPF "Active - Re-certification under Review",
+                              Non-HR Data (auch UK Extension), nächste
+                              Zertifizierung fällig 03.03.2027
+            Achtung: Der Eintrag auf privacyshield.gov ist der ALTE
+            Privacy-Shield-Datensatz und steht dort auf "Inactive" — wer den mit
+            dem DPF-Register verwechselt, meldet einen Befund, den es nicht gibt.
+            Supabase läuft NICHT über das DPF, sondern über Standardvertrags-
+            klauseln (Vertragspartei Supabase Pte. Ltd., Singapur) — siehe
+            Abschnitt 9 und supabase.com/legal/dpa. */}
+        <h2 style={S.h2}>10. Kontaktformular</h2>
         <p style={S.p}>
-          Wenn du uns per E-Mail kontaktierst, werden die von dir mitgeteilten
-          Daten (E-Mail-Adresse, Inhalt der Nachricht) zum Zweck der Bearbeitung
-          deiner Anfrage gespeichert. Diese Daten werden nicht ohne deine
-          Einwilligung weitergegeben. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b
-          DSGVO (vorvertragliche Maßnahmen) bzw. lit. f (berechtigtes Interesse
-          an der Beantwortung von Anfragen).
+          Auf der Kontaktseite und in den Kontakt-Fenstern einzelner Seiten
+          kannst du uns über ein Formular schreiben. Übermittelt werden dabei
+          deine <strong>E-Mail-Adresse</strong>, das gewählte{" "}
+          <strong>Thema</strong>, deine <strong>Nachricht</strong> und — wenn du
+          ihn angibst — dein <strong>Name</strong>. E-Mail-Adresse und Nachricht
+          brauchen wir zwingend, sonst lässt sich das Formular nicht absenden;
+          der Name ist freiwillig. Wir verarbeiten diese Angaben, um deine
+          Anfrage zu beantworten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO
+          (berechtigtes Interesse an der Beantwortung von Anfragen), bei Anfragen
+          zu einem Vertrag oder dessen Anbahnung Art. 6 Abs. 1 lit. b DSGVO.
+          Beiden Verarbeitungen, die wir auf das berechtigte Interesse stützen —
+          der Beantwortung und der unten beschriebenen Abwehr automatisierter
+          Einsendungen —, kannst du jederzeit widersprechen (Abschnitt 12).
+        </p>
+        <p style={S.p}>
+          Für den Versand nutzen wir den E-Mail-Dienst <strong>Resend</strong>{" "}
+          (Plus Five Five, Inc., 2261 Market Street #5039, San Francisco, CA
+          94114, USA) als Auftragsverarbeiter nach Art. 28 DSGVO. Deine Angaben
+          werden dabei in die USA übermittelt und dort technisch bedingt im
+          Versandprotokoll verarbeitet. Grundlage der Übermittlung ist der
+          Angemessenheitsbeschluss der EU-Kommission vom 10. Juli 2023 zum EU-US
+          Data Privacy Framework; Resend ist dort als Teilnehmer gelistet.
+          Zusätzlich sind in den Auftragsverarbeitungsvertrag die
+          Standardvertragsklauseln der EU-Kommission einbezogen — sie tragen die
+          Übermittlung auch dann, wenn die Zertifizierung entfallen sollte.
+          Weitere Informationen:{" "}
+          <a
+            href="https://resend.com/legal/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={S.a}
+          >
+            resend.com/legal/privacy-policy
+          </a>
+        </p>
+        <p style={S.p}>
+          In unserer Datenbank wird <strong>nichts davon gespeichert</strong>:
+          Deine Nachricht landet als E-Mail im Postfach des in Abschnitt 1
+          genannten Verantwortlichen und wird dort gelöscht, sobald die Anfrage
+          erledigt ist und keine gesetzlichen Aufbewahrungspflichten
+          entgegenstehen.
+        </p>
+        <p style={S.p}>
+          Um automatisierte Masseneinsendungen abzuwehren, hält unser Server die
+          IP-Adresse der absendenden Verbindung im Arbeitsspeicher fest und
+          wertet sie ausschließlich innerhalb eines Ein-Stunden-Zeitfensters aus
+          (bis zu fünf Nachrichten je Stunde und Serverinstanz). Sie wird nicht
+          dauerhaft gespeichert, nicht in die E-Mail an uns übernommen und
+          spätestens mit dem Neustart der Serverinstanz verworfen.
+          Rechtsgrundlage hierfür ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes
+          Interesse an einem funktionsfähigen, vor automatisierten Einsendungen
+          geschützten Formular).
         </p>
 
-        <h2 style={S.h2}>11. Deine Rechte</h2>
+        {/* Dieser Abschnitt stand vor dem Kontaktformular hier und beschrieb
+            dieselbe Sache mit anderen Worten: „gespeichert" ohne Löschkriterium
+            und mit umgekehrter Reihenfolge der Rechtsgrundlagen. Zwei
+            Begründungen für denselben Vorgang sind kein Stil-, sondern ein
+            Transparenzproblem — deshalb an Abschnitt 10 angeglichen. */}
+        <h2 style={S.h2}>11. Kontakt per E-Mail</h2>
+        <p style={S.p}>
+          Schreibst du uns direkt eine E-Mail, statt das Formular zu nutzen,
+          verarbeiten wir deine E-Mail-Adresse und den Inhalt deiner Nachricht
+          ausschließlich, um deine Anfrage zu beantworten. Rechtsgrundlage ist
+          Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Beantwortung
+          von Anfragen), bei Anfragen zu einem Vertrag oder dessen Anbahnung
+          Art. 6 Abs. 1 lit. b DSGVO; auch hier kannst du der Verarbeitung
+          jederzeit widersprechen (Abschnitt 12). Deine Nachricht wird gelöscht,
+          sobald die Anfrage erledigt ist und keine gesetzlichen
+          Aufbewahrungspflichten entgegenstehen. Eine Weitergabe an Dritte
+          erfolgt nicht, außer wir sind gesetzlich dazu verpflichtet.
+        </p>
+
+        <h2 style={S.h2}>12. Deine Rechte</h2>
         <p style={S.p}>Du hast jederzeit das Recht auf:</p>
         <ul style={S.ul}>
           <li style={S.li}>
@@ -323,14 +440,14 @@ export default function DatenschutzPage() {
           Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO).
         </p>
 
-        <h2 style={S.h2}>12. Änderungen</h2>
+        <h2 style={S.h2}>13. Änderungen</h2>
         <p style={S.p}>
           Diese Datenschutzerklärung kann gelegentlich aktualisiert werden, um
           Änderungen an der Website oder rechtlichen Anforderungen zu
           entsprechen.
         </p>
 
-        <h2 style={S.h2}>13. Eingebettete Widgets auf anderen Websites</h2>
+        <h2 style={S.h2}>14. Eingebettete Widgets auf anderen Websites</h2>
         <p style={S.p}>
           Wenn du eine fremde Website besuchst, die ein solar-check.io-Widget
           einbindet (etwa eine Strommix- oder Erzeugungs-Grafik), verarbeitet
@@ -346,7 +463,7 @@ export default function DatenschutzPage() {
         {/* Der Kommunen-Outreach kam in dieser Erklärung überhaupt nicht vor,
             während das Anschreiben für „Herkunft, Zweck und Ihr
             Widerspruchsrecht" hierher verwies — der Verweis ging ins Leere. */}
-        <h2 style={S.h2}>14. Anschreiben an Städte und Gemeinden</h2>
+        <h2 style={S.h2}>15. Anschreiben an Städte und Gemeinden</h2>
         <p style={S.p}>
           Wir schreiben Kommunen an, um ihnen die Solar-Zahlen ihres Ortes als
           fertige Meldung und als einbettbare Übersicht anzubieten. Verarbeitet

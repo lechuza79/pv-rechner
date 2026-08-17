@@ -44,6 +44,11 @@ export const SEITEN: Seite[] = [
   // Methodik trägt seit dem Kontakt-Teaser ein Client-Bauteil — ohne Rundgang
   // wäre ein Fehler darin unsichtbar (Seite liefert weiter HTTP 200).
   { pfad: "/methodik", erwartet: /so rechnen wir/i },
+  // Rechtstexte: Die Kontaktseite trägt das Formular (Client-Bauteil), die
+  // Datenschutzerklärung die Pflichtangaben dazu. Beide waren bis 15.08.2026
+  // im Rundgang nicht enthalten.
+  { pfad: "/kontakt", erwartet: /kontakt/i },
+  { pfad: "/datenschutz", erwartet: /datenschutzerklärung/i },
 ];
 
 /** Die Embed-Widgets sind das Produkt, das wir an Kommunen verteilen — sie

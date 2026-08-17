@@ -233,3 +233,109 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   validFrom: "2026-07",
   reviewBy: "2026-10", // Quartals-Rhythmus (scripts/balkon-verify.md), nicht jährlich
 };
+
+/** Ab diesem Jahresverbrauch weisen wir darauf hin, dass eine Dachanlage deutlich
+ *  mehr holt — ein Balkonkraftwerk deckt dann nur noch die Grundlast. Bewusst
+ *  konservativ. Steht hier, weil die Schwelle im Rechner-Ergebnis UND im
+ *  Textabschnitt der Seite genannt wird; als zweite getippte Zahl würde eine
+ *  davon beim nächsten Anfassen zurückbleiben. */
+export const BALKON_DACH_HINWEIS_KWH = 3500;
+
+// ─── Rechtsaussagen zu Steckersolar — EINE Quelle ───────────────────────────
+//
+// Dieselben Sätze stehen im Rechner-Ergebnis UND im FAQ der Rechner-Seite (und
+// von dort im FAQPage-JSON-LD). Als handgetippte Zweitkopie würde eine Korrektur
+// stumm nur eine der Oberflächen erreichen — dieselbe Systematik wie bei
+// `bioTreppeStufenText()` / `eegVerfahrenSatz()` (CLAUDE.md, Faktenprüfung 11).
+// Der Quartals-Wächter (scripts/balkon-verify.md, Abschnitt „Anmelde-Regel")
+// prüft diese Sätze; er findet sie ab jetzt hier statt im JSX.
+//
+// ZUSTAND: geltendes Recht (Solarpaket I, in Kraft seit 16.05.2024) — kein
+// Entwurf. Die VDE-Vornorm ist ausdrücklich KEIN Gesetz, sondern freiwillig;
+// dieser Unterschied steht im Satz selbst und darf beim Kürzen nicht wegfallen.
+// Festgenagelt von lib/__tests__/balkon.test.ts → „Rechtssätze".
+export const BALKON_RECHT = {
+  /** Tag, an dem die Sätze hier zuletzt gegen die Primärquellen gelesen wurden.
+   *  BEWUSST ein Stichtag und kein Renderdatum: Er darf nur mitwandern, wenn
+   *  jemand die Quellen wirklich wieder aufgeschlagen hat (Regel „Prüfdatum nur
+   *  stempeln, was geprüft wurde"). Der Quartals-Wächter zieht ihn nach. */
+  geprueftIso: "2026-08-16",
+
+  /** Anmeldeweg seit dem Solarpaket I. */
+  anmeldung:
+    "Anmeldung seit 2024 vereinfacht: eine Registrierung im Marktstammdatenregister genügt, keine Netzbetreiber-Genehmigung.",
+  /** Mietwohnung und Eigentümergemeinschaft. */
+  mieteEigentum:
+    "Seit 2024 gelten Steckersolargeräte als privilegierte Maßnahme — Vermieter und Eigentümergemeinschaft dürfen die Montage nur noch aus wichtigem Grund ablehnen. Ein kurzes Einverständnis vorab bleibt trotzdem sinnvoll.",
+  /** Keine Vergütung für den Überschuss — der Grund, warum nur Eigenverbrauch zählt. */
+  keineVerguetung:
+    "Für Balkonkraftwerke gibt es keine Einspeisevergütung — der Überschuss fließt unvergütet ins Netz. Deshalb zählt nur der Strom, den du selbst verbrauchst.",
+
+  // Geprüft am 16.08.2026 im Volltext, Auszug im Repo:
+  // docs/quellen/ustae-12-18-nullsteuersatz.txt
+  //   § 12 Abs. 3 UStG — Nullsteuersatz, Anlage an einer Wohnung, höchstens 30 kWp.
+  //   UStAE 12.18 Abs. 2 S. 6 — nennt Steckersolargeräte ausdrücklich.
+  //   UStAE 12.18 Abs. 7 S. 3 — bis 800 VA entfällt sogar die Nachweispflicht,
+  //     die Betreibereigenschaft wird unterstellt (bis 2024: 600 W; geändert durch
+  //     BMF-Schreiben v. 15.08.2024, III C 2 - S 7220/22/10002 :017).
+  // DER SPEICHER-SATZ IST IN BEIDE RICHTUNGEN HEIKEL — Council 16.08.2026, 2/3
+  // bestätigt, der adversariale Prüfer hat ihn ENTSCHÄRFT statt verschärft:
+  // Die 5 kWh aus Abs. 7 S. 10 sind eine VERMUTUNGSREGEL, kein Tatbestandsmerkmal.
+  // Materiell entscheidet S. 9 die Zweckbestimmung. Ein 1,6-kWh-Balkonspeicher
+  // fällt also nur aus der Vermutung, nicht aus der Begünstigung — er ist
+  // steuerfrei, sobald erkennbar ist, dass er Strom aus dem begünstigten Gerät
+  // speichert, und das ist beim Kauf zum Set praktisch immer erkennbar.
+  //   ZU STRENG wäre: „unter 5 kWh nicht steuerfrei" / „dann 19 %" — schlicht falsch.
+  //   ZU LASCH wäre: „Set und Speicher sind steuerfrei" — unterschlägt die Bedingung.
+  // Der Satz muss beide Fehler vermeiden; deshalb nennt er die Schwelle UND sagt,
+  // was darunter gilt. Festgenagelt von lib/__tests__/balkon.test.ts.
+  // Vom Council zusätzlich gefunden, hier bewusst NICHT im Satz (gehört in den
+  // geplanten Ratgeber, nicht in die Kurzantwort): Beim GEBRAUCHTKAUF vom
+  // Wiederverkäufer greift die Differenzbesteuerung (§ 25a Abs. 5 S. 1 UStG,
+  // 19 % auf die Marge), und Miete/Leasing sowie Wartungsverträge bleiben bei 19 %.
+  // Zwei weitere Council-Funde stecken im Wortlaut:
+  //   „STEUERFREI" IST DER FALSCHE BEGRIFF. Es ist ein Steuersatz von 0 %, keine
+  //   Steuerbefreiung — im Ergebnis dasselbe für den Käufer, aber ein anderer
+  //   Rechtsbegriff. Deshalb durchgehend „keine Mehrwertsteuer" / „Nullsteuersatz".
+  //   DIE HÄNDLERPRAXIS GEHÖRT DAZU. Beim SEPARAT gekauften Speicher fehlt die
+  //   Klammer des einheitlichen Kaufs (Sachgesamtheit, UStAE 3.1 Abs. 1 S. 4);
+  //   viele Händler rechnen dort trotzdem 19 % ab. Ohne diesen Halbsatz weckt
+  //   der Satz eine Erwartung, die an der Kasse platzt — rechtlich richtig,
+  //   praktisch irreführend.
+  nullsteuer:
+    "Auf das Set fällt keine Mehrwertsteuer an: Für Solarmodule an einer Wohnung gilt der Nullsteuersatz, und bis 800 Voltampere verlangt das Finanzamt dafür nicht einmal einen Nachweis. Beim separat gekauften Speicher unterstellt das Finanzamt den Solarbezug erst ab 5 kWh von sich aus; kleinere Balkonspeicher sind davon nicht ausgeschlossen, in der Praxis rechnen viele Händler dort aber die vollen 19 Prozent ab.",
+
+  // Geprüft am 16.08.2026 über die vollständige Verweiskette (nicht aus § 95 EnWG
+  // allein ableitbar — eine Verordnung löst nur bei ausdrücklicher Rückverweisung
+  // ein Bußgeld aus, und genau die gibt es hier):
+  //   § 5 Abs. 1 S. 1 MaStRV — Registrierungspflicht des Betreibers.
+  //   § 5 Abs. 5 S. 1 MaStRV — die Monatsfrist. Steht NICHT in Absatz 1; die
+  //     Verwechslung ist naheliegend, weil § 21 Nr. 1 nur auf Abs. 1 verweist —
+  //     die Fristüberschreitung wird dort über „nicht rechtzeitig" erfasst.
+  //   § 21 Nr. 1 MaStRV — „Ordnungswidrig im Sinn des § 95 Absatz 1 Nummer 5
+  //     Buchstabe e des Energiewirtschaftsgesetzes handelt, wer vorsätzlich oder
+  //     fahrlässig entgegen … § 5 Absatz 1 … eine Registrierung nicht, nicht
+  //     richtig, nicht in der vorgeschriebenen Weise oder nicht rechtzeitig
+  //     vornimmt". Das ist die Rückverweisung.
+  //   § 95 Abs. 2 EnWG — Rahmen für Nr. 5 Buchst. e: bis 50.000 €.
+  // Die 50.000 € stehen BEWUSST NICHT im Satz: Das ist der gesetzliche Höchstrahmen
+  // für alle Verstöße dieser Nummer, nicht das, was einem Balkon-Betreiber droht
+  // (§ 17 OWiG bemisst nach Bedeutung und Vorwurf). Die Zahl als Drohung zu setzen
+  // wäre formal belegbar und trotzdem irreführend — genau die Sorte Halbwahrheit,
+  // mit der die Wettbewerber-Seiten zu diesem Keyword arbeiten.
+  // Council 16.08.2026: 3/3 bestätigt, der adversariale Prüfer kam über fünf
+  // Angriffe nicht durch. Drei seiner Formulierungs-Einwände stecken im Satz:
+  //   1. „ordnungswidrig" nicht als Automatik — § 21 MaStRV verlangt Vorsatz
+  //      oder Fahrlässigkeit. Deshalb „grundsätzlich", wörtlich wie die
+  //      Bundesnetzagentur selbst in ihrer MaStR-Webhilfe formuliert.
+  //   2. Inbetriebnahme = erster Tag der Stromerzeugung, nicht Kauf oder
+  //      Lieferung. Das ist die Frage, an der die Frist real scheitert.
+  //   3. Pflichtig ist der BETREIBER — bei „Vermieter kauft, Mieter betreibt"
+  //      trifft es nicht den, den ein „wer eins hat" nahelegt. Deshalb „du"
+  //      im Sinn des Betreibers und kein Eigentums-Vokabular.
+  // Bewusst NICHT im Satz: die Verfolgungspraxis. Weder „wird nie verfolgt"
+  // noch „nachträglich sanktionsfrei" ließ sich auf die Behörde oder eine
+  // Statistik zurückführen — beides sind unbelegte Blog-Behauptungen.
+  anmeldeFrist:
+    "Dafür hast du einen Monat ab Inbetriebnahme — gerechnet ab dem Tag, an dem die Module das erste Mal Strom liefern, nicht ab Kauf oder Lieferung. Wer die Frist verstreichen lässt, handelt grundsätzlich ordnungswidrig; die Anmeldung selbst ist kostenlos und in wenigen Minuten erledigt.",
+} as const;

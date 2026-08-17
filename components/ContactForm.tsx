@@ -57,6 +57,16 @@ const S = {
     marginTop: space.xs,
   } as React.CSSProperties,
   buttonDisabled: { opacity: 0.6, cursor: "default" } as React.CSSProperties,
+  // Datenschutzhinweis am Formular (Art. 13 DSGVO): Der Hinweis gehört dorthin,
+  // wo die Daten eingegeben werden — die Erklärung allein reicht nicht, wenn
+  // das Formular selbst nicht auf sie zeigt.
+  privacy: {
+    fontSize: 12,
+    lineHeight: 1.6,
+    color: v('--color-text-faint'),
+    marginTop: space.xs,
+  } as React.CSSProperties,
+  privacyLink: { color: v('--color-text-muted'), textDecoration: "underline" } as React.CSSProperties,
   message: {
     display: "flex",
     alignItems: "center",
@@ -217,6 +227,20 @@ export default function ContactForm({
           <span>{errorText}</span>
         </div>
       )}
+
+      {/* Vor dem Knopf, nicht dahinter: Wer sich mit der Tastatur durchs
+          Formular bewegt, muss den Hinweis erreichen, BEVOR er das Bedienelement
+          erreicht, das seine Daten absendet (Art. 13 DSGVO an der
+          Erhebungsstelle). */}
+      <p style={S.privacy}>
+        Deine Angaben gehen per E-Mail an uns — über unseren Versanddienstleister
+        Resend (USA). In unserer Datenbank wird nichts davon gespeichert. Näheres
+        steht in der{" "}
+        <a href="/datenschutz" style={S.privacyLink}>
+          Datenschutzerklärung
+        </a>
+        .
+      </p>
 
       <button
         type="submit"
