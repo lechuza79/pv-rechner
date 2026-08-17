@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "../../../../../components/Breadcrumb";
+import GlossaryTerm from "../../../../../components/GlossaryTerm";
 import { IconArrowRight, IconExternal } from "../../../../../components/Icons";
 import RelatedLinks from "../../../../../components/RelatedLinks";
 import { v, iconSizes, space, pad } from "../../../../../lib/theme";
@@ -298,7 +299,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                     über allem, wo es zu nichts gehörte.
                     Auf schmalen Bildschirmen stapeln sie von selbst; die Linie
                     verschwindet dann, weil sie danebenläge. */}
-                <div className="foerder-spalten" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 48, alignItems: "stretch" }}>
+                <div className="foerder-spalten" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 48, alignItems: "stretch", marginTop: 36 }}>
                   <div style={{ paddingRight: 40, borderRight: `1px solid ${v("--color-border")}` }} className="foerder-spalte-links">
                     <FundingConditions conditions={f.conditions} eligibility={f.eligibility} />
                   </div>
@@ -354,21 +355,14 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                     sind, was die Seite von jemandem will. */}
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: space.md, marginTop: 44 }}>
                   <div style={S.aktionsBox}>
-                    <div style={S.aktionsTitel}>Was kostet eine Solaranlage in {city.name}?</div>
+                    <div style={S.aktionsTitel}>Solarförderung in {city.name}</div>
                     <p style={S.aktionsText}>
+                      Für eine übliche Dachanlage mit {uebliche.kwp} <GlossaryTerm id="kwp">kWp</GlossaryTerm>
+                      {uebliche.spKwh > 0 ? <> und {uebliche.spKwh} <GlossaryTerm id="speicherkapazitaet">kWh Speicher</GlossaryTerm></> : null}{" "}
                       {uebliche.foerderung > 0 ? (
-                        <>
-                          Für eine übliche Dachanlage mit {uebliche.kwp} kWp{uebliche.spKwh > 0 ? ` und ${uebliche.spKwh} kWh Speicher` : ""}{" "}
-                          gibt es hier rund <span style={S.strong}>{nf(uebliche.foerderung)} €</span> Zuschuss —
-                          bei {nf(uebliche.brutto)} € Investition. Rechne die Photovoltaik-Anlage mit deinem
-                          eigenen Stromverbrauch durch, die Förderung ist dabei eingerechnet.
-                        </>
+                        <>gibt es hier rund <span style={S.strong}>{nf(uebliche.foerderung)} €</span> Zuschuss.</>
                       ) : (
-                        <>
-                          Eine übliche Dachanlage mit {uebliche.kwp} kWp kostet in {city.name} rund{" "}
-                          <span style={S.strong}>{nf(uebliche.brutto)} €</span> — bei {nf(city.yieldKwhKwp)} kWh
-                          Ertrag je kWp. Rechne die Photovoltaik-Anlage mit deinem eigenen Stromverbrauch durch.
-                        </>
+                        <>liegt die Investition bei rund <span style={S.strong}>{nf(uebliche.brutto)} €</span>.</>
                       )}
                     </p>
                     <Link href={`/photovoltaik-rechner?er=${city.yieldKwhKwp}${ctaFoe}`} style={S.aktionsKnopf}>
@@ -378,11 +372,10 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                     </Link>
                   </div>
                   <div style={S.aktionsBox}>
-                    <div style={S.aktionsTitel}>Wie viel PV-Förderung bekommst du?</div>
+                    <div style={S.aktionsTitel}>Bekommst du die PV-Förderung?</div>
                     <p style={S.aktionsText}>
-                      Nicht jeder Zuschuss gilt für jeden. Vier Fragen zu Gebäude und Vorhaben, danach
-                      steht da, welche Förderprogramme in {city.name} für dich in Frage kommen — und in
-                      welcher Reihenfolge du den Antrag stellen musst, damit das Geld nicht verfällt.
+                      Vier Fragen zu Gebäude und Anlage — danach steht da, welche Zuschüsse für dich
+                      gelten und wann der Antrag raus muss.
                     </p>
                     <FoerderCheckStarter programme={[f, ...combinable]} ortName={city.name} />
                   </div>
