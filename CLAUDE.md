@@ -357,7 +357,7 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Sim
 
 ### Aktualisierungsstand der Rechner — BLOCKER
 
-Unter jedem Rechner steht eine Zeile „Stand: … geprüft am …". **Was eine Seite trägt, steht an einer Stelle: `lib/stand.ts`; die Formulierung macht `components/StandNote.tsx`, das `lastmod` der Sitemap kommt aus derselben Quelle** (`standGeprueftIso`). Erzwungen von `lib/__tests__/stand.test.ts` (unter anderem: jede Seite mit `<StandNote>` hat einen Eintrag und umgekehrt, und jeder Eintrag mit Tagesdatum steht mit demselben Datum in der Sitemap).
+Unter jedem Rechner steht — abgesetzt durch eine Trennlinie — der Aktualisierungsstand, je Sache mit **zwei** Daten: „Werte von Juli 2026, geprüft am 28. Juli 2026". Beide immer, auch wenn sie zusammenfallen (Vorgabe des Betreibers, 17.08.2026): Wer die zweite Zahl nur bei Abweichung sieht, lernt nie, dass es sie gibt — und liest ein späteres „von Juli, geprüft im Oktober" dann nicht als das, was es ist: bestätigt, nicht vergessen. Eine Rechtsaussage hat keinen Wertstand und nennt nur den Prüftag. **Was eine Seite trägt, steht an einer Stelle: `lib/stand.ts`; die Formulierung macht `components/StandNote.tsx`, das `lastmod` der Sitemap kommt aus derselben Quelle** (`standGeprueftIso`). Erzwungen von `lib/__tests__/stand.test.ts` (unter anderem: jede Seite mit `<StandNote>` hat einen Eintrag und umgekehrt, und jeder Eintrag mit Tagesdatum steht mit demselben Datum in der Sitemap).
 
 - **Nur stempeln, was geprüft wurde.** Kein Datum aus `new Date()` oder der Build-Zeit — ein mitlaufendes Datum behauptet eine Prüfung, die nie stattfand (dieselbe Fehlerklasse wie `updated_at` als Förder-Prüfdatum). Google nutzt `lastmod` nur, solange es nachprüfbar stimmt, und nennt das automatisch mitlaufende Copyright-Datum ausdrücklich als Gegenbeispiel.
 - **Getrennte Daten für getrennte Sachen.** Marktpreise, Rechtsstand und Modellannahmen altern verschieden schnell; ein gemeinsames Datum wäre für mindestens eines gelogen. Der Wärmepumpen-Rechner nennt deshalb drei (Anschaffung/Förderung, Grüngas-Pflicht, CO₂-Pfad), der Balkon-Rechner zwei.
@@ -372,6 +372,7 @@ npm install           # Dependencies installieren
 npm run dev           # Dev-Server (localhost:3000, nutzt .next-dev/)
 npm run build         # Production Build (prebuild räumt .next/ auf, nutzt .next/)
 npm run test:e2e      # Playwright-Smokes headless (test:e2e:ui = interaktiv)
+npm run stand:faellig # Prüfdaten: was ist überfällig, welcher Wächter steht still (--alle = ganzer Prüfstand)
 ```
 
 **Cache-Trennung:** Dev-Server (`.next-dev/`) und Build (`.next/`) nutzen getrennte Output-Verzeichnisse (`distDir` in `next.config.js`). Das verhindert „Cannot find module './XXX.js'"-Fehler, die auftreten, wenn beide sich `.next/` teilen. **`prebuild` prüft `process.env.VERCEL` und räumt nur lokal auf** — Vercel restored `.next/cache/` aus dem Build-Cache; diesen Cache zu löschen verdoppelt Build-Zeit und Kosten (die alte Fassung `rm -rf .next` machte jeden Vercel-Build zum Cold Build).
