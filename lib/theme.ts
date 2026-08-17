@@ -602,6 +602,9 @@ export const globalStyles = `
      ueberall gleich sitzt. Zahlen brechen NIE um (nowrap). */
   .kpi-val{font-family:var(--font-mono);font-size:22px;font-weight:700;line-height:1.1;white-space:nowrap}
   .kpi-unit{font-family:var(--font-mono);font-size:var(--font-size-small);font-weight:600;color:var(--color-text-muted);margin-top:2px}
+  /* Trennlinie zwischen Bedingungen und Konditionen auf der Förderkarte. Sobald
+     die beiden Spalten untereinander stehen, liefe sie ins Leere — dann weg. */
+  @media (max-width:700px){.foerder-spalte-links{border-right:none!important;padding-right:0!important}}
   /* Der EINE Abstand: zwischen Zahlenblock und Tendenz. */
   .kpi-tend{margin-top:10px}
   /* Titellose Einzelgruppe (Kreis-/Bundesland): schlichte Kachelreihe. */

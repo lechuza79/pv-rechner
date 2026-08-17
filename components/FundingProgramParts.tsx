@@ -41,13 +41,13 @@ export function FundingStatusBadge({ status }: { status: FundingStatus }) {
   return (
     <span
       style={{
-        fontSize: 11,
+        fontSize: "var(--font-size-small)",
         fontWeight: 700,
         color: positiv ? v("--color-positive-text") : c,
         background: positiv ? v("--color-chart-positive-bg") : "transparent",
         border: `1px solid ${positiv ? "transparent" : c}`,
         borderRadius: 999,
-        padding: "3px 10px",
+        padding: "5px 14px",
         whiteSpace: "nowrap",
       }}
     >
@@ -62,9 +62,14 @@ export function FundingRates({
   rates,
   bordered = false,
   columns = 1,
+  label,
 }: {
   rates: FundingProgram["rates"];
   bordered?: boolean;
+  /** Überschrift über der Liste — damit die Sätze neben den Bedingungen
+   *  genauso beschriftet sind wie diese und nicht als namenlose Tabelle
+   *  danebenstehen. */
+  label?: string;
   /** Zweispaltig auf breiten Bildschirmen — die Sätze sind kurze
    *  Beschriftung-Wert-Paare und lassen als einspaltige Liste viel Weißraum
    *  neben sich stehen. Unter 420 px bleibt es einspaltig, sonst bricht der
@@ -72,6 +77,10 @@ export function FundingRates({
   columns?: 1 | 2;
 }) {
   return (
+    <div>
+      {label && (
+        <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 6 }}>{label}</div>
+      )}
     <div
       style={
         columns === 2
@@ -91,6 +100,7 @@ export function FundingRates({
           <span style={{ fontFamily: v("--font-mono"), fontWeight: 700, textAlign: "right" }}>{r.value}</span>
         </div>
       ))}
+    </div>
     </div>
   );
 }

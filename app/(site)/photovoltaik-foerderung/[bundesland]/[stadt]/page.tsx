@@ -100,7 +100,9 @@ function ZubauChart({ years }: { years: { year: number; count: number }[] }) {
 }
 
 const S = {
-  page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
+  // Basis-Schriftgröße für die ganze Seite aus dem Token: Alles darunter erbt
+  // sie, statt dass jede Stelle ihre eigene Größe mitbringt.
+  page: { background: v("--color-bg"), fontFamily: v("--font-text"), fontSize: "var(--font-size-body)", color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
   breadcrumb: { fontSize: "var(--font-size-caption)", color: v("--color-text-secondary"), marginBottom: 6 } as React.CSSProperties,
   h1: { fontSize: "var(--font-size-h1)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
@@ -157,9 +159,6 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
     .map((id) => byId.get(id))
     .filter((p): p is FundingProgram => Boolean(p));
   // Der mittlere Fall (10 kWp mit kleinem Speicher) steht für das Einfamilienhaus
-  // — dieselbe Rechnung wie in den Beispielkarten weiter unten, damit die Karte
-  // oben und die Tabelle darunter nicht zwei verschiedene Zahlen zeigen.
-  const typischesBeispiel = examples[1] ?? examples[0];
   const currentYear = new Date().getFullYear();
   const lastFullYear = atlas?.solar.by_year.filter((y) => y.year < currentYear).slice(-1)[0];
   // FAQ aus den Förderdaten generiert (kein separater Datensatz).
@@ -211,96 +210,98 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: space.sm }}>
                   <div>
                     <h2 style={{ ...S.h2, fontSize: "var(--font-size-lead)" }}>{f.name}</h2>
-                    <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: 2 }}>{f.traeger}</div>
+                    {/* Träger und Stand in EINER Zeile, gleiche Größe: Es ist
+                        eine Angabe — wer es vergibt und mit welchem Datenstand.
+                        Der zweite Link zum Programm ist raus, er stand hier und
+                        am Fuß der Karte identisch. */}
+                    <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: 2 }}>
+                      {f.traeger} — {fundingStandLabel(f)}
+                    </div>
+                    {f.capped && (
+                      <div style={{ fontSize: "var(--font-size-small)", marginTop: 4 }}>
+                        <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>
+                          Mittel begrenzt: vor Antrag prüfen
+                        </a>
+                      </div>
+                    )}
                   </div>
                   <FundingStatusBadge status={f.status} />
-                </div>
-                <div style={{ fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), marginTop: space.sm, lineHeight: 1.6 }}>
-                  {fundingStandLabel(f)}
-                  {f.capped && (
-                    <>
-                      {" · "}
-                      <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>
-                        Mittel begrenzt: vor Antrag prüfen
-                      </a>
-                    </>
-                  )}
-                  {" · "}
-                  <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>Zum Programm</a>
                 </div>
               </div>
 
               <div style={{ padding: pad("md", "lg") }}>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: space.md }}>
-                  {f.eligibility.map((e) => (
-                    <span key={e} style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-secondary"), background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: 999, padding: "3px 10px" }}>
-                      {e === "privat" ? "Privat" : "Gewerblich"}
-                    </span>
-                  ))}
-                </div>
-                <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginBottom: space.md }}>
-                  Förderfähig: <span style={S.strong}>{f.coveredCosts}</span>
-                  {f.maxFoerderung ? ` · ${f.maxFoerderung}` : ""}
-                </div>
-
-                {/* Bedingungen und Sätze nebeneinander: Beide beantworten
-                    zusammen die eine Frage „komme ich in Frage, und wie viel
-                    ist es dann?". Untereinander schob die Bedingungsliste die
-                    Beträge aus dem Blick. Auf schmalen Bildschirmen stapeln
-                    sie von selbst. */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: space.lg, alignItems: "start" }}>
-                  <FundingConditions conditions={f.conditions} />
-                  <FundingRates rates={f.rates} bordered />
+                {/* Bedingungen und Konditionen nebeneinander, getrennt durch
+                    eine senkrechte Linie. Beide beantworten zusammen die eine
+                    Frage „komme ich in Frage, und wie viel ist es dann?".
+                    Wer wo hineingehört: die Zielgruppen-Kennzeichen zu den
+                    Bedingungen (sie sagen, WER darf), der Höchstbetrag zu den
+                    Konditionen (er sagt, WIE VIEL). Die frühere Sammelzeile
+                    „Förderfähig: … · max. …" hat beides vermischt und stand
+                    über allem, wo es zu nichts gehörte.
+                    Auf schmalen Bildschirmen stapeln sie von selbst; die Linie
+                    verschwindet dann, weil sie danebenläge. */}
+                <div className="foerder-spalten" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: space.xl, alignItems: "stretch" }}>
+                  <div style={{ paddingRight: space.lg, borderRight: `1px solid ${v("--color-border")}` }} className="foerder-spalte-links">
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: space.sm }}>
+                      {f.eligibility.map((e) => (
+                        <span key={e} style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-secondary"), background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: 999, padding: "3px 10px" }}>
+                          {e === "privat" ? "Privat" : "Gewerblich"}
+                        </span>
+                      ))}
+                    </div>
+                    <FundingConditions conditions={f.conditions} />
+                  </div>
+                  <div>
+                    <FundingRates rates={f.rates} bordered label="Konditionen" />
+                    {f.maxFoerderung && (
+                      <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: space.sm }}>
+                        Höchstbetrag: <span style={S.strong}>{f.maxFoerderung}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {combinable.length > 0 && (
-                  <div
-                    style={{
-                      marginTop: space.xl,
-                      paddingTop: space.lg,
-                      borderTop: `1px solid ${v("--color-border")}`,
-                      textAlign: "center",
-                    }}
-                  >
-                    <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-muted"), marginBottom: space.sm }}>
+                  <div style={{ marginTop: space.lg, textAlign: "center" }}>
+                    {/* Geschwungene Klammer statt Trennlinie: Eine Linie
+                        trennt, hier gehört aber beides zusammen — was
+                        darüber steht, lässt sich mit dem kombinieren, was
+                        darunter steht. Die Klammer führt die beiden Spalten
+                        sichtbar auf einen Punkt. */}
+                    <svg viewBox="0 0 400 18" preserveAspectRatio="none" style={{ width: "100%", height: 18, display: "block" }} aria-hidden="true">
+                      <path d="M2 1 C2 9, 10 9, 190 9 C198 9, 200 17, 200 17 C200 17, 202 9, 210 9 C390 9, 398 9, 398 1"
+                        fill="none" stroke={v("--color-border")} strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+                    </svg>
+                    <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-muted"), margin: `${space.sm}px 0` }}>
                       Kombinierbar mit
                     </div>
-                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: space.md, rowGap: space.xs }}>
+                    {/* Nur das Symbol führt hinaus: Der Name ist hier die
+                        Information, nicht der Weg — als Link gesetzt sah die
+                        Zeile aus wie eine Navigation zu vier Zielen. */}
+                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: space.lg, rowGap: space.xs }}>
                       {combinable.map((p) => (
-                        <a
-                          key={p.id}
-                          href={p.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "var(--font-size-small)", color: v("--color-accent"), textDecoration: "none" }}
-                        >
-                          {p.name} <IconExternal size={iconSizes.xs} />
-                        </a>
+                        <span key={p.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "var(--font-size-small)", color: v("--color-text-secondary") }}>
+                          {p.name}
+                          <a
+                            href={p.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${p.name} — Programmseite öffnen`}
+                            style={{ display: "inline-flex", color: v("--color-accent") }}
+                          >
+                            <IconExternal size={iconSizes.sm} />
+                          </a>
+                        </span>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* Das Wichtigste unten: die beiden Wege, die es von hier aus
-                    gibt — selbst nachrechnen oder die Berechtigung klären. */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: space.sm, marginTop: space.lg }}>
-                  <div style={S.aktionsBox}>
-                    <div style={S.aktionsTitel}>Was springt dabei heraus?</div>
-                    <p style={S.aktionsText}>
-                      Eine typische {typischesBeispiel.kwp}-kWp-Anlage auf einem Einfamilienhaus in {city.name}{" "}
-                      kostet rund {nf(typischesBeispiel.brutto)} €
-                      {typischesBeispiel.foerderung > 0 ? (
-                        <> — davon übernimmt die Förderung etwa <span style={S.strong}>{nf(typischesBeispiel.foerderung)} €</span>.</>
-                      ) : (
-                        <>.</>
-                      )}
-                    </p>
-                    <Link href="/pv-bedarf-berechnen" style={S.aktionsLink}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        Deinen Bedarf berechnen <IconArrowRight size={iconSizes.xs} />
-                      </span>
-                    </Link>
-                  </div>
+                {/* Ein Weg von hier aus, nicht zwei: die eigene Berechtigung
+                    klären. Die Rechen-Kachel daneben stand in Konkurrenz dazu
+                    und wiederholte die Beispielrechnungen, die weiter unten
+                    ohnehin ausführlich stehen. */}
+                <div style={{ marginTop: space.lg }}>
                   <div style={S.aktionsBox}>
                     <div style={S.aktionsTitel}>Bekommst du die Förderung?</div>
                     <p style={S.aktionsText}>
