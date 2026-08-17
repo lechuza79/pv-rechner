@@ -59,7 +59,11 @@ import { stackFunding, type FundingProgram } from "../../../lib/funding-programs
 const WP_FIELDS = GEBAEUDE_FIELDS;
 const EA_FIELDS = ["ea-km"] as const;
 const KLIMA_FIELDS = ["klima-rooms"] as const;
-const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS, ...KLIMA_FIELDS];
+// Auch die Dach-Fragen laufen über diesen Zustand. Sie standen zuerst außen vor
+// und das Ergebnis übergab ein festes „alles beantwortet"-Set — dadurch ließ
+// sich eine ungültig gewordene Ausrichtung nicht zurücknehmen, die Frage kam
+// nicht wieder und der Ertrag fiel still auf den Bestfall zurück.
+const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS, ...KLIMA_FIELDS, ...DACH_FIELDS];
 // Modell-Annahme für die Klima-Schnellschätzung, aus der geteilten Config (kein
 // Drift zum Klimaanlagen-Rechner). Langlabel auf den Kurznamen vor der Klammer.
 const KLIMA_DEVICE_LABEL = (CFG.devices.find(d => d.id === CFG.defaultDeviceId)?.label ?? "Split-Anlage").split(" (")[0];
@@ -139,6 +143,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const markGvAnswered = (key: string) => {
     setGvAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
     setGvEditing(null);
+  };
+  // Eine Antwort zurücknehmen: nötig, wenn eine Folgeantwort durch eine neue
+  // Vorgabe ungültig wird (Dachform-Wechsel verwirft eine Nord-Ausrichtung).
+  // Ohne das galt die Frage weiter als beantwortet und der Ertrag fiel still
+  // auf den Bestfall zurück.
+  const nimmGvZurueck = (key: string) => {
+    setGvAnswered(prev => { if (!prev.has(key)) return prev; const n = new Set(prev); n.delete(key); return n; });
   };
   // Welche Frage einer Section ist offen: die zum Bearbeiten angeklickte, sonst
   // die erste noch offene. null = alle beantwortet (alles eingeklappt).
@@ -921,6 +932,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                   setNeigungGrad={setNeigungGrad}
                   beantwortet={gvAnswered}
                   markiereBeantwortet={markGvAnswered}
+                  nimmZurueck={nimmGvZurueck}
                   bearbeitet={gvEditing}
                   setBearbeitet={setGvEditing}
                   hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource, neigungGrad)}
@@ -1232,8 +1244,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
                 setAusrichtung={setAusrichtung}
                 neigungGrad={neigungGrad}
                 setNeigungGrad={setNeigungGrad}
-                beantwortet={new Set(DACH_FIELDS)}
+                beantwortet={gvAnswered}
                 markiereBeantwortet={markGvAnswered}
+                nimmZurueck={nimmGvZurueck}
                 bearbeitet={gvEditing}
                 setBearbeitet={setGvEditing}
                 hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource, neigungGrad)}

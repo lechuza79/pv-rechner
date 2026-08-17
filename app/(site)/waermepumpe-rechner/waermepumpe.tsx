@@ -2,7 +2,7 @@
 import { useState, useMemo, type ReactNode } from "react";
 import Link from "next/link";
 import {
-  SITUATION, WOHNFLAECHEN, INSULATION_BESTAND, INSULATION_NEUBAU,
+  SITUATION, WOHNFLAECHEN, WP_M2_MIN, WP_M2_MAX, INSULATION_BESTAND, INSULATION_NEUBAU,
   PERSONEN, HEIZSYSTEM, WP_TYPE, WP_FUEL_OPTIONS, HAUSTYP_WP, YEAR, FUEL,
 } from "../../../lib/constants";
 import { waermeAusEndenergie, OEL_KWH_PRO_LITER } from "../../../lib/heat-consumption";
@@ -397,7 +397,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                           setCustomFlaeche(null);
                         } else {
                           const n = parseInt(raw);
-                          if (!isNaN(n) && n >= 30 && n <= 500) setCustomFlaeche(n);
+                          if (!isNaN(n) && n >= WP_M2_MIN && n <= WP_M2_MAX) setCustomFlaeche(n);
                         }
                       }}
                       onBlur={() => {

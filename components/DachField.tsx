@@ -42,6 +42,7 @@ export default function DachField({
   setNeigungGrad,
   beantwortet,
   markiereBeantwortet,
+  nimmZurueck,
   bearbeitet,
   setBearbeitet,
   hinweis,
@@ -56,6 +57,12 @@ export default function DachField({
   setNeigungGrad: (g: number | null) => void;
   beantwortet: ReadonlySet<string>;
   markiereBeantwortet: (key: string) => void;
+  /** Eine Antwort ZURÜCKNEHMEN — nötig, wenn eine Folgeantwort durch eine neue
+   *  Vorgabe ungültig wird. Ohne diesen Weg blieb eine gelöschte Ausrichtung als
+   *  „beantwortet" stehen: Die Frage kam nicht wieder, und der Dachfaktor fiel
+   *  still auf den Bestfall zurück (Satteldach/Nord/45° → Flachdach hob den
+   *  Ertrag von 450 auf 1.000 kWh je kWp). */
+  nimmZurueck: (key: string) => void;
   bearbeitet: string | null;
   setBearbeitet: (key: string | null) => void;
   hinweis?: string;
@@ -108,11 +115,19 @@ export default function DachField({
           selected={hat(F_FORM) ? dachartIdx : null}
           onSelect={i => {
             setDachartIdx(i);
-            // Aufgeständert kennt kein Nord, und die Neigungsstufen sind je
-            // Dachform andere — beides zurücksetzen statt einen Wert stehen zu
-            // lassen, der zur neuen Form nicht passt.
-            if (!dachErlaubtNord(i) && ausrichtung === "nord") setAusrichtung(null);
+            // Eine Ausrichtung, die zur neuen Dachform nicht passt, wird nicht
+            // nur geleert, sondern auch als unbeantwortet zurückgenommen —
+            // sonst gilt die Frage als erledigt, kommt nicht wieder, und
+            // gerechnet wird stillschweigend der Bestfall.
+            if (!dachErlaubtNord(i) && ausrichtung === "nord") {
+              setAusrichtung(null);
+              nimmZurueck(F_AUSRICHTUNG);
+            }
+            // Die Neigungsstufen sind je Dachform andere. Der Wert fällt weg,
+            // die Annahme der neuen Form greift — deshalb hier bewusst KEIN
+            // Zurücknehmen: Es gibt eine gültige Annahme, keine Lücke.
             setNeigungGrad(null);
+            nimmZurueck(F_NEIGUNG);
             markiereBeantwortet(F_FORM);
           }}
           render={d => d.label}

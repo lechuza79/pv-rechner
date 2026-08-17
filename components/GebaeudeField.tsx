@@ -22,6 +22,8 @@ import {
   HEIZSYSTEM_SHORT,
   INSULATION_BESTAND,
   WP_M2_PRESETS,
+  WP_M2_MIN,
+  WP_M2_MAX,
   type Heizsystem,
 } from "../lib/constants";
 
@@ -131,8 +133,8 @@ export default function GebaeudeField({
           <PresetNumberInput
             value={werte.wohnflaeche}
             presets={WP_M2_PRESETS}
-            min={20}
-            max={1000}
+            min={WP_M2_MIN}
+            max={WP_M2_MAX}
             unit="m²"
             onCommit={n => waehle(F_FLAECHE, { wohnflaeche: n })}
             onFocus={() => setBearbeitet(F_FLAECHE)}

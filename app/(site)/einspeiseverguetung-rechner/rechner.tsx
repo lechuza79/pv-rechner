@@ -82,6 +82,12 @@ export default function EinspeiseRechner() {
     setDachAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
     setDachEditing(null);
   };
+  // Zurücknehmen, wenn eine Folgeantwort ungültig wird (Dachform-Wechsel
+  // verwirft eine Nord-Ausrichtung) — sonst gilt die Frage als beantwortet und
+  // der Ertrag fällt still auf den Bestfall zurück.
+  const nimmDachZurueck = (key: string) => {
+    setDachAnswered(prev => { if (!prev.has(key)) return prev; const n = new Set(prev); n.delete(key); return n; });
+  };
   // Der gewählte Zustand als Kopfzeile des Abschnitts — zugeklappt ist das die
   // einzige Stelle, an der man sieht, worauf der gerechnete Ertrag beruht.
   const dachZusammenfassung = () =>
@@ -615,6 +621,7 @@ export default function EinspeiseRechner() {
               setNeigungGrad={setNeigungGrad}
               beantwortet={dachAnswered}
               markiereBeantwortet={markDachAnswered}
+              nimmZurueck={nimmDachZurueck}
               bearbeitet={dachEditing}
               setBearbeitet={setDachEditing}
               hinweis={dachErtragHinweis(ertragKwp, dachartIdx, ausrichtung, standortYield !== null, neigungGrad)}

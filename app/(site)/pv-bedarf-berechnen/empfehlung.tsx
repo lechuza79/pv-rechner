@@ -135,6 +135,13 @@ export default function Empfehlung() {
     setDachAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
     setGvEditing(null);
   };
+  // Zurücknehmen, wenn eine Antwort durch eine neue Vorgabe ungültig wird: Der
+  // Wechsel auf ein Flachdach verwirft eine Nord-Ausrichtung. Ohne das galt die
+  // Frage weiter als beantwortet, kam nicht wieder — und der Ertrag fiel still
+  // auf den Bestfall zurück.
+  const nimmDachZurueck = (key: string) => {
+    setDachAnswered(prev => { if (!prev.has(key)) return prev; const n = new Set(prev); n.delete(key); return n; });
+  };
   // Folge einer übersprungenen Frage — sichtbar statt still (siehe components/Toast).
   const [folgeToast, setFolgeToast] = useState<string | null>(null);
   const markGvAnswered = (key: string) => {
@@ -452,6 +459,7 @@ export default function Empfehlung() {
                     setNeigungGrad={setNeigungGrad}
                     beantwortet={dachAnswered}
                     markiereBeantwortet={markDachAnswered}
+                    nimmZurueck={nimmDachZurueck}
                     bearbeitet={gvEditing}
                     setBearbeitet={setGvEditing}
                     hinweis={effErtragKwp !== null ? dachErtragHinweis(effErtragKwp, dachart, ausrichtung, true, neigungGrad) : undefined}

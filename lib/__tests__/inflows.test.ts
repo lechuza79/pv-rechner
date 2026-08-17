@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { INFLOWS, RECHNER_DATEIEN, betroffeneDateien } from "../inflows";
+import { WP_M2_MIN, WP_M2_MAX, WP_M2_PRESETS } from "../constants";
 
 // Der Mechanismus hinter lib/inflows.ts: Die Liste sagt, welche Frage in welchen
 // Rechner gehört und an welchen Ort. Dieser Test liest die Rechner-Dateien und
@@ -98,6 +99,35 @@ describe("Inflows: jede Frage steht dort, wo sie stehen muss", () => {
           `${inflow.id} → ${aus.datei}: Frist ${monat}/${jahr} abgelaufen — entscheiden statt verlängern`,
         ).toBe(true);
       }
+    }
+  });
+
+  // ─── Was der zweite Review-Durchgang gefunden hat ─────────────────────────
+  it("eine Größe hat überall dieselben Grenzen", () => {
+    // Die Wohnfläche wurde im Ergebnis mit 20–1000 m² angeboten, im Flow des
+    // Wärmepumpen-Rechners aber nur mit 30–500 geprüft: Ein im Ergebnis
+    // eingetragener Wert von 800 wurde eingerechnet und im Flow abgelehnt.
+    // Beide Stellen lesen jetzt WP_M2_MIN/MAX — der Test hält das fest, indem
+    // er nach hart getippten Grenzen in den Aufrufern sucht.
+    const stellen = [
+      "components/GebaeudeField.tsx",
+      "app/(site)/waermepumpe-rechner/waermepumpe.tsx",
+    ];
+    // Positiv geprüft: beide Stellen MÜSSEN die geteilten Grenzen nennen. Eine
+    // Suche nach hart getippten Zahlen greift hier zu weit — im
+    // Wärmepumpen-Rechner stehen daneben die Grenzen der Heizwärme (1.000 bis
+    // 80.000 kWh), die nichts mit der Wohnfläche zu tun haben.
+    for (const datei of stellen) {
+      const quelle = lies(datei);
+      expect(quelle, `${datei} nennt WP_M2_MIN nicht`).toContain("WP_M2_MIN");
+      expect(quelle, `${datei} nennt WP_M2_MAX nicht`).toContain("WP_M2_MAX");
+    }
+    expect(WP_M2_MIN).toBeLessThan(WP_M2_MAX);
+    // Die Vorschläge müssen innerhalb der Grenzen liegen, sonst bietet die
+    // Oberfläche einen Wert an, den die Prüfung ablehnt.
+    for (const preset of WP_M2_PRESETS) {
+      expect(preset, `Preset ${preset} liegt außerhalb ${WP_M2_MIN}–${WP_M2_MAX}`).toBeGreaterThanOrEqual(WP_M2_MIN);
+      expect(preset).toBeLessThanOrEqual(WP_M2_MAX);
     }
   });
 });

@@ -263,6 +263,15 @@ export const HEIZSYSTEM_SHORT: Record<string, string> = { fbh: "Fußboden", hk_n
 
 /** Wohnflächen-Presets der WP-Gebäudeabfrage (PV-Rechner + Empfehlungs-Flow). */
 export const WP_M2_PRESETS = [100, 140, 180];
+/** Grenzen der Wohnfläche — EINE Quelle für Flow und Ergebnis. Vorher ließ das
+ *  Ergebnis 20–1000 m² zu, der Flow des Wärmepumpen-Rechners nur 30–500: Ein im
+ *  Ergebnis eingetragener Wert von 800 wurde eingerechnet, im Flow aber
+ *  abgelehnt — dieselbe Größe mit zwei Gültigkeitsbereichen. 30 m² ist die
+ *  kleinste Wohnung, für die eine eigene Wärmepumpe überhaupt gerechnet wird,
+ *  500 m² die Grenze, ab der es kein Einfamilienhaus mehr ist (dafür fehlt dem
+ *  Modell die Mehrfamilien-Struktur, siehe Roadmap „MFH-Rechner"). */
+export const WP_M2_MIN = 30;
+export const WP_M2_MAX = 500;
 
 export const WP_TYPE = [
   { id: "lwwp", label: "Luft/Wasser", sub: "Standard, günstigere Investition" },
