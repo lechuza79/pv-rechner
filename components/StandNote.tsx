@@ -65,7 +65,11 @@ export default function StandNote({ pfad, style }: { pfad: string; style?: React
   const kopf = <span style={{ fontWeight: 700, color: v("--color-text-primary") }}>Stand:</span>;
   const datenstand = (
     <>
-      Alle Werte, mit denen wir rechnen, stehen offen auf der{" "}
+      {/* NICHT "alle Werte stehen offen": /datenstand hält seit dem 17.08.2026
+          die durchkalibrierten Modell-Datensätze zurück (Wärmepumpe, Klima,
+          Balkon, CO₂-Pfad, historische Vergütungsreihe). Der alte Satz stand
+          ausgerechnet unter genau diesen Rechnern — und war dort falsch. */}
+      Womit wir rechnen, mit Stand und Quelle, steht auf der{" "}
       <Link href="/datenstand" style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 600 }}>
         Datenstand-Seite
       </Link>

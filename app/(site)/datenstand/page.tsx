@@ -33,10 +33,15 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = pageMetadata({
   path: "/datenstand",
-  title: "Datenstand – Alle Annahmen & Werte im Überblick",
+  // Titel und OG-Untertitel versprachen bis zum Audit am 17.08.2026 weiterhin
+  // "Alle Annahmen & Werte" bzw. "Jeder Wert … offengelegt" — die Fassung, die
+  // in Suchergebnissen und geteilten Links steht. Der Fließtext war da schon
+  // korrigiert; genau so überlebt eine zurückgenommene Zusage an der Stelle, die
+  // niemand mitliest.
+  title: "Datenstand – Womit wir rechnen, mit Stand und Quelle",
   description: "Womit Solar Check rechnet: Preise, Einspeisevergütung, CO₂-Preis, Wärmepumpen-Annahmen — jede Größe mit Stand und Quelle. Transparent statt Blackbox.",
   ogImageTitle: "Datenstand",
-  ogImageSubtitle: "Jeder Wert mit Stand und Quelle — offengelegt.",
+  ogImageSubtitle: "Jede Größe mit Stand und Quelle.",
 });
 
 const S = {
@@ -81,7 +86,13 @@ const S = {
     fontWeight: 700,
     color: v("--color-accent"),
     fontFamily: v("--font-mono"),
-    whiteSpace: "nowrap" as const,
+    // KEIN nowrap: Der längste Stand ist "Modell (HTW Berlin · BDEW)" und misst
+    // 230 px. In einer Flex-Zeile, die nicht umbrechen darf, schob er das
+    // Dokument auf schmalen Schirmen auf 518 px auf — die Seite scrollte
+    // seitlich. Gefunden im Audit am 17.08.2026; der Fehler ist älter, fällt
+    // aber jetzt stärker ins Gewicht, weil die Vertrauens-Leiste von jeder
+    // Seite hierher führt.
+    textAlign: "right" as const,
   },
   intro: { fontSize: v("--font-size-small"), color: v("--color-text-muted"), lineHeight: 1.6, marginBottom: 12 },
   card: {
@@ -277,10 +288,15 @@ function Section({ title, stand, intro, rows, source, caveat, aufAnfrage }: {
       {aufAnfrage ? (
         <div style={S.aufAnfrage}>
           <p style={S.aufAnfrageText}>
-            {aufAnfrage} — {rows.length}{" "}
-            {rows.length === 1 ? "Einzelwert" : "Einzelwerte"}. Die Zahlen stecken in der
-            Rechnung: Wer den Rechner benutzt, bekommt sie mit dem Ergebnis und kann sie dort
-            überschreiben. Den vollständigen Satz geben wir auf Anfrage heraus —{" "}
+            {/* KEINE Anzahl und KEIN "kann man im Rechner überschreiben" mehr.
+                Beides fiel im Audit: Eine Tabellenzeile ist nicht ein Wert (die
+                Wärmepumpen-Zeilen tragen über 30 Zahlen in 15 Zeilen), und von
+                den genannten Größen ist je Rechner nur eine Handvoll editierbar
+                — bei der historischen Vergütungsreihe gibt es gar keinen
+                Rechner, der sie ausgibt. Ein Ersatz für weggenommene Tabellen
+                darf nicht selbst etwas Falsches versprechen. */}
+            {aufAnfrage}. Was davon im Ergebnis überschreibbar ist, steht oben; den
+            vollständigen Satz geben wir auf Anfrage heraus —{" "}
             <ObfuscatedEmail user="hey" domain="solar-check.io" style={S.a} />.
           </p>
         </div>
@@ -380,14 +396,20 @@ export default async function DatenstandPage() {
           caveat="Die amtlichen Jahreswerte sind zusätzlich unabhängig aus Solarerzeugung und Börsenpreis nachgerechnet (Abweichung unter 3 %). Der Erlöspfad über die Laufzeit ist eine ausgewiesene Annahme, keine Prognose."
         />
 
-        {/* ── Historische Einspeisevergütung (Zeitreihe für die Zubau-Story) ── */}
+        {/* ── Historische Einspeisevergütung (Zeitreihe für die Zubau-Story) ──
+            BEWUSST NICHT zurückgehalten (Audit 17.08.2026): Dieselbe Reihe steht
+            auf /einspeiseverguetung-tabelle vollständig und in besser
+            abgreifbarer Form, dazu die BNetzA-Monatsmatrix. Sie hier
+            einzuklappen kostete die Offenlegungs-Zusage, ohne irgendetwas zu
+            schützen — und täuschte dem Leser eine Zurückhaltung vor, die es gar
+            nicht gibt. Zurückgehalten wird nur, wo es auch wirkt: bei den
+            kalibrierten Modell-Datensätzen. */}
         <Section
           title="Einspeisevergütung – historische Reihe"
           stand={FEEDIN_HISTORY_META.dataAsOf}
           intro="Jahresanfangs-Sätze für kleine Dachanlagen bei Inbetriebnahme, 2000 bis heute. Grundlage der Datenstory zum Solar-Zubau (photovoltaik-zubau-deutschland). Ab April 2012 sank die Vergütung unterjährig — die Jahreswerte sind Jahresanfangs-Repräsentanten."
           rows={FEEDIN_HISTORY_YEARS.map((y, i) => ({ label: `${y}`, value: `${ctSatz(FEEDIN_HISTORY_VALUES[i])} ct/kWh` }))}
           source={FEEDIN_HISTORY_META.source}
-          aufAnfrage={`Ein Satz je Inbetriebnahmejahr von ${FEEDIN_HISTORY_YEARS[0]} bis ${FEEDIN_HISTORY_YEARS[FEEDIN_HISTORY_YEARS.length - 1]}`}
         />
 
         {/* ── CO2-Preis (Heizen, für WP-Vergleich) ── */}
@@ -404,7 +426,11 @@ export default async function DatenstandPage() {
         <Section
           title="Wärmepumpe"
           stand={monthYear(HP.validFrom)}
-          intro="Annahmen des Wärmepumpen-Rechners: Heizbedarf, Effizienz, Investition und Förderung. Alle Werte im Ergebnis editierbar."
+          // NICHT "alle Werte editierbar" (Audit 17.08.2026): Das Ergebnis hat
+          // sieben Eingabefelder — Heizwärme, Heizlast, JAZ, Gaspreis, fossile
+          // Anschaffung, WP-Strompreis, Investition. Förderstaffeln, Wartung,
+          // Grundpreise, Betrachtungszeitraum und Teuerung sind es nicht.
+          intro="Annahmen des Wärmepumpen-Rechners: Heizbedarf, Effizienz, Investition und Förderung. Heizwärme, Heizlast, Jahresarbeitszahl, Gaspreis, Strompreis und beide Anschaffungskosten sind im Ergebnis editierbar."
           rows={[
             // Spanne immer über die GANZE Skala — sonst fällt eine neue Stufe still
             // aus der öffentlichen Übersicht. Reihenfolge der Beschriftung MUSS der
@@ -428,8 +454,8 @@ export default async function DatenstandPage() {
             { label: "Wartung je Jahr (fossil / Wärmepumpe)", value: `${nf(HP.gasMaintenance)} / ${nf(HP.wpMaintenance)} €` },
             { label: "Betrachtungszeitraum · Teuerung Strom/Brennstoff", value: `${HP.years} Jahre · ${nf(HP.stromInflation * 100)} / ${nf(HP.gasInflation * 100)} % pro Jahr` },
           ]}
-          source={`${HP.source}. Investition der Wärmepumpe kalibriert an der Auswertung von 160 realen Luft-Wasser-Angeboten (Verbraucherzentrale Rheinland-Pfalz): Median 34.979 €, Mittelwert 36.279 € bei einer Median-Leistung von 10 kW. Anschaffung der fossilen Alternative: Mittelwert der Fraunhofer-ISE-Kurzstudie „Vergleich Wärmeversorgung“ vom 23.06.2026 (Gaskessel Einfamilienhaus 11.400–20.400 € brutto), bestätigt durch die Beispielrechnung der Verbraucherzentrale Rheinland-Pfalz vom 02.06.2025 (16.000 €). Grundpreise und Wartung ebenfalls aus dieser Beispielrechnung.`}
-          aufAnfrage="Heizbedarf und Heizlast je Dämmstufe, Jahresarbeitszahlen, Investitions- und Förderstaffeln, Brennstoff- und Betriebskosten"
+          source={`${HP.source}. Umrechnung des Norm-Bedarfs auf den erwarteten realen Verbrauch (Prebound-Effekt) nach Sunikka-Blank/Galvin (2012), Building Research & Information 40(3), Auswertung von 3.400 deutschen Wohnungen — im unsanierten Bestand rund ${Math.round(preboundAnteil(HP.specDemandBestand[0]) * 100)} % Abschlag; Heizlast und Warmwasser bleiben unkorrigiert. Investition der Wärmepumpe kalibriert an der Auswertung von 160 realen Luft-Wasser-Angeboten (Verbraucherzentrale Rheinland-Pfalz): Median 34.979 €, Mittelwert 36.279 € bei einer Median-Leistung von 10 kW. Anschaffung der fossilen Alternative: Mittelwert der Fraunhofer-ISE-Kurzstudie „Vergleich Wärmeversorgung“ vom 23.06.2026 (Gaskessel Einfamilienhaus 11.400–20.400 € brutto), bestätigt durch die Beispielrechnung der Verbraucherzentrale Rheinland-Pfalz vom 02.06.2025 (16.000 €). Grundpreise und Wartung ebenfalls aus dieser Beispielrechnung.`}
+          aufAnfrage="Heizbedarf und Heizlast je Dämmstufe, Investitions- und Förderstaffeln, Brennstoff- und Betriebskosten"
         />
 
         {/* ── Grüngas-Pfad (Gas-Referenz im WP-Rechner + Ratgeber) ── */}
@@ -479,7 +505,12 @@ export default async function DatenstandPage() {
         <Section
           title="Balkonkraftwerk (Steckersolar)"
           stand={monthYear(BK.validFrom)}
-          intro="Annahmen des Balkonkraftwerk-Rechners. Ertrag, Eigenverbrauch und Speicher-Nutzen werden stündlich über ein Jahr simuliert — sie sind Ergebnis, nicht Annahme. Der Standort-Ertrag kommt live von PVGIS, der Strompreis ist im Ergebnis editierbar."
+          // Die beiden Rechtsaussagen stehen hier im Intro, nicht in den Zeilen:
+          // Der Block ist eingeklappt, und beide tragen einen Vorbehalt, der sie
+          // erst richtig macht (verbindlich vs. freiwillig). Die Zahl ohne ihren
+          // Vorbehalt stehen zu lassen ist genau das Muster, vor dem CLAUDE.md
+          // beim Balkon-Recht warnt — im Audit am 17.08.2026 aufgefallen.
+          intro={`Annahmen des Balkonkraftwerk-Rechners. Ertrag, Eigenverbrauch und Speicher-Nutzen werden stündlich über ein Jahr simuliert — sie sind Ergebnis, nicht Annahme. Der Standort-Ertrag kommt live von PVGIS, der Strompreis ist im Ergebnis editierbar. Rechtlich verbindlich ist allein die Grenze aus § 8 Abs. 5a EEG: 2.000 Wp Module und 800 VA Wechselrichter. Die Schuko-Grenze von ${nf(BK.schukoMaxWp)} Wp stammt dagegen aus der VDE-Vornorm DIN VDE V 0126-95 — eine freiwillige Produktnorm für Hersteller, die nur für Geräte ohne Speicher gilt.`}
           rows={[
             { label: "Set-Preise: 1 Modul / 2 Module / 4 Module", value: BK.sets.map((s) => `~${nf(s.price)} €`).join(" / ") },
             { label: "Modul / Wechselrichter je Set", value: BK.sets.map((s) => `${nf(s.moduleWp)} Wp / ${nf(s.inverterW)} W`).join(" · ") },

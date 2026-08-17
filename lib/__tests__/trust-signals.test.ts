@@ -33,9 +33,14 @@ describe("Vertrauens-Leiste", () => {
     });
   });
 
-  // Die drei Institutionen im Quellen-Punkt sind namentlich beworben. Wird eine
-  // Datenquelle ausgetauscht, muss der Satz mitwandern — sonst wirbt der Footer
-  // mit einer Herkunft, die es nicht mehr gibt.
+  // Wer namentlich genannt wird, muss auch eine unserer Quellen sein — und die
+  // Nennung darf nicht abschließend klingen.
+  //
+  // Der Satz zählte bis zum Audit am 17.08.2026 drei Institutionen auf, als wäre
+  // das die Liste. Die Leiste steht aber auch unter dem Wärmepumpen- und dem
+  // Klimarechner, deren Zahlen von Verbraucherzentrale, KfW, dena, test.de und
+  // ADAC stammen — dort war die Aufzählung schlicht falsch. Dazu kam ein
+  // Etikettenfehler: "amtlich" über einem privaten Forschungsinstitut.
   describe("Genannte Quellen decken sich mit dem Datenquellen-Register", () => {
     const quellenPunkt = TRUST_SIGNALS.find((s) => s.icon === "quote");
     const alleNamen = Object.values(DATA_SOURCES)
@@ -46,13 +51,24 @@ describe("Vertrauens-Leiste", () => {
       expect(quellenPunkt).toBeDefined();
     });
 
-    it.each(["Bundesnetzagentur", "Fraunhofer ISE", "Kommission"])(
-      "%s steht im Register",
-      (name) => {
-        expect(quellenPunkt!.text).toContain(name === "Kommission" ? "Kommission" : name);
-        expect(alleNamen, `${name} ist keine unserer Datenquellen mehr`).toContain(name);
-      },
-    );
+    it("jede namentlich genannte Stelle ist eine unserer Quellen", () => {
+      // Großgeschriebene Eigennamen aus dem Satz ziehen, Satzanfang ignorieren.
+      const genannt = (quellenPunkt!.text.match(/(?<!^)(?<![.:]\s)\b[A-ZÄÖÜ][a-zäöüß]{3,}/g) ?? [])
+        .filter((w) => !["Woher", "Zahl", "Forschung"].includes(w));
+      for (const name of genannt) {
+        expect(alleNamen, `"${name}" wird beworben, steht aber nicht im Quellen-Register`).toContain(
+          name,
+        );
+      }
+    });
+
+    it("nennt kein Etikett, das nicht für alle Genannten stimmt", () => {
+      // "amtlich" trug den Fehler: Fraunhofer ISE ist eine private
+      // Forschungsorganisation, und die Klima-/WP-Quellen sind es erst recht.
+      expect(`${quellenPunkt!.titel} ${quellenPunkt!.text}`.toLowerCase()).not.toMatch(
+        /amtlich|behördlich|staatlich/,
+      );
+    });
   });
 
   // Der Punkt wird IMMER gezeigt, sobald ein Stand vorliegt — auch ein alter
@@ -100,14 +116,48 @@ describe("Vertrauens-Leiste", () => {
   // einzeln gegen die Datenschutzerklärung geprüft werden. Solange keine drin
   // steht, kann diese Prüfung auch niemand vergessen.
   describe("Keine absoluten Aussagen", () => {
-    it.each(["niemals", "immer", "100 %", "garantiert", "zu keiner Zeit"])(
-      "'%s' kommt nicht vor",
-      (wort) => {
-        for (const s of TRUST_SIGNALS) {
-          expect(`${s.titel} ${s.text}`.toLowerCase()).not.toContain(wort.toLowerCase());
-        }
-      },
-    );
+    // Die Liste hieß bis zum Audit am 17.08.2026 "niemals / immer / 100 % /
+    // garantiert / zu keiner Zeit" — und traf damit KEINES der beiden absoluten
+    // Wörter, die tatsächlich dastanden ("Alle Annahmen", "jeder Wert"). Eine
+    // Schranke, die nur Wörter verbietet, die ohnehin niemand schreibt, ist
+    // schlimmer als keine: Sie läuft grün und erzeugt Sicherheit.
+    //
+    // "kein" fehlt hier bewusst: "kein Konto, kein Verkaufskontakt" ist eine
+    // Verneinung über unser eigenes Verhalten, die wir belegen können — anders
+    // als eine Allaussage über Daten, für die wir nicht einstehen können.
+    it.each([
+      "alle ",
+      "jeder wert",
+      "jede annahme",
+      "sämtliche",
+      "vollständig offen",
+      "niemals",
+      "immer",
+      "100 %",
+      "garantiert",
+      "zu keiner Zeit",
+    ])("'%s' kommt nicht vor", (wort) => {
+      for (const s of TRUST_SIGNALS) {
+        expect(
+          `${s.titel} ${s.text}`.toLowerCase(),
+          `"${s.titel}" macht eine Allaussage — die Seite dahinter muss sie halten können`,
+        ).not.toContain(wort.toLowerCase());
+      }
+    });
+
+    // Der Satz, der im Audit als schwerster Befund fiel: Er stand auf jeder
+    // Seite und war ausgerechnet auf der Seite falsch, auf die er verlinkt.
+    // Die Formulierung wanderte über drei Fassungen ("alle Werte" → "alle
+    // Annahmen" → …), deshalb wird hier auf das Muster geprüft, nicht auf den
+    // Wortlaut.
+    it("behauptet keine vollständige Offenlegung", () => {
+      for (const s of TRUST_SIGNALS) {
+        expect(
+          `${s.titel} ${s.text}`.toLowerCase(),
+          `"${s.titel}" verspricht Vollständigkeit — /datenstand hält Modell-Datensätze zurück`,
+        ).not.toMatch(/(alle|jede[rs]?|sämtliche)\s+\w*\s*(werte?|annahmen|zahlen)/);
+      }
+    });
 
     // "Die Berechnung läuft in deinem Browser" ist wörtlich die Aussage der
     // Datenschutzerklärung. Ändert sich der Datenfluss, muss der Footer mit.

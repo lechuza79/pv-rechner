@@ -68,8 +68,11 @@ test.describe("Lizenz: Abgrenzung zwischen Darstellung und Datenbestand", () => 
 
     const text = await page.locator("body").innerText();
 
-    // Die beiden gesetzlichen Grenzen stehen sichtbar da.
-    expect(text).toMatch(/wissenschaftlichen Forschungszwecken/);
+    // Die beiden gesetzlichen Grenzen stehen sichtbar da. Die Forschungsgrenze
+    // muss dabei eng benannt sein: § 60d UrhG privilegiert Forschungs-
+    // organisationen ohne gewerbliche Zwecksetzung, nicht jeden mit
+    // wissenschaftlichem Motiv — die weite Fassung gab mehr weg als nötig.
+    expect(text).toMatch(/Forschungsorganisationen ohne gewerbliche Zwecksetzung/);
     expect(text).toMatch(/einzelne Werte darf ohnehin jeder entnehmen/);
 
     // Und es wird nicht pauschal verboten, was ohnehin erlaubt ist.
@@ -81,13 +84,33 @@ test.describe("Lizenz: Abgrenzung zwischen Darstellung und Datenbestand", () => 
     expect(antwort.status()).toBe(200);
 
     const eintraege = (await antwort.json()) as { location: string; "tdm-reservation": number }[];
-    const bei = (ort: string) => eintraege.find((e) => e.location === ort);
 
-    // Die Seite sagt "Charts, Widgets und Texte stehen weiter offen" — dann darf
-    // die Datei nicht pauschal Nein sagen. Genau dieser Widerspruch war die erste
-    // Fassung.
-    expect(bei("/")?.["tdm-reservation"]).toBe(0);
-    expect(bei("/api/")?.["tdm-reservation"]).toBe(1);
+    // Die Seite sagt: Vorbehalt für die GANZE Seite, auch für die frei
+    // lizenzierten Teile. Dann muss die Datei dasselbe sagen.
+    //
+    // Zwischenzeitlich stand hier das Gegenteil ("/" → 0, nur "/api/"
+    // vorbehalten). Zwei Fehler auf einmal: Die Förderdaten liegen als HTML
+    // unter "/", nicht unter "/api/" — der Vorbehalt saß neben der Tür. Und
+    // eine 0 ist kein Schweigen, sondern eine ausdrückliche Freigabe, also
+    // schlechter als gar keine Datei. Dieser Test schrieb den Fehler fest.
+    expect(eintraege.find((e) => e.location === "/")?.["tdm-reservation"]).toBe(1);
+    for (const e of eintraege) {
+      expect(e["tdm-reservation"], `"${e.location}" gibt TDM ausdrücklich frei`).toBe(1);
+    }
+  });
+
+  test("Lizenztext und robots.txt behaupten dasselbe", async ({ page, request }) => {
+    await page.goto("/lizenz");
+    const text = await page.locator("body").innerText();
+    const robots = await (await request.get("/robots.txt")).text();
+
+    // Die Seite sagte "Die Charts, Widgets und Texte oben sind davon nicht
+    // betroffen — die stehen weiter offen", während robots.txt den
+    // Trainingssammlern Disallow: / für die ganze Domain gab. Wer den Satz liest
+    // und die Datei prüft, findet uns bei einer Unwahrheit.
+    expect(robots).toMatch(/Disallow: \/\s*$/m);
+    expect(text).not.toMatch(/die stehen weiter offen/);
+    expect(text).toMatch(/für die gesamte Seite, auch für die frei lizenzierten Teile/);
   });
 
   test("zitierende Crawler bleiben in der robots.txt offen", async ({ request }) => {

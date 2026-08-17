@@ -41,39 +41,48 @@ export interface TrustSignal {
 export const TRUST_SIGNALS: readonly TrustSignal[] = [
   {
     titel: "An Forschungsdaten geprüft",
-    text: "Eigenverbrauch und Autarkie rechnen wir gegen das Referenzkennfeld der HTW Berlin nach.",
+    text: "Unsere Autarkie-Rechnung wird gegen das Referenzkennfeld der HTW Berlin nachgerechnet.",
     href: "/methodik",
     icon: "check",
-    // Kennfeld: AUTARKY_GRID in lib/constants.ts, Vergleich in calcAutarkie
-    // (lib/calc.ts). Der Abgleich ist als Test festgenagelt:
+    // NUR die Autarkie — der Satz nannte bis zum Audit am 17.08.2026 auch den
+    // Eigenverbrauch, und das war zu breit: AUTARKY_GRID (lib/constants.ts) ist
+    // ein Autarkie-Kennfeld, und der einzige externe Abgleich ist
     // lib/__tests__/pv-sim.test.ts → "trifft das HTW-Referenzkennfeld bei
-    // gleichem Tagverbrauch (±3 pp)". Ausgeführt auf /methodik.
+    // gleichem Tagverbrauch (±3 pp)". Der Eigenverbrauch fürs Geld kommt aus
+    // calcEigenverbrauch (Power-Law) und hat KEINEN externen Anker; seine Tests
+    // prüfen Monotonie und Plausibilität, also die Rechnung gegen sich selbst.
+    // "Kalibriert an" ist eben nicht "rechnen wir nach".
     beleg: "lib/__tests__/pv-sim.test.ts + /methodik",
   },
   {
-    titel: "Amtliche Datenquellen",
-    text: "Die Zahlen stammen von Bundesnetzagentur, Fraunhofer ISE und der Europäischen Kommission.",
+    titel: "Offengelegte Datenquellen",
+    text: "Woher jede Zahl stammt, steht dabei — von der Bundesnetzagentur bis zur Forschung.",
     href: "/datenstand",
     icon: "quote",
-    // Die drei Genannten sind wörtlich Einträge in lib/data-sources.ts (mastr,
-    // energyCharts, pvgis) und werden auf /datenstand einzeln mit Lizenz
-    // ausgewiesen. Bewusst NUR diese drei genannt: sie tragen die Kernrechnung
-    // (Anlagenbestand, Erzeugung, Standort-Ertrag). Ein Test hält die Namen
-    // gegen das Register.
-    beleg: "lib/data-sources.ts (mastr, energyCharts, pvgis) + /datenstand",
+    // NICHT "amtlich" und NICHT als abschließende Aufzählung — beides fiel im
+    // Audit: Fraunhofer ISE ist ein privates Forschungsinstitut, keine Behörde,
+    // und die Leiste steht auch unter dem Wärmepumpen- und Klimarechner, deren
+    // Zahlen von Verbraucherzentrale, KfW, dena, test.de und ADAC kommen. Eine
+    // Aufzählung, die dort falsch ist, wäre eine Werbeaussage auf der falschen
+    // Seite. Die Zusage ist deshalb die überprüfbare: dass die Herkunft dabeisteht.
+    beleg: "lib/data-sources.ts + Quellenzeile je Block auf /datenstand",
   },
   {
-    titel: "Jeder Wert mit Quelle",
-    text: "Alle Annahmen, mit denen wir rechnen, stehen offen — jede mit ihrem eigenen Stand und ihrer Quelle.",
+    titel: "Jede Größe mit Quelle",
+    text: "Für jede Größe steht dabei, worauf wir rechnen, woher sie stammt und wie alt sie ist.",
     href: "/datenstand",
     icon: "refresh",
-    // KEIN gemeinsames Prüfdatum an dieser Stelle (Entscheidung des Betreibers,
-    // 17.08.2026): Die Werte werden in ganz verschiedenen Takten geprüft — Preise
-    // monatlich, Rechtsstände täglich, der CO₂-Preis jährlich. Ein einzelnes
-    // Datum über allen hätte den jüngsten Takt für alle behauptet; das ist
-    // dieselbe Fehlerklasse wie eine Kennzahl, die als Zustand gelesen wird.
-    // Die Stände stehen je Größe auf /datenstand, und dorthin führt der Punkt.
-    beleg: "/datenstand listet jede Größe mit validFrom/Stand und Quelle",
+    // KEIN "alle Werte stehen offen" mehr: Seit dem Umbau vom 17.08.2026 hält
+    // /datenstand die durchkalibrierten Modell-Datensätze zurück. Der alte Satz
+    // war damit ausgerechnet auf der Seite falsch, auf die er verlinkt — und
+    // stand trotzdem auf jeder Seite der Site. Was jetzt zugesagt wird, ist das,
+    // was die Seite hält: Herkunft und Stand je Größe.
+    //
+    // KEIN gemeinsames Prüfdatum: Die Werte werden in verschiedenen Takten
+    // geprüft — Rechtsstände täglich, Marktpreise monatlich, der CO₂-Preis
+    // jährlich. Ein Datum über allen behauptete den schnellsten Takt für den
+    // langsamsten Wert.
+    beleg: "/datenstand nennt je Block Stand und Quelle; Werte teils auf Anfrage",
   },
   {
     titel: "Ohne Anmeldung",

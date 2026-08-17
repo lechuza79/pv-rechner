@@ -141,7 +141,7 @@ export default function UeberPage() {
 
         <h2 style={S.h2}>Weiterverwenden und zitieren</h2>
         <p style={S.p}>
-          Unsere Darstellungen, Berechnungen und Texte stehen unter {OWN_WORK_LICENSE.code} und
+          Unsere Darstellungen und Texte stehen unter {OWN_WORK_LICENSE.code} und
           dürfen redaktionell wie gewerblich genutzt werden. Was das genau bedeutet und wie die
           Namensnennung aussieht, steht auf der{" "}
           <Link href={OWN_WORK_LICENSE.page} style={S.a}>

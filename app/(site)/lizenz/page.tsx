@@ -11,7 +11,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/lizenz",
   title: "Lizenz – Grafiken und Texte von Solar Check nutzen",
   description:
-    "Unsere Charts, Berechnungen und Texte stehen unter CC BY 4.0: redaktionell und gewerblich frei nutzbar, Bedingung ist die Namensnennung mit Link. Was für die zugrunde liegenden Daten gilt.",
+    "Unsere Charts und Texte stehen unter CC BY 4.0: redaktionell und gewerblich frei nutzbar, Bedingung ist die Namensnennung mit Link. Was für Daten und Datenbestände gilt.",
   ogImageTitle: "Lizenz",
   ogImageSubtitle: "Grafiken und Texte frei nutzen - mit Namensnennung.",
 });
@@ -94,7 +94,7 @@ export default function LizenzPage() {
         <div style={S.kurz}>
           <div style={S.kurzLabel}>Kurzfassung</div>
           <p style={S.p}>
-            Unsere Darstellungen, Berechnungen und Texte stehen unter{" "}
+            Unsere Darstellungen und Texte stehen unter{" "}
             <a href={OWN_WORK_LICENSE.url} target="_blank" rel="noopener noreferrer" style={S.a}>
               {OWN_WORK_LICENSE.code}
             </a>
@@ -146,21 +146,22 @@ export default function LizenzPage() {
 
         <h2 style={S.h2}>Nutzung zum Training von KI-Modellen</h2>
         <p style={S.p}>
-          Für unsere Datenbestände behalten wir uns die Nutzung zum Text- und Data-Mining vor. Der
-          Vorbehalt ist maschinenlesbar hinterlegt, weil er nur so wirkt; in reiner Textform wäre er
-          es nicht. Die Charts, Widgets und Texte oben sind davon nicht betroffen — die stehen
-          weiter offen.
+          Für diese Seite behalten wir uns die Nutzung zum Text- und Data-Mining vor — für die
+          gesamte Seite, auch für die frei lizenzierten Teile. Der Vorbehalt ist zusätzlich zu
+          diesem Absatz maschinenlesbar hinterlegt, unter <code>/.well-known/tdmrep.json</code> und
+          in der <code>robots.txt</code>. Dort sind auch die Sammler einzeln benannt.
         </p>
         <p style={S.p}>
           Das ist kein Widerspruch zur freien Lizenz: Sie erlaubt jede Nutzung, verlangt dafür aber
           die Namensnennung. Ein Modell, das unsere Inhalte einliest und später ohne Quelle
           wiedergibt, erfüllt genau diese eine Bedingung nicht. Crawler, die uns zitieren, sperren
-          wir deshalb nicht aus — nur solche, die ausschließlich für das Training sammeln.
+          wir deshalb nicht aus. Das gilt auch dort, wo derselbe Zugriff beides bedient — wer
+          unsere Inhalte zur Antwortzeit nachschlägt und uns dabei nennt, bleibt willkommen.
         </p>
         <p style={S.p}>
-          Zwei Dinge kann dieser Vorbehalt nicht: Auswertungen zu wissenschaftlichen
-          Forschungszwecken bleiben gesetzlich erlaubt, und einzelne Werte darf ohnehin jeder
-          entnehmen. Beides ist so gewollt.
+          Zwei Dinge kann dieser Vorbehalt nicht: Forschungsorganisationen ohne gewerbliche
+          Zwecksetzung dürfen nach dem Urheberrechtsgesetz auch gegen unseren Willen auswerten, und
+          einzelne Werte darf ohnehin jeder entnehmen. Beides ist so gewollt.
         </p>
 
         <h2 style={S.h2}>So sieht die Namensnennung aus</h2>
@@ -180,11 +181,12 @@ export default function LizenzPage() {
 
         <h2 style={S.h2}>Die Daten hinter den Grafiken</h2>
         <p style={S.p}>
-          Unsere Lizenz gilt für unsere Darstellung, nicht für die zugrunde liegenden Daten. Die
-          Daten stehen jeweils unter der Lizenz ihrer Quelle. Deshalb steht an jedem Chart und in
+          Hier geht es um die fremden Rohdaten, aus denen wir rechnen — nicht um unsere eigenen
+          Sammlungen aus dem Abschnitt oben. Unsere Lizenz gilt für unsere Darstellung, nicht für
+          diese Rohdaten. Sie stehen jeweils unter der Lizenz ihrer Quelle. Deshalb steht an jedem Chart und in
           jedem heruntergeladenen Bild ein Quellenhinweis — er ist Teil der Bedingungen dieser
-          Quellen und darf nicht entfernt oder unkenntlich gemacht werden. Welche Werte wir
-          verwenden und wie alt sie sind, steht auf der Seite{" "}
+          Quellen und darf nicht entfernt oder unkenntlich gemacht werden. Woher unsere Werte
+          stammen und wie alt sie sind, steht auf der Seite{" "}
           <Link href="/datenstand" style={S.a}>
             Datenstand
           </Link>

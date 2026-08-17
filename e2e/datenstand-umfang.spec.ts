@@ -24,16 +24,43 @@ test.describe("Datenstand: Umfang und Versprechen", () => {
 
     const text = await page.locator("body").innerText();
 
-    // Der überzogene Satz darf nicht zurückkommen.
+    // Auf Muster prüfen, nicht auf Wortlaut. Die erste Fassung dieses Tests
+    // verbot "alle Werte, mit denen wir rechnen" — und übersah die Trust-Leiste
+    // wenige Pixel darunter, die "Alle Annahmen, mit denen wir rechnen" sagte.
+    // Ein Wort daneben, Test grün, Falschaussage auf jeder Seite der Site.
     expect(text).not.toMatch(/steht jeder Wert/);
-    expect(text).not.toMatch(/alle Werte, mit denen wir rechnen/i);
+    expect(text).not.toMatch(/(alle|jede[rs]?|sämtliche)\s+\w*\s*(werte?|annahmen)[^.]{0,30}(stehen offen|im Überblick|offengelegt)/i);
 
     // Stattdessen: Was da ist, und wie man an den Rest kommt.
     expect(text).toMatch(/worauf wir rechnen, woher sie stammt und wie alt sie ist/);
     expect(text).toMatch(/auf Anfrage/);
-    // Der Weg zu den Zahlen wird benannt — sonst liest sich der Umbau als
-    // Rückzug hinter eine Mauer.
-    expect(text).toMatch(/Rechner gibt sie mit dem Ergebnis aus/);
+
+    // Der Ersatztext darf nicht selbst etwas Falsches versprechen. Die erste
+    // Fassung behauptete pauschal, man bekomme die Zahlen im Rechner und könne
+    // sie dort überschreiben — beim Wärmepumpen-Rechner sind es 7 von 15
+    // Größen, bei der historischen Vergütungsreihe gibt es überhaupt keinen
+    // Rechner. Und dieser Test nagelte den falschen Satz auch noch als
+    // erwünscht fest.
+    expect(text).not.toMatch(/kann sie dort überschreiben/);
+    expect(text).not.toMatch(/Rechner gibt sie mit dem Ergebnis aus/);
+    expect(text).not.toMatch(/Alle Werte im Ergebnis editierbar/);
+  });
+
+  // Die Zurückhaltung muss dort wirken, wo sie behauptet wird. Bei der
+  // historischen Vergütungsreihe tat sie das nicht: Dieselben Werte stehen auf
+  // /einspeiseverguetung-tabelle vollständig. Sie hier einzuklappen kostete die
+  // Zusage und täuschte eine Zurückhaltung vor, die es nicht gibt.
+  test("hält nur zurück, wo es auch wirkt", async ({ page }) => {
+    await page.goto("/datenstand");
+    await expect(page.getByRole("heading", { name: "Datenstand", exact: true })).toBeVisible({
+      timeout: 15_000,
+    });
+
+    const text = await page.locator("body").innerText();
+    // Die historische Reihe steht wieder offen — mindestens der erste und der
+    // letzte Jahrgang sind lesbar.
+    expect(text).toMatch(/\b2000\b/);
+    expect(text).toMatch(/50,62|ct\/kWh/);
   });
 
   test("Quelle und Stand stehen weiter bei jeder Größe", async ({ page }) => {

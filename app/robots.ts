@@ -31,14 +31,26 @@ const TRAINING_CRAWLER = [
   "GPTBot", // OpenAI, Modelltraining (NICHT OAI-SearchBot / ChatGPT-User)
   "ClaudeBot", // Anthropic, Modelltraining (NICHT Claude-SearchBot / Claude-User)
   "anthropic-ai",
-  "Google-Extended", // Gemini-Training; berührt die Google-Suche nicht
   "Applebot-Extended", // Apple-Training; der normale Applebot bleibt offen
-  "Meta-ExternalAgent",
   "CCBot", // Common Crawl — Sammelbecken, aus dem viele Modelle schöpfen
   "Bytespider",
-  "Diffbot",
   "Omgilibot",
 ];
+
+// BEWUSST NICHT GESPERRT, obwohl sie Training bedienen — sie bedienen eben nicht
+// NUR das (Audit 17.08.2026, an den Anbieter-Dokumentationen geprüft):
+//
+//   Google-Extended steuert außer dem Gemini-Training auch das Grounding, also
+//     das Nachschlagen im Suchindex zur Antwortzeit. Grounding IST der
+//     Zitierfall. Eine Sperre hätte uns aus Gemini-Antworten genommen, ohne
+//     dass irgendetwas kaputtgegangen wäre — die Sorte Fehler, die man erst an
+//     ausbleibendem Verkehr merkt.
+//   Meta-ExternalAgent nennt in Metas eigener Beschreibung neben dem Training
+//     ausdrücklich das Indexieren von Inhalten für Produkte.
+//   Diffbot baut einen Wissensgraphen und führt Quellen.
+//
+// Wer einen dieser Namen doch aufnimmt, prüft vorher die Doku des Anbieters und
+// begründet es hier — "klingt nach KI" reicht nicht.
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -54,6 +66,11 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: TRAINING_CRAWLER,
+        // Die Erklärung des Vorbehalts bleibt lesbar: Ein Disallow über die
+        // ganze Domain deckt sonst auch /.well-known/tdmrep.json ab — wir
+        // würden dem Sammler die Datei vorenthalten, die ihm sagt, woran er
+        // sich halten soll.
+        allow: "/.well-known/",
         disallow: "/",
       },
     ],

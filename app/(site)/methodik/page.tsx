@@ -427,7 +427,7 @@ export default async function MethodikPage() {
           geht bewusst zu unseren Ungunsten: kleinere Ersparnis, längere Amortisation.
           Und die Investitionskosten sind an rund 160 realen Handwerker-Angeboten
           kalibriert (Datensatz der Verbraucherzentrale Rheinland-Pfalz), nicht an
-          Portal-Preisen. Alle Annahmen stehen im Ergebnis und auf der{" "}
+          Portal-Preisen. Die Annahmen stehen im Ergebnis, Herkunft und Stand auf der{" "}
           <Link href="/datenstand" style={{ ...S.link, fontWeight: 600 }}>Datenstand-Seite</Link>.
         </p>
 
@@ -461,7 +461,7 @@ export default async function MethodikPage() {
           bläst. Wir stellen deshalb alle drei Gerätetypen auf dieselbe Grundlage — die Effizienz im echten Betrieb
           über eine ganze Saison: Monoblock {acSeer("monoblock")}, mobile Split-Anlage {acSeer("portasplit")}, fest
           installierte Split-Anlage {acSeer("split")}. Ein Monoblock zieht damit für dieselbe Kühlung rund das
-          Vierfache einer festen Split-Anlage. Die Werte samt Typenschild-Angabe stehen auf der{" "}
+          Vierfache einer festen Split-Anlage. Womit wir rechnen, mit Stand und Quelle, steht auf der{" "}
           <Link href="/datenstand" style={{ ...S.link, fontWeight: 600 }}>Datenstand-Seite</Link>.
         </p>
         <p style={S.p}>
@@ -531,7 +531,7 @@ export default async function MethodikPage() {
         </div>
 
         <p style={S.p}>
-          Eine kompakte Übersicht aller Werte — Preise, Vergütung, CO₂-Preis,
+          Eine kompakte Übersicht — Preise, Vergütung, CO₂-Preis,
           Wärmepumpen-Annahmen — mit Stand und Quelle findest du auf der{" "}
           <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
         </p>
