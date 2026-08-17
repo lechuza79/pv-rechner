@@ -136,12 +136,15 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
 /** "Bedingungen" heading + bullet list. Renders nothing when empty. */
 export function FundingConditions({ conditions }: { conditions: string[] }) {
   if (conditions.length === 0) return null;
+  // EIN Block, kein Fragment: Als Fragment waren Überschrift und Liste zwei
+  // Geschwister — in einem Raster landeten sie in zwei verschiedenen Spalten,
+  // die Überschrift links und die Bedingungen rechts daneben.
   return (
-    <>
-      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 6 }}>Bedingungen</div>
-      <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.7, color: v("--color-text-secondary") }}>
+    <div>
+      <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 6 }}>Bedingungen</div>
+      <ul style={{ margin: 0, paddingLeft: 18, fontSize: "var(--font-size-small)", lineHeight: 1.7, color: v("--color-text-secondary") }}>
         {conditions.map((c) => <li key={c}>{c}</li>)}
       </ul>
-    </>
+    </div>
   );
 }
