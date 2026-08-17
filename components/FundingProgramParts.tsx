@@ -79,21 +79,21 @@ export function FundingRates({
   return (
     <div>
       {label && (
-        <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 6 }}>{label}</div>
+        <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 12 }}>{label}</div>
       )}
     <div
       style={
         columns === 2
-          ? { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: bordered ? 8 : 4, columnGap: 20 }
-          : { display: "flex", flexDirection: "column", gap: bordered ? 8 : 4 }
+          ? { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: bordered ? 14 : 8, columnGap: 20 }
+          : { display: "flex", flexDirection: "column", gap: bordered ? 14 : 8 }
       }
     >
       {rates.map((r) => (
         <div
           key={r.label}
           style={{
-            display: "flex", justifyContent: "space-between", gap: 12, fontSize: 13,
-            ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 8 } : {}),
+            display: "flex", justifyContent: "space-between", gap: 12, fontSize: "var(--font-size-body)",
+            ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 14 } : {}),
           }}
         >
           <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
@@ -144,16 +144,35 @@ export function ExampleCards({ examples }: { examples: FundingExample[] }) {
 }
 
 /** "Bedingungen" heading + bullet list. Renders nothing when empty. */
-export function FundingConditions({ conditions }: { conditions: string[] }) {
-  if (conditions.length === 0) return null;
+export function FundingConditions({
+  conditions,
+  eligibility,
+}: {
+  conditions: string[];
+  /** Wer antragsberechtigt ist — wird als ERSTE Bedingung in die Liste
+   *  gesetzt, nicht als Abzeichen darüber. „Privat" und „Gewerblich" sind
+   *  Bedingungen wie jede andere auch: Sie sagen, wer in Frage kommt. Als
+   *  Pillen über der Liste standen sie als Etikett da, das zu nichts gehörte. */
+  eligibility?: FundingProgram["eligibility"];
+}) {
+  const wer =
+    eligibility && eligibility.length > 0
+      ? eligibility.length === 2
+        ? "Für Privatpersonen und Gewerbe"
+        : eligibility[0] === "privat"
+          ? "Nur für Privatpersonen"
+          : "Nur für Gewerbe"
+      : null;
+  const alle = wer ? [wer, ...conditions] : conditions;
+  if (alle.length === 0) return null;
   // EIN Block, kein Fragment: Als Fragment waren Überschrift und Liste zwei
   // Geschwister — in einem Raster landeten sie in zwei verschiedenen Spalten,
   // die Überschrift links und die Bedingungen rechts daneben.
   return (
     <div>
-      <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 6 }}>Bedingungen</div>
-      <ul style={{ margin: 0, paddingLeft: 18, fontSize: "var(--font-size-small)", lineHeight: 1.7, color: v("--color-text-secondary") }}>
-        {conditions.map((c) => <li key={c}>{c}</li>)}
+      <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 12 }}>Bedingungen</div>
+      <ul style={{ margin: 0, paddingLeft: 20, fontSize: "var(--font-size-body)", lineHeight: 1.6, color: v("--color-text-secondary") }}>
+        {alle.map((c) => <li key={c} style={{ marginBottom: 10 }}>{c}</li>)}
       </ul>
     </div>
   );

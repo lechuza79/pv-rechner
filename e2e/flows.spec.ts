@@ -119,10 +119,27 @@ async function imFlow(page: Page): Promise<boolean> {
  * Fehlermeldung — sie muss sagen, WELCHER Weg gebrochen ist, sonst ist ein
  * roter Lauf über hunderte Wege nicht auswertbar.
  */
+/**
+ * Seite laden und den Flow bereitstellen. Flows, die erst in einem Fenster
+ * öffnen, brauchen dafür einen Klick — jeder Weg beginnt neu von vorn, also
+ * gehört das Öffnen an dieselbe Stelle wie das Laden.
+ */
+async function oeffne(page: Page, flowPfad: string, startKnopf?: string) {
+  await page.goto(flowPfad, { waitUntil: "domcontentloaded" });
+  if (!startKnopf) return;
+  const knopf = page.getByRole("button", { name: new RegExp(startKnopf, "i") }).first();
+  await expect(knopf).toBeVisible({ timeout: 15_000 });
+  await expect(async () => {
+    await knopf.click();
+    await expect(page.locator("[data-flow-nav]").first()).toBeVisible({ timeout: 1_500 });
+  }).toPass({ timeout: 20_000 });
+}
+
 async function gehe(
   page: Page,
   flowName: string,
   flowPfad: string,
+  startKnopf: string | undefined,
   ergebnisEnthaelt: string,
   pfad: string[],
   erg: LaufErgebnis,
@@ -162,7 +179,7 @@ async function gehe(
     }
     await weiterHier.click();
     await page.waitForTimeout(120);
-    await gehe(page, flowName, flowPfad, ergebnisEnthaelt, [...pfad, VORBELEGT], erg);
+    await gehe(page, flowName, flowPfad, startKnopf, ergebnisEnthaelt, [...pfad, VORBELEGT], erg);
     return;
   }
 
@@ -188,7 +205,7 @@ async function gehe(
     // Jeder Weg beginnt neu von vorn: Zurück-Knöpfe stellen den Zustand nicht
     // zuverlässig wieder her, und ein Läufer, der auf halb aufgeräumten
     // Zuständen weiterläuft, prüft etwas, das kein Nutzer je sieht.
-    await page.goto(flowPfad, { waitUntil: "domcontentloaded" });
+    await oeffne(page, flowPfad, startKnopf);
     for (const vorher of pfad) {
       if (vorher === VORBELEGT) await fuelleFelder(page);
       else await waehle(page, vorher);
@@ -208,7 +225,7 @@ async function gehe(
     await weiterJetzt.click();
     await page.waitForTimeout(120);
     await bildAblegen(page, flowName, [...pfad, wahl].join("__"), erg);
-    await gehe(page, flowName, flowPfad, ergebnisEnthaelt, [...pfad, wahl], erg);
+    await gehe(page, flowName, flowPfad, startKnopf, ergebnisEnthaelt, [...pfad, wahl], erg);
   }
 }
 
@@ -244,7 +261,7 @@ for (const flow of FLOWS) {
 
     const erg: LaufErgebnis = { wege: 0, gedeckelt: false, fehler: [], bilder: new Set() };
     await bildAblegen(page, flow.name, "01-start", erg);
-    await gehe(page, flow.name, flow.pfad, flow.ergebnisEnthaelt, [], erg);
+    await gehe(page, flow.name, flow.pfad, flow.startKnopf, flow.ergebnisEnthaelt, [], erg);
 
     // Deckel laut wird gemeldet, nicht still hingenommen.
     if (erg.gedeckelt) {

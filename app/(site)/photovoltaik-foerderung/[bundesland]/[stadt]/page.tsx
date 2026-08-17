@@ -11,7 +11,7 @@ import { cityBySlug, slugify, isCityPublished, publishedCities } from "../../../
 import { fundingStandLabel, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
 import { FundingRates, FundingConditions, FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
-import FoerderFlow from "../../../../../components/FoerderFlow";
+import FoerderCheckStarter from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
 import { buildFundingFaq } from "../../../../../lib/funding-faq";
 import { getRegionAtlasData, type RegionAtlas } from "../../../../../lib/mastr-data";
@@ -291,14 +291,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                     verschwindet dann, weil sie danebenläge. */}
                 <div className="foerder-spalten" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: space.xl, alignItems: "stretch" }}>
                   <div style={{ paddingRight: space.lg, borderRight: `1px solid ${v("--color-border")}` }} className="foerder-spalte-links">
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: space.sm }}>
-                      {f.eligibility.map((e) => (
-                        <span key={e} style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-secondary"), background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: 999, padding: "3px 10px" }}>
-                          {e === "privat" ? "Privat" : "Gewerblich"}
-                        </span>
-                      ))}
-                    </div>
-                    <FundingConditions conditions={f.conditions} />
+                    <FundingConditions conditions={f.conditions} eligibility={f.eligibility} />
                   </div>
                   <div>
                     <FundingRates rates={f.rates} bordered label="Konditionen" />
@@ -369,11 +362,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                       Vier Fragen zu Vorhaben und Gebäude — danach steht da, was für dich gilt und in
                       welcher Reihenfolge du vorgehen musst. Dauert eine Minute.
                     </p>
-                    <a href="#foerder-check" style={S.aktionsKnopf}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                        Förder-Check starten <IconArrowRight size={iconSizes.sm} />
-                      </span>
-                    </a>
+                    <FoerderCheckStarter programme={[f, ...combinable]} ortName={city.name} />
                   </div>
                 </div>
               </div>
@@ -384,18 +373,9 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
           </div>
         )}
 
-        {/* ── Förder-Check: bin ich berechtigt, und was ist wann zu tun? ──
-            Die Schritte kommen aus den erfassten Bedingungen der Programme
-            dieses Ortes (lib/funding-flow.ts) — der Block blendet sich von
-            selbst aus, solange dort nichts Prüfbares hinterlegt ist. */}
-        {/* Ohne eigene Überschrift: Der Einstieg steht in der Karte darüber und
-            heißt schon „Bekommst du die Förderung?" — dieselbe Zeile hier ein
-            zweites Mal ließ den Check aussehen wie ein zweites Angebot. */}
-        {f && (
-          <div style={S.section} id="foerder-check">
-            <FoerderFlow programme={[f, ...combinable]} ortName={city.name} />
-          </div>
-        )}
+        {/* Der Förder-Check hat hier keinen eigenen Abschnitt mehr: Er ist kein
+            Inhalt zum Lesen, sondern ein Werkzeug, das aus der Förderkarte
+            heraus im Fenster startet (components/FoerderCheckStarter.tsx). */}
 
         {/* ── Beispielrechnungen ── */}
         <div style={S.section}>

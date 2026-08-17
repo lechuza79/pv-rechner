@@ -17,6 +17,9 @@ export interface FlowUnterTest {
   /** Text, der im Ergebnis stehen muss — beweist, dass der Weg wirklich ankommt
    *  und nicht nur die Knöpfe verschwinden. */
   ergebnisEnthaelt: string;
+  /** Beschriftung des Knopfes, der den Flow erst öffnet (Flows im Fenster).
+   *  Ohne Angabe steht der Flow direkt auf der Seite. */
+  startKnopf?: string;
 }
 
 export const FLOWS: FlowUnterTest[] = [
