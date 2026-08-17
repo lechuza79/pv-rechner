@@ -172,7 +172,11 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
   const combinable = (f?.combinableWith ?? [])
     .map((id) => byId.get(id))
     .filter((p): p is FundingProgram => Boolean(p));
-  // Der mittlere Fall (10 kWp mit kleinem Speicher) steht für das Einfamilienhaus
+  // Der mittlere Fall (10 kWp) steht für die übliche Dachanlage am
+  // Einfamilienhaus — dieselbe Rechnung wie in den Beispielkarten weiter unten,
+  // damit die Kachel oben und die Karten darunter nicht zwei verschiedene
+  // Förderbeträge zeigen.
+  const uebliche = examples[1] ?? examples[0];
   const currentYear = new Date().getFullYear();
   const lastFullYear = atlas?.solar.by_year.filter((y) => y.year < currentYear).slice(-1)[0];
   // Tempo statt Topfstand: Wie viele Anlagen sind dieses Jahr schon dazugekommen,
@@ -345,22 +349,35 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                     sind, was die Seite von jemandem will. */}
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: space.md, marginTop: space.xl }}>
                   <div style={S.aktionsBox}>
-                    <div style={S.aktionsTitel}>Was springt dabei heraus?</div>
+                    <div style={S.aktionsTitel}>Was kostet eine Solaranlage in {city.name}?</div>
                     <p style={S.aktionsText}>
-                      {city.name} liefert rund {nf(city.yieldKwhKwp)} kWh je kWp. Rechne mit deinen
-                      eigenen Werten — die Förderung ist dabei schon eingerechnet.
+                      {uebliche.foerderung > 0 ? (
+                        <>
+                          Für eine übliche Dachanlage mit {uebliche.kwp} kWp{uebliche.spKwh > 0 ? ` und ${uebliche.spKwh} kWh Speicher` : ""}{" "}
+                          gibt es hier rund <span style={S.strong}>{nf(uebliche.foerderung)} €</span> Zuschuss —
+                          bei {nf(uebliche.brutto)} € Investition. Rechne die Photovoltaik-Anlage mit deinem
+                          eigenen Stromverbrauch durch, die Förderung ist dabei eingerechnet.
+                        </>
+                      ) : (
+                        <>
+                          Eine übliche Dachanlage mit {uebliche.kwp} kWp kostet in {city.name} rund{" "}
+                          <span style={S.strong}>{nf(uebliche.brutto)} €</span> — bei {nf(city.yieldKwhKwp)} kWh
+                          Ertrag je kWp. Rechne die Photovoltaik-Anlage mit deinem eigenen Stromverbrauch durch.
+                        </>
+                      )}
                     </p>
                     <Link href={`/photovoltaik-rechner?er=${city.yieldKwhKwp}${ctaFoe}`} style={S.aktionsKnopf}>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                        {ctaFoe ? "Mit Förderung rechnen" : `Für ${city.name} rechnen`} <IconArrowRight size={iconSizes.sm} />
+                        Eigene Anlage rechnen <IconArrowRight size={iconSizes.sm} />
                       </span>
                     </Link>
                   </div>
                   <div style={S.aktionsBox}>
-                    <div style={S.aktionsTitel}>Bekommst du die Förderung?</div>
+                    <div style={S.aktionsTitel}>Wie viel PV-Förderung bekommst du?</div>
                     <p style={S.aktionsText}>
-                      Vier Fragen zu Vorhaben und Gebäude — danach steht da, was für dich gilt und in
-                      welcher Reihenfolge du vorgehen musst. Dauert eine Minute.
+                      Nicht jeder Zuschuss gilt für jeden. Vier Fragen zu Gebäude und Vorhaben, danach
+                      steht da, welche Förderprogramme in {city.name} für dich in Frage kommen — und in
+                      welcher Reihenfolge du den Antrag stellen musst, damit das Geld nicht verfällt.
                     </p>
                     <FoerderCheckStarter programme={[f, ...combinable]} ortName={city.name} />
                   </div>
