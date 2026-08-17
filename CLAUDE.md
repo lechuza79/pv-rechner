@@ -524,6 +524,14 @@ Ein Wächter, der um Erlaubnis fragt, ist kein Automatismus. Die Rechte stehen d
 
 **Worktree-Falle:** `core.hooksPath` muss **relativ** (`.githooks`) gesetzt sein, sonst zeigt jeder Worktree auf das Hauptrepo statt auf seinen eigenen Hook. Symptom: Hook-Updates im Worktree wirken beim Commit nicht. Fix: `git config --worktree --unset core.hooksPath`.
 
+**Prüfe, aus welchem Verzeichnis dein Dev-Server läuft — BLOCKER.** Bei zehn parallelen Worktrees ist ein belegter Port die Regel, nicht die Ausnahme, und Playwright verwendet einen laufenden Server auf dem Ziel-Port ungefragt weiter (`reuseExistingServer: !CI`). Am 17.08.2026 hat das **zwei Sessions gleichzeitig** je mehrere Stunden gekostet: Port 3045 gehörte einem fremden Worktree (Next 14 statt 15), die andere Session hatte ihren Vorschau-Server im Haupt-Repo. Beide prüften stundenlang **fremden Code** — grüne Läufe, die über die eigenen Änderungen nichts aussagten, und dazu Fehlersuche an Symptomen, die es im eigenen Zweig gar nicht gab (leere Seiten, fehlende Umgebungsvariablen, angeblich nicht gerenderte Bausteine).
+
+Deshalb, in dieser Reihenfolge:
+1. **Eigenen Port wählen** und ihn an Playwright durchgeben: `E2E_PORT=<port> npx playwright test`. Der Default 3045 ist bei parallelen Sessions praktisch immer schon belegt.
+2. **Vor dem ersten Verifizieren prüfen, wem der Port gehört:** `lsof -nP -iTCP:<port> -sTCP:LISTEN` liefert die PID, `lsof -a -p <pid> -d cwd -Fn` das Arbeitsverzeichnis. Steht dort ein anderer Worktree, ist jede Messung wertlos.
+3. **Fremde Server nie killen** — `pkill -f "next dev"` trifft alle. Wer wirklich aufräumen muss, filtert am eigenen Worktree-Pfad: `pkill -f "<worktree-name>/node_modules/.bin/next dev"`.
+4. **Ein Symptom, das nicht zum eigenen Diff passt, ist zuerst ein Umgebungsverdacht** (falscher Server, gecachter Zwischenstand, überlastete Maschine), nicht ein Codefehler. Und umgekehrt: Ein Exit-Code hinter einer Pipe (`… | tail`) ist der Code von `tail` — so wurde ein Lauf mit 20 Fehlschlägen als grün gemeldet.
+
 **Warum der Hook existiert:** Nach einem `git mv` waren nur die Renames staged, der lokale Build lief grün (Working-Tree korrekt), der Vercel-Build fiel um, weil der Commit selbst kaputt war. Mit Hook gilt: was committed wird, ist auch type-clean.
 
 **Hook deaktivieren** ist nicht erlaubt (`--no-verify`); wenn er schlägt, ist der Commit kaputt. Fix vor Commit.
