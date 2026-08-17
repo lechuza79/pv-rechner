@@ -39,6 +39,7 @@ export {
   DEFAULT_WP_BUILDING,
   defaultWpAnnualKwh,
   DEFAULT_WP_ANNUAL_KWH,
+  wpGebaeudeUebersprungenFolge,
   type WpElectricityInputs,
 } from "./heatpump-core";
 

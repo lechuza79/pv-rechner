@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import { ATLAS_CITIES } from "../atlas-cities";
-import { FUNDING_PROGRAMS, allFundingPrograms, getFundingProgram, fundingForAgs, fundingAmount, stackFunding } from "../funding-programs";
+import { FUNDING_PROGRAMS, allFundingPrograms, getFundingProgram, fundingForAgs, fundingAmount, stackFunding, fundingStandLabel, type FundingProgram } from "../funding-programs";
 
 // Integrity checks for the regional funding dataset. These are cheap insurance:
 // as cities/programs are added by hand, a typo in a fundingId or combinableWith
@@ -140,11 +141,29 @@ describe("fundingAmount math", () => {
 });
 
 describe("stackFunding", () => {
+  // Der Code-Seed trägt KEIN Prüfdatum — `lastVerified` kommt ausschließlich aus
+  // der Datenbank (lib/funding-data.ts). Seit dem Beleg-Verfall (16.08.2026)
+  // zieht ein Programm ohne frischen Quellenbeleg nichts mehr ab, also müssen
+  // Rechen-Tests den Beleg mitliefern. Genau das simuliert diese Hilfe: den
+  // Normalfall im Betrieb, in dem die Datenbank das Prüfdatum liefert.
+  const HEUTE = "2026-08-16";
+  const belegt = (ps: FundingProgram[]) => ps.map((p) => ({ ...p, lastVerified: HEUTE }));
+
   it("only counts active+computable programs and caps at gross cost", () => {
-    const programs = fundingForAgs("06412000"); // Frankfurt (aktiv, 20%)
-    const { total, applied } = stackFunding(programs, 10, 5, 25000);
+    const programs = belegt(fundingForAgs("06412000")); // Frankfurt (aktiv, 20%)
+    const { total, applied } = stackFunding(programs, 10, 5, 25000, HEUTE);
     expect(total).toBe(5000);
     expect(applied.map((a) => a.program.id)).toContain("frankfurt-klimabonus");
+  });
+
+  it("ohne Quellenbeleg zieht derselbe Datensatz nichts ab — der Seed allein reicht nicht", () => {
+    // Betriebsfall dahinter: Ist die Datenbank nicht erreichbar, fällt der Lader
+    // auf den Code-Seed zurück. Der kennt keine Prüfdaten, also wird in diesem
+    // Zustand KEINE Förderung eingerechnet. Bewusst so: Wir können die
+    // Aktualität dann nicht belegen, und eine versprochene Förderung, die es
+    // nicht mehr gibt, ist teurer als eine verschwiegene, die es noch gibt.
+    const ohneBeleg = fundingForAgs("06412000");
+    expect(stackFunding(ohneBeleg, 10, 5, 25000, HEUTE).total).toBe(0);
   });
 
   it("yields zero where no active computable program applies", () => {
@@ -192,7 +211,9 @@ describe("funding batch 2 (Juni 2026)", () => {
     expect(fundingAmount(p, 10, 0, 20000).total).toBe(1200);
     expect(fundingAmount(p, 10, 8, 25000).total).toBe(1200 + 1000);
     expect(fundingAmount(p, 10, 3, 25000).total).toBe(1200);
-    expect(stackFunding(fundingForAgs("12054000"), 10, 8, 25000).total).toBe(2200);
+    // Mit Quellenbeleg (im Betrieb aus der Datenbank) — siehe Beleg-Verfall.
+    const belegt = fundingForAgs("12054000").map((x) => ({ ...x, lastVerified: "2026-08-16" }));
+    expect(stackFunding(belegt, 10, 8, 25000, "2026-08-16").total).toBe(2200);
   });
   it("Hannover proKlima is info-only (not auto-deducted) — it covers only 6 of the ~21 Kreis municipalities", () => {
     const p = getFundingProgram("hannover-proklima")!;
@@ -369,6 +390,27 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(p.pvPerKwp).toBeUndefined();
   });
 
+  // Freiburg: Die Stadt hat den Jahrestopf 2026 am 14.07.2026 für leer erklärt
+  // ("Neue Anträge können ab sofort nicht mehr gestellt werden", Pressemitteilung
+  // freiburg.de/pb/2626054.html; die Programmseite nennt Baustein 3 ausdrücklich).
+  // Wir zogen bis zum 16.08.2026 weiter 150 €/kWp ab. Zwei Fallen hält dieser Test
+  // fest: Die Einzelseiten im Service-A-Z tragen den Stopp bis heute nicht (Stand
+  // 2023) — wer dort nachsieht, hält das Programm für offen. Und das Balkonmodul
+  // ist Ziffer 3.5 DESSELBEN Bausteins, also mitgestoppt, nicht ein eigener Topf.
+  it("Freiburg: Jahrestopf 2026 leer, kein Abzug mehr — Programm bleibt bestehen", () => {
+    const p = getFundingProgram("freiburg-stromerzeugung")!;
+    expect(p.status).toBe("ausgeschoepft");
+    expect(p.pvPerKwp).toBeUndefined();
+    expect(p.pvCap).toBeUndefined();
+    expect(stackFunding(fundingForAgs("08311000"), 10, 10, 25000).total).toBe(0);
+    // Die Sätze bleiben stehen: gestoppt ist das Geld, nicht die Richtlinie.
+    expect(p.rates.length).toBeGreaterThanOrEqual(3);
+    // Der Grund samt Stichtag steht sichtbar dabei, sonst wirkt die leere Kachel
+    // wie ein Datenfehler statt wie eine Tatsache.
+    expect(p.conditions.join(" ")).toMatch(/14\.07\.2026/);
+    expect(p.conditions.join(" ")).toMatch(/Balkonmodul/i);
+  });
+
   // Eine Startseiten-URL ist als Quellenangabe unter einem Förderbetrag wertlos:
   // Sie sieht aus wie ein Beleg, führt aber nirgendwo hin. Aufgefallen bei
   // Bergstraße und Memmingen, danach für alle aktiven Programme festgehalten.
@@ -470,5 +512,36 @@ describe("atlas-cities registry", () => {
       expect(c.yieldKwhKwp).toBeGreaterThanOrEqual(900);
       expect(c.yieldKwhKwp).toBeLessThanOrEqual(1200);
     }
+  });
+});
+
+// ─── „Zuletzt geprüft" darf nur eine echte Prüfung behaupten ─────────────────
+//
+// Bis 16.08.2026 setzte lib/funding-data.ts `lastVerified` auf
+// `last_verified ?? updated_at`. `updated_at` ist aber die letzte SCHREIBUNG der
+// Zeile — ein Resync, bei dem niemand etwas geprüft hat. 19 der 38 Programme
+// hatten nie ein echtes Prüfdatum und trugen trotzdem "Zuletzt geprüft: …" auf
+// ihrer Regionsseite, mit einem Datum, das jeder Resync auffrischte. Das Datum
+// ist das Vertrauenssignal, auf dem die Förderseiten aufbauen; ein falsches ist
+// die schwerste Fehlerklasse dieses Projekts (CLAUDE.md, "Zahlen und Einheiten").
+describe("Herkunft des Prüfdatums", () => {
+  it("ohne echtes Prüfdatum steht der redaktionelle Stand da, keine behauptete Prüfung", () => {
+    const p = { ...FUNDING_PROGRAMS["bund-nullsteuer"], stand: "Juni 2026", verified: true, lastVerified: undefined };
+    expect(fundingStandLabel(p)).toBe("Stand: Juni 2026");
+    expect(fundingStandLabel(p)).not.toContain("geprüft");
+  });
+
+  it("mit echtem Prüfdatum steht die Prüfung da", () => {
+    const p = { ...FUNDING_PROGRAMS["bund-nullsteuer"], verified: true, lastVerified: "2026-08-16" };
+    expect(fundingStandLabel(p)).toBe("Zuletzt geprüft: 16.08.2026");
+  });
+
+  it("der Lader zieht updated_at nicht als Ersatz heran", () => {
+    const quelle = readFileSync(new URL("../funding-data.ts", import.meta.url), "utf8");
+    const code = quelle
+      .split("\n")
+      .filter((l) => !l.trim().startsWith("//") && !l.trim().startsWith("*"))
+      .join("\n");
+    expect(code).not.toMatch(/updated_at/);
   });
 });

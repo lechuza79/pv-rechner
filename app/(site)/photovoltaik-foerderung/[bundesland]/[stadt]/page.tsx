@@ -8,7 +8,7 @@ import { v, iconSizes } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
 import { cityBySlug, slugify, isCityPublished, publishedCities } from "../../../../../lib/atlas-cities";
-import { fundingStandLabel, type FundingProgram } from "../../../../../lib/funding-programs";
+import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
 import { FundingRates, FundingConditions, FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
@@ -136,8 +136,11 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
   const f = city.fundingId ? byId.get(city.fundingId) : undefined;
   const examples = buildFundingExamples(city.yieldKwhKwp, f);
   // Förderung im Rechner vorab scharf schalten — nur wenn sie sich pauschal
-  // berechnen lässt UND aktuell Anträge angenommen werden.
-  const ctaFoe = f && f.status === "aktiv" && examples[0]?.foerderComputable ? `&foe=${f.id}` : "";
+  // berechnen lässt UND sie überhaupt noch zählt (Anträge offen + Quellenbeleg
+  // frisch, siehe fundingZaehlt). Über den rohen Status zu gehen würde einen
+  // Knopf anbieten, der eine Förderung vorbelegt, die der Rechner daneben nicht
+  // mehr abzieht.
+  const ctaFoe = fundingZaehlt(f) && examples[0]?.foerderComputable ? `&foe=${f!.id}` : "";
   const combinable = (f?.combinableWith ?? [])
     .map((id) => byId.get(id))
     .filter((p): p is FundingProgram => Boolean(p));
