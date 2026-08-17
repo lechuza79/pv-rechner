@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "../../../../../components/Breadcrumb";
-import { IconArrowRight, IconChevronLeft } from "../../../../../components/Icons";
+import { IconArrowRight, IconExternal } from "../../../../../components/Icons";
 import RelatedLinks from "../../../../../components/RelatedLinks";
 import { v, iconSizes, space, pad } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
@@ -102,16 +102,16 @@ function ZubauChart({ years }: { years: { year: number; count: number }[] }) {
 const S = {
   page: { background: v("--color-bg"), fontFamily: v("--font-text"), color: v("--color-text-primary"), minHeight: "100vh", padding: "0 16px 20px" } as React.CSSProperties,
   wrap: { maxWidth: 720, margin: "0 auto" } as React.CSSProperties,
-  breadcrumb: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 6 } as React.CSSProperties,
-  h1: { fontSize: 24, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
-  intro: { fontSize: 15, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" } as React.CSSProperties,
+  breadcrumb: { fontSize: "var(--font-size-caption)", color: v("--color-text-secondary"), marginBottom: 6 } as React.CSSProperties,
+  h1: { fontSize: "var(--font-size-h1)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2, margin: "0 0 8px" } as React.CSSProperties,
+  intro: { fontSize: "var(--font-size-body)", lineHeight: 1.6, color: v("--color-text-secondary"), margin: "0 0 22px" } as React.CSSProperties,
   strong: { color: v("--color-text-primary"), fontWeight: 600 } as React.CSSProperties,
   metricsGrid: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 10, marginBottom: 28 } as React.CSSProperties,
   metric: { background: v("--color-bg-muted"), borderRadius: v("--radius-md"), padding: 14 } as React.CSSProperties,
-  metricLabel: { fontSize: 12, color: v("--color-text-secondary"), marginBottom: 4 } as React.CSSProperties,
+  metricLabel: { fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginBottom: 4 } as React.CSSProperties,
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 } as React.CSSProperties,
-  h2: { fontSize: 16, fontWeight: 700, margin: "0 0 4px" } as React.CSSProperties,
-  sub: { fontSize: 12, color: v("--color-text-muted"), margin: "0 0 14px" } as React.CSSProperties,
+  h2: { fontSize: "var(--font-size-h3)", fontWeight: 700, margin: "0 0 4px" } as React.CSSProperties,
+  sub: { fontSize: "var(--font-size-small)", color: v("--color-text-muted"), margin: "0 0 14px" } as React.CSSProperties,
   section: { marginBottom: 28 } as React.CSSProperties,
   card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "16px 18px" } as React.CSSProperties,
   // Die beiden Wege am Fuß der Förderkarte: selbst nachrechnen (links) oder
@@ -125,9 +125,9 @@ const S = {
     flexDirection: "column",
     gap: space.xs,
   } as React.CSSProperties,
-  aktionsTitel: { fontSize: 14, fontWeight: 700, color: v("--color-text-primary") } as React.CSSProperties,
-  aktionsText: { fontSize: 13, lineHeight: 1.5, color: v("--color-text-secondary"), margin: 0, flex: 1 } as React.CSSProperties,
-  aktionsLink: { fontSize: 13, fontWeight: 600, color: v("--color-accent"), textDecoration: "none", marginTop: space.xs } as React.CSSProperties,
+  aktionsTitel: { fontSize: "var(--font-size-body)", fontWeight: 700, color: v("--color-text-primary") } as React.CSSProperties,
+  aktionsText: { fontSize: "var(--font-size-small)", lineHeight: 1.5, color: v("--color-text-secondary"), margin: 0, flex: 1 } as React.CSSProperties,
+  aktionsLink: { fontSize: "var(--font-size-small)", fontWeight: 600, color: v("--color-accent"), textDecoration: "none", marginTop: space.xs } as React.CSSProperties,
 };
 
 export default async function StadtPage(props: { params: Promise<{ bundesland: string; stadt: string }> }) {
@@ -173,9 +173,9 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
   return (
     <div style={S.page}>
       <div style={S.wrap}>
-        <Link href={`/photovoltaik-foerderung/${slugify(city.bundesland)}`} style={{ display: "inline-flex", alignItems: "center", gap: 3, fontSize: 13, fontWeight: 600, color: v("--color-accent"), textDecoration: "none", marginBottom: 12 }}>
-          <IconChevronLeft size={iconSizes.md} /> {city.bundesland}
-        </Link>
+        {/* Kein zusätzlicher Zurück-Pfeil über der Spur: Das Bundesland stand
+            damit zweimal übereinander — einmal als Pfeil, einmal als Station.
+            Wie im Atlas trägt allein die Spur die Navigation nach oben. */}
         <Breadcrumb
           items={[
             { label: "Förderung", href: "/photovoltaik-foerderung" },
@@ -210,12 +210,12 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
               <div style={{ padding: pad("md", "lg"), borderBottom: `1px solid ${v("--color-border")}`, background: v("--color-bg") }}>
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: space.sm }}>
                   <div>
-                    <h2 style={{ ...S.h2, fontSize: 17 }}>{f.name}</h2>
-                    <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: 2 }}>{f.traeger}</div>
+                    <h2 style={{ ...S.h2, fontSize: "var(--font-size-lead)" }}>{f.name}</h2>
+                    <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: 2 }}>{f.traeger}</div>
                   </div>
                   <FundingStatusBadge status={f.status} />
                 </div>
-                <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: space.sm, lineHeight: 1.6 }}>
+                <div style={{ fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), marginTop: space.sm, lineHeight: 1.6 }}>
                   {fundingStandLabel(f)}
                   {f.capped && (
                     <>
@@ -233,34 +233,51 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
               <div style={{ padding: pad("md", "lg") }}>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: space.md }}>
                   {f.eligibility.map((e) => (
-                    <span key={e} style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-secondary"), background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: 999, padding: "3px 10px" }}>
+                    <span key={e} style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-secondary"), background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: 999, padding: "3px 10px" }}>
                       {e === "privat" ? "Privat" : "Gewerblich"}
                     </span>
                   ))}
                 </div>
-                <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginBottom: space.md }}>
+                <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginBottom: space.md }}>
                   Förderfähig: <span style={S.strong}>{f.coveredCosts}</span>
                   {f.maxFoerderung ? ` · ${f.maxFoerderung}` : ""}
                 </div>
 
-                {/* Bedingungen vor die Sätze: Ob jemand überhaupt in Frage kommt,
-                    entscheidet sich hier — die Beträge nützen nichts, wenn eine
-                    Bedingung dazwischensteht. */}
-                <FundingConditions conditions={f.conditions} />
-
-                <div style={{ marginTop: space.md }}>
-                  <FundingRates rates={f.rates} bordered columns={2} />
+                {/* Bedingungen und Sätze nebeneinander: Beide beantworten
+                    zusammen die eine Frage „komme ich in Frage, und wie viel
+                    ist es dann?". Untereinander schob die Bedingungsliste die
+                    Beträge aus dem Blick. Auf schmalen Bildschirmen stapeln
+                    sie von selbst. */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: space.lg, alignItems: "start" }}>
+                  <FundingConditions conditions={f.conditions} />
+                  <FundingRates rates={f.rates} bordered />
                 </div>
 
                 {combinable.length > 0 && (
-                  <div style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: space.md }}>
-                    Kombinierbar mit:{" "}
-                    {combinable.map((p, i) => (
-                      <span key={p.id}>
-                        <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent"), textDecoration: "none" }}>{p.name}</a>
-                        {i < combinable.length - 1 ? ", " : ""}
-                      </span>
-                    ))}
+                  <div
+                    style={{
+                      marginTop: space.xl,
+                      paddingTop: space.lg,
+                      borderTop: `1px solid ${v("--color-border")}`,
+                      textAlign: "center",
+                    }}
+                  >
+                    <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: v("--color-text-muted"), marginBottom: space.sm }}>
+                      Kombinierbar mit
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: space.md, rowGap: space.xs }}>
+                      {combinable.map((p) => (
+                        <a
+                          key={p.id}
+                          href={p.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "var(--font-size-small)", color: v("--color-accent"), textDecoration: "none" }}
+                        >
+                          {p.name} <IconExternal size={iconSizes.xs} />
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -299,7 +316,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                 </div>
               </div>
             </div>
-            <Link href="/photovoltaik-foerderung" style={{ display: "inline-block", marginTop: 10, fontSize: 13, color: v("--color-accent"), textDecoration: "none" }}>
+            <Link href="/photovoltaik-foerderung" style={{ display: "inline-block", marginTop: 10, fontSize: "var(--font-size-small)", color: v("--color-accent"), textDecoration: "none" }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>Alle Förderprogramme im Überblick <IconArrowRight size={iconSizes.xs} /></span>
             </Link>
           </div>
@@ -309,11 +326,11 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             Die Schritte kommen aus den erfassten Bedingungen der Programme
             dieses Ortes (lib/funding-flow.ts) — der Block blendet sich von
             selbst aus, solange dort nichts Prüfbares hinterlegt ist. */}
+        {/* Ohne eigene Überschrift: Der Einstieg steht in der Karte darüber und
+            heißt schon „Bekommst du die Förderung?" — dieselbe Zeile hier ein
+            zweites Mal ließ den Check aussehen wie ein zweites Angebot. */}
         {f && (
           <div style={S.section} id="foerder-check">
-            <h2 style={S.h2}>Bekommst du die Förderung?</h2>
-            {/* Kein zweiter Erklärtext: Der Einstieg oben in der Karte sagt
-                bereits, was hier passiert, und springt hierher. */}
             <FoerderFlow programme={[f, ...combinable]} ortName={city.name} />
           </div>
         )}
@@ -339,7 +356,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         {/* ── CTA ── */}
         <div style={{ ...S.card, background: v("--color-bg-accent"), borderColor: v("--color-border-accent"), marginBottom: 28 }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: v("--color-accent"), marginBottom: 4 }}>Was würde sich für dich rechnen?</div>
-          <div style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), marginBottom: 14 }}>
+          <div style={{ fontSize: "var(--font-size-small)", lineHeight: 1.6, color: v("--color-text-secondary"), marginBottom: 14 }}>
             {city.name} liefert rund {nf(city.yieldKwhKwp)} kWh pro kWp. Rechne mit deinen eigenen Werten.
           </div>
           <Link href={`/photovoltaik-rechner?er=${city.yieldKwhKwp}${ctaFoe}`} style={{ display: "inline-block", textDecoration: "none", padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: 14, fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent") }}>
@@ -354,7 +371,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
             {faq.map((item) => (
               <details key={item.q} style={{ background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-md"), padding: "12px 14px" }}>
                 <summary style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary"), cursor: "pointer", listStyle: "none" }}>{item.q}</summary>
-                <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: "8px 0 0" }}>{item.a}</p>
+                <p style={{ fontSize: "var(--font-size-small)", lineHeight: 1.6, color: v("--color-text-secondary"), margin: "8px 0 0" }}>{item.a}</p>
               </details>
             ))}
           </div>
@@ -403,7 +420,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                     const maxKwp = Math.max(...atlas.solar.by_segment.map((s) => s.kwp));
                     return atlas.solar.by_segment.map((s) => (
                       <div key={s.segment}>
-                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 3 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "var(--font-size-small)", marginBottom: 3 }}>
                           <span>{SEGMENT_LABEL[s.segment] ?? s.segment}</span>
                           <span style={{ color: v("--color-text-secondary"), fontFamily: v("--font-mono") }}>{fmtCapacity(s.kwp)} · {nf(s.count)} Anlagen</span>
                         </div>
@@ -431,7 +448,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
         />
 
         {/* ── Disclaimer ── */}
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), lineHeight: 1.6, borderTop: `1px solid ${v("--color-border")}`, paddingTop: 12, marginBottom: 32 }}>
+        <div style={{ fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), lineHeight: 1.6, borderTop: `1px solid ${v("--color-border")}`, paddingTop: 12, marginBottom: 32 }}>
           Bestandsdaten: Marktstammdatenregister (Bundesnetzagentur){atlas?.data_as_of ? `, Stand ${atlas.data_as_of}` : ""}, monatlich aktualisiert, Datenlizenz{" "}
           <a
             href="https://www.govdata.de/dl-de/by-2-0"
