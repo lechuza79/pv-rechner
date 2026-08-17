@@ -11,11 +11,44 @@ Cloudflare-/JS-gesperrt und jede Stadt nutzt ein anderes Format. Deshalb
 Quelle (oder, wenn gesperrt, das Richtlinien-PDF / seriöse Sekundärquellen),
 extrahiert Satz + Status und hält sie gegen den hinterlegten Wert.
 
+## Schritt 0: Der Arbeitsvorrat — BLOCKER, vor jedem anderen Schritt
+
+```bash
+npm run foerder:probe -- --vorrat
+```
+
+Das ist die Liste, mit der der Lauf **beginnt**, und zwar von oben. Sie steht in
+dieser Reihenfolge: erst die Programme, an denen wir hängen (Fehlversuche), dann
+die am längsten nicht an der Amtsquelle geprüften.
+
+**Warum das der erste Schritt ist (16.08.2026):** Vorher stand in den Aufträgen
+„merke dir, welche Programme du nur sekundär belegen konntest, und arbeite sie in
+den Folgeläufen per Browser ab". Kein Lauf konnte das befolgen — jede Sitzung
+fängt bei null an. Also fiel jeder dauerhaft geblockte Träger stillschweigend
+hinten runter, während sein Prüfdatum auf der Seite alterte, ohne dass etwas
+anschlug. Das Gedächtnis steht jetzt in der Datenbank (`funding_checks`,
+Leseseite `lib/funding-verify-state.ts`), nicht im Kopf des Laufs.
+
+**Jeder Versuch wird protokolliert, auch der gescheiterte** — sonst ist der
+Vorrat beim nächsten Mal wieder leer:
+
+```bash
+npm run foerder:probe -- --ok <id> --wie traeger --url <url> --zitat "<Beleg>"
+npm run foerder:probe -- --fehl <id> --wie pruefseite
+```
+
+Fünf Ausgänge, und **nur `traeger` zählt als geprüft**: `traeger` (Amtsseite
+selbst gelesen — Abruf, PDF oder echter Browser) · `archiv` (nur der
+Archiv-Stand) · `sekundaer` (nur Dritte) · `pruefseite` (auf der Bot-Prüfung
+hängengeblieben) · `gesperrt` (auf allen Wegen zu). Nur `traeger` setzt das
+Datum, das auf den Seiten als „Zuletzt geprüft" steht.
+
 ## So wird die Routine ausgelöst
 
 Dem Assistenten sagen: **„Lauf die Förder-Prüfung."** Er liest dieses Runbook,
-spawnt **einen Agenten pro Programm** in `lib/funding-programs.ts` (Level
-≠ `bund` — die zwei Bundesprogramme sind stabil) und arbeitet die Ergebnisse ab.
+arbeitet den Vorrat aus Schritt 0 von oben ab, spawnt **einen Agenten pro
+Programm** in `lib/funding-programs.ts` (Level ≠ `bund` — die zwei
+Bundesprogramme sind stabil) und arbeitet die Ergebnisse ab.
 
 Pro Agent mitgeben: `name`, `traeger`, `region`, hinterlegte `url`, hinterlegter
 `status` und die hinterlegten Beträge (`rates` + strukturierte Felder
@@ -121,10 +154,18 @@ Regeln, die jeder Voll-Lauf erzwingt:
 1. **Jedes** Programm (Level ≠ bund) bekommt sein `status`-Feld erneut gegen die
    offizielle Quelle bestätigt — nicht nur die Verdachtsfälle.
 2. Nach Bestätigung/Korrektur die Beleg-Spalte **`last_verified` auf das heutige
-   Datum** setzen (DB; über `/api/funding/setup?resync=1` landet `updated_at` als
-   Fallback, der Wächter schreibt `last_verified` gezielt). Dieses Datum wird auf
-   den Seiten als „Zuletzt geprüft: …" angezeigt — es ist das Vertrauenssignal und
-   muss echt sein.
+   Datum** setzen — über `npm run foerder:probe -- --ok <id> --wie traeger …`
+   (protokolliert den Versuch mit) oder `scripts/set-funding-verified.mjs`.
+   Dieses Datum wird auf den Seiten als „Zuletzt geprüft: …" angezeigt — es ist
+   das Vertrauenssignal und muss echt sein.
+   **`updated_at` ist KEIN Ersatz** (korrigiert 16.08.2026): Der Lader zog früher
+   `last_verified ?? updated_at` heran, also ersatzweise den Zeitpunkt der letzten
+   Schreibung. Damit trugen 19 der 38 Programme ein „Zuletzt geprüft"-Datum für
+   eine Prüfung, die nie stattgefunden hat — und jeder Resync frischte es auf.
+   Ohne echtes Prüfdatum steht jetzt der redaktionelle `stand` da.
+   Das ist die Förder-Ausprägung von **Gate-Regel 9**: Bestätigung ohne Änderung
+   ist der Normalfall und setzt das Datum trotzdem — ein gescheiterter Abruf
+   nie.
 3. **Konservativ im Zweifel:** Quelle nicht erreichbar / widersprüchlich / Topf-Stand
    unklar → NICHT „aktiv", sondern `unsicher` (kein Abzug). Lieber eine echte
    Förderung als „unsicher" zeigen als eine tote als „aktiv".
@@ -152,8 +193,45 @@ aussieht.
 4. **Echter Browser** — `preview_start` mit der URL, dann `get_page_text`. Das ist
    der Handweg und die Stufe, die den 403 tatsächlich löst. Nicht überspringen,
    nur weil Stufe 1–3 gescheitert sind: genau dafür ist sie da.
-5. Erst wenn auch 4 scheitert: Sekundärquellen — und Verdikt `UNREACHABLE` mit
-   Vermerk, welche Stufen versucht wurden.
+   → protokollieren als `--ok … --wie traeger`, wenn die Seite kommt.
+5. **Archiv der Amtsseite** — `https://web.archive.org/web/2026/<url>`. Das ist
+   der Wortlaut des Trägers selbst, nur datiert; qualitativ etwas anderes als ein
+   Vergleichsportal. → `--fehl … --wie archiv`.
+6. Erst wenn auch das scheitert: Sekundärquellen — Verdikt `UNREACHABLE`, Vermerk,
+   welche Stufen versucht wurden. → `--fehl … --wie sekundaer|pruefseite|gesperrt`.
+
+**Das Archiv belegt den INHALT, nicht die AKTUALITÄT — BLOCKER.** Eine Förderung,
+die im Juli lief, kann im September gestoppt sein. Ein Archiv-Treffer setzt das
+Prüfdatum deshalb NICHT zurück (erzwungen von `lib/__tests__/funding-verify-state.test.ts`);
+er darf die Werte stützen, aber nie ein „aktiv" tragen.
+
+**Was ein Wächter NICHT tut: das Häkchen setzen.** Gemessen am 16.08.2026 an
+frankfurt.de — direkter Abruf 403; der skriptgesteuerte Browser (dasselbe
+Chromium, das die Seitentests fährt) landet auf der Cloudflare-Prüfseite,
+unsichtbar **und** sichtbar gestartet, und sie löst sich auch nach einer halben
+Minute nicht auf; im echten Chrome des Betreibers erschien zeitweise
+„Bestätigen Sie, dass Sie ein Mensch sind". Eine Mensch-Prüfung für eine Maschine
+wegzuklicken oder mit Tarnwerkzeugen zu umgehen, ist die eine Grenze, an der auch
+ein Wächter anhält — und wäre obendrein brüchig: Jede Änderung auf deren Seite
+legt es lahm, und dann meldet ein stillstehender Wächter weiter Grün.
+
+**Es ist keine Mauer, sondern eine Laune.** Derselbe echte Browser hat dieselbe
+Seite eine Stunde später ohne jede Prüfung vollständig geliefert. Ein einzelner
+Versuch ist Glückssache, über mehrere Läufe kommt man durch — genau dafür gibt es
+den Arbeitsvorrat aus Schritt 0.
+
+**Nach drei Läufen ohne Amtsquelle: sichere Richtung + Entscheidung.** Der Vorrat
+weist das Programm dann als ESKALATION aus. Dann `status` im Seed auf `unsicher`
+(kein Abzug mehr in der Rechnung, bleibt mit Hinweis sichtbar) — das darf der
+Wächter selbst, Wiedereinschalten nie — **und** die ausgegebene Entscheidungszeile
+als `decisions`-Eintrag melden. Erst drei, nicht einer: Die Prüfseite ist eine
+Laune; beim ersten Fehlversuch abzuschalten nähme Förderungen weg, die es gibt.
+
+**Letzte Stufe: bei der Stelle nachfragen.** Für Programme, die auch so nicht zu
+klären sind, erzeugt `lib/funding-inquiry-draft.ts` eine sachliche Anfrage an den
+Träger (Rollen-Postfach). **Entwurf, kein Versand** — abgeschickt wird er vom
+Betreiber. Der Text wirbt bewusst mit keinem Wort für uns: Sobald er das täte,
+wäre es keine Sachfrage mehr, sondern Kaltakquise (Legal-Checkliste 6).
 
 **Sekundärquellen reichen nicht, um „geprüft" zu behaupten.** Belegt am
 Frankfurt-Lauf (26.07.2026): Suche und Aggregatoren bestätigten brav „Programm
@@ -174,9 +252,19 @@ Status anders), zuerst das **Council** laufen lassen (`scripts/council-verify.md
 — drei unabhängige Verifizierer, einer mit Widerlegungs-Auftrag, prüfen genau
 diesen einen Befund gegen. Förderung ist im Kern ein **Ermessensfall**
 (Kleingedrucktes, „aktiv vs. unsicher", strukturierter Satz vs. kein Abzug) →
-für alles, was den Abzug **erhöht** oder ein Programm **einschaltet**: kein
-Auto-Fix, auch bei Konsens. Den bestätigten Befund als Vorschlag für
-`lib/funding-programs.ts` mailen; der Nutzer gibt frei.
+für alles, was den **Abzug erhöht** (Satz rauf, Deckel rauf, neuer
+strukturierter Satz): kein Auto-Fix, auch bei Konsens. Den bestätigten Befund als
+Vorschlag für `lib/funding-programs.ts` mailen; der Nutzer gibt frei.
+
+**Ein Programm EINSCHALTEN ist davon zu trennen** (Wächter-Gate, Teil 4:
+„Programm einschalten nach Träger-Beleg" steht in der Selbst-Ändern-Spalte, und
+das Gate geht dem Runbook vor). Zulässig, wenn die Richtlinie oder die
+Trägerseite selbst gelesen wurde **und** das Council 3/3 bestätigt. Beim
+Statuswechsel auf `aktiv` immer mitprüfen: Zieht damit auch ein Betrag ab
+(`pvPerKwp` & Co.)? Wenn ja, ist das der Teil, der Vorschlag bleibt — Status und
+Abzug sind zwei Entscheidungen, nicht eine. Und: `status: "aktiv"` **veröffentlicht
+die Stadtseite** (`isCityLive` in `lib/atlas-cities.ts`); das gehört in den
+Bericht, weil damit eine neue indexierbare Seite live geht.
 
 **Auto-Fix ist dagegen Pflicht, wenn beides zutrifft** (kein Ermessen, also auch
 kein Council nötig):
@@ -192,6 +280,53 @@ DB nachgezogen. Eine Nachricht an den Betreiber wäre hier reine Arbeitsverlager
 gewesen: Es gab nichts zu entscheiden, nur etwas abzuschreiben.
 
 ## Changelog
+
+### August 2026 (News-Wächter-Lauf 16.08.)
+- **Freiburg im Breisgau** — Jahrestopf leer, wir zogen weiter ab. Die Stadt hat
+  das Programm „Klimafreundlich Wohnen" am **14.07.2026** per Pressemitteilung
+  gestoppt („Neue Anträge können ab sofort nicht mehr gestellt werden",
+  freiburg.de/pb/2626054.html); die Programmseite nennt Baustein 3
+  (Stromerzeugung) ausdrücklich mit. Council 3/3 inkl. adversarialem Prüfer.
+  → `aktiv` → `ausgeschoepft`, `pvPerKwp`/`pvCap` entfernt (150 €/kWp, max.
+  1.500 € wurden einen Monat lang zu Unrecht abgezogen), Grund + Stichtag als
+  sichtbare Bedingung. Sätze und Richtlinie bleiben stehen: gestoppt ist das
+  Geld, nicht das Programm. Die Stadtseite bleibt online — `ausgeschoepft` zählt
+  als Archiv-Status, die Seite rechnet das Beispiel ohne den Zuschuss.
+  - **Falle für den nächsten Lauf:** Die Einzelseiten im Service-A-Z („3.3
+    Photovoltaik Dachvollbelegung", „3.5 Balkonmodul") tragen den Stopp bis
+    heute **nicht** — Freigabestand 2023, Antragslink wirkt weiter aktiv. Wer
+    dort nachsieht statt auf der Programmseite, hält das Programm für offen.
+    Maßgeblich ist die Programmseite (jüngere Richtlinienfassung, Stopp-Kasten).
+  - **Nicht automatisch wieder einschalten:** Der 01.01.2027 steht nur auf der
+    Programmseite, nicht in der Pressemitteilung, und die Richtlinie schließt
+    einen Rechtsanspruch aus. Vor dem Wiedereinschalten an der Trägerseite
+    nachprüfen.
+
+### August 2026 (News-Wächter-Lauf 14.08.)
+- **Heidelberg** — der Eintrag stand seit Juni auf `unsicher` („zwei städtische
+  Seiten widersprechen sich"). Der Widerspruch war keiner: Die Übersichtsseite
+  trägt oben einen Förderstopp-Kasten, der drei **andere** Programme meint
+  (Energieeffizienz Unternehmen/Vereine, Wassermanagement, Mobilität), direkt
+  darunter steht „Antragstellung ab 1. Juli 2026 wieder möglich". Richtlinie 2026
+  beschafft (`docs/quellen/Heidelberg_Rationelle-Energieverwendung_Richtlinie_
+  ab-2026-07-01.pdf`, gilt für Anträge nach dem 30.06.2026, Gemeinderatsbeschluss
+  11.06.2026). Council 3/3 inkl. adversarialem Prüfer. → `unsicher` → `aktiv`,
+  fehlender **Höchstbetrag 10.000 € je Objekt** ergänzt (der stand bei uns
+  nirgends), Leistungsgrenzen (Dach bis 100 kWp, Fassade bis 50 kWp), PV-Pflicht-
+  Abzug, 15-Jahre-Betriebsbindung, Bagatellgrenze 150 € und der Haushaltsvorbehalt
+  ergänzt. **Bewusst weiter ohne `pvPerKwp`**: Der Zuschuss hängt am Anlagenteil
+  über der PV-Pflicht BW, und der Topf (250.000 € Nachtragshaushalt 2026) ist mit
+  dem Starkregen-Programm geteilt, kein Rechtsanspruch — ein automatisch
+  abgezogener Betrag wäre ein Geldversprechen, das die Richtlinie so nicht gibt.
+  Nebenwirkung, gewollt: Die Stadtseite Heidelberg geht damit live.
+- **Bad Homburg** — bleibt `unsicher`. Die Trägerseite nennt die Richtlinie vom
+  17.08.2022 weiter als „aktuell gültig" und bittet um Anträge; die Sätze
+  (300 €/kWp, max. 6.000 €; Speicher 300 €/kWh, max. 3.000 €) sind an der
+  Richtlinie zellgleich bestätigt. **Offen bleibt allein die Haushaltsfrage** —
+  ob die Mittel 2026 noch reichen, sagt keine öffentliche Quelle. Nächster Lauf:
+  bei der Energieberatung (energieberatung@bad-homburg.de, Telefon im Impressum)
+  nachfassen oder eine Haushaltsvorlage der Stadt suchen; nicht auf Aggregatoren
+  stützen, deren „ausgeschöpft" stammt aus 2023.
 
 ### Juli 2026 (Handprüfung Frankfurt, News-Wächter-Lauf 26.07.)
 - **Frankfurt Klimabonus** — DISCREPANCY, per Browser direkt an der Träger-Seite

@@ -253,6 +253,33 @@ describe("calcInvestBrutto", () => {
     });
   });
 
+  // ── Zweiter Marktanker: Folge-Auswertung 2026 ────────────────────────────
+  // Quelle: Verbraucherzentrale Rheinland-Pfalz, „Luft-Wasser-Wärmepumpen:
+  // Zweiter Check von 160 Angeboten aus Rheinland-Pfalz", veröffentlicht am
+  // 02.07.2026 (Volltext: docs/quellen/VZ-RLP_Auswertung-160-Waermepumpen-
+  // Angebote_2026-07.pdf, Tabelle 1 S. 5). Gesamtkosten: Minimum 21.099 €,
+  // Maximum 54.168 €, Mittelwert 36.397 €, Median 34.898 €.
+  //
+  // Der zweite Jahrgang steht NEBEN dem ersten, statt ihn zu ersetzen: Zwei
+  // unabhängige Erhebungen, die dasselbe Preisniveau zeigen (Median −81 €
+  // gegenüber 2025), sind ein stärkerer Anker als die jeweils neueste allein —
+  // und ein späterer Ausreißer fällt gegen beide auf.
+  describe("Marktanker gegen echte Angebote (VZ RLP 2026, zweiter Check)", () => {
+    it("trifft im Median-Fall (10 kW) den Median der realen Angebote (±10 %)", () => {
+      const r = calcInvestBrutto("lwwp", 10, false);
+      expect(r).toBeGreaterThan(34898 * 0.9);
+      expect(r).toBeLessThan(34898 * 1.1);
+    });
+
+    it("bleibt über dem günstigsten realen Angebot — auch bei der kleinsten Anlage", () => {
+      expect(calcInvestBrutto("lwwp", 4, false)).toBeGreaterThan(21099);
+    });
+
+    it("bleibt bei der größten Anlage (18 kW) unter dem teuersten realen Angebot", () => {
+      expect(calcInvestBrutto("lwwp", 18, false)).toBeLessThan(54168);
+    });
+  });
+
   it("no swap cost by default (old radiators stay in place)", () => {
     const noSwap = calcInvestBrutto("lwwp", 8, false);
     const base = calcInvestBrutto("lwwp", 8, false);

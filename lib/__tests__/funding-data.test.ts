@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import { ATLAS_CITIES } from "../atlas-cities";
-import { FUNDING_PROGRAMS, allFundingPrograms, getFundingProgram, fundingForAgs, fundingAmount, stackFunding } from "../funding-programs";
+import { FUNDING_PROGRAMS, allFundingPrograms, getFundingProgram, fundingForAgs, fundingAmount, stackFunding, fundingStandLabel, type FundingProgram } from "../funding-programs";
 
 // Integrity checks for the regional funding dataset. These are cheap insurance:
 // as cities/programs are added by hand, a typo in a fundingId or combinableWith
@@ -140,11 +141,29 @@ describe("fundingAmount math", () => {
 });
 
 describe("stackFunding", () => {
+  // Der Code-Seed trägt KEIN Prüfdatum — `lastVerified` kommt ausschließlich aus
+  // der Datenbank (lib/funding-data.ts). Seit dem Beleg-Verfall (16.08.2026)
+  // zieht ein Programm ohne frischen Quellenbeleg nichts mehr ab, also müssen
+  // Rechen-Tests den Beleg mitliefern. Genau das simuliert diese Hilfe: den
+  // Normalfall im Betrieb, in dem die Datenbank das Prüfdatum liefert.
+  const HEUTE = "2026-08-16";
+  const belegt = (ps: FundingProgram[]) => ps.map((p) => ({ ...p, lastVerified: HEUTE }));
+
   it("only counts active+computable programs and caps at gross cost", () => {
-    const programs = fundingForAgs("06412000"); // Frankfurt (aktiv, 20%)
-    const { total, applied } = stackFunding(programs, 10, 5, 25000);
+    const programs = belegt(fundingForAgs("06412000")); // Frankfurt (aktiv, 20%)
+    const { total, applied } = stackFunding(programs, 10, 5, 25000, HEUTE);
     expect(total).toBe(5000);
     expect(applied.map((a) => a.program.id)).toContain("frankfurt-klimabonus");
+  });
+
+  it("ohne Quellenbeleg zieht derselbe Datensatz nichts ab — der Seed allein reicht nicht", () => {
+    // Betriebsfall dahinter: Ist die Datenbank nicht erreichbar, fällt der Lader
+    // auf den Code-Seed zurück. Der kennt keine Prüfdaten, also wird in diesem
+    // Zustand KEINE Förderung eingerechnet. Bewusst so: Wir können die
+    // Aktualität dann nicht belegen, und eine versprochene Förderung, die es
+    // nicht mehr gibt, ist teurer als eine verschwiegene, die es noch gibt.
+    const ohneBeleg = fundingForAgs("06412000");
+    expect(stackFunding(ohneBeleg, 10, 5, 25000, HEUTE).total).toBe(0);
   });
 
   it("yields zero where no active computable program applies", () => {
@@ -192,7 +211,9 @@ describe("funding batch 2 (Juni 2026)", () => {
     expect(fundingAmount(p, 10, 0, 20000).total).toBe(1200);
     expect(fundingAmount(p, 10, 8, 25000).total).toBe(1200 + 1000);
     expect(fundingAmount(p, 10, 3, 25000).total).toBe(1200);
-    expect(stackFunding(fundingForAgs("12054000"), 10, 8, 25000).total).toBe(2200);
+    // Mit Quellenbeleg (im Betrieb aus der Datenbank) — siehe Beleg-Verfall.
+    const belegt = fundingForAgs("12054000").map((x) => ({ ...x, lastVerified: "2026-08-16" }));
+    expect(stackFunding(belegt, 10, 8, 25000, "2026-08-16").total).toBe(2200);
   });
   it("Hannover proKlima is info-only (not auto-deducted) — it covers only 6 of the ~21 Kreis municipalities", () => {
     const p = getFundingProgram("hannover-proklima")!;
@@ -234,6 +255,34 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(fundingAmount(p, 10, 5, 20000).computable).toBe(false);
     expect(stackFunding(fundingForAgs("08222000"), 10, 5, 20000).total).toBe(0);
   });
+  // Am 07.08.2026 aus der Förderrichtlinie selbst abgeschrieben (Gemeinderatsbeschluss
+  // vom 11.03.2026, docs/quellen/Mannheim_SolarBonus_Foerderrichtlinie_2026-03-11.pdf).
+  // Vorher stand hier eine Spanne "250–300 €/kWp" ganz OHNE Höchstbetrag für zwei
+  // Bausteine, die in der Richtlinie getrennt und je gedeckelt sind — und zwei
+  // Bausteine fehlten. Eine Spanne ohne Deckel ist genau die Sorte Angabe, die einen
+  // Antragsteller mit einer zu hohen Erwartung losschickt.
+  it("Mannheim: jeder Baustein nennt seinen Höchstbetrag, keine Spanne ohne Deckel", () => {
+    const p = getFundingProgram("mannheim-solarbonus")!;
+    for (const r of p.rates) {
+      expect(r.value, `${r.label} ohne Höchstbetrag`).toMatch(/max\./);
+      expect(r.value, `${r.label} nennt eine Spanne statt eines Satzes`).not.toMatch(/–\s*\d/);
+    }
+    // Die vier €/kWp-Sätze der Richtlinie, zellgleich (Nr. 3.3.1–3.3.3, 3.4, 3.5):
+    const wert = (teil: string) => p.rates.find((r) => r.label.includes(teil))!.value;
+    expect(wert("Mehrfamilienhaus ab 3")).toBe("120 €/kWp, max. 2.400 €");
+    expect(wert("Dachbegrünung")).toBe("260 €/kWp, max. 4.000 €");
+    expect(wert("denkmalgeschütztem")).toBe("300 €/kWp, max. 4.500 €");
+    expect(wert("Fassaden-PV")).toBe("250 €/kWp, max. 3.000 €");
+    expect(wert("gemeinnütziger Vereine")).toBe("140 €/kWp, max. 4.200 €");
+  });
+  // Nr. 1.1 der Richtlinie schließt Neubauten komplett aus (Bauantrag vor dem
+  // 01.05.2022). Das ist die Bedingung, an der die meisten Interessenten scheitern —
+  // sie stand bei uns nirgends, während wir das Programm als aktiv angezeigt haben.
+  it("Mannheim: die Stichtags-Bedingung für Bestandsgebäude steht sichtbar dabei", () => {
+    const p = getFundingProgram("mannheim-solarbonus")!;
+    expect(p.conditions.join(" ")).toMatch(/01\.05\.2022/);
+    expect(p.coveredCosts).toMatch(/01\.05\.2022/);
+  });
   it("Wolfsburg (pausiert) and Bottrop (ausgeschoepft) are not auto-applied", () => {
     expect(getFundingProgram("wolfsburg-pv")!.status).toBe("pausiert");
     expect(stackFunding(fundingForAgs("03103000"), 10, 5, 20000).total).toBe(0);
@@ -271,6 +320,39 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(p.conditions.join(" ")).not.toMatch(/Mitte Juli/);
   });
 
+  // Heidelberg: Der Eintrag stand als "unsicher" da, weil zwei städtische Seiten
+  // sich zu widersprechen schienen. Der Widerspruch war ein Förderstopp-Kasten,
+  // der drei ANDERE Programme meint. Die Richtlinie 2026 (gültig für Anträge nach
+  // dem 30.06.2026, docs/quellen/Heidelberg_Rationelle-Energieverwendung_
+  // Richtlinie_ab-2026-07-01.pdf, am 14.08.2026 im Volltext gelesen) trägt die
+  // Werte wörtlich. Der 10.000-€-Deckel je Objekt fehlte bei uns komplett —
+  // ein Satz je kWp ohne Deckel schickt Interessenten mit zu hoher Erwartung los.
+  it("Heidelberg: aktiv nach Richtlinie 2026, jeder Satz mit Deckel, kein Abzug", () => {
+    const p = getFundingProgram("heidelberg-rev")!;
+    expect(p.status).toBe("aktiv");
+    expect(p.verified).toBe(true);
+    // Kein automatischer Abzug: der Zuschuss hängt am Anteil über der PV-Pflicht
+    // und der Topf ist geteilt — ein gerechneter Betrag wäre ein Geldversprechen.
+    expect(p.pvPerKwp).toBeUndefined();
+    expect(fundingAmount(p, 10, 5, 20000).computable).toBe(false);
+    expect(stackFunding(fundingForAgs("08221000"), 10, 5, 20000).total).toBe(0);
+    // Beide €/kWp-Sätze nennen ihren Höchstbetrag, zellgleich zur Richtlinie.
+    const wert = (teil: string) => p.rates.find((r) => r.label.includes(teil))!.value;
+    expect(wert("Dach-PV")).toBe("100 €/kWp, max. 10.000 €");
+    expect(wert("Fassade")).toBe("200 €/kWp, max. 10.000 €");
+    expect(wert("Mieterstrom")).toBe("50 % der investiven Kosten, max. 2.500 €");
+    for (const r of p.rates) expect(r.value, `${r.label} ohne Höchstbetrag`).toMatch(/max\./);
+    // Die zwei Bedingungen, an denen es real scheitert: PV-Pflicht-Abzug und Topf.
+    const bed = p.conditions.join(" ");
+    expect(bed).toMatch(/PV-Pflicht Baden-Württemberg/);
+    expect(bed).toMatch(/kein Rechtsanspruch/);
+    // Speicher und Balkonkraftwerk sind ausdrücklich ausgeschlossen.
+    expect(bed).toMatch(/steckerfertige/);
+    expect(p.speicherPerKwh).toBeUndefined();
+    // Der alte Unsicherheits-Hinweis ist weg, nicht bloß umformuliert.
+    expect(bed).not.toMatch(/Stand unsicher/);
+  });
+
   // Regensburg hat NIE Batteriespeicher gefördert. Die hinterlegten 150 €/kWh
   // waren eine Vermischung: Die amtliche Richtlinie vom 01.01.2026 (PDF in
   // docs/quellen/, am 03.08.2026 gelesen) kennt in Tabelle 1 genau zwei
@@ -306,6 +388,27 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(stackFunding(fundingForAgs("09764000"), 10, 10, 25000).total).toBe(0);
     // Dach-PV war hier nie förderfähig — das darf beim Statuswechsel nicht kippen.
     expect(p.pvPerKwp).toBeUndefined();
+  });
+
+  // Freiburg: Die Stadt hat den Jahrestopf 2026 am 14.07.2026 für leer erklärt
+  // ("Neue Anträge können ab sofort nicht mehr gestellt werden", Pressemitteilung
+  // freiburg.de/pb/2626054.html; die Programmseite nennt Baustein 3 ausdrücklich).
+  // Wir zogen bis zum 16.08.2026 weiter 150 €/kWp ab. Zwei Fallen hält dieser Test
+  // fest: Die Einzelseiten im Service-A-Z tragen den Stopp bis heute nicht (Stand
+  // 2023) — wer dort nachsieht, hält das Programm für offen. Und das Balkonmodul
+  // ist Ziffer 3.5 DESSELBEN Bausteins, also mitgestoppt, nicht ein eigener Topf.
+  it("Freiburg: Jahrestopf 2026 leer, kein Abzug mehr — Programm bleibt bestehen", () => {
+    const p = getFundingProgram("freiburg-stromerzeugung")!;
+    expect(p.status).toBe("ausgeschoepft");
+    expect(p.pvPerKwp).toBeUndefined();
+    expect(p.pvCap).toBeUndefined();
+    expect(stackFunding(fundingForAgs("08311000"), 10, 10, 25000).total).toBe(0);
+    // Die Sätze bleiben stehen: gestoppt ist das Geld, nicht die Richtlinie.
+    expect(p.rates.length).toBeGreaterThanOrEqual(3);
+    // Der Grund samt Stichtag steht sichtbar dabei, sonst wirkt die leere Kachel
+    // wie ein Datenfehler statt wie eine Tatsache.
+    expect(p.conditions.join(" ")).toMatch(/14\.07\.2026/);
+    expect(p.conditions.join(" ")).toMatch(/Balkonmodul/i);
   });
 
   // Eine Startseiten-URL ist als Quellenangabe unter einem Förderbetrag wertlos:
@@ -409,5 +512,36 @@ describe("atlas-cities registry", () => {
       expect(c.yieldKwhKwp).toBeGreaterThanOrEqual(900);
       expect(c.yieldKwhKwp).toBeLessThanOrEqual(1200);
     }
+  });
+});
+
+// ─── „Zuletzt geprüft" darf nur eine echte Prüfung behaupten ─────────────────
+//
+// Bis 16.08.2026 setzte lib/funding-data.ts `lastVerified` auf
+// `last_verified ?? updated_at`. `updated_at` ist aber die letzte SCHREIBUNG der
+// Zeile — ein Resync, bei dem niemand etwas geprüft hat. 19 der 38 Programme
+// hatten nie ein echtes Prüfdatum und trugen trotzdem "Zuletzt geprüft: …" auf
+// ihrer Regionsseite, mit einem Datum, das jeder Resync auffrischte. Das Datum
+// ist das Vertrauenssignal, auf dem die Förderseiten aufbauen; ein falsches ist
+// die schwerste Fehlerklasse dieses Projekts (CLAUDE.md, "Zahlen und Einheiten").
+describe("Herkunft des Prüfdatums", () => {
+  it("ohne echtes Prüfdatum steht der redaktionelle Stand da, keine behauptete Prüfung", () => {
+    const p = { ...FUNDING_PROGRAMS["bund-nullsteuer"], stand: "Juni 2026", verified: true, lastVerified: undefined };
+    expect(fundingStandLabel(p)).toBe("Stand: Juni 2026");
+    expect(fundingStandLabel(p)).not.toContain("geprüft");
+  });
+
+  it("mit echtem Prüfdatum steht die Prüfung da", () => {
+    const p = { ...FUNDING_PROGRAMS["bund-nullsteuer"], verified: true, lastVerified: "2026-08-16" };
+    expect(fundingStandLabel(p)).toBe("Zuletzt geprüft: 16.08.2026");
+  });
+
+  it("der Lader zieht updated_at nicht als Ersatz heran", () => {
+    const quelle = readFileSync(new URL("../funding-data.ts", import.meta.url), "utf8");
+    const code = quelle
+      .split("\n")
+      .filter((l) => !l.trim().startsWith("//") && !l.trim().startsWith("*"))
+      .join("\n");
+    expect(code).not.toMatch(/updated_at/);
   });
 });

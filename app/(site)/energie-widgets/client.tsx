@@ -146,6 +146,18 @@ const SECTIONS: WidgetSection[] = [
     variants: [{ id: "zubau-erneuerbare-atom", label: "Zubau EE vs. Atom", src: "/embed/zubau-erneuerbare-atom", height: 420 }],
   },
   {
+    id: "einspeiseverguetung-verlauf",
+    label: "Einspeisevergütung seit 2000",
+    intro:
+      "Der Verlauf der EEG-Einspeisevergütung für kleine Dachanlagen seit 2000 — Jahresbalken bis 2011, Monatswerte als Linie ab 2012 — mit der interaktiven Ereignis-Timeline der politischen Weichenstellungen. Werte aus dem BNetzA-Archiv und der gesetzlichen Kette, aktualisieren sich an den Stichtagen von selbst.",
+    attribution: {
+      path: "/einspeiseverguetung-tabelle",
+      text: "Einspeisevergütung seit 2000 – Solar Check",
+    },
+    showFrameWidth: true,
+    variants: [{ id: "einspeiseverguetung-verlauf", label: "Vergütungs-Verlauf", src: "/embed/einspeiseverguetung-verlauf", height: 640 }],
+  },
+  {
     id: "pv-zubau-deutschland",
     label: "PV-Zubau & Förderung (Deutschland)",
     intro:

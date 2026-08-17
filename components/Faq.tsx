@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import { FaqEntry, FaqLink } from "../lib/faq";
 import { IconChevronDown } from "./Icons";
-import { v, iconSizes } from "../lib/theme";
+import { faqContentGap, iconSizes, v } from "../lib/theme";
 import { jsonLdHtml } from "../lib/json-ld";
 
 // Visible FAQ accordion + matching FAQPage JSON-LD, both rendered from the same
@@ -86,7 +86,9 @@ export default function Faq({
   };
 
   return (
-    <section style={{ marginTop: 32, marginBottom: 24 }}>
+    // Abstand aus faqContentGap (lib/theme) — dieselbe Quelle nutzt das
+    // Akkordeon der Atomstrom-Seite, sonst driften die beiden FAQ-Bausteine.
+    <section style={{ marginTop: faqContentGap, marginBottom: 24 }}>
       <style dangerouslySetInnerHTML={{ __html: faqCss }} />
       <script
         type="application/ld+json"

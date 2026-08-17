@@ -3,6 +3,9 @@ import { v } from "../../../lib/theme";
 import { getNationalSolarByYear, type NationalSolarSeries } from "../../../lib/mastr-data";
 import { pageMetadata } from "../../../lib/seo";
 import ZubauDeutschlandClient from "./client";
+import SolarTrendSection from "../../../components/SolarTrendSection";
+import { getSolarMonthlySeries } from "../../../lib/solar-trend-data";
+import { letzteVergleiche } from "../../../lib/solar-trend";
 
 // Datenstory zum bundesweiten PV-Zubau. In Hauptnav (PV-Förderung) + Sitemap.
 // Redaktionelles Seiten-Muster wie die Ratgeber-Seiten (Wrapper + Typo-Tokens);
@@ -42,6 +45,11 @@ export default async function ZubauDeutschlandPage() {
     series = null;
   }
 
+  // Monats-Trend (Zubau vs. Wetter) — eigener Lesepfad, eigener Cache; fällt
+  // still aus, wenn die Reihe fehlt.
+  const solarSeries = await getSolarMonthlySeries().catch(() => []);
+  const vergleiche = letzteVergleiche(solarSeries, 12);
+
   return (
     <div style={S.page}>
       <div style={S.wrap}>
@@ -56,6 +64,9 @@ export default async function ZubauDeutschlandPage() {
           />
         </div>
         <ZubauDeutschlandClient series={series} />
+        <div style={S.textCol}>
+          <SolarTrendSection vergleiche={vergleiche} series={solarSeries} />
+        </div>
       </div>
     </div>
   );

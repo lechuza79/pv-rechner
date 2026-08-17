@@ -122,8 +122,14 @@ export const META_KEYS = [
 
 // ─── Formatters ──────────────────────────────────────────────────────────────
 
+// German decimal display for all energy-chart numbers ("8,4" not "8.4"): one
+// helper so every formatter below agrees. Fixed digit count like toFixed.
+function dezDe(n: number, digits: number): string {
+  return n.toLocaleString("de-DE", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+}
+
 export function formatMW(mw: number): string {
-  if (mw >= 1000) return `${(mw / 1000).toFixed(1)} GW`;
+  if (mw >= 1000) return `${dezDe(mw / 1000, 1)} GW`;
   return `${Math.round(mw)} MW`;
 }
 
@@ -137,22 +143,22 @@ export function powerUnit(totalMW: number): "GW" | "MW" {
 export function formatMWIn(mw: number, unit: "GW" | "MW"): string {
   if (unit === "GW") {
     const gw = mw / 1000;
-    if (gw >= 10) return `${gw.toFixed(0)} GW`;
-    if (gw >= 1) return `${gw.toFixed(1)} GW`;
-    if (gw >= 0.01) return `${gw.toFixed(2)} GW`;
-    return "< 0.01 GW";
+    if (gw >= 10) return `${dezDe(gw, 0)} GW`;
+    if (gw >= 1) return `${dezDe(gw, 1)} GW`;
+    if (gw >= 0.01) return `${dezDe(gw, 2)} GW`;
+    return "< 0,01 GW";
   }
   if (mw >= 10) return `${Math.round(mw)} MW`;
-  if (mw >= 1) return `${mw.toFixed(1)} MW`;
-  return `${mw.toFixed(2)} MW`;
+  if (mw >= 1) return `${dezDe(mw, 1)} MW`;
+  return `${dezDe(mw, 2)} MW`;
 }
 
 export function formatGWh(gwh: number): string {
-  if (gwh >= 10000) return `${(gwh / 1000).toFixed(0)} TWh`;
-  if (gwh >= 1000) return `${(gwh / 1000).toFixed(1)} TWh`;
-  if (gwh >= 10) return `${gwh.toFixed(0)} GWh`;
-  if (gwh >= 1) return `${gwh.toFixed(1)} GWh`;
-  return `${gwh.toFixed(2)} GWh`;
+  if (gwh >= 10000) return `${dezDe(gwh / 1000, 0)} TWh`;
+  if (gwh >= 1000) return `${dezDe(gwh / 1000, 1)} TWh`;
+  if (gwh >= 10) return `${dezDe(gwh, 0)} GWh`;
+  if (gwh >= 1) return `${dezDe(gwh, 1)} GWh`;
+  return `${dezDe(gwh, 2)} GWh`;
 }
 
 /** Determine whether to use TWh or GWh based on the total value.
@@ -165,23 +171,53 @@ export function energyUnit(totalGWh: number): "TWh" | "GWh" {
 export function formatGWhIn(gwh: number, unit: "TWh" | "GWh"): string {
   if (unit === "TWh") {
     const twh = gwh / 1000;
-    if (twh >= 10) return `${twh.toFixed(0)} TWh`;
-    if (twh >= 1) return `${twh.toFixed(1)} TWh`;
-    if (twh >= 0.01) return `${twh.toFixed(2)} TWh`;
-    return "< 0.01 TWh";
+    if (twh >= 10) return `${dezDe(twh, 0)} TWh`;
+    if (twh >= 1) return `${dezDe(twh, 1)} TWh`;
+    if (twh >= 0.01) return `${dezDe(twh, 2)} TWh`;
+    return "< 0,01 TWh";
   }
-  if (gwh >= 10) return `${gwh.toFixed(0)} GWh`;
-  if (gwh >= 1) return `${gwh.toFixed(1)} GWh`;
-  if (gwh >= 0.01) return `${gwh.toFixed(2)} GWh`;
-  return "< 0.01 GWh";
+  if (gwh >= 10) return `${dezDe(gwh, 0)} GWh`;
+  if (gwh >= 1) return `${dezDe(gwh, 1)} GWh`;
+  if (gwh >= 0.01) return `${dezDe(gwh, 2)} GWh`;
+  return "< 0,01 GWh";
+}
+
+/**
+ * Wie formatGWhIn, aber mit FESTER Nachkommastelle — für Vergleichs-Zahlen,
+ * neben denen eine Veränderung in Prozent steht.
+ *
+ * Warum eine eigene Variante: formatGWhIn lässt ab 10 die Nachkommastelle weg
+ * (gut für Kacheln, wo Kürze zählt). In einer Vergleichszeile wird daraus ein
+ * sichtbarer Widerspruch — „11 TWh gegen 10 TWh, +11 %" lädt zum Nachrechnen
+ * ein und liefert 10 %. Mit der Nachkommastelle (11,2 gegen 10,0) geht die
+ * Rechnung für den Leser auf.
+ */
+export function formatGWhCompare(gwh: number, unit: "TWh" | "GWh"): string {
+  const val = unit === "TWh" ? gwh / 1000 : gwh;
+  if (val > 0 && val < 0.05) return `< 0,1 ${unit}`;
+  return `${dezDe(val, 1)} ${unit}`;
 }
 
 export function formatEurMWh(eur: number): string {
-  return `${(eur / 10).toFixed(1)} ct/kWh`;
+  return `${dezDe(eur / 10, 1)} ct/kWh`;
 }
 
 export function formatPercent(pct: number): string {
   return `${Math.round(pct)} %`;
+}
+
+/**
+ * Anteil mit gestaffelter Genauigkeit — die Nachkommastellen wachsen, je
+ * kleiner der Wert wird. Ein blindes Runden macht aus 0,3 % ein „0 %", und das
+ * liest sich als „liefert gar nichts", obwohl der Träger läuft. Genau dieser
+ * Fehler ließ den Kernenergie-Anteil früher dauerhaft auf 0 stehen.
+ *
+ * Ohne Einheit, damit Aufrufer sie selbst setzen können (im SVG steht das
+ * Prozentzeichen oft in eigener Größe daneben).
+ */
+export function anteilZahl(pct: number): string {
+  if (pct >= 10) return String(Math.round(pct));
+  return pct.toLocaleString("de-DE", { maximumFractionDigits: pct < 0.1 ? 2 : 1 });
 }
 
 export function formatTime(iso: string, mode: "time" | "date" | "datetime" = "time"): string {

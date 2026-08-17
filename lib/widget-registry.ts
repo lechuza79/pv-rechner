@@ -148,6 +148,16 @@ export const WIDGETS = {
     sources: [DATA_SOURCES.ember],
     cta: { label: "Ländervergleich ansehen", href: "/laendervergleich" },
   },
+  einspeiseVerlauf: {
+    id: "einspeiseverguetung-verlauf",
+    title: "Einspeisevergütung seit 2000",
+    kind: "chart",
+    shareUrl: `${SITE}/einspeiseverguetung-tabelle`,
+    shareText:
+      "Einspeisevergütung für kleine Dachanlagen seit 2000 – vom Spitzenwert 2004 bis heute, mit den politischen Weichenstellungen",
+    sources: [DATA_SOURCES.eegVerguetung],
+    cta: { label: "Alle Sätze nachschlagen", href: "/einspeiseverguetung-tabelle" },
+  },
   pvZubau: {
     id: "pv-zubau-deutschland",
     title: "Photovoltaik-Zubau in Deutschland",
@@ -157,6 +167,22 @@ export const WIDGETS = {
       "Wie Förderung den Solarausbau in Deutschland geformt hat – Zubau, Einspeisevergütung & Strompreis seit 2000",
     sources: [DATA_SOURCES.mastr, DATA_SOURCES.eegVerguetung, DATA_SOURCES.eurostat],
     cta: { label: "Die ganze Geschichte lesen", href: "/photovoltaik-zubau-deutschland" },
+  },
+  solarTrend: {
+    id: "solar-trend-monat",
+    title: "Solarstrom im Monatsvergleich: Zubau oder Wetter?",
+    kind: "chart",
+    shareUrl: `${SITE}/photovoltaik-zubau-deutschland`,
+    shareText:
+      "Solarstrom gegen den Vorjahresmonat – aufgeteilt in neu gebaute Anlagen und Wetter",
+    sources: [DATA_SOURCES.energyCharts],
+    cta: { label: "Ertrag für dein Dach simulieren", href: "/pv-simulation" },
+    // Die Balken sind gestapelte Flächen, kein Chart-SVG — es gibt nichts
+    // abzufotografieren, also auch keinen Bild-Knopf.
+    exportable: false,
+    // Noch keine /embed/solar-trend-monat-Route; der Eintrag existiert für
+    // Titel, Quelle und den nächsten Schritt auf der eigenen Seite.
+    embeddable: false,
   },
   erzeugung: {
     id: "erzeugung",

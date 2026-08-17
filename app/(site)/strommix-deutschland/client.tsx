@@ -4,12 +4,15 @@ import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { useGenerationMix, useNuclearImport } from "../../../lib/energy";
 import StackedAreaChart from "../../../components/charts/StackedAreaChart";
+import JetztImNetz from "../../../components/charts/JetztImNetz";
+import EventTimeline from "../../../components/charts/EventTimeline";
 import StackedBarChart from "../../../components/charts/StackedBarChart";
 import {
-  formatGWhIn, energyUnit, calcPeriodStats, CATEGORY_COLORS,
+  formatGWhIn, energyUnit, calcPeriodStats, CATEGORY_COLORS, CHART_MARGIN,
 } from "../../../lib/chart-utils";
-import { v, iconSizes } from "../../../lib/theme";
+import { v, iconSizes, space, pad } from "../../../lib/theme";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
+import { STROMMIX_MILESTONES, milestonesForYear, strommixTimelineEvents } from "../../../lib/strommix-milestones";
 import { useChartExport } from "../../../lib/useChartExport";
 import ChartExportBar from "../../../components/ChartExportBar";
 import { IconChevronLeft, IconChevronRight, IconChevronDown } from "../../../components/Icons";
@@ -83,6 +86,80 @@ function rangeButtonStyle(active: boolean) {
     cursor: "pointer" as const,
     fontFamily: v("--font-text"),
   };
+}
+
+// ─── Jahres-Marken ──────────────────────────────────────────────────────────
+
+/** Zeitleiste über die ganze Reihe — dieselbe Mechanik wie in der Zubau-Story
+ *  (Tippen, Wischen, ←/→), auf die Jahresachse des Balken-Charts ausgerichtet.
+ *  Nur in der Max-Ansicht: In einer Einzeljahr-Ansicht gibt es keine
+ *  Jahresachse, an der eine Marke stehen könnte. */
+function MilestoneTimeline() {
+  const events = useMemo(() => strommixTimelineEvents(), []);
+  // Zuletzt Geschehenes zuerst: Wer die Ansicht öffnet, sieht die jüngste
+  // Marke, nicht die von vor sechs Jahren.
+  const [active, setActive] = useState(events.length - 1);
+  const startYear = 2015; // Beginn der Energy-Charts-Reihe = linke Achsenkante
+  const endYear = new Date().getFullYear();
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-primary"), marginBottom: space.sm, paddingLeft: 8 }}>
+        Was die Jahre geprägt hat
+      </div>
+      <EventTimeline
+        events={events}
+        active={active}
+        onChange={setActive}
+        startYear={startYear}
+        endYear={endYear}
+        margin={{ left: CHART_MARGIN.left, right: CHART_MARGIN.right }}
+      />
+    </div>
+  );
+}
+
+/** Ereignis-Einordnung unter dem Chart: für ein gewähltes Jahr dessen Marken,
+ *  in der Max-Ansicht die ganze Reihe. */
+function MilestoneBlock({ selected, isMax }: { selected: string; isMax: boolean }) {
+  const items = isMax ? STROMMIX_MILESTONES : milestonesForYear(Number(selected));
+  if (items.length === 0) return null;
+  return (
+    <div
+      style={{
+        background: v("--color-bg-muted"),
+        border: `1px solid ${v("--color-border")}`,
+        borderRadius: v("--radius-md"),
+        padding: pad("md", "lg"),
+        marginBottom: 20,
+      }}
+    >
+      <div style={{ fontSize: 12, fontWeight: 700, color: v("--color-text-primary"), marginBottom: space.sm }}>
+        {isMax ? "Was die Jahre geprägt hat" : `Was ${selected} geprägt hat`}
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: space.md }}>
+        {items.map((m) => (
+          <div key={`${m.year}-${m.title}`} style={{ display: "flex", gap: space.md, alignItems: "baseline" }}>
+            {isMax && (
+              <span
+                style={{
+                  flexShrink: 0,
+                  fontFamily: v("--font-mono"),
+                  fontWeight: 700,
+                  fontSize: 12,
+                  color: v("--color-accent"),
+                }}
+              >
+                {m.year}
+              </span>
+            )}
+            <div style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary") }}>
+              <strong style={{ color: v("--color-text-primary") }}>{m.title}.</strong> {m.text}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // ─── Loading Spinner ────────────────────────────────────────────────────────
@@ -291,9 +368,28 @@ export default function EnergieClient() {
       {/* Hero */}
       <div style={{ textAlign: "center", marginBottom: 28 }}>
         <h1 style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
-          Deutschlands Energiedaten
+          Strommix Deutschland – live
         </h1>
+        <p style={{ fontSize: 13, color: v("--color-text-secondary"), marginTop: 6, lineHeight: 1.5 }}>
+          Welche Energieträger gerade Strom liefern — aktuell, im Monats- und im Jahresvergleich.
+        </p>
       </div>
+
+      {/* Zwei eigenständige Live-Widgets — VOR dem Strommix-Widget, das aus
+          Zeitraum-Umschalter, Kachelreihe und Verlaufs-Chart besteht. Sie
+          standen zuerst zwischen Kacheln und Chart und wirkten dadurch wie ein
+          Teil davon; der Umschalter gilt aber nur für den Verlauf. */}
+      <JetztImNetz />
+
+      {/* Bereichs-Überschrift für das Strommix-Widget: Umschalter, Kacheln und
+          Verlaufs-Chart gehören zusammen und beginnen hier. Vorher fing der
+          Abschnitt mit einer nackten Knopfreihe an. */}
+      <h2 style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.01em", margin: `0 0 ${space.xs}px`, padding: "0 8px" }}>
+        Stromerzeugung im Zeitverlauf
+      </h2>
+      <p style={{ fontSize: 13, lineHeight: 1.65, color: v("--color-text-secondary"), margin: `0 0 ${space.lg}px`, padding: "0 8px" }}>
+        Wähle den Zeitraum — von den letzten 24 Stunden bis zurück ins Jahr 2015.
+      </p>
 
       {/* Time Range Toggle — two groups */}
       <div style={{ display: "flex", gap: 20, marginBottom: 20, flexWrap: "wrap" }}>
@@ -526,8 +622,15 @@ export default function EnergieClient() {
           marginBottom: 20,
         }}
       >
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: isStale ? 6 : 12, paddingLeft: 8 }}>
+        {/* Echte Überschrift plus Unterzeile mit dem gewählten Zeitraum: Der
+            Titel stand als gestyltes div da und fehlte in der Gliederung; und
+            ohne den Zeitraum daneben weiß niemand, was die Kurve zeigt, wenn
+            der Umschalter außerhalb des Blickfelds liegt. */}
+        <h3 style={{ fontSize: 14, fontWeight: 700, margin: 0, paddingLeft: 8 }}>
           Stromerzeugung nach Energieträger
+        </h3>
+        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 2, marginBottom: isStale ? 6 : 12, paddingLeft: 8 }}>
+          {rangeLabel}
         </div>
         {isStale && (
           <div style={{
@@ -649,6 +752,10 @@ export default function EnergieClient() {
         </div>
       </div>
 
+      {/* Jahres-Einordnung (nur Jahres-/Max-Ansicht) */}
+      {isMax ? <MilestoneTimeline /> : isYear ? <MilestoneBlock selected={selected} isMax={false} /> : null}
+
+      {/* Solar-Trend: Monatsvergleich zum Vorjahr */}
       {/* Methodology note */}
       {showNuclear && !nuclearLoading && nuclearImportGWh > 0 && (
         <div style={{

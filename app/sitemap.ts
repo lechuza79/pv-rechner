@@ -5,6 +5,7 @@ import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
 import { BUNDESLAENDER } from "../lib/mastr-regions";
 import { RATGEBER } from "../lib/ratgeber";
+import { standLastModIso } from "../lib/stand";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -127,14 +128,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
+  // Rechner-Seiten: `lastModified` ist der jüngste Stand der WERTE einer Seite
+  // (lib/stand.ts — dieselbe Quelle, aus der die sichtbare „Stand:"-Zeile unter
+  // dem Rechner kommt). Bewusst NICHT der jüngste Prüftag: Zwei Prüfdaten werden
+  // täglich nachgezogen (Rechtsstand der Grüngas-Pflicht, Sachstand der
+  // EEG-Reform). Hinge `lastmod` daran, meldete die Sitemap jeden Tag
+  // „geändert", während sich auf der Seite nur eine Datumszeile in der Fußnote
+  // bewegt. Eine Seite ohne Wertstand — die Live-Simulation hat keinen Stichtag
+  // — steht weiterhin OHNE `lastmod` da: ein Build-Datum wäre bei jedem Deploy
+  // „jetzt" und wird von Google ohnehin ignoriert.
+  //
+  // Google nutzt `lastmod` nur, solange es „consistently and verifiably
+  // accurate" ist, und verlangt dafür eine Änderung am eigentlichen Inhalt —
+  // ein mitlaufendes Copyright-Datum nennt es ausdrücklich als Gegenbeispiel.
+  // Deshalb hängt das Datum hier an den Zahlen, mit denen der Rechner rechnet:
+  // Ändert sich eine, ändert sich die Seite; wird eine nur bestätigt, bewegt
+  // sich das Prüfdatum in der Fußnote — und sonst nichts.
+  const rechnerStand = (pfad: string) => toDate(standLastModIso(pfad));
+
   return [
     { url: BASE_URL, changeFrequency: "monthly", priority: 1 },
-    { url: `${BASE_URL}/photovoltaik-rechner`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/pv-bedarf-berechnen`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/waermepumpe-rechner`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/klimaanlage-stromkosten`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/balkonkraftwerk-rechner`, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/einspeiseverguetung-rechner`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/photovoltaik-rechner`, lastModified: rechnerStand("/photovoltaik-rechner"), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/pv-bedarf-berechnen`, lastModified: rechnerStand("/pv-bedarf-berechnen"), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/waermepumpe-rechner`, lastModified: rechnerStand("/waermepumpe-rechner"), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/klimaanlage-stromkosten`, lastModified: rechnerStand("/klimaanlage-stromkosten"), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/balkonkraftwerk-rechner`, lastModified: rechnerStand("/balkonkraftwerk-rechner"), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/einspeiseverguetung-rechner`, lastModified: rechnerStand("/einspeiseverguetung-rechner"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
     // Zubau-Story rechnet auf denselben MaStR-Daten wie der Atlas — also auch
     // derselbe Stand.

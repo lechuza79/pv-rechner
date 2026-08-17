@@ -11,6 +11,9 @@ export const metadata: Metadata = pageMetadata({
   ogImageSubtitle: "Stromverbrauch, Kosten & CO₂ — und wie viel die Sonne übernimmt.",
 });
 
+// Die „Stand:"-Zeile sitzt im Rechner selbst (siehe klimaanlage.tsx), nicht
+// hier: Der Rechner-Rahmen ist mindestens bildschirmhoch, ein Absatz dahinter
+// stünde hinter einer leeren Fläche.
 export default function KlimaanlagePage() {
   return <Klimaanlage />;
 }

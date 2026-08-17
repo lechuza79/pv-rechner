@@ -8,7 +8,7 @@ import { v, iconSizes } from "../../../../lib/theme";
 import { pageMetadata } from "../../../../lib/seo";
 import { publishedBundeslaender, publishedCitiesInBundesland, citiesInBundesland, cityPath, slugify } from "../../../../lib/atlas-cities";
 import { getFundingPrograms } from "../../../../lib/funding-data";
-import { landProgramBundeslaender, fundingAmount, fundingStandLabel, type FundingProgram } from "../../../../lib/funding-programs";
+import { landProgramBundeslaender, fundingAmount, fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../lib/funding-programs";
 import { FundingStatusBadge, FundingRates } from "../../../../components/FundingProgramParts";
 import ScenarioCards from "../../../../components/ScenarioCards";
 import { MastrHeroSection } from "../../../../components/MastrHeroSection";
@@ -202,7 +202,10 @@ export default async function BundeslandPage(props: { params: Promise<{ bundesla
   // in the intro so the page leads with the concrete benefit.
   const activeCityNames = cities
     .map((c) => (c.fundingId ? byId.get(c.fundingId) : undefined))
-    .filter((p): p is FundingProgram => Boolean(p) && p!.status === "aktiv" && fundingAmount(p!, 10, 5, 20000).computable)
+    // fundingZaehlt statt des rohen Status: Diese Liste nennt Städte, für die
+    // wir eine konkrete Förderung vorrechnen — was nicht mehr belegt ist, darf
+    // dort nicht als Beispiel auftauchen.
+    .filter((p): p is FundingProgram => Boolean(p) && fundingZaehlt(p!) && fundingAmount(p!, 10, 5, 20000).computable)
     .map((p) => p.region);
 
   return (

@@ -1,6 +1,6 @@
 import { v, space, pad } from "../../lib/theme";
 import { IconArrowRight } from "../Icons";
-import GemeindeKontaktButton from "./GemeindeKontaktButton";
+import KontaktTeaser from "../KontaktTeaser";
 
 /**
  * "Diese Zahlen auf Ihrer Website einbinden" — der Outreach-Aufhänger für
@@ -49,10 +49,19 @@ export default function GemeindeEmbedBox({ name, ags, pfad }: { name: string; ag
       {/* Sekundärer Weg, deutlich abgesetzt vom Haupt-Knopf: Wer es nicht
           selbst einbetten will, findet hier ein Gesicht statt eines Formulars.
           Genau hier entscheidet eine Rathaus- oder Pressestelle, ob sie
-          schreibt. Bewusst nur EIN Kontakt-Einstieg in der Box. */}
-      <div style={S.help}>
-        <p style={S.helpTitle}>Sie brauchen Hilfe bei der Einrichtung?</p>
-        <GemeindeKontaktButton name={name} />
+          schreibt. Bewusst nur EIN Kontakt-Einstieg in der Box. surface="bg":
+          die Karte liegt auf --color-bg-muted, der Teaser nimmt die Nachbarstufe. */}
+      <div style={{ marginTop: space.xl }}>
+        <KontaktTeaser
+          surface="bg"
+          lead="Sie brauchen Hilfe bei der Einrichtung?"
+          // Reiner Anzeigetext. Der Mail-Betreff kommt AUSSCHLIESSLICH aus der
+          // Themen-Allowlist — der Gemeindename darf hier stehen, aber niemals
+          // in einen Mail-Header.
+          modalTitle={`Fragen zum Widget für ${name}`}
+          topic="Widget für eine Kommune"
+          initialMessage={`Wir möchten die Solar-Zahlen für ${name} auf unserer Website einbinden.\n\n`}
+        />
       </div>
     </div>
   );
@@ -69,25 +78,6 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: v("--font-size-small"),
     color: v("--color-text-secondary"),
     lineHeight: 1.6,
-    margin: `0 0 ${space.lg}px`,
-  },
-  // Eigene Fläche statt Trennlinie — aber als Abstufung DERSELBEN Farbfamilie
-  // wie die Karte, nicht als eigener Farbton: --color-bg ist die Nachbarstufe
-  // von --color-bg-muted, auf dem die Karte liegt. In hell setzt sich der Block
-  // dadurch hell ab, in dunkel dunkel; in beiden Token-Sätzen bleibt der
-  // Unterschied sichtbar, ohne dass ein blauer Akzent dazwischenfährt.
-  help: {
-    marginTop: space.xl,
-    padding: pad("xl"),
-    background: v("--color-bg"),
-    borderRadius: v("--radius-md"),
-  },
-  // Fließtext, keine Überschrift: Größe und Farbe kommen aus der Skala, ohne
-  // Fettung. Der Satz leitet den Kontakt-Weg ein, er gliedert nichts.
-  helpTitle: {
-    fontSize: v("--font-size-body"),
-    lineHeight: 1.6,
-    color: v("--color-text-secondary"),
     margin: `0 0 ${space.lg}px`,
   },
   actions: {

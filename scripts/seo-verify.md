@@ -51,6 +51,40 @@ Gegen den Vormonats-Schnappschuss (Datei des Vormonats) auswerten:
 Kein Vormonat vorhanden → nur Schnappschuss, Vergleich entfällt (erster Lauf: 08/2026).
 Commit als `[auto]` (nur der Schnappschuss, spezifisch gestaged, kein `git add -A`).
 
+### Schritt 2b — SERP prüfen, BEVOR aus einem Volumen eine Chance wird — BLOCKER
+
+Ein hohes Suchvolumen in `ranked_keywords` ist **kein** Chancensignal. Vor jeder
+Empfehlung für einen Begriff aus der Quick-Win-Zone:
+
+`POST https://api.dataforseo.com/v3/serp/google/organic/live/advanced`
+Body `[{"keyword":…,"location_code":2276,"language_code":"de","depth":10}]` (0,002 $;
+**nur ein Task je Aufruf**, sonst „You can set only one task at a time"). Auswerten:
+
+1. **Steht `ai_overview` oder `featured_snippet` im `items`-Aufbau?** Dann fängt Google
+   die Klicks ab — eine erklärende Seite dort zu verbessern, bringt Einblendungen und
+   keine Besucher. Nicht als Chance melden.
+2. **Wer steht auf Platz 1–8, und welche Frage beantworten die?** Deckt sich die
+   Intention nicht mit unserem Angebot, ist der Begriff kein Ziel, egal wie groß das
+   Volumen ist.
+3. **Gegenprobe in der Search Console:** Wie viele Einblendungen bringt der Begriff uns
+   tatsächlich (`?dim=query&page=…`)? Volumen ohne eigene Einblendungen ist Theorie.
+
+**Der Fehlschlag, aus dem das entstand (13.08.2026):** „solarkataster nrw" (Volumen
+1.900) wurde als größte Chance empfohlen. Tatsächlich stehen dort amtliche
+Dachflächen-Werkzeuge (Energieatlas NRW, land.nrw, open.nrw) — eine andere Frage als
+unsere Bestandsstatistik —, wir standen auf Position 73,6 und hatten in 28 Tagen **5**
+Einblendungen. Bei unserem eigenen Wort („solaratlas rlp") standen wir auf 10,6.
+Vollständig in `docs/seo/befund-2026-08-13.md`.
+
+### Schritt 2c — Durchschnittsposition nie ohne Query-Ebene — BLOCKER
+
+Eine gute Durchschnittsposition bei ~1 % Klickrate ist ein **Warnsignal, kein Erfolg**.
+Der Schnitt entsteht dann aus bedeutungslosen Mikro-Anfragen: `/methodik` stand auf
+Position 4,5 — die Anfragen dahinter hießen „berechnen", „8 kw", „pro qm", „wie viel im
+monat", je eine Einblendung. Vor jeder Aussage über eine gut platzierte Seite
+`?dim=query&page=…` abrufen und nachsehen, wofür sie wirklich rankt. Dieselbe
+Systematik wie „Impressionen sind kein Indexierungsstatus".
+
 ## Schritt 3 — Indexierung + Impressionen (GSC, eigene Routen)
 
 - `GET https://solar-check.io/api/seo/index-status?resubmit=1&days=28&urls=<bis zu 10 wichtige/neue Seiten>`
@@ -74,6 +108,13 @@ Energiedaten? Transaktions-Keywords fremder Geschäftsmodelle raus). **Maximal 5
 Chancen**, je Chance: Keyword, Volumen, KD, empfohlener Seitentyp (Optimierung
 bestehender Seite / Ratgeber / Tool / Hub-Erweiterung) in je einem Satz.
 
+**Intent-Filter davor** (`docs/seo-intent-konzept.md`): Jede Chance durchläuft die
+SERP-Prüfung aus Schritt 2b. Steht dort eine KI-Antwort, ist eine erklärende Seite
+kein gültiger Vorschlag — dann nur empfehlen, was die Antwortmaschine nicht kann:
+etwas Veränderliches (Live-/Statuswerte), etwas Persönliches (Rechner) oder etwas
+Handelndes (Checkliste, Antragsweg, Download). Der empfohlene Seitentyp muss
+**Werkzeug** heißen, nicht „Ratgeber", sobald eine KI-Antwort auf der Suche steht.
+
 ## Schritt 5 — Ratgeber-Frische
 
 `lib/ratgeber.ts`: Einträge mit `updated` älter als 6 Monate listen — nur als
@@ -90,6 +131,17 @@ Aktualität sichern die Fach-Wächter).
 - `done` = Schnappschuss abgelegt, ggf. Sitemap neu eingereicht.
 - `details` = der volle Bericht: Bewegung, Quick-Win-Zone, Indexstatus neuer
   Seiten, Shortlist mit Scores, Ratgeber-Frische.
+
+**Zusätzlich im Bericht mitführen** (seit 08/2026, `docs/seo-intent-konzept.md` Abs. 6):
+- **Klicks je Fläche** (Förderung / Energiedaten / Rechner / Ratgeber) — überlebt die
+  KI-Antwort als Aussage, anders als Einblendungen.
+- **Anteil unserer Top-20-Begriffe mit KI-Antwort** auf der Ergebnisseite. Steigt er,
+  sinken die Klicks ohne unser Zutun — das muss sichtbar sein, bevor jemand die Ursache
+  bei der eigenen Arbeit sucht.
+- **Zitate in KI-Antworten:** bei den geprüften Begriffen die Quellenliste des
+  `ai_overview`-Elements mitlesen (`references[].domain`) und melden, ob solar-check.io
+  darunter ist. Einziges Maß für den Ratgeber-Strang, der bewusst nicht mehr auf
+  Besucher zielt.
 
 **Nicht tun:** Titles/Content „schnell mitfixen" (Außenwirkung → Session mit
 Abnahme) · Rankings aus Impressionen ableiten · KD/Volumen aus dem Gedächtnis

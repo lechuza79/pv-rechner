@@ -20,6 +20,7 @@ import {
   energyUnit,
   CHART_MARGIN,
   CHART_HEIGHT,
+  anteilZahl,
 } from "../../lib/chart-utils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -407,7 +408,7 @@ function BarTooltip({ data, activeKeys, left, width, margin, nuclearGWh, compact
         const nucTotal = nuclearGWhLocal + (nuclearGWh || 0);
         const allTotal = totalGWh + (nuclearGWh || 0);
         const nucPctRaw = allTotal > 0 ? nucTotal / allTotal * 100 : 0;
-        const nucPct = nucPctRaw >= 10 ? Math.round(nucPctRaw) : nucPctRaw < 0.1 ? nucPctRaw.toFixed(2) : nucPctRaw.toFixed(1);
+        const nucPct = anteilZahl(nucPctRaw);
         return (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, marginBottom: 4 }}>

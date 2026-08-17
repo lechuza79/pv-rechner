@@ -11,8 +11,10 @@
 // the year is evaluated at render time — nothing here goes stale on rollover.
 // Never hardcode a year or a euro figure below.
 import { estimateCost, BATTERY_LIFETIME_YEARS } from "./calc";
-import { FEED_IN_YEARS } from "./constants";
-import { DEFAULT_FEED_IN, type FeedInRates } from "./feedin-config";
+import { calcBalkon, type BalkonInputs } from "./balkon";
+import { BALKON_RECHT, DEFAULT_BALKON_CONFIG, type BalkonSetId } from "./balkon-config";
+import { FEED_IN_YEARS, PERSONEN } from "./constants";
+import { DEFAULT_FEED_IN, fmtCt, type FeedInRates } from "./feedin-config";
 import { DEFAULT_PRICES } from "./prices-config";
 import { TILT_OPTIMUM, tiltPct } from "./tilt-config";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "./greengas-config";
@@ -115,12 +117,62 @@ export function pvRechnerFaq(): FaqEntry[] {
 // EINE Quelle: dieselbe Antwort erscheint im PV-Rechner-FAQ und im FAQ des
 // Einspeisevergütungs-Rechners — deshalb hier als geteilter Eintrag, nicht
 // zweimal getippt (Systematik wie eegVerfahrenSatz()).
+// Geteilte Kern-Sätze der Reform-Aussage — Oberflächen (FAQ-Eintrag unten,
+// Reform-Karte im Tabellen-Ratgeber) KOMPONIEREN daraus, statt die Sätze
+// abzutippen. Der Fakten-Check am 06.08.2026 fand genau solche handgetippten
+// Zweitkopien; als Kopie überlebt ein Satz jede künftige Korrektur stumm.
+export const EEG_REFORM_VORHABEN_SATZ =
+  "Vorgesehen ist, die feste Einspeisevergütung für Neuanlagen ab 2027 zu beenden";
+export function eegBestandsschutzSatz(): string {
+  return `Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung ${FEED_IN_YEARS} Jahre garantiert (Bestandsschutz)`;
+}
+
 function eegReform2027FaqEntry(): FaqEntry {
   return {
     q: "Fällt die Einspeisevergütung 2027 weg?",
-    a: `Die Bundesregierung hat dazu am ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} einen Gesetzentwurf beschlossen — ein Gesetz ist er damit noch nicht: Der Bundestag muss noch entscheiden, der Bundesrat ist am Verfahren beteiligt, und die Förderregeln brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission. Vorgesehen ist, die feste Einspeisevergütung für Neuanlagen ab 2027 zu beenden; für Anlagen unter 25 Kilowatt installierter Leistung soll es keine dauerhafte Förderung mehr geben, sondern eine befristete Starthilfe für die Direktvermarktung. Wichtig: Für alle Anlagen, die bis Ende 2026 in Betrieb gehen, bleibt die Vergütung 20 Jahre garantiert (Bestandsschutz) — an ihrem Vergütungsanspruch ändert der Entwurf nichts. In welcher Form die Reform am Ende kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage. (Stand: ${eegReformStandLabel()})`,
+    a: `Die Bundesregierung hat dazu am ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} einen Gesetzentwurf beschlossen — ein Gesetz ist er damit noch nicht: Der Bundestag muss noch entscheiden, der Bundesrat ist am Verfahren beteiligt, und die Förderregeln brauchen zusätzlich die beihilferechtliche Genehmigung der EU-Kommission. ${EEG_REFORM_VORHABEN_SATZ}; für Anlagen unter 25 Kilowatt installierter Leistung soll es keine dauerhafte Förderung mehr geben, sondern eine befristete Starthilfe für die Direktvermarktung. Wichtig: ${eegBestandsschutzSatz()} — an ihrem Vergütungsanspruch ändert der Entwurf nichts. In welcher Form die Reform am Ende kommt, ist offen; maßgeblich ist die offizielle Gesetzeslage. (Stand: ${eegReformStandLabel()})`,
     links: [{ phrase: "Einspeisevergütung", href: "/datenstand" }],
     cta: { label: "Ratgeber: Lohnt sich PV ohne Einspeisevergütung?", href: "/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung" },
+  };
+}
+
+// Geteilte Einspeisevergütungs-Einträge (EINE Quelle, Systematik wie
+// eegReform2027FaqEntry): dieselbe geprüfte Antwort erscheint im FAQ des
+// Einspeisevergütungs-Rechners UND im Tabellen-Ratgeber — nie zweimal tippen.
+
+/** Kern-Satz zur Garantiedauer (§ 25 EEG, Wortlaut am 04.08.2026 geprüft,
+ *  s. feedin-config) — geteilt zwischen FAQ und Ratgeber-Prosa. */
+export function feedInGarantieSatz(): string {
+  return `${FEED_IN_YEARS} Jahre ab Inbetriebnahme — bei der festen Einspeisevergütung verlängert sich die Zahlung sogar bis zum 31. Dezember des zwanzigsten Jahres (§ 25 EEG).`;
+}
+
+/** Kern-Satz zur halbjährlichen Degression (§ 49 EEG) — geteilt wie oben. */
+export const FEEDIN_DEGRESSION_SATZ =
+  "Das EEG senkt die Sätze für neu in Betrieb genommene Anlagen planmäßig um 1 % je Halbjahr, jeweils zum 1. Februar und zum 1. August (§ 49 EEG).";
+
+/** Garantiedauer nach § 25 EEG (Wortlaut am 04.08.2026 geprüft, s. feedin-config). */
+function feedInGarantieFaqEntry(): FaqEntry {
+  return {
+    q: "Wie lange ist die Einspeisevergütung garantiert?",
+    a: `${feedInGarantieSatz()} Der Satz, mit dem eine Anlage in Betrieb geht, bleibt über die gesamte Laufzeit fest; die halbjährliche Absenkung betrifft nur Anlagen, die danach neu in Betrieb gehen. Nach dem Ende der Vergütung läuft die Ersparnis durch Eigenverbrauch weiter.`,
+  };
+}
+
+/** Halbjährliche Degression nach § 49 EEG (fester Fahrplan, kein Einzelbeschluss). */
+function feedInDegressionFaqEntry(): FaqEntry {
+  return {
+    q: "Warum sinkt die Einspeisevergütung alle sechs Monate?",
+    a: `${FEEDIN_DEGRESSION_SATZ} Das ist ein fester Fahrplan, kein politischer Einzelbeschluss. Wer früher in Betrieb nimmt, sichert sich den höheren Satz für ${FEED_IN_YEARS} Jahre.`,
+  };
+}
+
+/** Auslaufen nach 20 Jahren — geteilt zwischen dem Reform-Ratgeber und dem
+ *  Tabellen-Ratgeber (Ü20-Suchintention „einspeisevergütung nach 20 jahren"). */
+function feedInNach20JahrenFaqEntry(): FaqEntry {
+  return {
+    q: "Was passiert nach den 20 Jahren EEG-Vergütung?",
+    a: "Die EEG-Vergütung endet nach 20 Jahren — das ist schon heute so und hat mit der geplanten Reform nichts zu tun. Danach fließt für eingespeisten Strom ohne neue Vermarktung nichts mehr, die Ersparnis durch Eigenverbrauch läuft aber unverändert weiter. Unser Rechner kalkuliert genau so: Vergütung nur 20 Jahre, Eigenverbrauch über die gesamte Laufzeit. Eine Anlage, die sich vor allem über Eigenverbrauch trägt, ist von diesem Auslaufen kaum abhängig.",
+    cta: { label: "Methodik im Detail", href: "/methodik" },
   };
 }
 
@@ -241,11 +293,7 @@ export function pvOhneEinspeisungFaq(prices?: PriceConfig): FaqEntry[] {
       a: `Nein. Für Anlagen, die bis Ende 2026 in Betrieb gehen, gilt Bestandsschutz: Die bei Inbetriebnahme zugesagte Einspeisevergütung bleibt für die vollen 20 Jahre garantiert. Der am ${eegDatum(EEG_REFORM_STAND.kabinettBeschlussIso)} im Kabinett beschlossene Entwurf ordnet dafür ausdrücklich an, dass für Anlagen mit Inbetriebnahme vor 2027 das bisherige Recht weiter gilt; die neue Regel betrifft allein Neuanlagen. Auch die geplante 50-Prozent-Grenze für die Einspeiseleistung trifft laufende Anlagen nicht (Stand: ${eegReformStandLabel()}).`,
       cta: { label: "Meine Anlage nachrechnen", href: "/photovoltaik-rechner" },
     },
-    {
-      q: "Was passiert nach den 20 Jahren EEG-Vergütung?",
-      a: "Die EEG-Vergütung endet nach 20 Jahren — das ist schon heute so und hat mit der geplanten Reform nichts zu tun. Danach fließt für eingespeisten Strom ohne neue Vermarktung nichts mehr, die Ersparnis durch Eigenverbrauch läuft aber unverändert weiter. Unser Rechner kalkuliert genau so: Vergütung nur 20 Jahre, Eigenverbrauch über die gesamte Laufzeit. Eine Anlage, die sich vor allem über Eigenverbrauch trägt, ist von diesem Auslaufen kaum abhängig.",
-      cta: { label: "Methodik im Detail", href: "/methodik" },
-    },
+    feedInNach20JahrenFaqEntry(),
     {
       q: "Was ist Direktvermarktung — und geht das für kleine Anlagen?",
       a: "Bei der Direktvermarktung verkauft ein Dienstleister deinen Überschussstrom an der Strombörse; du erhältst den Marktpreis abzüglich einer Gebühr. Bisher ist das erst für größere Anlagen Pflicht und für kleine Hausanlagen wegen der Fixkosten selten attraktiv. Sollte die geplante Reform kommen, dürfte sich dieser Markt für Kleinanlagen entwickeln — seriös beziffern lassen sich die künftigen Erlöse heute aber nicht. Unsere Beispielrechnung setzt sie deshalb konservativ mit null an.",
@@ -363,27 +411,40 @@ export function gasheizungWaermepumpeFaq(): FaqEntry[] {
 export function einspeiseverguetungFaq(rates: FeedInRates = DEFAULT_FEED_IN): FaqEntry[] {
   const year = new Date().getFullYear();
   const strompreisCt = Math.round(DEFAULT_PRICES.electricityPrice * 100);
-  const ct = (n: number) => n.toLocaleString("de-DE", { minimumFractionDigits: 2 });
+  const ct = fmtCt;
   return [
     {
       q: `Wie hoch ist die Einspeisevergütung ${year}?`,
       a: `Für neue Anlagen bis ${rates.thresholdKwp} kWp gibt es aktuell ${ct(rates.teilUnder10)} ct/kWh bei Teileinspeisung (Überschusseinspeisung) und ${ct(rates.vollUnder10)} ct/kWh bei Volleinspeisung. Für den Anlagenteil über ${rates.thresholdKwp} kWp sind es ${ct(rates.teilOver10)} bzw. ${ct(rates.vollOver10)} ct/kWh — bei größeren Anlagen ergibt sich daraus ein gewichteter Mischsatz, den der Rechner oben ausweist. Alle aktuellen Werte mit Stand-Datum stehen auf der Datenstand-Seite.`,
       links: [{ phrase: "Datenstand-Seite", href: "/datenstand" }],
     },
-    {
-      q: "Wie lange ist die Einspeisevergütung garantiert?",
-      a: `${FEED_IN_YEARS} Jahre ab Inbetriebnahme — bei der festen Einspeisevergütung verlängert sich die Zahlung sogar bis zum 31. Dezember des zwanzigsten Jahres (§ 25 EEG). Der Satz, mit dem eine Anlage in Betrieb geht, bleibt über die gesamte Laufzeit fest; die halbjährliche Absenkung betrifft nur Anlagen, die danach neu in Betrieb gehen. Nach dem Ende der Vergütung läuft die Ersparnis durch Eigenverbrauch weiter.`,
-    },
-    {
-      q: "Warum sinkt die Einspeisevergütung alle sechs Monate?",
-      a: `Das EEG senkt die Sätze für neu in Betrieb genommene Anlagen planmäßig um 1 % je Halbjahr, jeweils zum 1. Februar und zum 1. August (§ 49 EEG). Das ist ein fester Fahrplan, kein politischer Einzelbeschluss. Wer früher in Betrieb nimmt, sichert sich den höheren Satz für ${FEED_IN_YEARS} Jahre.`,
-    },
+    feedInGarantieFaqEntry(),
+    feedInDegressionFaqEntry(),
     {
       q: "Teileinspeisung oder Volleinspeisung — was lohnt sich?",
       a: `Für die meisten Haushalte die Teileinspeisung: Jede selbst verbrauchte Kilowattstunde spart den vollen Haushaltsstrompreis von rund ${strompreisCt} ct — deutlich mehr, als die Einspeisung einbringt. Die Volleinspeisung hat zwar den höheren Satz, verzichtet aber komplett auf diese Ersparnis; sie rechnet sich vor allem, wenn am Standort praktisch kein Strom verbraucht wird, etwa auf einer Scheune. Was bei deinen Zahlen herauskommt, zeigt der Photovoltaik-Rechner mit Amortisation und Rendite.`,
       links: [{ phrase: "Photovoltaik-Rechner", href: "/photovoltaik-rechner" }],
       cta: { label: "Komplette Rechnung mit Eigenverbrauch", href: "/photovoltaik-rechner" },
     },
+    eegReform2027FaqEntry(),
+  ];
+}
+
+/** FAQ für den Tabellen-Ratgeber (/einspeiseverguetung-tabelle). Historische
+ *  Aussagen beschreiben die Datenmodule (feedin-archiv/-history), Rechtssätze
+ *  sind ausschließlich die geteilten, geprüften Einträge — hier steht kein
+ *  neuer Rechtssatz (Council-Regel, s. CLAUDE.md Faktenprüfung). */
+export function einspeiseverguetungTabelleFaq(): FaqEntry[] {
+  return [
+    {
+      q: "Wie hoch war die Einspeisevergütung für meine Anlage?",
+      a: `Maßgeblich ist der Monat der Inbetriebnahme: Der damals gültige Satz bleibt ${FEED_IN_YEARS} Jahre fest — spätere Absenkungen betreffen nur Anlagen, die danach neu in Betrieb gingen. Für Inbetriebnahmen von April 2012 bis Juli 2022 steht der Satz in der Monatstabelle auf dieser Seite (amtliche Werte der Bundesnetzagentur), ab dem 30. Juli 2022 in der Halbjahres-Tabelle darüber. Wie viel deine Anlage damit über die Laufzeit einnimmt, rechnet der Einspeisevergütungs-Rechner aus. Für Anlagen von vor April 2012 galt eine andere Vergütungslogik mit mehreren Modellen — dort ist der Bescheid bzw. die Abrechnung des Netzbetreibers die verlässliche Quelle, ein pauschaler Tabellenwert wäre Scheingenauigkeit.`,
+      links: [{ phrase: "Einspeisevergütungs-Rechner", href: "/einspeiseverguetung-rechner" }],
+      cta: { label: "Vergütung für meine Anlage berechnen", href: "/einspeiseverguetung-rechner" },
+    },
+    feedInGarantieFaqEntry(),
+    feedInDegressionFaqEntry(),
+    feedInNach20JahrenFaqEntry(),
     eegReform2027FaqEntry(),
   ];
 }
@@ -409,6 +470,121 @@ export function neigungswinkelFaq(): FaqEntry[] {
     {
       q: "Lohnt sich ein Norddach für Photovoltaik?",
       a: `Meist nur bei flacher Neigung: Bei 10 Grad erreicht ein Norddach noch ${tiltPct("nord", 10)} Prozent des Optimums, bei 45 Grad nur noch ${tiltPct("nord", 45)} Prozent. Als Faustregel gilt: erst die anderen Dachflächen belegen; ein steiles Norddach rechnet sich in der Regel nicht.`,
+    },
+  ];
+}
+
+/** FAQ for the balcony-solar calculator (/balkonkraftwerk-rechner).
+ *
+ *  Every figure is computed here from the SAME model the calculator runs — no
+ *  typed euro amounts, so the FAQ can never drift from the tool above it. The
+ *  reference case is documented in BALKON_FAQ_REFERENZ and named in the answers
+ *  themselves, because a saving figure without its household is meaningless.
+ *
+ *  Legal statements come from BALKON_RECHT (lib/balkon-config.ts) — the same
+ *  source the calculator result renders, never a second hand-typed copy. */
+const BALKON_FAQ_REFERENZ = {
+  /** 2-Personen-Haushalt — die häufigste Konstellation für Steckersolar. */
+  personenIndex: 1,
+  orientationId: "sued_gelaender" as const, // klassischer Balkon, senkrecht
+  presenceId: "teils" as const,             // Homeoffice-Tage
+} as const;
+
+export function balkonFaq(): FaqEntry[] {
+  const cfg = DEFAULT_BALKON_CONFIG;
+  const haushaltKwh = PERSONEN[BALKON_FAQ_REFERENZ.personenIndex].verbrauch;
+  const base = {
+    presenceId: BALKON_FAQ_REFERENZ.presenceId,
+    orientationId: BALKON_FAQ_REFERENZ.orientationId,
+    haushaltKwh,
+    specificYield: cfg.specificYield,
+    monthlyYield: null,
+    stromPrice: cfg.stromPrice,
+  };
+  const setById = (id: BalkonSetId) => cfg.sets.find(s => s.id === id)!;
+  const standard = setById("duo");
+  const maxSet = setById("max");
+  const kleinstes = setById("single");
+
+  // Ertrag derselben Standard-Größe in drei Ausrichtungen — der größte Hebel.
+  const ertrag = (orientationId: BalkonInputs["orientationId"]) =>
+    calcBalkon({ ...base, orientationId, setId: "duo", storageId: "none" }).annualYield;
+  const ertragGelaender = ertrag("sued_gelaender");
+  const ertragFlach = ertrag("sued_flach");
+  const ertragOstWest = ertrag("ost_west");
+
+  const standardResult = calcBalkon({ ...base, setId: "duo", storageId: "none" });
+  const amort = standardResult.amortYears.toFixed(1).replace(".", ",");
+  const speicherKlein = cfg.storage.find(s => s.id === "small")!;
+  const speicherGross = cfg.storage.find(s => s.id === "large")!;
+  const eur = (n: number) => n.toLocaleString("de-DE");
+
+  return [
+    {
+      q: "Lohnt sich ein Balkonkraftwerk?",
+      a: `In den meisten Fällen ja — Steckersolar amortisiert sich deutlich schneller als eine Dachanlage, weil die Anschaffung klein ist. Beispiel: Ein Zwei-Personen-Haushalt mit ${eur(haushaltKwh)} kWh Jahresverbrauch und einem Standard-Set senkrecht am Südbalkon spart rund ${eur(standardResult.savingPerYear)} € im Jahr; bei ${eur(standard.price)} € Anschaffung ist das nach etwa ${amort} Jahren wieder drin. Entscheidend sind zwei Dinge: wie die Module hängen und wie viel Strom tagsüber im Haushalt gebraucht wird.`,
+      cta: { label: "Für deinen Haushalt rechnen", href: "/balkonkraftwerk-rechner" },
+    },
+    {
+      q: "Wie viel Strom bringt ein Balkonkraftwerk mit 800 Watt im Jahr?",
+      a: `Das hängt vor allem am Winkel. Dasselbe Standard-Set mit ${eur(standard.moduleWp)} Wp Modulen liefert im deutschen Mittel rund ${eur(ertragGelaender)} kWh, wenn die Module senkrecht am Südgeländer hängen — flach nach Süden aufgeständert sind es etwa ${eur(ertragFlach)} kWh, nach Osten oder Westen senkrecht nur noch rund ${eur(ertragOstWest)} kWh. Der Ertrag am eigenen Standort weicht davon ab; der Rechner holt ihn über die Postleitzahl aus den Sonnendaten der EU-Kommission.`,
+      links: [{ phrase: "am Winkel", href: "/photovoltaik-neigungswinkel" }],
+    },
+    {
+      q: "Was kostet ein Balkonkraftwerk?",
+      a: `Ein einzelnes Modul mit kleinem Wechselrichter liegt bei etwa ${eur(kleinstes.price)} €, das gängige Set mit zwei Modulen bei rund ${eur(standard.price)} €, vier Module am selben 800-W-Wechselrichter bei etwa ${eur(maxSet.price)} € — jeweils inklusive Halterung. Ein Nachrüst-Speicher kostet zusätzlich rund ${eur(speicherKlein.price)} € (${speicherKlein.kwh.toLocaleString("de-DE")} kWh) bis ${eur(speicherGross.price)} € (${speicherGross.kwh.toLocaleString("de-DE")} kWh). ${BALKON_RECHT.nullsteuer}`,
+    },
+    {
+      q: "Lohnt sich ein Speicher am Balkonkraftwerk?",
+      a: `Oft nicht. Ein Speicher hebt den Eigenverbrauch, kostet aber mehr als das Set selbst und hält realistisch rund ${cfg.storageLifeYears} Jahre — er muss sich also in dieser Zeit rechnen, nicht erst über die Lebensdauer der Module. Unser Rechner empfiehlt einen Speicher deshalb nur, wenn er sich innerhalb von ${cfg.storageRecommendMaxPayback} Jahren selbst trägt, und schreibt sonst ausdrücklich hin, dass er sich nicht lohnt. Das ist vor allem bei hohem Verbrauch und viel ungenutztem Mittagsstrom der Fall.`,
+      cta: { label: "Mit und ohne Speicher vergleichen", href: "/balkonkraftwerk-rechner" },
+    },
+    {
+      q: "Wie viele Module darf ein Balkonkraftwerk haben?",
+      a: `Der Wechselrichter darf höchstens ${standard.inverterW} Watt ins Netz speisen, die Module dürfen zusammen bis ${eur(maxSet.moduleWp)} Wp leisten — also deutlich mehr, als der Wechselrichter durchlässt. Das ist erlaubt und sinnvoll: Die Mittagsspitze wird gekappt, dafür kommt morgens und abends mehr an. Davon zu unterscheiden ist die VDE-Vornorm seit Dezember 2025: Sie sieht den normalen Schuko-Stecker nur bis ${eur(cfg.schukoMaxWp)} Wp vor, darüber eine spezielle Einspeisesteckdose. Diese Vornorm ist freiwillig und richtet sich an Hersteller, sie ist kein Gesetz.`,
+    },
+    {
+      q: "Muss ich ein Balkonkraftwerk anmelden?",
+      a: `${BALKON_RECHT.anmeldung} ${BALKON_RECHT.anmeldeFrist}`,
+    },
+    {
+      q: "Darf ich als Mieter ein Balkonkraftwerk anbringen?",
+      a: BALKON_RECHT.mieteEigentum,
+    },
+    {
+      q: "Bekomme ich Geld für den eingespeisten Strom?",
+      a: BALKON_RECHT.keineVerguetung + " Genau deshalb lohnt sich ein Balkonkraftwerk am meisten dort, wo tagsüber jemand zu Hause ist — und deshalb ist ein zu großes Set selten die beste Wahl.",
+    },
+  ];
+}
+
+/** FAQ for the live electricity-mix page (/strommix-deutschland). Deliberately
+ *  evergreen: no volatile share figures beyond what has held for years — the
+ *  live chart above the FAQ is the current number. The nuclear phase-out date
+ *  is a historical fact (allowed hardcode). */
+export function strommixFaq(): FaqEntry[] {
+  return [
+    {
+      q: "Wie setzt sich der deutsche Strommix aktuell zusammen?",
+      a: "Übers Jahr gerechnet liefern erneuerbare Energien — Wind, Solar, Wasserkraft und Biomasse — mehr als die Hälfte des öffentlich erzeugten Stroms in Deutschland; der Rest kommt überwiegend aus Kohle- und Gaskraftwerken. Der Mix schwankt aber stark mit Wetter und Tageszeit: An sonnigen, windigen Tagen decken Erneuerbare zeitweise fast die gesamte Erzeugung, in windstillen Winternächten übernehmen die steuerbaren Kraftwerke. Die Live-Ansicht oben zeigt den Stand von jetzt gerade.",
+    },
+    {
+      q: "Wann ist der Strom in Deutschland am saubersten?",
+      a: "Typischerweise mittags, wenn die Solaranlagen ihre Tagesspitze erreichen — und generell an windigen Tagen. Wer flexible Verbraucher hat, etwa ein E-Auto oder einen Heimspeicher, lädt am klimafreundlichsten in den Mittagsstunden. Nachts ist der Strom im Schnitt am fossilsten, weil die Solarerzeugung komplett wegfällt.",
+      links: [{ phrase: "Heimspeicher", href: "/photovoltaik-rechner" }],
+    },
+    {
+      q: "Warum laufen nachts mehr Kohle- und Gaskraftwerke?",
+      a: "Nachts liefert Solar nichts, und Wind weht nicht immer. Die Lücke zwischen erneuerbarer Erzeugung und Verbrauch füllen steuerbare Kraftwerke — vor allem Kohle und Gas —, dazu Stromimporte und zunehmend Batteriespeicher. Deshalb wechselt die Grafik nachts sichtbar von Grün zu Grau.",
+    },
+    {
+      q: "Erzeugt Deutschland noch Atomstrom?",
+      a: "Nein. Am 15. April 2023 gingen die letzten drei deutschen Kernkraftwerke vom Netz. Im Strommix taucht Kernenergie seitdem nur noch als rechnerischer Import auf: Ein Teil des importierten Stroms stammt aus Nachbarländern mit Kernkraftwerken, allen voran Frankreich. Wie groß dieser Anteil ist, zeigt unsere Auswertung zum Atomstrom-Import.",
+      links: [{ phrase: "Atomstrom-Import", href: "/atomstrom-import" }],
+    },
+    {
+      q: "Woher kommen die Daten zum Strommix?",
+      a: "Von Energy-Charts, der Datenplattform des Fraunhofer-Instituts für Solare Energiesysteme (ISE). Gezeigt wird die öffentliche Nettostromerzeugung — also der Strom, der ins öffentliche Netz eingespeist wird — in 15-Minuten-Schritten. Die Daten stehen unter der offenen Lizenz CC BY 4.0.",
     },
   ];
 }

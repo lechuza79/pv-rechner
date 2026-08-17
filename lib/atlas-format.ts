@@ -107,14 +107,6 @@ export function fmtErtragProKwp(kwhProKwp: number): string {
 }
 
 /**
- * Rechnerisch vermiedenes CO₂ in Tonnen pro Jahr.
- *
- * Staffelung t → Tsd. t → Mio. t: eine Gemeinde liegt bei Hunderten Tonnen,
- * ein Bundesland bei Millionen — ohne Staffelung wäre eine der beiden Zahlen
- * unlesbar. „CO₂" steht bewusst NICHT in der Einheit: die Spalte bzw. der
- * Satz daneben benennt die Größe, die Einheit bleibt die Masse.
- */
-/**
  * Gestaffelte Werte kompakt: unter 10 eine Nachkommastelle (9,8), darüber
  * ganze Zahlen (404 statt 404,2). Die Wirkungs-Spalten sind Modellwerte —
  * mehr als zwei, drei signifikante Stellen wären Scheingenauigkeit, und die
@@ -122,6 +114,14 @@ export function fmtErtragProKwp(kwhProKwp: number): string {
  */
 const kompakt = (n: number) => dez(n, n < 10 ? 1 : 0);
 
+/**
+ * Rechnerisch vermiedenes CO₂ in Tonnen pro Jahr.
+ *
+ * Staffelung t → Tsd. t → Mio. t: eine Gemeinde liegt bei Hunderten Tonnen,
+ * ein Bundesland bei Millionen — ohne Staffelung wäre eine der beiden Zahlen
+ * unlesbar. „CO₂" steht bewusst NICHT in der Einheit: die Spalte bzw. der
+ * Satz daneben benennt die Größe, die Einheit bleibt die Masse.
+ */
 export function co2TonnenTeile(tonnen: number): Messwert {
   if (tonnen >= 1_000_000) return { value: kompakt(tonnen / 1_000_000), unit: "Mio. t" };
   if (tonnen >= 1000) return { value: kompakt(tonnen / 1000), unit: "Tsd. t" };
@@ -145,19 +145,22 @@ export const fmtCo2FaktorKg = (kgProKwh: number): string =>
 export const ctProKwhTeile = (ct: number): Messwert => ({ value: dez(ct, 1), unit: "ct" });
 export const fmtCtProKwh = (ct: number): string => zusammen(ctProKwhTeile(ct));
 
+// ─── Anteile ──────────────────────────────────────────────────────────────────
+
 /**
- * Ein Anteil als Prozentangabe („27 %").
+ * Anteil in Prozent.
  *
- * Nimmt den ANTEIL (0…1), nicht die bereits mit 100 multiplizierte Zahl — genau
- * diese Verwechslung ist der Fehler, den eine gemeinsame Funktion verhindert:
- * mit 0,27 aufgerufen käme sonst „0 %" heraus, mit 27 ein „2.700 %".
+ * Nimmt den ANTEIL (0…1), NICHT die schon mit 100 multiplizierte Zahl. Das ist
+ * der Grund, warum die Funktion so und nicht anders geschnitten ist: Wer
+ * `anteilProzentTeile(kwp / total)` schreibt, kann die Multiplikation weder
+ * vergessen noch zweimal machen — beides sah man dem Ergebnis vorher nicht an,
+ * weil „%" von Hand daneben stand und jede Zahl plausibel wirkte.
  *
- * Ganze Prozent ohne Nachkommastelle: Die Anteile im Atlas sind Modellwerte
- * (Eigenverbrauch aus Anlagengröße und Speicherbestand). Eine Nachkommastelle
- * wäre Scheingenauigkeit.
+ * Prozent ist eine Einheit wie kWp: Sie wird nicht getippt, sondern kommt hier
+ * her. Zwischen Zahl und Zeichen steht im Deutschen ein Leerzeichen (DIN 5008).
  */
 export const anteilProzentTeile = (anteil: number): Messwert => ({
-  value: dez(anteil * 100, 0),
+  value: prozentGerundet(anteil).toLocaleString("de-DE"),
   unit: "%",
 });
 export const fmtAnteilProzent = (anteil: number): string => zusammen(anteilProzentTeile(anteil));
@@ -191,6 +194,51 @@ export const fmtEuro = (euro: number): string => zusammen(euroTeile(euro));
  * Bundesland zu einer zehnstelligen Zahl).
  */
 export const fmtEuroVoll = (euro: number): string => `${nf(euro)} €`;
+
+/**
+ * Der gerundete Prozentwert als ZAHL — für Entscheidungen, die an der
+ * angezeigten Stufe hängen (z. B. „±0 %" statt „+0 %"). Damit trifft die
+ * Entscheidung dieselbe Rundung wie die Anzeige und kann nicht gegen sie
+ * driften.
+ */
+export function prozentGerundet(anteil: number): number {
+  return Math.round(anteil * 100);
+}
+
+/**
+ * Anteil in Prozent, fein — Chart-Konvention der Donut-Legenden: ab 10 % ganze
+ * Prozent, darunter eine Nachkommastelle.
+ *
+ * Eigene Funktion statt eines Schalters, aus demselben Grund wie
+ * batterieMittelTeile: Unter 10 % würde die Rundung Segmente einebnen, die sich
+ * in der Legende sichtbar unterscheiden (0,4 % und 1,4 % wären beide „1 %" bzw.
+ * „0 %"). Oberhalb trägt die Nachkommastelle nichts und macht die Legende unruhig.
+ */
+export function anteilProzentFeinTeile(anteil: number): Messwert {
+  const p = anteil * 100;
+  return {
+    value:
+      p >= 9.95
+        ? nf(p)
+        : p.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+    unit: "%",
+  };
+}
+export const fmtAnteilProzentFein = (anteil: number): string => zusammen(anteilProzentFeinTeile(anteil));
+
+/**
+ * Rangstufe „Top X %".
+ *
+ * Bewusst AUFgerundet und mindestens 1 %: Die Stufe darf die Platzierung nicht
+ * besser aussehen lassen, als sie ist. Platz 3 von 200 ist „Top 2 %" — kaufmännisch
+ * gerundet stünde dort „Top 1 %", also eine Behauptung, die den Ort in die
+ * Spitzengruppe hebt, in der er nicht steht.
+ */
+export const topProzentTeile = (anteil: number): Messwert => ({
+  value: Math.max(1, Math.ceil(anteil * 100)).toLocaleString("de-DE"),
+  unit: "%",
+});
+export const fmtTopProzent = (anteil: number): string => zusammen(topProzentTeile(anteil));
 
 // ─── Regionsnamen ─────────────────────────────────────────────────────────────
 

@@ -143,6 +143,14 @@ export const DEFAULT_WP_BUILDING: Omit<WpElectricityInputs, "personen"> = {
   wpType: "lwwp",       // Luft/Wasser (Marktstandard)
 };
 
+/** Was gilt, wenn jemand die Gebäudefragen der Wärmepumpe überspringt.
+ *  Gegenleistung fürs Überspringen: die Annahme wird ausgesprochen, samt der
+ *  Zahl, die daraus folgt. Ein stiller Default wäre hier besonders teuer — der
+ *  Heizstrom ist in fast jeder Rechnung der größte Verbrauchsposten. */
+export function wpGebaeudeUebersprungenFolge(kwh: number): string {
+  return `Wir rechnen mit einem freistehenden Haus, ${DEFAULT_WP_BUILDING.wohnflaeche} m², teilsaniert, moderne Heizkörper — rund ${kwh.toLocaleString("de-DE")} kWh Heizstrom im Jahr. Bei einem kleineren oder besser gedämmten Haus ist es deutlich weniger.`;
+}
+
 /** WP-Jahresstrom fürs Standard-Gebäude mit gegebener Personenzahl (Warmwasser). */
 export function defaultWpAnnualKwh(personenCount = 2): number {
   return calcWpAnnualElectricity({ ...DEFAULT_WP_BUILDING, personen: personenCount });

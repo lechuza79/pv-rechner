@@ -44,8 +44,10 @@ const COLOR_BARS = "--color-accent"; // Blau
 const COLOR_FEEDIN = "--color-positive"; // Signalgrün
 const COLOR_PRICE = "--color-text-secondary"; // Grau
 
-/** Rechteck mit nur oben abgerundeten Ecken. */
-function topRoundedRect(x: number, y: number, w: number, h: number, r: number): string {
+/** Rechteck mit nur oben abgerundeten Ecken — der Haus-Balkenstil. Exportiert,
+ *  damit andere Charts (z. B. der Vergütungs-Verlauf im Tabellen-Ratgeber)
+ *  dieselbe Form nutzen statt eine zweite Kopie zu pflegen. */
+export function topRoundedRect(x: number, y: number, w: number, h: number, r: number): string {
   const rr = Math.max(0, Math.min(r, w / 2, h));
   return `M${x},${y + h} L${x},${y + rr} Q${x},${y} ${x + rr},${y} L${x + w - rr},${y} Q${x + w},${y} ${x + w},${y + rr} L${x + w},${y + h} Z`;
 }

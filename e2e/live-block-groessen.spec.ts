@@ -1,0 +1,60 @@
+import { test, expect } from "@playwright/test";
+
+// Die beiden Live-Karten auf /strommix-deutschland müssen gleich breit sein und
+// gleich große Ringe zeigen — bei JEDER Fensterbreite.
+//
+// Warum als Test und nicht per Augenmaß: Genau das ging dreimal hintereinander
+// schief. Mit Flexbox waren die Karten in einem schmalen Fenster gleich und in
+// einem breiten nicht — Flex verteilt den RESTPLATZ gleichmäßig, nicht die
+// Spalten. Sobald die einzeilige Stand-Zeile („Stand 17.08., 17:00 Uhr · 56 GW
+// im Netz") breiter wurde als ihr Anteil, wuchs ihre Karte darüber hinaus. Auf
+// dem Entwicklungsrechner brach die Zeile um, beim Betreiber nicht — der Fehler
+// war am einen Bildschirm unsichtbar und am anderen offensichtlich. Deshalb
+// prüft dieser Test mehrere Breiten.
+
+const BREITEN = [
+  { name: "schmal (Laptop)", w: 1024, h: 900 },
+  { name: "breit (Desktop)", w: 1600, h: 900 },
+  { name: "sehr breit", w: 1920, h: 900 },
+];
+
+test.describe("Live-Block: gleiche Karten, gleiche Ringe", () => {
+  for (const { name, w, h } of BREITEN) {
+    test(`${name}: beide Karten gleich breit`, async ({ page }) => {
+      await page.setViewportSize({ width: w, height: h });
+      await page.goto("/strommix-deutschland");
+
+      await expect(page.getByRole("heading", { name: "Gerade im Netz" })).toBeVisible({ timeout: 30_000 });
+
+      // Gemessen wird der SICHTBARE Kasten, nicht die Grid-Zelle. Genau das
+      // war der Messfehler, der die Prüfung dreimal grün meldete, während der
+      // Betreiber das Gegenteil sah: Die Zellen waren längst gleich (316/316),
+      // aber die rechte Karte stand als `inline-block` mit 226 px darin.
+      const spalten = await page.evaluate(() => {
+        const h2 = [...document.querySelectorAll("h2")].find((x) => x.textContent === "Gerade im Netz");
+        const reihe = h2?.parentElement?.parentElement;
+        if (!reihe) return null;
+        const kastenBreite = (zelle: Element): number | null => {
+          const kandidaten = [zelle, ...zelle.querySelectorAll("*")];
+          const kasten = kandidaten.find(
+            (e) => getComputedStyle(e).borderTopWidth !== "0px" && e.getBoundingClientRect().width > 100,
+          );
+          return kasten ? Math.round(kasten.getBoundingClientRect().width) : null;
+        };
+        return [...reihe.children].map(kastenBreite);
+      });
+
+      expect(spalten, "Live-Block nicht gefunden").not.toBeNull();
+      expect(spalten!.length, "Es müssen genau zwei Karten sein").toBe(2);
+      expect(spalten![0], "linke Karte hat keinen sichtbaren Rahmen").not.toBeNull();
+      expect(spalten![1], "rechte Karte hat keinen sichtbaren Rahmen").not.toBeNull();
+      // Ein Pixel Toleranz für die Rundung ungerader Spaltenbreiten.
+      const [links, rechts] = spalten as [number, number];
+      expect(
+        Math.abs(links - rechts),
+        `Sichtbare Karten ungleich breit: ${links} vs ${rechts} px bei ${w} px Fenster`,
+      ).toBeLessThanOrEqual(1);
+    });
+  }
+
+});

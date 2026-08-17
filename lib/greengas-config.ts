@@ -166,7 +166,27 @@ export interface GreenGasConfig {
   /** Mehrwertsteuer auf alle Komponenten. */
   vat: number;
   source: string;
+  /** Stand der Werte selbst — nur hochsetzen, wenn sich einer ändert. */
   validFrom: string;
+  /**
+   * Tag, an dem ein Lauf den IW-Report zuletzt wirklich aufgeschlagen hat —
+   * also die PREISBESTANDTEILE (Biomethan, Netzentgelte, CO₂). Jährlich, mit
+   * dem Nachfolge-Report.
+   */
+  geprueftIso: string;
+  /**
+   * Tag, an dem ein Lauf den RECHTSSTAND zuletzt nachgelesen hat (Verkündung,
+   * Inkrafttreten, Stufen der Bio-Treppe). Eigenes Datum, weil es eine eigene
+   * Sache mit eigenem Takt ist: Der tägliche News-Wächter sieht hier nach,
+   * während die Report-Werte einmal im Jahr geprüft werden. Ein gemeinsames
+   * Datum wäre für eines von beiden gelogen — dieselbe Aufteilung wie bei der
+   * BEG-Förderung im Wärmepumpen-Rechner.
+   *
+   * Beide wandern auch bei „geprüft und unverändert" mit und bleiben bei einem
+   * gescheiterten Abruf stehen (scripts/waechter-gate.md → Regel 9). Sichtbar
+   * auf /waermepumpe-rechner über lib/stand.ts.
+   */
+  geprueftRechtIso: string;
   reviewBy: string;
 }
 
@@ -196,6 +216,17 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
     "Basisszenario; der 2045er-Wert unter der Annahme vollständiger Grüngas-Versorgung. " +
     "Das Basisszenario ist laut Report ein analytischer Referenzpfad, keine Prognose",
   validFrom: "2026-07-25",
+  // Preisbestandteile: IW-Report am 27.07.2026 im Volltext gelesen (Commit
+  // „IW-Report im Volltext geprueft"). NICHT der 25.07. — das ist der Stand der
+  // Werte selbst, also `validFrom`.
+  geprueftIso: "2026-07-27",
+  // Rechtsstand: Council mit Legal-Judge am 28.07.2026 — Gesetzestext und
+  // Gesetzesbegründung (BT-Drs. 21/6278) im Volltext, Geltungsbereich
+  // korrigiert (drei Commits an diesem Tag). Der 29.07.2026 wäre falsch: Das
+  // ist der Tag, an dem das Gesetz IN KRAFT trat (`inKraftSeitIso`) — „gilt
+  // seit" ist kein „geprüft am". Der tägliche News-Wächter zieht dieses Datum
+  // ab jetzt nach.
+  geprueftRechtIso: "2026-07-28",
   reviewBy: "2027-07-25",
 };
 

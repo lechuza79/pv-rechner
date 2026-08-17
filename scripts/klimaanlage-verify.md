@@ -323,7 +323,15 @@ ab, schlägt der Pre-commit-Hook an.
   grün (`lib/__tests__/aircon.test.ts`), committen.
 - **Bei `abweichung` an STUDIEN/REGELN:** Systematik-Frage, **nicht** eigenmächtig
   nachziehen. Befund an den Menschen, ggf. Council (`scripts/council-verify.md`).
-- **Bei `ok`:** nur `validFrom` + `reviewBy` aufs nächste Quartal setzen.
+- **Bei `ok`:** `geprueftIso` + `reviewBy` aufs nächste Quartal setzen,
+  `validFrom` unverändert lassen.
+- **`geprueftIso` in jedem Fall nachziehen** (Gate-Regel 9): Sobald dieser Lauf
+  die Leitquellen (Datenblätter, Topten, test.de, ADAC) wirklich erreicht hat,
+  trägt `DEFAULT_AIRCON_CONFIG.geprueftIso` seinen Tag — auch wenn kein Wert sich
+  bewegt hat, denn „geprüft und unverändert" ist die Auskunft, die unter dem
+  Rechner steht („Gerätepreise und Effizienzen geprüft am …", `lib/stand.ts`).
+  Konnte eine Quelle nicht gelesen werden, bleibt das Datum stehen und der
+  Fehlschlag geht in den Bericht. `validFrom` bewegt sich nur mit einem Wert.
 - **Keine Selbstheilung für diese Config** — anders als bei EEG/Förderung gibt es
   keine amtliche Quelle zum automatischen Abgleich. Befund melden, Mensch
   entscheidet.

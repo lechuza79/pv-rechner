@@ -1,0 +1,67 @@
+name: Förder-Seiten-Wächter
+
+# Ruft täglich die Amtsseiten aller Förderprogramme ab und vergleicht den
+# sichtbaren Text mit dem letzten Stand.
+#
+# WARUM ALS ACTION UND NICHT ALS SCHEDULED TASK: Die inhaltlichen Wächter laufen
+# als scheduled tasks auf dem Rechner des Betreibers — also nur, wenn der an und
+# die App offen ist. In der Urlaubswoche (09.–13.08.2026) lief fünf Tage keiner,
+# und niemand hat es bemerkt. Dieser Lauf braucht weder Rechner noch Modell: Er
+# ruft ab und vergleicht Prüfsummen. Damit ist wenigstens die Frage „hat sich an
+# einer Amtsseite etwas bewegt?" zuverlässig beantwortet, unabhängig davon, ob
+# irgendjemand oder irgendetwas sonst läuft.
+#
+# WAS ER NICHT LEISTET: Er versteht nicht, WAS sich geändert hat, und findet
+# keine neuen Förderprogramme. Beides braucht Urteilsvermögen und bleibt beim
+# Modell-Lauf. Ein grüner Lauf heißt „nichts hat sich bewegt", nicht „alles
+# korrekt" — wer das verwechselt, hat wieder ein Monitoring, das Schweigen für
+# Bestätigung hält.
+#
+# Der Lauf wird NICHT rot, wenn er etwas findet. Eine geänderte Amtsseite ist
+# kein Fehler, sondern Arbeit: Das Programm steht danach oben im Arbeitsvorrat
+# (npm run foerder:probe -- --vorrat), den der nächste Förder-Wächter abarbeitet.
+# Rot wäre hier eine Warnung, die bei jedem zweiten Lauf angeht — und damit eine,
+# die man wegfiltert.
+
+on:
+  schedule:
+    # Täglich früh, vor den scheduled tasks des Betreibers: Findet der Crawler
+    # etwas, liegt es schon im Arbeitsvorrat, wenn dessen Lauf startet.
+    - cron: "40 3 * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: foerder-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Amtsseiten abrufen und vergleichen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          # Damit der Runner unsere eigene Produktion als Ausgangspunkt nutzen
+          # kann, wenn er selbst von einer Amtsseite abgewiesen wird.
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: npm run foerder:watch
+
+      - name: Arbeitsvorrat zeigen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run foerder:probe -- --vorrat
