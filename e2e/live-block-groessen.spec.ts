@@ -26,19 +26,33 @@ test.describe("Live-Block: gleiche Karten, gleiche Ringe", () => {
 
       await expect(page.getByRole("heading", { name: "Gerade im Netz" })).toBeVisible({ timeout: 30_000 });
 
+      // Gemessen wird der SICHTBARE Kasten, nicht die Grid-Zelle. Genau das
+      // war der Messfehler, der die Prüfung dreimal grün meldete, während der
+      // Betreiber das Gegenteil sah: Die Zellen waren längst gleich (316/316),
+      // aber die rechte Karte stand als `inline-block` mit 226 px darin.
       const spalten = await page.evaluate(() => {
         const h2 = [...document.querySelectorAll("h2")].find((x) => x.textContent === "Gerade im Netz");
         const reihe = h2?.parentElement?.parentElement;
         if (!reihe) return null;
-        return [...reihe.children].map((c) => Math.round(c.getBoundingClientRect().width));
+        const kastenBreite = (zelle: Element): number | null => {
+          const kandidaten = [zelle, ...zelle.querySelectorAll("*")];
+          const kasten = kandidaten.find(
+            (e) => getComputedStyle(e).borderTopWidth !== "0px" && e.getBoundingClientRect().width > 100,
+          );
+          return kasten ? Math.round(kasten.getBoundingClientRect().width) : null;
+        };
+        return [...reihe.children].map(kastenBreite);
       });
 
       expect(spalten, "Live-Block nicht gefunden").not.toBeNull();
       expect(spalten!.length, "Es müssen genau zwei Karten sein").toBe(2);
+      expect(spalten![0], "linke Karte hat keinen sichtbaren Rahmen").not.toBeNull();
+      expect(spalten![1], "rechte Karte hat keinen sichtbaren Rahmen").not.toBeNull();
       // Ein Pixel Toleranz für die Rundung ungerader Spaltenbreiten.
+      const [links, rechts] = spalten as [number, number];
       expect(
-        Math.abs(spalten![0] - spalten![1]),
-        `Karten ungleich breit: ${spalten![0]} vs ${spalten![1]} px bei ${w} px Fenster`,
+        Math.abs(links - rechts),
+        `Sichtbare Karten ungleich breit: ${links} vs ${rechts} px bei ${w} px Fenster`,
       ).toBeLessThanOrEqual(1);
     });
   }

@@ -282,6 +282,9 @@ export default function ErzeugungWidget({
       }}
     >
       <MastrLiveRadial
+        // Auf eigener Seite steht die Karte in einer Spalte und muss sie füllen;
+        // im iframe darf sie weiter auf ihren Inhalt schrumpfen.
+        fuelltBreite={nackt}
         energietraeger={traeger}
         installedKwp={installedKwp}
         highlightTs={highlightTs}
