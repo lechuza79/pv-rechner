@@ -37,12 +37,8 @@ const HEUTE = new Date().toISOString().slice(0, 10);
 const ohneKommentare = (quelle: string) =>
   quelle.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
 
-/** Alle Configs, deren Prüfdatum in einer Stand-Zeile sichtbar wird.
- *
- *  `DEFAULT_BALKON_CONFIG` steht bewusst NICHT hier: Set- und Speicherpreise
- *  sind ein Markt-Scan, der bei jedem Lauf neu erhoben wird — dort IST das
- *  Prüfdatum der Wertstand (`validFrom`, monatsgenau). Das Prüfdatum der
- *  Rechtsaussagen liegt daneben in `BALKON_RECHT.geprueftIso`. */
+/** Alle Configs, deren Prüfdatum in einer Stand-Zeile sichtbar wird — jede mit
+ *  dem Paar aus Wertstand und Prüftag, das die Seite nebeneinander zeigt. */
 const GEPRUEFT = [
   { name: "DEFAULT_AIRCON_CONFIG", geprueftIso: DEFAULT_AIRCON_CONFIG.geprueftIso, validFrom: DEFAULT_AIRCON_CONFIG.validFrom, reviewBy: DEFAULT_AIRCON_CONFIG.reviewBy },
   { name: "DEFAULT_HEATPUMP_CONFIG", geprueftIso: DEFAULT_HEATPUMP_CONFIG.geprueftIso, validFrom: DEFAULT_HEATPUMP_CONFIG.validFrom, reviewBy: DEFAULT_HEATPUMP_CONFIG.reviewBy },
@@ -51,6 +47,7 @@ const GEPRUEFT = [
   { name: "GREEN_GAS_CONFIG (Rechtsstand)", geprueftIso: GREEN_GAS_CONFIG.geprueftRechtIso, validFrom: GREEN_GAS_CONFIG.validFrom, reviewBy: GREEN_GAS_CONFIG.reviewBy },
   { name: "CO2_PRICE", geprueftIso: CO2_PRICE.geprueftIso, validFrom: CO2_PRICE.validFrom, reviewBy: CO2_PRICE.reviewBy },
   { name: "BALKON_RECHT", geprueftIso: BALKON_RECHT.geprueftIso, validFrom: DEFAULT_BALKON_CONFIG.validFrom, reviewBy: DEFAULT_BALKON_CONFIG.reviewBy },
+  { name: "DEFAULT_BALKON_CONFIG", geprueftIso: DEFAULT_BALKON_CONFIG.geprueftIso, validFrom: DEFAULT_BALKON_CONFIG.validFrom, reviewBy: DEFAULT_BALKON_CONFIG.reviewBy },
 ];
 
 describe("Stand-Zeile: nur stempeln, was geprüft wurde", () => {
@@ -144,7 +141,7 @@ describe("Stand-Zeile: getrennte Daten für getrennte Sachen", () => {
     expect(iso("/photovoltaik-rechner", "EEG-Vergütungssätze")).toBe(FEED_IN_GEPRUEFT_ISO);
     expect(iso("/photovoltaik-rechner", "Sachstand der EEG-Reform 2027")).toBe(EEG_REFORM_STAND.geprueftIso);
     expect(iso("/balkonkraftwerk-rechner", "rechtliche Angaben")).toBe(BALKON_RECHT.geprueftIso);
-    expect(iso("/balkonkraftwerk-rechner", "Set- und Speicherpreise")).toBe(DEFAULT_BALKON_CONFIG.validFrom);
+    expect(iso("/balkonkraftwerk-rechner", "Set- und Speicherpreise")).toBe(DEFAULT_BALKON_CONFIG.geprueftIso);
   });
 });
 

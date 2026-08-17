@@ -172,7 +172,8 @@ export interface BalkonConfig {
   gridCo2PerKwh: number;    // kg CO₂/kWh, DE-Netzmix (= WP-Rechner)
   stromPrice: number;       // Fallback €/kWh
 
-  validFrom: string;            // ISO — Stand der Preis-/Marktwerte
+  validFrom: string;            // ISO — Stand der Preis-/Marktwerte (Monat)
+  geprueftIso: string;          // ISO — Tag des letzten Laufs, der die Preisquellen erreicht hat
   reviewBy: string;             // ISO — bis dahin gegen Quellen prüfen (scripts/balkon-verify.md)
 }
 
@@ -231,6 +232,13 @@ export const DEFAULT_BALKON_CONFIG: BalkonConfig = {
   stromPrice: DEFAULT_PRICES.electricityPrice, // kanonischer Haushaltspreis (kein eigener Wert → kein Drift)
 
   validFrom: "2026-07",
+  /** Tag, an dem ein Lauf die Preisquellen zuletzt wirklich gelesen hat.
+   *  Getrennt von `validFrom`, obwohl bei einem Markt-Scan beide zusammen
+   *  entstehen: Sichtbar sind sie als „Set- und Speicherpreise von Juli 2026,
+   *  geprüft am 15. Juli 2026" — und sobald ein Lauf die Preise bestätigt, ohne
+   *  dass sich einer bewegt, laufen sie auseinander. Startwert ist der Lauf des
+   *  Geräte-Wächters vom 15.07.2026, aus dem die Preise stammen. */
+  geprueftIso: "2026-07-15",
   reviewBy: "2026-10", // Quartals-Rhythmus (scripts/balkon-verify.md), nicht jährlich
 };
 

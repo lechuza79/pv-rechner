@@ -1,34 +1,30 @@
 import Link from "next/link";
-import { STAND, monatJahr, tagMonatJahr, type StandSeite } from "../lib/stand";
+import { STAND, monatJahr, tagMonatJahr, type StandEintrag, type StandSeite } from "../lib/stand";
 import { v } from "../lib/theme";
 
 /**
- * Die „Stand:"-Zeile unter einem Rechner. Inhalt kommt aus `lib/stand.ts`,
- * hier steht nur die Formulierung — einmal, statt auf jeder Seite neu getippt.
+ * Der Aktualisierungsstand unter einem Rechner. Inhalt kommt aus
+ * `lib/stand.ts`, hier steht nur die Formulierung — einmal, statt auf jeder
+ * Seite neu getippt.
+ *
+ * ZWEI DATEN JE ZEILE, IMMER (Entscheidung des Betreibers, 17.08.2026): „von
+ * wann sind die Werte" und „wann hat zuletzt jemand nachgesehen" sind zwei
+ * Fragen. Wer die zweite Zahl nur dann sieht, wenn sie abweicht, lernt nie, dass
+ * es sie gibt — und liest ein späteres „von Juli, geprüft im Oktober" dann nicht
+ * als das, was es ist: bestätigt, nicht vergessen. Wo es nur eine Zahl gibt,
+ * steht auch nur eine: Eine Rechtsaussage ist geltendes Recht oder nicht, sie
+ * hat keinen Wertstand, den man datieren könnte.
+ *
+ * WARUM EINE LISTE UND KEIN SATZ: Mit zwei Daten je Eintrag wurde die
+ * Aufzählung zur Kommasuppe — der Wärmepumpen-Rechner nennt fünf Stände, das
+ * sind zehn Datumsangaben in einem Satz. Eine Zeile je Sache ist die Form, in
+ * der man sie überfliegen kann. Nur wo es genau einen Stand gibt, bleibt der
+ * Fließtext.
  *
  * Grammatik gehört zur Richtigkeit (CLAUDE.md, „Aussagen zählen wie Zahlen"):
  * ein Live-Wert bekommt „kommt", mehrere bekommen „kommen", und die Aufzählung
  * endet mit „und" statt mit einem Komma.
  */
-/**
- * Ab wann der Wertstand neben dem Prüfdatum genannt wird: 45 Tage.
- *
- * Kürzer wäre Lärm — die Wächter laufen quartalsweise, ein Abstand von wenigen
- * Wochen ist der Normalfall und sagt nichts. Länger würde genau den Fall
- * verschweigen, für den es die zweite Zahl gibt: Werte, die zwei Quartale
- * unverändert durchlaufen, weil sie unverändert richtig sind.
- */
-const WERTSTAND_AB_TAGEN = 45;
-
-function zeigeWertstand(wertIso: string | undefined, geprueftIso: string): boolean {
-  if (!wertIso) return false;
-  const tag = 24 * 60 * 60 * 1000;
-  // Monatsgenaue Wertstände zählen ab Monatsanfang — das ist die vorsichtige
-  // Richtung: Der Abstand wird eher unter- als überschätzt.
-  const wert = Date.parse(`${wertIso.length === 7 ? `${wertIso}-01` : wertIso}T00:00:00Z`);
-  return (Date.parse(`${geprueftIso}T00:00:00Z`) - wert) / tag >= WERTSTAND_AB_TAGEN;
-}
-
 function liveSatz(live: string[]): string | null {
   if (!live.length) return null;
   const liste =
@@ -38,57 +34,73 @@ function liveSatz(live: string[]): string | null {
   return `${liste} ${live.length === 1 ? "kommt" : "kommen"} bei jedem Aufruf live dazu.`;
 }
 
+/** „Werte von Juli 2026, geprüft am 28. Juli 2026" — beide Hälften, sobald es
+ *  beide gibt. Monatsgenaue Einträge ohne eigenen Prüftag nennen nur den Stand. */
+function datumsText(e: StandEintrag): string {
+  if (e.praezision === "monat") return `Stand ${monatJahr(e.iso)}`;
+  const geprueft = `geprüft am ${tagMonatJahr(e.iso)}`;
+  return e.wertIso ? `Werte von ${monatJahr(e.wertIso.slice(0, 7))}, ${geprueft}` : geprueft;
+}
+
 export default function StandNote({ pfad, style }: { pfad: string; style?: React.CSSProperties }) {
   const seite: StandSeite | undefined = STAND[pfad];
   if (!seite) return null;
 
-  // „geprüft am" steht einmal, beim ersten taggenauen Eintrag — danach reicht
-  // „am". Vier Mal derselbe Halbsatz liest sich wie ein Formular; die Aussage
-  // trägt trotzdem jede Zahl, weil das Verb vorne für die ganze Aufzählung gilt.
-  let geprueftGesagt = false;
-  const eintraege = seite.eintraege.map(e => {
-    if (e.praezision === "monat") return `${e.was} ${monatJahr(e.iso)}`;
-    const verb = geprueftGesagt ? "am" : "geprüft am";
-    geprueftGesagt = true;
-    // Zwei Daten nur, wenn sie zwei verschiedene Dinge sagen: Solange die Werte
-    // so alt sind wie ihre Prüfung, wäre das zweite Datum eine Wiederholung.
-    // Wachsen sie auseinander, ist genau das die Auskunft — „von Juli, im
-    // Oktober bestätigt" heißt: unverändert gültig, nicht vergessen.
-    return zeigeWertstand(e.wertIso, e.iso)
-      ? `${e.was} von ${monatJahr(e.wertIso!.slice(0, 7))}, ${verb} ${tagMonatJahr(e.iso)}`
-      : `${e.was} ${verb} ${tagMonatJahr(e.iso)}`;
-  });
   const live = liveSatz(seite.live);
-
-  return (
-    <p
-      style={{
-        fontSize: v("--font-size-small"),
-        color: v("--color-text-muted"),
-        lineHeight: 1.7,
-        marginTop: 28,
-        marginBottom: 12,
-        ...style,
-      }}
-    >
-      {eintraege.length > 0 ? (
-        <>
-          <span style={{ fontWeight: 700, color: v("--color-text-primary") }}>Stand:</span>{" "}
-          {eintraege.join(", ")}.{live ? ` ${live}` : ""}{" "}
-        </>
-      ) : (
-        // Kein Stichtag ist eine Aussage, keine Lücke: Wer hier ein Datum
-        // erwartet, soll lesen, warum es keines gibt.
-        <>
-          <span style={{ fontWeight: 700, color: v("--color-text-primary") }}>Stand:</span>{" "}
-          Diese Seite rechnet ohne Stichtag — {live ? live.replace(/\.$/, "") : "alle Werte werden live geholt"}.{" "}
-        </>
-      )}
+  const rahmen: React.CSSProperties = {
+    fontSize: v("--font-size-small"),
+    color: v("--color-text-muted"),
+    lineHeight: 1.7,
+    marginTop: 28,
+    marginBottom: 12,
+    ...style,
+  };
+  const kopf = <span style={{ fontWeight: 700, color: v("--color-text-primary") }}>Stand:</span>;
+  const datenstand = (
+    <>
       Alle Werte, mit denen wir rechnen, stehen offen auf der{" "}
       <Link href="/datenstand" style={{ color: v("--color-accent"), textDecoration: "none", fontWeight: 600 }}>
         Datenstand-Seite
       </Link>
       .
-    </p>
+    </>
+  );
+
+  // Kein Stichtag ist eine Aussage, keine Lücke: Wer hier ein Datum erwartet,
+  // soll lesen, warum es keines gibt.
+  if (seite.eintraege.length === 0) {
+    return (
+      <p style={rahmen}>
+        {kopf} Diese Seite rechnet ohne Stichtag —{" "}
+        {live ? live.replace(/\.$/, "") : "alle Werte werden live geholt"}. {datenstand}
+      </p>
+    );
+  }
+
+  if (seite.eintraege.length === 1) {
+    const e = seite.eintraege[0];
+    return (
+      <p style={rahmen}>
+        {kopf} {e.was} — {datumsText(e)}.{live ? ` ${live}` : ""} {datenstand}
+      </p>
+    );
+  }
+
+  return (
+    <div style={rahmen}>
+      <p style={{ marginBottom: 6 }}>{kopf}</p>
+      <ul style={{ listStyle: "none", margin: "0 0 8px", padding: 0 }}>
+        {seite.eintraege.map(e => (
+          <li key={e.was} style={{ display: "flex", flexWrap: "wrap", gap: "0 6px", marginBottom: 2 }}>
+            <span style={{ color: v("--color-text-secondary") }}>{e.was}</span>
+            <span>— {datumsText(e)}</span>
+          </li>
+        ))}
+      </ul>
+      <p>
+        {live ? `${live} ` : ""}
+        {datenstand}
+      </p>
+    </div>
   );
 }

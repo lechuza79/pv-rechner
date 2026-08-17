@@ -29,7 +29,7 @@ import { DEFAULT_AIRCON_CONFIG } from "./aircon-config";
 import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
 import { GREEN_GAS_CONFIG } from "./greengas-config";
 import { CO2_PRICE } from "./co2-config";
-import { FEED_IN_GEPRUEFT_ISO } from "./feedin-config";
+import { FEED_IN_GEPRUEFT_ISO, feedInRatesFor } from "./feedin-config";
 import { EEG_REFORM_STAND } from "./eeg-reform-config";
 
 /** `tag` = YYYY-MM-DD (eine Prüfung an einem Tag), `monat` = YYYY-MM (ein
@@ -65,8 +65,8 @@ export const STAND: Record<string, StandSeite> = {
   // Stichtagsdatum, sondern stehen bei den Live-Werten.
   "/photovoltaik-rechner": {
     eintraege: [
-      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag" },
-      { was: "Sachstand der EEG-Reform 2027", iso: EEG_REFORM_STAND.geprueftIso, praezision: "tag" },
+      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: feedInRatesFor().validFrom },
+      { was: "Sachstand der EEG-Reform 2027", iso: EEG_REFORM_STAND.geprueftIso, praezision: "tag", wertIso: EEG_REFORM_STAND.kabinettBeschlussIso },
     ],
     live: ["Anlagen- und Speicherpreise (monatlich neu erhoben)", "Strompreis", "Standort-Ertrag"],
   },
@@ -76,7 +76,7 @@ export const STAND: Record<string, StandSeite> = {
   // Eintrag weniger statt derselben Zeile.
   "/pv-bedarf-berechnen": {
     eintraege: [
-      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag" },
+      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: feedInRatesFor().validFrom },
     ],
     live: ["Anlagen- und Speicherpreise (monatlich neu erhoben)", "Strompreis"],
   },
@@ -110,15 +110,19 @@ export const STAND: Record<string, StandSeite> = {
 
   "/einspeiseverguetung-rechner": {
     eintraege: [
-      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag" },
-      { was: "Sachstand der EEG-Reform 2027", iso: EEG_REFORM_STAND.geprueftIso, praezision: "tag" },
+      { was: "EEG-Vergütungssätze", iso: FEED_IN_GEPRUEFT_ISO, praezision: "tag", wertIso: feedInRatesFor().validFrom },
+      { was: "Sachstand der EEG-Reform 2027", iso: EEG_REFORM_STAND.geprueftIso, praezision: "tag", wertIso: EEG_REFORM_STAND.kabinettBeschlussIso },
     ],
     live: ["Standort-Ertrag"],
   },
 
   "/balkonkraftwerk-rechner": {
     eintraege: [
-      { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.validFrom, praezision: "monat" },
+      { was: "Set- und Speicherpreise", iso: DEFAULT_BALKON_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_BALKON_CONFIG.validFrom },
+      // Rechtsaussagen tragen bewusst KEINEN Wertstand: Sie sind entweder
+      // geltendes Recht oder nicht — was altert, ist allein die Prüfung. Ein
+      // zweites Datum müsste man erfinden (welches der drei beteiligten
+      // Gesetze?), und ein erfundenes Datum ist schlechter als keins.
       { was: "rechtliche Angaben", iso: BALKON_RECHT.geprueftIso, praezision: "tag" },
     ],
     live: ["Strompreis", "Standort-Ertrag"],

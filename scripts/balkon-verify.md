@@ -157,13 +157,12 @@ Dem Assistenten sagen: **„Lauf die Balkonkraftwerk-Prüfung."**
 
 Gilt für jeden Ausgang, `ok` wie `abweichung` (Gate-Regel 9):
 
-- **`DEFAULT_BALKON_CONFIG.validFrom`** ← Monat dieses Laufs, sobald die
-  Preisquellen erreicht wurden — auch wenn kein Preis sich geändert hat. Bei
-  Marktpreisen fallen Wertstand und Prüfdatum zusammen: Ein bestätigter Preis
-  ist ein neu erhobener Preis, kein alter. (Deshalb hat diese eine Config
-  **kein** eigenes `geprueftIso` — anders als Wärmepumpe, Klima und CO₂, deren
-  Werte an einer datierten Auswertung hängen, die durch eine Bestätigung nicht
-  jünger wird.)
+- **`DEFAULT_BALKON_CONFIG.geprueftIso`** ← Tag dieses Laufs, sobald die
+  Preisquellen erreicht wurden, auch wenn kein Preis sich geändert hat.
+- **`DEFAULT_BALKON_CONFIG.validFrom`** ← nur, wenn sich wirklich ein Preis
+  bewegt hat (Monat des Laufs). Bleibt er stehen, sagt die Seite „Set- und
+  Speicherpreise von Juli 2026, geprüft am 15. Oktober 2026" — und das ist die
+  richtige Auskunft: dieselben Preise, frisch bestätigt.
 - **`BALKON_RECHT.geprueftIso`** ← nur, wenn in diesem Lauf die **Rechtsquellen**
   selbst aufgeschlagen wurden (EEG, MaStRV, UStAE-Auszug in `docs/quellen/`).
   Ein Lauf, der nur Preise geprüft hat, lässt es stehen: Die Zeile unter dem
@@ -174,6 +173,6 @@ Gilt für jeden Ausgang, `ok` wie `abweichung` (Gate-Regel 9):
 Beide Daten stehen über `lib/stand.ts` sichtbar unter dem Rechner und speisen das
 `lastmod` der Sitemap.
 
-- **Bei `ok`:** `validFrom` auf den Monat dieses Laufs und `reviewBy` aufs
-  nächste Quartal setzen; `BALKON_RECHT.geprueftIso` nur, wenn auch die
-  Rechtsquellen aufgeschlagen wurden.
+- **Bei `ok`:** `geprueftIso` auf heute und `reviewBy` aufs nächste Quartal
+  setzen, `validFrom` unverändert lassen; `BALKON_RECHT.geprueftIso` nur, wenn
+  auch die Rechtsquellen aufgeschlagen wurden.

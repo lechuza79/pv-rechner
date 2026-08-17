@@ -129,8 +129,8 @@ export const PRUEFSTAND: PruefEintrag[] = [
   },
   {
     was: "Balkonkraftwerk: Set- und Speicherpreise",
-    feld: "DEFAULT_BALKON_CONFIG.validFrom",
-    geprueftIso: DEFAULT_BALKON_CONFIG.validFrom,
+    feld: "DEFAULT_BALKON_CONFIG.geprueftIso",
+    geprueftIso: DEFAULT_BALKON_CONFIG.geprueftIso,
     reviewBy: DEFAULT_BALKON_CONFIG.reviewBy,
     waechter: "solar-check-geraete-config-verify-jaehrlich",
     rhythmus: "quartalsweise, 15. Januar/April/Juli/Oktober",
