@@ -205,9 +205,11 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
     "Basisszenario; der 2045er-Wert unter der Annahme vollständiger Grüngas-Versorgung. " +
     "Das Basisszenario ist laut Report ein analytischer Referenzpfad, keine Prognose",
   validFrom: "2026-07-25",
-  // Startwert = `validFrom`: der Tag, für den die Prüfung gegen IW-Report und
-  // Gesetzestext im Repo belegt ist.
-  geprueftIso: "2026-07-25",
+  // Der Council-Lauf mit Legal-Judge am 29.07.2026 hat Gesetzestext und
+  // Gesetzesbegründung (BT-Drs. 21/6278) im Volltext gelesen und den
+  // Geltungsbereich korrigiert — das ist der jüngste belegte Blick in die
+  // Quellen, nicht der 25.07. (das ist der Stand der IW-Report-Werte).
+  geprueftIso: "2026-07-29",
   reviewBy: "2027-07-25",
 };
 

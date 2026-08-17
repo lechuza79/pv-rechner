@@ -23,11 +23,16 @@ export default function StandNote({ pfad, style }: { pfad: string; style?: React
   const seite: StandSeite | undefined = STAND[pfad];
   if (!seite) return null;
 
-  const eintraege = seite.eintraege.map(e =>
-    e.praezision === "monat"
-      ? `${e.was} ${monatJahr(e.iso)}`
-      : `${e.was} geprüft am ${tagMonatJahr(e.iso)}`
-  );
+  // „geprüft am" steht einmal, beim ersten taggenauen Eintrag — danach reicht
+  // „am". Vier Mal derselbe Halbsatz liest sich wie ein Formular; die Aussage
+  // trägt trotzdem jede Zahl, weil das Verb vorne für die ganze Aufzählung gilt.
+  let geprueftGesagt = false;
+  const eintraege = seite.eintraege.map(e => {
+    if (e.praezision === "monat") return `${e.was} ${monatJahr(e.iso)}`;
+    const verb = geprueftGesagt ? "am" : "geprüft am";
+    geprueftGesagt = true;
+    return `${e.was} ${verb} ${tagMonatJahr(e.iso)}`;
+  });
   const live = liveSatz(seite.live);
 
   return (

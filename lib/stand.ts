@@ -79,7 +79,13 @@ export const STAND: Record<string, StandSeite> = {
   // wichtig, es ist die einzige Auskunft über das Alter der Zahlen.
   "/waermepumpe-rechner": {
     eintraege: [
-      { was: "Anschaffung, Tarife und BEG-Förderung", iso: DEFAULT_HEATPUMP_CONFIG.geprueftIso, praezision: "tag" },
+      { was: "Anschaffung und Tarife", iso: DEFAULT_HEATPUMP_CONFIG.geprueftIso, praezision: "tag" },
+      // Die Förderung hat einen eigenen Prüftag, weil sie an einer eigenen
+      // Quelle hängt (KfW-Merkblatt) und außer der Reihe geprüft wird. Sie mit
+      // den Marktwerten unter ein Datum zu stellen hieße, das ältere von beiden
+      // auf die Förderung zu übertragen — und damit eine Prüfung zu
+      // verschweigen, die stattgefunden hat.
+      { was: "BEG-Förderung", iso: DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso, praezision: "tag" },
       { was: "Grüngas-Pflicht und Gaspreis-Bestandteile", iso: GREEN_GAS_CONFIG.geprueftIso, praezision: "tag" },
       { was: "CO₂-Preispfad", iso: CO2_PRICE.geprueftIso, praezision: "tag" },
     ],

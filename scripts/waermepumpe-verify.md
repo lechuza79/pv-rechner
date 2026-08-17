@@ -177,11 +177,16 @@ SWWP-Invest > LWWP-Invest).
 
 - **Bei `ok`:** `geprueftIso` + `reviewBy` auf den nächsten Termin setzen,
   `validFrom` unverändert lassen.
-- **`geprueftIso` in jedem Fall nachziehen** (Gate-Regel 9):
-  `DEFAULT_HEATPUMP_CONFIG.geprueftIso` trägt den Tag dieses Laufs, sobald die
-  Leitquellen (Angebotsauswertung, KfW-Merkblatt, BDEW-Tarife) tatsächlich
-  gelesen wurden — auch bei „alles bestätigt, nichts geändert". Genau das steht
-  unter dem Rechner: „Anschaffung, Tarife und BEG-Förderung geprüft am …"
-  (`lib/stand.ts`), und dasselbe Datum ist das `lastmod` der Seite in der
-  Sitemap. Ein Lauf, der an einer Quelle gescheitert ist, lässt es stehen.
-  `validFrom` bewegt sich nur, wenn sich ein Wert ändert.
+- **Die zwei Prüfdaten in jedem Fall nachziehen** (Gate-Regel 9) — je nachdem,
+  welche Quelle dieser Lauf wirklich gelesen hat:
+  - `geprueftIso` ← Angebotsauswertung und BDEW-Tarife gelesen,
+  - `geprueftFoerderungIso` ← KfW-Merkblatt gelesen.
+
+  Beide auch bei „alles bestätigt, nichts geändert" — das ist das
+  Normalergebnis. **Nur das Datum der Quelle setzen, die dieser Lauf tatsächlich
+  aufgeschlagen hat:** Der Lauf vom 08.08.2026 hat allein das Merkblatt geprüft;
+  hätte er beide Daten gesetzt, stünde für die Marktwerte eine Prüfung da, die
+  nicht stattfand. Sie stehen getrennt unter dem Rechner („Anschaffung und
+  Tarife geprüft am …, BEG-Förderung am …", `lib/stand.ts`), das jüngere von
+  beiden ist das `lastmod` der Seite. Ein Lauf, der an einer Quelle gescheitert
+  ist, lässt ihr Datum stehen; `validFrom` bewegt sich nur mit einem Wert.
