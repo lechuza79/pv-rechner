@@ -403,7 +403,11 @@ export default function Klimaanlage() {
                 Ergebnis nicht an, für wie viele Räume und welchen Sommer es gilt. */}
             <ResultSection
               title="Kühlbedarf"
-              summary={`${rooms} ${rooms === 1 ? "Raum" : "Räume"} · ${rooms * roomM2} m² · ${cdhModusLabel()}`}
+              /* Die Flaeche kommt aus dem Rechenkern (result.cooledArea), nicht aus
+                 einer eigenen Multiplikation: Sonst zeigt die Kopfzeile eine
+                 andere Quadratmeterzahl als die, mit der die Kosten darunter
+                 gerechnet werden, sobald der Kern die Flaeche anders bildet. */
+              summary={`${rooms} ${rooms === 1 ? "Raum" : "Räume"} · ${cooledArea} m² · ${cdhModusLabel()}`}
             >
                 {/* Editierbare Annahmen */}
                 <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>

@@ -78,7 +78,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
   const [step, setStep] = useState(hasShare ? 5 : 0);
   const [anlage, setAnlage] = useState(hasShare ? paramInt(initialParams, "a", 2, 0, 4) : 2);
-  const [customKwp, setCustomKwp] = useState(hasShare ? paramInt(initialParams, "ck", 12, 1, 50) : 12);
+  // paramFloat, nicht paramInt: Die Größe ist in Halbschritten editierbar, und
+  // parseInt hat die Nachkommastelle verschluckt — 12,5 kWp kamen beim Empfänger
+  // des Links als 12 an, mit abweichender Investition und Amortisation.
+  const [customKwp, setCustomKwp] = useState(hasShare ? paramFloat(initialParams, "ck", 12, 1, 50) : 12);
   const [speicher, setSpeicher] = useState(hasShare ? paramInt(initialParams, "s", 0, 0, SPEICHER.length - 1) : 0);
   // Freie Speichergröße aus dem Ergebnis heraus (Vorgaben sind Indizes, hier
   // steht die kWh-Zahl selbst). Null = es gilt die im Flow gewählte Vorgabe.

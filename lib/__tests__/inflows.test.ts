@@ -102,6 +102,23 @@ describe("Inflows: jede Frage steht dort, wo sie stehen muss", () => {
     }
   });
 
+  // ─── Was der dritte Review-Durchgang gefunden hat ─────────────────────────
+  it("Werte mit Nachkommastelle werden auch als solche gelesen", () => {
+    // Die Anlagengröße ist in Halbschritten editierbar (step 0,5), wurde aber
+    // mit paramInt aus dem Teilen-Link gelesen: 12,5 kWp kamen beim Empfänger
+    // als 12 an, mit abweichender Investition und Amortisation. Der Speicher
+    // daneben machte es von Anfang an richtig.
+    const quelle = lies("app/(site)/photovoltaik-rechner/rechner.tsx");
+    for (const [param, feld] of [["ck", "Anlagengröße"], ["sk", "Speichergröße"]] as const) {
+      const zeile = quelle.split("\n").find(z => z.includes(`initialParams, "${param}"`));
+      expect(zeile, `Parameter ${param} (${feld}) wird nicht gelesen`).toBeTruthy();
+      expect(
+        zeile,
+        `${feld} ist in Halbschritten editierbar — Parameter ${param} muss mit paramFloat gelesen werden, nicht mit paramInt (verschluckt die Nachkommastelle)`,
+      ).toContain("paramFloat");
+    }
+  });
+
   // ─── Was der zweite Review-Durchgang gefunden hat ─────────────────────────
   it("eine Größe hat überall dieselben Grenzen", () => {
     // Die Wohnfläche wurde im Ergebnis mit 20–1000 m² angeboten, im Flow des
