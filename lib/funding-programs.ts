@@ -801,19 +801,29 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   "wolfsburg-pv": {
     id: "wolfsburg-pv", name: "Förderung der Solarstromerzeugung",
     traeger: "Stadt Wolfsburg", level: "kommune", region: "Wolfsburg", bundesland: "Niedersachsen", agsCode: "03103",
-    url: "https://www.wolfsburg.de/newsroom/2026/04/photovoltaik-foerderprogramm",
-    stand: "Juni 2026", status: "pausiert", capped: true, verified: true,
+    // Adresse ersetzt am 17.08.2026: Die frühere Newsroom-Meldung
+    // (/newsroom/2026/04/photovoltaik-foerderprogramm) antwortet mit 404 — der
+    // Seiten-Wächter hat sie als tot gemeldet. Eine Pressemeldung ist ohnehin die
+    // falsche Quelle für laufende Konditionen; sie verfällt mit dem Nachrichtenwert.
+    // Jetzt die Themenseite der Stadt, dazu die amtlichen Förderbedingungen als PDF
+    // (Stand 16.03.2026), an denen die Sätze am 17.08.2026 Zeile für Zeile geprüft
+    // wurden: Punkt 5.1 (Beträge), 5.2 (50 %), 5.3 (je Wohneinheit), 7.1 (Fenster).
+    url: "https://www.wolfsburg.de/umweltnaturschutz/klimaschutz/erneuerbare_energien",
+    stand: "August 2026", status: "pausiert", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Pauschale nach Anlagengröße + Speicher (max. 50 % der Kosten)",
     maxFoerderung: "max. 2.000 € je Wohneinheit",
     rates: [
       { label: "PV-Anlage", value: "700 € (<6 kWp) / 1.000 € (6–12 kWp) / 1.500 € (ab 12 kWp)" },
       { label: "Batteriespeicher (ab 3 kWh)", value: "+500 €" },
+      { label: "Steckerfertige PV (Balkonkraftwerk)", value: "200 €" },
     ],
     conditions: [
       "Antrag nur im jährlichen Fenster — 2026 vom 14.05. bis 14.06., aktuell geschlossen",
-      "nur Bestandsgebäude; Losverfahren bei Überzeichnung",
-      "max. 50 % der Kosten",
+      "Losverfahren bei Überzeichnung, kein Windhundverfahren",
+      "max. 50 % der entstandenen Kosten",
+      "Je Wohneinheit höchstens eine PV-Anlage oder ein Balkonkraftwerk plus ein Speicher",
+      "Nicht förderfähig: gesetzlich vorgeschriebene Anlagen, Anlagen als Teil eines Bauvorhabens, Insel-, Miet-, Leasing- und Eigenbauanlagen sowie gewerblich genutzte Immobilien",
     ],
     combinableWith: BUND,
     pvTiers: [{ upTo: 6, amount: 700 }, { upTo: 12, amount: 1000 }, { upTo: 999, amount: 1500 }],

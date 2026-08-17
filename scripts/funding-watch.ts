@@ -152,8 +152,20 @@ async function main(): Promise<void> {
             headers: { Authorization: `Bearer ${CRON_SECRET}` },
             signal: AbortSignal.timeout(70_000),
           });
-          const j = (await res.json()) as { ok?: boolean; fingerprint?: string; weg?: string; versuche?: unknown[] };
-          prodLog.push(`HTTP ${res.status}${j.weg ? ` via ${j.weg}` : ""}`);
+          const j = (await res.json()) as {
+            ok?: boolean; fingerprint?: string; weg?: string;
+            versuche?: { weg: string; status: number | string }[];
+          };
+          // NICHT den HTTP-Status der Route protokollieren — der ist 200, sobald
+          // sie überhaupt geantwortet hat, auch wenn sie die Amtsseite gar nicht
+          // bekommen hat. Genau so stand am 17.08. „Produktion: HTTP 200" neben
+          // einem Programm, das als unerreichbar gemeldet wurde. Was zählt, ist
+          // ihr eigener Ausgang.
+          prodLog.push(
+            j.ok
+              ? `erreicht via ${j.weg}`
+              : `nicht erreicht (${(j.versuche ?? []).map((v) => `${v.weg}:${v.status}`).join(", ") || `Antwort ${res.status}`})`,
+          );
           if (j.ok && j.fingerprint) {
             ausProduktion = j.fingerprint;
             break;
