@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { STAND, monatJahr, tagMonatJahr, type StandEintrag, type StandSeite } from "../lib/stand";
-import { v } from "../lib/theme";
+import { space, v } from "../lib/theme";
 
 /**
  * Der Aktualisierungsstand unter einem Rechner. Inhalt kommt aus
@@ -47,12 +47,19 @@ export default function StandNote({ pfad, style }: { pfad: string; style?: React
   if (!seite) return null;
 
   const live = liveSatz(seite.live);
+  // Trennlinie mit Luft darüber und darunter: Der Aktualisierungsstand ist kein
+  // weiterer Absatz des Rechners, sondern eine Fußnote über ihn. Ohne die Linie
+  // las er sich wie ein letzter Hinweis zur Bedienung; mit ihr sieht man auf
+  // einen Blick, dass hier etwas anderes anfängt. Werte aus der Abstands-Skala
+  // (lib/theme.ts): 48 über der Linie, 24 zwischen Linie und Text.
   const rahmen: React.CSSProperties = {
     fontSize: v("--font-size-small"),
     color: v("--color-text-muted"),
     lineHeight: 1.7,
-    marginTop: 28,
-    marginBottom: 12,
+    marginTop: space.huge,
+    paddingTop: space.xxl,
+    borderTop: `1px solid ${v("--color-border")}`,
+    marginBottom: space.xxl,
     ...style,
   };
   const kopf = <span style={{ fontWeight: 700, color: v("--color-text-primary") }}>Stand:</span>;
