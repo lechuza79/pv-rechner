@@ -86,6 +86,7 @@ async function main(): Promise<void> {
   const zeilen = (data ?? []).filter((r: any) => !r.archived) as (Zeile & { archived: boolean })[];
   const geaendert: string[] = [];
   const unerreichbar: string[] = [];
+  const ueberArchiv: string[] = [];
   let unveraendert = 0;
 
   for (const z of zeilen) {
@@ -126,8 +127,48 @@ async function main(): Promise<void> {
       if (versuch < 2) await new Promise((r) => setTimeout(r, 3_000 * (versuch + 1)));
     }
 
+    // Rückfallebene Archiv — die technische Antwort auf den Frankfurt-Fall.
+    //
+    // frankfurt.de lässt automatisierte Abrufe nicht durch und stellt zeitweise
+    // sogar echten Browsern eine Mensch-Prüfung. Die klickt hier niemand weg. Das
+    // Internet-Archiv liefert dieselbe Amtsseite aber mit einem gewöhnlichen
+    // Abruf aus, ohne jede Prüfung — gemessen am 16.08.2026 mit HTTP 200.
+    //
+    // Damit wird eine Änderung auch bei gesperrten Trägern zuverlässig bemerkt,
+    // ohne Mensch und ohne Browser. Der Preis ist ein Zeitverzug: Das Archiv
+    // erfasst die Seite, wann es will (bei Frankfurt zuletzt gut einen Monat
+    // vorher). Für „hat sich etwas bewegt" reicht das; für „gilt heute noch"
+    // nicht — deshalb bleibt ein Archiv-Beleg auch hier kein Prüfdatum.
+    //
+    // `id_` liefert die Originalfassung ohne die Navigationsleiste des Archivs;
+    // ohne das würde deren Rahmen im Fingerabdruck landen und bei jeder
+    // Archiv-Änderung eine Bewegung auf der Amtsseite vortäuschen.
+    let ausArchiv = false;
     if (!html) {
-      unerreichbar.push(`${p.name} (${p.region}) — HTTP ${status || "keine Antwort"}`);
+      try {
+        const av = await fetch(
+          `https://archive.org/wayback/available?url=${encodeURIComponent(p.url)}`,
+          { signal: AbortSignal.timeout(25_000) },
+        );
+        const j = (await av.json()) as { archived_snapshots?: { closest?: { timestamp?: string } } };
+        const ts = j.archived_snapshots?.closest?.timestamp;
+        if (ts) {
+          const res = await fetch(`https://web.archive.org/web/${ts}id_/${p.url}`, {
+            headers: { "User-Agent": UA },
+            signal: AbortSignal.timeout(45_000),
+          });
+          if (res.ok) {
+            html = await res.text();
+            ausArchiv = true;
+          }
+        }
+      } catch {
+        /* Archiv nicht erreichbar — dann bleibt es beim gescheiterten Abruf. */
+      }
+    }
+
+    if (!html) {
+      unerreichbar.push(`${p.name} (${p.region}) — HTTP ${status || "keine Antwort"}, auch nicht im Archiv`);
       if (!dry) {
         // WICHTIG: eigene Kennung, NICHT "pruefseite"/"gesperrt" — BLOCKER.
         // Ein gescheiterter Abruf dieses Crawlers ist KEIN Fehlversuch im Sinne
@@ -149,8 +190,12 @@ async function main(): Promise<void> {
       continue;
     }
 
-    const fp = fingerprint(html);
-    if (z.page_fingerprint && z.page_fingerprint !== fp) {
+    // Der Fingerabdruck trägt seine Herkunft. Live- und Archivfassung derselben
+    // Seite unterscheiden sich immer ein wenig; ohne diese Kennzeichnung meldete
+    // jeder Wechsel zwischen beiden Wegen eine Änderung, die es nie gab.
+    const fp = `${ausArchiv ? "archiv" : "live"}:${fingerprint(html)}`;
+    const gleicheHerkunft = z.page_fingerprint?.split(":")[0] === (ausArchiv ? "archiv" : "live");
+    if (z.page_fingerprint && gleicheHerkunft && z.page_fingerprint !== fp) {
       geaendert.push(`${p.name} (${p.region})`);
       if (!dry) {
         await sb.from("funding_checks").insert({
@@ -160,9 +205,10 @@ async function main(): Promise<void> {
           note: `Seiten-Wächter: Inhalt der Amtsseite hat sich geändert (${p.url})`,
         });
       }
-    } else if (z.page_fingerprint) {
+    } else if (z.page_fingerprint && gleicheHerkunft) {
       unveraendert++;
     }
+    if (ausArchiv) ueberArchiv.push(`${p.name} (${p.region})`);
 
     if (!dry) {
       await sb
@@ -176,6 +222,8 @@ async function main(): Promise<void> {
   console.log(`  unverändert:  ${unveraendert}`);
   console.log(`  geändert:     ${geaendert.length}`);
   for (const g of geaendert) console.log(`     → ${g}`);
+  console.log(`  über Archiv:  ${ueberArchiv.length}`);
+  for (const a of ueberArchiv) console.log(`     → ${a}`);
   console.log(`  unerreichbar: ${unerreichbar.length}`);
   for (const u of unerreichbar) console.log(`     → ${u}`);
 
