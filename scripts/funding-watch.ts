@@ -92,18 +92,38 @@ async function main(): Promise<void> {
     const p = z.data;
     if (!p?.url) continue;
 
+    // Mehrere Anläufe mit wachsender Geduld — BLOCKER für die Verlässlichkeit.
+    // Der erste Cloud-Lauf meldete Freiburg, Heidelberg und Karlsruhe als
+    // unerreichbar; alle drei antworten von einem normalen Anschluss sofort. Es
+    // waren keine Sperren, sondern Zeitüberschreitungen im Rechenzentrum. Ein
+    // Wächter, der beim ersten Timeout aufgibt, meldet genau die Städte nicht,
+    // deren Seiten sich ändern — und meldet dabei auch noch Grün.
     let html = "";
     let status = 0;
-    try {
-      const res = await fetch(p.url, {
-        headers: { "User-Agent": UA, "Accept-Language": "de-DE,de;q=0.9" },
-        redirect: "follow",
-        signal: AbortSignal.timeout(30_000),
-      });
-      status = res.status;
-      if (res.ok) html = await res.text();
-    } catch {
-      status = 0;
+    for (const versuch of [0, 1, 2]) {
+      try {
+        const res = await fetch(p.url, {
+          headers: {
+            "User-Agent": UA,
+            "Accept-Language": "de-DE,de;q=0.9",
+            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          },
+          redirect: "follow",
+          signal: AbortSignal.timeout(25_000 + versuch * 20_000),
+        });
+        status = res.status;
+        if (res.ok) {
+          html = await res.text();
+          break;
+        }
+        // 403/429 ist eine Entscheidung der Gegenseite — die ändert sich durch
+        // schnelles Nachfassen nicht, aber durchaus über die Zeit (siehe
+        // Frankfurt). Einmal nachfassen genügt, dann weiter.
+        if (status !== 403 && status !== 429 && status < 500) break;
+      } catch {
+        status = 0;
+      }
+      if (versuch < 2) await new Promise((r) => setTimeout(r, 3_000 * (versuch + 1)));
     }
 
     if (!html) {
