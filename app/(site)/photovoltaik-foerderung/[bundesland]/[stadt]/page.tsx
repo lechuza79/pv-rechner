@@ -161,6 +161,21 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
   // Der mittlere Fall (10 kWp mit kleinem Speicher) steht für das Einfamilienhaus
   const currentYear = new Date().getFullYear();
   const lastFullYear = atlas?.solar.by_year.filter((y) => y.year < currentYear).slice(-1)[0];
+  // Tempo statt Topfstand: Wie viele Anlagen sind dieses Jahr schon dazugekommen,
+  // verglichen mit dem gesamten Vorjahr?
+  //
+  // Bewusst NICHT hochgerechnet, wie viel vom Fördertopf verbraucht ist — das
+  // wäre eine erfundene Zahl mit vier Unbekannten (wer beantragt überhaupt,
+  // welcher Topf-Anteil entfällt auf Solar, der Antrag liegt Monate vor der
+  // Inbetriebnahme, Nachtragshaushalte ändern den Topf unterjährig). „Topf zu
+  // 60 % verbraucht" könnte in Wahrheit 20 % oder 100 % heißen, und ein
+  // „unter Vorbehalt" macht eine falsche Zahl nicht richtig. Die Anlagenzahl
+  // dagegen ist gemessen und erzeugt denselben Handlungsdruck.
+  const laufendesJahr = atlas?.solar.by_year.find((y) => y.year === currentYear);
+  const tempo =
+    laufendesJahr && lastFullYear && lastFullYear.count > 0 && laufendesJahr.count > 0
+      ? { jetzt: laufendesJahr.count, vorjahr: lastFullYear.count, vorjahrZahl: lastFullYear.year }
+      : null;
   // FAQ aus den Förderdaten generiert (kein separater Datensatz).
   const faq = buildFundingFaq(city.name, f, { amortYears: examples[1]?.amort ?? examples[0]?.amort ?? null });
   const faqJsonLd = {
@@ -222,6 +237,12 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                         <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>
                           Mittel begrenzt: vor Antrag prüfen
                         </a>
+                        {tempo && (
+                          <div style={{ color: v("--color-text-secondary"), marginTop: 4, lineHeight: 1.5 }}>
+                            In {city.name} {tempo.jetzt === 1 ? "ist dieses Jahr bisher 1 Anlage" : `sind dieses Jahr bisher ${nf(tempo.jetzt)} Anlagen`}{" "}
+                            ans Netz gegangen, {tempo.vorjahr === 1 ? "im gesamten Vorjahr 1" : `im gesamten ${tempo.vorjahrZahl} waren es ${nf(tempo.vorjahr)}`}.
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
