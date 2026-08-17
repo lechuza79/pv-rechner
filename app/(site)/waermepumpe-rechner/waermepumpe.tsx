@@ -15,7 +15,8 @@ import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../..
 import OptionCard from "../../../components/OptionCard";
 import ResultSection from "../../../components/ResultSection";
 import GebaeudeField, { GEBAEUDE_FIELDS } from "../../../components/GebaeudeField";
-import StandNote from "../../../components/StandNote";
+import StandNoteView from "../../../components/StandNoteView";
+import { type StandSeite } from "../../../lib/stand-format";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
 import GasPriceStackChart from "../../../components/charts/GasPriceStackChart";
@@ -35,7 +36,12 @@ const STEPS = ["Situation", "Größe & Typ", "Dämmstandard", "Haushalt", "Heizs
 // `embedded` = gerendert in einem Modal (z. B. aus dem Förder-Ratgeber), nicht
 // als eigene Seite: dann ohne 100vh-Höhe, ohne Seitentitel und volle Breite —
 // den Titel liefert der Modal-Header. Kein iframe, keine URL-/Storage-Kopplung.
-export default function Waermepumpe({ embedded = false }: { embedded?: boolean } = {}) {
+// Eingebettet gibt es auch keine Stand-Zeile, deshalb reicht der Ratgeber kein
+// `stand` durch; auf der eigenen Seite kommt es fertig aufgelöst von page.tsx.
+export default function Waermepumpe({
+  embedded = false,
+  stand,
+}: { embedded?: boolean; stand?: StandSeite } = {}) {
   // ── Step state ───────────────────────────────────────────────
   const [step, setStep] = useState(0);
   const [situation, setSituation] = useState<"bestand" | "neubau">("bestand");
@@ -1081,7 +1087,7 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
             dahinter läge hinter einer leeren Fläche und wäre praktisch
             unsichtbar. Im eingebetteten Widget entfällt er — dort trägt die
             einbettende Seite die Quellenangabe. */}
-        {!embedded && <StandNote pfad="/waermepumpe-rechner" />}
+        {!embedded && <StandNoteView seite={stand} />}
       </div>
     </div>
   );
