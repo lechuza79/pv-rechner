@@ -10,6 +10,7 @@ import { AccordionField, ChoiceButtons } from "../../../components/AccordionFiel
 import { trackEvent } from "../../../lib/analytics";
 import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
 import OptionCard from "../../../components/OptionCard";
+import StandNote from "../../../components/StandNote";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
@@ -778,6 +779,10 @@ export default function Empfehlung() {
             </div>
           </div>
         )}
+
+        {/* Innerhalb der Spalte, nicht dahinter — der Rahmen ist mindestens
+            bildschirmhoch, und was dahinter steht, sieht niemand. */}
+        <StandNote pfad="/pv-bedarf-berechnen" />
       </div>
     </div>
   );

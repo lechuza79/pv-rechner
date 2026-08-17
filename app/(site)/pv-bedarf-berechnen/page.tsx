@@ -1,8 +1,6 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
-import StandNote from "../../../components/StandNote";
 import { pageMetadata } from "../../../lib/seo";
-import { v } from "../../../lib/theme";
 import Empfehlung from "./empfehlung";
 
 export const metadata: Metadata = pageMetadata({
@@ -13,14 +11,14 @@ export const metadata: Metadata = pageMetadata({
   ogImageSubtitle: "Haushalt + Dach beschreiben — wir empfehlen Anlage & Speicher.",
 });
 
+// Die „Stand:"-Zeile sitzt im Flow selbst (siehe empfehlung.tsx), nicht hier:
+// Der Rahmen ist mindestens bildschirmhoch, ein Absatz dahinter stünde hinter
+// einer leeren Fläche.
 export default function EmpfehlungPage() {
   // useSearchParams in the client component requires a Suspense boundary.
   return (
     <Suspense fallback={null}>
       <Empfehlung />
-      <div style={{ maxWidth: v("--page-max-width"), margin: "0 auto", padding: "0 16px 32px" }}>
-        <StandNote pfad="/pv-bedarf-berechnen" />
-      </div>
     </Suspense>
   );
 }

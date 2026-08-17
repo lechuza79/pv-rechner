@@ -13,6 +13,7 @@ import { greenGasApplies } from "../../../lib/fossil-reference";
 import { gasMixSeries, heatCostComparisonSeries } from "../../../lib/greengas";
 import { bioTreppeStufenText, gmodgStandSatz, GMODG_RECHTSSTAND } from "../../../lib/greengas-config";
 import OptionCard from "../../../components/OptionCard";
+import StandNote from "../../../components/StandNote";
 import InlineEdit from "../../../components/InlineEdit";
 import HeatPumpChart from "./_components/HeatPumpChart";
 import GasPriceStackChart from "../../../components/charts/GasPriceStackChart";
@@ -1027,6 +1028,13 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
             </div>
           </div>
         )}
+
+        {/* Der Aktualisierungsstand steht INNERHALB der Rechner-Spalte, nicht
+            unter ihr: Der Rahmen ist mindestens bildschirmhoch, ein Absatz
+            dahinter läge hinter einer leeren Fläche und wäre praktisch
+            unsichtbar. Im eingebetteten Widget entfällt er — dort trägt die
+            einbettende Seite die Quellenangabe. */}
+        {!embedded && <StandNote pfad="/waermepumpe-rechner" />}
       </div>
     </div>
   );

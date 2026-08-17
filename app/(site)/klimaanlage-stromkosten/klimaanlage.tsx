@@ -2,6 +2,7 @@
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
+import StandNote from "../../../components/StandNote";
 import InlineEdit from "../../../components/InlineEdit";
 import InfoTooltip from "../../../components/InfoTooltip";
 import { IconArrowRight, IconRefresh, IconSun, IconCheck } from "../../../components/Icons";
@@ -676,6 +677,11 @@ export default function Klimaanlage() {
             </div>
           </div>
         )}
+
+        {/* Innerhalb der Rechner-Spalte, nicht dahinter: Der Rahmen ist
+            mindestens bildschirmhoch — ein Absatz darunter stünde hinter einer
+            leeren Fläche und würde nie gelesen. */}
+        <StandNote pfad="/klimaanlage-stromkosten" />
       </div>
     </div>
   );
