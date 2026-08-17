@@ -143,27 +143,57 @@ async function main(): Promise<void> {
     // `id_` liefert die Originalfassung ohne die Navigationsleiste des Archivs;
     // ohne das würde deren Rahmen im Fingerabdruck landen und bei jeder
     // Archiv-Änderung eine Bewegung auf der Amtsseite vortäuschen.
+    // Zwei Wege ins Archiv, jeder mit Wiederholung — das Archiv ist selbst nicht
+    // immer da. Gemessen am 17.08.2026: Mittags lieferte es die Frankfurter Seite
+    // mit HTTP 200, abends antwortete es mit 500/503, und die Verfügbarkeits-
+    // Abfrage lief zwischendurch in ein Anfragelimit. Es ist also eine gute
+    // Rückfallebene, aber keine Garantie — deshalb ist und bleibt der
+    // Beleg-Verfall nach 180 Tagen die eigentliche Absicherung.
     let ausArchiv = false;
     if (!html) {
-      try {
-        const av = await fetch(
-          `https://archive.org/wayback/available?url=${encodeURIComponent(p.url)}`,
-          { signal: AbortSignal.timeout(25_000) },
-        );
-        const j = (await av.json()) as { archived_snapshots?: { closest?: { timestamp?: string } } };
-        const ts = j.archived_snapshots?.closest?.timestamp;
-        if (ts) {
-          const res = await fetch(`https://web.archive.org/web/${ts}id_/${p.url}`, {
-            headers: { "User-Agent": UA },
-            signal: AbortSignal.timeout(45_000),
+      const jahr = new Date().getFullYear();
+      const wege = [
+        async () => {
+          const av = await fetch(`https://archive.org/wayback/available?url=${encodeURIComponent(p.url)}`, {
+            signal: AbortSignal.timeout(25_000),
           });
-          if (res.ok) {
-            html = await res.text();
-            ausArchiv = true;
+          const j = (await av.json()) as { archived_snapshots?: { closest?: { timestamp?: string } } };
+          const ts = j.archived_snapshots?.closest?.timestamp;
+          return ts ? `https://web.archive.org/web/${ts}id_/${p.url}` : null;
+        },
+        // Ohne Zeitstempel: Das Archiv leitet selbst auf den nächstgelegenen
+        // Schnappschuss um. Braucht die Verfügbarkeits-Abfrage nicht und
+        // funktioniert deshalb auch, wenn die gerade limitiert.
+        async () => `https://web.archive.org/web/${jahr}id_/${p.url}`,
+      ];
+
+      for (const weg of wege) {
+        if (html) break;
+        for (const versuch of [0, 1]) {
+          try {
+            const ziel = await weg();
+            if (!ziel) break;
+            const res = await fetch(ziel, {
+              headers: { "User-Agent": UA },
+              redirect: "follow",
+              signal: AbortSignal.timeout(45_000),
+            });
+            if (res.ok) {
+              const t = await res.text();
+              // Eine Fehlerseite des Archivs ist keine Amtsseite. Ohne diese
+              // Schwelle landete deren Hinweistext als Fingerabdruck in der
+              // Datenbank und gälte fortan als "die Seite der Stadt".
+              if (t.length > 2_000) {
+                html = t;
+                ausArchiv = true;
+                break;
+              }
+            }
+          } catch {
+            /* nächster Versuch */
           }
+          if (versuch === 0) await new Promise((r) => setTimeout(r, 4_000));
         }
-      } catch {
-        /* Archiv nicht erreichbar — dann bleibt es beim gescheiterten Abruf. */
       }
     }
 
