@@ -206,6 +206,20 @@ export function formatPercent(pct: number): string {
   return `${Math.round(pct)} %`;
 }
 
+/**
+ * Anteil mit gestaffelter Genauigkeit — die Nachkommastellen wachsen, je
+ * kleiner der Wert wird. Ein blindes Runden macht aus 0,3 % ein „0 %", und das
+ * liest sich als „liefert gar nichts", obwohl der Träger läuft. Genau dieser
+ * Fehler ließ den Kernenergie-Anteil früher dauerhaft auf 0 stehen.
+ *
+ * Ohne Einheit, damit Aufrufer sie selbst setzen können (im SVG steht das
+ * Prozentzeichen oft in eigener Größe daneben).
+ */
+export function anteilZahl(pct: number): string {
+  if (pct >= 10) return String(Math.round(pct));
+  return pct.toLocaleString("de-DE", { maximumFractionDigits: pct < 0.1 ? 2 : 1 });
+}
+
 export function formatTime(iso: string, mode: "time" | "date" | "datetime" = "time"): string {
   const d = new Date(iso);
   const opts: Intl.DateTimeFormatOptions =
