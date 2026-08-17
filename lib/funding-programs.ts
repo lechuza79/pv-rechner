@@ -527,18 +527,39 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  // Geprüft am 16.08.2026 an der Trägerquelle — Befund: Das Programm fördert
+  // KEINE Photovoltaik. Hinterlegt waren 300 €/kWp für Gründach-/MFH-/Fassaden-PV
+  // bei status "aktiv", also ein Abzug im Rechner. Gegengeprüft an drei Stellen
+  // der Stadt Münster, alle drei ohne jede PV-Position:
+  //   - Programmseite: nur die Bausteine "Energetische Sanierung" + "Dachbegrünung"
+  //   - Baustein Sanierung: Dämmung, Fenster, Heizungstausch, Boni — kein kWp
+  //   - Baustein Dachbegrünung: 50 % der Kosten, max. 40 €/m², max. 10.000 €;
+  //     Photovoltaik kommt dort nur als Überschrift "Prima Duo: Solaranlage und
+  //     Gründach" und als Verweis aufs Solarkataster vor, ohne Förderbetrag
+  //   - amtliche Förderrichtlinie (PDF, 18 Seiten, von der Programmseite verlinkt):
+  //     die Wörter Photovoltaik, Solar und kWp kommen kein einziges Mal vor
+  // Zusätzlich nimmt der Sanierungsbaustein wegen hoher Nachfrage seit dem
+  // 30.07.2026 keine Anträge mehr an.
+  //
+  // Der Eintrag bleibt sichtbar, statt gelöscht zu werden: Wer in Münster nach
+  // PV-Förderung sucht, soll lesen, dass das Stadtprogramm dafür nicht gilt —
+  // das ist die Antwort auf seine Frage. Ohne strukturierten Satz wird nichts
+  // mehr abgezogen.
   "muenster-klimafreundlich": {
-    id: "muenster-klimafreundlich", name: "Klimafreundliche Wohngebäude – Photovoltaik",
+    id: "muenster-klimafreundlich", name: "Klimafreundliche Wohngebäude (ohne Photovoltaik)",
     traeger: "Stadt Münster", level: "kommune", region: "Münster", bundesland: "Nordrhein-Westfalen", agsCode: "05515",
-    url: "https://www.stadt-muenster.de/klima/foerderprogramm", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: true,
+    url: "https://www.stadt-muenster.de/klima/foerderprogramm", stand: "August 2026",
+    status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp — nur Gründach-PV, Mehrfamilienhaus oder Fassade (nicht Standard-EFH-Schrägdach)",
-    rates: [{ label: "PV (Gründach / MFH / Fassade)", value: "300 €/kWp" }],
+    coveredCosts: "Keine Photovoltaik-Förderung — das Programm fördert Dämmung, Fenster, Heizungstausch und Dachbegrünung",
+    rates: [
+      { label: "Photovoltaik", value: "wird nicht gefördert" },
+      { label: "Dachbegrünung (mit PV kombinierbar)", value: "50 % der Kosten, max. 40 €/m², max. 10.000 €" },
+    ],
     conditions: [
-      "Nur PV auf Gründach, Mehrfamilienhaus (ab 3 Wohneinheiten) oder Fassade — nicht auf normalem Einfamilienhaus-Schrägdach",
-      "kein Batteriespeicher gefördert",
-      "Antrag vor Maßnahmenbeginn",
+      "Das Förderprogramm der Stadt Münster enthält keine Photovoltaik-Förderung",
+      "Eine Dachbegrünung lässt sich mit einer PV-Anlage kombinieren, gefördert wird aber allein die Begrünung",
+      "Für die energetische Sanierung nimmt die Stadt seit dem 30. Juli 2026 keine Anträge mehr an",
     ],
     combinableWith: BUND,
   },
@@ -709,6 +730,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Antrag vor Auftragsvergabe; Windhundverfahren, kein Rechtsanspruch",
       "Gefördert wird nur der kWp-Anteil oberhalb von 8 kWp",
+      // Ergänzt 16.08.2026 aus der Förderrichtlinie (Stand Mai 2025, Abschnitt B):
+      // In Niedersachsen gilt eine PV-Pflicht nach § 32a NBauO. Wer sie erfüllt,
+      // bekommt für diesen Teil nichts — ohne den Hinweis rechnet sich jemand
+      // eine Förderung aus, die genau an seinem Fall vorbeigeht.
+      "Nur Neuanlagen; gesetzlich vorgeschriebene Anlagen (GEG, PV-Pflicht nach NBauO, Bebauungsplan) sind nicht förderfähig",
+      "Bei einem ab 01.01.2025 sanierten Dach nur der Leistungsanteil über der vorgeschriebenen 50-%-Dachbelegung",
+      "Eine bereits vorhandene PV-Anlage wird auf die 8 kWp angerechnet",
       "Auftrag binnen 12 Wochen nach Bewilligung, Fertigstellung binnen 18 Monaten",
     ],
     combinableWith: BUND,
@@ -947,12 +975,76 @@ function tierAmount(tiers: { upTo: number; amount: number }[], value: number): n
   return tiers[tiers.length - 1].amount;
 }
 
+// ─── Vertrauen verfällt — BLOCKER ────────────────────────────────────────────
+//
+// WARUM (16.08.2026): Ein Förderbetrag wurde abgezogen, solange `status: "aktiv"`
+// im Datensatz stand — unbefristet. Ob das noch stimmte, hing allein daran, dass
+// irgendein Wächter lief und es widerrief. Diese Wächter laufen aber nur, wenn
+// der Rechner des Betreibers an ist; in der Urlaubswoche (09.–13.08.2026) lief
+// fünf Tage keiner, und niemand hat es bemerkt. Eine Zusage, die nur durch
+// AUSBLEIBEN eines Widerrufs weitergilt, ist genau die Konstruktion, die still
+// falsch wird.
+//
+// Deshalb dreht diese Regel die Beweislast um: Abgezogen wird nur, was innerhalb
+// der Frist an der AMTSQUELLE bestätigt wurde. Läuft kein Wächter, verfällt der
+// Abzug von selbst — deterministisch, ohne dass irgendetwas laufen muss.
+// Schweigen bedeutet damit nicht mehr „gilt weiter", sondern „nicht mehr belegt".
+//
+// Die Richtung ist bewusst zu unseren Ungunsten: Wer eine Förderung bekommt, die
+// wir nicht mehr einrechnen, erlebt eine angenehme Überraschung. Umgekehrt hat
+// jemand mit einer Zahl geplant, die es nicht mehr gibt.
+//
+// 180 Tage, weil der Quartals-Voll-Lauf alle 90 Tage fährt: Ein komplett
+// ausgefallener Zyklus ist damit noch abgedeckt, zwei nicht mehr.
+//
+// Gemessen bei Einführung: Von 38 Programmen ziehen genau 5 überhaupt Geld ab
+// (Regensburg, Darmstadt, Köln, Potsdam, Frankfurt) — alle fünf im August 2026
+// an der Amtsquelle bestätigt. Die Regel ändert heute also nichts; sie sichert
+// den Tag ab, an dem die Prüfung ausfällt.
+export const FOERDER_MAX_ALTER_TAGE = 180;
+
+function heuteIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+/**
+ * Ist der Beleg dieses Programms jung genug, um damit zu RECHNEN?
+ *
+ * Ohne Prüfdatum: nein. Ein Programm, das nie an seiner Amtsquelle bestätigt
+ * wurde, darf keinen Euro von einer Investitionsrechnung abziehen — auch wenn
+ * es plausibel klingt und in Portalen steht.
+ */
+export function fundingBelegAktuell(
+  f: Pick<FundingProgram, "lastVerified">,
+  heute: string = heuteIso(),
+): boolean {
+  if (!f.lastVerified) return false;
+  const belegt = Date.parse(f.lastVerified.slice(0, 10));
+  const jetzt = Date.parse(heute.slice(0, 10));
+  if (Number.isNaN(belegt) || Number.isNaN(jetzt)) return false;
+  return (jetzt - belegt) / 86_400_000 <= FOERDER_MAX_ALTER_TAGE;
+}
+
+/**
+ * Darf dieses Programm in einer Rechnung Geld abziehen?
+ *
+ * Zwei Bedingungen, beide nötig: Es nimmt Anträge an UND der Beleg ist frisch.
+ * Diese Funktion ist die EINZIGE Stelle, an der das entschieden wird — Seiten,
+ * Rechner und CTA fragen sie, statt `status === "aktiv"` selbst zu prüfen.
+ */
+export function fundingZaehlt(
+  f: Pick<FundingProgram, "status" | "lastVerified"> | undefined,
+  heute: string = heuteIso(),
+): boolean {
+  return !!f && f.status === "aktiv" && fundingBelegAktuell(f, heute);
+}
+
 export type FundingAmount = {
   /** Grant in € the program yields for this system (0 if not computable). */
   total: number;
   /** A concrete € amount could be derived (structured rule present). */
   computable: boolean;
-  /** Program currently accepts applications (status === "aktiv"). */
+  /** Nimmt Anträge an UND der Quellenbeleg ist frisch (siehe fundingZaehlt). */
   active: boolean;
 };
 
@@ -968,9 +1060,10 @@ export function fundingAmount(
   kwp: number,
   speicherKwh: number,
   bruttoCost: number,
+  heute?: string,
 ): FundingAmount {
   const computable = !!(f && (f.percentOfCost || f.pvPerKwp || f.pvTiers || f.speicherPerKwh || f.speicherTiers));
-  const active = f?.status === "aktiv";
+  const active = fundingZaehlt(f, heute);
   if (!f || !computable) return { total: 0, computable: false, active };
 
   if (f.percentOfCost) {
@@ -1004,11 +1097,12 @@ export function stackFunding(
   kwp: number,
   speicherKwh: number,
   bruttoCost: number,
+  heute?: string,
 ): { total: number; applied: { program: FundingProgram; amount: number }[] } {
   const applied: { program: FundingProgram; amount: number }[] = [];
   let total = 0;
   for (const p of programs) {
-    const a = fundingAmount(p, kwp, speicherKwh, bruttoCost);
+    const a = fundingAmount(p, kwp, speicherKwh, bruttoCost, heute);
     if (a.computable && a.active && a.total > 0) {
       applied.push({ program: p, amount: a.total });
       total += a.total;

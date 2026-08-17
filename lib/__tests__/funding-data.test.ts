@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { ATLAS_CITIES } from "../atlas-cities";
-import { FUNDING_PROGRAMS, allFundingPrograms, getFundingProgram, fundingForAgs, fundingAmount, stackFunding, fundingStandLabel } from "../funding-programs";
+import { FUNDING_PROGRAMS, allFundingPrograms, getFundingProgram, fundingForAgs, fundingAmount, stackFunding, fundingStandLabel, type FundingProgram } from "../funding-programs";
 
 // Integrity checks for the regional funding dataset. These are cheap insurance:
 // as cities/programs are added by hand, a typo in a fundingId or combinableWith
@@ -141,11 +141,29 @@ describe("fundingAmount math", () => {
 });
 
 describe("stackFunding", () => {
+  // Der Code-Seed trägt KEIN Prüfdatum — `lastVerified` kommt ausschließlich aus
+  // der Datenbank (lib/funding-data.ts). Seit dem Beleg-Verfall (16.08.2026)
+  // zieht ein Programm ohne frischen Quellenbeleg nichts mehr ab, also müssen
+  // Rechen-Tests den Beleg mitliefern. Genau das simuliert diese Hilfe: den
+  // Normalfall im Betrieb, in dem die Datenbank das Prüfdatum liefert.
+  const HEUTE = "2026-08-16";
+  const belegt = (ps: FundingProgram[]) => ps.map((p) => ({ ...p, lastVerified: HEUTE }));
+
   it("only counts active+computable programs and caps at gross cost", () => {
-    const programs = fundingForAgs("06412000"); // Frankfurt (aktiv, 20%)
-    const { total, applied } = stackFunding(programs, 10, 5, 25000);
+    const programs = belegt(fundingForAgs("06412000")); // Frankfurt (aktiv, 20%)
+    const { total, applied } = stackFunding(programs, 10, 5, 25000, HEUTE);
     expect(total).toBe(5000);
     expect(applied.map((a) => a.program.id)).toContain("frankfurt-klimabonus");
+  });
+
+  it("ohne Quellenbeleg zieht derselbe Datensatz nichts ab — der Seed allein reicht nicht", () => {
+    // Betriebsfall dahinter: Ist die Datenbank nicht erreichbar, fällt der Lader
+    // auf den Code-Seed zurück. Der kennt keine Prüfdaten, also wird in diesem
+    // Zustand KEINE Förderung eingerechnet. Bewusst so: Wir können die
+    // Aktualität dann nicht belegen, und eine versprochene Förderung, die es
+    // nicht mehr gibt, ist teurer als eine verschwiegene, die es noch gibt.
+    const ohneBeleg = fundingForAgs("06412000");
+    expect(stackFunding(ohneBeleg, 10, 5, 25000, HEUTE).total).toBe(0);
   });
 
   it("yields zero where no active computable program applies", () => {
@@ -193,7 +211,9 @@ describe("funding batch 2 (Juni 2026)", () => {
     expect(fundingAmount(p, 10, 0, 20000).total).toBe(1200);
     expect(fundingAmount(p, 10, 8, 25000).total).toBe(1200 + 1000);
     expect(fundingAmount(p, 10, 3, 25000).total).toBe(1200);
-    expect(stackFunding(fundingForAgs("12054000"), 10, 8, 25000).total).toBe(2200);
+    // Mit Quellenbeleg (im Betrieb aus der Datenbank) — siehe Beleg-Verfall.
+    const belegt = fundingForAgs("12054000").map((x) => ({ ...x, lastVerified: "2026-08-16" }));
+    expect(stackFunding(belegt, 10, 8, 25000, "2026-08-16").total).toBe(2200);
   });
   it("Hannover proKlima is info-only (not auto-deducted) — it covers only 6 of the ~21 Kreis municipalities", () => {
     const p = getFundingProgram("hannover-proklima")!;
