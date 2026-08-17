@@ -9,6 +9,8 @@ import {
   dachNeigungsFaktor,
   neigungsStufen,
   neigungLohntNachfrage,
+  ERTRAG_OPTIMUM_MIN,
+  ERTRAG_OPTIMUM_MAX,
 } from "../dach-ertrag";
 
 // Dachform-Index über die id, nicht über die Position — die Liste darf sich
@@ -169,5 +171,50 @@ describe("Dachneigung", () => {
     expect(dachErtragHinweis(800, sattel, "nord", true, 45)).not.toContain("typisch");
     expect(dachErtragHinweis(800, sattel, "nord", true)).toContain("typisch");
     expect(dachErtragHinweis(900, flach, "sued", true, 15)).toContain("aufgeständert");
+  });
+});
+
+// ─── Was der unabhängige Review-Durchgang gefunden hat ──────────────────────
+// Beide Fehler betrafen Zahlen, die niemandem aufgefallen wären: einer im
+// geteilten Link, einer beim Bestätigen der geltenden Annahme.
+describe("Ertrags-Grenzen und Flachdach-Stufen", () => {
+  it("die Rückrechnung aufs Optimum bleibt im teilbaren Bereich", () => {
+    // Der Teilen-Parameter `er` akzeptiert nur ERTRAG_OPTIMUM_MIN…MAX. Wer ein
+    // Eingabefeld für den ANGEZEIGTEN Ertrag baut, muss dessen Grenzen mit dem
+    // Dachfaktor skalieren — sonst erzeugt jede Eingabe bei Nordlage ein
+    // Optimum darüber, und der Empfänger des Links sieht eine andere Zahl als
+    // der Absender (gemessen: 428 statt 700 kWh/kWp).
+    const faelle: [number, "sued" | "ostwest" | "nord", number | null][] = [
+      [idx("sattel"), "nord", 45],
+      [idx("sattel"), "nord", 25],
+      [idx("pult"), "nord", 25],
+      [idx("sattel"), "ostwest", 35],
+      [idx("flach"), "sued", 0],
+      [idx("walm"), "sued", null],
+    ];
+    for (const [dachart, ausrichtung, neigung] of faelle) {
+      const faktor = dachNeigungsFaktor(dachart, ausrichtung, neigung);
+      const feldMin = Math.ceil(ERTRAG_OPTIMUM_MIN * faktor);
+      const feldMax = Math.floor(ERTRAG_OPTIMUM_MAX * faktor);
+      for (const eingabe of [feldMin, Math.round((feldMin + feldMax) / 2), feldMax]) {
+        const optimum = Math.round(eingabe / faktor);
+        const wo = `${ausrichtung} ${neigung ?? "typisch"}° · Eingabe ${eingabe}`;
+        expect(optimum, wo).toBeGreaterThanOrEqual(ERTRAG_OPTIMUM_MIN);
+        expect(optimum, wo).toBeLessThanOrEqual(ERTRAG_OPTIMUM_MAX);
+      }
+    }
+  });
+
+  it("die Flachdach-Stufe „Aufgeständert“ ist dieselbe Neigung wie die Annahme", () => {
+    // Sonst ändert sich der Ertrag, wenn jemand die geltende Annahme bestätigt.
+    const flach = idx("flach");
+    const aufgestaendert = neigungsStufen(flach).find(s => s.label === "Aufgeständert");
+    expect(aufgestaendert?.grad).toBe(DACHARTEN[flach].typNeigung);
+    for (const richtung of ["sued", "suedostwest", "ostwest"] as const) {
+      expect(
+        dachNeigungsFaktor(flach, richtung, aufgestaendert!.grad),
+        `${richtung}: Bestätigen der Annahme darf den Faktor nicht bewegen`,
+      ).toBe(dachNeigungsFaktor(flach, richtung, null));
+    }
   });
 });

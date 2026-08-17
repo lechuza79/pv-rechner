@@ -848,7 +848,13 @@ export default function Waermepumpe({ embedded = false }: { embedded?: boolean }
                       setOHeizlast(null);
                     }}
                     beantwortet={new Set(GEBAEUDE_FIELDS)}
-                    markiereBeantwortet={() => {}}
+                    /* Alle vier Fragen gelten hier als beantwortet (der Flow hat
+                       sie gestellt), zu markieren gibt es also nichts — aber die
+                       angeklickte Frage muss nach der Wahl wieder zuklappen.
+                       Genau das erledigt dieser Callback in den anderen
+                       Rechnern mit; eine leere Funktion ließ die Frage offen
+                       stehen und der Baustein verhielt sich hier anders. */
+                    markiereBeantwortet={() => setGebaeudeEditing(null)}
                     bearbeitet={gebaeudeEditing}
                     setBearbeitet={setGebaeudeEditing}
                     daemmstufen={insulationOptions}

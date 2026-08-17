@@ -12,6 +12,10 @@ interface ResultHeroCardProps {
   oStrom: number;
   setOStrom: (v: number) => void;
   oErtrag: number;
+  /** Grenzen des ANGEZEIGTEN Ertrags — mit dem Dachfaktor skaliert, damit die
+   *  Rückrechnung aufs Standort-Optimum im teilbaren Bereich bleibt. */
+  ertragMin: number;
+  ertragMax: number;
   setOErtrag: (v: number) => void;
   kwp: number;
   /** Anlagengröße direkt setzen (schaltet auf die eigene Größe um). */
@@ -39,7 +43,7 @@ interface ResultHeroCardProps {
 }
 
 export default function ResultHeroCard({
-  be, kosten, setOKosten, oStrom, setOStrom, oErtrag, setOErtrag,
+  be, kosten, setOKosten, oStrom, setOStrom, oErtrag, setOErtrag, ertragMin, ertragMax,
   kwp, setKwp, spKwh, setSpKwh, grundverbrauch, setGrundverbrauch, hatGrossverbraucher,
   effEv, setOEv, effEinspeisungModus,
   plz, setPlz, plzLoading, plzSource, fetchPvgis,
@@ -74,7 +78,7 @@ export default function ResultHeroCard({
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ color: v('--color-text-secondary') }}><GlossaryTerm id="ertrag">Ertrag</GlossaryTerm>{plzLoading && <span style={{ color: v('--color-accent'), fontSize: 10, marginLeft: 4 }}>…</span>}</span>
-            <InlineEdit value={oErtrag} onCommit={setOErtrag} unit=" kWh/kWp" step={10} min={700} max={1400} width={48} />
+            <InlineEdit value={oErtrag} onCommit={setOErtrag} unit=" kWh/kWp" step={10} min={ertragMin} max={ertragMax} width={48} />
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ color: v('--color-text-secondary') }}>Anlage</span>

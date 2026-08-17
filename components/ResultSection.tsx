@@ -93,8 +93,12 @@ export default function ResultSection({
         <button
           id={headId}
           onClick={() => { const next = !open; setOpen(next); onToggle?.(next); }}
-          aria-expanded={open}
-          aria-controls={panelId}
+          /* An `inhaltSichtbar`, nicht an `open`: Ein ausgeschalteter Abschnitt
+             zeigt seinen Inhalt nicht, auch wenn er vorher aufgeklappt war.
+             Hing die Angabe an `open`, meldete die Kopfzeile weiter „erweitert"
+             und `aria-controls` zeigte auf eine ID, die es im DOM nicht gab. */
+          aria-expanded={inhaltSichtbar}
+          aria-controls={inhaltSichtbar ? panelId : undefined}
           style={{
             display: "flex", alignItems: "center", gap: space.md, flex: 1, minWidth: 0,
             padding: 0, background: "transparent", border: "none", cursor: "pointer", textAlign: "left",

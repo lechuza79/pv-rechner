@@ -31,6 +31,18 @@ import { tiltPct, type TiltOrientation } from "./tilt-config";
 
 export type DachartId = (typeof DACHARTEN)[number]["id"];
 
+/** Grenzen des Standort-OPTIMUMS (kWh je kWp) — der Wert, der als `er` geteilt
+ *  wird. Deutschland liegt zwischen etwa 850 (Nordküste, trübes Jahr) und 1.150
+ *  (Alpenvorland); der Rahmen ist absichtlich etwas weiter.
+ *
+ *  Wichtig: Diese Grenzen gelten dem OPTIMUM, nicht dem angezeigten Ertrag. Wer
+ *  ein Eingabefeld für den angezeigten Ertrag baut, muss sie mit dem Dachfaktor
+ *  skalieren (× `dachNeigungsFaktor`) — sonst erzeugt die Rückrechnung Optima
+ *  außerhalb dieses Bereichs, und der Teilen-Link liefert dem Empfänger einen
+ *  anderen Ertrag als dem Absender. */
+export const ERTRAG_OPTIMUM_MIN = 700;
+export const ERTRAG_OPTIMUM_MAX = 1200;
+
 /** Dachformen, deren Ausrichtung der Monteur wählt (Aufständerung). Dort gibt
  *  es kein Nord — niemand ständert Module nach Norden auf. */
 export function dachErlaubtNord(dachartIdx: number | null): boolean {
@@ -52,7 +64,11 @@ export function neigungsStufen(dachartIdx: number | null): { grad: number; label
   if (dach.aufgestaendert) {
     return [
       { grad: 0, label: "Flach aufgelegt", sub: "Module liegen auf dem Dach" },
-      { grad: 15, label: "Aufgeständert", sub: "Auf Gestellen angeschrägt" },
+      // Dieselbe Gradzahl wie die Annahme der Dachform (DACHARTEN.typNeigung).
+      // Vorher stand hier 15° gegen 10° in der Annahme: Die Kopfzeile sagte
+      // „üblich: aufgeständert", und wer genau das anklickte — also die geltende
+      // Annahme bestätigte — sah den Ertrag um zwei Punkte steigen.
+      { grad: dach.typNeigung, label: "Aufgeständert", sub: "Auf Gestellen angeschrägt" },
     ];
   }
   switch (dach.id) {

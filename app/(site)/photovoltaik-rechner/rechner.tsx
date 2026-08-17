@@ -21,7 +21,7 @@ import OptionCard from "../../../components/OptionCard";
 import DachField, { DACH_FIELDS } from "../../../components/DachField";
 import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
 import Toast from "../../../components/Toast";
-import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor, dachUebersprungenFolge } from "../../../lib/dach-ertrag";
+import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor, dachUebersprungenFolge, ERTRAG_OPTIMUM_MIN, ERTRAG_OPTIMUM_MAX } from "../../../lib/dach-ertrag";
 import { TILT_ORIENTATIONS, type TiltOrientation } from "../../../lib/tilt-config";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
@@ -165,7 +165,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [einspeisungModus, setEinspeisungModus] = useState<"aus" | "teil" | "voll">(
     hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
   );
-  const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", NO_PLZ_DEFAULT_YIELD, 700, 1200) : NO_PLZ_DEFAULT_YIELD);
+  const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", NO_PLZ_DEFAULT_YIELD, ERTRAG_OPTIMUM_MIN, ERTRAG_OPTIMUM_MAX) : NO_PLZ_DEFAULT_YIELD);
   // Vergütungsregime: heutige Konditionen (Default — sie gelten für jede Anlage,
   // die bis Ende 2026 ans Netz geht) oder der Entwurf für Neuanlagen ab 2027.
   // Der Börsenerlös nach der Förderphase ist bewusst separat schaltbar und
@@ -440,8 +440,18 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // ihn von Hand setzt, meint „mein Dach bringt X" — also auf das Standort-
   // Optimum zurückrechnen, damit ein späterer Dachwechsel wieder sauber davon
   // skaliert (sonst wäre die Handeingabe nach dem nächsten Klick wieder weg).
+  //
+  // Die GRENZEN des Feldes müssen dabei mitskalieren. Sie gelten für den
+  // angezeigten Wert, die Rückrechnung erzeugt aber das Optimum — und das muss
+  // in `ERTRAG_OPTIMUM_MIN…MAX` bleiben, weil der Teilen-Parameter `er` genau
+  // diesen Bereich liest. Ohne Skalierung lag das Ergebnis bei Nordlage IMMER
+  // darüber: Eingabe 700 bei Faktor 0,45 ergibt 1.556, der Empfänger des Links
+  // fiel auf den Default zurück und sah 428 statt 700 kWh/kWp.
+  const ertragFaktor = dachNeigungsFaktor(dachartIdx, ausrichtung, neigungGrad);
+  const ertragMin = Math.ceil(ERTRAG_OPTIMUM_MIN * ertragFaktor);
+  const ertragMax = Math.floor(ERTRAG_OPTIMUM_MAX * ertragFaktor);
   const setErtragVonHand = (val: number) =>
-    setOErtrag(Math.round(val / dachNeigungsFaktor(dachartIdx, ausrichtung, neigungGrad)));
+    setOErtrag(Math.min(ERTRAG_OPTIMUM_MAX, Math.max(ERTRAG_OPTIMUM_MIN, Math.round(val / ertragFaktor))));
 
   const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: effErtrag, baseKwh: oVerbrauch });
   const effEv = oEv !== null ? oEv : autoEv;
@@ -1163,7 +1173,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             />
             <ResultHeroCard
               be={be} kosten={bruttoKosten} setOKosten={setOKosten}
-              oStrom={oStrom} setOStrom={setOStrom} oErtrag={effErtrag} setOErtrag={setErtragVonHand}
+              oStrom={oStrom} setOStrom={setOStrom} oErtrag={effErtrag} setOErtrag={setErtragVonHand} ertragMin={ertragMin} ertragMax={ertragMax}
               kwp={kwp}
               // Größe von Hand = eigene Größe (Index 4). Kostenschätzung und
               // Eigenverbrauch hängen daran und werden auf Auto zurückgesetzt,

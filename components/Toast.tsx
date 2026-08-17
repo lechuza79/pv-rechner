@@ -37,11 +37,18 @@ export default function Toast({
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
+  // Der Timer hängt zusätzlich am INHALT: Wechselt die Meldung, während der
+  // Toast schon offen ist, bleibt `open` true — der Effekt liefe nicht neu und
+  // die zweite Meldung erbte die Restzeit der ersten. Gemessen: Dach
+  // überspringen, acht Sekunden später das Gebäude überspringen, und der zweite
+  // Satz war nach einer Sekunde weg. Genau der Satz, der die stille Annahme
+  // sichtbar machen soll.
+  const inhalt = typeof children === "string" ? children : null;
   useEffect(() => {
     if (!open || !autoHideMs) return;
     const t = setTimeout(() => onCloseRef.current(), autoHideMs);
     return () => clearTimeout(t);
-  }, [open, autoHideMs]);
+  }, [open, autoHideMs, inhalt]);
 
   if (!open) return null;
 
