@@ -4,7 +4,7 @@
 // (Anlagen-Mix, Speicher, Pro-Kopf, Rang im Landkreis, Zubau-Trend), aktualisiert
 // sich mit dem Monatslauf von selbst. SEO über Ort + Solar/Photovoltaik + Vergleich.
 
-import { fmtPvLeistung, fmtWattProKopf } from "./atlas-format";
+import { fmtAnteilProzent, fmtPvLeistung, fmtWattProKopf } from "./atlas-format";
 import { ortPhrase } from "./atlas-orte";
 
 type SegRow = { segment: string; count: number; kwp: number };
@@ -29,7 +29,9 @@ function segCount(a: MiniAtlas, seg: string): number {
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 const fmtMW = fmtPvLeistung;
-const pct = (f: number) => Math.round(Math.abs(f) * 100);
+/** Anteil als Prozentangabe. Das Vorzeichen trägt der Satz („über"/„unter"),
+ *  deshalb hier immer der Betrag. Zahl und Zeichen kommen aus atlas-format. */
+const pct = (f: number) => fmtAnteilProzent(Math.abs(f));
 
 /** Ab so vielen Batterien traegt eine Aussage ueber die Speicherdichte. */
 const MIN_BATTERIEN = 5;
@@ -57,14 +59,14 @@ function characterSentence(atlas: MiniAtlas, blAtlas: MiniAtlas, blName: string)
       n === 1
         ? "Eine große Freiflächen-Anlage prägt das Bild"
         : "Freiflächen-Anlagen prägen das Bild";
-    cs.push({ mag: ff, text: `${wie} — ${pct(ff)} % der Leistung stehen auf der Fläche, deutlich mehr als im ${blName}-Schnitt.` });
+    cs.push({ mag: ff, text: `${wie} — ${pct(ff)} der Leistung stehen auf der Fläche, deutlich mehr als im ${blName}-Schnitt.` });
   }
   const pv = shareKwp(atlas, "privat_dach");
   if (pv > 0.55 && pv > shareKwp(blAtlas, "privat_dach") * 1.15)
-    cs.push({ mag: pv, text: `Der Solarstrom kommt hier vor allem von privaten Dächern — ${pct(pv)} % der Leistung, überdurchschnittlich für ${blName}.` });
+    cs.push({ mag: pv, text: `Der Solarstrom kommt hier vor allem von privaten Dächern — ${pct(pv)} der Leistung, überdurchschnittlich für ${blName}.` });
   const gw = shareKwp(atlas, "gewerbe_dach");
   if (gw > 0.35 && gw > shareKwp(blAtlas, "gewerbe_dach") * 1.3)
-    cs.push({ mag: gw, text: `Auffällig viel Gewerbe-Solar — ${pct(gw)} % der Leistung steht auf gewerblichen Dächern, mehr als im ${blName}-Schnitt.` });
+    cs.push({ mag: gw, text: `Auffällig viel Gewerbe-Solar — ${pct(gw)} der Leistung steht auf gewerblichen Dächern, mehr als im ${blName}-Schnitt.` });
   const rk = roofKwp(atlas);
   const sd = rk > 0 ? atlas.speicher.kwh_batterie / rk : 0;
   const rkBl = roofKwp(blAtlas);
@@ -82,9 +84,9 @@ function characterSentence(atlas: MiniAtlas, blAtlas: MiniAtlas, blName: string)
 
   // Fallback: die konkrete Zusammensetzung (je Gemeinde verschieden).
   const parts: string[] = [];
-  if (pv >= 0.05) parts.push(`${pct(pv)} % private Dächer`);
-  if (gw >= 0.05) parts.push(`${pct(gw)} % Gewerbe`);
-  if (ff >= 0.05) parts.push(`${pct(ff)} % Freifläche`);
+  if (pv >= 0.05) parts.push(`${pct(pv)} private Dächer`);
+  if (gw >= 0.05) parts.push(`${pct(gw)} Gewerbe`);
+  if (ff >= 0.05) parts.push(`${pct(ff)} Freifläche`);
   if (parts.length >= 2) return `Der Solarstrom verteilt sich auf ${parts.join(", ")}.`;
   return null;
 }
@@ -175,11 +177,11 @@ export function buildGemeindeHighlight(opts: {
     const abstand =
       perCapitaVsBl >= 3
         ? `das ${nf(perCapitaVsBl + 1)}-fache des ${blName}-Schnitts`
-        : `${pct(perCapitaVsBl)} % über dem ${blName}-Schnitt`;
+        : `${pct(perCapitaVsBl)} über dem ${blName}-Schnitt`;
     perCap =
       perCapitaVsBl >= 0
         ? `Je Einwohner sind das ${fmtWattProKopf(perCapita)} Photovoltaik — ${abstand}.`
-        : `Je Einwohner sind das ${fmtWattProKopf(perCapita)} — ${pct(perCapitaVsBl)} % unter dem ${blName}-Schnitt, hier ist also noch viel Luft nach oben.`;
+        : `Je Einwohner sind das ${fmtWattProKopf(perCapita)} — ${pct(perCapitaVsBl)} unter dem ${blName}-Schnitt, hier ist also noch viel Luft nach oben.`;
   }
 
   return [base, character, rank, zubau, perCap].filter(Boolean).join(" ");
