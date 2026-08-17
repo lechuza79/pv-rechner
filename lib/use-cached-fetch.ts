@@ -21,7 +21,18 @@ export type CachedFetchState<T> = {
 };
 
 export type CachedFetchOptions = {
-  /** If true, persist in localStorage (Infinity TTL). Else sessionStorage (5 min TTL). */
+  /**
+   * If true, persist in localStorage (Infinity TTL). Else sessionStorage (5 min TTL).
+   *
+   * Currently no caller sets this, and that is deliberate: persisting fetched
+   * DATA on the user's device across visits is a speed optimisation, and
+   * § 25 Abs. 2 Nr. 2 TDDDG only exempts storage that is technically
+   * indispensable for the requested service. Switching this on for a data cache
+   * would drag the site into consent-banner territory for no user benefit — see
+   * the note on LONG_CACHE_TTL in lib/energy.ts. Settings the user chose
+   * (postcode, colour scheme, home municipality) are a different case and may
+   * persist.
+   */
   longLived?: boolean;
   /** Override cache key prefix (useful for preventing collisions). */
   keyPrefix?: string;

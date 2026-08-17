@@ -1,13 +1,16 @@
 "use client";
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { IconArrowRight, IconChevronDown } from "../../../components/Icons";
+import { IconArrowRight } from "../../../components/Icons";
 import InlineEdit from "../../../components/InlineEdit";
 import FlowNav, { flowSelect } from "../../../components/FlowNav";
 import OptionCard from "../../../components/OptionCard";
 import SelectField from "../../../components/SelectField";
 import StandortField from "../../../components/StandortField";
+import DachField from "../../../components/DachField";
+import ResultSection from "../../../components/ResultSection";
 import { calcEigenverbrauch, calcWeightedFeedIn } from "../../../lib/calc";
+import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor } from "../../../lib/dach-ertrag";
 import { DACHARTEN, DEGRAD, FEED_IN_YEARS, NO_PLZ_DEFAULT_YIELD, PERSONEN } from "../../../lib/constants";
 import { eegReformStandLabel, eegVerfahrenSatz } from "../../../lib/eeg-reform-config";
 import {
@@ -18,7 +21,7 @@ import {
 } from "../../../lib/feedin-config";
 import { useFeedInRates } from "../../../lib/feedin";
 import { useSharedPlz } from "../../../lib/location";
-import { TILT_ORIENTATIONS, tiltPct, type TiltOrientation } from "../../../lib/tilt-config";
+import { TILT_ORIENTATIONS, type TiltOrientation } from "../../../lib/tilt-config";
 import { iconSizes, space, v } from "../../../lib/theme";
 
 const KWP_PRESETS = [
@@ -71,7 +74,27 @@ export default function EinspeiseRechner() {
   const [standortYield, setStandortYield] = useState<number | null>(null);
   const [ausrichtung, setAusrichtung] = useState<TiltOrientation | null>(null);
   const [dachartIdx, setDachartIdx] = useState<number | null>(null);
-  const [verfeinernOffen, setVerfeinernOffen] = useState(false);
+  // Neigung: null = nicht angegeben → typische Neigung der Dachform.
+  const [neigungGrad, setNeigungGrad] = useState<number | null>(null);
+  const [dachAnswered, setDachAnswered] = useState<Set<string>>(new Set());
+  const [dachEditing, setDachEditing] = useState<string | null>(null);
+  const markDachAnswered = (key: string) => {
+    setDachAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
+    setDachEditing(null);
+  };
+  // Zurücknehmen, wenn eine Folgeantwort ungültig wird (Dachform-Wechsel
+  // verwirft eine Nord-Ausrichtung) — sonst gilt die Frage als beantwortet und
+  // der Ertrag fällt still auf den Bestfall zurück.
+  const nimmDachZurueck = (key: string) => {
+    setDachAnswered(prev => { if (!prev.has(key)) return prev; const n = new Set(prev); n.delete(key); return n; });
+  };
+  // Der gewählte Zustand als Kopfzeile des Abschnitts — zugeklappt ist das die
+  // einzige Stelle, an der man sieht, worauf der gerechnete Ertrag beruht.
+  const dachZusammenfassung = () =>
+    dachartIdx !== null && ausrichtung !== null
+      ? `${DACHARTEN[dachartIdx].label} · ${TILT_ORIENTATIONS.find(o => o.key === ausrichtung)?.label}`
+        + (neigungGrad !== null ? ` · ${neigungGrad}°` : "")
+      : "noch nicht angegeben";
 
   const fetchPvgis = useCallback(async (inputPlz: string) => {
     if (!/^\d{5}$/.test(inputPlz)) return;
@@ -92,16 +115,10 @@ export default function EinspeiseRechner() {
   useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); });
   const onPlzChange = (raw: string) => { setPlz(raw); setPlzConfirmed(false); };
 
-  // PVGIS liefert den Ertrag bei OPTIMALER Neigung (siehe lib/balkon-sim.ts);
-  // die Neigungs-Matrix (lib/tilt-config.ts) ist auf dasselbe Optimum normiert —
-  // der Faktor darf deshalb multipliziert werden. Die Neigung kommt aus der
-  // Dachart (typNeigung in DACHARTEN) — Grad fragt niemand ab. Ohne Angabe:
-  // Faktor 1 (Optimum-Annahme, wie im konservativen Bundesschnitt enthalten).
-  const neigungsFaktor =
-    ausrichtung !== null && dachartIdx !== null
-      ? tiltPct(ausrichtung, DACHARTEN[dachartIdx].typNeigung) / 100
-      : 1;
-  const ertragKwp = Math.round((standortYield ?? NO_PLZ_DEFAULT_YIELD) * neigungsFaktor);
+  // Ertrag = Standort-Optimum × Dach. Die Regel steht in lib/dach-ertrag.ts und
+  // gilt für alle Rechner gleich — hier wird sie nur aufgerufen.
+  const neigungsFaktor = dachNeigungsFaktor(dachartIdx, ausrichtung, neigungGrad);
+  const ertragKwp = dachErtragKwp(standortYield ?? NO_PLZ_DEFAULT_YIELD, dachartIdx, ausrichtung, neigungGrad);
 
   const jahre = useMemo(() => {
     const list: number[] = [];
@@ -583,87 +600,33 @@ export default function EinspeiseRechner() {
             Den größeren Teil des Nutzens bringt der Eigenverbrauch. Beides zusammen, mit deinem
             Standort und aktuellen Marktpreisen, rechnet der Photovoltaik-Rechner.
           </p>
-          {/* ── Ergebnis verfeinern: eingeklappter CTA mit Chevron (pulst einmal
-               beim ersten Anblick des Ergebnisses), direkt über der Haupt-CTA.
-               Aufgeklappt: Standort · Trennlinie · Dachart · Ausrichtung —
-               alles geteilte Bausteine, die Neigung folgt aus der Dachart. ── */}
-          {!verfeinernOffen ? (
-            <button
-              type="button"
-              onClick={() => setVerfeinernOffen(true)}
-              className="sc-flow-nudge"
-              style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: space.md, width: "100%", textAlign: "left", padding: "14px 16px", marginBottom: space.lg, borderRadius: v("--radius-lg"), border: `1px solid ${v("--color-border")}`, background: v("--color-bg"), cursor: "pointer" }}
-            >
-              <span>
-                <span style={{ fontSize: 14, fontWeight: 700, color: v("--color-accent") }}>Ergebnis verfeinern</span>
-                <span style={{ display: "block", marginTop: 2, fontSize: 13, lineHeight: 1.5, color: v("--color-text-secondary") }}>
-                  Standort und Dach angeben — aus dem Bundesschnitt wird dein Ertrag.
-                </span>
-              </span>
-              <span style={{ color: v("--color-text-secondary"), display: "inline-flex", flexShrink: 0 }}>
-                <IconChevronDown size={iconSizes.lg} />
-              </span>
-            </button>
-          ) : (
-            <div className="sc-acc" style={{ border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: space.xl, marginBottom: space.lg }}>
-              <button
-                type="button"
-                onClick={() => setVerfeinernOffen(false)}
-                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: space.md, width: "100%", textAlign: "left", padding: 0, border: "none", background: "none", cursor: "pointer", marginBottom: space.lg }}
-              >
-                <span style={{ fontSize: 14, fontWeight: 700, color: v("--color-text-primary") }}>Ergebnis verfeinern</span>
-                <span style={{ color: v("--color-text-secondary"), display: "inline-flex", transform: "rotate(180deg)" }}>
-                  <IconChevronDown size={iconSizes.lg} />
-                </span>
-              </button>
-              <div style={{ fontSize: 13, marginBottom: space.lg }}>
-                <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
-              </div>
-              <div style={{ borderTop: `1px solid ${v("--color-border")}`, margin: `0 0 ${space.lg}px` }} />
-              {/* Fragen wie in den Flows: Options-Karten, abhängige Optionen.
-                  Ausrichtung erscheint erst nach der Dachart — und ein Flachdach
-                  bietet kein Nord an (niemand ständert Module nach Norden auf). */}
-              <div style={label}>Dachart</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.md, marginBottom: space.lg }}>
-                {DACHARTEN.map((d, i) => (
-                  <OptionCard
-                    key={d.label}
-                    selected={dachartIdx === i}
-                    onClick={() => {
-                      setDachartIdx(i);
-                      // Flachdach: aufgeständert gibt es kein Nord — ungültige Wahl zurücksetzen.
-                      if (i === 1 && ausrichtung === "nord") setAusrichtung(null);
-                    }}
-                    label={d.label}
-                    sub={d.sub}
-                  />
-                ))}
-              </div>
-              {dachartIdx !== null && (
-                <div className="sc-acc">
-                  <div style={label}>Ausrichtung der Module</div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: space.md }}>
-                    {TILT_ORIENTATIONS.filter((o) => !(dachartIdx === 1 && o.key === "nord")).map((o) => (
-                      <OptionCard
-                        key={o.key}
-                        selected={ausrichtung === o.key}
-                        onClick={() => setAusrichtung(o.key)}
-                        label={o.label}
-                        sub={o.key === "sued" ? "Voller Ertrag" : o.key === "suedostwest" ? "Fast voller Ertrag" : o.key === "ostwest" ? "Morgen- und Abendsonne" : "Nur bei flacher Neigung sinnvoll"}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-              {(standortYield !== null || neigungsFaktor < 1) && (
-                <p style={{ fontSize: 13, lineHeight: 1.6, color: v("--color-text-secondary"), margin: `${space.lg}px 0 0` }}>
-                  Gerechnet wird jetzt mit {nf(ertragKwp)} kWh je kWp
-                  {standortYield !== null ? " für deinen Standort" : ""}
-                  {dachartIdx !== null && ausrichtung !== null ? ` (${DACHARTEN[dachartIdx].label}, typisch ${DACHARTEN[dachartIdx].typNeigung}° Neigung)` : ""}.
-                </p>
-              )}
+          {/* Standort und Dach — im geteilten Ergebnis-Abschnitt, wie in jedem
+               anderen Rechner. Vorher war das ein handgebauter Aufklapper mit
+               eigenem Chevron und eigenem Öffnen-Zustand; drei Fassungen
+               desselben Musters waren der Grund für ResultSection. */}
+          <ResultSection
+            title="Standort und Dach"
+            summary={dachZusammenfassung()}
+          >
+            <div style={{ fontSize: 13, marginBottom: space.lg }}>
+              <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
             </div>
-          )}
+            <div style={{ borderTop: `1px solid ${v("--color-border")}`, margin: `0 0 ${space.lg}px` }} />
+            <DachField
+              dachartIdx={dachartIdx}
+              setDachartIdx={setDachartIdx}
+              ausrichtung={ausrichtung}
+              setAusrichtung={setAusrichtung}
+              neigungGrad={neigungGrad}
+              setNeigungGrad={setNeigungGrad}
+              beantwortet={dachAnswered}
+              markiereBeantwortet={markDachAnswered}
+              nimmZurueck={nimmDachZurueck}
+              bearbeitet={dachEditing}
+              setBearbeitet={setDachEditing}
+              hinweis={dachErtragHinweis(ertragKwp, dachartIdx, ausrichtung, standortYield !== null, neigungGrad)}
+            />
+          </ResultSection>
 
           {anlage === "neu" && (
             <Link

@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, NO_PLZ_DEFAULT_YIELD } from "../../../lib/constants";
+import { ANLAGEN, SPEICHER, PERSONEN, INSULATION_BESTAND, HAUSTYP_WP, DACHARTEN, NO_PLZ_DEFAULT_YIELD } from "../../../lib/constants";
+import { dachErtragKwp } from "../../../lib/dach-ertrag";
+import { type TiltOrientation } from "../../../lib/tilt-config";
 import { calcEigenverbrauch, estimateCost, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { calcWpAnnualElectricity } from "../../../lib/heatpump";
 import { DEFAULT_FEED_IN } from "../../../lib/feedin-config";
@@ -213,7 +215,14 @@ export async function GET(req: NextRequest) {
   const ea = paramStr(params, "ea", "nein", ["nein", "geplant", "ja"]);
   const eaKm = paramInt(params, "km", 15000, 1000, 50000);
   const customKwp = paramFloat(params, "ck", 12, 1, 50);
-  const ertragKwp = paramInt(params, "er", NO_PLZ_DEFAULT_YIELD, 700, 1400);
+  // `er` ist das Standort-OPTIMUM (PVGIS mit optimaler Neigung nach Süden);
+  // `da`/`az` machen daraus den Ertrag DIESES Dachs. Ohne diesen Schritt zeigt
+  // das Vorschaubild eines Ost/West-Links die Amortisation eines Süddachs —
+  // dieselbe Regel wie im Rechner (lib/dach-ertrag.ts).
+  const ertragOptimum = paramInt(params, "er", NO_PLZ_DEFAULT_YIELD, 700, 1400);
+  const ogDachart = params.da !== undefined ? paramInt(params, "da", -1, 0, DACHARTEN.length - 1) : -1;
+  const ogAusrichtung = paramStr(params, "az", "", ["sued", "suedostwest", "ostwest", "nord"]) as TiltOrientation | "";
+  const ertragKwp = dachErtragKwp(ertragOptimum, ogDachart >= 0 ? ogDachart : null, ogAusrichtung || null);
   const strompreis = paramFloat(params, "st", DEFAULT_PRICES.electricityPrice, 0.05, 1.0);
   const einspeisungModus = params.eia === "2" ? "voll" : params.eia === "0" ? "aus" : "teil";
   const plz = params.plz || "";
