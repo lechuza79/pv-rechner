@@ -54,6 +54,9 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          # Damit der Runner unsere eigene Produktion als Ausgangspunkt nutzen
+          # kann, wenn er selbst von einer Amtsseite abgewiesen wird.
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: npm run foerder:watch
 
       - name: Arbeitsvorrat zeigen
