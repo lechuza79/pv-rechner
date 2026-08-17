@@ -57,6 +57,20 @@ const S = {
     marginTop: space.xs,
   } as React.CSSProperties,
   buttonDisabled: { opacity: 0.6, cursor: "default" } as React.CSSProperties,
+  // Art. 13 DSGVO: the data subject is informed where the data is collected,
+  // not only in the privacy policy they may never open.
+  privacy: {
+    fontFamily: v('--font-text'),
+    fontSize: 13,
+    lineHeight: 1.5,
+    color: v('--color-text-muted'),
+    marginTop: space.md,
+    marginBottom: space.xs,
+  } as React.CSSProperties,
+  privacyLink: {
+    color: v('--color-accent'),
+    textDecoration: "underline",
+  } as React.CSSProperties,
   message: {
     display: "flex",
     alignItems: "center",
@@ -217,6 +231,19 @@ export default function ContactForm({
           <span>{errorText}</span>
         </div>
       )}
+
+      {/* Before the button, not after: keyboard users must reach the notice
+          before the control that submits their data (Art. 13 DSGVO). */}
+      <p style={S.privacy}>
+        Deine Nachricht wird als E-Mail an uns versendet; dafür nutzen wir den
+        Dienst Resend (USA) und vermerken deine IP-Adresse kurzzeitig im
+        Arbeitsspeicher, um Werbenachrichten abzuwehren. Was mit deinen Angaben
+        passiert, steht in der{" "}
+        <a href="/datenschutz" style={S.privacyLink}>
+          Datenschutzerklärung
+        </a>
+        .
+      </p>
 
       <button
         type="submit"

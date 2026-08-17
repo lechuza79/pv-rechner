@@ -20,8 +20,16 @@ export interface GenerationData {
 // ─── Hooks ───────────────────────────────────────────────────────────────────
 
 const CACHE_PREFIX = "sc-energy-";
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes (sessionStorage)
-const LONG_CACHE_TTL = Infinity; // Historical data never expires (localStorage)
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes (live data)
+// Historical series never change, so within one visit they never expire. They
+// are deliberately NOT persisted across visits: § 25 Abs. 2 Nr. 2 TDDDG exempts
+// storage on the user's device only where it is *technically indispensable* for
+// the requested service, and a pure speed cache is an optimisation — the
+// exemption would not carry it, and a consent banner for a data cache is absurd.
+// Session scope keeps the benefit within a visit and takes the question off the
+// table. Applies to DATA only; settings the user chose (postcode, colour scheme,
+// home municipality) stay persistent and DO rely on Nr. 2.
+const LONG_CACHE_TTL = Infinity;
 
 const RETRY_DELAYS = [3000, 8000]; // 2 retries after 3s and 8s
 
@@ -48,10 +56,11 @@ function useCachedFetch<T>(endpoint: string, cacheKey: string, defaultValue: T, 
     if (retryRef.current) clearTimeout(retryRef.current);
 
     const ttl = isHistorical ? LONG_CACHE_TTL : CACHE_TTL;
-    // Historical data → localStorage (persists across sessions), live → sessionStorage.
-    // Inside an embed widget cacheStorage() swaps in an in-memory fallback (no
-    // browser storage on a third-party page, see lib/embed-context.ts).
-    const store = cacheStorage(isHistorical ? "local" : "session");
+    // Both live and historical data go to sessionStorage — see LONG_CACHE_TTL
+    // above for why nothing here is persisted across visits. Inside an embed
+    // widget cacheStorage() swaps in an in-memory fallback (no browser storage
+    // on a third-party page, see lib/embed-context.ts).
+    const store = cacheStorage("session");
     const fullKey = CACHE_PREFIX + cacheKey;
 
     // Check cache — show stale data immediately if available
