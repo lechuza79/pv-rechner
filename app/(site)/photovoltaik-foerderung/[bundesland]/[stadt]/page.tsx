@@ -243,16 +243,22 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                         eine Angabe — wer es vergibt und mit welchem Datenstand.
                         Der zweite Link zum Programm ist raus, er stand hier und
                         am Fuß der Karte identisch. */}
-                    <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: 2 }}>
+                    <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: 2, lineHeight: 1.6 }}>
                       {f.traeger} — {fundingStandLabel(f)}
+                      {f.capped && (
+                        <>
+                          {" · "}
+                          <a
+                            href={f.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ display: "inline-flex", alignItems: "center", gap: 4, color: v("--color-accent") }}
+                          >
+                            Mittel begrenzt – vor Antrag prüfen <IconExternal size={iconSizes.xs} />
+                          </a>
+                        </>
+                      )}
                     </div>
-                    {f.capped && (
-                      <div style={{ fontSize: "var(--font-size-small)", marginTop: 4 }}>
-                        <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>
-                          Mittel begrenzt: vor Antrag prüfen
-                        </a>
-                      </div>
-                    )}
                     {/* Warnung nur bei echtem Andrang: Steht das laufende Jahr
                         schon bei mindestens drei Vierteln des Vorjahres, ist
                         der Hinweis eine Information — darunter wäre er Lärm,
