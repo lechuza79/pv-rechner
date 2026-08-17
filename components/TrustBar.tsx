@@ -53,7 +53,7 @@ export default function TrustBar() {
       .then((r) => (r.ok ? r.json() : null))
       .then((d: { iso?: string | null } | null) => {
         if (abgebrochen || !d) return;
-        setPruef(pruefSignal(d.iso ?? null, new Date()));
+        setPruef(pruefSignal(d.iso ?? null));
       })
       .catch(() => {
         /* Der Punkt entfällt still — er ist ein Zusatz, kein Seiteninhalt. */

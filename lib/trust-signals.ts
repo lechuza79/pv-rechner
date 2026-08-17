@@ -35,26 +35,6 @@ export interface TrustSignal {
 }
 
 /**
- * Höchstalter der letzten Quellenprüfung, bis zu dem der Prüf-Punkt behauptet
- * werden darf.
- *
- * WARUM ÜBERHAUPT EIN VERFALL: Der Satz "wird laufend geprüft" ist nur so lange
- * wahr, wie tatsächlich geprüft wird. Die Wächter hängen am Rechner des
- * Betreibers und laufen nur, wenn die App offen ist — vom 09. bis 13.08.2026 lief
- * fünf Tage keiner, und niemand hat es bemerkt (siehe CLAUDE.md, Monitoring).
- * Stünde der Satz unbefristet da, würde er bei der nächsten Urlaubswoche still
- * falsch. Dieselbe umgedrehte Beweislast wie bei fundingZaehlt(): Fällt die
- * Prüfung aus, verfällt die Aussage von selbst — es muss nichts laufen, um sie
- * zu widerrufen.
- *
- * WARUM 14 TAGE: Der tägliche Triage-Lauf und die wöchentlichen Wächter erzeugen
- * im Normalbetrieb mehrfach pro Woche einen Bericht. 14 Tage decken eine
- * zweiwöchige Abwesenheit ab, ohne dass der Punkt flackert; drei Wochen Stille
- * sind dagegen kein "laufend" mehr.
- */
-export const TRUST_PRUEFUNG_MAX_ALTER_TAGE = 14;
-
-/**
  * Die dauerhaft gültigen Punkte. Der zeitabhängige Prüf-Punkt kommt aus
  * {@link pruefSignal} dazu — er ist der einzige, der verfallen kann.
  */
@@ -96,15 +76,6 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
   },
 ] as const;
 
-/** Tage zwischen zwei Zeitpunkten, abgerundet. */
-function tageZwischen(vonIso: string, jetzt: Date): number | null {
-  const von = new Date(vonIso);
-  if (Number.isNaN(von.getTime())) return null;
-  const diff = jetzt.getTime() - von.getTime();
-  if (diff < 0) return 0; // Zeitpunkt in der Zukunft: wie "heute" behandeln
-  return Math.floor(diff / 86_400_000);
-}
-
 /**
  * Datum als TT.MM.JJJJ — bewusst aus den ISO-Bestandteilen gebaut statt über
  * toLocaleDateString: Server und Browser stehen in verschiedenen Zeitzonen, und
@@ -117,22 +88,28 @@ export function formatPruefdatum(iso: string): string | null {
 }
 
 /**
- * Der Prüf-Punkt — oder `null`, wenn die letzte Prüfung zu lange her ist, das
- * Datum unbrauchbar ist oder gar keine Prüfung vorliegt.
+ * Der Prüf-Punkt. Er wird IMMER gezeigt, sobald ein Prüfdatum vorliegt — auch
+ * ein altes (Vorgabe des Betreibers, 17.08.2026).
  *
- * `null` ist der Normalfall ohne Datenbank (lokal, Vorschau, Seed-Betrieb): Ohne
- * Prüfprotokoll gibt es keine Prüfung zu behaupten. Das ist gewollt — die
- * schwächere, aber ehrliche Aussage.
+ * WARUM DAS TRAGFÄHIG IST: Die frühere Fassung ließ den Punkt nach 14 Tagen
+ * verfallen, weil der Titel "Laufend nachgeprüft" eine Regelmäßigkeit behauptete,
+ * die niemand garantieren kann — die Wächter laufen nur, wenn der Rechner des
+ * Betreibers an ist (09.–13.08.2026 lief fünf Tage keiner). Die Behauptung steckte
+ * aber im Wort "laufend", nicht im Datum: Ein Stand-Datum ist bei JEDEM Alter
+ * wahr, und ein sichtbar altes sagt mehr über den Zustand als ein verschwundener
+ * Punkt. Deshalb heißt der Punkt jetzt "Zuletzt geprüft" und nennt nur noch den
+ * Stand. Wer will, sieht sofort, wenn er alt ist.
+ *
+ * `null` bleibt nur für den Fall ohne jedes Prüfdatum (Datenbank nicht erreichbar).
+ * Dort ein Datum zu erfinden wäre die eine Sache, die nicht passieren darf.
  */
-export function pruefSignal(letzteIso: string | null, jetzt: Date): TrustSignal | null {
+export function pruefSignal(letzteIso: string | null): TrustSignal | null {
   if (!letzteIso) return null;
-  const tage = tageZwischen(letzteIso, jetzt);
-  if (tage === null || tage > TRUST_PRUEFUNG_MAX_ALTER_TAGE) return null;
   const datum = formatPruefdatum(letzteIso);
   if (!datum) return null;
 
   return {
-    titel: "Laufend nachgeprüft",
+    titel: "Zuletzt geprüft",
     text: `Preise, Fördersätze und Rechtsstände werden gegen die Originalquellen geprüft — zuletzt am ${datum}.`,
     href: "/datenstand",
     icon: "refresh",
@@ -145,8 +122,8 @@ export function pruefSignal(letzteIso: string | null, jetzt: Date): TrustSignal 
   };
 }
 
-/** Die vollständige Leiste: dauerhafte Punkte plus, falls gültig, der Prüf-Punkt. */
-export function trustSignals(letzteIso: string | null, jetzt: Date): TrustSignal[] {
-  const pruef = pruefSignal(letzteIso, jetzt);
+/** Die vollständige Leiste: dauerhafte Punkte plus der Prüf-Punkt, wenn ein Stand vorliegt. */
+export function trustSignals(letzteIso: string | null): TrustSignal[] {
+  const pruef = pruefSignal(letzteIso);
   return pruef ? [...TRUST_SIGNALS, pruef] : [...TRUST_SIGNALS];
 }

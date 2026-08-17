@@ -1,13 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import {
-  TRUST_SIGNALS,
-  TRUST_PRUEFUNG_MAX_ALTER_TAGE,
-  pruefSignal,
-  trustSignals,
-  formatPruefdatum,
-} from "../trust-signals";
+import { TRUST_SIGNALS, pruefSignal, trustSignals, formatPruefdatum } from "../trust-signals";
 import { DATA_SOURCES } from "../data-sources";
 
 // Die Vertrauens-Leiste steht unter JEDER Seite. Jede Aussage darin ist damit
@@ -62,37 +56,47 @@ describe("Vertrauens-Leiste", () => {
     );
   });
 
-  // Der Verfall ist die eigentliche Absicherung: Die Wächter laufen nur, wenn
-  // der Rechner des Betreibers an ist (09.–13.08.2026 lief fünf Tage keiner).
-  // Ohne Verfall würde "wird laufend geprüft" bei der nächsten Abwesenheit still
-  // falsch — hier muss die Beweislast umgedreht sein.
-  describe("Prüf-Punkt verfällt von selbst", () => {
+  // Der Punkt wird IMMER gezeigt, sobald ein Stand vorliegt — auch ein alter
+  // (Vorgabe des Betreibers, 17.08.2026). Tragfähig ist das, weil die
+  // Regelmäßigkeits-Behauptung aus dem Titel raus ist: Ein Stand-Datum ist bei
+  // jedem Alter wahr, "laufend geprüft" wäre es nicht. Genau diese Trennung
+  // hält der folgende Block fest.
+  describe("Prüf-Punkt zeigt jeden Stand", () => {
     const vorTagen = (n: number) =>
       new Date(JETZT.getTime() - n * 86_400_000).toISOString();
 
     it("zeigt eine frische Prüfung", () => {
-      const s = pruefSignal(vorTagen(1), JETZT);
+      const s = pruefSignal(vorTagen(1));
       expect(s).not.toBeNull();
       expect(s!.text).toContain("16.08.2026");
     });
 
-    it("hält bis zur Altersgrenze", () => {
-      expect(pruefSignal(vorTagen(TRUST_PRUEFUNG_MAX_ALTER_TAGE), JETZT)).not.toBeNull();
+    it.each([14, 30, 200])("zeigt auch einen %s Tage alten Stand", (tage) => {
+      const s = pruefSignal(vorTagen(tage));
+      expect(s, `Stand nach ${tage} Tagen darf nicht verschwinden`).not.toBeNull();
     });
 
-    it("verfällt einen Tag danach", () => {
-      expect(pruefSignal(vorTagen(TRUST_PRUEFUNG_MAX_ALTER_TAGE + 1), JETZT)).toBeNull();
+    // Ohne diesen Test käme "laufend" bei der nächsten Textänderung zurück und
+    // würde eine Regelmäßigkeit behaupten, die niemand garantieren kann: Die
+    // Wächter laufen nur, wenn der Rechner des Betreibers an ist (09.–13.08.2026
+    // lief fünf Tage keiner). Das Datum darf altern, der Satz darüber nicht lügen.
+    it("behauptet keine Regelmäßigkeit", () => {
+      const s = pruefSignal(vorTagen(200))!;
+      const satz = `${s.titel} ${s.text}`.toLowerCase();
+      for (const wort of ["laufend", "täglich", "regelmäßig", "fortlaufend", "ständig"]) {
+        expect(satz, `"${wort}" behauptet einen Takt, den es nicht gibt`).not.toContain(wort);
+      }
     });
 
-    it("behauptet ohne Protokoll gar nichts", () => {
-      expect(pruefSignal(null, JETZT)).toBeNull();
-      expect(pruefSignal("", JETZT)).toBeNull();
-      expect(pruefSignal("keine-zeit", JETZT)).toBeNull();
+    it("erfindet ohne Protokoll kein Datum", () => {
+      expect(pruefSignal(null)).toBeNull();
+      expect(pruefSignal("")).toBeNull();
+      expect(pruefSignal("keine-zeit")).toBeNull();
     });
 
-    it("fällt aus der Leiste, statt sie zu leeren", () => {
-      expect(trustSignals(vorTagen(1), JETZT)).toHaveLength(TRUST_SIGNALS.length + 1);
-      expect(trustSignals(null, JETZT)).toHaveLength(TRUST_SIGNALS.length);
+    it("hängt sich an die dauerhaften Punkte an", () => {
+      expect(trustSignals(vorTagen(1))).toHaveLength(TRUST_SIGNALS.length + 1);
+      expect(trustSignals(null)).toHaveLength(TRUST_SIGNALS.length);
     });
   });
 
