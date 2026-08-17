@@ -64,8 +64,10 @@ const DIM = {
     centerLabel: 11,
     chevron: 24,
     chevronFont: 18,
-    titleFont: 13,
-    beforeFont: 12,
+    // Typo-Tokens statt Zahlen: Der Widget-Kopf muss zur Überschrift der Karte
+    // daneben passen — mit freien Zahlen driften die beiden auseinander.
+    titleFont: "var(--font-size-small)",
+    beforeFont: "var(--font-size-caption)",
   },
   compact: {
     size: 160,
@@ -80,8 +82,8 @@ const DIM = {
     centerLabel: 9,
     chevron: 20,
     chevronFont: 15,
-    titleFont: 12,
-    beforeFont: 11,
+    titleFont: "var(--font-size-small)",
+    beforeFont: "var(--font-size-caption)",
   },
 } as const;
 
@@ -303,8 +305,12 @@ export function MastrLiveRadial({
   // reveal "ohne Solar" when hovered. Single carriers use their newest bar.
   const latest: Bar | null = (() => {
     if (!bars.length) return null;
-    // Injizierte Daten: „jetzt" = die per highlightTs markierte Stunde.
-    if (injected) return bars.find((b) => b.ts === highlightTs) ?? bars[bars.length - 1];
+    // Eine gesetzte Marke gewinnt immer — auch beim bundesweiten Feed. Sie hieß
+    // „welcher Balken ist jetzt", wirkte aber nur bei injizierten Daten; damit
+    // konnte ein Aufrufer, der Radial und Donut auf denselben Moment stellen
+    // will, es nicht. Wer sie nicht setzt, bekommt unverändert die Logik unten.
+    if (highlightTs) return bars.find((b) => b.ts === highlightTs) ?? bars[bars.length - 1];
+    if (injected) return bars[bars.length - 1];
     if (energietraeger === "gesamt") {
       for (let i = bars.length - 1; i >= 0; i--) {
         if (!bars[i].solarMissing) return bars[i];
@@ -351,7 +357,30 @@ export function MastrLiveRadial({
     onValue?.(latestMw != null ? latestMw / 1000 : null);
   }, [latestMw, onValue]);
 
-  if (loading || !latest) return null;
+  // Kein `return null` mehr: Beim Ausfall der Datenquelle verschwand das
+  // Widget spurlos und hinterließ eine Lücke, die aussieht wie ein Bug — der
+  // Betreiber hat genau das gemeldet, als api.energy-charts.info kurz nicht
+  // auflösbar war. Ein Platzhalter in derselben Größe sagt stattdessen, was
+  // los ist, und hält das Layout ruhig.
+  if (loading || !latest) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          minHeight: DIM[size].size,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 16,
+          fontSize: 12,
+          color: v("--color-text-muted"),
+          textAlign: "center",
+        }}
+      >
+        {loading ? "Lade Daten…" : "Die Erzeugungsdaten sind gerade nicht erreichbar."}
+      </div>
+    );
+  }
 
   // Skala identisch über alle Tabs: höchster Gesamt-Wert der letzten 24h.
   // Gesamt füllt den ganzen Bar-Bereich, Solar/Wind/Bio/Wasser entsprechend

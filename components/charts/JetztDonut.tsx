@@ -15,14 +15,14 @@
  * fehlt — mittags eine grob falsche Aussage.
  */
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import DonutChart, { type DonutSegment } from "./DonutChart";
 import {
   ENERGY_COLORS_HEX, ENERGY_LABELS, GENERATION_STACK_KEYS, RENEWABLE_KEYS,
   CATEGORY_COLORS, formatMWIn, powerUnit, anteilZahl,
 } from "../../lib/chart-utils";
 import type { GenerationDataPoint } from "../../lib/energy";
-import { v, space } from "../../lib/theme";
+import { v } from "../../lib/theme";
 
 /** Kleinträger unter dieser Schwelle wandern in „Sonstige" — sonst zerfasert
  *  der Ring in Haarlinien, die niemand zuordnen kann. */
@@ -108,45 +108,47 @@ export function jetztAusReihe(data: GenerationDataPoint[]): JetztWerte | null {
 
 export default function JetztDonut({ data, size = 168 }: { data: GenerationDataPoint[]; size?: number }) {
   const werte = useMemo(() => jetztAusReihe(data), [data]);
+  const [aktiv, setAktiv] = useState<string | null>(null);
   if (!werte) return null;
 
-  const unit = powerUnit(werte.totalMw);
-  const zeit = new Date(werte.ts).toLocaleTimeString("de-DE", {
-    hour: "2-digit", minute: "2-digit", timeZone: "Europe/Berlin",
-  });
+  const gezeigt = werte.segments.find((s) => s.key === aktiv) ?? null;
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: space.lg, alignItems: "center" }}>
-      <DonutChart segments={werte.segments} size={size}>
-        {/* „gerade" gehört AN die Zahl, nicht nur in die Überschrift: Die
-            Kachelreihe darüber zeigt den Mittelwert über den gewählten
-            Zeitraum. Mittags stehen dort 63 % und hier 88 % — beides richtig,
-            aber ohne den Zusatz liest sich eine der beiden Zahlen als Fehler. */}
-        <div style={{ textAlign: "center", lineHeight: 1.15 }}>
-          <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, fontSize: 24, color: v("--color-text-primary") }}>
-            {Math.round(werte.eeSharePct)}
-            <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 2 }}>%</span>
-          </div>
-          <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>erneuerbar<br />gerade</div>
+    <div style={{ position: "relative", width: size, height: size, flexShrink: 0 }}>
+      <DonutChart segments={werte.segments} size={size} activeKey={aktiv} onActive={setAktiv}>
+        {/* Die Mitte trägt den Wert des berührten Segments — sonst den
+            Erneuerbaren-Anteil. Damit ersetzt der Ring seine eigene Legende:
+            eine dauerhafte Liste mit zehn Zeilen erschlägt die Karte, und
+            gefragt ist ohnehin immer nur ein Träger auf einmal.
+            „gerade" gehört AN die Zahl: Die Kachelreihe oben zeigt den
+            Mittelwert über den gewählten Zeitraum — mittags stehen dort 63 %
+            und hier 88 %, beides richtig, aber ohne den Zusatz liest sich
+            eine der beiden Zahlen als Fehler. */}
+        <div style={{ textAlign: "center", lineHeight: 1.15, padding: "0 12px" }}>
+          {gezeigt ? (
+            <>
+              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, fontSize: 22, color: v("--color-text-primary") }}>
+                {anteilZahl((gezeigt.value / werte.totalMw) * 100)}
+                <span style={{ fontSize: 12, color: v("--color-text-muted"), marginLeft: 2 }}>%</span>
+              </div>
+              <div style={{ fontSize: 10, color: v("--color-text-secondary"), marginTop: 2, fontWeight: 600 }}>
+                {gezeigt.label}
+              </div>
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 1, fontFamily: v("--font-mono") }}>
+                {formatMWIn(gezeigt.value, powerUnit(werte.totalMw))}
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{ fontFamily: v("--font-mono"), fontWeight: 800, fontSize: 24, color: v("--color-text-primary") }}>
+                {Math.round(werte.eeSharePct)}
+                <span style={{ fontSize: 13, color: v("--color-text-muted"), marginLeft: 2 }}>%</span>
+              </div>
+              <div style={{ fontSize: 9, color: v("--color-text-muted"), marginTop: 2 }}>erneuerbar<br />gerade</div>
+            </>
+          )}
         </div>
       </DonutChart>
-
-      <div style={{ flex: "1 1 180px", minWidth: 170 }}>
-        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginBottom: space.sm }}>
-          Stand {zeit} Uhr · {formatMWIn(werte.totalMw, unit)} im Netz
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-          {werte.segments.map((s) => (
-            <div key={s.key} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11 }}>
-              <span style={{ width: 9, height: 9, borderRadius: 2, background: s.color, flexShrink: 0 }} />
-              <span style={{ flex: 1, color: v("--color-text-secondary") }}>{s.label}</span>
-              <span style={{ fontFamily: v("--font-mono"), color: v("--color-text-primary") }}>
-                {anteilZahl((s.value / werte.totalMw) * 100)} %
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

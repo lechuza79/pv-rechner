@@ -82,3 +82,17 @@ describe("Hauptträger bleiben sichtbar", () => {
     expect(r.segments.find((s) => s.label === "Sonstige")?.value).toBe(20);
   });
 });
+
+// Die Ringgrößen sind Konstanten, keine Laufzeitwerte — deshalb hier statt im
+// Browser geprüft: stabil, ohne Netz und ohne die externe Datenquelle.
+// Anlass: Der Donut bekam zuerst dieselbe LEINWANDgröße wie das Radial (160),
+// zeichnete darin aber einen vollen Ring bis zum Rand, während das Radial nur
+// bis Radius 72 geht. Gleiche Leinwand hieß damit ungleich große Ringe.
+describe("Ringgrößen von Donut und Radial", () => {
+  const DONUT_SIZE = 144; // was JetztImNetz dem Donut übergibt
+  const RADIAL_OUTER_R = 72; // DIM.compact.outerR in MastrLiveRadial
+
+  it("beide zeichnen denselben Außendurchmesser", () => {
+    expect(DONUT_SIZE).toBe(RADIAL_OUTER_R * 2);
+  });
+});

@@ -4,7 +4,7 @@ import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { useGenerationMix, useNuclearImport } from "../../../lib/energy";
 import StackedAreaChart from "../../../components/charts/StackedAreaChart";
-import JetztDonut from "../../../components/charts/JetztDonut";
+import JetztImNetz from "../../../components/charts/JetztImNetz";
 import EventTimeline from "../../../components/charts/EventTimeline";
 import StackedBarChart from "../../../components/charts/StackedBarChart";
 import {
@@ -375,6 +375,22 @@ export default function EnergieClient() {
         </p>
       </div>
 
+      {/* Zwei eigenständige Live-Widgets — VOR dem Strommix-Widget, das aus
+          Zeitraum-Umschalter, Kachelreihe und Verlaufs-Chart besteht. Sie
+          standen zuerst zwischen Kacheln und Chart und wirkten dadurch wie ein
+          Teil davon; der Umschalter gilt aber nur für den Verlauf. */}
+      <JetztImNetz />
+
+      {/* Bereichs-Überschrift für das Strommix-Widget: Umschalter, Kacheln und
+          Verlaufs-Chart gehören zusammen und beginnen hier. Vorher fing der
+          Abschnitt mit einer nackten Knopfreihe an. */}
+      <h2 style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.01em", margin: `0 0 ${space.xs}px`, padding: "0 8px" }}>
+        Stromerzeugung im Zeitverlauf
+      </h2>
+      <p style={{ fontSize: 13, lineHeight: 1.65, color: v("--color-text-secondary"), margin: `0 0 ${space.lg}px`, padding: "0 8px" }}>
+        Wähle den Zeitraum — von den letzten 24 Stunden bis zurück ins Jahr 2015.
+      </p>
+
       {/* Time Range Toggle — two groups */}
       <div style={{ display: "flex", gap: 20, marginBottom: 20, flexWrap: "wrap" }}>
         {/* Letzte */}
@@ -596,29 +612,6 @@ export default function EnergieClient() {
         })()}
       </div>
 
-      {/* „Gerade jetzt" — Momentaufnahme aus DEMSELBEN Datensatz wie die Kurve
-          darunter. Nur bei den Live-Zeiträumen: ab 30 Tagen ist der letzte
-          Punkt ein Tages- oder Wochenmittel, „gerade" wäre dann schlicht
-          falsch. */}
-      {!isYear && !isMax && hours <= 168 && !loading && genData.data.length > 0 && (
-        <div
-          style={{
-            background: v("--color-bg"),
-            border: `1px solid ${v("--color-border")}`,
-            borderRadius: v("--radius-lg"),
-            padding: "16px 12px",
-            marginBottom: 20,
-          }}
-        >
-          <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 12, paddingLeft: 8 }}>
-            Gerade im Netz
-          </div>
-          <div style={{ paddingLeft: 8 }}>
-            <JetztDonut data={genData.data} />
-          </div>
-        </div>
-      )}
-
       {/* Stacked Area / Bar Chart */}
       <div
         style={{
@@ -629,8 +622,15 @@ export default function EnergieClient() {
           marginBottom: 20,
         }}
       >
-        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: isStale ? 6 : 12, paddingLeft: 8 }}>
+        {/* Echte Überschrift plus Unterzeile mit dem gewählten Zeitraum: Der
+            Titel stand als gestyltes div da und fehlte in der Gliederung; und
+            ohne den Zeitraum daneben weiß niemand, was die Kurve zeigt, wenn
+            der Umschalter außerhalb des Blickfelds liegt. */}
+        <h3 style={{ fontSize: 14, fontWeight: 700, margin: 0, paddingLeft: 8 }}>
           Stromerzeugung nach Energieträger
+        </h3>
+        <div style={{ fontSize: 11, color: v("--color-text-muted"), marginTop: 2, marginBottom: isStale ? 6 : 12, paddingLeft: 8 }}>
+          {rangeLabel}
         </div>
         {isStale && (
           <div style={{
