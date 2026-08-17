@@ -20,8 +20,12 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
 ## Was prüfen (volatil) vs. was nicht (Modell)
 
 **Prüfen (preis-/politikabhängig):**
-- `begGrundfoerderung` / `begKlimaBonus` / `begEffizienzBonus` /
-  `begEinkommensBonus` / `begMaxCap` / `begMaxRate` — BAFA/KfW BEG.
+- `begGrundfoerderung` / `begKlimaBonus` / `begEinkommensStaffel` /
+  `begFamilienzuschlag` / `begMaxCap` / `begMaxRate` / `begMaxRateLowIncome` —
+  KfW-Merkblatt 458. (Das Merkblatt in der Fassung 07/2026 kennt genau **zwei**
+  Boni — Klimageschwindigkeitsbonus und Einkommensbonus; einen Effizienzbonus
+  nennt es nicht, und im Code gibt es ihn auch nicht. Die frühere Zeile hier
+  verlangte die Prüfung eines Feldes, das gar nicht existiert.)
   **Zwei davon sinken am 01.02.2027 planmäßig, danach halbjährlich zum 01.02. und
   01.08.:** `begMaxCap` um 750 € je Schritt, `begKlimaBonus` um 4 Prozentpunkte je
   Schritt (ab Antragstellung 01.08.2028 entfällt er ganz). Termin und Schrittweite
@@ -32,17 +36,29 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   ablesen statt fortzurechnen — die Schrittweite kann der Gesetzgeber ändern.
 - `investLwwpBase` / `investLwwpPerKw` / `investSwwpBase` / `investSwwpPerKw` /
   `heizkoerperTauschKosten` — **Leitquelle: die jährliche Auswertung echter
-  Wärmepumpen-Angebote der Verbraucherzentrale Rheinland-Pfalz** (2025er Ausgabe
-  im Repo: `docs/quellen/VZ-RLP_Auswertung-160-Waermepumpen-Angebote_2025-06.pdf`,
-  Nachfolge-Auswertung als Pressemitteilung Juli 2026). Sie ist die einzige uns
-  bekannte Quelle mit echten Angebotspreisen inkl. Leistungsverteilung und
-  Kostenkategorien. Abgleich in dieser Reihenfolge:
-    1. **Median-Gesamtkosten** bei **Median-Leistung** (2025: 34.979 € bei 10 kW)
+  Wärmepumpen-Angebote der Verbraucherzentrale Rheinland-Pfalz.** Beide Jahrgänge
+  liegen im Repo: `docs/quellen/VZ-RLP_Auswertung-160-Waermepumpen-Angebote_2025-06.pdf`
+  und `…_2026-07.pdf` (zweiter Check, veröffentlicht 02.07.2026). Sie ist die
+  einzige uns bekannte Quelle mit echten Angebotspreisen inkl. Leistungsverteilung
+  und Kostenkategorien. Abgleich in dieser Reihenfolge:
+    1. **Median-Gesamtkosten** bei **Median-Leistung** (2025: 34.979 € bei 10 kW;
+       2026: 34.898 €, häufigste Leistungsklasse 10–12 kW)
        → muss `investLwwpBase + investLwwpPerKw × 10` treffen (±10 %).
     2. **Summe der leistungsunabhängigen Kategorien** (Montage/Lohn, Elektro,
-       Fundament, hydraulischer Abgleich, Warmwasser, Puffer; 2025: 16.652 €)
+       Fundament, hydraulischer Abgleich, Warmwasser, Puffer; 2025: 16.652 €,
+       2026: 15.868 € als Summe der Mittelwerte, Tabelle 5)
        → das ist `investLwwpBase`.
     3. **Heizkörpertausch**: Ø-Preis je Heizkörper × ~6 kritische Heizkörper.
+       **Die 2026er Auswertung beziffert ihn nicht** — sie nennt nur die Häufigkeit
+       (36 von 160 Angeboten, 23 %). Der hinterlegte Wert bleibt deshalb auf der
+       2025er Grundlage; das ist ein Befund, kein Versäumnis.
+
+  **Stand des Laufs vom 17.08.2026 (erster Lauf dieses Wächters überhaupt):**
+  Median 34.898 € gegen unsere 35.000 € im 10-kW-Fall = 0,3 % — bestätigt, kein
+  Wert geändert. Die Kategorien-Summe liegt 3,8 % unter `investLwwpBase`; das ist
+  innerhalb der Streuung zweier Erhebungen und war kein Anlass zu ändern. Wer beim
+  nächsten Lauf doch nachzieht, muss BEIDE Größen zusammen bewegen (Basis runter →
+  Steigung rauf), sonst verfehlt der Median-Fall seinen Anker.
   **Kein Scraping mehr** (2026-07 abgeschaltet): Die frühere Ableitung aus einer
   Portal-Kostenübersicht bezifferte den Einbau mit 3.000–7.500 € und ergab für ein
   kleines Haus 15.020 € — weniger als das **günstigste** von 160 echten Angeboten.
@@ -72,8 +88,21 @@ zusätzlich in `DEFAULT_HEATPUMP_CONFIG.reviewBy`.
   1. Dezember 2026 vorzulegen ist und Heizöl ausdrücklich einschließt. **Hier
   nichts doppelt prüfen** — zwei Wächter auf derselben Frage erzeugen
   widersprüchliche Befunde.
+- **OFFEN (bis 04/2027): Wartungskosten der Wärmepumpe.** Hinterlegt sind 250 €/a
+  aus der Beispielrechnung der Verbraucherzentrale RLP (02.06.2025) — dieselbe
+  Quelle, aus der die fossilen 300 €/a stammen, damit der Vergleich symmetrisch
+  bleibt. Die Angebots-Auswertung derselben Verbraucherzentrale nennt am
+  02.07.2026 rund **360 € je Wartung** (22 Angebote, Median 360 €, Mittelwert
+  356 €, Tabelle 8). Das sind **zwei verschiedene Größen**: hier ein
+  Beratungs-Rechenwert für ein Jahr, dort der Preis, den Installateure je Termin
+  anbieten. **Nicht einseitig nachziehen** — 110 €/a nur auf der WP-Seite sind
+  über 20 Jahre 2.200 € gegen die Wärmepumpe, und die fossile Seite hinge weiter
+  an der alten Quelle. Beim nächsten Lauf beide Seiten aus derselben Quelle neu
+  belegen oder den Befund als Entscheidung vorlegen.
 - **OFFEN (bis 01/2027): Wartungskosten Heizöl.** `gasMaintenance` gilt aktuell
-  für Gas UND Öl. Dass eine Ölheizung mit Tankprüfung und zusätzlichen
+  für Gas UND Öl. Der Lauf vom 17.08.2026 hat auch in der neuen VZ-Auswertung
+  keine getrennten Öl-Wartungskosten gefunden — die Gleichsetzung bleibt, der
+  Punkt bleibt offen. Dass eine Ölheizung mit Tankprüfung und zusätzlichen
   Schornsteinfeger-Terminen real teurer in der Wartung ist, ist plausibel — uns
   fehlt dafür aber eine belastbare Quelle (Kostenportale zählen nicht, siehe die
   Investitions-Lehre oben). Beim nächsten Lauf: Träger-/Verbraucherzentralen-
