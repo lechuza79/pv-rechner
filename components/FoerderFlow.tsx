@@ -25,9 +25,13 @@ import {
 export default function FoerderFlow({
   programme,
   ortName,
+  imFenster = false,
 }: {
   programme: FundingProgram[];
   ortName: string;
+  /** Im Fenster trägt der Dialog schon Rahmen und Abstand — ein zweiter Rahmen
+   *  darin ist ein Kasten im Kasten. */
+  imFenster?: boolean;
 }) {
   const fragen = useMemo(() => fragenFuer(programme), [programme]);
   const [schritt, setSchritt] = useState(0);
@@ -81,6 +85,7 @@ export default function FoerderFlow({
     return (
       <Ergebnis
         ergebnis={ergebnis}
+        imFenster={imFenster}
         ortName={ortName}
         onNeu={() => {
           setAntworten({});
@@ -92,7 +97,7 @@ export default function FoerderFlow({
   }
 
   return (
-    <div style={box}>
+    <div style={imFenster ? {} : box}>
       <div style={{ fontSize: 12, color: v("--color-text-muted"), marginBottom: space.xs }}>
         Schritt {schritt + 1} von {fragen.length}
       </div>
@@ -144,6 +149,7 @@ export default function FoerderFlow({
 }
 
 function Ergebnis({
+  imFenster = false,
   ergebnis,
   ortName,
   onNeu,
@@ -151,10 +157,11 @@ function Ergebnis({
   ergebnis: ReturnType<typeof werteAus>;
   ortName: string;
   onNeu: () => void;
+  imFenster?: boolean;
 }) {
   const { moeglich, ausgeschlossen, ungeprueft, durchBeauftragungVerloren } = ergebnis;
   return (
-    <div style={box}>
+    <div style={imFenster ? {} : box}>
       <h3 style={{ fontSize: 17, fontWeight: 700, color: v("--color-text-primary"), margin: `0 0 ${space.md}px` }}>
         Das gilt für dich in {ortName}
       </h3>

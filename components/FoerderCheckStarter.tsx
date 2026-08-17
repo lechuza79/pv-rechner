@@ -33,10 +33,10 @@ export default function FoerderCheckStarter({
       <Modal
         open={offen}
         onClose={() => setOffen(false)}
-        title={`Bekommst du die Förderung in ${ortName}?`}
+        title={`Förder-Check ${ortName}`}
         maxWidth={620}
       >
-        <FoerderFlow programme={programme} ortName={ortName} />
+        <FoerderFlow programme={programme} ortName={ortName} imFenster />
       </Modal>
     </>
   );
