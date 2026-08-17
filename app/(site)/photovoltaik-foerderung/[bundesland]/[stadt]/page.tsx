@@ -115,21 +115,35 @@ const S = {
   h2: { fontSize: "var(--font-size-h3)", fontWeight: 700, margin: "0 0 4px" } as React.CSSProperties,
   sub: { fontSize: "var(--font-size-small)", color: v("--color-text-muted"), margin: "0 0 14px" } as React.CSSProperties,
   section: { marginBottom: 28 } as React.CSSProperties,
-  card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: "16px 18px" } as React.CSSProperties,
+  card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: pad("lg", "xl") } as React.CSSProperties,
   // Die beiden Wege am Fuß der Förderkarte: selbst nachrechnen (links) oder
   // die eigene Berechtigung klären (rechts).
   aktionsBox: {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
     borderRadius: v("--radius-md"),
-    padding: pad("md", "md"),
+    padding: pad("lg", "lg"),
     display: "flex",
     flexDirection: "column",
     gap: space.xs,
   } as React.CSSProperties,
-  aktionsTitel: { fontSize: "var(--font-size-body)", fontWeight: 700, color: v("--color-text-primary") } as React.CSSProperties,
-  aktionsText: { fontSize: "var(--font-size-small)", lineHeight: 1.5, color: v("--color-text-secondary"), margin: 0, flex: 1 } as React.CSSProperties,
+  aktionsTitel: { fontSize: "var(--font-size-h3)", fontWeight: 700, color: v("--color-text-primary") } as React.CSSProperties,
+  aktionsText: { fontSize: "var(--font-size-body)", lineHeight: 1.5, color: v("--color-text-secondary"), margin: 0, flex: 1 } as React.CSSProperties,
   aktionsLink: { fontSize: "var(--font-size-small)", fontWeight: 600, color: v("--color-accent"), textDecoration: "none", marginTop: space.xs } as React.CSSProperties,
+  /** Echte Schaltfläche statt Textlink — das hier ist der Schritt, den die
+   *  Seite von jemandem will, und der soll wie einer aussehen. */
+  aktionsKnopf: {
+    display: "inline-block",
+    alignSelf: "flex-start",
+    marginTop: space.md,
+    padding: pad("sm", "lg"),
+    borderRadius: v("--radius-md"),
+    fontSize: "var(--font-size-body)",
+    fontWeight: 700,
+    background: v("--color-accent"),
+    color: v("--color-text-on-accent"),
+    textDecoration: "none",
+  } as React.CSSProperties,
 };
 
 export default async function StadtPage(props: { params: Promise<{ bundesland: string; stadt: string }> }) {
@@ -221,7 +235,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                   Der Rahmen bleibt neutral — eine grüne Umrandung um die ganze
                   Karte las sich wie eine Bewertung des Programms, obwohl sie nur
                   den Status wiederholte, der als Abzeichen daneben steht. */}
-              <div style={{ padding: pad("md", "lg"), borderBottom: `1px solid ${v("--color-border")}`, background: v("--color-bg") }}>
+              <div style={{ padding: pad("lg", "xl"), borderBottom: `1px solid ${v("--color-border")}`, background: v("--color-bg") }}>
                 <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: space.sm }}>
                   <div>
                     <h2 style={{ ...S.h2, fontSize: "var(--font-size-lead)" }}>{f.name}</h2>
@@ -237,12 +251,20 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                         <a href={f.url} target="_blank" rel="noopener noreferrer" style={{ color: v("--color-accent") }}>
                           Mittel begrenzt: vor Antrag prüfen
                         </a>
-                        {tempo && (
-                          <div style={{ color: v("--color-text-secondary"), marginTop: 4, lineHeight: 1.5 }}>
-                            In {city.name} {tempo.jetzt === 1 ? "ist dieses Jahr bisher 1 Anlage" : `sind dieses Jahr bisher ${nf(tempo.jetzt)} Anlagen`}{" "}
-                            ans Netz gegangen, {tempo.vorjahr === 1 ? "im gesamten Vorjahr 1" : `im gesamten ${tempo.vorjahrZahl} waren es ${nf(tempo.vorjahr)}`}.
-                          </div>
-                        )}
+                      </div>
+                    )}
+                    {/* Warnung nur bei echtem Andrang: Steht das laufende Jahr
+                        schon bei mindestens drei Vierteln des Vorjahres, ist
+                        der Hinweis eine Information — darunter wäre er Lärm,
+                        und ein Warnton, der immer angeht, wird weggefiltert. */}
+                    {tempo && tempo.jetzt >= tempo.vorjahr * 0.75 && (
+                      <div style={{ display: "flex", gap: space.sm, alignItems: "flex-start", marginTop: space.md, padding: pad("md", "md"), background: v("--color-bg-accent"), border: `1px solid ${v("--color-border-accent")}`, borderRadius: v("--radius-md") }}>
+                        <span aria-hidden="true" style={{ fontSize: "var(--font-size-lead)", fontWeight: 800, color: v("--color-accent"), lineHeight: 1.2 }}>!</span>
+                        <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), lineHeight: 1.5 }}>
+                          In {city.name} {tempo.jetzt === 1 ? "ist dieses Jahr bisher 1 Anlage" : `sind dieses Jahr bisher ${nf(tempo.jetzt)} Anlagen`}{" "}
+                          ans Netz gegangen — {tempo.vorjahr === 1 ? "im gesamten Vorjahr war es 1" : `im gesamten Jahr ${tempo.vorjahrZahl} waren es ${nf(tempo.vorjahr)}`}.
+                          Wer den Zuschuss noch will, sollte den Antrag nicht aufschieben.
+                        </span>
                       </div>
                     )}
                   </div>
@@ -250,7 +272,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                 </div>
               </div>
 
-              <div style={{ padding: pad("md", "lg") }}>
+              <div style={{ padding: pad("lg", "xl") }}>
                 {/* Bedingungen und Konditionen nebeneinander, getrennt durch
                     eine senkrechte Linie. Beide beantworten zusammen die eine
                     Frage „komme ich in Frage, und wie viel ist es dann?".
@@ -318,20 +340,32 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                   </div>
                 )}
 
-                {/* Ein Weg von hier aus, nicht zwei: die eigene Berechtigung
-                    klären. Die Rechen-Kachel daneben stand in Konkurrenz dazu
-                    und wiederholte die Beispielrechnungen, die weiter unten
-                    ohnehin ausführlich stehen. */}
-                <div style={{ marginTop: space.lg }}>
+                {/* Die beiden Wege von hier aus — durchrechnen oder die eigene
+                    Berechtigung klären. Beide mit echter Schaltfläche: Als
+                    Textlink gesetzt sahen sie aus wie Fußnoten, obwohl sie das
+                    sind, was die Seite von jemandem will. */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: space.md, marginTop: space.xl }}>
+                  <div style={S.aktionsBox}>
+                    <div style={S.aktionsTitel}>Was springt dabei heraus?</div>
+                    <p style={S.aktionsText}>
+                      {city.name} liefert rund {nf(city.yieldKwhKwp)} kWh je kWp. Rechne mit deinen
+                      eigenen Werten — die Förderung ist dabei schon eingerechnet.
+                    </p>
+                    <Link href={`/photovoltaik-rechner?er=${city.yieldKwhKwp}${ctaFoe}`} style={S.aktionsKnopf}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        {ctaFoe ? "Mit Förderung rechnen" : `Für ${city.name} rechnen`} <IconArrowRight size={iconSizes.sm} />
+                      </span>
+                    </Link>
+                  </div>
                   <div style={S.aktionsBox}>
                     <div style={S.aktionsTitel}>Bekommst du die Förderung?</div>
                     <p style={S.aktionsText}>
                       Vier Fragen zu Vorhaben und Gebäude — danach steht da, was für dich gilt und in
                       welcher Reihenfolge du vorgehen musst. Dauert eine Minute.
                     </p>
-                    <a href="#foerder-check" style={S.aktionsLink}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        Förder-Check starten <IconArrowRight size={iconSizes.xs} />
+                    <a href="#foerder-check" style={S.aktionsKnopf}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        Förder-Check starten <IconArrowRight size={iconSizes.sm} />
                       </span>
                     </a>
                   </div>
@@ -375,16 +409,9 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
           ) : null}
         </div>
 
-        {/* ── CTA ── */}
-        <div style={{ ...S.card, background: v("--color-bg-accent"), borderColor: v("--color-border-accent"), marginBottom: 28 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: v("--color-accent"), marginBottom: 4 }}>Was würde sich für dich rechnen?</div>
-          <div style={{ fontSize: "var(--font-size-small)", lineHeight: 1.6, color: v("--color-text-secondary"), marginBottom: 14 }}>
-            {city.name} liefert rund {nf(city.yieldKwhKwp)} kWh pro kWp. Rechne mit deinen eigenen Werten.
-          </div>
-          <Link href={`/photovoltaik-rechner?er=${city.yieldKwhKwp}${ctaFoe}`} style={{ display: "inline-block", textDecoration: "none", padding: "10px 18px", borderRadius: v("--radius-md"), fontSize: 14, fontWeight: 700, background: v("--color-accent"), color: v("--color-text-on-accent") }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{ctaFoe ? `Mit Förderung rechnen` : `Für ${city.name} rechnen`} <IconArrowRight size={iconSizes.sm} /></span>
-          </Link>
-        </div>
+        {/* Der Rechner-Einstieg stand hier ein zweites Mal — die Förderkarte
+            oben führt bereits dorthin, und die Beispielrechnungen dazwischen
+            beantworten dieselbe Frage schon mit konkreten Zahlen. */}
 
         {/* ── FAQ (aus Förderdaten generiert) ── */}
         <div style={S.section}>
