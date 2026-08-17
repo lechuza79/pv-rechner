@@ -40,9 +40,19 @@ async function readLetztePruefung(): Promise<string | null> {
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
-    if (error || !data) return null;
+    if (error) {
+      // Nicht still schlucken: Ein fehlender Prüf-Punkt sieht von außen genauso
+      // aus wie "lange nicht geprüft" — ohne diese Zeile wäre eine kaputte
+      // Abfrage von einem echten Prüf-Ausfall nicht zu unterscheiden.
+      console.error(`[Trust] Prüfstand nicht lesbar: ${error.message}`);
+      return null;
+    }
+    if (!data) return null;
     return typeof data.created_at === "string" ? data.created_at : null;
-  } catch {
+  } catch (err) {
+    console.error(
+      `[Trust] Prüfstand nicht lesbar: ${err instanceof Error ? err.message : "unbekannt"}`,
+    );
     return null;
   }
 }
