@@ -126,7 +126,20 @@ Datenschutzerklärung.**
 ## Offene Punkte
 
 - **OFFEN (bis 03/2027):** Resend-Zertifizierung im DPF-Register nachprüfen (fällig 03.03.2027).
-- **Ungeklärt:** ob Vercel Web Analytics Geräteeigenschaften ausliest und ob das nach
-  EDSA-Leitlinien 2/2023 als „Zugriff" i. S. v. § 25 Abs. 1 zählt. Die Aussage „keine
-  Informationen … ausgelesen" ist für Cookies und Speicher belegt, für Geräteeigenschaften
-  nicht geprüft.
+## Erledigt, aber nachzumessen
+
+**Was das Messskript vom Gerät liest, wird am Skript gemessen, nicht der Dokumentation
+geglaubt.** Am 16.08.2026 am Live-System geprüft (`fetch("/_vercel/insights/script.js")`,
+2.495 Bytes): Der einzige Gerätezugriff ist
+`navigator.webdriver || navigator.userAgent.includes("Headless")` — eine Bot-Erkennung,
+deren Ergebnis die Messung **unterdrückt** und die selbst nichts überträgt. Kein
+`screen.*`, kein `innerWidth`, kein `devicePixelRatio`, keine Zeitzone, kein Canvas,
+kein `localStorage`/`sessionStorage`, kein `document.cookie`. Gerätetyp und Herkunftsregion
+leitet der Dienst aus der Anfrage selbst ab. Deshalb sagt Abschnitt 5 seit dem 16.08.2026
+nicht mehr pauschal „keine Informationen … ausgelesen", sondern benennt diesen einen
+Zugriff.
+
+**Bei jedem Lauf neu messen** — das Skript wird von Vercel ausgeliefert und kann sich
+ohne unser Zutun ändern. Wächst es deutlich oder tauchen neue Zugriffe auf, ist Abschnitt 5
+überfällig und die Einordnung nach § 25 Abs. 1 neu zu stellen (EDSA-Leitlinien 2/2023:
+Auslesen kann auch ohne Speicherung ein „Zugriff" sein).
