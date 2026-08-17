@@ -163,9 +163,25 @@ Prüfung behauptet also nicht nur gegenüber dem Leser eine Aktualisierung, sond
 meldet sie auch an Google — und Google entwertet ein `lastmod`, das sich ohne
 echte Änderung bewegt, für die ganze Domain.
 
+**Kontrolliert wird das mit `npm run stand:faellig`** (`lib/pruefstand.ts`): Die
+Liste nennt je Wert das Prüfdatum, den zuständigen Wächter, seinen Rhythmus — und
+trennt zwei Befunde, weil sie verschiedene Antworten brauchen:
+
+- **Termin überzogen** → der WERT gehört auf den Prüfstand.
+- **Stillstand** (das Datum bewegt sich seit mehr als einem Rhythmus nicht) →
+  der WÄCHTER gehört nachgesehen. Das ist der gefährlichere Fall: Ein Lauf, der
+  gar nicht stattfindet, meldet auch keinen Fehler.
+
+Der tägliche Wächter und der Sonntagsbericht führen den Befehl aus; wer eine neue
+wächter-gepflegte Zahl einführt, trägt sie in `lib/pruefstand.ts` nach (ein Test
+verlangt, dass jedes sichtbare Prüfdatum dort steht).
+
 *Auslöser:* Bis zum 16.08.2026 fror jedes Prüfdatum ein, sobald es einmal gesetzt
 war. Die Wächter liefen weiter, bestätigten die Werte — und keiner der
-bestätigten Läufe war der Seite anzusehen.
+bestätigten Läufe war der Seite anzusehen. Beim Nachziehen am 17.08.2026 kam der
+zweite, größere Fund heraus: Der Wärmepumpen-Wächter war seit seiner Einrichtung
+am 13.07.2026 **nie gelaufen** — sein erster Termin verstrich still. Aufgefallen
+ist das keinem Monitoring, sondern einer Rückfrage des Betreibers.
 
 ---
 

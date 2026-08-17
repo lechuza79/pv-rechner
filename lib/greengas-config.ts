@@ -169,13 +169,24 @@ export interface GreenGasConfig {
   /** Stand der Werte selbst — nur hochsetzen, wenn sich einer ändert. */
   validFrom: string;
   /**
-   * Tag, an dem ein Wächter-Lauf Gesetzestext und Report zuletzt wirklich
-   * aufgeschlagen hat. Wandert auch bei „geprüft und unverändert" mit, bleibt
-   * bei einem gescheiterten Abruf stehen (scripts/waechter-gate.md → „Das
-   * Prüfdatum wandert mit jedem erreichten Lauf"). Sichtbar auf
-   * /waermepumpe-rechner über lib/stand.ts.
+   * Tag, an dem ein Lauf den IW-Report zuletzt wirklich aufgeschlagen hat —
+   * also die PREISBESTANDTEILE (Biomethan, Netzentgelte, CO₂). Jährlich, mit
+   * dem Nachfolge-Report.
    */
   geprueftIso: string;
+  /**
+   * Tag, an dem ein Lauf den RECHTSSTAND zuletzt nachgelesen hat (Verkündung,
+   * Inkrafttreten, Stufen der Bio-Treppe). Eigenes Datum, weil es eine eigene
+   * Sache mit eigenem Takt ist: Der tägliche News-Wächter sieht hier nach,
+   * während die Report-Werte einmal im Jahr geprüft werden. Ein gemeinsames
+   * Datum wäre für eines von beiden gelogen — dieselbe Aufteilung wie bei der
+   * BEG-Förderung im Wärmepumpen-Rechner.
+   *
+   * Beide wandern auch bei „geprüft und unverändert" mit und bleiben bei einem
+   * gescheiterten Abruf stehen (scripts/waechter-gate.md → Regel 9). Sichtbar
+   * auf /waermepumpe-rechner über lib/stand.ts.
+   */
+  geprueftRechtIso: string;
   reviewBy: string;
 }
 
@@ -205,11 +216,12 @@ export const GREEN_GAS_CONFIG: GreenGasConfig = {
     "Basisszenario; der 2045er-Wert unter der Annahme vollständiger Grüngas-Versorgung. " +
     "Das Basisszenario ist laut Report ein analytischer Referenzpfad, keine Prognose",
   validFrom: "2026-07-25",
-  // Der Council-Lauf mit Legal-Judge am 29.07.2026 hat Gesetzestext und
-  // Gesetzesbegründung (BT-Drs. 21/6278) im Volltext gelesen und den
-  // Geltungsbereich korrigiert — das ist der jüngste belegte Blick in die
-  // Quellen, nicht der 25.07. (das ist der Stand der IW-Report-Werte).
-  geprueftIso: "2026-07-29",
+  // Preisbestandteile: Stand des IW-Reports, am 25.07.2026 im Volltext gelesen.
+  geprueftIso: "2026-07-25",
+  // Rechtsstand: Council mit Legal-Judge am 29.07.2026 — Gesetzestext und
+  // Gesetzesbegründung (BT-Drs. 21/6278) im Volltext, Geltungsbereich
+  // korrigiert. Der tägliche News-Wächter zieht dieses Datum ab jetzt nach.
+  geprueftRechtIso: "2026-07-29",
   reviewBy: "2027-07-25",
 };
 

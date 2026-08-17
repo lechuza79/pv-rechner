@@ -10,6 +10,25 @@ import { v } from "../lib/theme";
  * ein Live-Wert bekommt „kommt", mehrere bekommen „kommen", und die Aufzählung
  * endet mit „und" statt mit einem Komma.
  */
+/**
+ * Ab wann der Wertstand neben dem Prüfdatum genannt wird: 45 Tage.
+ *
+ * Kürzer wäre Lärm — die Wächter laufen quartalsweise, ein Abstand von wenigen
+ * Wochen ist der Normalfall und sagt nichts. Länger würde genau den Fall
+ * verschweigen, für den es die zweite Zahl gibt: Werte, die zwei Quartale
+ * unverändert durchlaufen, weil sie unverändert richtig sind.
+ */
+const WERTSTAND_AB_TAGEN = 45;
+
+function zeigeWertstand(wertIso: string | undefined, geprueftIso: string): boolean {
+  if (!wertIso) return false;
+  const tag = 24 * 60 * 60 * 1000;
+  // Monatsgenaue Wertstände zählen ab Monatsanfang — das ist die vorsichtige
+  // Richtung: Der Abstand wird eher unter- als überschätzt.
+  const wert = Date.parse(`${wertIso.length === 7 ? `${wertIso}-01` : wertIso}T00:00:00Z`);
+  return (Date.parse(`${geprueftIso}T00:00:00Z`) - wert) / tag >= WERTSTAND_AB_TAGEN;
+}
+
 function liveSatz(live: string[]): string | null {
   if (!live.length) return null;
   const liste =
@@ -31,7 +50,13 @@ export default function StandNote({ pfad, style }: { pfad: string; style?: React
     if (e.praezision === "monat") return `${e.was} ${monatJahr(e.iso)}`;
     const verb = geprueftGesagt ? "am" : "geprüft am";
     geprueftGesagt = true;
-    return `${e.was} ${verb} ${tagMonatJahr(e.iso)}`;
+    // Zwei Daten nur, wenn sie zwei verschiedene Dinge sagen: Solange die Werte
+    // so alt sind wie ihre Prüfung, wäre das zweite Datum eine Wiederholung.
+    // Wachsen sie auseinander, ist genau das die Auskunft — „von Juli, im
+    // Oktober bestätigt" heißt: unverändert gültig, nicht vergessen.
+    return zeigeWertstand(e.wertIso, e.iso)
+      ? `${e.was} von ${monatJahr(e.wertIso!.slice(0, 7))}, ${verb} ${tagMonatJahr(e.iso)}`
+      : `${e.was} ${verb} ${tagMonatJahr(e.iso)}`;
   });
   const live = liveSatz(seite.live);
 

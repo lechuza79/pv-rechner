@@ -48,6 +48,7 @@ const GEPRUEFT = [
   { name: "DEFAULT_HEATPUMP_CONFIG", geprueftIso: DEFAULT_HEATPUMP_CONFIG.geprueftIso, validFrom: DEFAULT_HEATPUMP_CONFIG.validFrom, reviewBy: DEFAULT_HEATPUMP_CONFIG.reviewBy },
   { name: "DEFAULT_HEATPUMP_CONFIG (Förderung)", geprueftIso: DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso, validFrom: DEFAULT_HEATPUMP_CONFIG.validFrom, reviewBy: DEFAULT_HEATPUMP_CONFIG.reviewBy },
   { name: "GREEN_GAS_CONFIG", geprueftIso: GREEN_GAS_CONFIG.geprueftIso, validFrom: GREEN_GAS_CONFIG.validFrom, reviewBy: GREEN_GAS_CONFIG.reviewBy },
+  { name: "GREEN_GAS_CONFIG (Rechtsstand)", geprueftIso: GREEN_GAS_CONFIG.geprueftRechtIso, validFrom: GREEN_GAS_CONFIG.validFrom, reviewBy: GREEN_GAS_CONFIG.reviewBy },
   { name: "CO2_PRICE", geprueftIso: CO2_PRICE.geprueftIso, validFrom: CO2_PRICE.validFrom, reviewBy: CO2_PRICE.reviewBy },
   { name: "BALKON_RECHT", geprueftIso: BALKON_RECHT.geprueftIso, validFrom: DEFAULT_BALKON_CONFIG.validFrom, reviewBy: DEFAULT_BALKON_CONFIG.reviewBy },
 ];
@@ -136,7 +137,8 @@ describe("Stand-Zeile: getrennte Daten für getrennte Sachen", () => {
     const iso = (pfad: string, was: string) => STAND[pfad].eintraege.find(e => e.was === was)?.iso;
     expect(iso("/waermepumpe-rechner", "Anschaffung und Tarife")).toBe(DEFAULT_HEATPUMP_CONFIG.geprueftIso);
     expect(iso("/waermepumpe-rechner", "BEG-Förderung")).toBe(DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso);
-    expect(iso("/waermepumpe-rechner", "Grüngas-Pflicht und Gaspreis-Bestandteile")).toBe(GREEN_GAS_CONFIG.geprueftIso);
+    expect(iso("/waermepumpe-rechner", "Grüngas-Pflicht")).toBe(GREEN_GAS_CONFIG.geprueftRechtIso);
+    expect(iso("/waermepumpe-rechner", "Gaspreis-Bestandteile")).toBe(GREEN_GAS_CONFIG.geprueftIso);
     expect(iso("/waermepumpe-rechner", "CO₂-Preispfad")).toBe(CO2_PRICE.geprueftIso);
     expect(iso("/klimaanlage-stromkosten", "Gerätepreise und Effizienzen")).toBe(DEFAULT_AIRCON_CONFIG.geprueftIso);
     expect(iso("/photovoltaik-rechner", "EEG-Vergütungssätze")).toBe(FEED_IN_GEPRUEFT_ISO);

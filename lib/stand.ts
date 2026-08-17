@@ -42,6 +42,14 @@ export interface StandEintrag {
   /** ISO-Datum aus der Config, die den Wert trägt. Nie hier getippt. */
   iso: string;
   praezision: StandPraezision;
+  /**
+   * Stand der Werte selbst (`validFrom`), falls die Seite ihn getrennt nennen
+   * soll. <StandNote> zeigt ihn NUR, wenn er spürbar älter ist als die Prüfung
+   * — dann sagt die Zeile „Werte von Juli, im Oktober bestätigt", und genau das
+   * ist die interessante Auskunft. Solange beide zusammenfallen, wäre die
+   * zweite Zahl nur Lärm.
+   */
+  wertIso?: string;
 }
 
 export interface StandSeite {
@@ -79,22 +87,23 @@ export const STAND: Record<string, StandSeite> = {
   // wichtig, es ist die einzige Auskunft über das Alter der Zahlen.
   "/waermepumpe-rechner": {
     eintraege: [
-      { was: "Anschaffung und Tarife", iso: DEFAULT_HEATPUMP_CONFIG.geprueftIso, praezision: "tag" },
+      { was: "Anschaffung und Tarife", iso: DEFAULT_HEATPUMP_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_HEATPUMP_CONFIG.validFrom },
       // Die Förderung hat einen eigenen Prüftag, weil sie an einer eigenen
       // Quelle hängt (KfW-Merkblatt) und außer der Reihe geprüft wird. Sie mit
       // den Marktwerten unter ein Datum zu stellen hieße, das ältere von beiden
       // auf die Förderung zu übertragen — und damit eine Prüfung zu
       // verschweigen, die stattgefunden hat.
-      { was: "BEG-Förderung", iso: DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso, praezision: "tag" },
-      { was: "Grüngas-Pflicht und Gaspreis-Bestandteile", iso: GREEN_GAS_CONFIG.geprueftIso, praezision: "tag" },
-      { was: "CO₂-Preispfad", iso: CO2_PRICE.geprueftIso, praezision: "tag" },
+      { was: "BEG-Förderung", iso: DEFAULT_HEATPUMP_CONFIG.geprueftFoerderungIso, praezision: "tag", wertIso: DEFAULT_HEATPUMP_CONFIG.validFrom },
+      { was: "Grüngas-Pflicht", iso: GREEN_GAS_CONFIG.geprueftRechtIso, praezision: "tag", wertIso: GREEN_GAS_CONFIG.validFrom },
+      { was: "Gaspreis-Bestandteile", iso: GREEN_GAS_CONFIG.geprueftIso, praezision: "tag", wertIso: GREEN_GAS_CONFIG.validFrom },
+      { was: "CO₂-Preispfad", iso: CO2_PRICE.geprueftIso, praezision: "tag", wertIso: CO2_PRICE.validFrom },
     ],
     live: [],
   },
 
   "/klimaanlage-stromkosten": {
     eintraege: [
-      { was: "Gerätepreise und Effizienzen", iso: DEFAULT_AIRCON_CONFIG.geprueftIso, praezision: "tag" },
+      { was: "Gerätepreise und Effizienzen", iso: DEFAULT_AIRCON_CONFIG.geprueftIso, praezision: "tag", wertIso: DEFAULT_AIRCON_CONFIG.validFrom },
     ],
     live: ["Kühlbedarf aus dem Wetterarchiv deines Standorts", "Strompreis"],
   },
