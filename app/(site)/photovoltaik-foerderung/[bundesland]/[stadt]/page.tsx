@@ -258,7 +258,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                         der Hinweis eine Information — darunter wäre er Lärm,
                         und ein Warnton, der immer angeht, wird weggefiltert. */}
                     {tempo && tempo.jetzt >= tempo.vorjahr * 0.75 && (
-                      <div style={{ display: "flex", gap: space.sm, alignItems: "flex-start", marginTop: space.md, padding: pad("md", "md"), background: v("--color-bg-accent"), border: `1px solid ${v("--color-border-accent")}`, borderRadius: v("--radius-md") }}>
+                      <div style={{ display: "flex", gap: space.sm, alignItems: "flex-start", marginTop: space.lg, padding: pad("md", "md"), background: v("--color-bg-accent"), border: `1px solid ${v("--color-border-accent")}`, borderRadius: v("--radius-md") }}>
                         <span aria-hidden="true" style={{ fontSize: "var(--font-size-lead)", fontWeight: 800, color: v("--color-accent"), lineHeight: 1.2 }}>!</span>
                         <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), lineHeight: 1.5 }}>
                           In {city.name} {tempo.jetzt === 1 ? "ist dieses Jahr bisher 1 Anlage" : `sind dieses Jahr bisher ${nf(tempo.jetzt)} Anlagen`}{" "}
@@ -298,7 +298,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                 </div>
 
                 {combinable.length > 0 && (
-                  <div style={{ marginTop: space.lg, textAlign: "center" }}>
+                  <div style={{ marginTop: 44, textAlign: "center" }}>
                     {/* Geschwungene Klammer statt Trennlinie: Eine Linie
                         trennt, hier gehört aber beides zusammen — was
                         darüber steht, lässt sich mit dem kombinieren, was
@@ -337,7 +337,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                     Berechtigung klären. Beide mit echter Schaltfläche: Als
                     Textlink gesetzt sahen sie aus wie Fußnoten, obwohl sie das
                     sind, was die Seite von jemandem will. */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: space.md, marginTop: space.xl }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: space.md, marginTop: 44 }}>
                   <div style={S.aktionsBox}>
                     <div style={S.aktionsTitel}>Was kostet eine Solaranlage in {city.name}?</div>
                     <p style={S.aktionsText}>

@@ -84,8 +84,8 @@ export function FundingRates({
     <div
       style={
         columns === 2
-          ? { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: bordered ? 14 : 8, columnGap: 20 }
-          : { display: "flex", flexDirection: "column", gap: bordered ? 14 : 8 }
+          ? { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: bordered ? 8 : 4, columnGap: 20 }
+          : { display: "flex", flexDirection: "column", gap: bordered ? 8 : 4 }
       }
     >
       {rates.map((r) => {
@@ -103,7 +103,7 @@ export function FundingRates({
             style={{
               display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16,
               fontSize: "var(--font-size-body)",
-              ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 14 } : {}),
+              ...(bordered ? { borderBottom: `1px solid ${v("--color-border")}`, paddingBottom: 8 } : {}),
             }}
           >
             <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
@@ -190,7 +190,7 @@ export function FundingConditions({
     <div>
       <div style={{ fontSize: "var(--font-size-caption)", fontWeight: 700, color: v("--color-text-secondary"), marginBottom: 12 }}>Bedingungen</div>
       <ul style={{ margin: 0, paddingLeft: 20, fontSize: "var(--font-size-body)", lineHeight: 1.6, color: v("--color-text-secondary") }}>
-        {alle.map((c) => <li key={c} style={{ marginBottom: 10 }}>{c}</li>)}
+        {alle.map((c) => <li key={c} style={{ marginBottom: 4 }}>{c}</li>)}
       </ul>
     </div>
   );
