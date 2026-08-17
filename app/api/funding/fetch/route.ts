@@ -66,9 +66,15 @@ export async function GET(req: NextRequest) {
 
   const versuche: Versuch[] = [];
 
-  // 1) Die Amtsseite direkt, zweimal.
-  for (const n of [0, 1]) {
-    const res = await hole(url, 20_000 + n * 10_000);
+  // 1) Die Amtsseite direkt, mit mehreren Anläufen und kurzen Pausen.
+  //
+  // Gemessen am 17.08.2026 an frankfurt.de aus dieser Function: 403, 403, dann
+  // 200 mit 171 KB. Die Sperre ist eine Laune der Bot-Erkennung, kein Zustand —
+  // sie kippt beim Nachfassen. Zwei Anläufe waren dafür zu wenig; mit vieren
+  // löst sich der Fall in derselben Anfrage statt erst am nächsten Tag.
+  for (const n of [0, 1, 2, 3]) {
+    if (n > 0) await new Promise((r) => setTimeout(r, 2_500 * n));
+    const res = await hole(url, 15_000 + n * 5_000);
     versuche.push({ weg: "direkt", status: res?.status ?? "keine Antwort" });
     if (res?.ok) {
       const html = await res.text();
