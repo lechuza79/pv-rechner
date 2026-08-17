@@ -1,4 +1,5 @@
 import { v } from "../../lib/theme";
+import { fmtAnteilProzent, prozentGerundet } from "../../lib/atlas-format";
 
 const tagBase: React.CSSProperties = {
   display: "inline-flex",
@@ -52,14 +53,17 @@ const DOWN = {
  */
 export default function TendTag({ dev, ton = "auto" }: { dev: number | null; ton?: "auto" | "neutral" }) {
   if (dev === null) return null;
-  const pct = Math.round(Math.abs(dev) * 100);
+  // Vorzeichen und Farbe hängen an der ANGEZEIGTEN Stufe, nicht am Rohwert:
+  // ein Abstand von 0,2 % steht als „0 %" da und darf dann kein „+" tragen.
+  // Deshalb dieselbe Rundung wie die Anzeige, aus derselben Quelle.
+  const pct = prozentGerundet(Math.abs(dev));
   const c = ton === "neutral" || pct === 0 ? NEUTRAL : dev > 0 ? UP : DOWN;
   const sign = pct === 0 ? "±" : dev > 0 ? "+" : "−";
 
   return (
     <span style={{ ...tagBase, color: c.text, borderColor: c.border, background: c.fill }}>
       {sign}
-      {pct} %
+      {fmtAnteilProzent(Math.abs(dev))}
     </span>
   );
 }

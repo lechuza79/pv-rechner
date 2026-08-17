@@ -4,7 +4,7 @@ import { v } from "../lib/theme";
 import DonutChart from "./charts/DonutChart";
 import GemeindeWidgetShell from "./atlas/GemeindeWidgetShell";
 import { WIDGETS, widgetForPlace } from "../lib/widget-registry";
-import { pvLeistungTeile } from "../lib/atlas-format";
+import { fmtAnteilProzentFein, pvLeistungTeile } from "../lib/atlas-format";
 import type { AnlagentypSegment } from "../lib/anlagentyp";
 
 export type { AnlagentypSegment } from "../lib/anlagentyp";
@@ -15,15 +15,6 @@ export type { AnlagentypSegment } from "../lib/anlagentyp";
 // Variante: auf der PV-Förderseite ist die Bauform (Dach vs. Freifläche) die
 // relevante Differenzierung. Gleiche Shell + Donut wie das Gemeinde-Widget,
 // damit Land und Kommune visuell einheitlich sind.
-
-// Anteil in Prozent (Chart-Konvention: ab 10 % runden, darunter 1 Stelle).
-function fmtPct(share: number): string {
-  const s =
-    share >= 9.95
-      ? Math.round(share).toLocaleString("de-DE")
-      : share.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  return `${s} %`;
-}
 
 export default function RegionAnlagentypWidget({
   name,
@@ -85,7 +76,7 @@ export default function RegionAnlagentypWidget({
               <div key={t.key} style={S.legItem}>
                 <span style={{ ...S.dot, background: t.color }} />
                 <span style={S.legLabel}>{t.label}</span>
-                <span style={S.legVal}>{fmtPct((t.kwp / total) * 100)}</span>
+                <span style={S.legVal}>{fmtAnteilProzentFein(t.kwp / total)}</span>
               </div>
             ))}
           </div>

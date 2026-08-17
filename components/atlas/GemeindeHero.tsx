@@ -7,6 +7,7 @@ import { IconArrowRight, IconChevronDown, IconChevronLeft, IconChevronRight } fr
 import { v, tokens, space } from "../../lib/theme";
 import { SEGMENT_OWNER, type AtlasOwner, type SiblingRow } from "../../lib/atlas";
 import {
+  fmtAnteilProzent,
   fmtPvLeistung as fmtLeistung,
   fmtSpeicherKwh,
   fmtWattProKopf,
@@ -377,7 +378,7 @@ export default function GemeindeHero({
                   >
                     <span style={{ ...S.dot, background: s.color }} />
                     <span>{s.label}</span>
-                    <span style={S.legendVal}>{Math.round((s.value / total) * 100)} %</span>
+                    <span style={S.legendVal}>{fmtAnteilProzent(s.value / total)}</span>
                   </button>
                 ))}
               </div>
