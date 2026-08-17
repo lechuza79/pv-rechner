@@ -120,6 +120,60 @@ describe("Arbeitsvorrat — wer am längsten nicht an der Quelle war, kommt zuer
   });
 });
 
+// Der Seiten-Wächter (scripts/funding-watch.ts) läuft täglich in der Cloud und
+// vergleicht nur Fingerabdrücke — er versteht nichts, aber er merkt zuverlässig,
+// dass sich etwas bewegt hat. Das ist der einzige Weg, eine Kürzung mitten im
+// Quartal zu bemerken, ohne dass ein Mensch oder ein Modell etwas ahnt.
+describe("Bewegte Amtsseite", () => {
+  it("macht sofort fällig, unabhängig vom Alter der letzten Prüfung", () => {
+    const stand = pruefstandFuer(
+      { id: "koeln", lastVerified: "2026-08-10" }, // erst 6 Tage alt
+      [],
+      HEUTE,
+      [{ programId: "koeln", changedAt: "2026-08-15" }],
+    );
+    expect(stand.seiteGeaendert).toBe(true);
+    expect(stand.faellig).toBe(true);
+  });
+
+  it("eine Änderung VOR unserer letzten Prüfung ist erledigt und zählt nicht mehr", () => {
+    const stand = pruefstandFuer(
+      { id: "koeln", lastVerified: "2026-08-14" },
+      [],
+      HEUTE,
+      [{ programId: "koeln", changedAt: "2026-08-01" }],
+    );
+    expect(stand.seiteGeaendert).toBe(false);
+    expect(stand.faellig).toBe(false);
+  });
+
+  it("eine Änderung am Tag der Prüfung gilt als gesehen — sonst löst jeder Lauf sich selbst wieder aus", () => {
+    const stand = pruefstandFuer(
+      { id: "koeln", lastVerified: HEUTE },
+      [],
+      HEUTE,
+      [{ programId: "koeln", changedAt: HEUTE }],
+    );
+    expect(stand.seiteGeaendert).toBe(false);
+  });
+
+  it("steht im Arbeitsvorrat ganz oben — vor Hängern und vor Altersfällen", () => {
+    const programme = [
+      { id: "haengt", level: "kommune" as const, lastVerified: "2026-05-01" },
+      { id: "alt", level: "kommune" as const, lastVerified: "2026-01-01" },
+      { id: "bewegt", level: "kommune" as const, lastVerified: "2026-08-14" },
+    ];
+    const versuche = [
+      versuch("haengt", "2026-06-01", "pruefseite"),
+      versuch("haengt", "2026-07-01", "gesperrt"),
+    ];
+    const vorrat = arbeitsvorrat(programme, versuche, HEUTE, [
+      { programId: "bewegt", changedAt: "2026-08-15" },
+    ]);
+    expect(vorrat[0].programId).toBe("bewegt");
+  });
+});
+
 describe("Eskalation in die sichere Richtung", () => {
   const dreiFehl = [
     versuch("frankfurt", "2026-06-01", "pruefseite"),
