@@ -66,6 +66,38 @@ async function optionen(page: Page): Promise<string[]> {
 }
 
 /**
+ * Ein Schritt kann MEHRERE Fragen tragen — im PV-Rechner etwa Personenzahl und
+ * Nutzungsprofil nebeneinander. Nach der Wahl in der einen Frage bleibt Weiter
+ * dann zu Recht gesperrt, weil die andere noch offen ist.
+ *
+ * Diese Funktion beantwortet die übrigen Fragen des Schritts mit ihrer jeweils
+ * ersten Option. Die Fragen unterscheidet sie an `data-flow-group` (OptionCard);
+ * ohne das Attribut gehören alle Optionen zur selben Frage und es passiert
+ * nichts.
+ *
+ * BEWUSSTE GRENZE: Variiert wird nur die Frage, aus der die Hauptwahl kam — die
+ * übrigen bekommen immer ihre erste Option. Sonst multiplizieren sich die Wege
+ * je Schritt (4 Personen × 4 Profile = 16 statt 8), ohne dass die Kombination am
+ * Verhalten des Flows etwas ändert; was die Werte inhaltlich ergeben, prüfen die
+ * Rechen-Tests.
+ */
+async function uebrigeFragenBeantworten(page: Page) {
+  const offene = await page.locator("[data-flow-option]:visible").evaluateAll((els) => {
+    const beantwortet = new Set(
+      els.filter((e) => e.getAttribute("aria-pressed") === "true").map((e) => e.getAttribute("data-flow-group") || ""),
+    );
+    const ersteJeGruppe = new Map<string, string>();
+    for (const e of els) {
+      const gruppe = e.getAttribute("data-flow-group") || "";
+      if (beantwortet.has(gruppe) || ersteJeGruppe.has(gruppe)) continue;
+      ersteJeGruppe.set(gruppe, e.getAttribute("data-flow-option") || "");
+    }
+    return [...ersteJeGruppe.values()];
+  });
+  for (const label of offene) await waehle(page, label);
+}
+
+/**
  * Wählt eine Option und wartet, bis sie als gewählt markiert ist.
  *
  * Das Warten ist der Kern: Nach dem Seitenaufruf steht das servergerenderte
@@ -208,16 +240,23 @@ async function gehe(
     await oeffne(page, flowPfad, startKnopf);
     for (const vorher of pfad) {
       if (vorher === VORBELEGT) await fuelleFelder(page);
-      else await waehle(page, vorher);
+      else {
+        await waehle(page, vorher);
+        await uebrigeFragenBeantworten(page);
+      }
       await page.locator("[data-flow-next]:visible").first().click();
       await page.waitForTimeout(60);
     }
 
     await waehle(page, wahl);
+    await uebrigeFragenBeantworten(page);
 
     const weiterJetzt = page.locator("[data-flow-next]:visible").first();
     if ((await weiterJetzt.getAttribute("aria-disabled")) === "true") {
-      erg.fehler.push(`[${[...pfad, wahl].join(" → ")}] Weiter bleibt gesperrt, obwohl "${wahl}" gewählt ist`);
+      erg.fehler.push(
+        `[${[...pfad, wahl].join(" → ")}] Weiter bleibt gesperrt, obwohl "${wahl}" gewählt und jede ` +
+          `weitere Frage des Schritts beantwortet ist`,
+      );
       erg.wege++;
       continue;
     }
@@ -235,7 +274,16 @@ for (const flow of FLOWS) {
     // aufgebaut, und im Dev-Server kommt die erste Übersetzung jeder Route
     // dazu. Der Standard von 30 s reicht dafür nicht — er hat den Läufer
     // beim ersten Lauf mitten im Baum abgebrochen.
-    test.setTimeout(300_000);
+    //
+    // 10 statt 5 Minuten seit dem 17.08.2026: Mit den fünf migrierten Rechnern
+    // sind aus einem Flow sieben geworden, die parallel um dieselbe Maschine
+    // konkurrieren — und die Bäume sind tiefer. Der PV-Rechner allein hat rund
+    // 190 Wege (4 Anlagengrößen × 6 Speicher × 8 Haushaltsangaben), jeder mit
+    // eigenem Seitenaufbau. Bei 5 Minuten lief er mitten im Baum ab, und zwar
+    // OHNE einen inhaltlichen Befund — ein abgelaufener Lauf sieht aber aus wie
+    // ein kaputter Flow. Wer die Zahl wieder senken will, muss zuerst die Zahl
+    // der Wege senken (MAX_WEGE_JE_FLOW in flows.ts), nicht das Zeitlimit.
+    test.setTimeout(600_000);
     const konsolenFehler: string[] = [];
     page.on("console", (m) => {
       if (m.type() !== "error") return;
@@ -254,7 +302,13 @@ for (const flow of FLOWS) {
     });
     page.on("pageerror", (e) => konsolenFehler.push(`Ausnahme: ${e.message}`));
 
-    await page.goto(flow.pfad, { waitUntil: "domcontentloaded" });
+    // Über oeffne(), NICHT über ein nacktes goto: Flows, die erst in einem
+    // Fenster starten, brauchen dafür einen Klick. Ohne ihn stand hier eine
+    // Seite ohne jede Navigation, und der Lauf scheiterte an der Vorprüfung —
+    // mit einer Meldung („nicht sichtbar"), die nach einem kaputten Flow aussah,
+    // obwohl nur der Startknopf ungedrückt blieb. Genau so lag der Förder-Check
+    // rot, seit er ins Fenster gezogen ist.
+    await oeffne(page, flow.pfad, flow.startKnopf);
     // Flows liegen teils weiter unten auf der Seite — erst prüfen, ob es hier
     // überhaupt einen gibt, sonst schlägt der Test aus dem falschen Grund fehl.
     await expect(page.locator("[data-flow-nav]").first()).toBeVisible({ timeout: 15000 });

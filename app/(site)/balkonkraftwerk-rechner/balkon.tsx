@@ -1,6 +1,8 @@
 "use client";
 import { useState, useMemo, useCallback, useEffect, useRef, Fragment } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import FlowNav from "../../../components/FlowNav";
 import OptionCard from "../../../components/OptionCard";
 import InlineEdit from "../../../components/InlineEdit";
 import InfoTooltip from "../../../components/InfoTooltip";
@@ -34,7 +36,14 @@ function configLabel(setId: BalkonSetId, storageId: BalkonStorageId): string {
 }
 
 export default function Balkon() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
+  // Welche Fragen wirklich beantwortet sind. Die Werte behalten ihre Startwerte
+  // (die Rechnung braucht sie), geben sich aber nicht mehr als Auswahl aus —
+  // Flow-Konvention: keine Vorauswahl, Weiter erst nach echter Wahl.
+  const [beantwortet, setBeantwortet] = useState<Set<string>>(new Set());
+  const markBeantwortet = (key: string) =>
+    setBeantwortet(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
   const [orientationId, setOrientationId] = useState<BalkonInputs["orientationId"]>(CFG.defaultOrientation);
   const [presenceId, setPresenceId] = useState<BalkonInputs["presenceId"]>(CFG.defaultPresence);
   const [personen, setPersonen] = useState(1); // Index in PERSONEN (Default: 2 Personen)
@@ -116,6 +125,21 @@ export default function Balkon() {
     setStep(target);
   };
   const back = () => step > 0 && setStep(step - 1);
+
+  // Was jeder Schritt braucht — an einer Stelle. Die PLZ ist bewusst KEINE
+  // Bedingung: Sie ist als optional ausgewiesen, ohne sie rechnet der Rechner
+  // mit dem deutschen Durchschnitt weiter.
+  const stepAnforderung: { erfuellt: boolean; hinweis: string }[] = [
+    {
+      erfuellt: beantwortet.has("personen") && beantwortet.has("anwesenheit"),
+      hinweis: beantwortet.has("personen")
+        ? "Bitte noch angeben, ob tagsüber jemand zuhause ist."
+        : "Bitte Haushaltsgröße und Anwesenheit angeben.",
+    },
+    { erfuellt: beantwortet.has("ausrichtung"), hinweis: "Bitte erst wählen, wie die Module hängen." },
+  ];
+  const stepBeantwortet = stepAnforderung[step]?.erfuellt ?? true;
+  const stepHinweis = stepAnforderung[step]?.hinweis ?? "";
 
   const fetchPvgis = useCallback(async (inputPlz: string) => {
     if (!/^\d{5}$/.test(inputPlz)) return;
@@ -259,14 +283,18 @@ export default function Balkon() {
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie viele Personen im Haushalt?</div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 6, marginBottom: 20 }}>
-                  {PERSONEN.map((p, i) => (
-                    <button key={p.label} onClick={() => { setPersonen(i); setOVerbrauch(null); }} style={{
+                  {PERSONEN.map((p, i) => {
+                    const aktiv = beantwortet.has("personen") && personen === i;
+                    return (
+                    <button key={p.label} data-flow-option={p.label === "1" ? "1 Person" : `${p.label} Personen`} data-flow-group="personen" aria-pressed={aktiv}
+                      onClick={() => { setPersonen(i); setOVerbrauch(null); markBeantwortet("personen"); }} style={{
                       padding: "14px 4px", borderRadius: v('--radius-md'), fontSize: 16, fontWeight: 700, cursor: "pointer", textAlign: "center",
-                      background: personen === i ? v('--color-accent-dim') : v('--color-bg-muted'),
-                      border: personen === i ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
-                      color: personen === i ? v('--color-accent') : v('--color-text-secondary'),
+                      background: aktiv ? v('--color-accent-dim') : v('--color-bg-muted'),
+                      border: aktiv ? `2px solid ${v('--color-accent')}` : `2px solid ${v('--color-border')}`,
+                      color: aktiv ? v('--color-accent') : v('--color-text-secondary'),
                     }}>{p.label}</button>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em", display: "inline-flex", alignItems: "center", gap: 4 }}>
@@ -279,7 +307,7 @@ export default function Balkon() {
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 20 }}>
                   {CFG.presence.map(p => (
-                    <OptionCard key={p.id} selected={presenceId === p.id} onClick={() => setPresenceId(p.id)} label={p.label} sub={p.sub} />
+                    <OptionCard key={p.id} group="anwesenheit" selected={beantwortet.has("anwesenheit") && presenceId === p.id} onClick={() => { setPresenceId(p.id); markBeantwortet("anwesenheit"); }} label={p.label} sub={p.sub} />
                   ))}
                 </div>
 
@@ -321,7 +349,7 @@ export default function Balkon() {
                 <div style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-muted'), marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Wie hängen die Module?</div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
                   {CFG.orientations.map(o => (
-                    <OptionCard key={o.id} selected={orientationId === o.id} onClick={() => setOrientationId(o.id)} label={o.label} sub={o.sub} />
+                    <OptionCard key={o.id} selected={beantwortet.has("ausrichtung") && orientationId === o.id} onClick={() => { setOrientationId(o.id); markBeantwortet("ausrichtung"); }} label={o.label} sub={o.sub} />
                   ))}
                 </div>
                 <div style={{ fontSize: 12, color: v('--color-text-muted'), marginTop: 10, lineHeight: 1.5 }}>
@@ -332,15 +360,16 @@ export default function Balkon() {
             )}
 
             {/* Nav */}
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
-              {step > 0 ? (
-                <button onClick={back} style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer" }}>Zurück</button>
-              ) : (
-                <Link href="/" style={{ padding: "10px 20px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 600, background: "transparent", border: `1px solid ${v('--color-border-muted')}`, color: v('--color-text-secondary'), cursor: "pointer", textDecoration: "none", display: "inline-flex", alignItems: "center" }}>Zurück</Link>
-              )}
-              <button onClick={next} style={{ padding: "10px 32px", borderRadius: v('--radius-md'), fontSize: 14, fontWeight: 700, background: v('--color-accent'), border: "none", color: v('--color-text-on-accent'), cursor: "pointer" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>{step === STEPS.length - 1 ? <>Empfehlung anzeigen <IconArrowRight size={iconSizes.md} /></> : <>Weiter <IconArrowRight size={iconSizes.md} /></>}</span>
-              </button>
+            <div style={{ marginTop: 24 }}>
+              <FlowNav
+                weiterAktiv={stepBeantwortet}
+                weiterLabel={step === STEPS.length - 1 ? "Empfehlung anzeigen" : "Weiter"}
+                onWeiter={next}
+                // Im ersten Schritt führt Zurück aus dem Flow heraus auf die
+                // Startseite — wie vorher, nur im gemeinsamen Baustein.
+                onZurueck={step > 0 ? back : () => router.push("/")}
+                inaktivHinweis={stepHinweis}
+              />
             </div>
           </div>
         )}

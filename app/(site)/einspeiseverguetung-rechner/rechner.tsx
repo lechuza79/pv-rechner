@@ -424,7 +424,12 @@ export default function EinspeiseRechner() {
               <div style={label}>Personen im Haushalt</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginBottom: space.lg }}>
                 {PERSONEN.map((p, i) => (
-                  <button key={p.label} type="button" style={chip(personenIdx === i)} onClick={() => setPersonenIdx(i)}>
+                  // Kennzeichnung wie an einer Auswahlkarte: Die Chips sind
+                  // bewusst schmal, sollen für den Flow-Läufer aber genauso
+                  // bedienbar sein. Die Gruppe trennt sie vom Speicher darunter
+                  // — beide Fragen stehen in EINEM Schritt.
+                  <button key={p.label} type="button" data-flow-option={p.label === "1" ? "1 Person" : `${p.label} Personen`} data-flow-group="personen"
+                    aria-pressed={personenIdx === i} style={chip(personenIdx === i)} onClick={() => setPersonenIdx(i)}>
                     {p.label}
                   </button>
                 ))}
@@ -446,7 +451,8 @@ export default function EinspeiseRechner() {
           <div style={label}>Batteriespeicher</div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: space.sm, marginBottom: space.lg }}>
             {SPEICHER_OPTIONS.map((s) => (
-              <button key={s} type="button" style={chip(speicherKwh === s)} onClick={() => setSpeicherKwh(s)}>
+              <button key={s} type="button" data-flow-option={s === 0 ? "Kein Speicher" : `${s} kWh Speicher`} data-flow-group="speicher"
+                aria-pressed={speicherKwh === s} style={chip(speicherKwh === s)} onClick={() => setSpeicherKwh(s)}>
                 {s === 0 ? "Kein Speicher" : `${s} kWh`}
               </button>
             ))}
