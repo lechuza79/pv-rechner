@@ -13,6 +13,7 @@
 import { estimateCost, BATTERY_LIFETIME_YEARS } from "./calc";
 import { calcBalkon, type BalkonInputs } from "./balkon";
 import { BALKON_RECHT, DEFAULT_BALKON_CONFIG, type BalkonSetId } from "./balkon-config";
+import { MASTR_KATEGORIE, SOLARPAKET_ENTFALLEN } from "./balkon-anmeldung";
 import { FEED_IN_YEARS, PERSONEN } from "./constants";
 import { DEFAULT_FEED_IN, fmtCt, type FeedInRates } from "./feedin-config";
 import { DEFAULT_PRICES } from "./prices-config";
@@ -554,6 +555,52 @@ export function balkonFaq(): FaqEntry[] {
     {
       q: "Bekomme ich Geld für den eingespeisten Strom?",
       a: BALKON_RECHT.keineVerguetung + " Genau deshalb lohnt sich ein Balkonkraftwerk am meisten dort, wo tagsüber jemand zu Hause ist — und deshalb ist ein zu großes Set selten die beste Wahl.",
+    },
+  ];
+}
+
+/** FAQ for the registration guide (/balkonkraftwerk-anmelden).
+ *
+ *  Every legal statement here comes from BALKON_RECHT or is cited at its own
+ *  source in lib/balkon-anmeldung.ts — all verified in full text on 16.08.2026
+ *  and run through a six-checker council. Nothing about enforcement practice:
+ *  neither "never prosecuted" nor "late registration is free of consequence"
+ *  traces back to the regulator, and both circulate widely as fact. */
+export function balkonAnmeldenFaq(): FaqEntry[] {
+  return [
+    {
+      q: "Muss ich mein Balkonkraftwerk anmelden?",
+      a: `Ja. ${BALKON_RECHT.anmeldung} ${BALKON_RECHT.anmeldeFrist}`,
+      cta: { label: "Deine Frist ausrechnen", href: "/balkonkraftwerk-anmelden" },
+    },
+    {
+      q: "Wie lange habe ich Zeit, ein Balkonkraftwerk anzumelden?",
+      a: "Einen Monat ab Inbetriebnahme. Das ist nicht dasselbe wie 30 Tage: Die Frist endet an dem Tag des Folgemonats, der dieselbe Zahl trägt — bei Inbetriebnahme am 15. März also am 15. April. Fehlt dieser Tag im Folgemonat, endet sie mit dem Monatsletzten; wer am 31. Januar in Betrieb geht, hat bis zum 28. Februar Zeit. Registrieren am letzten Tag reicht noch, die Frist läuft erst mit Ablauf des Tages ab.",
+    },
+    {
+      q: "Was muss ich beim Netzbetreiber melden?",
+      a: `Nichts mehr. Seit dem Solarpaket im Mai 2024 entfällt ${SOLARPAKET_ENTFALLEN} — die Registrierung im Marktstammdatenregister genügt. Der Netzbetreiber erfährt von dort selbst, dass die Anlage existiert, und tauscht bei Bedarf den Zähler. Ältere Anleitungen im Netz nennen diesen Schritt noch; er ist überholt.`,
+    },
+    {
+      q: "Unter welcher Kategorie melde ich ein Balkonkraftwerk an?",
+      a: `Als „${MASTR_KATEGORIE}“. Das Wort Balkonkraftwerk kommt im Register nicht vor — wer danach sucht, findet nichts und landet leicht im langen Formular für Dachanlagen. Die steckerfertige Variante verlangt nur wenige Angaben zum Gerät.`,
+    },
+    {
+      q: "Was passiert, wenn ich mein Balkonkraftwerk nicht anmelde?",
+      a: "Wer die Frist versäumt, handelt nach Angabe der Bundesnetzagentur grundsätzlich ordnungswidrig — vorausgesetzt, es geschieht vorsätzlich oder fahrlässig. Der gesetzliche Bußgeldrahmen für diesen Verstoß liegt bei bis zu 50.000 Euro und halbiert sich bei Fahrlässigkeit; das ist die Obergrenze für alle Verstöße dieser Kategorie, einschließlich gewerblicher Großanlagen, und nicht der Betrag, der bei einem Balkongerät zu erwarten wäre. Die Behörde nennt selbst keine Summe. Wie oft tatsächlich Bußgelder verhängt werden, ist nicht öffentlich belegt — weder in der einen noch in der anderen Richtung. Nachholen lässt sich die Registrierung jederzeit.",
+    },
+    {
+      q: "Kostet die Anmeldung etwas?",
+      a: "Nein. Die Registrierung im Marktstammdatenregister ist kostenlos und läuft online. Für ein Balkonkraftwerk sind es das eigene Benutzerkonto, die Erfassung als Betreiber und wenige Angaben zum Gerät. Anbieter, die dafür Geld verlangen, verkaufen dir einen Behördengang, den du in wenigen Minuten selbst machst.",
+    },
+    {
+      q: "Wer muss anmelden — Mieter oder Vermieter?",
+      a: "Der Betreiber, also wer die Anlage tatsächlich betreibt. Das ist nicht zwangsläufig der Eigentümer der Wohnung oder derjenige, der das Gerät bezahlt hat: Kauft der Vermieter das Set und nutzt der Mieter den Strom, muss der Mieter sich als Betreiber erfassen. Ob du das Gerät überhaupt anbringen darfst, ist eine andere Frage — dafür gilt seit 2024 die privilegierte Maßnahme.",
+      links: [{ phrase: "privilegierte Maßnahme", href: "/balkonkraftwerk-rechner" }],
+    },
+    {
+      q: "Muss ich ein Balkonkraftwerk beim Finanzamt anmelden?",
+      a: `Für den Betrieb nicht: Ein Balkonkraftwerk ohne Einspeisevergütung erzeugt keine Einnahmen, die zu erklären wären. Beim Kauf spielt das Steuerrecht dagegen mit — ${BALKON_RECHT.nullsteuer}`,
     },
   ];
 }
