@@ -228,14 +228,10 @@ export default function ContactForm({
         </div>
       )}
 
-      <button
-        type="submit"
-        style={{ ...S.button, ...(status === "sending" ? S.buttonDisabled : {}) }}
-        disabled={status === "sending"}
-      >
-        {status === "sending" ? "Wird gesendet …" : "Nachricht senden"}
-      </button>
-
+      {/* Vor dem Knopf, nicht dahinter: Wer sich mit der Tastatur durchs
+          Formular bewegt, muss den Hinweis erreichen, BEVOR er das Bedienelement
+          erreicht, das seine Daten absendet (Art. 13 DSGVO an der
+          Erhebungsstelle). */}
       <p style={S.privacy}>
         Deine Angaben gehen per E-Mail an uns — über unseren Versanddienstleister
         Resend (USA). In unserer Datenbank wird nichts davon gespeichert. Näheres
@@ -245,6 +241,14 @@ export default function ContactForm({
         </a>
         .
       </p>
+
+      <button
+        type="submit"
+        style={{ ...S.button, ...(status === "sending" ? S.buttonDisabled : {}) }}
+        disabled={status === "sending"}
+      >
+        {status === "sending" ? "Wird gesendet …" : "Nachricht senden"}
+      </button>
     </form>
   );
 }
