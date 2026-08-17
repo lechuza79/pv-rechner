@@ -150,6 +150,7 @@ async function main(): Promise<void> {
     // Rückfallebene, aber keine Garantie — deshalb ist und bleibt der
     // Beleg-Verfall nach 180 Tagen die eigentliche Absicherung.
     let ausArchiv = false;
+    const archivLog: string[] = [];
     if (!html) {
       const jahr = new Date().getFullYear();
       const wege = [
@@ -180,17 +181,21 @@ async function main(): Promise<void> {
         async () => `https://web.archive.org/save/${p.url}`,
       ];
 
-      for (const weg of wege) {
+      for (const [nr, weg] of wege.entries()) {
         if (html) break;
         for (const versuch of [0, 1]) {
           try {
             const ziel = await weg();
-            if (!ziel) break;
+            if (!ziel) { archivLog.push(`Weg ${nr + 1}: kein Schnappschuss`); break; }
             const res = await fetch(ziel, {
               headers: { "User-Agent": UA },
               redirect: "follow",
-              signal: AbortSignal.timeout(45_000),
+              // Save Page Now holt die Seite live und braucht deutlich länger als
+              // ein Archiv-Lesezugriff — mit 45 s bricht genau die Stufe ab, die
+              // bei gesperrten Trägern als einzige durchkommt.
+              signal: AbortSignal.timeout(nr === 2 ? 120_000 : 45_000),
             });
+            archivLog.push(`Weg ${nr + 1}: HTTP ${res.status}`);
             if (res.ok) {
               const t = await res.text();
               // Eine Fehlerseite des Archivs ist keine Amtsseite. Ohne diese
@@ -202,8 +207,8 @@ async function main(): Promise<void> {
                 break;
               }
             }
-          } catch {
-            /* nächster Versuch */
+          } catch (e) {
+            archivLog.push(`Weg ${nr + 1}: ${e instanceof Error ? e.name : "Fehler"}`);
           }
           if (versuch === 0) await new Promise((r) => setTimeout(r, 4_000));
         }
@@ -211,7 +216,9 @@ async function main(): Promise<void> {
     }
 
     if (!html) {
-      unerreichbar.push(`${p.name} (${p.region}) — HTTP ${status || "keine Antwort"}, auch nicht im Archiv`);
+      unerreichbar.push(
+        `${p.name} (${p.region}) — HTTP ${status || "keine Antwort"}; Archiv: ${archivLog.join(", ") || "nicht versucht"}`,
+      );
       if (!dry) {
         // WICHTIG: eigene Kennung, NICHT "pruefseite"/"gesperrt" — BLOCKER.
         // Ein gescheiterter Abruf dieses Crawlers ist KEIN Fehlversuch im Sinne
