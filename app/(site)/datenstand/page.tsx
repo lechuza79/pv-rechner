@@ -344,8 +344,8 @@ export default async function DatenstandPage() {
         </p>
         <p style={S.subtitle}>
           Die durchkalibrierten Modell-Datensätze breiten wir hier nicht mehr am Stück aus.
-          An die Zahlen kommst du trotzdem: Der jeweilige Rechner gibt sie mit dem Ergebnis
-          aus, und dort lässt sich jede einzelne überschreiben. Den vollständigen Satz
+          Ein Teil davon steht im jeweiligen Rechner-Ergebnis und ist dort auch änderbar —
+          welche Größen das sind, steht beim jeweiligen Abschnitt. Den vollständigen Satz
           bekommst du auf Anfrage.
         </p>
 
