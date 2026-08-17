@@ -119,7 +119,11 @@ async function ladeAenderungen(): Promise<SeitenAenderung[]> {
     .in("source", ["seite-geaendert", "seite-unerreichbar"])
     .order("checked_at", { ascending: true });
   if (error) throw new Error(`Änderungsmeldungen nicht lesbar: ${error.message}`);
-  return (data ?? []).map((r) => ({ programId: r.program_id, changedAt: r.checked_at }));
+  return (data ?? []).map((r) => ({
+    programId: r.program_id,
+    changedAt: r.checked_at,
+    art: r.source === "seite-geaendert" ? ("geaendert" as const) : ("unerreichbar" as const),
+  }));
 }
 
 async function zeigeVorrat(): Promise<void> {
@@ -141,7 +145,11 @@ async function zeigeVorrat(): Promise<void> {
     const p = nachId.get(s.programId);
     const alter = Number.isFinite(s.tageSeitQuellenpruefung) ? `${s.tageSeitQuellenpruefung} Tage` : "nie geprüft";
     const haengt = s.fehlversuche ? `, ${s.fehlversuche}× nicht rangekommen` : "";
-    const bewegt = s.seiteGeaendert ? "  ⟵ AMTSSEITE HAT SICH GEÄNDERT" : "";
+    const bewegt = s.seiteGeaendert
+      ? "  ⟵ AMTSSEITE HAT SICH GEÄNDERT"
+      : s.seiteUnerreichbar
+        ? "  ⟵ Abruf kam nicht durch (Browser nötig)"
+        : "";
     console.log(`  ${p?.name ?? s.programId} (${p?.region ?? "?"}) — ${alter}${haengt}${bewegt}`);
     if (p) {
       const e = eskalationsVorschlag(p, s);

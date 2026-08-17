@@ -130,7 +130,7 @@ describe("Bewegte Amtsseite", () => {
       { id: "koeln", lastVerified: "2026-08-10" }, // erst 6 Tage alt
       [],
       HEUTE,
-      [{ programId: "koeln", changedAt: "2026-08-15" }],
+      [{ programId: "koeln", changedAt: "2026-08-15", art: "geaendert" }],
     );
     expect(stand.seiteGeaendert).toBe(true);
     expect(stand.faellig).toBe(true);
@@ -141,7 +141,7 @@ describe("Bewegte Amtsseite", () => {
       { id: "koeln", lastVerified: "2026-08-14" },
       [],
       HEUTE,
-      [{ programId: "koeln", changedAt: "2026-08-01" }],
+      [{ programId: "koeln", changedAt: "2026-08-01", art: "geaendert" }],
     );
     expect(stand.seiteGeaendert).toBe(false);
     expect(stand.faellig).toBe(false);
@@ -152,7 +152,7 @@ describe("Bewegte Amtsseite", () => {
       { id: "koeln", lastVerified: HEUTE },
       [],
       HEUTE,
-      [{ programId: "koeln", changedAt: HEUTE }],
+      [{ programId: "koeln", changedAt: HEUTE, art: "geaendert" }],
     );
     expect(stand.seiteGeaendert).toBe(false);
   });
@@ -168,7 +168,7 @@ describe("Bewegte Amtsseite", () => {
       versuch("haengt", "2026-07-01", "gesperrt"),
     ];
     const vorrat = arbeitsvorrat(programme, versuche, HEUTE, [
-      { programId: "bewegt", changedAt: "2026-08-15" },
+      { programId: "bewegt", changedAt: "2026-08-15", art: "geaendert" },
     ]);
     expect(vorrat[0].programId).toBe("bewegt");
   });
@@ -230,13 +230,16 @@ describe("Crawler-Abbrüche eskalieren nicht", () => {
       [],
       HEUTE,
       [
-        { programId: "frankfurt", changedAt: "2026-08-15" },
-        { programId: "frankfurt", changedAt: "2026-08-16" },
-        { programId: "frankfurt", changedAt: "2026-08-17" },
+        { programId: "frankfurt", changedAt: "2026-08-15", art: "unerreichbar" },
+        { programId: "frankfurt", changedAt: "2026-08-16", art: "unerreichbar" },
+        { programId: "frankfurt", changedAt: "2026-08-17", art: "unerreichbar" },
       ],
     );
     expect(stand.faellig).toBe(true);
     expect(stand.fehlversuche).toBe(0);
     expect(eskalationsVorschlag(frankfurt, stand)).toBeNull();
+    // Und: nicht als "geändert" etikettieren — wir haben die Seite nie gesehen.
+    expect(stand.seiteUnerreichbar).toBe(true);
+    expect(stand.seiteGeaendert).toBe(false);
   });
 });
