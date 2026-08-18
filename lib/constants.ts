@@ -305,5 +305,28 @@ export const WP_FUEL_OPTIONS: {
 }[] = [
   { id: "gas_neu", label: "Gas-Brennwert", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.95, co2PerKwh: FUEL_PRICE.gas.co2PerKwh },
   { id: "oil", label: "Heizöl", refLabel: "Ölheizung", kind: "oil", price: FUEL_PRICE.oil.price, efficiency: 0.85, co2PerKwh: FUEL_PRICE.oil.co2PerKwh },
+  // Die beiden Bestands-Einträge sind der Fall „Anschaffung 0" — und der heißt
+  // laut Beschreibung des Feldes ausdrücklich „meine Heizung ist noch jung".
+  // Bis 18.08.2026 gab es dafür nur den 30 Jahre alten Kessel mit 80 %: Wer
+  // seine junge Brennwerttherme meinte, bekam den Verbrauch einer Altanlage
+  // gerechnet — 8.084 € zu viel zugunsten der Wärmepumpe (140 m², teilsaniert).
+  // Und für Heizöl gab es gar keinen Bestands-Eintrag, weshalb ein Öl-Haushalt
+  // beim Umstellen still auf Gas rutschte (andere Grundgebühr, anderer
+  // CO₂-Faktor). Die Nutzungsgrade sind KEINE neuen Zahlen: 90 % Gas / 85 % Öl
+  // sind die vorhandene Heizung aus FUEL oben, dieselben, mit denen der
+  // PV-Rechner seit jeher gegen die bestehende Heizung rechnet.
+  //
+  // OFFEN (bis 01/2027): Für Heizöl fehlt der Bestands-Eintrag noch. Er braucht
+  // zwei verschiedene Nutzungsgrade (vorhanden / neu eingebaut), und die eine Zahl,
+  // die das Projekt heute für Öl kennt (0,85), beschreibt die VORHANDENE Anlage —
+  // sie steht derzeit an der neu eingebauten. Ein zweiter Eintrag mit derselben
+  // Zahl wäre kein Fall, sondern eine Dublette. Belegte Zielwerte liegen vor
+  // (IWU, „Energetische Kenngrößen für Heizungsanlagen im Bestand", Tab. 3, in
+  // Anlehnung an DIN V 4701-10: Öl-Brennwert 0,94 · Öl-Niedertemperatur 0,88;
+  // Volltext in docs/quellen/), die Prüfung läuft über scripts/waermepumpe-verify.md
+  // zusammen mit dem ebenfalls offenen Öl-Wartungswert. Bis dahin rutscht ein
+  // Öl-Haushalt bei „Anschaffung 0" auf Gas — sichtbar, aber unvermeidbar, ohne
+  // eine ungeprüfte Zahl zu erfinden.
+  { id: "gas_vorhanden", label: "Vorhandene Gastherme", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: FUEL.gas.efficiency, co2PerKwh: FUEL_PRICE.gas.co2PerKwh, bestandsanlage: true },
   { id: "gas_alt", label: "Alter Gaskessel", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.80, co2PerKwh: FUEL_PRICE.gas.co2PerKwh, bestandsanlage: true },
 ];
