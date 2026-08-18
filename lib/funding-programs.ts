@@ -1516,6 +1516,66 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // 1.000 € Pauschale — ohne Rechenwert, solange die Plätze vergeben sind.
   },
 
+  // ── Kommune – übergeben von der Prüfmechanik-Session, gelesen 18.08.2026 ────
+  //
+  // Beide Fälle musste die Vorgänger-Session ohne Betrag liegen lassen, weil das
+  // Modell „X % der Kosten, höchstens Y €" nicht ausdrücken konnte. Mit
+  // `balkonPercentOfCost` + `balkonCap` geht es jetzt. Ihre Zahlen stammten aus
+  // dem Screening und waren ausdrücklich NICHT gegengelesen — beide Seiten sind
+  // hier zuerst im Volltext geöffnet worden, und bei Leimen kam dabei ein
+  // Höchstbetrag zum Vorschein, den der Auszug nicht enthielt.
+
+  "hohenahr-pv": {
+    id: "hohenahr-pv", name: "Förderrichtlinie Photovoltaikanlagen",
+    traeger: "Gemeinde Hohenahr", level: "kommune", region: "Hohenahr",
+    bundesland: "Hessen", agsCode: "06532013",
+    url: "https://www.hohenahr.de/bauen-umwelt/energie-umwelt/foerderprogramm-pv-anlagen/",
+    stand: "August 2026", status: "aktiv", capped: false, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil an Anschaffung, Montage und Inbetriebnahme — Balkonkraftwerk und Dachanlage getrennt",
+    maxFoerderung: "max. 1.000 € für die Dachanlage, max. 200 € fürs Balkonkraftwerk",
+    rates: [
+      { label: "Steckerfertiges Balkonkraftwerk", value: "20 % der Anschaffungskosten, max. 200 € brutto" },
+      { label: "Genehmigungspflichtige Anlage bis 30 kWp", value: "10 % der Anschaffungskosten, max. 1.000 € brutto" },
+    ],
+    conditions: [
+      "Der Antrag ist vor Inbetriebnahme zu stellen und der Bewilligungsbescheid abzuwarten",
+      "Antragsberechtigt sind Mieterinnen und Mieter, Vermieter, Eigentümer und Wohnungseigentümergemeinschaften in Hohenahr",
+      "Das Balkonkraftwerk darf höchstens 600 W Wechselrichterleistung abgeben",
+      "Die Dachanlage darf höchstens 30 kWp installierte Leistung haben",
+    ],
+    combinableWith: BUND,
+    foerdert: ["pv", "balkon"],
+    percentOfCost: 0.1, pvCap: 1000,
+    balkonPercentOfCost: 0.2, balkonCap: 200,
+    // Die 600-W-Grenze steht so in der Richtlinie von 2023 und ist damit enger
+    // als die heute übliche 800-W-Schwelle. Sie bleibt als Bedingung stehen,
+    // statt stillschweigend auf 800 aufgerundet zu werden: Wer ein 800-W-Gerät
+    // kauft, bekommt hier nach dem Wortlaut nichts.
+  },
+
+  "leimen-klimaschutz": {
+    id: "leimen-klimaschutz", name: "Klimaschutzförderung Stecker-Solaranlagen",
+    traeger: "Stadt Leimen", level: "kommune", region: "Leimen",
+    bundesland: "Baden-Württemberg", agsCode: "08226041",
+    url: "https://www.leimen.de/leben-wohnen/klimaschutz-und-umwelt/klimaschutzfoerderungen",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil der Gesamtkosten einer Stecker-Solaranlage",
+    maxFoerderung: "max. 120 € je Antrag",
+    rates: [{ label: "Stecker-Solaranlage", value: "15 % der Gesamtkosten, max. 120 €" }],
+    conditions: [
+      "Gefördert wird nur ein Kauf innerhalb des Förderzeitraums 2026",
+      "Nach Angabe der Stadt sind ausreichend Fördermittel vorhanden",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // 120 € Deckel — der stand NICHT im Screening-Auszug, aus dem die
+    // Vorgänger-Session ihre 15 % hatte. Ohne ihn hätte ein 800-€-Set 120 statt
+    // 45 € Förderung gezeigt: derselbe Prozentsatz, dreifacher Betrag.
+    balkonPercentOfCost: 0.15, balkonCap: 120,
+  },
+
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

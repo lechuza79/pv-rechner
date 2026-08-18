@@ -116,6 +116,8 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "muehlhausen-sulz-pv", "senden-klima",
   // Erste Wärmepumpen-Funde derselben Runde.
   "maintal-klima", "roth-klimaschutz", "wenden-heizungstausch",
+  // Von der Prüfmechanik-Session übergeben und hier im Volltext gegengelesen.
+  "hohenahr-pv", "leimen-klimaschutz",
 ];
 
 /**
