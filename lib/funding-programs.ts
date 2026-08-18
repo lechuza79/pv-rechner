@@ -1844,6 +1844,139 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     foerdert: ["balkon"],
   },
 
+  // ── Kommune – erste Funde der URL-Suche, 18.08.2026 ─────────────────────────
+  //
+  // Diese Städte standen in KEINER erfassten Liste: Für sie kannten wir nur die
+  // Startseite der Verwaltung. Die Förderseite hat erst der neue Suchlauf auf
+  // der Amtsdomain gefunden. Neuwied fördert damit 380 Balkonkraftwerke im Jahr,
+  // Rodgau hält dafür 100.000 € bereit — beides lief bisher an uns vorbei.
+
+  "neuwied-balkonkraftwerke": {
+    id: "neuwied-balkonkraftwerke", name: "Kommunales Förderprogramm Balkonkraftwerke",
+    traeger: "Stadt Neuwied", level: "kommune", region: "Neuwied",
+    bundesland: "Rheinland-Pfalz", agsCode: "07138045",
+    url: "https://www.neuwied.de/klimaschutz/foerderungen",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Haushalt für ein Balkonkraftwerk",
+    maxFoerderung: "max. 100 € je Haushalt",
+    rates: [{ label: "Balkonkraftwerk", value: "100 € pauschal" }],
+    conditions: [
+      "Antragsberechtigt sind Eigentümerinnen und Eigentümer ebenso wie Mieterinnen und Mieter",
+      "Mietende brauchen die schriftliche Zustimmung der Vermieterseite",
+      "Der Antrag läuft über ein Online-Formular",
+      "Der Topf umfasst 38.000 € und reicht für 380 Anlagen",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 100,
+  },
+
+  "rodgau-balkonsolar": {
+    id: "rodgau-balkonsolar", name: "Förderung von Balkon-Solaranlagen",
+    traeger: "Stadt Rodgau", level: "kommune", region: "Rodgau",
+    bundesland: "Hessen", agsCode: "06438011",
+    url: "https://www.rodgau.de/de/leben/stadtplanung-umwelt-mobiltaet/umwelt/foerderung-von-balkon-solaranlagen/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteil des Rechnungsbetrags einer Balkon-Solaranlage",
+    maxFoerderung: "max. 200 € je Anlage",
+    rates: [{ label: "Balkon-Solaranlage", value: "25 % des Rechnungsbetrags, max. 200 €" }],
+    conditions: [
+      "Die Antragsfrist ist der 31. Dezember des jeweiligen Förderjahres",
+      "Mietende sollten sich eine schriftliche Einverständniserklärung der Vermieterseite geben lassen",
+      "Vergeben wird nach Eingang, bis der Jahrestopf von 100.000 € leer ist",
+      "Die Richtlinie läuft bis zum 31. Dezember 2026",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPercentOfCost: 0.25, balkonCap: 200,
+  },
+
+  "tuebingen-balkon-pv": {
+    id: "tuebingen-balkon-pv", name: "Balkon-PV für Inhaber der KreisBonusCard",
+    traeger: "Universitätsstadt Tübingen", level: "kommune", region: "Tübingen",
+    bundesland: "Baden-Württemberg", agsCode: "08416041",
+    url: "https://tuebingen.de/1620/47436.html",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Hoher Anteil der Anschaffungskosten — aber nur mit KreisBonusCard",
+    maxFoerderung: "max. 800 € je Wohnung",
+    rates: [{ label: "Balkonkraftwerk (nur mit KreisBonusCard)", value: "bis zu 75 % der Anschaffungskosten, max. 800 €" }],
+    conditions: [
+      "Antragsberechtigt sind ausschließlich Inhaberinnen und Inhaber der KreisBonusCard oder KreisBonusCard extra",
+      "Gefördert werden Wohngebäude im Stadtgebiet Tübingen",
+      "Anträge laufen über tuebingen-macht-blau.de/balkon-pv",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // KEIN Rechenwert, obwohl 75 % und 800 € ausdrücklich dastehen: Die Karte
+    // ist eine Sozialleistung mit Einkommensprüfung, die der Rechner nicht kennt.
+    // 800 € allen zu versprechen wäre bei einem 600-€-Set eine Förderung über
+    // dem Kaufpreis — und für die große Mehrheit schlicht falsch. Dieselbe
+    // Zurückhaltung wie beim München-Pass, der Stuttgarter FamilienCard und dem
+    // Holzgerlinger Familien- und Sozialpass.
+  },
+
+  "zweibruecken-balkonkraftwerke": {
+    id: "zweibruecken-balkonkraftwerke", name: "Förderung Balkonkraftwerke",
+    traeger: "Stadt Zweibrücken", level: "kommune", region: "Zweibrücken",
+    bundesland: "Rheinland-Pfalz", agsCode: "07320000",
+    url: "https://www.zweibruecken.de/de/verwaltung/aemter/stadtbauamt/klimaschutz-und-klimaanpassung/klimaschutz/balkonkraftwerke-foerderung/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale nach Zahl der Module",
+    maxFoerderung: "max. 180 € je Wohneinheit",
+    rates: [
+      { label: "Ein Modul (300 W)", value: "90 € pauschal" },
+      { label: "Zwei Module (600 W)", value: "180 € pauschal" },
+    ],
+    conditions: [
+      "Antragsberechtigt sind Privatpersonen mit Hauptwohnsitz in Zweibrücken",
+      "Je Wohneinheit wird höchstens ein Balkonkraftwerk gefördert",
+      "Gefördert werden nur Anlagen, die ab dem 1. Juli 2024 gekauft wurden",
+      "Der Antrag wird nach Installation und Registrierung gestellt",
+      "Mietende sollten vor der Anschaffung mit der Vermieterseite sprechen",
+      "Das Programm ist mit 126.000 € ausgestattet; danach werden keine Anträge mehr bewilligt",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    // Die Staffel läuft über die MODULZAHL, der Rechner kennt die Modulleistung
+    // — 300 W je Modul ist die Umrechnung, die die Stadt selbst in ihre Tabelle
+    // geschrieben hat. Ein typisches Set mit 800 Wp landet damit in der zweiten
+    // Stufe, was der Sache entspricht (zwei Module).
+    balkonTiers: [{ upTo: 300, amount: 90 }, { upTo: 999999, amount: 180 }],
+  },
+
+  "unterhaching-energiesparen": {
+    id: "unterhaching-energiesparen", name: "Förderprogramm Energiesparen und Klimaschutz",
+    traeger: "Gemeinde Unterhaching", level: "kommune", region: "Unterhaching",
+    bundesland: "Bayern", agsCode: "09184148",
+    url: "https://www.unterhaching.de/klimaschutz/foerderprogramm-energiesparen-klimaschutz",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat", "gewerblich"],
+    coveredCosts: "Anteil der Netto-Investitionskosten, je Baustein eigener Höchstbetrag",
+    maxFoerderung: "max. 2.000 € für die PV-Anlage",
+    rates: [
+      { label: "Photovoltaik", value: "10 % der Netto-Investitionskosten, max. 2.000 €" },
+      { label: "Batteriespeicher", value: "10 % der Netto-Investitionskosten, max. 1.000 €" },
+      { label: "Heizungsoptimierung", value: "10 % der Netto-Investitionskosten, max. 500 €" },
+    ],
+    conditions: [
+      "Der Antrag ist vor Beauftragung oder Bestellung zu stellen",
+      "Antragsberechtigt sind Eigentümer, Erbbauberechtigte, Mieter und Pächter mit Zustimmung des Eigentümers sowie Kleinstunternehmen",
+      "Balkonkraftwerke sind nicht Teil der Richtlinie",
+    ],
+    combinableWith: BUND,
+    percentOfCost: 0.1, pvCap: 2000,
+    // Gerechnet wird nur der PV-Baustein. Der Speicher hat denselben Satz, aber
+    // einen eigenen Deckel — das Modell kennt für Prozentsätze nur EINEN Topf
+    // und würde beim Zusammenrechnen den falschen Deckel ziehen. Die Wirkung
+    // geht zu unseren Ungunsten (bis zu 1.000 € nicht angesetzt), und das ist
+    // die richtige Richtung: lieber eine angenehme Überraschung als eine
+    // eingeplante Zahl, die nicht kommt.
+  },
+
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

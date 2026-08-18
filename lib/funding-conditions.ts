@@ -122,6 +122,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "heddesheim-umwelt", "nittenau-steckersolar", "beratzhausen-effizient",
   "rietheim-weilheim-pv", "forstinning-energiewende", "oftersheim-co2",
   "bad-rothenfelde-klima", "vilshofen-steckersolar",
+  // Erste Städte, die überhaupt erst die URL-Suche gefunden hat.
+  "neuwied-balkonkraftwerke", "rodgau-balkonsolar", "tuebingen-balkon-pv",
+  "zweibruecken-balkonkraftwerke", "unterhaching-energiesparen",
 ];
 
 /**
