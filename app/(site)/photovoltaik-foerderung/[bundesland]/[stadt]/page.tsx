@@ -8,9 +8,9 @@ import RelatedLinks from "../../../../../components/RelatedLinks";
 import { v, iconSizes, space, pad, sectionGap } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
-import { cityBySlug, slugify, isCityPublished, publishedCities } from "../../../../../lib/atlas-cities";
+import { cityBySlug, slugify, isCityPublished, publishedCities, fundingForFrom } from "../../../../../lib/atlas-cities";
 import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
-import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
+import { getFundingPrograms } from "../../../../../lib/funding-data";
 import { FundingRates, FundingConditions, FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
 import FoerderCheckStarter from "../../../../../components/FoerderCheckStarter";
 import { buildFundingExamples } from "../../../../../lib/funding-examples";
@@ -33,7 +33,10 @@ export async function generateMetadata(props: { params: Promise<{ bundesland: st
   const params = await props.params;
   const city = cityBySlug(params.stadt);
   if (!city || slugify(city.bundesland) !== params.bundesland) return {};
-  const f = city.fundingId ? await getFundingProgramById(city.fundingId) : undefined;
+  // Auch der Seitentitel muss über die abgeleitete Zuordnung gehen — sonst
+  // verspricht die Überschrift „Zuschüsse", während die Seite darunter ein
+  // eingestelltes Programm zeigt.
+  const f = fundingForFrom(await getFundingPrograms(), city);
   const active = f?.status === "aktiv";
   const year = new Date().getFullYear();
   return pageMetadata({
@@ -135,7 +138,7 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
 
   const programs = await getFundingPrograms();
   const byId = new Map(programs.map((p) => [p.id, p]));
-  const f = city.fundingId ? byId.get(city.fundingId) : undefined;
+  const f = fundingForFrom(programs, city);
   const examples = buildFundingExamples(city.yieldKwhKwp, f);
   // Förderung im Rechner vorab scharf schalten — nur wenn sie sich pauschal
   // berechnen lässt UND sie überhaupt noch zählt (Anträge offen + Quellenbeleg
