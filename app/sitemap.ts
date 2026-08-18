@@ -1,11 +1,11 @@
 import { MetadataRoute } from "next";
-import { liveCities, archivedCities, slugify, publishedBundeslaender } from "../lib/atlas-cities";
+import { liveCities, archivedCities, slugify, publishedBundeslaender, fundingForFrom } from "../lib/atlas-cities";
 import { landProgramBundeslaender } from "../lib/funding-programs";
 import { getFundingPrograms } from "../lib/funding-data";
 import { atlasLevelReleased } from "../lib/atlas-index";
 import { BUNDESLAENDER } from "../lib/mastr-regions";
 import { RATGEBER } from "../lib/ratgeber";
-import { BALKON_RECHT } from "../lib/balkon-config";
+import { standLastModIso } from "../lib/stand";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://solar-check.io";
 
@@ -17,7 +17,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const programs = await getFundingPrograms();
-  const byId = new Map(programs.map((p) => [p.id, p]));
   const toDate = (iso?: string): Date | undefined => {
     if (!iso) return undefined;
     const d = new Date(iso);
@@ -29,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     : now;
 
   const cityPages: MetadataRoute.Sitemap = liveCities().map((c) => {
-    const f = c.fundingId ? byId.get(c.fundingId) : undefined;
+    const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
       lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
@@ -40,7 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Archive pages (program exhausted/paused/discontinued): still indexable for
   // SEO, but lower priority and less churn than the live ones.
   const archivedCityPages: MetadataRoute.Sitemap = archivedCities().map((c) => {
-    const f = c.fundingId ? byId.get(c.fundingId) : undefined;
+    const f = fundingForFrom(programs, c);
     return {
       url: `${BASE_URL}/photovoltaik-foerderung/${slugify(c.bundesland)}/${c.slug}`,
       lastModified: toDate(f?.lastVerified) ?? maxFundingDate,
@@ -111,24 +110,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
+  // Rechner-Seiten: `lastModified` ist der jüngste Stand der WERTE einer Seite
+  // (lib/stand.ts — dieselbe Quelle, aus der die sichtbare „Stand:"-Zeile unter
+  // dem Rechner kommt). Bewusst NICHT der jüngste Prüftag: Zwei Prüfdaten werden
+  // täglich nachgezogen (Rechtsstand der Grüngas-Pflicht, Sachstand der
+  // EEG-Reform). Hinge `lastmod` daran, meldete die Sitemap jeden Tag
+  // „geändert", während sich auf der Seite nur eine Datumszeile in der Fußnote
+  // bewegt. Eine Seite ohne Wertstand — die Live-Simulation hat keinen Stichtag
+  // — steht weiterhin OHNE `lastmod` da: ein Build-Datum wäre bei jedem Deploy
+  // „jetzt" und wird von Google ohnehin ignoriert.
+  //
+  // Google nutzt `lastmod` nur, solange es „consistently and verifiably
+  // accurate" ist, und verlangt dafür eine Änderung am eigentlichen Inhalt —
+  // ein mitlaufendes Copyright-Datum nennt es ausdrücklich als Gegenbeispiel.
+  // Deshalb hängt das Datum hier an den Zahlen, mit denen der Rechner rechnet:
+  // Ändert sich eine, ändert sich die Seite; wird eine nur bestätigt, bewegt
+  // sich das Prüfdatum in der Fußnote — und sonst nichts.
+  const rechnerStand = (pfad: string) => toDate(standLastModIso(pfad));
+
   return [
     { url: BASE_URL, changeFrequency: "monthly", priority: 1 },
-    { url: `${BASE_URL}/photovoltaik-rechner`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/pv-bedarf-berechnen`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/waermepumpe-rechner`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE_URL}/klimaanlage-stromkosten`, changeFrequency: "monthly", priority: 0.8 },
-    // Einziger Rechner mit `lastModified`, weil er als einziger ein ehrliches
-    // Datum hat: den Tag, an dem die Rechtsangaben der Seite zuletzt gegen die
-    // Primärquellen gelesen wurden. Die anderen Rechner lassen es bewusst weg —
-    // ein Build-Datum wäre bei jedem Deploy „jetzt" und wird von Google ignoriert.
-    // Themen-Einstieg des Balkon-Clusters. Steht bewusst VOR dem Rechner:
-    // Er ist die Wurzel, unter der /balkonkraftwerk/anmelden hängt (der Ratgeber
-    // kommt aus der Registry weiter unten). Der Rechner zieht noch nach —
-    // solange eine Parallel-Session an balkon.tsx arbeitet, wäre der Rename ein
-    // Konflikt in einer fremden Baustelle.
-    { url: `${BASE_URL}/balkonkraftwerk`, lastModified: toDate(BALKON_RECHT.geprueftIso), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/balkonkraftwerk-rechner`, lastModified: toDate(BALKON_RECHT.geprueftIso), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${BASE_URL}/einspeiseverguetung-rechner`, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/photovoltaik-rechner`, lastModified: rechnerStand("/photovoltaik-rechner"), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/pv-bedarf-berechnen`, lastModified: rechnerStand("/pv-bedarf-berechnen"), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/waermepumpe-rechner`, lastModified: rechnerStand("/waermepumpe-rechner"), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/klimaanlage-stromkosten`, lastModified: rechnerStand("/klimaanlage-stromkosten"), changeFrequency: "monthly", priority: 0.8 },
+    // Themen-Einstieg des Balkon-Clusters — die Wurzel, unter der Rechner und
+    // Anmelde-Ratgeber haengen. Traegt denselben Stand wie der Rechner, weil er
+    // aus denselben Werten rechnet.
+    { url: `${BASE_URL}/balkonkraftwerk`, lastModified: rechnerStand("/balkonkraftwerk"), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/balkonkraftwerk/rechner`, lastModified: rechnerStand("/balkonkraftwerk/rechner"), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/einspeiseverguetung-rechner`, lastModified: rechnerStand("/einspeiseverguetung-rechner"), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-zubau-deutschland`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/ratgeber`, lastModified: neuesterRatgeber, changeFrequency: "monthly", priority: 0.7 },

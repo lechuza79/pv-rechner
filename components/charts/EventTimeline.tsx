@@ -12,6 +12,13 @@ import { useEffect, useRef, useState } from "react";
 import { space, v } from "../../lib/theme";
 import { PLOT_MARGIN } from "./ZubauTimelineChart";
 
+/** Seitliche Plot-Ränder des Charts, an dem die Leiste ausgerichtet wird.
+ *  Die Ausrichtung ist der ganze Punkt: Eine Marke, die nicht über ihrem
+ *  Jahr steht, zeigt auf das falsche Jahr. Deshalb reicht der Aufrufer die
+ *  Ränder SEINES Charts herein, statt dass die Leiste einen erratenen Wert
+ *  benutzt. Default sind die des Zubau-Charts. */
+export interface TimelineMargin { left: number; right: number }
+
 export interface TimelineEvent {
   year: number;
   label: string;
@@ -32,9 +39,11 @@ interface Props {
   /** Erstes/letztes Jahr der Chart-Achse — für die exakte Ausrichtung. */
   startYear: number;
   endYear: number;
+  /** Plot-Ränder des Charts darüber. Ohne Angabe die des Zubau-Charts. */
+  margin?: TimelineMargin;
 }
 
-export default function EventTimeline({ events, active, onChange, startYear, endYear }: Props) {
+export default function EventTimeline({ events, active, onChange, startYear, endYear, margin = PLOT_MARGIN }: Props) {
   const touchX = useRef<number | null>(null);
   // Auf schmalen Displays wandern die Blätter-Pfeile unter den Text: neben dem
   // Text quetschen sie die Spalte auf wenige Wörter je Zeile.
@@ -104,7 +113,7 @@ export default function EventTimeline({ events, active, onChange, startYear, end
     <div>
       {/* Track — Ränder = Chart-Plot-Ränder, damit die Punkte unter den Balken sitzen.
          Die Verbindungslinie beginnt am ersten Punkt (nicht am linken Rand). */}
-      <div style={{ position: "relative", paddingLeft: PLOT_MARGIN.left, paddingRight: PLOT_MARGIN.right }}>
+      <div style={{ position: "relative", paddingLeft: margin.left, paddingRight: margin.right }}>
         <div role="tablist" aria-label="Weichenstellungen im Solarausbau" style={{ position: "relative", height: 30 }}>
           {/* Graue Grundlinie bis zum letzten echten Ereignis */}
           <div
@@ -214,8 +223,8 @@ export default function EventTimeline({ events, active, onChange, startYear, end
           outline: "none",
           // Schmal: die Erläuterung nutzt die volle Breite. Die Ausrichtung auf
           // die Plot-Ränder gilt nur der Punkte-Leiste darüber, nicht dem Text.
-          paddingLeft: narrow ? 0 : PLOT_MARGIN.left,
-          paddingRight: narrow ? 0 : PLOT_MARGIN.right,
+          paddingLeft: narrow ? 0 : margin.left,
+          paddingRight: narrow ? 0 : margin.right,
         }}
       >
         <div style={{ display: "flex", flexDirection: narrow ? "column" : "row", alignItems: narrow ? "stretch" : "center", gap: space.lg }}>

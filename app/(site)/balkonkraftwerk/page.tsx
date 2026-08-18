@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../components/Breadcrumb";
+import StandNote from "../../../components/StandNote";
 import { pageMetadata } from "../../../lib/seo";
 import { v } from "../../../lib/theme";
 import { DEFAULT_BALKON_CONFIG as CFG, BALKON_RECHT } from "../../../lib/balkon-config";
@@ -102,7 +103,7 @@ export default function BalkonkraftwerkHub() {
         </p>
 
         <h2 style={S.h2}>Weiter</h2>
-        <Link href="/balkonkraftwerk-rechner" style={S.karte}>
+        <Link href="/balkonkraftwerk/rechner" style={S.karte}>
           <div style={S.karteTitel}>Für deinen Haushalt rechnen</div>
           <div style={S.karteText}>
             Ertrag am eigenen Standort, Ersparnis, Amortisation und die Frage, ob sich ein
@@ -124,11 +125,10 @@ export default function BalkonkraftwerkHub() {
           </div>
         </Link>
 
-        <p style={{ ...S.p, marginTop: 24, fontSize: v("--font-size-small") }}>
-          Alle Beispielzahlen auf dieser Seite sind live gerechnet — mit demselben Modell wie
-          im Rechner. Die Werte, auf denen das beruht, stehen offen auf der{" "}
-          <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
-        </p>
+        {/* Stand aus der geteilten Registry, nicht handgeschrieben — sonst
+            entsteht genau die Zweitkopie, die lib/__tests__/stand.test.ts
+            verbietet (und die beim ersten Wächter-Lauf auseinanderliefe). */}
+        <StandNote pfad="/balkonkraftwerk" style={{ marginTop: 24 }} />
       </div>
     </div>
   );

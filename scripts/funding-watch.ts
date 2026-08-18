@@ -29,8 +29,8 @@
 
 import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
-import { createHash } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
+import { fingerprintOf, markiert } from "../lib/funding-fingerprint";
 import type { FundingProgram } from "../lib/funding-programs";
 
 function loadEnvFile(): void {
@@ -51,26 +51,12 @@ if (!url || !key) {
 }
 const sb = createClient(url, key);
 const dry = process.argv.includes("--dry");
+const SITE = process.env.SITE_URL ?? "https://solar-check.io";
+const CRON_SECRET = process.env.CRON_SECRET;
 
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36";
 
-/** Sichtbarer Text, so weit normalisiert, dass nur echte Inhaltsänderungen zählen. */
-function fingerprint(html: string): string {
-  const text = html
-    .replace(/<(script|style|noscript|svg)[^>]*>[\s\S]*?<\/\1>/gi, " ")
-    .replace(/<!--[\s\S]*?-->/g, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&[a-z]+;|&#\d+;/gi, " ")
-    // Sitzungs-/Cache-Kennungen und Datumsstempel, die sich bei jedem Abruf
-    // ändern, würden sonst täglich eine Änderung vortäuschen.
-    .replace(/\b[0-9a-f]{16,}\b/gi, " ")
-    .replace(/\b\d{1,2}[.:]\d{2}(:\d{2})?\b/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .toLowerCase();
-  return createHash("sha256").update(text).digest("hex");
-}
 
 type Zeile = { id: string; data: FundingProgram; page_fingerprint: string | null };
 
@@ -87,6 +73,8 @@ async function main(): Promise<void> {
   const geaendert: string[] = [];
   const unerreichbar: string[] = [];
   const ueberArchiv: string[] = [];
+  const ueberProduktion: string[] = [];
+  const nichtVergleichbar: string[] = [];
   let unveraendert = 0;
 
   for (const z of zeilen) {
@@ -149,9 +137,50 @@ async function main(): Promise<void> {
     // Abfrage lief zwischendurch in ein Anfragelimit. Es ist also eine gute
     // Rückfallebene, aber keine Garantie — deshalb ist und bleibt der
     // Beleg-Verfall nach 180 Tagen die eigentliche Absicherung.
+    // Unsere eigene Produktion als Ausgangspunkt — die entscheidende Stufe.
+    //
+    // GitHub-Runner hängen an Azure-Rechenzentrumsadressen; die sperren viele
+    // Anbieter pauschal (gemessen: archive.org antwortet dort mit 503/523, von
+    // einem normalen Anschluss mit 200). Unsere Vercel-Function in Frankfurt ist
+    // dagegen eine Adresse, die echten Web-Verkehr ausliefert. Sie holt die Seite
+    // und gibt nur den Fingerabdruck zurück (/api/funding/fetch).
+    let ausProduktion: string | null = null;
+    const prodLog: string[] = [];
+    if (!html && SITE && CRON_SECRET) {
+      for (const versuch of [0, 1]) {
+        try {
+          const res = await fetch(`${SITE}/api/funding/fetch?id=${encodeURIComponent(z.id)}`, {
+            headers: { Authorization: `Bearer ${CRON_SECRET}` },
+            signal: AbortSignal.timeout(70_000),
+          });
+          const j = (await res.json()) as {
+            ok?: boolean; fingerprint?: string; weg?: string;
+            versuche?: { weg: string; status: number | string }[];
+          };
+          // NICHT den HTTP-Status der Route protokollieren — der ist 200, sobald
+          // sie überhaupt geantwortet hat, auch wenn sie die Amtsseite gar nicht
+          // bekommen hat. Genau so stand am 17.08. „Produktion: HTTP 200" neben
+          // einem Programm, das als unerreichbar gemeldet wurde. Was zählt, ist
+          // ihr eigener Ausgang.
+          prodLog.push(
+            j.ok
+              ? `erreicht via ${j.weg}`
+              : `nicht erreicht (${(j.versuche ?? []).map((v) => `${v.weg}:${v.status}`).join(", ") || `Antwort ${res.status}`})`,
+          );
+          if (j.ok && j.fingerprint) {
+            ausProduktion = j.fingerprint;
+            break;
+          }
+        } catch (e) {
+          prodLog.push(e instanceof Error ? e.name : "Fehler");
+        }
+        if (versuch === 0) await new Promise((r) => setTimeout(r, 5_000));
+      }
+    }
+
     let ausArchiv = false;
     const archivLog: string[] = [];
-    if (!html) {
+    if (!html && !ausProduktion) {
       const jahr = new Date().getFullYear();
       const wege = [
         async () => {
@@ -215,9 +244,9 @@ async function main(): Promise<void> {
       }
     }
 
-    if (!html) {
+    if (!html && !ausProduktion) {
       unerreichbar.push(
-        `${p.name} (${p.region}) — HTTP ${status || "keine Antwort"}; Archiv: ${archivLog.join(", ") || "nicht versucht"}`,
+        `${p.name} (${p.region}) — HTTP ${status || "keine Antwort"}; Produktion: ${prodLog.join(", ") || "nicht versucht"}; Archiv: ${archivLog.join(", ") || "nicht versucht"}`,
       );
       if (!dry) {
         // WICHTIG: eigene Kennung, NICHT "pruefseite"/"gesperrt" — BLOCKER.
@@ -243,9 +272,26 @@ async function main(): Promise<void> {
     // Der Fingerabdruck trägt seine Herkunft. Live- und Archivfassung derselben
     // Seite unterscheiden sich immer ein wenig; ohne diese Kennzeichnung meldete
     // jeder Wechsel zwischen beiden Wegen eine Änderung, die es nie gab.
-    const fp = `${ausArchiv ? "archiv" : "live"}:${fingerprint(html)}`;
-    const gleicheHerkunft = z.page_fingerprint?.split(":")[0] === (ausArchiv ? "archiv" : "live");
-    if (z.page_fingerprint && gleicheHerkunft && z.page_fingerprint !== fp) {
+    const fp = ausProduktion ?? markiert(ausArchiv ? "archiv" : "live", fingerprintOf(html));
+    const herkunft = fp.split(":")[0];
+    const gleicheHerkunft = z.page_fingerprint?.split(":")[0] === herkunft;
+    const hatSichGeaendert = !!z.page_fingerprint && gleicheHerkunft && z.page_fingerprint !== fp;
+
+    // NUR ein LIVE gelesener Abruf bestätigt, dass die Amtsseite noch da und
+    // unverändert ist — BLOCKER. Ein Archiv-Treffer ist ein wochenalter
+    // Schnappschuss; ihn als heutige Bestätigung zu stempeln würde die
+    // 14-Tage-Regel aushebeln: Eine dauerhaft gesperrte Stadt bliebe für immer
+    // "bestätigt", weil jede Nacht dieselbe alte Kopie neu gestempelt wird.
+    // Genau der halbjährig alte Stand, den die Regel verhindern soll.
+    const istLiveBestaetigt = herkunft === "live";
+
+    // Wechselt die Herkunft (live ⇄ archiv), ist KEIN Vergleich möglich — wir
+    // halten zwei verschiedene Dinge nebeneinander. Das offen ausweisen, statt
+    // es stillschweigend als "unverändert" durchgehen zu lassen.
+    if (z.page_fingerprint && !gleicheHerkunft) {
+      nichtVergleichbar.push(`${p.name} (${p.region}) — Abrufweg gewechselt (${z.page_fingerprint.split(":")[0]} → ${herkunft})`);
+    }
+    if (hatSichGeaendert) {
       geaendert.push(`${p.name} (${p.region})`);
       if (!dry) {
         await sb.from("funding_checks").insert({
@@ -258,12 +304,20 @@ async function main(): Promise<void> {
     } else if (z.page_fingerprint && gleicheHerkunft) {
       unveraendert++;
     }
-    if (ausArchiv) ueberArchiv.push(`${p.name} (${p.region})`);
+    if (ausProduktion) ueberProduktion.push(`${p.name} (${p.region})`);
+    else if (ausArchiv) ueberArchiv.push(`${p.name} (${p.region})`);
 
     if (!dry) {
       await sb
         .from("funding_programs")
-        .update({ page_fingerprint: fp, page_seen_at: new Date().toISOString() })
+        .update({
+          page_fingerprint: fp,
+          // Siehe oben: nur der Live-Abruf setzt die Bestätigung.
+          ...(istLiveBestaetigt ? { page_seen_at: new Date().toISOString() } : {}),
+          // Nur setzen, wenn sich wirklich etwas bewegt hat: Dieses Datum stellt
+          // den geprueften Inhalt in Frage und startet die Nachpruef-Frist.
+          ...(hatSichGeaendert ? { page_changed_at: new Date().toISOString() } : {}),
+        })
         .eq("id", z.id);
     }
   }
@@ -272,8 +326,12 @@ async function main(): Promise<void> {
   console.log(`  unverändert:  ${unveraendert}`);
   console.log(`  geändert:     ${geaendert.length}`);
   for (const g of geaendert) console.log(`     → ${g}`);
+  console.log(`  über eigene Produktion: ${ueberProduktion.length}`);
+  for (const a of ueberProduktion) console.log(`     → ${a}`);
   console.log(`  über Archiv:  ${ueberArchiv.length}`);
   for (const a of ueberArchiv) console.log(`     → ${a}`);
+  console.log(`  nicht vergleichbar (Abrufweg gewechselt): ${nichtVergleichbar.length}`);
+  for (const n of nichtVergleichbar) console.log(`     → ${n}`);
   console.log(`  unerreichbar: ${unerreichbar.length}`);
   for (const u of unerreichbar) console.log(`     → ${u}`);
 

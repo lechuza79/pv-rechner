@@ -28,9 +28,9 @@ const RECHNER_ITEMS: NavItem[] = [
   { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Lohnt sich meine PV-Anlage?", page: "rechner" },
   { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Heizkosten und Förderung vergleichen", page: "waermepumpe" },
   { href: "/klimaanlage-stromkosten", label: "Klimaanlagen-Rechner", desc: "Kühlkosten und Gerätevergleich — auch ergänzend zum Heizen", page: "klima" },
-  { href: "/balkonkraftwerk-rechner", label: "Balkonkraftwerk-Rechner", desc: "Steckersolar für Miete und Eigentum", page: "balkon" },
+  { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Steckersolar für Miete und Eigentum", page: "balkon" },
   { href: "/pv-bedarf-berechnen", label: "PV-Bedarf berechnen", desc: "Welche Anlage passt zu mir?", page: "empfehlung" },
-  { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge in Echtzeit", page: "simulation" },
+  { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge im Tagesverlauf", page: "simulation" },
 ];
 
 // PV-Förderung group: the regional funding directory plus the national data
@@ -76,7 +76,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/photovoltaik-rechner") ? "rechner" :
     pathname.startsWith("/waermepumpe-rechner") ? "waermepumpe" :
     pathname.startsWith("/klimaanlage-stromkosten") ? "klima" :
-    pathname.startsWith("/balkonkraftwerk-rechner") ? "balkon" :
+    pathname.startsWith("/balkonkraftwerk/rechner") ? "balkon" :
     pathname.startsWith("/photovoltaik-zubau-deutschland") ? "zubau" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
     pathname.startsWith("/ratgeber") ? "ratgeber" :
@@ -87,7 +87,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   const [isDesktop, setIsDesktop] = useState(true);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1000px)");
+    const mq = window.matchMedia("(min-width: 1080px)");
     setIsDesktop(mq.matches);
     const handler = (e: MediaQueryListEvent) => {
       setIsDesktop(e.matches);
@@ -188,8 +188,14 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
           <Logo width={130} />
         </Link>
 
-        {isDesktop && (
-          <nav style={{ display: "flex", alignItems: "center", gap: 24 }}>
+        {/* Die Navigation wird IMMER gerendert; sichtbar macht sie die
+            Medienabfrage in lib/theme.ts (.hdr-nav). Vorher hing sie an
+            `isDesktop &&`, und das steht bis zur Hydratation auf `true`: Der
+            Server lieferte damit auf JEDEM Gerät die Desktop-Leiste, die auf
+            375 px das Dokument auf 791 px aufriss — die Seite ließ sich für
+            einen Moment seitlich schieben. Layout gehört ins Stylesheet, nicht
+            in den Zustand einer Komponente. */}
+        <nav className="hdr-nav" style={{ alignItems: "center", gap: 24 }}>
             <DesktopDropdown
               triggerLabel="Rentabilität berechnen"
               triggerHref="/photovoltaik-rechner"
@@ -209,40 +215,69 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
               items={ENERGIE_ITEMS}
               activePage={activePage}
             />
-          </nav>
-        )}
+        </nav>
 
-        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: isDesktop ? 14 : 8 }}>
+        <div
+          className="hdr-aktionen"
+          style={{
+            marginLeft: "auto", display: "flex", alignItems: "center",
+            // Über die Abdunkelung des offenen Menüs (zIndex 99) heben, sonst
+            // fängt sie den Klick auf den Schließen-Knopf ab. Gemessen am
+            // 18.08.2026: Ein Klick auf das × traf die Abdunkelung, nicht den
+            // Knopf. Dass sich das Menü trotzdem schloss, war Zufall — beide
+            // tun dasselbe. Aufgefallen erst, als ein Browser-Test den Klick
+            // verweigerte ("intercepts pointer events"); für einen Nutzer sah
+            // es wie ein funktionierender Knopf aus.
+            //
+            // Der zIndex muss HIER sitzen, nicht am <header>: Abdunkelung und
+            // Knopf liegen im selben Stapelkontext, den Header anzuheben
+            // verschiebt beide gemeinsam und ändert ihr Verhältnis nicht.
+            //
+            // NUR bei offenem Menü (Audit 18.08.2026): Dauerhaft gesetzt, ließ
+            // er bei offenem Menü auch die Sonnenanzeige anklickbar — Menü und
+            // Theme-Auswahl standen dann gleichzeitig offen, jede mit eigener
+            // Außenklick-Logik. Das hat niemand entworfen. Geschlossen braucht
+            // die Zeile den Vorrang nicht.
+            position: "relative", zIndex: menuOpen ? 101 : undefined,
+          }}
+        >
+          {/* compact steuert nur Innenabstände, kein Layout — ein falscher
+              erster Frame kostet hier nichts und ist nach der Hydratation weg. */}
           <ThemeController compact={!isDesktop} />
-          {isDesktop ? desktopAuth : (
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
-              style={{
-                background: "none", border: "none", cursor: "pointer", padding: 4,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}
-            >
-              {menuOpen
-                ? <IconClose size={iconSizes.xl} color={v('--color-text-primary')} />
-                : <IconMenu size={iconSizes.xl} color={v('--color-text-primary')} />
-              }
-            </button>
-          )}
+          <span className="hdr-auth">{desktopAuth}</span>
+          <button
+            className="hdr-burger"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Menü schließen" : "Menü öffnen"}
+            style={{
+              background: "none", border: "none", cursor: "pointer", padding: 4,
+              alignItems: "center", justifyContent: "center",
+            }}
+          >
+            {menuOpen
+              ? <IconClose size={iconSizes.xl} color={v('--color-text-primary')} />
+              : <IconMenu size={iconSizes.xl} color={v('--color-text-primary')} />
+            }
+          </button>
         </div>
       </div>
 
       {/* Mobile menu dropdown */}
-      {!isDesktop && menuOpen && (
+      {/* Kein !isDesktop mehr. Dass beim Verbreitern des Fensters kein Menü
+          stehen bleibt, trägt der matchMedia-Effekt oben (setMenuOpen(false)
+          beim Wechsel auf breit); die Medienabfrage .hdr-menu ist das zweite
+          Netz, falls dieser Effekt einmal ausfällt. */}
+      {menuOpen && (
         <>
           <div
+            className="hdr-menu"
             onClick={closeMenu}
             style={{
               position: "fixed", inset: 0, zIndex: 99,
               background: "rgba(0,0,0,0.2)",
             }}
           />
-          <nav style={{
+          <nav className="hdr-menu" style={{
             position: "absolute",
             top: "100%",
             left: -16,

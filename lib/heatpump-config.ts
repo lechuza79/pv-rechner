@@ -104,7 +104,26 @@ export interface HeatPumpConfig {
   stromInflation: number;
   // Source attribution
   source: string;
-  validFrom: string;   // ISO date — when these values were last verified
+  validFrom: string;   // ISO date — Stand der Werte selbst (nur hochsetzen, wenn sich ein Wert ändert)
+  /**
+   * ISO date — Tag, an dem ein Wächter-Lauf die Markt-Quellen zuletzt wirklich
+   * erreicht und die Werte nachgelesen hat (Angebotsauswertung, BDEW-Tarife).
+   * Bewusst getrennt von `validFrom`: „geprüft und unverändert" ist das
+   * Normalergebnis, und genau das trägt dieses Datum. Es wandert bei JEDEM
+   * erreichten Lauf mit — aber nur dann; ein Lauf, der an Paywall, 404 oder
+   * Bot-Prüfung gescheitert ist, lässt es stehen (scripts/waechter-gate.md →
+   * „Das Prüfdatum wandert mit jedem erreichten Lauf").
+   * Sichtbar auf /waermepumpe-rechner über lib/stand.ts.
+   */
+  geprueftIso: string;
+  /**
+   * ISO date — eigener Prüftag der BEG-Werte. Zwei Daten statt einem, weil es
+   * zwei Sachen sind: Die Förderung hängt am KfW-Merkblatt (eigene Quelle,
+   * eigener Fahrplan mit der Absenkung zum 01.02.2027) und wird deshalb auch
+   * außer der Reihe geprüft — am 08.08.2026 zum Beispiel ohne die Marktwerte.
+   * Ein gemeinsames Datum wäre für eines von beiden gelogen.
+   */
+  geprueftFoerderungIso: string;
   reviewBy: string;    // ISO date — re-check against official sources by then (see scripts/waermepumpe-verify.md)
 }
 
@@ -213,7 +232,24 @@ export const DEFAULT_HEATPUMP_CONFIG: HeatPumpConfig = {
   years: 20,
   gasInflation: 0.02,
   stromInflation: 0.02, // p.a. — konsistent mit PV-Rechner (SCENARIOS realistic + electricityIncrease)
-  source: "Fraunhofer ISE WPsmart, Verbraucherzentrale RLP (Auswertung 160 Wärmepumpen-Angebote, 2025/2026), KfW Merkblatt 458 (BEG EM, gültig ab 21.07.2026), BDEW, dena-Gebäudereport + dena-Studie „Auswertung von Verbrauchskennwerten energieeffizienter Wohngebäude“ (Heizwärmebedarf nach Sanierung)",
+  source: "Fraunhofer ISE WPsmart, Verbraucherzentrale RLP (Auswertung 160 Wärmepumpen-Angebote, Juni 2025; bestätigt durch den zweiten Check vom 02.07.2026: Median 34.898 €, Mittelwert 36.397 €, Spanne 21.099–54.168 €), KfW Merkblatt 458 (BEG EM, Stand 07/2026), BDEW, dena-Gebäudereport + dena-Studie „Auswertung von Verbrauchskennwerten energieeffizienter Wohngebäude“ (Heizwärmebedarf nach Sanierung)",
   validFrom: "2026-07-27",
+  // Wächter-Lauf vom 17.08.2026 (der erste überhaupt — der Auftrag war seit
+  // seiner Einrichtung nie gefeuert): Die Folge-Auswertung der
+  // Verbraucherzentrale RLP vom 02.07.2026 im Volltext gelesen und gegen das
+  // Modell gerechnet. Median über alle 160 Angebote 34.898 € (Tabelle 1, S. 5;
+  // einen Median je Leistungsklasse weist der Bericht nicht aus, die häufigste
+  // Klasse 10–12 kW steht separat auf S. 8) gegen unsere 35.000 € im
+  // 10-kW-Fall — 0,3 % Abweichung, deshalb kein Wert
+  // geändert und `validFrom` unverändert. Genau dafür gibt es dieses Datum.
+  geprueftIso: "2026-08-17",
+  // Förderung am selben Tag am KfW-Merkblatt 458 (Stand 07/2026) nachgelesen:
+  // Grundförderung 30 %, Klimabonus 16 % (sinkt erstmalig 01.02.2027 um 4 pp,
+  // ab Antragstellung 01.08.2028 keiner mehr), Einkommensbonus 40/30/10 % bei
+  // 30/40/50 T€, Familienzuschlag 10 T€, Förderhöchstbetrag 28.000 € für die
+  // erste Wohneinheit (sinkt ab 01.02.2027 halbjährlich um 750 €), Obergrenze
+  // 70 % bzw. 80 %. Alles unverändert — damit ist auch der [auto]-Fix vom
+  // 08.08.2026 (Wecker für die Absenkung) an der Quelle nachgeprüft.
+  geprueftFoerderungIso: "2026-08-17",
   reviewBy: "2026-10-20",   // quartalsweiser Wächter (Jan/Apr/Jul/Okt); der Januar-Lauf 2027 fällt zusätzlich vor die Degression der Boni/Förderhöchstbeträge zum 01.02.2027
 };

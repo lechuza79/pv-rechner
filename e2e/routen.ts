@@ -11,7 +11,7 @@ export type Seite = { pfad: string; erwartet: RegExp };
 export const SEITEN: Seite[] = [
   // Rechner
   { pfad: "/klimaanlage-stromkosten", erwartet: /klima|kühl/i },
-  { pfad: "/balkonkraftwerk-rechner", erwartet: /balkon/i },
+  { pfad: "/balkonkraftwerk/rechner", erwartet: /balkon/i },
   { pfad: "/einspeiseverguetung-rechner", erwartet: /einspeisevergütung/i },
   { pfad: "/einspeiseverguetung-tabelle", erwartet: /einspeisevergütung/i },
   { pfad: "/photovoltaik-neigungswinkel", erwartet: /neigungswinkel/i },

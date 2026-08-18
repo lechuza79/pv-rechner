@@ -475,7 +475,7 @@ export function neigungswinkelFaq(): FaqEntry[] {
   ];
 }
 
-/** FAQ for the balcony-solar calculator (/balkonkraftwerk-rechner).
+/** FAQ for the balcony-solar calculator (/balkonkraftwerk/rechner).
  *
  *  Every figure is computed here from the SAME model the calculator runs — no
  *  typed euro amounts, so the FAQ can never drift from the tool above it. The
@@ -524,7 +524,7 @@ export function balkonFaq(): FaqEntry[] {
     {
       q: "Lohnt sich ein Balkonkraftwerk?",
       a: `In den meisten Fällen ja — Steckersolar amortisiert sich deutlich schneller als eine Dachanlage, weil die Anschaffung klein ist. Beispiel: Ein Zwei-Personen-Haushalt mit ${eur(haushaltKwh)} kWh Jahresverbrauch und einem Standard-Set senkrecht am Südbalkon spart rund ${eur(standardResult.savingPerYear)} € im Jahr; bei ${eur(standard.price)} € Anschaffung ist das nach etwa ${amort} Jahren wieder drin. Entscheidend sind zwei Dinge: wie die Module hängen und wie viel Strom tagsüber im Haushalt gebraucht wird.`,
-      cta: { label: "Für deinen Haushalt rechnen", href: "/balkonkraftwerk-rechner" },
+      cta: { label: "Für deinen Haushalt rechnen", href: "/balkonkraftwerk/rechner" },
     },
     {
       q: "Wie viel Strom bringt ein Balkonkraftwerk mit 800 Watt im Jahr?",
@@ -538,7 +538,7 @@ export function balkonFaq(): FaqEntry[] {
     {
       q: "Lohnt sich ein Speicher am Balkonkraftwerk?",
       a: `Oft nicht. Ein Speicher hebt den Eigenverbrauch, kostet aber mehr als das Set selbst und hält realistisch rund ${cfg.storageLifeYears} Jahre — er muss sich also in dieser Zeit rechnen, nicht erst über die Lebensdauer der Module. Unser Rechner empfiehlt einen Speicher deshalb nur, wenn er sich innerhalb von ${cfg.storageRecommendMaxPayback} Jahren selbst trägt, und schreibt sonst ausdrücklich hin, dass er sich nicht lohnt. Das ist vor allem bei hohem Verbrauch und viel ungenutztem Mittagsstrom der Fall.`,
-      cta: { label: "Mit und ohne Speicher vergleichen", href: "/balkonkraftwerk-rechner" },
+      cta: { label: "Mit und ohne Speicher vergleichen", href: "/balkonkraftwerk/rechner" },
     },
     {
       q: "Wie viele Module darf ein Balkonkraftwerk haben?",
@@ -596,7 +596,7 @@ export function balkonAnmeldenFaq(): FaqEntry[] {
     {
       q: "Wer muss anmelden — Mieter oder Vermieter?",
       a: "Der Betreiber, also wer die Anlage tatsächlich betreibt. Das ist nicht zwangsläufig der Eigentümer der Wohnung oder derjenige, der das Gerät bezahlt hat: Kauft der Vermieter das Set und nutzt der Mieter den Strom, muss der Mieter sich als Betreiber erfassen. Ob du das Gerät überhaupt anbringen darfst, ist eine andere Frage — dafür gilt seit 2024 die privilegierte Maßnahme.",
-      links: [{ phrase: "privilegierte Maßnahme", href: "/balkonkraftwerk-rechner" }],
+      links: [{ phrase: "privilegierte Maßnahme", href: "/balkonkraftwerk/rechner" }],
     },
     {
       q: "Muss ich ein Balkonkraftwerk beim Finanzamt anmelden?",

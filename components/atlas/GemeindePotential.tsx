@@ -110,7 +110,7 @@ export default function GemeindePotential({
             </span>
           </Link>
 
-          <Link href="/balkonkraftwerk-rechner" onClick={remember} style={S.exCard}>
+          <Link href="/balkonkraftwerk/rechner" onClick={remember} style={S.exCard}>
             <div style={S.exValRow}>
               <TrendBadge dir="up" />
               <span style={S.exVal}>

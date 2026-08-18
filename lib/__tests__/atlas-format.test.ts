@@ -6,6 +6,10 @@ import {
   fmtBatterieMittel,
   fmtSpeicherJeKwp,
   fmtErtragProKwp,
+  fmtAnteilProzent,
+  fmtAnteilProzentFein,
+  fmtTopProzent,
+  prozentGerundet,
   regionDisplayName,
 } from "../atlas-format";
 
@@ -52,6 +56,50 @@ describe("Einheit der installierten PV-Leistung", () => {
   it("benennt die zusammengesetzten Einheiten vollständig", () => {
     expect(fmtSpeicherJeKwp(1.639)).toBe("1,64 kWh je kWp Dach");
     expect(fmtErtragProKwp(1030.4)).toBe("1.030 kWh/kWp");
+  });
+});
+
+/**
+ * Prozent ist eine Einheit wie kWp und stand trotzdem an einem Dutzend Stellen
+ * von Hand neben der Zahl — jede mit ihrer eigenen Rundung. Hier steht, welche
+ * Rundung wo gilt und warum sie sich unterscheiden dürfen.
+ */
+describe("Anteile in Prozent", () => {
+  it("nimmt den Anteil, nicht die schon multiplizierte Zahl", () => {
+    expect(fmtAnteilProzent(0.42)).toBe("42 %");
+    expect(fmtAnteilProzent(1)).toBe("100 %");
+    // Ein Solarpark in einem winzigen Ort: vierstellige Prozentwerte gibt es
+    // wirklich, und auch sie bekommen den Tausenderpunkt.
+    expect(fmtAnteilProzent(49.35)).toBe("4.935 %");
+  });
+
+  it("koppelt die ±0-Entscheidung an die angezeigte Stufe", () => {
+    // Der Tendenz-Badge zeigt „±0 %", sobald die Anzeige 0 ist — die Prüfung
+    // darf deshalb nicht auf dem Rohwert sitzen, sonst steht „+0 %" da.
+    expect(prozentGerundet(0.002)).toBe(0);
+    expect(fmtAnteilProzent(0.002)).toBe("0 %");
+    expect(prozentGerundet(0.006)).toBe(1);
+  });
+
+  it("zeigt kleine Anteile in den Donut-Legenden mit einer Nachkommastelle", () => {
+    // Unter 10 % würden 0,4 und 1,4 sonst zur selben Zahl.
+    expect(fmtAnteilProzentFein(0.004)).toBe("0,4 %");
+    expect(fmtAnteilProzentFein(0.05)).toBe("5,0 %");
+    // Schwelle: ab 9,95 % rundet die Anzeige auf ganze Prozent (sonst stünde
+    // „10,0 %" neben „10 %").
+    expect(fmtAnteilProzentFein(0.0994)).toBe("9,9 %");
+    expect(fmtAnteilProzentFein(0.0995)).toBe("10 %");
+    expect(fmtAnteilProzentFein(0.637)).toBe("64 %");
+  });
+
+  it("rundet die Rangstufe auf — sie darf die Platzierung nicht schönen", () => {
+    // Platz 3 von 200 ist 1,5 %: kaufmännisch gerundet stünde „Top 2 %" ebenso
+    // da, bei Platz 2 von 200 (1 %) aber „Top 1 %" statt der erreichten Stufe.
+    expect(fmtTopProzent(3 / 200)).toBe("2 %");
+    expect(fmtTopProzent(2.4 / 200)).toBe("2 %");
+    expect(fmtTopProzent(11 / 100)).toBe("11 %");
+    // Nie „Top 0 %".
+    expect(fmtTopProzent(1 / 5000)).toBe("1 %");
   });
 });
 

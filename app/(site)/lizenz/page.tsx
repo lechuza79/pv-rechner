@@ -11,7 +11,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/lizenz",
   title: "Lizenz – Grafiken und Texte von Solar Check nutzen",
   description:
-    "Unsere Charts, Berechnungen und Texte stehen unter CC BY 4.0: redaktionell und gewerblich frei nutzbar, Bedingung ist die Namensnennung mit Link. Was für die zugrunde liegenden Daten gilt.",
+    "Unsere Darstellungen, Widgets sowie Ratgeber- und Methodiktexte stehen unter CC BY 4.0: redaktionell und gewerblich frei nutzbar, Bedingung ist die Namensnennung mit Link. Was für Daten und Datenbestände gilt.",
   ogImageTitle: "Lizenz",
   ogImageSubtitle: "Grafiken und Texte frei nutzen - mit Namensnennung.",
 });
@@ -94,7 +94,7 @@ export default function LizenzPage() {
         <div style={S.kurz}>
           <div style={S.kurzLabel}>Kurzfassung</div>
           <p style={S.p}>
-            Unsere Darstellungen, Berechnungen und Texte stehen unter{" "}
+            Unsere Darstellungen und Texte stehen unter{" "}
             <a href={OWN_WORK_LICENSE.url} target="_blank" rel="noopener noreferrer" style={S.a}>
               {OWN_WORK_LICENSE.code}
             </a>
@@ -104,23 +104,64 @@ export default function LizenzPage() {
             Grafik stammt. Es gilt keine Weitergabe-unter-gleichen-Bedingungen-Pflicht und kein
             Verbot kommerzieller Nutzung.
           </p>
+          <p style={{ ...S.p, marginBottom: 0 }}>
+            Nicht erfasst sind unsere zusammengetragenen Datenbestände als Datensatz — einzelne
+            Werte daraus zu zitieren bleibt frei.
+          </p>
         </div>
 
         <h2 style={S.h2}>Was unter dieser Lizenz steht</h2>
         <p style={S.p}>
-          {OWN_WORK_LICENSE.name} ({OWN_WORK_LICENSE.code}) gilt für alles, was wir selbst erstellt
-          haben:
+          {OWN_WORK_LICENSE.name} ({OWN_WORK_LICENSE.code}) gilt für diese vier Dinge:
         </p>
         <ul style={S.liste}>
           <li style={S.li}>die Charts und Grafiken auf dieser Seite, auch als heruntergeladenes Bild,</li>
           <li style={S.li}>die einbettbaren Widgets und ihre Darstellung,</li>
-          <li style={S.li}>unsere Auswertungen im Solar-Atlas und in den Datengeschichten,</li>
+          <li style={S.li}>
+            die Darstellung unserer Auswertungen im Solar-Atlas und in den Datengeschichten — also
+            die Karten, Tabellen und Diagramme,
+          </li>
           <li style={S.li}>die Ratgeber- und Methodiktexte.</li>
         </ul>
         <p style={S.p}>
           Du darfst diese Inhalte kopieren, weitergeben, ausdrucken, in Artikel einbauen und auch
           bearbeiten — etwa zuschneiden oder einen Ausschnitt zeigen. Das gilt für private, für
           redaktionelle und für gewerbliche Zwecke gleichermaßen.
+        </p>
+
+        <h2 style={S.h2}>Was nicht unter dieser Lizenz steht</h2>
+        <p style={S.p}>
+          Nicht erfasst sind unsere zusammengetragenen Datenbestände als Datensatz — vor allem die
+          Sammlung der Förderprogramme, die wir Programm für Programm bei den Trägern prüfen und
+          nachhalten. Gemeint ist damit das systematische Abziehen des Bestands, etwa über unsere
+          Schnittstellen. Einzelne Werte zu zitieren bleibt erlaubt und ist ausdrücklich erwünscht:
+          Wenn du für einen Artikel drei Förderbeträge brauchst, nimm sie.
+        </p>
+        <p style={S.p}>
+          Diese Abgrenzung gilt ab dem 17. August 2026 und wirkt nur nach vorn. Was du zuvor unter{" "}
+          {OWN_WORK_LICENSE.code} von uns übernommen hast, bleibt davon unberührt — eine einmal
+          erteilte Lizenz nehmen wir nicht zurück, das lässt {OWN_WORK_LICENSE.code} auch gar nicht
+          zu.
+        </p>
+
+        <h2 style={S.h2}>Nutzung zum Training von KI-Modellen</h2>
+        <p style={S.p}>
+          Für diese Seite behalten wir uns die Nutzung zum Text- und Data-Mining vor — für die
+          gesamte Seite, auch für die frei lizenzierten Teile. Der Vorbehalt ist zusätzlich zu
+          diesem Absatz maschinenlesbar hinterlegt, unter <code>/.well-known/tdmrep.json</code> und
+          in der <code>robots.txt</code>. Dort sind auch die Sammler einzeln benannt.
+        </p>
+        <p style={S.p}>
+          Das ist kein Widerspruch zur freien Lizenz: Sie erlaubt jede Nutzung, verlangt dafür aber
+          die Namensnennung. Ein Modell, das unsere Inhalte einliest und später ohne Quelle
+          wiedergibt, erfüllt genau diese eine Bedingung nicht. Crawler, die uns zitieren, sperren
+          wir deshalb nicht aus. Das gilt auch dort, wo derselbe Zugriff beides bedient — wer
+          unsere Inhalte zur Antwortzeit nachschlägt und uns dabei nennt, bleibt willkommen.
+        </p>
+        <p style={S.p}>
+          Zwei Dinge kann dieser Vorbehalt nicht: Forschungsorganisationen ohne gewerbliche
+          Zwecksetzung dürfen nach dem Urheberrechtsgesetz auch gegen unseren Willen auswerten, und
+          einzelne Werte darf ohnehin jeder entnehmen. Beides ist so gewollt.
         </p>
 
         <h2 style={S.h2}>So sieht die Namensnennung aus</h2>
@@ -140,11 +181,12 @@ export default function LizenzPage() {
 
         <h2 style={S.h2}>Die Daten hinter den Grafiken</h2>
         <p style={S.p}>
-          Unsere Lizenz gilt für unsere Darstellung, nicht für die zugrunde liegenden Daten. Die
-          Daten stehen jeweils unter der Lizenz ihrer Quelle. Deshalb steht an jedem Chart und in
+          Hier geht es um die fremden Rohdaten, aus denen wir rechnen — nicht um unsere eigenen
+          Sammlungen aus dem Abschnitt oben. Unsere Lizenz gilt für unsere Darstellung, nicht für
+          diese Rohdaten. Sie stehen jeweils unter der Lizenz ihrer Quelle. Deshalb steht an jedem Chart und in
           jedem heruntergeladenen Bild ein Quellenhinweis — er ist Teil der Bedingungen dieser
-          Quellen und darf nicht entfernt oder unkenntlich gemacht werden. Welche Werte wir
-          verwenden und wie alt sie sind, steht auf der Seite{" "}
+          Quellen und darf nicht entfernt oder unkenntlich gemacht werden. Woher unsere Werte
+          stammen und wie alt sie sind, steht auf der Seite{" "}
           <Link href="/datenstand" style={S.a}>
             Datenstand
           </Link>

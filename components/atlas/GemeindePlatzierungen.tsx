@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { v, space, pad } from "../../lib/theme";
+import { fmtTopProzent } from "../../lib/atlas-format";
 import { IconArrowRight } from "../Icons";
 import Modal from "../Modal";
 
@@ -99,7 +100,7 @@ export default function GemeindePlatzierungen({ regionId }: { regionId: string }
           <span style={S.vonZahl}>/ {nf(b.von)}</span>
           {/* Ab Platz 4 zaehlt die Auszeichnung ueber das oberste Zehntel — dann
               sagt die Zahl allein wenig ("Platz 40"), die Stufe dagegen viel. */}
-          {b.platz > 3 && <span style={S.stufe}>Top {Math.max(1, Math.ceil((b.platz / b.von) * 100))} %</span>}
+          {b.platz > 3 && <span style={S.stufe}>Top {fmtTopProzent(b.platz / b.von)}</span>}
         </span>
         <span style={S.thema}>{gross(b.thema)}</span>
         <span style={S.bezug}>

@@ -229,7 +229,7 @@ export default function AnmeldenPage() {
         <RelatedLinks
           currentPath="/balkonkraftwerk/anmelden"
           links={[
-            { href: "/balkonkraftwerk-rechner", label: "Balkonkraftwerk-Rechner", desc: "Was dein Set einbringt: Ertrag, Ersparnis und Amortisation — standortgenau, mit und ohne Speicher." },
+            { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Was dein Set einbringt: Ertrag, Ersparnis und Amortisation — standortgenau, mit und ohne Speicher." },
             { href: "/photovoltaik-neigungswinkel", label: "Neigungswinkel & Ausrichtung", desc: "Warum der Winkel bei Balkon-Photovoltaik der größte Hebel ist." },
             { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Für das eigene Dach: Amortisation, Rendite und Eigenverbrauch." },
             { href: "/photovoltaik-foerderung", label: "Photovoltaik-Förderung", desc: "Zuschüsse in deinem Bundesland — manche Programme fördern auch Steckersolar." },

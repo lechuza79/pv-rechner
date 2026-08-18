@@ -106,6 +106,71 @@ export function fmtErtragProKwp(kwhProKwp: number): string {
   return `${Math.round(kwhProKwp).toLocaleString("de-DE")} kWh/kWp`;
 }
 
+// ─── Anteile ──────────────────────────────────────────────────────────────────
+
+/**
+ * Anteil in Prozent.
+ *
+ * Nimmt den ANTEIL (0…1), NICHT die schon mit 100 multiplizierte Zahl. Das ist
+ * der Grund, warum die Funktion so und nicht anders geschnitten ist: Wer
+ * `anteilProzentTeile(kwp / total)` schreibt, kann die Multiplikation weder
+ * vergessen noch zweimal machen — beides sah man dem Ergebnis vorher nicht an,
+ * weil „%" von Hand daneben stand und jede Zahl plausibel wirkte.
+ *
+ * Prozent ist eine Einheit wie kWp: Sie wird nicht getippt, sondern kommt hier
+ * her. Zwischen Zahl und Zeichen steht im Deutschen ein Leerzeichen (DIN 5008).
+ */
+export const anteilProzentTeile = (anteil: number): Messwert => ({
+  value: prozentGerundet(anteil).toLocaleString("de-DE"),
+  unit: "%",
+});
+export const fmtAnteilProzent = (anteil: number): string => zusammen(anteilProzentTeile(anteil));
+
+/**
+ * Der gerundete Prozentwert als ZAHL — für Entscheidungen, die an der
+ * angezeigten Stufe hängen (z. B. „±0 %" statt „+0 %"). Damit trifft die
+ * Entscheidung dieselbe Rundung wie die Anzeige und kann nicht gegen sie
+ * driften.
+ */
+export function prozentGerundet(anteil: number): number {
+  return Math.round(anteil * 100);
+}
+
+/**
+ * Anteil in Prozent, fein — Chart-Konvention der Donut-Legenden: ab 10 % ganze
+ * Prozent, darunter eine Nachkommastelle.
+ *
+ * Eigene Funktion statt eines Schalters, aus demselben Grund wie
+ * batterieMittelTeile: Unter 10 % würde die Rundung Segmente einebnen, die sich
+ * in der Legende sichtbar unterscheiden (0,4 % und 1,4 % wären beide „1 %" bzw.
+ * „0 %"). Oberhalb trägt die Nachkommastelle nichts und macht die Legende unruhig.
+ */
+export function anteilProzentFeinTeile(anteil: number): Messwert {
+  const p = anteil * 100;
+  return {
+    value:
+      p >= 9.95
+        ? nf(p)
+        : p.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+    unit: "%",
+  };
+}
+export const fmtAnteilProzentFein = (anteil: number): string => zusammen(anteilProzentFeinTeile(anteil));
+
+/**
+ * Rangstufe „Top X %".
+ *
+ * Bewusst AUFgerundet und mindestens 1 %: Die Stufe darf die Platzierung nicht
+ * besser aussehen lassen, als sie ist. Platz 3 von 200 ist „Top 2 %" — kaufmännisch
+ * gerundet stünde dort „Top 1 %", also eine Behauptung, die den Ort in die
+ * Spitzengruppe hebt, in der er nicht steht.
+ */
+export const topProzentTeile = (anteil: number): Messwert => ({
+  value: Math.max(1, Math.ceil(anteil * 100)).toLocaleString("de-DE"),
+  unit: "%",
+});
+export const fmtTopProzent = (anteil: number): string => zusammen(topProzentTeile(anteil));
+
 // ─── Regionsnamen ─────────────────────────────────────────────────────────────
 
 // Die Liste der vorangestellten Gattungswörter steht in lib/atlas-orte.ts —

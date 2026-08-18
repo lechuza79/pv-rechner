@@ -245,6 +245,12 @@ describe("Widget-Konvention", () => {
       if (!pfad.startsWith("app/(embed)/embed/")) continue;
       if (!pfad.endsWith("client.tsx")) continue;
       if (istErlaubt(pfad, "max-breite")) continue;
+      // Eine Route, die ihr Widget nur aus components/ holt, trägt die Grenze
+      // nicht selbst — sie steckt in der Komponente. Genau dorthin gehört sie
+      // (Ortsregel, siehe lib/chart-katalog.ts); die Hülle hier zu prüfen
+      // würde den Umzug bestrafen statt ihn zu belohnen.
+      const istHuelle = /from "(\.\.\/)+components\//.test(inhalt);
+      if (istHuelle) continue;
       if (!/maxWidth/.test(inhalt)) treffer.push(pfad);
     }
     expect(treffer, `Embed-Karte ohne maximale Breite:\n${treffer.join("\n")}`).toEqual([]);

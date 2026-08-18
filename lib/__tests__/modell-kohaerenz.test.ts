@@ -5,6 +5,8 @@ import { calcHeatPump, type HeatPumpInputs } from "../heatpump";
 import { DEFAULT_HEATPUMP_CONFIG as CFG } from "../heatpump-config";
 import { greenGasApplies } from "../fossil-reference";
 import { INSULATION_BESTAND, WP_FUEL_OPTIONS } from "../constants";
+import { calc } from "../calc";
+import { einspeiseVerlauf } from "../einspeise-regime";
 
 /**
  * Wächter gegen INKOHÄRENTE MODELLE.
@@ -188,5 +190,98 @@ describe("Modell-Kohärenz: Beschriftung folgt der Rechnung", () => {
       `Feste Gas-Beschriftung im Ergebnis gefunden — sie muss aus fuel.refLabel / ` +
       `fuel.label kommen, sonst liest ein Öl-Nutzer durchgehend „Gas“:\n${funde.join("\n")}`,
     ).toEqual([]);
+  });
+});
+
+/**
+ * Fünfte Klasse (Council 15.08.2026): DER KOSTENBLOCK GEHÖRT ZU SEINEM FALL.
+ *
+ * Der Erlösverlauf des EEG-Entwurfs sind zwei verschiedene Fälle hintereinander:
+ * Erst nimmt der NETZBETREIBER ab (befristete Übergangszahlung), danach verkauft
+ * ein DIENSTLEISTER an der Börse. Nur der zweite Fall kostet eine Grundgebühr —
+ * im ersten gibt es niemanden, der sie erheben könnte.
+ *
+ * Genau diese Vermischung stand live: Der Rechner zog die Grundgebühr pauschal
+ * in JEDEM Jahr ab, in dem überhaupt ein Erlös floss, also auch in den
+ * Übergangsjahren. Der Ratgeber, der dieselbe Anlage rechnet, zog sie GAR NICHT
+ * ab — zwei Oberflächen, eine Anlage, zwei Ergebnisse.
+ *
+ * Die Regel dagegen: Welches Jahr welche festen Kosten trägt, sagt einzig der
+ * Erlösverlauf. Wer sie im Aufrufer nachbaut oder weglässt, baut den Fehler nach.
+ */
+describe("Modell-Kohärenz: der Kostenblock gehört zu seinem Fall", () => {
+  const BASIS = {
+    kwp: 10, kosten: 16000, strompreis: 0.31, eigenverbrauch: 35, einspeisung: 0,
+    stromSteigerung: 0.03, ertragKwp: 1000, monthly: null,
+  };
+
+  const verlaufFuer = (kwp: number, jahr: number, marktErloes: boolean) =>
+    einspeiseVerlauf({
+      regime: "reform2027", kwp, inbetriebnahmeJahr: jahr,
+      heuteSatzCt: 7.86, marktErloes, profilFaktor: 0.9,
+    });
+
+  it("in den Jahren ohne Vermarkter fällt keine Grundgebühr an", () => {
+    for (const kwp of [2, 10, 24, 30, 49, 60]) {
+      for (const jahr of [2027, 2028, 2029, 2030, 2031]) {
+        for (const marktErloes of [true, false]) {
+          for (const j of verlaufFuer(kwp, jahr, marktErloes)) {
+            if (j.art !== "uebergang" && j.art !== "keine") continue;
+            expect(
+              j.fixkosten,
+              `${kwp} kWp / ${jahr} / Jahr ${j.i} (${j.art}): Hier nimmt kein ` +
+              `Dienstleister ab — eine Grundgebühr wäre ein Kostenblock aus dem Marktfall.`,
+            ).toBe(0);
+          }
+        }
+      }
+    }
+  });
+
+  it("die Amortisation zieht genau die festen Kosten ab, die der Verlauf ausweist", () => {
+    for (const kwp of [10, 30]) {
+      for (const marktErloes of [true, false]) {
+        const verlauf = verlaufFuer(kwp, 2027, marktErloes);
+        const modell = {
+          satzCtImJahr: (i: number) => verlauf[i - 1]?.satzCt ?? 0,
+          einspeiseAnteil: 0.5,
+        };
+        const ohne = calc({ ...BASIS, kwp, einspeiseModell: modell });
+        const mit = calc({
+          ...BASIS, kwp,
+          einspeiseModell: { ...modell, fixkostenImJahr: (i: number) => verlauf[i - 1]?.fixkosten ?? 0 },
+        });
+        // Erwartet: die Summe der Grundgebühren aus genau den Jahren, in denen
+        // auch vermarktet wird (satzCt > 0). Kein Jahr mehr, keins weniger.
+        const erwartet = verlauf
+          .filter(j => j.satzCt > 0)
+          .reduce((a, j) => a + j.fixkosten, 0);
+        expect(
+          Math.round(ohne.total - mit.total),
+          `${kwp} kWp / Markterlös ${marktErloes}: abgezogen wurde etwas anderes als der Verlauf ausweist`,
+        ).toBe(Math.round(erwartet));
+      }
+    }
+  });
+
+  it("kein Aufrufer baut den Erlösverlauf ohne seine festen Kosten nach", () => {
+    // Der Ratgeber übergab `satzCtImJahr` und ließ die Gebühr weg — für
+    // TypeScript in Ordnung (das Feld ist optional), fürs Ergebnis nicht: Die
+    // Reform-Kurve stand dadurch rund 1.700 € zu gut da. Wer den einen Teil des
+    // Verlaufs übernimmt, übernimmt auch den anderen.
+    const AUFRUFER = [
+      "app/(site)/photovoltaik-rechner/rechner.tsx",
+      "app/(site)/ratgeber/lohnt-sich-pv-ohne-einspeiseverguetung/_components/RenditeVergleich.tsx",
+    ];
+    for (const datei of AUFRUFER) {
+      const quelle = readFileSync(join(ROOT, datei), "utf8");
+      const satz = (quelle.match(/satzCtImJahr:/g) ?? []).length;
+      const fix = (quelle.match(/fixkostenImJahr:/g) ?? []).length;
+      expect(
+        fix,
+        `${datei}: ${satz}× satzCtImJahr, aber ${fix}× fixkostenImJahr — ein Erlösverlauf ` +
+        `ohne seine Kosten rechnet die Anlage besser als der Rechner nebenan.`,
+      ).toBe(satz);
+    }
   });
 });
