@@ -19,6 +19,9 @@ import { trackEvent } from "../../../../lib/analytics";
 import { useSharedPlz, readLocation } from "../../../../lib/location";
 import { DataSourceNote } from "../../../../components/PoweredBy";
 import { DATA_SOURCES } from "../../../../lib/data-sources";
+import ResultFunding from "../../../../components/ResultFunding";
+import { stackFunding } from "../../../../lib/funding-programs";
+import { useFoerderung } from "../../../../lib/use-foerderung";
 
 const STEPS = ["Haushalt & Standort", "Ausrichtung"];
 
@@ -72,6 +75,12 @@ export default function Balkon() {
   // Editierbare Overrides im Ergebnis
   const [oStrom, setOStrom] = useState<number | null>(null);
   const [oInvest, setOInvest] = useState<number | null>(null);
+
+  // Kommunale Förderung: PLZ rein, zutreffende Programme raus. Derselbe Hook
+  // wie im PV-Rechner — er filtert selbst auf die Technik, damit hier kein
+  // reines Dach-Programm auftaucht.
+  const foerderQuelle = useFoerderung("balkon");
+  const [fundingEnabled, setFundingEnabled] = useState(true);
   const [oVerbrauch, setOVerbrauch] = useState<number | null>(null);
 
   const prices = usePrices();
@@ -165,11 +174,15 @@ export default function Balkon() {
 
   // Gemerkten Standort übernehmen und direkt anwenden — sonst stünde die PLZ
   // nur im Feld, während weiter mit dem Bundesschnitt gerechnet wird.
-  useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); });
+  useSharedPlz(plz, (shared) => { setPlz(shared); fetchPvgis(shared); foerderQuelle.ausPlz(shared); });
 
   const onPlzChange = (raw: string) => {
-    setPlz(raw.replace(/\D/g, "").slice(0, 5));
+    const sauber = raw.replace(/\D/g, "").slice(0, 5);
+    setPlz(sauber);
     setPlzConfirmed(false);
+    // Die Förderung hängt an der Gemeinde, nicht am Ertrag — sie wird deshalb
+    // schon beim Tippen aufgelöst und nicht erst beim Bestätigen des Standorts.
+    if (/^\d{5}$/.test(sauber)) foerderQuelle.ausPlz(sauber);
   };
 
   // Empfehlung: effizienteste Konfiguration (Set + Speicher) aus den Eingaben.
@@ -189,10 +202,36 @@ export default function Balkon() {
     [orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom],
   );
 
+  // ── Förderung ───────────────────────────────────────────────────────────────
+  //
+  // Reihenfolge mit Absicht: erst der BRUTTO-Preis, dann die Förderung darauf,
+  // dann die Rechnung mit dem geförderten Preis. Andersherum ginge es nicht —
+  // prozentuale Zuschüsse (Rodgau 25 %, Holzgerlingen 30 %) brauchen den vollen
+  // Kaufpreis als Bezugsgröße, und ein bereits geförderter Preis würde sie
+  // kleinrechnen.
+  const bruttoInvest = useMemo(() => {
+    if (oInvest !== null) return oInvest;
+    const set = CFG.sets.find((x) => x.id === active.setId)!;
+    const speicher = CFG.storage.find((x) => x.id === active.storageId);
+    return set.price + (speicher?.price ?? 0);
+  }, [oInvest, active.setId, active.storageId]);
+
+  const wattPeak = CFG.sets.find((x) => x.id === active.setId)!.moduleWp;
+
+  const foerderStack = useMemo(
+    () => stackFunding(foerderQuelle.programme, { technik: "balkon", wattPeak, kosten: bruttoInvest }),
+    [foerderQuelle.programme, wattPeak, bruttoInvest],
+  );
+  const foerderung = fundingEnabled ? foerderStack.total : 0;
+
   const inputs: BalkonInputs = useMemo(() => ({
     setId: active.setId, orientationId, presenceId, storageId: active.storageId,
-    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom, invest: oInvest ?? undefined,
-  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, oInvest]);
+    haushaltKwh, specificYield, monthlyYield, stromPrice: strompreis, priceIncrease: scenarioStrom,
+    // Der Rechenkern bekommt IMMER einen Preis übergeben, sobald eine Förderung
+    // greift oder der Nutzer einen gesetzt hat — sonst zöge er wieder den
+    // Listenpreis aus der Config heran.
+    invest: foerderung > 0 || oInvest !== null ? Math.max(0, bruttoInvest - foerderung) : undefined,
+  }), [active.setId, active.storageId, orientationId, presenceId, haushaltKwh, specificYield, monthlyYield, strompreis, scenarioStrom, bruttoInvest, foerderung, oInvest]);
 
   const r = useMemo(() => calcBalkon(inputs), [inputs]);
   const amortLabel = isFinite(r.amortYears) ? `${r.amortYears.toFixed(1).replace(".", ",")} J.` : "—";
@@ -528,12 +567,39 @@ export default function Balkon() {
 
               {/* Editierbare Annahmen inkl. nachträglicher Standort-Eingabe */}
               <div style={{ marginTop: 18, borderTop: `1px solid ${v('--color-border-accent')}`, paddingTop: 14, fontSize: 13, lineHeight: 2 }}>
-                <div>{r.storageKwh > 0 ? "Anschaffung (Set + Speicher)" : "Set-Preis"}: <InlineEdit value={r.invest} onCommit={val => setOInvest(Math.round(val))} unit=" €" min={100} max={4000} step={50} width={64} /></div>
+                {/* Editierbar ist der BRUTTO-Preis, die Förderung steht als eigene
+                    Zeile darunter. Andersherum — ein Feld, das den Preis nach
+                    Förderung zeigt — führt dazu, dass jemand seinen Kaufpreis
+                    einträgt und die Förderung ein zweites Mal abgezogen wird. */}
+                <div>{r.storageKwh > 0 ? "Anschaffung (Set + Speicher)" : "Set-Preis"}: <InlineEdit value={bruttoInvest} onCommit={val => setOInvest(Math.round(val))} unit=" €" min={100} max={4000} step={50} width={64} /></div>
+                {foerderung > 0 && (
+                  <div style={{ color: v('--color-positive') }}>
+                    Kommunale Förderung: −{foerderung.toLocaleString("de-DE")} € · du zahlst {r.invest.toLocaleString("de-DE")} €
+                  </div>
+                )}
                 <div>Strompreis: <InlineEdit value={Math.round(strompreis * 100 * 100) / 100} onCommit={val => setOStrom(val / 100)} unit=" ct/kWh" min={10} max={70} step={1} width={70} /></div>
                 <div>Haushaltsverbrauch: <InlineEdit value={haushaltKwh} onCommit={val => setOVerbrauch(Math.round(val))} unit=" kWh" min={800} max={12000} step={100} width={76} /></div>
                 <StandortField plz={plz} onPlzChange={onPlzChange} loading={plzLoading} confirmed={plzConfirmed} onSubmit={() => fetchPvgis(plz)} />
               </div>
             </div>
+
+            {/* Kommunale Förderung — direkt unter dem Standort, weil sie daran
+                hängt. Dieselbe Karte wie im PV-Rechner; `technik="balkon"`
+                steuert nur den Wortlaut, welche Programme ankommen entscheidet
+                der Hook. */}
+            <ResultFunding
+              loading={foerderQuelle.laedt}
+              candidates={foerderQuelle.kandidaten}
+              chosenAgs={foerderQuelle.ags}
+              onChooseAgs={foerderQuelle.waehleOrt}
+              programs={foerderQuelle.programme}
+              applied={foerderStack.applied}
+              total={foerderStack.total}
+              enabled={fundingEnabled}
+              onToggle={setFundingEnabled}
+              brutto={bruttoInvest}
+              technik="balkon"
+            />
 
             {/* Stats 2×2 */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
