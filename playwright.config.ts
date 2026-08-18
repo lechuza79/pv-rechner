@@ -39,8 +39,22 @@ export default defineConfig({
     timezoneId: "Europe/Berlin",
   },
 
+  // Zwei Projekte, weil die beiden Stufen verschieden teuer sind:
+  //
+  //   smoke — alles ausser dem Flow-Läufer. Läuft gegen den Dev-Server und ist
+  //           in wenigen Minuten durch.
+  //   flows — der Flow-Läufer allein (e2e/flows.spec.ts). Er baut je Weg die
+  //           Seite neu auf und braucht gegen einen fertigen Build gut eine
+  //           Viertelstunde; gegen den Dev-Server ein Vielfaches davon.
+  //
+  // Vorher lagen beide im selben Lauf. Als der Läufer von einem auf sieben
+  // Flows wuchs, riss das die Zeitgrenze des CI-Jobs — und ein abgebrochener
+  // Lauf fällt gar kein Urteil, weder rot noch grün. Getrennt kann jede Stufe
+  // ihr eigenes Zeitmass bekommen, und ein langer Flow-Lauf hält die schnellen
+  // Prüfungen nicht mehr auf.
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "smoke", use: { ...devices["Desktop Chrome"] }, testIgnore: /flows\.spec\.ts/ },
+    { name: "flows", use: { ...devices["Desktop Chrome"] }, testMatch: /flows\.spec\.ts/ },
   ],
 
   webServer: {
