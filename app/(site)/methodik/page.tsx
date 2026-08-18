@@ -474,7 +474,7 @@ export default async function MethodikPage() {
         {/* ── Balkonkraftwerk-Rechner ── */}
         <h2 style={S.h2}>Balkonkraftwerk-Rechner</h2>
         <p style={S.p}>
-          Der <Link href="/balkonkraftwerk-rechner" style={{ ...S.link, fontWeight: 600 }}>Balkonkraftwerk-Rechner</Link> nutzt
+          Der <Link href="/balkonkraftwerk/rechner" style={{ ...S.link, fontWeight: 600 }}>Balkonkraftwerk-Rechner</Link> nutzt
           dieselbe Basis wie der große PV-Rechner: Standort-Ertrag von PVGIS und eine Stunden-Simulation aus
           Sonnenverlauf und Haushaltsprofil. Zwei Besonderheiten: Der Ertrag wird am{" "}
           <strong style={S.strong}>800-Watt-Wechselrichter gedeckelt</strong> — bei großen Modul-Sets zeigt der
