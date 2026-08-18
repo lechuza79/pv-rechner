@@ -320,13 +320,15 @@ export const WP_FUEL_OPTIONS: {
   // zwei verschiedene Nutzungsgrade (vorhanden / neu eingebaut), und die eine Zahl,
   // die das Projekt heute für Öl kennt (0,85), beschreibt die VORHANDENE Anlage —
   // sie steht derzeit an der neu eingebauten. Ein zweiter Eintrag mit derselben
-  // Zahl wäre kein Fall, sondern eine Dublette. Belegte Zielwerte liegen vor
-  // (IWU, „Energetische Kenngrößen für Heizungsanlagen im Bestand", Tab. 3, in
-  // Anlehnung an DIN V 4701-10: Öl-Brennwert 0,94 · Öl-Niedertemperatur 0,88;
-  // Volltext in docs/quellen/), die Prüfung läuft über scripts/waermepumpe-verify.md
-  // zusammen mit dem ebenfalls offenen Öl-Wartungswert. Bis dahin rutscht ein
-  // Öl-Haushalt bei „Anschaffung 0" auf Gas — sichtbar, aber unvermeidbar, ohne
-  // eine ungeprüfte Zahl zu erfinden.
+  // Zahl wäre kein Fall, sondern eine Dublette. Das geht zugunsten der Wärmepumpe
+  // (die Ölheizung verbrennt zu viel) — die Richtung ist bekannt und benannt.
+  // Eine naheliegende Quelle wurde am 18.08.2026 geprüft und trägt den Wert NICHT
+  // (Baujahr-Spalten von 2002, Teillast statt Jahresnutzungsgrad, andere
+  // Bezugsgröße) — die Begründung steht ausgeschrieben in
+  // scripts/waermepumpe-verify.md, damit sie niemand ein zweites Mal geht.
+  // Gebraucht wird ein Jahresnutzungsgrad nach DIN V 18599-5. Bis dahin rutscht
+  // ein Öl-Haushalt bei „Anschaffung 0" auf Gas — sichtbar, aber besser als eine
+  // erfundene Zahl.
   { id: "gas_vorhanden", label: "Vorhandene Gastherme", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: FUEL.gas.efficiency, co2PerKwh: FUEL_PRICE.gas.co2PerKwh, bestandsanlage: true },
   { id: "gas_alt", label: "Alter Gaskessel", refLabel: "Gasheizung", kind: "gas", price: FUEL_PRICE.gas.price, efficiency: 0.80, co2PerKwh: FUEL_PRICE.gas.co2PerKwh, bestandsanlage: true },
 ];
