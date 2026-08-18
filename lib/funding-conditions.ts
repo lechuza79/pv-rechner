@@ -101,6 +101,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   "baden-baden-pvplus", "schwerin-pv", "wolfsburg-pv", "bottrop-solaroffensive",
   "krefeld-klimafreundlich", "rhein-erft-energieoffensive", "viersen-klimaschutz",
   "bergstrasse-speicher", "mayen-koblenz-speicher",
+  // Nach dem Merge von main dazugekommen — der Test hat sie gefunden, statt sie
+  // still ungeprüft durchzulassen. Genau dafür ist die Liste da.
+  "ludwigshafen-kipki", "waiblingen-klimaschutz", "herne-klimafoerderung",
 ];
 
 /**
