@@ -20,7 +20,7 @@ import {
   eegReformStandLabel,
   EEG_ENTWURF_WERTE,
 } from "../../../../lib/eeg-reform-config";
-import { MARKTWERT_SOLAR_HISTORIE } from "../../../../lib/marktwert-config";
+import { MARKTWERT_SOLAR_HISTORIE, DIREKTVERMARKTUNG } from "../../../../lib/marktwert-config";
 import type { EinspeiseRegime, RegimeJahr } from "../../../../lib/einspeise-regime";
 
 const letzterMarktwert = MARKTWERT_SOLAR_HISTORIE[MARKTWERT_SOLAR_HISTORIE.length - 1];
@@ -239,6 +239,29 @@ export default function ResultRegime({
                   × {profilFaktor.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
+              {/* Die Aufschlüsselung muss auf die Zahl führen, die unter ihr steht.
+                  Ohne diese beiden Zeilen sprang sie von „4,93 ct × 0,90" direkt
+                  auf einen GRÖSSEREN Wert — eine Rechnung, die man nicht
+                  nachvollziehen kann, und damit genau das, was diese Seite nicht
+                  sein will (Council 15.08.2026). Nur die mengenabhängige Gebühr
+                  gehört in diese ct-Kette; die Grundgebühr ist ein Jahresbetrag
+                  in Euro und steht deshalb im Text darunter. */}
+              {ersterMarkt?.art === "markt-bonus" && (
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span>Bonus, erste {EEG_ENTWURF_WERTE.bonusMonate} Monate</span>
+                  <span style={{ fontFamily: v("--font-mono") }}>
+                    + {EEG_ENTWURF_WERTE.bonusCt.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ct
+                  </span>
+                </div>
+              )}
+              {ersterMarkt && (
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span>Gebühr des Dienstleisters</span>
+                  <span style={{ fontFamily: v("--font-mono") }}>
+                    − {DIREKTVERMARKTUNG.gebuehrCtKwh.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ct
+                  </span>
+                </div>
+              )}
               {ersterMarkt && (
                 <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 600, color: v("--color-text-secondary") }}>
                   <span>Bleibt im ersten Marktjahr</span>
@@ -257,7 +280,11 @@ export default function ResultRegime({
                 {letzterMarktwert.ctKwh.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ct/kWh
                 im Jahr {letzterMarktwert.jahr}), nicht der mittlere Börsenpreis. Dein
                 Eigenverbrauch nimmt die gut bezahlten Morgen- und Abendstunden weg, also kommt
-                davon noch etwas weniger an. Gebühren sind abgezogen; der Erlös wächst hier nicht
+                davon noch etwas weniger an. Dazu kommen{" "}
+                {DIREKTVERMARKTUNG.grundgebuehrProJahr.toLocaleString("de-DE")} € Grundgebühr im
+                Jahr — aber erst ab dem Marktjahr: In den{" "}
+                {EEG_ENTWURF_WERTE.uebergangMonate} Monaten der Übergangszahlung nimmt der
+                Netzbetreiber ab, da gibt es keinen Dienstleister. Der Erlös wächst hier nicht
                 mit dem Strompreis mit.
               </div>
             </div>
