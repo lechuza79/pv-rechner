@@ -23,6 +23,7 @@
     "foerder:probe": "tsx scripts/funding-probe.ts",
     "foerder:watch": "tsx scripts/funding-watch.ts",
     "foerder:abdeckung": "tsx scripts/funding-coverage.ts",
+    "foerder:screen": "tsx scripts/funding-screen.ts",
     "stand:faellig": "tsx scripts/stand-faellig.ts"
   },
   "dependencies": {

@@ -64,11 +64,33 @@ export async function GET(req: NextRequest) {
   });
   results.push({ step: "funding_checks", status: e2 ? "error" : "ok", error: e2?.message });
 
+  // funding_coverage: Gedächtnis der Abdeckungs-Suche.
+  //
+  // WARUM (18.08.2026): 971 Gemeinden haben eine erfasste Förderseite, die wir
+  // nicht führen. Ein Durchgang schafft davon nur einen Teil — ohne Ablage
+  // begänne jeder Lauf wieder bei den größten und käme nie in die Tiefe. Genau
+  // dasselbe Gedächtnisproblem, das der Prüf-Arbeitsvorrat schon gelöst hat.
+  const { error: e2b } = await supabase.rpc("exec_sql", {
+    sql: `
+      CREATE TABLE IF NOT EXISTS funding_coverage (
+        region_id text PRIMARY KEY,
+        url text,
+        verdict text NOT NULL,
+        evidence text,
+        http int,
+        checked_at timestamptz NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS idx_fcov_verdict ON funding_coverage (verdict, checked_at);
+    `,
+  });
+  results.push({ step: "funding_coverage", status: e2b ? "error" : "ok", error: e2b?.message });
+
   // RLS: anon may read programs (public pages); only the service role writes.
   const { error: e3 } = await supabase.rpc("exec_sql", {
     sql: `
       ALTER TABLE funding_programs ENABLE ROW LEVEL SECURITY;
       ALTER TABLE funding_checks ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE funding_coverage ENABLE ROW LEVEL SECURITY;
       DO $$ BEGIN
         IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'fp_anon_read') THEN
           CREATE POLICY fp_anon_read ON funding_programs FOR SELECT TO anon USING (true);
