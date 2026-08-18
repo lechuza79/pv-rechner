@@ -21,10 +21,15 @@ Fachlich: pragmatischer Senior Full-Stack Engineer mit Erfahrung im Aufbau von C
 
 An diesem Repo arbeiten regelmäßig mehrere Sessions gleichzeitig, dazu die Wächter als scheduled tasks. Der Betreiber koordiniert das nicht — **das machst du.** Es ist an einem Tag zweimal schiefgegangen: ein Merge-Konflikt auf `main` und doppelte Arbeit an derselben Ursache.
 
-**Vor dem Start jeder inhaltlichen Arbeit:**
-1. `git fetch` + `git log origin/main` — was ist in den letzten Stunden gelandet?
-2. `git worktree list` — welche Bereiche sind belegt? Ein `locked`-Eintrag oder ein laufender Dev-Server heißt: da sitzt jemand.
-3. Bei Überschneidung mit einem fremden Bereich: **nicht anfangen**, sondern die andere Session kontaktieren.
+**Vor dem Start jeder inhaltlichen Arbeit:** `git fetch`, dann **`npm run sessions`**. Der Befehl beantwortet aus git und den laufenden Prozessen, was du sonst von Hand zusammensuchst: welcher Stand welchen Bereich anfasst, wo ein Dev-Server läuft (und auf welchem Port), was nirgends gemergt ist — und, das ist der Kern, **was inhaltlich längst auf der Hauptlinie steht** (`git cherry`, plus Dateivergleich für nie eingecheckte Änderungen). Bei Überschneidung mit einem fremden Bereich: **nicht anfangen**, sondern die andere Session kontaktieren.
+
+**Gemessen, nicht angemeldet — und das ist eine Entscheidung, keine Bequemlichkeit.** Eine Liste, in die sich Sessions eintragen, ist eine zweite Wahrheit: Sie veraltet beim ersten Vergessen, sie erzeugt Konflikte ausgerechnet in der Datei, die Konflikte verhindern soll, und sie sagt nichts über eine Session, die mittendrin aufgehört hat. Der Befehl behauptet nichts, er sieht nach.
+
+**Was er nicht kann:** Absichten sehen. Zwei Sessions, die denselben Auftrag bekommen haben und noch keine Zeile geschrieben haben, sind darin nicht zu unterscheiden — das bleibt eine Frage an den Betreiber, und deshalb steht sie auch dort: ein Auftrag, eine Session.
+
+**Wer auf `main` schiebt, bleibt, bis sein Lauf durch ist.** Nicht schieben und weggehen. Ist der Lauf rot, wird er behoben oder der Commit zurückgenommen — vor Session-Ende. Am 18.08.2026 stand ein kaputter Browser-Test zwei Stunden auf `main`, weil die Session, die ihn ausgelöst hatte, längst woanders war; danach lief die Prüfung stundenlang ins Zeitlimit, ohne dass jemand ein Urteil gesehen hätte. **Ein Lauf ohne Urteil ist schlimmer als ein roter** — Rot sieht man, „abgebrochen" liest man als „egal".
+
+**Der Anlass (18.08.2026, elf parallele Stände):** An dem Tag gab es *keine einzige* echte Kollision — und trotzdem Schaden, dreimal derselben Art. Eine Session fing Arbeit neu an, die schon eingecheckt war. Zwei liegengebliebene Stände enthielten Arbeit, die inzwischen jemand anders noch einmal gemacht hatte. Ein Dev-Server lief aus fremdem Verzeichnis und lieferte fremden Code, während die Session den Fehler im eigenen Zweig suchte. **Das Problem ist nie das Sperren, sondern die Sichtbarkeit: Was eine Session weiß, stirbt mit ihr.**
 
 **Vor jedem „das ist kaputt, ich baue das jetzt":** Erst prüfen, ob es schon jemand behebt (`git log` auf die betroffenen Dateien). Ein Fix, den zwei Sessions parallel bauen, ist teurer als eine Minute Nachsehen.
 
@@ -462,6 +467,7 @@ npm run dev           # Dev-Server (localhost:3000, nutzt .next-dev/)
 npm run build         # Production Build (prebuild räumt .next/ auf, nutzt .next/)
 npm run test:e2e      # Playwright-Smokes headless (test:e2e:ui = interaktiv)
 npm run stand:faellig # Prüfdaten: was ist überfällig, welcher Wächter steht still (--alle = ganzer Prüfstand)
+npm run sessions      # Wer arbeitet gerade wo: Bereiche, Dev-Server, Liegengebliebenes (vor jeder Arbeit)
 ```
 
 **Cache-Trennung:** Dev-Server (`.next-dev/`) und Build (`.next/`) nutzen getrennte Output-Verzeichnisse (`distDir` in `next.config.js`). Das verhindert „Cannot find module './XXX.js'"-Fehler, die auftreten, wenn beide sich `.next/` teilen. **`prebuild` prüft `process.env.VERCEL` und räumt nur lokal auf** — Vercel restored `.next/cache/` aus dem Build-Cache; diesen Cache zu löschen verdoppelt Build-Zeit und Kosten (die alte Fassung `rm -rf .next` machte jeden Vercel-Build zum Cold Build).
