@@ -85,22 +85,36 @@ async function resolve(pfad: string[] | undefined): Promise<AtlasRegion | null> 
   return resolveSlugPath(pfad);
 }
 
-function headline(region: AtlasRegion): string {
-  return `Solaranlagen ${ortPhrase(region)}`;
+/**
+ * Der Name, unter dem diese Seite gesucht wird.
+ *
+ * GEMESSEN, nicht geraten (18.08.2026, docs/seo/befund-2026-08-18-atlas-wellen.md):
+ * Unser eigenes Wort schlägt das der Behörden. Auf „solaratlas nrw" (110 Suchen/Monat)
+ * stehen wir auf Position 10,6, auf „solaratlas bayern" (90) auf 16,9 — und das,
+ * obwohl das Wort „Solaratlas" bis dahin weder im Titel noch in einer Überschrift
+ * stand. Auf „solarkataster nrw" (1.900) dagegen auf 71: Dort liegen die amtlichen
+ * Dachflächen-Werkzeuge (Energieatlas NRW, Geoportal), die eine ANDERE Frage
+ * beantworten („taugt mein Dach?" statt „was steht hier schon?"). Volumen ist keine
+ * Chance, solange die Suchabsicht nicht passt.
+ *
+ * Deshalb trägt der Titel beide Hälften: unser Wort für die Wiedererkennung und
+ * „Solaranlagen"/„Photovoltaik" für die beschreibende Suche.
+ */
+function seitenName(region: AtlasRegion): string {
+  return region.level === "de" ? "Solaratlas Deutschland" : `Solaratlas ${region.name}`;
 }
 
 export async function generateMetadata(props: { params: Promise<Params> }): Promise<Metadata> {
   const params = await props.params;
   const region = await resolve(params.pfad);
   if (!region) return { robots: atlasRobots(false) };
-  const title = headline(region);
   return {
     ...pageMetadata({
-      title: `${title} – Bestand & Zubau`,
+      title: `${seitenName(region)}: Solaranlagen, Bestand & Zubau`,
       description:
         region.level === "de"
           ? "Wie viel Photovoltaik steht in Deutschland? Bestand und Zubau aus dem Marktstammdatenregister, mit Rangliste aller Bundesländer nach Solarleistung je Einwohner."
-          : `Wie viele Solaranlagen stehen ${ortPhrase(region)}? Photovoltaik-Bestand, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister.`,
+          : `Wie viele Solaranlagen stehen ${ortPhrase(region)}? Photovoltaik-Bestand, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — mit Rangliste und Landesförderung.`,
       path: `/solar-atlas${params.pfad?.length ? "/" + params.pfad.join("/") : ""}`,
     }),
     robots: atlasRobots(atlasIsIndexable(region.level)),
@@ -272,7 +286,11 @@ async function AtlasBody({
           · monatlich aktualisiert
         </div>
 
-        <h1 style={S.h1}>{headline(region)}</h1>
+        {/* Die Überschrift trägt den Namen der Sache („Solaratlas Bayern"), der
+            Satz darunter beschreibt sie („… Solaranlagen sind in Bayern in
+            Betrieb"). Beide Formulierungen werden gesucht, und getrennt gesetzt
+            steht keine der beiden im Weg — siehe seitenName(). */}
+        <h1 style={S.h1}>{seitenName(region)}</h1>
         <p style={S.intro}>
           <strong style={S.strong}>{nf(atlas.solar.total_count)} Solaranlagen</strong> mit zusammen{" "}
           <strong style={S.strong}>{fmtLeistung(atlas.solar.total_kwp)}</strong> installierter Leistung

@@ -107,7 +107,14 @@ export async function generateMetadata(props: { params: Promise<Params> }): Prom
     : 0;
   return {
     ...pageMetadata({
-      title: `Solaranlagen in ${region.name} – Bestand & Zubau`,
+      // Ortsname + „Photovoltaik"/„Solaranlagen" — das ist das Muster, mit dem
+      // diese Seitengattung gewinnt, gemessen am Wettbewerber wieistmeinsolar.de:
+      // 139 Platzierungen, 8 davon in den Top 10, sämtlich auf Ortsnamen
+      // („pv erdweg" 5, „pv rendsburg" 7, „solar weinheim" 10) und keine einzige
+      // auf einem Begriff mit dem Wort „Landkreis". Der Ortsname steht deshalb
+      // vorn, damit er auch in der abgeschnittenen Trefferanzeige überlebt.
+      // Beleg: docs/seo/befund-2026-08-18-atlas-wellen.md
+      title: `Photovoltaik in ${region.name}: Solaranlagen, Bestand & Zubau`,
       description: `Photovoltaik in ${region.name}: Anlagenzahl, installierte Leistung und jährlicher Zubau aus dem Marktstammdatenregister — je Einwohner und im Vergleich zum ${bezugsebene}.`,
       path: `/solar-atlas/${params.bundesland}/${params.kreis}/${params.gemeinde}`,
     }),
