@@ -556,22 +556,32 @@ export const globalStyles = `
   /* Kopfzeile: Welche Navigation sichtbar ist, entscheidet die Medienabfrage —
      NICHT der Zustand der Komponente. Das isDesktop-Flag in Header.tsx startet
      vor der Hydratation auf wahr; der Server lieferte damit auf jedem
-     Gerät die Desktop-Leiste, und auf 375 px riss die das Dokument auf 791 px
-     auf. Sichtbar war das als kurzer seitlicher Scroll beim Laden.
+     Gerät die Desktop-Leiste, und auf 375 px riss die das Dokument über die
+     Fensterbreite hinaus. Sichtbar war das als kurzer seitlicher Scroll beim Laden.
      DER UMSCHALTPUNKT STEHT HIER UND IN Header.tsx (matchMedia) — beide bei
-     1000px. Wer einen ändert, ändert beide, sonst zeigt die Seite für einen
-     Bereich beides oder nichts. */
+     1080px. Wer einen ändert, ändert beide, sonst zeigt die Seite für einen
+     Bereich beides oder nichts.
+
+     WARUM 1080 UND NICHT 1000: Bei 1000 px passte die Desktop-Kopfzeile noch
+     gar nicht. Sie braucht rund 1009 px (Logo, vier Menüpunkte, Sonnenanzeige,
+     Einloggen), bekommt bei 1000 px Fenster aber nur 968 px — das Dokument lief
+     auf 1025 px auf und die Seite scrollte seitlich. Betroffen war unter
+     anderem jedes iPad im Querformat (1024 px) und jedes 1280er-Notebook bei
+     125 % Skalierung. Gemessen am 18.08.2026; der Fehler lag schon vorher im
+     matchMedia-Wert, fiel aber erst auf, als die Breite zum geprüften Wert
+     wurde. 1080 lässt Luft für längere Ortsnamen in der Sonnenanzeige — die
+     Kopfzeile wächst mit ihnen. */
   .hdr-nav{display:flex}
   .hdr-auth{display:contents}
   .hdr-burger{display:none}
   .hdr-aktionen{gap:14px}
-  @media (max-width:999px){
+  @media (max-width:1079px){
     .hdr-nav{display:none}
     .hdr-auth{display:none}
     .hdr-burger{display:flex}
     .hdr-aktionen{gap:8px}
   }
-  @media (min-width:1000px){
+  @media (min-width:1080px){
     .hdr-menu{display:none}
   }
   .footer-cols{display:grid;grid-template-columns:repeat(3,1fr);max-width:600px;margin:0 auto;gap:0}

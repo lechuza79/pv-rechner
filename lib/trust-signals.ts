@@ -144,6 +144,14 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
     // Rhythmus und Frist je Größe, dazu `npm run stand:faellig`, das meldet,
     // wenn ein Wächter stillsteht. Das Modal zeigt dieselbe Liste.
     //
+    // KEIN "die Termine je Größe" im Detailtext (Audit 18.08.2026): Der
+    // Prüfstand führt zehn Einträge (Wärmepumpe, Klima, Balkon, EEG), aber
+    // weder die PV-Marktpreise noch die 38 Förderprogramme — also ausgerechnet
+    // die "Preise" und "Fördersätze" aus dem Satz darüber. Beide haben einen
+    // Wächter, aber keinen Eintrag im Prüfstand: Ihr Stand kommt aus der
+    // Datenbank statt aus einer Config mit Prüfdatum. Solange das so ist,
+    // behauptet der Text keine Vollständigkeit.
+    //
     // Der Titel darf NIE allein stehen: Ohne den Satz wäre er eine
     // Zustandsbehauptung über jeden Wert zu jedem Zeitpunkt, und die Wächter
     // laufen nur, wenn der Rechner des Betreibers an ist (09.–13.08.2026 lief
@@ -155,7 +163,7 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
     text: "Das Ergebnis der Rechner erscheint sofort, die Berechnung läuft in deinem Browser.",
     betont: "in deinem Browser",
     detail:
-      "Die Rechenkerne laufen als JavaScript auf deinem Gerät. An unseren Server geht nur, was von außen kommen muss: die Postleitzahl für Standort-Ertrag und Wetter. Anlagengröße, Verbrauch und Ergebnis bleiben bei dir.",
+      "Die Rechenkerne laufen als JavaScript auf deinem Gerät — dein Ergebnis entsteht dort und wird nirgends gespeichert. An unseren Server geht die Postleitzahl, damit wir Standort-Ertrag, Wetter und Förderprogramme für deinen Ort holen können. Für die Reichweitenmessung zählen wir außerdem anonym mit, welche Anlagen- und Speichergröße gewählt wurde; das lässt sich weder dir noch einem Gerät zuordnen.",
     href: "/datenschutz",
     icon: "lock",
     // KEIN "Mehr erfahren": Der Satz sagt bereits alles, was der Punkt zusagt.
@@ -163,9 +171,22 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
     // direkt darunter.
     //
     // Deckungsgleich mit der Datenschutzerklärung, Abschnitt "Nutzung ohne
-    // Registrierung". Bewusst NICHT "keine Daten verlassen dein Gerät" — die
-    // Postleitzahl geht für Wetter- und Ertragsdaten an unsere eigene
-    // Schnittstelle.
+    // Registrierung".
+    //
+    // Der Detailtext stand bis zum 18.08.2026 falsch da: "Anlagengröße,
+    // Verbrauch und Ergebnis bleiben bei dir." Gemessen am laufenden Rechner
+    // geht bei jedem Ergebnis ein anonymes Ereignis an die Reichweitenmessung —
+    // {"anlage":"10 kWp","speicher":"10 kWh"} (rechner.tsx, calls
+    // trackEvent("pv_ergebnis")). Die Datenschutzerklärung, auf die dieser
+    // Punkt verlinkt, benennt das korrekt; die Leiste sagte das Gegenteil.
+    //
+    // Ebenso raus: das "nur" vor der Postleitzahl. Sie geht außer an Ertrag und
+    // Wetter auch an die Förderabfrage und die Sonnenanzeige.
+    //
+    // REGEL FÜR DIESEN PUNKT: Was hier über Datenflüsse steht, wird am
+    // laufenden Rechner GEMESSEN (Netzwerkmitschnitt), nicht aus dem Gedächtnis
+    // geschrieben. Der Test kann es nicht: Er prüft nur, ob eine Zeichenkette in
+    // der Datenschutzerklärung vorkommt.
     beleg: "/datenschutz, Abschnitt Nutzung ohne Registrierung",
   },
 ] as const;

@@ -30,7 +30,7 @@ const RECHNER_ITEMS: NavItem[] = [
   { href: "/klimaanlage-stromkosten", label: "Klimaanlagen-Rechner", desc: "Kühlkosten und Gerätevergleich — auch ergänzend zum Heizen", page: "klima" },
   { href: "/balkonkraftwerk-rechner", label: "Balkonkraftwerk-Rechner", desc: "Steckersolar für Miete und Eigentum", page: "balkon" },
   { href: "/pv-bedarf-berechnen", label: "PV-Bedarf berechnen", desc: "Welche Anlage passt zu mir?", page: "empfehlung" },
-  { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge in Echtzeit", page: "simulation" },
+  { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge im Tagesverlauf", page: "simulation" },
 ];
 
 // PV-Förderung group: the regional funding directory plus the national data
@@ -87,7 +87,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
   const [isDesktop, setIsDesktop] = useState(true);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1000px)");
+    const mq = window.matchMedia("(min-width: 1080px)");
     setIsDesktop(mq.matches);
     const handler = (e: MediaQueryListEvent) => {
       setIsDesktop(e.matches);
@@ -232,7 +232,13 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
             // Der zIndex muss HIER sitzen, nicht am <header>: Abdunkelung und
             // Knopf liegen im selben Stapelkontext, den Header anzuheben
             // verschiebt beide gemeinsam und ändert ihr Verhältnis nicht.
-            position: "relative", zIndex: 101,
+            //
+            // NUR bei offenem Menü (Audit 18.08.2026): Dauerhaft gesetzt, ließ
+            // er bei offenem Menü auch die Sonnenanzeige anklickbar — Menü und
+            // Theme-Auswahl standen dann gleichzeitig offen, jede mit eigener
+            // Außenklick-Logik. Das hat niemand entworfen. Geschlossen braucht
+            // die Zeile den Vorrang nicht.
+            position: "relative", zIndex: menuOpen ? 101 : undefined,
           }}
         >
           {/* compact steuert nur Innenabstände, kein Layout — ein falscher
@@ -257,10 +263,10 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
       </div>
 
       {/* Mobile menu dropdown */}
-      {/* Kein `!isDesktop` mehr: Über 1000 px ist der Burger ausgeblendet, also
-          kann `menuOpen` dort gar nicht erst gesetzt werden. Die Medienabfrage
-          nimmt das Menü zusätzlich aus dem Fluss, falls die Breite sich bei
-          offenem Menü ändert. */}
+      {/* Kein !isDesktop mehr. Dass beim Verbreitern des Fensters kein Menü
+          stehen bleibt, trägt der matchMedia-Effekt oben (setMenuOpen(false)
+          beim Wechsel auf breit); die Medienabfrage .hdr-menu ist das zweite
+          Netz, falls dieser Effekt einmal ausfällt. */}
       {menuOpen && (
         <>
           <div

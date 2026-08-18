@@ -195,9 +195,9 @@ export default function DatenschutzPage() {
           übertragen. Angaben wie Gerätetyp oder ungefähre Herkunftsregion
           leitet der Dienst aus dem ab, was dein Browser bei jedem Seitenaufruf
           ohnehin mitsendet — nicht aus einer Abfrage deines Geräts.
-          Erhoben werden ausschließlich anonyme, aggregierte Daten wie die
-          aufgerufene Seite, die ungefähre Herkunftsregion, der Gerätetyp und die
-          Verweis-Quelle. Zusätzlich zählen wir anonyme Nutzungsereignisse — etwa
+          Erhoben werden anonyme, aggregierte Daten: die aufgerufene Seite, die
+          ungefähre Herkunftsregion, der Gerätetyp und die Verweis-Quelle.
+          Dazu zählen wir anonyme Nutzungsereignisse — etwa
           dass ein Berechnungsschritt erreicht, eine Berechnung abgeschlossen oder
           ein Ergebnis geteilt wurde. In aggregierter, anonymer Form erfassen wir
           dabei einzelne gewählte Eckdaten der Berechnung (zum Beispiel die
@@ -259,7 +259,7 @@ export default function DatenschutzPage() {
         </p>
 
         <p style={S.p}>
-          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher nur Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong>, dein gewähltes <strong>Farbschema</strong> (hell, dunkel oder automatisch) und, falls du im Solar-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird ausschließlich für die Abfrage von Wetter- und Ertragsdaten für diesen Ort verwendet (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Solar-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
+          Dauerhaft — also auch bei einem späteren Besuch — merken wir uns im Browser-Speicher nur Einstellungen, die du selbst triffst: die von dir eingegebene <strong>Postleitzahl</strong>, dein gewähltes <strong>Farbschema</strong> (hell, dunkel oder automatisch) und, falls du im Solar-Atlas einen <strong>Heimatort</strong> festgelegt hast, dessen Namen samt Landkreis und Bundesland. Die Postleitzahl wird für alle Rechner und für die Sonnenanzeige gemeinsam genutzt, damit du sie nur einmal eingeben musst. Diese Werte verbleiben auf deinem Gerät, werden keinem Konto und keiner Kennung zugeordnet und fließen nicht in die Reichweitenmessung ein; die Postleitzahl wird für ortsbezogene Abfragen verwendet — Standort-Ertrag, Wetter- und Klimadaten, die Sonnenanzeige und die Suche nach Förderprogrammen für deinen Ort (siehe Abschnitt 8). Du kannst die Postleitzahl in der Sonnenanzeige und den Heimatort im Solar-Atlas jederzeit wieder entfernen oder den Browser-Speicher löschen. Weil es sich um Einstellungen handelt, die du für die gewünschte Funktion selbst gesetzt hast, ist für diese Speicherung auf deinem Gerät nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung nötig.
         </p>
 
         <h2 style={S.h2}>8. Standortgenaue Ertragsprognose</h2>

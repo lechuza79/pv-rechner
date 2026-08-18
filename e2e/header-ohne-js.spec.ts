@@ -46,7 +46,7 @@ test.describe("Kopfbereich ohne JavaScript", () => {
   // einer der beiden Medienabfragen (999 vs. 1000) erzeugt genau so eine Lücke,
   // und sie trifft nur einen schmalen Breitenbereich — im Alltag also niemanden,
   // der es meldet.
-  for (const breite of [999, 1000]) {
+  for (const breite of [1079, 1080]) {
     test(`bei ${breite}px steht genau eine Variante`, async ({ page }) => {
       await page.setViewportSize({ width: breite, height: 800 });
       await page.goto("/impressum");
@@ -68,12 +68,55 @@ test.describe("Kopfbereich mit JavaScript", () => {
     await page.locator(".hdr-burger").click();
     await expect(page.locator("nav.hdr-menu")).toBeVisible();
 
-    // Schließen über denselben Knopf (zeigt dann ein ×). Das ist der Weg, den
-    // ein Nutzer tatsächlich hat: Das Menü ist auf einem 812-px-Schirm rund
-    // 808 px hoch und verdeckt die Abdunkelung vollständig — ein "Klick
-    // daneben" existiert dort nicht. Beim Umbau am 18.08.2026 gemessen; der
-    // Schließen-Knopf trägt es, deshalb bleibt es hier bei der Beobachtung.
+    // Schließen über denselben Knopf (zeigt dann ein ×). Genau dieser Pfad war
+    // kaputt: Die Abdunkelung des Menüs lag über dem Knopf und fing den Klick
+    // ab — dass sich das Menü trotzdem schloss, war Zufall, weil beide dasselbe
+    // tun. Der Klick auf die Abdunkelung selbst wird unten geprüft.
     await page.locator(".hdr-burger").click();
     await expect(page.locator(".hdr-menu")).toHaveCount(0);
   });
+
+  // Der Streifen über dem Menü (neben Logo und Aktionsleiste) ist blanke
+  // Abdunkelung — anders als ein Kommentar hier zwischenzeitlich behauptete.
+  // Das Menü beginnt erst unterhalb der Kopfzeile.
+  test("ein Klick auf die Abdunkelung schließt ebenfalls", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/impressum");
+    await page.locator(".hdr-burger").click();
+    await expect(page.locator("nav.hdr-menu")).toBeVisible();
+
+    await page.locator("div.hdr-menu").click({ position: { x: 5, y: 5 } });
+    await expect(page.locator(".hdr-menu")).toHaveCount(0);
+  });
+
+  // DER TEST, DER GEFEHLT HAT.
+  //
+  // Die Prüfungen oben laufen ohne JavaScript — dort ist die Aktionsleiste leer,
+  // weil Sonnenanzeige und Einloggen erst der Browser rendert. Der Überlauf
+  // entsteht aber genau durch diese beiden: Bei 1000 px Fenster brauchte die
+  // Kopfzeile 1009 px und riss das Dokument auf 1025 px auf. Ohne JavaScript war
+  // davon nichts zu sehen, mit JavaScript scrollte jede Seite seitlich — und die
+  // Testsuite war gegen diesen Fall konstruktionsbedingt blind.
+  //
+  // Deshalb hier MIT JavaScript, und über die Breiten, an denen es kippt.
+  for (const breite of [375, 768, 1024, 1079, 1080, 1280]) {
+    test(`kein seitlicher Überlauf bei ${breite}px, mit JavaScript`, async ({ page }) => {
+      await page.setViewportSize({ width: breite, height: 900 });
+      await page.goto("/impressum");
+      // Auf das Nachladen der Kopfzeilen-Elemente warten: Sonnenanzeige und
+      // Einloggen erscheinen erst nach der Hydratation und sind genau das, was
+      // die Zeile breit macht.
+      await page.locator(".hdr-aktionen").waitFor({ state: "visible" });
+      await page.waitForLoadState("networkidle");
+
+      const { klient, dokument } = await page.evaluate(() => ({
+        klient: document.documentElement.clientWidth,
+        dokument: document.documentElement.scrollWidth,
+      }));
+      expect(
+        dokument,
+        `bei ${breite}px ist das Dokument ${dokument}px breit — die Seite scrollt seitlich`,
+      ).toBeLessThanOrEqual(klient + 1);
+    });
+  }
 });
