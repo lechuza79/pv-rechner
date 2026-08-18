@@ -104,6 +104,9 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Nach dem Merge von main dazugekommen — der Test hat sie gefunden, statt sie
   // still ungeprüft durchzulassen. Genau dafür ist die Liste da.
   "ludwigshafen-kipki", "waiblingen-klimaschutz", "herne-klimafoerderung",
+  // Aus dem Abdeckungs-Screening vom 18.08.2026 — Sätze und Bedingungen sind an
+  // der Amtsseite belegt, die Zuordnung zu den Prüfformen steht noch aus.
+  "hoehr-grenzhausen-energie", "wietzen-pv", "gaimersheim-energie", "dietmannsried-pv",
 ];
 
 /**

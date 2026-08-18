@@ -23,11 +23,25 @@ import { allFundingPrograms } from "../funding-programs";
  * Landkreises — ein falscher Nenner, und das ist im Projekt die schwerste
  * Fehlerklasse. Die Seiten kommen, wenn der Atlas Gemeinde-Ebene trägt.
  */
-const OHNE_SEITE: Record<string, string> = {
-  "badhomburg-energiespar": "OFFEN (bis 12/2026): keine kreisfreie Stadt — Seite braucht Atlas-Daten auf Gemeinde-Ebene",
-  "goettingen-klimafonds": "OFFEN (bis 12/2026): keine kreisfreie Stadt — Seite braucht Atlas-Daten auf Gemeinde-Ebene",
-  "waiblingen-klimaschutz": "OFFEN (bis 12/2026): keine kreisfreie Stadt — Seite braucht Atlas-Daten auf Gemeinde-Ebene",
-};
+const GEMEINDE_EBENE_OFFEN =
+  "OFFEN (bis 12/2026): Programme kreisangehöriger Gemeinden bekommen erst eine Seite, wenn der Atlas Bestandsdaten auf Gemeinde-Ebene trägt";
+
+/**
+ * Programme kreisangehöriger Gemeinden (achtstelliger Gemeindeschlüssel) haben
+ * bewusst noch keine Seite: Das Städte-Verzeichnis führt fünfstellige
+ * Kreisschlüssel, und mit dem eingetragen stünde unter dem Ortsnamen der
+ * Anlagenbestand des ganzen Landkreises — ein falscher Nenner. Im Rechner
+ * wirken sie trotzdem, dort zählt die Postleitzahl.
+ *
+ * Als REGEL statt als Einzelliste: Sonst wächst die Ausnahmeliste mit jedem
+ * gefundenen Dorfprogramm, und niemand sieht mehr, was Ausnahme und was System
+ * ist.
+ */
+function nurImRechner(agsCode: string | undefined): boolean {
+  return !!agsCode && agsCode.length > 5;
+}
+
+const OHNE_SEITE: Record<string, string> = {};
 
 describe("Förderkatalog und Stadtseiten bleiben synchron", () => {
   const regional = allFundingPrograms().filter((p) => p.level !== "bund");
@@ -36,7 +50,10 @@ describe("Förderkatalog und Stadtseiten bleiben synchron", () => {
     const ohne = regional
       .filter((p) => !ATLAS_CITIES.some((c) => fundingFor(c)?.id === p.id))
       .map((p) => p.id);
-    const unerklaert = ohne.filter((id) => !OHNE_SEITE[id]);
+    const unerklaert = ohne.filter((id) => {
+      const p = regional.find((x) => x.id === id)!;
+      return !OHNE_SEITE[id] && !nurImRechner(p.agsCode);
+    });
     expect(unerklaert, `ohne Seite und ohne Begründung: ${unerklaert.join(", ")}`).toEqual([]);
   });
 
@@ -52,6 +69,7 @@ describe("Förderkatalog und Stadtseiten bleiben synchron", () => {
     for (const [id, grund] of Object.entries(OHNE_SEITE)) {
       expect(grund, id).toMatch(/OFFEN \(bis \d{2}\/\d{4}\)/);
     }
+    expect(GEMEINDE_EBENE_OFFEN).toMatch(/OFFEN \(bis \d{2}\/\d{4}\)/);
   });
 
   it("keine Stadt zeigt auf ein Programm, das es nicht gibt", () => {

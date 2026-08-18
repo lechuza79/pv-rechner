@@ -841,6 +841,109 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  // ── Aus dem Abdeckungs-Screening, 18.08.2026 ──────────────────────────────
+  //
+  // Gefunden über das systematische Screening aller Gemeinden mit erfasster
+  // Förderseite (scripts/funding-screen.ts), jedes an der Amtsseite selbst
+  // gelesen. Es sind kleine Gemeinden — genau die Schicht, die der frühere
+  // Blick auf die größten Städte nie erreicht hat, und in der es die Programme
+  // im Gegensatz zu den Großstädten noch gibt.
+  "hoehr-grenzhausen-energie": {
+    id: "hoehr-grenzhausen-energie", name: "Förderung privater Energiegewinnung",
+    traeger: "Stadt Höhr-Grenzhausen", level: "kommune", region: "Höhr-Grenzhausen",
+    bundesland: "Rheinland-Pfalz", agsCode: "07143032",
+    url: "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-stadt-hoehr-grenzhausen/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Zuschuss je kWp und je kWh Speicher, gedeckelt",
+    maxFoerderung: "max. 1.500 € PV + 1.000 € Speicher je Grundstück",
+    rates: [
+      { label: "PV-Anlage", value: "150 € pro kWp, max. 1.500 €" },
+      { label: "Batteriespeicher", value: "100 € pro kWh, max. 1.000 €" },
+    ],
+    conditions: [
+      "Nur auf Wohngebäuden und deren Nebengebäuden; bestehende Anlagen werden nicht gefördert",
+      "Antrag vor Auftragserteilung an eine Fachfirma; Ausführung durch qualifizierte Fachbetriebe",
+      "Je Grundstück einmalig bis zum Erreichen des Höchstbetrags",
+      "Freiwillige Leistung ohne Rechtsanspruch, im Rahmen der Haushaltsmittel",
+    ],
+    combinableWith: BUND,
+    pvPerKwp: 150, pvCap: 1500, speicherPerKwh: 100, speicherCap: 1000,
+  },
+  "wietzen-pv": {
+    id: "wietzen-pv", name: "Förderung von Photovoltaik und Batteriespeichern",
+    traeger: "Gemeinde Wietzen", level: "kommune", region: "Wietzen",
+    bundesland: "Niedersachsen", agsCode: "03256036",
+    // Die Seite gehört der Samtgemeinde Weser-Aue und wird von mehreren
+    // Mitgliedsgemeinden geteilt — das Programm ist aber ausdrücklich das der
+    // Gemeinde Wietzen. Das Screening hatte die Seite deshalb zunächst allen
+    // Nachbarorten zugeordnet; gefördert wird nur in Wietzen.
+    url: "https://www.weser-aue.de/rathaus-politik/foerderprogramme/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Anteiliger Zuschuss je kWp und je kWh Speicher",
+    maxFoerderung: "max. 1.000 € je Förderfall",
+    rates: [
+      { label: "PV-Anlage", value: "100 € je angefangenem kWp, max. 1.000 €" },
+      { label: "Batteriespeicher", value: "200 € je angefangener kWh, max. 1.000 €" },
+    ],
+    conditions: [
+      "Nur für Privathaushalte in der Gemeinde Wietzen",
+      "Vergabe nach Eingang der Anträge (Windhundprinzip)",
+      "Haushaltsmittel auf 20.000 € pro Jahr begrenzt",
+      "Vorerst befristet bis zum 31.12.2026, vorbehaltlich der Haushaltslage",
+    ],
+    combinableWith: BUND,
+    pvPerKwp: 100, pvCap: 1000, speicherPerKwh: 200, speicherCap: 1000,
+  },
+  "gaimersheim-energie": {
+    id: "gaimersheim-energie", name: "Förderprogramm Energie",
+    traeger: "Markt Gaimersheim", level: "kommune", region: "Gaimersheim",
+    bundesland: "Bayern", agsCode: "09176126",
+    url: "https://gaimersheim.de/forderprogramme/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "20 % der Anschaffungskosten, je Position gedeckelt",
+    maxFoerderung: "max. 300 € PV + 500 € Speicher",
+    rates: [
+      { label: "PV-Anlage (bis 30 kWp)", value: "20 % der Anschaffungskosten, max. 300 €" },
+      { label: "Batteriespeicher", value: "20 % der Anschaffungskosten, max. 500 €" },
+    ],
+    conditions: [
+      "Gilt für Anlagen ab dem 01.01.2026",
+      "Je Grundstück (Flurnummer) nur einmal",
+      "Nachweis der Rechnung sowie der Anmeldung im Marktstammdatenregister und beim Netzbetreiber",
+      "Montage durch eine Fachfirma ist nicht erforderlich",
+    ],
+    combinableWith: BUND,
+    // "20 % der Kosten, gedeckelt auf 300 €" kann das Modell nicht ausdrücken:
+    // percentOfCost rechnet ohne Deckel, ein fester Sockel ignoriert die 20 %.
+    // Also kein strukturierter Satz — lieber keine Zahl als eine falsche.
+  },
+  "dietmannsried-pv": {
+    id: "dietmannsried-pv", name: "Förderprogramm PV-Anlagen",
+    traeger: "Markt Dietmannsried", level: "kommune", region: "Dietmannsried",
+    bundesland: "Bayern", agsCode: "09780119",
+    url: "https://www.dietmannsried.de/rathaus/aktuelles-bekanntmachungen/foerderprogramm-pv-anlagen.html",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Sockelbetrag für die ersten 7 kWp, danach je kWp",
+    maxFoerderung: "max. 1.700 € je Gebäude",
+    rates: [
+      { label: "PV-Dachanlage", value: "500 € für die ersten 7 kWp, danach 150 € je weiterem kWp" },
+      { label: "Balkonmodul", value: "200 € pauschal, auch für Mieter" },
+    ],
+    conditions: [
+      "Nur für selbstgenutztes Eigentum; Balkonmodule auch für Mieter",
+      "Die Anlage darf bei Antragstellung weder beauftragt noch erworben oder installiert sein",
+      "Fördertopf von 50.000 €",
+      "Mit anderen Förderungen kombinierbar",
+    ],
+    combinableWith: BUND,
+    // 500 € Sockel deckt die ersten 7 kWp ab, darüber 150 €/kWp — im Modell als
+    // Sockel plus Satz, der erst oberhalb greift, ist das nicht abbildbar. Der
+    // strukturierte Satz bleibt deshalb weg: lieber keine Zahl als eine falsche.
+  },
   // ── Ausgelaufene Programme: aufgenommen, weil das eine Auskunft ist ────────
   //
   // Entscheidung des Betreibers (17.08.2026): Auch beendete oder ausgesetzte
