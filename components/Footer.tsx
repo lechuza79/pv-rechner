@@ -36,7 +36,12 @@ const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
     label: "Tools",
     links: [
       { href: "/photovoltaik-rechner", label: "PV-Rechner" },
-      { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk" },
+      // Die Fußzeile ist neben dem Themen-Einstieg der einzige Ort, an dem der
+      // Cluster crawlbar verlinkt ist — die Menü-Ausklappgruppe rendert ihre
+      // Einträge erst beim Öffnen und zählt als interner Verweis nicht.
+      { href: "/balkonkraftwerk", label: "Balkonkraftwerk" },
+      { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner" },
+      { href: "/balkonkraftwerk/anmelden", label: "Balkonkraftwerk anmelden" },
       { href: "/waermepumpe-rechner", label: "Wärmepumpe" },
       { href: "/klimaanlage-stromkosten", label: "Klimaanlage" },
       { href: "/pv-bedarf-berechnen", label: "PV-Bedarf" },

@@ -38,6 +38,31 @@ const RECHNER_ITEMS: NavItem[] = [
   { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge im Tagesverlauf", page: "simulation" },
 ];
 
+// Balkonkraftwerk: eigenes Thema auf oberster Ebene, weil es die einzige Form
+// von Photovoltaik ist, die auch ohne eigenes Dach funktioniert — wer zur Miete
+// wohnt, sucht sie nicht unter „Rentabilität berechnen".
+//
+// Der Übersichts-Eintrag zeigt auf dasselbe Ziel wie der Auslöser der Gruppe.
+// Das ist beabsichtigt und dasselbe Muster wie bei den anderen Gruppen (der
+// PV-Rechner ist dort ebenfalls Auslöser-Ziel UND erster Eintrag): Wer den
+// Auslöser anklickt, will die Übersicht; wer die Liste liest, sucht einen
+// benannten Punkt.
+//
+// DIESE GRUPPE BRINGT NICHTS FÜR SUCHMASCHINEN — nachgemessen am 18.08.2026,
+// entgegen der ersten Annahme beim Bauen. `DesktopDropdown` rendert seine
+// Einträge erst bei geöffnetem Zustand (`{open && …}`), sie stehen also in
+// keinem ausgelieferten HTML und zählen nicht als interne Verweise. Das gilt
+// für ALLE Gruppen hier, ist also kein neuer Zustand.
+// Die crawlbaren Verweise auf den Cluster kommen aus dem Themen-Einstieg
+// (/balkonkraftwerk verlinkt Rechner und Anmelde-Ratgeber im Fließtext), aus
+// der Fußzeile und aus den Verweisblöcken der Ratgeber. Wer die interne
+// Verlinkung stärken will, setzt dort an, nicht hier.
+const BALKON_ITEMS: NavItem[] = [
+  { href: "/balkonkraftwerk", label: "Balkonkraftwerk — Überblick", desc: "Was es bringt, was es kostet, was zu tun ist", page: "balkon" },
+  { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Ertrag und Amortisation für deinen Haushalt", page: "balkon" },
+  { href: "/balkonkraftwerk/anmelden", label: "Balkonkraftwerk anmelden", desc: "Frist, Angaben und die drei Fallen im Register", page: "balkon" },
+];
+
 // PV-Förderung group: the regional funding directory plus the national data
 // story that puts it in context (how policy shaped the build-out).
 const FOERDERUNG_ITEMS: NavItem[] = [
@@ -222,12 +247,12 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
               items={FOERDERUNG_ITEMS}
               activePage={activePage}
             />
-            {/* Eigene Ebene, kein Unterpunkt der Rechner: Balkonkraftwerk ist
-                ein Thema mit eigenem Einstieg, Rechner und Ratgeber darunter —
-                und die einzige Form von Photovoltaik, die auch ohne Dach
-                funktioniert. Wer zur Miete wohnt, sucht sie nicht unter
-                „Rentabilität berechnen". */}
-            <Link href="/balkonkraftwerk" style={linkStyle("balkon")}>Balkonkraftwerk</Link>
+            <DesktopDropdown
+              triggerLabel="Balkonkraftwerk"
+              triggerHref="/balkonkraftwerk"
+              items={BALKON_ITEMS}
+              activePage={activePage}
+            />
             <Link href="/ratgeber" style={linkStyle("ratgeber")}>Ratgeber</Link>
             <DesktopDropdown
               triggerLabel="Strommix & Energiedaten"
@@ -316,7 +341,7 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 
-            <Link href="/balkonkraftwerk" style={mobileLinkStyle("balkon")} onClick={closeMenu}>Balkonkraftwerk</Link>
+            <MobileSection title="Balkonkraftwerk" items={BALKON_ITEMS} activePage={activePage} onNavigate={closeMenu} />
 
             <div style={{ height: 1, background: v('--color-border'), margin: "10px 0 2px" }} />
 

@@ -229,6 +229,25 @@ export default function BalkonkraftwerkHub() {
           rechnet sich seltener, als die Werbung nahelegt.
         </p>
 
+        {/* Förderung. BEWUSST OHNE KONKRETE PROGRAMME: Der Förderkatalog kennt
+            Balkonkraftwerke noch nicht als eigene Technik — eine Parallel-Session
+            trägt sie gerade ein. Bis dahin würde eine Formulierung wie „die
+            Übersicht zeigt dir die Programme für dein Balkonkraftwerk" jemanden
+            auf eine Seite schicken, die nur Dachanlagen listet.
+            NACHZIEHEN, sobald die Balkon-Technik im Katalog steht: Dann kann
+            hier stehen, wie viele Kommunen es sind, und der Rechner zieht den
+            Betrag direkt ab. */}
+        <h2 style={S.h2}>Gibt es Förderung?</h2>
+        <p style={S.p}>
+          Vom Bund nicht — dafür von immer mehr Städten und Gemeinden. Die Beträge sind
+          klein gemessen an einer Dachanlage, fallen bei einem Set von wenigen Hundert Euro
+          aber ins Gewicht: Üblich sind Pauschalen zwischen 50 und 200 € oder ein Anteil an
+          den Kosten, häufig gedeckelt. Manche Kommunen fördern ausdrücklich auch Mieter.
+          Welche Programme es in deiner Region gibt, steht in der{" "}
+          <Link href="/photovoltaik-foerderung" style={S.link}>Förder-Übersicht</Link> —
+          dort sind sie nach Bundesland und Stadt sortiert.
+        </p>
+
         <h2 style={S.h2}>Was muss ich anmelden?</h2>
         <p style={S.p}>
           {BALKON_RECHT.anmeldung} Zeit ist ein Monat ab Inbetriebnahme, und gemeint ist der
