@@ -16,6 +16,8 @@
 // Absolute Aussagen ("nie", "keine", "immer", "100 %") brauchen zusätzlich einen
 // Abgleich mit der Datenschutzerklärung, bevor sie hier landen.
 
+import { DATA_SOURCES } from "./data-sources";
+
 /** Welches Icon die Leiste vor dem Punkt zeigt. Auflösung in components/TrustBar. */
 export type TrustIcon = "check" | "quote" | "refresh" | "lock";
 
@@ -34,10 +36,19 @@ export interface TrustSignal {
   /** Ausführung im Modal: ein bis zwei Sätze, die den Punkt belegen. */
   detail: string;
   /**
-   * Zeigt "Mehr erfahren" und macht den Punkt anklickbar. Bewusst NICHT bei
+   * Wortfolgen aus `text`, die auf ihre Quelle verlinken. Die URLs kommen aus
+   * lib/data-sources.ts — dem Register, das ohnehin jede Quelle mit Lizenz
+   * führt. Sie hier zu tippen wäre eine zweite Fassung derselben Angabe, und
+   * die driftet (dieselbe Systematik wie bei den Einheiten).
+   */
+  links?: { begriff: string; url: string }[];
+  /**
+   * Zeigt "Mehr erfahren". Bewusst NICHT bei
    * jedem: Ein Punkt, dessen Satz schon alles sagt, führt sonst in ein Fenster,
    * das ihn nur wiederholt — vier gleich laute Einladungen entwerten sich
-   * gegenseitig (Betreiber-Vorgabe 18.08.2026).
+   * gegenseitig (Betreiber-Vorgabe 18.08.2026). Anklickbar ist dann NUR dieser
+   * Hinweis, nicht die ganze Kachel: Im Text stehen eigene Links, und ein
+   * Klickziel im Klickziel ist weder bedienbar noch zulässiges Markup.
    */
   mehr?: boolean;
   /** Externer Beleg, im Modal verlinkt. Nur wo es einen gibt. */
@@ -58,15 +69,21 @@ export interface TrustSignal {
  * Die dauerhaft gültigen Punkte. Der zeitabhängige Prüf-Punkt kommt aus
  * {@link pruefSignal} dazu — er ist der einzige, der verfallen kann.
  */
+/** Die Forschungsgruppe, an deren Daten die Autarkie-Rechnung geeicht ist.
+ *  Keine Datenquelle im Sinne von lib/data-sources.ts (wir übernehmen keine
+ *  Zahlen von dort in die Ausgabe), deshalb hier — aber genau einmal. */
+const HTW_STUDIEN = "https://solar.htw-berlin.de/studien/";
+
 export const TRUST_SIGNALS: readonly TrustSignal[] = [
   {
     titel: "Auf Basis von Forschungsdaten",
     text: "Unsere Autarkie-Rechnung ist an den Simulationsdaten der HTW Berlin geeicht.",
     betont: "HTW Berlin",
+    links: [{ begriff: "HTW Berlin", url: HTW_STUDIEN }],
     mehr: true,
     detail:
       "Die HTW Berlin hat 25.000 Anlagen-Konfigurationen minutengenau durchsimuliert. Unsere eigene Stundensimulation muss dieses Kennfeld bei gleichem Tagverbrauch auf drei Prozentpunkte genau treffen — ein Test prüft das bei jeder Änderung am Rechenkern.",
-    belegUrl: "https://solar.htw-berlin.de/studien/",
+    belegUrl: HTW_STUDIEN,
     belegLabel: "Studien der HTW Berlin",
     href: "/methodik",
     icon: "check",
@@ -83,6 +100,11 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
     titel: "Offizielle Datenquellen",
     text: "Bundesnetzagentur, Fraunhofer ISE, EU-Kommission und weitere.",
     betont: "und weitere",
+    links: [
+      { begriff: "Bundesnetzagentur", url: DATA_SOURCES.mastr.url },
+      { begriff: "Fraunhofer ISE", url: DATA_SOURCES.energyCharts.url },
+      { begriff: "EU-Kommission", url: DATA_SOURCES.pvgis.url },
+    ],
     mehr: true,
     detail:
       "Welche Quelle hinter einer Zahl steht, hängt vom Rechner ab: Der Wärmepumpen-Rechner stützt sich auf Verbraucherzentrale und KfW, der Klimarechner auf Wetterdienste und Gerätetests. Deshalb steht die Herkunft an jeder Größe einzeln statt als Liste vorneweg.",

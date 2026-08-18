@@ -565,19 +565,23 @@ export const globalStyles = `
   /* Der Punkt ist ein Knopf, kein Link: Alle vier öffnen dasselbe Modal. Der
      Knopf muss deshalb aussehen und sich anfühlen wie Fließtext, nicht wie ein
      Formularelement — daher das Zurücksetzen der Browser-Vorgaben. */
-  .trust-item{display:flex;gap:${space.lg}px;align-items:flex-start;text-align:left;width:100%;background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer}
+  .trust-item{display:flex;gap:${space.lg}px;align-items:flex-start}
   .trust-item-icon{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:var(--color-bg);border:1px solid var(--color-border)}
   .trust-item-title{display:block;font-size:var(--font-size-body);font-weight:700;color:var(--color-text-primary);line-height:1.35;margin-bottom:2px}
   .trust-item-text{display:block;font-size:var(--font-size-body);line-height:1.5;color:var(--color-text-muted)}
   .trust-item-betont{font-weight:700;color:var(--color-text-secondary)}
-  .trust-item:hover .trust-item-title{color:var(--color-accent)}
-  .trust-item:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px;border-radius:8px}
+  /* Quellenname im Satz: als Link erkennbar, aber leise — er soll den Satz
+     nicht in eine Linkliste verwandeln. Deshalb Unterstreichung statt Farbe;
+     die Akzentfarbe bleibt dem "Mehr erfahren" vorbehalten. */
+  .trust-item-quelle{color:inherit;text-decoration:underline;text-decoration-color:var(--color-border-accent);text-underline-offset:3px}
+  .trust-item-quelle:hover{color:var(--color-accent);text-decoration-color:currentColor}
+  .trust-item-quelle:focus-visible{outline:2px solid var(--color-accent);outline-offset:2px;border-radius:3px}
   /* "Mehr erfahren" sitzt AM PUNKT, nicht unter der Leiste: Es steht nur dort,
      wo es hinter der Zusage auch etwas zu lesen gibt. Ein Punkt ohne den Hinweis
      ist bewusst kein Knopf (.trust-item-still). */
-  .trust-item-mehr{display:inline-flex;align-items:center;gap:${space.xs}px;margin-top:${space.sm}px;font-size:var(--font-size-small);font-weight:600;color:var(--color-accent)}
-  .trust-item:hover .trust-item-mehr{color:var(--color-accent-dark)}
-  .trust-item-still{cursor:default}
+  .trust-item-mehr{display:inline-flex;align-items:center;gap:${space.xs}px;margin-top:${space.sm}px;background:none;border:0;padding:0;font:inherit;font-size:var(--font-size-small);font-weight:600;color:var(--color-accent);cursor:pointer}
+  .trust-item-mehr:hover{color:var(--color-accent-dark)}
+  .trust-item-mehr:focus-visible{outline:2px solid var(--color-accent);outline-offset:3px;border-radius:6px}
   /* Modal-Inhalt: je Punkt ein Abschnitt, darunter die Prüftermine. */
   .trust-modal-punkt{padding-top:${space.xl}px;border-top:1px solid var(--color-border)}
   .trust-modal-punkt:first-child{padding-top:0;border-top:0}

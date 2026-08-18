@@ -35,50 +35,97 @@ function wegLabel(href: string): string {
   return "Werte, Stand und Quellen";
 }
 
-/** Setzt `betont` fett — die einzige Hervorhebung je Punkt. */
-function MitBetonung({ text, betont }: { text: string; betont?: string }) {
-  if (!betont) return <>{text}</>;
-  const i = text.indexOf(betont);
-  if (i < 0) return <>{text}</>;
-  return (
-    <>
-      {text.slice(0, i)}
-      <strong className="trust-item-betont">{betont}</strong>
-      {text.slice(i + betont.length)}
-    </>
-  );
+/**
+ * Setzt Betonung und Quellen-Links in den Satz.
+ *
+ * Beide werden per Textsuche platziert, damit der Satz in lib/trust-signals.ts
+ * ein lesbarer Satz bleibt und kein Markup-Gerüst. Trifft eine Markierung nicht,
+ * fällt sie still aus — ein Test hält deshalb fest, dass jeder Begriff wörtlich
+ * im Text vorkommt.
+ */
+type Marke = { start: number; ende: number; betont: boolean; url?: string };
+
+function markiere(text: string, betont?: string, links?: { begriff: string; url: string }[]) {
+  const marken: Marke[] = [];
+  const setze = (begriff: string, url?: string) => {
+    const i = text.indexOf(begriff);
+    if (i < 0) return;
+    const ende = i + begriff.length;
+    const deckungsgleich = marken.find((m) => m.start === i && m.ende === ende);
+    if (deckungsgleich) {
+      // Dieselbe Wortfolge ist Link UND Hervorhebung — der Regelfall beim
+      // Namen der Forschungsgruppe. Beides auf ein Element legen, statt eines
+      // von beiden fallen zu lassen.
+      if (url) deckungsgleich.url = url;
+      else deckungsgleich.betont = true;
+      return;
+    }
+    // Teilweise Überschneidungen verwerfen: Sie ergäben ein Element im Element.
+    // Ein Test macht sie sichtbar, statt sie hier still zu schlucken.
+    if (marken.some((m) => i < m.ende && ende > m.start)) return;
+    marken.push({ start: i, ende, betont: !url, url });
+  };
+  links?.forEach((l) => setze(l.begriff, l.url));
+  if (betont) setze(betont);
+  marken.sort((a, b) => a.start - b.start);
+
+  const teile: React.ReactNode[] = [];
+  let pos = 0;
+  marken.forEach((m, i) => {
+    if (m.start > pos) teile.push(text.slice(pos, m.start));
+    const roh = text.slice(m.start, m.ende);
+    const inhalt = m.betont ? <strong className="trust-item-betont">{roh}</strong> : roh;
+    teile.push(
+      m.url ? (
+        <a
+          key={i}
+          href={m.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="trust-item-quelle"
+        >
+          {inhalt}
+        </a>
+      ) : (
+        <span key={i}>{inhalt}</span>
+      ),
+    );
+    pos = m.ende;
+  });
+  if (pos < text.length) teile.push(text.slice(pos));
+  return <>{teile}</>;
 }
 
+/**
+ * Ein Punkt der Leiste.
+ *
+ * Die Kachel ist NIE als Ganzes anklickbar (Betreiber-Vorgabe 18.08.2026): Im
+ * Satz stehen eigene Links auf die Quellen, und ein Klickziel innerhalb eines
+ * Klickziels ist weder bedienbar noch zulässiges Markup. Anklickbar ist genau
+ * das, was eine Handlung ankündigt — der "Mehr erfahren"-Knopf, und den gibt es
+ * nur dort, wo dahinter auch etwas steht.
+ */
 function TrustItem({ signal, onOeffnen }: { signal: TrustSignal; onOeffnen: () => void }) {
   const Icon = ICONS[signal.icon];
-  const inhalt = (
-    <>
+  return (
+    <li className="trust-item">
       <span className="trust-item-icon" aria-hidden="true">
         <Icon size={17} color={v("--color-accent")} />
       </span>
       <span>
         <span className="trust-item-title">{signal.titel}</span>
         <span className="trust-item-text">
-          <MitBetonung text={signal.text} betont={signal.betont} />
+          {markiere(signal.text, signal.betont, signal.links)}
         </span>
         {signal.mehr && (
-          <span className="trust-item-mehr">
+          <button type="button" className="trust-item-mehr" onClick={onOeffnen}>
             Mehr erfahren
             <IconArrowRight size={13} />
-          </span>
+          </button>
         )}
       </span>
-    </>
+    </li>
   );
-
-  // Ohne Vertiefung ist der Punkt kein Knopf: Ein Klickziel, das ein Fenster
-  // öffnet und dort denselben Satz wiederholt, ist eine Enttäuschung — und vier
-  // gleich laute Einladungen entwerten einander.
-  return <li>{signal.mehr ? (
-    <button type="button" className="trust-item" onClick={onOeffnen}>{inhalt}</button>
-  ) : (
-    <div className="trust-item trust-item-still">{inhalt}</div>
-  )}</li>;
 }
 
 /**

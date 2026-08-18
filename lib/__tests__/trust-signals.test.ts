@@ -64,6 +64,69 @@ describe("Vertrauens-Leiste", () => {
     });
   });
 
+  // Die Quellen-Links werden per Textsuche im Satz platziert. Trifft ein Begriff
+  // nicht, fällt der Link stumm aus: Der Name steht dann unverlinkt da, niemandem
+  // fällt es auf, und die Nachprüfbarkeit ist weg — dieselbe Falle wie bei der
+  // Hervorhebung.
+  describe("Quellen-Links im Satz", () => {
+    const mitLinks = TRUST_SIGNALS.filter((s) => s.links?.length);
+
+    it("jeder Begriff kommt wörtlich im Satz vor", () => {
+      for (const s of mitLinks) {
+        for (const l of s.links!) {
+          expect(s.text, `"${l.begriff}" steht nicht in "${s.titel}"`).toContain(l.begriff);
+        }
+      }
+    });
+
+    // Deckungsgleich ist erlaubt und der Regelfall: Der Name der Quelle ist
+    // zugleich das hervorgehobene Wort, der Renderer legt dann beides auf ein
+    // Element. Verboten ist die TEILWEISE Überschneidung — daraus würde ein
+    // Element im Element, also nicht bedienbar und kein gültiges Markup. Der
+    // Renderer verwirft so etwas still; dieser Test macht es sichtbar.
+    it("überschneidet sich mit der Hervorhebung höchstens vollständig", () => {
+      for (const s of mitLinks) {
+        if (!s.betont) continue;
+        const bStart = s.text.indexOf(s.betont);
+        const bEnde = bStart + s.betont.length;
+        for (const l of s.links!) {
+          const lStart = s.text.indexOf(l.begriff);
+          const lEnde = lStart + l.begriff.length;
+          const beruehrt = lStart < bEnde && lEnde > bStart;
+          const deckungsgleich = lStart === bStart && lEnde === bEnde;
+          expect(
+            beruehrt && !deckungsgleich,
+            `"${l.begriff}" und die Hervorhebung "${s.betont}" überlappen teilweise in "${s.titel}" — das ergäbe ein Element im Element`,
+          ).toBe(false);
+        }
+      }
+    });
+
+    // Die URLs stammen aus lib/data-sources.ts. Wird eine Quelle dort
+    // ausgetauscht, muss der Link mitwandern — hier fällt es auf.
+    it("zeigt auf eine Adresse aus dem Quellen-Register", () => {
+      const registerUrls = Object.values(DATA_SOURCES)
+        .map((q) => q.url)
+        .filter(Boolean) as string[];
+      const quellenPunkt = TRUST_SIGNALS.find((s) => s.icon === "quote");
+      for (const l of quellenPunkt?.links ?? []) {
+        expect(
+          registerUrls,
+          `"${l.begriff}" verlinkt auf eine Adresse, die im Quellen-Register nicht vorkommt`,
+        ).toContain(l.url);
+      }
+    });
+
+    it("führt aus dem Haus heraus und über HTTPS", () => {
+      for (const s of mitLinks) {
+        for (const l of s.links!) {
+          expect(l.url, `"${l.begriff}": kein HTTPS`).toMatch(/^https:\/\//);
+          expect(l.url, `"${l.begriff}": zeigt auf uns selbst`).not.toContain("solar-check.io");
+        }
+      }
+    });
+  });
+
   // Externe Belege sind der Teil, den ein Leser selbst nachprüfen kann. Ein
   // toter oder unsicherer Link wäre schlimmer als keiner: Er sieht aus wie ein
   // Nachweis und ist keiner.
