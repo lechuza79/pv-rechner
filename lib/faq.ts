@@ -559,7 +559,7 @@ export function balkonFaq(): FaqEntry[] {
   ];
 }
 
-/** FAQ for the registration guide (/balkonkraftwerk-anmelden).
+/** FAQ for the registration guide (/balkonkraftwerk/anmelden).
  *
  *  Every legal statement here comes from BALKON_RECHT or is cited at its own
  *  source in lib/balkon-anmeldung.ts — all verified in full text on 16.08.2026
@@ -571,7 +571,7 @@ export function balkonAnmeldenFaq(): FaqEntry[] {
     {
       q: "Muss ich mein Balkonkraftwerk anmelden?",
       a: `Ja. ${BALKON_RECHT.anmeldung} ${BALKON_RECHT.anmeldeFrist}`,
-      cta: { label: "Deine Frist ausrechnen", href: "/balkonkraftwerk-anmelden" },
+      cta: { label: "Deine Frist ausrechnen", href: "/balkonkraftwerk/anmelden" },
     },
     {
       q: "Wie lange habe ich Zeit, ein Balkonkraftwerk anzumelden?",

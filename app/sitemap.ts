@@ -121,6 +121,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Datum hat: den Tag, an dem die Rechtsangaben der Seite zuletzt gegen die
     // Primärquellen gelesen wurden. Die anderen Rechner lassen es bewusst weg —
     // ein Build-Datum wäre bei jedem Deploy „jetzt" und wird von Google ignoriert.
+    // Themen-Einstieg des Balkon-Clusters. Steht bewusst VOR dem Rechner:
+    // Er ist die Wurzel, unter der /balkonkraftwerk/anmelden hängt (der Ratgeber
+    // kommt aus der Registry weiter unten). Der Rechner zieht noch nach —
+    // solange eine Parallel-Session an balkon.tsx arbeitet, wäre der Rename ein
+    // Konflikt in einer fremden Baustelle.
+    { url: `${BASE_URL}/balkonkraftwerk`, lastModified: toDate(BALKON_RECHT.geprueftIso), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/balkonkraftwerk-rechner`, lastModified: toDate(BALKON_RECHT.geprueftIso), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/einspeiseverguetung-rechner`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/photovoltaik-foerderung`, lastModified: maxFundingDate, changeFrequency: "weekly", priority: 0.8 },

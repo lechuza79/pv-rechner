@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import { v, iconSizes } from "../../../lib/theme";
-import { IconCheck } from "../../../components/Icons";
-import { fristStand } from "../../../lib/balkon-anmeldung";
+import { v, iconSizes } from "../../../../lib/theme";
+import { IconCheck } from "../../../../components/Icons";
+import { fristStand } from "../../../../lib/balkon-anmeldung";
 
 const datum = (iso: string) =>
   new Date(`${iso}T00:00:00`).toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
