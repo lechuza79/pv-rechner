@@ -147,3 +147,23 @@ describe("Was das Prüfdatum auf der Seite sagt", () => {
     expect(fundingStandLabel(topfLeer, HEUTE)).not.toContain("nicht eingerechnet");
   });
 });
+
+describe("Prozentualer Zuschuss mit Höchstbetrag", () => {
+  // Die häufigste Bauform kommunaler Zuschüsse: "20 % der Kosten, höchstens
+  // 300 €". Bis 18.08.2026 rechnete der Prozent-Zweig ungedeckelt, solche
+  // Programme mussten deshalb ohne Betrag aufgenommen werden.
+  const prozent = (over: Partial<FundingProgram> = {}) =>
+    ({ ...programm(), pvPerKwp: undefined, percentOfCost: 0.2, ...over }) as FundingProgram;
+
+  it("deckelt, sobald der Prozentsatz den Höchstbetrag übersteigt", () => {
+    expect(fundingAmount(prozent({ pvCap: 300 }), 10, 0, 20000, HEUTE).total).toBe(300);
+  });
+
+  it("rechnet unterhalb des Deckels weiter prozentual", () => {
+    expect(fundingAmount(prozent({ pvCap: 300 }), 10, 0, 1000, HEUTE).total).toBe(200);
+  });
+
+  it("ohne Deckel bleibt es beim reinen Prozentsatz", () => {
+    expect(fundingAmount(prozent(), 10, 0, 20000, HEUTE).total).toBe(4000);
+  });
+});
