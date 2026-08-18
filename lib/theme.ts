@@ -553,6 +553,27 @@ export const globalStyles = `
   }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
+  /* Kopfzeile: Welche Navigation sichtbar ist, entscheidet die Medienabfrage —
+     NICHT der Zustand der Komponente. Das isDesktop-Flag in Header.tsx startet
+     vor der Hydratation auf wahr; der Server lieferte damit auf jedem
+     Gerät die Desktop-Leiste, und auf 375 px riss die das Dokument auf 791 px
+     auf. Sichtbar war das als kurzer seitlicher Scroll beim Laden.
+     DER UMSCHALTPUNKT STEHT HIER UND IN Header.tsx (matchMedia) — beide bei
+     1000px. Wer einen ändert, ändert beide, sonst zeigt die Seite für einen
+     Bereich beides oder nichts. */
+  .hdr-nav{display:flex}
+  .hdr-auth{display:contents}
+  .hdr-burger{display:none}
+  .hdr-aktionen{gap:14px}
+  @media (max-width:999px){
+    .hdr-nav{display:none}
+    .hdr-auth{display:none}
+    .hdr-burger{display:flex}
+    .hdr-aktionen{gap:8px}
+  }
+  @media (min-width:1000px){
+    .hdr-menu{display:none}
+  }
   .footer-cols{display:grid;grid-template-columns:repeat(3,1fr);max-width:600px;margin:0 auto;gap:0}
   .footer-cols>div{padding:0 22px}
   .footer-cols>div+div{border-left:1px solid var(--color-border)}
