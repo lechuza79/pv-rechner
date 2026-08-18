@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { ATLAS_CITIES, fundingFor, publishedCities } from "../atlas-cities";
+import { ATLAS_CITIES, fundingFor, fundingForFrom, publishedCities } from "../atlas-cities";
 import { allFundingPrograms } from "../funding-programs";
 
 // ─── Katalog und Städte-Verzeichnis dürfen nicht auseinanderlaufen ───────────
@@ -88,5 +88,34 @@ describe("Förderkatalog und Stadtseiten bleiben synchron", () => {
 
   it("veröffentlicht wird nur, wo es auch ein Programm gibt", () => {
     for (const c of publishedCities()) expect(fundingFor(c), c.slug).toBeDefined();
+  });
+});
+
+// Aus der Prüfrunde am 18.08.2026 — beide Fälle waren latent, kein Test hätte
+// angeschlagen, und beide hätten Geld bewegt bzw. eine indexierte Seite entfernt.
+describe("Zuordnung über den Gemeindeschlüssel", () => {
+  const stadt = (ags: string) =>
+    ({ slug: "test", name: "Test", ags, bundesland: "Rheinland-Pfalz", yieldKwhKwp: 1000 }) as any;
+
+  it("ein Gemeinde-Programm gilt NICHT für den ganzen Landkreis", () => {
+    // Höhr-Grenzhausen (07143032) liegt im Westerwaldkreis (07143). Die frühere
+    // Fassung kürzte auf fünf Stellen und hätte den Zuschuss jeder Postleitzahl
+    // des Kreises zugerechnet.
+    expect(fundingFor(stadt("07143"))).toBeUndefined();
+  });
+
+  it("der spezifischere Schlüssel gewinnt, statt dass sich zwei aufheben", () => {
+    const land = { id: "land", level: "land", agsCode: "04", status: "aktiv" } as any;
+    const kommune = { id: "kommune", level: "kommune", agsCode: "04011", status: "aktiv" } as any;
+    expect(fundingForFrom([land, kommune], stadt("04011"))?.id).toBe("kommune");
+    // Ohne eigenes Programm bleibt es beim Landesprogramm — so kam Bremerhaven
+    // überhaupt erst zu seiner Seite.
+    expect(fundingForFrom([land, kommune], stadt("04012"))?.id).toBe("land");
+  });
+
+  it("echte Mehrdeutigkeit bleibt ungelöst, statt geraten zu werden", () => {
+    const a = { id: "a", level: "kommune", agsCode: "06412", status: "aktiv" } as any;
+    const b = { id: "b", level: "kommune", agsCode: "06412", status: "aktiv" } as any;
+    expect(fundingForFrom([a, b], stadt("06412"))).toBeUndefined();
   });
 });

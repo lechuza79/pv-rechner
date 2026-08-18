@@ -188,7 +188,21 @@ export async function GET(req: NextRequest) {
     // Wiederholung findet keinen Unterschied mehr, weil der Upsert schon
     // durchlief. Deshalb geht der Fehler in die Antwort (HTTP 500), statt still
     // verbucht zu werden.
-    const { data: bestand } = await supabase.from("funding_programs").select("id, data, last_verified");
+    // Fehler PRÜFEN — BLOCKER. Ohne diese Abfrage wäre `bestand` bei einem
+    // gescheiterten Lesezugriff null, `vorher` leer und jedes Programm würde
+    // gegen null verglichen: vergleiche() macht daraus eine "aufnahme", also 45
+    // Erstsichtungen mit dem heutigen Datum. Das Protokoll behauptete dann, wir
+    // hätten Frankfurts Klimabonus heute zum ersten Mal gesehen — genau die
+    // erfundene Historie, gegen die dieses Modul gebaut ist. Reparieren lässt es
+    // sich hinterher nicht, weil der Upsert den alten Stand schon überschrieben
+    // hat. Gefunden in der Prüfrunde am 18.08.2026.
+    const { data: bestand, error: le } = await supabase.from("funding_programs").select("id, data, last_verified");
+    if (le) {
+      return NextResponse.json(
+        { success: false, error: `Bestand nicht lesbar, Resync abgebrochen: ${le.message}` },
+        { status: 500 },
+      );
+    }
     const vorher = new Map(
       ((bestand ?? []) as { id: string; data: FundingProgram; last_verified: string | null }[])
         .map((r) => [r.id, r]),
