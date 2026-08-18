@@ -28,6 +28,12 @@ const RECHNER_ITEMS: NavItem[] = [
   { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Lohnt sich meine PV-Anlage?", page: "rechner" },
   { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Heizkosten und Förderung vergleichen", page: "waermepumpe" },
   { href: "/klimaanlage-stromkosten", label: "Klimaanlagen-Rechner", desc: "Kühlkosten und Gerätevergleich — auch ergänzend zum Heizen", page: "klima" },
+  // Zwei Einträge für ein Thema, bewusst: Der Hub ist der Einstieg für alle, die
+  // noch nicht wissen, was sie brauchen; der Rechner behält seinen eigenen
+  // Menüpunkt, weil sein Ankertext genau das Keyword trifft, auf das er zielt
+  // (siehe Kopfkommentar dieser Datei). Ein Eintrag allein müsste eines von
+  // beidem opfern.
+  { href: "/balkonkraftwerk", label: "Balkonkraftwerk", desc: "Überblick: Ertrag, Kosten, Anmeldung — der Einstieg ins Thema", page: "balkon" },
   { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Steckersolar für Miete und Eigentum", page: "balkon" },
   { href: "/pv-bedarf-berechnen", label: "PV-Bedarf berechnen", desc: "Welche Anlage passt zu mir?", page: "empfehlung" },
   { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge im Tagesverlauf", page: "simulation" },
