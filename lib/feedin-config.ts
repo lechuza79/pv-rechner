@@ -67,6 +67,22 @@ export const FEED_IN_SCHEDULE: FeedInRates[] = [
 ];
 
 /**
+ * Tag, an dem ein Wächter-Lauf die Sätze zuletzt gegen die Bundesnetzagentur
+ * gelesen hat — NICHT der Stichtag, ab dem sie gelten (der steht je Periode in
+ * `validFrom`). Beides zu vermischen wäre für eines von beidem gelogen: Der
+ * Stichtag kommt aus dem Gesetz und wandert von selbst, das Prüfdatum nur, wenn
+ * jemand die amtliche Liste wirklich aufgeschlagen hat.
+ *
+ * Startwert: der [auto]-Lauf vom 01.08.2026, der die abgeleiteten Sätze gegen
+ * die BNetzA-Veröffentlichung bestätigt und den Herkunfts-Vorbehalt gestrichen
+ * hat. Der halbjährliche EEG-Wächter zieht das Datum bei jedem erreichten Lauf
+ * nach, auch wenn sich kein Satz geändert hat (scripts/eeg-verify.md).
+ * Sichtbar auf /photovoltaik-rechner und /einspeiseverguetung-rechner über
+ * lib/stand.ts.
+ */
+export const FEED_IN_GEPRUEFT_ISO = "2026-08-01";
+
+/**
  * The rates for a given day — the last period whose start date has been
  * reached. Server surfaces that must flip at the cutoff without waiting for a
  * deploy (the /api/feedin route the calculator reads) call this per request;

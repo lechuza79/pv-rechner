@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../components/Breadcrumb";
 import { IconArrowRight } from "../../../components/Icons";
-import { v, iconSizes } from "../../../lib/theme";
+import { v, iconSizes, faqContentGap } from "../../../lib/theme";
 import { pageMetadata } from "../../../lib/seo";
 import { jsonLdHtml } from "../../../lib/json-ld";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
@@ -211,7 +211,7 @@ export default async function AtomstromImportPage() {
           />
         </div>
 
-        <div style={S.section}>
+        <div style={{ ...S.section, marginTop: faqContentGap }}>
           <h2 style={S.h2}>Häufige Fragen &amp; Fakten-Check</h2>
 
           <h3 style={S.faqHeading}>Atomstrom-Import</h3>

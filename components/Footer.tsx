@@ -1,4 +1,5 @@
 import Link from "next/link";
+import TrustBar from "./TrustBar";
 import { v } from "../lib/theme";
 import { BUNDESLAENDER } from "../lib/mastr-regions";
 import { slugify } from "../lib/atlas-cities";
@@ -67,6 +68,9 @@ const GROUPS: { label: string; links: { href: string; label: string }[] }[] = [
 export default function Footer() {
   return (
     <div style={{ padding: "16px 0" }}>
+      {/* Vertrauens-Leiste zuerst: Sie ist Inhalt, die Spalten darunter sind
+          Navigation. Die Aussagen stehen in lib/trust-signals.ts. */}
+      <TrustBar />
       <div className="footer-cols">
         {[...GROUPS, ...(atlasLinks.length > 0 ? [{ label: "Solar-Atlas", links: atlasLinks }] : [])].map((g) => (
           <div key={g.label} style={{ textAlign: "left" }}>

@@ -16,16 +16,54 @@ export async function getFundingPrograms(): Promise<FundingProgram[]> {
   if (!supabase) return seed;
 
   try {
-    // Pull the provenance columns alongside the program json so pages can show
-    // "Zuletzt geprüft" and the sitemap can emit a real <lastmod>. last_verified
-    // is set by the verification routine; updated_at is the resync fallback.
-    const { data, error } = await supabase
+    // Pull the provenance column alongside the program json so pages can show
+    // "Zuletzt geprüft" and the sitemap can emit a real <lastmod>.
+    //
+    // NUR `last_verified` — NIEMALS `updated_at` als Ersatz (korrigiert
+    // 16.08.2026). `updated_at` ist der Zeitpunkt der letzten Schreibung, also
+    // z. B. eines Resyncs, bei dem niemand irgendetwas geprüft hat. Über diesen
+    // Fallback trugen 25 der 38 Programme ein "Zuletzt geprüft"-Datum, das eine
+    // Prüfung behauptete, die nie stattgefunden hat — und das mit jedem Resync
+    // frischer wurde (nur 13 hatten ein echtes Prüfdatum). Dieselbe Fehlerklasse wie am 28.07.2026, als ein Lauf allen
+    // 36 Programmen das Datum des Tages aufstempelte (siehe Kopf von
+    // scripts/set-funding-verified.mjs), nur auf dem stillen Weg.
+    //
+    // Ohne echtes Prüfdatum fällt fundingStandLabel auf den redaktionellen
+    // `stand` zurück ("Stand: Juni 2026") — eine ehrliche, schwächere Aussage.
+    // Zweistufig lesen — BLOCKER. Die Bestätigungs-Spalten sind jung; wird der
+    // Code ausgeliefert, BEVOR /api/funding/setup sie angelegt hat, scheitert die
+    // Abfrage komplett. Einstufig gelesen fiele der Lader dann auf den Code-Seed
+    // zurück, und der trägt kein Prüfdatum — Ergebnis: JEDE Förderung
+    // verschwindet schlagartig von Rechner, Stadtseiten und CTA. Genau das ist am
+    // 17.08.2026 in einem Prüfskript passiert ("column page_changed_at does not
+    // exist"). Fehlen die Spalten, lesen wir ohne sie weiter: Die Beträge bleiben
+    // sichtbar, nur die tagesaktuelle Bestätigung fehlt, bis das Setup lief.
+    let rows: Record<string, unknown>[] | null = null;
+    const voll = await supabase
       .from("funding_programs")
-      .select("data, last_verified, updated_at");
-    if (error || !data || data.length === 0) return seed;
+      .select("data, last_verified, page_seen_at, page_changed_at");
+    if (voll.error) {
+      const schmal = await supabase.from("funding_programs").select("data, last_verified");
+      if (schmal.error || !schmal.data) return seed;
+      rows = schmal.data as Record<string, unknown>[];
+    } else {
+      rows = voll.data as Record<string, unknown>[];
+    }
+    const data = rows;
+    if (!data || data.length === 0) return seed;
     const programs = data.map((r) => {
-      const lastVerified = (r.last_verified ?? r.updated_at) as string | null;
-      return { ...(r.data as FundingProgram), ...(lastVerified ? { lastVerified } : {}) };
+      const lastVerified = (r.last_verified ?? null) as string | null;
+      // Der Seiten-Waechter bestaetigt taeglich, dass die Amtsseite unveraendert
+      // ist. Genau das haelt einen geprueften Wert am Leben (fundingBelegAktuell)
+      // — ohne diese zwei Felder faellt jedes Programm nach zwei Wochen raus.
+      const pageSeenAt = (r.page_seen_at ?? null) as string | null;
+      const changedSinceIso = (r.page_changed_at ?? null) as string | null;
+      return {
+        ...(r.data as FundingProgram),
+        ...(lastVerified ? { lastVerified } : {}),
+        ...(pageSeenAt ? { pageSeenAt } : {}),
+        ...(changedSinceIso ? { changedSinceIso } : {}),
+      };
     });
     cache = { data: programs, ts: Date.now() };
     return programs;

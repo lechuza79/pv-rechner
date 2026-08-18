@@ -7,17 +7,27 @@ import { paramsToRow } from "../../../lib/types";
 import { einspeiseVerlauf, einspeiseDeckelKw, profilFaktorAus, type EinspeiseRegime } from "../../../lib/einspeise-regime";
 import { PREISFORM_MONAT_STUNDE, MARKTWERT_NIVEAU_CT, DIREKTVERMARKTUNG } from "../../../lib/marktwert-config";
 import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
-import ResultRegime from "./_components/ResultRegime";
-import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, HEIZSYSTEM, HEIZSYSTEM_SHORT, WP_M2_PRESETS, NO_PLZ_DEFAULT_YIELD, type Heizsystem } from "../../../lib/constants";
+// ResultVerguetung umschließt ResultRegime — deshalb hier nur der äußere Import.
+import ResultVerguetung from "./_components/ResultVerguetung";
+import ResultSection from "../../../components/ResultSection";
+// HEIZSYSTEM/HEIZSYSTEM_SHORT/WP_M2_PRESETS brauchte der entfallene
+// Verbrauchs-Abschnitt; die Gebäudefragen holen sie sich jetzt selbst aus
+// components/GebaeudeField.
+import { YEAR, YEARS, ANLAGEN, SPEICHER, PERSONEN, NUTZUNG, TRI, EA_KM_PRESETS, SCENARIOS, SHARE_KEYS, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, INSULATION_BESTAND, NO_PLZ_DEFAULT_YIELD, type Heizsystem } from "../../../lib/constants";
 import { estimateCost, calcEigenverbrauch, calcWeightedFeedIn, calc, batteryReplaceCost, paramInt, paramFloat, paramStr } from "../../../lib/calc";
 import { simulatePvYear, simulateExampleDay, EXAMPLE_DAYS } from "../../../lib/pv-sim";
-import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING } from "../../../lib/heatpump";
+import { calcWpAnnualElectricity, calcJAZ, flowTempForSystem, DEFAULT_WP_BUILDING, wpGebaeudeUebersprungenFolge } from "../../../lib/heatpump";
 import OptionCard from "../../../components/OptionCard";
+import DachField, { DACH_FIELDS } from "../../../components/DachField";
+import GebaeudeField, { GEBAEUDE_FIELDS, type GebaeudeWerte } from "../../../components/GebaeudeField";
+import Toast from "../../../components/Toast";
+import { dachErtragHinweis, dachErtragKwp, dachNeigungsFaktor, dachUebersprungenFolge, ERTRAG_OPTIMUM_MIN, ERTRAG_OPTIMUM_MAX } from "../../../lib/dach-ertrag";
+import { TILT_ORIENTATIONS, type TiltOrientation } from "../../../lib/tilt-config";
 import TriToggle from "../../../components/TriToggle";
 import InlineEdit from "../../../components/InlineEdit";
 import PresetNumberInput from "../../../components/PresetNumberInput";
 import GlossaryTerm from "../../../components/GlossaryTerm";
-import { calcExtraConsumption, calcEaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "../../../lib/consumption";
+import { calcExtraConsumption, calcEaAnnual, KLIMA_DEFAULT_M2, EA_KWH_PER_KM, type HouseholdProfile } from "../../../lib/consumption";
 import { DATA_SOURCES, sourceLabel } from "../../../lib/data-sources";
 import { calcAircon } from "../../../lib/aircon";
 import { DEFAULT_AIRCON_CONFIG as CFG } from "../../../lib/aircon-config";
@@ -36,7 +46,8 @@ import { useChartExport } from "../../../lib/useChartExport";
 import { trackEvent } from "../../../lib/analytics";
 import ChartExportBar from "../../../components/ChartExportBar";
 import ResultHeroCard from "./_components/ResultHeroCard";
-import QuickSettings from "./_components/QuickSettings";
+// ResultSection steht schon oben; ResultVerbrauch ist entfallen (die
+// Verbraucher haben je einen eigenen Abschnitt).
 import ResultStats from "./_components/ResultStats";
 import ResultActions from "./_components/ResultActions";
 import ResultFunding from "./_components/ResultFunding";
@@ -44,10 +55,16 @@ import { stackFunding, type FundingProgram } from "../../../lib/funding-programs
 
 // Großverbraucher-Detailfragen in ihrer Akkordeon-Reihenfolge. Pro aktivem
 // Verbraucher wird immer nur die erste noch offene Frage aufgeklappt.
-const WP_FIELDS = ["wp-haustyp", "wp-flaeche", "wp-daemmung", "wp-heizsystem"] as const;
+// Die vier Gebäudefragen kommen aus dem Baustein — eine Quelle, kein zweites
+// Tippen der Schlüssel.
+const WP_FIELDS = GEBAEUDE_FIELDS;
 const EA_FIELDS = ["ea-km"] as const;
 const KLIMA_FIELDS = ["klima-rooms"] as const;
-const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS, ...KLIMA_FIELDS];
+// Auch die Dach-Fragen laufen über diesen Zustand. Sie standen zuerst außen vor
+// und das Ergebnis übergab ein festes „alles beantwortet"-Set — dadurch ließ
+// sich eine ungültig gewordene Ausrichtung nicht zurücknehmen, die Frage kam
+// nicht wieder und der Ertrag fiel still auf den Bestfall zurück.
+const GV_FIELDS = [...WP_FIELDS, ...EA_FIELDS, ...KLIMA_FIELDS, ...DACH_FIELDS];
 // Modell-Annahme für die Klima-Schnellschätzung, aus der geteilten Config (kein
 // Drift zum Klimaanlagen-Rechner). Langlabel auf den Kurznamen vor der Klammer.
 const KLIMA_DEVICE_LABEL = (CFG.devices.find(d => d.id === CFG.defaultDeviceId)?.label ?? "Split-Anlage").split(" (")[0];
@@ -60,7 +77,8 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const RESULT_KEYS = SHARE_KEYS.filter(k => k !== "er" && k !== "plz" && k !== "foe");
   const hasShare = !!initialParams && RESULT_KEYS.some(k => k in initialParams);
 
-  const [step, setStep] = useState(hasShare ? 4 : 0);
+  // 5, nicht 4: Der Dach-Schritt ist inzwischen dazugekommen (Parallel-Session).
+  const [step, setStep] = useState(hasShare ? 5 : 0);
   // Welche Fragen der Nutzer WIRKLICH beantwortet hat.
   //
   // Die Werte darunter tragen weiterhin sinnvolle Startwerte — die Rechnung
@@ -75,8 +93,14 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const markBeantwortet = (key: string) =>
     setBeantwortet(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
   const [anlage, setAnlage] = useState(hasShare ? paramInt(initialParams, "a", 2, 0, 4) : 2);
-  const [customKwp, setCustomKwp] = useState(hasShare ? paramInt(initialParams, "ck", 12, 1, 50) : 12);
+  // paramFloat, nicht paramInt: Die Größe ist in Halbschritten editierbar, und
+  // parseInt hat die Nachkommastelle verschluckt — 12,5 kWp kamen beim Empfänger
+  // des Links als 12 an, mit abweichender Investition und Amortisation.
+  const [customKwp, setCustomKwp] = useState(hasShare ? paramFloat(initialParams, "ck", 12, 1, 50) : 12);
   const [speicher, setSpeicher] = useState(hasShare ? paramInt(initialParams, "s", 0, 0, SPEICHER.length - 1) : 0);
+  // Freie Speichergröße aus dem Ergebnis heraus (Vorgaben sind Indizes, hier
+  // steht die kWh-Zahl selbst). Null = es gilt die im Flow gewählte Vorgabe.
+  const [oSpKwh, setOSpKwh] = useState<number | null>(hasShare ? paramFloat(initialParams, "sk", 0, 0, 30) || null : null);
   const [personen, setPersonen] = useState(hasShare ? paramInt(initialParams, "p", 1, 0, 3) : 1);
   const [nutzung, setNutzung] = useState(hasShare ? paramInt(initialParams, "n", 1, 0, 3) : 1);
   const [wp, setWp] = useState(hasShare ? paramStr(initialParams, "wp", "nein", ["nein", "geplant", "ja"]) : "nein");
@@ -103,6 +127,31 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Haustyp (geteilte Wände) für den WP-Strom — 0 = freistehend (Default).
   const [wpHaustyp, setWpHaustyp] = useState(hasShare ? paramInt(initialParams, "wht", 0, 0, HAUSTYP_WP.length - 1) : 0);
 
+  // Brücke zum geteilten Gebäude-Baustein. Die vier Werte bleiben einzelne
+  // States (sie hängen an je einem Share-Parameter), nach außen sind sie ein
+  // Objekt — so sieht die Abfrage im Flow und im Ergebnis identisch aus, ohne
+  // dass die URL-Kopplung dafür umgebaut werden muss.
+  const gebaeudeWerte: GebaeudeWerte = {
+    haustypIdx: wpHaustyp,
+    wohnflaeche: wpWohnflaeche,
+    insulationIdx: wpInsulation,
+    heizsystem: wpHeizsystem,
+  };
+  const setGebaeudeWerte = (patch: Partial<GebaeudeWerte>) => {
+    if (patch.haustypIdx !== undefined) setWpHaustyp(patch.haustypIdx);
+    if (patch.wohnflaeche !== undefined) setWpWohnflaeche(patch.wohnflaeche);
+    if (patch.insulationIdx !== undefined) setWpInsulation(patch.insulationIdx);
+    if (patch.heizsystem !== undefined) setWpHeizsystem(patch.heizsystem);
+    setOEv(null); // Eigenverbrauch neu herleiten — der Heizstrom hat sich geändert.
+  };
+  const gebaeudeZusammenfassung = () =>
+    `${HAUSTYP_WP[wpHaustyp].label} · ${wpWohnflaeche} m² · ${INSULATION_BESTAND[wpInsulation].label}`;
+  const dachZusammenfassung = () =>
+    dachartIdx !== null && ausrichtung !== null
+      ? `${DACHARTEN[dachartIdx].label} · ${TILT_ORIENTATIONS.find(o => o.key === ausrichtung)?.label}`
+        + (neigungGrad !== null ? ` · ${neigungGrad}°` : "")
+      : "nicht angegeben";
+
   // Progressive Disclosure im Großverbraucher-Step: welche Detail-Fragen der
   // Nutzer schon aktiv beantwortet hat (kein Preset vorausgewählt) + welche zum
   // Nachbearbeiten wieder aufgeklappt ist. Bei geteilter URL gelten alle als
@@ -113,12 +162,20 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     setGvAnswered(prev => (prev.has(key) ? prev : new Set(prev).add(key)));
     setGvEditing(null);
   };
+  // Eine Antwort zurücknehmen: nötig, wenn eine Folgeantwort durch eine neue
+  // Vorgabe ungültig wird (Dachform-Wechsel verwirft eine Nord-Ausrichtung).
+  // Ohne das galt die Frage weiter als beantwortet und der Ertrag fiel still
+  // auf den Bestfall zurück.
+  const nimmGvZurueck = (key: string) => {
+    setGvAnswered(prev => { if (!prev.has(key)) return prev; const n = new Set(prev); n.delete(key); return n; });
+  };
   // Welche Frage einer Section ist offen: die zum Bearbeiten angeklickte, sonst
   // die erste noch offene. null = alle beantwortet (alles eingeklappt).
   const openGvField = (keys: readonly string[]): string | null => {
     if (gvEditing && keys.includes(gvEditing)) return gvEditing;
     return keys.find(k => !gvAnswered.has(k)) ?? null;
   };
+  const wpAlleBeantwortet = WP_FIELDS.every(k => gvAnswered.has(k));
 
   // Editable overrides (null = use auto-calculated)
   const [oKosten, setOKosten] = useState<number | null>(hasShare && initialParams?.k ? (() => { const n = Number(initialParams.k); return isFinite(n) && n >= 500 && n <= 200000 ? n : null; })() : null);
@@ -137,7 +194,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const [einspeisungModus, setEinspeisungModus] = useState<"aus" | "teil" | "voll">(
     hasShare ? (initialParams?.eia === "2" ? "voll" : initialParams?.eia === "0" ? "aus" : "teil") : "teil"
   );
-  const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", NO_PLZ_DEFAULT_YIELD, 700, 1200) : NO_PLZ_DEFAULT_YIELD);
+  const [oErtrag, setOErtrag] = useState(initialParams?.er ? paramInt(initialParams, "er", NO_PLZ_DEFAULT_YIELD, ERTRAG_OPTIMUM_MIN, ERTRAG_OPTIMUM_MAX) : NO_PLZ_DEFAULT_YIELD);
   // Vergütungsregime: heutige Konditionen (Default — sie gelten für jede Anlage,
   // die bis Ende 2026 ans Netz geht) oder der Entwurf für Neuanlagen ab 2027.
   // Der Börsenerlös nach der Förderphase ist bewusst separat schaltbar und
@@ -184,7 +241,37 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Empfehlungs-Flow Kontext
   const flowType = hasShare && initialParams?.flow === "emp" ? "empfehlung" : "manual";
   const htIdx = hasShare ? paramInt(initialParams, "ht", -1, 0, 3) : -1;
-  const daIdx = hasShare ? paramInt(initialParams, "da", -1, 0, 3) : -1;
+
+  // ── Dach: Form + Ausrichtung ────────────────────────────────────────────
+  // Die Dachform kommt aus dem Empfehlungs-Flow bereits mit (`da`) — dort wird
+  // sie für die Dachfläche gebraucht. Sie ist hier ECHTER State, nicht nur ein
+  // gelesener Parameter: der Nutzer soll sie auch im manuellen Flow angeben und
+  // im Ergebnis ändern können.
+  const [dachartIdx, setDachartIdx] = useState<number | null>(() => {
+    if (!hasShare) return null;
+    const i = paramInt(initialParams, "da", -1, 0, DACHARTEN.length - 1);
+    return i >= 0 ? i : null;
+  });
+  const [ausrichtung, setAusrichtung] = useState<TiltOrientation | null>(
+    hasShare
+      ? (paramStr(initialParams, "az", "", ["sued", "suedostwest", "ostwest", "nord"]) as TiltOrientation) || null
+      : null,
+  );
+  // Neigung in Grad. null = nicht angegeben → es gilt die typische Neigung der
+  // Dachform. Bewusst keine Pflichtangabe: nach Süden liegen zwischen 30° und
+  // 50° ganze 1 Prozentpunkt, nach Norden bis zu 27 (siehe lib/dach-ertrag.ts).
+  const [neigungGrad, setNeigungGrad] = useState<number | null>(() => {
+    if (!hasShare) return null;
+    const g = paramInt(initialParams, "ng", -1, 0, 90);
+    return g >= 0 ? g : null;
+  });
+  const daIdx = dachartIdx ?? -1;
+
+  // Überspringbare Fragen melden ihre Folge als Toast. Der Text ist die
+  // Gegenleistung fürs Überspringen — die Annahme wird ausgesprochen, statt
+  // still zu gelten. Ein String statt eines Flags, damit dieselbe Mechanik für
+  // Dach und Gebäude reicht.
+  const [folgeToast, setFolgeToast] = useState<string | null>(null);
 
   // PLZ → zutreffende Förderprogramme (Kandidaten serverseitig auflösen)
   const fetchFunding = async (inputPlz: string) => {
@@ -309,7 +396,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       // Pending save: speichere Berechnung in localStorage für Auto-Save nach Login
       if (isResult) {
         const row = paramsToRow(
-          { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
+          { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag: effErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
           { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
         );
         const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
@@ -326,7 +413,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   useEffect(() => { setCanShare(typeof navigator !== "undefined" && !!navigator.share); }, []);
 
   const kwp = anlage <= 3 ? ANLAGEN[anlage].kwp : customKwp;
-  const spKwh = SPEICHER[speicher].kwh;
+  const spKwh = oSpKwh ?? SPEICHER[speicher].kwh;
   // Brutto = vom Nutzer editierte oder geschätzte Investition. Förderung (falls
   // aktiviert) reduziert sie zur effektiven Investition, mit der gerechnet wird.
   const bruttoKosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh, prices);
@@ -370,12 +457,37 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   );
   const extraVerbrauch = calcExtraConsumption(wp, ea, eaKm, klima, KLIMA_DEFAULT_M2, effKlimaKwh, wpKwh);
   const gesamtVerbrauch = grundverbrauch + extraVerbrauch;
-  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: oErtrag, baseKwh: oVerbrauch });
+
+  // ── Der Ertrag, mit dem tatsächlich gerechnet wird ──────────────────────
+  // `oErtrag` ist das Standort-OPTIMUM (PVGIS liefert mit optimaler Neigung
+  // nach Süden). Erst das Dach macht daraus den Ertrag dieser Anlage. Ab hier
+  // gilt ausschließlich `effErtrag` — Geldrechnung UND Stundensimulation, sonst
+  // laufen Ersparnis und Autarkie auseinander (siehe lib/dach-ertrag.ts).
+  const effErtrag = dachErtragKwp(oErtrag, dachartIdx, ausrichtung, neigungGrad);
+
+  // Das Ertrags-Feld im Ergebnis zeigt und nimmt den Ertrag DIESER Anlage. Wer
+  // ihn von Hand setzt, meint „mein Dach bringt X" — also auf das Standort-
+  // Optimum zurückrechnen, damit ein späterer Dachwechsel wieder sauber davon
+  // skaliert (sonst wäre die Handeingabe nach dem nächsten Klick wieder weg).
+  //
+  // Die GRENZEN des Feldes müssen dabei mitskalieren. Sie gelten für den
+  // angezeigten Wert, die Rückrechnung erzeugt aber das Optimum — und das muss
+  // in `ERTRAG_OPTIMUM_MIN…MAX` bleiben, weil der Teilen-Parameter `er` genau
+  // diesen Bereich liest. Ohne Skalierung lag das Ergebnis bei Nordlage IMMER
+  // darüber: Eingabe 700 bei Faktor 0,45 ergibt 1.556, der Empfänger des Links
+  // fiel auf den Default zurück und sah 428 statt 700 kWh/kWp.
+  const ertragFaktor = dachNeigungsFaktor(dachartIdx, ausrichtung, neigungGrad);
+  const ertragMin = Math.ceil(ERTRAG_OPTIMUM_MIN * ertragFaktor);
+  const ertragMax = Math.floor(ERTRAG_OPTIMUM_MAX * ertragFaktor);
+  const setErtragVonHand = (val: number) =>
+    setOErtrag(Math.min(ERTRAG_OPTIMUM_MAX, Math.max(ERTRAG_OPTIMUM_MIN, Math.round(val / ertragFaktor))));
+
+  const autoEv = calcEigenverbrauch({ personenIdx: personen, nutzungIdx: nutzung, speicherKwh: spKwh, wp, ea, eaKm, klima, klimaM2: KLIMA_DEFAULT_M2, klimaKwh: effKlimaKwh, wpKwh, kwp, ertragKwp: effErtrag, baseKwh: oVerbrauch });
   const effEv = oEv !== null ? oEv : autoEv;
   // Volleinspeisung is incompatible with WP/E-Auto (they require self-consumption)
   const vollDisabled = wp !== "nein" || ea !== "nein";
   const effEinspeisungModus = vollDisabled && einspeisungModus === "voll" ? "teil" : einspeisungModus;
-  const jahresertrag = kwp * oErtrag;
+  const jahresertrag = kwp * effErtrag;
   // Lastprofil für die Stundensimulation — dieselben Verbrauchswerte wie oben,
   // nur als Stundenkurve (BDEW H0 + WP-Winterprofil + E-Auto + Klima).
   const household = useMemo<HouseholdProfile>(() => ({
@@ -396,17 +508,17 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Monatsdaten fürs Modal sowie die WP-spezifische PV-Deckung (pvSim.wpAutarky) für
   // die WP-Kachel. Gegen das HTW-Kennfeld validiert (±3 pp bei gleichem Tagverbrauch).
   const pvSim = useMemo(
-    () => simulatePvYear({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: oErtrag, household }),
-    [kwp, spKwh, monthlyProfile, oErtrag, household],
+    () => simulatePvYear({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: effErtrag, household }),
+    [kwp, spKwh, monthlyProfile, effErtrag, household],
   );
   const autarkie = pvSim.autarky;
   // Beispieltage (24-h-Detail) für das Modal — sonniger/trüber Wintertag + Sommertag.
   const exampleDays = useMemo(
     () => EXAMPLE_DAYS.map(d => ({
       key: d.key, label: d.label,
-      day: simulateExampleDay({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: oErtrag, household }, d.month, d.dayType),
+      day: simulateExampleDay({ kwp, speicherKwh: spKwh, monthlyYieldPerKwp: monthlyProfile, ertragKwp: effErtrag, household }, d.month, d.dayType),
     })),
-    [kwp, spKwh, monthlyProfile, oErtrag, household],
+    [kwp, spKwh, monthlyProfile, effErtrag, household],
   );
 
   // Feed-in: weighted EEG rate based on system size + effective mode
@@ -423,9 +535,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // hängt am Speicher und am Verbrauchsprofil dieses Haushalts, also fällt es aus
   // derselben Simulation an wie die Autarkie — statt aus einer zweiten Annahme.
   const marktSim = useMemo(() => {
-    const monthly = monthlyProfile ?? monthlyFromAnnual(oErtrag);
+    const monthly = monthlyProfile ?? monthlyFromAnnual(effErtrag);
     const summe = monthly.reduce((a, b) => a + b, 0);
-    const skaliert = summe > 0 ? monthly.map((m) => (m * oErtrag) / summe) : monthly;
+    const skaliert = summe > 0 ? monthly.map((m) => (m * effErtrag) / summe) : monthly;
     const gemeinsam = {
       moduleKwp: kwp, inverterKw: kwp, monthlyYieldPerKwp: skaliert,
       orientation: "sued_flach", household, batteryKwh: spKwh, roundtrip: 0.9,
@@ -437,7 +549,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       profilFaktor: profilFaktorAus(mitDeckel),
       einspeiseAnteil: ohneDeckel.feedInKwh > 0 ? mitDeckel.feedInKwh / ohneDeckel.feedInKwh : 1,
     };
-  }, [kwp, spKwh, monthlyProfile, oErtrag, household]);
+  }, [kwp, spKwh, monthlyProfile, effErtrag, household]);
 
   const einspeiseVerlaufJahre = useMemo(() => einspeiseVerlauf({
     regime,
@@ -474,18 +586,59 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
           ? 0
           : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
         einspeisung: effEinspeisungModus === "aus" ? 0 : effEinsp,
-        stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
+        stromSteigerung: s.strom, ertragKwp: effErtrag, monthly: monthlyProfile,
         batteryReplace: batteryReplaceCost(spKwh, prices),
         einspeiseModell: effEinspeisungModus === "aus" ? undefined : einspeiseModell,
       }),
-    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, oErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, einspeiseModell]);
+    })), [kwp, kosten, oStrom, effEv, effEinsp, effEinspeisungModus, effErtrag, eaKm, monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, einspeiseModell]);
+
+  // (Die Liste der aktiven Großverbraucher ist entfallen: sie war die Kopfzeile
+  // des gemeinsamen Verbrauchs-Abschnitts. Jeder Verbraucher hat jetzt seinen
+  // eigenen Abschnitt und trägt seinen Zustand selbst.)
+
+  // Was der Börsenerlös über die Laufzeit ausmacht: dasselbe Szenario einmal mit
+  // und einmal ohne Marktbewertung. Die Zahl steht am Schalter selbst — sonst
+  // klickt man ihn und sieht nichts, weil die Wirkung erst nach der
+  // Übergangszahlung einsetzt und die Amortisation in ganzen Jahren meist nicht
+  // bewegt.
+  const marktWirkungEuro = useMemo(() => {
+    if (regime !== "reform2027" || effEinspeisungModus === "aus") return undefined;
+    const s = SCENARIOS.find(x => x.id === scenario) ?? SCENARIOS[1];
+    const gemeinsam = {
+      kwp, kosten, strompreis: oStrom,
+      eigenverbrauch: effEinspeisungModus === "voll"
+        ? 0
+        : Math.min(effEv + s.evDelta, 95, (gesamtVerbrauch / jahresertrag) * 100),
+      einspeisung: effEinsp,
+      stromSteigerung: s.strom, ertragKwp: oErtrag, monthly: monthlyProfile,
+      batteryReplace: batteryReplaceCost(spKwh, prices),
+    };
+    const total = (mk: boolean) => {
+      const verlauf = einspeiseVerlauf({
+        regime, kwp, inbetriebnahmeJahr: Math.max(2027, YEAR),
+        heuteSatzCt: effEinsp, marktErloes: mk,
+        profilFaktor: marktSim.profilFaktor,
+        niveauCt: oMarktwert ?? MARKTWERT_NIVEAU_CT,
+      });
+      return calc({
+        ...gemeinsam,
+        einspeiseModell: {
+          satzCtImJahr: (i: number) => verlauf[i - 1]?.satzCt ?? 0,
+          fixkostenProJahr: DIREKTVERMARKTUNG.grundgebuehrProJahr,
+          einspeiseAnteil: marktSim.einspeiseAnteil,
+        },
+      }).total;
+    };
+    return Math.max(0, total(true) - total(false));
+  }, [regime, effEinspeisungModus, scenario, kwp, kosten, oStrom, effEv, effEinsp, oErtrag,
+      monthlyProfile, spKwh, prices, gesamtVerbrauch, jahresertrag, marktSim, oMarktwert]);
 
   // Das aktuell gewählte Szenario treibt alle Ergebniszahlen. Fallback auf
   // „realistic", falls der State (z. B. aus einer alten Share-URL) nicht passt.
   const sel = scenarioData.find(s => s.id === scenario) ?? scenarioData.find(s => s.id === "realistic")!;
   const be = sel.data.be;
 
-  const STEPS = ["Wie groß soll die Anlage werden?", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
+  const STEPS = ["Wie groß soll die Anlage werden?", "Dein Dach", "Batteriespeicher?", "Dein Haushalt", "Großverbraucher"];
   const isResult = step >= STEPS.length;
   const fundingActive = fundingPrograms.some((p) => p.level !== "bund");
 
@@ -539,14 +692,18 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   const back = () => step > 0 && setStep(step - 1);
 
   // Was der aktuelle Schritt braucht, bevor es weitergeht — an EINER Stelle,
-  // damit Freigabe und Hinweistext nie auseinanderlaufen.
+  // damit Freigabe und Hinweistext nie auseinanderlaufen. Reihenfolge wie STEPS.
   //
-  // Der Großverbraucher-Schritt (3) verlangt bewusst nichts: „keine Wärmepumpe,
-  // kein E-Auto, keine Klimaanlage" ist der Ausgangszustand einer Ein/Aus-Frage,
-  // keine vorausgewählte Antwort — wer nichts davon hat, soll nicht erst dreimal
-  // „nein" antworten müssen.
+  // Zwei Schritte verlangen bewusst NICHTS:
+  //   „Dein Dach" (1) trägt ein ausdrückliches „Weiß ich nicht — überspringen".
+  //   Eine Frage mit eigenem Ausweg ist keine Pflichtfrage; wer überspringt,
+  //   bekommt stattdessen den Toast mit der Annahme und ihrer Fehlerrichtung.
+  //   „Großverbraucher" (4) fragt Ein/Aus: „keine Wärmepumpe, kein E-Auto,
+  //   keine Klimaanlage" ist der Ausgangszustand, keine vorausgewählte Antwort —
+  //   wer nichts davon hat, soll nicht erst dreimal „nein" antworten müssen.
   const stepAnforderung: { erfuellt: boolean; hinweis: string }[] = [
     { erfuellt: beantwortet.has("anlage"), hinweis: "Bitte erst eine Anlagengröße wählen." },
+    { erfuellt: true, hinweis: "" },
     { erfuellt: beantwortet.has("speicher"), hinweis: "Bitte erst eine Speichergröße wählen — „Kein Speicher“ zählt auch." },
     {
       // Im Direktmodus ersetzt der eingetippte Jahresverbrauch die Personenfrage.
@@ -559,12 +716,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   ];
   const stepBeantwortet = step >= STEPS.length || (stepAnforderung[step]?.erfuellt ?? true);
   const stepHinweis = stepAnforderung[step]?.hinweis ?? "";
-  const restart = () => { setStep(0); setOKosten(null); setOEv(null); setOVerbrauch(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
+  const restart = () => { setStep(0); setOKosten(null); setOEv(null); setOVerbrauch(null); setDachartIdx(null); setAusrichtung(null); if (typeof window !== "undefined") window.history.replaceState(null, "", window.location.pathname); };
 
   const buildShareUrl = () => {
     const p = new URLSearchParams();
     p.set("a", String(anlage));
     p.set("s", String(speicher));
+    if (oSpKwh !== null) p.set("sk", String(oSpKwh));
     p.set("p", String(personen));
     p.set("n", String(nutzung));
     p.set("wp", wp);
@@ -586,7 +744,13 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (regime === "reform2027") p.set("rg", "2027");
     if (marktErloes) p.set("mk", "1");
     if (oMarktwert !== null) p.set("mw", String(oMarktwert));
+    // `er` ist das Standort-OPTIMUM, `da`/`az` machen daraus wieder den Ertrag
+    // dieser Anlage. Beides muss mit — sonst rechnet der Empfänger ein anderes
+    // Dach als der Absender (dieselbe Regel wie bei Regime und Marktwert).
     p.set("er", String(oErtrag));
+    if (dachartIdx !== null) p.set("da", String(dachartIdx));
+    if (ausrichtung !== null) p.set("az", ausrichtung);
+    if (neigungGrad !== null) p.set("ng", String(neigungGrad));
     if (scenario !== "realistic") p.set("sc", scenario);
     if (plz) p.set("plz", plz);
     // Förderung: das wirksamste angerechnete Programm mitgeben, damit der Link
@@ -595,7 +759,6 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (flowType === "empfehlung") {
       p.set("flow", "emp");
       if (htIdx >= 0) p.set("ht", String(htIdx));
-      if (daIdx >= 0) p.set("da", String(daIdx));
     }
     return `${window.location.origin}${window.location.pathname}?${p.toString()}`;
   };
@@ -658,7 +821,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     setSaving(true);
     try {
       const row = paramsToRow(
-        { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
+        { anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag: effErtrag, plz, fuelType, flowType: flowType as "manual" | "empfehlung", haustyp: htIdx >= 0 ? htIdx : null, dachart: daIdx >= 0 ? daIdx : null, budgetLimit: null },
         { kwp, amortisationJahre: be ? be.i : null, rendite25j: Math.round(sel.data.years[YEARS - 1]?.kum ?? 0) }
       );
       const spLabel = spKwh > 0 ? ` + ${spKwh} kWh` : "";
@@ -676,7 +839,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
       }
     } catch { /* silent */ }
     setSaving(false);
-  }, [authState, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, oErtrag, plz, fuelType, kwp, spKwh, be, sel, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [authState, saving, anlage, customKwp, speicher, personen, nutzung, wp, ea, eaKm, oKosten, oEv, oStrom, oEinsp, einspeisungModus, effErtrag, plz, fuelType, kwp, spKwh, be, sel, flowType, htIdx, daIdx]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Empfehlungs-Kontext für "Warum diese Anlage?"
   const empfehlungKontext = flowType === "empfehlung" && htIdx >= 0 && daIdx >= 0 ? (() => {
@@ -801,19 +964,49 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             {step === 1 && (
               <div>
                 <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
+                  Dachform und Ausrichtung entscheiden mit darüber, wie viel Strom die Anlage bringt —
+                  zwischen einem Süddach und einem Norddach liegen über 40 Prozent.
+                </p>
+                <DachField
+                  dachartIdx={dachartIdx}
+                  setDachartIdx={setDachartIdx}
+                  ausrichtung={ausrichtung}
+                  setAusrichtung={setAusrichtung}
+                  neigungGrad={neigungGrad}
+                  setNeigungGrad={setNeigungGrad}
+                  beantwortet={gvAnswered}
+                  markiereBeantwortet={markGvAnswered}
+                  nimmZurueck={nimmGvZurueck}
+                  bearbeitet={gvEditing}
+                  setBearbeitet={setGvEditing}
+                  hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource, neigungGrad)}
+                  onWeissNicht={() => {
+                    setDachartIdx(null);
+                    setAusrichtung(null);
+                    setNeigungGrad(null);
+                    setFolgeToast(dachUebersprungenFolge());
+                    next();
+                  }}
+                />
+              </div>
+            )}
+
+            {step === 2 && (
+              <div>
+                <p style={{ fontSize: 13, color: v('--color-text-muted'), marginTop: -10, marginBottom: 14, lineHeight: 1.5 }}>
                   Die <GlossaryTerm id="speicherkapazitaet">Speicherkapazität</GlossaryTerm> wird in <GlossaryTerm id="kwh">kWh</GlossaryTerm> gemessen.
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 {[...SPEICHER.map((s, idx) => ({ ...s, idx }))]
                   .sort((a, b) => a.kwh - b.kwh)
                   .map(s => (
-                    <OptionCard key={s.idx} selected={beantwortet.has("speicher") && speicher === s.idx} onClick={() => { setSpeicher(s.idx); setOKosten(null); markBeantwortet("speicher"); }} label={s.label} sub={s.sub} icon={s.icon} />
+                    <OptionCard key={s.idx} selected={beantwortet.has("speicher") && oSpKwh === null && speicher === s.idx} onClick={() => { setSpeicher(s.idx); setOSpKwh(null); setOKosten(null); markBeantwortet("speicher"); }} label={s.label} sub={s.sub} icon={s.icon} />
                   ))}
                 </div>
               </div>
             )}
 
-            {step === 2 && (
+            {step === 3 && (
               <div>
                 {/* Umschalter: Personen schätzen vs. Jahresverbrauch direkt eingeben */}
                 <div style={{ display: "flex", gap: 4, marginBottom: 16, background: v('--color-bg-muted'), borderRadius: v('--radius-md'), padding: 3, border: `1px solid ${v('--color-border')}` }}>
@@ -892,7 +1085,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               </div>
             )}
 
-            {step === 3 && (
+            {step === 4 && (
               <div>
                 {/* Warum diese Verbraucher zählen — Kontext als Infobox */}
                 <div style={{
@@ -910,52 +1103,31 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
 
                 {/* ── Wärmepumpe ── */}
                 <TriToggle label="⚡ Wärmepumpe" options={TRI} value={wp} onChange={v => { setWp(v); setOEv(null); }} />
-                {wp !== "nein" && (() => {
-                  const openKey = openGvField(WP_FIELDS);
-                  return (
-                    <div style={{ marginBottom: 28, marginTop: -4 }}>
-                      <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
-                        Wie viel Heizstrom deine Wärmepumpe braucht, berechnen wir aus den Angaben zu deinem Gebäude.
-                      </div>
-                      <AccordionField label="Haustyp" open={openKey === "wp-haustyp"} answered={gvAnswered.has("wp-haustyp")} summary={HAUSTYP_WP[wpHaustyp].label} onEdit={() => setGvEditing("wp-haustyp")}>
-                        <ChoiceButtons options={HAUSTYP_WP} columns={2} selected={gvAnswered.has("wp-haustyp") ? wpHaustyp : null}
-                          onSelect={i => { setWpHaustyp(i); setOEv(null); markGvAnswered("wp-haustyp"); }} render={h => h.label} />
-                      </AccordionField>
-                      <AccordionField label="Wohnfläche" open={openKey === "wp-flaeche"} answered={gvAnswered.has("wp-flaeche")} summary={`${wpWohnflaeche} m²`} onEdit={() => setGvEditing("wp-flaeche")}>
-                        <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-                          {WP_M2_PRESETS.map(m2 => {
-                            const active = gvAnswered.has("wp-flaeche") && wpWohnflaeche === m2;
-                            return (
-                              <button key={m2} onClick={() => { setWpWohnflaeche(m2); setOEv(null); markGvAnswered("wp-flaeche"); }} style={{
-                                padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
-                                background: active ? v('--color-accent-dim') : v('--color-bg-muted'),
-                                border: active ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
-                                color: active ? v('--color-accent') : v('--color-text-muted'),
-                              }}>{m2} m²</button>
-                            );
-                          })}
-                          <PresetNumberInput value={wpWohnflaeche} presets={WP_M2_PRESETS} min={20} max={1000} unit="m²"
-                            onCommit={n => { setWpWohnflaeche(n); setOEv(null); markGvAnswered("wp-flaeche"); }}
-                            onFocus={() => setGvEditing("wp-flaeche")} onBlur={() => setGvEditing(null)} />
-                        </div>
-                      </AccordionField>
-                      <AccordionField label="Dämmzustand" open={openKey === "wp-daemmung"} answered={gvAnswered.has("wp-daemmung")} summary={INSULATION_BESTAND[wpInsulation].label} onEdit={() => setGvEditing("wp-daemmung")}>
-                        <ChoiceButtons options={INSULATION_BESTAND} columns={2} selected={gvAnswered.has("wp-daemmung") ? wpInsulation : null}
-                          onSelect={i => { setWpInsulation(i); setOEv(null); markGvAnswered("wp-daemmung"); }} render={ins => ins.label} />
-                      </AccordionField>
-                      <AccordionField label="Heizsystem" open={openKey === "wp-heizsystem"} answered={gvAnswered.has("wp-heizsystem")} summary={HEIZSYSTEM.find(h => h.id === wpHeizsystem)?.label} onEdit={() => setGvEditing("wp-heizsystem")}>
-                        <ChoiceButtons options={HEIZSYSTEM} columns={3} selected={gvAnswered.has("wp-heizsystem") ? HEIZSYSTEM.findIndex(h => h.id === wpHeizsystem) : null}
-                          onSelect={i => { setWpHeizsystem(HEIZSYSTEM[i].id as Heizsystem); setOEv(null); markGvAnswered("wp-heizsystem"); }}
-                          render={h => HEIZSYSTEM_SHORT[h.id]} />
-                      </AccordionField>
-                      {openKey === null && wpKwh != null && (
-                        <div className="sc-acc" style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.5 }}>
-                          Daraus ergeben sich rund <strong style={{ color: v('--color-text-primary') }}>{wpKwh.toLocaleString("de-DE")} kWh</strong> Heizstrom pro Jahr.
-                        </div>
-                      )}
+                {wp !== "nein" && (
+                  <div style={{ marginBottom: 28, marginTop: -4 }}>
+                    <div style={{ fontSize: 11, color: v('--color-text-muted'), marginBottom: 12, lineHeight: 1.5 }}>
+                      Wie viel Heizstrom deine Wärmepumpe braucht, berechnen wir aus den Angaben zu deinem Gebäude.
                     </div>
-                  );
-                })()}
+                    <GebaeudeField
+                      werte={gebaeudeWerte}
+                      setWerte={setGebaeudeWerte}
+                      beantwortet={gvAnswered}
+                      markiereBeantwortet={markGvAnswered}
+                      bearbeitet={gvEditing}
+                      setBearbeitet={setGvEditing}
+                      hinweis={wpAlleBeantwortet && wpKwh != null
+                        ? `Daraus ergeben sich rund ${wpKwh.toLocaleString("de-DE")} kWh Heizstrom pro Jahr.`
+                        : undefined}
+                      onWeissNicht={() => {
+                        // Defaults gelten ohnehin — hier wird nur ausgesprochen,
+                        // WAS gilt, und die Kette als beantwortet markiert, damit
+                        // die Folgefragen nicht weiter nachrücken.
+                        WP_FIELDS.forEach(markGvAnswered);
+                        setFolgeToast(wpGebaeudeUebersprungenFolge(wpKwh ?? 0));
+                      }}
+                    />
+                  </div>
+                )}
 
                 {/* ── Elektroauto ── */}
                 <TriToggle label="🚗 Elektroauto" options={TRI} value={ea} onChange={v => { setEa(v); setOEv(null); }} />
@@ -1038,31 +1210,31 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         )}
 
         {/* ── RESULT ── */}
-        {plzToast && (
-          <div
-            className="fu"
-            onClick={() => {
-              const el = document.querySelector<HTMLInputElement>('input[placeholder="PLZ"]');
-              if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus(); }
-              setPlzToast(false);
-            }}
-            style={{
-              position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)",
-              zIndex: 900, maxWidth: 440, width: "calc(100% - 32px)", cursor: "pointer",
-              background: v('--color-accent'), color: v('--color-text-on-accent'),
-              borderRadius: v('--radius-md'), padding: "12px 16px",
-              boxShadow: "0 6px 24px rgba(0,0,0,0.25)", display: "flex", alignItems: "center", gap: 10,
-              fontSize: 13, fontWeight: 600, lineHeight: 1.4,
-            }}
-          >
-            <span style={{ flex: 1 }}>
-              {fundingActive
-                ? "PLZ eingeben für einen standortgenauen Ertrag"
-                : "PLZ eingeben für genauere Ergebnisse und mögliche Förderprogramme"}
-            </span>
-            <button onClick={e => { e.stopPropagation(); setPlzToast(false); }} aria-label="Schließen" style={{ border: "none", background: "transparent", color: v('--color-text-on-accent'), fontSize: 18, lineHeight: 0.8, cursor: "pointer", padding: 0, opacity: 0.85 }}>×</button>
-          </div>
-        )}
+        <Toast
+          open={plzToast}
+          onClose={() => setPlzToast(false)}
+          onClick={() => {
+            const el = document.querySelector<HTMLInputElement>('input[placeholder="PLZ"]');
+            if (el) { el.scrollIntoView({ behavior: "smooth", block: "center" }); el.focus(); }
+            setPlzToast(false);
+          }}
+        >
+          {fundingActive
+            ? "PLZ eingeben für einen standortgenauen Ertrag"
+            : "PLZ eingeben für genauere Ergebnisse und mögliche Förderprogramme"}
+        </Toast>
+
+        {/* Folge einer übersprungenen Frage. Neutral statt blau: das ist eine
+            Auskunft, keine Handlungsaufforderung — und sie verschwindet von
+            selbst, weil sie nichts erwartet. */}
+        <Toast
+          open={folgeToast !== null}
+          onClose={() => setFolgeToast(null)}
+          tone="neutral"
+          autoHideMs={9000}
+        >
+          {folgeToast}
+        </Toast>
 
         {isResult && (
           <div className="fu">
@@ -1075,54 +1247,191 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             />
             <ResultHeroCard
               be={be} kosten={bruttoKosten} setOKosten={setOKosten}
-              oStrom={oStrom} setOStrom={setOStrom} oErtrag={oErtrag} setOErtrag={setOErtrag}
-              kwp={kwp} spKwh={spKwh} effEv={effEv} setOEv={setOEv}
-              effEinspeisungModus={effEinspeisungModus} setEinspeisungModus={setEinspeisungModus}
-              vollDisabled={vollDisabled} effEinsp={effEinsp} setOEinsp={setOEinsp}
+              oStrom={oStrom} setOStrom={setOStrom} oErtrag={effErtrag} setOErtrag={setErtragVonHand} ertragMin={ertragMin} ertragMax={ertragMax}
+              kwp={kwp}
+              // Größe von Hand = eigene Größe (Index 4). Kostenschätzung und
+              // Eigenverbrauch hängen daran und werden auf Auto zurückgesetzt,
+              // sonst bliebe der Preis der alten Anlage am neuen kWp kleben.
+              setKwp={val => { setCustomKwp(Math.round(val * 10) / 10); setAnlage(4); setOKosten(null); setOEv(null); }}
+              spKwh={spKwh}
+              setSpKwh={val => { setOSpKwh(Math.round(val * 10) / 10); setOKosten(null); setOEv(null); }}
+              grundverbrauch={grundverbrauch}
+              setGrundverbrauch={val => { setOVerbrauch(Math.round(val)); setOEv(null); }}
+              hatGrossverbraucher={extraVerbrauch > 0}
+              effEv={effEv} setOEv={setOEv}
+              effEinspeisungModus={effEinspeisungModus}
               plz={plz} setPlz={setPlz} plzLoading={plzLoading} plzSource={plzSource} fetchPvgis={fetchPvgis}
             />
 
-            {/* Stromverbrauch — editierbar, mit Aufschlüsselung wenn WP/E-Auto aktiv */}
-            <div style={{
-              background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16,
-              border: `1px solid ${v('--color-border')}`,
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 13, fontWeight: 600, color: v('--color-text-secondary') }}>Stromverbrauch Haushalt</span>
-                <InlineEdit value={grundverbrauch} onCommit={val => { setOVerbrauch(Math.round(val)); setOEv(null); }} unit=" kWh" step={100} min={500} max={30000} width={72} />
+            {/* Einspeisung und Vergütung: aus der Karte oben herausgezogen und mit
+                den Konditionen (heute / Entwurf ab 2027) in EINEN aufklappbaren
+                Abschnitt zusammengelegt. Zugeklappt steht der gewählte Zustand
+                in der Kopfzeile. */}
+            <ResultVerguetung
+              modus={effEinspeisungModus} setModus={setEinspeisungModus}
+              vollDisabled={vollDisabled} effEinsp={effEinsp} setOEinsp={setOEinsp}
+              regime={regime} setRegime={setRegime}
+              marktErloes={marktErloes} setMarktErloes={setMarktErloes}
+              niveauCt={oMarktwert ?? MARKTWERT_NIVEAU_CT} setNiveauCt={setOMarktwert}
+              profilFaktor={marktSim.profilFaktor}
+              einspeiseAnteil={marktSim.einspeiseAnteil}
+              verlauf={einspeiseVerlaufJahre}
+              heuteSatzCt={effEinsp}
+              vollGewaehlt={effEinspeisungModus === "voll"}
+              marktWirkungEuro={marktWirkungEuro}
+              // „Eigener Satz" ist kein zusätzlicher Zustand, sondern genau der
+              // Fall „Satz von Hand gesetzt" (oEinsp). Zwei Quellen für dieselbe
+              // Aussage wären genau die Drift, die dieses Projekt teuer bezahlt.
+              eigenerSatz={oEinsp !== null}
+              setEigenerSatz={b => setOEinsp(b ? effEinsp : null)}
+              setHeuteSatzCt={val => setOEinsp(val)}
+            />
+
+            {/* ── Die Stellschrauben des Ergebnisses ──────────────────────────
+                Jeder Posten ein Abschnitt: Kopfzeile trägt den Zustand, Schalter
+                nimmt ihn aus der Rechnung (Eingaben bleiben erhalten), Aufklappen
+                zeigt die Details. Ein Muster für alle — vorher standen hier zwei
+                handgebaute Aufklapper und daneben eine Reihe nackter Häkchen, die
+                zwar an- und ausschalten konnte, aber nichts einstellen. */}
+
+            {/* Das Dach lässt sich nicht abschalten — es hat keinen Schalter. */}
+            <ResultSection
+              title="Dach und Ausrichtung"
+              summary={dachZusammenfassung()}
+            >
+              <DachField
+                dachartIdx={dachartIdx}
+                setDachartIdx={setDachartIdx}
+                ausrichtung={ausrichtung}
+                setAusrichtung={setAusrichtung}
+                neigungGrad={neigungGrad}
+                setNeigungGrad={setNeigungGrad}
+                beantwortet={gvAnswered}
+                markiereBeantwortet={markGvAnswered}
+                nimmZurueck={nimmGvZurueck}
+                bearbeitet={gvEditing}
+                setBearbeitet={setGvEditing}
+                hinweis={dachErtragHinweis(effErtrag, dachartIdx, ausrichtung, !!plzSource, neigungGrad)}
+              />
+            </ResultSection>
+
+            <ResultSection
+              title="Wärmepumpe"
+              summary={`${gebaeudeZusammenfassung()} · ${(wpKwh ?? 0).toLocaleString("de-DE")} kWh`}
+              aktiv={wp !== "nein"}
+              setAktiv={an => { setWp(an ? "ja" : "nein"); setOEv(null); }}
+              aktivLabel="Wärmepumpe mitrechnen"
+            >
+              <GebaeudeField
+                werte={gebaeudeWerte}
+                setWerte={setGebaeudeWerte}
+                beantwortet={new Set(WP_FIELDS)}
+                markiereBeantwortet={markGvAnswered}
+                bearbeitet={gvEditing}
+                setBearbeitet={setGvEditing}
+                hinweis={wpKwh != null
+                  ? `Daraus ergeben sich rund ${wpKwh.toLocaleString("de-DE")} kWh Heizstrom pro Jahr.`
+                  : undefined}
+              />
+            </ResultSection>
+
+            <ResultSection
+              title="E-Auto"
+              summary={`${eaKm.toLocaleString("de-DE")} km · ${calcExtraConsumption("nein", "ja", eaKm).toLocaleString("de-DE")} kWh`}
+              aktiv={ea !== "nein"}
+              setAktiv={an => { setEa(an ? "ja" : "nein"); setOEv(null); }}
+              aktivLabel="E-Auto mitrechnen"
+            >
+              <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-secondary'), marginBottom: 8 }}>Laufleistung im Jahr</div>
+              <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                {EA_KM_PRESETS.map(km => (
+                  <button key={km} onClick={() => { setEaKm(km); setOEv(null); }} style={{
+                    padding: "7px 10px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 600, cursor: "pointer",
+                    background: eaKm === km ? v('--color-accent-dim') : v('--color-bg-muted'),
+                    border: eaKm === km ? `1.5px solid ${v('--color-accent')}` : `1.5px solid ${v('--color-border')}`,
+                    color: eaKm === km ? v('--color-accent') : v('--color-text-muted'),
+                  }}>{km.toLocaleString("de-DE")} km</button>
+                ))}
+                <PresetNumberInput value={eaKm} presets={EA_KM_PRESETS} min={1000} max={50000} unit="km"
+                  onCommit={n => { setEaKm(n); setOEv(null); }} />
               </div>
-              {extraVerbrauch > 0 && (
-                <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px dashed ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.8 }}>
-                  {wp !== "nein" && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span>+ Wärmepumpe</span>
-                      <span style={{ fontFamily: v('--font-mono') }}>{(wpKwh ?? 0).toLocaleString("de-DE")} kWh</span>
-                    </div>
-                  )}
-                  {ea !== "nein" && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span>+ E-Auto</span>
-                      <span style={{ fontFamily: v('--font-mono') }}>{calcExtraConsumption("nein", ea, eaKm).toLocaleString("de-DE")} kWh</span>
-                    </div>
-                  )}
-                  {klima !== "nein" && (
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span>+ Klimaanlage{klimaKwh !== null ? " *" : ""}</span>
-                      <span style={{ fontFamily: v('--font-mono') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh</span>
-                    </div>
-                  )}
-                  <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, color: v('--color-text-primary'), marginTop: 2 }}>
-                    <span>Gesamt</span>
-                    <span style={{ fontFamily: v('--font-mono') }}>{gesamtVerbrauch.toLocaleString("de-DE")} kWh</span>
-                  </div>
-                  {klimaKwh !== null && (
-                    <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.4 }}>
-                      * Kühlstrom aus den Details bzw. dem <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none" }}>Klimaanlagen-Rechner</Link> übernommen. Räume ändern für die Schnellschätzung.
-                    </div>
-                  )}
+              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
+                Gerechnet mit {Math.round(EA_KWH_PER_KM * 100)} kWh je 100 km. Geladen wird zum Teil tagsüber — das hebt den Eigenverbrauch.
+              </div>
+            </ResultSection>
+
+            <ResultSection
+              title="Klimaanlage"
+              summary={`${klimaRooms} ${klimaRooms === 1 ? "Raum" : "Räume"} · ${klimaKwhEff.toLocaleString("de-DE")} kWh`}
+              aktiv={klima !== "nein"}
+              setAktiv={an => { setKlima(an ? "ja" : "nein"); setOEv(null); }}
+              aktivLabel="Klimaanlage mitrechnen"
+            >
+              <div style={{ fontSize: 13, fontWeight: 700, color: v('--color-text-secondary'), marginBottom: 8 }}>Gekühlte Räume</div>
+              <ChoiceButtons options={[1, 2, 3, 4, 5]} selected={klimaRooms - 1}
+                onSelect={i => { setKlimaRoomsManual(i + 1); setOEv(null); }} render={n => n} />
+              <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 10, lineHeight: 1.5 }}>
+                Schnellschätzung aus Räumen und Standort. Kühlen fällt mittags an, wenn die Sonne scheint — das hebt den Eigenverbrauch am stärksten.
+              </div>
+              <button onClick={() => setKlimaDetailOpen(true)} style={{
+                marginTop: 10, padding: "7px 12px", borderRadius: v('--radius-sm'), fontSize: 12, fontWeight: 700,
+                background: v('--color-bg-muted'), border: `1px solid ${v('--color-border')}`, color: v('--color-accent'), cursor: "pointer",
+              }}>Genauer berechnen</button>
+            </ResultSection>
+
+            {/* Woraus sich der Jahresverbrauch zusammensetzt — reine ANZEIGE.
+                Die Eingabe des Haushaltsverbrauchs sitzt in der Karte oben; zwei
+                Eingabefelder für dieselbe Zahl wären genau die Doppelung, gegen
+                die das Inflow-Register gebaut ist.
+
+                Dieser Block ist die einzige Stelle, die den Gesamtverbrauch
+                nennt — und der ist die Grundlage für Eigenverbrauch und
+                Autarkie. Beim Zusammenführen der beiden Zweige war er kurzzeitig
+                ganz verschwunden: die Karte zeigte 3.800 kWh Haushalt, die
+                Autarkie bezog sich auf 13.029, und diese Zahl stand nirgends. */}
+            {extraVerbrauch > 0 && (
+              <div style={{
+                background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", marginBottom: 16,
+                border: `1px solid ${v('--color-border')}`,
+                fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.8,
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span>Haushalt</span>
+                  <span style={{ fontFamily: v('--font-mono') }}>{grundverbrauch.toLocaleString("de-DE")} kWh</span>
                 </div>
-              )}
-            </div>
+                {wp !== "nein" && (
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>+ Wärmepumpe</span>
+                    <span style={{ fontFamily: v('--font-mono') }}>{(wpKwh ?? 0).toLocaleString("de-DE")} kWh</span>
+                  </div>
+                )}
+                {ea !== "nein" && (
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>+ E-Auto</span>
+                    <span style={{ fontFamily: v('--font-mono') }}>{calcExtraConsumption("nein", ea, eaKm).toLocaleString("de-DE")} kWh</span>
+                  </div>
+                )}
+                {klima !== "nein" && (
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span>+ Klimaanlage{klimaKwh !== null ? " *" : ""}</span>
+                    <span style={{ fontFamily: v('--font-mono') }}>{klimaKwhEff.toLocaleString("de-DE")} kWh</span>
+                  </div>
+                )}
+                <div style={{
+                  display: "flex", justifyContent: "space-between", fontWeight: 700,
+                  color: v('--color-text-primary'), marginTop: 4, paddingTop: 6,
+                  borderTop: `1px dashed ${v('--color-border')}`,
+                }}>
+                  <span>Verbrauch gesamt</span>
+                  <span style={{ fontFamily: v('--font-mono') }}>{gesamtVerbrauch.toLocaleString("de-DE")} kWh</span>
+                </div>
+                {klimaKwh !== null && (
+                  <div style={{ fontSize: 11, color: v('--color-text-faint'), marginTop: 4, lineHeight: 1.4 }}>
+                    * Kühlstrom aus den Details bzw. dem <Link href="/klimaanlage-stromkosten" style={{ color: v('--color-accent'), textDecoration: "none" }}>Klimaanlagen-Rechner</Link> übernommen. Räume ändern für die Schnellschätzung.
+                  </div>
+                )}
+              </div>
+            )}
 
             <ResultFunding
               loading={fundingLoading}
@@ -1185,15 +1494,11 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               </details>
             )}
 
-            <QuickSettings
-              wp={wp} setWp={setWp} ea={ea} setEa={setEa} eaKm={eaKm} setEaKm={setEaKm}
-              klima={klima} setKlima={setKlima} klimaRooms={klimaRooms} setKlimaRooms={setKlimaRoomsManual}
-              onKlimaDetails={() => setKlimaDetailOpen(true)}
-              speicher={speicher} setSpeicher={setSpeicher} spKwh={spKwh}
-              oKosten={oKosten} setOKosten={setOKosten} setOEv={() => setOEv(null)}
-            />
+            {/* Die Reihe „Starke Einflussfaktoren" ist entfallen: Sie konnte
+                jeden Posten an- und ausschalten, aber keinen einstellen — die
+                Einstellungen lagen in getrennten Blöcken darüber. Beides sitzt
+                jetzt in einem Abschnitt je Posten (siehe oben). */}
 
-            
             <ResultStats
               total={sel.data.total} kosten={kosten}
               wp={wp} wpKwh={wpKwh ?? 0} jaz={wpJaz} effEv={effEv} autarkie={autarkie} wpAutarky={pvSim.wpAutarky}
@@ -1291,24 +1596,17 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
               border: `1px solid ${v('--color-border')}`, fontSize: 12, color: v('--color-text-muted'), lineHeight: 1.6,
             }}>
               <Link href="/methodik" onClick={() => trackEvent("pv_methodik")} style={{ fontWeight: 700, color: v('--color-text-secondary'), textDecoration: "none", borderBottom: `1px dashed ${v('--color-text-faint')}` }}>Methodik</Link>
-              <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · Einspeisevergütung fix 20 J.</span>
+              {/* Der Nachsatz muss dem gewählten Regime folgen: „fix 20 J." ist
+                  im Entwurfs-Modus schlicht falsch — dort gibt es genau das
+                  nicht mehr. */}
+              <span style={{ color: v('--color-text-muted') }}>{" "}· Eigenverbrauch kalibriert an HTW Berlin Daten (±5%) · Degradation 0,5%/a · {
+                effEinspeisungModus === "aus"
+                  ? "ohne Einspeisevergütung gerechnet"
+                  : regime === "reform2027"
+                    ? "Einspeisung nach dem Entwurf ab 2027"
+                    : "Einspeisevergütung fix 20 J."
+              }</span>
             </div>
-
-            {/* Vergütungsregime: heute oder Entwurf ab 2027, mit abschaltbarer
-                Marktrechnung. Nur sinnvoll, wenn überhaupt eingespeist wird —
-                bei „Einspeisung aus" ändert das Regime an der Rechnung nichts. */}
-            {effEinspeisungModus !== "aus" && (
-              <ResultRegime
-                regime={regime} setRegime={setRegime}
-                marktErloes={marktErloes} setMarktErloes={setMarktErloes}
-                niveauCt={oMarktwert ?? MARKTWERT_NIVEAU_CT} setNiveauCt={setOMarktwert}
-                profilFaktor={marktSim.profilFaktor}
-                einspeiseAnteil={marktSim.einspeiseAnteil}
-                verlauf={einspeiseVerlaufJahre}
-                heuteSatzCt={effEinsp}
-                vollGewaehlt={effEinspeisungModus === "voll"}
-              />
-            )}
 
             <ResultActions
               copied={copied} canShare={canShare} authState={authState} saving={saving} saved={saved} savedCalcId={savedCalcId}

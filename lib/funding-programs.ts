@@ -86,6 +86,12 @@ export interface FundingProgram {
    *  fallback = updated_at). Surfaced as "Zuletzt geprüft" and as sitemap lastmod.
    *  Set by lib/funding-data.ts from the funding_programs row, not by the seed. */
   lastVerified?: string;
+  /** Letzter geglückter Abruf der Amtsseite durch den Seiten-Wächter (ISO).
+   *  Bestätigt: Die Seite ist noch da und unverändert. DB-only. */
+  pageSeenAt?: string;
+  /** Zeitpunkt der letzten erkannten Änderung der Amtsseite (ISO). Liegt er nach
+   *  `lastVerified`, ist der geprüfte Inhalt in Frage gestellt. DB-only. */
+  changedSinceIso?: string;
 }
 
 /**
@@ -94,15 +100,28 @@ export interface FundingProgram {
  * ("Stand: Juni 2026") for code-seed entries. Appends "· unbestätigt" when the
  * program is not confirmed against the official source.
  */
-export function fundingStandLabel(p: FundingProgram): string {
+export function fundingStandLabel(p: FundingProgram, heute?: string): string {
   const unbestaetigt = p.verified ? "" : " · unbestätigt";
+  // Zählt das Programm gerade nicht mit, MUSS das am Prüfdatum stehen — BLOCKER.
+  // Sonst liest jemand "Zuletzt geprüft: 05.08.2026" neben einer Beispielrechnung,
+  // die diese Förderung stillschweigend weglässt: Text und Zahl widersprechen
+  // sich, und das ist die schwerste Fehlerklasse dieses Projekts.
+  // NUR bei Programmen, die überhaupt einen Betrag abziehen können. Ein
+  // Bundesprogramm wie die 0 % Mehrwertsteuer trägt keinen strukturierten Satz
+  // und wird nie eingerechnet — dort wäre "daher nicht eingerechnet" eine
+  // beunruhigende Falschaussage über eine dauerhafte Rechtslage.
+  const rechenbar = !!(p.percentOfCost || p.pvPerKwp || p.pvTiers || p.speicherPerKwh || p.speicherTiers);
+  const nichtGerechnet =
+    rechenbar && p.status === "aktiv" && !fundingBelegAktuell(p, heute ?? heuteIso())
+      ? " · aktuell nicht bestätigt, daher nicht eingerechnet"
+      : "";
   if (p.lastVerified) {
     const d = new Date(p.lastVerified);
     if (!isNaN(d.getTime())) {
-      return `Zuletzt geprüft: ${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}${unbestaetigt}`;
+      return `Zuletzt geprüft: ${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}${unbestaetigt}${nichtGerechnet}`;
     }
   }
-  return `Stand: ${p.stand}${unbestaetigt}`;
+  return `Stand: ${p.stand}${unbestaetigt}${nichtGerechnet}`;
 }
 
 // Bund applies everywhere and combines with every regional program.
@@ -276,7 +295,7 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "PV-Anlage", value: "20 % (30 % als Solar-Gründach)" },
       { label: "Batteriespeicher + Ladesäule", value: "20 %" },
       { label: "Gemeinschaftsprojekte", value: "+5 Prozentpunkte" },
-      { label: "Balkonkraftwerk", value: "derzeit keine Mittel" },
+      { label: "Balkonkraftwerk", value: "keine Mittel" },
     ],
     conditions: [
       "Erst nach Zuwendungsbescheid mit der Maßnahme beginnen",
@@ -434,26 +453,49 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
   },
 
   // ── Batch Juni 2026 (je 1 Recherche-Agent → offizielle Quelle) ──────────────
+  //
+  // Der Jahrestopf 2026 ist leer: Die Stadt hat das Programm am 14.07.2026 per
+  // Pressemitteilung gestoppt („Die Mittel für das städtische Förderprogramm
+  // ‚Klimafreundlich Wohnen‘ sind für dieses Jahr vollständig ausgeschöpft […]
+  // Neue Anträge können ab sofort nicht mehr gestellt werden."
+  // freiburg.de/pb/2626054.html), die Programmseite nennt zusätzlich Baustein 3
+  // ausdrücklich: „Zu den Bausteinen 2 […] und 3 (Stromerzeugung erneuerbar)
+  // können keine Anträge mehr gestellt werden." (freiburg.de/pb/232441.html,
+  // abgerufen 16.08.2026). Council 3/3 am 16.08.2026, adversarialer Prüfer
+  // eingeschlossen. Deshalb kein `pvPerKwp`/`pvCap` mehr — der Rechner darf
+  // kein Geld abziehen, das derzeit niemand bekommt.
+  //
+  // NICHT abgeschafft, nur geschlossen: Die Förderrichtlinie (Fassung 06.2025)
+  // gilt unverändert fort, gestoppt ist allein die Mittelbereitstellung
+  // („Die Stadt Freiburg fördert Projekte, solange Fördermittel im Haushalt zur
+  // Verfügung stehen. Ein Rechtsanspruch auf Bewilligung besteht nicht.",
+  // Ziffer 7). Sätze und Bedingungen bleiben deshalb stehen.
+  //
+  // Die Wiedereröffnung zum 01.01.2027 steht auf der Programmseite, NICHT in der
+  // Pressemitteilung — sie ist eine Ankündigung der Stadt, keine Zusage, und
+  // wird von keiner Automatik ausgewertet. Wer den Eintrag im Januar wieder
+  // scharf schaltet, prüft das vorher an der Trägerseite nach.
   "freiburg-stromerzeugung": {
     id: "freiburg-stromerzeugung", name: "Klimafreundlich Wohnen – Stromerzeugung",
     traeger: "Stadt Freiburg im Breisgau", level: "kommune", region: "Freiburg im Breisgau", bundesland: "Baden-Württemberg", agsCode: "08311",
-    url: "https://www.freiburg.de/pb/232441.html", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: true,
+    url: "https://www.freiburg.de/pb/232441.html", stand: "August 2026",
+    status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp für Dach-PV (nur Anteil über der Solarpflicht-Mindestgröße)",
+    coveredCosts: "Zuschuss je kWp für Dach-PV (nur Anteil über der Solarpflicht-Mindestgröße) — Jahrestopf 2026 leer",
     rates: [
       { label: "Dach-PV (Vollbelegung)", value: "150 €/kWp, max. 1.500 €" },
       { label: "Bonus Gründach/Fassade/Denkmal", value: "+150 €/kWp, max. 1.500 €" },
       { label: "Balkonmodul (Mieter)", value: "150 € (mit Freiburg-Pass 300 €)" },
     ],
     conditions: [
+      "Mittel für 2026 vollständig ausgeschöpft: seit dem 14.07.2026 keine neuen Anträge — auch nicht für Balkonmodule; nach Angaben der Stadt wieder ab 1. Januar 2027",
+      "Bereits eingegangene Anträge werden weiter bearbeitet",
       "Gefördert nur der Anlagenteil über der gesetzlichen Solarpflicht-Mindestgröße",
       "Antrag bis 6 Monate nach Inbetriebnahme; Ausführung durch Fachbetrieb",
-      "Batteriespeicher seit Juni 2025 nicht mehr gefördert",
+      "Batteriespeicher seit Juni 2025 dauerhaft nicht mehr gefördert (Gemeinderatsbeschluss, unabhängig vom Mittelstopp)",
       "Mit BEG kumulierbar, max. 60 % der Kosten",
     ],
     combinableWith: BUND,
-    pvPerKwp: 150, pvCap: 1500,
   },
   // Der Status stand bis zum 14.08.2026 auf „unsicher", weil zwei städtische
   // Seiten sich zu widersprechen schienen. Sie tun es nicht: Die Übersichtsseite
@@ -528,18 +570,39 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  // Geprüft am 16.08.2026 an der Trägerquelle — Befund: Das Programm fördert
+  // KEINE Photovoltaik. Hinterlegt waren 300 €/kWp für Gründach-/MFH-/Fassaden-PV
+  // bei status "aktiv", also ein Abzug im Rechner. Gegengeprüft an drei Stellen
+  // der Stadt Münster, alle drei ohne jede PV-Position:
+  //   - Programmseite: nur die Bausteine "Energetische Sanierung" + "Dachbegrünung"
+  //   - Baustein Sanierung: Dämmung, Fenster, Heizungstausch, Boni — kein kWp
+  //   - Baustein Dachbegrünung: 50 % der Kosten, max. 40 €/m², max. 10.000 €;
+  //     Photovoltaik kommt dort nur als Überschrift "Prima Duo: Solaranlage und
+  //     Gründach" und als Verweis aufs Solarkataster vor, ohne Förderbetrag
+  //   - amtliche Förderrichtlinie (PDF, 18 Seiten, von der Programmseite verlinkt):
+  //     die Wörter Photovoltaik, Solar und kWp kommen kein einziges Mal vor
+  // Zusätzlich nimmt der Sanierungsbaustein wegen hoher Nachfrage seit dem
+  // 30.07.2026 keine Anträge mehr an.
+  //
+  // Der Eintrag bleibt sichtbar, statt gelöscht zu werden: Wer in Münster nach
+  // PV-Förderung sucht, soll lesen, dass das Stadtprogramm dafür nicht gilt —
+  // das ist die Antwort auf seine Frage. Ohne strukturierten Satz wird nichts
+  // mehr abgezogen.
   "muenster-klimafreundlich": {
-    id: "muenster-klimafreundlich", name: "Klimafreundliche Wohngebäude – Photovoltaik",
+    id: "muenster-klimafreundlich", name: "Klimafreundliche Wohngebäude (ohne Photovoltaik)",
     traeger: "Stadt Münster", level: "kommune", region: "Münster", bundesland: "Nordrhein-Westfalen", agsCode: "05515",
-    url: "https://www.stadt-muenster.de/klima/foerderprogramm", stand: "Juni 2026",
-    status: "aktiv", capped: true, verified: true,
+    url: "https://www.stadt-muenster.de/klima/foerderprogramm", stand: "August 2026",
+    status: "eingestellt", capped: true, verified: true,
     eligibility: ["privat", "gewerblich"],
-    coveredCosts: "Zuschuss je kWp — nur Gründach-PV, Mehrfamilienhaus oder Fassade (nicht Standard-EFH-Schrägdach)",
-    rates: [{ label: "PV (Gründach / MFH / Fassade)", value: "300 €/kWp" }],
+    coveredCosts: "Keine Photovoltaik-Förderung — das Programm fördert Dämmung, Fenster, Heizungstausch und Dachbegrünung",
+    rates: [
+      { label: "Photovoltaik", value: "wird nicht gefördert" },
+      { label: "Dachbegrünung (mit PV kombinierbar)", value: "50 % der Kosten, max. 40 €/m², max. 10.000 €" },
+    ],
     conditions: [
-      "Nur PV auf Gründach, Mehrfamilienhaus (ab 3 Wohneinheiten) oder Fassade — nicht auf normalem Einfamilienhaus-Schrägdach",
-      "kein Batteriespeicher gefördert",
-      "Antrag vor Maßnahmenbeginn",
+      "Das Förderprogramm der Stadt Münster enthält keine Photovoltaik-Förderung",
+      "Eine Dachbegrünung lässt sich mit einer PV-Anlage kombinieren, gefördert wird aber allein die Begrünung",
+      "Für die energetische Sanierung nimmt die Stadt seit dem 30. Juli 2026 keine Anträge mehr an",
     ],
     combinableWith: BUND,
   },
@@ -710,6 +773,13 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     conditions: [
       "Antrag vor Auftragsvergabe; Windhundverfahren, kein Rechtsanspruch",
       "Gefördert wird nur der kWp-Anteil oberhalb von 8 kWp",
+      // Ergänzt 16.08.2026 aus der Förderrichtlinie (Stand Mai 2025, Abschnitt B):
+      // In Niedersachsen gilt eine PV-Pflicht nach § 32a NBauO. Wer sie erfüllt,
+      // bekommt für diesen Teil nichts — ohne den Hinweis rechnet sich jemand
+      // eine Förderung aus, die genau an seinem Fall vorbeigeht.
+      "Nur Neuanlagen; gesetzlich vorgeschriebene Anlagen (GEG, PV-Pflicht nach NBauO, Bebauungsplan) sind nicht förderfähig",
+      "Bei einem ab 01.01.2025 sanierten Dach nur der Leistungsanteil über der vorgeschriebenen 50-%-Dachbelegung",
+      "Eine bereits vorhandene PV-Anlage wird auf die 8 kWp angerechnet",
       "Auftrag binnen 12 Wochen nach Bewilligung, Fertigstellung binnen 18 Monaten",
     ],
     combinableWith: BUND,
@@ -771,22 +841,87 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     ],
     combinableWith: BUND,
   },
+  // ── Ausgelaufene Programme: aufgenommen, weil das eine Auskunft ist ────────
+  //
+  // Entscheidung des Betreibers (17.08.2026): Auch beendete oder ausgesetzte
+  // Programme gehören in den Katalog. Wer in Waiblingen nach Förderung sucht,
+  // erfährt so „gab es, ist geschlossen" statt gar nichts — und der Seiten-
+  // Wächter bemerkt es, wenn die Stadt neu auflegt. Sie tragen bewusst KEINEN
+  // strukturierten Satz: Es gibt nichts abzuziehen.
+  "ludwigshafen-kipki": {
+    id: "ludwigshafen-kipki", name: "Förderprogramme für Bürger (KIPKI)",
+    traeger: "Stadt Ludwigshafen am Rhein", level: "kommune", region: "Ludwigshafen am Rhein",
+    bundesland: "Rheinland-Pfalz", agsCode: "07314",
+    url: "https://ludwigshafen.de/standort-mit-zukunft/klima/foerderprogramme",
+    stand: "August 2026", status: "eingestellt", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Beendet — gefördert wurden Balkonkraftwerke sowie Dach- und Fassadenbegrünung",
+    rates: [{ label: "Balkonkraftwerke", value: "Programm beendet" }],
+    conditions: [
+      "Die Stadt hat die Förderprogramme für Bürgerinnen und Bürger beendet",
+      "Gefördert wurden aus Landesmitteln (KIPKI) unter anderem private Balkonkraftwerke",
+      "Eine Dach-Photovoltaikanlage wurde auch davor nicht bezuschusst",
+    ],
+    combinableWith: BUND,
+  },
+  "waiblingen-klimaschutz": {
+    id: "waiblingen-klimaschutz", name: "Städtisches Förderprogramm Klimaschutz",
+    traeger: "Stadt Waiblingen", level: "kommune", region: "Waiblingen",
+    bundesland: "Baden-Württemberg", agsCode: "08119079",
+    url: "https://www.waiblingen.de/de/Die-Stadt/Unsere-Stadt/Nachhaltigkeit-Umwelt/Energie-Klimaschutz/Foerderprogramm-Klimaschutz",
+    stand: "August 2026", status: "pausiert", capped: true, verified: true,
+    eligibility: ["gewerblich"],
+    coveredCosts: "Geschlossen — der Photovoltaik-Teil war eine Beratung für Unternehmen, kein Zuschuss zur Anlage",
+    rates: [{ label: "Photovoltaik-Beratung für Unternehmen", value: "Anträge seit 24.06.2026 nicht mehr möglich" }],
+    conditions: [
+      "Der Gemeinderat hat das Förderprogramm Klimaschutz zum 24. Juni 2026 geschlossen",
+      "Über eine Fortführung wird im Haushaltsplanverfahren beraten",
+      "Der Photovoltaik-Baustein förderte eine Beratung für Unternehmen (Firmensitz in Waiblingen, Dachfläche ab 200 m²), nicht die Anlage selbst",
+    ],
+    combinableWith: BUND,
+  },
+  "herne-klimafoerderung": {
+    id: "herne-klimafoerderung", name: "Förderprogramme Klimaschutz",
+    traeger: "Stadt Herne", level: "kommune", region: "Herne",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05916",
+    url: "https://www.herne.de/Stadt-und-Leben/Klima/Foerderprogramme/",
+    stand: "August 2026", status: "pausiert", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Wechselt jährlich — für 2026 sind Balkonkraftwerke und Speicher angekündigt, aber noch nicht beschlossen",
+    rates: [{ label: "Balkonkraftwerk und Speicher", value: "für 2026 geplant, Konditionen offen" }],
+    conditions: [
+      "Die Stadt wechselt die Förderungen jedes Jahr je nach verfügbaren Mitteln und Nachfrage",
+      "Photovoltaik und Speicher wurden in früheren Jahren gefördert, diese Programme sind ausgelaufen",
+      "Für 2026 sind Stecker-PV-Geräte und Speicher angekündigt — Beträge und Antragsfenster standen bei der Prüfung noch nicht fest",
+    ],
+    combinableWith: BUND,
+  },
   "wolfsburg-pv": {
     id: "wolfsburg-pv", name: "Förderung der Solarstromerzeugung",
     traeger: "Stadt Wolfsburg", level: "kommune", region: "Wolfsburg", bundesland: "Niedersachsen", agsCode: "03103",
-    url: "https://www.wolfsburg.de/newsroom/2026/04/photovoltaik-foerderprogramm",
-    stand: "Juni 2026", status: "pausiert", capped: true, verified: true,
+    // Adresse ersetzt am 17.08.2026: Die frühere Newsroom-Meldung
+    // (/newsroom/2026/04/photovoltaik-foerderprogramm) antwortet mit 404 — der
+    // Seiten-Wächter hat sie als tot gemeldet. Eine Pressemeldung ist ohnehin die
+    // falsche Quelle für laufende Konditionen; sie verfällt mit dem Nachrichtenwert.
+    // Jetzt die Themenseite der Stadt, dazu die amtlichen Förderbedingungen als PDF
+    // (Stand 16.03.2026), an denen die Sätze am 17.08.2026 Zeile für Zeile geprüft
+    // wurden: Punkt 5.1 (Beträge), 5.2 (50 %), 5.3 (je Wohneinheit), 7.1 (Fenster).
+    url: "https://www.wolfsburg.de/umweltnaturschutz/klimaschutz/erneuerbare_energien",
+    stand: "August 2026", status: "pausiert", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Pauschale nach Anlagengröße + Speicher (max. 50 % der Kosten)",
     maxFoerderung: "max. 2.000 € je Wohneinheit",
     rates: [
       { label: "PV-Anlage", value: "700 € (<6 kWp) / 1.000 € (6–12 kWp) / 1.500 € (ab 12 kWp)" },
       { label: "Batteriespeicher (ab 3 kWh)", value: "+500 €" },
+      { label: "Steckerfertige PV (Balkonkraftwerk)", value: "200 €" },
     ],
     conditions: [
       "Antrag nur im jährlichen Fenster — 2026 vom 14.05. bis 14.06., aktuell geschlossen",
-      "nur Bestandsgebäude; Losverfahren bei Überzeichnung",
-      "max. 50 % der Kosten",
+      "Losverfahren bei Überzeichnung, kein Windhundverfahren",
+      "max. 50 % der entstandenen Kosten",
+      "Je Wohneinheit höchstens eine PV-Anlage oder ein Balkonkraftwerk plus ein Speicher",
+      "Nicht förderfähig: gesetzlich vorgeschriebene Anlagen, Anlagen als Teil eines Bauvorhabens, Insel-, Miet-, Leasing- und Eigenbauanlagen sowie gewerblich genutzte Immobilien",
     ],
     combinableWith: BUND,
     pvTiers: [{ upTo: 6, amount: 700 }, { upTo: 12, amount: 1000 }, { upTo: 999, amount: 1500 }],
@@ -948,12 +1083,111 @@ function tierAmount(tiers: { upTo: number; amount: number }[], value: number): n
   return tiers[tiers.length - 1].amount;
 }
 
+// ─── Vertrauen verfällt — BLOCKER ────────────────────────────────────────────
+//
+// WARUM (16./17.08.2026): Ein Förderbetrag wurde abgezogen, solange
+// `status: "aktiv"` dastand — unbefristet, gedeckt allein dadurch, dass kein
+// Wächter widersprach. Die erste Fassung dieser Regel setzte deshalb ein festes
+// Höchstalter von 180 Tagen auf die letzte inhaltliche Prüfung.
+//
+// Das war die falsche Größe, und der Betreiber hat es zu Recht zurückgewiesen:
+// Ein halbes Jahr alter Stand ist keine Absicherung, sondern ein halbes Jahr
+// alter Stand. Die Frist war als Notbremse gedacht und wurde zum Ersatz für die
+// Prüfung.
+//
+// DIE RICHTIGE GRÖSSE IST NICHT DAS ALTER, SONDERN DIE BESTÄTIGUNG. Der
+// Seiten-Wächter ruft jede Amtsseite täglich ab und vergleicht sie mit dem
+// Stand, den wir inhaltlich geprüft haben (scripts/funding-watch.ts). Ist die
+// Seite unverändert, gilt der geprüfte Inhalt weiter — dafür braucht es keine
+// Frist, das ist einfach wahr. Die Uhr läuft nur, wenn wir NICHT bestätigen
+// können, und dann kurz:
+//
+//   1. Die Seite hat sich geändert  → wir kennen den neuen Inhalt nicht.
+//      Ab da bleiben NACHPRUEF_FRIST_TAGE, um sie inhaltlich neu zu prüfen.
+//   2. Die Seite ist nicht erreichbar → wir wissen nicht, ob sie sich geändert
+//      hat. Ab dem letzten geglückten Abruf bleiben BESTAETIGUNG_MAX_TAGE.
+//
+// Danach fliegt der Abzug raus. Beides sind zwei Wochen, nicht sechs Monate:
+// Der Wächter läuft täglich, ein Programm hat also rund vierzehn Anläufe. Wer
+// in vierzehn Anläufen nicht durchkommt, kommt nicht wegen einer Laune nicht
+// durch.
+//
+// Die Richtung bleibt zu unseren Ungunsten: Wer eine Förderung bekommt, die wir
+// nicht einrechnen, erlebt eine angenehme Überraschung. Umgekehrt hat jemand mit
+// einer Zahl geplant, die es nicht mehr gibt.
+
+/** So lange gilt ein geprüfter Inhalt ohne neuen geglückten Abruf weiter. */
+export const FOERDER_BESTAETIGUNG_MAX_TAGE = 14;
+
+/** So lange darf ein Programm nach einer Seitenänderung ungeprüft mitrechnen. */
+export const FOERDER_NACHPRUEF_FRIST_TAGE = 14;
+
+function heuteIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function tageSeit(iso: string | undefined | null, heute: string): number {
+  if (!iso) return Number.POSITIVE_INFINITY;
+  const a = Date.parse(iso.slice(0, 10));
+  const b = Date.parse(heute.slice(0, 10));
+  if (Number.isNaN(a) || Number.isNaN(b)) return Number.POSITIVE_INFINITY;
+  return Math.round((b - a) / 86_400_000);
+}
+
+/**
+ * Ist der Beleg dieses Programms belastbar genug, um damit zu RECHNEN?
+ *
+ * Drei Bedingungen, alle nötig:
+ *  - die Werte wurden überhaupt einmal an der Amtsquelle gelesen,
+ *  - seither ist keine unbeantwortete Seitenänderung offen (oder sie liegt
+ *    innerhalb der Nachprüf-Frist),
+ *  - der Seiten-Wächter hat die Seite kürzlich noch erreicht.
+ */
+export function fundingBelegAktuell(
+  f: Pick<FundingProgram, "lastVerified" | "pageSeenAt" | "changedSinceIso">,
+  heute: string = heuteIso(),
+): boolean {
+  if (!f.lastVerified) return false;
+
+  // Eine erkannte Änderung, die nach unserer letzten inhaltlichen Prüfung liegt,
+  // stellt den geprüften Stand in Frage. Kurze Frist zum Nachprüfen, dann Schluss.
+  if (f.changedSinceIso && f.changedSinceIso.slice(0, 10) > f.lastVerified.slice(0, 10)) {
+    if (tageSeit(f.changedSinceIso, heute) > FOERDER_NACHPRUEF_FRIST_TAGE) return false;
+  }
+
+  // Ohne geglückten Abruf wissen wir nicht, ob sich etwas geändert hat.
+  //
+  // Fehlt `pageSeenAt` ganz, zählt ersatzweise die inhaltliche Prüfung. Das
+  // greift, solange die Bestätigungs-Spalten in der Datenbank noch fehlen
+  // (lib/funding-data.ts liest dann schmal weiter). Es greift NICHT beim reinen
+  // Code-Seed: Der trägt gar kein `lastVerified`, also scheitert schon die erste
+  // Bedingung oben. Fällt die Datenbank komplett aus, wird deshalb KEINE
+  // Förderung mehr abgezogen — bewusst die sichere Richtung, aber es ist kein
+  // sanfter Rückfall, sondern ein Aus. Wer das ändern will, müsste Prüfdaten in
+  // den Seed schreiben; das wäre eine zweite Wahrheit und ist bewusst nicht getan.
+  const bestaetigt = f.pageSeenAt ?? f.lastVerified;
+  return tageSeit(bestaetigt, heute) <= FOERDER_BESTAETIGUNG_MAX_TAGE;
+}
+
+/**
+ * Darf dieses Programm in einer Rechnung Geld abziehen?
+ *
+ * Die EINZIGE Stelle, an der das entschieden wird — Seiten, Rechner und CTA
+ * fragen sie, statt `status === "aktiv"` selbst zu prüfen.
+ */
+export function fundingZaehlt(
+  f: Pick<FundingProgram, "status" | "lastVerified" | "pageSeenAt" | "changedSinceIso"> | undefined,
+  heute: string = heuteIso(),
+): boolean {
+  return !!f && f.status === "aktiv" && fundingBelegAktuell(f, heute);
+}
+
 export type FundingAmount = {
   /** Grant in € the program yields for this system (0 if not computable). */
   total: number;
   /** A concrete € amount could be derived (structured rule present). */
   computable: boolean;
-  /** Program currently accepts applications (status === "aktiv"). */
+  /** Nimmt Anträge an UND der Quellenbeleg ist frisch (siehe fundingZaehlt). */
   active: boolean;
 };
 
@@ -969,9 +1203,10 @@ export function fundingAmount(
   kwp: number,
   speicherKwh: number,
   bruttoCost: number,
+  heute?: string,
 ): FundingAmount {
   const computable = !!(f && (f.percentOfCost || f.pvPerKwp || f.pvTiers || f.speicherPerKwh || f.speicherTiers));
-  const active = f?.status === "aktiv";
+  const active = fundingZaehlt(f, heute);
   if (!f || !computable) return { total: 0, computable: false, active };
 
   if (f.percentOfCost) {
@@ -1005,11 +1240,12 @@ export function stackFunding(
   kwp: number,
   speicherKwh: number,
   bruttoCost: number,
+  heute?: string,
 ): { total: number; applied: { program: FundingProgram; amount: number }[] } {
   const applied: { program: FundingProgram; amount: number }[] = [];
   let total = 0;
   for (const p of programs) {
-    const a = fundingAmount(p, kwp, speicherKwh, bruttoCost);
+    const a = fundingAmount(p, kwp, speicherKwh, bruttoCost, heute);
     if (a.computable && a.active && a.total > 0) {
       applied.push({ program: p, amount: a.total });
       total += a.total;

@@ -22,6 +22,12 @@ interface DonutChartProps {
    * Layout verwenden (kein SVG-Text-Approximieren).
    */
   children?: ReactNode;
+  /** Segment unter Zeiger/Finger — null beim Verlassen. Ohne diesen Rückruf
+   *  bleibt der Ring stumm (bestehende Aufrufer ändern sich nicht). */
+  onActive?: (key: string | null) => void;
+  /** Aktives Segment von außen: es wird hervorgehoben, die anderen treten
+   *  zurück. So kann eine Legende daneben denselben Zustand steuern. */
+  activeKey?: string | null;
 }
 
 /**
@@ -29,7 +35,7 @@ interface DonutChartProps {
  * Kanten, kein Hintergrund (transparentes SVG). Reihenfolge = wie übergeben.
  * Die Mitte ist ein HTML-Overlay (siehe `children`).
  */
-export default function DonutChart({ segments, size = 200, children }: DonutChartProps) {
+export default function DonutChart({ segments, size = 200, children, onActive, activeKey }: DonutChartProps) {
   const radius = size / 2;
   const innerRadius = radius * 0.72;
   // ~1px-Lücke am Außenrand: padAngle ≈ Lückenbreite / Radius.
@@ -57,11 +63,19 @@ export default function DonutChart({ segments, size = 200, children }: DonutChar
                 // wird daraus ein Hydration-Mismatch. Begründung in
                 // lib/svg-path.ts.
                 const d = pie.path(arc);
+                const gedimmt = activeKey != null && activeKey !== arc.data.key;
                 return (
                   <path
                     key={arc.data.key}
                     d={d ? roundSvgPath(d) : undefined}
                     fill={arc.data.color}
+                    opacity={gedimmt ? 0.3 : 1}
+                    style={{ transition: "opacity 0.15s", cursor: onActive ? "pointer" : undefined }}
+                    // Touch: Tippen meldet dasselbe wie Überfahren. Ohne das
+                    // bliebe der Ring auf dem Telefon unbeschriftet.
+                    onMouseEnter={() => onActive?.(arc.data.key)}
+                    onMouseLeave={() => onActive?.(null)}
+                    onTouchStart={() => onActive?.(arc.data.key)}
                   />
                 );
               })

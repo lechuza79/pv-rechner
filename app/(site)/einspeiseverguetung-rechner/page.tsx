@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Faq from "../../../components/Faq";
 import RelatedLinks from "../../../components/RelatedLinks";
+import StandNote from "../../../components/StandNote";
 import { einspeiseverguetungFaq } from "../../../lib/faq";
 import { feedInRatesFor } from "../../../lib/feedin-config";
 import { pageMetadata } from "../../../lib/seo";
@@ -109,6 +110,7 @@ export default function EinspeiseverguetungPage() {
         <EinspeiseRechner />
         <SaetzeBlock />
         <Faq items={einspeiseverguetungFaq()} title="Häufige Fragen zur Einspeisevergütung" currentPath="/einspeiseverguetung-rechner" />
+        <StandNote pfad="/einspeiseverguetung-rechner" />
         <RelatedLinks
           currentPath="/einspeiseverguetung-rechner"
           links={[

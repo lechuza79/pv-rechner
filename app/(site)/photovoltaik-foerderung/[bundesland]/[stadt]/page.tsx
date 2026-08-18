@@ -5,11 +5,11 @@ import Breadcrumb from "../../../../../components/Breadcrumb";
 import GlossaryTerm from "../../../../../components/GlossaryTerm";
 import { IconArrowRight, IconExternal } from "../../../../../components/Icons";
 import RelatedLinks from "../../../../../components/RelatedLinks";
-import { v, iconSizes, space, pad } from "../../../../../lib/theme";
+import { v, iconSizes, space, pad, sectionGap } from "../../../../../lib/theme";
 import { pageMetadata } from "../../../../../lib/seo";
 import { jsonLdHtml } from "../../../../../lib/json-ld";
 import { cityBySlug, slugify, isCityPublished, publishedCities } from "../../../../../lib/atlas-cities";
-import { fundingStandLabel, type FundingProgram } from "../../../../../lib/funding-programs";
+import { fundingStandLabel, fundingZaehlt, type FundingProgram } from "../../../../../lib/funding-programs";
 import { getFundingPrograms, getFundingProgramById } from "../../../../../lib/funding-data";
 import { FundingRates, FundingConditions, FundingStatusBadge, ExampleCards, FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE } from "../../../../../components/FundingProgramParts";
 import FoerderCheckStarter from "../../../../../components/FoerderCheckStarter";
@@ -61,45 +61,6 @@ function fmtCapacity(kwp: number): string {
   return `${mwp.toLocaleString("de-DE", { maximumFractionDigits: mwp < 10 ? 1 : 0 })} MWp`;
 }
 
-const SEGMENT_LABEL: Record<string, string> = {
-  steckersolar: "Balkonkraftwerke",
-  privat_dach: "Private Dächer",
-  gewerbe_dach: "Gewerbedächer",
-  freiflaeche: "Freiflächen-Parks",
-};
-
-function ZubauChart({ years }: { years: { year: number; count: number }[] }) {
-  const currentYear = new Date().getFullYear();
-  // Drop the partial current year and anything pre-2014 (sparse).
-  const rows = years.filter((y) => y.year >= 2014 && y.year < currentYear);
-  if (rows.length < 3) return null;
-  const max = Math.max(...rows.map((r) => r.count));
-  const peak = rows.reduce((a, b) => (b.count > a.count ? b : a));
-  return (
-    <div>
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 150 }}>
-        {rows.map((r) => (
-          <div key={r.year} title={`${r.year}: ${nf(r.count)} neue Anlagen`} style={{ flex: 1, height: "100%", display: "flex", alignItems: "flex-end" }}>
-            <div style={{
-              width: "100%",
-              height: `${Math.max(2, Math.round((r.count / max) * 100))}%`,
-              background: r.year === peak.year ? v("--color-accent") : v("--color-accent-light"),
-              borderRadius: "3px 3px 0 0",
-            }} />
-          </div>
-        ))}
-      </div>
-      <div style={{ display: "flex", gap: 4, marginTop: 6 }}>
-        {rows.map((r) => (
-          <div key={r.year} style={{ flex: 1, textAlign: "center", fontSize: 9, color: v("--color-text-muted"), fontFamily: v("--font-mono") }}>
-            {r.year % 2 === 0 ? `'${String(r.year).slice(2)}` : ""}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 const S = {
   // Basis-Schriftgröße für die ganze Seite aus dem Token: Alles darunter erbt
   // sie, statt dass jede Stelle ihre eigene Größe mitbringt.
@@ -115,10 +76,19 @@ const S = {
   metricValue: { fontFamily: v("--font-mono"), fontSize: 22, fontWeight: 700 } as React.CSSProperties,
   h2: { fontSize: "var(--font-size-h3)", fontWeight: 700, margin: "0 0 4px" } as React.CSSProperties,
   sub: { fontSize: "var(--font-size-small)", color: v("--color-text-muted"), margin: "0 0 14px" } as React.CSSProperties,
-  section: { marginBottom: 28 } as React.CSSProperties,
+  section: { marginBottom: sectionGap } as React.CSSProperties,
   card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: pad("lg", "xl") } as React.CSSProperties,
   // Die beiden Wege am Fuß der Förderkarte: selbst nachrechnen (links) oder
   // die eigene Berechtigung klären (rechts).
+  /** Bedingungen und Konditionen: je eine eigene Fläche mit Innenabstand.
+   *  Als nackte Spalten mit Trennlinie dazwischen klebte der Inhalt links und
+   *  rechts an den Kanten. */
+  datenBox: {
+    background: v("--color-bg"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: v("--radius-md"),
+    padding: pad("lg", "lg"),
+  } as React.CSSProperties,
   aktionsBox: {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
@@ -168,8 +138,11 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
   const f = city.fundingId ? byId.get(city.fundingId) : undefined;
   const examples = buildFundingExamples(city.yieldKwhKwp, f);
   // Förderung im Rechner vorab scharf schalten — nur wenn sie sich pauschal
-  // berechnen lässt UND aktuell Anträge angenommen werden.
-  const ctaFoe = f && f.status === "aktiv" && examples[0]?.foerderComputable ? `&foe=${f.id}` : "";
+  // berechnen lässt UND sie überhaupt noch zählt (Anträge offen + Quellenbeleg
+  // frisch, siehe fundingZaehlt). Über den rohen Status zu gehen würde einen
+  // Knopf anbieten, der eine Förderung vorbelegt, die der Rechner daneben nicht
+  // mehr abzieht.
+  const ctaFoe = fundingZaehlt(f) && examples[0]?.foerderComputable ? `&foe=${f!.id}` : "";
   const combinable = (f?.combinableWith ?? [])
     .map((id) => byId.get(id))
     .filter((p): p is FundingProgram => Boolean(p));
@@ -299,16 +272,17 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                     über allem, wo es zu nichts gehörte.
                     Auf schmalen Bildschirmen stapeln sie von selbst; die Linie
                     verschwindet dann, weil sie danebenläge. */}
-                <div className="foerder-spalten" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 48, alignItems: "stretch", marginTop: 36 }}>
-                  <div style={{ paddingRight: 40, borderRight: `1px solid ${v("--color-border")}` }} className="foerder-spalte-links">
+                <div className="foerder-spalten" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16, alignItems: "stretch", marginTop: 36 }}>
+                  <div style={S.datenBox}>
                     <FundingConditions conditions={f.conditions} eligibility={f.eligibility} />
                   </div>
-                  <div>
+                  <div style={S.datenBox}>
                     <FundingRates rates={f.rates} bordered label="Konditionen" />
                     {f.maxFoerderung && (
-                      <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: space.sm }}>
-                        Höchstbetrag: <span style={S.strong}>{f.maxFoerderung}</span>
-                      </div>
+                      /* Wie eine Konditionszeile gesetzt, nicht als Fließtext:
+                         Es IST eine Kondition — Beschriftung links, Betrag
+                         rechts in der Zahlen-Schrift. */
+                      <FundingRates rates={[{ label: "Höchstbetrag", value: f.maxFoerderung.replace(/^max\.\s*/, "") }]} />
                     )}
                   </div>
                 </div>
@@ -454,35 +428,17 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
               )}
             </div>
 
-            {atlas.solar.by_year.length >= 4 && (
-              <div style={{ marginBottom: 22 }}>
-                <h3 style={{ fontSize: 14, fontWeight: 700, margin: "0 0 2px" }}>Zubau pro Jahr</h3>
-                <p style={S.sub}>Neu in Betrieb genommene Solaranlagen</p>
-                <ZubauChart years={atlas.solar.by_year} />
-              </div>
-            )}
-
-            {atlas.solar.by_segment.length > 0 && (
-              <div>
-                <h3 style={{ fontSize: 14, fontWeight: 700, margin: "0 0 12px" }}>Wo der Strom erzeugt wird</h3>
-                <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-                  {(() => {
-                    const maxKwp = Math.max(...atlas.solar.by_segment.map((s) => s.kwp));
-                    return atlas.solar.by_segment.map((s) => (
-                      <div key={s.segment}>
-                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "var(--font-size-small)", marginBottom: 3 }}>
-                          <span>{SEGMENT_LABEL[s.segment] ?? s.segment}</span>
-                          <span style={{ color: v("--color-text-secondary"), fontFamily: v("--font-mono") }}>{fmtCapacity(s.kwp)} · {nf(s.count)} Anlagen</span>
-                        </div>
-                        <div style={{ height: 8, background: v("--color-bg-muted"), borderRadius: 4 }}>
-                          <div style={{ height: "100%", width: `${Math.max(3, Math.round((s.kwp / maxKwp) * 100))}%`, background: v("--color-accent"), borderRadius: 4 }} />
-                        </div>
-                      </div>
-                    ));
-                  })()}
-                </div>
-              </div>
-            )}
+            {/* Zubau-Chart und Segment-Aufteilung stehen hier NICHT mehr.
+                Dieselben Zahlen zeigt die Atlas-Gemeindeseite ausführlicher —
+                heute fällt das nicht auf, weil die Gemeindeebene auf
+                „nicht indexieren" steht. Mit der geplanten Freischaltung
+                (docs/atlas-index-wellen.md) stünden für denselben Ort zwei
+                indexierte Seiten mit demselben Bestand, demselben Chart und
+                derselben Aufteilung — bei 11.000 Gemeinden genau die Dopplung,
+                die der Index-Plan vermeiden soll.
+                Die vier Kennzahlen oben bleiben: Sie sind der Vertrauensanker
+                dieser Seite („hier passiert wirklich etwas"), und vier Zahlen
+                sind keine konkurrierende Seite. Der Atlas führt die Ausführung. */}
           </div>
         )}
 

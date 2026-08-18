@@ -1,4 +1,4 @@
-import { PERSONEN, NUTZUNG, HAUSTYPEN, DACHARTEN, SPEICHER, NO_PLZ_DEFAULT_YIELD } from "./constants";
+import { PERSONEN, NUTZUNG, HAUSTYPEN, HAUSTYP_WP, DACHARTEN, SPEICHER, NO_PLZ_DEFAULT_YIELD } from "./constants";
 import { calcEigenverbrauch, estimateCost, calc, selectByMarginalReturn, batteryReplaceCost } from "./calc";
 import { simulatePvYear } from "./pv-sim";
 import { calcEaAnnual, calcKlimaAnnual, KLIMA_DEFAULT_M2, type HouseholdProfile } from "./consumption";
@@ -40,6 +40,11 @@ export interface RecommendInput {
   wpWohnflaeche?: number;
   wpInsulation?: number;   // Index in INSULATION_BESTAND
   wpHeizsystem?: "fbh" | "hk_neu" | "hk_alt";
+  /** Index in HAUSTYP_WP (geteilte Wände). Das ist eine ANDERE Größe als
+   *  `haustyp` oben (HAUSTYPEN = Haus-Größenklasse für die Dachfläche). Wer sie
+   *  weglässt, bekommt die grobe Ableitung aus `haustyp` — brauchbar, solange
+   *  niemand danach gefragt hat, aber sichtbar schlechter, sobald doch. */
+  wpHaustyp?: number;
 }
 
 export interface RecommendReasoning {
@@ -138,7 +143,13 @@ function buildCtx(input: RecommendInput, prices?: PriceConfig, feedIn?: FeedInRa
     insulationIdx: input.wpInsulation ?? DEFAULT_WP_BUILDING.insulationIdx,
     heizsystem: input.wpHeizsystem ?? DEFAULT_WP_BUILDING.heizsystem,
     personen: PERSONEN[input.personen].count,
-    haustypFaktor: HAUSTYPEN[input.haustyp].wpFaktor,
+    // Der echte WP-Haustyp schlägt die Ableitung aus der Haus-Größenklasse.
+    // Beides nebeneinander stehen zu lassen wäre die Doppelquelle: der Flow
+    // zeigt den Heizstrom aus HAUSTYP_WP, die Empfehlung rechnete daneben mit
+    // einem anderen Faktor — zwei Zahlen für dasselbe Gebäude auf einer Seite.
+    haustypFaktor: input.wpHaustyp !== undefined
+      ? HAUSTYP_WP[input.wpHaustyp].faktor
+      : HAUSTYPEN[input.haustyp].wpFaktor,
   });
   const klima = input.klima ?? "nein";
   const klimaM2 = input.klimaM2 ?? KLIMA_DEFAULT_M2;

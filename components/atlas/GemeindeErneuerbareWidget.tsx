@@ -4,7 +4,7 @@ import { v } from "../../lib/theme";
 import DonutChart from "../charts/DonutChart";
 import GemeindeWidgetShell from "./GemeindeWidgetShell";
 import { WIDGETS, widgetForPlace } from "../../lib/widget-registry";
-import { fmtSpeicherKwh } from "../../lib/atlas-format";
+import { fmtAnteilProzentFein, fmtSpeicherKwh } from "../../lib/atlas-format";
 
 // Einbettbares Widget: installierte erneuerbare Leistung nach Technologie je
 // Gemeinde (echte MaStR-Daten, kein Modell). Donut in unseren Blau-Shades;
@@ -15,15 +15,6 @@ type Gen = { count: number; kwp: number };
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 const fmtKwh = fmtSpeicherKwh;
-// Anteil am Mix in Prozent (Chart-Konvention: ab 10 % runden, darunter 1 Stelle).
-function fmtPct(share: number): string {
-  const s =
-    share >= 9.95
-      ? Math.round(share).toLocaleString("de-DE")
-      : share.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  return `${s} %`;
-}
-
 // Unsere Blau-Shades (dunkel → hell), fest je Technologie.
 const TECH: { key: string; label: string; color: string }[] = [
   { key: "solar", label: "Solar", color: "#1365EA" },
@@ -109,7 +100,7 @@ export default function GemeindeErneuerbareWidget({
                 <div key={t.key} style={S.legItem}>
                   <span style={{ ...S.dot, background: t.color }} />
                   <span style={S.legLabel}>{t.label}</span>
-                  <span style={S.legVal}>{fmtPct((t.kwp / total) * 100)}</span>
+                  <span style={S.legVal}>{fmtAnteilProzentFein(t.kwp / total)}</span>
                 </div>
               ))}
             </div>

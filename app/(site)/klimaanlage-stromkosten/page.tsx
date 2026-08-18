@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { pageMetadata } from "../../../lib/seo";
+import { standSeite } from "../../../lib/stand";
 import Klimaanlage from "./klimaanlage";
 
 export const metadata: Metadata = pageMetadata({
@@ -11,6 +12,11 @@ export const metadata: Metadata = pageMetadata({
   ogImageSubtitle: "Stromverbrauch, Kosten & CO₂ — und wie viel die Sonne übernimmt.",
 });
 
+// Die „Stand:"-Zeile sitzt im Rechner selbst (siehe klimaanlage.tsx), nicht
+// hier: Der Rechner-Rahmen ist mindestens bildschirmhoch, ein Absatz dahinter
+// stünde hinter einer leeren Fläche. Nachgeschlagen wird sie trotzdem HIER, auf
+// dem Server — `lib/stand.ts` hängt an sieben Config-Modulen, die im Browser
+// nichts zu suchen haben.
 export default function KlimaanlagePage() {
-  return <Klimaanlage />;
+  return <Klimaanlage stand={standSeite("/klimaanlage-stromkosten")} />;
 }

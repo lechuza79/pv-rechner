@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import Faq from "../../../components/Faq";
 import RelatedLinks from "../../../components/RelatedLinks";
+import StandNote from "../../../components/StandNote";
 import { pvSimulationFaq } from "../../../lib/faq";
 import { pageMetadata } from "../../../lib/seo";
 import { v } from "../../../lib/theme";
@@ -26,6 +27,7 @@ export default function Page() {
       </Suspense>
       <div style={{ maxWidth: v("--page-max-width"), margin: "0 auto", padding: "0 16px 32px" }}>
         <Faq items={pvSimulationFaq()} title="Häufige Fragen zur PV-Simulation" currentPath="/pv-simulation" />
+        <StandNote pfad="/pv-simulation" />
         <RelatedLinks
           currentPath="/pv-simulation"
           links={[

@@ -440,7 +440,7 @@ export default function WaermepumpeFoerderungPage() {
             Alle Beträge auf dieser Seite sind unverbindliche Näherungswerte ohne Gewähr und
             ersetzen keine Förderberatung. Verbindlich ist allein der Zuschussbescheid der
             KfW; die Antragstellung läuft vor Auftragsvergabe über das KfW-Zuschussportal. Die
-            Fördersätze findest du mit Stand und Quelle auf der{" "}
+            Stand und Quelle der Fördersätze findest du auf der{" "}
             <Link href="/datenstand" style={S.link}>Datenstand-Seite</Link>.
           </span>
         </div>

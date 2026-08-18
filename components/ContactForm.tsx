@@ -58,6 +58,16 @@ const S = {
     marginTop: space.xs,
   } as React.CSSProperties,
   buttonDisabled: { opacity: 0.6, cursor: "default" } as React.CSSProperties,
+  // Datenschutzhinweis am Formular (Art. 13 DSGVO): Der Hinweis gehört dorthin,
+  // wo die Daten eingegeben werden — die Erklärung allein reicht nicht, wenn
+  // das Formular selbst nicht auf sie zeigt.
+  privacy: {
+    fontSize: 12,
+    lineHeight: 1.6,
+    color: v('--color-text-faint'),
+    marginTop: space.xs,
+  } as React.CSSProperties,
+  privacyLink: { color: v('--color-text-muted'), textDecoration: "underline" } as React.CSSProperties,
   message: {
     display: "flex",
     alignItems: "center",
@@ -219,11 +229,32 @@ export default function ContactForm({
         </div>
       )}
 
-      {/* Im Fenster klebt der Absende-Knopf am unteren Rand, statt bei langer
-          Nachricht oder eingeblendeter Tastatur unter die Falz zu rutschen.
-          Auf der Kontaktseite (kein Fenster) reicht ModalSticky ihn unverändert
-          durch — dieselbe Komponente, beide Orte. */}
+      {/* Datenschutz-Hinweis UND Knopf gemeinsam im klebenden Bereich.
+
+          Zwei Anliegen treffen hier aufeinander, und keines darf das andere
+          kosten: Der Hinweis muss erreicht werden, BEVOR das Bedienelement
+          erreicht wird, das die Daten absendet (Art. 13 DSGVO an der
+          Erhebungsstelle) — und im Fenster soll der Knopf nicht bei langer
+          Nachricht oder eingeblendeter Tastatur unter die Falz rutschen.
+
+          Nur den Knopf kleben zu lassen würde die Tastatur-Reihenfolge zwar
+          wahren (ModalSticky ändert die Stelle im Dokument nicht), aber der
+          Hinweis könnte darüber wegscrollen — dann wäre der Knopf bedienbar,
+          ohne dass der Hinweis je im Bild war. Zusammen geklebt gilt: Wer den
+          Knopf sieht, sieht den Hinweis.
+
+          Auf der Kontaktseite (kein Fenster) reicht ModalSticky beides
+          unverändert durch — dieselbe Komponente, beide Orte. */}
       <ModalSticky>
+        <p style={S.privacy}>
+          Deine Angaben gehen per E-Mail an uns — über unseren Versanddienstleister
+          Resend (USA). In unserer Datenbank wird nichts davon gespeichert. Näheres
+          steht in der{" "}
+          <a href="/datenschutz" style={S.privacyLink}>
+            Datenschutzerklärung
+          </a>
+          .
+        </p>
         <button
           type="submit"
           style={{ ...S.button, ...(status === "sending" ? S.buttonDisabled : {}) }}

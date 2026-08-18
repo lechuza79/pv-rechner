@@ -41,8 +41,18 @@ const EINZELDATEIEN = [
   "components/RegionSolarLive.tsx",
 ];
 
-/** `${…} kWh` — eine Zahl mit direkt angeklebter Einheit. */
-const ANGEKLEBT = /\}\s*(kWp|MWp|GWp|kWh|MWh|GWh|kW|MW|GW|Wp|W)\b/g;
+/**
+ * `${…} kWh` — eine Zahl mit direkt angeklebter Einheit.
+ *
+ * Das Prozentzeichen zählt nur in der ANZEIGE-Form, also mit Leerzeichen davor
+ * (`${wert} %`, deutsche Typografie nach DIN 5008). Ohne Leerzeichen ist es
+ * keine Einheit, sondern eine CSS-Länge — `width: ${pct}%`, `color-mix(… 10%)` —
+ * und die muss erlaubt bleiben: Sie steht in einem Stil-Wert, nicht in einem
+ * Satz, und es gibt für sie nichts zu formatieren. Die Trennung geht ohne
+ * Sonderfallliste auf, weil beide Formen sich genau in diesem Leerzeichen
+ * unterscheiden.
+ */
+const ANGEKLEBT = /\}(?:\s*(?:kWp|MWp|GWp|kWh|MWh|GWh|kW|MW|GW|Wp|W)\b|\s+%)/g;
 
 /**
  * Begründete Ausnahmen. Jede Zeile hier ist eine bewusste Entscheidung:
