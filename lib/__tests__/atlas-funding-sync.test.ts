@@ -24,14 +24,23 @@ import { allFundingPrograms } from "../funding-programs";
  * Fehlerklasse. Die Seiten kommen, wenn der Atlas Gemeinde-Ebene trägt.
  */
 const GEMEINDE_EBENE_OFFEN =
-  "OFFEN (bis 12/2026): Programme kreisangehöriger Gemeinden bekommen erst eine Seite, wenn der Atlas Bestandsdaten auf Gemeinde-Ebene trägt";
+  "OFFEN (bis 12/2026): Förderseite für kreisangehörige Gemeinden — Bestandsdaten liegen vor, das Städte-Verzeichnis führt aber noch Kreisschlüssel";
 
 /**
  * Programme kreisangehöriger Gemeinden (achtstelliger Gemeindeschlüssel) haben
- * bewusst noch keine Seite: Das Städte-Verzeichnis führt fünfstellige
- * Kreisschlüssel, und mit dem eingetragen stünde unter dem Ortsnamen der
- * Anlagenbestand des ganzen Landkreises — ein falscher Nenner. Im Rechner
- * wirken sie trotzdem, dort zählt die Postleitzahl.
+ * noch keine FÖRDERseite. Im Rechner wirken sie, dort zählt die Postleitzahl.
+ *
+ * KORREKTUR 18.08.2026: Die frühere Begründung hier war falsch — sie behauptete,
+ * dem Atlas fehlten Daten auf Gemeinde-Ebene. Die gibt es sehr wohl
+ * (`mastr_aggregates_gem`, Seiten wie
+ * /solar-atlas/baden-wuerttemberg/landkreis-rems-murr-kreis/waiblingen). Der
+ * Betreiber hat das richtiggestellt.
+ *
+ * Der echte Grund ist enger: ATLAS_CITIES führt fünfstellige KREIS-Schlüssel.
+ * Eine Gemeinde dort mit ihrem Kreisschlüssel einzutragen würde den Bestand des
+ * Landkreises unter den Ortsnamen setzen — falscher Nenner. Zu tun ist also
+ * nicht "Atlas erweitern", sondern das Verzeichnis auf achtstellige Schlüssel
+ * vorzubereiten und die Seite an die Gemeindedaten zu hängen.
  *
  * Als REGEL statt als Einzelliste: Sonst wächst die Ausnahmeliste mit jedem
  * gefundenen Dorfprogramm, und niemand sieht mehr, was Ausnahme und was System
