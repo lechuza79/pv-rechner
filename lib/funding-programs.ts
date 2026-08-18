@@ -937,10 +937,22 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     url: "https://www.hoehr-grenzhausen.de/themen-die-uns-bewegen/foerderung-privater-energiegewinnung/foerderrichtlinie-der-stadt-hoehr-grenzhausen/",
     // Am 18.08.2026 nachgelesen und STATUS KORRIGIERT: „Für das Haushaltsjahr
     // 2026 sind alle Fördermittel ausgeschöpft. Es können keine weiteren Anträge
-    // bewilligt werden." Der Eintrag stand auf `aktiv` und zog damit 1.500 €
-    // plus 1.000 € Speicher von der Investition ab — Geld, das dieses Jahr
-    // niemand mehr bekommt. Die Sätze selbst stimmen und bleiben stehen; sobald
-    // der Haushalt 2027 greift, ist nur der Status zurückzudrehen.
+    // bewilligt werden." Der Eintrag stand auf `aktiv`. Die Sätze selbst stimmen
+    // und bleiben stehen; sobald der Haushalt 2027 greift, ist nur der Status
+    // zurückzudrehen.
+    //
+    // WAS DAS GEKOSTET HAT — und was nicht, weil die Frage naheliegt: Gerechnet
+    // wurde hier NIE. Das Programm hatte kein `last_verified`, und ohne eine
+    // inhaltliche Prüfung an der Amtsquelle lässt `fundingBelegAktuell` kein
+    // Programm mitrechnen (nachgemessen: 0 €). Falsch war die AUSKUNFT: Auf der
+    // Stadtseite stand „nimmt aktuell Anträge an" für ein Programm, das keine
+    // mehr annimmt.
+    //
+    // Und deshalb hat auch kein Wächter angeschlagen: Der Seiten-Wächter meldet
+    // eine ÄNDERUNG gegenüber dem zuletzt geprüften Stand — gab es nie einen,
+    // gibt es nichts zu vergleichen. `page_changed_at` ist leer, der erste
+    // Fingerabdruck stammt von heute. Ein Eintrag ohne Prüfdatum ist damit
+    // gegen falsche Zahlen geschützt, gegen falsche Sätze aber nicht.
     stand: "August 2026", status: "ausgeschoepft", capped: true, verified: true,
     eligibility: ["privat"],
     coveredCosts: "Zuschuss je kWp und je kWh Speicher, gedeckelt",
