@@ -22,7 +22,7 @@ import {
   BATTERY_LIFETIME_YEARS,
 } from "../../../../lib/calc";
 import { simulatePvYear } from "../../../../lib/pv-sim";
-import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, NO_PLZ_DEFAULT_YIELD } from "../../../../lib/constants";
+import { PERSONEN, NUTZUNG, SCENARIOS, SPEICHER, YEARS, NATIONAL_AVG_YIELD } from "../../../../lib/constants";
 import { pageMetadata } from "../../../../lib/seo";
 import Chart from "../../photovoltaik-rechner/_components/Chart";
 
@@ -185,7 +185,10 @@ const S = {
 // ever differs from the tool, that's a bug, not a rounding choice.
 const EX = {
   kwp: 10,
-  ertragKwp: NO_PLZ_DEFAULT_YIELD, // conservative German average, same default as the calculator without PLZ
+  ertragKwp: NATIONAL_AVG_YIELD, // Bundesschnitt bei optimaler Ausrichtung — derselbe Startwert wie im Rechner
+  // ohne PLZ. Ein Dachabschlag steckt NICHT darin (er kommt aus der Dach-Frage,
+  // die dieses Beispiel nicht stellt); der Vergleich bleibt damit deckungsgleich
+  // mit dem verlinkten Rechner.
   personenIdx: 2, // 3–4 Personen → 3.800 kWh/a
   nutzungIdx: 1, // "Teils zuhause" → tagQuote 0.30 (HTW-Standardprofil)
 };
@@ -348,7 +351,7 @@ function TeaserCard({ row, title, badge }: { row: ExampleRow; title: string; bad
           </div>
         </div>
         <div style={tileWrap}>
-          <div style={tileLabel}>Rendite 25 J</div>
+          <div style={tileLabel}>Gewinn 25 J.</div>
           <div style={{ ...tileValue, color: row.gewinn25 >= 0 ? v("--color-positive") : v("--color-negative") }}>
             {row.gewinn25 > 0 ? "+" : ""}
             {row.gewinn25.toLocaleString("de-DE")} €

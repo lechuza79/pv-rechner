@@ -10,7 +10,7 @@ import EnergyFlowModal, { type ExampleDayEntry } from "../../../../components/En
 import type { SolarMonth } from "../../../../lib/balkon-sim";
 
 interface ResultStatsProps {
-  /** Rendite (25-J-Ende) des gewählten Szenarios — die Szenario-Wahl sitzt oben. */
+  /** Gewinn nach 25 Jahren (Ende der Laufzeit) im gewählten Szenario — die Szenario-Wahl sitzt oben. */
   total: number;
   kosten: number;
   wp: string;
@@ -86,7 +86,7 @@ export default function ResultStats({
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
         <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: "14px 16px", border: `1px solid ${v('--color-border')}` }}>
-          <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</div>
+          <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</div>
           <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: total >= 0 ? v('--color-positive') : v('--color-negative'), marginTop: 4 }}>
             {total > 0 ? "+" : ""}{total.toLocaleString("de-DE")} €
           </div>
