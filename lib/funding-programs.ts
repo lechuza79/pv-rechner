@@ -1977,6 +1977,25 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
     // eingeplante Zahl, die nicht kommt.
   },
 
+  "hueckelhoven-balkonkraftwerke": {
+    id: "hueckelhoven-balkonkraftwerke", name: "Förderung Balkonkraftwerke",
+    traeger: "Stadt Hückelhoven", level: "kommune", region: "Hückelhoven",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05370020",
+    url: "https://www.hueckelhoven.de/erfolgreiche-foerderprogramme-gehen-weiter/",
+    stand: "August 2026", status: "aktiv", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Pauschale je Balkonkraftwerk bis 800 W",
+    maxFoerderung: "max. 150 € je Anlage",
+    rates: [{ label: "Balkonkraftwerk bis 800 W", value: "150 € je Anlage" }],
+    conditions: [
+      "Gefördert werden Anlagen mit höchstens 800 W Leistung",
+      "Das Programm läuft seit 2024; im ersten Jahr wurden 139 Anträge bewilligt",
+    ],
+    combinableWith: BUND,
+    foerdert: ["balkon"],
+    balkonPauschale: 150,
+  },
+
 };
 
 export function getFundingProgram(id: string): FundingProgram | undefined {

@@ -125,6 +125,7 @@ export const NOCH_NICHT_ERFASST: string[] = [
   // Erste Städte, die überhaupt erst die URL-Suche gefunden hat.
   "neuwied-balkonkraftwerke", "rodgau-balkonsolar", "tuebingen-balkon-pv",
   "zweibruecken-balkonkraftwerke", "unterhaching-energiesparen",
+  "hueckelhoven-balkonkraftwerke",
 ];
 
 /**

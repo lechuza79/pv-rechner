@@ -95,6 +95,20 @@ export async function GET(req: NextRequest) {
       -- gescreent" stehen, während für zwei von drei Techniken nie jemand
       -- hingesehen hat — eine Abdeckungszahl, die genau das verdeckt, wofür es
       -- sie gibt. Mit Stempel kommen die alten Zeilen von selbst wieder dran.
+      -- Was ein MENSCH beim Lesen der Seite herausgefunden hat.
+      --
+      -- Der Screener stuft bei jedem Lauf neu ein und kennt kein Gestern: Eine
+      -- Seite, die jemand gelesen und verworfen hat, bleibt für ihn ein Treffer.
+      -- Hildens "PhotovoltaikCheck" ist eine Beratung, Vaterstettens PV-Position
+      -- gilt Planungsleistungen fuer Garagenhoefe — beide sehen im Text wie
+      -- Foerderung aus und sind keine. Ohne dieses Gedaechtnis stuenden sie
+      -- morgen wieder oben, und eine Liste, die zur Haelfte aus schon
+      -- Abgelehntem besteht, liest irgendwann niemand mehr.
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS gelesen_am date;
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS gelesen_ergebnis text;
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS gelesen_notiz text;
+      CREATE INDEX IF NOT EXISTS idx_fcov_gelesen ON funding_coverage (gelesen_am);
+
       ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS techniken text;
       ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS screen_version int NOT NULL DEFAULT 1;
       CREATE INDEX IF NOT EXISTS idx_fcov_version ON funding_coverage (screen_version);
