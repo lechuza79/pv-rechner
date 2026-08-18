@@ -7,6 +7,7 @@ import { IconUser, IconMenu, IconClose, IconChevronDown } from "./Icons";
 import { v, iconSizes } from "../lib/theme";
 import { useAuth, signOut } from "../lib/auth";
 import ThemeController from "./ThemeController";
+import { ratgeberBySlug } from "../lib/ratgeber";
 
 interface HeaderProps {
   onLoginClick?: () => void;
@@ -28,7 +29,11 @@ const RECHNER_ITEMS: NavItem[] = [
   { href: "/photovoltaik-rechner", label: "Photovoltaik-Rechner", desc: "Lohnt sich meine PV-Anlage?", page: "rechner" },
   { href: "/waermepumpe-rechner", label: "Wärmepumpen-Rechner", desc: "Heizkosten und Förderung vergleichen", page: "waermepumpe" },
   { href: "/klimaanlage-stromkosten", label: "Klimaanlagen-Rechner", desc: "Kühlkosten und Gerätevergleich — auch ergänzend zum Heizen", page: "klima" },
-  { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Steckersolar für Miete und Eigentum", page: "balkon" },
+  // Der Balkon-Rechner steht hier NICHT mehr: Balkonkraftwerk hat einen eigenen
+  // Menüpunkt auf oberster Ebene, und von dort führt der erste Schritt direkt
+  // in den Rechner. Stand er in beiden, leuchteten auf jeder Seite des Clusters
+  // ZWEI Menüpunkte gleichzeitig — der Ausklapp-Auslöser markiert sich, sobald
+  // irgendein Kind aktiv ist.
   { href: "/pv-bedarf-berechnen", label: "PV-Bedarf berechnen", desc: "Welche Anlage passt zu mir?", page: "empfehlung" },
   { href: "/pv-simulation", label: "PV-Live-Simulation", desc: "Aktuelle Erträge im Tagesverlauf", page: "simulation" },
 ];
@@ -76,10 +81,19 @@ export default function Header({ onLoginClick, onLogoutClick, activePage: active
     pathname.startsWith("/photovoltaik-rechner") ? "rechner" :
     pathname.startsWith("/waermepumpe-rechner") ? "waermepumpe" :
     pathname.startsWith("/klimaanlage-stromkosten") ? "klima" :
-    pathname.startsWith("/balkonkraftwerk/rechner") ? "balkon" :
+    // Der ganze Balkon-Cluster, nicht nur der Rechner: Hub, Rechner und
+    // Anmelde-Ratgeber teilen sich einen Menüpunkt. Muss VOR der Ratgeber-Regel
+    // stehen — /balkonkraftwerk/anmelden ist auch ein Registry-Eintrag, soll
+    // aber „Balkonkraftwerk" hervorheben, nicht „Ratgeber".
+    pathname.startsWith("/balkonkraftwerk") ? "balkon" :
     pathname.startsWith("/photovoltaik-zubau-deutschland") ? "zubau" :
     pathname.startsWith("/photovoltaik-foerderung") ? "foerderung" :
-    pathname.startsWith("/ratgeber") ? "ratgeber" :
+    // Ratgeber kommen aus der Registry, nicht aus dem Pfad. Mehrere liegen
+    // bewusst auf oberster Ebene (/photovoltaik-neigungswinkel,
+    // /einspeiseverguetung-tabelle) — auf denen leuchtete der Menüpunkt bisher
+    // NICHT, weil hier nur auf das Präfix /ratgeber geprüft wurde. Über die
+    // Registry gilt es automatisch auch für jeden künftigen Ratgeber.
+    pathname.startsWith("/ratgeber") || ratgeberBySlug(pathname) ? "ratgeber" :
     pathname.startsWith("/pv-bedarf-berechnen") ? "empfehlung" :
     pathname.startsWith("/dashboard") ? "dashboard" : ""
   );
