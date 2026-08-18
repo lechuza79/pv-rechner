@@ -109,7 +109,9 @@ export const TRUST_SIGNALS: readonly TrustSignal[] = [
   {
     titel: "Offizielle Datenquellen",
     text: "Bundesnetzagentur, Fraunhofer ISE, EU-Kommission und weitere.",
-    betont: "und weitere",
+    // KEINE Hervorhebung: Die drei Namen sind bereits verlinkt und damit
+    // ausgezeichnet. Ein viertes betontes Element in einem Satz aus fünf
+    // Wörtern macht die Zeile unruhig, statt etwas zu betonen.
     links: [
       { begriff: "Bundesnetzagentur", url: DATA_SOURCES.mastr.url },
       { begriff: "Fraunhofer ISE", url: DATA_SOURCES.energyCharts.url },

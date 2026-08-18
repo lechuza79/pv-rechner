@@ -560,7 +560,7 @@ export const globalStyles = `
   /* Vertrauens-Leiste über dem Footer (components/TrustBar.tsx). Zwei Spalten
      auf Desktop statt vier: Die Punkte sind ganze Sätze, und bei der 600px des
      Footer-Rasters bliebe für vier Spalten je ~140px — zu schmal zum Lesen. */
-  .trust-bar{max-width:var(--content-max-width);margin:0 auto ${space.xxl}px;background:var(--color-bg-muted);border:1px solid var(--color-border);border-radius:14px;padding:${pad("xxl")}}
+  .trust-bar{max-width:var(--content-max-width);margin:0 auto ${space.huge}px;background:var(--color-bg-muted);border:1px solid var(--color-border);border-radius:14px;padding:${pad("xxl")}}
   .trust-bar-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:${space.xxl}px}
   /* Der Punkt ist ein Knopf, kein Link: Alle vier öffnen dasselbe Modal. Der
      Knopf muss deshalb aussehen und sich anfühlen wie Fließtext, nicht wie ein

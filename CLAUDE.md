@@ -286,6 +286,38 @@ Einbettbare Widgets unter `app/(embed)/embed/*` (Strommix, Erzeugung, Karte, Sim
 
 **Farben im komponierten Export** (`buildExportSvg`, der `mode: "compose"`-Pfad): Serienfarben laufen durch `resolveVars`. Ein `var(--color-…)` in einem SVG-Attribut ist ungültig und rendert **schwarz** — so zeigte die Rechner-Legende monatelang drei schwarze Kästchen zu drei farbigen Kurven.
 
+## Vertrauens-Leiste im Footer — BLOCKER
+
+Über dem Footer steht auf **jeder** (site)-Seite eine Leiste mit vier Zusagen (`components/TrustBar.tsx`). Damit ist jeder Satz darin eine Werbeaussage nach § 5 UWG auf der gesamten Site gleichzeitig — und keine davon ist im Browser als falsch erkennbar. **Die Aussagen stehen deshalb genau einmal im Code (`lib/trust-signals.ts`), jede mit ihrem Beleg**; Darstellung ist die Komponente, sonst nichts.
+
+**Was ein Punkt braucht, um überhaupt aufgenommen zu werden:** eine Stelle im Projekt, an der er nachprüfbar ist (Test, Datenschutzerklärung, Quellen-Register, Prüfstand) — benannt im Feld `beleg`. „Klingt gut" ist kein Beleg.
+
+**Die drei Fehlerklassen, die hier real passiert sind** (Audit 17.08.2026, drei adversariale Prüfer, ~30 Befunde):
+
+1. **Eine Zusage an einer Stelle zurücknehmen und an den anderen stehen lassen.** „Alle Werte, mit denen wir rechnen, stehen offen" stand nach dem Datenstand-Umbau noch in der Leiste, in der Stand-Zeile unter sieben Rechnern, im Seitentitel von `/datenstand` **und** in der Einleitung derselben Datei, die gerade korrigiert worden war. Wer einen Satz ändert, sucht ihn projektweit — auch in `<title>`, OG-Untertitel und `description`, denn genau dort überlebt die alte Fassung unbemerkt.
+2. **Tests, die auf Wortlaut statt auf Muster prüfen.** Der Test verbot „alle **Werte**, mit denen wir rechnen" — die Leiste sagte „alle **Annahmen**, mit denen wir rechnen". Ein Wort daneben, Test grün, Falschaussage auf jeder Seite. Absolutheits- und Vollständigkeitsschranken prüfen deshalb per Regex auf die Aussage, nicht auf den Satz.
+3. **Ein Etikett, das nur auf einem Teil der Seiten stimmt.** „Amtliche Datenquellen" war doppelt falsch: Fraunhofer ISE ist ein privates Institut, und unter dem Wärmepumpen- und Klimarechner trägt keine der genannten Stellen eine Zahl. Eine Aufzählung in der Leiste braucht ein „und weitere" — sonst ist sie auf der Hälfte der Seiten unwahr.
+
+**Weitere Regeln, jede aus einem Befund:**
+- **Kein gemeinsames Prüfdatum.** Wir prüfen in verschiedenen Takten (Rechtsstände täglich, Marktpreise monatlich, CO₂-Preis jährlich); ein Datum über allen behauptet den schnellsten Takt für den langsamsten Wert. Die Stände stehen je Größe (`lib/stand.ts`, `/datenstand`).
+- **„Immer aktuell" darf als Überschrift stehen, aber nie allein.** Ein Test erzwingt die Paarung: Der Satz darunter muss sagen, was wir dafür tun („prüfen") und wo die Grenze liegt („regelmäßig"). Belegt ist das durch `lib/pruefstand.ts` — Rhythmus und Frist je Größe, dieselbe Liste, die das Modal zeigt und gegen die `npm run stand:faellig` meldet. **Nicht** „täglich", „lückenlos" o. Ä.: Die Wächter laufen nur, wenn der Rechner des Betreibers an ist.
+- **Quellen-Links kommen aus `lib/data-sources.ts`**, nie hier getippt — sonst zweite Fassung derselben Angabe.
+- **Die Kachel ist kein Klickziel.** Im Satz stehen Quellen-Links; ein Klickziel im Klickziel ist weder bedienbar noch gültiges Markup. Anklickbar ist nur „Mehr erfahren", und das nur bei Punkten mit Inhalt dahinter — vier gleich laute Einladungen entwerten einander.
+- Erzwungen von `lib/__tests__/trust-signals.test.ts` (Belegpflicht, Vollständigkeits- und Absolutheitsschranken, Link-Register-Abgleich) und `e2e/datenstand-umfang.spec.ts` (liest die Sätze dort, wo ein Nutzer sie sieht).
+
+## Nutzungsvorbehalt und Lizenzabgrenzung — BLOCKER
+
+**CC BY 4.0 lizenziert das Datenbankherstellerrecht automatisch mit** (Sec. 1(c), Sec. 4) — für alles, worauf wir die Lizenz anwenden, und nach Sec. 2(a)(1) unwiderruflich. Der Hebel ist deshalb nicht die Lizenz, sondern **was die Lizenzseite als lizenziert bezeichnet**. Bis zum 17.08.2026 stand dort „unsere **Auswertungen** im Solar-Atlas" — also die aggregierten Zahlen selbst, nicht ihre Darstellung. Ein Wort, und der Datenbestand war weggegeben.
+
+- Die Aufzählung auf `/lizenz` ist **abschließend**, der Atlas-Punkt heißt „die **Darstellung** unserer Auswertungen", und ein eigener Abschnitt nimmt die zusammengetragenen Bestände aus — **datiert und ausdrücklich nur nach vorn wirkend**, weil eine erteilte CC-BY-Lizenz nicht zurückgeholt werden kann. Das Gegenteil zu behaupten wäre selbst eine Falschaussage.
+- **Nur die Förderdatenbank trägt überhaupt ein Schutzrecht** (Council 17.08.2026). Atlas-Aggregate und die historische Vergütungsreihe nicht: Aggregieren ist *Erzeugen* von Daten (EuGH C-203/02), und abgeschriebene Behördenreihen begründen keine wesentliche Investition. Wir behaupten es deshalb auch nicht. Die offene Behördenlizenz (dl-de/by-2-0) verlangt nur Quellenangabe, kein Share-alike — eine engere Weiterlizenzierung des Abgeleiteten verstößt nicht dagegen.
+- **Der TDM-Vorbehalt gilt der ganzen Domain** (`public/.well-known/tdmrep.json`, `"/" → 1`). Zwei Fehler, die dabei schon gemacht wurden: `"/api/"` allein greift daneben (die Förderdaten kommen als HTML unter `/photovoltaik-foerderung/`), und **`0` ist kein Schweigen, sondern eine ausdrückliche Freigabe** — schlechter als gar keine Datei. Deckungsgleich mit `app/robots.ts`; auseinanderlaufen dürfen die beiden nie.
+- **Trainingssammler sperren, Zitierende nicht — und die Zuordnung an der Anbieter-Doku prüfen.** `Google-Extended` steuert auch das *Grounding* in Gemini, also den Zitierfall; es zu sperren kostet Reichweite, ohne dass etwas kaputtgeht — die Sorte Fehler, die man erst an ausbleibendem Verkehr merkt. Ebenso `Meta-ExternalAgent` (Indexierung) und `Diffbot` (Wissensgraph). `robots.txt` lässt `/.well-known/` offen, sonst hielten wir dem Sammler die Datei vor, die ihm den Vorbehalt erklärt.
+- **Nicht mehr behaupten, als der Vorbehalt kann:** Forschungsorganisationen ohne gewerbliche Zwecksetzung dürfen nach § 60d UrhG auch gegen unseren Willen auswerten, und unwesentliche Teile darf ohnehin jeder entnehmen (§ 87b Abs. 1) — eine Klausel dagegen wäre nichtig. Beides steht sichtbar auf `/lizenz`.
+- Erzwungen von `lib/__tests__/tdm-vorbehalt.test.ts` und `e2e/lizenz-abgrenzung.spec.ts`.
+
+**`/datenstand` zeigt seit 17.08.2026 nicht mehr jeden Einzelwert** (Betreiber-Entscheidung): Fünf Blöcke nennen nur noch, was sie enthalten. Die Grenze verläuft nicht entlang „wichtig/unwichtig", sondern hier: Werte, die der Rechner ohnehin ausgibt und editieren lässt, bleiben stehen — sie zu verbergen kostet Vertrauen und schützt nichts. Rechtsaussagen bleiben ebenfalls sichtbar (Grüngas-Block; die Balkon-Vorbehalte wanderten ins Intro). **Und: Was die Seite verspricht, muss sie halten** — die Einleitung sagte „hier steht jeder Wert", das wäre nach dem Umbau eine Falschaussage auf genau der Seite gewesen, die für die Ehrlichkeit der Zahlen bürgt.
+
 ## Modals — BLOCKER
 
 **`components/Modal.tsx` ist DER Modal-Baustein. Modals werden nicht pro Stelle neu gebaut.** Die aufrufende Stelle liefert nur `open`, `onClose`, `title` (optional `intro`, `ariaLabel`, `maxWidth`) und den Inhalt als Children — das gesamte Verhalten kommt aus dem Baustein:
