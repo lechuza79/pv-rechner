@@ -89,14 +89,17 @@ export function FundingRates({
       }
     >
       {rates.map((r) => {
-        // Wert und Zusatz trennen: „20 % (30 % als Solar-Gründach)" ist ein
-        // Betrag mit einer Bedingung daran. Zusammen in einer Zeile wuchs der
-        // Zusatz dem Wert davon und brach über zwei Zeilen um. Wie bei den
-        // Kacheln im Atlas: Der Wert trägt die Zeile, das Beiwerk steht kleiner
-        // und ruhiger darunter.
+        // Zahl, Einheit und Zusatz trennen — dieselbe Staffelung wie bei den
+        // Kacheln im Atlas: Der Zahlenwert trägt die Zeile, die Einheit steht
+        // kleiner daneben, eine Bedingung darunter noch kleiner und ruhiger.
+        // „20 % (30 % als Solar-Gründach)" als ein Stück in der Zahlen-Schrift
+        // ließ die Einheit so laut schreien wie den Betrag.
         const auf = r.value.indexOf(" (");
-        const wert = auf > 0 ? r.value.slice(0, auf) : r.value;
+        const ohneZusatz = auf > 0 ? r.value.slice(0, auf) : r.value;
         const zusatz = auf > 0 ? r.value.slice(auf + 2).replace(/\)$/, "") : null;
+        const m = ohneZusatz.match(/^([+\u2212-]?[\d.,]+(?:\s*[\u2013-]\s*[\d.,]+)?)\s*(.*)$/);
+        const zahl = m ? m[1] : ohneZusatz;
+        const einheit = m && m[2] ? m[2] : null;
         return (
           <div
             key={r.label}
@@ -108,7 +111,14 @@ export function FundingRates({
           >
             <span style={{ color: v("--color-text-secondary") }}>{r.label}</span>
             <span style={{ textAlign: "right", flexShrink: 0 }}>
-              <span style={{ display: "block", fontFamily: v("--font-mono"), fontWeight: 700, whiteSpace: "nowrap" }}>{wert}</span>
+              <span style={{ whiteSpace: "nowrap" }}>
+                <span style={{ fontFamily: v("--font-mono"), fontWeight: 700 }}>{zahl}</span>
+                {einheit && (
+                  <span style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), fontWeight: 400, marginLeft: 4 }}>
+                    {einheit}
+                  </span>
+                )}
+              </span>
               {zusatz && (
                 <span style={{ display: "block", fontSize: "var(--font-size-caption)", color: v("--color-text-muted"), fontWeight: 400, marginTop: 2 }}>
                   {zusatz}

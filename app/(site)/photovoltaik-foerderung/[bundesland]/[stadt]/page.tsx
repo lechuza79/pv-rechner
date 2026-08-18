@@ -119,6 +119,15 @@ const S = {
   card: { background: v("--color-bg"), border: `1px solid ${v("--color-border")}`, borderRadius: v("--radius-lg"), padding: pad("lg", "xl") } as React.CSSProperties,
   // Die beiden Wege am Fuß der Förderkarte: selbst nachrechnen (links) oder
   // die eigene Berechtigung klären (rechts).
+  /** Bedingungen und Konditionen: je eine eigene Fläche mit Innenabstand.
+   *  Als nackte Spalten mit Trennlinie dazwischen klebte der Inhalt links und
+   *  rechts an den Kanten. */
+  datenBox: {
+    background: v("--color-bg"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: v("--radius-md"),
+    padding: pad("lg", "lg"),
+  } as React.CSSProperties,
   aktionsBox: {
     background: v("--color-bg"),
     border: `1px solid ${v("--color-border")}`,
@@ -299,16 +308,17 @@ export default async function StadtPage(props: { params: Promise<{ bundesland: s
                     über allem, wo es zu nichts gehörte.
                     Auf schmalen Bildschirmen stapeln sie von selbst; die Linie
                     verschwindet dann, weil sie danebenläge. */}
-                <div className="foerder-spalten" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 48, alignItems: "stretch", marginTop: 36 }}>
-                  <div style={{ paddingRight: 40, borderRight: `1px solid ${v("--color-border")}` }} className="foerder-spalte-links">
+                <div className="foerder-spalten" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16, alignItems: "stretch", marginTop: 36 }}>
+                  <div style={S.datenBox}>
                     <FundingConditions conditions={f.conditions} eligibility={f.eligibility} />
                   </div>
-                  <div>
+                  <div style={S.datenBox}>
                     <FundingRates rates={f.rates} bordered label="Konditionen" />
                     {f.maxFoerderung && (
-                      <div style={{ fontSize: "var(--font-size-small)", color: v("--color-text-secondary"), marginTop: space.sm }}>
-                        Höchstbetrag: <span style={S.strong}>{f.maxFoerderung}</span>
-                      </div>
+                      /* Wie eine Konditionszeile gesetzt, nicht als Fließtext:
+                         Es IST eine Kondition — Beschriftung links, Betrag
+                         rechts in der Zahlen-Schrift. */
+                      <FundingRates rates={[{ label: "Höchstbetrag", value: f.maxFoerderung.replace(/^max\.\s*/, "") }]} />
                     )}
                   </div>
                 </div>
