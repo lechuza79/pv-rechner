@@ -52,8 +52,32 @@ const S = {
   karteTitel: { fontSize: v("--font-size-h3"), fontWeight: 700, color: v("--color-text-primary"), marginBottom: 4 },
   karteText: { fontSize: v("--font-size-body"), color: v("--color-text-muted"), lineHeight: 1.6 },
 
-  schritte: { listStyle: "none", padding: 0, margin: "0 0 28px" },
-  schritt: { display: "flex", gap: 12, marginBottom: 14, alignItems: "flex-start" },
+  // Zwei Spalten ab 720 px: links der Einstiegstext, rechts der Weg. Der Weg
+  // bekommt etwas weniger Breite — er ist die Beigabe, nicht die Hauptsache.
+  hero: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
+    gap: 28,
+    alignItems: "start",
+    marginBottom: 32,
+  },
+  schritte: {
+    listStyle: "none",
+    padding: "16px 18px",
+    margin: 0,
+    background: v("--color-bg-muted"),
+    border: `1px solid ${v("--color-border")}`,
+    borderRadius: v("--radius-lg"),
+  },
+  schrittLink: {
+    display: "inline-block",
+    marginTop: 4,
+    fontSize: v("--font-size-small"),
+    fontWeight: 700,
+    color: v("--color-accent"),
+    textDecoration: "none",
+  },
+  schritt: { display: "flex", gap: 12, marginBottom: 16, alignItems: "flex-start" },
   schrittNr: {
     flexShrink: 0,
     width: 26,
@@ -100,19 +124,24 @@ const S = {
 // ist beschlossen, aber zurückgestellt (docs/balkon-vergleichsseite-konzept.md).
 // Sie hier zu verschweigen wäre bequemer und würde die Lücke im Weg unsichtbar
 // machen; sie zu versprechen wäre eine Zusage, die wir noch nicht halten.
-const SCHRITTE: { titel: string; text: string; href?: string }[] = [
+// `link` ist bewusst NICHT der Titel: Als Ankertext zählt, wonach jemand sucht,
+// nicht wie der Schritt in der Liste heißt. „Balkonkraftwerk berechnen" trägt
+// das Keyword, „Bedarf rechnen" trägt gar nichts.
+const SCHRITTE: { titel: string; text: string; link?: string; href?: string }[] = [
   {
     titel: "Bedarf rechnen",
-    text: "Welche Set-Größe passt zu deinem Haushalt, lohnt sich ein Speicher, und wann ist die Anschaffung wieder drin — standortgenau gerechnet.",
+    text: "Welche Set-Größe zu deinem Haushalt passt, ob sich ein Speicher trägt und wann die Anschaffung wieder drin ist.",
+    link: "Balkonkraftwerk berechnen",
     href: "/balkonkraftwerk/rechner",
   },
   {
     titel: "Geräte vergleichen",
-    text: "Welches konkrete Set und welcher Speicher sich für den errechneten Bedarf tragen — mit echten Wirkungsgraden statt Datenblatt-Werten.",
+    text: "Welches konkrete Set und welcher Speicher sich für den errechneten Bedarf lohnen — mit echten Wirkungsgraden statt Datenblatt-Werten.",
   },
   {
     titel: "Anmelden",
-    text: "Eine Registrierung im Marktstammdatenregister, ein Monat Zeit ab dem ersten erzeugten Strom. Kostenlos, aber mit ein paar Fallen.",
+    text: "Eine Registrierung im Marktstammdatenregister, ein Monat Zeit ab dem ersten erzeugten Strom.",
+    link: "Balkonkraftwerk anmelden",
     href: "/balkonkraftwerk/anmelden",
   },
 ];
@@ -135,34 +164,50 @@ export default function BalkonkraftwerkHub() {
         <Breadcrumb items={[{ label: "Start", href: "/" }, { label: "Balkonkraftwerk" }]} jsonLd />
 
         <h1 style={S.h1}>Balkonkraftwerk: was es bringt, was es kostet, was zu tun ist</h1>
-        <p style={S.lede}>
-          Ein <GlossaryTerm id="steckersolar">Steckersolargerät</GlossaryTerm> ist die einzige
-          Form von Photovoltaik, die auch ohne eigenes Dach funktioniert — zur Miete, am
-          Geländer, im Garten. Bis es läuft, sind es drei Schritte.
-        </p>
 
-        {/* Der Weg von der Frage bis zum laufenden Gerät. Steht ganz oben, weil
-            die Seite sonst als Sammlung von Texten wirkt statt als Wegweiser —
-            genau die Orientierungslosigkeit, die der Betreiber am 18.08.2026
-            gemeldet hat. Der mittlere Schritt ist ehrlich als offen markiert,
-            statt ihn zu verschweigen: Wer hier steht, soll wissen, dass wir die
-            Produktseite planen und noch nicht haben. */}
-        <ol style={S.schritte}>
-          {SCHRITTE.map((s, i) => (
-            <li key={s.titel} style={S.schritt}>
-              <span aria-hidden style={{ ...S.schrittNr, ...(s.href ? null : S.schrittNrOffen) }}>{i + 1}</span>
-              <div style={{ minWidth: 0 }}>
-                <div style={S.schrittTitel}>
-                  {s.href
-                    ? <Link href={s.href} style={S.link}>{s.titel}</Link>
-                    : <span style={{ color: v("--color-text-muted") }}>{s.titel}</span>}
-                  {!s.href && <span style={S.baldBadge}>in Arbeit</span>}
+        {/* Intro und Weg nebeneinander: Der Text sagt, worum es geht, die Liste
+            daneben, was zu tun ist. Untereinander gestapelt las sich die Seite
+            als Sammlung von Absätzen — genau die Orientierungslosigkeit, die der
+            Betreiber gemeldet hat. Unter 720 px fällt es in eine Spalte, dann
+            steht der Weg unter dem Text.
+
+            Der mittlere Schritt ist als offen ausgewiesen statt verschwiegen:
+            Die Produktübersicht ist beschlossen und zurückgestellt
+            (docs/balkon-vergleichsseite-konzept.md). */}
+        <div style={S.hero}>
+          <div>
+            <p style={S.lede}>
+              Ein <GlossaryTerm id="steckersolar">Steckersolargerät</GlossaryTerm> ist die
+              einzige Form von Photovoltaik, die auch ohne eigenes Dach funktioniert — zur
+              Miete, am Geländer, im Garten. Ein Set kostet ein paar Hundert Euro und hat sich
+              bei den meisten Haushalten in wenigen Jahren bezahlt gemacht.
+            </p>
+            <p style={{ ...S.lede, marginBottom: 0 }}>
+              Was dabei zählt, ist nicht die Größe der Module, sondern wie viel von ihrem Strom
+              du selbst verbrauchst.
+            </p>
+          </div>
+
+          <ol style={S.schritte} aria-label="In drei Schritten zum eigenen Balkonkraftwerk">
+            {SCHRITTE.map((s, i) => (
+              <li key={s.titel} style={S.schritt}>
+                <span aria-hidden style={{ ...S.schrittNr, ...(s.href ? null : S.schrittNrOffen) }}>{i + 1}</span>
+                <div style={{ minWidth: 0 }}>
+                  <div style={S.schrittTitel}>
+                    {s.titel}
+                    {!s.href && <span style={S.baldBadge}>in Arbeit</span>}
+                  </div>
+                  <div style={S.schrittText}>{s.text}</div>
+                  {s.href && s.link && (
+                    <Link href={s.href} style={S.schrittLink}>
+                      {s.link} <span aria-hidden>›</span>
+                    </Link>
+                  )}
                 </div>
-                <div style={S.schrittText}>{s.text}</div>
-              </div>
-            </li>
-          ))}
-        </ol>
+              </li>
+            ))}
+          </ol>
+        </div>
 
         <h2 style={S.h2}>Lohnt es sich?</h2>
         <p style={S.p}>
