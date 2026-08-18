@@ -18,15 +18,14 @@
 // genau diese Anlagen tragen die Leistung, die im Atlas summiert wird. Ihr
 // anzulegender Wert ist der Zuschlagswert der Ausschreibung.
 //
-// Quelle (am 15.08.2026 direkt bei der Behörde abgelesen): Bundesnetzagentur,
-// "Solaranlagen des ersten Segments — Beendete Ausschreibungen / Statistiken"
-// (bundesnetzagentur.de → Fachthemen → Ausschreibungen → Solaranlagen1 →
-// BeendeteAusschreibungen), Spalte "durchschnittlicher, mengengewichteter
-// Zuschlagswert". Die jüngste Runde zusätzlich in der Pressemitteilung vom
-// 12.05.2026 ("Deutliche Überzeichnung der Ausschreibung für
-// PV-Freiflächenanlagen zum Gebotstermin 1. März 2026": 268 Zuschläge über
-// 2.299 MW, Zuschlagswerte 3,99 – 5,10 ct/kWh, mengengewichtetes Mittel
-// 4,94 ct/kWh).
+// Quelle (zuletzt am 18.08.2026 direkt bei der Behörde abgelesen):
+// Bundesnetzagentur, "Solaranlagen des ersten Segments — Beendete
+// Ausschreibungen / Statistiken" (bundesnetzagentur.de → Fachthemen →
+// Ausschreibungen → Solaranlagen1 → BeendeteAusschreibungen), Spalte
+// "durchschnittlicher, mengengewichteter Zuschlagswert". Die jüngste Runde
+// (Gebotstermin 1. Juli 2026) steht dort mit 2.134.567 kW ausgeschrieben,
+// 2.134.657 kW bezuschlagt und 4,79 ct/kWh — also erneut praktisch vollständig
+// bezuschlagt.
 //
 // ── BEWUSSTE GRENZEN ────────────────────────────────────────────────────────
 //  · NICHT abgebildet ist der gesetzliche anzulegende Wert für die kleinen,
@@ -69,10 +68,12 @@ export interface AusschreibungsRunde {
  * Marktlage, in die heute niemand mehr hineinbaut.
  */
 export const FREIFLAECHE_AUSSCHREIBUNGEN: ReadonlyArray<AusschreibungsRunde> = [
-  { gebotstermin: "2025-03-01", mengeKw: 2_625_069, zuschlagCt: 4.66 },
   { gebotstermin: "2025-07-01", mengeKw: 2_266_466, zuschlagCt: 4.84 },
   { gebotstermin: "2025-12-01", mengeKw: 2_327_515, zuschlagCt: 5.0 },
   { gebotstermin: "2026-03-01", mengeKw: 2_294_768, zuschlagCt: 4.94 },
+  // Am 18.08.2026 aus derselben Tabelle nachgeführt; die Runde 03/2025
+  // (4,66 ct) fällt dafür aus dem Fenster — es bleibt bei den letzten vier.
+  { gebotstermin: "2026-07-01", mengeKw: 2_134_567, zuschlagCt: 4.79 },
 ];
 
 /**
@@ -81,9 +82,9 @@ export const FREIFLAECHE_AUSSCHREIBUNGEN: ReadonlyArray<AusschreibungsRunde> = [
  * Handfaktor, Wächter-Gate).
  *
  * Gewichtet wird mit der ausgeschriebenen Menge: Alle vier Runden waren
- * deutlich überzeichnet (März 2026: 201 % Deckungsrate) und damit praktisch
- * vollständig bezuschlagt — bezuschlagte und ausgeschriebene Menge liegen unter
- * einem halben Prozent auseinander (2.299 gegen 2.295 MW).
+ * überzeichnet und damit praktisch vollständig bezuschlagt — bezuschlagte und
+ * ausgeschriebene Menge liegen unter einem halben Prozent auseinander
+ * (03/2026: 2.299 gegen 2.295 MW; 07/2026: 2.134,7 gegen 2.134,6 MW).
  *
  * WOFÜR DIESER WERT NICHT GILT: Er beschreibt die Zuschläge, die HEUTE erteilt
  * werden — also den Erlös eines Parks, der in bis zu zwei Jahren ans Netz geht
@@ -103,11 +104,25 @@ export const FREIFLAECHE_AW_CT =
  */
 export const FREIFLAECHE_GESETZLICHER_BASISWERT_CT = 7.0;
 
-/** Datenstand dieser Werte (ISO) — sichtbar auf /datenstand. */
-export const FREIFLAECHE_VALID_FROM = "2026-08-15";
+/**
+ * Datenstand dieser Werte (ISO).
+ *
+ * Hier stand „sichtbar auf /datenstand" — das stimmte nicht: Die Seite führt
+ * keinen Freiflächen-Eintrag, und weder `lib/pruefstand.ts` noch ein Runbook
+ * kennt diese Datei. Der Datenstand wird also von nichts überwacht; er wandert
+ * nur, wenn jemand von Hand nachsieht. Eine Zusage über den eigenen Code gilt
+ * erst, wenn sie am Code geprüft ist — deshalb steht hier jetzt, was zutrifft.
+ */
+export const FREIFLAECHE_VALID_FROM = "2026-08-18";
 
-/** Nächste fällige Prüfung: das Ergebnis der Juli-Runde 2026 steht aus. */
-export const FREIFLAECHE_REVIEW_BY = "2026-10-01";
+/**
+ * Nächste fällige Prüfung: Der letzte Gebotstermin des Jahres 2026 ist der
+ * 1. Dezember; sein Ergebnis erscheint erfahrungsgemäß binnen weniger Wochen.
+ * Dann ist zweierlei fällig — das gleitende Fenster oben nachführen UND das
+ * dann vollständige Ausschreibungsjahr 2026 unten in
+ * FREIFLAECHE_AUSSCHREIBUNG_JAHRE eintragen.
+ */
+export const FREIFLAECHE_REVIEW_BY = "2027-01-15";
 
 export const FREIFLAECHE_QUELLE =
   "Bundesnetzagentur, Ausschreibungen für Solaranlagen des ersten Segments (beendete Ausschreibungen / Statistiken)";

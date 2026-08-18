@@ -27,6 +27,7 @@ import {
   FREIFLAECHE_AW_CT,
   FREIFLAECHE_ZUSCHLAG_AB,
   FREIFLAECHE_ZUSCHLAG_BIS,
+  freiflaecheZuschlagCt,
 } from "../freiflaeche-config";
 import { DIREKTVERMARKTUNG } from "../marktwert-config";
 
@@ -527,13 +528,66 @@ describe("Stromwert nach Baujahr (Realitäts-Anker)", () => {
       const rs = runden[jahr];
       return rs.reduce((s, [mw, ct]) => s + mw * ct, 0) / rs.reduce((s, [mw]) => s + mw, 0);
     };
-    const erwartet2026 =
-      (jahresmittel(2024) + jahresmittel(2025)) / 2 - DIREKTVERMARKTUNG.gebuehrCtKwh;
+    // Untergrenze, nicht Zielwert: Liegt der Marktwert darüber, bekommt der Park
+    // ihn (siehe der Test zur Marktprämie unten). Seit 08/2026 liegen beide
+    // dicht beieinander, deshalb steht die Schranke hier ausdrücklich.
+    const erwartet2026 = Math.max(
+      (jahresmittel(2024) + jahresmittel(2025)) / 2 - DIREKTVERMARKTUNG.gebuehrCtKwh,
+      marktErloesCt(),
+    );
     // Toleranz, weil die Jahrestabelle die Jahresmittel auf zwei Stellen rundet.
     expect(Math.abs(einspeiseCt("freiflaeche", 2026) - erwartet2026)).toBeLessThan(0.02);
 
     // Alte Parks lagen um ein Vielfaches darüber (2010: 25,02 ct Freifläche).
     expect(einspeiseCt("freiflaeche", 2010)).toBeGreaterThan(einspeiseCt("freiflaeche", HEUTE) * 4);
+  });
+
+  it("lässt einen Freiflächen-Park nie unter den Börsenwert fallen (Marktprämie wird nicht negativ)", () => {
+    // § 23a EEG 2023 i. V. m. Anlage 1 Nummer 3.1.2: „MP = AW – MW. Ergibt sich
+    // bei der Berechnung ein Wert kleiner null, wird abweichend von Satz 1 der
+    // Wert »MP« mit null festgesetzt." (gleichlautend Nummer 4.1.2 für
+    // Jahresmarktwerte; Wortlaut am 18.08.2026 auf gesetze-im-internet.de
+    // geprüft). Der Park verkauft an der Börse UND bekommt die Prämie obendrauf;
+    // fällt die Prämie auf null, bleibt ihm der höhere Börsenerlös. Sein Erlös
+    // ist also max(AW, MW) — der anzulegende Wert ist eine Untergrenze.
+    //
+    // Bis 08/2026 rechnete der Atlas nur mit dem anzulegenden Wert. Das war
+    // folgenlos, solange er weit über dem Marktwert lag; inzwischen liegen beide
+    // dicht beieinander.
+    const markt = marktErloesCt();
+    const letztes = FREIFLAECHE_AUSSCHREIBUNG_JAHRE[FREIFLAECHE_AUSSCHREIBUNG_JAHRE.length - 1].jahr;
+
+    let mindestensEinerAmMarkt = false;
+    for (let j = FREIFLAECHE_ZUSCHLAG_AB; j <= letztes + 3; j++) {
+      const { ct, hinweis } = einspeiseSatz("freiflaeche", j);
+      // Unabhängig nachgerechnet aus der Konfiguration, nicht aus der Ausgabe.
+      const awNetto = Math.max(0, (freiflaecheZuschlagCt(j) as number) - DIREKTVERMARKTUNG.gebuehrCtKwh);
+      expect(ct).toBeCloseTo(Math.max(awNetto, markt), 9);
+      expect(ct).toBeGreaterThanOrEqual(markt - 1e-9);
+
+      // Und die Beschriftung folgt der Zahl: Wo der Börsenwert gewinnt, darf
+      // dort nicht „Zuschlagswert der Ausschreibung" stehen.
+      if (markt > awNetto) {
+        mindestensEinerAmMarkt = true;
+        expect(hinweis).toMatch(/Börsenwert/);
+        expect(hinweis).not.toMatch(/Zuschlagswert/);
+      } else {
+        expect(hinweis).toMatch(/Zuschlagswert/);
+      }
+    }
+
+    // Der Realitäts-Anker für die Lage von heute: Beim jüngsten Jahrgang liegen
+    // Zuschlagsniveau und Marktwert so dicht beieinander, dass die Regel greift.
+    // Schlägt diese Zeile an, hat sich die Marktlage gedreht — dann ist der Fall
+    // nur noch theoretisch, nicht die Regel falsch.
+    expect(mindestensEinerAmMarkt).toBe(true);
+
+    // Die gesetzlichen Jahrgänge davor sind davon unberührt: Sie lagen um ein
+    // Vielfaches über jedem Börsenwert, dort zahlte ohnehin der Netzbetreiber.
+    for (const j of [2012, 2013, 2014]) {
+      expect(einspeiseCt("freiflaeche", j)).toBeGreaterThan(markt * 1.5);
+      expect(einspeiseSatz("freiflaeche", j).hinweis).toMatch(/gesetzlicher Freiflächensatz/);
+    }
   });
 
   it("lässt die Jahrgangs-Reihe der Freiflächen nirgends springen", () => {
@@ -578,11 +632,15 @@ describe("Stromwert nach Baujahr (Realitäts-Anker)", () => {
       //     das verletzte die alte Fassung: Jahrgang 2025 stand bei 4,55 ct,
       //     während seine Zuschlagsjahre 2023/2024 zwischen 4,68 und 5,98 ct
       //     (netto) liegen. Der reine Sprungtest hätte das durchgelassen.
+      //     Die Schranken sind beide am Marktwert hochgezogen: Der Park bekommt
+      //     mindestens den Börsenerlös, weil die Marktprämie nicht negativ wird
+      //     (§ 23a EEG i. V. m. Anlage 1 Nr. 3.1.2). Ohne das Hochziehen prüfte
+      //     der Test ein Modell, das es nicht mehr gibt.
       const fenster = [j - 2, j - 1].map((y) => Math.min(Math.max(y, erstes), letztes)).map(ctVonJahr);
-      expect(ct).toBeGreaterThanOrEqual(
-        Math.min(...fenster) - DIREKTVERMARKTUNG.gebuehrCtKwh - 1e-9,
-      );
-      expect(ct).toBeLessThanOrEqual(Math.max(...fenster) - DIREKTVERMARKTUNG.gebuehrCtKwh + 1e-9);
+      const untenNetto = Math.min(...fenster) - DIREKTVERMARKTUNG.gebuehrCtKwh;
+      const obenNetto = Math.max(...fenster) - DIREKTVERMARKTUNG.gebuehrCtKwh;
+      expect(ct).toBeGreaterThanOrEqual(Math.max(untenNetto, marktErloesCt()) - 1e-9);
+      expect(ct).toBeLessThanOrEqual(Math.max(obenNetto, marktErloesCt()) + 1e-9);
 
       // (b) Und kein Abstand zwischen zwei benachbarten Baujahren ist größer
       //     als der größte Abstand zweier benachbarter Ausschreibungsjahre.
@@ -679,9 +737,13 @@ describe("Hilfetext und Rechnung bleiben dieselbe Quelle", () => {
       expect(e.hinweis.length).toBeGreaterThan(10);
     }
 
-    // Das Etikett beschreibt den AUSGEGEBENEN Wert: Ausgegeben wird der
-    // Zuschlagswert abzüglich Vermarktungsgebühr, nicht der Zuschlagswert.
+    // Das Etikett beschreibt den AUSGEGEBENEN Wert. Zwei Fälle sind möglich, und
+    // das Etikett muss den zutreffenden nennen: entweder den Zuschlagswert
+    // ABZÜGLICH Vermarktungsgebühr (nicht den Zuschlagswert selbst) oder — wenn
+    // der Börsenwert darüber liegt und die Marktprämie deshalb auf null fällt —
+    // eben diesen Börsenwert. Ein festes Wort zu erwarten hieße, eines der
+    // beiden richtigen Etiketten als Fehler zu werten.
     const frei = zeilen.find((z) => z.startsWith("Freiflächen-Park")) as string;
-    expect(frei).toMatch(/Vermarktungsgebühr/);
+    expect(frei).toMatch(/Vermarktungsgebühr|Börsenwert/);
   });
 });

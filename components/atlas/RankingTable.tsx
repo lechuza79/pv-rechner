@@ -227,6 +227,21 @@ export default function RankingTable({
   // The floating row lives outside the horizontal scroller (see below) and has to
   // be shifted by hand to stay under the columns it belongs to.
   const [scrollLeft, setScrollLeft] = useState(0);
+  // Läuft die Tabelle in diesem Fenster überhaupt über? Davon hängt beides ab:
+  // der Tab-Stopp am Scrollkasten (ein Stopp, der nichts scrollt, ist Lärm) und
+  // der Kantenschatten. Gemessen statt geraten — die Breite hängt an der
+  // Fensterbreite, nicht an einem Umbruchpunkt, den wir setzen.
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const [ueberlauf, setUeberlauf] = useState(false);
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const mess = () => setUeberlauf(el.scrollWidth - el.clientWidth > 1);
+    mess();
+    const ro = new ResizeObserver(mess);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Resolve ?plz= to the child region it belongs to. A postcode can span several
   // Gemeinden; the one that appears in this very list is the right match, so the
@@ -524,13 +539,40 @@ export default function RankingTable({
   // Liste UND schwebende Kopie, damit beide identisch aussehen.
   const ON_ACCENT = v("--color-text-on-accent");
   const ON_ACCENT_DIM = "rgba(255,255,255,0.72)";
-  const rowCells = (r: Row, onAccent: boolean) => (
+
+  /**
+   * Stil einer MITLAUFENDEN Spalte (Platz, Name).
+   *
+   * In der Liste hält `position: sticky` sie an ihrer Kante fest — das macht der
+   * Browser. In der SCHWEBENDEN Kopie geht das nicht: Die hängt gar nicht im
+   * Scrollkasten, ihr nächster Scrollbereich wäre das Fenster, und `left` würde
+   * sie dort um den Betrag der Kante nach rechts schieben. Dort wird deshalb die
+   * Verschiebung der Kopie (translateX(−scrollLeft)) an genau diesen beiden
+   * Zellen wieder aufgehoben. Ohne das wandern sie in der Kopie weg, während sie
+   * in der Liste stehen bleiben — genau hier ist die Ausrichtung schon zweimal
+   * gebrochen.
+   */
+  const fixStil = (links: number, floating: boolean): React.CSSProperties =>
+    ({
+      "--atlas-fix-links": `${links}px`,
+      // Nur die ERSTE mitlaufende Spalte deckt zusätzlich nach links: Davor
+      // liegt der Innenabstand der Zeile, der keiner Spalte gehört.
+      ...(links === FIX_LINKS_PLATZ ? { "--atlas-fix-vorne": `${ZEILEN_PAD}px` } : null),
+      ...(floating
+        ? { position: "relative", left: 0, transform: `translateX(${scrollLeft}px)` }
+        : null),
+    }) as React.CSSProperties;
+
+  const rowCells = (r: Row, onAccent: boolean, floating = false) => (
     <>
-      <span style={{ ...S.rank, ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}>
+      <span
+        className="atlas-fix-spalte"
+        style={{ ...S.rank, ...fixStil(FIX_LINKS_PLATZ, floating), ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}
+      >
         {valueOf(r, sort) === null ? "—" : `${rankOf.get(r.region_id)}.`}
         <RankDelta value={deltas.get(r.region_id) ?? null} sinceYear={lastFullYear} onAccent={onAccent} />
       </span>
-      <span style={S.nameCell}>
+      <span className="atlas-fix-spalte atlas-fix-spalte--kante" style={{ ...S.nameCell, ...fixStil(FIX_LINKS_NAME, floating) }}>
         <span style={{ ...S.name, fontWeight: onAccent ? 700 : 500, ...(onAccent ? { color: ON_ACCENT } : null) }}>{r.name}</span>
         <span style={{ ...S.hint, ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}>
           {r.population === null ? "unbewohnt" : fmtPop(r.population, popInMillions)}
@@ -580,15 +622,29 @@ export default function RankingTable({
     </>
   );
 
+  // Der Kantenschatten der Namensspalte erscheint NUR, wenn wirklich gescrollt
+  // ist — ein dauerhafter Schatten behauptete, rechts liege noch etwas
+  // verborgen, auch wenn die Tabelle vollständig sichtbar ist.
+  const kanteStil = {
+    "--atlas-fix-kante": scrollLeft > 0 ? KANTE_SCHATTEN : "0 0 0 0 transparent",
+  } as React.CSSProperties;
+  // Zeilenfarbe der hervorgehobenen Zeile, damit die mitlaufenden Zellen sie
+  // decken statt den scrollenden Inhalt durchscheinen zu lassen.
+  const AKZENT_ZEILE = { "--atlas-zeilen-bg": v("--color-accent") } as React.CSSProperties;
+
   // Die schwebende Kopie der markierten Zeile — oben wie unten dieselbe. Folgt
   // dem Horizontal-Scroll der Liste (translateX), damit die Spalten fluchten.
   const floatingRow = markedRow ? (
     <div
       key={`${sort}-${owner}-${rankMode}`}
-      style={{ ...S.table, ...S.rowsFade, transform: `translateX(${-scrollLeft}px)` }}
+      style={{ ...S.table, ...S.rowsFade, transform: `translateX(${-scrollLeft}px)`, ...kanteStil }}
     >
-      <Link href={markedRow.href ?? "#"} className="atlas-rank-row" style={{ ...S.row, ...S.stickyRow, ...S.rowLink }}>
-        {rowCells(markedRow, true)}
+      <Link
+        href={markedRow.href ?? "#"}
+        className="atlas-rank-row"
+        style={{ ...S.row, ...S.stickyRow, ...S.rowLink, ...AKZENT_ZEILE }}
+      >
+        {rowCells(markedRow, true, true)}
         <span className="atlas-go" style={{ ...S.go, color: ON_ACCENT }} aria-hidden>
           <IconArrowRight size={13} />
         </span>
@@ -626,12 +682,27 @@ export default function RankingTable({
         </div>
       )}
 
-      <div style={S.scroller} onScroll={(e) => setScrollLeft(e.currentTarget.scrollLeft)}>
+      {/* Der Scrollkasten trägt die Tastatur-Attribute NUR, solange er wirklich
+          überläuft — sonst wäre es ein Tab-Stopp, der nichts tut. Ohne sie gäbe
+          es für Tastaturnutzer gar keinen Weg zu den rechten Spalten
+          (WCAG 2.1.1); die Regeln dazu stehen in lib/theme.ts. */}
+      <div
+        ref={scrollerRef}
+        className="atlas-tabelle-scroller"
+        {...(ueberlauf ? { tabIndex: 0, role: "region", "aria-label": "Rangliste, waagerecht scrollbar" } : null)}
+        style={{ ...S.scroller, ...kanteStil }}
+        onScroll={(e) => setScrollLeft(e.currentTarget.scrollLeft)}
+      >
         <div style={S.table}>
           {/* Header: every column sorts, the first also picks what it shows. */}
           <div style={{ ...S.row, ...S.header }}>
-            <RankHeader mode={rankMode} onChange={setRankMode} sinceYear={lastFullYear} />
-            <NameHeader sort={sort} onChange={setSort} />
+            <RankHeader
+              mode={rankMode}
+              onChange={setRankMode}
+              sinceYear={lastFullYear}
+              fixStil={fixStil(FIX_LINKS_PLATZ, false)}
+            />
+            <NameHeader sort={sort} onChange={setSort} fixStil={fixStil(FIX_LINKS_NAME, false)} />
             {COLUMNS.map((c) => (
               <span key={c.key} style={S.headCell}>
                 <button
@@ -673,7 +744,7 @@ export default function RankingTable({
               const style = {
                 ...S.row,
                 ...(isMarked || nextMarked ? { borderBottom: "none" as const } : null),
-                ...(isMarked ? S.rowHome : null),
+                ...(isMarked ? { ...S.rowHome, ...AKZENT_ZEILE } : null),
               };
               const marker = isMarked ? { "data-marked": "true" } : {};
               // The whole row leads to the Gemeinde, not just its name — a 60px
@@ -791,7 +862,10 @@ function StromwertHilfe({ spanne }: { spanne: { min: number; max: number; mittel
       Jahre liegen dürfen und die meisten Projekte diese Frist ausreizen. Wie sich die
       Inbetriebnahmen im Einzelnen darauf verteilen, veröffentlicht die Behörde nicht — das ist
       eine begründete Näherung, keine gemessene Zuordnung. Solange ein Ausschreibungsjahr noch
-      läuft, zählt das jüngste vollständige. Strommenge: installierte Leistung mal typischer Ertrag im
+      läuft, zählt das jüngste vollständige. Liegt der Börsenwert über dem Zuschlagswert, zählt
+      der Börsenwert: Ein Park verkauft seinen Strom an der Börse und bekommt die Differenz zum
+      Zuschlagswert dazu — als Abzug wirkt sie nie. Der Zuschlagswert ist damit eine Untergrenze,
+      keine Obergrenze. Strommenge: installierte Leistung mal typischer Ertrag im
       Bundesland, kalibriert an der Erzeugung 2025 (Fraunhofer ISE).
     </>
   );
@@ -843,11 +917,25 @@ function useOutsideClose(open: boolean, close: () => void) {
   return ref;
 }
 
-function RankHeader({ mode, onChange, sinceYear }: { mode: RankMode; onChange: (m: RankMode) => void; sinceYear: number }) {
+function RankHeader({
+  mode,
+  onChange,
+  sinceYear,
+  fixStil,
+}: {
+  mode: RankMode;
+  onChange: (m: RankMode) => void;
+  sinceYear: number;
+  /** Macht den Spaltenkopf zur mitlaufenden Spalte — dieselbe Kante wie die
+   *  Zellen darunter, sonst scrollt die Überschrift von ihrer Spalte weg. */
+  fixStil: React.CSSProperties;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useOutsideClose(open, () => setOpen(false));
   return (
-    <div ref={ref} style={{ position: "relative" }}>
+    // Kein `position: relative` mehr: `sticky` aus der Klasse ist selbst
+    // Bezugsrahmen für das Aufklapp-Menü darunter.
+    <div ref={ref} className="atlas-fix-spalte atlas-fix-spalte--kopf" style={fixStil}>
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -893,12 +981,22 @@ function RankHeader({ mode, onChange, sinceYear }: { mode: RankMode; onChange: (
  * column of their own. "(Einwohner)" in the label names the small number shown
  * behind each place name.
  */
-function NameHeader({ sort, onChange }: { sort: Sort; onChange: (s: Sort) => void }) {
+function NameHeader({
+  sort,
+  onChange,
+  fixStil,
+}: {
+  sort: Sort;
+  onChange: (s: Sort) => void;
+  /** Siehe RankHeader — die Namensspalte ist zugleich die letzte mitlaufende
+   *  und trägt deshalb den Kantenschatten. */
+  fixStil: React.CSSProperties;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useOutsideClose(open, () => setOpen(false));
   const active = sort === "name" || sort === "population";
   return (
-    <div ref={ref} style={{ position: "relative" }}>
+    <div ref={ref} className="atlas-fix-spalte atlas-fix-spalte--kante atlas-fix-spalte--kopf" style={fixStil}>
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -1033,6 +1131,45 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  */
 const GRID = "40px minmax(175px,1fr) 74px 60px 60px 78px 70px 96px 62px 12px";
 
+/** Rasterlücke zwischen zwei Spalten (S.row.gap) — sie gehört keiner Spalte,
+ *  deshalb müssen die mitlaufenden Spalten sie mitdecken (siehe theme.ts). */
+const SPALTEN_LUECKE = 11;
+/**
+ * Linke Kanten der beiden mitlaufenden Spalten — gemessen von der INHALTSKANTE
+ * der Zeile, nicht von der Kante des Scrollkastens.
+ *
+ * Der Bezugspunkt von `left` bei `position: sticky` ist der Scrollbereich
+ * ABZÜGLICH seines Innenabstands. Der ist hier 8 px, und die Zeile hebt ihn mit
+ * ihrem negativen Außenabstand auf und setzt ihn als eigenen Innenabstand wieder
+ * hin — beides hebt sich auf, und die erste Spalte fängt genau bei 0 an. Mit den
+ * 8 px zusätzlich stand die Namensspalte um genau diese 8 px zu weit rechts und
+ * ihr deckender Überstand schnitt der Nachbarspalte die erste Ziffer ab
+ * („20.799" wurde zu „0.799"). Im Browser gemessen, nicht gerechnet.
+ */
+const FIX_LINKS_PLATZ = 0;
+const FIX_LINKS_NAME = 40 + SPALTEN_LUECKE;
+/**
+ * Wie weit die erste mitlaufende Spalte nach LINKS decken muss.
+ *
+ * Links vor ihr liegen zwei Streifen von je 8 px, die keiner Spalte gehören und
+ * die niemand abschneidet: der Innenabstand der Zeile (S.row) und der des
+ * Kastens darum (S.scroller bzw. S.stickyWrap — beide polstern 8 px, und ein
+ * Innenabstand wird nicht mit weggeschnitten). Ohne Deckung schoben sich dort
+ * beim Scrollen Ziffern aus den Wertspalten durch; auf der blau gefüllten Zeile
+ * war das sofort zu sehen, auf den grauen erst beim Hinsehen.
+ */
+const ZEILEN_PAD = 16;
+/**
+ * Der Schatten an der Kante der Namensspalte. Zwei Größen sind daran wichtig,
+ * beide im Browser nachgesehen:
+ *  · Der Versatz muss den deckenden Überstand ÜBERHOLEN (Lückenbreite plus die
+ *    halbe Unschärfe), sonst liegt der Schatten darunter und ist unsichtbar.
+ *  · Die negative Ausdehnung zieht ihn oben und unten ein. Ohne sie legt er
+ *    sich rings um die Zelle, und jede Zeile sieht aus wie eine aufgeklebte
+ *    Karte statt wie eine Tabellenzeile mit einer Kante.
+ */
+const KANTE_SCHATTEN = `${SPALTEN_LUECKE + 9}px 0 9px -6px rgba(0,0,0,0.3)`;
+
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
   chips: { display: "flex", gap: 4 },
@@ -1046,7 +1183,10 @@ const S: Record<string, React.CSSProperties> = {
     fontFamily: "inherit",
   },
   // Eight columns do not fit a phone. Scroll the table, never the page.
-  scroller: { overflowX: "auto", margin: "0 -8px", padding: "0 8px" },
+  // `overflow-x` und der Fokusrahmen stehen in der Klasse `atlas-tabelle-scroller`
+  // (lib/theme.ts): `:focus-visible` geht mit Inline-Styles nicht, und die Regel
+  // gilt für jede Atlas-Tabelle, nicht nur für diese.
+  scroller: { margin: "0 -8px", padding: "0 8px" },
   // Summe des Rasters: 40 + 175 (Name-Minimum) + 500 (Wertspalten) + 12 + 99
   // (neun Lücken à 11). Enger scrollt die Tabelle lieber waagerecht, als
   // Ortsnamen abzuschneiden — ein halber Ortsname ist in einer Rangliste wertlos.
@@ -1116,7 +1256,11 @@ const S: Record<string, React.CSSProperties> = {
     color: v("--color-text-muted"),
     display: "flex",
     alignItems: "baseline",
-    alignSelf: "start",
+    // Über die volle Zeilenhöhe, obwohl der Text oben steht: Als mitlaufende
+    // Spalte muss ihr Hintergrund die ganze Zeile decken — sonst scheint unter
+    // der Platzziffer der scrollende Inhalt durch. Die Ziffer bleibt oben, weil
+    // `alignItems: baseline` sie an die erste Grundlinie setzt.
+    alignSelf: "stretch",
     gap: 4,
   },
   delta: { fontFamily: v("--font-mono"), fontSize: 12, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 1 },

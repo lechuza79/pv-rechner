@@ -410,11 +410,12 @@ export function einspeiseCt(segment: string, jahrgang: number, kwpMittel?: numbe
 }
 
 /**
- * Freifläche: Der Erlös liegt beim anzulegenden Wert (die Marktprämie füllt auf
- * ihn auf), nicht beim Marktwert — siehe lib/freiflaeche-config.ts. Welcher Wert
- * das ist, hängt am Baujahr: bis 03/2012 der Satz der Alt-Tabelle, 2012–2014 der
+ * Freifläche: Der Erlös liegt MINDESTENS beim anzulegenden Wert (die Marktprämie
+ * füllt auf ihn auf) — siehe lib/freiflaeche-config.ts. Welcher Wert das ist,
+ * hängt am Baujahr: bis 03/2012 der Satz der Alt-Tabelle, 2012–2014 der
  * gesetzliche Satz nach § 32 Abs. 1 EEG 2012, ab 2015 der Zuschlagswert einer
- * Ausschreibung.
+ * Ausschreibung. Liegt der Marktwert darüber, zählt er (siehe besserVonBeiden) —
+ * die Marktprämie wird nicht negativ.
  *
  * Der Zuschlag fällt dabei VOR der Inbetriebnahme — bis zu 24 Monate (§ 37e
  * EEG, am 18.08.2026 im Wortlaut geprüft). JEDER Jahrgang ab 2015 bekommt
@@ -447,22 +448,59 @@ function freiflaecheSatz(jahrgang: number, alt: AltFeedInRow | null): { ct: numb
   // behauptet, wäre falsch — dieselbe Fehlerklasse wie eine falsche Zahl.
   const zuschlag = freiflaecheZuschlagHerkunft(jahrgang);
   if (zuschlag !== null) {
-    return {
-      ct: Math.max(0, zuschlag.ct - DIREKTVERMARKTUNG.gebuehrCtKwh),
-      hinweis: zuschlag.vollstaendig
+    return besserVonBeiden(
+      Math.max(0, zuschlag.ct - DIREKTVERMARKTUNG.gebuehrCtKwh),
+      zuschlag.vollstaendig
         ? "mittlerer Zuschlagswert der Ausschreibungen zwei Jahre vor Inbetriebnahme, abzüglich Vermarktungsgebühr"
         : `mittlerer Zuschlagswert der Ausschreibungen ${zuschlag.jahre.join(" und ")}, abzüglich Vermarktungsgebühr`,
-    };
+    );
   }
 
   // Rückfall ohne Jahrgangsbezug — erreichbar nur, wenn die Jahrgangs-Reihe
   // leer wäre. Er steht als Netz da, nicht als zweite Regel: Solange
   // FREIFLAECHE_AUSSCHREIBUNG_JAHRE Zeilen hat, trägt jeder Jahrgang ab 2015
   // seinen eigenen Wert, und alles davor kommt aus Gesetz oder Alt-Tabelle.
-  return {
-    ct: Math.max(0, FREIFLAECHE_AW_CT - DIREKTVERMARKTUNG.gebuehrCtKwh),
-    hinweis: "Zuschlagswert der Ausschreibung abzüglich Vermarktungsgebühr",
-  };
+  return besserVonBeiden(
+    Math.max(0, FREIFLAECHE_AW_CT - DIREKTVERMARKTUNG.gebuehrCtKwh),
+    "Zuschlagswert der Ausschreibung abzüglich Vermarktungsgebühr",
+  );
+}
+
+/**
+ * Der anzulegende Wert ist eine UNTERGRENZE, keine Obergrenze — der Park bekommt
+ * den höheren der beiden Erlöse.
+ *
+ * Warum: Ein Park in der Direktvermarktung verkauft seinen Strom an der Börse und
+ * bekommt die Marktprämie obendrauf. Die Marktprämie ist die Differenz zum
+ * Marktwert, und sie wird NICHT negativ: „MP = AW – MW. Ergibt sich bei der
+ * Berechnung ein Wert kleiner null, wird abweichend von Satz 1 der Wert »MP« mit
+ * null festgesetzt." (§ 23a EEG 2023 i. V. m. Anlage 1 Nummer 3.1.2 für
+ * Monatsmarktwerte, gleichlautend Nummer 4.1.2 für Jahresmarktwerte; Wortlaut am
+ * 18.08.2026 auf gesetze-im-internet.de/eeg_2014 geprüft). Liegt der Marktwert
+ * über dem anzulegenden Wert, entfällt also die Prämie — der Erlös bleibt aber
+ * der höhere Börsenerlös. Sein Erlös ist damit max(AW, MW).
+ *
+ * Bis 08/2026 stand hier immer der anzulegende Wert. Das war lange folgenlos,
+ * weil er weit über dem Marktwert lag; inzwischen liegen beide fast gleichauf
+ * (Jahrgang 2026: 4,61 gegen 4,63 ct netto), und die Untergrenze fing an, den
+ * Bestand zu klein zu rechnen.
+ *
+ * Die Vermarktungsgebühr steckt in BEIDEN Größen schon drin (marktErloesCt zieht
+ * sie ebenfalls ab) — verglichen wird also Netto gegen Netto.
+ *
+ * Der Hinweis wechselt mit: Eine Zahl, an der „Zuschlagswert der Ausschreibung"
+ * steht, obwohl sie der Börsenwert ist, wäre dieselbe Fehlerklasse wie eine
+ * falsche Zahl.
+ */
+function besserVonBeiden(awNettoCt: number, hinweis: string): { ct: number; hinweis: string } {
+  const markt = marktErloesCt();
+  if (markt > awNettoCt) {
+    return {
+      ct: markt,
+      hinweis: "Börsenwert — er liegt über dem anzulegenden Wert, und die Marktprämie wird nicht negativ",
+    };
+  }
+  return { ct: awNettoCt, hinweis };
 }
 
 /**
