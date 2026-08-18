@@ -77,7 +77,7 @@ const HTW_STUDIEN = "https://solar.htw-berlin.de/studien/";
 export const TRUST_SIGNALS: readonly TrustSignal[] = [
   {
     titel: "Auf Basis von Forschungsdaten",
-    text: "Eigenverbrauch und Autarkie rechnen wir auf Grundlage der Simulationsdaten der HTW Berlin.",
+    text: "In den Rechnern nutzen wir die Simulationsdaten der HTW Berlin.",
     betont: "HTW Berlin",
     links: [{ begriff: "HTW Berlin", url: HTW_STUDIEN }],
     mehr: true,
