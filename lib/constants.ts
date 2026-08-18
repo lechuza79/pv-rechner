@@ -20,12 +20,17 @@ export const FEED_IN_YEARS = 20;
 // NATIONAL_AVG_YIELD ist der PVGIS-Bundesschnitt (optimale Ausrichtung) und dient
 // serverseitig als Fallback, wenn PVGIS nicht erreichbar ist. Hier zentral, damit
 // Client (Rechner/Empfehlung/Balkon) und Server denselben Wert teilen.
+// Er ist zugleich der Startwert der Rechner ohne PLZ. Hier stand bis zum
+// 18.08.2026 ein zweiter, um 100 kWh gekürzter Wert („Puffer für nicht-optimale
+// Dachausrichtung") — und damit ein Dachabschlag an einer Stelle, an der die
+// Größe „Standort-OPTIMUM" heißt. Seit es die Dach-Frage gibt, zieht
+// dachErtragKwp() den Abschlag selbst ab: Wer sein Ost/West-Dach angab, bekam
+// ihn zweimal (rund 20 % zu wenig statt 20 %), und der Hinweis daneben behauptete
+// trotzdem „bei optimaler Neigung nach Süden". Der Abschlag gehört genau an eine
+// Stelle — in die Dach-Matrix, wo er zur Angabe des Nutzers passt und sichtbar
+// begründet ist. Solange niemand sein Dach angegeben hat, gilt das Optimum, und
+// die Rechner schreiben das ausdrücklich hin (dachErtragHinweis).
 export const NATIONAL_AVG_YIELD = 1050;
-// Ohne PLZ zeigen die Rechner einen bewusst KONSERVATIVEN Ertrag: der Bundesschnitt
-// minus 100 kWh Puffer für nicht-optimale Dachausrichtung/-neigung (echte Dächer
-// liegen selten im PVGIS-Optimum). Abgeleitet aus dem geprüften Modell, nicht
-// frei gegriffen — sobald der Nutzer eine PLZ eingibt, ersetzt der PVGIS-Wert ihn.
-export const NO_PLZ_DEFAULT_YIELD = NATIONAL_AVG_YIELD - 100; // = 950
 
 // Saisonaler Verbrauchsfaktor (BDEW Standardlastprofil H0)
 // Winter ~17% über Durchschnitt, Sommer ~15% unter

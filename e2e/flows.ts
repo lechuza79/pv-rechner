@@ -96,29 +96,39 @@ export const NOCH_NICHT_BEDIENBAR: { name: string; pfad: string; grund: string }
 export const NOCH_OHNE_FLOWNAV: { name: string; pfad: string }[] = [];
 
 /**
- * Deckel gegen Kombinationsexplosion. Wird er erreicht, MELDET der Läufer das —
- * eine stille Kürzung würde „alle Wege geprüft" behaupten, ohne es zu tun.
+ * Zwei Betriebsarten (Vorgabe des Betreibers, 18.08.2026: möglichst alle
+ * Kombinationen testen, bevor ein Nutzer sie trifft):
  *
- * 150 statt 300 seit dem 17.08.2026, gemessen an den migrierten Rechnern:
- * Ein Weg kostet gut zwei Sekunden, weil er von vorn aufgebaut wird. 300 Wege
- * überschreiten damit das Zeitlimit eines Flows, und ein abgelaufener Lauf ist
- * schlechter als ein gedeckelter: Er sagt gar nichts, statt etwas.
- *
- * Was das für die Abdeckung heißt — offen und nicht schöngerechnet:
- *   PV-Rechner            192 mögliche Wege → gedeckelt
- *   Klimaanlage           144 → vollständig
- *   PV-Bedarf              64 → vollständig
- *   Einspeisevergütung     60 → vollständig
- *   Balkonkraftwerk        28 → vollständig
- *   Wärmepumpe          ~1600 (2 × 8 × 5 × 4 × 5) → gedeckelt, knapp 10 %
- *
- * Bei den beiden tiefen Flows prüft der Läufer also einen Ausschnitt. Das ist
- * eine Grenze des „jede Kombination"-Ansatzes, keine Nachlässigkeit: Vollständig
- * wären es bei fünf Schritten tausende Wege. Wer die Abdeckung dort wirklich
- * braucht, muss die Strategie ändern (jede OPTION mindestens einmal statt jeder
- * Kombination) — nicht diesen Deckel hochsetzen, sonst laufen die Tests wieder ab.
+ *   Standard (jeder Push)         — jede OPTION jedes Schritts und jeder
+ *     Zweig, nicht jede Kombination. Schnell und auf dem CI-Runner stabil.
+ *   FLOW_ALLE_KOMBINATIONEN=1     — wirklich jede Kombination, ohne die
+ *     Erschöpft-Abkürzung. Läuft nächtlich (flows-nightly.yml), wo zwei
+ *     Stunden Laufzeit niemanden aufhalten.
  */
-export const MAX_WEGE_JE_FLOW = 150;
+export const ALLE_KOMBINATIONEN = !!process.env.FLOW_ALLE_KOMBINATIONEN;
+
+/**
+ * Notbremse gegen einen entlaufenen Läufer. Wird sie erreicht, MELDET er das —
+ * eine stille Kürzung würde „geprüft" behaupten, ohne es zu tun.
+ *
+ * Seit dem 18.08.2026 geht der Läufer im Standard-Modus jede OPTION jedes
+ * Schritts und jeden Zweig, nicht mehr jede Kombination (Strategiewechsel,
+ * begründet in flows.spec.ts an `gehe()`). Damit liegen alle Flows deutlich
+ * unter diesem Deckel — er ist kein Abdeckungs-Kompromiss mehr, sondern fängt
+ * nur noch den Fall, dass ein künftiger Flow den Läufer in einen Zyklus
+ * schickt (etwa ein Schritt, der bei jedem Erreichen andere
+ * Optionsbeschriftungen trägt und darum nie als erschöpft erkannt wird).
+ *
+ * Vorher war er ein echter Abdeckungs-Deckel — und ein irreführender: Die
+ * Tiefensuche verbrauchte ihn komplett im ersten Teilbaum, bei der Wärmepumpe
+ * (~1600 Kombinationen) wurde so nicht einmal die zweite Option des ERSTEN
+ * Schritts je erreicht, während der Lauf „150 Wege geprüft" meldete.
+ *
+ * Im Alle-Kombinationen-Modus muss er über dem tiefsten Flow liegen
+ * (Wärmepumpe ~1600 Kombinationen) — auch dort gilt: erreicht er den Deckel,
+ * wird das gemeldet, nicht verschwiegen.
+ */
+export const MAX_WEGE_JE_FLOW = ALLE_KOMBINATIONEN ? 2500 : 150;
 
 
 // ─── Geteilte Schritte durch einen Flow ──────────────────────────────────────
@@ -174,6 +184,56 @@ export async function uebrigeFragenBeantworten(page: Page) {
  * Wartezeit-Pflaster wäre auf langsamen Rechnern wieder brüchig; die Rückmeldung
  * der Oberfläche selbst ist das verlässliche Signal.
  */
+/**
+ * Klickt Weiter und wartet, bis der Schritt WIRKLICH gewechselt hat.
+ *
+ * Zwei Arten, wie ein blinder Weiter-Klick verpufft (beide am 18.08.2026 auf
+ * ausgelasteten Maschinen gemessen):
+ *   - Der Knopf ist noch `aria-disabled` (FlowNav sperrt bewusst so statt mit
+ *     `disabled`, damit der Hinweis-Tooltip klickbar bleibt) — der Klick wird
+ *     stumm verschluckt. Das passiert, wenn die Freigabe einen React-Commit
+ *     später kommt als das aria-pressed der eben gewählten Option.
+ *   - Der Klick landet, aber der Läufer prüft nie, ob der Schritt gewechselt
+ *     hat, und sucht dann die nächste Option auf dem alten Schritt — die
+ *     Fehlermeldung zeigt auf die falsche Stelle.
+ *
+ * Der Nachweis des Wechsels braucht keine Schritt-Kennung im DOM: Nach der
+ * Flow-Konvention startet kein Schritt mit einer Vorauswahl. Der Fingerabdruck
+ * aus sichtbaren Optionen UND ihrem Auswahlzustand ändert sich deshalb bei
+ * jedem echten Wechsel — selbst wenn zwei Schritte identische Beschriftungen
+ * trügen, unterscheidet sie der Auswahlzustand (vorher: eine gewählt, nachher:
+ * keine). Verschwindet die Navigation ganz, ist das Ergebnis erreicht — auch
+ * ein Wechsel.
+ */
+export async function weiterKlicken(page: Page) {
+  const fingerabdruck = () =>
+    page.evaluate(() => {
+      const sichtbar = (e: Element) => (e as HTMLElement).offsetParent !== null;
+      if (!Array.from(document.querySelectorAll("[data-flow-nav]")).some(sichtbar)) return "kein-flow";
+      return Array.from(document.querySelectorAll("[data-flow-option]"))
+        .filter(sichtbar)
+        .map((e) => `${e.getAttribute("data-flow-option")}=${e.getAttribute("aria-pressed")}`)
+        .join("¦");
+    });
+  const weiter = page.locator("[data-flow-next]:visible").first();
+  const vorher = await fingerabdruck();
+  try {
+    await expect(async () => {
+      await expect(weiter).not.toHaveAttribute("aria-disabled", "true", { timeout: 1_000 });
+      await weiter.click();
+      await expect(async () => {
+        expect(await fingerabdruck()).not.toBe(vorher);
+      }).toPass({ timeout: 1_500 });
+    }).toPass({ timeout: 20_000 });
+  } catch {
+    const gesperrt = (await weiter.getAttribute("aria-disabled").catch(() => null)) === "true";
+    throw new Error(
+      `Weiter kam nicht durch: Der Schritt wechselte 20 s lang nicht ` +
+        `(Weiter-Knopf ${gesperrt ? "gesperrt (aria-disabled)" : "frei"}).`,
+    );
+  }
+}
+
 export async function waehle(page: Page, label: string) {
   const option = page.locator(`[data-flow-option="${label.replace(/"/g, '\\"')}"]:visible`).first();
   await expect(option).toBeEnabled({ timeout: 15_000 });

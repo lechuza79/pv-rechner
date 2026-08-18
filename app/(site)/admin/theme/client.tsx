@@ -291,7 +291,7 @@ export default function ThemeClient({ overrides }: { overrides: ThemeOverrides }
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <div style={{ background: v('--color-bg'), borderRadius: v('--radius-md'), padding: 16, border: `1px solid ${v('--color-border')}` }}>
-              <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Rendite 25 Jahre</div>
+              <div style={{ fontSize: 11, color: v('--color-text-secondary'), textTransform: "uppercase", letterSpacing: "0.04em", fontWeight: 600 }}>Gewinn nach 25 Jahren</div>
               <div style={{ fontSize: 22, fontWeight: 800, fontFamily: v('--font-mono'), color: v('--color-positive'), marginTop: 4 }}>+18.450 €</div>
             </div>
             <div style={{
