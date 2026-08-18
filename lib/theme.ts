@@ -560,12 +560,12 @@ export const globalStyles = `
   /* Vertrauens-Leiste über dem Footer (components/TrustBar.tsx). Zwei Spalten
      auf Desktop statt vier: Die Punkte sind ganze Sätze, und bei der 600px des
      Footer-Rasters bliebe für vier Spalten je ~140px — zu schmal zum Lesen. */
-  .trust-bar{max-width:600px;margin:0 auto ${space.xxl}px;background:var(--color-bg-muted);border:1px solid var(--color-border);border-radius:14px;padding:${pad("xl")}}
+  .trust-bar{max-width:var(--content-max-width);margin:0 auto ${space.xxl}px;background:var(--color-bg-muted);border:1px solid var(--color-border);border-radius:14px;padding:${pad("xl")}}
   .trust-bar-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:${space.xl}px}
   .trust-item{display:flex;gap:${space.md}px;align-items:flex-start;text-decoration:none;color:inherit}
   .trust-item-icon{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:7px;background:var(--color-bg);border:1px solid var(--color-border)}
-  .trust-item-title{display:block;font-size:var(--font-size-caption);font-weight:700;color:var(--color-text-primary);line-height:1.35;margin-bottom:2px}
-  .trust-item-text{display:block;font-size:var(--font-size-caption);line-height:1.5;color:var(--color-text-muted)}
+  .trust-item-title{display:block;font-size:var(--font-size-body);font-weight:700;color:var(--color-text-primary);line-height:1.35;margin-bottom:2px}
+  .trust-item-text{display:block;font-size:var(--font-size-body);line-height:1.5;color:var(--color-text-muted)}
   .trust-item:hover .trust-item-title{color:var(--color-accent)}
   .trust-item:focus-visible{outline:2px solid var(--color-accent);outline-offset:4px;border-radius:8px}
   @media (max-width:640px){.trust-bar-grid{grid-template-columns:1fr;gap:${space.lg}px}}
