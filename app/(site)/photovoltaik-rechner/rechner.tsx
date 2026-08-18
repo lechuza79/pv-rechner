@@ -5,7 +5,7 @@ import { useAuth, signInWithMagicLink } from "../../../lib/auth";
 import { useSharedPlz, readLocation } from "../../../lib/location";
 import { paramsToRow } from "../../../lib/types";
 import { einspeiseVerlauf, einspeiseDeckelKw, profilFaktorAus, type EinspeiseRegime } from "../../../lib/einspeise-regime";
-import { PREISFORM_MONAT_STUNDE, MARKTWERT_NIVEAU_CT, DIREKTVERMARKTUNG } from "../../../lib/marktwert-config";
+import { PREISFORM_MONAT_STUNDE, MARKTWERT_NIVEAU_CT } from "../../../lib/marktwert-config";
 import { simulateSolarYear, monthlyFromAnnual } from "../../../lib/balkon-sim";
 // ResultVerguetung umschließt ResultRegime — deshalb hier nur der äußere Import.
 import ResultVerguetung from "./_components/ResultVerguetung";
@@ -553,7 +553,9 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
     if (regime === "heute") return undefined;
     return {
       satzCtImJahr: (i: number) => einspeiseVerlaufJahre[i - 1]?.satzCt ?? 0,
-      fixkostenProJahr: DIREKTVERMARKTUNG.grundgebuehrProJahr,
+      // Die Grundgebühr steht je Jahr im Verlauf: In den Übergangsjahren nimmt
+      // der Netzbetreiber ab, da gibt es keinen Vermarkter und keine Gebühr.
+      fixkostenImJahr: (i: number) => einspeiseVerlaufJahre[i - 1]?.fixkosten ?? 0,
       einspeiseAnteil: marktSim.einspeiseAnteil,
     };
   }, [regime, einspeiseVerlaufJahre, marktSim.einspeiseAnteil]);
@@ -609,7 +611,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
         ...gemeinsam,
         einspeiseModell: {
           satzCtImJahr: (i: number) => verlauf[i - 1]?.satzCt ?? 0,
-          fixkostenProJahr: DIREKTVERMARKTUNG.grundgebuehrProJahr,
+          fixkostenImJahr: (i: number) => verlauf[i - 1]?.fixkosten ?? 0,
           einspeiseAnteil: marktSim.einspeiseAnteil,
         },
       }).total;
