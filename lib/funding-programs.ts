@@ -62,6 +62,12 @@ export interface FundingProgram {
    *  fallback = updated_at). Surfaced as "Zuletzt geprüft" and as sitemap lastmod.
    *  Set by lib/funding-data.ts from the funding_programs row, not by the seed. */
   lastVerified?: string;
+  /** Letzter geglückter Abruf der Amtsseite durch den Seiten-Wächter (ISO).
+   *  Bestätigt: Die Seite ist noch da und unverändert. DB-only. */
+  pageSeenAt?: string;
+  /** Zeitpunkt der letzten erkannten Änderung der Amtsseite (ISO). Liegt er nach
+   *  `lastVerified`, ist der geprüfte Inhalt in Frage gestellt. DB-only. */
+  changedSinceIso?: string;
 }
 
 /**
@@ -987,63 +993,91 @@ function tierAmount(tiers: { upTo: number; amount: number }[], value: number): n
 
 // ─── Vertrauen verfällt — BLOCKER ────────────────────────────────────────────
 //
-// WARUM (16.08.2026): Ein Förderbetrag wurde abgezogen, solange `status: "aktiv"`
-// im Datensatz stand — unbefristet. Ob das noch stimmte, hing allein daran, dass
-// irgendein Wächter lief und es widerrief. Diese Wächter laufen aber nur, wenn
-// der Rechner des Betreibers an ist; in der Urlaubswoche (09.–13.08.2026) lief
-// fünf Tage keiner, und niemand hat es bemerkt. Eine Zusage, die nur durch
-// AUSBLEIBEN eines Widerrufs weitergilt, ist genau die Konstruktion, die still
-// falsch wird.
+// WARUM (16./17.08.2026): Ein Förderbetrag wurde abgezogen, solange
+// `status: "aktiv"` dastand — unbefristet, gedeckt allein dadurch, dass kein
+// Wächter widersprach. Die erste Fassung dieser Regel setzte deshalb ein festes
+// Höchstalter von 180 Tagen auf die letzte inhaltliche Prüfung.
 //
-// Deshalb dreht diese Regel die Beweislast um: Abgezogen wird nur, was innerhalb
-// der Frist an der AMTSQUELLE bestätigt wurde. Läuft kein Wächter, verfällt der
-// Abzug von selbst — deterministisch, ohne dass irgendetwas laufen muss.
-// Schweigen bedeutet damit nicht mehr „gilt weiter", sondern „nicht mehr belegt".
+// Das war die falsche Größe, und der Betreiber hat es zu Recht zurückgewiesen:
+// Ein halbes Jahr alter Stand ist keine Absicherung, sondern ein halbes Jahr
+// alter Stand. Die Frist war als Notbremse gedacht und wurde zum Ersatz für die
+// Prüfung.
 //
-// Die Richtung ist bewusst zu unseren Ungunsten: Wer eine Förderung bekommt, die
-// wir nicht mehr einrechnen, erlebt eine angenehme Überraschung. Umgekehrt hat
-// jemand mit einer Zahl geplant, die es nicht mehr gibt.
+// DIE RICHTIGE GRÖSSE IST NICHT DAS ALTER, SONDERN DIE BESTÄTIGUNG. Der
+// Seiten-Wächter ruft jede Amtsseite täglich ab und vergleicht sie mit dem
+// Stand, den wir inhaltlich geprüft haben (scripts/funding-watch.ts). Ist die
+// Seite unverändert, gilt der geprüfte Inhalt weiter — dafür braucht es keine
+// Frist, das ist einfach wahr. Die Uhr läuft nur, wenn wir NICHT bestätigen
+// können, und dann kurz:
 //
-// 180 Tage, weil der Quartals-Voll-Lauf alle 90 Tage fährt: Ein komplett
-// ausgefallener Zyklus ist damit noch abgedeckt, zwei nicht mehr.
+//   1. Die Seite hat sich geändert  → wir kennen den neuen Inhalt nicht.
+//      Ab da bleiben NACHPRUEF_FRIST_TAGE, um sie inhaltlich neu zu prüfen.
+//   2. Die Seite ist nicht erreichbar → wir wissen nicht, ob sie sich geändert
+//      hat. Ab dem letzten geglückten Abruf bleiben BESTAETIGUNG_MAX_TAGE.
 //
-// Gemessen bei Einführung: Von 38 Programmen ziehen genau 5 überhaupt Geld ab
-// (Regensburg, Darmstadt, Köln, Potsdam, Frankfurt) — alle fünf im August 2026
-// an der Amtsquelle bestätigt. Die Regel ändert heute also nichts; sie sichert
-// den Tag ab, an dem die Prüfung ausfällt.
-export const FOERDER_MAX_ALTER_TAGE = 180;
+// Danach fliegt der Abzug raus. Beides sind zwei Wochen, nicht sechs Monate:
+// Der Wächter läuft täglich, ein Programm hat also rund vierzehn Anläufe. Wer
+// in vierzehn Anläufen nicht durchkommt, kommt nicht wegen einer Laune nicht
+// durch.
+//
+// Die Richtung bleibt zu unseren Ungunsten: Wer eine Förderung bekommt, die wir
+// nicht einrechnen, erlebt eine angenehme Überraschung. Umgekehrt hat jemand mit
+// einer Zahl geplant, die es nicht mehr gibt.
+
+/** So lange gilt ein geprüfter Inhalt ohne neuen geglückten Abruf weiter. */
+export const FOERDER_BESTAETIGUNG_MAX_TAGE = 14;
+
+/** So lange darf ein Programm nach einer Seitenänderung ungeprüft mitrechnen. */
+export const FOERDER_NACHPRUEF_FRIST_TAGE = 14;
 
 function heuteIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+function tageSeit(iso: string | undefined | null, heute: string): number {
+  if (!iso) return Number.POSITIVE_INFINITY;
+  const a = Date.parse(iso.slice(0, 10));
+  const b = Date.parse(heute.slice(0, 10));
+  if (Number.isNaN(a) || Number.isNaN(b)) return Number.POSITIVE_INFINITY;
+  return Math.round((b - a) / 86_400_000);
+}
+
 /**
- * Ist der Beleg dieses Programms jung genug, um damit zu RECHNEN?
+ * Ist der Beleg dieses Programms belastbar genug, um damit zu RECHNEN?
  *
- * Ohne Prüfdatum: nein. Ein Programm, das nie an seiner Amtsquelle bestätigt
- * wurde, darf keinen Euro von einer Investitionsrechnung abziehen — auch wenn
- * es plausibel klingt und in Portalen steht.
+ * Drei Bedingungen, alle nötig:
+ *  - die Werte wurden überhaupt einmal an der Amtsquelle gelesen,
+ *  - seither ist keine unbeantwortete Seitenänderung offen (oder sie liegt
+ *    innerhalb der Nachprüf-Frist),
+ *  - der Seiten-Wächter hat die Seite kürzlich noch erreicht.
  */
 export function fundingBelegAktuell(
-  f: Pick<FundingProgram, "lastVerified">,
+  f: Pick<FundingProgram, "lastVerified" | "pageSeenAt" | "changedSinceIso">,
   heute: string = heuteIso(),
 ): boolean {
   if (!f.lastVerified) return false;
-  const belegt = Date.parse(f.lastVerified.slice(0, 10));
-  const jetzt = Date.parse(heute.slice(0, 10));
-  if (Number.isNaN(belegt) || Number.isNaN(jetzt)) return false;
-  return (jetzt - belegt) / 86_400_000 <= FOERDER_MAX_ALTER_TAGE;
+
+  // Eine erkannte Änderung, die nach unserer letzten inhaltlichen Prüfung liegt,
+  // stellt den geprüften Stand in Frage. Kurze Frist zum Nachprüfen, dann Schluss.
+  if (f.changedSinceIso && f.changedSinceIso.slice(0, 10) > f.lastVerified.slice(0, 10)) {
+    if (tageSeit(f.changedSinceIso, heute) > FOERDER_NACHPRUEF_FRIST_TAGE) return false;
+  }
+
+  // Ohne geglückten Abruf wissen wir nicht, ob sich etwas geändert hat. Fehlt der
+  // Wert ganz (Code-Seed ohne Datenbank), zählt die letzte inhaltliche Prüfung —
+  // sonst würde ein Datenbankausfall jede Förderung sofort abschalten.
+  const bestaetigt = f.pageSeenAt ?? f.lastVerified;
+  return tageSeit(bestaetigt, heute) <= FOERDER_BESTAETIGUNG_MAX_TAGE;
 }
 
 /**
  * Darf dieses Programm in einer Rechnung Geld abziehen?
  *
- * Zwei Bedingungen, beide nötig: Es nimmt Anträge an UND der Beleg ist frisch.
- * Diese Funktion ist die EINZIGE Stelle, an der das entschieden wird — Seiten,
- * Rechner und CTA fragen sie, statt `status === "aktiv"` selbst zu prüfen.
+ * Die EINZIGE Stelle, an der das entschieden wird — Seiten, Rechner und CTA
+ * fragen sie, statt `status === "aktiv"` selbst zu prüfen.
  */
 export function fundingZaehlt(
-  f: Pick<FundingProgram, "status" | "lastVerified"> | undefined,
+  f: Pick<FundingProgram, "status" | "lastVerified" | "pageSeenAt" | "changedSinceIso"> | undefined,
   heute: string = heuteIso(),
 ): boolean {
   return !!f && f.status === "aktiv" && fundingBelegAktuell(f, heute);

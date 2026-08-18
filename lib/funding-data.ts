@@ -32,11 +32,21 @@ export async function getFundingPrograms(): Promise<FundingProgram[]> {
     // `stand` zurück ("Stand: Juni 2026") — eine ehrliche, schwächere Aussage.
     const { data, error } = await supabase
       .from("funding_programs")
-      .select("data, last_verified");
+      .select("data, last_verified, page_seen_at, page_changed_at");
     if (error || !data || data.length === 0) return seed;
     const programs = data.map((r) => {
       const lastVerified = r.last_verified as string | null;
-      return { ...(r.data as FundingProgram), ...(lastVerified ? { lastVerified } : {}) };
+      // Der Seiten-Waechter bestaetigt taeglich, dass die Amtsseite unveraendert
+      // ist. Genau das haelt einen geprueften Wert am Leben (fundingBelegAktuell)
+      // — ohne diese zwei Felder faellt jedes Programm nach zwei Wochen raus.
+      const pageSeenAt = r.page_seen_at as string | null;
+      const changedSinceIso = r.page_changed_at as string | null;
+      return {
+        ...(r.data as FundingProgram),
+        ...(lastVerified ? { lastVerified } : {}),
+        ...(pageSeenAt ? { pageSeenAt } : {}),
+        ...(changedSinceIso ? { changedSinceIso } : {}),
+      };
     });
     cache = { data: programs, ts: Date.now() };
     return programs;

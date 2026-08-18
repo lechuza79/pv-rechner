@@ -273,7 +273,8 @@ async function main(): Promise<void> {
     // jeder Wechsel zwischen beiden Wegen eine Änderung, die es nie gab.
     const fp = ausProduktion ?? markiert(ausArchiv ? "archiv" : "live", fingerprintOf(html));
     const gleicheHerkunft = z.page_fingerprint?.split(":")[0] === fp.split(":")[0];
-    if (z.page_fingerprint && gleicheHerkunft && z.page_fingerprint !== fp) {
+    const hatSichGeaendert = !!z.page_fingerprint && gleicheHerkunft && z.page_fingerprint !== fp;
+    if (hatSichGeaendert) {
       geaendert.push(`${p.name} (${p.region})`);
       if (!dry) {
         await sb.from("funding_checks").insert({
@@ -292,7 +293,13 @@ async function main(): Promise<void> {
     if (!dry) {
       await sb
         .from("funding_programs")
-        .update({ page_fingerprint: fp, page_seen_at: new Date().toISOString() })
+        .update({
+          page_fingerprint: fp,
+          page_seen_at: new Date().toISOString(),
+          // Nur setzen, wenn sich wirklich etwas bewegt hat: Dieses Datum stellt
+          // den geprueften Inhalt in Frage und startet die Nachpruef-Frist.
+          ...(hatSichGeaendert ? { page_changed_at: new Date().toISOString() } : {}),
+        })
         .eq("id", z.id);
     }
   }
