@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, MAX_WEGE_JE_FLOW } from "./flows";
+import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, MAX_WEGE_JE_FLOW, uebrigeFragenBeantworten, waehle } from "./flows";
 
 /**
  * Der Flow-Läufer: klickt JEDEN Weg durch jeden Flow und stellt sicher, dass
@@ -79,76 +79,6 @@ async function optionen(page: Page): Promise<string[]> {
   );
 }
 
-/**
- * Ein Schritt kann MEHRERE Fragen tragen — im PV-Rechner etwa Personenzahl und
- * Nutzungsprofil nebeneinander. Nach der Wahl in der einen Frage bleibt Weiter
- * dann zu Recht gesperrt, weil die andere noch offen ist.
- *
- * Diese Funktion beantwortet die übrigen Fragen des Schritts mit ihrer jeweils
- * ersten Option. Die Fragen unterscheidet sie an `data-flow-group` (OptionCard);
- * ohne das Attribut gehören alle Optionen zur selben Frage und es passiert
- * nichts.
- *
- * BEWUSSTE GRENZE: Variiert wird nur die Frage, aus der die Hauptwahl kam — die
- * übrigen bekommen immer ihre erste Option. Sonst multiplizieren sich die Wege
- * je Schritt (4 Personen × 4 Profile = 16 statt 8), ohne dass die Kombination am
- * Verhalten des Flows etwas ändert; was die Werte inhaltlich ergeben, prüfen die
- * Rechen-Tests.
- */
-async function uebrigeFragenBeantworten(page: Page) {
-  const offene = await page.locator("[data-flow-option]:visible").evaluateAll((els) => {
-    const beantwortet = new Set(
-      els.filter((e) => e.getAttribute("aria-pressed") === "true").map((e) => e.getAttribute("data-flow-group") || ""),
-    );
-    const ersteJeGruppe = new Map<string, string>();
-    for (const e of els) {
-      const gruppe = e.getAttribute("data-flow-group") || "";
-      if (beantwortet.has(gruppe) || ersteJeGruppe.has(gruppe)) continue;
-      ersteJeGruppe.set(gruppe, e.getAttribute("data-flow-option") || "");
-    }
-    return [...ersteJeGruppe.values()];
-  });
-  for (const label of offene) await waehle(page, label);
-}
-
-/**
- * Wählt eine Option und wartet, bis sie als gewählt markiert ist.
- *
- * Das Warten ist der Kern: Nach dem Seitenaufruf steht das servergerenderte
- * HTML schon da, die React-Handler aber noch nicht. Ein Klick in diesem Fenster
- * verpufft — der Läufer meldete daraufhin „Weiter bleibt gesperrt, obwohl
- * gewählt ist" für Optionen, die von Hand einwandfrei funktionieren. Ein festes
- * Wartezeit-Pflaster wäre auf langsamen Rechnern wieder brüchig; die Rückmeldung
- * der Oberfläche selbst ist das verlässliche Signal.
- */
-async function waehle(page: Page, label: string) {
-  const option = page.locator(`[data-flow-option="${label.replace(/"/g, '\\"')}"]:visible`).first();
-  await expect(option).toBeEnabled({ timeout: 15_000 });
-  // Wiederholen, nicht warten: Der Knopf ist ab dem servergerenderten HTML da
-  // und anklickbar, reagiert aber erst, wenn React ihn übernommen hat. Ein
-  // einzelner Klick in dieses Fenster ist verloren — längeres Warten danach
-  // holt ihn nicht zurück, weil das Ereignis nie einen Empfänger hatte.
-  try {
-    await expect(async () => {
-      await option.click();
-      await expect(option).toHaveAttribute("aria-pressed", "true", { timeout: 1_000 });
-    }).toPass({ timeout: 20_000 });
-  } catch {
-    // Die nackte Meldung von toPass lautet nur „Timeout while waiting on the
-    // predicate" — sie sagt weder, WELCHE Option klemmt, noch auf welchem Weg.
-    // Bei hunderten Wegen ist das nicht auswertbar, und genau daran hat eine
-    // Fehlersuche schon eine Runde verloren.
-    const zustand = await option.evaluate((e) => ({
-      pressed: e.getAttribute("aria-pressed"),
-      sichtbar: (e as HTMLElement).offsetParent !== null,
-      deaktiviert: (e as HTMLButtonElement).disabled,
-    })).catch(() => null);
-    throw new Error(
-      `Option „${label}" ließ sich nicht wählen (20 s lang kein aria-pressed=true). ` +
-        `Zustand: ${JSON.stringify(zustand)}`,
-    );
-  }
-}
 
 /**
  * Auswahlfelder eines Schritts belegen (z. B. Monat und Jahr der
