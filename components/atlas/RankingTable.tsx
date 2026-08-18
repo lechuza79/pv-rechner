@@ -34,11 +34,37 @@ import InfoTooltip from "../InfoTooltip";
 
 type Owner = "alle" | "privat" | "gewerbe";
 type Metric = "count" | "kwp" | "perCapita" | "co2" | "wert" | "eigenverbrauch" | "speicher";
-/** Sort key: a numeric metric column (descending), the name column (A–Z), or
- *  population (descending). Name and population share the name-column dropdown. */
-type Sort = Metric | "name" | "population";
-/** What the first column shows — position, or movement. */
-type RankMode = "platz" | "delta";
+/**
+ * ZWEI GETRENNTE BEGRIFFE — der Umbau vom 18.08.2026.
+ *
+ * Bis dahin steuerte EIN Zustand (`sort`) beides: die Reihenfolge der Zeilen UND
+ * die Größe, auf die sich Platzziffer, Rangbewegung und Balken beziehen. Ein
+ * Klick auf eine Überschrift tat also zwei Dinge zugleich, und von außen war
+ * nicht zu erkennen, dass er das zweite überhaupt tut — der Betreiber: „so
+ * versteht das niemand."
+ *
+ * Seither:
+ *  · `platz` (Metric) — WORAUF sich die Platzierung bezieht. Bestimmt allein die
+ *    Platzziffer, die Rangbewegung daneben und den Balken unter dem Wert.
+ *    Gewählt wird sie im sichtbaren Feld „Platzierung nach …" über der Tabelle.
+ *  · `sort` (Sort) — in welcher REIHENFOLGE die Zeilen stehen. Ein Klick auf
+ *    eine Überschrift ändert nur noch das.
+ *
+ * Beide können auseinanderfallen (nach Name sortiert, nach Pro Kopf platziert →
+ * die Platzziffern stehen ungeordnet untereinander). Das ist gewollt und wird
+ * über der Tabelle in einem Satz benannt, sobald es eintritt.
+ */
+type Sort = Metric | "name" | "population" | "delta";
+
+/**
+ * Die Größen, nach denen platziert werden kann.
+ *
+ * „Batterien" ist bewusst NICHT dabei: Die Spalte misst nicht, wie viel
+ * Solarstrom eine Region erzeugt oder was er wert ist, sondern womit sie ihn
+ * puffert — eine Nebengröße der Liste. Sortieren lässt sie sich weiterhin, eine
+ * Platzierung trägt sie nicht.
+ */
+const PLATZ_METRIKEN: Metric[] = ["count", "kwp", "perCapita", "co2", "wert", "eigenverbrauch"];
 
 type Row = {
   region_id: string;
@@ -179,7 +205,7 @@ function fmtPop(pop: number, inMillions: boolean): string {
 }
 
 function valueOf(row: Row, m: Sort): number | null {
-  if (m === "name") return null;
+  if (m === "name" || m === "delta") return null;
   if (m === "perCapita") return row.perCapita;
   if (m === "population") return row.population;
   if (m === "wert") return row.wertEuro;
@@ -187,15 +213,37 @@ function valueOf(row: Row, m: Sort): number | null {
   return row[m] as number;
 }
 
+/** Absteigend nach einer Zahlengröße; Zeilen ohne Wert hängen hinten an. */
+function nachWert(rows: Row[], m: Metric | "population"): Row[] {
+  const mit = rows.filter((r) => valueOf(r, m) !== null);
+  const ohne = rows.filter((r) => valueOf(r, m) === null);
+  mit.sort((a, b) => (valueOf(b, m) as number) - (valueOf(a, m) as number));
+  return [...mit, ...ohne];
+}
+
+/** Wie eine Sortierung im Fließtext heißt — für den Satz über der Tabelle. */
+function sortName(s: Sort, sinceYear: number): string {
+  if (s === "name") return "Name";
+  if (s === "population") return "Einwohnerzahl";
+  if (s === "delta") return `Veränderung seit Ende ${sinceYear}`;
+  return COLUMNS.find((c) => c.key === s)?.label ?? s;
+}
+
 /**
- * Rangbewegung — steht UNTER der Platzziffer, nicht daneben.
+ * Rangbewegung — steht wieder NEBEN der Platzziffer, auf derselben Zeile.
  *
- * Nebeneinander brauchte die Spalte „199." plus Pfeil plus zwei Ziffern, also
- * rund 57 px; sie ist 30 breit, und alles darüber verschwand unter der
- * mitlaufenden Namensspalte — die Veränderung war je nach Liste halb
- * abgeschnitten. Untereinander bestimmt die breitere der beiden Angaben die
- * Spalte (29 px), und die Zelle ist genauso gebaut wie jede andere der Tabelle:
- * Hauptangabe oben, kleine Zusatzangabe darunter.
+ * VORGESCHICHTE, damit sie nicht ein drittes Mal wandert. Ursprünglich stand sie
+ * daneben; als die Spalte auf 30 px verschmälert wurde, passte sie dort nicht
+ * mehr und rutschte unter die Ziffer. Sichtbar war sie danach zwar noch (im
+ * Browser nachgemessen: 15 × 12 px, nichts abgeschnitten) — aber als 10-px-Zeile
+ * unter einer ohnehin gedämpften Ziffer las sie niemand mehr. Dazu kam, dass die
+ * Bewegung an der Rangfolge der SORTIERTEN Spalte hing: Auf der Deutschland-Seite
+ * bewegte sich in vier von sechs Größen gar nichts, dort war die Spalte also
+ * komplett leer — und eine leere Spalte sieht aus wie eine kaputte.
+ *
+ * Seit dem Umbau trägt die Platz-Spalte eine feste Bedeutung (sie folgt nicht
+ * mehr der Sortierung) und darf den Platz kosten: Ziffer und Bewegung stehen
+ * nebeneinander und lesen sich als ein Satz — „Platz 3, einen gutgemacht".
  */
 function RankDelta({ value, sinceYear, onAccent = false }: { value: number | null; sinceYear: number; onAccent?: boolean }) {
   if (value === null || value === 0) return null;
@@ -208,7 +256,7 @@ function RankDelta({ value, sinceYear, onAccent = false }: { value: number | nul
       // Richtung, grün auf Blau würde untergehen.
       style={{ ...S.delta, color: onAccent ? v("--color-text-on-accent") : up ? v("--color-positive") : v("--color-negative") }}
     >
-      <Icon size={8} />
+      <Icon size={9} />
       {Math.abs(value)}
     </span>
   );
@@ -239,8 +287,24 @@ export default function RankingTable({
   popInMillions?: boolean;
 }) {
   const [owner, setOwner] = useState<Owner>("alle");
+  /** Worauf sich Platzziffer, Rangbewegung und Balken beziehen. */
+  const [platz, setPlatz] = useState<Metric>("perCapita");
+  /** In welcher Reihenfolge die Zeilen stehen. Beim Laden dieselbe Größe wie die
+   *  Platzierung — die Liste zeigt die Rangfolge dann der Reihe nach, und genau
+   *  das ist der Normalfall. */
   const [sort, setSort] = useState<Sort>("perCapita");
-  const [rankMode, setRankMode] = useState<RankMode>("platz");
+  /**
+   * Eine neue Platzierungs-Größe ordnet die Liste mit um.
+   *
+   * Das ist kein zweites verstecktes Verhalten, sondern der Beleg: Die Ziffern
+   * laufen danach wieder 1, 2, 3 — daran sieht man, dass die Platzierung
+   * wirklich umgestellt ist. Wer die Reihenfolge davon lösen will, klickt danach
+   * eine Überschrift an; dann zählt allein die Sortierung.
+   */
+  const platzWaehlen = (m: Metric) => {
+    setPlatz(m);
+    setSort(m);
+  };
   const { home, setHome, ready } = useHomeGemeinde();
   // A shared link can mark a Gemeinde via ?plz=. Resolved on the client (like the
   // saved-home marker already is) so the page itself stays ISR-cached — reading
@@ -291,7 +355,7 @@ export default function RankingTable({
     const el = scrollerRef.current;
     if (!el) return;
     setScrollRest(el.scrollWidth - el.clientWidth - el.scrollLeft);
-  }, [ueberlauf, endraum, sort, owner, rankMode]);
+  }, [ueberlauf, endraum, sort, owner, platz]);
 
   // Resolve ?plz= to the child region it belongs to. A postcode can span several
   // Gemeinden; the one that appears in this very list is the right match, so the
@@ -437,19 +501,21 @@ export default function RankingTable({
   // this "Veränderung zum Vorjahr" would be a lie: it spans that year-end to
   // today, which in July is seven months, not twelve. The header says what it is.
   const deltas = useMemo(() => {
-    // Rank movement is only meaningful for the growth metrics. Alphabetical order
-    // has no "rank", and population barely moves year to year — no delta there.
-    if (sort === "name" || sort === "population") return new Map<string, number | null>();
-    const rank = (list: Row[]) => {
+    // Sie hängt an der PLATZIERUNGS-Größe, nicht mehr an der Sortierung: Eine
+    // Bewegung ist ein Wechsel des Platzes, und welcher Platz gemeint ist, sagt
+    // seit dem Umbau allein das Feld „Platzierung nach …". Wer die Liste
+    // alphabetisch sortiert, sieht die Bewegung deshalb weiterhin — vorher war
+    // sie in diesem Fall ersatzlos verschwunden.
+    const rang = (list: Row[]) => {
       const m = new Map<string, number>();
       list
-        .filter((r) => valueOf(r, sort) !== null)
-        .sort((a, b) => (valueOf(b, sort) as number) - (valueOf(a, sort) as number))
+        .filter((r) => valueOf(r, platz) !== null)
+        .sort((a, b) => (valueOf(b, platz) as number) - (valueOf(a, platz) as number))
         .forEach((r, i) => m.set(r.region_id, i + 1));
       return m;
     };
-    const now = rank(rows);
-    const before = rank(build(lastFullYear));
+    const now = rang(rows);
+    const before = rang(build(lastFullYear));
     const out = new Map<string, number | null>();
     for (const r of rows) {
       const a = before.get(r.region_id);
@@ -457,27 +523,37 @@ export default function RankingTable({
       out.set(r.region_id, a != null && b != null ? a - b : null);
     }
     return out;
-  }, [rows, build, sort, lastFullYear]);
+  }, [rows, build, platz, lastFullYear]);
 
-  const sorted = useMemo(() => {
-    if (sort === "name") return [...rows].sort((a, b) => a.name.localeCompare(b.name, "de"));
-    const withVal = rows.filter((r) => valueOf(r, sort) !== null);
-    const without = rows.filter((r) => valueOf(r, sort) === null);
-    withVal.sort((a, b) => (valueOf(b, sort) as number) - (valueOf(a, sort) as number));
-    return [...withVal, ...without];
-  }, [rows, sort]);
-
-  /** Position always comes from the metric sort, even when the list is ordered by movement. */
+  /** Die Rangfolge selbst — allein aus der Platzierungs-Größe. */
+  const platzListe = useMemo(() => nachWert(rows, platz), [rows, platz]);
   const rankOf = useMemo(() => {
     const m = new Map<string, number>();
-    sorted.forEach((r, i) => m.set(r.region_id, i + 1));
+    platzListe.forEach((r, i) => {
+      // Wer in dieser Größe keinen Wert hat, bekommt keinen Platz — sonst
+      // bekäme eine unbewohnte Fläche einen Rang „je Einwohner".
+      if (valueOf(r, platz) !== null) m.set(r.region_id, i + 1);
+    });
     return m;
-  }, [sorted]);
+  }, [platzListe, platz]);
 
+  /** Die Reihenfolge der Zeilen — allein aus der Sortierung. */
   const display = useMemo(() => {
-    if (rankMode !== "delta") return sorted;
-    return [...sorted].sort((a, b) => (deltas.get(b.region_id) ?? -Infinity) - (deltas.get(a.region_id) ?? -Infinity));
-  }, [sorted, rankMode, deltas]);
+    if (sort === "name") return [...rows].sort((a, b) => a.name.localeCompare(b.name, "de"));
+    if (sort === "delta") {
+      // Gutgemachte Plätze zuerst. Zeilen ohne Vergleichswert hängen hinten an;
+      // innerhalb gleicher Bewegung bleibt die Rangfolge stehen, sonst stünden
+      // die vielen Nullen in zufälliger Ordnung.
+      return [...platzListe].sort(
+        (a, b) => (deltas.get(b.region_id) ?? -Infinity) - (deltas.get(a.region_id) ?? -Infinity),
+      );
+    }
+    if (sort === "population") return nachWert(rows, "population");
+    return sort === platz ? platzListe : nachWert(rows, sort);
+  }, [rows, sort, platz, platzListe, deltas]);
+
+  /** Fallen Rangfolge und Zeilenreihenfolge auseinander? Dann sagt es die Seite. */
+  const auseinander = sort !== platz;
 
   // The children of this region carry keys at one fixed length (5 for Kreise under
   // a Bundesland, 8 for Gemeinden under a Kreis). A saved home is always an 8-digit
@@ -530,7 +606,7 @@ export default function RankingTable({
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [markedId, sort, owner, rankMode, display]);
+  }, [markedId, sort, owner, platz, display]);
 
   // Höhe der oben klebenden Kopie, um sie per negativem Rand aus dem Fluss zu
   // nehmen — sonst schöbe sie beim Einblenden den ganzen Rest nach unten (die
@@ -542,7 +618,7 @@ export default function RankingTable({
     if (markedPos === "above" && topPeekRef.current) {
       setTopPeekH(topPeekRef.current.offsetHeight);
     }
-  }, [markedPos, sort, owner, rankMode, display]);
+  }, [markedPos, sort, owner, platz, display]);
 
   const pick = (hit: GemeindeHit, plz: string) => {
     setHome({ ...hit, plz });
@@ -559,29 +635,39 @@ export default function RankingTable({
     setUrlPlz(null);
   };
 
-  // One scale for the list and the floating row, capped at the runner-up: a single
-  // Gemeinde with a solar park (126.865 W/head against 17.705 on second place)
-  // would otherwise flatten every other bar to a hairline.
+  // Eine Skala für die Liste und die schwebende Kopie, gekappt am
+  // Zweitplatzierten: Eine einzelne Gemeinde mit einem Solarpark (126.865 W/Kopf
+  // gegen 17.705 auf Platz zwei) drückte sonst jeden anderen Balken auf einen
+  // Strich.
+  //
+  // Sie gehört zur PLATZIERUNGS-Größe, nicht zur sortierten: Der Balken zeigt,
+  // wie weit ein Ort in der Größe kommt, nach der platziert wird — dieselbe
+  // Größe, aus der die Ziffer daneben entsteht. Gemessen wird über alle Zeilen
+  // (`rows`), nicht über die angezeigte Reihenfolge: Die Skala darf sich nicht
+  // ändern, nur weil jemand anders sortiert.
   const scale = useMemo(() => {
-    const vals = display
-      .map((r) => valueOf(r, sort))
+    const vals = rows
+      .map((r) => valueOf(r, platz))
       .filter((x): x is number => x !== null)
       .sort((a, b) => b - a);
     return Math.max(1, vals[1] ?? vals[0] ?? 1);
-  }, [display, sort]);
+  }, [rows, platz]);
   const barPct = (val: number | null) =>
     val === null ? 0 : Math.min(100, Math.max(1, Math.round((val / scale) * 100)));
 
   /**
    * Der Zahlenwert selbst. Alle Werte tragen dieselbe Textfarbe wie der
    * Ortsname — sie sind gleichrangige Messwerte, und ein abgedunkelter Wert
-   * sähe aus, als sei er weniger belastbar. Die sortierte Spalte hebt sich
-   * über das Gewicht ab (dazu der blaue Kopf und der Balken darunter), nicht
-   * über die Farbe.
+   * sähe aus, als sei er weniger belastbar.
+   *
+   * Fett steht die PLATZIERUNGS-Spalte, nicht die sortierte: Sie trägt den
+   * Balken und die Ziffer links, sie gehört zusammen hervorgehoben. Dass nach
+   * einer anderen Spalte sortiert ist, sagt deren blauer Kopf — zwei Aussagen,
+   * zwei Zeichen.
    */
   const cellNumStyle = (key: Metric): React.CSSProperties => ({
     ...S.valNum,
-    fontWeight: sort === key ? 700 : 500,
+    fontWeight: platz === key ? 700 : 500,
   });
 
   // Zellen einer Zeile. `onAccent` = die Zeile ist blau gefüllt (aktive Kommune):
@@ -619,8 +705,13 @@ export default function RankingTable({
         className="atlas-fix-spalte"
         style={{ ...S.rank, ...fixStil(FIX_LINKS_PLATZ, floating), ...(onAccent ? { color: ON_ACCENT_DIM } : null) }}
       >
-        {valueOf(r, sort) === null ? "—" : `${rankOf.get(r.region_id)}.`}
-        <RankDelta value={deltas.get(r.region_id) ?? null} sinceYear={lastFullYear} onAccent={onAccent} />
+        {/* Ziffer und Bewegung auf EINER Zeile, in einem eigenen Kasten: Die
+            Zelle selbst muss über die volle Zeilenhöhe decken (mitlaufende
+            Spalte), ihr Text aber oben auf der Namenslinie stehen. */}
+        <span style={S.rankZeile}>
+          {rankOf.has(r.region_id) ? `${rankOf.get(r.region_id)}.` : "—"}
+          <RankDelta value={deltas.get(r.region_id) ?? null} sinceYear={lastFullYear} onAccent={onAccent} />
+        </span>
       </span>
       <span className="atlas-fix-spalte atlas-fix-spalte--kante" style={{ ...S.nameCell, ...fixStil(FIX_LINKS_NAME, floating) }}>
         {/*
@@ -687,14 +778,16 @@ export default function RankingTable({
               {teil.unit || " "}
             </span>
             {/* Die Balkenschiene läuft in JEDER Zelle mit, sichtbar nur in der
-                sortierten. Nur dort zu rendern machte genau diese eine Zelle
-                höher — und damit stand ihre Zahl als einzige der Zeile nicht
-                mehr auf der gemeinsamen Linie. */}
+                PLATZIERUNGS-Spalte (nicht mehr in der sortierten): Der Balken
+                zeichnet die Größe, aus der die Ziffer links entsteht. Nur dort
+                zu rendern machte genau diese eine Zelle höher — und damit stand
+                ihre Zahl als einzige der Zeile nicht mehr auf der gemeinsamen
+                Linie. */}
             <span
               aria-hidden
               style={{
                 ...S.track,
-                ...(c.key === sort
+                ...(c.key === platz
                   ? onAccent
                     ? { background: "rgba(255,255,255,0.28)" }
                     : null
@@ -704,7 +797,7 @@ export default function RankingTable({
               <span
                 style={{
                   ...S.fill,
-                  width: `${barPct(valueOf(r, sort))}%`,
+                  width: `${barPct(valueOf(r, platz))}%`,
                   background: onAccent ? ON_ACCENT : v("--color-accent-light"),
                 }}
               />
@@ -729,7 +822,7 @@ export default function RankingTable({
   // dem Horizontal-Scroll der Liste (translateX), damit die Spalten fluchten.
   const floatingRow = markedRow ? (
     <div
-      key={`${sort}-${owner}-${rankMode}`}
+      key={`${sort}-${owner}-${platz}`}
       style={{ ...S.table, ...S.rowsFade, transform: `translateX(${-scrollLeft}px)`, ...kanteStil }}
     >
       <Link
@@ -748,6 +841,11 @@ export default function RankingTable({
   return (
     <div ref={rootRef}>
       <div style={S.controls}>
+        {/* Das Feld steht links, über der Spalte, die es steuert: Platzziffer
+            und Balken sitzen im selben Lot. Rechts daneben der vorhandene
+            Besitzer-Filter — er sagt, WER gezählt wird, das Feld sagt, WORAUF
+            sich die Platzierung bezieht. */}
+        <PlatzPicker platz={platz} onChange={platzWaehlen} />
         <div style={S.chips}>
           {OWNERS.map((o) => (
             <button
@@ -765,6 +863,25 @@ export default function RankingTable({
           ))}
         </div>
       </div>
+
+      {/*
+        Rangfolge und Zeilenreihenfolge dürfen auseinanderfallen — sortiert nach
+        Name, platziert nach Pro Kopf, und die Ziffern stehen ungeordnet
+        untereinander. Das sieht aus wie ein Fehler, wenn es niemand sagt.
+
+        Der Satz erscheint deshalb NUR in diesem Fall und nicht dauerhaft: Ein
+        Hinweis, der immer dasteht, erklärt beim ersten Mal und stört danach.
+        Und er bietet gleich den Weg zurück an, statt zu belehren.
+      */}
+      {auseinander && (
+        <p style={S.hinweis}>
+          Sortiert nach {sortName(sort, lastFullYear)}, platziert nach{" "}
+          {sortName(platz, lastFullYear)} — die Platzziffern stehen deshalb nicht der Reihe nach.{" "}
+          <button type="button" onClick={() => setSort(platz)} style={S.linkBtn}>
+            nach Platz sortieren
+          </button>
+        </p>
+      )}
 
       {/* Oben klebende Kopie: nur wenn die echte Zeile OBERHALB liegt (schon
           vorbeigescrollt). Vor dem Scroller, damit sie per sticky-top an der
@@ -805,11 +922,13 @@ export default function RankingTable({
           }}
         >
           <div style={S.table}>
-            {/* Header: every column sorts, the first also picks what it shows. */}
+            {/* Kopfzeile: JEDE Überschrift sortiert nur noch — was platziert
+                wird, steht im Feld über der Tabelle. */}
             <div style={{ ...S.row, ...S.header }}>
               <RankHeader
-                mode={rankMode}
-                onChange={setRankMode}
+                sort={sort}
+                platz={platz}
+                onChange={setSort}
                 sinceYear={lastFullYear}
                 fixStil={fixStil(FIX_LINKS_PLATZ, false)}
               />
@@ -822,6 +941,9 @@ export default function RankingTable({
                   <button
                     type="button"
                     onClick={() => setSort(c.key)}
+                    // Sagt beim Überfahren, was der Klick tut — und was er NICHT
+                    // tut. Genau diese Doppeldeutigkeit war der Anlass des Umbaus.
+                    title={`Liste nach ${c.label} sortieren. Die Platzierung ändert sich dadurch nicht.`}
                     style={{
                       ...S.headBtn,
                       color: sort === c.key ? v("--color-accent") : v("--color-text-muted"),
@@ -848,7 +970,7 @@ export default function RankingTable({
 
             {/* Re-keyed on metric+filter so the rows fade in on a switch instead of
                 snapping — the reorder and the value change land at once otherwise. */}
-            <div key={`${sort}-${owner}-${rankMode}`} style={S.rowsFade}>
+            <div key={`${sort}-${owner}-${platz}`} style={S.rowsFade}>
               {display.map((r, i) => {
                 const isMarked = markedId === r.region_id;
                 // Highlight-Zeile ohne Tabellenlinie oben und unten: diese Zeile UND
@@ -1041,14 +1163,81 @@ function useOutsideClose(open: boolean, close: () => void) {
   return ref;
 }
 
+/**
+ * PLATZIERUNG NACH … — das Feld, das die Rangfolge bestimmt.
+ *
+ * Es ist die sichtbare Hälfte des Umbaus: Vorher entschied ein Klick auf eine
+ * Spaltenüberschrift stillschweigend mit, worauf sich Platz, Bewegung und Balken
+ * beziehen. Jetzt steht diese eine Entscheidung als beschriftetes Feld über der
+ * Tabelle, wo man sie sieht, ohne sie zu suchen — und wo sie nichts anderes tut.
+ *
+ * Gebaut wie die beiden vorhandenen Aufklapp-Menüs der Kopfzeile (RankHeader,
+ * NameHeader): derselbe Auslöser mit Chevron, dasselbe `S.dropdown`, dasselbe
+ * Schließen bei Klick daneben. Eine dritte Bauart wäre eine dritte Baustelle.
+ */
+function PlatzPicker({ platz, onChange }: { platz: Metric; onChange: (m: Metric) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useOutsideClose(open, () => setOpen(false));
+  const aktuell = COLUMNS.find((c) => c.key === platz);
+  return (
+    <div ref={ref} style={S.pickWrap}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        title="Bestimmt die Platzziffer, die Veränderung daneben und den Balken unter dem Wert. Die Sortierung der Liste ändert sich mit — danach lässt sie sich über die Spaltenüberschriften frei ändern."
+        style={S.pickBtn}
+      >
+        <span style={S.pickLabel}>Platzierung nach</span>
+        <span style={S.pickWert}>{aktuell?.label ?? platz}</span>
+        <IconChevronDown size={9} />
+      </button>
+      {open && (
+        <div style={S.dropdown}>
+          {PLATZ_METRIKEN.map((k) => {
+            const c = COLUMNS.find((x) => x.key === k);
+            return (
+              <button
+                key={k}
+                type="button"
+                onClick={() => {
+                  onChange(k);
+                  setOpen(false);
+                }}
+                style={{ ...S.dropItem, fontWeight: platz === k ? 700 : 400 }}
+              >
+                {c?.label ?? k}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Kopf der Platz-Spalte — jetzt ein reines Sortier-Menü, wie NameHeader auch.
+ *
+ * WAS AUS DEM ALTEN „Platz / Δ JJJJ"-UMSCHALTER GEWORDEN IST. Er entschied, ob
+ * die Spalte die Ziffer ODER die Bewegung zeigt, und ordnete im zweiten Fall die
+ * Liste nach der Bewegung. Seit die Spalte beides nebeneinander trägt, ist die
+ * erste Hälfte gegenstandslos; die zweite war schon immer eine SORTIERUNG und
+ * heißt jetzt auch so. Übrig bleiben also die zwei Reihenfolgen, die diese
+ * Spalte anbietet: nach Platz und nach Bewegung. Die Überschrift heißt darum
+ * dauerhaft „Platz" und wechselt ihren Text nicht mehr — ein Kopf, der je nach
+ * Zustand etwas anderes benennt, war Teil des Problems.
+ */
 function RankHeader({
-  mode,
+  sort,
+  platz,
   onChange,
   sinceYear,
   fixStil,
 }: {
-  mode: RankMode;
-  onChange: (m: RankMode) => void;
+  sort: Sort;
+  platz: Metric;
+  onChange: (s: Sort) => void;
   sinceYear: number;
   /** Macht den Spaltenkopf zur mitlaufenden Spalte — dieselbe Kante wie die
    *  Zellen darunter, sonst scrollt die Überschrift von ihrer Spalte weg. */
@@ -1056,6 +1245,7 @@ function RankHeader({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useOutsideClose(open, () => setOpen(false));
+  const aktiv = sort === platz || sort === "delta";
   return (
     // Kein `position: relative` mehr: `sticky` aus der Klasse ist selbst
     // Bezugsrahmen für das Aufklapp-Menü darunter.
@@ -1063,32 +1253,32 @@ function RankHeader({
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        title={
-          mode === "platz"
-            ? "Platzierung nach der Spalte, nach der gerade sortiert wird."
-            : `Gewonnene oder verlorene Plätze seit Ende ${sinceYear}. Das laufende Jahr ist noch unvollständig und daher nicht als Vorjahr gerechnet.`
-        }
-        style={S.headBtnLeft}
+        title={`Sortieren: nach Platz oder nach den Plätzen, die seit Ende ${sinceYear} gutgemacht oder verloren wurden. Das laufende Jahr ist noch unvollständig und daher nicht als Vorjahr gerechnet.`}
+        style={{
+          ...S.headBtnLeft,
+          color: aktiv ? v("--color-accent") : v("--color-text-muted"),
+          fontWeight: aktiv ? 700 : 600,
+        }}
       >
-        {mode === "platz" ? "Platz" : `Δ ${sinceYear}`}
+        Platz
         <IconChevronDown size={7} />
       </button>
       {open && (
         <div style={S.dropdown}>
           {(
             [
-              ["platz", "Platzierung"],
+              [platz, "Platz (1, 2, 3 …)"],
               ["delta", `Veränderung seit Ende ${sinceYear}`],
-            ] as [RankMode, string][]
+            ] as [Sort, string][]
           ).map(([k, label]) => (
             <button
-              key={k}
+              key={k === platz ? "platz" : "delta"}
               type="button"
               onClick={() => {
                 onChange(k);
                 setOpen(false);
               }}
-              style={{ ...S.dropItem, fontWeight: mode === k ? 700 : 400 }}
+              style={{ ...S.dropItem, fontWeight: sort === k ? 700 : 400 }}
             >
               {label}
             </button>
@@ -1239,19 +1429,22 @@ function HomePicker({ onPick }: { onPick: (hit: GemeindeHit, plz: string) => voi
  * sie müssen als Spalten lesbar sein und untereinander fluchten), der Rest
  * gehört dem Namen. Die Breiten stehen an den Spalten selbst (COLUMNS).
  *
- * PLATZ und NAME sind schmaler als früher (40/175). Die Platzziffer braucht bei
- * dreistelligen Rängen 29 px (Monospace 12 px, „199."), die Rangbewegung
- * darunter 24 — mehr steht dort nicht, und ein Innenabstand ist es auch nicht
- * (im Browser nachgemessen: padding 0). Der Kopf „Platz" misst 36 und läuft um
- * sechs Pixel in die Rasterlücke daneben, die niemandem gehört und in der auch
- * nichts anderes steht.
+ * PLATZ trägt seit dem Umbau eine feste Bedeutung (sie folgt nicht mehr der
+ * Sortierung, sondern dem Feld „Platzierung nach …") — und beide Angaben, die
+ * dazugehören, stehen wieder nebeneinander. Die Breite ist der schlechteste
+ * ehrliche Fall, nicht der übliche: dreistelliger Rang „235." (29 px, Monospace
+ * 12) plus 4 Abstand plus dreistellige Bewegung „↑123" (Pfeil 9 + 1 + 3 × 6,6 ≈
+ * 30). Dreistellig ist nicht theoretisch — der Eifelkreis Bitburg-Prüm führt
+ * über 230 Gemeinden. Zu knapp bemessen schöbe sich die Bewegung unter die
+ * mitlaufende Namensspalte und würde dort abgeschnitten; genau daran ist sie
+ * schon einmal gescheitert und darunter gewandert.
  * Beim Namen ist es eine bewusste Umkehr: Früher stand hier „Enger scrollt die
  * Tabelle lieber waagerecht, als Ortsnamen abzuschneiden". Seit die Namensspalte
  * mitläuft, kostet jedes Pixel dort doppelt — es fehlt dem Wertbereich in JEDER
  * Scrollstellung. Lange Namen werden deshalb gekürzt und lassen sich per Tippen
  * aufklappen (siehe rowCells).
  */
-const SPALTE_PLATZ = 30;
+const SPALTE_PLATZ = 64;
 /** Untergrenze der Namensspalte; darüber nimmt sie sich den Rest (1fr).
  *  130 px, weil der Spaltenkopf „Name (Einwohner)" 108 px misst. */
 const SPALTE_NAME_MIN = 130;
@@ -1355,6 +1548,35 @@ const KANTE_SCHATTEN = `${SPALTEN_LUECKE + 9}px 0 9px -6px rgba(0,0,0,0.3)`;
 const S: Record<string, React.CSSProperties> = {
   controls: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 },
   chips: { display: "flex", gap: 4 },
+  // Bezugsrahmen für das Aufklapp-Menü — die beiden Kopf-Menüs bekommen ihn aus
+  // `position: sticky`, hier gibt es das nicht.
+  pickWrap: { position: "relative" },
+  /**
+   * Das Feld sieht aus wie ein Auswahlfeld, nicht wie ein Filter-Chip daneben:
+   * gefüllter Grund und Rahmen sagen „hier steht eine Einstellung", die runden
+   * Chips rechts sagen „hier ist eines von dreien an". Zwei Bedienarten, zwei
+   * Formen — sonst liest man sie als eine Reihe von sechs gleichrangigen Knöpfen.
+   */
+  pickBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    border: `1px solid ${v("--color-border-accent")}`,
+    borderRadius: v("--radius-md"),
+    padding: "6px 12px",
+    background: v("--color-bg-accent"),
+    fontFamily: "inherit",
+    fontSize: 12,
+    cursor: "pointer",
+    color: v("--color-accent"),
+    maxWidth: "100%",
+  },
+  // Die Beschriftung bleibt gedämpft, der gewählte Wert trägt die Farbe: Man
+  // liest zuerst, WAS gerade platziert wird, und erst dann, dass es einstellbar ist.
+  pickLabel: { color: v("--color-text-secondary"), fontWeight: 500, whiteSpace: "nowrap" },
+  pickWert: { color: v("--color-accent"), fontWeight: 700, whiteSpace: "nowrap" },
+  // Der Satz, der erscheint, wenn Rangfolge und Reihenfolge auseinanderfallen.
+  hinweis: { fontSize: 12, lineHeight: 1.4, color: v("--color-text-secondary"), margin: "0 0 10px" },
   chip: {
     border: `1px solid ${v("--color-border")}`,
     borderRadius: 999,
@@ -1493,10 +1715,10 @@ const S: Record<string, React.CSSProperties> = {
     display: "inline-flex",
     alignItems: "center",
     gap: 3,
-    // Darf NICHT umbrechen: „Δ 2025" ist 38 px breit, die Spalte 30 — ohne
-    // diese Zeile bricht das Δ auf eine eigene Zeile und verschwindet über dem
-    // sichtbaren Kopf. Die acht überstehenden Pixel laufen in die Rasterlücke,
-    // die Namensspalte beginnt erst bei 41.
+    // Darf NICHT umbrechen. „Platz" plus Chevron misst rund 40 px und passt
+    // heute bequem in die Spalte; die Zeile bleibt trotzdem stehen, weil ein
+    // Umbruch hier den Kopf über den sichtbaren Bereich schiebt statt ihn
+    // umzubrechen — das ist schon einmal passiert.
     whiteSpace: "nowrap",
   },
   // Aktive Kommune voll in unserem Blau (weiße Schrift via rowCells onAccent).
@@ -1508,8 +1730,6 @@ const S: Record<string, React.CSSProperties> = {
     fontSize: 12,
     lineHeight: 1.25,
     color: v("--color-text-muted"),
-    // Ziffer oben, Veränderung darunter — dieselbe Bauart wie Name/Einwohner
-    // und Zahl/Einheit. Nebeneinander sprengte das Paar die Spaltenbreite.
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
@@ -1519,7 +1739,11 @@ const S: Record<string, React.CSSProperties> = {
     alignSelf: "stretch",
     gap: 1,
   },
-  delta: { fontFamily: v("--font-mono"), fontSize: 10, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 1, lineHeight: 1.2 },
+  // Ziffer und Bewegung nebeneinander, in einer eigenen Zeile innerhalb der
+  // Zelle: So bleibt die Zelle ein Kasten über die volle Zeilenhöhe (Deckung),
+  // ihr Text steht aber oben auf derselben Linie wie Ortsname und Zahlenreihe.
+  rankZeile: { display: "flex", alignItems: "center", gap: 4, lineHeight: 1.25, whiteSpace: "nowrap" },
+  delta: { fontFamily: v("--font-mono"), fontSize: 11, fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 1, lineHeight: 1.2 },
   // Name und Einwohnerzahl gestapelt — dieselbe Bauart wie die Wertzellen
   // (Hauptangabe oben, kleine Zusatzangabe darunter). Dadurch fluchten alle
   // acht Spalten in zwei Textebenen statt in einer gemischten Zeile.
@@ -1540,9 +1764,9 @@ const S: Record<string, React.CSSProperties> = {
   // höher — das ist der sichtbare Beleg, dass hier gerade etwas mehr steht.
   nameOffen: { whiteSpace: "normal", overflow: "visible", textOverflow: "clip" },
   hint: { fontSize: 10, lineHeight: 1.2, color: v("--color-text-muted"), whiteSpace: "nowrap" },
-  // The bar sits under the number in the sorted column, not in a column of its
-  // own: a header names a measure, and "the bar" is not one — it is that measure,
-  // drawn.
+  // Der Balken steht unter der Zahl der PLATZIERUNGS-Spalte, nicht in einer
+  // eigenen Spalte: Eine Überschrift benennt eine Messgröße, und „der Balken"
+  // ist keine — er IST diese Größe, gezeichnet.
   // Wertzelle: Zahl oben, Einheit darunter, linksbündig. Linksbündig, weil die
   // Einheit sonst unter einer rechtsbündigen Zahl mit wechselnder Stellenzahl
   // wandert — die Einheiten stünden in derselben Spalte auf verschiedenen
