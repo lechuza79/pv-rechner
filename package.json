@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:flows": "E2E_BUILD=1 playwright test e2e/flows.spec.ts",
     "test:e2e:ui": "playwright test --ui",
     "typecheck": "tsc --noEmit",
     "mastr:refresh": "tsx scripts/mastr-refresh.ts",
@@ -23,6 +24,7 @@
     "foerder:probe": "tsx scripts/funding-probe.ts",
     "foerder:watch": "tsx scripts/funding-watch.ts",
     "foerder:abdeckung": "tsx scripts/funding-coverage.ts",
+    "foerder:screen": "tsx scripts/funding-screen.ts",
     "stand:faellig": "tsx scripts/stand-faellig.ts"
   },
   "dependencies": {

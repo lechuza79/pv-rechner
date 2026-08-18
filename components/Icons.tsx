@@ -37,6 +37,16 @@ export function IconLink({ size = 16, color = "currentColor", style }: IconProps
   );
 }
 
+/** Öffnet eine fremde Seite — Pfeil aus dem Kasten heraus. Bewusst NICHT das
+ *  Kettensymbol (IconLink): das bedeutet „verknüpft", nicht „verlässt uns". */
+export function IconExternal({ size = 16, color = "currentColor", style }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>
+      <path d="M10.5 3h4.5v4.5M14.5 3.5 8.25 9.75M13 11v3.25A1.75 1.75 0 0 1 11.25 16h-7.5A1.75 1.75 0 0 1 2 14.25v-7.5A1.75 1.75 0 0 1 3.75 5H7" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function IconShare({ size = 16, color = "currentColor", style }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0, ...style }}>

@@ -229,6 +229,15 @@ export function pad(y: keyof typeof space, x?: keyof typeof space): string {
  * (space.huge = 48) — bewusst großzügig, damit die Rechner-Hero-Fragen oben Luft
  * haben. Lese-/Textseiten legen darüber noch --content-lede-top drauf.
  */
+/**
+ * Abstand zwischen zwei Abschnitten einer Seite — die eine Quelle dafür.
+ *
+ * Vorher brachte jede Seite ihre eigene Zahl mit (22, 28, 32 …), und beim
+ * Durchsehen einer Seite fiel jedes Mal auf, dass Abschnitte zu dicht
+ * aufeinandersitzen. Wer hier dreht, dreht überall.
+ */
+export const sectionGap = 44;
+
 export const headerContentGap = space.huge; // 48
 
 /**
@@ -690,6 +699,9 @@ export const globalStyles = `
      ueberall gleich sitzt. Zahlen brechen NIE um (nowrap). */
   .kpi-val{font-family:var(--font-mono);font-size:22px;font-weight:700;line-height:1.1;white-space:nowrap}
   .kpi-unit{font-family:var(--font-mono);font-size:var(--font-size-small);font-weight:600;color:var(--color-text-muted);margin-top:2px}
+  /* Trennlinie zwischen Bedingungen und Konditionen auf der Förderkarte. Sobald
+     die beiden Spalten untereinander stehen, liefe sie ins Leere — dann weg. */
+  @media (max-width:700px){.foerder-spalte-links{border-right:none!important;padding-right:0!important}}
   /* Der EINE Abstand: zwischen Zahlenblock und Tendenz. */
   .kpi-tend{margin-top:10px}
   /* Titellose Einzelgruppe (Kreis-/Bundesland): schlichte Kachelreihe. */

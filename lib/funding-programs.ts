@@ -31,6 +31,30 @@ export interface FundingProgram {
   /** Confirmed against the official source (vs. only aggregator portals). */
   verified: boolean;
   eligibility: Eligibility[];
+  /**
+   * Bedingungen als LESBARE Sätze — eine Bedingung je Eintrag.
+   *
+   * Regeln (aus der Überarbeitung der Frankfurter Karte, 16.08.2026; gelten für
+   * ALLE Programme, nicht nur für neue):
+   *
+   * 1. **Eine Aussage je Eintrag.** Kein Semikolon-Anhängsel, das eine zweite
+   *    Sache behauptet. „… keine Mittel mehr; die übrigen Bausteine sind davon
+   *    nicht betroffen" ist zwei Bedingungen in einer Zeile — die zweite ist
+   *    Beruhigung, die niemand gesucht hat, und sie treibt die Zeile über drei
+   *    Zeilen Umbruch.
+   * 2. **Aktiv und kurz.** „Balkonkraftwerke werden nicht mehr gefördert" statt
+   *    „Für Balkonkraftwerke stehen keine Mittel mehr zur Verfügung".
+   * 3. **Was NICHT gilt, gehört nicht in die Liste**, außer es ist der Kern der
+   *    Bedingung. Wer eine Ausnahme erklärt, erklärt meist die Regel schlecht.
+   * 4. **Keine Herleitung.** Aktenzeichen, Richtliniennummern und „laut Nr. 1.1"
+   *    gehören in den Beleg beim Prüfdatum, nicht vor die Augen des Lesers.
+   * 5. **Der Antragszeitpunkt steht immer drin** — er ist die einzige Bedingung,
+   *    deren Verletzung die ganze Förderung kostet.
+   *
+   * Wer den Wortlaut ändert, ändert ihn auch in `lib/funding-conditions.ts`
+   * (dort steht er zeichengleich als Beleg) — der Test schlägt sonst an, und
+   * genau dafür ist er da.
+   */
   /** Which costs the funding applies to — varies per program. */
   coveredCosts: string;
   /** Optional overall cap, e.g. "max. 50.000 €". */
@@ -271,14 +295,14 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       { label: "PV-Anlage", value: "20 % (30 % als Solar-Gründach)" },
       { label: "Batteriespeicher + Ladesäule", value: "20 %" },
       { label: "Gemeinschaftsprojekte", value: "+5 Prozentpunkte" },
-      { label: "Balkonkraftwerk", value: "derzeit keine Mittel" },
+      { label: "Balkonkraftwerk", value: "keine Mittel" },
     ],
     conditions: [
       "Erst nach Zuwendungsbescheid mit der Maßnahme beginnen",
       "Online-Antrag mit Registrierung",
       "Grundstück im Stadtgebiet Frankfurt",
       "Batteriespeicher und Ladesäulen nur in Kombination mit einer neuen PV-Anlage",
-      "Für Balkonkraftwerke (Mini-PV) stehen seit dem 03.06.2025 keine Mittel mehr zur Verfügung; die übrigen Bausteine sind davon nicht betroffen",
+      "Balkonkraftwerke werden seit dem 03.06.2025 nicht mehr gefördert",
     ],
     combinableWith: BUND,
     percentOfCost: 0.2,
@@ -814,6 +838,61 @@ export const FUNDING_PROGRAMS: Record<string, FundingProgram> = {
       "Nur Stromkunden der Stadtwerke Schwerin, Eigentümer der Immobilie",
       "Kontingent: max. 10 Anlagen pro Jahr — kann unterjährig erschöpft sein",
       "Kundenbindung — daher nicht pauschal eingerechnet",
+    ],
+    combinableWith: BUND,
+  },
+  // ── Ausgelaufene Programme: aufgenommen, weil das eine Auskunft ist ────────
+  //
+  // Entscheidung des Betreibers (17.08.2026): Auch beendete oder ausgesetzte
+  // Programme gehören in den Katalog. Wer in Waiblingen nach Förderung sucht,
+  // erfährt so „gab es, ist geschlossen" statt gar nichts — und der Seiten-
+  // Wächter bemerkt es, wenn die Stadt neu auflegt. Sie tragen bewusst KEINEN
+  // strukturierten Satz: Es gibt nichts abzuziehen.
+  "ludwigshafen-kipki": {
+    id: "ludwigshafen-kipki", name: "Förderprogramme für Bürger (KIPKI)",
+    traeger: "Stadt Ludwigshafen am Rhein", level: "kommune", region: "Ludwigshafen am Rhein",
+    bundesland: "Rheinland-Pfalz", agsCode: "07314",
+    url: "https://ludwigshafen.de/standort-mit-zukunft/klima/foerderprogramme",
+    stand: "August 2026", status: "eingestellt", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Beendet — gefördert wurden Balkonkraftwerke sowie Dach- und Fassadenbegrünung",
+    rates: [{ label: "Balkonkraftwerke", value: "Programm beendet" }],
+    conditions: [
+      "Die Stadt hat die Förderprogramme für Bürgerinnen und Bürger beendet",
+      "Gefördert wurden aus Landesmitteln (KIPKI) unter anderem private Balkonkraftwerke",
+      "Eine Dach-Photovoltaikanlage wurde auch davor nicht bezuschusst",
+    ],
+    combinableWith: BUND,
+  },
+  "waiblingen-klimaschutz": {
+    id: "waiblingen-klimaschutz", name: "Städtisches Förderprogramm Klimaschutz",
+    traeger: "Stadt Waiblingen", level: "kommune", region: "Waiblingen",
+    bundesland: "Baden-Württemberg", agsCode: "08119079",
+    url: "https://www.waiblingen.de/de/Die-Stadt/Unsere-Stadt/Nachhaltigkeit-Umwelt/Energie-Klimaschutz/Foerderprogramm-Klimaschutz",
+    stand: "August 2026", status: "pausiert", capped: true, verified: true,
+    eligibility: ["gewerblich"],
+    coveredCosts: "Geschlossen — der Photovoltaik-Teil war eine Beratung für Unternehmen, kein Zuschuss zur Anlage",
+    rates: [{ label: "Photovoltaik-Beratung für Unternehmen", value: "Anträge seit 24.06.2026 nicht mehr möglich" }],
+    conditions: [
+      "Der Gemeinderat hat das Förderprogramm Klimaschutz zum 24. Juni 2026 geschlossen",
+      "Über eine Fortführung wird im Haushaltsplanverfahren beraten",
+      "Der Photovoltaik-Baustein förderte eine Beratung für Unternehmen (Firmensitz in Waiblingen, Dachfläche ab 200 m²), nicht die Anlage selbst",
+    ],
+    combinableWith: BUND,
+  },
+  "herne-klimafoerderung": {
+    id: "herne-klimafoerderung", name: "Förderprogramme Klimaschutz",
+    traeger: "Stadt Herne", level: "kommune", region: "Herne",
+    bundesland: "Nordrhein-Westfalen", agsCode: "05916",
+    url: "https://www.herne.de/Stadt-und-Leben/Klima/Foerderprogramme/",
+    stand: "August 2026", status: "pausiert", capped: true, verified: true,
+    eligibility: ["privat"],
+    coveredCosts: "Wechselt jährlich — für 2026 sind Balkonkraftwerke und Speicher angekündigt, aber noch nicht beschlossen",
+    rates: [{ label: "Balkonkraftwerk und Speicher", value: "für 2026 geplant, Konditionen offen" }],
+    conditions: [
+      "Die Stadt wechselt die Förderungen jedes Jahr je nach verfügbaren Mitteln und Nachfrage",
+      "Photovoltaik und Speicher wurden in früheren Jahren gefördert, diese Programme sind ausgelaufen",
+      "Für 2026 sind Stecker-PV-Geräte und Speicher angekündigt — Beträge und Antragsfenster standen bei der Prüfung noch nicht fest",
     ],
     combinableWith: BUND,
   },

@@ -20,12 +20,38 @@ import { v } from "../lib/theme";
  * eigenes Verhalten bekommt. Schritte rufen dafür nach dem Setzen der Auswahl
  * flowSelect(next) auf.
  */
-export const FLOW_ADVANCE_ON_SELECT = false;
+/**
+ * Wann ein Klick auf eine Option direkt weiterspringt.
+ *
+ *   "nie"    — Standard: auswählen und Weiter drücken (Betreiber-Vorgabe 05.08.2026)
+ *   "immer"  — jeder Klick springt
+ *   "mobil"  — nur auf schmalen Bildschirmen (< 768 px, dieselbe Grenze wie das
+ *              Burger-Menü im Header)
+ *
+ * Als Regel statt als Ja/Nein angelegt, damit sich das Verhalten nach einer
+ * Messung umlegen lässt, ohne dass irgendein Flow angefasst werden muss: Auf
+ * dem Telefon kostet jeder zusätzliche Druck mehr als am Schreibtisch, und ob
+ * das den Abbruch senkt oder Fehlauswahlen erhöht, weiß man erst mit Zahlen.
+ * Es bleibt EIN Schalter — nie pro Seite entscheiden.
+ */
+export type FlowAdvanceMode = "nie" | "immer" | "mobil";
+export const FLOW_ADVANCE_ON_SELECT: FlowAdvanceMode = "nie";
 
-/** Nach dem Setzen einer Auswahl aufrufen — springt nur in der
- *  Auto-Advance-Variante weiter. */
+/** Breite, ab der ein Bildschirm als „schmal" gilt — wie im Header. */
+const MOBIL_BIS = 767;
+
+/** Gilt Auto-Weiter im aktuellen Kontext? Wird bei jedem Klick neu gefragt,
+ *  damit ein Drehen des Geräts sofort wirkt. */
+export function flowAdvanceAktiv(): boolean {
+  if (FLOW_ADVANCE_ON_SELECT === "immer") return true;
+  if (FLOW_ADVANCE_ON_SELECT === "nie") return false;
+  // "mobil": window fehlt beim Rendern auf dem Server — dann nicht springen.
+  return typeof window !== "undefined" && window.matchMedia(`(max-width: ${MOBIL_BIS}px)`).matches;
+}
+
+/** Nach dem Setzen einer Auswahl aufrufen — springt nur, wenn die Regel es sagt. */
 export function flowSelect(next: () => void) {
-  if (FLOW_ADVANCE_ON_SELECT) next();
+  if (flowAdvanceAktiv()) next();
 }
 
 /**
@@ -61,7 +87,12 @@ export default function FlowNav({
   // Hover auf dem inaktiven Button und nach einem Klickversuch (kurz).
   const [hintSichtbar, setHintSichtbar] = useState(false);
   return (
-    <div style={{ display: "flex", gap: 8, marginTop: 4, width: "100%", justifyContent: "space-between" }}>
+    // data-flow-nav / data-flow-next: Erkennungsmerkmale für den Flow-Läufer
+    // (e2e/flows.spec.ts). Er klickt darüber jeden Weg durch jeden Flow, der
+    // diesen Baustein nutzt — ohne dass der Flow selbst etwas dafür tun muss.
+    // Ein Flow ohne diesen Baustein wird vom Läufer NICHT geprüft und muss
+    // deshalb in e2e/flows.ts als ungeprüft ausgewiesen sein.
+    <div data-flow-nav style={{ display: "flex", gap: 8, marginTop: 4, width: "100%", justifyContent: "space-between" }}>
       {zurueckSichtbar && onZurueck && (
         <button
           type="button"
@@ -120,6 +151,7 @@ export default function FlowNav({
         }}
         onMouseEnter={() => { if (!weiterAktiv) setHintSichtbar(true); }}
         onMouseLeave={() => setHintSichtbar(false)}
+        data-flow-next
         aria-disabled={!weiterAktiv}
         aria-label={weiterAktiv ? undefined : `${weiterLabel} — ${inaktivHinweis}`}
         style={{

@@ -3,7 +3,11 @@ import { v } from "../lib/theme";
 
 export default function OptionCard({ selected, onClick, icon = null, label, sub }: { selected: boolean; onClick: () => void; icon?: string | null; label: string; sub: string }) {
   return (
-    <button onClick={onClick} style={{
+    // data-flow-option: Der Flow-Läufer (e2e/flows.spec.ts) findet daran die
+    // wählbaren Optionen eines Schritts, ohne dass ein Flow ihm seine Struktur
+    // beschreiben muss. Selbe Systematik wie die Export-Marker: Der Baustein
+    // meldet sich selbst an, statt dass jemand daran denken muss.
+    <button onClick={onClick} data-flow-option={label} aria-pressed={selected} style={{
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       padding: "14px 8px", borderRadius: v('--radius-md'), cursor: "pointer",
       background: selected ? v('--color-accent-dim') : v('--color-bg-muted'),
