@@ -82,9 +82,55 @@ export async function GET(req: NextRequest) {
         checked_at timestamptz NOT NULL DEFAULT now()
       );
       CREATE INDEX IF NOT EXISTS idx_fcov_verdict ON funding_coverage (verdict, checked_at);
+
+      -- Drei Techniken statt einer (18.08.2026). Zwei Spalten, beide nötig:
+      --
+      -- Die Spalte techniken hält fest, WOFÜR die Seite ein Signal trug — ohne das wäre
+      -- ein Treffer nur „hier steht irgendwas über Energie" und die Leseliste
+      -- ließe sich nicht nach Rechner sortieren.
+      --
+      -- Die Spalte screen_version ist die wichtigere: Die 878 bereits abgehakten Seiten
+      -- wurden mit einem Screener geprüft, der Wärmepumpen GAR NICHT kannte und
+      -- Balkon nicht von Dach-PV trennte. Ohne Versionsstempel bliebe „95 %
+      -- gescreent" stehen, während für zwei von drei Techniken nie jemand
+      -- hingesehen hat — eine Abdeckungszahl, die genau das verdeckt, wofür es
+      -- sie gibt. Mit Stempel kommen die alten Zeilen von selbst wieder dran.
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS techniken text;
+      ALTER TABLE funding_coverage ADD COLUMN IF NOT EXISTS screen_version int NOT NULL DEFAULT 1;
+      CREATE INDEX IF NOT EXISTS idx_fcov_version ON funding_coverage (screen_version);
     `,
   });
   results.push({ step: "funding_coverage", status: e2b ? "error" : "ok", error: e2b?.message });
+
+  // funding_url_suche: Gedächtnis der URL-Suche.
+  //
+  // WARUM (18.08.2026): Das Screening kann nur prüfen, was der Kommunen-Outreach
+  // zufällig mitgesammelt hat. Für rund 9.700 Gemeinden kennen wir die
+  // Verwaltungs-Website, aber keine Förderseite — was die auflegen, sieht
+  // niemand. Eigene Tabelle statt einer Spalte an funding_coverage, weil es eine
+  // andere Frage ist: „Wo steht die Seite?" gegen „Was steht darauf?". Beide
+  // haben eigene Fehlversuche, eigene Versionen und einen eigenen Fortschritt.
+  //
+  // Der Fund wandert von hier nach kommunen_kontakt.thema_foerderung_url — das
+  // Feld, aus dem sich das Screening bedient. Ohne diese Verzahnung wäre die
+  // Suche eine Liste, die jemand von Hand weiterreichen müsste.
+  const { error: e2u } = await supabase.rpc("exec_sql", {
+    sql: `
+      CREATE TABLE IF NOT EXISTS funding_url_suche (
+        region_id text PRIMARY KEY,
+        website text,
+        verdikt text NOT NULL,
+        gefunden_url text,
+        linktext text,
+        punkte int,
+        such_version int NOT NULL DEFAULT 1,
+        checked_at timestamptz NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS idx_fus_verdikt ON funding_url_suche (verdikt, checked_at);
+      CREATE INDEX IF NOT EXISTS idx_fus_version ON funding_url_suche (such_version);
+    `,
+  });
+  results.push({ step: "funding_url_suche", status: e2u ? "error" : "ok", error: e2u?.message });
 
   // funding_history: Verlauf der Förderprogramme — jeder Zustandswechsel, den
   // wir feststellen, bevor er überschrieben wird.
@@ -126,6 +172,7 @@ export async function GET(req: NextRequest) {
       ALTER TABLE funding_programs ENABLE ROW LEVEL SECURITY;
       ALTER TABLE funding_checks ENABLE ROW LEVEL SECURITY;
       ALTER TABLE funding_coverage ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE funding_url_suche ENABLE ROW LEVEL SECURITY;
       ALTER TABLE funding_history ENABLE ROW LEVEL SECURITY;
       DO $$ BEGIN
         IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'fp_anon_read') THEN

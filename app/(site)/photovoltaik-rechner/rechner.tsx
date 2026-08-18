@@ -50,8 +50,9 @@ import ResultHeroCard from "./_components/ResultHeroCard";
 // Verbraucher haben je einen eigenen Abschnitt).
 import ResultStats from "./_components/ResultStats";
 import ResultActions from "./_components/ResultActions";
-import ResultFunding from "./_components/ResultFunding";
-import { stackFunding, type FundingProgram } from "../../../lib/funding-programs";
+import ResultFunding from "../../../components/ResultFunding";
+import { stackFunding } from "../../../lib/funding-programs";
+import { useFoerderung } from "../../../lib/use-foerderung";
 
 // Großverbraucher-Detailfragen in ihrer Akkordeon-Reihenfolge. Pro aktivem
 // Verbraucher wird immer nur die erste noch offene Frage aufgeklappt.
@@ -224,12 +225,12 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // (/api/funding liefert die Programme mit). `foe` (Programm-ID) kann ein
   // Programm vorab scharf schalten (Link von einer Stadt-/Förderseite).
   const seedFoeId = typeof initialParams?.foe === "string" ? initialParams.foe : null;
-  type FundingCandidate = { ort: string; ags: string; programs: FundingProgram[] };
-  const [fundingCandidates, setFundingCandidates] = useState<FundingCandidate[] | null>(null);
-  const [fundingAgs, setFundingAgs] = useState<string | null>(null);
-  const [fundingPrograms, setFundingPrograms] = useState<FundingProgram[]>([]);
+  // Abruf, Mehrdeutigkeit einer PLZ und Vorbelegung stecken im geteilten Hook —
+  // Balkon- und Wärmepumpen-Rechner benutzen denselben.
+  const foerderQuelle = useFoerderung("pv", seedFoeId);
+  const fundingPrograms = foerderQuelle.programme;
+  // Ob die Förderung eingerechnet wird, bleibt hier: eine Anzeige-Entscheidung.
   const [fundingEnabled, setFundingEnabled] = useState<boolean>(!!seedFoeId);
-  const [fundingLoading, setFundingLoading] = useState(false);
 
   // Einmaliger PLZ-Toast beim ersten Anzeigen des Ergebnisses.
   const [plzToast, setPlzToast] = useState(false);
@@ -273,59 +274,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // Dach und Gebäude reicht.
   const [folgeToast, setFolgeToast] = useState<string | null>(null);
 
-  // PLZ → zutreffende Förderprogramme (Kandidaten serverseitig auflösen)
-  const fetchFunding = async (inputPlz: string) => {
-    if (!/^\d{5}$/.test(inputPlz)) return;
-    setFundingLoading(true);
-    try {
-      const res = await fetch(`/api/funding?plz=${inputPlz}`);
-      const data = await res.json();
-      const candidates: FundingCandidate[] = Array.isArray(data.candidates) ? data.candidates : [];
-      setFundingCandidates(candidates);
-      if (candidates.length === 1) {
-        // Eindeutig → Programme direkt übernehmen.
-        setFundingAgs(candidates[0].ags);
-        setFundingPrograms(candidates[0].programs);
-      } else {
-        // Mehrdeutig → Nutzer fragen (X oder Y?), bis dahin keine Programme aktiv.
-        setFundingAgs(null);
-        setFundingPrograms([]);
-      }
-    } catch {
-      setFundingCandidates([]);
-      setFundingAgs(null);
-      setFundingPrograms([]);
-    }
-    setFundingLoading(false);
-  };
-
-  // Bei mehrdeutiger PLZ: gewählten Ort übernehmen (Programme liegen schon vor).
-  const chooseFundingAgs = (ags: string) => {
-    setFundingAgs(ags);
-    setFundingPrograms(fundingCandidates?.find((c) => c.ags === ags)?.programs ?? []);
-  };
-
-  // `foe`-Seed: Programm beim Laden serverseitig auflösen + scharf schalten.
-  useEffect(() => {
-    if (!seedFoeId) return;
-    (async () => {
-      setFundingLoading(true);
-      try {
-        const res = await fetch(`/api/funding?foe=${seedFoeId}`);
-        const data = await res.json();
-        if (Array.isArray(data.programs) && data.programs.length) {
-          setFundingPrograms(data.programs);
-          setFundingAgs(typeof data.ags === "string" ? data.ags : null);
-        }
-      } catch { /* ignore */ }
-      setFundingLoading(false);
-    })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   // PLZ → PVGIS Ertrag laden
   const fetchPvgis = async (inputPlz: string) => {
     if (!/^\d{5}$/.test(inputPlz)) return;
-    fetchFunding(inputPlz);
+    foerderQuelle.ausPlz(inputPlz);
     setPlzLoading(true);
     try {
       // PLZ → Koordinaten (lazy load)
@@ -418,7 +370,7 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
   // aktiviert) reduziert sie zur effektiven Investition, mit der gerechnet wird.
   const bruttoKosten = oKosten !== null ? oKosten : estimateCost(kwp, spKwh, prices);
   const fundingStack = useMemo(
-    () => stackFunding(fundingPrograms, kwp, spKwh, bruttoKosten),
+    () => stackFunding(fundingPrograms, { technik: "pv", kwp, speicherKwh: spKwh, kosten: bruttoKosten }),
     [fundingPrograms, kwp, spKwh, bruttoKosten],
   );
   const foerderung = fundingEnabled ? fundingStack.total : 0;
@@ -1447,10 +1399,10 @@ export default function PVRechner({ initialParams }: { initialParams?: Record<st
             )}
 
             <ResultFunding
-              loading={fundingLoading}
-              candidates={fundingCandidates}
-              chosenAgs={fundingAgs}
-              onChooseAgs={chooseFundingAgs}
+              loading={foerderQuelle.laedt}
+              candidates={foerderQuelle.kandidaten}
+              chosenAgs={foerderQuelle.ags}
+              onChooseAgs={foerderQuelle.waehleOrt}
               programs={fundingPrograms}
               applied={fundingStack.applied}
               total={fundingStack.total}

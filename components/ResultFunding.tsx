@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { v, iconSizes } from "../../../../lib/theme";
-import { IconArrowRight } from "../../../../components/Icons";
-import Modal from "../../../../components/Modal";
-import { FundingStatusBadge, FundingRates, FundingConditions } from "../../../../components/FundingProgramParts";
-import { fundingStandLabel, type FundingProgram } from "../../../../lib/funding-programs";
+import { v, iconSizes } from "../lib/theme";
+import { IconArrowRight } from "./Icons";
+import Modal from "./Modal";
+import { FundingStatusBadge, FundingRates, FundingConditions } from "./FundingProgramParts";
+import { fundingStandLabel, FUNDING_TECHNIK_LABEL, type FundingProgram, type FundingTechnik } from "../lib/funding-programs";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 
@@ -59,11 +59,17 @@ interface ResultFundingProps {
   enabled: boolean;
   onToggle: (b: boolean) => void;
   brutto: number;
+  /**
+   * Welche Technik gerechnet wird. Steuert nur den Wortlaut — welche Programme
+   * überhaupt hier ankommen, entscheidet `useFoerderung`. Die Voreinstellung
+   * hält die Bestandsaufrufe unverändert.
+   */
+  technik?: FundingTechnik;
 }
 
 export default function ResultFunding({
   loading, candidates, chosenAgs, onChooseAgs,
-  programs, applied, total, enabled, onToggle, brutto,
+  programs, applied, total, enabled, onToggle, brutto, technik = "pv",
 }: ResultFundingProps) {
   const [modalProgram, setModalProgram] = useState<FundingProgram | null>(null);
 
@@ -188,7 +194,7 @@ export default function ResultFunding({
               pro Anlage berechnen lässt. Die Details kannst du dir direkt ansehen.
             </>
           ) : (
-            <>Für deinen Ort kennen wir kein aktives kommunales Förderprogramm. Bundesweit gilt die 0 % Mehrwertsteuer auf PV — die steckt bereits in den Marktpreisen.</>
+            <>Für deinen Ort kennen wir kein aktives kommunales Förderprogramm für {FUNDING_TECHNIK_LABEL[technik]}. Bundesweit gilt die 0 % Mehrwertsteuer auf Photovoltaik und Speicher — die steckt bereits in den Marktpreisen.</>
           )}
         </div>
       )}
