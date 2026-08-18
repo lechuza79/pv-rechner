@@ -16,6 +16,20 @@ import { FLOWS, NOCH_OHNE_FLOWNAV, NOCH_NICHT_BEDIENBAR, MAX_WEGE_JE_FLOW } from
  *   2. Der Weg erreicht ein Ergebnis — kein Schritt führt ins Leere.
  *   3. Kein Konsolenfehler, keine nicht abgefangene Ausnahme unterwegs.
  *
+ * ZWEI ARBEITER, nicht acht (--workers=2 in package.json). Jeder Flow fährt
+ * einen eigenen Browser und baut je Weg die Seite neu auf; sieben davon
+ * gleichzeitig lasten die Maschine so aus, dass React auf den frisch geladenen
+ * Seiten nicht mehr rechtzeitig übernimmt. Der Klick geht dann ins Leere, und
+ * der Läufer meldet „Option ließ sich nicht wählen" für eine Option, die von
+ * Hand einwandfrei funktioniert — gemessen: bei voller Parallelität fielen
+ * sporadisch bis zu fünf Flows so aus, bei zweien keiner. Das ist eine Grenze
+ * der Maschine, kein Fehler der Oberfläche, und sie gehört hierher statt in
+ * eine Wiederholungsschleife, die Rot in Grün verwandelt.
+ *
+ * (Nicht versucht werden sollte „auf Netzruhe warten": Diese Seiten laden
+ * Preise und Förderdaten nach, das Warten lief je Seitenaufruf in die
+ * Zeitgrenze und verdoppelte den Lauf auf über 20 Minuten.)
+ *
  * Warum das nötig war: Beim Bau des Förder-Checks steckten zwei Fehler in
  * genau diesen Zwischenzuständen — ein Schritt, dessen Weiter-Knopf trotz
  * sichtbarem Wert gesperrt blieb, und eine Auswahl, die ein Programm falsch
@@ -114,10 +128,26 @@ async function waehle(page: Page, label: string) {
   // und anklickbar, reagiert aber erst, wenn React ihn übernommen hat. Ein
   // einzelner Klick in dieses Fenster ist verloren — längeres Warten danach
   // holt ihn nicht zurück, weil das Ereignis nie einen Empfänger hatte.
-  await expect(async () => {
-    await option.click();
-    await expect(option).toHaveAttribute("aria-pressed", "true", { timeout: 1_000 });
-  }).toPass({ timeout: 20_000 });
+  try {
+    await expect(async () => {
+      await option.click();
+      await expect(option).toHaveAttribute("aria-pressed", "true", { timeout: 1_000 });
+    }).toPass({ timeout: 20_000 });
+  } catch {
+    // Die nackte Meldung von toPass lautet nur „Timeout while waiting on the
+    // predicate" — sie sagt weder, WELCHE Option klemmt, noch auf welchem Weg.
+    // Bei hunderten Wegen ist das nicht auswertbar, und genau daran hat eine
+    // Fehlersuche schon eine Runde verloren.
+    const zustand = await option.evaluate((e) => ({
+      pressed: e.getAttribute("aria-pressed"),
+      sichtbar: (e as HTMLElement).offsetParent !== null,
+      deaktiviert: (e as HTMLButtonElement).disabled,
+    })).catch(() => null);
+    throw new Error(
+      `Option „${label}" ließ sich nicht wählen (20 s lang kein aria-pressed=true). ` +
+        `Zustand: ${JSON.stringify(zustand)}`,
+    );
+  }
 }
 
 /**
