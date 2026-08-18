@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { uebrigeFragenBeantworten } from "./flows";
 
 // End-to-end smoke for the heat pump calculator flow.
 // Five steps: Situation, Wohnfläche, Dämmstandard, Haushalt, Heizsystem (+ WP-Typ).
@@ -9,23 +10,28 @@ test("Wärmepumpe flow lands on a result with TCO and amortization", async ({ pa
 
   // Step 0: Situation — Bestandsgebäude (Sanierungsfall, BEG-relevant)
   await page.getByText("Bestandsgebäude", { exact: false }).click();
+  await uebrigeFragenBeantworten(page);
   await page.getByRole("button", { name: /weiter/i }).click();
 
   // Step 1: Wohnfläche — 140 m² (typical EFH)
   await page.getByText("140 m²", { exact: false }).first().click();
+  await uebrigeFragenBeantworten(page);
   await page.getByRole("button", { name: /weiter/i }).click();
 
   // Step 2: Dämmstandard — Teilsaniert
   await page.getByText("Teilsaniert", { exact: false }).first().click();
+  await uebrigeFragenBeantworten(page);
   await page.getByRole("button", { name: /weiter/i }).click();
 
   // Step 3: Haushalt — 3-4 persons
   await page.getByText("3–4", { exact: false }).first().click();
+  await uebrigeFragenBeantworten(page);
   await page.getByRole("button", { name: /weiter/i }).click();
 
   // Step 4: Heizsystem — Fußbodenheizung + Luft/Wasser-WP (defaults are picked)
   await page.getByText("Fußbodenheizung", { exact: false }).first().click();
   await page.getByText("Luft/Wasser", { exact: false }).first().click();
+  await uebrigeFragenBeantworten(page);
   await page.getByRole("button", { name: /berechnen|ergebnis|fertig/i }).click();
 
   // Result: heat-load, JAZ, TCO comparison, amortization
@@ -48,11 +54,19 @@ test("Grüngas-Modal nennt den Geltungsbereich vollständig und sichtbar", async
   await page.goto("/waermepumpe-rechner");
 
   await page.getByText("Neubau", { exact: false }).first().click();
-  for (let i = 0; i < 8; i++) {
+  // Durch den Flow: In JEDEM Schritt erst die offenen Fragen beantworten, dann
+  // Weiter. Seit dem Flow-Umbau (Betreiber-Vorgabe: kein Schritt startet
+  // vorbelegt) bleibt Weiter sonst ausgegraut, und der Test hängt am Knopf statt
+  // an dem, was er prüfen soll. Der Helfer ist derselbe, den der Flow-Läufer
+  // benutzt — geteilt in e2e/flows.ts, damit beide nicht auseinanderlaufen.
+  for (let i = 0; i < 12; i++) {
+    await uebrigeFragenBeantworten(page);
     const weiter = page.getByRole("button", { name: /^weiter$/i });
     if (!(await weiter.count())) break;
-    await weiter.click();
+    await weiter.first().click();
   }
+  await uebrigeFragenBeantworten(page);
+  await uebrigeFragenBeantworten(page);
   await page.getByRole("button", { name: /berechnen|ergebnis|fertig/i }).click();
 
   await page.getByRole("button", { name: "Mehr erfahren →", exact: true }).click();
