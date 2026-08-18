@@ -648,7 +648,7 @@ export default async function LohntSichPvMitSpeicherPage() {
             { href: "/einspeiseverguetung-tabelle", label: "Einspeisevergütung: Tabelle aller Sätze seit 2000", desc: "Zum Nachschlagen: aktuelle Sätze, amtliche Monatswerte 2012–2022 für Bestandsanlagen und die Jahreswerte seit 2000." },
             { href: "/pv-simulation", label: "PV-Simulation: Was produziert ein Dach gerade?", desc: "Live-Leistung einer PV-Anlage an deinem Standort, gerechnet aus aktuellen Wetterdaten." },
             { href: "/photovoltaik-foerderung", label: "PV-Förderung vor Ort", desc: "Welche Zuschüsse es in deinem Bundesland und deiner Stadt gerade gibt." },
-            { href: "/balkonkraftwerk-rechner", label: "Balkonkraftwerk-Rechner", desc: "Für Miete oder ohne eigenes Dach: was Steckersolar bringt und wann es sich amortisiert." },
+            { href: "/balkonkraftwerk/rechner", label: "Balkonkraftwerk-Rechner", desc: "Für Miete oder ohne eigenes Dach: was Steckersolar bringt und wann es sich amortisiert." },
             { href: "/methodik", label: "So rechnen wir" },
             { href: "/datenstand", label: "Aktuelle Preise & Annahmen" },
             { href: "/glossar", label: "Glossar" },
