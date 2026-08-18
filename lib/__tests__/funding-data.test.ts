@@ -98,33 +98,33 @@ describe("fundingForAgs geo-matching", () => {
 
 describe("fundingAmount math", () => {
   it("returns non-computable for undefined or free-text-only programs", () => {
-    expect(fundingAmount(undefined, 10, 5, 20000).computable).toBe(false);
+    expect(fundingAmount(undefined, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).computable).toBe(false);
   });
 
   it("applies €/kWp with socket and cap", () => {
     // Düsseldorf: 1000 € Sockel + 200 €/kWp, Cap 10.000 €
     const p = getFundingProgram("duesseldorf-klimafreundlich")!;
-    const r = fundingAmount(p, 10, 0, 20000);
+    const r = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 20000 });
     expect(r.computable).toBe(true);
     expect(r.total).toBe(1000 + 10 * 200); // 3000, well under cap
   });
 
   it("caps the PV grant at pvCap", () => {
     const p = getFundingProgram("duesseldorf-klimafreundlich")!;
-    const r = fundingAmount(p, 100, 0, 200000); // huge system → cap bites
+    const r = fundingAmount(p, { technik: "pv", kwp: 100, speicherKwh: 0, kosten: 200000 }); // huge system → cap bites
     expect(r.total).toBe(10000);
   });
 
   it("applies percent-of-cost programs against the gross cost", () => {
     const p = getFundingProgram("frankfurt-klimabonus")!; // 20 %
-    const r = fundingAmount(p, 10, 5, 25000);
+    const r = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 25000 });
     expect(r.total).toBe(5000);
   });
 
   it("respects a storage minimum (no grant below speicherMin)", () => {
     const p = getFundingProgram("koeln-pv")!; // tiered, speicherMin set
-    const withTiny = fundingAmount(p, 10, 1, 20000);
-    const withReal = fundingAmount(p, 10, 10, 20000);
+    const withTiny = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 1, kosten: 20000 });
+    const withReal = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 20000 });
     expect(withReal.total).toBeGreaterThan(withTiny.total);
   });
 
@@ -132,9 +132,9 @@ describe("fundingAmount math", () => {
     const p = allFundingPrograms().find(f => f.speicherPerKwh && (f.speicherMin ?? 0) > 0);
     expect(p).toBeTruthy();
     const min = p!.speicherMin!;
-    const noStorage = fundingAmount(p, 10, 0, 20000).total;
-    const below = fundingAmount(p, 10, min - 1, 20000).total;
-    const atMin = fundingAmount(p, 10, min, 20000).total;
+    const noStorage = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 20000 }).total;
+    const below = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: min - 1, kosten: 20000 }).total;
+    const atMin = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: min, kosten: 20000 }).total;
     expect(below).toBe(noStorage);        // under the minimum → no storage grant
     expect(atMin).toBeGreaterThan(below);  // at the minimum → per-kWh grant applies
   });
@@ -151,7 +151,7 @@ describe("stackFunding", () => {
 
   it("only counts active+computable programs and caps at gross cost", () => {
     const programs = belegt(fundingForAgs("06412000")); // Frankfurt (aktiv, 20%)
-    const { total, applied } = stackFunding(programs, 10, 5, 25000, HEUTE);
+    const { total, applied } = stackFunding(programs, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 25000 }, HEUTE);
     expect(total).toBe(5000);
     expect(applied.map((a) => a.program.id)).toContain("frankfurt-klimabonus");
   });
@@ -163,17 +163,17 @@ describe("stackFunding", () => {
     // Aktualität dann nicht belegen, und eine versprochene Förderung, die es
     // nicht mehr gibt, ist teurer als eine verschwiegene, die es noch gibt.
     const ohneBeleg = fundingForAgs("06412000");
-    expect(stackFunding(ohneBeleg, 10, 5, 25000, HEUTE).total).toBe(0);
+    expect(stackFunding(ohneBeleg, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 25000 }, HEUTE).total).toBe(0);
   });
 
   it("yields zero where no active computable program applies", () => {
     const programs = fundingForAgs("09162000"); // Munich → only bund (no € rule)
-    expect(stackFunding(programs, 10, 5, 25000).total).toBe(0);
+    expect(stackFunding(programs, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 25000 }).total).toBe(0);
   });
 
   it("never exceeds the gross cost", () => {
     const programs = fundingForAgs("06412000");
-    const { total } = stackFunding(programs, 5, 0, 1000); // tiny brutto
+    const { total } = stackFunding(programs, { technik: "pv", kwp: 5, speicherKwh: 0, kosten: 1000 }); // tiny brutto
     expect(total).toBeLessThanOrEqual(1000);
   });
 
@@ -186,8 +186,8 @@ describe("stackFunding", () => {
     const p = getFundingProgram("wuerzburg-klimastadt")!;
     expect(p.status).toBe("aktiv");
     expect(p.pvPerKwp).toBeUndefined();
-    expect(fundingAmount(p, 8, 0, 16000).computable).toBe(false);
-    expect(stackFunding(fundingForAgs("09663000"), 10, 5, 20000).total).toBe(0);
+    expect(fundingAmount(p, { technik: "pv", kwp: 8, speicherKwh: 0, kosten: 16000 }).computable).toBe(false);
+    expect(stackFunding(fundingForAgs("09663000"), { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).total).toBe(0);
   });
 
   // Regression: Bad Homburg amounts are correct but the program is not reliably
@@ -195,10 +195,10 @@ describe("stackFunding", () => {
   it("Bad Homburg (status unsicher) is not auto-applied", () => {
     const p = getFundingProgram("badhomburg-energiespar")!;
     expect(p.status).toBe("unsicher");
-    const a = fundingAmount(p, 10, 5, 20000);
+    const a = fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 });
     expect(a.computable).toBe(true);
     expect(a.active).toBe(false); // computable, but not active → no deduction
-    expect(stackFunding(fundingForAgs("06434003"), 10, 5, 20000).total).toBe(0);
+    expect(stackFunding(fundingForAgs("06434003"), { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).total).toBe(0);
   });
 });
 
@@ -207,13 +207,13 @@ describe("funding batch 2 (Juni 2026)", () => {
   it("Potsdam funds roof PV (200 €/kWp, cap 1.200) and a flat storage grant", () => {
     const p = getFundingProgram("potsdam-klimaschutz")!;
     expect(p.status).toBe("aktiv");
-    expect(fundingAmount(p, 5, 0, 12000).total).toBe(5 * 200);
-    expect(fundingAmount(p, 10, 0, 20000).total).toBe(1200);
-    expect(fundingAmount(p, 10, 8, 25000).total).toBe(1200 + 1000);
-    expect(fundingAmount(p, 10, 3, 25000).total).toBe(1200);
+    expect(fundingAmount(p, { technik: "pv", kwp: 5, speicherKwh: 0, kosten: 12000 }).total).toBe(5 * 200);
+    expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 0, kosten: 20000 }).total).toBe(1200);
+    expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 8, kosten: 25000 }).total).toBe(1200 + 1000);
+    expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 3, kosten: 25000 }).total).toBe(1200);
     // Mit Quellenbeleg (im Betrieb aus der Datenbank) — siehe Beleg-Verfall.
     const belegt = fundingForAgs("12054000").map((x) => ({ ...x, lastVerified: "2026-08-16" }));
-    expect(stackFunding(belegt, 10, 8, 25000, "2026-08-16").total).toBe(2200);
+    expect(stackFunding(belegt, { technik: "pv", kwp: 10, speicherKwh: 8, kosten: 25000 }, "2026-08-16").total).toBe(2200);
   });
   it("Hannover proKlima is info-only (not auto-deducted) — it covers only 6 of the ~21 Kreis municipalities", () => {
     const p = getFundingProgram("hannover-proklima")!;
@@ -222,15 +222,15 @@ describe("funding batch 2 (Juni 2026)", () => {
     // non-eligible towns (e.g. Burgdorf) and wrongly deduct 100 €/kWp. So it is
     // shown as a hint but never computed/subtracted until a precise 8-digit AGS
     // allowlist of the 6 eligible municipalities exists.
-    expect(fundingAmount(p, 15, 0, 25000).computable).toBe(false);
-    expect(fundingAmount(p, 15, 0, 25000).total).toBe(0);
+    expect(fundingAmount(p, { technik: "pv", kwp: 15, speicherKwh: 0, kosten: 25000 }).computable).toBe(false);
+    expect(fundingAmount(p, { technik: "pv", kwp: 15, speicherKwh: 0, kosten: 25000 }).total).toBe(0);
   });
   it("Dortmund (ausgeschoepft) and Essen (eingestellt) are not auto-applied", () => {
     expect(getFundingProgram("dortmund-pv")!.status).toBe("ausgeschoepft");
     // Council-Prüfung Juli 2026: Essen zum 03.07.2025 gestoppt → eingestellt.
     expect(getFundingProgram("essen-solar")!.status).toBe("eingestellt");
-    expect(stackFunding(fundingForAgs("05913000"), 10, 5, 20000).total).toBe(0);
-    expect(stackFunding(fundingForAgs("05113000"), 10, 5, 20000).total).toBe(0);
+    expect(stackFunding(fundingForAgs("05913000"), { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).total).toBe(0);
+    expect(stackFunding(fundingForAgs("05113000"), { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).total).toBe(0);
   });
 });
 
@@ -244,16 +244,16 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     const p = getFundingProgram("schweinfurt-pv")!;
     expect(p.status).toBe("eingestellt");
     // Rate-Mathematik dokumentiert das historische Programm — wird aber nicht angerechnet:
-    expect(fundingAmount(p, 8, 0, 16000).total).toBe(800);
-    expect(fundingAmount(p, 8, 0, 16000).active).toBe(false);
-    expect(stackFunding(fundingForAgs("09662000"), 10, 6, 22000).total).toBe(0);
+    expect(fundingAmount(p, { technik: "pv", kwp: 8, speicherKwh: 0, kosten: 16000 }).total).toBe(800);
+    expect(fundingAmount(p, { technik: "pv", kwp: 8, speicherKwh: 0, kosten: 16000 }).active).toBe(false);
+    expect(stackFunding(fundingForAgs("09662000"), { technik: "pv", kwp: 10, speicherKwh: 6, kosten: 22000 }).total).toBe(0);
   });
   it("Mannheim: aktiv (Neustart 03/2026), aber ohne pauschalen €/kWp-Abzug", () => {
     const p = getFundingProgram("mannheim-solarbonus")!;
     expect(p.status).toBe("aktiv");
     expect(p.pvPerKwp).toBeUndefined();
-    expect(fundingAmount(p, 10, 5, 20000).computable).toBe(false);
-    expect(stackFunding(fundingForAgs("08222000"), 10, 5, 20000).total).toBe(0);
+    expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).computable).toBe(false);
+    expect(stackFunding(fundingForAgs("08222000"), { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).total).toBe(0);
   });
   // Am 07.08.2026 aus der Förderrichtlinie selbst abgeschrieben (Gemeinderatsbeschluss
   // vom 11.03.2026, docs/quellen/Mannheim_SolarBonus_Foerderrichtlinie_2026-03-11.pdf).
@@ -285,8 +285,8 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
   });
   it("Wolfsburg (pausiert) and Bottrop (ausgeschoepft) are not auto-applied", () => {
     expect(getFundingProgram("wolfsburg-pv")!.status).toBe("pausiert");
-    expect(stackFunding(fundingForAgs("03103000"), 10, 5, 20000).total).toBe(0);
-    expect(stackFunding(fundingForAgs("05512000"), 10, 5, 20000).total).toBe(0); // Bottrop
+    expect(stackFunding(fundingForAgs("03103000"), { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).total).toBe(0);
+    expect(stackFunding(fundingForAgs("05512000"), { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).total).toBe(0); // Bottrop
   });
 
   // Frankfurt: the Mini-PV (Balkonkraftwerk) pot has been empty since 2025-06-03
@@ -313,9 +313,9 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(p.url).not.toMatch(/foerderprogramme\/2024-pv-stromspeicher/);
     expect(p.url).toMatch(/^https:\/\/www\.kreis-bergstrasse\.de\//);
     // Die Rate bleibt dokumentiert, wird aber nicht angerechnet.
-    expect(fundingAmount(p, 10, 10, 25000).total).toBe(1800);
-    expect(fundingAmount(p, 10, 10, 25000).active).toBe(false);
-    expect(stackFunding(fundingForAgs("06431000"), 10, 10, 25000).total).toBe(0);
+    expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).total).toBe(1800);
+    expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).active).toBe(false);
+    expect(stackFunding(fundingForAgs("06431000"), { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).total).toBe(0);
     // Keine abgelaufene Terminzusage mehr im Fließtext ("ab Mitte Juli").
     expect(p.conditions.join(" ")).not.toMatch(/Mitte Juli/);
   });
@@ -334,8 +334,8 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     // Kein automatischer Abzug: der Zuschuss hängt am Anteil über der PV-Pflicht
     // und der Topf ist geteilt — ein gerechneter Betrag wäre ein Geldversprechen.
     expect(p.pvPerKwp).toBeUndefined();
-    expect(fundingAmount(p, 10, 5, 20000).computable).toBe(false);
-    expect(stackFunding(fundingForAgs("08221000"), 10, 5, 20000).total).toBe(0);
+    expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).computable).toBe(false);
+    expect(stackFunding(fundingForAgs("08221000"), { technik: "pv", kwp: 10, speicherKwh: 5, kosten: 20000 }).total).toBe(0);
     // Beide €/kWp-Sätze nennen ihren Höchstbetrag, zellgleich zur Richtlinie.
     const wert = (teil: string) => p.rates.find((r) => r.label.includes(teil))!.value;
     expect(wert("Dach-PV")).toBe("100 €/kWp, max. 10.000 €");
@@ -371,8 +371,8 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     // Die tote Domain greendeal-regensburg.de löst nicht mehr auf.
     expect(p.url).not.toMatch(/greendeal-regensburg\.de/);
     // Ein 10-kWp-Fall bekommt den PV-Zuschuss, aber nichts für 10 kWh Speicher.
-    expect(fundingAmount(p, 10, 10, 25000).total).toBe(1000);
-    expect(fundingAmount(p, 30, 10, 60000).total).toBe(1500); // Deckel greift
+    expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).total).toBe(1000);
+    expect(fundingAmount(p, { technik: "pv", kwp: 30, speicherKwh: 10, kosten: 60000 }).total).toBe(1500); // Deckel greift
   });
 
   // Memmingen: Die Trägerseite bittet am 03.08.2026 wörtlich darum, keine Anträge
@@ -385,7 +385,7 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(p.status).toBe("ausgeschoepft");
     // Die Startseite als Quellenangabe war kein Beleg — es muss die Förderseite sein.
     expect(p.url).toMatch(/memmingen\.de\/.+foerderung/);
-    expect(stackFunding(fundingForAgs("09764000"), 10, 10, 25000).total).toBe(0);
+    expect(stackFunding(fundingForAgs("09764000"), { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).total).toBe(0);
     // Dach-PV war hier nie förderfähig — das darf beim Statuswechsel nicht kippen.
     expect(p.pvPerKwp).toBeUndefined();
   });
@@ -402,7 +402,7 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(p.status).toBe("ausgeschoepft");
     expect(p.pvPerKwp).toBeUndefined();
     expect(p.pvCap).toBeUndefined();
-    expect(stackFunding(fundingForAgs("08311000"), 10, 10, 25000).total).toBe(0);
+    expect(stackFunding(fundingForAgs("08311000"), { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).total).toBe(0);
     // Die Sätze bleiben stehen: gestoppt ist das Geld, nicht die Richtlinie.
     expect(p.rates.length).toBeGreaterThanOrEqual(3);
     // Der Grund samt Stichtag steht sichtbar dabei, sonst wirkt die leere Kachel
@@ -439,7 +439,7 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     expect(p.rates).toHaveLength(4);
     // Kein automatischer Abzug — die vier Bausteine treffen den Standardfall nicht.
     expect(p.pvPerKwp).toBeUndefined();
-    expect(stackFunding(fundingForAgs("09663000"), 10, 10, 25000).total).toBe(0);
+    expect(stackFunding(fundingForAgs("09663000"), { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).total).toBe(0);
   });
 
   // Stuttgart: Sätze und Deckel aus der Förderrichtlinie vom 1. Mai 2026 (PDF in
@@ -464,8 +464,8 @@ describe("funding batch 3 (Katalog) — Council-Korrekturen", () => {
     const p = getFundingProgram("potsdam-klimaschutz")!;
     expect(p.pvPerKwp).toBe(200);
     expect(p.pvCap).toBe(1200);
-    expect(fundingAmount(p, 10, 10, 25000).total).toBe(2200); // 1.200 PV + 1.000 Speicher
-    expect(fundingAmount(p, 10, 4, 25000).total).toBe(1200); // unter 5 kWh kein Speichergeld
+    expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 10, kosten: 25000 }).total).toBe(2200); // 1.200 PV + 1.000 Speicher
+    expect(fundingAmount(p, { technik: "pv", kwp: 10, speicherKwh: 4, kosten: 25000 }).total).toBe(1200); // unter 5 kWh kein Speichergeld
     const stecker = p.rates.find((r) => /steckersolar/i.test(r.label))!;
     expect(stecker.label).not.toMatch(/0,6/);
     expect(stecker.label).toMatch(/0,8 kW/);

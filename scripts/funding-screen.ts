@@ -21,12 +21,28 @@
  * welche Sätze gelten oder ob eine Förderung noch läuft: Das braucht Lesen und
  * Urteilsvermögen und bleibt beim Wächter-Lauf. Ein `treffer` heißt „hier lohnt
  * sich das Hinsehen", nicht „hier gibt es Geld".
+ *
+ * DREI TECHNIKEN STATT EINER (18.08.2026): Bis hierhin suchte der Lauf nur nach
+ * Photovoltaik; Wärmepumpen kannte er gar nicht, und Steckersolar lag in
+ * derselben Wortliste wie Dach-PV — Balkon-Treffer waren deshalb nicht als
+ * solche erkennbar und blieben liegen. Die Einordnung selbst steht jetzt in
+ * `lib/funding-screen-erkennung.ts`, wo sie einen Test hat.
+ *
+ * Und damit das nicht folgenlos bleibt: Jede Zeile trägt die Version der
+ * Erkennung, mit der sie entstand. Die knapp 900 bereits abgehakten Seiten
+ * wurden mit der PV-only-Fassung geprüft und kommen von selbst wieder dran —
+ * sonst stünde „95 % gescreent" da, während für zwei von drei Techniken nie
+ * jemand hingesehen hat.
  */
 
 import { resolve } from "node:path";
 import { readFileSync, existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
 import { FUNDING_PROGRAMS } from "../lib/funding-programs";
+import {
+  einordnen, sichtbarerText, SCREEN_VERSION,
+  type ScreenVerdikt, type ScreenTechnik,
+} from "../lib/funding-screen-erkennung";
 
 function loadEnvFile(): void {
   const envPath = resolve(process.cwd(), ".env.local");
@@ -56,92 +72,76 @@ function zahl(name: string, standard: number): number {
 }
 
 /**
- * Die Einordnung einer Seite. Bewusst grob und nachvollziehbar — ein Verdikt,
- * das niemand nachrechnen kann, taugt nicht als Arbeitsgrundlage.
- */
-type Verdikt =
-  /** PV/Solar UND ein Förder-Signal (Zuschuss, Betrag) — lohnt das Hinsehen. */
-  | "treffer"
-  /** Spricht über PV, aber erkennbar als beendet/ausgelaufen. */
-  | "ausgelaufen"
-  /** Förderseite ohne jeden PV-Bezug (Fassaden, Innenstadt, Wohnraum …). */
-  | "kein-pv"
-  /** Seite nicht abrufbar — kommt beim nächsten Lauf wieder dran. */
-  | "unerreichbar";
-
-function sichtbarerText(html: string): string {
-  return html
-    .replace(/<(script|style|noscript|svg)[^>]*>[\s\S]*?<\/\1>/gi, " ")
-    .replace(/<!--[\s\S]*?-->/g, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&[a-z]+;|&#\d+;/gi, " ")
-    .replace(/\s+/g, " ")
-    .toLowerCase();
-}
-
-const PV = /(photovoltaik|solaranlage|solarstrom|balkonkraftwerk|stecker-?pv|batteriespeicher|stromspeicher)/g;
-/** Ein konkreter Geldbetrag — nicht bloß das Wort „Förderung". */
-const BETRAG = /(\d[\d.]*\s*(?:€|euro)|€\s*\d|\d+\s*(?:prozent|%)\s*(?:der|zuschuss))/;
-const ZUSCHUSS = /(zuschuss|gefördert|fördersatz|förderhöhe|förderbetrag|wird gefördert)/;
-const BEENDET = /(beendet|eingestellt|ausgelaufen|ausgeschöpft|keine anträge|nicht mehr möglich|geschlossen|außer kraft|stehen keine förderprogramme|derzeit keine förder|zurzeit keine förder)/;
-
-/**
- * Einordnung — bewusst streng auf NÄHE gebaut.
+ * Alle Zeilen einer Tabelle — PostgREST liefert stumm höchstens 1.000.
  *
- * Erste Fassung fragte nur „kommt Photovoltaik vor UND irgendwo Geld?". Damit
- * meldete sie eine Oldenburger Seite über Zuschüsse zu Verhütungsmitteln als
- * Treffer: Das Wort Photovoltaik stand im Navigationsmenü, das auf jeder
- * Unterseite mitläuft. Ein Vorfilter, der Navigationsleisten meldet, kostet mehr
- * Lesezeit als er spart.
- *
- * Deshalb: Ein Treffer verlangt einen konkreten BETRAG oder ein Zuschuss-Wort
- * im selben Textfenster wie der PV-Begriff — und zwar an IRGENDEINEM der
- * Vorkommen, nicht nur am ersten (das ist fast immer die Navigation).
+ * BLOCKER, nicht Kosmetik: Der Lauf las seinen eigenen Fortschritt bisher mit
+ * einem einfachen `select` und lag mit 918 Zeilen knapp unter der Grenze. Beim
+ * nächsten Schub wäre er darüber gerutscht — dann hätte er Gemeinden erneut
+ * abgerufen, die längst abgehakt sind, und der Fortschrittsbalken wäre bei
+ * gleichbleibend „95 %" stehengeblieben, ohne dass irgendetwas kaputt aussieht.
+ * Mit der Ausweitung auf die rund 9.500 Gemeinden ohne erfasste Förderseite ist
+ * das kein Randfall mehr, sondern der Normalfall.
  */
-function einordnen(text: string): { verdikt: Verdikt; beleg: string } {
-  const stellen = [...text.matchAll(PV)].map((m) => m.index ?? 0);
-  if (!stellen.length) return { verdikt: "kein-pv", beleg: "" };
-
-  let bester: { verdikt: Verdikt; beleg: string } | null = null;
-  for (const stelle of stellen.slice(0, 40)) {
-    const umfeld = text.slice(Math.max(0, stelle - 260), stelle + 360).trim();
-    if (BEENDET.test(umfeld)) {
-      // „Beendet" schlägt einen Treffer, sobald es im selben Fenster steht:
-      // Lieber als ausgelaufen erfassen und einmal zu viel hinsehen, als eine
-      // gestrichene Förderung als lebendig zu melden.
-      return { verdikt: "ausgelaufen", beleg: umfeld.slice(0, 400) };
-    }
-    if (BETRAG.test(umfeld) && ZUSCHUSS.test(umfeld)) {
-      bester = { verdikt: "treffer", beleg: umfeld.slice(0, 400) };
-      break;
-    }
-    if (!bester && BETRAG.test(umfeld)) bester = { verdikt: "treffer", beleg: umfeld.slice(0, 400) };
+async function alleZeilen<T>(tabelle: string, spalten: string, filter?: (q: any) => any): Promise<T[]> {
+  const out: T[] = [];
+  const schritt = 1000;
+  for (let von = 0; ; von += schritt) {
+    let q = sb.from(tabelle).select(spalten).range(von, von + schritt - 1);
+    if (filter) q = filter(q);
+    const { data, error } = await q;
+    if (error) throw new Error(`${tabelle}: ${error.message}`);
+    out.push(...((data ?? []) as T[]));
+    if (!data || data.length < schritt) break;
   }
-  return bester ?? { verdikt: "kein-pv", beleg: text.slice(Math.max(0, stellen[0] - 120), stellen[0] + 180) };
+  return out;
 }
+
+type CoverageZeile = {
+  region_id: string;
+  verdict: string;
+  screen_version: number | null;
+  techniken: string | null;
+};
 
 async function offeneKandidaten(limit: number) {
-  const { data: kk, error } = await sb
-    .from("kommunen_kontakt")
-    .select("region_id, thema_foerderung_url")
-    .not("thema_foerderung_url", "is", null);
-  if (error) throw new Error(`Kontaktdaten nicht lesbar: ${error.message}`);
+  const kk = await alleZeilen<{ region_id: string; thema_foerderung_url: string | null }>(
+    "kommunen_kontakt",
+    "region_id, thema_foerderung_url",
+    (q) => q.not("thema_foerderung_url", "is", null),
+  );
 
   const gefuehrt = Object.values(FUNDING_PROGRAMS)
     .map((p) => p.agsCode)
     .filter(Boolean) as string[];
-  const offenIds = (kk ?? [])
+  const offenIds = kk
     .filter((r) => !gefuehrt.some((a) => String(r.region_id).startsWith(a)))
-    .map((r) => r.region_id as string);
+    .map((r) => r.region_id);
 
-  const { data: schon } = await sb.from("funding_coverage").select("region_id");
-  const geprueft = new Set((schon ?? []).map((r) => r.region_id as string));
+  const abgelegt = await alleZeilen<CoverageZeile>(
+    "funding_coverage",
+    "region_id, verdict, screen_version, techniken",
+  );
+  const zeileVon = new Map(abgelegt.map((r) => [r.region_id, r]));
 
-  // Unerreichbare kommen wieder dran, alles andere gilt als erledigt.
-  const { data: retry } = await sb.from("funding_coverage").select("region_id").eq("verdict", "unerreichbar");
-  for (const r of retry ?? []) geprueft.delete(r.region_id as string);
+  /**
+   * Ist diese Gemeinde erledigt?
+   *
+   * Drei Gründe, sie erneut vorzunehmen — und der dritte ist der wichtigste:
+   *  1. noch nie angesehen,
+   *  2. beim letzten Mal nicht erreichbar gewesen,
+   *  3. mit einer ÄLTEREN Erkennung geprüft. Die knapp 900 abgehakten Seiten
+   *     liefen durch eine Fassung, die Wärmepumpen nicht kannte; sie als
+   *     „geprüft" zu führen hieße, für zwei von drei Techniken eine Prüfung zu
+   *     behaupten, die nie stattgefunden hat.
+   */
+  const erledigt = (id: string): boolean => {
+    const z = zeileVon.get(id);
+    if (!z) return false;
+    if (z.verdict === "unerreichbar") return false;
+    return (z.screen_version ?? 1) >= SCREEN_VERSION;
+  };
 
-  const rest = offenIds.filter((id) => !geprueft.has(id));
+  const rest = offenIds.filter((id) => !erledigt(id));
   const pop = new Map<string, number>();
   for (let i = 0; i < rest.length; i += 500) {
     const { data: reg } = await sb.from("mastr_regions").select("region_id, population, name").in("region_id", rest.slice(i, i + 500));
@@ -149,33 +149,65 @@ async function offeneKandidaten(limit: number) {
       pop.set(r.region_id, r.population ?? 0);
     }
   }
-  const urlVon = new Map((kk ?? []).map((r) => [r.region_id as string, r.thema_foerderung_url as string]));
+  const urlVon = new Map(kk.map((r) => [r.region_id, r.thema_foerderung_url as string]));
+
+  // Nie angesehene zuerst, dann die mit veralteter Erkennung — bei beiden die
+  // größten voran. Eine unbekannte Seite kann JEDE Technik bringen, eine
+  // veraltete nur noch die zwei, die der alte Lauf nicht kannte.
+  const nieGesehen = (id: string) => !zeileVon.has(id);
+  const naechste = rest
+    .sort((a, b) => Number(nieGesehen(b)) - Number(nieGesehen(a)) || (pop.get(b) ?? 0) - (pop.get(a) ?? 0))
+    .slice(0, limit)
+    .map((id) => ({ region_id: id, url: urlVon.get(id)!, einwohner: pop.get(id) ?? 0 }));
+
   return {
     gesamt: offenIds.length,
     erledigt: offenIds.length - rest.length,
-    naechste: rest
-      .sort((a, b) => (pop.get(b) ?? 0) - (pop.get(a) ?? 0))
-      .slice(0, limit)
-      .map((id) => ({ region_id: id, url: urlVon.get(id)!, einwohner: pop.get(id) ?? 0 })),
+    nachzuholen: rest.filter((id) => zeileVon.has(id)).length,
+    naechste,
   };
 }
 
 async function stand(): Promise<void> {
-  const { gesamt, erledigt } = await offeneKandidaten(1);
-  const { data } = await sb.from("funding_coverage").select("verdict");
+  const { gesamt, erledigt, nachzuholen } = await offeneKandidaten(1);
+  const zeilen = await alleZeilen<CoverageZeile>("funding_coverage", "region_id, verdict, screen_version, techniken");
   const z = new Map<string, number>();
-  for (const r of (data ?? []) as { verdict: string }[]) z.set(r.verdict, (z.get(r.verdict) ?? 0) + 1);
+  for (const r of zeilen) z.set(r.verdict, (z.get(r.verdict) ?? 0) + 1);
   const prozent = gesamt ? Math.round((erledigt / gesamt) * 100) : 0;
   console.log(`Abdeckung: ${erledigt} von ${gesamt} Gemeinden mit Förderseite gescreent (${prozent} %).`);
   for (const [v, n] of [...z].sort((a, b) => b[1] - a[1])) console.log(`   ${v}: ${n}`);
+
+  // Je Technik zählen — die Gesamtzahl allein verdeckt, dass Wärmepumpen bis
+  // zum 18.08.2026 überhaupt nicht gesucht wurden.
+  const jeTechnik = new Map<string, number>();
+  for (const r of zeilen) {
+    for (const t of (r.techniken ?? "").split(",").filter(Boolean)) {
+      jeTechnik.set(t, (jeTechnik.get(t) ?? 0) + 1);
+    }
+  }
+  if (jeTechnik.size) {
+    console.log("\nTreffer je Technik:");
+    for (const [t, n] of [...jeTechnik].sort((a, b) => b[1] - a[1])) console.log(`   ${t}: ${n}`);
+  }
+  if (nachzuholen) {
+    console.log(
+      `\n${nachzuholen} Gemeinden wurden mit einer älteren Erkennung geprüft und stehen wieder an.\n` +
+        `Bis die durch sind, sagt die Abdeckung nichts über Balkon und Wärmepumpe.`,
+    );
+  }
 }
 
 async function treffer(): Promise<void> {
-  const { data } = await sb
-    .from("funding_coverage")
-    .select("region_id, url, evidence")
-    .eq("verdict", "treffer");
-  const rows = (data ?? []) as { region_id: string; url: string; evidence: string | null }[];
+  // --technik pv|balkon|waermepumpe grenzt die Leseliste auf einen Rechner ein.
+  const i = process.argv.indexOf("--technik");
+  const nurTechnik = i >= 0 ? (process.argv[i + 1] as ScreenTechnik) : null;
+
+  const alle = await alleZeilen<{ region_id: string; url: string; evidence: string | null; techniken: string | null }>(
+    "funding_coverage",
+    "region_id, url, evidence, techniken",
+    (q) => q.eq("verdict", "treffer"),
+  );
+  const rows = nurTechnik ? alle.filter((r) => (r.techniken ?? "").split(",").includes(nurTechnik)) : alle;
   if (!rows.length) return console.log("Noch keine Treffer.");
 
   const { data: reg } = await sb
@@ -189,12 +221,13 @@ async function treffer(): Promise<void> {
   // von denen ein Dutzend dieselbe Seite von Kirchberg (Hunsrück) war, jeweils
   // für einen 90-Seelen-Ort. Zu lesen ist die Seite einmal; die Gemeinden
   // dahinter sind nur ihr Geltungsbereich.
-  const seiten = new Map<string, { orte: string[]; pop: number; beleg: string | null }>();
+  const seiten = new Map<string, { orte: string[]; pop: number; beleg: string | null; techniken: Set<string> }>();
   for (const r of rows) {
-    const e = seiten.get(r.url) ?? { orte: [], pop: 0, beleg: r.evidence };
+    const e = seiten.get(r.url) ?? { orte: [], pop: 0, beleg: r.evidence, techniken: new Set<string>() };
     const i = info.get(r.region_id);
     e.orte.push(i?.name ?? r.region_id);
     e.pop += i?.pop ?? 0;
+    for (const t of (r.techniken ?? "").split(",").filter(Boolean)) e.techniken.add(t);
     seiten.set(r.url, e);
   }
 
@@ -202,10 +235,17 @@ async function treffer(): Promise<void> {
   console.log(`Treffer: ${sortiert.length} Seiten (für ${rows.length} Gemeinden), größte zuerst:\n`);
   for (const [url, e] of sortiert) {
     const orte = e.orte.length > 3 ? `${e.orte.slice(0, 3).join(", ")} und ${e.orte.length - 3} weitere` : e.orte.join(", ");
-    console.log(`  ${orte} — zusammen ${e.pop.toLocaleString("de-DE")} Einw.`);
+    const tech = e.techniken.size ? `  [${[...e.techniken].join(", ")}]` : "";
+    console.log(`  ${orte} — zusammen ${e.pop.toLocaleString("de-DE")} Einw.${tech}`);
     console.log(`     ${url}`);
     if (e.beleg) console.log(`     „…${e.beleg.slice(0, 180)}…"`);
   }
+}
+
+/** Die Version, mit der diese Gemeinde zuletzt geprüft wurde (für Fehlversuche). */
+async function zeileVersion(regionId: string): Promise<number | null> {
+  const { data } = await sb.from("funding_coverage").select("screen_version").eq("region_id", regionId).maybeSingle();
+  return (data?.screen_version as number | undefined) ?? null;
 }
 
 async function main(): Promise<void> {
@@ -216,7 +256,8 @@ async function main(): Promise<void> {
   const { gesamt, erledigt, naechste } = await offeneKandidaten(limit);
   console.log(`Abdeckung vorher: ${erledigt} von ${gesamt}. Nehme mir jetzt ${naechste.length} vor.\n`);
 
-  const zaehler = new Map<Verdikt, number>();
+  const zaehler = new Map<ScreenVerdikt, number>();
+  const jeTechnik = new Map<ScreenTechnik, number>();
   for (const k of naechste) {
     let html = "";
     let http = 0;
@@ -237,14 +278,22 @@ async function main(): Promise<void> {
       }
     }
 
-    const { verdikt, beleg } = html ? einordnen(sichtbarerText(html)) : { verdikt: "unerreichbar" as Verdikt, beleg: "" };
-    zaehler.set(verdikt, (zaehler.get(verdikt) ?? 0) + 1);
+    const befund = html
+      ? einordnen(sichtbarerText(html))
+      : { verdikt: "unerreichbar" as ScreenVerdikt, techniken: [] as ScreenTechnik[], beleg: "" };
+    zaehler.set(befund.verdikt, (zaehler.get(befund.verdikt) ?? 0) + 1);
+    for (const t of befund.techniken) jeTechnik.set(t, (jeTechnik.get(t) ?? 0) + 1);
 
     await sb.from("funding_coverage").upsert({
       region_id: k.region_id,
       url: k.url,
-      verdict: verdikt,
-      evidence: beleg || null,
+      verdict: befund.verdikt,
+      techniken: befund.techniken.join(",") || null,
+      // Der Versionsstempel wird NUR bei einem echten Abruf gesetzt. Eine
+      // unerreichbare Seite hat die neue Erkennung nicht gesehen — sie als
+      // geprüft zu stempeln nähme sie dauerhaft aus dem Arbeitsvorrat.
+      screen_version: html ? SCREEN_VERSION : ((await zeileVersion(k.region_id)) ?? 1),
+      evidence: befund.beleg || null,
       http,
       checked_at: new Date().toISOString(),
     });
@@ -252,6 +301,10 @@ async function main(): Promise<void> {
 
   console.log("Ergebnis dieses Laufs:");
   for (const [v, n] of [...zaehler].sort((a, b) => b[1] - a[1])) console.log(`   ${v}: ${n}`);
+  if (jeTechnik.size) {
+    console.log("   davon mit Signal für:");
+    for (const [t, n] of [...jeTechnik].sort((a, b) => b[1] - a[1])) console.log(`      ${t}: ${n}`);
+  }
   console.log("");
   await stand();
   console.log("\nTreffer ansehen: npm run foerder:screen -- --treffer");

@@ -386,7 +386,7 @@ export default function Empfehlung({ stand }: { stand?: StandSeite }) {
   // Nur aktive, pauschal berechenbare Programme tragen bei. Das zuletzt (am
   // spezifischsten) angewandte Programm wird im Ergebnis vorab scharf geschaltet.
   const fundingStack = rec
-    ? stackFunding(fundingPrograms, rec.kwp, rec.speicherKwh, rec.reasoning.investition)
+    ? stackFunding(fundingPrograms, { technik: "pv", kwp: rec.kwp, speicherKwh: rec.speicherKwh, kosten: rec.reasoning.investition })
     : { total: 0, applied: [] };
   const armedFoeId = fundingStack.applied.length > 0
     ? fundingStack.applied[fundingStack.applied.length - 1].program.id
