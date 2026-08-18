@@ -580,8 +580,13 @@ export const globalStyles = `
   @media (max-width:640px){.footer-cols{grid-template-columns:1fr;max-width:none;gap:20px}.footer-cols>div{padding:0}.footer-cols>div+div{border-left:none}}
   /* Vertrauens-Leiste über dem Footer (components/TrustBar.tsx). Zwei Spalten
      auf Desktop statt vier: Die Punkte sind ganze Sätze, und bei der 600px des
-     Footer-Rasters bliebe für vier Spalten je ~140px — zu schmal zum Lesen. */
-  .trust-bar{max-width:var(--content-max-width);margin:0 auto ${space.huge}px;background:var(--color-bg-muted);border:1px solid var(--color-border);border-radius:14px;padding:${pad("xxl")}}
+     Footer-Rasters bliebe für vier Spalten je ~140px — zu schmal zum Lesen.
+     Der Abstand nach unten ist das Doppelte der größten Skalenstufe (96px) und
+     damit der einzige Wert hier außerhalb der Skala: Die Leiste ist Inhalt, die
+     Spalten darunter sind Navigation, und bei 48px lasen sich beide als ein
+     Block. Der Sprung muss größer sein als jeder Abstand INNERHALB der Leiste,
+     sonst trennt er nichts. */
+  .trust-bar{max-width:var(--content-max-width);margin:0 auto ${space.huge * 2}px;background:var(--color-bg-muted);border:1px solid var(--color-border);border-radius:14px;padding:${pad("xxl")}}
   .trust-bar-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:${space.xxl}px}
   /* Der Punkt ist ein Knopf, kein Link: Alle vier öffnen dasselbe Modal. Der
      Knopf muss deshalb aussehen und sich anfühlen wie Fließtext, nicht wie ein
