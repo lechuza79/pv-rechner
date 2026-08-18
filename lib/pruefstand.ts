@@ -26,6 +26,7 @@ import { EEG_REFORM_STAND } from "./eeg-reform-config";
 import { FEED_IN_GEPRUEFT_ISO } from "./feedin-config";
 import { GREEN_GAS_CONFIG } from "./greengas-config";
 import { DEFAULT_HEATPUMP_CONFIG } from "./heatpump-config";
+import { DEFAULT_PRICES } from "./prices-config";
 
 export interface PruefEintrag {
   /** In der Sprache der Seite, damit die Meldung ohne Code-Kenntnis lesbar ist. */
@@ -42,6 +43,25 @@ export interface PruefEintrag {
   maxAlterTage: number;
   /** Runbook, das der Lauf fährt. */
   runbook: string;
+  /**
+   * Der Stand dieses Werts liegt in der DATENBANK, nicht in einer Config.
+   *
+   * Betrifft die gescrapten Marktpreise und die Förderprogramme: Sie haben einen
+   * Wächter und einen Rhythmus wie alle anderen, aber kein Prüfdatum im Code —
+   * es steht je Zeile in Supabase. Solche Einträge gehören trotzdem hierher: Die
+   * Liste beantwortet die Frage "was wird wann geprüft", und ohne sie fehlten
+   * ausgerechnet die Preise, mit denen der PV-Rechner rechnet, und die
+   * Förderbeträge (aufgefallen im Audit am 18.08.2026).
+   *
+   * Von der FÄLLIGKEITSPRÜFUNG sind sie ausgenommen — ein Datum, das hier nicht
+   * steht, kann diese Funktion nicht bewerten. Sie über DEFAULT_PRICES.validFrom
+   * zu bewerten wäre schlimmer als sie auszulassen: Das ist der Stand des
+   * Rückfall-Schnappschusses im Code, nicht der des Werts, mit dem gerechnet
+   * wird — dieselbe Fehlerklasse wie updated_at als Förder-Prüfdatum. Wer die
+   * Fälligkeit auch hier will, baut sie gegen die Datenbank, nicht gegen die
+   * Config.
+   */
+  standAusDb?: true;
 }
 
 /**
@@ -169,6 +189,32 @@ export const PRUEFSTAND: PruefEintrag[] = [
     maxAlterTage: 30,
     runbook: "scripts/eeg-verify.md",
   },
+  {
+    was: "Anschaffungspreise und Strompreis",
+    feld: "market_prices (Supabase), Rückfall: DEFAULT_PRICES.validFrom",
+    // Kein Prüfdatum im Code: Der gültige Stand steht je Zeile in der Datenbank.
+    // Der Wert hier ist der des Rückfall-Schnappschusses und dient nur der
+    // Typvollständigkeit — bewertet wird er wegen standAusDb nicht.
+    geprueftIso: DEFAULT_PRICES.validFrom,
+    waechter: "solar-check-preis-waechter",
+    rhythmus: "monatlich",
+    maxAlterTage: 45,
+    runbook: "scripts/preise-verify.md",
+    standAusDb: true,
+  },
+  {
+    was: "Regionale Förderprogramme",
+    feld: "funding_programs.last_verified (Supabase)",
+    // Wie oben: Jedes Programm trägt sein eigenes Prüfdatum in der Datenbank,
+    // ein gemeinsames gibt es nicht — und es zu erfinden wäre genau das, was die
+    // Förder-Regel verbietet.
+    geprueftIso: DEFAULT_PRICES.validFrom,
+    waechter: "solar-check-foerder-waechter",
+    rhythmus: "quartalsweise, dazu täglicher Seiten-Abgleich",
+    maxAlterTage: 120,
+    runbook: "scripts/foerder-verify.md",
+    standAusDb: true,
+  },
 ];
 
 /**
@@ -192,7 +238,9 @@ export const PRUEFSTAND: PruefEintrag[] = [
  * Regel 9): Schreibzeitpunkt ist kein Prüfzeitpunkt.
  */
 export function aeltestePruefung(stand: PruefEintrag[] = PRUEFSTAND): string {
-  return stand.map(e => e.geprueftIso).sort()[0];
+  // Ohne die DB-Einträge, aus demselben Grund wie in faelligkeiten(): Ihr Datum
+  // beschreibt den Rückfall-Schnappschuss, nicht den geprüften Wert.
+  return stand.filter(e => !e.standAusDb).map(e => e.geprueftIso).sort()[0];
 }
 
 export interface Faelligkeit extends PruefEintrag {
@@ -213,6 +261,13 @@ export interface Faelligkeit extends PruefEintrag {
 export function faelligkeiten(heuteIso: string, stand: PruefEintrag[] = PRUEFSTAND): Faelligkeit[] {
   const offen: Faelligkeit[] = [];
   for (const e of stand) {
+    // Einträge, deren Stand in der Datenbank liegt, werden hier NICHT bewertet:
+    // Das Datum im Eintrag ist der Stand des Rückfall-Schnappschusses im Code,
+    // nicht der des Werts, mit dem gerechnet wird. Es zu bewerten hieße, eine
+    // Fälligkeit über eine Zahl zu behaupten, die die Sache gar nicht misst.
+    // Sie stehen trotzdem in PRUEFSTAND, damit die Übersicht "was wird wann
+    // geprüft" vollständig ist.
+    if (e.standAusDb) continue;
     const alterTage = tageZwischen(e.geprueftIso, heuteIso, "prueftag");
     const terminUeberzogen = e.reviewBy ? Math.max(0, tageZwischen(e.reviewBy, heuteIso, "frist")) : 0;
     const stillstand = alterTage > e.maxAlterTage;

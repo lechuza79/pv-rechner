@@ -91,6 +91,11 @@ describe("Prüfstand: ein Datum für die ganze Seite", () => {
     // „alle Angaben seit … geprüft" wahr.
     const aeltest = aeltestePruefung();
     for (const e of PRUEFSTAND) {
+      // Einträge, deren Stand in der Datenbank liegt, tragen hier nur den
+      // Rückfall-Schnappschuss als Datum — er beschreibt nicht den geprüften
+      // Wert und darf deshalb weder bewertet noch verglichen werden. Dieselbe
+      // Ausnahme wie in aeltestePruefung() und faelligkeiten().
+      if (e.standAusDb) continue;
       expect(aeltest <= e.geprueftIso, `${e.was} (${e.geprueftIso}) ist älter als ${aeltest}`).toBe(true);
     }
     expect(PRUEFSTAND.some(e => e.geprueftIso === aeltest), "das Ergebnis ist kein echtes Prüfdatum").toBe(true);
