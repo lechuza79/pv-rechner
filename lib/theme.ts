@@ -229,6 +229,15 @@ export function pad(y: keyof typeof space, x?: keyof typeof space): string {
  * (space.huge = 48) — bewusst großzügig, damit die Rechner-Hero-Fragen oben Luft
  * haben. Lese-/Textseiten legen darüber noch --content-lede-top drauf.
  */
+/**
+ * Abstand zwischen zwei Abschnitten einer Seite — die eine Quelle dafür.
+ *
+ * Vorher brachte jede Seite ihre eigene Zahl mit (22, 28, 32 …), und beim
+ * Durchsehen einer Seite fiel jedes Mal auf, dass Abschnitte zu dicht
+ * aufeinandersitzen. Wer hier dreht, dreht überall.
+ */
+export const sectionGap = 44;
+
 export const headerContentGap = space.huge; // 48
 
 /** CSS variable reference for inline styles: v('--color-accent') → 'var(--color-accent)' */
