@@ -339,8 +339,22 @@ export function buildMonthlyEv(evFrac: number, fracs: number[]): number[] {
 export interface EinspeiseModell {
   /** Erlös je eingespeister kWh im Jahr i (1-basiert), ct/kWh. */
   satzCtImJahr: (i: number) => number;
-  /** Feste Kosten je Betriebsjahr in Euro (z. B. Grundgebühr Direktvermarktung). */
-  fixkostenProJahr?: number;
+  /**
+   * Feste Kosten im Jahr i (1-basiert) in Euro — z. B. die Grundgebühr der
+   * Direktvermarktung.
+   *
+   * JE JAHR, nicht pauschal, und der Unterschied ist der ganze Punkt: Der
+   * Erlösverlauf des EEG-Entwurfs sind zwei verschiedene Fälle hintereinander.
+   * Erst nimmt der NETZBETREIBER ab (befristete Übergangszahlung) — dort gibt es
+   * keinen Dienstleister, der eine Grundgebühr erheben könnte —, danach
+   * vermarktet einer an der Börse. Ein pauschaler Jahresbetrag zog die Gebühr
+   * auch in den Übergangsjahren ab (Council 15.08.2026).
+   *
+   * Welches Jahr welche festen Kosten trägt, sagt einzig der Verlauf
+   * (`RegimeJahr.fixkosten` in lib/einspeise-regime.ts). Wer sie im Aufrufer
+   * nachbaut oder weglässt, baut den Fehler nach.
+   */
+  fixkostenImJahr?: (i: number) => number;
   /**
    * Anteil des Überschusses, der überhaupt eingespeist werden darf (0–1). Bildet
    * die geplante 50-%-Einspeisegrenze ab. Der Rest ist verloren: Er kann weder
@@ -383,9 +397,12 @@ export function calc({ kwp, kosten, strompreis, eigenverbrauch, einspeisung, str
         const ertrag = kwp * ertragKwp * deg;
         j = ertrag * (eigenverbrauch / 100) * sp + ertrag * (1 - eigenverbrauch / 100) * anteil * (feedIn / 100);
       }
-      if (einspeiseModell?.fixkostenProJahr && feedIn > 0) {
-        // Die Grundgebühr fällt nur an, solange überhaupt vermarktet wird.
-        j -= einspeiseModell.fixkostenProJahr;
+      const fixkosten = einspeiseModell?.fixkostenImJahr?.(i) ?? 0;
+      if (fixkosten && feedIn > 0) {
+        // Die Grundgebühr fällt nur an, solange überhaupt vermarktet wird:
+        // Frisst die mengenabhängige Gebühr den Börsenerlös ganz auf, vermarktet
+        // niemand — dann gibt es auch keinen Vertrag mit einer Grundgebühr.
+        j -= fixkosten;
       }
     }
     // Akku-Tausch nach Ablauf der Speicher-Lebensdauer (einmalig im Horizont)

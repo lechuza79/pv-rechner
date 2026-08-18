@@ -64,6 +64,73 @@ describe("Vertrauens-Leiste", () => {
     });
   });
 
+  // Was die Leiste über Datenflüsse sagt, muss zu dem passen, was der Rechner
+  // tatsächlich sendet.
+  //
+  // Am 18.08.2026 stand im Modal: "Anlagengröße, Verbrauch und Ergebnis bleiben
+  // bei dir." Gemessen ging bei jedem Ergebnis ein anonymes Ereignis mit genau
+  // diesen Werten an die Reichweitenmessung — und die Datenschutzerklärung, auf
+  // die derselbe Punkt verlinkt, beschrieb das korrekt. Die Leiste sagte das
+  // Gegenteil, auf jeder Seite der Site.
+  //
+  // Der bestehende Test konnte das nicht sehen: Er prüfte `detail` nur auf Länge
+  // und Schlusspunkt, und die Datenschutz-Prüfung suchte lediglich eine
+  // Zeichenkette. Dieser Block liest stattdessen die Ereignis-Eigenschaften aus
+  // dem Rechner und hält sie gegen den Text.
+  describe("Aussagen über Datenflüsse", () => {
+    const datenPunkt = TRUST_SIGNALS.find((s) => s.icon === "lock")!;
+    const rechner = readFileSync(
+      join(REPO, "app", "(site)", "photovoltaik-rechner", "rechner.tsx"),
+      "utf8",
+    );
+
+    it("behauptet nichts als rein lokal, was als Ereignis rausgeht", () => {
+      // Die Eigenschaften des Ergebnis-Ereignisses aus dem Rechner ziehen.
+      const block = rechner.match(/trackEvent\("pv_ergebnis",\s*\{([\s\S]*?)\}\)/);
+      expect(block, "trackEvent('pv_ergebnis') nicht gefunden — Aufruf umbenannt?").not.toBeNull();
+      const felder = [...block![1].matchAll(/^\s*(\w+)\s*:/gm)].map((m) => m[1]);
+      expect(felder.length, "keine Eigenschaften erkannt").toBeGreaterThan(0);
+
+      // Zu jeder gesendeten Eigenschaft das Wort, mit dem die Leiste sie nennt.
+      const wortFuer: Record<string, string> = { anlage: "Anlagen", speicher: "Speicher" };
+      for (const feld of felder) {
+        const wort = wortFuer[feld];
+        if (!wort) continue;
+        const nenntEs = datenPunkt.detail.includes(wort);
+        const behauptetLokal = /bleib(en|t) bei dir|verlassen? (dein|Ihr) Gerät nicht|nur auf deinem Gerät/i.test(
+          datenPunkt.detail,
+        );
+        expect(
+          nenntEs && behauptetLokal,
+          `"${feld}" geht als Ereignis raus, der Text sagt aber, es bleibe lokal`,
+        ).toBe(false);
+      }
+    });
+
+    it("sagt kein 'nur' über das, was den Browser verlässt", () => {
+      // Die Postleitzahl geht außer an Ertrag und Wetter auch an die
+      // Förderabfrage und die Sonnenanzeige — ein "nur" davor ist falsch.
+      expect(
+        datenPunkt.detail,
+        "'nur' vor der Aufzählung gesendeter Daten — die Liste ist erfahrungsgemäß unvollständig",
+      ).not.toMatch(/geht nur|nur, was/);
+    });
+
+    // Der Punkt verlinkt auf die Datenschutzerklärung. Sagt die etwas über
+    // erfasste Eckdaten, darf die Leiste das nicht verschweigen.
+    it("verschweigt nicht, was die Datenschutzerklärung einräumt", () => {
+      const erklaerung = readFileSync(
+        join(REPO, "app", "(site)", "datenschutz", "page.tsx"),
+        "utf8",
+      );
+      if (!/Anlagen- oder Speichergröße/.test(erklaerung)) return;
+      expect(
+        datenPunkt.detail,
+        "die Erklärung nennt erfasste Eckdaten, die Leiste erwähnt sie nicht",
+      ).toMatch(/Reichweitenmessung|anonym/);
+    });
+  });
+
   // Die Quellen-Links werden per Textsuche im Satz platziert. Trifft ein Begriff
   // nicht, fällt der Link stumm aus: Der Name steht dann unverlinkt da, niemandem
   // fällt es auf, und die Nachprüfbarkeit ist weg — dieselbe Falle wie bei der

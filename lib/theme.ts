@@ -562,14 +562,50 @@ export const globalStyles = `
   }
   .tool-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media (max-width:720px){.tool-cards-grid{grid-template-columns:1fr}}
+  /* Kopfzeile: Welche Navigation sichtbar ist, entscheidet die Medienabfrage —
+     NICHT der Zustand der Komponente. Das isDesktop-Flag in Header.tsx startet
+     vor der Hydratation auf wahr; der Server lieferte damit auf jedem
+     Gerät die Desktop-Leiste, und auf 375 px riss die das Dokument über die
+     Fensterbreite hinaus. Sichtbar war das als kurzer seitlicher Scroll beim Laden.
+     DER UMSCHALTPUNKT STEHT HIER UND IN Header.tsx (matchMedia) — beide bei
+     1080px. Wer einen ändert, ändert beide, sonst zeigt die Seite für einen
+     Bereich beides oder nichts.
+
+     WARUM 1080 UND NICHT 1000: Bei 1000 px passte die Desktop-Kopfzeile noch
+     gar nicht. Sie braucht rund 1009 px (Logo, vier Menüpunkte, Sonnenanzeige,
+     Einloggen), bekommt bei 1000 px Fenster aber nur 968 px — das Dokument lief
+     auf 1025 px auf und die Seite scrollte seitlich. Betroffen war unter
+     anderem jedes iPad im Querformat (1024 px) und jedes 1280er-Notebook bei
+     125 % Skalierung. Gemessen am 18.08.2026; der Fehler lag schon vorher im
+     matchMedia-Wert, fiel aber erst auf, als die Breite zum geprüften Wert
+     wurde. 1080 lässt Luft für längere Ortsnamen in der Sonnenanzeige — die
+     Kopfzeile wächst mit ihnen. */
+  .hdr-nav{display:flex}
+  .hdr-auth{display:contents}
+  .hdr-burger{display:none}
+  .hdr-aktionen{gap:14px}
+  @media (max-width:1079px){
+    .hdr-nav{display:none}
+    .hdr-auth{display:none}
+    .hdr-burger{display:flex}
+    .hdr-aktionen{gap:8px}
+  }
+  @media (min-width:1080px){
+    .hdr-menu{display:none}
+  }
   .footer-cols{display:grid;grid-template-columns:repeat(3,1fr);max-width:600px;margin:0 auto;gap:0}
   .footer-cols>div{padding:0 22px}
   .footer-cols>div+div{border-left:1px solid var(--color-border)}
   @media (max-width:640px){.footer-cols{grid-template-columns:1fr;max-width:none;gap:20px}.footer-cols>div{padding:0}.footer-cols>div+div{border-left:none}}
   /* Vertrauens-Leiste über dem Footer (components/TrustBar.tsx). Zwei Spalten
      auf Desktop statt vier: Die Punkte sind ganze Sätze, und bei der 600px des
-     Footer-Rasters bliebe für vier Spalten je ~140px — zu schmal zum Lesen. */
-  .trust-bar{max-width:var(--content-max-width);margin:0 auto ${space.huge}px;background:var(--color-bg-muted);border:1px solid var(--color-border);border-radius:14px;padding:${pad("xxl")}}
+     Footer-Rasters bliebe für vier Spalten je ~140px — zu schmal zum Lesen.
+     Der Abstand nach unten ist das Doppelte der größten Skalenstufe (96px) und
+     damit der einzige Wert hier außerhalb der Skala: Die Leiste ist Inhalt, die
+     Spalten darunter sind Navigation, und bei 48px lasen sich beide als ein
+     Block. Der Sprung muss größer sein als jeder Abstand INNERHALB der Leiste,
+     sonst trennt er nichts. */
+  .trust-bar{max-width:var(--content-max-width);margin:0 auto ${space.huge * 2}px;background:var(--color-bg-muted);border:1px solid var(--color-border);border-radius:14px;padding:${pad("xxl")}}
   .trust-bar-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:${space.xxl}px}
   /* Der Punkt ist ein Knopf, kein Link: Alle vier öffnen dasselbe Modal. Der
      Knopf muss deshalb aussehen und sich anfühlen wie Fließtext, nicht wie ein

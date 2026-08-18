@@ -11,7 +11,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/lizenz",
   title: "Lizenz – Grafiken und Texte von Solar Check nutzen",
   description:
-    "Unsere Charts und Texte stehen unter CC BY 4.0: redaktionell und gewerblich frei nutzbar, Bedingung ist die Namensnennung mit Link. Was für Daten und Datenbestände gilt.",
+    "Unsere Darstellungen, Widgets sowie Ratgeber- und Methodiktexte stehen unter CC BY 4.0: redaktionell und gewerblich frei nutzbar, Bedingung ist die Namensnennung mit Link. Was für Daten und Datenbestände gilt.",
   ogImageTitle: "Lizenz",
   ogImageSubtitle: "Grafiken und Texte frei nutzen - mit Namensnennung.",
 });

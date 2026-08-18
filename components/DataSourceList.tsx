@@ -11,7 +11,10 @@ import { v, space } from "../lib/theme";
  * because the register does not carry it.
  */
 const VERWENDUNG: Record<keyof typeof DATA_SOURCES, string> = {
-  energyCharts: "Strommix, Stromerzeugung und Grenzflüsse in Echtzeit",
+  // NICHT "in Echtzeit" (Audit 18.08.2026): Energy-Charts liefert mit rund einer
+  // Stunde Verzug, Solar mit etwa zwei — steht so in ErzeugungWidget.tsx. Zwei
+  // Stunden sind keine Echtzeit, und die Seite weiß es an anderer Stelle.
+  energyCharts: "Strommix, Stromerzeugung und Grenzflüsse, stündlich aktualisiert",
   ember: "Ländervergleich: Zubau von Erneuerbaren und Atomkraft",
   mastr: "Anlagenbestand in Deutschland (Solar-Atlas, Karten, Kennzahlen)",
   openMeteo: "Wetterdaten der Live-Simulation und der Kühlgradstunden",

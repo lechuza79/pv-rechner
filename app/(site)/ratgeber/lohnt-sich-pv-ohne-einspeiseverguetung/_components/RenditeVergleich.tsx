@@ -76,6 +76,10 @@ export default function RenditeVergleich(p: RenditeVergleichProps) {
       einspeisung: 0,
       einspeiseModell: {
         satzCtImJahr: (i) => verlauf[i - 1]?.satzCt ?? 0,
+        // Auch die Grundgebühr des Vermarkters gehört dazu. Ohne sie zeigt
+        // dieser Artikel dieselbe Anlage besser als der Rechner, auf den er
+        // verlinkt — zwei Oberflächen, eine Anlage, zwei Ergebnisse.
+        fixkostenImJahr: (i) => verlauf[i - 1]?.fixkosten ?? 0,
         einspeiseAnteil: p.einspeiseAnteil,
       },
     });

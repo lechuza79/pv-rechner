@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     path: "/presse",
     title: "Presse und Redaktionen – Charts von Solar Check nutzen",
     description:
-      "Alle Charts zu Strommix, Solarzubau und Wärmekosten gesammelt: Live-Seite, Einbettungscode, Datenquelle. Frei nutzbar unter CC BY 4.0 mit Namensnennung.",
+      "Charts zu Strommix, Solarzubau und Wärmekosten gesammelt: Live-Seite, Einbettungscode, Datenquelle. Frei nutzbar unter CC BY 4.0 mit Namensnennung.",
     ogImageTitle: "Presse und Redaktionen",
-    ogImageSubtitle: "Alle Charts, frei nutzbar mit Namensnennung.",
+    ogImageSubtitle: "Charts frei nutzbar mit Namensnennung.",
   }),
   robots: { index: false, follow: false },
 };
@@ -130,11 +130,20 @@ export default function PressePage() {
 
         <h1 style={S.h1}>Presse und Redaktionen</h1>
 
+        {/* KEIN pauschales "alle" mehr (Audit 18.08.2026): Die Lizenzseite nimmt
+            die zusammengetragenen Datenbestände aus, und die IW-Zahlen im
+            Gaspreis-Chart können wir gar nicht weiterlizenzieren — beides steht
+            dort, stand hier aber nicht, und ein Link auf /lizenz fehlte
+            ebenfalls. Für Redaktionen ist das die Zielgruppe, die sich darauf
+            verlässt. */}
         <p style={S.lead}>
-          Alle Charts und Werkzeuge dieser Seite dürfen in Artikel, Sendungen, Präsentationen und
-          Studien übernommen werden — redaktionell wie gewerblich, ohne vorherige Anfrage. Bedingung
+          Die Charts dieser Seite dürfen in Artikel, Sendungen, Präsentationen und Studien
+          übernommen werden — redaktionell wie gewerblich, ohne vorherige Anfrage. Bedingung
           ist die Namensnennung „{OWN_WORK_LICENSE.attributionName}“ mit einem Link auf die Seite,
-          von der die Grafik stammt.
+          von der die Grafik stammt. Frei ist unsere Darstellung; für die zugrunde liegenden
+          Daten gilt die Lizenz ihrer Quelle, und unsere zusammengetragenen Datenbestände sind
+          ausgenommen. Die Einzelheiten stehen auf der{" "}
+          <Link href={OWN_WORK_LICENSE.page} style={S.a}>Lizenzseite</Link>.
         </p>
 
         <h2 style={S.h2}>Charts im Überblick</h2>
