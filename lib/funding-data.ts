@@ -30,17 +30,34 @@ export async function getFundingPrograms(): Promise<FundingProgram[]> {
     //
     // Ohne echtes Prüfdatum fällt fundingStandLabel auf den redaktionellen
     // `stand` zurück ("Stand: Juni 2026") — eine ehrliche, schwächere Aussage.
-    const { data, error } = await supabase
+    // Zweistufig lesen — BLOCKER. Die Bestätigungs-Spalten sind jung; wird der
+    // Code ausgeliefert, BEVOR /api/funding/setup sie angelegt hat, scheitert die
+    // Abfrage komplett. Einstufig gelesen fiele der Lader dann auf den Code-Seed
+    // zurück, und der trägt kein Prüfdatum — Ergebnis: JEDE Förderung
+    // verschwindet schlagartig von Rechner, Stadtseiten und CTA. Genau das ist am
+    // 17.08.2026 in einem Prüfskript passiert ("column page_changed_at does not
+    // exist"). Fehlen die Spalten, lesen wir ohne sie weiter: Die Beträge bleiben
+    // sichtbar, nur die tagesaktuelle Bestätigung fehlt, bis das Setup lief.
+    let rows: Record<string, unknown>[] | null = null;
+    const voll = await supabase
       .from("funding_programs")
       .select("data, last_verified, page_seen_at, page_changed_at");
-    if (error || !data || data.length === 0) return seed;
+    if (voll.error) {
+      const schmal = await supabase.from("funding_programs").select("data, last_verified");
+      if (schmal.error || !schmal.data) return seed;
+      rows = schmal.data as Record<string, unknown>[];
+    } else {
+      rows = voll.data as Record<string, unknown>[];
+    }
+    const data = rows;
+    if (!data || data.length === 0) return seed;
     const programs = data.map((r) => {
-      const lastVerified = r.last_verified as string | null;
+      const lastVerified = (r.last_verified ?? null) as string | null;
       // Der Seiten-Waechter bestaetigt taeglich, dass die Amtsseite unveraendert
       // ist. Genau das haelt einen geprueften Wert am Leben (fundingBelegAktuell)
       // — ohne diese zwei Felder faellt jedes Programm nach zwei Wochen raus.
-      const pageSeenAt = r.page_seen_at as string | null;
-      const changedSinceIso = r.page_changed_at as string | null;
+      const pageSeenAt = (r.page_seen_at ?? null) as string | null;
+      const changedSinceIso = (r.page_changed_at ?? null) as string | null;
       return {
         ...(r.data as FundingProgram),
         ...(lastVerified ? { lastVerified } : {}),

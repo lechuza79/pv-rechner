@@ -76,15 +76,28 @@ export interface FundingProgram {
  * ("Stand: Juni 2026") for code-seed entries. Appends "· unbestätigt" when the
  * program is not confirmed against the official source.
  */
-export function fundingStandLabel(p: FundingProgram): string {
+export function fundingStandLabel(p: FundingProgram, heute?: string): string {
   const unbestaetigt = p.verified ? "" : " · unbestätigt";
+  // Zählt das Programm gerade nicht mit, MUSS das am Prüfdatum stehen — BLOCKER.
+  // Sonst liest jemand "Zuletzt geprüft: 05.08.2026" neben einer Beispielrechnung,
+  // die diese Förderung stillschweigend weglässt: Text und Zahl widersprechen
+  // sich, und das ist die schwerste Fehlerklasse dieses Projekts.
+  // NUR bei Programmen, die überhaupt einen Betrag abziehen können. Ein
+  // Bundesprogramm wie die 0 % Mehrwertsteuer trägt keinen strukturierten Satz
+  // und wird nie eingerechnet — dort wäre "daher nicht eingerechnet" eine
+  // beunruhigende Falschaussage über eine dauerhafte Rechtslage.
+  const rechenbar = !!(p.percentOfCost || p.pvPerKwp || p.pvTiers || p.speicherPerKwh || p.speicherTiers);
+  const nichtGerechnet =
+    rechenbar && p.status === "aktiv" && !fundingBelegAktuell(p, heute ?? heuteIso())
+      ? " · aktuell nicht bestätigt, daher nicht eingerechnet"
+      : "";
   if (p.lastVerified) {
     const d = new Date(p.lastVerified);
     if (!isNaN(d.getTime())) {
-      return `Zuletzt geprüft: ${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}${unbestaetigt}`;
+      return `Zuletzt geprüft: ${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}${unbestaetigt}${nichtGerechnet}`;
     }
   }
-  return `Stand: ${p.stand}${unbestaetigt}`;
+  return `Stand: ${p.stand}${unbestaetigt}${nichtGerechnet}`;
 }
 
 // Bund applies everywhere and combines with every regional program.
@@ -1063,9 +1076,16 @@ export function fundingBelegAktuell(
     if (tageSeit(f.changedSinceIso, heute) > FOERDER_NACHPRUEF_FRIST_TAGE) return false;
   }
 
-  // Ohne geglückten Abruf wissen wir nicht, ob sich etwas geändert hat. Fehlt der
-  // Wert ganz (Code-Seed ohne Datenbank), zählt die letzte inhaltliche Prüfung —
-  // sonst würde ein Datenbankausfall jede Förderung sofort abschalten.
+  // Ohne geglückten Abruf wissen wir nicht, ob sich etwas geändert hat.
+  //
+  // Fehlt `pageSeenAt` ganz, zählt ersatzweise die inhaltliche Prüfung. Das
+  // greift, solange die Bestätigungs-Spalten in der Datenbank noch fehlen
+  // (lib/funding-data.ts liest dann schmal weiter). Es greift NICHT beim reinen
+  // Code-Seed: Der trägt gar kein `lastVerified`, also scheitert schon die erste
+  // Bedingung oben. Fällt die Datenbank komplett aus, wird deshalb KEINE
+  // Förderung mehr abgezogen — bewusst die sichere Richtung, aber es ist kein
+  // sanfter Rückfall, sondern ein Aus. Wer das ändern will, müsste Prüfdaten in
+  // den Seed schreiben; das wäre eine zweite Wahrheit und ist bewusst nicht getan.
   const bestaetigt = f.pageSeenAt ?? f.lastVerified;
   return tageSeit(bestaetigt, heute) <= FOERDER_BESTAETIGUNG_MAX_TAGE;
 }

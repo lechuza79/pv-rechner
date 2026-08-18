@@ -4,6 +4,7 @@ import {
   fundingBelegAktuell,
   fundingZaehlt,
   stackFunding,
+  fundingStandLabel,
   FOERDER_BESTAETIGUNG_MAX_TAGE,
   FOERDER_NACHPRUEF_FRIST_TAGE,
   type FundingProgram,
@@ -104,11 +105,45 @@ describe("Was in eine Rechnung einfließen darf", () => {
     }
   });
 
-  it("ohne Datenbank (Code-Seed) fällt der Beleg auf die inhaltliche Prüfung zurück", () => {
-    // Sonst schaltete ein Datenbankausfall schlagartig jede Förderung ab.
-    const seedFrisch = programm({ lastVerified: vorTagen(3), pageSeenAt: undefined });
-    expect(fundingZaehlt(seedFrisch, HEUTE)).toBe(true);
-    const seedAlt = programm({ lastVerified: vorTagen(90), pageSeenAt: undefined });
-    expect(fundingZaehlt(seedAlt, HEUTE)).toBe(false);
+  it("fehlt nur die Bestätigungs-Spalte, zählt ersatzweise die inhaltliche Prüfung", () => {
+    // Fall: Der Code ist ausgeliefert, /api/funding/setup hat die Spalten aber
+    // noch nicht angelegt. Der Lader liest dann schmal weiter, pageSeenAt fehlt.
+    const frisch = programm({ lastVerified: vorTagen(3), pageSeenAt: undefined });
+    expect(fundingZaehlt(frisch, HEUTE)).toBe(true);
+    const alt = programm({ lastVerified: vorTagen(90), pageSeenAt: undefined });
+    expect(fundingZaehlt(alt, HEUTE)).toBe(false);
+  });
+
+  it("beim reinen Code-Seed (Datenbank ganz weg) wird NICHTS abgezogen", () => {
+    // Der Seed trägt kein lastVerified — das ist die ehrliche Aussage über den
+    // Datenbankausfall. Frühere Fassung von Kommentar und Test behauptete einen
+    // sanften Rückfall, den es nie gab.
+    const ausSeed = { ...programm(), lastVerified: undefined, pageSeenAt: undefined };
+    expect(fundingZaehlt(ausSeed, HEUTE)).toBe(false);
+  });
+});
+
+describe("Was das Prüfdatum auf der Seite sagt", () => {
+  it("nennt es ausdrücklich, wenn die Förderung gerade nicht eingerechnet wird", () => {
+    const abgelaufen = programm({ lastVerified: vorTagen(40), pageSeenAt: vorTagen(40) });
+    const text = fundingStandLabel(abgelaufen, HEUTE);
+    expect(fundingZaehlt(abgelaufen, HEUTE)).toBe(false);
+    expect(text).toContain("nicht eingerechnet");
+  });
+
+  it("schweigt darüber, solange gerechnet wird", () => {
+    expect(fundingStandLabel(programm(), HEUTE)).not.toContain("nicht eingerechnet");
+  });
+
+  it("hängt den Hinweis nicht an Programme ohne eigenen Betrag (z. B. 0 % MwSt des Bundes)", () => {
+    const ohneSatz = { ...programm({ pageSeenAt: vorTagen(40) }), pvPerKwp: undefined };
+    expect(fundingStandLabel(ohneSatz, HEUTE)).not.toContain("nicht eingerechnet");
+  });
+
+  it("hängt den Hinweis nicht an Programme, die aus anderen Gründen nicht zählen", () => {
+    // "ausgeschöpft" erklärt sich selbst — ein zusätzliches "nicht bestätigt"
+    // wäre irreführend, denn bestätigt ist die Seite ja.
+    const topfLeer = programm({ status: "ausgeschoepft", pageSeenAt: vorTagen(40) });
+    expect(fundingStandLabel(topfLeer, HEUTE)).not.toContain("nicht eingerechnet");
   });
 });

@@ -74,6 +74,7 @@ async function main(): Promise<void> {
   const unerreichbar: string[] = [];
   const ueberArchiv: string[] = [];
   const ueberProduktion: string[] = [];
+  const nichtVergleichbar: string[] = [];
   let unveraendert = 0;
 
   for (const z of zeilen) {
@@ -272,8 +273,24 @@ async function main(): Promise<void> {
     // Seite unterscheiden sich immer ein wenig; ohne diese Kennzeichnung meldete
     // jeder Wechsel zwischen beiden Wegen eine Änderung, die es nie gab.
     const fp = ausProduktion ?? markiert(ausArchiv ? "archiv" : "live", fingerprintOf(html));
-    const gleicheHerkunft = z.page_fingerprint?.split(":")[0] === fp.split(":")[0];
+    const herkunft = fp.split(":")[0];
+    const gleicheHerkunft = z.page_fingerprint?.split(":")[0] === herkunft;
     const hatSichGeaendert = !!z.page_fingerprint && gleicheHerkunft && z.page_fingerprint !== fp;
+
+    // NUR ein LIVE gelesener Abruf bestätigt, dass die Amtsseite noch da und
+    // unverändert ist — BLOCKER. Ein Archiv-Treffer ist ein wochenalter
+    // Schnappschuss; ihn als heutige Bestätigung zu stempeln würde die
+    // 14-Tage-Regel aushebeln: Eine dauerhaft gesperrte Stadt bliebe für immer
+    // "bestätigt", weil jede Nacht dieselbe alte Kopie neu gestempelt wird.
+    // Genau der halbjährig alte Stand, den die Regel verhindern soll.
+    const istLiveBestaetigt = herkunft === "live";
+
+    // Wechselt die Herkunft (live ⇄ archiv), ist KEIN Vergleich möglich — wir
+    // halten zwei verschiedene Dinge nebeneinander. Das offen ausweisen, statt
+    // es stillschweigend als "unverändert" durchgehen zu lassen.
+    if (z.page_fingerprint && !gleicheHerkunft) {
+      nichtVergleichbar.push(`${p.name} (${p.region}) — Abrufweg gewechselt (${z.page_fingerprint.split(":")[0]} → ${herkunft})`);
+    }
     if (hatSichGeaendert) {
       geaendert.push(`${p.name} (${p.region})`);
       if (!dry) {
@@ -295,7 +312,8 @@ async function main(): Promise<void> {
         .from("funding_programs")
         .update({
           page_fingerprint: fp,
-          page_seen_at: new Date().toISOString(),
+          // Siehe oben: nur der Live-Abruf setzt die Bestätigung.
+          ...(istLiveBestaetigt ? { page_seen_at: new Date().toISOString() } : {}),
           // Nur setzen, wenn sich wirklich etwas bewegt hat: Dieses Datum stellt
           // den geprueften Inhalt in Frage und startet die Nachpruef-Frist.
           ...(hatSichGeaendert ? { page_changed_at: new Date().toISOString() } : {}),
@@ -312,6 +330,8 @@ async function main(): Promise<void> {
   for (const a of ueberProduktion) console.log(`     → ${a}`);
   console.log(`  über Archiv:  ${ueberArchiv.length}`);
   for (const a of ueberArchiv) console.log(`     → ${a}`);
+  console.log(`  nicht vergleichbar (Abrufweg gewechselt): ${nichtVergleichbar.length}`);
+  for (const n of nichtVergleichbar) console.log(`     → ${n}`);
   console.log(`  unerreichbar: ${unerreichbar.length}`);
   for (const u of unerreichbar) console.log(`     → ${u}`);
 
