@@ -782,10 +782,14 @@ function StromwertHilfe({ spanne }: { spanne: { min: number; max: number; mittel
       Baujahrs. Die Vergütung eines privaten Dachs von 2010 ist rund das Vierfache der heutigen;
       in dieser Spalte bleibt davon mehr als das Doppelte übrig, weil der selbst verbrauchte Strom
       bei beiden gleich viel wert ist. Nach 20 Jahren endet die Vergütung, dann zählt nur noch der
-      Börsenwert. Zwei Lücken kennen wir: Die zusätzliche Eigenverbrauchsvergütung der Baujahre
-      2009 bis 2012 fehlt, und für Freiflächen-Parks der Baujahre 2015 bis 2024 fehlt uns der
-      Zuschlagswert ihrer Ausschreibung — sie rechnen mit dem heutigen. Beide Lücken setzen die
-      Zahl eher zu niedrig an. Strommenge: installierte Leistung mal typischer Ertrag im
+      Börsenwert. Eine Lücke kennen wir: Die zusätzliche Eigenverbrauchsvergütung der Baujahre
+      2009 bis 2012 fehlt, das setzt die Zahl eher zu niedrig an. Freiflächen-Parks ab Baujahr
+      2015 erlösen nicht mehr einen Satz aus dem Gesetz, sondern den Zuschlagswert ihrer
+      Ausschreibung. Die Baujahre 2015 bis 2024 zählen deshalb mit dem Mittel der beiden
+      Ausschreibungsjahre davor, weil zwischen Zuschlag und Inbetriebnahme bis zu zwei Jahre
+      liegen dürfen und die meisten Projekte diese Frist ausreizen. Wie sich die Inbetriebnahmen
+      im Einzelnen darauf verteilen, veröffentlicht die Behörde nicht — das ist eine begründete
+      Näherung, keine gemessene Zuordnung. Strommenge: installierte Leistung mal typischer Ertrag im
       Bundesland, kalibriert an der Erzeugung 2025 (Fraunhofer ISE).
     </>
   );

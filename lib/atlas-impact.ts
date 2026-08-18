@@ -24,12 +24,7 @@ import type { FeedInRates } from "./feedin-config";
 import { effectiveFeedInCtPerKwh, feedInEndIso, feedInRatesForCommissioning } from "./feedin-config";
 import type { AltFeedInRow } from "./feedin-archiv-alt";
 import { FEED_IN_ALT_START, FEED_IN_ARCHIV_ALT, altFeedInRatesFor, blendRoofRate } from "./feedin-archiv-alt";
-import {
-  FREIFLAECHE_AW_CT,
-  FREIFLAECHE_LUECKE_AB,
-  FREIFLAECHE_LUECKE_BIS,
-  freiflaecheHistorieCt,
-} from "./freiflaeche-config";
+import { FREIFLAECHE_AW_CT, freiflaecheHistorieCt, freiflaecheZuschlagCt } from "./freiflaeche-config";
 import { ertragForRegionId } from "./bundesland-ertrag";
 import { fmtCtProKwh } from "./atlas-format";
 import { simulateSolarYear } from "./balkon-sim";
@@ -353,10 +348,13 @@ function jahrgangBasis(jahrgang: number): JahrgangBasis {
  *  · Dachanlagen über 100 kW in der alten Ära: Die Alt-Tabelle führt darüber
  *    keine Klasse, obwohl das Gesetz eine hatte (§ 33 Abs. 1 Nr. 3 EEG 2009).
  *    Solche Zellen bekommen den 100-kW-Satz — die einzige Abweichung nach oben.
- *  · Freiflächen der Jahrgänge 2015–2024: Seit dem ersten Gebotstermin
- *    (15.04.2015) ist ihr Erlös der individuelle Zuschlagswert, und eine belegte
- *    Reihe dieser Werte pflegt das Projekt nicht. Sie werden mit dem HEUTIGEN
- *    Ausschreibungsniveau bewertet — für die Jahrgänge bis etwa 2020 zu niedrig.
+ *  · Freiflächen der Jahrgänge 2015–2024 tragen den mittleren Zuschlagswert der
+ *    Ausschreibungen zwei Jahre vor ihrer Inbetriebnahme (§ 37e EEG, Begründung
+ *    in lib/freiflaeche-config.ts). Wie sich die Inbetriebnahmen innerhalb der
+ *    24-Monats-Frist verteilen, veröffentlicht die Behörde nicht — es ist eine
+ *    begründete Näherung, keine gemessene Zuordnung. Kleine Freiflächen unter
+ *    der Ausschreibungsschwelle behielten den höheren gesetzlichen Satz; auch
+ *    diese Auslassung senkt die Zahl.
  */
 export function einspeiseSatz(
   segment: string,
@@ -416,7 +414,19 @@ export function einspeiseCt(segment: string, jahrgang: number, kwpMittel?: numbe
  * ihn auf), nicht beim Marktwert — siehe lib/freiflaeche-config.ts. Welcher Wert
  * das ist, hängt am Baujahr: bis 03/2012 der Satz der Alt-Tabelle, 2012–2014 der
  * gesetzliche Satz nach § 32 Abs. 1 EEG 2012, ab 2015 der Zuschlagswert einer
- * Ausschreibung — und genau den kennen wir für 2015–2024 nicht.
+ * Ausschreibung.
+ *
+ * Der Zuschlag fällt dabei VOR der Inbetriebnahme — bis zu 24 Monate (§ 37e
+ * EEG). Die Jahrgänge 2015–2024 bekommen deshalb das Mittel der
+ * Ausschreibungsjahre davor; die Regel und ihre Grenzen stehen in
+ * lib/freiflaeche-config.ts. Ab 2025 rechnet das heutige Niveau, weil die dafür
+ * maßgeblichen Runden noch gar nicht alle abgeschlossen sind.
+ *
+ * Die Vermarktungsgebühr geht in beiden Fällen ab (dieselbe Behandlung wie beim
+ * heutigen Jahrgang): Wer einen Zuschlag hat, ist in der Direktvermarktung —
+ * der anzulegende Wert kommt nicht ohne Vermarkter beim Betreiber an. Die
+ * gesetzlichen Sätze bis 2014 sind davon bewusst ausgenommen, dort zahlte der
+ * Netzbetreiber direkt.
  */
 function freiflaecheSatz(jahrgang: number, alt: AltFeedInRow | null): { ct: number; hinweis: string } {
   if (alt) return { ct: alt.groundMounted, hinweis: "gesetzlicher Freiflächensatz des Baujahrs" };
@@ -428,14 +438,18 @@ function freiflaecheSatz(jahrgang: number, alt: AltFeedInRow | null): { ct: numb
 
   // Bewusst NETTO beschriftet: Ausgegeben wird der Zuschlagswert MINUS
   // Vermarktungsgebühr, nicht der Zuschlagswert selbst.
-  const ct = Math.max(0, FREIFLAECHE_AW_CT - DIREKTVERMARKTUNG.gebuehrCtKwh);
-  if (jahrgang >= FREIFLAECHE_LUECKE_AB && jahrgang <= FREIFLAECHE_LUECKE_BIS) {
+  const zuschlag = freiflaecheZuschlagCt(jahrgang);
+  if (zuschlag !== null) {
     return {
-      ct,
-      hinweis: "heutiger Zuschlagswert abzüglich Vermarktungsgebühr — der des Baujahrs ist uns nicht belegt",
+      ct: Math.max(0, zuschlag - DIREKTVERMARKTUNG.gebuehrCtKwh),
+      hinweis: "mittlerer Zuschlagswert der Ausschreibungen zwei Jahre vor Inbetriebnahme, abzüglich Vermarktungsgebühr",
     };
   }
-  return { ct, hinweis: "Zuschlagswert der Ausschreibung abzüglich Vermarktungsgebühr" };
+
+  return {
+    ct: Math.max(0, FREIFLAECHE_AW_CT - DIREKTVERMARKTUNG.gebuehrCtKwh),
+    hinweis: "Zuschlagswert der Ausschreibung abzüglich Vermarktungsgebühr",
+  };
 }
 
 /**

@@ -22,7 +22,12 @@ import { NATIONAL_AVG_YIELD } from "../constants";
 import { DEFAULT_PRICES } from "../prices-config";
 import { feedInRatesForCommissioning } from "../feedin-config";
 import { altFeedInRatesFor } from "../feedin-archiv-alt";
-import { FREIFLAECHE_AW_CT, FREIFLAECHE_LUECKE_AB, FREIFLAECHE_LUECKE_BIS } from "../freiflaeche-config";
+import {
+  FREIFLAECHE_AW_CT,
+  FREIFLAECHE_ZUSCHLAG_AB,
+  FREIFLAECHE_ZUSCHLAG_BIS,
+} from "../freiflaeche-config";
+import { DIREKTVERMARKTUNG } from "../marktwert-config";
 
 /**
  * Der Jahrgang, für den die Sätze "heute" gelten. Die Tests, die die Systematik
@@ -339,14 +344,14 @@ describe("Stromwert nach Baujahr (Realitäts-Anker)", () => {
       expect(ct).toBeGreaterThan(einspeiseCt(segment, HEUTE));
     }
 
-    // Freifläche genauso — außer der Grenzjahrgang liegt in der DOKUMENTIERTEN
-    // Lücke (2015–2024, Zuschlagswerte der Ausschreibungen sind uns nicht
-    // belegt). Dann steht dort bewusst das heutige Niveau; liegt er außerhalb
-    // und ist trotzdem nichts belegt, schlägt der Test an.
-    if (grenze < FREIFLAECHE_LUECKE_AB) {
+    // Freifläche genauso: Ein Grenzjahrgang aus der gesetzlichen Ära liegt weit
+    // über dem heutigen Niveau, einer aus der Ausschreibungs-Ära (ab 2015)
+    // zumindest darüber — die Zuschläge sind seit 2015 durchweg gefallen.
+    if (grenze < FREIFLAECHE_ZUSCHLAG_AB) {
       expect(einspeiseCt("freiflaeche", grenze)).toBeGreaterThan(einspeiseCt("freiflaeche", HEUTE) * 2);
     } else {
-      expect(grenze).toBeLessThanOrEqual(FREIFLAECHE_LUECKE_BIS);
+      expect(grenze).toBeLessThanOrEqual(FREIFLAECHE_ZUSCHLAG_BIS);
+      expect(einspeiseCt("freiflaeche", grenze)).toBeGreaterThan(einspeiseCt("freiflaeche", HEUTE));
     }
 
     // Und der Jahrgang direkt davor ist zum Jahreswechsel ausgelaufen.
@@ -394,11 +399,54 @@ describe("Stromwert nach Baujahr (Realitäts-Anker)", () => {
     expect(einspeiseCt("freiflaeche", 2012)).toBeGreaterThan(einspeiseCt("freiflaeche", 2013));
     expect(einspeiseCt("freiflaeche", 2014)).toBeGreaterThan(einspeiseCt("freiflaeche", HEUTE) * 1.5);
 
-    // Und die Lücke bleibt sichtbar benannt statt geraten: Für 2015–2024 gibt es
-    // keinen belegten Zuschlagswert, dort steht das heutige Niveau — der Hinweis
-    // sagt genau das.
-    expect(einspeiseSatz("freiflaeche", 2018).ct).toBeCloseTo(einspeiseCt("freiflaeche", HEUTE), 6);
-    expect(einspeiseSatz("freiflaeche", 2018).hinweis).toMatch(/nicht belegt/);
+  });
+
+  it("gibt jedem Ausschreibungs-Jahrgang seinen eigenen Zuschlagswert", () => {
+    // Bis 08/2026 fielen ALLE Jahrgänge 2015–2024 auf dasselbe heutige Niveau
+    // (~4,55 ct netto) — eine flache Reihe, obwohl hinter einem Park von 2015
+    // Zuschläge um 8,50 ct stehen. Genau diese Flachheit war der Fehler.
+    //
+    // Geprüft wird gegen UNABHÄNGIGE Bänder aus den BNetzA-Einzelrunden, nicht
+    // gegen die Konfigurationstabelle — sonst prüft der Test seine eigene Zeile.
+    const jahrgaenge = Array.from(
+      { length: FREIFLAECHE_ZUSCHLAG_BIS - FREIFLAECHE_ZUSCHLAG_AB + 1 },
+      (_, i) => FREIFLAECHE_ZUSCHLAG_AB + i,
+    );
+    const saetze = jahrgaenge.map((j) => einspeiseCt("freiflaeche", j));
+
+    // (1) Die Reihe VARIIERT. Vorher war sie flach.
+    expect(Math.max(...saetze) / Math.min(...saetze)).toBeGreaterThan(1.5);
+
+    // (2) Ein Park von 2017 (Zuschläge 2015/2016: alle Runden zwischen 6,90 und
+    //     9,17 ct) erlöst deutlich mehr als einer von 2024 (Zuschläge 2022/2023).
+    const ct2017 = einspeiseCt("freiflaeche", 2017);
+    const ct2024 = einspeiseCt("freiflaeche", 2024);
+    expect(ct2017 / ct2024).toBeGreaterThan(1.25);
+    expect(ct2017).toBeGreaterThan(6);
+    expect(ct2017).toBeLessThan(9);
+
+    // (3) Jahrgang 2016 stammt aus der ersten Ausschreibung (2015, ~8,50 ct) und
+    //     muss klar über Jahrgang 2020 liegen (Zuschläge 2018/2019, ~5 ct).
+    expect(einspeiseCt("freiflaeche", 2016)).toBeGreaterThan(einspeiseCt("freiflaeche", 2020) * 1.4);
+
+    // (4) Kein Jahrgang der Ausschreibungs-Ära liegt über dem letzten
+    //     GESETZLICHEN Satz (8,92 ct 2014) oder unter dem heutigen Niveau — die
+    //     Zuschläge lagen durchweg dazwischen.
+    for (const ct of saetze) {
+      expect(ct).toBeLessThan(einspeiseCt("freiflaeche", 2014));
+      expect(ct).toBeGreaterThan(einspeiseCt("freiflaeche", HEUTE));
+    }
+
+    // (5) Die Vermarktungsgebühr geht ab — dieselbe Behandlung wie beim heutigen
+    //     Jahrgang, denn wer einen Zuschlag hat, ist in der Direktvermarktung.
+    //     Unabhängig gerechnet aus dem Jahresmittel 2015 (8,50 ct), das für die
+    //     Jahrgänge 2015 und 2016 gilt.
+    expect(einspeiseCt("freiflaeche", 2016)).toBeCloseTo(8.5 - DIREKTVERMARKTUNG.gebuehrCtKwh, 6);
+
+    // (6) Und der Hinweis sagt, WAS die Zahl ist: kein Gesetzessatz, sondern ein
+    //     Zuschlagswert mit Versatz.
+    expect(einspeiseSatz("freiflaeche", 2018).hinweis).toMatch(/Zuschlagswert/);
+    expect(einspeiseSatz("freiflaeche", 2018).hinweis).toMatch(/zwei Jahre vor Inbetriebnahme/);
   });
 
   it("rechnet die EEG-Staffel anteilig, nicht als Sprungtarif", () => {
