@@ -65,3 +65,21 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: npm run foerder:probe -- --vorrat
+
+      # Der Katalog soll vollständig werden, nicht stichprobenhaft. 971 Gemeinden
+      # mit Förderseite führen wir noch nicht; in Schüben von 150 ist der Bestand
+      # in gut einer Woche einmal durchgesehen — und danach hält der Lauf ihn
+      # aktuell, weil unerreichbare Seiten wieder drankommen.
+      - name: Abdeckung weiter durchsehen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run foerder:screen -- --limit 150
+
+      - name: Treffer zum Nachlesen
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: npm run foerder:screen -- --treffer
