@@ -1,6 +1,6 @@
 import { v } from "../lib/theme";
 import InfoTooltip from "./InfoTooltip";
-import type { FundingProgram, FundingStatus } from "../lib/funding-programs";
+import { FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE, type FundingProgram, type FundingStatus } from "../lib/funding-programs";
 import type { FundingExample } from "../lib/funding-examples";
 
 const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
@@ -11,20 +11,11 @@ const nf = (n: number) => Math.round(n).toLocaleString("de-DE");
 // it here, not in four files. Page-specific framing (CTAs, eligibility badges,
 // combinable links, containers) stays in each caller.
 
-export const FUNDING_STATUS_LABEL: Record<FundingStatus, string> = {
-  aktiv: "aktiv", ausgeschoepft: "ausgeschöpft", pausiert: "pausiert", eingestellt: "eingestellt", unsicher: "Status unklar",
-};
-
-/** Short status phrase for inline prose on city/archive pages — reads naturally
- *  after "… ist {phrase}" / "… — {phrase}". Keeps the wording in one place so
- *  the city page, the example note and any future caller stay consistent. */
-export const FUNDING_STATUS_NOTE: Record<FundingStatus, string> = {
-  aktiv: "nimmt aktuell Anträge an",
-  ausgeschoepft: "aktuell ausgeschöpft (Fördertopf leer)",
-  pausiert: "aktuell pausiert (keine neuen Anträge)",
-  eingestellt: "eingestellt (wird nicht mehr angeboten)",
-  unsicher: "Status unklar",
-};
+// Wortlaut der Status-Bezeichnungen: umgezogen nach lib/funding-programs.ts
+// (18.08.2026), damit auch der Verlaufs-Vergleich sie benutzen kann, ohne eine
+// React-Komponente in die Schreibseite zu ziehen. Re-Export, damit die
+// bisherigen Aufrufer unverändert bleiben — EINE Quelle, zwei Türen.
+export { FUNDING_STATUS_LABEL, FUNDING_STATUS_NOTE };
 
 /**
  * Einheiten, die eine Erklärung brauchen — als „?" hinter der Einheit.
